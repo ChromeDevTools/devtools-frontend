@@ -729,6 +729,13 @@ var MainImpl = class {
       isEnabled: Root2.Runtime.hostConfig.devToolsEnableDurableMessages?.enabled ?? false,
       requiresChromeRestart: false
     });
+    Root2.Runtime.experiments.registerHostExperiment({
+      name: Root2.ExperimentNames.ExperimentName.JPEG_XL,
+      title: "JPEG XL support",
+      aboutFlag: "enable-jxl-image-format",
+      isEnabled: Root2.Runtime.hostConfig.devToolsJpegXlImageFormat?.enabled ?? false,
+      requiresChromeRestart: true
+    });
     Root2.Runtime.experiments.enableExperimentsByDefault([
       Root2.ExperimentNames.ExperimentName.FULL_ACCESSIBILITY_TREE,
       Root2.ExperimentNames.ExperimentName.USE_SOURCE_MAP_SCOPES

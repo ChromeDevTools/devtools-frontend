@@ -36,7 +36,7 @@ export declare class ComputedStyleWidget extends UI.Widget.VBox {
     private filterRegex;
     private readonly linkifier;
     private readonly imagePreviewPopover;
-    constructor();
+    constructor(element?: HTMLElement, view?: View);
     onResize(): void;
     get filterText(): string;
     get filterIsRegex(): boolean;
@@ -47,6 +47,7 @@ export declare class ComputedStyleWidget extends UI.Widget.VBox {
     set nodeStyle(nodeStyle: ComputedStyleModule.ComputedStyleModel.ComputedStyle | null);
     get matchedStyles(): SDK.CSSMatchedStyles.CSSMatchedStyles | null;
     set matchedStyles(matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles | null);
+    set propertyTraces(propertyTraces: Map<string, SDK.CSSProperty.CSSProperty[]> | null);
     get computedStyleModel(): ComputedStyleModule.ComputedStyleModel.ComputedStyleModel | undefined;
     set computedStyleModel(computedStyleModel: ComputedStyleModule.ComputedStyleModel.ComputedStyleModel);
     performUpdate(): Promise<void>;
@@ -56,7 +57,6 @@ export declare class ComputedStyleWidget extends UI.Widget.VBox {
     private createTreeNodeRenderer;
     private buildTreeNode;
     private handleContextMenuEvent;
-    private computePropertyTraces;
     private computeNonInheritedProperties;
     private onRegexToggled;
     private onFilterChanged;

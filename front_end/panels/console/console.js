@@ -3172,7 +3172,7 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
           /* Breakpoints.BreakpointManager.BreakpointOrigin.OTHER */
         );
         const aiPanel = await AiAssistancePanel.AiAssistancePanel.instance();
-        void aiPanel.handleBreakpointConversation(uiLocation);
+        void aiPanel.handleBreakpointConversation(uiLocation, this.text);
       }
     };
     return button;

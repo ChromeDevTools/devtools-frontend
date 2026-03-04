@@ -510,6 +510,7 @@ function registerCommands(inspectorBackend2) {
   inspectorBackend2.registerEnum("Emulation.PressureState", { Nominal: "nominal", Fair: "fair", Serious: "serious", Critical: "critical" });
   inspectorBackend2.registerEnum("Emulation.DisabledImageType", { Avif: "avif", Jxl: "jxl", Webp: "webp" });
   inspectorBackend2.registerEvent("Emulation.virtualTimeBudgetExpired", []);
+  inspectorBackend2.registerEvent("Emulation.screenOrientationLockChanged", ["locked", "orientation"]);
   inspectorBackend2.registerCommand("Emulation.canEmulate", [], ["result"], "Tells whether emulation is supported.");
   inspectorBackend2.registerCommand("Emulation.clearDeviceMetricsOverride", [], [], "Clears the overridden device metrics.");
   inspectorBackend2.registerCommand("Emulation.clearGeolocationOverride", [], [], "Clears the overridden Geolocation Position and Error.");
@@ -1980,6 +1981,9 @@ var TargetBase = class {
   }
   registerDOMStorageDispatcher(dispatcher) {
     this.registerDispatcher("DOMStorage", dispatcher);
+  }
+  registerEmulationDispatcher(dispatcher) {
+    this.registerDispatcher("Emulation", dispatcher);
   }
   registerFetchDispatcher(dispatcher) {
     this.registerDispatcher("Fetch", dispatcher);

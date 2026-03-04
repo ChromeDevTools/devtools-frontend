@@ -2990,4 +2990,31 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
         return event.target === this.expandElement;
     }
 }
+export class GhostStylePropertyTreeElement extends StylePropertyTreeElement {
+    constructor(stylesContainer, section, matchedStyles, property) {
+        super({
+            stylesContainer,
+            section,
+            matchedStyles,
+            property,
+            isShorthand: false,
+            inherited: false,
+            overloaded: false,
+            newProperty: false,
+        });
+    }
+    onattach() {
+        this.listItemElement.classList.add('ghost-row');
+        this.updateTitle();
+    }
+    updateTitle() {
+        this.listItemElement.removeChildren();
+        this.nameElement = Renderer.renderNameElement(this.name);
+        this.listItemElement.appendChild(this.nameElement);
+        this.listItemElement.createChild('span', 'styles-name-value-separator').textContent = ': ';
+        this.valueElement = this.listItemElement.createChild('span');
+        this.valueElement.textContent = this.value;
+        this.listItemElement.createChild('span', 'styles-semicolon').textContent = ';';
+    }
+}
 //# sourceMappingURL=StylePropertyTreeElement.js.map

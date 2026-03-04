@@ -46,6 +46,7 @@
     "../../../../../../front_end/models/ai_assistance/ExtensionScope.ts",
     "../../../../../../front_end/models/ai_assistance/agents/AiAgent.ts",
     "../../../../../../front_end/models/ai_assistance/agents/BreakpointDebuggerAgent.ts",
+    "../../../../../../front_end/models/ai_assistance/agents/BreakpointDebuggerAgentOverlay.ts",
     "../../../../../../front_end/models/ai_assistance/agents/ContextSelectionAgent.ts",
     "../../../../../../front_end/models/ai_assistance/agents/FileAgent.ts",
     "../../../../../../front_end/models/ai_assistance/agents/NetworkAgent.ts",

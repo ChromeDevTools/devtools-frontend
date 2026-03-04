@@ -8228,6 +8228,9 @@
   "panels/emulation/DeviceModeToolbar.ts | rotate": {
     "message": "Rotate"
   },
+  "panels/emulation/DeviceModeToolbar.ts | screenOrientationLocked": {
+    "message": "Screen orientation is locked by the page"
+  },
   "panels/emulation/DeviceModeToolbar.ts | screenOrientationOptions": {
     "message": "Screen orientation options"
   },

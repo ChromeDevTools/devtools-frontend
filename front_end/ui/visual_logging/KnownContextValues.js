@@ -2057,6 +2057,7 @@ export const knownContextValues = new Set([
     'java-script-disabled-true',
     'javascript',
     'javascript-context',
+    'jpeg-xl',
     'jpeg-xl-format-disabled',
     'jpeg-xl-format-disabled-true',
     'jpg-header',

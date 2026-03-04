@@ -233,6 +233,7 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
     #computedStyleModel;
     #nodeStyle = null;
     #matchedStyles = null;
+    #propertyTraces = null;
     showInheritedComputedStylePropertiesSetting;
     groupComputedStylesSetting;
     filterRegex = null;
@@ -268,9 +269,9 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
     #filterText = '';
     #filterIsRegex = false;
     #allowUserControl = true;
-    constructor() {
-        super({ useShadowDom: true });
-        this.#view = DEFAULT_VIEW;
+    constructor(element, view = DEFAULT_VIEW) {
+        super(element, { useShadowDom: true });
+        this.#view = view;
         this.contentElement.classList.add('styles-sidebar-computed-style-widget');
         this.showInheritedComputedStylePropertiesSetting =
             Common.Settings.Settings.instance().createSetting('show-inherited-computed-style-properties', false);
@@ -347,6 +348,10 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
         this.#matchedStyles = matchedStyles;
         this.requestUpdate();
     }
+    set propertyTraces(propertyTraces) {
+        this.#propertyTraces = propertyTraces;
+        this.requestUpdate();
+    }
     get computedStyleModel() {
         return this.#computedStyleModel;
     }
@@ -384,7 +389,7 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
         const uniqueProperties = [...nodeStyle.computedStyle.keys()];
         uniqueProperties.sort(propertySorter);
         const node = nodeStyle.node;
-        const propertyTraces = this.computePropertyTraces(matchedStyles);
+        const propertyTraces = this.#propertyTraces || new Map();
         const nonInheritedProperties = this.computeNonInheritedProperties(matchedStyles);
         const showInherited = this.#shouldShowAllStyles();
         const tree = [];
@@ -420,7 +425,7 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
             return;
         }
         const node = nodeStyle.node;
-        const propertyTraces = this.computePropertyTraces(matchedStyles);
+        const propertyTraces = this.#propertyTraces || new Map();
         const nonInheritedProperties = this.computeNonInheritedProperties(matchedStyles);
         const showInherited = this.showInheritedComputedStylePropertiesSetting.get();
         const propertiesByCategory = new Map();
@@ -536,24 +541,6 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
         }
         contextMenu.defaultSection().appendItem(i18nString(UIStrings.navigateToStyle), () => Common.Revealer.reveal(property), { jslogContext: 'navigate-to-style' });
         void contextMenu.show();
-    }
-    computePropertyTraces(matchedStyles) {
-        const result = new Map();
-        for (const style of matchedStyles.nodeStyles()) {
-            const allProperties = style.allProperties();
-            for (const property of allProperties) {
-                if (!property.activeInStyle() || !matchedStyles.propertyState(property)) {
-                    continue;
-                }
-                if (!result.has(property.name)) {
-                    result.set(property.name, []);
-                }
-                // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-                // @ts-expect-error
-                result.get(property.name).push(property);
-            }
-        }
-        return result;
     }
     computeNonInheritedProperties(matchedStyles) {
         const result = new Set();

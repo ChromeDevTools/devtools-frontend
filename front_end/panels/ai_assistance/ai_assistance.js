@@ -6,22 +6,23 @@ var __export = (target, all) => {
 
 // gen/front_end/panels/ai_assistance/AiAssistancePanel.js
 import "./../../ui/kit/kit.js";
-import * as Common5 from "./../../core/common/common.js";
+import * as Common6 from "./../../core/common/common.js";
 import * as Host6 from "./../../core/host/host.js";
 import * as i18n17 from "./../../core/i18n/i18n.js";
-import * as Platform4 from "./../../core/platform/platform.js";
+import * as Platform5 from "./../../core/platform/platform.js";
 import * as Root6 from "./../../core/root/root.js";
 import * as SDK3 from "./../../core/sdk/sdk.js";
-import * as AiAssistanceModel5 from "./../../models/ai_assistance/ai_assistance.js";
+import * as AiAssistanceModel6 from "./../../models/ai_assistance/ai_assistance.js";
 import * as Annotations from "./../../models/annotations/annotations.js";
 import * as Badges from "./../../models/badges/badges.js";
+import * as Greendev from "./../../models/greendev/greendev.js";
 import * as TextUtils from "./../../models/text_utils/text_utils.js";
 import * as Workspace5 from "./../../models/workspace/workspace.js";
 import * as Buttons7 from "./../../ui/components/buttons/buttons.js";
 import * as Snackbars2 from "./../../ui/components/snackbars/snackbars.js";
 import * as UIHelpers2 from "./../../ui/helpers/helpers.js";
 import * as UI9 from "./../../ui/legacy/legacy.js";
-import * as Lit5 from "./../../ui/lit/lit.js";
+import * as Lit6 from "./../../ui/lit/lit.js";
 import * as VisualLogging6 from "./../../ui/visual_logging/visual_logging.js";
 import * as NetworkForward from "./../network/forward/forward.js";
 import * as NetworkPanel from "./../network/network.js";
@@ -4690,9 +4691,42 @@ var ExploreWidget = class extends UI8.Widget.Widget {
 };
 
 // gen/front_end/panels/ai_assistance/components/MarkdownRendererWithCodeBlock.js
+import * as Common4 from "./../../core/common/common.js";
+import * as Platform4 from "./../../core/platform/platform.js";
+import * as AiAssistanceModel5 from "./../../models/ai_assistance/ai_assistance.js";
+import * as Logs from "./../../models/logs/logs.js";
 import * as MarkdownView from "./../../ui/components/markdown_view/markdown_view.js";
+import * as Lit4 from "./../../ui/lit/lit.js";
+var { html: html9 } = Lit4;
 var MarkdownRendererWithCodeBlock = class extends MarkdownView.MarkdownView.MarkdownInsightRenderer {
+  #revealableLink(revealable, label) {
+    return html9`<devtools-link @click=${(e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      void Common4.Revealer.reveal(revealable);
+    }}>${Platform4.StringUtilities.trimEndWithMaxLength(label, 100)}</devtools-link>`;
+  }
+  #renderLink(href) {
+    if (href.startsWith("#req-")) {
+      const request = Logs.NetworkLog.NetworkLog.instance().requests().find((req) => req.requestId() === href.substring(5));
+      if (request) {
+        return this.#revealableLink(request, request.url());
+      }
+    } else if (href.startsWith("#file-")) {
+      const file = AiAssistanceModel5.ContextSelectionAgent.ContextSelectionAgent.getUISourceCodes().find((file2) => AiAssistanceModel5.ContextSelectionAgent.ContextSelectionAgent.uiSourceCodeId.get(file2) === Number(href.substring(6)));
+      if (file) {
+        return this.#revealableLink(file, file.name());
+      }
+    }
+    return null;
+  }
   templateForToken(token) {
+    if (token.type === "link") {
+      const link4 = this.#renderLink(token.href);
+      if (link4) {
+        return link4;
+      }
+    }
     if (token.type === "code") {
       const lines = token.text.split("\n");
       if (lines[0]?.trim() === "css") {
@@ -4700,18 +4734,27 @@ var MarkdownRendererWithCodeBlock = class extends MarkdownView.MarkdownView.Mark
         token.text = lines.slice(1).join("\n");
       }
     }
+    if (token.type === "codespan") {
+      const matches = token.text.match(/^\[.*\]\((.+)\)$/);
+      if (matches?.[1]) {
+        const link4 = this.#renderLink(matches[1]);
+        if (link4) {
+          return link4;
+        }
+      }
+    }
     return super.templateForToken(token);
   }
 };
 
 // gen/front_end/panels/ai_assistance/components/PerformanceAgentMarkdownRenderer.js
-import * as Common4 from "./../../core/common/common.js";
+import * as Common5 from "./../../core/common/common.js";
 import * as SDK2 from "./../../core/sdk/sdk.js";
 import * as Trace from "./../../models/trace/trace.js";
-import * as Lit4 from "./../../ui/lit/lit.js";
+import * as Lit5 from "./../../ui/lit/lit.js";
 import * as PanelsCommon2 from "./../common/common.js";
-var { html: html9 } = Lit4.StaticHtml;
-var { ref: ref4, createRef: createRef2 } = Lit4.Directives;
+var { html: html10 } = Lit5.StaticHtml;
+var { ref: ref4, createRef: createRef2 } = Lit5.Directives;
 var PerformanceAgentMarkdownRenderer = class extends MarkdownRendererWithCodeBlock {
   mainFrameId;
   lookupEvent;
@@ -4732,11 +4775,11 @@ var PerformanceAgentMarkdownRenderer = class extends MarkdownRendererWithCodeBlo
           templateRef.value.textContent = "";
           templateRef.value.append(node);
         });
-        return html9`<span ${ref4(templateRef)}>${token.text}</span>`;
+        return html10`<span ${ref4(templateRef)}>${token.text}</span>`;
       }
       const event = this.lookupEvent(token.href.slice(1));
       if (!event) {
-        return html9`${token.text}`;
+        return html10`${token.text}`;
       }
       let label = token.text;
       let title = "";
@@ -4745,9 +4788,9 @@ var PerformanceAgentMarkdownRenderer = class extends MarkdownRendererWithCodeBlo
       } else {
         label += ` (${event.name})`;
       }
-      return html9`<a href="#" draggable=false .title=${title} @click=${(e) => {
+      return html10`<a href="#" draggable=false .title=${title} @click=${(e) => {
         e.stopPropagation();
-        void Common4.Revealer.reveal(new SDK2.TraceObject.RevealableEvent(event));
+        void Common5.Revealer.reveal(new SDK2.TraceObject.RevealableEvent(event));
       }}>${label}</a>`;
     }
     return super.templateForToken(token);
@@ -4778,7 +4821,7 @@ var PerformanceAgentMarkdownRenderer = class extends MarkdownRendererWithCodeBlo
 };
 
 // gen/front_end/panels/ai_assistance/AiAssistancePanel.js
-var { html: html10 } = Lit5;
+var { html: html11 } = Lit6;
 var AI_ASSISTANCE_SEND_FEEDBACK = "https://crbug.com/364805393";
 var AI_ASSISTANCE_HELP = "https://developer.chrome.com/docs/devtools/ai-assistance";
 var WALKTHROUGH_SIDEBAR_BREAKPOINT = 700;
@@ -4998,12 +5041,12 @@ async function getEmptyStateSuggestions(conversation) {
       ];
     }
     default:
-      Platform4.assertNever(conversation.type, "Unknown conversation type");
+      Platform5.assertNever(conversation.type, "Unknown conversation type");
   }
 }
 function getMarkdownRenderer(conversation) {
   const context = conversation?.selectedContext;
-  if (context instanceof AiAssistanceModel5.PerformanceAgent.PerformanceTraceContext) {
+  if (context instanceof AiAssistanceModel6.PerformanceAgent.PerformanceTraceContext) {
     if (!context.external) {
       const focus = context.getItem();
       return new PerformanceAgentMarkdownRenderer(focus.parsedTrace.data.Meta.mainFrameId, focus.lookupEvent.bind(focus));
@@ -5014,10 +5057,10 @@ function getMarkdownRenderer(conversation) {
   return new MarkdownRendererWithCodeBlock();
 }
 function toolbarView(input) {
-  return html10`
+  return html11`
     <div class="toolbar-container" role="toolbar" jslog=${VisualLogging6.toolbar()}>
       <devtools-toolbar class="freestyler-left-toolbar" role="presentation">
-      ${input.showChatActions ? html10`<devtools-button
+      ${input.showChatActions ? html11`<devtools-button
           title=${i18nString4(UIStrings4.newChat)}
           aria-label=${i18nString4(UIStrings4.newChat)}
           .iconName=${"plus"}
@@ -5031,8 +5074,8 @@ function toolbarView(input) {
           .iconName=${"history"}
           .jslogContext=${"freestyler.history"}
           .populateMenuCall=${input.populateHistoryMenu}
-        ></devtools-menu-button>` : Lit5.nothing}
-        ${input.showActiveConversationActions ? html10`
+        ></devtools-menu-button>` : Lit6.nothing}
+        ${input.showActiveConversationActions ? html11`
           <devtools-button
               title=${i18nString4(UIStrings4.deleteChat)}
               aria-label=${i18nString4(UIStrings4.deleteChat)}
@@ -5049,7 +5092,7 @@ function toolbarView(input) {
             .jslogContext=${"export-ai-conversation"}
             .variant=${"toolbar"}
             @click=${input.onExportConversationClick}>
-          </devtools-button>` : Lit5.nothing}
+          </devtools-button>` : Lit6.nothing}
       </devtools-toolbar>
       <devtools-toolbar class="freestyler-right-toolbar" role="presentation">
         <devtools-link
@@ -5081,9 +5124,9 @@ function defaultView(input, output, target) {
   function renderState() {
     switch (input.state) {
       case "chat-view": {
-        return html10`<devtools-ai-chat-view
+        return html11`<devtools-ai-chat-view
           .props=${input.props}
-          ${Lit5.Directives.ref((el) => {
+          ${Lit6.Directives.ref((el) => {
           if (!el || !(el instanceof ChatView)) {
             return;
           }
@@ -5092,20 +5135,20 @@ function defaultView(input, output, target) {
         ></devtools-ai-chat-view>`;
       }
       case "explore-view":
-        return html10`<devtools-widget
+        return html11`<devtools-widget
           class="fill-panel"
           .widgetConfig=${UI9.Widget.widgetConfig(ExploreWidget)}
         ></devtools-widget>`;
       case "disabled-view":
-        return html10`<devtools-widget
+        return html11`<devtools-widget
           class="fill-panel"
           .widgetConfig=${UI9.Widget.widgetConfig(DisabledWidget, input.props)}
         ></devtools-widget>`;
     }
   }
   const shouldShowWalkthrough = input.state === "chat-view" && input.walkthrough.isExpanded;
-  if (Root6.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled) {
-    Lit5.render(html10`
+  if (Root6.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled || Greendev.Prototypes.instance().isEnabled("breakpointDebuggerAgent")) {
+    Lit6.render(html11`
       ${toolbarView(input)}
       <div class="ai-assistance-view-container">
         <devtools-split-view
@@ -5119,19 +5162,19 @@ function defaultView(input, output, target) {
             ${renderState()}
           </div>
           <div slot="sidebar" class="sidebar-view">
-            ${shouldShowWalkthrough ? html10`
+            ${shouldShowWalkthrough ? html11`
               <devtools-widget .widgetConfig=${UI9.Widget.widgetConfig(WalkthroughView, {
       message: input.props.walkthrough.activeMessage,
       isLoading: input.props.isLoading,
       markdownRenderer: input.props.markdownRenderer,
       onToggle: input.props.walkthrough.onToggle
-    })}></devtools-widget>` : Lit5.nothing}
+    })}></devtools-widget>` : Lit6.nothing}
           </div>
         </devtools-split-view>
       </div>
     `, target);
   } else {
-    Lit5.render(html10`
+    Lit6.render(html11`
       ${toolbarView(input)}
       <div class="ai-assistance-view-container">${renderState()}</div>
     `, target);
@@ -5141,32 +5184,32 @@ function createNodeContext(node) {
   if (!node) {
     return null;
   }
-  return new AiAssistanceModel5.StylingAgent.NodeContext(node);
+  return new AiAssistanceModel6.StylingAgent.NodeContext(node);
 }
 function createFileContext(file) {
   if (!file) {
     return null;
   }
-  return new AiAssistanceModel5.FileAgent.FileContext(file);
+  return new AiAssistanceModel6.FileAgent.FileContext(file);
 }
 function createBreakpointContext(uiLocation) {
   if (!uiLocation) {
     return null;
   }
-  return new AiAssistanceModel5.BreakpointDebuggerAgent.BreakpointContext(uiLocation);
+  return new AiAssistanceModel6.BreakpointDebuggerAgent.BreakpointContext(uiLocation);
 }
 function createRequestContext(request) {
   if (!request) {
     return null;
   }
   const calculator = NetworkPanel.NetworkPanel.NetworkPanel.instance().networkLogView.timeCalculator();
-  return new AiAssistanceModel5.NetworkAgent.RequestContext(request, calculator);
+  return new AiAssistanceModel6.NetworkAgent.RequestContext(request, calculator);
 }
 function createPerformanceTraceContext(focus) {
   if (!focus) {
     return null;
   }
-  return new AiAssistanceModel5.PerformanceAgent.PerformanceTraceContext(focus);
+  return new AiAssistanceModel6.PerformanceAgent.PerformanceTraceContext(focus);
 }
 var panelInstance;
 var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
@@ -5178,8 +5221,8 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
   #viewOutput = {};
   #serverSideLoggingEnabled = isAiAssistanceServerSideLoggingEnabled();
   #aiAssistanceEnabledSetting;
-  #changeManager = new AiAssistanceModel5.ChangeManager.ChangeManager();
-  #mutex = new Common5.Mutex.Mutex();
+  #changeManager = new AiAssistanceModel6.ChangeManager.ChangeManager();
+  #mutex = new Common6.Mutex.Mutex();
   #conversation;
   #selectedFile = null;
   #selectedElement = null;
@@ -5216,7 +5259,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
     if (UI9.ActionRegistry.ActionRegistry.instance().hasAction("elements.toggle-element-search")) {
       this.#toggleSearchElementAction = UI9.ActionRegistry.ActionRegistry.instance().getAction("elements.toggle-element-search");
     }
-    AiAssistanceModel5.AiHistoryStorage.AiHistoryStorage.instance().addEventListener("AiHistoryDeleted", this.#onHistoryDeleted, this);
+    AiAssistanceModel6.AiHistoryStorage.AiHistoryStorage.instance().addEventListener("AiHistoryDeleted", this.#onHistoryDeleted, this);
   }
   #getToolbarInput() {
     return {
@@ -5331,7 +5374,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
   }
   #getAiAssistanceEnabledSetting() {
     try {
-      return Common5.Settings.moduleSetting("ai-assistance-enabled");
+      return Common6.Settings.moduleSetting("ai-assistance-enabled");
     } catch {
       return;
     }
@@ -5404,7 +5447,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
     if (this.#conversation?.type === targetConversationType) {
       return;
     }
-    const conversation = targetConversationType ? new AiAssistanceModel5.AiConversation.AiConversation(targetConversationType, [], void 0, false, this.#aidaClient, this.#changeManager, false, this.#handlePerformanceRecordAndReload.bind(this), this.#handleInspectElement.bind(this), NetworkPanel.NetworkPanel.NetworkPanel.instance().networkLogView.timeCalculator()) : void 0;
+    const conversation = targetConversationType ? new AiAssistanceModel6.AiConversation.AiConversation(targetConversationType, [], void 0, false, this.#aidaClient, this.#changeManager, false, this.#handlePerformanceRecordAndReload.bind(this), this.#handleInspectElement.bind(this), NetworkPanel.NetworkPanel.NetworkPanel.instance().networkLogView.timeCalculator()) : void 0;
     this.#updateConversationState(conversation);
   }
   #updateConversationState(conversation) {
@@ -5416,7 +5459,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
       if (!conversation) {
         const conversationType = this.#getDefaultConversationType();
         if (conversationType) {
-          conversation = new AiAssistanceModel5.AiConversation.AiConversation(conversationType, [], void 0, false, this.#aidaClient, this.#changeManager, false, this.#handlePerformanceRecordAndReload.bind(this), this.#handleInspectElement.bind(this), NetworkPanel.NetworkPanel.NetworkPanel.instance().networkLogView.timeCalculator());
+          conversation = new AiAssistanceModel6.AiConversation.AiConversation(conversationType, [], void 0, false, this.#aidaClient, this.#changeManager, false, this.#handlePerformanceRecordAndReload.bind(this), this.#handleInspectElement.bind(this), NetworkPanel.NetworkPanel.NetworkPanel.instance().networkLogView.timeCalculator());
         }
       }
       this.#conversation = conversation;
@@ -5433,14 +5476,16 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
     }
     this.requestUpdate();
   }
-  async handleBreakpointConversation(uiLocation) {
-    const context = new AiAssistanceModel5.BreakpointDebuggerAgent.BreakpointContext(uiLocation);
+  async handleBreakpointConversation(uiLocation, errorMsg) {
+    const context = new AiAssistanceModel6.BreakpointDebuggerAgent.BreakpointContext(uiLocation);
     this.#selectedBreakpoint = context;
-    const conversation = new AiAssistanceModel5.AiConversation.AiConversation("breakpoint", [], void 0, false, this.#aidaClient, this.#changeManager, false, this.#handlePerformanceRecordAndReload.bind(this), this.#handleInspectElement.bind(this), NetworkPanel.NetworkPanel.NetworkPanel.instance().networkLogView.timeCalculator());
+    const conversation = new AiAssistanceModel6.AiConversation.AiConversation("breakpoint", [], void 0, false, this.#aidaClient, this.#changeManager, false, this.#handlePerformanceRecordAndReload.bind(this), this.#handleInspectElement.bind(this), NetworkPanel.NetworkPanel.NetworkPanel.instance().networkLogView.timeCalculator());
     this.#updateConversationState(conversation);
     this.#conversation?.setContext(context);
     this.requestUpdate();
     await UI9.ViewManager.ViewManager.instance().showView(_AiAssistancePanel.panelName);
+    const prompt = errorMsg ? `debug the error "${errorMsg}" using breakpoint debugging agent` : "debug the error using breakpoint debugging agent";
+    await this.#startConversation(prompt);
   }
   wasShown() {
     super.wasShown();
@@ -5449,7 +5494,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
     void this.#handleAidaAvailabilityChange();
     this.#selectedElement = createNodeContext(selectedElementFilter(UI9.Context.Context.instance().flavor(SDK3.DOMModel.DOMNode)));
     this.#selectedRequest = createRequestContext(UI9.Context.Context.instance().flavor(SDK3.NetworkRequest.NetworkRequest));
-    this.#selectedPerformanceTrace = createPerformanceTraceContext(UI9.Context.Context.instance().flavor(AiAssistanceModel5.AIContext.AgentFocus));
+    this.#selectedPerformanceTrace = createPerformanceTraceContext(UI9.Context.Context.instance().flavor(AiAssistanceModel6.AIContext.AgentFocus));
     this.#selectedFile = createFileContext(UI9.Context.Context.instance().flavor(Workspace5.UISourceCode.UISourceCode));
     this.#selectedBreakpoint = createBreakpointContext(UI9.Context.Context.instance().flavor(Workspace5.UISourceCode.UILocation));
     this.#updateConversationState(this.#conversation);
@@ -5458,7 +5503,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
     this.#toggleSearchElementAction?.addEventListener("Toggled", this.requestUpdate, this);
     UI9.Context.Context.instance().addFlavorChangeListener(SDK3.DOMModel.DOMNode, this.#handleDOMNodeFlavorChange);
     UI9.Context.Context.instance().addFlavorChangeListener(SDK3.NetworkRequest.NetworkRequest, this.#handleNetworkRequestFlavorChange);
-    UI9.Context.Context.instance().addFlavorChangeListener(AiAssistanceModel5.AIContext.AgentFocus, this.#handlePerformanceTraceFlavorChange);
+    UI9.Context.Context.instance().addFlavorChangeListener(AiAssistanceModel6.AIContext.AgentFocus, this.#handlePerformanceTraceFlavorChange);
     UI9.Context.Context.instance().addFlavorChangeListener(Workspace5.UISourceCode.UISourceCode, this.#handleUISourceCodeFlavorChange);
     UI9.Context.Context.instance().addFlavorChangeListener(Workspace5.UISourceCode.UILocation, this.#handleBreakpointFlavorChange);
     UI9.ViewManager.ViewManager.instance().addEventListener("ViewVisibilityChanged", this.#selectDefaultAgentIfNeeded, this);
@@ -5476,7 +5521,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
     this.#toggleSearchElementAction?.removeEventListener("Toggled", this.requestUpdate, this);
     UI9.Context.Context.instance().removeFlavorChangeListener(SDK3.DOMModel.DOMNode, this.#handleDOMNodeFlavorChange);
     UI9.Context.Context.instance().removeFlavorChangeListener(SDK3.NetworkRequest.NetworkRequest, this.#handleNetworkRequestFlavorChange);
-    UI9.Context.Context.instance().removeFlavorChangeListener(AiAssistanceModel5.AIContext.AgentFocus, this.#handlePerformanceTraceFlavorChange);
+    UI9.Context.Context.instance().removeFlavorChangeListener(AiAssistanceModel6.AIContext.AgentFocus, this.#handlePerformanceTraceFlavorChange);
     UI9.Context.Context.instance().removeFlavorChangeListener(Workspace5.UISourceCode.UISourceCode, this.#handleUISourceCodeFlavorChange);
     UI9.ViewManager.ViewManager.instance().removeEventListener("ViewVisibilityChanged", this.#selectDefaultAgentIfNeeded, this);
     UI9.Context.Context.instance().removeFlavorChangeListener(TimelinePanel.TimelinePanel.TimelinePanel, this.#bindTimelineTraceListener, this);
@@ -5520,7 +5565,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
     }
     if (Boolean(ev.data)) {
       const calculator = NetworkPanel.NetworkPanel.NetworkPanel.instance().networkLogView.timeCalculator();
-      this.#selectedRequest = new AiAssistanceModel5.NetworkAgent.RequestContext(ev.data, calculator);
+      this.#selectedRequest = new AiAssistanceModel6.NetworkAgent.RequestContext(ev.data, calculator);
     } else {
       this.#selectedRequest = null;
     }
@@ -5530,7 +5575,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
     if (this.#selectedPerformanceTrace?.getItem() === ev.data) {
       return;
     }
-    this.#selectedPerformanceTrace = Boolean(ev.data) ? new AiAssistanceModel5.PerformanceAgent.PerformanceTraceContext(ev.data) : null;
+    this.#selectedPerformanceTrace = Boolean(ev.data) ? new AiAssistanceModel6.PerformanceAgent.PerformanceTraceContext(ev.data) : null;
     this.#updateConversationState(this.#conversation);
   };
   #handleUISourceCodeFlavorChange = (ev) => {
@@ -5538,7 +5583,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
     if (!newFile || this.#selectedFile?.getItem() === newFile) {
       return;
     }
-    this.#selectedFile = new AiAssistanceModel5.FileAgent.FileContext(ev.data);
+    this.#selectedFile = new AiAssistanceModel6.FileAgent.FileContext(ev.data);
     this.#updateConversationState(this.#conversation);
   };
   #handleBreakpointFlavorChange = (ev) => {
@@ -5546,7 +5591,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
     if (!newBreakpoint || this.#selectedBreakpoint?.getItem() === newBreakpoint) {
       return;
     }
-    this.#selectedBreakpoint = new AiAssistanceModel5.BreakpointDebuggerAgent.BreakpointContext(newBreakpoint);
+    this.#selectedBreakpoint = new AiAssistanceModel6.BreakpointDebuggerAgent.BreakpointContext(newBreakpoint);
     this.#updateConversationState(this.#conversation);
   };
   #getChangeSummary() {
@@ -5576,7 +5621,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
     }
   }
   #handleSelectElementClick() {
-    UI9.Context.Context.instance().setFlavor(Common5.ReturnToPanel.ReturnToPanelFlavor, new Common5.ReturnToPanel.ReturnToPanelFlavor(this.panelName));
+    UI9.Context.Context.instance().setFlavor(Common6.ReturnToPanel.ReturnToPanelFlavor, new Common6.ReturnToPanel.ReturnToPanelFlavor(this.panelName));
     void this.#toggleSearchElementAction?.execute();
   }
   #isTextInputDisabled() {
@@ -5626,7 +5671,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
       case "breakpoint":
         return lockedString7(UIStringsNotTranslate7.inputPlaceholderForNoContext);
       case "none":
-        if (AiAssistanceModel5.AiUtils.isGeminiBranding()) {
+        if (AiAssistanceModel6.AiUtils.isGeminiBranding()) {
           return lockedString7(UIStringsNotTranslate7.inputPlaceholderForNoContextBranded);
         }
         return lockedString7(UIStringsNotTranslate7.inputPlaceholderForNoContext);
@@ -5687,26 +5732,26 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
       return;
     }
     const context = this.#conversation.selectedContext;
-    if (context instanceof AiAssistanceModel5.NetworkAgent.RequestContext) {
+    if (context instanceof AiAssistanceModel6.NetworkAgent.RequestContext) {
       const requestLocation = NetworkForward.UIRequestLocation.UIRequestLocation.tab(
         context.getItem(),
         "headers-component"
         /* NetworkForward.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT */
       );
-      return Common5.Revealer.reveal(requestLocation);
+      return Common6.Revealer.reveal(requestLocation);
     }
-    if (context instanceof AiAssistanceModel5.FileAgent.FileContext) {
-      return Common5.Revealer.reveal(context.getItem().uiLocation(0, 0));
+    if (context instanceof AiAssistanceModel6.FileAgent.FileContext) {
+      return Common6.Revealer.reveal(context.getItem().uiLocation(0, 0));
     }
-    if (context instanceof AiAssistanceModel5.PerformanceAgent.PerformanceTraceContext) {
+    if (context instanceof AiAssistanceModel6.PerformanceAgent.PerformanceTraceContext) {
       const focus = context.getItem();
       if (focus.callTree) {
         const event = focus.callTree.selectedNode?.event ?? focus.callTree.rootNode.event;
         const revealable = new SDK3.TraceObject.RevealableEvent(event);
-        return Common5.Revealer.reveal(revealable);
+        return Common6.Revealer.reveal(revealable);
       }
       if (focus.insight) {
-        return Common5.Revealer.reveal(focus.insight);
+        return Common6.Revealer.reveal(focus.insight);
       }
     }
   }
@@ -5776,7 +5821,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
     }
     let conversation = this.#conversation;
     if (!this.#conversation || this.#conversation.type !== targetConversationType || this.#conversation.isEmpty) {
-      conversation = new AiAssistanceModel5.AiConversation.AiConversation(targetConversationType, [], void 0, false, this.#aidaClient, this.#changeManager, false, this.#handlePerformanceRecordAndReload.bind(this), this.#handleInspectElement.bind(this), NetworkPanel.NetworkPanel.NetworkPanel.instance().networkLogView.timeCalculator());
+      conversation = new AiAssistanceModel6.AiConversation.AiConversation(targetConversationType, [], void 0, false, this.#aidaClient, this.#changeManager, false, this.#handlePerformanceRecordAndReload.bind(this), this.#handleInspectElement.bind(this), NetworkPanel.NetworkPanel.NetworkPanel.instance().networkLogView.timeCalculator());
     }
     this.#updateConversationState(conversation);
     const predefinedPrompt = opts?.["prompt"];
@@ -5794,7 +5839,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
     }
   }
   #populateHistoryMenu(contextMenu) {
-    const historicalConversations = AiAssistanceModel5.AiHistoryStorage.AiHistoryStorage.instance().getHistory().map((serializedConversation) => AiAssistanceModel5.AiConversation.AiConversation.fromSerializedConversation(serializedConversation));
+    const historicalConversations = AiAssistanceModel6.AiHistoryStorage.AiHistoryStorage.instance().getHistory().map((serializedConversation) => AiAssistanceModel6.AiConversation.AiConversation.fromSerializedConversation(serializedConversation));
     for (const conversation of historicalConversations.reverse()) {
       if (conversation.isEmpty || !conversation.title) {
         continue;
@@ -5811,7 +5856,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
       });
     }
     contextMenu.footerSection().appendItem(i18nString4(UIStrings4.clearChatHistory), () => {
-      void AiAssistanceModel5.AiHistoryStorage.AiHistoryStorage.instance().deleteAll();
+      void AiAssistanceModel6.AiHistoryStorage.AiHistoryStorage.instance().deleteAll();
     }, {
       disabled: historyEmpty
     });
@@ -5823,7 +5868,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
     if (!this.#conversation) {
       return;
     }
-    void AiAssistanceModel5.AiHistoryStorage.AiHistoryStorage.instance().deleteHistoryEntry(this.#conversation.id);
+    void AiAssistanceModel6.AiHistoryStorage.AiHistoryStorage.instance().deleteHistoryEntry(this.#conversation.id);
     this.#updateConversationState();
     UI9.ARIAUtils.LiveAnnouncer.alert(i18nString4(UIStrings4.chatDeleted));
   }
@@ -5833,7 +5878,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
     }
     const markdownContent = this.#conversation.getConversationMarkdown();
     const contentData = new TextUtils.ContentData.ContentData(markdownContent, false, "text/markdown");
-    const titleFormatted = Platform4.StringUtilities.toSnakeCase(this.#conversation.title || "");
+    const titleFormatted = Platform5.StringUtilities.toSnakeCase(this.#conversation.title || "");
     const prefix = "devtools_";
     const suffix = ".md";
     const maxTitleLength = 64 - prefix.length - suffix.length;
@@ -5881,15 +5926,15 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
     }
   }
   #handleConversationContextChange = (data) => {
-    if (data instanceof AiAssistanceModel5.FileAgent.FileContext) {
+    if (data instanceof AiAssistanceModel6.FileAgent.FileContext) {
       this.#selectedFile = data;
-    } else if (data instanceof AiAssistanceModel5.StylingAgent.NodeContext) {
+    } else if (data instanceof AiAssistanceModel6.StylingAgent.NodeContext) {
       this.#selectedElement = data;
-    } else if (data instanceof AiAssistanceModel5.NetworkAgent.RequestContext) {
+    } else if (data instanceof AiAssistanceModel6.NetworkAgent.RequestContext) {
       this.#selectedRequest = data;
-    } else if (data instanceof AiAssistanceModel5.PerformanceAgent.PerformanceTraceContext) {
+    } else if (data instanceof AiAssistanceModel6.PerformanceAgent.PerformanceTraceContext) {
       this.#selectedPerformanceTrace = data;
-    } else if (data instanceof AiAssistanceModel5.BreakpointDebuggerAgent.BreakpointContext) {
+    } else if (data instanceof AiAssistanceModel6.BreakpointDebuggerAgent.BreakpointContext) {
       this.#selectedBreakpoint = data;
     }
     void VisualLogging6.logFunctionCall(`context-change-${this.#conversation?.type}`);
@@ -5990,6 +6035,9 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
               parts: []
             };
             this.#messages.push(systemMessage);
+            if (Greendev.Prototypes.instance().isEnabled("breakpointDebuggerAgent") && this.#conversation?.type === "breakpoint") {
+              this.#openWalkthrough(systemMessage);
+            }
             break;
           }
           case "querying": {
@@ -6146,7 +6194,7 @@ ${part.text}`);
         contentParts.push(`### ${step.title}`);
       }
       if (step.contextDetails) {
-        contentParts.push(AiAssistanceModel5.AiConversation.generateContextDetailsMarkdown(step.contextDetails));
+        contentParts.push(AiAssistanceModel6.AiConversation.generateContextDetailsMarkdown(step.contextDetails));
       }
       if (step.thought) {
         contentParts.push(step.thought);

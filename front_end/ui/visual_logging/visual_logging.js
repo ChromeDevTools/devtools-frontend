@@ -2062,6 +2062,7 @@ var knownContextValues = /* @__PURE__ */ new Set([
   "java-script-disabled-true",
   "javascript",
   "javascript-context",
+  "jpeg-xl",
   "jpeg-xl-format-disabled",
   "jpeg-xl-format-disabled-true",
   "jpg-header",
@@ -5214,6 +5215,10 @@ function checkPendingEventExpectation() {
     }
     if (!found) {
       processMissingEvents(pendingEventExpectation, expectedEventIndex, matchedImpressions);
+      if (!pendingEventExpectation.missingEvents?.length) {
+        numMatchedEvents = actualEventIndex;
+        pendingEventExpectation.success();
+      }
       return;
     }
   }

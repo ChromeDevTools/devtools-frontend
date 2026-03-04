@@ -3019,10 +3019,6 @@ var metricCard_css_default = `/*
   background-color: var(--sys-color-surface3);
   height: 100%;
   box-sizing: border-box;
-
-  &:not(:hover) .title-help {
-    visibility: hidden;
-  }
 }
 
 .title {

@@ -25,6 +25,17 @@ export interface AiCodeCompletionConfig {
     onRequestTriggered: () => void;
     onResponseReceived: () => void;
     panel: AiCodeCompletion.AiCodeCompletion.ContextFlavor;
+    getCompletionHint?: () => string | null;
+    getCurrentText?: () => string;
+    setAiAutoCompletion?: (args: {
+        text: string;
+        from: number;
+        startTime: number;
+        onImpression: (rpcGlobalId: Host.AidaClient.RpcGlobalId, latency: number, sampleId?: number) => void;
+        clearCachedRequest: () => void;
+        rpcGlobalId?: Host.AidaClient.RpcGlobalId;
+        sampleId?: number;
+    } | null) => void;
 }
 export declare const DELAY_BEFORE_SHOWING_RESPONSE_MS = 500;
 export declare const AIDA_REQUEST_DEBOUNCE_TIMEOUT_MS = 200;
@@ -36,4 +47,8 @@ export declare class AiCodeCompletionProvider {
     dispose(): void;
     editorInitialized(editor: TextEditor): void;
     clearCache(): void;
+    /**
+     * Removes the end of a suggestion if it overlaps with the start of the suffix.
+     */
+    static trimSuggestionOverlap(generationString: string, suffix?: string): string;
 }

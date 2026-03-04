@@ -1476,7 +1476,7 @@ export class ConsoleViewMessage {
                 await breakpointManager.setBreakpoint(uiLocation.uiSourceCode, uiLocation.lineNumber, uiLocation.columnNumber, Breakpoints.BreakpointManager.EMPTY_BREAKPOINT_CONDITION, /* enabled */ true, 
                 /* isLogpoint */ false, "RESTORED" /* Breakpoints.BreakpointManager.BreakpointOrigin.OTHER */);
                 const aiPanel = await AiAssistancePanel.AiAssistancePanel.instance();
-                void aiPanel.handleBreakpointConversation(uiLocation);
+                void aiPanel.handleBreakpointConversation(uiLocation, this.text);
             }
         };
         return button;

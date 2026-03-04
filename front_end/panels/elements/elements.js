@@ -25,6 +25,7 @@ __export(ElementsPanel_exports, {
   DOMNodeRevealer: () => DOMNodeRevealer,
   ElementsActionDelegate: () => ElementsActionDelegate,
   ElementsPanel: () => ElementsPanel,
+  NodeComputedStyles: () => NodeComputedStyles,
   PseudoStateMarkerDecorator: () => PseudoStateMarkerDecorator
 });
 import * as Common12 from "./../../core/common/common.js";
@@ -1452,6 +1453,7 @@ __export(StylePropertyTreeElement_exports, {
   EnvFunctionRenderer: () => EnvFunctionRenderer,
   FlexGridRenderer: () => FlexGridRenderer,
   FontRenderer: () => FontRenderer,
+  GhostStylePropertyTreeElement: () => GhostStylePropertyTreeElement,
   GridTemplateRenderer: () => GridTemplateRenderer,
   LengthRenderer: () => LengthRenderer,
   LightDarkColorRenderer: () => LightDarkColorRenderer,
@@ -2332,6 +2334,12 @@ var stylePropertiesTreeOutline_css_default = `/*
   .info {
     padding-top: 4px;
     padding-bottom: 3px;
+  }
+
+  &.ghost-row {
+    opacity: 50%;
+    font-style: italic;
+    pointer-events: none;
   }
 }
 
@@ -5563,6 +5571,33 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI7.TreeO
   }
   isEventWithinDisclosureTriangle(event) {
     return event.target === this.expandElement;
+  }
+};
+var GhostStylePropertyTreeElement = class extends StylePropertyTreeElement {
+  constructor(stylesContainer, section3, matchedStyles, property) {
+    super({
+      stylesContainer,
+      section: section3,
+      matchedStyles,
+      property,
+      isShorthand: false,
+      inherited: false,
+      overloaded: false,
+      newProperty: false
+    });
+  }
+  onattach() {
+    this.listItemElement.classList.add("ghost-row");
+    this.updateTitle();
+  }
+  updateTitle() {
+    this.listItemElement.removeChildren();
+    this.nameElement = Renderer.renderNameElement(this.name);
+    this.listItemElement.appendChild(this.nameElement);
+    this.listItemElement.createChild("span", "styles-name-value-separator").textContent = ": ";
+    this.valueElement = this.listItemElement.createChild("span");
+    this.valueElement.textContent = this.value;
+    this.listItemElement.createChild("span", "styles-semicolon").textContent = ";";
   }
 };
 
@@ -10046,6 +10081,7 @@ var ComputedStyleWidget = class extends UI12.Widget.VBox {
   #computedStyleModel;
   #nodeStyle = null;
   #matchedStyles = null;
+  #propertyTraces = null;
   showInheritedComputedStylePropertiesSetting;
   groupComputedStylesSetting;
   filterRegex = null;
@@ -10081,9 +10117,9 @@ var ComputedStyleWidget = class extends UI12.Widget.VBox {
   #filterText = "";
   #filterIsRegex = false;
   #allowUserControl = true;
-  constructor() {
-    super({ useShadowDom: true });
-    this.#view = DEFAULT_VIEW2;
+  constructor(element, view = DEFAULT_VIEW2) {
+    super(element, { useShadowDom: true });
+    this.#view = view;
     this.contentElement.classList.add("styles-sidebar-computed-style-widget");
     this.showInheritedComputedStylePropertiesSetting = Common6.Settings.Settings.instance().createSetting("show-inherited-computed-style-properties", false);
     this.showInheritedComputedStylePropertiesSetting.addChangeListener(this.requestUpdate.bind(this));
@@ -10158,6 +10194,10 @@ var ComputedStyleWidget = class extends UI12.Widget.VBox {
     this.#matchedStyles = matchedStyles;
     this.requestUpdate();
   }
+  set propertyTraces(propertyTraces) {
+    this.#propertyTraces = propertyTraces;
+    this.requestUpdate();
+  }
   get computedStyleModel() {
     return this.#computedStyleModel;
   }
@@ -10194,7 +10234,7 @@ var ComputedStyleWidget = class extends UI12.Widget.VBox {
     const uniqueProperties = [...nodeStyle.computedStyle.keys()];
     uniqueProperties.sort(propertySorter);
     const node = nodeStyle.node;
-    const propertyTraces = this.computePropertyTraces(matchedStyles);
+    const propertyTraces = this.#propertyTraces || /* @__PURE__ */ new Map();
     const nonInheritedProperties = this.computeNonInheritedProperties(matchedStyles);
     const showInherited = this.#shouldShowAllStyles();
     const tree3 = [];
@@ -10230,7 +10270,7 @@ var ComputedStyleWidget = class extends UI12.Widget.VBox {
       return;
     }
     const node = nodeStyle.node;
-    const propertyTraces = this.computePropertyTraces(matchedStyles);
+    const propertyTraces = this.#propertyTraces || /* @__PURE__ */ new Map();
     const nonInheritedProperties = this.computeNonInheritedProperties(matchedStyles);
     const showInherited = this.showInheritedComputedStylePropertiesSetting.get();
     const propertiesByCategory = /* @__PURE__ */ new Map();
@@ -10349,22 +10389,6 @@ var ComputedStyleWidget = class extends UI12.Widget.VBox {
     }
     contextMenu.defaultSection().appendItem(i18nString8(UIStrings8.navigateToStyle), () => Common6.Revealer.reveal(property), { jslogContext: "navigate-to-style" });
     void contextMenu.show();
-  }
-  computePropertyTraces(matchedStyles) {
-    const result = /* @__PURE__ */ new Map();
-    for (const style of matchedStyles.nodeStyles()) {
-      const allProperties = style.allProperties();
-      for (const property of allProperties) {
-        if (!property.activeInStyle() || !matchedStyles.propertyState(property)) {
-          continue;
-        }
-        if (!result.has(property.name)) {
-          result.set(property.name, []);
-        }
-        result.get(property.name).push(property);
-      }
-    }
-    return result;
   }
   computeNonInheritedProperties(matchedStyles) {
     const result = /* @__PURE__ */ new Set();
@@ -17389,6 +17413,9 @@ var ElementsPanel = class _ElementsPanel extends UI21.Panel.Panel {
     const matchedCascade = await this.#computedStyleModel.fetchMatchedCascade();
     this.#computedStyleWidget.nodeStyle = computedStyle;
     this.#computedStyleWidget.matchedStyles = matchedCascade;
+    if (matchedCascade) {
+      this.#computedStyleWidget.propertyTraces = this.#computedStyleModel.computePropertyTraces(matchedCascade);
+    }
   }
   handleElementExpanded() {
     if (Annotations.AnnotationRepository.annotationsEnabled()) {
@@ -18043,6 +18070,12 @@ ${node.simpleSelector()} {}`, false);
     }
     this.splitWidget.setSidebarWidget(this.sidebarPaneView.tabbedPane());
   }
+  revealComputedStylesPane() {
+    this.sidebarPaneView?.tabbedPane().selectTab(
+      "computed"
+      /* SidebarPaneTabId.COMPUTED */
+    );
+  }
   updateSidebarPosition() {
     if (this.sidebarPaneView?.tabbedPane().shouldHideOnDetach()) {
       return;
@@ -18246,6 +18279,12 @@ var ContextMenuProvider = class {
     contextMenu.revealSection().appendItem(i18nString15(UIStrings16.openInElementsPanel), () => Common12.Revealer.reveal(object), { jslogContext: "elements.reveal-node" });
   }
 };
+var NodeComputedStyles = class {
+  node;
+  constructor(node) {
+    this.node = node;
+  }
+};
 var DOMNodeRevealer = class {
   reveal(node, omitFocus) {
     const panel = ElementsPanel.instance();
@@ -18266,6 +18305,10 @@ var DOMNodeRevealer = class {
         onNodeResolved(node);
       } else if (node instanceof SDK18.DOMModel.DeferredDOMNode) {
         node.resolve(checkDeferredDOMNodeThenReveal);
+      } else if (node instanceof NodeComputedStyles) {
+        const elements = ElementsPanel.instance();
+        elements.revealComputedStylesPane();
+        onNodeResolved(node.node);
       } else {
         const domModel = node.runtimeModel().target().model(SDK18.DOMModel.DOMModel);
         if (domModel) {
@@ -19030,12 +19073,17 @@ import * as Common16 from "./../../core/common/common.js";
 import * as Host7 from "./../../core/host/host.js";
 import * as i18n39 from "./../../core/i18n/i18n.js";
 import * as AiCodeCompletion from "./../../models/ai_code_completion/ai_code_completion.js";
+import * as TextUtils7 from "./../../models/text_utils/text_utils.js";
+import * as TextEditor3 from "./../../ui/components/text_editor/text_editor.js";
 var StylesAiCodeCompletionProvider = class _StylesAiCodeCompletionProvider {
   #aidaClient = new Host7.AidaClient.AidaClient();
   #aiCodeCompletionSetting = Common16.Settings.Settings.instance().createSetting("ai-code-completion-enabled", false);
   #aiCodeCompletion;
   #aiCodeCompletionConfig;
   #boundOnUpdateAiCodeCompletionState = this.#updateAiCodeCompletionState.bind(this);
+  #debouncedRequestAidaSuggestion = Common16.Debouncer.debounce((prefix, suffix, cursorPositionAtRequest) => {
+    void this.#requestAidaSuggestion(prefix, suffix, cursorPositionAtRequest);
+  }, TextEditor3.AiCodeCompletionProvider.AIDA_REQUEST_DEBOUNCE_TIMEOUT_MS);
   constructor(aiCodeCompletionConfig) {
     const devtoolsLocale = i18n39.DevToolsLocale.DevToolsLocale.instance();
     if (!AiCodeCompletion.AiCodeCompletion.AiCodeCompletion.isAiCodeCompletionStylesEnabled(devtoolsLocale.locale)) {
@@ -19075,6 +19123,121 @@ var StylesAiCodeCompletionProvider = class _StylesAiCodeCompletionProvider {
     } else {
       this.#cleanupAiCodeCompletion();
     }
+  }
+  async triggerAiCodeCompletion(text, cursorPosition, isEditingName, cssProperty, cssModel) {
+    const styleSheetId = cssProperty.ownerStyle.styleSheetId;
+    if (!styleSheetId) {
+      return;
+    }
+    const header = cssModel.styleSheetHeaderForId(styleSheetId);
+    if (!header) {
+      return;
+    }
+    const contentData = await header.requestContentData();
+    if (TextUtils7.ContentData.ContentData.isError(contentData)) {
+      AiCodeCompletion.debugLog("Error while fetching content from stylesheet", contentData.error);
+      return;
+    }
+    const content = contentData.text;
+    const propertyRange = cssProperty.range;
+    if (!content || !propertyRange) {
+      return;
+    }
+    const contentText = new TextUtils7.Text.Text(content);
+    const propertyStartOffset = contentText.offsetFromPosition(propertyRange.startLine, propertyRange.startColumn);
+    const propertyEndOffset = contentText.offsetFromPosition(propertyRange.endLine, propertyRange.endColumn);
+    let prefix = content.substring(0, propertyStartOffset);
+    if (!isEditingName) {
+      const nameRange = cssProperty.nameRange();
+      if (nameRange) {
+        const nameEndOffset = contentText.offsetFromPosition(nameRange.endLine, nameRange.endColumn);
+        prefix = prefix + content.substring(propertyStartOffset, nameEndOffset) + ": ";
+      }
+    }
+    prefix = prefix + text;
+    const suffix = content.substring(propertyEndOffset);
+    this.#debouncedRequestAidaSuggestion(prefix, suffix, cursorPosition);
+  }
+  async #requestAidaSuggestion(prefix, suffix, cursorPositionAtRequest) {
+    if (!this.#aiCodeCompletion) {
+      AiCodeCompletion.debugLog("Ai Code Completion is not initialized");
+      this.#aiCodeCompletionConfig?.onResponseReceived();
+      Host7.userMetrics.actionTaken(Host7.UserMetrics.Action.AiCodeCompletionError);
+      return;
+    }
+    const startTime = performance.now();
+    this.#aiCodeCompletionConfig?.onRequestTriggered();
+    Host7.userMetrics.actionTaken(Host7.UserMetrics.Action.AiCodeCompletionRequestTriggered);
+    try {
+      const completionResponse = await this.#aiCodeCompletion.completeCode(
+        prefix,
+        suffix,
+        cursorPositionAtRequest,
+        "CSS"
+        /* Host.AidaClient.AidaInferenceLanguage.CSS */
+      );
+      this.#aiCodeCompletionConfig?.onResponseReceived();
+      if (!completionResponse) {
+        return;
+      }
+      const { response, fromCache } = completionResponse;
+      if (!response) {
+        return;
+      }
+      const sampleResponse = await this.#generateSampleForRequest(response, prefix, suffix);
+      if (!sampleResponse) {
+        return;
+      }
+      if (fromCache) {
+        Host7.userMetrics.actionTaken(Host7.UserMetrics.Action.AiCodeCompletionResponseServedFromCache);
+      }
+      this.#aiCodeCompletionConfig?.setAiAutoCompletion?.({
+        text: sampleResponse.suggestionText,
+        from: cursorPositionAtRequest,
+        rpcGlobalId: sampleResponse.rpcGlobalId,
+        sampleId: sampleResponse.sampleId,
+        startTime,
+        clearCachedRequest: this.clearCache.bind(this),
+        onImpression: this.#aiCodeCompletion?.registerUserImpression.bind(this.#aiCodeCompletion)
+      });
+    } catch (e) {
+      AiCodeCompletion.debugLog("Error while fetching code completion suggestions from AIDA", e);
+      this.#aiCodeCompletionConfig?.onResponseReceived();
+      Host7.userMetrics.actionTaken(Host7.UserMetrics.Action.AiCodeCompletionError);
+    }
+  }
+  async #generateSampleForRequest(response, prefix, suffix) {
+    const suggestionSample = this.#pickSampleFromResponse(response);
+    if (!suggestionSample) {
+      return null;
+    }
+    const shouldBlock = suggestionSample.attributionMetadata?.attributionAction === Host7.AidaClient.RecitationAction.BLOCK;
+    if (shouldBlock) {
+      return null;
+    }
+    const suggestionText = TextEditor3.AiCodeCompletionProvider.AiCodeCompletionProvider.trimSuggestionOverlap(suggestionSample.generationString, suffix);
+    if (suggestionText.length === 0) {
+      return null;
+    }
+    return {
+      suggestionText,
+      sampleId: suggestionSample.sampleId,
+      citations: suggestionSample.attributionMetadata?.citations ?? [],
+      rpcGlobalId: response.metadata.rpcGlobalId
+    };
+  }
+  #pickSampleFromResponse(response) {
+    if (!response.generatedSamples.length) {
+      return null;
+    }
+    const completionHint = this.#aiCodeCompletionConfig?.getCompletionHint?.();
+    if (!completionHint) {
+      return response.generatedSamples[0];
+    }
+    return response.generatedSamples.find((sample) => sample.generationString.startsWith(completionHint)) ?? response.generatedSamples[0];
+  }
+  clearCache() {
+    this.#aiCodeCompletion?.clearCachedRequest();
   }
 };
 

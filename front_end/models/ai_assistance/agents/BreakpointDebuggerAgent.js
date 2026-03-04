@@ -11,6 +11,7 @@ import * as TextUtils from '../../text_utils/text_utils.js';
 import * as Workspace from '../../workspace/workspace.js';
 import { debugLog } from '../debug.js';
 import { AiAgent, ConversationContext, } from './AiAgent.js';
+import { injectOverlay, removeOverlay, } from './BreakpointDebuggerAgentOverlay.js';
 // This is a temporary agent for a GreenDev prototype.
 // The preamble is not on the server and you should not build on top of this.
 const preamble = `You are an expert Root Cause Analysis (RCA) specialist.
@@ -26,20 +27,23 @@ You have two modes of operation that you can switch between and control:
 **Workflow**:
 1. **Hypothesize**: Read the code ('getFunctionSource', 'getPreviousLines', 'getNextLines') to understand the logic.
 2. **Set Trap**: Identify the critical line where state corruption likely occurred or lines that can lead you to that place. Use 'setBreakpoint' on that line.
-3. **Wait**: Call 'waitForBreakpoint'. This will suspend your execution until the user triggers the breakpoint. You CANNOT proceed until this tool returns.
+3. **Wait**: Call 'waitForUserActionToTriggerBreakpoint'. This will suspend your execution until the user triggers the breakpoint. You CANNOT proceed until this tool returns.
 4. **Inspect**: Using 'getExecutionLocation' check exactly where you are paused.
 5. **Analyze**: When paused (Runtime Mode), use 'getScopeVariables' and 'getCallStack' to verify your hypothesis. Check variables in multiple scopes and look up the call stack to see where bad data came from.
 6. **Step**: Use 'stepInto' to investigate function calls on the current line. Use 'stepOut' to return to the caller. Use 'stepOver' to move to the next line.
 7. **Trace Back**: If the current function isn't the root cause, use 'getCallStack' to find the caller, and repeat the analysis there.
 8. **Root Cause**: Explain exactly how the runtime state contradicts the expected logic and point to the specific line of code that is the root cause.
+9. **Test Fix**: Use the 'testFixInConsole' tool to run a JavaScript snippet in the current execution context to test your fix before making permanent changes. This will overwrite the problematic function or state. Follow the instructions to get the user's approval.
+10. **Verify**: IMMEDIATELY AFTER 'testFixInConsole' succeeds, you MUST call 'waitForUserActionToTriggerBreakpoint' (to pause and inspect) or 'resume' (if no inspection is needed), AND ask the user to trigger the buggy action again to verify the fix.
+11. **Patch**: Once the fix is successfully verified by the user, you MUST use the 'suggestFix' tool to apply the patch to the source code file. Provide the URL, the exact original code to change, and the new code. Finish the execution then.
 
 **Rules**:
 - **NEVER FINISH** execution until you have found the root cause or answer.
-- **ACTION OVER TALK**: If you need the user to trigger a breakpoint, do NOT just ask them in text. You **MUST** call 'waitForBreakpoint'. This tool will block and wait for the user to act.
-- **STATIC MODE**: If you are in STATIC MODE and need to see variables: 1. 'setBreakpoint', 2. 'waitForBreakpoint'. **DO NOT STOP** to ask the user. Investigate code and set breakpoints to find the root cause.
-- **ALREADY PAUSED?**: If 'setBreakpoint' warns you that you are already paused, **DO NOT** call 'waitForBreakpoint'. Start inspecting immediately. You can set more breakpoints while paused, but to call 'waitForBreakpoint' again you MUST be in static state.
+- **ACTION OVER TALK**: If you need the user to trigger a breakpoint, do NOT just ask them in text. You **MUST** call 'waitForUserActionToTriggerBreakpoint'. This tool will block and wait for the user to act.
+- **STATIC MODE**: If you are in STATIC MODE and need to see variables: 1. 'setBreakpoint', 2. 'waitForUserActionToTriggerBreakpoint'. **DO NOT STOP** to ask the user. Investigate code and set breakpoints to find the root cause.
+- **ALREADY PAUSED?**: If 'setBreakpoint' warns you that you are already paused, **DO NOT** call 'waitForUserActionToTriggerBreakpoint'. Start inspecting immediately. You can set more breakpoints while paused, but to call 'waitForUserActionToTriggerBreakpoint' again you MUST be in static state.
 - **USE TOOLS EXCESSIVELY**: checking one thing is often not enough. Check everything you can thinks of.
-- **CHECK LOCATION**: If you are not sure where you are, call 'getExecutionLocation' after 'waitForBreakpoint' or any step command to confirm where you are.
+- **CHECK LOCATION**: If you are not sure where you are, call 'getExecutionLocation' after 'waitForUserActionToTriggerBreakpoint' or any step command to confirm where you are.
 
 **Execution Control when you are currently on a breakpoint**:
 - **stepInto**: ESSENTIAL for entering function calls on the current line. Use this heavily when you suspect the issue is inside a called function.
@@ -47,6 +51,8 @@ You have two modes of operation that you can switch between and control:
 - **stepOut**: Return to the caller. If you are currently on a breakpoint, 'stepOut' will move you to the caller and pause again. **It often makes sense to 'stepOut' after you have investigated a function with 'stepInto' and verified it is correct.**
 - **stepInto, stepOver, stepOut**: After any step command, always call 'getScopeVariables' to see how the state evolved.
 - **listBreakpoints**: Use this to see all active breakpoints. Do not try to set a breakpoint that is already active.
+- **removeBreakpoint / removeAllBreakpoints**: Use this to remove breakpoints. This is especially useful when you want to speed up verifying a fix.
+- **CLEANUP AFTER FIX**: After a fix is suggested and worked, you MUST remove all breakpoints and call 'resume' to resume the execution of the page.
 `;
 export class BreakpointContext extends ConversationContext {
     #focus;
@@ -89,6 +95,11 @@ export class BreakpointDebuggerAgent extends AiAgent {
                 },
                 required: ['url', 'lineNumber'],
             },
+            displayInfoFromArgs: (args) => {
+                return {
+                    title: `Reading function source for ${args.url}:${args.lineNumber}`,
+                };
+            },
             handler: async (args) => {
                 const result = await this.#getFunctionSource(args);
                 debugLog('getFunctionSource for ', JSON.stringify(args), '->', JSON.stringify(result));
@@ -118,6 +129,11 @@ export class BreakpointDebuggerAgent extends AiAgent {
                 },
                 required: ['url', 'lineNumber', 'direction'],
             },
+            displayInfoFromArgs: (args) => {
+                return {
+                    title: `Reading code ${args.direction} ${args.url}:${args.lineNumber}`,
+                };
+            },
             handler: async (args) => {
                 const result = await this.#getCodeLines(args);
                 debugLog('getCodeLines result', JSON.stringify(result));
@@ -131,6 +147,11 @@ export class BreakpointDebuggerAgent extends AiAgent {
                 description: 'No parameters required',
                 properties: {},
                 required: [],
+            },
+            displayInfoFromArgs: () => {
+                return {
+                    title: 'Reading call stack',
+                };
             },
             handler: async () => {
                 const result = await this.#getCallStack();
@@ -146,6 +167,11 @@ export class BreakpointDebuggerAgent extends AiAgent {
                 properties: {},
                 required: [],
             },
+            displayInfoFromArgs: () => {
+                return {
+                    title: 'Reading scope variables',
+                };
+            },
             handler: async () => {
                 const result = await this.#getScopeVariables();
                 debugLog('getScopeVariables result', JSON.stringify(result));
@@ -159,6 +185,11 @@ export class BreakpointDebuggerAgent extends AiAgent {
                 description: 'No parameters required',
                 properties: {},
                 required: [],
+            },
+            displayInfoFromArgs: () => {
+                return {
+                    title: 'Listing breakpoints',
+                };
             },
             handler: async () => {
                 const result = await this.#listBreakpoints();
@@ -183,6 +214,11 @@ export class BreakpointDebuggerAgent extends AiAgent {
                 },
                 required: ['url', 'lineNumber'],
             },
+            displayInfoFromArgs: (args) => {
+                return {
+                    title: `Setting breakpoint at ${args.url}:${args.lineNumber}`,
+                };
+            },
             handler: async (args) => {
                 debugLog('setBreakpoint requested', args);
                 const result = await this.#setBreakpoint(args);
@@ -190,18 +226,78 @@ export class BreakpointDebuggerAgent extends AiAgent {
                 return result;
             },
         });
-        this.declareFunction('resume', {
-            description: 'Resume execution until the next breakpoint is hit.',
+        this.declareFunction('removeBreakpoint', {
+            description: 'Remove a breakpoint at a specific location.',
+            parameters: {
+                type: 6 /* Host.AidaClient.ParametersTypes.OBJECT */,
+                description: 'Location to remove the breakpoint from',
+                properties: {
+                    url: {
+                        type: 1 /* Host.AidaClient.ParametersTypes.STRING */,
+                        description: 'The URL of the file',
+                    },
+                    lineNumber: {
+                        type: 3 /* Host.AidaClient.ParametersTypes.INTEGER */,
+                        description: 'The 1-based line number to remove the breakpoint from',
+                    },
+                },
+                required: ['url', 'lineNumber'],
+            },
+            displayInfoFromArgs: (args) => {
+                return {
+                    title: `Removing breakpoint at ${args.url}:${args.lineNumber}`,
+                };
+            },
+            handler: async (args) => {
+                debugLog('removeBreakpoint requested', args);
+                const result = await this.#removeBreakpoint(args);
+                debugLog('removeBreakpoint result', JSON.stringify(result));
+                return result;
+            },
+        });
+        this.declareFunction('removeAllBreakpoints', {
+            description: 'Remove all active breakpoints.',
             parameters: {
                 type: 6 /* Host.AidaClient.ParametersTypes.OBJECT */,
                 description: 'No parameters required',
                 properties: {},
                 required: [],
             },
+            displayInfoFromArgs: () => {
+                return {
+                    title: 'Removing all breakpoints',
+                };
+            },
             handler: async () => {
-                const result = await this.#debuggerAction(model => model.resume());
-                debugLog('resume result', JSON.stringify(result));
-                return result;
+                debugLog('removeAllBreakpoints requested');
+                const breakpointManager = Breakpoints.BreakpointManager.BreakpointManager.instance();
+                const allBreakpoints = breakpointManager.allBreakpointLocations();
+                for (const bp of allBreakpoints) {
+                    await bp.breakpoint.remove(false);
+                }
+                return { result: { status: 'All breakpoints removed.' } };
+            },
+        });
+        this.declareFunction('resume', {
+            description: 'Resume execution. Always use this after applying a fix to resume the page execution.',
+            parameters: {
+                type: 6 /* Host.AidaClient.ParametersTypes.OBJECT */,
+                description: 'No parameters required',
+                properties: {},
+                required: [],
+            },
+            displayInfoFromArgs: () => {
+                return {
+                    title: 'Resuming execution',
+                };
+            },
+            handler: async () => {
+                const targetManager = SDK.TargetManager.TargetManager.instance();
+                const debuggerModel = targetManager.models(SDK.DebuggerModel.DebuggerModel).find(m => m.isPaused());
+                if (debuggerModel) {
+                    debuggerModel.resume();
+                }
+                return { result: { status: 'Execution resumed.' } };
             },
         });
         this.declareFunction('stepOver', {
@@ -211,6 +307,11 @@ export class BreakpointDebuggerAgent extends AiAgent {
                 description: 'No parameters required',
                 properties: {},
                 required: [],
+            },
+            displayInfoFromArgs: () => {
+                return {
+                    title: 'Stepping over',
+                };
             },
             handler: async () => {
                 const result = await this.#debuggerAction(model => model.stepOver());
@@ -226,6 +327,11 @@ export class BreakpointDebuggerAgent extends AiAgent {
                 properties: {},
                 required: [],
             },
+            displayInfoFromArgs: () => {
+                return {
+                    title: 'Stepping into',
+                };
+            },
             handler: async () => {
                 const result = await this.#debuggerAction(model => model.stepInto());
                 debugLog('stepInto result', JSON.stringify(result));
@@ -239,6 +345,11 @@ export class BreakpointDebuggerAgent extends AiAgent {
                 description: 'No parameters required',
                 properties: {},
                 required: [],
+            },
+            displayInfoFromArgs: () => {
+                return {
+                    title: 'Stepping out',
+                };
             },
             handler: async () => {
                 const result = await this.#debuggerAction(model => model.stepOut());
@@ -275,10 +386,144 @@ export class BreakpointDebuggerAgent extends AiAgent {
                 properties: {},
                 required: [],
             },
+            displayInfoFromArgs: () => {
+                return {
+                    title: 'Getting execution location',
+                };
+            },
             handler: async () => {
                 const result = await this.#getExecutionLocation();
                 debugLog('getExecutionLocation ', JSON.stringify(result));
                 return result;
+            },
+        });
+        this.declareFunction('testFixInConsole', {
+            description: 'Tests a JavaScript code snippet in the current execution context to overwrite the problematic code or state. Use this to verify the fix works before patching the source file.',
+            parameters: {
+                type: 6 /* Host.AidaClient.ParametersTypes.OBJECT */,
+                description: 'Provide the code to evaluate to test the fix',
+                properties: {
+                    code: {
+                        type: 1 /* Host.AidaClient.ParametersTypes.STRING */,
+                        description: 'The JavaScript code to evaluate in the console to test the fix.',
+                    },
+                    explanation: {
+                        type: 1 /* Host.AidaClient.ParametersTypes.STRING */,
+                        description: 'Explanation for why this code fixes the issue.',
+                    },
+                },
+                required: ['code', 'explanation'],
+            },
+            displayInfoFromArgs: (args) => {
+                return {
+                    title: 'Testing a fix in console',
+                    thought: args.explanation,
+                    action: args.code,
+                };
+            },
+            handler: async (args, options) => {
+                debugLog('testFixInConsole requested', args);
+                if (options?.approved === false) {
+                    return { error: 'Fix rejected by the user.' };
+                }
+                if (!options?.approved) {
+                    return { requiresApproval: true };
+                }
+                const targetManager = SDK.TargetManager.TargetManager.instance();
+                const debuggerModel = targetManager.models(SDK.DebuggerModel.DebuggerModel).find(m => m.isPaused());
+                if (!debuggerModel) {
+                    return { error: 'Execution is not paused.' };
+                }
+                const details = debuggerModel.debuggerPausedDetails();
+                const callFrame = details?.callFrames[0];
+                if (!callFrame) {
+                    return { error: 'No call frame available.' };
+                }
+                const result = await callFrame.evaluate({
+                    expression: args.code,
+                    objectGroup: 'console',
+                    includeCommandLineAPI: true,
+                    silent: false,
+                    returnByValue: false,
+                    generatePreview: true
+                });
+                if (!result) {
+                    return { error: 'Failed to evaluate the fix.' };
+                }
+                if ('error' in result) {
+                    return { error: 'Error applying fix: ' + result.error };
+                }
+                if (result.exceptionDetails) {
+                    return { error: 'Fix threw an exception: ' + result.exceptionDetails.text };
+                }
+                return {
+                    result: {
+                        status: 'Code evaluated successfully. You MUST now call waitForUserActionToTriggerBreakpoint or resume, and ask the user to trigger the action again to verify the fix.'
+                    }
+                };
+            },
+        });
+        this.declareFunction('suggestFix', {
+            description: 'Suggests a JavaScript code snippet to fix the root cause of the issue and applies it to the source code file if the user approves. Call this function AFTER you have verified the fix works using testFixInConsole.',
+            parameters: {
+                type: 6 /* Host.AidaClient.ParametersTypes.OBJECT */,
+                description: 'Provide the fix to the user',
+                properties: {
+                    url: {
+                        type: 1 /* Host.AidaClient.ParametersTypes.STRING */,
+                        description: 'The URL of the file to fix.',
+                    },
+                    originalCode: {
+                        type: 1 /* Host.AidaClient.ParametersTypes.STRING */,
+                        description: 'The exact original code to replace. Must match the file content exactly, including whitespace.',
+                    },
+                    suggestion: {
+                        type: 1 /* Host.AidaClient.ParametersTypes.STRING */,
+                        description: 'The new JavaScript code to replace the original code with.',
+                    },
+                    explanation: {
+                        type: 1 /* Host.AidaClient.ParametersTypes.STRING */,
+                        description: 'Explanation for why this code fixes the issue.',
+                    },
+                },
+                required: ['url', 'originalCode', 'suggestion', 'explanation'],
+            },
+            displayInfoFromArgs: (args) => {
+                return {
+                    title: 'Suggesting a fix',
+                    thought: args.explanation,
+                    action: args.suggestion,
+                };
+            },
+            handler: async (args, options) => {
+                debugLog('suggestFix requested', args);
+                if (options?.approved === false) {
+                    return { error: 'Fix rejected by the user.' };
+                }
+                if (!options?.approved) {
+                    return { requiresApproval: true };
+                }
+                const uiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(args.url);
+                if (!uiSourceCode) {
+                    return { error: `File not found: ${args.url}` };
+                }
+                const contentData = await uiSourceCode.requestContentData();
+                if ('error' in contentData || !contentData.isTextContent) {
+                    return { error: `Could not read content for file: ${args.url}` };
+                }
+                let currentContent = uiSourceCode.workingCopy();
+                if (!uiSourceCode.isDirty()) {
+                    currentContent = contentData.text;
+                }
+                if (!currentContent.includes(args.originalCode)) {
+                    return {
+                        error: 'originalCode not found in the file. Ensure the originalCode is an exact match including whitespace.'
+                    };
+                }
+                const newContent = currentContent.replace(args.originalCode, args.suggestion);
+                uiSourceCode.setWorkingCopy(newContent);
+                uiSourceCode.commitWorkingCopy();
+                return { result: { status: 'Fix applied to the source file successfully.' } };
             },
         });
     }
@@ -361,7 +606,7 @@ export class BreakpointDebuggerAgent extends AiAgent {
         const debuggerModel = targetManager.models(SDK.DebuggerModel.DebuggerModel).find(m => m.isPaused());
         if (!debuggerModel) {
             return {
-                error: 'Execution is not paused. I cannot access runtime variables or the call stack. I am currently in STATIC MODE. I must set a breakpoint and use waitForBreakpoint to enter RUNTIME MODE.'
+                error: 'Execution is not paused. I cannot access runtime variables or the call stack. I am currently in STATIC MODE. I must set a breakpoint and use waitForUserActionToTriggerBreakpoint to enter RUNTIME MODE.'
             };
         }
         const details = debuggerModel.debuggerPausedDetails();
@@ -384,7 +629,7 @@ export class BreakpointDebuggerAgent extends AiAgent {
         const debuggerModel = targetManager.models(SDK.DebuggerModel.DebuggerModel).find(m => m.isPaused());
         if (!debuggerModel) {
             return {
-                error: 'Execution is not paused. I cannot access runtime variables or the call stack. I am currently in STATIC MODE. I must set a breakpoint and use waitForBreakpoint to enter RUNTIME MODE.'
+                error: 'Execution is not paused. I cannot access runtime variables or the call stack. I am currently in STATIC MODE. I must set a breakpoint and use waitForUserActionToTriggerBreakpoint to enter RUNTIME MODE.'
             };
         }
         const details = debuggerModel.debuggerPausedDetails();
@@ -484,22 +729,38 @@ export class BreakpointDebuggerAgent extends AiAgent {
             const callFrame = details?.callFrames[0];
             if (callFrame) {
                 const pausedLoc = `${callFrame.script.contentURL()}:${callFrame.location().lineNumber + 1}`;
-                warning = ` WARNING: You are already PAUSED at ${pausedLoc}. \n1. If this is where you want to be, call 'getExecutionLocation' and inspect variables. \n2. If you want to wait for the NEW breakpoint, you MUST call 'waitForBreakpoint' (which will resume execution).`;
+                warning = ` WARNING: You are already PAUSED at ${pausedLoc}. \n1. If this is where you want to be, call 'getExecutionLocation' and inspect variables. \n2. If you want to wait for the NEW breakpoint, you MUST call 'waitForUserActionToTriggerBreakpoint' (which will resume execution).`;
             }
         }
         if (actualLineNumber !== args.lineNumber) {
             return {
                 result: {
-                    status: `Breakpoint requested at ${args.url}:${args.lineNumber}, but ACTUALLY resolved to line ${actualLineNumber}.${warning ? '\n' + warning :
-                        ' You must now call waitForBreakpoint and ask the user to trigger the action.'}`
+                    status: `Breakpoint requested at ${args.url}:${args.lineNumber}, but ACTUALLY resolved to line ${actualLineNumber}.${warning ?
+                        '\n' + warning :
+                        ' You must now call waitForUserActionToTriggerBreakpoint and ask the user to trigger the action.'}`
                 }
             };
         }
         return {
             result: {
-                status: `Breakpoint set at ${args.url}:${args.lineNumber}.${warning ? '\n' + warning : ' You must now call waitForBreakpoint and ask the user to trigger the action.'}`
+                status: `Breakpoint set at ${args.url}:${args.lineNumber}.${warning ?
+                    '\n' + warning :
+                    ' You must now call waitForUserActionToTriggerBreakpoint and ask the user to trigger the action.'}`
             }
         };
+    }
+    async #removeBreakpoint(args) {
+        const uiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(args.url);
+        if (!uiSourceCode) {
+            return { error: `File not found: ${args.url}` };
+        }
+        const breakpointLocations = Breakpoints.BreakpointManager.BreakpointManager.instance().breakpointLocationsForUISourceCode(uiSourceCode);
+        const breakpointLocation = breakpointLocations.find(bp => bp.uiLocation.lineNumber === args.lineNumber - 1);
+        if (!breakpointLocation) {
+            return { result: { status: `Breakpoint not found at ${args.url}:${args.lineNumber}.` } };
+        }
+        await breakpointLocation.breakpoint.remove(false);
+        return { result: { status: `Breakpoint removed at ${args.url}:${args.lineNumber}.` } };
     }
     async #debuggerAction(action) {
         const targetManager = SDK.TargetManager.TargetManager.instance();
@@ -507,8 +768,8 @@ export class BreakpointDebuggerAgent extends AiAgent {
         if (!debuggerModel) {
             return { error: 'Execution is not paused. I cannot step or resume in STATIC MODE.' };
         }
-        // Only resolve when next pause event is triggered
-        return await this.#waitForNextPause(() => action(debuggerModel));
+        // Only resolve when next pause event is triggered (with a 3 second timeout so the agent doesn't hang)
+        return await this.#waitForNextPause(() => action(debuggerModel), 3000);
     }
     async #waitForUserActionToTriggerBreakpoint() {
         const targetManager = SDK.TargetManager.TargetManager.instance();
@@ -516,14 +777,23 @@ export class BreakpointDebuggerAgent extends AiAgent {
         if (debuggerModels.length === 0) {
             return { error: 'No debugger attached' };
         }
-        return await this.#waitForNextPause(() => {
-            // Resume all paused models before waiting for the next breakpoint
-            for (const model of debuggerModels) {
-                if (model.isPaused()) {
-                    model.resume();
+        // While waiting for the user to trigger the breakpoint, show an overlay on top of the page.
+        // This is to make it clear to the user that they need to trigger the
+        // breakpoint for the agent to continue the debugging process.
+        void injectOverlay();
+        try {
+            return await this.#waitForNextPause(() => {
+                // Resume all paused models before waiting for the next breakpoint
+                for (const model of debuggerModels) {
+                    if (model.isPaused()) {
+                        model.resume();
+                    }
                 }
-            }
-        });
+            });
+        }
+        finally {
+            void removeOverlay();
+        }
     }
     /**
      * Helper that waits for the next debugger pause event.
@@ -531,11 +801,15 @@ export class BreakpointDebuggerAgent extends AiAgent {
      *
      * @param triggerAction Optional action to execute (e.g. resume, step) that is expected to lead to a pause.
      */
-    async #waitForNextPause(triggerAction = () => { }) {
+    async #waitForNextPause(triggerAction = () => { }, timeoutMs) {
         const targetManager = SDK.TargetManager.TargetManager.instance();
         return await new Promise(resolve => {
+            let timeoutId;
             const listener = async (event) => {
                 targetManager.removeModelListener(SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.DebuggerPaused, listener);
+                if (timeoutId) {
+                    clearTimeout(timeoutId);
+                }
                 const model = event.data;
                 const details = model.debuggerPausedDetails();
                 const callFrame = details?.callFrames[0];
@@ -553,6 +827,16 @@ export class BreakpointDebuggerAgent extends AiAgent {
                 resolve({ result: { status: `Paused at ${location}` } });
             };
             targetManager.addModelListener(SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.DebuggerPaused, listener);
+            if (timeoutMs !== undefined) {
+                timeoutId = setTimeout(() => {
+                    targetManager.removeModelListener(SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.DebuggerPaused, listener);
+                    resolve({
+                        result: {
+                            status: 'Execution resumed but did not pause again. There is nothing to step into or the execution finished.'
+                        }
+                    });
+                }, timeoutMs);
+            }
             // Execute the action that will eventually trigger the pause
             triggerAction();
         });
@@ -600,6 +884,26 @@ export class BreakpointDebuggerAgent extends AiAgent {
     }
     get options() {
         return { temperature: 0, modelId: undefined };
+    }
+    async *run(initialQuery, options, multimodalInput) {
+        try {
+            yield* super.run(initialQuery, options, multimodalInput);
+        }
+        finally {
+            // When the agent is done, remove all breakpoints and exit paused state.
+            const breakpointManager = Breakpoints.BreakpointManager.BreakpointManager.instance();
+            const allBreakpoints = breakpointManager.allBreakpointLocations();
+            for (const bp of allBreakpoints) {
+                await bp.breakpoint.remove(false);
+            }
+            const targetManager = SDK.TargetManager.TargetManager.instance();
+            const debuggerModels = targetManager.models(SDK.DebuggerModel.DebuggerModel);
+            for (const model of debuggerModels) {
+                if (model.isPaused()) {
+                    model.resume();
+                }
+            }
+        }
     }
 }
 //# sourceMappingURL=BreakpointDebuggerAgent.js.map

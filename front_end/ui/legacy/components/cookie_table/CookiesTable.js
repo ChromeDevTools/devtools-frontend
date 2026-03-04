@@ -136,19 +136,19 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 const expiresSessionValue = i18nLazyString(UIStrings.session);
 export class CookiesTable extends UI.Widget.VBox {
-    saveCallback;
-    refreshCallback;
-    selectedCallback;
-    deleteCallback;
+    #saveCallback;
+    #refreshCallback;
+    #selectedCallback;
+    #deleteCallback;
     lastEditedColumnId;
     data = [];
     cookies = [];
-    cookieDomain;
+    #cookieDomain;
     cookieToBlockedReasons;
     cookieToExemptionReason;
     view;
     selectedKey;
-    editable;
+    #editable;
     renderInline;
     schemeBindingEnabled;
     portBindingEnabled;
@@ -248,25 +248,40 @@ export class CookiesTable extends UI.Widget.VBox {
         }
         this.registerRequiredCSS(cookiesTableStyles);
         this.element.classList.add('cookies-table');
-        this.saveCallback = saveCallback;
-        this.refreshCallback = refreshCallback;
-        this.deleteCallback = deleteCallback;
-        this.editable = Boolean(saveCallback);
+        this.#saveCallback = saveCallback;
+        this.#refreshCallback = refreshCallback;
+        this.#deleteCallback = deleteCallback;
+        this.#editable = Boolean(saveCallback);
         const { devToolsEnableOriginBoundCookies } = Root.Runtime.hostConfig;
         this.schemeBindingEnabled = Boolean(devToolsEnableOriginBoundCookies?.schemeBindingEnabled);
         this.portBindingEnabled = Boolean(devToolsEnableOriginBoundCookies?.portBindingEnabled);
         this.view = view;
         this.renderInline = Boolean(renderInline);
-        this.selectedCallback = selectedCallback;
+        this.#selectedCallback = selectedCallback;
         this.lastEditedColumnId = null;
         this.data = [];
-        this.cookieDomain = '';
+        this.#cookieDomain = '';
         this.cookieToBlockedReasons = null;
         this.cookieToExemptionReason = null;
         this.requestUpdate();
     }
     set cookiesData(data) {
         this.setCookies(data.cookies, data.cookieToBlockedReasons, data.cookieToExemptionReason);
+    }
+    set saveCallback(callback) {
+        this.#saveCallback = callback;
+    }
+    set refreshCallback(callback) {
+        this.#refreshCallback = callback;
+    }
+    set selectedCallback(callback) {
+        this.#selectedCallback = callback;
+    }
+    set deleteCallback(callback) {
+        this.#deleteCallback = callback;
+    }
+    set editable(value) {
+        this.#editable = value;
     }
     set inline(value) {
         this.renderInline = value;
@@ -285,8 +300,8 @@ export class CookiesTable extends UI.Widget.VBox {
         }
         this.requestUpdate();
     }
-    setCookieDomain(cookieDomain) {
-        this.cookieDomain = cookieDomain;
+    set cookieDomain(cookieDomain) {
+        this.#cookieDomain = cookieDomain;
     }
     selectedCookie() {
         return this.cookies.find(cookie => cookie.key() === this.selectedKey) || null;
@@ -299,7 +314,7 @@ export class CookiesTable extends UI.Widget.VBox {
         const input = {
             data: this.data,
             selectedKey: this.selectedKey,
-            editable: this.editable,
+            editable: this.#editable,
             renderInline: this.renderInline,
             schemeBindingEnabled: this.schemeBindingEnabled,
             portBindingEnabled: this.portBindingEnabled,
@@ -315,12 +330,12 @@ export class CookiesTable extends UI.Widget.VBox {
     }
     onSelect(key) {
         this.selectedKey = key;
-        this.selectedCallback?.();
+        this.#selectedCallback?.(this.selectedCookie());
     }
     onDeleteCookie(data) {
         const cookie = this.cookies.find(cookie => cookie.key() === data.key);
-        if (cookie && this.deleteCallback) {
-            this.deleteCallback(cookie, () => this.refresh());
+        if (cookie && this.#deleteCallback) {
+            this.#deleteCallback(cookie, () => this.refresh());
         }
     }
     onUpdateCookie(oldData, columnIdentifier, _oldText, newText) {
@@ -355,7 +370,7 @@ export class CookiesTable extends UI.Widget.VBox {
             data["value" /* SDK.Cookie.Attribute.VALUE */] = '';
         }
         if (data["domain" /* SDK.Cookie.Attribute.DOMAIN */] === undefined) {
-            data["domain" /* SDK.Cookie.Attribute.DOMAIN */] = this.cookieDomain;
+            data["domain" /* SDK.Cookie.Attribute.DOMAIN */] = this.#cookieDomain;
         }
         if (data["path" /* SDK.Cookie.Attribute.PATH */] === undefined) {
             data["path" /* SDK.Cookie.Attribute.PATH */] = '/';
@@ -368,11 +383,11 @@ export class CookiesTable extends UI.Widget.VBox {
         }
     }
     saveCookie(newCookieData, oldCookie) {
-        if (!this.saveCallback) {
+        if (!this.#saveCallback) {
             return;
         }
         const newCookie = this.createCookieFromData(newCookieData);
-        void this.saveCallback(newCookie, oldCookie ?? null).then(success => {
+        void this.#saveCallback(newCookie, oldCookie ?? null).then(success => {
             if (!success) {
                 newCookieData.dirty = true;
             }
@@ -495,8 +510,8 @@ export class CookiesTable extends UI.Widget.VBox {
         return parsedURL !== null;
     }
     refresh() {
-        if (this.refreshCallback) {
-            this.refreshCallback();
+        if (this.#refreshCallback) {
+            this.#refreshCallback();
         }
     }
     populateContextMenu(data, contextMenu) {

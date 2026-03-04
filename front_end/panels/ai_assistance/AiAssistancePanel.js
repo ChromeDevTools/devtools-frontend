@@ -11,6 +11,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as AiAssistanceModel from '../../models/ai_assistance/ai_assistance.js';
 import * as Annotations from '../../models/annotations/annotations.js';
 import * as Badges from '../../models/badges/badges.js';
+import * as Greendev from '../../models/greendev/greendev.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
@@ -367,7 +368,8 @@ function defaultView(input, output, target) {
         }
     }
     const shouldShowWalkthrough = input.state === "chat-view" /* ViewState.CHAT_VIEW */ && input.walkthrough.isExpanded;
-    if (Root.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled) {
+    if (Root.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled ||
+        Greendev.Prototypes.instance().isEnabled('breakpointDebuggerAgent')) {
         Lit.render(html `
       ${toolbarView(input)}
       <div class="ai-assistance-view-container">
@@ -723,7 +725,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         }
         this.requestUpdate();
     }
-    async handleBreakpointConversation(uiLocation) {
+    async handleBreakpointConversation(uiLocation, errorMsg) {
         const context = new AiAssistanceModel.BreakpointDebuggerAgent.BreakpointContext(uiLocation);
         this.#selectedBreakpoint = context;
         const conversation = new AiAssistanceModel.AiConversation.AiConversation("breakpoint" /* AiAssistanceModel.AiHistoryStorage.ConversationType.BREAKPOINT */, [], undefined, false, this.#aidaClient, this.#changeManager, false, this.#handlePerformanceRecordAndReload.bind(this), this.#handleInspectElement.bind(this), NetworkPanel.NetworkPanel.NetworkPanel.instance().networkLogView.timeCalculator());
@@ -731,6 +733,9 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         this.#conversation?.setContext(context);
         this.requestUpdate();
         await UI.ViewManager.ViewManager.instance().showView(AiAssistancePanel.panelName);
+        const prompt = errorMsg ? `debug the error "${errorMsg}" using breakpoint debugging agent` :
+            'debug the error using breakpoint debugging agent';
+        await this.#startConversation(prompt);
     }
     wasShown() {
         super.wasShown();
@@ -1310,6 +1315,10 @@ export class AiAssistancePanel extends UI.Panel.Panel {
                             parts: [],
                         };
                         this.#messages.push(systemMessage);
+                        if (Greendev.Prototypes.instance().isEnabled('breakpointDebuggerAgent') &&
+                            this.#conversation?.type === "breakpoint" /* AiAssistanceModel.AiHistoryStorage.ConversationType.BREAKPOINT */) {
+                            this.#openWalkthrough(systemMessage);
+                        }
                         break;
                     }
                     case "querying" /* AiAssistanceModel.AiAgent.ResponseType.QUERYING */: {

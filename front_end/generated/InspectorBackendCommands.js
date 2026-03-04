@@ -473,6 +473,7 @@ export function registerCommands(inspectorBackend) {
     inspectorBackend.registerEnum("Emulation.PressureState", { Nominal: "nominal", Fair: "fair", Serious: "serious", Critical: "critical" });
     inspectorBackend.registerEnum("Emulation.DisabledImageType", { Avif: "avif", Jxl: "jxl", Webp: "webp" });
     inspectorBackend.registerEvent("Emulation.virtualTimeBudgetExpired", []);
+    inspectorBackend.registerEvent("Emulation.screenOrientationLockChanged", ["locked", "orientation"]);
     inspectorBackend.registerCommand("Emulation.canEmulate", [], ["result"], "Tells whether emulation is supported.");
     inspectorBackend.registerCommand("Emulation.clearDeviceMetricsOverride", [], [], "Clears the overridden device metrics.");
     inspectorBackend.registerCommand("Emulation.clearGeolocationOverride", [], [], "Clears the overridden Geolocation Position and Error.");

@@ -75,6 +75,7 @@ var ExperimentName;
   ExperimentName2["TIMELINE_SHOW_POST_MESSAGE_EVENTS"] = "timeline-show-postmessage-events";
   ExperimentName2["TIMELINE_DEBUG_MODE"] = "timeline-debug-mode";
   ExperimentName2["DURABLE_MESSAGES"] = "durable-messages";
+  ExperimentName2["JPEG_XL"] = "jpeg-xl";
 })(ExperimentName || (ExperimentName = {}));
 
 // gen/front_end/core/root/Runtime.js

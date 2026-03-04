@@ -34,3 +34,15 @@ export declare function getMatchedStylesWithProperties(payload: {
     getEnvironmentVariablesCallback?: ProtocolCommandHandler<'CSS.getEnvironmentVariables'>;
 } & Partial<SDK.CSSMatchedStyles.CSSMatchedStylesPayload>): Promise<SDK.CSSMatchedStyles.CSSMatchedStyles>;
 export declare function getMatchedStyles(payload?: Partial<SDK.CSSMatchedStyles.CSSMatchedStylesPayload>, getEnvironmentVariablesCallback?: ProtocolCommandHandler<'CSS.getEnvironmentVariables'>): Promise<SDK.CSSMatchedStyles.CSSMatchedStyles>;
+/**
+ * For some unit tests we need a DOM Node but it has to have a "real" DOM
+ * Model and CSS Model attached because code calls those methods and expect
+ * to find the actual models.
+ */
+export declare function createStubbedDomNodeWithModels(opts?: {
+    nodeId: number;
+}): {
+    node: SDK.DOMModel.DOMNode;
+    domModel: SDK.DOMModel.DOMModel;
+    cssModel: SDK.CSSModel.CSSModel;
+};

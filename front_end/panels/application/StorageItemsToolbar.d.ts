@@ -30,6 +30,9 @@ export declare class StorageItemsToolbar extends StorageItemsToolbar_base {
     #private;
     filterRegex: RegExp | null;
     constructor(element?: HTMLElement, view?: View);
+    set onRefreshCallback(callback: () => void);
+    set onDeleteAllCallback(callback: () => void);
+    set onDeleteSelectedCallback(callback: () => void);
     set metadataView(view: ApplicationComponents.StorageMetadataView.StorageMetadataView);
     get metadataView(): ApplicationComponents.StorageMetadataView.StorageMetadataView;
     performUpdate(): void;

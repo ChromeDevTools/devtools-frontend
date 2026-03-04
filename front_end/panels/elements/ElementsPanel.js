@@ -303,6 +303,9 @@ export class ElementsPanel extends UI.Panel.Panel {
         const matchedCascade = await this.#computedStyleModel.fetchMatchedCascade();
         this.#computedStyleWidget.nodeStyle = computedStyle;
         this.#computedStyleWidget.matchedStyles = matchedCascade;
+        if (matchedCascade) {
+            this.#computedStyleWidget.propertyTraces = this.#computedStyleModel.computePropertyTraces(matchedCascade);
+        }
     }
     handleElementExpanded() {
         if (Annotations.AnnotationRepository.annotationsEnabled()) {
@@ -1005,6 +1008,9 @@ export class ElementsPanel extends UI.Panel.Panel {
         }
         this.splitWidget.setSidebarWidget(this.sidebarPaneView.tabbedPane());
     }
+    revealComputedStylesPane() {
+        this.sidebarPaneView?.tabbedPane().selectTab("computed" /* SidebarPaneTabId.COMPUTED */);
+    }
     updateSidebarPosition() {
         if (this.sidebarPaneView?.tabbedPane().shouldHideOnDetach()) {
             return;
@@ -1205,6 +1211,16 @@ export class ContextMenuProvider {
         contextMenu.revealSection().appendItem(i18nString(UIStrings.openInElementsPanel), () => Common.Revealer.reveal(object), { jslogContext: 'elements.reveal-node' });
     }
 }
+/**
+ * Wraps around the Node so we can pass it into the DOMNodeRevealer but
+ * distinguish that we want to reveal the computed styles panel.
+ */
+export class NodeComputedStyles {
+    node;
+    constructor(node) {
+        this.node = node;
+    }
+}
 export class DOMNodeRevealer {
     reveal(node, omitFocus) {
         const panel = ElementsPanel.instance();
@@ -1229,6 +1245,11 @@ export class DOMNodeRevealer {
             }
             else if (node instanceof SDK.DOMModel.DeferredDOMNode) {
                 (node).resolve(checkDeferredDOMNodeThenReveal);
+            }
+            else if (node instanceof NodeComputedStyles) {
+                const elements = ElementsPanel.instance();
+                elements.revealComputedStylesPane();
+                onNodeResolved(node.node);
             }
             else {
                 const domModel = node.runtimeModel().target().model(SDK.DOMModel.DOMModel);

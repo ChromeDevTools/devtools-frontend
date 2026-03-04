@@ -4,7 +4,6 @@
 import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
-import * as Platform from '../../../core/platform/platform.js';
 import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as Logs from '../../logs/logs.js';
@@ -26,13 +25,12 @@ You are a Web Development Assistant integrated into Chrome DevTools. Your tone i
 You aim to help developers of all levels, prioritizing teaching web concepts as the primary entry point for any solution.
 
 # Considerations
-* Determine what the question the domain of the question is - styling, network, sources, performance or other part of DevTools.
+* Determine what is the domain of the question - styling, network, sources, performance or other part of DevTools.
 * Proactively try to gather additional data. If a select specific data can be selected, select one.
 * Always try select single specific context before answering the question.
 * Avoid making assumptions without sufficient evidence, and always seek further clarification if needed.
 * When presenting solutions, clearly distinguish between the primary cause and contributing factors.
 * Please answer only if you are sure about the answer. Otherwise, explain why you're not able to answer.
-* When answering, always consider MULTIPLE possible solutions.
 * If you are unable to gather more information provide a comprehensive guide to how to fix the issue using Chrome DevTools and explain how and why.
 * You can suggest any panel or flow in Chrome DevTools that may help the user out
 
@@ -41,9 +39,13 @@ You aim to help developers of all levels, prioritizing teaching web concepts as 
 * Always specify the language for code blocks (e.g., \`\`\`css, \`\`\`javascript).
 * Keep text responses concise and scannable.
 
+* **CRITICAL** If a tool returns an empty list, immediately pivot to the next logical tool (e.g., from sources to network).
+* **CRITICAL** Always exhaust all possible way to find and select context from different domains.
 * **CRITICAL** NEVER write full Python programs - you should only write individual statements that invoke a single function from the provided library.
 * **CRITICAL** NEVER output text before a function call. Always do a function call first.
 * **CRITICAL** You are a debugging assistant in DevTools. NEVER provide answers to questions of unrelated topics such as legal advice, financial advice, personal opinions, medical advice, religion, race, politics, sexuality, gender, or any other non web-development topics. Answer "Sorry, I can't answer that. I'm best at questions about debugging web pages." to such questions.
+* **CRITICAL** When referring to DevTools resource output a markdown link to the object using the format \`[<text>](#<type>-<ID>)\`.
+* The only available types are \`#req\` for network request and \`#file\` for source files. Only use ID inside the link, never ask about user selecting by ID.
 `;
 /**
  * One agent instance handles one conversation. Create a new agent
@@ -97,6 +99,7 @@ export class ContextSelectionAgent extends AiAgent {
                         continue;
                     }
                     requests.push({
+                        id: request.requestId(),
                         url: request.url(),
                         statusCode: request.statusCode,
                         duration: i18n.TimeUtilities.secondsToString(request.duration),
@@ -118,11 +121,11 @@ export class ContextSelectionAgent extends AiAgent {
                 type: 6 /* Host.AidaClient.ParametersTypes.OBJECT */,
                 description: '',
                 nullable: true,
-                required: ['url'],
+                required: ['id'],
                 properties: {
-                    url: {
+                    id: {
                         type: 1 /* Host.AidaClient.ParametersTypes.STRING */,
-                        description: 'The url of the requests',
+                        description: 'The id of the network request',
                         nullable: false,
                     },
                 },
@@ -130,15 +133,12 @@ export class ContextSelectionAgent extends AiAgent {
             displayInfoFromArgs: args => {
                 return {
                     title: lockedString('Getting network request…'),
-                    action: `selectNetworkRequest(${args.url})`,
+                    action: `selectNetworkRequest(${args.id})`,
                 };
             },
-            handler: async ({ url }) => {
-                // TODO: Switch to using IDs to make is easier to link to as well.
+            handler: async ({ id }) => {
                 const request = Logs.NetworkLog.NetworkLog.instance().requests().find(req => {
-                    return req.url() === Platform.DevToolsPath.urlString `${url}` ||
-                        req.url() === Platform.DevToolsPath.urlString `${url.slice(0, -1)}` ||
-                        req.url() === Platform.DevToolsPath.urlString `${url}/`;
+                    return req.requestId() === id;
                 });
                 if (request) {
                     const calculator = this.#networkTimeCalculator ?? new NetworkTimeCalculator.NetworkTransferTimeCalculator();
@@ -168,29 +168,29 @@ export class ContextSelectionAgent extends AiAgent {
                 };
             },
             handler: async () => {
-                // We get multiple of the same file name
-                // so we create a set and the pick based
-                // on heuristics in the select function
-                const files = new Set();
-                for (const file of this.#getUISourceCodes()) {
-                    files.add(file.fullDisplayName());
+                const files = [];
+                for (const file of ContextSelectionAgent.getUISourceCodes()) {
+                    files.push({
+                        file: file.fullDisplayName(),
+                        id: ContextSelectionAgent.uiSourceCodeId.get(file),
+                    });
                 }
                 return {
-                    result: [...files],
+                    result: files,
                 };
             },
         });
         this.declareFunction('selectSourceFile', {
-            description: `Selects a source file. Use this when asked about files on the page. Use listSourceFiles if you don't know the full path name.`,
+            description: `Selects a source file. Use this when asked about files on the page. Use listSourceFiles to find the file ID.`,
             parameters: {
                 type: 6 /* Host.AidaClient.ParametersTypes.OBJECT */,
                 description: '',
                 nullable: true,
-                required: ['name'],
+                required: ['id'],
                 properties: {
-                    name: {
-                        type: 1 /* Host.AidaClient.ParametersTypes.STRING */,
-                        description: 'The full path name of the file you want to select.',
+                    id: {
+                        type: 3 /* Host.AidaClient.ParametersTypes.INTEGER */,
+                        description: 'The id (URL) of the file you want to select.',
                         nullable: false,
                     },
                 },
@@ -198,20 +198,16 @@ export class ContextSelectionAgent extends AiAgent {
             displayInfoFromArgs: args => {
                 return {
                     title: lockedString('Getting source file…'),
-                    action: `selectSourceFile(${args.name})`,
+                    action: `selectSourceFile(${args.id})`,
                 };
             },
             handler: async (params) => {
-                // In some cases we get multiple files
-                // use the heuristics bellow to pick the better one
-                const files = this.#getUISourceCodes().filter(file => file.fullDisplayName() === params.name);
-                if (files.length === 0) {
+                const file = ContextSelectionAgent.getUISourceCodes().find(file => ContextSelectionAgent.uiSourceCodeId.get(file) === params.id);
+                if (!file) {
                     return {
                         error: 'Unable to find file.',
                     };
                 }
-                // This help us pick the file that is resolved source map.
-                const file = files.find(f => f.contentType().isFromSourceMap()) ?? files[0];
                 return {
                     context: new FileContext(file),
                     description: 'User selected a source file',
@@ -278,24 +274,47 @@ export class ContextSelectionAgent extends AiAgent {
             },
         });
     }
-    #getUISourceCodes = () => {
+    async *handleContextDetails() {
+    }
+    async enhanceQuery(query) {
+        return query;
+    }
+    static lastSourceId = 0;
+    static uiSourceCodeId = new WeakMap();
+    /**
+     * This is a heuristic algorithm that gets all the source files coming from the
+     * network and assigns unique ids to be linked from the LLM Markdown response.
+     * Steps we do:
+     * 1. Get all project that are coming from the Network. This scopes down
+     * sources exposed to the LLM
+     * 2. Remove all ignore listed source code. We further reduce thing that the
+     * user most likely does not have interest in, from global setting.
+     * 3.1. Source files don't have an uniqueId so we use the URL to differentiate
+     * them.
+     * 3.2. In cases where we encounter a duplicated URLs we prefer the latest one
+     * coming from SourceMaps (usually only one) as that has simple code and
+     * usually is what the user authored.
+     */
+    static getUISourceCodes() {
         const workspace = Workspace.Workspace.WorkspaceImpl.instance();
         const projects = workspace.projects().filter(project => project.type() === Workspace.Workspace.projectTypes.Network);
-        const uiSourceCodes = [];
+        const uiSourceCodes = new Map();
         for (const project of projects) {
             for (const uiSourceCode of project.uiSourceCodes()) {
                 if (uiSourceCode.isIgnoreListed()) {
                     continue;
                 }
-                uiSourceCodes.push(uiSourceCode);
+                const url = uiSourceCode.url();
+                // This helps us pick the file that is a resolved source map.
+                if (!uiSourceCodes.get(url) || uiSourceCode.contentType().isFromSourceMap()) {
+                    uiSourceCodes.set(url, uiSourceCode);
+                    if (!ContextSelectionAgent.uiSourceCodeId.has(uiSourceCode)) {
+                        ContextSelectionAgent.uiSourceCodeId.set(uiSourceCode, ++ContextSelectionAgent.lastSourceId);
+                    }
+                }
             }
         }
-        return uiSourceCodes;
-    };
-    async *handleContextDetails() {
-    }
-    async enhanceQuery(query) {
-        return query;
+        return [...uiSourceCodes.values()];
     }
 }
 //# sourceMappingURL=ContextSelectionAgent.js.map

@@ -15,6 +15,10 @@ export declare class ComputedStyleModel extends Common.ObjectWrapper.ObjectWrapp
     get node(): SDK.DOMModel.DOMNode | null;
     set node(node: SDK.DOMModel.DOMNode | null);
     cssModel(): SDK.CSSModel.CSSModel | null;
+    /**
+     * Clears all event listeners to ensure the instance can be GC'd without leaking memory.
+     */
+    dispose(): void;
     private updateModel;
     private onCSSModelChanged;
     private onComputedStyleChanged;
@@ -28,6 +32,7 @@ export declare class ComputedStyleModel extends Common.ObjectWrapper.ObjectWrapp
      * This allows determining which properties are active or overridden.
      */
     fetchMatchedCascade(): Promise<SDK.CSSMatchedStyles.CSSMatchedStyles | null>;
+    computePropertyTraces(matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles): Map<string, SDK.CSSProperty.CSSProperty[]>;
 }
 export declare const enum Events {
     CSS_MODEL_CHANGED = "CSSModelChanged",

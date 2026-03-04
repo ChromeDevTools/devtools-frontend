@@ -10,16 +10,17 @@ import * as SDK from '../../core/sdk/sdk.js';
  * Model trackComputedStyleUpdatesForNode method.
  */
 export class ComputedStyleModel extends Common.ObjectWrapper.ObjectWrapper {
-    #node;
-    #cssModel;
-    eventListeners;
+    #node = null;
+    #cssModel = null;
+    eventListeners = [];
     frameResizedTimer;
     computedStylePromise;
     constructor(node) {
         super();
-        this.#cssModel = null;
-        this.eventListeners = [];
-        this.#node = node ?? null;
+        if (node) {
+            // Call the explicit setter to trigger the setup and event binding.
+            this.node = node;
+        }
     }
     get node() {
         return this.#node;
@@ -31,6 +32,20 @@ export class ComputedStyleModel extends Common.ObjectWrapper.ObjectWrapper {
     }
     cssModel() {
         return this.#cssModel?.isEnabled() ? this.#cssModel : null;
+    }
+    /**
+     * Clears all event listeners to ensure the instance can be GC'd without leaking memory.
+     */
+    dispose() {
+        Common.EventTarget.removeEventListeners(this.eventListeners);
+        this.eventListeners = [];
+        this.node = null;
+        this.#cssModel = null;
+        this.computedStylePromise = undefined;
+        if (this.frameResizedTimer) {
+            clearTimeout(this.frameResizedTimer);
+            this.frameResizedTimer = undefined;
+        }
     }
     updateModel(cssModel) {
         if (this.#cssModel === cssModel) {
@@ -143,6 +158,21 @@ export class ComputedStyleModel extends Common.ObjectWrapper.ObjectWrapper {
             return null;
         }
         return matchedStyles.node() === this.node ? matchedStyles : null;
+    }
+    computePropertyTraces(matchedStyles) {
+        const result = new Map();
+        for (const style of matchedStyles.nodeStyles()) {
+            const allProperties = style.allProperties();
+            for (const property of allProperties) {
+                if (!property.activeInStyle() || !matchedStyles.propertyState(property)) {
+                    continue;
+                }
+                const matches = result.get(property.name) ?? [];
+                matches.push(property);
+                result.set(property.name, matches);
+            }
+        }
+        return result;
     }
 }
 export class ComputedStyle {

@@ -54,7 +54,7 @@ export declare class AiAssistancePanel extends UI.Panel.Panel {
     static instance(opts?: {
         forceNew: boolean | null;
     } | undefined): Promise<AiAssistancePanel>;
-    handleBreakpointConversation(uiLocation: Workspace.UISourceCode.UILocation): Promise<void>;
+    handleBreakpointConversation(uiLocation: Workspace.UISourceCode.UILocation, errorMsg?: string): Promise<void>;
     wasShown(): void;
     willHide(): void;
     performUpdate(): Promise<void>;

@@ -36,27 +36,27 @@ export interface CookiesTableData {
     cookieToExemptionReason?: ReadonlyMap<SDK.Cookie.Cookie, SDK.CookieModel.ExemptionReason>;
 }
 export declare class CookiesTable extends UI.Widget.VBox {
-    private saveCallback?;
-    private readonly refreshCallback?;
-    private readonly selectedCallback?;
-    private readonly deleteCallback?;
+    #private;
     private lastEditedColumnId;
     private data;
     private cookies;
-    private cookieDomain;
     private cookieToBlockedReasons;
     private cookieToExemptionReason;
     private readonly view;
     private selectedKey?;
-    private readonly editable;
     private renderInline;
     private readonly schemeBindingEnabled;
     private readonly portBindingEnabled;
-    constructor(element?: HTMLElement, renderInline?: boolean, saveCallback?: ((arg0: SDK.Cookie.Cookie, arg1: SDK.Cookie.Cookie | null) => Promise<boolean>), refreshCallback?: (() => void), selectedCallback?: (() => void), deleteCallback?: ((arg0: SDK.Cookie.Cookie, arg1: () => void) => void), view?: ViewFunction);
+    constructor(element?: HTMLElement, renderInline?: boolean, saveCallback?: ((arg0: SDK.Cookie.Cookie, arg1: SDK.Cookie.Cookie | null) => Promise<boolean>), refreshCallback?: (() => void), selectedCallback?: ((arg0: SDK.Cookie.Cookie | null) => void), deleteCallback?: ((arg0: SDK.Cookie.Cookie, arg1: () => void) => void), view?: ViewFunction);
     set cookiesData(data: CookiesTableData);
+    set saveCallback(callback: (arg0: SDK.Cookie.Cookie, arg1: SDK.Cookie.Cookie | null) => Promise<boolean>);
+    set refreshCallback(callback: () => void);
+    set selectedCallback(callback: (arg0: SDK.Cookie.Cookie | null) => void);
+    set deleteCallback(callback: (arg0: SDK.Cookie.Cookie, arg1: () => void) => void);
+    set editable(value: boolean);
     set inline(value: boolean);
     setCookies(cookies: SDK.Cookie.Cookie[], cookieToBlockedReasons?: ReadonlyMap<SDK.Cookie.Cookie, SDK.CookieModel.BlockedReason[]>, cookieToExemptionReason?: ReadonlyMap<SDK.Cookie.Cookie, SDK.CookieModel.ExemptionReason>): void;
-    setCookieDomain(cookieDomain: string): void;
+    set cookieDomain(cookieDomain: string);
     selectedCookie(): SDK.Cookie.Cookie | null;
     willHide(): void;
     performUpdate(): void;

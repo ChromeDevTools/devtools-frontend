@@ -310,7 +310,7 @@ export class AiCodeCompletionProvider {
         if (isRepetitive) {
             return null;
         }
-        const suggestionText = this.#trimSuggestionOverlap(suggestionSample.generationString, suffix);
+        const suggestionText = AiCodeCompletionProvider.trimSuggestionOverlap(suggestionSample.generationString, suffix);
         if (suggestionText.length === 0) {
             return null;
         }
@@ -345,7 +345,7 @@ export class AiCodeCompletionProvider {
     /**
      * Removes the end of a suggestion if it overlaps with the start of the suffix.
      */
-    #trimSuggestionOverlap(generationString, suffix) {
+    static trimSuggestionOverlap(generationString, suffix) {
         if (!suffix) {
             return generationString;
         }

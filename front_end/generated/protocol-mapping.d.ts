@@ -202,6 +202,12 @@ export namespace ProtocolMapping {
      * Notification sent after the virtual time budget for the current VirtualTimePolicy has run out.
      */
     'Emulation.virtualTimeBudgetExpired': [];
+    /**
+     * Fired when a page calls screen.orientation.lock() or screen.orientation.unlock()
+     * while device emulation is enabled. This allows the DevTools frontend to update the
+     * emulated device orientation accordingly.
+     */
+    'Emulation.screenOrientationLockChanged': [Protocol.Emulation.ScreenOrientationLockChangedEvent];
     'FedCm.dialogShown': [Protocol.FedCm.DialogShownEvent];
     /**
      * Triggered when a dialog is closed, either by user action, JS abort,

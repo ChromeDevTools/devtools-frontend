@@ -125,6 +125,7 @@ export declare class ElementsPanel extends UI.Panel.Panel implements UI.Searchab
     private showUAShadowDOMChanged;
     private setupTextSelectionHack;
     private initializeSidebarPanes;
+    revealComputedStylesPane(): void;
     private updateSidebarPosition;
     private extensionSidebarPaneAdded;
     private addExtensionSidebarPane;
@@ -150,8 +151,16 @@ export declare class ElementsPanel extends UI.Panel.Panel implements UI.Searchab
 export declare class ContextMenuProvider implements UI.ContextMenu.Provider<SDK.RemoteObject.RemoteObject | SDK.DOMModel.DOMNode | SDK.DOMModel.DeferredDOMNode> {
     appendApplicableItems(event: Event, contextMenu: UI.ContextMenu.ContextMenu, object: SDK.RemoteObject.RemoteObject | SDK.DOMModel.DOMNode | SDK.DOMModel.DeferredDOMNode): void;
 }
-export declare class DOMNodeRevealer implements Common.Revealer.Revealer<SDK.DOMModel.DOMNode | SDK.DOMModel.DeferredDOMNode | SDK.RemoteObject.RemoteObject | SDK.DOMModel.AdoptedStyleSheet> {
-    reveal(node: SDK.DOMModel.DOMNode | SDK.DOMModel.DeferredDOMNode | SDK.RemoteObject.RemoteObject | SDK.DOMModel.AdoptedStyleSheet, omitFocus?: boolean): Promise<void>;
+/**
+ * Wraps around the Node so we can pass it into the DOMNodeRevealer but
+ * distinguish that we want to reveal the computed styles panel.
+ */
+export declare class NodeComputedStyles {
+    readonly node: SDK.DOMModel.DOMNode;
+    constructor(node: SDK.DOMModel.DOMNode);
+}
+export declare class DOMNodeRevealer implements Common.Revealer.Revealer<SDK.DOMModel.DOMNode | SDK.DOMModel.DeferredDOMNode | SDK.RemoteObject.RemoteObject | SDK.DOMModel.AdoptedStyleSheet | NodeComputedStyles> {
+    reveal(node: SDK.DOMModel.DOMNode | SDK.DOMModel.DeferredDOMNode | SDK.RemoteObject.RemoteObject | SDK.DOMModel.AdoptedStyleSheet | NodeComputedStyles, omitFocus?: boolean): Promise<void>;
 }
 export declare class CSSPropertyRevealer implements Common.Revealer.Revealer<SDK.CSSProperty.CSSProperty> {
     reveal(property: SDK.CSSProperty.CSSProperty): Promise<void>;

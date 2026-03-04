@@ -732,7 +732,7 @@ __export(BreakpointDebuggerAgent_exports, {
   BreakpointDebuggerAgent: () => BreakpointDebuggerAgent
 });
 import * as Host2 from "./../../core/host/host.js";
-import * as SDK from "./../../core/sdk/sdk.js";
+import * as SDK2 from "./../../core/sdk/sdk.js";
 import * as Bindings from "./../bindings/bindings.js";
 import * as Breakpoints from "./../breakpoints/breakpoints.js";
 
@@ -885,6 +885,77 @@ function formatterWorkerPool() {
 import * as SourceMapScopes from "./../source_map_scopes/source_map_scopes.js";
 import * as TextUtils3 from "./../text_utils/text_utils.js";
 import * as Workspace from "./../workspace/workspace.js";
+
+// gen/front_end/models/ai_assistance/agents/BreakpointDebuggerAgentOverlay.js
+import * as SDK from "./../../core/sdk/sdk.js";
+async function injectOverlay() {
+  const targetManager = SDK.TargetManager.TargetManager.instance();
+  const primaryTarget = targetManager.primaryPageTarget();
+  await primaryTarget?.runtimeAgent().invoke_evaluate({
+    expression: WAIT_FOR_USER_ACTION_OVERLAY_SCRIPT
+  });
+}
+async function removeOverlay() {
+  const targetManager = SDK.TargetManager.TargetManager.instance();
+  const primaryTarget = targetManager.primaryPageTarget();
+  await primaryTarget?.runtimeAgent().invoke_evaluate({
+    expression: REMOVE_OVERLAY_SCRIPT
+  });
+}
+var WAIT_FOR_USER_ACTION_OVERLAY_SCRIPT = `
+(function() {
+  const devtoolsOverlayId = 'devtools-waiting-overlay';
+  let overlay = document.getElementById(devtoolsOverlayId);
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.id = devtoolsOverlayId;
+    overlay.style.position = 'fixed';
+    overlay.style.top = '0';
+    overlay.style.left = '0';
+    overlay.style.width = '100vw';
+    overlay.style.height = '100vh';
+    overlay.style.pointerEvents = 'none';
+    overlay.style.zIndex = '2147483647';
+    overlay.style.boxSizing = 'border-box';
+    overlay.style.border = '10px solid red';
+    overlay.style.animation = 'devtools-fade 1.5s infinite alternate';
+    const text = document.createElement('div');
+    text.innerText = 'Trigger the breakpoint again';
+    text.style.position = 'absolute';
+    text.style.top = '10px';
+    text.style.left = '50%';
+    text.style.transform = 'translateX(-50%)';
+    text.style.backgroundColor = 'red';
+    text.style.color = 'white';
+    text.style.padding = '10px 20px';
+    text.style.borderRadius = '5px';
+    text.style.fontFamily = 'system-ui, sans-serif';
+    text.style.fontSize = '16px';
+    text.style.fontWeight = 'bold';
+    text.style.boxShadow = '0 4px 6px rgba(0,0,0,0.1)';
+    overlay.appendChild(text);
+
+    const style = document.createElement('style');
+    style.id = devtoolsOverlayId + '-style';
+    style.innerText = '@keyframes devtools-fade { from { opacity: 0.5; } to { opacity: 1; } }';
+    // Head might not exist immediately on a completely blank page, fallback to documentElement
+    (document.head || document.documentElement).appendChild(style);
+
+    document.documentElement.appendChild(overlay);
+  }
+})();
+`;
+var REMOVE_OVERLAY_SCRIPT = `
+(function() {
+  const devtoolsOverlayId = 'devtools-waiting-overlay';
+  const overlay = document.getElementById(devtoolsOverlayId);
+  if (overlay) overlay.remove();
+  const style = document.getElementById(devtoolsOverlayId + '-style');
+  if (style) style.remove();
+})();
+`;
+
+// gen/front_end/models/ai_assistance/agents/BreakpointDebuggerAgent.js
 var preamble = `You are an expert Root Cause Analysis (RCA) specialist.
 Your sole objective is to find the **root cause** of why an error was thrown or why a bug occurred.
 You must not stop at the surface level. You must dig deep to understand the exact sequence of events and state changes that led to the failure.
@@ -898,20 +969,23 @@ You have two modes of operation that you can switch between and control:
 **Workflow**:
 1. **Hypothesize**: Read the code ('getFunctionSource', 'getPreviousLines', 'getNextLines') to understand the logic.
 2. **Set Trap**: Identify the critical line where state corruption likely occurred or lines that can lead you to that place. Use 'setBreakpoint' on that line.
-3. **Wait**: Call 'waitForBreakpoint'. This will suspend your execution until the user triggers the breakpoint. You CANNOT proceed until this tool returns.
+3. **Wait**: Call 'waitForUserActionToTriggerBreakpoint'. This will suspend your execution until the user triggers the breakpoint. You CANNOT proceed until this tool returns.
 4. **Inspect**: Using 'getExecutionLocation' check exactly where you are paused.
 5. **Analyze**: When paused (Runtime Mode), use 'getScopeVariables' and 'getCallStack' to verify your hypothesis. Check variables in multiple scopes and look up the call stack to see where bad data came from.
 6. **Step**: Use 'stepInto' to investigate function calls on the current line. Use 'stepOut' to return to the caller. Use 'stepOver' to move to the next line.
 7. **Trace Back**: If the current function isn't the root cause, use 'getCallStack' to find the caller, and repeat the analysis there.
 8. **Root Cause**: Explain exactly how the runtime state contradicts the expected logic and point to the specific line of code that is the root cause.
+9. **Test Fix**: Use the 'testFixInConsole' tool to run a JavaScript snippet in the current execution context to test your fix before making permanent changes. This will overwrite the problematic function or state. Follow the instructions to get the user's approval.
+10. **Verify**: IMMEDIATELY AFTER 'testFixInConsole' succeeds, you MUST call 'waitForUserActionToTriggerBreakpoint' (to pause and inspect) or 'resume' (if no inspection is needed), AND ask the user to trigger the buggy action again to verify the fix.
+11. **Patch**: Once the fix is successfully verified by the user, you MUST use the 'suggestFix' tool to apply the patch to the source code file. Provide the URL, the exact original code to change, and the new code. Finish the execution then.
 
 **Rules**:
 - **NEVER FINISH** execution until you have found the root cause or answer.
-- **ACTION OVER TALK**: If you need the user to trigger a breakpoint, do NOT just ask them in text. You **MUST** call 'waitForBreakpoint'. This tool will block and wait for the user to act.
-- **STATIC MODE**: If you are in STATIC MODE and need to see variables: 1. 'setBreakpoint', 2. 'waitForBreakpoint'. **DO NOT STOP** to ask the user. Investigate code and set breakpoints to find the root cause.
-- **ALREADY PAUSED?**: If 'setBreakpoint' warns you that you are already paused, **DO NOT** call 'waitForBreakpoint'. Start inspecting immediately. You can set more breakpoints while paused, but to call 'waitForBreakpoint' again you MUST be in static state.
+- **ACTION OVER TALK**: If you need the user to trigger a breakpoint, do NOT just ask them in text. You **MUST** call 'waitForUserActionToTriggerBreakpoint'. This tool will block and wait for the user to act.
+- **STATIC MODE**: If you are in STATIC MODE and need to see variables: 1. 'setBreakpoint', 2. 'waitForUserActionToTriggerBreakpoint'. **DO NOT STOP** to ask the user. Investigate code and set breakpoints to find the root cause.
+- **ALREADY PAUSED?**: If 'setBreakpoint' warns you that you are already paused, **DO NOT** call 'waitForUserActionToTriggerBreakpoint'. Start inspecting immediately. You can set more breakpoints while paused, but to call 'waitForUserActionToTriggerBreakpoint' again you MUST be in static state.
 - **USE TOOLS EXCESSIVELY**: checking one thing is often not enough. Check everything you can thinks of.
-- **CHECK LOCATION**: If you are not sure where you are, call 'getExecutionLocation' after 'waitForBreakpoint' or any step command to confirm where you are.
+- **CHECK LOCATION**: If you are not sure where you are, call 'getExecutionLocation' after 'waitForUserActionToTriggerBreakpoint' or any step command to confirm where you are.
 
 **Execution Control when you are currently on a breakpoint**:
 - **stepInto**: ESSENTIAL for entering function calls on the current line. Use this heavily when you suspect the issue is inside a called function.
@@ -919,6 +993,8 @@ You have two modes of operation that you can switch between and control:
 - **stepOut**: Return to the caller. If you are currently on a breakpoint, 'stepOut' will move you to the caller and pause again. **It often makes sense to 'stepOut' after you have investigated a function with 'stepInto' and verified it is correct.**
 - **stepInto, stepOver, stepOut**: After any step command, always call 'getScopeVariables' to see how the state evolved.
 - **listBreakpoints**: Use this to see all active breakpoints. Do not try to set a breakpoint that is already active.
+- **removeBreakpoint / removeAllBreakpoints**: Use this to remove breakpoints. This is especially useful when you want to speed up verifying a fix.
+- **CLEANUP AFTER FIX**: After a fix is suggested and worked, you MUST remove all breakpoints and call 'resume' to resume the execution of the page.
 `;
 var BreakpointContext = class extends ConversationContext {
   #focus;
@@ -961,6 +1037,11 @@ var BreakpointDebuggerAgent = class extends AiAgent {
         },
         required: ["url", "lineNumber"]
       },
+      displayInfoFromArgs: (args) => {
+        return {
+          title: `Reading function source for ${args.url}:${args.lineNumber}`
+        };
+      },
       handler: async (args) => {
         const result = await this.#getFunctionSource(args);
         debugLog("getFunctionSource for ", JSON.stringify(args), "->", JSON.stringify(result));
@@ -988,6 +1069,11 @@ var BreakpointDebuggerAgent = class extends AiAgent {
         },
         required: ["url", "lineNumber", "direction"]
       },
+      displayInfoFromArgs: (args) => {
+        return {
+          title: `Reading code ${args.direction} ${args.url}:${args.lineNumber}`
+        };
+      },
       handler: async (args) => {
         const result = await this.#getCodeLines(args);
         debugLog("getCodeLines result", JSON.stringify(result));
@@ -1001,6 +1087,11 @@ var BreakpointDebuggerAgent = class extends AiAgent {
         description: "No parameters required",
         properties: {},
         required: []
+      },
+      displayInfoFromArgs: () => {
+        return {
+          title: "Reading call stack"
+        };
       },
       handler: async () => {
         const result = await this.#getCallStack();
@@ -1016,6 +1107,11 @@ var BreakpointDebuggerAgent = class extends AiAgent {
         properties: {},
         required: []
       },
+      displayInfoFromArgs: () => {
+        return {
+          title: "Reading scope variables"
+        };
+      },
       handler: async () => {
         const result = await this.#getScopeVariables();
         debugLog("getScopeVariables result", JSON.stringify(result));
@@ -1029,6 +1125,11 @@ var BreakpointDebuggerAgent = class extends AiAgent {
         description: "No parameters required",
         properties: {},
         required: []
+      },
+      displayInfoFromArgs: () => {
+        return {
+          title: "Listing breakpoints"
+        };
       },
       handler: async () => {
         const result = await this.#listBreakpoints();
@@ -1053,6 +1154,11 @@ var BreakpointDebuggerAgent = class extends AiAgent {
         },
         required: ["url", "lineNumber"]
       },
+      displayInfoFromArgs: (args) => {
+        return {
+          title: `Setting breakpoint at ${args.url}:${args.lineNumber}`
+        };
+      },
       handler: async (args) => {
         debugLog("setBreakpoint requested", args);
         const result = await this.#setBreakpoint(args);
@@ -1060,18 +1166,78 @@ var BreakpointDebuggerAgent = class extends AiAgent {
         return result;
       }
     });
-    this.declareFunction("resume", {
-      description: "Resume execution until the next breakpoint is hit.",
+    this.declareFunction("removeBreakpoint", {
+      description: "Remove a breakpoint at a specific location.",
+      parameters: {
+        type: 6,
+        description: "Location to remove the breakpoint from",
+        properties: {
+          url: {
+            type: 1,
+            description: "The URL of the file"
+          },
+          lineNumber: {
+            type: 3,
+            description: "The 1-based line number to remove the breakpoint from"
+          }
+        },
+        required: ["url", "lineNumber"]
+      },
+      displayInfoFromArgs: (args) => {
+        return {
+          title: `Removing breakpoint at ${args.url}:${args.lineNumber}`
+        };
+      },
+      handler: async (args) => {
+        debugLog("removeBreakpoint requested", args);
+        const result = await this.#removeBreakpoint(args);
+        debugLog("removeBreakpoint result", JSON.stringify(result));
+        return result;
+      }
+    });
+    this.declareFunction("removeAllBreakpoints", {
+      description: "Remove all active breakpoints.",
       parameters: {
         type: 6,
         description: "No parameters required",
         properties: {},
         required: []
       },
+      displayInfoFromArgs: () => {
+        return {
+          title: "Removing all breakpoints"
+        };
+      },
       handler: async () => {
-        const result = await this.#debuggerAction((model) => model.resume());
-        debugLog("resume result", JSON.stringify(result));
-        return result;
+        debugLog("removeAllBreakpoints requested");
+        const breakpointManager = Breakpoints.BreakpointManager.BreakpointManager.instance();
+        const allBreakpoints = breakpointManager.allBreakpointLocations();
+        for (const bp of allBreakpoints) {
+          await bp.breakpoint.remove(false);
+        }
+        return { result: { status: "All breakpoints removed." } };
+      }
+    });
+    this.declareFunction("resume", {
+      description: "Resume execution. Always use this after applying a fix to resume the page execution.",
+      parameters: {
+        type: 6,
+        description: "No parameters required",
+        properties: {},
+        required: []
+      },
+      displayInfoFromArgs: () => {
+        return {
+          title: "Resuming execution"
+        };
+      },
+      handler: async () => {
+        const targetManager = SDK2.TargetManager.TargetManager.instance();
+        const debuggerModel = targetManager.models(SDK2.DebuggerModel.DebuggerModel).find((m) => m.isPaused());
+        if (debuggerModel) {
+          debuggerModel.resume();
+        }
+        return { result: { status: "Execution resumed." } };
       }
     });
     this.declareFunction("stepOver", {
@@ -1081,6 +1247,11 @@ var BreakpointDebuggerAgent = class extends AiAgent {
         description: "No parameters required",
         properties: {},
         required: []
+      },
+      displayInfoFromArgs: () => {
+        return {
+          title: "Stepping over"
+        };
       },
       handler: async () => {
         const result = await this.#debuggerAction((model) => model.stepOver());
@@ -1096,6 +1267,11 @@ var BreakpointDebuggerAgent = class extends AiAgent {
         properties: {},
         required: []
       },
+      displayInfoFromArgs: () => {
+        return {
+          title: "Stepping into"
+        };
+      },
       handler: async () => {
         const result = await this.#debuggerAction((model) => model.stepInto());
         debugLog("stepInto result", JSON.stringify(result));
@@ -1109,6 +1285,11 @@ var BreakpointDebuggerAgent = class extends AiAgent {
         description: "No parameters required",
         properties: {},
         required: []
+      },
+      displayInfoFromArgs: () => {
+        return {
+          title: "Stepping out"
+        };
       },
       handler: async () => {
         const result = await this.#debuggerAction((model) => model.stepOut());
@@ -1145,10 +1326,144 @@ var BreakpointDebuggerAgent = class extends AiAgent {
         properties: {},
         required: []
       },
+      displayInfoFromArgs: () => {
+        return {
+          title: "Getting execution location"
+        };
+      },
       handler: async () => {
         const result = await this.#getExecutionLocation();
         debugLog("getExecutionLocation ", JSON.stringify(result));
         return result;
+      }
+    });
+    this.declareFunction("testFixInConsole", {
+      description: "Tests a JavaScript code snippet in the current execution context to overwrite the problematic code or state. Use this to verify the fix works before patching the source file.",
+      parameters: {
+        type: 6,
+        description: "Provide the code to evaluate to test the fix",
+        properties: {
+          code: {
+            type: 1,
+            description: "The JavaScript code to evaluate in the console to test the fix."
+          },
+          explanation: {
+            type: 1,
+            description: "Explanation for why this code fixes the issue."
+          }
+        },
+        required: ["code", "explanation"]
+      },
+      displayInfoFromArgs: (args) => {
+        return {
+          title: "Testing a fix in console",
+          thought: args.explanation,
+          action: args.code
+        };
+      },
+      handler: async (args, options) => {
+        debugLog("testFixInConsole requested", args);
+        if (options?.approved === false) {
+          return { error: "Fix rejected by the user." };
+        }
+        if (!options?.approved) {
+          return { requiresApproval: true };
+        }
+        const targetManager = SDK2.TargetManager.TargetManager.instance();
+        const debuggerModel = targetManager.models(SDK2.DebuggerModel.DebuggerModel).find((m) => m.isPaused());
+        if (!debuggerModel) {
+          return { error: "Execution is not paused." };
+        }
+        const details = debuggerModel.debuggerPausedDetails();
+        const callFrame = details?.callFrames[0];
+        if (!callFrame) {
+          return { error: "No call frame available." };
+        }
+        const result = await callFrame.evaluate({
+          expression: args.code,
+          objectGroup: "console",
+          includeCommandLineAPI: true,
+          silent: false,
+          returnByValue: false,
+          generatePreview: true
+        });
+        if (!result) {
+          return { error: "Failed to evaluate the fix." };
+        }
+        if ("error" in result) {
+          return { error: "Error applying fix: " + result.error };
+        }
+        if (result.exceptionDetails) {
+          return { error: "Fix threw an exception: " + result.exceptionDetails.text };
+        }
+        return {
+          result: {
+            status: "Code evaluated successfully. You MUST now call waitForUserActionToTriggerBreakpoint or resume, and ask the user to trigger the action again to verify the fix."
+          }
+        };
+      }
+    });
+    this.declareFunction("suggestFix", {
+      description: "Suggests a JavaScript code snippet to fix the root cause of the issue and applies it to the source code file if the user approves. Call this function AFTER you have verified the fix works using testFixInConsole.",
+      parameters: {
+        type: 6,
+        description: "Provide the fix to the user",
+        properties: {
+          url: {
+            type: 1,
+            description: "The URL of the file to fix."
+          },
+          originalCode: {
+            type: 1,
+            description: "The exact original code to replace. Must match the file content exactly, including whitespace."
+          },
+          suggestion: {
+            type: 1,
+            description: "The new JavaScript code to replace the original code with."
+          },
+          explanation: {
+            type: 1,
+            description: "Explanation for why this code fixes the issue."
+          }
+        },
+        required: ["url", "originalCode", "suggestion", "explanation"]
+      },
+      displayInfoFromArgs: (args) => {
+        return {
+          title: "Suggesting a fix",
+          thought: args.explanation,
+          action: args.suggestion
+        };
+      },
+      handler: async (args, options) => {
+        debugLog("suggestFix requested", args);
+        if (options?.approved === false) {
+          return { error: "Fix rejected by the user." };
+        }
+        if (!options?.approved) {
+          return { requiresApproval: true };
+        }
+        const uiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(args.url);
+        if (!uiSourceCode) {
+          return { error: `File not found: ${args.url}` };
+        }
+        const contentData = await uiSourceCode.requestContentData();
+        if ("error" in contentData || !contentData.isTextContent) {
+          return { error: `Could not read content for file: ${args.url}` };
+        }
+        let currentContent = uiSourceCode.workingCopy();
+        if (!uiSourceCode.isDirty()) {
+          currentContent = contentData.text;
+        }
+        if (!currentContent.includes(args.originalCode)) {
+          return {
+            error: "originalCode not found in the file. Ensure the originalCode is an exact match including whitespace."
+          };
+        }
+        const newContent = currentContent.replace(args.originalCode, args.suggestion);
+        uiSourceCode.setWorkingCopy(newContent);
+        uiSourceCode.commitWorkingCopy();
+        return { result: { status: "Fix applied to the source file successfully." } };
       }
     });
   }
@@ -1226,11 +1541,11 @@ var BreakpointDebuggerAgent = class extends AiAgent {
     };
   }
   async #getCallStack() {
-    const targetManager = SDK.TargetManager.TargetManager.instance();
-    const debuggerModel = targetManager.models(SDK.DebuggerModel.DebuggerModel).find((m) => m.isPaused());
+    const targetManager = SDK2.TargetManager.TargetManager.instance();
+    const debuggerModel = targetManager.models(SDK2.DebuggerModel.DebuggerModel).find((m) => m.isPaused());
     if (!debuggerModel) {
       return {
-        error: "Execution is not paused. I cannot access runtime variables or the call stack. I am currently in STATIC MODE. I must set a breakpoint and use waitForBreakpoint to enter RUNTIME MODE."
+        error: "Execution is not paused. I cannot access runtime variables or the call stack. I am currently in STATIC MODE. I must set a breakpoint and use waitForUserActionToTriggerBreakpoint to enter RUNTIME MODE."
       };
     }
     const details = debuggerModel.debuggerPausedDetails();
@@ -1249,11 +1564,11 @@ var BreakpointDebuggerAgent = class extends AiAgent {
     return { result: { callFrames } };
   }
   async #getScopeVariables() {
-    const targetManager = SDK.TargetManager.TargetManager.instance();
-    const debuggerModel = targetManager.models(SDK.DebuggerModel.DebuggerModel).find((m) => m.isPaused());
+    const targetManager = SDK2.TargetManager.TargetManager.instance();
+    const debuggerModel = targetManager.models(SDK2.DebuggerModel.DebuggerModel).find((m) => m.isPaused());
     if (!debuggerModel) {
       return {
-        error: "Execution is not paused. I cannot access runtime variables or the call stack. I am currently in STATIC MODE. I must set a breakpoint and use waitForBreakpoint to enter RUNTIME MODE."
+        error: "Execution is not paused. I cannot access runtime variables or the call stack. I am currently in STATIC MODE. I must set a breakpoint and use waitForUserActionToTriggerBreakpoint to enter RUNTIME MODE."
       };
     }
     const details = debuggerModel.debuggerPausedDetails();
@@ -1347,8 +1662,8 @@ var BreakpointDebuggerAgent = class extends AiAgent {
         actualLineNumber = resolvedState[0].lineNumber + 1;
       }
     }
-    const targetManager = SDK.TargetManager.TargetManager.instance();
-    const debuggerModel = targetManager.models(SDK.DebuggerModel.DebuggerModel).find((m) => m.isPaused());
+    const targetManager = SDK2.TargetManager.TargetManager.instance();
+    const debuggerModel = targetManager.models(SDK2.DebuggerModel.DebuggerModel).find((m) => m.isPaused());
     let warning = "";
     if (debuggerModel) {
       const details = debuggerModel.debuggerPausedDetails();
@@ -1357,43 +1672,61 @@ var BreakpointDebuggerAgent = class extends AiAgent {
         const pausedLoc = `${callFrame.script.contentURL()}:${callFrame.location().lineNumber + 1}`;
         warning = ` WARNING: You are already PAUSED at ${pausedLoc}. 
 1. If this is where you want to be, call 'getExecutionLocation' and inspect variables. 
-2. If you want to wait for the NEW breakpoint, you MUST call 'waitForBreakpoint' (which will resume execution).`;
+2. If you want to wait for the NEW breakpoint, you MUST call 'waitForUserActionToTriggerBreakpoint' (which will resume execution).`;
       }
     }
     if (actualLineNumber !== args.lineNumber) {
       return {
         result: {
-          status: `Breakpoint requested at ${args.url}:${args.lineNumber}, but ACTUALLY resolved to line ${actualLineNumber}.${warning ? "\n" + warning : " You must now call waitForBreakpoint and ask the user to trigger the action."}`
+          status: `Breakpoint requested at ${args.url}:${args.lineNumber}, but ACTUALLY resolved to line ${actualLineNumber}.${warning ? "\n" + warning : " You must now call waitForUserActionToTriggerBreakpoint and ask the user to trigger the action."}`
         }
       };
     }
     return {
       result: {
-        status: `Breakpoint set at ${args.url}:${args.lineNumber}.${warning ? "\n" + warning : " You must now call waitForBreakpoint and ask the user to trigger the action."}`
+        status: `Breakpoint set at ${args.url}:${args.lineNumber}.${warning ? "\n" + warning : " You must now call waitForUserActionToTriggerBreakpoint and ask the user to trigger the action."}`
       }
     };
   }
+  async #removeBreakpoint(args) {
+    const uiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(args.url);
+    if (!uiSourceCode) {
+      return { error: `File not found: ${args.url}` };
+    }
+    const breakpointLocations = Breakpoints.BreakpointManager.BreakpointManager.instance().breakpointLocationsForUISourceCode(uiSourceCode);
+    const breakpointLocation = breakpointLocations.find((bp) => bp.uiLocation.lineNumber === args.lineNumber - 1);
+    if (!breakpointLocation) {
+      return { result: { status: `Breakpoint not found at ${args.url}:${args.lineNumber}.` } };
+    }
+    await breakpointLocation.breakpoint.remove(false);
+    return { result: { status: `Breakpoint removed at ${args.url}:${args.lineNumber}.` } };
+  }
   async #debuggerAction(action) {
-    const targetManager = SDK.TargetManager.TargetManager.instance();
-    const debuggerModel = targetManager.models(SDK.DebuggerModel.DebuggerModel).find((m) => m.isPaused());
+    const targetManager = SDK2.TargetManager.TargetManager.instance();
+    const debuggerModel = targetManager.models(SDK2.DebuggerModel.DebuggerModel).find((m) => m.isPaused());
     if (!debuggerModel) {
       return { error: "Execution is not paused. I cannot step or resume in STATIC MODE." };
     }
-    return await this.#waitForNextPause(() => action(debuggerModel));
+    return await this.#waitForNextPause(() => action(debuggerModel), 3e3);
   }
   async #waitForUserActionToTriggerBreakpoint() {
-    const targetManager = SDK.TargetManager.TargetManager.instance();
-    const debuggerModels = targetManager.models(SDK.DebuggerModel.DebuggerModel);
+    const targetManager = SDK2.TargetManager.TargetManager.instance();
+    const debuggerModels = targetManager.models(SDK2.DebuggerModel.DebuggerModel);
     if (debuggerModels.length === 0) {
       return { error: "No debugger attached" };
     }
-    return await this.#waitForNextPause(() => {
-      for (const model of debuggerModels) {
-        if (model.isPaused()) {
-          model.resume();
+    void injectOverlay();
+    try {
+      return await this.#waitForNextPause(() => {
+        for (const model of debuggerModels) {
+          if (model.isPaused()) {
+            model.resume();
+          }
         }
-      }
-    });
+      });
+    } finally {
+      void removeOverlay();
+    }
   }
   /**
    * Helper that waits for the next debugger pause event.
@@ -1402,11 +1735,15 @@ var BreakpointDebuggerAgent = class extends AiAgent {
    * @param triggerAction Optional action to execute (e.g. resume, step) that is expected to lead to a pause.
    */
   async #waitForNextPause(triggerAction = () => {
-  }) {
-    const targetManager = SDK.TargetManager.TargetManager.instance();
+  }, timeoutMs) {
+    const targetManager = SDK2.TargetManager.TargetManager.instance();
     return await new Promise((resolve) => {
+      let timeoutId;
       const listener = async (event) => {
-        targetManager.removeModelListener(SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.DebuggerPaused, listener);
+        targetManager.removeModelListener(SDK2.DebuggerModel.DebuggerModel, SDK2.DebuggerModel.Events.DebuggerPaused, listener);
+        if (timeoutId) {
+          clearTimeout(timeoutId);
+        }
         const model = event.data;
         const details = model.debuggerPausedDetails();
         const callFrame = details?.callFrames[0];
@@ -1422,13 +1759,23 @@ var BreakpointDebuggerAgent = class extends AiAgent {
         }
         resolve({ result: { status: `Paused at ${location}` } });
       };
-      targetManager.addModelListener(SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.DebuggerPaused, listener);
+      targetManager.addModelListener(SDK2.DebuggerModel.DebuggerModel, SDK2.DebuggerModel.Events.DebuggerPaused, listener);
+      if (timeoutMs !== void 0) {
+        timeoutId = setTimeout(() => {
+          targetManager.removeModelListener(SDK2.DebuggerModel.DebuggerModel, SDK2.DebuggerModel.Events.DebuggerPaused, listener);
+          resolve({
+            result: {
+              status: "Execution resumed but did not pause again. There is nothing to step into or the execution finished."
+            }
+          });
+        }, timeoutMs);
+      }
       triggerAction();
     });
   }
   async #getExecutionLocation() {
-    const targetManager = SDK.TargetManager.TargetManager.instance();
-    const debuggerModel = targetManager.models(SDK.DebuggerModel.DebuggerModel).find((m) => m.isPaused());
+    const targetManager = SDK2.TargetManager.TargetManager.instance();
+    const debuggerModel = targetManager.models(SDK2.DebuggerModel.DebuggerModel).find((m) => m.isPaused());
     if (!debuggerModel) {
       return { error: "Execution is not paused. I cannot determine execution location in STATIC MODE." };
     }
@@ -1469,6 +1816,24 @@ ${query}`;
   get options() {
     return { temperature: 0, modelId: void 0 };
   }
+  async *run(initialQuery, options, multimodalInput) {
+    try {
+      yield* super.run(initialQuery, options, multimodalInput);
+    } finally {
+      const breakpointManager = Breakpoints.BreakpointManager.BreakpointManager.instance();
+      const allBreakpoints = breakpointManager.allBreakpointLocations();
+      for (const bp of allBreakpoints) {
+        await bp.breakpoint.remove(false);
+      }
+      const targetManager = SDK2.TargetManager.TargetManager.instance();
+      const debuggerModels = targetManager.models(SDK2.DebuggerModel.DebuggerModel);
+      for (const model of debuggerModels) {
+        if (model.isPaused()) {
+          model.resume();
+        }
+      }
+    }
+  }
 };
 
 // gen/front_end/models/ai_assistance/agents/ContextSelectionAgent.js
@@ -1479,9 +1844,8 @@ __export(ContextSelectionAgent_exports, {
 import * as Common5 from "./../../core/common/common.js";
 import * as Host7 from "./../../core/host/host.js";
 import * as i18n9 from "./../../core/i18n/i18n.js";
-import * as Platform6 from "./../../core/platform/platform.js";
 import * as Root6 from "./../../core/root/root.js";
-import * as SDK7 from "./../../core/sdk/sdk.js";
+import * as SDK8 from "./../../core/sdk/sdk.js";
 import * as Logs2 from "./../logs/logs.js";
 import * as NetworkTimeCalculator3 from "./../network_time_calculator/network_time_calculator.js";
 import * as Workspace3 from "./../workspace/workspace.js";
@@ -2322,7 +2686,7 @@ import * as Host5 from "./../../core/host/host.js";
 import * as i18n5 from "./../../core/i18n/i18n.js";
 import * as Platform2 from "./../../core/platform/platform.js";
 import * as Root4 from "./../../core/root/root.js";
-import * as SDK2 from "./../../core/sdk/sdk.js";
+import * as SDK3 from "./../../core/sdk/sdk.js";
 import * as Tracing from "./../../services/tracing/tracing.js";
 import * as Annotations3 from "./../annotations/annotations.js";
 import * as SourceMapScopes2 from "./../source_map_scopes/source_map_scopes.js";
@@ -5139,7 +5503,7 @@ ${text}`, metadata: { source: "devtools", score: ScorePriority.REQUIRED } });
     this.addFact(this.#callFrameDataDescriptionFact);
     this.addFact(this.#networkDataDescriptionFact);
     if (!this.#traceFacts.length) {
-      const target = SDK2.TargetManager.TargetManager.instance().primaryPageTarget();
+      const target = SDK3.TargetManager.TargetManager.instance().primaryPageTarget();
       if (!target) {
         throw new Error("missing target");
       }
@@ -5491,7 +5855,7 @@ ${result}`,
         if (!this.#formatter) {
           throw new Error("missing formatter");
         }
-        const target = SDK2.TargetManager.TargetManager.instance().primaryPageTarget();
+        const target = SDK3.TargetManager.TargetManager.instance().primaryPageTarget();
         if (!target) {
           throw new Error("missing target");
         }
@@ -5534,7 +5898,7 @@ ${result}`,
         if (script?.content !== void 0) {
           content = script.content;
         } else if (isFresh || isTraceApp) {
-          const resource = SDK2.ResourceTreeModel.ResourceTreeModel.resourceForURL(url);
+          const resource = SDK3.ResourceTreeModel.ResourceTreeModel.resourceForURL(url);
           if (!resource) {
             return { error: "Resource not found" };
           }
@@ -5576,7 +5940,7 @@ ${result}`,
           if (!event) {
             return { error: "Invalid eventKey" };
           }
-          const revealable = new SDK2.TraceObject.RevealableEvent(event);
+          const revealable = new SDK3.TraceObject.RevealableEvent(event);
           await Common2.Revealer.reveal(revealable);
           return { result: { success: true } };
         }
@@ -5624,7 +5988,7 @@ import * as Host6 from "./../../core/host/host.js";
 import * as i18n7 from "./../../core/i18n/i18n.js";
 import * as Platform5 from "./../../core/platform/platform.js";
 import * as Root5 from "./../../core/root/root.js";
-import * as SDK6 from "./../../core/sdk/sdk.js";
+import * as SDK7 from "./../../core/sdk/sdk.js";
 import * as Annotations4 from "./../annotations/annotations.js";
 
 // gen/front_end/models/ai_assistance/ChangeManager.js
@@ -5634,7 +5998,7 @@ __export(ChangeManager_exports, {
 });
 import * as Common3 from "./../../core/common/common.js";
 import * as Platform3 from "./../../core/platform/platform.js";
-import * as SDK3 from "./../../core/sdk/sdk.js";
+import * as SDK4 from "./../../core/sdk/sdk.js";
 function formatStyles(styles, indent = 2) {
   const lines = Object.entries(styles).map(([key, value]) => `${" ".repeat(indent)}${key}: ${value};`);
   return lines.join("\n");
@@ -5645,7 +6009,7 @@ var ChangeManager = class {
   #stylesheetChanges = /* @__PURE__ */ new Map();
   #backupStylesheetChanges = /* @__PURE__ */ new Map();
   constructor() {
-    SDK3.TargetManager.TargetManager.instance().addModelListener(SDK3.ResourceTreeModel.ResourceTreeModel, SDK3.ResourceTreeModel.Events.PrimaryPageChanged, this.clear, this);
+    SDK4.TargetManager.TargetManager.instance().addModelListener(SDK4.ResourceTreeModel.ResourceTreeModel, SDK4.ResourceTreeModel.Events.PrimaryPageChanged, this.clear, this);
   }
   async stashChanges() {
     for (const [cssModel, stylesheetMap] of this.#cssModelToStylesheetId.entries()) {
@@ -5730,7 +6094,7 @@ ${formatStyles(change.styles)}
       if (!frameToStylesheet) {
         frameToStylesheet = /* @__PURE__ */ new Map();
         this.#cssModelToStylesheetId.set(cssModel, frameToStylesheet);
-        cssModel.addEventListener(SDK3.CSSModel.Events.ModelDisposed, this.#onCssModelDisposed, this);
+        cssModel.addEventListener(SDK4.CSSModel.Events.ModelDisposed, this.#onCssModelDisposed, this);
       }
       let stylesheetId = frameToStylesheet.get(frameId);
       if (!stylesheetId) {
@@ -5751,7 +6115,7 @@ ${formatStyles(change.styles)}
   async #onCssModelDisposed(event) {
     return await this.#stylesheetMutex.run(async () => {
       const cssModel = event.data;
-      cssModel.removeEventListener(SDK3.CSSModel.Events.ModelDisposed, this.#onCssModelDisposed, this);
+      cssModel.removeEventListener(SDK4.CSSModel.Events.ModelDisposed, this.#onCssModelDisposed, this);
       const stylesheetIds = Array.from(this.#cssModelToStylesheetId.get(cssModel)?.values() ?? []);
       const results = await Promise.allSettled(stylesheetIds.map(async (id) => {
         this.#stylesheetChanges.delete(id);
@@ -5777,7 +6141,7 @@ __export(EvaluateAction_exports, {
   stringifyObjectOnThePage: () => stringifyObjectOnThePage,
   stringifyRemoteObject: () => stringifyRemoteObject
 });
-import * as SDK4 from "./../../core/sdk/sdk.js";
+import * as SDK5 from "./../../core/sdk/sdk.js";
 
 // gen/front_end/models/ai_assistance/injected.js
 var injected_exports = {};
@@ -5996,7 +6360,7 @@ var EvaluateAction = class _EvaluateAction {
       }
       if (response.exceptionDetails) {
         const exceptionDescription = response.exceptionDetails.exception?.description;
-        if (SDK4.RuntimeModel.RuntimeModel.isSideEffectFailure(response)) {
+        if (SDK5.RuntimeModel.RuntimeModel.isSideEffectFailure(response)) {
           throw new SideEffectError(exceptionDescription);
         }
         return formatError(exceptionDescription ?? "JS exception");
@@ -6063,7 +6427,7 @@ __export(ExtensionScope_exports, {
 });
 import * as Common4 from "./../../core/common/common.js";
 import * as Platform4 from "./../../core/platform/platform.js";
-import * as SDK5 from "./../../core/sdk/sdk.js";
+import * as SDK6 from "./../../core/sdk/sdk.js";
 import * as Bindings3 from "./../bindings/bindings.js";
 var _a2;
 var ExtensionScope = class {
@@ -6093,14 +6457,14 @@ var ExtensionScope = class {
     if (this.#frameId) {
       return this.#frameId;
     }
-    const resourceTreeModel = this.target.model(SDK5.ResourceTreeModel.ResourceTreeModel);
+    const resourceTreeModel = this.target.model(SDK6.ResourceTreeModel.ResourceTreeModel);
     if (!resourceTreeModel?.mainFrame) {
       throw new Error("Main frame is not found for executing code");
     }
     return resourceTreeModel.mainFrame.id;
   }
   async install() {
-    const runtimeModel = this.target.model(SDK5.RuntimeModel.RuntimeModel);
+    const runtimeModel = this.target.model(SDK6.RuntimeModel.RuntimeModel);
     const pageAgent = this.target.pageAgent();
     const { executionContextId } = await pageAgent.invoke_createIsolatedWorld({ frameId: this.frameId, worldName: FREESTYLER_WORLD_NAME });
     const isolatedWorldContext = runtimeModel?.executionContext(executionContextId);
@@ -6108,7 +6472,7 @@ var ExtensionScope = class {
       throw new Error("Execution context is not found for executing code");
     }
     const handler = this.#bindingCalled.bind(this, isolatedWorldContext);
-    runtimeModel?.addEventListener(SDK5.RuntimeModel.Events.BindingCalled, handler);
+    runtimeModel?.addEventListener(SDK6.RuntimeModel.Events.BindingCalled, handler);
     this.#listeners.push(handler);
     await this.target.runtimeAgent().invoke_addBinding({
       name: FREESTYLER_BINDING_NAME,
@@ -6118,9 +6482,9 @@ var ExtensionScope = class {
     await this.#simpleEval(isolatedWorldContext, injectedFunctions);
   }
   async uninstall() {
-    const runtimeModel = this.target.model(SDK5.RuntimeModel.RuntimeModel);
+    const runtimeModel = this.target.model(SDK6.RuntimeModel.RuntimeModel);
     for (const handler of this.#listeners) {
-      runtimeModel?.removeEventListener(SDK5.RuntimeModel.Events.BindingCalled, handler);
+      runtimeModel?.removeEventListener(SDK6.RuntimeModel.Events.BindingCalled, handler);
     }
     this.#listeners = [];
     await this.target.runtimeAgent().invoke_removeBinding({
@@ -6165,7 +6529,7 @@ var ExtensionScope = class {
       if (rule?.origin === "user-agent") {
         break;
       }
-      if (rule instanceof SDK5.CSSRule.CSSStyleRule) {
+      if (rule instanceof SDK6.CSSRule.CSSStyleRule) {
         if (rule.nestingSelectors?.at(0)?.includes(AI_ASSISTANCE_CSS_CLASS_NAME) || rule.selectors.every((selector) => selector.text.includes(AI_ASSISTANCE_CSS_CLASS_NAME))) {
           continue;
         }
@@ -6225,7 +6589,7 @@ var ExtensionScope = class {
     }
     const lineNumber = styleSheetHeader.lineNumberInSource(range.startLine);
     const columnNumber = styleSheetHeader.columnNumberInSource(range.startLine, range.startColumn);
-    const location = new SDK5.CSSModel.CSSLocation(styleSheetHeader, lineNumber, columnNumber);
+    const location = new SDK6.CSSModel.CSSLocation(styleSheetHeader, lineNumber, columnNumber);
     const uiLocation = Bindings3.CSSWorkspaceBinding.CSSWorkspaceBinding.instance().rawLocationToUILocation(location);
     return uiLocation?.linkText(
       /* skipTrim= */
@@ -6238,11 +6602,11 @@ var ExtensionScope = class {
     if (!remoteObject.objectId) {
       throw new Error("DOMModel is not found");
     }
-    const cssModel = this.target.model(SDK5.CSSModel.CSSModel);
+    const cssModel = this.target.model(SDK6.CSSModel.CSSModel);
     if (!cssModel) {
       throw new Error("CSSModel is not found");
     }
-    const domModel = this.target.model(SDK5.DOMModel.DOMModel);
+    const domModel = this.target.model(SDK6.DOMModel.DOMModel);
     if (!domModel) {
       throw new Error("DOMModel is not found");
     }
@@ -6280,7 +6644,7 @@ var ExtensionScope = class {
       return;
     }
     await this.#bindingMutex.run(async () => {
-      const cssModel = this.target.model(SDK5.CSSModel.CSSModel);
+      const cssModel = this.target.model(SDK6.CSSModel.CSSModel);
       if (!cssModel) {
         throw new Error("CSSModel is not found");
       }
@@ -6420,12 +6784,12 @@ async function executeJsCode(functionDeclaration, { throwOnSideEffect, contextNo
   if (!target) {
     throw new Error("Target is not found for executing code");
   }
-  const resourceTreeModel = target.model(SDK6.ResourceTreeModel.ResourceTreeModel);
+  const resourceTreeModel = target.model(SDK7.ResourceTreeModel.ResourceTreeModel);
   const frameId = contextNode.frameId() ?? resourceTreeModel?.mainFrame?.id;
   if (!frameId) {
     throw new Error("Main frame is not found for executing code");
   }
-  const runtimeModel = target.model(SDK6.RuntimeModel.RuntimeModel);
+  const runtimeModel = target.model(SDK7.RuntimeModel.RuntimeModel);
   const pageAgent = target.pageAgent();
   const { executionContextId } = await pageAgent.invoke_createIsolatedWorld({ frameId, worldName: FREESTYLER_WORLD_NAME });
   const executionContext = runtimeModel?.executionContext(executionContextId);
@@ -6827,7 +7191,7 @@ const data = {
       if (!selectedNode) {
         return { error: "Error: Could not find the currently selected element." };
       }
-      const node = new SDK6.DOMModel.DeferredDOMNode(selectedNode.domModel().target(), Number(uid));
+      const node = new SDK7.DOMModel.DeferredDOMNode(selectedNode.domModel().target(), Number(uid));
       const resolved = await node.resolvePromise();
       if (!resolved) {
         return { error: "Error: Could not find the element with uid=" + uid };
@@ -6876,7 +7240,7 @@ const data = {
       return { error: "Error: no selected node found." };
     }
     const target = selectedNode.domModel().target();
-    if (target.model(SDK6.DebuggerModel.DebuggerModel)?.selectedCallFrame()) {
+    if (target.model(SDK7.DebuggerModel.DebuggerModel)?.selectedCallFrame()) {
       return {
         error: "Error: Cannot evaluate JavaScript because the execution is paused on a breakpoint."
       };
@@ -6972,13 +7336,12 @@ You are a Web Development Assistant integrated into Chrome DevTools. Your tone i
 You aim to help developers of all levels, prioritizing teaching web concepts as the primary entry point for any solution.
 
 # Considerations
-* Determine what the question the domain of the question is - styling, network, sources, performance or other part of DevTools.
+* Determine what is the domain of the question - styling, network, sources, performance or other part of DevTools.
 * Proactively try to gather additional data. If a select specific data can be selected, select one.
 * Always try select single specific context before answering the question.
 * Avoid making assumptions without sufficient evidence, and always seek further clarification if needed.
 * When presenting solutions, clearly distinguish between the primary cause and contributing factors.
 * Please answer only if you are sure about the answer. Otherwise, explain why you're not able to answer.
-* When answering, always consider MULTIPLE possible solutions.
 * If you are unable to gather more information provide a comprehensive guide to how to fix the issue using Chrome DevTools and explain how and why.
 * You can suggest any panel or flow in Chrome DevTools that may help the user out
 
@@ -6987,11 +7350,15 @@ You aim to help developers of all levels, prioritizing teaching web concepts as 
 * Always specify the language for code blocks (e.g., \`\`\`css, \`\`\`javascript).
 * Keep text responses concise and scannable.
 
+* **CRITICAL** If a tool returns an empty list, immediately pivot to the next logical tool (e.g., from sources to network).
+* **CRITICAL** Always exhaust all possible way to find and select context from different domains.
 * **CRITICAL** NEVER write full Python programs - you should only write individual statements that invoke a single function from the provided library.
 * **CRITICAL** NEVER output text before a function call. Always do a function call first.
 * **CRITICAL** You are a debugging assistant in DevTools. NEVER provide answers to questions of unrelated topics such as legal advice, financial advice, personal opinions, medical advice, religion, race, politics, sexuality, gender, or any other non web-development topics. Answer "Sorry, I can't answer that. I'm best at questions about debugging web pages." to such questions.
+* **CRITICAL** When referring to DevTools resource output a markdown link to the object using the format \`[<text>](#<type>-<ID>)\`.
+* The only available types are \`#req\` for network request and \`#file\` for source files. Only use ID inside the link, never ask about user selecting by ID.
 `;
-var ContextSelectionAgent = class extends AiAgent {
+var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
   preamble = preamble5;
   clientFeature = Host7.AidaClient.ClientFeature.CHROME_FILE_AGENT;
   get userTier() {
@@ -7030,7 +7397,7 @@ var ContextSelectionAgent = class extends AiAgent {
       },
       handler: async () => {
         const requests = [];
-        const target = SDK7.TargetManager.TargetManager.instance().primaryPageTarget();
+        const target = SDK8.TargetManager.TargetManager.instance().primaryPageTarget();
         const inspectedURL = target?.inspectedURL();
         const mainSecurityOrigin = inspectedURL ? new Common5.ParsedURL.ParsedURL(inspectedURL).securityOrigin() : null;
         for (const request of Logs2.NetworkLog.NetworkLog.instance().requests()) {
@@ -7038,6 +7405,7 @@ var ContextSelectionAgent = class extends AiAgent {
             continue;
           }
           requests.push({
+            id: request.requestId(),
             url: request.url(),
             statusCode: request.statusCode,
             duration: i18n9.TimeUtilities.secondsToString(request.duration)
@@ -7059,11 +7427,11 @@ var ContextSelectionAgent = class extends AiAgent {
         type: 6,
         description: "",
         nullable: true,
-        required: ["url"],
+        required: ["id"],
         properties: {
-          url: {
+          id: {
             type: 1,
-            description: "The url of the requests",
+            description: "The id of the network request",
             nullable: false
           }
         }
@@ -7071,12 +7439,12 @@ var ContextSelectionAgent = class extends AiAgent {
       displayInfoFromArgs: (args) => {
         return {
           title: lockedString5("Getting network request\u2026"),
-          action: `selectNetworkRequest(${args.url})`
+          action: `selectNetworkRequest(${args.id})`
         };
       },
-      handler: async ({ url }) => {
+      handler: async ({ id }) => {
         const request = Logs2.NetworkLog.NetworkLog.instance().requests().find((req) => {
-          return req.url() === Platform6.DevToolsPath.urlString`${url}` || req.url() === Platform6.DevToolsPath.urlString`${url.slice(0, -1)}` || req.url() === Platform6.DevToolsPath.urlString`${url}/`;
+          return req.requestId() === id;
         });
         if (request) {
           const calculator = this.#networkTimeCalculator ?? new NetworkTimeCalculator3.NetworkTransferTimeCalculator();
@@ -7106,26 +7474,29 @@ var ContextSelectionAgent = class extends AiAgent {
         };
       },
       handler: async () => {
-        const files = /* @__PURE__ */ new Set();
-        for (const file of this.#getUISourceCodes()) {
-          files.add(file.fullDisplayName());
+        const files = [];
+        for (const file of _ContextSelectionAgent.getUISourceCodes()) {
+          files.push({
+            file: file.fullDisplayName(),
+            id: _ContextSelectionAgent.uiSourceCodeId.get(file)
+          });
         }
         return {
-          result: [...files]
+          result: files
         };
       }
     });
     this.declareFunction("selectSourceFile", {
-      description: `Selects a source file. Use this when asked about files on the page. Use listSourceFiles if you don't know the full path name.`,
+      description: `Selects a source file. Use this when asked about files on the page. Use listSourceFiles to find the file ID.`,
       parameters: {
         type: 6,
         description: "",
         nullable: true,
-        required: ["name"],
+        required: ["id"],
         properties: {
-          name: {
-            type: 1,
-            description: "The full path name of the file you want to select.",
+          id: {
+            type: 3,
+            description: "The id (URL) of the file you want to select.",
             nullable: false
           }
         }
@@ -7133,17 +7504,16 @@ var ContextSelectionAgent = class extends AiAgent {
       displayInfoFromArgs: (args) => {
         return {
           title: lockedString5("Getting source file\u2026"),
-          action: `selectSourceFile(${args.name})`
+          action: `selectSourceFile(${args.id})`
         };
       },
       handler: async (params) => {
-        const files = this.#getUISourceCodes().filter((file2) => file2.fullDisplayName() === params.name);
-        if (files.length === 0) {
+        const file = _ContextSelectionAgent.getUISourceCodes().find((file2) => _ContextSelectionAgent.uiSourceCodeId.get(file2) === params.id);
+        if (!file) {
           return {
             error: "Unable to find file."
           };
         }
-        const file = files.find((f) => f.contentType().isFromSourceMap()) ?? files[0];
         return {
           context: new FileContext(file),
           description: "User selected a source file"
@@ -7210,24 +7580,46 @@ var ContextSelectionAgent = class extends AiAgent {
       }
     });
   }
-  #getUISourceCodes = () => {
+  async *handleContextDetails() {
+  }
+  async enhanceQuery(query) {
+    return query;
+  }
+  static lastSourceId = 0;
+  static uiSourceCodeId = /* @__PURE__ */ new WeakMap();
+  /**
+   * This is a heuristic algorithm that gets all the source files coming from the
+   * network and assigns unique ids to be linked from the LLM Markdown response.
+   * Steps we do:
+   * 1. Get all project that are coming from the Network. This scopes down
+   * sources exposed to the LLM
+   * 2. Remove all ignore listed source code. We further reduce thing that the
+   * user most likely does not have interest in, from global setting.
+   * 3.1. Source files don't have an uniqueId so we use the URL to differentiate
+   * them.
+   * 3.2. In cases where we encounter a duplicated URLs we prefer the latest one
+   * coming from SourceMaps (usually only one) as that has simple code and
+   * usually is what the user authored.
+   */
+  static getUISourceCodes() {
     const workspace = Workspace3.Workspace.WorkspaceImpl.instance();
     const projects = workspace.projects().filter((project) => project.type() === Workspace3.Workspace.projectTypes.Network);
-    const uiSourceCodes = [];
+    const uiSourceCodes = /* @__PURE__ */ new Map();
     for (const project of projects) {
       for (const uiSourceCode of project.uiSourceCodes()) {
         if (uiSourceCode.isIgnoreListed()) {
           continue;
         }
-        uiSourceCodes.push(uiSourceCode);
+        const url = uiSourceCode.url();
+        if (!uiSourceCodes.get(url) || uiSourceCode.contentType().isFromSourceMap()) {
+          uiSourceCodes.set(url, uiSourceCode);
+          if (!_ContextSelectionAgent.uiSourceCodeId.has(uiSourceCode)) {
+            _ContextSelectionAgent.uiSourceCodeId.set(uiSourceCode, ++_ContextSelectionAgent.lastSourceId);
+          }
+        }
       }
     }
-    return uiSourceCodes;
-  };
-  async *handleContextDetails() {
-  }
-  async enhanceQuery(query) {
-    return query;
+    return [...uiSourceCodes.values()];
   }
 };
 
@@ -7636,7 +8028,7 @@ __export(AiConversation_exports, {
 });
 import * as Host10 from "./../../core/host/host.js";
 import * as Root9 from "./../../core/root/root.js";
-import * as SDK8 from "./../../core/sdk/sdk.js";
+import * as SDK9 from "./../../core/sdk/sdk.js";
 import * as Trace7 from "./../trace/trace.js";
 import * as Greendev2 from "./../greendev/greendev.js";
 import * as NetworkTimeCalculator4 from "./../network_time_calculator/network_time_calculator.js";
@@ -8040,7 +8432,7 @@ ${item.text.trim()}`);
         this.#agent.addFact(cached);
         continue;
       }
-      if (context instanceof SDK8.DOMModel.DOMNode) {
+      if (context instanceof SDK9.DOMModel.DOMNode) {
         const desc = await StylingAgent.describeElement(context);
         const fact = {
           text: `Relevant HTML element:
@@ -8052,7 +8444,7 @@ ${desc}`,
         };
         this.#factsCache.set(context, fact);
         this.#agent.addFact(fact);
-      } else if (context instanceof SDK8.NetworkRequest.NetworkRequest) {
+      } else if (context instanceof SDK9.NetworkRequest.NetworkRequest) {
         const calculator = new NetworkTimeCalculator4.NetworkTransferTimeCalculator();
         calculator.updateBoundaries(context);
         const formatter = new NetworkRequestFormatter(context, calculator);
@@ -8492,9 +8884,9 @@ __export(ConversationHandler_exports, {
 import * as Common9 from "./../../core/common/common.js";
 import * as Host13 from "./../../core/host/host.js";
 import * as i18n15 from "./../../core/i18n/i18n.js";
-import * as Platform7 from "./../../core/platform/platform.js";
+import * as Platform6 from "./../../core/platform/platform.js";
 import * as Root12 from "./../../core/root/root.js";
-import * as SDK9 from "./../../core/sdk/sdk.js";
+import * as SDK10 from "./../../core/sdk/sdk.js";
 import * as NetworkTimeCalculator5 from "./../network_time_calculator/network_time_calculator.js";
 var UIStringsNotTranslate4 = {
   /**
@@ -8512,7 +8904,7 @@ async function inspectElementBySelector(selector) {
     return null;
   }
   const showUAShadowDOM = Common9.Settings.Settings.instance().moduleSetting("show-ua-shadow-dom").get();
-  const domModels = SDK9.TargetManager.TargetManager.instance().models(SDK9.DOMModel.DOMModel, { scoped: true });
+  const domModels = SDK10.TargetManager.TargetManager.instance().models(SDK10.DOMModel.DOMModel, { scoped: true });
   const performSearchPromises = domModels.map((domModel) => domModel.performSearch(whitespaceTrimmedQuery, showUAShadowDOM));
   const resultCounts = await Promise.all(performSearchPromises);
   const index = resultCounts.findIndex((value) => value > 0);
@@ -8522,13 +8914,13 @@ async function inspectElementBySelector(selector) {
   return null;
 }
 async function inspectNetworkRequestByUrl(selector) {
-  const networkManagers = SDK9.TargetManager.TargetManager.instance().models(SDK9.NetworkManager.NetworkManager, { scoped: true });
+  const networkManagers = SDK10.TargetManager.TargetManager.instance().models(SDK10.NetworkManager.NetworkManager, { scoped: true });
   const results = networkManagers.map((networkManager) => {
-    let request2 = networkManager.requestForURL(Platform7.DevToolsPath.urlString`${selector}`);
+    let request2 = networkManager.requestForURL(Platform6.DevToolsPath.urlString`${selector}`);
     if (!request2 && selector.at(-1) === "/") {
-      request2 = networkManager.requestForURL(Platform7.DevToolsPath.urlString`${selector.slice(0, -1)}`);
+      request2 = networkManager.requestForURL(Platform6.DevToolsPath.urlString`${selector.slice(0, -1)}`);
     } else if (!request2 && selector.at(-1) !== "/") {
-      request2 = networkManager.requestForURL(Platform7.DevToolsPath.urlString`${selector}/`);
+      request2 = networkManager.requestForURL(Platform6.DevToolsPath.urlString`${selector}/`);
     }
     return request2;
   }).filter((req) => !!req);

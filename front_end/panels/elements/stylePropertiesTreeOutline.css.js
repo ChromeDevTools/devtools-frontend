@@ -85,6 +85,12 @@ export default `/*
     padding-top: 4px;
     padding-bottom: 3px;
   }
+
+  &.ghost-row {
+    opacity: 50%;
+    font-style: italic;
+    pointer-events: none;
+  }
 }
 
 .tree-outline > li {

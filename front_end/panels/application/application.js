@@ -10064,10 +10064,22 @@ var StorageItemsToolbar = class extends Common14.ObjectWrapper.eventMixin(UI17.W
   #deleteAllButtonIconName = "clear";
   #deleteAllButtonTitle = i18nString23(UIStrings23.clearAll);
   #mainToolbarItems = [];
+  #onRefreshCallback;
+  #onDeleteAllCallback;
+  #onDeleteSelectedCallback;
   constructor(element, view = DEFAULT_VIEW5) {
     super(element);
     this.#view = view;
     this.filterRegex = null;
+  }
+  set onRefreshCallback(callback) {
+    this.#onRefreshCallback = callback;
+  }
+  set onDeleteAllCallback(callback) {
+    this.#onDeleteAllCallback = callback;
+  }
+  set onDeleteSelectedCallback(callback) {
+    this.#onDeleteSelectedCallback = callback;
   }
   set metadataView(view) {
     this.#metadataView = view;
@@ -10089,20 +10101,27 @@ var StorageItemsToolbar = class extends Common14.ObjectWrapper.eventMixin(UI17.W
       metadataView: this.metadataView,
       onFilterChanged: this.filterChanged.bind(this),
       onRefresh: () => {
+        this.#onRefreshCallback?.();
         this.dispatchEventToListeners(
           "Refresh"
           /* StorageItemsToolbar.Events.REFRESH */
         );
         UI17.ARIAUtils.LiveAnnouncer.alert(i18nString23(UIStrings23.refreshedStatus));
       },
-      onDeleteAll: () => this.dispatchEventToListeners(
-        "DeleteAll"
-        /* StorageItemsToolbar.Events.DELETE_ALL */
-      ),
-      onDeleteSelected: () => this.dispatchEventToListeners(
-        "DeleteSelected"
-        /* StorageItemsToolbar.Events.DELETE_SELECTED */
-      )
+      onDeleteAll: () => {
+        this.#onDeleteAllCallback?.();
+        this.dispatchEventToListeners(
+          "DeleteAll"
+          /* StorageItemsToolbar.Events.DELETE_ALL */
+        );
+      },
+      onDeleteSelected: () => {
+        this.#onDeleteSelectedCallback?.();
+        this.dispatchEventToListeners(
+          "DeleteSelected"
+          /* StorageItemsToolbar.Events.DELETE_SELECTED */
+        );
+      }
     };
     this.#view(viewInput, {}, this.contentElement);
   }
@@ -10123,6 +10142,7 @@ var StorageItemsToolbar = class extends Common14.ObjectWrapper.eventMixin(UI17.W
   }
   filterChanged({ detail: text }) {
     this.filterRegex = text ? new RegExp(Platform6.StringUtilities.escapeForRegExp(text), "i") : null;
+    this.#onRefreshCallback?.();
     this.dispatchEventToListeners(
       "Refresh"
       /* StorageItemsToolbar.Events.REFRESH */
@@ -13421,14 +13441,18 @@ var WorkerTreeElement = class extends ApplicationPanelTreeElement {
 // gen/front_end/panels/application/CookieItemsView.js
 var CookieItemsView_exports = {};
 __export(CookieItemsView_exports, {
-  CookieItemsView: () => CookieItemsView
+  CookieItemsView: () => CookieItemsView,
+  DEFAULT_COOKIE_PREVIEW_WIDGET_VIEW: () => DEFAULT_COOKIE_PREVIEW_WIDGET_VIEW,
+  DEFAULT_VIEW: () => DEFAULT_VIEW6
 });
 import * as Common18 from "./../../core/common/common.js";
 import * as i18n59 from "./../../core/i18n/i18n.js";
 import * as SDK25 from "./../../core/sdk/sdk.js";
+import * as Geometry2 from "./../../models/geometry/geometry.js";
 import * as IssuesManager2 from "./../../models/issues_manager/issues_manager.js";
 import * as CookieTable from "./../../ui/legacy/components/cookie_table/cookie_table.js";
 import * as UI23 from "./../../ui/legacy/legacy.js";
+import { html as html9, render as render8 } from "./../../ui/lit/lit.js";
 import * as VisualLogging16 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/application/cookieItemsView.css.js
@@ -13438,36 +13462,38 @@ var cookieItemsView_css_default = `/*
  * found in the LICENSE file.
  */
 
-.cookie-preview-widget {
-  padding: 2px 6px;
-}
+@scope to (devtools-widget > *) {
+  .cookie-preview-widget {
+    padding: 2px 6px;
+  }
 
-.cookie-preview-widget-header {
-  font-weight: bold;
-  user-select: none;
-  white-space: nowrap;
-  margin-bottom: 4px;
-  flex: 0 0 18px;
-  display: flex;
-  align-items: center;
-}
+  .cookie-preview-widget-header {
+    font-weight: bold;
+    user-select: none;
+    white-space: nowrap;
+    margin-bottom: 4px;
+    flex: 0 0 18px;
+    display: flex;
+    align-items: center;
+  }
 
-.cookie-preview-widget-header-label {
-  line-height: 18px;
-  flex-shrink: 0;
-}
+  .cookie-preview-widget-header-label {
+    line-height: 18px;
+    flex-shrink: 0;
+  }
 
-.cookie-preview-widget-cookie-value {
-  user-select: text;
-  word-break: break-all;
-  flex: 1;
-  overflow: auto;
-}
+  .cookie-preview-widget-cookie-value {
+    user-select: text;
+    word-break: break-all;
+    flex: 1;
+    overflow: auto;
+  }
 
-.cookie-preview-widget-toggle {
-  margin-left: 12px;
-  font-weight: normal;
-  flex-shrink: 1;
+  .cookie-preview-widget-toggle {
+    margin-left: 12px;
+    font-weight: normal;
+    flex-shrink: 1;
+  }
 }
 
 /*# sourceURL=${import.meta.resolve("./cookieItemsView.css")} */`;
@@ -13510,63 +13536,13 @@ var UIStrings30 = {
 };
 var str_30 = i18n59.i18n.registerUIStrings("panels/application/CookieItemsView.ts", UIStrings30);
 var i18nString30 = i18n59.i18n.getLocalizedString.bind(void 0, str_30);
-var CookiePreviewWidget = class extends UI23.Widget.VBox {
-  cookie;
-  showDecodedSetting;
-  toggle;
-  value;
-  constructor() {
-    super({ jslog: `${VisualLogging16.section("cookie-preview")}` });
-    this.setMinimumSize(230, 45);
-    this.cookie = null;
-    this.showDecodedSetting = Common18.Settings.Settings.instance().createSetting("cookie-view-show-decoded", false);
-    const header = document.createElement("div");
-    header.classList.add("cookie-preview-widget-header");
-    const span = document.createElement("span");
-    span.classList.add("cookie-preview-widget-header-label");
-    span.textContent = "Cookie Value";
-    header.appendChild(span);
-    this.contentElement.appendChild(header);
-    const toggle3 = UI23.UIUtils.CheckboxLabel.create(i18nString30(UIStrings30.showUrlDecoded), this.showDecodedSetting.get(), void 0, "show-url-decoded");
-    toggle3.title = i18nString30(UIStrings30.showUrlDecoded);
-    toggle3.classList.add("cookie-preview-widget-toggle");
-    toggle3.addEventListener("click", () => this.showDecoded(!this.showDecodedSetting.get()));
-    header.appendChild(toggle3);
-    this.toggle = toggle3;
-    const value = document.createElement("div");
-    value.classList.add("cookie-preview-widget-cookie-value");
-    value.textContent = "";
-    value.addEventListener("dblclick", this.handleDblClickOnCookieValue.bind(this));
-    this.value = value;
-    this.contentElement.classList.add("cookie-preview-widget");
-    this.contentElement.appendChild(value);
-  }
-  showDecoded(decoded) {
-    if (!this.cookie) {
-      return;
-    }
-    this.showDecodedSetting.set(decoded);
-    this.toggle.checked = decoded;
-    this.updatePreview();
-  }
-  updatePreview() {
-    if (this.cookie) {
-      this.value.textContent = this.showDecodedSetting.get() ? decodeURIComponent(this.cookie.value()) : this.cookie.value();
-    } else {
-      this.value.textContent = "";
-    }
-  }
-  setCookie(cookie) {
-    this.cookie = cookie;
-    this.updatePreview();
-  }
-  /**
-   * Select all text even if there a spaces in it
-   */
-  handleDblClickOnCookieValue(event) {
+var { Size: Size2 } = Geometry2;
+var DEFAULT_COOKIE_PREVIEW_WIDGET_VIEW = (input, output, target) => {
+  const cookieValue = input.cookie ? input.showDecoded ? decodeURIComponent(input.cookie.value()) : input.cookie.value() : "";
+  function handleDblClickOnCookieValue(event) {
     event.preventDefault();
     const range = document.createRange();
-    range.selectNode(this.value);
+    range.selectNode(event.currentTarget);
     const selection = window.getSelection();
     if (!selection) {
       return;
@@ -13574,67 +13550,128 @@ var CookiePreviewWidget = class extends UI23.Widget.VBox {
     selection.removeAllRanges();
     selection.addRange(range);
   }
+  render8(
+    html9`<style>${cookieItemsView_css_default}</style>
+    <div class="cookie-preview-widget">
+      <div class="cookie-preview-widget-header">
+        <span class="cookie-preview-widget-header-label">Cookie Value</span>
+        <devtools-checkbox
+          .checked=${input.showDecoded}
+          @change=${(e) => input.onShowDecodedChanged(e.target.checked)}
+          title=${i18nString30(UIStrings30.showUrlDecoded)}
+          jslog=${VisualLogging16.toggle("show-url-decoded").track({ click: true })}>
+          ${i18nString30(UIStrings30.showUrlDecoded)}
+        </devtools-checkbox>
+      </div>
+      <div class="cookie-preview-widget-cookie-value"
+          @dblclick=${handleDblClickOnCookieValue}>
+        ${cookieValue}
+      </div>
+    </div>
+  `,
+    // clang-format on
+    target
+  );
+};
+var CookiePreviewWidget = class extends UI23.Widget.VBox {
+  view;
+  #cookie;
+  showDecodedSetting;
+  constructor(element, view = DEFAULT_COOKIE_PREVIEW_WIDGET_VIEW) {
+    super(element, { jslog: `${VisualLogging16.section("cookie-preview")}` });
+    this.view = view;
+    this.setMinimumSize(230, 45);
+    this.#cookie = null;
+    this.showDecodedSetting = Common18.Settings.Settings.instance().createSetting("cookie-view-show-decoded", false);
+    this.requestUpdate();
+  }
+  set cookie(cookie) {
+    this.#cookie = cookie;
+    this.requestUpdate();
+  }
+  performUpdate() {
+    const input = {
+      cookie: this.#cookie,
+      showDecoded: this.showDecodedSetting.get(),
+      onShowDecodedChanged: (showDecoded) => {
+        this.showDecodedSetting.set(showDecoded);
+        this.requestUpdate();
+      }
+    };
+    this.view(input, void 0, this.contentElement);
+  }
+};
+var DEFAULT_VIEW6 = (input, output, target) => {
+  render8(
+    html9`<style>${cookieItemsView_css_default}</style>
+    <devtools-widget class="storage-view"
+      .widgetConfig=${UI23.Widget.widgetConfig(UI23.Widget.VBox, { minimumSize: new Size2(0, 50) })}>
+      <devtools-widget
+        .widgetConfig=${UI23.Widget.widgetConfig(StorageItemsToolbar, {
+      onDeleteSelectedCallback: input.onDeleteSelectedItems,
+      onDeleteAllCallback: input.onDeleteAllItems,
+      onRefreshCallback: input.onRefreshItems
+    })}
+        class=flex-none
+        ${UI23.Widget.widgetRef(StorageItemsToolbar, (toolbar6) => {
+      output.toolbar = toolbar6;
+    })}
+      ></devtools-widget>
+      <devtools-split-view sidebar-position="second" name="cookie-items-split-view-state">
+        <devtools-widget
+                  slot="main"
+                  .widgetConfig=${UI23.Widget.widgetConfig(UI23.Widget.VBox, { minimumSize: new Size2(0, 50) })}>
+          <devtools-widget slot="main" .widgetConfig=${UI23.Widget.widgetConfig(CookieTable.CookiesTable.CookiesTable, {
+      cookieDomain: input.cookieDomain,
+      cookiesData: input.cookiesData,
+      saveCallback: input.onSaveCookie,
+      refreshCallback: input.onRefresh,
+      selectedCallback: input.onSelect,
+      deleteCallback: input.onDelete,
+      editable: true
+    })}
+          ></devtools-widget>
+        </devtools-widget>
+        <devtools-widget
+          slot="sidebar"
+          .widgetConfig=${UI23.Widget.widgetConfig(UI23.Widget.VBox, { minimumSize: new Size2(0, 50) })}
+          jslog=${VisualLogging16.pane("preview").track({ resize: true })}>
+          ${input.selectedCookie ? html9`<devtools-widget .widgetConfig=${UI23.Widget.widgetConfig(CookiePreviewWidget, {
+      cookie: input.selectedCookie
+    })}></devtools-widget>` : html9`<devtools-widget .widgetConfig=${UI23.Widget.widgetConfig(UI23.EmptyWidget.EmptyWidget, {
+      header: i18nString30(UIStrings30.noCookieSelected),
+      text: i18nString30(UIStrings30.selectACookieToPreviewItsValue)
+    })}></devtools-widget>`}
+        </devtools-widget>
+      </devtools-split-view>
+    </devtools-widget>
+  `,
+    // clang-format on
+    target
+  );
 };
 var CookieItemsView = class extends UI23.Widget.VBox {
+  view;
   model;
   cookieDomain;
-  cookiesTable;
-  splitWidget;
-  previewPanel;
-  previewWidget;
-  emptyWidget;
   onlyIssuesFilterUI;
   allCookies;
   shownCookies;
   selectedCookie;
   #toolbar;
-  constructor(model, cookieDomain) {
+  constructor(model, cookieDomain, view = DEFAULT_VIEW6) {
     super({ jslog: `${VisualLogging16.pane("cookies-data")}` });
-    this.registerRequiredCSS(cookieItemsView_css_default);
-    this.element.classList.add("storage-view");
+    this.view = view;
     this.model = model;
     this.cookieDomain = cookieDomain;
-    this.#toolbar = new StorageItemsToolbar();
-    this.#toolbar.element.classList.add("flex-none");
-    this.#toolbar.show(this.element);
-    this.cookiesTable = new CookieTable.CookiesTable.CookiesTable(
-      void 0,
-      /* renderInline */
-      false,
-      this.saveCookie.bind(this),
-      this.refreshItems.bind(this),
-      this.handleCookieSelected.bind(this),
-      this.deleteCookie.bind(this)
-    );
-    this.cookiesTable.setMinimumSize(0, 50);
-    this.splitWidget = new UI23.SplitWidget.SplitWidget(
-      /* isVertical: */
-      false,
-      /* secondIsSidebar: */
-      true,
-      "cookie-items-split-view-state"
-    );
-    this.splitWidget.show(this.element);
-    this.previewPanel = new UI23.Widget.VBox();
-    this.previewPanel.element.setAttribute("jslog", `${VisualLogging16.pane("preview").track({ resize: true })}`);
-    const resizer = this.previewPanel.element.createChild("div", "preview-panel-resizer");
-    this.splitWidget.setMainWidget(this.cookiesTable);
-    this.splitWidget.setSidebarWidget(this.previewPanel);
-    this.splitWidget.installResizer(resizer);
-    this.previewWidget = new CookiePreviewWidget();
-    this.emptyWidget = new UI23.EmptyWidget.EmptyWidget(i18nString30(UIStrings30.noCookieSelected), i18nString30(UIStrings30.selectACookieToPreviewItsValue));
-    this.emptyWidget.show(this.previewPanel.contentElement);
     this.onlyIssuesFilterUI = new UI23.Toolbar.ToolbarCheckbox(i18nString30(UIStrings30.onlyShowCookiesWithAnIssue), i18nString30(UIStrings30.onlyShowCookiesWhichHaveAn), () => {
       this.updateWithCookies(this.allCookies);
     }, "only-show-cookies-with-issues");
-    this.#toolbar.appendToolbarItem(this.onlyIssuesFilterUI);
     this.allCookies = [];
     this.shownCookies = [];
     this.selectedCookie = null;
     this.setCookiesDomain(model, cookieDomain);
-    this.#toolbar.addEventListener("DeleteSelected", this.deleteSelectedItem, this);
-    this.#toolbar.addEventListener("DeleteAll", this.deleteAllItems, this);
-    this.#toolbar.addEventListener("Refresh", this.refreshItems, this);
+    this.requestUpdate();
   }
   setCookiesDomain(model, domain) {
     this.model.removeEventListener("CookieListUpdated", this.onCookieListUpdate, this);
@@ -13642,6 +13679,38 @@ var CookieItemsView = class extends UI23.Widget.VBox {
     this.cookieDomain = domain;
     this.refreshItems();
     this.model.addEventListener("CookieListUpdated", this.onCookieListUpdate, this);
+  }
+  performUpdate() {
+    const that = this;
+    const output = {
+      set toolbar(toolbar6) {
+        if (that.#toolbar === toolbar6) {
+          return;
+        }
+        that.#toolbar = toolbar6;
+        that.#toolbar.appendToolbarItem(that.onlyIssuesFilterUI);
+        that.updateWithCookies(that.allCookies);
+      }
+    };
+    const cookiesData = {
+      cookies: this.shownCookies,
+      cookieToBlockedReasons: this.model.getCookieToBlockedReasonsMap()
+    };
+    const parsedURL = Common18.ParsedURL.ParsedURL.fromString(this.cookieDomain);
+    const host = parsedURL ? parsedURL.host : "";
+    const input = {
+      cookieDomain: host,
+      cookiesData,
+      onSaveCookie: this.saveCookie.bind(this),
+      onRefresh: this.refreshItems.bind(this),
+      onSelect: this.handleCookieSelected.bind(this),
+      onDelete: this.deleteCookie.bind(this),
+      onDeleteSelectedItems: this.deleteSelectedItem.bind(this),
+      onDeleteAllItems: this.deleteAllItems.bind(this),
+      onRefreshItems: this.refreshItems.bind(this),
+      selectedCookie: this.selectedCookie
+    };
+    this.view(input, output, this.contentElement);
   }
   wasShown() {
     super.wasShown();
@@ -13652,19 +13721,14 @@ var CookieItemsView = class extends UI23.Widget.VBox {
       return;
     }
     this.selectedCookie = cookie;
-    if (!cookie) {
-      this.previewWidget.detach();
-      this.emptyWidget.show(this.previewPanel.contentElement);
-    } else {
-      this.emptyWidget.detach();
-      this.previewWidget.setCookie(cookie);
-      this.previewWidget.show(this.previewPanel.contentElement);
-    }
+    this.requestUpdate();
   }
-  handleCookieSelected() {
-    const cookie = this.cookiesTable.selectedCookie();
-    this.#toolbar.setCanDeleteSelected(Boolean(cookie));
-    this.showPreview(cookie);
+  handleCookieSelected(selectedCookie) {
+    if (!this.#toolbar) {
+      return;
+    }
+    this.#toolbar.setCanDeleteSelected(Boolean(selectedCookie));
+    this.showPreview(selectedCookie);
   }
   async saveCookie(newCookie, oldCookie) {
     if (oldCookie && newCookie.key() !== oldCookie.key()) {
@@ -13676,10 +13740,10 @@ var CookieItemsView = class extends UI23.Widget.VBox {
     void this.model.deleteCookie(cookie).then(callback);
   }
   updateWithCookies(allCookies) {
+    if (!this.#toolbar) {
+      return;
+    }
     this.allCookies = allCookies;
-    const parsedURL = Common18.ParsedURL.ParsedURL.fromString(this.cookieDomain);
-    const host = parsedURL ? parsedURL.host : "";
-    this.cookiesTable.setCookieDomain(host);
     this.shownCookies = this.filter(allCookies, (cookie) => `${cookie.name()} ${cookie.value()} ${cookie.domain()}`);
     if (this.#toolbar.hasFilter()) {
       this.#toolbar.setDeleteAllTitle(i18nString30(UIStrings30.clearFilteredCookies));
@@ -13688,14 +13752,11 @@ var CookieItemsView = class extends UI23.Widget.VBox {
       this.#toolbar.setDeleteAllTitle(i18nString30(UIStrings30.clearAllCookies));
       this.#toolbar.setDeleteAllGlyph("clear-list");
     }
-    this.cookiesTable.setCookies(this.shownCookies, this.model.getCookieToBlockedReasonsMap());
     UI23.ARIAUtils.LiveAnnouncer.alert(i18nString30(UIStrings30.numberOfCookiesShownInTableS, { PH1: this.shownCookies.length }));
     this.#toolbar.setCanFilter(true);
     this.#toolbar.setCanDeleteAll(this.shownCookies.length > 0);
-    this.#toolbar.setCanDeleteSelected(Boolean(this.cookiesTable.selectedCookie()));
-    if (!this.cookiesTable.selectedCookie()) {
-      this.showPreview(null);
-    }
+    this.#toolbar.setCanDeleteSelected(Boolean(this.selectedCookie));
+    this.requestUpdate();
   }
   filter(items, keyFunction) {
     const predicate = (object) => {
@@ -13707,7 +13768,7 @@ var CookieItemsView = class extends UI23.Widget.VBox {
       }
       return false;
     };
-    return items.filter((item2) => this.#toolbar.filterRegex?.test(keyFunction(item2)) ?? true).filter(predicate);
+    return items.filter((item2) => this.#toolbar?.filterRegex?.test(keyFunction(item2)) ?? true).filter(predicate);
   }
   /**
    * This will only delete the currently visible cookies.
@@ -13717,10 +13778,9 @@ var CookieItemsView = class extends UI23.Widget.VBox {
     void this.model.deleteCookies(this.shownCookies);
   }
   deleteSelectedItem() {
-    const selectedCookie = this.cookiesTable.selectedCookie();
-    if (selectedCookie) {
+    if (this.selectedCookie) {
       this.showPreview(null);
-      void this.model.deleteCookie(selectedCookie);
+      void this.model.deleteCookie(this.selectedCookie);
     }
   }
   onCookieListUpdate() {
@@ -13734,7 +13794,7 @@ var CookieItemsView = class extends UI23.Widget.VBox {
 // gen/front_end/panels/application/DeviceBoundSessionsView.js
 var DeviceBoundSessionsView_exports = {};
 __export(DeviceBoundSessionsView_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW6,
+  DEFAULT_VIEW: () => DEFAULT_VIEW7,
   DeviceBoundSessionsView: () => DeviceBoundSessionsView
 });
 import "./../../ui/components/report_view/report_view.js";
@@ -13742,7 +13802,7 @@ import "./../../ui/legacy/components/data_grid/data_grid.js";
 import * as i18n61 from "./../../core/i18n/i18n.js";
 import * as SourceFrame6 from "./../../ui/legacy/components/source_frame/source_frame.js";
 import * as UI24 from "./../../ui/legacy/legacy.js";
-import { Directives as Directives4, html as html9, nothing as nothing6, render as render8 } from "./../../ui/lit/lit.js";
+import { Directives as Directives4, html as html10, nothing as nothing6, render as render9 } from "./../../ui/lit/lit.js";
 import * as VisualLogging17 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/application/deviceBoundSessionsView.css.js
@@ -14303,19 +14363,19 @@ var UIStrings31 = {
 };
 var str_31 = i18n61.i18n.registerUIStrings("panels/application/DeviceBoundSessionsView.ts", UIStrings31);
 var i18nString31 = i18n61.i18n.getLocalizedString.bind(void 0, str_31);
-var DEFAULT_VIEW6 = (input, _output, target) => {
+var DEFAULT_VIEW7 = (input, _output, target) => {
   const { sessionAndEvents, preserveLogSetting, defaultTitle, defaultDescription, selectedEvent, onEventRowSelected } = input;
-  const toolbarHtml = preserveLogSetting ? html9`
+  const toolbarHtml = preserveLogSetting ? html10`
         <devtools-toolbar class="device-bound-sessions-toolbar">
         <devtools-checkbox title=${i18nString31(UIStrings31.doNotClearLogOnPageReload)} ${UI24.UIUtils.bindToSetting(preserveLogSetting)}>${i18nString31(UIStrings31.preserveLog)}</devtools-checkbox>
         </devtools-toolbar>
   ` : nothing6;
   if (!sessionAndEvents) {
     if (!defaultTitle || !defaultDescription) {
-      render8(nothing6, target);
+      render9(nothing6, target);
       return;
     }
-    render8(html9`
+    render9(html10`
       <style>${UI24.inspectorCommonStyles}</style>
       <style>${deviceBoundSessionsView_css_default}</style>
       ${toolbarHtml}
@@ -14329,7 +14389,7 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
   let sessionDetailsHtml;
   if (sessionAndEvents.session) {
     const { key, inclusionRules, cookieCravings } = sessionAndEvents.session;
-    sessionDetailsHtml = html9`
+    sessionDetailsHtml = html10`
         <devtools-report>
           <devtools-report-section-header role="heading" aria-level="2">${i18nString31(UIStrings31.sessionConfig)}</devtools-report-section-header>
           <devtools-report-key>${i18nString31(UIStrings31.keySite)}</devtools-report-key>
@@ -14350,7 +14410,7 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
           <devtools-report-key>${i18nString31(UIStrings31.includeSite)}</devtools-report-key>
           <devtools-report-value>${boolToString(inclusionRules.includeSite)}</devtools-report-value>
         </devtools-report>
-        ${inclusionRules.urlRules.length > 0 ? html9`
+        ${inclusionRules.urlRules.length > 0 ? html10`
           <div class="device-bound-session-grid-wrapper">
             <devtools-data-grid class="device-bound-session-url-rules-grid" striped inline name=${i18nString31(UIStrings31.scope)}>
               <table>
@@ -14362,7 +14422,7 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
                   </tr>
                 </thead>
                 <tbody>
-                  ${inclusionRules.urlRules.map((rule) => html9`
+                  ${inclusionRules.urlRules.map((rule) => html10`
                     <tr>
                       <td>${ruleTypeToString(rule.ruleType)}</td>
                       <td>${rule.hostPattern}</td>
@@ -14375,7 +14435,7 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
           </div>
         ` : nothing6}
         <devtools-report-section-header role="heading" aria-level="2">${i18nString31(UIStrings31.cookieCravings)}</devtools-report-section-header>
-        ${cookieCravings.length > 0 ? html9`
+        ${cookieCravings.length > 0 ? html10`
           <div class="device-bound-session-grid-wrapper">
             <devtools-data-grid class="device-bound-session-cookie-cravings-grid" striped inline name=${i18nString31(UIStrings31.cookieCravings)}>
               <table>
@@ -14390,7 +14450,7 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
                   </tr>
                 </thead>
                 <tbody>
-                  ${cookieCravings.map((craving) => html9`
+                  ${cookieCravings.map((craving) => html10`
                     <tr>
                       <td>${craving.name}</td>
                       <td>${craving.domain}</td>
@@ -14407,9 +14467,9 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
         ` : nothing6}`;
   }
   const events = [...sessionAndEvents.eventsById.values()];
-  const eventsHtml = html9`
+  const eventsHtml = html10`
       <devtools-report-section-header role="heading" aria-level="2">${i18nString31(UIStrings31.events)}</devtools-report-section-header>
-          ${events.length > 0 && onEventRowSelected ? html9`
+          ${events.length > 0 && onEventRowSelected ? html10`
             <div class="device-bound-session-grid-wrapper">
                 <devtools-data-grid class="device-bound-session-events-grid" striped inline name=${i18nString31(UIStrings31.events)} ${Directives4.ref((el) => {
     if (!el || !(el instanceof HTMLElement)) {
@@ -14428,7 +14488,7 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
                       <th id="details" sortable>${i18nString31(UIStrings31.result)}</th>
                     </tr>
                   </thead>
-                  <tbody>${events.map(({ event, timestamp }) => html9`
+                  <tbody>${events.map(({ event, timestamp }) => html10`
                       <tr @select=${() => onEventRowSelected(event)}>
                         <td>${getEventTypeString(event)}</td>
                         <td>${timestamp.toLocaleString()}</td>
@@ -14439,24 +14499,24 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
                 </table>
               </devtools-data-grid>
             </div>
-          ` : html9`<div class="device-bound-session-no-events-wrapper">${i18nString31(UIStrings31.noEvents)}</div>`}`;
+          ` : html10`<div class="device-bound-session-no-events-wrapper">${i18nString31(UIStrings31.noEvents)}</div>`}`;
   const failedRequestDetailsGetter = (failedRequest) => {
     if (!failedRequest) {
       return nothing6;
     }
-    return html9`${failedRequest.requestUrl && html9`
+    return html10`${failedRequest.requestUrl && html10`
         <devtools-report-key>${i18nString31(UIStrings31.failedRequestUrl)}</devtools-report-key>
         <devtools-report-value>${failedRequest.requestUrl}</devtools-report-value>
       `}
-      ${failedRequest.netError && html9`
+      ${failedRequest.netError && html10`
         <devtools-report-key>${i18nString31(UIStrings31.failedRequestNetError)}</devtools-report-key>
         <devtools-report-value>${failedRequest.netError}</devtools-report-value>
       `}
-      ${failedRequest.responseError !== void 0 ? html9`
+      ${failedRequest.responseError !== void 0 ? html10`
         <devtools-report-key>${i18nString31(UIStrings31.failedRequestResponseCode)}</devtools-report-key>
         <devtools-report-value>${failedRequest.responseError}</devtools-report-value>
       ` : nothing6}
-      ${failedRequest.responseErrorBody && html9`
+      ${failedRequest.responseErrorBody && html10`
         <devtools-report-key>${i18nString31(UIStrings31.failedRequestResponseBody)}</devtools-report-key>
         <devtools-report-value>
           <devtools-widget .widgetConfig=${UI24.Widget.widgetConfig(SourceFrame6.JSONView.SearchableJsonView, {
@@ -14465,41 +14525,41 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
         </devtools-report-value>
       `}`;
   };
-  const creationEventDetails = selectedEvent?.creationEventDetails && html9`
+  const creationEventDetails = selectedEvent?.creationEventDetails && html10`
           <devtools-report-key>${i18nString31(UIStrings31.fetchResult)}</devtools-report-key>
           <devtools-report-value>${fetchResultToString(selectedEvent.creationEventDetails.fetchResult)}</devtools-report-value>
-            ${selectedEvent.creationEventDetails.newSession && html9`
+            ${selectedEvent.creationEventDetails.newSession && html10`
               <devtools-report-key>${i18nString31(UIStrings31.updatedSessionConfig)}</devtools-report-key>
               <devtools-report-value>${i18nString31(UIStrings31.yes)}</devtools-report-value>
             `}
           ${failedRequestDetailsGetter(selectedEvent.creationEventDetails.failedRequest)}
       `;
-  const refreshEventDetails = selectedEvent?.refreshEventDetails && html9`
+  const refreshEventDetails = selectedEvent?.refreshEventDetails && html10`
           <devtools-report-key>${i18nString31(UIStrings31.refreshResult)}</devtools-report-key>
           <devtools-report-value>${refreshResultToString(selectedEvent.refreshEventDetails.refreshResult)}</devtools-report-value>
           <devtools-report-key>${i18nString31(UIStrings31.causedAnyRequestDeferrals)}</devtools-report-key>
           <devtools-report-value>${boolToString(!selectedEvent.refreshEventDetails.wasFullyProactiveRefresh)}</devtools-report-value>
-            ${selectedEvent.refreshEventDetails.fetchResult && html9`
+            ${selectedEvent.refreshEventDetails.fetchResult && html10`
               <devtools-report-key>${i18nString31(UIStrings31.fetchResult)}</devtools-report-key>
               <devtools-report-value>${fetchResultToString(selectedEvent.refreshEventDetails.fetchResult)}</devtools-report-value>
             `}
-            ${selectedEvent.refreshEventDetails.newSession && html9`
+            ${selectedEvent.refreshEventDetails.newSession && html10`
               <devtools-report-key>${i18nString31(UIStrings31.updatedSessionConfig)}</devtools-report-key>
               <devtools-report-value>${i18nString31(UIStrings31.yes)}</devtools-report-value>
             `}
           ${failedRequestDetailsGetter(selectedEvent.refreshEventDetails.failedRequest)}
       `;
-  const challengeEventDetails = selectedEvent?.challengeEventDetails && html9`
+  const challengeEventDetails = selectedEvent?.challengeEventDetails && html10`
           <devtools-report-key>${i18nString31(UIStrings31.challengeResult)}</devtools-report-key>
           <devtools-report-value>${challengeResultToString(selectedEvent.challengeEventDetails.challengeResult)}</devtools-report-value>
           <devtools-report-key>${i18nString31(UIStrings31.challenge)}</devtools-report-key>
           <devtools-report-value>${selectedEvent.challengeEventDetails.challenge}</devtools-report-value>
           `;
-  const terminationEventDetails = selectedEvent?.terminationEventDetails && html9`
+  const terminationEventDetails = selectedEvent?.terminationEventDetails && html10`
           <devtools-report-key>${i18nString31(UIStrings31.deletionReason)}</devtools-report-key>
           <devtools-report-value>${deletionReasonToString(selectedEvent.terminationEventDetails.deletionReason)}</devtools-report-value>
           `;
-  const eventDetailsContentHtml = selectedEvent ? html9`
+  const eventDetailsContentHtml = selectedEvent ? html10`
         <devtools-report>
           <devtools-report-key>${i18nString31(UIStrings31.keySite)}</devtools-report-key>
           <devtools-report-value>${selectedEvent.site}</devtools-report-value>
@@ -14514,12 +14574,12 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
           ${challengeEventDetails}
           ${terminationEventDetails}
         </devtools-report>
-    ` : html9`<div class="device-bound-session-no-event-details">${i18nString31(UIStrings31.selectEventToViewDetails)}</div>`;
-  const eventDetailsHtml = html9`
+    ` : html10`<div class="device-bound-session-no-event-details">${i18nString31(UIStrings31.selectEventToViewDetails)}</div>`;
+  const eventDetailsHtml = html10`
       <devtools-report-section-header role="heading" aria-level="2">${i18nString31(UIStrings31.eventDetails)}</devtools-report-section-header>
       ${eventDetailsContentHtml}
   `;
-  render8(html9`
+  render9(html10`
         <style>${UI24.inspectorCommonStyles}</style>
         <style>${deviceBoundSessionsView_css_default}</style>
         ${toolbarHtml}
@@ -14541,7 +14601,7 @@ var DeviceBoundSessionsView = class extends UI24.Widget.VBox {
   #defaultTitle;
   #defaultDescription;
   #selectedEvent;
-  constructor(view = DEFAULT_VIEW6) {
+  constructor(view = DEFAULT_VIEW7) {
     super({ jslog: `${VisualLogging17.pane("device-bound-sessions")}` });
     this.#view = view;
   }

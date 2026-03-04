@@ -354,6 +354,11 @@ export declare class StylePropertyTreeElement extends UI.TreeOutline.TreeElement
     ondblclick(): boolean;
     isEventWithinDisclosureTriangle(event: Event): boolean;
 }
+export declare class GhostStylePropertyTreeElement extends StylePropertyTreeElement {
+    constructor(stylesContainer: StylesContainer, section: StylePropertiesSection, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, property: SDK.CSSProperty.CSSProperty);
+    onattach(): void;
+    updateTitle(): void;
+}
 export interface Context {
     expanded: boolean;
     hasChildren: boolean;

@@ -6,6 +6,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as Elements from './elements.js';
 const UIStrings = {
     /**
      * @description Command for showing the 'Elements' panel. Elements refers to HTML elements.
@@ -578,10 +579,8 @@ UI.ViewManager.registerLocationResolver({
 Common.Revealer.registerRevealer({
     contextTypes() {
         return [
-            SDK.DOMModel.DOMNode,
-            SDK.DOMModel.DeferredDOMNode,
-            SDK.RemoteObject.RemoteObject,
-            SDK.DOMModel.AdoptedStyleSheet,
+            SDK.DOMModel.DOMNode, SDK.DOMModel.DeferredDOMNode, SDK.RemoteObject.RemoteObject, SDK.DOMModel.AdoptedStyleSheet,
+            Elements.ElementsPanel.NodeComputedStyles
         ];
     },
     destination: Common.Revealer.RevealerDestination.ELEMENTS_PANEL,

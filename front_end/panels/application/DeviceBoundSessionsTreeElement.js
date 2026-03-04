@@ -92,7 +92,7 @@ export class RootTreeElement extends ApplicationPanelTreeElement {
         if (isSiteAllowed && !isElementPresent) {
             // Appending a child element that already has children requires a workaround of
             // detaching and repopulating them so that the selection background color UI works.
-            // TODO(crbug.com/471021582): Can this fix safely be moved to Treeoutline.ts?
+            // TODO(crbug.com/486866983): Can this fix safely be moved to Treeoutline.ts?
             this.appendChild(siteTreeElement);
             const children = [...siteTreeElement.children()];
             siteTreeElement.removeChildren();

@@ -7322,16 +7322,16 @@ export const NativeFunctions = [
     signatures: [["type","eventInitDict"]]
   },
   {
+    name: "provideContext",
+    signatures: [["?options"]]
+  },
+  {
     name: "registerTool",
-    signatures: [["params"]]
+    signatures: [["tool"]]
   },
   {
     name: "unregisterTool",
-    signatures: [["tool_name"]]
-  },
-  {
-    name: "provideContext",
-    signatures: [["params"]]
+    signatures: [["name"]]
   },
   {
     name: "SnapEvent",

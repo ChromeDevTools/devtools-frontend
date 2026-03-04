@@ -609,25 +609,75 @@ export class DeviceModeToolbar {
     return this.standardDevices().concat(this.customDevices());
   }
 
-  private appendDeviceMenuItems(contextMenu: UI.ContextMenu.ContextMenu): void {
-    contextMenu.headerSection().appendCheckboxItem(
-        i18nString(UIStrings.responsive), this.switchToResponsive.bind(this),
-        {checked: this.model.type() === EmulationModel.DeviceModeModel.Type.Responsive, jslogContext: 'responsive'});
-    appendGroup.call(this, this.standardDevices());
-    appendGroup.call(this, this.customDevices());
-    contextMenu.footerSection().appendItem(
-        i18nString(UIStrings.edit), this.emulatedDevicesList.revealCustomSetting.bind(this.emulatedDevicesList),
-        {jslogContext: 'edit'});
+  private getDeviceModeOptions(): {
+    responsive: {title: string, selected: boolean, jslogContext: string},
+    standard: Array<{
+      device: EmulationModel.EmulatedDevices.EmulatedDevice,
+      title: string,
+      selected: boolean,
+      jslogContext: string,
+    }>,
+    custom: Array<{
+      device: EmulationModel.EmulatedDevices.EmulatedDevice,
+      title: string,
+      selected: boolean,
+      jslogContext: string,
+    }>,
+    edit: {title: string, jslogContext: string},
+  } {
+    return {
+      responsive: {
+        title: i18nString(UIStrings.responsive),
+        selected: this.model.type() === EmulationModel.DeviceModeModel.Type.Responsive,
+        jslogContext: 'responsive'
+      },
+      standard: this.standardDevices().map(device => ({
+                                             device,
+                                             title: device.title,
+                                             selected: this.model.device() === device,
+                                             jslogContext: Platform.StringUtilities.toKebabCase(device.title)
+                                           })),
+      custom: this.customDevices().map(device => ({
+                                         device,
+                                         title: device.title,
+                                         selected: this.model.device() === device,
+                                         jslogContext: Platform.StringUtilities.toKebabCase(device.title)
+                                       })),
+      edit: {
+        title: i18nString(UIStrings.edit),
+        jslogContext: 'edit',
+      }
+    };
+  }
 
-    function appendGroup(this: DeviceModeToolbar, devices: EmulationModel.EmulatedDevices.EmulatedDevice[]): void {
-      if (!devices.length) {
+  private appendDeviceMenuItems(contextMenu: UI.ContextMenu.ContextMenu): void {
+    const options = this.getDeviceModeOptions();
+
+    contextMenu.headerSection().appendCheckboxItem(
+        options.responsive.title, this.switchToResponsive.bind(this),
+        {checked: options.responsive.selected, jslogContext: options.responsive.jslogContext});
+
+    appendGroup.call(this, options.standard);
+    appendGroup.call(this, options.custom);
+
+    contextMenu.footerSection().appendItem(
+        options.edit.title, this.emulatedDevicesList.revealCustomSetting.bind(this.emulatedDevicesList),
+        {jslogContext: options.edit.jslogContext});
+
+    function appendGroup(this: DeviceModeToolbar, group: Array<{
+                           device: EmulationModel.EmulatedDevices.EmulatedDevice,
+                           title: string,
+                           selected: boolean,
+                           jslogContext: string,
+                         }>): void {
+      if (!group.length) {
         return;
       }
       const section = contextMenu.section();
-      for (const device of devices) {
-        section.appendCheckboxItem(device.title, this.emulateDevice.bind(this, device), {
-          checked: this.model.device() === device,
-          jslogContext: Platform.StringUtilities.toKebabCase(device.title),
+      for (const item of group) {
+        section.appendCheckboxItem(item.title, this.emulateDevice.bind(this, item.device), {
+          checked: item.selected,
+          jslogContext: item.jslogContext,
         });
       }
     }

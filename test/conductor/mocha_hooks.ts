@@ -57,7 +57,7 @@ export const mochaHooks = {
   // In serial mode (Mocha’s default), before all tests begin, once only.
   // In parallel mode, run before all tests begin, for each file.
   beforeAll: async function(this: Mocha.Suite) {
-    // It can take arbitrarly long on bots to boot up a server and start
+    // It can take arbitrarily long on bots to boot up a server and start
     // DevTools. Since this timeout only applies for this hook, we can let it
     // take an arbitrarily long time, while still enforcing that tests run
     // reasonably quickly (2 seconds by default).
@@ -80,7 +80,7 @@ export const mochaHooks = {
         this.timeout(paused ? 0 : 20000);
         await setupPages();
 
-        // Pause when running interactively in debug mode. This is mututally
+        // Pause when running interactively in debug mode. This is mutually
         // exclusive with parallel mode.
         // We need to pause after `resetPagesBetweenTests`, otherwise the DevTools
         // and target tab are not available to us to set breakpoints in.

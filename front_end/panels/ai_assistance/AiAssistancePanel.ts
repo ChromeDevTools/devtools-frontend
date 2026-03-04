@@ -462,7 +462,20 @@ function defaultView(input: ViewInput, output: PanelViewOutput, target: HTMLElem
 
   if (Root.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled ||
     Greendev.Prototypes.instance().isEnabled('breakpointDebuggerAgent')) {
-  const shouldShowWalkthrough = input.state === ViewState.CHAT_VIEW && input.walkthrough.isExpanded;
+
+    const shouldShowWalkthrough = input.state === ViewState.CHAT_VIEW && input.walkthrough.isExpanded;
+    /**
+     * We want to mark the walkthrough as loading only if it's showing the last
+     * message. Otherwise, a previous walkthrough will show as loading if we
+     * rely only on the isLoading flag.
+     */
+    let walkthroughIsForLastMessage = false;
+    if(input.state === ViewState.CHAT_VIEW) {
+      const lastMessage = input.props.messages.at(-1);
+      if(lastMessage && input.props.walkthrough.activeMessage === lastMessage) {
+        walkthroughIsForLastMessage = true;
+      }
+    }
 
     Lit.render(html`
       ${toolbarView(input)}
@@ -481,7 +494,7 @@ function defaultView(input: ViewInput, output: PanelViewOutput, target: HTMLElem
             ${shouldShowWalkthrough ? html`
               <devtools-widget .widgetConfig=${UI.Widget.widgetConfig(WalkthroughView, {
                 message: input.props.walkthrough.activeMessage,
-                isLoading: input.props.isLoading,
+                isLoading: input.props.isLoading && walkthroughIsForLastMessage,
                 markdownRenderer: input.props.markdownRenderer,
                 onToggle: input.props.walkthrough.onToggle,
               })}></devtools-widget>` : Lit.nothing}

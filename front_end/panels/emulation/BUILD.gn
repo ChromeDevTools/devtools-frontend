@@ -93,7 +93,6 @@ devtools_ui_module("unittests") {
 
   sources = [
     "AdvancedApp.test.ts",
-    "DeviceModeToolbar.test.ts",
     "MediaQueryInspector.test.ts",
   ]
 

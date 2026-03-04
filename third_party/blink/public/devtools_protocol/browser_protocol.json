@@ -11709,24 +11709,6 @@
                     "name": "virtualTimeBudgetExpired",
                     "description": "Notification sent after the virtual time budget for the current VirtualTimePolicy has run out.",
                     "experimental": true
-                },
-                {
-                    "name": "screenOrientationLockChanged",
-                    "description": "Fired when a page calls screen.orientation.lock() or screen.orientation.unlock()\nwhile device emulation is enabled. This allows the DevTools frontend to update the\nemulated device orientation accordingly.",
-                    "experimental": true,
-                    "parameters": [
-                        {
-                            "name": "locked",
-                            "description": "Whether the screen orientation is currently locked.",
-                            "type": "boolean"
-                        },
-                        {
-                            "name": "orientation",
-                            "description": "The orientation lock type requested by the page. Only set when locked is true.",
-                            "optional": true,
-                            "$ref": "ScreenOrientation"
-                        }
-                    ]
                 }
             ]
         },

@@ -113,7 +113,6 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   #emulationModel: SDK.EmulationModel.EmulationModel|null;
   #onModelAvailable: (() => void)|null;
   #outlineRect?: Rect;
-  #screenOrientationLocked: boolean;
 
   private constructor() {
     super();
@@ -173,7 +172,6 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
 
     this.#emulationModel = null;
     this.#onModelAvailable = null;
-    this.#screenOrientationLocked = false;
     SDK.TargetManager.TargetManager.instance().observeModels(SDK.EmulationModel.EmulationModel, this);
   }
 
@@ -444,9 +442,6 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
         this.#onModelAvailable = null;
         callback();
       }
-      emulationModel.addEventListener(
-          SDK.EmulationModel.EmulationModelEvents.SCREEN_ORIENTATION_LOCK_CHANGED, this.onScreenOrientationLockChanged,
-          this);
       const resourceTreeModel = emulationModel.target().model(SDK.ResourceTreeModel.ResourceTreeModel);
       if (resourceTreeModel) {
         resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.FrameResized, this.onFrameChange, this);
@@ -459,12 +454,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
 
   modelRemoved(emulationModel: SDK.EmulationModel.EmulationModel): void {
     if (this.#emulationModel === emulationModel) {
-      emulationModel.removeEventListener(
-          SDK.EmulationModel.EmulationModelEvents.SCREEN_ORIENTATION_LOCK_CHANGED, this.onScreenOrientationLockChanged,
-          this);
       this.#emulationModel = null;
-      this.#screenOrientationLocked = false;
-      this.dispatchEventToListeners(Events.UPDATED);
     }
   }
 
@@ -479,43 +469,6 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     }
 
     this.showHingeIfApplicable(overlayModel);
-  }
-
-  private onScreenOrientationLockChanged(
-      event: Common.EventTarget.EventTargetEvent<SDK.EmulationModel.ScreenOrientationLockChangedEvent>): void {
-    this.#screenOrientationLocked = event.data.locked;
-    if (event.data.locked && event.data.orientation) {
-      this.applyOrientationLock(event.data.orientation);
-    }
-    this.dispatchEventToListeners(Events.UPDATED);
-  }
-
-  private applyOrientationLock(orientation: Protocol.Emulation.ScreenOrientation): void {
-    const wantsLandscape = orientation.type === Protocol.Emulation.ScreenOrientationType.LandscapePrimary ||
-        orientation.type === Protocol.Emulation.ScreenOrientationType.LandscapeSecondary;
-
-    if (this.#type === Type.Device && this.#device && this.#mode) {
-      // For device emulation, switch to the matching orientation mode.
-      const isCurrentlyLandscape =
-          this.#mode.orientation === Horizontal || this.#mode.orientation === HorizontalSpanned;
-      if (wantsLandscape !== isCurrentlyLandscape) {
-        const rotationPartner = this.#device.getRotationPartner(this.#mode);
-        if (rotationPartner) {
-          this.emulate(this.#type, this.#device, rotationPartner);
-        }
-      }
-    } else if (this.#type === Type.Responsive) {
-      // For responsive mode, swap width/height if orientation doesn't match.
-      const appliedSize = this.appliedDeviceSize();
-      const isCurrentlyLandscape = appliedSize.width > appliedSize.height;
-      if (wantsLandscape !== isCurrentlyLandscape) {
-        this.setSizeAndScaleToFit(appliedSize.height, appliedSize.width);
-      }
-    }
-  }
-
-  isScreenOrientationLocked(): boolean {
-    return this.#screenOrientationLocked;
   }
 
   private scaleSettingChanged(): void {

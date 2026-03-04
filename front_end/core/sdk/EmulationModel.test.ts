@@ -10,43 +10,6 @@ import * as Common from '../common/common.js';
 import * as SDK from './sdk.js';
 
 describeWithMockConnection('EmulationModel', () => {
-  it('should track screen orientation lock state from CDP events', () => {
-    const parentTarget = createTarget();
-    const target = createTarget({parentTarget});
-    const emulationModel = target.model(SDK.EmulationModel.EmulationModel);
-    assert.isNotNull(emulationModel);
-
-    // Initially not locked.
-    assert.isFalse(emulationModel!.isScreenOrientationLocked());
-    assert.isNull(emulationModel!.lockedOrientation());
-
-    // Simulate lock event.
-    const orientation = {type: 'portraitPrimary' as Protocol.Emulation.ScreenOrientationType, angle: 0};
-    emulationModel!.screenOrientationLockChanged({locked: true, orientation});
-    assert.isTrue(emulationModel!.isScreenOrientationLocked());
-    assert.deepEqual(emulationModel!.lockedOrientation(), orientation);
-
-    // Simulate unlock event.
-    emulationModel!.screenOrientationLockChanged({locked: false});
-    assert.isFalse(emulationModel!.isScreenOrientationLocked());
-    assert.isNull(emulationModel!.lockedOrientation());
-  });
-
-  it('should dispatch SCREEN_ORIENTATION_LOCK_CHANGED event', () => {
-    const parentTarget = createTarget();
-    const target = createTarget({parentTarget});
-    const emulationModel = target.model(SDK.EmulationModel.EmulationModel);
-    assert.isNotNull(emulationModel);
-
-    const eventSpy = sinon.spy();
-    emulationModel!.addEventListener(SDK.EmulationModel.EmulationModelEvents.SCREEN_ORIENTATION_LOCK_CHANGED, eventSpy);
-
-    const orientation = {type: 'landscapePrimary' as Protocol.Emulation.ScreenOrientationType, angle: 90};
-    emulationModel!.screenOrientationLockChanged({locked: true, orientation});
-    sinon.assert.calledOnce(eventSpy);
-    assert.deepEqual(eventSpy.firstCall.args[0].data, {locked: true, orientation});
-  });
-
   it('should `emulateTouch` enable touch emulation', async () => {
     const parentTarget = createTarget();
     const target = createTarget({parentTarget});

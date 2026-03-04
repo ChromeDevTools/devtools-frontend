@@ -26,7 +26,7 @@ import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import * as Elements from '../../elements/elements.js';
 
 import chatMessageStyles from './chatMessage.css.js';
-import {WalkthroughView} from './WalkthroughView.js';
+import {walkthroughTitle, WalkthroughView} from './WalkthroughView.js';
 
 const {html, Directives: {ref, ifDefined}} = Lit;
 const lockedString = i18n.i18n.lockedString;
@@ -393,7 +393,7 @@ function renderTextAsMarkdown(text: string, markdownRenderer: MarkdownLitRendere
   // clang-format on
 }
 
-function titleForStep(step: Step): string {
+export function titleForStep(step: Step): string {
   return step.title ?? `${lockedString(UIStringsNotTranslate.investigating)}…`;
 }
 
@@ -489,7 +489,10 @@ function renderWalkthroughSidebarButton(
   if (walkthrough.isInlined) {
     return Lit.nothing;
   }
-  const title = input.isLoading ? titleForStep(lastStep) : lockedString(UIStringsNotTranslate.showThinking);
+  const title = walkthroughTitle({
+    isLoading: input.isLoading,
+    lastStep,
+  });
 
   // clang-format off
   return html`

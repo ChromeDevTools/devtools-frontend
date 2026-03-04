@@ -1439,10 +1439,18 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     this.#updateConversationState();
   }
 
+  #clearWalkthrough(): void {
+    this.#walkthrough.isExpanded = false;
+    this.#walkthrough.activeMessage = null;
+  }
+
   #onDeleteClicked(): void {
     if (!this.#conversation) {
       return;
     }
+
+    // Ensure we clear the walkthrough so it doesn't hold onto a chat that is about to be deleted.
+    this.#clearWalkthrough();
 
     void AiAssistanceModel.AiHistoryStorage.AiHistoryStorage.instance().deleteHistoryEntry(this.#conversation.id);
     this.#updateConversationState();

@@ -7205,6 +7205,14 @@ export namespace Emulation {
      * Scrollbar type. Default: `default`.
      */
     scrollbarType?: SetDeviceMetricsOverrideRequestScrollbarType;
+    /**
+     * If set to true, enables screen orientation lock emulation, which
+     * intercepts screen.orientation.lock() calls from the page and reports
+     * orientation changes via screenOrientationLockChanged events. This is
+     * useful for emulating mobile device orientation lock behavior in
+     * responsive design mode.
+     */
+    screenOrientationLockEmulation?: boolean;
   }
 
   export interface SetDevicePostureOverrideRequest {
@@ -7547,12 +7555,79 @@ export namespace Emulation {
     screenInfo: ScreenInfo;
   }
 
+  export interface UpdateScreenRequest {
+    /**
+     * Target screen identifier.
+     */
+    screenId: ScreenId;
+    /**
+     * Offset of the left edge of the screen in pixels.
+     */
+    left?: integer;
+    /**
+     * Offset of the top edge of the screen in pixels.
+     */
+    top?: integer;
+    /**
+     * The width of the screen in pixels.
+     */
+    width?: integer;
+    /**
+     * The height of the screen in pixels.
+     */
+    height?: integer;
+    /**
+     * Specifies the screen's work area.
+     */
+    workAreaInsets?: WorkAreaInsets;
+    /**
+     * Specifies the screen's device pixel ratio.
+     */
+    devicePixelRatio?: number;
+    /**
+     * Specifies the screen's rotation angle. Available values are 0, 90, 180 and 270.
+     */
+    rotation?: integer;
+    /**
+     * Specifies the screen's color depth in bits.
+     */
+    colorDepth?: integer;
+    /**
+     * Specifies the descriptive label for the screen.
+     */
+    label?: string;
+    /**
+     * Indicates whether the screen is internal to the device or external, attached to the device. Default is false.
+     */
+    isInternal?: boolean;
+  }
+
+  export interface UpdateScreenResponse extends ProtocolResponseWithError {
+    screenInfo: ScreenInfo;
+  }
+
   export interface RemoveScreenRequest {
     screenId: ScreenId;
   }
 
   export interface SetPrimaryScreenRequest {
     screenId: ScreenId;
+  }
+
+  /**
+   * Fired when a page calls screen.orientation.lock() or screen.orientation.unlock()
+   * while device emulation is enabled. This allows the DevTools frontend to update the
+   * emulated device orientation accordingly.
+   */
+  export interface ScreenOrientationLockChangedEvent {
+    /**
+     * Whether the screen orientation is currently locked.
+     */
+    locked: boolean;
+    /**
+     * The orientation lock type requested by the page. Only set when locked is true.
+     */
+    orientation?: ScreenOrientation;
   }
 }
 

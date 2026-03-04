@@ -4,6 +4,7 @@
 
 import type * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
+import * as i18n from '../../../core/i18n/i18n.js';
 import type * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as Bindings from '../../bindings/bindings.js';
@@ -30,6 +31,8 @@ import {
   injectOverlay,
   removeOverlay,
 } from './BreakpointDebuggerAgentOverlay.js';
+
+const lockedString = i18n.i18n.lockedString;
 
 // This is a temporary agent for a GreenDev prototype.
 // The preamble is not on the server and you should not build on top of this.
@@ -458,7 +461,10 @@ export class BreakpointDebuggerAgent extends AiAgent<Workspace.UISourceCode.UILo
           return {error: 'Fix rejected by the user.'};
         }
         if (!options?.approved) {
-          return {requiresApproval: true};
+          return {
+            requiresApproval: true,
+            description: lockedString('This code may modify page content. Continue?'),
+          };
         }
 
         const targetManager = SDK.TargetManager.TargetManager.instance();
@@ -546,7 +552,10 @@ export class BreakpointDebuggerAgent extends AiAgent<Workspace.UISourceCode.UILo
           return {error: 'Fix rejected by the user.'};
         }
         if (!options?.approved) {
-          return {requiresApproval: true};
+          return {
+            requiresApproval: true,
+            description: lockedString('This code may modify page content. Continue?'),
+          };
         }
 
         const uiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(

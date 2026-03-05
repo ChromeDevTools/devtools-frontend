@@ -15,7 +15,7 @@ import {
 import {DevToolsPage} from '../shared/frontend-helper.js';
 import type {InspectedPage} from '../shared/target-helper.js';
 
-async function loadTrace(
+async function loadEnhancedTrace(
     devToolsPage: DevToolsPage, inspectedPage: InspectedPage, resource: string): Promise<DevToolsPage> {
   // Scripts in these traces happen to fail asserts in formatter_worker.
   expectError(/ScopeParser\.js|formatter_worker\.js/);
@@ -40,7 +40,9 @@ async function loadTrace(
   const tracePage = new DevToolsPage(newPage);
 
   // Wait for Performance panel to open in the popup.
-  await loadTraceAndWaitToFullyRender(tracePage, async () => {});
+  // This creates a race condition where the event for
+  // `traceload` has already happened so check the panel as well.
+  await loadTraceAndWaitToFullyRender(tracePage, async () => {}, true);
 
   // Performance and Sources.
   assert.lengthOf(await tracePage.$$('.tabbed-pane-header[aria-label="Main toolbar"] .tabbed-pane-header-tab'), 2);
@@ -80,20 +82,23 @@ describe('trace_app.html', function() {
   }
 
   it('linkifies source mapped function calls', async ({devToolsPage, inspectedPage}) => {
-    const framePage = await loadTrace(devToolsPage, inspectedPage, 'performance/timeline/enhanced-trace.json.gz');
+    const framePage =
+        await loadEnhancedTrace(devToolsPage, inspectedPage, 'performance/timeline/enhanced-trace.json.gz');
     // This is a function on a firebase script that has sourcemaps.
     await searchAndClickOnStackTrace(
         framePage, 'createUserTimingTrace', 'createUserTimingTrace', 'oob_resources_service.ts:83:10');
   });
 
   it('linkifies function calls from inline scripts in HTML', async ({devToolsPage, inspectedPage}) => {
-    const framePage = await loadTrace(devToolsPage, inspectedPage, 'performance/timeline/enhanced-trace.json.gz');
+    const framePage =
+        await loadEnhancedTrace(devToolsPage, inspectedPage, 'performance/timeline/enhanced-trace.json.gz');
     // This is a function from an inline script in the HTML. Please excuse the Paul humor.
     await searchAndClickOnStackTrace(framePage, 'pooopInTheTrace', 'pooopInTheTrace', '(index):399:26');
   });
 
   it('linkifies to CSS resources', async ({devToolsPage, inspectedPage}) => {
-    const framePage = await loadTrace(devToolsPage, inspectedPage, 'performance/timeline/enhanced-trace.json.gz');
+    const framePage =
+        await loadEnhancedTrace(devToolsPage, inspectedPage, 'performance/timeline/enhanced-trace.json.gz');
     await searchAndClickOnStackTrace(
         framePage, 'fonts.googleapis.com', '/* latin */',
         'css?family=PT+Serif:regular,italic,bold|PT+Sans:regular,italic,bold|Droid+Sans:400,700|Lato:700,900');

@@ -235,18 +235,35 @@ export function increaseTimeoutForPerfPanel(context: Mocha.Suite): void {
     context.timeout(30_000);
   }
 }
-
+/**
+ * @param checkHasActiveTrace Usually this only required for enhanced traces
+ */
 export async function loadTraceAndWaitToFullyRender(
-    devToolsPage: DevToolsPage, initiateTraceLoadCb: () => Promise<unknown>) {
+    devToolsPage: DevToolsPage,
+    initiateTraceLoadCb: () => Promise<unknown>,
+    checkHasActiveTrace = false,
+) {
   const panelElement = await devToolsPage.waitFor('.widget.panel.timeline');
   await Promise.all([
-    initiateTraceLoadCb(), panelElement.evaluate(el => {
-      return new Promise<void>(res => {
-        el.addEventListener('traceload', () => {
-          res();
-        }, {once: true});
-      });
-    })
+    initiateTraceLoadCb(),
+    panelElement.evaluate(
+        (el, checkPanelState) => {
+          return new Promise<void>(async res => {
+            // Set-up the event listener first to prevent further
+            // race conditions.
+            el.addEventListener('traceload', () => {
+              res();
+            }, {once: true});
+            if (checkPanelState) {
+              // @ts-expect-error This is loaded inside the new DevTools page.
+              const TimelineModule = await import('./panels/timeline/timeline.js');
+              if (TimelineModule.TimelinePanel.TimelinePanel.instance().hasActiveTrace()) {
+                res();
+              }
+            }
+          });
+        },
+        checkHasActiveTrace),
   ]);
 
   // There's a lot of scheduling/waiting in the Timeline panel's rendering stack

@@ -772,6 +772,8 @@ describe('StylesSidebarPane', () => {
       '--wide-gamut-color': 'lch(0 0 0)',
     };
 
+    let section: sinon.SinonStubbedInstance<Elements.StylePropertiesSection.StylePropertiesSection>;
+
     const mockTreeItem = {
       property: {
         name: 'color',
@@ -805,6 +807,11 @@ describe('StylesSidebarPane', () => {
               },
         };
       },
+      section() {
+        section = sinon.createStubInstance(Elements.StylePropertiesSection.StylePropertiesSection);
+        return section;
+      },
+      showGhostTextInValue(_text: string): void{},
       stylesContainer() {
         const pane = sinon.createStubInstance(Elements.StylesSidebarPane.StylesSidebarPane);
         const cssModel = sinon.createStubInstance(SDK.CSSModel.CSSModel);
@@ -973,6 +980,60 @@ describe('StylesSidebarPane', () => {
         assert.strictEqual(aiCodeCompletionProvider.triggerAiCodeCompletion.firstCall.args[0], 'backgrou');
         assert.strictEqual(aiCodeCompletionProvider.triggerAiCodeCompletion.firstCall.args[1], 8);
         clock.restore();
+      });
+
+      it('setAiAutoCompletion shows ghost value', async () => {
+        const attachedElement = document.createElement('div');
+        renderElementIntoDOM(attachedElement);
+        const showGhostTextInValueSpy = sinon.spy(mockTreeItem, 'showGhostTextInValue');
+        const cssPropertyPrompt = new CSSPropertyPrompt(mockTreeItem, true);
+        const applySuggestionSpy = sinon.spy(cssPropertyPrompt, 'applySuggestion');
+        cssPropertyPrompt.attachAndStartEditing(attachedElement, noop);
+
+        assert.exists(cssPropertyPrompt.aiCodeCompletionConfig?.setAiAutoCompletion);
+        cssPropertyPrompt.aiCodeCompletionConfig.setAiAutoCompletion({
+          text: 'color: pink;',
+          from: 0,
+          startTime: 0,
+          clearCachedRequest: () => {},
+          onImpression: () => {},
+        });
+
+        sinon.assert.calledOnce(showGhostTextInValueSpy);
+        sinon.assert.calledWith(showGhostTextInValueSpy, 'pink');
+        sinon.assert.calledOnce(applySuggestionSpy);
+        sinon.assert.calledWith(applySuggestionSpy, {text: 'color'}, true);
+      });
+
+      it('setAiAutoCompletion renders a ghost tree element for multiline suggestions', async () => {
+        const attachedElement = document.createElement('div');
+        renderElementIntoDOM(attachedElement);
+        const cssPropertyPrompt = new CSSPropertyPrompt(mockTreeItem, false);
+        cssPropertyPrompt.attachAndStartEditing(attachedElement, noop);
+
+        assert.exists(cssPropertyPrompt.aiCodeCompletionConfig?.setAiAutoCompletion);
+        cssPropertyPrompt.aiCodeCompletionConfig.setAiAutoCompletion({
+          text: 'color: pink; background-color: white;',
+          from: 0,
+          startTime: 0,
+          clearCachedRequest: () => {},
+          onImpression: () => {},
+        });
+
+        sinon.assert.calledOnce(section.renderGhostStyleTreeElements);
+        sinon.assert.calledWith(section.renderGhostStyleTreeElements, 'background-color: white;');
+      });
+
+      it('setAiAutoCompletion clears ghost tree element when completion is null', async () => {
+        const attachedElement = document.createElement('div');
+        renderElementIntoDOM(attachedElement);
+        const cssPropertyPrompt = new CSSPropertyPrompt(mockTreeItem, false);
+        cssPropertyPrompt.attachAndStartEditing(attachedElement, noop);
+
+        assert.exists(cssPropertyPrompt.aiCodeCompletionConfig?.setAiAutoCompletion);
+        cssPropertyPrompt.aiCodeCompletionConfig.setAiAutoCompletion(null);
+
+        sinon.assert.calledOnce(section.clearGhostStyleTreeElements);
       });
     });
   });

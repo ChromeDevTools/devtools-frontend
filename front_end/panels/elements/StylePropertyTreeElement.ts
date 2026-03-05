@@ -3548,6 +3548,22 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
   override isEventWithinDisclosureTriangle(event: Event): boolean {
     return event.target === this.expandElement;
   }
+
+  showGhostTextInValue(text: string): void {
+    if (!this.valueElement) {
+      return;
+    }
+    this.clearGhostTextInValue();
+    this.valueElement.createChild('span', 'ghost-value-prediction').textContent = text;
+  }
+
+  clearGhostTextInValue(): void {
+    if (!this.valueElement) {
+      return;
+    }
+    const ghostElement = this.valueElement.querySelector('.ghost-value-prediction');
+    ghostElement?.remove();
+  }
 }
 
 export class GhostStylePropertyTreeElement extends StylePropertyTreeElement {

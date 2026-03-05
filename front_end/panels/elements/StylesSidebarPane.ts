@@ -1825,7 +1825,7 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
         getCurrentText: () => {
           return this.text();
         },
-        setAiAutoCompletion: () => {},
+        setAiAutoCompletion: this.setAiAutoCompletion.bind(this),
       };
       this.aiCodeCompletionProvider =
           StylesAiCodeCompletionProvider.StylesAiCodeCompletionProvider.createInstance(this.aiCodeCompletionConfig);
@@ -2115,6 +2115,46 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
     }
     await this.aiCodeCompletionProvider.triggerAiCodeCompletion(
         userInput, range.endOffset, this.isEditingName, this.treeElement.property, cssModel);
+  }
+
+  private setAiAutoCompletion(args: {
+    text: string,
+    from: number,
+    startTime: number,
+    onImpression: (rpcGlobalId: Host.AidaClient.RpcGlobalId, latency: number, sampleId?: number) => void,
+    clearCachedRequest: () => void,
+    rpcGlobalId?: Host.AidaClient.RpcGlobalId,
+    sampleId?: number,
+  }|null): void {
+    if (!args) {
+      this.treeElement.section().clearGhostStyleTreeElements();
+      return;
+    }
+    this.showAiGhostText(args?.text);
+    const latency = performance.now() - args.startTime;
+    if (args.rpcGlobalId) {
+      args.onImpression(args.rpcGlobalId, latency, args.sampleId);
+    }
+  }
+
+  private showAiGhostText(text: string): void {
+    const [currentLine, ...nextLinesList] = text.split(';');
+    const nextLines = nextLinesList.join(';').trim();
+
+    if (this.isEditingName && currentLine.includes(':')) {
+      const [namePart, valuePart] = currentLine.split(':').map(s => s.trim());
+      this.applySuggestion({text: this.text() + namePart}, true);
+      this.treeElement.showGhostTextInValue(valuePart);
+    } else {
+      // Only has ghost text for one field - name part or value part
+      this.applySuggestion({text: this.text() + currentLine}, true);
+    }
+
+    if (nextLines) {
+      this.treeElement.section().renderGhostStyleTreeElements(nextLines);
+    } else {
+      this.treeElement.section().clearGhostStyleTreeElements();
+    }
   }
 
   /**

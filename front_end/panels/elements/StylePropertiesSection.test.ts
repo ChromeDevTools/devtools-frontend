@@ -328,4 +328,41 @@ describeWithMockConnection('StylesPropertySection', () => {
     assert.isFalse(section1.propertiesTreeOutline.element.classList.contains('no-affect'));
     assert.isTrue(section2.propertiesTreeOutline.element.classList.contains('no-affect'));
   });
+
+  describe('GhostStylePropertyTreeElement', () => {
+    let section: Elements.StylePropertiesSection.StylePropertiesSection;
+    beforeEach(async () => {
+      const matchedStyles = await getMatchedStylesWithBlankRule({cssModel: new SDK.CSSModel.CSSModel(createTarget())});
+      section = new Elements.StylePropertiesSection.StylePropertiesSection(
+          new Elements.StylesSidebarPane.StylesSidebarPane(computedStyleModel), matchedStyles,
+          matchedStyles.nodeStyles()[0], 0, new Map(), new Map(), null);
+    });
+
+    it('renders ghost elements correctly from suggestion', async () => {
+      section.renderGhostStyleTreeElements('color: red; font-size: 10px;');
+
+      const ghostElements = section.propertiesTreeOutline.rootElement().children().filter(
+          e => e instanceof Elements.StylePropertyTreeElement.GhostStylePropertyTreeElement);
+      assert.lengthOf(ghostElements, 2);
+      assert.strictEqual(ghostElements[0].property.name, 'color');
+      assert.strictEqual(ghostElements[0].property.value, 'red');
+      assert.strictEqual(ghostElements[1].property.name, 'font-size');
+      assert.strictEqual(ghostElements[1].property.value, '10px');
+    });
+
+    it('clears ghost elements correctly', async () => {
+      const rootElement = section.propertiesTreeOutline.rootElement();
+      section.renderGhostStyleTreeElements('color: red;');
+
+      let ghostElements = rootElement.children().filter(
+          e => e instanceof Elements.StylePropertyTreeElement.GhostStylePropertyTreeElement);
+      assert.lengthOf(ghostElements, 1);
+
+      section.clearGhostStyleTreeElements();
+
+      ghostElements = rootElement.children().filter(
+          e => e instanceof Elements.StylePropertyTreeElement.GhostStylePropertyTreeElement);
+      assert.lengthOf(ghostElements, 0);
+    });
+  });
 });

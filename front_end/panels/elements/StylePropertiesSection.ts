@@ -55,7 +55,7 @@ import {FontEditorSectionManager} from './ColorSwatchPopoverIcon.js';
 import * as ElementsComponents from './components/components.js';
 import {ElementsPanel} from './ElementsPanel.js';
 import stylePropertiesTreeOutlineStyles from './stylePropertiesTreeOutline.css.js';
-import {type Context, StylePropertyTreeElement} from './StylePropertyTreeElement.js';
+import {type Context, GhostStylePropertyTreeElement, StylePropertyTreeElement} from './StylePropertyTreeElement.js';
 import type {StylesContainer} from './StylesContainer.js';
 
 const UIStrings = {
@@ -165,6 +165,8 @@ export class StylePropertiesSection {
   static #nextSpecificityTooltipId = 0;
   static #nextSectionTooltipIdPrefix = 0;
   readonly sectionTooltipIdPrefix = StylePropertiesSection.#nextSectionTooltipIdPrefix++;
+
+  private ghostStyleTreeElements: GhostStylePropertyTreeElement[] = [];
 
   constructor(
       stylesContainer: StylesContainer, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles,
@@ -776,6 +778,51 @@ export class StylePropertiesSection {
       return this.stylesContainer.sectionByElement.get(curElement);
     }
     return;
+  }
+
+  clearGhostStyleTreeElements(): void {
+    // Clear existing ghost elements
+    for (const ghost of this.ghostStyleTreeElements) {
+      this.propertiesTreeOutline.removeChild(ghost);
+    }
+    this.ghostStyleTreeElements = [];
+  }
+
+  renderGhostStyleTreeElements(suggestion: string): void {
+    this.clearGhostStyleTreeElements();
+    if (!suggestion) {
+      return;
+    }
+
+    const suggestionLines = suggestion.split(';').map(line => line.trim());
+    for (const line of suggestionLines) {
+      const colonIdx = line.indexOf(':');
+      if (colonIdx === -1) {
+        continue;
+      }
+
+      const name = line.substring(0, colonIdx).trim();
+      const value = line.substring(colonIdx + 1).trim();
+      if (!name || !value) {
+        continue;
+      }
+
+      // Create a fake property attached to this style
+      const fakeProperty = new SDK.CSSProperty.CSSProperty(
+          this.styleInternal,
+          this.styleInternal.allProperties().length,
+          name,
+          value,
+          false,
+          false,
+          true,
+          false,
+      );
+
+      const ghost = new GhostStylePropertyTreeElement(this.stylesContainer, this, this.matchedStyles, fakeProperty);
+      this.propertiesTreeOutline.appendChild(ghost);
+      this.ghostStyleTreeElements.push(ghost);
+    }
   }
 
   private onNewRuleClick(event: Common.EventTarget.EventTargetEvent<Event>): void {

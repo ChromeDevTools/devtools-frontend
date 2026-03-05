@@ -66,7 +66,7 @@ export class HiddenIssuesRow extends UI.TreeOutline.TreeElement {
   #view: View;
 
   constructor(view: View = DEFAULT_VIEW) {
-    super(undefined, true);
+    super(undefined, true, 'hidden-issues');
     this.#view = view;
     this.toggleOnClick = true;
     this.listItemElement.classList.add('issue-category', 'hidden-issues');

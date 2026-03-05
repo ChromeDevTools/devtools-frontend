@@ -7,7 +7,7 @@ import '../../ui/legacy/legacy.js';
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import type * as Platform from '../../core/platform/platform.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as IssueCounter from '../../ui/components/issue_counter/issue_counter.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -121,7 +121,7 @@ class IssueCategoryView extends UI.TreeOutline.TreeElement {
   #category: IssuesManager.Issue.IssueCategory;
 
   constructor(category: IssuesManager.Issue.IssueCategory) {
-    super();
+    super(undefined, undefined, Platform.StringUtilities.toKebabCase(category));
     this.#category = category;
 
     this.toggleOnClick = true;

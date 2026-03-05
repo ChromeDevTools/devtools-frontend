@@ -6,7 +6,7 @@
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import type * as Platform from '../../core/platform/platform.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as Protocol from '../../generated/protocol.js';
 import type {AggregatedIssue} from '../../models/issues_manager/IssueAggregator.js';
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
@@ -230,7 +230,7 @@ export class IssueView extends UI.TreeOutline.TreeElement {
   #contentCreated = false;
 
   constructor(issue: AggregatedIssue, description: IssuesManager.MarkdownIssueDescription.IssueDescription) {
-    super();
+    super(undefined, undefined, Platform.StringUtilities.toKebabCase(issue.getCategory()));
     this.#issue = issue;
     this.#description = description;
     this.#throttle = new Common.Throttler.Throttler(250);

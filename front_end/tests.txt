@@ -429,6 +429,7 @@ panels/elements/LayoutPane.test.js
 panels/elements/PlatformFontsWidget.test.js
 panels/elements/PropertiesWidget.test.js
 panels/elements/PropertyRenderer.test.js
+panels/elements/StandaloneStylesContainer.test.js
 panels/elements/StylePropertiesSection.test.js
 panels/elements/StylePropertyHighlighter.test.js
 panels/elements/StylePropertyTreeElement.test.js
@@ -437,7 +438,6 @@ panels/elements/StylesAiCodeCompletionProvider.test.js
 panels/elements/StylesSidebarPane.test.js
 panels/elements/WebCustomData.test.js
 panels/emulation/AdvancedApp.test.js
-panels/emulation/DeviceModeToolbar.test.js
 panels/emulation/MediaQueryInspector.test.js
 panels/event_listeners/EventListenersView.test.js
 panels/explain/components/ConsoleInsight.test.js

@@ -2782,6 +2782,13 @@ export namespace ProtocolMapping {
       returnType: Protocol.Emulation.AddScreenResponse;
     };
     /**
+     * Updates specified screen parameters. Only supported in headless mode.
+     */
+    'Emulation.updateScreen': {
+      paramsType: [Protocol.Emulation.UpdateScreenRequest];
+      returnType: Protocol.Emulation.UpdateScreenResponse;
+    };
+    /**
      * Remove screen from the device. Only supported in headless mode.
      */
     'Emulation.removeScreen': {

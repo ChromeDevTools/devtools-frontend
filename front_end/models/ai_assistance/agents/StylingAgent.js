@@ -254,7 +254,7 @@ export class StylingAgent extends AiAgent {
                 };
             },
             handler: async (params) => {
-                return await this.getStyles(params.elements, params.styleProperties);
+                return await this.#getStyles(params.elements, params.styleProperties);
             },
         });
         this.declareFunction('executeJavaScript', {
@@ -491,7 +491,8 @@ const data = {
     #getSelectedNode() {
         return this.context?.getItem() ?? null;
     }
-    async getStyles(elements, properties) {
+    async #getStyles(elements, properties) {
+        const widgets = [];
         const result = {};
         for (const uid of elements) {
             result[uid] = { computed: {}, authored: {} };
@@ -513,6 +514,15 @@ const data = {
             if (!matchedStyles) {
                 return { error: 'Error: Could not get authored styles.' };
             }
+            widgets.push({
+                name: 'COMPUTED_STYLES',
+                data: {
+                    computedStyles: styles,
+                    backendNodeId: node.backendNodeId(),
+                    matchedCascade: matchedStyles,
+                    properties,
+                }
+            });
             for (const prop of properties) {
                 result[uid].computed[prop] = styles.get(prop);
             }
@@ -530,6 +540,7 @@ const data = {
         }
         return {
             result: JSON.stringify(result, null, 2),
+            widgets,
         };
     }
     async executeAction(action, options) {
@@ -576,6 +587,7 @@ const data = {
                 }
                 return {
                     requiresApproval: true,
+                    description: lockedString('This code may modify page content. Continue?'),
                 };
             }
             if (result.canceled) {

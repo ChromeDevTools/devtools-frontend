@@ -9793,7 +9793,7 @@ var NetworkLogViewColumns = class _NetworkLogViewColumns {
   }
   createWaterfallHeader() {
     this.waterfallHeaderElement = this.waterfallColumn.contentElement.createChild("div", "network-waterfall-header");
-    this.waterfallHeaderElement.setAttribute("jslog", `${VisualLogging14.tableHeader("waterfall").track({ click: true })}`);
+    this.waterfallHeaderElement.setAttribute("jslog", `${VisualLogging14.tableHeader("waterfall").track({ click: true, resize: true })}`);
     this.waterfallHeaderElement.addEventListener("click", waterfallHeaderClicked.bind(this));
     this.waterfallHeaderElement.addEventListener("contextmenu", (event) => {
       const contextMenu = new UI24.ContextMenu.ContextMenu(event);

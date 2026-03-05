@@ -7,7 +7,9 @@ import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Root from '../../../core/root/root.js';
+import * as SDK from '../../../core/sdk/sdk.js';
 import * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
+import * as ComputedStyle from '../../../models/computed_style/computed_style.js';
 import * as Marked from '../../../third_party/marked/marked.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as Input from '../../../ui/components/input/input.js';
@@ -15,8 +17,9 @@ import * as UIHelpers from '../../../ui/helpers/helpers.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
+import * as Elements from '../../elements/elements.js';
 import chatMessageStyles from './chatMessage.css.js';
-import { WalkthroughView } from './WalkthroughView.js';
+import { walkthroughTitle, WalkthroughView } from './WalkthroughView.js';
 const { html, Directives: { ref, ifDefined } } = Lit;
 const lockedString = i18n.i18n.lockedString;
 const REPORT_URL = 'https://crbug.com/364805393';
@@ -86,17 +89,13 @@ const UIStringsNotTranslate = {
      */
     stoppedResponse: 'You stopped this response',
     /**
-     * @description Prompt for user to confirm code execution that may affect the page.
-     */
-    sideEffectConfirmationDescription: 'This code may modify page content. Continue?',
-    /**
      * @description Button text that confirm code execution that may affect the page.
      */
-    positiveSideEffectConfirmation: 'Continue',
+    confirmActionRequestApproval: 'Continue',
     /**
      * @description Button text that cancels code execution that may affect the page.
      */
-    negativeSideEffectConfirmation: 'Cancel',
+    declineActionRequestApproval: 'Cancel',
     /**
      * @description The generic name of the AI agent (do not translate)
      */
@@ -157,6 +156,10 @@ const UIStringsNotTranslate = {
      * @description Title for the button that shows the thinking process (walkthrough).
      */
     showThinking: 'Show thinking',
+    /**
+     * @description Title for the button that takes the user into other DevTools panels to reveal items the AI references.
+     */
+    reveal: 'Reveal'
 };
 export const DEFAULT_VIEW = (input, output, target) => {
     const message = input.message;
@@ -256,11 +259,13 @@ function renderTextAsMarkdown(text, markdownRenderer, { animate, ref: refFn } = 
   </devtools-markdown-view>`;
     // clang-format on
 }
-function titleForStep(step) {
+export function titleForStep(step) {
     return step.title ?? `${lockedString(UIStringsNotTranslate.investigating)}…`;
 }
 function renderTitle(step) {
-    const paused = step.sideEffect ? html `<span class="paused">${lockedString(UIStringsNotTranslate.paused)}: </span>` : Lit.nothing;
+    const paused = step.requestApproval ?
+        html `<span class="paused">${lockedString(UIStringsNotTranslate.paused)}: </span>` :
+        Lit.nothing;
     return html `<span class="title">${paused}${titleForStep(step)}</span>`;
 }
 function renderStepCode(step) {
@@ -298,7 +303,7 @@ function renderStepCode(step) {
     // clang-format on
 }
 function renderStepDetails({ step, markdownRenderer, isLast, }) {
-    const sideEffects = isLast && step.sideEffect ? renderSideEffectConfirmationUi(step) : Lit.nothing;
+    const sideEffects = isLast && step.requestApproval ? renderSideEffectConfirmationUi(step) : Lit.nothing;
     const thought = step.thought ? html `<p>${renderTextAsMarkdown(step.thought, markdownRenderer)}</p>` : Lit.nothing;
     // clang-format off
     const contextDetails = step.contextDetails ?
@@ -326,7 +331,10 @@ function renderWalkthroughSidebarButton(input, lastStep) {
     if (walkthrough.isInlined) {
         return Lit.nothing;
     }
-    const title = input.isLoading ? titleForStep(lastStep) : lockedString(UIStringsNotTranslate.showThinking);
+    const title = walkthroughTitle({
+        isLoading: input.isLoading,
+        lastStep,
+    });
     // clang-format off
     return html `
     <div class="walkthrough-toggle-container">
@@ -365,7 +373,7 @@ function renderWalkthroughUI(input, steps) {
         // No steps = no walkthrough UI in the chat view.
         return Lit.nothing;
     }
-    const sideEffectSteps = steps.filter(s => s.sideEffect);
+    const sideEffectSteps = steps.filter(s => s.requestApproval);
     // If the walkthrough is in the sidebar, we render a button into the
     // ChatView to open it.
     const openWalkThroughSidebarButton = !input.walkthrough.isInlined ? renderWalkthroughSidebarButton(input, lastStep) : Lit.nothing;
@@ -394,7 +402,7 @@ function renderWalkthroughUI(input, steps) {
         markdownRenderer: input.markdownRenderer,
         isInlined: true,
         isExpanded: input.isLastMessage &&
-            (input.walkthrough.isExpanded || steps.some(step => Boolean(step.sideEffect))),
+            (input.walkthrough.isExpanded || steps.some(step => Boolean(step.requestApproval))),
         onToggle: input.walkthrough.onToggle,
     })}></devtools-widget>
     </div>
@@ -407,13 +415,13 @@ function renderWalkthroughUI(input, steps) {
     // clang-format on
 }
 function renderStepBadge({ step, isLoading, isLast }) {
-    if (isLoading && isLast && !step.sideEffect) {
+    if (isLoading && isLast && !step.requestApproval) {
         return html `<devtools-spinner></devtools-spinner>`;
     }
     let iconName = 'checkmark';
     let ariaLabel = lockedString(UIStringsNotTranslate.completed);
     let role = 'button';
-    if (isLast && step.sideEffect) {
+    if (isLast && step.requestApproval) {
         role = undefined;
         ariaLabel = undefined;
         iconName = 'pause-circle';
@@ -430,17 +438,18 @@ function renderStepBadge({ step, isLoading, isLast }) {
     ></devtools-icon>`;
 }
 export function renderStep({ step, isLoading, markdownRenderer, isLast }) {
+    const shouldRenderWidgets = Boolean(step.widgets?.length && Root.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled);
     const stepClasses = Lit.Directives.classMap({
         step: true,
-        empty: !step.thought && !step.code && !step.contextDetails && !step.sideEffect,
-        paused: Boolean(step.sideEffect),
+        empty: !step.thought && !step.code && !step.contextDetails && !step.requestApproval,
+        paused: Boolean(step.requestApproval),
         canceled: Boolean(step.canceled),
     });
     // clang-format off
     return html `
     <details class=${stepClasses}
       jslog=${VisualLogging.section('step')}
-      .open=${Boolean(step.sideEffect)}>
+      .open=${Boolean(step.requestApproval)}>
       <summary>
         <div class="summary">
           ${renderStepBadge({ step, isLoading, isLast })}
@@ -452,11 +461,96 @@ export function renderStep({ step, isLoading, markdownRenderer, isLast }) {
         </div>
       </summary>
       ${renderStepDetails({ step, markdownRenderer, isLast })}
-    </details>`;
+    </details>
+    ${shouldRenderWidgets ? html `
+      <div class="step-widgets-wrapper">
+        ${Lit.Directives.until(renderStepWidgets(step))}
+      </div>` : Lit.nothing}`;
     // clang-format on
 }
+async function makeComputedStyleWidget(widgetData) {
+    const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+    if (!target) {
+        return null;
+    }
+    const node = new SDK.DOMModel.DeferredDOMNode(target, widgetData.data.backendNodeId);
+    const resolved = await node.resolvePromise();
+    if (!resolved) {
+        return null;
+    }
+    const model = new ComputedStyle.ComputedStyleModel.ComputedStyleModel(resolved);
+    const styles = new ComputedStyle.ComputedStyleModel.ComputedStyle(resolved, widgetData.data.computedStyles);
+    const widgetConfig = UI.Widget.widgetConfig(Elements.ComputedStyleWidget.ComputedStyleWidget, {
+        nodeStyle: styles,
+        matchedStyles: widgetData.data.matchedCascade,
+        // This disables showing the nested traces and detailed information in the widget.
+        propertyTraces: null,
+        computedStyleModel: model,
+        allowUserControl: false,
+        filterText: new RegExp(widgetData.data.properties.join('|'), 'i')
+    });
+    // clang-format off
+    const widget = html `<devtools-widget class="computed-styles-widget" .widgetConfig=${widgetConfig}></devtools-widget>`;
+    // clang-format on
+    return { renderedWidget: widget, revealable: new Elements.ElementsPanel.NodeComputedStyles(resolved) };
+}
+function renderWidgetResponse(response) {
+    if (response === null) {
+        return Lit.nothing;
+    }
+    function onReveal() {
+        if (response === null) {
+            return;
+        }
+        void Common.Revealer.reveal(response?.revealable);
+    }
+    // clang-format off
+    return html `
+    <div class="widget-content-container">
+      ${response.renderedWidget}
+    </div>
+    <div class="widget-reveal-container">
+      <devtools-button class="widget-reveal"
+        .iconName=${'tab-move'}
+        .variant=${"text" /* Buttons.Button.Variant.TEXT */}
+        @click=${onReveal}
+      >${lockedString(UIStringsNotTranslate.reveal)}</devtools-button>
+    </div>
+    `;
+    // clang-format on
+}
+/**
+ * Renders AI-defined UI widgets within a step.
+ * When a ModelChatMessage contains a WidgetPart, the ChatMessage component
+ * iterates through the `step.widgets` array. For each widget, it determines
+ * the appropriate rendering logic based on the `widgetData.name`.
+ *
+ * Currently, only 'COMPUTED_STYLES' widgets are supported. For these, the
+ * `makeComputedStyleWidget` function is called to construct the necessary
+ * data and configuration for the `Elements.ComputedStyleWidget.ComputedStyleWidget`
+ * component. The widget is then rendered using the `<devtools-widget>`
+ * custom element, which dynamically instantiates and displays the specified
+ * UI.Widget subclass with the provided configuration.
+ *
+ * This allows for a flexible and extensible system where new widget types
+ * can be added to the AI responses and rendered in DevTools by adding
+ * corresponding `make...Widget` functions and handling them here.
+ */
+async function renderStepWidgets(step) {
+    if (!step.widgets || step.widgets.length === 0) {
+        return Lit.nothing;
+    }
+    const ui = await Promise.all(step.widgets.map(async (widgetData) => {
+        if (widgetData.name === 'COMPUTED_STYLES') {
+            const response = await makeComputedStyleWidget(widgetData);
+            return renderWidgetResponse(response);
+        }
+        return Lit.nothing;
+    }));
+    return html `${ui}`;
+}
 function renderSideEffectConfirmationUi(step) {
-    if (!step.sideEffect) {
+    if (!step.requestApproval) {
         return Lit.nothing;
     }
     // clang-format off
@@ -464,23 +558,23 @@ function renderSideEffectConfirmationUi(step) {
     class="side-effect-confirmation"
     jslog=${VisualLogging.section('side-effect-confirmation')}
   >
-    <p>${lockedString(UIStringsNotTranslate.sideEffectConfirmationDescription)}</p>
+    ${step.requestApproval.description ? html `<p>${step.requestApproval.description}</p>` : Lit.nothing}
     <div class="side-effect-buttons-container">
       <devtools-button
         .data=${{
         variant: "outlined" /* Buttons.Button.Variant.OUTLINED */,
         jslogContext: 'decline-execute-code',
     }}
-        @click=${() => step.sideEffect?.onAnswer(false)}
-      >${lockedString(UIStringsNotTranslate.negativeSideEffectConfirmation)}</devtools-button>
+        @click=${() => step.requestApproval?.onAnswer(false)}
+      >${lockedString(UIStringsNotTranslate.declineActionRequestApproval)}</devtools-button>
       <devtools-button
         .data=${{
         variant: "primary" /* Buttons.Button.Variant.PRIMARY */,
         jslogContext: 'accept-execute-code',
         iconName: 'play',
     }}
-        @click=${() => step.sideEffect?.onAnswer(true)}
-      >${lockedString(UIStringsNotTranslate.positiveSideEffectConfirmation)}</devtools-button>
+        @click=${() => step.requestApproval?.onAnswer(true)}
+      >${lockedString(UIStringsNotTranslate.confirmActionRequestApproval)}</devtools-button>
     </div>
   </div>`;
     // clang-format on

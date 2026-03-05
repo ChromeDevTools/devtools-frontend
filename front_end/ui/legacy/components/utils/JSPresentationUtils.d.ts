@@ -25,6 +25,8 @@ export declare class StackTracePreviewContent extends UI.Widget.Widget {
     constructor(element?: HTMLElement, view?: View);
     hasContent(): boolean;
     performUpdate(): void;
+    wasShown(): void;
+    willHide(): void;
     get linkElements(): readonly HTMLElement[];
     set options(options: Options);
     set stackTrace(stackTrace: StackTrace.StackTrace.StackTrace);

@@ -83,26 +83,31 @@ export default `/*
     border-radius: var(--sys-size-5);
     overflow: hidden;
     background-color: var(--sys-color-surface1);
+    width: fit-content;
+
+    &[open] {
+      width: auto;
+    }
   }
 
-  .walkthrough-inline summary {
+  .walkthrough-inline > summary {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    padding: var(--sys-size-5) var(--sys-size-6);
+    padding: var(--sys-size-4) var(--sys-size-6);
     cursor: pointer;
     background-color: transparent;
-    font-weight: 500;
-    font-size: 11px;
+    font: var(--sys-typescale-body4-regular);
     user-select: none;
     list-style: none; /* Hide default triangle */
+    justify-content: flex-start;
+    gap: var(--sys-size-4);
   }
 
-  .walkthrough-inline summary::-webkit-details-marker {
+  .walkthrough-inline > summary::-webkit-details-marker {
     display: none;
   }
 
-  .walkthrough-inline summary:hover {
+  .walkthrough-inline > summary:hover {
     background-color: var(--sys-color-state-hover-on-subtle);
   }
 

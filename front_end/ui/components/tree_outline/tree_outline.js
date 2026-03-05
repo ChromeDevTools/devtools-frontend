@@ -69,6 +69,11 @@ li {
   flex: none;
 }
 
+/* If the entire list has no children, we don't need to reserve space for the expandable icon */
+ul.hasNoChildren .arrow-icon {
+  display: none;
+}
+
 ul {
   margin: 0;
   padding: 0;
@@ -689,7 +694,7 @@ var TreeOutline = class extends HTMLElement {
         aria-level=${depth + 1}
         aria-posinset=${positionInSet + 1}
         class=${listItemClasses}
-        jslog=${VisualLogging.treeItem(node.jslogContext).track({ click: true, keydown: "ArrowUp|ArrowDown|ArrowLeft|ArrowRight|Enter|Space|Home|End" })}
+        jslog=${VisualLogging.treeItem(node.jslogContext).track({ click: true, resize: true, keydown: "ArrowUp|ArrowDown|ArrowLeft|ArrowRight|Enter|Space|Home|End" })}
         @click=${this.#onNodeClick}
         track-dom-node-to-tree-node=${trackDOMNodeToTreeNode(this.#domNodeToTreeNodeMap, node)}
         ${Lit2.Directives.ref((domNode) => {
@@ -723,6 +728,8 @@ var TreeOutline = class extends HTMLElement {
       return;
     }
     this.#scheduledRender = true;
+    const hasChildrenInTree = this.#treeData.some((topLevelNode) => isExpandableNode(topLevelNode));
+    const ulClasses = Lit2.Directives.classMap({ hasNoChildren: !hasChildrenInTree });
     await RenderCoordinator.write("TreeOutline render", () => {
       Lit2.render(html`
       <style>${Buttons.textButtonStyles}</style>
@@ -730,7 +737,7 @@ var TreeOutline = class extends HTMLElement {
       <style>${treeOutline_css_default}</style>
       <style>${CodeHighlighter.codeHighlighterStyles}</style>
       <div class="wrapping-container">
-        <ul role="tree" @keydown=${this.#onTreeKeyDown}>
+        <ul role="tree" @keydown=${this.#onTreeKeyDown} class=${ulClasses}>
           ${this.#treeData.map((topLevelNode, index) => {
         return this.#renderNode(topLevelNode, {
           depth: 0,

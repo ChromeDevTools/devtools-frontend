@@ -50,6 +50,11 @@ li {
   flex: none;
 }
 
+/* If the entire list has no children, we don't need to reserve space for the expandable icon */
+ul.hasNoChildren .arrow-icon {
+  display: none;
+}
+
 ul {
   margin: 0;
   padding: 0;

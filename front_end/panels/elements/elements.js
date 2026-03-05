@@ -719,10 +719,10 @@ var FontEditorSectionManager = class {
   boundFontChanged;
   boundOnScroll;
   boundResized;
-  constructor(swatchPopoverHelper, section3) {
+  constructor(swatchPopoverHelper, section4) {
     this.treeElementMap = /* @__PURE__ */ new Map();
     this.swatchPopoverHelper = swatchPopoverHelper;
-    this.section = section3;
+    this.section = section4;
     this.stylesContainer = null;
     this.fontEditor = null;
     this.scrollerElement = null;
@@ -3571,8 +3571,8 @@ var AngleRenderer = class extends rendererBase(SDK6.CSSPropertyParserMatchers.An
     cssAngle.append(valueElement);
     const treeElement = this.#treeElement;
     cssAngle.addEventListener("popovertoggled", ({ data }) => {
-      const section3 = treeElement.section();
-      if (!section3) {
+      const section4 = treeElement.section();
+      if (!section4) {
         return;
       }
       if (data.open) {
@@ -3583,7 +3583,7 @@ var AngleRenderer = class extends rendererBase(SDK6.CSSPropertyParserMatchers.An
           /* Host.UserMetrics.SwatchType.ANGLE */
         );
       }
-      section3.element.classList.toggle("has-open-popover", data.open);
+      section4.element.classList.toggle("has-open-popover", data.open);
       treeElement.stylesContainer().setEditingStyle(data.open);
       if (!data.open) {
         void treeElement.applyStyleText(treeElement.renderedPropertyText(), true);
@@ -4351,7 +4351,7 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI7.TreeO
   contextForTest;
   #gridNames = void 0;
   #tooltipKeyCounts = /* @__PURE__ */ new Map();
-  constructor({ stylesContainer, section: section3, matchedStyles, property, isShorthand, inherited, overloaded, newProperty }) {
+  constructor({ stylesContainer, section: section4, matchedStyles, property, isShorthand, inherited, overloaded, newProperty }) {
     const jslogContext = property.name.startsWith("--") ? "custom-property" : property.name;
     super("", isShorthand, jslogContext);
     this.style = property.ownerStyle;
@@ -4361,7 +4361,7 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI7.TreeO
     this.#overloaded = overloaded;
     this.selectable = false;
     this.#stylesContainer = stylesContainer;
-    this.#parentSection = section3;
+    this.#parentSection = section4;
     this.isShorthand = isShorthand;
     this.newProperty = newProperty;
     if (this.newProperty) {
@@ -5417,7 +5417,7 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI7.TreeO
       }
       moveToNextCallback.call(this, this.newProperty, false, this.#parentSection);
     }
-    function moveToNextCallback(alreadyNew, valueChanged, section3) {
+    function moveToNextCallback(alreadyNew, valueChanged, section4) {
       if (!moveDirection) {
         this.#stylesContainer.resetFocus();
         return;
@@ -5431,7 +5431,7 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI7.TreeO
         return;
       }
       if (moveTo && !moveTo.parent) {
-        const rootElement = section3.propertiesTreeOutline.rootElement();
+        const rootElement = section4.propertiesTreeOutline.rootElement();
         if (moveDirection === "forward" && blankInput && !isEditingName) {
           --moveToIndex;
         }
@@ -5462,12 +5462,12 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI7.TreeO
         if (alreadyNew && !valueChanged && isEditingName !== (moveDirection === "backward")) {
           return;
         }
-        section3.addNewBlankProperty().startEditingName();
+        section4.addNewBlankProperty().startEditingName();
         return;
       }
       if (abandonNewProperty) {
         moveTo = this.findSibling(moveDirection);
-        const sectionToEdit = moveTo || moveDirection === "backward" ? section3 : section3.nextEditableSibling();
+        const sectionToEdit = moveTo || moveDirection === "backward" ? section4 : section4.nextEditableSibling();
         if (sectionToEdit) {
           if (sectionToEdit.style().parentRule) {
             sectionToEdit.startEditingSelector();
@@ -5478,10 +5478,10 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI7.TreeO
         return;
       }
       if (moveToSelector) {
-        if (section3.style().parentRule) {
-          section3.startEditingSelector();
+        if (section4.style().parentRule) {
+          section4.startEditingSelector();
         } else {
-          section3.moveEditorFromSelector(moveDirection);
+          section4.moveEditorFromSelector(moveDirection);
         }
       }
     }
@@ -5574,10 +5574,10 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI7.TreeO
   }
 };
 var GhostStylePropertyTreeElement = class extends StylePropertyTreeElement {
-  constructor(stylesContainer, section3, matchedStyles, property) {
+  constructor(stylesContainer, section4, matchedStyles, property) {
     super({
       stylesContainer,
-      section: section3,
+      section: section4,
       matchedStyles,
       property,
       isShorthand: false,
@@ -5639,9 +5639,9 @@ var StyleEditorWidget = class _StyleEditorWidget extends UI8.Widget.VBox {
     await target.applyStyleText("", false);
     this.requestUpdate();
   }
-  bindContext(stylesContainer, section3) {
+  bindContext(stylesContainer, section4) {
     this.stylesContainer = stylesContainer;
-    this.section = section3;
+    this.section = section4;
     this.editor?.addEventListener("propertyselected", this.onPropertySelected);
     this.editor?.addEventListener("propertydeselected", this.onPropertyDeselected);
   }
@@ -5683,7 +5683,7 @@ var StyleEditorWidget = class _StyleEditorWidget extends UI8.Widget.VBox {
       this.contentElement.appendChild(this.editor);
     }
   }
-  static createTriggerButton(stylesContainer, section3, editorClass, buttonTitle, triggerKey) {
+  static createTriggerButton(stylesContainer, section4, editorClass, buttonTitle, triggerKey) {
     const triggerButton = createIcon2("flex-wrap", "styles-pane-button");
     triggerButton.title = buttonTitle;
     triggerButton.role = "button";
@@ -5693,7 +5693,7 @@ var StyleEditorWidget = class _StyleEditorWidget extends UI8.Widget.VBox {
       const widget = _StyleEditorWidget.instance();
       widget.element.classList.toggle("with-padding", true);
       widget.setEditor(editorClass);
-      widget.bindContext(stylesContainer, section3);
+      widget.bindContext(stylesContainer, section4);
       widget.setTriggerKey(triggerKey);
       await widget.render();
       widget.focus();
@@ -5720,12 +5720,12 @@ var StyleEditorWidget = class _StyleEditorWidget extends UI8.Widget.VBox {
     return triggerButton;
   }
 };
-function ensureTreeElementForProperty(section3, propertyName) {
-  const target = section3.propertiesTreeOutline.rootElement().children().find((child) => child instanceof StylePropertyTreeElement && child.property.name === propertyName);
+function ensureTreeElementForProperty(section4, propertyName) {
+  const target = section4.propertiesTreeOutline.rootElement().children().find((child) => child instanceof StylePropertyTreeElement && child.property.name === propertyName);
   if (target) {
     return target;
   }
-  const newTarget = section3.addNewBlankProperty();
+  const newTarget = section4.addNewBlankProperty();
   newTarget.property.name = propertyName;
   return newTarget;
 }
@@ -5734,10 +5734,10 @@ async function fetchComputedStyles(stylesContainer) {
   const style = await computedStyleModel.fetchComputedStyle();
   return style ? style.computedStyle : /* @__PURE__ */ new Map();
 }
-function getAuthoredStyles(section3, editableProperties) {
+function getAuthoredStyles(section4, editableProperties) {
   const authoredProperties = /* @__PURE__ */ new Map();
   const editablePropertiesSet = new Set(editableProperties.map((prop) => prop.propertyName));
-  for (const prop of section3.style().leadingProperties()) {
+  for (const prop of section4.style().leadingProperties()) {
     if (editablePropertiesSet.has(prop.name)) {
       authoredProperties.set(prop.name, prop.value);
     }
@@ -7378,21 +7378,21 @@ var StylePropertyHighlighter = class {
    * Expand all shorthands, find the given property, scroll to it and highlight it.
    */
   async highlightProperty(cssProperty) {
-    const section3 = this.styleSidebarPane.allSections().find((section4) => section4.style().allProperties().includes(cssProperty));
-    if (!section3) {
+    const section4 = this.styleSidebarPane.allSections().find((section5) => section5.style().allProperties().includes(cssProperty));
+    if (!section4) {
       return;
     }
-    section3.showAllItems();
+    section4.showAllItems();
     const populatePromises = [];
-    for (let treeElement2 = section3.propertiesTreeOutline.firstChild(); treeElement2; treeElement2 = treeElement2.nextSibling) {
+    for (let treeElement2 = section4.propertiesTreeOutline.firstChild(); treeElement2; treeElement2 = treeElement2.nextSibling) {
       populatePromises.push(treeElement2.onpopulate());
     }
     await Promise.all(populatePromises);
-    const treeElement = this.findTreeElementFromSection((treeElement2) => treeElement2.property === cssProperty, section3);
+    const treeElement = this.findTreeElementFromSection((treeElement2) => treeElement2.property === cssProperty, section4);
     if (treeElement) {
       treeElement.parent?.expand();
       this.scrollAndHighlightTreeElement(treeElement);
-      section3.element.focus();
+      section4.element.focus();
     }
   }
   findAndHighlightSectionBlock(sectionBlockName) {
@@ -7400,19 +7400,19 @@ var StylePropertyHighlighter = class {
     if (!block || block.sections.length === 0) {
       return;
     }
-    const [section3] = block.sections;
-    section3.showAllItems();
+    const [section4] = block.sections;
+    section4.showAllItems();
     PanelUtils.highlightElement(block.titleElement());
   }
   findAndHighlightSection(sectionName, blockName) {
     const block = this.styleSidebarPane.getSectionBlockByName(blockName);
-    const section3 = block?.sections.find((section4) => section4.headerText() === sectionName);
-    if (!section3 || !block) {
+    const section4 = block?.sections.find((section5) => section5.headerText() === sectionName);
+    if (!section4 || !block) {
       return;
     }
     block.expand(true);
-    section3.showAllItems();
-    PanelUtils.highlightElement(section3.element);
+    section4.showAllItems();
+    PanelUtils.highlightElement(section4.element);
   }
   /**
    * Find the first non-overridden property that matches the provided name, scroll to it and highlight it.
@@ -7423,26 +7423,26 @@ var StylePropertyHighlighter = class {
     if (!sections) {
       return false;
     }
-    for (const section3 of sections) {
-      if (sectionName && section3.headerText() !== sectionName) {
+    for (const section4 of sections) {
+      if (sectionName && section4.headerText() !== sectionName) {
         continue;
       }
-      if (!section3.style().hasActiveProperty(propertyName)) {
+      if (!section4.style().hasActiveProperty(propertyName)) {
         continue;
       }
       block?.expand(true);
-      section3.showAllItems();
-      const treeElement = this.findTreeElementFromSection((treeElement2) => treeElement2.property.name === propertyName && !treeElement2.overloaded(), section3);
+      section4.showAllItems();
+      const treeElement = this.findTreeElementFromSection((treeElement2) => treeElement2.property.name === propertyName && !treeElement2.overloaded(), section4);
       if (treeElement) {
         this.scrollAndHighlightTreeElement(treeElement);
-        section3.element.focus();
+        section4.element.focus();
         return true;
       }
     }
     return false;
   }
-  findTreeElementFromSection(compareCb, section3) {
-    let treeElement = section3.propertiesTreeOutline.firstChild();
+  findTreeElementFromSection(compareCb, section4) {
+    let treeElement = section4.propertiesTreeOutline.firstChild();
     while (treeElement && treeElement instanceof StylePropertyTreeElement) {
       if (compareCb(treeElement)) {
         return treeElement;
@@ -7986,8 +7986,8 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common4.ObjectWrapper.e
   jumpToSection(sectionName, blockName) {
     this.decorator.findAndHighlightSection(sectionName, blockName);
   }
-  jumpToSectionBlock(section3) {
-    this.decorator.findAndHighlightSectionBlock(section3);
+  jumpToSectionBlock(section4) {
+    this.decorator.findAndHighlightSectionBlock(section4);
   }
   jumpToFunctionDefinition(functionName) {
     this.jumpToSection(functionName, FUNCTION_SECTION_NAME);
@@ -8007,8 +8007,8 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common4.ObjectWrapper.e
     if (!activeElement) {
       return;
     }
-    const section3 = this.sectionByElement.get(activeElement);
-    if (!section3) {
+    const section4 = this.sectionByElement.get(activeElement);
+    if (!section4) {
       return;
     }
     let sectionToFocus = null;
@@ -8016,23 +8016,23 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common4.ObjectWrapper.e
     switch (event.key) {
       case "ArrowUp":
       case "ArrowLeft": {
-        sectionToFocus = section3.previousSibling() || section3.lastSibling();
+        sectionToFocus = section4.previousSibling() || section4.lastSibling();
         willIterateForward = false;
         break;
       }
       case "ArrowDown":
       case "ArrowRight": {
-        sectionToFocus = section3.nextSibling() || section3.firstSibling();
+        sectionToFocus = section4.nextSibling() || section4.firstSibling();
         willIterateForward = true;
         break;
       }
       case "Home": {
-        sectionToFocus = section3.firstSibling();
+        sectionToFocus = section4.firstSibling();
         willIterateForward = true;
         break;
       }
       case "End": {
-        sectionToFocus = section3.lastSibling();
+        sectionToFocus = section4.lastSibling();
         willIterateForward = false;
         break;
       }
@@ -8128,11 +8128,11 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common4.ObjectWrapper.e
   }
   refreshUpdate(editedSection, editedTreeElement) {
     if (editedTreeElement) {
-      for (const section3 of this.allSections()) {
-        if (section3 instanceof BlankStylePropertiesSection && section3.isBlank) {
+      for (const section4 of this.allSections()) {
+        if (section4 instanceof BlankStylePropertiesSection && section4.isBlank) {
           continue;
         }
-        section3.updateVarFunctions(editedTreeElement);
+        section4.updateVarFunctions(editedTreeElement);
       }
     }
     if (this.isEditingStyle) {
@@ -8142,11 +8142,11 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common4.ObjectWrapper.e
     if (!node) {
       return;
     }
-    for (const section3 of this.allSections()) {
-      if (section3 instanceof BlankStylePropertiesSection && section3.isBlank) {
+    for (const section4 of this.allSections()) {
+      if (section4 instanceof BlankStylePropertiesSection && section4.isBlank) {
         continue;
       }
-      section3.update(section3 === editedSection);
+      section4.update(section4 === editedSection);
     }
     if (this.#filterRegex) {
       this.updateFilter();
@@ -8246,8 +8246,8 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common4.ObjectWrapper.e
   }
   #resize() {
     const width = this.contentElement.getBoundingClientRect().width + "px";
-    this.allSections().forEach((section3) => {
-      section3.propertiesTreeOutline.element.style.width = width;
+    this.allSections().forEach((section4) => {
+      section4.propertiesTreeOutline.element.style.width = width;
     });
     this.hideAllPopovers();
     return Promise.resolve();
@@ -8309,8 +8309,8 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common4.ObjectWrapper.e
   onCSSModelChanged(event) {
     const edit = event?.data && "edit" in event.data ? event.data.edit : null;
     if (edit) {
-      for (const section3 of this.allSections()) {
-        section3.styleSheetEdited(edit);
+      for (const section4 of this.allSections()) {
+        section4.styleSheetEdited(edit);
       }
       void this.#refreshComputedStyles();
       return;
@@ -8434,17 +8434,17 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common4.ObjectWrapper.e
     if (signal.aborted) {
       return;
     }
-    for (const section3 of this.allSections()) {
-      section3.setComputedStyles(computedStyles);
-      section3.setParentsComputedStyles(parentsComputedStyles);
-      section3.updateAuthoringHint();
+    for (const section4 of this.allSections()) {
+      section4.setComputedStyles(computedStyles);
+      section4.setParentsComputedStyles(parentsComputedStyles);
+      section4.updateAuthoringHint();
     }
   }
   focusedSectionIndex() {
     let index = 0;
     for (const block of this.sectionBlocks) {
-      for (const section3 of block.sections) {
-        if (section3.element.hasFocus()) {
+      for (const section4 of block.sections) {
+        if (section4.element.hasFocus()) {
           return index;
         }
         index++;
@@ -8453,11 +8453,11 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common4.ObjectWrapper.e
     return -1;
   }
   continueEditingElement(sectionIndex, propertyIndex) {
-    const section3 = this.allSections()[sectionIndex];
-    if (section3) {
-      const element = section3.closestPropertyForEditing(propertyIndex);
+    const section4 = this.allSections()[sectionIndex];
+    if (section4) {
+      const element = section4.closestPropertyForEditing(propertyIndex);
       if (!element) {
-        section3.element.focus();
+        section4.element.focus();
         return;
       }
       element.startEditingName();
@@ -8507,10 +8507,10 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common4.ObjectWrapper.e
       if (titleElement) {
         fragment.appendChild(titleElement);
       }
-      for (const section3 of block.sections) {
-        fragment.appendChild(section3.element);
+      for (const section4 of block.sections) {
+        fragment.appendChild(section4.element);
         if (index === focusedIndex) {
-          elementToFocus = section3.element;
+          elementToFocus = section4.element;
         }
         index++;
       }
@@ -8586,9 +8586,9 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common4.ObjectWrapper.e
       const lastBlock = blocks[blocks.length - 1];
       if (lastBlock && (!isTransitionOrAnimationStyle || style.allProperties().length > 0)) {
         this.idleCallbackManager.schedule(() => {
-          const section3 = new StylePropertiesSection(this, matchedStyles, style, sectionIdx, computedStyles, parentsComputedStyles, computedStyleExtraFields);
+          const section4 = new StylePropertiesSection(this, matchedStyles, style, sectionIdx, computedStyles, parentsComputedStyles, computedStyleExtraFields);
           sectionIdx++;
-          lastBlock.sections.push(section3);
+          lastBlock.sections.push(section4);
         });
       }
     }
@@ -8639,9 +8639,9 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common4.ObjectWrapper.e
         addLayerSeparator(style);
         const lastBlock = blocks[blocks.length - 1];
         this.idleCallbackManager.schedule(() => {
-          const section3 = new HighlightPseudoStylePropertiesSection(this, matchedStyles, style, sectionIdx, computedStyles, parentsComputedStyles, computedStyleExtraFields);
+          const section4 = new HighlightPseudoStylePropertiesSection(this, matchedStyles, style, sectionIdx, computedStyles, parentsComputedStyles, computedStyleExtraFields);
           sectionIdx++;
-          lastBlock.sections.push(section3);
+          lastBlock.sections.push(section4);
         });
       }
     }
@@ -8741,20 +8741,20 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common4.ObjectWrapper.e
     }
     let sectionIdx = 0;
     for (const block of this.sectionBlocks) {
-      for (const section3 of block.sections) {
-        section3.setSectionIdx(sectionIdx);
+      for (const section4 of block.sections) {
+        section4.setSectionIdx(sectionIdx);
         sectionIdx++;
       }
     }
   }
-  removeSection(section3) {
+  removeSection(section4) {
     for (const block of this.sectionBlocks) {
-      const index = block.sections.indexOf(section3);
+      const index = block.sections.indexOf(section4);
       if (index === -1) {
         continue;
       }
       block.sections.splice(index, 1);
-      section3.element.remove();
+      section4.element.remove();
     }
   }
   filterRegex() {
@@ -8958,7 +8958,7 @@ var SectionBlock = class _SectionBlock {
     this.#icon.name = expand2 ? "triangle-down" : "triangle-right";
     UI10.ARIAUtils.setExpanded(this.#titleElement, expand2);
     this.#expanded = expand2;
-    this.sections.forEach((section3) => section3.element.classList.toggle("hidden", !expand2));
+    this.sections.forEach((section4) => section4.element.classList.toggle("hidden", !expand2));
   }
   static createPseudoTypeBlock(pseudoType, pseudoArgument) {
     const separatorElement = document.createElement("div");
@@ -9052,8 +9052,8 @@ var SectionBlock = class _SectionBlock {
     for (const childBlock of this.childBlocks) {
       numVisibleSections += childBlock.updateFilter();
     }
-    for (const section3 of this.sections) {
-      numVisibleSections += section3.updateFilter() ? 1 : 0;
+    for (const section4 of this.sections) {
+      numVisibleSections += section4.updateFilter() ? 1 : 0;
     }
     if (this.#titleElement) {
       this.#titleElement.classList.toggle("hidden", numVisibleSections === 0);
@@ -10143,6 +10143,9 @@ var ComputedStyleWidget = class extends UI12.Widget.VBox {
     this.#computedStylesTree.classList.toggle("computed-narrow", isNarrow);
   }
   get filterText() {
+    if (this.#filterIsRegex) {
+      return new RegExp(this.#filterText);
+    }
     return this.#filterText;
   }
   get filterIsRegex() {
@@ -10156,6 +10159,7 @@ var ComputedStyleWidget = class extends UI12.Widget.VBox {
       this.#filterText = newFilter.source;
       this.#filterIsRegex = true;
     }
+    this.filterRegex = this.#buildFilterRegex(this.#filterText);
     this.requestUpdate();
   }
   get allowUserControl() {
@@ -12107,6 +12111,7 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
     this.treeOutline = null;
     this.listItemElement.setAttribute("jslog", `${VisualLogging8.treeItem().parent("elementsTreeOutline").track({
       keydown: "ArrowUp|ArrowDown|ArrowLeft|ArrowRight|Backspace|Delete|Enter|Space|Home|End",
+      resize: true,
       drag: true,
       click: true
     })}`);
@@ -12912,19 +12917,19 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
     menuItem = contextMenu.clipboardSection().appendItem(i18nString10(UIStrings11.cut), treeOutline.performCopyOrCut.bind(treeOutline, true, this.nodeInternal), { disabled: !this.hasEditableNode(), jslogContext: "cut" });
     menuItem.setShortcut(createShortcut("X", modifier));
     const copyMenu = contextMenu.clipboardSection().appendSubMenuItem(i18nString10(UIStrings11.copy), false, "copy");
-    const section3 = copyMenu.section();
+    const section4 = copyMenu.section();
     if (!isShadowRoot) {
-      menuItem = section3.appendItem(i18nString10(UIStrings11.copyOuterhtml), treeOutline.performCopyOrCut.bind(treeOutline, false, this.nodeInternal), { jslogContext: "copy-outer-html" });
+      menuItem = section4.appendItem(i18nString10(UIStrings11.copyOuterhtml), treeOutline.performCopyOrCut.bind(treeOutline, false, this.nodeInternal), { jslogContext: "copy-outer-html" });
       menuItem.setShortcut(createShortcut("V", modifier));
     }
     if (this.nodeInternal.nodeType() === Node.ELEMENT_NODE) {
-      section3.appendItem(i18nString10(UIStrings11.copySelector), this.copyCSSPath.bind(this), { jslogContext: "copy-selector" });
-      section3.appendItem(i18nString10(UIStrings11.copyJsPath), this.copyJSPath.bind(this), { disabled: !canGetJSPath(this.nodeInternal), jslogContext: "copy-js-path" });
-      section3.appendItem(i18nString10(UIStrings11.copyStyles), this.copyStyles.bind(this), { jslogContext: "elements.copy-styles" });
+      section4.appendItem(i18nString10(UIStrings11.copySelector), this.copyCSSPath.bind(this), { jslogContext: "copy-selector" });
+      section4.appendItem(i18nString10(UIStrings11.copyJsPath), this.copyJSPath.bind(this), { disabled: !canGetJSPath(this.nodeInternal), jslogContext: "copy-js-path" });
+      section4.appendItem(i18nString10(UIStrings11.copyStyles), this.copyStyles.bind(this), { jslogContext: "elements.copy-styles" });
     }
     if (!isShadowRoot) {
-      section3.appendItem(i18nString10(UIStrings11.copyXpath), this.copyXPath.bind(this), { jslogContext: "copy-xpath" });
-      section3.appendItem(i18nString10(UIStrings11.copyFullXpath), this.copyFullXPath.bind(this), { jslogContext: "copy-full-xpath" });
+      section4.appendItem(i18nString10(UIStrings11.copyXpath), this.copyXPath.bind(this), { jslogContext: "copy-xpath" });
+      section4.appendItem(i18nString10(UIStrings11.copyFullXpath), this.copyFullXPath.bind(this), { jslogContext: "copy-full-xpath" });
     }
     menuItem = copyMenu.clipboardSection().appendItem(i18nString10(UIStrings11.copyElement), treeOutline.performCopyOrCut.bind(treeOutline, false, this.nodeInternal, true), { jslogContext: "copy-element" });
     menuItem.setShortcut(createShortcut("C", modifier));
@@ -16166,15 +16171,13 @@ var DEFAULT_VIEW6 = (input, output, target) => {
   };
   const renderElement = (element) => html10`<div
           class="element"
-          jslog=${VisualLogging10.item()}>
+          jslog=${VisualLogging10.item().track({ resize: true })}>
         <devtools-checkbox
           data-element="true"
           class="checkbox-label"
           .checked=${element.enabled}
           @change=${(e) => input.onElementToggle(element, e)}
-          jslog=${VisualLogging10.toggle().track({
-    click: true
-  })}>
+          jslog=${VisualLogging10.toggle().track({ click: true, resize: true })}>
           <span
               class="node-text-container"
               data-label="true"
@@ -16184,7 +16187,8 @@ var DEFAULT_VIEW6 = (input, output, target) => {
     nodeId: element.domId,
     nodeTitle: element.name,
     nodeClasses: element.domClasses
-  }}></devtools-node-text>
+  }}>
+            </devtools-node-text>
           </span>
         </devtools-checkbox>
         <label
@@ -20100,6 +20104,201 @@ var Renderer2 = class _Renderer {
     };
   }
 };
+
+// gen/front_end/panels/elements/StandaloneStylesContainer.js
+var StandaloneStylesContainer_exports = {};
+__export(StandaloneStylesContainer_exports, {
+  DEFAULT_VIEW: () => DEFAULT_VIEW13,
+  StandaloneStylesContainer: () => StandaloneStylesContainer
+});
+import * as Common18 from "./../../core/common/common.js";
+import * as ComputedStyle4 from "./../../models/computed_style/computed_style.js";
+import * as InlineEditor5 from "./../../ui/legacy/components/inline_editor/inline_editor.js";
+import * as Components8 from "./../../ui/legacy/components/utils/utils.js";
+import * as UI29 from "./../../ui/legacy/legacy.js";
+import { html as html17, render as render16 } from "./../../ui/lit/lit.js";
+import * as VisualLogging18 from "./../../ui/visual_logging/visual_logging.js";
+import * as ElementsComponents8 from "./components/components.js";
+var DEFAULT_VIEW13 = (input, _output, target) => {
+  render16(html17`
+    <style>${stylesSidebarPane_css_default}</style>
+    <div class="style-panes-wrapper" jslog=${VisualLogging18.section("standalone-styles").track({
+    resize: true
+  })}>
+      <div class="styles-pane">
+        ${input.sections.map((section4) => section4.element)}
+      </div>
+    </div>
+  `, target);
+};
+var StandaloneStylesContainer = class extends UI29.Widget.VBox {
+  activeCSSAngle = null;
+  isEditingStyle = false;
+  sectionByElement = /* @__PURE__ */ new WeakMap();
+  // TODO: Reference the MAX_LINK_LENGTH from StylesSidebarPane at a later stage, when we have a reference to it.
+  linkifier = new Components8.Linkifier.Linkifier(
+    23,
+    /* useLinkDecorator */
+    true
+  );
+  #webCustomData;
+  #userOperation = false;
+  #sections = [];
+  #swatchPopoverHelper = new InlineEditor5.SwatchPopoverHelper.SwatchPopoverHelper();
+  #computedStyleModelInternal = new ComputedStyle4.ComputedStyleModel.ComputedStyleModel();
+  #view;
+  constructor(element, view = DEFAULT_VIEW13) {
+    super(element, { useShadowDom: true });
+    this.#view = view;
+  }
+  get userOperation() {
+    return this.#userOperation;
+  }
+  get webCustomData() {
+    if (!this.#webCustomData && Common18.Settings.Settings.instance().moduleSetting("show-css-property-documentation-on-hover").get()) {
+      this.#webCustomData = WebCustomData.create();
+    }
+    return this.#webCustomData;
+  }
+  async #updateSections() {
+    const node = this.node();
+    if (!node) {
+      this.#sections = [];
+      this.requestUpdate();
+      return;
+    }
+    const cssModel = node.domModel().cssModel();
+    const matchedStyles = await cssModel.cachedMatchedCascadeForNode(node);
+    const parentNodeId = matchedStyles?.getParentLayoutNodeId();
+    const [parentStyles, computedStyles, extraStyles] = await Promise.all([
+      parentNodeId ? cssModel.getComputedStyle(parentNodeId) : null,
+      cssModel.getComputedStyle(node.id),
+      cssModel.getComputedStyleExtraFields(node.id)
+    ]);
+    if (!matchedStyles) {
+      return;
+    }
+    const newSections = [];
+    let sectionIdx = 0;
+    for (const style of matchedStyles.nodeStyles()) {
+      const section4 = new StylePropertiesSection(this, matchedStyles, style, sectionIdx++, computedStyles, parentStyles, extraStyles);
+      newSections.push(section4);
+      this.sectionByElement.set(section4.element, section4);
+    }
+    this.#sections = newSections;
+    this.swatchPopoverHelper().reposition();
+  }
+  async performUpdate() {
+    if (this.isEditingStyle || this.#userOperation) {
+      return;
+    }
+    await this.#updateSections();
+    const viewInput = {
+      sections: this.#sections
+    };
+    this.#view(viewInput, void 0, this.contentElement);
+  }
+  swatchPopoverHelper() {
+    return this.#swatchPopoverHelper;
+  }
+  // TODO: Refactor StylesContainer to use getter for node(), so that we can have a `node` setter here: set node().
+  set domNode(node) {
+    if (this.#computedStyleModelInternal.node === node) {
+      return;
+    }
+    this.#computedStyleModelInternal.node = node;
+    this.requestUpdate();
+  }
+  node() {
+    return this.#computedStyleModelInternal.node;
+  }
+  cssModel() {
+    return this.#computedStyleModelInternal.cssModel();
+  }
+  computedStyleModel() {
+    return this.#computedStyleModelInternal;
+  }
+  setActiveProperty(_treeElement) {
+  }
+  refreshUpdate(editedSection, editedTreeElement) {
+    if (editedTreeElement) {
+      for (const section4 of this.#sections) {
+        section4.updateVarFunctions(editedTreeElement);
+      }
+    }
+    if (this.isEditingStyle) {
+      return;
+    }
+    for (const section4 of this.#sections) {
+      section4.update(section4 === editedSection);
+    }
+    this.swatchPopoverHelper().reposition();
+  }
+  filterRegex() {
+    return null;
+  }
+  setEditingStyle(editing) {
+    this.isEditingStyle = editing;
+  }
+  setUserOperation(userOperation) {
+    this.#userOperation = userOperation;
+  }
+  forceUpdate() {
+    this.hideAllPopovers();
+    this.requestUpdate();
+  }
+  hideAllPopovers() {
+    this.#swatchPopoverHelper.hide();
+  }
+  allSections() {
+    return this.#sections;
+  }
+  getVariablePopoverContents(matchedStyles, variableName, computedValue) {
+    const registration = matchedStyles.getRegisteredProperty(variableName);
+    return new ElementsComponents8.CSSVariableValueView.CSSVariableValueView({
+      variableName,
+      value: computedValue ?? void 0,
+      // TODO: provide a goToDefinition to jump to the StylesSidebarPane
+      details: registration ? { registration, goToDefinition: () => {
+      } } : void 0
+    });
+  }
+  getVariableParserError(_matchedStyles, _variableName) {
+    return null;
+  }
+  jumpToFunctionDefinition(_functionName) {
+  }
+  continueEditingElement(_sectionIndex, _propertyIndex) {
+  }
+  revealProperty(_cssProperty) {
+  }
+  resetFocus() {
+    const firstVisibleSection = this.#sections[0]?.findCurrentOrNextVisible(true);
+    if (firstVisibleSection) {
+      firstVisibleSection.element.tabIndex = this.hasFocus() ? -1 : 0;
+    }
+  }
+  removeSection(_section) {
+  }
+  focusedSectionIndex() {
+    return this.#sections.findIndex((section4) => section4.element.hasFocus());
+  }
+  addBlankSection(_insertAfterSection, _styleSheetHeader, _ruleLocation) {
+  }
+  jumpToProperty(_propertyName, _sectionName, _blockName) {
+    return false;
+  }
+  jumpToSectionBlock(_section) {
+  }
+  jumpToFontPaletteDefinition(_paletteName) {
+  }
+  jumpToDeclaration(_valueSource) {
+  }
+  addStyleUpdateListener(_listener) {
+  }
+  removeStyleUpdateListener(_listener) {
+  }
+};
 export {
   AccessibilityTreeUtils_exports as AccessibilityTreeUtils,
   AccessibilityTreeView_exports as AccessibilityTreeView,
@@ -20126,6 +20325,7 @@ export {
   PlatformFontsWidget_exports as PlatformFontsWidget,
   PropertiesWidget_exports as PropertiesWidget,
   PropertyRenderer_exports as PropertyRenderer,
+  StandaloneStylesContainer_exports as StandaloneStylesContainer,
   StyleEditorWidget_exports as StyleEditorWidget,
   StylePropertiesSection_exports as StylePropertiesSection,
   StylePropertyHighlighter_exports as StylePropertyHighlighter,

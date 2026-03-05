@@ -6655,6 +6655,14 @@ export declare namespace Emulation {
          * Scrollbar type. Default: `default`.
          */
         scrollbarType?: SetDeviceMetricsOverrideRequestScrollbarType;
+        /**
+         * If set to true, enables screen orientation lock emulation, which
+         * intercepts screen.orientation.lock() calls from the page and reports
+         * orientation changes via screenOrientationLockChanged events. This is
+         * useful for emulating mobile device orientation lock behavior in
+         * responsive design mode.
+         */
+        screenOrientationLockEmulation?: boolean;
     }
     interface SetDevicePostureOverrideRequest {
         posture: DevicePosture;
@@ -6957,6 +6965,55 @@ export declare namespace Emulation {
         isInternal?: boolean;
     }
     interface AddScreenResponse extends ProtocolResponseWithError {
+        screenInfo: ScreenInfo;
+    }
+    interface UpdateScreenRequest {
+        /**
+         * Target screen identifier.
+         */
+        screenId: ScreenId;
+        /**
+         * Offset of the left edge of the screen in pixels.
+         */
+        left?: integer;
+        /**
+         * Offset of the top edge of the screen in pixels.
+         */
+        top?: integer;
+        /**
+         * The width of the screen in pixels.
+         */
+        width?: integer;
+        /**
+         * The height of the screen in pixels.
+         */
+        height?: integer;
+        /**
+         * Specifies the screen's work area.
+         */
+        workAreaInsets?: WorkAreaInsets;
+        /**
+         * Specifies the screen's device pixel ratio.
+         */
+        devicePixelRatio?: number;
+        /**
+         * Specifies the screen's rotation angle. Available values are 0, 90, 180 and 270.
+         */
+        rotation?: integer;
+        /**
+         * Specifies the screen's color depth in bits.
+         */
+        colorDepth?: integer;
+        /**
+         * Specifies the descriptive label for the screen.
+         */
+        label?: string;
+        /**
+         * Indicates whether the screen is internal to the device or external, attached to the device. Default is false.
+         */
+        isInternal?: boolean;
+    }
+    interface UpdateScreenResponse extends ProtocolResponseWithError {
         screenInfo: ScreenInfo;
     }
     interface RemoveScreenRequest {

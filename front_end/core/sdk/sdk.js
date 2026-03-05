@@ -4953,7 +4953,7 @@ var generatedProperties = [
     "inherited": false,
     "keywords": [
       "none",
-      "auto"
+      "all"
     ],
     "name": "view-transition-scope"
   },
@@ -7329,7 +7329,7 @@ var generatedPropertyValues = {
   "view-transition-scope": {
     "values": [
       "none",
-      "auto"
+      "all"
     ]
   },
   "visibility": {
@@ -33331,14 +33331,10 @@ var EmulationModel = class extends SDKModel {
   #touchEmulationAllowed;
   #customTouchEnabled;
   #touchConfiguration;
-  #screenOrientationLocked;
-  #lockedOrientation;
   constructor(target) {
     super(target);
     this.#emulationAgent = target.emulationAgent();
     this.#deviceOrientationAgent = target.deviceOrientationAgent();
-    this.#screenOrientationLocked = false;
-    this.#lockedOrientation = null;
     this.#cssModel = target.model(CSSModel);
     this.#overlayModel = target.model(OverlayModel);
     if (this.#overlayModel) {
@@ -33500,7 +33496,6 @@ var EmulationModel = class extends SDKModel {
       enabled: false,
       configuration: "mobile"
     };
-    target.registerEmulationDispatcher(this);
   }
   setTouchEmulationAllowed(touchEmulationAllowed) {
     this.#touchEmulationAllowed = touchEmulationAllowed;
@@ -33701,20 +33696,6 @@ var EmulationModel = class extends SDKModel {
       }
     ];
     return await this.emulateCSSMedia(type, features);
-  }
-  // ProtocolProxyApi.EmulationDispatcher implementation
-  virtualTimeBudgetExpired() {
-  }
-  screenOrientationLockChanged(event) {
-    this.#screenOrientationLocked = event.locked;
-    this.#lockedOrientation = event.orientation ?? null;
-    this.dispatchEventToListeners("ScreenOrientationLockChanged", { locked: event.locked, orientation: event.orientation ?? null });
-  }
-  isScreenOrientationLocked() {
-    return this.#screenOrientationLocked;
-  }
-  lockedOrientation() {
-    return this.#lockedOrientation;
   }
 };
 var Location2 = class _Location {

@@ -291,6 +291,7 @@ style.setProperty('--image-file-step', 'url(\"' + new URL('./src/step.svg', impo
 style.setProperty('--image-file-stop', 'url(\"' + new URL('./src/stop.svg', import.meta.url).toString() + '\")');
 style.setProperty('--image-file-symbol', 'url(\"' + new URL('./src/symbol.svg', import.meta.url).toString() + '\")');
 style.setProperty('--image-file-sync', 'url(\"' + new URL('./src/sync.svg', import.meta.url).toString() + '\")');
+style.setProperty('--image-file-tab-move', 'url(\"' + new URL('./src/tab-move.svg', import.meta.url).toString() + '\")');
 style.setProperty('--image-file-table', 'url(\"' + new URL('./src/table.svg', import.meta.url).toString() + '\")');
 style.setProperty('--image-file-terminal', 'url(\"' + new URL('./src/terminal.svg', import.meta.url).toString() + '\")');
 style.setProperty('--image-file-text-analysis', 'url(\"' + new URL('./src/text-analysis.svg', import.meta.url).toString() + '\")');

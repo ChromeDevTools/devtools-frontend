@@ -32,6 +32,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 import * as i18n from '../../../../core/i18n/i18n.js';
+import * as Root from '../../../../core/root/root.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
 import * as StackTrace from '../../../../models/stack_trace/stack_trace.js';
 import * as Workspace from '../../../../models/workspace/workspace.js';
@@ -197,6 +198,33 @@ export class StackTracePreviewContent extends UI.Widget.Widget {
             onShowLess: this.#onShowMoreLess.bind(this, false),
         };
         this.#view(input, {}, this.contentElement);
+        this.#updateHasNonIgnoredLinks();
+    }
+    // Propagate ignore-list state to the host element so that CSS outside the
+    // shadow DOM can coordinate ignore-list toggling across multiple stack
+    // traces (e.g. Error inline stack + console.error call stack).
+    // See crbug.com/379788109.
+    #updateHasNonIgnoredLinks = () => {
+        const hasNonIgnoredLinks = this.linkElements.some(link => {
+            const uiLocation = Linkifier.uiLocation(link);
+            if (uiLocation) {
+                return !uiLocation.isIgnoreListed();
+            }
+            return !link.classList.contains('ignore-list-link');
+        });
+        this.element.classList.toggle('has-non-ignored-links', hasNonIgnoredLinks);
+    };
+    wasShown() {
+        super.wasShown();
+        if (Root.DevToolsContext.globalInstance().has(Workspace.IgnoreListManager.IgnoreListManager)) {
+            Workspace.IgnoreListManager.IgnoreListManager.instance().addChangeListener(this.#updateHasNonIgnoredLinks);
+        }
+    }
+    willHide() {
+        if (Root.DevToolsContext.globalInstance().has(Workspace.IgnoreListManager.IgnoreListManager)) {
+            Workspace.IgnoreListManager.IgnoreListManager.instance().removeChangeListener(this.#updateHasNonIgnoredLinks);
+        }
+        super.willHide();
     }
     get linkElements() {
         return [...this.contentElement.querySelectorAll('td.link > .devtools-link')];

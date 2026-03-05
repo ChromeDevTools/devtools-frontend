@@ -121,6 +121,9 @@
       "path": "../common/bundle-tsconfig.json"
     },
     {
+      "path": "../elements/bundle-tsconfig.json"
+    },
+    {
       "path": "../network/bundle-tsconfig.json"
     },
     {

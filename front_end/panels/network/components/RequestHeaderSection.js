@@ -42,7 +42,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
     ${headers.map(header => html `
       <devtools-header-section-row
         .data=${{ header }}
-        jslog=${VisualLogging.item('request-header')}
+        jslog=${VisualLogging.item('request-header').track({ resize: true })}
       ></devtools-header-section-row>
     `)}
   `, target);

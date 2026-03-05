@@ -239,7 +239,7 @@ export class FilteredListWidget extends Common.ObjectWrapper.eventMixin(UI.Widge
         wrapperElement.className = 'filtered-list-widget-item';
         if (this.provider) {
             render(this.provider.renderItem(item, this.cleanValue()), wrapperElement);
-            wrapperElement.setAttribute('jslog', `${VisualLogging.item(this.provider.jslogContextAt(item)).track({ click: true })}`);
+            wrapperElement.setAttribute('jslog', `${VisualLogging.item(this.provider.jslogContextAt(item)).track({ click: true, resize: true })}`);
         }
         UI.ARIAUtils.markAsOption(wrapperElement);
         return wrapperElement;

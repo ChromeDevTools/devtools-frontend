@@ -1,6 +1,7 @@
 import '../../../ui/components/markdown_view/markdown_view.js';
 import '../../../ui/kit/kit.js';
 import * as Host from '../../../core/host/host.js';
+import type { AiWidget } from '../../../models/ai_assistance/agents/AiAgent.js';
 import * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
 import type { MarkdownLitRenderer } from '../../../ui/components/markdown_view/MarkdownView.js';
 import * as UI from '../../../ui/legacy/legacy.js';
@@ -11,11 +12,13 @@ export interface Step {
     title?: string;
     code?: string;
     output?: string;
+    widgets?: AiWidget[];
     canceled?: boolean;
-    sideEffect?: ConfirmSideEffectDialog;
+    requestApproval?: ConfirmSideEffectDialog;
     contextDetails?: [AiAssistanceModel.AiAgent.ContextDetail, ...AiAssistanceModel.AiAgent.ContextDetail[]];
 }
 export interface ConfirmSideEffectDialog {
+    description: string | null;
     onAnswer: (result: boolean) => void;
 }
 export declare const enum ChatMessageEntity {
@@ -94,6 +97,7 @@ export interface MessageInput {
 }
 export declare const DEFAULT_VIEW: (input: ChatMessageViewInput, output: ViewOutput, target: HTMLElement) => void;
 export type View = typeof DEFAULT_VIEW;
+export declare function titleForStep(step: Step): string;
 export declare function renderStep({ step, isLoading, markdownRenderer, isLast }: {
     step: Step;
     isLoading: boolean;

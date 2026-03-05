@@ -338,6 +338,7 @@ export default `/*
     }
   }
 
+
   .error-step {
     color: var(--sys-color-error);
   }
@@ -358,6 +359,35 @@ export default `/*
     display: flex;
     gap: var(--sys-size-4);
     align-items: center;
+  }
+
+
+  .computed-styles-widget {
+    display: block;
+    width: fit-content;
+  }
+
+  .step-widgets-wrapper {
+    width: fit-content;
+  }
+
+  .widget-reveal-container {
+    width: 100%;
+    background: var(--sys-color-surface5);
+    border-bottom-right-radius: var(--sys-shape-corner-medium);
+    border-bottom-left-radius: var(--sys-shape-corner-medium);
+    padding: 0 var(--sys-size-4) var(--sys-size-4) 0;
+  }
+
+  .widget-content-container {
+    padding: var(--sys-size-4);
+    border-top-left-radius: var(--sys-shape-corner-medium);
+    border-top-right-radius: var(--sys-shape-corner-medium);
+    width: 100%;
+    overflow-x: auto;
+    background-color: var(--sys-color-surface3);
+
+    --override-computed-style-property-white-space: normal;
   }
 }
 

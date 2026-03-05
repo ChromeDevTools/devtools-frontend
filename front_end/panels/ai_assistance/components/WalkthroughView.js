@@ -7,8 +7,9 @@ import * as Input from '../../../ui/components/input/input.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import chatMessageStyles from './chatMessage.css.js';
-import { renderStep } from './ChatMessage.js';
+import { renderStep, titleForStep } from './ChatMessage.js';
 import walkthroughViewStyles from './walkthroughView.css.js';
+const lockedString = i18n.i18n.lockedString;
 const { html, render } = Lit;
 const UIStrings = {
     /**
@@ -20,14 +21,19 @@ const UIStrings = {
      */
     title: 'Investigation steps',
     /**
-     * @description Title for the inline walkthrough view.
+     * @description Title for the button that shows the thinking process (walkthrough).
      */
-    inlineTitle: 'Show thinking',
+    showThinking: 'Show thinking',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/ai_assistance/components/WalkthroughView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-function renderInlineWalkthrough(input, stepsOutput) {
-    if (!input.isInlined) {
+export function walkthroughTitle(input) {
+    const title = input.isLoading ? titleForStep(input.lastStep) : lockedString(UIStrings.showThinking);
+    return title;
+}
+function renderInlineWalkthrough(input, stepsOutput, steps) {
+    const lastStep = steps.at(-1);
+    if (!input.isInlined || !lastStep) {
         return Lit.nothing;
     }
     function onToggle(event) {
@@ -37,7 +43,8 @@ function renderInlineWalkthrough(input, stepsOutput) {
     return html `
     <details class="walkthrough-inline" ?open=${input.isExpanded} @toggle=${onToggle}>
       <summary>
-        ${i18nString(UIStrings.inlineTitle)}
+        ${input.isLoading ? html `<devtools-spinner></devtools-spinner>` : Lit.nothing}
+        ${walkthroughTitle({ isLoading: input.isLoading, lastStep, })}
         <devtools-icon name="chevron-down"></devtools-icon>
       </summary>
       ${stepsOutput}
@@ -97,7 +104,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
       ${chatMessageStyles}
       ${walkthroughViewStyles}
     </style>
-    ${input.isInlined ? renderInlineWalkthrough(input, stepsOutput)
+    ${input.isInlined ? renderInlineWalkthrough(input, stepsOutput, steps)
         : renderSidebarWalkthrough(input, stepsOutput, steps.length)}`, target);
     // clang-format on
 };

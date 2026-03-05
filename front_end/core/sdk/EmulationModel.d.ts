@@ -1,4 +1,3 @@
-import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import * as Protocol from '../../generated/protocol.js';
 import { OverlayModel } from './OverlayModel.js';
 import { SDKModel } from './SDKModel.js';
@@ -8,7 +7,7 @@ export declare const enum DataSaverOverride {
     ENABLED = "enabled",
     DISABLED = "disabled"
 }
-export declare class EmulationModel extends SDKModel<EmulationModelEventTypes> implements ProtocolProxyApi.EmulationDispatcher {
+export declare class EmulationModel extends SDKModel<void> {
     #private;
     constructor(target: Target);
     setTouchEmulationAllowed(touchEmulationAllowed: boolean): void;
@@ -38,20 +37,6 @@ export declare class EmulationModel extends SDKModel<EmulationModelEventTypes> i
     overrideEmulateTouch(enabled: boolean): Promise<void>;
     private updateTouch;
     private updateCssMedia;
-    virtualTimeBudgetExpired(): void;
-    screenOrientationLockChanged(event: Protocol.Emulation.ScreenOrientationLockChangedEvent): void;
-    isScreenOrientationLocked(): boolean;
-    lockedOrientation(): Protocol.Emulation.ScreenOrientation | null;
-}
-export declare const enum EmulationModelEvents {
-    SCREEN_ORIENTATION_LOCK_CHANGED = "ScreenOrientationLockChanged"
-}
-export interface ScreenOrientationLockChangedEvent {
-    locked: boolean;
-    orientation: Protocol.Emulation.ScreenOrientation | null;
-}
-export interface EmulationModelEventTypes {
-    [EmulationModelEvents.SCREEN_ORIENTATION_LOCK_CHANGED]: ScreenOrientationLockChangedEvent;
 }
 export declare class Location {
     static readonly DEFAULT_ACCURACY = 150;

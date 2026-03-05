@@ -1,0 +1,56 @@
+import type * as SDK from '../../core/sdk/sdk.js';
+import * as ComputedStyle from '../../models/computed_style/computed_style.js';
+import type * as TextUtils from '../../models/text_utils/text_utils.js';
+import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
+import * as Components from '../../ui/legacy/components/utils/utils.js';
+import * as UI from '../../ui/legacy/legacy.js';
+import * as ElementsComponents from './components/components.js';
+import { StylePropertiesSection } from './StylePropertiesSection.js';
+import type { StylePropertyTreeElement } from './StylePropertyTreeElement.js';
+import type { StylesContainer } from './StylesContainer.js';
+import { WebCustomData } from './WebCustomData.js';
+interface ViewInput {
+    sections: StylePropertiesSection[];
+}
+type View = (input: ViewInput, output_: undefined, target: HTMLElement) => void;
+export declare const DEFAULT_VIEW: View;
+export declare class StandaloneStylesContainer extends UI.Widget.VBox implements StylesContainer {
+    #private;
+    activeCSSAngle: InlineEditor.CSSAngle.CSSAngle | null;
+    isEditingStyle: boolean;
+    readonly sectionByElement: WeakMap<Node, StylePropertiesSection>;
+    readonly linkifier: Components.Linkifier.Linkifier;
+    constructor(element?: HTMLElement, view?: View);
+    get userOperation(): boolean;
+    get webCustomData(): WebCustomData | undefined;
+    performUpdate(): Promise<void>;
+    swatchPopoverHelper(): InlineEditor.SwatchPopoverHelper.SwatchPopoverHelper;
+    set domNode(node: SDK.DOMModel.DOMNode | null);
+    node(): SDK.DOMModel.DOMNode | null;
+    cssModel(): SDK.CSSModel.CSSModel | null;
+    computedStyleModel(): ComputedStyle.ComputedStyleModel.ComputedStyleModel;
+    setActiveProperty(_treeElement: StylePropertyTreeElement | null): void;
+    refreshUpdate(editedSection: StylePropertiesSection, editedTreeElement?: StylePropertyTreeElement): void;
+    filterRegex(): RegExp | null;
+    setEditingStyle(editing: boolean): void;
+    setUserOperation(userOperation: boolean): void;
+    forceUpdate(): void;
+    hideAllPopovers(): void;
+    allSections(): StylePropertiesSection[];
+    getVariablePopoverContents(matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, variableName: string, computedValue: string | null): ElementsComponents.CSSVariableValueView.CSSVariableValueView;
+    getVariableParserError(_matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, _variableName: string): ElementsComponents.CSSVariableValueView.CSSVariableParserError | null;
+    jumpToFunctionDefinition(_functionName: string): void;
+    continueEditingElement(_sectionIndex: number, _propertyIndex: number): void;
+    revealProperty(_cssProperty: SDK.CSSProperty.CSSProperty): void;
+    resetFocus(): void;
+    removeSection(_section: StylePropertiesSection): void;
+    focusedSectionIndex(): number;
+    addBlankSection(_insertAfterSection: StylePropertiesSection, _styleSheetHeader: SDK.CSSStyleSheetHeader.CSSStyleSheetHeader, _ruleLocation: TextUtils.TextRange.TextRange): void;
+    jumpToProperty(_propertyName: string, _sectionName?: string, _blockName?: string): boolean;
+    jumpToSectionBlock(_section: string): void;
+    jumpToFontPaletteDefinition(_paletteName: string): void;
+    jumpToDeclaration(_valueSource: SDK.CSSMatchedStyles.CSSValueSource): void;
+    addStyleUpdateListener(_listener: () => void): void;
+    removeStyleUpdateListener(_listener: () => void): void;
+}
+export {};

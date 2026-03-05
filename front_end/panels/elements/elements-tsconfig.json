@@ -65,6 +65,7 @@
     "../../../../../../front_end/panels/elements/PropertyNameCategories.ts",
     "../../../../../../front_end/panels/elements/PropertyRenderer.ts",
     "../../../../../../front_end/panels/elements/ShortcutTreeElement.ts",
+    "../../../../../../front_end/panels/elements/StandaloneStylesContainer.ts",
     "../../../../../../front_end/panels/elements/StyleEditorWidget.ts",
     "../../../../../../front_end/panels/elements/StylePropertiesSection.ts",
     "../../../../../../front_end/panels/elements/StylePropertyHighlighter.ts",

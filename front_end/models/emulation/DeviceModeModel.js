@@ -99,7 +99,6 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
     #emulationModel;
     #onModelAvailable;
     #outlineRect;
-    #screenOrientationLocked;
     constructor() {
         super();
         this.#screenRect = new Rect(0, 0, 1, 1);
@@ -149,7 +148,6 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
         this.#touchMobile = false;
         this.#emulationModel = null;
         this.#onModelAvailable = null;
-        this.#screenOrientationLocked = false;
         SDK.TargetManager.TargetManager.instance().observeModels(SDK.EmulationModel.EmulationModel, this);
     }
     static instance(opts) {
@@ -379,7 +377,6 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
                 this.#onModelAvailable = null;
                 callback();
             }
-            emulationModel.addEventListener("ScreenOrientationLockChanged" /* SDK.EmulationModel.EmulationModelEvents.SCREEN_ORIENTATION_LOCK_CHANGED */, this.onScreenOrientationLockChanged, this);
             const resourceTreeModel = emulationModel.target().model(SDK.ResourceTreeModel.ResourceTreeModel);
             if (resourceTreeModel) {
                 resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.FrameResized, this.onFrameChange, this);
@@ -392,10 +389,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
     }
     modelRemoved(emulationModel) {
         if (this.#emulationModel === emulationModel) {
-            emulationModel.removeEventListener("ScreenOrientationLockChanged" /* SDK.EmulationModel.EmulationModelEvents.SCREEN_ORIENTATION_LOCK_CHANGED */, this.onScreenOrientationLockChanged, this);
             this.#emulationModel = null;
-            this.#screenOrientationLocked = false;
-            this.dispatchEventToListeners("Updated" /* Events.UPDATED */);
         }
     }
     inspectedURL() {
@@ -407,38 +401,6 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
             return;
         }
         this.showHingeIfApplicable(overlayModel);
-    }
-    onScreenOrientationLockChanged(event) {
-        this.#screenOrientationLocked = event.data.locked;
-        if (event.data.locked && event.data.orientation) {
-            this.applyOrientationLock(event.data.orientation);
-        }
-        this.dispatchEventToListeners("Updated" /* Events.UPDATED */);
-    }
-    applyOrientationLock(orientation) {
-        const wantsLandscape = orientation.type === "landscapePrimary" /* Protocol.Emulation.ScreenOrientationType.LandscapePrimary */ ||
-            orientation.type === "landscapeSecondary" /* Protocol.Emulation.ScreenOrientationType.LandscapeSecondary */;
-        if (this.#type === Type.Device && this.#device && this.#mode) {
-            // For device emulation, switch to the matching orientation mode.
-            const isCurrentlyLandscape = this.#mode.orientation === Horizontal || this.#mode.orientation === HorizontalSpanned;
-            if (wantsLandscape !== isCurrentlyLandscape) {
-                const rotationPartner = this.#device.getRotationPartner(this.#mode);
-                if (rotationPartner) {
-                    this.emulate(this.#type, this.#device, rotationPartner);
-                }
-            }
-        }
-        else if (this.#type === Type.Responsive) {
-            // For responsive mode, swap width/height if orientation doesn't match.
-            const appliedSize = this.appliedDeviceSize();
-            const isCurrentlyLandscape = appliedSize.width > appliedSize.height;
-            if (wantsLandscape !== isCurrentlyLandscape) {
-                this.setSizeAndScaleToFit(appliedSize.height, appliedSize.width);
-            }
-        }
-    }
-    isScreenOrientationLocked() {
-        return this.#screenOrientationLocked;
     }
     scaleSettingChanged() {
         this.calculateAndEmulate(false);

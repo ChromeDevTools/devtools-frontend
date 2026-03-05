@@ -247,6 +247,7 @@ __export(JSPresentationUtils_exports, {
   StackTracePreviewContent: () => StackTracePreviewContent
 });
 import * as i18n5 from "./../../../../core/i18n/i18n.js";
+import * as Root from "./../../../../core/root/root.js";
 import * as SDK3 from "./../../../../core/sdk/sdk.js";
 import * as StackTrace from "./../../../../models/stack_trace/stack_trace.js";
 import * as Workspace3 from "./../../../../models/workspace/workspace.js";
@@ -1451,6 +1452,33 @@ var StackTracePreviewContent = class extends UI2.Widget.Widget {
       onShowLess: this.#onShowMoreLess.bind(this, false)
     };
     this.#view(input, {}, this.contentElement);
+    this.#updateHasNonIgnoredLinks();
+  }
+  // Propagate ignore-list state to the host element so that CSS outside the
+  // shadow DOM can coordinate ignore-list toggling across multiple stack
+  // traces (e.g. Error inline stack + console.error call stack).
+  // See crbug.com/379788109.
+  #updateHasNonIgnoredLinks = () => {
+    const hasNonIgnoredLinks = this.linkElements.some((link3) => {
+      const uiLocation = Linkifier.uiLocation(link3);
+      if (uiLocation) {
+        return !uiLocation.isIgnoreListed();
+      }
+      return !link3.classList.contains("ignore-list-link");
+    });
+    this.element.classList.toggle("has-non-ignored-links", hasNonIgnoredLinks);
+  };
+  wasShown() {
+    super.wasShown();
+    if (Root.DevToolsContext.globalInstance().has(Workspace3.IgnoreListManager.IgnoreListManager)) {
+      Workspace3.IgnoreListManager.IgnoreListManager.instance().addChangeListener(this.#updateHasNonIgnoredLinks);
+    }
+  }
+  willHide() {
+    if (Root.DevToolsContext.globalInstance().has(Workspace3.IgnoreListManager.IgnoreListManager)) {
+      Workspace3.IgnoreListManager.IgnoreListManager.instance().removeChangeListener(this.#updateHasNonIgnoredLinks);
+    }
+    super.willHide();
   }
   get linkElements() {
     return [...this.contentElement.querySelectorAll("td.link > .devtools-link")];

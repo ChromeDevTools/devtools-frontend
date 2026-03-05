@@ -180,8 +180,8 @@
   /**
    * Colors for Coverage visualization.
    */
-  --app-color-coverage-used: var(--ref-palette-neutral80);
-  --app-color-coverage-unused: var(--sys-color-error-bright);
+  --app-color-coverage-used: var(--sys-color-green-bright);
+    --app-color-coverage-unused: var(--ref-palette-neutral80);
   --app-color-toolbar-background: var(--sys-color-surface4);
 
   /**
@@ -372,8 +372,8 @@
     /**
      * Colors for Coverage visualization.
      */
-    --app-color-coverage-used: var(--ref-palette-neutral40);
-    --app-color-coverage-unused: var(--sys-color-error-bright);
+    --app-color-coverage-used: var(--sys-color-green-bright);
+      --app-color-coverage-unused: var(--ref-palette-neutral40);
     --app-color-toolbar-background: var(--sys-color-base);
 
     /**

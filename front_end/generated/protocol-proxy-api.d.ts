@@ -1848,6 +1848,11 @@ declare namespace ProtocolProxyApi {
     invoke_addScreen(params: Protocol.Emulation.AddScreenRequest): Promise<Protocol.Emulation.AddScreenResponse>;
 
     /**
+     * Updates specified screen parameters. Only supported in headless mode.
+     */
+    invoke_updateScreen(params: Protocol.Emulation.UpdateScreenRequest): Promise<Protocol.Emulation.UpdateScreenResponse>;
+
+    /**
      * Remove screen from the device. Only supported in headless mode.
      */
     invoke_removeScreen(params: Protocol.Emulation.RemoveScreenRequest): Promise<Protocol.ProtocolResponseWithError>;

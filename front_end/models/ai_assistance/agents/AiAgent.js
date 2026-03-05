@@ -404,6 +404,7 @@ export class AiAgent {
             yield {
                 type: "side-effect" /* ResponseType.SIDE_EFFECT */,
                 confirm: sideEffectConfirmationPromiseWithResolvers.resolve,
+                description: result.description,
             };
             const approvedRun = await sideEffectConfirmationPromiseWithResolvers.promise;
             if (!approvedRun) {
@@ -427,6 +428,7 @@ export class AiAgent {
                 type: "action" /* ResponseType.ACTION */,
                 code,
                 output: typeof result.result === 'string' ? result.result : JSON.stringify(result.result),
+                widgets: result.widgets,
                 canceled: false,
             };
         }

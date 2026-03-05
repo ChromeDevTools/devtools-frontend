@@ -4890,7 +4890,7 @@ export const generatedProperties = [
         "inherited": false,
         "keywords": [
             "none",
-            "auto"
+            "all"
         ],
         "name": "view-transition-scope"
     },
@@ -7266,7 +7266,7 @@ export const generatedPropertyValues = {
     "view-transition-scope": {
         "values": [
             "none",
-            "auto"
+            "all"
         ]
     },
     "visibility": {

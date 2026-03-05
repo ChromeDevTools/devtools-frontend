@@ -367,9 +367,21 @@ function defaultView(input, output, target) {
         ></devtools-widget>`;
         }
     }
-    const shouldShowWalkthrough = input.state === "chat-view" /* ViewState.CHAT_VIEW */ && input.walkthrough.isExpanded;
     if (Root.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled ||
         Greendev.Prototypes.instance().isEnabled('breakpointDebuggerAgent')) {
+        const shouldShowWalkthrough = input.state === "chat-view" /* ViewState.CHAT_VIEW */ && input.walkthrough.isExpanded;
+        /**
+         * We want to mark the walkthrough as loading only if it's showing the last
+         * message. Otherwise, a previous walkthrough will show as loading if we
+         * rely only on the isLoading flag.
+         */
+        let walkthroughIsForLastMessage = false;
+        if (input.state === "chat-view" /* ViewState.CHAT_VIEW */) {
+            const lastMessage = input.props.messages.at(-1);
+            if (lastMessage && input.props.walkthrough.activeMessage === lastMessage) {
+                walkthroughIsForLastMessage = true;
+            }
+        }
         Lit.render(html `
       ${toolbarView(input)}
       <div class="ai-assistance-view-container">
@@ -387,7 +399,7 @@ function defaultView(input, output, target) {
             ${shouldShowWalkthrough ? html `
               <devtools-widget .widgetConfig=${UI.Widget.widgetConfig(WalkthroughView, {
             message: input.props.walkthrough.activeMessage,
-            isLoading: input.props.isLoading,
+            isLoading: input.props.isLoading && walkthroughIsForLastMessage,
             markdownRenderer: input.props.markdownRenderer,
             onToggle: input.props.walkthrough.onToggle,
         })}></devtools-widget>` : Lit.nothing}
@@ -1127,10 +1139,16 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     #onHistoryDeleted() {
         this.#updateConversationState();
     }
+    #clearWalkthrough() {
+        this.#walkthrough.isExpanded = false;
+        this.#walkthrough.activeMessage = null;
+    }
     #onDeleteClicked() {
         if (!this.#conversation) {
             return;
         }
+        // Ensure we clear the walkthrough so it doesn't hold onto a chat that is about to be deleted.
+        this.#clearWalkthrough();
         void AiAssistanceModel.AiHistoryStorage.AiHistoryStorage.instance().deleteHistoryEntry(this.#conversation.id);
         this.#updateConversationState();
         UI.ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.chatDeleted));
@@ -1302,7 +1320,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
             let announcedAnswerLoading = false;
             let announcedAnswerReady = false;
             for await (const data of items) {
-                step.sideEffect = undefined;
+                step.requestApproval = undefined;
                 switch (data.type) {
                     case "user-query" /* AiAssistanceModel.AiAgent.ResponseType.USER_QUERY */: {
                         this.#messages.push({
@@ -1363,10 +1381,11 @@ export class AiAssistancePanel extends UI.Panel.Panel {
                     case "side-effect" /* AiAssistanceModel.AiAgent.ResponseType.SIDE_EFFECT */: {
                         step.isLoading = false;
                         step.code ??= data.code;
-                        step.sideEffect = {
+                        step.requestApproval = {
+                            description: data.description,
                             onAnswer: (result) => {
                                 data.confirm(result);
-                                step.sideEffect = undefined;
+                                step.requestApproval = undefined;
                                 this.requestUpdate();
                             },
                         };
@@ -1378,6 +1397,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
                         step.code ??= data.code;
                         step.output ??= data.output;
                         step.canceled = data.canceled;
+                        step.widgets ??= data.widgets;
                         commitStep();
                         break;
                     }

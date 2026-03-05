@@ -91,6 +91,9 @@
       "path": "../../generated/protocol-tsconfig.json"
     },
     {
+      "path": "../computed_style/bundle-tsconfig.json"
+    },
+    {
       "path": "../network_time_calculator/bundle-tsconfig.json"
     },
     {

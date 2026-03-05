@@ -37,7 +37,7 @@ function renderEndiannessSetting(onEndiannessChanged, currentEndiannes) {
         data-endianness="true" @change=${(e) => onEndiannessChanged(e.target.value)}>
         ${["Little Endian" /* Endianness.LITTLE */, "Big Endian" /* Endianness.BIG */].map(endianness => {
         return html `<option value=${endianness} .selected=${currentEndiannes === endianness}
-            jslog=${VisualLogging.item(Platform.StringUtilities.toKebabCase(endianness)).track({ click: true })}>${i18n.i18n.lockedString(endianness)}</option>`;
+            jslog=${VisualLogging.item(Platform.StringUtilities.toKebabCase(endianness)).track({ click: true, resize: true })}>${i18n.i18n.lockedString(endianness)}</option>`;
     })}
       </select>
     </label>

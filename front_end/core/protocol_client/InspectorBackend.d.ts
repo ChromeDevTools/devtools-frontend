@@ -172,7 +172,6 @@ export declare class TargetBase {
     unregisterDebuggerDispatcher(dispatcher: ProtocolProxyApi.DebuggerDispatcher): void;
     registerDOMDispatcher(dispatcher: ProtocolProxyApi.DOMDispatcher): void;
     registerDOMStorageDispatcher(dispatcher: ProtocolProxyApi.DOMStorageDispatcher): void;
-    registerEmulationDispatcher(dispatcher: ProtocolProxyApi.EmulationDispatcher): void;
     registerFetchDispatcher(dispatcher: ProtocolProxyApi.FetchDispatcher): void;
     registerHeapProfilerDispatcher(dispatcher: ProtocolProxyApi.HeapProfilerDispatcher): void;
     registerInspectorDispatcher(dispatcher: ProtocolProxyApi.InspectorDispatcher): void;

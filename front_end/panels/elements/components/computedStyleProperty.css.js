@@ -24,7 +24,7 @@ export default `/*
   min-height: 16px;
   box-sizing: border-box;
   padding-top: 2px;
-  white-space: nowrap;
+  white-space: var(--override-computed-style-property-white-space, nowrap);
   user-select: text;
 }
 

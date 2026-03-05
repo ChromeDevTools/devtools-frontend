@@ -65,9 +65,6 @@ export declare class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<
     modelRemoved(emulationModel: SDK.EmulationModel.EmulationModel): void;
     inspectedURL(): string | null;
     private onFrameChange;
-    private onScreenOrientationLockChanged;
-    private applyOrientationLock;
-    isScreenOrientationLocked(): boolean;
     private scaleSettingChanged;
     private widthSettingChanged;
     private heightSettingChanged;

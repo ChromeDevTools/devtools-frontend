@@ -813,7 +813,7 @@ function renderTargetSelectorRow(input) {
             jslog=${VisualLogging.dropDown('target-selector').track({ change: true })}
             @change=${input.onTargetSelected}>
       ${input.targets.map(target => html `
-        <option jslog=${VisualLogging.item('target').track({ click: true })}
+        <option jslog=${VisualLogging.item('target').track({ click: true, resize: true })}
                 value=${target.id()} ?selected=${target.id() === input.targetId}>
           ${target.name()} (${target.inspectedURL()})
         </option>`)}

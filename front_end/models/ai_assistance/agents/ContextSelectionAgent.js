@@ -103,6 +103,7 @@ export class ContextSelectionAgent extends AiAgent {
                         url: request.url(),
                         statusCode: request.statusCode,
                         duration: i18n.TimeUtilities.secondsToString(request.duration),
+                        transferSize: i18n.ByteUtilities.formatBytesToKb(request.transferSize),
                     });
                 }
                 if (requests.length === 0) {
@@ -253,13 +254,20 @@ export class ContextSelectionAgent extends AiAgent {
             },
             displayInfoFromArgs: () => {
                 return {
-                    title: lockedString('Please select an element on the page…'),
-                    action: 'selectElement()',
+                    title: lockedString('Select an element on the page or in the Elements panel'),
                 };
             },
-            handler: async () => {
+            handler: async (_params, options) => {
                 if (!this.#onInspectElement) {
-                    return { error: 'The inspect element action is not available.' };
+                    return {
+                        error: 'The inspect element action is not available.',
+                    };
+                }
+                if (!options?.approved) {
+                    return {
+                        requiresApproval: true,
+                        description: null,
+                    };
                 }
                 const node = await this.#onInspectElement();
                 if (node) {

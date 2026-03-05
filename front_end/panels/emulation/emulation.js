@@ -204,11 +204,6 @@ var UIStrings = {
    */
   screenOrientationOptions: "Screen orientation options",
   /**
-   * @description Tooltip shown on the rotate button when screen orientation is locked by the page
-   * via screen.orientation.lock().
-   */
-  screenOrientationLocked: "Screen orientation is locked by the page",
-  /**
    * @description Tooltip for a button which turns on/off dual-screen mode, which emulates devices
    * like tablets which have two screens.
    */
@@ -550,9 +545,6 @@ var DeviceModeToolbar = class {
     return;
   }
   modeMenuClicked(event) {
-    if (this.model.isScreenOrientationLocked()) {
-      return;
-    }
     const device = this.model.device();
     const model = this.model;
     const autoAdjustScaleSetting = this.autoAdjustScaleSetting;
@@ -705,17 +697,6 @@ var DeviceModeToolbar = class {
         value.mode = "";
       }
       this.persistenceSetting.set(value);
-    }
-    if (this.model.isScreenOrientationLocked()) {
-      this.modeButton.setEnabled(false);
-      setTitleForButton(this.modeButton, i18nString(UIStrings.screenOrientationLocked));
-    } else if (this.cachedModelDevice) {
-      const modeCount = this.cachedModelDevice.modes.length;
-      this.modeButton.setEnabled(modeCount >= 2);
-      setTitleForButton(this.modeButton, modeCount === 2 ? i18nString(UIStrings.rotate) : i18nString(UIStrings.screenOrientationOptions));
-    } else if (this.model.type() === EmulationModel.DeviceModeModel.Type.Responsive) {
-      this.modeButton.setEnabled(true);
-      setTitleForButton(this.modeButton, i18nString(UIStrings.rotate));
     }
   }
   restore() {

@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as Host from '../../../core/host/host.js';
+import * as i18n from '../../../core/i18n/i18n.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as Bindings from '../../bindings/bindings.js';
 import * as Breakpoints from '../../breakpoints/breakpoints.js';
@@ -12,6 +13,7 @@ import * as Workspace from '../../workspace/workspace.js';
 import { debugLog } from '../debug.js';
 import { AiAgent, ConversationContext, } from './AiAgent.js';
 import { injectOverlay, removeOverlay, } from './BreakpointDebuggerAgentOverlay.js';
+const lockedString = i18n.i18n.lockedString;
 // This is a temporary agent for a GreenDev prototype.
 // The preamble is not on the server and you should not build on top of this.
 const preamble = `You are an expert Root Cause Analysis (RCA) specialist.
@@ -33,17 +35,18 @@ You have two modes of operation that you can switch between and control:
 6. **Step**: Use 'stepInto' to investigate function calls on the current line. Use 'stepOut' to return to the caller. Use 'stepOver' to move to the next line.
 7. **Trace Back**: If the current function isn't the root cause, use 'getCallStack' to find the caller, and repeat the analysis there.
 8. **Root Cause**: Explain exactly how the runtime state contradicts the expected logic and point to the specific line of code that is the root cause.
-9. **Test Fix**: Use the 'testFixInConsole' tool to run a JavaScript snippet in the current execution context to test your fix before making permanent changes. This will overwrite the problematic function or state. Follow the instructions to get the user's approval.
-10. **Verify**: IMMEDIATELY AFTER 'testFixInConsole' succeeds, you MUST call 'waitForUserActionToTriggerBreakpoint' (to pause and inspect) or 'resume' (if no inspection is needed), AND ask the user to trigger the buggy action again to verify the fix.
-11. **Patch**: Once the fix is successfully verified by the user, you MUST use the 'suggestFix' tool to apply the patch to the source code file. Provide the URL, the exact original code to change, and the new code. Finish the execution then.
+9. **Apply Fix**: Use the 'testFixInConsole' tool to overwrite the problematic code in the current session.
+10. **Verify**: The fix is applied but NOT verified. You MUST run the code again to verify the fix worked.
+11. **Finish**: If the fix worked, you may output the solution and finish the execution.
 
 **Rules**:
-- **NEVER FINISH** execution until you have found the root cause or answer.
+- **NEVER FINISH** execution until you have found the root cause and verified the fix.
 - **ACTION OVER TALK**: If you need the user to trigger a breakpoint, do NOT just ask them in text. You **MUST** call 'waitForUserActionToTriggerBreakpoint'. This tool will block and wait for the user to act.
 - **STATIC MODE**: If you are in STATIC MODE and need to see variables: 1. 'setBreakpoint', 2. 'waitForUserActionToTriggerBreakpoint'. **DO NOT STOP** to ask the user. Investigate code and set breakpoints to find the root cause.
 - **ALREADY PAUSED?**: If 'setBreakpoint' warns you that you are already paused, **DO NOT** call 'waitForUserActionToTriggerBreakpoint'. Start inspecting immediately. You can set more breakpoints while paused, but to call 'waitForUserActionToTriggerBreakpoint' again you MUST be in static state.
 - **USE TOOLS EXCESSIVELY**: checking one thing is often not enough. Check everything you can thinks of.
 - **CHECK LOCATION**: If you are not sure where you are, call 'getExecutionLocation' after 'waitForUserActionToTriggerBreakpoint' or any step command to confirm where you are.
+- **INITIAL CONTEXT**: The breakpoint provided in the context is ALREADY SET. Do NOT set it again. Start by setting additional breakpoints if needed, or, if no additional breakpoints within the code you see make sense, call 'waitForUserActionToTriggerBreakpoint'.
 
 **Execution Control when you are currently on a breakpoint**:
 - **stepInto**: ESSENTIAL for entering function calls on the current line. Use this heavily when you suspect the issue is inside a called function.
@@ -96,8 +99,9 @@ export class BreakpointDebuggerAgent extends AiAgent {
                 required: ['url', 'lineNumber'],
             },
             displayInfoFromArgs: (args) => {
+                const uiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(args.url);
                 return {
-                    title: `Reading function source for ${args.url}:${args.lineNumber}`,
+                    title: `Reading function source for ${uiSourceCode?.displayName()}:${args.lineNumber}`,
                 };
             },
             handler: async (args) => {
@@ -130,8 +134,9 @@ export class BreakpointDebuggerAgent extends AiAgent {
                 required: ['url', 'lineNumber', 'direction'],
             },
             displayInfoFromArgs: (args) => {
+                const uiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(args.url);
                 return {
-                    title: `Reading code ${args.direction} ${args.url}:${args.lineNumber}`,
+                    title: `Reading code ${args.direction} ${uiSourceCode?.displayName()}:${args.lineNumber}`,
                 };
             },
             handler: async (args) => {
@@ -215,8 +220,9 @@ export class BreakpointDebuggerAgent extends AiAgent {
                 required: ['url', 'lineNumber'],
             },
             displayInfoFromArgs: (args) => {
+                const uiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(args.url);
                 return {
-                    title: `Setting breakpoint at ${args.url}:${args.lineNumber}`,
+                    title: `Setting breakpoint at ${uiSourceCode?.displayName() ?? args.url}:${args.lineNumber}`,
                 };
             },
             handler: async (args) => {
@@ -244,8 +250,9 @@ export class BreakpointDebuggerAgent extends AiAgent {
                 required: ['url', 'lineNumber'],
             },
             displayInfoFromArgs: (args) => {
+                const uiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(args.url);
                 return {
-                    title: `Removing breakpoint at ${args.url}:${args.lineNumber}`,
+                    title: `Removing breakpoint at ${uiSourceCode?.displayName() ?? args.url}:${args.lineNumber}`,
                 };
             },
             handler: async (args) => {
@@ -398,7 +405,7 @@ export class BreakpointDebuggerAgent extends AiAgent {
             },
         });
         this.declareFunction('testFixInConsole', {
-            description: 'Tests a JavaScript code snippet in the current execution context to overwrite the problematic code or state. Use this to verify the fix works before patching the source file.',
+            description: 'Tests a JavaScript code snippet in the current execution context to overwrite the problematic code or state. After running this, verify the fix worked.',
             parameters: {
                 type: 6 /* Host.AidaClient.ParametersTypes.OBJECT */,
                 description: 'Provide the code to evaluate to test the fix',
@@ -427,7 +434,10 @@ export class BreakpointDebuggerAgent extends AiAgent {
                     return { error: 'Fix rejected by the user.' };
                 }
                 if (!options?.approved) {
-                    return { requiresApproval: true };
+                    return {
+                        requiresApproval: true,
+                        description: lockedString('This code may modify page content. Continue?'),
+                    };
                 }
                 const targetManager = SDK.TargetManager.TargetManager.instance();
                 const debuggerModel = targetManager.models(SDK.DebuggerModel.DebuggerModel).find(m => m.isPaused());
@@ -458,72 +468,9 @@ export class BreakpointDebuggerAgent extends AiAgent {
                 }
                 return {
                     result: {
-                        status: 'Code evaluated successfully. You MUST now call waitForUserActionToTriggerBreakpoint or resume, and ask the user to trigger the action again to verify the fix.'
+                        status: 'Code evaluated successfully. Fix applied. PROCEED TO VERIFICATION: Call "resume" and ask the user to "run the code again" to verify.'
                     }
                 };
-            },
-        });
-        this.declareFunction('suggestFix', {
-            description: 'Suggests a JavaScript code snippet to fix the root cause of the issue and applies it to the source code file if the user approves. Call this function AFTER you have verified the fix works using testFixInConsole.',
-            parameters: {
-                type: 6 /* Host.AidaClient.ParametersTypes.OBJECT */,
-                description: 'Provide the fix to the user',
-                properties: {
-                    url: {
-                        type: 1 /* Host.AidaClient.ParametersTypes.STRING */,
-                        description: 'The URL of the file to fix.',
-                    },
-                    originalCode: {
-                        type: 1 /* Host.AidaClient.ParametersTypes.STRING */,
-                        description: 'The exact original code to replace. Must match the file content exactly, including whitespace.',
-                    },
-                    suggestion: {
-                        type: 1 /* Host.AidaClient.ParametersTypes.STRING */,
-                        description: 'The new JavaScript code to replace the original code with.',
-                    },
-                    explanation: {
-                        type: 1 /* Host.AidaClient.ParametersTypes.STRING */,
-                        description: 'Explanation for why this code fixes the issue.',
-                    },
-                },
-                required: ['url', 'originalCode', 'suggestion', 'explanation'],
-            },
-            displayInfoFromArgs: (args) => {
-                return {
-                    title: 'Suggesting a fix',
-                    thought: args.explanation,
-                    action: args.suggestion,
-                };
-            },
-            handler: async (args, options) => {
-                debugLog('suggestFix requested', args);
-                if (options?.approved === false) {
-                    return { error: 'Fix rejected by the user.' };
-                }
-                if (!options?.approved) {
-                    return { requiresApproval: true };
-                }
-                const uiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(args.url);
-                if (!uiSourceCode) {
-                    return { error: `File not found: ${args.url}` };
-                }
-                const contentData = await uiSourceCode.requestContentData();
-                if ('error' in contentData || !contentData.isTextContent) {
-                    return { error: `Could not read content for file: ${args.url}` };
-                }
-                let currentContent = uiSourceCode.workingCopy();
-                if (!uiSourceCode.isDirty()) {
-                    currentContent = contentData.text;
-                }
-                if (!currentContent.includes(args.originalCode)) {
-                    return {
-                        error: 'originalCode not found in the file. Ensure the originalCode is an exact match including whitespace.'
-                    };
-                }
-                const newContent = currentContent.replace(args.originalCode, args.suggestion);
-                uiSourceCode.setWorkingCopy(newContent);
-                uiSourceCode.commitWorkingCopy();
-                return { result: { status: 'Fix applied to the source file successfully.' } };
             },
         });
     }

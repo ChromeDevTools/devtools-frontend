@@ -1421,11 +1421,16 @@ var consoleView_css_default = `/* Copyright 2021 The Chromium Authors
     --display-ignored-formatted-stack-frame: var(--display-formatted-stack-frame-default);
   }
 
-  &:has(.formatted-stack-frame .ignore-list-link):has(.formatted-stack-frame .devtools-link:not(.ignore-list-link)) {
+  &:has(.formatted-stack-frame .ignore-list-link):has(.formatted-stack-frame .devtools-link:not(.ignore-list-link)),
+  &:has(.formatted-stack-frame .ignore-list-link):has(.stack-preview-container.has-non-ignored-links) {
     /* If there are ignored frames and unignored frames, then we want
     to enable the show more/less links. To do that we override some
     variables to always display the structured stack trace, but possibly
-    only the links at the bottom of it, as we share its show more/less links. */
+    only the links at the bottom of it, as we share its show more/less links.
+    We also check the structured stack trace (StackTracePreviewContent) for
+    non-ignored links, so that when all inline Error frames are ignored but
+    the console.error() call stack has non-ignored frames (e.g. in async
+    traces), the toggle is still shown. See crbug.com/379788109. */
     --override-display-stack-preview-toggle-link: table-row;
     --override-display-stack-preview-hidden-div: block;
 
@@ -2969,6 +2974,7 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
     this.elementInternal.className = "console-message-wrapper";
     this.elementInternal.setAttribute("jslog", `${VisualLogging.item("console-message").track({
       click: true,
+      resize: true,
       keydown: "ArrowUp|ArrowDown|ArrowLeft|ArrowRight|Enter|Space|Home|End"
     })}`);
     this.elementInternal.removeChildren();

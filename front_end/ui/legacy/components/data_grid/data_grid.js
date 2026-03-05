@@ -1825,7 +1825,10 @@ var DataGridNode = class {
   }
   createElement() {
     this.elementInternal = document.createElement("tr");
-    this.elementInternal.setAttribute("jslog", `${VisualLogging.tableRow().track({ keydown: "ArrowUp|ArrowDown|ArrowLeft|ArrowRight|Enter|Space" })}`);
+    this.elementInternal.setAttribute("jslog", `${VisualLogging.tableRow().track({
+      resize: true,
+      keydown: "ArrowUp|ArrowDown|ArrowLeft|ArrowRight|Enter|Space"
+    })}`);
     this.elementInternal.classList.add("data-grid-data-grid-node");
     if (this.dataGrid) {
       this.dataGrid.elementToDataGridNode.set(this.elementInternal, this);

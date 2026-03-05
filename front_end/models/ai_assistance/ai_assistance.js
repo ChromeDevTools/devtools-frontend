@@ -635,7 +635,8 @@ var AiAgent = class {
       }, { once: true });
       yield {
         type: "side-effect",
-        confirm: sideEffectConfirmationPromiseWithResolvers.resolve
+        confirm: sideEffectConfirmationPromiseWithResolvers.resolve,
+        description: result.description
       };
       const approvedRun = await sideEffectConfirmationPromiseWithResolvers.promise;
       if (!approvedRun) {
@@ -659,6 +660,7 @@ var AiAgent = class {
         type: "action",
         code,
         output: typeof result.result === "string" ? result.result : JSON.stringify(result.result),
+        widgets: result.widgets,
         canceled: false
       };
     }
@@ -732,6 +734,7 @@ __export(BreakpointDebuggerAgent_exports, {
   BreakpointDebuggerAgent: () => BreakpointDebuggerAgent
 });
 import * as Host2 from "./../../core/host/host.js";
+import * as i18n from "./../../core/i18n/i18n.js";
 import * as SDK2 from "./../../core/sdk/sdk.js";
 import * as Bindings from "./../bindings/bindings.js";
 import * as Breakpoints from "./../breakpoints/breakpoints.js";
@@ -956,6 +959,7 @@ var REMOVE_OVERLAY_SCRIPT = `
 `;
 
 // gen/front_end/models/ai_assistance/agents/BreakpointDebuggerAgent.js
+var lockedString = i18n.i18n.lockedString;
 var preamble = `You are an expert Root Cause Analysis (RCA) specialist.
 Your sole objective is to find the **root cause** of why an error was thrown or why a bug occurred.
 You must not stop at the surface level. You must dig deep to understand the exact sequence of events and state changes that led to the failure.
@@ -975,17 +979,18 @@ You have two modes of operation that you can switch between and control:
 6. **Step**: Use 'stepInto' to investigate function calls on the current line. Use 'stepOut' to return to the caller. Use 'stepOver' to move to the next line.
 7. **Trace Back**: If the current function isn't the root cause, use 'getCallStack' to find the caller, and repeat the analysis there.
 8. **Root Cause**: Explain exactly how the runtime state contradicts the expected logic and point to the specific line of code that is the root cause.
-9. **Test Fix**: Use the 'testFixInConsole' tool to run a JavaScript snippet in the current execution context to test your fix before making permanent changes. This will overwrite the problematic function or state. Follow the instructions to get the user's approval.
-10. **Verify**: IMMEDIATELY AFTER 'testFixInConsole' succeeds, you MUST call 'waitForUserActionToTriggerBreakpoint' (to pause and inspect) or 'resume' (if no inspection is needed), AND ask the user to trigger the buggy action again to verify the fix.
-11. **Patch**: Once the fix is successfully verified by the user, you MUST use the 'suggestFix' tool to apply the patch to the source code file. Provide the URL, the exact original code to change, and the new code. Finish the execution then.
+9. **Apply Fix**: Use the 'testFixInConsole' tool to overwrite the problematic code in the current session.
+10. **Verify**: The fix is applied but NOT verified. You MUST run the code again to verify the fix worked.
+11. **Finish**: If the fix worked, you may output the solution and finish the execution.
 
 **Rules**:
-- **NEVER FINISH** execution until you have found the root cause or answer.
+- **NEVER FINISH** execution until you have found the root cause and verified the fix.
 - **ACTION OVER TALK**: If you need the user to trigger a breakpoint, do NOT just ask them in text. You **MUST** call 'waitForUserActionToTriggerBreakpoint'. This tool will block and wait for the user to act.
 - **STATIC MODE**: If you are in STATIC MODE and need to see variables: 1. 'setBreakpoint', 2. 'waitForUserActionToTriggerBreakpoint'. **DO NOT STOP** to ask the user. Investigate code and set breakpoints to find the root cause.
 - **ALREADY PAUSED?**: If 'setBreakpoint' warns you that you are already paused, **DO NOT** call 'waitForUserActionToTriggerBreakpoint'. Start inspecting immediately. You can set more breakpoints while paused, but to call 'waitForUserActionToTriggerBreakpoint' again you MUST be in static state.
 - **USE TOOLS EXCESSIVELY**: checking one thing is often not enough. Check everything you can thinks of.
 - **CHECK LOCATION**: If you are not sure where you are, call 'getExecutionLocation' after 'waitForUserActionToTriggerBreakpoint' or any step command to confirm where you are.
+- **INITIAL CONTEXT**: The breakpoint provided in the context is ALREADY SET. Do NOT set it again. Start by setting additional breakpoints if needed, or, if no additional breakpoints within the code you see make sense, call 'waitForUserActionToTriggerBreakpoint'.
 
 **Execution Control when you are currently on a breakpoint**:
 - **stepInto**: ESSENTIAL for entering function calls on the current line. Use this heavily when you suspect the issue is inside a called function.
@@ -1038,8 +1043,9 @@ var BreakpointDebuggerAgent = class extends AiAgent {
         required: ["url", "lineNumber"]
       },
       displayInfoFromArgs: (args) => {
+        const uiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(args.url);
         return {
-          title: `Reading function source for ${args.url}:${args.lineNumber}`
+          title: `Reading function source for ${uiSourceCode?.displayName()}:${args.lineNumber}`
         };
       },
       handler: async (args) => {
@@ -1070,8 +1076,9 @@ var BreakpointDebuggerAgent = class extends AiAgent {
         required: ["url", "lineNumber", "direction"]
       },
       displayInfoFromArgs: (args) => {
+        const uiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(args.url);
         return {
-          title: `Reading code ${args.direction} ${args.url}:${args.lineNumber}`
+          title: `Reading code ${args.direction} ${uiSourceCode?.displayName()}:${args.lineNumber}`
         };
       },
       handler: async (args) => {
@@ -1155,8 +1162,9 @@ var BreakpointDebuggerAgent = class extends AiAgent {
         required: ["url", "lineNumber"]
       },
       displayInfoFromArgs: (args) => {
+        const uiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(args.url);
         return {
-          title: `Setting breakpoint at ${args.url}:${args.lineNumber}`
+          title: `Setting breakpoint at ${uiSourceCode?.displayName() ?? args.url}:${args.lineNumber}`
         };
       },
       handler: async (args) => {
@@ -1184,8 +1192,9 @@ var BreakpointDebuggerAgent = class extends AiAgent {
         required: ["url", "lineNumber"]
       },
       displayInfoFromArgs: (args) => {
+        const uiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(args.url);
         return {
-          title: `Removing breakpoint at ${args.url}:${args.lineNumber}`
+          title: `Removing breakpoint at ${uiSourceCode?.displayName() ?? args.url}:${args.lineNumber}`
         };
       },
       handler: async (args) => {
@@ -1338,7 +1347,7 @@ var BreakpointDebuggerAgent = class extends AiAgent {
       }
     });
     this.declareFunction("testFixInConsole", {
-      description: "Tests a JavaScript code snippet in the current execution context to overwrite the problematic code or state. Use this to verify the fix works before patching the source file.",
+      description: "Tests a JavaScript code snippet in the current execution context to overwrite the problematic code or state. After running this, verify the fix worked.",
       parameters: {
         type: 6,
         description: "Provide the code to evaluate to test the fix",
@@ -1367,7 +1376,10 @@ var BreakpointDebuggerAgent = class extends AiAgent {
           return { error: "Fix rejected by the user." };
         }
         if (!options?.approved) {
-          return { requiresApproval: true };
+          return {
+            requiresApproval: true,
+            description: lockedString("This code may modify page content. Continue?")
+          };
         }
         const targetManager = SDK2.TargetManager.TargetManager.instance();
         const debuggerModel = targetManager.models(SDK2.DebuggerModel.DebuggerModel).find((m) => m.isPaused());
@@ -1398,72 +1410,9 @@ var BreakpointDebuggerAgent = class extends AiAgent {
         }
         return {
           result: {
-            status: "Code evaluated successfully. You MUST now call waitForUserActionToTriggerBreakpoint or resume, and ask the user to trigger the action again to verify the fix."
+            status: 'Code evaluated successfully. Fix applied. PROCEED TO VERIFICATION: Call "resume" and ask the user to "run the code again" to verify.'
           }
         };
-      }
-    });
-    this.declareFunction("suggestFix", {
-      description: "Suggests a JavaScript code snippet to fix the root cause of the issue and applies it to the source code file if the user approves. Call this function AFTER you have verified the fix works using testFixInConsole.",
-      parameters: {
-        type: 6,
-        description: "Provide the fix to the user",
-        properties: {
-          url: {
-            type: 1,
-            description: "The URL of the file to fix."
-          },
-          originalCode: {
-            type: 1,
-            description: "The exact original code to replace. Must match the file content exactly, including whitespace."
-          },
-          suggestion: {
-            type: 1,
-            description: "The new JavaScript code to replace the original code with."
-          },
-          explanation: {
-            type: 1,
-            description: "Explanation for why this code fixes the issue."
-          }
-        },
-        required: ["url", "originalCode", "suggestion", "explanation"]
-      },
-      displayInfoFromArgs: (args) => {
-        return {
-          title: "Suggesting a fix",
-          thought: args.explanation,
-          action: args.suggestion
-        };
-      },
-      handler: async (args, options) => {
-        debugLog("suggestFix requested", args);
-        if (options?.approved === false) {
-          return { error: "Fix rejected by the user." };
-        }
-        if (!options?.approved) {
-          return { requiresApproval: true };
-        }
-        const uiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(args.url);
-        if (!uiSourceCode) {
-          return { error: `File not found: ${args.url}` };
-        }
-        const contentData = await uiSourceCode.requestContentData();
-        if ("error" in contentData || !contentData.isTextContent) {
-          return { error: `Could not read content for file: ${args.url}` };
-        }
-        let currentContent = uiSourceCode.workingCopy();
-        if (!uiSourceCode.isDirty()) {
-          currentContent = contentData.text;
-        }
-        if (!currentContent.includes(args.originalCode)) {
-          return {
-            error: "originalCode not found in the file. Ensure the originalCode is an exact match including whitespace."
-          };
-        }
-        const newContent = currentContent.replace(args.originalCode, args.suggestion);
-        uiSourceCode.setWorkingCopy(newContent);
-        uiSourceCode.commitWorkingCopy();
-        return { result: { status: "Fix applied to the source file successfully." } };
       }
     });
   }
@@ -1843,7 +1792,7 @@ __export(ContextSelectionAgent_exports, {
 });
 import * as Common5 from "./../../core/common/common.js";
 import * as Host7 from "./../../core/host/host.js";
-import * as i18n9 from "./../../core/i18n/i18n.js";
+import * as i18n11 from "./../../core/i18n/i18n.js";
 import * as Root6 from "./../../core/root/root.js";
 import * as SDK8 from "./../../core/sdk/sdk.js";
 import * as Logs2 from "./../logs/logs.js";
@@ -1857,7 +1806,7 @@ __export(FileAgent_exports, {
   FileContext: () => FileContext
 });
 import * as Host3 from "./../../core/host/host.js";
-import * as i18n from "./../../core/i18n/i18n.js";
+import * as i18n3 from "./../../core/i18n/i18n.js";
 import * as Root2 from "./../../core/root/root.js";
 
 // gen/front_end/models/ai_assistance/data_formatters/FileFormatter.js
@@ -2458,7 +2407,7 @@ var UIStringsNotTranslate = {
    */
   analyzingFile: "Analyzing file"
 };
-var lockedString = i18n.i18n.lockedString;
+var lockedString2 = i18n3.i18n.lockedString;
 var FileContext = class extends ConversationContext {
   #file;
   constructor(file) {
@@ -2498,7 +2447,7 @@ var FileAgent = class extends AiAgent {
     }
     yield {
       type: "context",
-      title: lockedString(UIStringsNotTranslate.analyzingFile),
+      title: lockedString2(UIStringsNotTranslate.analyzingFile),
       details: createContextDetailsForFileAgent(selectedFile)
     };
   }
@@ -2528,7 +2477,7 @@ __export(NetworkAgent_exports, {
   RequestContext: () => RequestContext
 });
 import * as Host4 from "./../../core/host/host.js";
-import * as i18n3 from "./../../core/i18n/i18n.js";
+import * as i18n5 from "./../../core/i18n/i18n.js";
 import * as Root3 from "./../../core/root/root.js";
 var preamble3 = `You are the most advanced network request debugging assistant integrated into Chrome DevTools.
 The user selected a network request in the browser's DevTools Network Panel and sends a query to understand the request.
@@ -2586,7 +2535,7 @@ var UIStringsNotTranslate2 = {
    */
   requestInitiatorChain: "Request initiator chain"
 };
-var lockedString2 = i18n3.i18n.lockedString;
+var lockedString3 = i18n5.i18n.lockedString;
 var RequestContext = class extends ConversationContext {
   #request;
   #calculator;
@@ -2628,7 +2577,7 @@ var NetworkAgent = class extends AiAgent {
     }
     yield {
       type: "context",
-      title: lockedString2(UIStringsNotTranslate2.analyzingNetworkData),
+      title: lockedString3(UIStringsNotTranslate2.analyzingNetworkData),
       details: await createContextDetailsForNetworkAgent(selectedNetworkRequest)
     };
   }
@@ -2646,25 +2595,25 @@ async function createContextDetailsForNetworkAgent(selectedNetworkRequest) {
   const request = selectedNetworkRequest.getItem();
   const formatter = new NetworkRequestFormatter(request, selectedNetworkRequest.calculator);
   const requestContextDetail = {
-    title: lockedString2(UIStringsNotTranslate2.request),
-    text: lockedString2(UIStringsNotTranslate2.requestUrl) + ": " + request.url() + "\n\n" + formatter.formatRequestHeaders()
+    title: lockedString3(UIStringsNotTranslate2.request),
+    text: lockedString3(UIStringsNotTranslate2.requestUrl) + ": " + request.url() + "\n\n" + formatter.formatRequestHeaders()
   };
   const responseBody = await formatter.formatResponseBody();
   const responseBodyString = responseBody ? `
 
 ${responseBody}` : "";
   const responseContextDetail = {
-    title: lockedString2(UIStringsNotTranslate2.response),
+    title: lockedString3(UIStringsNotTranslate2.response),
     text: formatter.formatResponseHeaders() + responseBodyString + `
 
 ${formatter.formatStatus()}${formatter.formatFailureReasons()}`
   };
   const timingContextDetail = {
-    title: lockedString2(UIStringsNotTranslate2.timing),
+    title: lockedString3(UIStringsNotTranslate2.timing),
     text: formatter.formatNetworkRequestTiming()
   };
   const initiatorChainContextDetail = {
-    title: lockedString2(UIStringsNotTranslate2.requestInitiatorChain),
+    title: lockedString3(UIStringsNotTranslate2.requestInitiatorChain),
     text: formatter.formatRequestInitiatorChain()
   };
   return [
@@ -2683,7 +2632,7 @@ __export(PerformanceAgent_exports, {
 });
 import * as Common2 from "./../../core/common/common.js";
 import * as Host5 from "./../../core/host/host.js";
-import * as i18n5 from "./../../core/i18n/i18n.js";
+import * as i18n7 from "./../../core/i18n/i18n.js";
 import * as Platform2 from "./../../core/platform/platform.js";
 import * as Root4 from "./../../core/root/root.js";
 import * as SDK3 from "./../../core/sdk/sdk.js";
@@ -5034,7 +4983,7 @@ var UIStringsNotTranslated = {
    */
   mainThreadActivity: "Investigating main thread activity\u2026"
 };
-var lockedString3 = i18n5.i18n.lockedString;
+var lockedString4 = i18n7.i18n.lockedString;
 var greenDevAdditionalAnnotationsFunction = `
 - CRITICAL: You also have access to functions called addElementAnnotation and addNeworkRequestAnnotation,
 which should be used to highlight elements and network requests (respectively).`;
@@ -5306,7 +5255,7 @@ var PerformanceAgent = class extends AiAgent {
     }
     yield {
       type: "context",
-      title: lockedString3(UIStringsNotTranslated.analyzingTrace),
+      title: lockedString4(UIStringsNotTranslated.analyzingTrace),
       details: [
         {
           title: "Trace",
@@ -5565,7 +5514,7 @@ ${result}`,
       },
       displayInfoFromArgs: (params) => {
         return {
-          title: lockedString3(`Investigating insight ${params.insightName}\u2026`),
+          title: lockedString4(`Investigating insight ${params.insightName}\u2026`),
           action: `getInsightDetails('${params.insightSetId}', '${params.insightName}')`
         };
       },
@@ -5603,7 +5552,7 @@ ${result}`,
         required: ["eventKey"]
       },
       displayInfoFromArgs: (params) => {
-        return { title: lockedString3("Looking at trace event\u2026"), action: `getEventByKey('${params.eventKey}')` };
+        return { title: lockedString4("Looking at trace event\u2026"), action: `getEventByKey('${params.eventKey}')` };
       },
       handler: async (params) => {
         debugLog("Function call: getEventByKey", params);
@@ -5650,7 +5599,7 @@ ${result}`,
       },
       displayInfoFromArgs: (args) => {
         return {
-          title: lockedString3(UIStringsNotTranslated.mainThreadActivity),
+          title: lockedString4(UIStringsNotTranslated.mainThreadActivity),
           action: `getMainThreadTrackSummary({min: ${args.min}, max: ${args.max}})`
         };
       },
@@ -5699,7 +5648,7 @@ ${result}`,
       },
       displayInfoFromArgs: (args) => {
         return {
-          title: lockedString3(UIStringsNotTranslated.networkActivitySummary),
+          title: lockedString4(UIStringsNotTranslated.networkActivitySummary),
           action: `getNetworkTrackSummary({min: ${args.min}, max: ${args.max}})`
         };
       },
@@ -5741,7 +5690,7 @@ ${result}`,
         required: ["eventKey"]
       },
       displayInfoFromArgs: (args) => {
-        return { title: lockedString3("Looking at call tree\u2026"), action: `getDetailedCallTree('${args.eventKey}')` };
+        return { title: lockedString4("Looking at call tree\u2026"), action: `getDetailedCallTree('${args.eventKey}')` };
       },
       handler: async (args) => {
         debugLog("Function call: getDetailedCallTree");
@@ -5840,7 +5789,7 @@ ${result}`,
       },
       displayInfoFromArgs: (args) => {
         return {
-          title: lockedString3("Looking up function code\u2026"),
+          title: lockedString4("Looking up function code\u2026"),
           action: `getFunctionCode('${args.scriptUrl}', ${args.line}, ${args.column})`
         };
       },
@@ -5888,7 +5837,7 @@ ${result}`,
         required: ["url"]
       },
       displayInfoFromArgs: (args) => {
-        return { title: lockedString3("Looking at resource content\u2026"), action: `getResourceContent('${args.url}')` };
+        return { title: lockedString4("Looking at resource content\u2026"), action: `getResourceContent('${args.url}')` };
       },
       handler: async (args) => {
         debugLog("Function call: getResourceContent");
@@ -5932,7 +5881,7 @@ ${result}`,
           required: ["eventKey"]
         },
         displayInfoFromArgs: (params) => {
-          return { title: lockedString3("Selecting event\u2026"), action: `selectEventByKey('${params.eventKey}')` };
+          return { title: lockedString4("Selecting event\u2026"), action: `selectEventByKey('${params.eventKey}')` };
         },
         handler: async (params) => {
           debugLog("Function call: selectEventByKey", params);
@@ -5985,7 +5934,7 @@ __export(StylingAgent_exports, {
   StylingAgent: () => StylingAgent
 });
 import * as Host6 from "./../../core/host/host.js";
-import * as i18n7 from "./../../core/i18n/i18n.js";
+import * as i18n9 from "./../../core/i18n/i18n.js";
 import * as Platform5 from "./../../core/platform/platform.js";
 import * as Root5 from "./../../core/root/root.js";
 import * as SDK7 from "./../../core/sdk/sdk.js";
@@ -6725,7 +6674,7 @@ var UIStringsNotTranslate3 = {
    */
   dataUsed: "Data used"
 };
-var lockedString4 = i18n7.i18n.lockedString;
+var lockedString5 = i18n9.i18n.lockedString;
 var preamble4 = `You are the most advanced CSS/DOM/HTML debugging assistant integrated into Chrome DevTools.
 You always suggest considering the best web development practices and the newest platform features such as view transitions.
 The user selected a DOM element in the browser's DevTools and sends a query about the page or the selected DOM element.
@@ -6944,7 +6893,7 @@ var StylingAgent = class _StylingAgent extends AiAgent {
         };
       },
       handler: async (params) => {
-        return await this.getStyles(params.elements, params.styleProperties);
+        return await this.#getStyles(params.elements, params.styleProperties);
       }
     });
     this.declareFunction("executeJavaScript", {
@@ -7182,7 +7131,8 @@ const data = {
   #getSelectedNode() {
     return this.context?.getItem() ?? null;
   }
-  async getStyles(elements, properties) {
+  async #getStyles(elements, properties) {
+    const widgets = [];
     const result = {};
     for (const uid of elements) {
       result[uid] = { computed: {}, authored: {} };
@@ -7204,6 +7154,15 @@ const data = {
       if (!matchedStyles) {
         return { error: "Error: Could not get authored styles." };
       }
+      widgets.push({
+        name: "COMPUTED_STYLES",
+        data: {
+          computedStyles: styles,
+          backendNodeId: node.backendNodeId(),
+          matchedCascade: matchedStyles,
+          properties
+        }
+      });
       for (const prop of properties) {
         result[uid].computed[prop] = styles.get(prop);
       }
@@ -7220,7 +7179,8 @@ const data = {
       }
     }
     return {
-      result: JSON.stringify(result, null, 2)
+      result: JSON.stringify(result, null, 2),
+      widgets
     };
   }
   async executeAction(action, options) {
@@ -7266,7 +7226,8 @@ const data = {
           };
         }
         return {
-          requiresApproval: true
+          requiresApproval: true,
+          description: lockedString5("This code may modify page content. Continue?")
         };
       }
       if (result.canceled) {
@@ -7309,9 +7270,9 @@ const data = {
     }
     yield {
       type: "context",
-      title: lockedString4(UIStringsNotTranslate3.analyzingThePrompt),
+      title: lockedString5(UIStringsNotTranslate3.analyzingThePrompt),
       details: [{
-        title: lockedString4(UIStringsNotTranslate3.dataUsed),
+        title: lockedString5(UIStringsNotTranslate3.dataUsed),
         text: await _StylingAgent.describeElement(selectedElement.getItem())
       }]
     };
@@ -7330,7 +7291,7 @@ ${await _StylingAgent.describeElement(selectedElement.getItem())}
 };
 
 // gen/front_end/models/ai_assistance/agents/ContextSelectionAgent.js
-var lockedString5 = i18n9.i18n.lockedString;
+var lockedString6 = i18n11.i18n.lockedString;
 var preamble5 = `
 You are a Web Development Assistant integrated into Chrome DevTools. Your tone is educational, supportive, and technically precise.
 You aim to help developers of all levels, prioritizing teaching web concepts as the primary entry point for any solution.
@@ -7391,7 +7352,7 @@ var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
       },
       displayInfoFromArgs: () => {
         return {
-          title: lockedString5("Listing network requests\u2026"),
+          title: lockedString6("Listing network requests\u2026"),
           action: "listNetworkRequest()"
         };
       },
@@ -7408,7 +7369,8 @@ var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
             id: request.requestId(),
             url: request.url(),
             statusCode: request.statusCode,
-            duration: i18n9.TimeUtilities.secondsToString(request.duration)
+            duration: i18n11.TimeUtilities.secondsToString(request.duration),
+            transferSize: i18n11.ByteUtilities.formatBytesToKb(request.transferSize)
           });
         }
         if (requests.length === 0) {
@@ -7438,7 +7400,7 @@ var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
       },
       displayInfoFromArgs: (args) => {
         return {
-          title: lockedString5("Getting network request\u2026"),
+          title: lockedString6("Getting network request\u2026"),
           action: `selectNetworkRequest(${args.id})`
         };
       },
@@ -7469,7 +7431,7 @@ var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
       },
       displayInfoFromArgs: () => {
         return {
-          title: lockedString5("Listing source requests\u2026"),
+          title: lockedString6("Listing source requests\u2026"),
           action: "listSourceFiles()"
         };
       },
@@ -7503,7 +7465,7 @@ var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
       },
       displayInfoFromArgs: (args) => {
         return {
-          title: lockedString5("Getting source file\u2026"),
+          title: lockedString6("Getting source file\u2026"),
           action: `selectSourceFile(${args.id})`
         };
       },
@@ -7559,13 +7521,20 @@ var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
       },
       displayInfoFromArgs: () => {
         return {
-          title: lockedString5("Please select an element on the page\u2026"),
-          action: "selectElement()"
+          title: lockedString6("Select an element on the page or in the Elements panel")
         };
       },
-      handler: async () => {
+      handler: async (_params, options) => {
         if (!this.#onInspectElement) {
-          return { error: "The inspect element action is not available." };
+          return {
+            error: "The inspect element action is not available."
+          };
+        }
+        if (!options?.approved) {
+          return {
+            requiresApproval: true,
+            description: null
+          };
         }
         const node = await this.#onInspectElement();
         if (node) {
@@ -7868,7 +7837,7 @@ __export(PerformanceAnnotationsAgent_exports, {
   PerformanceAnnotationsAgent: () => PerformanceAnnotationsAgent
 });
 import * as Host9 from "./../../core/host/host.js";
-import * as i18n11 from "./../../core/i18n/i18n.js";
+import * as i18n13 from "./../../core/i18n/i18n.js";
 import * as Root8 from "./../../core/root/root.js";
 var UIStringsNotTranslated2 = {
   analyzingCallTree: "Analyzing call tree"
@@ -7876,7 +7845,7 @@ var UIStringsNotTranslated2 = {
    * @description Shown when the agent is investigating network activity
    */
 };
-var lockedString6 = i18n11.i18n.lockedString;
+var lockedString7 = i18n13.i18n.lockedString;
 var callTreePreamble = `You are an expert performance analyst embedded within Chrome DevTools.
 You meticulously examine web application behavior captured by the Chrome DevTools Performance Panel and Chrome tracing.
 You will receive a structured text representation of a call tree, derived from a user-selected call frame within a performance trace's flame chart.
@@ -7965,7 +7934,7 @@ var PerformanceAnnotationsAgent = class extends AiAgent {
     const callTree = focus.callTree;
     yield {
       type: "context",
-      title: lockedString6(UIStringsNotTranslated2.analyzingCallTree),
+      title: lockedString7(UIStringsNotTranslated2.analyzingCallTree),
       details: [
         {
           title: "Selected call tree",
@@ -8571,7 +8540,7 @@ __export(AiUtils_exports, {
 });
 import * as Common7 from "./../../core/common/common.js";
 import * as Host11 from "./../../core/host/host.js";
-import * as i18n13 from "./../../core/i18n/i18n.js";
+import * as i18n15 from "./../../core/i18n/i18n.js";
 import * as Root10 from "./../../core/root/root.js";
 var UIStrings = {
   /**
@@ -8591,8 +8560,8 @@ var UIStrings = {
    */
   notAvailableInIncognitoMode: "AI assistance is not available in Incognito mode or Guest mode."
 };
-var str_ = i18n13.i18n.registerUIStrings("models/ai_assistance/AiUtils.ts", UIStrings);
-var i18nString = i18n13.i18n.getLocalizedString.bind(void 0, str_);
+var str_ = i18n15.i18n.registerUIStrings("models/ai_assistance/AiUtils.ts", UIStrings);
+var i18nString = i18n15.i18n.getLocalizedString.bind(void 0, str_);
 function getDisabledReasons(aidaAvailability) {
   const reasons = [];
   if (Root10.Runtime.hostConfig.isOffTheRecord) {
@@ -8883,7 +8852,7 @@ __export(ConversationHandler_exports, {
 });
 import * as Common9 from "./../../core/common/common.js";
 import * as Host13 from "./../../core/host/host.js";
-import * as i18n15 from "./../../core/i18n/i18n.js";
+import * as i18n17 from "./../../core/i18n/i18n.js";
 import * as Platform6 from "./../../core/platform/platform.js";
 import * as Root12 from "./../../core/root/root.js";
 import * as SDK10 from "./../../core/sdk/sdk.js";
@@ -8894,7 +8863,7 @@ var UIStringsNotTranslate4 = {
    */
   enableInSettings: "For AI features to be available, you need to enable AI assistance in DevTools settings."
 };
-var lockedString7 = i18n15.i18n.lockedString;
+var lockedString8 = i18n17.i18n.lockedString;
 function isAiAssistanceServerSideLoggingEnabled2() {
   return !Root12.Runtime.hostConfig.aidaAvailability?.disallowLogging;
 }
@@ -8984,7 +8953,7 @@ var ConversationHandler = class _ConversationHandler extends Common9.ObjectWrapp
       const disabledReasons = await this.#getDisabledReasons();
       const aiAssistanceSetting = this.#aiAssistanceEnabledSetting?.getIfNotDisabled();
       if (!aiAssistanceSetting) {
-        disabledReasons.push(lockedString7(UIStringsNotTranslate4.enableInSettings));
+        disabledReasons.push(lockedString8(UIStringsNotTranslate4.enableInSettings));
       }
       if (disabledReasons.length > 0) {
         return this.#generateErrorResponse(disabledReasons.join(" "));

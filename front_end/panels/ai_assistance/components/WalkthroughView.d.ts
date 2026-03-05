@@ -1,6 +1,6 @@
 import type { MarkdownLitRenderer } from '../../../ui/components/markdown_view/MarkdownView.js';
 import * as UI from '../../../ui/legacy/legacy.js';
-import { type ModelChatMessage } from './ChatMessage.js';
+import { type ModelChatMessage, type Step } from './ChatMessage.js';
 export interface ViewInput {
     message: ModelChatMessage | null;
     isLoading: boolean;
@@ -9,6 +9,10 @@ export interface ViewInput {
     isExpanded: boolean;
     onToggle: (isOpen: boolean) => void;
 }
+export declare function walkthroughTitle(input: {
+    isLoading: boolean;
+    lastStep: Step;
+}): string;
 export declare const DEFAULT_VIEW: (input: ViewInput, _output: null, target: HTMLElement | DocumentFragment) => void;
 export type View = typeof DEFAULT_VIEW;
 export declare class WalkthroughView extends UI.Widget.Widget {

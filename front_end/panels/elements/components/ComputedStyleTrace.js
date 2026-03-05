@@ -12,6 +12,9 @@ export class ComputedStyleTrace extends HTMLElement {
     #active = false;
     #onNavigateToSource = () => { };
     #ruleOriginNode;
+    connectedCallback() {
+        this.#render();
+    }
     set data(data) {
         this.#selector = data.selector;
         this.#active = data.active;

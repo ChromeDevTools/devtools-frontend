@@ -1,5 +1,6 @@
 import * as Host from '../../../core/host/host.js';
 import type * as SDK from '../../../core/sdk/sdk.js';
+import type * as Protocol from '../../../generated/protocol.js';
 export declare const enum ResponseType {
     CONTEXT = "context",
     TITLE = "title",
@@ -65,6 +66,7 @@ export interface ThoughtResponse {
 }
 export interface SideEffectResponse {
     type: ResponseType.SIDE_EFFECT;
+    description: string | null;
     code?: string;
     confirm: (confirm: boolean) => void;
 }
@@ -85,6 +87,7 @@ export interface ActionResponse {
     code?: string;
     output?: string;
     canceled: boolean;
+    widgets?: AiWidget[];
 }
 export interface QueryingResponse {
     type: ResponseType.QUERYING;
@@ -156,10 +159,26 @@ export declare abstract class ConversationContext<T> {
     refresh(): Promise<void>;
     getSuggestions(): Promise<ConversationSuggestions | undefined>;
 }
+export interface ComputedStyleAiWidget {
+    name: 'COMPUTED_STYLES';
+    data: {
+        computedStyles: Map<string, string>;
+        backendNodeId: Protocol.DOM.BackendNodeId;
+        matchedCascade: SDK.CSSMatchedStyles.CSSMatchedStyles;
+        properties: string[];
+    };
+}
+export type AiWidget = ComputedStyleAiWidget;
 export type FunctionCallHandlerResult<Result> = {
     requiresApproval: true;
+    /**
+     * Provides extra description of what the required
+     * approval is requesting.
+     */
+    description: string | null;
 } | {
     result: Result;
+    widgets?: AiWidget[];
 } | {
     context: ConversationContext<unknown>;
     description: string;

@@ -9,7 +9,7 @@ const UIStrings = {
   /**
    * @description Title of a setting under the Persistence category in Settings
    */
-  enableLocalOverrides: 'Enable Local Overrides',
+  localOverrides: 'Local overrides',
   /**
    * @description A tag of Enable Local Overrides setting that can be searched in the command menu
    */
@@ -32,11 +32,11 @@ const UIStrings = {
    */
   request: 'request',
   /**
-   * @description Title of a setting under the Persistence category that can be invoked through the Command Menu
+   * @description Title of an option under the Persistence category that can be invoked through the Command Menu
    */
   enableOverrideNetworkRequests: 'Enable override network requests',
   /**
-   * @description Title of a setting under the Persistence category that can be invoked through the Command Menu
+   * @description Title of an option under the Persistence category that can be invoked through the Command Menu
    */
   disableOverrideNetworkRequests: 'Disable override network requests',
 } as const;
@@ -45,7 +45,7 @@ const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.PERSISTENCE,
-  title: i18nLazyString(UIStrings.enableLocalOverrides),
+  title: i18nLazyString(UIStrings.localOverrides),
   settingName: 'persistence-network-overrides-enabled',
   settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: false,

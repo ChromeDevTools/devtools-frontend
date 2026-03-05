@@ -142,7 +142,7 @@ describe('Overrides panel', function() {
     await devToolsPage.click('aria/Close coffees.json');
 
     // Disable Local overrides
-    await devToolsPage.click('aria/Enable Local Overrides');
+    await devToolsPage.click('aria/Local overrides');
 
     // Navigate to files
     await openNetworkTab(devToolsPage);
@@ -241,9 +241,9 @@ describe('Overrides panel', function() {
     await devToolsPage.click('aria/Show all overrides');
 
     // In the Sources panel
-    await devToolsPage.waitForAria('Enable Local Overrides');
+    await devToolsPage.waitForAria('Local overrides');
 
-    assertElements = await devToolsPage.$$('Enable Local Overrides', undefined, 'aria');
+    assertElements = await devToolsPage.$$('Local overrides', undefined, 'aria');
     assert.lengthOf(assertElements, 1);
   });
 

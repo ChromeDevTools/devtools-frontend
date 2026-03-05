@@ -82,6 +82,6 @@ export const setIgnoreListPattern = async (pattern: string, devToolsPage: DevToo
 
 export const toggleIgnoreListing = async (enable: boolean, devToolsPage: DevToolsPage) => {
   await openSettingsTab('Ignore list', devToolsPage);
-  await devToolsPage.setCheckBox('[title="Enable ignore listing"]', enable);
+  await devToolsPage.setCheckBox('[title="Ignore listing"]', enable);
   await closeSettings(devToolsPage);
 };

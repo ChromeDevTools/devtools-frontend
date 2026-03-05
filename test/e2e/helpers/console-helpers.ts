@@ -37,7 +37,7 @@ export const CONSOLE_MESSAGE_WRAPPER_SELECTOR = '.console-group-messages .consol
 export const CONSOLE_SELECTOR = '.console-user-command-result';
 export const CONSOLE_SETTINGS_SELECTOR = '[aria-label^="Console settings"]';
 export const AUTOCOMPLETE_FROM_HISTORY_SELECTOR = '[title="Autocomplete from history"]';
-export const SHOW_CORS_ERRORS_SELECTOR = '[title="Show CORS errors in console"]';
+export const SHOW_CORS_ERRORS_SELECTOR = '[title="CORS errors in console"]';
 export const LOG_XML_HTTP_REQUESTS_SELECTOR = '[title="Log XMLHttpRequests"]';
 export const CONSOLE_CREATE_LIVE_EXPRESSION_SELECTOR = '[aria-label^="Create live expression"]';
 export const CONSOLE_SIDEBAR_SELECTOR = 'div[slot="sidebar"]';

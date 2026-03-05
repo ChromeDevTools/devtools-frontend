@@ -20,7 +20,7 @@ import {togglePreferenceInSettingsTab} from '../helpers/settings-helpers.js';
 describe('The Elements tab', function() {
   it('is able to update shadow dom tree structure upon typing', async ({devToolsPage, inspectedPage}) => {
     await inspectedPage.goToResource('elements/shadow-dom-modify-chardata.html');
-    await togglePreferenceInSettingsTab('Show user agent shadow DOM', undefined, devToolsPage);
+    await togglePreferenceInSettingsTab('User agent shadow DOM', undefined, devToolsPage);
     await expandSelectedNodeRecursively(devToolsPage);
     const tree = await devToolsPage.waitForAria('Page DOM');
     assert.include(await tree.evaluate(e => e.textContent), '<div>​</div>​');
@@ -64,7 +64,7 @@ describe('The Elements tab', function() {
           root.innerHTML = "<input type='text'>";
         </script>
         `);
-       await togglePreferenceInSettingsTab('Show user agent shadow DOM', undefined, devToolsPage);
+       await togglePreferenceInSettingsTab('User agent shadow DOM', undefined, devToolsPage);
        await expandSelectedNodeRecursively(devToolsPage);
 
        const userAgentRootSelector = '#shadow-root (user-agent)';

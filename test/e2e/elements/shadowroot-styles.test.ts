@@ -88,7 +88,7 @@ describe('The Elements Tab', () => {
          <input type="date">
       `);
 
-       await togglePreferenceInSettingsTab('Show user agent shadow DOM', undefined, devToolsPage);
+       await togglePreferenceInSettingsTab('User agent shadow DOM', undefined, devToolsPage);
        await expandSelectedNodeRecursively(devToolsPage);
 
        const getProperties = async (elementSpec: string, expectedSelector: string) => {

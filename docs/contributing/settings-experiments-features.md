@@ -1,44 +1,35 @@
 # Settings, Experiments, and Features in Chromium DevTools
 
-From a developers perspective the Chromium DevTools experience can be
-customized in multiple ways:
+Chromium DevTools can be customized in several ways:
 
-* via Settings \> Preferences,
-* via Settings \> Experiments,
-* via `chrome://flags`,
-* or by passing a command line flag to Chromium.
+**Preferences** (found in Settings > Preferences) control the general appearance and behavior of
+DevTools, such as language or UI options. In the codebase, these are represented as "Settings"
+([documentation](https://chromium.googlesource.com/devtools/devtools-frontend/+/main/front_end/core/common/README.md)).
+They are intended as permanent options that remain relatively stable over time.
 
-Adding new DevTools experiments is deprecated, the preferred way for adding new
-features / exposing experimental features is via `base::Feature`s. These are
-controllable via Chromium command line parameters or optionally via `chrome://flags`.
-
-Note: We are currently in the process of migrating away from DevTools experiments,
-this documentation is partly outdated and will be updated ASAP.
-
+**Experiments** are features under active development or evaluation. These can change frequently
+and are managed through DevTools > Settings > Experiments, `chrome://flags`, or command-line
+switches. They are implemented using Chromium's `base::Feature` system, which allows for granular
+control and testing.
 
 [TOC]
 
-## How to add `base::Feature` feature flags
+## How to add base::Feature feature flags
 
-[go/chrome-devtools:command-line-config](http://go/chrome-devtools:command-line-config)
+`base::Feature` flags are defined in the Chromium repository and exposed to DevTools through [host
+bindings](https://crsrc.org/c/chrome/browser/devtools/devtools_ui_bindings.cc). This architecture
+ensures a single source of truth for features that span both the front-end (DevTools) and back-end
+(Chromium). Even features that only affect the front-end should use this system for consistency.
+By default, `base::Features` are configurable via command line parameters when launching Chromium.
+Optionally, they can be made available via the `chrome://flags` UI and via
+DevTools > Settings > Preferences as well.
 
-`base::Feature`s are defined in the Chromium repository and made available to
-DevTools via host bindings. This allows configuring features which have both a
-DevTools front-end and a Chromium back-end component from a single source of
-truth. But front-end-only features can be controlled via a `base::Feature` just
-as well.
-
-By default, `base::Feature`s are configurable via command line parameters when
-launching Chromium. Optionally, they can be made available via the `chrome://flags`
-UI as well.
-
-### Define a new `base::Feature`
+### Define a new base::Feature
 
 Add a new `base::Feature` to DevTools' [`features.cc`](https://crsrc.org/c/chrome/browser/devtools/features.cc). This feature will automatically be available as a Chrome command line parameter:
 
 ```cxx
-// in browser_features.cc
-
+// in features.cc
 BASE_FEATURE(kDevToolsNewFeature, "DevToolsNewFeature",
              base::FEATURE_DISABLED_BY_DEFAULT);
 
@@ -47,24 +38,19 @@ const base::FeatureParam<std::string> kDevToolsNewFeatureStringParam{
     &kDevToolsNewFeature, "string_param", /*default_value=*/""};
 const base::FeatureParam<double> kDevToolsNewFeatureDoubleParam{
     &kDevToolsNewFeature, "double_param", /*default_value=*/0};
-
 ```
 
 Start Chrome via command line including flags:
 
 ```bash
-out/Default/chrome --enable-features=DevToolsNewFeature
+[path to chrome]/chrome --enable-features=DevToolsNewFeature
 ```
 
-You can even pass additional feature parameters:
+Command for starting Chrome with feature and additional feature parameters:
 
 ```bash
-out/Default/chrome --enable-features="DevToolsNewFeature:string_param/foo/double_param/0.5"
+[path to chrome]/chrome --enable-features="DevToolsNewFeature:string_param/foo/double_param/0.5"
 ```
-
-### Make the `base::Feature` available via `chrome://flags`
-
-This step is optional. If you want the `base::Feature` to be controllable via the `chrome://flags` UI and not only via the command line, follow [this documentation](https://chromium.googlesource.com/chromium/src/+/main/docs/how_to_add_your_feature_flag.md#step-2_adding-the-feature-flag-to-the-chrome_flags-ui).
 
 ### Add the new feature to the host configuration being sent to DevTools
 
@@ -73,92 +59,81 @@ This step is optional. If you want the `base::Feature` to be controllable via th
 ### In DevTools, use the new property added to HostConfig
 
 * Update the type definition in [`Runtime.ts`](https://crsrc.org/c/third_party/devtools-frontend/src/front_end/core/root/Runtime.ts).
-* Update the dummy value returned by `getHostConfig` in [`InspectorFrontendHost.ts`](https://crsrc.org/c/third_party/devtools-frontend/src/front_end/core/host/InspectorFrontendHost.ts).
-* Access the host config via `Root.Runtime.hostConfig`.
-* In unit tests, make sure to assign the expected configuration using `updateHostConfig({ foo: bar })`.
+* Check if the `base::Feature` is enabled and use this to run certain code blocks conditionally by
+accessing the host config via `Root.Runtime.hostConfig`.
+* In unit tests, make sure to assign the expected configuration using
+`updateHostConfig({ someFeature: {enabled: true} })`.
 
-Please refer to this [example CL](https://crrev.com/c/5626314).
+Please refer to this [example CL](https://crrev.com/c/6820841).
 
-## DEPRECATED:How to add experiments
+### Optional: Make the base::Feature available via chrome://flags
 
-Note: We are currently in the process of migrating away from DevTools experiments, please use a `base::Feature` instead.
+This step is optional. If you want the `base::Feature` to be controllable via the
+`chrome://flags` UI and not only via the command line, follow
+[this documentation](https://chromium.googlesource.com/chromium/src/+/main/docs/how_to_add_your_feature_flag.md#step-2_adding-the-feature-flag-to-the-chrome_flags-ui).
 
-If you want to launch a new feature in DevTools behind an experiment flag, you
-will need to do two things:
+[Example CL](https://crrev.com/c/7588357)
 
-1.  Make Chromium aware of the experiment and enable it to track users
-    enabling/disabling the experiment.
-2.  Register the experiment in DevTools to have it added to the Settings UI.
+### Optional: Add the base::Feature to DevTools > Settings > Experiments
 
-### Chromium
+Prerequisite: The `base::Feature` needs to be have been added to `chrome://flags`.
 
-In Chromium, edit `tools/metrics/histograms/enums.xml`. Find the enum titled
-`DevToolsExperiments` (your best bet is to search for this text in your editor,
-as `enums.xml` is very large).
+#### Step 1: Create a HostExperiment in the DevTools repository
 
-Go to the end of this enum, and add a new entry. Make sure that the `value` is
-increased by one from the previous entry. The label can be anything you like but
-make sure it is easily identifiable.
+Register the experiment in [`MainImpl.ts`](https://crsrc.org/c/third_party/devtools-frontend/src/front_end/entrypoints/main/MainImpl.ts;l=343)
+
+```ts
+Root.Runtime.experiments.registerHostExperiment({
+  name: Root.ExperimentNames.ExperimentName.DURABLE_MESSAGES,
+  // Short description of the experiment, shown to users
+  title: 'Durable Messages',
+  // This must match the name of the Chrome flag as seen in `chrome://flags` or in `chrome/browser/about_flags.cc`
+  aboutFlag: 'devtools-enable-durable-messages',
+  isEnabled: Root.Runtime.hostConfig.devToolsEnableDurableMessages?.enabled ?? false,
+  // Whether the experiment requires a Chrome restart or only a reload of DevTools
+  requiresChromeRestart: false,
+  // optional
+  docLink: 'https://goo.gle/related-documentation',
+  // optional
+  feedbackLink: 'https://crbug.com/[bug number]',
+});
+```
+
+[Example CL](https://crrev.com/c/7588114)
+
+`requiresChromeRestart` should be set to `true` if the `base::Feature` is used for conditionally
+running code in the Chromium repository as well. If it only affects code paths in the DevTools
+repository, `requiresChromeRestart` can be set to `false`. This means that toggling the
+experimental feature requires only reloading DevTools and not restarting Chrome.
+
+You may also pass in two additional arguments which can be used to link users to documentation and
+a way to provide feedback.
+
+You must also add the experiment to [UserMetrics.ts](https://crsrc.org/c/third_party/devtools-frontend/src/front_end/core/host/UserMetrics.ts;l=807).
+Add an entry to the `DevToolsExperiments` enum, incrementing the `MAX_VALUE` by 1 and assigning the
+un-incremented value to your experiment. There are gaps in the values assigned to experiments. This
+is explained by the fact that expired experiments are removed from the codebase.
+
+#### Step 2: Add the experiment to enums.xml in the Chromium repository
+
+In Chromium, edit [tools/metrics/histograms/metadata/dev/enums.xml](https://crsrc.org/c/tools/metrics/histograms/metadata/dev/enums.xml;l=898).
+Find the enum titled `DevToolsExperiments`, and add a new entry. Make sure that the value matches the one from
+[UserMetrics.ts](https://crsrc.org/c/third_party/devtools-frontend/src/front_end/core/host/UserMetrics.ts;l=807)
+in the DevTools repository. The label can be anything you like but make sure it is easily identifiable.
 
 ```xml
 <int value="95" label="yourExperimentNameHere"/>
 ```
 
-See an example Chromium CL [here](https://crrev.com/c/4915777).
+[Example CL](https://crrev.com/c/4915777)
 
-### DevTools front-end
+## Deprecated: DevTools experiments
 
-In DevTools, you need to register the experiment. This is done in
-`front_end/entrypoints/main/MainImpl.ts` and is done by calling
-`Root.Runtime.experiments.register`:
+Previously, DevTools experiments that lacked a Chrome component were managed separately. This
+system is now deprecated. All legacy experiments are being migrated to the `base::Feature`
+framework to streamline development.
 
-```ts
-Root.Runtime.experiments.register(
-  'yourExperimentNameHere',
-  'User facing short description of experiment here',
-  false,
-);
-```
-
-The first argument is the experiment's label, and **this must match the label
-you used in your Chromium CL**.
-
-The second argument is a short description of the experiment. This string will
-be shown to users.
-
-Finally, the third argument marks the experiment as unstable. You should pass
-`true` if you want your experiment to be marked as unstable. This moves it into
-a separate part of the UI where users are warned that enabling the experiment
-may cause issues.
-
-You may also pass in two additional arguments which can be used to link users to
-documentation and a way to provide feedback:
-
-```ts
-Root.Runtime.experiments.register(
-  'jsProfilerTemporarilyEnable',
-  'Enable JavaScript Profiler temporarily',
-  /* unstable= */ false,
-  /* documentation */ 'https://goo.gle/js-profiler-deprecation',
-  /* feedback */ 'https://crbug.com/1354548',
-);
-```
-
-You must also add the experiment to `front_end/core/host/UserMetrics.ts`. Add an
-entry to the `DevToolsExperiments` enum, using **the same label and integer
-value** that you used in the Chromium CL. You should also increase the
-`MaxValue` entry by one.
-
-Once the experiment is registered, you can check if it is enabled and use this
-to run certain code blocks conditionally:
-
-```ts
-if (Root.Runtime.experiments.isEnabled('yourExperimentNameHere')) {
-  // Experiment code here
-}
-```
-
-## A/B Testing with Finch and `base::Feature`
+## A/B Testing with Finch and base::Feature
 
 `base::Feature` flags can be used with Finch to conduct A/B testing by toggling feature flags for a defined percentage of users. A/B testing can be a good way of testing the waters. However, since the time to get meaningful metrics may take a long time, it shouldn't be used to get feedback on options quickly.
 

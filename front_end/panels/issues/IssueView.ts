@@ -24,7 +24,6 @@ import {AffectedDescendantsWithinSelectElementView} from './AffectedDescendantsW
 import {AffectedDirectivesView} from './AffectedDirectivesView.js';
 import {AffectedDocumentsInQuirksModeView} from './AffectedDocumentsInQuirksModeView.js';
 import {AffectedElementsView} from './AffectedElementsView.js';
-import {AffectedElementsWithLowContrastView} from './AffectedElementsWithLowContrastView.js';
 import {AffectedHeavyAdView} from './AffectedHeavyAdView.js';
 import {AffectedMetadataAllowedSitesView} from './AffectedMetadataAllowedSitesView.js';
 import {AffectedPartitioningBlobURLView} from './AffectedPartitioningBlobURLView.js';
@@ -251,7 +250,6 @@ export class IssueView extends UI.TreeOutline.TreeElement {
       new AffectedDirectivesView(this, this.#issue, 'directives-details'),
       new AffectedBlockedByResponseView(this, this.#issue, 'blocked-by-response-details'),
       new AffectedSharedArrayBufferIssueDetailsView(this, this.#issue, 'sab-details'),
-      new AffectedElementsWithLowContrastView(this, this.#issue, 'low-contrast-details'),
       new CorsIssueDetailsView(this, this.#issue, 'cors-details'),
       new GenericIssueDetailsView(this, this.#issue, 'generic-details'),
       new AffectedDocumentsInQuirksModeView(this, this.#issue, 'affected-documents'),

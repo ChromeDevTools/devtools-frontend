@@ -817,7 +817,6 @@ export enum DevtoolsExperiments {
   apca = 39,
   'font-editor' = 41,
   'full-accessibility-tree' = 42,
-  'contrast-issues' = 44,
   'experimental-cookie-features' = 45,
   'instrumentation-breakpoints' = 61,
   'authored-deployed-grouping' = 63,
@@ -907,7 +906,7 @@ export enum IssueCreated {
   'CookieIssue::WarnSameSiteUnspecifiedCrossSiteContext::SetCookie' = 35,
   'SharedArrayBufferIssue::TransferIssue' = 36,
   'SharedArrayBufferIssue::CreationIssue' = 37,
-  LowTextContrastIssue = 41,
+
   'CorsIssue::InsecureLocalNetwork' = 42,
   'CorsIssue::InvalidHeaders' = 44,
   'CorsIssue::WildcardOriginWithCredentials' = 45,

@@ -23,7 +23,6 @@ ts_e2e_library("issues") {
     "issue-links.test.ts",
     "issue-view-caching.test.ts",
     "issue-view-reparent.test.ts",
-    "low-text-contrast-issues.test.ts",
     "partitioning-blob-url-issues.test.ts",
     "privacy-sandbox-extensions-api.test.ts",
     "quirks-mode-issues.test.ts",

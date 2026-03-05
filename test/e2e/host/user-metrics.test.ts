@@ -484,37 +484,6 @@ describe('User metrics for CSS overview', () => {
 });
 
 describe('User Metrics for Issue Panel', () => {
-  setup({enabledDevToolsExperiments: ['contrast-issues']});
-
-  it('dispatches an event when a LowTextContrastIssue is created', async ({devToolsPage, inspectedPage}) => {
-    await setupInspectorFrontendHostStub(devToolsPage);
-    await openPanelViaMoreTools('Issues', devToolsPage);
-    await inspectedPage.goToResource('elements/low-contrast.html');
-    await devToolsPage.waitFor('.issue');
-
-    await assertHistogramEventsInclude(
-        [
-          {
-            actionName: 'DevTools.IssueCreated',
-            actionCode: 41,  // LowTextContrastIssue
-          },
-          {
-            actionName: 'DevTools.IssueCreated',
-            actionCode: 41,  // LowTextContrastIssue
-          },
-          {
-            actionName: 'DevTools.IssueCreated',
-            actionCode: 41,  // LowTextContrastIssue
-          },
-          {
-            actionName: 'DevTools.IssueCreated',
-            actionCode: 41,  // LowTextContrastIssue
-          },
-        ],
-        devToolsPage,
-    );
-  });
-
   it('dispatches an event when a SharedArrayBufferIssue is created', async ({devToolsPage, inspectedPage}) => {
     await setupInspectorFrontendHostStub(devToolsPage);
     await openPanelViaMoreTools('Issues', devToolsPage);

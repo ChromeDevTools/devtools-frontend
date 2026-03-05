@@ -23,7 +23,6 @@ devtools_ui_module("issues") {
     "AffectedDirectivesView.ts",
     "AffectedDocumentsInQuirksModeView.ts",
     "AffectedElementsView.ts",
-    "AffectedElementsWithLowContrastView.ts",
     "AffectedHeavyAdView.ts",
     "AffectedMetadataAllowedSitesView.ts",
     "AffectedPartitioningBlobURLView.ts",

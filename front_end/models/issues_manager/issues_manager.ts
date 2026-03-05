@@ -7,7 +7,6 @@ import * as CheckFormsIssuesTrigger from './CheckFormsIssuesTrigger.js';
 import * as ClientHintIssue from './ClientHintIssue.js';
 import * as ConnectionAllowlistIssue from './ConnectionAllowlistIssue.js';
 import * as ContentSecurityPolicyIssue from './ContentSecurityPolicyIssue.js';
-import * as ContrastCheckTrigger from './ContrastCheckTrigger.js';
 import * as CookieDeprecationMetadataIssue from './CookieDeprecationMetadataIssue.js';
 import * as CookieIssue from './CookieIssue.js';
 import * as CorsIssue from './CorsIssue.js';
@@ -21,7 +20,6 @@ import * as Issue from './Issue.js';
 import * as IssueAggregator from './IssueAggregator.js';
 import * as IssueResolver from './IssueResolver.js';
 import * as IssuesManager from './IssuesManager.js';
-import * as LowTextContrastIssue from './LowTextContrastIssue.js';
 import * as MarkdownIssueDescription from './MarkdownIssueDescription.js';
 import * as MixedContentIssue from './MixedContentIssue.js';
 import * as PartitioningBlobURLIssue from './PartitioningBlobURLIssue.js';
@@ -42,7 +40,6 @@ export {
   ClientHintIssue,
   ConnectionAllowlistIssue,
   ContentSecurityPolicyIssue,
-  ContrastCheckTrigger,
   CookieDeprecationMetadataIssue,
   CookieIssue,
   CorsIssue,
@@ -56,7 +53,6 @@ export {
   IssueAggregator,
   IssueResolver,
   IssuesManager,
-  LowTextContrastIssue,
   MarkdownIssueDescription,
   MixedContentIssue,
   PartitioningBlobURLIssue,

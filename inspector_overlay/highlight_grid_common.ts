@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type {AreaBounds, Bounds} from './common.js';
+import type {AreaBounds, Bounds, Position} from './common.js';
 import {drawGridLabels, type GridLabelState, isHorizontalWritingMode} from './css_grid_label_helpers.js';
 import {applyMatrixToPoint, buildPath, emptyBounds, hatchFillPath} from './highlight_common.js';
 
@@ -188,6 +188,7 @@ export const gridStyle = `
 export interface GridHighlight {
   gridBorder: Array<string|number>;
   writingMode: string;
+  writingModeRoot?: Position;
   rowGaps: Array<string|number>;
   rotationAngle: number;
   columnGaps: Array<string|number>;
@@ -222,7 +223,7 @@ export function drawLayoutGridHighlight(
 
   // Transform the context to match the current writing-mode.
   context.save();
-  applyWritingModeTransformation(highlight.writingMode, gridBounds, context);
+  applyWritingModeTransformation(highlight.writingMode, gridBounds, context, highlight.writingModeRoot);
 
   // Draw grid background
   if (highlight.gridHighlightConfig.gridBackgroundColor) {
@@ -285,7 +286,8 @@ export function drawLayoutGridHighlight(
       writingModeMatrix);
 }
 
-function applyWritingModeTransformation(writingMode: string, gridBounds: Bounds, context: CanvasRenderingContext2D) {
+function applyWritingModeTransformation(
+    writingMode: string, gridBounds: Bounds, context: CanvasRenderingContext2D, writingModeRoot?: Position) {
   if (isHorizontalWritingMode(writingMode)) {
     return;
   }
@@ -293,13 +295,14 @@ function applyWritingModeTransformation(writingMode: string, gridBounds: Bounds,
   const topLeft = gridBounds.allPoints[0];
   const topRight = gridBounds.allPoints[1];
   const bottomLeft = gridBounds.allPoints[3];
+  const origin = writingModeRoot ?? topLeft;
 
-  // Move to the top-left corner to do all transformations there.
-  context.translate(topLeft.x, topLeft.y);
+  // Move to the origin corner to do all transformations there.
+  context.translate(origin.x, origin.y);
 
   if (writingMode === 'vertical-rl' || writingMode === 'sideways-rl') {
     context.rotate(90 * Math.PI / 180);
-    context.translate(0, -1 * (bottomLeft.y - topLeft.y));
+    context.translate(0, -(bottomLeft.y - topLeft.y));
   }
 
   if (writingMode === 'vertical-lr') {
@@ -309,11 +312,11 @@ function applyWritingModeTransformation(writingMode: string, gridBounds: Bounds,
 
   if (writingMode === 'sideways-lr') {
     context.rotate(-90 * Math.PI / 180);
-    context.translate(-1 * (topRight.x - topLeft.x), 0);
+    context.translate(-(topRight.x - topLeft.x), 0);
   }
 
   // Move back to the original point.
-  context.translate(topLeft.x * -1, topLeft.y * -1);
+  context.translate(-origin.x, -origin.y);
 }
 
 function drawGridLines(

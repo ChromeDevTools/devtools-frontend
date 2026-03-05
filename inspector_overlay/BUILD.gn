@@ -113,6 +113,7 @@ ts_library("unittests") {
     "css_grid_label_helpers.test.ts",
     "highlight_common.test.ts",
     "highlight_flex_common.test.ts",
+    "highlight_grid_common.test.ts",
     "tool_highlight.test.ts",
     "tool_source_order.test.ts",
     "tool_window_controls.test.ts",

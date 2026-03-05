@@ -10,6 +10,7 @@ import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as EmulationModel from '../../models/emulation/emulation.js';
+import * as uiI18n from '../../ui/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
@@ -19,8 +20,14 @@ const UIStrings = {
   /**
    * @description Title of the device dimensions selection item in the Device Mode Toolbar.
    * webpage in pixels.
+   * @example {Responsive} PH1
    */
-  dimensions: 'Dimensions',
+  dimensions: 'Dimensions: {PH1}',
+  /**
+   * @description Title of the device pixel ratio selection item in the Device Mode Toolbar.
+   * @example {2.0} PH1
+   */
+  dpr: 'DPR: {PH1}',
   /**
    * @description Title of the width input textbox in the Device Mode Toolbar, for the width of the
    * webpage in pixels.
@@ -70,7 +77,7 @@ const UIStrings = {
    * placeholder, which is a number. In the Device Mode Toolbar.
    * @example {4.3} PH1
    */
-  defaultF: 'Default: {PH1}',
+  defaultF: '{PH1} (default)',
   /**
    * @description Command to hide the frame (like a picture frame) around the mobile device screen.
    */
@@ -289,6 +296,9 @@ export class DeviceModeToolbar {
         new UI.Toolbar.ToolbarMenuButton(this.appendDeviceMenuItems.bind(this), undefined, undefined, 'device');
     this.deviceSelectItem.turnShrinkable();
     this.deviceSelectItem.setDarkText();
+    const dimensionsSpan =
+        uiI18n.getFormatLocalizedString(str_, UIStrings.dimensions, {PH1: this.deviceSelectItem.element});
+    mainToolbar.append(...dimensionsSpan.childNodes);
     mainToolbar.appendToolbarItem(this.deviceSelectItem);
 
     this.widthInput.addEventListener('sizechanged', ({size: width}) => {
@@ -328,6 +338,8 @@ export class DeviceModeToolbar {
     this.deviceScaleItem.setVisible(this.showDeviceScaleFactorSetting.get());
     setTitleForButton(this.deviceScaleItem, i18nString(UIStrings.devicePixelRatio));
     this.deviceScaleItem.setDarkText();
+    const deviceScaleSpan = uiI18n.getFormatLocalizedString(str_, UIStrings.dpr, {PH1: this.deviceScaleItem.element});
+    mainToolbar.append(...deviceScaleSpan.childNodes);
     mainToolbar.appendToolbarItem(this.deviceScaleItem);
     mainToolbar.appendToolbarItem(new UI.Toolbar.ToolbarItem(this.createEmptyToolbarElement()));
     this.uaItem =
@@ -435,17 +447,28 @@ export class DeviceModeToolbar {
             this.model.uaSetting().get() === EmulationModel.DeviceModeModel.UA.MOBILE_NO_TOUCH ?
         EmulationModel.DeviceModeModel.defaultMobileScaleFactor :
         window.devicePixelRatio;
-    appendDeviceScaleFactorItem(
-        contextMenu.headerSection(), i18nString(UIStrings.defaultF, {PH1: defaultValue}), 0, 'dpr-default');
-    appendDeviceScaleFactorItem(contextMenu.defaultSection(), '1', 1, 'dpr-1');
-    appendDeviceScaleFactorItem(contextMenu.defaultSection(), '2', 2, 'dpr-2');
-    appendDeviceScaleFactorItem(contextMenu.defaultSection(), '3', 3, 'dpr-3');
+    const values = [1, 2, 3];
+    if (!values.includes(defaultValue)) {
+      values.push(defaultValue);
+      values.sort((a, b) => a - b);
+    }
+
+    for (const value of values) {
+      if (value === defaultValue) {
+        appendDeviceScaleFactorItem(
+            contextMenu.defaultSection(), i18nString(UIStrings.defaultF, {PH1: value}), 0, 'dpr-default');
+      } else {
+        appendDeviceScaleFactorItem(contextMenu.defaultSection(), String(value), value, `dpr-${value}`);
+      }
+    }
 
     function appendDeviceScaleFactorItem(
         section: UI.ContextMenu.Section, title: string, value: number, jslogContext: string): void {
-      section.appendCheckboxItem(
-          title, deviceScaleFactorSetting.set.bind(deviceScaleFactorSetting, value),
-          {checked: deviceScaleFactorSetting.get() === value, jslogContext});
+      section.appendCheckboxItem(title, deviceScaleFactorSetting.set.bind(deviceScaleFactorSetting, value), {
+        checked: deviceScaleFactorSetting.get() === value ||
+            (value === 0 && deviceScaleFactorSetting.get() === defaultValue),
+        jslogContext
+      });
     }
   }
 
@@ -745,7 +768,7 @@ export class DeviceModeToolbar {
 
     const deviceScale = this.model.appliedDeviceScaleFactor();
     if (deviceScale !== this.cachedDeviceScale) {
-      this.deviceScaleItem.setText(`DPR: ${deviceScale.toFixed(1)}`);
+      this.deviceScaleItem.setText(`${deviceScale.toFixed(1)}`);
       this.cachedDeviceScale = deviceScale;
     }
 
@@ -763,7 +786,7 @@ export class DeviceModeToolbar {
     if (this.model.type() === EmulationModel.DeviceModeModel.Type.Device && device) {
       deviceItemTitle = device.title;
     }
-    this.deviceSelectItem.setText(`${i18nString(UIStrings.dimensions)}: ${deviceItemTitle}`);
+    this.deviceSelectItem.setText(deviceItemTitle);
 
     if (this.model.device() !== this.cachedModelDevice) {
       const device = this.model.device();

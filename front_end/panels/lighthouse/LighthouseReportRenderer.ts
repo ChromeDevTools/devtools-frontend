@@ -6,6 +6,7 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import type * as LighthouseModel from '../../models/lighthouse/lighthouse.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as LighthouseReport from '../../third_party/lighthouse/report/report.js';
@@ -15,9 +16,6 @@ import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as PanelsCommon from '../common/common.js';
 
-import type {
-  NodeDetailsJSON, ReportJSON, RunnerResultArtifacts, SourceLocationDetailsJSON} from './LighthouseReporterTypes.js';
-
 const MaxLengthForLinks = 40;
 
 interface RenderReportOpts {
@@ -26,8 +24,9 @@ interface RenderReportOpts {
 }
 
 export class LighthouseReportRenderer {
-  static renderLighthouseReport(lhr: ReportJSON, artifacts?: RunnerResultArtifacts, opts?: RenderReportOpts):
-      HTMLElement {
+  static renderLighthouseReport(
+      lhr: LighthouseModel.ReporterTypes.ReportJSON, artifacts?: LighthouseModel.ReporterTypes.RunnerResultArtifacts,
+      opts?: RenderReportOpts): HTMLElement {
     let onViewTrace: (() => Promise<void>)|undefined = undefined;
     if (artifacts) {
       onViewTrace = async () => {
@@ -134,7 +133,7 @@ export class LighthouseReportRenderer {
 
     for (const origElement of el.getElementsByClassName('lh-node')) {
       const origHTMLElement = origElement as HTMLElement;
-      const detailsItem = origHTMLElement.dataset as unknown as NodeDetailsJSON;
+      const detailsItem = origHTMLElement.dataset as unknown as LighthouseModel.ReporterTypes.NodeDetailsJSON;
       if (!detailsItem.path) {
         continue;
       }
@@ -165,7 +164,7 @@ export class LighthouseReportRenderer {
   static async linkifySourceLocationDetails(el: Element): Promise<void> {
     for (const origElement of el.getElementsByClassName('lh-source-location')) {
       const origHTMLElement = origElement as HTMLElement;
-      const detailsItem = origHTMLElement.dataset as SourceLocationDetailsJSON;
+      const detailsItem = origHTMLElement.dataset as LighthouseModel.ReporterTypes.SourceLocationDetailsJSON;
       if (!detailsItem.sourceUrl || !detailsItem.sourceLine || !detailsItem.sourceColumn) {
         continue;
       }

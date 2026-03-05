@@ -7,8 +7,7 @@ import type * as Platform from '../../core/platform/platform.js';
 import type * as ProtocolClient from '../../core/protocol_client/protocol_client.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
-
-import type * as ReportRenderer from './LighthouseReporterTypes.js';
+import type * as LighthouseModel from '../../models/lighthouse/lighthouse.js';
 
 /**
  * @file
@@ -149,7 +148,8 @@ export class ProtocolService implements ProtocolClient.CDPConnection.CDPConnecti
     });
   }
 
-  async collectLighthouseResults(currentLighthouseRun: LighthouseRun): Promise<ReportRenderer.RunnerResult> {
+  async collectLighthouseResults(currentLighthouseRun: LighthouseRun):
+      Promise<LighthouseModel.ReporterTypes.RunnerResult> {
     const {inspectedURL, categoryIDs, flags} = currentLighthouseRun;
 
     if (!this.mainSessionId || !this.rootTargetId) {
@@ -289,10 +289,10 @@ export class ProtocolService implements ProtocolClient.CDPConnection.CDPConnecti
 
   /** sendWithResponse currently only handles the original startLighthouse request and LHR-filled response. */
   private async sendWithResponse(action: string, args: Record<string, string|string[]|object|undefined> = {}):
-      Promise<ReportRenderer.RunnerResult> {
+      Promise<LighthouseModel.ReporterTypes.RunnerResult> {
     const worker = await this.ensureWorkerExists();
     const messageId = lastId++;
-    const messageResult = new Promise<ReportRenderer.RunnerResult>(resolve => {
+    const messageResult = new Promise<LighthouseModel.ReporterTypes.RunnerResult>(resolve => {
       const workerListener = (event: MessageEvent): void => {
         const lighthouseMessage = event.data;
 

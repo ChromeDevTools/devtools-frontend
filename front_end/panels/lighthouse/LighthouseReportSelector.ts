@@ -5,9 +5,8 @@
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import type * as LighthouseModel from '../../models/lighthouse/lighthouse.js';
 import * as UI from '../../ui/legacy/legacy.js';
-
-import type * as ReportRenderer from './LighthouseReporterTypes.js';
 
 const UIStrings = {
   /**
@@ -102,7 +101,9 @@ export class Item {
   private readonly showLandingCallback: () => void;
   private readonly element: HTMLOptionElement;
 
-  constructor(lighthouseResult: ReportRenderer.ReportJSON, renderReport: () => void, showLandingCallback: () => void) {
+  constructor(
+      lighthouseResult: LighthouseModel.ReporterTypes.ReportJSON, renderReport: () => void,
+      showLandingCallback: () => void) {
     this.renderReport = renderReport;
     this.showLandingCallback = showLandingCallback;
 

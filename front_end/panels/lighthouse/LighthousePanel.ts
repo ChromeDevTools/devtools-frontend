@@ -7,6 +7,7 @@ import '../../ui/legacy/legacy.js';
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import type * as LighthouseModel from '../../models/lighthouse/lighthouse.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
@@ -19,7 +20,6 @@ import {
 } from './LighthouseController.js';
 import lighthousePanelStyles from './lighthousePanel.css.js';
 import {ProtocolService} from './LighthouseProtocolService.js';
-import type {ReportJSON, RunnerResultArtifacts} from './LighthouseReporterTypes.js';
 import {LighthouseReportRenderer} from './LighthouseReportRenderer.js';
 import {Item, ReportSelector} from './LighthouseReportSelector.js';
 import {StartView} from './LighthouseStartView.js';
@@ -69,7 +69,7 @@ export class LighthousePanel extends UI.Panel.Panel {
   private readonly timespanView: TimespanView;
   private warningText: Nullable<string>;
   private unauditableExplanation: Nullable<string>;
-  private readonly cachedRenderedReports: Map<ReportJSON, HTMLElement>;
+  private readonly cachedRenderedReports: Map<LighthouseModel.ReporterTypes.ReportJSON, HTMLElement>;
   private readonly dropTarget: UI.DropTarget.DropTarget;
   private readonly auditResultsElement: HTMLElement;
   private clearButton!: UI.Toolbar.ToolbarButton;
@@ -296,7 +296,9 @@ export class LighthousePanel extends UI.Panel.Panel {
     this.statusView.toggleCancelButton(true);
   }
 
-  private renderReport(lighthouseResult: ReportJSON, artifacts?: RunnerResultArtifacts): void {
+  private renderReport(
+      lighthouseResult: LighthouseModel.ReporterTypes.ReportJSON,
+      artifacts?: LighthouseModel.ReporterTypes.RunnerResultArtifacts): void {
     this.toggleSettingsDisplay(false);
     this.contentElement.classList.toggle('in-progress', false);
     this.startView.hideWidget();
@@ -319,7 +321,9 @@ export class LighthousePanel extends UI.Panel.Panel {
     this.cachedRenderedReports.set(lighthouseResult, reportContainer);
   }
 
-  private buildReportUI(lighthouseResult: ReportJSON, artifacts?: RunnerResultArtifacts): void {
+  private buildReportUI(
+      lighthouseResult: LighthouseModel.ReporterTypes.ReportJSON,
+      artifacts?: LighthouseModel.ReporterTypes.RunnerResultArtifacts): void {
     if (lighthouseResult === null) {
       return;
     }
@@ -355,7 +359,7 @@ export class LighthousePanel extends UI.Panel.Panel {
     if (!data['lighthouseVersion']) {
       return;
     }
-    this.buildReportUI(data as ReportJSON);
+    this.buildReportUI(data as LighthouseModel.ReporterTypes.ReportJSON);
   }
 
   override elementsToRestoreScrollPositionsFor(): Element[] {

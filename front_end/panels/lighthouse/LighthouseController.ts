@@ -9,10 +9,10 @@ import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as EmulationModel from '../../models/emulation/emulation.js';
+import type * as LighthouseModel from '../../models/lighthouse/lighthouse.js';
 import * as Emulation from '../emulation/emulation.js';
 
 import type {LighthouseRun as LighthouseRunType, ProtocolService} from './LighthouseProtocolService.js';
-import type {RunnerResult} from './LighthouseReporterTypes.js';
 
 const UIStrings = {
   /**
@@ -236,7 +236,7 @@ class LighthouseRun {
     }
   }
 
-  async collect(): Promise<RunnerResult> {
+  async collect(): Promise<LighthouseModel.ReporterTypes.RunnerResult> {
     try {
       const lighthouseResponse = await this.protocolService.collectLighthouseResults(
           {inspectedURL: this.inspectedURL, categoryIDs: this.categoryIDs, flags: this.flags});
@@ -663,7 +663,7 @@ export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper<Eve
     return await this.lastAction;
   }
 
-  async collectLighthouseResults(): Promise<RunnerResult> {
+  async collectLighthouseResults(): Promise<LighthouseModel.ReporterTypes.RunnerResult> {
     if (!this.currentLighthouseRun) {
       throw new Error('Lighthouse is not started');
     }

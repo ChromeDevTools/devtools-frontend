@@ -5,6 +5,7 @@
 import type * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
+import type * as LighthouseModel from '../../models/lighthouse/lighthouse.js';
 import {createTarget, stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
 
@@ -31,7 +32,7 @@ describeWithMockConnection('LighthousePanel', () => {
       environment: {benchmarkIndex: 0},
       i18n: {rendererFormattedStrings: {}},
     },
-  } as unknown as LighthouseModule.LighthouseReporterTypes.RunnerResult;
+  } as unknown as LighthouseModel.ReporterTypes.RunnerResult;
 
   beforeEach(async () => {
     stubNoopSettings();

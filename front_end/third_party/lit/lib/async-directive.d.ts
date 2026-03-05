@@ -1,3 +1,68 @@
+/**
+ * @license
+ * Copyright 2017 Google LLC
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+
+interface DirectiveClass {
+    new (part: PartInfo): Directive;
+}
+/**
+ * This utility type extracts the signature of a directive class's render()
+ * method so we can use it for the type of the generated directive function.
+ */
+type DirectiveParameters<C extends Directive> = Parameters<C['render']>;
+/**
+ * A generated directive function doesn't evaluate the directive, but just
+ * returns a DirectiveResult object that captures the arguments.
+ */
+interface DirectiveResult<C extends DirectiveClass = DirectiveClass> {
+}
+declare const PartType: {
+    readonly ATTRIBUTE: 1;
+    readonly CHILD: 2;
+    readonly PROPERTY: 3;
+    readonly BOOLEAN_ATTRIBUTE: 4;
+    readonly EVENT: 5;
+    readonly ELEMENT: 6;
+};
+type PartType = (typeof PartType)[keyof typeof PartType];
+interface ChildPartInfo {
+    readonly type: typeof PartType.CHILD;
+}
+interface AttributePartInfo {
+    readonly type: typeof PartType.ATTRIBUTE | typeof PartType.PROPERTY | typeof PartType.BOOLEAN_ATTRIBUTE | typeof PartType.EVENT;
+    readonly strings?: ReadonlyArray<string>;
+    readonly name: string;
+    readonly tagName: string;
+}
+interface ElementPartInfo {
+    readonly type: typeof PartType.ELEMENT;
+}
+/**
+ * Information about the part a directive is bound to.
+ *
+ * This is useful for checking that a directive is attached to a valid part,
+ * such as with directive that can only be used on attribute bindings.
+ */
+type PartInfo = ChildPartInfo | AttributePartInfo | ElementPartInfo;
+/**
+ * Creates a user-facing directive function from a Directive class. This
+ * function has the same parameters as the directive's render() method.
+ */
+declare const directive: <C extends DirectiveClass>(c: C) => (...values: DirectiveParameters<InstanceType<C>>) => DirectiveResult<C>;
+/**
+ * Base class for creating custom directives. Users should extend this class,
+ * implement `render` and/or `update`, and then pass their subclass to
+ * `directive`.
+ */
+declare abstract class Directive implements Disconnectable {
+    constructor(_partInfo: PartInfo);
+    get _$isConnected(): boolean;
+    abstract render(...props: Array<unknown>): unknown;
+    update(_part: Part, props: Array<unknown>): unknown;
+}
+
 declare class TrustedHTML {
     private constructor(); // To prevent instantiting with 'new'.
     private brand: true; // To prevent structural typing.
@@ -51,50 +116,6 @@ type UncompiledTemplateResult<T extends ResultType = ResultType> = {
     strings: TemplateStringsArray;
     values: unknown[];
 };
-/**
- * The return type of the template tag functions, {@linkcode html} and
- * {@linkcode svg}.
- *
- * A `TemplateResult` object holds all the information about a template
- * expression required to render it: the template strings, expression values,
- * and type of template (html or svg).
- *
- * `TemplateResult` objects do not create any DOM on their own. To create or
- * update DOM you need to render the `TemplateResult`. See
- * [Rendering](https://lit.dev/docs/components/rendering) for more information.
- *
- * In Lit 4, this type will be an alias of
- * MaybeCompiledTemplateResult, so that code will get type errors if it assumes
- * that Lit templates are not compiled. When deliberately working with only
- * one, use either {@linkcode CompiledTemplateResult} or
- * {@linkcode UncompiledTemplateResult} explicitly.
- */
-type TemplateResult<T extends ResultType = ResultType> = UncompiledTemplateResult<T>;
-/**
- * A sentinel value that signals that a value was handled by a directive and
- * should not be written to the DOM.
- */
-declare const noChange: unique symbol;
-/**
- * A sentinel value that signals a ChildPart to fully clear its content.
- *
- * ```ts
- * const button = html`${
- *  user.isAdmin
- *    ? html`<button>DELETE</button>`
- *    : nothing
- * }`;
- * ```
- *
- * Prefer using `nothing` over other falsy values as it provides a consistent
- * behavior between various expression binding contexts.
- *
- * In child expressions, `undefined`, `null`, `''`, and `nothing` all behave the
- * same and render no nodes. In attribute expressions, `nothing` _removes_ the
- * attribute, while `undefined` and `null` will render an empty string. In
- * property expressions `nothing` becomes `undefined`.
- */
-declare const nothing: unique symbol;
 /**
  * Object specifying options for controlling lit-html rendering. Note that
  * while `render` may be called multiple times on the same `container` (and
@@ -277,269 +298,6 @@ declare class ElementPart implements Disconnectable {
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-
-interface DirectiveClass {
-    new (part: PartInfo): Directive;
-}
-/**
- * This utility type extracts the signature of a directive class's render()
- * method so we can use it for the type of the generated directive function.
- */
-type DirectiveParameters<C extends Directive> = Parameters<C['render']>;
-/**
- * A generated directive function doesn't evaluate the directive, but just
- * returns a DirectiveResult object that captures the arguments.
- */
-interface DirectiveResult<C extends DirectiveClass = DirectiveClass> {
-}
-declare const PartType: {
-    readonly ATTRIBUTE: 1;
-    readonly CHILD: 2;
-    readonly PROPERTY: 3;
-    readonly BOOLEAN_ATTRIBUTE: 4;
-    readonly EVENT: 5;
-    readonly ELEMENT: 6;
-};
-type PartType = (typeof PartType)[keyof typeof PartType];
-interface ChildPartInfo {
-    readonly type: typeof PartType.CHILD;
-}
-interface AttributePartInfo {
-    readonly type: typeof PartType.ATTRIBUTE | typeof PartType.PROPERTY | typeof PartType.BOOLEAN_ATTRIBUTE | typeof PartType.EVENT;
-    readonly strings?: ReadonlyArray<string>;
-    readonly name: string;
-    readonly tagName: string;
-}
-interface ElementPartInfo {
-    readonly type: typeof PartType.ELEMENT;
-}
-/**
- * Information about the part a directive is bound to.
- *
- * This is useful for checking that a directive is attached to a valid part,
- * such as with directive that can only be used on attribute bindings.
- */
-type PartInfo = ChildPartInfo | AttributePartInfo | ElementPartInfo;
-/**
- * Base class for creating custom directives. Users should extend this class,
- * implement `render` and/or `update`, and then pass their subclass to
- * `directive`.
- */
-declare abstract class Directive implements Disconnectable {
-    constructor(_partInfo: PartInfo);
-    get _$isConnected(): boolean;
-    abstract render(...props: Array<unknown>): unknown;
-    update(_part: Part, props: Array<unknown>): unknown;
-}
-
-/**
- * A key-value set of class names to truthy values.
- */
-interface ClassInfo {
-    [name: string]: string | boolean | number;
-}
-declare class ClassMapDirective extends Directive {
-    /**
-     * Stores the ClassInfo object applied to a given AttributePart.
-     * Used to unset existing values when a new ClassInfo object is applied.
-     */
-    private _previousClasses?;
-    private _staticClasses?;
-    constructor(partInfo: PartInfo);
-    render(classInfo: ClassInfo): string;
-    update(part: AttributePart, [classInfo]: DirectiveParameters<this>): string | typeof noChange;
-}
-/**
- * A directive that applies dynamic CSS classes.
- *
- * This must be used in the `class` attribute and must be the only part used in
- * the attribute. It takes each property in the `classInfo` argument and adds
- * the property name to the element's `classList` if the property value is
- * truthy; if the property value is falsy, the property name is removed from
- * the element's `class`.
- *
- * For example `{foo: bar}` applies the class `foo` if the value of `bar` is
- * truthy.
- *
- * @param classInfo
- */
-declare const classMap: (classInfo: ClassInfo) => DirectiveResult<typeof ClassMapDirective>;
-
-/**
- * @license
- * Copyright 2018 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */
-
-/**
- * For AttributeParts, sets the attribute if the value is defined and removes
- * the attribute if the value is undefined.
- *
- * For other part types, this directive is a no-op.
- */
-declare const ifDefined: <T>(value: T) => typeof nothing | NonNullable<T>;
-
-/**
- * @license
- * Copyright 2020 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */
-
-declare class LiveDirective<T> extends Directive {
-    constructor(partInfo: PartInfo);
-    render(value: T): T;
-    update(part: AttributePart, [value]: DirectiveParameters<this>): typeof noChange | T;
-}
-interface Live {
-    <T>(value: T): DirectiveResult<typeof LiveDirective<T>>;
-}
-/**
- * Checks binding values against live DOM values, instead of previously bound
- * values, when determining whether to update the value.
- *
- * This is useful for cases where the DOM value may change from outside of
- * lit-html, such as with a binding to an `<input>` element's `value` property,
- * a content editable elements text, or to a custom element that changes it's
- * own properties or attributes.
- *
- * In these cases if the DOM value changes, but the value set through lit-html
- * bindings hasn't, lit-html won't know to update the DOM value and will leave
- * it alone. If this is not what you want--if you want to overwrite the DOM
- * value with the bound value no matter what--use the `live()` directive:
- *
- * ```js
- * html`<input .value=${live(x)}>`
- * ```
- *
- * `live()` performs a strict equality check against the live DOM value, and if
- * the new value is equal to the live value, does nothing. This means that
- * `live()` should not be used when the binding will cause a type conversion. If
- * you use `live()` with an attribute binding, make sure that only strings are
- * passed in, or the binding will update every render.
- */
-declare const live: Live;
-
-/**
- * @license
- * Copyright 2017 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */
-
-type KeyFn<T> = (item: T, index: number) => unknown;
-type ItemTemplate<T> = (item: T, index: number) => unknown;
-declare class RepeatDirective extends Directive {
-    private _itemKeys?;
-    constructor(partInfo: PartInfo);
-    private _getValuesAndKeys;
-    render<T>(items: Iterable<T>, template: ItemTemplate<T>): Array<unknown>;
-    render<T>(items: Iterable<T>, keyFn: KeyFn<T> | ItemTemplate<T>, template: ItemTemplate<T>): Array<unknown>;
-    update<T>(containerPart: ChildPart, [items, keyFnOrTemplate, template]: [
-        Iterable<T>,
-        KeyFn<T> | ItemTemplate<T>,
-        ItemTemplate<T>
-    ]): unknown[] | typeof noChange;
-}
-interface RepeatDirectiveFn {
-    <T>(items: Iterable<T>, keyFnOrTemplate: KeyFn<T> | ItemTemplate<T>, template?: ItemTemplate<T>): unknown;
-    <T>(items: Iterable<T>, template: ItemTemplate<T>): unknown;
-    <T>(items: Iterable<T>, keyFn: KeyFn<T> | ItemTemplate<T>, template: ItemTemplate<T>): unknown;
-}
-/**
- * A directive that repeats a series of values (usually `TemplateResults`)
- * generated from an iterable, and updates those items efficiently when the
- * iterable changes based on user-provided `keys` associated with each item.
- *
- * Note that if a `keyFn` is provided, strict key-to-DOM mapping is maintained,
- * meaning previous DOM for a given key is moved into the new position if
- * needed, and DOM will never be reused with values for different keys (new DOM
- * will always be created for new keys). This is generally the most efficient
- * way to use `repeat` since it performs minimum unnecessary work for insertions
- * and removals.
- *
- * The `keyFn` takes two parameters, the item and its index, and returns a unique key value.
- *
- * ```js
- * html`
- *   <ol>
- *     ${repeat(this.items, (item) => item.id, (item, index) => {
- *       return html`<li>${index}: ${item.name}</li>`;
- *     })}
- *   </ol>
- * `
- * ```
- *
- * **Important**: If providing a `keyFn`, keys *must* be unique for all items in a
- * given call to `repeat`. The behavior when two or more items have the same key
- * is undefined.
- *
- * If no `keyFn` is provided, this directive will perform similar to mapping
- * items to values, and DOM will be reused against potentially different items.
- */
-declare const repeat: RepeatDirectiveFn;
-
-/**
- * A key-value set of CSS properties and values.
- *
- * The key should be either a valid CSS property name string, like
- * `'background-color'`, or a valid JavaScript camel case property name
- * for CSSStyleDeclaration like `backgroundColor`.
- */
-interface StyleInfo {
-    [name: string]: string | number | undefined | null;
-}
-declare class StyleMapDirective extends Directive {
-    private _previousStyleProperties?;
-    constructor(partInfo: PartInfo);
-    render(styleInfo: Readonly<StyleInfo>): string;
-    update(part: AttributePart, [styleInfo]: DirectiveParameters<this>): string | typeof noChange;
-}
-/**
- * A directive that applies CSS properties to an element.
- *
- * `styleMap` can only be used in the `style` attribute and must be the only
- * expression in the attribute. It takes the property names in the
- * {@link StyleInfo styleInfo} object and adds the properties to the inline
- * style of the element.
- *
- * Property names with dashes (`-`) are assumed to be valid CSS
- * property names and set on the element's style object using `setProperty()`.
- * Names without dashes are assumed to be camelCased JavaScript property names
- * and set on the element's style object using property assignment, allowing the
- * style object to translate JavaScript-style names to CSS property names.
- *
- * For example `styleMap({backgroundColor: 'red', 'border-top': '5px', '--size':
- * '0'})` sets the `background-color`, `border-top` and `--size` properties.
- *
- * @param styleInfo
- * @see {@link https://lit.dev/docs/templates/directives/#stylemap styleMap code samples on Lit.dev}
- */
-declare const styleMap: (styleInfo: Readonly<StyleInfo>) => DirectiveResult<typeof StyleMapDirective>;
-
-declare class UnsafeHTMLDirective extends Directive {
-    static directiveName: string;
-    static resultType: number;
-    private _value;
-    private _templateResult?;
-    constructor(partInfo: PartInfo);
-    render(value: string | typeof nothing | typeof noChange | undefined | null): typeof noChange | typeof nothing | TemplateResult | null | undefined;
-}
-/**
- * Renders the result as HTML, rather than text.
- *
- * The values `undefined`, `null`, and `nothing`, will all result in no content
- * (empty string) being rendered.
- *
- * Note, this is unsafe to use with any user-provided input that hasn't been
- * sanitized or escaped, as it may lead to cross-site-scripting
- * vulnerabilities.
- */
-declare const unsafeHTML: (value: string | typeof noChange | typeof nothing | null | undefined) => DirectiveResult<typeof UnsafeHTMLDirective>;
-
-/**
- * @license
- * Copyright 2017 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */
 /**
  * Overview:
  *
@@ -704,101 +462,4 @@ declare abstract class AsyncDirective extends Directive {
     protected reconnected(): void;
 }
 
-/**
- * @license
- * Copyright 2017 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */
-
-type UnwrapPromise<T> = T extends Promise<infer U> ? U : T;
-declare class UntilDirective<T> extends AsyncDirective {
-    private __lastRenderedIndex;
-    private __values;
-    private __weakThis;
-    private __pauser;
-    render(...args: Array<T>): UnwrapPromise<T>;
-    update(_part: Part, args: Array<unknown>): unknown;
-    disconnected(): void;
-    reconnected(): void;
-}
-interface Until {
-    <T extends Array<unknown>>(...args: T): DirectiveResult<typeof UntilDirective<T[number]>>;
-}
-/**
- * Renders one of a series of values, including Promises, to a Part.
- *
- * Values are rendered in priority order, with the first argument having the
- * highest priority and the last argument having the lowest priority. If a
- * value is a Promise, low-priority values will be rendered until it resolves.
- *
- * The priority of values can be used to create placeholder content for async
- * data. For example, a Promise with pending content can be the first,
- * highest-priority, argument, and a non_promise loading indicator template can
- * be used as the second, lower-priority, argument. The loading indicator will
- * render immediately, and the primary content will render when the Promise
- * resolves.
- *
- * Example:
- *
- * ```js
- * const content = fetch('./content.txt').then(r => r.text());
- * html`${until(content, html`<span>Loading...</span>`)}`
- * ```
- */
-declare const until: Until;
-
-/**
- * Creates a new Ref object, which is container for a reference to an element.
- */
-declare const createRef: <T = Element>() => Ref<T>;
-/**
- * An object that holds a ref value.
- */
-declare class Ref<T = Element> {
-    /**
-     * The current Element value of the ref, or else `undefined` if the ref is no
-     * longer rendered.
-     */
-    readonly value?: T;
-}
-
-type RefOrCallback<T = Element> = Ref<T> | ((el: T | undefined) => void);
-declare class RefDirective extends AsyncDirective {
-    private _element?;
-    private _ref?;
-    private _context?;
-    render(_ref?: RefOrCallback): symbol;
-    update(part: ElementPart, [ref]: Parameters<this['render']>): symbol;
-    private _updateRefValue;
-    private get _lastElementForRef();
-    disconnected(): void;
-    reconnected(): void;
-}
-/**
- * Sets the value of a Ref object or calls a ref callback with the element it's
- * bound to.
- *
- * A Ref object acts as a container for a reference to an element. A ref
- * callback is a function that takes an element as its only argument.
- *
- * The ref directive sets the value of the Ref object or calls the ref callback
- * during rendering, if the referenced element changed.
- *
- * Note: If a ref callback is rendered to a different element position or is
- * removed in a subsequent render, it will first be called with `undefined`,
- * followed by another call with the new element it was rendered to (if any).
- *
- * ```js
- * // Using Ref object
- * const inputRef = createRef();
- * render(html`<input ${ref(inputRef)}>`, container);
- * inputRef.value.focus();
- *
- * // Using callback
- * const callback = (inputElement) => inputElement.focus();
- * render(html`<input ${ref(callback)}>`, container);
- * ```
- */
-declare const ref: (_ref?: RefOrCallback<Element> | undefined) => DirectiveResult<typeof RefDirective>;
-
-export { type ClassInfo, ClassMapDirective, type ItemTemplate, type KeyFn, LiveDirective, Ref, RefDirective, type RefOrCallback, RepeatDirective, type RepeatDirectiveFn, type StyleInfo, StyleMapDirective, UnsafeHTMLDirective, UntilDirective, classMap, createRef, ifDefined, live, ref, repeat, styleMap, unsafeHTML, until };
+export { AsyncDirective, AttributePart, type AttributePartInfo, BooleanAttributePart, ChildPart, type ChildPartInfo, Directive, type DirectiveClass, type DirectiveParameters, type DirectiveResult, ElementPart, type ElementPartInfo, EventPart, type Part, type PartInfo, PartType, PropertyPart, directive };

@@ -10,6 +10,9 @@ devtools_pre_built("lit") {
   sources_are_release = false
 
   sources = [
+    "lib/async-directive.d.ts",
+    "lib/async-directive.js",
+    "lib/async-directive.js.map",
     "lib/decorators.d.ts",
     "lib/decorators.js",
     "lib/decorators.js.map",

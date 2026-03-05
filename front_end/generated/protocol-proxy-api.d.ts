@@ -887,6 +887,11 @@ declare namespace ProtocolProxyApi {
     invoke_setSupportsText(params: Protocol.CSS.SetSupportsTextRequest): Promise<Protocol.CSS.SetSupportsTextResponse>;
 
     /**
+     * Modifies the expression of a navigation at-rule.
+     */
+    invoke_setNavigationText(params: Protocol.CSS.SetNavigationTextRequest): Promise<Protocol.CSS.SetNavigationTextResponse>;
+
+    /**
      * Modifies the expression of a scope at-rule.
      */
     invoke_setScopeText(params: Protocol.CSS.SetScopeTextRequest): Promise<Protocol.CSS.SetScopeTextResponse>;

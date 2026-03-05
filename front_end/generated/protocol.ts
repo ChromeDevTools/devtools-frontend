@@ -1221,6 +1221,7 @@ export namespace Audits {
     AutofillAndManualTextPolicyControlledFeaturesInfo = 'AutofillAndManualTextPolicyControlledFeaturesInfo',
     AutofillPolicyControlledFeatureInfo = 'AutofillPolicyControlledFeatureInfo',
     ManualTextPolicyControlledFeatureInfo = 'ManualTextPolicyControlledFeatureInfo',
+    FormModelContextParameterMissingTitleAndDescription = 'FormModelContextParameterMissingTitleAndDescription',
   }
 
   /**
@@ -3033,6 +3034,11 @@ export namespace CSS {
      * The array enumerates @starting-style at-rules starting with the innermost one, going outwards.
      */
     startingStyles?: CSSStartingStyle[];
+    /**
+     * @navigation CSS at-rule array.
+     * The array enumerates @navigation at-rules starting with the innermost one, going outwards.
+     */
+    navigations?: CSSNavigation[];
   }
 
   /**
@@ -3047,6 +3053,7 @@ export namespace CSS {
     ScopeRule = 'ScopeRule',
     StyleRule = 'StyleRule',
     StartingStyleRule = 'StartingStyleRule',
+    NavigationRule = 'NavigationRule',
   }
 
   /**
@@ -3331,6 +3338,29 @@ export namespace CSS {
      * Whether the supports condition is satisfied.
      */
     active: boolean;
+    /**
+     * The associated rule header range in the enclosing stylesheet (if
+     * available).
+     */
+    range?: SourceRange;
+    /**
+     * Identifier of the stylesheet containing this object (if exists).
+     */
+    styleSheetId?: DOM.StyleSheetId;
+  }
+
+  /**
+   * CSS Navigation at-rule descriptor.
+   */
+  export interface CSSNavigation {
+    /**
+     * Navigation rule text.
+     */
+    text: string;
+    /**
+     * Whether the navigation condition is satisfied.
+     */
+    active?: boolean;
     /**
      * The associated rule header range in the enclosing stylesheet (if
      * available).
@@ -3676,6 +3706,10 @@ export namespace CSS {
      * @supports CSS at-rule condition. Only one type of condition should be set.
      */
     supports?: CSSSupports;
+    /**
+     * @navigation condition. Only one type of condition should be set.
+     */
+    navigation?: CSSNavigation;
     /**
      * Block body.
      */
@@ -4163,6 +4197,19 @@ export namespace CSS {
      * The resulting CSS Supports rule after modification.
      */
     supports: CSSSupports;
+  }
+
+  export interface SetNavigationTextRequest {
+    styleSheetId: DOM.StyleSheetId;
+    range: SourceRange;
+    text: string;
+  }
+
+  export interface SetNavigationTextResponse extends ProtocolResponseWithError {
+    /**
+     * The resulting CSS Navigation rule after modification.
+     */
+    navigation: CSSNavigation;
   }
 
   export interface SetScopeTextRequest {

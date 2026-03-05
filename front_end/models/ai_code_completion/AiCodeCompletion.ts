@@ -363,4 +363,5 @@ export class AiCodeCompletion {
 export const enum ContextFlavor {
   CONSOLE = 'console',  // generated code can contain console specific APIs like `$0`.
   SOURCES = 'sources',
+  STYLES = 'styles',
 }

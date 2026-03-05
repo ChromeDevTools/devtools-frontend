@@ -147,6 +147,9 @@ function getTooltipDisclaimerText(noLogging: boolean, panel: AiCodeCompletion.Ai
       return noLogging ?
           lockedString(UIStringsNotTranslate.tooltipDisclaimerTextForAiCodeGenerationNoLoggingInSources) :
           lockedString(UIStringsNotTranslate.tooltipDisclaimerTextForAiCodeGenerationInSources);
+    case AiCodeCompletion.AiCodeCompletion.ContextFlavor.STYLES:
+      // TODO(476101019): update with string for styles pane
+      return '';
   }
 }
 

@@ -42,9 +42,11 @@ import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
+import * as AiCodeCompletion from '../../models/ai_code_completion/ai_code_completion.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import type * as ComputedStyle from '../../models/computed_style/computed_style.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
+import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 import {createIcon, Icon} from '../../ui/kit/kit.js';
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
@@ -70,6 +72,7 @@ import {
 } from './StylePropertiesSection.js';
 import {StylePropertyHighlighter} from './StylePropertyHighlighter.js';
 import type {StylePropertyTreeElement} from './StylePropertyTreeElement.js';
+import * as StylesAiCodeCompletionProvider from './StylesAiCodeCompletionProvider.js';
 import type {StylesContainer} from './StylesContainer.js';
 import stylesSidebarPaneStyles from './stylesSidebarPane.css.js';
 import {WebCustomData} from './WebCustomData.js';
@@ -1736,6 +1739,12 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
   private treeElement: StylePropertyTreeElement;
   private isEditingName: boolean;
   private readonly cssVariables: string[];
+  aiCodeCompletionConfig?: TextEditor.AiCodeCompletionProvider.AiCodeCompletionConfig;
+  aiCodeCompletionProvider?: StylesAiCodeCompletionProvider.StylesAiCodeCompletionProvider;
+
+  #debouncedTriggerAiCodeCompletion = Common.Debouncer.debounce(() => {
+    void this.triggerAiCodeCompletion();
+  }, TextEditor.AiCodeCompletionProvider.AIDA_REQUEST_DEBOUNCE_TIMEOUT_MS);
 
   constructor(treeElement: StylePropertyTreeElement, isEditingName: boolean, completions: string[] = []) {
     // Use the same callback both for applyItemCallback and acceptItemCallback.
@@ -1794,6 +1803,27 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
         }
       }
     }
+
+    const devtoolsLocale = i18n.DevToolsLocale.DevToolsLocale.instance();
+    if (AiCodeCompletion.AiCodeCompletion.AiCodeCompletion.isAiCodeCompletionStylesEnabled(devtoolsLocale.locale)) {
+      this.aiCodeCompletionConfig = {
+        completionContext: {},
+        generationContext: {},
+        onFeatureEnabled: () => {},
+        onFeatureDisabled: () => {},
+        onSuggestionAccepted: () => {},
+        onRequestTriggered: () => {},
+        onResponseReceived: () => {},
+        panel: AiCodeCompletion.AiCodeCompletion.ContextFlavor.STYLES,
+        getCompletionHint: this.getCompletionHint.bind(this),
+        getCurrentText: () => {
+          return this.text();
+        },
+        setAiAutoCompletion: () => {},
+      };
+      this.aiCodeCompletionProvider =
+          StylesAiCodeCompletionProvider.StylesAiCodeCompletionProvider.createInstance(this.aiCodeCompletionConfig);
+    }
   }
 
   override onKeyDown(event: Event): void {
@@ -1842,6 +1872,13 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
 
     // Always tab to the next field.
     return false;
+  }
+
+  override onInput(event: Event): void {
+    super.onInput(event);
+    if (this.aiCodeCompletionProvider) {
+      this.#debouncedTriggerAiCodeCompletion();
+    }
   }
 
   private handleNameOrValueUpDown(event: Event): boolean {
@@ -2053,6 +2090,48 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
       subtitleElement.title = `${computedValue}`;
       return subtitleElement;
     }
+  }
+
+  private async triggerAiCodeCompletion(): Promise<void> {
+    const selection = this.element().getComponentSelection();
+    if (!this.aiCodeCompletionProvider || !selection || selection.rangeCount === 0) {
+      return;
+    }
+    const range = selection.getRangeAt(0);
+    const userInput = this.text();
+    // Only trigger if caret is at end of text content
+    if (range.endOffset < userInput.length) {
+      return;
+    }
+    const cssModel = this.treeElement.stylesContainer().cssModel();
+    if (!cssModel) {
+      return;
+    }
+    await this.aiCodeCompletionProvider.triggerAiCodeCompletion(
+        userInput, range.endOffset, this.isEditingName, this.treeElement.property, cssModel);
+  }
+
+  /**
+   * Extracts the remaining portion of the suggestion text that follows the
+   * user's current input.
+   */
+  private getCompletionHint(): string|null {
+    const topSuggestion = this.isSuggestBoxVisible() ? this.suggestBox?.completion() : null;
+    const suggestionText = topSuggestion?.text;
+    if (!suggestionText) {
+      return null;
+    }
+    const userInput = this.text();
+    let completionHint = suggestionText;
+    // Iterate from the longest possible overlap down to the shortest
+    for (let i = Math.min(userInput.length, suggestionText.length); i > 0; i--) {
+      const overlapCandidate = suggestionText.substring(0, i);
+      if (userInput.endsWith(overlapCandidate)) {
+        completionHint = suggestionText.slice(i);
+        break;
+      }
+    }
+    return completionHint;
   }
 }
 

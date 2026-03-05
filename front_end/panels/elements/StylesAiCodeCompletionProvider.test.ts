@@ -8,7 +8,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as AiCodeCompletion from '../../models/ai_code_completion/ai_code_completion.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import {createTarget, describeWithEnvironment, updateHostConfig} from '../../testing/EnvironmentHelpers.js';
-import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
+import type * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 
 import * as Elements from './elements.js';
 
@@ -17,8 +17,7 @@ function createProvider(): {
   config: TextEditor.AiCodeCompletionProvider.AiCodeCompletionConfig,
 } {
   const config = {
-    // TODO: Update this to Styles panel
-    panel: AiCodeCompletion.AiCodeCompletion.ContextFlavor.SOURCES,
+    panel: AiCodeCompletion.AiCodeCompletion.ContextFlavor.STYLES,
     completionContext: {},
     generationContext: {},
     onFeatureEnabled: () => {},
@@ -101,8 +100,7 @@ describeWithEnvironment('StylesAiCodeCompletionProvider', () => {
       const {cssModel, cssProperty} = createCssModelAndProperty();
       await clock.tickAsync(0);  // for the initial onAidaAvailabilityChange call
 
-      void provider.triggerAiCodeCompletion('backgro', 7, true, cssProperty, cssModel);
-      await clock.tickAsync(TextEditor.AiCodeCompletionProvider.AIDA_REQUEST_DEBOUNCE_TIMEOUT_MS + 1);
+      await provider.triggerAiCodeCompletion('backgro', 7, true, cssProperty, cssModel);
 
       sinon.assert.calledOnce(completeCodeStub);
       const [prefix, suffix, cursorPosition, language] = completeCodeStub.firstCall.args;
@@ -118,31 +116,11 @@ describeWithEnvironment('StylesAiCodeCompletionProvider', () => {
       const {cssModel, cssProperty} = createCssModelAndProperty();
       await clock.tickAsync(0);  // for the initial onAidaAvailabilityChange call
 
-      void provider.triggerAiCodeCompletion('pur', 3, false, cssProperty, cssModel);
-      await clock.tickAsync(TextEditor.AiCodeCompletionProvider.AIDA_REQUEST_DEBOUNCE_TIMEOUT_MS + 1);
+      await provider.triggerAiCodeCompletion('pur', 3, false, cssProperty, cssModel);
 
       sinon.assert.calledOnce(completeCodeStub);
       const [prefix, suffix, cursorPosition, language] = completeCodeStub.firstCall.args;
       assert.deepEqual(prefix, 'body { color: pur');
-      assert.deepEqual(suffix, ' }');
-      assert.deepEqual(cursorPosition, 3);
-      assert.deepEqual(language, Host.AidaClient.AidaInferenceLanguage.CSS);
-    });
-
-    it('debounces requests for code completion', async () => {
-      const completeCodeStub = sinon.stub(AiCodeCompletion.AiCodeCompletion.AiCodeCompletion.prototype, 'completeCode');
-      const {provider} = createProvider();
-      const {cssModel, cssProperty} = createCssModelAndProperty();
-      await clock.tickAsync(0);  // for the initial onAidaAvailabilityChange call
-
-      void provider.triggerAiCodeCompletion('p', 1, true, cssProperty, cssModel);
-      void provider.triggerAiCodeCompletion('pr', 2, true, cssProperty, cssModel);
-      void provider.triggerAiCodeCompletion('pre', 3, true, cssProperty, cssModel);
-      await clock.tickAsync(TextEditor.AiCodeCompletionProvider.AIDA_REQUEST_DEBOUNCE_TIMEOUT_MS + 1);
-
-      sinon.assert.calledOnce(completeCodeStub);
-      const [prefix, suffix, cursorPosition, language] = completeCodeStub.firstCall.args;
-      assert.deepEqual(prefix, 'body { pre');
       assert.deepEqual(suffix, ' }');
       assert.deepEqual(cursorPosition, 3);
       assert.deepEqual(language, Host.AidaClient.AidaInferenceLanguage.CSS);
@@ -168,9 +146,8 @@ describeWithEnvironment('StylesAiCodeCompletionProvider', () => {
     const {cssModel, cssProperty} = createCssModelAndProperty();
     await clock.tickAsync(0);
 
-    void provider.triggerAiCodeCompletion('bl', 2, false, cssProperty, cssModel);
+    await provider.triggerAiCodeCompletion('bl', 2, false, cssProperty, cssModel);
 
-    await clock.tickAsync(TextEditor.AiCodeCompletionProvider.AIDA_REQUEST_DEBOUNCE_TIMEOUT_MS + 1);
     sinon.assert.calledOnce(onRequestTriggeredSpy);
     sinon.assert.calledOnce(completeCodeStub);
     const [prefix, suffix] = completeCodeStub.firstCall.args;

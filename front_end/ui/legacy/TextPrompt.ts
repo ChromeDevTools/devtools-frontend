@@ -272,7 +272,7 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper<EventTypes> i
   private boundClearAutocomplete?: (() => void);
   private boundOnBlur?: ((ev: Event) => void);
   private contentElement?: HTMLElement;
-  private suggestBox?: SuggestBox;
+  protected suggestBox?: SuggestBox;
   private isEditing?: boolean;
   private focusRestorer?: ElementFocusRestorer;
   private blurListener?: ((arg0: Event) => void);

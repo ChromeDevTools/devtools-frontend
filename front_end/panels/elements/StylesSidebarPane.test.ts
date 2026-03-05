@@ -15,6 +15,7 @@ import {expectCall} from '../../testing/ExpectStubCall.js';
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {describeWithMockConnection, setMockConnectionResponseHandler} from '../../testing/MockConnection.js';
 import {createStubbedDomNodeWithModels, getMatchedStyles} from '../../testing/StyleHelpers.js';
+import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as PanelsCommon from '../common/common.js';
@@ -804,6 +805,12 @@ describe('StylesSidebarPane', () => {
               },
         };
       },
+      stylesContainer() {
+        const pane = sinon.createStubInstance(Elements.StylesSidebarPane.StylesSidebarPane);
+        const cssModel = sinon.createStubInstance(SDK.CSSModel.CSSModel);
+        pane.cssModel.returns(cssModel);
+        return pane;
+      }
     } as unknown as Elements.StylePropertyTreeElement.StylePropertyTreeElement;
 
     const noop = () => {};
@@ -883,6 +890,89 @@ describe('StylesSidebarPane', () => {
         assert.isTrue(spyObj?.updateSuggestions.called);
         const completions = spyObj?.updateSuggestions.firstCall.args[1];
         assert.isAbove(completions.length, 0);
+      });
+    });
+
+    describe('AI code completion', () => {
+      let aiCodeCompletionProvider:
+          sinon.SinonStubbedInstance<Elements.StylesAiCodeCompletionProvider.StylesAiCodeCompletionProvider>;
+      beforeEach(() => {
+        updateHostConfig({
+          devToolsAiCodeCompletionStyles: {
+            enabled: true,
+          },
+          aidaAvailability: {
+            enabled: true,
+            blockedByAge: false,
+            blockedByGeo: false,
+          }
+        });
+
+        aiCodeCompletionProvider =
+            sinon.createStubInstance(Elements.StylesAiCodeCompletionProvider.StylesAiCodeCompletionProvider);
+        sinon.stub(Elements.StylesAiCodeCompletionProvider.StylesAiCodeCompletionProvider, 'createInstance')
+            .returns(aiCodeCompletionProvider);
+      });
+
+      it('getCompletionHint returns null if suggestBox is not visible', () => {
+        const attachedElement = document.createElement('div');
+        renderElementIntoDOM(attachedElement);
+        const cssPropertyPrompt = new CSSPropertyPrompt(mockTreeItem, false);
+        cssPropertyPrompt.attachAndStartEditing(attachedElement, noop);
+
+        assert.exists(cssPropertyPrompt.aiCodeCompletionConfig);
+        assert.exists(cssPropertyPrompt.aiCodeCompletionConfig.getCompletionHint);
+        assert.isNull(cssPropertyPrompt.aiCodeCompletionConfig.getCompletionHint());
+      });
+
+      it('getCompletionHint returns the correct completion hint', async () => {
+        const attachedElement = document.createElement('div');
+        renderElementIntoDOM(attachedElement);
+        const cssPropertyPrompt = new CSSPropertyPrompt(mockTreeItem, false);
+
+        cssPropertyPrompt.attachAndStartEditing(attachedElement, noop);
+        cssPropertyPrompt.setText('var(--rgb');
+        await cssPropertyPrompt.complete(true);
+
+        assert.strictEqual(cssPropertyPrompt.aiCodeCompletionConfig?.getCompletionHint?.(), '-color)');
+      });
+
+      it('debounces triggerAiCodeCompletion', async () => {
+        const clock = sinon.useFakeTimers();
+        const attachedElement = document.createElement('div');
+        renderElementIntoDOM(attachedElement);
+        const cssPropertyPrompt = new CSSPropertyPrompt(mockTreeItem, false);
+        cssPropertyPrompt.attachAndStartEditing(attachedElement, noop);
+
+        cssPropertyPrompt.setText('backgr');
+        cssPropertyPrompt.onInput(new Event('input'));
+        cssPropertyPrompt.setText('backgro');
+        cssPropertyPrompt.onInput(new Event('input'));
+        cssPropertyPrompt.setText('backgrou');
+        cssPropertyPrompt.onInput(new Event('input'));
+        await clock.tickAsync(TextEditor.AiCodeCompletionProvider.AIDA_REQUEST_DEBOUNCE_TIMEOUT_MS + 1);
+
+        sinon.assert.calledOnce(aiCodeCompletionProvider.triggerAiCodeCompletion);
+        assert.strictEqual(aiCodeCompletionProvider.triggerAiCodeCompletion.firstCall.args[0], 'backgrou');
+        assert.strictEqual(aiCodeCompletionProvider.triggerAiCodeCompletion.firstCall.args[1], 8);
+        clock.restore();
+      });
+
+      it('triggerAiCodeCompletion calls the provider with correct arguments', () => {
+        const clock = sinon.useFakeTimers();
+        const attachedElement = document.createElement('div');
+        renderElementIntoDOM(attachedElement);
+        const cssPropertyPrompt = new CSSPropertyPrompt(mockTreeItem, false);
+        cssPropertyPrompt.attachAndStartEditing(attachedElement, noop);
+
+        cssPropertyPrompt.setText('backgrou');
+        cssPropertyPrompt.onInput(new Event('input'));
+        clock.tick(TextEditor.AiCodeCompletionProvider.AIDA_REQUEST_DEBOUNCE_TIMEOUT_MS + 1);
+
+        sinon.assert.calledOnce(aiCodeCompletionProvider.triggerAiCodeCompletion);
+        assert.strictEqual(aiCodeCompletionProvider.triggerAiCodeCompletion.firstCall.args[0], 'backgrou');
+        assert.strictEqual(aiCodeCompletionProvider.triggerAiCodeCompletion.firstCall.args[1], 8);
+        clock.restore();
       });
     });
   });

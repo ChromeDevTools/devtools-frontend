@@ -18,11 +18,6 @@ export class StylesAiCodeCompletionProvider {
 
   #boundOnUpdateAiCodeCompletionState = this.#updateAiCodeCompletionState.bind(this);
 
-  #debouncedRequestAidaSuggestion =
-      Common.Debouncer.debounce((prefix: string, suffix: string, cursorPositionAtRequest: number) => {
-        void this.#requestAidaSuggestion(prefix, suffix, cursorPositionAtRequest);
-      }, TextEditor.AiCodeCompletionProvider.AIDA_REQUEST_DEBOUNCE_TIMEOUT_MS);
-
   private constructor(aiCodeCompletionConfig: TextEditor.AiCodeCompletionProvider.AiCodeCompletionConfig) {
     const devtoolsLocale = i18n.DevToolsLocale.DevToolsLocale.instance();
     if (!AiCodeCompletion.AiCodeCompletion.AiCodeCompletion.isAiCodeCompletionStylesEnabled(devtoolsLocale.locale)) {
@@ -113,7 +108,7 @@ export class StylesAiCodeCompletionProvider {
     prefix = prefix + text;
     const suffix = content.substring(propertyEndOffset);
     // TODO(b/476098133): Consider adjusting cursor position
-    this.#debouncedRequestAidaSuggestion(prefix, suffix, cursorPosition);
+    await this.#requestAidaSuggestion(prefix, suffix, cursorPosition);
   }
 
   async #requestAidaSuggestion(prefix: string, suffix: string, cursorPositionAtRequest: number): Promise<void> {

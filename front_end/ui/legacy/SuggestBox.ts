@@ -87,6 +87,10 @@ export class SuggestBox implements ListDelegate<Suggestion> {
     return this.glassPane.isShowing();
   }
 
+  completion(): Suggestion|null {
+    return this.list.selectedItem();
+  }
+
   setPosition(anchorBox: AnchorBox): void {
     this.glassPane.setContentAnchorBox(anchorBox);
   }

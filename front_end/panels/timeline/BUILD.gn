@@ -173,8 +173,7 @@ devtools_entrypoint("bundle") {
 
   visibility = [
     ":*",
-    "../../../test/interactions/panels/performance/timeline/*",
-    "../../../test/perf/*",
+    "../../../test/e2e/*",
     "../../entrypoints/*",
     "../../models/trace/handlers:unittests",
     "../../panels/ai_assistance/*",

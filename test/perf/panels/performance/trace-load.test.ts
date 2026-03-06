@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Timeline from '../../../../front_end/panels/timeline/timeline.js';
 import {
   navigateToPerformanceTab,
   uploadTraceFile,
@@ -10,23 +9,11 @@ import {
 import type {DevToolsPage} from '../../../e2e/shared/frontend-helper.js';
 import type {InspectedPage} from '../../../e2e/shared/target-helper.js';
 import {measurements} from '../../report/report.js';
-
 async function timeFixture(fixture: string, devToolsPage: DevToolsPage, inspectedPage: InspectedPage): Promise<number> {
   await navigateToPerformanceTab(undefined, devToolsPage, inspectedPage);
-  const panelElement = await devToolsPage.waitFor('.widget.panel.timeline');
-  const [result] = await Promise.all([
-    panelElement.evaluate(el => {
-      return new Promise<number>(res => {
-        el.addEventListener('traceload', e => {
-          const ev = e as Timeline.BenchmarkEvents.TraceLoadEvent;
-          res(ev.duration);
-        }, {once: true});
-      });
-    }),
-    uploadTraceFile(devToolsPage, `front_end/panels/timeline/fixtures/traces/${fixture}.gz`),
-  ]);
+  await devToolsPage.waitFor('.widget.panel.timeline');
 
-  return result;
+  return await uploadTraceFile(devToolsPage, `front_end/panels/timeline/fixtures/traces/${fixture}.gz`);
 }
 
 describe('Performance panel trace load performance', () => {

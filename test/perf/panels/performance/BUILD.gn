@@ -8,7 +8,6 @@ ts_e2e_library("performance") {
   sources = [ "trace-load.test.ts" ]
 
   deps = [
-    "../../../../front_end/panels/timeline:bundle",
     "../../../e2e/conductor:implementation",
     "../../../e2e/helpers",
     "../../report",

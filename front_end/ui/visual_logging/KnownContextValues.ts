@@ -3026,6 +3026,7 @@ export const knownContextValues = new Set([
   'preloading-speculations',
   'preloading-status-panel',
   'preloading-status-panel-pretty-print',
+  'preloading.clear',
   'presentation',
   'preserve-console-log',
   'preserve-console-log-true',

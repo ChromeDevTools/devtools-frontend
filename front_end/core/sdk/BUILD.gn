@@ -20,6 +20,7 @@ devtools_module("sdk") {
     "CSSMedia.ts",
     "CSSMetadata.ts",
     "CSSModel.ts",
+    "CSSNavigation.ts",
     "CSSProperty.ts",
     "CSSPropertyParser.ts",
     "CSSPropertyParserMatchers.ts",

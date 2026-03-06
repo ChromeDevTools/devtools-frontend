@@ -1,0 +1,33 @@
+// Copyright 2026 The Chromium Authors
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
+import type * as Protocol from '../../generated/protocol.js';
+import * as TextUtils from '../../models/text_utils/text_utils.js';
+
+import type {CSSModel} from './CSSModel.js';
+import {CSSQuery} from './CSSQuery.js';
+
+export class CSSNavigation extends CSSQuery {
+  static parseNavigationPayload(cssModel: CSSModel, payload: Protocol.CSS.CSSNavigation[]): CSSNavigation[] {
+    return payload.map(navigation => new CSSNavigation(cssModel, navigation));
+  }
+
+  #active = true;
+
+  constructor(cssModel: CSSModel, payload: Protocol.CSS.CSSNavigation) {
+    super(cssModel);
+    this.reinitialize(payload);
+  }
+
+  reinitialize(payload: Protocol.CSS.CSSNavigation): void {
+    this.text = payload.text;
+    this.range = payload.range ? TextUtils.TextRange.TextRange.fromObject(payload.range) : null;
+    this.styleSheetId = payload.styleSheetId;
+    this.#active = payload.active ?? true;
+  }
+
+  active(): boolean {
+    return this.#active;
+  }
+}

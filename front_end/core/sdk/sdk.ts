@@ -29,6 +29,7 @@ import * as CSSMatchedStyles from './CSSMatchedStyles.js';
 import * as CSSMedia from './CSSMedia.js';
 import * as CSSMetadata from './CSSMetadata.js';
 import * as CSSModel from './CSSModel.js';
+import * as CSSNavigation from './CSSNavigation.js';
 import * as CSSProperty from './CSSProperty.js';
 import * as CSSPropertyParser from './CSSPropertyParser.js';
 import * as CSSPropertyParserMatchers from './CSSPropertyParserMatchers.js';
@@ -111,6 +112,7 @@ export {
   CSSMedia,
   CSSMetadata,
   CSSModel,
+  CSSNavigation,
   CSSProperty,
   CSSPropertyParser,
   CSSPropertyParserMatchers,

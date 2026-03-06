@@ -10,6 +10,7 @@ import {CSSContainerQuery} from './CSSContainerQuery.js';
 import {CSSLayer} from './CSSLayer.js';
 import {CSSMedia} from './CSSMedia.js';
 import type {CSSModel, Edit} from './CSSModel.js';
+import {CSSNavigation} from './CSSNavigation.js';
 import {CSSScope} from './CSSScope.js';
 import {CSSStartingStyle} from './CSSStartingStyle.js';
 import {CSSStyleDeclaration, Type} from './CSSStyleDeclaration.js';
@@ -113,6 +114,7 @@ export class CSSStyleRule extends CSSRule {
   layers: CSSLayer[];
   ruleTypes: Protocol.CSS.CSSRuleType[];
   startingStyles: CSSStartingStyle[];
+  navigations: CSSNavigation[];
   wasUsed: boolean;
   constructor(cssModel: CSSModel, payload: Protocol.CSS.CSSRule, wasUsed?: boolean) {
     super(cssModel, {
@@ -132,6 +134,7 @@ export class CSSStyleRule extends CSSRule {
     this.layers = payload.layers ? CSSLayer.parseLayerPayload(cssModel, payload.layers) : [];
     this.startingStyles =
         payload.startingStyles ? CSSStartingStyle.parseStartingStylePayload(cssModel, payload.startingStyles) : [];
+    this.navigations = payload.navigations ? CSSNavigation.parseNavigationPayload(cssModel, payload.navigations) : [];
     this.ruleTypes = payload.ruleTypes || [];
     this.wasUsed = wasUsed || false;
   }
@@ -224,6 +227,7 @@ export class CSSStyleRule extends CSSRule {
     this.containerQueries.forEach(cq => cq.rebase(edit));
     this.scopes.forEach(scope => scope.rebase(edit));
     this.supports.forEach(supports => supports.rebase(edit));
+    this.navigations.forEach(navigation => navigation.rebase(edit));
 
     super.rebase(edit);
   }
@@ -396,7 +400,7 @@ export interface CSSNestedStyleLeaf {
 
 export type CSSNestedStyleCondition = {
   children: CSSNestedStyle[],
-}&({media: CSSMedia}|{container: CSSContainerQuery}|{supports: CSSSupports});
+}&({media: CSSMedia}|{container: CSSContainerQuery}|{supports: CSSSupports}|{navigation: CSSNavigation});
 
 export type CSSNestedStyle = CSSNestedStyleLeaf|CSSNestedStyleCondition;
 
@@ -463,7 +467,13 @@ export class CSSFunctionRule extends CSSRule {
           supports: new CSSSupports(this.cssModelInternal, node.condition.supports),
         };
       }
-      console.error('A function rule condition must have a media, container, or supports');
+      if (node.condition.navigation) {
+        return {
+          children,
+          navigation: new CSSNavigation(this.cssModelInternal, node.condition.navigation),
+        };
+      }
+      console.error('A function rule condition must have a media, container, supports, or navigation');
       return;
     }
     console.error('A function rule node must have a style or condition');

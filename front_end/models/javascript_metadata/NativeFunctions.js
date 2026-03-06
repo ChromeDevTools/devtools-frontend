@@ -2487,6 +2487,11 @@ export const NativeFunctions = [
   },
   {
     name: "getAttribute",
+    signatures: [["name"]],
+    receivers: ["ProcessingInstruction"]
+  },
+  {
+    name: "getAttribute",
     signatures: [["tag"]],
     receivers: ["SmartCardConnection"]
   },
@@ -2508,7 +2513,13 @@ export const NativeFunctions = [
   },
   {
     name: "hasAttribute",
-    signatures: [["qualifiedName"],["name"]]
+    signatures: [["qualifiedName"],["name"]],
+    receivers: ["Element"]
+  },
+  {
+    name: "hasAttribute",
+    signatures: [["name"]],
+    receivers: ["ProcessingInstruction"]
   },
   {
     name: "hasAttributeNS",
@@ -2542,6 +2553,11 @@ export const NativeFunctions = [
     name: "removeAttribute",
     signatures: [["qualifiedName"],["name"]],
     receivers: ["Element"]
+  },
+  {
+    name: "removeAttribute",
+    signatures: [["name"]],
+    receivers: ["ProcessingInstruction"]
   },
   {
     name: "removeAttribute",
@@ -2588,6 +2604,11 @@ export const NativeFunctions = [
   },
   {
     name: "setAttribute",
+    signatures: [["name","value"]],
+    receivers: ["ProcessingInstruction"]
+  },
+  {
+    name: "setAttribute",
     signatures: [["tag","value"]],
     receivers: ["SmartCardConnection"]
   },
@@ -2619,7 +2640,13 @@ export const NativeFunctions = [
   },
   {
     name: "toggleAttribute",
-    signatures: [["qualifiedName","?force"]]
+    signatures: [["qualifiedName","?force"]],
+    receivers: ["Element"]
+  },
+  {
+    name: "toggleAttribute",
+    signatures: [["name","?force"]],
+    receivers: ["ProcessingInstruction"]
   },
   {
     name: "webkitMatchesSelector",
@@ -7334,10 +7361,6 @@ export const NativeFunctions = [
     signatures: [["type","eventInitDict"]]
   },
   {
-    name: "provideContext",
-    signatures: [["?options"]]
-  },
-  {
     name: "registerTool",
     signatures: [["tool"]]
   },
@@ -9261,6 +9284,10 @@ export const NativeFunctions = [
   {
     name: "MIDIMessageEvent",
     signatures: [["type","?eventInitDict"]]
+  },
+  {
+    name: "startDiagnosticLogging",
+    signatures: [["?options"]]
   },
   {
     name: "CloseEvent",

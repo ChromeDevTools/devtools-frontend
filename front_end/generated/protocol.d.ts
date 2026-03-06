@@ -1132,7 +1132,8 @@ export declare namespace Audits {
         NavigationEntryMarkedSkippable = "NavigationEntryMarkedSkippable",
         AutofillAndManualTextPolicyControlledFeaturesInfo = "AutofillAndManualTextPolicyControlledFeaturesInfo",
         AutofillPolicyControlledFeatureInfo = "AutofillPolicyControlledFeatureInfo",
-        ManualTextPolicyControlledFeatureInfo = "ManualTextPolicyControlledFeatureInfo"
+        ManualTextPolicyControlledFeatureInfo = "ManualTextPolicyControlledFeatureInfo",
+        FormModelContextParameterMissingTitleAndDescription = "FormModelContextParameterMissingTitleAndDescription"
     }
     /**
      * Depending on the concrete errorType, different properties are set.
@@ -2808,6 +2809,11 @@ export declare namespace CSS {
          * The array enumerates @starting-style at-rules starting with the innermost one, going outwards.
          */
         startingStyles?: CSSStartingStyle[];
+        /**
+         * @navigation CSS at-rule array.
+         * The array enumerates @navigation at-rules starting with the innermost one, going outwards.
+         */
+        navigations?: CSSNavigation[];
     }
     /**
      * Enum indicating the type of a CSS rule, used to represent the order of a style rule's ancestors.
@@ -2820,7 +2826,8 @@ export declare namespace CSS {
         LayerRule = "LayerRule",
         ScopeRule = "ScopeRule",
         StyleRule = "StyleRule",
-        StartingStyleRule = "StartingStyleRule"
+        StartingStyleRule = "StartingStyleRule",
+        NavigationRule = "NavigationRule"
     }
     /**
      * CSS coverage information.
@@ -3092,6 +3099,28 @@ export declare namespace CSS {
          * Whether the supports condition is satisfied.
          */
         active: boolean;
+        /**
+         * The associated rule header range in the enclosing stylesheet (if
+         * available).
+         */
+        range?: SourceRange;
+        /**
+         * Identifier of the stylesheet containing this object (if exists).
+         */
+        styleSheetId?: DOM.StyleSheetId;
+    }
+    /**
+     * CSS Navigation at-rule descriptor.
+     */
+    interface CSSNavigation {
+        /**
+         * Navigation rule text.
+         */
+        text: string;
+        /**
+         * Whether the navigation condition is satisfied.
+         */
+        active?: boolean;
         /**
          * The associated rule header range in the enclosing stylesheet (if
          * available).
@@ -3420,6 +3449,10 @@ export declare namespace CSS {
          * @supports CSS at-rule condition. Only one type of condition should be set.
          */
         supports?: CSSSupports;
+        /**
+         * @navigation condition. Only one type of condition should be set.
+         */
+        navigation?: CSSNavigation;
         /**
          * Block body.
          */
@@ -3857,6 +3890,17 @@ export declare namespace CSS {
          * The resulting CSS Supports rule after modification.
          */
         supports: CSSSupports;
+    }
+    interface SetNavigationTextRequest {
+        styleSheetId: DOM.StyleSheetId;
+        range: SourceRange;
+        text: string;
+    }
+    interface SetNavigationTextResponse extends ProtocolResponseWithError {
+        /**
+         * The resulting CSS Navigation rule after modification.
+         */
+        navigation: CSSNavigation;
     }
     interface SetScopeTextRequest {
         styleSheetId: DOM.StyleSheetId;

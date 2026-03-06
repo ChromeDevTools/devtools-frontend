@@ -10,7 +10,6 @@ import { GenericIssue } from './GenericIssue.js';
 import { HeavyAdIssue } from './HeavyAdIssue.js';
 import { Issue, IssueCategory, IssueKind } from './Issue.js';
 import type { EventTypes as IssuesManagerEventsTypes } from './IssuesManager.js';
-import { LowTextContrastIssue } from './LowTextContrastIssue.js';
 import type { MarkdownIssueDescription } from './MarkdownIssueDescription.js';
 import { MixedContentIssue } from './MixedContentIssue.js';
 import { PartitioningBlobURLIssue } from './PartitioningBlobURLIssue.js';
@@ -59,7 +58,6 @@ export declare class AggregatedIssue extends Issue {
     getCorsIssues(): Set<CorsIssue>;
     getCspIssues(): Iterable<ContentSecurityPolicyIssue>;
     getDeprecationIssues(): Iterable<DeprecationIssue>;
-    getLowContrastIssues(): Iterable<LowTextContrastIssue>;
     requests(): Iterable<Protocol.Audits.AffectedRequest>;
     getSharedArrayBufferIssues(): Iterable<SharedArrayBufferIssue>;
     getQuirksModeIssues(): Iterable<QuirksModeIssue>;

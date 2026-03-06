@@ -10117,6 +10117,9 @@ var SuggestBox = class {
   visible() {
     return this.glassPane.isShowing();
   }
+  completion() {
+    return this.list.selectedItem();
+  }
   setPosition(anchorBox) {
     this.glassPane.setContentAnchorBox(anchorBox);
   }

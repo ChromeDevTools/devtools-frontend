@@ -186,7 +186,7 @@ export function drawLayoutGridHighlight(highlight, context, deviceScaleFactor, c
     const gridPath = buildPath(highlight.gridBorder, gridBounds, emulationScaleFactor);
     // Transform the context to match the current writing-mode.
     context.save();
-    applyWritingModeTransformation(highlight.writingMode, gridBounds, context);
+    applyWritingModeTransformation(highlight.writingMode, gridBounds, context, highlight.writingModeRoot);
     // Draw grid background
     if (highlight.gridHighlightConfig.gridBackgroundColor) {
         context.fillStyle = highlight.gridHighlightConfig.gridBackgroundColor;
@@ -229,18 +229,19 @@ export function drawLayoutGridHighlight(highlight, context, deviceScaleFactor, c
     // Draw all the labels
     drawGridLabels(highlight, gridBounds, areaBounds, { canvasWidth, canvasHeight }, labelState, emulationScaleFactor, writingModeMatrix);
 }
-function applyWritingModeTransformation(writingMode, gridBounds, context) {
+function applyWritingModeTransformation(writingMode, gridBounds, context, writingModeRoot) {
     if (isHorizontalWritingMode(writingMode)) {
         return;
     }
     const topLeft = gridBounds.allPoints[0];
     const topRight = gridBounds.allPoints[1];
     const bottomLeft = gridBounds.allPoints[3];
-    // Move to the top-left corner to do all transformations there.
-    context.translate(topLeft.x, topLeft.y);
+    const origin = writingModeRoot ?? topLeft;
+    // Move to the origin corner to do all transformations there.
+    context.translate(origin.x, origin.y);
     if (writingMode === 'vertical-rl' || writingMode === 'sideways-rl') {
         context.rotate(90 * Math.PI / 180);
-        context.translate(0, -1 * (bottomLeft.y - topLeft.y));
+        context.translate(0, -(bottomLeft.y - topLeft.y));
     }
     if (writingMode === 'vertical-lr') {
         context.rotate(90 * Math.PI / 180);
@@ -248,10 +249,10 @@ function applyWritingModeTransformation(writingMode, gridBounds, context) {
     }
     if (writingMode === 'sideways-lr') {
         context.rotate(-90 * Math.PI / 180);
-        context.translate(-1 * (topRight.x - topLeft.x), 0);
+        context.translate(-(topRight.x - topLeft.x), 0);
     }
     // Move back to the original point.
-    context.translate(topLeft.x * -1, topLeft.y * -1);
+    context.translate(-origin.x, -origin.y);
 }
 function drawGridLines(context, highlight, direction, emulationScaleFactor) {
     const tracks = highlight[`${direction}s`];

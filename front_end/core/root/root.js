@@ -66,7 +66,6 @@ var ExperimentName;
   ExperimentName2["APCA"] = "apca";
   ExperimentName2["FONT_EDITOR"] = "font-editor";
   ExperimentName2["FULL_ACCESSIBILITY_TREE"] = "full-accessibility-tree";
-  ExperimentName2["CONTRAST_ISSUES"] = "contrast-issues";
   ExperimentName2["EXPERIMENTAL_COOKIE_FEATURES"] = "experimental-cookie-features";
   ExperimentName2["INSTRUMENTATION_BREAKPOINTS"] = "instrumentation-breakpoints";
   ExperimentName2["AUTHORED_DEPLOYED_GROUPING"] = "authored-deployed-grouping";

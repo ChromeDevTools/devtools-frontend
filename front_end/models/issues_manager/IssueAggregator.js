@@ -12,7 +12,6 @@ import { ElementAccessibilityIssue } from './ElementAccessibilityIssue.js';
 import { GenericIssue } from './GenericIssue.js';
 import { HeavyAdIssue } from './HeavyAdIssue.js';
 import { Issue, unionIssueKind } from './Issue.js';
-import { LowTextContrastIssue } from './LowTextContrastIssue.js';
 import { MixedContentIssue } from './MixedContentIssue.js';
 import { PartitioningBlobURLIssue } from './PartitioningBlobURLIssue.js';
 import { PermissionElementIssue } from './PermissionElementIssue.js';
@@ -37,7 +36,6 @@ export class AggregatedIssue extends Issue {
     #cspIssues = new Set();
     #deprecationIssues = new Set();
     #issueKind = "Improvement" /* IssueKind.IMPROVEMENT */;
-    #lowContrastIssues = new Set();
     #cookieDeprecationMetadataIssues = new Set();
     #mixedContentIssues = new Set();
     #partitioningBlobURLIssues = new Set();
@@ -95,9 +93,6 @@ export class AggregatedIssue extends Issue {
     }
     getDeprecationIssues() {
         return this.#deprecationIssues;
-    }
-    getLowContrastIssues() {
-        return this.#lowContrastIssues;
     }
     requests() {
         return this.#affectedRequests.values();
@@ -208,9 +203,6 @@ export class AggregatedIssue extends Issue {
         }
         if (issue instanceof SharedArrayBufferIssue) {
             this.#sharedArrayBufferIssues.add(issue);
-        }
-        if (issue instanceof LowTextContrastIssue) {
-            this.#lowContrastIssues.add(issue);
         }
         if (issue instanceof CorsIssue) {
             this.#corsIssues.add(issue);

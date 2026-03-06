@@ -34,12 +34,15 @@ export declare class DeviceModeToolbar {
     private createEmptyToolbarElement;
     private createMainToolbar;
     private createOptionsToolbar;
+    private getDevicePostureOptions;
     private appendDevicePostureItems;
     private currentDevicePosture;
+    private getScaleOptions;
     private appendScaleMenuItems;
     private onScaleMenuChanged;
-    private onAutoAdjustScaleChanged;
+    private getDeviceScaleFactorOptions;
     private appendDeviceScaleMenuItems;
+    private getUserAgentOptions;
     private appendUserAgentMenuItems;
     private appendOptionsMenuItems;
     private reset;
@@ -49,6 +52,7 @@ export declare class DeviceModeToolbar {
     private standardDevices;
     private customDevices;
     private allDevices;
+    private getDeviceModeOptions;
     private appendDeviceMenuItems;
     private deviceListChanged;
     private updateDeviceScaleFactorVisibility;

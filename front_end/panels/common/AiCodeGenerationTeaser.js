@@ -137,6 +137,9 @@ function getTooltipDisclaimerText(noLogging, panel) {
             return noLogging ?
                 lockedString(UIStringsNotTranslate.tooltipDisclaimerTextForAiCodeGenerationNoLoggingInSources) :
                 lockedString(UIStringsNotTranslate.tooltipDisclaimerTextForAiCodeGenerationInSources);
+        case "styles" /* AiCodeCompletion.AiCodeCompletion.ContextFlavor.STYLES */:
+            // TODO(476101019): update with string for styles pane
+            return '';
     }
 }
 export const DEFAULT_VIEW = (input, output, target) => {

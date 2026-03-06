@@ -41,7 +41,6 @@
     "../../../../../../front_end/panels/issues/AffectedDirectivesView.ts",
     "../../../../../../front_end/panels/issues/AffectedDocumentsInQuirksModeView.ts",
     "../../../../../../front_end/panels/issues/AffectedElementsView.ts",
-    "../../../../../../front_end/panels/issues/AffectedElementsWithLowContrastView.ts",
     "../../../../../../front_end/panels/issues/AffectedHeavyAdView.ts",
     "../../../../../../front_end/panels/issues/AffectedMetadataAllowedSitesView.ts",
     "../../../../../../front_end/panels/issues/AffectedPartitioningBlobURLView.ts",

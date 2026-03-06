@@ -68,7 +68,6 @@ models/issues_manager/GenericIssue.test.js
 models/issues_manager/Issue.test.js
 models/issues_manager/IssueAggregator.test.js
 models/issues_manager/IssueResolver.test.js
-models/issues_manager/LowTextContrastIssue.test.js
 models/issues_manager/MarkdownIssueDescription.test.js
 models/issues_manager/PermissionElementIssue.test.js
 models/issues_manager/PropertyRuleIssue.test.js
@@ -438,6 +437,7 @@ panels/elements/StylesAiCodeCompletionProvider.test.js
 panels/elements/StylesSidebarPane.test.js
 panels/elements/WebCustomData.test.js
 panels/emulation/AdvancedApp.test.js
+panels/emulation/DeviceModeToolbar.test.js
 panels/emulation/MediaQueryInspector.test.js
 panels/event_listeners/EventListenersView.test.js
 panels/explain/components/ConsoleInsight.test.js

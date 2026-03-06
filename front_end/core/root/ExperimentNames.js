@@ -15,7 +15,6 @@ export var ExperimentName;
     ExperimentName["APCA"] = "apca";
     ExperimentName["FONT_EDITOR"] = "font-editor";
     ExperimentName["FULL_ACCESSIBILITY_TREE"] = "full-accessibility-tree";
-    ExperimentName["CONTRAST_ISSUES"] = "contrast-issues";
     ExperimentName["EXPERIMENTAL_COOKIE_FEATURES"] = "experimental-cookie-features";
     ExperimentName["INSTRUMENTATION_BREAKPOINTS"] = "instrumentation-breakpoints";
     ExperimentName["AUTHORED_DEPLOYED_GROUPING"] = "authored-deployed-grouping";

@@ -11,7 +11,6 @@ export declare enum ExperimentName {
     APCA = "apca",
     FONT_EDITOR = "font-editor",
     FULL_ACCESSIBILITY_TREE = "full-accessibility-tree",
-    CONTRAST_ISSUES = "contrast-issues",
     EXPERIMENTAL_COOKIE_FEATURES = "experimental-cookie-features",
     INSTRUMENTATION_BREAKPOINTS = "instrumentation-breakpoints",
     AUTHORED_DEPLOYED_GROUPING = "authored-deployed-grouping",

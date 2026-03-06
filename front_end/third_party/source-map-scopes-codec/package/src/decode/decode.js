@@ -393,7 +393,7 @@ class Decoder {
                 to: { line: 0, column: 0 },
                 value: value,
             });
-            for (const [binding, line, column] of bindings) {
+            for (const [line, column, binding] of bindings) {
                 lastLine += line;
                 if (line === 0) {
                     lastColumn += column;

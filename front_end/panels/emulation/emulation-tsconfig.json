@@ -86,6 +86,9 @@
       "path": "../mobile_throttling/bundle-tsconfig.json"
     },
     {
+      "path": "../../ui/i18n/bundle-tsconfig.json"
+    },
+    {
       "path": "../../ui/kit/bundle-tsconfig.json"
     },
     {

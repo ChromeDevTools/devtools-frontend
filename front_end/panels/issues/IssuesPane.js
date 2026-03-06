@@ -5,6 +5,7 @@
 import '../../ui/legacy/legacy.js';
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as IssueCounter from '../../ui/components/issue_counter/issue_counter.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -112,7 +113,7 @@ const ISSUES_PANEL_EXPLANATION_URL = 'https://developer.chrome.com/docs/devtools
 class IssueCategoryView extends UI.TreeOutline.TreeElement {
     #category;
     constructor(category) {
-        super();
+        super(undefined, undefined, Platform.StringUtilities.toKebabCase(category));
         this.#category = category;
         this.toggleOnClick = true;
         this.listItemElement.classList.add('issue-category');

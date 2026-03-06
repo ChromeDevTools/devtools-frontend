@@ -782,6 +782,7 @@
   "front_end/panels/layer_viewer/layer_viewer-meta.js",
   "front_end/panels/layers/layers.js",
   "front_end/panels/layers/layers-meta.js",
+  "front_end/models/lighthouse/lighthouse.js",
   "front_end/third_party/lighthouse/report/report.js",
   "front_end/third_party/lighthouse/lighthouse-dt-bundle.js",
   "front_end/panels/lighthouse/lighthouse.js",

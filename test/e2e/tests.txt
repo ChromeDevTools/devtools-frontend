@@ -112,7 +112,6 @@ issues/hide-issues-menu.test.js
 issues/issue-links.test.js
 issues/issue-view-caching.test.js
 issues/issue-view-reparent.test.js
-issues/low-text-contrast-issues.test.js
 issues/partitioning-blob-url-issues.test.js
 issues/privacy-sandbox-extensions-api.test.js
 issues/quirks-mode-issues.test.js

@@ -1840,6 +1840,7 @@ var DeviceModeModel = class _DeviceModeModel extends Common2.ObjectWrapper.Objec
   #emulationModel;
   #onModelAvailable;
   #outlineRect;
+  #screenOrientationLocked;
   constructor() {
     super();
     this.#screenRect = new Rect(0, 0, 1, 1);
@@ -1896,6 +1897,7 @@ var DeviceModeModel = class _DeviceModeModel extends Common2.ObjectWrapper.Objec
     this.#touchMobile = false;
     this.#emulationModel = null;
     this.#onModelAvailable = null;
+    this.#screenOrientationLocked = false;
     SDK2.TargetManager.TargetManager.instance().observeModels(SDK2.EmulationModel.EmulationModel, this);
   }
   static instance(opts) {
@@ -2111,6 +2113,7 @@ var DeviceModeModel = class _DeviceModeModel extends Common2.ObjectWrapper.Objec
         this.#onModelAvailable = null;
         callback();
       }
+      emulationModel.addEventListener("ScreenOrientationLockChanged", this.onScreenOrientationLockChanged, this);
       const resourceTreeModel = emulationModel.target().model(SDK2.ResourceTreeModel.ResourceTreeModel);
       if (resourceTreeModel) {
         resourceTreeModel.addEventListener(SDK2.ResourceTreeModel.Events.FrameResized, this.onFrameChange, this);
@@ -2122,7 +2125,13 @@ var DeviceModeModel = class _DeviceModeModel extends Common2.ObjectWrapper.Objec
   }
   modelRemoved(emulationModel) {
     if (this.#emulationModel === emulationModel) {
+      emulationModel.removeEventListener("ScreenOrientationLockChanged", this.onScreenOrientationLockChanged, this);
       this.#emulationModel = null;
+      this.#screenOrientationLocked = false;
+      this.dispatchEventToListeners(
+        "Updated"
+        /* Events.UPDATED */
+      );
     }
   }
   inspectedURL() {
@@ -2134,6 +2143,37 @@ var DeviceModeModel = class _DeviceModeModel extends Common2.ObjectWrapper.Objec
       return;
     }
     this.showHingeIfApplicable(overlayModel);
+  }
+  onScreenOrientationLockChanged(event) {
+    this.#screenOrientationLocked = event.data.locked;
+    if (event.data.locked && event.data.orientation) {
+      this.applyOrientationLock(event.data.orientation);
+    }
+    this.dispatchEventToListeners(
+      "Updated"
+      /* Events.UPDATED */
+    );
+  }
+  applyOrientationLock(orientation) {
+    const wantsLandscape = orientation.type === "landscapePrimary" || orientation.type === "landscapeSecondary";
+    if (this.#type === Type2.Device && this.#device && this.#mode) {
+      const isCurrentlyLandscape = this.#mode.orientation === Horizontal || this.#mode.orientation === HorizontalSpanned;
+      if (wantsLandscape !== isCurrentlyLandscape) {
+        const rotationPartner = this.#device.getRotationPartner(this.#mode);
+        if (rotationPartner) {
+          this.emulate(this.#type, this.#device, rotationPartner);
+        }
+      }
+    } else if (this.#type === Type2.Responsive) {
+      const appliedSize = this.appliedDeviceSize();
+      const isCurrentlyLandscape = appliedSize.width > appliedSize.height;
+      if (wantsLandscape !== isCurrentlyLandscape) {
+        this.setSizeAndScaleToFit(appliedSize.height, appliedSize.width);
+      }
+    }
+  }
+  isScreenOrientationLocked() {
+    return this.#screenOrientationLocked;
   }
   scaleSettingChanged() {
     this.calculateAndEmulate(false);

@@ -42,6 +42,7 @@ export declare class AiCodeCompletion {
 }
 export declare const enum ContextFlavor {
     CONSOLE = "console",// generated code can contain console specific APIs like `$0`.
-    SOURCES = "sources"
+    SOURCES = "sources",
+    STYLES = "styles"
 }
 export {};

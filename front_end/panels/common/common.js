@@ -829,6 +829,8 @@ function getTooltipDisclaimerText(noLogging, panel2) {
       return noLogging ? lockedString2(UIStringsNotTranslate2.tooltipDisclaimerTextForAiCodeGenerationNoLoggingInConsole) : lockedString2(UIStringsNotTranslate2.tooltipDisclaimerTextForAiCodeGenerationInConsole);
     case "sources":
       return noLogging ? lockedString2(UIStringsNotTranslate2.tooltipDisclaimerTextForAiCodeGenerationNoLoggingInSources) : lockedString2(UIStringsNotTranslate2.tooltipDisclaimerTextForAiCodeGenerationInSources);
+    case "styles":
+      return "";
   }
 }
 var DEFAULT_VIEW2 = (input, output, target) => {
@@ -2224,6 +2226,8 @@ function getTooltipDisclaimerText2(noLogging, panel2) {
       return noLogging ? lockedString4(UIStringsNotTranslate4.tooltipDisclaimerTextForAiCodeCompletionNoLoggingInConsole) : lockedString4(UIStringsNotTranslate4.tooltipDisclaimerTextForAiCodeCompletionInConsole);
     case "sources":
       return noLogging ? lockedString4(UIStringsNotTranslate4.tooltipDisclaimerTextForAiCodeCompletionNoLoggingInSources) : lockedString4(UIStringsNotTranslate4.tooltipDisclaimerTextForAiCodeCompletionInSources);
+    case "styles":
+      return "";
   }
 }
 var DEFAULT_SUMMARY_TOOLBAR_VIEW = (input, output, target) => {

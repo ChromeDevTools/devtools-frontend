@@ -7226,6 +7226,10 @@ var NativeFunctions = [
     signatures: [["width", "height"]]
   },
   {
+    name: "OverscrollEvent",
+    signatures: [["type", "?eventInitDict"]]
+  },
+  {
     name: "setValueAndClosePopup",
     signatures: [["numberValue", "stringValue", "is_keyboard_event"]]
   },

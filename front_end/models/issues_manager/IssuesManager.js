@@ -17,7 +17,6 @@ import { ElementAccessibilityIssue } from './ElementAccessibilityIssue.js';
 import { FederatedAuthRequestIssue } from './FederatedAuthRequestIssue.js';
 import { GenericIssue } from './GenericIssue.js';
 import { HeavyAdIssue } from './HeavyAdIssue.js';
-import { LowTextContrastIssue } from './LowTextContrastIssue.js';
 import { MixedContentIssue } from './MixedContentIssue.js';
 import { PartitioningBlobURLIssue } from './PartitioningBlobURLIssue.js';
 import { PermissionElementIssue } from './PermissionElementIssue.js';
@@ -66,10 +65,6 @@ const issueCodeHandlers = new Map([
     [
         "SharedDictionaryIssue" /* Protocol.Audits.InspectorIssueCode.SharedDictionaryIssue */,
         SharedDictionaryIssue.fromInspectorIssue,
-    ],
-    [
-        "LowTextContrastIssue" /* Protocol.Audits.InspectorIssueCode.LowTextContrastIssue */,
-        LowTextContrastIssue.fromInspectorIssue,
     ],
     [
         "CorsIssue" /* Protocol.Audits.InspectorIssueCode.CorsIssue */,

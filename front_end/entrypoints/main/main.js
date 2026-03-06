@@ -717,7 +717,6 @@ var MainImpl = class {
     Root2.Runtime.experiments.register(Root2.ExperimentNames.ExperimentName.APCA, "Advanced Perceptual Contrast Algorithm (APCA) replacing previous contrast ratio and AA/AAA guidelines", "https://developer.chrome.com/blog/new-in-devtools-89/#apca");
     Root2.Runtime.experiments.register(Root2.ExperimentNames.ExperimentName.FULL_ACCESSIBILITY_TREE, "Full accessibility tree view in the Elements panel", "https://developer.chrome.com/blog/new-in-devtools-90/#accessibility-tree", "https://g.co/devtools/a11y-tree-feedback");
     Root2.Runtime.experiments.register(Root2.ExperimentNames.ExperimentName.FONT_EDITOR, "New font editor in the Styles tab", "https://developer.chrome.com/blog/new-in-devtools-89/#font");
-    Root2.Runtime.experiments.register(Root2.ExperimentNames.ExperimentName.CONTRAST_ISSUES, "Automatic contrast issue reporting via the Issues panel", "https://developer.chrome.com/blog/new-in-devtools-90/#low-contrast");
     Root2.Runtime.experiments.register(Root2.ExperimentNames.ExperimentName.EXPERIMENTAL_COOKIE_FEATURES, "Experimental cookie features");
     Root2.Runtime.experiments.register(Root2.ExperimentNames.ExperimentName.AUTHORED_DEPLOYED_GROUPING, "Group sources into authored and deployed trees", "https://goo.gle/authored-deployed", "https://goo.gle/authored-deployed-feedback");
     Root2.Runtime.experiments.register(Root2.ExperimentNames.ExperimentName.JUST_MY_CODE, "Hide ignore-listed code in Sources tree view");
@@ -786,7 +785,6 @@ var MainImpl = class {
       showThirdPartyIssuesSetting: IssuesManager.Issue.getShowThirdPartyIssuesSetting(),
       hideIssueSetting: IssuesManager.IssuesManager.getHideIssueByCodeSetting()
     });
-    IssuesManager.ContrastCheckTrigger.ContrastCheckTrigger.instance();
     UI2.DockController.DockController.instance({ forceNew: true, canDock });
     SDK2.DOMDebuggerModel.DOMDebuggerManager.instance({ forceNew: true });
     const targetManager = SDK2.TargetManager.TargetManager.instance();

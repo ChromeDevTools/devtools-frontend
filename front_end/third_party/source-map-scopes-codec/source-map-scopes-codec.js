@@ -264,7 +264,7 @@ var Encoder = class {
         lastLine = subRange.from.line;
         lastColumn = subRange.from.column;
         const binding = subRange.value === void 0 ? 0 : this.#resolveNamesIdx(subRange.value) + 1;
-        this.#encodeUnsigned(binding).#encodeUnsigned(encodedLine).#encodeUnsigned(encodedColumn);
+        this.#encodeUnsigned(encodedLine).#encodeUnsigned(encodedColumn).#encodeUnsigned(binding);
       }
       this.#finishItem();
     }
@@ -757,7 +757,7 @@ var Decoder = class {
         to: { line: 0, column: 0 },
         value
       });
-      for (const [binding, line, column] of bindings) {
+      for (const [line, column, binding] of bindings) {
         lastLine += line;
         if (line === 0) {
           lastColumn += column;

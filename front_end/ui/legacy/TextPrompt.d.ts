@@ -75,7 +75,7 @@ export declare class TextPrompt extends Common.ObjectWrapper.ObjectWrapper<Event
     private boundClearAutocomplete?;
     private boundOnBlur?;
     private contentElement?;
-    private suggestBox?;
+    protected suggestBox?: SuggestBox;
     private isEditing?;
     private focusRestorer?;
     private blurListener?;

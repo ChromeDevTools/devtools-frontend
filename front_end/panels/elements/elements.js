@@ -10,7 +10,7 @@ __export(InspectElementModeController_exports, {
   InspectElementModeController: () => InspectElementModeController,
   ToggleSearchActionDelegate: () => ToggleSearchActionDelegate
 });
-import * as Common13 from "./../../core/common/common.js";
+import * as Common14 from "./../../core/common/common.js";
 import * as Root7 from "./../../core/root/root.js";
 import * as SDK19 from "./../../core/sdk/sdk.js";
 import * as UI22 from "./../../ui/legacy/legacy.js";
@@ -28,9 +28,9 @@ __export(ElementsPanel_exports, {
   NodeComputedStyles: () => NodeComputedStyles,
   PseudoStateMarkerDecorator: () => PseudoStateMarkerDecorator
 });
-import * as Common12 from "./../../core/common/common.js";
-import * as Host5 from "./../../core/host/host.js";
-import * as i18n31 from "./../../core/i18n/i18n.js";
+import * as Common13 from "./../../core/common/common.js";
+import * as Host6 from "./../../core/host/host.js";
+import * as i18n32 from "./../../core/i18n/i18n.js";
 import * as Platform10 from "./../../core/platform/platform.js";
 import * as Root6 from "./../../core/root/root.js";
 import * as SDK18 from "./../../core/sdk/sdk.js";
@@ -849,8 +849,8 @@ __export(ComputedStyleWidget_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW2
 });
 import "./../../ui/legacy/legacy.js";
-import * as Common6 from "./../../core/common/common.js";
-import * as i18n15 from "./../../core/i18n/i18n.js";
+import * as Common7 from "./../../core/common/common.js";
+import * as i18n16 from "./../../core/i18n/i18n.js";
 import * as Platform6 from "./../../core/platform/platform.js";
 import * as SDK10 from "./../../core/sdk/sdk.js";
 import * as TreeOutline6 from "./../../ui/components/tree_outline/tree_outline.js";
@@ -1173,8 +1173,8 @@ __export(PropertyRenderer_exports, {
   URLRenderer: () => URLRenderer,
   rendererBase: () => rendererBase
 });
-import * as Common5 from "./../../core/common/common.js";
-import * as i18n13 from "./../../core/i18n/i18n.js";
+import * as Common6 from "./../../core/common/common.js";
+import * as i18n14 from "./../../core/i18n/i18n.js";
 import * as SDK9 from "./../../core/sdk/sdk.js";
 import * as Components3 from "./../../ui/legacy/components/utils/utils.js";
 import * as UI11 from "./../../ui/legacy/legacy.js";
@@ -1197,15 +1197,17 @@ __export(StylesSidebarPane_exports, {
   unescapeCssString: () => unescapeCssString
 });
 import "./../../ui/legacy/legacy.js";
-import * as Common4 from "./../../core/common/common.js";
-import * as Host3 from "./../../core/host/host.js";
-import * as i18n11 from "./../../core/i18n/i18n.js";
+import * as Common5 from "./../../core/common/common.js";
+import * as Host4 from "./../../core/host/host.js";
+import * as i18n12 from "./../../core/i18n/i18n.js";
 import * as Platform5 from "./../../core/platform/platform.js";
 import { assertNotNullOrUndefined } from "./../../core/platform/platform.js";
 import * as Root4 from "./../../core/root/root.js";
 import * as SDK8 from "./../../core/sdk/sdk.js";
+import * as AiCodeCompletion3 from "./../../models/ai_code_completion/ai_code_completion.js";
 import * as Bindings4 from "./../../models/bindings/bindings.js";
-import * as TextUtils4 from "./../../models/text_utils/text_utils.js";
+import * as TextUtils5 from "./../../models/text_utils/text_utils.js";
+import * as TextEditor2 from "./../../ui/components/text_editor/text_editor.js";
 import { createIcon as createIcon3, Icon as Icon2 } from "./../../ui/kit/kit.js";
 import * as InlineEditor3 from "./../../ui/legacy/components/inline_editor/inline_editor.js";
 import * as Components2 from "./../../ui/legacy/components/utils/utils.js";
@@ -7456,6 +7458,180 @@ var StylePropertyHighlighter = class {
   }
 };
 
+// gen/front_end/panels/elements/StylesAiCodeCompletionProvider.js
+var StylesAiCodeCompletionProvider_exports = {};
+__export(StylesAiCodeCompletionProvider_exports, {
+  StylesAiCodeCompletionProvider: () => StylesAiCodeCompletionProvider
+});
+import * as Common4 from "./../../core/common/common.js";
+import * as Host3 from "./../../core/host/host.js";
+import * as i18n11 from "./../../core/i18n/i18n.js";
+import * as AiCodeCompletion from "./../../models/ai_code_completion/ai_code_completion.js";
+import * as TextUtils4 from "./../../models/text_utils/text_utils.js";
+import * as TextEditor from "./../../ui/components/text_editor/text_editor.js";
+var StylesAiCodeCompletionProvider = class _StylesAiCodeCompletionProvider {
+  #aidaClient = new Host3.AidaClient.AidaClient();
+  #aiCodeCompletionSetting = Common4.Settings.Settings.instance().createSetting("ai-code-completion-enabled", false);
+  #aiCodeCompletion;
+  #aiCodeCompletionConfig;
+  #boundOnUpdateAiCodeCompletionState = this.#updateAiCodeCompletionState.bind(this);
+  constructor(aiCodeCompletionConfig) {
+    const devtoolsLocale = i18n11.DevToolsLocale.DevToolsLocale.instance();
+    if (!AiCodeCompletion.AiCodeCompletion.AiCodeCompletion.isAiCodeCompletionStylesEnabled(devtoolsLocale.locale)) {
+      throw new Error("AI code completion feature in Styles is not enabled.");
+    }
+    this.#aiCodeCompletionConfig = aiCodeCompletionConfig;
+    Host3.AidaClient.HostConfigTracker.instance().addEventListener("aidaAvailabilityChanged", this.#boundOnUpdateAiCodeCompletionState);
+    this.#aiCodeCompletionSetting.addChangeListener(this.#boundOnUpdateAiCodeCompletionState);
+    void this.#updateAiCodeCompletionState();
+  }
+  static createInstance(aiCodeCompletionConfig) {
+    return new _StylesAiCodeCompletionProvider(aiCodeCompletionConfig);
+  }
+  #setupAiCodeCompletion() {
+    if (!this.#aiCodeCompletionConfig) {
+      return;
+    }
+    if (this.#aiCodeCompletion) {
+      return;
+    }
+    this.#aiCodeCompletion = new AiCodeCompletion.AiCodeCompletion.AiCodeCompletion({ aidaClient: this.#aidaClient }, this.#aiCodeCompletionConfig.panel, void 0, this.#aiCodeCompletionConfig.completionContext.stopSequences);
+    this.#aiCodeCompletionConfig.onFeatureEnabled();
+  }
+  #cleanupAiCodeCompletion() {
+    if (!this.#aiCodeCompletion) {
+      return;
+    }
+    this.#aiCodeCompletion = void 0;
+    this.#aiCodeCompletionConfig?.onFeatureDisabled();
+  }
+  async #updateAiCodeCompletionState() {
+    const aidaAvailability = await Host3.AidaClient.AidaClient.checkAccessPreconditions();
+    const isAvailable = aidaAvailability === "available";
+    const isEnabled = this.#aiCodeCompletionSetting.get();
+    if (isAvailable && isEnabled) {
+      this.#setupAiCodeCompletion();
+    } else {
+      this.#cleanupAiCodeCompletion();
+    }
+  }
+  async triggerAiCodeCompletion(text, cursorPosition, isEditingName, cssProperty, cssModel) {
+    const styleSheetId = cssProperty.ownerStyle.styleSheetId;
+    if (!styleSheetId) {
+      return;
+    }
+    const header = cssModel.styleSheetHeaderForId(styleSheetId);
+    if (!header) {
+      return;
+    }
+    const contentData = await header.requestContentData();
+    if (TextUtils4.ContentData.ContentData.isError(contentData)) {
+      AiCodeCompletion.debugLog("Error while fetching content from stylesheet", contentData.error);
+      return;
+    }
+    const content = contentData.text;
+    const propertyRange = cssProperty.range;
+    if (!content || !propertyRange) {
+      return;
+    }
+    const contentText = new TextUtils4.Text.Text(content);
+    const propertyStartOffset = contentText.offsetFromPosition(propertyRange.startLine, propertyRange.startColumn);
+    const propertyEndOffset = contentText.offsetFromPosition(propertyRange.endLine, propertyRange.endColumn);
+    let prefix = content.substring(0, propertyStartOffset);
+    if (!isEditingName) {
+      const nameRange = cssProperty.nameRange();
+      if (nameRange) {
+        const nameEndOffset = contentText.offsetFromPosition(nameRange.endLine, nameRange.endColumn);
+        prefix = prefix + content.substring(propertyStartOffset, nameEndOffset) + ": ";
+      }
+    }
+    prefix = prefix + text;
+    const suffix = content.substring(propertyEndOffset);
+    await this.#requestAidaSuggestion(prefix, suffix, cursorPosition);
+  }
+  async #requestAidaSuggestion(prefix, suffix, cursorPositionAtRequest) {
+    if (!this.#aiCodeCompletion) {
+      AiCodeCompletion.debugLog("Ai Code Completion is not initialized");
+      this.#aiCodeCompletionConfig?.onResponseReceived();
+      Host3.userMetrics.actionTaken(Host3.UserMetrics.Action.AiCodeCompletionError);
+      return;
+    }
+    const startTime = performance.now();
+    this.#aiCodeCompletionConfig?.onRequestTriggered();
+    Host3.userMetrics.actionTaken(Host3.UserMetrics.Action.AiCodeCompletionRequestTriggered);
+    try {
+      const completionResponse = await this.#aiCodeCompletion.completeCode(
+        prefix,
+        suffix,
+        cursorPositionAtRequest,
+        "CSS"
+        /* Host.AidaClient.AidaInferenceLanguage.CSS */
+      );
+      this.#aiCodeCompletionConfig?.onResponseReceived();
+      if (!completionResponse) {
+        return;
+      }
+      const { response, fromCache } = completionResponse;
+      if (!response) {
+        return;
+      }
+      const sampleResponse = await this.#generateSampleForRequest(response, prefix, suffix);
+      if (!sampleResponse) {
+        return;
+      }
+      if (fromCache) {
+        Host3.userMetrics.actionTaken(Host3.UserMetrics.Action.AiCodeCompletionResponseServedFromCache);
+      }
+      this.#aiCodeCompletionConfig?.setAiAutoCompletion?.({
+        text: sampleResponse.suggestionText,
+        from: cursorPositionAtRequest,
+        rpcGlobalId: sampleResponse.rpcGlobalId,
+        sampleId: sampleResponse.sampleId,
+        startTime,
+        clearCachedRequest: this.clearCache.bind(this),
+        onImpression: this.#aiCodeCompletion?.registerUserImpression.bind(this.#aiCodeCompletion)
+      });
+    } catch (e) {
+      AiCodeCompletion.debugLog("Error while fetching code completion suggestions from AIDA", e);
+      this.#aiCodeCompletionConfig?.onResponseReceived();
+      Host3.userMetrics.actionTaken(Host3.UserMetrics.Action.AiCodeCompletionError);
+    }
+  }
+  async #generateSampleForRequest(response, prefix, suffix) {
+    const suggestionSample = this.#pickSampleFromResponse(response);
+    if (!suggestionSample) {
+      return null;
+    }
+    const shouldBlock = suggestionSample.attributionMetadata?.attributionAction === Host3.AidaClient.RecitationAction.BLOCK;
+    if (shouldBlock) {
+      return null;
+    }
+    const suggestionText = TextEditor.AiCodeCompletionProvider.AiCodeCompletionProvider.trimSuggestionOverlap(suggestionSample.generationString, suffix);
+    if (suggestionText.length === 0) {
+      return null;
+    }
+    return {
+      suggestionText,
+      sampleId: suggestionSample.sampleId,
+      citations: suggestionSample.attributionMetadata?.citations ?? [],
+      rpcGlobalId: response.metadata.rpcGlobalId
+    };
+  }
+  #pickSampleFromResponse(response) {
+    if (!response.generatedSamples.length) {
+      return null;
+    }
+    const completionHint = this.#aiCodeCompletionConfig?.getCompletionHint?.();
+    if (!completionHint) {
+      return response.generatedSamples[0];
+    }
+    return response.generatedSamples.find((sample) => sample.generationString.startsWith(completionHint)) ?? response.generatedSamples[0];
+  }
+  clearCache() {
+    this.#aiCodeCompletion?.clearCachedRequest();
+  }
+};
+
 // gen/front_end/panels/elements/stylesSidebarPane.css.js
 var stylesSidebarPane_css_default = `/**
  * Copyright 2017 The Chromium Authors
@@ -7856,8 +8032,8 @@ var UIStrings6 = {
    */
   clickToRevealLayer: "Click to reveal layer in layer tree"
 };
-var str_6 = i18n11.i18n.registerUIStrings("panels/elements/StylesSidebarPane.ts", UIStrings6);
-var i18nString6 = i18n11.i18n.getLocalizedString.bind(void 0, str_6);
+var str_6 = i18n12.i18n.registerUIStrings("panels/elements/StylesSidebarPane.ts", UIStrings6);
+var i18nString6 = i18n12.i18n.getLocalizedString.bind(void 0, str_6);
 var FILTER_IDLE_PERIOD = 500;
 var MIN_FOLDED_SECTIONS_COUNT = 5;
 var REGISTERED_PROPERTY_SECTION_NAME = "@property";
@@ -7878,7 +8054,7 @@ var HIGHLIGHTABLE_PROPERTIES = [
   { mode: "align-items", properties: ["align-items"] },
   { mode: "flexibility", properties: ["flex", "flex-basis", "flex-grow", "flex-shrink"] }
 ];
-var StylesSidebarPane = class _StylesSidebarPane extends Common4.ObjectWrapper.eventMixin(ElementsSidebarPane) {
+var StylesSidebarPane = class _StylesSidebarPane extends Common5.ObjectWrapper.eventMixin(ElementsSidebarPane) {
   matchedStyles = null;
   currentToolbarPane = null;
   animatedToolbarPane = null;
@@ -7910,9 +8086,9 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common4.ObjectWrapper.e
   sectionBlocks = [];
   idleCallbackManager = null;
   needsForceUpdate = false;
-  resizeThrottler = new Common4.Throttler.Throttler(100);
-  resetUpdateThrottler = new Common4.Throttler.Throttler(500);
-  computedStyleUpdateThrottler = new Common4.Throttler.Throttler(500);
+  resizeThrottler = new Common5.Throttler.Throttler(100);
+  resetUpdateThrottler = new Common5.Throttler.Throttler(500);
+  computedStyleUpdateThrottler = new Common5.Throttler.Throttler(500);
   scrollerElement;
   boundOnScroll;
   imagePreviewPopover;
@@ -7924,7 +8100,7 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common4.ObjectWrapper.e
     super(computedStyleModel, { delegatesFocus: true });
     this.setMinimumSize(96, 26);
     this.registerRequiredCSS(stylesSidebarPane_css_default);
-    Common4.Settings.Settings.instance().moduleSetting("text-editor-indent").addChangeListener(this.requestUpdate, this);
+    Common5.Settings.Settings.instance().moduleSetting("text-editor-indent").addChangeListener(this.requestUpdate, this);
     this.toolbarPaneElement = this.createStylesSidebarToolbar();
     this.noMatchesElement = this.contentElement.createChild("div", "gray-info-message hidden");
     this.noMatchesElement.textContent = i18nString6(UIStrings6.noMatchingSelectorOrStyle);
@@ -7954,7 +8130,7 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common4.ObjectWrapper.e
     });
   }
   get webCustomData() {
-    if (!this.#webCustomData && Common4.Settings.Settings.instance().moduleSetting("show-css-property-documentation-on-hover").get()) {
+    if (!this.#webCustomData && Common5.Settings.Settings.instance().moduleSetting("show-css-property-documentation-on-hover").get()) {
       this.#webCustomData = WebCustomData.create();
     }
     return this.#webCustomData;
@@ -8533,7 +8709,7 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common4.ObjectWrapper.e
       this.lastRevealedProperty = null;
     }
     this.swatchPopoverHelper().reposition();
-    Host3.userMetrics.panelLoaded("elements", "DevTools.Launch.Elements");
+    Host4.userMetrics.panelLoaded("elements", "DevTools.Launch.Elements");
     this.dispatchEventToListeners("StylesUpdateCompleted", { hasMatchedStyles: false });
   }
   nodeStylesUpdatedForTest(_node, _rebuild) {
@@ -8721,8 +8897,8 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common4.ObjectWrapper.e
       return;
     }
     const contentDataOrError = await styleSheetHeader.requestContentData();
-    const lines = TextUtils4.ContentData.ContentData.textOr(contentDataOrError, "").split("\n");
-    const range = TextUtils4.TextRange.TextRange.createFromLocation(lines.length - 1, lines[lines.length - 1].length);
+    const lines = TextUtils5.ContentData.ContentData.textOr(contentDataOrError, "").split("\n");
+    const range = TextUtils5.TextRange.TextRange.createFromLocation(lines.length - 1, lines[lines.length - 1].length);
     if (this.sectionBlocks && this.sectionBlocks.length > 0) {
       this.addBlankSection(this.sectionBlocks[0].sections[0], styleSheetHeader, range);
     }
@@ -8798,7 +8974,7 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common4.ObjectWrapper.e
     return sections;
   }
   clipboardCopy(_event) {
-    Host3.userMetrics.actionTaken(Host3.UserMetrics.Action.StyleRuleCopied);
+    Host4.userMetrics.actionTaken(Host4.UserMetrics.Action.StyleRuleCopied);
   }
   createStylesSidebarToolbar() {
     const container = this.contentElement.createChild("div", "styles-sidebar-pane-toolbar-container");
@@ -8892,8 +9068,8 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common4.ObjectWrapper.e
     }
   }
   createRenderingShortcuts() {
-    const prefersColorSchemeSetting = Common4.Settings.Settings.instance().moduleSetting("emulated-css-media-feature-prefers-color-scheme");
-    const autoDarkModeSetting = Common4.Settings.Settings.instance().moduleSetting("emulate-auto-dark-mode");
+    const prefersColorSchemeSetting = Common5.Settings.Settings.instance().moduleSetting("emulated-css-media-feature-prefers-color-scheme");
+    const autoDarkModeSetting = Common5.Settings.Settings.instance().moduleSetting("emulate-auto-dark-mode");
     const decorateStatus = (condition, title) => `${condition ? "\u2713 " : ""}${title}`;
     const button = new UI10.Toolbar.ToolbarToggle(i18nString6(UIStrings6.toggleRenderingEmulations), "brush", "brush-filled", void 0, false);
     button.element.setAttribute("jslog", `${VisualLogging5.dropDown("rendering-emulations").track({ click: true })}`);
@@ -9118,6 +9294,11 @@ var CSSPropertyPrompt = class extends UI10.TextPrompt.TextPrompt {
   treeElement;
   isEditingName;
   cssVariables;
+  aiCodeCompletionConfig;
+  aiCodeCompletionProvider;
+  #debouncedTriggerAiCodeCompletion = Common5.Debouncer.debounce(() => {
+    void this.triggerAiCodeCompletion();
+  }, TextEditor2.AiCodeCompletionProvider.AIDA_REQUEST_DEBOUNCE_TIMEOUT_MS);
   constructor(treeElement, isEditingName, completions = []) {
     super();
     this.initialize(this.buildPropertyCompletions.bind(this), UI10.UIUtils.StyleValueDelimiters);
@@ -9151,8 +9332,8 @@ var CSSPropertyPrompt = class extends UI10.TextPrompt.TextPrompt {
       this.disableDefaultSuggestionForEmptyInput();
       if (treeElement?.valueElement) {
         const cssValueText = treeElement.valueElement.textContent;
-        const cmdOrCtrl = Host3.Platform.isMac() ? "Cmd" : "Ctrl";
-        const optionOrAlt = Host3.Platform.isMac() ? "Option" : "Alt";
+        const cmdOrCtrl = Host4.Platform.isMac() ? "Cmd" : "Ctrl";
+        const optionOrAlt = Host4.Platform.isMac() ? "Option" : "Alt";
         if (cssValueText !== null) {
           if (cssValueText.match(/#[\da-f]{3,6}$/i)) {
             this.setTitle(i18nString6(UIStrings6.incrementdecrementWithMousewheelOne, { PH1: cmdOrCtrl, PH2: optionOrAlt }));
@@ -9161,6 +9342,31 @@ var CSSPropertyPrompt = class extends UI10.TextPrompt.TextPrompt {
           }
         }
       }
+    }
+    const devtoolsLocale = i18n12.DevToolsLocale.DevToolsLocale.instance();
+    if (AiCodeCompletion3.AiCodeCompletion.AiCodeCompletion.isAiCodeCompletionStylesEnabled(devtoolsLocale.locale)) {
+      this.aiCodeCompletionConfig = {
+        completionContext: {},
+        generationContext: {},
+        onFeatureEnabled: () => {
+        },
+        onFeatureDisabled: () => {
+        },
+        onSuggestionAccepted: () => {
+        },
+        onRequestTriggered: () => {
+        },
+        onResponseReceived: () => {
+        },
+        panel: "styles",
+        getCompletionHint: this.getCompletionHint.bind(this),
+        getCurrentText: () => {
+          return this.text();
+        },
+        setAiAutoCompletion: () => {
+        }
+      };
+      this.aiCodeCompletionProvider = StylesAiCodeCompletionProvider.createInstance(this.aiCodeCompletionConfig);
     }
   }
   onKeyDown(event) {
@@ -9201,6 +9407,12 @@ var CSSPropertyPrompt = class extends UI10.TextPrompt.TextPrompt {
   tabKeyPressed() {
     this.acceptAutoComplete();
     return false;
+  }
+  onInput(event) {
+    super.onInput(event);
+    if (this.aiCodeCompletionProvider) {
+      this.#debouncedTriggerAiCodeCompletion();
+    }
   }
   handleNameOrValueUpDown(event) {
     function finishHandler(_originalValue, _replacementString) {
@@ -9357,7 +9569,7 @@ var CSSPropertyPrompt = class extends UI10.TextPrompt.TextPrompt {
       if (variable) {
         const computedValue = this.treeElement.matchedStyles().computeCSSVariable(this.treeElement.property.ownerStyle, completion);
         if (computedValue) {
-          const color = Common4.Color.parse(computedValue.value);
+          const color = Common5.Color.parse(computedValue.value);
           if (color) {
             result.subtitleRenderer = colorSwatchRenderer.bind(null, color);
             result.isCSSVariableColor = true;
@@ -9391,6 +9603,43 @@ var CSSPropertyPrompt = class extends UI10.TextPrompt.TextPrompt {
       return subtitleElement;
     }
   }
+  async triggerAiCodeCompletion() {
+    const selection = this.element().getComponentSelection();
+    if (!this.aiCodeCompletionProvider || !selection || selection.rangeCount === 0) {
+      return;
+    }
+    const range = selection.getRangeAt(0);
+    const userInput = this.text();
+    if (range.endOffset < userInput.length) {
+      return;
+    }
+    const cssModel = this.treeElement.stylesContainer().cssModel();
+    if (!cssModel) {
+      return;
+    }
+    await this.aiCodeCompletionProvider.triggerAiCodeCompletion(userInput, range.endOffset, this.isEditingName, this.treeElement.property, cssModel);
+  }
+  /**
+   * Extracts the remaining portion of the suggestion text that follows the
+   * user's current input.
+   */
+  getCompletionHint() {
+    const topSuggestion = this.isSuggestBoxVisible() ? this.suggestBox?.completion() : null;
+    const suggestionText = topSuggestion?.text;
+    if (!suggestionText) {
+      return null;
+    }
+    const userInput = this.text();
+    let completionHint = suggestionText;
+    for (let i = Math.min(userInput.length, suggestionText.length); i > 0; i--) {
+      const overlapCandidate = suggestionText.substring(0, i);
+      if (userInput.endsWith(overlapCandidate)) {
+        completionHint = suggestionText.slice(i);
+        break;
+      }
+    }
+    return completionHint;
+  }
 };
 function unescapeCssString(input) {
   const reCssEscapeSequence = /(?<!\\)\\(?:([a-fA-F0-9]{1,6})|(.))[\n\t\x20]?/gs;
@@ -9417,7 +9666,7 @@ var ActionDelegate = class {
   handleAction(_context, actionId) {
     switch (actionId) {
       case "elements.new-style-rule": {
-        Host3.userMetrics.actionTaken(Host3.UserMetrics.Action.NewStyleRuleAdded);
+        Host4.userMetrics.actionTaken(Host4.UserMetrics.Action.NewStyleRuleAdded);
         void ElementsPanel.instance().stylesWidget.createNewRuleInViaInspectorStyleSheet();
         return true;
       }
@@ -9468,8 +9717,8 @@ var UIStrings7 = {
    */
   cssPropertyValue: "`CSS` property value: {PH1}"
 };
-var str_7 = i18n13.i18n.registerUIStrings("panels/elements/PropertyRenderer.ts", UIStrings7);
-var i18nString7 = i18n13.i18n.getLocalizedString.bind(void 0, str_7);
+var str_7 = i18n14.i18n.registerUIStrings("panels/elements/PropertyRenderer.ts", UIStrings7);
+var i18nString7 = i18n14.i18n.getLocalizedString.bind(void 0, str_7);
 function mergeWithSpacing(nodes, merge) {
   const result = [...nodes];
   if (SDK9.CSSPropertyParser.requiresSpace(nodes, merge)) {
@@ -9865,7 +10114,7 @@ var URLRenderer = class extends rendererBase(SDK9.CSSPropertyParserMatchers.URLM
     UI11.UIUtils.createTextChild(container, "url(");
     let hrefUrl = null;
     if (this.rule?.resourceURL()) {
-      hrefUrl = Common5.ParsedURL.ParsedURL.completeURL(this.rule.resourceURL(), url);
+      hrefUrl = Common6.ParsedURL.ParsedURL.completeURL(this.rule.resourceURL(), url);
     } else if (this.node) {
       hrefUrl = this.node.resolveURL(url);
     }
@@ -9944,8 +10193,8 @@ var UIStrings8 = {
    */
   filterUpdateAriaText: `Filter applied: {PH1}. Total Results: {PH2}`
 };
-var str_8 = i18n15.i18n.registerUIStrings("panels/elements/ComputedStyleWidget.ts", UIStrings8);
-var i18nString8 = i18n15.i18n.getLocalizedString.bind(void 0, str_8);
+var str_8 = i18n16.i18n.registerUIStrings("panels/elements/ComputedStyleWidget.ts", UIStrings8);
+var i18nString8 = i18n16.i18n.getLocalizedString.bind(void 0, str_8);
 function matchProperty(name, value5) {
   return SDK10.CSSPropertyParser.matchDeclaration(name, value5, [
     new SDK10.CSSPropertyParserMatchers.ColorMatcher(),
@@ -10010,7 +10259,7 @@ var createTraceElement = (node, property, isPropertyOverloaded, matchedStyles, l
 var ColorRenderer2 = class extends rendererBase(SDK10.CSSPropertyParserMatchers.ColorMatch) {
   // clang-format on
   render(match, context) {
-    const color = Common6.Color.parse(match.text);
+    const color = Common7.Color.parse(match.text);
     if (!color) {
       return [document.createTextNode(match.text)];
     }
@@ -10034,7 +10283,7 @@ var navigateToSource = (cssProperty, event) => {
   if (!event) {
     return;
   }
-  void Common6.Revealer.reveal(cssProperty);
+  void Common7.Revealer.reveal(cssProperty);
   event.consume(true);
 };
 var propertySorter = (propA, propB) => {
@@ -10121,9 +10370,9 @@ var ComputedStyleWidget = class extends UI12.Widget.VBox {
     super(element, { useShadowDom: true });
     this.#view = view;
     this.contentElement.classList.add("styles-sidebar-computed-style-widget");
-    this.showInheritedComputedStylePropertiesSetting = Common6.Settings.Settings.instance().createSetting("show-inherited-computed-style-properties", false);
+    this.showInheritedComputedStylePropertiesSetting = Common7.Settings.Settings.instance().createSetting("show-inherited-computed-style-properties", false);
     this.showInheritedComputedStylePropertiesSetting.addChangeListener(this.requestUpdate.bind(this));
-    this.groupComputedStylesSetting = Common6.Settings.Settings.instance().createSetting("group-computed-styles", false);
+    this.groupComputedStylesSetting = Common7.Settings.Settings.instance().createSetting("group-computed-styles", false);
     this.groupComputedStylesSetting.addChangeListener(() => {
       this.requestUpdate();
     });
@@ -10391,7 +10640,7 @@ var ComputedStyleWidget = class extends UI12.Widget.VBox {
         }, { jslogContext: "navigate-to-selector-source" });
       }
     }
-    contextMenu.defaultSection().appendItem(i18nString8(UIStrings8.navigateToStyle), () => Common6.Revealer.reveal(property), { jslogContext: "navigate-to-style" });
+    contextMenu.defaultSection().appendItem(i18nString8(UIStrings8.navigateToStyle), () => Common7.Revealer.reveal(property), { jslogContext: "navigate-to-style" });
     void contextMenu.show();
   }
   computeNonInheritedProperties(matchedStyles) {
@@ -10585,8 +10834,8 @@ __export(ElementsTreeOutline_exports, {
   MappedCharToEntity: () => MappedCharToEntity,
   elementsTreeOutlineStyles: () => elementsTreeOutline_css_default
 });
-import * as Common9 from "./../../core/common/common.js";
-import * as i18n25 from "./../../core/i18n/i18n.js";
+import * as Common10 from "./../../core/common/common.js";
+import * as i18n26 from "./../../core/i18n/i18n.js";
 import * as SDK15 from "./../../core/sdk/sdk.js";
 import * as Badges4 from "./../../models/badges/badges.js";
 import * as Elements from "./../../models/elements/elements.js";
@@ -10606,7 +10855,7 @@ __export(AdoptedStyleSheetTreeElement_exports, {
   AdoptedStyleSheetTreeElement: () => AdoptedStyleSheetTreeElement
 });
 import * as SDK11 from "./../../core/sdk/sdk.js";
-import * as TextUtils5 from "./../../models/text_utils/text_utils.js";
+import * as TextUtils6 from "./../../models/text_utils/text_utils.js";
 import * as CodeHighlighter from "./../../ui/components/code_highlighter/code_highlighter.js";
 import * as Components5 from "./../../ui/legacy/components/utils/utils.js";
 import * as UI13 from "./../../ui/legacy/legacy.js";
@@ -10682,7 +10931,7 @@ var AdoptedStyleSheetContentsTreeElement = class extends UI13.TreeOutline.TreeEl
   }
   async onpopulate() {
     const data = await this.styleSheetHeader.requestContentData();
-    if (!TextUtils5.ContentData.ContentData.isError(data) && data.isTextContent) {
+    if (!TextUtils6.ContentData.ContentData.isError(data) && data.isTextContent) {
       this.listItemElement.removeChildren();
       const newNode = this.listItemElement.createChild("span", "webkit-html-text-node webkit-html-css-node");
       newNode.setAttribute("jslog", `${VisualLogging7.value("css-text-node").track({ change: true, dblclick: true })}`);
@@ -10723,7 +10972,7 @@ var AdoptedStyleSheetContentsTreeElement = class extends UI13.TreeOutline.TreeEl
       return;
     }
     const data = await this.styleSheetHeader.requestContentData();
-    textNode.textContent = TextUtils5.ContentData.ContentData.isError(data) || !data.isTextContent ? "" : data.text;
+    textNode.textContent = TextUtils6.ContentData.ContentData.isError(data) || !data.isTextContent ? "" : data.text;
     const config = new UI13.InplaceEditor.Config(this.editingCommitted.bind(this), () => this.editingCancelled(), void 0);
     const editorHandles = UI13.InplaceEditor.InplaceEditor.startEditing(textNode, config);
     if (!editorHandles) {
@@ -10756,7 +11005,7 @@ var AdoptedStyleSheetContentsTreeElement = class extends UI13.TreeOutline.TreeEl
 };
 
 // gen/front_end/panels/elements/ElementIssueUtils.js
-import * as i18n17 from "./../../core/i18n/i18n.js";
+import * as i18n18 from "./../../core/i18n/i18n.js";
 import * as IssuesManager from "./../../models/issues_manager/issues_manager.js";
 var UIStrings9 = {
   /**
@@ -10828,8 +11077,8 @@ var UIStrings9 = {
    */
   interactiveContentSummaryDescendant: "Interactive element inside of a <summary> element"
 };
-var str_9 = i18n17.i18n.registerUIStrings("panels/elements/ElementIssueUtils.ts", UIStrings9);
-var i18nString9 = i18n17.i18n.getLocalizedString.bind(void 0, str_9);
+var str_9 = i18n18.i18n.registerUIStrings("panels/elements/ElementIssueUtils.ts", UIStrings9);
+var i18nString9 = i18n18.i18n.getLocalizedString.bind(void 0, str_9);
 function getElementIssueDetails(issue) {
   if (issue instanceof IssuesManager.GenericIssue.GenericIssue) {
     const issueDetails = issue.details();
@@ -10913,20 +11162,20 @@ __export(ElementsTreeElement_exports, {
 });
 import "./../../ui/components/adorners/adorners.js";
 import "./../../ui/components/buttons/buttons.js";
-import * as Common7 from "./../../core/common/common.js";
-import * as Host4 from "./../../core/host/host.js";
-import * as i18n21 from "./../../core/i18n/i18n.js";
+import * as Common8 from "./../../core/common/common.js";
+import * as Host5 from "./../../core/host/host.js";
+import * as i18n22 from "./../../core/i18n/i18n.js";
 import * as Platform7 from "./../../core/platform/platform.js";
 import * as Root5 from "./../../core/root/root.js";
 import * as SDK13 from "./../../core/sdk/sdk.js";
 import * as AIAssistance from "./../../models/ai_assistance/ai_assistance.js";
 import * as Badges3 from "./../../models/badges/badges.js";
-import * as TextUtils6 from "./../../models/text_utils/text_utils.js";
+import * as TextUtils7 from "./../../models/text_utils/text_utils.js";
 import * as Workspace from "./../../models/workspace/workspace.js";
 import * as CodeMirror from "./../../third_party/codemirror.next/codemirror.next.js";
 import * as CodeHighlighter3 from "./../../ui/components/code_highlighter/code_highlighter.js";
 import * as Highlighting2 from "./../../ui/components/highlighting/highlighting.js";
-import * as TextEditor from "./../../ui/components/text_editor/text_editor.js";
+import * as TextEditor3 from "./../../ui/components/text_editor/text_editor.js";
 import { Icon as Icon3 } from "./../../ui/kit/kit.js";
 import * as Components6 from "./../../ui/legacy/components/utils/utils.js";
 import * as UI14 from "./../../ui/legacy/legacy.js";
@@ -11211,7 +11460,7 @@ __export(MarkerDecorator_exports, {
   GenericDecorator: () => GenericDecorator,
   getRegisteredDecorators: () => getRegisteredDecorators
 });
-import * as i18n19 from "./../../core/i18n/i18n.js";
+import * as i18n20 from "./../../core/i18n/i18n.js";
 var UIStrings10 = {
   /**
    * @description Title of the Marker Decorator of Elements
@@ -11222,8 +11471,8 @@ var UIStrings10 = {
    */
   elementIsHidden: "Element is hidden"
 };
-var str_10 = i18n19.i18n.registerUIStrings("panels/elements/MarkerDecorator.ts", UIStrings10);
-var i18nLazyString = i18n19.i18n.getLazilyComputedLocalizedString.bind(void 0, str_10);
+var str_10 = i18n20.i18n.registerUIStrings("panels/elements/MarkerDecorator.ts", UIStrings10);
+var i18nLazyString = i18n20.i18n.getLazilyComputedLocalizedString.bind(void 0, str_10);
 var GenericDecorator = class {
   title;
   color;
@@ -11553,8 +11802,8 @@ var UIStrings11 = {
    */
   reveal: "reveal"
 };
-var str_11 = i18n21.i18n.registerUIStrings("panels/elements/ElementsTreeElement.ts", UIStrings11);
-var i18nString10 = i18n21.i18n.getLocalizedString.bind(void 0, str_11);
+var str_11 = i18n22.i18n.registerUIStrings("panels/elements/ElementsTreeElement.ts", UIStrings11);
+var i18nString10 = i18n22.i18n.getLocalizedString.bind(void 0, str_11);
 function isOpeningTag(context) {
   return context.tagType === "OPENING_TAG";
 }
@@ -11843,7 +12092,7 @@ function renderAttribute(attr, updateRecord, isDiff, node) {
   return html7`<span class="webkit-html-attribute" jslog=${jslog}><span class="webkit-html-attribute-name"
       ${animateOn(Boolean(updateRecord?.isAttributeModified(name) && !hasText), DOM_UPDATE_ANIMATION_CLASS_NAME)} ${relationRefDirective}>${name}</span>${hasText ? html7`=\u200B"<span class="webkit-html-attribute-value" ${animateOn(Boolean(updateRecord?.isAttributeModified(name) && hasText), DOM_UPDATE_ANIMATION_CLASS_NAME)} ${valueRelationRefDirective} ${withEntitiesRef}>
                         ${valueType === 1 ? renderLinkifiedValue(value5, node) : nothing3}
-                        ${valueType === 2 ? renderLinkifiedSrcset(Common7.Srcset.parseSrcset(value5), node) : nothing3}
+                        ${valueType === 2 ? renderLinkifiedSrcset(Common8.Srcset.parseSrcset(value5), node) : nothing3}
                 </span>"` : nothing3}</span>`;
 }
 function renderTag(node, tagName, isClosingTag, expanded, isDistinctTreeElement, updateRecord) {
@@ -12090,7 +12339,7 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
   #nodeElementToIssue = /* @__PURE__ */ new Map();
   #highlights = [];
   tagTypeContext;
-  #adornersThrottler = new Common7.Throttler.Throttler(100);
+  #adornersThrottler = new Common8.Throttler.Throttler(100);
   #containerAdornerActive = false;
   #flexAdornerActive = false;
   #gridAdornerActive = false;
@@ -12117,7 +12366,7 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
     })}`);
     this.searchQuery = null;
     this.#expandedChildrenLimit = InitialChildrenLimit;
-    this.decorationsThrottler = new Common7.Throttler.Throttler(100);
+    this.decorationsThrottler = new Common8.Throttler.Throttler(100);
     this.inClipboard = false;
     this.#hovered = false;
     this.editing = null;
@@ -12156,7 +12405,7 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
   }
   static visibleShadowRoots(node) {
     let roots = node.shadowRoots();
-    if (roots.length && !Common7.Settings.Settings.instance().moduleSetting("show-ua-shadow-dom").get()) {
+    if (roots.length && !Common8.Settings.Settings.instance().moduleSetting("show-ua-shadow-dom").get()) {
       roots = roots.filter(filter);
     }
     function filter(root) {
@@ -12238,7 +12487,7 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
         if (this.nodeInternal.assignedSlot) {
           const deferredNode = this.nodeInternal.assignedSlot.deferredNode;
           deferredNode.resolve((node) => {
-            void Common7.Revealer.reveal(node);
+            void Common8.Revealer.reveal(node);
           });
         }
       },
@@ -12628,7 +12877,7 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
     this.treeOutline.selectDOMNode(this.nodeInternal, selectedByUser);
     if (selectedByUser) {
       this.nodeInternal.highlight();
-      Host4.userMetrics.actionTaken(Host4.UserMetrics.Action.ChangeInspectedNodeInElementsPanel);
+      Host5.userMetrics.actionTaken(Host5.UserMetrics.Action.ChangeInspectedNodeInElementsPanel);
     }
     this.performUpdate();
     this.treeOutline.suppressRevealAndSelect = false;
@@ -12722,7 +12971,7 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
       const frame = SDK13.FrameManager.FrameManager.instance().getFrame(frameOwnerId);
       if (frame) {
         const sourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(frame.url);
-        void Common7.Revealer.reveal(sourceCode);
+        void Common8.Revealer.reveal(sourceCode);
       }
     }
   }
@@ -12956,7 +13205,7 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
         const frameOwnerFrameId = this.nodeInternal.frameOwnerFrameId();
         if (frameOwnerFrameId) {
           const frame = SDK13.FrameManager.FrameManager.instance().getFrame(frameOwnerFrameId);
-          void Common7.Revealer.reveal(frame);
+          void Common8.Revealer.reveal(frame);
         }
       }, { jslogContext: "show-frame-details" });
     }
@@ -13065,7 +13314,7 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
       UI14.UIUtils.handleElementValueModifications(event, attribute);
       return "";
     }
-    if (!Common7.ParsedURL.ParsedURL.fromString(attributeValueElement?.textContent || "")) {
+    if (!Common8.ParsedURL.ParsedURL.fromString(attributeValueElement?.textContent || "")) {
       config.setPostKeydownFinishHandler(postKeyDownFinishHandler);
     }
     this.updateEditorHandles(attribute, config);
@@ -13182,7 +13431,7 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
         event.consume(true);
       }
     });
-    const editor = new TextEditor.TextEditor.TextEditor(CodeMirror.EditorState.create({
+    const editor = new TextEditor3.TextEditor.TextEditor(CodeMirror.EditorState.create({
       doc: initialValue,
       extensions: [
         CodeMirror.keymap.of([
@@ -13201,11 +13450,11 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
             }
           }
         ]),
-        TextEditor.Config.baseConfiguration(initialValue),
-        TextEditor.Config.closeBrackets.instance(),
-        TextEditor.Config.autocompletion.instance(),
+        TextEditor3.Config.baseConfiguration(initialValue),
+        TextEditor3.Config.closeBrackets.instance(),
+        TextEditor3.Config.autocompletion.instance(),
         CodeMirror.html.html({ autoCloseTags: false, selfClosingTags: true }),
-        TextEditor.Config.domWordWrap.instance(),
+        TextEditor3.Config.domWordWrap.instance(),
         CodeMirror.EditorView.theme({
           "&.cm-editor": { maxHeight: "300px" },
           ".cm-scroller": { overflowY: "auto" }
@@ -13531,16 +13780,16 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
     void node.getOuterHTML().then(this.startEditingAsHTML.bind(this, commitChange, disposeCallback));
   }
   copyCSSPath() {
-    Host4.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(cssPath(this.nodeInternal, true));
+    Host5.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(cssPath(this.nodeInternal, true));
   }
   copyJSPath() {
-    Host4.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(jsPath(this.nodeInternal, true));
+    Host5.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(jsPath(this.nodeInternal, true));
   }
   copyXPath() {
-    Host4.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(xPath(this.nodeInternal, true));
+    Host5.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(xPath(this.nodeInternal, true));
   }
   copyFullXPath() {
-    Host4.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(xPath(this.nodeInternal, false));
+    Host5.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(xPath(this.nodeInternal, false));
   }
   async copyStyles() {
     const node = this.nodeInternal;
@@ -13549,7 +13798,7 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
     if (!cascade) {
       return;
     }
-    const indent = Common7.Settings.Settings.instance().moduleSetting("text-editor-indent").get();
+    const indent = Common8.Settings.Settings.instance().moduleSetting("text-editor-indent").get();
     const lines = [];
     for (const style of cascade.nodeStyles().reverse()) {
       for (const property of style.leadingProperties()) {
@@ -13568,7 +13817,7 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
         lines.push(`${indent}${property.name}: ${property.value};`);
       }
     }
-    Host4.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(lines.join("\n"));
+    Host5.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(lines.join("\n"));
   }
   #highlightSearchResults() {
     this.hideSearchHighlights();
@@ -13580,16 +13829,16 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
     const matchRanges = [];
     let match = regexObject.exec(text);
     while (match) {
-      matchRanges.push(new TextUtils6.TextRange.SourceRange(match.index, match[0].length));
+      matchRanges.push(new TextUtils7.TextRange.SourceRange(match.index, match[0].length));
       match = regexObject.exec(text);
     }
     if (!matchRanges.length) {
-      matchRanges.push(new TextUtils6.TextRange.SourceRange(0, text.length));
+      matchRanges.push(new TextUtils7.TextRange.SourceRange(0, text.length));
     }
     this.#highlights = Highlighting2.HighlightManager.HighlightManager.instance().highlightOrderedTextRanges(this.listItemElement, matchRanges);
   }
   editAsHTML() {
-    const promise = Common7.Revealer.reveal(this.node());
+    const promise = Common8.Revealer.reveal(this.node());
     void promise.then(() => {
       const action2 = UI14.ActionRegistry.ActionRegistry.instance().getAction("elements.edit-as-html");
       return action2.execute();
@@ -13676,7 +13925,7 @@ function convertUnicodeCharsToHTMLEntities(text) {
     if (charToEntity.has(char)) {
       result += text.substring(lastIndexAfterEntity, i);
       const entityValue = "&" + charToEntity.get(char) + ";";
-      entityRanges.push(new TextUtils6.TextRange.SourceRange(result.length, entityValue.length));
+      entityRanges.push(new TextUtils7.TextRange.SourceRange(result.length, entityValue.length));
       result += entityValue;
       lastIndexAfterEntity = i + 1;
     }
@@ -14083,8 +14332,8 @@ li.hovered:not(.always-parent) + ol.children:not(.shadow-root) {
 /*# sourceURL=${import.meta.resolve("./elementsTreeOutline.css")} */`;
 
 // gen/front_end/panels/elements/ShortcutTreeElement.js
-import * as Common8 from "./../../core/common/common.js";
-import * as i18n23 from "./../../core/i18n/i18n.js";
+import * as Common9 from "./../../core/common/common.js";
+import * as i18n24 from "./../../core/i18n/i18n.js";
 import * as UI15 from "./../../ui/legacy/legacy.js";
 import * as Lit7 from "./../../ui/lit/lit.js";
 import * as VisualElements from "./../../ui/visual_logging/visual_logging.js";
@@ -14096,8 +14345,8 @@ var UIStrings12 = {
    */
   reveal: "reveal"
 };
-var str_12 = i18n23.i18n.registerUIStrings("panels/elements/ShortcutTreeElement.ts", UIStrings12);
-var i18nString11 = i18n23.i18n.getLocalizedString.bind(void 0, str_12);
+var str_12 = i18n24.i18n.registerUIStrings("panels/elements/ShortcutTreeElement.ts", UIStrings12);
+var i18nString11 = i18n24.i18n.getLocalizedString.bind(void 0, str_12);
 var DEFAULT_VIEW4 = (input, _output, target) => {
   render7(html8`
     <div class="selection fill"></div>
@@ -14171,7 +14420,7 @@ var ShortcutTreeElement = class extends UI15.TreeOutline.TreeElement {
   onRevealAdornerClick(event) {
     event.stopPropagation();
     this.nodeShortcut.deferredNode.resolve((node) => {
-      void Common8.Revealer.reveal(node);
+      void Common9.Revealer.reveal(node);
     });
   }
   performUpdate() {
@@ -14252,8 +14501,8 @@ var UIStrings13 = {
    */
   viewIssue: "View Issue:"
 };
-var str_13 = i18n25.i18n.registerUIStrings("panels/elements/ElementsTreeOutline.ts", UIStrings13);
-var i18nString12 = i18n25.i18n.getLocalizedString.bind(void 0, str_13);
+var str_13 = i18n26.i18n.registerUIStrings("panels/elements/ElementsTreeOutline.ts", UIStrings13);
+var i18nString12 = i18n26.i18n.getLocalizedString.bind(void 0, str_13);
 var elementsTreeOutlineByDOMModel = /* @__PURE__ */ new WeakMap();
 var populatedTreeElements = /* @__PURE__ */ new WeakSet();
 var DEFAULT_VIEW5 = (input, output, target) => {
@@ -14358,14 +14607,14 @@ var DOMTreeWidget = class extends UI17.Widget.Widget {
     alreadyExpandedParentTreeElement: null,
     isUpdatingHighlights: false
   };
-  #highlightThrottler = new Common9.Throttler.Throttler(100);
+  #highlightThrottler = new Common10.Throttler.Throttler(100);
   constructor(element, view) {
     super(element, {
       useShadowDom: false,
       delegatesFocus: false
     });
     this.#view = view ?? DEFAULT_VIEW5;
-    if (Common9.Settings.Settings.instance().moduleSetting("highlight-node-on-hover-in-overlay").get()) {
+    if (Common10.Settings.Settings.instance().moduleSetting("highlight-node-on-hover-in-overlay").get()) {
       SDK15.TargetManager.TargetManager.instance().addModelListener(SDK15.OverlayModel.OverlayModel, "HighlightNodeRequested", this.#highlightNode, this, { scoped: true });
       SDK15.TargetManager.TargetManager.instance().addModelListener(SDK15.OverlayModel.OverlayModel, "InspectModeWillBeToggled", this.#clearHighlightedNode, this, { scoped: true });
     }
@@ -14555,7 +14804,7 @@ var DOMTreeWidget = class extends UI17.Widget.Widget {
     super.show(parentElement, insertBefore, suppressOrphanWidgetError);
   }
 };
-var ElementsTreeOutline = class _ElementsTreeOutline extends Common9.ObjectWrapper.eventMixin(UI17.TreeOutline.TreeOutline) {
+var ElementsTreeOutline = class _ElementsTreeOutline extends Common10.ObjectWrapper.eventMixin(UI17.TreeOutline.TreeOutline) {
   treeElementByNode;
   shadowRoot;
   elementInternal;
@@ -14639,7 +14888,7 @@ var ElementsTreeOutline = class _ElementsTreeOutline extends Common9.ObjectWrapp
     this.updateRecords = /* @__PURE__ */ new Map();
     this.treeElementsBeingUpdated = /* @__PURE__ */ new Set();
     this.decoratorExtensions = null;
-    this.showHTMLCommentsSetting = Common9.Settings.Settings.instance().moduleSetting("show-html-comments");
+    this.showHTMLCommentsSetting = Common10.Settings.Settings.instance().moduleSetting("show-html-comments");
     this.showHTMLCommentsSetting.addChangeListener(this.onShowHTMLCommentsChange.bind(this));
     this.setUseLightSelectionColor(true);
     this.#popupHelper = new UI17.PopoverHelper.PopoverHelper(this.elementInternal, (event) => {
@@ -14663,7 +14912,7 @@ var ElementsTreeOutline = class _ElementsTreeOutline extends Common9.ObjectWrapp
               return nothing4;
             }
             const issueKindIconName = IssueCounter.IssueCounter.getIssueKindIconName(issue.getKind());
-            const openIssueEvent = () => Common9.Revealer.reveal(issue);
+            const openIssueEvent = () => Common10.Revealer.reveal(issue);
             return html9`
                   <div class="squiggles-content-item">
                   <devtools-icon .name=${issueKindIconName} @click=${openIssueEvent}></devtools-icon>
@@ -15874,8 +16123,8 @@ __export(LayoutPane_exports, {
   LayoutPane: () => LayoutPane
 });
 import "./../../ui/components/node_text/node_text.js";
-import * as Common10 from "./../../core/common/common.js";
-import * as i18n27 from "./../../core/i18n/i18n.js";
+import * as Common11 from "./../../core/common/common.js";
+import * as i18n28 from "./../../core/i18n/i18n.js";
 import * as Platform8 from "./../../core/platform/platform.js";
 import * as SDK16 from "./../../core/sdk/sdk.js";
 import * as Buttons2 from "./../../ui/components/buttons/buttons.js";
@@ -16071,8 +16320,8 @@ var UIStrings14 = {
    */
   colorPickerOpened: "Color picker opened."
 };
-var str_14 = i18n27.i18n.registerUIStrings("panels/elements/LayoutPane.ts", UIStrings14);
-var i18nString13 = i18n27.i18n.getLocalizedString.bind(void 0, str_14);
+var str_14 = i18n28.i18n.registerUIStrings("panels/elements/LayoutPane.ts", UIStrings14);
+var i18nString13 = i18n28.i18n.getLocalizedString.bind(void 0, str_14);
 var { render: render9, html: html10 } = Lit8;
 var nodeToLayoutElement = (node) => {
   const className = node.getAttribute("class");
@@ -16085,7 +16334,7 @@ var nodeToLayoutElement = (node) => {
     domClasses: className ? className.split(/\s+/).filter((s) => !!s) : void 0,
     enabled: false,
     reveal: () => {
-      void Common10.Revealer.reveal(node);
+      void Common11.Revealer.reveal(node);
       void node.scrollIntoView();
     },
     highlight: () => {
@@ -16293,7 +16542,7 @@ var LayoutPane = class _LayoutPane extends UI18.Widget.Widget {
   constructor(element, view = DEFAULT_VIEW6) {
     super(element);
     this.#settings = this.#makeSettings();
-    this.#uaShadowDOMSetting = Common10.Settings.Settings.instance().moduleSetting("show-ua-shadow-dom");
+    this.#uaShadowDOMSetting = Common11.Settings.Settings.instance().moduleSetting("show-ua-shadow-dom");
     this.#domModels = [];
     this.#view = view;
   }
@@ -16351,7 +16600,7 @@ var LayoutPane = class _LayoutPane extends UI18.Widget.Widget {
   #makeSettings() {
     const settings = [];
     for (const settingName of ["show-grid-line-labels", "show-grid-track-sizes", "show-grid-areas", "extend-grid-lines"]) {
-      const setting = Common10.Settings.Settings.instance().moduleSetting(settingName);
+      const setting = Common11.Settings.Settings.instance().moduleSetting(settingName);
       const settingValue = setting.get();
       const settingType = setting.type();
       if (!settingType) {
@@ -16388,12 +16637,12 @@ var LayoutPane = class _LayoutPane extends UI18.Widget.Widget {
     return settings;
   }
   onSettingChanged(setting, value5) {
-    Common10.Settings.Settings.instance().moduleSetting(setting).set(value5);
+    Common11.Settings.Settings.instance().moduleSetting(setting).set(value5);
   }
   wasShown() {
     super.wasShown();
     for (const setting of this.#settings) {
-      Common10.Settings.Settings.instance().moduleSetting(setting.name).addChangeListener(this.requestUpdate, this);
+      Common11.Settings.Settings.instance().moduleSetting(setting.name).addChangeListener(this.requestUpdate, this);
     }
     for (const domModel of this.#domModels) {
       this.modelRemoved(domModel);
@@ -16407,7 +16656,7 @@ var LayoutPane = class _LayoutPane extends UI18.Widget.Widget {
   willHide() {
     super.willHide();
     for (const setting of this.#settings) {
-      Common10.Settings.Settings.instance().moduleSetting(setting.name).removeChangeListener(this.requestUpdate, this);
+      Common11.Settings.Settings.instance().moduleSetting(setting.name).removeChangeListener(this.requestUpdate, this);
     }
     SDK16.TargetManager.TargetManager.instance().unobserveModels(SDK16.DOMModel.DOMModel, this);
     UI18.Context.Context.instance().removeFlavorChangeListener(SDK16.DOMModel.DOMNode, this.requestUpdate, this);
@@ -16490,7 +16739,7 @@ var MetricsSidebarPane_exports = {};
 __export(MetricsSidebarPane_exports, {
   MetricsSidebarPane: () => MetricsSidebarPane
 });
-import * as Common11 from "./../../core/common/common.js";
+import * as Common12 from "./../../core/common/common.js";
 import * as Platform9 from "./../../core/platform/platform.js";
 import * as SDK17 from "./../../core/sdk/sdk.js";
 import * as UI19 from "./../../ui/legacy/legacy.js";
@@ -16693,11 +16942,11 @@ var DEFAULT_VIEW7 = (input, output, target) => {
   const noPositionType = /* @__PURE__ */ new Set(["static"]);
   const boxes = ["content", "padding", "border", "margin", "position"];
   const boxColors = [
-    Common11.Color.PageHighlight.Content,
-    Common11.Color.PageHighlight.Padding,
-    Common11.Color.PageHighlight.Border,
-    Common11.Color.PageHighlight.Margin,
-    Common11.Color.Legacy.fromRGBA([0, 0, 0, 0])
+    Common12.Color.PageHighlight.Content,
+    Common12.Color.PageHighlight.Padding,
+    Common12.Color.PageHighlight.Border,
+    Common12.Color.PageHighlight.Margin,
+    Common12.Color.Legacy.fromRGBA([0, 0, 0, 0])
   ];
   const boxLabels = ["content", "padding", "border", "margin", "position"];
   let previousBox = nothing5;
@@ -16973,7 +17222,7 @@ var MetricsSidebarPane = class extends ElementsSidebarPane {
     const computedStyle = context.computedStyle;
     if (computedStyle.get("box-sizing") === "border-box" && (styleProperty === "width" || styleProperty === "height")) {
       if (!userInput.match(/px$/)) {
-        Common11.Console.Console.instance().error("For elements with box-sizing: border-box, only absolute content area dimensions can be applied");
+        Common12.Console.Console.instance().error("For elements with box-sizing: border-box, only absolute content area dimensions can be applied");
         return;
       }
       const borderBox = this.getBox(computedStyle, "border");
@@ -17032,7 +17281,7 @@ __export(PlatformFontsWidget_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW8,
   PlatformFontsWidget: () => PlatformFontsWidget
 });
-import * as i18n29 from "./../../core/i18n/i18n.js";
+import * as i18n30 from "./../../core/i18n/i18n.js";
 import * as ComputedStyle2 from "./../../models/computed_style/computed_style.js";
 import * as UI20 from "./../../ui/legacy/legacy.js";
 import { html as html12, render as render11 } from "./../../ui/lit/lit.js";
@@ -17117,8 +17366,8 @@ var UIStrings15 = {
    */
   dGlyphs: "{n, plural, =1 {(# glyph)} other {(# glyphs)}}"
 };
-var str_15 = i18n29.i18n.registerUIStrings("panels/elements/PlatformFontsWidget.ts", UIStrings15);
-var i18nString14 = i18n29.i18n.getLocalizedString.bind(void 0, str_15);
+var str_15 = i18n30.i18n.registerUIStrings("panels/elements/PlatformFontsWidget.ts", UIStrings15);
+var i18nString14 = i18n30.i18n.getLocalizedString.bind(void 0, str_15);
 var DEFAULT_VIEW8 = (input, _output, target) => {
   const isEmptySection = !input.platformFonts?.length;
   render11(html12`
@@ -17265,8 +17514,8 @@ var UIStrings16 = {
    */
   adornerSettings: "Badge settings"
 };
-var str_16 = i18n31.i18n.registerUIStrings("panels/elements/ElementsPanel.ts", UIStrings16);
-var i18nString15 = i18n31.i18n.getLocalizedString.bind(void 0, str_16);
+var str_16 = i18n32.i18n.registerUIStrings("panels/elements/ElementsPanel.ts", UIStrings16);
+var i18nString15 = i18n32.i18n.getLocalizedString.bind(void 0, str_16);
 var createAccessibilityTreeToggleButton = (isActive) => {
   const button = new Buttons3.Button.Button();
   const title = isActive ? i18nString15(UIStrings16.switchToDomTreeView) : i18nString15(UIStrings16.switchToAccessibilityTreeView);
@@ -17351,10 +17600,10 @@ var ElementsPanel = class _ElementsPanel extends UI21.Panel.Panel {
     this.mainContainer.id = "main-content";
     this.domTreeContainer.id = "elements-content";
     this.domTreeContainer.tabIndex = -1;
-    if (Common12.Settings.Settings.instance().moduleSetting("dom-word-wrap").get()) {
+    if (Common13.Settings.Settings.instance().moduleSetting("dom-word-wrap").get()) {
       this.domTreeContainer.classList.add("elements-wrap");
     }
-    Common12.Settings.Settings.instance().moduleSetting("dom-word-wrap").addChangeListener(this.domWordWrapSettingChanged.bind(this));
+    Common13.Settings.Settings.instance().moduleSetting("dom-word-wrap").addChangeListener(this.domWordWrapSettingChanged.bind(this));
     crumbsContainer.id = "elements-crumbs";
     if (this.domTreeButton) {
       this.accessibilityTreeView = new AccessibilityTreeView(this.domTreeButton, new TreeOutline13.TreeOutline.TreeOutline());
@@ -17376,12 +17625,12 @@ var ElementsPanel = class _ElementsPanel extends UI21.Panel.Panel {
     this.#computedStyleModel.addEventListener("ComputedStyleChanged", this.#updateComputedStyles, this);
     this.#computedStyleModel.addEventListener("CSSModelChanged", this.#updateComputedStyles, this);
     this.metricsWidget = new MetricsSidebarPane(this.#computedStyleModel);
-    Common12.Settings.Settings.instance().moduleSetting("sidebar-position").addChangeListener(this.updateSidebarPosition.bind(this));
+    Common13.Settings.Settings.instance().moduleSetting("sidebar-position").addChangeListener(this.updateSidebarPosition.bind(this));
     this.updateSidebarPosition();
     this.cssStyleTrackerByCSSModel = /* @__PURE__ */ new Map();
     this.currentSearchResultIndex = -1;
     this.pendingNodeReveal = false;
-    this.adornerManager = new ElementsComponents7.AdornerManager.AdornerManager(Common12.Settings.Settings.instance().moduleSetting("adorner-settings"));
+    this.adornerManager = new ElementsComponents7.AdornerManager.AdornerManager(Common13.Settings.Settings.instance().moduleSetting("adorner-settings"));
     this.adornersByName = /* @__PURE__ */ new Map();
     this.#domTreeWidget = new DOMTreeWidget();
     this.#domTreeWidget.omitRootDOMNode = true;
@@ -17391,10 +17640,10 @@ var ElementsPanel = class _ElementsPanel extends UI21.Panel.Panel {
     this.#domTreeWidget.onDocumentUpdated = this.documentUpdated.bind(this);
     this.#domTreeWidget.onElementExpanded = this.handleElementExpanded.bind(this);
     this.#domTreeWidget.onElementCollapsed = this.handleElementCollapsed.bind(this);
-    this.#domTreeWidget.setWordWrap(Common12.Settings.Settings.instance().moduleSetting("dom-word-wrap").get());
+    this.#domTreeWidget.setWordWrap(Common13.Settings.Settings.instance().moduleSetting("dom-word-wrap").get());
     SDK18.TargetManager.TargetManager.instance().observeModels(SDK18.DOMModel.DOMModel, this, { scoped: true });
     SDK18.TargetManager.TargetManager.instance().addEventListener("NameChanged", (event) => this.targetNameChanged(event.data));
-    Common12.Settings.Settings.instance().moduleSetting("show-ua-shadow-dom").addChangeListener(this.showUAShadowDOMChanged.bind(this));
+    Common13.Settings.Settings.instance().moduleSetting("show-ua-shadow-dom").addChangeListener(this.showUAShadowDOMChanged.bind(this));
     PanelCommon.ExtensionServer.ExtensionServer.instance().addEventListener("SidebarPaneAdded", this.extensionSidebarPaneAdded, this);
     if (Annotations.AnnotationRepository.annotationsEnabled()) {
       PanelCommon.AnnotationManager.instance().initializePlacementForAnnotationType(Annotations.AnnotationType.ELEMENT_NODE, this.resolveInitialState.bind(this), this.#domTreeWidget.element);
@@ -17402,7 +17651,7 @@ var ElementsPanel = class _ElementsPanel extends UI21.Panel.Panel {
   }
   // This is a debounced method because the user might be navigated from Styles tab to Computed Style tab and vice versa.
   // For that case, we want to only run this function once.
-  evaluateTrackingComputedStyleUpdatesForNode = Common12.Debouncer.debounce(() => {
+  evaluateTrackingComputedStyleUpdatesForNode = Common13.Debouncer.debounce(() => {
     const selectedNode = UI21.Context.Context.instance().flavor(SDK18.DOMModel.DOMNode);
     if (!selectedNode) {
       return;
@@ -17747,7 +17996,7 @@ ${node.simpleSelector()} {}`, false);
       this.hideSearchHighlights();
     }
     this.searchConfig = searchConfig;
-    const showUAShadowDOM = Common12.Settings.Settings.instance().moduleSetting("show-ua-shadow-dom").get();
+    const showUAShadowDOM = Common13.Settings.Settings.instance().moduleSetting("show-ua-shadow-dom").get();
     const domModels = SDK18.TargetManager.TargetManager.instance().models(SDK18.DOMModel.DOMModel, { scoped: true });
     const promises = domModels.map((domModel) => domModel.performSearch(whitespaceTrimmedQuery, showUAShadowDOM));
     void Promise.all(promises).then((resultCounts) => {
@@ -17902,7 +18151,7 @@ ${node.simpleSelector()} {}`, false);
   async revealAndSelectNode(nodeToReveal, opts) {
     const { showPanel = true, focusNode = false, highlightInOverlay = true } = opts ?? {};
     this.omitDefaultSelection = true;
-    const node = Common12.Settings.Settings.instance().moduleSetting("show-ua-shadow-dom").get() ? nodeToReveal : this.leaveUserAgentShadowDOM(nodeToReveal);
+    const node = Common13.Settings.Settings.instance().moduleSetting("show-ua-shadow-dom").get() ? nodeToReveal : this.leaveUserAgentShadowDOM(nodeToReveal);
     if (highlightInOverlay) {
       node.highlightForTwoSeconds();
     }
@@ -17917,7 +18166,7 @@ ${node.simpleSelector()} {}`, false);
     if (!this.notFirstInspectElement) {
       _ElementsPanel.firstInspectElementNodeNameForTest = node.nodeName();
       _ElementsPanel.firstInspectElementCompletedForTest();
-      Host5.InspectorFrontendHost.InspectorFrontendHostInstance.inspectElementCompleted();
+      Host6.InspectorFrontendHost.InspectorFrontendHostInstance.inspectElementCompleted();
     }
     this.notFirstInspectElement = true;
   }
@@ -18084,7 +18333,7 @@ ${node.simpleSelector()} {}`, false);
     if (this.sidebarPaneView?.tabbedPane().shouldHideOnDetach()) {
       return;
     }
-    const position = Common12.Settings.Settings.instance().moduleSetting("sidebar-position").get();
+    const position = Common13.Settings.Settings.instance().moduleSetting("sidebar-position").get();
     let splitMode = "Horizontal";
     if (position === "right" || position === "auto" && this.splitWidget.element.offsetWidth > 680) {
       splitMode = "Vertical";
@@ -18226,7 +18475,7 @@ ${node.simpleSelector()} {}`, false);
       return null;
     }
     if (reveal) {
-      await Common12.Revealer.reveal(anchor);
+      await Common13.Revealer.reveal(anchor);
     }
     const offsetToTagName = 22;
     const yPadding = 5;
@@ -18280,7 +18529,7 @@ var ContextMenuProvider = class {
     if (ElementsPanel.instance().element.isAncestor(event.target)) {
       return;
     }
-    contextMenu.revealSection().appendItem(i18nString15(UIStrings16.openInElementsPanel), () => Common12.Revealer.reveal(object), { jslogContext: "elements.reveal-node" });
+    contextMenu.revealSection().appendItem(i18nString15(UIStrings16.openInElementsPanel), () => Common13.Revealer.reveal(object), { jslogContext: "elements.reveal-node" });
   }
 };
 var NodeComputedStyles = class {
@@ -18301,7 +18550,7 @@ var DOMNodeRevealer = class {
       } else {
         message = i18nString15(UIStrings16.nodeCannotBeFoundInTheCurrent);
       }
-      Common12.Console.Console.instance().warn(message);
+      Common13.Console.Console.instance().warn(message);
       throw reason;
     });
     function revealPromise(resolve, reject) {
@@ -18400,7 +18649,7 @@ var ElementsActionDelegate = class {
         ElementsPanel.instance().toggleAccessibilityTree();
         return true;
       case "elements.toggle-word-wrap": {
-        const setting = Common12.Settings.Settings.instance().moduleSetting("dom-word-wrap");
+        const setting = Common13.Settings.Settings.instance().moduleSetting("dom-word-wrap");
         setting.set(!setting.get());
         return true;
       }
@@ -18464,7 +18713,7 @@ var InspectElementModeController = class _InspectElementModeController {
     ), void 0, { scoped: true });
     SDK19.OverlayModel.OverlayModel.setInspectNodeHandler(this.inspectNode.bind(this));
     SDK19.TargetManager.TargetManager.instance().observeModels(SDK19.OverlayModel.OverlayModel, this, { scoped: true });
-    this.showDetailedInspectTooltipSetting = Common13.Settings.Settings.instance().moduleSetting("show-detailed-inspect-tooltip");
+    this.showDetailedInspectTooltipSetting = Common14.Settings.Settings.instance().moduleSetting("show-detailed-inspect-tooltip");
     this.showDetailedInspectTooltipSetting.addChangeListener(this.showDetailedInspectTooltipChanged.bind(this));
     document.addEventListener("keydown", (event) => {
       if (event.keyCode !== UI22.KeyboardShortcut.Keys.Esc.code) {
@@ -18503,7 +18752,7 @@ var InspectElementModeController = class _InspectElementModeController {
     if (this.isInInspectElementMode()) {
       mode = "none";
     } else {
-      mode = Common13.Settings.Settings.instance().moduleSetting("show-ua-shadow-dom").get() ? "searchForUAShadowDOM" : "searchForNode";
+      mode = Common14.Settings.Settings.instance().moduleSetting("show-ua-shadow-dom").get() ? "searchForUAShadowDOM" : "searchForNode";
     }
     this.setMode(mode);
   }
@@ -18531,8 +18780,8 @@ var InspectElementModeController = class _InspectElementModeController {
     this.toggleSearchAction.setToggled(false);
   }
   inspectNode(node) {
-    const returnToPanel = UI22.Context.Context.instance().flavor(Common13.ReturnToPanel.ReturnToPanelFlavor);
-    UI22.Context.Context.instance().setFlavor(Common13.ReturnToPanel.ReturnToPanelFlavor, null);
+    const returnToPanel = UI22.Context.Context.instance().flavor(Common14.ReturnToPanel.ReturnToPanelFlavor);
+    UI22.Context.Context.instance().setFlavor(Common14.ReturnToPanel.ReturnToPanelFlavor, null);
     if (returnToPanel) {
       return ElementsPanel.instance().revealAndSelectNode(node, { showPanel: false, highlightInOverlay: false }).then(() => {
         void UI22.ViewManager.ViewManager.instance().showView(returnToPanel.viewId, false, false);
@@ -18570,8 +18819,8 @@ __export(EventListenersWidget_exports, {
   DispatchFilterBy: () => DispatchFilterBy,
   EventListenersWidget: () => EventListenersWidget
 });
-import * as Common14 from "./../../core/common/common.js";
-import * as i18n33 from "./../../core/i18n/i18n.js";
+import * as Common15 from "./../../core/common/common.js";
+import * as i18n34 from "./../../core/i18n/i18n.js";
 import * as SDK20 from "./../../core/sdk/sdk.js";
 import * as UI23 from "./../../ui/legacy/legacy.js";
 import { html as html13, render as render12 } from "./../../ui/lit/lit.js";
@@ -18612,8 +18861,8 @@ var UIStrings17 = {
    */
   resolveEventListenersBoundWith: "Resolve event listeners bound with framework"
 };
-var str_17 = i18n33.i18n.registerUIStrings("panels/elements/EventListenersWidget.ts", UIStrings17);
-var i18nString16 = i18n33.i18n.getLocalizedString.bind(void 0, str_17);
+var str_17 = i18n34.i18n.registerUIStrings("panels/elements/EventListenersWidget.ts", UIStrings17);
+var i18nString16 = i18n34.i18n.getLocalizedString.bind(void 0, str_17);
 var eventListenersWidgetInstance;
 var DEFAULT_VIEW9 = (input, _output, target) => {
   render12(html13`
@@ -18655,11 +18904,11 @@ var EventListenersWidget = class _EventListenersWidget extends UI23.Widget.VBox 
   constructor(view = DEFAULT_VIEW9) {
     super();
     this.#view = view;
-    this.showForAncestorsSetting = Common14.Settings.Settings.instance().moduleSetting("show-event-listeners-for-ancestors");
+    this.showForAncestorsSetting = Common15.Settings.Settings.instance().moduleSetting("show-event-listeners-for-ancestors");
     this.showForAncestorsSetting.addChangeListener(this.requestUpdate.bind(this));
-    this.dispatchFilterBySetting = Common14.Settings.Settings.instance().createSetting("event-listener-dispatch-filter-type", DispatchFilterBy.All);
+    this.dispatchFilterBySetting = Common15.Settings.Settings.instance().createSetting("event-listener-dispatch-filter-type", DispatchFilterBy.All);
     this.dispatchFilterBySetting.addChangeListener(this.requestUpdate.bind(this));
-    this.showFrameworkListenersSetting = Common14.Settings.Settings.instance().createSetting("show-frameowkr-listeners", true);
+    this.showFrameworkListenersSetting = Common15.Settings.Settings.instance().createSetting("show-frameowkr-listeners", true);
     this.showFrameworkListenersSetting.setTitle(i18nString16(UIStrings17.frameworkListeners));
     this.showFrameworkListenersSetting.addChangeListener(this.requestUpdate.bind(this));
     UI23.Context.Context.instance().addFlavorChangeListener(SDK20.DOMModel.DOMNode, this.requestUpdate.bind(this));
@@ -18783,9 +19032,9 @@ __export(PropertiesWidget_exports, {
   PropertiesWidget: () => PropertiesWidget
 });
 import "./../../ui/legacy/legacy.js";
-import * as Common15 from "./../../core/common/common.js";
-import * as Host6 from "./../../core/host/host.js";
-import * as i18n35 from "./../../core/i18n/i18n.js";
+import * as Common16 from "./../../core/common/common.js";
+import * as Host7 from "./../../core/host/host.js";
+import * as i18n36 from "./../../core/i18n/i18n.js";
 import * as Platform11 from "./../../core/platform/platform.js";
 import * as SDK21 from "./../../core/sdk/sdk.js";
 import * as ObjectUI from "./../../ui/legacy/components/object_ui/object_ui.js";
@@ -18838,8 +19087,8 @@ var UIStrings18 = {
    */
   noMatchingProperty: "No matching property"
 };
-var str_18 = i18n35.i18n.registerUIStrings("panels/elements/PropertiesWidget.ts", UIStrings18);
-var i18nString17 = i18n35.i18n.getLocalizedString.bind(void 0, str_18);
+var str_18 = i18n36.i18n.registerUIStrings("panels/elements/PropertiesWidget.ts", UIStrings18);
+var i18nString17 = i18n36.i18n.getLocalizedString.bind(void 0, str_18);
 var DEFAULT_VIEW10 = (input, _output, target) => {
   render13(html14`
     <div jslog=${VisualLogging15.pane("element-properties").track({ resize: true })}>
@@ -18863,7 +19112,7 @@ var DEFAULT_VIEW10 = (input, _output, target) => {
       ${input.treeOutline.element}
     </div>`, target);
 };
-var getShowAllPropertiesSetting = () => Common15.Settings.Settings.instance().createSetting(
+var getShowAllPropertiesSetting = () => Common16.Settings.Settings.instance().createSetting(
   "show-all-properties",
   /* defaultValue */
   false
@@ -18897,7 +19146,7 @@ var PropertiesWidget = class extends UI24.Widget.VBox {
       false
     );
     this.treeOutline.addEventListener(UI24.TreeOutline.Events.ElementExpanded, () => {
-      Host6.userMetrics.actionTaken(Host6.UserMetrics.Action.DOMPropertiesExpanded);
+      Host7.userMetrics.actionTaken(Host7.UserMetrics.Action.DOMPropertiesExpanded);
     });
     this.requestUpdate();
   }
@@ -19004,7 +19253,7 @@ __export(NodeStackTraceWidget_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW11,
   NodeStackTraceWidget: () => NodeStackTraceWidget
 });
-import * as i18n37 from "./../../core/i18n/i18n.js";
+import * as i18n38 from "./../../core/i18n/i18n.js";
 import * as SDK22 from "./../../core/sdk/sdk.js";
 import * as Bindings5 from "./../../models/bindings/bindings.js";
 import * as Components7 from "./../../ui/legacy/components/utils/utils.js";
@@ -19033,8 +19282,8 @@ var UIStrings19 = {
    */
   noStackTraceAvailable: "No stack trace available"
 };
-var str_19 = i18n37.i18n.registerUIStrings("panels/elements/NodeStackTraceWidget.ts", UIStrings19);
-var i18nString18 = i18n37.i18n.getLocalizedString.bind(void 0, str_19);
+var str_19 = i18n38.i18n.registerUIStrings("panels/elements/NodeStackTraceWidget.ts", UIStrings19);
+var i18nString18 = i18n38.i18n.getLocalizedString.bind(void 0, str_19);
 var DEFAULT_VIEW11 = (input, _output, target) => {
   const { stackTrace } = input;
   render14(html15`
@@ -19065,183 +19314,6 @@ var NodeStackTraceWidget = class extends UI25.Widget.VBox {
     const runtimeStackTrace = await node?.creationStackTrace() ?? void 0;
     const stackTrace = runtimeStackTrace && target ? await Bindings5.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createStackTraceFromProtocolRuntime(runtimeStackTrace, target) : void 0;
     this.#view({ stackTrace }, {}, this.contentElement);
-  }
-};
-
-// gen/front_end/panels/elements/StylesAiCodeCompletionProvider.js
-var StylesAiCodeCompletionProvider_exports = {};
-__export(StylesAiCodeCompletionProvider_exports, {
-  StylesAiCodeCompletionProvider: () => StylesAiCodeCompletionProvider
-});
-import * as Common16 from "./../../core/common/common.js";
-import * as Host7 from "./../../core/host/host.js";
-import * as i18n39 from "./../../core/i18n/i18n.js";
-import * as AiCodeCompletion from "./../../models/ai_code_completion/ai_code_completion.js";
-import * as TextUtils7 from "./../../models/text_utils/text_utils.js";
-import * as TextEditor3 from "./../../ui/components/text_editor/text_editor.js";
-var StylesAiCodeCompletionProvider = class _StylesAiCodeCompletionProvider {
-  #aidaClient = new Host7.AidaClient.AidaClient();
-  #aiCodeCompletionSetting = Common16.Settings.Settings.instance().createSetting("ai-code-completion-enabled", false);
-  #aiCodeCompletion;
-  #aiCodeCompletionConfig;
-  #boundOnUpdateAiCodeCompletionState = this.#updateAiCodeCompletionState.bind(this);
-  #debouncedRequestAidaSuggestion = Common16.Debouncer.debounce((prefix, suffix, cursorPositionAtRequest) => {
-    void this.#requestAidaSuggestion(prefix, suffix, cursorPositionAtRequest);
-  }, TextEditor3.AiCodeCompletionProvider.AIDA_REQUEST_DEBOUNCE_TIMEOUT_MS);
-  constructor(aiCodeCompletionConfig) {
-    const devtoolsLocale = i18n39.DevToolsLocale.DevToolsLocale.instance();
-    if (!AiCodeCompletion.AiCodeCompletion.AiCodeCompletion.isAiCodeCompletionStylesEnabled(devtoolsLocale.locale)) {
-      throw new Error("AI code completion feature in Styles is not enabled.");
-    }
-    this.#aiCodeCompletionConfig = aiCodeCompletionConfig;
-    Host7.AidaClient.HostConfigTracker.instance().addEventListener("aidaAvailabilityChanged", this.#boundOnUpdateAiCodeCompletionState);
-    this.#aiCodeCompletionSetting.addChangeListener(this.#boundOnUpdateAiCodeCompletionState);
-    void this.#updateAiCodeCompletionState();
-  }
-  static createInstance(aiCodeCompletionConfig) {
-    return new _StylesAiCodeCompletionProvider(aiCodeCompletionConfig);
-  }
-  #setupAiCodeCompletion() {
-    if (!this.#aiCodeCompletionConfig) {
-      return;
-    }
-    if (this.#aiCodeCompletion) {
-      return;
-    }
-    this.#aiCodeCompletion = new AiCodeCompletion.AiCodeCompletion.AiCodeCompletion({ aidaClient: this.#aidaClient }, this.#aiCodeCompletionConfig.panel, void 0, this.#aiCodeCompletionConfig.completionContext.stopSequences);
-    this.#aiCodeCompletionConfig.onFeatureEnabled();
-  }
-  #cleanupAiCodeCompletion() {
-    if (!this.#aiCodeCompletion) {
-      return;
-    }
-    this.#aiCodeCompletion = void 0;
-    this.#aiCodeCompletionConfig?.onFeatureDisabled();
-  }
-  async #updateAiCodeCompletionState() {
-    const aidaAvailability = await Host7.AidaClient.AidaClient.checkAccessPreconditions();
-    const isAvailable = aidaAvailability === "available";
-    const isEnabled = this.#aiCodeCompletionSetting.get();
-    if (isAvailable && isEnabled) {
-      this.#setupAiCodeCompletion();
-    } else {
-      this.#cleanupAiCodeCompletion();
-    }
-  }
-  async triggerAiCodeCompletion(text, cursorPosition, isEditingName, cssProperty, cssModel) {
-    const styleSheetId = cssProperty.ownerStyle.styleSheetId;
-    if (!styleSheetId) {
-      return;
-    }
-    const header = cssModel.styleSheetHeaderForId(styleSheetId);
-    if (!header) {
-      return;
-    }
-    const contentData = await header.requestContentData();
-    if (TextUtils7.ContentData.ContentData.isError(contentData)) {
-      AiCodeCompletion.debugLog("Error while fetching content from stylesheet", contentData.error);
-      return;
-    }
-    const content = contentData.text;
-    const propertyRange = cssProperty.range;
-    if (!content || !propertyRange) {
-      return;
-    }
-    const contentText = new TextUtils7.Text.Text(content);
-    const propertyStartOffset = contentText.offsetFromPosition(propertyRange.startLine, propertyRange.startColumn);
-    const propertyEndOffset = contentText.offsetFromPosition(propertyRange.endLine, propertyRange.endColumn);
-    let prefix = content.substring(0, propertyStartOffset);
-    if (!isEditingName) {
-      const nameRange = cssProperty.nameRange();
-      if (nameRange) {
-        const nameEndOffset = contentText.offsetFromPosition(nameRange.endLine, nameRange.endColumn);
-        prefix = prefix + content.substring(propertyStartOffset, nameEndOffset) + ": ";
-      }
-    }
-    prefix = prefix + text;
-    const suffix = content.substring(propertyEndOffset);
-    this.#debouncedRequestAidaSuggestion(prefix, suffix, cursorPosition);
-  }
-  async #requestAidaSuggestion(prefix, suffix, cursorPositionAtRequest) {
-    if (!this.#aiCodeCompletion) {
-      AiCodeCompletion.debugLog("Ai Code Completion is not initialized");
-      this.#aiCodeCompletionConfig?.onResponseReceived();
-      Host7.userMetrics.actionTaken(Host7.UserMetrics.Action.AiCodeCompletionError);
-      return;
-    }
-    const startTime = performance.now();
-    this.#aiCodeCompletionConfig?.onRequestTriggered();
-    Host7.userMetrics.actionTaken(Host7.UserMetrics.Action.AiCodeCompletionRequestTriggered);
-    try {
-      const completionResponse = await this.#aiCodeCompletion.completeCode(
-        prefix,
-        suffix,
-        cursorPositionAtRequest,
-        "CSS"
-        /* Host.AidaClient.AidaInferenceLanguage.CSS */
-      );
-      this.#aiCodeCompletionConfig?.onResponseReceived();
-      if (!completionResponse) {
-        return;
-      }
-      const { response, fromCache } = completionResponse;
-      if (!response) {
-        return;
-      }
-      const sampleResponse = await this.#generateSampleForRequest(response, prefix, suffix);
-      if (!sampleResponse) {
-        return;
-      }
-      if (fromCache) {
-        Host7.userMetrics.actionTaken(Host7.UserMetrics.Action.AiCodeCompletionResponseServedFromCache);
-      }
-      this.#aiCodeCompletionConfig?.setAiAutoCompletion?.({
-        text: sampleResponse.suggestionText,
-        from: cursorPositionAtRequest,
-        rpcGlobalId: sampleResponse.rpcGlobalId,
-        sampleId: sampleResponse.sampleId,
-        startTime,
-        clearCachedRequest: this.clearCache.bind(this),
-        onImpression: this.#aiCodeCompletion?.registerUserImpression.bind(this.#aiCodeCompletion)
-      });
-    } catch (e) {
-      AiCodeCompletion.debugLog("Error while fetching code completion suggestions from AIDA", e);
-      this.#aiCodeCompletionConfig?.onResponseReceived();
-      Host7.userMetrics.actionTaken(Host7.UserMetrics.Action.AiCodeCompletionError);
-    }
-  }
-  async #generateSampleForRequest(response, prefix, suffix) {
-    const suggestionSample = this.#pickSampleFromResponse(response);
-    if (!suggestionSample) {
-      return null;
-    }
-    const shouldBlock = suggestionSample.attributionMetadata?.attributionAction === Host7.AidaClient.RecitationAction.BLOCK;
-    if (shouldBlock) {
-      return null;
-    }
-    const suggestionText = TextEditor3.AiCodeCompletionProvider.AiCodeCompletionProvider.trimSuggestionOverlap(suggestionSample.generationString, suffix);
-    if (suggestionText.length === 0) {
-      return null;
-    }
-    return {
-      suggestionText,
-      sampleId: suggestionSample.sampleId,
-      citations: suggestionSample.attributionMetadata?.citations ?? [],
-      rpcGlobalId: response.metadata.rpcGlobalId
-    };
-  }
-  #pickSampleFromResponse(response) {
-    if (!response.generatedSamples.length) {
-      return null;
-    }
-    const completionHint = this.#aiCodeCompletionConfig?.getCompletionHint?.();
-    if (!completionHint) {
-      return response.generatedSamples[0];
-    }
-    return response.generatedSamples.find((sample) => sample.generationString.startsWith(completionHint)) ?? response.generatedSamples[0];
-  }
-  clearCache() {
-    this.#aiCodeCompletion?.clearCachedRequest();
   }
 };
 

@@ -1738,6 +1738,13 @@ export namespace ProtocolMapping {
       returnType: Protocol.CSS.SetSupportsTextResponse;
     };
     /**
+     * Modifies the expression of a navigation at-rule.
+     */
+    'CSS.setNavigationText': {
+      paramsType: [Protocol.CSS.SetNavigationTextRequest];
+      returnType: Protocol.CSS.SetNavigationTextResponse;
+    };
+    /**
      * Modifies the expression of a scope at-rule.
      */
     'CSS.setScopeText': {

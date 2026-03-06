@@ -49,7 +49,7 @@ const DEFAULT_VIEW = (input, _output, target) => {
 export class HiddenIssuesRow extends UI.TreeOutline.TreeElement {
     #view;
     constructor(view = DEFAULT_VIEW) {
-        super(undefined, true);
+        super(undefined, true, 'hidden-issues');
         this.#view = view;
         this.toggleOnClick = true;
         this.listItemElement.classList.add('issue-category', 'hidden-issues');

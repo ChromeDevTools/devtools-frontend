@@ -5,6 +5,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import type * as ComputedStyle from '../../models/computed_style/computed_style.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
+import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -12,6 +13,7 @@ import * as ElementsComponents from './components/components.js';
 import { ElementsSidebarPane } from './ElementsSidebarPane.js';
 import { StylePropertiesSection } from './StylePropertiesSection.js';
 import type { StylePropertyTreeElement } from './StylePropertyTreeElement.js';
+import * as StylesAiCodeCompletionProvider from './StylesAiCodeCompletionProvider.js';
 import type { StylesContainer } from './StylesContainer.js';
 import { WebCustomData } from './WebCustomData.js';
 /** Title of the registered properties section **/
@@ -163,6 +165,7 @@ export declare class IdleCallbackManager {
 }
 export declare function quoteFamilyName(familyName: string): string;
 export declare class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
+    #private;
     private readonly isColorAware;
     private readonly cssCompletions;
     private selectedNodeComputedStyles;
@@ -170,13 +173,22 @@ export declare class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
     private treeElement;
     private isEditingName;
     private readonly cssVariables;
+    aiCodeCompletionConfig?: TextEditor.AiCodeCompletionProvider.AiCodeCompletionConfig;
+    aiCodeCompletionProvider?: StylesAiCodeCompletionProvider.StylesAiCodeCompletionProvider;
     constructor(treeElement: StylePropertyTreeElement, isEditingName: boolean, completions?: string[]);
     onKeyDown(event: Event): void;
     onMouseWheel(event: Event): void;
     tabKeyPressed(): boolean;
+    onInput(event: Event): void;
     private handleNameOrValueUpDown;
     private isValueSuggestion;
     private buildPropertyCompletions;
+    private triggerAiCodeCompletion;
+    /**
+     * Extracts the remaining portion of the suggestion text that follows the
+     * user's current input.
+     */
+    private getCompletionHint;
 }
 export declare function unescapeCssString(input: string): string;
 export declare function escapeUrlAsCssComment(urlText: string): string;

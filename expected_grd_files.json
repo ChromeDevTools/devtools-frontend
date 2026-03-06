@@ -627,6 +627,7 @@
   "front_end/models/issues_manager/descriptions/unencodedDigestUnknownAlgorithm.md",
   "front_end/models/issues_manager/issues_manager.js",
   "front_end/models/javascript_metadata/javascript_metadata.js",
+  "front_end/models/lighthouse/lighthouse.js",
   "front_end/models/live-metrics/live-metrics.js",
   "front_end/models/live-metrics/web-vitals-injected/spec/spec.js",
   "front_end/models/live-metrics/web-vitals-injected/web-vitals-injected.generated.js",

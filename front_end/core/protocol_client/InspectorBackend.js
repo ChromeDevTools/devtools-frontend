@@ -384,6 +384,9 @@ export class TargetBase {
     registerDOMStorageDispatcher(dispatcher) {
         this.registerDispatcher('DOMStorage', dispatcher);
     }
+    registerEmulationDispatcher(dispatcher) {
+        this.registerDispatcher('Emulation', dispatcher);
+    }
     registerFetchDispatcher(dispatcher) {
         this.registerDispatcher('Fetch', dispatcher);
     }

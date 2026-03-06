@@ -177,6 +177,12 @@ const UIStrings = {
   prerenderFinalStatusNavigationBadHttpStatus:
       'The prerendering navigation failed because of a non-2xx HTTP response status code.',
   /**
+   * @description Description text for PrerenderFinalStatus::kNavigationBadHttpStatus when the HTTP status code is known.
+   * @example {404} PH1
+   */
+  prerenderFinalStatusNavigationBadHttpStatusWithStatusCode:
+      'The prerendering navigation failed because of a non-2xx HTTP response status code ({PH1}).',
+  /**
    *  Description text for PrerenderFinalStatus::kClientCertRequested.
    */
   prerenderFinalStatusClientCertRequested: 'The prerendering navigation required a HTTP client certificate.',
@@ -545,7 +551,8 @@ export function prefetchFailureReason(
 
 /** Detailed failure reason for PrerenderFinalStatus. **/
 export function prerenderFailureReason(
-    attempt: SDK.PreloadingModel.PrerenderAttempt|SDK.PreloadingModel.PrerenderUntilScriptAttempt): string|null {
+    attempt: SDK.PreloadingModel.PrerenderAttempt|SDK.PreloadingModel.PrerenderUntilScriptAttempt,
+    statusCode?: number): string|null {
   // If you face an error on rolling CDP changes, see
   // https://docs.google.com/document/d/1PnrfowsZMt62PX1EvvTp2Nqs3ji1zrklrAEe1JYbkTk
   switch (attempt.prerenderStatus) {
@@ -581,7 +588,12 @@ export function prerenderFailureReason(
       // TODO(https://crbug.com/1410709): Fill it.
       return i18n.i18n.lockedString('Internal error');
     case Protocol.Preload.PrerenderFinalStatus.NavigationBadHttpStatus:
+      if (statusCode !== undefined) {
+        return i18nString(
+            UIStrings.prerenderFinalStatusNavigationBadHttpStatusWithStatusCode, {PH1: String(statusCode)});
+      }
       return i18nString(UIStrings.prerenderFinalStatusNavigationBadHttpStatus);
+
     case Protocol.Preload.PrerenderFinalStatus.ClientCertRequested:
       return i18nString(UIStrings.prerenderFinalStatusClientCertRequested);
     case Protocol.Preload.PrerenderFinalStatus.NavigationRequestNetworkError:
@@ -819,7 +831,8 @@ export function composedStatus(attempt: SDK.PreloadingModel.PreloadingAttempt, s
     case Protocol.Preload.SpeculationAction.Prerender:
     case Protocol.Preload.SpeculationAction.PrerenderUntilScript: {
       const detail = prerenderFailureReason(
-          attempt as SDK.PreloadingModel.PrerenderAttempt | SDK.PreloadingModel.PrerenderUntilScriptAttempt);
+          attempt as SDK.PreloadingModel.PrerenderAttempt | SDK.PreloadingModel.PrerenderUntilScriptAttempt,
+          statusCode);
       assertNotNullOrUndefined(detail);
       return short + ' - ' + detail;
     }

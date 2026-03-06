@@ -727,6 +727,124 @@ describeWithMockConnection('PreloadingAttemptView', () => {
     );
   });
 
+  it('shows status code for prerender failure in the grid', async () => {
+    const emulator = new NavigationEmulator();
+    await emulator.openDevTools();
+    const view = createAttemptView(emulator.primaryTarget);
+
+    await emulator.navigateAndDispatchEvents('');
+    await emulator.addSpecRules(`
+{
+  "prerender": [
+    {
+      "source": "list",
+      "urls": ["/prerendered.html"]
+    }
+  ]
+}
+`);
+
+    const url = 'https://example.com/prerendered.html';
+    const fakeRequest = {statusCode: 404} as SDK.NetworkRequest.NetworkRequest;
+    const fakeNetworkManager = {requestForLoaderId: () => fakeRequest} as unknown as SDK.NetworkManager.NetworkManager;
+    const fakeFrame = {
+      loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
+      resourceTreeModel: () => ({
+        target: () => ({
+          model: () => fakeNetworkManager,
+        }),
+      }),
+    } as unknown as SDK.ResourceTreeModel.ResourceTreeFrame;
+    sinon.stub(SDK.ResourceTreeModel.ResourceTreeModel, 'frames').returns([fakeFrame]);
+
+    dispatchEvent(emulator.primaryTarget, 'Preload.prerenderStatusUpdated', {
+      key: {
+        loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
+        action: Protocol.Preload.SpeculationAction.Prerender,
+        url,
+      },
+      status: Protocol.Preload.PreloadingStatus.Failure,
+      prerenderStatus: Protocol.Preload.PrerenderFinalStatus.NavigationBadHttpStatus,
+    } as Protocol.Preload.PrerenderStatusUpdatedEvent);
+
+    await RenderCoordinator.done();
+
+    const preloadingGridComponent = view.getPreloadingGridForTest();
+    assert.isNotNull(preloadingGridComponent.contentElement);
+
+    assertGridWidgetContents(
+        preloadingGridComponent.contentElement,
+        ['URL', 'Action', 'Rule set', 'Status'],
+        [
+          [
+            '/prerendered.html',
+            'Prerender',
+            '',
+            'Failure - The prerendering navigation failed because of a non-2xx HTTP response status code (404).',
+          ],
+        ],
+    );
+  });
+
+  it('does not show status code 0 for prerender failure in the grid', async () => {
+    const emulator = new NavigationEmulator();
+    await emulator.openDevTools();
+    const view = createAttemptView(emulator.primaryTarget);
+
+    await emulator.navigateAndDispatchEvents('');
+    await emulator.addSpecRules(`
+{
+  "prerender": [
+    {
+      "source": "list",
+      "urls": ["/prerendered.html"]
+    }
+  ]
+}
+`);
+
+    const url = 'https://example.com/prerendered.html';
+    const fakeRequest = {statusCode: 0} as SDK.NetworkRequest.NetworkRequest;
+    const fakeNetworkManager = {requestForLoaderId: () => fakeRequest} as unknown as SDK.NetworkManager.NetworkManager;
+    const fakeFrame = {
+      loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
+      resourceTreeModel: () => ({
+        target: () => ({
+          model: () => fakeNetworkManager,
+        }),
+      }),
+    } as unknown as SDK.ResourceTreeModel.ResourceTreeFrame;
+    sinon.stub(SDK.ResourceTreeModel.ResourceTreeModel, 'frames').returns([fakeFrame]);
+
+    dispatchEvent(emulator.primaryTarget, 'Preload.prerenderStatusUpdated', {
+      key: {
+        loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
+        action: Protocol.Preload.SpeculationAction.Prerender,
+        url,
+      },
+      status: Protocol.Preload.PreloadingStatus.Failure,
+      prerenderStatus: Protocol.Preload.PrerenderFinalStatus.NavigationBadHttpStatus,
+    } as Protocol.Preload.PrerenderStatusUpdatedEvent);
+
+    await RenderCoordinator.done();
+
+    const preloadingGridComponent = view.getPreloadingGridForTest();
+    assert.isNotNull(preloadingGridComponent.contentElement);
+
+    assertGridWidgetContents(
+        preloadingGridComponent.contentElement,
+        ['URL', 'Action', 'Rule set', 'Status'],
+        [
+          [
+            '/prerendered.html',
+            'Prerender',
+            '',
+            'Failure - The prerendering navigation failed because of a non-2xx HTTP response status code.',
+          ],
+        ],
+    );
+  });
+
   // See https://crbug.com/1432880
   it('preserves information even if iframe loaded', async () => {
     const emulator = new NavigationEmulator();

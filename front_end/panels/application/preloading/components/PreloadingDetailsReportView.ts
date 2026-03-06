@@ -349,8 +349,8 @@ export class PreloadingDetailsReportView extends LegacyWrapper.LegacyWrapper.Wra
       return Lit.nothing;
     }
 
-    // Lookup status code for Non2XX failures
-    const statusCode = PreloadingHelper.PreloadingForward.prefetchStatusCode(attempt.requestId);
+    // Lookup status code for Non2XX failures.
+    const statusCode = PreloadingHelper.PreloadingForward.preloadStatusCode(attempt);
 
     const failureDescription = prefetchFailureReason(attempt, statusCode);
     if (failureDescription === null) {
@@ -389,8 +389,11 @@ export class PreloadingDetailsReportView extends LegacyWrapper.LegacyWrapper.Wra
       return Lit.nothing;
     }
 
+    // Lookup status code from the network log for NavigationBadHttpStatus.
+    const statusCode = PreloadingHelper.PreloadingForward.preloadStatusCode(attempt);
+
     const failureReason = prerenderFailureReason(
-        attempt as SDK.PreloadingModel.PrerenderAttempt | SDK.PreloadingModel.PrerenderUntilScriptAttempt);
+        attempt as SDK.PreloadingModel.PrerenderAttempt | SDK.PreloadingModel.PrerenderUntilScriptAttempt, statusCode);
     if (failureReason === null) {
       return Lit.nothing;
     }

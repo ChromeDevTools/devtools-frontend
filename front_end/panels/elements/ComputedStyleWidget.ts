@@ -353,13 +353,18 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
 
     this.filterRegex = null;
     this.linkifier = new Components.Linkifier.Linkifier(maxLinkLength);
-    this.imagePreviewPopover = new ImagePreviewPopover(this.contentElement, event => {
-      const link = event.composedPath()[0];
-      if (link instanceof Element) {
-        return link;
-      }
-      return null;
-    }, () => this.#computedStyleModel ? this.#computedStyleModel.node : null);
+    this.imagePreviewPopover = new ImagePreviewPopover(
+        this.contentElement,
+        event => {
+          const link = event.composedPath()[0];
+          if (link instanceof Element) {
+            return link;
+          }
+          return null;
+        },
+        async () => {
+          return await Components.ImagePreview.loadPrecomputedFeatures(this.#computedStyleModel?.node);
+        });
 
     this.#updateView({hasMatches: true});
   }

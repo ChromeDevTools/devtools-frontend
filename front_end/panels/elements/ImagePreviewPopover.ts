@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import type * as Platform from '../../core/platform/platform.js';
-import type * as SDK from '../../core/sdk/sdk.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -15,13 +14,15 @@ import * as UI from '../../ui/legacy/legacy.js';
  */
 export class ImagePreviewPopover {
   private readonly getLinkElement: (arg0: Event) => Element | null;
-  private readonly getDOMNode: (arg0: Element) => SDK.DOMModel.DOMNode | null;
   private readonly popover: UI.PopoverHelper.PopoverHelper;
+
+  #getNodeFeatures: (link: Element) => Promise<Components.ImagePreview.PrecomputedFeatures|undefined>;
+
   constructor(
       container: HTMLElement, getLinkElement: (arg0: Event) => Element | null,
-      getDOMNode: (arg0: Element) => SDK.DOMModel.DOMNode | null) {
+      getNodeFeatures: (arg0: Element) => Promise<Components.ImagePreview.PrecomputedFeatures|undefined>) {
     this.getLinkElement = getLinkElement;
-    this.getDOMNode = getDOMNode;
+    this.#getNodeFeatures = getNodeFeatures;
     this.popover =
         new UI.PopoverHelper.PopoverHelper(container, this.handleRequest.bind(this), 'elements.image-preview');
     this.popover.setTimeout(0, 100);
@@ -39,11 +40,7 @@ export class ImagePreviewPopover {
     return {
       box: link.boxInWindow(),
       show: async (popover: UI.GlassPane.GlassPane) => {
-        const node = this.getDOMNode((link));
-        if (!node) {
-          return false;
-        }
-        const precomputedFeatures = await Components.ImagePreview.ImagePreview.loadDimensionsForNode(node);
+        const precomputedFeatures = await this.#getNodeFeatures(link);
         const preview = await Components.ImagePreview.ImagePreview.build(href, true, {
           precomputedFeatures,
           align: Components.ImagePreview.Align.CENTER,

@@ -236,13 +236,19 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     this.contentElement.addEventListener('copy', this.clipboardCopy.bind(this));
 
     this.boundOnScroll = this.onScroll.bind(this);
-    this.imagePreviewPopover = new ImagePreviewPopover(this.contentElement, event => {
-      const link = event.composedPath()[0];
-      if (link instanceof Element) {
-        return link;
-      }
-      return null;
-    }, () => this.node());
+    this.imagePreviewPopover = new ImagePreviewPopover(
+        this.contentElement,
+        event => {
+          const link = event.composedPath()[0];
+          if (link instanceof Element) {
+            return link;
+          }
+          return null;
+        },
+        async () => {
+          const features = await Components.ImagePreview.loadPrecomputedFeatures(this.node());
+          return features;
+        });
 
     UI.ViewManager.ViewManager.instance().addEventListener(UI.ViewManager.Events.VIEW_VISIBILITY_CHANGED, event => {
       if (event.data.revealedViewId === 'animations' || event.data.hiddenViewId === 'animations') {

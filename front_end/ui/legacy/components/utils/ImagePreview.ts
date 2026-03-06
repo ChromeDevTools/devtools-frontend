@@ -183,33 +183,37 @@ export class ImagePreview {
     });
   }
 
-  static async loadDimensionsForNode(node: SDK.DOMModel.DOMNode): Promise<PrecomputedFeatures|undefined> {
-    if (!node.nodeName() || node.nodeName().toLowerCase() !== 'img') {
-      return;
-    }
-
-    const object = await node.resolveToObject('');
-
-    if (!object) {
-      return;
-    }
-
-    const featuresObject = await object.callFunctionJSON(features, undefined);
-    object.release();
-    return featuresObject ?? undefined;
-
-    function features(this: HTMLImageElement): PrecomputedFeatures {
-      return {
-        renderedWidth: this.width,
-        renderedHeight: this.height,
-        currentSrc: this.currentSrc as Platform.DevToolsPath.UrlString,
-      };
-    }
-  }
-
   static defaultAltTextForImageURL(url: Platform.DevToolsPath.UrlString): string {
     const parsedImageURL = new Common.ParsedURL.ParsedURL(url);
     const imageSourceText = parsedImageURL.isValid ? parsedImageURL.displayName : i18nString(UIStrings.unknownSource);
     return i18nString(UIStrings.imageFromS, {PH1: imageSourceText});
+  }
+}
+
+export async function loadPrecomputedFeatures(node?: SDK.DOMModel.DOMNode|null):
+    Promise<PrecomputedFeatures|undefined> {
+  if (!node) {
+    return undefined;
+  }
+  if (!node.nodeName() || node.nodeName().toLowerCase() !== 'img') {
+    return undefined;
+  }
+
+  const object = await node.resolveToObject('');
+
+  if (!object) {
+    return undefined;
+  }
+
+  const featuresObject = await object.callFunctionJSON(features, undefined);
+  object.release();
+  return featuresObject ?? undefined;
+
+  function features(this: HTMLImageElement): PrecomputedFeatures {
+    return {
+      renderedWidth: this.width,
+      renderedHeight: this.height,
+      currentSrc: this.currentSrc as Platform.DevToolsPath.UrlString,
+    };
   }
 }

@@ -13,8 +13,8 @@ describeWithEnvironment('ChatView', () => {
   function getProp(options: Partial<AiAssistancePanel.Props>): AiAssistancePanel.Props {
     const noop = () => {};
     const messages = options.messages ?? [];
-    const selectedContext = sinon.createStubInstance(AiAssistanceModel.StylingAgent.NodeContext);
-    selectedContext.getTitle.returns('');
+    const context = sinon.createStubInstance(AiAssistanceModel.StylingAgent.NodeContext);
+    context.getTitle.returns('');
     return {
       onTextSubmit: noop,
       onInspectElementClick: noop,
@@ -29,7 +29,8 @@ describeWithEnvironment('ChatView', () => {
       inspectElementToggled: false,
       conversationType: AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING,
       messages,
-      selectedContext,
+      context,
+      isContextSelected: true,
       isLoading: false,
       canShowFeedbackForm: false,
       userInfo: {},

@@ -65,7 +65,8 @@ export interface Props {
   changeManager: AiAssistanceModel.ChangeManager.ChangeManager;
   inspectElementToggled: boolean;
   messages: Message[];
-  selectedContext: AiAssistanceModel.AiAgent.ConversationContext<unknown>|null;
+  context: AiAssistanceModel.AiAgent.ConversationContext<unknown>|null;
+  isContextSelected: boolean;
   isLoading: boolean;
   canShowFeedbackForm: boolean;
   userInfo: Pick<Host.InspectorFrontendHostAPI.SyncInformation, 'accountImage'|'accountGivenName'>;
@@ -178,7 +179,8 @@ const DEFAULT_VIEW: View = (input, output, target) => {
             isTextInputDisabled: input.isTextInputDisabled,
             inputPlaceholder: input.inputPlaceholder,
             disclaimerText: input.disclaimerText,
-            selectedContext: input.selectedContext,
+            context: input.context,
+            isContextSelected: input.isContextSelected,
             inspectElementToggled: input.inspectElementToggled,
             multimodalInputEnabled: input.multimodalInputEnabled ?? false,
             conversationType: input.conversationType,

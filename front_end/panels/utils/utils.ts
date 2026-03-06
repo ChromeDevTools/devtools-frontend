@@ -97,8 +97,11 @@ export class PanelUtils {
 
       // clang-format off
       return html`<devtools-icon
-          class="icon" name=${iconName} title=${title}> role=img
-        </devtools-icon>`;
+          class="icon"
+          name=${iconName}
+          title=${title}
+          role=img
+        ></devtools-icon>`;
       // clang-format on
     }
 
@@ -261,9 +264,12 @@ export class PanelUtils {
         binding ? PanelCommon.PersistenceUtils.PersistenceUtils.tooltipForUISourceCode(uiSourceCode) : undefined;
     // clang-format off
     return html`<devtools-file-source-icon
-        name=${iconType} title=${ifDefined(title)} .data=${{
-          contentType: uiSourceCode.contentType().name(), hasDotBadge, isDotPurple, iconType}}>
-      </devtools-file-source-icon>`;
+        class="icon"
+        name=${iconType} 
+        title=${ifDefined(title)} 
+        .data=${{
+          contentType: uiSourceCode.contentType().name(), hasDotBadge, isDotPurple, iconType}
+        }></devtools-file-source-icon>`;
     // clang-format on
   }
 

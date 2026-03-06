@@ -134,7 +134,8 @@ export interface ViewInput {
   blockedByCrossOrigin: boolean;
   isTextInputDisabled: boolean;
   inputPlaceholder: Platform.UIString.LocalizedString;
-  selectedContext: AiAssistanceModel.AiAgent.ConversationContext<unknown>|null;
+  context: AiAssistanceModel.AiAgent.ConversationContext<unknown>|null;
+  isContextSelected: boolean;
   inspectElementToggled: boolean;
   disclaimerText: string;
   conversationType: AiAssistanceModel.AiHistoryStorage.ConversationType;
@@ -183,7 +184,7 @@ function getContextRemoveLabel(context: AiAssistanceModel.AiAgent.ConversationCo
 export const DEFAULT_VIEW = (input: ViewInput, _output: ViewOutput, target: HTMLElement): void => {
   const chatInputContainerCls = Lit.Directives.classMap({
     'chat-input-container': true,
-    'single-line-layout': !input.selectedContext && !input.onContextAdd,
+    'single-line-layout': !input.context,
     disabled: input.isTextInputDisabled,
   });
 
@@ -300,7 +301,7 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: ViewOutput, target: HTML
             ></textarea>
             <div class="chat-input-actions">
               <div class="chat-input-actions-left">
-                ${input.selectedContext ?
+                ${input.context ?
                   html`
                     <div class="select-element">
                       ${input.conversationType === AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING ?
@@ -321,29 +322,33 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: ViewOutput, target: HTML
                           ></devtools-button>`
                         : Lit.nothing}
                       <div
-                        class="resource-link"
+                        class=${Lit.Directives.classMap({
+                          'resource-link': true,
+                          disabled: !input.isContextSelected,
+                        })}
                       >
                         ${
-                          input.selectedContext instanceof AiAssistanceModel.StylingAgent.NodeContext ?
+                          input.context instanceof AiAssistanceModel.StylingAgent.NodeContext ?
                             html`
                               <devtools-widget
                                 class="title"
                                 .widgetConfig=${UI.Widget.widgetConfig(PanelsCommon.DOMLinkifier.DOMNodeLink, {
-                                  node: input.selectedContext.getItem(),
+                                  node: input.context.getItem(),
                                   options: {
-                                    hiddenClassList: input.selectedContext.getItem().classNames().filter(
+                                    disabled: !input.isContextSelected,
+                                    hiddenClassList: input.context.getItem().classNames().filter(
                                       className => className.startsWith(AiAssistanceModel.Injected.AI_ASSISTANCE_CSS_CLASS_NAME)),
                                     ariaDescription: i18nString(UIStrings.revealContextDescription),
                                   },
                                 })}
                               ></devtools-widget>` :
                             html`
-                          ${input.selectedContext instanceof AiAssistanceModel.NetworkAgent.RequestContext ?
-                            PanelUtils.PanelUtils.getIconForNetworkRequest(input.selectedContext.getItem()) :
-                            input.selectedContext instanceof AiAssistanceModel.FileAgent.FileContext ?
-                            PanelUtils.PanelUtils.getIconForSourceFile(input.selectedContext.getItem()) :
-                            input.selectedContext instanceof AiAssistanceModel.PerformanceAgent.PerformanceTraceContext ?
-                            html`<devtools-icon name="performance" title="Performance"></devtools-icon>` :
+                          ${input.context instanceof AiAssistanceModel.NetworkAgent.RequestContext ?
+                            PanelUtils.PanelUtils.getIconForNetworkRequest(input.context.getItem()) :
+                            input.context instanceof AiAssistanceModel.FileAgent.FileContext ?
+                            PanelUtils.PanelUtils.getIconForSourceFile(input.context.getItem()) :
+                            input.context instanceof AiAssistanceModel.PerformanceAgent.PerformanceTraceContext ?
+                            html`<devtools-icon class="icon" name="performance" title="Performance"></devtools-icon>` :
                             Lit.nothing}
                             <span 
                               role="button"
@@ -356,31 +361,31 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: ViewOutput, target: HTML
                                 }
                               }}
                               aria-description=${i18nString(UIStrings.revealContextDescription)}
-                            >${input.selectedContext.getTitle()}</span>`
+                            >${input.context.getTitle()}</span>`
                         }
-                        ${input.onContextRemoved ? html`
+                        ${input.isContextSelected && input.onContextRemoved ? html`
                                   <devtools-button
-                                    title=${getContextRemoveLabel(input.selectedContext)}
-                                    aria-label=${getContextRemoveLabel(input.selectedContext)}
+                                    title=${getContextRemoveLabel(input.context)}
+                                    aria-label=${getContextRemoveLabel(input.context)}
                                     class="remove-context"
                                     .iconName=${'cross'}
                                     .size=${Buttons.Button.Size.MICRO}
                                     .jslogContext=${'context-removed'}
                                     .variant=${Buttons.Button.Variant.ICON}
                                     @click=${input.onContextRemoved}></devtools-button>` : Lit.nothing}
+                      ${!input.isContextSelected && input.onContextAdd ? html`
+                                    <devtools-button
+                                      title=${lockedString(UIStringsNotTranslate.addContext)}
+                                      aria-label=${lockedString(UIStringsNotTranslate.addContext)}
+                                      class="add-context"
+                                      .iconName=${'plus'}
+                                      .size=${Buttons.Button.Size.MICRO}
+                                      .jslogContext=${'context-added'}
+                                      .variant=${Buttons.Button.Variant.ICON}
+                                      @click=${input.onContextAdd}></devtools-button>` : Lit.nothing}
                       </div>
                     </div>`
-                  :
-                    input.onContextAdd ? html`
-                                  <devtools-button
-                                    title=${lockedString(UIStringsNotTranslate.addContext)}
-                                    aria-label=${lockedString(UIStringsNotTranslate.addContext)}
-                                    class="add-context"
-                                    .iconName=${'plus'}
-                                    .size=${Buttons.Button.Size.SMALL}
-                                    .jslogContext=${'context-added'}
-                                    .variant=${Buttons.Button.Variant.ICON}
-                                    @click=${input.onContextAdd}></devtools-button>` : Lit.nothing}
+                  : Lit.nothing}
               </div>
               <div class="chat-input-actions-right">
                 <div class="chat-input-disclaimer-container">
@@ -488,7 +493,8 @@ export class ChatInput extends UI.Widget.Widget implements SDK.TargetManager.Obs
   blockedByCrossOrigin = false;
   isTextInputDisabled = false;
   inputPlaceholder = '' as Platform.UIString.LocalizedString;
-  selectedContext: AiAssistanceModel.AiAgent.ConversationContext<unknown>|null = null;
+  context: AiAssistanceModel.AiAgent.ConversationContext<unknown>|null = null;
+  isContextSelected = false;
   inspectElementToggled = false;
   disclaimerText = '';
   conversationType = AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING;
@@ -675,7 +681,8 @@ export class ChatInput extends UI.Widget.Widget implements SDK.TargetManager.Obs
           isLoading: this.isLoading,
           blockedByCrossOrigin: this.blockedByCrossOrigin,
           isTextInputDisabled: this.isTextInputDisabled,
-          selectedContext: this.selectedContext,
+          context: this.context,
+          isContextSelected: this.isContextSelected,
           inspectElementToggled: this.inspectElementToggled,
           isTextInputEmpty: this.#isTextInputEmpty(),
           disclaimerText: this.disclaimerText,

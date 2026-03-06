@@ -244,39 +244,63 @@ describeWithEnvironment('ChatInput', () => {
   });
 
   describe('view', () => {
+    class MockContext extends AiAssistanceModel.AiAgent.ConversationContext<string> {
+      getIcon() {
+        return document.createElement('span');
+      }
+      getTitle() {
+        return 'test';
+      }
+      getItem() {
+        return 'test';
+      }
+      getOrigin() {
+        return '';
+      }
+    }
+
+    function createDefaultViewInput(): AiAssistance.ChatInput.ViewInput {
+      return {
+        isLoading: false,
+        isTextInputEmpty: true,
+        blockedByCrossOrigin: false,
+        isTextInputDisabled: false,
+        inputPlaceholder: 'Type a message...' as Platform.UIString.LocalizedString,
+        context: null,
+        isContextSelected: false,
+        inspectElementToggled: false,
+        disclaimerText: 'Disclaimer text',
+        conversationType: AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING,
+        multimodalInputEnabled: false,
+        uploadImageInputEnabled: false,
+        isReadOnly: false,
+        textAreaRef: {value: undefined},
+        onContextClick: () => {},
+        onInspectElementClick: () => {},
+        onSubmit: () => {},
+        onTextAreaKeyDown: () => {},
+        onCancel: () => {},
+        onNewConversation: () => {},
+        onTextInputChange: () => {},
+        onTakeScreenshot: () => {},
+        onRemoveImageInput: () => {},
+        onImageUpload: () => {},
+        onImagePaste: () => {},
+        onImageDragOver: () => {},
+        onImageDrop: () => {},
+        onContextRemoved: null,
+        onContextAdd: null,
+      };
+    }
+
     it('renders correctly when multimodal is enabled', async () => {
       const target = document.createElement('div');
       renderElementIntoDOM(target);
       AiAssistance.ChatInput.DEFAULT_VIEW(
           {
-            isLoading: false,
-            isTextInputEmpty: true,
-            blockedByCrossOrigin: false,
-            isTextInputDisabled: false,
-            inputPlaceholder: 'Type a message...' as Platform.UIString.LocalizedString,
-            selectedContext: null,
-            inspectElementToggled: false,
-            disclaimerText: 'Disclaimer text',
-            conversationType: AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING,
+            ...createDefaultViewInput(),
             multimodalInputEnabled: true,
             uploadImageInputEnabled: true,
-            isReadOnly: false,
-            textAreaRef: {value: undefined},
-            onContextClick: () => {},
-            onInspectElementClick: () => {},
-            onSubmit: () => {},
-            onTextAreaKeyDown: () => {},
-            onCancel: () => {},
-            onNewConversation: () => {},
-            onTextInputChange: () => {},
-            onTakeScreenshot: () => {},
-            onRemoveImageInput: () => {},
-            onImageUpload: () => {},
-            onImagePaste: () => {},
-            onImageDragOver: () => {},
-            onImageDrop: () => {},
-            onContextRemoved: null,
-            onContextAdd: null,
           },
           undefined, target);
       await assertScreenshot('ai_assistance/chat_input_multimodal_enabled.png');
@@ -287,37 +311,70 @@ describeWithEnvironment('ChatInput', () => {
       renderElementIntoDOM(target);
       AiAssistance.ChatInput.DEFAULT_VIEW(
           {
-            isLoading: false,
-            isTextInputEmpty: true,
-            blockedByCrossOrigin: false,
-            isTextInputDisabled: false,
-            inputPlaceholder: 'Type a message...' as Platform.UIString.LocalizedString,
-            selectedContext: null,
-            inspectElementToggled: false,
-            disclaimerText: 'Disclaimer text',
-            conversationType: AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING,
-            multimodalInputEnabled: false,
-            uploadImageInputEnabled: false,
-            isReadOnly: false,
-            textAreaRef: {value: undefined},
-            onContextClick: () => {},
-            onInspectElementClick: () => {},
-            onSubmit: () => {},
-            onTextAreaKeyDown: () => {},
-            onCancel: () => {},
-            onNewConversation: () => {},
-            onTextInputChange: () => {},
-            onTakeScreenshot: () => {},
-            onRemoveImageInput: () => {},
-            onImageUpload: () => {},
-            onImagePaste: () => {},
-            onImageDragOver: () => {},
-            onImageDrop: () => {},
-            onContextRemoved: null,
-            onContextAdd: null,
+            ...createDefaultViewInput(),
           },
           undefined, target);
       await assertScreenshot('ai_assistance/chat_input_multimodal_disabled.png');
+    });
+
+    it('shows the context pill and calls onContextClick', async () => {
+      const target = document.createElement('div');
+      renderElementIntoDOM(target);
+      const onContextClick = sinon.stub();
+      const context = new MockContext();
+      AiAssistance.ChatInput.DEFAULT_VIEW(
+          {
+            ...createDefaultViewInput(),
+            context,
+            isContextSelected: true,
+            onContextClick,
+          },
+          undefined, target);
+
+      const pill = target.querySelector('.title') as HTMLElement;
+      assert.isNotNull(pill);
+      pill.click();
+      sinon.assert.calledOnce(onContextClick);
+    });
+
+    it('calls onContextRemoved when the remove button is clicked', async () => {
+      const target = document.createElement('div');
+      renderElementIntoDOM(target);
+      const onContextRemoved = sinon.stub();
+      const context = new MockContext();
+      AiAssistance.ChatInput.DEFAULT_VIEW(
+          {
+            ...createDefaultViewInput(),
+            context,
+            isContextSelected: true,
+            onContextRemoved,
+          },
+          undefined, target);
+
+      const removeButton = target.querySelector('.remove-context') as HTMLElement;
+      assert.isNotNull(removeButton);
+      removeButton.click();
+      sinon.assert.calledOnce(onContextRemoved);
+    });
+
+    it('calls onContextAdd when the add button is clicked', async () => {
+      const target = document.createElement('div');
+      renderElementIntoDOM(target);
+      const onContextAdd = sinon.stub();
+      const context = new MockContext();
+      AiAssistance.ChatInput.DEFAULT_VIEW(
+          {
+            ...createDefaultViewInput(),
+            context,
+            isContextSelected: false,
+            onContextAdd,
+          },
+          undefined, target);
+
+      const addButton = target.querySelector('.add-context') as HTMLElement;
+      assert.isNotNull(addButton);
+      addButton.click();
+      sinon.assert.calledOnce(onContextAdd);
     });
   });
 });

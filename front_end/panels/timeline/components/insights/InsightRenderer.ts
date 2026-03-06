@@ -7,6 +7,7 @@ import * as UI from '../../../../ui/legacy/legacy.js';
 
 import type {BaseInsightComponent} from './BaseInsightComponent.js';
 import {Cache} from './Cache.js';
+import {CharacterSet} from './CharacterSet.js';
 import {CLSCulprits} from './CLSCulprits.js';
 import {DocumentLatency} from './DocumentLatency.js';
 import {DOMSize} from './DOMSize.js';
@@ -36,6 +37,7 @@ type InsightWidgetElement = UI.Widget.WidgetElement<BaseInsightComponent<Trace.I
  */
 const INSIGHT_NAME_TO_COMPONENT = {
   Cache,
+  CharacterSet,
   CLSCulprits,
   DocumentLatency,
   DOMSize,

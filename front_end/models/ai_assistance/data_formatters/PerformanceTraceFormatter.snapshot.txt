@@ -467,6 +467,7 @@ Here are all the insights that contain some related request from the given range
 - DocumentLatency: news.yahoo.com/ (news.yahoo.com) (eventKey: s-2116, ts: 157423489126)
 - ThirdParties: cmp.js (consent.cmp.oath.com) (eventKey: s-3382, ts: 157423742399), gpt.js (securepubads.g.doubleclick.net) (eventKey: s-6244, ts: 157423760529), loader.js (cdn.taboola.com) (eventKey: s-6352, ts: 157423761978)
 - Cache: prebid-2.0.js (s.yimg.com) (eventKey: s-6279, ts: 157423760925), cmp.js (consent.cmp.oath.com) (eventKey: s-3382, ts: 157423742399), d1irmdsmbztlvx.js (s.yimg.com) (eventKey: s-6185, ts: 157423759200), consent.js (s.yimg.com) (eventKey: s-3384, ts: 157423742450), wnsrvbjmeprtfrnfx.js (s.yimg.com) (eventKey: s-6273, ts: 157423760794)
+- CharacterSet: news.yahoo.com/ (news.yahoo.com) (eventKey: s-2116, ts: 157423489126)
 - LegacyJavaScript: benji-2.2.99.js (s.yimg.com) (eventKey: s-3387, ts: 157423742567), 25fa214.caas-news_web.min.js (s.yimg.com) (eventKey: s-3412, ts: 157423743431), wnsrvbjmeprtfrnfx.js (s.yimg.com) (eventKey: s-6273, ts: 157423760794), consent.js (s.yimg.com) (eventKey: s-3384, ts: 157423742450), news.yahoo.com/ (news.yahoo.com) (eventKey: s-2116, ts: 157423489126)
 === end content
 
@@ -510,6 +511,10 @@ Available insights:
     description: 3rd party code can significantly impact load performance. [Reduce and defer loading of 3rd party code](https://developer.chrome.com/docs/performance/insights/third-parties) to prioritize your page's content.
     relevant trace bounds: {min: 1020034871372, max: 1020035171789}
     example question: Which third parties are having the largest impact on my page performance?
+  - insight name: CharacterSet
+    description: A character encoding declaration is required. It can be done with a meta charset tag in the first 1024 bytes of the HTML or in the Content-Type HTTP response header. [Learn more about declaring the character encoding](https://developer.chrome.com/docs/insights/charset/).
+    relevant trace bounds: {min: 1020034836013, max: 1020034892491}
+    example question: How do I declare a character encoding for my page?
 === end content
 
 Title: PerformanceTraceFormatter formatTraceSummary yahoo-news.json.gz
@@ -617,6 +622,10 @@ Available insights:
     relevant trace bounds: {min: 171608170438, max: 171608877165}
     example question: Show me the most impactful render-blocking requests that I should focus on
     example question: How can I reduce the number of render-blocking requests?
+  - insight name: CharacterSet
+    description: A character encoding declaration is required. It can be done with a meta charset tag in the first 1024 bytes of the HTML or in the Content-Type HTTP response header. [Learn more about declaring the character encoding](https://developer.chrome.com/docs/insights/charset/).
+    relevant trace bounds: {min: 171607584346, max: 171608171143}
+    example question: How do I declare a character encoding for my page?
 
 ## insight set id: NAVIGATION_1
 
@@ -641,6 +650,10 @@ Available insights:
     relevant trace bounds: {min: 171614330544, max: 171615043224}
     example question: Show me the most impactful render-blocking requests that I should focus on
     example question: How can I reduce the number of render-blocking requests?
+  - insight name: CharacterSet
+    description: A character encoding declaration is required. It can be done with a meta charset tag in the first 1024 bytes of the HTML or in the Content-Type HTTP response header. [Learn more about declaring the character encoding](https://developer.chrome.com/docs/insights/charset/).
+    relevant trace bounds: {min: 171613750986, max: 171614330870}
+    example question: How do I declare a character encoding for my page?
 === end content
 
 Title: PerformanceTraceFormatter formatTraceSummary deals with CrUX manager errors
@@ -714,6 +727,10 @@ Available insights:
     description: 3rd party code can significantly impact load performance. [Reduce and defer loading of 3rd party code](https://developer.chrome.com/docs/performance/insights/third-parties) to prioritize your page's content.
     relevant trace bounds: {min: 59728701403, max: 59729465969}
     example question: Which third parties are having the largest impact on my page performance?
+  - insight name: CharacterSet
+    description: A character encoding declaration is required. It can be done with a meta charset tag in the first 1024 bytes of the HTML or in the Content-Type HTTP response header. [Learn more about declaring the character encoding](https://developer.chrome.com/docs/insights/charset/).
+    relevant trace bounds: {min: 59728651057, max: 59728790724}
+    example question: How do I declare a character encoding for my page?
 === end content
 
 Title: PerformanceTraceFormatter formatTraceSummary image-delivery.json.gz
@@ -794,6 +811,10 @@ Available insights:
     description: 3rd party code can significantly impact load performance. [Reduce and defer loading of 3rd party code](https://developer.chrome.com/docs/performance/insights/third-parties) to prioritize your page's content.
     relevant trace bounds: {min: 59728701403, max: 59729465969}
     example question: Which third parties are having the largest impact on my page performance?
+  - insight name: CharacterSet
+    description: A character encoding declaration is required. It can be done with a meta charset tag in the first 1024 bytes of the HTML or in the Content-Type HTTP response header. [Learn more about declaring the character encoding](https://developer.chrome.com/docs/insights/charset/).
+    relevant trace bounds: {min: 59728651057, max: 59728790724}
+    example question: How do I declare a character encoding for my page?
 === end content
 
 Title: PerformanceTraceFormatter formatTraceSummary includes INP insight when there is no navigation

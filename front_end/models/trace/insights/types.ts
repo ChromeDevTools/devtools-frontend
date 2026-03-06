@@ -164,4 +164,5 @@ export const enum InsightKeys {
   VIEWPORT = 'Viewport',
   MODERN_HTTP = 'ModernHTTP',
   CACHE = 'Cache',
+  CHARACTER_SET = 'CharacterSet',
 }

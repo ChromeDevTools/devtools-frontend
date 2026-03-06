@@ -376,47 +376,19 @@ describeWithEnvironment('TraceProcessor', function() {
 
       const orderWithoutMetadata = await getInsightOrder(false);
       assert.deepEqual(orderWithoutMetadata, [
-        'CLSCulprits',
-        'Viewport',
-        'Cache',
-        'ImageDelivery',
-        'INPBreakdown',
-        'LCPBreakdown',
-        'LCPDiscovery',
-        'RenderBlocking',
-        'NetworkDependencyTree',
-        'DocumentLatency',
-        'FontDisplay',
-        'DOMSize',
-        'ThirdParties',
-        'DuplicatedJavaScript',
-        'SlowCSSSelector',
-        'ForcedReflow',
-        'ModernHTTP',
-        'LegacyJavaScript',
+        'CLSCulprits',  'Viewport',     'Cache',          'ImageDelivery',         'INPBreakdown',
+        'LCPBreakdown', 'LCPDiscovery', 'RenderBlocking', 'NetworkDependencyTree', 'DocumentLatency',
+        'FontDisplay',  'DOMSize',      'ThirdParties',   'DuplicatedJavaScript',  'SlowCSSSelector',
+        'ForcedReflow', 'CharacterSet', 'ModernHTTP',     'LegacyJavaScript',
       ]);
 
       const orderWithMetadata = await getInsightOrder(true);
       // Viewport is first, before CLSCulprits, since the field data produces a higher weight for INP than for CLS.
       assert.deepEqual(orderWithMetadata, [
-        'Viewport',
-        'CLSCulprits',
-        'Cache',
-        'ImageDelivery',
-        'INPBreakdown',
-        'LCPBreakdown',
-        'LCPDiscovery',
-        'RenderBlocking',
-        'NetworkDependencyTree',
-        'DocumentLatency',
-        'FontDisplay',
-        'DOMSize',
-        'ThirdParties',
-        'DuplicatedJavaScript',
-        'SlowCSSSelector',
-        'ForcedReflow',
-        'ModernHTTP',
-        'LegacyJavaScript',
+        'Viewport',     'CLSCulprits',  'Cache',          'ImageDelivery',         'INPBreakdown',
+        'LCPBreakdown', 'LCPDiscovery', 'RenderBlocking', 'NetworkDependencyTree', 'DocumentLatency',
+        'FontDisplay',  'DOMSize',      'ThirdParties',   'DuplicatedJavaScript',  'SlowCSSSelector',
+        'ForcedReflow', 'CharacterSet', 'ModernHTTP',     'LegacyJavaScript',
       ]);
     });
   });

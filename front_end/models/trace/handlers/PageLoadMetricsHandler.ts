@@ -40,11 +40,17 @@ let metricScoresByFrameId = new Map<FrameId, Map<AnyNavigationStart, Map<MetricN
  */
 let allMarkerEvents: Types.Events.PageLoadEvent[] = [];
 
+// Grouped by navigation to make it easier for insights to scope checks.
+let metaCharsetCheckEventsByNavigation = new Map<AnyNavigationStart, Types.Events.MetaCharsetCheck[]>();
+let metaCharsetCheckEventsArray: Types.Events.MetaCharsetCheck[] = [];
+
 export function reset(): void {
   metricScoresByFrameId = new Map();
   pageLoadEventsArray = [];
   allMarkerEvents = [];
   selectedLCPCandidateEvents = new Set();
+  metaCharsetCheckEventsByNavigation = new Map();
+  metaCharsetCheckEventsArray = [];
 }
 
 let pageLoadEventsArray: Types.Events.PageLoadEvent[] = [];
@@ -60,6 +66,11 @@ let pageLoadEventsArray: Types.Events.PageLoadEvent[] = [];
 let selectedLCPCandidateEvents = new Set<Types.Events.AnyLargestContentfulPaintCandidate>();
 
 export function handleEvent(event: Types.Events.Event): void {
+  if (Types.Events.isMetaCharsetCheck(event)) {
+    metaCharsetCheckEventsArray.push(event);
+    return;
+  }
+
   if (!Types.Events.eventIsPageLoadEvent(event)) {
     return;
   }
@@ -393,6 +404,23 @@ export async function finalize(): Promise<void> {
       storePageLoadMetricAgainstNavigationId(navigation, pageLoadEvent);
     }
   }
+
+  const {navigationsByFrameId} = metaHandlerData();
+  metaCharsetCheckEventsArray.sort((a, b) => a.ts - b.ts);
+  for (const metaCharsetCheckEvent of metaCharsetCheckEventsArray) {
+    const frameId = metaCharsetCheckEvent.args.data?.frame;
+    if (!frameId) {
+      continue;
+    }
+    const navigation = Helpers.Trace.getNavigationForTraceEvent(metaCharsetCheckEvent, frameId, navigationsByFrameId);
+    if (!navigation) {
+      continue;
+    }
+    const eventsForNavigation =
+        Platform.MapUtilities.getWithDefault(metaCharsetCheckEventsByNavigation, navigation, () => []);
+    eventsForNavigation.push(metaCharsetCheckEvent);
+  }
+
   // NOTE: if you are looking for the TBT calculation, it has temporarily been
   // removed. See crbug.com/1424335 for details.
   const allFinalLCPEvents = gatherFinalLCPEvents();
@@ -421,12 +449,17 @@ export interface PageLoadMetricsData {
    * main frame.
    */
   allMarkerEvents: Types.Events.PageLoadEvent[];
+  /**
+   * MetaCharsetCheck events grouped by navigation.
+   */
+  metaCharsetCheckEventsByNavigation: Map<AnyNavigationStart, Types.Events.MetaCharsetCheck[]>;
 }
 
 export function data(): PageLoadMetricsData {
   return {
     metricScoresByFrameId,
     allMarkerEvents,
+    metaCharsetCheckEventsByNavigation,
   };
 }
 

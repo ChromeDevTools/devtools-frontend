@@ -352,6 +352,7 @@ export class TraceProcessor extends EventTarget {
       SlowCSSSelector: null,
       ForcedReflow: null,
       Cache: null,
+      CharacterSet: null,
       ModernHTTP: null,
       LegacyJavaScript: null,
     };

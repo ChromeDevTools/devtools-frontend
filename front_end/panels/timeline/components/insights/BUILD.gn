@@ -21,6 +21,7 @@ devtools_ui_module("insights") {
     "BaseInsightComponent.ts",
     "CLSCulprits.ts",
     "Cache.ts",
+    "CharacterSet.ts",
     "Checklist.ts",
     "DOMSize.ts",
     "DocumentLatency.ts",

@@ -4,6 +4,7 @@
 
 import * as Host from '../../../core/host/host.js';
 import * as Root from '../../../core/root/root.js';
+import type * as AIAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
 import {assertScreenshot, querySelectorErrorOnMissing, renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import {
   describeWithEnvironment,
@@ -289,6 +290,58 @@ describeWithEnvironment('ChatMessage', () => {
         }
       });
       assert.isNull(target.querySelector('[data-show-walkthrough]'));
+    });
+
+    it('makes the walkthrough button "Show thinking" if there are no widgets', async () => {
+      const messageNoWidgets: AiAssistance.ChatMessage.ModelChatMessage = {
+        entity: AiAssistance.ChatMessage.ChatMessageEntity.MODEL,
+        parts: [{
+          type: 'step',
+          step: {
+            isLoading: false,
+            title: 'Investigating XYZ',
+            code: 'console.log("test")',
+          },
+        }],
+        rpcId: 99,
+      };
+      const target = renderView({
+        isLoading: false,
+        message: messageNoWidgets,
+        walkthrough: {
+          ...DEFAULT_WALKTHROUGH,
+          isInlined: false,
+        }
+      });
+      const button = querySelectorErrorOnMissing(target, '[data-show-walkthrough]');
+      assert.strictEqual(button.innerText, 'Show thinking');
+    });
+
+    it('makes the walkthrough button "Show agent walkthrough" if there are widgets', async () => {
+      const messageWithWidget: AiAssistance.ChatMessage.ModelChatMessage = {
+        entity: AiAssistance.ChatMessage.ChatMessageEntity.MODEL,
+        parts: [{
+          type: 'step',
+          step: {
+            isLoading: false,
+            title: 'Investigating XYZ',
+            code: 'console.log("test")',
+            // Don't need a proper widget for this test
+            widgets: [{} as AIAssistanceModel.AiAgent.ComputedStyleAiWidget],
+          },
+        }],
+        rpcId: 99,
+      };
+      const target = renderView({
+        isLoading: false,
+        message: messageWithWidget,
+        walkthrough: {
+          ...DEFAULT_WALKTHROUGH,
+          isInlined: false,
+        }
+      });
+      const button = querySelectorErrorOnMissing(target, '[data-show-walkthrough]');
+      assert.strictEqual(button.innerText, 'Show agent walkthrough');
     });
 
     it('renders inline walkthrough when inline', () => {

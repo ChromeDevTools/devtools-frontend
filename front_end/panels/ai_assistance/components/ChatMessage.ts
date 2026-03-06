@@ -485,14 +485,18 @@ function renderStepDetails({
 
 function renderWalkthroughSidebarButton(
     input: ChatMessageViewInput,
-    lastStep: Step,
+    steps: Step[],
     ): Lit.LitTemplate {
   const {message, walkthrough} = input;
-  if (walkthrough.isInlined) {
+  const lastStep = steps.at(-1);
+  if (walkthrough.isInlined || !lastStep) {
     return Lit.nothing;
   }
+
+  const hasOneStepWithWidget = steps.some(step => step.widgets?.length);
   const title = walkthroughTitle({
     isLoading: input.isLoading,
+    hasWidgets: hasOneStepWithWidget,
     lastStep,
   });
 
@@ -537,7 +541,7 @@ function renderWalkthroughUI(input: ChatMessageViewInput, steps: Step[]): Lit.Li
   // If the walkthrough is in the sidebar, we render a button into the
   // ChatView to open it.
   const openWalkThroughSidebarButton =
-      !input.walkthrough.isInlined ? renderWalkthroughSidebarButton(input, lastStep) : Lit.nothing;
+      !input.walkthrough.isInlined ? renderWalkthroughSidebarButton(input, steps) : Lit.nothing;
 
   // If there are side-effect steps, and the walkthrough is not open, we render
   // those inline so that the user can see them and approve them.

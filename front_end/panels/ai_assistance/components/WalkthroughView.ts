@@ -27,9 +27,13 @@ const UIStrings = {
    */
   title: 'Investigation steps',
   /**
-   * @description Title for the button that shows the thinking process (walkthrough).
+   * @description Title for the button that shows the walkthrough when there are no widgets in the walkthrough.
    */
   showThinking: 'Show thinking',
+  /**
+   * @description Title for the button that shows the walkthrough when there are widgets in the walkthrough.
+   */
+  showAgentWalkthrough: 'Show agent walkthrough',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/ai_assistance/components/WalkthroughView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -46,10 +50,16 @@ export interface ViewInput {
 
 export function walkthroughTitle(input: {
   isLoading: boolean,
+  hasWidgets: boolean,
   lastStep: Step,
 }): string {
-  const title = input.isLoading ? titleForStep(input.lastStep) : lockedString(UIStrings.showThinking);
-  return title;
+  if (input.isLoading) {
+    return titleForStep(input.lastStep);
+  }
+  if (input.hasWidgets) {
+    return lockedString(UIStrings.showAgentWalkthrough);
+  }
+  return lockedString(UIStrings.showThinking);
 }
 
 function renderInlineWalkthrough(input: ViewInput, stepsOutput: Lit.LitTemplate, steps: Step[]): Lit.LitTemplate {
@@ -62,12 +72,14 @@ function renderInlineWalkthrough(input: ViewInput, stepsOutput: Lit.LitTemplate,
     input.onToggle((event.target as HTMLDetailsElement).open);
   }
 
+  const hasWidgets = steps.some(s => s.widgets?.length);
+
   // clang-format off
   return html`
     <details class="walkthrough-inline" ?open=${input.isExpanded} @toggle=${onToggle}>
       <summary>
         ${input.isLoading ? html`<devtools-spinner></devtools-spinner>` : Lit.nothing}
-        ${walkthroughTitle({isLoading: input.isLoading, lastStep,})}
+        ${walkthroughTitle({isLoading: input.isLoading, lastStep, hasWidgets})}
         <devtools-icon name="chevron-down"></devtools-icon>
       </summary>
       ${stepsOutput}

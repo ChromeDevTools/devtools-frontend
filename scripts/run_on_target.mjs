@@ -81,14 +81,20 @@ if (
 }
 
 if (!skipNinja) {
+  const ninjaCommand = process.platform === 'win32' ? process.env.ComSpec ?? 'cmd.exe' : 'autoninja';
+  const ninjaArgs = process.platform === 'win32' ? ['/c', 'autoninja', '-C', cwd, script] : ['-C', cwd, script];
   const { error, status, stdout, stderr } = childProcess.spawnSync(
-    'autoninja',
-    ['-C', cwd, script],
+    ninjaCommand,
+    ninjaArgs,
     { stdio: debug ? 'inherit' : 'pipe', cwd: sourceRoot },
   );
   if (status || error) {
-    console.log(stdout.toString());
-    console.log(stderr.toString());
+    if (stdout) {
+      console.log(stdout.toString());
+    }
+    if (stderr) {
+      console.log(stderr.toString());
+    }
     if (error) {
       console.error(error);
     }

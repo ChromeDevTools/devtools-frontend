@@ -103,18 +103,38 @@ Root.Runtime.experiments.registerHostExperiment({
 
 `requiresChromeRestart` should be set to `true` if the `base::Feature` is used for conditionally
 running code in the Chromium repository as well. If it only affects code paths in the DevTools
-repository, `requiresChromeRestart` can be set to `false`. This means that toggling the
+repository, `requiresChromeRestart` should be set to `false`. This means that toggling the
 experimental feature requires only reloading DevTools and not restarting Chrome.
 
 You may also pass in two additional arguments which can be used to link users to documentation and
-a way to provide feedback.
+to a place for providing feedback.
 
 You must also add the experiment to [UserMetrics.ts](https://crsrc.org/c/third_party/devtools-frontend/src/front_end/core/host/UserMetrics.ts;l=807).
 Add an entry to the `DevToolsExperiments` enum, incrementing the `MAX_VALUE` by 1 and assigning the
-un-incremented value to your experiment. There are gaps in the values assigned to experiments. This
-is explained by the fact that expired experiments are removed from the codebase.
+un-incremented value to your experiment (the gaps in the values assigned to experiments are caused
+by expired experiments which are no longer part of the codebase).
 
-#### Step 2: Add the experiment to enums.xml in the Chromium repository
+#### Step 2: Update UI bindings to allow toggling the experiment from the DevTools UI
+
+In the scenario of allowing users to toggle the experiment from the DevTools UI, when assembling
+the host config to be sent to DevTools, use the `GetFeatureStateForDevTools` helper to determine
+the enabled/disabled state of the experiment.
+
+```cxx
+response_dict.Set(
+  "devToolsNewFeature",
+  base::DictValue().Set(
+    "enabled",
+    GetFeatureStateForDevTools(
+      ::features::kDevToolsNewFeature,
+      enabled_by_flags,
+      disabled_by_flags
+    )
+  )
+);
+```
+
+#### Step 3: Add the experiment to enums.xml in the Chromium repository
 
 In Chromium, edit [tools/metrics/histograms/metadata/dev/enums.xml](https://crsrc.org/c/tools/metrics/histograms/metadata/dev/enums.xml;l=898).
 Find the enum titled `DevToolsExperiments`, and add a new entry. Make sure that the value matches the one from

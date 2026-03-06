@@ -623,6 +623,7 @@ export const generatedProperties = [
    "page-margin-safety",
    "page-orientation",
    "paint-order",
+   "path-length",
    "pathname",
    "pattern",
    "perspective",
@@ -3573,6 +3574,12 @@ export const generatedProperties = [
    "markers"
   ],
   "name": "paint-order"
+ },
+ {
+  "keywords": [
+   "none"
+  ],
+  "name": "path-length"
  },
  {
   "name": "pathname"
@@ -6588,6 +6595,11 @@ export const generatedPropertyValues = {
    "fill",
    "stroke",
    "markers"
+  ]
+ },
+ "path-length": {
+  "values": [
+   "none"
   ]
  },
  "perspective": {

@@ -3149,7 +3149,7 @@ export const NativeFunctions = [
   },
   {
     name: "initKeyboardEvent",
-    signatures: [["typeArg","?bubblesArg","?cancelableArg","?viewArg","?keyArg","?locationArg","?ctrlKey","?altKey","?shiftKey","?metaKey"]]
+    signatures: [["typeArg","?bubblesArg","?cancelableArg","?viewArg","?keyArg","?locationArg","?ctrlKey","?altKey","?shiftKey","?metaKey"],["type","?bubbles","?cancelable","?view","?keyIdentifier","?location","?ctrlKey","?altKey","?shiftKey","?metaKey"]]
   },
   {
     name: "setKeyframes",
@@ -4183,7 +4183,7 @@ export const NativeFunctions = [
   },
   {
     name: "initUIEvent",
-    signatures: [["typeArg","?bubblesArg","?cancelableArg","?viewArg","?detailArg"],["type","?bubbles","?cancelable","?view","?detail"]]
+    signatures: [["typeArg","?bubblesArg","?cancelableArg","?viewArg","?detailArg"]]
   },
   {
     name: "getTranslatedShaderSource",
@@ -6818,6 +6818,10 @@ export const NativeFunctions = [
     signatures: [["type","?eventInitDict"]]
   },
   {
+    name: "FocusEvent",
+    signatures: [["type","?eventInitDict"]]
+  },
+  {
     name: "HashChangeEvent",
     signatures: [["type","?eventInitDict"]]
   },
@@ -6827,6 +6831,10 @@ export const NativeFunctions = [
   },
   {
     name: "InterestEvent",
+    signatures: [["type","?eventInitDict"]]
+  },
+  {
+    name: "KeyboardEvent",
     signatures: [["type","?eventInitDict"]]
   },
   {
@@ -6866,7 +6874,7 @@ export const NativeFunctions = [
     signatures: [["type","?eventInitDict"]]
   },
   {
-    name: "UIEvent",
+    name: "TouchEvent",
     signatures: [["type","?eventInitDict"]]
   },
   {

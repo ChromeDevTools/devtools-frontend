@@ -2937,6 +2937,7 @@ export const knownContextValues = new Set([
   'patch-widget.save-all',
   'patch-widget.workspace',
   'path',
+  'path-length',
   'pathname',
   'pattern',
   'pause',

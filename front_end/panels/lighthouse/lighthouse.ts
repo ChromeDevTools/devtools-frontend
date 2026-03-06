@@ -11,6 +11,7 @@ import * as LighthouseReportRenderer from './LighthouseReportRenderer.js';
 import * as LighthouseReportSelector from './LighthouseReportSelector.js';
 import * as LighthouseStartView from './LighthouseStartView.js';
 import * as LighthouseStatusView from './LighthouseStatusView.js';
+import * as LighthouseTimespanView from './LighthouseTimespanView.js';
 import * as RadioSetting from './RadioSetting.js';
 
 export {
@@ -21,5 +22,6 @@ export {
   LighthouseReportSelector,
   LighthouseStartView,
   LighthouseStatusView,
+  LighthouseTimespanView,
   RadioSetting,
 };

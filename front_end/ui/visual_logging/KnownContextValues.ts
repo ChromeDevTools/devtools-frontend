@@ -3845,6 +3845,7 @@ export const knownContextValues = new Set([
   'test-combo-box-setting',
   'test-device',
   'test-font',
+  'test-radio-setting',
   'test-setting',
   'test-setting-true',
   'test-sidebar',

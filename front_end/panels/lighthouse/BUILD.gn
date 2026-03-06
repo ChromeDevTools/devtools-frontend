@@ -93,6 +93,9 @@ devtools_ui_module("unittests") {
     "LighthousePanel.test.ts",
     "LighthouseProtocolService.test.ts",
     "LighthouseReportRenderer.test.ts",
+    "LighthouseStartView.test.ts",
+    "LighthouseTimespanView.test.ts",
+    "RadioSetting.test.ts",
   ]
 
   deps = [

@@ -7,6 +7,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Geometry from '../../models/geometry/geometry.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import {Directives, html, render} from '../../ui/lit/lit.js';
 
 import lighthouseDialogStyles from './lighthouseDialog.css.js';
 import type {LighthousePanel} from './LighthousePanel.js';
@@ -36,6 +37,43 @@ const UIStrings = {
 
 const str_ = i18n.i18n.registerUIStrings('panels/lighthouse/LighthouseTimespanView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+
+const renderTimespanView = (
+    input: {
+      cancelButton: Element,
+      endButton: Element,
+    },
+    output: {
+      statusHeader?: HTMLElement,
+      contentContainer?: HTMLElement,
+    },
+    target: ShadowRoot,
+    ): void => {
+  // clang-format off
+  render(
+    html`
+      <div class="lighthouse-view vbox">
+        <span
+          ${Directives.ref(e => {
+            output.statusHeader = e as HTMLElement;
+          })}
+          class="header"
+        ></span>
+        <span
+          ${Directives.ref(e => {
+            output.contentContainer = e as HTMLElement;
+          })}
+          class="lighthouse-dialog-text"
+        ></span>
+        <div class="lighthouse-action-buttons hbox">
+          ${input.cancelButton} ${input.endButton}
+        </div>
+      </div>
+    `,
+    target,
+  );
+  // clang-format on
+};
 
 export class TimespanView extends UI.Dialog.Dialog {
   private panel: LighthousePanel;
@@ -90,20 +128,21 @@ export class TimespanView extends UI.Dialog.Dialog {
       className: 'cancel',
       jslogContext: 'lighthouse.cancel',
     });
-    const fragment = UI.Fragment.Fragment.build`
-  <div class="lighthouse-view vbox">
-  <span $="status-header" class="header"></span>
-  <span $="call-to-action" class="lighthouse-dialog-text"></span>
-  <div class="lighthouse-action-buttons hbox">
-  ${cancelButton}
-  ${this.endButton}
-  </div>
-  </div>
-  `;
 
-    this.statusHeader = fragment.$('status-header');
-    this.contentContainer = fragment.$('call-to-action');
-    dialogRoot.appendChild(fragment.element());
+    const output = {
+      statusHeader: undefined as HTMLElement | undefined,
+      contentContainer: undefined as HTMLElement | undefined,
+    };
+
+    renderTimespanView(
+        {
+          cancelButton,
+          endButton: this.endButton,
+        },
+        output, dialogRoot);
+
+    this.statusHeader = output.statusHeader ?? null;
+    this.contentContainer = output.contentContainer ?? null;
 
     this.setSizeBehavior(UI.GlassPane.SizeBehavior.SET_EXACT_WIDTH_MAX_HEIGHT);
     this.setMaxContentSize(new Geometry.Size(500, 400));

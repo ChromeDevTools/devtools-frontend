@@ -2,10 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-imperative-dom-api */
+/* eslint-disable @devtools/no-lit-render-outside-of-view */
 
 import type * as Common from '../../core/common/common.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import {Directives, html, render} from '../../ui/lit/lit.js';
 
+const {ifDefined} = Directives;
 interface RadioOption {
   value: string;
   label: () => Common.UIString.LocalizedString;
@@ -28,25 +31,36 @@ export class RadioSetting {
     UI.ARIAUtils.markAsRadioGroup(this.element);
 
     this.radioElements = [];
-    for (const option of this.options) {
-      const fragment = UI.Fragment.Fragment.build`
-  <label $="label" class="lighthouse-radio">
-  <input $="input" type="radio" value=${option.value} name=${setting.name}>
-  <span $="span" class="lighthouse-radio-text">${option.label()}</span>
-  </label>
-  `;
-
-      this.element.appendChild(fragment.element());
-
-      const tooltip = option.tooltip?.() || description;
-      if (description) {
-        UI.Tooltip.Tooltip.install(fragment.$('input') as HTMLElement, tooltip);
-        UI.Tooltip.Tooltip.install(fragment.$('span') as HTMLElement, tooltip);
-      }
-      const radioElement = fragment.$('input') as HTMLInputElement;
-      radioElement.addEventListener('change', this.valueChanged.bind(this));
-      this.radioElements.push(radioElement);
-    }
+    // clang-format off
+    render(
+      html`
+        ${this.options.map(option => {
+          const tooltip = option.tooltip?.() || description;
+          return html`
+            <label class="lighthouse-radio">
+              <input
+                type="radio"
+                value=${option.value}
+                name=${setting.name}
+                @change=${this.valueChanged.bind(this)}
+                title=${ifDefined(description ? tooltip : undefined)}
+                ${Directives.ref(el => {
+                    this.radioElements.push(el as HTMLInputElement);
+                  }
+                )}
+              />
+              <span
+                class="lighthouse-radio-text"
+               title=${ifDefined(description ? tooltip : undefined)}
+                >${option.label()}</span
+              >
+            </label>
+          `;
+        })}
+      `,
+      this.element,
+    );
+    // clang-format on
 
     this.ignoreChangeEvents = false;
     this.selectedIndex = -1;

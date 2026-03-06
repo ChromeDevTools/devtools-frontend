@@ -85,6 +85,7 @@ devtools_ui_module("unittests") {
   sources = [
     "MainView.test.ts",
     "PlayerListView.test.ts",
+    "PlayerMessagesView.test.ts",
     "TickingFlameChartHelpers.test.ts",
   ]
 

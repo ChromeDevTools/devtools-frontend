@@ -41,6 +41,7 @@ export interface ViewInput {
   isInlined: boolean;
   isExpanded: boolean;
   onToggle: (isOpen: boolean) => void;
+  onOpen: (message: ModelChatMessage) => void;
 }
 
 export function walkthroughTitle(input: {
@@ -155,6 +156,7 @@ export class WalkthroughView extends UI.Widget.Widget {
   #isLoading = false;
   #markdownRenderer: MarkdownLitRenderer|null = null;
   #onToggle: (isOpen: boolean) => void = () => {};
+  #onOpen: (message: ModelChatMessage) => void = () => {};
   #isInlined = false;
   #isExpanded = false;
 
@@ -183,6 +185,15 @@ export class WalkthroughView extends UI.Widget.Widget {
 
   get message(): ModelChatMessage|null {
     return this.#message;
+  }
+
+  get onOpen(): (message: ModelChatMessage) => void {
+    return this.#onOpen;
+  }
+
+  set onOpen(onOpen: (message: ModelChatMessage) => void) {
+    this.#onOpen = onOpen;
+    this.requestUpdate();
   }
 
   set message(message: ModelChatMessage|null) {
@@ -214,6 +225,7 @@ export class WalkthroughView extends UI.Widget.Widget {
           isLoading: this.#isLoading,
           markdownRenderer: this.#markdownRenderer,
           onToggle: this.#onToggle,
+          onOpen: this.#onOpen,
           isInlined: this.#isInlined,
           isExpanded: this.#isExpanded,
           message: this.#message,

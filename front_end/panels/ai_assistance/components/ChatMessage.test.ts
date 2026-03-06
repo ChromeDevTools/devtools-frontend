@@ -42,6 +42,7 @@ describeWithEnvironment('ChatMessage', () => {
     onToggle: () => {},
     isExpanded: false,
     isInlined: false,
+    activeMessage: null,
   };
 
   it('should show the feedback form when canShowFeedbackForm is true', async () => {

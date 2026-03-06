@@ -278,6 +278,7 @@ export interface MessageInput {
     isExpanded: boolean,
     onToggle: (isOpen: boolean) => void,
     isInlined: boolean,
+    activeMessage: ModelChatMessage|null,
   };
 }
 
@@ -505,7 +506,7 @@ function renderWalkthroughSidebarButton(
         .jslogContext=${walkthrough.isExpanded ? 'ai-hide-walkthrough-sidebar' : 'ai-show-walkthrough-sidebar'}
         data-show-walkthrough
         @click=${() => {
-          if(walkthrough.isExpanded) {
+          if(walkthrough.activeMessage === input.message && walkthrough.isExpanded) {
             walkthrough.onToggle(false);
           } else {
             // Can't just toggle the visibility here; we need to ensure we
@@ -554,6 +555,9 @@ function renderWalkthroughUI(input: ChatMessageViewInput, steps: Step[]): Lit.Li
 
   // If the walkthrough is inlined (narrow width screens), render it here.
   // Note that we force it open if there is a side-effect.
+
+  const isExpanded = (input.walkthrough.isExpanded && input.walkthrough.activeMessage === input.message) ||
+      steps.some(s => s.requestApproval);
   // clang-format off
   const walkthroughInline = input.walkthrough.isInlined ? html`
     <div class="walkthrough-container">
@@ -562,9 +566,9 @@ function renderWalkthroughUI(input: ChatMessageViewInput, steps: Step[]): Lit.Li
         isLoading: input.isLoading && input.isLastMessage,
         markdownRenderer: input.markdownRenderer,
         isInlined: true,
-        isExpanded: input.isLastMessage &&
-            (input.walkthrough.isExpanded || steps.some(step => Boolean(step.requestApproval))),
+        isExpanded,
         onToggle: input.walkthrough.onToggle,
+        onOpen: input.walkthrough.onOpen,
       })}></devtools-widget>
     </div>
   ` : Lit.nothing;
@@ -994,6 +998,7 @@ export class ChatMessage extends UI.Widget.Widget {
     onToggle: () => {},
     isInlined: false,
     isExpanded: false,
+    activeMessage: null,
   };
 
   #suggestionsResizeObserver = new ResizeObserver(() => this.#handleSuggestionsScrollOrResize());

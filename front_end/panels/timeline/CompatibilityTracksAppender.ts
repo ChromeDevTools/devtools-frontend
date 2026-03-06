@@ -36,17 +36,6 @@ export interface PopoverInfo {
   additionalElements: HTMLElement[];
 }
 
-let showPostMessageEvents: boolean|undefined;
-function isShowPostMessageEventsEnabled(): boolean {
-  // Everytime the experiment is toggled devtools is reloaded so the
-  // cache is updated automatically.
-  if (showPostMessageEvents === undefined) {
-    showPostMessageEvents =
-        Root.Runtime.experiments.isEnabled(Root.ExperimentNames.ExperimentName.TIMELINE_SHOW_POST_MESSAGE_EVENTS);
-  }
-  return showPostMessageEvents;
-}
-
 export function entryIsVisibleInTimeline(
     entry: Trace.Types.Events.Event, parsedTrace?: Trace.TraceModel.ParsedTrace): boolean {
   if (parsedTrace?.data.Meta.traceIsGeneric) {
@@ -64,10 +53,8 @@ export function entryIsVisibleInTimeline(
     return true;
   }
 
-  if (isShowPostMessageEventsEnabled()) {
-    if (Trace.Types.Events.isSchedulePostMessage(entry) || Trace.Types.Events.isHandlePostMessage(entry)) {
-      return true;
-    }
+  if (Trace.Types.Events.isSchedulePostMessage(entry) || Trace.Types.Events.isHandlePostMessage(entry)) {
+    return true;
   }
 
   if (Trace.Types.Extensions.isSyntheticExtensionEntry(entry)) {

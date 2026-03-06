@@ -822,7 +822,6 @@ export enum DevtoolsExperiments {
   'authored-deployed-grouping' = 63,
   'just-my-code' = 65,
   'use-source-map-scopes' = 76,
-  'timeline-show-postmessage-events' = 86,
   'timeline-debug-mode' = 93,
   'durable-messages' = 110,
   'jpeg-xl' = 111,

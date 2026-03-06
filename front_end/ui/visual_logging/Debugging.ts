@@ -241,7 +241,7 @@ export function processEventForIntuitiveDebugging(
 
 export function processEventForTestDebugging(
     event: EventType, state: LoggingState|null, _extraInfo?: EventAttributes): void {
-  if (event !== 'SettingAccess' && event !== 'FunctionCall') {
+  if (event !== 'SettingAccess' && event !== 'FunctionCall' && event !== 'Resize') {
     lastImpressionLogEntry = null;
   }
   maybeLogDebugEvent({interaction: event, veid: state?.veid || 0});

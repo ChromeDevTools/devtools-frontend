@@ -47,6 +47,7 @@
     "../../../../../../front_end/core/sdk/CSSMedia.ts",
     "../../../../../../front_end/core/sdk/CSSMetadata.ts",
     "../../../../../../front_end/core/sdk/CSSModel.ts",
+    "../../../../../../front_end/core/sdk/CSSNavigation.ts",
     "../../../../../../front_end/core/sdk/CSSProperty.ts",
     "../../../../../../front_end/core/sdk/CSSPropertyParser.ts",
     "../../../../../../front_end/core/sdk/CSSPropertyParserMatchers.ts",

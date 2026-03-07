@@ -15,6 +15,7 @@ import { MixedContentIssue } from './MixedContentIssue.js';
 import { PartitioningBlobURLIssue } from './PartitioningBlobURLIssue.js';
 import { PermissionElementIssue } from './PermissionElementIssue.js';
 import { QuirksModeIssue } from './QuirksModeIssue.js';
+import { SelectivePermissionsInterventionIssue } from './SelectivePermissionsInterventionIssue.js';
 import { SharedArrayBufferIssue } from './SharedArrayBufferIssue.js';
 export interface IssuesProvider extends Common.EventTarget.EventTarget<IssuesManagerEventsTypes> {
     issues(): Iterable<Issue>;
@@ -59,6 +60,7 @@ export declare class AggregatedIssue extends Issue {
     getCspIssues(): Iterable<ContentSecurityPolicyIssue>;
     getDeprecationIssues(): Iterable<DeprecationIssue>;
     requests(): Iterable<Protocol.Audits.AffectedRequest>;
+    getSelectivePermissionsInterventionIssues(): Iterable<SelectivePermissionsInterventionIssue>;
     getSharedArrayBufferIssues(): Iterable<SharedArrayBufferIssue>;
     getQuirksModeIssues(): Iterable<QuirksModeIssue>;
     getAttributionReportingIssues(): ReadonlySet<AttributionReportingIssue>;

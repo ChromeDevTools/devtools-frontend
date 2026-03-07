@@ -680,9 +680,15 @@ declare abstract class ReactiveElement extends HTMLElement implements ReactiveCo
      * @param oldValue old value of requesting property
      * @param options property options to use instead of the previously
      *     configured options
+     * @param useNewValue if true, the newValue argument is used instead of
+     *     reading the property value. This is important to use if the reactive
+     *     property is a standard private accessor, as opposed to a plain
+     *     property, since private members can't be dynamically read by name.
+     * @param newValue the new value of the property. This is only used if
+     *     `useNewValue` is true.
      * @category updates
      */
-    requestUpdate(name?: PropertyKey, oldValue?: unknown, options?: PropertyDeclaration): void;
+    requestUpdate(name?: PropertyKey, oldValue?: unknown, options?: PropertyDeclaration, useNewValue?: boolean, newValue?: unknown): void;
     /**
      * Sets up the element to asynchronously update.
      */

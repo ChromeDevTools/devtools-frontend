@@ -149,6 +149,7 @@
   "selectElementAccessibilityInteractiveContentLegendChild.md",
   "selectElementAccessibilityInteractiveContentOptionChild.md",
   "selectElementAccessibilityNonPhrasingContentOptionChild.md",
+  "selectivePermissionsIntervention.md",
   "summaryElementAccessibilityInteractiveContentSummaryDescendant.md",
   "sharedArrayBuffer.md",
   "stylesheetLateImport.md",

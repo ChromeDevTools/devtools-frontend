@@ -22,6 +22,7 @@ import { PartitioningBlobURLIssue } from './PartitioningBlobURLIssue.js';
 import { PermissionElementIssue } from './PermissionElementIssue.js';
 import { PropertyRuleIssue } from './PropertyRuleIssue.js';
 import { QuirksModeIssue } from './QuirksModeIssue.js';
+import { SelectivePermissionsInterventionIssue } from './SelectivePermissionsInterventionIssue.js';
 import { SharedArrayBufferIssue } from './SharedArrayBufferIssue.js';
 import { SharedDictionaryIssue } from './SharedDictionaryIssue.js';
 import { SourceFrameIssuesManager } from './SourceFrameIssuesManager.js';
@@ -133,6 +134,10 @@ const issueCodeHandlers = new Map([
     [
         "PermissionElementIssue" /* Protocol.Audits.InspectorIssueCode.PermissionElementIssue */,
         PermissionElementIssue.fromInspectorIssue,
+    ],
+    [
+        "SelectivePermissionsInterventionIssue" /* Protocol.Audits.InspectorIssueCode.SelectivePermissionsInterventionIssue */,
+        SelectivePermissionsInterventionIssue.fromInspectorIssue,
     ],
 ]);
 /**

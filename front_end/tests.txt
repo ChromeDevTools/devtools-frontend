@@ -194,6 +194,7 @@ models/har/Writer.test.js
 models/heap_snapshot_model/heap_snapshot_model.test.js
 models/issues_manager/CheckFormsIssuesTrigger.test.js
 models/issues_manager/IssuesManager.test.js
+models/issues_manager/SelectivePermissionsInterventionIssue.test.js
 models/javascript_metadata/JavaScriptMetadata.test.js
 models/live-metrics/LiveMetrics.test.js
 models/logs/NetworkLog.test.js
@@ -441,6 +442,7 @@ panels/emulation/DeviceModeToolbar.test.js
 panels/emulation/MediaQueryInspector.test.js
 panels/event_listeners/EventListenersView.test.js
 panels/explain/components/ConsoleInsight.test.js
+panels/issues/AffectedSelectivePermissionsInterventionView.test.js
 panels/issues/IssueView.test.js
 panels/issues/IssuesPane.test.js
 panels/layer_viewer/layer_viewer.test.js
@@ -449,6 +451,9 @@ panels/lighthouse/LighthouseController.test.js
 panels/lighthouse/LighthousePanel.test.js
 panels/lighthouse/LighthouseProtocolService.test.js
 panels/lighthouse/LighthouseReportRenderer.test.js
+panels/lighthouse/LighthouseStartView.test.js
+panels/lighthouse/LighthouseTimespanView.test.js
+panels/lighthouse/RadioSetting.test.js
 panels/linear_memory_inspector/LinearMemoryInspectorController.test.js
 panels/linear_memory_inspector/LinearMemoryInspectorPane.test.js
 panels/linear_memory_inspector/components/LinearMemoryHighlightChipList.test.js
@@ -459,6 +464,7 @@ panels/linear_memory_inspector/components/ValueInterpreterDisplay.test.js
 panels/linear_memory_inspector/components/ValueInterpreterSettings.test.js
 panels/media/MainView.test.js
 panels/media/PlayerListView.test.js
+panels/media/PlayerMessagesView.test.js
 panels/media/TickingFlameChartHelpers.test.js
 panels/mobile_throttling/NetworkThrottlingSelector.test.js
 panels/mobile_throttling/ThrottlingManager.test.js

@@ -698,6 +698,7 @@ export class StylePropertiesSection {
         let scopeIndex = 0;
         let supportsIndex = 0;
         let nestingIndex = 0;
+        let navigationsIndex = 0;
         this.nestingLevel = 0;
         for (const ruleType of rule.ruleTypes) {
             let ancestorRuleElement;
@@ -719,6 +720,9 @@ export class StylePropertiesSection {
                     break;
                 case "StartingStyleRule" /* Protocol.CSS.CSSRuleType.StartingStyleRule */:
                     ancestorRuleElement = this.createStartingStyleElement();
+                    break;
+                case "NavigationRule" /* Protocol.CSS.CSSRuleType.NavigationRule */:
+                    ancestorRuleElement = this.createNavigationElement(rule.navigations[navigationsIndex++]);
                     break;
             }
             if (ancestorRuleElement) {
@@ -875,6 +879,23 @@ export class StylePropertiesSection {
             jslogContext: 'supports',
         };
         return supportsElement;
+    }
+    createNavigationElement(navigation) {
+        if (!navigation.text) {
+            return;
+        }
+        let onQueryTextClick;
+        if (navigation.styleSheetId) {
+            onQueryTextClick = this.handleQueryRuleClick.bind(this, navigation);
+        }
+        const navigationElement = new ElementsComponents.CSSQuery.CSSQuery();
+        navigationElement.data = {
+            queryPrefix: '@navigation',
+            queryText: navigation.text,
+            onQueryTextClick,
+            jslogContext: 'navigation',
+        };
+        return navigationElement;
     }
     createNestingElement(nestingSelector) {
         if (!nestingSelector) {
@@ -1232,6 +1253,9 @@ export class StylePropertiesSection {
             }
             else if (query instanceof SDK.CSSScope.CSSScope) {
                 success = await cssModel.setScopeText(query.styleSheetId, range, newContent);
+            }
+            else if (query instanceof SDK.CSSNavigation.CSSNavigation) {
+                success = await cssModel.setNavigationText(query.styleSheetId, range, newContent);
             }
             else {
                 success = await cssModel.setMediaText(query.styleSheetId, range, newContent);
@@ -1598,6 +1622,9 @@ export class FunctionRuleSection extends StylePropertiesSection {
         }
         if ('supports' in condition) {
             return this.createSupportsElement(condition.supports);
+        }
+        if ('navigation' in condition) {
+            return this.createNavigationElement(condition.navigation);
         }
         return;
     }

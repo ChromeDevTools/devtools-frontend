@@ -72,7 +72,7 @@ export default `/*
 }
 
 .status-error-box {
-  font-family: monospace;
+  font-family: var(--monospace-font-family);
   border: 1px solid var(--sys-color-error-outline);
   border-radius: 5px;
   padding: 4px;

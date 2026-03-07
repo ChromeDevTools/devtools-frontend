@@ -465,6 +465,24 @@ export class CSSModel extends SDKModel {
             return false;
         }
     }
+    async setNavigationText(styleSheetId, range, newNavigationText) {
+        Host.userMetrics.actionTaken(Host.UserMetrics.Action.StyleRuleEdited);
+        try {
+            await this.ensureOriginalStyleSheetText(styleSheetId);
+            const { navigation } = await this.agent.invoke_setNavigationText({ styleSheetId, range, text: newNavigationText });
+            if (!navigation) {
+                return false;
+            }
+            this.#domModel.markUndoableState();
+            const edit = new Edit(styleSheetId, range, newNavigationText, navigation);
+            this.fireStyleSheetChanged(styleSheetId, edit);
+            return true;
+        }
+        catch (e) {
+            console.error(e);
+            return false;
+        }
+    }
     async setScopeText(styleSheetId, range, newScopeText) {
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.StyleRuleEdited);
         try {

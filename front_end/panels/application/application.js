@@ -6106,7 +6106,8 @@ var PreloadingView_exports = {};
 __export(PreloadingView_exports, {
   PreloadingAttemptView: () => PreloadingAttemptView,
   PreloadingRuleSetView: () => PreloadingRuleSetView,
-  PreloadingSummaryView: () => PreloadingSummaryView
+  PreloadingSummaryView: () => PreloadingSummaryView,
+  applyFilterText: () => applyFilterText
 });
 import "./../../ui/kit/kit.js";
 import "./../../ui/legacy/legacy.js";
@@ -6115,6 +6116,7 @@ import * as i18n25 from "./../../core/i18n/i18n.js";
 import * as Platform4 from "./../../core/platform/platform.js";
 import { assertNotNullOrUndefined as assertNotNullOrUndefined2 } from "./../../core/platform/platform.js";
 import * as SDK14 from "./../../core/sdk/sdk.js";
+import * as TextUtils from "./../../models/text_utils/text_utils.js";
 import * as Buttons5 from "./../../ui/components/buttons/buttons.js";
 import * as UI10 from "./../../ui/legacy/legacy.js";
 import { Directives as Directives3, html as html5, render as render4 } from "./../../ui/lit/lit.js";
@@ -6514,6 +6516,16 @@ function ruleSetTagOrLocationShort(ruleSet, pageURL2) {
   }
   return ruleSetLocationShort(ruleSet, pageURL2);
 }
+function capitalizedAction(action5) {
+  switch (action5) {
+    case "Prefetch":
+      return i18n23.i18n.lockedString("Prefetch");
+    case "Prerender":
+      return i18n23.i18n.lockedString("Prerender");
+    case "PrerenderUntilScript":
+      return i18n23.i18n.lockedString("Prerender until script");
+  }
+}
 
 // gen/front_end/panels/application/preloading/PreloadingView.js
 import * as PreloadingHelper from "./preloading/helper/helper.js";
@@ -6545,6 +6557,10 @@ var preloadingView_css_default = `/*
 
   button.toolbar-has-dropdown {
     margin: var(--sys-size-2) 0;
+  }
+
+  .toolbar-filter {
+    max-width: var(--sys-size-29);
   }
 }
 
@@ -6848,6 +6864,53 @@ var PreloadingRuleSetView = class extends UI10.Widget.VBox {
     return this.ruleSetGrid;
   }
 };
+function applyFilterText(filterText, rows) {
+  const trimmedFilter = filterText.trim();
+  if (trimmedFilter === "") {
+    return rows;
+  }
+  const FILTER_KEYS = ["url", "action", "status"];
+  const parser = new TextUtils.TextUtils.FilterParser([...FILTER_KEYS]);
+  const query = parser.parse(filterText.toLowerCase());
+  const lastTerm = query.at(-1);
+  if (!lastTerm) {
+    return rows;
+  }
+  const isKeyWithNoValue = (lastTerm.key === void 0 || lastTerm.key === null) && FILTER_KEYS.some((key) => lastTerm.text === `${key}:`);
+  if (isKeyWithNoValue) {
+    query.pop();
+  }
+  if (query.length === 0) {
+    return rows;
+  }
+  return rows.filter((row) => {
+    const attempt = row.pipeline.getOriginallyTriggered();
+    const url = attempt.key.url.toLowerCase();
+    const action5 = capitalizedAction(attempt.action).toLowerCase();
+    const status = PreloadingUIUtils.status(attempt.status).toLowerCase();
+    return query.every((term) => {
+      if (term.text === void 0 || term.text === null || term.text === "") {
+        return true;
+      }
+      const searchText = term.text.toLowerCase();
+      const key = term.key;
+      switch (key) {
+        case "url":
+          return url.includes(searchText);
+        case "action":
+          return action5.includes(searchText);
+        case "status": {
+          const statusValues = searchText.split(",");
+          return statusValues.some((v) => status.includes(v));
+        }
+        case void 0:
+          return url.includes(searchText) || action5.includes(searchText) || status.includes(searchText);
+        default:
+          return false;
+      }
+    });
+  });
+}
 var PreloadingAttemptView = class extends UI10.Widget.VBox {
   model;
   // Note that we use id of (representative) preloading attempt while we show pipelines in grid.
@@ -6858,6 +6921,7 @@ var PreloadingAttemptView = class extends UI10.Widget.VBox {
   preloadingGrid = new PreloadingComponents.PreloadingGrid.PreloadingGrid();
   preloadingDetails = new PreloadingComponents.PreloadingDetailsReportView.PreloadingDetailsReportView();
   ruleSetSelector;
+  textFilterUI;
   clearButton;
   constructor(model) {
     super({
@@ -6878,6 +6942,12 @@ var PreloadingAttemptView = class extends UI10.Widget.VBox {
     const vbox = new UI10.Widget.VBox();
     const toolbar6 = vbox.contentElement.createChild("devtools-toolbar", "preloading-toolbar");
     toolbar6.setAttribute("jslog", `${VisualLogging6.toolbar()}`);
+    this.ruleSetSelector = new PreloadingRuleSetSelector(() => this.render());
+    toolbar6.appendToolbarItem(this.ruleSetSelector.item());
+    this.textFilterUI = new UI10.Toolbar.ToolbarFilter(void 0, 1, 1);
+    this.textFilterUI.addEventListener("TextChanged", this.onTextFilterChanged, this);
+    toolbar6.appendToolbarItem(this.textFilterUI);
+    toolbar6.appendToolbarItem(new UI10.Toolbar.ToolbarSeparator());
     this.clearButton = new UI10.Toolbar.ToolbarButton("Clear speculative loads", "clear", void 0, "clear-speculative-loads");
     this.clearButton.addEventListener("Click", () => {
       const model2 = SDK14.TargetManager.TargetManager.instance().scopeTarget()?.model(SDK14.PreloadingModel.PreloadingModel);
@@ -6885,11 +6955,11 @@ var PreloadingAttemptView = class extends UI10.Widget.VBox {
         return;
       }
       model2.reset();
+      this.textFilterUI.setValue("");
       this.ruleSetSelector.select(null);
+      this.render();
     });
     toolbar6.appendToolbarItem(this.clearButton);
-    this.ruleSetSelector = new PreloadingRuleSetSelector(() => this.render());
-    toolbar6.appendToolbarItem(this.ruleSetSelector.item());
     this.preloadingGrid.onSelect = this.onPreloadingGridCellFocused.bind(this);
     const preloadingGridContainer = document.createElement("div");
     preloadingGridContainer.className = "preloading-grid-widget-container";
@@ -6934,6 +7004,11 @@ var PreloadingAttemptView = class extends UI10.Widget.VBox {
       id = null;
     }
     this.ruleSetSelector.select(id);
+    this.textFilterUI.setValue("");
+    this.render();
+  }
+  onTextFilterChanged() {
+    this.render();
   }
   updatePreloadingDetails() {
     const id = this.focusedPreloadingAttemptId;
@@ -6967,7 +7042,8 @@ var PreloadingAttemptView = class extends UI10.Widget.VBox {
         statusCode
       };
     });
-    this.preloadingGrid.rows = rows;
+    const filteredRows = applyFilterText(this.textFilterUI.valueWithoutSuggestion(), rows);
+    this.preloadingGrid.rows = filteredRows;
     this.preloadingGrid.pageURL = pageURL();
     this.contentElement.classList.toggle("empty", rows.length === 0);
     this.updatePreloadingDetails();
@@ -7572,7 +7648,7 @@ import * as Common10 from "./../../core/common/common.js";
 import * as i18n33 from "./../../core/i18n/i18n.js";
 import * as Platform5 from "./../../core/platform/platform.js";
 import * as SDK16 from "./../../core/sdk/sdk.js";
-import * as TextUtils from "./../../models/text_utils/text_utils.js";
+import * as TextUtils3 from "./../../models/text_utils/text_utils.js";
 import * as DataGrid5 from "./../../ui/legacy/components/data_grid/data_grid.js";
 import * as UI12 from "./../../ui/legacy/legacy.js";
 import * as VisualLogging8 from "./../../ui/visual_logging/visual_logging.js";
@@ -8026,7 +8102,7 @@ var ServiceWorkerCacheView = class extends UI12.View.SimpleView {
     if (!response) {
       return { error: "No cached response found" };
     }
-    return new TextUtils.ContentData.ContentData(
+    return new TextUtils3.ContentData.ContentData(
       response.body,
       /* isBase64=*/
       true,
@@ -11334,7 +11410,12 @@ var StorageView = class _StorageView extends UI21.Widget.VBox {
     const quotaAsString = i18n53.ByteUtilities.bytesToString(response.quota);
     const usageAsString = i18n53.ByteUtilities.bytesToString(response.usage);
     const formattedQuotaAsString = i18nString27(UIStrings27.storageWithCustomMarker, { PH1: quotaAsString });
-    const quota = quotaOverridden ? UI21.Fragment.Fragment.build`<b>${formattedQuotaAsString}</b>`.element() : quotaAsString;
+    let quota = quotaAsString;
+    if (quotaOverridden) {
+      const element2 = document.createElement("b");
+      element2.textContent = formattedQuotaAsString;
+      quota = element2;
+    }
     const element = uiI18n.getFormatLocalizedString(str_27, UIStrings27.storageQuotaUsed, { PH1: usageAsString, PH2: quota });
     this.quotaRow.appendChild(element);
     UI21.Tooltip.Tooltip.install(this.quotaRow, i18nString27(UIStrings27.storageQuotaUsedWithBytes, { PH1: response.usage.toLocaleString(), PH2: response.quota.toLocaleString() }));
@@ -14906,7 +14987,7 @@ __export(DOMStorageItemsView_exports, {
 });
 import * as Common19 from "./../../core/common/common.js";
 import * as i18n63 from "./../../core/i18n/i18n.js";
-import * as TextUtils2 from "./../../models/text_utils/text_utils.js";
+import * as TextUtils4 from "./../../models/text_utils/text_utils.js";
 import * as SourceFrame7 from "./../../ui/legacy/components/source_frame/source_frame.js";
 import * as UI25 from "./../../ui/legacy/legacy.js";
 import * as VisualLogging18 from "./../../ui/visual_logging/visual_logging.js";
@@ -14944,7 +15025,7 @@ var DOMStorageItemsView = class extends KeyValueStorageItemsView {
   createPreview(key, value) {
     const protocol = this.domStorage.isLocalStorage ? "localstorage" : "sessionstorage";
     const url = `${protocol}://${key}`;
-    const provider = TextUtils2.StaticContentProvider.StaticContentProvider.fromString(url, Common19.ResourceType.resourceTypes.XHR, value);
+    const provider = TextUtils4.StaticContentProvider.StaticContentProvider.fromString(url, Common19.ResourceType.resourceTypes.XHR, value);
     return SourceFrame7.PreviewFactory.PreviewFactory.createPreview(provider, "text/plain");
   }
   setStorage(domStorage) {
@@ -15026,7 +15107,7 @@ __export(ExtensionStorageItemsView_exports, {
 });
 import * as Common20 from "./../../core/common/common.js";
 import * as i18n65 from "./../../core/i18n/i18n.js";
-import * as TextUtils3 from "./../../models/text_utils/text_utils.js";
+import * as TextUtils5 from "./../../models/text_utils/text_utils.js";
 import * as JSON5 from "./../../third_party/json5/json5.js";
 import * as SourceFrame8 from "./../../ui/legacy/components/source_frame/source_frame.js";
 import * as UI26 from "./../../ui/legacy/legacy.js";
@@ -15082,7 +15163,7 @@ var ExtensionStorageItemsView = class extends KeyValueStorageItemsView {
   }
   createPreview(key, value) {
     const url = "extension-storage://" + this.#extensionStorage.extensionId + "/" + this.#extensionStorage.storageArea + "/preview/" + key;
-    const provider = TextUtils3.StaticContentProvider.StaticContentProvider.fromString(url, Common20.ResourceType.resourceTypes.XHR, value);
+    const provider = TextUtils5.StaticContentProvider.StaticContentProvider.fromString(url, Common20.ResourceType.resourceTypes.XHR, value);
     return SourceFrame8.PreviewFactory.PreviewFactory.createPreview(provider, "text/plain");
   }
   setStorage(extensionStorage) {

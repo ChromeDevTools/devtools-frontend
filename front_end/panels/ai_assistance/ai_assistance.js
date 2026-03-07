@@ -1424,12 +1424,15 @@ var chatInput_css_default = `/*
 
     & .title {
       vertical-align: middle;
+      /* Fixed italic text getting cut off */
+      padding-right: var(--sys-size-2);
       font: var(--sys-typescale-body5-regular);
       overflow: hidden;
       text-overflow: ellipsis;
     }
 
-    & .remove-context {
+    & .remove-context,
+    & .add-context {
       vertical-align: middle;
     }
 
@@ -1443,6 +1446,28 @@ var chatInput_css_default = `/*
       vertical-align: middle;
       min-width: var(--sys-size-7);
       min-height: var(--sys-size-7);
+    }
+
+    &.disabled {
+      border-style: dashed;
+      border-color: var(--sys-color-neutral-outline);
+      color: var(--sys-color-on-surface-light);
+
+      devtools-icon,
+      devtools-file-source-icon {
+        /* Override devtools-file-source-icon */
+        --override-file-source-icon-color: var(
+          --sys-color-on-surface-light-graphics
+        );
+        /* Some icons set their style attribute and we need to override it */
+        /* stylelint-disable-next-line declaration-no-important */
+        color: var(--sys-color-on-surface-light-graphics) !important;
+      }
+
+      .title {
+        color: var(--sys-color-on-surface-light);
+        font-style: italic;
+      }
     }
 
     /*
@@ -1677,7 +1702,7 @@ function getContextRemoveLabel(context) {
 var DEFAULT_VIEW2 = (input, _output, target) => {
   const chatInputContainerCls = Lit.Directives.classMap({
     "chat-input-container": true,
-    "single-line-layout": !input.selectedContext && !input.onContextAdd,
+    "single-line-layout": !input.context,
     disabled: input.isTextInputDisabled
   });
   const renderRelevantDataDisclaimer = (tooltipId) => {
@@ -1780,7 +1805,7 @@ var DEFAULT_VIEW2 = (input, _output, target) => {
             ></textarea>
             <div class="chat-input-actions">
               <div class="chat-input-actions-left">
-                ${input.selectedContext ? html3`
+                ${input.context ? html3`
                     <div class="select-element">
                       ${input.conversationType === "freestyler" ? html3`
                           <devtools-button
@@ -1798,20 +1823,24 @@ var DEFAULT_VIEW2 = (input, _output, target) => {
                             @click=${input.onInspectElementClick}
                           ></devtools-button>` : Lit.nothing}
                       <div
-                        class="resource-link"
+                        class=${Lit.Directives.classMap({
+    "resource-link": true,
+    disabled: !input.isContextSelected
+  })}
                       >
-                        ${input.selectedContext instanceof AiAssistanceModel2.StylingAgent.NodeContext ? html3`
+                        ${input.context instanceof AiAssistanceModel2.StylingAgent.NodeContext ? html3`
                               <devtools-widget
                                 class="title"
                                 .widgetConfig=${UI3.Widget.widgetConfig(PanelsCommon.DOMLinkifier.DOMNodeLink, {
-    node: input.selectedContext.getItem(),
+    node: input.context.getItem(),
     options: {
-      hiddenClassList: input.selectedContext.getItem().classNames().filter((className) => className.startsWith(AiAssistanceModel2.Injected.AI_ASSISTANCE_CSS_CLASS_NAME)),
+      disabled: !input.isContextSelected,
+      hiddenClassList: input.context.getItem().classNames().filter((className) => className.startsWith(AiAssistanceModel2.Injected.AI_ASSISTANCE_CSS_CLASS_NAME)),
       ariaDescription: i18nString(UIStrings.revealContextDescription)
     }
   })}
                               ></devtools-widget>` : html3`
-                          ${input.selectedContext instanceof AiAssistanceModel2.NetworkAgent.RequestContext ? PanelUtils.PanelUtils.getIconForNetworkRequest(input.selectedContext.getItem()) : input.selectedContext instanceof AiAssistanceModel2.FileAgent.FileContext ? PanelUtils.PanelUtils.getIconForSourceFile(input.selectedContext.getItem()) : input.selectedContext instanceof AiAssistanceModel2.PerformanceAgent.PerformanceTraceContext ? html3`<devtools-icon name="performance" title="Performance"></devtools-icon>` : Lit.nothing}
+                          ${input.context instanceof AiAssistanceModel2.NetworkAgent.RequestContext ? PanelUtils.PanelUtils.getIconForNetworkRequest(input.context.getItem()) : input.context instanceof AiAssistanceModel2.FileAgent.FileContext ? PanelUtils.PanelUtils.getIconForSourceFile(input.context.getItem()) : input.context instanceof AiAssistanceModel2.PerformanceAgent.PerformanceTraceContext ? html3`<devtools-icon class="icon" name="performance" title="Performance"></devtools-icon>` : Lit.nothing}
                             <span 
                               role="button"
                               class="title"
@@ -1823,28 +1852,29 @@ var DEFAULT_VIEW2 = (input, _output, target) => {
     }
   }}
                               aria-description=${i18nString(UIStrings.revealContextDescription)}
-                            >${input.selectedContext.getTitle()}</span>`}
-                        ${input.onContextRemoved ? html3`
+                            >${input.context.getTitle()}</span>`}
+                        ${input.isContextSelected && input.onContextRemoved ? html3`
                                   <devtools-button
-                                    title=${getContextRemoveLabel(input.selectedContext)}
-                                    aria-label=${getContextRemoveLabel(input.selectedContext)}
+                                    title=${getContextRemoveLabel(input.context)}
+                                    aria-label=${getContextRemoveLabel(input.context)}
                                     class="remove-context"
                                     .iconName=${"cross"}
                                     .size=${"MICRO"}
                                     .jslogContext=${"context-removed"}
                                     .variant=${"icon"}
                                     @click=${input.onContextRemoved}></devtools-button>` : Lit.nothing}
+                      ${!input.isContextSelected && input.onContextAdd ? html3`
+                                    <devtools-button
+                                      title=${lockedString3(UIStringsNotTranslate3.addContext)}
+                                      aria-label=${lockedString3(UIStringsNotTranslate3.addContext)}
+                                      class="add-context"
+                                      .iconName=${"plus"}
+                                      .size=${"MICRO"}
+                                      .jslogContext=${"context-added"}
+                                      .variant=${"icon"}
+                                      @click=${input.onContextAdd}></devtools-button>` : Lit.nothing}
                       </div>
-                    </div>` : input.onContextAdd ? html3`
-                                  <devtools-button
-                                    title=${lockedString3(UIStringsNotTranslate3.addContext)}
-                                    aria-label=${lockedString3(UIStringsNotTranslate3.addContext)}
-                                    class="add-context"
-                                    .iconName=${"plus"}
-                                    .size=${"SMALL"}
-                                    .jslogContext=${"context-added"}
-                                    .variant=${"icon"}
-                                    @click=${input.onContextAdd}></devtools-button>` : Lit.nothing}
+                    </div>` : Lit.nothing}
               </div>
               <div class="chat-input-actions-right">
                 <div class="chat-input-disclaimer-container">
@@ -1935,7 +1965,8 @@ var ChatInput = class extends UI3.Widget.Widget {
   blockedByCrossOrigin = false;
   isTextInputDisabled = false;
   inputPlaceholder = "";
-  selectedContext = null;
+  context = null;
+  isContextSelected = false;
   inspectElementToggled = false;
   disclaimerText = "";
   conversationType = "freestyler";
@@ -2100,7 +2131,8 @@ var ChatInput = class extends UI3.Widget.Widget {
       isLoading: this.isLoading,
       blockedByCrossOrigin: this.blockedByCrossOrigin,
       isTextInputDisabled: this.isTextInputDisabled,
-      selectedContext: this.selectedContext,
+      context: this.context,
+      isContextSelected: this.isContextSelected,
       inspectElementToggled: this.inspectElementToggled,
       isTextInputEmpty: this.#isTextInputEmpty(),
       disclaimerText: this.disclaimerText,
@@ -4206,7 +4238,8 @@ var DEFAULT_VIEW5 = (input, output, target) => {
     isTextInputDisabled: input.isTextInputDisabled,
     inputPlaceholder: input.inputPlaceholder,
     disclaimerText: input.disclaimerText,
-    selectedContext: input.selectedContext,
+    context: input.context,
+    isContextSelected: input.isContextSelected,
     inspectElementToggled: input.inspectElementToggled,
     multimodalInputEnabled: input.multimodalInputEnabled ?? false,
     conversationType: input.conversationType,
@@ -5429,7 +5462,14 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
           blockedByCrossOrigin: this.#conversation.isBlockedByOrigin,
           isLoading: this.#isLoading,
           messages: this.#messages,
-          selectedContext: this.#conversation.selectedContext ?? null,
+          /**
+           * We pass either the selected context with isContextSelected=true
+           * to make sure the pill is show with normal styling and a remove button.
+           * Or we pass the panels default context with isContextSelected=false
+           * to display a placeholder pill with neutral styling and an add button.
+           */
+          context: this.#conversation.selectedContext ?? this.#getConversationContext(this.#getDefaultConversationType()),
+          isContextSelected: Boolean(this.#conversation.selectedContext),
           conversationType: this.#conversation.type,
           isReadOnly: this.#conversation.isReadOnly ?? false,
           changeSummary: this.#getChangeSummary(),
@@ -5560,13 +5600,16 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
   // there isn't any active conversation.
   #selectDefaultAgentIfNeeded() {
     if (this.#isLoading) {
+      this.requestUpdate();
       return;
     }
     if (this.#conversation && !this.#conversation.isEmpty) {
+      this.requestUpdate();
       return;
     }
     const targetConversationType = this.#getDefaultConversationType();
     if (this.#conversation?.type === targetConversationType) {
+      this.requestUpdate();
       return;
     }
     const conversation = targetConversationType ? new AiAssistanceModel6.AiConversation.AiConversation(targetConversationType, [], void 0, false, this.#aidaClient, this.#changeManager, false, this.#handlePerformanceRecordAndReload.bind(this), this.#handleInspectElement.bind(this), NetworkPanel.NetworkPanel.NetworkPanel.instance().networkLogView.timeCalculator()) : void 0;

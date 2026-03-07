@@ -894,11 +894,11 @@ import * as Components from "./../../ui/legacy/components/utils/utils.js";
 import * as UI3 from "./../../ui/legacy/legacy.js";
 var ImagePreviewPopover = class {
   getLinkElement;
-  getDOMNode;
   popover;
-  constructor(container, getLinkElement, getDOMNode) {
+  #getNodeFeatures;
+  constructor(container, getLinkElement, getNodeFeatures) {
     this.getLinkElement = getLinkElement;
-    this.getDOMNode = getDOMNode;
+    this.#getNodeFeatures = getNodeFeatures;
     this.popover = new UI3.PopoverHelper.PopoverHelper(container, this.handleRequest.bind(this), "elements.image-preview");
     this.popover.setTimeout(0, 100);
   }
@@ -914,11 +914,7 @@ var ImagePreviewPopover = class {
     return {
       box: link2.boxInWindow(),
       show: async (popover) => {
-        const node = this.getDOMNode(link2);
-        if (!node) {
-          return false;
-        }
-        const precomputedFeatures = await Components.ImagePreview.ImagePreview.loadDimensionsForNode(node);
+        const precomputedFeatures = await this.#getNodeFeatures(link2);
         const preview = await Components.ImagePreview.ImagePreview.build(href, true, {
           precomputedFeatures,
           align: "center"
@@ -6398,6 +6394,7 @@ var StylePropertiesSection = class _StylePropertiesSection {
     let scopeIndex = 0;
     let supportsIndex = 0;
     let nestingIndex = 0;
+    let navigationsIndex = 0;
     this.nestingLevel = 0;
     for (const ruleType of rule.ruleTypes) {
       let ancestorRuleElement;
@@ -6419,6 +6416,9 @@ var StylePropertiesSection = class _StylePropertiesSection {
           break;
         case "StartingStyleRule":
           ancestorRuleElement = this.createStartingStyleElement();
+          break;
+        case "NavigationRule":
+          ancestorRuleElement = this.createNavigationElement(rule.navigations[navigationsIndex++]);
           break;
       }
       if (ancestorRuleElement) {
@@ -6571,6 +6571,23 @@ var StylePropertiesSection = class _StylePropertiesSection {
       jslogContext: "supports"
     };
     return supportsElement;
+  }
+  createNavigationElement(navigation) {
+    if (!navigation.text) {
+      return;
+    }
+    let onQueryTextClick;
+    if (navigation.styleSheetId) {
+      onQueryTextClick = this.handleQueryRuleClick.bind(this, navigation);
+    }
+    const navigationElement = new ElementsComponents2.CSSQuery.CSSQuery();
+    navigationElement.data = {
+      queryPrefix: "@navigation",
+      queryText: navigation.text,
+      onQueryTextClick,
+      jslogContext: "navigation"
+    };
+    return navigationElement;
   }
   createNestingElement(nestingSelector) {
     if (!nestingSelector) {
@@ -6913,6 +6930,8 @@ var StylePropertiesSection = class _StylePropertiesSection {
         success = await cssModel.setSupportsText(query.styleSheetId, range, newContent);
       } else if (query instanceof SDK7.CSSScope.CSSScope) {
         success = await cssModel.setScopeText(query.styleSheetId, range, newContent);
+      } else if (query instanceof SDK7.CSSNavigation.CSSNavigation) {
+        success = await cssModel.setNavigationText(query.styleSheetId, range, newContent);
       } else {
         success = await cssModel.setMediaText(query.styleSheetId, range, newContent);
       }
@@ -7266,6 +7285,9 @@ var FunctionRuleSection = class extends StylePropertiesSection {
     }
     if ("supports" in condition) {
       return this.createSupportsElement(condition.supports);
+    }
+    if ("navigation" in condition) {
+      return this.createNavigationElement(condition.navigation);
     }
     return;
   }
@@ -8122,7 +8144,10 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common5.ObjectWrapper.e
         return link2;
       }
       return null;
-    }, () => this.node());
+    }, async () => {
+      const features = await Components2.ImagePreview.loadPrecomputedFeatures(this.node());
+      return features;
+    });
     UI10.ViewManager.ViewManager.instance().addEventListener("ViewVisibilityChanged", (event) => {
       if (event.data.revealedViewId === "animations" || event.data.hiddenViewId === "animations") {
         this.#scheduleResetUpdateIfNotEditing();
@@ -10384,7 +10409,9 @@ var ComputedStyleWidget = class extends UI12.Widget.VBox {
         return link2;
       }
       return null;
-    }, () => this.#computedStyleModel ? this.#computedStyleModel.node : null);
+    }, async () => {
+      return await Components4.ImagePreview.loadPrecomputedFeatures(this.#computedStyleModel?.node);
+    });
     this.#updateView({ hasMatches: true });
   }
   onResize() {
@@ -10843,6 +10870,7 @@ import * as IssuesManager2 from "./../../models/issues_manager/issues_manager.js
 import * as CodeHighlighter5 from "./../../ui/components/code_highlighter/code_highlighter.js";
 import * as Highlighting3 from "./../../ui/components/highlighting/highlighting.js";
 import * as IssueCounter from "./../../ui/components/issue_counter/issue_counter.js";
+import * as UIComponentUtils from "./../../ui/legacy/components/utils/utils.js";
 import * as UI17 from "./../../ui/legacy/legacy.js";
 import { html as html9, nothing as nothing4, render as render8 } from "./../../ui/lit/lit.js";
 import * as VisualLogging9 from "./../../ui/visual_logging/visual_logging.js";
@@ -14874,16 +14902,13 @@ var ElementsTreeOutline = class _ElementsTreeOutline extends Common10.ObjectWrap
         link2 = link2.parentElementOrShadowHost();
       }
       return link2;
-    }, (link2) => {
+    }, async (link2) => {
       const listItem = UI17.UIUtils.enclosingNodeOrSelfWithNodeName(link2, "li");
       if (!listItem) {
-        return null;
+        return void 0;
       }
       const treeElement = UI17.TreeOutline.TreeElement.getTreeElementBylistItemNode(listItem);
-      if (!treeElement) {
-        return null;
-      }
-      return treeElement.node();
+      return await UIComponentUtils.ImagePreview.loadPrecomputedFeatures(treeElement?.node());
     });
     this.updateRecords = /* @__PURE__ */ new Map();
     this.treeElementsBeingUpdated = /* @__PURE__ */ new Set();
@@ -18585,7 +18610,7 @@ var DOMNodeRevealer = class {
           return;
         }
         if (resolvedNode) {
-          const opts = { showPanel: true, focusNode: !omitFocus };
+          const opts = omitFocus ? { showPanel: false } : { showPanel: true, focusNode: true };
           const promise = resolvedNode instanceof SDK18.DOMModel.AdoptedStyleSheet ? panel.revealAndSelectAdoptedStyleSheet(resolvedNode, opts) : panel.revealAndSelectNode(resolvedNode, opts);
           void promise.then(resolve);
           return;

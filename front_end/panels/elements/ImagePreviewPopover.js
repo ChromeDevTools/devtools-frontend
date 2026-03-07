@@ -11,11 +11,11 @@ import * as UI from '../../ui/legacy/legacy.js';
  */
 export class ImagePreviewPopover {
     getLinkElement;
-    getDOMNode;
     popover;
-    constructor(container, getLinkElement, getDOMNode) {
+    #getNodeFeatures;
+    constructor(container, getLinkElement, getNodeFeatures) {
         this.getLinkElement = getLinkElement;
-        this.getDOMNode = getDOMNode;
+        this.#getNodeFeatures = getNodeFeatures;
         this.popover =
             new UI.PopoverHelper.PopoverHelper(container, this.handleRequest.bind(this), 'elements.image-preview');
         this.popover.setTimeout(0, 100);
@@ -32,11 +32,7 @@ export class ImagePreviewPopover {
         return {
             box: link.boxInWindow(),
             show: async (popover) => {
-                const node = this.getDOMNode((link));
-                if (!node) {
-                    return false;
-                }
-                const precomputedFeatures = await Components.ImagePreview.ImagePreview.loadDimensionsForNode(node);
+                const precomputedFeatures = await this.#getNodeFeatures(link);
                 const preview = await Components.ImagePreview.ImagePreview.build(href, true, {
                     precomputedFeatures,
                     align: "center" /* Components.ImagePreview.Align.CENTER */,

@@ -5,6 +5,7 @@ import { CSSContainerQuery } from './CSSContainerQuery.js';
 import { CSSLayer } from './CSSLayer.js';
 import { CSSMedia } from './CSSMedia.js';
 import type { CSSModel, Edit } from './CSSModel.js';
+import { CSSNavigation } from './CSSNavigation.js';
 import { CSSScope } from './CSSScope.js';
 import { CSSStartingStyle } from './CSSStartingStyle.js';
 import { CSSStyleDeclaration } from './CSSStyleDeclaration.js';
@@ -49,6 +50,7 @@ export declare class CSSStyleRule extends CSSRule {
     layers: CSSLayer[];
     ruleTypes: Protocol.CSS.CSSRuleType[];
     startingStyles: CSSStartingStyle[];
+    navigations: CSSNavigation[];
     wasUsed: boolean;
     constructor(cssModel: CSSModel, payload: Protocol.CSS.CSSRule, wasUsed?: boolean);
     static createDummyRule(cssModel: CSSModel, selectorText: string): CSSStyleRule;
@@ -109,6 +111,8 @@ export type CSSNestedStyleCondition = {
     container: CSSContainerQuery;
 } | {
     supports: CSSSupports;
+} | {
+    navigation: CSSNavigation;
 });
 export type CSSNestedStyle = CSSNestedStyleLeaf | CSSNestedStyleCondition;
 export declare class CSSFunctionRule extends CSSRule {

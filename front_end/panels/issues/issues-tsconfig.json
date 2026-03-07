@@ -46,6 +46,7 @@
     "../../../../../../front_end/panels/issues/AffectedPartitioningBlobURLView.ts",
     "../../../../../../front_end/panels/issues/AffectedPermissionElementsView.ts",
     "../../../../../../front_end/panels/issues/AffectedResourcesView.ts",
+    "../../../../../../front_end/panels/issues/AffectedSelectivePermissionsInterventionView.ts",
     "../../../../../../front_end/panels/issues/AffectedSharedArrayBufferIssueDetailsView.ts",
     "../../../../../../front_end/panels/issues/AffectedSourcesView.ts",
     "../../../../../../front_end/panels/issues/AffectedTrackingSitesView.ts",
@@ -79,6 +80,9 @@
     },
     {
       "path": "../../generated/protocol-tsconfig.json"
+    },
+    {
+      "path": "../../models/bindings/bundle-tsconfig.json"
     },
     {
       "path": "../../models/issues_manager/bundle-tsconfig.json"

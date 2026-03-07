@@ -26,11 +26,12 @@ import * as PermissionElementIssue from './PermissionElementIssue.js';
 import * as PropertyRuleIssue from './PropertyRuleIssue.js';
 import * as QuirksModeIssue from './QuirksModeIssue.js';
 import * as RelatedIssue from './RelatedIssue.js';
+import * as SelectivePermissionsInterventionIssue from './SelectivePermissionsInterventionIssue.js';
 import * as SharedArrayBufferIssue from './SharedArrayBufferIssue.js';
 import * as SharedDictionaryIssue from './SharedDictionaryIssue.js';
 import * as SourceFrameIssuesManager from './SourceFrameIssuesManager.js';
 import * as SRIMessageSignatureIssue from './SRIMessageSignatureIssue.js';
 import * as StylesheetLoadingIssue from './StylesheetLoadingIssue.js';
 import * as UnencodedDigestIssue from './UnencodedDigestIssue.js';
-export { AttributionReportingIssue, CheckFormsIssuesTrigger, ClientHintIssue, ConnectionAllowlistIssue, ContentSecurityPolicyIssue, CookieDeprecationMetadataIssue, CookieIssue, CorsIssue, CrossOriginEmbedderPolicyIssue, DeprecationIssue, ElementAccessibilityIssue, FederatedAuthUserInfoRequestIssue, GenericIssue, HeavyAdIssue, Issue, IssueAggregator, IssueResolver, IssuesManager, MarkdownIssueDescription, MixedContentIssue, PartitioningBlobURLIssue, PermissionElementIssue, PropertyRuleIssue, QuirksModeIssue, RelatedIssue, SharedArrayBufferIssue, SharedDictionaryIssue, SourceFrameIssuesManager, SRIMessageSignatureIssue, StylesheetLoadingIssue, UnencodedDigestIssue, };
+export { AttributionReportingIssue, CheckFormsIssuesTrigger, ClientHintIssue, ConnectionAllowlistIssue, ContentSecurityPolicyIssue, CookieDeprecationMetadataIssue, CookieIssue, CorsIssue, CrossOriginEmbedderPolicyIssue, DeprecationIssue, ElementAccessibilityIssue, FederatedAuthUserInfoRequestIssue, GenericIssue, HeavyAdIssue, Issue, IssueAggregator, IssueResolver, IssuesManager, MarkdownIssueDescription, MixedContentIssue, PartitioningBlobURLIssue, PermissionElementIssue, PropertyRuleIssue, QuirksModeIssue, RelatedIssue, SelectivePermissionsInterventionIssue, SharedArrayBufferIssue, SharedDictionaryIssue, SourceFrameIssuesManager, SRIMessageSignatureIssue, StylesheetLoadingIssue, UnencodedDigestIssue, };
 //# sourceMappingURL=issues_manager.prebundle.js.map

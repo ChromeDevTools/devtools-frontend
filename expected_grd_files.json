@@ -571,6 +571,7 @@
   "front_end/models/issues_manager/descriptions/selectElementAccessibilityInteractiveContentLegendChild.md",
   "front_end/models/issues_manager/descriptions/selectElementAccessibilityInteractiveContentOptionChild.md",
   "front_end/models/issues_manager/descriptions/selectElementAccessibilityNonPhrasingContentOptionChild.md",
+  "front_end/models/issues_manager/descriptions/selectivePermissionsIntervention.md",
   "front_end/models/issues_manager/descriptions/sharedArrayBuffer.md",
   "front_end/models/issues_manager/descriptions/sharedDictionaryUseErrorCrossOriginNoCorsRequest.md",
   "front_end/models/issues_manager/descriptions/sharedDictionaryUseErrorDictionaryLoadFailure.md",

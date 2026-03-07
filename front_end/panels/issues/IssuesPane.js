@@ -106,6 +106,10 @@ const UIStrings = {
      * @description Category title for a group of permission element issues
      */
     permissionElement: 'PEPC Element',
+    /**
+     * @description Category title for the different 'Selective Permissions Intervention' issues.
+     */
+    selectivePermissionsIntervention: 'Selective Permissions Intervention',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/issues/IssuesPane.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -143,6 +147,8 @@ class IssueCategoryView extends UI.TreeOutline.TreeElement {
                 return i18nString(UIStrings.generic);
             case "PermissionElement" /* IssuesManager.Issue.IssueCategory.PERMISSION_ELEMENT */:
                 return i18nString(UIStrings.permissionElement);
+            case "SelectivePermissionsIntervention" /* IssuesManager.Issue.IssueCategory.SELECTIVE_PERMISSIONS_INTERVENTION */:
+                return i18nString(UIStrings.selectivePermissionsIntervention);
             case "Other" /* IssuesManager.Issue.IssueCategory.OTHER */:
                 return i18nString(UIStrings.other);
         }

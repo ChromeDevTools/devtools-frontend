@@ -16,6 +16,7 @@ import * as MainView from './MainView.js';
 import * as MediaModel from './MediaModel.js';
 import * as PlayerDetailView from './PlayerDetailView.js';
 import * as PlayerListView from './PlayerListView.js';
+import * as PlayerMessagesView from './PlayerMessagesView.js';
 import * as PlayerPropertiesView from './PlayerPropertiesView.js';
 import * as TickingFlameChart from './TickingFlameChart.js';
 import * as TickingFlameChartHelpers from './TickingFlameChartHelpers.js';
@@ -26,6 +27,7 @@ export {
   PlayerDetailView,
   PlayerEventsView,
   PlayerListView,
+  PlayerMessagesView,
   PlayerPropertiesView,
   TickingFlameChart,
   TickingFlameChartHelpers,

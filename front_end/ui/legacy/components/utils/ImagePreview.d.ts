@@ -16,6 +16,6 @@ export declare class ImagePreview {
         imageAltText?: string;
         hideFileData?: boolean;
     }): Promise<HTMLDivElement | null>;
-    static loadDimensionsForNode(node: SDK.DOMModel.DOMNode): Promise<PrecomputedFeatures | undefined>;
     static defaultAltTextForImageURL(url: Platform.DevToolsPath.UrlString): string;
 }
+export declare function loadPrecomputedFeatures(node?: SDK.DOMModel.DOMNode | null): Promise<PrecomputedFeatures | undefined>;

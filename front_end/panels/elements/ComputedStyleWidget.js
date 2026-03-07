@@ -288,7 +288,9 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
                 return link;
             }
             return null;
-        }, () => this.#computedStyleModel ? this.#computedStyleModel.node : null);
+        }, async () => {
+            return await Components.ImagePreview.loadPrecomputedFeatures(this.#computedStyleModel?.node);
+        });
         this.#updateView({ hasMatches: true });
     }
     onResize() {

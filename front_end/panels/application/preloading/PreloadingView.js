@@ -10,6 +10,7 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
 import { assertNotNullOrUndefined } from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
+import * as TextUtils from '../../../models/text_utils/text_utils.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 // eslint-disable-next-line @devtools/es-modules-import
 import emptyWidgetStyles from '../../../ui/legacy/emptyWidget.css.js';
@@ -17,7 +18,7 @@ import * as UI from '../../../ui/legacy/legacy.js';
 import { Directives, html, render } from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import * as PreloadingComponents from './components/components.js';
-import { ruleSetTagOrLocationShort } from './components/PreloadingString.js';
+import { capitalizedAction, ruleSetTagOrLocationShort } from './components/PreloadingString.js';
 import * as PreloadingHelper from './helper/helper.js';
 import preloadingViewStyles from './preloadingView.css.js';
 import preloadingViewDropDownStyles from './preloadingViewDropDown.css.js';
@@ -314,6 +315,67 @@ export class PreloadingRuleSetView extends UI.Widget.VBox {
         return this.ruleSetGrid;
     }
 }
+/**
+ * Pure filtering function for preloading grid rows.
+ * Exported for testability.
+ */
+export function applyFilterText(filterText, rows) {
+    const trimmedFilter = filterText.trim();
+    if (trimmedFilter === '') {
+        return rows;
+    }
+    const FILTER_KEYS = ['url', 'action', 'status'];
+    const parser = new TextUtils.TextUtils.FilterParser([...FILTER_KEYS]);
+    // The match is case-insensitive. We handle the matching with everything lower cased,
+    // both keywords and values.
+    const query = parser.parse(filterText.toLowerCase());
+    // Drop the last term if it is an incomplete filter key (e.g., "action:" with no value).
+    // FilterParser parses "action:" as plain text since KEY_VALUE_FILTER_REGEXP requires a value.
+    // This lets users type "url:foo action:" and still see results for "url:foo".
+    const lastTerm = query.at(-1);
+    // If the parse result is empty, the query only contains spaces.
+    if (!lastTerm) {
+        return rows;
+    }
+    const isKeyWithNoValue = (lastTerm.key === undefined || lastTerm.key === null) && FILTER_KEYS.some(key => lastTerm.text === `${key}:`);
+    if (isKeyWithNoValue) {
+        query.pop();
+    }
+    if (query.length === 0) {
+        return rows;
+    }
+    return rows.filter(row => {
+        const attempt = row.pipeline.getOriginallyTriggered();
+        const url = attempt.key.url.toLowerCase();
+        const action = capitalizedAction(attempt.action).toLowerCase();
+        const status = PreloadingUIUtils.status(attempt.status).toLowerCase();
+        // Each term must match (AND logic between terms)
+        return query.every(term => {
+            if (term.text === undefined || term.text === null || term.text === '') {
+                return true;
+            }
+            const searchText = term.text.toLowerCase();
+            // The query is lowercased before parsing, so keys are already normalized.
+            const key = term.key;
+            switch (key) {
+                case 'url':
+                    return url.includes(searchText);
+                case 'action':
+                    return action.includes(searchText);
+                case 'status': {
+                    // Support multiple status values separated by comma (e.g., "status:ready,success")
+                    const statusValues = searchText.split(',');
+                    return statusValues.some(v => status.includes(v));
+                }
+                case undefined:
+                    // No key specified: search across all columns (URL, action, status)
+                    return url.includes(searchText) || action.includes(searchText) || status.includes(searchText);
+                default:
+                    return false;
+            }
+        });
+    });
+}
 export class PreloadingAttemptView extends UI.Widget.VBox {
     model;
     // Note that we use id of (representative) preloading attempt while we show pipelines in grid.
@@ -324,6 +386,7 @@ export class PreloadingAttemptView extends UI.Widget.VBox {
     preloadingGrid = new PreloadingComponents.PreloadingGrid.PreloadingGrid();
     preloadingDetails = new PreloadingComponents.PreloadingDetailsReportView.PreloadingDetailsReportView();
     ruleSetSelector;
+    textFilterUI;
     clearButton;
     constructor(model) {
         super({
@@ -357,7 +420,16 @@ export class PreloadingAttemptView extends UI.Widget.VBox {
         const vbox = new UI.Widget.VBox();
         const toolbar = vbox.contentElement.createChild('devtools-toolbar', 'preloading-toolbar');
         toolbar.setAttribute('jslog', `${VisualLogging.toolbar()}`);
-        // Clear button first (leftmost)
+        // Rule set dropdown first
+        this.ruleSetSelector = new PreloadingRuleSetSelector(() => this.render());
+        toolbar.appendToolbarItem(this.ruleSetSelector.item());
+        // Text filter second
+        this.textFilterUI = new UI.Toolbar.ToolbarFilter(undefined, 1, 1);
+        this.textFilterUI.addEventListener("TextChanged" /* UI.Toolbar.ToolbarInput.Event.TEXT_CHANGED */, this.onTextFilterChanged, this);
+        toolbar.appendToolbarItem(this.textFilterUI);
+        // Separator between text filter and clear button
+        toolbar.appendToolbarItem(new UI.Toolbar.ToolbarSeparator());
+        // Clear button last (rightmost)
         this.clearButton =
             new UI.Toolbar.ToolbarButton('Clear speculative loads', 'clear', undefined, 'clear-speculative-loads');
         this.clearButton.addEventListener("Click" /* UI.Toolbar.ToolbarButton.Events.CLICK */, () => {
@@ -366,12 +438,12 @@ export class PreloadingAttemptView extends UI.Widget.VBox {
                 return;
             }
             model.reset();
+            // Reset UI state
+            this.textFilterUI.setValue('');
             this.ruleSetSelector.select(null);
+            this.render();
         });
         toolbar.appendToolbarItem(this.clearButton);
-        // Rule set dropdown
-        this.ruleSetSelector = new PreloadingRuleSetSelector(() => this.render());
-        toolbar.appendToolbarItem(this.ruleSetSelector.item());
         this.preloadingGrid.onSelect = this.onPreloadingGridCellFocused.bind(this);
         const preloadingGridContainer = document.createElement('div');
         preloadingGridContainer.className = 'preloading-grid-widget-container';
@@ -416,6 +488,12 @@ export class PreloadingAttemptView extends UI.Widget.VBox {
             id = null;
         }
         this.ruleSetSelector.select(id);
+        // Reset text filter when navigating from Rules view to clear any existing filter
+        this.textFilterUI.setValue('');
+        this.render();
+    }
+    onTextFilterChanged() {
+        this.render();
     }
     updatePreloadingDetails() {
         const id = this.focusedPreloadingAttemptId;
@@ -454,8 +532,11 @@ export class PreloadingAttemptView extends UI.Widget.VBox {
                 statusCode,
             };
         });
-        this.preloadingGrid.rows = rows;
+        // Apply text filter
+        const filteredRows = applyFilterText(this.textFilterUI.valueWithoutSuggestion(), rows);
+        this.preloadingGrid.rows = filteredRows;
         this.preloadingGrid.pageURL = pageURL();
+        // Only show empty state when there are truly no speculations (not when filter has no matches)
         this.contentElement.classList.toggle('empty', rows.length === 0);
         this.updatePreloadingDetails();
     }

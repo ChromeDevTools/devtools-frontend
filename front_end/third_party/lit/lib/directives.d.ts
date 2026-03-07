@@ -336,7 +336,7 @@ declare abstract class Directive implements Disconnectable {
  * A key-value set of class names to truthy values.
  */
 interface ClassInfo {
-    readonly [name: string]: string | boolean | number;
+    [name: string]: string | boolean | number;
 }
 declare class ClassMapDirective extends Directive {
     /**
@@ -379,10 +379,19 @@ declare const classMap: (classInfo: ClassInfo) => DirectiveResult<typeof ClassMa
  */
 declare const ifDefined: <T>(value: T) => typeof nothing | NonNullable<T>;
 
-declare class LiveDirective extends Directive {
+/**
+ * @license
+ * Copyright 2020 Google LLC
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+
+declare class LiveDirective<T> extends Directive {
     constructor(partInfo: PartInfo);
-    render(value: unknown): unknown;
-    update(part: AttributePart, [value]: DirectiveParameters<this>): unknown;
+    render(value: T): T;
+    update(part: AttributePart, [value]: DirectiveParameters<this>): typeof noChange | T;
+}
+interface Live {
+    <T>(value: T): DirectiveResult<typeof LiveDirective<T>>;
 }
 /**
  * Checks binding values against live DOM values, instead of previously bound
@@ -408,7 +417,7 @@ declare class LiveDirective extends Directive {
  * you use `live()` with an attribute binding, make sure that only strings are
  * passed in, or the binding will update every render.
  */
-declare const live: (value: unknown) => DirectiveResult<typeof LiveDirective>;
+declare const live: Live;
 
 /**
  * @license
@@ -695,15 +704,25 @@ declare abstract class AsyncDirective extends Directive {
     protected reconnected(): void;
 }
 
-declare class UntilDirective extends AsyncDirective {
+/**
+ * @license
+ * Copyright 2017 Google LLC
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+
+type UnwrapPromise<T> = T extends Promise<infer U> ? U : T;
+declare class UntilDirective<T> extends AsyncDirective {
     private __lastRenderedIndex;
     private __values;
     private __weakThis;
     private __pauser;
-    render(...args: Array<unknown>): unknown;
+    render(...args: Array<T>): UnwrapPromise<T>;
     update(_part: Part, args: Array<unknown>): unknown;
     disconnected(): void;
     reconnected(): void;
+}
+interface Until {
+    <T extends Array<unknown>>(...args: T): DirectiveResult<typeof UntilDirective<T[number]>>;
 }
 /**
  * Renders one of a series of values, including Promises, to a Part.
@@ -726,7 +745,7 @@ declare class UntilDirective extends AsyncDirective {
  * html`${until(content, html`<span>Loading...</span>`)}`
  * ```
  */
-declare const until: (...values: unknown[]) => DirectiveResult<typeof UntilDirective>;
+declare const until: Until;
 
 /**
  * Creates a new Ref object, which is container for a reference to an element.

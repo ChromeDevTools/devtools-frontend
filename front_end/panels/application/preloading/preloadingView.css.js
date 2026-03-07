@@ -30,6 +30,10 @@ export default `/*
   button.toolbar-has-dropdown {
     margin: var(--sys-size-2) 0;
   }
+
+  .toolbar-filter {
+    max-width: var(--sys-size-29);
+  }
 }
 
 devtools-split-view {

@@ -683,6 +683,9 @@ export const generatedPropertyValues: {
     "paint-order": {
         values: string[];
     };
+    "path-length": {
+        values: string[];
+    };
     perspective: {
         values: string[];
     };

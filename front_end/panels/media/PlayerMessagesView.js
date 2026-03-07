@@ -2,9 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-imperative-dom-api */
+/* eslint-disable @devtools/no-lit-render-outside-of-view */
 import '../../ui/legacy/legacy.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import { html, nothing, render } from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import playerMessagesViewStyles from './playerMessagesView.css.js';
 const UIStrings = {
@@ -270,54 +272,59 @@ export class PlayerMessagesView extends UI.Widget.VBox {
         const container = this.bodyPanel.createChild('div', 'media-messages-message-container media-message-' + message.level);
         UI.UIUtils.createTextChild(container, message.message);
     }
-    errorToDiv(error) {
-        const entry = UI.Fragment.Fragment.build `
-    <div class="status-error-box">
-    <div class="status-error-field-labeled">
-      <span class="status-error-field-label" $="status-error-group"></span>
-      <span>${error.errorType}</span>
-    </div>
-    <div class="status-error-field-labeled">
-      <span class="status-error-field-label" $="status-error-code"></span>
-      <span>${error.code}</span>
-    </div>
-    <div class="status-error-field-labeled" $="status-error-data">
-    </div>
-    <div class="status-error-field-labeled" $="status-error-stack">
-    </div>
-    <div class="status-error-field-labeled" $="status-error-cause">
-    </div>
+    renderError(error) {
+        // clang-format off
+        return html `
+      <div class="status-error-box">
+        <div class="status-error-field-labeled">
+          <span class="status-error-field-label"
+            >${i18nString(UIStrings.errorGroupLabel)}</span
+          >
+          <span>${error.errorType}</span>
+        </div>
+        <div class="status-error-field-labeled">
+          <span class="status-error-field-label"
+            >${i18nString(UIStrings.errorCodeLabel)}</span
+          >
+          <span>${error.code}</span>
+        </div>
+        <div class="status-error-field-labeled">
+        ${Object.keys(error.data).length !== 0
+            ? html `<span class="status-error-field-label"
+                  >${i18nString(UIStrings.errorDataLabel)}</span
+                >
+                <div>
+                  ${Object.entries(error.data).map(([key, value]) => html `<div>${key}: ${value}</div>`)}
+                </div>`
+            : nothing}
+        </div>
+        <div class="status-error-field-labeled">
+          ${error.stack.length !== 0
+            ? html `<span class="status-error-field-label"
+                    >${i18nString(UIStrings.errorStackLabel)}</span
+                  >
+                  <div>
+                    ${error.stack.map(stackEntry => html `<div>${stackEntry.file}:${stackEntry.line}</div>`)}
+                  </div>`
+            : nothing}
+        </div>
+        <div class="status-error-field-labeled">
+          ${error.cause.length !== 0
+            ? html `
+                  <span class="status-error-field-label"
+                    >${i18nString(UIStrings.errorCauseLabel)}</span
+                  >
+                  ${this.renderError(error.cause[0])}
+                `
+            : nothing}
+        </div>
+      </div>
     `;
-        entry.$('status-error-group').textContent = i18nString(UIStrings.errorGroupLabel);
-        entry.$('status-error-code').textContent = i18nString(UIStrings.errorCodeLabel);
-        if (Object.keys(error.data).length !== 0) {
-            const label = entry.$('status-error-data').createChild('span', 'status-error-field-label');
-            UI.UIUtils.createTextChild(label, i18nString(UIStrings.errorDataLabel));
-            const dataContent = entry.$('status-error-data').createChild('div');
-            for (const [key, value] of Object.entries(error.data)) {
-                const datumContent = dataContent.createChild('div');
-                UI.UIUtils.createTextChild(datumContent, `${key}: ${value}`);
-            }
-        }
-        if (error.stack.length !== 0) {
-            const label = entry.$('status-error-stack').createChild('span', 'status-error-field-label');
-            UI.UIUtils.createTextChild(label, i18nString(UIStrings.errorStackLabel));
-            const stackContent = entry.$('status-error-stack').createChild('div');
-            for (const stackEntry of error.stack) {
-                const frameBox = stackContent.createChild('div');
-                UI.UIUtils.createTextChild(frameBox, `${stackEntry.file}:${stackEntry.line}`);
-            }
-        }
-        if (error.cause.length !== 0) {
-            const label = entry.$('status-error-cause').createChild('span', 'status-error-field-label');
-            UI.UIUtils.createTextChild(label, i18nString(UIStrings.errorCauseLabel));
-            entry.$('status-error-cause').appendChild(this.errorToDiv(error.cause[0]));
-        }
-        return entry.element();
+        // clang-format on
     }
     addError(error) {
         const container = this.bodyPanel.createChild('div', 'media-messages-message-container media-message-error');
-        container.appendChild(this.errorToDiv(error));
+        render(this.renderError(error), container);
     }
 }
 //# sourceMappingURL=PlayerMessagesView.js.map

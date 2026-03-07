@@ -26,6 +26,11 @@ export declare class PreloadingRuleSetView extends UI.Widget.VBox {
     getInfobarContainerForTest(): HTMLElement;
     getRuleSetGridForTest(): PreloadingComponents.RuleSetGrid.RuleSetGrid;
 }
+/**
+ * Pure filtering function for preloading grid rows.
+ * Exported for testability.
+ */
+export declare function applyFilterText(filterText: string, rows: PreloadingComponents.PreloadingGrid.PreloadingGridRow[]): PreloadingComponents.PreloadingGrid.PreloadingGridRow[];
 export declare class PreloadingAttemptView extends UI.Widget.VBox {
     private model;
     private focusedPreloadingAttemptId;
@@ -34,11 +39,13 @@ export declare class PreloadingAttemptView extends UI.Widget.VBox {
     private readonly preloadingGrid;
     private readonly preloadingDetails;
     private readonly ruleSetSelector;
+    private readonly textFilterUI;
     private clearButton;
     constructor(model: SDK.PreloadingModel.PreloadingModel);
     wasShown(): void;
     onScopeChange(): void;
     setFilter(filter: PreloadingHelper.PreloadingForward.AttemptViewWithFilter): void;
+    private onTextFilterChanged;
     private updatePreloadingDetails;
     render(): void;
     private onPreloadingGridCellFocused;

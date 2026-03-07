@@ -2485,6 +2485,11 @@ export const NativeFunctions = [
     },
     {
         name: "getAttribute",
+        signatures: [["name"]],
+        receivers: ["ProcessingInstruction"]
+    },
+    {
+        name: "getAttribute",
         signatures: [["tag"]],
         receivers: ["SmartCardConnection"]
     },
@@ -2506,7 +2511,13 @@ export const NativeFunctions = [
     },
     {
         name: "hasAttribute",
-        signatures: [["qualifiedName"], ["name"]]
+        signatures: [["qualifiedName"], ["name"]],
+        receivers: ["Element"]
+    },
+    {
+        name: "hasAttribute",
+        signatures: [["name"]],
+        receivers: ["ProcessingInstruction"]
     },
     {
         name: "hasAttributeNS",
@@ -2540,6 +2551,11 @@ export const NativeFunctions = [
         name: "removeAttribute",
         signatures: [["qualifiedName"], ["name"]],
         receivers: ["Element"]
+    },
+    {
+        name: "removeAttribute",
+        signatures: [["name"]],
+        receivers: ["ProcessingInstruction"]
     },
     {
         name: "removeAttribute",
@@ -2586,6 +2602,11 @@ export const NativeFunctions = [
     },
     {
         name: "setAttribute",
+        signatures: [["name", "value"]],
+        receivers: ["ProcessingInstruction"]
+    },
+    {
+        name: "setAttribute",
         signatures: [["tag", "value"]],
         receivers: ["SmartCardConnection"]
     },
@@ -2617,7 +2638,13 @@ export const NativeFunctions = [
     },
     {
         name: "toggleAttribute",
-        signatures: [["qualifiedName", "?force"]]
+        signatures: [["qualifiedName", "?force"]],
+        receivers: ["Element"]
+    },
+    {
+        name: "toggleAttribute",
+        signatures: [["name", "?force"]],
+        receivers: ["ProcessingInstruction"]
     },
     {
         name: "webkitMatchesSelector",
@@ -3147,7 +3174,7 @@ export const NativeFunctions = [
     },
     {
         name: "initKeyboardEvent",
-        signatures: [["typeArg", "?bubblesArg", "?cancelableArg", "?viewArg", "?keyArg", "?locationArg", "?ctrlKey", "?altKey", "?shiftKey", "?metaKey"]]
+        signatures: [["typeArg", "?bubblesArg", "?cancelableArg", "?viewArg", "?keyArg", "?locationArg", "?ctrlKey", "?altKey", "?shiftKey", "?metaKey"], ["type", "?bubbles", "?cancelable", "?view", "?keyIdentifier", "?location", "?ctrlKey", "?altKey", "?shiftKey", "?metaKey"]]
     },
     {
         name: "setKeyframes",
@@ -4181,7 +4208,7 @@ export const NativeFunctions = [
     },
     {
         name: "initUIEvent",
-        signatures: [["typeArg", "?bubblesArg", "?cancelableArg", "?viewArg", "?detailArg"], ["type", "?bubbles", "?cancelable", "?view", "?detail"]]
+        signatures: [["typeArg", "?bubblesArg", "?cancelableArg", "?viewArg", "?detailArg"]]
     },
     {
         name: "getTranslatedShaderSource",
@@ -6816,6 +6843,10 @@ export const NativeFunctions = [
         signatures: [["type", "?eventInitDict"]]
     },
     {
+        name: "FocusEvent",
+        signatures: [["type", "?eventInitDict"]]
+    },
+    {
         name: "HashChangeEvent",
         signatures: [["type", "?eventInitDict"]]
     },
@@ -6825,6 +6856,10 @@ export const NativeFunctions = [
     },
     {
         name: "InterestEvent",
+        signatures: [["type", "?eventInitDict"]]
+    },
+    {
+        name: "KeyboardEvent",
         signatures: [["type", "?eventInitDict"]]
     },
     {
@@ -6864,7 +6899,7 @@ export const NativeFunctions = [
         signatures: [["type", "?eventInitDict"]]
     },
     {
-        name: "UIEvent",
+        name: "TouchEvent",
         signatures: [["type", "?eventInitDict"]]
     },
     {
@@ -7322,10 +7357,6 @@ export const NativeFunctions = [
     {
         name: "TaskPriorityChangeEvent",
         signatures: [["type", "eventInitDict"]]
-    },
-    {
-        name: "provideContext",
-        signatures: [["?options"]]
     },
     {
         name: "registerTool",
@@ -9251,6 +9282,10 @@ export const NativeFunctions = [
     {
         name: "MIDIMessageEvent",
         signatures: [["type", "?eventInitDict"]]
+    },
+    {
+        name: "startDiagnosticLogging",
+        signatures: [["?options"]]
     },
     {
         name: "CloseEvent",

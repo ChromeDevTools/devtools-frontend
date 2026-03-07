@@ -878,9 +878,14 @@ var PlayerEventsTimeline = class extends TickingFlameChart {
 };
 
 // gen/front_end/panels/media/PlayerMessagesView.js
+var PlayerMessagesView_exports = {};
+__export(PlayerMessagesView_exports, {
+  PlayerMessagesView: () => PlayerMessagesView
+});
 import "./../../ui/legacy/legacy.js";
 import * as i18n5 from "./../../core/i18n/i18n.js";
 import * as UI3 from "./../../ui/legacy/legacy.js";
+import { html, nothing, render } from "./../../ui/lit/lit.js";
 import * as VisualLogging3 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/media/playerMessagesView.css.js
@@ -953,7 +958,7 @@ var playerMessagesView_css_default = `/*
 }
 
 .status-error-box {
-  font-family: monospace;
+  font-family: var(--monospace-font-family);
   border: 1px solid var(--sys-color-error-outline);
   border-radius: 5px;
   padding: 4px;
@@ -1227,54 +1232,51 @@ var PlayerMessagesView = class extends UI3.Widget.VBox {
     const container = this.bodyPanel.createChild("div", "media-messages-message-container media-message-" + message.level);
     UI3.UIUtils.createTextChild(container, message.message);
   }
-  errorToDiv(error) {
-    const entry = UI3.Fragment.Fragment.build`
-    <div class="status-error-box">
-    <div class="status-error-field-labeled">
-      <span class="status-error-field-label" $="status-error-group"></span>
-      <span>${error.errorType}</span>
-    </div>
-    <div class="status-error-field-labeled">
-      <span class="status-error-field-label" $="status-error-code"></span>
-      <span>${error.code}</span>
-    </div>
-    <div class="status-error-field-labeled" $="status-error-data">
-    </div>
-    <div class="status-error-field-labeled" $="status-error-stack">
-    </div>
-    <div class="status-error-field-labeled" $="status-error-cause">
-    </div>
+  renderError(error) {
+    return html`
+      <div class="status-error-box">
+        <div class="status-error-field-labeled">
+          <span class="status-error-field-label"
+            >${i18nString3(UIStrings3.errorGroupLabel)}</span
+          >
+          <span>${error.errorType}</span>
+        </div>
+        <div class="status-error-field-labeled">
+          <span class="status-error-field-label"
+            >${i18nString3(UIStrings3.errorCodeLabel)}</span
+          >
+          <span>${error.code}</span>
+        </div>
+        <div class="status-error-field-labeled">
+        ${Object.keys(error.data).length !== 0 ? html`<span class="status-error-field-label"
+                  >${i18nString3(UIStrings3.errorDataLabel)}</span
+                >
+                <div>
+                  ${Object.entries(error.data).map(([key, value]) => html`<div>${key}: ${value}</div>`)}
+                </div>` : nothing}
+        </div>
+        <div class="status-error-field-labeled">
+          ${error.stack.length !== 0 ? html`<span class="status-error-field-label"
+                    >${i18nString3(UIStrings3.errorStackLabel)}</span
+                  >
+                  <div>
+                    ${error.stack.map((stackEntry) => html`<div>${stackEntry.file}:${stackEntry.line}</div>`)}
+                  </div>` : nothing}
+        </div>
+        <div class="status-error-field-labeled">
+          ${error.cause.length !== 0 ? html`
+                  <span class="status-error-field-label"
+                    >${i18nString3(UIStrings3.errorCauseLabel)}</span
+                  >
+                  ${this.renderError(error.cause[0])}
+                ` : nothing}
+        </div>
+      </div>
     `;
-    entry.$("status-error-group").textContent = i18nString3(UIStrings3.errorGroupLabel);
-    entry.$("status-error-code").textContent = i18nString3(UIStrings3.errorCodeLabel);
-    if (Object.keys(error.data).length !== 0) {
-      const label = entry.$("status-error-data").createChild("span", "status-error-field-label");
-      UI3.UIUtils.createTextChild(label, i18nString3(UIStrings3.errorDataLabel));
-      const dataContent = entry.$("status-error-data").createChild("div");
-      for (const [key, value] of Object.entries(error.data)) {
-        const datumContent = dataContent.createChild("div");
-        UI3.UIUtils.createTextChild(datumContent, `${key}: ${value}`);
-      }
-    }
-    if (error.stack.length !== 0) {
-      const label = entry.$("status-error-stack").createChild("span", "status-error-field-label");
-      UI3.UIUtils.createTextChild(label, i18nString3(UIStrings3.errorStackLabel));
-      const stackContent = entry.$("status-error-stack").createChild("div");
-      for (const stackEntry of error.stack) {
-        const frameBox = stackContent.createChild("div");
-        UI3.UIUtils.createTextChild(frameBox, `${stackEntry.file}:${stackEntry.line}`);
-      }
-    }
-    if (error.cause.length !== 0) {
-      const label = entry.$("status-error-cause").createChild("span", "status-error-field-label");
-      UI3.UIUtils.createTextChild(label, i18nString3(UIStrings3.errorCauseLabel));
-      entry.$("status-error-cause").appendChild(this.errorToDiv(error.cause[0]));
-    }
-    return entry.element();
   }
   addError(error) {
     const container = this.bodyPanel.createChild("div", "media-messages-message-container media-message-error");
-    container.appendChild(this.errorToDiv(error));
+    render(this.renderError(error), container);
   }
 };
 
@@ -1964,7 +1966,7 @@ import "./../../ui/kit/kit.js";
 import * as i18n11 from "./../../core/i18n/i18n.js";
 import * as Platform3 from "./../../core/platform/platform.js";
 import * as UI6 from "./../../ui/legacy/legacy.js";
-import { Directives, html, render } from "./../../ui/lit/lit.js";
+import { Directives, html as html2, render as render2 } from "./../../ui/lit/lit.js";
 import * as VisualLogging5 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/media/playerListView.css.js
@@ -2082,13 +2084,13 @@ var UIStrings6 = {
 var str_6 = i18n11.i18n.registerUIStrings("panels/media/PlayerListView.ts", UIStrings6);
 var i18nString6 = i18n11.i18n.getLocalizedString.bind(void 0, str_6);
 var DEFAULT_VIEW = (input, _output, target) => {
-  render(html`
+  render2(html2`
       <style>${playerListView_css_default}</style>
       <div class="player-entry-header" id="players-header">${i18nString6(UIStrings6.players)}</div>
       <div role="listbox" aria-labelledby="players-header">
       ${input.players.map((player) => {
     const isSelected = player.playerID === input.selectedPlayerID;
-    return html`
+    return html2`
           <div class=${classMap({
       "player-entry-row": true,
       hbox: true,
@@ -2569,6 +2571,7 @@ export {
   PlayerDetailView_exports as PlayerDetailView,
   EventDisplayTable_exports as PlayerEventsView,
   PlayerListView_exports as PlayerListView,
+  PlayerMessagesView_exports as PlayerMessagesView,
   PlayerPropertiesView_exports as PlayerPropertiesView,
   TickingFlameChart_exports as TickingFlameChart,
   TickingFlameChartHelpers_exports as TickingFlameChartHelpers

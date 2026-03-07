@@ -76,6 +76,11 @@ export const markdownLinks = new Map([
         'https://privacysandbox.com/news/update-on-plans-for-privacy-sandbox-technologies/'
     ],
     ['urlPatternSpec', 'https://urlpattern.spec.whatwg.org/'],
+    [
+        'SelectivePermissionsInterventionIssue',
+        'https://issues.chromium.org/issues/new?component=1456114&title=Selective%20Permissions%20Intervention%20Breakage:%20%3Cyour%20domain%20here%3E&template=0',
+    ],
+    ['ChromeFilterlistRepository', 'https://github.com/chromium/chromium-ads-detection'],
 ]);
 export const getMarkdownLink = (key) => {
     if (/^https:\/\/www\.chromestatus\.com\//.test(key)) {

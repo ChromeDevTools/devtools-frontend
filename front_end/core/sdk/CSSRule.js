@@ -6,6 +6,7 @@ import * as Platform from '../platform/platform.js';
 import { CSSContainerQuery } from './CSSContainerQuery.js';
 import { CSSLayer } from './CSSLayer.js';
 import { CSSMedia } from './CSSMedia.js';
+import { CSSNavigation } from './CSSNavigation.js';
 import { CSSScope } from './CSSScope.js';
 import { CSSStartingStyle } from './CSSStartingStyle.js';
 import { CSSStyleDeclaration, Type } from './CSSStyleDeclaration.js';
@@ -87,6 +88,7 @@ export class CSSStyleRule extends CSSRule {
     layers;
     ruleTypes;
     startingStyles;
+    navigations;
     wasUsed;
     constructor(cssModel, payload, wasUsed) {
         super(cssModel, {
@@ -106,6 +108,7 @@ export class CSSStyleRule extends CSSRule {
         this.layers = payload.layers ? CSSLayer.parseLayerPayload(cssModel, payload.layers) : [];
         this.startingStyles =
             payload.startingStyles ? CSSStartingStyle.parseStartingStylePayload(cssModel, payload.startingStyles) : [];
+        this.navigations = payload.navigations ? CSSNavigation.parseNavigationPayload(cssModel, payload.navigations) : [];
         this.ruleTypes = payload.ruleTypes || [];
         this.wasUsed = wasUsed || false;
     }
@@ -189,6 +192,7 @@ export class CSSStyleRule extends CSSRule {
         this.containerQueries.forEach(cq => cq.rebase(edit));
         this.scopes.forEach(scope => scope.rebase(edit));
         this.supports.forEach(supports => supports.rebase(edit));
+        this.navigations.forEach(navigation => navigation.rebase(edit));
         super.rebase(edit);
     }
 }
@@ -389,7 +393,13 @@ export class CSSFunctionRule extends CSSRule {
                     supports: new CSSSupports(this.cssModelInternal, node.condition.supports),
                 };
             }
-            console.error('A function rule condition must have a media, container, or supports');
+            if (node.condition.navigation) {
+                return {
+                    children,
+                    navigation: new CSSNavigation(this.cssModelInternal, node.condition.navigation),
+                };
+            }
+            console.error('A function rule condition must have a media, container, supports, or navigation');
             return;
         }
         console.error('A function rule node must have a style or condition');

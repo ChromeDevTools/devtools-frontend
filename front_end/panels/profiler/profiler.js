@@ -5143,6 +5143,7 @@ import * as HeapSnapshotModel from "./../../models/heap_snapshot_model/heap_snap
 import { createIcon as createIcon2 } from "./../../ui/kit/kit.js";
 import * as DataGrid7 from "./../../ui/legacy/components/data_grid/data_grid.js";
 import * as UI12 from "./../../ui/legacy/legacy.js";
+import { Directives, html, render } from "./../../ui/lit/lit.js";
 import * as VisualLogging4 from "./../../ui/visual_logging/visual_logging.js";
 var UIStrings10 = {
   /**
@@ -5342,22 +5343,27 @@ var HeapSnapshotGridNode = class _HeapSnapshotGridNode extends Common10.ObjectWr
   }
   createValueCell(columnId) {
     const jslog = VisualLogging4.tableCell("numeric-column").track({ click: true });
-    const cell = UI12.Fragment.html`<td class="numeric-column" jslog=${jslog} />`;
+    const cell = document.createElement("td");
+    cell.className = "numeric-column";
+    cell.setAttribute("jslog", jslog.toString());
     const dataGrid = this.dataGrid;
     if (dataGrid.snapshot && dataGrid.snapshot.totalSize !== 0) {
-      const div = document.createElement("div");
-      const valueSpan = UI12.Fragment.html`<span>${this.data[columnId]}</span>`;
-      div.appendChild(valueSpan);
+      const value2 = this.data[columnId];
       const percentColumn = columnId + "-percent";
-      if (percentColumn in this.data) {
-        const percentSpan = UI12.Fragment.html`<span class="percent-column">${this.data[percentColumn]}</span>`;
-        div.appendChild(percentSpan);
-        div.classList.add("profile-multiple-values");
-        UI12.ARIAUtils.setHidden(valueSpan, true);
-        UI12.ARIAUtils.setHidden(percentSpan, true);
-        this.setCellAccessibleName(i18nString10(UIStrings10.genericStringsTwoPlaceholders, { PH1: this.data[columnId], PH2: this.data[percentColumn] }), cell, columnId);
+      const percent = this.data[percentColumn];
+      if (percent) {
+        render(html`
+          <div class="profile-multiple-values">
+            <span aria-hidden="true">${value2}</span>
+            <span class="percent-column" aria-hidden="true">${percent}</span>
+          </div>`, cell);
+        this.setCellAccessibleName(i18nString10(UIStrings10.genericStringsTwoPlaceholders, { PH1: value2, PH2: percent }), cell, columnId);
+      } else {
+        render(html`
+          <div>
+            <span>${value2}</span>
+          </div>`, cell);
       }
-      cell.appendChild(div);
     }
     return cell;
   }
@@ -5623,14 +5629,24 @@ var HeapSnapshotGenericObjectNode = class extends HeapSnapshotGridNode {
   }
   createObjectCellWithValue(valueStyle, value2) {
     const jslog = VisualLogging4.tableCell("object-column").track({ click: true });
-    const fragment = UI12.Fragment.Fragment.build`
-  <td class="object-column disclosure" jslog=${jslog}>
-  <div class="source-code event-properties" style="overflow: visible;" $="container">
-  <span class="value object-value-${valueStyle}">${value2}</span>
-  <span class="object-value-id">@${this.snapshotNodeId}</span>
-  </div>
-  </td>`;
-    const div = fragment.$("container");
+    const cell = document.createElement("td");
+    cell.className = "object-column disclosure";
+    cell.setAttribute("jslog", jslog.toString());
+    const output = {};
+    render(html`<div
+        class="source-code event-properties"
+        style="overflow: visible;"
+        ${Directives.ref((el) => {
+      output.div = el;
+    })}
+      >
+        <span class="value object-value-${valueStyle}">${value2}</span>
+        <span class="object-value-id">@${this.snapshotNodeId}</span>
+      </div>`, cell);
+    const div = output.div;
+    if (!div) {
+      throw new Error("Expected div to exists");
+    }
     this.prefixObjectCell(div);
     if (this.reachableFromWindow) {
       const frameIcon = createIcon2("frame", "heap-object-tag");
@@ -5643,7 +5659,6 @@ var HeapSnapshotGenericObjectNode = class extends HeapSnapshotGridNode {
       div.appendChild(frameIcon);
     }
     void this.appendSourceLocation(div);
-    const cell = fragment.element();
     if (this.depth) {
       cell.style.setProperty("padding-left", this.depth * this.dataGrid.indentWidth + "px");
     }
@@ -5652,7 +5667,8 @@ var HeapSnapshotGenericObjectNode = class extends HeapSnapshotGridNode {
   prefixObjectCell(_div) {
   }
   async appendSourceLocation(div) {
-    const linkContainer = UI12.Fragment.html`<span class="heap-object-source-link" />`;
+    const linkContainer = document.createElement("span");
+    linkContainer.className = "heap-object-source-link";
     div.appendChild(linkContainer);
     const link = await this.dataGridInternal.dataDisplayDelegate().linkifyObject(this.snapshotNodeIndex);
     if (link) {

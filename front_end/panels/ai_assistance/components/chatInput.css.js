@@ -244,12 +244,15 @@ export default `/*
 
     & .title {
       vertical-align: middle;
+      /* Fixed italic text getting cut off */
+      padding-right: var(--sys-size-2);
       font: var(--sys-typescale-body5-regular);
       overflow: hidden;
       text-overflow: ellipsis;
     }
 
-    & .remove-context {
+    & .remove-context,
+    & .add-context {
       vertical-align: middle;
     }
 
@@ -263,6 +266,28 @@ export default `/*
       vertical-align: middle;
       min-width: var(--sys-size-7);
       min-height: var(--sys-size-7);
+    }
+
+    &.disabled {
+      border-style: dashed;
+      border-color: var(--sys-color-neutral-outline);
+      color: var(--sys-color-on-surface-light);
+
+      devtools-icon,
+      devtools-file-source-icon {
+        /* Override devtools-file-source-icon */
+        --override-file-source-icon-color: var(
+          --sys-color-on-surface-light-graphics
+        );
+        /* Some icons set their style attribute and we need to override it */
+        /* stylelint-disable-next-line declaration-no-important */
+        color: var(--sys-color-on-surface-light-graphics) !important;
+      }
+
+      .title {
+        color: var(--sys-color-on-surface-light);
+        font-style: italic;
+      }
     }
 
     /*

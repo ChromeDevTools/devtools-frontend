@@ -25,7 +25,8 @@ export interface Props {
     changeManager: AiAssistanceModel.ChangeManager.ChangeManager;
     inspectElementToggled: boolean;
     messages: Message[];
-    selectedContext: AiAssistanceModel.AiAgent.ConversationContext<unknown> | null;
+    context: AiAssistanceModel.AiAgent.ConversationContext<unknown> | null;
+    isContextSelected: boolean;
     isLoading: boolean;
     canShowFeedbackForm: boolean;
     userInfo: Pick<Host.InspectorFrontendHostAPI.SyncInformation, 'accountImage' | 'accountGivenName'>;

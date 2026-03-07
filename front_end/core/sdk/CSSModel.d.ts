@@ -70,6 +70,7 @@ export declare class CSSModel extends SDKModel<EventTypes> {
     setMediaText(styleSheetId: Protocol.DOM.StyleSheetId, range: TextUtils.TextRange.TextRange, newMediaText: string): Promise<boolean>;
     setContainerQueryText(styleSheetId: Protocol.DOM.StyleSheetId, range: TextUtils.TextRange.TextRange, newContainerQueryText: string): Promise<boolean>;
     setSupportsText(styleSheetId: Protocol.DOM.StyleSheetId, range: TextUtils.TextRange.TextRange, newSupportsText: string): Promise<boolean>;
+    setNavigationText(styleSheetId: Protocol.DOM.StyleSheetId, range: TextUtils.TextRange.TextRange, newNavigationText: string): Promise<boolean>;
     setScopeText(styleSheetId: Protocol.DOM.StyleSheetId, range: TextUtils.TextRange.TextRange, newScopeText: string): Promise<boolean>;
     addRule(styleSheetId: Protocol.DOM.StyleSheetId, ruleText: string, ruleLocation: TextUtils.TextRange.TextRange): Promise<CSSStyleRule | null>;
     requestViaInspectorStylesheet(maybeFrameId?: Protocol.Page.FrameId | null): Promise<CSSStyleSheetHeader | null>;

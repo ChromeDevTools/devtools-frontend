@@ -41,6 +41,7 @@ import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as CodeHighlighter from '../../ui/components/code_highlighter/code_highlighter.js';
 import * as Highlighting from '../../ui/components/highlighting/highlighting.js';
 import * as IssueCounter from '../../ui/components/issue_counter/issue_counter.js';
+import * as UIComponentUtils from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import { html, nothing, render } from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -455,16 +456,13 @@ export class ElementsTreeOutline extends Common.ObjectWrapper.eventMixin(UI.Tree
                 link = link.parentElementOrShadowHost();
             }
             return link;
-        }, link => {
+        }, async (link) => {
             const listItem = UI.UIUtils.enclosingNodeOrSelfWithNodeName(link, 'li');
             if (!listItem) {
-                return null;
+                return undefined;
             }
             const treeElement = UI.TreeOutline.TreeElement.getTreeElementBylistItemNode(listItem);
-            if (!treeElement) {
-                return null;
-            }
-            return treeElement.node();
+            return await UIComponentUtils.ImagePreview.loadPrecomputedFeatures(treeElement?.node());
         });
         this.updateRecords = new Map();
         this.treeElementsBeingUpdated = new Set();

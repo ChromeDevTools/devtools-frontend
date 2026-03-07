@@ -64,6 +64,7 @@
     "../../../../../../front_end/models/issues_manager/QuirksModeIssue.ts",
     "../../../../../../front_end/models/issues_manager/RelatedIssue.ts",
     "../../../../../../front_end/models/issues_manager/SRIMessageSignatureIssue.ts",
+    "../../../../../../front_end/models/issues_manager/SelectivePermissionsInterventionIssue.ts",
     "../../../../../../front_end/models/issues_manager/SharedArrayBufferIssue.ts",
     "../../../../../../front_end/models/issues_manager/SharedDictionaryIssue.ts",
     "../../../../../../front_end/models/issues_manager/SourceFrameIssuesManager.ts",

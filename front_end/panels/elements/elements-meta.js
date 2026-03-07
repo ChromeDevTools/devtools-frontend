@@ -105,9 +105,13 @@ var UIStrings = {
   /**
    * @description Title of a setting under the Elements category. Whether to show/hide code comments in HTML.
    */
+  htmlComments: "HTML comments",
+  /**
+   * @description Title of an option under the Elements category that can be invoked through the Command Menu
+   */
   showHtmlComments: "Show `HTML` comments",
   /**
-   * @description Title of a setting under the Elements category. Whether to show/hide code comments in HTML.
+   * @description Title of an option under the Elements category that can be invoked through the Command Menu
    */
   hideHtmlComments: "Hide `HTML` comments",
   /**
@@ -121,12 +125,12 @@ var UIStrings = {
    * the inspect tooltip (an information pane that hovers next to selected DOM elements) has extra
    * detail.
    */
-  showDetailedInspectTooltip: "Show detailed inspect tooltip",
+  detailedInspectTooltip: "Detailed inspect tooltip",
   /**
    * @description Title of a setting under the Elements category in Settings. Turns on a mode where
    * hovering over CSS properties in the Styles pane will display a popover with documentation.
    */
-  showCSSDocumentationTooltip: "Show CSS documentation tooltip",
+  CSSDocumentationTooltip: "CSS documentation tooltip",
   /**
    * @description A context menu item (command) in the Elements panel that copy the styles of
    * the HTML element.
@@ -141,7 +145,7 @@ var UIStrings = {
    * @description Title of a setting under the Elements category. Whether to show/hide hide
    * the shadow DOM nodes of HTML elements that are built into the browser (e.g. the <input> element).
    */
-  showUserAgentShadowDOM: "Show user agent shadow `DOM`",
+  userAgentShadowDOM: "User agent shadow `DOM`",
   /**
    * @description Command for showing the 'Computed' tool. Displays computed CSS styles in Elements sidebar.
    */
@@ -463,7 +467,7 @@ Common.Settings.registerSettingExtension({
   category: "ELEMENTS",
   storageType: "Synced",
   order: 1,
-  title: i18nLazyString(UIStrings.showUserAgentShadowDOM),
+  title: i18nLazyString(UIStrings.userAgentShadowDOM),
   settingName: "show-ua-shadow-dom",
   settingType: "boolean",
   defaultValue: false
@@ -502,7 +506,7 @@ Common.Settings.registerSettingExtension({
   category: "ELEMENTS",
   storageType: "Synced",
   order: 3,
-  title: i18nLazyString(UIStrings.showHtmlComments),
+  title: i18nLazyString(UIStrings.htmlComments),
   settingName: "show-html-comments",
   settingType: "boolean",
   defaultValue: true,
@@ -530,7 +534,7 @@ Common.Settings.registerSettingExtension({
   category: "ELEMENTS",
   storageType: "Synced",
   order: 5,
-  title: i18nLazyString(UIStrings.showDetailedInspectTooltip),
+  title: i18nLazyString(UIStrings.detailedInspectTooltip),
   settingName: "show-detailed-inspect-tooltip",
   settingType: "boolean",
   defaultValue: true
@@ -550,7 +554,7 @@ Common.Settings.registerSettingExtension({
 Common.Settings.registerSettingExtension({
   category: "ELEMENTS",
   storageType: "Synced",
-  title: i18nLazyString(UIStrings.showCSSDocumentationTooltip),
+  title: i18nLazyString(UIStrings.CSSDocumentationTooltip),
   settingName: "show-css-property-documentation-on-hover",
   settingType: "boolean",
   defaultValue: true

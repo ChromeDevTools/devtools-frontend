@@ -19,7 +19,8 @@ export interface ViewInput {
     blockedByCrossOrigin: boolean;
     isTextInputDisabled: boolean;
     inputPlaceholder: Platform.UIString.LocalizedString;
-    selectedContext: AiAssistanceModel.AiAgent.ConversationContext<unknown> | null;
+    context: AiAssistanceModel.AiAgent.ConversationContext<unknown> | null;
+    isContextSelected: boolean;
     inspectElementToggled: boolean;
     disclaimerText: string;
     conversationType: AiAssistanceModel.AiHistoryStorage.ConversationType;
@@ -55,7 +56,8 @@ export declare class ChatInput extends UI.Widget.Widget implements SDK.TargetMan
     blockedByCrossOrigin: boolean;
     isTextInputDisabled: boolean;
     inputPlaceholder: Platform.UIString.LocalizedString;
-    selectedContext: AiAssistanceModel.AiAgent.ConversationContext<unknown> | null;
+    context: AiAssistanceModel.AiAgent.ConversationContext<unknown> | null;
+    isContextSelected: boolean;
     inspectElementToggled: boolean;
     disclaimerText: string;
     conversationType: AiAssistanceModel.AiHistoryStorage.ConversationType;

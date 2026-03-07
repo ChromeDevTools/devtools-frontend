@@ -84,6 +84,7 @@ export declare class StylePropertiesSection {
     protected createScopeElement(scope: SDK.CSSScope.CSSScope): ElementsComponents.CSSQuery.CSSQuery | undefined;
     protected createStartingStyleElement(): ElementsComponents.CSSQuery.CSSQuery | undefined;
     protected createSupportsElement(supports: SDK.CSSSupports.CSSSupports): ElementsComponents.CSSQuery.CSSQuery | undefined;
+    protected createNavigationElement(navigation: SDK.CSSNavigation.CSSNavigation): ElementsComponents.CSSQuery.CSSQuery | undefined;
     protected createNestingElement(nestingSelector?: string): HTMLElement | undefined;
     private addContainerForContainerQuery;
     private updateAncestorRuleList;

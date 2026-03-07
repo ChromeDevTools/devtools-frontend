@@ -7,7 +7,8 @@ var __export = (target, all) => {
 // gen/front_end/ui/legacy/components/utils/ImagePreview.js
 var ImagePreview_exports = {};
 __export(ImagePreview_exports, {
-  ImagePreview: () => ImagePreview
+  ImagePreview: () => ImagePreview,
+  loadPrecomputedFeatures: () => loadPrecomputedFeatures
 });
 import * as Common from "./../../../../core/common/common.js";
 import * as Host from "./../../../../core/host/host.js";
@@ -214,31 +215,34 @@ var ImagePreview = class {
       }
     });
   }
-  static async loadDimensionsForNode(node) {
-    if (!node.nodeName() || node.nodeName().toLowerCase() !== "img") {
-      return;
-    }
-    const object = await node.resolveToObject("");
-    if (!object) {
-      return;
-    }
-    const featuresObject = await object.callFunctionJSON(features, void 0);
-    object.release();
-    return featuresObject ?? void 0;
-    function features() {
-      return {
-        renderedWidth: this.width,
-        renderedHeight: this.height,
-        currentSrc: this.currentSrc
-      };
-    }
-  }
   static defaultAltTextForImageURL(url) {
     const parsedImageURL = new Common.ParsedURL.ParsedURL(url);
     const imageSourceText = parsedImageURL.isValid ? parsedImageURL.displayName : i18nString(UIStrings.unknownSource);
     return i18nString(UIStrings.imageFromS, { PH1: imageSourceText });
   }
 };
+async function loadPrecomputedFeatures(node) {
+  if (!node) {
+    return void 0;
+  }
+  if (!node.nodeName() || node.nodeName().toLowerCase() !== "img") {
+    return void 0;
+  }
+  const object = await node.resolveToObject("");
+  if (!object) {
+    return void 0;
+  }
+  const featuresObject = await object.callFunctionJSON(features, void 0);
+  object.release();
+  return featuresObject ?? void 0;
+  function features() {
+    return {
+      renderedWidth: this.width,
+      renderedHeight: this.height,
+      currentSrc: this.currentSrc
+    };
+  }
+}
 
 // gen/front_end/ui/legacy/components/utils/JSPresentationUtils.js
 var JSPresentationUtils_exports = {};

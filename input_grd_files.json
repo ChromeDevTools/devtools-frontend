@@ -588,6 +588,7 @@
   "front_end/models/issues_manager/descriptions/selectElementAccessibilityInteractiveContentLegendChild.md",
   "front_end/models/issues_manager/descriptions/selectElementAccessibilityInteractiveContentOptionChild.md",
   "front_end/models/issues_manager/descriptions/selectElementAccessibilityNonPhrasingContentOptionChild.md",
+  "front_end/models/issues_manager/descriptions/selectivePermissionsIntervention.md",
   "front_end/models/issues_manager/descriptions/summaryElementAccessibilityInteractiveContentSummaryDescendant.md",
   "front_end/models/issues_manager/descriptions/sharedArrayBuffer.md",
   "front_end/models/issues_manager/descriptions/stylesheetLateImport.md",

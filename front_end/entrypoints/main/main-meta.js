@@ -127,11 +127,11 @@ var UIStrings = {
   /**
    * @description Title of a setting under the Appearance category in Settings
    */
-  enableCtrlShortcutToSwitchPanels: "Enable Ctrl + 1-9 shortcut to switch panels",
+  enableCtrlShortcutToSwitchPanels: "Use Ctrl + 1-9 to switch panels",
   /**
    * @description (Mac only) Title of a setting under the Appearance category in Settings
    */
-  enableShortcutToSwitchPanels: "Enable \u2318 + 1-9 shortcut to switch panels",
+  enableShortcutToSwitchPanels: "Use \u2318 + 1-9 to switch panels",
   /**
    * @description A drop-down menu option to dock to right
    */

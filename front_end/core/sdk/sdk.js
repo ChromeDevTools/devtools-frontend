@@ -685,6 +685,7 @@ var generatedProperties = [
       "page-margin-safety",
       "page-orientation",
       "paint-order",
+      "path-length",
       "pathname",
       "pattern",
       "perspective",
@@ -3635,6 +3636,12 @@ var generatedProperties = [
       "markers"
     ],
     "name": "paint-order"
+  },
+  {
+    "keywords": [
+      "none"
+    ],
+    "name": "path-length"
   },
   {
     "name": "pathname"
@@ -6652,6 +6659,11 @@ var generatedPropertyValues = {
       "markers"
     ]
   },
+  "path-length": {
+    "values": [
+      "none"
+    ]
+  },
   "perspective": {
     "values": [
       "none"
@@ -9429,7 +9441,7 @@ __export(NetworkRequest_exports, {
   setCookieBlockedReasonToAttribute: () => setCookieBlockedReasonToAttribute,
   setCookieBlockedReasonToUiString: () => setCookieBlockedReasonToUiString
 });
-import * as TextUtils23 from "./../../models/text_utils/text_utils.js";
+import * as TextUtils24 from "./../../models/text_utils/text_utils.js";
 import * as Common27 from "./../common/common.js";
 import * as i18n21 from "./../i18n/i18n.js";
 import * as Platform17 from "./../platform/platform.js";
@@ -12532,7 +12544,7 @@ __export(CSSModel_exports, {
   Events: () => Events5,
   InlineStyleResult: () => InlineStyleResult
 });
-import * as TextUtils17 from "./../../models/text_utils/text_utils.js";
+import * as TextUtils18 from "./../../models/text_utils/text_utils.js";
 import * as Common13 from "./../common/common.js";
 import * as Host3 from "./../host/host.js";
 import * as Platform10 from "./../platform/platform.js";
@@ -14814,7 +14826,7 @@ __export(CSSRule_exports, {
   CSSRule: () => CSSRule,
   CSSStyleRule: () => CSSStyleRule
 });
-import * as TextUtils12 from "./../../models/text_utils/text_utils.js";
+import * as TextUtils13 from "./../../models/text_utils/text_utils.js";
 import * as Platform5 from "./../platform/platform.js";
 
 // gen/front_end/core/sdk/CSSContainerQuery.js
@@ -15105,12 +15117,38 @@ var Source = {
   IMPORT_RULE: "importRule"
 };
 
+// gen/front_end/core/sdk/CSSNavigation.js
+var CSSNavigation_exports = {};
+__export(CSSNavigation_exports, {
+  CSSNavigation: () => CSSNavigation
+});
+import * as TextUtils8 from "./../../models/text_utils/text_utils.js";
+var CSSNavigation = class _CSSNavigation extends CSSQuery {
+  static parseNavigationPayload(cssModel, payload) {
+    return payload.map((navigation) => new _CSSNavigation(cssModel, navigation));
+  }
+  #active = true;
+  constructor(cssModel, payload) {
+    super(cssModel);
+    this.reinitialize(payload);
+  }
+  reinitialize(payload) {
+    this.text = payload.text;
+    this.range = payload.range ? TextUtils8.TextRange.TextRange.fromObject(payload.range) : null;
+    this.styleSheetId = payload.styleSheetId;
+    this.#active = payload.active ?? true;
+  }
+  active() {
+    return this.#active;
+  }
+};
+
 // gen/front_end/core/sdk/CSSScope.js
 var CSSScope_exports = {};
 __export(CSSScope_exports, {
   CSSScope: () => CSSScope
 });
-import * as TextUtils8 from "./../../models/text_utils/text_utils.js";
+import * as TextUtils9 from "./../../models/text_utils/text_utils.js";
 var CSSScope = class _CSSScope extends CSSQuery {
   static parseScopesPayload(cssModel, payload) {
     return payload.map((scope) => new _CSSScope(cssModel, scope));
@@ -15121,7 +15159,7 @@ var CSSScope = class _CSSScope extends CSSQuery {
   }
   reinitialize(payload) {
     this.text = payload.text;
-    this.range = payload.range ? TextUtils8.TextRange.TextRange.fromObject(payload.range) : null;
+    this.range = payload.range ? TextUtils9.TextRange.TextRange.fromObject(payload.range) : null;
     this.styleSheetId = payload.styleSheetId;
   }
   active() {
@@ -15134,7 +15172,7 @@ var CSSStartingStyle_exports = {};
 __export(CSSStartingStyle_exports, {
   CSSStartingStyle: () => CSSStartingStyle
 });
-import * as TextUtils9 from "./../../models/text_utils/text_utils.js";
+import * as TextUtils10 from "./../../models/text_utils/text_utils.js";
 var CSSStartingStyle = class _CSSStartingStyle extends CSSQuery {
   static parseStartingStylePayload(cssModel, payload) {
     return payload.map((p) => new _CSSStartingStyle(cssModel, p));
@@ -15144,7 +15182,7 @@ var CSSStartingStyle = class _CSSStartingStyle extends CSSQuery {
     this.reinitialize(payload);
   }
   reinitialize(payload) {
-    this.range = payload.range ? TextUtils9.TextRange.TextRange.fromObject(payload.range) : null;
+    this.range = payload.range ? TextUtils10.TextRange.TextRange.fromObject(payload.range) : null;
     this.styleSheetId = payload.styleSheetId;
   }
   active() {
@@ -15158,7 +15196,7 @@ __export(CSSStyleDeclaration_exports, {
   CSSStyleDeclaration: () => CSSStyleDeclaration,
   Type: () => Type2
 });
-import * as TextUtils10 from "./../../models/text_utils/text_utils.js";
+import * as TextUtils11 from "./../../models/text_utils/text_utils.js";
 var CSSStyleDeclaration = class {
   #cssModel;
   parentRule;
@@ -15199,7 +15237,7 @@ var CSSStyleDeclaration = class {
   }
   #reinitialize(payload) {
     this.styleSheetId = payload.styleSheetId;
-    this.range = payload.range ? TextUtils10.TextRange.TextRange.fromObject(payload.range) : null;
+    this.range = payload.range ? TextUtils11.TextRange.TextRange.fromObject(payload.range) : null;
     const shorthandEntries = payload.shorthandEntries;
     this.#shorthandValues = /* @__PURE__ */ new Map();
     this.#shorthandIsImportant = /* @__PURE__ */ new Set();
@@ -15417,7 +15455,7 @@ var CSSSupports_exports = {};
 __export(CSSSupports_exports, {
   CSSSupports: () => CSSSupports
 });
-import * as TextUtils11 from "./../../models/text_utils/text_utils.js";
+import * as TextUtils12 from "./../../models/text_utils/text_utils.js";
 var CSSSupports = class _CSSSupports extends CSSQuery {
   static parseSupportsPayload(cssModel, payload) {
     return payload.map((supports) => new _CSSSupports(cssModel, supports));
@@ -15429,7 +15467,7 @@ var CSSSupports = class _CSSSupports extends CSSQuery {
   }
   reinitialize(payload) {
     this.text = payload.text;
-    this.range = payload.range ? TextUtils11.TextRange.TextRange.fromObject(payload.range) : null;
+    this.range = payload.range ? TextUtils12.TextRange.TextRange.fromObject(payload.range) : null;
     this.styleSheetId = payload.styleSheetId;
     this.#active = payload.active;
   }
@@ -15493,7 +15531,7 @@ var CSSValue = class {
   constructor(payload) {
     this.text = payload.text;
     if (payload.range) {
-      this.range = TextUtils12.TextRange.TextRange.fromObject(payload.range);
+      this.range = TextUtils13.TextRange.TextRange.fromObject(payload.range);
     }
     if (payload.specificity) {
       this.specificity = payload.specificity;
@@ -15516,6 +15554,7 @@ var CSSStyleRule = class _CSSStyleRule extends CSSRule {
   layers;
   ruleTypes;
   startingStyles;
+  navigations;
   wasUsed;
   constructor(cssModel, payload, wasUsed) {
     super(cssModel, {
@@ -15532,6 +15571,7 @@ var CSSStyleRule = class _CSSStyleRule extends CSSRule {
     this.supports = payload.supports ? CSSSupports.parseSupportsPayload(cssModel, payload.supports) : [];
     this.layers = payload.layers ? CSSLayer.parseLayerPayload(cssModel, payload.layers) : [];
     this.startingStyles = payload.startingStyles ? CSSStartingStyle.parseStartingStylePayload(cssModel, payload.startingStyles) : [];
+    this.navigations = payload.navigations ? CSSNavigation.parseNavigationPayload(cssModel, payload.navigations) : [];
     this.ruleTypes = payload.ruleTypes || [];
     this.wasUsed = wasUsed || false;
   }
@@ -15543,7 +15583,7 @@ var CSSStyleRule = class _CSSStyleRule extends CSSRule {
       },
       style: {
         styleSheetId: "0",
-        range: new TextUtils12.TextRange.TextRange(0, 0, 0, 0),
+        range: new TextUtils13.TextRange.TextRange(0, 0, 0, 0),
         shorthandEntries: [],
         cssProperties: []
       },
@@ -15580,7 +15620,7 @@ var CSSStyleRule = class _CSSStyleRule extends CSSRule {
     if (!firstRange || !lastRange) {
       return null;
     }
-    return new TextUtils12.TextRange.TextRange(firstRange.startLine, firstRange.startColumn, lastRange.endLine, lastRange.endColumn);
+    return new TextUtils13.TextRange.TextRange(firstRange.startLine, firstRange.startColumn, lastRange.endLine, lastRange.endColumn);
   }
   lineNumberInSource(selectorIndex) {
     const selector = this.selectors[selectorIndex];
@@ -15612,6 +15652,7 @@ var CSSStyleRule = class _CSSStyleRule extends CSSRule {
     this.containerQueries.forEach((cq) => cq.rebase(edit));
     this.scopes.forEach((scope) => scope.rebase(edit));
     this.supports.forEach((supports) => supports.rebase(edit));
+    this.navigations.forEach((navigation) => navigation.rebase(edit));
     super.rebase(edit);
   }
 };
@@ -15810,7 +15851,13 @@ var CSSFunctionRule = class extends CSSRule {
           supports: new CSSSupports(this.cssModelInternal, node.condition.supports)
         };
       }
-      console.error("A function rule condition must have a media, container, or supports");
+      if (node.condition.navigation) {
+        return {
+          children,
+          navigation: new CSSNavigation(this.cssModelInternal, node.condition.navigation)
+        };
+      }
+      console.error("A function rule condition must have a media, container, supports, or navigation");
       return;
     }
     console.error("A function rule node must have a style or condition");
@@ -17162,7 +17209,7 @@ var CSSStyleSheetHeader_exports = {};
 __export(CSSStyleSheetHeader_exports, {
   CSSStyleSheetHeader: () => CSSStyleSheetHeader
 });
-import * as TextUtils13 from "./../../models/text_utils/text_utils.js";
+import * as TextUtils14 from "./../../models/text_utils/text_utils.js";
 import * as Common8 from "./../common/common.js";
 import * as i18n3 from "./../i18n/i18n.js";
 import * as Platform7 from "./../platform/platform.js";
@@ -17230,14 +17277,14 @@ var CSSStyleSheetHeader = class {
         if (originalText === null) {
           return { error: i18nString2(UIStrings2.couldNotFindTheOriginalStyle) };
         }
-        return new TextUtils13.ContentData.ContentData(
+        return new TextUtils14.ContentData.ContentData(
           originalText,
           /* isBase64=*/
           false,
           "text/css"
         );
       };
-      this.#originalContentProvider = new TextUtils13.StaticContentProvider.StaticContentProvider(this.contentURL(), this.contentType(), lazyContent);
+      this.#originalContentProvider = new TextUtils14.StaticContentProvider.StaticContentProvider(this.contentURL(), this.contentType(), lazyContent);
     }
     return this.#originalContentProvider;
   }
@@ -17307,7 +17354,7 @@ var CSSStyleSheetHeader = class {
     if (cssText === null) {
       return { error: i18nString2(UIStrings2.thereWasAnErrorRetrievingThe) };
     }
-    return new TextUtils13.ContentData.ContentData(
+    return new TextUtils14.ContentData.ContentData(
       cssText,
       /* isBase64=*/
       false,
@@ -17316,7 +17363,7 @@ var CSSStyleSheetHeader = class {
   }
   async searchInContent(query, caseSensitive, isRegex) {
     const contentData = await this.requestContentData();
-    return TextUtils13.TextUtils.performSearchInContentData(contentData, query, caseSensitive, isRegex);
+    return TextUtils14.TextUtils.performSearchInContentData(contentData, query, caseSensitive, isRegex);
   }
   isViaInspector() {
     return this.origin === "inspector";
@@ -18643,7 +18690,7 @@ __export(SourceMap_exports, {
   TokenIterator: () => TokenIterator,
   parseSourceMap: () => parseSourceMap
 });
-import * as TextUtils16 from "./../../models/text_utils/text_utils.js";
+import * as TextUtils17 from "./../../models/text_utils/text_utils.js";
 import * as ScopesCodec from "./../../third_party/source-map-scopes-codec/source-map-scopes-codec.js";
 import * as Common11 from "./../common/common.js";
 import * as Platform8 from "./../platform/platform.js";
@@ -18655,7 +18702,7 @@ __export(ScopeTreeCache_exports, {
   scopeTreeForScript: () => scopeTreeForScript
 });
 import * as Formatter from "./../../models/formatter/formatter.js";
-import * as TextUtils15 from "./../../models/text_utils/text_utils.js";
+import * as TextUtils16 from "./../../models/text_utils/text_utils.js";
 var scopeTrees = /* @__PURE__ */ new WeakMap();
 function scopeTreeForScript(script) {
   if (script.isWasm()) {
@@ -18664,7 +18711,7 @@ function scopeTreeForScript(script) {
   let promise = scopeTrees.get(script);
   if (promise === void 0) {
     promise = script.requestContentData().then((content) => {
-      if (TextUtils15.ContentData.ContentData.isError(content)) {
+      if (TextUtils16.ContentData.ContentData.isError(content)) {
         return null;
       }
       const sourceType = script.isModule ? "module" : "script";
@@ -19563,7 +19610,7 @@ var SourceMap = class {
     }
     const endLine = endIndex < mappings.length ? mappings[endIndex].lineNumber : 2 ** 31 - 1;
     const endColumn = endIndex < mappings.length ? mappings[endIndex].columnNumber : 2 ** 31 - 1;
-    const range = new TextUtils16.TextRange.TextRange(mappings[startIndex].lineNumber, mappings[startIndex].columnNumber, endLine, endColumn);
+    const range = new TextUtils17.TextRange.TextRange(mappings[startIndex].lineNumber, mappings[startIndex].columnNumber, endLine, endColumn);
     const reverseMappings = this.reversedMappings(sourceURL);
     const startSourceLine = mappings[startIndex].sourceLineNumber;
     const startSourceColumn = mappings[startIndex].sourceColumnNumber;
@@ -19573,7 +19620,7 @@ var SourceMap = class {
     }
     const endSourceLine = endReverseIndex < reverseMappings.length ? mappings[reverseMappings[endReverseIndex]].sourceLineNumber : 2 ** 31 - 1;
     const endSourceColumn = endReverseIndex < reverseMappings.length ? mappings[reverseMappings[endReverseIndex]].sourceColumnNumber : 2 ** 31 - 1;
-    const sourceRange = new TextUtils16.TextRange.TextRange(startSourceLine, startSourceColumn, endSourceLine, endSourceColumn);
+    const sourceRange = new TextUtils17.TextRange.TextRange(startSourceLine, startSourceColumn, endSourceLine, endSourceColumn);
     return { range, sourceRange, sourceURL };
   }
   sourceLineMapping(sourceURL, lineNumber, columnNumber) {
@@ -19623,7 +19670,7 @@ var SourceMap = class {
       const startColumn = mappings[startIndex].columnNumber;
       const endLine = endIndex < mappings.length ? mappings[endIndex].lineNumber : 2 ** 31 - 1;
       const endColumn = endIndex < mappings.length ? mappings[endIndex].columnNumber : 2 ** 31 - 1;
-      ranges.push(new TextUtils16.TextRange.TextRange(startLine, startColumn, endLine, endColumn));
+      ranges.push(new TextUtils17.TextRange.TextRange(startLine, startColumn, endLine, endColumn));
     }
     return ranges;
   }
@@ -19851,14 +19898,14 @@ var SourceMap = class {
     const ranges = [];
     for (let reverseIndex = startReverseIndex; reverseIndex < endReverseIndex; ++reverseIndex) {
       const startIndex = reverseMappings[reverseIndex], endIndex = startIndex + 1;
-      const range = TextUtils16.TextRange.TextRange.createUnboundedFromLocation(mappings[startIndex].lineNumber, mappings[startIndex].columnNumber);
+      const range = TextUtils17.TextRange.TextRange.createUnboundedFromLocation(mappings[startIndex].lineNumber, mappings[startIndex].columnNumber);
       if (endIndex < mappings.length) {
         range.endLine = mappings[endIndex].lineNumber;
         range.endColumn = mappings[endIndex].columnNumber;
       }
       ranges.push(range);
     }
-    ranges.sort(TextUtils16.TextRange.TextRange.comparator);
+    ranges.sort(TextUtils17.TextRange.TextRange.comparator);
     let j = 0;
     for (let i = 1; i < ranges.length; ++i) {
       if (ranges[j].immediatelyPrecedes(ranges[i])) {
@@ -19896,13 +19943,13 @@ var SourceMap = class {
     }
     let current = null;
     if ((mappings[0].lineNumber !== 0 || mappings[0].columnNumber !== 0) && options?.isStartMatching) {
-      current = TextUtils16.TextRange.TextRange.createUnboundedFromLocation(0, 0);
+      current = TextUtils17.TextRange.TextRange.createUnboundedFromLocation(0, 0);
       ranges.push(current);
     }
     for (const { sourceURL, lineNumber, columnNumber } of mappings) {
       const ignoreListHint = sourceURL && predicate(sourceURL);
       if (!current && ignoreListHint) {
-        current = TextUtils16.TextRange.TextRange.createUnboundedFromLocation(lineNumber, columnNumber);
+        current = TextUtils17.TextRange.TextRange.createUnboundedFromLocation(lineNumber, columnNumber);
         ranges.push(current);
         continue;
       }
@@ -20673,6 +20720,23 @@ var CSSModel = class _CSSModel extends SDKModel {
       return false;
     }
   }
+  async setNavigationText(styleSheetId, range, newNavigationText) {
+    Host3.userMetrics.actionTaken(Host3.UserMetrics.Action.StyleRuleEdited);
+    try {
+      await this.ensureOriginalStyleSheetText(styleSheetId);
+      const { navigation } = await this.agent.invoke_setNavigationText({ styleSheetId, range, text: newNavigationText });
+      if (!navigation) {
+        return false;
+      }
+      this.#domModel.markUndoableState();
+      const edit = new Edit(styleSheetId, range, newNavigationText, navigation);
+      this.fireStyleSheetChanged(styleSheetId, edit);
+      return true;
+    } catch (e) {
+      console.error(e);
+      return false;
+    }
+  }
   async setScopeText(styleSheetId, range, newScopeText) {
     Host3.userMetrics.actionTaken(Host3.UserMetrics.Action.StyleRuleEdited);
     try {
@@ -20998,7 +21062,7 @@ var Edit = class {
   constructor(styleSheetId, oldRange, newText, payload) {
     this.styleSheetId = styleSheetId;
     this.oldRange = oldRange;
-    this.newRange = TextUtils17.TextRange.TextRange.fromEdit(oldRange, newText);
+    this.newRange = TextUtils18.TextRange.TextRange.fromEdit(oldRange, newText);
     this.newText = newText;
     this.payload = payload;
   }
@@ -21988,7 +22052,7 @@ __export(Script_exports, {
   sourceURLRegex: () => sourceURLRegex
 });
 import * as Platform11 from "./../platform/platform.js";
-import * as TextUtils18 from "./../../models/text_utils/text_utils.js";
+import * as TextUtils19 from "./../../models/text_utils/text_utils.js";
 import * as Common16 from "./../common/common.js";
 import * as i18n9 from "./../i18n/i18n.js";
 var UIStrings5 = {
@@ -22113,7 +22177,7 @@ var Script = class _Script {
     }
     const { scriptSource, bytecode } = result;
     if (bytecode) {
-      return new TextUtils18.ContentData.ContentData(
+      return new TextUtils19.ContentData.ContentData(
         bytecode,
         /* isBase64 */
         true,
@@ -22124,7 +22188,7 @@ var Script = class _Script {
     if (this.hasSourceURL && Common16.ParsedURL.schemeIs(this.sourceURL, "snippet:")) {
       content = _Script.trimSourceURLComment(content);
     }
-    return new TextUtils18.ContentData.ContentData(
+    return new TextUtils19.ContentData.ContentData(
       content,
       /* isBase64 */
       false,
@@ -22170,7 +22234,7 @@ var Script = class _Script {
     for (let i = 0; i < functionBodyOffsets.length; i += 2) {
       functionBodyRanges.push({ start: functionBodyOffsets[i], end: functionBodyOffsets[i + 1] });
     }
-    return new TextUtils18.WasmDisassembly.WasmDisassembly(lines.concat(...lineChunks), bytecodeOffsets.concat(...bytecodeOffsetChunks), functionBodyRanges);
+    return new TextUtils19.WasmDisassembly.WasmDisassembly(lines.concat(...lineChunks), bytecodeOffsets.concat(...bytecodeOffsetChunks), functionBodyRanges);
   }
   requestContentData() {
     if (!this.#contentPromise) {
@@ -22222,14 +22286,14 @@ var Script = class _Script {
     return await response.arrayBuffer();
   }
   originalContentProvider() {
-    return new TextUtils18.StaticContentProvider.StaticContentProvider(this.contentURL(), this.contentType(), () => this.requestContentData());
+    return new TextUtils19.StaticContentProvider.StaticContentProvider(this.contentURL(), this.contentType(), () => this.requestContentData());
   }
   async searchInContent(query, caseSensitive, isRegex) {
     if (!this.scriptId) {
       return [];
     }
     const matches = await this.debuggerModel.target().debuggerAgent().invoke_searchInContent({ scriptId: this.scriptId, query, caseSensitive, isRegex });
-    return TextUtils18.TextUtils.performSearchInSearchMatches(matches.result || [], query, caseSensitive, isRegex);
+    return TextUtils19.TextUtils.performSearchInSearchMatches(matches.result || [], query, caseSensitive, isRegex);
   }
   appendSourceURLCommentIfNeeded(source) {
     if (!this.hasSourceURL) {
@@ -22240,7 +22304,7 @@ var Script = class _Script {
   async editSource(newSource) {
     newSource = _Script.trimSourceURLComment(newSource);
     newSource = this.appendSourceURLCommentIfNeeded(newSource);
-    const oldSource = TextUtils18.ContentData.ContentData.textOr(await this.requestContentData(), null);
+    const oldSource = TextUtils19.ContentData.ContentData.textOr(await this.requestContentData(), null);
     if (oldSource === newSource) {
       return {
         changed: false,
@@ -22253,7 +22317,7 @@ var Script = class _Script {
       throw new Error(`Script#editSource failed for script with id ${this.scriptId}: ${response.getError()}`);
     }
     if (!response.getError() && response.status === "Ok") {
-      this.#contentPromise = Promise.resolve(new TextUtils18.ContentData.ContentData(
+      this.#contentPromise = Promise.resolve(new TextUtils19.ContentData.ContentData(
         newSource,
         /* isBase64 */
         false,
@@ -22355,7 +22419,7 @@ async function disassembleWasm(content) {
               reject(data.error);
             } else if ("result" in data) {
               const { lines, offsets, functionBodyOffsets } = data.result;
-              resolve(new TextUtils18.WasmDisassembly.WasmDisassembly(lines, offsets, functionBodyOffsets));
+              resolve(new TextUtils19.WasmDisassembly.WasmDisassembly(lines, offsets, functionBodyOffsets));
             }
             break;
         }
@@ -26540,7 +26604,7 @@ var Resource_exports = {};
 __export(Resource_exports, {
   Resource: () => Resource
 });
-import * as TextUtils20 from "./../../models/text_utils/text_utils.js";
+import * as TextUtils21 from "./../../models/text_utils/text_utils.js";
 import * as Common22 from "./../common/common.js";
 import * as Platform14 from "./../platform/platform.js";
 var Resource = class {
@@ -26650,7 +26714,7 @@ var Resource = class {
       return await this.#pendingContentData;
     }
     this.#pendingContentData = this.innerRequestContent().then((contentData) => {
-      if (!TextUtils20.ContentData.ContentData.isError(contentData)) {
+      if (!TextUtils21.ContentData.ContentData.isError(contentData)) {
         this.#contentData = contentData;
       }
       this.#pendingContentData = null;
@@ -26669,11 +26733,11 @@ var Resource = class {
       return await this.request.searchInContent(query, caseSensitive, isRegex);
     }
     const result = await this.#resourceTreeModel.target().pageAgent().invoke_searchInResource({ frameId: this.frameId, url: this.url, query, caseSensitive, isRegex });
-    return TextUtils20.TextUtils.performSearchInSearchMatches(result.result || [], query, caseSensitive, isRegex);
+    return TextUtils21.TextUtils.performSearchInSearchMatches(result.result || [], query, caseSensitive, isRegex);
   }
   async populateImageSource(image) {
     const contentData = await this.requestContentData();
-    if (TextUtils20.ContentData.ContentData.isError(contentData)) {
+    if (TextUtils21.ContentData.ContentData.isError(contentData)) {
       return;
     }
     image.src = contentData.asDataUrl() ?? this.#url;
@@ -26687,7 +26751,7 @@ var Resource = class {
     if (error) {
       return { error };
     }
-    return new TextUtils20.ContentData.ContentData(response.content, response.base64Encoded, this.mimeType);
+    return new TextUtils21.ContentData.ContentData(response.content, response.base64Encoded, this.mimeType);
   }
   frame() {
     return this.#frameId ? this.#resourceTreeModel.frameForId(this.#frameId) : null;
@@ -28110,7 +28174,7 @@ function getStatusText(statusCode) {
 }
 
 // gen/front_end/core/sdk/ServerSentEvents.js
-import * as TextUtils22 from "./../../models/text_utils/text_utils.js";
+import * as TextUtils23 from "./../../models/text_utils/text_utils.js";
 
 // gen/front_end/core/sdk/ServerSentEventsProtocol.js
 var ServerSentEventsProtocol_exports = {};
@@ -28220,7 +28284,7 @@ var ServerSentEvents = class {
       this.#lastDataReceivedTime = request.pseudoWallTime(request.startTime);
       this.#parser = new ServerSentEventsParser(this.#onParserEvent.bind(this), request.charset() ?? void 0);
       void this.#request.requestStreamingContent().then((streamingContentData) => {
-        if (!TextUtils22.StreamingContentData.isError(streamingContentData)) {
+        if (!TextUtils23.StreamingContentData.isError(streamingContentData)) {
           void this.#parser?.addBase64Chunk(streamingContentData.content().base64);
           streamingContentData.addEventListener("ChunkAdded", ({ data: { chunk } }) => {
             this.#lastDataReceivedTime = request.pseudoWallTime(request.endTime);
@@ -29534,10 +29598,10 @@ var NetworkRequest = class _NetworkRequest extends Common27.ObjectWrapper.Object
     }
     const contentPromise = this.finished ? this.requestContentData() : NetworkManager.streamResponseBody(this);
     this.#streamingContentData = contentPromise.then((contentData) => {
-      if (TextUtils23.ContentData.ContentData.isError(contentData)) {
+      if (TextUtils24.ContentData.ContentData.isError(contentData)) {
         return contentData;
       }
-      return TextUtils23.StreamingContentData.StreamingContentData.from(contentData);
+      return TextUtils24.StreamingContentData.StreamingContentData.from(contentData);
     });
     return this.#streamingContentData;
   }
@@ -29552,10 +29616,10 @@ var NetworkRequest = class _NetworkRequest extends Common27.ObjectWrapper.Object
       return await NetworkManager.searchInRequest(this, query, caseSensitive, isRegex);
     }
     const contentData = await this.requestContentData();
-    if (TextUtils23.ContentData.ContentData.isError(contentData) || !contentData.isTextContent) {
+    if (TextUtils24.ContentData.ContentData.isError(contentData) || !contentData.isTextContent) {
       return [];
     }
-    return TextUtils23.TextUtils.performSearchInContentData(contentData, query, caseSensitive, isRegex);
+    return TextUtils24.TextUtils.performSearchInContentData(contentData, query, caseSensitive, isRegex);
   }
   requestContentType() {
     return this.requestHeaderValue("Content-Type");
@@ -29586,7 +29650,7 @@ var NetworkRequest = class _NetworkRequest extends Common27.ObjectWrapper.Object
   }
   async populateImageSource(image) {
     const contentData = await this.requestContentData();
-    if (TextUtils23.ContentData.ContentData.isError(contentData)) {
+    if (TextUtils24.ContentData.ContentData.isError(contentData)) {
       return;
     }
     let imageSrc = contentData.asDataUrl();
@@ -29857,7 +29921,7 @@ var NetworkRequest = class _NetworkRequest extends Common27.ObjectWrapper.Object
     this.endTime = timestamp;
     if (data) {
       void this.#streamingContentData?.then((contentData) => {
-        if (!TextUtils23.StreamingContentData.isError(contentData)) {
+        if (!TextUtils24.StreamingContentData.isError(contentData)) {
           contentData.addChunk(data);
         }
       });
@@ -31532,7 +31596,7 @@ var CompilerSourceMappingContentProvider_exports = {};
 __export(CompilerSourceMappingContentProvider_exports, {
   CompilerSourceMappingContentProvider: () => CompilerSourceMappingContentProvider
 });
-import * as TextUtils25 from "./../../models/text_utils/text_utils.js";
+import * as TextUtils26 from "./../../models/text_utils/text_utils.js";
 import * as i18n25 from "./../i18n/i18n.js";
 var UIStrings11 = {
   /**
@@ -31562,7 +31626,7 @@ var CompilerSourceMappingContentProvider = class {
   async requestContentData() {
     try {
       const { content } = await PageResourceLoader.instance().loadResource(this.#sourceURL, this.#initiator);
-      return new TextUtils25.ContentData.ContentData(
+      return new TextUtils26.ContentData.ContentData(
         content,
         /* isBase64=*/
         false,
@@ -31576,7 +31640,7 @@ var CompilerSourceMappingContentProvider = class {
   }
   async searchInContent(query, caseSensitive, isRegex) {
     const contentData = await this.requestContentData();
-    return TextUtils25.TextUtils.performSearchInContentData(contentData, query, caseSensitive, isRegex);
+    return TextUtils26.TextUtils.performSearchInContentData(contentData, query, caseSensitive, isRegex);
   }
 };
 
@@ -37115,6 +37179,7 @@ export {
   CSSMedia_exports as CSSMedia,
   CSSMetadata_exports as CSSMetadata,
   CSSModel_exports as CSSModel,
+  CSSNavigation_exports as CSSNavigation,
   CSSProperty_exports as CSSProperty,
   CSSPropertyParser_exports as CSSPropertyParser,
   CSSPropertyParserMatchers_exports as CSSPropertyParserMatchers,

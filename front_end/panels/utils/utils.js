@@ -80,8 +80,11 @@ var PanelUtils = class _PanelUtils {
         iconName2 = "cross-circle-filled";
       }
       return html`<devtools-icon
-          class="icon" name=${iconName2} title=${title}> role=img
-        </devtools-icon>`;
+          class="icon"
+          name=${iconName2}
+          title=${title}
+          role=img
+        ></devtools-icon>`;
     }
     if (request.hasThirdPartyCookiePhaseoutIssue()) {
       return html`<devtools-icon
@@ -203,13 +206,15 @@ var PanelUtils = class _PanelUtils {
     }
     const title = binding ? PanelCommon.PersistenceUtils.PersistenceUtils.tooltipForUISourceCode(uiSourceCode) : void 0;
     return html`<devtools-file-source-icon
-        name=${iconType} title=${ifDefined(title)} .data=${{
+        class="icon"
+        name=${iconType} 
+        title=${ifDefined(title)} 
+        .data=${{
       contentType: uiSourceCode.contentType().name(),
       hasDotBadge,
       isDotPurple,
       iconType
-    }}>
-      </devtools-file-source-icon>`;
+    }}></devtools-file-source-icon>`;
   }
   static async formatCSSChangesFromDiff(diff) {
     const indent = "  ";

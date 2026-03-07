@@ -749,9 +749,15 @@ declare abstract class ReactiveElement extends HTMLElement implements ReactiveCo
      * @param oldValue old value of requesting property
      * @param options property options to use instead of the previously
      *     configured options
+     * @param useNewValue if true, the newValue argument is used instead of
+     *     reading the property value. This is important to use if the reactive
+     *     property is a standard private accessor, as opposed to a plain
+     *     property, since private members can't be dynamically read by name.
+     * @param newValue the new value of the property. This is only used if
+     *     `useNewValue` is true.
      * @category updates
      */
-    requestUpdate(name?: PropertyKey, oldValue?: unknown, options?: PropertyDeclaration): void;
+    requestUpdate(name?: PropertyKey, oldValue?: unknown, options?: PropertyDeclaration, useNewValue?: boolean, newValue?: unknown): void;
     /**
      * Sets up the element to asynchronously update.
      */
@@ -984,7 +990,7 @@ declare namespace LitUnstable {
             kind: 'begin render';
             id: number;
             value: unknown;
-            container: HTMLElement | DocumentFragment;
+            container: RenderRootNode;
             options: RenderOptions | undefined;
             part: ChildPart | undefined;
         }
@@ -992,7 +998,7 @@ declare namespace LitUnstable {
             kind: 'end render';
             id: number;
             value: unknown;
-            container: HTMLElement | DocumentFragment;
+            container: RenderRootNode;
             options: RenderOptions | undefined;
             part: ChildPart;
         }
@@ -1323,6 +1329,10 @@ interface RenderOptions {
      */
     isConnected?: boolean;
 }
+/**
+ * The root DOM node for rendering.
+ */
+type RenderRootNode = HTMLElement | SVGElement | DocumentFragment;
 interface DirectiveParent {
     _$parent?: DirectiveParent;
     _$isConnected: boolean;
@@ -1548,7 +1558,7 @@ declare const _$LH: {
  * {@link https://lit.dev/docs/libraries/standalone-templates/#rendering-lit-html-templates| Rendering Lit HTML Templates}
  */
 declare const render: {
-    (value: unknown, container: HTMLElement | DocumentFragment, options?: RenderOptions): RootPart;
+    (value: unknown, container: RenderRootNode, options?: RenderOptions): RootPart;
     setSanitizer: (newSanitizer: SanitizerFactory) => void;
     createSanitizer: SanitizerFactory;
     _testOnlyClearSanitizerFactoryDoNotCallOrElse: () => void;
@@ -1738,4 +1748,4 @@ declare const _$LE: {
  */
 declare const isServer = false;
 
-export { AttributePart, BooleanAttributePart, CSSResult, type CSSResultArray, type CSSResultGroup, type CSSResultOrNative, ChildPart, type CompiledTemplate, type CompiledTemplateResult, type ComplexAttributeConverter, type DirectiveParent, type Disconnectable, ElementPart, EventPart, type HTMLTemplateResult, type HasChanged, type Initializer, LitElement, LitUnstable, type MathMLTemplateResult, type MaybeCompiledTemplateResult, type Part, type PropertyDeclaration, type PropertyDeclarations, PropertyPart, type PropertyValueMap, type PropertyValues, type ReactiveController, type ReactiveControllerHost, ReactiveElement, ReactiveUnstable, type RenderOptions, type RootPart, type SVGTemplateResult, type SanitizerFactory, TemplateInstance, type TemplateResult, type UncompiledTemplateResult, Unstable, type ValueSanitizer, type WarningKind, _$LE, _$LH, adoptStyles, css, defaultConverter, getCompatibleStyle, html, isServer, mathml, noChange, notEqual, nothing, render, supportsAdoptingStyleSheets, svg, unsafeCSS };
+export { AttributePart, BooleanAttributePart, CSSResult, type CSSResultArray, type CSSResultGroup, type CSSResultOrNative, ChildPart, type CompiledTemplate, type CompiledTemplateResult, type ComplexAttributeConverter, type DirectiveParent, type Disconnectable, ElementPart, EventPart, type HTMLTemplateResult, type HasChanged, type Initializer, LitElement, LitUnstable, type MathMLTemplateResult, type MaybeCompiledTemplateResult, type Part, type PropertyDeclaration, type PropertyDeclarations, PropertyPart, type PropertyValueMap, type PropertyValues, type ReactiveController, type ReactiveControllerHost, ReactiveElement, ReactiveUnstable, type RenderOptions, type RenderRootNode, type RootPart, type SVGTemplateResult, type SanitizerFactory, TemplateInstance, type TemplateResult, type UncompiledTemplateResult, Unstable, type ValueSanitizer, type WarningKind, _$LE, _$LH, adoptStyles, css, defaultConverter, getCompatibleStyle, html, isServer, mathml, noChange, notEqual, nothing, render, supportsAdoptingStyleSheets, svg, unsafeCSS };

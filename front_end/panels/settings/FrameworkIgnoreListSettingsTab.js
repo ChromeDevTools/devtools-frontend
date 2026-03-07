@@ -36,7 +36,7 @@ const UIStrings = {
     /**
      * @description Text in Framework Ignore List Settings Tab of the Settings
      */
-    enableIgnoreListing: 'Enable ignore listing',
+    ignoreListing: 'Ignore listing',
     /**
      * @description Text in Framework Ignore List Settings Tab of the Settings
      */
@@ -102,7 +102,7 @@ export class FrameworkIgnoreListSettingsTab extends UI.Widget.VBox {
         ignoreListingDescription.textContent = i18nString(UIStrings.ignoreListingDescription);
         const enabledSetting = Common.Settings.Settings.instance().moduleSetting('enable-ignore-listing');
         const enableIgnoreListing = this.contentElement.createChild('div', 'enable-ignore-listing');
-        enableIgnoreListing.appendChild(SettingsUI.SettingsUI.createSettingCheckbox(i18nString(UIStrings.enableIgnoreListing), enabledSetting));
+        enableIgnoreListing.appendChild(SettingsUI.SettingsUI.createSettingCheckbox(i18nString(UIStrings.ignoreListing), enabledSetting));
         UI.Tooltip.Tooltip.install(enableIgnoreListing, i18nString(UIStrings.enableIgnoreListingTooltip));
         const enableIgnoreListingCard = settingsContent.createChild('devtools-card');
         enableIgnoreListingCard.heading = i18nString(UIStrings.frameworkIgnoreList);

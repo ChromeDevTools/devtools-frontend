@@ -355,13 +355,17 @@ const UIStrings = {
    */
   trailing: 'Trailing',
   /**
-   * @description Title of a setting under the Sources category that can be invoked through the Command Menu
+   * @description Title of a setting under the Sources category
+   */
+  variableValuesInlineWhile: 'Variable values inline',
+  /**
+   * @description Title of an option under the Sources category that can be invoked through the Command Menu
    */
   displayVariableValuesInlineWhile: 'Display variable values inline while debugging',
   /**
-   * @description Title of a setting under the Sources category that can be invoked through the Command Menu
+   * @description Title of an option under the Sources category that can be invoked through the Command Menu
    */
-  doNotDisplayVariableValuesInline: 'Do not display variable values inline while debugging',
+  doNotDisplayVariableValuesInline: 'Don\'t show variable values inline',
   /**
    * @description Title of a setting under the Sources category in Settings
    */
@@ -1703,7 +1707,7 @@ UI.ActionRegistration.registerActionExtension({
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.SOURCES,
   storageType: Common.Settings.SettingStorageType.SYNCED,
-  title: i18nLazyString(UIStrings.displayVariableValuesInlineWhile),
+  title: i18nLazyString(UIStrings.variableValuesInlineWhile),
   settingName: 'inline-variable-values',
   settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: true,

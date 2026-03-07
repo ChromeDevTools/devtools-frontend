@@ -4,12 +4,346 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
+// gen/front_end/panels/issues/AffectedSelectivePermissionsInterventionView.js
+var AffectedSelectivePermissionsInterventionView_exports = {};
+__export(AffectedSelectivePermissionsInterventionView_exports, {
+  AffectedSelectivePermissionsInterventionView: () => AffectedSelectivePermissionsInterventionView
+});
+import * as i18n3 from "./../../core/i18n/i18n.js";
+import * as Bindings from "./../../models/bindings/bindings.js";
+import * as Components2 from "./../../ui/legacy/components/utils/utils.js";
+import * as UI2 from "./../../ui/legacy/legacy.js";
+import { Directives, html, nothing, render } from "./../../ui/lit/lit.js";
+
+// gen/front_end/panels/issues/AffectedResourcesView.js
+import * as Common from "./../../core/common/common.js";
+import * as Host from "./../../core/host/host.js";
+import * as i18n from "./../../core/i18n/i18n.js";
+import * as SDK from "./../../core/sdk/sdk.js";
+import * as Logs from "./../../models/logs/logs.js";
+import * as RequestLinkIcon from "./../../ui/components/request_link_icon/request_link_icon.js";
+import { Icon } from "./../../ui/kit/kit.js";
+import * as Components from "./../../ui/legacy/components/utils/utils.js";
+import * as UI from "./../../ui/legacy/legacy.js";
+import * as VisualLogging from "./../../ui/visual_logging/visual_logging.js";
+import * as PanelsCommon from "./../common/common.js";
+var UIStrings = {
+  /**
+   * @description Text in Object Properties Section
+   */
+  unknown: "unknown",
+  /**
+   * @description Tooltip for button linking to the Elements panel
+   */
+  clickToRevealTheFramesDomNodeIn: "Click to reveal the frame's DOM node in the Elements panel",
+  /**
+   * @description Replacement text for a link to an HTML element which is not available (anymore).
+   */
+  unavailable: "unavailable"
+};
+var str_ = i18n.i18n.registerUIStrings("panels/issues/AffectedResourcesView.ts", UIStrings);
+var i18nString = i18n.i18n.getLocalizedString.bind(void 0, str_);
+var extractShortPath = (path) => {
+  return (/[^/]+$/.exec(path) || /[^/]+\/$/.exec(path) || [""])[0];
+};
+var AffectedResourcesView = class extends UI.TreeOutline.TreeElement {
+  #parentView;
+  issue;
+  affectedResourcesCountElement;
+  affectedResources;
+  #affectedResourcesCount;
+  #frameListeners;
+  #unresolvedFrameIds;
+  requestResolver;
+  constructor(parent, issue, jslogContext) {
+    super(
+      /* title */
+      void 0,
+      /* expandable */
+      void 0,
+      jslogContext
+    );
+    this.#parentView = parent;
+    this.issue = issue;
+    this.toggleOnClick = true;
+    this.affectedResourcesCountElement = this.createAffectedResourcesCounter();
+    this.affectedResources = this.createAffectedResources();
+    this.#affectedResourcesCount = 0;
+    this.requestResolver = new Logs.RequestResolver.RequestResolver();
+    this.#frameListeners = [];
+    this.#unresolvedFrameIds = /* @__PURE__ */ new Set();
+  }
+  /**
+   * Sets the issue to take the resources from. Does not
+   * trigger an update, the caller needs to do that explicitly.
+   */
+  setIssue(issue) {
+    this.issue = issue;
+  }
+  createAffectedResourcesCounter() {
+    const counterLabel = document.createElement("div");
+    counterLabel.classList.add("affected-resource-label");
+    this.listItemElement.appendChild(counterLabel);
+    return counterLabel;
+  }
+  createAffectedResources() {
+    const body = new UI.TreeOutline.TreeElement();
+    const affectedResources = document.createElement("table");
+    affectedResources.classList.add("affected-resource-list");
+    body.listItemElement.appendChild(affectedResources);
+    this.appendChild(body);
+    return affectedResources;
+  }
+  updateAffectedResourceCount(count) {
+    this.#affectedResourcesCount = count;
+    this.affectedResourcesCountElement.textContent = this.getResourceNameWithCount(count);
+    this.hidden = this.#affectedResourcesCount === 0;
+    this.#parentView.updateAffectedResourceVisibility();
+  }
+  isEmpty() {
+    return this.#affectedResourcesCount === 0;
+  }
+  clear() {
+    this.affectedResources.textContent = "";
+    this.requestResolver.clear();
+  }
+  expandIfOneResource() {
+    if (this.#affectedResourcesCount === 1) {
+      this.expand();
+    }
+  }
+  /**
+   * This function resolves a frameId to a ResourceTreeFrame. If the frameId does not resolve, or hasn't navigated yet,
+   * a listener is installed that takes care of updating the view if the frame is added. This is useful if the issue is
+   * added before the frame gets reported.
+   */
+  #resolveFrameId(frameId) {
+    const frame = SDK.FrameManager.FrameManager.instance().getFrame(frameId);
+    if (!frame?.url) {
+      this.#unresolvedFrameIds.add(frameId);
+      if (!this.#frameListeners.length) {
+        const addListener = SDK.FrameManager.FrameManager.instance().addEventListener("FrameAddedToTarget", this.#onFrameChanged, this);
+        const navigateListener = SDK.FrameManager.FrameManager.instance().addEventListener("FrameNavigated", this.#onFrameChanged, this);
+        this.#frameListeners = [addListener, navigateListener];
+      }
+    }
+    return frame;
+  }
+  #onFrameChanged(event) {
+    const frame = event.data.frame;
+    if (!frame.url) {
+      return;
+    }
+    const frameWasUnresolved = this.#unresolvedFrameIds.delete(frame.id);
+    if (this.#unresolvedFrameIds.size === 0 && this.#frameListeners.length) {
+      Common.EventTarget.removeEventListeners(this.#frameListeners);
+      this.#frameListeners = [];
+    }
+    if (frameWasUnresolved) {
+      this.update();
+    }
+  }
+  createFrameCell(frameId, issueCategory) {
+    const frame = this.#resolveFrameId(frameId);
+    const url = frame && (frame.unreachableUrl() || frame.url) || i18nString(UIStrings.unknown);
+    const frameCell = document.createElement("td");
+    frameCell.classList.add("affected-resource-cell");
+    if (frame) {
+      const icon = new Icon();
+      icon.name = "code-circle";
+      icon.classList.add("link", "elements-panel", "medium");
+      icon.onclick = async () => {
+        Host.userMetrics.issuesPanelResourceOpened(
+          issueCategory,
+          "Element"
+          /* AffectedItem.ELEMENT */
+        );
+        const frame2 = SDK.FrameManager.FrameManager.instance().getFrame(frameId);
+        if (frame2) {
+          const ownerNode = await frame2.getOwnerDOMNodeOrDocument();
+          if (ownerNode) {
+            void Common.Revealer.reveal(ownerNode);
+          }
+        }
+      };
+      icon.title = i18nString(UIStrings.clickToRevealTheFramesDomNodeIn);
+      frameCell.appendChild(icon);
+    }
+    frameCell.appendChild(document.createTextNode(url));
+    frameCell.onmouseenter = () => {
+      const frame2 = SDK.FrameManager.FrameManager.instance().getFrame(frameId);
+      if (frame2) {
+        void frame2.highlight();
+      }
+    };
+    frameCell.onmouseleave = () => SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
+    return frameCell;
+  }
+  createRequestCell(affectedRequest, options = {}) {
+    const requestCell = document.createElement("td");
+    requestCell.classList.add("affected-resource-cell");
+    const requestLinkIcon = new RequestLinkIcon.RequestLinkIcon.RequestLinkIcon();
+    requestLinkIcon.data = { ...options, affectedRequest, requestResolver: this.requestResolver, displayURL: true };
+    requestCell.appendChild(requestLinkIcon);
+    return requestCell;
+  }
+  async createElementCell({ backendNodeId, nodeName, target }, issueCategory) {
+    if (!target) {
+      const cellElement2 = document.createElement("td");
+      cellElement2.textContent = nodeName || i18nString(UIStrings.unavailable);
+      return cellElement2;
+    }
+    function sendTelemetry() {
+      Host.userMetrics.issuesPanelResourceOpened(
+        issueCategory,
+        "Element"
+        /* AffectedItem.ELEMENT */
+      );
+    }
+    const deferredDOMNode = new SDK.DOMModel.DeferredDOMNode(target, backendNodeId);
+    const anchorElement = PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(deferredDOMNode);
+    anchorElement.textContent = nodeName;
+    anchorElement.addEventListener("click", () => sendTelemetry());
+    anchorElement.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        sendTelemetry();
+      }
+    });
+    const cellElement = document.createElement("td");
+    cellElement.classList.add("affected-resource-element", "devtools-link");
+    cellElement.appendChild(anchorElement);
+    return cellElement;
+  }
+  appendSourceLocation(element, sourceLocation, target) {
+    const sourceCodeLocation = document.createElement("td");
+    sourceCodeLocation.classList.add("affected-source-location");
+    if (sourceLocation) {
+      const linkifier = new Components.Linkifier.Linkifier(UI.UIUtils.MaxLengthForDisplayedURLsInConsole);
+      const sourceAnchor = linkifier.linkifyScriptLocation(target || null, sourceLocation.scriptId || null, sourceLocation.url, sourceLocation.lineNumber, { columnNumber: sourceLocation.columnNumber, inlineFrameIndex: 0 });
+      sourceAnchor.setAttribute("jslog", `${VisualLogging.link("source-location").track({ click: true })}`);
+      sourceCodeLocation.appendChild(sourceAnchor);
+    }
+    element.appendChild(sourceCodeLocation);
+  }
+  appendColumnTitle(header, title, additionalClass = null) {
+    const info = document.createElement("td");
+    info.classList.add("affected-resource-header");
+    if (additionalClass) {
+      info.classList.add(additionalClass);
+    }
+    info.textContent = title;
+    header.appendChild(info);
+  }
+  createIssueDetailCell(textContent, additionalClass = null) {
+    const cell = document.createElement("td");
+    if (typeof textContent === "string") {
+      cell.textContent = textContent;
+    } else {
+      cell.appendChild(textContent);
+    }
+    if (additionalClass) {
+      cell.classList.add(additionalClass);
+    }
+    return cell;
+  }
+  appendIssueDetailCell(element, textContent, additionalClass = null) {
+    const cell = this.createIssueDetailCell(textContent, additionalClass);
+    element.appendChild(cell);
+    return cell;
+  }
+};
+
+// gen/front_end/panels/issues/AffectedSelectivePermissionsInterventionView.js
+var UIStrings2 = {
+  /**
+   * @description Label for number of affected resources indication in issue view
+   */
+  nViolations: "{n, plural, =1 {# violation} other {# violations}}",
+  /**
+   * @description Title for the API column in the Selective Permissions Intervention affected resources list
+   */
+  api: "API",
+  /**
+   * @description Title for the Script column in the Selective Permissions Intervention affected resources list
+   */
+  script: "Script",
+  /**
+   * @description Title for the Ad Ancestry column in the Selective Permissions Intervention affected resources list
+   */
+  adAncestry: "Ad Ancestry",
+  /**
+   * @description Text for unknown value
+   */
+  unknown: "unknown",
+  /**
+   * @description Text for loading state
+   */
+  loading: "loading\u2026"
+};
+var str_2 = i18n3.i18n.registerUIStrings("panels/issues/AffectedSelectivePermissionsInterventionView.ts", UIStrings2);
+var i18nString2 = i18n3.i18n.getLocalizedString.bind(void 0, str_2);
+var AffectedSelectivePermissionsInterventionView = class extends AffectedResourcesView {
+  #linkifier = new Components2.Linkifier.Linkifier();
+  getResourceNameWithCount(count) {
+    return i18nString2(UIStrings2.nViolations, { n: count });
+  }
+  #render() {
+    const issues = Array.from(this.issue.getSelectivePermissionsInterventionIssues());
+    render(html`
+      <tr>
+        <td class="affected-resource-header">${i18nString2(UIStrings2.api)}</td>
+        <td class="affected-resource-header">${i18nString2(UIStrings2.script)}</td>
+        <td class="affected-resource-header">${i18nString2(UIStrings2.adAncestry)}</td>
+      </tr>
+      ${issues.map((issue) => this.#renderDetail(issue))}
+    `, this.affectedResources, { host: this });
+    this.updateAffectedResourceCount(issues.length);
+  }
+  #renderDetail(issue) {
+    const details = issue.details();
+    const issuesModel = issue.model();
+    const stackTracePromise = details.stackTrace && issuesModel ? this.#resolveStackTrace(details.stackTrace, issuesModel) : Promise.resolve(html`<span>${i18nString2(UIStrings2.unknown)}</span>`);
+    const target = issuesModel ? issuesModel.target() : null;
+    return html`
+      <tr class="affected-resource-directive">
+        <td>${details.apiName}</td>
+        <td>${Directives.until(stackTracePromise, html`<span>${i18nString2(UIStrings2.loading)}</span>`)}</td>
+        <td class="affected-resource-cell">
+          <div class="ad-ancestry-list">
+            ${(details.adAncestry?.adAncestryChain || []).map((script) => {
+      const link4 = this.#linkifier.linkifyScriptLocation(target, script.scriptId, script.name, 0);
+      return html`<div>${link4}</div>`;
+    })}
+            ${details.adAncestry?.rootScriptFilterlistRule ? html`<div>Rule: ${details.adAncestry.rootScriptFilterlistRule}</div>` : nothing}
+          </div>
+        </td>
+      </tr>
+    `;
+  }
+  async #resolveStackTrace(stackTrace, issuesModel) {
+    const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
+    const stackTraceTranslated = await debuggerWorkspaceBinding.createStackTraceFromProtocolRuntime(stackTrace, issuesModel.target());
+    return html`
+      <devtools-widget .widgetConfig=${UI2.Widget.widgetConfig(Components2.JSPresentationUtils.StackTracePreviewContent, {
+      stackTrace: stackTraceTranslated,
+      options: { expandable: true }
+    })}>
+      </devtools-widget>
+    `;
+  }
+  update() {
+    this.requestResolver.clear();
+    this.#linkifier.reset();
+    this.#render();
+  }
+};
+
 // gen/front_end/panels/issues/IssueRevealer.js
 var IssueRevealer_exports = {};
 __export(IssueRevealer_exports, {
   IssueRevealer: () => IssueRevealer
 });
-import * as UI7 from "./../../ui/legacy/legacy.js";
+import * as UI8 from "./../../ui/legacy/legacy.js";
 
 // gen/front_end/panels/issues/IssuesPane.js
 var IssuesPane_exports = {};
@@ -19,22 +353,22 @@ __export(IssuesPane_exports, {
 });
 import "./../../ui/legacy/legacy.js";
 import * as Common6 from "./../../core/common/common.js";
-import * as i18n41 from "./../../core/i18n/i18n.js";
+import * as i18n43 from "./../../core/i18n/i18n.js";
 import * as Platform5 from "./../../core/platform/platform.js";
 import * as IssuesManager12 from "./../../models/issues_manager/issues_manager.js";
 import * as IssueCounter5 from "./../../ui/components/issue_counter/issue_counter.js";
-import * as UI6 from "./../../ui/legacy/legacy.js";
+import * as UI7 from "./../../ui/legacy/legacy.js";
 import * as VisualLogging5 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/issues/HiddenIssuesRow.js
 import "./../../ui/components/adorners/adorners.js";
-import * as i18n from "./../../core/i18n/i18n.js";
+import * as i18n5 from "./../../core/i18n/i18n.js";
 import * as IssuesManager from "./../../models/issues_manager/issues_manager.js";
 import * as Buttons from "./../../ui/components/buttons/buttons.js";
-import * as UI from "./../../ui/legacy/legacy.js";
-import { html, render } from "./../../ui/lit/lit.js";
-import * as VisualLogging from "./../../ui/visual_logging/visual_logging.js";
-var UIStrings = {
+import * as UI3 from "./../../ui/legacy/legacy.js";
+import { html as html2, render as render2 } from "./../../ui/lit/lit.js";
+import * as VisualLogging2 from "./../../ui/visual_logging/visual_logging.js";
+var UIStrings3 = {
   /**
    * @description Title for the hidden issues row
    */
@@ -44,28 +378,28 @@ var UIStrings = {
    */
   unhideAll: "Unhide all"
 };
-var str_ = i18n.i18n.registerUIStrings("panels/issues/HiddenIssuesRow.ts", UIStrings);
-var i18nString = i18n.i18n.getLocalizedString.bind(void 0, str_);
+var str_3 = i18n5.i18n.registerUIStrings("panels/issues/HiddenIssuesRow.ts", UIStrings3);
+var i18nString3 = i18n5.i18n.getLocalizedString.bind(void 0, str_3);
 var DEFAULT_VIEW = (input, _output, target) => {
   const stopPropagationForEnter = (event) => {
     if (event.key === "Enter") {
       event.stopImmediatePropagation();
     }
   };
-  render(html`
+  render2(html2`
   <div class="header">
     <devtools-adorner class="aggregated-issues-count" .name=${"countWrapper"}>
       <span>${input.count}</span>
     </devtools-adorner>
-    <div class="title">${i18nString(UIStrings.hiddenIssues)}</div>
+    <div class="title">${i18nString3(UIStrings3.hiddenIssues)}</div>
     <devtools-button class="unhide-all-issues-button"
-                     jslog=${VisualLogging.action().track({ click: true }).context("issues.unhide-all-hiddes")}
+                     jslog=${VisualLogging2.action().track({ click: true }).context("issues.unhide-all-hiddes")}
                      @click=${input.onUnhideAllIssues}
                      @keydown=${stopPropagationForEnter}
-                     .variant=${"outlined"}>${i18nString(UIStrings.unhideAll)}</devtools-button>
+                     .variant=${"outlined"}>${i18nString3(UIStrings3.unhideAll)}</devtools-button>
   </div>`, target);
 };
-var HiddenIssuesRow = class extends UI.TreeOutline.TreeElement {
+var HiddenIssuesRow = class extends UI3.TreeOutline.TreeElement {
   #view;
   constructor(view = DEFAULT_VIEW) {
     super(void 0, true, "hidden-issues");
@@ -88,16 +422,16 @@ var HiddenIssuesRow = class extends UI.TreeOutline.TreeElement {
 };
 
 // gen/front_end/panels/issues/IssueKindView.js
-import * as Common from "./../../core/common/common.js";
-import * as i18n3 from "./../../core/i18n/i18n.js";
+import * as Common2 from "./../../core/common/common.js";
+import * as i18n7 from "./../../core/i18n/i18n.js";
 import * as Platform from "./../../core/platform/platform.js";
 import * as IssuesManager3 from "./../../models/issues_manager/issues_manager.js";
 import * as Adorners from "./../../ui/components/adorners/adorners.js";
 import * as IssueCounter from "./../../ui/components/issue_counter/issue_counter.js";
-import { Icon } from "./../../ui/kit/kit.js";
-import * as UI2 from "./../../ui/legacy/legacy.js";
-import * as Components from "./components/components.js";
-var UIStrings2 = {
+import { Icon as Icon2 } from "./../../ui/kit/kit.js";
+import * as UI4 from "./../../ui/legacy/legacy.js";
+import * as Components3 from "./components/components.js";
+var UIStrings4 = {
   /**
    * @description Menu entry for hiding all current Page Errors.
    */
@@ -111,10 +445,10 @@ var UIStrings2 = {
    */
   hideAllCurrentImprovements: "Hide all current Improvements"
 };
-var str_2 = i18n3.i18n.registerUIStrings("panels/issues/IssueKindView.ts", UIStrings2);
-var i18nString2 = i18n3.i18n.getLocalizedString.bind(void 0, str_2);
+var str_4 = i18n7.i18n.registerUIStrings("panels/issues/IssueKindView.ts", UIStrings4);
+var i18nString4 = i18n7.i18n.getLocalizedString.bind(void 0, str_4);
 function getGroupIssuesByKindSetting() {
-  return Common.Settings.Settings.instance().createSetting("group-issues-by-kind", false);
+  return Common2.Settings.Settings.instance().createSetting("group-issues-by-kind", false);
 }
 function issueKindViewSortPriority(a, b) {
   if (a.getKind() === b.getKind()) {
@@ -138,7 +472,7 @@ function getClassNameFromKind(kind) {
       return "page-errors";
   }
 }
-var IssueKindView = class extends UI2.TreeOutline.TreeElement {
+var IssueKindView = class extends UI4.TreeOutline.TreeElement {
   #kind;
   #issueCount;
   constructor(kind) {
@@ -156,17 +490,17 @@ var IssueKindView = class extends UI2.TreeOutline.TreeElement {
   getHideAllCurrentKindString() {
     switch (this.#kind) {
       case "PageError":
-        return i18nString2(UIStrings2.hideAllCurrentPageErrors);
+        return i18nString4(UIStrings4.hideAllCurrentPageErrors);
       case "Improvement":
-        return i18nString2(UIStrings2.hideAllCurrentImprovements);
+        return i18nString4(UIStrings4.hideAllCurrentImprovements);
       case "BreakingChange":
-        return i18nString2(UIStrings2.hideAllCurrentBreakingChanges);
+        return i18nString4(UIStrings4.hideAllCurrentBreakingChanges);
     }
   }
   #appendHeader() {
     const header = document.createElement("div");
     header.classList.add("header");
-    const issueKindIcon = new Icon();
+    const issueKindIcon = new Icon2();
     issueKindIcon.name = IssueCounter.IssueCounter.getIssueKindIconName(this.#kind);
     issueKindIcon.classList.add("leading-issue-icon", "extra-large");
     const countAdorner = new Adorners.Adorner.Adorner();
@@ -177,7 +511,7 @@ var IssueKindView = class extends UI2.TreeOutline.TreeElement {
     const title = document.createElement("div");
     title.classList.add("title");
     title.textContent = IssuesManager3.Issue.getIssueKindName(this.#kind);
-    const hideAvailableIssuesBtn = new Components.HideIssuesMenu.HideIssuesMenu();
+    const hideAvailableIssuesBtn = new Components3.HideIssuesMenu.HideIssuesMenu();
     hideAvailableIssuesBtn.classList.add("hide-available-issues");
     hideAvailableIssuesBtn.data = {
       menuItemLabel: this.getHideAllCurrentKindString(),
@@ -724,7 +1058,7 @@ __export(IssueView_exports, {
 });
 import * as Common5 from "./../../core/common/common.js";
 import * as Host7 from "./../../core/host/host.js";
-import * as i18n39 from "./../../core/i18n/i18n.js";
+import * as i18n41 from "./../../core/i18n/i18n.js";
 import * as Platform4 from "./../../core/platform/platform.js";
 import * as IssuesManager10 from "./../../models/issues_manager/issues_manager.js";
 import * as NetworkForward3 from "./../network/forward/forward.js";
@@ -732,254 +1066,14 @@ import * as Adorners2 from "./../../ui/components/adorners/adorners.js";
 import * as IssueCounter3 from "./../../ui/components/issue_counter/issue_counter.js";
 import * as MarkdownView from "./../../ui/components/markdown_view/markdown_view.js";
 import { Icon as Icon3 } from "./../../ui/kit/kit.js";
-import * as UI5 from "./../../ui/legacy/legacy.js";
-import { html as html2, render as render2 } from "./../../ui/lit/lit.js";
+import * as UI6 from "./../../ui/legacy/legacy.js";
+import { html as html3, render as render3 } from "./../../ui/lit/lit.js";
 
 // gen/front_end/panels/issues/AffectedBlockedByResponseView.js
 import * as Host2 from "./../../core/host/host.js";
-import * as i18n7 from "./../../core/i18n/i18n.js";
+import * as i18n9 from "./../../core/i18n/i18n.js";
 import * as IssuesManager5 from "./../../models/issues_manager/issues_manager.js";
-
-// gen/front_end/panels/issues/AffectedResourcesView.js
-import * as Common2 from "./../../core/common/common.js";
-import * as Host from "./../../core/host/host.js";
-import * as i18n5 from "./../../core/i18n/i18n.js";
-import * as SDK from "./../../core/sdk/sdk.js";
-import * as Logs from "./../../models/logs/logs.js";
-import * as RequestLinkIcon from "./../../ui/components/request_link_icon/request_link_icon.js";
-import { Icon as Icon2 } from "./../../ui/kit/kit.js";
-import * as Components2 from "./../../ui/legacy/components/utils/utils.js";
-import * as UI3 from "./../../ui/legacy/legacy.js";
-import * as VisualLogging2 from "./../../ui/visual_logging/visual_logging.js";
-import * as PanelsCommon from "./../common/common.js";
-var UIStrings3 = {
-  /**
-   * @description Text in Object Properties Section
-   */
-  unknown: "unknown",
-  /**
-   * @description Tooltip for button linking to the Elements panel
-   */
-  clickToRevealTheFramesDomNodeIn: "Click to reveal the frame's DOM node in the Elements panel",
-  /**
-   * @description Replacement text for a link to an HTML element which is not available (anymore).
-   */
-  unavailable: "unavailable"
-};
-var str_3 = i18n5.i18n.registerUIStrings("panels/issues/AffectedResourcesView.ts", UIStrings3);
-var i18nString3 = i18n5.i18n.getLocalizedString.bind(void 0, str_3);
-var extractShortPath = (path) => {
-  return (/[^/]+$/.exec(path) || /[^/]+\/$/.exec(path) || [""])[0];
-};
-var AffectedResourcesView = class extends UI3.TreeOutline.TreeElement {
-  #parentView;
-  issue;
-  affectedResourcesCountElement;
-  affectedResources;
-  #affectedResourcesCount;
-  #frameListeners;
-  #unresolvedFrameIds;
-  requestResolver;
-  constructor(parent, issue, jslogContext) {
-    super(
-      /* title */
-      void 0,
-      /* expandable */
-      void 0,
-      jslogContext
-    );
-    this.#parentView = parent;
-    this.issue = issue;
-    this.toggleOnClick = true;
-    this.affectedResourcesCountElement = this.createAffectedResourcesCounter();
-    this.affectedResources = this.createAffectedResources();
-    this.#affectedResourcesCount = 0;
-    this.requestResolver = new Logs.RequestResolver.RequestResolver();
-    this.#frameListeners = [];
-    this.#unresolvedFrameIds = /* @__PURE__ */ new Set();
-  }
-  /**
-   * Sets the issue to take the resources from. Does not
-   * trigger an update, the caller needs to do that explicitly.
-   */
-  setIssue(issue) {
-    this.issue = issue;
-  }
-  createAffectedResourcesCounter() {
-    const counterLabel = document.createElement("div");
-    counterLabel.classList.add("affected-resource-label");
-    this.listItemElement.appendChild(counterLabel);
-    return counterLabel;
-  }
-  createAffectedResources() {
-    const body = new UI3.TreeOutline.TreeElement();
-    const affectedResources = document.createElement("table");
-    affectedResources.classList.add("affected-resource-list");
-    body.listItemElement.appendChild(affectedResources);
-    this.appendChild(body);
-    return affectedResources;
-  }
-  updateAffectedResourceCount(count) {
-    this.#affectedResourcesCount = count;
-    this.affectedResourcesCountElement.textContent = this.getResourceNameWithCount(count);
-    this.hidden = this.#affectedResourcesCount === 0;
-    this.#parentView.updateAffectedResourceVisibility();
-  }
-  isEmpty() {
-    return this.#affectedResourcesCount === 0;
-  }
-  clear() {
-    this.affectedResources.textContent = "";
-    this.requestResolver.clear();
-  }
-  expandIfOneResource() {
-    if (this.#affectedResourcesCount === 1) {
-      this.expand();
-    }
-  }
-  /**
-   * This function resolves a frameId to a ResourceTreeFrame. If the frameId does not resolve, or hasn't navigated yet,
-   * a listener is installed that takes care of updating the view if the frame is added. This is useful if the issue is
-   * added before the frame gets reported.
-   */
-  #resolveFrameId(frameId) {
-    const frame = SDK.FrameManager.FrameManager.instance().getFrame(frameId);
-    if (!frame?.url) {
-      this.#unresolvedFrameIds.add(frameId);
-      if (!this.#frameListeners.length) {
-        const addListener = SDK.FrameManager.FrameManager.instance().addEventListener("FrameAddedToTarget", this.#onFrameChanged, this);
-        const navigateListener = SDK.FrameManager.FrameManager.instance().addEventListener("FrameNavigated", this.#onFrameChanged, this);
-        this.#frameListeners = [addListener, navigateListener];
-      }
-    }
-    return frame;
-  }
-  #onFrameChanged(event) {
-    const frame = event.data.frame;
-    if (!frame.url) {
-      return;
-    }
-    const frameWasUnresolved = this.#unresolvedFrameIds.delete(frame.id);
-    if (this.#unresolvedFrameIds.size === 0 && this.#frameListeners.length) {
-      Common2.EventTarget.removeEventListeners(this.#frameListeners);
-      this.#frameListeners = [];
-    }
-    if (frameWasUnresolved) {
-      this.update();
-    }
-  }
-  createFrameCell(frameId, issueCategory) {
-    const frame = this.#resolveFrameId(frameId);
-    const url = frame && (frame.unreachableUrl() || frame.url) || i18nString3(UIStrings3.unknown);
-    const frameCell = document.createElement("td");
-    frameCell.classList.add("affected-resource-cell");
-    if (frame) {
-      const icon = new Icon2();
-      icon.name = "code-circle";
-      icon.classList.add("link", "elements-panel", "medium");
-      icon.onclick = async () => {
-        Host.userMetrics.issuesPanelResourceOpened(
-          issueCategory,
-          "Element"
-          /* AffectedItem.ELEMENT */
-        );
-        const frame2 = SDK.FrameManager.FrameManager.instance().getFrame(frameId);
-        if (frame2) {
-          const ownerNode = await frame2.getOwnerDOMNodeOrDocument();
-          if (ownerNode) {
-            void Common2.Revealer.reveal(ownerNode);
-          }
-        }
-      };
-      icon.title = i18nString3(UIStrings3.clickToRevealTheFramesDomNodeIn);
-      frameCell.appendChild(icon);
-    }
-    frameCell.appendChild(document.createTextNode(url));
-    frameCell.onmouseenter = () => {
-      const frame2 = SDK.FrameManager.FrameManager.instance().getFrame(frameId);
-      if (frame2) {
-        void frame2.highlight();
-      }
-    };
-    frameCell.onmouseleave = () => SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
-    return frameCell;
-  }
-  createRequestCell(affectedRequest, options = {}) {
-    const requestCell = document.createElement("td");
-    requestCell.classList.add("affected-resource-cell");
-    const requestLinkIcon = new RequestLinkIcon.RequestLinkIcon.RequestLinkIcon();
-    requestLinkIcon.data = { ...options, affectedRequest, requestResolver: this.requestResolver, displayURL: true };
-    requestCell.appendChild(requestLinkIcon);
-    return requestCell;
-  }
-  async createElementCell({ backendNodeId, nodeName, target }, issueCategory) {
-    if (!target) {
-      const cellElement2 = document.createElement("td");
-      cellElement2.textContent = nodeName || i18nString3(UIStrings3.unavailable);
-      return cellElement2;
-    }
-    function sendTelemetry() {
-      Host.userMetrics.issuesPanelResourceOpened(
-        issueCategory,
-        "Element"
-        /* AffectedItem.ELEMENT */
-      );
-    }
-    const deferredDOMNode = new SDK.DOMModel.DeferredDOMNode(target, backendNodeId);
-    const anchorElement = PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(deferredDOMNode);
-    anchorElement.textContent = nodeName;
-    anchorElement.addEventListener("click", () => sendTelemetry());
-    anchorElement.addEventListener("keydown", (event) => {
-      if (event.key === "Enter") {
-        sendTelemetry();
-      }
-    });
-    const cellElement = document.createElement("td");
-    cellElement.classList.add("affected-resource-element", "devtools-link");
-    cellElement.appendChild(anchorElement);
-    return cellElement;
-  }
-  appendSourceLocation(element, sourceLocation, target) {
-    const sourceCodeLocation = document.createElement("td");
-    sourceCodeLocation.classList.add("affected-source-location");
-    if (sourceLocation) {
-      const linkifier = new Components2.Linkifier.Linkifier(UI3.UIUtils.MaxLengthForDisplayedURLsInConsole);
-      const sourceAnchor = linkifier.linkifyScriptLocation(target || null, sourceLocation.scriptId || null, sourceLocation.url, sourceLocation.lineNumber, { columnNumber: sourceLocation.columnNumber, inlineFrameIndex: 0 });
-      sourceAnchor.setAttribute("jslog", `${VisualLogging2.link("source-location").track({ click: true })}`);
-      sourceCodeLocation.appendChild(sourceAnchor);
-    }
-    element.appendChild(sourceCodeLocation);
-  }
-  appendColumnTitle(header, title, additionalClass = null) {
-    const info = document.createElement("td");
-    info.classList.add("affected-resource-header");
-    if (additionalClass) {
-      info.classList.add(additionalClass);
-    }
-    info.textContent = title;
-    header.appendChild(info);
-  }
-  createIssueDetailCell(textContent, additionalClass = null) {
-    const cell = document.createElement("td");
-    if (typeof textContent === "string") {
-      cell.textContent = textContent;
-    } else {
-      cell.appendChild(textContent);
-    }
-    if (additionalClass) {
-      cell.classList.add(additionalClass);
-    }
-    return cell;
-  }
-  appendIssueDetailCell(element, textContent, additionalClass = null) {
-    const cell = this.createIssueDetailCell(textContent, additionalClass);
-    element.appendChild(cell);
-    return cell;
-  }
-};
-
-// gen/front_end/panels/issues/AffectedBlockedByResponseView.js
-var UIStrings4 = {
+var UIStrings5 = {
   /**
    * @description Noun for singular or plural network requests. Label for the affected resources section in the issue view.
    */
@@ -997,14 +1091,14 @@ var UIStrings4 = {
    */
   blockedResource: "Blocked Resource"
 };
-var str_4 = i18n7.i18n.registerUIStrings("panels/issues/AffectedBlockedByResponseView.ts", UIStrings4);
-var i18nString4 = i18n7.i18n.getLocalizedString.bind(void 0, str_4);
+var str_5 = i18n9.i18n.registerUIStrings("panels/issues/AffectedBlockedByResponseView.ts", UIStrings5);
+var i18nString5 = i18n9.i18n.getLocalizedString.bind(void 0, str_5);
 var AffectedBlockedByResponseView = class extends AffectedResourcesView {
   #appendDetails(details) {
     const header = document.createElement("tr");
-    this.appendColumnTitle(header, i18nString4(UIStrings4.requestC));
-    this.appendColumnTitle(header, i18nString4(UIStrings4.parentFrame));
-    this.appendColumnTitle(header, i18nString4(UIStrings4.blockedResource));
+    this.appendColumnTitle(header, i18nString5(UIStrings5.requestC));
+    this.appendColumnTitle(header, i18nString5(UIStrings5.parentFrame));
+    this.appendColumnTitle(header, i18nString5(UIStrings5.blockedResource));
     this.affectedResources.appendChild(header);
     let count = 0;
     for (const detail of details) {
@@ -1014,7 +1108,7 @@ var AffectedBlockedByResponseView = class extends AffectedResourcesView {
     this.updateAffectedResourceCount(count);
   }
   getResourceNameWithCount(count) {
-    return i18nString4(UIStrings4.nRequests, { n: count });
+    return i18nString5(UIStrings5.nRequests, { n: count });
   }
   #appendDetail(details) {
     const element = document.createElement("tr");
@@ -1052,10 +1146,10 @@ var AffectedBlockedByResponseView = class extends AffectedResourcesView {
 // gen/front_end/panels/issues/AffectedCookiesView.js
 import * as Common3 from "./../../core/common/common.js";
 import * as Host3 from "./../../core/host/host.js";
-import * as i18n9 from "./../../core/i18n/i18n.js";
+import * as i18n11 from "./../../core/i18n/i18n.js";
 import * as NetworkForward from "./../network/forward/forward.js";
 import * as VisualLogging3 from "./../../ui/visual_logging/visual_logging.js";
-var UIStrings5 = {
+var UIStrings6 = {
   /**
    * @description Noun, singular or plural. Label for the kind and number of affected resources associated with a DevTools issue. A cookie is a small piece of data that a server sends to the user's web browser. See https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies.
    */
@@ -1081,16 +1175,16 @@ var UIStrings5 = {
    */
   filterSetCookieTitle: "Show network requests that include this `Set-Cookie` header in the network panel"
 };
-var str_5 = i18n9.i18n.registerUIStrings("panels/issues/AffectedCookiesView.ts", UIStrings5);
-var i18nString5 = i18n9.i18n.getLocalizedString.bind(void 0, str_5);
+var str_6 = i18n11.i18n.registerUIStrings("panels/issues/AffectedCookiesView.ts", UIStrings6);
+var i18nString6 = i18n11.i18n.getLocalizedString.bind(void 0, str_6);
 var AffectedCookiesView = class extends AffectedResourcesView {
   getResourceNameWithCount(count) {
-    return i18nString5(UIStrings5.nCookies, { n: count });
+    return i18nString6(UIStrings6.nCookies, { n: count });
   }
   #appendAffectedCookies(cookies) {
     const header = document.createElement("tr");
-    this.appendColumnTitle(header, i18nString5(UIStrings5.name));
-    this.appendColumnTitle(header, i18nString5(UIStrings5.domain) + " & " + i18nString5(UIStrings5.path), "affected-resource-cookie-info-header");
+    this.appendColumnTitle(header, i18nString6(UIStrings6.name));
+    this.appendColumnTitle(header, i18nString6(UIStrings6.domain) + " & " + i18nString6(UIStrings6.path), "affected-resource-cookie-info-header");
     this.affectedResources.appendChild(header);
     let count = 0;
     for (const cookie of cookies) {
@@ -1145,7 +1239,7 @@ var AffectedCookiesView = class extends AffectedResourcesView {
 };
 var AffectedRawCookieLinesView = class extends AffectedResourcesView {
   getResourceNameWithCount(count) {
-    return i18nString5(UIStrings5.nRawCookieLines, { n: count });
+    return i18nString6(UIStrings6.nRawCookieLines, { n: count });
   }
   update() {
     this.clear();
@@ -1159,7 +1253,7 @@ var AffectedRawCookieLinesView = class extends AffectedResourcesView {
         const link4 = document.createElement("button");
         link4.classList.add("link", "devtools-link");
         link4.textContent = cookie.rawCookieLine;
-        link4.title = i18nString5(UIStrings5.filterSetCookieTitle);
+        link4.title = i18nString6(UIStrings6.filterSetCookieTitle);
         link4.tabIndex = 0;
         link4.setAttribute("jslog", `${VisualLogging3.link("issues.filter-network-requests-by-raw-cookie").track({ click: true })}`);
         link4.addEventListener("click", () => {
@@ -1183,18 +1277,18 @@ var AffectedRawCookieLinesView = class extends AffectedResourcesView {
 };
 
 // gen/front_end/panels/issues/AffectedDescendantsWithinSelectElementView.js
-import * as i18n13 from "./../../core/i18n/i18n.js";
+import * as i18n15 from "./../../core/i18n/i18n.js";
 
 // gen/front_end/panels/issues/AffectedElementsView.js
-import * as i18n11 from "./../../core/i18n/i18n.js";
-var UIStrings6 = {
+import * as i18n13 from "./../../core/i18n/i18n.js";
+var UIStrings7 = {
   /**
    * @description Noun for singular or plural number of affected element resource indication in issue view.
    */
   nElements: "{n, plural, =1 {# element} other {# elements}}"
 };
-var str_6 = i18n11.i18n.registerUIStrings("panels/issues/AffectedElementsView.ts", UIStrings6);
-var i18nString6 = i18n11.i18n.getLocalizedString.bind(void 0, str_6);
+var str_7 = i18n13.i18n.registerUIStrings("panels/issues/AffectedElementsView.ts", UIStrings7);
+var i18nString7 = i18n13.i18n.getLocalizedString.bind(void 0, str_7);
 var AffectedElementsView = class extends AffectedResourcesView {
   async #appendAffectedElements(affectedElements) {
     let count = 0;
@@ -1205,7 +1299,7 @@ var AffectedElementsView = class extends AffectedResourcesView {
     this.updateAffectedResourceCount(count);
   }
   getResourceNameWithCount(count) {
-    return i18nString6(UIStrings6.nElements, { n: count });
+    return i18nString7(UIStrings7.nElements, { n: count });
   }
   async #appendAffectedElement(element) {
     const cellElement = await this.createElementCell(element, this.issue.getCategory());
@@ -1220,7 +1314,7 @@ var AffectedElementsView = class extends AffectedResourcesView {
 };
 
 // gen/front_end/panels/issues/AffectedDescendantsWithinSelectElementView.js
-var UIStrings7 = {
+var UIStrings8 = {
   /**
    * @description Noun for singular or plural number of affected descendant nodes indication in issue view.
    */
@@ -1230,15 +1324,15 @@ var UIStrings7 = {
    */
   disallowedNode: "Disallowed descendant"
 };
-var str_7 = i18n13.i18n.registerUIStrings("panels/issues/AffectedDescendantsWithinSelectElementView.ts", UIStrings7);
-var i18nString7 = i18n13.i18n.getLocalizedString.bind(void 0, str_7);
+var str_8 = i18n15.i18n.registerUIStrings("panels/issues/AffectedDescendantsWithinSelectElementView.ts", UIStrings8);
+var i18nString8 = i18n15.i18n.getLocalizedString.bind(void 0, str_8);
 var AffectedDescendantsWithinSelectElementView = class extends AffectedElementsView {
   #runningUpdatePromise = Promise.resolve();
   update() {
     this.#runningUpdatePromise = this.#runningUpdatePromise.then(this.#doUpdate.bind(this));
   }
   getResourceName(count) {
-    return i18nString7(UIStrings7.nDescendants, { n: count });
+    return i18nString8(UIStrings8.nDescendants, { n: count });
   }
   async #doUpdate() {
     this.clear();
@@ -1249,7 +1343,7 @@ var AffectedDescendantsWithinSelectElementView = class extends AffectedElementsV
     row.classList.add("affected-resource-select-element-descendant");
     const details = issue.details();
     const target = issue.model()?.target() || null;
-    row.appendChild(await this.createElementCell({ nodeName: i18nString7(UIStrings7.disallowedNode), backendNodeId: details.nodeId, target }, issue.getCategory()));
+    row.appendChild(await this.createElementCell({ nodeName: i18nString8(UIStrings8.disallowedNode), backendNodeId: details.nodeId, target }, issue.getCategory()));
     this.affectedResources.appendChild(row);
   }
   async #appendDisallowedSelectDescendants(issues) {
@@ -1265,12 +1359,12 @@ var AffectedDescendantsWithinSelectElementView = class extends AffectedElementsV
 // gen/front_end/panels/issues/AffectedDirectivesView.js
 import * as Common4 from "./../../core/common/common.js";
 import * as Host4 from "./../../core/host/host.js";
-import * as i18n15 from "./../../core/i18n/i18n.js";
+import * as i18n17 from "./../../core/i18n/i18n.js";
 import * as Platform2 from "./../../core/platform/platform.js";
 import * as SDK2 from "./../../core/sdk/sdk.js";
 import * as IssuesManager6 from "./../../models/issues_manager/issues_manager.js";
 import * as IssuesComponents from "./components/components.js";
-var UIStrings8 = {
+var UIStrings9 = {
   /**
    * @description Singular or plural label for number of affected CSP (content security policy,
    * see https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP) directives in issue view.
@@ -1309,22 +1403,22 @@ var UIStrings8 = {
    */
   resourceC: "Resource"
 };
-var str_8 = i18n15.i18n.registerUIStrings("panels/issues/AffectedDirectivesView.ts", UIStrings8);
-var i18nString8 = i18n15.i18n.getLocalizedString.bind(void 0, str_8);
+var str_9 = i18n17.i18n.registerUIStrings("panels/issues/AffectedDirectivesView.ts", UIStrings9);
+var i18nString9 = i18n17.i18n.getLocalizedString.bind(void 0, str_9);
 var AffectedDirectivesView = class extends AffectedResourcesView {
   #appendStatus(element, isReportOnly) {
     const status = document.createElement("td");
     if (isReportOnly) {
       status.classList.add("affected-resource-report-only-status");
-      status.textContent = i18nString8(UIStrings8.reportonly);
+      status.textContent = i18nString9(UIStrings9.reportonly);
     } else {
       status.classList.add("affected-resource-blocked-status");
-      status.textContent = i18nString8(UIStrings8.blocked);
+      status.textContent = i18nString9(UIStrings9.blocked);
     }
     element.appendChild(status);
   }
   getResourceNameWithCount(count) {
-    return i18nString8(UIStrings8.nDirectives, { n: count });
+    return i18nString9(UIStrings9.nDirectives, { n: count });
   }
   #appendViolatedDirective(element, directive) {
     const violatedDirective = document.createElement("td");
@@ -1341,7 +1435,7 @@ var AffectedDirectivesView = class extends AffectedResourcesView {
     const elementsPanelLinkComponent = new IssuesComponents.ElementsPanelLink.ElementsPanelLink();
     if (nodeId) {
       const violatingNodeId = nodeId;
-      elementsPanelLinkComponent.title = i18nString8(UIStrings8.clickToRevealTheViolatingDomNode);
+      elementsPanelLinkComponent.title = i18nString9(UIStrings9.clickToRevealTheViolatingDomNode);
       const onElementRevealIconClick = () => {
         const target = model.getTargetIfNotDisposed();
         if (target) {
@@ -1376,26 +1470,26 @@ var AffectedDirectivesView = class extends AffectedResourcesView {
   #appendAffectedContentSecurityPolicyDetails(cspIssues) {
     const header = document.createElement("tr");
     if (this.issue.code() === IssuesManager6.ContentSecurityPolicyIssue.inlineViolationCode) {
-      this.appendColumnTitle(header, i18nString8(UIStrings8.directiveC));
-      this.appendColumnTitle(header, i18nString8(UIStrings8.element));
-      this.appendColumnTitle(header, i18nString8(UIStrings8.sourceLocation));
-      this.appendColumnTitle(header, i18nString8(UIStrings8.status));
+      this.appendColumnTitle(header, i18nString9(UIStrings9.directiveC));
+      this.appendColumnTitle(header, i18nString9(UIStrings9.element));
+      this.appendColumnTitle(header, i18nString9(UIStrings9.sourceLocation));
+      this.appendColumnTitle(header, i18nString9(UIStrings9.status));
     } else if (this.issue.code() === IssuesManager6.ContentSecurityPolicyIssue.urlViolationCode) {
-      this.appendColumnTitle(header, i18nString8(UIStrings8.resourceC), "affected-resource-directive-info-header");
-      this.appendColumnTitle(header, i18nString8(UIStrings8.status));
-      this.appendColumnTitle(header, i18nString8(UIStrings8.directiveC));
-      this.appendColumnTitle(header, i18nString8(UIStrings8.sourceLocation));
+      this.appendColumnTitle(header, i18nString9(UIStrings9.resourceC), "affected-resource-directive-info-header");
+      this.appendColumnTitle(header, i18nString9(UIStrings9.status));
+      this.appendColumnTitle(header, i18nString9(UIStrings9.directiveC));
+      this.appendColumnTitle(header, i18nString9(UIStrings9.sourceLocation));
     } else if (this.issue.code() === IssuesManager6.ContentSecurityPolicyIssue.evalViolationCode) {
-      this.appendColumnTitle(header, i18nString8(UIStrings8.sourceLocation));
-      this.appendColumnTitle(header, i18nString8(UIStrings8.directiveC));
-      this.appendColumnTitle(header, i18nString8(UIStrings8.status));
+      this.appendColumnTitle(header, i18nString9(UIStrings9.sourceLocation));
+      this.appendColumnTitle(header, i18nString9(UIStrings9.directiveC));
+      this.appendColumnTitle(header, i18nString9(UIStrings9.status));
     } else if (this.issue.code() === IssuesManager6.ContentSecurityPolicyIssue.trustedTypesSinkViolationCode) {
-      this.appendColumnTitle(header, i18nString8(UIStrings8.sourceLocation));
-      this.appendColumnTitle(header, i18nString8(UIStrings8.status));
+      this.appendColumnTitle(header, i18nString9(UIStrings9.sourceLocation));
+      this.appendColumnTitle(header, i18nString9(UIStrings9.status));
     } else if (this.issue.code() === IssuesManager6.ContentSecurityPolicyIssue.trustedTypesPolicyViolationCode) {
-      this.appendColumnTitle(header, i18nString8(UIStrings8.sourceLocation));
-      this.appendColumnTitle(header, i18nString8(UIStrings8.directiveC));
-      this.appendColumnTitle(header, i18nString8(UIStrings8.status));
+      this.appendColumnTitle(header, i18nString9(UIStrings9.sourceLocation));
+      this.appendColumnTitle(header, i18nString9(UIStrings9.directiveC));
+      this.appendColumnTitle(header, i18nString9(UIStrings9.status));
     } else {
       this.updateAffectedResourceCount(0);
       return;
@@ -1449,9 +1543,9 @@ var AffectedDirectivesView = class extends AffectedResourcesView {
 };
 
 // gen/front_end/panels/issues/AffectedDocumentsInQuirksModeView.js
-import * as i18n17 from "./../../core/i18n/i18n.js";
+import * as i18n19 from "./../../core/i18n/i18n.js";
 import * as SDK3 from "./../../core/sdk/sdk.js";
-var UIStrings9 = {
+var UIStrings10 = {
   /**
    * @description Noun for singular or plural number of affected document nodes indication in issue view.
    */
@@ -1469,15 +1563,15 @@ var UIStrings9 = {
    */
   mode: "Mode"
 };
-var str_9 = i18n17.i18n.registerUIStrings("panels/issues/AffectedDocumentsInQuirksModeView.ts", UIStrings9);
-var i18nString9 = i18n17.i18n.getLocalizedString.bind(void 0, str_9);
+var str_10 = i18n19.i18n.registerUIStrings("panels/issues/AffectedDocumentsInQuirksModeView.ts", UIStrings10);
+var i18nString10 = i18n19.i18n.getLocalizedString.bind(void 0, str_10);
 var AffectedDocumentsInQuirksModeView = class extends AffectedElementsView {
   #runningUpdatePromise = Promise.resolve();
   update() {
     this.#runningUpdatePromise = this.#runningUpdatePromise.then(this.#doUpdate.bind(this));
   }
   getResourceName(count) {
-    return i18nString9(UIStrings9.nDocuments, { n: count });
+    return i18nString10(UIStrings10.nDocuments, { n: count });
   }
   async #doUpdate() {
     this.clear();
@@ -1495,9 +1589,9 @@ var AffectedDocumentsInQuirksModeView = class extends AffectedElementsView {
   }
   async #appendQuirksModeDocuments(issues) {
     const header = document.createElement("tr");
-    this.appendColumnTitle(header, i18nString9(UIStrings9.documentInTheDOMTree));
-    this.appendColumnTitle(header, i18nString9(UIStrings9.mode));
-    this.appendColumnTitle(header, i18nString9(UIStrings9.url));
+    this.appendColumnTitle(header, i18nString10(UIStrings10.documentInTheDOMTree));
+    this.appendColumnTitle(header, i18nString10(UIStrings10.mode));
+    this.appendColumnTitle(header, i18nString10(UIStrings10.url));
     this.affectedResources.appendChild(header);
     let count = 0;
     for (const issue of issues) {
@@ -1509,8 +1603,8 @@ var AffectedDocumentsInQuirksModeView = class extends AffectedElementsView {
 };
 
 // gen/front_end/panels/issues/AffectedHeavyAdView.js
-import * as i18n19 from "./../../core/i18n/i18n.js";
-var UIStrings10 = {
+import * as i18n21 from "./../../core/i18n/i18n.js";
+var UIStrings11 = {
   /**
    * @description Label for number of affected resources indication in issue view
    */
@@ -1552,14 +1646,14 @@ var UIStrings10 = {
    */
   networkLimit: "Network limit"
 };
-var str_10 = i18n19.i18n.registerUIStrings("panels/issues/AffectedHeavyAdView.ts", UIStrings10);
-var i18nString10 = i18n19.i18n.getLocalizedString.bind(void 0, str_10);
+var str_11 = i18n21.i18n.registerUIStrings("panels/issues/AffectedHeavyAdView.ts", UIStrings11);
+var i18nString11 = i18n21.i18n.getLocalizedString.bind(void 0, str_11);
 var AffectedHeavyAdView = class extends AffectedResourcesView {
   #appendAffectedHeavyAds(heavyAds) {
     const header = document.createElement("tr");
-    this.appendColumnTitle(header, i18nString10(UIStrings10.limitExceeded));
-    this.appendColumnTitle(header, i18nString10(UIStrings10.resolutionStatus));
-    this.appendColumnTitle(header, i18nString10(UIStrings10.frameUrl));
+    this.appendColumnTitle(header, i18nString11(UIStrings11.limitExceeded));
+    this.appendColumnTitle(header, i18nString11(UIStrings11.resolutionStatus));
+    this.appendColumnTitle(header, i18nString11(UIStrings11.frameUrl));
     this.affectedResources.appendChild(header);
     let count = 0;
     for (const heavyAd of heavyAds) {
@@ -1569,25 +1663,25 @@ var AffectedHeavyAdView = class extends AffectedResourcesView {
     this.updateAffectedResourceCount(count);
   }
   getResourceNameWithCount(count) {
-    return i18nString10(UIStrings10.nResources, { n: count });
+    return i18nString11(UIStrings11.nResources, { n: count });
   }
   #statusToString(status) {
     switch (status) {
       case "HeavyAdBlocked":
-        return i18nString10(UIStrings10.removed);
+        return i18nString11(UIStrings11.removed);
       case "HeavyAdWarning":
-        return i18nString10(UIStrings10.warned);
+        return i18nString11(UIStrings11.warned);
     }
     return "";
   }
   #limitToString(status) {
     switch (status) {
       case "CpuPeakLimit":
-        return i18nString10(UIStrings10.cpuPeakLimit);
+        return i18nString11(UIStrings11.cpuPeakLimit);
       case "CpuTotalLimit":
-        return i18nString10(UIStrings10.cpuTotalLimit);
+        return i18nString11(UIStrings11.cpuTotalLimit);
       case "NetworkTotalLimit":
-        return i18nString10(UIStrings10.networkLimit);
+        return i18nString11(UIStrings11.networkLimit);
     }
     return "";
   }
@@ -1614,9 +1708,9 @@ var AffectedHeavyAdView = class extends AffectedResourcesView {
 };
 
 // gen/front_end/panels/issues/AffectedMetadataAllowedSitesView.js
-import * as i18n21 from "./../../core/i18n/i18n.js";
+import * as i18n23 from "./../../core/i18n/i18n.js";
 import { Link } from "./../../ui/kit/kit.js";
-var UIStrings11 = {
+var UIStrings12 = {
   /**
    * @description Label for the the number of affected `Allowed Sites` associated with a
    *DevTools issue. In this context, `Allowed` refers to permission to access cookies
@@ -1626,11 +1720,11 @@ var UIStrings11 = {
    */
   nAllowedSites: "{n, plural, =1 {1 website allowed to access cookies} other {# websites allowed to access cookies}}"
 };
-var str_11 = i18n21.i18n.registerUIStrings("panels/issues/AffectedMetadataAllowedSitesView.ts", UIStrings11);
-var i18nString11 = i18n21.i18n.getLocalizedString.bind(void 0, str_11);
+var str_12 = i18n23.i18n.registerUIStrings("panels/issues/AffectedMetadataAllowedSitesView.ts", UIStrings12);
+var i18nString12 = i18n23.i18n.getLocalizedString.bind(void 0, str_12);
 var AffectedMetadataAllowedSitesView = class extends AffectedResourcesView {
   getResourceNameWithCount(count) {
-    return i18nString11(UIStrings11.nAllowedSites, { n: count });
+    return i18nString12(UIStrings12.nAllowedSites, { n: count });
   }
   update() {
     this.clear();
@@ -1662,8 +1756,8 @@ var AffectedMetadataAllowedSitesView = class extends AffectedResourcesView {
 };
 
 // gen/front_end/panels/issues/AffectedPartitioningBlobURLView.js
-import * as i18n23 from "./../../core/i18n/i18n.js";
-var UIStrings12 = {
+import * as i18n25 from "./../../core/i18n/i18n.js";
+var UIStrings13 = {
   /**
    * @description Description for Partitioning BlobURL issue when PartitioningBlobURLInfo is BlockedCrossPartitionFetching.
    * @example {blob:https://web-platform.test:8444/example} url
@@ -1684,11 +1778,11 @@ var UIStrings12 = {
    */
   noBlobURLAvailable: "No Blob URL available for this issue."
 };
-var str_12 = i18n23.i18n.registerUIStrings("panels/issues/AffectedPartitioningBlobURLView.ts", UIStrings12);
-var i18nString12 = i18n23.i18n.getLocalizedString.bind(void 0, str_12);
+var str_13 = i18n25.i18n.registerUIStrings("panels/issues/AffectedPartitioningBlobURLView.ts", UIStrings13);
+var i18nString13 = i18n25.i18n.getLocalizedString.bind(void 0, str_13);
 var AffectedPartitioningBlobURLView = class extends AffectedResourcesView {
   getResourceNameWithCount(count) {
-    return i18nString12(UIStrings12.blobURLCount, { count });
+    return i18nString13(UIStrings13.blobURLCount, { count });
   }
   update() {
     this.clear();
@@ -1701,10 +1795,10 @@ var AffectedPartitioningBlobURLView = class extends AffectedResourcesView {
         let description;
         switch (partitioningBlobURLInfo) {
           case "BlockedCrossPartitionFetching":
-            description = i18nString12(UIStrings12.blockedCrossPartitionFetching, { url: blobURL });
+            description = i18nString13(UIStrings13.blockedCrossPartitionFetching, { url: blobURL });
             break;
           case "EnforceNoopenerForNavigation":
-            description = i18nString12(UIStrings12.enforceNoopenerForNavigation, { url: blobURL });
+            description = i18nString13(UIStrings13.enforceNoopenerForNavigation, { url: blobURL });
             break;
         }
         const descriptionElement = document.createElement("div");
@@ -1713,7 +1807,7 @@ var AffectedPartitioningBlobURLView = class extends AffectedResourcesView {
         count++;
       } else {
         const noURLMessage = document.createElement("div");
-        noURLMessage.textContent = i18nString12(UIStrings12.noBlobURLAvailable);
+        noURLMessage.textContent = i18nString13(UIStrings13.noBlobURLAvailable);
         this.affectedResources.appendChild(noURLMessage);
       }
     }
@@ -1722,29 +1816,29 @@ var AffectedPartitioningBlobURLView = class extends AffectedResourcesView {
 };
 
 // gen/front_end/panels/issues/AffectedPermissionElementsView.js
-import * as i18n25 from "./../../core/i18n/i18n.js";
-import * as UI4 from "./../../ui/legacy/legacy.js";
-var UIStrings13 = {
+import * as i18n27 from "./../../core/i18n/i18n.js";
+import * as UI5 from "./../../ui/legacy/legacy.js";
+var UIStrings14 = {
   /**
    * @description Noun for singular or plural number of affected element resource indication in issue view.
    */
   nElements: "{n, plural, =1 {# element} other {# elements}}"
 };
-var str_13 = i18n25.i18n.registerUIStrings("panels/issues/AffectedPermissionElementsView.ts", UIStrings13);
-var i18nString13 = i18n25.i18n.getLocalizedString.bind(void 0, str_13);
+var str_14 = i18n27.i18n.registerUIStrings("panels/issues/AffectedPermissionElementsView.ts", UIStrings14);
+var i18nString14 = i18n27.i18n.getLocalizedString.bind(void 0, str_14);
 var AffectedPermissionElementsView = class extends AffectedElementsView {
   update() {
     this.clear();
     void this.#appendAffectedElements(this.issue.getPermissionElementIssues());
   }
   getResourceNameWithCount(count) {
-    return i18nString13(UIStrings13.nElements, { n: count });
+    return i18nString14(UIStrings14.nElements, { n: count });
   }
   async #appendAffectedElements(issues) {
     let count = 0;
     for (const issue of issues) {
       for (const element of issue.elements()) {
-        const rowElement = UI4.Fragment.html`
+        const rowElement = UI5.Fragment.html`
     <tr>
       ${await this.createElementCell(element, this.issue.getCategory())}
     </tr>`;
@@ -1757,9 +1851,9 @@ var AffectedPermissionElementsView = class extends AffectedElementsView {
 };
 
 // gen/front_end/panels/issues/AffectedSharedArrayBufferIssueDetailsView.js
-import * as i18n27 from "./../../core/i18n/i18n.js";
+import * as i18n29 from "./../../core/i18n/i18n.js";
 import * as IssuesManager7 from "./../../models/issues_manager/issues_manager.js";
-var UIStrings14 = {
+var UIStrings15 = {
   /**
    * @description Label for number of affected resources indication in issue view
    */
@@ -1801,20 +1895,20 @@ var UIStrings14 = {
    */
   status: "Status"
 };
-var str_14 = i18n27.i18n.registerUIStrings("panels/issues/AffectedSharedArrayBufferIssueDetailsView.ts", UIStrings14);
-var i18nString14 = i18n27.i18n.getLocalizedString.bind(void 0, str_14);
+var str_15 = i18n29.i18n.registerUIStrings("panels/issues/AffectedSharedArrayBufferIssueDetailsView.ts", UIStrings15);
+var i18nString15 = i18n29.i18n.getLocalizedString.bind(void 0, str_15);
 var AffectedSharedArrayBufferIssueDetailsView = class extends AffectedResourcesView {
   getResourceNameWithCount(count) {
-    return i18nString14(UIStrings14.nViolations, { n: count });
+    return i18nString15(UIStrings15.nViolations, { n: count });
   }
   #appendStatus(element, isWarning) {
     const status = document.createElement("td");
     if (isWarning) {
       status.classList.add("affected-resource-report-only-status");
-      status.textContent = i18nString14(UIStrings14.warning);
+      status.textContent = i18nString15(UIStrings15.warning);
     } else {
       status.classList.add("affected-resource-blocked-status");
-      status.textContent = i18nString14(UIStrings14.blocked);
+      status.textContent = i18nString15(UIStrings15.blocked);
     }
     element.appendChild(status);
   }
@@ -1822,21 +1916,21 @@ var AffectedSharedArrayBufferIssueDetailsView = class extends AffectedResourcesV
     const status = document.createElement("td");
     switch (type) {
       case "CreationIssue":
-        status.textContent = i18nString14(UIStrings14.instantiation);
-        status.title = i18nString14(UIStrings14.aSharedarraybufferWas);
+        status.textContent = i18nString15(UIStrings15.instantiation);
+        status.title = i18nString15(UIStrings15.aSharedarraybufferWas);
         break;
       case "TransferIssue":
-        status.textContent = i18nString14(UIStrings14.transfer);
-        status.title = i18nString14(UIStrings14.sharedarraybufferWasTransferedTo);
+        status.textContent = i18nString15(UIStrings15.transfer);
+        status.title = i18nString15(UIStrings15.sharedarraybufferWasTransferedTo);
         break;
     }
     element.appendChild(status);
   }
   #appendDetails(sabIssues) {
     const header = document.createElement("tr");
-    this.appendColumnTitle(header, i18nString14(UIStrings14.sourceLocation));
-    this.appendColumnTitle(header, i18nString14(UIStrings14.trigger));
-    this.appendColumnTitle(header, i18nString14(UIStrings14.status));
+    this.appendColumnTitle(header, i18nString15(UIStrings15.sourceLocation));
+    this.appendColumnTitle(header, i18nString15(UIStrings15.trigger));
+    this.appendColumnTitle(header, i18nString15(UIStrings15.status));
     this.affectedResources.appendChild(header);
     let count = 0;
     for (const sabIssue of sabIssues) {
@@ -1862,17 +1956,17 @@ var AffectedSharedArrayBufferIssueDetailsView = class extends AffectedResourcesV
 };
 
 // gen/front_end/panels/issues/AffectedSourcesView.js
-import * as i18n29 from "./../../core/i18n/i18n.js";
-import * as Components3 from "./../../ui/legacy/components/utils/utils.js";
+import * as i18n31 from "./../../core/i18n/i18n.js";
+import * as Components4 from "./../../ui/legacy/components/utils/utils.js";
 import * as VisualLogging4 from "./../../ui/visual_logging/visual_logging.js";
-var UIStrings15 = {
+var UIStrings16 = {
   /**
    * @description Singular or Plural label for number of affected sources (consisting of (source) file name + line number) in issue view
    */
   nSources: "{n, plural, =1 {# source} other {# sources}}"
 };
-var str_15 = i18n29.i18n.registerUIStrings("panels/issues/AffectedSourcesView.ts", UIStrings15);
-var i18nString15 = i18n29.i18n.getLocalizedString.bind(void 0, str_15);
+var str_16 = i18n31.i18n.registerUIStrings("panels/issues/AffectedSourcesView.ts", UIStrings16);
+var i18nString16 = i18n31.i18n.getLocalizedString.bind(void 0, str_16);
 var AffectedSourcesView = class extends AffectedResourcesView {
   #appendAffectedSources(affectedSources) {
     let count = 0;
@@ -1883,12 +1977,12 @@ var AffectedSourcesView = class extends AffectedResourcesView {
     this.updateAffectedResourceCount(count);
   }
   getResourceNameWithCount(count) {
-    return i18nString15(UIStrings15.nSources, { n: count });
+    return i18nString16(UIStrings16.nSources, { n: count });
   }
   #appendAffectedSource({ url, lineNumber, columnNumber }) {
     const cellElement = document.createElement("td");
     const linkifierURLOptions = { columnNumber, lineNumber, tabStop: true, showColumnNumber: false, inlineFrameIndex: 0 };
-    const anchorElement = Components3.Linkifier.Linkifier.linkifyURL(url, linkifierURLOptions);
+    const anchorElement = Components4.Linkifier.Linkifier.linkifyURL(url, linkifierURLOptions);
     anchorElement.setAttribute("jslog", `${VisualLogging4.link("source-location").track({ click: true })}`);
     cellElement.appendChild(anchorElement);
     const rowElement = document.createElement("tr");
@@ -1903,8 +1997,8 @@ var AffectedSourcesView = class extends AffectedResourcesView {
 };
 
 // gen/front_end/panels/issues/AffectedTrackingSitesView.js
-import * as i18n31 from "./../../core/i18n/i18n.js";
-var UIStrings16 = {
+import * as i18n33 from "./../../core/i18n/i18n.js";
+var UIStrings17 = {
   /**
    * @description Label for the the number of affected `Potentially-tracking Sites` associated with a
    *DevTools issue. In this context, `tracking` refers to bounce tracking and `Site` is equivalent
@@ -1914,11 +2008,11 @@ var UIStrings16 = {
    */
   nTrackingSites: "{n, plural, =1 {1 potentially tracking website} other {# potentially tracking websites}}"
 };
-var str_16 = i18n31.i18n.registerUIStrings("panels/issues/AffectedTrackingSitesView.ts", UIStrings16);
-var i18nString16 = i18n31.i18n.getLocalizedString.bind(void 0, str_16);
+var str_17 = i18n33.i18n.registerUIStrings("panels/issues/AffectedTrackingSitesView.ts", UIStrings17);
+var i18nString17 = i18n33.i18n.getLocalizedString.bind(void 0, str_17);
 var AffectedTrackingSitesView = class extends AffectedResourcesView {
   getResourceNameWithCount(count) {
-    return i18nString16(UIStrings16.nTrackingSites, { n: count });
+    return i18nString17(UIStrings17.nTrackingSites, { n: count });
   }
   update() {
     this.clear();
@@ -1937,9 +2031,9 @@ var AffectedTrackingSitesView = class extends AffectedResourcesView {
 
 // gen/front_end/panels/issues/AttributionReportingIssueDetailsView.js
 import * as Host5 from "./../../core/host/host.js";
-import * as i18n33 from "./../../core/i18n/i18n.js";
+import * as i18n35 from "./../../core/i18n/i18n.js";
 import * as IssuesManager8 from "./../../models/issues_manager/issues_manager.js";
-var UIStrings17 = {
+var UIStrings18 = {
   /**
    * @description Label for number of rows in the issue details table.
    */
@@ -1962,11 +2056,11 @@ var UIStrings17 = {
    */
   untrustworthyOrigin: "Untrustworthy origin"
 };
-var str_17 = i18n33.i18n.registerUIStrings("panels/issues/AttributionReportingIssueDetailsView.ts", UIStrings17);
-var i18nString17 = i18n33.i18n.getLocalizedString.bind(void 0, str_17);
+var str_18 = i18n35.i18n.registerUIStrings("panels/issues/AttributionReportingIssueDetailsView.ts", UIStrings18);
+var i18nString18 = i18n35.i18n.getLocalizedString.bind(void 0, str_18);
 var AttributionReportingIssueDetailsView = class extends AffectedResourcesView {
   getResourceNameWithCount(count) {
-    return i18nString17(UIStrings17.nViolations, { n: count });
+    return i18nString18(UIStrings18.nViolations, { n: count });
   }
   update() {
     this.clear();
@@ -1991,18 +2085,18 @@ var AttributionReportingIssueDetailsView = class extends AffectedResourcesView {
       case "AttributionReportingIssue::TriggerIgnored":
       case "AttributionReportingIssue::InvalidInfoHeader":
       case "AttributionReportingIssue::NavigationRegistrationUniqueScopeAlreadySet":
-        this.appendColumnTitle(header, i18nString17(UIStrings17.request));
-        this.appendColumnTitle(header, i18nString17(UIStrings17.invalidHeaderValue));
+        this.appendColumnTitle(header, i18nString18(UIStrings18.request));
+        this.appendColumnTitle(header, i18nString18(UIStrings18.invalidHeaderValue));
         break;
       case "AttributionReportingIssue::InsecureContext":
       case "AttributionReportingIssue::UntrustworthyReportingOrigin":
-        this.appendColumnTitle(header, i18nString17(UIStrings17.element));
-        this.appendColumnTitle(header, i18nString17(UIStrings17.request));
-        this.appendColumnTitle(header, i18nString17(UIStrings17.untrustworthyOrigin));
+        this.appendColumnTitle(header, i18nString18(UIStrings18.element));
+        this.appendColumnTitle(header, i18nString18(UIStrings18.request));
+        this.appendColumnTitle(header, i18nString18(UIStrings18.untrustworthyOrigin));
         break;
       case "AttributionReportingIssue::PermissionPolicyDisabled":
-        this.appendColumnTitle(header, i18nString17(UIStrings17.element));
-        this.appendColumnTitle(header, i18nString17(UIStrings17.request));
+        this.appendColumnTitle(header, i18nString18(UIStrings18.element));
+        this.appendColumnTitle(header, i18nString18(UIStrings18.request));
         break;
       case "AttributionReportingIssue::SourceAndTriggerHeaders":
       case "AttributionReportingIssue::WebAndOsHeaders":
@@ -2011,10 +2105,10 @@ var AttributionReportingIssueDetailsView = class extends AffectedResourcesView {
       case "AttributionReportingIssue::NoRegisterTriggerHeader":
       case "AttributionReportingIssue::NoRegisterOsSourceHeader":
       case "AttributionReportingIssue::NoRegisterOsTriggerHeader":
-        this.appendColumnTitle(header, i18nString17(UIStrings17.request));
+        this.appendColumnTitle(header, i18nString18(UIStrings18.request));
         break;
       case "AttributionReportingIssue::NavigationRegistrationWithoutTransientUserActivation":
-        this.appendColumnTitle(header, i18nString17(UIStrings17.element));
+        this.appendColumnTitle(header, i18nString18(UIStrings18.element));
         break;
     }
     this.affectedResources.appendChild(header);
@@ -2096,15 +2190,15 @@ var AttributionReportingIssueDetailsView = class extends AffectedResourcesView {
 };
 
 // gen/front_end/panels/issues/IssueView.js
-import * as Components4 from "./components/components.js";
+import * as Components5 from "./components/components.js";
 
 // gen/front_end/panels/issues/CorsIssueDetailsView.js
 import * as Host6 from "./../../core/host/host.js";
-import * as i18n35 from "./../../core/i18n/i18n.js";
+import * as i18n37 from "./../../core/i18n/i18n.js";
 import * as Platform3 from "./../../core/platform/platform.js";
 import * as IssuesManager9 from "./../../models/issues_manager/issues_manager.js";
 import * as NetworkForward2 from "./../network/forward/forward.js";
-var UIStrings18 = {
+var UIStrings19 = {
   /**
    * @description Label for number of affected resources indication in issue view
    */
@@ -2214,8 +2308,8 @@ var UIStrings18 = {
    */
   failedRequest: "Failed Request"
 };
-var str_18 = i18n35.i18n.registerUIStrings("panels/issues/CorsIssueDetailsView.ts", UIStrings18);
-var i18nString18 = i18n35.i18n.getLocalizedString.bind(void 0, str_18);
+var str_19 = i18n37.i18n.registerUIStrings("panels/issues/CorsIssueDetailsView.ts", UIStrings19);
+var i18nString19 = i18n37.i18n.getLocalizedString.bind(void 0, str_19);
 var CorsIssueDetailsView = class _CorsIssueDetailsView extends AffectedResourcesView {
   constructor(parent, issue, jslogContext) {
     super(parent, issue, jslogContext);
@@ -2225,69 +2319,69 @@ var CorsIssueDetailsView = class _CorsIssueDetailsView extends AffectedResources
     const status = document.createElement("td");
     if (isWarning) {
       status.classList.add("affected-resource-report-only-status");
-      status.textContent = i18nString18(UIStrings18.warning);
+      status.textContent = i18nString19(UIStrings19.warning);
     } else {
       status.classList.add("affected-resource-blocked-status");
-      status.textContent = i18nString18(UIStrings18.blocked);
+      status.textContent = i18nString19(UIStrings19.blocked);
     }
     element.appendChild(status);
   }
   getResourceNameWithCount(count) {
-    return i18nString18(UIStrings18.nRequests, { n: count });
+    return i18nString19(UIStrings19.nRequests, { n: count });
   }
   #appendDetails(issueCode, issues) {
     const header = document.createElement("tr");
-    this.appendColumnTitle(header, i18nString18(UIStrings18.request));
-    this.appendColumnTitle(header, i18nString18(UIStrings18.status));
+    this.appendColumnTitle(header, i18nString19(UIStrings19.request));
+    this.appendColumnTitle(header, i18nString19(UIStrings19.status));
     switch (issueCode) {
       case "CorsIssue::InvalidHeaders":
-        this.appendColumnTitle(header, i18nString18(UIStrings18.preflightRequestIfProblematic));
-        this.appendColumnTitle(header, i18nString18(UIStrings18.header));
-        this.appendColumnTitle(header, i18nString18(UIStrings18.problem));
-        this.appendColumnTitle(header, i18nString18(UIStrings18.invalidValue));
+        this.appendColumnTitle(header, i18nString19(UIStrings19.preflightRequestIfProblematic));
+        this.appendColumnTitle(header, i18nString19(UIStrings19.header));
+        this.appendColumnTitle(header, i18nString19(UIStrings19.problem));
+        this.appendColumnTitle(header, i18nString19(UIStrings19.invalidValue));
         break;
       case "CorsIssue::WildcardOriginWithCredentials":
-        this.appendColumnTitle(header, i18nString18(UIStrings18.preflightRequestIfProblematic));
+        this.appendColumnTitle(header, i18nString19(UIStrings19.preflightRequestIfProblematic));
         break;
       case "CorsIssue::PreflightResponseInvalid":
-        this.appendColumnTitle(header, i18nString18(UIStrings18.preflightRequest));
-        this.appendColumnTitle(header, i18nString18(UIStrings18.problem));
+        this.appendColumnTitle(header, i18nString19(UIStrings19.preflightRequest));
+        this.appendColumnTitle(header, i18nString19(UIStrings19.problem));
         break;
       case "CorsIssue::OriginMismatch":
-        this.appendColumnTitle(header, i18nString18(UIStrings18.preflightRequestIfProblematic));
-        this.appendColumnTitle(header, i18nString18(UIStrings18.initiatorContext));
-        this.appendColumnTitle(header, i18nString18(UIStrings18.allowedOrigin));
+        this.appendColumnTitle(header, i18nString19(UIStrings19.preflightRequestIfProblematic));
+        this.appendColumnTitle(header, i18nString19(UIStrings19.initiatorContext));
+        this.appendColumnTitle(header, i18nString19(UIStrings19.allowedOrigin));
         break;
       case "CorsIssue::AllowCredentialsRequired":
-        this.appendColumnTitle(header, i18nString18(UIStrings18.preflightRequestIfProblematic));
-        this.appendColumnTitle(header, i18nString18(UIStrings18.allowCredentialsValueFromHeader));
+        this.appendColumnTitle(header, i18nString19(UIStrings19.preflightRequestIfProblematic));
+        this.appendColumnTitle(header, i18nString19(UIStrings19.allowCredentialsValueFromHeader));
         break;
       case "CorsIssue::InsecureLocalNetwork":
-        this.appendColumnTitle(header, i18nString18(UIStrings18.resourceAddressSpace));
-        this.appendColumnTitle(header, i18nString18(UIStrings18.initiatorAddressSpace));
-        this.appendColumnTitle(header, i18nString18(UIStrings18.initiatorContext));
+        this.appendColumnTitle(header, i18nString19(UIStrings19.resourceAddressSpace));
+        this.appendColumnTitle(header, i18nString19(UIStrings19.initiatorAddressSpace));
+        this.appendColumnTitle(header, i18nString19(UIStrings19.initiatorContext));
         break;
       case "CorsIssue::MethodDisallowedByPreflightResponse":
-        this.appendColumnTitle(header, i18nString18(UIStrings18.preflightRequest));
-        this.appendColumnTitle(header, i18nString18(UIStrings18.disallowedRequestMethod));
+        this.appendColumnTitle(header, i18nString19(UIStrings19.preflightRequest));
+        this.appendColumnTitle(header, i18nString19(UIStrings19.disallowedRequestMethod));
         break;
       case "CorsIssue::HeaderDisallowedByPreflightResponse":
-        this.appendColumnTitle(header, i18nString18(UIStrings18.preflightRequest));
-        this.appendColumnTitle(header, i18nString18(UIStrings18.disallowedRequestHeader));
+        this.appendColumnTitle(header, i18nString19(UIStrings19.preflightRequest));
+        this.appendColumnTitle(header, i18nString19(UIStrings19.disallowedRequestHeader));
         break;
       case "CorsIssue::RedirectContainsCredentials":
         break;
       case "CorsIssue::DisallowedByMode":
-        this.appendColumnTitle(header, i18nString18(UIStrings18.initiatorContext));
-        this.appendColumnTitle(header, i18nString18(UIStrings18.sourceLocation));
+        this.appendColumnTitle(header, i18nString19(UIStrings19.initiatorContext));
+        this.appendColumnTitle(header, i18nString19(UIStrings19.sourceLocation));
         break;
       case "CorsIssue::CorsDisabledScheme":
-        this.appendColumnTitle(header, i18nString18(UIStrings18.initiatorContext));
-        this.appendColumnTitle(header, i18nString18(UIStrings18.sourceLocation));
-        this.appendColumnTitle(header, i18nString18(UIStrings18.unsupportedScheme));
+        this.appendColumnTitle(header, i18nString19(UIStrings19.initiatorContext));
+        this.appendColumnTitle(header, i18nString19(UIStrings19.sourceLocation));
+        this.appendColumnTitle(header, i18nString19(UIStrings19.unsupportedScheme));
         break;
       case "CorsIssue::NoCorsRedirectModeNotFollow":
-        this.appendColumnTitle(header, i18nString18(UIStrings18.sourceLocation));
+        this.appendColumnTitle(header, i18nString19(UIStrings19.sourceLocation));
         break;
       default:
         Platform3.assertUnhandled(issueCode);
@@ -2305,7 +2399,7 @@ var CorsIssueDetailsView = class _CorsIssueDetailsView extends AffectedResources
       this.appendIssueDetailCell(element, "");
       return;
     }
-    this.appendIssueDetailCell(element, isSecureContext ? i18nString18(UIStrings18.secure) : i18nString18(UIStrings18.insecure));
+    this.appendIssueDetailCell(element, isSecureContext ? i18nString19(UIStrings19.secure) : i18nString19(UIStrings19.insecure));
   }
   static getHeaderFromError(corsError) {
     switch (corsError) {
@@ -2342,19 +2436,19 @@ var CorsIssueDetailsView = class _CorsIssueDetailsView extends AffectedResources
       case "InvalidAllowMethodsPreflightResponse":
       case "PreflightInvalidAllowOriginValue":
       case "InvalidAllowOriginValue":
-        return i18nString18(UIStrings18.problemInvalidValue);
+        return i18nString19(UIStrings19.problemInvalidValue);
       case "PreflightMultipleAllowOriginValues":
       case "MultipleAllowOriginValues":
-        return i18nString18(UIStrings18.problemMultipleValues);
+        return i18nString19(UIStrings19.problemMultipleValues);
       case "MissingAllowOriginHeader":
       case "PreflightMissingAllowOriginHeader":
-        return i18nString18(UIStrings18.problemMissingHeader);
+        return i18nString19(UIStrings19.problemMissingHeader);
       case "PreflightInvalidStatus":
-        return i18nString18(UIStrings18.preflightInvalidStatus);
+        return i18nString19(UIStrings19.preflightInvalidStatus);
       case "PreflightDisallowedRedirect":
-        return i18nString18(UIStrings18.preflightDisallowedRedirect);
+        return i18nString19(UIStrings19.preflightDisallowedRedirect);
       case "InvalidResponse":
-        return i18nString18(UIStrings18.failedRequest);
+        return i18nString19(UIStrings19.failedRequest);
     }
     throw new Error("Invalid Argument");
   }
@@ -2518,8 +2612,8 @@ var CorsIssueDetailsView = class _CorsIssueDetailsView extends AffectedResources
 };
 
 // gen/front_end/panels/issues/GenericIssueDetailsView.js
-import * as i18n37 from "./../../core/i18n/i18n.js";
-var UIStrings19 = {
+import * as i18n39 from "./../../core/i18n/i18n.js";
+var UIStrings20 = {
   /**
    * @description Label for number of affected resources indication in issue view
    */
@@ -2533,17 +2627,17 @@ var UIStrings19 = {
    */
   violatingNode: "Violating node"
 };
-var str_19 = i18n37.i18n.registerUIStrings("panels/issues/GenericIssueDetailsView.ts", UIStrings19);
-var i18nString19 = i18n37.i18n.getLocalizedString.bind(void 0, str_19);
+var str_20 = i18n39.i18n.registerUIStrings("panels/issues/GenericIssueDetailsView.ts", UIStrings20);
+var i18nString20 = i18n39.i18n.getLocalizedString.bind(void 0, str_20);
 var GenericIssueDetailsView = class extends AffectedResourcesView {
   getResourceNameWithCount(count) {
-    return i18nString19(UIStrings19.nResources, { n: count });
+    return i18nString20(UIStrings20.nResources, { n: count });
   }
   #appendDetails(genericIssues) {
     const header = document.createElement("tr");
     const sampleIssueDetails = genericIssues.values().next().value?.details();
     if (sampleIssueDetails?.frameId) {
-      this.appendColumnTitle(header, i18nString19(UIStrings19.frameId));
+      this.appendColumnTitle(header, i18nString20(UIStrings20.frameId));
     }
     this.affectedResources.appendChild(header);
     let count = 0;
@@ -2572,9 +2666,9 @@ var GenericIssueDetailsView = class extends AffectedResourcesView {
   violatingNodeIdName(errorType) {
     switch (errorType) {
       case "FormLabelForNameError":
-        return i18n37.i18n.lockedString("Label");
+        return i18n39.i18n.lockedString("Label");
       default:
-        return i18nString19(UIStrings19.violatingNode);
+        return i18nString20(UIStrings20.violatingNode);
     }
   }
   update() {
@@ -2589,7 +2683,7 @@ var GenericIssueDetailsView = class extends AffectedResourcesView {
 };
 
 // gen/front_end/panels/issues/IssueView.js
-var UIStrings20 = {
+var UIStrings21 = {
   /**
    * @description Noun, singular. Label for a column or field containing the name of an entity.
    */
@@ -2637,8 +2731,8 @@ var UIStrings20 = {
    */
   unhideIssuesLikeThis: "Unhide issues like this"
 };
-var str_20 = i18n39.i18n.registerUIStrings("panels/issues/IssueView.ts", UIStrings20);
-var i18nString20 = i18n39.i18n.getLocalizedString.bind(void 0, str_20);
+var str_21 = i18n41.i18n.registerUIStrings("panels/issues/IssueView.ts", UIStrings21);
+var i18nString21 = i18n41.i18n.getLocalizedString.bind(void 0, str_21);
 var AffectedRequestsView = class extends AffectedResourcesView {
   #appendAffectedRequests(affectedRequests) {
     let count = 0;
@@ -2663,7 +2757,7 @@ var AffectedRequestsView = class extends AffectedResourcesView {
     this.updateAffectedResourceCount(count);
   }
   getResourceNameWithCount(count) {
-    return i18nString20(UIStrings20.nRequests, { n: count });
+    return i18nString21(UIStrings21.nRequests, { n: count });
   }
   update() {
     this.clear();
@@ -2695,8 +2789,8 @@ var issueTypeToNetworkHeaderMap = /* @__PURE__ */ new Map([
 var AffectedMixedContentView = class _AffectedMixedContentView extends AffectedResourcesView {
   #appendAffectedMixedContentDetails(mixedContentIssues) {
     const header = document.createElement("tr");
-    this.appendColumnTitle(header, i18nString20(UIStrings20.name));
-    this.appendColumnTitle(header, i18nString20(UIStrings20.restrictionStatus));
+    this.appendColumnTitle(header, i18nString21(UIStrings21.name));
+    this.appendColumnTitle(header, i18nString21(UIStrings21.restrictionStatus));
     this.affectedResources.appendChild(header);
     let count = 0;
     for (const issue of mixedContentIssues) {
@@ -2707,7 +2801,7 @@ var AffectedMixedContentView = class _AffectedMixedContentView extends AffectedR
     this.updateAffectedResourceCount(count);
   }
   getResourceNameWithCount(count) {
-    return i18nString20(UIStrings20.nResources, { n: count });
+    return i18nString21(UIStrings21.nResources, { n: count });
   }
   appendAffectedMixedContent(mixedContent) {
     const element = document.createElement("tr");
@@ -2735,11 +2829,11 @@ var AffectedMixedContentView = class _AffectedMixedContentView extends AffectedR
   static translateStatus(resolutionStatus) {
     switch (resolutionStatus) {
       case "MixedContentBlocked":
-        return i18nString20(UIStrings20.blocked);
+        return i18nString21(UIStrings21.blocked);
       case "MixedContentAutomaticallyUpgraded":
-        return i18nString20(UIStrings20.automaticallyUpgraded);
+        return i18nString21(UIStrings21.automaticallyUpgraded);
       case "MixedContentWarning":
-        return i18nString20(UIStrings20.warned);
+        return i18nString21(UIStrings21.warned);
     }
   }
   update() {
@@ -2747,7 +2841,7 @@ var AffectedMixedContentView = class _AffectedMixedContentView extends AffectedR
     this.#appendAffectedMixedContentDetails(this.issue.getMixedContentIssues());
   }
 };
-var IssueView = class _IssueView extends UI5.TreeOutline.TreeElement {
+var IssueView = class _IssueView extends UI6.TreeOutline.TreeElement {
   #issue;
   #description;
   toggleOnClick;
@@ -2789,9 +2883,10 @@ var IssueView = class _IssueView extends UI5.TreeOutline.TreeElement {
       new AffectedMetadataAllowedSitesView(this, this.#issue, "metadata-allowed-sites-details"),
       new AffectedDescendantsWithinSelectElementView(this, this.#issue, "disallowed-select-descendants-details"),
       new AffectedPartitioningBlobURLView(this, this.#issue, "partitioning-blob-url-details"),
-      new AffectedPermissionElementsView(this, this.#issue, "permission-element-elements")
+      new AffectedPermissionElementsView(this, this.#issue, "permission-element-elements"),
+      new AffectedSelectivePermissionsInterventionView(this, this.#issue, "selective-permissions-intervention-details")
     ];
-    this.#hiddenIssuesMenu = new Components4.HideIssuesMenu.HideIssuesMenu();
+    this.#hiddenIssuesMenu = new Components5.HideIssuesMenu.HideIssuesMenu();
     this.#aggregatedIssuesCount = null;
     this.#hasBeenExpandedBefore = false;
   }
@@ -2850,8 +2945,8 @@ var IssueView = class _IssueView extends UI5.TreeOutline.TreeElement {
   #updateAffectedResourcesPositionAndSize(visibleAffectedResource) {
     for (let i = 0; i < visibleAffectedResource.length; i++) {
       const element = visibleAffectedResource[i].listItemElement;
-      UI5.ARIAUtils.setPositionInSet(element, i + 1);
-      UI5.ARIAUtils.setSetSize(element, visibleAffectedResource.length);
+      UI6.ARIAUtils.setPositionInSet(element, i + 1);
+      UI6.ARIAUtils.setSetSize(element, visibleAffectedResource.length);
     }
   }
   #appendHeader() {
@@ -2906,7 +3001,7 @@ var IssueView = class _IssueView extends UI5.TreeOutline.TreeElement {
     this.listItemElement.classList.toggle("hidden-issue", this.#issue.isHidden());
     if (this.#hiddenIssuesMenu) {
       const data = {
-        menuItemLabel: this.#issue.isHidden() ? i18nString20(UIStrings20.unhideIssuesLikeThis) : i18nString20(UIStrings20.hideIssuesLikeThis),
+        menuItemLabel: this.#issue.isHidden() ? i18nString21(UIStrings21.unhideIssuesLikeThis) : i18nString21(UIStrings21.hideIssuesLikeThis),
         menuItemAction: () => {
           const setting = IssuesManager10.IssuesManager.getHideIssueByCodeSetting();
           const values = setting.get();
@@ -2922,42 +3017,42 @@ var IssueView = class _IssueView extends UI5.TreeOutline.TreeElement {
     this.affectedResources.hidden = noResources;
   }
   #createAffectedResources() {
-    const wrapper = new UI5.TreeOutline.TreeElement();
+    const wrapper = new UI6.TreeOutline.TreeElement();
     wrapper.setCollapsible(false);
     wrapper.setExpandable(true);
     wrapper.expand();
     wrapper.selectable = false;
     wrapper.listItemElement.classList.add("affected-resources-label");
-    wrapper.listItemElement.textContent = i18nString20(UIStrings20.affectedResources);
+    wrapper.listItemElement.textContent = i18nString21(UIStrings21.affectedResources);
     wrapper.childrenListElement.classList.add("affected-resources");
-    UI5.ARIAUtils.setPositionInSet(wrapper.listItemElement, 2);
-    UI5.ARIAUtils.setSetSize(wrapper.listItemElement, this.#description.links.length === 0 ? 2 : 3);
+    UI6.ARIAUtils.setPositionInSet(wrapper.listItemElement, 2);
+    UI6.ARIAUtils.setSetSize(wrapper.listItemElement, this.#description.links.length === 0 ? 2 : 3);
     return wrapper;
   }
   #createBody() {
-    const messageElement = new UI5.TreeOutline.TreeElement();
+    const messageElement = new UI6.TreeOutline.TreeElement();
     messageElement.setCollapsible(false);
     messageElement.selectable = false;
     const markdownComponent = new MarkdownView.MarkdownView.MarkdownView();
     markdownComponent.data = { tokens: this.#description.markdown };
     messageElement.listItemElement.appendChild(markdownComponent);
-    UI5.ARIAUtils.setPositionInSet(messageElement.listItemElement, 1);
-    UI5.ARIAUtils.setSetSize(messageElement.listItemElement, this.#description.links.length === 0 ? 2 : 3);
+    UI6.ARIAUtils.setPositionInSet(messageElement.listItemElement, 1);
+    UI6.ARIAUtils.setSetSize(messageElement.listItemElement, this.#description.links.length === 0 ? 2 : 3);
     this.appendChild(messageElement);
   }
   #createReadMoreLinks() {
     if (this.#description.links.length === 0) {
       return;
     }
-    const linkWrapper = new UI5.TreeOutline.TreeElement();
+    const linkWrapper = new UI6.TreeOutline.TreeElement();
     linkWrapper.setCollapsible(false);
     linkWrapper.listItemElement.classList.add("link-wrapper");
-    UI5.ARIAUtils.setPositionInSet(linkWrapper.listItemElement, 3);
-    UI5.ARIAUtils.setSetSize(linkWrapper.listItemElement, 3);
+    UI6.ARIAUtils.setPositionInSet(linkWrapper.listItemElement, 3);
+    UI6.ARIAUtils.setSetSize(linkWrapper.listItemElement, 3);
     const linkList = linkWrapper.listItemElement.createChild("ul", "link-list");
     for (const description of this.#description.links) {
       const linkListItem = linkList.createChild("li");
-      render2(html2`<devtools-link class="link devtools-link" href=${description.link} jslogcontext="learn-more">${i18nString20(UIStrings20.learnMoreS, { PH1: description.linkTitle })}</devtools-link>`, linkListItem);
+      render3(html3`<devtools-link class="link devtools-link" href=${description.link} jslogcontext="learn-more">${i18nString21(UIStrings21.learnMoreS, { PH1: description.linkTitle })}</devtools-link>`, linkListItem);
     }
     this.appendChild(linkWrapper);
   }
@@ -2991,7 +3086,7 @@ var IssueView = class _IssueView extends UI5.TreeOutline.TreeElement {
 };
 
 // gen/front_end/panels/issues/IssuesPane.js
-var UIStrings21 = {
+var UIStrings22 = {
   /**
    * @description Category title for a group of cross origin embedder policy (COEP) issues
    */
@@ -3081,12 +3176,16 @@ var UIStrings21 = {
   /**
    * @description Category title for a group of permission element issues
    */
-  permissionElement: "PEPC Element"
+  permissionElement: "PEPC Element",
+  /**
+   * @description Category title for the different 'Selective Permissions Intervention' issues.
+   */
+  selectivePermissionsIntervention: "Selective Permissions Intervention"
 };
-var str_21 = i18n41.i18n.registerUIStrings("panels/issues/IssuesPane.ts", UIStrings21);
-var i18nString21 = i18n41.i18n.getLocalizedString.bind(void 0, str_21);
+var str_22 = i18n43.i18n.registerUIStrings("panels/issues/IssuesPane.ts", UIStrings22);
+var i18nString22 = i18n43.i18n.getLocalizedString.bind(void 0, str_22);
 var ISSUES_PANEL_EXPLANATION_URL = "https://developer.chrome.com/docs/devtools/issues";
-var IssueCategoryView = class extends UI6.TreeOutline.TreeElement {
+var IssueCategoryView = class extends UI7.TreeOutline.TreeElement {
   #category;
   constructor(category) {
     super(void 0, void 0, Platform5.StringUtilities.toKebabCase(category));
@@ -3098,29 +3197,31 @@ var IssueCategoryView = class extends UI6.TreeOutline.TreeElement {
   getCategoryName() {
     switch (this.#category) {
       case "CrossOriginEmbedderPolicy":
-        return i18nString21(UIStrings21.crossOriginEmbedderPolicy);
+        return i18nString22(UIStrings22.crossOriginEmbedderPolicy);
       case "MixedContent":
-        return i18nString21(UIStrings21.mixedContent);
+        return i18nString22(UIStrings22.mixedContent);
       case "Cookie":
-        return i18nString21(UIStrings21.samesiteCookie);
+        return i18nString22(UIStrings22.samesiteCookie);
       case "HeavyAd":
-        return i18nString21(UIStrings21.heavyAds);
+        return i18nString22(UIStrings22.heavyAds);
       case "ContentSecurityPolicy":
-        return i18nString21(UIStrings21.contentSecurityPolicy);
+        return i18nString22(UIStrings22.contentSecurityPolicy);
       case "LowTextContrast":
-        return i18nString21(UIStrings21.lowTextContrast);
+        return i18nString22(UIStrings22.lowTextContrast);
       case "Cors":
-        return i18nString21(UIStrings21.cors);
+        return i18nString22(UIStrings22.cors);
       case "AttributionReporting":
-        return i18nString21(UIStrings21.attributionReporting);
+        return i18nString22(UIStrings22.attributionReporting);
       case "QuirksMode":
-        return i18nString21(UIStrings21.quirksMode);
+        return i18nString22(UIStrings22.quirksMode);
       case "Generic":
-        return i18nString21(UIStrings21.generic);
+        return i18nString22(UIStrings22.generic);
       case "PermissionElement":
-        return i18nString21(UIStrings21.permissionElement);
+        return i18nString22(UIStrings22.permissionElement);
+      case "SelectivePermissionsIntervention":
+        return i18nString22(UIStrings22.selectivePermissionsIntervention);
       case "Other":
-        return i18nString21(UIStrings21.other);
+        return i18nString22(UIStrings22.other);
     }
   }
   onattach() {
@@ -3139,7 +3240,7 @@ var IssueCategoryView = class extends UI6.TreeOutline.TreeElement {
 function getGroupIssuesByCategorySetting() {
   return Common6.Settings.Settings.instance().createSetting("group-issues-by-category", false);
 }
-var IssuesPane = class extends UI6.Widget.VBox {
+var IssuesPane = class extends UI7.Widget.VBox {
   #categoryViews;
   #issueViews;
   #kindViews;
@@ -3162,14 +3263,14 @@ var IssuesPane = class extends UI6.Widget.VBox {
     this.#issueViews = /* @__PURE__ */ new Map();
     this.#showThirdPartyCheckbox = null;
     this.#createToolbars();
-    this.#issuesTree = new UI6.TreeOutline.TreeOutlineInShadow();
+    this.#issuesTree = new UI7.TreeOutline.TreeOutlineInShadow();
     this.#issuesTree.setShowSelectionOnKeyboardFocus(true);
     this.#issuesTree.contentElement.classList.add("issues");
     this.#issuesTree.registerRequiredCSS(issuesTree_css_default);
     this.contentElement.appendChild(this.#issuesTree.element);
     this.#hiddenIssuesRow = new HiddenIssuesRow();
     this.#issuesTree.appendChild(this.#hiddenIssuesRow);
-    this.#noIssuesMessageDiv = new UI6.EmptyWidget.EmptyWidget("", i18nString21(UIStrings21.issuesPanelDescription));
+    this.#noIssuesMessageDiv = new UI7.EmptyWidget.EmptyWidget("", i18nString22(UIStrings22.issuesPanelDescription));
     this.#noIssuesMessageDiv.link = ISSUES_PANEL_EXPLANATION_URL;
     this.#noIssuesMessageDiv.show(this.contentElement);
     this.#issuesManager = IssuesManager12.IssuesManager.IssuesManager.instance();
@@ -3192,21 +3293,21 @@ var IssuesPane = class extends UI6.Widget.VBox {
     const rightToolbar = toolbarContainer.createChild("devtools-toolbar", "issues-toolbar-right");
     rightToolbar.role = "presentation";
     const groupByCategorySetting = getGroupIssuesByCategorySetting();
-    const groupByCategoryCheckbox = new UI6.Toolbar.ToolbarSettingCheckbox(groupByCategorySetting, i18nString21(UIStrings21.groupDisplayedIssuesUnder), i18nString21(UIStrings21.groupByCategory));
+    const groupByCategoryCheckbox = new UI7.Toolbar.ToolbarSettingCheckbox(groupByCategorySetting, i18nString22(UIStrings22.groupDisplayedIssuesUnder), i18nString22(UIStrings22.groupByCategory));
     groupByCategoryCheckbox.setVisible(false);
     rightToolbar.appendToolbarItem(groupByCategoryCheckbox);
     groupByCategorySetting.addChangeListener(() => {
       this.#fullUpdate(true);
     });
     const groupByKindSetting = getGroupIssuesByKindSetting();
-    const groupByKindSettingCheckbox = new UI6.Toolbar.ToolbarSettingCheckbox(groupByKindSetting, i18nString21(UIStrings21.groupDisplayedIssuesUnderKind), i18nString21(UIStrings21.groupByKind));
+    const groupByKindSettingCheckbox = new UI7.Toolbar.ToolbarSettingCheckbox(groupByKindSetting, i18nString22(UIStrings22.groupDisplayedIssuesUnderKind), i18nString22(UIStrings22.groupByKind));
     rightToolbar.appendToolbarItem(groupByKindSettingCheckbox);
     groupByKindSetting.addChangeListener(() => {
       this.#fullUpdate(true);
     });
     groupByKindSettingCheckbox.setVisible(true);
     const thirdPartySetting = IssuesManager12.Issue.getShowThirdPartyIssuesSetting();
-    this.#showThirdPartyCheckbox = new UI6.Toolbar.ToolbarSettingCheckbox(thirdPartySetting, i18nString21(UIStrings21.includeCookieIssuesCausedBy), i18nString21(UIStrings21.includeThirdpartyCookieIssues));
+    this.#showThirdPartyCheckbox = new UI7.Toolbar.ToolbarSettingCheckbox(thirdPartySetting, i18nString22(UIStrings22.includeCookieIssuesCausedBy), i18nString22(UIStrings22.includeThirdpartyCookieIssues));
     rightToolbar.appendToolbarItem(this.#showThirdPartyCheckbox);
     rightToolbar.appendSeparator();
     const issueCounter = new IssueCounter5.IssueCounter.IssueCounter();
@@ -3223,7 +3324,7 @@ var IssuesPane = class extends UI6.Widget.VBox {
     };
     issueCounter.id = "console-issues-counter";
     issueCounter.setAttribute("jslog", `${VisualLogging5.counter("issues")}`);
-    const issuesToolbarItem = new UI6.Toolbar.ToolbarItem(issueCounter);
+    const issuesToolbarItem = new UI7.Toolbar.ToolbarItem(issueCounter);
     rightToolbar.appendToolbarItem(issuesToolbarItem);
     return { toolbarContainer };
   }
@@ -3250,7 +3351,7 @@ var IssuesPane = class extends UI6.Widget.VBox {
     } else {
       issueView.setIssue(issue);
       const newParent = this.#getIssueViewParent(issue);
-      if (issueView.parent !== newParent && !(newParent instanceof UI6.TreeOutline.TreeOutline && issueView.parent === newParent.rootElement())) {
+      if (issueView.parent !== newParent && !(newParent instanceof UI7.TreeOutline.TreeOutline && issueView.parent === newParent.rootElement())) {
         issueView.parent?.removeChild(issueView);
         this.appendIssueViewToParent(issueView, newParent);
       }
@@ -3272,7 +3373,7 @@ var IssuesPane = class extends UI6.Widget.VBox {
       console.error("The issues tree should only contain IssueView objects as direct children");
       return 0;
     });
-    if (parent instanceof UI6.TreeOutline.TreeElement) {
+    if (parent instanceof UI7.TreeOutline.TreeElement) {
       this.#updateItemPositionAndSize(parent);
     }
   }
@@ -3282,8 +3383,8 @@ var IssuesPane = class extends UI6.Widget.VBox {
     for (let i = 0; i < childNodes.length; i++) {
       const node = childNodes[i];
       if (node.classList.contains("issue")) {
-        UI6.ARIAUtils.setPositionInSet(node, ++treeItemCount);
-        UI6.ARIAUtils.setSetSize(node, childNodes.length / 2);
+        UI7.ARIAUtils.setPositionInSet(node, ++treeItemCount);
+        UI7.ARIAUtils.setSetSize(node, childNodes.length / 2);
       }
     }
   }
@@ -3377,7 +3478,7 @@ var IssuesPane = class extends UI6.Widget.VBox {
     } else {
       this.#issuesTree.element.hidden = true;
       const hasOnlyThirdPartyIssues = this.#issuesManager.numberOfAllStoredIssues() - this.#issuesManager.numberOfThirdPartyCookiePhaseoutIssues() > 0;
-      this.#noIssuesMessageDiv.header = hasOnlyThirdPartyIssues ? i18nString21(UIStrings21.onlyThirdpartyCookieIssues) : i18nString21(UIStrings21.noIssues);
+      this.#noIssuesMessageDiv.header = hasOnlyThirdPartyIssues ? i18nString22(UIStrings22.onlyThirdpartyCookieIssues) : i18nString22(UIStrings22.noIssues);
       this.#noIssuesMessageDiv.showWidget();
     }
   }
@@ -3405,8 +3506,8 @@ var IssuesPane = class extends UI6.Widget.VBox {
 // gen/front_end/panels/issues/IssueRevealer.js
 var IssueRevealer = class {
   async reveal(issue) {
-    await UI7.ViewManager.ViewManager.instance().showView("issues-pane");
-    const view = UI7.ViewManager.ViewManager.instance().view("issues-pane");
+    await UI8.ViewManager.ViewManager.instance().showView("issues-pane");
+    const view = UI8.ViewManager.ViewManager.instance().view("issues-pane");
     if (view) {
       const issuesPane = await view.widget();
       if (issuesPane instanceof IssuesPane) {
@@ -3418,6 +3519,7 @@ var IssueRevealer = class {
   }
 };
 export {
+  AffectedSelectivePermissionsInterventionView_exports as AffectedSelectivePermissionsInterventionView,
   IssueRevealer_exports as IssueRevealer,
   IssueView_exports as IssueView,
   IssuesPane_exports as IssuesPane

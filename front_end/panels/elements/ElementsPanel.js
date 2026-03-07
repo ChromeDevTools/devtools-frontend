@@ -1279,7 +1279,7 @@ export class DOMNodeRevealer {
                     return;
                 }
                 if (resolvedNode) {
-                    const opts = { showPanel: true, focusNode: !omitFocus };
+                    const opts = omitFocus ? { showPanel: false } : { showPanel: true, focusNode: true };
                     const promise = resolvedNode instanceof SDK.DOMModel.AdoptedStyleSheet ?
                         panel.revealAndSelectAdoptedStyleSheet(resolvedNode, opts) :
                         panel.revealAndSelectNode(resolvedNode, opts);

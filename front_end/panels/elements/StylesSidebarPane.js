@@ -205,7 +205,10 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsS
                 return link;
             }
             return null;
-        }, () => this.node());
+        }, async () => {
+            const features = await Components.ImagePreview.loadPrecomputedFeatures(this.node());
+            return features;
+        });
         UI.ViewManager.ViewManager.instance().addEventListener("ViewVisibilityChanged" /* UI.ViewManager.Events.VIEW_VISIBILITY_CHANGED */, event => {
             if (event.data.revealedViewId === 'animations' || event.data.hiddenViewId === 'animations') {
                 this.#scheduleResetUpdateIfNotEditing();

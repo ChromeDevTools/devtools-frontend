@@ -39,13 +39,17 @@ var UIStrings = {
    */
   captureAsyncStackTraces: "Capture async stack traces",
   /**
-   * @description Text of a setting that  turn on the measuring rulers when hover over a target
+   * @description Text of a setting that turn on the measuring rulers when hover over a target
+   */
+  rulersOnHover: "Rulers on hover",
+  /**
+   * @description Text of an option that turn on the measuring rulers when hover over a target through the Command Menu
    */
   showRulersOnHover: "Show rulers on hover",
   /**
    * @description Text of a setting that do turn off the measuring rulers when hover over a target
    */
-  doNotShowRulersOnHover: "Do not show rulers on hover",
+  doNotShowRulersOnHover: "Don't show rulers on hover",
   /**
    * @description Title of a setting that turns on grid area name labels
    */
@@ -95,19 +99,19 @@ var UIStrings = {
    */
   showLineNames: "Show line names",
   /**
-   * @description Title of a setting under the Rendering category that can be invoked through the Command Menu
+   * @description Title of an option under the Rendering category that can be invoked through the Command Menu
    */
   showPaintFlashingRectangles: "Show paint flashing rectangles",
   /**
-   * @description Title of a setting under the Rendering category that can be invoked through the Command Menu
+   * @description Title of an option under the Rendering category that can be invoked through the Command Menu
    */
   hidePaintFlashingRectangles: "Hide paint flashing rectangles",
   /**
-   * @description Title of a setting under the Rendering category that can be invoked through the Command Menu
+   * @description Title of an option under the Rendering category that can be invoked through the Command Menu
    */
   showLayoutShiftRegions: "Show layout shift regions",
   /**
-   * @description Title of a setting under the Rendering category that can be invoked through the Command Menu
+   * @description Title of an option under the Rendering category that can be invoked through the Command Menu
    */
   hideLayoutShiftRegions: "Hide layout shift regions",
   /**
@@ -115,31 +119,31 @@ var UIStrings = {
    */
   highlightAdFrames: "Highlight ad frames",
   /**
-   * @description Title of a setting under the Rendering category that can be invoked through the Command Menu
+   * @description Title of an option under the Rendering category that can be invoked through the Command Menu
    */
   doNotHighlightAdFrames: "Do not highlight ad frames",
   /**
-   * @description Title of a setting under the Rendering category that can be invoked through the Command Menu
+   * @description Title of an option under the Rendering category that can be invoked through the Command Menu
    */
   showLayerBorders: "Show layer borders",
   /**
-   * @description Title of a setting under the Rendering category that can be invoked through the Command Menu
+   * @description Title of an option under the Rendering category that can be invoked through the Command Menu
    */
   hideLayerBorders: "Hide layer borders",
   /**
-   * @description Title of a setting under the Rendering category that can be invoked through the Command Menu
+   * @description Title of an option under the Rendering category that can be invoked through the Command Menu
    */
   showFramesPerSecondFpsMeter: "Show frames per second (FPS) meter",
   /**
-   * @description Title of a setting under the Rendering category that can be invoked through the Command Menu
+   * @description Title of an option under the Rendering category that can be invoked through the Command Menu
    */
   hideFramesPerSecondFpsMeter: "Hide frames per second (FPS) meter",
   /**
-   * @description Title of a setting under the Rendering category that can be invoked through the Command Menu
+   * @description Title of an option under the Rendering category that can be invoked through the Command Menu
    */
   showScrollPerformanceBottlenecks: "Show scroll performance bottlenecks",
   /**
-   * @description Title of a setting under the Rendering category that can be invoked through the Command Menu
+   * @description Title of an option under the Rendering category that can be invoked through the Command Menu
    */
   hideScrollPerformanceBottlenecks: "Hide scroll performance bottlenecks",
   /**
@@ -371,11 +375,11 @@ var UIStrings = {
    */
   javaScriptSourceMaps: "JavaScript source maps",
   /**
-   * @description Title of a setting under the Sources category that can be invoked through the Command Menu
+   * @description Title of an option under the Sources category that can be invoked through the Command Menu
    */
   enableJavaScriptSourceMaps: "Enable JavaScript source maps",
   /**
-   * @description Title of a setting under the Sources category that can be invoked through the Command Menu
+   * @description Title of an option under the Sources category that can be invoked through the Command Menu
    */
   disableJavaScriptSourceMaps: "Disable JavaScript source maps",
   /**
@@ -383,11 +387,11 @@ var UIStrings = {
    */
   cssSourceMaps: "CSS source maps",
   /**
-   * @description Title of a setting under the Sources category that can be invoked through the Command Menu
+   * @description Title of an option under the Sources category that can be invoked through the Command Menu
    */
   enableCssSourceMaps: "Enable CSS source maps",
   /**
-   * @description Title of a setting under the Sources category that can be invoked through the Command Menu
+   * @description Title of an option under the Sources category that can be invoked through the Command Menu
    */
   disableCssSourceMaps: "Disable CSS source maps",
   /**
@@ -488,7 +492,7 @@ Common.Settings.registerSettingExtension({
 Common.Settings.registerSettingExtension({
   category: "ELEMENTS",
   storageType: "Synced",
-  title: i18nLazyString(UIStrings.showRulersOnHover),
+  title: i18nLazyString(UIStrings.rulersOnHover),
   settingName: "show-metrics-rulers",
   settingType: "boolean",
   options: [

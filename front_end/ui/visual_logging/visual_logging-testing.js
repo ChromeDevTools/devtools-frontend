@@ -2970,6 +2970,7 @@ var knownContextValues = /* @__PURE__ */ new Set([
   "patch-widget.save-all",
   "patch-widget.workspace",
   "path",
+  "path-length",
   "pathname",
   "pattern",
   "pause",
@@ -3058,6 +3059,7 @@ var knownContextValues = /* @__PURE__ */ new Set([
   "preloading-speculations",
   "preloading-status-panel",
   "preloading-status-panel-pretty-print",
+  "preloading.clear",
   "presentation",
   "preserve-console-log",
   "preserve-console-log-true",
@@ -3481,6 +3483,7 @@ var knownContextValues = /* @__PURE__ */ new Set([
   "selected-context-filter-enabled",
   "selected-context-filter-enabled-true",
   "selected-profile-type",
+  "selective-permissions-intervention-details",
   "selector",
   "selector-aria",
   "selector-attribute",
@@ -3875,6 +3878,7 @@ var knownContextValues = /* @__PURE__ */ new Set([
   "test-combo-box-setting",
   "test-device",
   "test-font",
+  "test-radio-setting",
   "test-setting",
   "test-setting-true",
   "test-sidebar",
@@ -4787,7 +4791,7 @@ function processEventForIntuitiveDebugging(event, state2, extraInfo) {
   maybeLogDebugEvent(entry);
 }
 function processEventForTestDebugging(event, state2, _extraInfo) {
-  if (event !== "SettingAccess" && event !== "FunctionCall") {
+  if (event !== "SettingAccess" && event !== "FunctionCall" && event !== "Resize") {
     lastImpressionLogEntry = null;
   }
   maybeLogDebugEvent({ interaction: event, veid: state2?.veid || 0 });

@@ -546,7 +546,14 @@ export class AiAssistancePanel extends UI.Panel.Panel {
                     blockedByCrossOrigin: this.#conversation.isBlockedByOrigin,
                     isLoading: this.#isLoading,
                     messages: this.#messages,
-                    selectedContext: this.#conversation.selectedContext ?? null,
+                    /**
+                     * We pass either the selected context with isContextSelected=true
+                     * to make sure the pill is show with normal styling and a remove button.
+                     * Or we pass the panels default context with isContextSelected=false
+                     * to display a placeholder pill with neutral styling and an add button.
+                     */
+                    context: this.#conversation.selectedContext ?? this.#getConversationContext(this.#getDefaultConversationType()),
+                    isContextSelected: Boolean(this.#conversation.selectedContext),
                     conversationType: this.#conversation.type,
                     isReadOnly: this.#conversation.isReadOnly ?? false,
                     changeSummary: this.#getChangeSummary(),
@@ -688,15 +695,18 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     #selectDefaultAgentIfNeeded() {
         // We don't change the current agent when there is a message in flight.
         if (this.#isLoading) {
+            this.requestUpdate();
             return;
         }
         // If there already is an agent and if it is not empty,
         // we don't automatically change the agent.
         if (this.#conversation && !this.#conversation.isEmpty) {
+            this.requestUpdate();
             return;
         }
         const targetConversationType = this.#getDefaultConversationType();
         if (this.#conversation?.type === targetConversationType) {
+            this.requestUpdate();
             // The above if makes sure even if we have an active agent it's empty
             // So we can just reuse it
             return;

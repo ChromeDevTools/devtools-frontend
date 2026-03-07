@@ -86,8 +86,11 @@ export class PanelUtils {
             }
             // clang-format off
             return html `<devtools-icon
-          class="icon" name=${iconName} title=${title}> role=img
-        </devtools-icon>`;
+          class="icon"
+          name=${iconName}
+          title=${title}
+          role=img
+        ></devtools-icon>`;
             // clang-format on
         }
         if (request.hasThirdPartyCookiePhaseoutIssue()) {
@@ -239,10 +242,12 @@ export class PanelUtils {
         const title = binding ? PanelCommon.PersistenceUtils.PersistenceUtils.tooltipForUISourceCode(uiSourceCode) : undefined;
         // clang-format off
         return html `<devtools-file-source-icon
-        name=${iconType} title=${ifDefined(title)} .data=${{
+        class="icon"
+        name=${iconType} 
+        title=${ifDefined(title)} 
+        .data=${{
             contentType: uiSourceCode.contentType().name(), hasDotBadge, isDotPurple, iconType
-        }}>
-      </devtools-file-source-icon>`;
+        }}></devtools-file-source-icon>`;
         // clang-format on
     }
     static async formatCSSChangesFromDiff(diff) {

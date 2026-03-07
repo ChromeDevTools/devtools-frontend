@@ -56,11 +56,11 @@ var UIStrings = {
    */
   timestamps: "Timestamps",
   /**
-   * @description Title of a setting under the Console category that can be invoked through the Command Menu
+   * @description Title of an option under the Console category that can be invoked through the Command Menu
    */
   showTimestamps: "Show timestamps",
   /**
-   * @description Title of a setting under the Console category that can be invoked through the Command Menu
+   * @description Title of an option under the Console category that can be invoked through the Command Menu
    */
   hideTimestamps: "Hide timestamps",
   /**
@@ -82,19 +82,23 @@ var UIStrings = {
   /**
    * @description Title of a setting under the Console category that can be invoked through the Command Menu
    */
-  groupSimilarMessagesInConsole: "Group similar messages in console",
+  groupSimilarMessages: "Group similar messages",
   /**
    * @description Title of a setting under the Console category that can be invoked through the Command Menu
    */
-  doNotGroupSimilarMessagesIn: "Do not group similar messages in console",
+  doNotGroupSimilarMessages: "Don't group similar messages",
   /**
-   * @description Title of a setting under the Console category that can be invoked through the Command Menu
+   * @description Title of a setting under the Console category in Settings
    */
-  showCorsErrorsInConsole: "Show `CORS` errors in console",
+  corsErrorsInConsole: "CORS errors in console",
   /**
-   * @description Title of a setting under the Console category that can be invoked through the Command Menu
+   * @description Title of an option under the Console category that can be invoked through the Command Menu
    */
-  doNotShowCorsErrorsIn: "Do not show `CORS` errors in console",
+  showCorsErrorsInConsole: "Show CORS errors in console",
+  /**
+   * @description Title of an option under the Console category that can be invoked through the Command Menu
+   */
+  doNotShowCorsErrorsIn: "Don't show CORS errors in console",
   /**
    * @description Title of a setting under the Console category in Settings
    */
@@ -131,7 +135,7 @@ var UIStrings = {
    * @description Title of a setting under the Console category in Settings that controls whether AI summaries should
    * be shown for console warnings/errors.
    */
-  showConsoleInsightTeasers: "Show AI summaries for console messages"
+  consoleInsightTeasers: "AI summaries for console messages"
 };
 var str_ = i18n.i18n.registerUIStrings("panels/console/console-meta.ts", UIStrings);
 var i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(void 0, str_);
@@ -322,24 +326,24 @@ Common.Settings.registerSettingExtension({
 Common.Settings.registerSettingExtension({
   category: "CONSOLE",
   storageType: "Synced",
-  title: i18nLazyString(UIStrings.groupSimilarMessagesInConsole),
+  title: i18nLazyString(UIStrings.groupSimilarMessages),
   settingName: "console-group-similar",
   settingType: "boolean",
   defaultValue: true,
   options: [
     {
       value: true,
-      title: i18nLazyString(UIStrings.groupSimilarMessagesInConsole)
+      title: i18nLazyString(UIStrings.groupSimilarMessages)
     },
     {
       value: false,
-      title: i18nLazyString(UIStrings.doNotGroupSimilarMessagesIn)
+      title: i18nLazyString(UIStrings.doNotGroupSimilarMessages)
     }
   ]
 });
 Common.Settings.registerSettingExtension({
   category: "CONSOLE",
-  title: i18nLazyString(UIStrings.showCorsErrorsInConsole),
+  title: i18nLazyString(UIStrings.corsErrorsInConsole),
   settingName: "console-shows-cors-errors",
   settingType: "boolean",
   defaultValue: true,
@@ -411,7 +415,7 @@ Common.Settings.registerSettingExtension({
 Common.Settings.registerSettingExtension({
   category: "CONSOLE",
   storageType: "Synced",
-  title: i18nLazyString(UIStrings.showConsoleInsightTeasers),
+  title: i18nLazyString(UIStrings.consoleInsightTeasers),
   settingName: "console-insight-teasers-enabled",
   settingType: "boolean",
   defaultValue: true

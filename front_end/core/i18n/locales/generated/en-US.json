@@ -573,7 +573,7 @@
     "message": "Do not show grid track sizes"
   },
   "core/sdk/sdk-meta.ts | doNotShowRulersOnHover": {
-    "message": "Do not show rulers on hover"
+    "message": "Don't show rulers on hover"
   },
   "core/sdk/sdk-meta.ts | emulateAchromatopsia": {
     "message": "Emulate achromatopsia (no color)"
@@ -733,6 +733,9 @@
   },
   "core/sdk/sdk-meta.ts | remoteFileLoadingInfo": {
     "message": "Example resource are source maps. Disabled by default for security reasons."
+  },
+  "core/sdk/sdk-meta.ts | rulersOnHover": {
+    "message": "Rulers on hover"
   },
   "core/sdk/sdk-meta.ts | screen": {
     "message": "screen"
@@ -1077,10 +1080,10 @@
     "message": "Earn badges"
   },
   "entrypoints/main/main-meta.ts | enableCtrlShortcutToSwitchPanels": {
-    "message": "Enable Ctrl + 1-9 shortcut to switch panels"
+    "message": "Use Ctrl + 1-9 to switch panels"
   },
   "entrypoints/main/main-meta.ts | enableShortcutToSwitchPanels": {
-    "message": "Enable ⌘ + 1-9 shortcut to switch panels"
+    "message": "Use ⌘ + 1-9 to switch panels"
   },
   "entrypoints/main/main-meta.ts | findNextResult": {
     "message": "Find next result"
@@ -1697,6 +1700,9 @@
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "Document compatibility mode"
   },
+  "models/issues_manager/SelectivePermissionsInterventionIssue.ts | selectivePermissionsIntervention": {
+    "message": "Selective Permissions Intervention"
+  },
   "models/issues_manager/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
     "message": "Enabling SharedArrayBuffer"
   },
@@ -1784,14 +1790,14 @@
   "models/persistence/persistence-meta.ts | disableOverrideNetworkRequests": {
     "message": "Disable override network requests"
   },
-  "models/persistence/persistence-meta.ts | enableLocalOverrides": {
-    "message": "Enable Local Overrides"
-  },
   "models/persistence/persistence-meta.ts | enableOverrideNetworkRequests": {
     "message": "Enable override network requests"
   },
   "models/persistence/persistence-meta.ts | interception": {
     "message": "interception"
+  },
+  "models/persistence/persistence-meta.ts | localOverrides": {
+    "message": "Local overrides"
   },
   "models/persistence/persistence-meta.ts | network": {
     "message": "network"
@@ -6587,6 +6593,12 @@
   "panels/console/console-meta.ts | console": {
     "message": "Console"
   },
+  "panels/console/console-meta.ts | consoleInsightTeasers": {
+    "message": "AI summaries for console messages"
+  },
+  "panels/console/console-meta.ts | corsErrorsInConsole": {
+    "message": "CORS errors in console"
+  },
   "panels/console/console-meta.ts | createLiveExpression": {
     "message": "Create live expression"
   },
@@ -6599,11 +6611,11 @@
   "panels/console/console-meta.ts | doNotEagerlyEvaluateConsole": {
     "message": "Do not eagerly evaluate console prompt text"
   },
-  "panels/console/console-meta.ts | doNotGroupSimilarMessagesIn": {
-    "message": "Do not group similar messages in console"
+  "panels/console/console-meta.ts | doNotGroupSimilarMessages": {
+    "message": "Don't group similar messages"
   },
   "panels/console/console-meta.ts | doNotShowCorsErrorsIn": {
-    "message": "Do not show CORS errors in console"
+    "message": "Don't show CORS errors in console"
   },
   "panels/console/console-meta.ts | doNotTreatEvaluationAsUser": {
     "message": "Do not treat evaluation as user activation"
@@ -6620,8 +6632,8 @@
   "panels/console/console-meta.ts | expandConsoleTraceMessagesByDefault": {
     "message": "Automatically expand console.trace() messages"
   },
-  "panels/console/console-meta.ts | groupSimilarMessagesInConsole": {
-    "message": "Group similar messages in console"
+  "panels/console/console-meta.ts | groupSimilarMessages": {
+    "message": "Group similar messages"
   },
   "panels/console/console-meta.ts | hideNetworkMessages": {
     "message": "Hide network messages"
@@ -6640,9 +6652,6 @@
   },
   "panels/console/console-meta.ts | showConsole": {
     "message": "Show Console"
-  },
-  "panels/console/console-meta.ts | showConsoleInsightTeasers": {
-    "message": "Show AI summaries for console messages"
   },
   "panels/console/console-meta.ts | showCorsErrorsInConsole": {
     "message": "Show CORS errors in console"
@@ -6780,7 +6789,7 @@
     "message": "Find string in logs"
   },
   "panels/console/ConsoleView.ts | groupSimilarMessagesInConsole": {
-    "message": "Group similar messages in console"
+    "message": "Group similar messages"
   },
   "panels/console/ConsoleView.ts | hideAll": {
     "message": "Hide all"
@@ -6843,7 +6852,7 @@
     "message": "Show console sidebar"
   },
   "panels/console/ConsoleView.ts | showCorsErrorsInConsole": {
-    "message": "Show CORS errors in console"
+    "message": "CORS errors in console"
   },
   "panels/console/ConsoleView.ts | sOnly": {
     "message": "{PH1} only"
@@ -7526,6 +7535,12 @@
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "Copy styles"
   },
+  "panels/elements/elements-meta.ts | CSSDocumentationTooltip": {
+    "message": "CSS documentation tooltip"
+  },
+  "panels/elements/elements-meta.ts | detailedInspectTooltip": {
+    "message": "Detailed inspect tooltip"
+  },
   "panels/elements/elements-meta.ts | duplicateElement": {
     "message": "Duplicate element"
   },
@@ -7543,6 +7558,9 @@
   },
   "panels/elements/elements-meta.ts | hideHtmlComments": {
     "message": "Hide HTML comments"
+  },
+  "panels/elements/elements-meta.ts | htmlComments": {
+    "message": "HTML comments"
   },
   "panels/elements/elements-meta.ts | layout": {
     "message": "Layout"
@@ -7568,12 +7586,6 @@
   "panels/elements/elements-meta.ts | showComputedStyles": {
     "message": "Show Computed Styles"
   },
-  "panels/elements/elements-meta.ts | showCSSDocumentationTooltip": {
-    "message": "Show CSS documentation tooltip"
-  },
-  "panels/elements/elements-meta.ts | showDetailedInspectTooltip": {
-    "message": "Show detailed inspect tooltip"
-  },
   "panels/elements/elements-meta.ts | showElements": {
     "message": "Show Elements"
   },
@@ -7595,9 +7607,6 @@
   "panels/elements/elements-meta.ts | showStyles": {
     "message": "Show Styles"
   },
-  "panels/elements/elements-meta.ts | showUserAgentShadowDOM": {
-    "message": "Show user agent shadow DOM"
-  },
   "panels/elements/elements-meta.ts | stackTrace": {
     "message": "Stack Trace"
   },
@@ -7612,6 +7621,9 @@
   },
   "panels/elements/elements-meta.ts | undo": {
     "message": "Undo"
+  },
+  "panels/elements/elements-meta.ts | userAgentShadowDOM": {
+    "message": "User agent shadow DOM"
   },
   "panels/elements/elements-meta.ts | wordWrap": {
     "message": "Word wrap"
@@ -8567,6 +8579,24 @@
   "panels/issues/AffectedResourcesView.ts | unknown": {
     "message": "unknown"
   },
+  "panels/issues/AffectedSelectivePermissionsInterventionView.ts | adAncestry": {
+    "message": "Ad Ancestry"
+  },
+  "panels/issues/AffectedSelectivePermissionsInterventionView.ts | api": {
+    "message": "API"
+  },
+  "panels/issues/AffectedSelectivePermissionsInterventionView.ts | loading": {
+    "message": "loading…"
+  },
+  "panels/issues/AffectedSelectivePermissionsInterventionView.ts | nViolations": {
+    "message": "{n, plural, =1 {# violation} other {# violations}}"
+  },
+  "panels/issues/AffectedSelectivePermissionsInterventionView.ts | script": {
+    "message": "Script"
+  },
+  "panels/issues/AffectedSelectivePermissionsInterventionView.ts | unknown": {
+    "message": "unknown"
+  },
   "panels/issues/AffectedSharedArrayBufferIssueDetailsView.ts | aSharedarraybufferWas": {
     "message": "A SharedArrayBuffer was instantiated in a context that is not cross-origin isolated"
   },
@@ -8794,6 +8824,9 @@
   },
   "panels/issues/IssuesPane.ts | samesiteCookie": {
     "message": "SameSite Cookie"
+  },
+  "panels/issues/IssuesPane.ts | selectivePermissionsIntervention": {
+    "message": "Selective Permissions Intervention"
   },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "Affected Resources"
@@ -13598,9 +13631,6 @@
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | customExclusionRules": {
     "message": "Custom exclusion rules"
   },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | enableIgnoreListing": {
-    "message": "Enable ignore listing"
-  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | enableIgnoreListingTooltip": {
     "message": "Uncheck to disable all ignore listing"
   },
@@ -13615,6 +13645,9 @@
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreListContentScripts": {
     "message": "Content scripts injected by extensions"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreListing": {
+    "message": "Ignore listing"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreListingDescription": {
     "message": "When enabled, the debugger will skip over ignore-listed scripts and will ignore exceptions that only affect them and the Performance panel will collapse matching flamechart items."
@@ -14472,7 +14505,7 @@
     "message": "Do not detect indentation"
   },
   "panels/sources/sources-meta.ts | doNotDisplayVariableValuesInline": {
-    "message": "Do not display variable values inline while debugging"
+    "message": "Don't show variable values inline"
   },
   "panels/sources/sources-meta.ts | doNotSearchInAnonymousAndContent": {
     "message": "Do not search in anonymous and content scripts"
@@ -14671,6 +14704,9 @@
   },
   "panels/sources/sources-meta.ts | trailing": {
     "message": "Trailing"
+  },
+  "panels/sources/sources-meta.ts | variableValuesInlineWhile": {
+    "message": "Variable values inline"
   },
   "panels/sources/sources-meta.ts | wasmAutoStepping": {
     "message": "Wasm auto-stepping bytecode"

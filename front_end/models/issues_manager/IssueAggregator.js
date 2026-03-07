@@ -16,6 +16,7 @@ import { MixedContentIssue } from './MixedContentIssue.js';
 import { PartitioningBlobURLIssue } from './PartitioningBlobURLIssue.js';
 import { PermissionElementIssue } from './PermissionElementIssue.js';
 import { QuirksModeIssue } from './QuirksModeIssue.js';
+import { SelectivePermissionsInterventionIssue } from './SelectivePermissionsInterventionIssue.js';
 import { SharedArrayBufferIssue } from './SharedArrayBufferIssue.js';
 /**
  * An `AggregatedIssue` representes a number of `IssuesManager.Issue.Issue` objects that are displayed together.
@@ -40,6 +41,7 @@ export class AggregatedIssue extends Issue {
     #mixedContentIssues = new Set();
     #partitioningBlobURLIssues = new Set();
     #permissionElementIssues = new Set();
+    #selectivePermissionsInterventionIssues = new Set();
     #sharedArrayBufferIssues = new Set();
     #quirksModeIssues = new Set();
     #attributionReportingIssues = new Set();
@@ -96,6 +98,9 @@ export class AggregatedIssue extends Issue {
     }
     requests() {
         return this.#affectedRequests.values();
+    }
+    getSelectivePermissionsInterventionIssues() {
+        return this.#selectivePermissionsInterventionIssues;
     }
     getSharedArrayBufferIssues() {
         return this.#sharedArrayBufferIssues;
@@ -224,6 +229,9 @@ export class AggregatedIssue extends Issue {
         }
         if (issue instanceof PermissionElementIssue) {
             this.#permissionElementIssues.add(issue);
+        }
+        if (issue instanceof SelectivePermissionsInterventionIssue) {
+            this.#selectivePermissionsInterventionIssues.add(issue);
         }
     }
     getKind() {

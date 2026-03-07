@@ -6236,11 +6236,11 @@ var UIStrings5 = {
   /**
    * @description Title of a setting under the Console category that can be invoked through the Command Menu
    */
-  groupSimilarMessagesInConsole: "Group similar messages in console",
+  groupSimilarMessagesInConsole: "Group similar messages",
   /**
    * @description Title of a setting under the Console category that can be invoked through the Command Menu
    */
-  showCorsErrorsInConsole: "Show `CORS` errors in console",
+  showCorsErrorsInConsole: "CORS errors in console",
   /**
    * @description Tooltip for the the console sidebar toggle in the Console panel. Command to
    * open/show the sidebar.

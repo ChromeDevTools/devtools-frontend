@@ -1,5 +1,5 @@
 // gen/front_end/ui/lit/lit.prebundle.js
-import { Decorators, Directive, Directives, LitElement, noChange, nothing as nothing2, render, StaticHtml as StaticHtml2, svg } from "./../../third_party/lit/lit.js";
+import { AsyncDirective, Decorators, Directive, Directives, LitElement, noChange, nothing as nothing2, render, StaticHtml as StaticHtml2, svg } from "./../../third_party/lit/lit.js";
 
 // gen/front_end/ui/lit/i18n-template.js
 import * as i18n from "./../../core/i18n/i18n.js";
@@ -53,6 +53,7 @@ function strip(strings) {
   return stripped;
 }
 export {
+  AsyncDirective,
   Decorators,
   Directive,
   Directives,

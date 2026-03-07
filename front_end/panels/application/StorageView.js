@@ -438,7 +438,12 @@ export class StorageView extends UI.Widget.VBox {
         const quotaAsString = i18n.ByteUtilities.bytesToString(response.quota);
         const usageAsString = i18n.ByteUtilities.bytesToString(response.usage);
         const formattedQuotaAsString = i18nString(UIStrings.storageWithCustomMarker, { PH1: quotaAsString });
-        const quota = quotaOverridden ? UI.Fragment.Fragment.build `<b>${formattedQuotaAsString}</b>`.element() : quotaAsString;
+        let quota = quotaAsString;
+        if (quotaOverridden) {
+            const element = document.createElement('b');
+            element.textContent = formattedQuotaAsString;
+            quota = element;
+        }
         const element = uiI18n.getFormatLocalizedString(str_, UIStrings.storageQuotaUsed, { PH1: usageAsString, PH2: quota });
         this.quotaRow.appendChild(element);
         UI.Tooltip.Tooltip.install(this.quotaRow, i18nString(UIStrings.storageQuotaUsedWithBytes, { PH1: response.usage.toLocaleString(), PH2: response.quota.toLocaleString() }));

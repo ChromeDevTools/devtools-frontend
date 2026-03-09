@@ -10,8 +10,8 @@ export default function loadCSS() {
   return {
     name: 'loadCSS',
     /**
-     * @param code
-     * @param id
+     * @param code {string}
+     * @param id {string}
      */
     transform(code, id) {
       if (id.endsWith('.css')) {

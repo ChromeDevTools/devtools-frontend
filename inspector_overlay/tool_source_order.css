@@ -15,6 +15,7 @@
   text-align: center;
   align-items: center;
   background-color: #fff;
+  /* stylelint-disable-next-line plugin/use_monospace_font */
   font-family: Menlo, Consolas, monospace;
   font-size: 12px;
   font-weight: bold;

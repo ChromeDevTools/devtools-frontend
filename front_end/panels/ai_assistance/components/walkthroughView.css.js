@@ -43,6 +43,21 @@ export default `/*
     gap: var(--sys-size-6);
   }
 
+  .walkthrough-step {
+    display: flex;
+    gap: var(--sys-size-6);
+    align-items: flex-start;
+    justify-content: flex-start;
+
+    .step-number {
+      font: var(--sys-typescale-body4-regular);
+      color: var(--sys-color-on-surface-subtle);
+      padding-top:var(--sys-size-4);
+      flex-grow: 0;
+      flex-shrink: 0;
+    }
+  }
+
   .step-wrapper {
     display: flex;
     flex-direction: column;

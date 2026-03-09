@@ -2674,6 +2674,21 @@ var walkthroughView_css_default = `/*
     gap: var(--sys-size-6);
   }
 
+  .walkthrough-step {
+    display: flex;
+    gap: var(--sys-size-6);
+    align-items: flex-start;
+    justify-content: flex-start;
+
+    .step-number {
+      font: var(--sys-typescale-body4-regular);
+      color: var(--sys-color-on-surface-subtle);
+      padding-top:var(--sys-size-4);
+      flex-grow: 0;
+      flex-shrink: 0;
+    }
+  }
+
   .step-wrapper {
     display: flex;
     flex-direction: column;
@@ -2837,13 +2852,16 @@ var DEFAULT_VIEW3 = (input, _output, target) => {
   const stepsOutput = steps.length > 0 ? html4`
     <div class="steps-container">
       ${steps.map((step, index) => html4`
-        <div class="step-wrapper">
-          ${renderStep({
+        <div class="walkthrough-step">
+          <span class="step-number">${index + 1}</span>
+          <div class="step-wrapper">
+            ${renderStep({
     step,
     isLoading: input.isLoading,
     markdownRenderer: input.markdownRenderer,
     isLast: index === steps.length - 1
   })}
+          </div>
         </div>
       `)}
     </div>

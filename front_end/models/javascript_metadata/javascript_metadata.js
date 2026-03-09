@@ -230,7 +230,7 @@ var NativeFunctions = [
   {
     name: "create",
     signatures: [["?options"]],
-    receivers: ["CredentialsContainer"]
+    receivers: ["CredentialsContainer", "Classifier"]
   },
   {
     name: "defineProperty",
@@ -7523,6 +7523,10 @@ var NativeFunctions = [
   {
     name: "queryFeatureSupport",
     signatures: [["feature"]]
+  },
+  {
+    name: "classify",
+    signatures: [["input", "?options"]]
   },
   {
     name: "LanguageModelToolCall",

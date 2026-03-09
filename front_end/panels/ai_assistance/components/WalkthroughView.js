@@ -87,13 +87,16 @@ export const DEFAULT_VIEW = (input, _output, target) => {
     const stepsOutput = steps.length > 0 ? html `
     <div class="steps-container">
       ${steps.map((step, index) => html `
-        <div class="step-wrapper">
-          ${renderStep({
+        <div class="walkthrough-step">
+          <span class="step-number">${index + 1}</span>
+          <div class="step-wrapper">
+            ${renderStep({
         step,
         isLoading: input.isLoading,
         markdownRenderer: input.markdownRenderer,
         isLast: index === steps.length - 1
     })}
+          </div>
         </div>
       `)}
     </div>

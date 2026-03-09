@@ -674,10 +674,13 @@ async function makeComputedStyleWidget(widgetData: ComputedStyleAiWidget): Promi
     matchedStyles: widgetData.data.matchedCascade,
     // This disables showing the nested traces and detailed information in the widget.
     propertyTraces: null,
-    computedStyleModel: model,
     allowUserControl: false,
     filterText: new RegExp(widgetData.data.properties.join('|'), 'i')
   });
+  // Now we have used the model and got what we need, we dispose it so it
+  // doesn't keep listening (the computed styles widget here is static and is
+  // not supposed to update).
+  model.dispose();
 
   // clang-format off
     const widget = html`<devtools-widget class="computed-styles-widget" .widgetConfig=${widgetConfig}></devtools-widget>`;

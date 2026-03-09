@@ -50,7 +50,6 @@ function createWidgetWithMultipleProperties(
         SDK.CSSModel.CSSModel, {cachedMatchedCascadeForNode: Promise.resolve(cssMatchedStyles)});
   });
   const widget = new Elements.ComputedStyleWidget.ComputedStyleWidget();
-  widget.computedStyleModel = computedStyleModel;
   widget.nodeStyle = {node, computedStyle: properties};
   widget.matchedStyles = cssMatchedStyles;
   renderElementIntoDOM(widget);
@@ -134,7 +133,6 @@ describeWithMockConnection('ComputedStyleWidget', () => {
       const computedStyleWidget = new Elements.ComputedStyleWidget.ComputedStyleWidget();
       renderElementIntoDOM(computedStyleWidget);
 
-      computedStyleWidget.computedStyleModel = computedStyleModel;
       computedStyleWidget.nodeStyle = {node, computedStyle: new Map([['color', 'red']])};
       computedStyleWidget.matchedStyles = cssMatchedStyles;
       computedStyleWidget.propertyTraces = computedStyleModel.computePropertyTraces(cssMatchedStyles);

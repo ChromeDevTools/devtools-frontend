@@ -362,7 +362,6 @@ function renderStepActions(input: ViewInput): Lit.TemplateResult|null {
       }}
       jslog=${VisualLogging.dropDown('step-actions').track({click: true})}
       .iconName=${'dots-vertical'}
-      }
     ></devtools-menu-button>
   `;
   // clang-format on
@@ -459,7 +458,6 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: ViewOutput, target: HTML
               <div class="subtitle" title=${subtitle}>${subtitle}</div>
             </div>
           </div>
-          <div class="filler"></div>
           ${renderStepActions(input)}
         </div>
         <div class="details">

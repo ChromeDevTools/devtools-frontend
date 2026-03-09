@@ -13,18 +13,18 @@
 .title-container {
   /* Vertically center items with min-width: 0; */
   min-width: 0;
-  font-size: 13px;
-  line-height: 16px;
-  letter-spacing: 0.03em;
+  font-size: var(--sys-size-7);
   display: flex;
   flex-direction: row;
-  gap: 3px;
-  outline-offset: 3px;
+  gap: var(--sys-size-2);
+  outline-offset: var(--sys-size-2);
+  flex-grow: 1;
+  align-items: center;
 }
 
 .action {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
 }
 
 .title {
@@ -58,7 +58,7 @@
   cy: 8px;
 }
 
-.is-start-of-group .circle-icon {
+.is-start-of-group:not(:first-of-type) .circle-icon {
   r: 7px;
   fill: var(--sys-color-cdt-base-container);
   stroke: var(--sys-color-primary);
@@ -143,7 +143,7 @@
   height: 14px;
   transition: 200ms;
   position: absolute;
-  top: 18px;
+  top: 14px;
   left: 24px;
   transform: rotate(-90deg);
   color: var(--sys-color-on-surface);
@@ -183,17 +183,17 @@ devtools-recorder-step-editor:hover {
 }
 
 devtools-recorder-step-editor.is-selected {
-  background-color: color-mix(in srgb, var(--sys-color-tonal-container), var(--sys-color-cdt-base-container) 50%);
+  background-color: color-mix(
+    in srgb,
+    var(--sys-color-tonal-container),
+    var(--sys-color-cdt-base-container) 50%
+  );
   border: 1px solid var(--sys-color-tonal-outline);
 }
 
 .summary {
   display: flex;
   flex-flow: row nowrap;
-}
-
-.filler {
-  flex-grow: 1;
 }
 
 .subtitle {

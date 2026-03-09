@@ -41,7 +41,12 @@ describeWithMockConnection('DeviceModeToolbar', () => {
   beforeEach(() => {
     sinon.stub(Common.Settings.Settings, 'instance').returns({
       createSetting: <T>(_name: string, defaultValue: T) => createFakeSetting(defaultValue),
-      moduleSetting: <T>(_name: string) => createFakeSetting(false as T),
+      moduleSetting: <T>(name: string) => {
+        if (name === 'custom-network-conditions') {
+          return createFakeSetting([] as T);
+        }
+        return createFakeSetting(false as T);
+      },
       createLocalSetting: <T>(_name: string, defaultValue: T) => createFakeSetting(defaultValue),
     } as unknown as Common.Settings.Settings);
 

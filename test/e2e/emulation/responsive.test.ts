@@ -5,31 +5,24 @@ import {assert} from 'chai';
 
 import {
   clickWidthInput,
-  clickZoomDropDown,
   getZoom,
   openDeviceToolbar,
+  selectZoomLevel,
   toggleAutoAdjustZoom,
-  waitForZoomDropDownNotExpanded,
 } from '../helpers/emulation-helpers.js';
 
 describe('Custom devices', () => {
   it('can preserve zoom', async ({devToolsPage, inspectedPage}) => {
     await openDeviceToolbar(devToolsPage, inspectedPage);
 
-    await clickZoomDropDown(devToolsPage);
-    await devToolsPage.page.keyboard.press('ArrowDown');
-    await devToolsPage.page.keyboard.press('Enter');
-    await waitForZoomDropDownNotExpanded(devToolsPage);
+    await selectZoomLevel(devToolsPage, '50%');
     assert.strictEqual(await getZoom(devToolsPage), '50%');
 
     await clickWidthInput(devToolsPage);
     await devToolsPage.page.keyboard.press('ArrowDown');
     assert.strictEqual(await getZoom(devToolsPage), '100%');
 
-    await clickZoomDropDown(devToolsPage);
-    await devToolsPage.page.keyboard.press('ArrowDown');
-    await devToolsPage.page.keyboard.press('Enter');
-    await waitForZoomDropDownNotExpanded(devToolsPage);
+    await selectZoomLevel(devToolsPage, '50%');
     assert.strictEqual(await getZoom(devToolsPage), '50%');
 
     await toggleAutoAdjustZoom(devToolsPage);

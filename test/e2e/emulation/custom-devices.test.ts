@@ -7,11 +7,12 @@ import type * as puppeteer from 'puppeteer-core';
 
 import {waitForDomNodeToBeVisible} from '../helpers/elements-helpers.js';
 import {
-  clickZoomDropDown,
+  getZoom,
   openDeviceToolbar,
   selectDevice,
   selectEdit,
   selectTestDevice,
+  selectZoomLevel,
 } from '../helpers/emulation-helpers.js';
 import type {DevToolsPage} from '../shared/frontend-helper.js';
 import type {InspectedPage} from '../shared/target-helper.js';
@@ -221,20 +222,12 @@ describe('Custom devices', () => {
     // Select the device in the menu.
     await selectDevice('Prime numbers', devToolsPage);
 
-    const zoomButton = await devToolsPage.waitForAria('Zoom');
-    assert.strictEqual(await elementTextContent(zoomButton), '51%');
+    // Check fit-to-window text is selected.
+    assert.strictEqual(await getZoom(devToolsPage), '51% (fit to window)');
 
-    // Check fit-to-window text.
-    await clickZoomDropDown(devToolsPage);
-
-    const fitButton = await devToolsPage.waitFor('[aria-label*="fit to window"]');
-    assert.strictEqual(await elementTextContent(fitButton), '51% (fit to window)');
-    assert.strictEqual(await elementTextContent(zoomButton), '51%');
-
-    const zoomTo100Button = await devToolsPage.waitFor('[aria-label*="100%"]');
-    await devToolsPage.clickElement(zoomTo100Button);
-    assert.strictEqual(await elementTextContent(fitButton), '51% (fit to window)');
-    assert.strictEqual(await elementTextContent(zoomButton), '100%');
+    // Select 100%.
+    await selectZoomLevel(devToolsPage, '100%');
+    assert.strictEqual(await getZoom(devToolsPage), '100%');
   });
 
   it('shows an error if the pixel ratio is not a number', async ({devToolsPage, inspectedPage}) => {

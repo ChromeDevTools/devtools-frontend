@@ -394,12 +394,6 @@ declare namespace ProtocolProxyApi {
     invoke_enable(): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
-     * Runs the contrast check for the target page. Found issues are reported
-     * using Audits.issueAdded event.
-     */
-    invoke_checkContrast(params: Protocol.Audits.CheckContrastRequest): Promise<Protocol.ProtocolResponseWithError>;
-
-    /**
      * Runs the form issues check for the target page. Found issues are reported
      * using Audits.issueAdded event.
      */

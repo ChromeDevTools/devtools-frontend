@@ -226,7 +226,7 @@ export const NativeFunctions = [
   {
     name: "create",
     signatures: [["?options"]],
-    receivers: ["CredentialsContainer"]
+    receivers: ["CredentialsContainer","Classifier"]
   },
   {
     name: "defineProperty",
@@ -7519,6 +7519,10 @@ export const NativeFunctions = [
   {
     name: "queryFeatureSupport",
     signatures: [["feature"]]
+  },
+  {
+    name: "classify",
+    signatures: [["input","?options"]]
   },
   {
     name: "LanguageModelToolCall",

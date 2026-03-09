@@ -1171,14 +1171,6 @@ export namespace ProtocolMapping {
       returnType: void;
     };
     /**
-     * Runs the contrast check for the target page. Found issues are reported
-     * using Audits.issueAdded event.
-     */
-    'Audits.checkContrast': {
-      paramsType: [Protocol.Audits.CheckContrastRequest?];
-      returnType: void;
-    };
-    /**
      * Runs the form issues check for the target page. Found issues are reported
      * using Audits.issueAdded event.
      */

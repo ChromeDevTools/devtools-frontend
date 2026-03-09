@@ -1032,16 +1032,6 @@ export namespace Audits {
     type: SharedArrayBufferIssueType;
   }
 
-  export interface LowTextContrastIssueDetails {
-    violatingNodeId: DOM.BackendNodeId;
-    violatingNodeSelector: string;
-    contrastRatio: number;
-    thresholdAA: number;
-    thresholdAAA: number;
-    fontSize: string;
-    fontWeight: string;
-  }
-
   /**
    * Details for a CORS related issue, e.g. a warning or error related to
    * CORS RFC1918 enforcement.
@@ -1612,7 +1602,6 @@ export namespace Audits {
     HeavyAdIssue = 'HeavyAdIssue',
     ContentSecurityPolicyIssue = 'ContentSecurityPolicyIssue',
     SharedArrayBufferIssue = 'SharedArrayBufferIssue',
-    LowTextContrastIssue = 'LowTextContrastIssue',
     CorsIssue = 'CorsIssue',
     AttributionReportingIssue = 'AttributionReportingIssue',
     QuirksModeIssue = 'QuirksModeIssue',
@@ -1650,7 +1639,6 @@ export namespace Audits {
     heavyAdIssueDetails?: HeavyAdIssueDetails;
     contentSecurityPolicyIssueDetails?: ContentSecurityPolicyIssueDetails;
     sharedArrayBufferIssueDetails?: SharedArrayBufferIssueDetails;
-    lowTextContrastIssueDetails?: LowTextContrastIssueDetails;
     corsIssueDetails?: CorsIssueDetails;
     attributionReportingIssueDetails?: AttributionReportingIssueDetails;
     quirksModeIssueDetails?: QuirksModeIssueDetails;
@@ -1736,13 +1724,6 @@ export namespace Audits {
      * Size after re-encoding.
      */
     encodedSize: integer;
-  }
-
-  export interface CheckContrastRequest {
-    /**
-     * Whether to report WCAG AAA level issues. Default is false.
-     */
-    reportAAA?: boolean;
   }
 
   export interface CheckFormsIssuesResponse extends ProtocolResponseWithError {
@@ -15276,6 +15257,7 @@ export namespace Page {
     BackForwardCacheDisabledForPrerender = 'BackForwardCacheDisabledForPrerender',
     UserAgentOverrideDiffers = 'UserAgentOverrideDiffers',
     ForegroundCacheLimit = 'ForegroundCacheLimit',
+    ForwardCacheDisabled = 'ForwardCacheDisabled',
     BrowsingInstanceNotSwapped = 'BrowsingInstanceNotSwapped',
     BackForwardCacheDisabledForDelegate = 'BackForwardCacheDisabledForDelegate',
     UnloadHandlerExistsInMainFrame = 'UnloadHandlerExistsInMainFrame',

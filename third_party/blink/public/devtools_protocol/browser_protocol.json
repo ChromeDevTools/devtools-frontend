@@ -1472,40 +1472,6 @@
                     ]
                 },
                 {
-                    "id": "LowTextContrastIssueDetails",
-                    "type": "object",
-                    "properties": [
-                        {
-                            "name": "violatingNodeId",
-                            "$ref": "DOM.BackendNodeId"
-                        },
-                        {
-                            "name": "violatingNodeSelector",
-                            "type": "string"
-                        },
-                        {
-                            "name": "contrastRatio",
-                            "type": "number"
-                        },
-                        {
-                            "name": "thresholdAA",
-                            "type": "number"
-                        },
-                        {
-                            "name": "thresholdAAA",
-                            "type": "number"
-                        },
-                        {
-                            "name": "fontSize",
-                            "type": "string"
-                        },
-                        {
-                            "name": "fontWeight",
-                            "type": "string"
-                        }
-                    ]
-                },
-                {
                     "id": "CorsIssueDetails",
                     "description": "Details for a CORS related issue, e.g. a warning or error related to\nCORS RFC1918 enforcement.",
                     "type": "object",
@@ -2340,7 +2306,6 @@
                         "HeavyAdIssue",
                         "ContentSecurityPolicyIssue",
                         "SharedArrayBufferIssue",
-                        "LowTextContrastIssue",
                         "CorsIssue",
                         "AttributionReportingIssue",
                         "QuirksModeIssue",
@@ -2400,11 +2365,6 @@
                             "name": "sharedArrayBufferIssueDetails",
                             "optional": true,
                             "$ref": "SharedArrayBufferIssueDetails"
-                        },
-                        {
-                            "name": "lowTextContrastIssueDetails",
-                            "optional": true,
-                            "$ref": "LowTextContrastIssueDetails"
                         },
                         {
                             "name": "corsIssueDetails",
@@ -2610,18 +2570,6 @@
                 {
                     "name": "enable",
                     "description": "Enables issues domain, sends the issues collected so far to the client by means of the\n`issueAdded` event."
-                },
-                {
-                    "name": "checkContrast",
-                    "description": "Runs the contrast check for the target page. Found issues are reported\nusing Audits.issueAdded event.",
-                    "parameters": [
-                        {
-                            "name": "reportAAA",
-                            "description": "Whether to report WCAG AAA level issues. Default is false.",
-                            "optional": true,
-                            "type": "boolean"
-                        }
-                    ]
                 },
                 {
                     "name": "checkFormsIssues",
@@ -22960,6 +22908,7 @@
                         "BackForwardCacheDisabledForPrerender",
                         "UserAgentOverrideDiffers",
                         "ForegroundCacheLimit",
+                        "ForwardCacheDisabled",
                         "BrowsingInstanceNotSwapped",
                         "BackForwardCacheDisabledForDelegate",
                         "UnloadHandlerExistsInMainFrame",

@@ -357,6 +357,19 @@
   }
 
 
+  .computed-styles-widget {
+    display: block;
+    width: fit-content;
+  }
+
+  .step-widgets-wrapper {
+    width: fit-content;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--sys-size-5);
+  }
+
   .widget-reveal-container {
     background: var(--sys-color-surface5);
     border-bottom-right-radius: var(--sys-shape-corner-medium);

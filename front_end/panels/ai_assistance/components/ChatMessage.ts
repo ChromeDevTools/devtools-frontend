@@ -11,6 +11,7 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import type * as Platform from '../../../core/platform/platform.js';
 import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';
+import type * as Protocol from '../../../generated/protocol.js';
 import type {AiWidget, ComputedStyleAiWidget} from '../../../models/ai_assistance/agents/AiAgent.js';
 import * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
 import * as ComputedStyle from '../../../models/computed_style/computed_style.js';
@@ -653,21 +654,27 @@ interface WidgetMakerResponse {
   revealable: unknown;
 }
 
+const computedStyleNodeCache = new Map<Protocol.DOM.BackendNodeId, SDK.DOMModel.DOMNode>();
+
 async function makeComputedStyleWidget(widgetData: ComputedStyleAiWidget): Promise<WidgetMakerResponse|null> {
-  const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
-  if (!target) {
-    return null;
+  let domNodeForId = computedStyleNodeCache.get(widgetData.data.backendNodeId);
+  if (!domNodeForId) {
+    const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+    if (!target) {
+      return null;
+    }
+    const node = new SDK.DOMModel.DeferredDOMNode(
+        target,
+        widgetData.data.backendNodeId,
+    );
+    const resolved = await node.resolvePromise();
+    if (!resolved) {
+      return null;
+    }
+    domNodeForId = resolved;
+    computedStyleNodeCache.set(widgetData.data.backendNodeId, resolved);
   }
-  const node = new SDK.DOMModel.DeferredDOMNode(
-      target,
-      widgetData.data.backendNodeId,
-  );
-  const resolved = await node.resolvePromise();
-  if (!resolved) {
-    return null;
-  }
-  const model = new ComputedStyle.ComputedStyleModel.ComputedStyleModel(resolved);
-  const styles = new ComputedStyle.ComputedStyleModel.ComputedStyle(resolved, widgetData.data.computedStyles);
+  const styles = new ComputedStyle.ComputedStyleModel.ComputedStyle(domNodeForId, widgetData.data.computedStyles);
 
   const widgetConfig = UI.Widget.widgetConfig(Elements.ComputedStyleWidget.ComputedStyleWidget, {
     nodeStyle: styles,
@@ -677,16 +684,12 @@ async function makeComputedStyleWidget(widgetData: ComputedStyleAiWidget): Promi
     allowUserControl: false,
     filterText: new RegExp(widgetData.data.properties.join('|'), 'i')
   });
-  // Now we have used the model and got what we need, we dispose it so it
-  // doesn't keep listening (the computed styles widget here is static and is
-  // not supposed to update).
-  model.dispose();
 
   // clang-format off
-    const widget = html`<devtools-widget class="computed-styles-widget" .widgetConfig=${widgetConfig}></devtools-widget>`;
+  const widget = html`<devtools-widget class="computed-styles-widget" .widgetConfig=${widgetConfig}></devtools-widget>`;
   // clang-format on
 
-  return {renderedWidget: widget, revealable: new Elements.ElementsPanel.NodeComputedStyles(resolved)};
+  return {renderedWidget: widget, revealable: new Elements.ElementsPanel.NodeComputedStyles(domNodeForId)};
 }
 
 function renderWidgetResponse(response: WidgetMakerResponse|null): Lit.LitTemplate {
@@ -703,15 +706,17 @@ function renderWidgetResponse(response: WidgetMakerResponse|null): Lit.LitTempla
 
   // clang-format off
   return html`
-    <div class="widget-content-container">
-      ${response.renderedWidget}
-    </div>
-    <div class="widget-reveal-container">
-      <devtools-button class="widget-reveal"
-        .iconName=${'tab-move'}
-        .variant=${Buttons.Button.Variant.TEXT}
-        @click=${onReveal}
-      >${lockedString(UIStringsNotTranslate.reveal)}</devtools-button>
+    <div class="widget-and-revealer-container">
+      <div class="widget-content-container">
+        ${response.renderedWidget}
+      </div>
+      <div class="widget-reveal-container">
+        <devtools-button class="widget-reveal"
+          .iconName=${'tab-move'}
+          .variant=${Buttons.Button.Variant.TEXT}
+          @click=${onReveal}
+        >${lockedString(UIStringsNotTranslate.reveal)}</devtools-button>
+      </div>
     </div>
     `;
   // clang-format on

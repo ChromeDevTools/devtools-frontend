@@ -527,7 +527,7 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
 
     const ulClasses = Lit.Directives.classMap({hasNoChildren: !hasChildrenInTree});
 
-    await RenderCoordinator.write('TreeOutline render', () => {
+    await RenderCoordinator.write(() => {
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
       // Unfortunately the TreeOutline web component adds the

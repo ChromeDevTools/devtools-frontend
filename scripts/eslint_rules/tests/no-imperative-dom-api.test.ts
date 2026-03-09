@@ -1235,72 +1235,7 @@ class SomeWidget extends UI.Widget.Widget {
 }`,
       errors: [{messageId: 'preferTemplateLiterals'}],
     },
-    {
-      filename: 'front_end/ui/components/component/file.ts',
-      code: `
-class SomeWidget extends UI.Widget.Widget {
-  constructor() {
-    super();
-    const contrastFragment = UI.Fragment.Fragment.build\`
-      <div class="contrast-container-in-grid" $="contrast-container-element">
-        <span class="contrast-preview">Aa</span>
-        <span>\${contrastRatioString}</span>
-      </div>\`;
-    this.contentElement.appendChild(contrastFragment.element());
-  }
-}`,
-      output: `
 
-export const DEFAULT_VIEW = (input, output, target) => {
-  render(html\`
-    <div>
-      <div class="contrast-container-in-grid" \${ref(e => { output.contrastContainerElement = e; })}>
-        <span class="contrast-preview">Aa</span>
-        <span>\${contrastRatioString}</span>
-      </div>
-    </div>\`,
-    target, {host: input});
-};
-
-class SomeWidget extends UI.Widget.Widget {
-  constructor() {
-    super();
-  }
-}`,
-      errors: [{messageId: 'preferTemplateLiterals'}],
-    },
-    {
-      filename: 'front_end/ui/components/component/file.ts',
-      code: `
-class SomeWidget extends UI.Widget.Widget {
-  constructor() {
-    super();
-    const contrastFragment = UI.Fragment.Fragment.build\`
-      <div class="contrast-container-in-grid" $="contrast-container-element">
-        <span class="contrast-preview">Aa</span>
-        <span>\${contrastRatioString}</span>
-      </div>\`;
-    const container = contrastFragment.$('contrast-container-element');
-    container.createChild('span', 'contrast-preview').textContent = 'Aa';
-  }
-}`,
-      output: `
-class SomeWidget extends UI.Widget.Widget {
-  constructor() {
-    super();
-    const contrastFragment = UI.Fragment.Fragment.build\`
-      <div class="contrast-container-in-grid" $="contrast-container-element">
-        <span class="contrast-preview">Aa</span>
-        <span>\${contrastRatioString}</span>
-      </div>\`;
-    const container = html\`
-    <template id="contrast-container-element">
-      <span class="contrast-preview">Aa</span>
-    </template>\`;
-  }
-}`,
-      errors: [{messageId: 'preferTemplateLiterals'}],
-    },
     {
       filename: 'front_end/ui/components/component/file.ts',
       code: `

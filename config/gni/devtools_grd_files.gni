@@ -2569,7 +2569,6 @@ grd_files_unbundled_sources = [
   "front_end/ui/legacy/FilterBar.js",
   "front_end/ui/legacy/FilterSuggestionBuilder.js",
   "front_end/ui/legacy/ForwardedInputEventHandler.js",
-  "front_end/ui/legacy/Fragment.js",
   "front_end/ui/legacy/GlassPane.js",
   "front_end/ui/legacy/Infobar.js",
   "front_end/ui/legacy/InplaceEditor.js",

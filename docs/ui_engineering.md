@@ -1183,42 +1183,6 @@ export const DEFAULT_VIEW = (input, _output, target) => {
 };
 ```
 
-## Migrating `UI.Fragment`
-
-Replace `UI.Fragment.Fragment.build` with a standard lit-html template. To get a reference to an element, use the `ref` directive.
-
-**Before:**
-```typescript
-
-class SomeWidget extends UI.Widget.Widget {
-  constructor() {
-    super();
-    const contrastFragment = UI.Fragment.Fragment.build`
-      <div class="contrast-container-in-grid" $="contrast-container-element">
-        <span class="contrast-preview">Aa</span>
-        <span>${contrastRatioString}</span>
-      </div>`;
-    this.contentElement.appendChild(contrastFragment.element());
-  }
-}
-```
-
-**After:**
-```typescript
-
-
-export const DEFAULT_VIEW = (input, output, target) => {
-  render(html`
-    <div>
-      <div class="contrast-container-in-grid" ${ref(e => { output.contrastContainerElement = e; })}>
-        <span class="contrast-preview">Aa</span>
-        <span>${contrastRatioString}</span>
-      </div>
-    </div>`,
-    target, {host: input});
-};
-```
-
 ## Migrating `UI.ARIAUtils` helpers
 
 Replace calls to `UI.ARIAUtils` helper functions with the corresponding ARIA attributes directly in the lit-html template.

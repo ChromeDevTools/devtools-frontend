@@ -178,7 +178,7 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
     this.dataGrid = this.createDataGrid();
     const dataGridWidget = this.dataGrid.asWidget();
     this.splitWidget.setSidebarWidget(dataGridWidget);
-    dataGridWidget.setMinimumSize(0, 250);
+    dataGridWidget.setMinimumSize(0, 100);
   }
 
   override wasShown(): void {

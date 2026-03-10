@@ -270,6 +270,9 @@ export class AiConversation {
                      if (item.type === ResponseType.SIDE_EFFECT) {
                        return {...item, confirm: undefined};
                      }
+                     if (item.type === ResponseType.CONTEXT && item.widgets) {
+                       return {...item, widgets: undefined};
+                     }
                      return item;
                    })
                    .filter(history => !!history),

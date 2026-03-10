@@ -22,6 +22,7 @@ import {AgentFocus} from '../performance/AIContext.js';
 
 import {
   AiAgent,
+  type AiWidget,
   type ContextResponse,
   ConversationContext,
   type ConversationSuggestions,
@@ -381,6 +382,18 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
       return;
     }
 
+    const widgets: AiWidget[] = [];
+    const primaryInsightSet = context.getItem().primaryInsightSet;
+    if (primaryInsightSet) {
+      widgets.push({
+        name: 'CORE_VITALS',
+        data: {
+          parsedTrace: context.getItem().parsedTrace,
+          insightSetKey: primaryInsightSet.id,
+        },
+      });
+    }
+
     yield {
       type: ResponseType.CONTEXT,
       title: lockedString(UIStringsNotTranslated.analyzingTrace),
@@ -390,6 +403,7 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
           text: this.#formatter?.formatTraceSummary() ?? '',
         },
       ],
+      widgets,
     };
 
     this.#hasShownAnalyzeTraceContext = true;

@@ -171,6 +171,15 @@ describeWithMockConnection('PerformanceAgent – call tree focus', () => {
           details: [
             {title: 'Trace', text: expectedData},
           ],
+          widgets: [
+            {
+              name: 'CORE_VITALS',
+              data: {
+                parsedTrace,
+                insightSetKey: 'NAVIGATION_0',
+              },
+            },
+          ],
         },
         {
           type: AiAgent.ResponseType.QUERYING,
@@ -377,6 +386,15 @@ code
           title: 'Analyzing trace',
           details: [
             {title: 'Trace', text: expectedDetailText},
+          ],
+          widgets: [
+            {
+              name: 'CORE_VITALS',
+              data: {
+                parsedTrace,
+                insightSetKey: 'NAVIGATION_0',
+              },
+            },
           ],
         },
         {

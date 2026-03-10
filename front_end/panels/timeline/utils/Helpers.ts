@@ -147,8 +147,12 @@ export function formatOriginWithEntity(
   return originWithEntity;
 }
 
-/** Thin wrapper class to enable revealing an individual insight in Timeline panel. **/
 export class RevealableInsight {
   constructor(public insight: Trace.Insights.Types.InsightModel) {
+  }
+}
+
+export class RevealableCoreVitals {
+  constructor(public insightSetKey: string) {
   }
 }

@@ -12,7 +12,8 @@ import type * as Platform from '../../../core/platform/platform.js';
 import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
-import type {AiWidget, ComputedStyleAiWidget} from '../../../models/ai_assistance/agents/AiAgent.js';
+import type {
+  AiWidget, ComputedStyleAiWidget, CoreVitalsAiWidget} from '../../../models/ai_assistance/agents/AiAgent.js';
 import * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
 import * as ComputedStyle from '../../../models/computed_style/computed_style.js';
 import * as Marked from '../../../third_party/marked/marked.js';
@@ -25,6 +26,8 @@ import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import * as Elements from '../../elements/elements.js';
+import * as TimelineComponents from '../../timeline/components/components.js';
+import * as TimelineUtils from '../../timeline/utils/utils.js';
 
 import chatMessageStyles from './chatMessage.css.js';
 import {walkthroughTitle, WalkthroughView} from './WalkthroughView.js';
@@ -696,6 +699,20 @@ async function makeComputedStyleWidget(widgetData: ComputedStyleAiWidget): Promi
   return {renderedWidget: widget, revealable: new Elements.ElementsPanel.NodeComputedStyles(domNodeForId)};
 }
 
+async function makeCoreVitalsWidget(widgetData: CoreVitalsAiWidget): Promise<WidgetMakerResponse|null> {
+  const widgetConfig =
+      UI.Widget.widgetConfig(TimelineComponents.SidebarSingleInsightSet.CWVMetrics, {data: widgetData.data});
+
+  // clang-format off
+  const widget = html`<devtools-widget class="core-vitals-widget" .widgetConfig=${widgetConfig}></devtools-widget>`;
+  // clang-format on
+
+  return {
+    renderedWidget: widget,
+    revealable: new TimelineUtils.Helpers.RevealableCoreVitals(widgetData.data.insightSetKey)
+  };
+}
+
 function renderWidgetResponse(response: WidgetMakerResponse|null): Lit.LitTemplate {
   if (response === null) {
     return Lit.nothing;
@@ -732,10 +749,11 @@ function renderWidgetResponse(response: WidgetMakerResponse|null): Lit.LitTempla
  * iterates through the `step.widgets` array. For each widget, it determines
  * the appropriate rendering logic based on the `widgetData.name`.
  *
- * Currently, only 'COMPUTED_STYLES' widgets are supported. For these, the
- * `makeComputedStyleWidget` function is called to construct the necessary
+ * Currently, only 'COMPUTED_STYLES' and 'CORE_VITALS' widgets are supported. For these, the
+ * `makeComputedStyleWidget` and `makeCoreVitalsWidget` functions are called to construct the necessary
  * data and configuration for the `Elements.ComputedStyleWidget.ComputedStyleWidget`
- * component. The widget is then rendered using the `<devtools-widget>`
+ * and `TimelineComponents.SidebarSingleInsightSet.CWVMetrics`
+ * components. The widget is then rendered using the `<devtools-widget>`
  * custom element, which dynamically instantiates and displays the specified
  * UI.Widget subclass with the provided configuration.
  *
@@ -750,6 +768,10 @@ async function renderStepWidgets(step: Step): Promise<Lit.LitTemplate> {
   const ui = await Promise.all(step.widgets.map(async widgetData => {
     if (widgetData.name === 'COMPUTED_STYLES') {
       const response = await makeComputedStyleWidget(widgetData);
+      return renderWidgetResponse(response);
+    }
+    if (widgetData.name === 'CORE_VITALS') {
+      const response = await makeCoreVitalsWidget(widgetData);
       return renderWidgetResponse(response);
     }
     return Lit.nothing;

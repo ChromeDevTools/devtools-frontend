@@ -1714,6 +1714,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
           case AiAssistanceModel.AiAgent.ResponseType.CONTEXT: {
             step.title = data.title;
             step.contextDetails = data.details;
+            step.widgets = data.widgets;
             step.isLoading = false;
             commitStep();
             break;

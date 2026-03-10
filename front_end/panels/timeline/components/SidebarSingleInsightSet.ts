@@ -89,110 +89,93 @@ interface LocalMetrics {
   inp: {value: Trace.Types.Timing.Micro, event: Trace.Types.Events.SyntheticInteractionPair}|null;
 }
 
+function getLocalMetrics(parsedTrace: Trace.TraceModel.ParsedTrace|null, insightSetKey: string|null): LocalMetrics|
+    null {
+  if (!parsedTrace || !insightSetKey) {
+    return null;
+  }
+
+  const insightSet = parsedTrace.insights?.get(insightSetKey);
+  if (!insightSet) {
+    return null;
+  }
+
+  const lcp = Trace.Insights.Common.getLCP(insightSet);
+  const cls = Trace.Insights.Common.getCLS(insightSet);
+  const inp = Trace.Insights.Common.getINP(insightSet);
+
+  return {lcp, cls, inp};
+}
+
+function getFieldMetrics(parsedTrace: Trace.TraceModel.ParsedTrace|null, insightSetKey: string|null):
+    Trace.Insights.Common.CrUXFieldMetricResults|null {
+  if (!parsedTrace || !parsedTrace.metadata?.cruxFieldData || !insightSetKey) {
+    return null;
+  }
+
+  const insightSet = parsedTrace.insights?.get(insightSetKey);
+  if (!insightSet) {
+    return null;
+  }
+
+  let scope: CrUXManager.Scope|null = null;
+  try {
+    scope = CrUXManager.CrUXManager.instance().getSelectedScope();
+  } catch {
+    // test environment
+  }
+
+  const fieldMetricsResults =
+      Trace.Insights.Common.getFieldMetricsForInsightSet(insightSet, parsedTrace.metadata, scope);
+  if (!fieldMetricsResults) {
+    return null;
+  }
+
+  return fieldMetricsResults;
+}
+
+interface MetricsViewInput {
+  parsedTrace: Trace.TraceModel.ParsedTrace|null;
+  insightSetKey: string|null;
+  didDismissFieldMismatchNotice: boolean;
+  onDismisFieldMismatchNotice: () => void;
+  onClickMetric: (traceEvent: Trace.Types.Events.Event) => void;
+}
+
+type MetricsView = (input: MetricsViewInput, output: undefined, target: HTMLElement) => void;
+
 interface ViewInput {
   shownInsights: InsightData[];
   passedInsights: InsightData[];
-  local: LocalMetrics|null;
-  field: Trace.Insights.Common.CrUXFieldMetricResults|null;
-  activeCategory: Trace.Insights.Types.InsightCategory;
-  showFieldMismatchNotice: boolean;
-  onDismisFieldMismatchNotice: () => void;
-  onClickMetric: (traceEvent: Trace.Types.Events.Event) => void;
+  insightSetKey: Trace.Types.Events.NavigationId|null;
+  parsedTrace: Trace.TraceModel.ParsedTrace|null;
   renderInsightComponent: (insightData: InsightData) => Lit.LitTemplate;
 }
 
 type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 
-export const DEFAULT_VIEW: View = (input, output, target) => {
+const CWV_METRICS_VIEW: MetricsView = (input, _output, target) => {
   const {
-    shownInsights,
-    passedInsights,
-    local,
-    field,
-    activeCategory,
-    showFieldMismatchNotice,
+    parsedTrace,
+    insightSetKey,
+    didDismissFieldMismatchNotice,
     onDismisFieldMismatchNotice,
     onClickMetric,
-    renderInsightComponent,
   } = input;
 
-  function renderMetrics(): Lit.TemplateResult {
-    const lcpEl = renderMetricValue('LCP', local?.lcp?.value ?? null, local?.lcp?.event ?? null);
-    const inpEl = renderMetricValue('INP', local?.inp?.value ?? null, local?.inp?.event ?? null);
-    const clsEl = renderMetricValue('CLS', local?.cls?.value ?? null, local?.cls?.worstClusterEvent ?? null);
+  const local = getLocalMetrics(parsedTrace, insightSetKey);
+  const field = getFieldMetrics(parsedTrace, insightSetKey);
 
-    const localMetricsTemplateResult = html`
-      <div class="metrics-row">
-        <span>${lcpEl}</span>
-        <span>${inpEl}</span>
-        <span>${clsEl}</span>
-        <span class="row-label">Local</span>
-      </div>
-      <span class="row-border"></span>
-    `;
-
-    let fieldMetricsTemplateResult;
-    if (field) {
-      const {lcp, inp, cls} = field;
-
-      const lcpEl = renderMetricValue('LCP', lcp?.value ?? null, null);
-      const inpEl = renderMetricValue('INP', inp?.value ?? null, null);
-      const clsEl = renderMetricValue('CLS', cls?.value ?? null, null);
-
-      let scope = i18nString(UIStrings.originOption);
-      if (lcp?.pageScope === 'url' || inp?.pageScope === 'url') {
-        scope = i18nString(UIStrings.urlOption);
-      }
-
-      // clang-format off
-      fieldMetricsTemplateResult = html`
-        <div class="metrics-row">
-          <span>${lcpEl}</span>
-          <span>${inpEl}</span>
-          <span>${clsEl}</span>
-          <span class="row-label">${i18nString(UIStrings.fieldScoreLabel, {PH1: scope})}</span>
-        </div>
-        <span class="row-border"></span>
-      `;
-      // clang-format on
-    }
-
-    let fieldIsDifferentEl;
-    if (showFieldMismatchNotice) {
-      // clang-format off
-      fieldIsDifferentEl = html`
-        <div class="field-mismatch-notice" jslog=${VisualLogging.section('timeline.insights.field-mismatch')}>
-          <h3>${i18nString(UIStrings.fieldMismatchTitle)}</h3>
-          <devtools-button
-            title=${i18nString(UIStrings.dismissTitle)}
-            .iconName=${'cross'}
-            .variant=${Buttons.Button.Variant.ICON}
-            .jslogContext=${'timeline.insights.dismiss-field-mismatch'}
-            @click=${onDismisFieldMismatchNotice}
-          ></devtools-button>
-          <div class="field-mismatch-notice__body">${md(i18nString(UIStrings.fieldMismatchNotice))}</div>
-        </div>
-      `;
-      // clang-format on
-    }
-
-    const classes = {metrics: true, 'metrics--field': Boolean(fieldMetricsTemplateResult)};
-    const metricsTableEl = html`<div class=${Lit.Directives.classMap(classes)}>
-      <div class="metrics-row">
-        <span class="metric-label">LCP</span>
-        <span class="metric-label">INP</span>
-        <span class="metric-label">CLS</span>
-        <span class="row-label"></span>
-      </div>
-      ${localMetricsTemplateResult}
-      ${fieldMetricsTemplateResult}
-    </div>`;
-
-    return html`
-      ${metricsTableEl}
-      ${fieldIsDifferentEl}
-    `;
-  }
+  const localValues = {
+    lcp: local?.lcp?.value !== undefined ? Trace.Helpers.Timing.microToMilli(local?.lcp.value) : undefined,
+    inp: local?.inp?.value !== undefined ? Trace.Helpers.Timing.microToMilli(local?.inp.value) : undefined,
+  };
+  const fieldValues = field && {
+    lcp: field.lcp?.value !== undefined ? Trace.Helpers.Timing.microToMilli(field.lcp.value) : undefined,
+    inp: field.inp?.value !== undefined ? Trace.Helpers.Timing.microToMilli(field.inp.value) : undefined,
+  };
+  const showFieldMismatchNotice =
+      !didDismissFieldMismatchNotice && !!fieldValues && isFieldWorseThanLocal(localValues, fieldValues);
 
   function renderMetricValue(
       metric: 'LCP'|'CLS'|'INP', value: number|null, relevantEvent: Trace.Types.Events.Event|null): Lit.LitTemplate {
@@ -233,7 +216,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
       i18nString(UIStrings.metricScore, {PH1: metric, PH2: valueText, PH3: classification}) :
       i18nString(UIStrings.metricScoreUnavailable, {PH1: metric});
 
-    return metricIsVisible(activeCategory, metric) ? html`
+    return html`
       <button class="metric"
         @click=${relevantEvent ? onClickMetric.bind(relevantEvent) : null}
         title=${title}
@@ -241,8 +224,110 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
       >
         <div class="metric-value metric-value-${classification}">${valueDisplay}</div>
       </button>
-    ` : Lit.nothing;
+    `;
     // clang-format on
+  }
+
+  const lcpEl = renderMetricValue('LCP', local?.lcp?.value ?? null, local?.lcp?.event ?? null);
+  const inpEl = renderMetricValue('INP', local?.inp?.value ?? null, local?.inp?.event ?? null);
+  const clsEl = renderMetricValue('CLS', local?.cls?.value ?? null, local?.cls?.worstClusterEvent ?? null);
+
+  const localMetricsTemplateResult = html`
+    <div class="metrics-row">
+      <span>${lcpEl}</span>
+      <span>${inpEl}</span>
+      <span>${clsEl}</span>
+      <span class="row-label">Local</span>
+    </div>
+    <span class="row-border"></span>
+  `;
+
+  let fieldMetricsTemplateResult;
+  if (field) {
+    const {lcp, inp, cls} = field;
+
+    const lcpEl = renderMetricValue('LCP', lcp?.value ?? null, null);
+    const inpEl = renderMetricValue('INP', inp?.value ?? null, null);
+    const clsEl = renderMetricValue('CLS', cls?.value ?? null, null);
+
+    let scope = i18nString(UIStrings.originOption);
+    if (lcp?.pageScope === 'url' || inp?.pageScope === 'url') {
+      scope = i18nString(UIStrings.urlOption);
+    }
+
+    // clang-format off
+    fieldMetricsTemplateResult = html`
+      <div class="metrics-row">
+        <span>${lcpEl}</span>
+        <span>${inpEl}</span>
+        <span>${clsEl}</span>
+        <span class="row-label">${i18nString(UIStrings.fieldScoreLabel, {PH1: scope})}</span>
+      </div>
+      <span class="row-border"></span>
+    `;
+    // clang-format on
+  }
+
+  let fieldIsDifferentEl;
+  if (showFieldMismatchNotice) {
+    // clang-format off
+    fieldIsDifferentEl = html`
+      <div class="field-mismatch-notice" jslog=${VisualLogging.section('timeline.insights.field-mismatch')}>
+        <h3>${i18nString(UIStrings.fieldMismatchTitle)}</h3>
+        <devtools-button
+          title=${i18nString(UIStrings.dismissTitle)}
+          .iconName=${'cross'}
+          .variant=${Buttons.Button.Variant.ICON}
+          .jslogContext=${'timeline.insights.dismiss-field-mismatch'}
+          @click=${onDismisFieldMismatchNotice}
+        ></devtools-button>
+        <div class="field-mismatch-notice__body">${md(i18nString(UIStrings.fieldMismatchNotice))}</div>
+      </div>
+    `;
+    // clang-format on
+  }
+
+  const classes = {metrics: true, 'metrics--field': Boolean(fieldMetricsTemplateResult)};
+  const metricsTableEl = html`<div class=${Lit.Directives.classMap(classes)}>
+    <div class="metrics-row">
+      <span class="metric-label">LCP</span>
+      <span class="metric-label">INP</span>
+      <span class="metric-label">CLS</span>
+      <span class="row-label"></span>
+    </div>
+    ${localMetricsTemplateResult}
+    ${fieldMetricsTemplateResult}
+  </div>`;
+
+  Lit.render(
+      html`
+    <style>${sidebarSingleInsightSetStyles}</style>
+    ${metricsTableEl}
+    ${fieldIsDifferentEl}
+  `,
+      target);
+};
+
+const DEFAULT_VIEW: View = (input, output, target) => {
+  const {
+    shownInsights,
+    passedInsights,
+    insightSetKey,
+    parsedTrace,
+    renderInsightComponent,
+  } = input;
+
+  function renderMetrics(): Lit.LitTemplate {
+    if (!insightSetKey || !parsedTrace) {
+      return Lit.nothing;
+    }
+    const metricsWidgetConfig = UI.Widget.widgetConfig(CWVMetrics, {
+      data: {
+        insightSetKey,
+        parsedTrace,
+      }
+    });
+    return html`<devtools-widget .widgetConfig=${metricsWidgetConfig}></devtools-widget>`;
   }
 
   function renderInsights(): Lit.LitTemplate {
@@ -275,12 +360,63 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
   // clang-format on
 };
 
-function metricIsVisible(activeCategory: Trace.Insights.Types.InsightCategory, label: 'LCP'|'CLS'|'INP'): boolean {
-  if (activeCategory === Trace.Insights.Types.InsightCategory.ALL) {
-    return true;
+export interface CWVMetricsData {
+  insightSetKey: Trace.Types.Events.NavigationId|null;
+  parsedTrace: Trace.TraceModel.ParsedTrace|null;
+}
+
+export class CWVMetrics extends UI.Widget.Widget {
+  #view: MetricsView;
+  #data: CWVMetricsData = {
+    insightSetKey: null,
+    parsedTrace: null,
+  };
+
+  #didDismissFieldMismatchNotice = false;
+
+  constructor(element?: HTMLElement, view: MetricsView = CWV_METRICS_VIEW) {
+    super(element, {useShadowDom: true});
+    this.#view = view;
   }
 
-  return label === activeCategory;
+  set data(data: CWVMetricsData) {
+    this.#data = data;
+    this.requestUpdate();
+  }
+
+  #onClickMetric(traceEvent: Trace.Types.Events.Event): void {
+    this.element.dispatchEvent(new Insights.EventRef.EventReferenceClick(traceEvent));
+  }
+
+  #onDismisFieldMismatchNotice(): void {
+    this.#didDismissFieldMismatchNotice = true;
+    this.requestUpdate();
+  }
+
+  override performUpdate(): void {
+    const {
+      parsedTrace,
+      insightSetKey,
+    } = this.#data;
+
+    if (!parsedTrace?.insights || !insightSetKey || !(parsedTrace.insights instanceof Map)) {
+      return;
+    }
+
+    const insightSet = parsedTrace.insights.get(insightSetKey);
+    if (!insightSet) {
+      return;
+    }
+
+    const input: MetricsViewInput = {
+      parsedTrace,
+      insightSetKey,
+      didDismissFieldMismatchNotice: this.#didDismissFieldMismatchNotice,
+      onDismisFieldMismatchNotice: this.#onDismisFieldMismatchNotice.bind(this),
+      onClickMetric: this.#onClickMetric.bind(this),
+    };
+    this.#view(input, undefined, this.contentElement);
+  }
 }
 
 export class SidebarSingleInsightSet extends UI.Widget.Widget {
@@ -295,8 +431,6 @@ export class SidebarSingleInsightSet extends UI.Widget.Widget {
     activeInsight: null,
     parsedTrace: null,
   };
-
-  #didDismissFieldMismatchNotice = false;
 
   constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
     super(element, {useShadowDom: true});
@@ -330,57 +464,15 @@ export class SidebarSingleInsightSet extends UI.Widget.Widget {
     });
   }
 
-  #onClickMetric(traceEvent: Trace.Types.Events.Event): void {
-    this.element.dispatchEvent(new Insights.EventRef.EventReferenceClick(traceEvent));
-  }
-
-  #getLocalMetrics(insightSetKey: string): LocalMetrics|null {
-    if (!this.#data.parsedTrace) {
-      return null;
-    }
-
-    const insightSet = this.#data.parsedTrace.insights?.get(insightSetKey);
-    if (!insightSet) {
-      return null;
-    }
-
-    const lcp = Trace.Insights.Common.getLCP(insightSet);
-    const cls = Trace.Insights.Common.getCLS(insightSet);
-    const inp = Trace.Insights.Common.getINP(insightSet);
-
-    return {lcp, cls, inp};
-  }
-
-  #getFieldMetrics(insightSetKey: string): Trace.Insights.Common.CrUXFieldMetricResults|null {
-    if (!this.#data.parsedTrace) {
-      return null;
-    }
-
-    const insightSet = this.#data.parsedTrace.insights?.get(insightSetKey);
-    if (!insightSet) {
-      return null;
-    }
-
-    const fieldMetricsResults = Trace.Insights.Common.getFieldMetricsForInsightSet(
-        insightSet, this.#data.parsedTrace.metadata, CrUXManager.CrUXManager.instance().getSelectedScope());
-    if (!fieldMetricsResults) {
-      return null;
-    }
-
-    return fieldMetricsResults;
-  }
-
-  #onDismisFieldMismatchNotice(): void {
-    this.#didDismissFieldMismatchNotice = true;
-    this.requestUpdate();
-  }
-
   static categorizeInsights(
       insightSets: Trace.Insights.Types.TraceInsightSets|null,
       insightSetKey: string,
       activeCategory: Trace.Insights.Types.InsightCategory,
       ): {shownInsights: InsightData[], passedInsights: InsightData[]} {
-    const insightSet = insightSets?.get(insightSetKey);
+    if (!insightSets || !(insightSets instanceof Map)) {
+      return {shownInsights: [], passedInsights: []};
+    }
+    const insightSet = insightSets.get(insightSetKey);
     if (!insightSet) {
       return {shownInsights: [], passedInsights: []};
     }
@@ -433,7 +525,7 @@ export class SidebarSingleInsightSet extends UI.Widget.Widget {
       insightSetKey,
     } = this.#data;
 
-    if (!parsedTrace?.insights || !insightSetKey) {
+    if (!parsedTrace?.insights || !insightSetKey || !(parsedTrace.insights instanceof Map)) {
       return;
     }
 
@@ -442,34 +534,18 @@ export class SidebarSingleInsightSet extends UI.Widget.Widget {
       return;
     }
 
-    const local = this.#getLocalMetrics(insightSetKey);
-    const field = this.#getFieldMetrics(insightSetKey);
+    const field = getFieldMetrics(parsedTrace, insightSetKey);
     const {shownInsights, passedInsights} = SidebarSingleInsightSet.categorizeInsights(
         parsedTrace.insights,
         insightSetKey,
         this.#data.activeCategory,
     );
 
-    const localValues = {
-      lcp: local?.lcp?.value !== undefined ? Trace.Helpers.Timing.microToMilli(local?.lcp.value) : undefined,
-      inp: local?.inp?.value !== undefined ? Trace.Helpers.Timing.microToMilli(local?.inp.value) : undefined,
-    };
-    const fieldValues = field && {
-      lcp: field.lcp?.value !== undefined ? Trace.Helpers.Timing.microToMilli(field.lcp.value) : undefined,
-      inp: field.inp?.value !== undefined ? Trace.Helpers.Timing.microToMilli(field.inp.value) : undefined,
-    };
-    const showFieldMismatchNotice =
-        !this.#didDismissFieldMismatchNotice && !!fieldValues && isFieldWorseThanLocal(localValues, fieldValues);
-
     const input: ViewInput = {
       shownInsights,
       passedInsights,
-      local,
-      field,
-      activeCategory: this.#data.activeCategory,
-      showFieldMismatchNotice,
-      onDismisFieldMismatchNotice: this.#onDismisFieldMismatchNotice.bind(this),
-      onClickMetric: this.#onClickMetric.bind(this),
+      insightSetKey,
+      parsedTrace,
       renderInsightComponent: insightData => this.#renderInsightComponent(insightSet, insightData, field),
     };
     this.#view(input, undefined, this.contentElement);

@@ -7,6 +7,7 @@ import * as Root from '../../../core/root/root.js';
 import type * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import * as Greendev from '../../greendev/greendev.js';
+import type * as Trace from '../../trace/trace.js';
 import {debugLog, isStructuredLogEnabled} from '../debug.js';
 
 export const enum ResponseType {
@@ -69,6 +70,7 @@ export interface ContextResponse {
   type: ResponseType.CONTEXT;
   title: string;
   details: [ContextDetail, ...ContextDetail[]];
+  widgets?: AiWidget[];
 }
 
 export interface TitleResponse {
@@ -228,8 +230,16 @@ export interface ComputedStyleAiWidget {
     properties: string[],
   };
 }
+export interface CoreVitalsAiWidget {
+  name: 'CORE_VITALS';
+  data: {
+    insightSetKey: string,
+    parsedTrace: Trace.TraceModel.ParsedTrace,
+  };
+}
+
 // This type will grow as we add more widgets.
-export type AiWidget = ComputedStyleAiWidget;
+export type AiWidget = ComputedStyleAiWidget|CoreVitalsAiWidget;
 
 export type FunctionCallHandlerResult<Result> = {
   requiresApproval: true,

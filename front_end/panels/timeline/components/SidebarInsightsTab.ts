@@ -200,6 +200,16 @@ export class SidebarInsightsTab extends UI.Widget.Widget {
     this.requestUpdate();
   }
 
+  setActiveInsightSet(insightSetKey: string): void {
+    if (this.#parsedTrace?.insights) {
+      const insightSet = this.#parsedTrace.insights.get(insightSetKey);
+      if (insightSet) {
+        this.#selectedInsightSet = insightSet;
+        this.requestUpdate();
+      }
+    }
+  }
+
   #onInsightSetToggled(insightSet: Trace.Insights.Types.InsightSet): void {
     this.#selectedInsightSet = this.#selectedInsightSet === insightSet ? null : insightSet;
     // Update the active insight set.

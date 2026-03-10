@@ -182,7 +182,6 @@ let panels: AiAssistancePanel.AiAssistancePanel[] = [];
 export async function createAiAssistancePanel(options?: {
   aidaClient?: Host.AidaClient.AidaClient,
   aidaAvailability?: Host.AidaClient.AidaAccessPreconditions,
-  syncInfo?: Host.InspectorFrontendHostAPI.SyncInformation,
   chatView?: AiAssistancePanel.ChatView,
 }) {
   let aidaAvailabilityForStub = options?.aidaAvailability ?? Host.AidaClient.AidaAccessPreconditions.AVAILABLE;
@@ -196,7 +195,6 @@ export async function createAiAssistancePanel(options?: {
   const panel = new AiAssistancePanel.AiAssistancePanel(view, {
     aidaClient,
     aidaAvailability: aidaAvailabilityForStub,
-    syncInfo: options?.syncInfo ?? {isSyncActive: true},
   });
   panels.push(panel);
 

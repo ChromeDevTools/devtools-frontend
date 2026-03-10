@@ -67,9 +67,8 @@ export interface Props {
   messages: Message[];
   context: AiAssistanceModel.AiAgent.ConversationContext<unknown>|null;
   isContextSelected: boolean;
-  isLoading: boolean;
   canShowFeedbackForm: boolean;
-  userInfo: Pick<Host.InspectorFrontendHostAPI.SyncInformation, 'accountImage'|'accountGivenName'>;
+  isLoading: boolean;
   conversationType: AiAssistanceModel.AiHistoryStorage.ConversationType;
   isReadOnly: boolean;
   blockedByCrossOrigin: boolean;
@@ -91,7 +90,6 @@ export interface Props {
 }
 
 interface ChatWidgetInput extends Props {
-  accountGivenName: string;
   handleScroll: (ev: Event) => void;
   handleSuggestionClick: (title: string) => void;
   handleMessageContainerRef: (el: Element|undefined) => void;
@@ -121,7 +119,6 @@ const DEFAULT_VIEW: View = (input, output, target) => {
                   isLoading: input.isLoading && input.messages.at(-1) === message,
                   isReadOnly: input.isReadOnly,
                   canShowFeedbackForm: input.canShowFeedbackForm,
-                  userInfo: input.userInfo,
                   markdownRenderer: input.markdownRenderer,
                   isLastMessage: input.messages.at(-1) === message,
                   onSuggestionClick: input.handleSuggestionClick,
@@ -149,7 +146,7 @@ const DEFAULT_VIEW: View = (input, output, target) => {
                 </div>
                 ${AiAssistanceModel.AiUtils.isGeminiBranding() ?
                   html`
-                    <h1 class='greeting'>Hello${input.accountGivenName ? `, ${input.accountGivenName}` : ''}</h1>
+                    <h1 class='greeting'>Hello</h1>
                     <p class='cta'>${lockedString(UIStringsNotTranslate.emptyStateTextGemini)}</p>
                   ` : html`<h1>${lockedString(UIStringsNotTranslate.emptyStateText)}</h1>`
                 }
@@ -354,7 +351,6 @@ export class ChatView extends HTMLElement {
     this.#view(
         {
           ...this.#props,
-          accountGivenName: this.#props.userInfo.accountGivenName ?? '',
           handleScroll: this.#handleScroll,
           handleSuggestionClick: this.#handleSuggestionClick,
           handleMessageContainerRef: this.#handleMessageContainerRef,

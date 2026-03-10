@@ -602,12 +602,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   #isLoading = false;
   // Stores the availability status of the `AidaClient` and the reason for unavailability, if any.
   #aidaAvailability: Host.AidaClient.AidaAccessPreconditions;
-  // Info of the currently logged in user.
-  #userInfo: {
-    accountImage?: string,
-    accountFullName?: string,
-    accountGivenName?: string,
-  };
   #timelinePanelInstance: TimelinePanel.TimelinePanel.TimelinePanel|null = null;
   #runAbortController = new AbortController();
   #walkthrough: WalkthroughState = {
@@ -616,10 +610,9 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     activeMessage: null,
   };
 
-  constructor(private view: View = defaultView, {aidaClient, aidaAvailability, syncInfo}: {
+  constructor(private view: View = defaultView, {aidaClient, aidaAvailability}: {
     aidaClient: Host.AidaClient.AidaClient,
     aidaAvailability: Host.AidaClient.AidaAccessPreconditions,
-    syncInfo: Host.InspectorFrontendHostAPI.SyncInformation,
   }) {
     super(AiAssistancePanel.panelName);
     this.registerRequiredCSS(aiAssistancePanelStyles);
@@ -627,11 +620,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
 
     this.#aidaClient = aidaClient;
     this.#aidaAvailability = aidaAvailability;
-    this.#userInfo = {
-      accountImage: syncInfo.accountImage,
-      accountFullName: syncInfo.accountFullName,
-      accountGivenName: syncInfo.accountGivenName,
-    };
 
     if (UI.ActionRegistry.ActionRegistry.instance().hasAction('elements.toggle-element-search')) {
       this.#toggleSearchElementAction =
@@ -706,7 +694,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
           isReadOnly: this.#conversation.isReadOnly ?? false,
           changeSummary: this.#getChangeSummary(),
           inspectElementToggled: this.#toggleSearchElementAction?.toggled() ?? false,
-          userInfo: this.#userInfo,
           canShowFeedbackForm: this.#serverSideLoggingEnabled,
           multimodalInputEnabled: isAiAssistanceMultimodalInputEnabled() &&
               this.#conversation.type === AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING,
@@ -792,11 +779,8 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     const {forceNew} = opts;
     if (!panelInstance || forceNew) {
       const aidaClient = new Host.AidaClient.AidaClient();
-      const syncInfoPromise = new Promise<Host.InspectorFrontendHostAPI.SyncInformation>(
-          resolve => Host.InspectorFrontendHost.InspectorFrontendHostInstance.getSyncInformation(resolve));
-      const [aidaAvailability, syncInfo] =
-          await Promise.all([Host.AidaClient.AidaClient.checkAccessPreconditions(), syncInfoPromise]);
-      panelInstance = new AiAssistancePanel(defaultView, {aidaClient, aidaAvailability, syncInfo});
+      const aidaAvailability = await Host.AidaClient.AidaClient.checkAccessPreconditions();
+      panelInstance = new AiAssistancePanel(defaultView, {aidaClient, aidaAvailability});
     }
 
     return panelInstance;
@@ -1059,13 +1043,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     const currentAidaAvailability = await Host.AidaClient.AidaClient.checkAccessPreconditions();
     if (currentAidaAvailability !== this.#aidaAvailability) {
       this.#aidaAvailability = currentAidaAvailability;
-      const syncInfo = await new Promise<Host.InspectorFrontendHostAPI.SyncInformation>(
-          resolve => Host.InspectorFrontendHost.InspectorFrontendHostInstance.getSyncInformation(resolve));
-      this.#userInfo = {
-        accountImage: syncInfo.accountImage,
-        accountFullName: syncInfo.accountFullName,
-        accountGivenName: syncInfo.accountGivenName,
-      };
       this.requestUpdate();
     }
   };

@@ -121,10 +121,6 @@ const UIStringsNotTranslate = {
    */
   gemini: 'Gemini',
   /**
-   * @description The fallback text when we can't find the user full name
-   */
-  you: 'You',
-  /**
    * @description The fallback text when a step has no title yet
    */
   investigating: 'Investigating',
@@ -156,10 +152,6 @@ const UIStringsNotTranslate = {
    * @description Alt text for the image input (displayed in the chat messages) that has been sent to the model.
    */
   imageInputSentToTheModel: 'Image input sent to the model',
-  /**
-   * @description Alt text for the account avatar.
-   */
-  accountAvatar: 'Account avatar',
   /**
    * @description Title for the link which wraps the image input rendered in chat messages.
    */
@@ -272,7 +264,6 @@ export interface MessageInput {
   isReadOnly: boolean;
   isLastMessage: boolean;
   canShowFeedbackForm: boolean;
-  userInfo: Pick<Host.InspectorFrontendHostAPI.SyncInformation, 'accountImage'|'accountFullName'|'accountGivenName'>;
   markdownRenderer: MarkdownLitRenderer;
   onSuggestionClick: (suggestion: string) => void;
   onFeedbackSubmit: (rpcId: Host.AidaClient.RpcGlobalId, rate: Host.AidaClient.Rating, feedback?: string) => void;
@@ -289,14 +280,6 @@ export interface MessageInput {
 export const DEFAULT_VIEW = (input: ChatMessageViewInput, output: ViewOutput, target: HTMLElement): void => {
   const message = input.message;
   if (message.entity === ChatMessageEntity.USER) {
-    const givenName = AiAssistanceModel.AiUtils.isGeminiBranding() ? input.userInfo.accountGivenName : '';
-    const name = givenName || input.userInfo.accountFullName || lockedString(UIStringsNotTranslate.you);
-    const image = input.userInfo.accountImage ?
-        html`<img src="data:image/png;base64, ${input.userInfo.accountImage}" alt=${
-            UIStringsNotTranslate.accountAvatar} />` :
-        html`<devtools-icon
-          name="profile"
-        ></devtools-icon>`;
     const imageInput = message.imageInput && 'inlineData' in message.imageInput ?
         renderImageChatMessage(message.imageInput.inlineData) :
         Lit.nothing;
@@ -308,12 +291,6 @@ export const DEFAULT_VIEW = (input: ChatMessageViewInput, output: ViewOutput, ta
         class="chat-message query ${input.isLastMessage ? 'is-last-message' : ''}"
         jslog=${VisualLogging.section('question')}
       >
-        <div class="message-info">
-          ${image}
-          <div class="message-name">
-            <h2>${name}</h2>
-          </div>
-        </div>
         ${imageInput}
         <div class="message-content">${renderTextAsMarkdown(message.text, input.markdownRenderer)}</div>
       </section>
@@ -1019,8 +996,6 @@ export class ChatMessage extends UI.Widget.Widget {
   isReadOnly = false;
   canShowFeedbackForm = false;
   isLastMessage = false;
-  userInfo:
-      Pick<Host.InspectorFrontendHostAPI.SyncInformation, 'accountImage'|'accountFullName'|'accountGivenName'> = {};
   markdownRenderer!: MarkdownLitRenderer;
   onSuggestionClick: (suggestion: string) => void = () => {};
   onFeedbackSubmit:
@@ -1067,7 +1042,6 @@ export class ChatMessage extends UI.Widget.Widget {
           isLoading: this.isLoading,
           isReadOnly: this.isReadOnly,
           canShowFeedbackForm: this.canShowFeedbackForm,
-          userInfo: this.userInfo,
           markdownRenderer: this.markdownRenderer,
           isLastMessage: this.isLastMessage,
           onSuggestionClick: this.onSuggestionClick,

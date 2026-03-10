@@ -116,8 +116,27 @@ export class TestUniverse {
 
   get targetManager(): SDK.TargetManager.TargetManager {
     if (!this.#context.has(SDK.TargetManager.TargetManager)) {
-      const targetManager = new SDK.TargetManager.TargetManager(
-          this.#context, this.#creationOptions?.overrideAutoStartModels ?? new Set());
+      // `SDKModel` instances pull their dependencies from the context we pass here.
+      // Instead of eagerly creating them in `createTarget`, we pass a simple stub that
+      // re-directs to the TestUniverse for lazy initialization. This also makes it explicit
+      // what dependencies `SDKModel` instances are using and also safe-guards against
+      // `createTarget({targetManager: universe.targetManager}) instantiations.
+      const universe = this;
+      const context = new (class LazyContext implements Root.DevToolsContext.DevToolsContext {
+        // eslint-disable-next-line @devtools/enforce-test-universe-return-types
+        get<T>(ctor: Root.DevToolsContext.ConstructorT<T>): T {
+          if (ctor === Common.Settings.Settings.prototype.constructor) {
+            return universe.settings as T;
+          }
+          if (ctor === SDK.FrameManager.FrameManager.prototype.constructor) {
+            return universe.frameManager as T;
+          }
+          throw new Error(`Class ${
+              ctor.name} not set-up as a dependency for SDKModels in TestUniverse.ts. Add it to LazyContext#get in TestUniverse.ts`);
+        }
+      })();
+      const targetManager =
+          new SDK.TargetManager.TargetManager(context, this.#creationOptions?.overrideAutoStartModels ?? new Set());
       this.#context.set(SDK.TargetManager.TargetManager, targetManager);
     }
     return this.#context.get(SDK.TargetManager.TargetManager);

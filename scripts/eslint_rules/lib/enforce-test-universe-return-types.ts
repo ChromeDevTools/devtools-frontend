@@ -13,6 +13,7 @@ import {createRule} from './utils/ruleCreator.ts';
  * happen when any of these types is used.
  */
 const ALLOWED_RETURN_TYPES = new Set([
+  'Common.Console.Console',
   'Common.Settings.Settings',
   'Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding',
   'Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding',

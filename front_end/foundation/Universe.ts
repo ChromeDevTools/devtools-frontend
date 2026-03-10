@@ -29,6 +29,9 @@ export class Universe {
     });
     context.set(Common.Settings.Settings, settings);
 
+    const console = new Common.Console.Console();
+    context.set(Common.Console.Console, console);
+
     const targetManager = new SDK.TargetManager.TargetManager(context, options.overrideAutoStartModels);
     context.set(SDK.TargetManager.TargetManager, targetManager);
 

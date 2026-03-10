@@ -2,24 +2,24 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Root from '../root/root.js';
+
 import {ObjectWrapper} from './Object.js';
 import {reveal} from './Revealer.js';
-
-let consoleInstance: Console|undefined;
 
 export class Console extends ObjectWrapper<EventTypes> {
   readonly #messages: Message[] = [];
 
   static instance(opts?: {forceNew: boolean}): Console {
-    if (!consoleInstance || opts?.forceNew) {
-      consoleInstance = new Console();
+    if (!Root.DevToolsContext.globalInstance().has(Console) || opts?.forceNew) {
+      Root.DevToolsContext.globalInstance().set(Console, new Console());
     }
 
-    return consoleInstance;
+    return Root.DevToolsContext.globalInstance().get(Console);
   }
 
   static removeInstance(): void {
-    consoleInstance = undefined;
+    Root.DevToolsContext.globalInstance().delete(Console);
   }
 
   /**

@@ -51,6 +51,13 @@ export class TestUniverse {
     return createTarget({...options, targetManager: this.targetManager});
   }
 
+  get console(): Common.Console.Console {
+    if (!this.#context.has(Common.Console.Console)) {
+      this.#context.set(Common.Console.Console, new Common.Console.Console());
+    }
+    return this.#context.get(Common.Console.Console);
+  }
+
   get cssWorkspaceBinding(): Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding {
     if (!this.#context.has(Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding)) {
       this.#context.set(

@@ -9,10 +9,10 @@ import {
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
 import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
-import {createSettingsForTest, setupSettingsHooks} from '../../testing/SettingsHelpers.js';
+import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
+import {TestUniverse} from '../../testing/TestUniverse.js';
 import * as Host from '../host/host.js';
 import * as Platform from '../platform/platform.js';
-import * as Root from '../root/root.js';
 
 import * as SDK from './sdk.js';
 
@@ -39,10 +39,9 @@ function setup({loadOverride, maxConcurrentLoads}: {
                   }>),
   maxConcurrentLoads?: number,
 } = {}) {
-  const targetManager = new SDK.TargetManager.TargetManager(new Root.DevToolsContext.DevToolsContext());
-  const settings = createSettingsForTest();
-  const loader = new SDK.PageResourceLoader.PageResourceLoader(
-      targetManager, settings, {currentUserAgent: () => ''}, loadOverride ?? null, maxConcurrentLoads);
+  const universe =
+      new TestUniverse({pageResourceLoaderOptions: {loadOverride: loadOverride ?? null, maxConcurrentLoads}});
+  const {pageResourceLoader: loader, settings, targetManager} = universe;
   return {loader, settings, targetManager};
 }
 

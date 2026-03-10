@@ -36,16 +36,16 @@ export class FrameManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
   }>();
   #awaitedFrames = new Map<string, Array<{resolve: (frame: ResourceTreeFrame) => void, notInTarget?: Target}>>();
 
-  constructor() {
+  constructor(targetManager: TargetManager) {
     super();
-    TargetManager.instance().observeModels(ResourceTreeModel, this);
+    targetManager.observeModels(ResourceTreeModel, this);
   }
 
   static instance({forceNew}: {
     forceNew: boolean,
   } = {forceNew: false}): FrameManager {
     if (!Root.DevToolsContext.globalInstance().has(FrameManager) || forceNew) {
-      Root.DevToolsContext.globalInstance().set(FrameManager, new FrameManager());
+      Root.DevToolsContext.globalInstance().set(FrameManager, new FrameManager(TargetManager.instance()));
     }
     return Root.DevToolsContext.globalInstance().get(FrameManager);
   }

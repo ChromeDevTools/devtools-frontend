@@ -31386,6 +31386,118 @@
             ]
         },
         {
+            "domain": "WebMCP",
+            "experimental": true,
+            "dependencies": [
+                "Runtime",
+                "Page",
+                "DOM"
+            ],
+            "types": [
+                {
+                    "id": "Annotation",
+                    "description": "Tool annotations",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "readOnly",
+                            "description": "A hint indicating that the tool does not modify any state.",
+                            "optional": true,
+                            "type": "boolean"
+                        },
+                        {
+                            "name": "autosubmit",
+                            "description": "If the declarative tool was declared with the autosubmit attribute.",
+                            "optional": true,
+                            "type": "boolean"
+                        }
+                    ]
+                },
+                {
+                    "id": "Tool",
+                    "description": "Definition of a tool that can be invoked.",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "name",
+                            "description": "Tool name.",
+                            "type": "string"
+                        },
+                        {
+                            "name": "description",
+                            "description": "Tool description.",
+                            "type": "string"
+                        },
+                        {
+                            "name": "inputSchema",
+                            "description": "Schema for the tool's input parameters.",
+                            "optional": true,
+                            "type": "object"
+                        },
+                        {
+                            "name": "annotations",
+                            "description": "Optional annotations for the tool.",
+                            "optional": true,
+                            "$ref": "Annotation"
+                        },
+                        {
+                            "name": "frameId",
+                            "description": "Frame identifier associated with the tool registration.",
+                            "$ref": "Page.FrameId"
+                        },
+                        {
+                            "name": "backendNodeId",
+                            "description": "Optional node ID for declarative tools.",
+                            "optional": true,
+                            "$ref": "DOM.BackendNodeId"
+                        },
+                        {
+                            "name": "stackTrace",
+                            "description": "The stack trace at the time of the registration.",
+                            "optional": true,
+                            "$ref": "Runtime.StackTrace"
+                        }
+                    ]
+                }
+            ],
+            "commands": [
+                {
+                    "name": "enable",
+                    "description": "Enables the WebMCP domain, allowing events to be sent. Enabling the domain will trigger a toolsAdded event for\nall currently registered tools."
+                }
+            ],
+            "events": [
+                {
+                    "name": "toolsAdded",
+                    "description": "Event fired when new tools are added.",
+                    "parameters": [
+                        {
+                            "name": "tools",
+                            "description": "Array of tools that were added.",
+                            "type": "array",
+                            "items": {
+                                "$ref": "Tool"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "toolsRemoved",
+                    "description": "Event fired when tools are removed.",
+                    "parameters": [
+                        {
+                            "name": "tools",
+                            "description": "Array of tools that were removed.",
+                            "type": "array",
+                            "items": {
+                                "$ref": "Tool"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
             "domain": "Console",
             "description": "This domain is deprecated - use Runtime or Log instead.",
             "deprecated": true,

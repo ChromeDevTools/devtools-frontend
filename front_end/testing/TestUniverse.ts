@@ -70,6 +70,13 @@ export class TestUniverse {
     return this.#context.get(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding);
   }
 
+  get frameManager(): SDK.FrameManager.FrameManager {
+    if (!this.#context.has(SDK.FrameManager.FrameManager)) {
+      this.#context.set(SDK.FrameManager.FrameManager, new SDK.FrameManager.FrameManager(this.targetManager));
+    }
+    return this.#context.get(SDK.FrameManager.FrameManager);
+  }
+
   get ignoreListManager(): Workspace.IgnoreListManager.IgnoreListManager {
     if (!this.#context.has(Workspace.IgnoreListManager.IgnoreListManager)) {
       this.#context.set(

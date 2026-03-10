@@ -29,6 +29,9 @@ export class Universe {
     const targetManager = new SDK.TargetManager.TargetManager(this.context, options.overrideAutoStartModels);
     this.context.set(SDK.TargetManager.TargetManager, targetManager);
 
+    const frameManager = new SDK.FrameManager.FrameManager(targetManager);
+    this.context.set(SDK.FrameManager.FrameManager, frameManager);
+
     const multitargetNetworkManager = new SDK.NetworkManager.MultitargetNetworkManager(targetManager);
     this.context.set(SDK.NetworkManager.MultitargetNetworkManager, multitargetNetworkManager);
 

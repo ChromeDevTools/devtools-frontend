@@ -488,7 +488,6 @@ export class MainImpl {
 
     // These instances need to be created early so they don't miss any events about requests/issues/etc.
     Logs.NetworkLog.NetworkLog.instance();
-    SDK.FrameManager.FrameManager.instance();
     Logs.LogManager.LogManager.instance();
     IssuesManager.IssuesManager.IssuesManager.instance({
       forceNew: true,

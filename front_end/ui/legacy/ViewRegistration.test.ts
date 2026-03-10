@@ -43,7 +43,7 @@ describeWithEnvironment('ViewRegistration', () => {
       },
     });
     UI.ViewManager.ViewManager.instance(
-        {forceNew: true, universe: {context: new Root.DevToolsContext.DevToolsContext()}});
+        {forceNew: true, universe: {context: new Root.DevToolsContext.WritableDevToolsContext()}});
   });
 
   it('retrieves a registered view', async () => {

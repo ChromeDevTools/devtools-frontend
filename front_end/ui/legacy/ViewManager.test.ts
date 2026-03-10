@@ -96,7 +96,7 @@ describeWithEnvironment('ViewManager', () => {
     }
 
     viewManager = UI.ViewManager.ViewManager.instance(
-        {forceNew: true, universe: {context: new Root.DevToolsContext.DevToolsContext()}});
+        {forceNew: true, universe: {context: new Root.DevToolsContext.WritableDevToolsContext()}});
     locationResolver.createLocation(UI.ViewManager.ViewLocationValues.PANEL, true, 'view-1');
     locationResolver.createLocation(UI.ViewManager.ViewLocationValues.DRAWER_VIEW, false, undefined);
   });

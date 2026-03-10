@@ -14,9 +14,12 @@ export interface CreationOptions {
 }
 
 export class Universe {
-  readonly context = new Root.DevToolsContext.DevToolsContext();
+  readonly context: Root.DevToolsContext.DevToolsContext;
 
   constructor(options: CreationOptions) {
+    const context = new Root.DevToolsContext.WritableDevToolsContext();
+    this.context = context;
+
     // TODO(crbug.com/458180550): Store instance only on this.context instead.
     //                            For now the global is required as not everything in foundation cleanly
     //                            reads from the scoped `Settings` instance.
@@ -24,33 +27,33 @@ export class Universe {
       forceNew: true,
       ...options.settingsCreationOptions,
     });
-    this.context.set(Common.Settings.Settings, settings);
+    context.set(Common.Settings.Settings, settings);
 
-    const targetManager = new SDK.TargetManager.TargetManager(this.context, options.overrideAutoStartModels);
-    this.context.set(SDK.TargetManager.TargetManager, targetManager);
+    const targetManager = new SDK.TargetManager.TargetManager(context, options.overrideAutoStartModels);
+    context.set(SDK.TargetManager.TargetManager, targetManager);
 
     const frameManager = new SDK.FrameManager.FrameManager(targetManager);
-    this.context.set(SDK.FrameManager.FrameManager, frameManager);
+    context.set(SDK.FrameManager.FrameManager, frameManager);
 
     const multitargetNetworkManager = new SDK.NetworkManager.MultitargetNetworkManager(targetManager);
-    this.context.set(SDK.NetworkManager.MultitargetNetworkManager, multitargetNetworkManager);
+    context.set(SDK.NetworkManager.MultitargetNetworkManager, multitargetNetworkManager);
 
     const pageResourceLoader =
         new SDK.PageResourceLoader.PageResourceLoader(targetManager, settings, multitargetNetworkManager, null);
-    this.context.set(SDK.PageResourceLoader.PageResourceLoader, pageResourceLoader);
+    context.set(SDK.PageResourceLoader.PageResourceLoader, pageResourceLoader);
 
     const workspace = new Workspace.Workspace.WorkspaceImpl();
-    this.context.set(Workspace.Workspace.WorkspaceImpl, workspace);
+    context.set(Workspace.Workspace.WorkspaceImpl, workspace);
 
     const ignoreListManager = new Workspace.IgnoreListManager.IgnoreListManager(settings, targetManager);
-    this.context.set(Workspace.IgnoreListManager.IgnoreListManager, ignoreListManager);
+    context.set(Workspace.IgnoreListManager.IgnoreListManager, ignoreListManager);
 
     const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
     const cssWorkspaceBinding = new Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding(resourceMapping, targetManager);
-    this.context.set(Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding, cssWorkspaceBinding);
+    context.set(Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding, cssWorkspaceBinding);
 
     const debuggerWorkspaceBinding = new Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding(
         resourceMapping, targetManager, ignoreListManager, workspace);
-    this.context.set(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, debuggerWorkspaceBinding);
+    context.set(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, debuggerWorkspaceBinding);
   }
 }

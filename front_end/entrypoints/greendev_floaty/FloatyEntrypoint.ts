@@ -431,7 +431,7 @@ async function init(): Promise<void> {
         settingRegistrations: Common.SettingRegistration.getRegisteredSettings(),
       }
     });
-    Root.DevToolsContext.setGlobalInstance(universe.context);
+    Root.DevToolsContext.setGlobalInstance(universe.context as Root.DevToolsContext.WritableDevToolsContext);
 
     await i18n.i18n.fetchAndRegisterLocaleData('en-US');
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.connectionReady();

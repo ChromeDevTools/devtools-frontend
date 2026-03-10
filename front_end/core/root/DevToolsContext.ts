@@ -11,7 +11,14 @@ export type ConstructorT<T> = new (...args: any[]) => T;
  * via constructor, and not just pass a {@link DevToolsContext} around. That would hide
  * dependencies and we want to be explicit.
  */
-export class DevToolsContext {
+export interface DevToolsContext {
+  get<T>(ctor: ConstructorT<T>): T;
+}
+
+/**
+ * The actual implementation. Should only be accessed by test-setup code or the bootstrapper.
+ */
+export class WritableDevToolsContext implements DevToolsContext {
   readonly #instances = new Map<ConstructorT<unknown>, unknown>();
 
   get<T>(ctor: ConstructorT<T>): T {
@@ -28,8 +35,7 @@ export class DevToolsContext {
   }
 
   /**
-   * @deprecated Should only be used by existing `instance` accessors and the bootstrapper.
-   * Exists on the public interface only for migration purposes for now.
+   * Should only be used by existing `instance` accessors and the bootstrapper.
    */
   set<T>(ctor: ConstructorT<T>, instance: T): void {
     // TODO(crbug.com/458180550): We need to throw here if an instance was already set!
@@ -42,16 +48,16 @@ export class DevToolsContext {
   }
 }
 
-let gInstance: DevToolsContext|null = null;
+let gInstance: WritableDevToolsContext|null = null;
 
 /**
  * @deprecated Exists to migrate instance() methods.
  */
-export function globalInstance(): DevToolsContext {
+export function globalInstance(): WritableDevToolsContext {
   if (!gInstance) {
     // TODO(crbug.com/458180550): This should really throw to prevent side-effects and globals
     //                            from leaking all over the place.
-    gInstance = new DevToolsContext();
+    gInstance = new WritableDevToolsContext();
   }
   return gInstance;
 }
@@ -59,6 +65,6 @@ export function globalInstance(): DevToolsContext {
 /**
  * @deprecated Should only be called by test setup and MainImpl
  */
-export function setGlobalInstance(context: DevToolsContext|null): void {
+export function setGlobalInstance(context: WritableDevToolsContext|null): void {
   gInstance = context;
 }

@@ -201,7 +201,7 @@ export class MainImpl {
       },
     };
     this.#universe = new Foundation.Universe.Universe(creationOptions);
-    Root.DevToolsContext.setGlobalInstance(this.#universe.context);
+    Root.DevToolsContext.setGlobalInstance(this.#universe.context as Root.DevToolsContext.WritableDevToolsContext);
 
     await this.requestAndRegisterLocaleData();
 

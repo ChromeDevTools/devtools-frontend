@@ -90,7 +90,7 @@ describe('FrameManager', () => {
 
   function createFrameManager() {
     return new SDK.FrameManager.FrameManager(
-        new SDK.TargetManager.TargetManager(new Root.DevToolsContext.DevToolsContext()));
+        new SDK.TargetManager.TargetManager(new Root.DevToolsContext.WritableDevToolsContext()));
   }
 
   const frameId = 'frame-id' as Protocol.Page.FrameId;

@@ -37,7 +37,7 @@ export interface CreationOptions extends Partial<Foundation.Universe.CreationOpt
  * registered settings (on purpose).
  */
 export class TestUniverse {
-  readonly #context = new Root.DevToolsContext.DevToolsContext();
+  readonly #context = new Root.DevToolsContext.WritableDevToolsContext();
   readonly #creationOptions?: CreationOptions;
 
   constructor(options?: CreationOptions) {

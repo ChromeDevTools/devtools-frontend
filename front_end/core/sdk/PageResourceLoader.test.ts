@@ -65,6 +65,7 @@ describe('PageResourceLoader', () => {
   });
 
   setupLocaleHooks();
+  setupSettingsHooks();
 
   it('registers extension loads', async () => {
     const {loader} = setup({loadOverride: load});
@@ -252,6 +253,7 @@ describe('PageResourceLoader', () => {
 
 describe('PageResourceLoader', () => {
   setupRuntimeHooks();
+  setupSettingsHooks();
 
   describe('loadResource', () => {
     const stream = 'STREAM_ID' as Protocol.IO.StreamHandle;

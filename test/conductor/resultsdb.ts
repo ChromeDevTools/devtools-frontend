@@ -76,6 +76,24 @@ let timer: ReturnType<typeof setTimeout>|undefined;
 
 const seenTestIds = new Set<string>();
 
+function stringifyTestResults(results: TestResult[]): string {
+  const testResults = results.map(result => {
+    // SummaryHTML has a limit of 4096 bytes.
+    if (result.summaryHtml) {
+      const buf = Buffer.from(result.summaryHtml, 'utf8');
+      if (buf.length > 4096) {
+        // Note this may produce wrong last character
+        // but node outputs � in that case which is OK.
+        result.summaryHtml = buf.subarray(0, 4096).toString('utf8');
+      }
+    }
+
+    return result;
+  });
+
+  return JSON.stringify({testResults});
+}
+
 function takeAndSendResults() {
   const sinkData = getSinkData();
   if (sinkData.url === undefined) {
@@ -112,8 +130,7 @@ function takeAndSendResults() {
     request.destroy();
     console.error('sending to rdb timed out');
   });
-  const data = JSON.stringify({testResults});
-  request.write(data);
+  request.write(stringifyTestResults(testResults));
   request.end();
 }
 

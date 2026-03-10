@@ -3682,7 +3682,7 @@ var NumberWithUnit;
     if (lastPart) {
       element.append(lastPart);
     }
-    return { text: element.textContent ?? "", element };
+    return { text: element.textContent, element };
   }
   NumberWithUnit2.formatMicroSecondsAsSeconds = formatMicroSecondsAsSeconds;
   function formatMicroSecondsAsMillisFixed(time, fractionDigits = 0) {
@@ -3703,7 +3703,7 @@ var NumberWithUnit;
     if (lastPart) {
       element.append(lastPart);
     }
-    return { text: element.textContent ?? "", element };
+    return { text: element.textContent, element };
   }
   NumberWithUnit2.formatMicroSecondsAsMillisFixed = formatMicroSecondsAsMillisFixed;
 })(NumberWithUnit || (NumberWithUnit = {}));

@@ -11695,7 +11695,7 @@ var ToolbarText = class extends ToolbarItem {
     this.setText(text);
   }
   text() {
-    return this.element.textContent ?? "";
+    return this.element.textContent;
   }
   setText(text) {
     this.element.textContent = text;
@@ -17455,195 +17455,6 @@ var ForwardedInputEventHandler = class {
 };
 new ForwardedInputEventHandler();
 
-// gen/front_end/ui/legacy/Fragment.js
-var Fragment_exports = {};
-__export(Fragment_exports, {
-  Fragment: () => Fragment,
-  attributeMarker: () => attributeMarker,
-  html: () => html3,
-  textMarker: () => textMarker
-});
-function getNodeData(node) {
-  return node.data;
-}
-function setNodeData(node, value) {
-  node.data = value;
-}
-var Fragment = class _Fragment {
-  #element;
-  elementsById = /* @__PURE__ */ new Map();
-  constructor(element) {
-    this.#element = element;
-  }
-  element() {
-    return this.#element;
-  }
-  $(elementId) {
-    return this.elementsById.get(elementId);
-  }
-  static build(strings, ...values) {
-    return _Fragment.render(_Fragment.template(strings), values);
-  }
-  static cached(strings, ...values) {
-    let template = templateCache.get(strings);
-    if (!template) {
-      template = _Fragment.template(strings);
-      templateCache.set(strings, template);
-    }
-    return _Fragment.render(template, values);
-  }
-  static template(strings) {
-    let html7 = "";
-    let insideText = true;
-    for (let i = 0; i < strings.length - 1; i++) {
-      html7 += strings[i];
-      const close5 = strings[i].lastIndexOf(">");
-      const open = strings[i].indexOf("<", close5 + 1);
-      if (close5 !== -1 && open === -1) {
-        insideText = true;
-      } else if (open !== -1) {
-        insideText = false;
-      }
-      html7 += insideText ? textMarker : attributeMarker(i);
-    }
-    html7 += strings[strings.length - 1];
-    const template = document.createElement("template");
-    template.innerHTML = html7;
-    const walker = template.ownerDocument.createTreeWalker(template.content, NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT, null);
-    let valueIndex = 0;
-    const emptyTextNodes = [];
-    const binds = [];
-    const nodesToMark = [];
-    while (walker.nextNode()) {
-      const node = walker.currentNode;
-      if (node.nodeType === Node.ELEMENT_NODE && node.hasAttributes()) {
-        if (node.hasAttribute("$")) {
-          nodesToMark.push(node);
-          binds.push({ elementId: node.getAttribute("$") || "" });
-          node.removeAttribute("$");
-        }
-        const attributesToRemove = [];
-        for (let i = 0; i < node.attributes.length; i++) {
-          const name = node.attributes[i].name;
-          if (!attributeMarkerRegex.test(name) && !attributeMarkerRegex.test(node.attributes[i].value)) {
-            continue;
-          }
-          attributesToRemove.push(name);
-          nodesToMark.push(node);
-          const attr = {
-            index: valueIndex,
-            names: name.split(attributeMarkerRegex),
-            values: node.attributes[i].value.split(attributeMarkerRegex)
-          };
-          valueIndex += attr.names.length - 1;
-          valueIndex += attr.values.length - 1;
-          const bind = {
-            attr
-          };
-          binds.push(bind);
-        }
-        for (let i = 0; i < attributesToRemove.length; i++) {
-          node.removeAttribute(attributesToRemove[i]);
-        }
-      }
-      if (node.nodeType === Node.TEXT_NODE && getNodeData(node).indexOf(textMarker) !== -1) {
-        const texts = getNodeData(node).split(textMarkerRegex);
-        setNodeData(node, texts[texts.length - 1]);
-        const parentNode = node.parentNode;
-        for (let i = 0; i < texts.length - 1; i++) {
-          if (texts[i]) {
-            parentNode.insertBefore(document.createTextNode(texts[i]), node);
-          }
-          const nodeToReplace = document.createElement("span");
-          nodesToMark.push(nodeToReplace);
-          binds.push({ replaceNodeIndex: valueIndex++ });
-          parentNode.insertBefore(nodeToReplace, node);
-        }
-      }
-      if (node.nodeType === Node.TEXT_NODE && (!node.previousSibling || node.previousSibling.nodeType === Node.ELEMENT_NODE) && (!node.nextSibling || node.nextSibling.nodeType === Node.ELEMENT_NODE) && /^\s*$/.test(getNodeData(node))) {
-        emptyTextNodes.push(node);
-      }
-    }
-    for (let i = 0; i < nodesToMark.length; i++) {
-      nodesToMark[i].classList.add(generateClassName(i));
-    }
-    for (const emptyTextNode of emptyTextNodes) {
-      emptyTextNode.remove();
-    }
-    return { template, binds };
-  }
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  static render(template, values) {
-    const content = template.template.ownerDocument.importNode(template.template.content, true);
-    const resultElement = content.firstChild === content.lastChild ? content.firstChild : content;
-    const result = new _Fragment(resultElement);
-    const boundElements = [];
-    for (let i = 0; i < template.binds.length; i++) {
-      const className = generateClassName(i);
-      const element = content.querySelector("." + className);
-      element.classList.remove(className);
-      boundElements.push(element);
-    }
-    for (let bindIndex = 0; bindIndex < template.binds.length; bindIndex++) {
-      const bind = template.binds[bindIndex];
-      const element = boundElements[bindIndex];
-      if (bind.elementId !== void 0) {
-        result.elementsById.set(bind.elementId, element);
-      } else if (bind.replaceNodeIndex !== void 0) {
-        const value = values[bind.replaceNodeIndex];
-        element.parentNode.replaceChild(this.nodeForValue(value), element);
-      } else if (bind.attr !== void 0) {
-        if (bind.attr.names.length === 2 && bind.attr.values.length === 1 && typeof values[bind.attr.index] === "function") {
-          values[bind.attr.index].call(null, element);
-        } else {
-          let name = bind.attr.names[0];
-          for (let i = 1; i < bind.attr.names.length; i++) {
-            name += values[bind.attr.index + i - 1];
-            name += bind.attr.names[i];
-          }
-          if (name) {
-            let value = bind.attr.values[0];
-            for (let i = 1; i < bind.attr.values.length; i++) {
-              value += values[bind.attr.index + bind.attr.names.length - 1 + i - 1];
-              value += bind.attr.values[i];
-            }
-            element.setAttribute(name, value);
-          }
-        }
-      } else {
-        throw new Error("Unexpected bind");
-      }
-    }
-    return result;
-  }
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  static nodeForValue(value) {
-    if (value instanceof Node) {
-      return value;
-    }
-    if (value instanceof _Fragment) {
-      return value.#element;
-    }
-    if (Array.isArray(value)) {
-      const node = document.createDocumentFragment();
-      for (const v of value) {
-        node.appendChild(this.nodeForValue(v));
-      }
-      return node;
-    }
-    return document.createTextNode(String(value));
-  }
-};
-var textMarker = "{{template-text}}";
-var textMarkerRegex = /{{template-text}}/;
-var attributeMarker = (index) => "template-attribute" + index;
-var attributeMarkerRegex = /template-attribute\d+/;
-var generateClassName = (index) => "template-class-" + index;
-var templateCache = /* @__PURE__ */ new Map();
-var html3 = (strings, ...vararg) => {
-  return Fragment.cached(strings, ...vararg).element();
-};
-
 // gen/front_end/ui/legacy/InplaceEditor.js
 var InplaceEditor_exports = {};
 __export(InplaceEditor_exports, {
@@ -17858,7 +17669,7 @@ __export(ListWidget_exports, {
 import * as i18n27 from "./../../core/i18n/i18n.js";
 import * as Platform21 from "./../../core/platform/platform.js";
 import * as Buttons7 from "./../components/buttons/buttons.js";
-import { html as html4, render as render5 } from "./../lit/lit.js";
+import { html as html3, render as render5 } from "./../lit/lit.js";
 import * as VisualLogging18 from "./../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/listWidget.css.js
@@ -18194,7 +18005,7 @@ var ListWidget = class extends VBox {
     const controls = document.createElement("div");
     controls.classList.add("controls-container");
     controls.classList.add("fill");
-    render5(html4`
+    render5(html3`
       <div class="controls-gradient"></div>
       <div class="controls-buttons">
         <devtools-toolbar>
@@ -18869,7 +18680,7 @@ var ProgressIndicator = class extends HTMLElement {
     this.#labelElement.textContent = title;
   }
   get title() {
-    return this.#labelElement.textContent ?? "";
+    return this.#labelElement.textContent;
   }
   set totalWork(totalWork) {
     this.#progressElement.max = totalWork;
@@ -18895,7 +18706,7 @@ __export(RemoteDebuggingTerminatedScreen_exports, {
 });
 import * as i18n29 from "./../../core/i18n/i18n.js";
 import * as Buttons8 from "./../components/buttons/buttons.js";
-import { html as html5, render as render6 } from "./../lit/lit.js";
+import { html as html4, render as render6 } from "./../lit/lit.js";
 
 // gen/front_end/ui/legacy/remoteDebuggingTerminatedScreen.css.js
 var remoteDebuggingTerminatedScreen_css_default = `/*
@@ -18960,7 +18771,7 @@ var UIStrings15 = {
 var str_15 = i18n29.i18n.registerUIStrings("ui/legacy/RemoteDebuggingTerminatedScreen.ts", UIStrings15);
 var i18nString15 = i18n29.i18n.getLocalizedString.bind(void 0, str_15);
 var DEFAULT_VIEW2 = (input, _output, target) => {
-  render6(html5`
+  render6(html4`
     <style>${remoteDebuggingTerminatedScreen_css_default}</style>
     <div class="header">${i18nString15(UIStrings15.debuggingConnectionWasClosed)}</div>
     <div class="content">
@@ -20544,7 +20355,7 @@ __export(TargetCrashedScreen_exports, {
   TargetCrashedScreen: () => TargetCrashedScreen
 });
 import * as i18n35 from "./../../core/i18n/i18n.js";
-import { html as html6, render as render7 } from "./../lit/lit.js";
+import { html as html5, render as render7 } from "./../lit/lit.js";
 
 // gen/front_end/ui/legacy/targetCrashedScreen.css.js
 var targetCrashedScreen_css_default = `/*
@@ -20580,7 +20391,7 @@ var UIStrings18 = {
 var str_18 = i18n35.i18n.registerUIStrings("ui/legacy/TargetCrashedScreen.ts", UIStrings18);
 var i18nString18 = i18n35.i18n.getLocalizedString.bind(void 0, str_18);
 var DEFAULT_VIEW3 = (input, _output, target) => {
-  render7(html6`
+  render7(html5`
     <style>${targetCrashedScreen_css_default}</style>
     <div class="message">${i18nString18(UIStrings18.devtoolsWasDisconnectedFromThe)}</div>
     <div class="message">${i18nString18(UIStrings18.oncePageIsReloadedDevtoolsWill)}</div>`, target);
@@ -22569,7 +22380,6 @@ export {
   FilterBar_exports as FilterBar,
   FilterSuggestionBuilder_exports as FilterSuggestionBuilder,
   ForwardedInputEventHandler_exports as ForwardedInputEventHandler,
-  Fragment_exports as Fragment,
   GlassPane_exports as GlassPane,
   Infobar_exports as Infobar,
   InplaceEditor_exports as InplaceEditor,

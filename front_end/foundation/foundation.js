@@ -21,6 +21,7 @@ var Universe = class {
       forceNew: true,
       ...options.settingsCreationOptions
     });
+    this.context.set(Common.Settings.Settings, settings);
     const targetManager = new SDK.TargetManager.TargetManager(this.context, options.overrideAutoStartModels);
     this.context.set(SDK.TargetManager.TargetManager, targetManager);
     const multitargetNetworkManager = new SDK.NetworkManager.MultitargetNetworkManager(targetManager);

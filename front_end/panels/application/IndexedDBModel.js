@@ -125,7 +125,7 @@ export class IndexedDBModel extends SDK.SDKModel.SDKModel {
             return;
         }
         for (const [storageBucketName] of this.databaseNamesByStorageKeyAndBucket.get(storageKey) || []) {
-            const storageBucket = this.storageBucketModel?.getBucketByName(storageKey, storageBucketName ?? undefined)?.bucket;
+            const storageBucket = this.storageBucketModel?.getBucketByName(storageKey, storageBucketName)?.bucket;
             if (storageBucket) {
                 this.removeStorageBucket(storageBucket);
             }
@@ -147,7 +147,7 @@ export class IndexedDBModel extends SDK.SDKModel.SDKModel {
         for (const [storageKey] of this.databaseNamesByStorageKeyAndBucket) {
             const storageBucketNames = this.databaseNamesByStorageKeyAndBucket.get(storageKey)?.keys() || [];
             for (const storageBucketName of storageBucketNames) {
-                const storageBucket = this.storageBucketModel?.getBucketByName(storageKey, storageBucketName ?? undefined)?.bucket;
+                const storageBucket = this.storageBucketModel?.getBucketByName(storageKey, storageBucketName)?.bucket;
                 if (storageBucket) {
                     await this.loadDatabaseNamesByStorageBucket(storageBucket);
                 }

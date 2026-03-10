@@ -12522,11 +12522,13 @@ __export(DOMModel_exports, {
   ARIA_ATTRIBUTES: () => ARIA_ATTRIBUTES,
   AdoptedStyleSheet: () => AdoptedStyleSheet,
   DOMDocument: () => DOMDocument,
+  DOMDocumentSnapshot: () => DOMDocumentSnapshot,
   DOMModel: () => DOMModel,
   DOMModelUndoStack: () => DOMModelUndoStack,
   DOMNode: () => DOMNode,
   DOMNodeEvents: () => DOMNodeEvents,
   DOMNodeShortcut: () => DOMNodeShortcut,
+  DOMNodeSnapshot: () => DOMNodeSnapshot,
   DeferredDOMNode: () => DeferredDOMNode,
   Events: () => Events8
 });
@@ -19329,7 +19331,7 @@ var SourceMapScopesInfo = class _SourceMapScopesInfo {
    * Returns the authored function name of the function containing the provided generated position.
    */
   findOriginalFunctionName(position) {
-    const originalInnerMostScope = this.findOriginalFunctionScope(position)?.scope ?? void 0;
+    const originalInnerMostScope = this.findOriginalFunctionScope(position)?.scope;
     return this.#findFunctionNameInOriginalScopeChain(originalInnerMostScope);
   }
   /**
@@ -25822,6 +25824,102 @@ var DOMNode = class _DOMNode extends Common21.ObjectWrapper.ObjectWrapper {
     }
     return this.domModel().nodeForId(response.nodeId);
   }
+  async takeSnapshot(ownerDocumentSnapshot) {
+    const snapshot = this instanceof DOMDocument ? new DOMDocumentSnapshot(this.domModel(), {
+      nodeId: this.id,
+      backendNodeId: this.backendNodeId(),
+      nodeType: this.nodeType(),
+      nodeName: this.nodeName(),
+      localName: this.localName(),
+      nodeValue: this.nodeValueInternal
+    }) : new DOMNodeSnapshot(this.domModel());
+    snapshot.id = this.id;
+    snapshot.#backendNodeId = this.#backendNodeId;
+    snapshot.#frameOwnerFrameId = this.#frameOwnerFrameId;
+    snapshot.#nodeType = this.#nodeType;
+    snapshot.#nodeName = this.#nodeName;
+    snapshot.#localName = this.#localName;
+    snapshot.nodeValueInternal = this.nodeValueInternal;
+    snapshot.#pseudoType = this.#pseudoType;
+    snapshot.#pseudoIdentifier = this.#pseudoIdentifier;
+    snapshot.#shadowRootType = this.#shadowRootType;
+    snapshot.#xmlVersion = this.#xmlVersion;
+    snapshot.#isSVGNode = this.#isSVGNode;
+    snapshot.#isScrollable = this.#isScrollable;
+    snapshot.#affectedByStartingStyles = this.#affectedByStartingStyles;
+    snapshot.ownerDocument = ownerDocumentSnapshot || (snapshot instanceof DOMDocument ? snapshot : this.ownerDocument);
+    snapshot.#isInShadowTree = this.#isInShadowTree;
+    snapshot.childNodeCountInternal = this.childNodeCountInternal;
+    if (snapshot instanceof DOMDocument && this instanceof DOMDocument) {
+      snapshot.documentURL = this.documentURL;
+      snapshot.baseURL = this.baseURL;
+    }
+    if (!this.childrenInternal && this.childNodeCountInternal > 0) {
+      await this.getSubtree(1, false);
+    }
+    for (const [name, attr] of this.#attributes) {
+      snapshot.#attributes.set(name, { name: attr.name, value: attr.value, _node: snapshot });
+    }
+    if (this.childrenInternal) {
+      snapshot.childrenInternal = [];
+      for (const child of this.childrenInternal) {
+        const childSnapshot = await child.takeSnapshot(snapshot.ownerDocument || void 0);
+        childSnapshot.parentNode = snapshot;
+        childSnapshot.ownerDocument = snapshot instanceof DOMDocument ? snapshot : snapshot.ownerDocument;
+        snapshot.childrenInternal.push(childSnapshot);
+        if (childSnapshot.ownerDocument instanceof DOMDocument) {
+          if (childSnapshot.nodeName() === "HTML" && !childSnapshot.ownerDocument.documentElement) {
+            childSnapshot.ownerDocument.documentElement = childSnapshot;
+          }
+          if (childSnapshot.nodeName() === "BODY" && !childSnapshot.ownerDocument.body) {
+            childSnapshot.ownerDocument.body = childSnapshot;
+          }
+        }
+      }
+    }
+    for (const root of this.shadowRootsInternal) {
+      const rootSnapshot = await root.takeSnapshot(snapshot.ownerDocument || void 0);
+      rootSnapshot.parentNode = snapshot;
+      rootSnapshot.ownerDocument = snapshot.ownerDocument;
+      snapshot.shadowRootsInternal.push(rootSnapshot);
+    }
+    if (this.templateContentInternal) {
+      const templateSnapshot = await this.templateContentInternal.takeSnapshot(snapshot.ownerDocument || void 0);
+      templateSnapshot.parentNode = snapshot;
+      templateSnapshot.ownerDocument = snapshot.ownerDocument;
+      snapshot.templateContentInternal = templateSnapshot;
+    }
+    if (this.contentDocumentInternal) {
+      const contentDocSnapshot = await this.contentDocumentInternal.takeSnapshot();
+      contentDocSnapshot.parentNode = snapshot;
+      snapshot.contentDocumentInternal = contentDocSnapshot;
+    }
+    if (this.#importedDocument) {
+      const importedDocSnapshot = await this.#importedDocument.takeSnapshot(snapshot.ownerDocument || void 0);
+      importedDocSnapshot.parentNode = snapshot;
+      importedDocSnapshot.ownerDocument = snapshot.ownerDocument;
+      snapshot.#importedDocument = importedDocSnapshot;
+    }
+    for (const [pseudoType, nodes] of this.#pseudoElements) {
+      const snapshots = [];
+      for (const node of nodes) {
+        const pseudoSnapshot = await node.takeSnapshot(snapshot.ownerDocument || void 0);
+        pseudoSnapshot.parentNode = snapshot;
+        pseudoSnapshot.ownerDocument = snapshot.ownerDocument;
+        snapshots.push(pseudoSnapshot);
+      }
+      snapshot.#pseudoElements.set(pseudoType, snapshots);
+    }
+    if (this.#distributedNodes) {
+      snapshot.#distributedNodes = [...this.#distributedNodes];
+    }
+    snapshot.assignedSlot = this.assignedSlot;
+    snapshot.#retainedNodes = this.#retainedNodes;
+    if (this.#adoptedStyleSheets.length) {
+      snapshot.setAdoptedStyleSheets(this.#adoptedStyleSheets.map((sheet) => sheet.id));
+    }
+    return snapshot;
+  }
   classNames() {
     const classes = this.getAttribute("class");
     return classes ? classes.split(/\s+/) : [];
@@ -26598,6 +26696,60 @@ var DOMModelUndoStack = class _DOMModelUndoStack {
   }
 };
 SDKModel.register(DOMModel, { capabilities: 2, autostart: true });
+var DOMNodeSnapshot = class extends DOMNode {
+  init(_doc, _isInShadowTree, _payload, _retainedNodes) {
+  }
+  setNodeName(_name, _callback) {
+  }
+  setNodeValue(_value, _callback) {
+  }
+  setAttribute(_name, _text, _callback) {
+  }
+  setAttributeValue(_name, _value, _callback) {
+  }
+  removeAttribute(_name) {
+    return Promise.resolve();
+  }
+  setOuterHTML(_html, _callback) {
+  }
+  removeNode(_callback) {
+    return Promise.resolve();
+  }
+  copyTo(_targetNode, _anchorNode, _callback) {
+  }
+  moveTo(_targetNode, _anchorNode, _callback) {
+  }
+  setAsInspectedNode() {
+    return Promise.resolve();
+  }
+};
+var DOMDocumentSnapshot = class extends DOMDocument {
+  init(_doc, _isInShadowTree, _payload, _retainedNodes) {
+  }
+  setNodeName(_name, _callback) {
+  }
+  setNodeValue(_value, _callback) {
+  }
+  setAttribute(_name, _text, _callback) {
+  }
+  setAttributeValue(_name, _value, _callback) {
+  }
+  removeAttribute(_name) {
+    return Promise.resolve();
+  }
+  setOuterHTML(_html, _callback) {
+  }
+  removeNode(_callback) {
+    return Promise.resolve();
+  }
+  copyTo(_targetNode, _anchorNode, _callback) {
+  }
+  moveTo(_targetNode, _anchorNode, _callback) {
+  }
+  setAsInspectedNode() {
+    return Promise.resolve();
+  }
+};
 
 // gen/front_end/core/sdk/Resource.js
 var Resource_exports = {};

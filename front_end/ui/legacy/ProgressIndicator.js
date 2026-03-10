@@ -53,7 +53,7 @@ export class ProgressIndicator extends HTMLElement {
         this.#labelElement.textContent = title;
     }
     get title() {
-        return this.#labelElement.textContent ?? '';
+        return this.#labelElement.textContent;
     }
     set totalWork(totalWork) {
         this.#progressElement.max = totalWork;

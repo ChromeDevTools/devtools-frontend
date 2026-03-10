@@ -20,7 +20,6 @@ export var ExperimentName;
     ExperimentName["AUTHORED_DEPLOYED_GROUPING"] = "authored-deployed-grouping";
     ExperimentName["JUST_MY_CODE"] = "just-my-code";
     ExperimentName["USE_SOURCE_MAP_SCOPES"] = "use-source-map-scopes";
-    ExperimentName["TIMELINE_SHOW_POST_MESSAGE_EVENTS"] = "timeline-show-postmessage-events";
     ExperimentName["TIMELINE_DEBUG_MODE"] = "timeline-debug-mode";
     ExperimentName["DURABLE_MESSAGES"] = "durable-messages";
     ExperimentName["JPEG_XL"] = "jpeg-xl";

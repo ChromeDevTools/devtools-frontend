@@ -4451,7 +4451,7 @@ var IndexedDBModel = class _IndexedDBModel extends SDK8.SDKModel.SDKModel {
       return;
     }
     for (const [storageBucketName] of this.databaseNamesByStorageKeyAndBucket.get(storageKey) || []) {
-      const storageBucket = this.storageBucketModel?.getBucketByName(storageKey, storageBucketName ?? void 0)?.bucket;
+      const storageBucket = this.storageBucketModel?.getBucketByName(storageKey, storageBucketName)?.bucket;
       if (storageBucket) {
         this.removeStorageBucket(storageBucket);
       }
@@ -4473,7 +4473,7 @@ var IndexedDBModel = class _IndexedDBModel extends SDK8.SDKModel.SDKModel {
     for (const [storageKey] of this.databaseNamesByStorageKeyAndBucket) {
       const storageBucketNames = this.databaseNamesByStorageKeyAndBucket.get(storageKey)?.keys() || [];
       for (const storageBucketName of storageBucketNames) {
-        const storageBucket = this.storageBucketModel?.getBucketByName(storageKey, storageBucketName ?? void 0)?.bucket;
+        const storageBucket = this.storageBucketModel?.getBucketByName(storageKey, storageBucketName)?.bucket;
         if (storageBucket) {
           await this.loadDatabaseNamesByStorageBucket(storageBucket);
         }
@@ -8396,6 +8396,7 @@ import * as i18n39 from "./../../core/i18n/i18n.js";
 import * as SDK19 from "./../../core/sdk/sdk.js";
 import * as NetworkForward2 from "./../network/forward/forward.js";
 import * as Buttons6 from "./../../ui/components/buttons/buttons.js";
+import { Link } from "./../../ui/kit/kit.js";
 import * as Components3 from "./../../ui/legacy/components/utils/utils.js";
 import * as UI15 from "./../../ui/legacy/legacy.js";
 import * as VisualLogging10 from "./../../ui/visual_logging/visual_logging.js";
@@ -9186,13 +9187,7 @@ var ServiceWorkersView = class extends UI15.Widget.VBox {
     othersView.show(othersDiv);
     const othersSection = othersView.appendSection(i18nString20(UIStrings20.serviceWorkersFromOtherOrigins));
     const othersSectionRow = othersSection.appendRow();
-    const seeOthers = UI15.Fragment.html`<a class="devtools-link" role="link" tabindex="0" href="chrome://serviceworker-internals" target="_blank" style="display: inline; cursor: pointer;">${i18nString20(UIStrings20.seeAllRegistrations)}</a>`;
-    seeOthers.setAttribute("jslog", `${VisualLogging10.link("view-all").track({ click: true })}`);
-    self.onInvokeElement(seeOthers, (event) => {
-      const rootTarget = SDK19.TargetManager.TargetManager.instance().rootTarget();
-      rootTarget && void rootTarget.targetAgent().invoke_createTarget({ url: "chrome://serviceworker-internals?devtools" });
-      event.consume(true);
-    });
+    const seeOthers = Link.create("chrome://serviceworker-internals", i18nString20(UIStrings20.seeAllRegistrations), void 0, "view-all");
     othersSectionRow.appendChild(seeOthers);
     this.toolbar.appendToolbarItem(MobileThrottling.ThrottlingManager.throttlingManager().createOfflineToolbarCheckbox());
     const updateOnReloadSetting = Common11.Settings.Settings.instance().createSetting("service-worker-update-on-reload", false);
@@ -10852,7 +10847,7 @@ import * as i18n53 from "./../../core/i18n/i18n.js";
 import * as Platform7 from "./../../core/platform/platform.js";
 import * as SDK23 from "./../../core/sdk/sdk.js";
 import * as uiI18n from "./../../ui/i18n/i18n.js";
-import { Icon, Link } from "./../../ui/kit/kit.js";
+import { Icon, Link as Link2 } from "./../../ui/kit/kit.js";
 import * as PerfUI from "./../../ui/legacy/components/perf_ui/perf_ui.js";
 import * as SettingsUI from "./../../ui/legacy/components/settings_ui/settings_ui.js";
 import * as UI21 from "./../../ui/legacy/legacy.js";
@@ -11129,7 +11124,7 @@ var StorageView = class _StorageView extends UI21.Widget.VBox {
     this.quotaRow = quota.appendSelectableRow();
     this.quotaRow.classList.add("quota-usage-row");
     const learnMoreRow = quota.appendRow();
-    const learnMore = Link.create("https://developer.chrome.com/docs/devtools/progressive-web-apps#opaque-responses", i18nString27(UIStrings27.learnMore), void 0, "learn-more");
+    const learnMore = Link2.create("https://developer.chrome.com/docs/devtools/progressive-web-apps#opaque-responses", i18nString27(UIStrings27.learnMore), void 0, "learn-more");
     learnMoreRow.appendChild(learnMore);
     this.quotaUsage = null;
     this.pieChart = new PerfUI.PieChart.PieChart();

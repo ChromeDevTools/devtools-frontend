@@ -608,6 +608,8 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         if (isNarrow === this.#walkthrough.isInlined) {
             return;
         }
+        // If the UI changed, we reset the visibility of the AI Walkthrough.
+        this.#clearWalkthrough();
         this.#walkthrough.isInlined = isNarrow;
         this.requestUpdate();
     }

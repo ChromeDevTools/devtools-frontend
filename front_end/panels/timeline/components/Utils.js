@@ -197,7 +197,7 @@ export var NumberWithUnit;
         if (lastPart) {
             element.append(lastPart);
         }
-        return { text: element.textContent ?? '', element };
+        return { text: element.textContent, element };
     }
     NumberWithUnit.formatMicroSecondsAsSeconds = formatMicroSecondsAsSeconds;
     function formatMicroSecondsAsMillisFixed(time, fractionDigits = 0) {
@@ -219,7 +219,7 @@ export var NumberWithUnit;
         if (lastPart) {
             element.append(lastPart);
         }
-        return { text: element.textContent ?? '', element };
+        return { text: element.textContent, element };
     }
     NumberWithUnit.formatMicroSecondsAsMillisFixed = formatMicroSecondsAsMillisFixed;
 })(NumberWithUnit || (NumberWithUnit = {}));

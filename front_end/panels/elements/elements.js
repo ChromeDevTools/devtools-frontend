@@ -4018,11 +4018,15 @@ var GridTemplateRenderer = class extends rendererBase(SDK6.CSSPropertyParserMatc
     }
     const indent = Common2.Settings.Settings.instance().moduleSetting("text-editor-indent").get();
     const container = document.createDocumentFragment();
-    for (const line of match.lines) {
-      const value5 = Renderer.render(line, context);
-      const lineBreak = UI7.Fragment.html`<br /><span class='styles-clipboard-only'>${indent.repeat(2)}</span>`;
-      container.append(lineBreak, ...value5.nodes);
-    }
+    const template = html4`
+      ${match.lines.map((line) => {
+      const lines = Renderer.render(line, context).nodes;
+      return html4`
+        <span class='styles-clipboard-only'>${indent.repeat(2)}</span>
+        ${lines}`;
+    })}
+    `;
+    render3(template, container);
     return [container];
   }
 };
@@ -10352,7 +10356,14 @@ var DEFAULT_VIEW2 = (input, _output, target) => {
   `, target);
 };
 var ComputedStyleWidget = class extends UI12.Widget.VBox {
-  #computedStyleModel;
+  /**
+   * We store these because they are used when calculating the dimensions for the image preview.
+   * When we need to get those dimensions, we try to resolve them against the
+   * node fresh (in case the dimensions have changed), but if that doesn't work,
+   * we fallback to the precomputed ones, which helps to deal with situations
+   * where the node might have been removed from the DOM.
+   */
+  #storedNodeFeatures = null;
   #nodeStyle = null;
   #matchedStyles = null;
   #propertyTraces = null;
@@ -10410,7 +10421,8 @@ var ComputedStyleWidget = class extends UI12.Widget.VBox {
       }
       return null;
     }, async () => {
-      return await Components4.ImagePreview.loadPrecomputedFeatures(this.#computedStyleModel?.node);
+      const liveFeatures = await Components4.ImagePreview.loadPrecomputedFeatures(this.#nodeStyle?.node);
+      return liveFeatures ?? this.#storedNodeFeatures ?? void 0;
     });
     this.#updateView({ hasMatches: true });
   }
@@ -10465,7 +10477,11 @@ var ComputedStyleWidget = class extends UI12.Widget.VBox {
   }
   set nodeStyle(nodeStyle) {
     this.#nodeStyle = nodeStyle;
-    this.requestUpdate();
+    if (nodeStyle) {
+      void this.#storeNodeFeatures(nodeStyle.node).then(() => this.requestUpdate());
+    } else {
+      this.requestUpdate();
+    }
   }
   get matchedStyles() {
     return this.#matchedStyles;
@@ -10478,12 +10494,13 @@ var ComputedStyleWidget = class extends UI12.Widget.VBox {
     this.#propertyTraces = propertyTraces;
     this.requestUpdate();
   }
-  get computedStyleModel() {
-    return this.#computedStyleModel;
-  }
-  set computedStyleModel(computedStyleModel) {
-    this.#computedStyleModel = computedStyleModel;
-    this.requestUpdate();
+  async #storeNodeFeatures(node) {
+    if (node) {
+      const features = await Components4.ImagePreview.loadPrecomputedFeatures(node);
+      this.#storedNodeFeatures = features ?? null;
+    } else {
+      this.#storedNodeFeatures = null;
+    }
   }
   #shouldGroupStyles() {
     return this.#allowUserControl && this.groupComputedStylesSetting.get();
@@ -10507,10 +10524,6 @@ var ComputedStyleWidget = class extends UI12.Widget.VBox {
   async rebuildAlphabeticalList(nodeStyle, matchedStyles) {
     this.imagePreviewPopover.hide();
     this.linkifier.reset();
-    const cssModel = this.#computedStyleModel?.cssModel();
-    if (!cssModel) {
-      return;
-    }
     const uniqueProperties = [...nodeStyle.computedStyle.keys()];
     uniqueProperties.sort(propertySorter);
     const node = nodeStyle.node;
@@ -10544,8 +10557,7 @@ var ComputedStyleWidget = class extends UI12.Widget.VBox {
   async rebuildGroupedList(nodeStyle, matchedStyles) {
     this.imagePreviewPopover.hide();
     this.linkifier.reset();
-    const cssModel = this.#computedStyleModel?.cssModel();
-    if (!nodeStyle || !matchedStyles || !cssModel) {
+    if (!nodeStyle || !matchedStyles) {
       this.#updateView({ hasMatches: false });
       return;
     }
@@ -17646,7 +17658,6 @@ var ElementsPanel = class _ElementsPanel extends UI21.Panel.Panel {
     UI21.Context.Context.instance().addFlavorChangeListener(StylesSidebarPane, this.evaluateTrackingComputedStyleUpdatesForNode, this);
     this.stylesWidget = new StylesSidebarPane(this.#computedStyleModel);
     this.#computedStyleWidget = new ComputedStyleWidget();
-    this.#computedStyleWidget.computedStyleModel = this.#computedStyleModel;
     this.#computedStyleModel.addEventListener("ComputedStyleChanged", this.#updateComputedStyles, this);
     this.#computedStyleModel.addEventListener("CSSModelChanged", this.#updateComputedStyles, this);
     this.metricsWidget = new MetricsSidebarPane(this.#computedStyleModel);
@@ -19294,7 +19305,7 @@ var nodeStackTraceWidget_css_default = `/*
 @scope to (devtools-widget > *) {
   .stack-trace {
     font-size: 11px !important; /* stylelint-disable-line declaration-no-important */
-    font-family: Menlo, monospace;
+    font-family: Menlo, var(--monospace-font-family);
   }
 }
 

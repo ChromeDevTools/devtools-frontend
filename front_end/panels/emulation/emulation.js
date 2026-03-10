@@ -202,11 +202,6 @@ var UIStrings = {
    */
   rotate: "Rotate",
   /**
-   * @description Fallback/default text used for the name of a custom device when no name has been
-   * provided by the user.
-   */
-  none: "None",
-  /**
    * @description Tooltip of the rotate/screen orientation button.
    */
   screenOrientationOptions: "Screen orientation options",
@@ -224,7 +219,11 @@ var UIStrings = {
    * @description Tooltip tip for a drop-down menu where the user can select the device
    * posture e.g. Continuous, Folded.
    */
-  devicePosture: "Device posture"
+  devicePosture: "Device posture",
+  /**
+   * @description Title of the network throttling selection in the Device Mode Toolbar.
+   */
+  throttling: "Throttling"
 };
 var str_ = i18n.i18n.registerUIStrings("panels/emulation/DeviceModeToolbar.ts", UIStrings);
 var i18nString = i18n.i18n.getLocalizedString.bind(void 0, str_);
@@ -256,7 +255,6 @@ var DeviceModeToolbar = class {
   cachedDeviceScale;
   cachedUaType;
   xItem;
-  throttlingConditionsItem;
   cachedModelType;
   cachedScale;
   cachedModelDevice;
@@ -285,6 +283,11 @@ var DeviceModeToolbar = class {
     this.persistenceSetting = Common.Settings.Settings.instance().createSetting("emulation.device-mode-value", { device: "", orientation: "", mode: "" });
     this.model.toolbarControlsEnabledSetting().addChangeListener(updateToolbarsEnabled);
     updateToolbarsEnabled();
+    this.updateDeviceMenuItems();
+    this.updateScaleMenuItems();
+    this.updateDeviceScaleMenuItems();
+    this.updateUserAgentMenuItems();
+    this.updateDevicePostureItems();
     function updateToolbarsEnabled() {
       const enabled = model.toolbarControlsEnabledSetting().get();
       mainToolbar.setEnabled(enabled);
@@ -299,9 +302,8 @@ var DeviceModeToolbar = class {
   createMainToolbar() {
     const mainToolbar = this.#element.createChild("devtools-toolbar", "main-toolbar");
     mainToolbar.appendToolbarItem(new UI.Toolbar.ToolbarItem(this.createEmptyToolbarElement()));
-    this.deviceSelectItem = new UI.Toolbar.ToolbarMenuButton(this.appendDeviceMenuItems.bind(this), void 0, void 0, "device");
+    this.deviceSelectItem = new UI.Toolbar.ToolbarComboBox(this.onDeviceChange.bind(this), i18nString(UIStrings.deviceType), "dark-text", "device");
     this.deviceSelectItem.turnShrinkable();
-    this.deviceSelectItem.setDarkText();
     const dimensionsSpan = uiI18n.getFormatLocalizedString(str_, UIStrings.dimensions, { PH1: this.deviceSelectItem.element });
     mainToolbar.append(...dimensionsSpan.childNodes);
     mainToolbar.appendToolbarItem(this.deviceSelectItem);
@@ -327,32 +329,24 @@ var DeviceModeToolbar = class {
     mainToolbar.appendToolbarItem(this.xItem);
     mainToolbar.appendToolbarItem(new UI.Toolbar.ToolbarItem(this.heightInput));
     mainToolbar.appendToolbarItem(new UI.Toolbar.ToolbarItem(this.createEmptyToolbarElement()));
-    this.scaleItem = new UI.Toolbar.ToolbarMenuButton(this.appendScaleMenuItems.bind(this), void 0, void 0, "scale");
-    setTitleForButton(this.scaleItem, i18nString(UIStrings.zoom));
+    this.scaleItem = new UI.Toolbar.ToolbarComboBox(this.onScaleChange.bind(this), i18nString(UIStrings.zoom), "dark-text", "scale");
     this.scaleItem.turnShrinkable();
-    this.scaleItem.setDarkText();
     mainToolbar.appendToolbarItem(this.scaleItem);
     const autoAdjustScaleButton = new UI.Toolbar.ToolbarSettingToggle(this.autoAdjustScaleSetting, "center-focus-weak", i18nString(UIStrings.autoadjustZoom));
     mainToolbar.appendToolbarItem(autoAdjustScaleButton);
     mainToolbar.appendToolbarItem(new UI.Toolbar.ToolbarItem(this.createEmptyToolbarElement()));
-    this.deviceScaleItem = new UI.Toolbar.ToolbarMenuButton(this.appendDeviceScaleMenuItems.bind(this), void 0, void 0, "device-pixel-ratio");
+    this.deviceScaleItem = new UI.Toolbar.ToolbarComboBox(this.onDeviceScaleChange.bind(this), i18nString(UIStrings.devicePixelRatio), "dark-text", "device-pixel-ratio");
     this.deviceScaleItem.turnShrinkable();
     this.deviceScaleItem.setVisible(this.showDeviceScaleFactorSetting.get());
-    setTitleForButton(this.deviceScaleItem, i18nString(UIStrings.devicePixelRatio));
-    this.deviceScaleItem.setDarkText();
     const deviceScaleSpan = uiI18n.getFormatLocalizedString(str_, UIStrings.dpr, { PH1: this.deviceScaleItem.element });
     mainToolbar.append(...deviceScaleSpan.childNodes);
     mainToolbar.appendToolbarItem(this.deviceScaleItem);
     mainToolbar.appendToolbarItem(new UI.Toolbar.ToolbarItem(this.createEmptyToolbarElement()));
-    this.uaItem = new UI.Toolbar.ToolbarMenuButton(this.appendUserAgentMenuItems.bind(this), void 0, void 0, "device-type");
+    this.uaItem = new UI.Toolbar.ToolbarComboBox(this.onUAChange.bind(this), i18nString(UIStrings.deviceType), "dark-text", "device-type");
     this.uaItem.turnShrinkable();
     this.uaItem.setVisible(this.showUserAgentTypeSetting.get());
-    setTitleForButton(this.uaItem, i18nString(UIStrings.deviceType));
-    this.uaItem.setDarkText();
     mainToolbar.appendToolbarItem(this.uaItem);
-    this.throttlingConditionsItem = MobileThrottling.ThrottlingManager.throttlingManager().createMobileThrottlingButton();
-    this.throttlingConditionsItem.turnShrinkable();
-    mainToolbar.appendToolbarItem(this.throttlingConditionsItem);
+    MobileThrottling.NetworkThrottlingSelector.NetworkThrottlingSelect.createForGlobalConditions(mainToolbar, i18nString(UIStrings.throttling));
     const saveDataItem = MobileThrottling.ThrottlingManager.throttlingManager().createSaveDataOverrideSelector();
     saveDataItem.turnShrinkable();
     mainToolbar.appendToolbarItem(saveDataItem);
@@ -364,10 +358,8 @@ var DeviceModeToolbar = class {
     this.spanButton.addEventListener("Click", this.spanClicked, this);
     mainToolbar.appendToolbarItem(this.spanButton);
     mainToolbar.appendToolbarItem(new UI.Toolbar.ToolbarItem(this.createEmptyToolbarElement()));
-    this.postureItem = new UI.Toolbar.ToolbarMenuButton(this.appendDevicePostureItems.bind(this), void 0, void 0, "device-posture");
+    this.postureItem = new UI.Toolbar.ToolbarComboBox(this.onPostureChange.bind(this), i18nString(UIStrings.devicePosture), "dark-text", "device-posture");
     this.postureItem.turnShrinkable();
-    this.postureItem.setDarkText();
-    setTitleForButton(this.postureItem, i18nString(UIStrings.devicePosture));
     mainToolbar.appendToolbarItem(this.postureItem);
     return mainToolbar;
   }
@@ -384,9 +376,21 @@ var DeviceModeToolbar = class {
     const currentPosture = this.currentDevicePosture();
     return ["Continuous", "Folded"].map((title) => ({ title, value: title, selected: currentPosture === title }));
   }
-  appendDevicePostureItems(contextMenu) {
+  updateDevicePostureItems() {
+    this.postureItem.removeOptions();
     for (const option of this.getDevicePostureOptions()) {
-      contextMenu.defaultSection().appendCheckboxItem(option.title, this.spanClicked.bind(this), { checked: option.selected, jslogContext: option.title.toLowerCase() });
+      this.postureItem.createOption(option.title, option.value, option.title.toLowerCase());
+    }
+    const currentPosture = this.currentDevicePosture();
+    if (this.postureItem.element.value !== currentPosture) {
+      this.postureItem.element.value = currentPosture;
+    }
+    this.resizeItem(this.postureItem);
+  }
+  onPostureChange() {
+    const value = this.postureItem.element.value;
+    if (value !== this.currentDevicePosture()) {
+      this.spanClicked();
     }
   }
   currentDevicePosture() {
@@ -426,12 +430,20 @@ var DeviceModeToolbar = class {
       return { title, value, selected: currentScale === value, jslogContext };
     });
   }
-  appendScaleMenuItems(contextMenu) {
-    for (const option of this.getScaleOptions()) {
-      contextMenu.defaultSection().appendCheckboxItem(option.title, this.onScaleMenuChanged.bind(this, option.value), { checked: option.selected, jslogContext: option.jslogContext });
+  updateScaleMenuItems() {
+    this.scaleItem.removeOptions();
+    const options = this.getScaleOptions();
+    for (const option of options) {
+      this.scaleItem.createOption(option.title, String(option.value), option.jslogContext);
     }
+    const selected = options.find((o) => o.selected);
+    if (selected) {
+      this.scaleItem.element.value = String(selected.value);
+    }
+    this.resizeItem(this.scaleItem, true);
   }
-  onScaleMenuChanged(value) {
+  onScaleChange() {
+    const value = Number(this.scaleItem.selectedOption()?.value);
     this.model.scaleSetting().set(value);
   }
   getDeviceScaleFactorOptions() {
@@ -458,11 +470,21 @@ var DeviceModeToolbar = class {
       };
     });
   }
-  appendDeviceScaleMenuItems(contextMenu) {
-    const deviceScaleFactorSetting = this.model.deviceScaleFactorSetting();
-    for (const option of this.getDeviceScaleFactorOptions()) {
-      contextMenu.defaultSection().appendCheckboxItem(option.title, deviceScaleFactorSetting.set.bind(deviceScaleFactorSetting, option.value), { checked: option.selected, jslogContext: option.jslogContext });
+  updateDeviceScaleMenuItems() {
+    this.deviceScaleItem.removeOptions();
+    const options = this.getDeviceScaleFactorOptions();
+    for (const option of options) {
+      this.deviceScaleItem.createOption(option.title, String(option.value), option.jslogContext);
     }
+    const selected = options.find((o) => o.selected);
+    if (selected) {
+      this.deviceScaleItem.element.value = String(selected.value);
+    }
+    this.resizeItem(this.deviceScaleItem, true);
+  }
+  onDeviceScaleChange() {
+    const value = Number(this.deviceScaleItem.selectedOption()?.value);
+    this.model.deviceScaleFactorSetting().set(value);
   }
   getUserAgentOptions() {
     const uaSetting = this.model.uaSetting();
@@ -479,11 +501,22 @@ var DeviceModeToolbar = class {
       jslogContext: Platform.StringUtilities.toKebabCase(value)
     }));
   }
-  appendUserAgentMenuItems(contextMenu) {
-    const uaSetting = this.model.uaSetting();
-    for (const option of this.getUserAgentOptions()) {
-      contextMenu.defaultSection().appendCheckboxItem(option.title, uaSetting.set.bind(uaSetting, option.value), { checked: option.selected, jslogContext: option.jslogContext });
+  updateUserAgentMenuItems() {
+    this.uaItem.removeOptions();
+    const options = this.getUserAgentOptions();
+    for (const option of options) {
+      this.uaItem.createOption(option.title, option.value, option.jslogContext);
     }
+    const selected = options.find((o) => o.selected);
+    if (selected) {
+      this.uaItem.element.value = selected.value;
+    }
+    this.resizeItem(this.uaItem);
+  }
+  onUAChange() {
+    const value = this.uaItem.selectedOption()?.value;
+    this.model.uaSetting().set(value);
+    this.resizeItem(this.uaItem);
   }
   appendOptionsMenuItems(contextMenu) {
     const model = this.model;
@@ -560,26 +593,57 @@ var DeviceModeToolbar = class {
       }
     };
   }
-  appendDeviceMenuItems(contextMenu) {
+  updateDeviceMenuItems() {
+    this.deviceSelectItem.removeOptions();
     const options = this.getDeviceModeOptions();
-    contextMenu.headerSection().appendCheckboxItem(options.responsive.title, this.switchToResponsive.bind(this), { checked: options.responsive.selected, jslogContext: options.responsive.jslogContext });
-    appendGroup.call(this, options.standard);
-    appendGroup.call(this, options.custom);
-    contextMenu.footerSection().appendItem(options.edit.title, this.emulatedDevicesList.revealCustomSetting.bind(this.emulatedDevicesList), { jslogContext: options.edit.jslogContext });
-    function appendGroup(group) {
+    this.deviceSelectItem.createOption(options.responsive.title, "Responsive", options.responsive.jslogContext);
+    appendGroup.call(this, options.standard, "Standard");
+    appendGroup.call(this, options.custom, "Custom");
+    this.deviceSelectItem.createOption(options.edit.title, "Edit", options.edit.jslogContext);
+    this.updateDeviceSelection();
+    function appendGroup(group, label) {
       if (!group.length) {
         return;
       }
-      const section = contextMenu.section();
-      for (const item of group) {
-        section.appendCheckboxItem(item.title, this.emulateDevice.bind(this, item.device), {
-          checked: item.selected,
-          jslogContext: item.jslogContext
-        });
+      const optGroup = document.createElement("optgroup");
+      optGroup.label = label;
+      for (const item2 of group) {
+        const option = document.createElement("option");
+        option.value = item2.title;
+        option.text = item2.title;
+        option.setAttribute("jslog", `${VisualLogging.item(item2.jslogContext).track({ click: true })}`);
+        optGroup.appendChild(option);
+      }
+      this.deviceSelectItem.addOption(optGroup);
+    }
+  }
+  updateDeviceSelection() {
+    const device = this.model.device();
+    if (this.model.type() === EmulationModel.DeviceModeModel.Type.Responsive) {
+      this.deviceSelectItem.element.value = "Responsive";
+    } else if (device) {
+      this.deviceSelectItem.element.value = device.title;
+    }
+    this.resizeItem(this.deviceSelectItem);
+  }
+  onDeviceChange() {
+    const value = this.deviceSelectItem.selectedOption()?.value;
+    if (value === "Edit") {
+      this.emulatedDevicesList.revealCustomSetting();
+      this.updateDeviceSelection();
+    } else if (value === "Responsive") {
+      this.switchToResponsive();
+    } else {
+      for (const device of this.allDevices()) {
+        if (device.title === value) {
+          this.emulateDevice(device);
+          break;
+        }
       }
     }
   }
   deviceListChanged() {
+    this.updateDeviceMenuItems();
     const device = this.model.device();
     if (!device) {
       return;
@@ -602,7 +666,11 @@ var DeviceModeToolbar = class {
   }
   updateUserAgentTypeVisibility() {
     if (this.uaItem) {
-      this.uaItem.setVisible(this.showUserAgentTypeSetting.get());
+      const visible = this.showUserAgentTypeSetting.get();
+      this.uaItem.setVisible(visible);
+      if (visible) {
+        this.resizeItem(this.uaItem);
+      }
     }
   }
   spanClicked() {
@@ -717,28 +785,24 @@ var DeviceModeToolbar = class {
     this.heightInput.size = this.model.type() === EmulationModel.DeviceModeModel.Type.Responsive && this.model.isFullHeight() ? "" : String(size.height);
     this.heightInput.placeholder = String(size.height);
     if (this.model.scale() !== this.cachedScale) {
-      this.scaleItem.setText(`${this.getPrettyZoomPercentage()}%`);
+      this.updateScaleMenuItems();
       this.cachedScale = this.model.scale();
     }
     const deviceScale = this.model.appliedDeviceScaleFactor();
     if (deviceScale !== this.cachedDeviceScale) {
-      this.deviceScaleItem.setText(`${deviceScale.toFixed(1)}`);
+      this.deviceScaleItem.element.value = String(deviceScale);
       this.cachedDeviceScale = deviceScale;
+      this.resizeItem(this.deviceScaleItem, true);
     }
     const uaType = this.model.appliedUserAgentType();
     if (uaType !== this.cachedUaType) {
-      this.uaItem.setText(uaType);
+      this.uaItem.element.value = uaType;
       this.cachedUaType = uaType;
-    }
-    let deviceItemTitle = i18nString(UIStrings.none);
-    if (this.model.type() === EmulationModel.DeviceModeModel.Type.Responsive) {
-      deviceItemTitle = i18nString(UIStrings.responsive);
+      this.updateDeviceScaleMenuItems();
+      this.resizeItem(this.uaItem);
     }
     const device = this.model.device();
-    if (this.model.type() === EmulationModel.DeviceModeModel.Type.Device && device) {
-      deviceItemTitle = device.title;
-    }
-    this.deviceSelectItem.setText(deviceItemTitle);
+    this.updateDeviceSelection();
     if (this.model.device() !== this.cachedModelDevice) {
       const device2 = this.model.device();
       if (device2) {
@@ -754,7 +818,7 @@ var DeviceModeToolbar = class {
     } else if (device?.isFoldableScreen) {
       this.spanButton.setVisible(false);
       this.postureItem.setVisible(true);
-      this.postureItem.setText(this.currentDevicePosture());
+      this.updateDevicePostureItems();
     } else {
       this.spanButton.setVisible(false);
       this.postureItem.setVisible(false);
@@ -804,6 +868,28 @@ var DeviceModeToolbar = class {
       }
     }
     this.model.emulate(EmulationModel.DeviceModeModel.Type.Responsive, null, null);
+  }
+  resizeItem(item2, stripParens = false) {
+    const selectedOption = item2.selectedOption();
+    if (!selectedOption) {
+      return;
+    }
+    const dummySelect = item2.element.cloneNode(false);
+    const dummyOption = selectedOption.cloneNode(true);
+    if (stripParens) {
+      const parensIndex = dummyOption.text.indexOf(" (");
+      if (parensIndex >= 0) {
+        dummyOption.text = dummyOption.text.substring(0, parensIndex);
+      }
+    }
+    dummySelect.appendChild(dummyOption);
+    dummySelect.style.width = "fit-content";
+    dummySelect.style.position = "absolute";
+    dummySelect.style.visibility = "hidden";
+    dummySelect.style.pointerEvents = "none";
+    item2.element.parentElement?.appendChild(dummySelect);
+    item2.element.style.width = dummySelect.offsetWidth + "px";
+    dummySelect.remove();
   }
 };
 

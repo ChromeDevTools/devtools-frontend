@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as i18n from '../../core/i18n/i18n.js';
-import * as UI from '../../ui/legacy/legacy.js';
+import { html, render } from '../../ui/lit/lit.js';
 import { AffectedElementsView } from './AffectedElementsView.js';
 const UIStrings = {
     /**
@@ -22,16 +22,19 @@ export class AffectedPermissionElementsView extends AffectedElementsView {
     }
     async #appendAffectedElements(issues) {
         let count = 0;
+        // clang-format off
+        const templates = [];
         for (const issue of issues) {
             for (const element of issue.elements()) {
-                const rowElement = UI.Fragment.html `
-    <tr>
-      ${await this.createElementCell(element, this.issue.getCategory())}
-    </tr>`;
-                this.affectedResources.appendChild(rowElement);
                 count++;
+                templates.push(html `<tr>
+          ${await this.createElementCell(element, this.issue.getCategory())}
+        </tr>`);
             }
         }
+        // clang-format on
+        // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
+        render(html `${templates}`, this.affectedResources);
         this.updateAffectedResourceCount(count);
     }
 }

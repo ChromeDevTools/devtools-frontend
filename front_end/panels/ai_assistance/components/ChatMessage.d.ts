@@ -93,6 +93,7 @@ export interface MessageInput {
         isExpanded: boolean;
         onToggle: (isOpen: boolean) => void;
         isInlined: boolean;
+        activeMessage: ModelChatMessage | null;
     };
 }
 export declare const DEFAULT_VIEW: (input: ChatMessageViewInput, output: ViewOutput, target: HTMLElement) => void;

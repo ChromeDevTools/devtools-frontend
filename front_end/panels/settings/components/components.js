@@ -15,9 +15,9 @@ import "./../../../ui/kit/kit.js";
 import * as Common from "./../../../core/common/common.js";
 import * as Host from "./../../../core/host/host.js";
 import * as i18n from "./../../../core/i18n/i18n.js";
-import * as SDK from "./../../../core/sdk/sdk.js";
 import * as Badges from "./../../../models/badges/badges.js";
 import * as Buttons from "./../../../ui/components/buttons/buttons.js";
+import * as UIHelpers from "./../../../ui/helpers/helpers.js";
 import * as UI from "./../../../ui/legacy/legacy.js";
 import * as Lit from "./../../../ui/lit/lit.js";
 import * as VisualLogging from "./../../../ui/visual_logging/visual_logging.js";
@@ -417,16 +417,8 @@ var SyncSection = class extends UI.Widget.Widget {
     });
   }
   #onWarningClick(event) {
-    const rootTarget = SDK.TargetManager.TargetManager.instance().rootTarget();
-    if (rootTarget === null) {
-      return;
-    }
-    const warningLink = !this.#syncInfo.isSyncActive ? "chrome://settings/syncSetup" : "chrome://settings/syncSetup/advanced";
-    void rootTarget.targetAgent().invoke_createTarget({ url: warningLink }).then((result) => {
-      if (result.getError()) {
-        Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(warningLink);
-      }
-    });
+    const warningLink = this.#syncInfo.isSyncActive ? "chrome://settings/syncSetup/advanced" : "chrome://settings/syncSetup";
+    UIHelpers.openInNewTab(warningLink);
     event.consume();
   }
   async #fetchGdpDetails() {

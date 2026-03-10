@@ -71,7 +71,6 @@ var ExperimentName;
   ExperimentName2["AUTHORED_DEPLOYED_GROUPING"] = "authored-deployed-grouping";
   ExperimentName2["JUST_MY_CODE"] = "just-my-code";
   ExperimentName2["USE_SOURCE_MAP_SCOPES"] = "use-source-map-scopes";
-  ExperimentName2["TIMELINE_SHOW_POST_MESSAGE_EVENTS"] = "timeline-show-postmessage-events";
   ExperimentName2["TIMELINE_DEBUG_MODE"] = "timeline-debug-mode";
   ExperimentName2["DURABLE_MESSAGES"] = "durable-messages";
   ExperimentName2["JPEG_XL"] = "jpeg-xl";

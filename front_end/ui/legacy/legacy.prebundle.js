@@ -15,7 +15,6 @@ import * as EmptyWidget from './EmptyWidget.js';
 import * as FilterBar from './FilterBar.js';
 import * as FilterSuggestionBuilder from './FilterSuggestionBuilder.js';
 import * as ForwardedInputEventHandler from './ForwardedInputEventHandler.js';
-import * as Fragment from './Fragment.js';
 import * as GlassPane from './GlassPane.js';
 import * as Infobar from './Infobar.js';
 import * as InplaceEditor from './InplaceEditor.js';
@@ -50,5 +49,5 @@ import * as View from './View.js';
 import * as ViewManager from './ViewManager.js';
 import * as Widget from './Widget.js';
 import * as ZoomManager from './ZoomManager.js';
-export { ActionRegistration, ActionRegistry, ARIAUtils, Context, ContextFlavorListener, ContextMenu, Dialog, DockController, DOMUtilities, DropTarget, EmptyWidget, FilterBar, FilterSuggestionBuilder, ForwardedInputEventHandler, Fragment, GlassPane, Infobar, InplaceEditor, inspectorCommonStyles, InspectorView, KeyboardShortcut, LinkContextMenuProvider, ListControl, ListModel, ListWidget, Panel, PopoverHelper, ProgressIndicator, RemoteDebuggingTerminatedScreen, ReportView, ResizerWidget, RootView, SearchableView, ShortcutRegistry, SoftContextMenu, SoftDropDown, SplitWidget, SuggestBox, TabbedPane, TargetCrashedScreen, TextPrompt, Toolbar, Tooltip, TreeOutline, UIUtils, View, ViewManager, Widget, ZoomManager };
+export { ActionRegistration, ActionRegistry, ARIAUtils, Context, ContextFlavorListener, ContextMenu, Dialog, DockController, DOMUtilities, DropTarget, EmptyWidget, FilterBar, FilterSuggestionBuilder, ForwardedInputEventHandler, GlassPane, Infobar, InplaceEditor, inspectorCommonStyles, InspectorView, KeyboardShortcut, LinkContextMenuProvider, ListControl, ListModel, ListWidget, Panel, PopoverHelper, ProgressIndicator, RemoteDebuggingTerminatedScreen, ReportView, ResizerWidget, RootView, SearchableView, ShortcutRegistry, SoftContextMenu, SoftDropDown, SplitWidget, SuggestBox, TabbedPane, TargetCrashedScreen, TextPrompt, Toolbar, Tooltip, TreeOutline, UIUtils, View, ViewManager, Widget, ZoomManager };
 //# sourceMappingURL=legacy.prebundle.js.map

@@ -144,7 +144,7 @@ var AiCodeCompletion = class {
       return typeof temperature === "number" && temperature >= 0 ? temperature : void 0;
     }
     prefix = "\n" + prefix;
-    let additionalContextFiles = additionalFiles ?? void 0;
+    let additionalContextFiles = additionalFiles;
     if (!additionalContextFiles) {
       additionalContextFiles = this.#panel === "console" ? [{
         path: "devtools-console-context.js",

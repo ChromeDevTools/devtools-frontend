@@ -8,9 +8,11 @@ export interface ViewInput {
     isInlined: boolean;
     isExpanded: boolean;
     onToggle: (isOpen: boolean) => void;
+    onOpen: (message: ModelChatMessage) => void;
 }
 export declare function walkthroughTitle(input: {
     isLoading: boolean;
+    hasWidgets: boolean;
     lastStep: Step;
 }): string;
 export declare const DEFAULT_VIEW: (input: ViewInput, _output: null, target: HTMLElement | DocumentFragment) => void;
@@ -23,6 +25,8 @@ export declare class WalkthroughView extends UI.Widget.Widget {
     get markdownRenderer(): MarkdownLitRenderer | null;
     set markdownRenderer(markdownRenderer: MarkdownLitRenderer | null);
     get message(): ModelChatMessage | null;
+    get onOpen(): (message: ModelChatMessage) => void;
+    set onOpen(onOpen: (message: ModelChatMessage) => void);
     set message(message: ModelChatMessage | null);
     set onToggle(onToggle: (isOpen: boolean) => void);
     set isInlined(isInlined: boolean);

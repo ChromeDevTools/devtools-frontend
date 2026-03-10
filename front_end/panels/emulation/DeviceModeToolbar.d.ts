@@ -25,7 +25,6 @@ export declare class DeviceModeToolbar {
     private cachedDeviceScale;
     private cachedUaType;
     private xItem?;
-    private throttlingConditionsItem?;
     private cachedModelType?;
     private cachedScale?;
     private cachedModelDevice?;
@@ -35,15 +34,18 @@ export declare class DeviceModeToolbar {
     private createMainToolbar;
     private createOptionsToolbar;
     private getDevicePostureOptions;
-    private appendDevicePostureItems;
+    private updateDevicePostureItems;
+    private onPostureChange;
     private currentDevicePosture;
     private getScaleOptions;
-    private appendScaleMenuItems;
-    private onScaleMenuChanged;
+    private updateScaleMenuItems;
+    private onScaleChange;
     private getDeviceScaleFactorOptions;
-    private appendDeviceScaleMenuItems;
+    private updateDeviceScaleMenuItems;
+    private onDeviceScaleChange;
     private getUserAgentOptions;
-    private appendUserAgentMenuItems;
+    private updateUserAgentMenuItems;
+    private onUAChange;
     private appendOptionsMenuItems;
     private reset;
     private emulateDevice;
@@ -53,7 +55,9 @@ export declare class DeviceModeToolbar {
     private customDevices;
     private allDevices;
     private getDeviceModeOptions;
-    private appendDeviceMenuItems;
+    private updateDeviceMenuItems;
+    private updateDeviceSelection;
+    private onDeviceChange;
     private deviceListChanged;
     private updateDeviceScaleFactorVisibility;
     private updateUserAgentTypeVisibility;
@@ -64,4 +68,5 @@ export declare class DeviceModeToolbar {
     element(): Element;
     update(): void;
     restore(): void;
+    private resizeItem;
 }

@@ -5409,7 +5409,6 @@ __export(Settings_exports, {
 });
 import * as Platform4 from "./../platform/platform.js";
 import * as Root3 from "./../root/root.js";
-var settingsInstance;
 var Settings = class _Settings {
   syncedStorage;
   globalStorage;
@@ -5448,20 +5447,27 @@ var Settings = class _Settings {
     return this.#settingRegistrations;
   }
   static hasInstance() {
-    return typeof settingsInstance !== "undefined";
+    return Root3.DevToolsContext.globalInstance().has(_Settings);
   }
   static instance(opts = { forceNew: null, syncedStorage: null, globalStorage: null, localStorage: null, settingRegistrations: null }) {
     const { forceNew, syncedStorage, globalStorage, localStorage, settingRegistrations, logSettingAccess, runSettingsMigration } = opts;
-    if (!settingsInstance || forceNew) {
+    if (!Root3.DevToolsContext.globalInstance().has(_Settings) || forceNew) {
       if (!syncedStorage || !globalStorage || !localStorage || !settingRegistrations) {
         throw new Error(`Unable to create settings: global and local storage must be provided: ${new Error().stack}`);
       }
-      settingsInstance = new _Settings({ syncedStorage, globalStorage, localStorage, settingRegistrations, logSettingAccess, runSettingsMigration });
+      Root3.DevToolsContext.globalInstance().set(_Settings, new _Settings({
+        syncedStorage,
+        globalStorage,
+        localStorage,
+        settingRegistrations,
+        logSettingAccess,
+        runSettingsMigration
+      }));
     }
-    return settingsInstance;
+    return Root3.DevToolsContext.globalInstance().get(_Settings);
   }
   static removeInstance() {
-    settingsInstance = void 0;
+    Root3.DevToolsContext.globalInstance().delete(_Settings);
   }
   registerModuleSetting(setting) {
     const settingName = setting.name;

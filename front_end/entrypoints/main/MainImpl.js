@@ -342,7 +342,6 @@ export class MainImpl {
         Root.Runtime.experiments.register(Root.ExperimentNames.ExperimentName.AUTHORED_DEPLOYED_GROUPING, 'Group sources into authored and deployed trees', 'https://goo.gle/authored-deployed', 'https://goo.gle/authored-deployed-feedback');
         // Hide third party code (as determined by ignore lists or source maps)
         Root.Runtime.experiments.register(Root.ExperimentNames.ExperimentName.JUST_MY_CODE, 'Hide ignore-listed code in Sources tree view');
-        Root.Runtime.experiments.register(Root.ExperimentNames.ExperimentName.TIMELINE_SHOW_POST_MESSAGE_EVENTS, 'Performance panel: show postMessage dispatch and handling flows');
         Root.Runtime.experiments.registerHostExperiment({
             name: Root.ExperimentNames.ExperimentName.DURABLE_MESSAGES,
             title: 'Durable Messages',

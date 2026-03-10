@@ -730,7 +730,7 @@ var TreeOutline = class extends HTMLElement {
     this.#scheduledRender = true;
     const hasChildrenInTree = this.#treeData.some((topLevelNode) => isExpandableNode(topLevelNode));
     const ulClasses = Lit2.Directives.classMap({ hasNoChildren: !hasChildrenInTree });
-    await RenderCoordinator.write("TreeOutline render", () => {
+    await RenderCoordinator.write(() => {
       Lit2.render(html`
       <style>${Buttons.textButtonStyles}</style>
       <style>${UI.inspectorCommonStyles}</style>

@@ -2854,7 +2854,7 @@ import * as TraceBounds13 from "./../../services/trace_bounds/trace_bounds.js";
 import * as Tracing5 from "./../../services/tracing/tracing.js";
 import * as Components3 from "./../../ui/legacy/components/utils/utils.js";
 import * as UI16 from "./../../ui/legacy/legacy.js";
-import { Directives as Directives2, html as html3, nothing, render as render3 } from "./../../ui/lit/lit.js";
+import { Directives as Directives2, html as html4, nothing, render as render4 } from "./../../ui/lit/lit.js";
 import * as VisualLogging9 from "./../../ui/visual_logging/visual_logging.js";
 import * as TimelineComponents5 from "./components/components.js";
 
@@ -2893,6 +2893,7 @@ __export(TimelineUIUtils_exports, {
   previewElementSymbol: () => previewElementSymbol,
   timeStampForEventAdjustedForClosestNavigationIfPossible: () => timeStampForEventAdjustedForClosestNavigationIfPossible
 });
+import "./../../ui/kit/kit.js";
 import * as Common11 from "./../../core/common/common.js";
 import * as i18n41 from "./../../core/i18n/i18n.js";
 import * as Platform12 from "./../../core/platform/platform.js";
@@ -3015,7 +3016,6 @@ var codeHighlighter_css_default = `/*
 
 // gen/front_end/panels/timeline/TimelineUIUtils.js
 import * as uiI18n from "./../../ui/i18n/i18n.js";
-import { Link as Link2 } from "./../../ui/kit/kit.js";
 import * as PerfUI13 from "./../../ui/legacy/components/perf_ui/perf_ui.js";
 
 // gen/front_end/ui/legacy/components/utils/imagePreview.css.js
@@ -3099,6 +3099,7 @@ var imagePreview_css_default = `/*
 import * as LegacyComponents from "./../../ui/legacy/components/utils/utils.js";
 import * as UI11 from "./../../ui/legacy/legacy.js";
 import * as ThemeSupport19 from "./../../ui/legacy/theme_support/theme_support.js";
+import { html, render } from "./../../ui/lit/lit.js";
 import * as PanelsCommon from "./../common/common.js";
 import * as TimelineComponents4 from "./components/components.js";
 import * as Extensions3 from "./extensions/extensions.js";
@@ -5322,7 +5323,7 @@ async function innerForTraceCalculate({ recordingStartTime, cruxFieldData } = {}
   const deviceModeModel = EmulationModel.DeviceModeModel.DeviceModeModel.tryInstance();
   let emulatedDeviceTitle;
   if (deviceModeModel?.type() === EmulationModel.DeviceModeModel.Type.Device) {
-    emulatedDeviceTitle = deviceModeModel.device()?.title ?? void 0;
+    emulatedDeviceTitle = deviceModeModel.device()?.title;
   } else if (deviceModeModel?.type() === EmulationModel.DeviceModeModel.Type.Responsive) {
     emulatedDeviceTitle = "Responsive";
   }
@@ -11280,8 +11281,9 @@ var TimelineUIUtils = class _TimelineUIUtils {
       default:
         break;
     }
-    const html4 = UI11.Fragment.html`<div>${Link2.create(link, i18nString21(UIStrings21.learnMore), void 0, "learn-more")} about ${name}.</div>`;
-    return html4;
+    const div = document.createElement("div");
+    render(html`<devtools-link href=${link}>${i18nString21(UIStrings21.learnMore)}</devtools-link> about ${name}.`, div);
+    return div;
   }
   static buildConsumeCacheDetails(eventData, contentHelper) {
     if (typeof eventData.consumedCacheSize === "number") {
@@ -13374,7 +13376,7 @@ async function getPaintProfilerSnapshot(paintProfilerModel, paint) {
 }
 
 // gen/front_end/panels/timeline/TimelinePaintProfilerView.js
-var { html, render } = Lit;
+var { html: html2, render: render2 } = Lit;
 var { createRef, ref } = Lit.Directives;
 var TimelinePaintProfilerView = class extends UI14.SplitWidget.SplitWidget {
   logAndImageSplitWidget;
@@ -13524,7 +13526,7 @@ var TimelinePaintProfilerView = class extends UI14.SplitWidget.SplitWidget {
 };
 var DEFAULT_VIEW = (input, output, target) => {
   const imageElementRef = createRef();
-  render(html`
+  render2(html2`
   <div class="paint-profiler-image-view fill">
     <div class="paint-profiler-image-container" style="-webkit-transform: ${input.imageContainerWebKitTransform}">
       <img src=${input.imageURL} display=${input.imageContainerHidden ? "none" : "block"} ${ref(imageElementRef)}>
@@ -13629,7 +13631,7 @@ import * as i18n45 from "./../../core/i18n/i18n.js";
 import * as SDK11 from "./../../core/sdk/sdk.js";
 import * as Trace29 from "./../../models/trace/trace.js";
 import * as UI15 from "./../../ui/legacy/legacy.js";
-import { html as html2, render as render2 } from "./../../ui/lit/lit.js";
+import { html as html3, render as render3 } from "./../../ui/lit/lit.js";
 import * as VisualLogging8 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/timeline/timelineSelectorStatsView.css.js
@@ -13740,7 +13742,7 @@ var str_23 = i18n45.i18n.registerUIStrings("panels/timeline/TimelineSelectorStat
 var i18nString23 = i18n45.i18n.getLocalizedString.bind(void 0, str_23);
 var SelectorTimingsKey = Trace29.Types.Events.SelectorTimingsKey;
 var DEFAULT_VIEW2 = (input, _output, target) => {
-  render2(html2`
+  render3(html3`
       <devtools-data-grid striped name=${i18nString23(UIStrings23.selectorStats)}
           @contextmenu=${input.onContextMenu.bind(input)}>
         <table>
@@ -13778,7 +13780,7 @@ var DEFAULT_VIEW2 = (input, _output, target) => {
     const styleSheetId = timing[SelectorTimingsKey.StyleSheetId];
     const locations = timing.locations;
     const locationMessage = locations ? null : locations === null ? "" : i18nString23(UIStrings23.unableToLinkViaStyleSheetId, { PH1: styleSheetId });
-    return html2`<tr>
+    return html3`<tr>
             <td data-value=${timing[SelectorTimingsKey.Elapsed]}>
               ${(timing[SelectorTimingsKey.Elapsed] / 1e3).toFixed(3)}
             </td>
@@ -13793,7 +13795,7 @@ var DEFAULT_VIEW2 = (input, _output, target) => {
             <td title=${timing[SelectorTimingsKey.Selector]}>
              ${timing[SelectorTimingsKey.Selector]}
             </td>
-            <td data-value=${styleSheetId}>${locations ? html2`${locations.map((location, itemIndex) => html2`
+            <td data-value=${styleSheetId}>${locations ? html3`${locations.map((location, itemIndex) => html3`
                 <devtools-linkifier .data=${location}></devtools-linkifier
                 >${itemIndex !== locations.length - 1 ? "," : ""}`)}` : locationMessage}
             </td>
@@ -14155,13 +14157,13 @@ var TimelineDetailsPane = class extends Common14.ObjectWrapper.eventMixin(UI16.W
       }
     });
     this.#thirdPartyTree.addEventListener("TreeRowHovered", (node) => {
-      this.dispatchEventToListeners("TreeRowHovered", { node: node.data.node, events: node.data.events ?? void 0 });
+      this.dispatchEventToListeners("TreeRowHovered", { node: node.data.node, events: node.data.events });
     });
     this.#thirdPartyTree.addEventListener("BottomUpButtonClicked", (node) => {
       this.selectTab(Tab.BottomUp, node.data, AggregatedTimelineTreeView.GroupBy.ThirdParties);
     });
     this.#thirdPartyTree.addEventListener("TreeRowClicked", (node) => {
-      this.dispatchEventToListeners("TreeRowClicked", { node: node.data.node, events: node.data.events ?? void 0 });
+      this.dispatchEventToListeners("TreeRowClicked", { node: node.data.node, events: node.data.events });
     });
     this.tabbedPane.addEventListener(UI16.TabbedPane.Events.TabSelected, this.tabSelected, this);
     TraceBounds13.TraceBounds.onChange(this.#onTraceBoundsChangeBound);
@@ -14500,7 +14502,7 @@ var Tab;
   Tab2["SelectorStats"] = "selector-stats";
 })(Tab || (Tab = {}));
 var SUMMARY_DEFAULT_VIEW = (input, _output, target) => {
-  render3(html3`
+  render4(html4`
         <style>${timelineDetailsView_css_default}</style>
         ${Directives2.until(renderSelectedEventDetails(input))}
         ${input.selectedRange ? generateRangeSummaryDetails(input) : nothing}
@@ -14548,7 +14550,7 @@ function generateRangeSummaryDetails(input) {
   const startOffset = startTime - minBoundsMilli;
   const endOffset = endTime - minBoundsMilli;
   const summaryDetailElem = TimelineUIUtils.generateSummaryDetails(aggregatedStats, startOffset, endOffset, events, thirdPartyTree);
-  return html3`${summaryDetailElem}`;
+  return html4`${summaryDetailElem}`;
 }
 async function renderSelectedEventDetails(input) {
   const { selectedEvent, parsedTrace, linkifier } = input;
@@ -14557,7 +14559,7 @@ async function renderSelectedEventDetails(input) {
   }
   const traceRecordingIsFresh = parsedTrace ? Tracing5.FreshRecording.Tracker.instance().recordingIsFresh(parsedTrace) : false;
   if (Trace30.Types.Events.isSyntheticLayoutShift(selectedEvent) || Trace30.Types.Events.isSyntheticLayoutShiftCluster(selectedEvent)) {
-    return html3`
+    return html4`
       <devtools-widget data-layout-shift-details .widgetConfig=${UI16.Widget.widgetConfig(TimelineComponents5.LayoutShiftDetails.LayoutShiftDetails, {
       event: selectedEvent,
       parsedTrace: input.parsedTrace,
@@ -14566,7 +14568,7 @@ async function renderSelectedEventDetails(input) {
       ></devtools-widget>`;
   }
   if (Trace30.Types.Events.isSyntheticNetworkRequest(selectedEvent)) {
-    return html3`
+    return html4`
       <devtools-widget data-network-request-details .widgetConfig=${UI16.Widget.widgetConfig(TimelineComponents5.NetworkRequestDetails.NetworkRequestDetails, {
       request: selectedEvent,
       entityMapper: input.entityMapper,
@@ -14580,10 +14582,10 @@ async function renderSelectedEventDetails(input) {
   if (Trace30.Types.Events.isLegacyTimelineFrame(selectedEvent) && input.filmStrip) {
     const matchedFilmStripFrame = getFilmStripFrame(input.filmStrip, selectedEvent);
     const content = TimelineUIUtils.generateDetailsContentForFrame(selectedEvent, input.filmStrip, matchedFilmStripFrame);
-    return html3`${content}`;
+    return html4`${content}`;
   }
   const traceEventDetails = await TimelineUIUtils.buildTraceEventDetails(parsedTrace, selectedEvent, linkifier, true, input.entityMapper);
-  return html3`${traceEventDetails}`;
+  return html4`${traceEventDetails}`;
 }
 var filmStripFrameCache = /* @__PURE__ */ new WeakMap();
 function getFilmStripFrame(filmStrip, frame) {
@@ -18342,13 +18344,6 @@ var TimingsTrackAppender = class {
 
 // gen/front_end/panels/timeline/CompatibilityTracksAppender.js
 import * as TimelineUtils from "./utils/utils.js";
-var showPostMessageEvents;
-function isShowPostMessageEventsEnabled() {
-  if (showPostMessageEvents === void 0) {
-    showPostMessageEvents = Root7.Runtime.experiments.isEnabled(Root7.ExperimentNames.ExperimentName.TIMELINE_SHOW_POST_MESSAGE_EVENTS);
-  }
-  return showPostMessageEvents;
-}
 function entryIsVisibleInTimeline(entry, parsedTrace) {
   if (parsedTrace?.data.Meta.traceIsGeneric) {
     return true;
@@ -18356,10 +18351,8 @@ function entryIsVisibleInTimeline(entry, parsedTrace) {
   if (Trace36.Types.Events.isUpdateCounters(entry)) {
     return true;
   }
-  if (isShowPostMessageEventsEnabled()) {
-    if (Trace36.Types.Events.isSchedulePostMessage(entry) || Trace36.Types.Events.isHandlePostMessage(entry)) {
-      return true;
-    }
+  if (Trace36.Types.Events.isSchedulePostMessage(entry) || Trace36.Types.Events.isHandlePostMessage(entry)) {
+    return true;
   }
   if (Trace36.Types.Extensions.isSyntheticExtensionEntry(entry)) {
     return true;

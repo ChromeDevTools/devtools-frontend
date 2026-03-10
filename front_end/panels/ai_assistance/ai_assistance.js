@@ -2596,10 +2596,13 @@ var chatMessage_css_default = `/*
 
   .step-widgets-wrapper {
     width: fit-content;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--sys-size-5);
   }
 
   .widget-reveal-container {
-    width: 100%;
     background: var(--sys-color-surface5);
     border-bottom-right-radius: var(--sys-shape-corner-medium);
     border-bottom-left-radius: var(--sys-shape-corner-medium);
@@ -2610,7 +2613,6 @@ var chatMessage_css_default = `/*
     padding: var(--sys-size-4);
     border-top-left-radius: var(--sys-shape-corner-medium);
     border-top-right-radius: var(--sys-shape-corner-medium);
-    width: 100%;
     overflow-x: auto;
     background-color: var(--sys-color-surface3);
 
@@ -2791,15 +2793,24 @@ var UIStrings2 = {
    */
   title: "Investigation steps",
   /**
-   * @description Title for the button that shows the thinking process (walkthrough).
+   * @description Title for the button that shows the walkthrough when there are no widgets in the walkthrough.
    */
-  showThinking: "Show thinking"
+  showThinking: "Show thinking",
+  /**
+   * @description Title for the button that shows the walkthrough when there are widgets in the walkthrough.
+   */
+  showAgentWalkthrough: "Show agent walkthrough"
 };
 var str_2 = i18n7.i18n.registerUIStrings("panels/ai_assistance/components/WalkthroughView.ts", UIStrings2);
 var i18nString2 = i18n7.i18n.getLocalizedString.bind(void 0, str_2);
 function walkthroughTitle(input) {
-  const title = input.isLoading ? titleForStep(input.lastStep) : lockedString4(UIStrings2.showThinking);
-  return title;
+  if (input.isLoading) {
+    return titleForStep(input.lastStep);
+  }
+  if (input.hasWidgets) {
+    return lockedString4(UIStrings2.showAgentWalkthrough);
+  }
+  return lockedString4(UIStrings2.showThinking);
 }
 function renderInlineWalkthrough(input, stepsOutput, steps) {
   const lastStep = steps.at(-1);
@@ -2809,11 +2820,12 @@ function renderInlineWalkthrough(input, stepsOutput, steps) {
   function onToggle(event) {
     input.onToggle(event.target.open);
   }
+  const hasWidgets = steps.some((s) => s.widgets?.length);
   return html4`
     <details class="walkthrough-inline" ?open=${input.isExpanded} @toggle=${onToggle}>
       <summary>
         ${input.isLoading ? html4`<devtools-spinner></devtools-spinner>` : Lit2.nothing}
-        ${walkthroughTitle({ isLoading: input.isLoading, lastStep })}
+        ${walkthroughTitle({ isLoading: input.isLoading, lastStep, hasWidgets })}
         <devtools-icon name="chevron-down"></devtools-icon>
       </summary>
       ${stepsOutput}
@@ -2883,6 +2895,8 @@ var WalkthroughView = class extends UI4.Widget.Widget {
   #markdownRenderer = null;
   #onToggle = () => {
   };
+  #onOpen = () => {
+  };
   #isInlined = false;
   #isExpanded = false;
   constructor(element, view = DEFAULT_VIEW3) {
@@ -2905,6 +2919,13 @@ var WalkthroughView = class extends UI4.Widget.Widget {
   }
   get message() {
     return this.#message;
+  }
+  get onOpen() {
+    return this.#onOpen;
+  }
+  set onOpen(onOpen) {
+    this.#onOpen = onOpen;
+    this.requestUpdate();
   }
   set message(message) {
     this.#message = message;
@@ -2930,6 +2951,7 @@ var WalkthroughView = class extends UI4.Widget.Widget {
       isLoading: this.#isLoading,
       markdownRenderer: this.#markdownRenderer,
       onToggle: this.#onToggle,
+      onOpen: this.#onOpen,
       isInlined: this.#isInlined,
       isExpanded: this.#isExpanded,
       message: this.#message
@@ -3209,13 +3231,16 @@ function renderStepDetails({ step, markdownRenderer, isLast }) {
     ${contextDetails}
   </div>`;
 }
-function renderWalkthroughSidebarButton(input, lastStep) {
+function renderWalkthroughSidebarButton(input, steps) {
   const { message, walkthrough } = input;
-  if (walkthrough.isInlined) {
+  const lastStep = steps.at(-1);
+  if (walkthrough.isInlined || !lastStep) {
     return Lit3.nothing;
   }
+  const hasOneStepWithWidget = steps.some((step) => step.widgets?.length);
   const title = walkthroughTitle({
     isLoading: input.isLoading,
+    hasWidgets: hasOneStepWithWidget,
     lastStep
   });
   return html5`
@@ -3228,7 +3253,7 @@ function renderWalkthroughSidebarButton(input, lastStep) {
         .jslogContext=${walkthrough.isExpanded ? "ai-hide-walkthrough-sidebar" : "ai-show-walkthrough-sidebar"}
         data-show-walkthrough
         @click=${() => {
-    if (walkthrough.isExpanded) {
+    if (walkthrough.activeMessage === input.message && walkthrough.isExpanded) {
       walkthrough.onToggle(false);
     } else {
       walkthrough.onOpen(message);
@@ -3244,7 +3269,7 @@ function renderWalkthroughUI(input, steps) {
     return Lit3.nothing;
   }
   const sideEffectSteps = steps.filter((s) => s.requestApproval);
-  const openWalkThroughSidebarButton = !input.walkthrough.isInlined ? renderWalkthroughSidebarButton(input, lastStep) : Lit3.nothing;
+  const openWalkThroughSidebarButton = !input.walkthrough.isInlined ? renderWalkthroughSidebarButton(input, steps) : Lit3.nothing;
   const sideEffectStepsUI = !input.walkthrough.isInlined && !input.walkthrough.isExpanded && sideEffectSteps.length > 0 ? sideEffectSteps.map((step) => html5`
     <div class="side-effect-container">
       ${renderStep({
@@ -3254,6 +3279,7 @@ function renderWalkthroughUI(input, steps) {
     isLast: true
   })}
     </div> `) : Lit3.nothing;
+  const isExpanded = input.walkthrough.isExpanded && input.walkthrough.activeMessage === input.message || steps.some((s) => s.requestApproval);
   const walkthroughInline = input.walkthrough.isInlined ? html5`
     <div class="walkthrough-container">
       <devtools-widget .widgetConfig=${UI5.Widget.widgetConfig(WalkthroughView, {
@@ -3261,8 +3287,9 @@ function renderWalkthroughUI(input, steps) {
     isLoading: input.isLoading && input.isLastMessage,
     markdownRenderer: input.markdownRenderer,
     isInlined: true,
-    isExpanded: input.isLastMessage && (input.walkthrough.isExpanded || steps.some((step) => Boolean(step.requestApproval))),
-    onToggle: input.walkthrough.onToggle
+    isExpanded,
+    onToggle: input.walkthrough.onToggle,
+    onOpen: input.walkthrough.onOpen
   })}></devtools-widget>
     </div>
   ` : Lit3.nothing;
@@ -3323,29 +3350,33 @@ function renderStep({ step, isLoading, markdownRenderer, isLast }) {
         ${Lit3.Directives.until(renderStepWidgets(step))}
       </div>` : Lit3.nothing}`;
 }
+var computedStyleNodeCache = /* @__PURE__ */ new Map();
 async function makeComputedStyleWidget(widgetData) {
-  const target = SDK2.TargetManager.TargetManager.instance().primaryPageTarget();
-  if (!target) {
-    return null;
+  let domNodeForId = computedStyleNodeCache.get(widgetData.data.backendNodeId);
+  if (!domNodeForId) {
+    const target = SDK2.TargetManager.TargetManager.instance().primaryPageTarget();
+    if (!target) {
+      return null;
+    }
+    const node = new SDK2.DOMModel.DeferredDOMNode(target, widgetData.data.backendNodeId);
+    const resolved = await node.resolvePromise();
+    if (!resolved) {
+      return null;
+    }
+    domNodeForId = resolved;
+    computedStyleNodeCache.set(widgetData.data.backendNodeId, resolved);
   }
-  const node = new SDK2.DOMModel.DeferredDOMNode(target, widgetData.data.backendNodeId);
-  const resolved = await node.resolvePromise();
-  if (!resolved) {
-    return null;
-  }
-  const model = new ComputedStyle.ComputedStyleModel.ComputedStyleModel(resolved);
-  const styles = new ComputedStyle.ComputedStyleModel.ComputedStyle(resolved, widgetData.data.computedStyles);
+  const styles = new ComputedStyle.ComputedStyleModel.ComputedStyle(domNodeForId, widgetData.data.computedStyles);
   const widgetConfig = UI5.Widget.widgetConfig(Elements.ComputedStyleWidget.ComputedStyleWidget, {
     nodeStyle: styles,
     matchedStyles: widgetData.data.matchedCascade,
     // This disables showing the nested traces and detailed information in the widget.
     propertyTraces: null,
-    computedStyleModel: model,
     allowUserControl: false,
     filterText: new RegExp(widgetData.data.properties.join("|"), "i")
   });
   const widget = html5`<devtools-widget class="computed-styles-widget" .widgetConfig=${widgetConfig}></devtools-widget>`;
-  return { renderedWidget: widget, revealable: new Elements.ElementsPanel.NodeComputedStyles(resolved) };
+  return { renderedWidget: widget, revealable: new Elements.ElementsPanel.NodeComputedStyles(domNodeForId) };
 }
 function renderWidgetResponse(response) {
   if (response === null) {
@@ -3358,15 +3389,17 @@ function renderWidgetResponse(response) {
     void Common3.Revealer.reveal(response?.revealable);
   }
   return html5`
-    <div class="widget-content-container">
-      ${response.renderedWidget}
-    </div>
-    <div class="widget-reveal-container">
-      <devtools-button class="widget-reveal"
-        .iconName=${"tab-move"}
-        .variant=${"text"}
-        @click=${onReveal}
-      >${lockedString5(UIStringsNotTranslate4.reveal)}</devtools-button>
+    <div class="widget-and-revealer-container">
+      <div class="widget-content-container">
+        ${response.renderedWidget}
+      </div>
+      <div class="widget-reveal-container">
+        <devtools-button class="widget-reveal"
+          .iconName=${"tab-move"}
+          .variant=${"text"}
+          @click=${onReveal}
+        >${lockedString5(UIStringsNotTranslate4.reveal)}</devtools-button>
+      </div>
     </div>
     `;
 }
@@ -3612,7 +3645,8 @@ var ChatMessage = class extends UI5.Widget.Widget {
     onToggle: () => {
     },
     isInlined: false,
-    isExpanded: false
+    isExpanded: false,
+    activeMessage: null
   };
   #suggestionsResizeObserver = new ResizeObserver(() => this.#handleSuggestionsScrollOrResize());
   #suggestionsEvaluateLayoutThrottler = new Common3.Throttler.Throttler(50);
@@ -5540,6 +5574,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
     if (isNarrow === this.#walkthrough.isInlined) {
       return;
     }
+    this.#clearWalkthrough();
     this.#walkthrough.isInlined = isNarrow;
     this.requestUpdate();
   }

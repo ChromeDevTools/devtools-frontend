@@ -8910,7 +8910,7 @@ var ConversationHandler = class _ConversationHandler extends Common9.ObjectWrapp
   static instance(opts) {
     if (opts?.forceNew || conversationHandlerInstance === void 0) {
       const aidaClient = opts?.aidaClient ?? new Host13.AidaClient.AidaClient();
-      conversationHandlerInstance = new _ConversationHandler(aidaClient, opts?.aidaAvailability ?? void 0);
+      conversationHandlerInstance = new _ConversationHandler(aidaClient, opts?.aidaAvailability);
     }
     return conversationHandlerInstance;
   }

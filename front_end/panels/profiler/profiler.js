@@ -5851,8 +5851,13 @@ var HeapSnapshotObjectNode = class _HeapSnapshotObjectNode extends HeapSnapshotG
     if (this.cycledWithAncestorGridNode) {
       div.classList.add("cycled-ancestor-node");
     }
-    div.prepend(UI12.Fragment.html`<span class="property-name ${nameClass}">${name}</span>
-  <span class="grayed">${this.edgeNodeSeparator()}</span>`);
+    const property = document.createElement("span");
+    property.classList.add("property-name", nameClass);
+    property.textContent = name;
+    const separator = document.createElement("span");
+    separator.classList.add("grayed");
+    separator.textContent = this.edgeNodeSeparator();
+    div.prepend(property, separator);
   }
   edgeNodeSeparator() {
     return "::";
@@ -6060,7 +6065,8 @@ var HeapSnapshotConstructorNode = class extends HeapSnapshotGridNode {
   createCell(columnId) {
     const cell = columnId === "object" ? super.createCell(columnId) : this.createValueCell(columnId);
     if (columnId === "object" && this.count > 1) {
-      cell.appendChild(UI12.Fragment.html`<span class="objects-count">×${this.data.count}</span>`);
+      const template = html`<span class="objects-count">×${this.data.count}</span>`;
+      render(template, cell);
     }
     return cell;
   }

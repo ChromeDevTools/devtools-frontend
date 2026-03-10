@@ -3179,6 +3179,9 @@
   "panels/ai_assistance/components/WalkthroughView.ts | close": {
     "message": "Close"
   },
+  "panels/ai_assistance/components/WalkthroughView.ts | showAgentWalkthrough": {
+    "message": "Show agent walkthrough"
+  },
   "panels/ai_assistance/components/WalkthroughView.ts | showThinking": {
     "message": "Show thinking"
   },
@@ -8219,9 +8222,6 @@
   "panels/emulation/DeviceModeToolbar.ts | moreOptions": {
     "message": "More options"
   },
-  "panels/emulation/DeviceModeToolbar.ts | none": {
-    "message": "None"
-  },
   "panels/emulation/DeviceModeToolbar.ts | portrait": {
     "message": "Portrait"
   },
@@ -8254,6 +8254,9 @@
   },
   "panels/emulation/DeviceModeToolbar.ts | showRulers": {
     "message": "Show rulers"
+  },
+  "panels/emulation/DeviceModeToolbar.ts | throttling": {
+    "message": "Throttling"
   },
   "panels/emulation/DeviceModeToolbar.ts | toggleDualscreenMode": {
     "message": "Toggle dual-screen mode"

@@ -180,6 +180,7 @@ export declare class DOMNode extends Common.ObjectWrapper.ObjectWrapper<DOMNodeE
     focus(): Promise<void>;
     simpleSelector(): string;
     getAnchorBySpecifier(specifier?: string): Promise<DOMNode | null>;
+    takeSnapshot(ownerDocumentSnapshot?: DOMDocument): Promise<DOMNode>;
     classNames(): string[];
 }
 export declare namespace DOMNode {
@@ -343,6 +344,32 @@ export declare class DOMModelUndoStack {
     undo(): Promise<void>;
     redo(): Promise<void>;
     dispose(model: DOMModel): void;
+}
+export declare class DOMNodeSnapshot extends DOMNode {
+    init(_doc: DOMDocument | null, _isInShadowTree: boolean, _payload: Protocol.DOM.Node, _retainedNodes?: Set<Protocol.DOM.BackendNodeId> | undefined): void;
+    setNodeName(_name: string, _callback?: ((arg0: string | null, arg1: DOMNode | null) => void) | undefined): void;
+    setNodeValue(_value: string, _callback?: ((arg0: string | null) => void) | undefined): void;
+    setAttribute(_name: string, _text: string, _callback?: ((arg0: string | null) => void) | undefined): void;
+    setAttributeValue(_name: string, _value: string, _callback?: ((arg0: string | null) => void) | undefined): void;
+    removeAttribute(_name: string): Promise<void>;
+    setOuterHTML(_html: string, _callback?: ((arg0: string | null) => void) | undefined): void;
+    removeNode(_callback?: ((arg0: string | null, arg1?: Protocol.DOM.NodeId | undefined) => void) | undefined): Promise<void>;
+    copyTo(_targetNode: DOMNode, _anchorNode: DOMNode | null, _callback?: ((arg0: string | null, arg1: DOMNode | null) => void) | undefined): void;
+    moveTo(_targetNode: DOMNode, _anchorNode: DOMNode | null, _callback?: ((arg0: string | null, arg1: DOMNode | null) => void) | undefined): void;
+    setAsInspectedNode(): Promise<void>;
+}
+export declare class DOMDocumentSnapshot extends DOMDocument {
+    init(_doc: DOMDocument | null, _isInShadowTree: boolean, _payload: Protocol.DOM.Node, _retainedNodes?: Set<Protocol.DOM.BackendNodeId> | undefined): void;
+    setNodeName(_name: string, _callback?: ((arg0: string | null, arg1: DOMNode | null) => void) | undefined): void;
+    setNodeValue(_value: string, _callback?: ((arg0: string | null) => void) | undefined): void;
+    setAttribute(_name: string, _text: string, _callback?: ((arg0: string | null) => void) | undefined): void;
+    setAttributeValue(_name: string, _value: string, _callback?: ((arg0: string | null) => void) | undefined): void;
+    removeAttribute(_name: string): Promise<void>;
+    setOuterHTML(_html: string, _callback?: ((arg0: string | null) => void) | undefined): void;
+    removeNode(_callback?: ((arg0: string | null, arg1?: Protocol.DOM.NodeId | undefined) => void) | undefined): Promise<void>;
+    copyTo(_targetNode: DOMNode, _anchorNode: DOMNode | null, _callback?: ((arg0: string | null, arg1: DOMNode | null) => void) | undefined): void;
+    moveTo(_targetNode: DOMNode, _anchorNode: DOMNode | null, _callback?: ((arg0: string | null, arg1: DOMNode | null) => void) | undefined): void;
+    setAsInspectedNode(): Promise<void>;
 }
 export interface Attribute {
     name: string;

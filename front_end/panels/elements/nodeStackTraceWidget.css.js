@@ -11,7 +11,7 @@ export default `/*
 @scope to (devtools-widget > *) {
   .stack-trace {
     font-size: 11px !important; /* stylelint-disable-line declaration-no-important */
-    font-family: Menlo, monospace;
+    font-family: Menlo, var(--monospace-font-family);
   }
 }
 

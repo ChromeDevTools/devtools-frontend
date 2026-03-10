@@ -73,7 +73,7 @@ export class ConversationHandler extends Common.ObjectWrapper.ObjectWrapper {
     static instance(opts) {
         if (opts?.forceNew || conversationHandlerInstance === undefined) {
             const aidaClient = opts?.aidaClient ?? new Host.AidaClient.AidaClient();
-            conversationHandlerInstance = new ConversationHandler(aidaClient, opts?.aidaAvailability ?? undefined);
+            conversationHandlerInstance = new ConversationHandler(aidaClient, opts?.aidaAvailability);
         }
         return conversationHandlerInstance;
     }

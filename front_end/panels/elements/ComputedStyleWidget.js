@@ -230,7 +230,14 @@ export const DEFAULT_VIEW = (input, _output, target) => {
     // clang-format on
 };
 export class ComputedStyleWidget extends UI.Widget.VBox {
-    #computedStyleModel;
+    /**
+     * We store these because they are used when calculating the dimensions for the image preview.
+     * When we need to get those dimensions, we try to resolve them against the
+     * node fresh (in case the dimensions have changed), but if that doesn't work,
+     * we fallback to the precomputed ones, which helps to deal with situations
+     * where the node might have been removed from the DOM.
+     */
+    #storedNodeFeatures = null;
     #nodeStyle = null;
     #matchedStyles = null;
     #propertyTraces = null;
@@ -289,7 +296,8 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
             }
             return null;
         }, async () => {
-            return await Components.ImagePreview.loadPrecomputedFeatures(this.#computedStyleModel?.node);
+            const liveFeatures = await Components.ImagePreview.loadPrecomputedFeatures(this.#nodeStyle?.node);
+            return liveFeatures ?? this.#storedNodeFeatures ?? undefined;
         });
         this.#updateView({ hasMatches: true });
     }
@@ -345,7 +353,14 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
     }
     set nodeStyle(nodeStyle) {
         this.#nodeStyle = nodeStyle;
-        this.requestUpdate();
+        if (nodeStyle) {
+            // Make sure we get the node features before we request an update so we
+            // don't run the update before we have the features fetched.
+            void this.#storeNodeFeatures(nodeStyle.node).then(() => this.requestUpdate());
+        }
+        else {
+            this.requestUpdate();
+        }
     }
     get matchedStyles() {
         return this.#matchedStyles;
@@ -358,12 +373,14 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
         this.#propertyTraces = propertyTraces;
         this.requestUpdate();
     }
-    get computedStyleModel() {
-        return this.#computedStyleModel;
-    }
-    set computedStyleModel(computedStyleModel) {
-        this.#computedStyleModel = computedStyleModel;
-        this.requestUpdate();
+    async #storeNodeFeatures(node) {
+        if (node) {
+            const features = await Components.ImagePreview.loadPrecomputedFeatures(node);
+            this.#storedNodeFeatures = features ?? null;
+        }
+        else {
+            this.#storedNodeFeatures = null;
+        }
     }
     #shouldGroupStyles() {
         return this.#allowUserControl && this.groupComputedStylesSetting.get();
@@ -388,10 +405,6 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
     async rebuildAlphabeticalList(nodeStyle, matchedStyles) {
         this.imagePreviewPopover.hide();
         this.linkifier.reset();
-        const cssModel = this.#computedStyleModel?.cssModel();
-        if (!cssModel) {
-            return;
-        }
         const uniqueProperties = [...nodeStyle.computedStyle.keys()];
         uniqueProperties.sort(propertySorter);
         const node = nodeStyle.node;
@@ -425,8 +438,7 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
     async rebuildGroupedList(nodeStyle, matchedStyles) {
         this.imagePreviewPopover.hide();
         this.linkifier.reset();
-        const cssModel = this.#computedStyleModel?.cssModel();
-        if (!nodeStyle || !matchedStyles || !cssModel) {
+        if (!nodeStyle || !matchedStyles) {
             this.#updateView({ hasMatches: false });
             return;
         }

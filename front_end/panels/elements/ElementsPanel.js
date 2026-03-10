@@ -253,7 +253,6 @@ export class ElementsPanel extends UI.Panel.Panel {
         UI.Context.Context.instance().addFlavorChangeListener(StylesSidebarPane, this.evaluateTrackingComputedStyleUpdatesForNode, this);
         this.stylesWidget = new StylesSidebarPane(this.#computedStyleModel);
         this.#computedStyleWidget = new ComputedStyleWidget();
-        this.#computedStyleWidget.computedStyleModel = this.#computedStyleModel;
         this.#computedStyleModel.addEventListener("ComputedStyleChanged" /* ComputedStyle.ComputedStyleModel.Events.COMPUTED_STYLE_CHANGED */, this.#updateComputedStyles, this);
         this.#computedStyleModel.addEventListener("CSSModelChanged" /* ComputedStyle.ComputedStyleModel.Events.CSS_MODEL_CHANGED */, this.#updateComputedStyles, this);
         this.metricsWidget = new MetricsSidebarPane(this.#computedStyleModel);

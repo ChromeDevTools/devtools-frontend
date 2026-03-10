@@ -1304,11 +1304,15 @@ export class GridTemplateRenderer extends rendererBase(SDK.CSSPropertyParserMatc
         }
         const indent = Common.Settings.Settings.instance().moduleSetting('text-editor-indent').get();
         const container = document.createDocumentFragment();
-        for (const line of match.lines) {
-            const value = Renderer.render(line, context);
-            const lineBreak = UI.Fragment.html `<br /><span class='styles-clipboard-only'>${indent.repeat(2)}</span>`;
-            container.append(lineBreak, ...value.nodes);
-        }
+        const template = html `
+      ${match.lines.map(line => {
+            const lines = Renderer.render(line, context).nodes;
+            return html `
+        <span class='styles-clipboard-only'>${indent.repeat(2)}</span>
+        ${lines}`;
+        })}
+    `;
+        render(template, container);
         return [container];
     }
 }

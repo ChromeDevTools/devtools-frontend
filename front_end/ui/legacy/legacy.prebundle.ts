@@ -16,7 +16,6 @@ import * as EmptyWidget from './EmptyWidget.js';
 import * as FilterBar from './FilterBar.js';
 import * as FilterSuggestionBuilder from './FilterSuggestionBuilder.js';
 import * as ForwardedInputEventHandler from './ForwardedInputEventHandler.js';
-import * as Fragment from './Fragment.js';
 import * as GlassPane from './GlassPane.js';
 import * as Infobar from './Infobar.js';
 import * as InplaceEditor from './InplaceEditor.js';
@@ -67,7 +66,6 @@ export {
   FilterBar,
   FilterSuggestionBuilder,
   ForwardedInputEventHandler,
-  Fragment,
   GlassPane,
   Infobar,
   InplaceEditor,

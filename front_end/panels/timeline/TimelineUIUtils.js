@@ -32,6 +32,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+import '../../ui/kit/kit.js';
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
@@ -47,13 +48,13 @@ import * as CodeHighlighter from '../../ui/components/code_highlighter/code_high
 // eslint-disable-next-line @devtools/es-modules-import
 import codeHighlighterStyles from '../../ui/components/code_highlighter/codeHighlighter.css.js';
 import * as uiI18n from '../../ui/i18n/i18n.js';
-import { Link } from '../../ui/kit/kit.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 // eslint-disable-next-line @devtools/es-modules-import
 import imagePreviewStyles from '../../ui/legacy/components/utils/imagePreview.css.js';
 import * as LegacyComponents from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
+import { html, render } from '../../ui/lit/lit.js';
 import * as PanelsCommon from '../common/common.js';
 import { getDurationString } from './AppenderUtils.js';
 import * as TimelineComponents from './components/components.js';
@@ -780,8 +781,10 @@ export class TimelineUIUtils {
             default:
                 break;
         }
-        const html = UI.Fragment.html `<div>${Link.create(link, i18nString(UIStrings.learnMore), undefined, 'learn-more')} about ${name}.</div>`;
-        return html;
+        const div = document.createElement('div');
+        // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
+        render(html `<devtools-link href=${link}>${i18nString(UIStrings.learnMore)}</devtools-link> about ${name}.`, div);
+        return div;
     }
     static buildConsumeCacheDetails(eventData, contentHelper) {
         if (typeof eventData.consumedCacheSize === 'number') {

@@ -48,8 +48,6 @@ export declare class ComputedStyleWidget extends UI.Widget.VBox {
     get matchedStyles(): SDK.CSSMatchedStyles.CSSMatchedStyles | null;
     set matchedStyles(matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles | null);
     set propertyTraces(propertyTraces: Map<string, SDK.CSSProperty.CSSProperty[]> | null);
-    get computedStyleModel(): ComputedStyleModule.ComputedStyleModel.ComputedStyleModel | undefined;
-    set computedStyleModel(computedStyleModel: ComputedStyleModule.ComputedStyleModel.ComputedStyleModel);
     performUpdate(): Promise<void>;
     private rebuildAlphabeticalList;
     private rebuildGroupedList;

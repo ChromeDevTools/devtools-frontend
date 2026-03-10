@@ -8,6 +8,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as NetworkForward from '../../panels/network/forward/forward.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
+import { Link } from '../../ui/kit/kit.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -212,15 +213,7 @@ export class ServiceWorkersView extends UI.Widget.VBox {
         othersView.show(othersDiv);
         const othersSection = othersView.appendSection(i18nString(UIStrings.serviceWorkersFromOtherOrigins));
         const othersSectionRow = othersSection.appendRow();
-        const seeOthers = UI.Fragment
-            .html `<a class="devtools-link" role="link" tabindex="0" href="chrome://serviceworker-internals" target="_blank" style="display: inline; cursor: pointer;">${i18nString(UIStrings.seeAllRegistrations)}</a>`;
-        seeOthers.setAttribute('jslog', `${VisualLogging.link('view-all').track({ click: true })}`);
-        self.onInvokeElement(seeOthers, event => {
-            const rootTarget = SDK.TargetManager.TargetManager.instance().rootTarget();
-            rootTarget &&
-                void rootTarget.targetAgent().invoke_createTarget({ url: 'chrome://serviceworker-internals?devtools' });
-            event.consume(true);
-        });
+        const seeOthers = Link.create('chrome://serviceworker-internals', i18nString(UIStrings.seeAllRegistrations), undefined, 'view-all');
         othersSectionRow.appendChild(seeOthers);
         this.toolbar.appendToolbarItem(MobileThrottling.ThrottlingManager.throttlingManager().createOfflineToolbarCheckbox());
         const updateOnReloadSetting = Common.Settings.Settings.instance().createSetting('service-worker-update-on-reload', false);

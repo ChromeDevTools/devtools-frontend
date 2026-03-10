@@ -124,7 +124,7 @@ export class AiCodeCompletion {
         }
         // As a temporary fix for b/441221870 we are prepending a newline for each prefix.
         prefix = '\n' + prefix;
-        let additionalContextFiles = additionalFiles ?? undefined;
+        let additionalContextFiles = additionalFiles;
         if (!additionalContextFiles) {
             additionalContextFiles = this.#panel === "console" /* ContextFlavor.CONSOLE */ ? [{
                     path: 'devtools-console-context.js',

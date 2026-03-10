@@ -6,7 +6,6 @@ import * as Root from '../root/root.js';
 import { Console } from './Console.js';
 import { ObjectWrapper } from './Object.js';
 import { getLocalizedSettingsCategory, maybeRemoveSettingExtension, registerSettingExtension, registerSettingsForTest, resetSettings, } from './SettingRegistration.js';
-let settingsInstance;
 export class Settings {
     syncedStorage;
     globalStorage;
@@ -47,20 +46,27 @@ export class Settings {
         return this.#settingRegistrations;
     }
     static hasInstance() {
-        return typeof settingsInstance !== 'undefined';
+        return Root.DevToolsContext.globalInstance().has(Settings);
     }
     static instance(opts = { forceNew: null, syncedStorage: null, globalStorage: null, localStorage: null, settingRegistrations: null }) {
         const { forceNew, syncedStorage, globalStorage, localStorage, settingRegistrations, logSettingAccess, runSettingsMigration } = opts;
-        if (!settingsInstance || forceNew) {
+        if (!Root.DevToolsContext.globalInstance().has(Settings) || forceNew) {
             if (!syncedStorage || !globalStorage || !localStorage || !settingRegistrations) {
                 throw new Error(`Unable to create settings: global and local storage must be provided: ${new Error().stack}`);
             }
-            settingsInstance = new Settings({ syncedStorage, globalStorage, localStorage, settingRegistrations, logSettingAccess, runSettingsMigration });
+            Root.DevToolsContext.globalInstance().set(Settings, new Settings({
+                syncedStorage,
+                globalStorage,
+                localStorage,
+                settingRegistrations,
+                logSettingAccess,
+                runSettingsMigration
+            }));
         }
-        return settingsInstance;
+        return Root.DevToolsContext.globalInstance().get(Settings);
     }
     static removeInstance() {
-        settingsInstance = undefined;
+        Root.DevToolsContext.globalInstance().delete(Settings);
     }
     registerModuleSetting(setting) {
         const settingName = setting.name;

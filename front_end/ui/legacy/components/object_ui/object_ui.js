@@ -1123,18 +1123,25 @@ var ObjectPropertiesSection = class _ObjectPropertiesSection extends UI2.TreeOut
     return Platform2.StringUtilities.naturalOrderComparator(a, b);
   }
   static createNameElement(name, isPrivate) {
+    const element = document.createElement("span");
+    element.classList.add("name");
     if (name === null) {
-      return UI2.Fragment.html`<span class="name"></span>`;
+      return element;
     }
     if (/^\s|\s$|^$|\n/.test(name)) {
-      return UI2.Fragment.html`<span class="name">"${name.replace(/\n/g, "\u21B5")}"</span>`;
+      element.textContent = `"${name.replace(/\n/g, "\u21B5")}"`;
+      return element;
     }
     if (isPrivate) {
-      return UI2.Fragment.html`<span class="name">
-  <span class="private-property-hash">${name[0]}</span>${name.substring(1)}
-  </span>`;
+      const privatePropertyHash = document.createElement("span");
+      privatePropertyHash.classList.add("private-property-hash");
+      privatePropertyHash.textContent = name[0];
+      element.appendChild(privatePropertyHash);
+      element.appendChild(document.createTextNode(name.substring(1)));
+      return element;
     }
-    return UI2.Fragment.html`<span class="name">${name}</span>`;
+    element.textContent = name;
+    return element;
   }
   static valueElementForFunctionDescription(description, includePreview, defaultName, className) {
     const contents = (description2, defaultName2) => {

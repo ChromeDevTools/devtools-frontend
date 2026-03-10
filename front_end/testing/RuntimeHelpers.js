@@ -15,7 +15,6 @@ const REGISTERED_EXPERIMENTS = [
     Root.ExperimentNames.ExperimentName.FULL_ACCESSIBILITY_TREE,
     Root.ExperimentNames.ExperimentName.INSTRUMENTATION_BREAKPOINTS,
     Root.ExperimentNames.ExperimentName.USE_SOURCE_MAP_SCOPES,
-    Root.ExperimentNames.ExperimentName.TIMELINE_SHOW_POST_MESSAGE_EVENTS,
     Root.ExperimentNames.ExperimentName.TIMELINE_DEBUG_MODE,
 ];
 export function setupRuntime() {

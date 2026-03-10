@@ -693,7 +693,6 @@ ui/legacy/DOMUtilities.test.js
 ui/legacy/Dialog.test.js
 ui/legacy/DockController.test.js
 ui/legacy/FilterBar.test.js
-ui/legacy/Fragment.test.js
 ui/legacy/Infobar.test.js
 ui/legacy/InspectorView.test.js
 ui/legacy/KeyboardShortcut.test.js

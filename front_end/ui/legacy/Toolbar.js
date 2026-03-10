@@ -479,7 +479,7 @@ export class ToolbarText extends ToolbarItem {
         this.setText(text);
     }
     text() {
-        return this.element.textContent ?? '';
+        return this.element.textContent;
     }
     setText(text) {
         this.element.textContent = text;

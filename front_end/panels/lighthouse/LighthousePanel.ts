@@ -13,10 +13,11 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {
   type AuditProgressChangedEvent,
+  type CategoryId,
   Events,
   LighthouseController,
   type PageAuditabilityChangedEvent,
-  type PageWarningsChangedEvent,
+  type PageWarningsChangedEvent
 } from './LighthouseController.js';
 import lighthousePanelStyles from './lighthousePanel.css.js';
 import {ProtocolService} from './LighthouseProtocolService.js';
@@ -70,7 +71,6 @@ export class LighthousePanel extends UI.Panel.Panel {
   private warningText: Nullable<string>;
   private unauditableExplanation: Nullable<string>;
   private readonly cachedRenderedReports: Map<LighthouseModel.ReporterTypes.ReportJSON, HTMLElement>;
-  private readonly dropTarget: UI.DropTarget.DropTarget;
   private readonly auditResultsElement: HTMLElement;
   private clearButton!: UI.Toolbar.ToolbarButton;
   private newButton!: UI.Toolbar.ToolbarButton;
@@ -94,7 +94,7 @@ export class LighthousePanel extends UI.Panel.Panel {
     this.unauditableExplanation = null;
     this.cachedRenderedReports = new Map();
 
-    this.dropTarget = new UI.DropTarget.DropTarget(
+    new UI.DropTarget.DropTarget(
         this.contentElement, [UI.DropTarget.Type.File], i18nString(UIStrings.dropLighthouseJsonHere),
         this.handleDrop.bind(this));
 
@@ -147,14 +147,17 @@ export class LighthousePanel extends UI.Panel.Panel {
     }
   }
 
-  async handleCompleteRun(): Promise<void> {
+  async handleCompleteRun(overrides?: RunOverrides):
+      Promise<{report: LighthouseModel.ReporterTypes.ReportJSON | null}> {
     try {
-      await this.controller.startLighthouse();
+      await this.controller.startLighthouse(overrides);
       this.renderStatusView();
       const {lhr, artifacts} = await this.controller.collectLighthouseResults();
       this.buildReportUI(lhr, artifacts);
+      return {report: lhr};
     } catch (err) {
       this.handleError(err);
+      return {report: null};
     }
   }
 
@@ -379,4 +382,18 @@ export class LighthousePanel extends UI.Panel.Panel {
       event.handled = true;
     }
   }
+
+  static async executeLighthouseRecording(
+      overrides?: RunOverrides,
+      ): Promise<LighthouseModel.ReporterTypes.ReportJSON|null> {
+    const panel = LighthousePanel.instance();
+    await UI.ViewManager.ViewManager.instance().showView('lighthouse');
+
+    const {report} = await panel.handleCompleteRun(overrides);
+    return report;
+  }
+}
+
+export interface RunOverrides {
+  categoryIds: CategoryId[];
 }

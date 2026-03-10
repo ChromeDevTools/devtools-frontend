@@ -12,6 +12,7 @@ import * as EmulationModel from '../../models/emulation/emulation.js';
 import type * as LighthouseModel from '../../models/lighthouse/lighthouse.js';
 import * as Emulation from '../emulation/emulation.js';
 
+import type {RunOverrides} from './LighthousePanel.js';
 import type {LighthouseRun as LighthouseRunType, ProtocolService} from './LighthouseProtocolService.js';
 
 const UIStrings = {
@@ -567,9 +568,9 @@ export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper<Eve
     };
   }
 
-  getCategoryIDs(): string[] {
+  getCategoryIDs(): CategoryId[] {
     const {mode} = this.getFlags();
-    const categoryIDs = [];
+    const categoryIDs: CategoryId[] = [];
     for (const preset of Presets) {
       if (mode && !preset.supportedModes.includes(mode)) {
         continue;
@@ -639,7 +640,12 @@ export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper<Eve
     }
   }
 
-  async startLighthouse(): Promise<void> {
+  /**
+   * Starts a LH run. By default it will use the categories based on what the
+   * user has selected in the UI, but these can be overridden by passing in the
+   * category IDs, in which case these take priority.
+   */
+  async startLighthouse(overrides?: RunOverrides): Promise<void> {
     if (this.lastAction) {
       await this.lastAction;
     }
@@ -651,7 +657,7 @@ export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper<Eve
       }
 
       const inspectedURL = await this.getInspectedURL({force: true});
-      const categoryIDs = this.getCategoryIDs();
+      const categoryIDs = overrides?.categoryIds ?? this.getCategoryIDs();
       const flags = this.getFlags();
 
       this.recordMetrics(flags, categoryIDs);
@@ -861,9 +867,11 @@ export interface EventTypes {
   [Events.AuditProgressChanged]: AuditProgressChangedEvent;
 }
 
+export type CategoryId = 'performance'|'accessibility'|'best-practices'|'seo';
+
 export interface Preset {
   setting: Common.Settings.Setting<boolean>;
-  configID: string;
+  configID: CategoryId;
   title: () => Common.UIString.LocalizedString;
   description: () => Common.UIString.LocalizedString;
   supportedModes: string[];

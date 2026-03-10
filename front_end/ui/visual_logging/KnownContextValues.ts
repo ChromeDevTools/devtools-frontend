@@ -2453,6 +2453,7 @@ export const knownContextValues = new Set([
   'lighthouse.enable-sampling',
   'lighthouse.end-time-span',
   'lighthouse.mode',
+  'lighthouse.record',
   'lighthouse.start',
   'lighthouse.throttling',
   'lighting-color',

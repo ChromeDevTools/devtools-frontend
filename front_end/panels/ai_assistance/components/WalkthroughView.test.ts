@@ -108,7 +108,7 @@ describeWithEnvironment('WalkthroughView', () => {
     assert.isFalse(inlineWalkthrough.hasAttribute('open'));
   });
 
-  it('does not render the details/summary in sidebar mode', async () => {
+  it('renders the titlebar in sidebar mode', async () => {
     const message: AiAssistance.ChatMessage.ModelChatMessage = {
       entity: AiAssistance.ChatMessage.ChatMessageEntity.MODEL,
       parts: [{
@@ -127,6 +127,6 @@ describeWithEnvironment('WalkthroughView', () => {
     });
 
     const title = querySelectorErrorOnMissing(view.contentElement, '.walkthrough-title');
-    assert.strictEqual(title.innerText, 'Investigation steps');
+    assert.strictEqual(title.innerText, 'Agent walkthrough');
   });
 });

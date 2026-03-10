@@ -25,7 +25,7 @@ const UIStrings = {
   /**
    * @description Title for the walkthrough view.
    */
-  title: 'Investigation steps',
+  title: 'Agent walkthrough',
   /**
    * @description Title for the button that shows the walkthrough when there are no widgets in the walkthrough.
    */
@@ -101,7 +101,7 @@ function renderSidebarWalkthrough(input: ViewInput, stepsOutput: Lit.LitTemplate
          <devtools-button
           .data=${{
             variant: Buttons.Button.Variant.TOOLBAR,
-            iconName: 'right-panel-open',
+            iconName: 'cross',
             title: i18nString(UIStrings.close),
             jslogContext: 'close-walkthrough',
           } as Buttons.Button.ButtonData}

@@ -40,7 +40,16 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
       target);
 };
 
-export class StandaloneStylesContainer extends UI.Widget.VBox implements StylesContainer {
+export const enum Events {
+  STYLES_UPDATE_COMPLETED = 'StylesUpdateCompleted',
+}
+
+export interface EventTypes {
+  [Events.STYLES_UPDATE_COMPLETED]: void;
+}
+
+export class StandaloneStylesContainer extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.VBox>(
+    UI.Widget.VBox) implements StylesContainer {
   activeCSSAngle: InlineEditor.CSSAngle.CSSAngle|null = null;
   isEditingStyle = false;
   readonly sectionByElement = new WeakMap<Node, StylePropertiesSection>();
@@ -49,7 +58,7 @@ export class StandaloneStylesContainer extends UI.Widget.VBox implements StylesC
       new Components.Linkifier.Linkifier(23, /* useLinkDecorator */ true);
 
   #webCustomData: WebCustomData|undefined;
-  #userOperation = false;
+  userOperation = false;
   #sections: StylePropertiesSection[] = [];
   #swatchPopoverHelper = new InlineEditor.SwatchPopoverHelper.SwatchPopoverHelper();
   #computedStyleModelInternal = new ComputedStyle.ComputedStyleModel.ComputedStyleModel();
@@ -58,10 +67,24 @@ export class StandaloneStylesContainer extends UI.Widget.VBox implements StylesC
   constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
     super(element, {useShadowDom: true});
     this.#view = view;
+    this.#computedStyleModelInternal.addEventListener(
+        ComputedStyle.ComputedStyleModel.Events.CSS_MODEL_CHANGED, this.#onCSSModelChanged, this);
   }
 
-  get userOperation(): boolean {
-    return this.#userOperation;
+  async #onCSSModelChanged(
+      event: Common.EventTarget.EventTargetEvent<ComputedStyle.ComputedStyleModel.CSSModelChangedEvent>):
+      Promise<void> {
+    // We only recreate sections if this update is more than an "edit" operation.
+    // Sections will pull their own updates in the case of an "edit".
+    if (event?.data && 'edit' in event.data && event?.data.edit) {
+      return;
+    }
+
+    if (this.isEditingStyle || this.userOperation) {
+      return;
+    }
+
+    this.requestUpdate();
   }
 
   get webCustomData(): WebCustomData|undefined {
@@ -73,10 +96,12 @@ export class StandaloneStylesContainer extends UI.Widget.VBox implements StylesC
   }
 
   async #updateSections(): Promise<void> {
+    for (const section of this.#sections) {
+      section.dispose();
+    }
     const node = this.node();
     if (!node) {
       this.#sections = [];
-      this.requestUpdate();
       return;
     }
 
@@ -106,9 +131,8 @@ export class StandaloneStylesContainer extends UI.Widget.VBox implements StylesC
   }
 
   override async performUpdate(): Promise<void> {
-    if (this.isEditingStyle || this.#userOperation) {
-      return;
-    }
+    this.hideAllPopovers();
+    this.node()?.domModel().cssModel().discardCachedMatchedCascade();
 
     await this.#updateSections();
 
@@ -116,6 +140,11 @@ export class StandaloneStylesContainer extends UI.Widget.VBox implements StylesC
       sections: this.#sections,
     };
     this.#view(viewInput, undefined, this.contentElement);
+    this.#onUpdateFinished();
+  }
+
+  #onUpdateFinished(): void {
+    this.dispatchEventToListeners(Events.STYLES_UPDATE_COMPLETED);
   }
 
   swatchPopoverHelper(): InlineEditor.SwatchPopoverHelper.SwatchPopoverHelper {
@@ -154,6 +183,7 @@ export class StandaloneStylesContainer extends UI.Widget.VBox implements StylesC
     }
 
     if (this.isEditingStyle) {
+      this.#onUpdateFinished();
       return;
     }
 
@@ -161,6 +191,7 @@ export class StandaloneStylesContainer extends UI.Widget.VBox implements StylesC
       section.update(section === editedSection);
     }
     this.swatchPopoverHelper().reposition();
+    this.#onUpdateFinished();
   }
 
   filterRegex(): RegExp|null {
@@ -172,16 +203,19 @@ export class StandaloneStylesContainer extends UI.Widget.VBox implements StylesC
   }
 
   setUserOperation(userOperation: boolean): void {
-    this.#userOperation = userOperation;
+    this.userOperation = userOperation;
   }
 
   forceUpdate(): void {
-    this.hideAllPopovers();
     this.requestUpdate();
   }
 
   hideAllPopovers(): void {
     this.#swatchPopoverHelper.hide();
+    if (this.activeCSSAngle) {
+      this.activeCSSAngle.minify();
+      this.activeCSSAngle = null;
+    }
   }
 
   allSections(): StylePropertiesSection[] {
@@ -246,9 +280,11 @@ export class StandaloneStylesContainer extends UI.Widget.VBox implements StylesC
   jumpToDeclaration(_valueSource: SDK.CSSMatchedStyles.CSSValueSource): void {
   }
 
-  addStyleUpdateListener(_listener: () => void): void {
+  addStyleUpdateListener(listener: () => void): void {
+    this.addEventListener(Events.STYLES_UPDATE_COMPLETED, listener);
   }
 
-  removeStyleUpdateListener(_listener: () => void): void {
+  removeStyleUpdateListener(listener: () => void): void {
+    this.removeEventListener(Events.STYLES_UPDATE_COMPLETED, listener);
   }
 }

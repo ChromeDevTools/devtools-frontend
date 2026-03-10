@@ -17,12 +17,14 @@ export class Universe {
   readonly context = new Root.DevToolsContext.DevToolsContext();
 
   constructor(options: CreationOptions) {
-    // TODO(crbug.com/458180550): Store instance on a "DevToolsContext" instead.
-    //                            For now the global is fine as we don't anticipate the MCP server to change settings.
+    // TODO(crbug.com/458180550): Store instance only on this.context instead.
+    //                            For now the global is required as not everything in foundation cleanly
+    //                            reads from the scoped `Settings` instance.
     const settings = Common.Settings.Settings.instance({
       forceNew: true,
       ...options.settingsCreationOptions,
     });
+    this.context.set(Common.Settings.Settings, settings);
 
     const targetManager = new SDK.TargetManager.TargetManager(this.context, options.overrideAutoStartModels);
     this.context.set(SDK.TargetManager.TargetManager, targetManager);

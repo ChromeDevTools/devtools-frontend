@@ -22,8 +22,6 @@ import {
   SettingType,
 } from './SettingRegistration.js';
 
-let settingsInstance: Settings|undefined;
-
 export interface SettingsCreationOptions {
   syncedStorage: SettingsStorage;
   globalStorage: SettingsStorage;
@@ -85,7 +83,7 @@ export class Settings {
   }
 
   static hasInstance(): boolean {
-    return typeof settingsInstance !== 'undefined';
+    return Root.DevToolsContext.globalInstance().has(Settings);
   }
 
   static instance(opts: {
@@ -107,20 +105,26 @@ export class Settings {
       logSettingAccess,
       runSettingsMigration
     } = opts;
-    if (!settingsInstance || forceNew) {
+    if (!Root.DevToolsContext.globalInstance().has(Settings) || forceNew) {
       if (!syncedStorage || !globalStorage || !localStorage || !settingRegistrations) {
         throw new Error(`Unable to create settings: global and local storage must be provided: ${new Error().stack}`);
       }
 
-      settingsInstance = new Settings(
-          {syncedStorage, globalStorage, localStorage, settingRegistrations, logSettingAccess, runSettingsMigration});
+      Root.DevToolsContext.globalInstance().set(Settings, new Settings({
+                                                  syncedStorage,
+                                                  globalStorage,
+                                                  localStorage,
+                                                  settingRegistrations,
+                                                  logSettingAccess,
+                                                  runSettingsMigration
+                                                }));
     }
 
-    return settingsInstance;
+    return Root.DevToolsContext.globalInstance().get(Settings);
   }
 
   static removeInstance(): void {
-    settingsInstance = undefined;
+    Root.DevToolsContext.globalInstance().delete(Settings);
   }
 
   private registerModuleSetting(setting: Setting<unknown>): void {

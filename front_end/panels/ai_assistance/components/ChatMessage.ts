@@ -700,8 +700,7 @@ async function makeComputedStyleWidget(widgetData: ComputedStyleAiWidget): Promi
 }
 
 async function makeCoreVitalsWidget(widgetData: CoreVitalsAiWidget): Promise<WidgetMakerResponse|null> {
-  const widgetConfig =
-      UI.Widget.widgetConfig(TimelineComponents.SidebarSingleInsightSet.CWVMetrics, {data: widgetData.data});
+  const widgetConfig = UI.Widget.widgetConfig(TimelineComponents.CWVMetrics.CWVMetrics, {data: widgetData.data});
 
   // clang-format off
   const widget = html`<devtools-widget class="core-vitals-widget" .widgetConfig=${widgetConfig}></devtools-widget>`;
@@ -752,7 +751,7 @@ function renderWidgetResponse(response: WidgetMakerResponse|null): Lit.LitTempla
  * Currently, only 'COMPUTED_STYLES' and 'CORE_VITALS' widgets are supported. For these, the
  * `makeComputedStyleWidget` and `makeCoreVitalsWidget` functions are called to construct the necessary
  * data and configuration for the `Elements.ComputedStyleWidget.ComputedStyleWidget`
- * and `TimelineComponents.SidebarSingleInsightSet.CWVMetrics`
+ * and `TimelineComponents.CWVMetrics.CWVMetrics`
  * components. The widget is then rendered using the `<devtools-widget>`
  * custom element, which dynamically instantiates and displays the specified
  * UI.Widget subclass with the provided configuration.

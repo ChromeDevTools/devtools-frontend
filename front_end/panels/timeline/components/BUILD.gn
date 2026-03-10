@@ -11,6 +11,7 @@ generate_css("css_files") {
   sources = [
     "breadcrumbsUI.css",
     "cpuThrottlingSelector.css",
+    "cwvMetrics.css",
     "exportTraceOptions.css",
     "fieldSettingsDialog.css",
     "ignoreListSetting.css",
@@ -36,6 +37,7 @@ devtools_ui_module("components") {
     "Breadcrumbs.ts",
     "BreadcrumbsUI.ts",
     "CPUThrottlingSelector.ts",
+    "CWVMetrics.ts",
     "DetailsView.ts",
     "ExportTraceOptions.ts",
     "FieldSettingsDialog.ts",

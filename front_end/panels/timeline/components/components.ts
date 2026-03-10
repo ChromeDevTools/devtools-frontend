@@ -5,6 +5,7 @@
 import * as Breadcrumbs from './Breadcrumbs.js';
 import * as BreadcrumbsUI from './BreadcrumbsUI.js';
 import * as CPUThrottlingSelector from './CPUThrottlingSelector.js';
+import * as CWVMetrics from './CWVMetrics.js';
 import * as DetailsView from './DetailsView.js';
 import * as ExportTraceOptions from './ExportTraceOptions.js';
 import * as FieldSettingsDialog from './FieldSettingsDialog.js';
@@ -29,6 +30,7 @@ export {
   Breadcrumbs,
   BreadcrumbsUI,
   CPUThrottlingSelector,
+  CWVMetrics,
   DetailsView,
   ExportTraceOptions,
   FieldSettingsDialog,

@@ -778,6 +778,15 @@ export const getStyleSectionSubtitles = async (devToolsPage: DevToolsPage) => {
   return await Promise.all(subtitles.map(node => node.evaluate(n => n.textContent)));
 };
 
+export const waitForCSSPropertyIsUnset = async (
+    ruleSection: puppeteer.ElementHandle<Element>|string, name: string, sourcePosition: string|undefined = undefined,
+    devToolsPage: DevToolsPage) => {
+  return await devToolsPage.waitForFunction(async () => {
+    const property = await getCSSPropertyInRule(ruleSection, name, sourcePosition, devToolsPage);
+    return !property;
+  });
+};
+
 export const getCSSPropertyInRule = async (
     ruleSection: puppeteer.ElementHandle<Element>|string, name: string, sourcePosition: string|undefined = undefined,
     devToolsPage: DevToolsPage) => {

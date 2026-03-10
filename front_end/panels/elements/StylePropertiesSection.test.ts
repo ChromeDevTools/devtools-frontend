@@ -6,8 +6,9 @@ import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as ComputedStyle from '../../models/computed_style/computed_style.js';
-import type * as TextUtils from '../../models/text_utils/text_utils.js';
+import * as TextUtils from '../../models/text_utils/text_utils.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
+import {expectCalled} from '../../testing/ExpectStubCall.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import {getMatchedStylesWithBlankRule, getMatchedStylesWithStylesheet} from '../../testing/StyleHelpers.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
@@ -363,6 +364,85 @@ describeWithMockConnection('StylesPropertySection', () => {
       ghostElements = rootElement.children().filter(
           e => e instanceof Elements.StylePropertyTreeElement.GhostStylePropertyTreeElement);
       assert.lengthOf(ghostElements, 0);
+    });
+  });
+
+  describe('onCSSModelChanged', () => {
+    let cssModel: SDK.CSSModel.CSSModel;
+    let matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles;
+    let container: Elements.StylesSidebarPane.StylesSidebarPane;
+
+    beforeEach(async () => {
+      cssModel = new SDK.CSSModel.CSSModel(createTarget());
+      matchedStyles = await getMatchedStylesWithBlankRule({cssModel});
+      container = new Elements.StylesSidebarPane.StylesSidebarPane(computedStyleModel);
+    });
+
+    function createSection(): Elements.StylePropertiesSection.StylePropertiesSection {
+      return new Elements.StylePropertiesSection.StylePropertiesSection(
+          container, matchedStyles, matchedStyles.nodeStyles()[0], 0, new Map(), new Map(), null);
+    }
+
+    it('updates internal model and values upon receiving a direct edit event', async () => {
+      const section = createSection();
+      const styleSheetEditedSpy = sinon.spy(section, 'styleSheetEdited');
+      const refreshComputedValuesSpy = sinon.stub(section, 'refreshComputedValues').resolves();
+
+      const styleSheetId = '0' as Protocol.DOM.StyleSheetId;
+      const edit = new SDK.CSSModel.Edit(
+          styleSheetId, TextUtils.TextRange.TextRange.createFromLocation(0, 0), 'color: red', null);
+      const eventData: SDK.CSSModel.StyleSheetChangedEvent = {styleSheetId, edit};
+
+      computedStyleModel.dispatchEventToListeners(ComputedStyle.ComputedStyleModel.Events.CSS_MODEL_CHANGED, eventData);
+
+      await expectCalled(refreshComputedValuesSpy);
+
+      sinon.assert.calledWith(styleSheetEditedSpy, edit);
+    });
+
+    it('updates computed values while the container panel is in an editing state', async () => {
+      container.isEditingStyle = true;
+      const section = createSection();
+      const refreshComputedValuesSpy = sinon.stub(section, 'refreshComputedValues').resolves();
+
+      const eventData: ComputedStyle.ComputedStyleModel.CSSModelChangedEvent = {
+        styleSheetId: '0' as Protocol.DOM.StyleSheetId,
+      } as ComputedStyle.ComputedStyleModel.CSSModelChangedEvent;
+
+      computedStyleModel.dispatchEventToListeners(ComputedStyle.ComputedStyleModel.Events.CSS_MODEL_CHANGED, eventData);
+
+      await expectCalled(refreshComputedValuesSpy);
+    });
+
+    it('updates computed values while a user operation (like a popover) is active in the container', async () => {
+      container.userOperation = true;
+      const section = createSection();
+      const refreshComputedValuesSpy = sinon.stub(section, 'refreshComputedValues').resolves();
+
+      const eventData: ComputedStyle.ComputedStyleModel.CSSModelChangedEvent = {
+        styleSheetId: '0' as Protocol.DOM.StyleSheetId,
+      } as ComputedStyle.ComputedStyleModel.CSSModelChangedEvent;
+
+      computedStyleModel.dispatchEventToListeners(ComputedStyle.ComputedStyleModel.Events.CSS_MODEL_CHANGED, eventData);
+
+      await expectCalled(refreshComputedValuesSpy);
+    });
+
+    it('does not update computed values if not editing and no user operation is active', async () => {
+      container.isEditingStyle = false;
+      container.userOperation = false;
+      const section = createSection();
+      const refreshComputedValuesSpy = sinon.stub(section, 'refreshComputedValues').resolves();
+
+      const eventData: ComputedStyle.ComputedStyleModel.CSSModelChangedEvent = {
+        styleSheetId: '0' as Protocol.DOM.StyleSheetId,
+      } as ComputedStyle.ComputedStyleModel.CSSModelChangedEvent;
+
+      computedStyleModel.dispatchEventToListeners(ComputedStyle.ComputedStyleModel.Events.CSS_MODEL_CHANGED, eventData);
+
+      await new Promise(resolve => setTimeout(resolve, 0));
+
+      sinon.assert.notCalled(refreshComputedValuesSpy);
     });
   });
 });

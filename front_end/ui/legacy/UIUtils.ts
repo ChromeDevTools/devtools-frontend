@@ -2094,10 +2094,7 @@ export class HTMLElementWithLightDOMTemplate extends HTMLElement {
     const patchingWrapper = <Args extends any[], R>(fn: (...args: Args) => R): ((...args: Args) => R) => {
       return function(this: unknown, ...args: Args): R {
         const result = fn.apply(this, args);
-        if (isLitTemplate(result)) {
-          HTMLElementWithLightDOMTemplate.patchLitTemplate(result);
-        }
-        return result;
+        return patchValue(result) as R;
       };
     };
     if (template === Lit.nothing) {

@@ -4,10 +4,12 @@
 
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import * as Lit from '../../ui/lit/lit.js';
 import * as RenderCoordinator from '../components/render_coordinator/render_coordinator.js';
 
 import * as UI from './legacy.js';
 
+const {html} = Lit;
 const {Widget} = UI.Widget;
 
 function checkFocus(id: string) {
@@ -563,6 +565,30 @@ describeWithEnvironment('Widget', () => {
       widget!.focus();
 
       assert.strictEqual(document.activeElement, widgetElement);
+    });
+  });
+
+  describe('WidgetDirective', () => {
+    it('creates a new Widget when the widget class changes in a ternary operator', () => {
+      class WidgetA extends UI.Widget.Widget {}
+      class WidgetB extends UI.Widget.Widget {}
+
+      const container = document.createElement('div');
+      renderElementIntoDOM(container);
+
+      const renderTernary = (condition: boolean) =>
+          Lit.render(html`${condition ? UI.Widget.widget(WidgetA) : UI.Widget.widget(WidgetB)}`, container);
+
+      renderTernary(true);
+      const widgetElement1 = container.querySelector('devtools-widget') as UI.Widget.WidgetElement<WidgetA>;
+      const widget1 = widgetElement1.getWidget();
+      assert.instanceOf(widget1, WidgetA);
+
+      renderTernary(false);
+      const widgetElement2 = container.querySelector('devtools-widget') as UI.Widget.WidgetElement<WidgetB>;
+      const widget2 = widgetElement2.getWidget();
+      assert.instanceOf(widget2, WidgetB);
+      assert.notStrictEqual(widgetElement1, widgetElement2);
     });
   });
 

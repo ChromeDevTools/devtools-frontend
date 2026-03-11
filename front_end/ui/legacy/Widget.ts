@@ -276,7 +276,15 @@ export class WidgetDirective extends Lit.Directive.Directive {
   render<F extends WidgetFactory<Widget>, ParamKeys extends keyof InferWidgetTFromFactory<F>>(
       widgetClass: F,
       widgetParams?: Pick<InferWidgetTFromFactory<F>, ParamKeys>&Partial<InferWidgetTFromFactory<F>>): unknown {
-    return html`<devtools-widget .widgetConfig=${widgetConfig(widgetClass, widgetParams as never)}></devtools-widget>`;
+    // We use `repeat` to force Lit to recreate the `<devtools-widget>` DOM node when the `widgetClass` changes.
+    // If we didn't use `repeat` and used `html` directly, Lit would reuse the same `<devtools-widget>` instance
+    // even if `widgetClass` changed (for example, in a ternary operator `condition ? widget(A) : widget(B)`).
+    // This is because the template string is the same, so Lit reuses the DOM node and only updates `.widgetConfig`,
+    // which does not properly recreate the widget instance.
+    return Lit.Directives.repeat(
+        [widgetClass], () => widgetClass,
+        () => html`<devtools-widget .widgetConfig=${
+            widgetConfig(widgetClass, widgetParams as never)}></devtools-widget>`);
   }
 }
 

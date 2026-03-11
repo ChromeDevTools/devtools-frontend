@@ -40,11 +40,11 @@ To test the `DEFAULT_VIEW` function itself, we should use screenshot and e2e tes
 
 We should no longer use imperative API to update DOM. Instead we rely on orchestrated rendering of lit-html templates. The view function described above should be a call to lit-html `render`. The view function should be called from `UI.Widget`’s `performUpdate` method, which by default is scheduled using `requestAnimationFrame`.
 
-To embed another presenter (`UI.Widget`) in the lit-html template, use `<devtools-widget .widgetConfig=${widgetConfig(<class>, {foo: 1, bar: 2})}`
+To embed another presenter (`UI.Widget`) in the lit-html template, use `widget(<class>, {foo: 1, bar: 2})`
 
 This will instantiate a `Widget` class with the web component as its `element` and, optionally, will set the properties provided in the second parameter. The widget won’t be re-instantiated on the subsequent template renders, but the properties would be updated. For this to work, the widget needs to accept `HTMLElement` as a sole constructor parameter and properties need to be public members or setters.
 
-For backwards compatibility, the first argument to `widgetConfig` can also be a factory function: `<devtools-widget .widgetConfig=${widgetConfig(element => new MyWidget(foo, bar, element))}>`. Similar to the class constructor version, `element` is the actual `<devtools-widget>` so the following two invocations of `widgetConfig` are equivalent: `widgetConfig(MyWidget)` and `widgetConfig(element => new MyWidget(element))`.
+For backwards compatibility, the first argument to `widgetConfig` can also be a factory function: `widget(element => new MyWidget(foo, bar, element))`. Similar to the class constructor version, `element` is the actual `<devtools-widget>` so the following two invocations of `widgetConfig` are equivalent: `widget(MyWidget)` and `widget(element => new MyWidget(element))`.
 
 ## Styling
 To prevent style conflicts in widgets without relying on shadow DOM, we use the CSS [`@scope`](https://developer.mozilla.org/en-US/docs/Web/CSS/@scope) at-rule for style encapsulation. This ensures that styles defined for a widget do not leak out and affect other components.
@@ -83,12 +83,12 @@ render(html`
   <div class="container">
     <h3 class="title">My Widget</h3>
     ...
-    <devtools-widget .widgetConfig=${widgetConfig(NestedWidget)}></devtools-widget>
+    ${widget(NestedWidget)}
   </div>
 `, this.element);
 ```
 
-In this example, the `.title` style will apply within the parent widget but will not leak into the nested `<devtools-widget>`. Because this convention relies on developer discipline, it is important to verify its correct application during code reviews.
+In this example, the `.title` style will apply within the parent widget but will not leak into the nested widget. Because this convention relies on developer discipline, it is important to verify its correct application during code reviews.
 
 ## Examples
 
@@ -97,8 +97,8 @@ In this example, the `.title` style will apply within the parent widget but will
   <devtools-split-view>
     <devtools-widget slot="main" .widgetConfig=${widgetConfig(ElementsTree)}></devtools-widget>
     <devtools-tab-pane slot="sidebar">
-      <devtools-widget .widgetConfig=${widgetConfig(StylesPane, {element: input.element})}></devtools-widget>
-      <devtools-widget .widgetConfig=${widgetConfig(ComputedPane, {element: input.element})}></devtools-widget>
+      ${widget(StylesPane, {element: input.element})}
+      ${widget(ComputedPane, {element: input.element})}
       ...
     </devtools-tab-pane>
   </devtools-split-view>
@@ -109,8 +109,7 @@ In this example, the `.title` style will apply within the parent widget but will
 type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
 const DEFAULT_VIEW = (input, output, target) => {
   render(html`
-    <devtools-widget .widgetConfig=${widgetConfig(MetricsPane, {element: input.element})}>
-    </devtools-widget>
+    ${widget(MetricsPane, {element: input.element})}
     <devtools-toolbar>
       <devtools-filter-input @change=${input.onFilter}></devtools-filter-input>
       <devtools-checkbox @change=${input.onShowAll}>Show All</devtools-checkbox>
@@ -1236,7 +1235,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
 
 ## Migrating `EmptyWidget`
 
-Replace the imperative `EmptyWidget` with a declarative `<devtools-widget>` and configure it with `widgetConfig` to render an `EmptyWidget`.
+Replace the imperative `EmptyWidget` with a declarative `widget` and configure it to render an `EmptyWidget`.
 
 **Before:**
 ```typescript
@@ -1258,9 +1257,9 @@ class SomeWidget extends UI.Widget.Widget {
 export const DEFAULT_VIEW = (input, _output, target) => {
   render(html`
     <div>
-      <devtools-widget .widgetConfig=${widgetConfig(UI.EmptyWidget.EmptyWidget,{
+      ${widget(UI.EmptyWidget.EmptyWidget,{
           header: i18nString(UIStrings.nothingToSeeHere), text: this.explanation,
-          link: 'http://www.google.com',})}></devtools-widget>
+          link: 'http://www.google.com',})}
     </div>`,
     target, {host: input});
 };

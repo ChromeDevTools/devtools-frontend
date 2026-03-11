@@ -38,6 +38,8 @@ import * as Lit from '../../ui/lit/lit.js';
 import {appendStyle, deepActiveElement} from './DOMUtilities.js';
 import {cloneCustomElement, createShadowRootWithCoreStyles} from './UIUtils.js';
 
+const {html} = Lit;
+
 // Remember the original DOM mutation methods here, since we
 // will override them below to sanity check the Widget system.
 const originalAppendChild = Element.prototype.appendChild;
@@ -223,7 +225,7 @@ export class WidgetElement<WidgetT extends Widget> extends HTMLElement {
   }
 
   override removeChild<T extends Node>(child: T): T {
-    const childWidget = Widget.get(child as unknown as HTMLElement);
+    const childWidget = Widget.get(child);
     if (childWidget) {
       childWidget.detach();
       return child;
@@ -233,7 +235,7 @@ export class WidgetElement<WidgetT extends Widget> extends HTMLElement {
 
   override removeChildren(): void {
     for (const child of this.children) {
-      const childWidget = Widget.get(child as unknown as HTMLElement);
+      const childWidget = Widget.get(child);
       if (childWidget) {
         childWidget.detach();
       }
@@ -262,6 +264,27 @@ export class WidgetElement<WidgetT extends Widget> extends HTMLElement {
 }
 
 customElements.define('devtools-widget', WidgetElement);
+
+export class WidgetDirective extends Lit.Directive.Directive {
+  constructor(partInfo: Lit.Directive.PartInfo) {
+    super(partInfo);
+    if (partInfo.type !== Lit.Directive.PartType.CHILD) {
+      throw new Error('Widget directive must be used as a child directive.');
+    }
+  }
+
+  render<F extends WidgetFactory<Widget>, ParamKeys extends keyof InferWidgetTFromFactory<F>>(
+      widgetClass: F,
+      widgetParams?: Pick<InferWidgetTFromFactory<F>, ParamKeys>&Partial<InferWidgetTFromFactory<F>>): unknown {
+    return html`<devtools-widget .widgetConfig=${widgetConfig(widgetClass, widgetParams as never)}></devtools-widget>`;
+  }
+}
+
+export const widget = Lit.Directive.directive(WidgetDirective) as
+    <F extends WidgetFactory<Widget>, ParamKeys extends keyof InferWidgetTFromFactory<F>>(
+                          widgetClass: F,
+                          widgetParams?: Pick<InferWidgetTFromFactory<F>, ParamKeys>&
+                          Partial<InferWidgetTFromFactory<F>>) => Lit.Directive.DirectiveResult<typeof WidgetDirective>;
 
 export function widgetRef<T extends Widget, Args extends unknown[]>(
     type: Platform.Constructor.Constructor<T, Args>, callback: (_: T) => void): ReturnType<typeof Lit.Directives.ref> {

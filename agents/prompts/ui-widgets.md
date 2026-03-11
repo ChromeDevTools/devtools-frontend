@@ -11,7 +11,7 @@ Adhere strictly to the Model-View-Presenter (MVP) architecture.
 ### Presenter (`Widget`) Rules
 
 * Location: Co-located in the same file as its View.
-* MUST extend a base `UI.Widget` class (e.g., `UI.Widget.Widget`). Note that `UI.Widget.Widget` is not an `HTMLElement` and must be appended via `.show()` or `<devtools-widget>`.
+* MUST extend a base `UI.Widget` class (e.g., `UI.Widget.Widget`). Note that `UI.Widget.Widget` is not an `HTMLElement` and must be appended via `.show()` or `UI.Widget.widget`
 * Constructor MUST assign the injected view function to a private `#view` field.
 * Constructor MUST call `super()`. If taking `element?: HTMLElement`, pass it to `super(element)`. `super(true)` is forbidden.
 * Styling MUST be handled within the View. `this.registerCSSFiles()` is forbidden.
@@ -50,10 +50,10 @@ const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLElement)
 // clang-format on
 ```
 
-### Composition (`<devtools-widget>`)
+### Composition
 
-* To render a child widget, the parent's View MUST use `<devtools-widget>`.
-* Configuration is passed via the `.widgetConfig` property using `UI.Widget.widgetConfig()`.
+* To render a child widget, the parent's View MUST use lit-html directive `UI.Widget.wiget`
+* Configuration is passed via the parameters.
 * Properties passed from a parent MUST be declared as public fields on the child presenter class.
 * The framework automatically updates these properties and calls `requestUpdate()` on the child when the parent re-renders.
 
@@ -66,7 +66,7 @@ When migrating imperative components (extending `UI.VBox`, `UI.Panel`, or `HTMLE
     *   Prefer extending `UI.Widget.Widget`.
     *   **Special Case:** If the component *must* extend `UI.Panel.Panel` or `UI.Dialog.Dialog` (to retain specific functionality), you cannot use `requestUpdate()`. Instead, call `this.performUpdate()` directly on state changes.
 3.  **State Migration:** Move DOM-stored state to private class fields.
-4.  **Update Usage:** Replace `new MyComponent()` instantiations with declarative `<devtools-widget .widgetConfig=...>` in parent templates.
+4.  **Update Usage:** Replace `new MyComponent()` instantiations with declarative `widget(MyComponent, {params})` in parent templates.
 5.  **Scoping Styles:** Ensure your CSS file uses the `@scope` block to prevent style leaks:
     ```css
     @scope to (devtools-widget > *) {
@@ -101,7 +101,7 @@ render(html`
 
 ### Legacy Interop & Refs
 *   **Raw Elements:** Use `Lit.Directives.ref` to obtain a reference to a raw `HTMLElement` if needed for imperative APIs (e.g., `splitWidget.installResizer(element)`).
-*   **Child Widgets:** Use `UI.Widget.widgetRef` to obtain the class instance of a child `<devtools-widget>` if you need to call methods on it directly (though declarative data flow is preferred).
+*   **Child Widgets:** Use `UI.Widget.widgetRef` to obtain the class instance of a child widget if you need to call methods on it directly (though declarative data flow is preferred).
 
 ### Dependencies
 The `DEFAULT_VIEW` is typically a module-level function. Ensure all dependencies (enums, constants, other components) are imported at the top of the file so they are available in the function scope.
@@ -236,8 +236,7 @@ const DEFAULT_VIEW = (input: ViewInput, output: undefined, target: HTMLElement):
       <button @click=${input.onTitleChange}>Change Child Title</button>
 
       <!-- Pass properties to the child widget. -->
-      <devtools-widget .widgetConfig=${widgetConfig(MyExampleWidget, {title: input.title})}>
-      </devtools-widget>
+      ${widget(MyExampleWidget, {title: input.title})}
     </div>
   `, target);
 };

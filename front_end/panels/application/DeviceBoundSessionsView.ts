@@ -19,7 +19,7 @@ import {
   type SessionAndEvents
 } from './DeviceBoundSessionsModel.js';
 import deviceBoundSessionsViewStyles from './deviceBoundSessionsView.css.js';
-const {widgetConfig} = UI.Widget;
+const {widget, widgetConfig} = UI.Widget;
 
 const UIStrings = {
   /**
@@ -727,28 +727,24 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: ViewOutput, target: HTML
         if (!failedRequest) {
           return nothing;
         }
+        // clang-format off
         return html`${failedRequest.requestUrl && html`
-        <devtools-report-key>${i18nString(UIStrings.failedRequestUrl)}</devtools-report-key>
-        <devtools-report-value>${failedRequest.requestUrl}</devtools-report-value>
-      `}
-      ${failedRequest.netError && html`
-        <devtools-report-key>${i18nString(UIStrings.failedRequestNetError)}</devtools-report-key>
-        <devtools-report-value>${failedRequest.netError}</devtools-report-value>
-      `}
-      ${
-            failedRequest.responseError !== undefined ? html`
-        <devtools-report-key>${i18nString(UIStrings.failedRequestResponseCode)}</devtools-report-key>
-        <devtools-report-value>${failedRequest.responseError}</devtools-report-value>
-      ` :
-                                                        nothing}
-      ${failedRequest.responseErrorBody && html`
-        <devtools-report-key>${i18nString(UIStrings.failedRequestResponseBody)}</devtools-report-key>
-        <devtools-report-value>
-          <devtools-widget .widgetConfig=${UI.Widget.widgetConfig(SourceFrame.JSONView.SearchableJsonView, {
-          jsonObject: tryParseJson(failedRequest.responseErrorBody),
-        })}></devtools-widget>
-        </devtools-report-value>
-      `}`;
+          <devtools-report-key>${i18nString(UIStrings.failedRequestUrl)}</devtools-report-key>
+          <devtools-report-value>${failedRequest.requestUrl}</devtools-report-value>`}
+        ${failedRequest.netError && html`
+          <devtools-report-key>${i18nString(UIStrings.failedRequestNetError)}</devtools-report-key>
+          <devtools-report-value>${failedRequest.netError}</devtools-report-value>`}
+        ${failedRequest.responseError !== undefined ? html`
+          <devtools-report-key>${i18nString(UIStrings.failedRequestResponseCode)}</devtools-report-key>
+          <devtools-report-value>${failedRequest.responseError}</devtools-report-value>` : nothing}
+        ${failedRequest.responseErrorBody && html`
+          <devtools-report-key>${i18nString(UIStrings.failedRequestResponseBody)}</devtools-report-key>
+          <devtools-report-value>
+            ${widget(SourceFrame.JSONView.SearchableJsonView, {
+              jsonObject: tryParseJson(failedRequest.responseErrorBody),
+            })}
+          </devtools-report-value>`}`;
+        // clang-format on
       };
 
   const creationEventDetails =

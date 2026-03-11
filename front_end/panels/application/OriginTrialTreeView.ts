@@ -16,7 +16,7 @@ import originTrialTokenRowsStyles from './originTrialTokenRows.css.js';
 import originTrialTreeViewStyles from './originTrialTreeView.css.js';
 
 const {classMap} = Directives;
-const {widgetConfig} = UI.Widget;
+const {widget} = UI.Widget;
 
 const UIStrings = {
   /**
@@ -131,8 +131,7 @@ interface TokenField {
 function renderTokenDetails(token: Protocol.Page.OriginTrialTokenWithStatus): TemplateResult {
   return html`
     <li role="treeitem">
-      <devtools-widget .widgetConfig=${widgetConfig(OriginTrialTokenRows, {data: token})}>
-      </devtools-widget>
+      ${widget(OriginTrialTokenRows, {data: token})}
     </li>`;
 }
 

@@ -295,6 +295,94 @@ describe('PageResourceLoader', () => {
       });
     }
   });
+
+  describe('loadResource with CSP', () => {
+    it('does not fall back to host bindings if frame has restrictive CSP', async () => {
+      const {loader, settings, targetManager} = setup();
+      settings.moduleSetting('cache-disabled').set(false);
+      const connection = new MockCDPConnection();
+
+      connection.setHandler('Network.getSecurityIsolationStatus', () => {
+        return {
+          result: {
+            status: {
+              csp: [{
+                effectiveDirectives: 'connect-src \'none\'',
+                isEnforced: true,
+                source: 'HTTP' as Protocol.Network.ContentSecurityPolicySource,
+              }],
+            },
+          },
+        };
+      });
+
+      connection.setHandler('Network.loadNetworkResource', () => {
+        return {
+          error: {
+            code: -32000,
+            message: 'Frame not found',
+          },
+        };
+      });
+
+      const target = createTarget({connection, targetManager});
+      const initiator = {target, frameId: '123' as Protocol.Page.FrameId, initiatorUrl: urlString`https://example.com`};
+      const url = urlString`https://example.com/source.map`;
+
+      const loadHostBindingsStub =
+          sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'loadNetworkResource');
+
+      try {
+        await loader.loadResource(url, initiator);
+        assert.fail('Expected loadResource to throw');
+      } catch (e) {
+        assert.strictEqual(e.message, 'Frame not found');
+      }
+
+      // Verify fallback was NOT called
+      sinon.assert.notCalled(loadHostBindingsStub);
+    });
+
+    it('falls back to host bindings if frame has no restrictive CSP', async () => {
+      const {loader, settings, targetManager} = setup();
+      settings.moduleSetting('cache-disabled').set(false);
+      const connection = new MockCDPConnection();
+
+      connection.setHandler('Network.getSecurityIsolationStatus', () => {
+        return {
+          result: {
+            status: {
+              csp: [],
+            },
+          },
+        };
+      });
+
+      connection.setHandler('Network.loadNetworkResource', () => {
+        return {
+          error: {
+            code: -32000,
+            message: 'Frame not found',
+          },
+        };
+      });
+
+      const target = createTarget({connection, targetManager});
+      const initiator = {target, frameId: '123' as Protocol.Page.FrameId, initiatorUrl: urlString`https://example.com`};
+      const url = urlString`https://example.com/source.map`;
+
+      const loadHostBindingsStub =
+          sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'loadNetworkResource')
+              .callsFake((_url, _headers, streamId, callback) => {
+                Host.ResourceLoader.streamWrite(streamId, 'fallback content');
+                callback({statusCode: 200});
+              });
+
+      const result = await loader.loadResource(url, initiator);
+      assert.strictEqual(result.content, 'fallback content');
+      sinon.assert.calledOnce(loadHostBindingsStub);
+    });
+  });
 });
 
 describe('PageResourceLoader', () => {

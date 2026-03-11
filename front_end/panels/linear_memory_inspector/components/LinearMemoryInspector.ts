@@ -41,7 +41,7 @@ const UIStrings = {
 const str_ =
     i18n.i18n.registerUIStrings('panels/linear_memory_inspector/components/LinearMemoryInspector.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-const {widgetConfig} = UI.Widget;
+const {widget} = UI.Widget;
 
 /**
  * If the LinearMemoryInspector only receives a portion
@@ -162,13 +162,12 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: Record<string, unknown>,
         @addressinputchanged=${input.onAddressChange}
         @pagenavigation=${input.onNavigatePage}
         @historynavigation=${input.onNavigateHistory}></devtools-linear-memory-inspector-navigator>
-      <devtools-widget .widgetConfig=${widgetConfig(LinearMemoryHighlightChipList, {
+      ${widget(LinearMemoryHighlightChipList, {
         highlightInfos: highlightedMemoryAreas,
         focusedMemoryHighlight,
         jumpToAddress: (address: number) => input.onJumpToAddress(address),
         deleteHighlight: input.onDeleteMemoryHighlight,
-      })}>
-      </devtools-widget>
+      })}
       <devtools-linear-memory-inspector-viewer
         .data=${
       {
@@ -186,7 +185,7 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: Record<string, unknown>,
     ${
       input.hideValueInspector ? nothing : html`
     <div class="value-interpreter">
-      <devtools-widget .widgetConfig=${widgetConfig(LinearMemoryValueInterpreter, {
+      ${widget(LinearMemoryValueInterpreter, {
             buffer: input.memory
                        .slice(
                            input.address - input.memoryOffset,
@@ -201,7 +200,7 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: Record<string, unknown>,
             onJumpToAddressClicked: input.onJumpToAddress,
             onValueTypeToggled: input.onValueTypeToggled,
             onEndiannessChanged: input.onEndiannessChanged,
-      })}></devtools-widget>
+      })}
     </div>`}
     `,
          target);

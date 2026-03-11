@@ -13,7 +13,6 @@ let veDebuggingEnabled = false;
 let debugOverlay: HTMLElement|null = null;
 let debugPopover: HTMLElement|null = null;
 const highlightedElements: HTMLElement[] = [];
-const nonDomDebugElements = new WeakMap<Loggable, HTMLElement>();
 let onInspect: ((query: string) => void)|undefined = undefined;
 
 function ensureDebugOverlay(): void {
@@ -96,8 +95,6 @@ export function processForDebugging(loggable: Loggable): void {
   }
   if (loggable instanceof HTMLElement) {
     processElementForDebugging(loggable, loggingState);
-  } else {
-    processNonDomLoggableForDebugging(loggable, loggingState);
   }
 }
 
@@ -406,35 +403,6 @@ function processImpressionsForAdHocAnalysisDebugLog(states: LoggingState[]): voi
     const entry = {...buildVe(state), interactions: [], time: Date.now() - sessionStartTime};
     adHocAnalysisEntries.set(state.veid, entry);
     maybeLogDebugEvent(entry);
-  }
-}
-
-function processNonDomLoggableForDebugging(loggable: Loggable, loggingState: LoggingState): void {
-  let debugElement = nonDomDebugElements.get(loggable);
-  if (!debugElement) {
-    debugElement = document.createElement('div');
-    debugElement.classList.add('ve-debug');
-    debugElement.style.background = 'black';
-    debugElement.style.color = 'white';
-    debugElement.style.zIndex = '100000';
-    debugElement.textContent = debugString(loggingState.config);
-    nonDomDebugElements.set(loggable, debugElement);
-    setTimeout(() => {
-      if (!loggingState.size?.width || !loggingState.size?.height) {
-        debugElement?.parentElement?.removeChild(debugElement);
-        nonDomDebugElements.delete(loggable);
-      }
-    }, 10000);
-  }
-  const parentDebugElement =
-      parent instanceof HTMLElement ? parent : nonDomDebugElements.get(parent as Loggable) || debugPopover;
-  assertNotNullOrUndefined(parentDebugElement);
-  if (!parentDebugElement.classList.contains('ve-debug')) {
-    debugElement.style.position = 'absolute';
-    parentDebugElement.insertBefore(debugElement, parentDebugElement.firstChild);
-  } else {
-    debugElement.style.marginLeft = '10px';
-    parentDebugElement.appendChild(debugElement);
   }
 }
 

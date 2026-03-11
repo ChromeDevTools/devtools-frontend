@@ -35,7 +35,7 @@ const str_ = i18n.i18n.registerUIStrings('core/sdk/CPUThrottlingManager.ts', UIS
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
-let throttlingManagerInstance: CPUThrottlingManager;
+let throttlingManagerInstance: CPUThrottlingManager|undefined;
 
 export class CPUThrottlingManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> implements
     SDKModelObserver<EmulationModel> {
@@ -60,6 +60,10 @@ export class CPUThrottlingManager extends Common.ObjectWrapper.ObjectWrapper<Eve
     }
 
     return throttlingManagerInstance;
+  }
+
+  static removeInstance(): void {
+    throttlingManagerInstance = undefined;
   }
 
   cpuThrottlingRate(): number {

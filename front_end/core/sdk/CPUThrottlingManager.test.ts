@@ -22,7 +22,7 @@ describeWithMockConnection('CPUThrottlingManager', () => {
       return ({getError: () => undefined, result: {value: 42}} as Protocol.Runtime.EvaluateResponse);
     });
 
-    const manager = SDK.CPUThrottlingManager.CPUThrottlingManager.instance();
+    const manager = SDK.CPUThrottlingManager.CPUThrottlingManager.instance({forceNew: true});
     const concurrency = await manager.getHardwareConcurrency();
     assert.strictEqual(concurrency, 42);
   });
@@ -30,7 +30,7 @@ describeWithMockConnection('CPUThrottlingManager', () => {
   it('can set the current hardwareConcurrency', async () => {
     const cdpStub = sinon.stub(target.emulationAgent(), 'invoke_setHardwareConcurrencyOverride').resolves();
 
-    const manager = SDK.CPUThrottlingManager.CPUThrottlingManager.instance();
+    const manager = SDK.CPUThrottlingManager.CPUThrottlingManager.instance({forceNew: true});
     manager.setHardwareConcurrency(5);
 
     sinon.assert.calledOnce(cdpStub);
@@ -40,7 +40,7 @@ describeWithMockConnection('CPUThrottlingManager', () => {
   it('does not set concurrency to 0 or negative numbers', async () => {
     const cdpStub = sinon.stub(target.emulationAgent(), 'invoke_setHardwareConcurrencyOverride').resolves();
 
-    const manager = SDK.CPUThrottlingManager.CPUThrottlingManager.instance();
+    const manager = SDK.CPUThrottlingManager.CPUThrottlingManager.instance({forceNew: true});
     manager.setHardwareConcurrency(0);
     sinon.assert.notCalled(cdpStub);
 

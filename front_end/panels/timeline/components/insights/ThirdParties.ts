@@ -14,7 +14,7 @@ import {createLimitedRows, renderOthersLabel, type RowLimitAggregator, Table} fr
 const {UIStrings, i18nString, createOverlaysForSummary} = Trace.Insights.Models.ThirdParties;
 
 const {html} = Lit;
-const {widgetConfig} = UI.Widget;
+const {widget} = UI.Widget;
 
 const MAX_TO_SHOW = 5;
 
@@ -79,13 +79,12 @@ export class ThirdParties extends BaseInsightComponent<ThirdPartiesInsightModel>
       // clang-format off
       sections.push(html`
         <div class="insight-section">
-          <devtools-widget .widgetConfig=${widgetConfig(Table, {
+          ${widget(Table, {
            data: {
               insight: this,
               headers: [i18nString(UIStrings.columnThirdParty), i18nString(UIStrings.columnTransferSize)],
               rows,
-            }})}>
-          </devtools-widget>
+            }})}
         </div>
       `);
       // clang-format on
@@ -96,13 +95,12 @@ export class ThirdParties extends BaseInsightComponent<ThirdPartiesInsightModel>
       // clang-format off
       sections.push(html`
         <div class="insight-section">
-          <devtools-widget .widgetConfig=${widgetConfig(Table, {
+          ${widget(Table, {
            data: {
               insight: this,
               headers: [i18nString(UIStrings.columnThirdParty), i18nString(UIStrings.columnMainThreadTime)],
               rows,
-            }})}>
-          </devtools-widget>
+            }})}
         </div>
       `);
       // clang-format on

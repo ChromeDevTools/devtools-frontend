@@ -13,7 +13,7 @@ import baseInsightComponentStyles from './baseInsightComponent.css.js';
 import {eventRef} from './EventRef.js';
 
 const {html} = Lit;
-const {widgetConfig} = UI.Widget;
+const {widget} = UI.Widget;
 
 interface ViewInput {
   request: Trace.Types.Events.SyntheticNetworkRequest;
@@ -106,7 +106,5 @@ class ImageRef extends UI.Widget.Widget {
 }
 
 export function imageRef(request: Trace.Types.Events.SyntheticNetworkRequest): Lit.TemplateResult {
-  return html`<devtools-widget .widgetConfig=${widgetConfig(ImageRef, {
-    request,
-  })}></devtools-widget>`;
+  return html`${widget(ImageRef, {request})}`;
 }

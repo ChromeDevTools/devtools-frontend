@@ -16,7 +16,7 @@ import {createLimitedRows, renderOthersLabel, Table, type TableDataRow} from './
 const {UIStrings, i18nString, createOverlayForRequest} = Trace.Insights.Models.ModernHTTP;
 
 const {html} = Lit;
-const {widgetConfig} = UI.Widget;
+const {widget} = UI.Widget;
 
 export class ModernHTTP extends BaseInsightComponent<ModernHTTPInsightModel> {
   override internalName = 'modern-http';
@@ -58,13 +58,12 @@ export class ModernHTTP extends BaseInsightComponent<ModernHTTPInsightModel> {
     // clang-format off
     return html`
       <div class="insight-section">
-        <devtools-widget .widgetConfig=${widgetConfig(Table, {
+        ${widget(Table, {
            data: {
             insight: this,
             headers: [i18nString(UIStrings.request), i18nString(UIStrings.protocol)],
             rows,
-          }})}>
-        </devtools-widget>
+          }})}
       </div>`;
     // clang-format on
   }

@@ -12,7 +12,7 @@ import * as Lit from '../../../../ui/lit/lit.js';
 import * as PanelsCommon from '../../../common/common.js';
 
 const {html} = Lit;
-const {widgetConfig} = UI.Widget;
+const {widget} = UI.Widget;
 
 interface ViewInput {
   relatedNodeEl: Node|undefined;
@@ -157,7 +157,5 @@ export class NodeLink extends UI.Widget.Widget {
 }
 
 export function nodeLink(data: NodeLinkData): Lit.TemplateResult {
-  return html`<devtools-widget .widgetConfig=${widgetConfig(NodeLink, {
-    data,
-  })}></devtools-widget>`;
+  return html`${widget(NodeLink, {data})}`;
 }

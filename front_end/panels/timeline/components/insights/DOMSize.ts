@@ -20,7 +20,7 @@ import {Table, type TableDataRow} from './Table.js';
 const {UIStrings, i18nString} = Trace.Insights.Models.DOMSize;
 
 const {html} = Lit;
-const {widgetConfig} = UI.Widget;
+const {widget} = UI.Widget;
 
 export class DOMSize extends BaseInsightComponent<DOMSizeInsightModel> {
   override internalName = 'dom-size';
@@ -58,13 +58,12 @@ export class DOMSize extends BaseInsightComponent<DOMSizeInsightModel> {
 
     // clang-format off
     return html`<div class="insight-section">
-      <devtools-widget .widgetConfig=${widgetConfig(Table, {
+      ${widget(Table, {
         data: {
           insight: this,
           headers: [i18nString(UIStrings.statistic), i18nString(UIStrings.element)],
           rows,
-        }})}>
-      </devtools-widget>
+        }})}
     </div>`;
     // clang-format on
   }
@@ -88,13 +87,12 @@ export class DOMSize extends BaseInsightComponent<DOMSizeInsightModel> {
     // clang-format off
     return html`<div class="insight-section">
       <div class="insight-description">${md(i18nString(UIStrings.topUpdatesDescription))}</div>
-      <devtools-widget .widgetConfig=${widgetConfig(Table, {
+      ${widget(Table, {
         data: {
           insight: this,
           headers: ['', i18nString(UIStrings.duration)],
           rows,
-        }})}>
-      </devtools-widget>
+        }})}
     </div>`;
     // clang-format on
   }
@@ -111,19 +109,17 @@ export class DOMSize extends BaseInsightComponent<DOMSizeInsightModel> {
 
     // clang-format off
     return html`<div class="insight-section">
-      <devtools-widget
-        .widgetConfig=${widgetConfig(Table, {
-          data: {
-            insight: this,
-            headers: [i18nString(UIStrings.statistic), i18nString(UIStrings.value)],
-            rows: [
-              {values: [i18nString(UIStrings.totalElements), domStatsData.totalElements]},
-              {values: [i18nString(UIStrings.maxDOMDepth), domStatsData.maxDepth?.depth ?? 0]},
-              {values: [i18nString(UIStrings.maxChildren), domStatsData.maxChildren?.numChildren ?? 0]},
-            ],
-          },
-        })}>
-      </devtools-widget>
+      ${widget(Table, {
+        data: {
+          insight: this,
+          headers: [i18nString(UIStrings.statistic), i18nString(UIStrings.value)],
+          rows: [
+            {values: [i18nString(UIStrings.totalElements), domStatsData.totalElements]},
+            {values: [i18nString(UIStrings.maxDOMDepth), domStatsData.maxDepth?.depth ?? 0]},
+            {values: [i18nString(UIStrings.maxChildren), domStatsData.maxChildren?.numChildren ?? 0]},
+          ],
+        },
+      })}>
     </div>
     ${this.#renderNodeTable(domStatsData)}
     ${this.#renderLargeUpdatesTable()}

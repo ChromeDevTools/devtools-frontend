@@ -16,7 +16,7 @@ import {createLimitedRows, renderOthersLabel, Table, type TableDataRow} from './
 const {UIStrings, i18nString, createOverlayForRequest} = Trace.Insights.Models.ImageDelivery;
 
 const {html} = Lit;
-const {widgetConfig} = UI.Widget;
+const {widget} = UI.Widget;
 
 export class ImageDelivery extends BaseInsightComponent<ImageDeliveryInsightModel> {
   override internalName = 'image-delivery';
@@ -58,13 +58,12 @@ export class ImageDelivery extends BaseInsightComponent<ImageDeliveryInsightMode
     // clang-format off
     return html`
       <div class="insight-section">
-        <devtools-widget .widgetConfig=${widgetConfig(Table, {
+        ${widget(Table, {
            data: {
             insight: this,
             headers: [i18nString(UIStrings.optimizeFile)],
             rows,
-          }})}>
-        </devtools-widget>
+          }})}
       </div>
     `;
     // clang-format on

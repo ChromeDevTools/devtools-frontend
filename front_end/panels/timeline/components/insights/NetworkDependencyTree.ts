@@ -23,7 +23,7 @@ import {renderOthersLabel, Table, type TableDataRow} from './Table.js';
 const {UIStrings, i18nString} = Trace.Insights.Models.NetworkDependencyTree;
 
 const {html} = Lit;
-const {widgetConfig} = UI.Widget;
+const {widget} = UI.Widget;
 
 export const MAX_CHAINS_TO_SHOW = 5;
 
@@ -117,14 +117,12 @@ export class NetworkDependencyTree extends BaseInsightComponent<NetworkDependenc
 
     // clang-format off
     return html`
-      <devtools-widget .widgetConfig=${widgetConfig(Table, {
+      ${widget(Table, {
            data: {
             insight: this,
             headers: [i18nString(UIStrings.columnRequest), i18nString(UIStrings.columnTime)],
             rows,
-          }})}>
-      </devtools-widget>
-    `;
+          }})}`;
     // clang-format on
   }
 
@@ -242,13 +240,12 @@ export class NetworkDependencyTree extends BaseInsightComponent<NetworkDependenc
       <div class="insight-section">
         ${preconnectOriginsTableTitle}
         ${this.#renderTooManyPreconnectsWarning()}
-        <devtools-widget .widgetConfig=${widgetConfig(Table, {
+        ${widget(Table, {
            data: {
             insight: this,
             headers: [i18nString(UIStrings.columnOrigin), i18nString(UIStrings.columnSource)],
             rows,
-          }})}>
-        </devtools-widget>
+          }})}
       </div>
     `;
     // clang-format on
@@ -285,13 +282,12 @@ export class NetworkDependencyTree extends BaseInsightComponent<NetworkDependenc
     return html`
       <div class="insight-section">
         ${estSavingTableTitle}
-        <devtools-widget .widgetConfig=${widgetConfig(Table, {
+        ${widget(Table, {
            data: {
             insight: this,
             headers: [i18nString(UIStrings.columnOrigin), i18nString(UIStrings.columnWastedMs)],
             rows,
-          }})}>
-        </devtools-widget>
+          }})}
       </div>
     `;
     // clang-format on

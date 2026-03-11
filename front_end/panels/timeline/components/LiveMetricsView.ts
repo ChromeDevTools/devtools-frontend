@@ -41,7 +41,7 @@ import metricValueStyles from './metricValueStyles.css.js';
 import {CLS_THRESHOLDS, INP_THRESHOLDS, renderMetricValue} from './Utils.js';
 
 const {html, nothing} = Lit;
-const {widgetConfig} = UI.Widget;
+const {widget} = UI.Widget;
 
 type DeviceOption = CrUXManager.DeviceScope|'AUTO';
 
@@ -485,8 +485,7 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
             <div class="related-info" slot="extra-info">
               <span class="related-info-label">${i18nString(UIStrings.lcpElement)}</span>
               <span class="related-info-link">
-               <devtools-widget .widgetConfig=${widgetConfig(PanelsCommon.DOMLinkifier.DOMNodeLink, {node: this.#lcpValue?.nodeRef})}>
-               </devtools-widget>
+               ${widget(PanelsCommon.DOMLinkifier.DOMNodeLink, {node: this.#lcpValue?.nodeRef})}
               </span>
             </div>
           `
@@ -650,7 +649,7 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
         </ul>
       ` : nothing}
       <div class="environment-option">
-        <devtools-widget .widgetConfig=${widgetConfig(CPUThrottlingSelector, {recommendedOption: recs.cpuOption})}></devtools-widget>
+        ${widget(CPUThrottlingSelector, {recommendedOption: recs.cpuOption})}
       </div>
       <div class="environment-option">
         <devtools-network-throttling-selector .recommendedConditions=${recs.networkConditions}></devtools-network-throttling-selector>
@@ -1003,8 +1002,7 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
                     : nothing}
                   </span>
                   <span class="interaction-node">
-                    <devtools-widget .widgetConfig=${widgetConfig(PanelsCommon.DOMLinkifier.DOMNodeLink, {node: interaction.nodeRef})}>
-                    </devtools-widget>
+                    ${widget(PanelsCommon.DOMLinkifier.DOMNodeLink, {node: interaction.nodeRef})}
                   </span>
                   ${isP98Excluded ? html`<devtools-icon
                     class="interaction-info"
@@ -1113,8 +1111,7 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
               <div class="layout-shift-nodes">
                 ${layoutShift.affectedNodeRefs.map(node => html`
                   <div class="layout-shift-node">
-                    <devtools-widget .widgetConfig=${widgetConfig(PanelsCommon.DOMLinkifier.DOMNodeLink, {node})}>
-                    </devtools-widget>
+                    ${widget(PanelsCommon.DOMLinkifier.DOMNodeLink, {node})}
                   </div>
                 `)}
               </div>

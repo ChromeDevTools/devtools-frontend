@@ -17,7 +17,7 @@ import {createLimitedRows, renderOthersLabel, Table, type TableDataRow} from './
 const {UIStrings, i18nString} = Trace.Insights.Models.FontDisplay;
 
 const {html} = Lit;
-const {widgetConfig} = UI.Widget;
+const {widget} = UI.Widget;
 
 export class FontDisplay extends BaseInsightComponent<FontDisplayInsightModel> {
   override internalName = 'font-display';
@@ -78,13 +78,12 @@ export class FontDisplay extends BaseInsightComponent<FontDisplayInsightModel> {
     // clang-format off
     return html`
       <div class="insight-section">
-        ${html`<devtools-widget .widgetConfig=${widgetConfig(Table, {
+        ${widget(Table, {
            data: {
             insight: this,
             headers: [i18nString(UIStrings.fontColumn), i18nString(UIStrings.wastedTimeColumn)],
             rows,
-          }})}>
-        </devtools-widget>`}
+          }})}
       </div>`;
     // clang-format on
   }

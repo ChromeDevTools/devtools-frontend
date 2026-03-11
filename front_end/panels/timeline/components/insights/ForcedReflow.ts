@@ -18,7 +18,7 @@ import {createLimitedRows, renderOthersLabel, Table, type TableDataRow} from './
 const {UIStrings, i18nString, createOverlayForEvents} = Trace.Insights.Models.ForcedReflow;
 
 const {html, nothing} = Lit;
-const {widgetConfig} = UI.Widget;
+const {widget} = UI.Widget;
 
 export class ForcedReflow extends BaseInsightComponent<ForcedReflowInsightModel> {
   override internalName = 'forced-reflow';
@@ -87,7 +87,7 @@ export class ForcedReflow extends BaseInsightComponent<ForcedReflowInsightModel>
     return html`
       ${topLevelFunctionCallData ? html`
         <div class="insight-section">
-          <devtools-widget .widgetConfig=${widgetConfig(Table, {
+          ${widget(Table, {
            data: {
               insight: this,
               headers: [i18nString(UIStrings.topTimeConsumingFunctionCall), i18nString(UIStrings.totalReflowTime)],
@@ -98,18 +98,16 @@ export class ForcedReflow extends BaseInsightComponent<ForcedReflowInsightModel>
                 ],
                 overlays: createOverlayForEvents(topLevelFunctionCallData.topLevelFunctionCallEvents, 'INFO'),
               }],
-            }})}>
-          </devtools-widget>
+            }})}
         </div>
       ` : nothing}
       <div class="insight-section">
-        <devtools-widget .widgetConfig=${widgetConfig(Table, {
+        ${widget(Table, {
            data: {
             insight: this,
             headers: [i18nString(UIStrings.reflowCallFrames)],
             rows,
-        }})}>
-        </devtools-widget>
+        }})}
       </div>`;
     // clang-format on
   }

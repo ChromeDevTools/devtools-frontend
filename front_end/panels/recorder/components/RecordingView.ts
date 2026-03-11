@@ -37,6 +37,7 @@ import {
 } from './StepView.js';
 
 const {html} = Lit;
+const {widget} = UI.Widget;
 
 const UIStrings = {
   /**
@@ -525,15 +526,12 @@ function renderReplayOrAbortButton(input: ViewInput): Lit.LitTemplate {
   }
 
   // clang-format off
-    return html`<devtools-widget
-        .widgetConfig=${UI.Widget.widgetConfig(ReplaySection, {
-          settings: input.recorderSettings,
-          replayExtensions: input.replayExtensions,
-          onStartReplay: input.onTogglePlaying,
-          disabled: input.replayState.isPlaying,
-        })}
-        >
-      </devtools-widget>`;
+    return html`${widget(ReplaySection, {
+      settings: input.recorderSettings,
+      replayExtensions: input.replayExtensions,
+      onStartReplay: input.onTogglePlaying,
+      disabled: input.replayState.isPlaying,
+    })}`;
   // clang-format on
 }
 
@@ -571,32 +569,29 @@ function renderSections(input: ViewInput): Lit.LitTemplate {
               </div>
               <div class="content">
                 <div class="steps">
-                  <devtools-widget
-                    .widgetConfig=${UI.Widget.widgetConfig(StepView, {
-                      section,
-                      state: input.getSectionState(section),
-                      isStartOfGroup: true,
-                      isEndOfGroup: section.steps.length === 0,
-                      isFirstSection: i === 0,
-                      isLastSection:
-                        i === input.sections.length - 1 &&
-                        section.steps.length === 0,
-                      isSelected:
-                        input.selectedStep === (section.causingStep || null),
-                      sectionIndex: i,
-                      isRecording: input.isRecording,
-                      isPlaying: input.replayState.isPlaying,
-                      error:
-                        input.getSectionState(section) === State.ERROR
-                          ? (input.currentError ?? undefined)
-                          : undefined,
-                      hasBreakpoint: false,
-                      removable: input.recording.steps.length > 1 && Boolean(section.causingStep),
-                      onStepClick: input.onStepClick,
-                      onStepHover: input.onStepHover,
-                    })}
-                  >
-                  </devtools-widget>
+                  ${widget(StepView, {
+                    section,
+                    state: input.getSectionState(section),
+                    isStartOfGroup: true,
+                    isEndOfGroup: section.steps.length === 0,
+                    isFirstSection: i === 0,
+                    isLastSection:
+                      i === input.sections.length - 1 &&
+                      section.steps.length === 0,
+                    isSelected:
+                      input.selectedStep === (section.causingStep || null),
+                    sectionIndex: i,
+                    isRecording: input.isRecording,
+                    isPlaying: input.replayState.isPlaying,
+                    error:
+                      input.getSectionState(section) === State.ERROR
+                        ? (input.currentError ?? undefined)
+                        : undefined,
+                    hasBreakpoint: false,
+                    removable: input.recording.steps.length > 1 && Boolean(section.causingStep),
+                    onStepClick: input.onStepClick,
+                    onStepHover: input.onStepHover,
+                  })}
                   ${section.steps.map(step => {
                     const stepIndex = input.recording.steps.indexOf(step);
                     return html`
@@ -653,7 +648,7 @@ function renderSections(input: ViewInput): Lit.LitTemplate {
       )}
       </div>
     `;
-        // clang-format on
+    // clang-format on
 }
 
 function renderHeader(input: ViewInput): Lit.LitTemplate {

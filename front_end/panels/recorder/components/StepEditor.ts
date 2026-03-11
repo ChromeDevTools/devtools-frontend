@@ -32,6 +32,7 @@ import {
 const {html, Decorators, Directives, LitElement} = Lit;
 const {customElement, property, state} = Decorators;
 const {live} = Directives;
+const {widget} = UI.Widget;
 
 type StepFor<Type> = Extract<Models.Schema.Step, {type: Type}>;
 type Attribute = Keys<Models.Schema.Step>;
@@ -778,13 +779,11 @@ export class StepEditor extends LitElement {
     return html`<div class="attribute" data-attribute="selectors" jslog=${VisualLogging.treeItem('selectors')}>
       <div class="row">
         <div>selectors<span class="separator">:</span></div>
-        <devtools-widget
-          .widgetConfig=${UI.Widget.widgetConfig(SelectorPicker, {
-            disabled: this.disabled,
-            onSelectorPicked: this.#handleSelectorPicked,
-            onAttributeRequested: this.#handleAttributeRequested,
-          })}
-        ></devtools-widget>
+        ${widget(SelectorPicker, {
+          disabled: this.disabled,
+          onSelectorPicked: this.#handleSelectorPicked,
+          onAttributeRequested: this.#handleAttributeRequested,
+        })}
         ${this.#renderDeleteButton('selectors')}
       </div>
       ${this.state.selectors.map((selector, index, selectors) => {

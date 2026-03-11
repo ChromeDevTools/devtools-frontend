@@ -282,13 +282,40 @@ describe('VersionController', () => {
       assert.strictEqual(localStorage.get(VersionController.LOCAL_VERSION_SETTING_NAME), currentVersion);
     });
 
+    it('should have correct method count and names', () => {
+      // TODO: We should move the VersionController into a separate file and test
+      // and this can become an EsLint rule like enforce-test-universe-return-types.ts
+      // for that specific file only.
+      const versionController = new VersionController(settings);
+      let updateCount = 0;
+      for (const prop of Object.getOwnPropertyNames(VersionController.prototype)) {
+        const matches = prop.match(/updateVersionFrom(\d{1,3})To(\d{1,3})/);
+        const isFunction = typeof versionController[prop as keyof Common.Settings.VersionController] === 'function';
+        if (!matches) {
+          continue;
+        }
+        assert(isFunction, `expected ${prop} to be a function`);
+        assert.strictEqual(
+            Number(matches[1]) + 1,
+            Number(matches[2]),
+            `expected ${prop} to be a have version next to each other`,
+        );
+        updateCount++;
+      }
+
+      assert.strictEqual(
+          updateCount,
+          VersionController.CURRENT_VERSION,
+          'CurrentVersion does not match the number of method needed to run',
+      );
+    });
+
     function spyAllUpdateMethods(versionController: Common.Settings.VersionController) {
       const spies: Array<sinon.SinonSpy<unknown[], unknown>> = [];
       for (let i = 0; i < VersionController.CURRENT_VERSION; ++i) {
         spies.push(
             sinon.spy(versionController, `updateVersionFrom${i}To${i + 1}` as keyof Common.Settings.VersionController));
       }
-      assert.lengthOf(spies, VersionController.CURRENT_VERSION);
       return spies;
     }
 

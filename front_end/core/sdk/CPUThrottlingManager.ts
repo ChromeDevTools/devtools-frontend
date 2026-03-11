@@ -39,27 +39,24 @@ let throttlingManagerInstance: CPUThrottlingManager;
 
 export class CPUThrottlingManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> implements
     SDKModelObserver<EmulationModel> {
-  readonly #targetManager: TargetManager;
   #cpuThrottlingOption: CPUThrottlingOption;
   #calibratedThrottlingSetting: Common.Settings.Setting<CalibratedCPUThrottling>;
   #hardwareConcurrency?: number;
   #pendingMainTargetPromise?: (r: number) => void;
 
-  private constructor(settings: Common.Settings.Settings, targetManager: TargetManager) {
+  private constructor() {
     super();
-    this.#targetManager = targetManager;
     this.#cpuThrottlingOption = NoThrottlingOption;
-    this.#calibratedThrottlingSetting = settings.createSetting<CalibratedCPUThrottling>(
+    this.#calibratedThrottlingSetting = Common.Settings.Settings.instance().createSetting<CalibratedCPUThrottling>(
         'calibrated-cpu-throttling', {}, Common.Settings.SettingStorageType.GLOBAL);
     this.#calibratedThrottlingSetting.addChangeListener(this.#onCalibratedSettingChanged, this);
-    targetManager.observeModels(EmulationModel, this);
+    TargetManager.instance().observeModels(EmulationModel, this);
   }
 
   static instance(opts: {forceNew: boolean|null} = {forceNew: null}): CPUThrottlingManager {
     const {forceNew} = opts;
     if (!throttlingManagerInstance || forceNew) {
-      throttlingManagerInstance =
-          new CPUThrottlingManager(Common.Settings.Settings.instance(), TargetManager.instance());
+      throttlingManagerInstance = new CPUThrottlingManager();
     }
 
     return throttlingManagerInstance;
@@ -87,7 +84,7 @@ export class CPUThrottlingManager extends Common.ObjectWrapper.ObjectWrapper<Eve
       return;
     }
 
-    for (const emulationModel of this.#targetManager.models(EmulationModel)) {
+    for (const emulationModel of TargetManager.instance().models(EmulationModel)) {
       void emulationModel.setCPUThrottlingRate(rate);
     }
     this.dispatchEventToListeners(Events.RATE_CHANGED, rate);
@@ -99,7 +96,7 @@ export class CPUThrottlingManager extends Common.ObjectWrapper.ObjectWrapper<Eve
     }
 
     this.#cpuThrottlingOption = option;
-    for (const emulationModel of this.#targetManager.models(EmulationModel)) {
+    for (const emulationModel of TargetManager.instance().models(EmulationModel)) {
       void emulationModel.setCPUThrottlingRate(this.#cpuThrottlingOption.rate());
     }
     this.dispatchEventToListeners(Events.RATE_CHANGED, this.#cpuThrottlingOption.rate());
@@ -107,7 +104,7 @@ export class CPUThrottlingManager extends Common.ObjectWrapper.ObjectWrapper<Eve
 
   setHardwareConcurrency(concurrency: number): void {
     this.#hardwareConcurrency = concurrency;
-    for (const emulationModel of this.#targetManager.models(EmulationModel)) {
+    for (const emulationModel of TargetManager.instance().models(EmulationModel)) {
       void emulationModel.setHardwareConcurrency(concurrency);
     }
     this.dispatchEventToListeners(Events.HARDWARE_CONCURRENCY_CHANGED, this.#hardwareConcurrency);
@@ -118,14 +115,14 @@ export class CPUThrottlingManager extends Common.ObjectWrapper.ObjectWrapper<Eve
     // target may error. So if we get any errors here at all, assume that we do
     // not have a target.
     try {
-      return this.#targetManager.primaryPageTarget() !== null;
+      return TargetManager.instance().primaryPageTarget() !== null;
     } catch {
       return false;
     }
   }
 
   async getHardwareConcurrency(): Promise<number> {
-    const target = this.#targetManager.primaryPageTarget();
+    const target = TargetManager.instance().primaryPageTarget();
     const existingCallback = this.#pendingMainTargetPromise;
 
     // If the main target hasn't attached yet, block callers until it appears.

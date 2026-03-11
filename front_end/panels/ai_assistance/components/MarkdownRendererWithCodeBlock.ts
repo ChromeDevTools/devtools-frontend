@@ -33,16 +33,21 @@ export class MarkdownRendererWithCodeBlock extends MarkdownView.MarkdownView.Mar
     }}>${Platform.StringUtilities.trimEndWithMaxLength(label, 100)}</devtools-link>`;
   }
 
-  #renderLink(href: string): Lit.LitTemplate|null {
+  #renderLink(
+      href: string,
+      fallbackText: string,
+      ): Lit.LitTemplate|null {
     if (href.startsWith('#req-')) {
-      const request =
-          Logs.NetworkLog.NetworkLog.instance().requests().find(req => req.requestId() === href.substring(5));
+      const request = Logs.NetworkLog.NetworkLog.instance().requests().find(
+          req => req.requestId() === href.substring(5),
+      );
 
       if (request) {
         return this.#revealableLink(request, request.url());
       }
-
-    } else if (href.startsWith('#file-')) {
+      return html`${fallbackText}`;
+    }
+    if (href.startsWith('#file-')) {
       const file = AiAssistanceModel.ContextSelectionAgent.ContextSelectionAgent.getUISourceCodes().find(
           file => AiAssistanceModel.ContextSelectionAgent.ContextSelectionAgent.uiSourceCodeId.get(file) ===
               Number(href.substring(6)));
@@ -50,13 +55,14 @@ export class MarkdownRendererWithCodeBlock extends MarkdownView.MarkdownView.Mar
       if (file) {
         return this.#revealableLink(file, file.name());
       }
+      return html`${fallbackText}`;
     }
     return null;
   }
 
   override templateForToken(token: Marked.Marked.MarkedToken): Lit.LitTemplate|null {
     if (token.type === 'link') {
-      const link = this.#renderLink(token.href);
+      const link = this.#renderLink(token.href, token.text);
       if (link) {
         return link;
       }
@@ -73,9 +79,12 @@ export class MarkdownRendererWithCodeBlock extends MarkdownView.MarkdownView.Mar
     if (token.type === 'codespan') {
       // LLM likes outputting the link inside a codespan block.
       // Remove the codespan and render the link directly
-      const matches = token.text.match(/^\[.*\]\((.+)\)$/);
-      if (matches?.[1]) {
-        const link = this.#renderLink(matches[1]);
+      const matches = token.text.match(/^\[(.*)\]\((.+)\)$/);
+      if (matches?.[2]) {
+        const link = this.#renderLink(
+            matches[2],
+            matches[1],
+        );
         if (link) {
           return link;
         }

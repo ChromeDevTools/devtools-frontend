@@ -394,6 +394,10 @@ export abstract class AiAgent<T> {
     this.#facts.clear();
   }
 
+  popPendingMultimodalInput(): MultimodalInput|undefined {
+    return undefined;
+  }
+
   preambleFeatures(): string[] {
     return [];
   }

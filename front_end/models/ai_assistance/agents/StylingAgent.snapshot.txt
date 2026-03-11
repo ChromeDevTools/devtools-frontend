@@ -121,6 +121,30 @@ Content:
           "title"
         ]
       }
+    },
+    {
+      "name": "activateDeviceEmulation",
+      "description": "Sets emulation viewing mode for a specific device and optionally enables vision deficiency emulation.",
+      "parameters": {
+        "type": 6,
+        "description": "",
+        "nullable": false,
+        "properties": {
+          "deviceName": {
+            "type": 1,
+            "description": "The name of the device to emulate. Allowed values: Pixel 3 XL, Pixel 7, Samsung Galaxy S8+, Samsung Galaxy S20 Ultra, Surface Pro 7, Surface Duo, Galaxy Z Fold 5, Asus Zenbook Fold, Samsung Galaxy A51/71, Nest Hub Max, Nest Hub, iPhone 4, iPhone 5/SE, iPhone 6/7/8, iPhone SE, iPhone XR, iPhone 12 Pro, iPhone 14 Pro Max, iPad Mini, iPad Air, iPad Pro.",
+            "nullable": false
+          },
+          "visionDeficiency": {
+            "type": 1,
+            "description": "Optional vision deficiency to emulate. Allowed values: blurredVision, reducedContrast, achromatopsia, deuteranopia, protanopia, tritanopia.",
+            "nullable": true
+          }
+        },
+        "required": [
+          "deviceName"
+        ]
+      }
     }
   ],
   "options": {

@@ -33,6 +33,7 @@ devtools_ui_module("ai_assistance") {
     "components/ExploreWidget.ts",
     "components/MarkdownRendererWithCodeBlock.ts",
     "components/PerformanceAgentMarkdownRenderer.ts",
+    "components/StylingAgentMarkdownRenderer.ts",
     "components/WalkthroughView.ts",
   ]
 

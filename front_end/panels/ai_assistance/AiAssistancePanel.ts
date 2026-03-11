@@ -43,6 +43,7 @@ import {DisabledWidget} from './components/DisabledWidget.js';
 import {ExploreWidget} from './components/ExploreWidget.js';
 import {MarkdownRendererWithCodeBlock} from './components/MarkdownRendererWithCodeBlock.js';
 import {PerformanceAgentMarkdownRenderer} from './components/PerformanceAgentMarkdownRenderer.js';
+import {StylingAgentMarkdownRenderer} from './components/StylingAgentMarkdownRenderer.js';
 import {
   WalkthroughView,
 } from './components/WalkthroughView.js';
@@ -233,6 +234,10 @@ const lockedString = i18n.i18n.lockedString;
 
 function selectedElementFilter(maybeNode: SDK.DOMModel.DOMNode|null): SDK.DOMModel.DOMNode|null {
   if (maybeNode) {
+    if (Greendev.Prototypes.instance().isEnabled('emulationCapabilities')) {
+      return maybeNode;
+    }
+
     return maybeNode.nodeType() === Node.ELEMENT_NODE ? maybeNode : null;
   }
 
@@ -260,7 +265,12 @@ async function getEmptyStateSuggestions(conversation?: AiAssistanceModel.AiConve
       return [
         {title: 'What can you help me with?', jslogContext: 'styling-default'},
         {title: 'Why isn’t this element visible?', jslogContext: 'styling-default'},
-        {title: 'How do I center this element?', jslogContext: 'styling-default'},
+        {
+          title: Greendev.Prototypes.instance().isEnabled('emulationCapabilities') ?
+              'Are there display issues on this page for people using an Android phone?' :
+              'How do I center this element?',
+          jslogContext: 'styling-default'
+        },
       ];
     case AiAssistanceModel.AiHistoryStorage.ConversationType.FILE:
       return [
@@ -313,6 +323,14 @@ function getMarkdownRenderer(conversation?: AiAssistanceModel.AiConversation.AiC
   } else if (conversation?.type === AiAssistanceModel.AiHistoryStorage.ConversationType.PERFORMANCE) {
     // Handle historical conversations (can't linkify anything).
     return new PerformanceAgentMarkdownRenderer();
+  } else if (
+      Greendev.Prototypes.instance().isEnabled('emulationCapabilities') &&
+      conversation?.type === AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING &&
+      SDK.TargetManager.TargetManager.instance().primaryPageTarget()?.model(SDK.DOMModel.DOMModel)) {
+    const domModel = SDK.TargetManager.TargetManager.instance().primaryPageTarget()?.model(SDK.DOMModel.DOMModel);
+    const resourceTreeModel = domModel?.target().model(SDK.ResourceTreeModel.ResourceTreeModel);
+    const mainFrameId = resourceTreeModel?.mainFrame?.id;
+    return new StylingAgentMarkdownRenderer(mainFrameId);
   }
 
   return new MarkdownRendererWithCodeBlock();
@@ -1612,12 +1630,19 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     if (this.#conversation.isEmpty) {
       Badges.UserBadges.instance().recordAction(Badges.BadgeAction.STARTED_AI_CONVERSATION);
     }
-    const multimodalInput = isAiAssistanceMultimodalInputEnabled() && imageInput && multimodalInputType ? {
-      input: imageInput,
-      id: crypto.randomUUID(),
-      type: multimodalInputType,
-    } :
-                                                                                                          undefined;
+
+    const greenDevEmulationEnabled = Greendev.Prototypes.instance().isEnabled('emulationCapabilities');
+    let multimodalInput: AiAssistanceModel.AiAgent.MultimodalInput|undefined;
+    const pendingInput = this.#conversation.getPendingMultimodalInput();
+    if (greenDevEmulationEnabled && pendingInput) {
+      multimodalInput = pendingInput;
+    } else if (isAiAssistanceMultimodalInputEnabled() && imageInput && multimodalInputType) {
+      multimodalInput = {
+        input: imageInput,
+        id: crypto.randomUUID(),
+        type: multimodalInputType,
+      };
+    }
 
     void VisualLogging.logFunctionCall(`start-conversation-${this.#conversation.type}`, 'ui');
 

@@ -16,10 +16,13 @@ import {
   getDisplayedCSSPropertyNames,
   getDisplayedStyleRules,
   getDisplayedStyleRulesCompact,
+  getGhostText,
+  getMultilineGhostElements,
   getStyleRule,
   getStyleRuleSelector,
   getStyleSectionSubtitles,
   goToResourceAndWaitForStyleSection,
+  mockAidaCodeComplete,
   waitForAndClickTreeElementWithPartialText,
   waitForChildrenOfSelectedElementNode,
   waitForContentOfSelectedElementsNode,
@@ -2001,5 +2004,110 @@ describe('The Styles pane', () => {
     inspectedRules = await getDisplayedCSSDeclarations(devToolsPage);
     assert.sameDeepMembers(
         inspectedRules, ['font-size: 12px;', 'color: rgb(1);', 'display: block;', 'unicode-bidi: isolate;']);
+  });
+
+  describe('AI code completion', () => {
+    async function setupAiCompletion(devToolsPage: DevToolsPage) {
+      const hostConfig = {
+        aidaAvailability: {
+          enabled: true,
+          disallowLogging: true,
+          enterprisePolicyValue: 0,
+        },
+        devToolsFreestyler: {
+          enabled: true,
+        },
+        isOffTheRecord: false,
+        devToolsAiCodeCompletion: {
+          enabled: true,
+        },
+        devToolsAiCodeCompletionStyles: {
+          enabled: true,
+        },
+      };
+      await devToolsPage.setupMockHostConfigAndReload(hostConfig);
+      await devToolsPage.evaluate(`
+        (async () => {
+          const Common = await import('./core/common/common.js');
+          Common.Settings.Settings.instance().createLocalSetting('ai-code-completion-enabled', false).set(true);
+        })()
+      `);
+
+      await devToolsPage.useSoftMenu();
+    }
+
+    it('triggers a suggestion when typing in a property name', async ({devToolsPage, inspectedPage}) => {
+      await setupAiCompletion(devToolsPage);
+      await goToResourceAndWaitForStyleSection('elements/elements-panel-styles.html', devToolsPage, inspectedPage);
+      await prepareElementsTab(devToolsPage);
+      await waitForAndClickTreeElementWithPartialText('id=\u200B"container"', devToolsPage);
+      await waitForStyleRule('#container', devToolsPage);
+      await waitForAndClickTreeElementWithPartialText('id=\u200B"foo"', devToolsPage);
+      await waitForStyleRule('.foo', devToolsPage);
+
+      const propertiesSection = await getStyleRule('#container .foo', devToolsPage);
+      await propertiesSection.focus();
+
+      // Mock Aida response
+      await mockAidaCodeComplete(devToolsPage, {
+        generatedSamples: [{
+          generationString: 'or: red;',
+          sampleId: 1,
+          score: 1.0,
+        }],
+        metadata: {rpcGlobalId: '123'}
+      });
+
+      await devToolsPage.typeText('col');
+
+      // Wait for ghost text "red"
+      await devToolsPage.waitForFunction(async () => {
+        const ghostText = await getGhostText(devToolsPage);
+        return ghostText === 'red';
+      });
+
+      // Also check the name part is updated in the editor
+      const nameText = await devToolsPage.activeElementTextContent();
+      assert.strictEqual(nameText, 'color');
+    });
+
+    it('shows multiline ghost rows for multiline suggestions', async ({devToolsPage, inspectedPage}) => {
+      await setupAiCompletion(devToolsPage);
+      await goToResourceAndWaitForStyleSection('elements/elements-panel-styles.html', devToolsPage, inspectedPage);
+      await prepareElementsTab(devToolsPage);
+      await waitForAndClickTreeElementWithPartialText('id=\u200B"container"', devToolsPage);
+      await waitForStyleRule('#container', devToolsPage);
+      await waitForAndClickTreeElementWithPartialText('id=\u200B"foo"', devToolsPage);
+
+      const propertiesSection = await getStyleRule('#container .foo', devToolsPage);
+      await propertiesSection.focus();
+
+      // Mock multiline Aida response
+      await mockAidaCodeComplete(devToolsPage, {
+        generatedSamples: [{
+          generationString: 'or: pink;\nbackground: red;',
+          sampleId: 1,
+          score: 1.0,
+        }],
+        metadata: {rpcGlobalId: '123'}
+      });
+
+      await devToolsPage.typeText('col');
+
+      // Wait for ghost text in current value
+      await devToolsPage.waitForFunction(async () => {
+        const ghostText = await getGhostText(devToolsPage);
+        return ghostText === 'pink';
+      });
+
+      // Also check the name part is updated in the editor
+      const nameText = await devToolsPage.activeElementTextContent();
+      assert.strictEqual(nameText, 'color');
+
+      // Check multiline ghost rows
+      const multilineGhosts = await getMultilineGhostElements(devToolsPage);
+      assert.lengthOf(multilineGhosts, 1);
+      assert.include(multilineGhosts[0], 'background: red');
+    });
   });
 });

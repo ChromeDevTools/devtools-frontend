@@ -22,38 +22,8 @@ describe('AI Assistance', function() {
       hostConfig: Root.Runtime.HostConfig,
       messages: AidaPart[],
   ) {
-    const syncInformation = {
-      accountEmail: 'some-email',
-      isSyncActive: true,
-      arePreferencesSynced: false,
-    };
-
     // TODO: come up with less invasive way to mock host configs.
-    const {identifier} = await devToolsPage.evaluateOnNewDocument(`
-      Object.defineProperty(window, 'InspectorFrontendHost', {
-        configurable: true,
-        enumerable: true,
-        get() {
-            return this._InspectorFrontendHost;
-        },
-        set(value) {
-            value.getHostConfig = (cb) => {
-              cb({
-                ...globalThis.hostConfigForTesting ?? {},
-                ...JSON.parse('${JSON.stringify(hostConfig)}'),
-              });
-            }
-
-            value.getSyncInformation = (cb) => {
-              cb(JSON.parse('${JSON.stringify(syncInformation)}'));
-            };
-            this._InspectorFrontendHost = value;
-        }
-      });
-    `);
-
-    preloadScriptId = identifier;
-    await devToolsPage.reload();
+    preloadScriptId = await devToolsPage.setupMockHostConfigAndReload(hostConfig);
     await resetMockMessages(devToolsPage, messages);
   }
 

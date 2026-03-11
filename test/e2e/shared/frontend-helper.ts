@@ -6,6 +6,7 @@ import {createWriteStream} from 'node:fs';
 import {join} from 'node:path';
 import type * as puppeteer from 'puppeteer-core';
 
+import type * as Root from '../../../front_end/core/root/root.js';
 import {installPageErrorHandlers} from '../../conductor/events.js';
 import {TestConfig} from '../../conductor/test_config.js';
 
@@ -346,6 +347,41 @@ export class DevToolsPage extends PageWrapper {
       });
     `);
     await this.reload();
+  }
+
+  async setupMockHostConfigAndReload(hostConfig: Root.Runtime.HostConfig, aidaOverride?: string): Promise<string> {
+    const syncInformation = {
+      accountEmail: 'some-email',
+      isSyncActive: true,
+      arePreferencesSynced: false,
+    };
+    const {identifier} = await this.evaluateOnNewDocument(`
+      Object.defineProperty(window, 'InspectorFrontendHost', {
+        configurable: true,
+        enumerable: true,
+        get() {
+            return this._InspectorFrontendHost;
+        },
+        set(value) {
+            value.getHostConfig = (cb) => {
+              cb({
+                ...globalThis.hostConfigForTesting ?? {},
+                ...JSON.parse('${JSON.stringify(hostConfig)}'),
+              });
+            }
+
+            value.getSyncInformation = (cb) => {
+              cb(JSON.parse('${JSON.stringify(syncInformation)}'));
+            };
+            ${aidaOverride}
+            this._InspectorFrontendHost = value;
+        }
+      });
+    `);
+    await this.reload({
+      waitUntil: 'networkidle0',
+    });
+    return identifier;
   }
 
   async #getCDPSession() {

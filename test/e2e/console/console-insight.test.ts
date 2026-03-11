@@ -24,11 +24,6 @@ describe('ConsoleInsight', function() {
       devToolsPage: DevToolsPage,
       aidaResponse?: string,
   ) {
-    const syncInformation = {
-      accountEmail: 'some-email',
-      isSyncActive: true,
-      arePreferencesSynced: false,
-    };
     const hostConfig = {
       devToolsConsoleInsights: {...devToolsConsoleInsights},
       aidaAvailability: {...aidaAvailability},
@@ -59,35 +54,7 @@ describe('ConsoleInsight', function() {
             };
       `;
 
-    await devToolsPage.evaluateOnNewDocument(`
-        Object.defineProperty(window, 'InspectorFrontendHost', {
-        configurable: true,
-        enumerable: true,
-        get() {
-            return this._InspectorFrontendHost;
-        },
-        set(value) {
-            value.getHostConfig = (cb) => {
-              cb({
-                ...globalThis.hostConfigForTesting ?? {},
-                ...JSON.parse('${JSON.stringify(hostConfig)}'),
-              });
-            }
-
-            value.getSyncInformation = (cb) => {
-              cb(JSON.parse('${JSON.stringify(syncInformation)}'));
-            };
-
-            ${aidaOverride}
-
-            this._InspectorFrontendHost = value;
-        }
-      });
-    `);
-
-    await devToolsPage.reload({
-      waitUntil: 'networkidle0',
-    });
+    await devToolsPage.setupMockHostConfigAndReload(hostConfig, aidaOverride);
 
     await devToolsPage.evaluate(`
       (async () => {

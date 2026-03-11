@@ -4,6 +4,7 @@
 import {assert} from 'chai';
 import type * as puppeteer from 'puppeteer-core';
 
+import type * as Host from '../../../front_end/core/host/host.js';
 import {AsyncScope} from '../../conductor/async-scope.js';
 import {
   step,
@@ -1180,4 +1181,33 @@ export const checkStyleAttributes = async (expectedStyles: string[], devToolsPag
   const result = await devToolsPage.$$(STYLE_PROPERTIES_SELECTOR, undefined, 'pierce');
   const actual = await Promise.all(result.map(e => e.evaluate(e => e.textContent?.trim())));
   return actual.sort().join(' ') === expectedStyles.sort().join(' ');
+};
+
+const GHOST_VALUE_PREDICTION_SELECTOR = '.ghost-value-prediction';
+const GHOST_ROW_SELECTOR = '.ghost-row';
+
+export const mockAidaCodeComplete =
+    async (devToolsPage: DevToolsPage, response: Host.AidaClient.CompletionResponse) => {
+  await devToolsPage.evaluate(responseString => {
+    if (!window.InspectorFrontendHost) {
+      return;
+    }
+    window.InspectorFrontendHost.aidaCodeComplete = (_request, callback) => {
+      callback({response: responseString});
+    };
+  }, JSON.stringify(response));
+};
+
+export const getGhostText = async (devToolsPage: DevToolsPage) => {
+  const ghostElement = await devToolsPage.waitFor(GHOST_VALUE_PREDICTION_SELECTOR);
+  if (!ghostElement) {
+    return null;
+  }
+  return await ghostElement.evaluate(node => node.textContent);
+};
+
+export const getMultilineGhostElements = async (devToolsPage: DevToolsPage) => {
+  await devToolsPage.waitFor(GHOST_ROW_SELECTOR);
+  const ghostRows = await devToolsPage.$$(GHOST_ROW_SELECTOR);
+  return await Promise.all(ghostRows.map(row => row.evaluate(node => node.textContent)));
 };

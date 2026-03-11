@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
+import * as Root from '../../core/root/root.js';
 import * as i18n from '../i18n/i18n.js';
 
 import {EmulationModel} from './EmulationModel.js';
@@ -35,8 +36,6 @@ const str_ = i18n.i18n.registerUIStrings('core/sdk/CPUThrottlingManager.ts', UIS
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
-let throttlingManagerInstance: CPUThrottlingManager;
-
 export class CPUThrottlingManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> implements
     SDKModelObserver<EmulationModel> {
   readonly #targetManager: TargetManager;
@@ -45,7 +44,7 @@ export class CPUThrottlingManager extends Common.ObjectWrapper.ObjectWrapper<Eve
   #hardwareConcurrency?: number;
   #pendingMainTargetPromise?: (r: number) => void;
 
-  private constructor(settings: Common.Settings.Settings, targetManager: TargetManager) {
+  constructor(settings: Common.Settings.Settings, targetManager: TargetManager) {
     super();
     this.#targetManager = targetManager;
     this.#cpuThrottlingOption = NoThrottlingOption;
@@ -57,12 +56,18 @@ export class CPUThrottlingManager extends Common.ObjectWrapper.ObjectWrapper<Eve
 
   static instance(opts: {forceNew: boolean|null} = {forceNew: null}): CPUThrottlingManager {
     const {forceNew} = opts;
-    if (!throttlingManagerInstance || forceNew) {
-      throttlingManagerInstance =
-          new CPUThrottlingManager(Common.Settings.Settings.instance(), TargetManager.instance());
+    const context = Root.DevToolsContext.globalInstance();
+    if (!context.has(CPUThrottlingManager) || forceNew) {
+      context.set(
+          CPUThrottlingManager,
+          new CPUThrottlingManager(Common.Settings.Settings.instance(), TargetManager.instance()));
     }
 
-    return throttlingManagerInstance;
+    return context.get(CPUThrottlingManager);
+  }
+
+  static removeInstance(): void {
+    Root.DevToolsContext.globalInstance().delete(CPUThrottlingManager);
   }
 
   cpuThrottlingRate(): number {

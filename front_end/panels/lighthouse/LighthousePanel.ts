@@ -63,6 +63,11 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let lighthousePanelInstace: LighthousePanel;
 type Nullable<T> = T|null;
 
+export class ActiveLighthouseReport {
+  constructor(public report: LighthouseModel.ReporterTypes.ReportJSON) {
+  }
+}
+
 export class LighthousePanel extends UI.Panel.Panel {
   private readonly controller: LighthouseController;
   private readonly startView: StartView;
@@ -108,6 +113,7 @@ export class LighthousePanel extends UI.Panel.Panel {
     this.renderStartView();
 
     this.controller.recomputePageAuditability();
+    UI.Context.Context.instance().setFlavor(ActiveLighthouseReport, null);
   }
 
   static instance(opts?: {forceNew: boolean, protocolService: ProtocolService, controller: LighthouseController}):
@@ -154,9 +160,11 @@ export class LighthousePanel extends UI.Panel.Panel {
       this.renderStatusView();
       const {lhr, artifacts} = await this.controller.collectLighthouseResults();
       this.buildReportUI(lhr, artifacts);
+      UI.Context.Context.instance().setFlavor(ActiveLighthouseReport, new ActiveLighthouseReport(lhr));
       return {report: lhr};
     } catch (err) {
       this.handleError(err);
+      UI.Context.Context.instance().setFlavor(ActiveLighthouseReport, null);
       return {report: null};
     }
   }

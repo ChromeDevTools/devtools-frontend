@@ -75,6 +75,16 @@ describeWithMockConnection('LighthousePanel', () => {
     }));
   });
 
+  it('stores the report in the UI Context when done', async () => {
+    const context = UI.Context.Context.instance();
+    const instance = Lighthouse.LighthousePanel.LighthousePanel.instance({forceNew: true, protocolService, controller});
+    assert.isNull(context.flavor(Lighthouse.LighthousePanel.ActiveLighthouseReport));
+    await instance.handleCompleteRun();
+    assert.instanceOf(
+        context.flavor(Lighthouse.LighthousePanel.ActiveLighthouseReport),
+        Lighthouse.LighthousePanel.ActiveLighthouseReport);
+  });
+
   it('waits for main target to load before linkifying', async () => {
     const instance = Lighthouse.LighthousePanel.LighthousePanel.instance({forceNew: true, protocolService, controller});
     void instance.handleCompleteRun();

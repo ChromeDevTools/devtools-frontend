@@ -352,6 +352,35 @@ describe('UIUtils', () => {
       clonedButton.click();
       sinon.assert.calledOnce(clickHandler);
     });
+
+    it('does not patch native class constructors', async () => {
+      const el = new TestLightDOMTemplate();
+      const container = document.createElement('div');
+      renderElementIntoDOM(container);
+      container.appendChild(el);
+
+      class MockWidget {}
+
+      let instantiatedWidget: MockWidget|null = null;
+      class WidgetDirective extends Lit.Directive.Directive {
+        render(ctor: typeof MockWidget) {
+          instantiatedWidget = new ctor();
+          return Lit.nothing;
+        }
+      }
+      const widget = Lit.Directive.directive(WidgetDirective);
+
+      // If MockWidget was wrongly wrapped by patchingWrapper, ctor would be a regular function.
+      // Calling `new ctor()` would invoke the wrapper, which calls `fn.apply(this, args)`.
+      // Since fn is a native class constructor, fn.apply throws a TypeError.
+      assert.doesNotThrow(() => {
+        el.template = html`${widget(MockWidget)}`;
+      });
+
+      await raf();
+
+      assert.instanceOf(instantiatedWidget, MockWidget);
+    });
   });
 
   describe('InterceptBindingDirective', () => {

@@ -2114,7 +2114,10 @@ export class HTMLElementWithLightDOMTemplate extends HTMLElement {
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     function isCallable(value: unknown): value is(...args: any[]) => any {
-      return typeof value === 'function';
+      // Native class constructors cannot be invoked without 'new', and we shouldn't attempt to wrap them.
+      // Differentiate them from regular functions by checking their 'prototype' descriptor:
+      // class constructors have a non-writable prototype, whereas regular functions have a writable prototype.
+      return typeof value === 'function' && Object.getOwnPropertyDescriptor(value, 'prototype')?.writable !== false;
     }
 
     function patchValue(value: unknown): unknown {

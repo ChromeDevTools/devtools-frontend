@@ -6,6 +6,7 @@ import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
+import * as Logs from '../../models/logs/logs.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 
 import * as Network from './network.js';
@@ -407,6 +408,23 @@ describeWithEnvironment('NetworkLogView', () => {
     const el = document.createElement('div');
     networkRequestNode.renderCell(el, 'set-cookies');
     assert.strictEqual(el.innerText, '1');
+  });
+
+  it('shows the request number in request-number column', async () => {
+    const request1 = SDK.NetworkRequest.NetworkRequest.create(
+        'requestId-1' as Protocol.Network.RequestId, urlString`https://www.example.com/1`, urlString``, null, null,
+        null);
+    const request2 = SDK.NetworkRequest.NetworkRequest.create(
+        'requestId-2' as Protocol.Network.RequestId, urlString`https://www.example.com/2`, urlString``, null, null,
+        null);
+    Logs.NetworkLog.NetworkLog.instance().importRequests([request1, request2]);
+
+    const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(
+        {} as Network.NetworkDataGridNode.NetworkLogViewInterface, request2);
+    const el = document.createElement('div');
+    networkRequestNode.renderCell(el, 'request-number');
+
+    assert.strictEqual(el.innerText, '2');
   });
 
   it('shows transferred size when the matched ServiceWorker router source is network', async () => {

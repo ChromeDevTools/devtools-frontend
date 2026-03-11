@@ -74,6 +74,10 @@ const UIStrings = {
    */
   url: 'Url',
   /**
+   * @description Column header in the Network log view of the Network panel
+   */
+  requestNumber: 'Request #',
+  /**
    * @description Text for one or a group of functions
    */
   method: 'Method',
@@ -991,6 +995,12 @@ const DEFAULT_COLUMNS = [
     hideable: true,
     hideableGroup: 'path',
     sortingFunction: NetworkRequestNode.RequestURLComparator,
+  },
+  {
+    id: 'request-number',
+    title: i18nLazyString(UIStrings.requestNumber),
+    align: DataGrid.DataGrid.Align.RIGHT,
+    sortingFunction: NetworkRequestNode.RequestNumberComparator,
   },
   {
     id: 'method',

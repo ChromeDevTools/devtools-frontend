@@ -3230,6 +3230,7 @@ export const knownContextValues = new Set([
   'request-info-form-data-category-expanded',
   'request-info-query-string-category-expanded',
   'request-info-request-payload-category-expanded',
+  'request-number',
   'request-payload',
   'request-types',
   'required',

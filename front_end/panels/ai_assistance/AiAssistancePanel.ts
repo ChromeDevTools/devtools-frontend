@@ -1699,8 +1699,14 @@ export class AiAssistancePanel extends UI.Panel.Panel {
               parts: [],
             };
             this.#messages.push(systemMessage);
-            if (Greendev.Prototypes.instance().isEnabled('breakpointDebuggerAgent') &&
-                this.#conversation?.type === AiAssistanceModel.AiHistoryStorage.ConversationType.BREAKPOINT) {
+            // If the walkthrough is currently expanded in the sidebar, we want to
+            // automatically swap it to the newly created message's walkthrough.
+            // This ensures that when a user asks a new question, the sidebar updates
+            // immediately to show the "loading" state of the new walkthrough.
+            const isSidebarWalkthroughOpen = this.#walkthrough.isExpanded && !this.#walkthrough.isInlined;
+            if (isSidebarWalkthroughOpen ||
+                (Greendev.Prototypes.instance().isEnabled('breakpointDebuggerAgent') &&
+                 this.#conversation?.type === AiAssistanceModel.AiHistoryStorage.ConversationType.BREAKPOINT)) {
               this.#openWalkthrough(systemMessage);
             }
             break;

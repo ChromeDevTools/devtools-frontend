@@ -16,7 +16,7 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import requestInitiatorViewStyles from './requestInitiatorView.css.js';
 import requestInitiatorViewTreeStyles from './requestInitiatorViewTree.css.js';
 
-const {widgetConfig} = UI.Widget;
+const {widget} = UI.Widget;
 
 const UIStrings = {
   /**
@@ -59,19 +59,21 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLE
     if (!input.stackTrace) {
       return html`${nothing}`;
     }
+    // clang-format off
     return html`
       <li role="treeitem" class="request-initiator-view-section-title" aria-expanded="true" open>
         ${i18nString(UIStrings.requestCallStack)}
         <ul role="group">
           <li role="treeitem">
-            <devtools-widget .widgetConfig=${widgetConfig(Components.JSPresentationUtils.StackTracePreviewContent, {
-      options: {tabStops: true},
-      stackTrace: input.stackTrace,
-    })}></devtools-widget>
+            ${widget(Components.JSPresentationUtils.StackTracePreviewContent, {
+              options: {tabStops: true},
+              stackTrace: input.stackTrace,
+            })}
           </li>
         </ul>
       </li>
     `;
+    // clang-format on
   };
 
   const renderInitiatorNodes =

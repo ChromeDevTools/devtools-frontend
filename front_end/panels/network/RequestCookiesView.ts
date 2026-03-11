@@ -14,6 +14,7 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import requestCookiesViewStyles from './requestCookiesView.css.js';
 const {render, html} = Lit;
+const {widget} = UI.Widget;
 
 const UIStrings = {
   /**
@@ -93,10 +94,8 @@ export const DEFAULT_VIEW: ViewFunction = (input, _output, target) => {
     <style>${requestCookiesViewStyles}</style>
     <style>${UI.inspectorCommonStyles}</style>
     <div class="request-cookies-view">
-      ${input.gotCookies ? Lit.nothing : html`
-        <devtools-widget .widgetConfig=${UI.Widget.widgetConfig(UI.EmptyWidget.EmptyWidget, {
-          header: i18nString(UIStrings.thisRequestHasNoCookies)})}></devtools-widget>
-      `}
+      ${input.gotCookies ? Lit.nothing : widget(UI.EmptyWidget.EmptyWidget, {
+          header: i18nString(UIStrings.thisRequestHasNoCookies)})}
 
       <div class=${input.requestCookies.cookies.length || input.hasBlockedCookies ? '' : 'hidden'}>
         <span class="request-cookies-title" title=${i18nString(UIStrings.cookiesThatWereSentToTheServerIn)}>

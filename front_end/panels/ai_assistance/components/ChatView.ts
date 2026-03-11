@@ -25,6 +25,7 @@ const {
   repeat,
   classMap,
 } = Directives;
+const {widget} = UI.Widget;
 
 /*
 * Strings that don't need to be translated at this time.
@@ -114,7 +115,7 @@ const DEFAULT_VIEW: View = (input, output, target) => {
           ${input.messages.length > 0 ? html`
             <div class="messages-container" ${ref(input.handleMessageContainerRef)}>
               ${repeat(input.messages, message =>
-                html`<devtools-widget .widgetConfig=${UI.Widget.widgetConfig(ChatMessage, {
+                widget(ChatMessage, {
                   message,
                   isLoading: input.isLoading && input.messages.at(-1) === message,
                   isReadOnly: input.isReadOnly,
@@ -127,14 +128,12 @@ const DEFAULT_VIEW: View = (input, output, target) => {
                   walkthrough: {
                     ...input.walkthrough,
                   }
-                })}></devtools-widget>`
+                })
               )}
-              ${input.isLoading ? nothing : html`<devtools-widget
-                .widgetConfig=${UI.Widget.widgetConfig(PatchWidget, {
+              ${input.isLoading ? nothing : widget(PatchWidget, {
                   changeSummary: input.changeSummary ?? '',
                   changeManager: input.changeManager,
                 })}
-              ></devtools-widget>`}
             </div>
           ` : html`
             <div class="empty-state-container">

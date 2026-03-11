@@ -34,6 +34,7 @@ import {walkthroughTitle, WalkthroughView} from './WalkthroughView.js';
 
 const {html, Directives: {ref, ifDefined}} = Lit;
 const lockedString = i18n.i18n.lockedString;
+const {widget} = UI.Widget;
 
 const REPORT_URL = 'https://crbug.com/364805393' as Platform.DevToolsPath.UrlString;
 const SCROLL_ROUNDING_OFFSET = 1;
@@ -546,7 +547,7 @@ function renderWalkthroughUI(input: ChatMessageViewInput, steps: Step[]): Lit.Li
   // clang-format off
   const walkthroughInline = input.walkthrough.isInlined ? html`
     <div class="walkthrough-container">
-      <devtools-widget .widgetConfig=${UI.Widget.widgetConfig(WalkthroughView, {
+      ${widget(WalkthroughView, {
         message: input.message as ModelChatMessage,
         isLoading: input.isLoading && input.isLastMessage,
         markdownRenderer: input.markdownRenderer,
@@ -554,7 +555,7 @@ function renderWalkthroughUI(input: ChatMessageViewInput, steps: Step[]): Lit.Li
         isExpanded,
         onToggle: input.walkthrough.onToggle,
         onOpen: input.walkthrough.onOpen,
-      })}></devtools-widget>
+      })}
     </div>
   ` : Lit.nothing;
 

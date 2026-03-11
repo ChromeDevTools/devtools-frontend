@@ -238,6 +238,9 @@ let BidiPage = (() => {
         openDevTools() {
             throw new UnsupportedOperation();
         }
+        hasDevTools() {
+            throw new UnsupportedOperation();
+        }
         async focusedFrame() {
             const env_1 = { stack: [], error: void 0, hasError: false };
             try {

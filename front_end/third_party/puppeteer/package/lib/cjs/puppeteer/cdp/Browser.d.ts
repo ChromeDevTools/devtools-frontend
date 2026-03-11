@@ -34,6 +34,7 @@ export declare class CdpBrowser extends BrowserBase {
     newPage(options?: CreatePageOptions): Promise<Page>;
     _createPageInContext(contextId?: string, options?: CreatePageOptions): Promise<Page>;
     _createDevToolsPage(pageTargetId: string): Promise<Page>;
+    _hasDevToolsTarget(pageTargetId: string): Promise<string | undefined>;
     installExtension(path: string): Promise<string>;
     uninstallExtension(id: string): Promise<void>;
     screens(): Promise<ScreenInfo[]>;

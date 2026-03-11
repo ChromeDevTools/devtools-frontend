@@ -240,6 +240,12 @@ export class CdpBrowser extends BrowserBase {
         }
         return page;
     }
+    async _hasDevToolsTarget(pageTargetId) {
+        const response = await this.#connection.send('Target.getDevToolsTarget', {
+            targetId: pageTargetId,
+        });
+        return response.targetId;
+    }
     async installExtension(path) {
         const { id } = await this.#connection.send('Extensions.loadUnpacked', { path });
         return id;

@@ -2417,6 +2417,13 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      */
     abstract openDevTools(): Promise<Page>;
     /**
+     * Returns true if DevTools is attached to the current page.
+     * Use {@link Page.openDevTools} to get the DevTools page.
+     *
+     * @experimental
+     */
+    abstract hasDevTools(): Promise<boolean>;
+    /**
      * {@inheritDoc BluetoothEmulation}
      */
     abstract get bluetooth(): BluetoothEmulation;

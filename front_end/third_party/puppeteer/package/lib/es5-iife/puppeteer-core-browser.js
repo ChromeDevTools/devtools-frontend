@@ -3050,7 +3050,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    */
   // If moved update release-please config
   // x-release-please-start-version
-  const packageVersion = '24.38.0';
+  const packageVersion = '24.39.0';
   // x-release-please-end
 
   /**
@@ -21218,6 +21218,11 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       const devtoolsPage = await browser._createDevToolsPage(pageTargetId);
       return devtoolsPage;
     }
+    async hasDevTools() {
+      const browser = this.browser();
+      const targetId = await browser._hasDevToolsTarget(this.target()._targetId);
+      return Boolean(targetId);
+    }
     async waitForFileChooser(options = {}) {
       const needsEnable = _classPrivateFieldGet(_fileChooserDeferreds, this).size === 0;
       const {
@@ -22997,6 +23002,12 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         throw new Error(`Failed to create a DevTools Page for target (id = ${pageTargetId})`);
       }
       return page;
+    }
+    async _hasDevToolsTarget(pageTargetId) {
+      const response = await _classPrivateFieldGet(_connection5, this).send('Target.getDevToolsTarget', {
+        targetId: pageTargetId
+      });
+      return response.targetId;
     }
     async installExtension(path) {
       const {
@@ -25247,8 +25258,8 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    * @internal
    */
   const PUPPETEER_REVISIONS = Object.freeze({
-    chrome: '146.0.7680.31',
-    'chrome-headless-shell': '146.0.7680.31',
+    chrome: '146.0.7680.66',
+    'chrome-headless-shell': '146.0.7680.66',
     firefox: 'stable_148.0'
   });
 

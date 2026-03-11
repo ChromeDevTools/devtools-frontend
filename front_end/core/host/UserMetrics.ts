@@ -322,6 +322,11 @@ export class UserMetrics {
     InspectorFrontendHostInstance.recordPerformanceHistogram(
         'DevTools.Insights.ShortTeaserGenerationTime', timeInMilliseconds);
   }
+
+  extensionEvalTarget(target: ExtensionEvalTarget): void {
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(
+        EnumeratedHistogram.ExtensionEvalTarget, target, ExtensionEvalTarget.MAX_VALUE);
+  }
 }
 
 /**
@@ -1263,4 +1268,11 @@ export const enum BuiltInAiAvailability {
   AVAILABLE_NO_GPU = 8,
   DISABLED_NO_GPU = 9,
   MAX_VALUE = 10,
+}
+
+export const enum ExtensionEvalTarget {
+  WEB_PAGE = 0,
+  SAME_EXTENSION = 1,
+  OTHER_EXTENSION = 2,
+  MAX_VALUE = 3,
 }

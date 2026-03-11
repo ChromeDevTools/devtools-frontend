@@ -444,7 +444,8 @@
     TimelineNavigationSettingState: 'DevTools.TimelineNavigationSettingState',
     SyncSetting: 'DevTools.SyncSetting',
     SwatchActivated: 'DevTools.SwatchActivated',
-    BuiltInAiAvailability: 'DevTools.BuiltInAiAvailability'
+    BuiltInAiAvailability: 'DevTools.BuiltInAiAvailability',
+    ExtensionEvalTarget: 'DevTools.ExtensionEvalTarget'
     // LINT.ThenChange(/front_end/core/host/InspectorFrontendHostAPI.ts:EnumeratedHistogram)
   };
 

@@ -6,6 +6,7 @@ import("../../../scripts/build/typescript/typescript.gni")
 
 ts_e2e_library("emulation") {
   sources = [
+    "custom-device-ua-clear.test.ts",
     "custom-devices.test.ts",
     "dual-screen.test.ts",
     "foldable-device.test.ts",

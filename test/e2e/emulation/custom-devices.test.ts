@@ -243,6 +243,8 @@ describe('Custom devices', () => {
     await devToolsPage.typeText('400');
     await devToolsPage.tabForward();  // Focus DPR.
     await devToolsPage.typeText('zzz.213213');
+    await devToolsPage.tabForward();  // Focus UA string.
+    await devToolsPage.typeText('Test device browser 1.0');
 
     const error = await devToolsPage.waitFor('.list-widget-input-validation-error');
     const errorText = await error.evaluate(element => element.textContent);

@@ -157,4 +157,65 @@ describeWithMockConnection('DeviceModeModel', () => {
     deviceModeModel.modelRemoved(emulationModel!);
     assert.isFalse(deviceModeModel.isScreenOrientationLocked());
   });
+
+  it('clears user agent and metadata when switching to a device with empty UA', () => {
+    const deviceModeModel = EmulationModel.DeviceModeModel.DeviceModeModel.instance({forceNew: true});
+    const setUserAgentOverride =
+        sinon.spy(SDK.NetworkManager.MultitargetNetworkManager.instance(), 'setUserAgentOverride');
+
+    try {
+      const mobileDevice = new EmulationModel.EmulatedDevices.EmulatedDevice();
+      mobileDevice.userAgent = 'test-mobile-ua';
+      mobileDevice.userAgentMetadata = {
+        brands: [{brand: 'TestBrand', version: '1.0'}],
+        fullVersionList: [],
+        platform: 'Android',
+        platformVersion: '12',
+        architecture: 'arm',
+        model: 'Pixel',
+        mobile: true,
+      } as Protocol.Emulation.UserAgentMetadata;
+      mobileDevice.capabilities = [
+        EmulationModel.EmulatedDevices.Capability.TOUCH,
+        EmulationModel.EmulatedDevices.Capability.MOBILE,
+      ];
+      mobileDevice.vertical = {width: 400, height: 800, outlineInsets: null, outlineImage: null, hinge: null};
+
+      // Custom desktop device with empty UA but non-null metadata (as
+      // created through the DevTools UI when only filling in some CH fields).
+      const desktopDevice = new EmulationModel.EmulatedDevices.EmulatedDevice();
+      desktopDevice.userAgent = '';
+      desktopDevice.userAgentMetadata = {
+        brands: [],
+        fullVersionList: [],
+        platform: '',
+        platformVersion: '',
+        architecture: '',
+        model: '',
+        mobile: false,
+      } as Protocol.Emulation.UserAgentMetadata;
+      desktopDevice.capabilities = [];
+      desktopDevice.vertical = {width: 1920, height: 1080, outlineInsets: null, outlineImage: null, hinge: null};
+
+      const mode: EmulationModel.EmulatedDevices.Mode = {
+        title: 'default',
+        orientation: EmulationModel.EmulatedDevices.Vertical,
+        insets: new EmulationModel.DeviceModeModel.Insets(0, 0, 0, 0),
+        image: null,
+      };
+
+      deviceModeModel.emulate(EmulationModel.DeviceModeModel.Type.Device, mobileDevice, mode);
+      deviceModeModel.emulate(EmulationModel.DeviceModeModel.Type.Device, desktopDevice, mode);
+
+      // The UA must be an empty string (clears the override on the backend,
+      // letting the target use its real User-Agent). The metadata must be
+      // null: the backend rejects setUserAgentOverride calls that provide
+      // metadata without a UA string ("Empty userAgent invalid with
+      // userAgentMetadata provided").
+      assert.strictEqual(setUserAgentOverride.lastCall.args[0], '');
+      assert.isNull(setUserAgentOverride.lastCall.args[1]);
+    } finally {
+      deviceModeModel.emulate(EmulationModel.DeviceModeModel.Type.None, null, null);
+    }
+  });
 });

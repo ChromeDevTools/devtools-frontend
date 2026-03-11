@@ -58,4 +58,24 @@ describeWithEnvironment('emulatedDevices', () => {
     // They are patched while parsed, so there should be none remaining
     assert.lengthOf(chromeDevices.filter(d => d.userAgent.includes('Chrome/%s')), 0);
   });
+
+  it('drops user agent metadata when the user agent string is empty', () => {
+    const rawDevice: Record<string, unknown> =
+        structuredClone(EmulationModel.EmulatedDevices.EmulatedDevicesList.rawEmulatedDevicesForTest()[0]);
+    rawDevice['user-agent'] = '';
+    rawDevice['user-agent-metadata'] = {mobile: false};
+
+    const parsedDevice = EmulationModel.EmulatedDevices.EmulatedDevice.fromJSONV1(rawDevice);
+    assert.exists(parsedDevice);
+    assert.isNull(parsedDevice?.userAgentMetadata);
+  });
+
+  it('does not serialize user agent metadata when the user agent string is empty', () => {
+    const device = new EmulationModel.EmulatedDevices.EmulatedDevice();
+    device.userAgent = '';
+    device.userAgentMetadata = {mobile: false} as NonNullable<typeof device.userAgentMetadata>;
+
+    const json = device.toJSON();
+    assert.isUndefined(json['user-agent-metadata']);
+  });
 });

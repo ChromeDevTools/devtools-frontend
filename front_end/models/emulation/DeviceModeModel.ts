@@ -680,7 +680,11 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   }
 
   private applyUserAgent(userAgent: string, userAgentMetadata: Protocol.Emulation.UserAgentMetadata|null): void {
-    SDK.NetworkManager.MultitargetNetworkManager.instance().setUserAgentOverride(userAgent, userAgentMetadata);
+    // When the user agent string is empty (e.g. custom desktop device without
+    // a UA override), metadata must also be cleared. The backend rejects
+    // setUserAgentOverride calls that provide metadata without a UA string.
+    SDK.NetworkManager.MultitargetNetworkManager.instance().setUserAgentOverride(
+        userAgent, userAgent ? userAgentMetadata : null);
   }
 
   private applyDeviceMetrics(

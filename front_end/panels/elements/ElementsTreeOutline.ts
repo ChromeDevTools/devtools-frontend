@@ -90,6 +90,12 @@ interface ViewInput {
   omitRootDOMNode: boolean;
   selectEnabled: boolean;
   hideGutter: boolean;
+  maxTreeDepth?: number;
+  enableContextMenu?: boolean;
+  showComments?: boolean;
+  showAIButton?: boolean;
+  disableEdits?: boolean;
+  expandRoot?: boolean;
   visibleWidth?: number;
   visible?: boolean;
   wrap: boolean;
@@ -119,7 +125,9 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
     // FIXME: this is basically a ref to existing imperative
     // implementation. Once this is declarative the ref should not be
     // needed.
-    output.elementsTreeOutline = new ElementsTreeOutline(input.omitRootDOMNode, input.selectEnabled, input.hideGutter);
+    output.elementsTreeOutline = new ElementsTreeOutline(
+        input.omitRootDOMNode, input.selectEnabled, input.hideGutter, input.maxTreeDepth, input.enableContextMenu,
+        input.showComments, input.showAIButton, input.disableEdits, input.expandRoot);
     output.elementsTreeOutline.addEventListener(
         ElementsTreeOutline.Events.SelectedNodeChanged, input.onSelectedNodeChanged, this);
     output.elementsTreeOutline.addEventListener(
@@ -128,6 +136,7 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
     output.elementsTreeOutline.addEventListener(UI.TreeOutline.Events.ElementCollapsed, input.onElementCollapsed, this);
     target.appendChild(output.elementsTreeOutline.element);
   }
+
   if (input.visibleWidth !== undefined) {
     output.elementsTreeOutline.setVisibleWidth(input.visibleWidth);
   }
@@ -209,6 +218,11 @@ export class DOMTreeWidget extends UI.Widget.Widget {
   onElementExpanded: () => void = () => {};
   onElementCollapsed: () => void = () => {};
 
+  #maxTreeDepth?: number;
+  #enableContextMenu = true;
+  #showComments = true;
+  #showAIButton = true;
+  #disableEdits = false;
   #visible = false;
   #visibleWidth?: number;
   #wrap = false;
@@ -230,6 +244,51 @@ export class DOMTreeWidget extends UI.Widget.Widget {
   }
   get rootDOMNode(): SDK.DOMModel.DOMNode|null {
     return this.#viewOutput.elementsTreeOutline?.rootDOMNode ?? null;
+  }
+
+  get maxTreeDepth(): number|undefined {
+    return this.#maxTreeDepth;
+  }
+
+  set maxTreeDepth(maxTreeDepth: number|undefined) {
+    this.#maxTreeDepth = maxTreeDepth;
+    this.performUpdate();
+  }
+
+  get enableContextMenu(): boolean {
+    return this.#enableContextMenu;
+  }
+
+  set enableContextMenu(enableContextMenu: boolean) {
+    this.#enableContextMenu = enableContextMenu;
+    this.performUpdate();
+  }
+
+  get showComments(): boolean {
+    return this.#showComments;
+  }
+
+  set showComments(showComments: boolean) {
+    this.#showComments = showComments;
+    this.performUpdate();
+  }
+
+  get showAIButton(): boolean {
+    return this.#showAIButton;
+  }
+
+  set showAIButton(showAIButton: boolean) {
+    this.#showAIButton = showAIButton;
+    this.performUpdate();
+  }
+
+  get disableEdits(): boolean {
+    return this.#disableEdits;
+  }
+
+  set disableEdits(disableEdits: boolean) {
+    this.#disableEdits = disableEdits;
+    this.performUpdate();
   }
 
   #currentHighlightedNode: SDK.DOMModel.DOMNode|null = null;
@@ -323,6 +382,11 @@ export class DOMTreeWidget extends UI.Widget.Widget {
           omitRootDOMNode: this.omitRootDOMNode,
           selectEnabled: this.selectEnabled,
           hideGutter: this.hideGutter,
+          maxTreeDepth: this.#maxTreeDepth,
+          enableContextMenu: this.#enableContextMenu,
+          showComments: this.#showComments,
+          showAIButton: this.#showAIButton,
+          disableEdits: this.#disableEdits,
           visibleWidth: this.#visibleWidth,
           visible: this.#visible,
           wrap: this.#wrap,
@@ -501,8 +565,17 @@ export class ElementsTreeOutline extends
   #issuesManager?: IssuesManager.IssuesManager.IssuesManager;
   #popupHelper?: UI.PopoverHelper.PopoverHelper;
   #nodeElementToIssues = new Map<Element, IssuesManager.Issue.Issue[]>();
+  readonly maxTreeDepth?: number;
+  readonly enableContextMenu: boolean;
+  readonly showComments: boolean;
+  readonly showAIButton: boolean;
+  readonly disableEdits: boolean;
+  readonly expandRoot: boolean;
 
-  constructor(omitRootDOMNode?: boolean, selectEnabled?: boolean, hideGutter?: boolean) {
+  constructor(
+      omitRootDOMNode?: boolean, selectEnabled?: boolean, hideGutter?: boolean, maxTreeDepth?: number,
+      enableContextMenu?: boolean, showComments?: boolean, showAIButton?: boolean, disableEdits?: boolean,
+      expandRoot?: boolean) {
     super();
 
     this.#issuesManager = IssuesManager.IssuesManager.IssuesManager.instance();
@@ -516,25 +589,34 @@ export class ElementsTreeOutline extends
 
     this.elementInternal = this.element;
     this.elementInternal.classList.add('elements-tree-outline', 'source-code');
-    if (hideGutter) {
-      this.elementInternal.classList.add('elements-hide-gutter');
-    }
+    this.maxTreeDepth = maxTreeDepth;
+    this.enableContextMenu = enableContextMenu ?? true;
+    this.showComments = showComments ?? true;
+    this.showAIButton = showAIButton ?? true;
+    this.disableEdits = disableEdits ?? false;
+    this.expandRoot = expandRoot ?? false;
+    this.elementInternal.classList.toggle('elements-hide-gutter', hideGutter);
     UI.ARIAUtils.setLabel(this.elementInternal, i18nString(UIStrings.pageDom));
     this.elementInternal.addEventListener('focusout', this.onfocusout.bind(this), false);
     this.elementInternal.addEventListener('mousedown', this.onmousedown.bind(this), false);
     this.elementInternal.addEventListener('mousemove', this.onmousemove.bind(this), false);
     this.elementInternal.addEventListener('mouseleave', this.onmouseleave.bind(this), false);
-    this.elementInternal.addEventListener('dragstart', this.ondragstart.bind(this), false);
-    this.elementInternal.addEventListener('dragover', this.ondragover.bind(this), false);
-    this.elementInternal.addEventListener('dragleave', this.ondragleave.bind(this), false);
-    this.elementInternal.addEventListener('drop', this.ondrop.bind(this), false);
-    this.elementInternal.addEventListener('dragend', this.ondragend.bind(this), false);
-    this.elementInternal.addEventListener('contextmenu', this.contextMenuEventFired.bind(this), false);
-    this.elementInternal.addEventListener('clipboard-beforecopy', this.onBeforeCopy.bind(this), false);
-    this.elementInternal.addEventListener('clipboard-copy', this.onCopyOrCut.bind(this, false), false);
-    this.elementInternal.addEventListener('clipboard-cut', this.onCopyOrCut.bind(this, true), false);
-    this.elementInternal.addEventListener('clipboard-paste', this.onPaste.bind(this), false);
     this.elementInternal.addEventListener('keydown', this.onKeyDown.bind(this), false);
+
+    if (!this.disableEdits) {
+      this.elementInternal.addEventListener('dragstart', this.ondragstart.bind(this), false);
+      this.elementInternal.addEventListener('dragover', this.ondragover.bind(this), false);
+      this.elementInternal.addEventListener('dragleave', this.ondragleave.bind(this), false);
+      this.elementInternal.addEventListener('drop', this.ondrop.bind(this), false);
+      this.elementInternal.addEventListener('dragend', this.ondragend.bind(this), false);
+      this.elementInternal.addEventListener('clipboard-beforecopy', this.onBeforeCopy.bind(this), false);
+      this.elementInternal.addEventListener('clipboard-copy', this.onCopyOrCut.bind(this, false), false);
+      this.elementInternal.addEventListener('clipboard-cut', this.onCopyOrCut.bind(this, true), false);
+      this.elementInternal.addEventListener('clipboard-paste', this.onPaste.bind(this), false);
+    }
+    if (this.enableContextMenu) {
+      this.elementInternal.addEventListener('contextmenu', this.contextMenuEventFired.bind(this), false);
+    }
 
     outlineDisclosureElement.appendChild(this.elementInternal);
     this.element = shadowContainer;
@@ -571,9 +653,16 @@ export class ElementsTreeOutline extends
     this.treeElementsBeingUpdated = new Set();
 
     this.decoratorExtensions = null;
-
-    this.showHTMLCommentsSetting = Common.Settings.Settings.instance().moduleSetting('show-html-comments');
-    this.showHTMLCommentsSetting.addChangeListener(this.onShowHTMLCommentsChange.bind(this));
+    if (this.showComments) {
+      this.showHTMLCommentsSetting = Common.Settings.Settings.instance().moduleSetting('show-html-comments');
+      this.showHTMLCommentsSetting.addChangeListener(this.onShowHTMLCommentsChange.bind(this));
+    } else {
+      this.showHTMLCommentsSetting = {
+        get: () => false,
+        addChangeListener: () => {},
+        removeChangeListener: () => {},
+      } as unknown as Common.Settings.Setting<boolean>;
+    }
     this.setUseLightSelectionColor(true);
     // TODO(changhaohan): refactor the popover to use tooltip component.
     this.#popupHelper = new UI.PopoverHelper.PopoverHelper(this.elementInternal, event => {
@@ -595,19 +684,20 @@ export class ElementsTreeOutline extends
           render(html`
             <div class="squiggles-content">
               ${issues.map(issue => {
-                const elementIssueDetails = getElementIssueDetails(issue);
-                if (!elementIssueDetails) {
-                  // This shouldn't happen, but add this if check to pass ts check.
-                  return nothing;
-                }
-                const issueKindIconName = IssueCounter.IssueCounter.getIssueKindIconName(issue.getKind());
-                const openIssueEvent = (): Promise<void> => Common.Revealer.reveal(issue);
-                return html`
+            const elementIssueDetails = getElementIssueDetails(issue);
+            if (!elementIssueDetails) {
+              // This shouldn't happen, but add this if check to pass ts check.
+              return nothing;
+            }
+            const issueKindIconName = IssueCounter.IssueCounter.getIssueKindIconName(issue.getKind());
+            const openIssueEvent = (): Promise<void> => Common.Revealer.reveal(issue);
+            return html`
                   <div class="squiggles-content-item">
                   <devtools-icon .name=${issueKindIconName} @click=${openIssueEvent}></devtools-icon>
                   <devtools-link class="link" @click=${openIssueEvent}>${i18nString(UIStrings.viewIssue)}</devtools-link>
                   <span>${elementIssueDetails.tooltip}</span>
-                  </div>`;})}
+                  </div>`;
+          })}
             </div>`, popover.contentElement);
           // clang-format on
           return true;
@@ -958,6 +1048,9 @@ export class ElementsTreeOutline extends
     if (this.includeRootDOMNode) {
       const treeElement = this.createElementTreeElement(this.rootDOMNode);
       this.appendChild(treeElement);
+      if (this.expandRoot) {
+        treeElement.expand();
+      }
     } else {
       // FIXME: this could use findTreeElement to reuse a tree element if it already exists
       const children = this.visibleChildren(this.rootDOMNode);
@@ -1774,6 +1867,31 @@ export class ElementsTreeOutline extends
     }
   }
 
+  private isMaxDepthReached(node: SDK.DOMModel.DOMNode): boolean {
+    if (this.maxTreeDepth === undefined || this.maxTreeDepth === Infinity) {
+      return false;
+    }
+    // Allow ShadowRoots and Documents to expand one more level.
+    if (node.nodeType() === Node.DOCUMENT_NODE || node.isShadowRoot()) {
+      return false;
+    }
+    const maxDepth = this.maxTreeDepth;
+    let depth = 0;
+    let current: SDK.DOMModel.DOMNode|null = node;
+    const rootNode = this.rootDOMNode;
+    while (current && current !== rootNode) {
+      depth++;
+      current = current.parentNode;
+    }
+    if (this.includeRootDOMNode) {
+      depth++;
+    }
+    if (depth >= maxDepth) {
+      return true;
+    }
+    return false;
+  }
+
   private createElementTreeElement(node: SDK.DOMModel.DOMNode|SDK.DOMModel.AdoptedStyleSheet[], isClosingTag?: boolean):
       UI.TreeOutline.TreeElement {
     if (node instanceof Array) {
@@ -1870,6 +1988,9 @@ export class ElementsTreeOutline extends
   }
 
   private hasVisibleChildren(node: SDK.DOMModel.DOMNode): boolean {
+    if (this.isMaxDepthReached(node)) {
+      return false;
+    }
     if (node.isIframe()) {
       return true;
     }

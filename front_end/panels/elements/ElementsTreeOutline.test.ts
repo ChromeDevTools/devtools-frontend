@@ -300,4 +300,179 @@ describeWithMockConnection('ElementsTreeOutline', () => {
 
     sinon.assert.called(preventDefaultSpy);
   });
+  describe('Snapshot mode', () => {
+    it('does not attach event listeners in snapshot mode', () => {
+      const addEventListenerSpy = sinon.spy(HTMLElement.prototype, 'addEventListener');
+      const snapshotTreeOutline = new Elements.ElementsTreeOutline.ElementsTreeOutline(
+          /* omitRootDOMNode */ true, /* selectEnabled */ true, /* hideGutter */ true, /* maxTreeDepth */ 2,
+          /* enableContextMenu */ false, /* showComments */ false, /* showAIButton */ false, /* disableEdits */ true,
+          /* expandRoot */ true);
+
+      const eventsToCheck = [
+        'dragstart', 'dragover', 'dragleave', 'drop', 'dragend', 'contextmenu', 'clipboard-beforecopy',
+        'clipboard-copy', 'clipboard-cut', 'clipboard-paste'
+      ];
+      for (const event of eventsToCheck) {
+        assert.isFalse(
+            addEventListenerSpy.calledWith(event),
+            `Event listener for ${event} should not be attached in snapshot mode`);
+      }
+      snapshotTreeOutline.element.remove();
+    });
+
+    it('auto-expands the root node in snapshot mode', async () => {
+      const snapshotTreeOutline = new Elements.ElementsTreeOutline.ElementsTreeOutline(
+          /* omitRootDOMNode */ false, /* selectEnabled */ true, /* hideGutter */ true, /* maxTreeDepth */ 2,
+          /* enableContextMenu */ false, /* showComments */ false, /* showAIButton */ false, /* disableEdits */ true,
+          /* expandRoot */ true);
+      const rootNode = SDK.DOMModel.DOMNode.create(model, null, false, {
+        nodeId: 1 as Protocol.DOM.NodeId,
+        backendNodeId: 1 as Protocol.DOM.BackendNodeId,
+        nodeType: Node.ELEMENT_NODE,
+        nodeName: 'BODY',
+        localName: 'body',
+        nodeValue: '',
+        childNodeCount: 1,
+        children: [{
+          nodeId: 2 as Protocol.DOM.NodeId,
+          parentId: 1 as Protocol.DOM.NodeId,
+          backendNodeId: 2 as Protocol.DOM.BackendNodeId,
+          nodeType: Node.ELEMENT_NODE,
+          nodeName: 'DIV',
+          localName: 'div',
+          nodeValue: 'A div',
+          childNodeCount: 0,
+          attributes: [],
+        } as Protocol.DOM.Node],
+        attributes: [],
+      });
+
+      const snapshot = await rootNode.takeSnapshot();
+      snapshotTreeOutline.rootDOMNode = snapshot;
+      const rootTreeElement =
+          snapshotTreeOutline.rootElement().childAt(0) as Elements.ElementsTreeElement.ElementsTreeElement;
+      assert.isNotNull(rootTreeElement);
+      assert.isTrue(rootTreeElement.expanded, 'Root element should be expanded in snapshot mode');
+    });
+
+    it('limits depth to root + 1 level in snapshot mode', async () => {
+      const snapshotTreeOutline = new Elements.ElementsTreeOutline.ElementsTreeOutline(
+          /* omitRootDOMNode */ false, /* selectEnabled */ true, /* hideGutter */ true, /* maxTreeDepth */ 2,
+          /* enableContextMenu */ false, /* showComments */ false, /* showAIButton */ false, /* disableEdits */ true,
+          /* expandRoot */ true);
+
+      // Root -> Child -> GrandChild
+      const rootNode = SDK.DOMModel.DOMNode.create(model, null, false, {
+        nodeId: 1 as Protocol.DOM.NodeId,
+        backendNodeId: 1 as Protocol.DOM.BackendNodeId,
+        nodeType: Node.ELEMENT_NODE,
+        nodeName: 'BODY',
+        localName: 'body',
+        nodeValue: '',
+        childNodeCount: 1,
+        children: [{
+          nodeId: 2 as Protocol.DOM.NodeId,
+          parentId: 1 as Protocol.DOM.NodeId,
+          backendNodeId: 2 as Protocol.DOM.BackendNodeId,
+          nodeType: Node.ELEMENT_NODE,
+          nodeName: 'DIV',
+          localName: 'div',
+          nodeValue: 'Child',
+          childNodeCount: 1,
+          children: [{
+            nodeId: 3 as Protocol.DOM.NodeId,
+            parentId: 2 as Protocol.DOM.NodeId,
+            backendNodeId: 3 as Protocol.DOM.BackendNodeId,
+            nodeType: Node.ELEMENT_NODE,
+            nodeName: 'SPAN',
+            localName: 'span',
+            nodeValue: 'Grandchild',
+            childNodeCount: 0,
+            attributes: [],
+          } as Protocol.DOM.Node],
+          attributes: [],
+        } as Protocol.DOM.Node],
+        attributes: [],
+      });
+
+      const snapshot = await rootNode.takeSnapshot();
+      snapshotTreeOutline.rootDOMNode = snapshot;
+
+      const rootTreeElement =
+          snapshotTreeOutline.rootElement().childAt(0) as Elements.ElementsTreeElement.ElementsTreeElement;
+      assert.isNotNull(rootTreeElement);
+      assert.isTrue(rootTreeElement.isExpandable(), 'Root should be expandable');
+
+      await snapshotTreeOutline.populateTreeElement(rootTreeElement);
+
+      const childTreeElement = rootTreeElement.childAt(0) as Elements.ElementsTreeElement.ElementsTreeElement;
+      assert.isNotNull(childTreeElement);
+      assert.isFalse(childTreeElement.isExpandable(), 'Child should NOT be expandable due to depth limit');
+
+      assert.strictEqual(childTreeElement.childCount(), 0, 'Child should not have children populated');
+    });
+
+    it('allows ShadowRoot to exceed depth limit', async () => {
+      const snapshotTreeOutline = new Elements.ElementsTreeOutline.ElementsTreeOutline(
+          /* omitRootDOMNode */ false, /* selectEnabled */ true, /* hideGutter */ true, /* maxTreeDepth */ 2,
+          /* enableContextMenu */ false, /* showComments */ false, /* showAIButton */ false, /* disableEdits */ true);
+
+      // Root -> ShadowRoot -> Child
+      const rootPayload = {
+        nodeId: 1 as Protocol.DOM.NodeId,
+        backendNodeId: 1 as Protocol.DOM.BackendNodeId,
+        nodeType: Node.ELEMENT_NODE,
+        nodeName: 'DIV',
+        localName: 'div',
+        nodeValue: '',
+        childNodeCount: 1,
+        shadowRoots: [{
+          nodeId: 2 as Protocol.DOM.NodeId,
+          parentId: 1 as Protocol.DOM.NodeId,
+          backendNodeId: 2 as Protocol.DOM.BackendNodeId,
+          nodeType: Node.DOCUMENT_FRAGMENT_NODE,
+          nodeName: '#shadow-root',
+          localName: '#shadow-root',
+          nodeValue: '',
+          shadowRootType: Protocol.DOM.ShadowRootType.Open,
+          childNodeCount: 1,
+          children: [{
+            nodeId: 3 as Protocol.DOM.NodeId,
+            parentId: 2 as Protocol.DOM.NodeId,
+            backendNodeId: 3 as Protocol.DOM.BackendNodeId,
+            nodeType: Node.ELEMENT_NODE,
+            nodeName: 'SPAN',
+            localName: 'span',
+            nodeValue: 'Child',
+            childNodeCount: 0,
+            attributes: [],
+          } as Protocol.DOM.Node],
+          attributes: [],
+        } as Protocol.DOM.Node],
+        attributes: [],
+      };
+
+      const rootNode = SDK.DOMModel.DOMNode.create(model, null, false, rootPayload);
+      const snapshot = await rootNode.takeSnapshot();
+      snapshotTreeOutline.rootDOMNode = snapshot;
+
+      const rootTreeElement =
+          snapshotTreeOutline.rootElement().childAt(0) as Elements.ElementsTreeElement.ElementsTreeElement;
+      assert.isNotNull(rootTreeElement);
+      assert.isTrue(rootTreeElement.isExpandable(), 'Host should be expandable');
+
+      await snapshotTreeOutline.populateTreeElement(rootTreeElement);
+
+      const shadowRootTreeElement = rootTreeElement.childAt(0) as Elements.ElementsTreeElement.ElementsTreeElement;
+      assert.isNotNull(shadowRootTreeElement);
+      assert.strictEqual(shadowRootTreeElement.node().nodeName(), '#shadow-root');
+      assert.isTrue(shadowRootTreeElement.isExpandable(), 'ShadowRoot should be expandable (exception)');
+
+      await snapshotTreeOutline.populateTreeElement(shadowRootTreeElement);
+
+      const childTreeElement = shadowRootTreeElement.childAt(0) as Elements.ElementsTreeElement.ElementsTreeElement;
+      assert.isNotNull(childTreeElement);
+      assert.isFalse(childTreeElement.isExpandable(), 'Child inside ShadowRoot should NOT be expandable');
+    });
+  });
 });

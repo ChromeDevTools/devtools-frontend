@@ -284,8 +284,8 @@ const UIStrings = {
    */
   startAChat: 'Start a chat',
   /**
-   * @description Label of an adorner next to the html node in the Elements panel.
-   */
+   * @description Label of an adorner next to the html node in the Elements panel.
+   */
   viewSourceCode: 'View source code',
   /**
    * @description Context menu item in Elements panel to assess visibility of an element via AI.
@@ -436,7 +436,6 @@ export interface ViewInput {
   showAiButton: boolean;
   aiButtonTitle?: string;
   onAiButtonClick: (e: Event) => void;
-
   decorations: Decoration[];
   descendantDecorations: Decoration[];
   decorationsTooltip: string;
@@ -806,16 +805,13 @@ function renderAttribute(
 
   // clang-format off
   return html`<span class="webkit-html-attribute" jslog=${jslog}><span class="webkit-html-attribute-name"
-      ${animateOn(Boolean(updateRecord?.isAttributeModified(name) && !hasText), DOM_UPDATE_ANIMATION_CLASS_NAME)} ${
-      relationRefDirective}>${name}</span>${
-      hasText ? html`=\u200B"<span class="webkit-html-attribute-value" ${
-                    animateOn(
-                        Boolean(updateRecord?.isAttributeModified(name) && hasText),
-                        DOM_UPDATE_ANIMATION_CLASS_NAME)} ${valueRelationRefDirective} ${withEntitiesRef}>
+      ${animateOn(Boolean(updateRecord?.isAttributeModified(name) && !hasText), DOM_UPDATE_ANIMATION_CLASS_NAME)} ${relationRefDirective}>${name}</span>${hasText ? html`=\u200B"<span class="webkit-html-attribute-value" ${animateOn(
+    Boolean(updateRecord?.isAttributeModified(name) && hasText),
+    DOM_UPDATE_ANIMATION_CLASS_NAME)} ${valueRelationRefDirective} ${withEntitiesRef}>
                         ${valueType === ValueType.SRC ? renderLinkifiedValue(value, node) : nothing}
                         ${valueType === ValueType.SRCSET ? renderLinkifiedSrcset(Common.Srcset.parseSrcset(value), node) : nothing}
                 </span>"` :
-                nothing}</span>`;
+      nothing}</span>`;
   // clang-format on
 }
 
@@ -868,15 +864,15 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
   render(html`
     <div ${ref(el => { output.contentElement = el as HTMLElement; })}>
       ${input.node ? html`<span class="highlight">${renderTitle(
-          input.node,
-          input.isClosingTag,
-          input.expanded,
-          input.isExpandable,
-          input.isXMLMimeType,
-          input.updateRecord,
-          input.onHighlightSearchResults,
-          input.onExpand,
-      )}</span>` : nothing}
+    input.node,
+    input.isClosingTag,
+    input.expanded,
+    input.isExpandable,
+    input.isXMLMimeType,
+    input.updateRecord,
+    input.onHighlightSearchResults,
+    input.onExpand,
+  )}</span>` : nothing}
       ${input.isHovered || input.isSelected ? html`
         <div class="selection fill" style=${`margin-left: ${-input.indent}px`}></div>
       ` : nothing}
@@ -913,7 +909,7 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
           toggleable=true
           tabindex=0
           .name=${ElementsComponents.AdornerManager.RegisteredAdorners.CONTAINER}
-          jslog=${VisualLogging.adorner(ElementsComponents.AdornerManager.RegisteredAdorners.CONTAINER).track({click: true})}
+          jslog=${VisualLogging.adorner(ElementsComponents.AdornerManager.RegisteredAdorners.CONTAINER).track({ click: true })}
           active=${input.containerAdornerActive}
           aria-label=${input.containerAdornerActive ? i18nString(UIStrings.enableContainer) : i18nString(UIStrings.disableContainer)}
           @click=${input.onContainerAdornerClick}
@@ -930,7 +926,7 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
           toggleable=true
           tabindex=0
           .name=${ElementsComponents.AdornerManager.RegisteredAdorners.FLEX}
-          jslog=${VisualLogging.adorner(ElementsComponents.AdornerManager.RegisteredAdorners.FLEX).track({click: true})}
+          jslog=${VisualLogging.adorner(ElementsComponents.AdornerManager.RegisteredAdorners.FLEX).track({ click: true })}
           active=${input.flexAdornerActive}
           aria-label=${input.flexAdornerActive ? i18nString(UIStrings.disableFlexMode) : i18nString(UIStrings.enableFlexMode)}
           @click=${input.onFlexAdornerClick}
@@ -944,7 +940,7 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
           toggleable=true
           tabindex=0
           .name=${input.isSubgrid ? ElementsComponents.AdornerManager.RegisteredAdorners.SUBGRID : ElementsComponents.AdornerManager.RegisteredAdorners.GRID}
-          jslog=${VisualLogging.adorner(input.isSubgrid ? ElementsComponents.AdornerManager.RegisteredAdorners.SUBGRID : ElementsComponents.AdornerManager.RegisteredAdorners.GRID).track({click: true})}
+          jslog=${VisualLogging.adorner(input.isSubgrid ? ElementsComponents.AdornerManager.RegisteredAdorners.SUBGRID : ElementsComponents.AdornerManager.RegisteredAdorners.GRID).track({ click: true })}
           active=${input.gridAdornerActive}
           aria-label=${input.gridAdornerActive ? i18nString(UIStrings.disableGridMode) : i18nString(UIStrings.enableGridMode)}
           @click=${input.onGridAdornerClick}
@@ -958,7 +954,7 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
           toggleable=true
           tabindex=0
           .name=${ElementsComponents.AdornerManager.RegisteredAdorners.GRID_LANES}
-          jslog=${VisualLogging.adorner(ElementsComponents.AdornerManager.RegisteredAdorners.GRID_LANES).track({click: true})}
+          jslog=${VisualLogging.adorner(ElementsComponents.AdornerManager.RegisteredAdorners.GRID_LANES).track({ click: true })}
           active=${input.gridAdornerActive}
           aria-label=${input.gridAdornerActive ? i18nString(UIStrings.disableGridLanesMode) : i18nString(UIStrings.enableGridLanesMode)}
           @click=${input.onGridAdornerClick}
@@ -971,7 +967,7 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
           role=button
           tabindex=0
           .name=${ElementsComponents.AdornerManager.RegisteredAdorners.MEDIA}
-          jslog=${VisualLogging.adorner(ElementsComponents.AdornerManager.RegisteredAdorners.MEDIA).track({click: true})}
+          jslog=${VisualLogging.adorner(ElementsComponents.AdornerManager.RegisteredAdorners.MEDIA).track({ click: true })}
           aria-label=${i18nString(UIStrings.openMediaPanel)}
           @click=${input.onMediaAdornerClick}
           @keydown=${handleAdornerKeydown(input.onMediaAdornerClick)}
@@ -986,7 +982,7 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
           toggleable=true
           tabindex=0
           .name=${ElementsComponents.AdornerManager.RegisteredAdorners.POPOVER}
-          jslog=${VisualLogging.adorner(ElementsComponents.AdornerManager.RegisteredAdorners.POPOVER).track({click: true})}
+          jslog=${VisualLogging.adorner(ElementsComponents.AdornerManager.RegisteredAdorners.POPOVER).track({ click: true })}
           active=${input.popoverAdornerActive}
           aria-label=${input.popoverAdornerActive ? i18nString(UIStrings.stopForceOpenPopover) : i18nString(UIStrings.forceOpenPopover)}
           @click=${input.onPopoverAdornerClick}
@@ -999,7 +995,7 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
           role=button
           tabindex=0
           .name=${ElementsComponents.AdornerManager.RegisteredAdorners.TOP_LAYER}
-          jslog=${VisualLogging.adorner(ElementsComponents.AdornerManager.RegisteredAdorners.TOP_LAYER).track({click: true})}
+          jslog=${VisualLogging.adorner(ElementsComponents.AdornerManager.RegisteredAdorners.TOP_LAYER).track({ click: true })}
           aria-label=${i18nString(UIStrings.reveal)}
           @click=${input.onTopLayerAdornerClick}
           @keydown=${handleAdornerKeydown(input.onTopLayerAdornerClick)}
@@ -1011,7 +1007,7 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
         ${input.showStartingStyleAdorner ? html`<devtools-adorner
           class="starting-style"
           .name=${ElementsComponents.AdornerManager.RegisteredAdorners.STARTING_STYLE}
-          jslog=${VisualLogging.adorner(ElementsComponents.AdornerManager.RegisteredAdorners.STARTING_STYLE).track({click: true})}
+          jslog=${VisualLogging.adorner(ElementsComponents.AdornerManager.RegisteredAdorners.STARTING_STYLE).track({ click: true })}
           active=${input.startingStyleAdornerActive}
           toggleable=true
           aria-label=${input.startingStyleAdornerActive ? i18nString(UIStrings.disableStartingStyle) : i18nString(UIStrings.enableStartingStyle)}
@@ -1023,7 +1019,7 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
         ${input.showScrollAdorner ? html`<devtools-adorner
           class="scroll"
           .name=${ElementsComponents.AdornerManager.RegisteredAdorners.SCROLL}
-          jslog=${VisualLogging.adorner(ElementsComponents.AdornerManager.RegisteredAdorners.SCROLL).track({click: true})}
+          jslog=${VisualLogging.adorner(ElementsComponents.AdornerManager.RegisteredAdorners.SCROLL).track({ click: true })}
           aria-label=${i18nString(UIStrings.elementHasScrollableOverflow)}
           ${adornerRef()}>
           <span>${ElementsComponents.AdornerManager.RegisteredAdorners.SCROLL}</span>
@@ -1033,7 +1029,7 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
           role=button
           tabindex=0
           .name=${ElementsComponents.AdornerManager.RegisteredAdorners.SLOT}
-          jslog=${VisualLogging.adorner(ElementsComponents.AdornerManager.RegisteredAdorners.SLOT).track({click: true})}
+          jslog=${VisualLogging.adorner(ElementsComponents.AdornerManager.RegisteredAdorners.SLOT).track({ click: true })}
           @click=${input.onSlotAdornerClick}
           @mousedown=${(e: Event) => e.stopPropagation()}
           ${adornerRef()}>
@@ -1045,7 +1041,7 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
         ${input.showScrollSnapAdorner ? html`<devtools-adorner
           class="scroll-snap"
           .name=${ElementsComponents.AdornerManager.RegisteredAdorners.SCROLL_SNAP}
-          jslog=${VisualLogging.adorner(ElementsComponents.AdornerManager.RegisteredAdorners.SCROLL_SNAP).track({click: true})}
+          jslog=${VisualLogging.adorner(ElementsComponents.AdornerManager.RegisteredAdorners.SCROLL_SNAP).track({ click: true })}
           active=${input.scrollSnapAdornerActive}
           toggleable=true
           aria-label=${input.scrollSnapAdornerActive ? i18nString(UIStrings.disableScrollSnap) : i18nString(UIStrings.enableScrollSnap)}
@@ -1056,7 +1052,7 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
         </devtools-adorner>` : nothing}
       </div>`: nothing}
       ${input.isSelected ? html`
-        <span class="selected-hint" title=${i18nString(UIStrings.useSInTheConsoleToReferToThis, {PH1: '$0'})} aria-hidden="true"></span>
+        <span class="selected-hint" title=${i18nString(UIStrings.useSInTheConsoleToReferToThis, { PH1: '$0' })} aria-hidden="true"></span>
       ` : nothing}
       ${input.showAiButton ? html`
         <span class="ai-button-container">
@@ -1261,7 +1257,8 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
           showSlotAdorner: Boolean(this.nodeInternal.assignedSlot) && !this.isClosingTag(),
           showStartingStyleAdorner: this.nodeInternal.affectedByStartingStyles() && !this.isClosingTag(),
           startingStyleAdornerActive: this.#startingStyleAdornerActive,
-          onStartingStyleAdornerClick: (event: Event) => this.#onStartingStyleAdornerClick(event),
+          onStartingStyleAdornerClick:
+              this.treeOutline?.disableEdits ? () => {} : (event: Event) => this.#onStartingStyleAdornerClick(event),
           onSlotAdornerClick: () => {
             if (this.nodeInternal.assignedSlot) {
               const deferredNode = this.nodeInternal.assignedSlot.deferredNode;
@@ -1271,25 +1268,32 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
             }
           },
           topLayerIndex: this.node().topLayerIndex(),
-          onViewSourceAdornerClick: this.revealHTMLInSources.bind(this),
+          onViewSourceAdornerClick: this.treeOutline?.disableEdits ? () => {} : this.revealHTMLInSources.bind(this),
           onGutterClick: this.showContextMenu.bind(this),
-          onContainerAdornerClick: (event: Event) => this.#onContainerAdornerClick(event),
-          onFlexAdornerClick: (event: Event) => this.#onFlexAdornerClick(event),
-          onGridAdornerClick: (event: Event) => this.#onGridAdornerClick(event),
-          onMediaAdornerClick: (event: Event) => this.#onMediaAdornerClick(event),
-          onPopoverAdornerClick: (event: Event) => this.#onPopoverAdornerClick(event),
-          onScrollSnapAdornerClick: (event: Event) => this.#onScrollSnapAdornerClick(event),
-          onTopLayerAdornerClick: () => {
-            if (!this.treeOutline) {
-              return;
-            }
-            this.treeOutline.revealInTopLayer(this.node());
-          },
+          onContainerAdornerClick:
+              this.treeOutline?.disableEdits ? () => {} : (event: Event) => this.#onContainerAdornerClick(event),
+          onFlexAdornerClick: this.treeOutline?.disableEdits ? () => {} :
+                                                               (event: Event) => this.#onFlexAdornerClick(event),
+          onGridAdornerClick: this.treeOutline?.disableEdits ? () => {} :
+                                                               (event: Event) => this.#onGridAdornerClick(event),
+          onMediaAdornerClick: this.treeOutline?.disableEdits ? () => {} :
+                                                                (event: Event) => this.#onMediaAdornerClick(event),
+          onPopoverAdornerClick: this.treeOutline?.disableEdits ? () => {} :
+                                                                  (event: Event) => this.#onPopoverAdornerClick(event),
+          onScrollSnapAdornerClick:
+              this.treeOutline?.disableEdits ? () => {} : (event: Event) => this.#onScrollSnapAdornerClick(event),
+          onTopLayerAdornerClick: this.treeOutline?.disableEdits ? () => {} :
+                                                                   () => {
+                                                                     if (!this.treeOutline) {
+                                                                       return;
+                                                                     }
+                                                                     this.treeOutline.revealInTopLayer(this.node());
+                                                                   },
           isHovered: this.#hovered,
           isSelected: this.selected,
           showAiButton: Boolean(this.#hovered || this.selected) && this.node().nodeType() === Node.ELEMENT_NODE &&
-              UI.ActionRegistry.ActionRegistry.instance().hasAction('freestyler.elements-floating-button'),
-          aiButtonTitle: UI.ActionRegistry.ActionRegistry.instance().hasAction('freestyler.elements-floating-button') ?
+              this.isAiButtonEnabled() && (this.treeOutline as ElementsTreeOutline)?.showAIButton,
+          aiButtonTitle: this.isAiButtonEnabled() ?
               UI.ActionRegistry.ActionRegistry.instance().getAction('freestyler.elements-floating-button').title() :
               undefined,
           onAiButtonClick: (ev: Event) => {
@@ -1891,6 +1895,10 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     contextMenu.viewSection().appendItem(
         i18nString(UIStrings.scrollIntoView), () => this.nodeInternal.scrollIntoView(),
         {jslogContext: 'scroll-into-view'});
+  }
+
+  private isAiButtonEnabled(): boolean {
+    return UI.ActionRegistry.ActionRegistry.instance().hasAction('freestyler.elements-floating-button');
   }
 
   async populateTextContextMenu(contextMenu: UI.ContextMenu.ContextMenu, textNode: Element): Promise<void> {

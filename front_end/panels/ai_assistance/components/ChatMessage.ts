@@ -103,6 +103,10 @@ const UIStringsNotTranslate = {
    */
   maxStepsError: 'Seems like I am stuck with the investigation. It would be better if you start over.',
   /**
+   * @description The error message when the LLM selects context from a different origin.
+   */
+  crossOriginError: 'I have selected the new context but you will have to start a new chat.',
+  /**
    * @description Displayed when the user stop the response
    */
   stoppedResponse: 'You stopped this response',
@@ -843,6 +847,9 @@ function renderError(message: ModelChatMessage): Lit.LitTemplate {
         break;
       case AiAssistanceModel.AiAgent.ErrorType.MAX_STEPS:
         errorMessage = UIStringsNotTranslate.maxStepsError;
+        break;
+      case AiAssistanceModel.AiAgent.ErrorType.CROSS_ORIGIN:
+        errorMessage = UIStringsNotTranslate.crossOriginError;
         break;
       case AiAssistanceModel.AiAgent.ErrorType.ABORT:
         return html`<p class="aborted" jslog=${VisualLogging.section('aborted')}>${

@@ -29,6 +29,7 @@ export const enum ErrorType {
   ABORT = 'abort',
   MAX_STEPS = 'max-steps',
   BLOCK = 'block',
+  CROSS_ORIGIN = 'cross-origin'
 }
 
 export const enum MultimodalInputType {
@@ -149,6 +150,7 @@ export interface AgentOptions {
   confirmSideEffectForTest?: typeof Promise.withResolvers;
   onInspectElement?: () => Promise<SDK.DOMModel.DOMNode|null>;
   history?: Host.AidaClient.Content[];
+  allowedOrigin?: () => string | undefined;
 }
 
 export interface ParsedAnswer {

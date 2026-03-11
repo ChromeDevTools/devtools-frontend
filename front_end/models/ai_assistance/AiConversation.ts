@@ -1,10 +1,10 @@
 // Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-
+import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as Root from '../../core/root/root.js';
-import type * as SDK from '../../core/sdk/sdk.js';
+import * as SDK from '../../core/sdk/sdk.js';
 import type * as Trace from '../../models/trace/trace.js';
 import * as Greendev from '../greendev/greendev.js';
 import type * as NetworkTimeCalculator from '../network_time_calculator/network_time_calculator.js';
@@ -13,6 +13,7 @@ import {
   type AiAgent,
   type ContextDetail,
   type ConversationContext,
+  ErrorType,
   type MultimodalInput,
   type ResponseData,
   ResponseType,
@@ -313,6 +314,7 @@ export class AiConversation {
       performanceRecordAndReload: this.#performanceRecordAndReload,
       onInspectElement: this.#onInspectElement,
       networkTimeCalculator: this.#networkTimeCalculator,
+      allowedOrigin: this.allowedOrigin,
       history,
     };
     switch (type) {
@@ -369,12 +371,6 @@ export class AiConversation {
     void this.addHistoryItem(userQuery);
     yield userQuery;
 
-    this.#setOriginIfEmpty(this.selectedContext?.getOrigin());
-
-    if (this.isBlockedByOrigin) {
-      throw new Error('Cross-origin context data should not be included');
-    }
-
     yield* this.#runAgent(initialQuery, options);
   }
 
@@ -390,6 +386,15 @@ export class AiConversation {
             multimodalInput?: MultimodalInput,
           } = {},
           ): AsyncGenerator<ResponseData, void, void> {
+    this.#setOriginIfEmpty(this.selectedContext?.getOrigin());
+    if (this.isBlockedByOrigin) {
+      yield {
+        type: ResponseType.ERROR,
+        error: ErrorType.CROSS_ORIGIN,
+      };
+      return;
+    }
+
     function shouldAddToHistory(data: ResponseData): boolean {
       if (data.type === ResponseType.CONTEXT_CHANGE) {
         return false;
@@ -445,6 +450,17 @@ export class AiConversation {
   get type(): ConversationType {
     return this.#type;
   }
+
+  allowedOrigin = (): string|undefined => {
+    if (this.#origin) {
+      return this.#origin;
+    }
+    const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+    const inspectedURL = target?.inspectedURL();
+    this.#origin = inspectedURL ? new Common.ParsedURL.ParsedURL(inspectedURL).securityOrigin() : undefined;
+
+    return this.#origin;
+  };
 }
 
 function isAiAssistanceServerSideLoggingEnabled(): boolean {

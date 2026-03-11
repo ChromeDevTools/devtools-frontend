@@ -6,6 +6,7 @@ import * as Common from '../../core/common/common.js';
 import type * as Host from '../../core/host/host.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import type * as Protocol from '../../generated/protocol.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import {createNetworkRequest, mockAidaClient} from '../../testing/AiAssistanceHelpers.js';
 import {
@@ -124,6 +125,46 @@ describeWithEnvironment('AiConversation', () => {
     });
   });
 
+  it('should update conversation origin when agent returns CONTEXT_CHANGE', async () => {
+    updateHostConfig({devToolsAiAssistanceContextSelectionAgent: {enabled: true}});
+
+    const aidaClient = mockAidaClient([
+      [
+        {
+          explanation: '',
+          functionCalls: [{
+            name: 'selectNetworkRequest',
+            args: {id: 'requestId-0'},
+          }],
+        },
+      ],
+      [
+        {
+          explanation: 'Done',
+        },
+      ],
+    ]);
+
+    const conversation = new AiAssistance.AiConversation.AiConversation(
+        AiAssistance.AiHistoryStorage.ConversationType.NONE,
+        [],
+        'test-id',
+        false,
+        aidaClient,
+    );
+
+    const networkRequest = createNetworkRequest({url: Platform.DevToolsPath.urlString`https://example.com/test`});
+    const contentData = new TextUtils.ContentData.ContentData('test content', false, 'text/plain');
+    sinon.stub(networkRequest, 'requestContentData').resolves(contentData);
+    sinon.stub(Logs.NetworkLog.NetworkLog.instance(), 'requests').returns([networkRequest]);
+
+    assert.isUndefined(conversation.origin);
+
+    await Array.fromAsync(conversation.run('test query'));
+
+    assert.strictEqual(conversation.origin, 'https://example.com');
+  });
+
   it('should forward history to the new agent when switching agents', async () => {
     updateHostConfig({devToolsAiAssistanceContextSelectionAgent: {enabled: true}});
 
@@ -195,5 +236,158 @@ describeWithEnvironment('AiConversation', () => {
     const thirdRequest = aidaClient.doConversation.getCall(2).firstArg;
     assert.isFalse(hasFunctionCalls(thirdRequest));
     assert.lengthOf(thirdRequest.historical_contexts ?? [], 3);
+  });
+
+  it('filters network requests by security origin', async () => {
+    updateHostConfig({devToolsAiAssistanceContextSelectionAgent: {enabled: true}});
+
+    const origin = Platform.DevToolsPath.urlString`https://example.com`;
+    const otherOrigin = Platform.DevToolsPath.urlString`https://other.com`;
+
+    const target = sinon.createStubInstance(SDK.Target.Target);
+    target.inspectedURL.returns(Platform.DevToolsPath.urlString`${origin}/`);
+    sinon.stub(SDK.TargetManager.TargetManager.instance(), 'primaryPageTarget').returns(target);
+
+    const sameOriginRequest = SDK.NetworkRequest.NetworkRequest.create(
+        'requestId1' as Protocol.Network.RequestId,
+        Platform.DevToolsPath.urlString`${origin}/foo`,
+        Platform.DevToolsPath.urlString`${origin}/foo`,
+        null,
+        null,
+        null,
+    );
+    sameOriginRequest.statusCode = 200;
+    sameOriginRequest.setIssueTime(0, 0);
+    sameOriginRequest.endTime = 1;
+
+    const crossOriginRequest = SDK.NetworkRequest.NetworkRequest.create(
+        'requestId2' as Protocol.Network.RequestId,
+        Platform.DevToolsPath.urlString`${otherOrigin}/bar`,
+        Platform.DevToolsPath.urlString`${otherOrigin}/bar`,
+        null,
+        null,
+        null,
+    );
+    crossOriginRequest.statusCode = 200;
+    crossOriginRequest.setIssueTime(0, 0);
+    crossOriginRequest.endTime = 1;
+
+    const networkLog = Logs.NetworkLog.NetworkLog.instance();
+    sinon.stub(networkLog, 'requests').returns([sameOriginRequest, crossOriginRequest]);
+
+    const aidaClient = mockAidaClient([
+      [{
+        functionCalls: [{
+          name: 'listNetworkRequests',
+          args: {},
+        }],
+        explanation: '',
+      }],
+      [{explanation: 'Done'}],
+    ]);
+    const conversation = new AiAssistance.AiConversation.AiConversation(
+        AiAssistance.AiHistoryStorage.ConversationType.NONE,
+        [],
+        'test-id',
+        false,
+        aidaClient,
+    );
+
+    await Array.fromAsync(conversation.run('test'));
+
+    const requestToAida = aidaClient.doConversation.getCall(1).firstArg;
+    const part = requestToAida.current_message.parts[0];
+
+    assert(part && 'functionResponse' in part, 'Expected functionResponse part');
+    assert.strictEqual(part.functionResponse.name, 'listNetworkRequests');
+    assert.deepEqual(part.functionResponse.response.result, [
+      {
+        id: 'requestId1',
+        url: `${origin}/foo`,
+        statusCode: 200,
+        duration: '1.00\xA0s',
+        transferSize: '0.0\xA0kB',
+      },
+    ]);
+  });
+
+  it('locks the origin when listNetworkRequests is called', async () => {
+    updateHostConfig({devToolsAiAssistanceContextSelectionAgent: {enabled: true}});
+
+    const origin = Platform.DevToolsPath.urlString`https://example.com`;
+    const otherOrigin = Platform.DevToolsPath.urlString`https://other.com`;
+
+    const target = sinon.createStubInstance(SDK.Target.Target);
+    target.inspectedURL.returns(Platform.DevToolsPath.urlString`${origin}/`);
+    sinon.stub(SDK.TargetManager.TargetManager.instance(), 'primaryPageTarget').returns(target);
+
+    const request1 = SDK.NetworkRequest.NetworkRequest.create(
+        'requestId1' as Protocol.Network.RequestId,
+        Platform.DevToolsPath.urlString`${origin}/foo`,
+        Platform.DevToolsPath.urlString`${origin}/foo`,
+        null,
+        null,
+        null,
+    );
+    request1.statusCode = 200;
+    request1.setIssueTime(0, 0);
+    request1.endTime = 1;
+
+    const networkLog = Logs.NetworkLog.NetworkLog.instance();
+    const requestsStub = sinon.stub(networkLog, 'requests').returns([request1]);
+
+    const aidaClient = mockAidaClient([
+      [{
+        functionCalls: [{
+          name: 'listNetworkRequests',
+          args: {},
+        }],
+        explanation: '',
+      }],
+      [{explanation: 'Done'}],
+      [{
+        functionCalls: [{
+          name: 'listNetworkRequests',
+          args: {},
+        }],
+        explanation: '',
+      }],
+      [{explanation: 'Done2'}],
+    ]);
+    const conversation = new AiAssistance.AiConversation.AiConversation(
+        AiAssistance.AiHistoryStorage.ConversationType.NONE,
+        [],
+        'test-id',
+        false,
+        aidaClient,
+    );
+
+    await Array.fromAsync(conversation.run('test'));
+
+    target.inspectedURL.returns(Platform.DevToolsPath.urlString`${otherOrigin}/`);
+
+    const request2 = SDK.NetworkRequest.NetworkRequest.create(
+        'requestId2' as Protocol.Network.RequestId,
+        Platform.DevToolsPath.urlString`${otherOrigin}/bar`,
+        Platform.DevToolsPath.urlString`${otherOrigin}/bar`,
+        null,
+        null,
+        null,
+    );
+    request2.statusCode = 200;
+    request2.setIssueTime(0, 0);
+    request2.endTime = 1;
+    requestsStub.returns([request2]);
+
+    await Array.fromAsync(conversation.run('test2'));
+
+    const requestToAida = aidaClient.doConversation.getCall(3).firstArg;
+    const part = requestToAida.current_message.parts[0];
+
+    assert(part && 'functionResponse' in part, 'Expected functionResponse part');
+    assert.strictEqual(part.functionResponse.name, 'listNetworkRequests');
+    assert.deepEqual(part.functionResponse.response, {
+      error: 'No requests showing with origin https://example.com. Tell the user to start a new chat',
+    });
   });
 });

@@ -81,6 +81,7 @@ async function domNodesForBackendIds(frameId, nodeIds) {
 // gen/front_end/panels/timeline/utils/Helpers.js
 var Helpers_exports = {};
 __export(Helpers_exports, {
+  RevealableCoreVitals: () => RevealableCoreVitals,
   RevealableInsight: () => RevealableInsight,
   createUrlLabels: () => createUrlLabels,
   formatOriginWithEntity: () => formatOriginWithEntity,
@@ -180,6 +181,12 @@ var RevealableInsight = class {
   insight;
   constructor(insight) {
     this.insight = insight;
+  }
+};
+var RevealableCoreVitals = class {
+  insightSetKey;
+  constructor(insightSetKey) {
+    this.insightSetKey = insightSetKey;
   }
 };
 

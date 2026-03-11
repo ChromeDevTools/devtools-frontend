@@ -2993,6 +2993,20 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     isEventWithinDisclosureTriangle(event) {
         return event.target === this.expandElement;
     }
+    showGhostTextInValue(text) {
+        if (!this.valueElement) {
+            return;
+        }
+        this.clearGhostTextInValue();
+        this.valueElement.createChild('span', 'ghost-value-prediction').textContent = text;
+    }
+    clearGhostTextInValue() {
+        if (!this.valueElement) {
+            return;
+        }
+        const ghostElement = this.valueElement.querySelector('.ghost-value-prediction');
+        ghostElement?.remove();
+    }
 }
 export class GhostStylePropertyTreeElement extends StylePropertyTreeElement {
     constructor(stylesContainer, section, matchedStyles, property) {

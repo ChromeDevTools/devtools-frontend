@@ -178,7 +178,6 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsS
     #webCustomData;
     activeCSSAngle = null;
     #updateAbortController;
-    #updateComputedStylesAbortController;
     constructor(computedStyleModel) {
         super(computedStyleModel, { delegatesFocus: true });
         this.setMinimumSize(96, 26);
@@ -570,12 +569,9 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsS
         }
     }
     onCSSModelChanged(event) {
-        const edit = event?.data && 'edit' in event.data ? event.data.edit : null;
-        if (edit) {
-            for (const section of this.allSections()) {
-                section.styleSheetEdited(edit);
-            }
-            void this.#refreshComputedStyles();
+        // We only recreate sections if this update is more than an "edit" operation.
+        // Sections will pull their own updates in the case of an "edit".
+        if (event?.data && 'edit' in event.data && event.data.edit) {
             return;
         }
         this.#resetUpdateIfNotEditing();
@@ -593,7 +589,6 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsS
     }
     #resetUpdateIfNotEditing() {
         if (this.userOperation || this.isEditingStyle) {
-            void this.#refreshComputedStyles();
             return;
         }
         this.resetCache();
@@ -709,23 +704,6 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsS
             updateStyleSection(currentInheritedAnimationsStyle, newInheritedAnimationsStyle ?? null);
         }
     }
-    async #refreshComputedStyles() {
-        this.#updateComputedStylesAbortController?.abort();
-        this.#updateAbortController = new AbortController();
-        const signal = this.#updateAbortController.signal;
-        const matchedStyles = await this.fetchMatchedCascade();
-        const nodeId = this.node()?.id;
-        const parentNodeId = matchedStyles?.getParentLayoutNodeId();
-        const [computedStyles, parentsComputedStyles] = await Promise.all([this.fetchComputedStylesFor(nodeId), this.fetchComputedStylesFor(parentNodeId)]);
-        if (signal.aborted) {
-            return;
-        }
-        for (const section of this.allSections()) {
-            section.setComputedStyles(computedStyles);
-            section.setParentsComputedStyles(parentsComputedStyles);
-            section.updateAuthoringHint();
-        }
-    }
     focusedSectionIndex() {
         let index = 0;
         for (const block of this.sectionBlocks) {
@@ -762,6 +740,9 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsS
         const focusedIndex = this.focusedSectionIndex();
         this.linkifier.reset();
         const prevSections = this.sectionBlocks.map(block => block.sections).flat();
+        for (const section of prevSections) {
+            section.dispose();
+        }
         this.sectionBlocks = [];
         const node = this.node();
         this.hasMatchedStyles = matchedStyles !== null && node !== null;
@@ -1492,7 +1473,7 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
                 getCurrentText: () => {
                     return this.text();
                 },
-                setAiAutoCompletion: () => { },
+                setAiAutoCompletion: this.setAiAutoCompletion.bind(this),
             };
             this.aiCodeCompletionProvider =
                 StylesAiCodeCompletionProvider.StylesAiCodeCompletionProvider.createInstance(this.aiCodeCompletionConfig);
@@ -1753,6 +1734,36 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
             return;
         }
         await this.aiCodeCompletionProvider.triggerAiCodeCompletion(userInput, range.endOffset, this.isEditingName, this.treeElement.property, cssModel);
+    }
+    setAiAutoCompletion(args) {
+        if (!args) {
+            this.treeElement.section().clearGhostStyleTreeElements();
+            return;
+        }
+        this.showAiGhostText(args?.text);
+        const latency = performance.now() - args.startTime;
+        if (args.rpcGlobalId) {
+            args.onImpression(args.rpcGlobalId, latency, args.sampleId);
+        }
+    }
+    showAiGhostText(text) {
+        const [currentLine, ...nextLinesList] = text.split(';');
+        const nextLines = nextLinesList.join(';').trim();
+        if (this.isEditingName && currentLine.includes(':')) {
+            const [namePart, valuePart] = currentLine.split(':').map(s => s.trim());
+            this.applySuggestion({ text: this.text() + namePart }, true);
+            this.treeElement.showGhostTextInValue(valuePart);
+        }
+        else {
+            // Only has ghost text for one field - name part or value part
+            this.applySuggestion({ text: this.text() + currentLine }, true);
+        }
+        if (nextLines) {
+            this.treeElement.section().renderGhostStyleTreeElements(nextLines);
+        }
+        else {
+            this.treeElement.section().clearGhostStyleTreeElements();
+        }
     }
     /**
      * Extracts the remaining portion of the suggestion text that follows the

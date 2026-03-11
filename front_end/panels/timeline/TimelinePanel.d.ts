@@ -192,6 +192,7 @@ export declare class TimelinePanel extends TimelinePanel_base implements Client,
      * 3. Flash the Insight with the highlight colour we use in other panels.
      */
     revealInsight(insightModel: Trace.Insights.Types.InsightModel): void;
+    revealCoreVitals(revealable: Utils.Helpers.RevealableCoreVitals): void;
     static executeRecordAndReload(): Promise<Trace.TraceModel.ParsedTrace>;
     static handleExternalRecordRequest(): AsyncGenerator<AiAssistanceModel.AiAgent.ExternalRequestResponse, AiAssistanceModel.AiAgent.ExternalRequestResponse>;
     static handleExternalAnalyzeRequest(prompt: string): Promise<AsyncGenerator<AiAssistanceModel.AiAgent.ExternalRequestResponse, AiAssistanceModel.AiAgent.ExternalRequestResponse>>;
@@ -223,6 +224,9 @@ export declare class EventRevealer implements Common.Revealer.Revealer<SDK.Trace
 }
 export declare class InsightRevealer implements Common.Revealer.Revealer<Utils.Helpers.RevealableInsight> {
     reveal(revealable: Utils.Helpers.RevealableInsight): Promise<void>;
+}
+export declare class CoreVitalsRevealer implements Common.Revealer.Revealer<Utils.Helpers.RevealableCoreVitals> {
+    reveal(revealable: Utils.Helpers.RevealableCoreVitals): Promise<void>;
 }
 export declare class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
     handleAction(context: UI.Context.Context, actionId: string): boolean;

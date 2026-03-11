@@ -2,9 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as Common from '../common/common.js';
+import * as Root from '../root/root.js';
 import { Events as ResourceTreeModelEvents, ResourceTreeModel } from './ResourceTreeModel.js';
 import { TargetManager } from './TargetManager.js';
-let frameManagerInstance = null;
 /**
  * The FrameManager is a central storage for all #frames. It collects #frames from all
  * ResourceTreeModel-instances (one per target), so that #frames can be found by id
@@ -20,18 +20,18 @@ export class FrameManager extends Common.ObjectWrapper.ObjectWrapper {
     #outermostFrame = null;
     #transferringFramesDataCache = new Map();
     #awaitedFrames = new Map();
-    constructor() {
+    constructor(targetManager) {
         super();
-        TargetManager.instance().observeModels(ResourceTreeModel, this);
+        targetManager.observeModels(ResourceTreeModel, this);
     }
     static instance({ forceNew } = { forceNew: false }) {
-        if (!frameManagerInstance || forceNew) {
-            frameManagerInstance = new FrameManager();
+        if (!Root.DevToolsContext.globalInstance().has(FrameManager) || forceNew) {
+            Root.DevToolsContext.globalInstance().set(FrameManager, new FrameManager(TargetManager.instance()));
         }
-        return frameManagerInstance;
+        return Root.DevToolsContext.globalInstance().get(FrameManager);
     }
     static removeInstance() {
-        frameManagerInstance = null;
+        Root.DevToolsContext.globalInstance().delete(FrameManager);
     }
     modelAdded(resourceTreeModel) {
         const addListener = resourceTreeModel.addEventListener(ResourceTreeModelEvents.FrameAdded, this.frameAdded, this);

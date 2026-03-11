@@ -353,6 +353,8 @@ export declare class StylePropertyTreeElement extends UI.TreeOutline.TreeElement
     private innerApplyStyleText;
     ondblclick(): boolean;
     isEventWithinDisclosureTriangle(event: Event): boolean;
+    showGhostTextInValue(text: string): void;
+    clearGhostTextInValue(): void;
 }
 export declare class GhostStylePropertyTreeElement extends StylePropertyTreeElement {
     constructor(stylesContainer: StylesContainer, section: StylePropertiesSection, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, property: SDK.CSSProperty.CSSProperty);

@@ -148,6 +148,15 @@ export class SidebarInsightsTab extends UI.Widget.Widget {
         }
         this.requestUpdate();
     }
+    setActiveInsightSet(insightSetKey) {
+        if (this.#parsedTrace?.insights) {
+            const insightSet = this.#parsedTrace.insights.get(insightSetKey);
+            if (insightSet) {
+                this.#selectedInsightSet = insightSet;
+                this.requestUpdate();
+            }
+        }
+    }
     #onInsightSetToggled(insightSet) {
         this.#selectedInsightSet = this.#selectedInsightSet === insightSet ? null : insightSet;
         // Update the active insight set.

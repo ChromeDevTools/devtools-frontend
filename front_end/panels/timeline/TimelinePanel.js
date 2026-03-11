@@ -2575,6 +2575,16 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin(UI.Panel.Pane
         const insightSetKey = insightModel.navigation?.args.data?.navigationId ?? Trace.Types.Events.NO_NAVIGATION;
         this.#setActiveInsight({ model: insightModel, insightSetKey }, { highlightInsight: true });
     }
+    revealCoreVitals(revealable) {
+        if (this.#splitWidget.showMode() !== "Both" /* UI.SplitWidget.ShowMode.BOTH */) {
+            this.#splitWidget.showBoth();
+        }
+        this.#sideBar.openInsightsTab();
+        if (revealable.insightSetKey) {
+            this.#sideBar.setActiveInsightSet(revealable.insightSetKey);
+            this.#setActiveInsight(null);
+        }
+    }
     static async executeRecordAndReload() {
         await UI.ViewManager.ViewManager.instance().showView('timeline');
         const panelInstance = TimelinePanel.instance();
@@ -2712,6 +2722,12 @@ export class InsightRevealer {
     async reveal(revealable) {
         await UI.ViewManager.ViewManager.instance().showView('timeline');
         TimelinePanel.instance().revealInsight(revealable.insight);
+    }
+}
+export class CoreVitalsRevealer {
+    async reveal(revealable) {
+        await UI.ViewManager.ViewManager.instance().showView('timeline');
+        TimelinePanel.instance().revealCoreVitals(revealable);
     }
 }
 export class ActionDelegate {

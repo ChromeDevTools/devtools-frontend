@@ -21,6 +21,7 @@ export declare class SidebarInsightsTab extends UI.Widget.Widget {
     set parsedTrace(data: Trace.TraceModel.ParsedTrace | null);
     get activeInsight(): ActiveInsight | null;
     set activeInsight(active: ActiveInsight | null);
+    setActiveInsightSet(insightSetKey: string): void;
     highlightActiveInsight(): void;
     performUpdate(): void;
 }

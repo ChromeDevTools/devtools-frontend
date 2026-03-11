@@ -39,6 +39,7 @@ import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Badges from '../../models/badges/badges.js';
 import * as Bindings from '../../models/bindings/bindings.js';
+import * as ComputedStyle from '../../models/computed_style/computed_style.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as Tooltips from '../../ui/components/tooltips/tooltips.js';
@@ -49,7 +50,7 @@ import { FontEditorSectionManager } from './ColorSwatchPopoverIcon.js';
 import * as ElementsComponents from './components/components.js';
 import { ElementsPanel } from './ElementsPanel.js';
 import stylePropertiesTreeOutlineStyles from './stylePropertiesTreeOutline.css.js';
-import { StylePropertyTreeElement } from './StylePropertyTreeElement.js';
+import { GhostStylePropertyTreeElement, StylePropertyTreeElement } from './StylePropertyTreeElement.js';
 const UIStrings = {
     /**
      * @description Tooltip text that appears when hovering over the largeicon add button in the Styles Sidebar Pane of the Elements panel
@@ -151,6 +152,7 @@ export class StylePropertiesSection {
     static #nextSpecificityTooltipId = 0;
     static #nextSectionTooltipIdPrefix = 0;
     sectionTooltipIdPrefix = StylePropertiesSection.#nextSectionTooltipIdPrefix++;
+    ghostStyleTreeElements = [];
     constructor(stylesContainer, matchedStyles, style, sectionIdx, computedStyles, parentsComputedStyles, computedStyleExtraFields, customHeaderText) {
         this.#customHeaderText = customHeaderText;
         this.stylesContainer = stylesContainer;
@@ -289,9 +291,42 @@ export class StylePropertiesSection {
         this.#isHidden = false;
         this.markSelectorMatches();
         this.onpopulate();
+        this.stylesContainer.computedStyleModel().addEventListener("CSSModelChanged" /* ComputedStyle.ComputedStyleModel.Events.CSS_MODEL_CHANGED */, this.#onCSSModelChanged, this);
     }
     setComputedStyles(computedStyles) {
         this.computedStyles = computedStyles;
+    }
+    #onCSSModelChanged(event) {
+        const edit = event?.data && 'edit' in event.data ? event.data.edit : null;
+        if (edit) {
+            this.styleSheetEdited(edit);
+            void this.refreshComputedValues();
+            return;
+        }
+        if (this.stylesContainer.isEditingStyle || this.stylesContainer.userOperation) {
+            void this.refreshComputedValues();
+        }
+    }
+    async refreshComputedValues() {
+        const node = this.stylesContainer.node();
+        if (!node) {
+            return;
+        }
+        const cssModel = node.domModel().cssModel();
+        const computedStyleModel = this.stylesContainer.computedStyleModel();
+        const matchedStyles = await cssModel.cachedMatchedCascadeForNode(node);
+        const parentNodeId = matchedStyles?.getParentLayoutNodeId();
+        const [computedStyles, parentsComputedStyles] = await Promise.all([
+            computedStyleModel.fetchComputedStyle(),
+            parentNodeId ? cssModel.getComputedStyle(parentNodeId) : null,
+        ]);
+        if (computedStyles) {
+            this.setComputedStyles(computedStyles.computedStyle);
+        }
+        if (parentsComputedStyles) {
+            this.setParentsComputedStyles(parentsComputedStyles);
+        }
+        this.updateAuthoringHint();
     }
     setParentsComputedStyles(parentsComputedStyles) {
         this.parentsComputedStyles = parentsComputedStyles;
@@ -309,6 +344,9 @@ export class StylePropertiesSection {
             }
             child = child.nextSibling;
         }
+    }
+    dispose() {
+        this.stylesContainer.computedStyleModel().removeEventListener("CSSModelChanged" /* ComputedStyle.ComputedStyleModel.Events.CSS_MODEL_CHANGED */, this.#onCSSModelChanged, this);
     }
     setSectionIdx(sectionIdx) {
         this.sectionIdx = sectionIdx;
@@ -671,6 +709,36 @@ export class StylePropertiesSection {
             return this.stylesContainer.sectionByElement.get(curElement);
         }
         return;
+    }
+    clearGhostStyleTreeElements() {
+        // Clear existing ghost elements
+        for (const ghost of this.ghostStyleTreeElements) {
+            this.propertiesTreeOutline.removeChild(ghost);
+        }
+        this.ghostStyleTreeElements = [];
+    }
+    renderGhostStyleTreeElements(suggestion) {
+        this.clearGhostStyleTreeElements();
+        if (!suggestion) {
+            return;
+        }
+        const suggestionLines = suggestion.split(';').map(line => line.trim());
+        for (const line of suggestionLines) {
+            const colonIdx = line.indexOf(':');
+            if (colonIdx === -1) {
+                continue;
+            }
+            const name = line.substring(0, colonIdx).trim();
+            const value = line.substring(colonIdx + 1).trim();
+            if (!name || !value) {
+                continue;
+            }
+            // Create a fake property attached to this style
+            const fakeProperty = new SDK.CSSProperty.CSSProperty(this.styleInternal, this.styleInternal.allProperties().length, name, value, false, false, true, false);
+            const ghost = new GhostStylePropertyTreeElement(this.stylesContainer, this, this.matchedStyles, fakeProperty);
+            this.propertiesTreeOutline.appendChild(ghost);
+            this.ghostStyleTreeElements.push(ghost);
+        }
     }
     onNewRuleClick(event) {
         event.data.consume();

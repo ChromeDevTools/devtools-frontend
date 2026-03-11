@@ -46,6 +46,8 @@ export declare class SidebarWidget extends UI.Widget.VBox {
     setActiveInsight(activeInsight: ActiveInsight | null, opts: {
         highlight: boolean;
     }): void;
+    openInsightsTab(): void;
+    setActiveInsightSet(insightSetKey: string): void;
     /**
      * True if the sidebar has been visible at least one time. This is persisted
      * to the user settings so it persists across sessions. This is used because

@@ -86,7 +86,7 @@ export default `/*
     padding-bottom: 3px;
   }
 
-  &.ghost-row {
+  &.ghost-row, .ghost-value-prediction {
     opacity: 50%;
     font-style: italic;
     pointer-events: none;

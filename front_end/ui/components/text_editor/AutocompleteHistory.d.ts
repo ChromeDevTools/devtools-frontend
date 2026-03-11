@@ -12,8 +12,8 @@ export declare class AutocompleteHistory {
      * Pushes a committed text into the history.
      */
     pushHistoryItem(text: string): void;
-    previous(currentText: string): string | undefined;
-    next(currentText: string): string | undefined;
+    previous(currentText?: string): string | undefined;
+    next(currentText?: string): string | undefined;
     /** Returns a de-duplicated list of history entries that start with the specified prefix */
     matchingEntries(prefix: string, limit?: number): Set<string>;
 }

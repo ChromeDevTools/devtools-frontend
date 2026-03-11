@@ -2,13 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /**
- * Container for singletons scoped to a single DevTools universe.
- *
- * When wiring up dependencies, strongly prefer to pass all direct dependencies
- * via constructor, and not just pass a {@link DevToolsContext} around. That would hide
- * dependencies and we want to be explicit.
+ * The actual implementation. Should only be accessed by test-setup code or the bootstrapper.
  */
-export class DevToolsContext {
+export class WritableDevToolsContext {
     #instances = new Map();
     get(ctor) {
         const instance = this.#instances.get(ctor);
@@ -22,8 +18,7 @@ export class DevToolsContext {
         return this.#instances.has(ctor);
     }
     /**
-     * @deprecated Should only be used by existing `instance` accessors and the bootstrapper.
-     * Exists on the public interface only for migration purposes for now.
+     * Should only be used by existing `instance` accessors and the bootstrapper.
      */
     set(ctor, instance) {
         // TODO(crbug.com/458180550): We need to throw here if an instance was already set!
@@ -42,7 +37,7 @@ export function globalInstance() {
     if (!gInstance) {
         // TODO(crbug.com/458180550): This should really throw to prevent side-effects and globals
         //                            from leaking all over the place.
-        gInstance = new DevToolsContext();
+        gInstance = new WritableDevToolsContext();
     }
     return gInstance;
 }

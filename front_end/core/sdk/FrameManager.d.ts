@@ -3,7 +3,7 @@ import * as Common from '../common/common.js';
 import type { Resource } from './Resource.js';
 import { type ResourceTreeFrame, ResourceTreeModel } from './ResourceTreeModel.js';
 import type { Target } from './Target.js';
-import { type SDKModelObserver } from './TargetManager.js';
+import { type SDKModelObserver, TargetManager } from './TargetManager.js';
 /**
  * The FrameManager is a central storage for all #frames. It collects #frames from all
  * ResourceTreeModel-instances (one per target), so that #frames can be found by id
@@ -11,7 +11,7 @@ import { type SDKModelObserver } from './TargetManager.js';
  */
 export declare class FrameManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> implements SDKModelObserver<ResourceTreeModel> {
     #private;
-    constructor();
+    constructor(targetManager: TargetManager);
     static instance({ forceNew }?: {
         forceNew: boolean;
     }): FrameManager;

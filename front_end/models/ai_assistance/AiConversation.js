@@ -3,10 +3,7 @@
 // found in the LICENSE file.
 import * as Host from '../../core/host/host.js';
 import * as Root from '../../core/root/root.js';
-import * as SDK from '../../core/sdk/sdk.js';
-import * as Trace from '../../models/trace/trace.js';
 import * as Greendev from '../greendev/greendev.js';
-import * as NetworkTimeCalculator from '../network_time_calculator/network_time_calculator.js';
 import { BreakpointDebuggerAgent } from './agents/BreakpointDebuggerAgent.js';
 import { ContextSelectionAgent } from './agents/ContextSelectionAgent.js';
 import { FileAgent, FileContext } from './agents/FileAgent.js';
@@ -14,10 +11,6 @@ import { NetworkAgent, RequestContext } from './agents/NetworkAgent.js';
 import { PerformanceAgent, PerformanceTraceContext } from './agents/PerformanceAgent.js';
 import { NodeContext, StylingAgent } from './agents/StylingAgent.js';
 import { AiHistoryStorage } from './AiHistoryStorage.js';
-import { NetworkRequestFormatter } from './data_formatters/NetworkRequestFormatter.js';
-import { PerformanceInsightFormatter } from './data_formatters/PerformanceInsightFormatter.js';
-import { micros } from './data_formatters/UnitFormatters.js';
-import { AgentFocus } from './performance/AIContext.js';
 export const NOT_FOUND_IMAGE_DATA = '';
 const MAX_TITLE_LENGTH = 80;
 export function generateContextDetailsMarkdown(details) {
@@ -216,6 +209,9 @@ export class AiConversation {
                 if (item.type === "side-effect" /* ResponseType.SIDE_EFFECT */) {
                     return { ...item, confirm: undefined };
                 }
+                if (item.type === "context" /* ResponseType.CONTEXT */ && item.widgets) {
+                    return { ...item, widgets: undefined };
+                }
                 return item;
             })
                 .filter(history => !!history),
@@ -278,72 +274,6 @@ export class AiConversation {
             }
         }
     }
-    #factsCache = new Map();
-    async #createFactsForExtraContext(contexts) {
-        for (const context of contexts) {
-            const cached = this.#factsCache.get(context);
-            if (cached) {
-                this.#agent.addFact(cached);
-                continue;
-            }
-            if (context instanceof SDK.DOMModel.DOMNode) {
-                const desc = await StylingAgent.describeElement(context);
-                const fact = {
-                    text: `Relevant HTML element:\n${desc}`,
-                    metadata: {
-                        source: 'devtools-floaty',
-                        score: 1,
-                    }
-                };
-                this.#factsCache.set(context, fact);
-                this.#agent.addFact(fact);
-            }
-            else if (context instanceof SDK.NetworkRequest.NetworkRequest) {
-                const calculator = new NetworkTimeCalculator.NetworkTransferTimeCalculator();
-                calculator.updateBoundaries(context);
-                const formatter = new NetworkRequestFormatter(context, calculator);
-                const desc = await formatter.formatNetworkRequest();
-                const fact = {
-                    text: `Relevant network request:\n${desc}`,
-                    metadata: {
-                        source: 'devtools-floaty',
-                        score: 1,
-                    }
-                };
-                this.#factsCache.set(context, fact);
-                this.#agent.addFact(fact);
-            }
-            else if ('insight' in context) {
-                const focus = AgentFocus.fromInsight(context.trace, context.insight);
-                const formatter = new PerformanceInsightFormatter(focus, context.insight);
-                const text = `Relevant Performance Insight:\n${formatter.formatInsight()}`;
-                const fact = {
-                    text,
-                    metadata: {
-                        source: 'devtools-floaty',
-                        score: 1,
-                    }
-                };
-                this.#factsCache.set(context, fact);
-                this.#agent.addFact(fact);
-            }
-            else {
-                // Must be a trace event
-                const time = Trace.Types.Timing.Micro(context.event.ts - context.traceStartTime);
-                const desc = `Trace event: ${context.event.name}
-Time: ${micros(time)}`;
-                const fact = {
-                    text: `Relevant trace event:\n${desc}`,
-                    metadata: {
-                        source: 'devtools-floaty',
-                        score: 1,
-                    }
-                };
-                this.#factsCache.set(context, fact);
-                this.#agent.addFact(fact);
-            }
-        }
-    }
     async *run(initialQuery, options = {}) {
         if (this.isBlockedByOrigin) {
             // This error should not be reached. If it happens, some
@@ -358,9 +288,6 @@ Time: ${micros(time)}`;
         };
         void this.addHistoryItem(userQuery);
         yield userQuery;
-        if (options.extraContext) {
-            await this.#createFactsForExtraContext(options.extraContext);
-        }
         this.#setOriginIfEmpty(this.selectedContext?.getOrigin());
         if (this.isBlockedByOrigin) {
             throw new Error('Cross-origin context data should not be included');

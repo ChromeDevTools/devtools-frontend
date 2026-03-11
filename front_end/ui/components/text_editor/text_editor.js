@@ -1766,6 +1766,16 @@ var AutocompleteHistory = class _AutocompleteHistory {
    */
   #editedEntries = /* @__PURE__ */ new Map();
   /**
+   * The prefix used for filtering history during navigation (zsh-style).
+   * Set on first navigation when user has typed something.
+   */
+  #searchPrefix = "";
+  /**
+   * Stack of history indices visited during filtered navigation.
+   * Used to navigate forward through the same filtered entries.
+   */
+  #filteredIndices = [];
+  /**
    * Creates a new settings-backed history. The class assumes it has sole
    * ownership of the setting.
    */
@@ -1778,6 +1788,8 @@ var AutocompleteHistory = class _AutocompleteHistory {
     this.#setting.set([]);
     this.#historyOffset = 1;
     this.#editedEntries.clear();
+    this.#searchPrefix = "";
+    this.#filteredIndices = [];
   }
   length() {
     return this.#data.length;
@@ -1792,6 +1804,8 @@ var AutocompleteHistory = class _AutocompleteHistory {
     }
     this.#historyOffset = 1;
     this.#editedEntries.clear();
+    this.#searchPrefix = "";
+    this.#filteredIndices = [];
     if (text !== this.#currentHistoryItem()) {
       this.#data.push(text);
     }
@@ -1811,13 +1825,45 @@ var AutocompleteHistory = class _AutocompleteHistory {
     if (this.#historyOffset > this.#data.length) {
       return void 0;
     }
+    currentText = currentText ?? "";
     if (this.#historyOffset === 1) {
       this.#pushCurrentText(currentText);
+      this.#filteredIndices = [];
+      this.#searchPrefix = currentText;
     } else {
       this.#saveCurrentEdit(currentText);
     }
-    ++this.#historyOffset;
-    return this.#currentHistoryItem();
+    if (this.#searchPrefix.length === 0) {
+      ++this.#historyOffset;
+      return this.#currentHistoryItem();
+    }
+    const result = this.#findNextMatch();
+    if (!result) {
+      if (this.#historyOffset === 1) {
+        this.#searchPrefix = "";
+        ++this.#historyOffset;
+        return this.#currentHistoryItem();
+      }
+      return void 0;
+    }
+    this.#filteredIndices.push(result.index);
+    this.#historyOffset = this.#data.length - result.index;
+    return result.value;
+  }
+  /**
+   * Finds the next history entry that matches the search prefix.
+   * Returns undefined if no more matches are found.
+   */
+  #findNextMatch() {
+    const startIndex = this.#data.length - this.#historyOffset - 1;
+    for (let i = startIndex; i >= 0; --i) {
+      const storedValue = this.#data[i];
+      if (storedValue.startsWith(this.#searchPrefix)) {
+        const value = this.#editedEntries.get(i) ?? storedValue;
+        return { index: i, value };
+      }
+    }
+    return void 0;
   }
   /**
    * Saves the current text as an edit if it differs from the current history item
@@ -1841,8 +1887,19 @@ var AutocompleteHistory = class _AutocompleteHistory {
     if (this.#historyOffset === 1) {
       return void 0;
     }
+    currentText = currentText ?? this.#currentHistoryItem() ?? "";
     this.#saveCurrentEdit(currentText);
-    --this.#historyOffset;
+    if (this.#searchPrefix.length === 0) {
+      --this.#historyOffset;
+      return this.#currentHistoryItem();
+    }
+    this.#filteredIndices.pop();
+    if (this.#filteredIndices.length === 0) {
+      this.#historyOffset = 1;
+      return this.#currentHistoryItem();
+    }
+    const prevIndex = this.#filteredIndices[this.#filteredIndices.length - 1];
+    this.#historyOffset = this.#data.length - prevIndex;
     return this.#currentHistoryItem();
   }
   /** Returns a de-duplicated list of history entries that start with the specified prefix */

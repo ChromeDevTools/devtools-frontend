@@ -1,6 +1,7 @@
 import * as Host from '../../../core/host/host.js';
 import type * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
+import type * as Trace from '../../trace/trace.js';
 export declare const enum ResponseType {
     CONTEXT = "context",
     TITLE = "title",
@@ -53,6 +54,7 @@ export interface ContextResponse {
     type: ResponseType.CONTEXT;
     title: string;
     details: [ContextDetail, ...ContextDetail[]];
+    widgets?: AiWidget[];
 }
 export interface TitleResponse {
     type: ResponseType.TITLE;
@@ -168,7 +170,14 @@ export interface ComputedStyleAiWidget {
         properties: string[];
     };
 }
-export type AiWidget = ComputedStyleAiWidget;
+export interface CoreVitalsAiWidget {
+    name: 'CORE_VITALS';
+    data: {
+        insightSetKey: string;
+        parsedTrace: Trace.TraceModel.ParsedTrace;
+    };
+}
+export type AiWidget = ComputedStyleAiWidget | CoreVitalsAiWidget;
 export type FunctionCallHandlerResult<Result> = {
     requiresApproval: true;
     /**

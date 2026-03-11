@@ -33,8 +33,11 @@ export declare function shortenUrl(url: URL, maxChars?: number): string;
  * @example 'securepubads.g.doubleclick.net (Google/Doubleclick Ads)'
  */
 export declare function formatOriginWithEntity(url: URL, entity: Trace.Handlers.Helpers.Entity | null, parenthesizeEntity?: boolean): string;
-/** Thin wrapper class to enable revealing an individual insight in Timeline panel. **/
 export declare class RevealableInsight {
     insight: Trace.Insights.Types.InsightModel;
     constructor(insight: Trace.Insights.Types.InsightModel);
+}
+export declare class RevealableCoreVitals {
+    insightSetKey: string;
+    constructor(insightSetKey: string);
 }

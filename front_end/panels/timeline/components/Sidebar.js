@@ -110,6 +110,12 @@ export class SidebarWidget extends UI.Widget.VBox {
             this.#tabbedPane.selectTab("insights" /* SidebarTabs.INSIGHTS */);
         }
     }
+    openInsightsTab() {
+        this.#tabbedPane.selectTab("insights" /* SidebarTabs.INSIGHTS */);
+    }
+    setActiveInsightSet(insightSetKey) {
+        this.#insightsView.setActiveInsightSet(insightSetKey);
+    }
     /**
      * True if the sidebar has been visible at least one time. This is persisted
      * to the user settings so it persists across sessions. This is used because
@@ -152,6 +158,13 @@ class InsightsView extends UI.Widget.VBox {
                 widget.highlightActiveInsight();
             });
         }
+    }
+    setActiveInsightSet(insightSetKey) {
+        const widget = this.#component.getWidget();
+        if (!widget) {
+            return;
+        }
+        widget.setActiveInsightSet(insightSetKey);
     }
 }
 class AnnotationsView extends UI.Widget.VBox {

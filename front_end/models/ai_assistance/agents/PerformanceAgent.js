@@ -325,6 +325,17 @@ export class PerformanceAgent extends AiAgent {
         if (this.#hasShownAnalyzeTraceContext) {
             return;
         }
+        const widgets = [];
+        const primaryInsightSet = context.getItem().primaryInsightSet;
+        if (primaryInsightSet) {
+            widgets.push({
+                name: 'CORE_VITALS',
+                data: {
+                    parsedTrace: context.getItem().parsedTrace,
+                    insightSetKey: primaryInsightSet.id,
+                },
+            });
+        }
         yield {
             type: "context" /* ResponseType.CONTEXT */,
             title: lockedString(UIStringsNotTranslated.analyzingTrace),
@@ -334,6 +345,7 @@ export class PerformanceAgent extends AiAgent {
                     text: this.#formatter?.formatTraceSummary() ?? '',
                 },
             ],
+            widgets,
         };
         this.#hasShownAnalyzeTraceContext = true;
     }

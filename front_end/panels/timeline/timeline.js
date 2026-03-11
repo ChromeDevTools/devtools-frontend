@@ -4834,6 +4834,7 @@ customElements.define("devtools-performance-third-party-tree-view", ThirdPartyTr
 var TimelinePanel_exports = {};
 __export(TimelinePanel_exports, {
   ActionDelegate: () => ActionDelegate,
+  CoreVitalsRevealer: () => CoreVitalsRevealer,
   EventRevealer: () => EventRevealer,
   InsightRevealer: () => InsightRevealer,
   SelectedInsight: () => SelectedInsight,
@@ -10418,6 +10419,16 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
     const insightSetKey = insightModel.navigation?.args.data?.navigationId ?? Trace24.Types.Events.NO_NAVIGATION;
     this.#setActiveInsight({ model: insightModel, insightSetKey }, { highlightInsight: true });
   }
+  revealCoreVitals(revealable) {
+    if (this.#splitWidget.showMode() !== "Both") {
+      this.#splitWidget.showBoth();
+    }
+    this.#sideBar.openInsightsTab();
+    if (revealable.insightSetKey) {
+      this.#sideBar.setActiveInsightSet(revealable.insightSetKey);
+      this.#setActiveInsight(null);
+    }
+  }
   static async executeRecordAndReload() {
     await UI10.ViewManager.ViewManager.instance().showView("timeline");
     const panelInstance = _TimelinePanel.instance();
@@ -10549,6 +10560,12 @@ var InsightRevealer = class {
   async reveal(revealable) {
     await UI10.ViewManager.ViewManager.instance().showView("timeline");
     TimelinePanel.instance().revealInsight(revealable.insight);
+  }
+};
+var CoreVitalsRevealer = class {
+  async reveal(revealable) {
+    await UI10.ViewManager.ViewManager.instance().showView("timeline");
+    TimelinePanel.instance().revealCoreVitals(revealable);
   }
 };
 var ActionDelegate = class {

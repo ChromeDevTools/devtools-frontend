@@ -35,7 +35,7 @@ import * as Platform10 from "./../../core/platform/platform.js";
 import * as Root6 from "./../../core/root/root.js";
 import * as SDK18 from "./../../core/sdk/sdk.js";
 import * as Annotations from "./../../models/annotations/annotations.js";
-import * as ComputedStyle3 from "./../../models/computed_style/computed_style.js";
+import * as ComputedStyle4 from "./../../models/computed_style/computed_style.js";
 import * as PanelCommon from "./../common/common.js";
 import * as Buttons3 from "./../../ui/components/buttons/buttons.js";
 import * as TreeOutline13 from "./../../ui/components/tree_outline/tree_outline.js";
@@ -2334,7 +2334,7 @@ var stylePropertiesTreeOutline_css_default = `/*
     padding-bottom: 3px;
   }
 
-  &.ghost-row {
+  &.ghost-row, .ghost-value-prediction {
     opacity: 50%;
     font-style: italic;
     pointer-events: none;
@@ -5574,6 +5574,20 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI7.TreeO
   isEventWithinDisclosureTriangle(event) {
     return event.target === this.expandElement;
   }
+  showGhostTextInValue(text) {
+    if (!this.valueElement) {
+      return;
+    }
+    this.clearGhostTextInValue();
+    this.valueElement.createChild("span", "ghost-value-prediction").textContent = text;
+  }
+  clearGhostTextInValue() {
+    if (!this.valueElement) {
+      return;
+    }
+    const ghostElement = this.valueElement.querySelector(".ghost-value-prediction");
+    ghostElement?.remove();
+  }
 };
 var GhostStylePropertyTreeElement = class extends StylePropertyTreeElement {
   constructor(stylesContainer, section4, matchedStyles, property) {
@@ -5768,6 +5782,7 @@ import * as Root2 from "./../../core/root/root.js";
 import * as SDK7 from "./../../core/sdk/sdk.js";
 import * as Badges2 from "./../../models/badges/badges.js";
 import * as Bindings3 from "./../../models/bindings/bindings.js";
+import * as ComputedStyle2 from "./../../models/computed_style/computed_style.js";
 import * as TextUtils3 from "./../../models/text_utils/text_utils.js";
 import * as Buttons from "./../../ui/components/buttons/buttons.js";
 import * as Tooltips2 from "./../../ui/components/tooltips/tooltips.js";
@@ -5876,6 +5891,7 @@ var StylePropertiesSection = class _StylePropertiesSection {
   static #nextSpecificityTooltipId = 0;
   static #nextSectionTooltipIdPrefix = 0;
   sectionTooltipIdPrefix = _StylePropertiesSection.#nextSectionTooltipIdPrefix++;
+  ghostStyleTreeElements = [];
   constructor(stylesContainer, matchedStyles, style, sectionIdx, computedStyles, parentsComputedStyles, computedStyleExtraFields, customHeaderText) {
     this.#customHeaderText = customHeaderText;
     this.stylesContainer = stylesContainer;
@@ -6008,9 +6024,42 @@ var StylePropertiesSection = class _StylePropertiesSection {
     this.#isHidden = false;
     this.markSelectorMatches();
     this.onpopulate();
+    this.stylesContainer.computedStyleModel().addEventListener("CSSModelChanged", this.#onCSSModelChanged, this);
   }
   setComputedStyles(computedStyles) {
     this.computedStyles = computedStyles;
+  }
+  #onCSSModelChanged(event) {
+    const edit = event?.data && "edit" in event.data ? event.data.edit : null;
+    if (edit) {
+      this.styleSheetEdited(edit);
+      void this.refreshComputedValues();
+      return;
+    }
+    if (this.stylesContainer.isEditingStyle || this.stylesContainer.userOperation) {
+      void this.refreshComputedValues();
+    }
+  }
+  async refreshComputedValues() {
+    const node = this.stylesContainer.node();
+    if (!node) {
+      return;
+    }
+    const cssModel = node.domModel().cssModel();
+    const computedStyleModel = this.stylesContainer.computedStyleModel();
+    const matchedStyles = await cssModel.cachedMatchedCascadeForNode(node);
+    const parentNodeId = matchedStyles?.getParentLayoutNodeId();
+    const [computedStyles, parentsComputedStyles] = await Promise.all([
+      computedStyleModel.fetchComputedStyle(),
+      parentNodeId ? cssModel.getComputedStyle(parentNodeId) : null
+    ]);
+    if (computedStyles) {
+      this.setComputedStyles(computedStyles.computedStyle);
+    }
+    if (parentsComputedStyles) {
+      this.setParentsComputedStyles(parentsComputedStyles);
+    }
+    this.updateAuthoringHint();
   }
   setParentsComputedStyles(parentsComputedStyles) {
     this.parentsComputedStyles = parentsComputedStyles;
@@ -6028,6 +6077,9 @@ var StylePropertiesSection = class _StylePropertiesSection {
       }
       child = child.nextSibling;
     }
+  }
+  dispose() {
+    this.stylesContainer.computedStyleModel().removeEventListener("CSSModelChanged", this.#onCSSModelChanged, this);
   }
   setSectionIdx(sectionIdx) {
     this.sectionIdx = sectionIdx;
@@ -6372,6 +6424,34 @@ var StylePropertiesSection = class _StylePropertiesSection {
       return this.stylesContainer.sectionByElement.get(curElement);
     }
     return;
+  }
+  clearGhostStyleTreeElements() {
+    for (const ghost of this.ghostStyleTreeElements) {
+      this.propertiesTreeOutline.removeChild(ghost);
+    }
+    this.ghostStyleTreeElements = [];
+  }
+  renderGhostStyleTreeElements(suggestion) {
+    this.clearGhostStyleTreeElements();
+    if (!suggestion) {
+      return;
+    }
+    const suggestionLines = suggestion.split(";").map((line) => line.trim());
+    for (const line of suggestionLines) {
+      const colonIdx = line.indexOf(":");
+      if (colonIdx === -1) {
+        continue;
+      }
+      const name = line.substring(0, colonIdx).trim();
+      const value5 = line.substring(colonIdx + 1).trim();
+      if (!name || !value5) {
+        continue;
+      }
+      const fakeProperty = new SDK7.CSSProperty.CSSProperty(this.styleInternal, this.styleInternal.allProperties().length, name, value5, false, false, true, false);
+      const ghost = new GhostStylePropertyTreeElement(this.stylesContainer, this, this.matchedStyles, fakeProperty);
+      this.propertiesTreeOutline.appendChild(ghost);
+      this.ghostStyleTreeElements.push(ghost);
+    }
   }
   onNewRuleClick(event) {
     event.data.consume();
@@ -8121,7 +8201,6 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common5.ObjectWrapper.e
   #webCustomData;
   activeCSSAngle = null;
   #updateAbortController;
-  #updateComputedStylesAbortController;
   constructor(computedStyleModel) {
     super(computedStyleModel, { delegatesFocus: true });
     this.setMinimumSize(96, 26);
@@ -8512,12 +8591,7 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common5.ObjectWrapper.e
     }
   }
   onCSSModelChanged(event) {
-    const edit = event?.data && "edit" in event.data ? event.data.edit : null;
-    if (edit) {
-      for (const section4 of this.allSections()) {
-        section4.styleSheetEdited(edit);
-      }
-      void this.#refreshComputedStyles();
+    if (event?.data && "edit" in event.data && event.data.edit) {
       return;
     }
     this.#resetUpdateIfNotEditing();
@@ -8535,7 +8609,6 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common5.ObjectWrapper.e
   }
   #resetUpdateIfNotEditing() {
     if (this.userOperation || this.isEditingStyle) {
-      void this.#refreshComputedStyles();
       return;
     }
     this.resetCache();
@@ -8628,23 +8701,6 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common5.ObjectWrapper.e
       updateStyleSection(currentInheritedAnimationsStyle, newInheritedAnimationsStyle ?? null);
     }
   }
-  async #refreshComputedStyles() {
-    this.#updateComputedStylesAbortController?.abort();
-    this.#updateAbortController = new AbortController();
-    const signal = this.#updateAbortController.signal;
-    const matchedStyles = await this.fetchMatchedCascade();
-    const nodeId = this.node()?.id;
-    const parentNodeId = matchedStyles?.getParentLayoutNodeId();
-    const [computedStyles, parentsComputedStyles] = await Promise.all([this.fetchComputedStylesFor(nodeId), this.fetchComputedStylesFor(parentNodeId)]);
-    if (signal.aborted) {
-      return;
-    }
-    for (const section4 of this.allSections()) {
-      section4.setComputedStyles(computedStyles);
-      section4.setParentsComputedStyles(parentsComputedStyles);
-      section4.updateAuthoringHint();
-    }
-  }
   focusedSectionIndex() {
     let index = 0;
     for (const block of this.sectionBlocks) {
@@ -8677,6 +8733,9 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common5.ObjectWrapper.e
     const focusedIndex = this.focusedSectionIndex();
     this.linkifier.reset();
     const prevSections = this.sectionBlocks.map((block) => block.sections).flat();
+    for (const section4 of prevSections) {
+      section4.dispose();
+    }
     this.sectionBlocks = [];
     const node = this.node();
     this.hasMatchedStyles = matchedStyles !== null && node !== null;
@@ -9392,8 +9451,7 @@ var CSSPropertyPrompt = class extends UI10.TextPrompt.TextPrompt {
         getCurrentText: () => {
           return this.text();
         },
-        setAiAutoCompletion: () => {
-        }
+        setAiAutoCompletion: this.setAiAutoCompletion.bind(this)
       };
       this.aiCodeCompletionProvider = StylesAiCodeCompletionProvider.createInstance(this.aiCodeCompletionConfig);
     }
@@ -9647,6 +9705,33 @@ var CSSPropertyPrompt = class extends UI10.TextPrompt.TextPrompt {
       return;
     }
     await this.aiCodeCompletionProvider.triggerAiCodeCompletion(userInput, range.endOffset, this.isEditingName, this.treeElement.property, cssModel);
+  }
+  setAiAutoCompletion(args) {
+    if (!args) {
+      this.treeElement.section().clearGhostStyleTreeElements();
+      return;
+    }
+    this.showAiGhostText(args?.text);
+    const latency = performance.now() - args.startTime;
+    if (args.rpcGlobalId) {
+      args.onImpression(args.rpcGlobalId, latency, args.sampleId);
+    }
+  }
+  showAiGhostText(text) {
+    const [currentLine, ...nextLinesList] = text.split(";");
+    const nextLines = nextLinesList.join(";").trim();
+    if (this.isEditingName && currentLine.includes(":")) {
+      const [namePart, valuePart] = currentLine.split(":").map((s) => s.trim());
+      this.applySuggestion({ text: this.text() + namePart }, true);
+      this.treeElement.showGhostTextInValue(valuePart);
+    } else {
+      this.applySuggestion({ text: this.text() + currentLine }, true);
+    }
+    if (nextLines) {
+      this.treeElement.section().renderGhostStyleTreeElements(nextLines);
+    } else {
+      this.treeElement.section().clearGhostStyleTreeElements();
+    }
   }
   /**
    * Extracts the remaining portion of the suggestion text that follows the
@@ -17319,7 +17404,7 @@ __export(PlatformFontsWidget_exports, {
   PlatformFontsWidget: () => PlatformFontsWidget
 });
 import * as i18n30 from "./../../core/i18n/i18n.js";
-import * as ComputedStyle2 from "./../../models/computed_style/computed_style.js";
+import * as ComputedStyle3 from "./../../models/computed_style/computed_style.js";
 import * as UI20 from "./../../ui/legacy/legacy.js";
 import { html as html12, render as render11 } from "./../../ui/lit/lit.js";
 
@@ -17650,7 +17735,7 @@ var ElementsPanel = class _ElementsPanel extends UI21.Panel.Panel {
       this.crumbNodeSelected(event);
     });
     crumbsContainer.appendChild(this.breadcrumbs);
-    this.#computedStyleModel = new ComputedStyle3.ComputedStyleModel.ComputedStyleModel(UI21.Context.Context.instance().flavor(SDK18.DOMModel.DOMNode));
+    this.#computedStyleModel = new ComputedStyle4.ComputedStyleModel.ComputedStyleModel(UI21.Context.Context.instance().flavor(SDK18.DOMModel.DOMNode));
     UI21.Context.Context.instance().addFlavorChangeListener(SDK18.DOMModel.DOMNode, (event) => {
       this.#computedStyleModel.node = event.data;
       this.evaluateTrackingComputedStyleUpdatesForNode();
@@ -20220,7 +20305,7 @@ __export(StandaloneStylesContainer_exports, {
   StandaloneStylesContainer: () => StandaloneStylesContainer
 });
 import * as Common18 from "./../../core/common/common.js";
-import * as ComputedStyle4 from "./../../models/computed_style/computed_style.js";
+import * as ComputedStyle5 from "./../../models/computed_style/computed_style.js";
 import * as InlineEditor5 from "./../../ui/legacy/components/inline_editor/inline_editor.js";
 import * as Components8 from "./../../ui/legacy/components/utils/utils.js";
 import * as UI29 from "./../../ui/legacy/legacy.js";
@@ -20239,7 +20324,7 @@ var DEFAULT_VIEW13 = (input, _output, target) => {
     </div>
   `, target);
 };
-var StandaloneStylesContainer = class extends UI29.Widget.VBox {
+var StandaloneStylesContainer = class extends Common18.ObjectWrapper.eventMixin(UI29.Widget.VBox) {
   activeCSSAngle = null;
   isEditingStyle = false;
   sectionByElement = /* @__PURE__ */ new WeakMap();
@@ -20250,17 +20335,24 @@ var StandaloneStylesContainer = class extends UI29.Widget.VBox {
     true
   );
   #webCustomData;
-  #userOperation = false;
+  userOperation = false;
   #sections = [];
   #swatchPopoverHelper = new InlineEditor5.SwatchPopoverHelper.SwatchPopoverHelper();
-  #computedStyleModelInternal = new ComputedStyle4.ComputedStyleModel.ComputedStyleModel();
+  #computedStyleModelInternal = new ComputedStyle5.ComputedStyleModel.ComputedStyleModel();
   #view;
   constructor(element, view = DEFAULT_VIEW13) {
     super(element, { useShadowDom: true });
     this.#view = view;
+    this.#computedStyleModelInternal.addEventListener("CSSModelChanged", this.#onCSSModelChanged, this);
   }
-  get userOperation() {
-    return this.#userOperation;
+  async #onCSSModelChanged(event) {
+    if (event?.data && "edit" in event.data && event?.data.edit) {
+      return;
+    }
+    if (this.isEditingStyle || this.userOperation) {
+      return;
+    }
+    this.requestUpdate();
   }
   get webCustomData() {
     if (!this.#webCustomData && Common18.Settings.Settings.instance().moduleSetting("show-css-property-documentation-on-hover").get()) {
@@ -20269,10 +20361,12 @@ var StandaloneStylesContainer = class extends UI29.Widget.VBox {
     return this.#webCustomData;
   }
   async #updateSections() {
+    for (const section4 of this.#sections) {
+      section4.dispose();
+    }
     const node = this.node();
     if (!node) {
       this.#sections = [];
-      this.requestUpdate();
       return;
     }
     const cssModel = node.domModel().cssModel();
@@ -20297,14 +20391,20 @@ var StandaloneStylesContainer = class extends UI29.Widget.VBox {
     this.swatchPopoverHelper().reposition();
   }
   async performUpdate() {
-    if (this.isEditingStyle || this.#userOperation) {
-      return;
-    }
+    this.hideAllPopovers();
+    this.node()?.domModel().cssModel().discardCachedMatchedCascade();
     await this.#updateSections();
     const viewInput = {
       sections: this.#sections
     };
     this.#view(viewInput, void 0, this.contentElement);
+    this.#onUpdateFinished();
+  }
+  #onUpdateFinished() {
+    this.dispatchEventToListeners(
+      "StylesUpdateCompleted"
+      /* Events.STYLES_UPDATE_COMPLETED */
+    );
   }
   swatchPopoverHelper() {
     return this.#swatchPopoverHelper;
@@ -20335,12 +20435,14 @@ var StandaloneStylesContainer = class extends UI29.Widget.VBox {
       }
     }
     if (this.isEditingStyle) {
+      this.#onUpdateFinished();
       return;
     }
     for (const section4 of this.#sections) {
       section4.update(section4 === editedSection);
     }
     this.swatchPopoverHelper().reposition();
+    this.#onUpdateFinished();
   }
   filterRegex() {
     return null;
@@ -20349,14 +20451,17 @@ var StandaloneStylesContainer = class extends UI29.Widget.VBox {
     this.isEditingStyle = editing;
   }
   setUserOperation(userOperation) {
-    this.#userOperation = userOperation;
+    this.userOperation = userOperation;
   }
   forceUpdate() {
-    this.hideAllPopovers();
     this.requestUpdate();
   }
   hideAllPopovers() {
     this.#swatchPopoverHelper.hide();
+    if (this.activeCSSAngle) {
+      this.activeCSSAngle.minify();
+      this.activeCSSAngle = null;
+    }
   }
   allSections() {
     return this.#sections;
@@ -20402,9 +20507,11 @@ var StandaloneStylesContainer = class extends UI29.Widget.VBox {
   }
   jumpToDeclaration(_valueSource) {
   }
-  addStyleUpdateListener(_listener) {
+  addStyleUpdateListener(listener) {
+    this.addEventListener("StylesUpdateCompleted", listener);
   }
-  removeStyleUpdateListener(_listener) {
+  removeStyleUpdateListener(listener) {
+    this.removeEventListener("StylesUpdateCompleted", listener);
   }
 };
 export {

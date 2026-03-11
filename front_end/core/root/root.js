@@ -7,11 +7,11 @@ var __export = (target, all) => {
 // gen/front_end/core/root/DevToolsContext.js
 var DevToolsContext_exports = {};
 __export(DevToolsContext_exports, {
-  DevToolsContext: () => DevToolsContext,
+  WritableDevToolsContext: () => WritableDevToolsContext,
   globalInstance: () => globalInstance,
   setGlobalInstance: () => setGlobalInstance
 });
-var DevToolsContext = class {
+var WritableDevToolsContext = class {
   #instances = /* @__PURE__ */ new Map();
   get(ctor) {
     const instance = this.#instances.get(ctor);
@@ -25,8 +25,7 @@ var DevToolsContext = class {
     return this.#instances.has(ctor);
   }
   /**
-   * @deprecated Should only be used by existing `instance` accessors and the bootstrapper.
-   * Exists on the public interface only for migration purposes for now.
+   * Should only be used by existing `instance` accessors and the bootstrapper.
    */
   set(ctor, instance) {
     this.#instances.set(ctor, instance);
@@ -39,7 +38,7 @@ var DevToolsContext = class {
 var gInstance = null;
 function globalInstance() {
   if (!gInstance) {
-    gInstance = new DevToolsContext();
+    gInstance = new WritableDevToolsContext();
   }
   return gInstance;
 }

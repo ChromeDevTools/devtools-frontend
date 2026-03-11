@@ -5253,6 +5253,17 @@ var PerformanceAgent = class extends AiAgent {
     if (this.#hasShownAnalyzeTraceContext) {
       return;
     }
+    const widgets = [];
+    const primaryInsightSet = context.getItem().primaryInsightSet;
+    if (primaryInsightSet) {
+      widgets.push({
+        name: "CORE_VITALS",
+        data: {
+          parsedTrace: context.getItem().parsedTrace,
+          insightSetKey: primaryInsightSet.id
+        }
+      });
+    }
     yield {
       type: "context",
       title: lockedString4(UIStringsNotTranslated.analyzingTrace),
@@ -5261,7 +5272,8 @@ var PerformanceAgent = class extends AiAgent {
           title: "Trace",
           text: this.#formatter?.formatTraceSummary() ?? ""
         }
-      ]
+      ],
+      widgets
     };
     this.#hasShownAnalyzeTraceContext = true;
   }
@@ -7997,10 +8009,7 @@ __export(AiConversation_exports, {
 });
 import * as Host10 from "./../../core/host/host.js";
 import * as Root9 from "./../../core/root/root.js";
-import * as SDK9 from "./../../core/sdk/sdk.js";
-import * as Trace7 from "./../trace/trace.js";
 import * as Greendev2 from "./../greendev/greendev.js";
-import * as NetworkTimeCalculator4 from "./../network_time_calculator/network_time_calculator.js";
 
 // gen/front_end/models/ai_assistance/AiHistoryStorage.js
 var AiHistoryStorage_exports = {};
@@ -8336,6 +8345,9 @@ ${item.text.trim()}`);
         if (item.type === "side-effect") {
           return { ...item, confirm: void 0 };
         }
+        if (item.type === "context" && item.widgets) {
+          return { ...item, widgets: void 0 };
+        }
         return item;
       }).filter((history) => !!history),
       type: this.#type,
@@ -8393,72 +8405,6 @@ ${item.text.trim()}`);
       }
     }
   }
-  #factsCache = /* @__PURE__ */ new Map();
-  async #createFactsForExtraContext(contexts) {
-    for (const context of contexts) {
-      const cached = this.#factsCache.get(context);
-      if (cached) {
-        this.#agent.addFact(cached);
-        continue;
-      }
-      if (context instanceof SDK9.DOMModel.DOMNode) {
-        const desc = await StylingAgent.describeElement(context);
-        const fact = {
-          text: `Relevant HTML element:
-${desc}`,
-          metadata: {
-            source: "devtools-floaty",
-            score: 1
-          }
-        };
-        this.#factsCache.set(context, fact);
-        this.#agent.addFact(fact);
-      } else if (context instanceof SDK9.NetworkRequest.NetworkRequest) {
-        const calculator = new NetworkTimeCalculator4.NetworkTransferTimeCalculator();
-        calculator.updateBoundaries(context);
-        const formatter = new NetworkRequestFormatter(context, calculator);
-        const desc = await formatter.formatNetworkRequest();
-        const fact = {
-          text: `Relevant network request:
-${desc}`,
-          metadata: {
-            source: "devtools-floaty",
-            score: 1
-          }
-        };
-        this.#factsCache.set(context, fact);
-        this.#agent.addFact(fact);
-      } else if ("insight" in context) {
-        const focus = AgentFocus.fromInsight(context.trace, context.insight);
-        const formatter = new PerformanceInsightFormatter(focus, context.insight);
-        const text = `Relevant Performance Insight:
-${formatter.formatInsight()}`;
-        const fact = {
-          text,
-          metadata: {
-            source: "devtools-floaty",
-            score: 1
-          }
-        };
-        this.#factsCache.set(context, fact);
-        this.#agent.addFact(fact);
-      } else {
-        const time = Trace7.Types.Timing.Micro(context.event.ts - context.traceStartTime);
-        const desc = `Trace event: ${context.event.name}
-Time: ${micros(time)}`;
-        const fact = {
-          text: `Relevant trace event:
-${desc}`,
-          metadata: {
-            source: "devtools-floaty",
-            score: 1
-          }
-        };
-        this.#factsCache.set(context, fact);
-        this.#agent.addFact(fact);
-      }
-    }
-  }
   async *run(initialQuery, options = {}) {
     if (this.isBlockedByOrigin) {
       throw new Error("cross-origin context data should not be included");
@@ -8471,9 +8417,6 @@ ${desc}`,
     };
     void this.addHistoryItem(userQuery);
     yield userQuery;
-    if (options.extraContext) {
-      await this.#createFactsForExtraContext(options.extraContext);
-    }
     this.#setOriginIfEmpty(this.selectedContext?.getOrigin());
     if (this.isBlockedByOrigin) {
       throw new Error("Cross-origin context data should not be included");
@@ -8855,8 +8798,8 @@ import * as Host13 from "./../../core/host/host.js";
 import * as i18n17 from "./../../core/i18n/i18n.js";
 import * as Platform6 from "./../../core/platform/platform.js";
 import * as Root12 from "./../../core/root/root.js";
-import * as SDK10 from "./../../core/sdk/sdk.js";
-import * as NetworkTimeCalculator5 from "./../network_time_calculator/network_time_calculator.js";
+import * as SDK9 from "./../../core/sdk/sdk.js";
+import * as NetworkTimeCalculator4 from "./../network_time_calculator/network_time_calculator.js";
 var UIStringsNotTranslate4 = {
   /**
    * @description Error message shown when AI assistance is not enabled in DevTools settings.
@@ -8873,7 +8816,7 @@ async function inspectElementBySelector(selector) {
     return null;
   }
   const showUAShadowDOM = Common9.Settings.Settings.instance().moduleSetting("show-ua-shadow-dom").get();
-  const domModels = SDK10.TargetManager.TargetManager.instance().models(SDK10.DOMModel.DOMModel, { scoped: true });
+  const domModels = SDK9.TargetManager.TargetManager.instance().models(SDK9.DOMModel.DOMModel, { scoped: true });
   const performSearchPromises = domModels.map((domModel) => domModel.performSearch(whitespaceTrimmedQuery, showUAShadowDOM));
   const resultCounts = await Promise.all(performSearchPromises);
   const index = resultCounts.findIndex((value) => value > 0);
@@ -8883,7 +8826,7 @@ async function inspectElementBySelector(selector) {
   return null;
 }
 async function inspectNetworkRequestByUrl(selector) {
-  const networkManagers = SDK10.TargetManager.TargetManager.instance().models(SDK10.NetworkManager.NetworkManager, { scoped: true });
+  const networkManagers = SDK9.TargetManager.TargetManager.instance().models(SDK9.NetworkManager.NetworkManager, { scoped: true });
   const results = networkManagers.map((networkManager) => {
     let request2 = networkManager.requestForURL(Platform6.DevToolsPath.urlString`${selector}`);
     if (!request2 && selector.at(-1) === "/") {
@@ -9054,7 +8997,7 @@ var ConversationHandler = class _ConversationHandler extends Common9.ObjectWrapp
     if (!request) {
       return this.#generateErrorResponse(`Can't find request with the given selector ${requestUrl}`);
     }
-    const calculator = new NetworkTimeCalculator5.NetworkTransferTimeCalculator();
+    const calculator = new NetworkTimeCalculator4.NetworkTransferTimeCalculator();
     calculator.updateBoundaries(request);
     return this.#createAndDoExternalConversation({
       conversationType: "drjones-network-request",

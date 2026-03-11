@@ -4,6 +4,7 @@
 import * as Breadcrumbs from './Breadcrumbs.js';
 import * as BreadcrumbsUI from './BreadcrumbsUI.js';
 import * as CPUThrottlingSelector from './CPUThrottlingSelector.js';
+import * as CWVMetrics from './CWVMetrics.js';
 import * as DetailsView from './DetailsView.js';
 import * as ExportTraceOptions from './ExportTraceOptions.js';
 import * as FieldSettingsDialog from './FieldSettingsDialog.js';
@@ -23,5 +24,5 @@ import * as SidebarInsightsTab from './SidebarInsightsTab.js';
 import * as SidebarSingleInsightSet from './SidebarSingleInsightSet.js';
 import * as TimelineSummary from './TimelineSummary.js';
 import * as Utils from './Utils.js';
-export { Breadcrumbs, BreadcrumbsUI, CPUThrottlingSelector, DetailsView, ExportTraceOptions, FieldSettingsDialog, IgnoreListSetting, InteractionBreakdown, LayoutShiftDetails, LiveMetricsView, MetricCard, NetworkRequestDetails, NetworkRequestTooltip, NetworkThrottlingSelector, OriginMap, RelatedInsightChips, Sidebar, SidebarAnnotationsTab, SidebarInsightsTab, SidebarSingleInsightSet, TimelineSummary, Utils, };
+export { Breadcrumbs, BreadcrumbsUI, CPUThrottlingSelector, CWVMetrics, DetailsView, ExportTraceOptions, FieldSettingsDialog, IgnoreListSetting, InteractionBreakdown, LayoutShiftDetails, LiveMetricsView, MetricCard, NetworkRequestDetails, NetworkRequestTooltip, NetworkThrottlingSelector, OriginMap, RelatedInsightChips, Sidebar, SidebarAnnotationsTab, SidebarInsightsTab, SidebarSingleInsightSet, TimelineSummary, Utils, };
 //# sourceMappingURL=components.prebundle.js.map

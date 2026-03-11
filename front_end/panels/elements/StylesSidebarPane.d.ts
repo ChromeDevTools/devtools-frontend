@@ -47,7 +47,7 @@ export declare class StylesSidebarPane extends StylesSidebarPane_base implements
     readonly linkifier: Components.Linkifier.Linkifier;
     private readonly decorator;
     private lastRevealedProperty;
-    private userOperation;
+    userOperation: boolean;
     isEditingStyle: boolean;
     private isActivePropertyHighlighted;
     private initialUpdateCompleted;
@@ -184,6 +184,8 @@ export declare class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
     private isValueSuggestion;
     private buildPropertyCompletions;
     private triggerAiCodeCompletion;
+    private setAiAutoCompletion;
+    private showAiGhostText;
     /**
      * Extracts the remaining portion of the suggestion text that follows the
      * user's current input.

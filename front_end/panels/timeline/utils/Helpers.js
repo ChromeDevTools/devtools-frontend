@@ -125,11 +125,16 @@ export function formatOriginWithEntity(url, entity, parenthesizeEntity) {
     originWithEntity = Platform.StringUtilities.trimEndWithMaxLength(originWithEntity, MAX_ORIGIN_LENGTH);
     return originWithEntity;
 }
-/** Thin wrapper class to enable revealing an individual insight in Timeline panel. **/
 export class RevealableInsight {
     insight;
     constructor(insight) {
         this.insight = insight;
+    }
+}
+export class RevealableCoreVitals {
+    insightSetKey;
+    constructor(insightSetKey) {
+        this.insightSetKey = insightSetKey;
     }
 }
 //# sourceMappingURL=Helpers.js.map

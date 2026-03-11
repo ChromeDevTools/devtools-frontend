@@ -1,3 +1,4 @@
+import * as Common from '../../core/common/common.js';
 import type * as SDK from '../../core/sdk/sdk.js';
 import * as ComputedStyle from '../../models/computed_style/computed_style.js';
 import type * as TextUtils from '../../models/text_utils/text_utils.js';
@@ -14,14 +15,28 @@ interface ViewInput {
 }
 type View = (input: ViewInput, output_: undefined, target: HTMLElement) => void;
 export declare const DEFAULT_VIEW: View;
-export declare class StandaloneStylesContainer extends UI.Widget.VBox implements StylesContainer {
+export declare const enum Events {
+    STYLES_UPDATE_COMPLETED = "StylesUpdateCompleted"
+}
+export interface EventTypes {
+    [Events.STYLES_UPDATE_COMPLETED]: void;
+}
+declare const StandaloneStylesContainer_base: (new (...args: any[]) => {
+    "__#private@#events": Common.ObjectWrapper.ObjectWrapper<EventTypes>;
+    addEventListener<T extends Events.STYLES_UPDATE_COMPLETED>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<EventTypes[T], any>) => void, thisObject?: Object): Common.EventTarget.EventDescriptor<EventTypes, T>;
+    once<T extends Events.STYLES_UPDATE_COMPLETED>(eventType: T): Promise<EventTypes[T]>;
+    removeEventListener<T extends Events.STYLES_UPDATE_COMPLETED>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<EventTypes[T], any>) => void, thisObject?: Object): void;
+    hasEventListeners(eventType: Events.STYLES_UPDATE_COMPLETED): boolean;
+    dispatchEventToListeners<T extends Events.STYLES_UPDATE_COMPLETED>(eventType: import("../../core/platform/TypescriptUtilities.js").NoUnion<T>, ...eventData: Common.EventTarget.EventPayloadToRestParameters<EventTypes, T>): void;
+}) & typeof UI.Widget.VBox;
+export declare class StandaloneStylesContainer extends StandaloneStylesContainer_base implements StylesContainer {
     #private;
     activeCSSAngle: InlineEditor.CSSAngle.CSSAngle | null;
     isEditingStyle: boolean;
     readonly sectionByElement: WeakMap<Node, StylePropertiesSection>;
     readonly linkifier: Components.Linkifier.Linkifier;
+    userOperation: boolean;
     constructor(element?: HTMLElement, view?: View);
-    get userOperation(): boolean;
     get webCustomData(): WebCustomData | undefined;
     performUpdate(): Promise<void>;
     swatchPopoverHelper(): InlineEditor.SwatchPopoverHelper.SwatchPopoverHelper;
@@ -50,7 +65,7 @@ export declare class StandaloneStylesContainer extends UI.Widget.VBox implements
     jumpToSectionBlock(_section: string): void;
     jumpToFontPaletteDefinition(_paletteName: string): void;
     jumpToDeclaration(_valueSource: SDK.CSSMatchedStyles.CSSValueSource): void;
-    addStyleUpdateListener(_listener: () => void): void;
-    removeStyleUpdateListener(_listener: () => void): void;
+    addStyleUpdateListener(listener: () => void): void;
+    removeStyleUpdateListener(listener: () => void): void;
 }
 export {};

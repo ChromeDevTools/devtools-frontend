@@ -931,6 +931,14 @@ export namespace ProtocolMapping {
      */
     'WebAuthn.credentialAsserted': [Protocol.WebAuthn.CredentialAssertedEvent];
     /**
+     * Event fired when new tools are added.
+     */
+    'WebMCP.toolsAdded': [Protocol.WebMCP.ToolsAddedEvent];
+    /**
+     * Event fired when tools are removed.
+     */
+    'WebMCP.toolsRemoved': [Protocol.WebMCP.ToolsRemovedEvent];
+    /**
      * Fired when breakpoint is resolved to an actual script and location.
      * Deprecated in favor of `resolvedBreakpoints` in the `scriptParsed` event.
      */
@@ -5370,6 +5378,14 @@ export namespace ProtocolMapping {
      */
     'WebAuthn.setCredentialProperties': {
       paramsType: [Protocol.WebAuthn.SetCredentialPropertiesRequest];
+      returnType: void;
+    };
+    /**
+     * Enables the WebMCP domain, allowing events to be sent. Enabling the domain will trigger a toolsAdded event for
+     * all currently registered tools.
+     */
+    'WebMCP.enable': {
+      paramsType: [];
       returnType: void;
     };
     /**

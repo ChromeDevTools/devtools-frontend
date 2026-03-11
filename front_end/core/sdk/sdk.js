@@ -9453,7 +9453,7 @@ __export(CookieModel_exports, {
 });
 import * as Common25 from "./../common/common.js";
 import * as Platform16 from "./../platform/platform.js";
-import * as Root10 from "./../root/root.js";
+import * as Root11 from "./../root/root.js";
 
 // gen/front_end/core/sdk/Cookie.js
 var Cookie_exports = {};
@@ -12534,7 +12534,7 @@ __export(DOMModel_exports, {
 });
 import * as Common21 from "./../common/common.js";
 import * as Platform13 from "./../platform/platform.js";
-import * as Root9 from "./../root/root.js";
+import * as Root10 from "./../root/root.js";
 
 // gen/front_end/core/sdk/CSSModel.js
 var CSSModel_exports = {};
@@ -21182,7 +21182,7 @@ __export(FrameManager_exports, {
   FrameManager: () => FrameManager
 });
 import * as Common14 from "./../common/common.js";
-var frameManagerInstance = null;
+import * as Root7 from "./../root/root.js";
 var FrameManager = class _FrameManager extends Common14.ObjectWrapper.ObjectWrapper {
   #eventListeners = /* @__PURE__ */ new WeakMap();
   // Maps frameIds to #frames and a count of how many ResourceTreeModels contain this frame.
@@ -21193,18 +21193,18 @@ var FrameManager = class _FrameManager extends Common14.ObjectWrapper.ObjectWrap
   #outermostFrame = null;
   #transferringFramesDataCache = /* @__PURE__ */ new Map();
   #awaitedFrames = /* @__PURE__ */ new Map();
-  constructor() {
+  constructor(targetManager) {
     super();
-    TargetManager.instance().observeModels(ResourceTreeModel, this);
+    targetManager.observeModels(ResourceTreeModel, this);
   }
   static instance({ forceNew } = { forceNew: false }) {
-    if (!frameManagerInstance || forceNew) {
-      frameManagerInstance = new _FrameManager();
+    if (!Root7.DevToolsContext.globalInstance().has(_FrameManager) || forceNew) {
+      Root7.DevToolsContext.globalInstance().set(_FrameManager, new _FrameManager(TargetManager.instance()));
     }
-    return frameManagerInstance;
+    return Root7.DevToolsContext.globalInstance().get(_FrameManager);
   }
   static removeInstance() {
-    frameManagerInstance = null;
+    Root7.DevToolsContext.globalInstance().delete(_FrameManager);
   }
   modelAdded(resourceTreeModel) {
     const addListener = resourceTreeModel.addEventListener(Events3.FrameAdded, this.frameAdded, this);
@@ -21362,7 +21362,7 @@ __export(OverlayModel_exports, {
 });
 import * as Common20 from "./../common/common.js";
 import * as i18n13 from "./../i18n/i18n.js";
-import * as Root8 from "./../root/root.js";
+import * as Root9 from "./../root/root.js";
 
 // gen/front_end/core/sdk/DebuggerModel.js
 var DebuggerModel_exports = {};
@@ -21382,7 +21382,7 @@ __export(DebuggerModel_exports, {
 });
 import * as Common17 from "./../common/common.js";
 import * as i18n11 from "./../i18n/i18n.js";
-import * as Root7 from "./../root/root.js";
+import * as Root8 from "./../root/root.js";
 
 // gen/front_end/core/sdk/RuntimeModel.js
 var RuntimeModel_exports = {};
@@ -22626,11 +22626,11 @@ var DebuggerModel = class _DebuggerModel extends SDKModel {
       return;
     }
     this.#debuggerEnabled = true;
-    const isRemoteFrontend = Root7.Runtime.Runtime.queryParam("remoteFrontend") || Root7.Runtime.Runtime.queryParam("ws");
+    const isRemoteFrontend = Root8.Runtime.Runtime.queryParam("remoteFrontend") || Root8.Runtime.Runtime.queryParam("ws");
     const maxScriptsCacheSize = isRemoteFrontend ? 1e7 : 1e8;
     const enablePromise = this.agent.invoke_enable({ maxScriptsCacheSize });
     let instrumentationPromise;
-    if (Root7.Runtime.experiments.isEnabled(Root7.ExperimentNames.ExperimentName.INSTRUMENTATION_BREAKPOINTS)) {
+    if (Root8.Runtime.experiments.isEnabled(Root8.ExperimentNames.ExperimentName.INSTRUMENTATION_BREAKPOINTS)) {
       instrumentationPromise = this.agent.invoke_setInstrumentationBreakpoint({
         instrumentation: "beforeScriptExecution"
       });
@@ -22645,7 +22645,7 @@ var DebuggerModel = class _DebuggerModel extends SDKModel {
     this.registerDebugger(enableResult);
   }
   async syncDebuggerId() {
-    const isRemoteFrontend = Root7.Runtime.Runtime.queryParam("remoteFrontend") || Root7.Runtime.Runtime.queryParam("ws");
+    const isRemoteFrontend = Root8.Runtime.Runtime.queryParam("remoteFrontend") || Root8.Runtime.Runtime.queryParam("ws");
     const maxScriptsCacheSize = isRemoteFrontend ? 1e7 : 1e8;
     const enablePromise = this.agent.invoke_enable({ maxScriptsCacheSize });
     void enablePromise.then(this.registerDebugger.bind(this));
@@ -24426,7 +24426,7 @@ var OverlayModel = class _OverlayModel extends SDKModel {
       gridHighlightConfig: {},
       flexContainerHighlightConfig: {},
       flexItemHighlightConfig: {},
-      contrastAlgorithm: Root8.Runtime.experiments.isEnabled(Root8.ExperimentNames.ExperimentName.APCA) ? "apca" : "aa"
+      contrastAlgorithm: Root9.Runtime.experiments.isEnabled(Root9.ExperimentNames.ExperimentName.APCA) ? "apca" : "aa"
     };
     if (mode === "all" || mode === "content") {
       highlightConfig.contentColor = Common20.Color.PageHighlight.Content.toProtocolRGBA();
@@ -26021,7 +26021,7 @@ var DOMModel = class _DOMModel extends SDKModel {
     if (!target.suspended()) {
       void this.agent.invoke_enable({});
     }
-    if (Root9.Runtime.experiments.isEnabled(Root9.ExperimentNames.ExperimentName.CAPTURE_NODE_CREATION_STACKS)) {
+    if (Root10.Runtime.experiments.isEnabled(Root10.ExperimentNames.ExperimentName.CAPTURE_NODE_CREATION_STACKS)) {
       void this.agent.invoke_setNodeStackTracesEnabled({ enable: true });
     }
   }
@@ -27994,7 +27994,7 @@ var CookieModel = class extends SDKModel {
     if (cookie.expires()) {
       expires = Math.floor(Date.parse(`${cookie.expires()}`) / 1e3);
     }
-    const enabled = Root10.Runtime.experiments.isEnabled(Root10.ExperimentNames.ExperimentName.EXPERIMENTAL_COOKIE_FEATURES);
+    const enabled = Root11.Runtime.experiments.isEnabled(Root11.ExperimentNames.ExperimentName.EXPERIMENTAL_COOKIE_FEATURES);
     const preserveUnset = (scheme) => scheme === "Unset" ? scheme : void 0;
     const protocolCookie = {
       name: cookie.name(),
@@ -31808,7 +31808,7 @@ import * as i18n29 from "./../i18n/i18n.js";
 import * as Common34 from "./../common/common.js";
 import * as Host7 from "./../host/host.js";
 import * as ProtocolClient3 from "./../protocol_client/protocol_client.js";
-import * as Root12 from "./../root/root.js";
+import * as Root13 from "./../root/root.js";
 
 // gen/front_end/core/sdk/RehydratingConnection.js
 var RehydratingConnection_exports = {};
@@ -31819,7 +31819,7 @@ __export(RehydratingConnection_exports, {
 import * as Common33 from "./../common/common.js";
 import * as i18n27 from "./../i18n/i18n.js";
 import * as ProtocolClient2 from "./../protocol_client/protocol_client.js";
-import * as Root11 from "./../root/root.js";
+import * as Root12 from "./../root/root.js";
 
 // gen/front_end/core/sdk/EnhancedTracesParser.js
 var EnhancedTracesParser_exports = {};
@@ -32219,9 +32219,9 @@ var RehydratingConnectionTransport = class {
   }
   /** Returns true if found a trace URL. */
   #maybeHandleLoadingFromUrl() {
-    let traceUrl = Root11.Runtime.Runtime.queryParam("traceURL");
+    let traceUrl = Root12.Runtime.Runtime.queryParam("traceURL");
     if (!traceUrl) {
-      const timelineUrl = Root11.Runtime.Runtime.queryParam("loadTimelineFromURL");
+      const timelineUrl = Root12.Runtime.Runtime.queryParam("loadTimelineFromURL");
       if (timelineUrl) {
         traceUrl = decodeURIComponent(timelineUrl);
       }
@@ -32754,11 +32754,11 @@ async function initMainConnection(createRootTarget, onConnectionLost) {
   Host7.InspectorFrontendHost.InspectorFrontendHostInstance.connectionReady();
 }
 function createMainTransport(onConnectionLost) {
-  if (Root12.Runtime.Runtime.isTraceApp()) {
+  if (Root13.Runtime.Runtime.isTraceApp()) {
     return new RehydratingConnectionTransport(onConnectionLost);
   }
-  const wsParam = Root12.Runtime.Runtime.queryParam("ws");
-  const wssParam = Root12.Runtime.Runtime.queryParam("wss");
+  const wsParam = Root13.Runtime.Runtime.queryParam("ws");
+  const wssParam = Root13.Runtime.Runtime.queryParam("wss");
   if (wsParam || wssParam) {
     const ws = wsParam ? `ws://${wsParam}` : `wss://${wssParam}`;
     return new WebSocketTransport(ws, onConnectionLost);
@@ -34078,26 +34078,28 @@ var i18nString16 = i18n35.i18n.getLocalizedString.bind(void 0, str_16);
 var i18nLazyString2 = i18n35.i18n.getLazilyComputedLocalizedString.bind(void 0, str_16);
 var throttlingManagerInstance;
 var CPUThrottlingManager = class _CPUThrottlingManager extends Common37.ObjectWrapper.ObjectWrapper {
+  #targetManager;
   #cpuThrottlingOption;
   #calibratedThrottlingSetting;
   #hardwareConcurrency;
   #pendingMainTargetPromise;
-  constructor() {
+  constructor(settings, targetManager) {
     super();
+    this.#targetManager = targetManager;
     this.#cpuThrottlingOption = NoThrottlingOption;
-    this.#calibratedThrottlingSetting = Common37.Settings.Settings.instance().createSetting(
+    this.#calibratedThrottlingSetting = settings.createSetting(
       "calibrated-cpu-throttling",
       {},
       "Global"
       /* Common.Settings.SettingStorageType.GLOBAL */
     );
     this.#calibratedThrottlingSetting.addChangeListener(this.#onCalibratedSettingChanged, this);
-    TargetManager.instance().observeModels(EmulationModel, this);
+    targetManager.observeModels(EmulationModel, this);
   }
   static instance(opts = { forceNew: null }) {
     const { forceNew } = opts;
     if (!throttlingManagerInstance || forceNew) {
-      throttlingManagerInstance = new _CPUThrottlingManager();
+      throttlingManagerInstance = new _CPUThrottlingManager(Common37.Settings.Settings.instance(), TargetManager.instance());
     }
     return throttlingManagerInstance;
   }
@@ -34117,7 +34119,7 @@ var CPUThrottlingManager = class _CPUThrottlingManager extends Common37.ObjectWr
       this.setCPUThrottlingOption(NoThrottlingOption);
       return;
     }
-    for (const emulationModel of TargetManager.instance().models(EmulationModel)) {
+    for (const emulationModel of this.#targetManager.models(EmulationModel)) {
       void emulationModel.setCPUThrottlingRate(rate);
     }
     this.dispatchEventToListeners("RateChanged", rate);
@@ -34127,27 +34129,27 @@ var CPUThrottlingManager = class _CPUThrottlingManager extends Common37.ObjectWr
       return;
     }
     this.#cpuThrottlingOption = option;
-    for (const emulationModel of TargetManager.instance().models(EmulationModel)) {
+    for (const emulationModel of this.#targetManager.models(EmulationModel)) {
       void emulationModel.setCPUThrottlingRate(this.#cpuThrottlingOption.rate());
     }
     this.dispatchEventToListeners("RateChanged", this.#cpuThrottlingOption.rate());
   }
   setHardwareConcurrency(concurrency) {
     this.#hardwareConcurrency = concurrency;
-    for (const emulationModel of TargetManager.instance().models(EmulationModel)) {
+    for (const emulationModel of this.#targetManager.models(EmulationModel)) {
       void emulationModel.setHardwareConcurrency(concurrency);
     }
     this.dispatchEventToListeners("HardwareConcurrencyChanged", this.#hardwareConcurrency);
   }
   hasPrimaryPageTargetSet() {
     try {
-      return TargetManager.instance().primaryPageTarget() !== null;
+      return this.#targetManager.primaryPageTarget() !== null;
     } catch {
       return false;
     }
   }
   async getHardwareConcurrency() {
-    const target = TargetManager.instance().primaryPageTarget();
+    const target = this.#targetManager.primaryPageTarget();
     const existingCallback = this.#pendingMainTargetPromise;
     if (!target) {
       if (existingCallback) {

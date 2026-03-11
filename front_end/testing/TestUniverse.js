@@ -20,7 +20,7 @@ import { createTarget } from './TargetHelpers.js';
  * registered settings (on purpose).
  */
 export class TestUniverse {
-    #context = new Root.DevToolsContext.DevToolsContext();
+    #context = new Root.DevToolsContext.WritableDevToolsContext();
     #creationOptions;
     constructor(options) {
         this.#creationOptions = options;
@@ -30,6 +30,12 @@ export class TestUniverse {
      */
     createTarget(options) {
         return createTarget({ ...options, targetManager: this.targetManager });
+    }
+    get console() {
+        if (!this.#context.has(Common.Console.Console)) {
+            this.#context.set(Common.Console.Console, new Common.Console.Console());
+        }
+        return this.#context.get(Common.Console.Console);
     }
     get cssWorkspaceBinding() {
         if (!this.#context.has(Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding)) {
@@ -42,6 +48,12 @@ export class TestUniverse {
             this.#context.set(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, new Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding(this.#resourceMapping, this.targetManager, this.ignoreListManager, this.workspace));
         }
         return this.#context.get(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding);
+    }
+    get frameManager() {
+        if (!this.#context.has(SDK.FrameManager.FrameManager)) {
+            this.#context.set(SDK.FrameManager.FrameManager, new SDK.FrameManager.FrameManager(this.targetManager));
+        }
+        return this.#context.get(SDK.FrameManager.FrameManager);
     }
     get ignoreListManager() {
         if (!this.#context.has(Workspace.IgnoreListManager.IgnoreListManager)) {
@@ -68,7 +80,25 @@ export class TestUniverse {
     }
     get targetManager() {
         if (!this.#context.has(SDK.TargetManager.TargetManager)) {
-            const targetManager = new SDK.TargetManager.TargetManager(this.#context, this.#creationOptions?.overrideAutoStartModels ?? new Set());
+            // `SDKModel` instances pull their dependencies from the context we pass here.
+            // Instead of eagerly creating them in `createTarget`, we pass a simple stub that
+            // re-directs to the TestUniverse for lazy initialization. This also makes it explicit
+            // what dependencies `SDKModel` instances are using and also safe-guards against
+            // `createTarget({targetManager: universe.targetManager}) instantiations.
+            const universe = this;
+            const context = new (class LazyContext {
+                // eslint-disable-next-line @devtools/enforce-test-universe-return-types
+                get(ctor) {
+                    if (ctor === Common.Settings.Settings.prototype.constructor) {
+                        return universe.settings;
+                    }
+                    if (ctor === SDK.FrameManager.FrameManager.prototype.constructor) {
+                        return universe.frameManager;
+                    }
+                    throw new Error(`Class ${ctor.name} not set-up as a dependency for SDKModels in TestUniverse.ts. Add it to LazyContext#get in TestUniverse.ts`);
+                }
+            })();
+            const targetManager = new SDK.TargetManager.TargetManager(context, this.#creationOptions?.overrideAutoStartModels ?? new Set());
             this.#context.set(SDK.TargetManager.TargetManager, targetManager);
         }
         return this.#context.get(SDK.TargetManager.TargetManager);

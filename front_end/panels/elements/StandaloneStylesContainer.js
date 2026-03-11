@@ -24,14 +24,14 @@ export const DEFAULT_VIEW = (input, _output, target) => {
     </div>
   `, target);
 };
-export class StandaloneStylesContainer extends UI.Widget.VBox {
+export class StandaloneStylesContainer extends Common.ObjectWrapper.eventMixin(UI.Widget.VBox) {
     activeCSSAngle = null;
     isEditingStyle = false;
     sectionByElement = new WeakMap();
     // TODO: Reference the MAX_LINK_LENGTH from StylesSidebarPane at a later stage, when we have a reference to it.
     linkifier = new Components.Linkifier.Linkifier(23, /* useLinkDecorator */ true);
     #webCustomData;
-    #userOperation = false;
+    userOperation = false;
     #sections = [];
     #swatchPopoverHelper = new InlineEditor.SwatchPopoverHelper.SwatchPopoverHelper();
     #computedStyleModelInternal = new ComputedStyle.ComputedStyleModel.ComputedStyleModel();
@@ -39,9 +39,18 @@ export class StandaloneStylesContainer extends UI.Widget.VBox {
     constructor(element, view = DEFAULT_VIEW) {
         super(element, { useShadowDom: true });
         this.#view = view;
+        this.#computedStyleModelInternal.addEventListener("CSSModelChanged" /* ComputedStyle.ComputedStyleModel.Events.CSS_MODEL_CHANGED */, this.#onCSSModelChanged, this);
     }
-    get userOperation() {
-        return this.#userOperation;
+    async #onCSSModelChanged(event) {
+        // We only recreate sections if this update is more than an "edit" operation.
+        // Sections will pull their own updates in the case of an "edit".
+        if (event?.data && 'edit' in event.data && event?.data.edit) {
+            return;
+        }
+        if (this.isEditingStyle || this.userOperation) {
+            return;
+        }
+        this.requestUpdate();
     }
     get webCustomData() {
         if (!this.#webCustomData &&
@@ -51,10 +60,12 @@ export class StandaloneStylesContainer extends UI.Widget.VBox {
         return this.#webCustomData;
     }
     async #updateSections() {
+        for (const section of this.#sections) {
+            section.dispose();
+        }
         const node = this.node();
         if (!node) {
             this.#sections = [];
-            this.requestUpdate();
             return;
         }
         const cssModel = node.domModel().cssModel();
@@ -78,14 +89,17 @@ export class StandaloneStylesContainer extends UI.Widget.VBox {
         this.swatchPopoverHelper().reposition();
     }
     async performUpdate() {
-        if (this.isEditingStyle || this.#userOperation) {
-            return;
-        }
+        this.hideAllPopovers();
+        this.node()?.domModel().cssModel().discardCachedMatchedCascade();
         await this.#updateSections();
         const viewInput = {
             sections: this.#sections,
         };
         this.#view(viewInput, undefined, this.contentElement);
+        this.#onUpdateFinished();
+    }
+    #onUpdateFinished() {
+        this.dispatchEventToListeners("StylesUpdateCompleted" /* Events.STYLES_UPDATE_COMPLETED */);
     }
     swatchPopoverHelper() {
         return this.#swatchPopoverHelper;
@@ -116,12 +130,14 @@ export class StandaloneStylesContainer extends UI.Widget.VBox {
             }
         }
         if (this.isEditingStyle) {
+            this.#onUpdateFinished();
             return;
         }
         for (const section of this.#sections) {
             section.update(section === editedSection);
         }
         this.swatchPopoverHelper().reposition();
+        this.#onUpdateFinished();
     }
     filterRegex() {
         return null;
@@ -130,14 +146,17 @@ export class StandaloneStylesContainer extends UI.Widget.VBox {
         this.isEditingStyle = editing;
     }
     setUserOperation(userOperation) {
-        this.#userOperation = userOperation;
+        this.userOperation = userOperation;
     }
     forceUpdate() {
-        this.hideAllPopovers();
         this.requestUpdate();
     }
     hideAllPopovers() {
         this.#swatchPopoverHelper.hide();
+        if (this.activeCSSAngle) {
+            this.activeCSSAngle.minify();
+            this.activeCSSAngle = null;
+        }
     }
     allSections() {
         return this.#sections;
@@ -182,9 +201,11 @@ export class StandaloneStylesContainer extends UI.Widget.VBox {
     }
     jumpToDeclaration(_valueSource) {
     }
-    addStyleUpdateListener(_listener) {
+    addStyleUpdateListener(listener) {
+        this.addEventListener("StylesUpdateCompleted" /* Events.STYLES_UPDATE_COMPLETED */, listener);
     }
-    removeStyleUpdateListener(_listener) {
+    removeStyleUpdateListener(listener) {
+        this.removeEventListener("StylesUpdateCompleted" /* Events.STYLES_UPDATE_COMPLETED */, listener);
     }
 }
 //# sourceMappingURL=StandaloneStylesContainer.js.map

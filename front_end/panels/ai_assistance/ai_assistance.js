@@ -2228,6 +2228,8 @@ import * as UI5 from "./../../ui/legacy/legacy.js";
 import * as Lit3 from "./../../ui/lit/lit.js";
 import * as VisualLogging3 from "./../../ui/visual_logging/visual_logging.js";
 import * as Elements from "./../elements/elements.js";
+import * as TimelineComponents from "./../timeline/components/components.js";
+import * as TimelineUtils from "./../timeline/utils/utils.js";
 
 // gen/front_end/panels/ai_assistance/components/chatMessage.css.js
 var chatMessage_css_default = `/*
@@ -2791,7 +2793,7 @@ var UIStrings2 = {
   /**
    * @description Title for the walkthrough view.
    */
-  title: "Investigation steps",
+  title: "Agent walkthrough",
   /**
    * @description Title for the button that shows the walkthrough when there are no widgets in the walkthrough.
    */
@@ -2843,7 +2845,7 @@ function renderSidebarWalkthrough(input, stepsOutput, stepsCount) {
          <devtools-button
           .data=${{
     variant: "toolbar",
-    iconName: "right-panel-open",
+    iconName: "cross",
     title: i18nString2(UIStrings2.close),
     jslogContext: "close-walkthrough"
   }}
@@ -3378,6 +3380,14 @@ async function makeComputedStyleWidget(widgetData) {
   const widget = html5`<devtools-widget class="computed-styles-widget" .widgetConfig=${widgetConfig}></devtools-widget>`;
   return { renderedWidget: widget, revealable: new Elements.ElementsPanel.NodeComputedStyles(domNodeForId) };
 }
+async function makeCoreVitalsWidget(widgetData) {
+  const widgetConfig = UI5.Widget.widgetConfig(TimelineComponents.CWVMetrics.CWVMetrics, { data: widgetData.data });
+  const widget = html5`<devtools-widget class="core-vitals-widget" .widgetConfig=${widgetConfig}></devtools-widget>`;
+  return {
+    renderedWidget: widget,
+    revealable: new TimelineUtils.Helpers.RevealableCoreVitals(widgetData.data.insightSetKey)
+  };
+}
 function renderWidgetResponse(response) {
   if (response === null) {
     return Lit3.nothing;
@@ -3410,6 +3420,10 @@ async function renderStepWidgets(step) {
   const ui = await Promise.all(step.widgets.map(async (widgetData) => {
     if (widgetData.name === "COMPUTED_STYLES") {
       const response = await makeComputedStyleWidget(widgetData);
+      return renderWidgetResponse(response);
+    }
+    if (widgetData.name === "CORE_VITALS") {
+      const response = await makeCoreVitalsWidget(widgetData);
       return renderWidgetResponse(response);
     }
     return Lit3.nothing;
@@ -6273,6 +6287,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
           case "context": {
             step.title = data.title;
             step.contextDetails = data.details;
+            step.widgets = data.widgets;
             step.isLoading = false;
             commitStep();
             break;

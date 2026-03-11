@@ -6,14 +6,19 @@ export type ConstructorT<T> = new (...args: any[]) => T;
  * via constructor, and not just pass a {@link DevToolsContext} around. That would hide
  * dependencies and we want to be explicit.
  */
-export declare class DevToolsContext {
+export interface DevToolsContext {
+    get<T>(ctor: ConstructorT<T>): T;
+}
+/**
+ * The actual implementation. Should only be accessed by test-setup code or the bootstrapper.
+ */
+export declare class WritableDevToolsContext implements DevToolsContext {
     #private;
     get<T>(ctor: ConstructorT<T>): T;
     /** @deprecated Should only be used by existing `instance` accessors. */
     has<T>(ctor: ConstructorT<T>): boolean;
     /**
-     * @deprecated Should only be used by existing `instance` accessors and the bootstrapper.
-     * Exists on the public interface only for migration purposes for now.
+     * Should only be used by existing `instance` accessors and the bootstrapper.
      */
     set<T>(ctor: ConstructorT<T>, instance: T): void;
     /** @deprecated Should only be used by existing `removeInstance` static methods. */
@@ -22,8 +27,8 @@ export declare class DevToolsContext {
 /**
  * @deprecated Exists to migrate instance() methods.
  */
-export declare function globalInstance(): DevToolsContext;
+export declare function globalInstance(): WritableDevToolsContext;
 /**
  * @deprecated Should only be called by test setup and MainImpl
  */
-export declare function setGlobalInstance(context: DevToolsContext | null): void;
+export declare function setGlobalInstance(context: WritableDevToolsContext | null): void;

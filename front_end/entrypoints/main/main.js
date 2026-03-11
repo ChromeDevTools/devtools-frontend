@@ -776,7 +776,6 @@ var MainImpl = class {
     UI2.ContextMenu.ContextMenu.installHandler(document);
     UI2.ViewManager.ViewManager.instance({ forceNew: true, universe: this.#universe });
     Logs.NetworkLog.NetworkLog.instance();
-    SDK2.FrameManager.FrameManager.instance();
     Logs.LogManager.LogManager.instance();
     IssuesManager.IssuesManager.IssuesManager.instance({
       forceNew: true,

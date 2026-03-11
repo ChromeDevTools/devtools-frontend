@@ -219,6 +219,39 @@ describe('Matchers for SDK.CSSPropertyParser.BottomUpTreeMatching', () => {
     checkFailure('in srgb', '0% red', 'blue 0%');
   });
 
+  it('parses contrast-color', () => {
+    function check(color: string): void {
+      const {ast, match, text} = matchSingleValue(
+          'color', `contrast-color(${color})`, new SDK.CSSPropertyParserMatchers.ContrastColorMatcher());
+      assert.exists(ast, text);
+      assert.exists(match, text);
+
+      assert.strictEqual(match.color.map(n => ast.text(n)).join(' '), color, text);
+    }
+
+    function checkFailure(color: string): void {
+      const {match, text} = matchSingleValue(
+          'color', `contrast-color(${color})`, new SDK.CSSPropertyParserMatchers.ContrastColorMatcher());
+      assert.isNull(match, text);
+    }
+
+    check('red');
+    check('/*asd*/ srgb');
+    check('var(--color)');
+    checkFailure('red, blue');
+  });
+
+  it('parses contrast-color with vars', () => {
+    injectVariableSubstitutions({
+      '--color': 'red',
+    });
+    const {ast, match, text} = matchSingleValue(
+        'color', 'contrast-color(var(--color))', new SDK.CSSPropertyParserMatchers.ContrastColorMatcher());
+    assert.exists(ast, text);
+    assert.exists(match, text);
+    assert.strictEqual(match.color.map(n => ast.text(n)).join(''), 'var(--color)');
+  });
+
   it('parses URLs', () => {
     const url = 'http://example.com';
     {

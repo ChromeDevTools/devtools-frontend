@@ -433,6 +433,34 @@ export class ColorMixMatcher extends matcherBase(ColorMixMatch) {
   }
 }
 
+export class ContrastColorMatch implements Match {
+  constructor(readonly text: string, readonly node: CodeMirror.SyntaxNode, readonly color: CodeMirror.SyntaxNode[]) {
+  }
+}
+
+// clang-format off
+export class ContrastColorMatcher extends matcherBase(ContrastColorMatch) {
+  // clang-format on
+  override accepts(propertyName: string): boolean {
+    return cssMetadata().isColorAwareProperty(propertyName);
+  }
+  override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): ContrastColorMatch|null {
+    if (node.name !== 'CallExpression' || matching.ast.text(node.getChild('Callee')) !== 'contrast-color') {
+      return null;
+    }
+
+    if (matching.getComputedText(node) === '') {
+      return null;
+    }
+
+    const args = ASTUtils.callArgs(node);
+    if (args.length !== 1) {
+      return null;
+    }
+    return new ContrastColorMatch(matching.ast.text(node), node, args[0]);
+  }
+}
+
 // clang-format off
 export class URLMatch implements Match {
   constructor(

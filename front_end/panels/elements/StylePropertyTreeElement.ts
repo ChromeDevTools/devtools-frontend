@@ -1025,6 +1025,46 @@ export class ColorMixRenderer extends rendererBase(SDK.CSSPropertyParserMatchers
 }
 
 // clang-format off
+export class ContrastColorRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.ContrastColorMatch) {
+  // clang-format on
+  readonly #treeElement: StylePropertyTreeElement|null;
+  readonly #stylesContainer: StylesContainer;
+  constructor(stylesContainer: StylesContainer, treeElement: StylePropertyTreeElement|null) {
+    super();
+    this.#treeElement = treeElement;
+    this.#stylesContainer = stylesContainer;
+  }
+
+  override render(match: SDK.CSSPropertyParserMatchers.ContrastColorMatch, context: RenderingContext): Node[] {
+    const content = document.createElement('span');
+    content.appendChild(document.createTextNode('contrast-color('));
+    const param = content.appendChild(document.createElement('span'));
+    content.appendChild(document.createTextNode(')'));
+    Renderer.renderInto(match.color, context, param);
+
+    if (context.matchedResult.hasUnresolvedSubstitutions(match.node)) {
+      return [content];
+    }
+
+    const colorText = context.matchedResult.getComputedText(match.node);
+    const fakeSpan = document.body.appendChild(document.createElement('span'));
+    fakeSpan.style.color = colorText;
+    const resolvedColorText = window.getComputedStyle(fakeSpan).color;
+    fakeSpan.remove();
+
+    const color = Common.Color.parse(resolvedColorText);
+    if (!color) {
+      return [content];
+    }
+
+    const colorSwatch = new ColorRenderer(this.#stylesContainer, this.#treeElement).renderColorSwatch(color, content);
+    context.addControl('color', colorSwatch);
+
+    return [colorSwatch, content];
+  }
+}
+
+// clang-format off
 export class AngleRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.AngleMatch) {
   // clang-format on
   readonly #treeElement: StylePropertyTreeElement|null;
@@ -1490,7 +1530,8 @@ export class ShadowRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.S
           properties.push({value, source, propertyType: ShadowPropertyType.INSET, expansionContext});
         } else if (
             match instanceof SDK.CSSPropertyParserMatchers.ColorMatch ||
-            match instanceof SDK.CSSPropertyParserMatchers.ColorMixMatch) {
+            match instanceof SDK.CSSPropertyParserMatchers.ColorMixMatch ||
+            match instanceof SDK.CSSPropertyParserMatchers.ContrastColorMatch) {
           if (properties.find(({propertyType}) => propertyType === ShadowPropertyType.COLOR)) {
             return null;
           }
@@ -1950,6 +1991,7 @@ export function getPropertyRenderers(
     new VariableRenderer(stylesContainer, treeElement, matchedStyles, computedStyles, computedStyleExtraFields),
     new ColorRenderer(stylesContainer, treeElement),
     new ColorMixRenderer(stylesContainer, matchedStyles, computedStyles, computedStyleExtraFields, treeElement),
+    new ContrastColorRenderer(stylesContainer, treeElement),
     new URLRenderer(style.parentRule, stylesContainer.node()),
     new AngleRenderer(treeElement),
     new LinkableNameRenderer(matchedStyles, stylesContainer),

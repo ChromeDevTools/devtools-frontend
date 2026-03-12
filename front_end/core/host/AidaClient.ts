@@ -137,6 +137,8 @@ export enum ClientFeature {
   CHROME_CONTEXT_SELECTION_AGENT = 25,
   // Chrome Accessibility Agent
   CHROME_ACCESSIBILITY_AGENT = 26,
+  // Chrome AI Assistance Conversation Summary Agent.
+  CHROME_CONVERSATION_SUMMARY_AGENT = 27,
 
   // Removed features (for reference).
   // Chrome AI Assistance Performance Insights Agent.

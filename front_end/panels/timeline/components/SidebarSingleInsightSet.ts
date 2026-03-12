@@ -26,6 +26,7 @@ const UIStrings = {
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/SidebarSingleInsightSet.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+const {widget} = UI.Widget;
 
 export interface SidebarSingleInsightSetData {
   insightSetKey: Trace.Types.Events.NavigationId|null;
@@ -62,13 +63,7 @@ const DEFAULT_VIEW: View = (input, output, target) => {
     if (!insightSetKey || !parsedTrace) {
       return Lit.nothing;
     }
-    const metricsWidgetConfig = UI.Widget.widgetConfig(CWVMetrics, {
-      data: {
-        insightSetKey,
-        parsedTrace,
-      }
-    });
-    return html`<devtools-widget .widgetConfig=${metricsWidgetConfig}></devtools-widget>`;
+    return html`${widget(CWVMetrics, {data: {insightSetKey, parsedTrace}})}`;
   }
 
   function renderInsights(): Lit.LitTemplate {

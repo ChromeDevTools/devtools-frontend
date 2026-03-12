@@ -10,7 +10,7 @@ import * as Utils from '../../utils/utils.js';
 import baseInsightComponentStyles from './baseInsightComponent.css.js';
 
 const {html, Directives: {ifDefined}} = Lit;
-const {widgetConfig} = UI.Widget;
+const {widget} = UI.Widget;
 
 export class EventReferenceClick extends Event {
   static readonly eventName = 'eventreferenceclick';
@@ -91,7 +91,7 @@ export function eventRef(
     text = event.name;
   }
 
-  return html`<devtools-widget title=${ifDefined(title)} .widgetConfig=${widgetConfig(EventRef, {
+  return html`<devtools-widget title=${ifDefined(title)} ${widget(EventRef, {
     event,
     text,
   })}></devtools-widget>`;

@@ -1,3 +1,8 @@
+---
+name: devtools-imports
+description: Conventions for importing code in Devtools to avoid build errors. Covers cross-module imports, internal imports, and the "import * as" requirement.
+---
+
 # Imports
 
 This codebase follows a special convention for importing code that must be followed to avoid build errors.
@@ -16,23 +21,23 @@ Within each module there are multiple TypeScript files. *The file that is named 
 
 When you want to reuse code from other modules, *you must import that module via its entrypoint*. Imagine we are in `front_end/panels/timeline/TimelinePanel.ts`. This import is GOOD:
 
-```
+```ts
 import * as Trace from '../models/trace/trace.js'; // import the entrypoint
 ```
 
 This import is BAD because we import a file that is NOT the entrypoint:
 
-```
+```ts
 import * as ModelImpl from '../models/trace/ModelImpl.js' // NEVER ALLOWED
 ```
 
 Additionally, you **must import using the `import * as` syntax**.
 
-```
+```ts
 import {ModelImpl, X, Y} from '../models/trace/trace.js'; // BAD
 ```
 
-```
+```ts
 import * as Trace from '../models/trace/trace.js'; // GOOD
 ```
 
@@ -42,6 +47,6 @@ If you are within the same module, it is OK to import from files directly rather
 
 For example, if you are editing `front_end/models/trace/ModelImpl.ts` this would be acceptable:
 
-```
+```ts
 import {Foo} from './Foo.js'; // allowed because Foo.ts is in the same directory.
 ```

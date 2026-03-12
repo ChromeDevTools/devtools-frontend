@@ -1,3 +1,8 @@
+---
+name: devtools-verification
+description: Guidelines for verifying changes in DevTools. Covers npm test, autoninja build, linting, and using fast builds.
+---
+
 # Instructions on how to verify your changes
 
 ## Testing

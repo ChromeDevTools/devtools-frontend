@@ -1,3 +1,9 @@
+```
+---
+name: devtools-model-management
+description: Guidelines for creating, migrating, and registering models in front_end/models/. Covers BUILD.gn, devtools_grd_files.gni, and entrypoints.
+---
+
 # Creating or Migrating a Model in DevTools
 
 This guide outlines the standard procedure for creating a new model or migrating an existing one to `front_end/models/`.

@@ -1,3 +1,8 @@
+---
+name: devtools-module-merging
+description: Workflow for merging a DevTools submodule into its parent module. Covers BUILD.gn consolidation and updating devtools_grd_files.gni.
+---
+
 # Workflow: Merging a DevTools Submodule into its Parent
 
 This document outlines the process for merging a submodule (e.g., `panels/timeline/extensions`) into its parent module (e.g., `panels/timeline`) within the DevTools build system. The goal is to simplify the build configuration by consolidating `BUILD.gn` files while keeping the original source file directory structure.

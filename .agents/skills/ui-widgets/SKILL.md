@@ -1,3 +1,8 @@
+---
+name: devtools-ui-widgets
+description: Guidelines for building UI widgets using the MVP architecture in DevTools. Covers Widget lifecycle, lit-html views, and state management.
+---
+
 ## UI Widget Framework Guide (MVP Architecture)
 
 Adhere strictly to the Model-View-Presenter (MVP) architecture.

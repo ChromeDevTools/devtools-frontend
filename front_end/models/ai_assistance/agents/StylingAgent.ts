@@ -15,11 +15,12 @@ import {ChangeManager} from '../ChangeManager.js';
 import {debugLog} from '../debug.js';
 import {EvaluateAction, formatError, SideEffectError} from '../EvaluateAction.js';
 import {ExtensionScope} from '../ExtensionScope.js';
-import {FREESTYLER_WORLD_NAME} from '../injected.js';
+import {AI_ASSISTANCE_CSS_CLASS_NAME, FREESTYLER_WORLD_NAME} from '../injected.js';
 
 import {
   type AgentOptions as BaseAgentOptions,
   AiAgent,
+  type AnswerResponse,
   type ComputedStyleAiWidget,
   type ContextResponse,
   ConversationContext,
@@ -194,6 +195,8 @@ async function executeJsCode(
 const MAX_OBSERVATION_BYTE_LENGTH = 25_000;
 const OBSERVATION_TIMEOUT = 5_000;
 
+export const AI_ASSISTANCE_FILTER_REGEX = `\\.${AI_ASSISTANCE_CSS_CLASS_NAME}-.*&`;
+
 type CreateExtensionScopeFunction = (changes: ChangeManager) => {
   install(): Promise<void>, uninstall(): Promise<void>,
 };
@@ -317,15 +320,17 @@ export class StylingAgent extends AiAgent<SDK.DOMModel.DOMNode> {
   #createExtensionScope: CreateExtensionScopeFunction;
   #greenDevEmulationScreenshot: string|null = null;
   #greenDevEmulationAxTree: string|null = null;
+  #currentTurnId = 0;
 
   constructor(opts: AgentOptions) {
     super(opts);
 
     this.#changes = opts.changeManager || new ChangeManager();
     this.#execJs = opts.execJs ?? executeJsCode;
-    this.#createExtensionScope = opts.createExtensionScope ?? ((changes: ChangeManager) => {
-                                   return new ExtensionScope(changes, this.sessionId, this.context?.getItem() ?? null);
-                                 });
+    this.#createExtensionScope =
+        opts.createExtensionScope ?? ((changes: ChangeManager) => {
+          return new ExtensionScope(changes, this.sessionId, this.context?.getItem() ?? null, this.#currentTurnId);
+        });
 
     this.declareFunction<{
       elements: number[],
@@ -1048,6 +1053,31 @@ const data = {
     };
   }
 
+  protected override async preRun(): Promise<void> {
+    this.#currentTurnId++;
+  }
+
+  protected override async finalizeAnswer(answer: AnswerResponse): Promise<AnswerResponse> {
+    if (!Root.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled) {
+      return answer;
+    }
+
+    const changedNodeIds = this.#changes.getChangedNodesForGroupId(this.sessionId, this.#currentTurnId);
+    if (changedNodeIds.length === 0) {
+      return answer;
+    }
+    answer.widgets = [
+      ...(answer.widgets ?? []),
+      ...changedNodeIds.map(id => ({
+                              name: 'STYLE_PROPERTIES' as const,
+                              data: {
+                                backendNodeId: id,
+                                selector: AI_ASSISTANCE_FILTER_REGEX,
+                              },
+                            })),
+    ];
+    return answer;
+  }
   override async enhanceQuery(
       query: string, selectedElement: ConversationContext<SDK.DOMModel.DOMNode>|null,
       multimodalInputType?: MultimodalInputType): Promise<string> {

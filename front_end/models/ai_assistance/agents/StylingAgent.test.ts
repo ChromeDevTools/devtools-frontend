@@ -5,6 +5,7 @@
 import * as Host from '../../../core/host/host.js';
 import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';
+import type * as Protocol from '../../../generated/protocol.js';
 import {mockAidaClient} from '../../../testing/AiAssistanceHelpers.js';
 import {
   describeWithEnvironment,
@@ -365,7 +366,7 @@ describeWithEnvironment('StylingAgent', function() {
             await Array.fromAsync(agent.run('test', {selected: new AiAssistance.StylingAgent.NodeContext(element)}));
         const actionSteps = result.filter(step => {
           return step.type === AiAssistance.AiAgent.ResponseType.ACTION;
-        });
+        }) as AiAssistance.AiAgent.ActionResponse[];
         assert.lengthOf(actionSteps, 1, 'Found non or multiple action steps');
         const actionStep = actionSteps.at(0)!;
         assert(actionStep.output!.includes('Error: Output exceeded the maximum allowed length.'));
@@ -731,6 +732,48 @@ describeWithEnvironment('StylingAgent', function() {
             actionStep.output, 'Error: JavaScript execution that modifies the page is currently disabled.');
         assert.lengthOf(execJs.getCalls(), 1);
       });
+    });
+  });
+
+  describe('finalizeAnswer', () => {
+    it('yields STYLE_PROPERTIES widget for nodes touched in the current turn', async () => {
+      updateHostConfig({
+        devToolsAiAssistanceV2: {
+          enabled: true,
+        },
+      });
+      const changeManager = new AiAssistance.ChangeManager.ChangeManager();
+      // Stub ChangeManager to return a node only for Turn 1
+      const stub = sinon.stub(changeManager, 'getChangedNodesForGroupId');
+      stub.withArgs(sinon.match.any, 1).returns([1 as Protocol.DOM.BackendNodeId]);
+      stub.withArgs(sinon.match.any, 2).returns([2 as Protocol.DOM.BackendNodeId]);
+
+      const agent = new StylingAgent.StylingAgent({
+        aidaClient: mockAidaClient([[{explanation: 'answer'}], [{explanation: 'answer2'}]]),
+        changeManager,
+      });
+
+      // Execute Turn 1
+      const responses1 =
+          await Array.fromAsync(agent.run('test 1', {selected: new AiAssistance.StylingAgent.NodeContext(element)}));
+      const answer1 = responses1.find(r => r.type === AiAssistance.AiAgent.ResponseType.ANSWER) as
+          AiAssistance.AiAgent.AnswerResponse;
+      assert.exists(answer1.widgets);
+      assert.lengthOf(answer1.widgets, 1);
+      assert.strictEqual(answer1.widgets[0].name, 'STYLE_PROPERTIES');
+      const widgetData = answer1.widgets[0].data as {backendNodeId: Protocol.DOM.BackendNodeId, selector: string};
+      assert.strictEqual(widgetData.backendNodeId, 1);
+      assert.strictEqual(widgetData.selector, AiAssistance.StylingAgent.AI_ASSISTANCE_FILTER_REGEX);
+
+      // Execute Turn 2
+      const responses2 =
+          await Array.fromAsync(agent.run('test 2', {selected: new AiAssistance.StylingAgent.NodeContext(element)}));
+      const answer2 = responses2.find(r => r.type === AiAssistance.AiAgent.ResponseType.ANSWER) as
+          AiAssistance.AiAgent.AnswerResponse;
+      assert.exists(answer2.widgets);
+      assert.lengthOf(answer2.widgets, 1);
+      const widgetData2 = answer2.widgets[0].data as {backendNodeId: Protocol.DOM.BackendNodeId};
+      assert.strictEqual(widgetData2.backendNodeId, 2);
     });
   });
 });

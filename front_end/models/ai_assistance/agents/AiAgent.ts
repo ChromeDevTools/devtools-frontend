@@ -49,6 +49,7 @@ export interface AnswerResponse {
   complete: boolean;
   rpcId?: Host.AidaClient.RpcGlobalId;
   suggestions?: [string, ...string[]];
+  widgets?: AiWidget[];
 }
 
 export interface SuggestionsResponse {
@@ -238,8 +239,16 @@ export interface CoreVitalsAiWidget {
   };
 }
 
+export interface StylePropertiesAiWidget {
+  name: 'STYLE_PROPERTIES';
+  data: {
+    backendNodeId: Protocol.DOM.BackendNodeId,
+    selector?: string,
+  };
+}
+
 // This type will grow as we add more widgets.
-export type AiWidget = ComputedStyleAiWidget|CoreVitalsAiWidget;
+export type AiWidget = ComputedStyleAiWidget|CoreVitalsAiWidget|StylePropertiesAiWidget;
 
 export type FunctionCallHandlerResult<Result> = {
   requiresApproval: true,
@@ -521,6 +530,10 @@ export abstract class AiAgent<T> {
     return this.parseTextResponseForSuggestions(response.trim());
   }
 
+  protected async finalizeAnswer(answer: AnswerResponse): Promise<AnswerResponse> {
+    return answer;
+  }
+
   /**
    * Declare a function that the AI model can call.
    * @param name The name of the function
@@ -546,6 +559,9 @@ export abstract class AiAgent<T> {
     this.#functionDeclarations.clear();
   }
 
+  protected async preRun(): Promise<void> {
+  }
+
   async *
       run(
           initialQuery: string,
@@ -555,6 +571,7 @@ export abstract class AiAgent<T> {
           },
           multimodalInput?: MultimodalInput,
           ): AsyncGenerator<ResponseData, void, void> {
+    await this.preRun();
     await options.selected?.refresh();
     if (options.selected) {
       this.context = options.selected;
@@ -632,13 +649,13 @@ export abstract class AiAgent<T> {
           });
         }
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceAnswerReceived);
-        yield {
+        yield await this.finalizeAnswer({
           type: ResponseType.ANSWER,
           text: parsedResponse.answer,
           suggestions: parsedResponse.suggestions,
           complete: true,
           rpcId,
-        };
+        });
         if (!functionCall) {
           break;
         }

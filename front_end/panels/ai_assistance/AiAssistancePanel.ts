@@ -1788,6 +1788,13 @@ export class AiAssistancePanel extends UI.Panel.Panel {
               systemMessage.parts.push(newPart);
             }
 
+            if (data.widgets && Root.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled) {
+              systemMessage.parts.push({
+                type: 'widget',
+                widgets: data.widgets,
+              });
+            }
+
             // When there is an answer without any thinking steps, we don't want to show the thinking step.
             // TODO(crbug.com/463323934): Remove specially handling this case.
             if (systemMessage.parts.length > 1) {
@@ -1881,7 +1888,7 @@ export function getResponseMarkdown(message: ModelChatMessage): string {
   for (const part of message.parts) {
     if (part.type === 'answer') {
       contentParts.push(`### Answer\n\n${part.text}`);
-    } else {
+    } else if (part.type === 'step') {
       const step = part.step;
       if (step.title) {
         contentParts.push(`### ${step.title}`);

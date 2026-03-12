@@ -327,4 +327,53 @@ div {
       sinon.assert.calledTwice(cssModel.setStyleSheetText);
     });
   });
+
+  describe('turn tracking', () => {
+    it('tracks changes by numeric turnId', async () => {
+      const changeManager = new AiAssistanceModel.ChangeManager.ChangeManager();
+      const cssModel = createModel();
+      const backendNodeId = 1 as Protocol.DOM.BackendNodeId;
+
+      await changeManager.addChange(cssModel, frameId, {
+        groupId: agentId,
+        turnId: 1,
+        selector: 'div',
+        className: 'ai-style-change-1',
+        styles: {color: 'blue'},
+        backendNodeId,
+      });
+
+      assert.deepEqual(changeManager.getChangedNodesForGroupId(agentId, 1), [backendNodeId]);
+      assert.deepEqual(changeManager.getChangedNodesForGroupId(agentId, 2), []);
+    });
+
+    it('updates turnId when an element is re-modified in a later turn', async () => {
+      const changeManager = new AiAssistanceModel.ChangeManager.ChangeManager();
+      const cssModel = createModel();
+      const backendNodeId = 1 as Protocol.DOM.BackendNodeId;
+
+      // Turn 1
+      await changeManager.addChange(cssModel, frameId, {
+        groupId: agentId,
+        turnId: 1,
+        selector: 'div',
+        className: 'ai-style-change-1',
+        styles: {color: 'blue'},
+        backendNodeId,
+      });
+
+      // Turn 2
+      await changeManager.addChange(cssModel, frameId, {
+        groupId: agentId,
+        turnId: 2,
+        selector: 'div',
+        className: 'ai-style-change-1',
+        styles: {color: 'red'},
+        backendNodeId,
+      });
+
+      assert.deepEqual(changeManager.getChangedNodesForGroupId(agentId, 2), [backendNodeId]);
+      assert.deepEqual(changeManager.getChangedNodesForGroupId(agentId, 1), []);
+    });
+  });
 });

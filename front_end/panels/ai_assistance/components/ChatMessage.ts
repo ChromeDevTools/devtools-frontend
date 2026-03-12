@@ -13,7 +13,8 @@ import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import type {
-  AiWidget, ComputedStyleAiWidget, CoreVitalsAiWidget} from '../../../models/ai_assistance/agents/AiAgent.js';
+  AiWidget, ComputedStyleAiWidget, CoreVitalsAiWidget, StylePropertiesAiWidget} from
+  '../../../models/ai_assistance/agents/AiAgent.js';
 import * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
 import * as ComputedStyle from '../../../models/computed_style/computed_style.js';
 import * as Marked from '../../../third_party/marked/marked.js';
@@ -205,7 +206,12 @@ export interface StepPart {
   step: Step;
 }
 
-export type ModelMessagePart = AnswerPart|StepPart;
+export interface WidgetPart {
+  type: 'widget';
+  widgets: AiWidget[];
+}
+
+export type ModelMessagePart = AnswerPart|StepPart|WidgetPart;
 
 export interface UserChatMessage {
   entity: ChatMessageEntity.USER;
@@ -326,6 +332,9 @@ export const DEFAULT_VIEW = (input: ChatMessageViewInput, output: ViewOutput, ta
           const isLastPart = index === message.parts.length - 1;
           if (part.type === 'answer') {
             return html`<p>${renderTextAsMarkdown(part.text, input.markdownRenderer, { animate: !input.isReadOnly && input.isLoading && isLastPart && input.isLastMessage })}</p>`;
+          }
+          if (part.type === 'widget') {
+            return html`${Lit.Directives.until(renderWidgets(part.widgets, {wrapperClass: 'main-widgets-wrapper'}))}`;
           }
           if (!aiAssistanceV2 && part.type === 'step') {
             return renderStep({
@@ -602,7 +611,6 @@ export function renderStep({step, isLoading, markdownRenderer, isLast}: {
   markdownRenderer: MarkdownLitRenderer,
   isLast: boolean,
 }): Lit.LitTemplate {
-  const shouldRenderWidgets = Boolean(step.widgets?.length && Root.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled);
   const stepClasses = Lit.Directives.classMap({
     step: true,
     empty: !step.thought && !step.code && !step.contextDetails && !step.requestApproval,
@@ -626,11 +634,8 @@ export function renderStep({step, isLoading, markdownRenderer, isLast}: {
       </summary>
       ${renderStepDetails({step, markdownRenderer, isLast})}
     </details>
-    ${shouldRenderWidgets ? html`
-      <div class="step-widgets-wrapper">
-        ${Lit.Directives.until(renderStepWidgets(step))}
-      </div>` : Lit.nothing
-     }`;
+    ${Lit.Directives.until(renderWidgets(step.widgets, {wrapperClass: 'step-widgets-wrapper'}))}
+    `;
   // clang-format on
 }
 
@@ -639,25 +644,31 @@ interface WidgetMakerResponse {
   revealable: unknown;
 }
 
-const computedStyleNodeCache = new Map<Protocol.DOM.BackendNodeId, SDK.DOMModel.DOMNode>();
+const nodeCache = new Map<Protocol.DOM.BackendNodeId, SDK.DOMModel.DOMNode>();
+
+async function resolveNode(backendNodeId: Protocol.DOM.BackendNodeId): Promise<SDK.DOMModel.DOMNode|null> {
+  const cachedNode = nodeCache.get(backendNodeId);
+  if (cachedNode) {
+    return cachedNode;
+  }
+
+  const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+  if (!target) {
+    return null;
+  }
+
+  const node = new SDK.DOMModel.DeferredDOMNode(target, backendNodeId);
+  const resolved = await node.resolvePromise();
+  if (resolved) {
+    nodeCache.set(backendNodeId, resolved);
+  }
+  return resolved;
+}
 
 async function makeComputedStyleWidget(widgetData: ComputedStyleAiWidget): Promise<WidgetMakerResponse|null> {
-  let domNodeForId = computedStyleNodeCache.get(widgetData.data.backendNodeId);
+  const domNodeForId = await resolveNode(widgetData.data.backendNodeId);
   if (!domNodeForId) {
-    const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
-    if (!target) {
-      return null;
-    }
-    const node = new SDK.DOMModel.DeferredDOMNode(
-        target,
-        widgetData.data.backendNodeId,
-    );
-    const resolved = await node.resolvePromise();
-    if (!resolved) {
-      return null;
-    }
-    domNodeForId = resolved;
-    computedStyleNodeCache.set(widgetData.data.backendNodeId, resolved);
+    return null;
   }
   const styles = new ComputedStyle.ComputedStyleModel.ComputedStyle(domNodeForId, widgetData.data.computedStyles);
 
@@ -688,6 +699,27 @@ async function makeCoreVitalsWidget(widgetData: CoreVitalsAiWidget): Promise<Wid
     renderedWidget: widget,
     revealable: new TimelineUtils.Helpers.RevealableCoreVitals(widgetData.data.insightSetKey)
   };
+}
+
+async function makeStylePropertiesWidget(widgetData: StylePropertiesAiWidget): Promise<WidgetMakerResponse|null> {
+  const domNodeForId = await resolveNode(widgetData.data.backendNodeId);
+  if (!domNodeForId) {
+    return null;
+  }
+
+  const widgetConfig = UI.Widget.widgetConfig(Elements.StandaloneStylesContainer.StandaloneStylesContainer, {
+    domNode: domNodeForId,
+    filter: widgetData.data.selector ? new RegExp(widgetData.data.selector) : null,
+  });
+
+  // clang-format off
+  const widget = html`<devtools-widget
+    class="styling-preview-widget"
+    .widgetConfig=${widgetConfig}
+  ></devtools-widget>`;
+  // clang-format on
+
+  return {renderedWidget: widget, revealable: domNodeForId};
 }
 
 function renderWidgetResponse(response: WidgetMakerResponse|null): Lit.LitTemplate {
@@ -721,38 +753,43 @@ function renderWidgetResponse(response: WidgetMakerResponse|null): Lit.LitTempla
 }
 
 /**
- * Renders AI-defined UI widgets within a step.
- * When a ModelChatMessage contains a WidgetPart, the ChatMessage component
- * iterates through the `step.widgets` array. For each widget, it determines
- * the appropriate rendering logic based on the `widgetData.name`.
+ * Renders AI-defined UI widgets.
+ * When a ModelChatMessage contains a WidgetPart, or a Step has widgets,
+ * the ChatMessage component iterates through the \`widgets\` array.
+ * For each widget, it determines the appropriate rendering logic based on
+ * the \`widgetData.name\`.
  *
- * Currently, only 'COMPUTED_STYLES' and 'CORE_VITALS' widgets are supported. For these, the
- * `makeComputedStyleWidget` and `makeCoreVitalsWidget` functions are called to construct the necessary
- * data and configuration for the `Elements.ComputedStyleWidget.ComputedStyleWidget`
- * and `TimelineComponents.CWVMetrics.CWVMetrics`
- * components. The widget is then rendered using the `<devtools-widget>`
- * custom element, which dynamically instantiates and displays the specified
- * UI.Widget subclass with the provided configuration.
+ * Currently, 'COMPUTED_STYLES', 'CORE_VITALS' and 'STYLE_PROPERTIES' widgets are supported.
+ * For these, the corresponding \`make...Widget\` functions are called to construct the necessary
+ * data and configuration for the UI components. The widget is then rendered using the
+ * \`<devtools-widget>\` custom element, which dynamically instantiates and displays the
+ * specified UI.Widget subclass with the provided configuration.
  *
  * This allows for a flexible and extensible system where new widget types
  * can be added to the AI responses and rendered in DevTools by adding
- * corresponding `make...Widget` functions and handling them here.
+ * corresponding \`make...Widget\` functions and handling them here.
  */
-async function renderStepWidgets(step: Step): Promise<Lit.LitTemplate> {
-  if (!step.widgets || step.widgets.length === 0) {
+async function renderWidgets(
+    widgets: AiWidget[]|undefined, options: {wrapperClass?: string} = {}): Promise<Lit.LitTemplate> {
+  if (!Root.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled || !widgets || widgets.length === 0) {
     return Lit.nothing;
   }
-  const ui = await Promise.all(step.widgets.map(async widgetData => {
+  const ui = await Promise.all(widgets.map(async widgetData => {
+    let response: WidgetMakerResponse|null = null;
     if (widgetData.name === 'COMPUTED_STYLES') {
-      const response = await makeComputedStyleWidget(widgetData);
-      return renderWidgetResponse(response);
+      response = await makeComputedStyleWidget(widgetData);
+    } else if (widgetData.name === 'CORE_VITALS') {
+      response = await makeCoreVitalsWidget(widgetData);
+    } else if (widgetData.name === 'STYLE_PROPERTIES') {
+      response = await makeStylePropertiesWidget(widgetData);
     }
-    if (widgetData.name === 'CORE_VITALS') {
-      const response = await makeCoreVitalsWidget(widgetData);
-      return renderWidgetResponse(response);
-    }
-    return Lit.nothing;
+    return renderWidgetResponse(response);
   }));
+
+  if (options.wrapperClass) {
+    return html`<div class=${options.wrapperClass}>${ui}</div>`;
+  }
+
   return html`${ui}`;
 }
 

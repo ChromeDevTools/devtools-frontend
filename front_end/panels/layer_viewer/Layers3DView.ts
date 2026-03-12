@@ -27,6 +27,7 @@ import {
 import {Events as TransformControllerEvents, TransformController} from './TransformController.js';
 
 const {html, render, Directives: {ref}} = Lit;
+const {widget} = UI.Widget;
 
 const UIStrings = {
   /**
@@ -108,11 +109,11 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
       ${layers3DViewStyles}
     </style>
     ${input.panelToolbar}
-    ${input.error === 'missing-root' ? html`<div><devtools-widget .widgetConfig=${UI.Widget.widgetConfig(UI.EmptyWidget.EmptyWidget, {
+    ${input.error === 'missing-root' ? html`<div>${widget(UI.EmptyWidget.EmptyWidget, {
       header: i18nString(UIStrings.noLayerInformation),
       text: i18nString(UIStrings.layerExplanation)
-    })}></devtools-widget></div>` : Lit.nothing}
-    ${input.error === 'webgl-disabled' ? html`<div><devtools-widget .widgetConfig=${UI.Widget.widgetConfig(UI.EmptyWidget.EmptyWidget, {
+    })}</div>` : Lit.nothing}
+    ${input.error === 'webgl-disabled' ? html`<div>${widget(UI.EmptyWidget.EmptyWidget, {
       header: i18nString(UIStrings.cantDisplayLayers),
       text: i18nString(UIStrings.webglSupportIsDisabledInYour),
       extraElements: [
@@ -123,7 +124,7 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
           }
         )
       ],
-    })}></devtools-widget></div>` : Lit.nothing}
+    })}</div>` : Lit.nothing}
     <canvas
       tabindex="0"
       jslog=${VisualLogging.canvas('layers').track({

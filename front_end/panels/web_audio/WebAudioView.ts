@@ -15,7 +15,7 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import webAudioStyles from './webAudio.css.js';
 import {Events as ModelEvents, WebAudioModel} from './WebAudioModel.js';
-const {widgetConfig} = UI.Widget;
+const {widget} = UI.Widget;
 const {bindToAction} = UI.UIUtils;
 
 const UIStrings = {
@@ -123,12 +123,11 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
     <div class="web-audio-content-container vbox flex-auto">
       ${!selectedContext ? html`
         <div class="web-audio-details-container vbox flex-auto">
-          <devtools-widget .widgetConfig=${widgetConfig(UI.EmptyWidget.EmptyWidget,
+          ${widget(UI.EmptyWidget.EmptyWidget,
             {header: i18nString(UIStrings.noWebAudio),
               text: i18nString(UIStrings.openAPageThatUsesWebAudioApiTo),
             link: WEBAUDIO_EXPLANATION_URL,
-          })}>
-          </devtools-widget>
+          })}
         </div>` : html`<div class="web-audio-details-container vbox flex-auto">
           <div class="context-detail-container">
             <div class="context-detail-header">

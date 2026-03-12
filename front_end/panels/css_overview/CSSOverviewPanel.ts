@@ -6,7 +6,7 @@ import * as Host from '../../core/host/host.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import {html, render} from '../../ui/lit/lit.js';
+import {render} from '../../ui/lit/lit.js';
 
 import {type ContrastIssue, CSSOverviewCompletedView, type OverviewData} from './CSSOverviewCompletedView.js';
 import {CSSOverviewModel, type GlobalStyleStats} from './CSSOverviewModel.js';
@@ -14,7 +14,7 @@ import {CSSOverviewProcessingView} from './CSSOverviewProcessingView.js';
 import {CSSOverviewStartView} from './CSSOverviewStartView.js';
 import type {UnusedDeclaration} from './CSSOverviewUnusedDeclarations.js';
 
-const {widgetConfig} = UI.Widget;
+const {widget} = UI.Widget;
 
 interface ViewInput {
   state: 'start'|'processing'|'completed';
@@ -28,19 +28,15 @@ interface ViewInput {
 type View = (input: ViewInput, output: object, target: HTMLElement) => void;
 
 export const DEFAULT_VIEW: View = (input, _output, target) => {
-  // clang-format off
-  render(input.state === 'start' ?  html`
-      <devtools-widget .widgetConfig=${widgetConfig(CSSOverviewStartView, {onStartCapture: input.onStartCapture})}></devtools-widget>`
-    : input.state === 'processing' ?  html`
-      <devtools-widget .widgetConfig=${widgetConfig(CSSOverviewProcessingView, {onCancel: input.onCancel})}></devtools-widget>`
-    : html`
-      <devtools-widget .widgetConfig=${widgetConfig(CSSOverviewCompletedView, {
-      onReset: input.onReset,
-      overviewData: input.overviewData,
-      target: input.target,
-    })}></devtools-widget>`,
-    target);
-  // clang-format on
+  render(
+      input.state === 'start'          ? widget(CSSOverviewStartView, {onStartCapture: input.onStartCapture}) :
+          input.state === 'processing' ? widget(CSSOverviewProcessingView, {onCancel: input.onCancel}) :
+                                         widget(CSSOverviewCompletedView, {
+                                           onReset: input.onReset,
+                                           overviewData: input.overviewData,
+                                           target: input.target,
+                                         }),
+      target);
 };
 
 export class CSSOverviewPanel extends UI.Panel.Panel implements SDK.TargetManager.Observer {

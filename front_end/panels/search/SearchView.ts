@@ -107,7 +107,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/search/SearchView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const {ref, live} = Directives;
-const {widgetConfig, widgetRef} = UI.Widget;
+const {widgetConfig, widget, widgetRef} = UI.Widget;
 
 export interface SearchViewInput {
   query: string;
@@ -251,8 +251,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
               output.showAllMatches = () => void w.showAllMatches();
               output.collapseAllResults = () => void w.collapseAllResults(); })}>
             </devtools-widget>`
-           : html`<devtools-widget .widgetConfig=${widgetConfig(UI.EmptyWidget.EmptyWidget, {header, text})}>
-                  </devtools-widget>`}
+           : widget(UI.EmptyWidget.EmptyWidget, {header, text})}
       </div>
       <div class="search-toolbar-summary" @keydown=${onPanelKeyDown}>
         <div class="search-message">${searchMessage}</div>

@@ -34,6 +34,8 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/changes/ChangesView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const {render, html} = Lit;
+const {widget} = UI.Widget;
+
 interface ViewInput {
   selectedSourceCode: Workspace.UISourceCode.UISourceCode|null;
   onSelect(sourceCode: Workspace.UISourceCode.UISourceCode|null): void;
@@ -63,10 +65,10 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
                             })}>
           </devtools-widget>
           <div class=diff-container role=tabpanel ?hidden=${input.workspaceDiff.modifiedUISourceCodes().length === 0}>
-            <devtools-widget .widgetConfig=${UI.Widget.widgetConfig(CombinedDiffView.CombinedDiffView, {
-                                              selectedFileUrl: input.selectedSourceCode?.url(),
-                                              workspaceDiff: input.workspaceDiff
-                                            })}></devtools-widget>
+            ${widget(CombinedDiffView.CombinedDiffView, {
+                selectedFileUrl: input.selectedSourceCode?.url(),
+                workspaceDiff: input.workspaceDiff
+            })}
           </div>
           ${hasCopyToPrompt ? html`
             <devtools-widget class="copy-to-prompt"

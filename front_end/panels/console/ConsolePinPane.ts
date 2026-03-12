@@ -20,6 +20,7 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import consolePinPaneStyles from './consolePinPane.css.js';
 
 const {createRef, ref} = Directives;
+const {widget} = UI.Widget;
 
 const UIStrings = {
   /**
@@ -71,12 +72,11 @@ export const DEFAULT_PANE_VIEW = (input: PaneViewInput, _output: object, target:
   render(html`
     <style>${consolePinPaneStyles}</style>
     <div class='console-pins monospace' jslog=${VisualLogging.pane('console-pins')} @contextmenu=${input.onContextMenu}>
-    ${input.pins.map(pin => html`
-        <devtools-widget .widgetConfig=${UI.Widget.widgetConfig(ConsolePinPresenter, {
+    ${input.pins.map(pin => widget(ConsolePinPresenter, {
           pin,
           focusOut: input.focusOut,
           onRemove: () => input.onRemove(pin),
-        })}></devtools-widget>`
+      })
     )}
     </div>`, target);
   // clang-format on

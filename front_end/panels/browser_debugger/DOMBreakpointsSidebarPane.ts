@@ -107,6 +107,7 @@ const DOM_BREAKPOINT_DOCUMENTATION_URL =
     'https://developer.chrome.com/docs/devtools/javascript/breakpoints#dom' as Platform.DevToolsPath.UrlString;
 
 const {html, render, Directives} = Lit;
+const {widget} = UI.Widget;
 
 export interface Breakpoint {
   breakpoint: SDK.DOMDebuggerModel.DOMBreakpoint;
@@ -169,11 +170,11 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
           </ul>` : html
           `<div class="placeholder">
             <div class="gray-info-message">${i18nString(UIStrings.noBreakpoints)}</div>
-            <devtools-widget .widgetConfig=${UI.Widget.widgetConfig(UI.EmptyWidget.EmptyWidget, {
+            ${widget(UI.EmptyWidget.EmptyWidget, {
               header: i18nString(UIStrings.noBreakpoints),
               text: i18nString(UIStrings.domBreakpointsDescription),
               link: DOM_BREAKPOINT_DOCUMENTATION_URL,
-            })}></devtools-widget>
+            })}
           </div>`}
       </div>
     `,

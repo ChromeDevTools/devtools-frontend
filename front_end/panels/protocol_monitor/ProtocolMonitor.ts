@@ -22,7 +22,7 @@ import {Events as JSONEditorEvents, JSONEditor, type Parameter} from './JSONEdit
 import protocolMonitorStyles from './protocolMonitor.css.js';
 
 const {styleMap} = Directives;
-const {widgetConfig, widgetRef} = UI.Widget;
+const {widget, widgetConfig, widgetRef} = UI.Widget;
 const UIStrings = {
   /**
    * @description Text for one or a group of functions
@@ -675,7 +675,7 @@ type InfoWidgetView = (input: InfoWidgetViewInput, output: undefined, target: HT
 
 const INFO_WIDGET_VIEW: InfoWidgetView = (input, _output, target) => {
   // clang-format off
-  render(html`<devtools-widget .widgetConfig=${widgetConfig(UI.TabbedPane.TabbedPane, {
+  render(widget(UI.TabbedPane.TabbedPane, {
     tabs: [
       {
         id: 'request',
@@ -696,8 +696,7 @@ const INFO_WIDGET_VIEW: InfoWidgetView = (input, _output, target) => {
             SourceFrame.JSONView.JSONView.createViewSync(input.response || null),
         selected: input.selectedTab === 'response',
       }
-    ]})}>
-  </devtools-widget>`, target);
+    ]}), target);
   // clang-format on
 };
 

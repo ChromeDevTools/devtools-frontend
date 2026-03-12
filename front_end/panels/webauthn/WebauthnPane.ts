@@ -20,7 +20,7 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import webauthnPaneStyles from './webauthnPane.css.js';
 
 const {render, html, Directives: {ref, repeat, classMap}} = Lit;
-const {widgetConfig} = UI.Widget;
+const {widget} = UI.Widget;
 
 const UIStrings = {
   /**
@@ -284,7 +284,7 @@ function renderToolbar(enabled: boolean, onToggle: () => void): Lit.TemplateResu
 function renderLearnMoreView(): Lit.TemplateResult {
   // clang-format off
   return html`
-    <devtools-widget class="learn-more" .widgetConfig=${widgetConfig(UI.EmptyWidget.EmptyWidget, {
+    <devtools-widget class="learn-more" ${widget(UI.EmptyWidget.EmptyWidget, {
         header: i18nString(UIStrings.noAuthenticator),
         text: i18nString(UIStrings.useWebauthnForPhishingresistant),
         link: WEB_AUTHN_EXPLANATION_URL})}>

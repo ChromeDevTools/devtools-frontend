@@ -19,6 +19,7 @@ import stepViewStyles from './stepView.css.js';
 import {TimelineSection} from './TimelineSection.js';
 
 const {html} = Lit;
+const {widget} = UI.Widget;
 
 const UIStrings = {
   /**
@@ -396,7 +397,7 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: ViewOutput, target: HTML
     html`
     <style>${stepViewStyles}</style>
     <div>
-      <devtools-widget .widgetConfig=${UI.Widget.widgetConfig(TimelineSection, {
+      <devtools-widget ${widget(TimelineSection, {
           isFirstSection: input.isFirstSection,
           isLastSection: input.isLastSection,
           isStartOfGroup: input.isStartOfGroup,

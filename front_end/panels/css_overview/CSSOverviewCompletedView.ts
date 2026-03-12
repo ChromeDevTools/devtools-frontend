@@ -25,7 +25,7 @@ import {CSSOverviewSidebarPanel} from './CSSOverviewSidebarPanel.js';
 import type {UnusedDeclaration} from './CSSOverviewUnusedDeclarations.js';
 
 const {styleMap, ref} = Directives;
-const {widgetConfig} = UI.Widget;
+const {widget} = UI.Widget;
 
 const UIStrings = {
   /**
@@ -281,7 +281,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
   render(html`
       <style>${cssOverviewCompletedViewStyles}</style>
       <devtools-split-view direction="column" sidebar-position="first" sidebar-initial-size="200">
-        <devtools-widget slot="sidebar" .widgetConfig=${widgetConfig(CSSOverviewSidebarPanel, {
+        <devtools-widget slot="sidebar" ${widget(CSSOverviewSidebarPanel, {
           minimumSize: new Geometry.Size(100, 25),
           items: [
             {name: i18nString(UIStrings.overviewSummary), id: 'summary'},
@@ -325,7 +325,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
               ${renderMediaQueries(input.mediaQueries)}
             </div>
           </div>
-          <devtools-widget slot="sidebar" .widgetConfig=${widgetConfig(e => {
+          <devtools-widget slot="sidebar" ${widget(e => {
               const tabbedPane = new UI.TabbedPane.TabbedPane(e);
               output.closeAllTabs = () => { tabbedPane.closeTabs(tabbedPane.tabIds()); };
               output.addTab = (id: string, tabTitle: string, view: UI.Widget.Widget, jslogContext: string) => {

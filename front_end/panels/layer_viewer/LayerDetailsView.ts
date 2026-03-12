@@ -20,6 +20,7 @@ import {
 } from './LayerViewHost.js';
 
 const {html, nothing} = Lit;
+const {widget} = UI.Widget;
 
 const UIStrings = {
   /**
@@ -157,7 +158,7 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: ViewOutput, target: HTML
   if (!layer) {
     // clang-format off
     Lit.render(html`<div class="layer-details-container">
-      <devtools-widget class="learn-more" .widgetConfig=${UI.Widget.widgetConfig(UI.EmptyWidget.EmptyWidget, {
+      <devtools-widget class="learn-more" ${widget(UI.EmptyWidget.EmptyWidget, {
         header: i18nString(UIStrings.noLayerSelected),
         text: i18nString(UIStrings.selectALayerToSeeItsDetails)})}>
       </devtools-widget>

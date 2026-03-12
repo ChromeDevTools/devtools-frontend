@@ -42,6 +42,7 @@ const UIStrings = {
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/issues/AffectedSelectivePermissionsInterventionView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+const {widget} = UI.Widget;
 
 export class AffectedSelectivePermissionsInterventionView extends AffectedResourcesView {
   readonly #linkifier = new Components.Linkifier.Linkifier();
@@ -103,13 +104,10 @@ export class AffectedSelectivePermissionsInterventionView extends AffectedResour
     const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
     const stackTraceTranslated =
         await debuggerWorkspaceBinding.createStackTraceFromProtocolRuntime(stackTrace, issuesModel.target());
-    return html`
-      <devtools-widget .widgetConfig=${UI.Widget.widgetConfig(Components.JSPresentationUtils.StackTracePreviewContent, {
+    return html`${widget(Components.JSPresentationUtils.StackTracePreviewContent, {
       stackTrace: stackTraceTranslated,
       options: {expandable: true},
-    })}>
-      </devtools-widget>
-    `;
+    })}`;
   }
 
   update(): void {

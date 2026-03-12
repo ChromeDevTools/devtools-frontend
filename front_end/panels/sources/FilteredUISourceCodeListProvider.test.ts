@@ -4,7 +4,6 @@
 
 import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
-import * as Root from '../../core/root/root.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {setUpEnvironment} from '../../testing/OverridesHelpers.js';
@@ -34,10 +33,6 @@ const setUpEnvironmentWithUISourceCode =
     };
 
 describeWithEnvironment('FilteredUISourceCodeListProvider', () => {
-  before(() => {
-    Root.Runtime.experiments.register(Root.ExperimentNames.ExperimentName.JUST_MY_CODE, '');
-  });
-
   it('should exclude Fetch requests in the result', () => {
     const url = 'http://www.example.com/list-fetch.json';
     const resourceType = Common.ResourceType.resourceTypes.Fetch;
@@ -98,7 +93,8 @@ describeWithEnvironment('FilteredUISourceCodeListProvider', () => {
     const {workspace, project, uiSourceCode} = setUpEnvironmentWithUISourceCode(url, resourceType);
 
     // ignore the uiSourceCode
-    Root.Runtime.experiments.setEnabled(Root.ExperimentNames.ExperimentName.JUST_MY_CODE, true);
+    const setting = Common.Settings.Settings.instance().moduleSetting('navigator-just-my-code');
+    setting.set(true);
     Workspace.IgnoreListManager.IgnoreListManager.instance().ignoreListUISourceCode(uiSourceCode);
 
     const filteredUISourceCodeListProvider =
@@ -108,7 +104,7 @@ describeWithEnvironment('FilteredUISourceCodeListProvider', () => {
     const result = filteredUISourceCodeListProvider.itemCount();
 
     workspace.removeProject(project);
-    Root.Runtime.experiments.setEnabled(Root.ExperimentNames.ExperimentName.JUST_MY_CODE, false);
+    setting.set(false);
 
     assert.strictEqual(result, 0);
   });

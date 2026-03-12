@@ -4,7 +4,6 @@
 
 import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
-import * as Root from '../../core/root/root.js';
 import type * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
@@ -30,9 +29,6 @@ describeWithMockConnection('NavigatorView', () => {
   let workspace: Workspace.Workspace.WorkspaceImpl;
 
   beforeEach(() => {
-    Root.Runtime.experiments.register(Root.ExperimentNames.ExperimentName.AUTHORED_DEPLOYED_GROUPING, '');
-    Root.Runtime.experiments.register(Root.ExperimentNames.ExperimentName.JUST_MY_CODE, '');
-
     setMockResourceTree(false);
     setMockConnectionResponseHandler('Page.getResourceTree', async () => {
       return {

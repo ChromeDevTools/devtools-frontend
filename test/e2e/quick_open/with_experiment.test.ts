@@ -8,8 +8,8 @@ import {readQuickOpenResults, typeIntoQuickOpen} from '../helpers/quick_open-hel
 import {setIgnoreListPattern} from '../helpers/settings-helpers.js';
 import {openSourcesPanel} from '../helpers/sources-helpers.js';
 
-describe('Quick Open menu with experiment', () => {
-  setup({enabledDevToolsExperiments: ['just-my-code']});
+describe('Quick Open menu with just-my-code setting', () => {
+  setup({devToolsSettings: {'navigator-just-my-code': true}});
 
   it('does not list ignore-listed files', async ({devToolsPage, inspectedPage}) => {
     await setIgnoreListPattern('workers.js', devToolsPage);

@@ -76,6 +76,8 @@ export const DEFAULT_SETTING_REGISTRATIONS_FOR_TEST = [
       Common.Settings.SettingCategory.DEBUGGER, 'skip-stack-frames-pattern',
       '/node_modules/|^node:', Common.Settings.SettingType.REGEX),
   createSettingValue(Common.Settings.SettingCategory.DEBUGGER, 'navigator-group-by-folder', true),
+  createSettingValue(Common.Settings.SettingCategory.DEBUGGER, 'navigator-group-by-authored', false),
+  createSettingValue(Common.Settings.SettingCategory.DEBUGGER, 'navigator-just-my-code', false),
   createSettingValue(Common.Settings.SettingCategory.ELEMENTS, 'dom-word-wrap', true),
   createSettingValue(Common.Settings.SettingCategory.ELEMENTS, 'show-detailed-inspect-tooltip', true),
   createSettingValue(Common.Settings.SettingCategory.ELEMENTS, 'show-html-comments', true),

@@ -2701,6 +2701,7 @@ export const knownContextValues = new Set([
   'navigator-files',
   'navigator-group-by-authored',
   'navigator-group-by-folder',
+  'navigator-just-my-code',
   'navigator-network',
   'navigator-overrides',
   'navigator-snippets',

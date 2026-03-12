@@ -140,8 +140,10 @@ describe('Ignore list', function() {
     ]);
   });
 
-  describe('with just-my-code experiment', () => {
-    setup({enabledDevToolsExperiments: ['just-my-code']});
+  describe('with just-my-code setting', () => {
+    setup({
+      devToolsSettings: {'navigator-just-my-code': true},
+    });
     it('removes ignored sources from page source tree', async ({devToolsPage, inspectedPage}) => {
       await setIgnoreListPattern('thirdparty', devToolsPage);
       await inspectedPage.goToResource('sources/multi-files.html');

@@ -8,7 +8,6 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
-import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as AiAssistance from '../../models/ai_assistance/ai_assistance.js';
 import * as Bindings from '../../models/bindings/bindings.js';
@@ -180,7 +179,8 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
   private authoredNode?: NavigatorGroupTreeNode;
   private deployedNode?: NavigatorGroupTreeNode;
   private navigatorGroupByFolderSetting: Common.Settings.Setting<boolean>;
-  private navigatorGroupByAuthoredExperiment?: Root.ExperimentNames.ExperimentName;
+  private navigatorJustMyCodeSetting: Common.Settings.Setting<boolean>;
+  private navigatorGroupByAuthoredSetting?: Common.Settings.Setting<boolean>;
   #workspace!: Workspace.Workspace.WorkspaceImpl;
   private groupByFrame?: boolean;
   private groupByAuthored?: boolean;
@@ -217,8 +217,12 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
 
     this.navigatorGroupByFolderSetting = Common.Settings.Settings.instance().moduleSetting('navigator-group-by-folder');
     this.navigatorGroupByFolderSetting.addChangeListener(this.groupingChanged.bind(this));
+    this.navigatorJustMyCodeSetting = Common.Settings.Settings.instance().moduleSetting('navigator-just-my-code');
+    this.navigatorJustMyCodeSetting.addChangeListener(this.groupingChanged.bind(this));
     if (enableAuthoredGrouping) {
-      this.navigatorGroupByAuthoredExperiment = Root.ExperimentNames.ExperimentName.AUTHORED_DEPLOYED_GROUPING;
+      this.navigatorGroupByAuthoredSetting =
+          Common.Settings.Settings.instance().moduleSetting('navigator-group-by-authored');
+      this.navigatorGroupByAuthoredSetting.addChangeListener(this.groupingChanged.bind(this));
     }
 
     Workspace.IgnoreListManager.IgnoreListManager.instance().addChangeListener(this.ignoreListChanged.bind(this));
@@ -458,7 +462,7 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
   }
 
   private addUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): void {
-    if (Root.Runtime.experiments.isEnabled(Root.ExperimentNames.ExperimentName.JUST_MY_CODE) &&
+    if (this.navigatorJustMyCodeSetting.get() &&
         Workspace.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(
             uiSourceCode)) {
       return;
@@ -1189,7 +1193,7 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
   }
 
   private ignoreListChanged(): void {
-    if (Root.Runtime.experiments.isEnabled(Root.ExperimentNames.ExperimentName.JUST_MY_CODE)) {
+    if (this.navigatorJustMyCodeSetting.get()) {
       this.groupingChanged();
     } else {
       this.rootNode.updateTitleRecursive();
@@ -1200,8 +1204,8 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
     this.groupByFrame = true;
     this.groupByDomain = this.navigatorGroupByFolderSetting.get();
     this.groupByFolder = this.groupByDomain;
-    if (this.navigatorGroupByAuthoredExperiment) {
-      this.groupByAuthored = Root.Runtime.experiments.isEnabled(this.navigatorGroupByAuthoredExperiment);
+    if (this.navigatorGroupByAuthoredSetting) {
+      this.groupByAuthored = this.navigatorGroupByAuthoredSetting.get();
     } else {
       this.groupByAuthored = false;
     }

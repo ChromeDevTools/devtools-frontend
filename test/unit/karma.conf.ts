@@ -132,6 +132,8 @@ const CustomChrome = function(this: any, _baseBrowserDecorator: unknown, args: B
       '--disable-lcd-text',
       '--disable-device-discovery-notifications',
       '--window-size=1280,768',
+      '--enable-crash-reporter-for-testing',  // Works only on linux
+      `--crash-dumps-dir=${TestConfig.artifactsDir}`,
       ...flagsDisabledWithDebugging,
       ...args.flags,
       url,

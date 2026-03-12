@@ -21,6 +21,7 @@ import * as NetworkComponents from './components/components.js';
 import {ShowMoreDetailsWidget} from './ShowMoreDetailsWidget.js';
 
 const {render, html} = Lit;
+const {widget} = UI.Widget;
 
 const UIStrings = {
   /**
@@ -210,8 +211,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
           contents: (input.showRequestHeadersText && requestHeadersText) ?
             renderRawHeaders(requestHeadersText) :
             html`
-          <devtools-widget .widgetConfig=${
-            UI.Widget.widgetConfig(NetworkComponents.RequestHeaderSection.RequestHeaderSection, {
+          <devtools-widget ${widget(NetworkComponents.RequestHeaderSection.RequestHeaderSection, {
               request: input.request,
               toReveal: input.toReveal,
             })} jslog=${VisualLogging.section('request-headers')}></devtools-widget>`
@@ -392,8 +392,8 @@ function renderHeaderOverridesLink(input: ViewInput): Lit.LitTemplate {
 }
 
 function renderRawHeaders(text: string): Lit.TemplateResult {
-  return html`<div class="row raw-headers-row"><devtools-widget  class=raw-headers .widgetConfig=${
-      UI.Widget.widgetConfig(ShowMoreDetailsWidget, {text})}></devtools-widget></div>`;
+  return html`<div class="row raw-headers-row"><devtools-widget  class=raw-headers
+      ${widget(ShowMoreDetailsWidget, {text})}></devtools-widget></div>`;
 }
 
 function renderGeneralRow(

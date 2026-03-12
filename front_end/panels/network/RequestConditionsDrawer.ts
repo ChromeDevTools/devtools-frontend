@@ -24,7 +24,7 @@ import * as PanelUtils from '../utils/utils.js';
 import requestConditionsDrawerStyles from './requestConditionsDrawer.css.js';
 
 const {ref, live} = Directives;
-const {widgetConfig} = UI.Widget;
+const {widget} = UI.Widget;
 
 const UIStrings = {
   /**
@@ -175,7 +175,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
           ${i18nString(UIStrings.addRule)}
       </devtools-button>
     </div>
-    <devtools-widget .widgetConfig=${UI.Widget.widgetConfig(UI.Widget.VBox)}>
+    <devtools-widget ${widget(UI.Widget.VBox)}>
       ${input.list.element}
     </devtools-widget>
     `,
@@ -271,7 +271,7 @@ function renderItem(
     <devtools-widget
        class=conditions-selector
        title=${i18nString(UIStrings.requestConditionsLabel)}
-       .widgetConfig=${UI.Widget.widgetConfig(
+       ${widget(
          MobileThrottling.NetworkThrottlingSelector.NetworkThrottlingSelectorWidget, {
            variant:
              MobileThrottling.NetworkThrottlingSelector.NetworkThrottlingSelect.Variant.INDIVIDUAL_REQUEST_CONDITIONS,
@@ -282,7 +282,7 @@ function renderItem(
          })}></devtools-widget>
     <devtools-widget
       ?disabled=${!editable || !originalOrUpgradedURLPattern}
-      .widgetConfig=${widgetConfig(AffectedCountWidget, {condition, lookUpRequestCount})}></devtools-widget>`;
+      ${widget(AffectedCountWidget, {condition, lookUpRequestCount})}></devtools-widget>`;
   // clang-format on
 }
 

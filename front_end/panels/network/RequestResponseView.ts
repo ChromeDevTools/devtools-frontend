@@ -43,7 +43,7 @@ export interface ViewOutput {
   revealPosition: (position: SourceFrame.SourceFrame.RevealPosition) => Promise<void>;
 }
 
-const {widgetConfig, widgetRef, widget} = UI.Widget;
+const {widgetRef, widget} = UI.Widget;
 type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
 
 export const DEFAULT_VIEW: View = (input: ViewInput, output: ViewOutput, target: HTMLElement): void => {
@@ -62,7 +62,7 @@ export const DEFAULT_VIEW: View = (input: ViewInput, output: ViewOutput, target:
     // clang-format on
   } else if (input.renderAsText) {
     // clang-format off
-    widgetTemplate = html`<devtools-widget .widgetConfig=${widgetConfig(element => new SourceFrame.ResourceSourceFrame.SearchableContainer(
+    widgetTemplate = html`<devtools-widget ${widget(element => new SourceFrame.ResourceSourceFrame.SearchableContainer(
                         input.request, input.mimeType, element))}
                     ${widgetRef(SourceFrame.ResourceSourceFrame.SearchableContainer, widget => {output.revealPosition = widget.revealPosition.bind(widget);})}></devtools-widget>`;
     // clang-format on

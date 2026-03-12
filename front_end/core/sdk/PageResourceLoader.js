@@ -211,6 +211,26 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper {
             initiator.target;
         Host.userMetrics.developerResourceScheme(this.getDeveloperResourceScheme(parsedURL));
         if (eligibleForLoadFromTarget) {
+            let mustEnforceCSP = false;
+            const isHttp = parsedURL.scheme === 'http' || parsedURL.scheme === 'https';
+            if (isHttp && initiator.target) {
+                const networkManager = initiator.target.model(NetworkManager);
+                if (networkManager) {
+                    let status = await networkManager.getSecurityIsolationStatus(initiator.frameId);
+                    if (!status && initiator.frameId) {
+                        status = await networkManager.getSecurityIsolationStatus(null);
+                    }
+                    if (status?.csp) {
+                        for (const csp of status.csp) {
+                            const directives = csp.effectiveDirectives;
+                            if (directives.includes('connect-src') || directives.includes('default-src')) {
+                                mustEnforceCSP = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
             try {
                 Host.userMetrics.developerResourceLoaded(0 /* Host.UserMetrics.DeveloperResourceLoaded.LOAD_THROUGH_PAGE_VIA_TARGET */);
                 const result = await this.loadFromTarget(initiator.target, initiator.frameId, url, isBinary);
@@ -219,7 +239,7 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper {
             catch (e) {
                 if (e instanceof Error) {
                     Host.userMetrics.developerResourceLoaded(2 /* Host.UserMetrics.DeveloperResourceLoaded.LOAD_THROUGH_PAGE_FAILURE */);
-                    if (e.message.includes('CSP violation')) {
+                    if (mustEnforceCSP || e.message.includes('CSP violation')) {
                         return {
                             success: false,
                             content: '',

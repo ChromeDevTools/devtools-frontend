@@ -124,7 +124,7 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/application/preloading/components/UsedPreloadingView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-const { widgetConfig } = UI.Widget;
+const { widget } = UI.Widget;
 function renderSpeculativeLoadingStatusForThisPageSections({ kind, prefetch, prerenderLike, mismatchedData, attemptWithMismatchedHeaders }) {
     let badge;
     let basicMessage;
@@ -212,8 +212,7 @@ function renderMismatchedSections(data) {
       ${i18nString(UIStrings.preloadedURLs)}
     </devtools-report-section-header>
     <devtools-report-section jslog=${VisualLogging.section('preloaded-urls')}>
-      <devtools-widget .widgetConfig=${widgetConfig(MismatchedPreloadingGrid, { data })}>
-      </devtools-widget>
+      ${widget(MismatchedPreloadingGrid, { data })}
     </devtools-report-section>`;
     // clang-format on
 }

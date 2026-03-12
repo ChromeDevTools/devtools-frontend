@@ -45,10 +45,9 @@ export declare class AiAssistancePanel extends UI.Panel.Panel {
     #private;
     private view;
     static panelName: string;
-    constructor(view: View | undefined, { aidaClient, aidaAvailability, syncInfo }: {
+    constructor(view: View | undefined, { aidaClient, aidaAvailability }: {
         aidaClient: Host.AidaClient.AidaClient;
         aidaAvailability: Host.AidaClient.AidaAccessPreconditions;
-        syncInfo: Host.InspectorFrontendHostAPI.SyncInformation;
     });
     onResize(): void;
     static instance(opts?: {

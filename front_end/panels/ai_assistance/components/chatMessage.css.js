@@ -148,14 +148,6 @@ export default `/*
       gap: var(--sys-size-4);
       font: var(--sys-typescale-body4-bold);
 
-      img {
-        border: 0;
-        border-radius: var(--sys-shape-corner-full);
-        display: block;
-        height: var(--sys-size-9);
-        width: var(--sys-size-9);
-      }
-
       h2 {
         font: var(--sys-typescale-body4-bold);
       }

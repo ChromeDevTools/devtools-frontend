@@ -18,6 +18,7 @@ export declare class AiConversation {
     get isEmpty(): boolean;
     setContext(updateContext: ConversationContext<unknown> | null): void;
     get selectedContext(): ConversationContext<unknown> | undefined;
+    getPendingMultimodalInput(): MultimodalInput | undefined;
     getConversationMarkdown(): string;
     archiveConversation(): void;
     addHistoryItem(item: ResponseData): Promise<void>;

@@ -7,6 +7,7 @@ export declare class CPUThrottlingManager extends Common.ObjectWrapper.ObjectWra
     static instance(opts?: {
         forceNew: boolean | null;
     }): CPUThrottlingManager;
+    static removeInstance(): void;
     cpuThrottlingRate(): number;
     cpuThrottlingOption(): CPUThrottlingOption;
     setCPUThrottlingOption(option: CPUThrottlingOption): void;

@@ -888,7 +888,7 @@ var UIStrings2 = {
 };
 var str_2 = i18n3.i18n.registerUIStrings("panels/application/components/BackForwardCacheView.ts", UIStrings2);
 var i18nString = i18n3.i18n.getLocalizedString.bind(void 0, str_2);
-var { widgetConfig } = UI.Widget;
+var { widget } = UI.Widget;
 function renderMainFrameInformation(frame, frameTreeData, reasonToFramesMap, screenStatus, navigateAwayAndBack) {
   if (!frame) {
     return html`
@@ -1076,7 +1076,7 @@ function maybeRenderJavaScriptDetails(details) {
   const maxLengthForDisplayedURLs = 50;
   const rows = [html`<div>${i18nString(UIStrings2.filesPerIssue, { n: details.length })}</div>`];
   rows.push(...details.map((detail) => html`
-          <devtools-widget .widgetConfig=${widgetConfig(Components.Linkifier.ScriptLocationLink, {
+          ${widget(Components.Linkifier.ScriptLocationLink, {
     sourceURL: detail.url,
     lineNumber: detail.lineNumber,
     options: {
@@ -1085,7 +1085,7 @@ function maybeRenderJavaScriptDetails(details) {
       inlineFrameIndex: 0,
       maxLength: maxLengthForDisplayedURLs
     }
-  })}></devtools-widget>`));
+  })}`));
   return html`
       <div class="details-list">
         <devtools-expandable-list .data=${{ rows }}></devtools-expandable-list>

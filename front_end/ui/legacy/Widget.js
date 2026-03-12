@@ -33,6 +33,7 @@ import * as Geometry from '../../models/geometry/geometry.js';
 import * as Lit from '../../ui/lit/lit.js';
 import { appendStyle, deepActiveElement } from './DOMUtilities.js';
 import { cloneCustomElement, createShadowRootWithCoreStyles } from './UIUtils.js';
+const { html } = Lit;
 // Remember the original DOM mutation methods here, since we
 // will override them below to sanity check the Widget system.
 const originalAppendChild = Element.prototype.appendChild;
@@ -229,6 +230,23 @@ export class WidgetElement extends HTMLElement {
     }
 }
 customElements.define('devtools-widget', WidgetElement);
+export class WidgetDirective extends Lit.Directive.Directive {
+    constructor(partInfo) {
+        super(partInfo);
+        if (partInfo.type !== Lit.Directive.PartType.CHILD) {
+            throw new Error('Widget directive must be used as a child directive.');
+        }
+    }
+    render(widgetClass, widgetParams) {
+        // We use `repeat` to force Lit to recreate the `<devtools-widget>` DOM node when the `widgetClass` changes.
+        // If we didn't use `repeat` and used `html` directly, Lit would reuse the same `<devtools-widget>` instance
+        // even if `widgetClass` changed (for example, in a ternary operator `condition ? widget(A) : widget(B)`).
+        // This is because the template string is the same, so Lit reuses the DOM node and only updates `.widgetConfig`,
+        // which does not properly recreate the widget instance.
+        return Lit.Directives.repeat([widgetClass], () => widgetClass, () => html `<devtools-widget .widgetConfig=${widgetConfig(widgetClass, widgetParams)}></devtools-widget>`);
+    }
+}
+export const widget = Lit.Directive.directive(WidgetDirective);
 export function widgetRef(type, callback) {
     return Lit.Directives.ref((e) => {
         if (!(e instanceof HTMLElement)) {

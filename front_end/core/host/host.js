@@ -1814,6 +1814,14 @@ var UserMetrics = class {
   consoleInsightShortTeaserGenerated(timeInMilliseconds) {
     InspectorFrontendHostInstance.recordPerformanceHistogram("DevTools.Insights.ShortTeaserGenerationTime", timeInMilliseconds);
   }
+  extensionEvalTarget(target) {
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(
+      "DevTools.ExtensionEvalTarget",
+      target,
+      3
+      /* ExtensionEvalTarget.MAX_VALUE */
+    );
+  }
 };
 var Action;
 (function(Action2) {

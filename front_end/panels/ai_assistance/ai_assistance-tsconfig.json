@@ -45,6 +45,7 @@
     "../../../../../../front_end/panels/ai_assistance/components/ExploreWidget.ts",
     "../../../../../../front_end/panels/ai_assistance/components/MarkdownRendererWithCodeBlock.ts",
     "../../../../../../front_end/panels/ai_assistance/components/PerformanceAgentMarkdownRenderer.ts",
+    "../../../../../../front_end/panels/ai_assistance/components/StylingAgentMarkdownRenderer.ts",
     "../../../../../../front_end/panels/ai_assistance/components/WalkthroughView.ts",
     "../../../../../../front_end/legacy/legacy-defs.d.ts",
     "../../../../../../front_end/global_typings/global_defs.d.ts",

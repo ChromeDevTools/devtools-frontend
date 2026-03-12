@@ -21,7 +21,7 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as ApplicationComponents from './components/components.js';
 import frameDetailsReportViewStyles from './frameDetailsReportView.css.js';
 import { OriginTrialTreeView } from './OriginTrialTreeView.js';
-const { widgetConfig } = UI.Widget;
+const { widget, widgetConfig } = UI.Widget;
 const UIStrings = {
     /**
      * @description Section header in the Frame Details view
@@ -256,12 +256,11 @@ const DEFAULT_VIEW = (input, _output, target) => {
       ${renderIsolationSection(input)}
       ${renderApiAvailabilitySection(input.frame)}
       ${renderOriginTrial(input.trials)}
-      ${input.permissionsPolicies ? html `
-          <devtools-widget .widgetConfig=${widgetConfig(ApplicationComponents.PermissionsPolicySection.PermissionsPolicySection, {
-        policies: input.permissionsPolicies,
-        showDetails: false
-    })}>
-          </devtools-widget>` : nothing}
+      ${input.permissionsPolicies ?
+        widget(ApplicationComponents.PermissionsPolicySection.PermissionsPolicySection, {
+            policies: input.permissionsPolicies,
+            showDetails: false
+        }) : nothing}
       ${input.protocolMonitorExperimentEnabled ? renderAdditionalInfoSection(input.frame) : nothing}
     </devtools-report>
   `, target);
@@ -372,10 +371,7 @@ function renderOwnerElement(linkTargetDOMNode) {
         <devtools-report-key>${i18nString(UIStrings.ownerElement)}</devtools-report-key>
         <devtools-report-value class="without-min-width">
           <div class="inline-items">
-            <devtools-widget .widgetConfig=${widgetConfig(PanelCommon.DOMLinkifier.DOMNodeLink, {
-            node: linkTargetDOMNode
-        })}>
-            </devtools-widget>
+            ${widget(PanelCommon.DOMLinkifier.DOMNodeLink, { node: linkTargetDOMNode })}
           </div>
         </devtools-report-value>
       `;
@@ -390,8 +386,7 @@ function maybeRenderCreationStacktrace(stackTrace) {
         return html `
         <devtools-report-key title=${i18nString(UIStrings.creationStackTraceExplanation)}>${i18nString(UIStrings.creationStackTrace)}</devtools-report-key>
         <devtools-report-value jslog=${VisualLogging.section('frame-creation-stack-trace')}>
-          <devtools-widget .widgetConfig=${UI.Widget.widgetConfig(Components.JSPresentationUtils.StackTracePreviewContent, { stackTrace, options: { expandable: true } })}>
-          </devtools-widget>
+          ${widget(Components.JSPresentationUtils.StackTracePreviewContent, { stackTrace, options: { expandable: true } })}
         </devtools-report-value>
       `;
         // clang-format on
@@ -446,10 +441,7 @@ function maybeRenderCreatorAdScriptAncestry(adFrameType, target, adScriptAncestr
         // Disabled until https://crbug.com/1079231 is fixed.
         // clang-format off
         return html `<div>
-      <devtools-widget .widgetConfig=${widgetConfig(Components.Linkifier.ScriptLocationLink, {
-            target, scriptId: adScriptId.scriptId, options: { jslogContext: 'ad-script' }
-        })}>
-      </devtools-widget>
+      ${widget(Components.Linkifier.ScriptLocationLink, { target, scriptId: adScriptId.scriptId, options: { jslogContext: 'ad-script' } })}
     </div>`;
         // clang-format on
     });

@@ -1841,6 +1841,7 @@ var knownContextValues = /* @__PURE__ */ new Set([
   "greendev-artifact-viewer-enabled",
   "greendev-breakpoint-debugger-agent-enabled",
   "greendev-copy-to-gemini-enabled",
+  "greendev-emulation-capabilities-enabled",
   "greendev-in-devtools-floaty-enabled",
   "greendev-inline-widgets-enabled",
   "greendev-prototypes",
@@ -4493,9 +4494,9 @@ function parseJsLog(jslog) {
     checkContextValue(context);
     config.context = context;
   }
-  const parent2 = getComponent("parent:");
-  if (parent2) {
-    config.parent = parent2;
+  const parent = getComponent("parent:");
+  if (parent) {
+    config.parent = parent;
   }
   const trackString = getComponent("track:");
   if (trackString) {
@@ -4552,17 +4553,17 @@ function nextVeId() {
   crypto.getRandomValues(result);
   return Number(result[0] >> 64n - 53n);
 }
-function getOrCreateLoggingState(loggable, config, parent2) {
+function getOrCreateLoggingState(loggable, config, parent) {
   if (config.parent && parentProviders.has(config.parent) && loggable instanceof Element) {
-    parent2 = parentProviders.get(config.parent)?.(loggable);
-    while (parent2 instanceof Element && !needsLogging(parent2)) {
-      parent2 = parent2.parentElementOrShadowHost() ?? void 0;
+    parent = parentProviders.get(config.parent)?.(loggable);
+    while (parent instanceof Element && !needsLogging(parent)) {
+      parent = parent.parentElementOrShadowHost() ?? void 0;
     }
   }
   if (state.has(loggable)) {
     const currentState = state.get(loggable);
-    if (parent2 && currentState.parent !== getLoggingState(parent2)) {
-      currentState.parent = getLoggingState(parent2);
+    if (parent && currentState.parent !== getLoggingState(parent)) {
+      currentState.parent = getLoggingState(parent);
     }
     return currentState;
   }
@@ -4571,7 +4572,7 @@ function getOrCreateLoggingState(loggable, config, parent2) {
     processed: false,
     config,
     veid: nextVeId(),
-    parent: parent2 ? getLoggingState(parent2) : null,
+    parent: parent ? getLoggingState(parent) : null,
     size: new DOMRect(0, 0, 0, 0)
   };
   state.set(loggable, loggableState);
@@ -4589,8 +4590,8 @@ function registerParentProvider(name, provider) {
 }
 var PARENT = Symbol("veParent");
 registerParentProvider("mapped", (e) => e[PARENT]);
-function setMappedParent(element, parent2) {
-  element[PARENT] = parent2;
+function setMappedParent(element, parent) {
+  element[PARENT] = parent;
 }
 
 // gen/front_end/ui/visual_logging/Debugging.js
@@ -4598,7 +4599,6 @@ var veDebuggingEnabled = false;
 var debugOverlay = null;
 var debugPopover = null;
 var highlightedElements = [];
-var nonDomDebugElements = /* @__PURE__ */ new WeakMap();
 var onInspect = void 0;
 function ensureDebugOverlay() {
   if (!debugOverlay) {
@@ -4672,8 +4672,6 @@ function processForDebugging(loggable) {
   }
   if (loggable instanceof HTMLElement) {
     processElementForDebugging(loggable, loggingState);
-  } else {
-    processNonDomLoggableForDebugging(loggable, loggingState);
   }
 }
 function showDebugPopover(content, rect) {
@@ -4849,9 +4847,9 @@ function processImpressionsForIntuitiveDebugLog(states) {
     if (!state2.parent || !impressions.has(state2.parent?.veid)) {
       entry.parent = state2.parent?.veid;
     } else {
-      const parent2 = impressions.get(state2.parent?.veid);
-      parent2.children = parent2.children || [];
-      parent2.children.push(entry);
+      const parent = impressions.get(state2.parent?.veid);
+      parent.children = parent.children || [];
+      parent.children.push(entry);
     }
   }
   const entries = [...impressions.values()].filter((i) => "parent" in i);
@@ -4903,33 +4901,6 @@ function processImpressionsForAdHocAnalysisDebugLog(states) {
     const entry = { ...buildVe(state2), interactions: [], time: Date.now() - sessionStartTime };
     adHocAnalysisEntries.set(state2.veid, entry);
     maybeLogDebugEvent(entry);
-  }
-}
-function processNonDomLoggableForDebugging(loggable, loggingState) {
-  let debugElement = nonDomDebugElements.get(loggable);
-  if (!debugElement) {
-    debugElement = document.createElement("div");
-    debugElement.classList.add("ve-debug");
-    debugElement.style.background = "black";
-    debugElement.style.color = "white";
-    debugElement.style.zIndex = "100000";
-    debugElement.textContent = debugString(loggingState.config);
-    nonDomDebugElements.set(loggable, debugElement);
-    setTimeout(() => {
-      if (!loggingState.size?.width || !loggingState.size?.height) {
-        debugElement?.parentElement?.removeChild(debugElement);
-        nonDomDebugElements.delete(loggable);
-      }
-    }, 1e4);
-  }
-  const parentDebugElement = parent instanceof HTMLElement ? parent : nonDomDebugElements.get(parent) || debugPopover;
-  assertNotNullOrUndefined(parentDebugElement);
-  if (!parentDebugElement.classList.contains("ve-debug")) {
-    debugElement.style.position = "absolute";
-    parentDebugElement.insertBefore(debugElement, parentDebugElement.firstChild);
-  } else {
-    debugElement.style.marginLeft = "10px";
-    parentDebugElement.appendChild(debugElement);
   }
 }
 function elementKey(config) {
@@ -5065,11 +5036,11 @@ var StateFlowElementsByArea = class {
   }
   getArea(e) {
     let area = (e.width || 0) * (e.height || 0);
-    const parent2 = e.parent ? this.#data.get(e.parent?.veid) : null;
-    if (!parent2) {
+    const parent = e.parent ? this.#data.get(e.parent?.veid) : null;
+    if (!parent) {
       return area;
     }
-    const parentArea = this.getArea(parent2);
+    const parentArea = this.getArea(parent);
     if (area > parentArea) {
       area = parentArea;
     }
@@ -5308,9 +5279,9 @@ function getDomState(documents2) {
   const loggables = [];
   const shadowRoots = [];
   const queue = [];
-  const enqueue = (children, parent2) => {
+  const enqueue = (children, parent) => {
     for (const child of children) {
-      queue.push({ element: child, parent: parent2 });
+      queue.push({ element: child, parent });
     }
   };
   for (const document2 of documents2) {
@@ -5327,18 +5298,18 @@ function getDomState(documents2) {
     if (element.localName === "template") {
       continue;
     }
-    let { parent: parent2 } = top;
+    let { parent } = top;
     if (needsLogging(element)) {
-      loggables.push({ element, parent: parent2 });
-      parent2 = element;
+      loggables.push({ element, parent });
+      parent = element;
     }
     if (element.localName === "slot" && element.assignedElements().length) {
-      enqueue(element.assignedElements(), parent2);
+      enqueue(element.assignedElements(), parent);
     } else if (element.shadowRoot) {
       shadowRoots.push(element.shadowRoot);
-      enqueue(element.shadowRoot.children, parent2);
+      enqueue(element.shadowRoot.children, parent);
     } else {
-      enqueue(element.children, parent2);
+      enqueue(element.children, parent);
     }
   }
   return { loggables, shadowRoots };
@@ -5596,22 +5567,22 @@ __export(NonDomState_exports, {
   unregisterLoggables: () => unregisterLoggables
 });
 var registry = /* @__PURE__ */ new WeakMap();
-function getLoggables(parent2) {
-  return registry.get(parent2 || nullParent) || [];
+function getLoggables(parent) {
+  return registry.get(parent || nullParent) || [];
 }
-function registerLoggable(loggable, config, parent2, size) {
-  const values = getLoggables(parent2);
-  values.push({ loggable, config, parent: parent2, size });
-  registry.set(parent2 || nullParent, values);
+function registerLoggable(loggable, config, parent, size) {
+  const values = getLoggables(parent);
+  values.push({ loggable, config, parent, size });
+  registry.set(parent || nullParent, values);
 }
-function hasNonDomLoggables(parent2) {
-  return registry.has(parent2 || nullParent);
+function hasNonDomLoggables(parent) {
+  return registry.has(parent || nullParent);
 }
-function getNonDomLoggables(parent2) {
-  return [...getLoggables(parent2)];
+function getNonDomLoggables(parent) {
+  return [...getLoggables(parent)];
 }
-function unregisterLoggables(parent2) {
-  registry.delete(parent2 || nullParent);
+function unregisterLoggables(parent) {
+  registry.delete(parent || nullParent);
 }
 function unregisterAllLoggables() {
   registry = /* @__PURE__ */ new WeakMap();
@@ -5735,12 +5706,12 @@ async function process() {
   const visibleLoggables = [];
   observeMutations(shadowRoots);
   const nonDomRoots = [void 0];
-  for (const { element, parent: parent2 } of loggables) {
-    const loggingState = getOrCreateLoggingState(element, getLoggingConfig(element), parent2);
+  for (const { element, parent } of loggables) {
+    const loggingState = getOrCreateLoggingState(element, getLoggingConfig(element), parent);
     if (!loggingState.impressionLogged) {
       const overlap = visibleOverlap(element, viewportRectFor(element));
       const visibleSelectOption = element.tagName === "OPTION" && loggingState.parent?.selectOpen;
-      const visible = overlap && element.checkVisibility({ checkVisibilityCSS: true }) && (!parent2 || loggingState.parent?.impressionLogged);
+      const visible = overlap && element.checkVisibility({ checkVisibilityCSS: true }) && (!parent || loggingState.parent?.impressionLogged);
       if (visible || visibleSelectOption) {
         if (overlap) {
           loggingState.size = overlap;
@@ -5849,8 +5820,8 @@ async function process() {
   }
   for (let i = 0; i < nonDomRoots.length; ++i) {
     const root = nonDomRoots[i];
-    for (const { loggable, config, parent: parent2, size } of getNonDomLoggables(root)) {
-      const loggingState = getOrCreateLoggingState(loggable, config, parent2);
+    for (const { loggable, config, parent, size } of getNonDomLoggables(root)) {
+      const loggingState = getOrCreateLoggingState(loggable, config, parent);
       if (loggingState.impressionLogged) {
         continue;
       }

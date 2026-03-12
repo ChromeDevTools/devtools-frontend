@@ -10,7 +10,7 @@ import { Directives, html, nothing, render } from '../../ui/lit/lit.js';
 import originTrialTokenRowsStyles from './originTrialTokenRows.css.js';
 import originTrialTreeViewStyles from './originTrialTreeView.css.js';
 const { classMap } = Directives;
-const { widgetConfig } = UI.Widget;
+const { widget } = UI.Widget;
 const UIStrings = {
     /**
      * @description Label for the 'origin' field in a parsed Origin Trial Token.
@@ -105,8 +105,7 @@ function renderTokenNode(token) {
 function renderTokenDetails(token) {
     return html `
     <li role="treeitem">
-      <devtools-widget .widgetConfig=${widgetConfig(OriginTrialTokenRows, { data: token })}>
-      </devtools-widget>
+      ${widget(OriginTrialTokenRows, { data: token })}
     </li>`;
 }
 function renderTokenDetailsNodes(token) {

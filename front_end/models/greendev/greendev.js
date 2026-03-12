@@ -39,7 +39,13 @@ var Prototypes = class _Prototypes {
       "Local"
       /* Common.Settings.SettingStorageType.LOCAL */
     );
-    return { aiAnnotations, copyToGemini, breakpointDebuggerAgent };
+    const emulationCapabilities = settings.createSetting(
+      "greendev-emulation-capabilities-enabled",
+      false,
+      "Local"
+      /* Common.Settings.SettingStorageType.LOCAL */
+    );
+    return { aiAnnotations, copyToGemini, breakpointDebuggerAgent, emulationCapabilities };
   }
 };
 export {

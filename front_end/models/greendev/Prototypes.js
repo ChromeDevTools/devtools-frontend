@@ -26,7 +26,8 @@ export class Prototypes {
         const aiAnnotations = settings.createSetting('greendev-ai-annotations-enabled', false, "Local" /* Common.Settings.SettingStorageType.LOCAL */);
         const copyToGemini = settings.createSetting('greendev-copy-to-gemini-enabled', false, "Local" /* Common.Settings.SettingStorageType.LOCAL */);
         const breakpointDebuggerAgent = settings.createSetting('greendev-breakpoint-debugger-agent-enabled', false, "Local" /* Common.Settings.SettingStorageType.LOCAL */);
-        return { aiAnnotations, copyToGemini, breakpointDebuggerAgent };
+        const emulationCapabilities = settings.createSetting('greendev-emulation-capabilities-enabled', false, "Local" /* Common.Settings.SettingStorageType.LOCAL */);
+        return { aiAnnotations, copyToGemini, breakpointDebuggerAgent, emulationCapabilities };
     }
 }
 //# sourceMappingURL=Prototypes.js.map

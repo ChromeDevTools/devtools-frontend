@@ -65,6 +65,7 @@ export async function deinitializeGlobalVars() {
     deinitializeGlobalLocaleVars();
     Logs.NetworkLog.NetworkLog.removeInstance();
     SDK.TargetManager.TargetManager.removeInstance();
+    SDK.CPUThrottlingManager.CPUThrottlingManager.removeInstance();
     SDK.FrameManager.FrameManager.removeInstance();
     Common.Settings.Settings.removeInstance();
     Common.Revealer.RevealerRegistry.removeInstance();

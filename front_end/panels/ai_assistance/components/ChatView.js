@@ -14,6 +14,7 @@ import { ChatMessage } from './ChatMessage.js';
 import chatViewStyles from './chatView.css.js';
 export { ChatInput } from './ChatInput.js';
 const { ref, repeat, classMap, } = Directives;
+const { widget } = UI.Widget;
 /*
 * Strings that don't need to be translated at this time.
 */
@@ -45,12 +46,11 @@ const DEFAULT_VIEW = (input, output, target) => {
         <main @scroll=${input.handleScroll} ${ref(element => { output.mainElement = element; })}>
           ${input.messages.length > 0 ? html `
             <div class="messages-container" ${ref(input.handleMessageContainerRef)}>
-              ${repeat(input.messages, message => html `<devtools-widget .widgetConfig=${UI.Widget.widgetConfig(ChatMessage, {
+              ${repeat(input.messages, message => widget(ChatMessage, {
         message,
         isLoading: input.isLoading && input.messages.at(-1) === message,
         isReadOnly: input.isReadOnly,
         canShowFeedbackForm: input.canShowFeedbackForm,
-        userInfo: input.userInfo,
         markdownRenderer: input.markdownRenderer,
         isLastMessage: input.messages.at(-1) === message,
         onSuggestionClick: input.handleSuggestionClick,
@@ -59,13 +59,11 @@ const DEFAULT_VIEW = (input, output, target) => {
         walkthrough: {
             ...input.walkthrough,
         }
-    })}></devtools-widget>`)}
-              ${input.isLoading ? nothing : html `<devtools-widget
-                .widgetConfig=${UI.Widget.widgetConfig(PatchWidget, {
+    }))}
+              ${input.isLoading ? nothing : widget(PatchWidget, {
         changeSummary: input.changeSummary ?? '',
         changeManager: input.changeManager,
     })}
-              ></devtools-widget>`}
             </div>
           ` : html `
             <div class="empty-state-container">
@@ -77,7 +75,7 @@ const DEFAULT_VIEW = (input, output, target) => {
                 </div>
                 ${AiAssistanceModel.AiUtils.isGeminiBranding() ?
         html `
-                    <h1 class='greeting'>Hello${input.accountGivenName ? `, ${input.accountGivenName}` : ''}</h1>
+                    <h1 class='greeting'>Hello</h1>
                     <p class='cta'>${lockedString(UIStringsNotTranslate.emptyStateTextGemini)}</p>
                   ` : html `<h1>${lockedString(UIStringsNotTranslate.emptyStateText)}</h1>`}
               </div>
@@ -254,7 +252,6 @@ export class ChatView extends HTMLElement {
     #render() {
         this.#view({
             ...this.#props,
-            accountGivenName: this.#props.userInfo.accountGivenName ?? '',
             handleScroll: this.#handleScroll,
             handleSuggestionClick: this.#handleSuggestionClick,
             handleMessageContainerRef: this.#handleMessageContainerRef,

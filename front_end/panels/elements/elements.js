@@ -12607,7 +12607,8 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
       showSlotAdorner: Boolean(this.nodeInternal.assignedSlot) && !this.isClosingTag(),
       showStartingStyleAdorner: this.nodeInternal.affectedByStartingStyles() && !this.isClosingTag(),
       startingStyleAdornerActive: this.#startingStyleAdornerActive,
-      onStartingStyleAdornerClick: (event) => this.#onStartingStyleAdornerClick(event),
+      onStartingStyleAdornerClick: this.treeOutline?.disableEdits ? () => {
+      } : (event) => this.#onStartingStyleAdornerClick(event),
       onSlotAdornerClick: () => {
         if (this.nodeInternal.assignedSlot) {
           const deferredNode = this.nodeInternal.assignedSlot.deferredNode;
@@ -12617,15 +12618,23 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
         }
       },
       topLayerIndex: this.node().topLayerIndex(),
-      onViewSourceAdornerClick: this.revealHTMLInSources.bind(this),
+      onViewSourceAdornerClick: this.treeOutline?.disableEdits ? () => {
+      } : this.revealHTMLInSources.bind(this),
       onGutterClick: this.showContextMenu.bind(this),
-      onContainerAdornerClick: (event) => this.#onContainerAdornerClick(event),
-      onFlexAdornerClick: (event) => this.#onFlexAdornerClick(event),
-      onGridAdornerClick: (event) => this.#onGridAdornerClick(event),
-      onMediaAdornerClick: (event) => this.#onMediaAdornerClick(event),
-      onPopoverAdornerClick: (event) => this.#onPopoverAdornerClick(event),
-      onScrollSnapAdornerClick: (event) => this.#onScrollSnapAdornerClick(event),
-      onTopLayerAdornerClick: () => {
+      onContainerAdornerClick: this.treeOutline?.disableEdits ? () => {
+      } : (event) => this.#onContainerAdornerClick(event),
+      onFlexAdornerClick: this.treeOutline?.disableEdits ? () => {
+      } : (event) => this.#onFlexAdornerClick(event),
+      onGridAdornerClick: this.treeOutline?.disableEdits ? () => {
+      } : (event) => this.#onGridAdornerClick(event),
+      onMediaAdornerClick: this.treeOutline?.disableEdits ? () => {
+      } : (event) => this.#onMediaAdornerClick(event),
+      onPopoverAdornerClick: this.treeOutline?.disableEdits ? () => {
+      } : (event) => this.#onPopoverAdornerClick(event),
+      onScrollSnapAdornerClick: this.treeOutline?.disableEdits ? () => {
+      } : (event) => this.#onScrollSnapAdornerClick(event),
+      onTopLayerAdornerClick: this.treeOutline?.disableEdits ? () => {
+      } : () => {
         if (!this.treeOutline) {
           return;
         }
@@ -12633,8 +12642,8 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
       },
       isHovered: this.#hovered,
       isSelected: this.selected,
-      showAiButton: Boolean(this.#hovered || this.selected) && this.node().nodeType() === Node.ELEMENT_NODE && UI14.ActionRegistry.ActionRegistry.instance().hasAction("freestyler.elements-floating-button"),
-      aiButtonTitle: UI14.ActionRegistry.ActionRegistry.instance().hasAction("freestyler.elements-floating-button") ? UI14.ActionRegistry.ActionRegistry.instance().getAction("freestyler.elements-floating-button").title() : void 0,
+      showAiButton: Boolean(this.#hovered || this.selected) && this.node().nodeType() === Node.ELEMENT_NODE && this.isAiButtonEnabled() && this.treeOutline?.showAIButton,
+      aiButtonTitle: this.isAiButtonEnabled() ? UI14.ActionRegistry.ActionRegistry.instance().getAction("freestyler.elements-floating-button").title() : void 0,
       onAiButtonClick: (ev) => {
         ev.stopPropagation();
         this.select(true, false);
@@ -13130,6 +13139,9 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
   }
   populateScrollIntoView(contextMenu) {
     contextMenu.viewSection().appendItem(i18nString10(UIStrings11.scrollIntoView), () => this.nodeInternal.scrollIntoView(), { jslogContext: "scroll-into-view" });
+  }
+  isAiButtonEnabled() {
+    return UI14.ActionRegistry.ActionRegistry.instance().hasAction("freestyler.elements-floating-button");
   }
   async populateTextContextMenu(contextMenu, textNode) {
     if (!this.editing) {
@@ -14632,7 +14644,7 @@ var elementsTreeOutlineByDOMModel = /* @__PURE__ */ new WeakMap();
 var populatedTreeElements = /* @__PURE__ */ new WeakSet();
 var DEFAULT_VIEW5 = (input, output, target) => {
   if (!output.elementsTreeOutline) {
-    output.elementsTreeOutline = new ElementsTreeOutline(input.omitRootDOMNode, input.selectEnabled, input.hideGutter);
+    output.elementsTreeOutline = new ElementsTreeOutline(input.omitRootDOMNode, input.selectEnabled, input.hideGutter, input.maxTreeDepth, input.enableContextMenu, input.showComments, input.showAIButton, input.disableEdits, input.expandRoot);
     output.elementsTreeOutline.addEventListener(ElementsTreeOutline.Events.SelectedNodeChanged, input.onSelectedNodeChanged, void 0);
     output.elementsTreeOutline.addEventListener(ElementsTreeOutline.Events.ElementsTreeUpdated, input.onElementsTreeUpdated, void 0);
     output.elementsTreeOutline.addEventListener(UI17.TreeOutline.Events.ElementExpanded, input.onElementExpanded, void 0);
@@ -14705,6 +14717,11 @@ var DOMTreeWidget = class extends UI17.Widget.Widget {
   };
   onElementCollapsed = () => {
   };
+  #maxTreeDepth;
+  #enableContextMenu = true;
+  #showComments = true;
+  #showAIButton = true;
+  #disableEdits = false;
   #visible = false;
   #visibleWidth;
   #wrap = false;
@@ -14724,6 +14741,41 @@ var DOMTreeWidget = class extends UI17.Widget.Widget {
   }
   get rootDOMNode() {
     return this.#viewOutput.elementsTreeOutline?.rootDOMNode ?? null;
+  }
+  get maxTreeDepth() {
+    return this.#maxTreeDepth;
+  }
+  set maxTreeDepth(maxTreeDepth) {
+    this.#maxTreeDepth = maxTreeDepth;
+    this.performUpdate();
+  }
+  get enableContextMenu() {
+    return this.#enableContextMenu;
+  }
+  set enableContextMenu(enableContextMenu) {
+    this.#enableContextMenu = enableContextMenu;
+    this.performUpdate();
+  }
+  get showComments() {
+    return this.#showComments;
+  }
+  set showComments(showComments) {
+    this.#showComments = showComments;
+    this.performUpdate();
+  }
+  get showAIButton() {
+    return this.#showAIButton;
+  }
+  set showAIButton(showAIButton) {
+    this.#showAIButton = showAIButton;
+    this.performUpdate();
+  }
+  get disableEdits() {
+    return this.#disableEdits;
+  }
+  set disableEdits(disableEdits) {
+    this.#disableEdits = disableEdits;
+    this.performUpdate();
   }
   #currentHighlightedNode = null;
   #view;
@@ -14796,6 +14848,11 @@ var DOMTreeWidget = class extends UI17.Widget.Widget {
       omitRootDOMNode: this.omitRootDOMNode,
       selectEnabled: this.selectEnabled,
       hideGutter: this.hideGutter,
+      maxTreeDepth: this.#maxTreeDepth,
+      enableContextMenu: this.#enableContextMenu,
+      showComments: this.#showComments,
+      showAIButton: this.#showAIButton,
+      disableEdits: this.#disableEdits,
       visibleWidth: this.#visibleWidth,
       visible: this.#visible,
       wrap: this.#wrap,
@@ -14956,7 +15013,13 @@ var ElementsTreeOutline = class _ElementsTreeOutline extends Common10.ObjectWrap
   #issuesManager;
   #popupHelper;
   #nodeElementToIssues = /* @__PURE__ */ new Map();
-  constructor(omitRootDOMNode, selectEnabled, hideGutter) {
+  maxTreeDepth;
+  enableContextMenu;
+  showComments;
+  showAIButton;
+  disableEdits;
+  expandRoot;
+  constructor(omitRootDOMNode, selectEnabled, hideGutter, maxTreeDepth, enableContextMenu, showComments, showAIButton, disableEdits, expandRoot) {
     super();
     this.#issuesManager = IssuesManager2.IssuesManager.IssuesManager.instance();
     this.#issuesManager.addEventListener("IssueAdded", this.#onIssueAdded, this);
@@ -14966,25 +15029,33 @@ var ElementsTreeOutline = class _ElementsTreeOutline extends Common10.ObjectWrap
     const outlineDisclosureElement = this.shadowRoot.createChild("div", "elements-disclosure");
     this.elementInternal = this.element;
     this.elementInternal.classList.add("elements-tree-outline", "source-code");
-    if (hideGutter) {
-      this.elementInternal.classList.add("elements-hide-gutter");
-    }
+    this.maxTreeDepth = maxTreeDepth;
+    this.enableContextMenu = enableContextMenu ?? true;
+    this.showComments = showComments ?? true;
+    this.showAIButton = showAIButton ?? true;
+    this.disableEdits = disableEdits ?? false;
+    this.expandRoot = expandRoot ?? false;
+    this.elementInternal.classList.toggle("elements-hide-gutter", hideGutter);
     UI17.ARIAUtils.setLabel(this.elementInternal, i18nString12(UIStrings13.pageDom));
     this.elementInternal.addEventListener("focusout", this.onfocusout.bind(this), false);
     this.elementInternal.addEventListener("mousedown", this.onmousedown.bind(this), false);
     this.elementInternal.addEventListener("mousemove", this.onmousemove.bind(this), false);
     this.elementInternal.addEventListener("mouseleave", this.onmouseleave.bind(this), false);
-    this.elementInternal.addEventListener("dragstart", this.ondragstart.bind(this), false);
-    this.elementInternal.addEventListener("dragover", this.ondragover.bind(this), false);
-    this.elementInternal.addEventListener("dragleave", this.ondragleave.bind(this), false);
-    this.elementInternal.addEventListener("drop", this.ondrop.bind(this), false);
-    this.elementInternal.addEventListener("dragend", this.ondragend.bind(this), false);
-    this.elementInternal.addEventListener("contextmenu", this.contextMenuEventFired.bind(this), false);
-    this.elementInternal.addEventListener("clipboard-beforecopy", this.onBeforeCopy.bind(this), false);
-    this.elementInternal.addEventListener("clipboard-copy", this.onCopyOrCut.bind(this, false), false);
-    this.elementInternal.addEventListener("clipboard-cut", this.onCopyOrCut.bind(this, true), false);
-    this.elementInternal.addEventListener("clipboard-paste", this.onPaste.bind(this), false);
     this.elementInternal.addEventListener("keydown", this.onKeyDown.bind(this), false);
+    if (!this.disableEdits) {
+      this.elementInternal.addEventListener("dragstart", this.ondragstart.bind(this), false);
+      this.elementInternal.addEventListener("dragover", this.ondragover.bind(this), false);
+      this.elementInternal.addEventListener("dragleave", this.ondragleave.bind(this), false);
+      this.elementInternal.addEventListener("drop", this.ondrop.bind(this), false);
+      this.elementInternal.addEventListener("dragend", this.ondragend.bind(this), false);
+      this.elementInternal.addEventListener("clipboard-beforecopy", this.onBeforeCopy.bind(this), false);
+      this.elementInternal.addEventListener("clipboard-copy", this.onCopyOrCut.bind(this, false), false);
+      this.elementInternal.addEventListener("clipboard-cut", this.onCopyOrCut.bind(this, true), false);
+      this.elementInternal.addEventListener("clipboard-paste", this.onPaste.bind(this), false);
+    }
+    if (this.enableContextMenu) {
+      this.elementInternal.addEventListener("contextmenu", this.contextMenuEventFired.bind(this), false);
+    }
     outlineDisclosureElement.appendChild(this.elementInternal);
     this.element = shadowContainer;
     this.contentElement.setAttribute("jslog", `${VisualLogging9.tree("elements")}`);
@@ -15010,8 +15081,18 @@ var ElementsTreeOutline = class _ElementsTreeOutline extends Common10.ObjectWrap
     this.updateRecords = /* @__PURE__ */ new Map();
     this.treeElementsBeingUpdated = /* @__PURE__ */ new Set();
     this.decoratorExtensions = null;
-    this.showHTMLCommentsSetting = Common10.Settings.Settings.instance().moduleSetting("show-html-comments");
-    this.showHTMLCommentsSetting.addChangeListener(this.onShowHTMLCommentsChange.bind(this));
+    if (this.showComments) {
+      this.showHTMLCommentsSetting = Common10.Settings.Settings.instance().moduleSetting("show-html-comments");
+      this.showHTMLCommentsSetting.addChangeListener(this.onShowHTMLCommentsChange.bind(this));
+    } else {
+      this.showHTMLCommentsSetting = {
+        get: () => false,
+        addChangeListener: () => {
+        },
+        removeChangeListener: () => {
+        }
+      };
+    }
     this.setUseLightSelectionColor(true);
     this.#popupHelper = new UI17.PopoverHelper.PopoverHelper(this.elementInternal, (event) => {
       const hoveredNode = event.composedPath()[0];
@@ -15322,6 +15403,9 @@ var ElementsTreeOutline = class _ElementsTreeOutline extends Common10.ObjectWrap
     if (this.includeRootDOMNode) {
       const treeElement = this.createElementTreeElement(this.rootDOMNode);
       this.appendChild(treeElement);
+      if (this.expandRoot) {
+        treeElement.expand();
+      }
     } else {
       const children = this.visibleChildren(this.rootDOMNode);
       for (const child of children) {
@@ -15979,6 +16063,29 @@ var ElementsTreeOutline = class _ElementsTreeOutline extends Common10.ObjectWrap
       container.revealInTopLayer(node);
     }
   }
+  isMaxDepthReached(node) {
+    if (this.maxTreeDepth === void 0 || this.maxTreeDepth === Infinity) {
+      return false;
+    }
+    if (node.nodeType() === Node.DOCUMENT_NODE || node.isShadowRoot()) {
+      return false;
+    }
+    const maxDepth = this.maxTreeDepth;
+    let depth = 0;
+    let current = node;
+    const rootNode = this.rootDOMNode;
+    while (current && current !== rootNode) {
+      depth++;
+      current = current.parentNode;
+    }
+    if (this.includeRootDOMNode) {
+      depth++;
+    }
+    if (depth >= maxDepth) {
+      return true;
+    }
+    return false;
+  }
   createElementTreeElement(node, isClosingTag) {
     if (node instanceof Array) {
       return new AdoptedStyleSheetSetTreeElement(node);
@@ -16054,6 +16161,9 @@ var ElementsTreeOutline = class _ElementsTreeOutline extends Common10.ObjectWrap
     return visibleChildren;
   }
   hasVisibleChildren(node) {
+    if (this.isMaxDepthReached(node)) {
+      return false;
+    }
     if (node.isIframe()) {
       return true;
     }

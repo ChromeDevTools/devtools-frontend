@@ -1259,6 +1259,22 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
         if (!extension?.isAllowedOnTarget(context.origin)) {
             return this.status.E_FAILED('Permission denied');
         }
+        try {
+            const parsedUrl = new URL(frame.url);
+            let targetType = 0 /* Host.UserMetrics.ExtensionEvalTarget.WEB_PAGE */;
+            if (parsedUrl.protocol === 'chrome-extension:') {
+                if (parsedUrl.origin === securityOrigin) {
+                    targetType = 1 /* Host.UserMetrics.ExtensionEvalTarget.SAME_EXTENSION */;
+                }
+                else {
+                    targetType = 2 /* Host.UserMetrics.ExtensionEvalTarget.OTHER_EXTENSION */;
+                }
+            }
+            Host.userMetrics.extensionEvalTarget(targetType);
+        }
+        catch {
+            // Ignore invalid URLs.
+        }
         void context
             .evaluate({
             expression,

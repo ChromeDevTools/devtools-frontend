@@ -33,26 +33,26 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 let throttlingManagerInstance;
 export class CPUThrottlingManager extends Common.ObjectWrapper.ObjectWrapper {
-    #targetManager;
     #cpuThrottlingOption;
     #calibratedThrottlingSetting;
     #hardwareConcurrency;
     #pendingMainTargetPromise;
-    constructor(settings, targetManager) {
+    constructor() {
         super();
-        this.#targetManager = targetManager;
         this.#cpuThrottlingOption = NoThrottlingOption;
-        this.#calibratedThrottlingSetting = settings.createSetting('calibrated-cpu-throttling', {}, "Global" /* Common.Settings.SettingStorageType.GLOBAL */);
+        this.#calibratedThrottlingSetting = Common.Settings.Settings.instance().createSetting('calibrated-cpu-throttling', {}, "Global" /* Common.Settings.SettingStorageType.GLOBAL */);
         this.#calibratedThrottlingSetting.addChangeListener(this.#onCalibratedSettingChanged, this);
-        targetManager.observeModels(EmulationModel, this);
+        TargetManager.instance().observeModels(EmulationModel, this);
     }
     static instance(opts = { forceNew: null }) {
         const { forceNew } = opts;
         if (!throttlingManagerInstance || forceNew) {
-            throttlingManagerInstance =
-                new CPUThrottlingManager(Common.Settings.Settings.instance(), TargetManager.instance());
+            throttlingManagerInstance = new CPUThrottlingManager();
         }
         return throttlingManagerInstance;
+    }
+    static removeInstance() {
+        throttlingManagerInstance = undefined;
     }
     cpuThrottlingRate() {
         return this.#cpuThrottlingOption.rate();
@@ -72,7 +72,7 @@ export class CPUThrottlingManager extends Common.ObjectWrapper.ObjectWrapper {
             this.setCPUThrottlingOption(NoThrottlingOption);
             return;
         }
-        for (const emulationModel of this.#targetManager.models(EmulationModel)) {
+        for (const emulationModel of TargetManager.instance().models(EmulationModel)) {
             void emulationModel.setCPUThrottlingRate(rate);
         }
         this.dispatchEventToListeners("RateChanged" /* Events.RATE_CHANGED */, rate);
@@ -82,14 +82,14 @@ export class CPUThrottlingManager extends Common.ObjectWrapper.ObjectWrapper {
             return;
         }
         this.#cpuThrottlingOption = option;
-        for (const emulationModel of this.#targetManager.models(EmulationModel)) {
+        for (const emulationModel of TargetManager.instance().models(EmulationModel)) {
             void emulationModel.setCPUThrottlingRate(this.#cpuThrottlingOption.rate());
         }
         this.dispatchEventToListeners("RateChanged" /* Events.RATE_CHANGED */, this.#cpuThrottlingOption.rate());
     }
     setHardwareConcurrency(concurrency) {
         this.#hardwareConcurrency = concurrency;
-        for (const emulationModel of this.#targetManager.models(EmulationModel)) {
+        for (const emulationModel of TargetManager.instance().models(EmulationModel)) {
             void emulationModel.setHardwareConcurrency(concurrency);
         }
         this.dispatchEventToListeners("HardwareConcurrencyChanged" /* Events.HARDWARE_CONCURRENCY_CHANGED */, this.#hardwareConcurrency);
@@ -99,14 +99,14 @@ export class CPUThrottlingManager extends Common.ObjectWrapper.ObjectWrapper {
         // target may error. So if we get any errors here at all, assume that we do
         // not have a target.
         try {
-            return this.#targetManager.primaryPageTarget() !== null;
+            return TargetManager.instance().primaryPageTarget() !== null;
         }
         catch {
             return false;
         }
     }
     async getHardwareConcurrency() {
-        const target = this.#targetManager.primaryPageTarget();
+        const target = TargetManager.instance().primaryPageTarget();
         const existingCallback = this.#pendingMainTargetPromise;
         // If the main target hasn't attached yet, block callers until it appears.
         if (!target) {

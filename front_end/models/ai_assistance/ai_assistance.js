@@ -331,6 +331,9 @@ var AiAgent = class {
   clearFacts() {
     this.#facts.clear();
   }
+  popPendingMultimodalInput() {
+    return void 0;
+  }
   preambleFeatures() {
     return [];
   }
@@ -354,12 +357,12 @@ var AiAgent = class {
     }
     const enableAidaFunctionCalling = declarations.length;
     const userTier = Host.AidaClient.convertToUserTierEnum(this.userTier);
-    const preamble7 = userTier === Host.AidaClient.UserTier.TESTERS ? this.preamble : void 0;
+    const preamble6 = userTier === Host.AidaClient.UserTier.TESTERS ? this.preamble : void 0;
     const facts = Array.from(this.#facts);
     const request = {
       client: Host.AidaClient.CLIENT_NAME,
       current_message: currentMessage,
-      preamble: preamble7,
+      preamble: preamble6,
       historical_contexts: history.length ? history : void 0,
       facts: facts.length ? facts : void 0,
       ...enableAidaFunctionCalling ? { function_declarations: declarations } : {},
@@ -5950,7 +5953,9 @@ import * as i18n9 from "./../../core/i18n/i18n.js";
 import * as Platform5 from "./../../core/platform/platform.js";
 import * as Root5 from "./../../core/root/root.js";
 import * as SDK7 from "./../../core/sdk/sdk.js";
+import * as Greendev2 from "./../greendev/greendev.js";
 import * as Annotations4 from "./../annotations/annotations.js";
+import * as Emulation from "./../emulation/emulation.js";
 
 // gen/front_end/models/ai_assistance/ChangeManager.js
 var ChangeManager_exports = {};
@@ -6687,7 +6692,8 @@ var UIStringsNotTranslate3 = {
   dataUsed: "Data used"
 };
 var lockedString5 = i18n9.i18n.lockedString;
-var preamble4 = `You are the most advanced CSS/DOM/HTML debugging assistant integrated into Chrome DevTools.
+function getPreamble() {
+  let preamble6 = `You are the most advanced CSS/DOM/HTML debugging assistant integrated into Chrome DevTools.
 You always suggest considering the best web development practices and the newest platform features such as view transitions.
 The user selected a DOM element in the browser's DevTools and sends a query about the page or the selected DOM element.
 First, examine the provided context, then use the functions to gather additional context and resolve the user request.
@@ -6709,6 +6715,44 @@ First, examine the provided context, then use the functions to gather additional
 * **CRITICAL** NEVER output text before a function call. Always do a function call first.
 * **CRITICAL** When answering questions about positioning or layout, ALWAYS inspect \`position\`, \`display\` and ALL related properties.
 * **CRITICAL** You are a CSS/DOM/HTML debugging assistant. NEVER provide answers to questions of unrelated topics such as legal advice, financial advice, personal opinions, medical advice, religion, race, politics, sexuality, gender, or any other non web-development topics. Answer "Sorry, I can't answer that. I'm best at questions about debugging web pages." to such questions.`;
+  const greenDevEmulationEnabled = Greendev2.Prototypes.instance().isEnabled("emulationCapabilities");
+  if (greenDevEmulationEnabled) {
+    preamble6 += `
+# Emulation and Screenshots
+
+* If asked to verify whether the page is visually broken or if there are display problems with specific devices, use the \`activateDeviceEmulation\` tool. This tool will activate emulation for a specified device and capture a screenshot.
+* **DEVICE SELECTION**: You must choose the most closely related device match from the allowed list.
+    * If the user asks about a specific device (e.g., "iPhone 6"), choose the closest match (e.g., "iPhone 6/7/8").
+    * If the user specifies a generic category (e.g., "Android phone", "iPhone", "Samsung"), choose the device with the highest version number available in that category (e.g., "Pixel 7" or "Samsung Galaxy S20" for Android, "iPhone 14 Pro Max" for iPhone).
+* **VISION DEFICIENCY**: If the user asks about checking for color blindness or vision issues, you can pass an optional \`visionDeficiency\` parameter to \`activateDeviceEmulation\`. Allowed values are: 'blurredVision', 'reducedContrast', 'achromatopsia', 'deuteranopia', 'protanopia', 'tritanopia'.
+* **IMPORTANT**: This is a **TWO-STEP** process.
+* **STEP 1**: Call \`activateDeviceEmulation\`. After calling this tool, YOU MUST STOP and tell the user that the screenshot has been captured and ask them whether they would like you to focus on specific sections of the screenshot or review it all for possible problems.
+* **STEP 2**: The captured screenshot will be automatically attached to the user's **NEXT** query.
+* **CRITICAL**: DO NOT try to investigate/analyze the page state or element visibility automatically. But, after the user has requested to analyze the page, you can prompt the user to select one of the problematic elements if they want to diagnose further.
+* **CRITICAL**: The output of the analysis should only be in json form (no supplemental text) and the json should list the problems found on the device, with a short description of the problem. If identical problems are identified acress multiple devices, feel free to combine sections.
+* **CRITICAL**: ALWAYS escape single and double quotes within the json output strings (' and ").
+*
+* Example (with no duplication):
+
+[
+  {
+    "Problem": "Element not resizing",
+    "Element": "Hero banner",
+    "NodeId": "23",
+    "Details": "The "hero" element is not resizing because... etc etc."
+  }
+]
+
+# Additional notes:
+
+When referring to an element for which you know the nodeId, annotate your output using markdown link syntax:
+- For example, if nodeId is 23: ([link](#node-23))
+- Always prefix the nodeId with the 'node-' prefix when using the markdown syntax.
+- This link will reveal the element in the Elements panel
+- Never mention node or nodeId when referring to the element, and especially not in the link text.`;
+  }
+  return preamble6;
+}
 var promptForScreenshot = `The user has provided you a screenshot of the page (as visible in the viewport) in base64-encoded format. You SHOULD use it while answering user's queries.
 
 * Try to connect the screenshot to actual DOM elements in the page.
@@ -6831,10 +6875,11 @@ var NodeContext = class extends ConversationContext {
   }
 };
 var StylingAgent = class _StylingAgent extends AiAgent {
-  preamble = preamble4;
+  preamble = getPreamble();
   clientFeature = Host6.AidaClient.ClientFeature.CHROME_STYLING_AGENT;
   get userTier() {
-    return Root5.Runtime.hostConfig.devToolsFreestyler?.userTier;
+    const greenDevEmulationEnabled = Greendev2.Prototypes.instance().isEnabled("emulationCapabilities");
+    return greenDevEmulationEnabled ? "TESTERS" : Root5.Runtime.hostConfig.devToolsFreestyler?.userTier;
   }
   get executionMode() {
     return Root5.Runtime.hostConfig.devToolsFreestyler?.executionMode ?? Root5.Runtime.HostConfigFreestylerExecutionMode.ALL_SCRIPTS;
@@ -6856,6 +6901,8 @@ var StylingAgent = class _StylingAgent extends AiAgent {
   #execJs;
   #changes;
   #createExtensionScope;
+  #greenDevEmulationScreenshot = null;
+  #greenDevEmulationAxTree = null;
   constructor(opts) {
     super(opts);
     this.#changes = opts.changeManager || new ChangeManager();
@@ -7010,6 +7057,30 @@ const data = {
         }
       });
     }
+    this.declareFunction("activateDeviceEmulation", {
+      description: "Sets emulation viewing mode for a specific device and optionally enables vision deficiency emulation.",
+      parameters: {
+        type: 6,
+        description: "",
+        nullable: false,
+        properties: {
+          deviceName: {
+            type: 1,
+            description: "The name of the device to emulate. Allowed values: Pixel 3 XL, Pixel 7, Samsung Galaxy S8+, Samsung Galaxy S20 Ultra, Surface Pro 7, Surface Duo, Galaxy Z Fold 5, Asus Zenbook Fold, Samsung Galaxy A51/71, Nest Hub Max, Nest Hub, iPhone 4, iPhone 5/SE, iPhone 6/7/8, iPhone SE, iPhone XR, iPhone 12 Pro, iPhone 14 Pro Max, iPad Mini, iPad Air, iPad Pro.",
+            nullable: false
+          },
+          visionDeficiency: {
+            type: 1,
+            description: "Optional vision deficiency to emulate. Allowed values: blurredVision, reducedContrast, achromatopsia, deuteranopia, protanopia, tritanopia.",
+            nullable: true
+          }
+        },
+        required: ["deviceName"]
+      },
+      handler: async (params) => {
+        return await this.activateDeviceEmulation(params.deviceName, params.visionDeficiency);
+      }
+    });
   }
   async generateObservation(action, { throwOnSideEffect }) {
     const functionDeclaration = `async function ($0) {
@@ -7276,6 +7347,164 @@ const data = {
       result: `Annotation added for element ${elementId}: ${annotationMessage}`
     };
   }
+  async #compressScreenshot(base64Data) {
+    return await new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        const maxDimension = 2e3;
+        let scale = 1;
+        if (img.width > maxDimension || img.height > maxDimension) {
+          scale = maxDimension / Math.max(img.width, img.height);
+        }
+        canvas.width = img.width * scale;
+        canvas.height = img.height * scale;
+        const ctx = canvas.getContext("2d");
+        if (!ctx) {
+          reject(new Error("Could not get canvas context"));
+          return;
+        }
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = "high";
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        const dataUrl = canvas.toDataURL("image/jpeg", 0.9);
+        resolve(dataUrl.split(",")[1]);
+      };
+      img.onerror = (e) => reject(new Error("Image load error: " + e));
+      img.src = "data:image/png;base64," + base64Data;
+    });
+  }
+  async activateDeviceEmulation(deviceName, visionDeficiency) {
+    const greenDevEmulationEnabled = Greendev2.Prototypes.instance().isEnabled("emulationCapabilities");
+    if (!greenDevEmulationEnabled) {
+      return { error: `GreenDev emulation capabilities not enabled` };
+    }
+    console.log("activateDeviceEmulation called with device:", deviceName, "visionDeficiency:", visionDeficiency);
+    this.#greenDevEmulationScreenshot = null;
+    this.#greenDevEmulationAxTree = null;
+    const emulatedDevicesList = Emulation.EmulatedDevices.EmulatedDevicesList.instance();
+    const device = emulatedDevicesList.standard().find((d) => d.title === deviceName);
+    if (!device) {
+      return {
+        error: `Could not find device "${deviceName}" in the list of emulated devices.`
+      };
+    }
+    const deviceModeModel = Emulation.DeviceModeModel.DeviceModeModel.instance();
+    const verticalMode = device.modesForOrientation(Emulation.EmulatedDevices.Vertical)[0];
+    if (!verticalMode) {
+      return {
+        error: `Could not find vertical mode for "${deviceName}".`
+      };
+    }
+    deviceModeModel.emulate(Emulation.DeviceModeModel.Type.Device, device, verticalMode);
+    const selectedNode = this.#getSelectedNode();
+    try {
+      if (selectedNode) {
+        const target = selectedNode.domModel().target();
+        const emulationModel = target.model(SDK7.EmulationModel.EmulationModel);
+        if (emulationModel) {
+          let type = "none";
+          if (visionDeficiency && visionDeficiency !== "none") {
+            type = visionDeficiency;
+          }
+          await target.emulationAgent().invoke_setEmulatedVisionDeficiency({ type });
+        }
+      } else {
+        console.error("No selected node context to retrieve EmulationModel.");
+      }
+    } catch {
+      return {
+        error: `Unable to apply vision deficiency "${visionDeficiency}".`
+      };
+    }
+    if (selectedNode) {
+      try {
+        const code = "await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)))";
+        await this.#execJs(code, { throwOnSideEffect: false, contextNode: selectedNode });
+      } catch (e) {
+        console.error("Failed to wait for layout settle:", e);
+      }
+    }
+    const orientation = device.orientationByName(Emulation.EmulatedDevices.Vertical);
+    const width = orientation.width;
+    let documentHeight = 2e3;
+    if (selectedNode) {
+      try {
+        const heightJs = "document.body.scrollHeight";
+        const result = await this.#execJs(heightJs, { throwOnSideEffect: false, contextNode: selectedNode });
+        const parsedHeight = Number(result);
+        if (!isNaN(parsedHeight)) {
+          documentHeight = Math.min(parsedHeight, 2e3);
+        }
+      } catch (e) {
+        console.error("Failed to get document height:", e);
+      }
+    }
+    const clip = {
+      x: 0,
+      y: 0,
+      width,
+      height: documentHeight,
+      scale: 1
+    };
+    const screenshot = await deviceModeModel.captureScreenshot(false, clip);
+    if (!screenshot) {
+      return {
+        error: `Emulation for ${deviceName} activated, but failed to capture screenshot.`
+      };
+    }
+    try {
+      this.#greenDevEmulationScreenshot = await this.#compressScreenshot(screenshot);
+    } catch (e) {
+      console.error("Screenshot compression failed, using original", e);
+      this.#greenDevEmulationScreenshot = screenshot;
+    }
+    try {
+      if (selectedNode) {
+        const accessibilityModel = selectedNode.domModel().target().model(SDK7.AccessibilityModel.AccessibilityModel);
+        if (accessibilityModel) {
+          await accessibilityModel.resumeModel();
+          const axResponse = await accessibilityModel.agent.invoke_getFullAXTree({});
+          if (!axResponse.getError()) {
+            this.#greenDevEmulationAxTree = JSON.stringify(axResponse.nodes);
+          } else {
+            console.error("Failed to capture Accessibility Tree:", axResponse.getError());
+          }
+        }
+      }
+    } catch (e) {
+      console.error("Exception capturing Accessibility Tree:", e);
+    }
+    let resultMsg = `Emulation for ${deviceName} activated and screenshot has been captured.`;
+    if (visionDeficiency) {
+      resultMsg += ` Vision deficiency "${visionDeficiency}" was also applied.`;
+    }
+    resultMsg += " Ready for analysis.";
+    return {
+      result: resultMsg
+    };
+  }
+  popPendingMultimodalInput() {
+    const greenDevEmulationEnabled = Greendev2.Prototypes.instance().isEnabled("emulationCapabilities");
+    if (!greenDevEmulationEnabled) {
+      return void 0;
+    }
+    if (this.#greenDevEmulationScreenshot) {
+      const data = this.#greenDevEmulationScreenshot;
+      this.#greenDevEmulationScreenshot = null;
+      return {
+        type: "screenshot",
+        input: {
+          inlineData: {
+            data,
+            mimeType: "image/jpeg"
+          }
+        },
+        id: crypto.randomUUID()
+      };
+    }
+    return void 0;
+  }
   async *handleContextDetails(selectedElement) {
     if (!selectedElement) {
       return;
@@ -7290,6 +7519,11 @@ const data = {
     };
   }
   async enhanceQuery(query, selectedElement, multimodalInputType) {
+    let multimodalInputEnhancementQuery = this.multimodalInputEnabled && multimodalInputType ? MULTIMODAL_ENHANCEMENT_PROMPTS[multimodalInputType] : "";
+    if (this.#greenDevEmulationAxTree) {
+      multimodalInputEnhancementQuery += "\n# Accessibility Tree\n\n" + this.#greenDevEmulationAxTree;
+      this.#greenDevEmulationAxTree = null;
+    }
     const elementEnchancementQuery = selectedElement ? `# Inspected element
 
 ${await _StylingAgent.describeElement(selectedElement.getItem())}
@@ -7297,14 +7531,13 @@ ${await _StylingAgent.describeElement(selectedElement.getItem())}
 # User request
 
 ` : "";
-    const multimodalInputEnhancementQuery = this.multimodalInputEnabled && multimodalInputType ? MULTIMODAL_ENHANCEMENT_PROMPTS[multimodalInputType] : "";
     return `${multimodalInputEnhancementQuery}${elementEnchancementQuery}QUERY: ${query}`;
   }
 };
 
 // gen/front_end/models/ai_assistance/agents/ContextSelectionAgent.js
 var lockedString6 = i18n11.i18n.lockedString;
-var preamble5 = `
+var preamble4 = `
 You are a Web Development Assistant integrated into Chrome DevTools. Your tone is educational, supportive, and technically precise.
 You aim to help developers of all levels, prioritizing teaching web concepts as the primary entry point for any solution.
 
@@ -7332,7 +7565,7 @@ You aim to help developers of all levels, prioritizing teaching web concepts as 
 * The only available types are \`#req\` for network request and \`#file\` for source files. Only use ID inside the link, never ask about user selecting by ID.
 `;
 var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
-  preamble = preamble5;
+  preamble = preamble4;
   clientFeature = Host7.AidaClient.ClientFeature.CHROME_FILE_AGENT;
   get userTier() {
     return Root6.Runtime.hostConfig.devToolsFreestyler?.userTier;
@@ -7612,7 +7845,7 @@ __export(PatchAgent_exports, {
 });
 import * as Host8 from "./../../core/host/host.js";
 import * as Root7 from "./../../core/root/root.js";
-var preamble6 = `You are a highly skilled software engineer with expertise in web development.
+var preamble5 = `You are a highly skilled software engineer with expertise in web development.
 The user asks you to apply changes to a source code folder.
 
 # Considerations
@@ -7648,7 +7881,7 @@ var PatchAgent = class extends AiAgent {
   async *handleContextDetails(_select) {
     return;
   }
-  preamble = preamble6;
+  preamble = preamble5;
   clientFeature = Host8.AidaClient.ClientFeature.CHROME_PATCH_AGENT;
   get userTier() {
     return Root7.Runtime.hostConfig.devToolsFreestyler?.userTier;
@@ -7830,7 +8063,7 @@ var FileUpdateAgent = class extends AiAgent {
   async *handleContextDetails(_select) {
     return;
   }
-  preamble = preamble6;
+  preamble = preamble5;
   clientFeature = Host8.AidaClient.ClientFeature.CHROME_PATCH_AGENT;
   get userTier() {
     return Root7.Runtime.hostConfig.devToolsFreestyler?.userTier;
@@ -8009,7 +8242,7 @@ __export(AiConversation_exports, {
 });
 import * as Host10 from "./../../core/host/host.js";
 import * as Root9 from "./../../core/root/root.js";
-import * as Greendev2 from "./../greendev/greendev.js";
+import * as Greendev3 from "./../greendev/greendev.js";
 
 // gen/front_end/models/ai_assistance/AiHistoryStorage.js
 var AiHistoryStorage_exports = {};
@@ -8236,6 +8469,10 @@ var AiConversation = class _AiConversation {
   get selectedContext() {
     return this.#contexts.at(0);
   }
+  getPendingMultimodalInput() {
+    const greenDevEmulationEnabled = Greendev3.Prototypes.instance().isEnabled("emulationCapabilities");
+    return greenDevEmulationEnabled ? this.#agent.popPendingMultimodalInput() : void 0;
+  }
   #reconstructHistory(historyWithoutImages) {
     const imageHistory = AiHistoryStorage.instance().getImageHistory();
     if (imageHistory && imageHistory.length > 0) {
@@ -8393,7 +8630,7 @@ ${item.text.trim()}`);
         break;
       }
       case "breakpoint": {
-        const breakpointAgentEnabled = Greendev2.Prototypes.instance().isEnabled("breakpointDebuggerAgent");
+        const breakpointAgentEnabled = Greendev3.Prototypes.instance().isEnabled("breakpointDebuggerAgent");
         if (breakpointAgentEnabled) {
           this.#agent = new BreakpointDebuggerAgent(options);
         }

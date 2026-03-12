@@ -1048,7 +1048,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
             showSlotAdorner: Boolean(this.nodeInternal.assignedSlot) && !this.isClosingTag(),
             showStartingStyleAdorner: this.nodeInternal.affectedByStartingStyles() && !this.isClosingTag(),
             startingStyleAdornerActive: this.#startingStyleAdornerActive,
-            onStartingStyleAdornerClick: (event) => this.#onStartingStyleAdornerClick(event),
+            onStartingStyleAdornerClick: this.treeOutline?.disableEdits ? () => { } : (event) => this.#onStartingStyleAdornerClick(event),
             onSlotAdornerClick: () => {
                 if (this.nodeInternal.assignedSlot) {
                     const deferredNode = this.nodeInternal.assignedSlot.deferredNode;
@@ -1058,25 +1058,30 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
                 }
             },
             topLayerIndex: this.node().topLayerIndex(),
-            onViewSourceAdornerClick: this.revealHTMLInSources.bind(this),
+            onViewSourceAdornerClick: this.treeOutline?.disableEdits ? () => { } : this.revealHTMLInSources.bind(this),
             onGutterClick: this.showContextMenu.bind(this),
-            onContainerAdornerClick: (event) => this.#onContainerAdornerClick(event),
-            onFlexAdornerClick: (event) => this.#onFlexAdornerClick(event),
-            onGridAdornerClick: (event) => this.#onGridAdornerClick(event),
-            onMediaAdornerClick: (event) => this.#onMediaAdornerClick(event),
-            onPopoverAdornerClick: (event) => this.#onPopoverAdornerClick(event),
-            onScrollSnapAdornerClick: (event) => this.#onScrollSnapAdornerClick(event),
-            onTopLayerAdornerClick: () => {
-                if (!this.treeOutline) {
-                    return;
-                }
-                this.treeOutline.revealInTopLayer(this.node());
-            },
+            onContainerAdornerClick: this.treeOutline?.disableEdits ? () => { } : (event) => this.#onContainerAdornerClick(event),
+            onFlexAdornerClick: this.treeOutline?.disableEdits ? () => { } :
+                (event) => this.#onFlexAdornerClick(event),
+            onGridAdornerClick: this.treeOutline?.disableEdits ? () => { } :
+                (event) => this.#onGridAdornerClick(event),
+            onMediaAdornerClick: this.treeOutline?.disableEdits ? () => { } :
+                (event) => this.#onMediaAdornerClick(event),
+            onPopoverAdornerClick: this.treeOutline?.disableEdits ? () => { } :
+                (event) => this.#onPopoverAdornerClick(event),
+            onScrollSnapAdornerClick: this.treeOutline?.disableEdits ? () => { } : (event) => this.#onScrollSnapAdornerClick(event),
+            onTopLayerAdornerClick: this.treeOutline?.disableEdits ? () => { } :
+                () => {
+                    if (!this.treeOutline) {
+                        return;
+                    }
+                    this.treeOutline.revealInTopLayer(this.node());
+                },
             isHovered: this.#hovered,
             isSelected: this.selected,
             showAiButton: Boolean(this.#hovered || this.selected) && this.node().nodeType() === Node.ELEMENT_NODE &&
-                UI.ActionRegistry.ActionRegistry.instance().hasAction('freestyler.elements-floating-button'),
-            aiButtonTitle: UI.ActionRegistry.ActionRegistry.instance().hasAction('freestyler.elements-floating-button') ?
+                this.isAiButtonEnabled() && this.treeOutline?.showAIButton,
+            aiButtonTitle: this.isAiButtonEnabled() ?
                 UI.ActionRegistry.ActionRegistry.instance().getAction('freestyler.elements-floating-button').title() :
                 undefined,
             onAiButtonClick: (ev) => {
@@ -1579,6 +1584,9 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     }
     populateScrollIntoView(contextMenu) {
         contextMenu.viewSection().appendItem(i18nString(UIStrings.scrollIntoView), () => this.nodeInternal.scrollIntoView(), { jslogContext: 'scroll-into-view' });
+    }
+    isAiButtonEnabled() {
+        return UI.ActionRegistry.ActionRegistry.instance().hasAction('freestyler.elements-floating-button');
     }
     async populateTextContextMenu(contextMenu, textNode) {
         if (!this.editing) {

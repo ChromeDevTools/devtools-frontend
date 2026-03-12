@@ -337,6 +337,7 @@ panels/application/KeyValueStorageItemsView.test.js
 panels/application/OriginTrialTreeView.test.js
 panels/application/PreloadingTreeElement.test.js
 panels/application/ReportingApiView.test.js
+panels/application/ServiceWorkerCacheViews.test.js
 panels/application/ServiceWorkerUpdateCycleView.test.js
 panels/application/ServiceWorkersView.test.js
 panels/application/SharedStorageEventsView.test.js

@@ -8,7 +8,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import { html, render } from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as ApplicationComponents from './components/components.js';
-const { widgetConfig } = UI.Widget;
+const { widget, widgetConfig } = UI.Widget;
 const UIStrings = {
     /**
      * @description Placeholder text that shows if no report or endpoint was detected.
@@ -47,34 +47,30 @@ export const DEFAULT_VIEW = (input, output, target) => {
         ${input.hasReports ? html `
           <devtools-split-view slot="main" sidebar-position="second" sidebar-initial-size="150">
             <div slot="main">
-              <devtools-widget .widgetConfig=${widgetConfig(ApplicationComponents.ReportsGrid.ReportsGrid, {
+              ${widget(ApplicationComponents.ReportsGrid.ReportsGrid, {
             reports: input.reports, onReportSelected: input.onReportSelected,
-        })}></devtools-widget>
+        })}
             </div>
             <div slot="sidebar" class="vbox" jslog=${VisualLogging.pane('preview').track({ resize: true })}>
-              ${input.focusedReport ? html `
-                <devtools-widget .widgetConfig=${widgetConfig(SourceFrame.JSONView.SearchableJsonView, {
-            jsonObject: input.focusedReport.body,
-        })}></devtools-widget>
-              ` : html `
-                <devtools-widget .widgetConfig=${widgetConfig(UI.EmptyWidget.EmptyWidget, {
-            header: i18nString(UIStrings.noReportSelected),
-            text: i18nString(UIStrings.clickToDisplayBody),
-        })}></devtools-widget>
-              `}
+              ${input.focusedReport
+            ? widget(SourceFrame.JSONView.SearchableJsonView, { jsonObject: input.focusedReport.body })
+            : widget(UI.EmptyWidget.EmptyWidget, {
+                header: i18nString(UIStrings.noReportSelected),
+                text: i18nString(UIStrings.clickToDisplayBody),
+            })}
             </div>
           </devtools-split-view>
         ` : html `
           <div slot="main">
-            <devtools-widget .widgetConfig=${widgetConfig(ApplicationComponents.ReportsGrid.ReportsGrid, {
+            ${widget(ApplicationComponents.ReportsGrid.ReportsGrid, {
             reports: input.reports, onReportSelected: input.onReportSelected,
-        })}></devtools-widget>
+        })}
           </div>
         `}
         <div slot="sidebar">
-          <devtools-widget .widgetConfig=${widgetConfig(ApplicationComponents.EndpointsGrid.EndpointsGrid, {
+          ${widget(ApplicationComponents.EndpointsGrid.EndpointsGrid, {
             endpoints: input.endpoints,
-        })}></devtools-widget>
+        })}
         </div>
       </devtools-split-view>
     `, target);

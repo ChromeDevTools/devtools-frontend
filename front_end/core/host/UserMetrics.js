@@ -228,6 +228,9 @@ export class UserMetrics {
     consoleInsightShortTeaserGenerated(timeInMilliseconds) {
         InspectorFrontendHostInstance.recordPerformanceHistogram('DevTools.Insights.ShortTeaserGenerationTime', timeInMilliseconds);
     }
+    extensionEvalTarget(target) {
+        InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.ExtensionEvalTarget" /* EnumeratedHistogram.ExtensionEvalTarget */, target, 3 /* ExtensionEvalTarget.MAX_VALUE */);
+    }
 }
 /**
  * The numeric enum values are not necessarily continuous! It is possible that

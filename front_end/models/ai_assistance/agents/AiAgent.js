@@ -93,6 +93,9 @@ export class AiAgent {
     clearFacts() {
         this.#facts.clear();
     }
+    popPendingMultimodalInput() {
+        return undefined;
+    }
     preambleFeatures() {
         return [];
     }

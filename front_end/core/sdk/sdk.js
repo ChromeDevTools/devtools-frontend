@@ -18578,6 +18578,26 @@ var PageResourceLoader = class _PageResourceLoader extends Common10.ObjectWrappe
     const eligibleForLoadFromTarget = this.getLoadThroughTargetSetting().get() && parsedURL && parsedURL.scheme !== "file" && parsedURL.scheme !== "data" && parsedURL.scheme !== "devtools" && initiator.target;
     Host2.userMetrics.developerResourceScheme(this.getDeveloperResourceScheme(parsedURL));
     if (eligibleForLoadFromTarget) {
+      let mustEnforceCSP = false;
+      const isHttp = parsedURL.scheme === "http" || parsedURL.scheme === "https";
+      if (isHttp && initiator.target) {
+        const networkManager = initiator.target.model(NetworkManager);
+        if (networkManager) {
+          let status = await networkManager.getSecurityIsolationStatus(initiator.frameId);
+          if (!status && initiator.frameId) {
+            status = await networkManager.getSecurityIsolationStatus(null);
+          }
+          if (status?.csp) {
+            for (const csp of status.csp) {
+              const directives = csp.effectiveDirectives;
+              if (directives.includes("connect-src") || directives.includes("default-src")) {
+                mustEnforceCSP = true;
+                break;
+              }
+            }
+          }
+        }
+      }
       try {
         Host2.userMetrics.developerResourceLoaded(
           0
@@ -18591,7 +18611,7 @@ var PageResourceLoader = class _PageResourceLoader extends Common10.ObjectWrappe
             2
             /* Host.UserMetrics.DeveloperResourceLoaded.LOAD_THROUGH_PAGE_FAILURE */
           );
-          if (e.message.includes("CSP violation")) {
+          if (mustEnforceCSP || e.message.includes("CSP violation")) {
             return {
               success: false,
               content: "",
@@ -34078,30 +34098,31 @@ var i18nString16 = i18n35.i18n.getLocalizedString.bind(void 0, str_16);
 var i18nLazyString2 = i18n35.i18n.getLazilyComputedLocalizedString.bind(void 0, str_16);
 var throttlingManagerInstance;
 var CPUThrottlingManager = class _CPUThrottlingManager extends Common37.ObjectWrapper.ObjectWrapper {
-  #targetManager;
   #cpuThrottlingOption;
   #calibratedThrottlingSetting;
   #hardwareConcurrency;
   #pendingMainTargetPromise;
-  constructor(settings, targetManager) {
+  constructor() {
     super();
-    this.#targetManager = targetManager;
     this.#cpuThrottlingOption = NoThrottlingOption;
-    this.#calibratedThrottlingSetting = settings.createSetting(
+    this.#calibratedThrottlingSetting = Common37.Settings.Settings.instance().createSetting(
       "calibrated-cpu-throttling",
       {},
       "Global"
       /* Common.Settings.SettingStorageType.GLOBAL */
     );
     this.#calibratedThrottlingSetting.addChangeListener(this.#onCalibratedSettingChanged, this);
-    targetManager.observeModels(EmulationModel, this);
+    TargetManager.instance().observeModels(EmulationModel, this);
   }
   static instance(opts = { forceNew: null }) {
     const { forceNew } = opts;
     if (!throttlingManagerInstance || forceNew) {
-      throttlingManagerInstance = new _CPUThrottlingManager(Common37.Settings.Settings.instance(), TargetManager.instance());
+      throttlingManagerInstance = new _CPUThrottlingManager();
     }
     return throttlingManagerInstance;
+  }
+  static removeInstance() {
+    throttlingManagerInstance = void 0;
   }
   cpuThrottlingRate() {
     return this.#cpuThrottlingOption.rate();
@@ -34119,7 +34140,7 @@ var CPUThrottlingManager = class _CPUThrottlingManager extends Common37.ObjectWr
       this.setCPUThrottlingOption(NoThrottlingOption);
       return;
     }
-    for (const emulationModel of this.#targetManager.models(EmulationModel)) {
+    for (const emulationModel of TargetManager.instance().models(EmulationModel)) {
       void emulationModel.setCPUThrottlingRate(rate);
     }
     this.dispatchEventToListeners("RateChanged", rate);
@@ -34129,27 +34150,27 @@ var CPUThrottlingManager = class _CPUThrottlingManager extends Common37.ObjectWr
       return;
     }
     this.#cpuThrottlingOption = option;
-    for (const emulationModel of this.#targetManager.models(EmulationModel)) {
+    for (const emulationModel of TargetManager.instance().models(EmulationModel)) {
       void emulationModel.setCPUThrottlingRate(this.#cpuThrottlingOption.rate());
     }
     this.dispatchEventToListeners("RateChanged", this.#cpuThrottlingOption.rate());
   }
   setHardwareConcurrency(concurrency) {
     this.#hardwareConcurrency = concurrency;
-    for (const emulationModel of this.#targetManager.models(EmulationModel)) {
+    for (const emulationModel of TargetManager.instance().models(EmulationModel)) {
       void emulationModel.setHardwareConcurrency(concurrency);
     }
     this.dispatchEventToListeners("HardwareConcurrencyChanged", this.#hardwareConcurrency);
   }
   hasPrimaryPageTargetSet() {
     try {
-      return this.#targetManager.primaryPageTarget() !== null;
+      return TargetManager.instance().primaryPageTarget() !== null;
     } catch {
       return false;
     }
   }
   async getHardwareConcurrency() {
-    const target = this.#targetManager.primaryPageTarget();
+    const target = TargetManager.instance().primaryPageTarget();
     const existingCallback = this.#pendingMainTargetPromise;
     if (!target) {
       if (existingCallback) {

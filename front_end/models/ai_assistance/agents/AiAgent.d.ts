@@ -270,6 +270,7 @@ export declare abstract class AiAgent<T> {
     addFact(fact: Host.AidaClient.RequestFact): ReadonlySet<Host.AidaClient.RequestFact>;
     removeFact(fact: Host.AidaClient.RequestFact): boolean;
     clearFacts(): void;
+    popPendingMultimodalInput(): MultimodalInput | undefined;
     preambleFeatures(): string[];
     buildRequest(part: Host.AidaClient.Part | Host.AidaClient.Part[], role: Host.AidaClient.Role.USER | Host.AidaClient.Role.ROLE_UNSPECIFIED): Host.AidaClient.DoConversationRequest;
     get sessionId(): string;

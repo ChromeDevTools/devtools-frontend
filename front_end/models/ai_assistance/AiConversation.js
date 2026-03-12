@@ -107,6 +107,10 @@ export class AiConversation {
     get selectedContext() {
         return this.#contexts.at(0);
     }
+    getPendingMultimodalInput() {
+        const greenDevEmulationEnabled = Greendev.Prototypes.instance().isEnabled('emulationCapabilities');
+        return greenDevEmulationEnabled ? this.#agent.popPendingMultimodalInput() : undefined;
+    }
     #reconstructHistory(historyWithoutImages) {
         const imageHistory = AiHistoryStorage.instance().getImageHistory();
         if (imageHistory && imageHistory.length > 0) {

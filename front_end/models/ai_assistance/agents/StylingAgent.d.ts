@@ -2,7 +2,7 @@ import * as Host from '../../../core/host/host.js';
 import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import { ChangeManager } from '../ChangeManager.js';
-import { type AgentOptions as BaseAgentOptions, AiAgent, type ContextResponse, ConversationContext, type ConversationSuggestions, type FunctionCallHandlerResult, type FunctionHandlerOptions, MultimodalInputType, type RequestOptions } from './AiAgent.js';
+import { type AgentOptions as BaseAgentOptions, AiAgent, type ContextResponse, ConversationContext, type ConversationSuggestions, type FunctionCallHandlerResult, type FunctionHandlerOptions, type MultimodalInput, MultimodalInputType, type RequestOptions } from './AiAgent.js';
 declare function executeJsCode(functionDeclaration: string, { throwOnSideEffect, contextNode }: {
     throwOnSideEffect: boolean;
     contextNode: SDK.DOMModel.DOMNode | null;
@@ -48,6 +48,8 @@ export declare class StylingAgent extends AiAgent<SDK.DOMModel.DOMNode> {
     static describeElement(element: SDK.DOMModel.DOMNode): Promise<string>;
     executeAction(action: string, options?: FunctionHandlerOptions): Promise<FunctionCallHandlerResult<unknown>>;
     addElementAnnotation(elementId: string, annotationMessage: string): Promise<FunctionCallHandlerResult<unknown>>;
+    activateDeviceEmulation(deviceName: string, visionDeficiency?: string): Promise<FunctionCallHandlerResult<unknown>>;
+    popPendingMultimodalInput(): MultimodalInput | undefined;
     handleContextDetails(selectedElement: ConversationContext<SDK.DOMModel.DOMNode> | null): AsyncGenerator<ContextResponse, void, void>;
     enhanceQuery(query: string, selectedElement: ConversationContext<SDK.DOMModel.DOMNode> | null, multimodalInputType?: MultimodalInputType): Promise<string>;
 }

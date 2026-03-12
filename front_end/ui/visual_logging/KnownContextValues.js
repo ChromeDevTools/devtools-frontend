@@ -1807,6 +1807,7 @@ export const knownContextValues = new Set([
     'greendev-artifact-viewer-enabled',
     'greendev-breakpoint-debugger-agent-enabled',
     'greendev-copy-to-gemini-enabled',
+    'greendev-emulation-capabilities-enabled',
     'greendev-in-devtools-floaty-enabled',
     'greendev-inline-widgets-enabled',
     'greendev-prototypes',

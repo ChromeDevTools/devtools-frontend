@@ -148,7 +148,6 @@ export async function createAiAssistancePanel(options) {
     const panel = new AiAssistancePanel.AiAssistancePanel(view, {
         aidaClient,
         aidaAvailability: aidaAvailabilityForStub,
-        syncInfo: options?.syncInfo ?? { isSyncActive: true },
     });
     panels.push(panel);
     // In many of the tests we create other panels to allow the right contexts to

@@ -27,9 +27,8 @@ export interface Props {
     messages: Message[];
     context: AiAssistanceModel.AiAgent.ConversationContext<unknown> | null;
     isContextSelected: boolean;
-    isLoading: boolean;
     canShowFeedbackForm: boolean;
-    userInfo: Pick<Host.InspectorFrontendHostAPI.SyncInformation, 'accountImage' | 'accountGivenName'>;
+    isLoading: boolean;
     conversationType: AiAssistanceModel.AiHistoryStorage.ConversationType;
     isReadOnly: boolean;
     blockedByCrossOrigin: boolean;
@@ -50,7 +49,6 @@ export interface Props {
     };
 }
 interface ChatWidgetInput extends Props {
-    accountGivenName: string;
     handleScroll: (ev: Event) => void;
     handleSuggestionClick: (title: string) => void;
     handleMessageContainerRef: (el: Element | undefined) => void;

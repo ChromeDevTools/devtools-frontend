@@ -83,7 +83,6 @@ export interface MessageInput {
     isReadOnly: boolean;
     isLastMessage: boolean;
     canShowFeedbackForm: boolean;
-    userInfo: Pick<Host.InspectorFrontendHostAPI.SyncInformation, 'accountImage' | 'accountFullName' | 'accountGivenName'>;
     markdownRenderer: MarkdownLitRenderer;
     onSuggestionClick: (suggestion: string) => void;
     onFeedbackSubmit: (rpcId: Host.AidaClient.RpcGlobalId, rate: Host.AidaClient.Rating, feedback?: string) => void;
@@ -112,7 +111,6 @@ export declare class ChatMessage extends UI.Widget.Widget {
     isReadOnly: boolean;
     canShowFeedbackForm: boolean;
     isLastMessage: boolean;
-    userInfo: Pick<Host.InspectorFrontendHostAPI.SyncInformation, 'accountImage' | 'accountFullName' | 'accountGivenName'>;
     markdownRenderer: MarkdownLitRenderer;
     onSuggestionClick: (suggestion: string) => void;
     onFeedbackSubmit: (rpcId: Host.AidaClient.RpcGlobalId, rate: Host.AidaClient.Rating, feedback?: string) => void;

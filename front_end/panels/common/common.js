@@ -4519,6 +4519,19 @@ var ExtensionServer = class _ExtensionServer extends Common6.ObjectWrapper.Objec
     if (!extension?.isAllowedOnTarget(context.origin)) {
       return this.status.E_FAILED("Permission denied");
     }
+    try {
+      const parsedUrl = new URL(frame.url);
+      let targetType = 0;
+      if (parsedUrl.protocol === "chrome-extension:") {
+        if (parsedUrl.origin === securityOrigin) {
+          targetType = 1;
+        } else {
+          targetType = 2;
+        }
+      }
+      Host9.userMetrics.extensionEvalTarget(targetType);
+    } catch {
+    }
     void context.evaluate(
       {
         expression,

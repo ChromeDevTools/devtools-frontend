@@ -41,7 +41,6 @@ export declare function createNetworkRequest(opts?: {
 export declare function createAiAssistancePanel(options?: {
     aidaClient?: Host.AidaClient.AidaClient;
     aidaAvailability?: Host.AidaClient.AidaAccessPreconditions;
-    syncInfo?: Host.InspectorFrontendHostAPI.SyncInformation;
     chatView?: AiAssistancePanel.ChatView;
 }): Promise<{
     panel: AiAssistancePanel.AiAssistancePanel;

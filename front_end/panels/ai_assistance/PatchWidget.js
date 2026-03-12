@@ -116,6 +116,7 @@ const UIStringsNotTranslate = {
 };
 const lockedString = i18n.i18n.lockedString;
 const CODE_SNIPPET_WARNING_URL = 'https://support.google.com/legal/answer/13505487';
+const { widget } = UI.Widget;
 export var PatchSuggestionState;
 (function (PatchSuggestionState) {
     /**
@@ -209,11 +210,11 @@ const DEFAULT_VIEW = (input, output, target) => {
             return nothing;
         }
         if (input.patchSuggestionState === PatchSuggestionState.SUCCESS) {
-            return html `<devtools-widget .widgetConfig=${UI.Widget.widgetConfig(ChangesPanel.CombinedDiffView.CombinedDiffView, {
+            return html `${widget(ChangesPanel.CombinedDiffView.CombinedDiffView, {
                 workspaceDiff: input.workspaceDiff,
                 // Ignore user creates inspector-stylesheets
                 ignoredUrls: ['inspector://']
-            })}></devtools-widget>`;
+            })}`;
         }
         return html `<devtools-code-block
           .code=${input.changeSummary ?? ''}

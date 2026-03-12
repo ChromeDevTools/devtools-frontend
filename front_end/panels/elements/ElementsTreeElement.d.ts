@@ -137,6 +137,7 @@ export declare class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     populatePseudoElementContextMenu(contextMenu: UI.ContextMenu.ContextMenu): void;
     private populateExpandRecursively;
     private populateScrollIntoView;
+    private isAiButtonEnabled;
     populateTextContextMenu(contextMenu: UI.ContextMenu.ContextMenu, textNode: Element): Promise<void>;
     populateNodeContextMenu(contextMenu: UI.ContextMenu.ContextMenu): Promise<void>;
     populateProcessingElementContextMenu(contextMenu: UI.ContextMenu.ContextMenu): Promise<void>;

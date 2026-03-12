@@ -130,16 +130,15 @@ export class StandaloneStylesContainer extends Common.ObjectWrapper.eventMixin<E
       this.sectionByElement.set(section.element, section);
     }
     this.#sections = newSections;
+    this.#updateFilter();
     this.swatchPopoverHelper().reposition();
   }
 
   override async performUpdate(): Promise<void> {
     this.hideAllPopovers();
 
-    this.#updateFilter();
-
     const viewInput: ViewInput = {
-      sections: this.#sections,
+      sections: this.#sections.filter(section => !section.isHidden()),
     };
     this.#view(viewInput, undefined, this.contentElement);
     this.#onUpdateFinished();
@@ -170,6 +169,7 @@ export class StandaloneStylesContainer extends Common.ObjectWrapper.eventMixin<E
   set filter(regex: RegExp|null) {
     this.#filter = regex;
     this.#updateFilter();
+    this.requestUpdate();
   }
 
   node(): SDK.DOMModel.DOMNode|null {

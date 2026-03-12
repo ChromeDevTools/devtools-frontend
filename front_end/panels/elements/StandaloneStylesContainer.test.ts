@@ -18,7 +18,9 @@ import {
   setMockConnectionResponseHandler,
 } from '../../testing/MockConnection.js';
 import {
+  getMatchedStyles,
   getMatchedStylesWithProperties,
+  ruleMatch,
 } from '../../testing/StyleHelpers.js';
 
 import * as Elements from './elements.js';
@@ -156,5 +158,65 @@ describeWithMockConnection('StandaloneStylesContainer', () => {
 
     await container.updateComplete;
     sinon.assert.calledOnce(repositionSpy);
+  });
+
+  it('should render only matching sections from the DOM when a filter is applied', async () => {
+    const matchedStyles = await getMatchedStyles({
+      cssModel,
+      node,
+      matchedPayload: [
+        ruleMatch('.match', {color: 'red'}),
+        ruleMatch('.no-match', {color: 'blue'}),
+      ],
+    });
+    sinon.stub(cssModel, 'cachedMatchedCascadeForNode').resolves(matchedStyles);
+    const container = new Elements.StandaloneStylesContainer.StandaloneStylesContainer();
+    renderElementIntoDOM(container);
+
+    const updatePromise = new Promise<void>(resolve => {
+      container.addEventListener(
+          Elements.StandaloneStylesContainer.Events.STYLES_UPDATE_COMPLETED, () => resolve(), {once: true});
+    });
+    container.domNode = node;
+    await updatePromise;
+
+    assert.lengthOf(container.contentElement.querySelectorAll('.styles-section'), 2);
+
+    container.filter = /\.match/;
+    await container.updateComplete;
+
+    const sections = container.contentElement.querySelectorAll('.styles-section');
+    assert.lengthOf(sections, 1);
+    assert.include(sections[0].textContent, '.match');
+    assert.notInclude(sections[0].textContent, '.no-match');
+  });
+
+  it('should restore sections to the DOM when the filter is cleared', async () => {
+    const matchedStyles = await getMatchedStyles({
+      cssModel,
+      node,
+      matchedPayload: [
+        ruleMatch('.match', {color: 'red'}),
+        ruleMatch('.no-match', {color: 'blue'}),
+      ],
+    });
+    sinon.stub(cssModel, 'cachedMatchedCascadeForNode').resolves(matchedStyles);
+    const container = new Elements.StandaloneStylesContainer.StandaloneStylesContainer();
+    renderElementIntoDOM(container);
+
+    const updatePromise = new Promise<void>(resolve => {
+      container.addEventListener(
+          Elements.StandaloneStylesContainer.Events.STYLES_UPDATE_COMPLETED, () => resolve(), {once: true});
+    });
+    container.domNode = node;
+    await updatePromise;
+
+    container.filter = /\.match/;
+    await container.updateComplete;
+    assert.lengthOf(container.contentElement.querySelectorAll('.styles-section'), 1);
+
+    container.filter = null;
+    await container.updateComplete;
+    assert.lengthOf(container.contentElement.querySelectorAll('.styles-section'), 2);
   });
 });

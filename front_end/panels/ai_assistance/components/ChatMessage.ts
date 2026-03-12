@@ -13,7 +13,7 @@ import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import type {
-  AiWidget, ComputedStyleAiWidget, CoreVitalsAiWidget, StylePropertiesAiWidget} from
+  AiWidget, ComputedStyleAiWidget, CoreVitalsAiWidget, DomTreeAiWidget, StylePropertiesAiWidget} from
   '../../../models/ai_assistance/agents/AiAgent.js';
 import * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
 import * as ComputedStyle from '../../../models/computed_style/computed_style.js';
@@ -756,6 +756,34 @@ function renderWidgetResponse(response: WidgetMakerResponse|null): Lit.LitTempla
   // clang-format on
 }
 
+async function makeDomTreeWidget(widgetData: DomTreeAiWidget): Promise<WidgetMakerResponse|null> {
+  const root = widgetData.data.root;
+  if (!(root instanceof SDK.DOMModel.DOMNodeSnapshot)) {
+    return null;
+  }
+
+  const widgetConfig = UI.Widget.widgetConfig(Elements.ElementsTreeOutline.DOMTreeWidget, {
+    maxTreeDepth: 2,
+    enableContextMenu: false,
+    showComments: false,
+    showAIButton: false,
+    disableEdits: true,
+    expandRoot: true,
+    rootDOMNode: root,
+    visibleWidth: 400,
+    wrap: true,
+  });
+
+  // clang-format off
+  const widget = html`<devtools-widget class="dom-tree-widget" .widgetConfig=${widgetConfig}></devtools-widget>`;
+  // clang-format on
+
+  return {
+    renderedWidget: widget,
+    revealable: new SDK.DOMModel.DeferredDOMNode(root.domModel().target(), root.backendNodeId()),
+  };
+}
+
 /**
  * Renders AI-defined UI widgets.
  * When a ModelChatMessage contains a WidgetPart, or a Step has widgets,
@@ -786,6 +814,8 @@ async function renderWidgets(
       response = await makeCoreVitalsWidget(widgetData);
     } else if (widgetData.name === 'STYLE_PROPERTIES') {
       response = await makeStylePropertiesWidget(widgetData);
+    } else if (widgetData.name === 'DOM_TREE') {
+      response = await makeDomTreeWidget(widgetData);
     }
     return renderWidgetResponse(response);
   }));

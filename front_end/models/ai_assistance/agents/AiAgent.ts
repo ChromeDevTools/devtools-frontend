@@ -249,8 +249,15 @@ export interface StylePropertiesAiWidget {
   };
 }
 
+export interface DomTreeAiWidget {
+  name: 'DOM_TREE';
+  data: {
+    root: SDK.DOMModel.DOMNodeSnapshot,
+  };
+}
+
 // This type will grow as we add more widgets.
-export type AiWidget = ComputedStyleAiWidget|CoreVitalsAiWidget|StylePropertiesAiWidget;
+export type AiWidget = ComputedStyleAiWidget|CoreVitalsAiWidget|StylePropertiesAiWidget|DomTreeAiWidget;
 
 export type FunctionCallHandlerResult<Result> = {
   requiresApproval: true,
@@ -689,10 +696,12 @@ export abstract class AiAgent<T> {
 
             return;
           }
+
           query = {
             functionResponse: {
               name: functionCall.name,
-              response: result,
+              // Widgets are not sent back to the LLM
+              response: {...result, widgets: undefined},
             },
           };
           request = this.buildRequest(query, Host.AidaClient.Role.ROLE_UNSPECIFIED);
@@ -720,7 +729,8 @@ export abstract class AiAgent<T> {
           options?: FunctionHandlerOptions&{explanation?: string},
           ): AsyncGenerator<FunctionCallResponseData, {
         result: unknown,
-      }|{context: ConversationContext<unknown>, description: string}> {
+        widgets?: AiWidget[],
+      }|{context: ConversationContext<unknown>, description: string, widgets?: AiWidget[]}> {
     const call = this.#functionDeclarations.get(name);
     if (!call) {
       throw new Error(`Function ${name} is not found.`);
@@ -837,7 +847,7 @@ export abstract class AiAgent<T> {
       return result;
     }
 
-    return result as {result: unknown};
+    return result as {result: unknown, widgets?: AiWidget[]};
   }
 
   async *

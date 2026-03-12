@@ -137,6 +137,13 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
     target.appendChild(output.elementsTreeOutline.element);
   }
 
+  output.elementsTreeOutline.maxTreeDepth = input.maxTreeDepth;
+  output.elementsTreeOutline.enableContextMenu = input.enableContextMenu ?? true;
+  output.elementsTreeOutline.showComments = input.showComments ?? true;
+  output.elementsTreeOutline.showAIButton = input.showAIButton ?? true;
+  output.elementsTreeOutline.disableEdits = input.disableEdits ?? false;
+  output.elementsTreeOutline.expandRoot = input.expandRoot ?? false;
+
   if (input.visibleWidth !== undefined) {
     output.elementsTreeOutline.setVisibleWidth(input.visibleWidth);
   }
@@ -223,6 +230,7 @@ export class DOMTreeWidget extends UI.Widget.Widget {
   #showComments = true;
   #showAIButton = true;
   #disableEdits = false;
+  #expandRoot = false;
   #visible = false;
   #visibleWidth?: number;
   #wrap = false;
@@ -291,6 +299,15 @@ export class DOMTreeWidget extends UI.Widget.Widget {
     this.performUpdate();
   }
 
+  get expandRoot(): boolean {
+    return this.#expandRoot;
+  }
+
+  set expandRoot(expandRoot: boolean) {
+    this.#expandRoot = expandRoot;
+    this.performUpdate();
+  }
+
   #currentHighlightedNode: SDK.DOMModel.DOMNode|null = null;
 
   #view: View;
@@ -347,9 +364,17 @@ export class DOMTreeWidget extends UI.Widget.Widget {
     this.#viewOutput?.elementsTreeOutline?.highlightNodeAttribute(node, attribute);
   }
 
-  setWordWrap(wrap: boolean): void {
+  get wrap(): boolean {
+    return this.#wrap;
+  }
+
+  set wrap(wrap: boolean) {
     this.#wrap = wrap;
     this.performUpdate();
+  }
+
+  setWordWrap(wrap: boolean): void {
+    this.wrap = wrap;
   }
 
   selectedDOMNode(): SDK.DOMModel.DOMNode|null {
@@ -387,6 +412,7 @@ export class DOMTreeWidget extends UI.Widget.Widget {
           showComments: this.#showComments,
           showAIButton: this.#showAIButton,
           disableEdits: this.#disableEdits,
+          expandRoot: this.#expandRoot,
           visibleWidth: this.#visibleWidth,
           visible: this.#visible,
           wrap: this.#wrap,
@@ -565,12 +591,12 @@ export class ElementsTreeOutline extends
   #issuesManager?: IssuesManager.IssuesManager.IssuesManager;
   #popupHelper?: UI.PopoverHelper.PopoverHelper;
   #nodeElementToIssues = new Map<Element, IssuesManager.Issue.Issue[]>();
-  readonly maxTreeDepth?: number;
-  readonly enableContextMenu: boolean;
-  readonly showComments: boolean;
-  readonly showAIButton: boolean;
-  readonly disableEdits: boolean;
-  readonly expandRoot: boolean;
+  maxTreeDepth?: number;
+  enableContextMenu: boolean;
+  showComments: boolean;
+  showAIButton: boolean;
+  disableEdits: boolean;
+  expandRoot: boolean;
 
   constructor(
       omitRootDOMNode?: boolean, selectEnabled?: boolean, hideGutter?: boolean, maxTreeDepth?: number,
@@ -1388,7 +1414,7 @@ export class ElementsTreeOutline extends
   }
 
   async showContextMenu(treeElement: ElementsTreeElement, event: Event): Promise<void> {
-    if (UI.UIUtils.isEditing()) {
+    if (UI.UIUtils.isEditing() || !this.enableContextMenu) {
       return;
     }
 

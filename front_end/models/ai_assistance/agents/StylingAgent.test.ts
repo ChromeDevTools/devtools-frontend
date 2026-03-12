@@ -442,6 +442,7 @@ describeWithEnvironment('StylingAgent', function() {
               name: 'executeJavaScript',
               response: {
                 result: 'test data',
+                widgets: undefined,
               }
             }
           },

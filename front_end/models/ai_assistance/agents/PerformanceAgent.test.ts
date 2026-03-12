@@ -6,6 +6,7 @@ import type * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
+import type * as Protocol from '../../../generated/protocol.js';
 import {mockAidaClient} from '../../../testing/AiAssistanceHelpers.js';
 import {
   createTarget,
@@ -605,6 +606,131 @@ code
             'getMainThreadTrackSummary({min: 197695826524, max: 197698633660})',
             'getNetworkTrackSummary({min: 197695826524, max: 197698633660})'
           ]);
+    });
+
+    it('deduplicates DOM tree widgets within a single response for the same node', async function() {
+      const parsedTrace = await TraceLoader.traceEngine(this, 'lcp-images.json.gz');
+      assert.isOk(parsedTrace.insights);
+      const [firstNav] = parsedTrace.data.Meta.mainFrameNavigations;
+      const lcpDiscovery = getInsightOrError('LCPDiscovery', parsedTrace.insights, firstNav);
+      const insightSetId = [...parsedTrace.insights.keys()][0];
+      const insightSet = parsedTrace.insights.get(insightSetId)!;
+      insightSet.model.LCPBreakdown = {
+        insightKey: 'LCPBreakdown',
+        state: 'fail',
+        lcpMs: 1 as Trace.Types.Timing.Milli,
+        lcpEvent: {
+          name: 'largestContentfulPaint::Candidate',
+          args: {data: {nodeId: 4}},
+        } as unknown as Trace.Types.Events.LargestContentfulPaintCandidate,
+      } as Trace.Insights.Types.InsightModels['LCPBreakdown'];
+
+      const context = PerformanceAgent.PerformanceTraceContext.fromInsight(parsedTrace, lcpDiscovery);
+
+      const agent = createAgentForConversation({
+        aidaClient: mockAidaClient([
+          [{
+            explanation: '',
+            functionCalls: [
+              {name: 'getInsightDetails', args: {insightSetId: insightSet.id, insightName: 'LCPDiscovery'}},
+            ]
+          }],
+          [{
+            explanation: '',
+            functionCalls: [
+              {name: 'getInsightDetails', args: {insightSetId: insightSet.id, insightName: 'LCPDiscovery'}},
+            ]
+          }],
+          [{explanation: 'done'}]
+        ])
+      });
+
+      const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+      assert.exists(target);
+      const domModel = target.model(SDK.DOMModel.DOMModel);
+      assert.exists(domModel);
+
+      const pushNodesStub = sinon.stub(domModel, 'pushNodesByBackendIdsToFrontend');
+      const mockNode = {takeSnapshot: sinon.stub().resolves({root: {nodeName: 'IMG'}})};
+      pushNodesStub.resolves(new Map([[4 as Protocol.DOM.BackendNodeId, mockNode as unknown as SDK.DOMModel.DOMNode]]));
+
+      const responses = await Array.fromAsync(agent.run('test', {selected: context}));
+
+      const actions = responses.filter(r => r.type === AiAgent.ResponseType.ACTION);
+      assert.lengthOf(actions, 2);
+
+      // The first call should have a widget, the second one should not as it is within the same response.
+      assert.exists(actions[0].widgets);
+      assert.lengthOf(actions[0].widgets!, 1);
+      assert.strictEqual(actions[0].widgets![0].name, 'DOM_TREE');
+
+      assert.lengthOf(actions[1].widgets!, 0);
+    });
+
+    it('does NOT deduplicate DOM tree widgets across different responses for the same node', async function() {
+      const parsedTrace = await TraceLoader.traceEngine(this, 'lcp-images.json.gz');
+      assert.isOk(parsedTrace.insights);
+      const [firstNav] = parsedTrace.data.Meta.mainFrameNavigations;
+      const lcpDiscovery = getInsightOrError('LCPDiscovery', parsedTrace.insights, firstNav);
+      const insightSetId = [...parsedTrace.insights.keys()][0];
+      const insightSet = parsedTrace.insights.get(insightSetId)!;
+      insightSet.model.LCPBreakdown = {
+        insightKey: 'LCPBreakdown',
+        state: 'fail',
+        lcpMs: 1 as Trace.Types.Timing.Milli,
+        lcpEvent: {
+          name: 'largestContentfulPaint::Candidate',
+          args: {data: {nodeId: 4}},
+        } as unknown as Trace.Types.Events.LargestContentfulPaintCandidate,
+      } as Trace.Insights.Types.InsightModels['LCPBreakdown'];
+
+      const context = PerformanceAgent.PerformanceTraceContext.fromInsight(parsedTrace, lcpDiscovery);
+
+      const agent = createAgentForConversation({
+        aidaClient: mockAidaClient([
+          // First run
+          [{
+            explanation: '',
+            functionCalls: [
+              {name: 'getInsightDetails', args: {insightSetId: insightSet.id, insightName: 'LCPDiscovery'}},
+            ]
+          }],
+          [{explanation: 'done'}],
+          // Second run
+          [{
+            explanation: '',
+            functionCalls: [
+              {name: 'getInsightDetails', args: {insightSetId: insightSet.id, insightName: 'LCPDiscovery'}},
+            ]
+          }],
+          [{explanation: 'done'}]
+        ])
+      });
+
+      const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+      assert.exists(target);
+      const domModel = target.model(SDK.DOMModel.DOMModel);
+      assert.exists(domModel);
+
+      sinon.stub(domModel, 'pushNodesByBackendIdsToFrontend').resolves(new Map([[
+        4 as Protocol.DOM.BackendNodeId,
+        {takeSnapshot: sinon.stub().resolves({root: {nodeName: 'IMG'}})} as unknown as SDK.DOMModel.DOMNode
+      ]]));
+
+      // First run
+      const firstResponses = await Array.fromAsync(agent.run('first test', {selected: context}));
+      const firstActions = firstResponses.filter(r => r.type === AiAgent.ResponseType.ACTION);
+      assert.lengthOf(firstActions, 1);
+      assert.exists(firstActions[0].widgets);
+      assert.lengthOf(firstActions[0].widgets!, 1);
+
+      // Second run for the same node
+      const secondResponses = await Array.fromAsync(agent.run('second test', {selected: context}));
+      const secondActions = secondResponses.filter(r => r.type === AiAgent.ResponseType.ACTION);
+      assert.lengthOf(secondActions, 1);
+      // It should show the widget again because it's a new response.
+      assert.exists(secondActions[0].widgets);
+      assert.lengthOf(secondActions[0].widgets!, 1);
     });
   });
 });

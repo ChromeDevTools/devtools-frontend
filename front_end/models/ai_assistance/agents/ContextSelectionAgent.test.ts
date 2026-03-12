@@ -209,6 +209,7 @@ describeWithMockConnection('ContextSelectionAgent', function() {
                     transferSize: '3.0\xA0kB',
                   },
                 ],
+                widgets: undefined,
               },
             },
           }],

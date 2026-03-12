@@ -265,21 +265,23 @@ export class AiConversation {
       id: this.id,
       history: this.history
                    .map(item => {
-                     if (item.type === ResponseType.CONTEXT_CHANGE) {
-                       return null;
+                     switch (item.type) {
+                       case ResponseType.CONTEXT_CHANGE: {
+                         return null;
+                       }
+                       case ResponseType.USER_QUERY: {
+                         return {...item, imageInput: undefined};
+                       }
+                       case ResponseType.SIDE_EFFECT: {
+                         return {...item, confirm: undefined};
+                       }
+                       case ResponseType.CONTEXT:
+                       case ResponseType.ACTION: {
+                         return {...item, widgets: undefined};
+                       }
+                       default:
+                         return item;
                      }
-
-                     if (item.type === ResponseType.USER_QUERY) {
-                       return {...item, imageInput: undefined};
-                     }
-                     // Remove the `confirm()`-function because `structuredClone()` throws on functions
-                     if (item.type === ResponseType.SIDE_EFFECT) {
-                       return {...item, confirm: undefined};
-                     }
-                     if (item.type === ResponseType.CONTEXT && item.widgets) {
-                       return {...item, widgets: undefined};
-                     }
-                     return item;
                    })
                    .filter(history => !!history),
       type: this.#type,

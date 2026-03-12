@@ -8,6 +8,7 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';
+import type * as Protocol from '../../../generated/protocol.js';
 import * as Tracing from '../../../services/tracing/tracing.js';
 import * as Annotations from '../../annotations/annotations.js';
 import * as SourceMapScopes from '../../source_map_scopes/source_map_scopes.js';
@@ -700,6 +701,7 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
   #declareFunctions(context: PerformanceTraceContext): void {
     const focus = context.getItem();
     const {parsedTrace} = focus;
+    const processedNodeIds = new Set<Protocol.DOM.BackendNodeId>();
 
     this.declareFunction<{insightSetId: string, insightName: string}, {details: string}>('getInsightDetails', {
       description:
@@ -749,9 +751,36 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
 
         const details = new PerformanceInsightFormatter(focus, insight).formatInsight();
 
+        const widgets: AiWidget[] = [];
+        if (params.insightName === 'LCPDiscovery' || params.insightName === 'LCPBreakdown') {
+          const lcpMetric = Trace.Insights.Common.getLCP(insightSet);
+          const lcpEvent = lcpMetric?.event;
+          if (lcpEvent && Trace.Types.Events.isAnyLargestContentfulPaintCandidate(lcpEvent)) {
+            const nodeId = lcpEvent.args.data?.nodeId;
+            // We want to show only one DOM tree widget per walkthrough per node.
+            // We do want to show the widget for the same node again, if it's within a new walkthrough.
+            if (nodeId && !processedNodeIds.has(nodeId)) {
+              const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+              const domModel = target?.model(SDK.DOMModel.DOMModel);
+              if (domModel) {
+                const nodeMap = await domModel.pushNodesByBackendIdsToFrontend(new Set([nodeId]));
+                const node = nodeMap?.get(nodeId);
+                if (node) {
+                  const snapshot = await node.takeSnapshot();
+                  widgets.push({
+                    name: 'DOM_TREE',
+                    data: {root: snapshot},
+                  });
+                  processedNodeIds.add(nodeId);
+                }
+              }
+            }
+          }
+        }
+
         const key = `getInsightDetails('${params.insightSetId}', '${params.insightName}')`;
         this.#cacheFunctionResult(focus, key, details);
-        return {result: {details}};
+        return {result: {details}, widgets};
       },
     });
 

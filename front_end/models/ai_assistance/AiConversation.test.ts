@@ -388,6 +388,68 @@ describeWithEnvironment('AiConversation', () => {
     assert.strictEqual(part.functionResponse.name, 'listNetworkRequests');
     assert.deepEqual(part.functionResponse.response, {
       error: 'No requests showing with origin https://example.com. Tell the user to start a new chat',
+      widgets: undefined,
     });
+  });
+
+  it('should correctly serialize history by removing non-serializable data', async () => {
+    const conversation =
+        new AiAssistance.AiConversation.AiConversation(AiAssistance.AiHistoryStorage.ConversationType.STYLING);
+
+    const userQuery: AiAssistance.AiAgent.UserQuery = {
+      type: AiAssistance.AiAgent.ResponseType.USER_QUERY,
+      query: 'test query',
+      imageId: 'test-image-id',
+      imageInput: {inlineData: {data: 'base64', mimeType: 'image/png'}},
+    };
+
+    const contextResponse: AiAssistance.AiAgent.ContextResponse = {
+      type: AiAssistance.AiAgent.ResponseType.CONTEXT,
+      title: 'Context',
+      details: [{title: 'Detail', text: 'Text'}],
+      widgets: [{name: 'DOM_TREE', data: {root: {} as SDK.DOMModel.DOMNodeSnapshot}}],
+    };
+
+    const actionResponse: AiAssistance.AiAgent.ActionResponse = {
+      type: AiAssistance.AiAgent.ResponseType.ACTION,
+      code: 'code',
+      output: 'output',
+      canceled: false,
+      widgets: [{
+        name: 'COMPUTED_STYLES',
+        data: {
+          computedStyles: new Map(),
+          backendNodeId: 0 as Protocol.DOM.BackendNodeId,
+          matchedCascade: {} as SDK.CSSMatchedStyles.CSSMatchedStyles,
+          properties: [],
+        },
+      }],
+    };
+
+    const sideEffectResponse: AiAssistance.AiAgent.SideEffectResponse = {
+      type: AiAssistance.AiAgent.ResponseType.SIDE_EFFECT,
+      description: 'Side effect',
+      code: 'code',
+      confirm: () => {},
+    };
+
+    conversation.history.push(userQuery, contextResponse, actionResponse, sideEffectResponse);
+
+    const serialized = conversation.serialize();
+
+    assert.lengthOf(serialized.history, 4);
+
+    // UserQuery should have imageInput removed
+    assert.strictEqual(serialized.history[0].type, AiAssistance.AiAgent.ResponseType.USER_QUERY);
+    assert.isUndefined((serialized.history[0] as AiAssistance.AiAgent.UserQuery).imageInput);
+    assert.strictEqual((serialized.history[0] as AiAssistance.AiAgent.UserQuery).imageId, 'test-image-id');
+
+    // ContextResponse should have widgets removed
+    assert.strictEqual(serialized.history[1].type, AiAssistance.AiAgent.ResponseType.CONTEXT);
+    assert.isUndefined((serialized.history[1] as AiAssistance.AiAgent.ContextResponse).widgets);
+
+    // ActionResponse should have widgets removed
+    assert.strictEqual(serialized.history[2].type, AiAssistance.AiAgent.ResponseType.ACTION);
+    assert.isUndefined((serialized.history[2] as AiAssistance.AiAgent.ActionResponse).widgets);
   });
 });

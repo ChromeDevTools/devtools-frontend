@@ -676,33 +676,29 @@ async function makeComputedStyleWidget(widgetData: ComputedStyleAiWidget): Promi
   }
   const styles = new ComputedStyle.ComputedStyleModel.ComputedStyle(domNodeForId, widgetData.data.computedStyles);
 
-  const widgetConfig = UI.Widget.widgetConfig(Elements.ComputedStyleWidget.ComputedStyleWidget, {
-    nodeStyle: styles,
-    matchedStyles: widgetData.data.matchedCascade,
-    // This disables showing the nested traces and detailed information in the widget.
-    propertyTraces: null,
-    allowUserControl: false,
-    filterText: new RegExp(widgetData.data.properties.join('|'), 'i')
-  });
-
   // clang-format off
-  const widget = html`<devtools-widget class="computed-styles-widget" .widgetConfig=${widgetConfig}></devtools-widget>`;
+  const renderedWidget = html`<devtools-widget
+      class="computed-styles-widget" ${widget(Elements.ComputedStyleWidget.ComputedStyleWidget, {
+        nodeStyle: styles,
+        matchedStyles: widgetData.data.matchedCascade,
+        // This disables showing the nested traces and detailed information in the widget.
+        propertyTraces: null,
+        allowUserControl: false,
+        filterText: new RegExp(widgetData.data.properties.join('|'), 'i')
+      })}></devtools-widget>`;
   // clang-format on
 
-  return {renderedWidget: widget, revealable: new Elements.ElementsPanel.NodeComputedStyles(domNodeForId)};
+  return {renderedWidget, revealable: new Elements.ElementsPanel.NodeComputedStyles(domNodeForId)};
 }
 
 async function makeCoreVitalsWidget(widgetData: CoreVitalsAiWidget): Promise<WidgetMakerResponse|null> {
-  const widgetConfig = UI.Widget.widgetConfig(TimelineComponents.CWVMetrics.CWVMetrics, {data: widgetData.data});
-
   // clang-format off
-  const widget = html`<devtools-widget class="core-vitals-widget" .widgetConfig=${widgetConfig}></devtools-widget>`;
+  const renderedWidget = html`<devtools-widget
+      class="core-vitals-widget" ${widget(TimelineComponents.CWVMetrics.CWVMetrics, {data: widgetData.data})}>
+  </devtools-widget>`;
   // clang-format on
 
-  return {
-    renderedWidget: widget,
-    revealable: new TimelineUtils.Helpers.RevealableCoreVitals(widgetData.data.insightSetKey)
-  };
+  return {renderedWidget, revealable: new TimelineUtils.Helpers.RevealableCoreVitals(widgetData.data.insightSetKey)};
 }
 
 async function makeStylePropertiesWidget(widgetData: StylePropertiesAiWidget): Promise<WidgetMakerResponse|null> {
@@ -711,19 +707,17 @@ async function makeStylePropertiesWidget(widgetData: StylePropertiesAiWidget): P
     return null;
   }
 
-  const widgetConfig = UI.Widget.widgetConfig(Elements.StandaloneStylesContainer.StandaloneStylesContainer, {
-    domNode: domNodeForId,
-    filter: widgetData.data.selector ? new RegExp(widgetData.data.selector) : null,
-  });
-
   // clang-format off
-  const widget = html`<devtools-widget
-    class="styling-preview-widget"
-    .widgetConfig=${widgetConfig}
-  ></devtools-widget>`;
+  const renderedWidget = html`<devtools-widget
+      class="styling-preview-widget"
+      ${widget(Elements.StandaloneStylesContainer.StandaloneStylesContainer, {
+      domNode: domNodeForId,
+      filter: widgetData.data.selector ? new RegExp(widgetData.data.selector) : null,
+    })}>
+  </devtools-widget>`;
   // clang-format on
 
-  return {renderedWidget: widget, revealable: domNodeForId};
+  return {renderedWidget, revealable: domNodeForId};
 }
 
 function renderWidgetResponse(response: WidgetMakerResponse|null): Lit.LitTemplate {

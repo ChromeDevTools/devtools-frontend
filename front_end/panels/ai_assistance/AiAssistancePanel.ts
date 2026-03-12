@@ -50,6 +50,7 @@ import {
 import {isAiAssistancePatchingEnabled} from './PatchWidget.js';
 
 const {html} = Lit;
+const {widget} = UI.Widget;
 
 const AI_ASSISTANCE_SEND_FEEDBACK = 'https://crbug.com/364805393' as Platform.DevToolsPath.UrlString;
 const AI_ASSISTANCE_HELP =
@@ -465,16 +466,12 @@ function defaultView(input: ViewInput, output: PanelViewOutput, target: HTMLElem
         ></devtools-ai-chat-view>`;
       }
       case ViewState.EXPLORE_VIEW:
-        return html`<devtools-widget
-          class="fill-panel"
-          .widgetConfig=${UI.Widget.widgetConfig(ExploreWidget)}
-        ></devtools-widget>`;
+        return html`<devtools-widget class="fill-panel" ${widget(ExploreWidget)}>
+                    </devtools-widget>`;
 
       case ViewState.DISABLED_VIEW:
-        return html`<devtools-widget
-          class="fill-panel"
-          .widgetConfig=${UI.Widget.widgetConfig(DisabledWidget, input.props)}
-        ></devtools-widget>`;
+        return html`<devtools-widget class="fill-panel" ${widget(DisabledWidget, input.props)}>
+                    </devtools-widget>`;
     }
   }
 
@@ -510,7 +507,7 @@ function defaultView(input: ViewInput, output: PanelViewOutput, target: HTMLElem
           </div>
           <div slot="sidebar" class="sidebar-view">
             ${shouldShowWalkthrough ? html`
-              <devtools-widget .widgetConfig=${UI.Widget.widgetConfig(WalkthroughView, {
+              <devtools-widget ${widget(WalkthroughView, {
                 message: input.props.walkthrough.activeMessage,
                 isLoading: input.props.isLoading && walkthroughIsForLastMessage,
                 markdownRenderer: input.props.markdownRenderer,

@@ -120,6 +120,6 @@ Content:
     "client_version": "unit_test"
   },
   "functionality_type": 5,
-  "client_feature": 9
+  "client_feature": 25
 }
 === end content

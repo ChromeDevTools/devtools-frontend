@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as AgentProject from './AgentProject.js';
+import * as AccessibilityAgent from './agents/AccessibilityAgent.js';
 import * as AiAgent from './agents/AiAgent.js';
 import * as BreakpointDebuggerAgent from './agents/BreakpointDebuggerAgent.js';
 import * as ContextSelectionAgent from './agents/ContextSelectionAgent.js';
@@ -32,6 +33,7 @@ import * as AIContext from './performance/AIContext.js';
 import * as AIQueries from './performance/AIQueries.js';
 
 export {
+  AccessibilityAgent,
   AgentProject,
   AiAgent,
   AICallTree,

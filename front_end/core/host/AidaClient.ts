@@ -133,6 +133,8 @@ export enum ClientFeature {
   CHROME_PATCH_AGENT = 12,
   // Chrome AI Assistance Performance Agent.
   CHROME_PERFORMANCE_FULL_AGENT = 24,
+  // Chrome Accessibility Agent
+  CHROME_ACCESSIBILITY_AGENT = 26,
 
   // Removed features (for reference).
   // Chrome AI Assistance Performance Insights Agent.

@@ -21,6 +21,7 @@ devtools_entrypoint("bundle") {
 
   visibility = [
     ":*",
+    "../../models/ai_assistance/*",
     "../../panels/lighthouse/*",
   ]
 }

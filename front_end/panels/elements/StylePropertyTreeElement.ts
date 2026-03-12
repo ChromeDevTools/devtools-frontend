@@ -2066,9 +2066,12 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       this.listItemElement.textContent = '';
     }
 
-    this.property.addEventListener(SDK.CSSProperty.Events.LOCAL_VALUE_UPDATED, () => {
-      this.updateTitle();
-    });
+    this.property.addEventListener(SDK.CSSProperty.Events.LOCAL_VALUE_UPDATED, this.updateTitle, this);
+  }
+
+  override onunbind(): void {
+    this.property.removeEventListener(SDK.CSSProperty.Events.LOCAL_VALUE_UPDATED, this.updateTitle, this);
+    super.onunbind();
   }
 
   async gridNames(): Promise<Set<string>> {

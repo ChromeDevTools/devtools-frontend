@@ -63,6 +63,7 @@ export class StandaloneStylesContainer extends Common.ObjectWrapper.eventMixin<E
   #swatchPopoverHelper = new InlineEditor.SwatchPopoverHelper.SwatchPopoverHelper();
   #computedStyleModelInternal = new ComputedStyle.ComputedStyleModel.ComputedStyleModel();
   #view: View;
+  #filter: RegExp|null = null;
 
   constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
     super(element, {useShadowDom: true});
@@ -84,6 +85,8 @@ export class StandaloneStylesContainer extends Common.ObjectWrapper.eventMixin<E
       return;
     }
 
+    this.node()?.domModel().cssModel().discardCachedMatchedCascade();
+    await this.#updateSections();
     this.requestUpdate();
   }
 
@@ -132,9 +135,8 @@ export class StandaloneStylesContainer extends Common.ObjectWrapper.eventMixin<E
 
   override async performUpdate(): Promise<void> {
     this.hideAllPopovers();
-    this.node()?.domModel().cssModel().discardCachedMatchedCascade();
 
-    await this.#updateSections();
+    this.#updateFilter();
 
     const viewInput: ViewInput = {
       sections: this.#sections,
@@ -147,6 +149,12 @@ export class StandaloneStylesContainer extends Common.ObjectWrapper.eventMixin<E
     this.dispatchEventToListeners(Events.STYLES_UPDATE_COMPLETED);
   }
 
+  #updateFilter(): void {
+    for (const section of this.#sections) {
+      section.updateFilter();
+    }
+  }
+
   swatchPopoverHelper(): InlineEditor.SwatchPopoverHelper.SwatchPopoverHelper {
     return this.#swatchPopoverHelper;
   }
@@ -157,7 +165,11 @@ export class StandaloneStylesContainer extends Common.ObjectWrapper.eventMixin<E
       return;
     }
     this.#computedStyleModelInternal.node = node;
-    this.requestUpdate();
+  }
+
+  set filter(regex: RegExp|null) {
+    this.#filter = regex;
+    this.#updateFilter();
   }
 
   node(): SDK.DOMModel.DOMNode|null {
@@ -195,7 +207,7 @@ export class StandaloneStylesContainer extends Common.ObjectWrapper.eventMixin<E
   }
 
   filterRegex(): RegExp|null {
-    return null;
+    return this.#filter;
   }
 
   setEditingStyle(editing: boolean): void {
@@ -207,7 +219,10 @@ export class StandaloneStylesContainer extends Common.ObjectWrapper.eventMixin<E
   }
 
   forceUpdate(): void {
-    this.requestUpdate();
+    this.node()?.domModel().cssModel().discardCachedMatchedCascade();
+    void this.#updateSections().then(() => {
+      this.requestUpdate();
+    });
   }
 
   hideAllPopovers(): void {

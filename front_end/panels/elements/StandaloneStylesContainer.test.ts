@@ -50,8 +50,14 @@ describeWithMockConnection('StandaloneStylesContainer', () => {
     sinon.stub(cssModel, 'cachedMatchedCascadeForNode').resolves(matchedStyles);
     const container = new Elements.StandaloneStylesContainer.StandaloneStylesContainer();
     renderElementIntoDOM(container);
+
+    const updatePromise = new Promise<void>(resolve => {
+      container.addEventListener(
+          Elements.StandaloneStylesContainer.Events.STYLES_UPDATE_COMPLETED, () => resolve(), {once: true});
+    });
+
     container.domNode = node;
-    await container.updateComplete;
+    await updatePromise;
     return {container, matchedStyles};
   }
 
@@ -72,10 +78,15 @@ describeWithMockConnection('StandaloneStylesContainer', () => {
     const initialSections = container.allSections();
     const discardSpy = sinon.spy(cssModel, 'discardCachedMatchedCascade');
 
+    const updatePromise = new Promise<void>(resolve => {
+      container.addEventListener(
+          Elements.StandaloneStylesContainer.Events.STYLES_UPDATE_COMPLETED, () => resolve(), {once: true});
+    });
+
     container.computedStyleModel().dispatchEventToListeners(
         ComputedStyle.ComputedStyleModel.Events.CSS_MODEL_CHANGED, undefined);
 
-    await container.updateComplete;
+    await updatePromise;
     sinon.assert.called(discardSpy);
 
     const newSections = container.allSections();
@@ -100,9 +111,14 @@ describeWithMockConnection('StandaloneStylesContainer', () => {
       attributes: [],
     });
 
+    const updatePromise = new Promise<void>(resolve => {
+      container.addEventListener(
+          Elements.StandaloneStylesContainer.Events.STYLES_UPDATE_COMPLETED, () => resolve(), {once: true});
+    });
+
     container.domNode = node2;
 
-    await container.updateComplete;
+    await updatePromise;
     sinon.assert.called(discardSpy);
     assert.notStrictEqual(
         container.allSections(), initialSections, 'Sections should have been recreated for the new node');

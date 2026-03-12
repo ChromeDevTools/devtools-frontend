@@ -143,7 +143,10 @@ export function loadTests(testDirectory: string, filename = 'tests.txt') {
                     .filter(t => t.length > 0)
                     .map(t => path.normalize(path.join(testDirectory, t)))
                     .filter(t => TestConfig.tests.some((spec: string) => t.startsWith(spec)))
-                    .filter(t => shardFilter(TestConfig, t));
+                    // To keep sharding deterministic, use the relative path from the test directory, NOT the
+                    // absolute file path on disk. Also replace backward slashes with forward slashes so sharding stays
+                    // the same across windows, linux and mac.
+                    .filter(t => shardFilter(TestConfig, path.relative(testDirectory, t).replaceAll('\\', '/')));
 
   if (TestConfig.shuffle) {
     for (let i = tests.length - 1; i > 0; i--) {

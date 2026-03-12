@@ -362,6 +362,8 @@ def CheckObsoleteScreenshotGoldens(input_api, output_api):
                                 message='Obsolete screenshot images')
 
 
+_UPDATE_NODE_DEPENDENCIES_FOOTER = 'Update-Node-Dependencies'
+
 def CheckNodeModules(input_api, output_api):
     files = ['.clang-format', 'OWNERS', 'README.chromium']
     results = []
@@ -379,29 +381,39 @@ def CheckNodeModules(input_api, output_api):
         input_api.os_path.join(input_api.PresubmitLocalPath(), 'node_modules')
     ], [], [])
 
-    # If the changes are above 100 assume that touching the node_modules
-    # was intentional
-    if len(node_module_files) == 0 or len(node_module_files) > 100:
+    if len(node_module_files) == 0:
         return results
 
+    reasons = input_api.change.GitFootersFromDescription().get(
+        _UPDATE_NODE_DEPENDENCIES_FOOTER, [])
+
+    if len(reasons):
+        if ''.join(reasons).strip() == '':
+            return [
+                output_api.PresubmitError(
+                    '{key} is specified without the reason. Please provide the reason '
+                    'in "{key}: <reason>"'.format(
+                        key=_UPDATE_NODE_DEPENDENCIES_FOOTER))
+            ]
+        input_api.logging.info('node_modules check is being ignored')
+        return []
+
+    # Fail on CQ when checking diffs.
+    # Warn locally or when checking the whole tree (due to legacy headers).
+    if input_api.is_committing and not input_api.no_diffs:
+        report_type = output_api.PresubmitError
+    else:
+        report_type = output_api.PresubmitPromptWarning
+
     message = (
-        "Changes to `node_modules` detected.\n" +
-        "This is third party code and should not be modified.\n" +
-        "`node_module` are mainly used in testing infra\n" +
+        "{key}: <reason> footer must be present.\n".format(
+            key=_UPDATE_NODE_DEPENDENCIES_FOOTER) +
+        "This is third party code and should not be modified manually.\n" +
+        "`node_modules` are mainly used in testing infra\n" +
         "For bug fixes and features usually you should not need this change.\n"
         + "Was this change intentional?")
-    results.extend([
-        output_api.PresubmitPromptWarning(
-            message,
-            locations=[
-                output_api.PresubmitResultLocation(
-                    # Location expects relative path
-                    # But _GetAffectedFiles returns us absolute path
-                    input_api.os_path.relpath(
-                        node_module_files[0],
-                        input_api.PresubmitLocalPath()), ),
-            ])
-    ])
+
+    results.extend([report_type(message)])
 
     return results
 

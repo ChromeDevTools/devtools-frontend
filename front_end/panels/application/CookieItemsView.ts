@@ -82,6 +82,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/application/CookieItemsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const {Size} = Geometry;
+const {widget} = UI.Widget;
 
 interface CookiePreviewWidgetInput {
   cookie: SDK.Cookie.Cookie|null;
@@ -184,10 +185,8 @@ type View = (input: CookieItemsViewInput, output: CookieItemsViewOutput, target:
 export const DEFAULT_VIEW: View = (input, output, target) => {
   // clang-format off
   render(html`<style>${cookieItemsViewStyles}</style>
-    <devtools-widget class="storage-view"
-      .widgetConfig=${UI.Widget.widgetConfig(UI.Widget.VBox, {minimumSize: new Size(0, 50)})}>
-      <devtools-widget
-        .widgetConfig=${UI.Widget.widgetConfig(StorageItemsToolbar, {
+    <devtools-widget class="storage-view" ${widget(UI.Widget.VBox, {minimumSize: new Size(0, 50)})}>
+      <devtools-widget ${widget(StorageItemsToolbar, {
           onDeleteSelectedCallback: input.onDeleteSelectedItems,
           onDeleteAllCallback: input.onDeleteAllItems,
           onRefreshCallback: input.onRefreshItems,
@@ -196,10 +195,8 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
         ${UI.Widget.widgetRef(StorageItemsToolbar, toolbar => { output.toolbar = toolbar; })}
       ></devtools-widget>
       <devtools-split-view sidebar-position="second" name="cookie-items-split-view-state">
-        <devtools-widget
-                  slot="main"
-                  .widgetConfig=${UI.Widget.widgetConfig(UI.Widget.VBox, {minimumSize: new Size(0, 50)})}>
-          <devtools-widget slot="main" .widgetConfig=${UI.Widget.widgetConfig(CookieTable.CookiesTable.CookiesTable, {
+        <devtools-widget slot="main" ${widget(UI.Widget.VBox, {minimumSize: new Size(0, 50)})}>
+          <devtools-widget slot="main" ${widget(CookieTable.CookiesTable.CookiesTable, {
             cookieDomain: input.cookieDomain,
             cookiesData: input.cookiesData,
             saveCallback: input.onSaveCookie,
@@ -210,15 +207,12 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
           })}
           ></devtools-widget>
         </devtools-widget>
-        <devtools-widget
-          slot="sidebar"
-          .widgetConfig=${UI.Widget.widgetConfig(UI.Widget.VBox, {minimumSize: new Size(0, 50)})}
+        <devtools-widget slot="sidebar" ${widget(UI.Widget.VBox, {minimumSize: new Size(0, 50)})}
           jslog=${VisualLogging.pane('preview').track({resize: true})}>
           ${input.selectedCookie ?
-            html`<devtools-widget .widgetConfig=${UI.Widget.widgetConfig(CookiePreviewWidget, {
-              cookie: input.selectedCookie
-            })}></devtools-widget>` :
-            html`<devtools-widget .widgetConfig=${UI.Widget.widgetConfig(UI.EmptyWidget.EmptyWidget, {
+            html`<devtools-widget ${widget(CookiePreviewWidget, {cookie: input.selectedCookie})}>
+                 </devtools-widget>` :
+            html`<devtools-widget ${widget(UI.EmptyWidget.EmptyWidget, {
               header: i18nString(UIStrings.noCookieSelected),
               text: i18nString(UIStrings.selectACookieToPreviewItsValue)
             })}></devtools-widget>`}

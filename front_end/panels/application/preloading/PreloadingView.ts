@@ -28,6 +28,7 @@ import preloadingViewStyles from './preloadingView.css.js';
 import preloadingViewDropDownStyles from './preloadingViewDropDown.css.js';
 
 const {createRef, ref} = Directives;
+const {widget} = UI.Widget;
 
 const UIStrings = {
   /**
@@ -266,7 +267,7 @@ export class PreloadingRuleSetView extends UI.Widget.VBox {
           <div slot="main" ${ref(this.ruleSetGridContainerRef)}>
           </div>
           <div slot="sidebar" jslog=${VisualLogging.section('rule-set-details')}>
-            <devtools-widget .widgetConfig=${UI.Widget.widgetConfig(PreloadingComponents.RuleSetDetailsView.RuleSetDetailsView, {
+            <devtools-widget ${widget(PreloadingComponents.RuleSetDetailsView.RuleSetDetailsView, {
               ruleSet: this.getRuleSet(),
               shouldPrettyPrint: this.shouldPrettyPrint,
             })} ${ref(this.ruleSetDetailsRef)}></devtools-widget>

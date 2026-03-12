@@ -22,7 +22,7 @@ import * as ApplicationComponents from './components/components.js';
 
 const {styleMap, classMap, ref} = Directives;
 const {linkifyURL} = Components.Linkifier.Linkifier;
-const {widget, widgetConfig} = UI.Widget;
+const {widget} = UI.Widget;
 
 const UIStrings = {
   /**
@@ -719,7 +719,7 @@ function renderProtocolHandlers(data: ProtocolHandlersSectionData, output: ViewO
   // clang-format off
   return html`${renderSectionHeader(i18nString(UIStrings.protocolHandlers), output)}
     <div class="report-row">
-      <devtools-widget .widgetConfig=${widgetConfig(
+      <devtools-widget ${widget(
         ApplicationComponents.ProtocolHandlersView.ProtocolHandlersView,
         {protocolHandlers: data.protocolHandlers, manifestLink: data.manifestLink})}
         ${ref(setFocusOnSection(i18nString(UIStrings.protocolHandlers), output))}>

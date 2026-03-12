@@ -30,7 +30,7 @@ import * as ApplicationComponents from './components/components.js';
 import frameDetailsReportViewStyles from './frameDetailsReportView.css.js';
 import {OriginTrialTreeView} from './OriginTrialTreeView.js';
 
-const {widget, widgetConfig} = UI.Widget;
+const {widget} = UI.Widget;
 
 const UIStrings = {
   /**
@@ -327,7 +327,7 @@ function renderOriginTrial(trials: Protocol.Page.OriginTrial[]|null): LitTemplat
         </devtools-link>
       </span>
     </devtools-report-section>
-    <devtools-widget class="span-cols" .widgetConfig=${widgetConfig(OriginTrialTreeView, {data})}>
+    <devtools-widget class="span-cols" ${widget(OriginTrialTreeView, {data})}>
     </devtools-widget>
     <devtools-report-divider></devtools-report-divider>`;
   // clang-format on

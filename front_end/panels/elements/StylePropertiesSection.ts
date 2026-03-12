@@ -47,6 +47,7 @@ import * as ComputedStyle from '../../models/computed_style/computed_style.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as Tooltips from '../../ui/components/tooltips/tooltips.js';
+import {createIcon, type Icon} from '../../ui/kit/kit.js';
 import type * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -115,6 +116,14 @@ const UIStrings = {
    * @example {(0,0,1)} PH1
    */
   specificity: 'Specificity: {PH1}',
+  /**
+   * @description Accessibility label for the button that expands a collapsed CSS rule in the Styles pane.
+   */
+  expandCollapsedRule: 'Expand collapsed rule',
+  /**
+   * @description Accessibility label for the button that collapses an expanded CSS rule in the Styles pane.
+   */
+  collapseExpandedRule: 'Collapse expanded rule',
 } as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/elements/StylePropertiesSection.ts', UIStrings);
@@ -151,6 +160,8 @@ export class StylePropertiesSection {
   protected readonly selectorRefElement: HTMLElement;
   private hoverableSelectorsMode: boolean;
   #isHidden: boolean;
+  #isCollapsed: boolean;
+  #collapseIcon: Icon|null = null;
   protected customPopulateCallback: () => void;
 
   nestingLevel = 0;
@@ -228,6 +239,25 @@ export class StylePropertiesSection {
     const selectorContainer = document.createElement('div');
     selectorContainer.createChild('span', 'styles-clipboard-only').textContent = indent.repeat(this.nestingLevel);
     selectorContainer.classList.add('selector-container');
+
+    // Collapse/expand toggle icon for rules that can be manually toggled.
+    this.#collapseIcon = createIcon('triangle-right', 'section-collapse-icon');
+    UI.ARIAUtils.markAsButton(this.#collapseIcon);
+    UI.ARIAUtils.setControls(this.#collapseIcon, this.propertiesTreeOutline.element);
+    this.#collapseIcon.tabIndex = 0;
+    this.#collapseIcon.addEventListener('click', (event: Event) => {
+      event.consume(true);
+      this.#toggleCollapsed();
+    });
+    this.#collapseIcon.addEventListener('keydown', (event: KeyboardEvent) => {
+      if (!Platform.KeyboardUtilities.isEnterOrSpaceKey(event)) {
+        return;
+      }
+      event.consume(true);
+      this.#toggleCollapsed();
+    });
+    selectorContainer.appendChild(this.#collapseIcon);
+
     this.selectorElement = document.createElement('span');
     UI.ARIAUtils.setLabel(this.selectorElement, i18nString(UIStrings.cssSelector));
     this.selectorElement.classList.add('selector');
@@ -324,8 +354,10 @@ export class StylePropertiesSection {
     }
     this.hoverableSelectorsMode = false;
     this.#isHidden = false;
+    this.#isCollapsed = false;
     this.markSelectorMatches();
     this.onpopulate();
+    this.#updateCollapsedState();
 
     this.stylesContainer.computedStyleModel().addEventListener(
         ComputedStyle.ComputedStyleModel.Events.CSS_MODEL_CHANGED, this.#onCSSModelChanged, this);
@@ -620,9 +652,18 @@ export class StylePropertiesSection {
         keyboardEvent.metaKey) {
       return;
     }
+
+    // Only handle section-level edit shortcuts when the event originated from
+    // the section itself. Child editors dispatch key events that bubble up to
+    // the section, and we must not treat those as section shortcuts.
+    const isSectionLevelShortcut = keyboardEvent.target === this.element;
+
     switch (keyboardEvent.key) {
       case 'Enter':
       case ' ':
+        if (!isSectionLevelShortcut) {
+          return;
+        }
         this.startEditingAtFirstPosition();
         keyboardEvent.consume(true);
         break;
@@ -634,7 +675,7 @@ export class StylePropertiesSection {
         break;
       default:
         // Filter out non-printable key strokes.
-        if (keyboardEvent.key.length === 1) {
+        if (isSectionLevelShortcut && keyboardEvent.key.length === 1) {
           this.addNewBlankProperty(0).startEditingName();
         }
         break;
@@ -1333,6 +1374,82 @@ export class StylePropertiesSection {
     return this.#isHidden;
   }
 
+  /**
+   * Checks whether the section should be collapsed because it does not
+   * contribute any active styles. A section is collapsed when:
+   * - It has no leading properties (empty rule), OR
+   * - All its leading properties have PropertyState.OVERLOADED
+   *
+   * Sections containing only user-disabled properties are NOT collapsed,
+   * since the user intentionally toggled them off and they should remain visible.
+   */
+  #shouldCollapse(): boolean {
+    const style = this.styleInternal;
+    const properties = style.leadingProperties();
+
+    // Never collapse the element's own inline style section.
+    if (style.type === SDK.CSSStyleDeclaration.Type.Inline) {
+      return false;
+    }
+
+    // Empty rule (e.g. from CSS nesting): collapse.
+    if (properties.length === 0) {
+      return true;
+    }
+
+    // If any property is user-disabled (toggled off via checkbox), do not
+    // collapse. The user deliberately disabled them.
+    const hasDisabledProperty = properties.some(p => p.disabled);
+    if (hasDisabledProperty) {
+      return false;
+    }
+
+    // If every property is OVERLOADED, collapse.
+    const allOverloaded =
+        properties.every(p => this.matchedStyles.propertyState(p) === SDK.CSSMatchedStyles.PropertyState.OVERLOADED);
+    return allOverloaded;
+  }
+
+  #updateCollapsedState(): void {
+    const shouldCollapse = this.#shouldCollapse();
+    // Mark as collapsible so the toggle icon is always shown for
+    // sections that can be collapsed, even after manual expansion.
+    this.element.classList.toggle('collapsible', shouldCollapse);
+    this.#setCollapsed(shouldCollapse);
+  }
+
+  #setCollapsed(collapsed: boolean): void {
+    this.#isCollapsed = collapsed;
+    this.element.classList.toggle('collapsed', collapsed);
+    this.propertiesTreeOutline.element.classList.toggle('hidden', collapsed);
+    if (this.#collapseIcon) {
+      this.#collapseIcon.name = collapsed ? 'triangle-right' : 'triangle-down';
+      UI.ARIAUtils.setExpanded(this.#collapseIcon, !collapsed);
+      UI.ARIAUtils.setLabel(
+          this.#collapseIcon,
+          collapsed ? i18nString(UIStrings.expandCollapsedRule) : i18nString(UIStrings.collapseExpandedRule));
+    }
+  }
+
+  #toggleCollapsed(): void {
+    this.#setCollapsed(!this.#isCollapsed);
+  }
+
+  /**
+   * Expand a collapsed section, e.g. when navigating to a property
+   * via a var() link.
+   */
+  expand(): void {
+    if (!this.#isCollapsed) {
+      return;
+    }
+    this.#setCollapsed(false);
+  }
+
+  isCollapsed(): boolean {
+    return this.#isCollapsed;
+  }
+
   markSelectorMatches(): void {
     const rule = this.styleInternal.parentRule;
     if (!rule || !(rule instanceof SDK.CSSRule.CSSStyleRule)) {
@@ -1395,6 +1512,10 @@ export class StylePropertiesSection {
 
   addNewBlankProperty(index: number|undefined = this.propertiesTreeOutline.rootElement().childCount()):
       StylePropertyTreeElement {
+    if (this.#isCollapsed) {
+      this.expand();
+    }
+
     const property = this.styleInternal.newBlankProperty(index);
     const item = new StylePropertyTreeElement({
       stylesContainer: this.stylesContainer,
@@ -1416,6 +1537,13 @@ export class StylePropertiesSection {
   }
 
   private handleEmptySpaceClick(event: Event): void {
+    // If collapsed, clicking anywhere on the section should expand it.
+    if (this.#isCollapsed) {
+      this.#toggleCollapsed();
+      event.consume(true);
+      return;
+    }
+
     // `this.willCauseCancelEditing` is a hacky way to understand whether we should
     // create a new property or not on empty space click.
     // For empty space clicks, the order of events are:

@@ -176,6 +176,474 @@ describe('StylesSidebarPane', () => {
       });
     });
 
+    describe('collapsing non-contributing sections', () => {
+      it('collapses a section where all properties are overloaded', async () => {
+        const stylesSidebarPane =
+            new Elements.StylesSidebarPane.StylesSidebarPane(new ComputedStyle.ComputedStyleModel.ComputedStyleModel());
+        const node = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+        node.id = 1 as Protocol.DOM.NodeId;
+        const matchedStyles = await getMatchedStyles({
+          cssModel: stylesSidebarPane.cssModel() as SDK.CSSModel.CSSModel,
+          node,
+          matchedPayload: [
+            // Lower specificity rule: color will be overloaded by the higher specificity rule.
+            {
+              rule: {
+                selectorList: {selectors: [{text: 'div'}], text: 'div'},
+                origin: Protocol.CSS.StyleSheetOrigin.Regular,
+                style: {
+                  cssProperties: [{name: 'color', value: 'blue'}],
+                  shorthandEntries: [],
+                },
+              },
+              matchingSelectors: [0],
+            },
+            // Higher specificity rule: color is active here.
+            {
+              rule: {
+                selectorList: {selectors: [{text: '#id'}], text: '#id'},
+                origin: Protocol.CSS.StyleSheetOrigin.Regular,
+                style: {
+                  cssProperties: [{name: 'color', value: 'red'}],
+                  shorthandEntries: [],
+                },
+              },
+              matchingSelectors: [0],
+            },
+          ],
+        });
+
+        const sectionBlocks = await stylesSidebarPane.rebuildSectionsForMatchedStyleRulesForTest(
+            matchedStyles, new Map(), new Map(), null);
+
+        assert.lengthOf(sectionBlocks[0].sections, 2);
+
+        const activeSection = sectionBlocks[0].sections.find(section => section.headerText() === '#id');
+        const overloadedSection = sectionBlocks[0].sections.find(section => section.headerText() === 'div');
+        if (!activeSection || !overloadedSection) {
+          assert.fail('Expected #id and div sections to exist');
+        }
+
+        const overloadedProperty = overloadedSection.style().leadingProperties()[0];
+        if (!overloadedProperty) {
+          assert.fail('Expected overloaded section to have at least one property');
+        }
+        assert.strictEqual(
+            matchedStyles.propertyState(overloadedProperty), SDK.CSSMatchedStyles.PropertyState.OVERLOADED,
+            'Expected div{color:blue} to be overloaded by #id{color:red}');
+
+        // The section with all overloaded properties should be collapsed.
+        assert.isTrue(
+            overloadedSection.element.classList.contains('collapsed'),
+            'Section with all overloaded properties should have collapsed class');
+
+        // The section with active properties should NOT be collapsed.
+        assert.isFalse(
+            activeSection.element.classList.contains('collapsed'),
+            'Section with active properties should not be collapsed');
+      });
+
+      it('collapses an empty section (no leading properties)', async () => {
+        const stylesSidebarPane =
+            new Elements.StylesSidebarPane.StylesSidebarPane(new ComputedStyle.ComputedStyleModel.ComputedStyleModel());
+        const node = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+        node.id = 1 as Protocol.DOM.NodeId;
+        const matchedStyles = await getMatchedStyles({
+          cssModel: stylesSidebarPane.cssModel() as SDK.CSSModel.CSSModel,
+          node,
+          matchedPayload: [
+            // Empty rule (no properties -- common with CSS nesting).
+            {
+              rule: {
+                selectorList: {selectors: [{text: '.empty'}], text: '.empty'},
+                origin: Protocol.CSS.StyleSheetOrigin.Regular,
+                style: {
+                  cssProperties: [],
+                  shorthandEntries: [],
+                },
+              },
+              matchingSelectors: [0],
+            },
+            // Non-empty rule.
+            {
+              rule: {
+                selectorList: {selectors: [{text: '#id'}], text: '#id'},
+                origin: Protocol.CSS.StyleSheetOrigin.Regular,
+                style: {
+                  cssProperties: [{name: 'color', value: 'red'}],
+                  shorthandEntries: [],
+                },
+              },
+              matchingSelectors: [0],
+            },
+          ],
+        });
+
+        const sectionBlocks = await stylesSidebarPane.rebuildSectionsForMatchedStyleRulesForTest(
+            matchedStyles, new Map(), new Map(), null);
+
+        assert.lengthOf(sectionBlocks[0].sections, 2);
+        const activeSection = sectionBlocks[0].sections[0];  // #id - has properties
+        const emptySection = sectionBlocks[0].sections[1];   // .empty - no properties
+
+        assert.isTrue(emptySection.element.classList.contains('collapsed'), 'Empty section should be collapsed');
+        assert.isFalse(
+            activeSection.element.classList.contains('collapsed'), 'Non-empty section should not be collapsed');
+      });
+
+      it('does NOT collapse a section containing only disabled properties', async () => {
+        const stylesSidebarPane =
+            new Elements.StylesSidebarPane.StylesSidebarPane(new ComputedStyle.ComputedStyleModel.ComputedStyleModel());
+        const node = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+        node.id = 1 as Protocol.DOM.NodeId;
+        const matchedStyles = await getMatchedStyles({
+          cssModel: stylesSidebarPane.cssModel() as SDK.CSSModel.CSSModel,
+          node,
+          matchedPayload: [
+            // Rule with a disabled (user-toggled-off) property.
+            {
+              rule: {
+                selectorList: {selectors: [{text: '.disabled-props'}], text: '.disabled-props'},
+                origin: Protocol.CSS.StyleSheetOrigin.Regular,
+                style: {
+                  cssProperties: [{name: 'color', value: 'blue', disabled: true}],
+                  shorthandEntries: [],
+                },
+              },
+              matchingSelectors: [0],
+            },
+            // Another rule so the disabled one has something to compare against.
+            {
+              rule: {
+                selectorList: {selectors: [{text: '#id'}], text: '#id'},
+                origin: Protocol.CSS.StyleSheetOrigin.Regular,
+                style: {
+                  cssProperties: [{name: 'background', value: 'white'}],
+                  shorthandEntries: [],
+                },
+              },
+              matchingSelectors: [0],
+            },
+          ],
+        });
+
+        const sectionBlocks = await stylesSidebarPane.rebuildSectionsForMatchedStyleRulesForTest(
+            matchedStyles, new Map(), new Map(), null);
+
+        assert.lengthOf(sectionBlocks[0].sections, 2);
+        const disabledSection = sectionBlocks[0].sections[1];  // .disabled-props
+
+        // A section with disabled properties should NOT be collapsed.
+        // Disabled properties are user-intentional and should remain visible.
+        assert.isFalse(
+            disabledSection.element.classList.contains('collapsed'),
+            'Section with disabled properties should not be collapsed');
+      });
+
+      it('does NOT collapse a section with at least one active property', async () => {
+        const stylesSidebarPane =
+            new Elements.StylesSidebarPane.StylesSidebarPane(new ComputedStyle.ComputedStyleModel.ComputedStyleModel());
+        const node = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+        node.id = 1 as Protocol.DOM.NodeId;
+        const matchedStyles = await getMatchedStyles({
+          cssModel: stylesSidebarPane.cssModel() as SDK.CSSModel.CSSModel,
+          node,
+          matchedPayload: [
+            // Rule with one overloaded and one active property.
+            {
+              rule: {
+                selectorList: {selectors: [{text: 'div'}], text: 'div'},
+                origin: Protocol.CSS.StyleSheetOrigin.Regular,
+                style: {
+                  cssProperties: [
+                    {name: 'color', value: 'blue'},   // will be overloaded
+                    {name: 'margin', value: '10px'},  // will be active (not set elsewhere)
+                  ],
+                  shorthandEntries: [],
+                },
+              },
+              matchingSelectors: [0],
+            },
+            // Higher specificity rule that overrides color.
+            {
+              rule: {
+                selectorList: {selectors: [{text: '#id'}], text: '#id'},
+                origin: Protocol.CSS.StyleSheetOrigin.Regular,
+                style: {
+                  cssProperties: [{name: 'color', value: 'red'}],
+                  shorthandEntries: [],
+                },
+              },
+              matchingSelectors: [0],
+            },
+          ],
+        });
+
+        const sectionBlocks = await stylesSidebarPane.rebuildSectionsForMatchedStyleRulesForTest(
+            matchedStyles, new Map(), new Map(), null);
+
+        assert.lengthOf(sectionBlocks[0].sections, 2);
+        const mixedSection = sectionBlocks[0].sections[1];  // div - has one active, one overloaded
+
+        assert.isFalse(
+            mixedSection.element.classList.contains('collapsed'),
+            'Section with at least one active property should not be collapsed');
+      });
+
+      it('expands a collapsed section when jump-to targets it', async () => {
+        const stylesSidebarPane =
+            new Elements.StylesSidebarPane.StylesSidebarPane(new ComputedStyle.ComputedStyleModel.ComputedStyleModel());
+        const node = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+        node.id = 1 as Protocol.DOM.NodeId;
+        const matchedStyles = await getMatchedStyles({
+          cssModel: stylesSidebarPane.cssModel() as SDK.CSSModel.CSSModel,
+          node,
+          matchedPayload: [
+            // Lower specificity -- all overloaded.
+            {
+              rule: {
+                selectorList: {selectors: [{text: 'div'}], text: 'div'},
+                origin: Protocol.CSS.StyleSheetOrigin.Regular,
+                style: {
+                  cssProperties: [{name: 'color', value: 'blue'}],
+                  shorthandEntries: [],
+                },
+              },
+              matchingSelectors: [0],
+            },
+            // Higher specificity.
+            {
+              rule: {
+                selectorList: {selectors: [{text: '#id'}], text: '#id'},
+                origin: Protocol.CSS.StyleSheetOrigin.Regular,
+                style: {
+                  cssProperties: [{name: 'color', value: 'red'}],
+                  shorthandEntries: [],
+                },
+              },
+              matchingSelectors: [0],
+            },
+          ],
+        });
+
+        stylesSidebarPane.setMatchedStylesForTest(matchedStyles);
+        const sectionBlocks = await stylesSidebarPane.rebuildSectionsForMatchedStyleRulesForTest(
+            matchedStyles, new Map(), new Map(), null);
+
+        // In production, requestUpdate() stores these blocks internally.
+        // In this unit test we call rebuildSectionsForMatchedStyleRulesForTest()
+        // directly, so wire them into the pane explicitly for jump-to lookup.
+        (stylesSidebarPane as unknown as {sectionBlocks: Elements.StylesSidebarPane.SectionBlock[]}).sectionBlocks =
+            sectionBlocks;
+
+        const overloadedSection = sectionBlocks[0].sections.find(section => section.headerText() === 'div');
+        if (!overloadedSection) {
+          assert.fail('Expected div section to exist');
+        }
+
+        // Reveal the overloaded property via jump-to.
+        const overloadedProperty = overloadedSection.style().leadingProperties()[0];
+        if (!overloadedProperty) {
+          assert.fail('Expected overloaded section to have at least one property');
+        }
+        assert.strictEqual(
+            matchedStyles.propertyState(overloadedProperty), SDK.CSSMatchedStyles.PropertyState.OVERLOADED,
+            'Expected div{color:blue} to be overloaded by #id{color:red}');
+
+        // Verify section is initially collapsed.
+        assert.isTrue(
+            overloadedSection.element.classList.contains('collapsed'), 'Section should be initially collapsed');
+
+        stylesSidebarPane.revealProperty(overloadedProperty);
+
+        // After reveal, the section should be expanded (not collapsed).
+        assert.isFalse(
+            overloadedSection.element.classList.contains('collapsed'),
+            'Section should be expanded after revealProperty');
+      });
+
+      it('can be manually expanded and re-collapsed via toggle', async () => {
+        const stylesSidebarPane =
+            new Elements.StylesSidebarPane.StylesSidebarPane(new ComputedStyle.ComputedStyleModel.ComputedStyleModel());
+        const node = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+        node.id = 1 as Protocol.DOM.NodeId;
+        const matchedStyles = await getMatchedStyles({
+          cssModel: stylesSidebarPane.cssModel() as SDK.CSSModel.CSSModel,
+          node,
+          matchedPayload: [
+            {
+              rule: {
+                selectorList: {selectors: [{text: 'div'}], text: 'div'},
+                origin: Protocol.CSS.StyleSheetOrigin.Regular,
+                style: {
+                  cssProperties: [{name: 'color', value: 'blue'}],
+                  shorthandEntries: [],
+                },
+              },
+              matchingSelectors: [0],
+            },
+            {
+              rule: {
+                selectorList: {selectors: [{text: '#id'}], text: '#id'},
+                origin: Protocol.CSS.StyleSheetOrigin.Regular,
+                style: {
+                  cssProperties: [{name: 'color', value: 'red'}],
+                  shorthandEntries: [],
+                },
+              },
+              matchingSelectors: [0],
+            },
+          ],
+        });
+
+        const sectionBlocks = await stylesSidebarPane.rebuildSectionsForMatchedStyleRulesForTest(
+            matchedStyles, new Map(), new Map(), null);
+
+        const overloadedSection = sectionBlocks[0].sections.find(section => section.headerText() === 'div');
+        if (!overloadedSection) {
+          assert.fail('Expected div section to exist');
+        }
+
+        // Initially collapsed.
+        assert.isTrue(overloadedSection.isCollapsed(), 'Section should be initially collapsed');
+        assert.isTrue(
+            overloadedSection.element.classList.contains('collapsible'), 'Section should have collapsible class');
+
+        // Expand manually.
+        overloadedSection.expand();
+        assert.isFalse(overloadedSection.isCollapsed(), 'Section should be expanded after expand()');
+        assert.isFalse(
+            overloadedSection.element.classList.contains('collapsed'),
+            'Section should not have collapsed class after expand()');
+        // Still marked collapsible so the icon remains visible.
+        assert.isTrue(
+            overloadedSection.element.classList.contains('collapsible'),
+            'Section should retain collapsible class after manual expand');
+      });
+
+      it('expands collapsed sections before adding a new blank property', async () => {
+        const stylesSidebarPane =
+            new Elements.StylesSidebarPane.StylesSidebarPane(new ComputedStyle.ComputedStyleModel.ComputedStyleModel());
+        const node = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+        node.id = 1 as Protocol.DOM.NodeId;
+        const styleSheetId = '0' as Protocol.DOM.StyleSheetId;
+
+        const matchedStyles = await getMatchedStyles({
+          cssModel: stylesSidebarPane.cssModel() as SDK.CSSModel.CSSModel,
+          node,
+          matchedPayload: [
+            {
+              rule: {
+                selectorList: {selectors: [{text: 'div'}], text: 'div'},
+                origin: Protocol.CSS.StyleSheetOrigin.Regular,
+                style: {
+                  cssProperties: [{name: 'color', value: 'blue'}],
+                  shorthandEntries: [],
+                  styleSheetId,
+                  range: {startLine: 0, startColumn: 0, endLine: 0, endColumn: 15},
+                },
+              },
+              matchingSelectors: [0],
+            },
+            {
+              rule: {
+                selectorList: {selectors: [{text: '#id'}], text: '#id'},
+                origin: Protocol.CSS.StyleSheetOrigin.Regular,
+                style: {
+                  cssProperties: [{name: 'color', value: 'red'}],
+                  shorthandEntries: [],
+                  styleSheetId,
+                  range: {startLine: 1, startColumn: 0, endLine: 1, endColumn: 15},
+                },
+              },
+              matchingSelectors: [0],
+            },
+          ],
+        });
+
+        const sectionBlocks = await stylesSidebarPane.rebuildSectionsForMatchedStyleRulesForTest(
+            matchedStyles, new Map(), new Map(), null);
+
+        const overloadedSection = sectionBlocks[0].sections.find(section => section.headerText() === 'div');
+        if (!overloadedSection) {
+          assert.fail('Expected div section to exist');
+        }
+
+        assert.isTrue(overloadedSection.isCollapsed(), 'Section should be initially collapsed');
+
+        const treeElement = overloadedSection.addNewBlankProperty();
+
+        assert.isFalse(overloadedSection.isCollapsed(), 'Section should expand before adding a new property');
+        assert.exists(treeElement, 'Expected a new blank property tree element to be created');
+      });
+
+      it('collapses inherited sections with all overloaded properties', async () => {
+        const stylesSidebarPane =
+            new Elements.StylesSidebarPane.StylesSidebarPane(new ComputedStyle.ComputedStyleModel.ComputedStyleModel());
+        const node = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+        node.nodeName.returns('div');
+        node.id = 1 as Protocol.DOM.NodeId;
+        const parentNode = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+        parentNode.id = 2 as Protocol.DOM.NodeId;
+        node.parentNode = parentNode;
+        parentNode.nodeName.returns('body');
+
+        const matchedStyles = await getMatchedStyles({
+          cssModel: stylesSidebarPane.cssModel() as SDK.CSSModel.CSSModel,
+          node,
+          matchedPayload: [{
+            rule: {
+              selectorList: {selectors: [{text: 'div'}], text: 'div'},
+              origin: Protocol.CSS.StyleSheetOrigin.Regular,
+              style: {
+                cssProperties: [{name: 'color', value: 'red'}],
+                shorthandEntries: [],
+              },
+            },
+            matchingSelectors: [0],
+          }],
+          inheritedPayload: [{
+            matchedCSSRules: [{
+              rule: {
+                selectorList: {selectors: [{text: 'body'}], text: 'body'},
+                origin: Protocol.CSS.StyleSheetOrigin.Regular,
+                style: {
+                  // color is inheritable but overloaded by the div rule above.
+                  cssProperties: [{name: 'color', value: 'blue'}],
+                  shorthandEntries: [],
+                },
+              },
+              matchingSelectors: [0],
+            }],
+          }],
+        });
+
+        const sectionBlocks = await stylesSidebarPane.rebuildSectionsForMatchedStyleRulesForTest(
+            matchedStyles, new Map(), new Map(), null);
+
+        // Block 0: element styles (div rule), Block 1: inherited from body.
+        assert.isTrue(sectionBlocks.length >= 2);
+        const inheritedSection = sectionBlocks[1].sections.find(section => section.headerText() === 'body');
+        if (!inheritedSection) {
+          assert.fail('Expected inherited body section to exist');
+        }
+
+        const inheritedProperty = inheritedSection.style().leadingProperties()[0];
+        if (!inheritedProperty) {
+          assert.fail('Expected inherited section to have at least one property');
+        }
+        assert.strictEqual(
+            matchedStyles.propertyState(inheritedProperty), SDK.CSSMatchedStyles.PropertyState.OVERLOADED,
+            'Expected inherited color to be overloaded by element color');
+
+        // The inherited section's color property is overloaded by the div rule,
+        // so it should be collapsed.
+        assert.isTrue(
+            inheritedSection.element.classList.contains('collapsed'),
+            'Inherited section with all overloaded properties should be collapsed');
+      });
+    });
+
     it('should add @font-* section to the end', async () => {
       const stylesSidebarPane =
           new Elements.StylesSidebarPane.StylesSidebarPane(new ComputedStyle.ComputedStyleModel.ComputedStyleModel());

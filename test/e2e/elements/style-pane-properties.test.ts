@@ -416,7 +416,13 @@ describe('The Styles pane', () => {
          </style>`);
     await waitForElementsStyleSection(undefined, devToolsPage);
 
-    await devToolsPage.hover('.exclamation-mark');
+    const bodySection = await getStyleRule('body', devToolsPage);
+    const isCollapsed = await bodySection.evaluate(section => section.classList.contains('collapsed'));
+    if (isCollapsed) {
+      await devToolsPage.click('.section-collapse-icon', {root: bodySection});
+    }
+
+    await devToolsPage.hover('.exclamation-mark', {root: bodySection});
 
     const infobox = await devToolsPage.waitFor(':popover-open');
     const textContent: string = await infobox.evaluate(e => e.deepInnerText());

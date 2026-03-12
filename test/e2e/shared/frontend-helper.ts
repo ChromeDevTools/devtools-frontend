@@ -551,20 +551,10 @@ async function setDockingSide(devToolsPage: DevToolsPage, side: string) {
 }
 
 export async function setupDevToolsPage(
-    context: puppeteer.BrowserContext, settings: DevtoolsSettings, inspectedPage: InspectedPage) {
-  const session = await context.browser().target().createCDPSession();
-  // FIXME: get rid of the reload below and configure
-  // the initial DevTools state via the openDevTools command.
-  const {targetId} = await session.send('Target.openDevTools', {
-    // @ts-expect-error need to expose this via Puppeteer.
-    targetId: inspectedPage.page.target()._getTargetInfo().targetId
-  });
-  // @ts-expect-error need to expose this via Puppeteer.
-  const devToolsTarget = await context.waitForTarget(target => target._getTargetInfo().targetId === targetId);
-  const frontend = await devToolsTarget?.page();
-  if (!frontend) {
-    throw new Error('Unable to find frontend target!');
-  }
+    inspectedPage: InspectedPage,
+    settings: DevtoolsSettings,
+) {
+  const frontend = await inspectedPage.page.openDevTools();
   installPageErrorHandlers(frontend);
   const devToolsPage = new DevToolsPage(frontend);
   await devToolsPage.ensureReadyForTesting();

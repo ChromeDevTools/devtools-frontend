@@ -425,17 +425,21 @@ export class LinearMemoryInspector extends Common.ObjectWrapper.eventMixin<Event
   }
 
   #onValueTypeToggled(type: ValueType, checked: boolean): void {
+    const valueTypes = new Set(this.#valueTypes);
     if (checked) {
-      this.#valueTypes.add(type);
+      valueTypes.add(type);
     } else {
-      this.#valueTypes.delete(type);
+      valueTypes.delete(type);
     }
+    this.#valueTypes = valueTypes;
     this.dispatchEventToListeners(Events.SETTINGS_CHANGED, this.#createSettings());
     void this.requestUpdate();
   }
 
   #onValueTypeModeChanged(type: ValueType, mode: ValueTypeMode): void {
-    this.#valueTypeModes.set(type, mode);
+    const valueTypeModes = new Map(this.#valueTypeModes);
+    valueTypeModes.set(type, mode);
+    this.#valueTypeModes = valueTypeModes;
     this.dispatchEventToListeners(Events.SETTINGS_CHANGED, this.#createSettings());
     void this.requestUpdate();
   }

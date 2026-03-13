@@ -942,6 +942,52 @@ describe('updateVersionFrom40To41', () => {
   });
 });
 
+describe('updateVersionFrom41To42', () => {
+  let settings: Common.Settings.Settings;
+  let recordingsSetting: Common.Settings.Setting<Array<{storageName: string, flow: {title: string, steps: unknown[]}}>>;
+  beforeEach(() => {
+    const mockStore = new InMemoryStorage();
+    const syncedStorage = new Common.Settings.SettingsStorage({}, mockStore);
+    const globalStorage = new Common.Settings.SettingsStorage({}, mockStore);
+    const localStorage = new Common.Settings.SettingsStorage({}, mockStore);
+
+    settings = new Common.Settings.Settings({
+      syncedStorage,
+      globalStorage,
+      localStorage,
+      settingRegistrations: Common.SettingRegistration.getRegisteredSettings(),
+      runSettingsMigration: false,
+    });
+    recordingsSetting = settings.createSetting('recorder-recordings-ng', []);
+  });
+
+  it('work if setting is empty', () => {
+    const versionController = new VersionController(settings);
+    versionController.updateVersionFrom41To42();
+    assert.deepEqual(recordingsSetting.get(), []);
+  });
+
+  it('trims title', () => {
+    recordingsSetting.set([
+      {storageName: '1', flow: {title: 'a'.repeat(350), steps: []}}
+    ]);  // User had "Hide chrome frame" changed from default value to ON
+    const versionController = new VersionController(settings);
+    versionController.updateVersionFrom41To42();
+    const first = recordingsSetting.get()[0];
+    assert.isTrue(first.flow.title.length <= 300);
+  });
+
+  it('trims steps', async () => {
+    recordingsSetting.set([
+      {storageName: '1', flow: {title: 'a', steps: Array(5000).fill({})}}
+    ]);  // User had "Hide chrome frame" changed from default value to ON
+    const versionController = new VersionController(settings);
+    versionController.updateVersionFrom41To42();
+    const first = recordingsSetting.get()[0];
+    assert.isTrue(first.flow.steps.length <= 4096);
+  });
+});
+
 describe('access logging', () => {
   let settings: Common.Settings.Settings;
   let logSettingAccess!: sinon.SinonSpy;

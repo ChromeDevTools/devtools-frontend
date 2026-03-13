@@ -648,7 +648,7 @@ function renderSections(input: ViewInput): Lit.LitTemplate {
       )}
       </div>
     `;
-    // clang-format on
+        // clang-format on
 }
 
 function renderHeader(input: ViewInput): Lit.LitTemplate {
@@ -672,6 +672,7 @@ function renderHeader(input: ViewInput): Lit.LitTemplate {
                 })}
                 .value=${Lit.Directives.live(title)}
                 .disabled=${!isTitleEditable}
+                maxlength="300"
                 >
           <div class="title-button-bar">
             <devtools-button

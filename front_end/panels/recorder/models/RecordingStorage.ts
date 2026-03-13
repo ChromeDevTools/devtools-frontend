@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../../core/common/common.js';
+import * as Platform from '../../../core/platform/platform.js';
 
 import type {UserFlow} from './Schema.js';
 
@@ -39,34 +40,28 @@ export class RecordingStorage {
     this.#idGenerator = idGenerator;
   }
 
-  async saveRecording(flow: UserFlow): Promise<StoredRecording> {
-    const release = await this.#mutex.acquire();
-    try {
-      const recordings = await this.#recordingsSetting.forceGet();
-      const storageName = this.#idGenerator.next();
-      const recording = {storageName, flow};
-      recordings.push(recording);
-      this.#recordingsSetting.set(recordings);
-      return recording;
-    } finally {
-      release();
-    }
-  }
-
-  async updateRecording(
-      storageName: string,
+  async upsertRecording(
       flow: UserFlow,
+      storageName?: string,
       ): Promise<StoredRecording> {
     const release = await this.#mutex.acquire();
     try {
       const recordings = await this.#recordingsSetting.forceGet();
-      const recording = recordings.find(
+      flow.title = Platform.StringUtilities.trimEndWithMaxLength(flow.title, 300);
+
+      let recording = recordings.find(
           recording => recording.storageName === storageName,
       );
-      if (!recording) {
-        throw new Error('No recording is found during updateRecording');
+      if (recording) {
+        recording.flow = flow;
+      } else {
+        recording = {
+          storageName: this.#idGenerator.next(),
+          flow,
+        };
+        recordings.push(recording);
       }
-      recording.flow = flow;
+
       this.#recordingsSetting.set(recordings);
       return recording;
     } finally {

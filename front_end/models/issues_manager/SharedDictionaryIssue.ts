@@ -23,7 +23,7 @@ const str_ = i18n.i18n.registerUIStrings('models/issues_manager/SharedDictionary
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 export const enum IssueCode {
-  USE_ERROR_CROSS_ORIGIN_NO_CORS_REQUEST = 'SharedDictionaryIssue::UseErrorCrossOriginNoCorsRequest',
+  USE_ERROR_NO_CORP_CROSS_ORIGIN_NO_CORS_REQUEST = 'SharedDictionaryIssue::UseErrorNoCorpCrossOriginNoCorsRequest',
   USE_ERROR_DICTIONARY_LOAD_FAILURE = 'SharedDictionaryIssue::UseErrorDictionaryLoadFailure',
   USE_ERROR_MATCHING_DICTIONARY_NOT_USED = 'SharedDictionaryIssue::UseErrorMatchingDictionaryNotUsed',
   USE_ERROR_UNEXPECTED_CONTENT_DICTIONARY_HEADER = 'SharedDictionaryIssue::UseErrorUnexpectedContentDictionaryHeader',
@@ -36,6 +36,7 @@ export const enum IssueCode {
   WRITE_ERROR_INVALID_STRUCTURED_HEADER = 'SharedDictionaryIssue::WriteErrorInvalidStructuredHeader',
   WRITE_ERROR_INVALID_TTL_FIELD = 'SharedDictionaryIssue::WriteErrorInvalidTTLField',
   WRITE_ERROR_NAVIGATION_REQUEST = 'SharedDictionaryIssue::WriteErrorNavigationRequest',
+  WRITE_ERROR_NO_CORP_COSS_ORIGIN_NO_CORS_REQUEST = 'SharedDictionaryIssue::WriteErrorNoCorpCossOriginNoCorsRequest',
   WRITE_ERROR_NO_MATCH_FIELD = 'SharedDictionaryIssue::WriteErrorNoMatchField',
   WRITE_ERROR_NON_INTEGER_TTL_FIELD = 'SharedDictionaryIssue::WriteErrorNonIntegerTTLField',
   WRITE_ERROR_NON_LIST_MATCH_DEST_FIELD = 'SharedDictionaryIssue::WriteErrorNonListMatchDestField',
@@ -53,8 +54,8 @@ export const enum IssueCode {
 
 function getIssueCode(details: Protocol.Audits.SharedDictionaryIssueDetails): IssueCode {
   switch (details.sharedDictionaryError) {
-    case Protocol.Audits.SharedDictionaryError.UseErrorCrossOriginNoCorsRequest:
-      return IssueCode.USE_ERROR_CROSS_ORIGIN_NO_CORS_REQUEST;
+    case Protocol.Audits.SharedDictionaryError.UseErrorNoCorpCrossOriginNoCorsRequest:
+      return IssueCode.USE_ERROR_NO_CORP_CROSS_ORIGIN_NO_CORS_REQUEST;
     case Protocol.Audits.SharedDictionaryError.UseErrorDictionaryLoadFailure:
       return IssueCode.USE_ERROR_DICTIONARY_LOAD_FAILURE;
     case Protocol.Audits.SharedDictionaryError.UseErrorMatchingDictionaryNotUsed:
@@ -79,6 +80,8 @@ function getIssueCode(details: Protocol.Audits.SharedDictionaryIssueDetails): Is
       return IssueCode.WRITE_ERROR_INVALID_TTL_FIELD;
     case Protocol.Audits.SharedDictionaryError.WriteErrorNavigationRequest:
       return IssueCode.WRITE_ERROR_NAVIGATION_REQUEST;
+    case Protocol.Audits.SharedDictionaryError.WriteErrorNoCorpCossOriginNoCorsRequest:
+      return IssueCode.WRITE_ERROR_NO_CORP_COSS_ORIGIN_NO_CORS_REQUEST;
     case Protocol.Audits.SharedDictionaryError.WriteErrorNoMatchField:
       return IssueCode.WRITE_ERROR_NO_MATCH_FIELD;
     case Protocol.Audits.SharedDictionaryError.WriteErrorNonIntegerTTLField:
@@ -168,9 +171,9 @@ const specLinks = [{
 const issueDescriptions = new Map<Protocol.Audits.SharedDictionaryError, LazyMarkdownIssueDescription>([
 
   [
-    Protocol.Audits.SharedDictionaryError.UseErrorCrossOriginNoCorsRequest,
+    Protocol.Audits.SharedDictionaryError.UseErrorNoCorpCrossOriginNoCorsRequest,
     {
-      file: 'sharedDictionaryUseErrorCrossOriginNoCorsRequest.md',
+      file: 'sharedDictionaryUseErrorNoCorpCrossOriginNoCorsRequest.md',
       links: specLinks,
     },
   ],
@@ -255,6 +258,13 @@ const issueDescriptions = new Map<Protocol.Audits.SharedDictionaryError, LazyMar
     Protocol.Audits.SharedDictionaryError.WriteErrorNavigationRequest,
     {
       file: 'sharedDictionaryWriteErrorNavigationRequest.md',
+      links: specLinks,
+    },
+  ],
+  [
+    Protocol.Audits.SharedDictionaryError.WriteErrorNoCorpCossOriginNoCorsRequest,
+    {
+      file: 'sharedDictionaryWriteErrorNoCorpCossOriginNoCorsRequest.md',
       links: specLinks,
     },
   ],

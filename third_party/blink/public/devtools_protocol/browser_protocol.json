@@ -1541,9 +1541,9 @@
                     "id": "SharedDictionaryError",
                     "type": "string",
                     "enum": [
-                        "UseErrorCrossOriginNoCorsRequest",
                         "UseErrorDictionaryLoadFailure",
                         "UseErrorMatchingDictionaryNotUsed",
+                        "UseErrorNoCorpCrossOriginNoCorsRequest",
                         "UseErrorUnexpectedContentDictionaryHeader",
                         "WriteErrorCossOriginNoCorsRequest",
                         "WriteErrorDisallowedBySettings",
@@ -1554,6 +1554,7 @@
                         "WriteErrorInvalidStructuredHeader",
                         "WriteErrorInvalidTTLField",
                         "WriteErrorNavigationRequest",
+                        "WriteErrorNoCorpCossOriginNoCorsRequest",
                         "WriteErrorNoMatchField",
                         "WriteErrorNonIntegerTTLField",
                         "WriteErrorNonListMatchDestField",

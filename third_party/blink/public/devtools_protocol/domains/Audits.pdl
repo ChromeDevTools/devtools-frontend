@@ -297,9 +297,9 @@ experimental domain Audits
 
   type SharedDictionaryError extends string
     enum
-      UseErrorCrossOriginNoCorsRequest
       UseErrorDictionaryLoadFailure
       UseErrorMatchingDictionaryNotUsed
+      UseErrorNoCorpCrossOriginNoCorsRequest
       UseErrorUnexpectedContentDictionaryHeader
       WriteErrorCossOriginNoCorsRequest
       WriteErrorDisallowedBySettings
@@ -310,6 +310,7 @@ experimental domain Audits
       WriteErrorInvalidStructuredHeader
       WriteErrorInvalidTTLField
       WriteErrorNavigationRequest
+      WriteErrorNoCorpCossOriginNoCorsRequest
       WriteErrorNoMatchField
       WriteErrorNonIntegerTTLField
       WriteErrorNonListMatchDestField

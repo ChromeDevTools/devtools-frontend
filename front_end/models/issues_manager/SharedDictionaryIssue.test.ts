@@ -23,7 +23,7 @@ describe('SharedDictionaryIssue', () => {
 
   it('can be created for various error reasons', () => {
     const errorReasons = [
-      Protocol.Audits.SharedDictionaryError.UseErrorCrossOriginNoCorsRequest,
+      Protocol.Audits.SharedDictionaryError.UseErrorNoCorpCrossOriginNoCorsRequest,
       Protocol.Audits.SharedDictionaryError.UseErrorDictionaryLoadFailure,
       Protocol.Audits.SharedDictionaryError.UseErrorMatchingDictionaryNotUsed,
       Protocol.Audits.SharedDictionaryError.UseErrorUnexpectedContentDictionaryHeader,
@@ -36,6 +36,7 @@ describe('SharedDictionaryIssue', () => {
       Protocol.Audits.SharedDictionaryError.WriteErrorInvalidStructuredHeader,
       Protocol.Audits.SharedDictionaryError.WriteErrorInvalidTTLField,
       Protocol.Audits.SharedDictionaryError.WriteErrorNavigationRequest,
+      Protocol.Audits.SharedDictionaryError.WriteErrorNoCorpCossOriginNoCorsRequest,
       Protocol.Audits.SharedDictionaryError.WriteErrorNoMatchField,
       Protocol.Audits.SharedDictionaryError.WriteErrorNonIntegerTTLField,
       Protocol.Audits.SharedDictionaryError.WriteErrorNonListMatchDestField,

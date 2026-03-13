@@ -62,8 +62,8 @@ test/perf/.generated
 .stylelintcache
 **/tsconfig.tsbuildinfo
 
-# e2e test runner copies dumps into the source tree.
-*.dmp
+# test runner copies dumps into the source tree.
+artifacts/*
 
 # cipd rollup binaries synced from third_party/
 node_modules/@rollup/rollup*/

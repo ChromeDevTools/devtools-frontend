@@ -61,10 +61,6 @@ const CustomChrome = function(this: any, _baseBrowserDecorator: unknown, args: B
     });
 
     await (async function dumpCommandLineVariationsToFile() {
-      if (!TestConfig.artifactsDir) {
-        return;
-      }
-
       const versionPage = await browser.newPage();
       await versionPage.goto('chrome://version/?show-variations-cmd');
       const commandLineText =
@@ -73,7 +69,10 @@ const CustomChrome = function(this: any, _baseBrowserDecorator: unknown, args: B
 
       if (commandLineText) {
         fs.writeFileSync(
-            path.join(TestConfig.artifactsDir, 'variations-cmd.txt'), commandLineText, {encoding: 'utf-8'});
+            path.join(TestConfig.artifactsDir, 'variations-cmd.txt'),
+            commandLineText,
+            {encoding: 'utf-8'},
+        );
       }
     })();
 

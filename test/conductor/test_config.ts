@@ -111,9 +111,17 @@ function configureChrome(executablePath: string) {
   }
 }
 
+const getDefaultArtifactDir = () => {
+  const artifactsPath = path.join(SOURCE_ROOT, 'artifacts');
+  if (!fs.existsSync(artifactsPath)) {
+    fs.mkdirSync(artifactsPath);
+  }
+  return artifactsPath;
+};
+
 export const TestConfig: Config = {
   tests: getTestsFromOptions(),
-  artifactsDir: options['artifacts-dir'] || SOURCE_ROOT,
+  artifactsDir: options['artifacts-dir'] || getDefaultArtifactDir(),
   chromeBinary: options['chrome-binary'] ?? defaultChromePath(),
   serverType: ServerType.HOSTED_MODE,
   debug: options['debug'],

@@ -194,17 +194,6 @@ const CONVERTER_ID_TO_METRIC: Record<string, Host.UserMetrics.RecordingExported|
   [Models.ConverterIds.ConverterIds.LIGHTHOUSE]: Host.UserMetrics.RecordingExported.TO_LIGHTHOUSE,
 };
 
-/** Provide some defaults to prevent OOM issues like crbug.com/491027421 */
-function verifyFlowSize(flow: Models.Schema.UserFlow): void {
-  if (flow.steps.length > 4096) {
-    throw new Error('Recording with steps over 4096 is not allowed');
-  }
-
-  if (flow.title.length > 300) {
-    throw new Error('Recording with title over 300 characters is not allowed');
-  }
-}
-
 @customElement('devtools-recorder-controller')
 export class RecorderController extends LitElement {
   @state() declare private currentRecordingSession?: Models.RecordingSession.RecordingSession;
@@ -350,13 +339,11 @@ export class RecorderController extends LitElement {
     let flow: Models.Schema.UserFlow|undefined;
     try {
       flow = Models.SchemaUtils.parse(JSON.parse(outputStream.data()));
-      verifyFlowSize(flow);
-
     } catch (error) {
       this.importError = error;
       return;
     }
-    this.#setCurrentRecording(await this.#storage.upsertRecording(flow));
+    this.#setCurrentRecording(await this.#storage.saveRecording(flow));
     this.#setCurrentPage(Pages.RECORDING_PAGE);
     this.#clearError();
     UI.ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.recordingImported));
@@ -638,7 +625,7 @@ export class RecorderController extends LitElement {
 
   async #onSetRecording(event: Event): Promise<void> {
     const json = JSON.parse((event as CustomEvent).detail);
-    this.#setCurrentRecording(await this.#storage.upsertRecording(Models.SchemaUtils.parse(json)));
+    this.#setCurrentRecording(await this.#storage.saveRecording(Models.SchemaUtils.parse(json)));
     this.#setCurrentPage(Pages.RECORDING_PAGE);
     this.#clearError();
   }
@@ -660,10 +647,7 @@ export class RecorderController extends LitElement {
       },
     };
     this.#setCurrentRecording(
-        await this.#storage.upsertRecording(
-            recording.flow,
-            recording.storageName,
-            ),
+        await this.#storage.updateRecording(recording.storageName, recording.flow),
         {keepBreakpoints: true, updateSession: true});
   }
 
@@ -716,10 +700,7 @@ export class RecorderController extends LitElement {
       return breakpointIndex + 1;
     }));
     this.#setCurrentRecording(
-        await this.#storage.upsertRecording(
-            recording.flow,
-            recording.storageName,
-            ),
+        await this.#storage.updateRecording(recording.storageName, recording.flow),
         {keepBreakpoints: true, updateSession: true});
   }
 
@@ -729,10 +710,7 @@ export class RecorderController extends LitElement {
     }
 
     const flow = {...this.currentRecording.flow, title};
-    this.#setCurrentRecording(await this.#storage.upsertRecording(
-        flow,
-        this.currentRecording.storageName,
-        ));
+    this.#setCurrentRecording(await this.#storage.updateRecording(this.currentRecording.storageName, flow));
   }
 
   async #handleStepRemoved(event: Components.StepView.RemoveStep): Promise<void> {
@@ -758,10 +736,7 @@ export class RecorderController extends LitElement {
                                               })
                                               .filter(index => index >= 0));
     this.#setCurrentRecording(
-        await this.#storage.upsertRecording(
-            flow,
-            this.currentRecording.storageName,
-            ),
+        await this.#storage.updateRecording(this.currentRecording.storageName, flow),
         {keepBreakpoints: true, updateSession: true});
   }
 
@@ -798,10 +773,8 @@ export class RecorderController extends LitElement {
       step.upload = data.upload;
       step.latency = data.latency;
     }
-    this.#setCurrentRecording(await this.#storage.upsertRecording(
-        this.currentRecording.flow,
-        this.currentRecording.storageName,
-        ));
+    this.#setCurrentRecording(
+        await this.#storage.updateRecording(this.currentRecording.storageName, this.currentRecording.flow));
   }
 
   async #onTimeoutChanged(timeout?: number): Promise<void> {
@@ -809,10 +782,8 @@ export class RecorderController extends LitElement {
       throw new Error('Current recording expected to be defined.');
     }
     this.currentRecording.flow.timeout = timeout;
-    this.#setCurrentRecording(await this.#storage.upsertRecording(
-        this.currentRecording.flow,
-        this.currentRecording.storageName,
-        ));
+    this.#setCurrentRecording(
+        await this.#storage.updateRecording(this.currentRecording.storageName, this.currentRecording.flow));
   }
 
   async #onDeleteRecording(event: Event): Promise<void> {
@@ -862,7 +833,7 @@ export class RecorderController extends LitElement {
       selectorTypesToRecord: data.selectorTypesToRecord.length ? data.selectorTypesToRecord :
                                                                  Object.values(Models.Schema.SelectorType),
     });
-    this.#setCurrentRecording(await this.#storage.upsertRecording(this.currentRecordingSession.cloneUserFlow()));
+    this.#setCurrentRecording(await this.#storage.saveRecording(this.currentRecordingSession.cloneUserFlow()));
 
     let previousSectionIndex = -1;
     let screenshotPromise:|Promise<Models.ScreenshotStorage.Screenshot>|undefined;
@@ -892,10 +863,7 @@ export class RecorderController extends LitElement {
           if (!this.currentRecording) {
             throw new Error('No current recording found');
           }
-          this.#setCurrentRecording(await this.#storage.upsertRecording(
-              data,
-              this.currentRecording.storageName,
-              ));
+          this.#setCurrentRecording(await this.#storage.updateRecording(this.currentRecording.storageName, data));
           this.#recordingView?.scrollToBottom();
 
           await takeScreenshot(this.currentRecording);
@@ -907,10 +875,7 @@ export class RecorderController extends LitElement {
             throw new Error('No current recording found');
           }
           Host.userMetrics.keyboardShortcutFired(Actions.RecorderActions.START_RECORDING);
-          this.#setCurrentRecording(await this.#storage.upsertRecording(
-              data,
-              this.currentRecording.storageName,
-              ));
+          this.#setCurrentRecording(await this.#storage.updateRecording(this.currentRecording.storageName, data));
           await this.#onRecordingFinished();
         });
 
@@ -1022,10 +987,7 @@ export class RecorderController extends LitElement {
     const flow = this.currentRecordingSession.cloneUserFlow();
     flow.steps.push({type: 'waitForElement' as Models.Schema.StepType.WaitForElement, selectors: [['.cls']]});
     this.#setCurrentRecording(
-        await this.#storage.upsertRecording(
-            flow,
-            this.currentRecording.storageName,
-            ),
+        await this.#storage.updateRecording(this.currentRecording.storageName, flow),
         {keepBreakpoints: true, updateSession: true});
     await this.updateComplete;
     // FIXME: call a method on the recording view widget.

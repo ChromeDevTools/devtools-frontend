@@ -688,7 +688,7 @@ export class VersionController {
   static readonly SYNCED_VERSION_SETTING_NAME = 'syncedInspectorVersion';
   static readonly LOCAL_VERSION_SETTING_NAME = 'localInspectorVersion';
 
-  static readonly CURRENT_VERSION = 42;
+  static readonly CURRENT_VERSION = 41;
 
   readonly #settings: Settings;
   readonly #globalVersionSetting: Setting<number>;
@@ -1477,29 +1477,6 @@ export class VersionController {
         newChromeFrameSetting.set(!oldChromeFrameSetting.get());
       }
       this.#removeSetting(oldChromeFrameSetting);
-    }
-  }
-
-  /**
-   * The recording in recorder panel may have unreasonably long titles
-   * or a lot of steps which can cause renderer crashes.
-   * Similar to https://crbug.com/40918380
-   */
-  updateVersionFrom41To42(): void {
-    if (this.#settings.globalStorage.has('recorder-recordings-ng')) {
-      const recordingsSetting =
-          this.#settings.moduleSetting<Array<{steps: unknown[], title: string}>>('recorder-recordings-ng');
-      const recordings = recordingsSetting.get();
-      if (recordings.length === 0) {
-        return;
-      }
-
-      for (const recording of recordings) {
-        recording.title = Platform.StringUtilities.trimEndWithMaxLength(recording.title, 300);
-        recording.steps = recording.steps.slice(0, 4096);
-      }
-
-      recordingsSetting.set(recordings);
     }
   }
 

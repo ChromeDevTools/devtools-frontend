@@ -448,6 +448,7 @@ export class PreloadingAttemptView extends UI.Widget.VBox {
       new PreloadingComponents.PreloadingDetailsReportView.PreloadingDetailsReportView();
   private readonly ruleSetSelector: PreloadingRuleSetSelector;
   private readonly textFilterUI: UI.Toolbar.ToolbarFilter;
+  private hsplit?: UI.SplitWidget.SplitWidget;
   private clearButton: UI.Toolbar.ToolbarButton;
 
   constructor(model: SDK.PreloadingModel.PreloadingModel) {
@@ -541,7 +542,12 @@ export class PreloadingAttemptView extends UI.Widget.VBox {
             >${i18nString(UIStrings.learnMore)}</devtools-link>
           </div>
         </div>
-        <devtools-split-view sidebar-position="second">
+        <devtools-split-view sidebar-position="second" ${
+            UI.Widget.widgetRef(
+                UI.SplitWidget.SplitWidget,
+                w => {
+                  this.hsplit = w;
+                })}>
           <div slot="main" class="overflow-auto" style="height: 100%">
             ${preloadingGridContainer}
           </div>
@@ -632,7 +638,15 @@ export class PreloadingAttemptView extends UI.Widget.VBox {
     this.preloadingGrid.rows = filteredRows;
     this.preloadingGrid.pageURL = pageURL();
     // Only show empty state when there are truly no speculations (not when filter has no matches)
-    this.contentElement.classList.toggle('empty', rows.length === 0);
+    const wasEmpty = this.contentElement.classList.contains('empty');
+    const isEmpty = rows.length === 0;
+    this.contentElement.classList.toggle('empty', isEmpty);
+
+    // When this view starts empty, the split view gets laid out while hidden and collapses
+    // its sidebar to 0. Re-layout once it becomes visible.
+    if (wasEmpty && !isEmpty) {
+      this.hsplit?.doLayout();
+    }
 
     this.updatePreloadingDetails();
   }

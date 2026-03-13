@@ -203,6 +203,46 @@ describeWithEnvironment('Widget', () => {
   });
 
   describe('performUpdate', () => {
+    it('passes an AbortSignal that is aborted on a subsequent requestUpdate()', async () => {
+      let capturedSignal: AbortSignal|undefined;
+      const widget = new (class extends Widget {
+        override async performUpdate(signal?: AbortSignal): Promise<void> {
+          capturedSignal = signal;
+        }
+      })();
+      widget.markAsRoot();
+      widget.show(renderElementIntoDOM(document.createElement('main')));
+
+      widget.requestUpdate();
+      await widget.updateComplete;
+
+      assert.isDefined(capturedSignal);
+      assert.isFalse(capturedSignal?.aborted);
+
+      widget.requestUpdate();
+      assert.isTrue(capturedSignal?.aborted);
+    });
+
+    it('passes an AbortSignal that is aborted when the widget is detached', async () => {
+      let capturedSignal: AbortSignal|undefined;
+      const widget = new (class extends Widget {
+        override async performUpdate(signal?: AbortSignal): Promise<void> {
+          capturedSignal = signal;
+        }
+      })();
+      widget.markAsRoot();
+      widget.show(renderElementIntoDOM(document.createElement('main')));
+
+      widget.requestUpdate();
+      await widget.updateComplete;
+
+      assert.isDefined(capturedSignal);
+      assert.isFalse(capturedSignal?.aborted);
+
+      widget.detach();
+      assert.isTrue(capturedSignal?.aborted);
+    });
+
     it('can safely use the `RenderCoordinator` primitives', async () => {
       const widget = new (class extends Widget {
         override async performUpdate(): Promise<void> {
@@ -324,6 +364,30 @@ describeWithEnvironment('Widget', () => {
 
       assert.notStrictEqual(updateComplete, widget.updateComplete);
       await widget.updateComplete;
+    });
+
+    it('resolves when performUpdate throws an error', async () => {
+      const widget = new (class extends Widget {
+        override async performUpdate(): Promise<void> {
+          throw new Error('AbortError');
+        }
+      })();
+
+      // Prevent the test from failing due to the unhandled rejection
+      const originalHandler = window.onunhandledrejection;
+      window.onunhandledrejection = e => {
+        if (e.reason?.message === 'AbortError') {
+          e.preventDefault();
+        }
+      };
+
+      try {
+        widget.requestUpdate();
+        // This should not hang
+        await widget.updateComplete;
+      } finally {
+        window.onunhandledrejection = originalHandler;
+      }
     });
   });
 

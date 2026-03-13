@@ -101,6 +101,7 @@ function enqueueWidgetUpdate(widget: Widget): Promise<void> {
 }
 
 function cancelUpdate(widget: Widget): void {
+  widget.cancelUpdateController();
   if (currentUpdateQueue) {
     const scheduledUpdate = currentUpdateQueue.get(widget);
     if (scheduledUpdate) {
@@ -124,8 +125,13 @@ function runNextUpdate(): void {
   for (const [widget, {resolve}] of currentUpdateQueue) {
     currentlyProcessed.add(widget);
     void (async () => {
-      await widget.performUpdate();
-      resolve();
+      try {
+        const controller = new AbortController();
+        widget.addUpdateController(controller);
+        await widget.performUpdate(controller.signal);
+      } finally {
+        resolve();
+      }
     })();
   }
   currentUpdateQueue.clear();
@@ -406,6 +412,7 @@ export class Widget {
   #invalidationsRequested?: boolean;
   #externallyManaged?: boolean;
   #updateComplete = UPDATE_COMPLETE;
+  #updateController?: AbortController;
 
   /**
    * Constructs a new `Widget` with the given `options`.
@@ -1045,7 +1052,17 @@ export class Widget {
    *          update logic will await the resolution of the returned promise
    *          before proceeding.
    */
-  performUpdate(): Promise<void>|void {
+  performUpdate(): Promise<void>|void;
+  performUpdate(signal: AbortSignal): Promise<void>|void;
+  performUpdate(_signal?: AbortSignal): Promise<void>|void {
+  }
+
+  addUpdateController(controller: AbortController): void {
+    this.#updateController = controller;
+  }
+
+  cancelUpdateController(): void {
+    this.#updateController?.abort();
   }
 
   /**
@@ -1055,6 +1072,7 @@ export class Widget {
    * frame.
    */
   requestUpdate(): void {
+    this.#updateController?.abort();
     this.#updateComplete = enqueueWidgetUpdate(this);
   }
 

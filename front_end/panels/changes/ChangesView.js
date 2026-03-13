@@ -26,6 +26,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/changes/ChangesView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const { render, html } = Lit;
+const { widget } = UI.Widget;
 export const DEFAULT_VIEW = (input, _output, target) => {
     const onSidebar = (sidebar) => {
         sidebar.addEventListener("SelectedUISourceCodeChanged" /* Events.SELECTED_UI_SOURCE_CODE_CHANGED */, () => input.onSelect(sidebar.selectedUISourceCode()));
@@ -46,10 +47,10 @@ export const DEFAULT_VIEW = (input, _output, target) => {
     })}>
           </devtools-widget>
           <div class=diff-container role=tabpanel ?hidden=${input.workspaceDiff.modifiedUISourceCodes().length === 0}>
-            <devtools-widget .widgetConfig=${UI.Widget.widgetConfig(CombinedDiffView.CombinedDiffView, {
+            ${widget(CombinedDiffView.CombinedDiffView, {
         selectedFileUrl: input.selectedSourceCode?.url(),
         workspaceDiff: input.workspaceDiff
-    })}></devtools-widget>
+    })}
           </div>
           ${hasCopyToPrompt ? html `
             <devtools-widget class="copy-to-prompt"

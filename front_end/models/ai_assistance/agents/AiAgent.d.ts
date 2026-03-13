@@ -19,7 +19,8 @@ export declare const enum ErrorType {
     UNKNOWN = "unknown",
     ABORT = "abort",
     MAX_STEPS = "max-steps",
-    BLOCK = "block"
+    BLOCK = "block",
+    CROSS_ORIGIN = "cross-origin"
 }
 export declare const enum MultimodalInputType {
     SCREENSHOT = "screenshot",
@@ -36,6 +37,7 @@ export interface AnswerResponse {
     complete: boolean;
     rpcId?: Host.AidaClient.RpcGlobalId;
     suggestions?: [string, ...string[]];
+    widgets?: AiWidget[];
 }
 export interface SuggestionsResponse {
     type: ResponseType.SUGGESTIONS;
@@ -117,6 +119,7 @@ export interface AgentOptions {
     confirmSideEffectForTest?: typeof Promise.withResolvers;
     onInspectElement?: () => Promise<SDK.DOMModel.DOMNode | null>;
     history?: Host.AidaClient.Content[];
+    allowedOrigin?: () => string | undefined;
 }
 export interface ParsedAnswer {
     answer: string;
@@ -177,7 +180,14 @@ export interface CoreVitalsAiWidget {
         parsedTrace: Trace.TraceModel.ParsedTrace;
     };
 }
-export type AiWidget = ComputedStyleAiWidget | CoreVitalsAiWidget;
+export interface StylePropertiesAiWidget {
+    name: 'STYLE_PROPERTIES';
+    data: {
+        backendNodeId: Protocol.DOM.BackendNodeId;
+        selector?: string;
+    };
+}
+export type AiWidget = ComputedStyleAiWidget | CoreVitalsAiWidget | StylePropertiesAiWidget;
 export type FunctionCallHandlerResult<Result> = {
     requiresApproval: true;
     /**
@@ -287,6 +297,7 @@ export declare abstract class AiAgent<T> {
      * though/action/title/answer/suggestions component.
      */
     parseTextResponse(response: string): ParsedResponse;
+    protected finalizeAnswer(answer: AnswerResponse): Promise<AnswerResponse>;
     /**
      * Declare a function that the AI model can call.
      * @param name The name of the function
@@ -300,6 +311,7 @@ export declare abstract class AiAgent<T> {
      */
     protected declareFunction<Args extends Record<string, unknown>, ReturnType = unknown>(name: string, declaration: FunctionDeclaration<Args, ReturnType>): void;
     protected clearDeclaredFunctions(): void;
+    protected preRun(): Promise<void>;
     run(initialQuery: string, options: {
         selected: ConversationContext<T> | null;
         signal?: AbortSignal;

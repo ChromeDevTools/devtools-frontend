@@ -6,7 +6,7 @@ import * as Lit from '../../../../ui/lit/lit.js';
 import { BaseInsightComponent } from './BaseInsightComponent.js';
 import { Checklist } from './Checklist.js';
 const { html } = Lit;
-const { widgetConfig } = UI.Widget;
+const { widget } = UI.Widget;
 export class DocumentLatency extends BaseInsightComponent {
     internalName = 'document-latency';
     hasAskAiSupport() {
@@ -19,11 +19,7 @@ export class DocumentLatency extends BaseInsightComponent {
         if (!this.model?.data) {
             return Lit.nothing;
         }
-        // clang-format off
-        return html `<devtools-widget .widgetConfig=${widgetConfig(Checklist, {
-            checklist: this.model.data.checklist,
-        })}></devtools-widget>`;
-        // clang-format on
+        return html `${widget(Checklist, { checklist: this.model.data.checklist })}`;
     }
 }
 //# sourceMappingURL=DocumentLatency.js.map

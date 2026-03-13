@@ -6,7 +6,7 @@ import type { ChangeManager } from './ChangeManager.js';
  */
 export declare class ExtensionScope {
     #private;
-    constructor(changes: ChangeManager, agentId: string, selectedNode: SDK.DOMModel.DOMNode | null);
+    constructor(changes: ChangeManager, agentId: string, selectedNode: SDK.DOMModel.DOMNode | null, turnId?: number);
     get target(): SDK.Target.Target;
     get frameId(): Protocol.Page.FrameId;
     install(): Promise<void>;

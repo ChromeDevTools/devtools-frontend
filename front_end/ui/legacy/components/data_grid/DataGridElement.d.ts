@@ -62,13 +62,13 @@ declare global {
 export interface DataGridInternalToken {
     token: 'DataGridInternalToken';
 }
-export declare const ifExpanded: (content: () => Lit.TemplateResult) => Lit.DirectiveResult<{
+export declare const ifExpanded: (content: Lit.LitTemplate | Iterable<Lit.LitTemplate>) => Lit.DirectiveResult<{
     new (partInfo: Lit.Directive.PartInfo): {
         "__#private@#partInfo": {
             type: Lit.Directive.PartType;
             startNode: Node;
         };
-        render(content: () => Lit.TemplateResult): Lit.LitTemplate;
+        render(content: Lit.LitTemplate | Iterable<Lit.LitTemplate>): Lit.LitTemplate | Iterable<Lit.LitTemplate>;
         "__#private@#isInExpandedRow"(element: Node | null | undefined): boolean;
         get _$isConnected(): boolean;
         update(_part: Lit.Directive.Part, props: Array<unknown>): unknown;

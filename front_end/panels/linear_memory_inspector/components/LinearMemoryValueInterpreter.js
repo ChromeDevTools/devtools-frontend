@@ -25,7 +25,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/linear_memory_inspector/components/LinearMemoryValueInterpreter.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const { render, html } = Lit;
-const { widgetConfig } = UI.Widget;
+const { widget } = UI.Widget;
 function renderEndiannessSetting(onEndiannessChanged, currentEndiannes) {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
@@ -64,14 +64,11 @@ export const DEFAULT_VIEW = (input, _output, target) => {
       </div>
       <span class="divider"></span>
       <div>
-        ${input.showSettings ?
-        html `
-            <devtools-widget .widgetConfig=${widgetConfig(ValueInterpreterSettings, {
+        ${input.showSettings
+        ? widget(ValueInterpreterSettings, {
             valueTypes: input.valueTypes, onToggle: input.onValueTypeToggled
-        })}>
-            </devtools-widget>` :
-        html `
-            <devtools-widget .widgetConfig=${widgetConfig(ValueInterpreterDisplay, {
+        })
+        : widget(ValueInterpreterDisplay, {
             buffer: input.buffer,
             valueTypes: input.valueTypes,
             endianness: input.endianness,
@@ -79,8 +76,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
             memoryLength: input.memoryLength,
             onValueTypeModeChange: input.onValueTypeModeChange,
             onJumpToAddressClicked: input.onJumpToAddressClicked,
-        })}>
-            </devtools-widget>`}
+        })}
       </div>
     </div>
   `, target);

@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 import * as UI from '../../../../ui/legacy/legacy.js';
 import { Cache } from './Cache.js';
+import { CharacterSet } from './CharacterSet.js';
 import { CLSCulprits } from './CLSCulprits.js';
 import { DocumentLatency } from './DocumentLatency.js';
 import { DOMSize } from './DOMSize.js';
@@ -28,6 +29,7 @@ const { widgetConfig } = UI.Widget;
  */
 const INSIGHT_NAME_TO_COMPONENT = {
     Cache,
+    CharacterSet,
     CLSCulprits,
     DocumentLatency,
     DOMSize,

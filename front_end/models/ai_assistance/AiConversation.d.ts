@@ -1,5 +1,5 @@
 import * as Host from '../../core/host/host.js';
-import type * as SDK from '../../core/sdk/sdk.js';
+import * as SDK from '../../core/sdk/sdk.js';
 import type * as Trace from '../../models/trace/trace.js';
 import type * as NetworkTimeCalculator from '../network_time_calculator/network_time_calculator.js';
 import { type ContextDetail, type ConversationContext, type MultimodalInput, type ResponseData } from './agents/AiAgent.js';
@@ -35,4 +35,5 @@ export declare class AiConversation {
     get isBlockedByOrigin(): boolean;
     get origin(): string | undefined;
     get type(): ConversationType;
+    allowedOrigin: () => string | undefined;
 }

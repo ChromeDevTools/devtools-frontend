@@ -1,11 +1,9 @@
 // Copyright 2026 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Root from '../../../core/root/root.js';
-import * as SDK from '../../../core/sdk/sdk.js';
 import * as Logs from '../../logs/logs.js';
 import * as NetworkTimeCalculator from '../../network_time_calculator/network_time_calculator.js';
 import * as Workspace from '../../workspace/workspace.js';
@@ -53,7 +51,7 @@ You aim to help developers of all levels, prioritizing teaching web concepts as 
  */
 export class ContextSelectionAgent extends AiAgent {
     preamble = preamble;
-    clientFeature = Host.AidaClient.ClientFeature.CHROME_FILE_AGENT;
+    clientFeature = Host.AidaClient.ClientFeature.CHROME_CONTEXT_SELECTION_AGENT;
     get userTier() {
         // TODO: Make this depend on variable.
         return Root.Runtime.hostConfig.devToolsFreestyler?.userTier;
@@ -69,11 +67,13 @@ export class ContextSelectionAgent extends AiAgent {
     #performanceRecordAndReload;
     #onInspectElement;
     #networkTimeCalculator;
+    #allowedOrigin;
     constructor(opts) {
         super(opts);
         this.#performanceRecordAndReload = opts.performanceRecordAndReload;
         this.#onInspectElement = opts.onInspectElement;
         this.#networkTimeCalculator = opts.networkTimeCalculator;
+        this.#allowedOrigin = opts.allowedOrigin ?? (() => undefined);
         this.declareFunction('listNetworkRequests', {
             description: `Gives a list of network requests including URL, status code, and duration.`,
             parameters: {
@@ -91,11 +91,11 @@ export class ContextSelectionAgent extends AiAgent {
             },
             handler: async () => {
                 const requests = [];
-                const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
-                const inspectedURL = target?.inspectedURL();
-                const mainSecurityOrigin = inspectedURL ? new Common.ParsedURL.ParsedURL(inspectedURL).securityOrigin() : null;
+                const origin = this.#allowedOrigin();
+                let hasCrossOriginRequest = false;
                 for (const request of Logs.NetworkLog.NetworkLog.instance().requests()) {
-                    if (mainSecurityOrigin && request.securityOrigin() !== mainSecurityOrigin) {
+                    if (origin && request.securityOrigin() !== origin) {
+                        hasCrossOriginRequest = true;
                         continue;
                     }
                     requests.push({
@@ -108,7 +108,9 @@ export class ContextSelectionAgent extends AiAgent {
                 }
                 if (requests.length === 0) {
                     return {
-                        error: 'No requests recorded by DevTools',
+                        error: hasCrossOriginRequest ?
+                            `No requests showing with origin ${origin}. Tell the user to start a new chat` :
+                            'No requests recorded by DevTools',
                     };
                 }
                 return {

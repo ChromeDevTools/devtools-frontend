@@ -113,6 +113,15 @@ export declare class ColorMixRenderer extends ColorMixRenderer_base {
     constructor(stylesContainer: StylesContainer, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, computedStyles: Map<string, string>, computedStyleExtraFields: Protocol.CSS.ComputedStyleExtraFields | null, treeElement: StylePropertyTreeElement | null);
     render(match: SDK.CSSPropertyParserMatchers.ColorMixMatch, context: RenderingContext): Node[];
 }
+declare const ContrastColorRenderer_base: abstract new () => {
+    readonly matchType: Platform.Constructor.Constructor<SDK.CSSPropertyParserMatchers.ContrastColorMatch, any[]>;
+    render(_match: SDK.CSSPropertyParserMatchers.ContrastColorMatch, _context: RenderingContext): Node[];
+};
+export declare class ContrastColorRenderer extends ContrastColorRenderer_base {
+    #private;
+    constructor(stylesContainer: StylesContainer, treeElement: StylePropertyTreeElement | null);
+    render(match: SDK.CSSPropertyParserMatchers.ContrastColorMatch, context: RenderingContext): Node[];
+}
 declare const AngleRenderer_base: abstract new () => {
     readonly matchType: Platform.Constructor.Constructor<SDK.CSSPropertyParserMatchers.AngleMatch, any[]>;
     render(_match: SDK.CSSPropertyParserMatchers.AngleMatch, _context: RenderingContext): Node[];
@@ -291,6 +300,7 @@ export declare class StylePropertyTreeElement extends UI.TreeOutline.TreeElement
     private computedStyleExtraFields;
     private contextForTest;
     constructor({ stylesContainer, section, matchedStyles, property, isShorthand, inherited, overloaded, newProperty }: StylePropertyTreeElementParams);
+    onunbind(): void;
     gridNames(): Promise<Set<string>>;
     matchedStyles(): SDK.CSSMatchedStyles.CSSMatchedStyles;
     getLonghand(): StylePropertyTreeElement | null;

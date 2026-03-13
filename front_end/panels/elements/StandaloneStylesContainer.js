@@ -36,6 +36,7 @@ export class StandaloneStylesContainer extends Common.ObjectWrapper.eventMixin(U
     #swatchPopoverHelper = new InlineEditor.SwatchPopoverHelper.SwatchPopoverHelper();
     #computedStyleModelInternal = new ComputedStyle.ComputedStyleModel.ComputedStyleModel();
     #view;
+    #filter = null;
     constructor(element, view = DEFAULT_VIEW) {
         super(element, { useShadowDom: true });
         this.#view = view;
@@ -50,6 +51,8 @@ export class StandaloneStylesContainer extends Common.ObjectWrapper.eventMixin(U
         if (this.isEditingStyle || this.userOperation) {
             return;
         }
+        this.node()?.domModel().cssModel().discardCachedMatchedCascade();
+        await this.#updateSections();
         this.requestUpdate();
     }
     get webCustomData() {
@@ -86,20 +89,24 @@ export class StandaloneStylesContainer extends Common.ObjectWrapper.eventMixin(U
             this.sectionByElement.set(section.element, section);
         }
         this.#sections = newSections;
+        this.#updateFilter();
         this.swatchPopoverHelper().reposition();
     }
     async performUpdate() {
         this.hideAllPopovers();
-        this.node()?.domModel().cssModel().discardCachedMatchedCascade();
-        await this.#updateSections();
         const viewInput = {
-            sections: this.#sections,
+            sections: this.#sections.filter(section => !section.isHidden()),
         };
         this.#view(viewInput, undefined, this.contentElement);
         this.#onUpdateFinished();
     }
     #onUpdateFinished() {
         this.dispatchEventToListeners("StylesUpdateCompleted" /* Events.STYLES_UPDATE_COMPLETED */);
+    }
+    #updateFilter() {
+        for (const section of this.#sections) {
+            section.updateFilter();
+        }
     }
     swatchPopoverHelper() {
         return this.#swatchPopoverHelper;
@@ -110,6 +117,10 @@ export class StandaloneStylesContainer extends Common.ObjectWrapper.eventMixin(U
             return;
         }
         this.#computedStyleModelInternal.node = node;
+    }
+    set filter(regex) {
+        this.#filter = regex;
+        this.#updateFilter();
         this.requestUpdate();
     }
     node() {
@@ -140,7 +151,7 @@ export class StandaloneStylesContainer extends Common.ObjectWrapper.eventMixin(U
         this.#onUpdateFinished();
     }
     filterRegex() {
-        return null;
+        return this.#filter;
     }
     setEditingStyle(editing) {
         this.isEditingStyle = editing;
@@ -149,7 +160,10 @@ export class StandaloneStylesContainer extends Common.ObjectWrapper.eventMixin(U
         this.userOperation = userOperation;
     }
     forceUpdate() {
-        this.requestUpdate();
+        this.node()?.domModel().cssModel().discardCachedMatchedCascade();
+        void this.#updateSections().then(() => {
+            this.requestUpdate();
+        });
     }
     hideAllPopovers() {
         this.#swatchPopoverHelper.hide();

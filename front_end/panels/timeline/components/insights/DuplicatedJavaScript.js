@@ -13,7 +13,7 @@ import { scriptRef } from './ScriptRef.js';
 import { Table } from './Table.js';
 const { UIStrings, i18nString } = Trace.Insights.Models.DuplicatedJavaScript;
 const { html } = Lit;
-const { widgetConfig } = UI.Widget;
+const { widget } = UI.Widget;
 export class DuplicatedJavaScript extends BaseInsightComponent {
     internalName = 'duplicated-javascript';
     #treemapData = null;
@@ -85,14 +85,13 @@ export class DuplicatedJavaScript extends BaseInsightComponent {
         return html `
       ${treemapButton}
       <div class="insight-section">
-        <devtools-widget .widgetConfig=${widgetConfig(Table, {
+        ${widget(Table, {
             data: {
                 insight: this,
                 headers: [i18nString(UIStrings.columnSource), i18nString(UIStrings.columnDuplicatedBytes)],
                 rows,
             }
-        })}>
-        </devtools-widget>
+        })}
       </div>
     `;
         // clang-format on

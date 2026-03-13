@@ -137,6 +137,7 @@ export declare class PerformanceInsightFormatter {
      * @param insight The Network Dependency Tree Insight Model to query.
      * @returns a string formatted for sending to Ask AI.
      */
+    formatCharacterSetInsight(insight: Trace.Insights.Models.CharacterSet.CharacterSetInsightModel): string;
     formatViewportInsight(insight: Trace.Insights.Models.Viewport.ViewportInsightModel): string;
     /**
      * Formats and outputs the insight's data.

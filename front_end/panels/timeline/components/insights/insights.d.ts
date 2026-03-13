@@ -1,5 +1,6 @@
 import * as BaseInsightComponent from './BaseInsightComponent.js';
 import * as Cache from './Cache.js';
+import * as CharacterSet from './CharacterSet.js';
 import * as Checklist from './Checklist.js';
 import * as CLSCulprits from './CLSCulprits.js';
 import * as DocumentLatency from './DocumentLatency.js';
@@ -25,4 +26,4 @@ import * as Table from './Table.js';
 import * as ThirdParties from './ThirdParties.js';
 import * as Types from './types.js';
 import * as Viewport from './Viewport.js';
-export { BaseInsightComponent, Cache, Checklist, CLSCulprits, DocumentLatency, DOMSize, DuplicatedJavaScript, EventRef, FontDisplay, ForcedReflow, Helpers, ImageDelivery, INPBreakdown, InsightRenderer, LCPBreakdown, LCPDiscovery, LegacyJavaScript, ModernHTTP, NetworkDependencyTree, NodeLink, RenderBlocking, SidebarInsight, SlowCSSSelector, Table, ThirdParties, Types, Viewport, };
+export { BaseInsightComponent, Cache, CharacterSet, Checklist, CLSCulprits, DocumentLatency, DOMSize, DuplicatedJavaScript, EventRef, FontDisplay, ForcedReflow, Helpers, ImageDelivery, INPBreakdown, InsightRenderer, LCPBreakdown, LCPDiscovery, LegacyJavaScript, ModernHTTP, NetworkDependencyTree, NodeLink, RenderBlocking, SidebarInsight, SlowCSSSelector, Table, ThirdParties, Types, Viewport, };

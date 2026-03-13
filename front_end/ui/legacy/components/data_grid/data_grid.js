@@ -3677,13 +3677,13 @@ var ifExpanded = Lit.Directive.directive(class extends Lit.Directive.Directive {
   #partInfo;
   constructor(partInfo) {
     if (partInfo.type !== Lit.Directive.PartType.CHILD) {
-      throw new Error("expand directive must be used in a child node");
+      throw new Error("ifExpanded directive must be used in a child node");
     }
     super(partInfo);
     this.#partInfo = partInfo;
   }
   render(content) {
-    return this.#isInExpandedRow(this.#partInfo.startNode) ? content() : Lit.nothing;
+    return this.#isInExpandedRow(this.#partInfo.startNode) ? content : Lit.nothing;
   }
   #isInExpandedRow(element) {
     if (!element) {

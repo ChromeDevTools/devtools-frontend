@@ -10,7 +10,7 @@ import { eventRef } from './EventRef.js';
 import { createLimitedRows, renderOthersLabel, Table } from './Table.js';
 const { UIStrings, i18nString, createOverlayForRequest } = Trace.Insights.Models.RenderBlocking;
 const { html } = Lit;
-const { widgetConfig } = UI.Widget;
+const { widget } = UI.Widget;
 export class RenderBlocking extends BaseInsightComponent {
     internalName = 'render-blocking-requests';
     mapToRow(request) {
@@ -46,14 +46,13 @@ export class RenderBlocking extends BaseInsightComponent {
         // clang-format off
         return html `
       <div class="insight-section">
-        <devtools-widget .widgetConfig=${widgetConfig(Table, {
+        ${widget(Table, {
             data: {
                 insight: this,
                 headers: [i18nString(UIStrings.renderBlockingRequest), i18nString(UIStrings.duration)],
                 rows,
             }
-        })}>
-        </devtools-widget>
+        })}
       </div>
     `;
         // clang-format on

@@ -2589,6 +2589,17 @@ var chatMessage_css_default = `/*
     width: fit-content;
   }
 
+  .styling-preview-widget {
+    width: 100%;
+    min-height: 100px;
+  }
+
+  .main-widgets-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sys-size-5);
+  }
+
   .step-widgets-wrapper {
     width: fit-content;
     display: flex;
@@ -3018,6 +3029,10 @@ var UIStringsNotTranslate4 = {
    */
   maxStepsError: "Seems like I am stuck with the investigation. It would be better if you start over.",
   /**
+   * @description The error message when the LLM selects context from a different origin.
+   */
+  crossOriginError: "I have selected the new context but you will have to start a new chat.",
+  /**
    * @description Displayed when the user stop the response
    */
   stoppedResponse: "You stopped this response",
@@ -3124,6 +3139,9 @@ var DEFAULT_VIEW4 = (input, output, target) => {
     const isLastPart = index === message.parts.length - 1;
     if (part.type === "answer") {
       return html5`<p>${renderTextAsMarkdown(part.text, input.markdownRenderer, { animate: !input.isReadOnly && input.isLoading && isLastPart && input.isLastMessage })}</p>`;
+    }
+    if (part.type === "widget") {
+      return html5`${Lit3.Directives.until(renderWidgets(part.widgets, { wrapperClass: "main-widgets-wrapper" }))}`;
     }
     if (!aiAssistanceV2 && part.type === "step") {
       return renderStep({
@@ -3299,7 +3317,6 @@ function renderStepBadge({ step, isLoading, isLast }) {
     ></devtools-icon>`;
 }
 function renderStep({ step, isLoading, markdownRenderer, isLast }) {
-  const shouldRenderWidgets = Boolean(step.widgets?.length && Root3.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled);
   const stepClasses = Lit3.Directives.classMap({
     step: true,
     empty: !step.thought && !step.code && !step.contextDetails && !step.requestApproval,
@@ -3322,26 +3339,30 @@ function renderStep({ step, isLoading, markdownRenderer, isLast }) {
       </summary>
       ${renderStepDetails({ step, markdownRenderer, isLast })}
     </details>
-    ${shouldRenderWidgets ? html5`
-      <div class="step-widgets-wrapper">
-        ${Lit3.Directives.until(renderStepWidgets(step))}
-      </div>` : Lit3.nothing}`;
+    ${Lit3.Directives.until(renderWidgets(step.widgets, { wrapperClass: "step-widgets-wrapper" }))}
+    `;
 }
-var computedStyleNodeCache = /* @__PURE__ */ new Map();
+var nodeCache = /* @__PURE__ */ new Map();
+async function resolveNode(backendNodeId) {
+  const cachedNode = nodeCache.get(backendNodeId);
+  if (cachedNode) {
+    return cachedNode;
+  }
+  const target = SDK2.TargetManager.TargetManager.instance().primaryPageTarget();
+  if (!target) {
+    return null;
+  }
+  const node = new SDK2.DOMModel.DeferredDOMNode(target, backendNodeId);
+  const resolved = await node.resolvePromise();
+  if (resolved) {
+    nodeCache.set(backendNodeId, resolved);
+  }
+  return resolved;
+}
 async function makeComputedStyleWidget(widgetData) {
-  let domNodeForId = computedStyleNodeCache.get(widgetData.data.backendNodeId);
+  const domNodeForId = await resolveNode(widgetData.data.backendNodeId);
   if (!domNodeForId) {
-    const target = SDK2.TargetManager.TargetManager.instance().primaryPageTarget();
-    if (!target) {
-      return null;
-    }
-    const node = new SDK2.DOMModel.DeferredDOMNode(target, widgetData.data.backendNodeId);
-    const resolved = await node.resolvePromise();
-    if (!resolved) {
-      return null;
-    }
-    domNodeForId = resolved;
-    computedStyleNodeCache.set(widgetData.data.backendNodeId, resolved);
+    return null;
   }
   const styles = new ComputedStyle.ComputedStyleModel.ComputedStyle(domNodeForId, widgetData.data.computedStyles);
   const widgetConfig = UI5.Widget.widgetConfig(Elements.ComputedStyleWidget.ComputedStyleWidget, {
@@ -3362,6 +3383,21 @@ async function makeCoreVitalsWidget(widgetData) {
     renderedWidget: widget4,
     revealable: new TimelineUtils.Helpers.RevealableCoreVitals(widgetData.data.insightSetKey)
   };
+}
+async function makeStylePropertiesWidget(widgetData) {
+  const domNodeForId = await resolveNode(widgetData.data.backendNodeId);
+  if (!domNodeForId) {
+    return null;
+  }
+  const widgetConfig = UI5.Widget.widgetConfig(Elements.StandaloneStylesContainer.StandaloneStylesContainer, {
+    domNode: domNodeForId,
+    filter: widgetData.data.selector ? new RegExp(widgetData.data.selector) : null
+  });
+  const widget4 = html5`<devtools-widget
+    class="styling-preview-widget"
+    .widgetConfig=${widgetConfig}
+  ></devtools-widget>`;
+  return { renderedWidget: widget4, revealable: domNodeForId };
 }
 function renderWidgetResponse(response) {
   if (response === null) {
@@ -3388,21 +3424,24 @@ function renderWidgetResponse(response) {
     </div>
     `;
 }
-async function renderStepWidgets(step) {
-  if (!step.widgets || step.widgets.length === 0) {
+async function renderWidgets(widgets, options = {}) {
+  if (!Root3.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled || !widgets || widgets.length === 0) {
     return Lit3.nothing;
   }
-  const ui = await Promise.all(step.widgets.map(async (widgetData) => {
+  const ui = await Promise.all(widgets.map(async (widgetData) => {
+    let response = null;
     if (widgetData.name === "COMPUTED_STYLES") {
-      const response = await makeComputedStyleWidget(widgetData);
-      return renderWidgetResponse(response);
+      response = await makeComputedStyleWidget(widgetData);
+    } else if (widgetData.name === "CORE_VITALS") {
+      response = await makeCoreVitalsWidget(widgetData);
+    } else if (widgetData.name === "STYLE_PROPERTIES") {
+      response = await makeStylePropertiesWidget(widgetData);
     }
-    if (widgetData.name === "CORE_VITALS") {
-      const response = await makeCoreVitalsWidget(widgetData);
-      return renderWidgetResponse(response);
-    }
-    return Lit3.nothing;
+    return renderWidgetResponse(response);
   }));
+  if (options.wrapperClass) {
+    return html5`<div class=${options.wrapperClass}>${ui}</div>`;
+  }
   return html5`${ui}`;
 }
 function renderSideEffectConfirmationUi(step) {
@@ -3443,6 +3482,9 @@ function renderError(message) {
         break;
       case "max-steps":
         errorMessage = UIStringsNotTranslate4.maxStepsError;
+        break;
+      case "cross-origin":
+        errorMessage = UIStringsNotTranslate4.crossOriginError;
         break;
       case "abort":
         return html5`<p class="aborted" jslog=${VisualLogging3.section("aborted")}>${lockedString5(UIStringsNotTranslate4.stoppedResponse)}</p>`;
@@ -4890,23 +4932,26 @@ var MarkdownRendererWithCodeBlock = class extends MarkdownView.MarkdownView.Mark
       void Common4.Revealer.reveal(revealable);
     }}>${Platform4.StringUtilities.trimEndWithMaxLength(label, 100)}</devtools-link>`;
   }
-  #renderLink(href) {
+  #renderLink(href, fallbackText) {
     if (href.startsWith("#req-")) {
       const request = Logs.NetworkLog.NetworkLog.instance().requests().find((req) => req.requestId() === href.substring(5));
       if (request) {
         return this.#revealableLink(request, request.url());
       }
-    } else if (href.startsWith("#file-")) {
+      return html9`${fallbackText}`;
+    }
+    if (href.startsWith("#file-")) {
       const file = AiAssistanceModel5.ContextSelectionAgent.ContextSelectionAgent.getUISourceCodes().find((file2) => AiAssistanceModel5.ContextSelectionAgent.ContextSelectionAgent.uiSourceCodeId.get(file2) === Number(href.substring(6)));
       if (file) {
         return this.#revealableLink(file, file.name());
       }
+      return html9`${fallbackText}`;
     }
     return null;
   }
   templateForToken(token) {
     if (token.type === "link") {
-      const link4 = this.#renderLink(token.href);
+      const link4 = this.#renderLink(token.href, token.text);
       if (link4) {
         return link4;
       }
@@ -4919,9 +4964,9 @@ var MarkdownRendererWithCodeBlock = class extends MarkdownView.MarkdownView.Mark
       }
     }
     if (token.type === "codespan") {
-      const matches = token.text.match(/^\[.*\]\((.+)\)$/);
-      if (matches?.[1]) {
-        const link4 = this.#renderLink(matches[1]);
+      const matches = token.text.match(/^\[(.*)\]\((.+)\)$/);
+      if (matches?.[2]) {
+        const link4 = this.#renderLink(matches[2], matches[1]);
         if (link4) {
           return link4;
         }
@@ -6413,7 +6458,8 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
               parts: []
             };
             this.#messages.push(systemMessage);
-            if (Greendev.Prototypes.instance().isEnabled("breakpointDebuggerAgent") && this.#conversation?.type === "breakpoint") {
+            const isSidebarWalkthroughOpen = this.#walkthrough.isExpanded && !this.#walkthrough.isInlined;
+            if (isSidebarWalkthroughOpen || Greendev.Prototypes.instance().isEnabled("breakpointDebuggerAgent") && this.#conversation?.type === "breakpoint") {
               this.#openWalkthrough(systemMessage);
             }
             break;
@@ -6498,6 +6544,12 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
               }
               systemMessage.parts.push(newPart);
             }
+            if (data.widgets && Root6.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled) {
+              systemMessage.parts.push({
+                type: "widget",
+                widgets: data.widgets
+              });
+            }
             if (systemMessage.parts.length > 1) {
               const firstPart = systemMessage.parts[0];
               if (firstPart.type === "step" && firstPart.step.isLoading && !firstPart.step.thought && !firstPart.step.code && !firstPart.step.contextDetails) {
@@ -6569,7 +6621,7 @@ function getResponseMarkdown(message) {
       contentParts.push(`### Answer
 
 ${part.text}`);
-    } else {
+    } else if (part.type === "step") {
       const step = part.step;
       if (step.title) {
         contentParts.push(`### ${step.title}`);

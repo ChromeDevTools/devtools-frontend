@@ -12,7 +12,7 @@ import { BaseInsightComponent } from './BaseInsightComponent.js';
 import { Table } from './Table.js';
 const { UIStrings, i18nString } = Trace.Insights.Models.SlowCSSSelector;
 const { html } = Lit;
-const { widgetConfig } = UI.Widget;
+const { widget } = UI.Widget;
 export class SlowCSSSelector extends BaseInsightComponent {
     internalName = 'slow-css-selector';
     #selectorLocations = new Map();
@@ -80,7 +80,7 @@ export class SlowCSSSelector extends BaseInsightComponent {
         // clang-format off
         const sections = [html `
       <div class="insight-section">
-        <devtools-widget .widgetConfig=${widgetConfig(Table, {
+        ${widget(Table, {
                 data: {
                     insight: this,
                     headers: [i18nString(UIStrings.total), ''],
@@ -90,8 +90,7 @@ export class SlowCSSSelector extends BaseInsightComponent {
                         { values: [i18nString(UIStrings.elapsed), i18n.TimeUtilities.millisToString(this.model.totalElapsedMs)] },
                     ],
                 }
-            })}>
-        </devtools-widget>
+            })}
       </div>
     `];
         // clang-format on
@@ -100,7 +99,7 @@ export class SlowCSSSelector extends BaseInsightComponent {
             // clang-format off
             sections.push(html `
         <div class="insight-section">
-          <devtools-widget .widgetConfig=${widgetConfig(Table, {
+          ${widget(Table, {
                 data: {
                     insight: this,
                     headers: [`${i18nString(UIStrings.topSelectorElapsedTime)}: ${time(Trace.Types.Timing.Micro(selector['elapsed (us)']))}`],
@@ -108,8 +107,7 @@ export class SlowCSSSelector extends BaseInsightComponent {
                             values: [html `${selector.selector} ${Lit.Directives.until(this.getSelectorLinks(cssModel, selector))}`]
                         }]
                 }
-            })}>
-          </devtools-widget>
+            })}
         </div>
       `);
             // clang-format on
@@ -119,7 +117,7 @@ export class SlowCSSSelector extends BaseInsightComponent {
             // clang-format off
             sections.push(html `
         <div class="insight-section">
-          <devtools-widget .widgetConfig=${widgetConfig(Table, {
+          ${widget(Table, {
                 data: {
                     insight: this,
                     headers: [`${i18nString(UIStrings.topSelectorMatchAttempt)}: ${selector['match_attempts']}`],
@@ -127,8 +125,7 @@ export class SlowCSSSelector extends BaseInsightComponent {
                             values: [html `${selector.selector} ${Lit.Directives.until(this.getSelectorLinks(cssModel, selector))}`],
                         }]
                 }
-            })}>
-          </devtools-widget>
+            })}
         </div>
       `);
             // clang-format on

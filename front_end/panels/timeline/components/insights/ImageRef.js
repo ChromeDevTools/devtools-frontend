@@ -8,7 +8,7 @@ import * as Lit from '../../../../ui/lit/lit.js';
 import baseInsightComponentStyles from './baseInsightComponent.css.js';
 import { eventRef } from './EventRef.js';
 const { html } = Lit;
-const { widgetConfig } = UI.Widget;
+const { widget } = UI.Widget;
 export const DEFAULT_VIEW = (input, output, target) => {
     const { request, imageDataUrl, } = input;
     const img = imageDataUrl ? html `<img src=${imageDataUrl} class="element-img"/>` : Lit.nothing;
@@ -75,8 +75,6 @@ class ImageRef extends UI.Widget.Widget {
     }
 }
 export function imageRef(request) {
-    return html `<devtools-widget .widgetConfig=${widgetConfig(ImageRef, {
-        request,
-    })}></devtools-widget>`;
+    return html `${widget(ImageRef, { request })}`;
 }
 //# sourceMappingURL=ImageRef.js.map

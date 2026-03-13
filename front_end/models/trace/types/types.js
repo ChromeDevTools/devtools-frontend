@@ -228,6 +228,7 @@ __export(TraceEvents_exports, {
   isMarkDOMContent: () => isMarkDOMContent,
   isMarkLoad: () => isMarkLoad,
   isMarkerEvent: () => isMarkerEvent,
+  isMetaCharsetCheck: () => isMetaCharsetCheck,
   isNavigationStart: () => isNavigationStart,
   isNeedsBeginFrameChanged: () => isNeedsBeginFrameChanged,
   isNestableAsyncPhase: () => isNestableAsyncPhase,
@@ -405,6 +406,9 @@ function isBeginCommitCompositorFrame(event) {
 }
 function isParseMetaViewport(event) {
   return event.name === "ParseMetaViewport";
+}
+function isMetaCharsetCheck(event) {
+  return event.name === "MetaCharsetCheck";
 }
 function isLinkPreconnect(event) {
   return event.name === "LinkPreconnect";

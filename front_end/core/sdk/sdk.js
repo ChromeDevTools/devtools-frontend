@@ -12652,6 +12652,8 @@ __export(CSSPropertyParserMatchers_exports, {
   ColorMatcher: () => ColorMatcher,
   ColorMixMatch: () => ColorMixMatch,
   ColorMixMatcher: () => ColorMixMatcher,
+  ContrastColorMatch: () => ContrastColorMatch,
+  ContrastColorMatcher: () => ContrastColorMatcher,
   CustomFunctionMatch: () => CustomFunctionMatch,
   CustomFunctionMatcher: () => CustomFunctionMatcher,
   EnvFunctionMatch: () => EnvFunctionMatch,
@@ -13028,6 +13030,35 @@ var ColorMixMatcher = class extends matcherBase(ColorMixMatch) {
       return null;
     }
     return new ColorMixMatch(matching.ast.text(node), node, args[0], args[1], args[2]);
+  }
+};
+var ContrastColorMatch = class {
+  text;
+  node;
+  color;
+  constructor(text, node, color) {
+    this.text = text;
+    this.node = node;
+    this.color = color;
+  }
+};
+var ContrastColorMatcher = class extends matcherBase(ContrastColorMatch) {
+  // clang-format on
+  accepts(propertyName) {
+    return cssMetadata().isColorAwareProperty(propertyName);
+  }
+  matches(node, matching) {
+    if (node.name !== "CallExpression" || matching.ast.text(node.getChild("Callee")) !== "contrast-color") {
+      return null;
+    }
+    if (matching.getComputedText(node) === "") {
+      return null;
+    }
+    const args = ASTUtils.callArgs(node);
+    if (args.length !== 1) {
+      return null;
+    }
+    return new ContrastColorMatch(matching.ast.text(node), node, args[0]);
   }
 };
 var URLMatch = class {
@@ -16536,6 +16567,7 @@ var CSSMatchedStyles = class _CSSMatchedStyles {
       new VariableMatcher(this, style),
       new ColorMatcher(() => computedStyles?.get("color") ?? null),
       new ColorMixMatcher(),
+      new ContrastColorMatcher(),
       new URLMatcher(),
       new AngleMatcher(),
       new LinkableNameMatcher(),

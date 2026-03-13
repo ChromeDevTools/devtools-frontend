@@ -41,6 +41,7 @@ export declare class StandaloneStylesContainer extends StandaloneStylesContainer
     performUpdate(): Promise<void>;
     swatchPopoverHelper(): InlineEditor.SwatchPopoverHelper.SwatchPopoverHelper;
     set domNode(node: SDK.DOMModel.DOMNode | null);
+    set filter(regex: RegExp | null);
     node(): SDK.DOMModel.DOMNode | null;
     cssModel(): SDK.CSSModel.CSSModel | null;
     computedStyleModel(): ComputedStyle.ComputedStyleModel.ComputedStyleModel;

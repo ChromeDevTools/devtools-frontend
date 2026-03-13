@@ -1233,7 +1233,7 @@ function renderItem(info, input) {
       </td>
       ${info.sources.length > 0 ? html`
         <td><table>
-          ${ifExpanded(() => html`${repeat(info.sources, (source) => source.url, (source) => renderItem(source, input))}`)}
+          ${ifExpanded(html`${repeat(info.sources, (source) => source.url, (source) => renderItem(source, input))}`)}
         </table></td>` : nothing}
     </tr>`;
 }

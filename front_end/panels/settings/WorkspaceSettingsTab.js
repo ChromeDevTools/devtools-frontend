@@ -37,6 +37,7 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/settings/WorkspaceSettingsTab.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+const { widget } = UI.Widget;
 export const DEFAULT_VIEW = (input, _output, target) => {
     // clang-format off
     render(html `
@@ -58,8 +59,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
           <devtools-card heading=${fileSystem.displayName}>
             <devtools-icon name="folder" slot="heading-prefix"></devtools-icon>
             <div class="mapping-view-container">
-              <devtools-widget .widgetConfig=${UI.Widget.widgetConfig(EditFileSystemView, { fileSystem: fileSystem.fileSystem })}>
-              </devtools-widget>
+              ${widget(EditFileSystemView, { fileSystem: fileSystem.fileSystem })}
             </div>
             <devtools-button
               slot="heading-suffix"

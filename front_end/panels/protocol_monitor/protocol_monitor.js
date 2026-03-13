@@ -1199,7 +1199,7 @@ var protocolMonitor_css_default = `/*
 
 // gen/front_end/panels/protocol_monitor/ProtocolMonitor.js
 var { styleMap } = Directives2;
-var { widgetConfig, widgetRef } = UI2.Widget;
+var { widget, widgetConfig, widgetRef } = UI2.Widget;
 var UIStrings2 = {
   /**
    * @description Text for one or a group of functions
@@ -1719,7 +1719,7 @@ var CommandAutocompleteSuggestionProvider = class {
   }
 };
 var INFO_WIDGET_VIEW = (input, _output, target) => {
-  render2(html2`<devtools-widget .widgetConfig=${widgetConfig(UI2.TabbedPane.TabbedPane, {
+  render2(widget(UI2.TabbedPane.TabbedPane, {
     tabs: [
       {
         id: "request",
@@ -1735,8 +1735,7 @@ var INFO_WIDGET_VIEW = (input, _output, target) => {
         selected: input.selectedTab === "response"
       }
     ]
-  })}>
-  </devtools-widget>`, target);
+  }), target);
 };
 var InfoWidget = class extends UI2.Widget.VBox {
   #view;

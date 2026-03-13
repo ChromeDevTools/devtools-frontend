@@ -152,6 +152,7 @@ models/ai_assistance/ChangeManager.test.js
 models/ai_assistance/ConversationHandler.test.js
 models/ai_assistance/EvaluateAction.test.js
 models/ai_assistance/ExtensionScope.test.js
+models/ai_assistance/agents/AccessibilityAgent.test.js
 models/ai_assistance/agents/AiAgent.test.js
 models/ai_assistance/agents/ContextSelectionAgent.test.js
 models/ai_assistance/agents/FileAgent.test.js
@@ -268,6 +269,7 @@ models/trace/helpers/Trace.test.js
 models/trace/helpers/TreeHelpers.test.js
 models/trace/insights/CLSCulprits.test.js
 models/trace/insights/Cache.test.js
+models/trace/insights/CharacterSet.test.js
 models/trace/insights/Common.test.js
 models/trace/insights/DOMSize.test.js
 models/trace/insights/DocumentLatency.test.js

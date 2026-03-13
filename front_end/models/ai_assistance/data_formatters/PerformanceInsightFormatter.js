@@ -174,6 +174,10 @@ export class PerformanceInsightFormatter {
                     { title: 'Is my site polyfilling modern JavaScript features?' },
                     { title: 'How can I reduce the amount of legacy JavaScript on my page?' },
                 ];
+            case 'CharacterSet':
+                return [
+                    { title: 'How do I declare a character encoding for my page?' },
+                ];
             default:
                 throw new Error(`Unknown insight key '${this.#insight.insightKey}'`);
         }
@@ -737,6 +741,18 @@ ${requestSummary}`;
      * @param insight The Network Dependency Tree Insight Model to query.
      * @returns a string formatted for sending to Ask AI.
      */
+    formatCharacterSetInsight(insight) {
+        let output = '';
+        if (insight.data) {
+            output += 'HTTP Content-Type header charset: ' + (insight.data.hasHttpCharset ? 'present' : 'missing') + '.\n';
+            output += 'HTML meta charset disposition: ' + (insight.data.metaCharsetDisposition ?? 'unknown') + '.\n';
+            if (!insight.data.hasHttpCharset && insight.data.metaCharsetDisposition !== 'found-in-first-1024-bytes') {
+                output +=
+                    '\nThe page does not declare character encoding via HTTP header or a meta charset tag in the first 1024 bytes.\n';
+            }
+        }
+        return output;
+    }
     formatViewportInsight(insight) {
         let output = '';
         output += 'The webpage is ' + (insight.mobileOptimized ? 'already' : 'not') + ' optimized for mobile viewing.\n';
@@ -828,6 +844,9 @@ ${this.#links()}`;
         if (Trace.Insights.Models.Viewport.isViewportInsight(this.#insight)) {
             return this.formatViewportInsight(this.#insight);
         }
+        if (Trace.Insights.Models.CharacterSet.isCharacterSetInsight(this.#insight)) {
+            return this.formatCharacterSetInsight(this.#insight);
+        }
         return '';
     }
     estimatedSavings() {
@@ -901,6 +920,9 @@ ${this.#links()}`;
             case 'LegacyJavaScript':
                 links.push('https://web.dev/articles/baseline-and-polyfills');
                 links.push('https://philipwalton.com/articles/the-state-of-es5-on-the-web/');
+                break;
+            case 'CharacterSet':
+                links.push('https://developer.chrome.com/docs/insights/charset/');
                 break;
         }
         return links.map(link => '- ' + link).join('\n');
@@ -984,6 +1006,8 @@ To pass this insight, ensure your server supports and prioritizes a modern HTTP 
                 return `This insight identified legacy JavaScript in your application's modules that may be creating unnecessary code.
 
 Polyfills and transforms enable older browsers to use new JavaScript features. However, many are not necessary for modern browsers. Consider modifying your JavaScript build process to not transpile Baseline features, unless you know you must support older browsers.`;
+            case 'CharacterSet':
+                return `This insight checks that the page declares a character encoding, ideally via the Content-Type HTTP response header. A missing or late charset declaration can force the browser to re-parse the document once it finally determines the encoding, delaying first contentful paint. Best practice: include charset=utf-8 in the Content-Type header and add <meta charset="utf-8"> as the very first element inside <head>.`;
         }
     }
 }

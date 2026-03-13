@@ -1832,6 +1832,30 @@
   "models/trace/insights/Cache.ts | title": {
     "message": "Use efficient cache lifetimes"
   },
+  "models/trace/insights/CharacterSet.ts | description": {
+    "message": "A character encoding declaration is required. It can be done with a meta charset tag in the first 1024 bytes of the HTML or in the Content-Type HTTP response header. [Learn more about declaring the character encoding](https://developer.chrome.com/docs/insights/charset/)."
+  },
+  "models/trace/insights/CharacterSet.ts | failedHttpHeader": {
+    "message": "Does not declare charset in HTTP header"
+  },
+  "models/trace/insights/CharacterSet.ts | failedMetaCharsetLate": {
+    "message": "Declares charset using a meta tag after the first 1024 bytes"
+  },
+  "models/trace/insights/CharacterSet.ts | failedMetaCharsetMissing": {
+    "message": "Does not declare charset using a meta tag"
+  },
+  "models/trace/insights/CharacterSet.ts | failedMetaCharsetUnknown": {
+    "message": "Could not determine meta charset declaration from trace"
+  },
+  "models/trace/insights/CharacterSet.ts | passingHttpHeader": {
+    "message": "Declares charset in HTTP header"
+  },
+  "models/trace/insights/CharacterSet.ts | passingMetaCharsetEarly": {
+    "message": "Declares charset using a meta tag in the first 1024 bytes"
+  },
+  "models/trace/insights/CharacterSet.ts | title": {
+    "message": "Declare a character encoding"
+  },
   "models/trace/insights/CLSCulprits.ts | animation": {
     "message": "Animation"
   },

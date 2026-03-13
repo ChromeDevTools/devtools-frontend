@@ -9,7 +9,7 @@ import { BaseInsightComponent } from './BaseInsightComponent.js';
 import { Table } from './Table.js';
 const { UIStrings, i18nString } = Trace.Insights.Models.LCPBreakdown;
 const { html } = Lit;
-const { widgetConfig } = UI.Widget;
+const { widget } = UI.Widget;
 export class LCPBreakdown extends BaseInsightComponent {
     internalName = 'lcp-by-phase';
     #overlay = null;
@@ -49,14 +49,13 @@ export class LCPBreakdown extends BaseInsightComponent {
         // clang-format off
         return html `
       <div class="insight-section">
-        <devtools-widget .widgetConfig=${widgetConfig(Table, {
+        ${widget(Table, {
             data: {
                 insight: this,
                 headers: [i18nString(UIStrings.subpart), i18nString(UIStrings.fieldDuration)],
                 rows,
             }
-        })}>
-        </devtools-widget>
+        })}
       </div>
     `;
         // clang-format on
@@ -89,14 +88,13 @@ export class LCPBreakdown extends BaseInsightComponent {
         // clang-format off
         const sections = [html `
       <div class="insight-section">
-        <devtools-widget .widgetConfig=${widgetConfig(Table, {
+        ${widget(Table, {
                 data: {
                     insight: this,
                     headers: [i18nString(UIStrings.subpart), i18nString(UIStrings.duration)],
                     rows,
                 }
-            })}>
-        </devtools-widget>
+            })}
       </div>`
         ];
         // clang-format on

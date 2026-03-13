@@ -2055,9 +2055,9 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
     insight.addEventListener("close", () => {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightClosed);
       this.elementInternal?.classList.toggle("has-insight", false);
-      const widget = UI2.Widget.Widget.get(insight);
-      if (widget) {
-        widget.detach();
+      const widget2 = UI2.Widget.Widget.get(insight);
+      if (widget2) {
+        widget2.detach();
       } else {
         this.elementInternal?.removeChild(insight);
       }
@@ -4066,12 +4066,12 @@ async function formatStackTrace(message) {
   if (!previewContainer) {
     return "";
   }
-  const widget = UI3.Widget.Widget.get(previewContainer);
-  if (!widget) {
+  const widget2 = UI3.Widget.Widget.get(previewContainer);
+  if (!widget2) {
     return "";
   }
-  await widget.updateComplete;
-  const preview = widget.contentElement.querySelector(".stack-preview-container");
+  await widget2.updateComplete;
+  const preview = widget2.contentElement.querySelector(".stack-preview-container");
   const nodes = preview.childTextNodes();
   const messageContent = nodes.filter((n) => {
     return !n.parentElement?.closest(".show-all-link,.show-less-link,.hidden-row");
@@ -4792,6 +4792,7 @@ var consolePinPane_css_default = `/*
 
 // gen/front_end/panels/console/ConsolePinPane.js
 var { createRef, ref: ref2 } = Directives;
+var { widget } = UI5.Widget;
 var UIStrings3 = {
   /**
    * @description A context menu item in the Console Pin Pane of the Console panel
@@ -4833,12 +4834,11 @@ var DEFAULT_PANE_VIEW = (input, _output, target) => {
   render4(html3`
     <style>${consolePinPane_css_default}</style>
     <div class='console-pins monospace' jslog=${VisualLogging3.pane("console-pins")} @contextmenu=${input.onContextMenu}>
-    ${input.pins.map((pin) => html3`
-        <devtools-widget .widgetConfig=${UI5.Widget.widgetConfig(ConsolePinPresenter, {
+    ${input.pins.map((pin) => widget(ConsolePinPresenter, {
     pin,
     focusOut: input.focusOut,
     onRemove: () => input.onRemove(pin)
-  })}></devtools-widget>`)}
+  }))}
     </div>`, target);
 };
 var ConsolePinPane = class extends UI5.Widget.VBox {

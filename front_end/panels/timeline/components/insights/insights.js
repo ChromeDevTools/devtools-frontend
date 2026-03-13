@@ -1026,7 +1026,7 @@ import * as UI4 from "./../../../../ui/legacy/legacy.js";
 import * as Lit5 from "./../../../../ui/lit/lit.js";
 var { UIStrings: UIStrings3, i18nString: i18nString3, createOverlayForRequest } = Trace3.Insights.Models.Cache;
 var { html: html5 } = Lit5;
-var { widgetConfig: widgetConfig2 } = UI4.Widget;
+var { widget } = UI4.Widget;
 var Cache = class extends BaseInsightComponent {
   internalName = "cache";
   hasAskAiSupport() {
@@ -1056,18 +1056,24 @@ var Cache = class extends BaseInsightComponent {
     }
     return html5`
       <div class="insight-section">
-        <devtools-widget
-          .widgetConfig=${widgetConfig2(Table, {
+        ${widget(Table, {
       data: {
         insight: this,
         headers: [i18nString3(UIStrings3.requestColumn), i18nString3(UIStrings3.cacheTTL)],
         rows
       }
-    })}>
-        </devtools-widget>
+    })}
       </div>`;
   }
 };
+
+// gen/front_end/panels/timeline/components/insights/CharacterSet.js
+var CharacterSet_exports = {};
+__export(CharacterSet_exports, {
+  CharacterSet: () => CharacterSet
+});
+import * as UI6 from "./../../../../ui/legacy/legacy.js";
+import * as Lit7 from "./../../../../ui/lit/lit.js";
 
 // gen/front_end/panels/timeline/components/insights/Checklist.js
 var Checklist_exports = {};
@@ -1178,6 +1184,27 @@ var Checklist = class extends UI5.Widget.Widget {
   }
 };
 
+// gen/front_end/panels/timeline/components/insights/CharacterSet.js
+var { html: html7 } = Lit7;
+var { widgetConfig: widgetConfig2 } = UI6.Widget;
+var CharacterSet = class extends BaseInsightComponent {
+  internalName = "character-set";
+  hasAskAiSupport() {
+    return true;
+  }
+  getEstimatedSavingsTime() {
+    return this.model?.metricSavings?.FCP ?? null;
+  }
+  renderContent() {
+    if (!this.model?.data) {
+      return Lit7.nothing;
+    }
+    return html7`<devtools-widget .widgetConfig=${widgetConfig2(Checklist, {
+      checklist: this.model.data.checklist
+    })}></devtools-widget>`;
+  }
+};
+
 // gen/front_end/panels/timeline/components/insights/CLSCulprits.js
 var CLSCulprits_exports = {};
 __export(CLSCulprits_exports, {
@@ -1185,7 +1212,7 @@ __export(CLSCulprits_exports, {
 });
 import * as i18n8 from "./../../../../core/i18n/i18n.js";
 import * as Trace4 from "./../../../../models/trace/trace.js";
-import * as Lit8 from "./../../../../ui/lit/lit.js";
+import * as Lit9 from "./../../../../ui/lit/lit.js";
 
 // gen/front_end/panels/timeline/components/insights/NodeLink.js
 var NodeLink_exports = {};
@@ -1197,16 +1224,16 @@ __export(NodeLink_exports, {
 import * as SDK from "./../../../../core/sdk/sdk.js";
 import * as Buttons2 from "./../../../../ui/components/buttons/buttons.js";
 import * as LegacyComponents from "./../../../../ui/legacy/components/utils/utils.js";
-import * as UI6 from "./../../../../ui/legacy/legacy.js";
-import * as Lit7 from "./../../../../ui/lit/lit.js";
+import * as UI7 from "./../../../../ui/legacy/legacy.js";
+import * as Lit8 from "./../../../../ui/lit/lit.js";
 import * as PanelsCommon from "./../../../common/common.js";
-var { html: html7 } = Lit7;
-var { widgetConfig: widgetConfig3 } = UI6.Widget;
+var { html: html8 } = Lit8;
+var { widget: widget2 } = UI7.Widget;
 var DEFAULT_VIEW5 = (input, output, target) => {
   const { relatedNodeEl, fallbackUrl, fallbackHtmlSnippet, fallbackText } = input;
   let template;
   if (relatedNodeEl) {
-    template = html7`<div class='node-link'>${relatedNodeEl}</div>`;
+    template = html8`<div class='node-link'>${relatedNodeEl}</div>`;
   } else if (fallbackUrl) {
     const MAX_URL_LENGTH = 20;
     const options = {
@@ -1216,20 +1243,20 @@ var DEFAULT_VIEW5 = (input, output, target) => {
       maxLength: MAX_URL_LENGTH
     };
     const linkEl = LegacyComponents.Linkifier.Linkifier.linkifyURL(fallbackUrl, options);
-    template = html7`<div class='node-link'>
+    template = html8`<div class='node-link'>
       <style>${Buttons2.textButtonStyles}</style>
       ${linkEl}
     </div>`;
   } else if (fallbackHtmlSnippet) {
-    template = html7`<pre style='text-wrap: auto'>${fallbackHtmlSnippet}</pre>`;
+    template = html8`<pre style='text-wrap: auto'>${fallbackHtmlSnippet}</pre>`;
   } else if (fallbackText) {
-    template = html7`<span>${fallbackText}</span>`;
+    template = html8`<span>${fallbackText}</span>`;
   } else {
-    template = Lit7.nothing;
+    template = Lit8.nothing;
   }
-  Lit7.render(template, target);
+  Lit8.render(template, target);
 };
-var NodeLink = class extends UI6.Widget.Widget {
+var NodeLink = class extends UI7.Widget.Widget {
   #view;
   #backendNodeId;
   #frame;
@@ -1296,14 +1323,12 @@ var NodeLink = class extends UI6.Widget.Widget {
   }
 };
 function nodeLink(data) {
-  return html7`<devtools-widget .widgetConfig=${widgetConfig3(NodeLink, {
-    data
-  })}></devtools-widget>`;
+  return html8`${widget2(NodeLink, { data })}`;
 }
 
 // gen/front_end/panels/timeline/components/insights/CLSCulprits.js
 var { UIStrings: UIStrings5, i18nString: i18nString5 } = Trace4.Insights.Models.CLSCulprits;
-var { html: html8 } = Lit8;
+var { html: html9 } = Lit9;
 var CLSCulprits = class extends BaseInsightComponent {
   internalName = "cls-culprits";
   hasAskAiSupport() {
@@ -1320,15 +1345,15 @@ var CLSCulprits = class extends BaseInsightComponent {
   }
   #renderCulpritsSection(culprits) {
     if (culprits.length === 0) {
-      return html8`<div class="insight-section">${i18nString5(UIStrings5.noCulprits)}</div>`;
+      return html9`<div class="insight-section">${i18nString5(UIStrings5.noCulprits)}</div>`;
     }
-    return html8`
+    return html9`
       <div class="insight-section">
         <p class="list-title">${i18nString5(UIStrings5.topCulprits)}:</p>
         <ul class="worst-culprits">
           ${culprits.map((culprit) => {
       if (culprit.type === 3) {
-        return html8`
+        return html9`
                 <li>
                   ${culprit.description}
                   ${nodeLink({
@@ -1338,23 +1363,23 @@ var CLSCulprits = class extends BaseInsightComponent {
         })}
                 </li>`;
       }
-      return html8`<li>${culprit.description}</li>`;
+      return html9`<li>${culprit.description}</li>`;
     })}
         </ul>
       </div>`;
   }
   renderContent() {
     if (!this.model || !this.bounds) {
-      return Lit8.nothing;
+      return Lit9.nothing;
     }
     if (!this.model.clusters.length || !this.model.worstCluster) {
-      return html8`<div class="insight-section">${i18nString5(UIStrings5.noLayoutShifts)}</div>`;
+      return html9`<div class="insight-section">${i18nString5(UIStrings5.noLayoutShifts)}</div>`;
     }
     const worstCluster = this.model.worstCluster;
     const culprits = this.model.topCulpritsByCluster.get(worstCluster) ?? [];
     const ts = Trace4.Types.Timing.Micro(worstCluster.ts - this.bounds.min);
     const clusterTs = i18n8.TimeUtilities.formatMicroSecondsTime(ts);
-    return html8`
+    return html9`
       <div class="insight-section">
         <span class="worst-cluster">${i18nString5(UIStrings5.worstCluster)}: <button type="button" class="timeline-link" @click=${() => this.#clickEvent(worstCluster)}>${i18nString5(UIStrings5.layoutShiftCluster, { PH1: clusterTs })}</button></span>
       </div>
@@ -1368,10 +1393,10 @@ var DocumentLatency_exports = {};
 __export(DocumentLatency_exports, {
   DocumentLatency: () => DocumentLatency
 });
-import * as UI7 from "./../../../../ui/legacy/legacy.js";
-import * as Lit9 from "./../../../../ui/lit/lit.js";
-var { html: html9 } = Lit9;
-var { widgetConfig: widgetConfig4 } = UI7.Widget;
+import * as UI8 from "./../../../../ui/legacy/legacy.js";
+import * as Lit10 from "./../../../../ui/lit/lit.js";
+var { html: html10 } = Lit10;
+var { widget: widget3 } = UI8.Widget;
 var DocumentLatency = class extends BaseInsightComponent {
   internalName = "document-latency";
   hasAskAiSupport() {
@@ -1382,11 +1407,9 @@ var DocumentLatency = class extends BaseInsightComponent {
   }
   renderContent() {
     if (!this.model?.data) {
-      return Lit9.nothing;
+      return Lit10.nothing;
     }
-    return html9`<devtools-widget .widgetConfig=${widgetConfig4(Checklist, {
-      checklist: this.model.data.checklist
-    })}></devtools-widget>`;
+    return html10`${widget3(Checklist, { checklist: this.model.data.checklist })}`;
   }
 };
 
@@ -1398,11 +1421,11 @@ __export(DOMSize_exports, {
 import "./../../../../ui/kit/kit.js";
 import * as i18n9 from "./../../../../core/i18n/i18n.js";
 import * as Trace5 from "./../../../../models/trace/trace.js";
-import * as UI8 from "./../../../../ui/legacy/legacy.js";
-import * as Lit10 from "./../../../../ui/lit/lit.js";
+import * as UI9 from "./../../../../ui/legacy/legacy.js";
+import * as Lit11 from "./../../../../ui/lit/lit.js";
 var { UIStrings: UIStrings6, i18nString: i18nString6 } = Trace5.Insights.Models.DOMSize;
-var { html: html10 } = Lit10;
-var { widgetConfig: widgetConfig5 } = UI8.Widget;
+var { html: html11 } = Lit11;
+var { widget: widget4 } = UI9.Widget;
 var DOMSize = class extends BaseInsightComponent {
   internalName = "dom-size";
   hasAskAiSupport() {
@@ -1429,17 +1452,16 @@ var DOMSize = class extends BaseInsightComponent {
       rows.push({ values: [i18nString6(UIStrings6.maxChildren), template] });
     }
     if (!rows.length) {
-      return Lit10.nothing;
+      return Lit11.nothing;
     }
-    return html10`<div class="insight-section">
-      <devtools-widget .widgetConfig=${widgetConfig5(Table, {
+    return html11`<div class="insight-section">
+      ${widget4(Table, {
       data: {
         insight: this,
         headers: [i18nString6(UIStrings6.statistic), i18nString6(UIStrings6.element)],
         rows
       }
-    })}>
-      </devtools-widget>
+    })}
     </div>`;
   }
   #renderLargeUpdatesTable() {
@@ -1456,29 +1478,27 @@ var DOMSize = class extends BaseInsightComponent {
         }]
       };
     });
-    return html10`<div class="insight-section">
+    return html11`<div class="insight-section">
       <div class="insight-description">${md(i18nString6(UIStrings6.topUpdatesDescription))}</div>
-      <devtools-widget .widgetConfig=${widgetConfig5(Table, {
+      ${widget4(Table, {
       data: {
         insight: this,
         headers: ["", i18nString6(UIStrings6.duration)],
         rows
       }
-    })}>
-      </devtools-widget>
+    })}
     </div>`;
   }
   renderContent() {
     if (!this.model) {
-      return Lit10.nothing;
+      return Lit11.nothing;
     }
     const domStatsData = this.model.maxDOMStats?.args.data;
     if (!domStatsData) {
-      return Lit10.nothing;
+      return Lit11.nothing;
     }
-    return html10`<div class="insight-section">
-      <devtools-widget
-        .widgetConfig=${widgetConfig5(Table, {
+    return html11`<div class="insight-section">
+      ${widget4(Table, {
       data: {
         insight: this,
         headers: [i18nString6(UIStrings6.statistic), i18nString6(UIStrings6.value)],
@@ -1489,7 +1509,6 @@ var DOMSize = class extends BaseInsightComponent {
         ]
       }
     })}>
-      </devtools-widget>
     </div>
     ${this.#renderNodeTable(domStatsData)}
     ${this.#renderLargeUpdatesTable()}
@@ -1505,8 +1524,8 @@ __export(DuplicatedJavaScript_exports, {
 import * as i18n10 from "./../../../../core/i18n/i18n.js";
 import * as Trace6 from "./../../../../models/trace/trace.js";
 import * as Buttons3 from "./../../../../ui/components/buttons/buttons.js";
-import * as UI9 from "./../../../../ui/legacy/legacy.js";
-import * as Lit11 from "./../../../../ui/lit/lit.js";
+import * as UI10 from "./../../../../ui/legacy/legacy.js";
+import * as Lit12 from "./../../../../ui/lit/lit.js";
 import * as VisualLogging2 from "./../../../../ui/visual_logging/visual_logging.js";
 import * as Utils2 from "./../../utils/utils.js";
 
@@ -1537,8 +1556,8 @@ function scriptRef(script) {
 
 // gen/front_end/panels/timeline/components/insights/DuplicatedJavaScript.js
 var { UIStrings: UIStrings7, i18nString: i18nString7 } = Trace6.Insights.Models.DuplicatedJavaScript;
-var { html: html11 } = Lit11;
-var { widgetConfig: widgetConfig6 } = UI9.Widget;
+var { html: html12 } = Lit12;
+var { widget: widget5 } = UI10.Widget;
 var DuplicatedJavaScript = class extends BaseInsightComponent {
   internalName = "duplicated-javascript";
   #treemapData = null;
@@ -1566,7 +1585,7 @@ var DuplicatedJavaScript = class extends BaseInsightComponent {
   }
   renderContent() {
     if (!this.model) {
-      return Lit11.nothing;
+      return Lit12.nothing;
     }
     const rows = [...this.model.duplicationGroupedByNodeModules.entries()].slice(0, 10).map(([source, data]) => {
       const scriptToOverlay = /* @__PURE__ */ new Map();
@@ -1598,7 +1617,7 @@ var DuplicatedJavaScript = class extends BaseInsightComponent {
     });
     let treemapButton;
     if (this.#shouldShowTreemap()) {
-      treemapButton = html11`<devtools-button
+      treemapButton = html12`<devtools-button
         .variant=${"outlined"}
         jslog=${VisualLogging2.action(`timeline.treemap.${this.internalName}-insight`).track({
         click: true
@@ -1606,17 +1625,16 @@ var DuplicatedJavaScript = class extends BaseInsightComponent {
         @click=${this.#openTreemap.bind(this)}
       >View Treemap</devtools-button>`;
     }
-    return html11`
+    return html12`
       ${treemapButton}
       <div class="insight-section">
-        <devtools-widget .widgetConfig=${widgetConfig6(Table, {
+        ${widget5(Table, {
       data: {
         insight: this,
         headers: [i18nString7(UIStrings7.columnSource), i18nString7(UIStrings7.columnDuplicatedBytes)],
         rows
       }
-    })}>
-        </devtools-widget>
+    })}
       </div>
     `;
   }
@@ -1629,11 +1647,11 @@ __export(FontDisplay_exports, {
 });
 import * as i18n11 from "./../../../../core/i18n/i18n.js";
 import * as Trace7 from "./../../../../models/trace/trace.js";
-import * as UI10 from "./../../../../ui/legacy/legacy.js";
-import * as Lit12 from "./../../../../ui/lit/lit.js";
+import * as UI11 from "./../../../../ui/legacy/legacy.js";
+import * as Lit13 from "./../../../../ui/lit/lit.js";
 var { UIStrings: UIStrings8, i18nString: i18nString8 } = Trace7.Insights.Models.FontDisplay;
-var { html: html12 } = Lit12;
-var { widgetConfig: widgetConfig7 } = UI10.Widget;
+var { html: html13 } = Lit13;
+var { widget: widget6 } = UI11.Widget;
 var FontDisplay = class extends BaseInsightComponent {
   internalName = "font-display";
   #overlayForRequest = /* @__PURE__ */ new Map();
@@ -1675,19 +1693,18 @@ var FontDisplay = class extends BaseInsightComponent {
   }
   renderContent() {
     if (!this.model) {
-      return Lit12.nothing;
+      return Lit13.nothing;
     }
     const rows = createLimitedRows(this.model.fonts, this);
-    return html12`
+    return html13`
       <div class="insight-section">
-        ${html12`<devtools-widget .widgetConfig=${widgetConfig7(Table, {
+        ${widget6(Table, {
       data: {
         insight: this,
         headers: [i18nString8(UIStrings8.fontColumn), i18nString8(UIStrings8.wastedTimeColumn)],
         rows
       }
-    })}>
-        </devtools-widget>`}
+    })}
       </div>`;
   }
 };
@@ -1701,11 +1718,11 @@ import * as i18n12 from "./../../../../core/i18n/i18n.js";
 import * as Platform2 from "./../../../../core/platform/platform.js";
 import * as Trace8 from "./../../../../models/trace/trace.js";
 import * as LegacyComponents2 from "./../../../../ui/legacy/components/utils/utils.js";
-import * as UI11 from "./../../../../ui/legacy/legacy.js";
-import * as Lit13 from "./../../../../ui/lit/lit.js";
+import * as UI12 from "./../../../../ui/legacy/legacy.js";
+import * as Lit14 from "./../../../../ui/lit/lit.js";
 var { UIStrings: UIStrings9, i18nString: i18nString9, createOverlayForEvents } = Trace8.Insights.Models.ForcedReflow;
-var { html: html13, nothing: nothing10 } = Lit13;
-var { widgetConfig: widgetConfig8 } = UI11.Widget;
+var { html: html14, nothing: nothing11 } = Lit14;
+var { widget: widget7 } = UI12.Widget;
 var ForcedReflow = class extends BaseInsightComponent {
   internalName = "forced-reflow";
   hasAskAiSupport() {
@@ -1726,7 +1743,7 @@ var ForcedReflow = class extends BaseInsightComponent {
   #linkifyUrl(callFrame) {
     const style = "display: flex; gap: 4px; overflow: hidden; white-space: nowrap";
     if (!callFrame) {
-      return html13`<div style=${style}>${i18nString9(UIStrings9.unattributed)}</div>`;
+      return html14`<div style=${style}>${i18nString9(UIStrings9.unattributed)}</div>`;
     }
     const linkifier = new LegacyComponents2.Linkifier.Linkifier();
     const location = linkifier.linkifyScriptLocation(null, callFrame.scriptId, callFrame.url, callFrame.lineNumber, {
@@ -1745,20 +1762,20 @@ var ForcedReflow = class extends BaseInsightComponent {
       location.style.flex = "1";
     }
     const functionName = callFrame.functionName || i18nString9(UIStrings9.anonymous);
-    return html13`<div style=${style}>${functionName}<span> @ </span> ${location}</div>`;
+    return html14`<div style=${style}>${functionName}<span> @ </span> ${location}</div>`;
   }
   renderContent() {
     if (!this.model) {
-      return Lit13.nothing;
+      return Lit14.nothing;
     }
     const topLevelFunctionCallData = this.model.topLevelFunctionCallData;
     const bottomUpCallStackData = this.model.aggregatedBottomUpData;
     const time = (us) => i18n12.TimeUtilities.millisToString(Platform2.Timing.microSecondsToMilliSeconds(us));
     const rows = createLimitedRows(bottomUpCallStackData, this);
-    return html13`
-      ${topLevelFunctionCallData ? html13`
+    return html14`
+      ${topLevelFunctionCallData ? html14`
         <div class="insight-section">
-          <devtools-widget .widgetConfig=${widgetConfig8(Table, {
+          ${widget7(Table, {
       data: {
         insight: this,
         headers: [i18nString9(UIStrings9.topTimeConsumingFunctionCall), i18nString9(UIStrings9.totalReflowTime)],
@@ -1770,19 +1787,17 @@ var ForcedReflow = class extends BaseInsightComponent {
           overlays: createOverlayForEvents(topLevelFunctionCallData.topLevelFunctionCallEvents, "INFO")
         }]
       }
-    })}>
-          </devtools-widget>
+    })}
         </div>
-      ` : nothing10}
+      ` : nothing11}
       <div class="insight-section">
-        <devtools-widget .widgetConfig=${widgetConfig8(Table, {
+        ${widget7(Table, {
       data: {
         insight: this,
         headers: [i18nString9(UIStrings9.reflowCallFrames)],
         rows
       }
-    })}>
-        </devtools-widget>
+    })}
       </div>`;
   }
 };
@@ -1794,20 +1809,20 @@ __export(ImageDelivery_exports, {
 });
 import "./../../../../ui/kit/kit.js";
 import * as Trace9 from "./../../../../models/trace/trace.js";
-import * as UI13 from "./../../../../ui/legacy/legacy.js";
-import * as Lit15 from "./../../../../ui/lit/lit.js";
+import * as UI14 from "./../../../../ui/legacy/legacy.js";
+import * as Lit16 from "./../../../../ui/lit/lit.js";
 
 // gen/front_end/panels/timeline/components/insights/ImageRef.js
 import * as i18n13 from "./../../../../core/i18n/i18n.js";
 import * as SDK2 from "./../../../../core/sdk/sdk.js";
-import * as UI12 from "./../../../../ui/legacy/legacy.js";
-import * as Lit14 from "./../../../../ui/lit/lit.js";
-var { html: html14 } = Lit14;
-var { widgetConfig: widgetConfig9 } = UI12.Widget;
+import * as UI13 from "./../../../../ui/legacy/legacy.js";
+import * as Lit15 from "./../../../../ui/lit/lit.js";
+var { html: html15 } = Lit15;
+var { widget: widget8 } = UI13.Widget;
 var DEFAULT_VIEW6 = (input, output, target) => {
   const { request, imageDataUrl } = input;
-  const img = imageDataUrl ? html14`<img src=${imageDataUrl} class="element-img"/>` : Lit14.nothing;
-  Lit14.render(html14`
+  const img = imageDataUrl ? html15`<img src=${imageDataUrl} class="element-img"/>` : Lit15.nothing;
+  Lit15.render(html15`
     <style>${baseInsightComponent_css_default}</style>
     <div class="image-ref">
       ${img}
@@ -1818,7 +1833,7 @@ var DEFAULT_VIEW6 = (input, output, target) => {
     </div>
 `, target);
 };
-var ImageRef = class extends UI12.Widget.Widget {
+var ImageRef = class extends UI13.Widget.Widget {
   #view;
   #request;
   #imageDataUrl;
@@ -1868,15 +1883,13 @@ var ImageRef = class extends UI12.Widget.Widget {
   }
 };
 function imageRef(request) {
-  return html14`<devtools-widget .widgetConfig=${widgetConfig9(ImageRef, {
-    request
-  })}></devtools-widget>`;
+  return html15`${widget8(ImageRef, { request })}`;
 }
 
 // gen/front_end/panels/timeline/components/insights/ImageDelivery.js
 var { UIStrings: UIStrings10, i18nString: i18nString10, createOverlayForRequest: createOverlayForRequest2 } = Trace9.Insights.Models.ImageDelivery;
-var { html: html15 } = Lit15;
-var { widgetConfig: widgetConfig10 } = UI13.Widget;
+var { html: html16 } = Lit16;
+var { widget: widget9 } = UI14.Widget;
 var ImageDelivery = class extends BaseInsightComponent {
   internalName = "image-delivery";
   mapToRow(image) {
@@ -1896,24 +1909,23 @@ var ImageDelivery = class extends BaseInsightComponent {
   }
   renderContent() {
     if (!this.model) {
-      return Lit15.nothing;
+      return Lit16.nothing;
     }
     const optimizableImages = [...this.model.optimizableImages];
     const topImages = optimizableImages.sort((a, b) => b.request.args.data.decodedBodyLength - a.request.args.data.decodedBodyLength);
     const rows = createLimitedRows(topImages, this);
     if (!rows.length) {
-      return html15`<div class="insight-section">${i18nString10(UIStrings10.noOptimizableImages)}</div>`;
+      return html16`<div class="insight-section">${i18nString10(UIStrings10.noOptimizableImages)}</div>`;
     }
-    return html15`
+    return html16`
       <div class="insight-section">
-        <devtools-widget .widgetConfig=${widgetConfig10(Table, {
+        ${widget9(Table, {
       data: {
         insight: this,
         headers: [i18nString10(UIStrings10.optimizeFile)],
         rows
       }
-    })}>
-        </devtools-widget>
+    })}
       </div>
     `;
   }
@@ -1927,11 +1939,11 @@ __export(INPBreakdown_exports, {
 import * as i18n14 from "./../../../../core/i18n/i18n.js";
 import * as Platform3 from "./../../../../core/platform/platform.js";
 import * as Trace10 from "./../../../../models/trace/trace.js";
-import * as UI14 from "./../../../../ui/legacy/legacy.js";
-import * as Lit16 from "./../../../../ui/lit/lit.js";
+import * as UI15 from "./../../../../ui/legacy/legacy.js";
+import * as Lit17 from "./../../../../ui/lit/lit.js";
 var { UIStrings: UIStrings11, i18nString: i18nString11, createOverlaysForSubpart } = Trace10.Insights.Models.INPBreakdown;
-var { html: html16 } = Lit16;
-var { widgetConfig: widgetConfig11 } = UI14.Widget;
+var { html: html17 } = Lit17;
+var { widget: widget10 } = UI15.Widget;
 var INPBreakdown = class extends BaseInsightComponent {
   internalName = "inp";
   hasAskAiSupport() {
@@ -1940,12 +1952,12 @@ var INPBreakdown = class extends BaseInsightComponent {
   renderContent() {
     const event = this.model?.longestInteractionEvent;
     if (!event) {
-      return html16`<div class="insight-section">${i18nString11(UIStrings11.noInteractions)}</div>`;
+      return html17`<div class="insight-section">${i18nString11(UIStrings11.noInteractions)}</div>`;
     }
     const time = (us) => i18n14.TimeUtilities.millisToString(Platform3.Timing.microSecondsToMilliSeconds(us));
-    return html16`
+    return html17`
       <div class="insight-section">
-        ${html16`<devtools-widget .widgetConfig=${widgetConfig11(Table, {
+        ${widget10(Table, {
       data: {
         insight: this,
         headers: [i18nString11(UIStrings11.subpart), i18nString11(UIStrings11.duration)],
@@ -1964,8 +1976,7 @@ var INPBreakdown = class extends BaseInsightComponent {
           }
         ]
       }
-    })}>
-        </devtools-widget>`}
+    })}
       </div>`;
   }
 };
@@ -1975,7 +1986,7 @@ var InsightRenderer_exports = {};
 __export(InsightRenderer_exports, {
   InsightRenderer: () => InsightRenderer
 });
-import * as UI23 from "./../../../../ui/legacy/legacy.js";
+import * as UI24 from "./../../../../ui/legacy/legacy.js";
 
 // gen/front_end/panels/timeline/components/insights/LCPBreakdown.js
 var LCPBreakdown_exports = {};
@@ -1984,11 +1995,11 @@ __export(LCPBreakdown_exports, {
 });
 import * as i18n15 from "./../../../../core/i18n/i18n.js";
 import * as Trace11 from "./../../../../models/trace/trace.js";
-import * as UI15 from "./../../../../ui/legacy/legacy.js";
-import * as Lit17 from "./../../../../ui/lit/lit.js";
+import * as UI16 from "./../../../../ui/legacy/legacy.js";
+import * as Lit18 from "./../../../../ui/lit/lit.js";
 var { UIStrings: UIStrings12, i18nString: i18nString12 } = Trace11.Insights.Models.LCPBreakdown;
-var { html: html17 } = Lit17;
-var { widgetConfig: widgetConfig12 } = UI15.Widget;
+var { html: html18 } = Lit18;
+var { widget: widget11 } = UI16.Widget;
 var LCPBreakdown = class extends BaseInsightComponent {
   internalName = "lcp-by-phase";
   #overlay = null;
@@ -2025,16 +2036,15 @@ var LCPBreakdown = class extends BaseInsightComponent {
       { values: [i18nString12(UIStrings12.resourceLoadDuration), loadDurationMillis] },
       { values: [i18nString12(UIStrings12.elementRenderDelay), renderDelayMillis] }
     ];
-    return html17`
+    return html18`
       <div class="insight-section">
-        <devtools-widget .widgetConfig=${widgetConfig12(Table, {
+        ${widget11(Table, {
       data: {
         insight: this,
         headers: [i18nString12(UIStrings12.subpart), i18nString12(UIStrings12.fieldDuration)],
         rows
       }
-    })}>
-        </devtools-widget>
+    })}
       </div>
     `;
   }
@@ -2046,11 +2056,11 @@ var LCPBreakdown = class extends BaseInsightComponent {
   }
   renderContent() {
     if (!this.model) {
-      return Lit17.nothing;
+      return Lit18.nothing;
     }
     const { subparts } = this.model;
     if (!subparts) {
-      return html17`<div class="insight-section">${i18nString12(UIStrings12.noLcp)}</div>`;
+      return html18`<div class="insight-section">${i18nString12(UIStrings12.noLcp)}</div>`;
     }
     const rows = Object.values(subparts).map((subpart) => {
       const section = this.#overlay?.sections.find((section2) => subpart.label === section2.label);
@@ -2064,23 +2074,22 @@ var LCPBreakdown = class extends BaseInsightComponent {
       };
     });
     const sections = [
-      html17`
+      html18`
       <div class="insight-section">
-        <devtools-widget .widgetConfig=${widgetConfig12(Table, {
+        ${widget11(Table, {
         data: {
           insight: this,
           headers: [i18nString12(UIStrings12.subpart), i18nString12(UIStrings12.duration)],
           rows
         }
-      })}>
-        </devtools-widget>
+      })}
       </div>`
     ];
     const fieldDataSection = this.#renderFieldSubparts();
     if (fieldDataSection) {
       sections.push(fieldDataSection);
     }
-    return html17`${sections}`;
+    return html18`${sections}`;
   }
 };
 
@@ -2092,11 +2101,11 @@ __export(LCPDiscovery_exports, {
 import * as i18n16 from "./../../../../core/i18n/i18n.js";
 import * as Trace12 from "./../../../../models/trace/trace.js";
 import * as uiI18n from "./../../../../ui/i18n/i18n.js";
-import * as UI16 from "./../../../../ui/legacy/legacy.js";
-import * as Lit18 from "./../../../../ui/lit/lit.js";
-var { widgetConfig: widgetConfig13 } = UI16.Widget;
+import * as UI17 from "./../../../../ui/legacy/legacy.js";
+import * as Lit19 from "./../../../../ui/lit/lit.js";
+var { widget: widget12 } = UI17.Widget;
 var { UIStrings: UIStrings13, i18nString: i18nString13, getImageData } = Trace12.Insights.Models.LCPDiscovery;
-var { html: html18 } = Lit18;
+var { html: html19 } = Lit19;
 var str_4 = i18n16.i18n.registerUIStrings("models/trace/insights/LCPDiscovery.ts", UIStrings13);
 var LCPDiscovery = class extends BaseInsightComponent {
   internalName = "lcp-discovery";
@@ -2135,24 +2144,22 @@ var LCPDiscovery = class extends BaseInsightComponent {
   }
   renderContent() {
     if (!this.model) {
-      return Lit18.nothing;
+      return Lit19.nothing;
     }
     const imageData = getImageData(this.model);
     if (!imageData) {
       if (!this.model.lcpEvent) {
-        return html18`<div class="insight-section">${i18nString13(UIStrings13.noLcp)}</div>`;
+        return html19`<div class="insight-section">${i18nString13(UIStrings13.noLcp)}</div>`;
       }
-      return html18`<div class="insight-section">${i18nString13(UIStrings13.noLcpResource)}</div>`;
+      return html19`<div class="insight-section">${i18nString13(UIStrings13.noLcpResource)}</div>`;
     }
     let delayEl;
     if (imageData.discoveryDelay) {
-      delayEl = html18`<div>${this.#renderDiscoveryDelay(imageData.discoveryDelay)}</div>`;
+      delayEl = html19`<div>${this.#renderDiscoveryDelay(imageData.discoveryDelay)}</div>`;
     }
-    return html18`
+    return html19`
       <div class="insight-section">
-        <devtools-widget .widgetConfig=${widgetConfig13(Checklist, {
-      checklist: imageData.checklist
-    })}></devtools-widget>
+        ${widget12(Checklist, { checklist: imageData.checklist })}
         <div class="insight-section">${imageRef(imageData.request)}${delayEl}</div>
       </div>`;
   }
@@ -2168,11 +2175,11 @@ import * as i18n18 from "./../../../../core/i18n/i18n.js";
 import * as SDK3 from "./../../../../core/sdk/sdk.js";
 import * as Bindings from "./../../../../models/bindings/bindings.js";
 import * as Trace13 from "./../../../../models/trace/trace.js";
-import * as UI17 from "./../../../../ui/legacy/legacy.js";
-import * as Lit19 from "./../../../../ui/lit/lit.js";
+import * as UI18 from "./../../../../ui/legacy/legacy.js";
+import * as Lit20 from "./../../../../ui/lit/lit.js";
 var { UIStrings: UIStrings14, i18nString: i18nString14 } = Trace13.Insights.Models.LegacyJavaScript;
-var { html: html19 } = Lit19;
-var { widgetConfig: widgetConfig14 } = UI17.Widget;
+var { html: html20 } = Lit20;
+var { widget: widget13 } = UI18.Widget;
 var LegacyJavaScript = class extends BaseInsightComponent {
   internalName = "legacy-javascript";
   getEstimatedSavingsTime() {
@@ -2199,7 +2206,7 @@ var LegacyJavaScript = class extends BaseInsightComponent {
   }
   renderContent() {
     if (!this.model) {
-      return Lit19.nothing;
+      return Lit20.nothing;
     }
     const rows = [...this.model.legacyJavaScriptResults.entries()].slice(0, 10).map(([script, result]) => {
       const overlays = [];
@@ -2215,21 +2222,20 @@ var LegacyJavaScript = class extends BaseInsightComponent {
         overlays,
         subRows: result.matches.map((match) => {
           return {
-            values: [html19`<span @click=${() => this.#revealLocation(script, match)} title=${`${script.url}:${match.line}:${match.column}`}>${match.name}</span>`]
+            values: [html20`<span @click=${() => this.#revealLocation(script, match)} title=${`${script.url}:${match.line}:${match.column}`}>${match.name}</span>`]
           };
         })
       };
     });
-    return html19`
+    return html20`
       <div class="insight-section">
-        <devtools-widget .widgetConfig=${widgetConfig14(Table, {
+        ${widget13(Table, {
       data: {
         insight: this,
         headers: [i18nString14(UIStrings14.columnScript), i18nString14(UIStrings14.columnWastedBytes)],
         rows
       }
-    })}>
-        </devtools-widget>
+    })}
       </div>
     `;
   }
@@ -2241,11 +2247,11 @@ __export(ModernHTTP_exports, {
   ModernHTTP: () => ModernHTTP
 });
 import * as Trace14 from "./../../../../models/trace/trace.js";
-import * as UI18 from "./../../../../ui/legacy/legacy.js";
-import * as Lit20 from "./../../../../ui/lit/lit.js";
+import * as UI19 from "./../../../../ui/legacy/legacy.js";
+import * as Lit21 from "./../../../../ui/lit/lit.js";
 var { UIStrings: UIStrings15, i18nString: i18nString15, createOverlayForRequest: createOverlayForRequest3 } = Trace14.Insights.Models.ModernHTTP;
-var { html: html20 } = Lit20;
-var { widgetConfig: widgetConfig15 } = UI18.Widget;
+var { html: html21 } = Lit21;
+var { widget: widget14 } = UI19.Widget;
 var ModernHTTP = class extends BaseInsightComponent {
   internalName = "modern-http";
   hasAskAiSupport() {
@@ -2268,22 +2274,21 @@ var ModernHTTP = class extends BaseInsightComponent {
   }
   renderContent() {
     if (!this.model) {
-      return Lit20.nothing;
+      return Lit21.nothing;
     }
     const rows = createLimitedRows(this.model.http1Requests, this);
     if (!rows.length) {
-      return html20`<div class="insight-section">${i18nString15(UIStrings15.noOldProtocolRequests)}</div>`;
+      return html21`<div class="insight-section">${i18nString15(UIStrings15.noOldProtocolRequests)}</div>`;
     }
-    return html20`
+    return html21`
       <div class="insight-section">
-        <devtools-widget .widgetConfig=${widgetConfig15(Table, {
+        ${widget14(Table, {
       data: {
         insight: this,
         headers: [i18nString15(UIStrings15.request), i18nString15(UIStrings15.protocol)],
         rows
       }
-    })}>
-        </devtools-widget>
+    })}
       </div>`;
   }
 };
@@ -2297,8 +2302,8 @@ __export(NetworkDependencyTree_exports, {
 import "./../../../../ui/kit/kit.js";
 import * as i18n19 from "./../../../../core/i18n/i18n.js";
 import * as Trace15 from "./../../../../models/trace/trace.js";
-import * as UI19 from "./../../../../ui/legacy/legacy.js";
-import * as Lit21 from "./../../../../ui/lit/lit.js";
+import * as UI20 from "./../../../../ui/legacy/legacy.js";
+import * as Lit22 from "./../../../../ui/lit/lit.js";
 
 // gen/front_end/panels/timeline/components/insights/networkDependencyTreeInsight.css.js
 var networkDependencyTreeInsight_css_default = `/*
@@ -2329,8 +2334,8 @@ var networkDependencyTreeInsight_css_default = `/*
 
 // gen/front_end/panels/timeline/components/insights/NetworkDependencyTree.js
 var { UIStrings: UIStrings16, i18nString: i18nString16 } = Trace15.Insights.Models.NetworkDependencyTree;
-var { html: html21 } = Lit21;
-var { widgetConfig: widgetConfig16 } = UI19.Widget;
+var { html: html22 } = Lit22;
+var { widget: widget15 } = UI20.Widget;
 var MAX_CHAINS_TO_SHOW = 5;
 var NetworkDependencyTree = class extends BaseInsightComponent {
   internalName = "long-critical-network-tree";
@@ -2349,16 +2354,16 @@ var NetworkDependencyTree = class extends BaseInsightComponent {
     return overlays;
   }
   #renderNetworkTreeRow(node) {
-    const requestStyles = Lit21.Directives.styleMap({
+    const requestStyles = Lit22.Directives.styleMap({
       display: "flex",
       "--override-timeline-link-text-color": node.isLongest ? "var(--sys-color-error)" : "",
       color: node.isLongest ? "var(--sys-color-error)" : "",
       backgroundColor: this.#relatedRequests?.has(node.request) ? "var(--sys-color-state-hover-on-subtle)" : ""
     });
-    const urlStyles = Lit21.Directives.styleMap({
+    const urlStyles = Lit22.Directives.styleMap({
       flex: "auto"
     });
-    return html21`
+    return html22`
       <div style=${requestStyles}>
         <span style=${urlStyles}>${eventRef(node.request)}</span>
         <span>
@@ -2399,28 +2404,26 @@ var NetworkDependencyTree = class extends BaseInsightComponent {
         values: [renderOthersLabel(this.#countOfChains - MAX_CHAINS_TO_SHOW)]
       });
     }
-    return html21`
-      <devtools-widget .widgetConfig=${widgetConfig16(Table, {
+    return html22`
+      ${widget15(Table, {
       data: {
         insight: this,
         headers: [i18nString16(UIStrings16.columnRequest), i18nString16(UIStrings16.columnTime)],
         rows
       }
-    })}>
-      </devtools-widget>
-    `;
+    })}`;
   }
   #renderNetworkTreeSection() {
     if (!this.model) {
-      return Lit21.nothing;
+      return Lit22.nothing;
     }
     if (!this.model.rootNodes.length) {
-      return html21`
+      return html22`
         <style>${networkDependencyTreeInsight_css_default}</style>
         <div class="insight-section">${i18nString16(UIStrings16.noNetworkDependencyTree)}</div>
       `;
     }
-    return html21`
+    return html22`
       <style>${networkDependencyTreeInsight_css_default}</style>
       <div class="insight-section">
         <div class="max-time">
@@ -2436,17 +2439,17 @@ var NetworkDependencyTree = class extends BaseInsightComponent {
   }
   #renderTooManyPreconnectsWarning() {
     if (!this.model) {
-      return Lit21.nothing;
+      return Lit22.nothing;
     }
     if (this.model.preconnectedOrigins.length <= Trace15.Insights.Models.NetworkDependencyTree.TOO_MANY_PRECONNECTS_THRESHOLD) {
-      return Lit21.nothing;
+      return Lit22.nothing;
     }
-    const warningStyles = Lit21.Directives.styleMap({
+    const warningStyles = Lit22.Directives.styleMap({
       backgroundColor: "var(--sys-color-surface-yellow)",
       padding: " var(--sys-size-5) var(--sys-size-8);",
       display: "flex"
     });
-    return html21`
+    return html22`
       <div style=${warningStyles}>
         ${md(i18nString16(UIStrings16.tooManyPreconnectLinksWarning))}
       </div>
@@ -2454,15 +2457,15 @@ var NetworkDependencyTree = class extends BaseInsightComponent {
   }
   #renderPreconnectOriginsTable() {
     if (!this.model) {
-      return Lit21.nothing;
+      return Lit22.nothing;
     }
-    const preconnectOriginsTableTitle = html21`
+    const preconnectOriginsTableTitle = html22`
       <style>${networkDependencyTreeInsight_css_default}</style>
       <div class='section-title'>${i18nString16(UIStrings16.preconnectOriginsTableTitle)}</div>
       <div class="insight-description">${md(i18nString16(UIStrings16.preconnectOriginsTableDescription))}</div>
     `;
     if (!this.model.preconnectedOrigins.length) {
-      return html21`
+      return html22`
         <div class="insight-section">
           ${preconnectOriginsTableTitle}
           ${i18nString16(UIStrings16.noPreconnectOrigins)}
@@ -2497,32 +2500,31 @@ var NetworkDependencyTree = class extends BaseInsightComponent {
         subRows
       };
     });
-    return html21`
+    return html22`
       <div class="insight-section">
         ${preconnectOriginsTableTitle}
         ${this.#renderTooManyPreconnectsWarning()}
-        <devtools-widget .widgetConfig=${widgetConfig16(Table, {
+        ${widget15(Table, {
       data: {
         insight: this,
         headers: [i18nString16(UIStrings16.columnOrigin), i18nString16(UIStrings16.columnSource)],
         rows
       }
-    })}>
-        </devtools-widget>
+    })}
       </div>
     `;
   }
   #renderEstSavingTable() {
     if (!this.model) {
-      return Lit21.nothing;
+      return Lit22.nothing;
     }
-    const estSavingTableTitle = html21`
+    const estSavingTableTitle = html22`
       <style>${networkDependencyTreeInsight_css_default}</style>
       <div class='section-title'>${i18nString16(UIStrings16.estSavingTableTitle)}</div>
       <div class="insight-description">${md(i18nString16(UIStrings16.estSavingTableDescription))}</div>
     `;
     if (!this.model.preconnectCandidates.length) {
-      return html21`
+      return html22`
         <div class="insight-section">
           ${estSavingTableTitle}
           ${i18nString16(UIStrings16.noPreconnectCandidates)}
@@ -2532,22 +2534,21 @@ var NetworkDependencyTree = class extends BaseInsightComponent {
     const rows = this.model.preconnectCandidates.map((candidate) => ({
       values: [candidate.origin, i18n19.TimeUtilities.millisToString(candidate.wastedMs)]
     }));
-    return html21`
+    return html22`
       <div class="insight-section">
         ${estSavingTableTitle}
-        <devtools-widget .widgetConfig=${widgetConfig16(Table, {
+        ${widget15(Table, {
       data: {
         insight: this,
         headers: [i18nString16(UIStrings16.columnOrigin), i18nString16(UIStrings16.columnWastedMs)],
         rows
       }
-    })}>
-        </devtools-widget>
+    })}
       </div>
     `;
   }
   renderContent() {
-    return html21`
+    return html22`
       ${this.#renderNetworkTreeSection()}
       ${this.#renderPreconnectOriginsTable()}
       ${this.#renderEstSavingTable()}
@@ -2562,11 +2563,11 @@ __export(RenderBlocking_exports, {
 });
 import * as i18n20 from "./../../../../core/i18n/i18n.js";
 import * as Trace16 from "./../../../../models/trace/trace.js";
-import * as UI20 from "./../../../../ui/legacy/legacy.js";
-import * as Lit22 from "./../../../../ui/lit/lit.js";
+import * as UI21 from "./../../../../ui/legacy/legacy.js";
+import * as Lit23 from "./../../../../ui/lit/lit.js";
 var { UIStrings: UIStrings17, i18nString: i18nString17, createOverlayForRequest: createOverlayForRequest4 } = Trace16.Insights.Models.RenderBlocking;
-var { html: html22 } = Lit22;
-var { widgetConfig: widgetConfig17 } = UI20.Widget;
+var { html: html23 } = Lit23;
+var { widget: widget16 } = UI21.Widget;
 var RenderBlocking = class extends BaseInsightComponent {
   internalName = "render-blocking-requests";
   mapToRow(request) {
@@ -2592,23 +2593,22 @@ var RenderBlocking = class extends BaseInsightComponent {
   }
   renderContent() {
     if (!this.model) {
-      return Lit22.nothing;
+      return Lit23.nothing;
     }
     const requests = this.model.renderBlockingRequests;
     if (!requests.length) {
-      return html22`<div class="insight-section">${i18nString17(UIStrings17.noRenderBlocking)}</div>`;
+      return html23`<div class="insight-section">${i18nString17(UIStrings17.noRenderBlocking)}</div>`;
     }
     const rows = createLimitedRows(requests, this);
-    return html22`
+    return html23`
       <div class="insight-section">
-        <devtools-widget .widgetConfig=${widgetConfig17(Table, {
+        ${widget16(Table, {
       data: {
         insight: this,
         headers: [i18nString17(UIStrings17.renderBlockingRequest), i18nString17(UIStrings17.duration)],
         rows
       }
-    })}>
-        </devtools-widget>
+    })}
       </div>
     `;
   }
@@ -2624,11 +2624,11 @@ import * as i18n21 from "./../../../../core/i18n/i18n.js";
 import * as Platform4 from "./../../../../core/platform/platform.js";
 import * as SDK4 from "./../../../../core/sdk/sdk.js";
 import * as Trace17 from "./../../../../models/trace/trace.js";
-import * as UI21 from "./../../../../ui/legacy/legacy.js";
-import * as Lit23 from "./../../../../ui/lit/lit.js";
+import * as UI22 from "./../../../../ui/legacy/legacy.js";
+import * as Lit24 from "./../../../../ui/lit/lit.js";
 var { UIStrings: UIStrings18, i18nString: i18nString18 } = Trace17.Insights.Models.SlowCSSSelector;
-var { html: html23 } = Lit23;
-var { widgetConfig: widgetConfig18 } = UI21.Widget;
+var { html: html24 } = Lit24;
+var { widget: widget17 } = UI22.Widget;
 var SlowCSSSelector = class extends BaseInsightComponent {
   internalName = "slow-css-selector";
   #selectorLocations = /* @__PURE__ */ new Map();
@@ -2666,35 +2666,35 @@ var SlowCSSSelector = class extends BaseInsightComponent {
   }
   async getSelectorLinks(cssModel, selector) {
     if (!cssModel) {
-      return Lit23.nothing;
+      return Lit24.nothing;
     }
     if (!selector.style_sheet_id) {
-      return Lit23.nothing;
+      return Lit24.nothing;
     }
     const locations = await this.toSourceFileLocation(cssModel, selector);
     if (!locations) {
-      return Lit23.nothing;
+      return Lit24.nothing;
     }
-    const links = html23`
+    const links = html24`
     ${locations.map((location, itemIndex) => {
       const divider = itemIndex !== locations.length - 1 ? ", " : "";
-      return html23`<devtools-linkifier .data=${location}></devtools-linkifier>${divider}`;
+      return html24`<devtools-linkifier .data=${location}></devtools-linkifier>${divider}`;
     })}`;
     return links;
   }
   renderContent() {
     if (!this.model) {
-      return Lit23.nothing;
+      return Lit24.nothing;
     }
     const target = SDK4.TargetManager.TargetManager.instance().primaryPageTarget();
     const cssModel = target?.model(SDK4.CSSModel.CSSModel);
     const time = (us) => i18n21.TimeUtilities.millisToString(Platform4.Timing.microSecondsToMilliSeconds(us));
     if (!this.model.topSelectorMatchAttempts && !this.model.topSelectorElapsedMs) {
-      return html23`<div class="insight-section">${i18nString18(UIStrings18.enableSelectorData)}</div>`;
+      return html24`<div class="insight-section">${i18nString18(UIStrings18.enableSelectorData)}</div>`;
     }
-    const sections = [html23`
+    const sections = [html24`
       <div class="insight-section">
-        <devtools-widget .widgetConfig=${widgetConfig18(Table, {
+        ${widget17(Table, {
       data: {
         insight: this,
         headers: [i18nString18(UIStrings18.total), ""],
@@ -2704,45 +2704,42 @@ var SlowCSSSelector = class extends BaseInsightComponent {
           { values: [i18nString18(UIStrings18.elapsed), i18n21.TimeUtilities.millisToString(this.model.totalElapsedMs)] }
         ]
       }
-    })}>
-        </devtools-widget>
+    })}
       </div>
     `];
     if (this.model.topSelectorElapsedMs) {
       const selector = this.model.topSelectorElapsedMs;
-      sections.push(html23`
+      sections.push(html24`
         <div class="insight-section">
-          <devtools-widget .widgetConfig=${widgetConfig18(Table, {
+          ${widget17(Table, {
         data: {
           insight: this,
           headers: [`${i18nString18(UIStrings18.topSelectorElapsedTime)}: ${time(Trace17.Types.Timing.Micro(selector["elapsed (us)"]))}`],
           rows: [{
-            values: [html23`${selector.selector} ${Lit23.Directives.until(this.getSelectorLinks(cssModel, selector))}`]
+            values: [html24`${selector.selector} ${Lit24.Directives.until(this.getSelectorLinks(cssModel, selector))}`]
           }]
         }
-      })}>
-          </devtools-widget>
+      })}
         </div>
       `);
     }
     if (this.model.topSelectorMatchAttempts) {
       const selector = this.model.topSelectorMatchAttempts;
-      sections.push(html23`
+      sections.push(html24`
         <div class="insight-section">
-          <devtools-widget .widgetConfig=${widgetConfig18(Table, {
+          ${widget17(Table, {
         data: {
           insight: this,
           headers: [`${i18nString18(UIStrings18.topSelectorMatchAttempt)}: ${selector["match_attempts"]}`],
           rows: [{
-            values: [html23`${selector.selector} ${Lit23.Directives.until(this.getSelectorLinks(cssModel, selector))}`]
+            values: [html24`${selector.selector} ${Lit24.Directives.until(this.getSelectorLinks(cssModel, selector))}`]
           }]
         }
-      })}>
-          </devtools-widget>
+      })}
         </div>
       `);
     }
-    return html23`${sections}`;
+    return html24`${sections}`;
   }
 };
 
@@ -2753,11 +2750,11 @@ __export(ThirdParties_exports, {
 });
 import * as i18n22 from "./../../../../core/i18n/i18n.js";
 import * as Trace18 from "./../../../../models/trace/trace.js";
-import * as UI22 from "./../../../../ui/legacy/legacy.js";
-import * as Lit24 from "./../../../../ui/lit/lit.js";
+import * as UI23 from "./../../../../ui/legacy/legacy.js";
+import * as Lit25 from "./../../../../ui/lit/lit.js";
 var { UIStrings: UIStrings19, i18nString: i18nString19, createOverlaysForSummary } = Trace18.Insights.Models.ThirdParties;
-var { html: html24 } = Lit24;
-var { widgetConfig: widgetConfig19 } = UI22.Widget;
+var { html: html25 } = Lit25;
+var { widget: widget18 } = UI23.Widget;
 var MAX_TO_SHOW = 5;
 var ThirdParties = class extends BaseInsightComponent {
   internalName = "third-parties";
@@ -2792,49 +2789,47 @@ var ThirdParties = class extends BaseInsightComponent {
   }
   renderContent() {
     if (!this.model) {
-      return Lit24.nothing;
+      return Lit25.nothing;
     }
     let result = this.model.entitySummaries ?? [];
     if (this.model.firstPartyEntity) {
       result = result.filter((s) => s.entity !== this.model?.firstPartyEntity || null);
     }
     if (!result.length) {
-      return html24`<div class="insight-section">${i18nString19(UIStrings19.noThirdParties)}</div>`;
+      return html25`<div class="insight-section">${i18nString19(UIStrings19.noThirdParties)}</div>`;
     }
     const topTransferSizeEntries = result.toSorted((a, b) => b.transferSize - a.transferSize);
     const topMainThreadTimeEntries = result.toSorted((a, b) => b.mainThreadTime - a.mainThreadTime);
     const sections = [];
     if (topTransferSizeEntries.length) {
       const rows = createLimitedRows(topTransferSizeEntries, this.#transferSizeAggregator, MAX_TO_SHOW);
-      sections.push(html24`
+      sections.push(html25`
         <div class="insight-section">
-          <devtools-widget .widgetConfig=${widgetConfig19(Table, {
+          ${widget18(Table, {
         data: {
           insight: this,
           headers: [i18nString19(UIStrings19.columnThirdParty), i18nString19(UIStrings19.columnTransferSize)],
           rows
         }
-      })}>
-          </devtools-widget>
+      })}
         </div>
       `);
     }
     if (topMainThreadTimeEntries.length) {
       const rows = createLimitedRows(topMainThreadTimeEntries, this.#mainThreadTimeAggregator, MAX_TO_SHOW);
-      sections.push(html24`
+      sections.push(html25`
         <div class="insight-section">
-          <devtools-widget .widgetConfig=${widgetConfig19(Table, {
+          ${widget18(Table, {
         data: {
           insight: this,
           headers: [i18nString19(UIStrings19.columnThirdParty), i18nString19(UIStrings19.columnMainThreadTime)],
           rows
         }
-      })}>
-          </devtools-widget>
+      })}
         </div>
       `);
     }
-    return html24`${sections}`;
+    return html25`${sections}`;
   }
 };
 
@@ -2843,8 +2838,8 @@ var Viewport_exports = {};
 __export(Viewport_exports, {
   Viewport: () => Viewport
 });
-import * as Lit25 from "./../../../../ui/lit/lit.js";
-var { html: html25 } = Lit25;
+import * as Lit26 from "./../../../../ui/lit/lit.js";
+var { html: html26 } = Lit26;
 var Viewport = class extends BaseInsightComponent {
   internalName = "viewport";
   hasAskAiSupport() {
@@ -2855,13 +2850,13 @@ var Viewport = class extends BaseInsightComponent {
   }
   renderContent() {
     if (!this.model || !this.model.viewportEvent) {
-      return Lit25.nothing;
+      return Lit26.nothing;
     }
     const backendNodeId = this.model.viewportEvent.args.data.node_id;
     if (backendNodeId === void 0) {
-      return Lit25.nothing;
+      return Lit26.nothing;
     }
-    return html25`
+    return html26`
       <div>
         ${nodeLink({
       backendNodeId,
@@ -2874,9 +2869,10 @@ var Viewport = class extends BaseInsightComponent {
 };
 
 // gen/front_end/panels/timeline/components/insights/InsightRenderer.js
-var { widgetConfig: widgetConfig20 } = UI23.Widget;
+var { widgetConfig: widgetConfig3 } = UI24.Widget;
 var INSIGHT_NAME_TO_COMPONENT = {
   Cache,
+  CharacterSet,
   CLSCulprits,
   DocumentLatency,
   DOMSize,
@@ -2905,7 +2901,7 @@ var InsightRenderer = class {
       this.#insightWidgetCache.set(model, widgetElement);
     }
     const componentClass = INSIGHT_NAME_TO_COMPONENT[insightName];
-    widgetElement.widgetConfig = widgetConfig20(componentClass, {
+    widgetElement.widgetConfig = widgetConfig3(componentClass, {
       selected: options.selected ?? false,
       // The `model` passed in as a parameter is the base type, but since
       // `componentClass` is the union of every derived insight component, the
@@ -2928,6 +2924,7 @@ export {
   BaseInsightComponent_exports as BaseInsightComponent,
   CLSCulprits_exports as CLSCulprits,
   Cache_exports as Cache,
+  CharacterSet_exports as CharacterSet,
   Checklist_exports as Checklist,
   DOMSize_exports as DOMSize,
   DocumentLatency_exports as DocumentLatency,

@@ -12,7 +12,7 @@ import { BaseInsightComponent } from './BaseInsightComponent.js';
 import { createLimitedRows, renderOthersLabel, Table } from './Table.js';
 const { UIStrings, i18nString, createOverlayForEvents } = Trace.Insights.Models.ForcedReflow;
 const { html, nothing } = Lit;
-const { widgetConfig } = UI.Widget;
+const { widget } = UI.Widget;
 export class ForcedReflow extends BaseInsightComponent {
     internalName = 'forced-reflow';
     hasAskAiSupport() {
@@ -66,7 +66,7 @@ export class ForcedReflow extends BaseInsightComponent {
         return html `
       ${topLevelFunctionCallData ? html `
         <div class="insight-section">
-          <devtools-widget .widgetConfig=${widgetConfig(Table, {
+          ${widget(Table, {
             data: {
                 insight: this,
                 headers: [i18nString(UIStrings.topTimeConsumingFunctionCall), i18nString(UIStrings.totalReflowTime)],
@@ -78,19 +78,17 @@ export class ForcedReflow extends BaseInsightComponent {
                         overlays: createOverlayForEvents(topLevelFunctionCallData.topLevelFunctionCallEvents, 'INFO'),
                     }],
             }
-        })}>
-          </devtools-widget>
+        })}
         </div>
       ` : nothing}
       <div class="insight-section">
-        <devtools-widget .widgetConfig=${widgetConfig(Table, {
+        ${widget(Table, {
             data: {
                 insight: this,
                 headers: [i18nString(UIStrings.reflowCallFrames)],
                 rows,
             }
-        })}>
-        </devtools-widget>
+        })}
       </div>`;
         // clang-format on
     }

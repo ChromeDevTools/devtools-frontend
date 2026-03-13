@@ -34,7 +34,11 @@ export interface StepPart {
     type: 'step';
     step: Step;
 }
-export type ModelMessagePart = AnswerPart | StepPart;
+export interface WidgetPart {
+    type: 'widget';
+    widgets: AiWidget[];
+}
+export type ModelMessagePart = AnswerPart | StepPart | WidgetPart;
 export interface UserChatMessage {
     entity: ChatMessageEntity.USER;
     text: string;

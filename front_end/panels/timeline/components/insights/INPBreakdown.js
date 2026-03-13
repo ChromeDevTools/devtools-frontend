@@ -10,7 +10,7 @@ import { BaseInsightComponent } from './BaseInsightComponent.js';
 import { Table } from './Table.js';
 const { UIStrings, i18nString, createOverlaysForSubpart } = Trace.Insights.Models.INPBreakdown;
 const { html } = Lit;
-const { widgetConfig } = UI.Widget;
+const { widget } = UI.Widget;
 export class INPBreakdown extends BaseInsightComponent {
     internalName = 'inp';
     hasAskAiSupport() {
@@ -25,7 +25,7 @@ export class INPBreakdown extends BaseInsightComponent {
         // clang-format off
         return html `
       <div class="insight-section">
-        ${html `<devtools-widget .widgetConfig=${widgetConfig(Table, {
+        ${widget(Table, {
             data: {
                 insight: this,
                 headers: [i18nString(UIStrings.subpart), i18nString(UIStrings.duration)],
@@ -44,8 +44,7 @@ export class INPBreakdown extends BaseInsightComponent {
                     },
                 ],
             }
-        })}>
-        </devtools-widget>`}
+        })}
       </div>`;
         // clang-format on
     }

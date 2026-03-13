@@ -605,7 +605,7 @@ var objectValue_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./objectValue.css")} */`;
 
 // gen/front_end/ui/legacy/components/object_ui/ObjectPropertiesSection.js
-var { widgetConfig } = UI2.Widget;
+var { widget } = UI2.Widget;
 var { ref, repeat: repeat2, ifDefined: ifDefined2, classMap } = Directives2;
 var UIStrings2 = {
   /**
@@ -1248,12 +1248,12 @@ var ObjectPropertiesSection = class _ObjectPropertiesSection extends UI2.TreeOut
       if (type === "string" && typeof description === "string") {
         const text = JSON.stringify(description);
         const tooLong = description.length > maxRenderableStringLength;
-        return html2`<span class="value object-value-string" title=${ifDefined2(tooLong ? void 0 : description)}>${tooLong ? html2`<devtools-widget .widgetConfig=${widgetConfig(ExpandableTextPropertyValue, { text })}></devtools-widget>` : text}</span>`;
+        return html2`<span class="value object-value-string" title=${ifDefined2(tooLong ? void 0 : description)}>${tooLong ? widget(ExpandableTextPropertyValue, { text }) : text}</span>`;
       }
       if (type === "object" && subtype === "trustedtype") {
         const text = `${className} '${description}'`;
         const tooLong = text.length > maxRenderableStringLength;
-        return html2`<span class="value object-value-trustedtype" title=${ifDefined2(tooLong ? void 0 : text)}>${tooLong ? html2`<devtools-widget .widgetConfig=${widgetConfig(ExpandableTextPropertyValue, { text })}></devtools-widget>` : html2`${className} <span class=object-value-string title=${description}>${JSON.stringify(description)}</span>`}</span>`;
+        return html2`<span class="value object-value-trustedtype" title=${ifDefined2(tooLong ? void 0 : text)}>${tooLong ? widget(ExpandableTextPropertyValue, { text }) : html2`${className} <span class=object-value-string title=${description}>${JSON.stringify(description)}</span>`}</span>`;
       }
       if (type === "function") {
         return _ObjectPropertiesSection.valueElementForFunctionDescription(description, void 0, void 0, "value");
@@ -1269,8 +1269,9 @@ var ObjectPropertiesSection = class _ObjectPropertiesSection extends UI2.TreeOut
           >${renderNodeTitle(description)}</span>`;
       }
       if (description.length > maxRenderableStringLength) {
-        return html2`<span class="value object-value-${subtype || type}" title=${description}><devtools-widget
-          .widgetConfig=${widgetConfig(ExpandableTextPropertyValue, { text: description })}></devtools-widget></span>`;
+        return html2`<span class="value object-value-${subtype || type}" title=${description}>
+          ${widget(ExpandableTextPropertyValue, { text: description })}
+        </span>`;
       }
       const hasPreview = value.preview && showPreview;
       return html2`<span class="value object-value-${subtype || type}" title=${description}>${hasPreview ? new RemoteObjectPreviewFormatter().renderObjectPreview(value.preview, includeNullOrUndefined) : description}${isSyntheticProperty ? nothing2 : this.getMemoryIcon(value, variableName)}</span>`;

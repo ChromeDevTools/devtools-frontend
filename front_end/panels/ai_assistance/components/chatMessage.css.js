@@ -359,6 +359,17 @@ export default `/*
     width: fit-content;
   }
 
+  .styling-preview-widget {
+    width: 100%;
+    min-height: 100px;
+  }
+
+  .main-widgets-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sys-size-5);
+  }
+
   .step-widgets-wrapper {
     width: fit-content;
     display: flex;

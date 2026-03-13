@@ -173,6 +173,8 @@ var SettingCheckbox = class extends HTMLElement {
           <devtools-button
             class="info-icon"
             aria-details=${id}
+            aria-disabled=true
+            accessibleLabel=${learnMore.tooltip()}
             .data=${data}
           ></devtools-button>
           <devtools-tooltip id=${id} variant="rich">

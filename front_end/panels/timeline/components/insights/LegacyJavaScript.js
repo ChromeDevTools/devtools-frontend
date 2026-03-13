@@ -13,7 +13,7 @@ import { scriptRef } from './ScriptRef.js';
 import { Table } from './Table.js';
 const { UIStrings, i18nString } = Trace.Insights.Models.LegacyJavaScript;
 const { html } = Lit;
-const { widgetConfig } = UI.Widget;
+const { widget } = UI.Widget;
 export class LegacyJavaScript extends BaseInsightComponent {
     internalName = 'legacy-javascript';
     getEstimatedSavingsTime() {
@@ -64,14 +64,13 @@ export class LegacyJavaScript extends BaseInsightComponent {
         // clang-format off
         return html `
       <div class="insight-section">
-        <devtools-widget .widgetConfig=${widgetConfig(Table, {
+        ${widget(Table, {
             data: {
                 insight: this,
                 headers: [i18nString(UIStrings.columnScript), i18nString(UIStrings.columnWastedBytes)],
                 rows,
             }
-        })}>
-        </devtools-widget>
+        })}
       </div>
     `;
         // clang-format on

@@ -98,6 +98,9 @@ export function isBeginCommitCompositorFrame(event) {
 export function isParseMetaViewport(event) {
     return event.name === "ParseMetaViewport" /* Name.PARSE_META_VIEWPORT */;
 }
+export function isMetaCharsetCheck(event) {
+    return event.name === "MetaCharsetCheck" /* Name.META_CHARSET_CHECK */;
+}
 export function isLinkPreconnect(event) {
     return event.name === "LinkPreconnect" /* Name.LINK_PRECONNECT */;
 }

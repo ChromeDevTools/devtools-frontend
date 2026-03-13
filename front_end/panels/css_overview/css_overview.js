@@ -2032,7 +2032,7 @@ __export(CSSOverviewPanel_exports, {
 import * as Host from "./../../core/host/host.js";
 import * as SDK3 from "./../../core/sdk/sdk.js";
 import * as UI5 from "./../../ui/legacy/legacy.js";
-import { html as html5, render as render5 } from "./../../ui/lit/lit.js";
+import { render as render5 } from "./../../ui/lit/lit.js";
 
 // gen/front_end/panels/css_overview/CSSOverviewStartView.js
 import "./../../ui/components/panel_feedback/panel_feedback.js";
@@ -2211,16 +2211,13 @@ var CSSOverviewStartView = class extends UI4.Widget.Widget {
 };
 
 // gen/front_end/panels/css_overview/CSSOverviewPanel.js
-var { widgetConfig: widgetConfig2 } = UI5.Widget;
+var { widget } = UI5.Widget;
 var DEFAULT_VIEW5 = (input, _output, target) => {
-  render5(input.state === "start" ? html5`
-      <devtools-widget .widgetConfig=${widgetConfig2(CSSOverviewStartView, { onStartCapture: input.onStartCapture })}></devtools-widget>` : input.state === "processing" ? html5`
-      <devtools-widget .widgetConfig=${widgetConfig2(CSSOverviewProcessingView, { onCancel: input.onCancel })}></devtools-widget>` : html5`
-      <devtools-widget .widgetConfig=${widgetConfig2(CSSOverviewCompletedView, {
+  render5(input.state === "start" ? widget(CSSOverviewStartView, { onStartCapture: input.onStartCapture }) : input.state === "processing" ? widget(CSSOverviewProcessingView, { onCancel: input.onCancel }) : widget(CSSOverviewCompletedView, {
     onReset: input.onReset,
     overviewData: input.overviewData,
     target: input.target
-  })}></devtools-widget>`, target);
+  }), target);
 };
 var CSSOverviewPanel = class extends UI5.Panel.Panel {
   #currentUrl;

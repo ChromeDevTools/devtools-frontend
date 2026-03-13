@@ -838,6 +838,39 @@ export class ColorMixRenderer extends rendererBase(SDK.CSSPropertyParserMatchers
     }
 }
 // clang-format off
+export class ContrastColorRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.ContrastColorMatch) {
+    // clang-format on
+    #treeElement;
+    #stylesContainer;
+    constructor(stylesContainer, treeElement) {
+        super();
+        this.#treeElement = treeElement;
+        this.#stylesContainer = stylesContainer;
+    }
+    render(match, context) {
+        const content = document.createElement('span');
+        content.appendChild(document.createTextNode('contrast-color('));
+        const param = content.appendChild(document.createElement('span'));
+        content.appendChild(document.createTextNode(')'));
+        Renderer.renderInto(match.color, context, param);
+        if (context.matchedResult.hasUnresolvedSubstitutions(match.node)) {
+            return [content];
+        }
+        const colorText = context.matchedResult.getComputedText(match.node);
+        const fakeSpan = document.body.appendChild(document.createElement('span'));
+        fakeSpan.style.color = colorText;
+        const resolvedColorText = window.getComputedStyle(fakeSpan).color;
+        fakeSpan.remove();
+        const color = Common.Color.parse(resolvedColorText);
+        if (!color) {
+            return [content];
+        }
+        const colorSwatch = new ColorRenderer(this.#stylesContainer, this.#treeElement).renderColorSwatch(color, content);
+        context.addControl('color', colorSwatch);
+        return [colorSwatch, content];
+    }
+}
+// clang-format off
 export class AngleRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.AngleMatch) {
     // clang-format on
     #treeElement;
@@ -1229,7 +1262,8 @@ export class ShadowRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.S
                     properties.push({ value, source, propertyType: "inset" /* ShadowPropertyType.INSET */, expansionContext });
                 }
                 else if (match instanceof SDK.CSSPropertyParserMatchers.ColorMatch ||
-                    match instanceof SDK.CSSPropertyParserMatchers.ColorMixMatch) {
+                    match instanceof SDK.CSSPropertyParserMatchers.ColorMixMatch ||
+                    match instanceof SDK.CSSPropertyParserMatchers.ContrastColorMatch) {
                     if (properties.find(({ propertyType }) => propertyType === "color" /* ShadowPropertyType.COLOR */)) {
                         return null;
                     }
@@ -1611,6 +1645,7 @@ export function getPropertyRenderers(propertyName, style, stylesContainer, match
         new VariableRenderer(stylesContainer, treeElement, matchedStyles, computedStyles, computedStyleExtraFields),
         new ColorRenderer(stylesContainer, treeElement),
         new ColorMixRenderer(stylesContainer, matchedStyles, computedStyles, computedStyleExtraFields, treeElement),
+        new ContrastColorRenderer(stylesContainer, treeElement),
         new URLRenderer(style.parentRule, stylesContainer.node()),
         new AngleRenderer(treeElement),
         new LinkableNameRenderer(matchedStyles, stylesContainer),
@@ -1677,9 +1712,11 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
         if (this.newProperty) {
             this.listItemElement.textContent = '';
         }
-        this.property.addEventListener("localValueUpdated" /* SDK.CSSProperty.Events.LOCAL_VALUE_UPDATED */, () => {
-            this.updateTitle();
-        });
+        this.property.addEventListener("localValueUpdated" /* SDK.CSSProperty.Events.LOCAL_VALUE_UPDATED */, this.updateTitle, this);
+    }
+    onunbind() {
+        this.property.removeEventListener("localValueUpdated" /* SDK.CSSProperty.Events.LOCAL_VALUE_UPDATED */, this.updateTitle, this);
+        super.onunbind();
     }
     async gridNames() {
         if (!SDK.CSSMetadata.cssMetadata().isGridNameAwareProperty(this.name)) {

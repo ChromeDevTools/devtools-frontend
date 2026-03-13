@@ -38,6 +38,7 @@
     "../../../../../../../../front_end/panels/timeline/components/insights/BaseInsightComponent.ts",
     "../../../../../../../../front_end/panels/timeline/components/insights/CLSCulprits.ts",
     "../../../../../../../../front_end/panels/timeline/components/insights/Cache.ts",
+    "../../../../../../../../front_end/panels/timeline/components/insights/CharacterSet.ts",
     "../../../../../../../../front_end/panels/timeline/components/insights/Checklist.ts",
     "../../../../../../../../front_end/panels/timeline/components/insights/DOMSize.ts",
     "../../../../../../../../front_end/panels/timeline/components/insights/DocumentLatency.ts",

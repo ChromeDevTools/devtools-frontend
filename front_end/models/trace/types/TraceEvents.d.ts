@@ -1084,6 +1084,17 @@ export interface ParseMetaViewport extends Instant {
     };
 }
 export declare function isParseMetaViewport(event: Event): event is ParseMetaViewport;
+export type MetaCharsetDisposition = 'found-in-first-1024-bytes' | 'found-after-first-1024-bytes' | 'not-found';
+export interface MetaCharsetCheck extends Instant {
+    name: Name.META_CHARSET_CHECK;
+    args: Args & {
+        data: {
+            frame: string;
+            disposition: MetaCharsetDisposition;
+        };
+    };
+}
+export declare function isMetaCharsetCheck(event: Event): event is MetaCharsetCheck;
 export interface LinkPreconnect extends Instant {
     name: Name.LINK_PRECONNECT;
     args: Args & {
@@ -2230,6 +2241,7 @@ export declare const enum Name {
     SELECTOR_STATS = "SelectorStats",
     BEGIN_COMMIT_COMPOSITOR_FRAME = "BeginCommitCompositorFrame",
     PARSE_META_VIEWPORT = "ParseMetaViewport",
+    META_CHARSET_CHECK = "MetaCharsetCheck",
     SCROLL_LAYER = "ScrollLayer",
     UPDATE_LAYER = "UpdateLayer",
     PAINT_SETUP = "PaintSetup",

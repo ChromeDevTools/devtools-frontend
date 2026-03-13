@@ -319,8 +319,8 @@ var SettingsScreen = class _SettingsScreen extends UI.Widget.VBox {
     tabbedPane.makeVerticalTabLayout();
     const keyBindsView = UI.ViewManager.ViewManager.instance().view("keybinds");
     if (keyBindsView) {
-      void keyBindsView.widget().then((widget) => {
-        this.keybindsTab = widget;
+      void keyBindsView.widget().then((widget2) => {
+        this.keybindsTab = widget2;
       });
     }
     tabbedPane.show(this.contentElement);
@@ -712,9 +712,9 @@ var Revealer = class {
       if (settings && settings.indexOf(object.name) !== -1) {
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.bringToFront();
         await SettingsScreen.showSettingsScreen({ name: id });
-        const widget = await view.widget();
-        if ("highlightObject" in widget && typeof widget.highlightObject === "function") {
-          widget.highlightObject(object);
+        const widget2 = await view.widget();
+        if ("highlightObject" in widget2 && typeof widget2.highlightObject === "function") {
+          widget2.highlightObject(object);
         }
         return;
       }
@@ -3013,6 +3013,7 @@ var UIStrings6 = {
 };
 var str_6 = i18n11.i18n.registerUIStrings("panels/settings/WorkspaceSettingsTab.ts", UIStrings6);
 var i18nString6 = i18n11.i18n.getLocalizedString.bind(void 0, str_6);
+var { widget } = UI6.Widget;
 var DEFAULT_VIEW2 = (input, _output, target) => {
   render4(html4`
     <style>${workspaceSettingsTab_css_default}</style>
@@ -3033,8 +3034,7 @@ var DEFAULT_VIEW2 = (input, _output, target) => {
           <devtools-card heading=${fileSystem.displayName}>
             <devtools-icon name="folder" slot="heading-prefix"></devtools-icon>
             <div class="mapping-view-container">
-              <devtools-widget .widgetConfig=${UI6.Widget.widgetConfig(EditFileSystemView, { fileSystem: fileSystem.fileSystem })}>
-              </devtools-widget>
+              ${widget(EditFileSystemView, { fileSystem: fileSystem.fileSystem })}
             </div>
             <devtools-button
               slot="heading-suffix"

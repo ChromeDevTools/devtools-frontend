@@ -4,25 +4,20 @@
 import * as Host from '../../core/host/host.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import { html, render } from '../../ui/lit/lit.js';
+import { render } from '../../ui/lit/lit.js';
 import { CSSOverviewCompletedView } from './CSSOverviewCompletedView.js';
 import { CSSOverviewModel } from './CSSOverviewModel.js';
 import { CSSOverviewProcessingView } from './CSSOverviewProcessingView.js';
 import { CSSOverviewStartView } from './CSSOverviewStartView.js';
-const { widgetConfig } = UI.Widget;
+const { widget } = UI.Widget;
 export const DEFAULT_VIEW = (input, _output, target) => {
-    // clang-format off
-    render(input.state === 'start' ? html `
-      <devtools-widget .widgetConfig=${widgetConfig(CSSOverviewStartView, { onStartCapture: input.onStartCapture })}></devtools-widget>`
-        : input.state === 'processing' ? html `
-      <devtools-widget .widgetConfig=${widgetConfig(CSSOverviewProcessingView, { onCancel: input.onCancel })}></devtools-widget>`
-            : html `
-      <devtools-widget .widgetConfig=${widgetConfig(CSSOverviewCompletedView, {
+    render(input.state === 'start' ? widget(CSSOverviewStartView, { onStartCapture: input.onStartCapture }) :
+        input.state === 'processing' ? widget(CSSOverviewProcessingView, { onCancel: input.onCancel }) :
+            widget(CSSOverviewCompletedView, {
                 onReset: input.onReset,
                 overviewData: input.overviewData,
                 target: input.target,
-            })}></devtools-widget>`, target);
-    // clang-format on
+            }), target);
 };
 export class CSSOverviewPanel extends UI.Panel.Panel {
     #currentUrl;

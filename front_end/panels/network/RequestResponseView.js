@@ -26,36 +26,31 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/network/RequestResponseView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-const widgetConfig = UI.Widget.widgetConfig;
-const widgetRef = UI.Widget.widgetRef;
+const { widgetConfig, widgetRef, widget } = UI.Widget;
 export const DEFAULT_VIEW = (input, output, target) => {
-    let widget;
+    let widgetTemplate;
     if (TextUtils.StreamingContentData.isError(input.contentData)) {
         // clang-format off
-        widget = html `<devtools-widget
-                    .widgetConfig=${widgetConfig(element => new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.failedToLoadResponseData), input.contentData.error, element))}></devtools-widget>`;
+        widgetTemplate = html `${widget(element => new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.failedToLoadResponseData), input.contentData.error, element))}`;
         // clang-format on
     }
     else if (input.request.statusCode === 204 || input.request.failed) {
         // clang-format off
-        widget = html `<devtools-widget
-                     .widgetConfig=${widgetConfig(element => new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.noPreview), i18nString(UIStrings.thisRequestHasNoResponseData), element))}></devtools-widget>`;
+        widgetTemplate = html `${widget(element => new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.noPreview), i18nString(UIStrings.thisRequestHasNoResponseData), element))}`;
         // clang-format on
     }
     else if (input.renderAsText) {
         // clang-format off
-        widget = html `<devtools-widget
-                    .widgetConfig=${widgetConfig(element => new SourceFrame.ResourceSourceFrame.SearchableContainer(input.request, input.mimeType, element))}
+        widgetTemplate = html `<devtools-widget .widgetConfig=${widgetConfig(element => new SourceFrame.ResourceSourceFrame.SearchableContainer(input.request, input.mimeType, element))}
                     ${widgetRef(SourceFrame.ResourceSourceFrame.SearchableContainer, widget => { output.revealPosition = widget.revealPosition.bind(widget); })}></devtools-widget>`;
         // clang-format on
     }
     else {
         // clang-format off
-        widget = html `<devtools-widget
-                    .widgetConfig=${widgetConfig(element => new BinaryResourceView(input.contentData, input.request.url(), input.request.resourceType(), element))}></devtools-widget>`;
+        widgetTemplate = html `${widget(element => new BinaryResourceView(input.contentData, input.request.url(), input.request.resourceType(), element))}`;
         // clang-format on
     }
-    render(widget, target);
+    render(widgetTemplate, target);
 };
 export class RequestResponseView extends UI.Widget.VBox {
     request;

@@ -9,7 +9,7 @@ import * as Lit from '../../../../ui/lit/lit.js';
 import { BaseInsightComponent } from './BaseInsightComponent.js';
 import { Checklist } from './Checklist.js';
 import { imageRef } from './ImageRef.js';
-const { widgetConfig } = UI.Widget;
+const { widget } = UI.Widget;
 const { UIStrings, i18nString, getImageData } = Trace.Insights.Models.LCPDiscovery;
 const { html } = Lit;
 // eslint-disable-next-line @devtools/l10n-filename-matches
@@ -70,9 +70,7 @@ export class LCPDiscovery extends BaseInsightComponent {
         // clang-format off
         return html `
       <div class="insight-section">
-        <devtools-widget .widgetConfig=${widgetConfig(Checklist, {
-            checklist: imageData.checklist,
-        })}></devtools-widget>
+        ${widget(Checklist, { checklist: imageData.checklist })}
         <div class="insight-section">${imageRef(imageData.request)}${delayEl}</div>
       </div>`;
         // clang-format on

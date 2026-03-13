@@ -1354,8 +1354,14 @@ export class AiAssistancePanel extends UI.Panel.Panel {
                             parts: [],
                         };
                         this.#messages.push(systemMessage);
-                        if (Greendev.Prototypes.instance().isEnabled('breakpointDebuggerAgent') &&
-                            this.#conversation?.type === "breakpoint" /* AiAssistanceModel.AiHistoryStorage.ConversationType.BREAKPOINT */) {
+                        // If the walkthrough is currently expanded in the sidebar, we want to
+                        // automatically swap it to the newly created message's walkthrough.
+                        // This ensures that when a user asks a new question, the sidebar updates
+                        // immediately to show the "loading" state of the new walkthrough.
+                        const isSidebarWalkthroughOpen = this.#walkthrough.isExpanded && !this.#walkthrough.isInlined;
+                        if (isSidebarWalkthroughOpen ||
+                            (Greendev.Prototypes.instance().isEnabled('breakpointDebuggerAgent') &&
+                                this.#conversation?.type === "breakpoint" /* AiAssistanceModel.AiHistoryStorage.ConversationType.BREAKPOINT */)) {
                             this.#openWalkthrough(systemMessage);
                         }
                         break;
@@ -1441,6 +1447,12 @@ export class AiAssistancePanel extends UI.Panel.Panel {
                                 newPart.suggestions = data.suggestions;
                             }
                             systemMessage.parts.push(newPart);
+                        }
+                        if (data.widgets && Root.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled) {
+                            systemMessage.parts.push({
+                                type: 'widget',
+                                widgets: data.widgets,
+                            });
                         }
                         // When there is an answer without any thinking steps, we don't want to show the thinking step.
                         // TODO(crbug.com/463323934): Remove specially handling this case.
@@ -1530,7 +1542,7 @@ export function getResponseMarkdown(message) {
         if (part.type === 'answer') {
             contentParts.push(`### Answer\n\n${part.text}`);
         }
-        else {
+        else if (part.type === 'step') {
             const step = part.step;
             if (step.title) {
                 contentParts.push(`### ${step.title}`);

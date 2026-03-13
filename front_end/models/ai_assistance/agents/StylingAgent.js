@@ -13,7 +13,7 @@ import { ChangeManager } from '../ChangeManager.js';
 import { debugLog } from '../debug.js';
 import { EvaluateAction, formatError, SideEffectError } from '../EvaluateAction.js';
 import { ExtensionScope } from '../ExtensionScope.js';
-import { FREESTYLER_WORLD_NAME } from '../injected.js';
+import { AI_ASSISTANCE_CSS_CLASS_NAME, FREESTYLER_WORLD_NAME } from '../injected.js';
 import { AiAgent, ConversationContext } from './AiAgent.js';
 /*
 * Strings that don't need to be translated at this time.
@@ -152,6 +152,7 @@ async function executeJsCode(functionDeclaration, { throwOnSideEffect, contextNo
 }
 const MAX_OBSERVATION_BYTE_LENGTH = 25_000;
 const OBSERVATION_TIMEOUT = 5_000;
+export const AI_ASSISTANCE_FILTER_REGEX = `\\.${AI_ASSISTANCE_CSS_CLASS_NAME}-.*&`;
 export class NodeContext extends ConversationContext {
     #node;
     constructor(node) {
@@ -249,13 +250,15 @@ export class StylingAgent extends AiAgent {
     #createExtensionScope;
     #greenDevEmulationScreenshot = null;
     #greenDevEmulationAxTree = null;
+    #currentTurnId = 0;
     constructor(opts) {
         super(opts);
         this.#changes = opts.changeManager || new ChangeManager();
         this.#execJs = opts.execJs ?? executeJsCode;
-        this.#createExtensionScope = opts.createExtensionScope ?? ((changes) => {
-            return new ExtensionScope(changes, this.sessionId, this.context?.getItem() ?? null);
-        });
+        this.#createExtensionScope =
+            opts.createExtensionScope ?? ((changes) => {
+                return new ExtensionScope(changes, this.sessionId, this.context?.getItem() ?? null, this.#currentTurnId);
+            });
         this.declareFunction('getStyles', {
             description: `Get computed and source styles for one or multiple elements on the inspected page for multiple elements at once by uid.
 
@@ -881,6 +884,29 @@ const data = {
                     text: await StylingAgent.describeElement(selectedElement.getItem()),
                 }],
         };
+    }
+    async preRun() {
+        this.#currentTurnId++;
+    }
+    async finalizeAnswer(answer) {
+        if (!Root.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled) {
+            return answer;
+        }
+        const changedNodeIds = this.#changes.getChangedNodesForGroupId(this.sessionId, this.#currentTurnId);
+        if (changedNodeIds.length === 0) {
+            return answer;
+        }
+        answer.widgets = [
+            ...(answer.widgets ?? []),
+            ...changedNodeIds.map(id => ({
+                name: 'STYLE_PROPERTIES',
+                data: {
+                    backendNodeId: id,
+                    selector: AI_ASSISTANCE_FILTER_REGEX,
+                },
+            })),
+        ];
+        return answer;
     }
     async enhanceQuery(query, selectedElement, multimodalInputType) {
         let multimodalInputEnhancementQuery = this.multimodalInputEnabled && multimodalInputType ? MULTIMODAL_ENHANCEMENT_PROMPTS[multimodalInputType] : '';

@@ -14,6 +14,7 @@ import layers3DViewStyles from './layers3DView.css.js';
 import { LayerSelection, ScrollRectSelection, Selection, SnapshotSelection, } from './LayerViewHost.js';
 import { TransformController } from './TransformController.js';
 const { html, render, Directives: { ref } } = Lit;
+const { widget } = UI.Widget;
 const UIStrings = {
     /**
      * @description Text of a DOM element in DView of the Layers panel
@@ -73,11 +74,11 @@ export const DEFAULT_VIEW = (input, output, target) => {
       ${layers3DViewStyles}
     </style>
     ${input.panelToolbar}
-    ${input.error === 'missing-root' ? html `<div><devtools-widget .widgetConfig=${UI.Widget.widgetConfig(UI.EmptyWidget.EmptyWidget, {
+    ${input.error === 'missing-root' ? html `<div>${widget(UI.EmptyWidget.EmptyWidget, {
         header: i18nString(UIStrings.noLayerInformation),
         text: i18nString(UIStrings.layerExplanation)
-    })}></devtools-widget></div>` : Lit.nothing}
-    ${input.error === 'webgl-disabled' ? html `<div><devtools-widget .widgetConfig=${UI.Widget.widgetConfig(UI.EmptyWidget.EmptyWidget, {
+    })}</div>` : Lit.nothing}
+    ${input.error === 'webgl-disabled' ? html `<div>${widget(UI.EmptyWidget.EmptyWidget, {
         header: i18nString(UIStrings.cantDisplayLayers),
         text: i18nString(UIStrings.webglSupportIsDisabledInYour),
         extraElements: [
@@ -85,7 +86,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
                 PH1: Link.create('about:gpu', undefined, undefined, 'about-gpu')
             })
         ],
-    })}></devtools-widget></div>` : Lit.nothing}
+    })}</div>` : Lit.nothing}
     <canvas
       tabindex="0"
       jslog=${VisualLogging.canvas('layers').track({

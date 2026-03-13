@@ -14,16 +14,18 @@ export class ExtensionScope {
     #listeners = [];
     #changeManager;
     #agentId;
+    #turnId;
     /** Don't use directly use the getter */
     #frameId;
     /** Don't use directly use the getter */
     #target;
     #bindingMutex = new Common.Mutex.Mutex();
-    constructor(changes, agentId, selectedNode) {
+    constructor(changes, agentId, selectedNode, turnId) {
         this.#changeManager = changes;
         const frameId = selectedNode?.frameId();
         const target = selectedNode?.domModel().target();
         this.#agentId = agentId;
+        this.#turnId = turnId;
         this.#target = target;
         this.#frameId = frameId;
     }
@@ -208,6 +210,7 @@ export class ExtensionScope {
         if (!node) {
             throw new Error('Node is not found');
         }
+        const backendNodeId = node.backendNodeId();
         try {
             const matchedStyles = await cssModel.getMatchedStyles(node.id);
             if (!matchedStyles) {
@@ -225,6 +228,7 @@ export class ExtensionScope {
                 selector,
                 simpleSelector: _a.getSelectorForNode(node),
                 sourceLocation: _a.getSourceLocation(styleRule),
+                backendNodeId,
             };
         }
         catch {
@@ -233,6 +237,7 @@ export class ExtensionScope {
         // Fallback
         return {
             selector: _a.getSelectorForNode(node),
+            backendNodeId,
         };
     }
     async #bindingCalled(executionContext, event) {
@@ -258,7 +263,8 @@ export class ExtensionScope {
             }
             let context = {
                 // TODO: Should this a be a *?
-                selector: ''
+                selector: '',
+                backendNodeId: undefined,
             };
             try {
                 context = await this.#computeContextFromElement(element.object);
@@ -273,11 +279,13 @@ export class ExtensionScope {
                 const sanitizedStyles = await this.sanitizedStyleChanges(context.selector, arg.styles);
                 const styleChanges = await this.#changeManager.addChange(cssModel, this.frameId, {
                     groupId: this.#agentId,
+                    turnId: this.#turnId,
                     sourceLocation: context.sourceLocation,
                     selector: context.selector,
                     simpleSelector: context.simpleSelector,
                     className: arg.className,
                     styles: sanitizedStyles,
+                    backendNodeId: context.backendNodeId,
                 });
                 await this.#simpleEval(executionContext, `freestyler.respond(${id}, ${JSON.stringify(styleChanges)})`);
             }

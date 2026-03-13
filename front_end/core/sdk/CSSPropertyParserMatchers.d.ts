@@ -163,6 +163,23 @@ export declare class ColorMixMatcher extends ColorMixMatcher_base {
     accepts(propertyName: string): boolean;
     matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): ColorMixMatch | null;
 }
+export declare class ContrastColorMatch implements Match {
+    readonly text: string;
+    readonly node: CodeMirror.SyntaxNode;
+    readonly color: CodeMirror.SyntaxNode[];
+    constructor(text: string, node: CodeMirror.SyntaxNode, color: CodeMirror.SyntaxNode[]);
+}
+declare const ContrastColorMatcher_base: {
+    new (): {
+        matchType: Platform.Constructor.ConstructorOrAbstract<ContrastColorMatch>;
+        accepts(_propertyName: string): boolean;
+        matches(_node: CodeMirror.SyntaxNode, _matching: BottomUpTreeMatching): ContrastColorMatch | null;
+    };
+};
+export declare class ContrastColorMatcher extends ContrastColorMatcher_base {
+    accepts(propertyName: string): boolean;
+    matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): ContrastColorMatch | null;
+}
 export declare class URLMatch implements Match {
     readonly url: Platform.DevToolsPath.UrlString;
     readonly text: string;

@@ -3176,15 +3176,23 @@ import * as Helpers14 from "./../helpers/helpers.js";
 import * as Types20 from "./../types/types.js";
 var metricScoresByFrameId = /* @__PURE__ */ new Map();
 var allMarkerEvents = [];
+var metaCharsetCheckEventsByNavigation = /* @__PURE__ */ new Map();
+var metaCharsetCheckEventsArray = [];
 function reset19() {
   metricScoresByFrameId = /* @__PURE__ */ new Map();
   pageLoadEventsArray = [];
   allMarkerEvents = [];
   selectedLCPCandidateEvents = /* @__PURE__ */ new Set();
+  metaCharsetCheckEventsByNavigation = /* @__PURE__ */ new Map();
+  metaCharsetCheckEventsArray = [];
 }
 var pageLoadEventsArray = [];
 var selectedLCPCandidateEvents = /* @__PURE__ */ new Set();
 function handleEvent19(event) {
+  if (Types20.Events.isMetaCharsetCheck(event)) {
+    metaCharsetCheckEventsArray.push(event);
+    return;
+  }
   if (!Types20.Events.eventIsPageLoadEvent(event)) {
     return;
   }
@@ -3440,6 +3448,20 @@ async function finalize19() {
       storePageLoadMetricAgainstNavigationId(navigation, pageLoadEvent);
     }
   }
+  const { navigationsByFrameId: navigationsByFrameId2 } = data5();
+  metaCharsetCheckEventsArray.sort((a, b) => a.ts - b.ts);
+  for (const metaCharsetCheckEvent of metaCharsetCheckEventsArray) {
+    const frameId = metaCharsetCheckEvent.args.data?.frame;
+    if (!frameId) {
+      continue;
+    }
+    const navigation = Helpers14.Trace.getNavigationForTraceEvent(metaCharsetCheckEvent, frameId, navigationsByFrameId2);
+    if (!navigation) {
+      continue;
+    }
+    const eventsForNavigation = Platform10.MapUtilities.getWithDefault(metaCharsetCheckEventsByNavigation, navigation, () => []);
+    eventsForNavigation.push(metaCharsetCheckEvent);
+  }
   const allFinalLCPEvents = gatherFinalLCPEvents();
   const mainFrame = data5().mainFrameId;
   const allEventsButLCP = pageLoadEventsArray.filter((event) => !Types20.Events.isAnyLargestContentfulPaintCandidate(event));
@@ -3449,7 +3471,8 @@ async function finalize19() {
 function data19() {
   return {
     metricScoresByFrameId,
-    allMarkerEvents
+    allMarkerEvents,
+    metaCharsetCheckEventsByNavigation
   };
 }
 function deps10() {

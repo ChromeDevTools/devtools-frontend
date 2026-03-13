@@ -563,6 +563,7 @@ var Models_exports = {};
 __export(Models_exports, {
   CLSCulprits: () => CLSCulprits_exports,
   Cache: () => Cache_exports,
+  CharacterSet: () => CharacterSet_exports,
   DOMSize: () => DOMSize_exports,
   DocumentLatency: () => DocumentLatency_exports,
   DuplicatedJavaScript: () => DuplicatedJavaScript_exports,
@@ -581,22 +582,157 @@ __export(Models_exports, {
   Viewport: () => Viewport_exports
 });
 
-// gen/front_end/models/trace/insights/CLSCulprits.js
-var CLSCulprits_exports = {};
-__export(CLSCulprits_exports, {
+// gen/front_end/models/trace/insights/CharacterSet.js
+var CharacterSet_exports = {};
+__export(CharacterSet_exports, {
   UIStrings: () => UIStrings2,
   createOverlays: () => createOverlays2,
   generateInsight: () => generateInsight2,
-  getNonCompositedFailure: () => getNonCompositedFailure,
   i18nString: () => i18nString2,
-  isCLSCulpritsInsight: () => isCLSCulpritsInsight
+  isCharacterSetInsight: () => isCharacterSetInsight
 });
 import * as i18n3 from "./../../../core/i18n/i18n.js";
+var UIStrings2 = {
+  /**
+   * @description Title of an insight that checks whether the page declares a character encoding early enough.
+   */
+  title: "Declare a character encoding",
+  /**
+   * @description Description of an insight that checks whether the page has a proper character encoding declaration via HTTP header or early meta tag.
+   */
+  description: "A character encoding declaration is required. It can be done with a meta charset tag in the first 1024 bytes of the HTML or in the Content-Type HTTP response header. [Learn more about declaring the character encoding](https://developer.chrome.com/docs/insights/charset/).",
+  /**
+   * @description Text to tell the user that the charset is declared in the Content-Type HTTP response header.
+   */
+  passingHttpHeader: "Declares charset in HTTP header",
+  /**
+   * @description Text to tell the user that the charset is NOT declared in the Content-Type HTTP response header.
+   */
+  failedHttpHeader: "Does not declare charset in HTTP header",
+  /**
+   * @description Text to tell the user that a meta charset tag was found in the first 1024 bytes of the HTML.
+   */
+  passingMetaCharsetEarly: "Declares charset using a meta tag in the first 1024 bytes",
+  /**
+   * @description Text to tell the user that a meta charset tag was found, but too late in the HTML.
+   */
+  failedMetaCharsetLate: "Declares charset using a meta tag after the first 1024 bytes",
+  /**
+   * @description Text to tell the user that no meta charset tag was found in the HTML.
+   */
+  failedMetaCharsetMissing: "Does not declare charset using a meta tag",
+  /**
+   * @description Text to tell the user that trace data did not include the Blink signal for meta charset.
+   */
+  failedMetaCharsetUnknown: "Could not determine meta charset declaration from trace"
+};
+var str_2 = i18n3.i18n.registerUIStrings("models/trace/insights/CharacterSet.ts", UIStrings2);
+var i18nString2 = i18n3.i18n.getLocalizedString.bind(void 0, str_2);
+var CHARSET_HTTP_REGEX = /charset\s*=\s*[a-zA-Z0-9\-_:.()]{2,}/i;
+function isCharacterSetInsight(model) {
+  return model.insightKey === "CharacterSet";
+}
+function finalize2(partialModel) {
+  let hasFailure = false;
+  if (partialModel.data) {
+    hasFailure = !partialModel.data.checklist.httpCharset.value && !partialModel.data.checklist.metaCharset.value;
+  }
+  return {
+    insightKey: "CharacterSet",
+    strings: UIStrings2,
+    title: i18nString2(UIStrings2.title),
+    description: i18nString2(UIStrings2.description),
+    docs: "https://developer.chrome.com/docs/insights/charset/",
+    category: InsightCategory.ALL,
+    state: hasFailure ? "fail" : "pass",
+    ...partialModel
+  };
+}
+function hasCharsetInContentType(request) {
+  if (!request.args.data.responseHeaders) {
+    return false;
+  }
+  for (const header of request.args.data.responseHeaders) {
+    if (header.name.toLowerCase() === "content-type") {
+      return CHARSET_HTTP_REGEX.test(header.value);
+    }
+  }
+  return false;
+}
+function findMetaCharsetDisposition(data, context) {
+  if (!context.navigation) {
+    return void 0;
+  }
+  return data.PageLoadMetrics.metaCharsetCheckEventsByNavigation.get(context.navigation)?.at(-1)?.args.data?.disposition;
+}
+function metaCharsetLabel(disposition) {
+  switch (disposition) {
+    case "found-in-first-1024-bytes":
+      return i18nString2(UIStrings2.passingMetaCharsetEarly);
+    case "found-after-first-1024-bytes":
+      return i18nString2(UIStrings2.failedMetaCharsetLate);
+    case "not-found":
+      return i18nString2(UIStrings2.failedMetaCharsetMissing);
+    default:
+      return i18nString2(UIStrings2.failedMetaCharsetUnknown);
+  }
+}
+function generateInsight2(data, context) {
+  if (!context.navigation) {
+    return finalize2({});
+  }
+  const documentRequest = data.NetworkRequests.byId.get(context.navigationId);
+  if (!documentRequest) {
+    return finalize2({ warnings: [InsightWarning.NO_DOCUMENT_REQUEST] });
+  }
+  const hasHttpCharset = hasCharsetInContentType(documentRequest);
+  const metaCharsetDisposition = findMetaCharsetDisposition(data, context);
+  const hasMetaCharsetInFirst1024Bytes = metaCharsetDisposition === "found-in-first-1024-bytes";
+  return finalize2({
+    relatedEvents: [documentRequest],
+    data: {
+      hasHttpCharset,
+      metaCharsetDisposition,
+      documentRequest,
+      checklist: {
+        httpCharset: {
+          label: hasHttpCharset ? i18nString2(UIStrings2.passingHttpHeader) : i18nString2(UIStrings2.failedHttpHeader),
+          value: hasHttpCharset
+        },
+        metaCharset: {
+          label: metaCharsetLabel(metaCharsetDisposition),
+          value: hasMetaCharsetInFirst1024Bytes
+        }
+      }
+    }
+  });
+}
+function createOverlays2(model) {
+  if (!model.data?.documentRequest) {
+    return [];
+  }
+  return [{
+    type: "ENTRY_SELECTED",
+    entry: model.data.documentRequest
+  }];
+}
+
+// gen/front_end/models/trace/insights/CLSCulprits.js
+var CLSCulprits_exports = {};
+__export(CLSCulprits_exports, {
+  UIStrings: () => UIStrings3,
+  createOverlays: () => createOverlays3,
+  generateInsight: () => generateInsight3,
+  getNonCompositedFailure: () => getNonCompositedFailure,
+  i18nString: () => i18nString3,
+  isCLSCulpritsInsight: () => isCLSCulpritsInsight
+});
+import * as i18n5 from "./../../../core/i18n/i18n.js";
 import * as Platform from "./../../../core/platform/platform.js";
 import * as Handlers from "./../handlers/handlers.js";
 import * as Helpers3 from "./../helpers/helpers.js";
 import * as Types2 from "./../types/types.js";
-var UIStrings2 = {
+var UIStrings3 = {
   /** Title of an insight that provides details about why elements shift/move on the page. The causes for these shifts are referred to as culprits ("reasons"). */
   title: "Layout shift culprits",
   /**
@@ -646,8 +782,8 @@ var UIStrings2 = {
    */
   noCulprits: "Could not detect any layout shift culprits"
 };
-var str_2 = i18n3.i18n.registerUIStrings("models/trace/insights/CLSCulprits.ts", UIStrings2);
-var i18nString2 = i18n3.i18n.getLocalizedString.bind(void 0, str_2);
+var str_3 = i18n5.i18n.registerUIStrings("models/trace/insights/CLSCulprits.ts", UIStrings3);
+var i18nString3 = i18n5.i18n.getLocalizedString.bind(void 0, str_3);
 var ACTIONABLE_FAILURE_REASONS = [
   {
     flag: 1 << 0,
@@ -902,18 +1038,18 @@ function getTopCulprits(cluster, culpritsByShift) {
     const animations = culprits.nonCompositedAnimations;
     const unsizedImages = culprits.unsizedImages;
     for (let i = 0; i < fontReq.length && causes.length < MAX_TOP_CULPRITS; i++) {
-      causes.push({ type: 0, description: i18nString2(UIStrings2.webFont) });
+      causes.push({ type: 0, description: i18nString3(UIStrings3.webFont) });
     }
     for (let i = 0; i < iframes.length && causes.length < MAX_TOP_CULPRITS; i++) {
-      causes.push({ type: 1, description: i18nString2(UIStrings2.injectedIframe) });
+      causes.push({ type: 1, description: i18nString3(UIStrings3.injectedIframe) });
     }
     for (let i = 0; i < animations.length && causes.length < MAX_TOP_CULPRITS; i++) {
-      causes.push({ type: 2, description: i18nString2(UIStrings2.animation) });
+      causes.push({ type: 2, description: i18nString3(UIStrings3.animation) });
     }
     for (let i = 0; i < unsizedImages.length && causes.length < MAX_TOP_CULPRITS; i++) {
       causes.push({
         type: 3,
-        description: i18nString2(UIStrings2.unsizedImage),
+        description: i18nString3(UIStrings3.unsizedImage),
         url: unsizedImages[i].paintImageEvent.args.data.url || "",
         backendNodeId: unsizedImages[i].backendNodeId,
         frame: unsizedImages[i].paintImageEvent.args.data.frame || ""
@@ -925,7 +1061,7 @@ function getTopCulprits(cluster, culpritsByShift) {
   }
   return causes.slice(0, MAX_TOP_CULPRITS);
 }
-function finalize2(partialModel) {
+function finalize3(partialModel) {
   let state = "pass";
   if (partialModel.worstCluster) {
     const classification = Handlers.ModelHandlers.LayoutShifts.scoreClassificationForLayoutShift(partialModel.worstCluster.clusterCumulativeScore);
@@ -937,16 +1073,16 @@ function finalize2(partialModel) {
   }
   return {
     insightKey: "CLSCulprits",
-    strings: UIStrings2,
-    title: i18nString2(UIStrings2.title),
-    description: i18nString2(UIStrings2.description),
+    strings: UIStrings3,
+    title: i18nString3(UIStrings3.title),
+    description: i18nString3(UIStrings3.description),
     docs: "https://developer.chrome.com/docs/performance/insights/cls-culprit",
     category: InsightCategory.CLS,
     state,
     ...partialModel
   };
 }
-function generateInsight2(data, context) {
+function generateInsight3(data, context) {
   const isWithinContext = (event) => Helpers3.Timing.eventIsInBounds(event, context.bounds);
   const compositeAnimationEvents = data.Animations.animations.filter(isWithinContext);
   const iframeEvents = data.LayoutShifts.renderFrameImplCreateChildFrameEvents.filter(isWithinContext);
@@ -977,7 +1113,7 @@ function generateInsight2(data, context) {
   for (const cluster of clusters) {
     topCulpritsByCluster.set(cluster, getTopCulprits(cluster, rootCausesByShift));
   }
-  return finalize2({
+  return finalize3({
     relatedEvents,
     animationFailures,
     shifts: rootCausesByShift,
@@ -986,7 +1122,7 @@ function generateInsight2(data, context) {
     topCulpritsByCluster
   });
 }
-function createOverlays2(model) {
+function createOverlays3(model) {
   const clustersByScore = model.clusters.toSorted((a, b) => b.clusterCumulativeScore - a.clusterCumulativeScore) ?? [];
   const worstCluster = clustersByScore[0];
   if (!worstCluster) {
@@ -999,7 +1135,7 @@ function createOverlays2(model) {
     sections: [
       {
         bounds: { min: worstCluster.ts, range, max },
-        label: i18nString2(UIStrings2.worstLayoutShiftCluster),
+        label: i18nString3(UIStrings3.worstLayoutShiftCluster),
         showDuration: false
       }
     ],
@@ -1012,16 +1148,16 @@ function createOverlays2(model) {
 // gen/front_end/models/trace/insights/DocumentLatency.js
 var DocumentLatency_exports = {};
 __export(DocumentLatency_exports, {
-  UIStrings: () => UIStrings3,
-  createOverlays: () => createOverlays3,
-  generateInsight: () => generateInsight3,
-  i18nString: () => i18nString3,
+  UIStrings: () => UIStrings4,
+  createOverlays: () => createOverlays4,
+  generateInsight: () => generateInsight4,
+  i18nString: () => i18nString4,
   isDocumentLatencyInsight: () => isDocumentLatencyInsight
 });
-import * as i18n5 from "./../../../core/i18n/i18n.js";
+import * as i18n7 from "./../../../core/i18n/i18n.js";
 import * as Helpers4 from "./../helpers/helpers.js";
 import * as Types3 from "./../types/types.js";
-var UIStrings3 = {
+var UIStrings4 = {
   /**
    * @description Title of an insight that provides a breakdown for how long it took to download the main document.
    */
@@ -1071,8 +1207,8 @@ var UIStrings3 = {
    */
   uncompressedDownload: "Uncompressed download"
 };
-var str_3 = i18n5.i18n.registerUIStrings("models/trace/insights/DocumentLatency.ts", UIStrings3);
-var i18nString3 = i18n5.i18n.getLocalizedString.bind(void 0, str_3);
+var str_4 = i18n7.i18n.registerUIStrings("models/trace/insights/DocumentLatency.ts", UIStrings4);
+var i18nString4 = i18n7.i18n.getLocalizedString.bind(void 0, str_4);
 var TOO_SLOW_THRESHOLD_MS = 600;
 var TARGET_MS = 100;
 var IGNORE_THRESHOLD_IN_BYTES = 1400;
@@ -1134,30 +1270,30 @@ function getCompressionSavings(request) {
   }
   return estimatedSavings < IGNORE_THRESHOLD_IN_BYTES ? 0 : estimatedSavings;
 }
-function finalize3(partialModel) {
+function finalize4(partialModel) {
   let hasFailure = false;
   if (partialModel.data) {
     hasFailure = !partialModel.data.checklist.usesCompression.value || !partialModel.data.checklist.serverResponseIsFast.value || !partialModel.data.checklist.noRedirects.value;
   }
   return {
     insightKey: "DocumentLatency",
-    strings: UIStrings3,
-    title: i18nString3(UIStrings3.title),
-    description: i18nString3(UIStrings3.description),
+    strings: UIStrings4,
+    title: i18nString4(UIStrings4.title),
+    description: i18nString4(UIStrings4.description),
     docs: "https://developer.chrome.com/docs/performance/insights/document-latency",
     category: InsightCategory.ALL,
     state: hasFailure ? "fail" : "pass",
     ...partialModel
   };
 }
-function generateInsight3(data, context) {
+function generateInsight4(data, context) {
   if (!context.navigation) {
-    return finalize3({});
+    return finalize4({});
   }
-  const millisToString = context.options.insightTimeFormatters?.milli ?? i18n5.TimeUtilities.millisToString;
+  const millisToString = context.options.insightTimeFormatters?.milli ?? i18n7.TimeUtilities.millisToString;
   const documentRequest = data.NetworkRequests.byId.get(context.navigationId);
   if (!documentRequest) {
-    return finalize3({ warnings: [InsightWarning.NO_DOCUMENT_REQUEST] });
+    return finalize4({ warnings: [InsightWarning.NO_DOCUMENT_REQUEST] });
   }
   const serverResponseTime = getServerResponseTime(documentRequest);
   if (serverResponseTime === null) {
@@ -1178,7 +1314,7 @@ function generateInsight3(data, context) {
   const noRedirects = redirectDuration === 0;
   const serverResponseIsFast = !serverResponseTooSlow;
   const usesCompression = uncompressedResponseBytes === 0;
-  return finalize3({
+  return finalize4({
     relatedEvents: [documentRequest],
     data: {
       serverResponseTime,
@@ -1187,18 +1323,18 @@ function generateInsight3(data, context) {
       documentRequest,
       checklist: {
         noRedirects: {
-          label: noRedirects ? i18nString3(UIStrings3.passingRedirects) : i18nString3(UIStrings3.failedRedirects, {
+          label: noRedirects ? i18nString4(UIStrings4.passingRedirects) : i18nString4(UIStrings4.failedRedirects, {
             PH1: documentRequest.args.data.redirects.length,
             PH2: millisToString(redirectDuration)
           }),
           value: noRedirects
         },
         serverResponseIsFast: {
-          label: serverResponseIsFast ? i18nString3(UIStrings3.passingServerResponseTime, { PH1: millisToString(serverResponseTime) }) : i18nString3(UIStrings3.failedServerResponseTime, { PH1: millisToString(serverResponseTime) }),
+          label: serverResponseIsFast ? i18nString4(UIStrings4.passingServerResponseTime, { PH1: millisToString(serverResponseTime) }) : i18nString4(UIStrings4.failedServerResponseTime, { PH1: millisToString(serverResponseTime) }),
           value: serverResponseIsFast
         },
         usesCompression: {
-          label: usesCompression ? i18nString3(UIStrings3.passingTextCompression) : i18nString3(UIStrings3.failedTextCompression),
+          label: usesCompression ? i18nString4(UIStrings4.passingTextCompression) : i18nString4(UIStrings4.failedTextCompression),
           value: usesCompression
         }
       }
@@ -1207,7 +1343,7 @@ function generateInsight3(data, context) {
     wastedBytes: uncompressedResponseBytes
   });
 }
-function createOverlays3(model) {
+function createOverlays4(model) {
   if (!model.data?.documentRequest) {
     return [];
   }
@@ -1217,7 +1353,7 @@ function createOverlays3(model) {
   const sections = [];
   if (model.data.redirectDuration) {
     const bounds = Helpers4.Timing.traceWindowFromMicroSeconds(event.ts, event.ts + redirectDurationMicro);
-    sections.push({ bounds, label: i18nString3(UIStrings3.redirectsLabel), showDuration: true });
+    sections.push({ bounds, label: i18nString4(UIStrings4.redirectsLabel), showDuration: true });
     overlays.push({ type: "CANDY_STRIPED_TIME_RANGE", bounds, entry: event });
   }
   if (!model.data.checklist.serverResponseIsFast.value) {
@@ -1225,11 +1361,11 @@ function createOverlays3(model) {
     const sendEnd = event.args.data.timing?.sendEnd ?? Types3.Timing.Milli(0);
     const sendEndMicro = Helpers4.Timing.milliToMicro(sendEnd);
     const bounds = Helpers4.Timing.traceWindowFromMicroSeconds(sendEndMicro, sendEndMicro + serverResponseTimeMicro);
-    sections.push({ bounds, label: i18nString3(UIStrings3.serverResponseTimeLabel), showDuration: true });
+    sections.push({ bounds, label: i18nString4(UIStrings4.serverResponseTimeLabel), showDuration: true });
   }
   if (model.data.uncompressedResponseBytes) {
     const bounds = Helpers4.Timing.traceWindowFromMicroSeconds(event.args.data.syntheticData.downloadStart, event.args.data.syntheticData.downloadStart + event.args.data.syntheticData.download);
-    sections.push({ bounds, label: i18nString3(UIStrings3.uncompressedDownload), showDuration: true });
+    sections.push({ bounds, label: i18nString4(UIStrings4.uncompressedDownload), showDuration: true });
     overlays.push({ type: "CANDY_STRIPED_TIME_RANGE", bounds, entry: event });
   }
   if (sections.length) {
@@ -1252,17 +1388,17 @@ function createOverlays3(model) {
 // gen/front_end/models/trace/insights/DOMSize.js
 var DOMSize_exports = {};
 __export(DOMSize_exports, {
-  UIStrings: () => UIStrings4,
-  createOverlays: () => createOverlays4,
-  generateInsight: () => generateInsight4,
-  i18nString: () => i18nString4,
+  UIStrings: () => UIStrings5,
+  createOverlays: () => createOverlays5,
+  generateInsight: () => generateInsight5,
+  i18nString: () => i18nString5,
   isDomSizeInsight: () => isDomSizeInsight
 });
-import * as i18n7 from "./../../../core/i18n/i18n.js";
+import * as i18n9 from "./../../../core/i18n/i18n.js";
 import * as Handlers2 from "./../handlers/handlers.js";
 import * as Helpers5 from "./../helpers/helpers.js";
 import * as Types4 from "./../types/types.js";
-var UIStrings4 = {
+var UIStrings5 = {
   /**
    * @description Title of an insight that recommends reducing the size of the DOM tree as a means to improve page responsiveness. "DOM" is an acronym and should not be translated.
    */
@@ -1314,18 +1450,18 @@ var UIStrings4 = {
    */
   largeStyleRecalc: "Style recalculation ({PH1} elements)"
 };
-var str_4 = i18n7.i18n.registerUIStrings("models/trace/insights/DOMSize.ts", UIStrings4);
-var i18nString4 = i18n7.i18n.getLocalizedString.bind(void 0, str_4);
+var str_5 = i18n9.i18n.registerUIStrings("models/trace/insights/DOMSize.ts", UIStrings5);
+var i18nString5 = i18n9.i18n.getLocalizedString.bind(void 0, str_5);
 var DOM_SIZE_DURATION_THRESHOLD = Helpers5.Timing.milliToMicro(Types4.Timing.Milli(40));
 var LAYOUT_OBJECTS_THRESHOLD = 100;
 var STYLE_RECALC_ELEMENTS_THRESHOLD = 300;
-function finalize4(partialModel) {
+function finalize5(partialModel) {
   const relatedEvents = [...partialModel.largeLayoutUpdates, ...partialModel.largeStyleRecalcs];
   return {
     insightKey: "DOMSize",
-    strings: UIStrings4,
-    title: i18nString4(UIStrings4.title),
-    description: i18nString4(UIStrings4.description),
+    strings: UIStrings5,
+    title: i18nString5(UIStrings5.title),
+    description: i18nString5(UIStrings5.description),
     docs: "https://developer.chrome.com/docs/performance/insights/dom-size",
     category: InsightCategory.INP,
     state: relatedEvents.length > 0 ? "informative" : "pass",
@@ -1336,7 +1472,7 @@ function finalize4(partialModel) {
 function isDomSizeInsight(model) {
   return model.insightKey === "DOMSize";
 }
-function generateInsight4(data, context) {
+function generateInsight5(data, context) {
   const isWithinContext = (event) => Helpers5.Timing.eventIsInBounds(event, context.bounds);
   const mainTid = context.navigation?.tid;
   const largeLayoutUpdates = [];
@@ -1390,13 +1526,13 @@ function generateInsight4(data, context) {
     ...largeLayoutUpdates.map((event) => {
       const duration = event.dur / 1e3;
       const size = event.args.beginData.dirtyObjects;
-      const label = i18nString4(UIStrings4.largeLayout, { PH1: size });
+      const label = i18nString5(UIStrings5.largeLayout, { PH1: size });
       return { label, duration, size, event };
     }),
     ...largeStyleRecalcs.map((event) => {
       const duration = event.dur / 1e3;
       const size = event.args.elementCount;
-      const label = i18nString4(UIStrings4.largeStyleRecalc, { PH1: size });
+      const label = i18nString5(UIStrings5.largeStyleRecalc, { PH1: size });
       return { label, duration, size, event };
     })
   ].sort((a, b) => b.duration - a.duration).slice(0, 5);
@@ -1411,14 +1547,14 @@ function generateInsight4(data, context) {
       maxDOMStats = domStats;
     }
   }
-  return finalize4({
+  return finalize5({
     largeLayoutUpdates,
     largeStyleRecalcs,
     largeUpdates,
     maxDOMStats
   });
 }
-function createOverlays4(model) {
+function createOverlays5(model) {
   const entries = [...model.largeStyleRecalcs, ...model.largeLayoutUpdates];
   return entries.map((entry) => ({
     type: "ENTRY_OUTLINE",
@@ -1430,16 +1566,16 @@ function createOverlays4(model) {
 // gen/front_end/models/trace/insights/DuplicatedJavaScript.js
 var DuplicatedJavaScript_exports = {};
 __export(DuplicatedJavaScript_exports, {
-  UIStrings: () => UIStrings5,
-  createOverlays: () => createOverlays5,
-  generateInsight: () => generateInsight5,
-  i18nString: () => i18nString5,
+  UIStrings: () => UIStrings6,
+  createOverlays: () => createOverlays6,
+  generateInsight: () => generateInsight6,
+  i18nString: () => i18nString6,
   isDuplicatedJavaScriptInsight: () => isDuplicatedJavaScriptInsight
 });
-import * as i18n9 from "./../../../core/i18n/i18n.js";
+import * as i18n11 from "./../../../core/i18n/i18n.js";
 import * as Extras from "./../extras/extras.js";
 import * as Helpers6 from "./../helpers/helpers.js";
-var UIStrings5 = {
+var UIStrings6 = {
   /**
    * @description Title of an insight that identifies multiple copies of the same JavaScript sources, and recommends removing the duplication.
    */
@@ -1453,15 +1589,15 @@ var UIStrings5 = {
   /** Label for a column in a data table; entries will be the number of wasted bytes due to duplication of a web resource. */
   columnDuplicatedBytes: "Duplicated bytes"
 };
-var str_5 = i18n9.i18n.registerUIStrings("models/trace/insights/DuplicatedJavaScript.ts", UIStrings5);
-var i18nString5 = i18n9.i18n.getLocalizedString.bind(void 0, str_5);
-function finalize5(partialModel) {
+var str_6 = i18n11.i18n.registerUIStrings("models/trace/insights/DuplicatedJavaScript.ts", UIStrings6);
+var i18nString6 = i18n11.i18n.getLocalizedString.bind(void 0, str_6);
+function finalize6(partialModel) {
   const requests = partialModel.scriptsWithDuplication.map((script) => script.request).filter((e) => !!e);
   return {
     insightKey: "DuplicatedJavaScript",
-    strings: UIStrings5,
-    title: i18nString5(UIStrings5.title),
-    description: i18nString5(UIStrings5.description),
+    strings: UIStrings6,
+    title: i18nString6(UIStrings6.title),
+    description: i18nString6(UIStrings6.description),
     docs: "https://developer.chrome.com/docs/performance/insights/duplicated-javascript",
     category: InsightCategory.LCP,
     state: Boolean(partialModel.duplication.values().next().value) ? "fail" : "pass",
@@ -1472,7 +1608,7 @@ function finalize5(partialModel) {
 function isDuplicatedJavaScriptInsight(model) {
   return model.insightKey === "DuplicatedJavaScript";
 }
-function generateInsight5(data, context) {
+function generateInsight6(data, context) {
   const scripts = data.Scripts.scripts.filter((script) => {
     if (script.frame !== context.frameId) {
       return false;
@@ -1502,7 +1638,7 @@ function generateInsight5(data, context) {
       wastedBytesByRequestId.set(requestId, (wastedBytesByRequestId.get(requestId) || 0) + transferSize);
     }
   }
-  return finalize5({
+  return finalize6({
     duplication,
     duplicationGroupedByNodeModules,
     scriptsWithDuplication: [...new Set(scriptsWithDuplication)],
@@ -1512,7 +1648,7 @@ function generateInsight5(data, context) {
     wastedBytes: wastedBytesByRequestId.values().reduce((acc, cur) => acc + cur, 0)
   });
 }
-function createOverlays5(model) {
+function createOverlays6(model) {
   return model.scriptsWithDuplication.map((script) => script.request).filter((e) => !!e).map((request) => {
     return {
       type: "ENTRY_OUTLINE",
@@ -1525,17 +1661,17 @@ function createOverlays5(model) {
 // gen/front_end/models/trace/insights/FontDisplay.js
 var FontDisplay_exports = {};
 __export(FontDisplay_exports, {
-  UIStrings: () => UIStrings6,
-  createOverlays: () => createOverlays6,
-  generateInsight: () => generateInsight6,
-  i18nString: () => i18nString6,
+  UIStrings: () => UIStrings7,
+  createOverlays: () => createOverlays7,
+  generateInsight: () => generateInsight7,
+  i18nString: () => i18nString7,
   isFontDisplayInsight: () => isFontDisplayInsight
 });
-import * as i18n11 from "./../../../core/i18n/i18n.js";
+import * as i18n13 from "./../../../core/i18n/i18n.js";
 import * as Platform2 from "./../../../core/platform/platform.js";
 import * as Helpers7 from "./../helpers/helpers.js";
 import * as Types5 from "./../types/types.js";
-var UIStrings6 = {
+var UIStrings7 = {
   /** Title of an insight that provides details about the fonts used on the page, and the value of their `font-display` properties. */
   title: "Font display",
   /**
@@ -1547,14 +1683,14 @@ var UIStrings6 = {
   /** Column for the amount of time wasted. */
   wastedTimeColumn: "Wasted time"
 };
-var str_6 = i18n11.i18n.registerUIStrings("models/trace/insights/FontDisplay.ts", UIStrings6);
-var i18nString6 = i18n11.i18n.getLocalizedString.bind(void 0, str_6);
-function finalize6(partialModel) {
+var str_7 = i18n13.i18n.registerUIStrings("models/trace/insights/FontDisplay.ts", UIStrings7);
+var i18nString7 = i18n13.i18n.getLocalizedString.bind(void 0, str_7);
+function finalize7(partialModel) {
   return {
     insightKey: "FontDisplay",
-    strings: UIStrings6,
-    title: i18nString6(UIStrings6.title),
-    description: i18nString6(UIStrings6.description),
+    strings: UIStrings7,
+    title: i18nString7(UIStrings7.title),
+    description: i18nString7(UIStrings7.description),
     docs: "https://developer.chrome.com/docs/performance/insights/font-display",
     category: InsightCategory.INP,
     state: partialModel.fonts.find((font) => font.wastedTime > 0) ? "fail" : "pass",
@@ -1564,7 +1700,7 @@ function finalize6(partialModel) {
 function isFontDisplayInsight(model) {
   return model.insightKey === "FontDisplay";
 }
-function generateInsight6(data, context) {
+function generateInsight7(data, context) {
   const fonts = [];
   for (const remoteFont of data.LayoutShifts.remoteFonts) {
     const event = remoteFont.beginRemoteFontLoadEvent;
@@ -1594,13 +1730,13 @@ function generateInsight6(data, context) {
   }
   fonts.sort((a, b) => b.wastedTime - a.wastedTime);
   const savings = Math.max(...fonts.map((f) => f.wastedTime));
-  return finalize6({
+  return finalize7({
     relatedEvents: fonts.map((f) => f.request),
     fonts,
     metricSavings: { FCP: savings }
   });
 }
-function createOverlays6(model) {
+function createOverlays7(model) {
   return model.fonts.map((font) => ({
     type: "ENTRY_OUTLINE",
     entry: font.request,
@@ -1611,19 +1747,19 @@ function createOverlays6(model) {
 // gen/front_end/models/trace/insights/ForcedReflow.js
 var ForcedReflow_exports = {};
 __export(ForcedReflow_exports, {
-  UIStrings: () => UIStrings7,
+  UIStrings: () => UIStrings8,
   createOverlayForEvents: () => createOverlayForEvents,
-  createOverlays: () => createOverlays7,
-  generateInsight: () => generateInsight7,
-  i18nString: () => i18nString7,
+  createOverlays: () => createOverlays8,
+  generateInsight: () => generateInsight8,
+  i18nString: () => i18nString8,
   isForcedReflowInsight: () => isForcedReflowInsight
 });
-import * as i18n13 from "./../../../core/i18n/i18n.js";
+import * as i18n15 from "./../../../core/i18n/i18n.js";
 import * as Platform3 from "./../../../core/platform/platform.js";
 import * as Extras2 from "./../extras/extras.js";
 import * as Helpers8 from "./../helpers/helpers.js";
 import * as Types6 from "./../types/types.js";
-var UIStrings7 = {
+var UIStrings8 = {
   /**
    * @description Title of an insight that provides details about Forced reflow.
    */
@@ -1653,8 +1789,8 @@ var UIStrings7 = {
    */
   anonymous: "(anonymous)"
 };
-var str_7 = i18n13.i18n.registerUIStrings("models/trace/insights/ForcedReflow.ts", UIStrings7);
-var i18nString7 = i18n13.i18n.getLocalizedString.bind(void 0, str_7);
+var str_8 = i18n15.i18n.registerUIStrings("models/trace/insights/ForcedReflow.ts", UIStrings8);
+var i18nString8 = i18n15.i18n.getLocalizedString.bind(void 0, str_8);
 function getCallFrameId(callFrame) {
   return callFrame.scriptId + ":" + callFrame.lineNumber + ":" + callFrame.columnNumber;
 }
@@ -1706,12 +1842,12 @@ function getLargestTopLevelFunctionData(forcedReflowEvents, traceParsedData) {
   });
   return topTimeConsumingData;
 }
-function finalize7(partialModel) {
+function finalize8(partialModel) {
   return {
     insightKey: "ForcedReflow",
-    strings: UIStrings7,
-    title: i18nString7(UIStrings7.title),
-    description: i18nString7(UIStrings7.description),
+    strings: UIStrings8,
+    title: i18nString8(UIStrings8.title),
+    description: i18nString8(UIStrings8.description),
     docs: "https://developer.chrome.com/docs/performance/insights/forced-reflow",
     category: InsightCategory.ALL,
     state: partialModel.aggregatedBottomUpData.length !== 0 ? "fail" : "pass",
@@ -1726,7 +1862,7 @@ function getBottomCallFrameForEvent(event, traceParsedData) {
 function isForcedReflowInsight(model) {
   return model.insightKey === "ForcedReflow";
 }
-function generateInsight7(traceParsedData, context) {
+function generateInsight8(traceParsedData, context) {
   const isWithinContext = (event) => {
     const frameId = Helpers8.Trace.frameIDForEvent(event);
     if (frameId !== context.frameId) {
@@ -1748,13 +1884,13 @@ function generateInsight7(traceParsedData, context) {
     bottomUpData.relatedEvents.push(event);
   }
   const topLevelFunctionCallData = getLargestTopLevelFunctionData(events, traceParsedData);
-  return finalize7({
+  return finalize8({
     relatedEvents: events,
     topLevelFunctionCallData,
     aggregatedBottomUpData: [...bottomUpDataMap.values()]
   });
 }
-function createOverlays7(model) {
+function createOverlays8(model) {
   if (!model.topLevelFunctionCallData) {
     return [];
   }
@@ -1776,18 +1912,18 @@ function createOverlayForEvents(events, outlineReason = "ERROR") {
 var ImageDelivery_exports = {};
 __export(ImageDelivery_exports, {
   ImageOptimizationType: () => ImageOptimizationType,
-  UIStrings: () => UIStrings8,
+  UIStrings: () => UIStrings9,
   createOverlayForRequest: () => createOverlayForRequest2,
-  createOverlays: () => createOverlays8,
-  generateInsight: () => generateInsight8,
+  createOverlays: () => createOverlays9,
+  generateInsight: () => generateInsight9,
   getOptimizationMessage: () => getOptimizationMessage,
   getOptimizationMessageWithBytes: () => getOptimizationMessageWithBytes,
-  i18nString: () => i18nString8,
+  i18nString: () => i18nString9,
   isImageDeliveryInsight: () => isImageDeliveryInsight
 });
-import * as i18n15 from "./../../../core/i18n/i18n.js";
+import * as i18n17 from "./../../../core/i18n/i18n.js";
 import * as Helpers9 from "./../helpers/helpers.js";
-var UIStrings8 = {
+var UIStrings9 = {
   /**
    * @description Title of an insight that recommends ways to reduce the size of images downloaded and used on the page.
    */
@@ -1834,8 +1970,8 @@ var UIStrings8 = {
    */
   estimatedSavings: "{PH1} (Est {PH2})"
 };
-var str_8 = i18n15.i18n.registerUIStrings("models/trace/insights/ImageDelivery.ts", UIStrings8);
-var i18nString8 = i18n15.i18n.getLocalizedString.bind(void 0, str_8);
+var str_9 = i18n17.i18n.registerUIStrings("models/trace/insights/ImageDelivery.ts", UIStrings9);
+var i18nString9 = i18n17.i18n.getLocalizedString.bind(void 0, str_9);
 var TARGET_BYTES_PER_PIXEL_AVIF = 2 * 1 / 12;
 var GIF_SIZE_THRESHOLD = 100 * 1024;
 var BYTE_SAVINGS_THRESHOLD = 4096;
@@ -1853,29 +1989,29 @@ function isImageDeliveryInsight(model) {
 function getOptimizationMessage(optimization) {
   switch (optimization.type) {
     case ImageOptimizationType.ADJUST_COMPRESSION:
-      return i18nString8(UIStrings8.useCompression);
+      return i18nString9(UIStrings9.useCompression);
     case ImageOptimizationType.MODERN_FORMAT_OR_COMPRESSION:
-      return i18nString8(UIStrings8.useModernFormat);
+      return i18nString9(UIStrings9.useModernFormat);
     case ImageOptimizationType.VIDEO_FORMAT:
-      return i18nString8(UIStrings8.useVideoFormat);
+      return i18nString9(UIStrings9.useVideoFormat);
     case ImageOptimizationType.RESPONSIVE_SIZE:
-      return i18nString8(UIStrings8.useResponsiveSize, {
+      return i18nString9(UIStrings9.useResponsiveSize, {
         PH1: `${optimization.fileDimensions.width}x${optimization.fileDimensions.height}`,
         PH2: `${optimization.displayDimensions.width}x${optimization.displayDimensions.height}`
       });
   }
 }
 function getOptimizationMessageWithBytes(optimization) {
-  const byteSavingsText = i18n15.ByteUtilities.bytesToString(optimization.byteSavings);
+  const byteSavingsText = i18n17.ByteUtilities.bytesToString(optimization.byteSavings);
   const optimizationMessage = getOptimizationMessage(optimization);
-  return i18nString8(UIStrings8.estimatedSavings, { PH1: optimizationMessage, PH2: byteSavingsText });
+  return i18nString9(UIStrings9.estimatedSavings, { PH1: optimizationMessage, PH2: byteSavingsText });
 }
-function finalize8(partialModel) {
+function finalize9(partialModel) {
   return {
     insightKey: "ImageDelivery",
-    strings: UIStrings8,
-    title: i18nString8(UIStrings8.title),
-    description: i18nString8(UIStrings8.description),
+    strings: UIStrings9,
+    title: i18nString9(UIStrings9.title),
+    description: i18nString9(UIStrings9.description),
     docs: "https://developer.chrome.com/docs/performance/insights/image-delivery",
     category: InsightCategory.LCP,
     state: partialModel.optimizableImages.length > 0 ? "fail" : "pass",
@@ -1899,7 +2035,7 @@ function getPixelCounts(data, paintImage) {
     displayedPixels: width * height
   };
 }
-function generateInsight8(data, context) {
+function generateInsight9(data, context) {
   const isWithinContext = (event) => Helpers9.Timing.eventIsInBounds(event, context.bounds);
   const contextRequests = data.NetworkRequests.byTime.filter(isWithinContext);
   const optimizableImages = [];
@@ -1982,7 +2118,7 @@ function generateInsight8(data, context) {
     }
     return b.request.args.data.decodedBodyLength - a.request.args.data.decodedBodyLength;
   });
-  return finalize8({
+  return finalize9({
     optimizableImages,
     metricSavings: metricSavingsForWastedBytes(wastedBytesByRequestId, context),
     wastedBytes: optimizableImages.reduce((total, img) => total + img.byteSavings, 0)
@@ -1995,24 +2131,24 @@ function createOverlayForRequest2(request) {
     outlineReason: "ERROR"
   };
 }
-function createOverlays8(model) {
+function createOverlays9(model) {
   return model.optimizableImages.map((image) => createOverlayForRequest2(image.request));
 }
 
 // gen/front_end/models/trace/insights/INPBreakdown.js
 var INPBreakdown_exports = {};
 __export(INPBreakdown_exports, {
-  UIStrings: () => UIStrings9,
-  createOverlays: () => createOverlays9,
+  UIStrings: () => UIStrings10,
+  createOverlays: () => createOverlays10,
   createOverlaysForSubpart: () => createOverlaysForSubpart,
-  generateInsight: () => generateInsight9,
-  i18nString: () => i18nString9,
+  generateInsight: () => generateInsight10,
+  i18nString: () => i18nString10,
   isINPBreakdownInsight: () => isINPBreakdownInsight
 });
-import * as i18n17 from "./../../../core/i18n/i18n.js";
+import * as i18n19 from "./../../../core/i18n/i18n.js";
 import * as Handlers3 from "./../handlers/handlers.js";
 import * as Helpers10 from "./../helpers/helpers.js";
-var UIStrings9 = {
+var UIStrings10 = {
   /**
    * @description Text to tell the user about the longest user interaction.
    */
@@ -2047,12 +2183,12 @@ var UIStrings9 = {
    */
   noInteractions: "No interactions detected"
 };
-var str_9 = i18n17.i18n.registerUIStrings("models/trace/insights/INPBreakdown.ts", UIStrings9);
-var i18nString9 = i18n17.i18n.getLocalizedString.bind(void 0, str_9);
+var str_10 = i18n19.i18n.registerUIStrings("models/trace/insights/INPBreakdown.ts", UIStrings10);
+var i18nString10 = i18n19.i18n.getLocalizedString.bind(void 0, str_10);
 function isINPBreakdownInsight(insight) {
   return insight.insightKey === "INPBreakdown";
 }
-function finalize9(partialModel) {
+function finalize10(partialModel) {
   let state = "pass";
   if (partialModel.longestInteractionEvent) {
     const classification = Handlers3.ModelHandlers.UserInteractions.scoreClassificationForInteractionToNextPaint(partialModel.longestInteractionEvent.dur);
@@ -2064,21 +2200,21 @@ function finalize9(partialModel) {
   }
   return {
     insightKey: "INPBreakdown",
-    strings: UIStrings9,
-    title: i18nString9(UIStrings9.title),
-    description: i18nString9(UIStrings9.description),
+    strings: UIStrings10,
+    title: i18nString10(UIStrings10.title),
+    description: i18nString10(UIStrings10.description),
     docs: "https://developer.chrome.com/docs/performance/insights/inp-breakdown",
     category: InsightCategory.INP,
     state,
     ...partialModel
   };
 }
-function generateInsight9(data, context) {
+function generateInsight10(data, context) {
   const interactionEvents = data.UserInteractions.interactionEventsWithNoNesting.filter((event) => {
     return Helpers10.Timing.eventIsInBounds(event, context.bounds);
   });
   if (!interactionEvents.length) {
-    return finalize9({});
+    return finalize10({});
   }
   const longestByInteractionId = /* @__PURE__ */ new Map();
   for (const event of interactionEvents) {
@@ -2091,7 +2227,7 @@ function generateInsight9(data, context) {
   const normalizedInteractionEvents = [...longestByInteractionId.values()];
   normalizedInteractionEvents.sort((a, b) => b.dur - a.dur);
   const highPercentileIndex = Math.min(9, Math.floor(normalizedInteractionEvents.length / 50));
-  return finalize9({
+  return finalize10({
     relatedEvents: [normalizedInteractionEvents[0]],
     longestInteractionEvent: normalizedInteractionEvents[0],
     highPercentileInteractionEvent: normalizedInteractionEvents[highPercentileIndex]
@@ -2102,9 +2238,9 @@ function createOverlaysForSubpart(event, subpartIndex = -1) {
   const p2 = Helpers10.Timing.traceWindowFromMicroSeconds(p1.max, p1.max + event.mainThreadHandling);
   const p3 = Helpers10.Timing.traceWindowFromMicroSeconds(p2.max, p2.max + event.presentationDelay);
   let sections = [
-    { bounds: p1, label: i18nString9(UIStrings9.inputDelay), showDuration: true },
-    { bounds: p2, label: i18nString9(UIStrings9.processingDuration), showDuration: true },
-    { bounds: p3, label: i18nString9(UIStrings9.presentationDelay), showDuration: true }
+    { bounds: p1, label: i18nString10(UIStrings10.inputDelay), showDuration: true },
+    { bounds: p2, label: i18nString10(UIStrings10.processingDuration), showDuration: true },
+    { bounds: p3, label: i18nString10(UIStrings10.presentationDelay), showDuration: true }
   ];
   if (subpartIndex !== -1) {
     sections = [sections[subpartIndex]];
@@ -2118,7 +2254,7 @@ function createOverlaysForSubpart(event, subpartIndex = -1) {
     }
   ];
 }
-function createOverlays9(model) {
+function createOverlays10(model) {
   const event = model.longestInteractionEvent;
   if (!event) {
     return [];
@@ -2129,17 +2265,17 @@ function createOverlays9(model) {
 // gen/front_end/models/trace/insights/LCPBreakdown.js
 var LCPBreakdown_exports = {};
 __export(LCPBreakdown_exports, {
-  UIStrings: () => UIStrings10,
-  createOverlays: () => createOverlays10,
-  generateInsight: () => generateInsight10,
-  i18nString: () => i18nString10,
+  UIStrings: () => UIStrings11,
+  createOverlays: () => createOverlays11,
+  generateInsight: () => generateInsight11,
+  i18nString: () => i18nString11,
   isLCPBreakdownInsight: () => isLCPBreakdownInsight
 });
-import * as i18n19 from "./../../../core/i18n/i18n.js";
+import * as i18n21 from "./../../../core/i18n/i18n.js";
 import * as Handlers4 from "./../handlers/handlers.js";
 import * as Helpers11 from "./../helpers/helpers.js";
 import * as Types7 from "./../types/types.js";
-var UIStrings10 = {
+var UIStrings11 = {
   /**
    * @description Title of an insight that provides details about the LCP metric, broken down by parts.
    */
@@ -2182,8 +2318,8 @@ var UIStrings10 = {
    */
   noLcp: "No LCP detected"
 };
-var str_10 = i18n19.i18n.registerUIStrings("models/trace/insights/LCPBreakdown.ts", UIStrings10);
-var i18nString10 = i18n19.i18n.getLocalizedString.bind(void 0, str_10);
+var str_11 = i18n21.i18n.registerUIStrings("models/trace/insights/LCPBreakdown.ts", UIStrings11);
+var i18nString11 = i18n21.i18n.getLocalizedString.bind(void 0, str_11);
 function isLCPBreakdownInsight(model) {
   return model.insightKey === "LCPBreakdown";
 }
@@ -2196,9 +2332,9 @@ function determineSubparts(nav, docRequest, lcpEvent, lcpRequest) {
     return null;
   }
   const ttfb = Helpers11.Timing.traceWindowFromMicroSeconds(nav.ts, firstDocByteTs);
-  ttfb.label = i18nString10(UIStrings10.timeToFirstByte);
+  ttfb.label = i18nString11(UIStrings11.timeToFirstByte);
   let renderDelay = Helpers11.Timing.traceWindowFromMicroSeconds(ttfb.max, lcpEvent.ts);
-  renderDelay.label = i18nString10(UIStrings10.elementRenderDelay);
+  renderDelay.label = i18nString11(UIStrings11.elementRenderDelay);
   if (!lcpRequest) {
     if (anyValuesNaN(ttfb.range, renderDelay.range)) {
       return null;
@@ -2210,9 +2346,9 @@ function determineSubparts(nav, docRequest, lcpEvent, lcpRequest) {
   const loadDelay = Helpers11.Timing.traceWindowFromMicroSeconds(ttfb.max, lcpStartTs);
   const loadDuration = Helpers11.Timing.traceWindowFromMicroSeconds(lcpStartTs, lcpReqEndTs);
   renderDelay = Helpers11.Timing.traceWindowFromMicroSeconds(lcpReqEndTs, lcpEvent.ts);
-  loadDelay.label = i18nString10(UIStrings10.resourceLoadDelay);
-  loadDuration.label = i18nString10(UIStrings10.resourceLoadDuration);
-  renderDelay.label = i18nString10(UIStrings10.elementRenderDelay);
+  loadDelay.label = i18nString11(UIStrings11.resourceLoadDelay);
+  loadDuration.label = i18nString11(UIStrings11.resourceLoadDuration);
+  renderDelay.label = i18nString11(UIStrings11.elementRenderDelay);
   if (anyValuesNaN(ttfb.range, loadDelay.range, loadDuration.range, renderDelay.range)) {
     return null;
   }
@@ -2223,7 +2359,7 @@ function determineSubparts(nav, docRequest, lcpEvent, lcpRequest) {
     renderDelay
   };
 }
-function finalize10(partialModel) {
+function finalize11(partialModel) {
   const relatedEvents = [];
   if (partialModel.lcpEvent) {
     relatedEvents.push(partialModel.lcpEvent);
@@ -2242,9 +2378,9 @@ function finalize10(partialModel) {
   }
   return {
     insightKey: "LCPBreakdown",
-    strings: UIStrings10,
-    title: i18nString10(UIStrings10.title),
-    description: i18nString10(UIStrings10.description),
+    strings: UIStrings11,
+    title: i18nString11(UIStrings11.title),
+    description: i18nString11(UIStrings11.description),
     docs: "https://developer.chrome.com/docs/performance/insights/lcp-breakdown",
     category: InsightCategory.LCP,
     state,
@@ -2252,9 +2388,9 @@ function finalize10(partialModel) {
     relatedEvents
   };
 }
-function generateInsight10(data, context) {
+function generateInsight11(data, context) {
   if (!context.navigation) {
-    return finalize10({});
+    return finalize11({});
   }
   const networkRequests = data.NetworkRequests;
   const frameMetrics = data.PageLoadMetrics.metricScoresByFrameId.get(context.frameId);
@@ -2271,16 +2407,16 @@ function generateInsight10(data, context) {
   );
   const lcpEvent = metricScore?.event;
   if (!lcpEvent || !Types7.Events.isAnyLargestContentfulPaintCandidate(lcpEvent)) {
-    return finalize10({ warnings: [InsightWarning.NO_LCP] });
+    return finalize11({ warnings: [InsightWarning.NO_LCP] });
   }
   const lcpMs = Helpers11.Timing.microToMilli(metricScore.timing);
   const lcpTs = metricScore.event?.ts ? Helpers11.Timing.microToMilli(metricScore.event?.ts) : void 0;
   const lcpRequest = data.LargestImagePaint.lcpRequestByNavigationId.get(context.navigationId);
   const docRequest = networkRequests.byId.get(context.navigationId);
   if (!docRequest) {
-    return finalize10({ lcpMs, lcpTs, lcpEvent, lcpRequest, warnings: [InsightWarning.NO_DOCUMENT_REQUEST] });
+    return finalize11({ lcpMs, lcpTs, lcpEvent, lcpRequest, warnings: [InsightWarning.NO_DOCUMENT_REQUEST] });
   }
-  return finalize10({
+  return finalize11({
     lcpMs,
     lcpTs,
     lcpEvent,
@@ -2288,7 +2424,7 @@ function generateInsight10(data, context) {
     subparts: determineSubparts(context.navigation, docRequest, lcpEvent, lcpRequest) ?? void 0
   });
 }
-function createOverlays10(model) {
+function createOverlays11(model) {
   if (!model.subparts || !model.lcpTs) {
     return [];
   }
@@ -2307,18 +2443,18 @@ function createOverlays10(model) {
 // gen/front_end/models/trace/insights/LCPDiscovery.js
 var LCPDiscovery_exports = {};
 __export(LCPDiscovery_exports, {
-  UIStrings: () => UIStrings11,
-  createOverlays: () => createOverlays11,
-  generateInsight: () => generateInsight11,
+  UIStrings: () => UIStrings12,
+  createOverlays: () => createOverlays12,
+  generateInsight: () => generateInsight12,
   getImageData: () => getImageData,
-  i18nString: () => i18nString11,
+  i18nString: () => i18nString12,
   isLCPDiscoveryInsight: () => isLCPDiscoveryInsight
 });
-import * as i18n21 from "./../../../core/i18n/i18n.js";
+import * as i18n23 from "./../../../core/i18n/i18n.js";
 import * as Handlers5 from "./../handlers/handlers.js";
 import * as Helpers12 from "./../helpers/helpers.js";
 import * as Types8 from "./../types/types.js";
-var UIStrings11 = {
+var UIStrings12 = {
   /**
    * @description Title of an insight that provides details about the LCP metric, and the network requests necessary to load it. Details how the LCP request was discoverable - in other words, the path necessary to load it (ex: network requests, JavaScript)
    */
@@ -2357,21 +2493,21 @@ var UIStrings11 = {
    */
   noLcpResource: "No LCP resource detected because the LCP is not an image"
 };
-var str_11 = i18n21.i18n.registerUIStrings("models/trace/insights/LCPDiscovery.ts", UIStrings11);
-var i18nString11 = i18n21.i18n.getLocalizedString.bind(void 0, str_11);
+var str_12 = i18n23.i18n.registerUIStrings("models/trace/insights/LCPDiscovery.ts", UIStrings12);
+var i18nString12 = i18n23.i18n.getLocalizedString.bind(void 0, str_12);
 function isLCPDiscoveryInsight(model) {
   return model.insightKey === "LCPDiscovery";
 }
-function finalize11(partialModel) {
+function finalize12(partialModel) {
   const relatedEvents = partialModel.lcpEvent && partialModel.lcpRequest ? (
     // TODO: add entire request initiator chain?
     [partialModel.lcpEvent, partialModel.lcpRequest]
   ) : [];
   return {
     insightKey: "LCPDiscovery",
-    strings: UIStrings11,
-    title: i18nString11(UIStrings11.title),
-    description: i18nString11(UIStrings11.description),
+    strings: UIStrings12,
+    title: i18nString12(UIStrings12.title),
+    description: i18nString12(UIStrings12.description),
     docs: "https://developer.chrome.com/docs/performance/insights/lcp-discovery",
     category: InsightCategory.LCP,
     state: partialModel.lcpRequest && partialModel.checklist && (!partialModel.checklist.eagerlyLoaded.value || !partialModel.checklist.requestDiscoverable.value || !partialModel.checklist.priorityHinted.value) ? "fail" : "pass",
@@ -2379,9 +2515,9 @@ function finalize11(partialModel) {
     relatedEvents
   };
 }
-function generateInsight11(data, context) {
+function generateInsight12(data, context) {
   if (!context.navigation) {
-    return finalize11({});
+    return finalize12({});
   }
   const networkRequests = data.NetworkRequests;
   const frameMetrics = data.PageLoadMetrics.metricScoresByFrameId.get(context.frameId);
@@ -2398,15 +2534,15 @@ function generateInsight11(data, context) {
   );
   const lcpEvent = metricScore?.event;
   if (!lcpEvent || !Types8.Events.isAnyLargestContentfulPaintCandidate(lcpEvent)) {
-    return finalize11({ warnings: [InsightWarning.NO_LCP] });
+    return finalize12({ warnings: [InsightWarning.NO_LCP] });
   }
   const docRequest = networkRequests.byId.get(context.navigationId);
   if (!docRequest) {
-    return finalize11({ warnings: [InsightWarning.NO_DOCUMENT_REQUEST] });
+    return finalize12({ warnings: [InsightWarning.NO_DOCUMENT_REQUEST] });
   }
   const lcpRequest = data.LargestImagePaint.lcpRequestByNavigationId.get(context.navigationId);
   if (!lcpRequest) {
-    return finalize11({ lcpEvent });
+    return finalize12({ lcpEvent });
   }
   const initiatorUrl = lcpRequest.args.data.initiator?.url;
   const initiatedByMainDoc = lcpRequest?.args.data.initiator?.type === "parser" && docRequest.args.data.url === initiatorUrl;
@@ -2415,17 +2551,17 @@ function generateInsight11(data, context) {
   const imageFetchPriorityHint = lcpRequest?.args.data.fetchPriorityHint;
   const earliestDiscoveryTime = calculateDocFirstByteTs(docRequest);
   const priorityHintFound = imageFetchPriorityHint === "high";
-  return finalize11({
+  return finalize12({
     lcpEvent,
     lcpRequest,
     earliestDiscoveryTimeTs: earliestDiscoveryTime ? Types8.Timing.Micro(earliestDiscoveryTime) : void 0,
     checklist: {
       priorityHinted: {
-        label: priorityHintFound ? i18nString11(UIStrings11.fetchPriorityApplied) : i18nString11(UIStrings11.fetchPriorityShouldBeApplied),
+        label: priorityHintFound ? i18nString12(UIStrings12.fetchPriorityApplied) : i18nString12(UIStrings12.fetchPriorityShouldBeApplied),
         value: priorityHintFound
       },
-      requestDiscoverable: { label: i18nString11(UIStrings11.requestDiscoverable), value: imgPreloadedOrFoundInHTML },
-      eagerlyLoaded: { label: i18nString11(UIStrings11.lazyLoadNotApplied), value: imageLoadingAttr !== "lazy" }
+      requestDiscoverable: { label: i18nString12(UIStrings12.requestDiscoverable), value: imgPreloadedOrFoundInHTML },
+      eagerlyLoaded: { label: i18nString12(UIStrings12.lazyLoadNotApplied), value: imageLoadingAttr !== "lazy" }
     }
   });
 }
@@ -2452,7 +2588,7 @@ function getImageData(model) {
   }
   return data;
 }
-function createOverlays11(model) {
+function createOverlays12(model) {
   const imageResults = getImageData(model);
   if (!imageResults?.discoveryDelay) {
     return [];
@@ -2486,17 +2622,17 @@ function createOverlays11(model) {
 // gen/front_end/models/trace/insights/LegacyJavaScript.js
 var LegacyJavaScript_exports = {};
 __export(LegacyJavaScript_exports, {
-  UIStrings: () => UIStrings12,
-  createOverlays: () => createOverlays12,
-  generateInsight: () => generateInsight12,
-  i18nString: () => i18nString12,
+  UIStrings: () => UIStrings13,
+  createOverlays: () => createOverlays13,
+  generateInsight: () => generateInsight13,
+  i18nString: () => i18nString13,
   isLegacyJavaScript: () => isLegacyJavaScript
 });
-import * as i18n23 from "./../../../core/i18n/i18n.js";
+import * as i18n25 from "./../../../core/i18n/i18n.js";
 import * as LegacyJavaScriptLib from "./../../../third_party/legacy-javascript/legacy-javascript.js";
 import * as Helpers13 from "./../helpers/helpers.js";
 var { detectLegacyJavaScript } = LegacyJavaScriptLib.LegacyJavaScript;
-var UIStrings12 = {
+var UIStrings13 = {
   /**
    * @description Title of an insight that identifies polyfills for modern JavaScript features, and recommends their removal.
    */
@@ -2510,16 +2646,16 @@ var UIStrings12 = {
   /** Label for a column in a data table; entries will be the number of wasted bytes (aka the estimated savings in terms of bytes). */
   columnWastedBytes: "Wasted bytes"
 };
-var str_12 = i18n23.i18n.registerUIStrings("models/trace/insights/LegacyJavaScript.ts", UIStrings12);
-var i18nString12 = i18n23.i18n.getLocalizedString.bind(void 0, str_12);
+var str_13 = i18n25.i18n.registerUIStrings("models/trace/insights/LegacyJavaScript.ts", UIStrings13);
+var i18nString13 = i18n25.i18n.getLocalizedString.bind(void 0, str_13);
 var BYTE_THRESHOLD = 5e3;
-function finalize12(partialModel) {
+function finalize13(partialModel) {
   const requests = [...partialModel.legacyJavaScriptResults.keys()].map((script) => script.request).filter((e) => !!e);
   return {
     insightKey: "LegacyJavaScript",
-    strings: UIStrings12,
-    title: i18nString12(UIStrings12.title),
-    description: i18nString12(UIStrings12.description),
+    strings: UIStrings13,
+    title: i18nString13(UIStrings13.title),
+    description: i18nString13(UIStrings13.description),
     docs: "https://developer.chrome.com/docs/performance/insights/legacy-javascript",
     category: InsightCategory.ALL,
     state: requests.length ? "fail" : "pass",
@@ -2530,7 +2666,7 @@ function finalize12(partialModel) {
 function isLegacyJavaScript(model) {
   return model.insightKey === "LegacyJavaScript";
 }
-function generateInsight12(data, context) {
+function generateInsight13(data, context) {
   const scripts = data.Scripts.scripts.filter((script) => {
     if (script.frame !== context.frameId) {
       return false;
@@ -2560,13 +2696,13 @@ function generateInsight12(data, context) {
     }
   }
   const sorted = new Map([...legacyJavaScriptResults].sort((a, b) => b[1].estimatedByteSavings - a[1].estimatedByteSavings));
-  return finalize12({
+  return finalize13({
     legacyJavaScriptResults: sorted,
     metricSavings: metricSavingsForWastedBytes(wastedBytesByRequestId, context),
     wastedBytes: wastedBytesByRequestId.values().reduce((acc, cur) => acc + cur, 0)
   });
 }
-function createOverlays12(model) {
+function createOverlays13(model) {
   return [...model.legacyJavaScriptResults.keys()].map((script) => script.request).filter((e) => !!e).map((request) => {
     return {
       type: "ENTRY_OUTLINE",
@@ -2579,19 +2715,19 @@ function createOverlays12(model) {
 // gen/front_end/models/trace/insights/ModernHTTP.js
 var ModernHTTP_exports = {};
 __export(ModernHTTP_exports, {
-  UIStrings: () => UIStrings13,
+  UIStrings: () => UIStrings14,
   createOverlayForRequest: () => createOverlayForRequest3,
-  createOverlays: () => createOverlays13,
+  createOverlays: () => createOverlays14,
   determineHttp1Requests: () => determineHttp1Requests,
-  generateInsight: () => generateInsight13,
-  i18nString: () => i18nString13,
+  generateInsight: () => generateInsight14,
+  i18nString: () => i18nString14,
   isModernHTTPInsight: () => isModernHTTPInsight
 });
-import * as i18n25 from "./../../../core/i18n/i18n.js";
+import * as i18n27 from "./../../../core/i18n/i18n.js";
 import * as Platform4 from "./../../../core/platform/platform.js";
 import * as Handlers6 from "./../handlers/handlers.js";
 import * as Helpers15 from "./../helpers/helpers.js";
-var UIStrings13 = {
+var UIStrings14 = {
   /**
    * @description Title of an insight that recommends using HTTP/2 over HTTP/1.1 because of the performance benefits. "HTTP" should not be translated.
    */
@@ -2613,8 +2749,8 @@ var UIStrings13 = {
    */
   noOldProtocolRequests: "No requests used HTTP/1.1, or its current use of HTTP/1.1 does not present a significant optimization opportunity. HTTP/1.1 requests are only flagged if six or more static assets originate from the same origin, and they are not served from a local development environment or a third-party source."
 };
-var str_13 = i18n25.i18n.registerUIStrings("models/trace/insights/ModernHTTP.ts", UIStrings13);
-var i18nString13 = i18n25.i18n.getLocalizedString.bind(void 0, str_13);
+var str_14 = i18n27.i18n.registerUIStrings("models/trace/insights/ModernHTTP.ts", UIStrings14);
+var i18nString14 = i18n27.i18n.getLocalizedString.bind(void 0, str_14);
 function isModernHTTPInsight(model) {
   return model.insightKey === "ModernHTTP";
 }
@@ -2710,12 +2846,12 @@ function computeMetricSavings(http1Requests, context) {
     LCP: computeWasteWithGraph(urlsToChange, lcpGraph, context.lantern.simulator)
   };
 }
-function finalize13(partialModel) {
+function finalize14(partialModel) {
   return {
     insightKey: "ModernHTTP",
-    strings: UIStrings13,
-    title: i18nString13(UIStrings13.title),
-    description: i18nString13(UIStrings13.description),
+    strings: UIStrings14,
+    title: i18nString14(UIStrings14.title),
+    description: i18nString14(UIStrings14.description),
     docs: "https://developer.chrome.com/docs/performance/insights/modern-http",
     category: InsightCategory.LCP,
     state: partialModel.http1Requests.length > 0 ? "fail" : "pass",
@@ -2723,14 +2859,14 @@ function finalize13(partialModel) {
     relatedEvents: partialModel.http1Requests
   };
 }
-function generateInsight13(data, context) {
+function generateInsight14(data, context) {
   const isWithinContext = (event) => Helpers15.Timing.eventIsInBounds(event, context.bounds);
   const contextRequests = data.NetworkRequests.byTime.filter(isWithinContext);
   const entityMappings = data.NetworkRequests.entityMappings;
   const firstPartyUrl = context.navigation?.args.data?.documentLoaderURL ?? data.Meta.mainFrameURL;
   const firstPartyEntity = Handlers6.Helpers.getEntityForUrl(firstPartyUrl, entityMappings);
   const http1Requests = determineHttp1Requests(contextRequests, entityMappings, firstPartyEntity ?? null);
-  return finalize13({
+  return finalize14({
     http1Requests,
     metricSavings: computeMetricSavings(http1Requests, context)
   });
@@ -2742,7 +2878,7 @@ function createOverlayForRequest3(request) {
     outlineReason: "ERROR"
   };
 }
-function createOverlays13(model) {
+function createOverlays14(model) {
   return model.http1Requests.map((req) => createOverlayForRequest3(req)) ?? [];
 }
 
@@ -2750,22 +2886,22 @@ function createOverlays13(model) {
 var NetworkDependencyTree_exports = {};
 __export(NetworkDependencyTree_exports, {
   TOO_MANY_PRECONNECTS_THRESHOLD: () => TOO_MANY_PRECONNECTS_THRESHOLD,
-  UIStrings: () => UIStrings14,
-  createOverlays: () => createOverlays14,
-  generateInsight: () => generateInsight14,
+  UIStrings: () => UIStrings15,
+  createOverlays: () => createOverlays15,
+  generateInsight: () => generateInsight15,
   generatePreconnectCandidates: () => generatePreconnectCandidates,
   generatePreconnectedOrigins: () => generatePreconnectedOrigins,
   handleLinkResponseHeader: () => handleLinkResponseHeader,
-  i18nString: () => i18nString14,
+  i18nString: () => i18nString15,
   isNetworkDependencyTreeInsight: () => isNetworkDependencyTreeInsight
 });
 import * as Common from "./../../../core/common/common.js";
-import * as i18n27 from "./../../../core/i18n/i18n.js";
+import * as i18n29 from "./../../../core/i18n/i18n.js";
 import * as Platform5 from "./../../../core/platform/platform.js";
 import * as Extras3 from "./../extras/extras.js";
 import * as Helpers16 from "./../helpers/helpers.js";
 import * as Types9 from "./../types/types.js";
-var UIStrings14 = {
+var UIStrings15 = {
   /**
    * @description Title of an insight that recommends avoiding chaining critical requests.
    */
@@ -2840,8 +2976,8 @@ var UIStrings14 = {
    */
   columnWastedMs: "Est LCP savings"
 };
-var str_14 = i18n27.i18n.registerUIStrings("models/trace/insights/NetworkDependencyTree.ts", UIStrings14);
-var i18nString14 = i18n27.i18n.getLocalizedString.bind(void 0, str_14);
+var str_15 = i18n29.i18n.registerUIStrings("models/trace/insights/NetworkDependencyTree.ts", UIStrings15);
+var i18nString15 = i18n29.i18n.getLocalizedString.bind(void 0, str_15);
 var nonCriticalResourceTypes = /* @__PURE__ */ new Set([
   "Image",
   "XHR",
@@ -2851,12 +2987,12 @@ var nonCriticalResourceTypes = /* @__PURE__ */ new Set([
 var PRECONNECT_SOCKET_MAX_IDLE_IN_MS = Types9.Timing.Milli(15e3);
 var IGNORE_THRESHOLD_IN_MILLISECONDS = Types9.Timing.Milli(50);
 var TOO_MANY_PRECONNECTS_THRESHOLD = 4;
-function finalize14(partialModel) {
+function finalize15(partialModel) {
   return {
     insightKey: "NetworkDependencyTree",
-    strings: UIStrings14,
-    title: i18nString14(UIStrings14.title),
-    description: i18nString14(UIStrings14.description),
+    strings: UIStrings15,
+    title: i18nString15(UIStrings15.title),
+    description: i18nString15(UIStrings15.description),
     docs: "https://developer.chrome.com/docs/performance/insights/network-dependency-tree",
     category: InsightCategory.LCP,
     state: partialModel.fail ? "fail" : "pass",
@@ -2943,7 +3079,7 @@ function generateNetworkDependencyTree(context) {
         currentNodes.push(found);
       }
       path.forEach((request2) => found?.relatedRequests.add(request2));
-      relatedEvents.set(request, depth < 2 ? [] : [i18nString14(UIStrings14.warningDescription)]);
+      relatedEvents.set(request, depth < 2 ? [] : [i18nString15(UIStrings15.warningDescription)]);
       currentNodes = found.children;
     }
   }
@@ -3202,9 +3338,9 @@ function generatePreconnectCandidates(data, context, contextRequests) {
 function isNetworkDependencyTreeInsight(model) {
   return model.insightKey === "NetworkDependencyTree";
 }
-function generateInsight14(data, context) {
+function generateInsight15(data, context) {
   if (!context.navigation) {
-    return finalize14({
+    return finalize15({
       rootNodes: [],
       maxTime: 0,
       fail: false,
@@ -3217,7 +3353,7 @@ function generateInsight14(data, context) {
   const contextRequests = data.NetworkRequests.byTime.filter(isWithinContext);
   const preconnectCandidates = generatePreconnectCandidates(data, context, contextRequests);
   const preconnectedOrigins = generatePreconnectedOrigins(data, context, contextRequests, preconnectCandidates);
-  return finalize14({
+  return finalize15({
     rootNodes,
     maxTime,
     fail,
@@ -3226,7 +3362,7 @@ function generateInsight14(data, context) {
     preconnectCandidates
   });
 }
-function createOverlays14(model) {
+function createOverlays15(model) {
   function walk(nodes, overlays2) {
     nodes.forEach((node) => {
       overlays2.push({
@@ -3245,17 +3381,17 @@ function createOverlays14(model) {
 // gen/front_end/models/trace/insights/RenderBlocking.js
 var RenderBlocking_exports = {};
 __export(RenderBlocking_exports, {
-  UIStrings: () => UIStrings15,
+  UIStrings: () => UIStrings16,
   createOverlayForRequest: () => createOverlayForRequest4,
-  createOverlays: () => createOverlays15,
-  generateInsight: () => generateInsight15,
-  i18nString: () => i18nString15,
+  createOverlays: () => createOverlays16,
+  generateInsight: () => generateInsight16,
+  i18nString: () => i18nString16,
   isRenderBlockingInsight: () => isRenderBlockingInsight
 });
-import * as i18n29 from "./../../../core/i18n/i18n.js";
+import * as i18n31 from "./../../../core/i18n/i18n.js";
 import * as Handlers7 from "./../handlers/handlers.js";
 import * as Helpers17 from "./../helpers/helpers.js";
-var UIStrings15 = {
+var UIStrings16 = {
   /**
    * @description Title of an insight that provides the user with the list of network requests that blocked and therefore slowed down the page rendering and becoming visible to the user.
    */
@@ -3277,8 +3413,8 @@ var UIStrings15 = {
    */
   noRenderBlocking: "No render-blocking requests for this navigation"
 };
-var str_15 = i18n29.i18n.registerUIStrings("models/trace/insights/RenderBlocking.ts", UIStrings15);
-var i18nString15 = i18n29.i18n.getLocalizedString.bind(void 0, str_15);
+var str_16 = i18n31.i18n.registerUIStrings("models/trace/insights/RenderBlocking.ts", UIStrings16);
+var i18nString16 = i18n31.i18n.getLocalizedString.bind(void 0, str_16);
 function isRenderBlockingInsight(insight) {
   return insight.insightKey === "RenderBlocking";
 }
@@ -3346,21 +3482,21 @@ function computeSavings(data, context, renderBlockingRequests) {
   }
   return { metricSavings, requestIdToWastedMs };
 }
-function finalize15(partialModel) {
+function finalize16(partialModel) {
   return {
     insightKey: "RenderBlocking",
-    strings: UIStrings15,
-    title: i18nString15(UIStrings15.title),
-    description: i18nString15(UIStrings15.description),
+    strings: UIStrings16,
+    title: i18nString16(UIStrings16.title),
+    description: i18nString16(UIStrings16.description),
     docs: "https://developer.chrome.com/docs/performance/insights/render-blocking",
     category: InsightCategory.LCP,
     state: partialModel.renderBlockingRequests.length > 0 ? "fail" : "pass",
     ...partialModel
   };
 }
-function generateInsight15(data, context) {
+function generateInsight16(data, context) {
   if (!context.navigation) {
-    return finalize15({
+    return finalize16({
       renderBlockingRequests: []
     });
   }
@@ -3369,7 +3505,7 @@ function generateInsight15(data, context) {
     /* Handlers.ModelHandlers.PageLoadMetrics.MetricName.FP */
   )?.event?.ts;
   if (!firstPaintTs) {
-    return finalize15({
+    return finalize16({
       renderBlockingRequests: [],
       warnings: [InsightWarning.NO_FP]
     });
@@ -3402,7 +3538,7 @@ function generateInsight15(data, context) {
   renderBlockingRequests = renderBlockingRequests.sort((a, b) => {
     return b.dur - a.dur;
   });
-  return finalize15({
+  return finalize16({
     relatedEvents: renderBlockingRequests,
     renderBlockingRequests,
     ...savings
@@ -3415,20 +3551,20 @@ function createOverlayForRequest4(request) {
     outlineReason: "ERROR"
   };
 }
-function createOverlays15(model) {
+function createOverlays16(model) {
   return model.renderBlockingRequests.map((request) => createOverlayForRequest4(request));
 }
 
 // gen/front_end/models/trace/insights/SlowCSSSelector.js
 var SlowCSSSelector_exports = {};
 __export(SlowCSSSelector_exports, {
-  UIStrings: () => UIStrings16,
-  createOverlays: () => createOverlays16,
-  generateInsight: () => generateInsight16,
-  i18nString: () => i18nString16,
+  UIStrings: () => UIStrings17,
+  createOverlays: () => createOverlays17,
+  generateInsight: () => generateInsight17,
+  i18nString: () => i18nString17,
   isSlowCSSSelectorInsight: () => isSlowCSSSelectorInsight
 });
-import * as i18n31 from "./../../../core/i18n/i18n.js";
+import * as i18n33 from "./../../../core/i18n/i18n.js";
 import * as Helpers18 from "./../helpers/helpers.js";
 
 // gen/front_end/models/trace/types/TraceEvents.js
@@ -3483,7 +3619,7 @@ function isNavigationStart(event) {
 
 // gen/front_end/models/trace/insights/SlowCSSSelector.js
 import * as Types10 from "./../types/types.js";
-var UIStrings16 = {
+var UIStrings17 = {
   /**
    * @description Title of an insight that provides details about slow CSS selectors.
    */
@@ -3525,8 +3661,8 @@ var UIStrings16 = {
    */
   topSelectorMatchAttempt: "Top selector match attempt"
 };
-var str_16 = i18n31.i18n.registerUIStrings("models/trace/insights/SlowCSSSelector.ts", UIStrings16);
-var i18nString16 = i18n31.i18n.getLocalizedString.bind(void 0, str_16);
+var str_17 = i18n33.i18n.registerUIStrings("models/trace/insights/SlowCSSSelector.ts", UIStrings17);
+var i18nString17 = i18n33.i18n.getLocalizedString.bind(void 0, str_17);
 var slowCSSSelectorThreshold = 500;
 function aggregateSelectorStats(data, context) {
   const selectorMap = /* @__PURE__ */ new Map();
@@ -3552,12 +3688,12 @@ function aggregateSelectorStats(data, context) {
   }
   return [...selectorMap.values()];
 }
-function finalize16(partialModel) {
+function finalize17(partialModel) {
   return {
     insightKey: "SlowCSSSelector",
-    strings: UIStrings16,
-    title: i18nString16(UIStrings16.title),
-    description: i18nString16(UIStrings16.description),
+    strings: UIStrings17,
+    title: i18nString17(UIStrings17.title),
+    description: i18nString17(UIStrings17.description),
     docs: "https://developer.chrome.com/docs/performance/insights/slow-css-selector",
     category: InsightCategory.ALL,
     state: partialModel.topSelectorElapsedMs && partialModel.topSelectorMatchAttempts ? "informative" : "pass",
@@ -3567,7 +3703,7 @@ function finalize16(partialModel) {
 function isSlowCSSSelectorInsight(model) {
   return model.insightKey === "SlowCSSSelector";
 }
-function generateInsight16(data, context) {
+function generateInsight17(data, context) {
   const selectorStatsData = data.SelectorStats;
   if (!selectorStatsData) {
     throw new Error("no selector stats data");
@@ -3594,7 +3730,7 @@ function generateInsight16(data, context) {
       return a[SelectorTimingsKey.MatchAttempts] > b[SelectorTimingsKey.MatchAttempts] ? a : b;
     });
   }
-  return finalize16({
+  return finalize17({
     // TODO: should we identify RecalcStyle events as linked to this insight?
     relatedEvents: [],
     totalElapsedMs: Types10.Timing.Milli(totalElapsedUs / 1e3),
@@ -3604,25 +3740,25 @@ function generateInsight16(data, context) {
     topSelectorMatchAttempts
   });
 }
-function createOverlays16(_) {
+function createOverlays17(_) {
   return [];
 }
 
 // gen/front_end/models/trace/insights/ThirdParties.js
 var ThirdParties_exports = {};
 __export(ThirdParties_exports, {
-  UIStrings: () => UIStrings17,
-  createOverlays: () => createOverlays17,
+  UIStrings: () => UIStrings18,
+  createOverlays: () => createOverlays18,
   createOverlaysForSummary: () => createOverlaysForSummary,
-  generateInsight: () => generateInsight17,
-  i18nString: () => i18nString17,
+  generateInsight: () => generateInsight18,
+  i18nString: () => i18nString18,
   isThirdPartyInsight: () => isThirdPartyInsight
 });
-import * as i18n33 from "./../../../core/i18n/i18n.js";
+import * as i18n35 from "./../../../core/i18n/i18n.js";
 import * as ThirdPartyWeb from "./../../../third_party/third-party-web/third-party-web.js";
 import * as Extras4 from "./../extras/extras.js";
 import * as Handlers8 from "./../handlers/handlers.js";
-var UIStrings17 = {
+var UIStrings18 = {
   /** Title of an insight that provides details about the code on a web page that the user doesn't control (referred to as "third-party code"). */
   title: "3rd parties",
   /**
@@ -3641,8 +3777,8 @@ var UIStrings17 = {
    */
   noThirdParties: "No third parties found"
 };
-var str_17 = i18n33.i18n.registerUIStrings("models/trace/insights/ThirdParties.ts", UIStrings17);
-var i18nString17 = i18n33.i18n.getLocalizedString.bind(void 0, str_17);
+var str_18 = i18n35.i18n.registerUIStrings("models/trace/insights/ThirdParties.ts", UIStrings18);
+var i18nString18 = i18n35.i18n.getLocalizedString.bind(void 0, str_18);
 function getRelatedEvents(summaries, firstPartyEntity) {
   const relatedEvents = [];
   for (const summary of summaries) {
@@ -3652,12 +3788,12 @@ function getRelatedEvents(summaries, firstPartyEntity) {
   }
   return relatedEvents;
 }
-function finalize17(partialModel) {
+function finalize18(partialModel) {
   return {
     insightKey: "ThirdParties",
-    strings: UIStrings17,
-    title: i18nString17(UIStrings17.title),
-    description: i18nString17(UIStrings17.description),
+    strings: UIStrings18,
+    title: i18nString18(UIStrings18.title),
+    description: i18nString18(UIStrings18.description),
     docs: "https://developer.chrome.com/docs/performance/insights/third-parties",
     category: InsightCategory.ALL,
     state: partialModel.entitySummaries.find((summary) => summary.entity !== partialModel.firstPartyEntity) ? "informative" : "pass",
@@ -3667,11 +3803,11 @@ function finalize17(partialModel) {
 function isThirdPartyInsight(model) {
   return model.insightKey === "ThirdParties";
 }
-function generateInsight17(data, context) {
+function generateInsight18(data, context) {
   const entitySummaries = Extras4.ThirdParties.summarizeByThirdParty(data, context.bounds);
   const firstPartyUrl = context.navigation?.args.data?.documentLoaderURL ?? data.Meta.mainFrameURL;
   const firstPartyEntity = ThirdPartyWeb.ThirdPartyWeb.getEntity(firstPartyUrl) || Handlers8.Helpers.makeUpEntity(data.Renderer.entityMappings.createdEntityCache, firstPartyUrl);
-  return finalize17({
+  return finalize18({
     relatedEvents: getRelatedEvents(entitySummaries, firstPartyEntity),
     firstPartyEntity,
     entitySummaries
@@ -3692,7 +3828,7 @@ function createOverlaysForSummary(summary) {
   }
   return overlays;
 }
-function createOverlays17(model) {
+function createOverlays18(model) {
   const overlays = [];
   const summaries = model.entitySummaries ?? [];
   for (const summary of summaries) {
@@ -3708,18 +3844,18 @@ function createOverlays17(model) {
 // gen/front_end/models/trace/insights/Viewport.js
 var Viewport_exports = {};
 __export(Viewport_exports, {
-  UIStrings: () => UIStrings18,
-  createOverlays: () => createOverlays18,
-  generateInsight: () => generateInsight18,
-  i18nString: () => i18nString18,
+  UIStrings: () => UIStrings19,
+  createOverlays: () => createOverlays19,
+  generateInsight: () => generateInsight19,
+  i18nString: () => i18nString19,
   isViewportInsight: () => isViewportInsight
 });
-import * as i18n35 from "./../../../core/i18n/i18n.js";
+import * as i18n37 from "./../../../core/i18n/i18n.js";
 import * as Platform6 from "./../../../core/platform/platform.js";
 import * as Handlers9 from "./../handlers/handlers.js";
 import * as Helpers20 from "./../helpers/helpers.js";
 import * as Types11 from "./../types/types.js";
-var UIStrings18 = {
+var UIStrings19 = {
   /** Title of an insight that provides details about if the page's viewport is optimized for mobile viewing. */
   title: "Optimize viewport for mobile",
   /**
@@ -3731,14 +3867,14 @@ var UIStrings18 = {
    */
   mobileTapDelayLabel: "Mobile tap delay"
 };
-var str_18 = i18n35.i18n.registerUIStrings("models/trace/insights/Viewport.ts", UIStrings18);
-var i18nString18 = i18n35.i18n.getLocalizedString.bind(void 0, str_18);
-function finalize18(partialModel) {
+var str_19 = i18n37.i18n.registerUIStrings("models/trace/insights/Viewport.ts", UIStrings19);
+var i18nString19 = i18n37.i18n.getLocalizedString.bind(void 0, str_19);
+function finalize19(partialModel) {
   return {
     insightKey: "Viewport",
-    strings: UIStrings18,
-    title: i18nString18(UIStrings18.title),
-    description: i18nString18(UIStrings18.description),
+    strings: UIStrings19,
+    title: i18nString19(UIStrings19.title),
+    description: i18nString19(UIStrings19.description),
     docs: "https://developer.chrome.com/docs/performance/insights/viewport",
     category: InsightCategory.INP,
     state: partialModel.mobileOptimized === false ? "fail" : "pass",
@@ -3748,7 +3884,7 @@ function finalize18(partialModel) {
 function isViewportInsight(model) {
   return model.insightKey === "Viewport";
 }
-function generateInsight18(data, context) {
+function generateInsight19(data, context) {
   const viewportEvent = data.UserInteractions.parseMetaViewportEvents.find((event) => {
     if (event.args.data.frame !== context.frameId) {
       return false;
@@ -3765,7 +3901,7 @@ function generateInsight18(data, context) {
     return Helpers20.Timing.eventIsInBounds(event, context.bounds);
   });
   if (!compositorEvents.length) {
-    return finalize18({
+    return finalize19({
       mobileOptimized: null,
       warnings: [InsightWarning.NO_LAYOUT]
     });
@@ -3775,7 +3911,7 @@ function generateInsight18(data, context) {
       const longPointerInteractions = [...data.UserInteractions.interactionsOverThreshold.values()].filter((interaction) => Handlers9.ModelHandlers.UserInteractions.categoryOfInteraction(interaction) === "POINTER" && interaction.inputDelay >= 5e4);
       const inputDelay = Math.max(0, ...longPointerInteractions.map((interaction) => interaction.inputDelay)) / 1e3;
       const inpMetricSavings = Platform6.NumberUtilities.clamp(inputDelay, 0, 300);
-      return finalize18({
+      return finalize19({
         mobileOptimized: false,
         viewportEvent,
         longPointerInteractions,
@@ -3783,12 +3919,12 @@ function generateInsight18(data, context) {
       });
     }
   }
-  return finalize18({
+  return finalize19({
     mobileOptimized: true,
     viewportEvent
   });
 }
-function createOverlays18(model) {
+function createOverlays19(model) {
   if (!model.longPointerInteractions) {
     return [];
   }
@@ -3798,7 +3934,7 @@ function createOverlays18(model) {
     return {
       type: "TIMESPAN_BREAKDOWN",
       entry: interaction,
-      sections: [{ bounds, label: i18nString18(UIStrings18.mobileTapDelayLabel), showDuration: true }],
+      sections: [{ bounds, label: i18nString19(UIStrings19.mobileTapDelayLabel), showDuration: true }],
       renderLocation: "ABOVE_EVENT"
     };
   });

@@ -1348,7 +1348,7 @@ var UIStrings5 = {
 var str_5 = i18n9.i18n.registerUIStrings("panels/linear_memory_inspector/components/LinearMemoryValueInterpreter.ts", UIStrings5);
 var i18nString5 = i18n9.i18n.getLocalizedString.bind(void 0, str_5);
 var { render: render5, html: html5 } = Lit4;
-var { widgetConfig } = UI4.Widget;
+var { widget } = UI4.Widget;
 function renderEndiannessSetting(onEndiannessChanged, currentEndiannes) {
   return html5`
     <label data-endianness-setting="true" title=${i18nString5(UIStrings5.changeEndianness)}>
@@ -1386,13 +1386,10 @@ var DEFAULT_VIEW4 = (input, _output, target) => {
       </div>
       <span class="divider"></span>
       <div>
-        ${input.showSettings ? html5`
-            <devtools-widget .widgetConfig=${widgetConfig(ValueInterpreterSettings, {
+        ${input.showSettings ? widget(ValueInterpreterSettings, {
     valueTypes: input.valueTypes,
     onToggle: input.onValueTypeToggled
-  })}>
-            </devtools-widget>` : html5`
-            <devtools-widget .widgetConfig=${widgetConfig(ValueInterpreterDisplay, {
+  }) : widget(ValueInterpreterDisplay, {
     buffer: input.buffer,
     valueTypes: input.valueTypes,
     endianness: input.endianness,
@@ -1400,8 +1397,7 @@ var DEFAULT_VIEW4 = (input, _output, target) => {
     memoryLength: input.memoryLength,
     onValueTypeModeChange: input.onValueTypeModeChange,
     onJumpToAddressClicked: input.onJumpToAddressClicked
-  })}>
-            </devtools-widget>`}
+  })}
       </div>
     </div>
   `, target);
@@ -1522,7 +1518,7 @@ var UIStrings6 = {
 };
 var str_6 = i18n11.i18n.registerUIStrings("panels/linear_memory_inspector/components/LinearMemoryInspector.ts", UIStrings6);
 var i18nString6 = i18n11.i18n.getLocalizedString.bind(void 0, str_6);
-var { widgetConfig: widgetConfig2 } = UI5.Widget;
+var { widget: widget2 } = UI5.Widget;
 var AddressHistoryEntry = class {
   #address = 0;
   #callback;
@@ -1563,13 +1559,12 @@ var DEFAULT_VIEW5 = (input, _output, target) => {
         @addressinputchanged=${input.onAddressChange}
         @pagenavigation=${input.onNavigatePage}
         @historynavigation=${input.onNavigateHistory}></devtools-linear-memory-inspector-navigator>
-      <devtools-widget .widgetConfig=${widgetConfig2(LinearMemoryHighlightChipList, {
+      ${widget2(LinearMemoryHighlightChipList, {
     highlightInfos: highlightedMemoryAreas,
     focusedMemoryHighlight,
     jumpToAddress: (address) => input.onJumpToAddress(address),
     deleteHighlight: input.onDeleteMemoryHighlight
-  })}>
-      </devtools-widget>
+  })}
       <devtools-linear-memory-inspector-viewer
         .data=${{
     memory: input.memorySlice,
@@ -1585,7 +1580,7 @@ var DEFAULT_VIEW5 = (input, _output, target) => {
     </div>
     ${input.hideValueInspector ? nothing2 : html6`
     <div class="value-interpreter">
-      <devtools-widget .widgetConfig=${widgetConfig2(LinearMemoryValueInterpreter, {
+      ${widget2(LinearMemoryValueInterpreter, {
     buffer: input.memory.slice(input.address - input.memoryOffset, input.address + VALUE_INTEPRETER_MAX_NUM_BYTES).buffer,
     valueTypes: input.valueTypes,
     valueTypeModes: input.valueTypeModes,
@@ -1595,7 +1590,7 @@ var DEFAULT_VIEW5 = (input, _output, target) => {
     onJumpToAddressClicked: input.onJumpToAddress,
     onValueTypeToggled: input.onValueTypeToggled,
     onEndiannessChanged: input.onEndiannessChanged
-  })}></devtools-widget>
+  })}
     </div>`}
     `, target);
 };

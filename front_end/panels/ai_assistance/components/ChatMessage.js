@@ -88,6 +88,10 @@ const UIStringsNotTranslate = {
      */
     maxStepsError: 'Seems like I am stuck with the investigation. It would be better if you start over.',
     /**
+     * @description The error message when the LLM selects context from a different origin.
+     */
+    crossOriginError: 'I have selected the new context but you will have to start a new chat.',
+    /**
      * @description Displayed when the user stop the response
      */
     stoppedResponse: 'You stopped this response',
@@ -199,6 +203,9 @@ export const DEFAULT_VIEW = (input, output, target) => {
         const isLastPart = index === message.parts.length - 1;
         if (part.type === 'answer') {
             return html `<p>${renderTextAsMarkdown(part.text, input.markdownRenderer, { animate: !input.isReadOnly && input.isLoading && isLastPart && input.isLastMessage })}</p>`;
+        }
+        if (part.type === 'widget') {
+            return html `${Lit.Directives.until(renderWidgets(part.widgets, { wrapperClass: 'main-widgets-wrapper' }))}`;
         }
         if (!aiAssistanceV2 && part.type === 'step') {
             return renderStep({
@@ -425,7 +432,6 @@ function renderStepBadge({ step, isLoading, isLast }) {
     ></devtools-icon>`;
 }
 export function renderStep({ step, isLoading, markdownRenderer, isLast }) {
-    const shouldRenderWidgets = Boolean(step.widgets?.length && Root.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled);
     const stepClasses = Lit.Directives.classMap({
         step: true,
         empty: !step.thought && !step.code && !step.contextDetails && !step.requestApproval,
@@ -449,27 +455,31 @@ export function renderStep({ step, isLoading, markdownRenderer, isLast }) {
       </summary>
       ${renderStepDetails({ step, markdownRenderer, isLast })}
     </details>
-    ${shouldRenderWidgets ? html `
-      <div class="step-widgets-wrapper">
-        ${Lit.Directives.until(renderStepWidgets(step))}
-      </div>` : Lit.nothing}`;
+    ${Lit.Directives.until(renderWidgets(step.widgets, { wrapperClass: 'step-widgets-wrapper' }))}
+    `;
     // clang-format on
 }
-const computedStyleNodeCache = new Map();
+const nodeCache = new Map();
+async function resolveNode(backendNodeId) {
+    const cachedNode = nodeCache.get(backendNodeId);
+    if (cachedNode) {
+        return cachedNode;
+    }
+    const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+    if (!target) {
+        return null;
+    }
+    const node = new SDK.DOMModel.DeferredDOMNode(target, backendNodeId);
+    const resolved = await node.resolvePromise();
+    if (resolved) {
+        nodeCache.set(backendNodeId, resolved);
+    }
+    return resolved;
+}
 async function makeComputedStyleWidget(widgetData) {
-    let domNodeForId = computedStyleNodeCache.get(widgetData.data.backendNodeId);
+    const domNodeForId = await resolveNode(widgetData.data.backendNodeId);
     if (!domNodeForId) {
-        const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
-        if (!target) {
-            return null;
-        }
-        const node = new SDK.DOMModel.DeferredDOMNode(target, widgetData.data.backendNodeId);
-        const resolved = await node.resolvePromise();
-        if (!resolved) {
-            return null;
-        }
-        domNodeForId = resolved;
-        computedStyleNodeCache.set(widgetData.data.backendNodeId, resolved);
+        return null;
     }
     const styles = new ComputedStyle.ComputedStyleModel.ComputedStyle(domNodeForId, widgetData.data.computedStyles);
     const widgetConfig = UI.Widget.widgetConfig(Elements.ComputedStyleWidget.ComputedStyleWidget, {
@@ -494,6 +504,23 @@ async function makeCoreVitalsWidget(widgetData) {
         renderedWidget: widget,
         revealable: new TimelineUtils.Helpers.RevealableCoreVitals(widgetData.data.insightSetKey)
     };
+}
+async function makeStylePropertiesWidget(widgetData) {
+    const domNodeForId = await resolveNode(widgetData.data.backendNodeId);
+    if (!domNodeForId) {
+        return null;
+    }
+    const widgetConfig = UI.Widget.widgetConfig(Elements.StandaloneStylesContainer.StandaloneStylesContainer, {
+        domNode: domNodeForId,
+        filter: widgetData.data.selector ? new RegExp(widgetData.data.selector) : null,
+    });
+    // clang-format off
+    const widget = html `<devtools-widget
+    class="styling-preview-widget"
+    .widgetConfig=${widgetConfig}
+  ></devtools-widget>`;
+    // clang-format on
+    return { renderedWidget: widget, revealable: domNodeForId };
 }
 function renderWidgetResponse(response) {
     if (response === null) {
@@ -523,38 +550,42 @@ function renderWidgetResponse(response) {
     // clang-format on
 }
 /**
- * Renders AI-defined UI widgets within a step.
- * When a ModelChatMessage contains a WidgetPart, the ChatMessage component
- * iterates through the `step.widgets` array. For each widget, it determines
- * the appropriate rendering logic based on the `widgetData.name`.
+ * Renders AI-defined UI widgets.
+ * When a ModelChatMessage contains a WidgetPart, or a Step has widgets,
+ * the ChatMessage component iterates through the \`widgets\` array.
+ * For each widget, it determines the appropriate rendering logic based on
+ * the \`widgetData.name\`.
  *
- * Currently, only 'COMPUTED_STYLES' and 'CORE_VITALS' widgets are supported. For these, the
- * `makeComputedStyleWidget` and `makeCoreVitalsWidget` functions are called to construct the necessary
- * data and configuration for the `Elements.ComputedStyleWidget.ComputedStyleWidget`
- * and `TimelineComponents.CWVMetrics.CWVMetrics`
- * components. The widget is then rendered using the `<devtools-widget>`
- * custom element, which dynamically instantiates and displays the specified
- * UI.Widget subclass with the provided configuration.
+ * Currently, 'COMPUTED_STYLES', 'CORE_VITALS' and 'STYLE_PROPERTIES' widgets are supported.
+ * For these, the corresponding \`make...Widget\` functions are called to construct the necessary
+ * data and configuration for the UI components. The widget is then rendered using the
+ * \`<devtools-widget>\` custom element, which dynamically instantiates and displays the
+ * specified UI.Widget subclass with the provided configuration.
  *
  * This allows for a flexible and extensible system where new widget types
  * can be added to the AI responses and rendered in DevTools by adding
- * corresponding `make...Widget` functions and handling them here.
+ * corresponding \`make...Widget\` functions and handling them here.
  */
-async function renderStepWidgets(step) {
-    if (!step.widgets || step.widgets.length === 0) {
+async function renderWidgets(widgets, options = {}) {
+    if (!Root.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled || !widgets || widgets.length === 0) {
         return Lit.nothing;
     }
-    const ui = await Promise.all(step.widgets.map(async (widgetData) => {
+    const ui = await Promise.all(widgets.map(async (widgetData) => {
+        let response = null;
         if (widgetData.name === 'COMPUTED_STYLES') {
-            const response = await makeComputedStyleWidget(widgetData);
-            return renderWidgetResponse(response);
+            response = await makeComputedStyleWidget(widgetData);
         }
-        if (widgetData.name === 'CORE_VITALS') {
-            const response = await makeCoreVitalsWidget(widgetData);
-            return renderWidgetResponse(response);
+        else if (widgetData.name === 'CORE_VITALS') {
+            response = await makeCoreVitalsWidget(widgetData);
         }
-        return Lit.nothing;
+        else if (widgetData.name === 'STYLE_PROPERTIES') {
+            response = await makeStylePropertiesWidget(widgetData);
+        }
+        return renderWidgetResponse(response);
     }));
+    if (options.wrapperClass) {
+        return html `<div class=${options.wrapperClass}>${ui}</div>`;
+    }
     return html `${ui}`;
 }
 function renderSideEffectConfirmationUi(step) {
@@ -597,6 +628,9 @@ function renderError(message) {
                 break;
             case "max-steps" /* AiAssistanceModel.AiAgent.ErrorType.MAX_STEPS */:
                 errorMessage = UIStringsNotTranslate.maxStepsError;
+                break;
+            case "cross-origin" /* AiAssistanceModel.AiAgent.ErrorType.CROSS_ORIGIN */:
+                errorMessage = UIStringsNotTranslate.crossOriginError;
                 break;
             case "abort" /* AiAssistanceModel.AiAgent.ErrorType.ABORT */:
                 return html `<p class="aborted" jslog=${VisualLogging.section('aborted')}>${lockedString(UIStringsNotTranslate.stoppedResponse)}</p>`;

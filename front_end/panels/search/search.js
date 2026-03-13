@@ -638,7 +638,7 @@ var UIStrings2 = {
 var str_2 = i18n3.i18n.registerUIStrings("panels/search/SearchView.ts", UIStrings2);
 var i18nString2 = i18n3.i18n.getLocalizedString.bind(void 0, str_2);
 var { ref, live } = Directives;
-var { widgetConfig, widgetRef } = UI2.Widget;
+var { widgetConfig, widget, widgetRef } = UI2.Widget;
 var DEFAULT_VIEW2 = (input, output, target) => {
   const { query, matchCase, isRegex, searchConfig, searchMessage, searchResults, searchResultsMessage, progress, onQueryChange, onQueryKeyDown, onPanelKeyDown, onClearSearchInput, onToggleRegex, onToggleMatchCase, onRefresh, onClearSearch } = input;
   let header = "", text = "";
@@ -735,8 +735,7 @@ var DEFAULT_VIEW2 = (input, output, target) => {
     output.showAllMatches = () => void w.showAllMatches();
     output.collapseAllResults = () => void w.collapseAllResults();
   })}>
-            </devtools-widget>` : html2`<devtools-widget .widgetConfig=${widgetConfig(UI2.EmptyWidget.EmptyWidget, { header, text })}>
-                  </devtools-widget>`}
+            </devtools-widget>` : widget(UI2.EmptyWidget.EmptyWidget, { header, text })}
       </div>
       <div class="search-toolbar-summary" @keydown=${onPanelKeyDown}>
         <div class="search-message">${searchMessage}</div>

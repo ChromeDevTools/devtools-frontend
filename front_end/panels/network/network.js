@@ -3546,6 +3546,7 @@ var requestCookiesView_css_default = `/*
 
 // gen/front_end/panels/network/RequestCookiesView.js
 var { render: render4, html: html3 } = Lit;
+var { widget } = UI7.Widget;
 var UIStrings7 = {
   /**
    * @description Text in Request Cookies View of the Network panel
@@ -3604,11 +3605,9 @@ var DEFAULT_VIEW3 = (input, _output, target) => {
     <style>${requestCookiesView_css_default}</style>
     <style>${UI7.inspectorCommonStyles}</style>
     <div class="request-cookies-view">
-      ${input.gotCookies ? Lit.nothing : html3`
-        <devtools-widget .widgetConfig=${UI7.Widget.widgetConfig(UI7.EmptyWidget.EmptyWidget, {
+      ${input.gotCookies ? Lit.nothing : widget(UI7.EmptyWidget.EmptyWidget, {
     header: i18nString7(UIStrings7.thisRequestHasNoCookies)
-  })}></devtools-widget>
-      `}
+  })}
 
       <div class=${input.requestCookies.cookies.length || input.hasBlockedCookies ? "" : "hidden"}>
         <span class="request-cookies-title" title=${i18nString7(UIStrings7.cookiesThatWereSentToTheServerIn)}>
@@ -4336,7 +4335,7 @@ var requestInitiatorViewTree_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./requestInitiatorViewTree.css")} */`;
 
 // gen/front_end/panels/network/RequestInitiatorView.js
-var { widgetConfig: widgetConfig2 } = UI10.Widget;
+var { widget: widget2 } = UI10.Widget;
 var UIStrings10 = {
   /**
    * @description Text in Request Initiator View of the Network panel if the request has no initiator data
@@ -4372,10 +4371,10 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
         ${i18nString10(UIStrings10.requestCallStack)}
         <ul role="group">
           <li role="treeitem">
-            <devtools-widget .widgetConfig=${widgetConfig2(Components2.JSPresentationUtils.StackTracePreviewContent, {
+            ${widget2(Components2.JSPresentationUtils.StackTracePreviewContent, {
       options: { tabStops: true },
       stackTrace: input.stackTrace
-    })}></devtools-widget>
+    })}
           </li>
         </ul>
       </li>
@@ -4906,7 +4905,7 @@ var requestPayloadView_css_default = `/*
 
 // gen/front_end/panels/network/RequestPayloadView.js
 var { classMap } = Directives2;
-var { widgetConfig: widgetConfig3 } = UI11.Widget;
+var { widgetConfig: widgetConfig2 } = UI11.Widget;
 var { ifExpanded } = UI11.TreeOutline;
 var UIStrings11 = {
   /**
@@ -4979,7 +4978,7 @@ var DEFAULT_VIEW7 = (input, output, target) => {
   };
   const createSourceText = (text) => html7`<li role=treeitem
       @contextmenu=${copyValueContextmenu(i18nString11(UIStrings11.copyPayload), () => text, "copy-payload")}>
-        <devtools-widget class='payload-value source-code' .widgetConfig=${widgetConfig3(ShowMoreDetailsWidget, { text })}>
+        <devtools-widget class='payload-value source-code' .widgetConfig=${widgetConfig2(ShowMoreDetailsWidget, { text })}>
         </devtools-widget>
       </li>`;
   const createParsedParams = (params) => params.map((param) => html7`<li role=treeitem @contextmenu=${copyValueContextmenu(i18nString11(UIStrings11.copyValue), () => decodeURIComponent(param.value), "copy-value")}>${param.name !== "" ? html7`${RequestPayloadView.formatParameter(param.name, "payload-name", input.decodeRequestParameters)}${RequestPayloadView.formatParameter(param.value, "payload-value source-code", input.decodeRequestParameters)}` : RequestPayloadView.formatParameter(i18nString11(UIStrings11.empty), "empty-request-payload", input.decodeRequestParameters)}</li>`);
@@ -5772,27 +5771,22 @@ var UIStrings14 = {
 };
 var str_14 = i18n27.i18n.registerUIStrings("panels/network/RequestResponseView.ts", UIStrings14);
 var i18nString14 = i18n27.i18n.getLocalizedString.bind(void 0, str_14);
-var widgetConfig4 = UI15.Widget.widgetConfig;
-var widgetRef = UI15.Widget.widgetRef;
+var { widgetConfig: widgetConfig3, widgetRef, widget: widget3 } = UI15.Widget;
 var DEFAULT_VIEW9 = (input, output, target) => {
-  let widget;
+  let widgetTemplate;
   if (TextUtils2.StreamingContentData.isError(input.contentData)) {
-    widget = html9`<devtools-widget
-                    .widgetConfig=${widgetConfig4((element) => new UI15.EmptyWidget.EmptyWidget(i18nString14(UIStrings14.failedToLoadResponseData), input.contentData.error, element))}></devtools-widget>`;
+    widgetTemplate = html9`${widget3((element) => new UI15.EmptyWidget.EmptyWidget(i18nString14(UIStrings14.failedToLoadResponseData), input.contentData.error, element))}`;
   } else if (input.request.statusCode === 204 || input.request.failed) {
-    widget = html9`<devtools-widget
-                     .widgetConfig=${widgetConfig4((element) => new UI15.EmptyWidget.EmptyWidget(i18nString14(UIStrings14.noPreview), i18nString14(UIStrings14.thisRequestHasNoResponseData), element))}></devtools-widget>`;
+    widgetTemplate = html9`${widget3((element) => new UI15.EmptyWidget.EmptyWidget(i18nString14(UIStrings14.noPreview), i18nString14(UIStrings14.thisRequestHasNoResponseData), element))}`;
   } else if (input.renderAsText) {
-    widget = html9`<devtools-widget
-                    .widgetConfig=${widgetConfig4((element) => new SourceFrame3.ResourceSourceFrame.SearchableContainer(input.request, input.mimeType, element))}
-                    ${widgetRef(SourceFrame3.ResourceSourceFrame.SearchableContainer, (widget2) => {
-      output.revealPosition = widget2.revealPosition.bind(widget2);
+    widgetTemplate = html9`<devtools-widget .widgetConfig=${widgetConfig3((element) => new SourceFrame3.ResourceSourceFrame.SearchableContainer(input.request, input.mimeType, element))}
+                    ${widgetRef(SourceFrame3.ResourceSourceFrame.SearchableContainer, (widget4) => {
+      output.revealPosition = widget4.revealPosition.bind(widget4);
     })}></devtools-widget>`;
   } else {
-    widget = html9`<devtools-widget
-                    .widgetConfig=${widgetConfig4((element) => new BinaryResourceView(input.contentData, input.request.url(), input.request.resourceType(), element))}></devtools-widget>`;
+    widgetTemplate = html9`${widget3((element) => new BinaryResourceView(input.contentData, input.request.url(), input.request.resourceType(), element))}`;
   }
-  render10(widget, target);
+  render10(widgetTemplate, target);
 };
 var RequestResponseView = class extends UI15.Widget.VBox {
   request;
@@ -9700,9 +9694,9 @@ var NetworkLogViewColumns = class _NetworkLogViewColumns {
     this.activeWaterfallSortId = WaterfallSortIds.StartTime;
     this.#dataGrid.markColumnAsSortedBy(INITIAL_SORT_COLUMN, DataGrid7.DataGrid.Order.Ascending);
     this.splitWidget = new UI24.SplitWidget.SplitWidget(true, true, "network-panel-split-view-waterfall", 200);
-    const widget = this.#dataGrid.asWidget();
-    widget.setMinimumSize(150, 0);
-    this.splitWidget.setMainWidget(widget);
+    const widget4 = this.#dataGrid.asWidget();
+    widget4.setMinimumSize(150, 0);
+    this.splitWidget.setMainWidget(widget4);
   }
   setupWaterfall() {
     this.waterfallColumn = new NetworkWaterfallColumn(this.networkLogView.calculator());

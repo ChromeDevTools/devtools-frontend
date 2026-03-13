@@ -8,7 +8,7 @@ import * as UI from '../../../../ui/legacy/legacy.js';
 import * as Lit from '../../../../ui/lit/lit.js';
 import * as PanelsCommon from '../../../common/common.js';
 const { html } = Lit;
-const { widgetConfig } = UI.Widget;
+const { widget } = UI.Widget;
 export const DEFAULT_VIEW = (input, output, target) => {
     const { relatedNodeEl, fallbackUrl, fallbackHtmlSnippet, fallbackText, } = input;
     let template;
@@ -110,8 +110,6 @@ export class NodeLink extends UI.Widget.Widget {
     }
 }
 export function nodeLink(data) {
-    return html `<devtools-widget .widgetConfig=${widgetConfig(NodeLink, {
-        data,
-    })}></devtools-widget>`;
+    return html `${widget(NodeLink, { data })}`;
 }
 //# sourceMappingURL=NodeLink.js.map

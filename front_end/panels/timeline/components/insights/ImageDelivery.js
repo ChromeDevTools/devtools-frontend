@@ -10,7 +10,7 @@ import { imageRef } from './ImageRef.js';
 import { createLimitedRows, renderOthersLabel, Table } from './Table.js';
 const { UIStrings, i18nString, createOverlayForRequest } = Trace.Insights.Models.ImageDelivery;
 const { html } = Lit;
-const { widgetConfig } = UI.Widget;
+const { widget } = UI.Widget;
 export class ImageDelivery extends BaseInsightComponent {
     internalName = 'image-delivery';
     mapToRow(image) {
@@ -41,14 +41,13 @@ export class ImageDelivery extends BaseInsightComponent {
         // clang-format off
         return html `
       <div class="insight-section">
-        <devtools-widget .widgetConfig=${widgetConfig(Table, {
+        ${widget(Table, {
             data: {
                 insight: this,
                 headers: [i18nString(UIStrings.optimizeFile)],
                 rows,
             }
-        })}>
-        </devtools-widget>
+        })}
       </div>
     `;
         // clang-format on

@@ -98,7 +98,7 @@ describe('The Memory Panel', function() {
         [
           'Detached V8EventListener', 'Detached EventListener', 'Detached InternalNode', 'Detached InternalNode',
           'Detached InternalNode', 'Detached <div>', 'Retainer',
-          `Window (global*) / localhost:${inspectedPage.serverPort}`,
+          `Window [JSGlobalObject] / localhost:${inspectedPage.serverPort}`,
           `system / NativeContext / https://localhost:${inspectedPage.serverPort}`
         ],
         devToolsPage);
@@ -199,7 +199,7 @@ describe('The Memory Panel', function() {
     await waitUntilRetainerChainSatisfies(
         retainerChain => retainerChain.some(
             ({propertyName, retainerClassName}) =>
-                propertyName === 'aUniqueName' && retainerClassName === `Window (global*) / ://`),
+                propertyName === 'aUniqueName' && retainerClassName === `Window [JSGlobalObject] / ://`),
         devToolsPage);
   });
 
@@ -471,21 +471,21 @@ describe('The Memory Panel', function() {
     await findSearchResult('"searchable_string"', '1 of 2', devToolsPage);
     await waitForRetainerChain(
         [
-          '{y}', 'KeyType', `Window (global*) / localhost:${inspectedPage.serverPort}`,
+          '{y}', 'KeyType', `Window [JSGlobalObject] / localhost:${inspectedPage.serverPort}`,
           `system / NativeContext / https://localhost:${inspectedPage.serverPort}`
         ],
         devToolsPage);
     await clickOnContextMenuForRetainer('KeyType', 'Ignore this retainer', devToolsPage);
     await waitForRetainerChain(
         [
-          '{y}', '{x}', `Window (global*) / localhost:${inspectedPage.serverPort}`,
+          '{y}', '{x}', `Window [JSGlobalObject] / localhost:${inspectedPage.serverPort}`,
           `system / NativeContext / https://localhost:${inspectedPage.serverPort}`
         ],
         devToolsPage);
     await clickOnContextMenuForRetainer('x', 'Ignore this retainer', devToolsPage);
     await waitForRetainerChain(
         [
-          '{y}', '(internal array)[]', 'WeakMap', `Window (global*) / localhost:${inspectedPage.serverPort}`,
+          '{y}', '(internal array)[]', 'WeakMap', `Window [JSGlobalObject] / localhost:${inspectedPage.serverPort}`,
           `system / NativeContext / https://localhost:${inspectedPage.serverPort}`
         ],
         devToolsPage);
@@ -497,7 +497,7 @@ describe('The Memory Panel', function() {
           `{${'#'.repeat(130)}, …}`,
           '{b, irrelevantProperty, <symbol also irrelevant>, "}"}',
           '{a, extraProp0, extraProp1, extraProp2, extraProp3, …, extraProp6, extraProp7, extraProp8, extraProp9}',
-          `Window (global*) / localhost:${inspectedPage.serverPort}`,
+          `Window [JSGlobalObject] / localhost:${inspectedPage.serverPort}`,
           `system / NativeContext / https://localhost:${inspectedPage.serverPort}`,
         ],
         devToolsPage);
@@ -506,7 +506,7 @@ describe('The Memory Panel', function() {
     await restoreIgnoredRetainers(devToolsPage);
     await waitForRetainerChain(
         [
-          '{y}', 'KeyType', `Window (global*) / localhost:${inspectedPage.serverPort}`,
+          '{y}', 'KeyType', `Window [JSGlobalObject] / localhost:${inspectedPage.serverPort}`,
           `system / NativeContext / https://localhost:${inspectedPage.serverPort}`
         ],
         devToolsPage);

@@ -7617,6 +7617,7 @@
       affected_by_all: false,
       // Overlaps with transform-origin.
       legacy_overlapping: true,
+      percentages_depend_on_used_value: true,
     },
     {
       name: "-webkit-transform-origin-y",
@@ -7628,6 +7629,7 @@
       affected_by_all: false,
       // Overlaps with transform-origin.
       legacy_overlapping: true,
+      percentages_depend_on_used_value: true,
     },
     {
       name: "-webkit-transform-origin-z",
@@ -7639,6 +7641,7 @@
       affected_by_all: false,
       // Overlaps with transform-origin.
       legacy_overlapping: true,
+      percentages_depend_on_used_value: true,
     },
     {
       name: "-webkit-user-drag",
@@ -7777,8 +7780,15 @@
       name: "will-change",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
       style_builder_custom_functions: ["initial", "inherit", "value"],
+      type_name: "StyleWillChangeData",
+      field_template: "pointer",
+      field_group: "misc",
+      wrapper_pointer_name: "Member",
+      default_value: "nullptr",
+      include_paths: ["third_party/blink/renderer/core/style/style_will_change_data.h"],
       keywords: ["auto"],
       typedom_types: ["Keyword"],
+      invalidate: ["compositing"],
       valid_for_permission_element: true,
       is_animation_affecting: true,
     },

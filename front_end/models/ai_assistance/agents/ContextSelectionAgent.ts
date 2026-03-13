@@ -63,7 +63,7 @@ You aim to help developers of all levels, prioritizing teaching web concepts as 
  */
 export class ContextSelectionAgent extends AiAgent<never> {
   readonly preamble = preamble;
-  readonly clientFeature = Host.AidaClient.ClientFeature.CHROME_FILE_AGENT;
+  readonly clientFeature = Host.AidaClient.ClientFeature.CHROME_CONTEXT_SELECTION_AGENT;
   get userTier(): string|undefined {
     // TODO: Make this depend on variable.
     return Root.Runtime.hostConfig.devToolsFreestyler?.userTier;

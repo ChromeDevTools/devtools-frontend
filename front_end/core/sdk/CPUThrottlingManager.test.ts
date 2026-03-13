@@ -2,25 +2,20 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Protocol from '../../generated/protocol.js';
-import {createTarget} from '../../testing/EnvironmentHelpers.js';
-import {describeWithMockConnection, setMockConnectionResponseHandler} from '../../testing/MockConnection.js';
+import * as Protocol from '../../generated/protocol.js';
+import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
 
 import * as SDK from './sdk.js';
 
-describeWithMockConnection('CPUThrottlingManager', () => {
-  let target: SDK.Target.Target;
-
-  beforeEach(() => {
-    // We need one target since CPUThrottlingManager gets it from TargetManager.
-    target = createTarget();
-  });
-
+describeWithEnvironment('CPUThrottlingManager', () => {
   it('can get the current hardwareConcurrency.', async () => {
-    setMockConnectionResponseHandler('Runtime.evaluate', ({expression}) => {
+    const connection = new MockCDPConnection();
+    connection.setHandler('Runtime.evaluate', ({expression}) => {
       assert.strictEqual(expression, 'navigator.hardwareConcurrency');
-      return ({getError: () => undefined, result: {value: 42}} as Protocol.Runtime.EvaluateResponse);
+      return {result: {result: {value: 42, type: Protocol.Runtime.RemoteObjectType.Number}}};
     });
+    createTarget({connection});
 
     const manager = SDK.CPUThrottlingManager.CPUThrottlingManager.instance({forceNew: true});
     const concurrency = await manager.getHardwareConcurrency();
@@ -28,7 +23,7 @@ describeWithMockConnection('CPUThrottlingManager', () => {
   });
 
   it('can set the current hardwareConcurrency', async () => {
-    const cdpStub = sinon.stub(target.emulationAgent(), 'invoke_setHardwareConcurrencyOverride').resolves();
+    const cdpStub = sinon.stub(createTarget().emulationAgent(), 'invoke_setHardwareConcurrencyOverride').resolves();
 
     const manager = SDK.CPUThrottlingManager.CPUThrottlingManager.instance({forceNew: true});
     manager.setHardwareConcurrency(5);
@@ -38,7 +33,7 @@ describeWithMockConnection('CPUThrottlingManager', () => {
   });
 
   it('does not set concurrency to 0 or negative numbers', async () => {
-    const cdpStub = sinon.stub(target.emulationAgent(), 'invoke_setHardwareConcurrencyOverride').resolves();
+    const cdpStub = sinon.stub(createTarget().emulationAgent(), 'invoke_setHardwareConcurrencyOverride').resolves();
 
     const manager = SDK.CPUThrottlingManager.CPUThrottlingManager.instance({forceNew: true});
     manager.setHardwareConcurrency(0);

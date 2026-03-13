@@ -14,6 +14,7 @@ export const enum ConversationType {
   NETWORK = 'drjones-network-request',
   PERFORMANCE = 'drjones-performance-full',
   BREAKPOINT = 'breakpoint',
+  ACCESSIBILITY = 'accessibility',
 }
 
 export interface SerializedConversation {

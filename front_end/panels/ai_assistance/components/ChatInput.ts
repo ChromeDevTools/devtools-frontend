@@ -347,6 +347,8 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: ViewOutput, target: HTML
                             PanelUtils.PanelUtils.getIconForNetworkRequest(input.context.getItem()) :
                             input.context instanceof AiAssistanceModel.FileAgent.FileContext ?
                             PanelUtils.PanelUtils.getIconForSourceFile(input.context.getItem()) :
+                            input.context instanceof AiAssistanceModel.AccessibilityAgent.AccessibilityContext ?
+                            html`<devtools-icon class="icon" name="performance" title="Lighthouse"></devtools-icon>` :
                             input.context instanceof AiAssistanceModel.PerformanceAgent.PerformanceTraceContext ?
                             html`<devtools-icon class="icon" name="performance" title="Performance"></devtools-icon>` :
                             Lit.nothing}

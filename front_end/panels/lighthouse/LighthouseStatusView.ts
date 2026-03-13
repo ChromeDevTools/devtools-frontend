@@ -9,7 +9,7 @@ import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
 
-import {RuntimeSettings} from './LighthouseController.js';
+import {getRuntimeSettings} from './LighthouseController.js';
 import lighthouseDialogStyles from './lighthouseDialog.css.js';
 import type {LighthousePanel} from './LighthousePanel.js';
 
@@ -378,8 +378,8 @@ export class StatusView {
       return phase.message();
     }
 
-    const deviceTypeSetting = RuntimeSettings.find(item => item.setting.name === 'lighthouse.device-type');
-    const throttleSetting = RuntimeSettings.find(item => item.setting.name === 'lighthouse.throttling');
+    const deviceTypeSetting = getRuntimeSettings().find(item => item.setting.name === 'lighthouse.device-type');
+    const throttleSetting = getRuntimeSettings().find(item => item.setting.name === 'lighthouse.throttling');
     const deviceType = deviceTypeSetting ? deviceTypeSetting.setting.get() : '';
     const throttling = throttleSetting ? throttleSetting.setting.get() : '';
     const match = LoadingMessages.find(item => {

@@ -267,6 +267,7 @@ export const knownContextValues = new Set([
   'accept',
   'accept-execute-code',
   'access-control-allow-origin',
+  'accessibility-default',
   'accessibility-tree',
   'accessibility.view',
   'accuracy',

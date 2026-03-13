@@ -62,6 +62,7 @@ devtools_ui_module("ai_assistance") {
     "../../panels/changes:bundle",
     "../../panels/common:bundle",
     "../../panels/elements:bundle",
+    "../../panels/lighthouse:bundle",
     "../../panels/network:bundle",
     "../../panels/network/forward:bundle",
     "../../panels/timeline:bundle",

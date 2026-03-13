@@ -3,12 +3,14 @@
 // found in the LICENSE file.
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Trace from '../../models/trace/trace.js';
 import * as Greendev from '../greendev/greendev.js';
 import type * as NetworkTimeCalculator from '../network_time_calculator/network_time_calculator.js';
 
+import {AccessibilityAgent, AccessibilityContext} from './agents/AccessibilityAgent.js';
 import {
   type AiAgent,
   type ContextDetail,
@@ -155,6 +157,8 @@ export class AiConversation {
         this.#updateAgent(ConversationType.NETWORK);
       } else if (updateContext instanceof PerformanceTraceContext) {
         this.#updateAgent(ConversationType.PERFORMANCE);
+      } else if (updateContext instanceof AccessibilityContext) {
+        this.#updateAgent(ConversationType.ACCESSIBILITY);
       }
     }
   }
@@ -343,10 +347,16 @@ export class AiConversation {
         }
         break;
       }
+      case ConversationType.ACCESSIBILITY: {
+        this.#agent = new AccessibilityAgent(options);
+        break;
+      }
       case ConversationType.NONE: {
         this.#agent = new ContextSelectionAgent(options);
         break;
       }
+      default:
+        Platform.assertNever(type, 'Unknown conversation type');
     }
   }
 

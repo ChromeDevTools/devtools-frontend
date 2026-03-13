@@ -30,8 +30,8 @@ describeWithMockConnection('AccessibilityAgent', () => {
       }]]),
     });
 
-    const responses =
-        await Array.fromAsync(agent.run('test', {selected: new AiAssistance.AccessibilityAgent.Context(mockReport)}));
+    const responses = await Array.fromAsync(
+        agent.run('test', {selected: new AiAssistance.AccessibilityAgent.AccessibilityContext(mockReport)}));
     assert.deepEqual(responses, [
       {
         type: AiAssistance.AiAgent.ResponseType.CONTEXT,

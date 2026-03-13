@@ -569,6 +569,39 @@ describeWithEnvironment('Widget', () => {
   });
 
   describe('WidgetDirective', () => {
+    let attachedCount = 0;
+    let detachedCount = 0;
+    let fooSetterCount = 0;
+    let barSetterCount = 0;
+
+    class TestWidget extends UI.Widget.Widget {
+      params?: {foo: string};
+
+      override wasShown(): void {
+        super.wasShown();
+        attachedCount++;
+      }
+
+      override wasHidden(): void {
+        detachedCount++;
+      }
+
+      set foo(_value: string) {
+        fooSetterCount++;
+      }
+
+      set bar(_value: string) {
+        barSetterCount++;
+      }
+    }
+
+    beforeEach(() => {
+      attachedCount = 0;
+      detachedCount = 0;
+      fooSetterCount = 0;
+      barSetterCount = 0;
+    });
+
     it('creates a new Widget when the widget class changes in a ternary operator', () => {
       class WidgetA extends UI.Widget.Widget {}
       class WidgetB extends UI.Widget.Widget {}
@@ -589,6 +622,88 @@ describeWithEnvironment('Widget', () => {
       const widget2 = widgetElement2.getWidget();
       assert.instanceOf(widget2, WidgetB);
       assert.notStrictEqual(widgetElement1, widgetElement2);
+    });
+
+    it('instantiates widget on a child directive', async () => {
+      const container = document.createElement('div');
+      renderElementIntoDOM(container);
+
+      Lit.render(html`${UI.Widget.widget(TestWidget)}`, container);
+      await new Promise(resolve => setTimeout(resolve, 0));
+
+      assert.strictEqual(attachedCount, 1);
+      const widget = UI.Widget.Widget.get(container.firstElementChild!);
+      assert.instanceOf(widget, TestWidget);
+    });
+
+    it('instantiates widget on an element directive', async () => {
+      const container = document.createElement('div');
+      renderElementIntoDOM(container);
+
+      Lit.render(html`<devtools-widget ${UI.Widget.widget(TestWidget)}></devtools-widget>`, container);
+      await new Promise(resolve => setTimeout(resolve, 0));
+
+      assert.strictEqual(attachedCount, 1);
+      const devtoolsWidget = container.querySelector('devtools-widget');
+      assert.exists(devtoolsWidget);
+      const widget = UI.Widget.Widget.get(devtoolsWidget!);
+      assert.instanceOf(widget, TestWidget);
+    });
+
+    it('passes and updates widget parameters', async () => {
+      const container = document.createElement('div');
+      renderElementIntoDOM(container);
+
+      Lit.render(
+          html`<devtools-widget ${UI.Widget.widget(TestWidget, {params: {foo: 'bar'}})}></devtools-widget>`, container);
+      await new Promise(resolve => setTimeout(resolve, 0));
+
+      const devtoolsWidget = container.querySelector('devtools-widget');
+      assert.exists(devtoolsWidget);
+      const widget = UI.Widget.Widget.get(devtoolsWidget!) as TestWidget;
+      assert.deepEqual(widget.params, {foo: 'bar'});
+
+      Lit.render(
+          html`<devtools-widget ${UI.Widget.widget(TestWidget, {params: {foo: 'baz'}})}></devtools-widget>`, container);
+      await new Promise(resolve => setTimeout(resolve, 0));
+
+      const devtoolsWidget2 = container.querySelector('devtools-widget');
+      const widget2 = UI.Widget.Widget.get(devtoolsWidget2!) as TestWidget;
+      assert.deepEqual(widget2.params, {foo: 'baz'});
+    });
+
+    it('detaches the widget when the Lit template re-renders and removes it', async () => {
+      const container = document.createElement('div');
+      renderElementIntoDOM(container);
+
+      Lit.render(html`<devtools-widget ${UI.Widget.widget(TestWidget)}></devtools-widget>`, container);
+      await new Promise(resolve => setTimeout(resolve, 0));
+      assert.strictEqual(attachedCount, 1);
+      assert.strictEqual(detachedCount, 0);
+
+      Lit.render(html`<div></div>`, container);
+      await new Promise(resolve => setTimeout(resolve, 0));
+      assert.strictEqual(detachedCount, 1);
+    });
+
+    it('only calls setters for changed widget parameters', async () => {
+      const container = document.createElement('div');
+      renderElementIntoDOM(container);
+
+      const renderWidget = (foo: string, bar: string) => {
+        Lit.render(html`<devtools-widget ${UI.Widget.widget(TestWidget, {foo, bar})}></devtools-widget>`, container);
+      };
+
+      renderWidget('1', '1');
+      await new Promise(resolve => setTimeout(resolve, 0));
+
+      assert.strictEqual(fooSetterCount, 1, 'fooSetterCount 1st');
+      assert.strictEqual(barSetterCount, 1, 'barSetterCount 1st');
+
+      renderWidget('2', '1');
+      await new Promise(resolve => setTimeout(resolve, 0));
+
+      assert.strictEqual(fooSetterCount, 2, 'fooSetterCount 2nd');
     });
   });
 

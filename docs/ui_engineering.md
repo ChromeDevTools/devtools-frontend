@@ -44,7 +44,7 @@ To embed another presenter (`UI.Widget`) in the lit-html template, use `widget(<
 
 This will instantiate a `Widget` class with the web component as its `element` and, optionally, will set the properties provided in the second parameter. The widget won’t be re-instantiated on the subsequent template renders, but the properties would be updated. For this to work, the widget needs to accept `HTMLElement` as a sole constructor parameter and properties need to be public members or setters.
 
-For backwards compatibility, the first argument to `widgetConfig` can also be a factory function: `widget(element => new MyWidget(foo, bar, element))`. Similar to the class constructor version, `element` is the actual `<devtools-widget>` so the following two invocations of `widgetConfig` are equivalent: `widget(MyWidget)` and `widget(element => new MyWidget(element))`.
+For backwards compatibility, the first argument to `widget` can also be a factory function: `widget(element => new MyWidget(foo, bar, element))`. Similar to the class constructor version, `element` is the actual `<devtools-widget>` so the following two invocations of `widget` are equivalent: `widget(MyWidget)` and `widget(element => new MyWidget(element))`.
 
 ## Styling
 To prevent style conflicts in widgets without relying on shadow DOM, we use the CSS [`@scope`](https://developer.mozilla.org/en-US/docs/Web/CSS/@scope) at-rule for style encapsulation. This ensures that styles defined for a widget do not leak out and affect other components.
@@ -93,9 +93,9 @@ In this example, the `.title` style will apply within the parent widget but will
 ## Examples
 
 ```html
-<devtools-widget .widgetConfig=${widgetConfig(ElementsPanel)}>
+<devtools-widget ${widget(ElementsPanel)}>
   <devtools-split-view>
-    <devtools-widget slot="main" .widgetConfig=${widgetConfig(ElementsTree)}></devtools-widget>
+    <devtools-widget slot="main" ${widget(ElementsTree)}></devtools-widget>
     <devtools-tab-pane slot="sidebar">
       ${widget(StylesPane, {element: input.element})}
       ${widget(ComputedPane, {element: input.element})}
@@ -1169,12 +1169,12 @@ export const DEFAULT_VIEW = (input, _output, target) => {
     <div>
       <devtools-split-view direction=${this.vertical ? 'column' : 'row'} sidebar-position="first"
           sidebar-initial-size="200">
-        <devtools-widget slot="sidebar" .widgetConfig=${widgetConfig(SidebarPanel,
+        <devtools-widget slot="sidebar" ${widget(SidebarPanel,
             {minimumSize: {width: 100, height: 25}})}></devtools-widget>
         <devtools-split-view direction="column" sidebar-position="second" slot="main"
             direction="row" sidebar-position="$this.dockedLeft ? 'second' : 'first'}">
-          <devtools-widget slot="main" .widgetConfig=${widgetConfig(UI.Widget.EmptyWidget)}></devtools-widget>
-          <devtools-widget slot="sidebar" .widgetConfig=${widgetConfig(DetailsView)}></devtools-widget>
+          <devtools-widget slot="main" ${widget(UI.Widget.EmptyWidget)}></devtools-widget>
+          <devtools-widget slot="sidebar" ${widget(DetailsView)}></devtools-widget>
         </devtools-split-view>
       </devtools-split-view>
     </div>`,

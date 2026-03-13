@@ -266,16 +266,34 @@ export class WidgetElement<WidgetT extends Widget> extends HTMLElement {
 customElements.define('devtools-widget', WidgetElement);
 
 export class WidgetDirective extends Lit.Directive.Directive {
+  #partType: Lit.Directive.PartType;
+
   constructor(partInfo: Lit.Directive.PartInfo) {
     super(partInfo);
-    if (partInfo.type !== Lit.Directive.PartType.CHILD) {
-      throw new Error('Widget directive must be used as a child directive.');
+    this.#partType = partInfo.type;
+    if (this.#partType !== Lit.Directive.PartType.CHILD && this.#partType !== Lit.Directive.PartType.ELEMENT) {
+      throw new Error('Widget directive must be used as a child or element directive.');
     }
+  }
+
+  override update(part: Lit.Directive.Part, [widgetClass, widgetParams]: Parameters<this['render']>): unknown {
+    if (this.#partType === Lit.Directive.PartType.ELEMENT) {
+      const element = (part as Lit.Directive.ElementPart).element;
+      if (!(element instanceof WidgetElement)) {
+        throw new Error('Widget directive must be used on a devtools-widget element.');
+      }
+      element.widgetConfig = widgetConfig(widgetClass, widgetParams);
+      return Lit.nothing;
+    }
+    return this.render(widgetClass, widgetParams);
   }
 
   render<F extends WidgetFactory<Widget>, ParamKeys extends keyof InferWidgetTFromFactory<F>>(
       widgetClass: F,
       widgetParams?: Pick<InferWidgetTFromFactory<F>, ParamKeys>&Partial<InferWidgetTFromFactory<F>>): unknown {
+    if (this.#partType === Lit.Directive.PartType.ELEMENT) {
+      return Lit.nothing;
+    }
     // We use `repeat` to force Lit to recreate the `<devtools-widget>` DOM node when the `widgetClass` changes.
     // If we didn't use `repeat` and used `html` directly, Lit would reuse the same `<devtools-widget>` instance
     // even if `widgetClass` changed (for example, in a ternary operator `condition ? widget(A) : widget(B)`).
@@ -284,7 +302,7 @@ export class WidgetDirective extends Lit.Directive.Directive {
     return Lit.Directives.repeat(
         [widgetClass], () => widgetClass,
         () => html`<devtools-widget .widgetConfig=${
-            widgetConfig(widgetClass, widgetParams as never)}></devtools-widget>`);
+            widgetConfig<F, ParamKeys>(widgetClass, widgetParams)}></devtools-widget>`);
   }
 }
 

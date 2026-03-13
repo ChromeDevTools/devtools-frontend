@@ -62,7 +62,7 @@ import { BidiElementHandle } from './ElementHandle.js';
 import { ExposableFunction } from './ExposedFunction.js';
 import { BidiJSHandle } from './JSHandle.js';
 import { BidiSerializer } from './Serializer.js';
-import { createEvaluationError } from './util.js';
+import { createEvaluationError, rewriteEvaluationError } from './util.js';
 /**
  * @internal
  */
@@ -149,7 +149,7 @@ export class BidiRealm extends Realm {
                 serializationOptions,
             });
         }
-        const result = await responsePromise;
+        const result = await responsePromise.catch(rewriteEvaluationError);
         if ('type' in result && result.type === 'exception') {
             throw createEvaluationError(result.exceptionDetails);
         }

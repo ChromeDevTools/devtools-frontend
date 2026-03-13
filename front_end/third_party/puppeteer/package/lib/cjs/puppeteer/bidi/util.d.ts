@@ -12,4 +12,8 @@ export declare function createEvaluationError(details: Bidi.Script.ExceptionDeta
  * @internal
  */
 export declare function rewriteNavigationError(message: string, ms: number): (error: unknown) => never;
+/**
+ * @internal
+ */
+export declare function rewriteEvaluationError(error: unknown): never;
 //# sourceMappingURL=util.d.ts.map

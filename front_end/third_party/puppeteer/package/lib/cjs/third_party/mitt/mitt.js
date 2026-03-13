@@ -44,7 +44,7 @@ var __copyProps = (to, from, except, desc) => {
 };
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
-// ../../node_modules/mitt/dist/mitt.mjs
+// node_modules/mitt/dist/mitt.mjs
 var mitt_exports = {};
 __export(mitt_exports, {
   default: () => mitt_default
@@ -66,7 +66,7 @@ function mitt_default(n) {
   } };
 }
 var init_mitt = __esm({
-  "../../node_modules/mitt/dist/mitt.mjs"() {
+  "node_modules/mitt/dist/mitt.mjs"() {
   }
 });
 

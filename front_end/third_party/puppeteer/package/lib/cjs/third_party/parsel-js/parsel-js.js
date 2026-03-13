@@ -50,7 +50,7 @@ __export(parsel_js_exports, {
 });
 module.exports = __toCommonJS(parsel_js_exports);
 
-// ../../node_modules/parsel-js/dist/parsel.js
+// node_modules/parsel-js/dist/parsel.js
 var TOKENS = {
   attribute: /\[\s*(?:(?<namespace>\*|[-\w\P{ASCII}]*)\|)?(?<name>[-\w\P{ASCII}]+)\s*(?:(?<operator>\W?=)\s*(?<value>.+?)\s*(\s(?<caseSensitive>[iIsS]))?\s*)?\]/gu,
   id: /#(?<name>[-\w\P{ASCII}]+)/gu,

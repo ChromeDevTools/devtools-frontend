@@ -152,7 +152,7 @@ class BidiRealm extends Realm_js_1.Realm {
                 serializationOptions,
             });
         }
-        const result = await responsePromise;
+        const result = await responsePromise.catch(util_js_2.rewriteEvaluationError);
         if ('type' in result && result.type === 'exception') {
             throw (0, util_js_2.createEvaluationError)(result.exceptionDetails);
         }

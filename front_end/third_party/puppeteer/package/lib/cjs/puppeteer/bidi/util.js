@@ -7,6 +7,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createEvaluationError = createEvaluationError;
 exports.rewriteNavigationError = rewriteNavigationError;
+exports.rewriteEvaluationError = rewriteEvaluationError;
 const Errors_js_1 = require("../common/Errors.js");
 const util_js_1 = require("../common/util.js");
 const Deserializer_js_1 = require("./Deserializer.js");
@@ -61,5 +62,17 @@ function rewriteNavigationError(message, ms) {
         }
         throw error;
     };
+}
+/**
+ * @internal
+ */
+function rewriteEvaluationError(error) {
+    if (error instanceof Error) {
+        if (error.message.includes('ExecutionContext was destroyed') ||
+            error.message.includes('Inspected target navigated or closed')) {
+            throw new Error('Execution context was destroyed, most likely because of a navigation.');
+        }
+    }
+    throw error;
 }
 //# sourceMappingURL=util.js.map

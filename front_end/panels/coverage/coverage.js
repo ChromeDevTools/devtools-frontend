@@ -1601,7 +1601,7 @@ var i18nString2 = i18n3.i18n.getLocalizedString.bind(void 0, str_2);
 var i18nTemplate = unboundI18nTemplate.bind(void 0, str_2);
 var { ref } = Directives2;
 var { bindToAction, bindToSetting } = UI2.UIUtils;
-var { widgetConfig } = UI2.Widget;
+var { widget } = UI2.Widget;
 var coverageViewInstance;
 var DEFAULT_VIEW2 = (input, output, target) => {
   render2(html2`
@@ -1663,7 +1663,7 @@ var DEFAULT_VIEW2 = (input, output, target) => {
       </div>
       <div class="coverage-results">
         ${input.needsReload ? renderReloadPromptPage(input.needsReload === "bfcache-page" ? i18nString2(UIStrings2.bfcacheNoCapture) : i18nString2(UIStrings2.activationNoCapture), input.needsReload) : input.coverageInfo ? html2`
-          <devtools-widget autofocus class="results" .widgetConfig=${widgetConfig(CoverageListView, {
+          <devtools-widget autofocus class="results" ${widget(CoverageListView, {
     coverageInfo: input.coverageInfo,
     highlightRegExp: input.textFilter,
     selectedUrl: input.selectedUrl
@@ -1685,7 +1685,7 @@ var DEFAULT_VIEW2 = (input, output, target) => {
 function renderLandingPage(supportsRecordOnReload) {
   if (supportsRecordOnReload) {
     return html2`
-      <devtools-widget .widgetConfig=${widgetConfig(UI2.EmptyWidget.EmptyWidget, {
+      <devtools-widget ${widget(UI2.EmptyWidget.EmptyWidget, {
       header: i18nString2(UIStrings2.noCoverageData),
       link: "https://developer.chrome.com/docs/devtools/coverage",
       text: i18nString2(UIStrings2.clickTheReloadButtonSToReloadAnd, { PH1: i18nString2(UIStrings2.reloadPage) })
@@ -1697,7 +1697,7 @@ function renderLandingPage(supportsRecordOnReload) {
       </devtools-widget>`;
   }
   return html2`
-    <devtools-widget .widgetConfig=${widgetConfig(UI2.EmptyWidget.EmptyWidget, {
+    <devtools-widget ${widget(UI2.EmptyWidget.EmptyWidget, {
     header: i18nString2(UIStrings2.noCoverageData),
     link: "https://developer.chrome.com/docs/devtools/coverage",
     text: i18nString2(UIStrings2.clickTheRecordButtonSToStart, { PH1: i18nString2(UIStrings2.startRecording) })
@@ -2042,7 +2042,7 @@ var ActionDelegate = class {
     ).then(() => {
       const view = UI2.ViewManager.ViewManager.instance().view(coverageViewId);
       return view?.widget();
-    }).then((widget) => this.#handleAction(widget, actionId));
+    }).then((widget2) => this.#handleAction(widget2, actionId));
     return true;
   }
   #handleAction(coverageView, actionId) {

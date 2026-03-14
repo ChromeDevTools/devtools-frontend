@@ -282,6 +282,7 @@ var UIStrings2 = {
 };
 var str_2 = i18n3.i18n.registerUIStrings("panels/issues/AffectedSelectivePermissionsInterventionView.ts", UIStrings2);
 var i18nString2 = i18n3.i18n.getLocalizedString.bind(void 0, str_2);
+var { widget } = UI2.Widget;
 var AffectedSelectivePermissionsInterventionView = class extends AffectedResourcesView {
   #linkifier = new Components2.Linkifier.Linkifier();
   getResourceNameWithCount(count) {
@@ -323,13 +324,10 @@ var AffectedSelectivePermissionsInterventionView = class extends AffectedResourc
   async #resolveStackTrace(stackTrace, issuesModel) {
     const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
     const stackTraceTranslated = await debuggerWorkspaceBinding.createStackTraceFromProtocolRuntime(stackTrace, issuesModel.target());
-    return html`
-      <devtools-widget .widgetConfig=${UI2.Widget.widgetConfig(Components2.JSPresentationUtils.StackTracePreviewContent, {
+    return html`${widget(Components2.JSPresentationUtils.StackTracePreviewContent, {
       stackTrace: stackTraceTranslated,
       options: { expandable: true }
-    })}>
-      </devtools-widget>
-    `;
+    })}`;
   }
   update() {
     this.requestResolver.clear();

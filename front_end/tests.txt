@@ -155,6 +155,7 @@ models/ai_assistance/ExtensionScope.test.js
 models/ai_assistance/agents/AccessibilityAgent.test.js
 models/ai_assistance/agents/AiAgent.test.js
 models/ai_assistance/agents/ContextSelectionAgent.test.js
+models/ai_assistance/agents/ConversationSummaryAgent.test.js
 models/ai_assistance/agents/FileAgent.test.js
 models/ai_assistance/agents/NetworkAgent.test.js
 models/ai_assistance/agents/PatchAgent.test.js

@@ -18,6 +18,7 @@ import * as Sources from '../sources/sources.js';
 import * as NetworkComponents from './components/components.js';
 import { ShowMoreDetailsWidget } from './ShowMoreDetailsWidget.js';
 const { render, html } = Lit;
+const { widget } = UI.Widget;
 const UIStrings = {
     /**
      * @description Text in Request Headers View of the Network panel
@@ -191,7 +192,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
         contents: (input.showRequestHeadersText && requestHeadersText) ?
             renderRawHeaders(requestHeadersText) :
             html `
-          <devtools-widget .widgetConfig=${UI.Widget.widgetConfig(NetworkComponents.RequestHeaderSection.RequestHeaderSection, {
+          <devtools-widget ${widget(NetworkComponents.RequestHeaderSection.RequestHeaderSection, {
                 request: input.request,
                 toReveal: input.toReveal,
             })} jslog=${VisualLogging.section('request-headers')}></devtools-widget>`
@@ -343,7 +344,8 @@ function renderHeaderOverridesLink(input) {
     // clang-format on
 }
 function renderRawHeaders(text) {
-    return html `<div class="row raw-headers-row"><devtools-widget  class=raw-headers .widgetConfig=${UI.Widget.widgetConfig(ShowMoreDetailsWidget, { text })}></devtools-widget></div>`;
+    return html `<div class="row raw-headers-row"><devtools-widget  class=raw-headers
+      ${widget(ShowMoreDetailsWidget, { text })}></devtools-widget></div>`;
 }
 function renderGeneralRow(input, name, value, id, classNames) {
     const isHighlighted = input.toReveal?.section === "General" /* NetworkForward.UIRequestLocation.UIHeaderSection.GENERAL */ &&

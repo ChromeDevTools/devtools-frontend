@@ -113,7 +113,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const i18nTemplate = unboundI18nTemplate.bind(undefined, str_);
 const { ref } = Directives;
 const { bindToAction, bindToSetting } = UI.UIUtils;
-const { widgetConfig } = UI.Widget;
+const { widget } = UI.Widget;
 let coverageViewInstance;
 export const DEFAULT_VIEW = (input, output, target) => {
     // clang-format off
@@ -180,7 +180,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
         renderReloadPromptPage(input.needsReload === 'bfcache-page' ?
             i18nString(UIStrings.bfcacheNoCapture) : i18nString(UIStrings.activationNoCapture), input.needsReload)
         : input.coverageInfo ? html `
-          <devtools-widget autofocus class="results" .widgetConfig=${widgetConfig(CoverageListView, {
+          <devtools-widget autofocus class="results" ${widget(CoverageListView, {
             coverageInfo: input.coverageInfo,
             highlightRegExp: input.textFilter,
             selectedUrl: input.selectedUrl,
@@ -201,7 +201,7 @@ function renderLandingPage(supportsRecordOnReload) {
     if (supportsRecordOnReload) {
         // clang-format off
         return html `
-      <devtools-widget .widgetConfig=${widgetConfig(UI.EmptyWidget.EmptyWidget, {
+      <devtools-widget ${widget(UI.EmptyWidget.EmptyWidget, {
             header: i18nString(UIStrings.noCoverageData),
             link: 'https://developer.chrome.com/docs/devtools/coverage',
             text: i18nString(UIStrings.clickTheReloadButtonSToReloadAnd, { PH1: i18nString(UIStrings.reloadPage) }),
@@ -215,7 +215,7 @@ function renderLandingPage(supportsRecordOnReload) {
     }
     // clang-format off
     return html `
-    <devtools-widget .widgetConfig=${widgetConfig(UI.EmptyWidget.EmptyWidget, {
+    <devtools-widget ${widget(UI.EmptyWidget.EmptyWidget, {
         header: i18nString(UIStrings.noCoverageData),
         link: 'https://developer.chrome.com/docs/devtools/coverage',
         text: i18nString(UIStrings.clickTheRecordButtonSToStart, { PH1: i18nString(UIStrings.startRecording) }),

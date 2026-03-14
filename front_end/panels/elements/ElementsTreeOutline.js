@@ -89,6 +89,12 @@ export const DEFAULT_VIEW = (input, output, target) => {
         output.elementsTreeOutline.addEventListener(UI.TreeOutline.Events.ElementCollapsed, input.onElementCollapsed, this);
         target.appendChild(output.elementsTreeOutline.element);
     }
+    output.elementsTreeOutline.maxTreeDepth = input.maxTreeDepth;
+    output.elementsTreeOutline.enableContextMenu = input.enableContextMenu ?? true;
+    output.elementsTreeOutline.showComments = input.showComments ?? true;
+    output.elementsTreeOutline.showAIButton = input.showAIButton ?? true;
+    output.elementsTreeOutline.disableEdits = input.disableEdits ?? false;
+    output.elementsTreeOutline.expandRoot = input.expandRoot ?? false;
     if (input.visibleWidth !== undefined) {
         output.elementsTreeOutline.setVisibleWidth(input.visibleWidth);
     }
@@ -165,6 +171,7 @@ export class DOMTreeWidget extends UI.Widget.Widget {
     #showComments = true;
     #showAIButton = true;
     #disableEdits = false;
+    #expandRoot = false;
     #visible = false;
     #visibleWidth;
     #wrap = false;
@@ -220,6 +227,13 @@ export class DOMTreeWidget extends UI.Widget.Widget {
         this.#disableEdits = disableEdits;
         this.performUpdate();
     }
+    get expandRoot() {
+        return this.#expandRoot;
+    }
+    set expandRoot(expandRoot) {
+        this.#expandRoot = expandRoot;
+        this.performUpdate();
+    }
     #currentHighlightedNode = null;
     #view;
     #viewOutput = {
@@ -266,9 +280,15 @@ export class DOMTreeWidget extends UI.Widget.Widget {
     highlightNodeAttribute(node, attribute) {
         this.#viewOutput?.elementsTreeOutline?.highlightNodeAttribute(node, attribute);
     }
-    setWordWrap(wrap) {
+    get wrap() {
+        return this.#wrap;
+    }
+    set wrap(wrap) {
         this.#wrap = wrap;
         this.performUpdate();
+    }
+    setWordWrap(wrap) {
+        this.wrap = wrap;
     }
     selectedDOMNode() {
         return this.#viewOutput.elementsTreeOutline?.selectedDOMNode() ?? null;
@@ -300,6 +320,7 @@ export class DOMTreeWidget extends UI.Widget.Widget {
             showComments: this.#showComments,
             showAIButton: this.#showAIButton,
             disableEdits: this.#disableEdits,
+            expandRoot: this.#expandRoot,
             visibleWidth: this.#visibleWidth,
             visible: this.#visible,
             wrap: this.#wrap,
@@ -1145,7 +1166,7 @@ export class ElementsTreeOutline extends Common.ObjectWrapper.eventMixin(UI.Tree
         }
     }
     async showContextMenu(treeElement, event) {
-        if (UI.UIUtils.isEditing()) {
+        if (UI.UIUtils.isEditing() || !this.enableContextMenu) {
             return;
         }
         const node = event.target;

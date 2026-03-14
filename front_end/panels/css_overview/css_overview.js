@@ -1167,7 +1167,7 @@ var CSSOverviewSidebarPanel = class extends UI2.Widget.VBox {
 
 // gen/front_end/panels/css_overview/CSSOverviewCompletedView.js
 var { styleMap, ref } = Directives2;
-var { widgetConfig } = UI3.Widget;
+var { widget } = UI3.Widget;
 var UIStrings4 = {
   /**
    * @description Label for the summary in the CSS overview report
@@ -1354,7 +1354,7 @@ var DEFAULT_VIEW3 = (input, output, target) => {
   render3(html3`
       <style>${cssOverviewCompletedView_css_default}</style>
       <devtools-split-view direction="column" sidebar-position="first" sidebar-initial-size="200">
-        <devtools-widget slot="sidebar" .widgetConfig=${widgetConfig(CSSOverviewSidebarPanel, {
+        <devtools-widget slot="sidebar" ${widget(CSSOverviewSidebarPanel, {
     minimumSize: new Geometry.Size(100, 25),
     items: [
       { name: i18nString4(UIStrings4.overviewSummary), id: "summary" },
@@ -1408,7 +1408,7 @@ var DEFAULT_VIEW3 = (input, output, target) => {
               ${renderMediaQueries(input.mediaQueries)}
             </div>
           </div>
-          <devtools-widget slot="sidebar" .widgetConfig=${widgetConfig((e) => {
+          <devtools-widget slot="sidebar" ${widget((e) => {
     const tabbedPane = new UI3.TabbedPane.TabbedPane(e);
     output.closeAllTabs = () => {
       tabbedPane.closeTabs(tabbedPane.tabIds());
@@ -2211,9 +2211,9 @@ var CSSOverviewStartView = class extends UI4.Widget.Widget {
 };
 
 // gen/front_end/panels/css_overview/CSSOverviewPanel.js
-var { widget } = UI5.Widget;
+var { widget: widget2 } = UI5.Widget;
 var DEFAULT_VIEW5 = (input, _output, target) => {
-  render5(input.state === "start" ? widget(CSSOverviewStartView, { onStartCapture: input.onStartCapture }) : input.state === "processing" ? widget(CSSOverviewProcessingView, { onCancel: input.onCancel }) : widget(CSSOverviewCompletedView, {
+  render5(input.state === "start" ? widget2(CSSOverviewStartView, { onStartCapture: input.onStartCapture }) : input.state === "processing" ? widget2(CSSOverviewProcessingView, { onCancel: input.onCancel }) : widget2(CSSOverviewCompletedView, {
     onReset: input.onReset,
     overviewData: input.overviewData,
     target: input.target

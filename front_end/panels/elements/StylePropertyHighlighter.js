@@ -16,6 +16,7 @@ export class StylePropertyHighlighter {
         if (!section) {
             return;
         }
+        section.expand();
         section.showAllItems();
         const populatePromises = [];
         for (let treeElement = section.propertiesTreeOutline.firstChild(); treeElement; treeElement = treeElement.nextSibling) {
@@ -45,6 +46,7 @@ export class StylePropertyHighlighter {
             return;
         }
         block.expand(true);
+        section.expand();
         section.showAllItems();
         PanelUtils.highlightElement(section.element);
     }
@@ -65,6 +67,7 @@ export class StylePropertyHighlighter {
                 continue;
             }
             block?.expand(true);
+            section.expand();
             section.showAllItems();
             const treeElement = this.findTreeElementFromSection(treeElement => treeElement.property.name === propertyName && !treeElement.overloaded(), section);
             if (treeElement) {

@@ -689,7 +689,7 @@ import * as UI2 from "./../../../../ui/legacy/legacy.js";
 import * as Lit3 from "./../../../../ui/lit/lit.js";
 import * as Utils from "./../../utils/utils.js";
 var { html: html3, Directives: { ifDefined } } = Lit3;
-var { widgetConfig } = UI2.Widget;
+var { widget } = UI2.Widget;
 var EventReferenceClick = class _EventReferenceClick extends Event {
   event;
   static eventName = "eventreferenceclick";
@@ -747,7 +747,7 @@ function eventRef(event, options) {
     console.warn("No text given for eventRef");
     text = event.name;
   }
-  return html3`<devtools-widget title=${ifDefined(title)} .widgetConfig=${widgetConfig(EventRef, {
+  return html3`<devtools-widget title=${ifDefined(title)} ${widget(EventRef, {
     event,
     text
   })}></devtools-widget>`;
@@ -1026,7 +1026,7 @@ import * as UI4 from "./../../../../ui/legacy/legacy.js";
 import * as Lit5 from "./../../../../ui/lit/lit.js";
 var { UIStrings: UIStrings3, i18nString: i18nString3, createOverlayForRequest } = Trace3.Insights.Models.Cache;
 var { html: html5 } = Lit5;
-var { widget } = UI4.Widget;
+var { widget: widget2 } = UI4.Widget;
 var Cache = class extends BaseInsightComponent {
   internalName = "cache";
   hasAskAiSupport() {
@@ -1056,7 +1056,7 @@ var Cache = class extends BaseInsightComponent {
     }
     return html5`
       <div class="insight-section">
-        ${widget(Table, {
+        ${widget2(Table, {
       data: {
         insight: this,
         headers: [i18nString3(UIStrings3.requestColumn), i18nString3(UIStrings3.cacheTTL)],
@@ -1186,7 +1186,7 @@ var Checklist = class extends UI5.Widget.Widget {
 
 // gen/front_end/panels/timeline/components/insights/CharacterSet.js
 var { html: html7 } = Lit7;
-var { widgetConfig: widgetConfig2 } = UI6.Widget;
+var { widget: widget3 } = UI6.Widget;
 var CharacterSet = class extends BaseInsightComponent {
   internalName = "character-set";
   hasAskAiSupport() {
@@ -1199,9 +1199,7 @@ var CharacterSet = class extends BaseInsightComponent {
     if (!this.model?.data) {
       return Lit7.nothing;
     }
-    return html7`<devtools-widget .widgetConfig=${widgetConfig2(Checklist, {
-      checklist: this.model.data.checklist
-    })}></devtools-widget>`;
+    return html7`${widget3(Checklist, { checklist: this.model.data.checklist })}`;
   }
 };
 
@@ -1228,7 +1226,7 @@ import * as UI7 from "./../../../../ui/legacy/legacy.js";
 import * as Lit8 from "./../../../../ui/lit/lit.js";
 import * as PanelsCommon from "./../../../common/common.js";
 var { html: html8 } = Lit8;
-var { widget: widget2 } = UI7.Widget;
+var { widget: widget4 } = UI7.Widget;
 var DEFAULT_VIEW5 = (input, output, target) => {
   const { relatedNodeEl, fallbackUrl, fallbackHtmlSnippet, fallbackText } = input;
   let template;
@@ -1323,7 +1321,7 @@ var NodeLink = class extends UI7.Widget.Widget {
   }
 };
 function nodeLink(data) {
-  return html8`${widget2(NodeLink, { data })}`;
+  return html8`${widget4(NodeLink, { data })}`;
 }
 
 // gen/front_end/panels/timeline/components/insights/CLSCulprits.js
@@ -1396,7 +1394,7 @@ __export(DocumentLatency_exports, {
 import * as UI8 from "./../../../../ui/legacy/legacy.js";
 import * as Lit10 from "./../../../../ui/lit/lit.js";
 var { html: html10 } = Lit10;
-var { widget: widget3 } = UI8.Widget;
+var { widget: widget5 } = UI8.Widget;
 var DocumentLatency = class extends BaseInsightComponent {
   internalName = "document-latency";
   hasAskAiSupport() {
@@ -1409,7 +1407,7 @@ var DocumentLatency = class extends BaseInsightComponent {
     if (!this.model?.data) {
       return Lit10.nothing;
     }
-    return html10`${widget3(Checklist, { checklist: this.model.data.checklist })}`;
+    return html10`${widget5(Checklist, { checklist: this.model.data.checklist })}`;
   }
 };
 
@@ -1425,7 +1423,7 @@ import * as UI9 from "./../../../../ui/legacy/legacy.js";
 import * as Lit11 from "./../../../../ui/lit/lit.js";
 var { UIStrings: UIStrings6, i18nString: i18nString6 } = Trace5.Insights.Models.DOMSize;
 var { html: html11 } = Lit11;
-var { widget: widget4 } = UI9.Widget;
+var { widget: widget6 } = UI9.Widget;
 var DOMSize = class extends BaseInsightComponent {
   internalName = "dom-size";
   hasAskAiSupport() {
@@ -1455,7 +1453,7 @@ var DOMSize = class extends BaseInsightComponent {
       return Lit11.nothing;
     }
     return html11`<div class="insight-section">
-      ${widget4(Table, {
+      ${widget6(Table, {
       data: {
         insight: this,
         headers: [i18nString6(UIStrings6.statistic), i18nString6(UIStrings6.element)],
@@ -1480,7 +1478,7 @@ var DOMSize = class extends BaseInsightComponent {
     });
     return html11`<div class="insight-section">
       <div class="insight-description">${md(i18nString6(UIStrings6.topUpdatesDescription))}</div>
-      ${widget4(Table, {
+      ${widget6(Table, {
       data: {
         insight: this,
         headers: ["", i18nString6(UIStrings6.duration)],
@@ -1498,7 +1496,7 @@ var DOMSize = class extends BaseInsightComponent {
       return Lit11.nothing;
     }
     return html11`<div class="insight-section">
-      ${widget4(Table, {
+      ${widget6(Table, {
       data: {
         insight: this,
         headers: [i18nString6(UIStrings6.statistic), i18nString6(UIStrings6.value)],
@@ -1557,7 +1555,7 @@ function scriptRef(script) {
 // gen/front_end/panels/timeline/components/insights/DuplicatedJavaScript.js
 var { UIStrings: UIStrings7, i18nString: i18nString7 } = Trace6.Insights.Models.DuplicatedJavaScript;
 var { html: html12 } = Lit12;
-var { widget: widget5 } = UI10.Widget;
+var { widget: widget7 } = UI10.Widget;
 var DuplicatedJavaScript = class extends BaseInsightComponent {
   internalName = "duplicated-javascript";
   #treemapData = null;
@@ -1628,7 +1626,7 @@ var DuplicatedJavaScript = class extends BaseInsightComponent {
     return html12`
       ${treemapButton}
       <div class="insight-section">
-        ${widget5(Table, {
+        ${widget7(Table, {
       data: {
         insight: this,
         headers: [i18nString7(UIStrings7.columnSource), i18nString7(UIStrings7.columnDuplicatedBytes)],
@@ -1651,7 +1649,7 @@ import * as UI11 from "./../../../../ui/legacy/legacy.js";
 import * as Lit13 from "./../../../../ui/lit/lit.js";
 var { UIStrings: UIStrings8, i18nString: i18nString8 } = Trace7.Insights.Models.FontDisplay;
 var { html: html13 } = Lit13;
-var { widget: widget6 } = UI11.Widget;
+var { widget: widget8 } = UI11.Widget;
 var FontDisplay = class extends BaseInsightComponent {
   internalName = "font-display";
   #overlayForRequest = /* @__PURE__ */ new Map();
@@ -1698,7 +1696,7 @@ var FontDisplay = class extends BaseInsightComponent {
     const rows = createLimitedRows(this.model.fonts, this);
     return html13`
       <div class="insight-section">
-        ${widget6(Table, {
+        ${widget8(Table, {
       data: {
         insight: this,
         headers: [i18nString8(UIStrings8.fontColumn), i18nString8(UIStrings8.wastedTimeColumn)],
@@ -1722,7 +1720,7 @@ import * as UI12 from "./../../../../ui/legacy/legacy.js";
 import * as Lit14 from "./../../../../ui/lit/lit.js";
 var { UIStrings: UIStrings9, i18nString: i18nString9, createOverlayForEvents } = Trace8.Insights.Models.ForcedReflow;
 var { html: html14, nothing: nothing11 } = Lit14;
-var { widget: widget7 } = UI12.Widget;
+var { widget: widget9 } = UI12.Widget;
 var ForcedReflow = class extends BaseInsightComponent {
   internalName = "forced-reflow";
   hasAskAiSupport() {
@@ -1775,7 +1773,7 @@ var ForcedReflow = class extends BaseInsightComponent {
     return html14`
       ${topLevelFunctionCallData ? html14`
         <div class="insight-section">
-          ${widget7(Table, {
+          ${widget9(Table, {
       data: {
         insight: this,
         headers: [i18nString9(UIStrings9.topTimeConsumingFunctionCall), i18nString9(UIStrings9.totalReflowTime)],
@@ -1791,7 +1789,7 @@ var ForcedReflow = class extends BaseInsightComponent {
         </div>
       ` : nothing11}
       <div class="insight-section">
-        ${widget7(Table, {
+        ${widget9(Table, {
       data: {
         insight: this,
         headers: [i18nString9(UIStrings9.reflowCallFrames)],
@@ -1818,7 +1816,7 @@ import * as SDK2 from "./../../../../core/sdk/sdk.js";
 import * as UI13 from "./../../../../ui/legacy/legacy.js";
 import * as Lit15 from "./../../../../ui/lit/lit.js";
 var { html: html15 } = Lit15;
-var { widget: widget8 } = UI13.Widget;
+var { widget: widget10 } = UI13.Widget;
 var DEFAULT_VIEW6 = (input, output, target) => {
   const { request, imageDataUrl } = input;
   const img = imageDataUrl ? html15`<img src=${imageDataUrl} class="element-img"/>` : Lit15.nothing;
@@ -1883,13 +1881,13 @@ var ImageRef = class extends UI13.Widget.Widget {
   }
 };
 function imageRef(request) {
-  return html15`${widget8(ImageRef, { request })}`;
+  return html15`${widget10(ImageRef, { request })}`;
 }
 
 // gen/front_end/panels/timeline/components/insights/ImageDelivery.js
 var { UIStrings: UIStrings10, i18nString: i18nString10, createOverlayForRequest: createOverlayForRequest2 } = Trace9.Insights.Models.ImageDelivery;
 var { html: html16 } = Lit16;
-var { widget: widget9 } = UI14.Widget;
+var { widget: widget11 } = UI14.Widget;
 var ImageDelivery = class extends BaseInsightComponent {
   internalName = "image-delivery";
   mapToRow(image) {
@@ -1919,7 +1917,7 @@ var ImageDelivery = class extends BaseInsightComponent {
     }
     return html16`
       <div class="insight-section">
-        ${widget9(Table, {
+        ${widget11(Table, {
       data: {
         insight: this,
         headers: [i18nString10(UIStrings10.optimizeFile)],
@@ -1943,7 +1941,7 @@ import * as UI15 from "./../../../../ui/legacy/legacy.js";
 import * as Lit17 from "./../../../../ui/lit/lit.js";
 var { UIStrings: UIStrings11, i18nString: i18nString11, createOverlaysForSubpart } = Trace10.Insights.Models.INPBreakdown;
 var { html: html17 } = Lit17;
-var { widget: widget10 } = UI15.Widget;
+var { widget: widget12 } = UI15.Widget;
 var INPBreakdown = class extends BaseInsightComponent {
   internalName = "inp";
   hasAskAiSupport() {
@@ -1957,7 +1955,7 @@ var INPBreakdown = class extends BaseInsightComponent {
     const time = (us) => i18n14.TimeUtilities.millisToString(Platform3.Timing.microSecondsToMilliSeconds(us));
     return html17`
       <div class="insight-section">
-        ${widget10(Table, {
+        ${widget12(Table, {
       data: {
         insight: this,
         headers: [i18nString11(UIStrings11.subpart), i18nString11(UIStrings11.duration)],
@@ -1999,7 +1997,7 @@ import * as UI16 from "./../../../../ui/legacy/legacy.js";
 import * as Lit18 from "./../../../../ui/lit/lit.js";
 var { UIStrings: UIStrings12, i18nString: i18nString12 } = Trace11.Insights.Models.LCPBreakdown;
 var { html: html18 } = Lit18;
-var { widget: widget11 } = UI16.Widget;
+var { widget: widget13 } = UI16.Widget;
 var LCPBreakdown = class extends BaseInsightComponent {
   internalName = "lcp-by-phase";
   #overlay = null;
@@ -2038,7 +2036,7 @@ var LCPBreakdown = class extends BaseInsightComponent {
     ];
     return html18`
       <div class="insight-section">
-        ${widget11(Table, {
+        ${widget13(Table, {
       data: {
         insight: this,
         headers: [i18nString12(UIStrings12.subpart), i18nString12(UIStrings12.fieldDuration)],
@@ -2076,7 +2074,7 @@ var LCPBreakdown = class extends BaseInsightComponent {
     const sections = [
       html18`
       <div class="insight-section">
-        ${widget11(Table, {
+        ${widget13(Table, {
         data: {
           insight: this,
           headers: [i18nString12(UIStrings12.subpart), i18nString12(UIStrings12.duration)],
@@ -2103,7 +2101,7 @@ import * as Trace12 from "./../../../../models/trace/trace.js";
 import * as uiI18n from "./../../../../ui/i18n/i18n.js";
 import * as UI17 from "./../../../../ui/legacy/legacy.js";
 import * as Lit19 from "./../../../../ui/lit/lit.js";
-var { widget: widget12 } = UI17.Widget;
+var { widget: widget14 } = UI17.Widget;
 var { UIStrings: UIStrings13, i18nString: i18nString13, getImageData } = Trace12.Insights.Models.LCPDiscovery;
 var { html: html19 } = Lit19;
 var str_4 = i18n16.i18n.registerUIStrings("models/trace/insights/LCPDiscovery.ts", UIStrings13);
@@ -2159,7 +2157,7 @@ var LCPDiscovery = class extends BaseInsightComponent {
     }
     return html19`
       <div class="insight-section">
-        ${widget12(Checklist, { checklist: imageData.checklist })}
+        ${widget14(Checklist, { checklist: imageData.checklist })}
         <div class="insight-section">${imageRef(imageData.request)}${delayEl}</div>
       </div>`;
   }
@@ -2179,7 +2177,7 @@ import * as UI18 from "./../../../../ui/legacy/legacy.js";
 import * as Lit20 from "./../../../../ui/lit/lit.js";
 var { UIStrings: UIStrings14, i18nString: i18nString14 } = Trace13.Insights.Models.LegacyJavaScript;
 var { html: html20 } = Lit20;
-var { widget: widget13 } = UI18.Widget;
+var { widget: widget15 } = UI18.Widget;
 var LegacyJavaScript = class extends BaseInsightComponent {
   internalName = "legacy-javascript";
   getEstimatedSavingsTime() {
@@ -2229,7 +2227,7 @@ var LegacyJavaScript = class extends BaseInsightComponent {
     });
     return html20`
       <div class="insight-section">
-        ${widget13(Table, {
+        ${widget15(Table, {
       data: {
         insight: this,
         headers: [i18nString14(UIStrings14.columnScript), i18nString14(UIStrings14.columnWastedBytes)],
@@ -2251,7 +2249,7 @@ import * as UI19 from "./../../../../ui/legacy/legacy.js";
 import * as Lit21 from "./../../../../ui/lit/lit.js";
 var { UIStrings: UIStrings15, i18nString: i18nString15, createOverlayForRequest: createOverlayForRequest3 } = Trace14.Insights.Models.ModernHTTP;
 var { html: html21 } = Lit21;
-var { widget: widget14 } = UI19.Widget;
+var { widget: widget16 } = UI19.Widget;
 var ModernHTTP = class extends BaseInsightComponent {
   internalName = "modern-http";
   hasAskAiSupport() {
@@ -2282,7 +2280,7 @@ var ModernHTTP = class extends BaseInsightComponent {
     }
     return html21`
       <div class="insight-section">
-        ${widget14(Table, {
+        ${widget16(Table, {
       data: {
         insight: this,
         headers: [i18nString15(UIStrings15.request), i18nString15(UIStrings15.protocol)],
@@ -2335,7 +2333,7 @@ var networkDependencyTreeInsight_css_default = `/*
 // gen/front_end/panels/timeline/components/insights/NetworkDependencyTree.js
 var { UIStrings: UIStrings16, i18nString: i18nString16 } = Trace15.Insights.Models.NetworkDependencyTree;
 var { html: html22 } = Lit22;
-var { widget: widget15 } = UI20.Widget;
+var { widget: widget17 } = UI20.Widget;
 var MAX_CHAINS_TO_SHOW = 5;
 var NetworkDependencyTree = class extends BaseInsightComponent {
   internalName = "long-critical-network-tree";
@@ -2405,7 +2403,7 @@ var NetworkDependencyTree = class extends BaseInsightComponent {
       });
     }
     return html22`
-      ${widget15(Table, {
+      ${widget17(Table, {
       data: {
         insight: this,
         headers: [i18nString16(UIStrings16.columnRequest), i18nString16(UIStrings16.columnTime)],
@@ -2504,7 +2502,7 @@ var NetworkDependencyTree = class extends BaseInsightComponent {
       <div class="insight-section">
         ${preconnectOriginsTableTitle}
         ${this.#renderTooManyPreconnectsWarning()}
-        ${widget15(Table, {
+        ${widget17(Table, {
       data: {
         insight: this,
         headers: [i18nString16(UIStrings16.columnOrigin), i18nString16(UIStrings16.columnSource)],
@@ -2537,7 +2535,7 @@ var NetworkDependencyTree = class extends BaseInsightComponent {
     return html22`
       <div class="insight-section">
         ${estSavingTableTitle}
-        ${widget15(Table, {
+        ${widget17(Table, {
       data: {
         insight: this,
         headers: [i18nString16(UIStrings16.columnOrigin), i18nString16(UIStrings16.columnWastedMs)],
@@ -2567,7 +2565,7 @@ import * as UI21 from "./../../../../ui/legacy/legacy.js";
 import * as Lit23 from "./../../../../ui/lit/lit.js";
 var { UIStrings: UIStrings17, i18nString: i18nString17, createOverlayForRequest: createOverlayForRequest4 } = Trace16.Insights.Models.RenderBlocking;
 var { html: html23 } = Lit23;
-var { widget: widget16 } = UI21.Widget;
+var { widget: widget18 } = UI21.Widget;
 var RenderBlocking = class extends BaseInsightComponent {
   internalName = "render-blocking-requests";
   mapToRow(request) {
@@ -2602,7 +2600,7 @@ var RenderBlocking = class extends BaseInsightComponent {
     const rows = createLimitedRows(requests, this);
     return html23`
       <div class="insight-section">
-        ${widget16(Table, {
+        ${widget18(Table, {
       data: {
         insight: this,
         headers: [i18nString17(UIStrings17.renderBlockingRequest), i18nString17(UIStrings17.duration)],
@@ -2628,7 +2626,7 @@ import * as UI22 from "./../../../../ui/legacy/legacy.js";
 import * as Lit24 from "./../../../../ui/lit/lit.js";
 var { UIStrings: UIStrings18, i18nString: i18nString18 } = Trace17.Insights.Models.SlowCSSSelector;
 var { html: html24 } = Lit24;
-var { widget: widget17 } = UI22.Widget;
+var { widget: widget19 } = UI22.Widget;
 var SlowCSSSelector = class extends BaseInsightComponent {
   internalName = "slow-css-selector";
   #selectorLocations = /* @__PURE__ */ new Map();
@@ -2694,7 +2692,7 @@ var SlowCSSSelector = class extends BaseInsightComponent {
     }
     const sections = [html24`
       <div class="insight-section">
-        ${widget17(Table, {
+        ${widget19(Table, {
       data: {
         insight: this,
         headers: [i18nString18(UIStrings18.total), ""],
@@ -2711,7 +2709,7 @@ var SlowCSSSelector = class extends BaseInsightComponent {
       const selector = this.model.topSelectorElapsedMs;
       sections.push(html24`
         <div class="insight-section">
-          ${widget17(Table, {
+          ${widget19(Table, {
         data: {
           insight: this,
           headers: [`${i18nString18(UIStrings18.topSelectorElapsedTime)}: ${time(Trace17.Types.Timing.Micro(selector["elapsed (us)"]))}`],
@@ -2727,7 +2725,7 @@ var SlowCSSSelector = class extends BaseInsightComponent {
       const selector = this.model.topSelectorMatchAttempts;
       sections.push(html24`
         <div class="insight-section">
-          ${widget17(Table, {
+          ${widget19(Table, {
         data: {
           insight: this,
           headers: [`${i18nString18(UIStrings18.topSelectorMatchAttempt)}: ${selector["match_attempts"]}`],
@@ -2754,7 +2752,7 @@ import * as UI23 from "./../../../../ui/legacy/legacy.js";
 import * as Lit25 from "./../../../../ui/lit/lit.js";
 var { UIStrings: UIStrings19, i18nString: i18nString19, createOverlaysForSummary } = Trace18.Insights.Models.ThirdParties;
 var { html: html25 } = Lit25;
-var { widget: widget18 } = UI23.Widget;
+var { widget: widget20 } = UI23.Widget;
 var MAX_TO_SHOW = 5;
 var ThirdParties = class extends BaseInsightComponent {
   internalName = "third-parties";
@@ -2805,7 +2803,7 @@ var ThirdParties = class extends BaseInsightComponent {
       const rows = createLimitedRows(topTransferSizeEntries, this.#transferSizeAggregator, MAX_TO_SHOW);
       sections.push(html25`
         <div class="insight-section">
-          ${widget18(Table, {
+          ${widget20(Table, {
         data: {
           insight: this,
           headers: [i18nString19(UIStrings19.columnThirdParty), i18nString19(UIStrings19.columnTransferSize)],
@@ -2819,7 +2817,7 @@ var ThirdParties = class extends BaseInsightComponent {
       const rows = createLimitedRows(topMainThreadTimeEntries, this.#mainThreadTimeAggregator, MAX_TO_SHOW);
       sections.push(html25`
         <div class="insight-section">
-          ${widget18(Table, {
+          ${widget20(Table, {
         data: {
           insight: this,
           headers: [i18nString19(UIStrings19.columnThirdParty), i18nString19(UIStrings19.columnMainThreadTime)],
@@ -2869,7 +2867,7 @@ var Viewport = class extends BaseInsightComponent {
 };
 
 // gen/front_end/panels/timeline/components/insights/InsightRenderer.js
-var { widgetConfig: widgetConfig3 } = UI24.Widget;
+var { widgetConfig } = UI24.Widget;
 var INSIGHT_NAME_TO_COMPONENT = {
   Cache,
   CharacterSet,
@@ -2901,7 +2899,7 @@ var InsightRenderer = class {
       this.#insightWidgetCache.set(model, widgetElement);
     }
     const componentClass = INSIGHT_NAME_TO_COMPONENT[insightName];
-    widgetElement.widgetConfig = widgetConfig3(componentClass, {
+    widgetElement.widgetConfig = widgetConfig(componentClass, {
       selected: options.selected ?? false,
       // The `model` passed in as a parameter is the base type, but since
       // `componentClass` is the union of every derived insight component, the

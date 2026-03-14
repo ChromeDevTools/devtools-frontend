@@ -7,7 +7,7 @@ import * as Lit from '../../../../ui/lit/lit.js';
 import * as Utils from '../../utils/utils.js';
 import baseInsightComponentStyles from './baseInsightComponent.css.js';
 const { html, Directives: { ifDefined } } = Lit;
-const { widgetConfig } = UI.Widget;
+const { widget } = UI.Widget;
 export class EventReferenceClick extends Event {
     event;
     static eventName = 'eventreferenceclick';
@@ -68,7 +68,7 @@ export function eventRef(event, options) {
         console.warn('No text given for eventRef');
         text = event.name;
     }
-    return html `<devtools-widget title=${ifDefined(title)} .widgetConfig=${widgetConfig(EventRef, {
+    return html `<devtools-widget title=${ifDefined(title)} ${widget(EventRef, {
         event,
         text,
     })}></devtools-widget>`;

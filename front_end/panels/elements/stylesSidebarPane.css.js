@@ -99,6 +99,40 @@ export default `/**
     --override-styles-section-text-hover-text-decoration: underline;
     --override-styles-section-text-hover-cursor: default;
   }
+
+  & .section-collapse-icon {
+    width: 12px;
+    height: 12px;
+    margin-right: 2px;
+    margin-left: -2px;
+    vertical-align: middle;
+    cursor: pointer;
+    display: none;
+  }
+
+  &.collapsible .section-collapse-icon {
+    display: inline-block;
+  }
+
+  &.collapsed {
+    opacity: 60%;
+
+    & .style-properties {
+      display: none;
+    }
+
+    & .styles-section-subtitle {
+      display: none;
+    }
+
+    & .sidebar-pane-closing-brace {
+      display: none;
+    }
+
+    & .sidebar-pane-open-brace::after {
+      content: "}";
+    }
+  }
 }
 
 .sidebar-pane-closing-brace {

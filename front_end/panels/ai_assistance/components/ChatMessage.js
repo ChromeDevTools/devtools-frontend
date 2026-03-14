@@ -482,45 +482,42 @@ async function makeComputedStyleWidget(widgetData) {
         return null;
     }
     const styles = new ComputedStyle.ComputedStyleModel.ComputedStyle(domNodeForId, widgetData.data.computedStyles);
-    const widgetConfig = UI.Widget.widgetConfig(Elements.ComputedStyleWidget.ComputedStyleWidget, {
+    // clang-format off
+    const renderedWidget = html `<devtools-widget
+      class="computed-styles-widget" ${widget(Elements.ComputedStyleWidget.ComputedStyleWidget, {
         nodeStyle: styles,
         matchedStyles: widgetData.data.matchedCascade,
         // This disables showing the nested traces and detailed information in the widget.
         propertyTraces: null,
         allowUserControl: false,
         filterText: new RegExp(widgetData.data.properties.join('|'), 'i')
-    });
-    // clang-format off
-    const widget = html `<devtools-widget class="computed-styles-widget" .widgetConfig=${widgetConfig}></devtools-widget>`;
+    })}></devtools-widget>`;
     // clang-format on
-    return { renderedWidget: widget, revealable: new Elements.ElementsPanel.NodeComputedStyles(domNodeForId) };
+    return { renderedWidget, revealable: new Elements.ElementsPanel.NodeComputedStyles(domNodeForId) };
 }
 async function makeCoreVitalsWidget(widgetData) {
-    const widgetConfig = UI.Widget.widgetConfig(TimelineComponents.CWVMetrics.CWVMetrics, { data: widgetData.data });
     // clang-format off
-    const widget = html `<devtools-widget class="core-vitals-widget" .widgetConfig=${widgetConfig}></devtools-widget>`;
+    const renderedWidget = html `<devtools-widget
+      class="core-vitals-widget" ${widget(TimelineComponents.CWVMetrics.CWVMetrics, { data: widgetData.data })}>
+  </devtools-widget>`;
     // clang-format on
-    return {
-        renderedWidget: widget,
-        revealable: new TimelineUtils.Helpers.RevealableCoreVitals(widgetData.data.insightSetKey)
-    };
+    return { renderedWidget, revealable: new TimelineUtils.Helpers.RevealableCoreVitals(widgetData.data.insightSetKey) };
 }
 async function makeStylePropertiesWidget(widgetData) {
     const domNodeForId = await resolveNode(widgetData.data.backendNodeId);
     if (!domNodeForId) {
         return null;
     }
-    const widgetConfig = UI.Widget.widgetConfig(Elements.StandaloneStylesContainer.StandaloneStylesContainer, {
+    // clang-format off
+    const renderedWidget = html `<devtools-widget
+      class="styling-preview-widget"
+      ${widget(Elements.StandaloneStylesContainer.StandaloneStylesContainer, {
         domNode: domNodeForId,
         filter: widgetData.data.selector ? new RegExp(widgetData.data.selector) : null,
-    });
-    // clang-format off
-    const widget = html `<devtools-widget
-    class="styling-preview-widget"
-    .widgetConfig=${widgetConfig}
-  ></devtools-widget>`;
+    })}>
+  </devtools-widget>`;
     // clang-format on
-    return { renderedWidget: widget, revealable: domNodeForId };
+    return { renderedWidget, revealable: domNodeForId };
 }
 function renderWidgetResponse(response) {
     if (response === null) {
@@ -548,6 +545,30 @@ function renderWidgetResponse(response) {
     </div>
     `;
     // clang-format on
+}
+async function makeDomTreeWidget(widgetData) {
+    const root = widgetData.data.root;
+    if (!(root instanceof SDK.DOMModel.DOMNodeSnapshot)) {
+        return null;
+    }
+    const widgetConfig = UI.Widget.widgetConfig(Elements.ElementsTreeOutline.DOMTreeWidget, {
+        maxTreeDepth: 2,
+        enableContextMenu: false,
+        showComments: false,
+        showAIButton: false,
+        disableEdits: true,
+        expandRoot: true,
+        rootDOMNode: root,
+        visibleWidth: 400,
+        wrap: true,
+    });
+    // clang-format off
+    const widget = html `<devtools-widget class="dom-tree-widget" .widgetConfig=${widgetConfig}></devtools-widget>`;
+    // clang-format on
+    return {
+        renderedWidget: widget,
+        revealable: new SDK.DOMModel.DeferredDOMNode(root.domModel().target(), root.backendNodeId()),
+    };
 }
 /**
  * Renders AI-defined UI widgets.
@@ -580,6 +601,9 @@ async function renderWidgets(widgets, options = {}) {
         }
         else if (widgetData.name === 'STYLE_PROPERTIES') {
             response = await makeStylePropertiesWidget(widgetData);
+        }
+        else if (widgetData.name === 'DOM_TREE') {
+            response = await makeDomTreeWidget(widgetData);
         }
         return renderWidgetResponse(response);
     }));

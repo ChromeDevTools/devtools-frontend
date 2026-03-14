@@ -597,7 +597,7 @@ var DEFAULT_VIEW3 = (input, _output, target) => {
         <div class=vbox slot="main">
           <devtools-widget
             ?hidden=${input.workspaceDiff.modifiedUISourceCodes().length > 0}
-            .widgetConfig=${UI3.Widget.widgetConfig(UI3.EmptyWidget.EmptyWidget, {
+            ${widget(UI3.EmptyWidget.EmptyWidget, {
       header: i18nString3(UIStrings3.noChanges),
       text: i18nString3(UIStrings3.changesViewDescription),
       link: CHANGES_VIEW_URL
@@ -611,18 +611,14 @@ var DEFAULT_VIEW3 = (input, _output, target) => {
           </div>
           ${hasCopyToPrompt ? html3`
             <devtools-widget class="copy-to-prompt"
-              .widgetConfig=${UI3.Widget.widgetConfig(PanelsCommon.CopyChangesToPrompt, {
+              ${widget(PanelsCommon.CopyChangesToPrompt, {
       workspaceDiff: input.workspaceDiff,
       patchAgentCSSChange: null
     })}
             ></devtools-widget>
           ` : Lit3.nothing}
         </div>
-        <devtools-widget
-          slot="sidebar"
-          .widgetConfig=${UI3.Widget.widgetConfig(ChangesSidebar, {
-      workspaceDiff: input.workspaceDiff
-    })}
+        <devtools-widget slot="sidebar" ${widget(ChangesSidebar, { workspaceDiff: input.workspaceDiff })}
           ${UI3.Widget.widgetRef(ChangesSidebar, onSidebar)}>
         </devtools-widget>
       </devtools-split-view>`,

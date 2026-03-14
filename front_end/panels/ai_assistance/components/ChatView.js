@@ -96,7 +96,7 @@ const DEFAULT_VIEW = (input, output, target) => {
               </div>
             </div>
           `}
-          <devtools-widget class=${inputWidgetClasses} .widgetConfig=${UI.Widget.widgetConfig(ChatInput, {
+          <devtools-widget class=${inputWidgetClasses} ${widget(ChatInput, {
         isLoading: input.isLoading,
         blockedByCrossOrigin: input.blockedByCrossOrigin,
         isTextInputDisabled: input.isTextInputDisabled,

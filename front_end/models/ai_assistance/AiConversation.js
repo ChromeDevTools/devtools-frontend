@@ -205,20 +205,23 @@ export class AiConversation {
             id: this.id,
             history: this.history
                 .map(item => {
-                if (item.type === "context-change" /* ResponseType.CONTEXT_CHANGE */) {
-                    return null;
+                switch (item.type) {
+                    case "context-change" /* ResponseType.CONTEXT_CHANGE */: {
+                        return null;
+                    }
+                    case "user-query" /* ResponseType.USER_QUERY */: {
+                        return { ...item, imageInput: undefined };
+                    }
+                    case "side-effect" /* ResponseType.SIDE_EFFECT */: {
+                        return { ...item, confirm: undefined };
+                    }
+                    case "context" /* ResponseType.CONTEXT */:
+                    case "action" /* ResponseType.ACTION */: {
+                        return { ...item, widgets: undefined };
+                    }
+                    default:
+                        return item;
                 }
-                if (item.type === "user-query" /* ResponseType.USER_QUERY */) {
-                    return { ...item, imageInput: undefined };
-                }
-                // Remove the `confirm()`-function because `structuredClone()` throws on functions
-                if (item.type === "side-effect" /* ResponseType.SIDE_EFFECT */) {
-                    return { ...item, confirm: undefined };
-                }
-                if (item.type === "context" /* ResponseType.CONTEXT */ && item.widgets) {
-                    return { ...item, widgets: undefined };
-                }
-                return item;
             })
                 .filter(history => !!history),
             type: this.#type,

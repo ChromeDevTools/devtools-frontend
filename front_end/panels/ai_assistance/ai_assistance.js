@@ -672,7 +672,7 @@ var DEFAULT_VIEW = (input, output, target) => {
       return nothing2;
     }
     return html2`<devtools-widget class="copy-to-prompt"
-      .widgetConfig=${UI2.Widget.widgetConfig(PanelCommon.CopyChangesToPrompt, {
+      ${widget(PanelCommon.CopyChangesToPrompt, {
       workspaceDiff: input.workspaceDiff,
       patchAgentCSSChange: changedCode
     })}></devtools-widget>`;
@@ -3365,39 +3365,36 @@ async function makeComputedStyleWidget(widgetData) {
     return null;
   }
   const styles = new ComputedStyle.ComputedStyleModel.ComputedStyle(domNodeForId, widgetData.data.computedStyles);
-  const widgetConfig = UI5.Widget.widgetConfig(Elements.ComputedStyleWidget.ComputedStyleWidget, {
+  const renderedWidget = html5`<devtools-widget
+      class="computed-styles-widget" ${widget2(Elements.ComputedStyleWidget.ComputedStyleWidget, {
     nodeStyle: styles,
     matchedStyles: widgetData.data.matchedCascade,
     // This disables showing the nested traces and detailed information in the widget.
     propertyTraces: null,
     allowUserControl: false,
     filterText: new RegExp(widgetData.data.properties.join("|"), "i")
-  });
-  const widget4 = html5`<devtools-widget class="computed-styles-widget" .widgetConfig=${widgetConfig}></devtools-widget>`;
-  return { renderedWidget: widget4, revealable: new Elements.ElementsPanel.NodeComputedStyles(domNodeForId) };
+  })}></devtools-widget>`;
+  return { renderedWidget, revealable: new Elements.ElementsPanel.NodeComputedStyles(domNodeForId) };
 }
 async function makeCoreVitalsWidget(widgetData) {
-  const widgetConfig = UI5.Widget.widgetConfig(TimelineComponents.CWVMetrics.CWVMetrics, { data: widgetData.data });
-  const widget4 = html5`<devtools-widget class="core-vitals-widget" .widgetConfig=${widgetConfig}></devtools-widget>`;
-  return {
-    renderedWidget: widget4,
-    revealable: new TimelineUtils.Helpers.RevealableCoreVitals(widgetData.data.insightSetKey)
-  };
+  const renderedWidget = html5`<devtools-widget
+      class="core-vitals-widget" ${widget2(TimelineComponents.CWVMetrics.CWVMetrics, { data: widgetData.data })}>
+  </devtools-widget>`;
+  return { renderedWidget, revealable: new TimelineUtils.Helpers.RevealableCoreVitals(widgetData.data.insightSetKey) };
 }
 async function makeStylePropertiesWidget(widgetData) {
   const domNodeForId = await resolveNode(widgetData.data.backendNodeId);
   if (!domNodeForId) {
     return null;
   }
-  const widgetConfig = UI5.Widget.widgetConfig(Elements.StandaloneStylesContainer.StandaloneStylesContainer, {
+  const renderedWidget = html5`<devtools-widget
+      class="styling-preview-widget"
+      ${widget2(Elements.StandaloneStylesContainer.StandaloneStylesContainer, {
     domNode: domNodeForId,
     filter: widgetData.data.selector ? new RegExp(widgetData.data.selector) : null
-  });
-  const widget4 = html5`<devtools-widget
-    class="styling-preview-widget"
-    .widgetConfig=${widgetConfig}
-  ></devtools-widget>`;
-  return { renderedWidget: widget4, revealable: domNodeForId };
+  })}>
+  </devtools-widget>`;
+  return { renderedWidget, revealable: domNodeForId };
 }
 function renderWidgetResponse(response) {
   if (response === null) {
@@ -3424,6 +3421,28 @@ function renderWidgetResponse(response) {
     </div>
     `;
 }
+async function makeDomTreeWidget(widgetData) {
+  const root = widgetData.data.root;
+  if (!(root instanceof SDK2.DOMModel.DOMNodeSnapshot)) {
+    return null;
+  }
+  const widgetConfig = UI5.Widget.widgetConfig(Elements.ElementsTreeOutline.DOMTreeWidget, {
+    maxTreeDepth: 2,
+    enableContextMenu: false,
+    showComments: false,
+    showAIButton: false,
+    disableEdits: true,
+    expandRoot: true,
+    rootDOMNode: root,
+    visibleWidth: 400,
+    wrap: true
+  });
+  const widget5 = html5`<devtools-widget class="dom-tree-widget" .widgetConfig=${widgetConfig}></devtools-widget>`;
+  return {
+    renderedWidget: widget5,
+    revealable: new SDK2.DOMModel.DeferredDOMNode(root.domModel().target(), root.backendNodeId())
+  };
+}
 async function renderWidgets(widgets, options = {}) {
   if (!Root3.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled || !widgets || widgets.length === 0) {
     return Lit3.nothing;
@@ -3436,6 +3455,8 @@ async function renderWidgets(widgets, options = {}) {
       response = await makeCoreVitalsWidget(widgetData);
     } else if (widgetData.name === "STYLE_PROPERTIES") {
       response = await makeStylePropertiesWidget(widgetData);
+    } else if (widgetData.name === "DOM_TREE") {
+      response = await makeDomTreeWidget(widgetData);
     }
     return renderWidgetResponse(response);
   }));
@@ -4311,7 +4332,7 @@ var DEFAULT_VIEW5 = (input, output, target) => {
               </div>
             </div>
           `}
-          <devtools-widget class=${inputWidgetClasses} .widgetConfig=${UI6.Widget.widgetConfig(ChatInput, {
+          <devtools-widget class=${inputWidgetClasses} ${widget3(ChatInput, {
     isLoading: input.isLoading,
     blockedByCrossOrigin: input.blockedByCrossOrigin,
     isTextInputDisabled: input.isTextInputDisabled,
@@ -5219,6 +5240,7 @@ var StylingAgentMarkdownRenderer = class _StylingAgentMarkdownRenderer extends M
 
 // gen/front_end/panels/ai_assistance/AiAssistancePanel.js
 var { html: html12 } = Lit7;
+var { widget: widget4 } = UI9.Widget;
 var AI_ASSISTANCE_SEND_FEEDBACK = "https://crbug.com/364805393";
 var AI_ASSISTANCE_HELP = "https://developer.chrome.com/docs/devtools/ai-assistance";
 var WALKTHROUGH_SIDEBAR_BREAKPOINT = 700;
@@ -5543,15 +5565,11 @@ function defaultView(input, output, target) {
         ></devtools-ai-chat-view>`;
       }
       case "explore-view":
-        return html12`<devtools-widget
-          class="fill-panel"
-          .widgetConfig=${UI9.Widget.widgetConfig(ExploreWidget)}
-        ></devtools-widget>`;
+        return html12`<devtools-widget class="fill-panel" ${widget4(ExploreWidget)}>
+                    </devtools-widget>`;
       case "disabled-view":
-        return html12`<devtools-widget
-          class="fill-panel"
-          .widgetConfig=${UI9.Widget.widgetConfig(DisabledWidget, input.props)}
-        ></devtools-widget>`;
+        return html12`<devtools-widget class="fill-panel" ${widget4(DisabledWidget, input.props)}>
+                    </devtools-widget>`;
     }
   }
   if (Root6.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled || Greendev.Prototypes.instance().isEnabled("breakpointDebuggerAgent")) {
@@ -5578,7 +5596,7 @@ function defaultView(input, output, target) {
           </div>
           <div slot="sidebar" class="sidebar-view">
             ${shouldShowWalkthrough ? html12`
-              <devtools-widget .widgetConfig=${UI9.Widget.widgetConfig(WalkthroughView, {
+              <devtools-widget ${widget4(WalkthroughView, {
       message: input.props.walkthrough.activeMessage,
       isLoading: input.props.isLoading && walkthroughIsForLastMessage,
       markdownRenderer: input.props.markdownRenderer,
@@ -6669,8 +6687,8 @@ var ActionDelegate = class {
           if (UI9.InspectorView.InspectorView.instance().drawerSize() < minDrawerSize) {
             UI9.InspectorView.InspectorView.instance().setDrawerSize(minDrawerSize);
           }
-          const widget4 = await view.widget();
-          void widget4.handleAction(actionId, opts);
+          const widget5 = await view.widget();
+          void widget5.handleAction(actionId, opts);
         })();
         return true;
       }

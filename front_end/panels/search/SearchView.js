@@ -102,7 +102,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/search/SearchView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const { ref, live } = Directives;
-const { widgetConfig, widget, widgetRef } = UI.Widget;
+const { widget, widgetRef } = UI.Widget;
 export const DEFAULT_VIEW = (input, output, target) => {
     const { query, matchCase, isRegex, searchConfig, searchMessage, searchResults, searchResultsMessage, progress, onQueryChange, onQueryKeyDown, onPanelKeyDown, onClearSearchInput, onToggleRegex, onToggleMatchCase, onRefresh, onClearSearch, } = input;
     let header = '', text = '';
@@ -197,7 +197,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
       </div>
       <div class="search-results" @keydown=${onPanelKeyDown}>
         ${searchResults.length
-        ? html `<devtools-widget .widgetConfig=${widgetConfig(SearchResultsPane, { searchResults, searchConfig })}
+        ? html `<devtools-widget ${widget(SearchResultsPane, { searchResults, searchConfig })}
             ${widgetRef(SearchResultsPane, w => {
             output.showAllMatches = () => void w.showAllMatches();
             output.collapseAllResults = () => void w.collapseAllResults();

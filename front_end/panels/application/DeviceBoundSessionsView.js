@@ -9,7 +9,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import { Directives, html, nothing, render } from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import deviceBoundSessionsViewStyles from './deviceBoundSessionsView.css.js';
-const { widget, widgetConfig } = UI.Widget;
+const { widget } = UI.Widget;
 const UIStrings = {
     /**
      *@description Label for a site, e.g. https://example.com/.
@@ -553,10 +553,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
       <style>${UI.inspectorCommonStyles}</style>
       <style>${deviceBoundSessionsViewStyles}</style>
       ${toolbarHtml}
-      <devtools-widget .widgetConfig=${widgetConfig(UI.EmptyWidget.EmptyWidget, {
-            header: defaultTitle,
-            text: defaultDescription
-        })} jslog=${VisualLogging.pane('device-bound-sessions-empty')}></devtools-widget>
+      <devtools-widget ${widget(UI.EmptyWidget.EmptyWidget, { header: defaultTitle, text: defaultDescription })} jslog=${VisualLogging.pane('device-bound-sessions-empty')}></devtools-widget>
     `, target);
         return;
     }

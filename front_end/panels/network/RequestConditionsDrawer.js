@@ -19,7 +19,7 @@ import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
 import * as PanelUtils from '../utils/utils.js';
 import requestConditionsDrawerStyles from './requestConditionsDrawer.css.js';
 const { ref, live } = Directives;
-const { widgetConfig } = UI.Widget;
+const { widget } = UI.Widget;
 const UIStrings = {
     /**
      * @description Text to enable blocking of network requests
@@ -156,7 +156,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
           ${i18nString(UIStrings.addRule)}
       </devtools-button>
     </div>
-    <devtools-widget .widgetConfig=${UI.Widget.widgetConfig(UI.Widget.VBox)}>
+    <devtools-widget ${widget(UI.Widget.VBox)}>
       ${input.list.element}
     </devtools-widget>
     `, 
@@ -241,7 +241,7 @@ function renderItem(condition, editable, index, onToggle, onConditionsChanged, o
     <devtools-widget
        class=conditions-selector
        title=${i18nString(UIStrings.requestConditionsLabel)}
-       .widgetConfig=${UI.Widget.widgetConfig(MobileThrottling.NetworkThrottlingSelector.NetworkThrottlingSelectorWidget, {
+       ${widget(MobileThrottling.NetworkThrottlingSelector.NetworkThrottlingSelectorWidget, {
         variant: "individual-request-conditions" /* MobileThrottling.NetworkThrottlingSelector.NetworkThrottlingSelect.Variant.INDIVIDUAL_REQUEST_CONDITIONS */,
         jslogContext: 'request-conditions',
         disabled: !editable,
@@ -250,7 +250,7 @@ function renderItem(condition, editable, index, onToggle, onConditionsChanged, o
     })}></devtools-widget>
     <devtools-widget
       ?disabled=${!editable || !originalOrUpgradedURLPattern}
-      .widgetConfig=${widgetConfig(AffectedCountWidget, { condition, lookUpRequestCount })}></devtools-widget>`;
+      ${widget(AffectedCountWidget, { condition, lookUpRequestCount })}></devtools-widget>`;
     // clang-format on
 }
 export const AFFECTED_COUNT_DEFAULT_VIEW = (input, output, target) => {

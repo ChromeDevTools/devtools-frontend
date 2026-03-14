@@ -21,7 +21,7 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as ApplicationComponents from './components/components.js';
 import frameDetailsReportViewStyles from './frameDetailsReportView.css.js';
 import { OriginTrialTreeView } from './OriginTrialTreeView.js';
-const { widget, widgetConfig } = UI.Widget;
+const { widget } = UI.Widget;
 const UIStrings = {
     /**
      * @description Section header in the Frame Details view
@@ -285,7 +285,7 @@ function renderOriginTrial(trials) {
         </devtools-link>
       </span>
     </devtools-report-section>
-    <devtools-widget class="span-cols" .widgetConfig=${widgetConfig(OriginTrialTreeView, { data })}>
+    <devtools-widget class="span-cols" ${widget(OriginTrialTreeView, { data })}>
     </devtools-widget>
     <devtools-report-divider></devtools-report-divider>`;
     // clang-format on

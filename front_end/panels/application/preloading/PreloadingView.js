@@ -23,6 +23,7 @@ import * as PreloadingHelper from './helper/helper.js';
 import preloadingViewStyles from './preloadingView.css.js';
 import preloadingViewDropDownStyles from './preloadingViewDropDown.css.js';
 const { createRef, ref } = Directives;
+const { widget } = UI.Widget;
 const UIStrings = {
     /**
      * @description DropDown title for filtering preloading attempts by rule set
@@ -232,7 +233,7 @@ export class PreloadingRuleSetView extends UI.Widget.VBox {
           <div slot="main" ${ref(this.ruleSetGridContainerRef)}>
           </div>
           <div slot="sidebar" jslog=${VisualLogging.section('rule-set-details')}>
-            <devtools-widget .widgetConfig=${UI.Widget.widgetConfig(PreloadingComponents.RuleSetDetailsView.RuleSetDetailsView, {
+            <devtools-widget ${widget(PreloadingComponents.RuleSetDetailsView.RuleSetDetailsView, {
             ruleSet: this.getRuleSet(),
             shouldPrettyPrint: this.shouldPrettyPrint,
         })} ${ref(this.ruleSetDetailsRef)}></devtools-widget>
@@ -387,6 +388,7 @@ export class PreloadingAttemptView extends UI.Widget.VBox {
     preloadingDetails = new PreloadingComponents.PreloadingDetailsReportView.PreloadingDetailsReportView();
     ruleSetSelector;
     textFilterUI;
+    hsplit;
     clearButton;
     constructor(model) {
         super({
@@ -461,7 +463,9 @@ export class PreloadingAttemptView extends UI.Widget.VBox {
             >${i18nString(UIStrings.learnMore)}</devtools-link>
           </div>
         </div>
-        <devtools-split-view sidebar-position="second">
+        <devtools-split-view sidebar-position="second" ${UI.Widget.widgetRef(UI.SplitWidget.SplitWidget, w => {
+            this.hsplit = w;
+        })}>
           <div slot="main" class="overflow-auto" style="height: 100%">
             ${preloadingGridContainer}
           </div>
@@ -537,7 +541,14 @@ export class PreloadingAttemptView extends UI.Widget.VBox {
         this.preloadingGrid.rows = filteredRows;
         this.preloadingGrid.pageURL = pageURL();
         // Only show empty state when there are truly no speculations (not when filter has no matches)
-        this.contentElement.classList.toggle('empty', rows.length === 0);
+        const wasEmpty = this.contentElement.classList.contains('empty');
+        const isEmpty = rows.length === 0;
+        this.contentElement.classList.toggle('empty', isEmpty);
+        // When this view starts empty, the split view gets laid out while hidden and collapses
+        // its sidebar to 0. Re-layout once it becomes visible.
+        if (wasEmpty && !isEmpty) {
+            this.hsplit?.doLayout();
+        }
         this.updatePreloadingDetails();
     }
     onPreloadingGridCellFocused({ rowId }) {

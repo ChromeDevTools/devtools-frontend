@@ -8051,6 +8051,9 @@
   "panels/elements/ShortcutTreeElement.ts | reveal": {
     "message": "reveal"
   },
+  "panels/elements/StylePropertiesSection.ts | collapseExpandedRule": {
+    "message": "Collapse expanded rule"
+  },
   "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
     "message": "constructed stylesheet"
   },
@@ -8065,6 +8068,9 @@
   },
   "panels/elements/StylePropertiesSection.ts | cssSelector": {
     "message": "CSS selector"
+  },
+  "panels/elements/StylePropertiesSection.ts | expandCollapsedRule": {
+    "message": "Expand collapsed rule"
   },
   "panels/elements/StylePropertiesSection.ts | injectedStylesheet": {
     "message": "injected stylesheet"

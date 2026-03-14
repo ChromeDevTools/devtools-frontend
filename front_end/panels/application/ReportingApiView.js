@@ -8,7 +8,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import { html, render } from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as ApplicationComponents from './components/components.js';
-const { widget, widgetConfig } = UI.Widget;
+const { widget } = UI.Widget;
 const UIStrings = {
     /**
      * @description Placeholder text that shows if no report or endpoint was detected.
@@ -79,7 +79,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
     else {
         // clang-format off
         render(html `
-      <devtools-widget .widgetConfig=${widgetConfig(UI.EmptyWidget.EmptyWidget, {
+      <devtools-widget ${widget(UI.EmptyWidget.EmptyWidget, {
             header: i18nString(UIStrings.noReportOrEndpoint),
             text: i18nString(UIStrings.reportingApiDescription),
             link: REPORTING_API_EXPLANATION_URL,

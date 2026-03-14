@@ -331,7 +331,8 @@ export class AiAgent {
                     query = {
                         functionResponse: {
                             name: functionCall.name,
-                            response: result,
+                            // Widgets are not sent back to the LLM
+                            response: { ...result, widgets: undefined },
                         },
                     };
                     request = this.buildRequest(query, Host.AidaClient.Role.ROLE_UNSPECIFIED);

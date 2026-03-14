@@ -233,7 +233,7 @@ const DEFAULT_VIEW = (input, output, target) => {
         }
         // clang-format off
         return html `<devtools-widget class="copy-to-prompt"
-      .widgetConfig=${UI.Widget.widgetConfig(PanelCommon.CopyChangesToPrompt, {
+      ${widget(PanelCommon.CopyChangesToPrompt, {
             workspaceDiff: input.workspaceDiff,
             patchAgentCSSChange: changedCode,
         })}></devtools-widget>`;

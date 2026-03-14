@@ -40,6 +40,7 @@ export declare class PreloadingAttemptView extends UI.Widget.VBox {
     private readonly preloadingDetails;
     private readonly ruleSetSelector;
     private readonly textFilterUI;
+    private hsplit?;
     private clearButton;
     constructor(model: SDK.PreloadingModel.PreloadingModel);
     wasShown(): void;

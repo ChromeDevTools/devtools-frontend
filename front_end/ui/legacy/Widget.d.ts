@@ -27,7 +27,9 @@ export declare class WidgetElement<WidgetT extends Widget> extends HTMLElement {
     focus(): void;
 }
 export declare class WidgetDirective extends Lit.Directive.Directive {
+    #private;
     constructor(partInfo: Lit.Directive.PartInfo);
+    update(part: Lit.Directive.Part, [widgetClass, widgetParams]: Parameters<this['render']>): unknown;
     render<F extends WidgetFactory<Widget>, ParamKeys extends keyof InferWidgetTFromFactory<F>>(widgetClass: F, widgetParams?: Pick<InferWidgetTFromFactory<F>, ParamKeys> & Partial<InferWidgetTFromFactory<F>>): unknown;
 }
 export declare const widget: <F extends WidgetFactory<Widget>, ParamKeys extends keyof InferWidgetTFromFactory<F>>(widgetClass: F, widgetParams?: Pick<InferWidgetTFromFactory<F>, ParamKeys> & Partial<InferWidgetTFromFactory<F>>) => Lit.Directive.DirectiveResult<typeof WidgetDirective>;
@@ -166,6 +168,9 @@ export declare class Widget {
      *          before proceeding.
      */
     performUpdate(): Promise<void> | void;
+    performUpdate(signal: AbortSignal): Promise<void> | void;
+    addUpdateController(controller: AbortController): void;
+    cancelUpdateController(): void;
     /**
      * Schedules an asynchronous update for this widget.
      *

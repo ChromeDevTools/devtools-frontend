@@ -10,6 +10,7 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import layerDetailsViewStyles from './layerDetailsView.css.js';
 import { ScrollRectSelection, } from './LayerViewHost.js';
 const { html, nothing } = Lit;
+const { widget } = UI.Widget;
 const UIStrings = {
     /**
      * @description Text in Layer Details View of the Layers panel
@@ -134,7 +135,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
     if (!layer) {
         // clang-format off
         Lit.render(html `<div class="layer-details-container">
-      <devtools-widget class="learn-more" .widgetConfig=${UI.Widget.widgetConfig(UI.EmptyWidget.EmptyWidget, {
+      <devtools-widget class="learn-more" ${widget(UI.EmptyWidget.EmptyWidget, {
             header: i18nString(UIStrings.noLayerSelected),
             text: i18nString(UIStrings.selectALayerToSeeItsDetails)
         })}>

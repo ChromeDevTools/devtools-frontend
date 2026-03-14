@@ -20,19 +20,14 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/SidebarSingleInsightSet.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+const { widget } = UI.Widget;
 const DEFAULT_VIEW = (input, output, target) => {
     const { shownInsights, passedInsights, insightSetKey, parsedTrace, renderInsightComponent, } = input;
     function renderMetrics() {
         if (!insightSetKey || !parsedTrace) {
             return Lit.nothing;
         }
-        const metricsWidgetConfig = UI.Widget.widgetConfig(CWVMetrics, {
-            data: {
-                insightSetKey,
-                parsedTrace,
-            }
-        });
-        return html `<devtools-widget .widgetConfig=${metricsWidgetConfig}></devtools-widget>`;
+        return html `${widget(CWVMetrics, { data: { insightSetKey, parsedTrace } })}`;
     }
     function renderInsights() {
         const shownInsightTemplates = shownInsights.map(renderInsightComponent);

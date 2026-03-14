@@ -187,7 +187,13 @@ export interface StylePropertiesAiWidget {
         selector?: string;
     };
 }
-export type AiWidget = ComputedStyleAiWidget | CoreVitalsAiWidget | StylePropertiesAiWidget;
+export interface DomTreeAiWidget {
+    name: 'DOM_TREE';
+    data: {
+        root: SDK.DOMModel.DOMNodeSnapshot;
+    };
+}
+export type AiWidget = ComputedStyleAiWidget | CoreVitalsAiWidget | StylePropertiesAiWidget | DomTreeAiWidget;
 export type FunctionCallHandlerResult<Result> = {
     requiresApproval: true;
     /**

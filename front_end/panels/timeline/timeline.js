@@ -14120,6 +14120,7 @@ var UIStrings24 = {
 };
 var str_24 = i18n47.i18n.registerUIStrings("panels/timeline/TimelineDetailsView.ts", UIStrings24);
 var i18nString24 = i18n47.i18n.getLocalizedString.bind(void 0, str_24);
+var { widget } = UI16.Widget;
 var TimelineDetailsPane = class extends Common14.ObjectWrapper.eventMixin(UI16.Widget.VBox) {
   detailsLinkifier;
   tabbedPane;
@@ -14523,7 +14524,7 @@ var SUMMARY_DEFAULT_VIEW = (input, _output, target) => {
         <style>${timelineDetailsView_css_default}</style>
         ${Directives2.until(renderSelectedEventDetails(input))}
         ${input.selectedRange ? generateRangeSummaryDetails(input) : nothing}
-        <devtools-widget data-related-insight-chips .widgetConfig=${UI16.Widget.widgetConfig(TimelineComponents5.RelatedInsightChips.RelatedInsightChips, {
+        <devtools-widget data-related-insight-chips ${widget(TimelineComponents5.RelatedInsightChips.RelatedInsightChips, {
     activeEvent: input.selectedEvent,
     eventToInsightsMap: input.eventToRelatedInsightsMap
   })}></devtools-widget>
@@ -14577,7 +14578,7 @@ async function renderSelectedEventDetails(input) {
   const traceRecordingIsFresh = parsedTrace ? Tracing5.FreshRecording.Tracker.instance().recordingIsFresh(parsedTrace) : false;
   if (Trace30.Types.Events.isSyntheticLayoutShift(selectedEvent) || Trace30.Types.Events.isSyntheticLayoutShiftCluster(selectedEvent)) {
     return html4`
-      <devtools-widget data-layout-shift-details .widgetConfig=${UI16.Widget.widgetConfig(TimelineComponents5.LayoutShiftDetails.LayoutShiftDetails, {
+      <devtools-widget data-layout-shift-details ${widget(TimelineComponents5.LayoutShiftDetails.LayoutShiftDetails, {
       event: selectedEvent,
       parsedTrace: input.parsedTrace,
       isFreshRecording: traceRecordingIsFresh
@@ -14586,7 +14587,7 @@ async function renderSelectedEventDetails(input) {
   }
   if (Trace30.Types.Events.isSyntheticNetworkRequest(selectedEvent)) {
     return html4`
-      <devtools-widget data-network-request-details .widgetConfig=${UI16.Widget.widgetConfig(TimelineComponents5.NetworkRequestDetails.NetworkRequestDetails, {
+      <devtools-widget data-network-request-details ${widget(TimelineComponents5.NetworkRequestDetails.NetworkRequestDetails, {
       request: selectedEvent,
       entityMapper: input.entityMapper,
       target: input.target,

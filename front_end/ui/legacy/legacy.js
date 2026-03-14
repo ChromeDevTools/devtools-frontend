@@ -2479,6 +2479,7 @@ function enqueueWidgetUpdate(widget2) {
   return enqueueIntoNextUpdateQueue(widget2);
 }
 function cancelUpdate(widget2) {
+  widget2.cancelUpdateController();
   if (currentUpdateQueue) {
     const scheduledUpdate2 = currentUpdateQueue.get(widget2);
     if (scheduledUpdate2) {
@@ -2501,8 +2502,13 @@ function runNextUpdate() {
   for (const [widget2, { resolve }] of currentUpdateQueue) {
     currentlyProcessed.add(widget2);
     void (async () => {
-      await widget2.performUpdate();
-      resolve();
+      try {
+        const controller = new AbortController();
+        widget2.addUpdateController(controller);
+        await widget2.performUpdate(controller.signal);
+      } finally {
+        resolve();
+      }
     })();
   }
   currentUpdateQueue.clear();
@@ -2631,13 +2637,29 @@ var WidgetElement = class extends HTMLElement {
 };
 customElements.define("devtools-widget", WidgetElement);
 var WidgetDirective = class extends Lit.Directive.Directive {
+  #partType;
   constructor(partInfo) {
     super(partInfo);
-    if (partInfo.type !== Lit.Directive.PartType.CHILD) {
-      throw new Error("Widget directive must be used as a child directive.");
+    this.#partType = partInfo.type;
+    if (this.#partType !== Lit.Directive.PartType.CHILD && this.#partType !== Lit.Directive.PartType.ELEMENT) {
+      throw new Error("Widget directive must be used as a child or element directive.");
     }
   }
+  update(part, [widgetClass, widgetParams]) {
+    if (this.#partType === Lit.Directive.PartType.ELEMENT) {
+      const element = part.element;
+      if (!(element instanceof WidgetElement)) {
+        throw new Error("Widget directive must be used on a devtools-widget element.");
+      }
+      element.widgetConfig = widgetConfig(widgetClass, widgetParams);
+      return Lit.nothing;
+    }
+    return this.render(widgetClass, widgetParams);
+  }
   render(widgetClass, widgetParams) {
+    if (this.#partType === Lit.Directive.PartType.ELEMENT) {
+      return Lit.nothing;
+    }
     return Lit.Directives.repeat([widgetClass], () => widgetClass, () => html`<devtools-widget .widgetConfig=${widgetConfig(widgetClass, widgetParams)}></devtools-widget>`);
   }
 };
@@ -2689,6 +2711,7 @@ var Widget = class _Widget {
   #invalidationsRequested;
   #externallyManaged;
   #updateComplete = UPDATE_COMPLETE;
+  #updateController;
   constructor(elementOrOptions, options) {
     if (elementOrOptions instanceof HTMLElement) {
       this.element = elementOrOptions;
@@ -3195,18 +3218,13 @@ var Widget = class _Widget {
     assert(!this.#parentWidget, "Attempt to mark widget as externally managed after insertion to the DOM");
     this.#externallyManaged = true;
   }
-  /**
-   * Override this method in derived classes to perform the actual view update.
-   *
-   * This is not meant to be called directly, but invoked (indirectly) through
-   * the `requestAnimationFrame` and executed with the animation frame. Instead,
-   * use the `requestUpdate()` method to schedule an asynchronous update.
-   *
-   * @returns can either return nothing or a promise; in that latter case, the
-   *          update logic will await the resolution of the returned promise
-   *          before proceeding.
-   */
-  performUpdate() {
+  performUpdate(_signal) {
+  }
+  addUpdateController(controller) {
+    this.#updateController = controller;
+  }
+  cancelUpdateController() {
+    this.#updateController?.abort();
   }
   /**
    * Schedules an asynchronous update for this widget.
@@ -3215,6 +3233,7 @@ var Widget = class _Widget {
    * frame.
    */
   requestUpdate() {
+    this.#updateController?.abort();
     this.#updateComplete = enqueueWidgetUpdate(this);
   }
   /**

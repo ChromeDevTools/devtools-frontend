@@ -77,9 +77,13 @@ export declare class DOMTreeWidget extends UI.Widget.Widget {
     set showAIButton(showAIButton: boolean);
     get disableEdits(): boolean;
     set disableEdits(disableEdits: boolean);
+    get expandRoot(): boolean;
+    set expandRoot(expandRoot: boolean);
     constructor(element?: HTMLElement, view?: View);
     selectDOMNode(node: SDK.DOMModel.DOMNode | SDK.DOMModel.AdoptedStyleSheet | null, focus?: boolean): void;
     highlightNodeAttribute(node: SDK.DOMModel.DOMNode, attribute: string): void;
+    get wrap(): boolean;
+    set wrap(wrap: boolean);
     setWordWrap(wrap: boolean): void;
     selectedDOMNode(): SDK.DOMModel.DOMNode | null;
     /**
@@ -156,12 +160,12 @@ export declare class ElementsTreeOutline extends ElementsTreeOutline_base {
     private treeElementBeingDragged?;
     private dragOverTreeElement?;
     private updateModifiedNodesTimeout?;
-    readonly maxTreeDepth?: number;
-    readonly enableContextMenu: boolean;
-    readonly showComments: boolean;
-    readonly showAIButton: boolean;
-    readonly disableEdits: boolean;
-    readonly expandRoot: boolean;
+    maxTreeDepth?: number;
+    enableContextMenu: boolean;
+    showComments: boolean;
+    showAIButton: boolean;
+    disableEdits: boolean;
+    expandRoot: boolean;
     constructor(omitRootDOMNode?: boolean, selectEnabled?: boolean, hideGutter?: boolean, maxTreeDepth?: number, enableContextMenu?: boolean, showComments?: boolean, showAIButton?: boolean, disableEdits?: boolean, expandRoot?: boolean);
     static forDOMModel(domModel: SDK.DOMModel.DOMModel): ElementsTreeOutline | null;
     deindentSingleNode(): void;

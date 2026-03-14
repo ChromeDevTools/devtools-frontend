@@ -585,6 +585,7 @@ export class PerformanceAgent extends AiAgent {
     #declareFunctions(context) {
         const focus = context.getItem();
         const { parsedTrace } = focus;
+        const processedNodeIds = new Set();
         this.declareFunction('getInsightDetails', {
             description: 'Returns detailed information about a specific insight of an insight set. Use this before commenting on any specific issue to get more information.',
             parameters: {
@@ -626,9 +627,35 @@ export class PerformanceAgent extends AiAgent {
                     return { error: `No insight available. Valid insight names are: ${valid}` };
                 }
                 const details = new PerformanceInsightFormatter(focus, insight).formatInsight();
+                const widgets = [];
+                if (params.insightName === 'LCPDiscovery' || params.insightName === 'LCPBreakdown') {
+                    const lcpMetric = Trace.Insights.Common.getLCP(insightSet);
+                    const lcpEvent = lcpMetric?.event;
+                    if (lcpEvent && Trace.Types.Events.isAnyLargestContentfulPaintCandidate(lcpEvent)) {
+                        const nodeId = lcpEvent.args.data?.nodeId;
+                        // We want to show only one DOM tree widget per walkthrough per node.
+                        // We do want to show the widget for the same node again, if it's within a new walkthrough.
+                        if (nodeId && !processedNodeIds.has(nodeId)) {
+                            const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+                            const domModel = target?.model(SDK.DOMModel.DOMModel);
+                            if (domModel) {
+                                const nodeMap = await domModel.pushNodesByBackendIdsToFrontend(new Set([nodeId]));
+                                const node = nodeMap?.get(nodeId);
+                                if (node) {
+                                    const snapshot = await node.takeSnapshot();
+                                    widgets.push({
+                                        name: 'DOM_TREE',
+                                        data: { root: snapshot },
+                                    });
+                                    processedNodeIds.add(nodeId);
+                                }
+                            }
+                        }
+                    }
+                }
                 const key = `getInsightDetails('${params.insightSetId}', '${params.insightName}')`;
                 this.#cacheFunctionResult(focus, key, details);
-                return { result: { details } };
+                return { result: { details }, widgets };
             },
         });
         this.declareFunction('getEventByKey', {

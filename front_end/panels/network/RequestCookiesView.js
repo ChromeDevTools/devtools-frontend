@@ -91,7 +91,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
       </div>
 
       ${input.requestCookies.cookies.length > 0 ? html `
-        <devtools-widget .widgetConfig=${UI.Widget.widgetConfig(CookieTable.CookiesTable.CookiesTable, {
+        <devtools-widget ${widget(CookieTable.CookiesTable.CookiesTable, {
         cookiesData: input.requestCookies,
         inline: true
     })} class="cookie-table cookies-panel-item"></devtools-widget>
@@ -109,7 +109,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
       </div>
 
       ${input.responseCookies.cookies.length ? html `
-        <devtools-widget .widgetConfig=${UI.Widget.widgetConfig(CookieTable.CookiesTable.CookiesTable, {
+        <devtools-widget ${widget(CookieTable.CookiesTable.CookiesTable, {
         cookiesData: input.responseCookies,
         inline: true
     })} class="cookie-table cookies-panel-item"></devtools-widget>

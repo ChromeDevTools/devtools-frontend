@@ -40,7 +40,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
         <div class=vbox slot="main">
           <devtools-widget
             ?hidden=${input.workspaceDiff.modifiedUISourceCodes().length > 0}
-            .widgetConfig=${UI.Widget.widgetConfig(UI.EmptyWidget.EmptyWidget, {
+            ${widget(UI.EmptyWidget.EmptyWidget, {
         header: i18nString(UIStrings.noChanges),
         text: i18nString(UIStrings.changesViewDescription),
         link: CHANGES_VIEW_URL,
@@ -54,18 +54,14 @@ export const DEFAULT_VIEW = (input, _output, target) => {
           </div>
           ${hasCopyToPrompt ? html `
             <devtools-widget class="copy-to-prompt"
-              .widgetConfig=${UI.Widget.widgetConfig(PanelsCommon.CopyChangesToPrompt, {
+              ${widget(PanelsCommon.CopyChangesToPrompt, {
         workspaceDiff: input.workspaceDiff,
         patchAgentCSSChange: null,
     })}
             ></devtools-widget>
           ` : Lit.nothing}
         </div>
-        <devtools-widget
-          slot="sidebar"
-          .widgetConfig=${UI.Widget.widgetConfig(ChangesSidebar, {
-        workspaceDiff: input.workspaceDiff
-    })}
+        <devtools-widget slot="sidebar" ${widget(ChangesSidebar, { workspaceDiff: input.workspaceDiff })}
           ${UI.Widget.widgetRef(ChangesSidebar, onSidebar)}>
         </devtools-widget>
       </devtools-split-view>`, 

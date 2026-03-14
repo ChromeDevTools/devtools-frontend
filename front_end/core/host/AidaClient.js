@@ -48,6 +48,8 @@ export var ClientFeature;
     ClientFeature[ClientFeature["CHROME_CONTEXT_SELECTION_AGENT"] = 25] = "CHROME_CONTEXT_SELECTION_AGENT";
     // Chrome Accessibility Agent
     ClientFeature[ClientFeature["CHROME_ACCESSIBILITY_AGENT"] = 26] = "CHROME_ACCESSIBILITY_AGENT";
+    // Chrome AI Assistance Conversation Summary Agent.
+    ClientFeature[ClientFeature["CHROME_CONVERSATION_SUMMARY_AGENT"] = 27] = "CHROME_CONVERSATION_SUMMARY_AGENT";
     // Removed features (for reference).
     // Chrome AI Assistance Performance Insights Agent.
     // CHROME_PERFORMANCE_INSIGHTS_AGENT = 13,

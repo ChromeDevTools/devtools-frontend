@@ -7842,19 +7842,14 @@ var UIStrings20 = {
 };
 var str_20 = i18n39.i18n.registerUIStrings("panels/timeline/components/SidebarSingleInsightSet.ts", UIStrings20);
 var i18nString19 = i18n39.i18n.getLocalizedString.bind(void 0, str_20);
+var { widget: widget3 } = UI15.Widget;
 var DEFAULT_VIEW10 = (input, output, target) => {
   const { shownInsights, passedInsights, insightSetKey, parsedTrace, renderInsightComponent } = input;
   function renderMetrics() {
     if (!insightSetKey || !parsedTrace) {
       return Lit19.nothing;
     }
-    const metricsWidgetConfig = UI15.Widget.widgetConfig(CWVMetrics, {
-      data: {
-        insightSetKey,
-        parsedTrace
-      }
-    });
-    return html19`<devtools-widget .widgetConfig=${metricsWidgetConfig}></devtools-widget>`;
+    return html19`${widget3(CWVMetrics, { data: { insightSetKey, parsedTrace } })}`;
   }
   function renderInsights() {
     const shownInsightTemplates = shownInsights.map(renderInsightComponent);
@@ -8297,30 +8292,30 @@ var InsightsView = class extends UI17.Widget.VBox {
     this.#component.widgetConfig = UI17.Widget.widgetConfig(SidebarInsightsTab, { parsedTrace });
   }
   getActiveInsight() {
-    const widget3 = this.#component.getWidget();
-    if (widget3) {
-      return widget3.activeInsight;
+    const widget4 = this.#component.getWidget();
+    if (widget4) {
+      return widget4.activeInsight;
     }
     return null;
   }
   setActiveInsight(active, opts) {
-    const widget3 = this.#component.getWidget();
-    if (!widget3) {
+    const widget4 = this.#component.getWidget();
+    if (!widget4) {
       return;
     }
-    widget3.activeInsight = active;
+    widget4.activeInsight = active;
     if (opts.highlight && active) {
-      void widget3.updateComplete.then(() => {
-        widget3.highlightActiveInsight();
+      void widget4.updateComplete.then(() => {
+        widget4.highlightActiveInsight();
       });
     }
   }
   setActiveInsightSet(insightSetKey) {
-    const widget3 = this.#component.getWidget();
-    if (!widget3) {
+    const widget4 = this.#component.getWidget();
+    if (!widget4) {
       return;
     }
-    widget3.setActiveInsightSet(insightSetKey);
+    widget4.setActiveInsightSet(insightSetKey);
   }
 };
 var AnnotationsView = class extends UI17.Widget.VBox {

@@ -367,12 +367,12 @@ var AiAgent = class {
     }
     const enableAidaFunctionCalling = declarations.length;
     const userTier = Host.AidaClient.convertToUserTierEnum(this.userTier);
-    const preamble7 = userTier === Host.AidaClient.UserTier.TESTERS ? this.preamble : void 0;
+    const preamble8 = userTier === Host.AidaClient.UserTier.TESTERS ? this.preamble : void 0;
     const facts = Array.from(this.#facts);
     const request = {
       client: Host.AidaClient.CLIENT_NAME,
       current_message: currentMessage,
-      preamble: preamble7,
+      preamble: preamble8,
       historical_contexts: history.length ? history : void 0,
       facts: facts.length ? facts : void 0,
       ...enableAidaFunctionCalling ? { function_declarations: declarations } : {},
@@ -570,7 +570,8 @@ var AiAgent = class {
           query = {
             functionResponse: {
               name: functionCall.name,
-              response: result
+              // Widgets are not sent back to the LLM
+              response: { ...result, widgets: void 0 }
             }
           };
           request = this.buildRequest(query, Host.AidaClient.Role.ROLE_UNSPECIFIED);
@@ -5626,6 +5627,7 @@ ${result}`,
   #declareFunctions(context) {
     const focus = context.getItem();
     const { parsedTrace } = focus;
+    const processedNodeIds = /* @__PURE__ */ new Set();
     this.declareFunction("getInsightDetails", {
       description: "Returns detailed information about a specific insight of an insight set. Use this before commenting on any specific issue to get more information.",
       parameters: {
@@ -5665,9 +5667,33 @@ ${result}`,
           return { error: `No insight available. Valid insight names are: ${valid}` };
         }
         const details = new PerformanceInsightFormatter(focus, insight).formatInsight();
+        const widgets = [];
+        if (params.insightName === "LCPDiscovery" || params.insightName === "LCPBreakdown") {
+          const lcpMetric = Trace6.Insights.Common.getLCP(insightSet);
+          const lcpEvent = lcpMetric?.event;
+          if (lcpEvent && Trace6.Types.Events.isAnyLargestContentfulPaintCandidate(lcpEvent)) {
+            const nodeId = lcpEvent.args.data?.nodeId;
+            if (nodeId && !processedNodeIds.has(nodeId)) {
+              const target = SDK3.TargetManager.TargetManager.instance().primaryPageTarget();
+              const domModel = target?.model(SDK3.DOMModel.DOMModel);
+              if (domModel) {
+                const nodeMap = await domModel.pushNodesByBackendIdsToFrontend(/* @__PURE__ */ new Set([nodeId]));
+                const node = nodeMap?.get(nodeId);
+                if (node) {
+                  const snapshot = await node.takeSnapshot();
+                  widgets.push({
+                    name: "DOM_TREE",
+                    data: { root: snapshot }
+                  });
+                  processedNodeIds.add(nodeId);
+                }
+              }
+            }
+          }
+        }
         const key = `getInsightDetails('${params.insightSetId}', '${params.insightName}')`;
         this.#cacheFunctionResult(focus, key, details);
-        return { result: { details } };
+        return { result: { details }, widgets };
       }
     });
     this.declareFunction("getEventByKey", {
@@ -6833,7 +6859,7 @@ var UIStringsNotTranslate4 = {
 };
 var lockedString6 = i18n11.i18n.lockedString;
 function getPreamble() {
-  let preamble7 = `You are the most advanced CSS/DOM/HTML debugging assistant integrated into Chrome DevTools.
+  let preamble8 = `You are the most advanced CSS/DOM/HTML debugging assistant integrated into Chrome DevTools.
 You always suggest considering the best web development practices and the newest platform features such as view transitions.
 The user selected a DOM element in the browser's DevTools and sends a query about the page or the selected DOM element.
 First, examine the provided context, then use the functions to gather additional context and resolve the user request.
@@ -6857,7 +6883,7 @@ First, examine the provided context, then use the functions to gather additional
 * **CRITICAL** You are a CSS/DOM/HTML debugging assistant. NEVER provide answers to questions of unrelated topics such as legal advice, financial advice, personal opinions, medical advice, religion, race, politics, sexuality, gender, or any other non web-development topics. Answer "Sorry, I can't answer that. I'm best at questions about debugging web pages." to such questions.`;
   const greenDevEmulationEnabled = Greendev2.Prototypes.instance().isEnabled("emulationCapabilities");
   if (greenDevEmulationEnabled) {
-    preamble7 += `
+    preamble8 += `
 # Emulation and Screenshots
 
 * If asked to verify whether the page is visually broken or if there are display problems with specific devices, use the \`activateDeviceEmulation\` tool. This tool will activate emulation for a specified device and capture a screenshot.
@@ -6891,7 +6917,7 @@ When referring to an element for which you know the nodeId, annotate your output
 - This link will reveal the element in the Elements panel
 - Never mention node or nodeId when referring to the element, and especially not in the link text.`;
   }
-  return preamble7;
+  return preamble8;
 }
 var promptForScreenshot = `The user has provided you a screenshot of the page (as visible in the viewport) in base64-encoded format. You SHOULD use it while answering user's queries.
 
@@ -8004,15 +8030,99 @@ var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
   }
 };
 
+// gen/front_end/models/ai_assistance/agents/ConversationSummaryAgent.js
+var ConversationSummaryAgent_exports = {};
+__export(ConversationSummaryAgent_exports, {
+  ConversationSummaryAgent: () => ConversationSummaryAgent,
+  ConversationSummaryContext: () => ConversationSummaryContext
+});
+import * as Host9 from "./../../core/host/host.js";
+import * as Root8 from "./../../core/root/root.js";
+var preamble6 = `You are an expert technical assistant specializing in summarizing debugging conversations from Chrome DevTools.
+You will receive a markdown-formatted transcript of a conversation between a user and a DevTools AI assistant.
+Your goal is to produce a succinct, structured summary that a local AI agent in the user's IDE can use to apply code fixes.
+
+Focus on extracting:
+1. **Core Issue:** The primary problem or question the user was investigating.
+2. **Diagnostic Findings:** Key technical details discovered (e.g., specific functions, bottlenecks, error messages, URLs, or CSS properties).
+3. **Proposed Solution:** The specific changes or optimizations recommended by the DevTools assistant.
+4. **Actionable Steps:** A clear, step-by-step list of instructions for the IDE agent to implement the fix.
+
+Maintain a professional, technical, and extremely concise tone. Avoid conversational filler or introductory/concluding remarks.
+The output must be structured markdown.`;
+var ConversationSummaryContext = class extends ConversationContext {
+  #conversation;
+  constructor(conversation) {
+    super();
+    this.#conversation = conversation;
+  }
+  getOrigin() {
+    return "devtools://ai-assistance";
+  }
+  getItem() {
+    return this.#conversation;
+  }
+  getTitle() {
+    return "Conversation";
+  }
+};
+var ConversationSummaryAgent = class extends AiAgent {
+  preamble = preamble6;
+  get clientFeature() {
+    return Host9.AidaClient.ClientFeature.CHROME_CONVERSATION_SUMMARY_AGENT;
+  }
+  get userTier() {
+    return Root8.Runtime.hostConfig.devToolsFreestyler?.userTier;
+  }
+  get options() {
+    const temperature = Root8.Runtime.hostConfig.devToolsFreestyler?.temperature;
+    const modelId = Root8.Runtime.hostConfig.devToolsFreestyler?.modelId;
+    return {
+      temperature,
+      modelId
+    };
+  }
+  async *handleContextDetails(context) {
+    if (!context) {
+      return;
+    }
+    yield {
+      type: "context",
+      title: "Summarizing conversation",
+      details: [
+        {
+          title: "Conversation transcript",
+          text: context.getItem()
+        }
+      ]
+    };
+  }
+  async enhanceQuery(query, context) {
+    const conversation = context ? context.getItem() : query;
+    return `Summarize the following conversation:
+
+${conversation}`;
+  }
+  async summarizeConversation(conversation) {
+    const context = new ConversationSummaryContext(conversation);
+    const response = await Array.fromAsync(this.run("", { selected: context }));
+    const lastResponse = response.at(-1);
+    if (lastResponse && lastResponse.type === "answer" && lastResponse.complete === true) {
+      return lastResponse.text.trim();
+    }
+    throw new Error("Failed to summarize conversation");
+  }
+};
+
 // gen/front_end/models/ai_assistance/agents/PatchAgent.js
 var PatchAgent_exports = {};
 __export(PatchAgent_exports, {
   FileUpdateAgent: () => FileUpdateAgent,
   PatchAgent: () => PatchAgent
 });
-import * as Host9 from "./../../core/host/host.js";
-import * as Root8 from "./../../core/root/root.js";
-var preamble6 = `You are a highly skilled software engineer with expertise in web development.
+import * as Host10 from "./../../core/host/host.js";
+import * as Root9 from "./../../core/root/root.js";
+var preamble7 = `You are a highly skilled software engineer with expertise in web development.
 The user asks you to apply changes to a source code folder.
 
 # Considerations
@@ -8048,15 +8158,15 @@ var PatchAgent = class extends AiAgent {
   async *handleContextDetails(_select) {
     return;
   }
-  preamble = preamble6;
-  clientFeature = Host9.AidaClient.ClientFeature.CHROME_PATCH_AGENT;
+  preamble = preamble7;
+  clientFeature = Host10.AidaClient.ClientFeature.CHROME_PATCH_AGENT;
   get userTier() {
-    return Root8.Runtime.hostConfig.devToolsFreestyler?.userTier;
+    return Root9.Runtime.hostConfig.devToolsFreestyler?.userTier;
   }
   get options() {
     return {
-      temperature: Root8.Runtime.hostConfig.devToolsFreestyler?.temperature,
-      modelId: Root8.Runtime.hostConfig.devToolsFreestyler?.modelId
+      temperature: Root9.Runtime.hostConfig.devToolsFreestyler?.temperature,
+      modelId: Root9.Runtime.hostConfig.devToolsFreestyler?.modelId
     };
   }
   get agentProject() {
@@ -8230,15 +8340,15 @@ var FileUpdateAgent = class extends AiAgent {
   async *handleContextDetails(_select) {
     return;
   }
-  preamble = preamble6;
-  clientFeature = Host9.AidaClient.ClientFeature.CHROME_PATCH_AGENT;
+  preamble = preamble7;
+  clientFeature = Host10.AidaClient.ClientFeature.CHROME_PATCH_AGENT;
   get userTier() {
-    return Root8.Runtime.hostConfig.devToolsFreestyler?.userTier;
+    return Root9.Runtime.hostConfig.devToolsFreestyler?.userTier;
   }
   get options() {
     return {
-      temperature: Root8.Runtime.hostConfig.devToolsFreestyler?.temperature,
-      modelId: Root8.Runtime.hostConfig.devToolsFreestyler?.modelId
+      temperature: Root9.Runtime.hostConfig.devToolsFreestyler?.temperature,
+      modelId: Root9.Runtime.hostConfig.devToolsFreestyler?.modelId
     };
   }
 };
@@ -8248,9 +8358,9 @@ var PerformanceAnnotationsAgent_exports = {};
 __export(PerformanceAnnotationsAgent_exports, {
   PerformanceAnnotationsAgent: () => PerformanceAnnotationsAgent
 });
-import * as Host10 from "./../../core/host/host.js";
+import * as Host11 from "./../../core/host/host.js";
 import * as i18n15 from "./../../core/i18n/i18n.js";
-import * as Root9 from "./../../core/root/root.js";
+import * as Root10 from "./../../core/root/root.js";
 var UIStringsNotTranslated2 = {
   analyzingCallTree: "Analyzing call tree"
   /**
@@ -8322,14 +8432,14 @@ Consider optimizing the position calculation logic or reducing the frequency of 
 var PerformanceAnnotationsAgent = class extends AiAgent {
   preamble = callTreePreamble;
   get clientFeature() {
-    return Host10.AidaClient.ClientFeature.CHROME_PERFORMANCE_ANNOTATIONS_AGENT;
+    return Host11.AidaClient.ClientFeature.CHROME_PERFORMANCE_ANNOTATIONS_AGENT;
   }
   get userTier() {
-    return Root9.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.userTier;
+    return Root10.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.userTier;
   }
   get options() {
-    const temperature = Root9.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.temperature;
-    const modelId = Root9.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.modelId;
+    const temperature = Root10.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.temperature;
+    const modelId = Root10.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.modelId;
     return {
       temperature,
       modelId
@@ -8408,8 +8518,8 @@ __export(AiConversation_exports, {
   generateContextDetailsMarkdown: () => generateContextDetailsMarkdown
 });
 import * as Common6 from "./../../core/common/common.js";
-import * as Host11 from "./../../core/host/host.js";
-import * as Root10 from "./../../core/root/root.js";
+import * as Host12 from "./../../core/host/host.js";
+import * as Root11 from "./../../core/root/root.js";
 import * as SDK8 from "./../../core/sdk/sdk.js";
 import * as Greendev3 from "./../greendev/greendev.js";
 
@@ -8563,7 +8673,7 @@ var AiConversation = class _AiConversation {
   #performanceRecordAndReload;
   #onInspectElement;
   #networkTimeCalculator;
-  constructor(type, data = [], id = crypto.randomUUID(), isReadOnly = true, aidaClient = new Host11.AidaClient.AidaClient(), changeManager, isExternal = false, performanceRecordAndReload, onInspectElement, networkTimeCalculator) {
+  constructor(type, data = [], id = crypto.randomUUID(), isReadOnly = true, aidaClient = new Host12.AidaClient.AidaClient(), changeManager, isExternal = false, performanceRecordAndReload, onInspectElement, networkTimeCalculator) {
     this.#changeManager = changeManager;
     this.#aidaClient = aidaClient;
     this.#performanceRecordAndReload = performanceRecordAndReload;
@@ -8742,19 +8852,23 @@ ${item.text.trim()}`);
     return {
       id: this.id,
       history: this.history.map((item) => {
-        if (item.type === "context-change") {
-          return null;
+        switch (item.type) {
+          case "context-change": {
+            return null;
+          }
+          case "user-query": {
+            return { ...item, imageInput: void 0 };
+          }
+          case "side-effect": {
+            return { ...item, confirm: void 0 };
+          }
+          case "context":
+          case "action": {
+            return { ...item, widgets: void 0 };
+          }
+          default:
+            return item;
         }
-        if (item.type === "user-query") {
-          return { ...item, imageInput: void 0 };
-        }
-        if (item.type === "side-effect") {
-          return { ...item, confirm: void 0 };
-        }
-        if (item.type === "context" && item.widgets) {
-          return { ...item, widgets: void 0 };
-        }
-        return item;
       }).filter((history) => !!history),
       type: this.#type,
       isExternal: this.#isExternal
@@ -8888,10 +9002,10 @@ Original user query: ${initialQuery}`;
   };
 };
 function isAiAssistanceServerSideLoggingEnabled() {
-  return !Root10.Runtime.hostConfig.aidaAvailability?.disallowLogging;
+  return !Root11.Runtime.hostConfig.aidaAvailability?.disallowLogging;
 }
 function isAiAssistanceContextSelectionAgentEnabled() {
-  return Boolean(Root10.Runtime.hostConfig.devToolsAiAssistanceContextSelectionAgent?.enabled);
+  return Boolean(Root11.Runtime.hostConfig.devToolsAiAssistanceContextSelectionAgent?.enabled);
 }
 
 // gen/front_end/models/ai_assistance/AiUtils.js
@@ -8902,9 +9016,9 @@ __export(AiUtils_exports, {
   isGeminiBranding: () => isGeminiBranding
 });
 import * as Common7 from "./../../core/common/common.js";
-import * as Host12 from "./../../core/host/host.js";
+import * as Host13 from "./../../core/host/host.js";
 import * as i18n17 from "./../../core/i18n/i18n.js";
-import * as Root11 from "./../../core/root/root.js";
+import * as Root12 from "./../../core/root/root.js";
 var UIStrings = {
   /**
    * @description Message shown to the user if the age check is not successful.
@@ -8927,7 +9041,7 @@ var str_ = i18n17.i18n.registerUIStrings("models/ai_assistance/AiUtils.ts", UISt
 var i18nString = i18n17.i18n.getLocalizedString.bind(void 0, str_);
 function getDisabledReasons(aidaAvailability) {
   const reasons = [];
-  if (Root11.Runtime.hostConfig.isOffTheRecord) {
+  if (Root12.Runtime.hostConfig.isOffTheRecord) {
     reasons.push(i18nString(UIStrings.notAvailableInIncognitoMode));
   }
   switch (aidaAvailability) {
@@ -8939,7 +9053,7 @@ function getDisabledReasons(aidaAvailability) {
     case "no-internet":
       reasons.push(i18nString(UIStrings.offline));
     case "available": {
-      if (Root11.Runtime.hostConfig?.aidaAvailability?.blockedByAge === true) {
+      if (Root12.Runtime.hostConfig?.aidaAvailability?.blockedByAge === true) {
         reasons.push(i18nString(UIStrings.ageRestricted));
       }
     }
@@ -8948,7 +9062,7 @@ function getDisabledReasons(aidaAvailability) {
   return reasons;
 }
 function isGeminiBranding() {
-  return !!Root11.Runtime.hostConfig.devToolsGeminiRebranding?.enabled;
+  return !!Root12.Runtime.hostConfig.devToolsGeminiRebranding?.enabled;
 }
 function getIconName() {
   return isGeminiBranding() ? "spark" : "smart-assistant";
@@ -8960,8 +9074,8 @@ __export(BuiltInAi_exports, {
   BuiltInAi: () => BuiltInAi
 });
 import * as Common8 from "./../../core/common/common.js";
-import * as Host13 from "./../../core/host/host.js";
-import * as Root12 from "./../../core/root/root.js";
+import * as Host14 from "./../../core/host/host.js";
+import * as Root13 from "./../../core/root/root.js";
 var builtInAiInstance;
 var BuiltInAi = class _BuiltInAi extends Common8.ObjectWrapper.ObjectWrapper {
   #availability = null;
@@ -8982,7 +9096,7 @@ var BuiltInAi = class _BuiltInAi extends Common8.ObjectWrapper.ObjectWrapper {
     this.initDoneForTesting = this.getLanguageModelAvailability().then(() => this.#sendAvailabilityMetrics()).then(() => this.initialize());
   }
   async getLanguageModelAvailability() {
-    if (!Root12.Runtime.hostConfig.devToolsConsoleInsightsTeasers?.enabled) {
+    if (!Root13.Runtime.hostConfig.devToolsConsoleInsightsTeasers?.enabled) {
       this.#availability = "disabled";
       return this.#availability;
     }
@@ -9006,7 +9120,7 @@ var BuiltInAi = class _BuiltInAi extends Common8.ObjectWrapper.ObjectWrapper {
     return this.#availability === "downloading";
   }
   isEventuallyAvailable() {
-    if (!this.#hasGpu && !Boolean(Root12.Runtime.hostConfig.devToolsConsoleInsightsTeasers?.allowWithoutGpu)) {
+    if (!this.#hasGpu && !Boolean(Root13.Runtime.hostConfig.devToolsConsoleInsightsTeasers?.allowWithoutGpu)) {
       return false;
     }
     return this.#availability === "available" || this.#availability === "downloading" || this.#availability === "downloadable";
@@ -9019,7 +9133,7 @@ var BuiltInAi = class _BuiltInAi extends Common8.ObjectWrapper.ObjectWrapper {
     return this.#downloadProgress;
   }
   startDownloadingModel() {
-    if (!Root12.Runtime.hostConfig.devToolsConsoleInsightsTeasers?.allowWithoutGpu && !this.#hasGpu) {
+    if (!Root13.Runtime.hostConfig.devToolsConsoleInsightsTeasers?.allowWithoutGpu && !this.#hasGpu) {
       return;
     }
     if (this.#availability !== "downloadable") {
@@ -9054,7 +9168,7 @@ var BuiltInAi = class _BuiltInAi extends Common8.ObjectWrapper.ObjectWrapper {
     return Boolean(this.#consoleInsightsSession);
   }
   async initialize() {
-    if (!Root12.Runtime.hostConfig.devToolsConsoleInsightsTeasers?.allowWithoutGpu && !this.#hasGpu) {
+    if (!Root13.Runtime.hostConfig.devToolsConsoleInsightsTeasers?.allowWithoutGpu && !this.#hasGpu) {
       return;
     }
     if (this.#availability !== "available" && this.#availability !== "downloading") {
@@ -9141,31 +9255,31 @@ Your instructions are as follows:
     if (this.#hasGpu) {
       switch (this.#availability) {
         case "unavailable":
-          Host13.userMetrics.builtInAiAvailability(
+          Host14.userMetrics.builtInAiAvailability(
             0
             /* Host.UserMetrics.BuiltInAiAvailability.UNAVAILABLE_HAS_GPU */
           );
           break;
         case "downloadable":
-          Host13.userMetrics.builtInAiAvailability(
+          Host14.userMetrics.builtInAiAvailability(
             1
             /* Host.UserMetrics.BuiltInAiAvailability.DOWNLOADABLE_HAS_GPU */
           );
           break;
         case "downloading":
-          Host13.userMetrics.builtInAiAvailability(
+          Host14.userMetrics.builtInAiAvailability(
             2
             /* Host.UserMetrics.BuiltInAiAvailability.DOWNLOADING_HAS_GPU */
           );
           break;
         case "available":
-          Host13.userMetrics.builtInAiAvailability(
+          Host14.userMetrics.builtInAiAvailability(
             3
             /* Host.UserMetrics.BuiltInAiAvailability.AVAILABLE_HAS_GPU */
           );
           break;
         case "disabled":
-          Host13.userMetrics.builtInAiAvailability(
+          Host14.userMetrics.builtInAiAvailability(
             4
             /* Host.UserMetrics.BuiltInAiAvailability.DISABLED_HAS_GPU */
           );
@@ -9174,31 +9288,31 @@ Your instructions are as follows:
     } else {
       switch (this.#availability) {
         case "unavailable":
-          Host13.userMetrics.builtInAiAvailability(
+          Host14.userMetrics.builtInAiAvailability(
             5
             /* Host.UserMetrics.BuiltInAiAvailability.UNAVAILABLE_NO_GPU */
           );
           break;
         case "downloadable":
-          Host13.userMetrics.builtInAiAvailability(
+          Host14.userMetrics.builtInAiAvailability(
             6
             /* Host.UserMetrics.BuiltInAiAvailability.DOWNLOADABLE_NO_GPU */
           );
           break;
         case "downloading":
-          Host13.userMetrics.builtInAiAvailability(
+          Host14.userMetrics.builtInAiAvailability(
             7
             /* Host.UserMetrics.BuiltInAiAvailability.DOWNLOADING_NO_GPU */
           );
           break;
         case "available":
-          Host13.userMetrics.builtInAiAvailability(
+          Host14.userMetrics.builtInAiAvailability(
             8
             /* Host.UserMetrics.BuiltInAiAvailability.AVAILABLE_NO_GPU */
           );
           break;
         case "disabled":
-          Host13.userMetrics.builtInAiAvailability(
+          Host14.userMetrics.builtInAiAvailability(
             9
             /* Host.UserMetrics.BuiltInAiAvailability.DISABLED_NO_GPU */
           );
@@ -9214,10 +9328,10 @@ __export(ConversationHandler_exports, {
   ConversationHandler: () => ConversationHandler
 });
 import * as Common9 from "./../../core/common/common.js";
-import * as Host14 from "./../../core/host/host.js";
+import * as Host15 from "./../../core/host/host.js";
 import * as i18n19 from "./../../core/i18n/i18n.js";
 import * as Platform6 from "./../../core/platform/platform.js";
-import * as Root13 from "./../../core/root/root.js";
+import * as Root14 from "./../../core/root/root.js";
 import * as SDK9 from "./../../core/sdk/sdk.js";
 import * as NetworkTimeCalculator4 from "./../network_time_calculator/network_time_calculator.js";
 var UIStringsNotTranslate5 = {
@@ -9228,7 +9342,7 @@ var UIStringsNotTranslate5 = {
 };
 var lockedString9 = i18n19.i18n.lockedString;
 function isAiAssistanceServerSideLoggingEnabled2() {
-  return !Root13.Runtime.hostConfig.aidaAvailability?.disallowLogging;
+  return !Root14.Runtime.hostConfig.aidaAvailability?.disallowLogging;
 }
 async function inspectElementBySelector(selector) {
   const whitespaceTrimmedQuery = selector.trim();
@@ -9272,7 +9386,7 @@ var ConversationHandler = class _ConversationHandler extends Common9.ObjectWrapp
   }
   static instance(opts) {
     if (opts?.forceNew || conversationHandlerInstance === void 0) {
-      const aidaClient = opts?.aidaClient ?? new Host14.AidaClient.AidaClient();
+      const aidaClient = opts?.aidaClient ?? new Host15.AidaClient.AidaClient();
       conversationHandlerInstance = new _ConversationHandler(aidaClient, opts?.aidaAvailability);
     }
     return conversationHandlerInstance;
@@ -9292,7 +9406,7 @@ var ConversationHandler = class _ConversationHandler extends Common9.ObjectWrapp
   }
   async #getDisabledReasons() {
     if (this.#aidaAvailability === void 0) {
-      this.#aidaAvailability = await Host14.AidaClient.AidaClient.checkAccessPreconditions();
+      this.#aidaAvailability = await Host15.AidaClient.AidaClient.checkAccessPreconditions();
     }
     return getDisabledReasons(this.#aidaAvailability);
   }
@@ -9442,6 +9556,7 @@ export {
   ChangeManager_exports as ChangeManager,
   ContextSelectionAgent_exports as ContextSelectionAgent,
   ConversationHandler_exports as ConversationHandler,
+  ConversationSummaryAgent_exports as ConversationSummaryAgent,
   debug_exports as Debug,
   EvaluateAction_exports as EvaluateAction,
   ExtensionScope_exports as ExtensionScope,

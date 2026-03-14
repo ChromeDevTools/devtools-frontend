@@ -26,7 +26,7 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/network/RequestResponseView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-const { widgetConfig, widgetRef, widget } = UI.Widget;
+const { widgetRef, widget } = UI.Widget;
 export const DEFAULT_VIEW = (input, output, target) => {
     let widgetTemplate;
     if (TextUtils.StreamingContentData.isError(input.contentData)) {
@@ -41,7 +41,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
     }
     else if (input.renderAsText) {
         // clang-format off
-        widgetTemplate = html `<devtools-widget .widgetConfig=${widgetConfig(element => new SourceFrame.ResourceSourceFrame.SearchableContainer(input.request, input.mimeType, element))}
+        widgetTemplate = html `<devtools-widget ${widget(element => new SourceFrame.ResourceSourceFrame.SearchableContainer(input.request, input.mimeType, element))}
                     ${widgetRef(SourceFrame.ResourceSourceFrame.SearchableContainer, widget => { output.revealPosition = widget.revealPosition.bind(widget); })}></devtools-widget>`;
         // clang-format on
     }

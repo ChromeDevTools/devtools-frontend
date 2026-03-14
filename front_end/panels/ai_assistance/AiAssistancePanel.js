@@ -33,6 +33,7 @@ import { StylingAgentMarkdownRenderer } from './components/StylingAgentMarkdownR
 import { WalkthroughView, } from './components/WalkthroughView.js';
 import { isAiAssistancePatchingEnabled } from './PatchWidget.js';
 const { html } = Lit;
+const { widget } = UI.Widget;
 const AI_ASSISTANCE_SEND_FEEDBACK = 'https://crbug.com/364805393';
 const AI_ASSISTANCE_HELP = 'https://developer.chrome.com/docs/devtools/ai-assistance';
 const WALKTHROUGH_SIDEBAR_BREAKPOINT = 700;
@@ -373,15 +374,11 @@ function defaultView(input, output, target) {
         ></devtools-ai-chat-view>`;
             }
             case "explore-view" /* ViewState.EXPLORE_VIEW */:
-                return html `<devtools-widget
-          class="fill-panel"
-          .widgetConfig=${UI.Widget.widgetConfig(ExploreWidget)}
-        ></devtools-widget>`;
+                return html `<devtools-widget class="fill-panel" ${widget(ExploreWidget)}>
+                    </devtools-widget>`;
             case "disabled-view" /* ViewState.DISABLED_VIEW */:
-                return html `<devtools-widget
-          class="fill-panel"
-          .widgetConfig=${UI.Widget.widgetConfig(DisabledWidget, input.props)}
-        ></devtools-widget>`;
+                return html `<devtools-widget class="fill-panel" ${widget(DisabledWidget, input.props)}>
+                    </devtools-widget>`;
         }
     }
     if (Root.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled ||
@@ -414,7 +411,7 @@ function defaultView(input, output, target) {
           </div>
           <div slot="sidebar" class="sidebar-view">
             ${shouldShowWalkthrough ? html `
-              <devtools-widget .widgetConfig=${UI.Widget.widgetConfig(WalkthroughView, {
+              <devtools-widget ${widget(WalkthroughView, {
             message: input.props.walkthrough.activeMessage,
             isLoading: input.props.isLoading && walkthroughIsForLastMessage,
             markdownRenderer: input.props.markdownRenderer,

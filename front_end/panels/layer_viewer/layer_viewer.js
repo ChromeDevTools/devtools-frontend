@@ -228,6 +228,7 @@ var LayerViewHost = class {
 
 // gen/front_end/panels/layer_viewer/LayerDetailsView.js
 var { html, nothing } = Lit;
+var { widget } = UI.Widget;
 var UIStrings2 = {
   /**
    * @description Text in Layer Details View of the Layers panel
@@ -351,7 +352,7 @@ var DEFAULT_VIEW = (input, _output, target) => {
   const { layer, snapshotSelection, compositingReasons, onScrollRectClick, onPaintProfilerRequested } = input;
   if (!layer) {
     Lit.render(html`<div class="layer-details-container">
-      <devtools-widget class="learn-more" .widgetConfig=${UI.Widget.widgetConfig(UI.EmptyWidget.EmptyWidget, {
+      <devtools-widget class="learn-more" ${widget(UI.EmptyWidget.EmptyWidget, {
       header: i18nString2(UIStrings2.noLayerSelected),
       text: i18nString2(UIStrings2.selectALayerToSeeItsDetails)
     })}>
@@ -1133,7 +1134,7 @@ var TransformController = class extends Common4.ObjectWrapper.ObjectWrapper {
 
 // gen/front_end/panels/layer_viewer/Layers3DView.js
 var { html: html2, render: render2, Directives: { ref } } = Lit2;
-var { widget } = UI4.Widget;
+var { widget: widget2 } = UI4.Widget;
 var UIStrings5 = {
   /**
    * @description Text of a DOM element in DView of the Layers panel
@@ -1192,11 +1193,11 @@ var DEFAULT_VIEW2 = (input, output, target) => {
       ${layers3DView_css_default}
     </style>
     ${input.panelToolbar}
-    ${input.error === "missing-root" ? html2`<div>${widget(UI4.EmptyWidget.EmptyWidget, {
+    ${input.error === "missing-root" ? html2`<div>${widget2(UI4.EmptyWidget.EmptyWidget, {
     header: i18nString5(UIStrings5.noLayerInformation),
     text: i18nString5(UIStrings5.layerExplanation)
   })}</div>` : Lit2.nothing}
-    ${input.error === "webgl-disabled" ? html2`<div>${widget(UI4.EmptyWidget.EmptyWidget, {
+    ${input.error === "webgl-disabled" ? html2`<div>${widget2(UI4.EmptyWidget.EmptyWidget, {
     header: i18nString5(UIStrings5.cantDisplayLayers),
     text: i18nString5(UIStrings5.webglSupportIsDisabledInYour),
     extraElements: [

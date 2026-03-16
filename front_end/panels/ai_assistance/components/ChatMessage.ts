@@ -31,6 +31,7 @@ import * as TimelineComponents from '../../timeline/components/components.js';
 import * as TimelineInsights from '../../timeline/components/insights/insights.js';
 import * as Timeline from '../../timeline/timeline.js';
 import * as TimelineUtils from '../../timeline/utils/utils.js';
+import {PanelUtils} from '../../utils/utils.js';
 
 import chatMessageStyles from './chatMessage.css.js';
 import {walkthroughTitle, WalkthroughView} from './WalkthroughView.js';
@@ -792,6 +793,32 @@ async function makePerformanceTraceWidget(widgetData: PerformanceTraceAiWidget):
   };
 }
 
+function renderNetworkRequestPreview(networkRequest: NonNullable<DomTreeAiWidget['data']['networkRequest']>):
+    Lit.TemplateResult {
+  const filename = networkRequest.url.split('/').pop() || networkRequest.url;
+  const size = i18n.ByteUtilities.bytesToString(networkRequest.size);
+  const resourceType = Common.ResourceType.resourceTypes[networkRequest.resourceType];
+  const {iconName, color} = PanelUtils.iconDataForResourceType(resourceType);
+
+  return html`
+    <div class="network-request-preview">
+      <div class="network-request-header">
+        <div class="network-request-icon">
+          ${
+      resourceType.isImage() ? html`<img src=${networkRequest.imageUrl ?? networkRequest.url} alt=${filename} />` :
+                               html`<devtools-icon name=${iconName} style=${Lit.Directives.styleMap({
+                                 color: color ?? ''
+                               })}></devtools-icon>`}
+        </div>
+        <div class="network-request-details">
+          <div class="network-request-name" title=${networkRequest.url}>${filename}</div>
+          <div class="network-request-size">${size}</div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
 async function makeDomTreeWidget(widgetData: DomTreeAiWidget): Promise<WidgetMakerResponse|null> {
   const root = widgetData.data.root;
   if (!(root instanceof SDK.DOMModel.DOMNodeSnapshot)) {
@@ -810,12 +837,17 @@ async function makeDomTreeWidget(widgetData: DomTreeAiWidget): Promise<WidgetMak
     wrap: true,
   });
 
+  const networkRequest = widgetData.data.networkRequest;
+
   // clang-format off
-  const widget = html`<devtools-widget class="dom-tree-widget" .widgetConfig=${widgetConfig}></devtools-widget>`;
+  const renderedWidget = html`
+    ${networkRequest ? renderNetworkRequestPreview(networkRequest) : Lit.nothing}
+    <devtools-widget class="dom-tree-widget" .widgetConfig=${widgetConfig}></devtools-widget>
+  `;
   // clang-format on
 
   return {
-    renderedWidget: widget,
+    renderedWidget,
     revealable: new SDK.DOMModel.DeferredDOMNode(root.domModel().target(), root.backendNodeId()),
   };
 }

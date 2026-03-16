@@ -253,6 +253,13 @@ export interface DomTreeAiWidget {
   name: 'DOM_TREE';
   data: {
     root: SDK.DOMModel.DOMNodeSnapshot,
+    networkRequest?: {
+      url: string,
+      size: number,
+      resourceType: Protocol.Network.ResourceType,
+      mimeType: string,
+      imageUrl?: string,
+    },
   };
 }
 

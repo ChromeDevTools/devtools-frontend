@@ -11,7 +11,9 @@ import * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import * as Tracing from '../../../services/tracing/tracing.js';
 import * as Annotations from '../../annotations/annotations.js';
+import * as Logs from '../../logs/logs.js';
 import * as SourceMapScopes from '../../source_map_scopes/source_map_scopes.js';
+import * as TextUtils from '../../text_utils/text_utils.js';
 import * as Trace from '../../trace/trace.js';
 import {
   PerformanceInsightFormatter,
@@ -740,7 +742,8 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
         const details = new PerformanceInsightFormatter(focus, insight).formatInsight();
 
         const widgets: AiWidget[] = [];
-        if (params.insightName === 'LCPDiscovery' || params.insightName === 'LCPBreakdown') {
+        if (Trace.Insights.Models.LCPDiscovery.isLCPDiscoveryInsight(insight) ||
+            Trace.Insights.Models.LCPBreakdown.isLCPBreakdownInsight(insight)) {
           const lcpMetric = Trace.Insights.Common.getLCP(insightSet);
           const lcpEvent = lcpMetric?.event;
           if (lcpEvent && Trace.Types.Events.isAnyLargestContentfulPaintCandidate(lcpEvent)) {
@@ -755,9 +758,24 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
                 const node = nodeMap?.get(nodeId);
                 if (node) {
                   const snapshot = await node.takeSnapshot();
+                  let networkRequest;
+                  const lcpSyntheticRequest = insight.lcpRequest;
+                  if (lcpSyntheticRequest) {
+                    networkRequest = {
+                      url: lcpSyntheticRequest.args.data.url,
+                      size: lcpSyntheticRequest.args.data.decodedBodyLength ??
+                          lcpSyntheticRequest.args.data.encodedDataLength ?? 0,
+                      resourceType: lcpSyntheticRequest.args.data.resourceType,
+                      mimeType: lcpSyntheticRequest.args.data.mimeType ?? '',
+                      imageUrl: await this.#getNetworkRequestImageData(lcpSyntheticRequest),
+                    };
+                  }
                   widgets.push({
                     name: 'DOM_TREE',
-                    data: {root: snapshot},
+                    data: {
+                      root: snapshot,
+                      networkRequest,
+                    },
                   });
                   processedNodeIds.add(nodeId);
                 }
@@ -1253,5 +1271,25 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
 
     Annotations.AnnotationRepository.instance().addNetworkRequestAnnotation(annotationMessage, requestId);
     return {result: {success: true}};
+  }
+
+  async #getNetworkRequestImageData(lcpRequest: Trace.Types.Events.SyntheticNetworkRequest): Promise<string|undefined> {
+    const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+    const networkManager = target?.model(SDK.NetworkManager.NetworkManager);
+    if (!target || !networkManager) {
+      return undefined;
+    }
+
+    const networkLog = Logs.NetworkLog.NetworkLog.instance();
+    const requestId = lcpRequest.args.data.requestId;
+    const sdkRequest = networkLog.requestByManagerAndId(networkManager, requestId);
+
+    if (sdkRequest?.contentType().isImage()) {
+      const contentData = await sdkRequest.requestContentData();
+      if (!TextUtils.ContentData.ContentData.isError(contentData)) {
+        return contentData.asDataUrl() ?? undefined;
+      }
+    }
+    return undefined;
   }
 }

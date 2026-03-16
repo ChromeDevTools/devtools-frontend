@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable @devtools/no-imperative-dom-api */
-
 import '../../ui/legacy/legacy.js';
 
 import * as i18n from '../../core/i18n/i18n.js';
@@ -11,8 +9,9 @@ import * as Platform from '../../core/platform/platform.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import type * as Trace from '../../models/trace/trace.js';
 import * as Workspace from '../../models/workspace/workspace.js';
-import type * as Buttons from '../../ui/components/buttons/buttons.js';
+import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import {html, nothing, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {traceJsonGenerator} from './SaveFileFormatter.js';
@@ -44,19 +43,105 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/StatusDialog.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
+export interface ViewInput {
+  statusText: string;
+  showTimer: boolean;
+  timeText: string;
+  showProgress: boolean;
+  progressActivity: string;
+  progressPercent: number;
+  descriptionText: string|undefined;
+  buttonText: string;
+  hideStopButton: boolean;
+  focusStopButton: boolean;
+  showDownloadButton: boolean;
+  downloadButtonDisabled: boolean;
+  onStopClick: () => void;
+  onDownloadClick: () => void;
+}
+
+export type ViewOutput = Record<string, never>;
+
+export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
+
+// clang-format off
+export const DEFAULT_VIEW: View = (input, output, target) => {
+  render(html`
+    <style>${timelineStatusDialogStyles}</style>
+    <div class="timeline-status-dialog">
+      <div class="status-dialog-line status">
+        <div class="label">${i18nString(UIStrings.status)}</div>
+        <div class="content" role="status">${input.statusText}</div>
+      </div>
+      ${input.showTimer ? html`
+        <div class="status-dialog-line time">
+          <div class="label">${i18nString(UIStrings.time)}</div>
+          <div class="content">${input.timeText}</div>
+        </div>
+      ` : nothing}
+      ${input.showProgress ? html`
+        <div class="status-dialog-line progress">
+          <div class="label">${input.progressActivity}</div>
+          <div class="indicator-container">
+            <div class="indicator"
+              style="width: ${input.progressPercent.toFixed(1)}%"
+              role="progressbar"
+              aria-valuemin="0"
+              aria-valuemax="100"
+              aria-valuenow=${input.progressPercent}>
+            </div>
+          </div>
+        </div>
+      ` : nothing}
+      ${input.descriptionText !== undefined ? html`
+        <div class="status-dialog-line description">
+          <div class="label">${i18nString(UIStrings.description)}</div>
+          <div class="content">${input.descriptionText}</div>
+        </div>
+      ` : nothing}
+      <div class="stop-button">
+        ${input.showDownloadButton ? html`
+          <devtools-button
+            .variant=${Buttons.Button.Variant.OUTLINED}
+            .disabled=${input.downloadButtonDisabled}
+            @click=${input.onDownloadClick}
+            .jslogContext=${'timeline.download-after-error'}
+          >${i18nString(UIStrings.downloadAfterError)}</devtools-button>
+        ` : nothing}
+        ${!input.hideStopButton ? html`
+          <devtools-button
+            .variant=${Buttons.Button.Variant.PRIMARY}
+            @click=${input.onStopClick}
+            .jslogContext=${'timeline.stop-recording'}
+            ?autofocus=${input.focusStopButton}
+          >${input.buttonText}</devtools-button>
+        ` : nothing}
+      </div>
+    </div>
+  `, target);
+};
+// clang-format on
+
 /**
  * This is the dialog shown whilst a trace is being recorded/imported.
  */
 export class StatusDialog extends UI.Widget.VBox {
-  private status: HTMLElement;
-  private time: Element|undefined;
-  private progressLabel?: HTMLElement;
-  private progressBar?: HTMLElement;
-  private readonly description: HTMLElement|undefined;
-  private button: Buttons.Button.Button;
-  private downloadTraceButton: Buttons.Button.Button;
-  private startTime!: number;
-  private timeUpdateTimer?: number;
+  readonly #view: View;
+  #statusText = '';
+  readonly #showTimer: boolean;
+  #timeText = '';
+  readonly #showProgress: boolean;
+  #progressActivity = '';
+  #progressPercent = 0;
+  readonly #descriptionText: string|undefined;
+  readonly #buttonText: string;
+  #hideStopButton: boolean;
+  #focusStopButton = false;
+  #showDownloadButton = false;
+  #downloadButtonDisabled = true;
+  readonly #onButtonClickCallback: () => (Promise<void>| void);
+  #startTime!: number;
+  #timeUpdateTimer?: number;
   #rawEvents?: Trace.Types.Events.Event[];
 
   constructor(
@@ -67,61 +152,25 @@ export class StatusDialog extends UI.Widget.VBox {
         description?: string,
         buttonText?: string,
       },
-      onButtonClickCallback: () => (Promise<void>| void)) {
+      onButtonClickCallback: () => (Promise<void>| void), view: View = DEFAULT_VIEW) {
     super({
       jslog: `${VisualLogging.dialog('timeline-status').track({resize: true})}`,
       useShadowDom: true,
     });
 
-    this.contentElement.classList.add('timeline-status-dialog');
-
-    const statusLine = this.contentElement.createChild('div', 'status-dialog-line status');
-    statusLine.createChild('div', 'label').textContent = i18nString(UIStrings.status);
-    this.status = statusLine.createChild('div', 'content');
-    UI.ARIAUtils.markAsStatus(this.status);
-
-    if (options.showTimer) {
-      const timeLine = this.contentElement.createChild('div', 'status-dialog-line time');
-      timeLine.createChild('div', 'label').textContent = i18nString(UIStrings.time);
-      this.time = timeLine.createChild('div', 'content');
-    }
-
-    if (options.showProgress) {
-      const progressBarContainer = this.contentElement.createChild('div', 'status-dialog-line progress');
-      this.progressLabel = progressBarContainer.createChild('div', 'label');
-      this.progressBar = progressBarContainer.createChild('div', 'indicator-container').createChild('div', 'indicator');
-      UI.ARIAUtils.markAsProgressBar(this.progressBar);
-    }
-
-    if (typeof options.description === 'string') {
-      const descriptionLine = this.contentElement.createChild('div', 'status-dialog-line description');
-      descriptionLine.createChild('div', 'label').textContent = i18nString(UIStrings.description);
-      this.description = descriptionLine.createChild('div', 'content');
-      this.description.innerText = options.description;
-    }
-
-    const buttonContainer = this.contentElement.createChild('div', 'stop-button');
-    this.downloadTraceButton = UI.UIUtils.createTextButton(i18nString(UIStrings.downloadAfterError), () => {
-      void this.#downloadRawTraceAfterError();
-    }, {jslogContext: 'timeline.download-after-error'});
-
-    this.downloadTraceButton.disabled = true;
-    this.downloadTraceButton.classList.add('hidden');
-
-    const buttonText = options.buttonText || i18nString(UIStrings.stop);
-    this.button = UI.UIUtils.createTextButton(buttonText, onButtonClickCallback, {
-      jslogContext: 'timeline.stop-recording',
-    });
-    // Profiling can't be stopped during initialization.
-    this.button.classList.toggle('hidden', options.hideStopButton);
-
-    buttonContainer.append(this.downloadTraceButton);
-    buttonContainer.append(this.button);
+    this.#view = view;
+    this.#showTimer = Boolean(options.showTimer);
+    this.#showProgress = Boolean(options.showProgress);
+    this.#descriptionText = options.description;
+    this.#buttonText = options.buttonText || i18nString(UIStrings.stop);
+    this.#hideStopButton = options.hideStopButton;
+    this.#onButtonClickCallback = onButtonClickCallback;
   }
 
   finish(): void {
     this.stopTimer();
-    this.button.classList.add('hidden');
+    this.#hideStopButton = true;
+    this.requestUpdate();
   }
 
   async #downloadRawTraceAfterError(): Promise<void> {
@@ -140,8 +189,9 @@ export class StatusDialog extends UI.Widget.VBox {
 
   enableDownloadOfEvents(rawEvents: Trace.Types.Events.Event[]): void {
     this.#rawEvents = rawEvents;
-    this.downloadTraceButton.disabled = false;
-    this.downloadTraceButton.classList.remove('hidden');
+    this.#showDownloadButton = true;
+    this.#downloadButtonDisabled = false;
+    this.requestUpdate();
   }
 
   remove(): void {
@@ -157,51 +207,77 @@ export class StatusDialog extends UI.Widget.VBox {
   }
 
   enableAndFocusButton(): void {
-    this.button.classList.remove('hidden');
-    this.button.focus();
+    this.#hideStopButton = false;
+    this.#focusStopButton = true;
+    this.requestUpdate();
   }
 
   updateStatus(text: string): void {
-    this.status.textContent = text;
+    this.#statusText = text;
+    this.requestUpdate();
   }
 
   updateProgressBar(activity: string, percent: number): void {
-    if (this.progressLabel) {
-      this.progressLabel.textContent = activity;
-    }
-    if (this.progressBar) {
-      this.progressBar.style.width = percent.toFixed(1) + '%';
-      UI.ARIAUtils.setValueNow(this.progressBar, percent);
-    }
-    this.updateTimer();
+    this.#progressActivity = activity;
+    this.#progressPercent = percent;
+    this.#updateTimerTick();
+    this.requestUpdate();
   }
 
   startTimer(): void {
-    this.startTime = Date.now();
-    this.timeUpdateTimer = window.setInterval(this.updateTimer.bind(this), 100);
-    this.updateTimer();
+    this.#startTime = Date.now();
+    this.#timeUpdateTimer = window.setInterval(this.#updateTimerTick.bind(this), 100);
+    this.#updateTimerTick();
   }
 
   private stopTimer(): void {
-    if (!this.timeUpdateTimer) {
+    if (!this.#timeUpdateTimer) {
       return;
     }
-    clearInterval(this.timeUpdateTimer);
-    this.updateTimer();
-    delete this.timeUpdateTimer;
+    clearInterval(this.#timeUpdateTimer);
+    this.#updateTimerTick();
+    this.#timeUpdateTimer = undefined;
   }
 
-  private updateTimer(): void {
-    if (!this.timeUpdateTimer || !this.time) {
+  #updateTimerTick(): void {
+    if (!this.#timeUpdateTimer || !this.#showTimer) {
       return;
     }
+    const seconds = (Date.now() - this.#startTime) / 1000;
+    this.#timeText = i18n.TimeUtilities.preciseSecondsToString(seconds, 1);
+    this.requestUpdate();
+  }
 
-    const seconds = (Date.now() - this.startTime) / 1000;
-    this.time.textContent = i18n.TimeUtilities.preciseSecondsToString(seconds, 1);
+  override performUpdate(): void {
+    this.#view(
+        {
+          statusText: this.#statusText,
+          showTimer: this.#showTimer,
+          timeText: this.#timeText,
+          showProgress: this.#showProgress,
+          progressActivity: this.#progressActivity,
+          progressPercent: this.#progressPercent,
+          descriptionText: this.#descriptionText,
+          buttonText: this.#buttonText,
+          hideStopButton: this.#hideStopButton,
+          focusStopButton: this.#focusStopButton,
+          showDownloadButton: this.#showDownloadButton,
+          downloadButtonDisabled: this.#downloadButtonDisabled,
+          onStopClick: () => {
+            void this.#onButtonClickCallback();
+          },
+          onDownloadClick: () => {
+            void this.#downloadRawTraceAfterError();
+          },
+        },
+        {},
+        this.contentElement,
+    );
+    this.#focusStopButton = false;
   }
 
   override wasShown(): void {
     super.wasShown();
-    this.registerRequiredCSS(timelineStatusDialogStyles);
+    this.requestUpdate();
   }
 }

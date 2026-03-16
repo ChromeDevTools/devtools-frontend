@@ -200,3 +200,10 @@ dd.dl-title {
   margin-top: var(--sys-size-5);
   text-align: center;
 }
+
+.insight.minimal {
+  .insight-section {
+    border-top: none;
+    padding: 0;
+  }
+}

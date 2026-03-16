@@ -730,5 +730,48 @@ code
       assert.exists(secondActions[0].widgets);
       assert.lengthOf(secondActions[0].widgets!, 1);
     });
+
+    it('yields an LCP_BREAKDOWN widget when getInsightDetails is called for LCPBreakdown', async function() {
+      const parsedTrace = await TraceLoader.traceEngine(this, 'lcp-images.json.gz');
+      assert.isOk(parsedTrace.insights);
+      const [nav] = parsedTrace.data.Meta.mainFrameNavigations;
+      const lcpDiscovery = getInsightOrError('LCPDiscovery', parsedTrace.insights, nav);
+      const insightSetId = [...parsedTrace.insights.keys()][0];
+      const insightSet = parsedTrace.insights.get(insightSetId)!;
+
+      // Mock the LCPBreakdown insight
+      insightSet.model.LCPBreakdown = {
+        insightKey: 'LCPBreakdown',
+        state: 'fail',
+        lcpMs: 1000 as Trace.Types.Timing.Milli,
+        lcpEvent: {
+          name: 'largestContentfulPaint::Candidate',
+          args: {data: {nodeId: 4}},
+        } as unknown as Trace.Types.Events.LargestContentfulPaintCandidate,
+      } as Trace.Insights.Types.InsightModels['LCPBreakdown'];
+
+      const context = PerformanceAgent.PerformanceTraceContext.fromInsight(parsedTrace, lcpDiscovery);
+
+      const agent = createAgentForConversation({
+        aidaClient: mockAidaClient([
+          [{
+            explanation: '',
+            functionCalls: [
+              {name: 'getInsightDetails', args: {insightSetId: insightSet.id, insightName: 'LCPBreakdown'}},
+            ]
+          }],
+          [{explanation: 'done'}]
+        ])
+      });
+
+      const responses = await Array.fromAsync(agent.run('test', {selected: context}));
+      const actions = responses.filter(r => r.type === AiAgent.ResponseType.ACTION);
+      assert.lengthOf(actions, 1);
+
+      assert.exists(actions[0].widgets);
+      const lcpWidget = actions[0].widgets?.find(w => w.name === 'LCP_BREAKDOWN');
+      assert.exists(lcpWidget);
+      assert.strictEqual(lcpWidget?.data.lcpData, insightSet.model.LCPBreakdown);
+    });
   });
 });

@@ -263,9 +263,16 @@ export interface PerformanceTraceAiWidget {
   };
 }
 
+export interface LcpBreakdownAiWidget {
+  name: 'LCP_BREAKDOWN';
+  data: {
+    lcpData: Trace.Insights.Models.LCPBreakdown.LCPBreakdownInsightModel,
+  };
+}
+
 // This type will grow as we add more widgets.
-export type AiWidget =
-    ComputedStyleAiWidget|CoreVitalsAiWidget|StylePropertiesAiWidget|DomTreeAiWidget|PerformanceTraceAiWidget;
+export type AiWidget = ComputedStyleAiWidget|CoreVitalsAiWidget|StylePropertiesAiWidget|DomTreeAiWidget|
+    PerformanceTraceAiWidget|LcpBreakdownAiWidget;
 
 export type FunctionCallHandlerResult<Result> = {
   requiresApproval: true,

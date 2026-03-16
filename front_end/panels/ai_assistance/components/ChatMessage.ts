@@ -13,7 +13,7 @@ import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import type {
-  AiWidget, ComputedStyleAiWidget, CoreVitalsAiWidget, DomTreeAiWidget, PerformanceTraceAiWidget,
+  AiWidget, ComputedStyleAiWidget, CoreVitalsAiWidget, DomTreeAiWidget, LcpBreakdownAiWidget, PerformanceTraceAiWidget,
   StylePropertiesAiWidget} from '../../../models/ai_assistance/agents/AiAgent.js';
 import * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
 import * as ComputedStyle from '../../../models/computed_style/computed_style.js';
@@ -28,6 +28,7 @@ import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import * as Elements from '../../elements/elements.js';
 import * as TimelineComponents from '../../timeline/components/components.js';
+import * as TimelineInsights from '../../timeline/components/insights/insights.js';
 import * as Timeline from '../../timeline/timeline.js';
 import * as TimelineUtils from '../../timeline/utils/utils.js';
 
@@ -727,6 +728,26 @@ async function makeStylePropertiesWidget(widgetData: StylePropertiesAiWidget): P
   return {renderedWidget, revealable: domNodeForId};
 }
 
+async function makeLcpBreakdownWidget(widgetData: LcpBreakdownAiWidget): Promise<WidgetMakerResponse|null> {
+  const insight = widgetData.data.lcpData;
+  if (!insight) {
+    return null;
+  }
+
+  const widgetConfig = UI.Widget.widgetConfig(TimelineInsights.LCPBreakdown.LCPBreakdown, {
+    model: insight,
+    minimal: true,
+  });
+
+  // clang-format off
+  const renderedWidget = html`<devtools-widget
+    class="lcp-breakdown-widget"
+    .widgetConfig=${widgetConfig}></devtools-widget>`;
+  // clang-format on
+
+  return {renderedWidget, revealable: new TimelineUtils.Helpers.RevealableInsight(insight)};
+}
+
 function renderWidgetResponse(response: WidgetMakerResponse|null): Lit.LitTemplate {
   if (response === null) {
     return Lit.nothing;
@@ -838,6 +859,9 @@ async function renderWidgets(
         break;
       case 'PERFORMANCE_TRACE':
         response = await makePerformanceTraceWidget(widgetData);
+        break;
+      case 'LCP_BREAKDOWN':
+        response = await makeLcpBreakdownWidget(widgetData);
         break;
       default:
         Platform.assertNever(widgetData, 'Unknown AiWidget name');

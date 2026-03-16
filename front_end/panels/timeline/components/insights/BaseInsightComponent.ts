@@ -75,6 +75,13 @@ interface ViewInput {
   dispatchInsightToggle: () => void;
   onHeaderKeyDown: (event: KeyboardEvent) => void;
   onAskAIButtonClick: () => void;
+  /**
+   * Minimal mode hides the component's header and AI buttons, and ensures that the
+   * component is rendered as expanded (not closed).
+   *
+   * It is used when rendering an insight in a widget within the AI assistance panel.
+   */
+  minimal?: boolean;
 }
 
 type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
@@ -91,11 +98,13 @@ const DEFAULT_VIEW: View = (input, _output, target) => {
     renderContent,
     onHeaderKeyDown,
     onAskAIButtonClick,
+    minimal,
   } = input;
 
   const containerClasses = Lit.Directives.classMap({
     insight: true,
-    closed: !selected,
+    closed: !selected && !minimal,
+    minimal: Boolean(minimal),
   });
 
   let ariaLabel = `${i18nString(UIStrings.viewDetails, {PH1: model.title})}`;
@@ -105,7 +114,7 @@ const DEFAULT_VIEW: View = (input, _output, target) => {
   }
 
   function renderInsightContent(): Lit.LitTemplate {
-    if (!selected) {
+    if (!selected && !minimal) {
       return Lit.nothing;
     }
 
@@ -117,9 +126,9 @@ const DEFAULT_VIEW: View = (input, _output, target) => {
     // clang-format off
     return html`
       <div class="insight-body">
-        <div class="insight-description">${md(model.description)}</div>
+        ${minimal ? Lit.nothing : html`<div class="insight-description">${md(model.description)}</div>`}
         <div class="insight-content">${content}</div>
-        ${showAskAI ? html`
+        ${showAskAI && !minimal ? html`
           <div class="ask-ai-btn-wrap">
             <devtools-button class="ask-ai"
               .variant=${Buttons.Button.Variant.OUTLINED}
@@ -159,25 +168,26 @@ const DEFAULT_VIEW: View = (input, _output, target) => {
   Lit.render(html`
     <style>${baseInsightComponentStyles}</style>
     <div class=${containerClasses}>
-      <header @click=${dispatchInsightToggle}
-        @keydown=${onHeaderKeyDown}
-        jslog=${VisualLogging.action(`timeline.toggle-insight.${internalName}`).track({click: true})}
-        data-insight-header-title=${model?.title}
-        tabIndex="0"
-        role="button"
-        aria-expanded=${selected}
-        aria-label=${ariaLabel}
-      >
-        ${renderHoverIcon()}
-        <h3 class="insight-title">${model?.title}</h3>
-        ${estimatedSavingsString ?
-          html`
-          <slot name="insight-savings" class="insight-savings">
-            <span title=${estimatedSavingsAriaLabel ?? ''}>${estimatedSavingsString}</span>
-          </slot>
-        </div>`
-        : Lit.nothing}
-      </header>
+      ${minimal ? Lit.nothing : html`
+        <header @click=${dispatchInsightToggle}
+          @keydown=${onHeaderKeyDown}
+          jslog=${VisualLogging.action(`timeline.toggle-insight.${internalName}`).track({click: true})}
+          data-insight-header-title=${model?.title}
+          tabIndex="0"
+          role="button"
+          aria-expanded=${selected}
+          aria-label=${ariaLabel}
+        >
+          ${renderHoverIcon()}
+          <h3 class="insight-title">${model?.title}</h3>
+          ${estimatedSavingsString ?
+            html`
+            <slot name="insight-savings" class="insight-savings">
+              <span title=${estimatedSavingsAriaLabel ?? ''}>${estimatedSavingsString}</span>
+            </slot>`
+          : Lit.nothing}
+        </header>
+      `}
       ${renderInsightContent()}
     </div>
   `, target);
@@ -199,6 +209,7 @@ export abstract class BaseInsightComponent<T extends InsightModel> extends UI.Wi
   #view: View;
   abstract internalName: string;
   #selected = false;
+  #minimal = false;
   #model: T|null = null;
   #agentFocus: AIAssistance.AIContext.AgentFocus|null = null;
   #fieldMetrics: Trace.Insights.Common.CrUXFieldMetricResults|null = null;
@@ -233,8 +244,10 @@ export abstract class BaseInsightComponent<T extends InsightModel> extends UI.Wi
 
   set selected(selected: boolean) {
     if (!this.#selected && selected) {
-      const options = this.getOverlayOptionsForInitialOverlays();
-      this.element.dispatchEvent(new SidebarInsight.InsightProvideOverlays(this.getInitialOverlays(), options));
+      if (!this.#minimal) {
+        const options = this.getOverlayOptionsForInitialOverlays();
+        this.element.dispatchEvent(new SidebarInsight.InsightProvideOverlays(this.getInitialOverlays(), options));
+      }
     }
 
     if (this.#selected !== selected) {
@@ -245,6 +258,16 @@ export abstract class BaseInsightComponent<T extends InsightModel> extends UI.Wi
 
   get selected(): boolean {
     return this.#selected;
+  }
+
+  set minimal(minimal: boolean) {
+    this.#minimal = minimal;
+    this.#selected = this.#selected || minimal;
+    this.requestUpdate();
+  }
+
+  get minimal(): boolean {
+    return this.#minimal;
   }
 
   set model(model: T) {
@@ -335,13 +358,14 @@ export abstract class BaseInsightComponent<T extends InsightModel> extends UI.Wi
    */
   toggleTemporaryOverlays(
       overlays: Trace.Types.Overlays.Overlay[]|null, options: Overlays.Overlays.TimelineOverlaySetOptions): void {
-    if (!this.#selected) {
+    if (!this.#selected && !this.#minimal) {
       return;
     }
 
     if (!overlays) {
-      this.element.dispatchEvent(new SidebarInsight.InsightProvideOverlays(
-          this.getInitialOverlays(), this.getOverlayOptionsForInitialOverlays()));
+      const initialOverlays = this.#minimal ? [] : this.getInitialOverlays();
+      this.element.dispatchEvent(
+          new SidebarInsight.InsightProvideOverlays(initialOverlays, this.getOverlayOptionsForInitialOverlays()));
       return;
     }
 
@@ -379,6 +403,7 @@ export abstract class BaseInsightComponent<T extends InsightModel> extends UI.Wi
       renderContent: () => this.renderContent(),
       onHeaderKeyDown: this.#onHeaderKeyDown.bind(this),
       onAskAIButtonClick: () => this.#onAskAIButtonClick(),
+      minimal: this.#minimal,
     };
     this.#view(input, undefined, this.contentElement);
   }

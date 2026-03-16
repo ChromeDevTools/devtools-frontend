@@ -17,33 +17,64 @@ declare const window: Window&{
   [Spec.EVENT_BINDING_NAME]: (payload: string) => void,
 };
 
-type ListenerArgs = Parameters<typeof globalThis['addEventListener']>;
+const eventListenerCleanupController = new AbortController();
 
-const windowListeners: ListenerArgs[] = [];
-const documentListeners: ListenerArgs[] = [];
-const observers: PerformanceObserver[] = [];
+const patchAddListener = (proto: typeof Window.prototype|typeof Document.prototype): void => {
+  const original = proto.addEventListener;
 
-const originalWindowAddListener = Window.prototype.addEventListener;
-Window.prototype.addEventListener = function(...args: ListenerArgs) {
-  windowListeners.push(args);
-  return originalWindowAddListener.call(this, ...args);
+  proto.addEventListener = function(
+      type: string, listener: EventListenerOrEventListenerObject, options?: boolean|AddEventListenerOptions): void {
+    // Standardize options into an object
+    const navOptions = typeof options === 'boolean' ? {capture: options} : {...options};
+
+    // If we already have a signal, we should respect it,
+    // but also link it to our global cleanup signal.
+    if (navOptions.signal) {
+      navOptions.signal = AbortSignal.any([navOptions.signal, eventListenerCleanupController.signal]);
+    } else {
+      navOptions.signal = eventListenerCleanupController.signal;
+    }
+
+    return original.call(this, type, listener, navOptions);
+  };
 };
 
-const originalDocumentAddListener = Document.prototype.addEventListener;
-Document.prototype.addEventListener = function(...args: ListenerArgs) {
-  documentListeners.push(args);
-  return originalDocumentAddListener.call(this, ...args);
-};
+// Patch the core targets
+patchAddListener(Window.prototype);
+patchAddListener(Document.prototype);
 
-class InternalPerformanceObserver extends PerformanceObserver {
-  constructor(...args: ConstructorParameters<typeof PerformanceObserver>) {
-    super(...args);
-    observers.push(this);
+// Use a class wrapper that auto-registers and auto-unregisters
+const activeObservers = new Set<PerformanceObserver>();
+class TrackedPerformanceObserver extends globalThis.PerformanceObserver {
+  constructor(callback: PerformanceObserverCallback) {
+    super(callback);
+    activeObservers.add(this);
+  }
+
+  // Override disconnect to remove it from our tracking set
+  override disconnect(): void {
+    super.disconnect();
+    activeObservers.delete(this);
   }
 }
-globalThis.PerformanceObserver = InternalPerformanceObserver;
 
-let killed = false;
+const nodeList: Array<WeakRef<Node>> = [];
+const nodeToIdMap = new WeakMap<Node, number>();
+
+function establishNodeIndex(node: Node): number {
+  let index = nodeToIdMap.get(node);
+  if (index !== undefined) {
+    return index;
+  }
+
+  index = nodeList.length;
+  nodeList.push(new WeakRef(node));
+  nodeToIdMap.set(node, index);
+  return index;
+}
+
+// Replace the global constructor
+globalThis.PerformanceObserver = TrackedPerformanceObserver;
 
 /**
  * This is a hack solution to remove any listeners that were added by web-vitals.js
@@ -51,22 +82,23 @@ let killed = false;
  * context should be considered dead and a new one will need to be created for live metrics
  * to be served again.
  */
+let killed = false;
 window[Spec.INTERNAL_KILL_SWITCH] = () => {
   if (killed) {
     return;
   }
 
-  for (const observer of observers) {
+  for (const observer of activeObservers) {
+    // This calls the overridden disconnect above,
+    // cleaning up BOTH the browser resource and our Set.
     observer.disconnect();
   }
+  activeObservers.clear();
 
-  for (const args of windowListeners) {
-    window.removeEventListener(...args);
-  }
+  eventListenerCleanupController.abort();
 
-  for (const args of documentListeners) {
-    document.removeEventListener(...args);
-  }
+  // Explicitly clear the Node List to help GC
+  nodeList.length = 0;
 
   killed = true;
 };
@@ -74,14 +106,6 @@ window[Spec.INTERNAL_KILL_SWITCH] = () => {
 function sendEventToDevTools(event: Spec.WebVitalsEvent): void {
   const payload = JSON.stringify(event);
   window[Spec.EVENT_BINDING_NAME](payload);
-}
-
-const nodeList: Array<WeakRef<Node>> = [];
-
-function establishNodeIndex(node: Node): number {
-  const index = nodeList.length;
-  nodeList.push(new WeakRef(node));
-  return index;
 }
 
 /**

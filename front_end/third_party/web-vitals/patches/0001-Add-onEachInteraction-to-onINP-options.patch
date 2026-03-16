@@ -8,14 +8,76 @@ each interaction. It also calls attributeINP on each value given to the
 callback.
 
 ---
- src/attribution/onINP.ts | 35 ++++++++++++++++++++++++++++++++++-
- src/types/inp.ts         |  1 +
- 2 files changed, 35 insertions(+), 1 deletion(-)
+ dist/modules/attribution/onINP.js | 13 +++++++++++--
+ src/attribution/onINP.ts          | 47 +++++++++++++++++++++++++++++++++++++++-
+ src/types/inp.ts                  |  1 +
+ 3 files changed, 56 insertions(+), 5 deletions(-)
 
+diff --git a/dist/modules/attribution/onINP.js b/dist/modules/attribution/onINP.js
+index 479a00f..d295263 100644
+--- a/dist/modules/attribution/onINP.js
++++ b/dist/modules/attribution/onINP.js
+@@ -121,7 +121,11 @@
+                 group.startTime = Math.min(entry.startTime, group.startTime);
+                 group.processingStart = Math.min(entry.processingStart, group.processingStart);
+                 group.processingEnd = Math.max(entry.processingEnd, group.processingEnd);
+-                group.entries.push(entry);
++                // Entries are not needed in DevTools since we're only displaying the
++                // summary information, and also emitting events as they come in. Stop
++                // holding a reference to avoid memory issues.
++                // See https://crbug.com/484342204
++                // group.entries.push(entry);
+                 break;
+             }
+         }
+@@ -135,7 +139,12 @@
+             group = {
+                 startTime: entry.startTime,
+                 processingStart: entry.processingStart,
+                 processingEnd: entry.processingEnd,
+                 renderTime,
+-                entries: [entry],
++                // Entries are not needed in DevTools since we're only displaying the
++                // summary information, and also emiting events as they come in. Stop
++                // holding a reference to avoid memory issues.
++                // See https://crbug.com/484342204
++                // entries: [entry],
++                entries: [],
+             };
+             pendingEntriesGroups.push(group);
+         }
 diff --git a/src/attribution/onINP.ts b/src/attribution/onINP.ts
 index 479a00f..d295263 100644
 --- a/src/attribution/onINP.ts
 +++ b/src/attribution/onINP.ts
+@@ -165,7 +165,11 @@
+         group.processingEnd = Math.max(
+           entry.processingEnd,
+           group.processingEnd,
+         );
+-        group.entries.push(entry);
++        // Entries are not needed in DevTools since we're only displaying the
++        // summary information, and also emitting events as they come in. Stop
++        // holding a reference to avoid memory issues.
++        // See https://crbug.com/484342204
++        // group.entries.push(entry);
+ 
+         break;
+       }
+@@ -186,7 +190,12 @@
+         processingStart: entry.processingStart,
+         processingEnd: entry.processingEnd,
+         renderTime,
+-        entries: [entry],
++        // Entries are not needed in DevTools since we're only displaying the
++        // summary information, and also emiting events as they come in. Stop
++        // holding a reference to avoid memory issues.
++        // See https://crbug.com/484342204
++        // entries: [entry],
++        entries: [],
+       };
+ 
+       pendingEntriesGroups.push(group);
 @@ -240,7 +240,40 @@ export const onINP = (
      cleanupPending = false;
    };
@@ -72,4 +134,3 @@ index 7dfa9bb..f87a2c5 100644
  /**
 -- 
 2.51.0.760.g7b8bcc2412-goog
-

@@ -164,14 +164,18 @@ export class LighthouseReportRenderer {
   static async linkifySourceLocationDetails(el: Element): Promise<void> {
     for (const origElement of el.getElementsByClassName('lh-source-location')) {
       const origHTMLElement = origElement as HTMLElement;
-      const detailsItem = origHTMLElement.dataset as LighthouseModel.ReporterTypes.SourceLocationDetailsJSON;
+      const detailsItem = origHTMLElement.dataset as {
+        sourceUrl?: Platform.DevToolsPath.UrlString,
+        sourceLine?: string,
+        sourceColumn?: string,
+      };
       if (!detailsItem.sourceUrl || !detailsItem.sourceLine || !detailsItem.sourceColumn) {
         continue;
       }
       const url = detailsItem.sourceUrl;
       const line = Number(detailsItem.sourceLine);
       const column = Number(detailsItem.sourceColumn);
-      const element = await Components.Linkifier.Linkifier.linkifyURL(url, {
+      const element = Components.Linkifier.Linkifier.linkifyURL(url, {
         lineNumber: line,
         columnNumber: column,
         showColumnNumber: false,

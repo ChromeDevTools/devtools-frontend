@@ -142,6 +142,8 @@ export const DEFAULT_SETTING_REGISTRATIONS_FOR_TEST = [
   createSettingValue(
       Common.Settings.SettingCategory.EMULATION, 'emulation.cpu-pressure', '', Common.Settings.SettingType.ENUM),
   createSettingValue(
+      Common.Settings.SettingCategory.EMULATION, 'emulation.locations', [], Common.Settings.SettingType.ARRAY),
+  createSettingValue(
       Common.Settings.SettingCategory.GRID, 'show-grid-line-labels', 'none', Common.Settings.SettingType.ENUM),
   createSettingValue(Common.Settings.SettingCategory.GRID, 'extend-grid-lines', true),
   createSettingValue(Common.Settings.SettingCategory.GRID, 'show-grid-areas', true),

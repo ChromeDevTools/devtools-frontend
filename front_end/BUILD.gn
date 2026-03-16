@@ -203,6 +203,7 @@ group("unittests") {
     "panels/screencast:unittests",
     "panels/search:unittests",
     "panels/security:unittests",
+    "panels/sensors:unittests",
     "panels/settings:unittests",
     "panels/settings/components:unittests",
     "panels/settings/emulation/components:unittests",

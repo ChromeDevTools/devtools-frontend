@@ -8786,6 +8786,14 @@ export const NativeFunctions = [
     signatures: [["?text"]]
   },
   {
+    name: "addWords",
+    signatures: [["words"]]
+  },
+  {
+    name: "removeWords",
+    signatures: [["words"]]
+  },
+  {
     name: "requestStorageAccessFor",
     signatures: [["requestedOrigin"]]
   },

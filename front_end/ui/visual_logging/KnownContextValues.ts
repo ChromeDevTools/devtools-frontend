@@ -3982,7 +3982,6 @@ export const knownContextValues = new Set([
   'timeline-trigger-source',
   'timeline-trigger-timeline',
   'timeline-user-has-opened-sidebar-once',
-  'timeline-v8-runtime-call-stats',
   'timeline.animations',
   'timeline.annotation-sidebar.annotation-entries-link',
   'timeline.annotation-sidebar.annotation-entry-label',

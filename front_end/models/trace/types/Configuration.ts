@@ -12,10 +12,6 @@ import type {Milli} from './Timing.js';
 
 export interface Configuration {
   /**
-   * Include V8 RCS functions in the JS stacks
-   */
-  includeRuntimeCallStats: boolean;
-  /**
    * Show all events: disable the default filtering which hides and excludes some events.
    */
   showAllEvents: boolean;
@@ -49,7 +45,6 @@ export interface Configuration {
 }
 
 export const defaults = (): Configuration => ({
-  includeRuntimeCallStats: false,
   showAllEvents: false,
   debugMode: false,
   maxInvalidationEventsPerEvent: 20,

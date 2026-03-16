@@ -409,23 +409,6 @@ describeWithEnvironment('TraceTree', () => {
       assert.strictEqual(eventId, 'f:performConcurrentWorkOnRoot@7:25701:38');
     });
 
-    it('generates the right ID for new engine native profile call events', async function() {
-      const {data} = await TraceLoader.traceEngine(this, 'invalid-animation-events.json.gz', {
-        ...Trace.Types.Configuration.defaults(),
-        includeRuntimeCallStats: true,
-      });
-
-      const mainThread = getMainThread(data.Renderer);
-      const profileCallEntry = mainThread.entries.find(entry => {
-        return Trace.Types.Events.isProfileCall(entry) && entry.callFrame.url === 'native V8Runtime';
-      });
-      if (!profileCallEntry) {
-        throw new Error('Could not find a profile call');
-      }
-      const eventId = Trace.Extras.TraceTree.generateEventID(profileCallEntry);
-      assert.strictEqual(eventId, 'f:Compile@0:-1:-1');
-    });
-
     it('differentiates between anonymous functions based on their location', () => {
       const event1 = makeProfileCall('(anonymous)', 0, 1000);
       event1.callFrame.url = 'https://example.com/script.js';

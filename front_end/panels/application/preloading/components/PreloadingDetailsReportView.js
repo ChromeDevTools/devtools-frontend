@@ -305,8 +305,8 @@ export class PreloadingDetailsReportView extends LegacyWrapper.LegacyWrapper.Wra
         if (attempt.action !== "Prefetch" /* Protocol.Preload.SpeculationAction.Prefetch */) {
             return Lit.nothing;
         }
-        // Lookup status code for Non2XX failures
-        const statusCode = PreloadingHelper.PreloadingForward.prefetchStatusCode(attempt.requestId);
+        // Lookup status code for Non2XX failures.
+        const statusCode = PreloadingHelper.PreloadingForward.preloadStatusCode(attempt);
         const failureDescription = prefetchFailureReason(attempt, statusCode);
         if (failureDescription === null) {
             return Lit.nothing;
@@ -338,7 +338,9 @@ export class PreloadingDetailsReportView extends LegacyWrapper.LegacyWrapper.Wra
         if (!this.#isPrerenderLike(attempt.action)) {
             return Lit.nothing;
         }
-        const failureReason = prerenderFailureReason(attempt);
+        // Lookup status code from the network log for NavigationBadHttpStatus.
+        const statusCode = PreloadingHelper.PreloadingForward.preloadStatusCode(attempt);
+        const failureReason = prerenderFailureReason(attempt, statusCode);
         if (failureReason === null) {
             return Lit.nothing;
         }

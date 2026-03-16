@@ -150,6 +150,11 @@ const UIStrings = {
      */
     prerenderFinalStatusNavigationBadHttpStatus: 'The prerendering navigation failed because of a non-2xx HTTP response status code.',
     /**
+     * @description Description text for PrerenderFinalStatus::kNavigationBadHttpStatus when the HTTP status code is known.
+     * @example {404} PH1
+     */
+    prerenderFinalStatusNavigationBadHttpStatusWithStatusCode: 'The prerendering navigation failed because of a non-2xx HTTP response status code ({PH1}).',
+    /**
      *  Description text for PrerenderFinalStatus::kClientCertRequested.
      */
     prerenderFinalStatusClientCertRequested: 'The prerendering navigation required a HTTP client certificate.',
@@ -474,7 +479,7 @@ export function prefetchFailureReason({ prefetchStatus }, statusCode) {
     }
 }
 /** Detailed failure reason for PrerenderFinalStatus. **/
-export function prerenderFailureReason(attempt) {
+export function prerenderFailureReason(attempt, statusCode) {
     // If you face an error on rolling CDP changes, see
     // https://docs.google.com/document/d/1PnrfowsZMt62PX1EvvTp2Nqs3ji1zrklrAEe1JYbkTk
     switch (attempt.prerenderStatus) {
@@ -510,6 +515,9 @@ export function prerenderFailureReason(attempt) {
             // TODO(https://crbug.com/1410709): Fill it.
             return i18n.i18n.lockedString('Internal error');
         case "NavigationBadHttpStatus" /* Protocol.Preload.PrerenderFinalStatus.NavigationBadHttpStatus */:
+            if (statusCode !== undefined) {
+                return i18nString(UIStrings.prerenderFinalStatusNavigationBadHttpStatusWithStatusCode, { PH1: String(statusCode) });
+            }
             return i18nString(UIStrings.prerenderFinalStatusNavigationBadHttpStatus);
         case "ClientCertRequested" /* Protocol.Preload.PrerenderFinalStatus.ClientCertRequested */:
             return i18nString(UIStrings.prerenderFinalStatusClientCertRequested);
@@ -737,7 +745,7 @@ export function composedStatus(attempt, statusCode) {
         }
         case "Prerender" /* Protocol.Preload.SpeculationAction.Prerender */:
         case "PrerenderUntilScript" /* Protocol.Preload.SpeculationAction.PrerenderUntilScript */: {
-            const detail = prerenderFailureReason(attempt);
+            const detail = prerenderFailureReason(attempt, statusCode);
             assertNotNullOrUndefined(detail);
             return short + ' - ' + detail;
         }

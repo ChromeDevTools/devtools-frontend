@@ -8,7 +8,7 @@ export declare const PrefetchReasonDescription: Record<string, {
 /** Decoding PrefetchFinalStatus prefetchAttempt to failure description. **/
 export declare function prefetchFailureReason({ prefetchStatus }: SDK.PreloadingModel.PrefetchAttempt, statusCode?: number): string | null;
 /** Detailed failure reason for PrerenderFinalStatus. **/
-export declare function prerenderFailureReason(attempt: SDK.PreloadingModel.PrerenderAttempt | SDK.PreloadingModel.PrerenderUntilScriptAttempt): string | null;
+export declare function prerenderFailureReason(attempt: SDK.PreloadingModel.PrerenderAttempt | SDK.PreloadingModel.PrerenderUntilScriptAttempt, statusCode?: number): string | null;
 export declare function ruleSetLocationShort(ruleSet: Protocol.Preload.RuleSet, pageURL: Platform.DevToolsPath.UrlString): string;
 export declare function ruleSetTagOrLocationShort(ruleSet: Protocol.Preload.RuleSet, pageURL: Platform.DevToolsPath.UrlString): string;
 export declare function capitalizedAction(action: Protocol.Preload.SpeculationAction): Common.UIString.LocalizedString;

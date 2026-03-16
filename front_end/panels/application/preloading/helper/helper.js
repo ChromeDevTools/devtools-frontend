@@ -9,8 +9,9 @@ var PreloadingForward_exports = {};
 __export(PreloadingForward_exports, {
   AttemptViewWithFilter: () => AttemptViewWithFilter,
   RuleSetView: () => RuleSetView,
-  prefetchStatusCode: () => prefetchStatusCode
+  preloadStatusCode: () => preloadStatusCode
 });
+import * as SDK from "./../../../../core/sdk/sdk.js";
 import * as Logs from "./../../../../models/logs/logs.js";
 var RuleSetView = class {
   ruleSetId;
@@ -24,6 +25,16 @@ var AttemptViewWithFilter = class {
     this.ruleSetId = ruleSetId;
   }
 };
+function preloadStatusCode(attempt) {
+  switch (attempt.action) {
+    case "Prefetch":
+      return prefetchStatusCode(attempt.requestId);
+    case "Prerender":
+    case "PrerenderUntilScript":
+      return prerenderStatusCode(attempt.key.loaderId);
+  }
+  return void 0;
+}
 function prefetchStatusCode(requestId) {
   const networkLog = Logs.NetworkLog.NetworkLog.instance();
   const requests = networkLog.requestsForId(requestId);
@@ -31,6 +42,15 @@ function prefetchStatusCode(requestId) {
     return requests[requests.length - 1].statusCode;
   }
   return void 0;
+}
+function prerenderStatusCode(loaderId) {
+  const frame = SDK.ResourceTreeModel.ResourceTreeModel.frames().find((f) => f.loaderId === loaderId);
+  if (!frame) {
+    return void 0;
+  }
+  const networkManager = frame.resourceTreeModel().target().model(SDK.NetworkManager.NetworkManager);
+  const request = networkManager?.requestForLoaderId(loaderId);
+  return request?.statusCode === 0 ? void 0 : request?.statusCode;
 }
 export {
   PreloadingForward_exports as PreloadingForward

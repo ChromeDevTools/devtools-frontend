@@ -525,10 +525,8 @@ export class PreloadingAttemptView extends UI.Widget.VBox {
                 const ruleSet = this.model.getRuleSetById(id);
                 return ruleSet === null ? [] : [ruleSet];
             });
-            // Lookup status code for prefetch attempts
-            const statusCode = attempt.action === "Prefetch" /* Protocol.Preload.SpeculationAction.Prefetch */ ?
-                PreloadingHelper.PreloadingForward.prefetchStatusCode(attempt.requestId) :
-                undefined;
+            // Lookup status code from the network log for display in the grid.
+            const statusCode = PreloadingHelper.PreloadingForward.preloadStatusCode(attempt);
             return {
                 id,
                 pipeline,

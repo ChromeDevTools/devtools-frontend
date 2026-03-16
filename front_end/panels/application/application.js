@@ -6260,6 +6260,11 @@ var UIStrings12 = {
    */
   prerenderFinalStatusNavigationBadHttpStatus: "The prerendering navigation failed because of a non-2xx HTTP response status code.",
   /**
+   * @description Description text for PrerenderFinalStatus::kNavigationBadHttpStatus when the HTTP status code is known.
+   * @example {404} PH1
+   */
+  prerenderFinalStatusNavigationBadHttpStatusWithStatusCode: "The prerendering navigation failed because of a non-2xx HTTP response status code ({PH1}).",
+  /**
    *  Description text for PrerenderFinalStatus::kClientCertRequested.
    */
   prerenderFinalStatusClientCertRequested: "The prerendering navigation required a HTTP client certificate.",
@@ -7025,7 +7030,7 @@ var PreloadingAttemptView = class extends UI10.Widget.VBox {
         const ruleSet = this.model.getRuleSetById(id2);
         return ruleSet === null ? [] : [ruleSet];
       });
-      const statusCode = attempt.action === "Prefetch" ? PreloadingHelper.PreloadingForward.prefetchStatusCode(attempt.requestId) : void 0;
+      const statusCode = PreloadingHelper.PreloadingForward.preloadStatusCode(attempt);
       return {
         id,
         pipeline,

@@ -168,6 +168,11 @@ var UIStrings = {
    */
   prerenderFinalStatusNavigationBadHttpStatus: "The prerendering navigation failed because of a non-2xx HTTP response status code.",
   /**
+   * @description Description text for PrerenderFinalStatus::kNavigationBadHttpStatus when the HTTP status code is known.
+   * @example {404} PH1
+   */
+  prerenderFinalStatusNavigationBadHttpStatusWithStatusCode: "The prerendering navigation failed because of a non-2xx HTTP response status code ({PH1}).",
+  /**
    *  Description text for PrerenderFinalStatus::kClientCertRequested.
    */
   prerenderFinalStatusClientCertRequested: "The prerendering navigation required a HTTP client certificate.",
@@ -485,7 +490,7 @@ function prefetchFailureReason({ prefetchStatus }, statusCode) {
       return i18n.i18n.lockedString(`Unknown failure reason: ${prefetchStatus}`);
   }
 }
-function prerenderFailureReason(attempt) {
+function prerenderFailureReason(attempt, statusCode) {
   switch (attempt.prerenderStatus) {
     case null:
     case "Activated":
@@ -514,6 +519,9 @@ function prerenderFailureReason(attempt) {
     case "NavigationNotCommitted":
       return i18n.i18n.lockedString("Internal error");
     case "NavigationBadHttpStatus":
+      if (statusCode !== void 0) {
+        return i18nString(UIStrings.prerenderFinalStatusNavigationBadHttpStatusWithStatusCode, { PH1: String(statusCode) });
+      }
       return i18nString(UIStrings.prerenderFinalStatusNavigationBadHttpStatus);
     case "ClientCertRequested":
       return i18nString(UIStrings.prerenderFinalStatusClientCertRequested);
@@ -719,7 +727,7 @@ function composedStatus(attempt, statusCode) {
     }
     case "Prerender":
     case "PrerenderUntilScript": {
-      const detail = prerenderFailureReason(attempt);
+      const detail = prerenderFailureReason(attempt, statusCode);
       assertNotNullOrUndefined(detail);
       return short + " - " + detail;
     }
@@ -1191,7 +1199,7 @@ var PreloadingDetailsReportView = class extends LegacyWrapper.LegacyWrapper.Wrap
     if (attempt.action !== "Prefetch") {
       return Lit2.nothing;
     }
-    const statusCode = PreloadingHelper.PreloadingForward.prefetchStatusCode(attempt.requestId);
+    const statusCode = PreloadingHelper.PreloadingForward.preloadStatusCode(attempt);
     const failureDescription = prefetchFailureReason(attempt, statusCode);
     if (failureDescription === null) {
       return Lit2.nothing;
@@ -1223,7 +1231,8 @@ var PreloadingDetailsReportView = class extends LegacyWrapper.LegacyWrapper.Wrap
     if (!this.#isPrerenderLike(attempt.action)) {
       return Lit2.nothing;
     }
-    const failureReason = prerenderFailureReason(attempt);
+    const statusCode = PreloadingHelper.PreloadingForward.preloadStatusCode(attempt);
+    const failureReason = prerenderFailureReason(attempt, statusCode);
     if (failureReason === null) {
       return Lit2.nothing;
     }

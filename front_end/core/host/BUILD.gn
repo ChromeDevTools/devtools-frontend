@@ -9,6 +9,7 @@ devtools_module("host") {
   sources = [
     "AidaClient.ts",
     "DispatchHttpRequestClient.ts",
+    "GcaTypes.ts",
     "GdpClient.ts",
     "InspectorFrontendHost.ts",
     "InspectorFrontendHostAPI.ts",

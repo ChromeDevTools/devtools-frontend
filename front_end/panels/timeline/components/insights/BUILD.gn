@@ -33,7 +33,6 @@ devtools_ui_module("insights") {
     "INPBreakdown.ts",
     "ImageDelivery.ts",
     "ImageRef.ts",
-    "InsightRenderer.ts",
     "LCPBreakdown.ts",
     "LCPDiscovery.ts",
     "LegacyJavaScript.ts",

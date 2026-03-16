@@ -12,7 +12,6 @@ import * as EmulationModel from '../../models/emulation/emulation.js';
 import type * as LighthouseModel from '../../models/lighthouse/lighthouse.js';
 import * as Emulation from '../emulation/emulation.js';
 
-import type {RunOverrides} from './LighthousePanel.js';
 import type {LighthouseRun as LighthouseRunType, ProtocolService} from './LighthouseProtocolService.js';
 
 const UIStrings = {
@@ -568,9 +567,9 @@ export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper<Eve
     };
   }
 
-  getCategoryIDs(): CategoryId[] {
+  getCategoryIDs(): LighthouseModel.RunTypes.CategoryId[] {
     const {mode} = this.getFlags();
-    const categoryIDs: CategoryId[] = [];
+    const categoryIDs: LighthouseModel.RunTypes.CategoryId[] = [];
     for (const preset of getPresets()) {
       if (mode && !preset.supportedModes.includes(mode)) {
         continue;
@@ -645,7 +644,7 @@ export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper<Eve
    * user has selected in the UI, but these can be overridden by passing in the
    * category IDs, in which case these take priority.
    */
-  async startLighthouse(overrides?: RunOverrides): Promise<void> {
+  async startLighthouse(overrides?: LighthouseModel.RunTypes.RunOverrides): Promise<void> {
     if (this.lastAction) {
       await this.lastAction;
     }
@@ -702,8 +701,8 @@ const STORAGE_TYPE_NAMES = new Map([
   [Protocol.Storage.StorageType.Websql, i18nLazyString(UIStrings.webSql)],
 ]);
 
-let presets: Preset[]|null = null;
-export function getPresets(): Preset[] {
+let presets: LighthouseModel.RunTypes.Preset[]|null = null;
+export function getPresets(): LighthouseModel.RunTypes.Preset[] {
   if (!presets) {
     presets = [
       // configID maps to Lighthouse's Object.keys(config.categories)[0] value
@@ -748,10 +747,8 @@ export function getPresets(): Preset[] {
   return presets;
 }
 
-export type Flags = Record<string, string|boolean>;
-
-let runtimeSettings: RuntimeSetting[]|null = null;
-export function getRuntimeSettings(): RuntimeSetting[] {
+let runtimeSettings: LighthouseModel.RunTypes.RuntimeSetting[]|null = null;
+export function getRuntimeSettings(): LighthouseModel.RunTypes.RuntimeSetting[] {
   if (!runtimeSettings) {
     runtimeSettings = [
       {
@@ -759,7 +756,7 @@ export function getRuntimeSettings(): RuntimeSetting[] {
             'lighthouse.device-type', 'mobile', Common.Settings.SettingStorageType.SYNCED),
         title: i18nLazyString(UIStrings.applyMobileEmulation),
         description: i18nLazyString(UIStrings.applyMobileEmulationDuring),
-        setFlags: (flags: Flags, value: string|boolean) => {
+        setFlags: (flags: LighthouseModel.RunTypes.Flags, value: string|boolean) => {
           // See Audits.AuditsPanel._setupEmulationAndProtocolConnection()
           flags.formFactor = value;
         },
@@ -781,7 +778,7 @@ export function getRuntimeSettings(): RuntimeSetting[] {
             'lighthouse.mode', 'navigation', Common.Settings.SettingStorageType.SYNCED),
         title: i18nLazyString(UIStrings.lighthouseMode),
         description: i18nLazyString(UIStrings.runLighthouseInMode),
-        setFlags: (flags: Flags, value: string|boolean) => {
+        setFlags: (flags: LighthouseModel.RunTypes.Flags, value: string|boolean) => {
           flags.mode = value;
         },
         options: [
@@ -814,7 +811,7 @@ export function getRuntimeSettings(): RuntimeSetting[] {
             'https://github.com/GoogleChrome/lighthouse/blob/master/docs/throttling.md#devtools-lighthouse-panel-throttling' as
             Platform.DevToolsPath.UrlString,
         description: i18nLazyString(UIStrings.simulateASlowerPageLoadBasedOn),
-        setFlags: (flags: Flags, value: string|boolean) => {
+        setFlags: (flags: LighthouseModel.RunTypes.Flags, value: string|boolean) => {
           if (typeof value === 'string') {
             flags.throttlingMethod = value;
           } else {
@@ -831,7 +828,7 @@ export function getRuntimeSettings(): RuntimeSetting[] {
             'lighthouse.clear-storage', true, Common.Settings.SettingStorageType.SYNCED),
         title: i18nLazyString(UIStrings.clearStorage),
         description: i18nLazyString(UIStrings.resetStorageLocalstorage),
-        setFlags: (flags: Flags, value: string|boolean) => {
+        setFlags: (flags: LighthouseModel.RunTypes.Flags, value: string|boolean) => {
           flags.disableStorageReset = !value;
         },
       },
@@ -840,7 +837,7 @@ export function getRuntimeSettings(): RuntimeSetting[] {
             'lighthouse.enable-sampling', false, Common.Settings.SettingStorageType.SYNCED),
         title: i18nLazyString(UIStrings.enableSampling),
         description: i18nLazyString(UIStrings.enableJavaScriptSampling),
-        setFlags: (flags: Flags, value: string|boolean) => {
+        setFlags: (flags: LighthouseModel.RunTypes.Flags, value: string|boolean) => {
           if (value) {
             flags.additionalTraceCategories = 'disabled-by-default-v8.cpu_profiler';
           } else {
@@ -877,27 +874,4 @@ export interface EventTypes {
   [Events.PageAuditabilityChanged]: PageAuditabilityChangedEvent;
   [Events.PageWarningsChanged]: PageWarningsChangedEvent;
   [Events.AuditProgressChanged]: AuditProgressChangedEvent;
-}
-
-export type CategoryId = 'performance'|'accessibility'|'best-practices'|'seo';
-
-export interface Preset {
-  setting: Common.Settings.Setting<boolean>;
-  configID: CategoryId;
-  title: () => Common.UIString.LocalizedString;
-  description: () => Common.UIString.LocalizedString;
-  supportedModes: string[];
-  userMetric: Host.UserMetrics.LighthouseCategoryUsed;
-}
-export interface RuntimeSetting {
-  setting: Common.Settings.Setting<string|boolean>;
-  description: () => Common.UIString.LocalizedString;
-  setFlags: (flags: Flags, value: string|boolean) => void;
-  options?: Array<{
-    label: () => Common.UIString.LocalizedString,
-    value: string,
-    tooltip?: () => Common.UIString.LocalizedString,
-  }>;
-  title?: () => Common.UIString.LocalizedString;
-  learnMore?: Platform.DevToolsPath.UrlString;
 }

@@ -8,12 +8,13 @@ import '../../ui/legacy/legacy.js';
 import type * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
+import type * as LHModel from '../../models/lighthouse/lighthouse.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import {Link} from '../../ui/kit/kit.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {Directives, html, render} from '../../ui/lit/lit.js';
 
-import {getPresets, getRuntimeSettings, type LighthouseController, type Preset} from './LighthouseController.js';
+import {getPresets, getRuntimeSettings, type LighthouseController} from './LighthouseController.js';
 import type {LighthousePanel} from './LighthousePanel.js';
 import lighthouseStartViewStyles from './lighthouseStartView.css.js';
 import {RadioSetting} from './RadioSetting.js';
@@ -135,7 +136,7 @@ export class StartView extends UI.Widget.Widget {
   private startButton!: Buttons.Button.Button;
   private helpText?: Element;
   private warningText?: Element;
-  private checkboxes: Array<{preset: Preset, checkbox: UI.Toolbar.ToolbarCheckbox}> = [];
+  private checkboxes: Array<{preset: LHModel.RunTypes.Preset, checkbox: UI.Toolbar.ToolbarCheckbox}> = [];
 
   changeFormMode?: (mode: string) => void;
 

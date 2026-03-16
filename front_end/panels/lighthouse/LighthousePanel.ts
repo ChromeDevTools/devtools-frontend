@@ -13,7 +13,6 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {
   type AuditProgressChangedEvent,
-  type CategoryId,
   Events,
   LighthouseController,
   type PageAuditabilityChangedEvent,
@@ -153,7 +152,7 @@ export class LighthousePanel extends UI.Panel.Panel {
     }
   }
 
-  async handleCompleteRun(overrides?: RunOverrides):
+  async handleCompleteRun(overrides?: LighthouseModel.RunTypes.RunOverrides):
       Promise<{report: LighthouseModel.ReporterTypes.ReportJSON | null}> {
     try {
       await this.controller.startLighthouse(overrides);
@@ -392,7 +391,7 @@ export class LighthousePanel extends UI.Panel.Panel {
   }
 
   static async executeLighthouseRecording(
-      overrides?: RunOverrides,
+      overrides?: LighthouseModel.RunTypes.RunOverrides,
       ): Promise<LighthouseModel.ReporterTypes.ReportJSON|null> {
     const panel = LighthousePanel.instance();
     await UI.ViewManager.ViewManager.instance().showView('lighthouse');
@@ -400,8 +399,4 @@ export class LighthousePanel extends UI.Panel.Panel {
     const {report} = await panel.handleCompleteRun(overrides);
     return report;
   }
-}
-
-export interface RunOverrides {
-  categoryIds: CategoryId[];
 }

@@ -6,9 +6,14 @@ import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("lighthouse") {
-  sources = [ "LighthouseReporterTypes.ts" ]
+  sources = [
+    "LighthouseReporterTypes.ts",
+    "RunTypes.ts",
+  ]
 
   deps = [
+    "../../core/common:bundle",
+    "../../core/host:bundle",
     "../../core/platform:bundle",
     "../../models/trace:bundle",
   ]

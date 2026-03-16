@@ -15,6 +15,7 @@ import type {ActiveInsight} from './Sidebar.js';
 import sidebarSingleInsightSetStyles from './sidebarSingleInsightSet.css.js';
 
 const {html} = Lit.StaticHtml;
+const {ref} = Lit.Directives;
 
 /**
  * Every insight (INCLUDING experimental ones).
@@ -125,9 +126,6 @@ const DEFAULT_VIEW: View = (input, output, target) => {
 
 export class SidebarSingleInsightSet extends UI.Widget.Widget {
   #view: View;
-  #insightWidgetCache = new WeakMap<
-      Trace.Insights.Types.InsightModel,
-      UI.Widget.WidgetElement<Insights.BaseInsightComponent.BaseInsightComponent<Trace.Insights.Types.InsightModel>>>();
   #activeInsightElement: HTMLElement|null = null;
   #activeHighlightTimeout = -1;
 
@@ -210,19 +208,11 @@ export class SidebarSingleInsightSet extends UI.Widget.Widget {
     const {insightName, model} = insightData;
     const activeInsight = this.#data.activeInsight;
     const agentFocus = AIAssistance.AIContext.AgentFocus.fromInsight(this.#data.parsedTrace, model);
-
-    let widgetElement = this.#insightWidgetCache.get(model);
-    if (!widgetElement) {
-      widgetElement = document.createElement('devtools-widget') as
-          UI.Widget
-              .WidgetElement<Insights.BaseInsightComponent.BaseInsightComponent<Trace.Insights.Types.InsightModel>>;
-      widgetElement.classList.add('insight-component-widget');
-      this.#insightWidgetCache.set(model, widgetElement);
-    }
+    const isActiveInsight = activeInsight?.model === model;
 
     const componentClass = INSIGHT_NAME_TO_COMPONENT[insightName as keyof typeof INSIGHT_NAME_TO_COMPONENT];
-    widgetElement.widgetConfig = UI.Widget.widgetConfig(componentClass, {
-      selected: activeInsight?.model === model,
+    const widgetConfig = {
+      selected: isActiveInsight,
       // The `model` passed in as a parameter is the base type, but since
       // `componentClass` is the union of every derived insight component, the
       // `model` for the widget config is the union of every model. That can't be
@@ -233,13 +223,17 @@ export class SidebarSingleInsightSet extends UI.Widget.Widget {
       insightSetKey: insightSet.id,
       agentFocus,
       fieldMetrics,
-    });
+    };
 
-    if (activeInsight?.model === model) {
-      this.#activeInsightElement = widgetElement;
-    }
-
-    return html`${widgetElement}`;
+    // clang-format off
+    return html`<devtools-widget class="insight-component-widget" ${ref((element?: Element) => {
+        if (element instanceof HTMLElement && isActiveInsight) {
+          this.#activeInsightElement = element;
+        }
+      })}
+      ${widget(componentClass, widgetConfig)}
+    ></devtools-widget>`;
+    // clang-format on
   }
 
   override performUpdate(): void {

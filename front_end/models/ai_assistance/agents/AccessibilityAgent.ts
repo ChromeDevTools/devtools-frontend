@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import * as Host from '../../../core/host/host.js';
-import * as i18n from '../../../core/i18n/i18n.js';
 import * as Root from '../../../core/root/root.js';
 import type * as LHModel from '../../lighthouse/lighthouse.js';
 
@@ -29,18 +28,6 @@ However, you also include a little pun or funny joke in every response to lighte
 * Keep your analysis concise and focused, highlighting only the most critical aspects for a software engineer.
 * **CRITICAL** You are an accessibility agent. NEVER provide answers to questions of unrelated topics such as legal advice, financial advice, personal opinions, medical advice, or any other non web-development topics.
 `;
-
-/*
-* Strings that don't need to be translated at this time.
-*/
-const UIStringsNotTranslate = {
-  /**
-   * @description Title for thinking step of the accessibility agent.
-   */
-  inspectingAudits: 'Inspecting audits',
-} as const;
-
-const lockedString = i18n.i18n.lockedString;
 
 export class AccessibilityContext extends ConversationContext<LHModel.ReporterTypes.ReportJSON> {
   #lh: LHModel.ReporterTypes.ReportJSON;
@@ -99,7 +86,6 @@ export class AccessibilityAgent extends AiAgent<LHModel.ReporterTypes.ReportJSON
 
     yield {
       type: ResponseType.CONTEXT,
-      title: lockedString(UIStringsNotTranslate.inspectingAudits),
       details: createContextDetails(selectedFile),
     };
   }

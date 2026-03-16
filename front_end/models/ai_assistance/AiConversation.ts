@@ -31,6 +31,7 @@ import {AiHistoryStorage, ConversationType, type SerializedConversation} from '.
 import type {ChangeManager} from './ChangeManager.js';
 
 export const NOT_FOUND_IMAGE_DATA = '';
+export const CONTEXT_TITLE = 'Analyzing data';
 const MAX_TITLE_LENGTH = 80;
 
 export function generateContextDetailsMarkdown(details: ContextDetail[]): string {
@@ -209,7 +210,7 @@ export class AiConversation {
           break;
         }
         case ResponseType.CONTEXT: {
-          contentParts.push(`### ${item.title}`);
+          contentParts.push(`### ${CONTEXT_TITLE}`);
           if (item.details && item.details.length > 0) {
             contentParts.push(generateContextDetailsMarkdown(item.details));
           }

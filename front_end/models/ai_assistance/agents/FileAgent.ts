@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import * as Host from '../../../core/host/host.js';
-import * as i18n from '../../../core/i18n/i18n.js';
 import * as Root from '../../../core/root/root.js';
 import type * as Workspace from '../../workspace/workspace.js';
 import {FileFormatter} from '../data_formatters/FileFormatter.js';
@@ -62,18 +61,6 @@ External Resources:
 MDN Web Docs: JavaScript Functions: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Functions
 `;
 
-/*
-* Strings that don't need to be translated at this time.
-*/
-const UIStringsNotTranslate = {
-  /**
-   * @description Title for thinking step of File agent.
-   */
-  analyzingFile: 'Analyzing file',
-} as const;
-
-const lockedString = i18n.i18n.lockedString;
-
 export class FileContext extends ConversationContext<Workspace.UISourceCode.UISourceCode> {
   #file: Workspace.UISourceCode.UISourceCode;
 
@@ -118,7 +105,6 @@ export class FileAgent extends AiAgent<Workspace.UISourceCode.UISourceCode> {
       modelId,
     };
   }
-
   async *
       handleContextDetails(selectedFile: ConversationContext<Workspace.UISourceCode.UISourceCode>|null):
           AsyncGenerator<ContextResponse, void, void> {
@@ -128,7 +114,6 @@ export class FileAgent extends AiAgent<Workspace.UISourceCode.UISourceCode> {
 
     yield {
       type: ResponseType.CONTEXT,
-      title: lockedString(UIStringsNotTranslate.analyzingFile),
       details: createContextDetailsForFileAgent(selectedFile),
     };
   }

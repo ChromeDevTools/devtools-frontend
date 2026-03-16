@@ -19,7 +19,7 @@ import {
 import {NetworkAgent, RequestContext} from './agents/NetworkAgent.js';
 import type {PerformanceTraceContext} from './agents/PerformanceAgent.js';
 import {NodeContext, StylingAgent} from './agents/StylingAgent.js';
-import {AiConversation} from './AiConversation.js';
+import {AiConversation, CONTEXT_TITLE} from './AiConversation.js';
 import {
   ConversationType,
 } from './AiHistoryStorage.js';
@@ -235,10 +235,16 @@ export class ConversationHandler extends Common.ObjectWrapper.ObjectWrapper<Even
       if (data.type !== ResponseType.ANSWER || data.complete) {
         devToolsLogs.push(data);
       }
-      if (data.type === ResponseType.CONTEXT || data.type === ResponseType.TITLE) {
+      if (data.type === ResponseType.TITLE) {
         yield {
           type: ExternalRequestResponseType.NOTIFICATION,
           message: data.title,
+        };
+      }
+      if (data.type === ResponseType.CONTEXT) {
+        yield {
+          type: ExternalRequestResponseType.NOTIFICATION,
+          message: CONTEXT_TITLE,
         };
       }
       if (data.type === ResponseType.SIDE_EFFECT) {

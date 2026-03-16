@@ -2086,7 +2086,6 @@ describeWithMockConnection('AI Assistance Panel', () => {
       const stubbedResponses: AsyncGenerator<AiAssistanceModel.AiAgent.ResponseData> = (async function*() {
         yield {
           type: AiAssistanceModel.AiAgent.ResponseType.CONTEXT,
-          title: 'context-title',
           details: [{title: 'mock', text: 'mock'}]
         };
       })();
@@ -2101,7 +2100,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
       assert(nextInput.state === AiAssistancePanel.ViewState.CHAT_VIEW);
 
       assert.isTrue(
-          liveAnnouncerStatusStub.calledWith('context-title'),
+          liveAnnouncerStatusStub.calledWith('Analyzing data'),
           'Expected live announcer status to be called with the context title');
     });
 

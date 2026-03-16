@@ -375,7 +375,7 @@ describeWithEnvironment('TimelinePanel', function() {
         data: Timeline.TimelinePanel.TimelinePanel.instance().getOrCreateExternalAIConversationData(),
       });
       let response = await generator.next();
-      assert.strictEqual(response.value.message, 'Analyzing trace');
+      assert.strictEqual(response.value.message, 'Analyzing data');
       response = await generator.next();
       assert.strictEqual(response.value.message, explanation);
     });

@@ -3,21 +3,12 @@
 // found in the LICENSE file.
 
 import * as Host from '../../../core/host/host.js';
-import * as i18n from '../../../core/i18n/i18n.js';
 import * as Root from '../../../core/root/root.js';
 import type {AICallTree} from '../performance/AICallTree.js';
 import type {AgentFocus} from '../performance/AIContext.js';
 
 import {AiAgent, type ContextResponse, type ConversationContext, type RequestOptions, ResponseType} from './AiAgent.js';
 import {PerformanceTraceContext} from './PerformanceAgent.js';
-
-const UIStringsNotTranslated = {
-  analyzingCallTree: 'Analyzing call tree',
-  /**
-   * @description Shown when the agent is investigating network activity
-   */
-} as const;
-const lockedString = i18n.i18n.lockedString;
 
 /**
  * Preamble clocks in at ~970 tokens.
@@ -124,7 +115,6 @@ export class PerformanceAnnotationsAgent extends AiAgent<AgentFocus> {
 
     yield {
       type: ResponseType.CONTEXT,
-      title: lockedString(UIStringsNotTranslated.analyzingCallTree),
       details: [
         {
           title: 'Selected call tree',

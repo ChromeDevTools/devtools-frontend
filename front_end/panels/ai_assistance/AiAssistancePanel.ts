@@ -131,6 +131,10 @@ const UIStringsNotTranslate = {
    */
   answerReady: 'Answer ready',
   /**
+   * @description Title for the first step of the walkthrough.
+   */
+  analyzingData: 'Analyzing data',
+  /**
    * @description Placeholder text for the input shown when the conversation is blocked because a cross-origin context was selected.
    */
   crossOriginError: 'To talk about data from another origin, start a new chat',
@@ -1792,7 +1796,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
             break;
           }
           case AiAssistanceModel.AiAgent.ResponseType.CONTEXT: {
-            step.title = data.title;
+            step.title = lockedString(UIStringsNotTranslate.analyzingData);
             step.contextDetails = data.details;
             step.widgets = data.widgets;
             step.isLoading = false;
@@ -1932,12 +1936,12 @@ export class AiAssistancePanel extends UI.Panel.Panel {
           }
 
           // Announce as status update to screen readers when:
-          // * Context is received (e.g. Analyzing the prompt)
+          // * Context is received (e.g. Analyzing data)
           // * Answer started streaming
           // * Answer finished streaming
           switch (data.type) {
             case AiAssistanceModel.AiAgent.ResponseType.CONTEXT:
-              UI.ARIAUtils.LiveAnnouncer.status(data.title);
+              UI.ARIAUtils.LiveAnnouncer.status(lockedString(UIStringsNotTranslate.analyzingData));
               break;
             case AiAssistanceModel.AiAgent.ResponseType.ANSWER: {
               if (!data.complete && !announcedAnswerLoading) {

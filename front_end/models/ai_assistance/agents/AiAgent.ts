@@ -70,7 +70,6 @@ export interface ContextDetail {
 }
 export interface ContextResponse {
   type: ResponseType.CONTEXT;
-  title: string;
   details: [ContextDetail, ...ContextDetail[]];
   widgets?: AiWidget[];
 }

@@ -168,7 +168,6 @@ describeWithMockConnection('PerformanceAgent – call tree focus', () => {
       assert.deepEqual(responses, [
         {
           type: AiAgent.ResponseType.CONTEXT,
-          title: 'Analyzing trace',
           details: [
             {title: 'Trace', text: expectedData},
           ],
@@ -384,7 +383,6 @@ code
 
         {
           type: AiAgent.ResponseType.CONTEXT,
-          title: 'Analyzing trace',
           details: [
             {title: 'Trace', text: expectedDetailText},
           ],

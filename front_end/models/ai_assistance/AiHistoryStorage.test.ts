@@ -561,7 +561,6 @@ describe('AiHistoryStorage', () => {
         },
         {
           type: AiAssistance.AiAgent.ResponseType.CONTEXT,
-          title: 'Analyzing context',
           details: [
             {title: 'Detail 1', text: 'Some detail'},
             {title: 'Detail 2', text: 'const a = 1;', codeLang: 'js'},

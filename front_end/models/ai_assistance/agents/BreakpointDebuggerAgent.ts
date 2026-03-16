@@ -608,7 +608,6 @@ export class BreakpointDebuggerAgent extends AiAgent<Workspace.UISourceCode.UILo
     }
     yield {
       type: ResponseType.CONTEXT,
-      title: 'Analyzing breakpoint location',
       details: [{title: 'Location', text: selectedBreakpoint.getTitle()}]
     };
   }

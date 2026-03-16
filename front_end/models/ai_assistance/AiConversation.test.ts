@@ -405,7 +405,6 @@ describeWithEnvironment('AiConversation', () => {
 
     const contextResponse: AiAssistance.AiAgent.ContextResponse = {
       type: AiAssistance.AiAgent.ResponseType.CONTEXT,
-      title: 'Context',
       details: [{title: 'Detail', text: 'Text'}],
       widgets: [{name: 'DOM_TREE', data: {root: {} as SDK.DOMModel.DOMNodeSnapshot}}],
     };

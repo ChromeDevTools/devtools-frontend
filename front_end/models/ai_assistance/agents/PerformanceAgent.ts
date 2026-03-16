@@ -36,10 +36,6 @@ import {
 
 const UIStringsNotTranslated = {
   /**
-   *@description Shown when the agent is investigating a trace
-   */
-  analyzingTrace: 'Analyzing trace',
-  /**
    * @description Shown when the agent is investigating network activity
    */
   networkActivitySummary: 'Investigating network activity…',
@@ -318,7 +314,6 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
   #formatter: PerformanceTraceFormatter|null = null;
   #lastEventForEnhancedQuery: Trace.Types.Events.Event|undefined;
   #lastInsightForEnhancedQuery: Trace.Insights.Types.InsightModel|undefined;
-  #hasShownAnalyzeTraceContext = false;
 
   /**
    * Cache of all function calls made by the agent. This allows us to include (as a
@@ -379,10 +374,6 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
       return;
     }
 
-    if (this.#hasShownAnalyzeTraceContext) {
-      return;
-    }
-
     const widgets: AiWidget[] = [];
     const primaryInsightSet = context.getItem().primaryInsightSet;
     if (primaryInsightSet) {
@@ -397,7 +388,6 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
 
     yield {
       type: ResponseType.CONTEXT,
-      title: lockedString(UIStringsNotTranslated.analyzingTrace),
       details: [
         {
           title: 'Trace',
@@ -406,8 +396,6 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
       ],
       widgets,
     };
-
-    this.#hasShownAnalyzeTraceContext = true;
   }
 
   #callTreeContextSet = new WeakSet();

@@ -140,7 +140,6 @@ describeWithMockConnection('FileAgent', () => {
         assert.deepEqual(responses, [
           {
             type: AiAgent.ResponseType.CONTEXT,
-            title: 'Analyzing file',
             details: [
               {
                 title: 'Selected file',

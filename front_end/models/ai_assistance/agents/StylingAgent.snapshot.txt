@@ -216,7 +216,6 @@ Content:
 [
   {
     "type": "context",
-    "title": "Analyzing the prompt",
     "details": [
       {
         "title": "Data used",
@@ -296,7 +295,6 @@ Content:
 [
   {
     "type": "context",
-    "title": "Analyzing the prompt",
     "details": [
       {
         "title": "Data used",
@@ -321,7 +319,6 @@ Content:
 [
   {
     "type": "context",
-    "title": "Analyzing the prompt",
     "details": [
       {
         "title": "Data used",
@@ -349,7 +346,6 @@ Content:
 [
   {
     "type": "context",
-    "title": "Analyzing the prompt",
     "details": [
       {
         "title": "Data used",
@@ -374,7 +370,6 @@ Content:
 [
   {
     "type": "context",
-    "title": "Analyzing the prompt",
     "details": [
       {
         "title": "Data used",
@@ -397,7 +392,6 @@ Content:
 [
   {
     "type": "context",
-    "title": "Analyzing the prompt",
     "details": [
       {
         "title": "Data used",

@@ -35,7 +35,6 @@ describeWithMockConnection('AccessibilityAgent', () => {
     assert.deepEqual(responses, [
       {
         type: AiAssistance.AiAgent.ResponseType.CONTEXT,
-        title: 'Inspecting audits',
         details: [
           {
             title: 'Lighthouse report',

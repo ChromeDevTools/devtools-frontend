@@ -207,7 +207,7 @@ describeWithMockConnection('ConversationHandler', () => {
         requestUrl: 'https://localhost:8080/'
       });
       let response = await generator.next();
-      assert.strictEqual(response.value.message, 'Analyzing network data');
+      assert.strictEqual(response.value.message, 'Analyzing data');
       response = await generator.next();
       assert.strictEqual(response.value.message, explanation);
       sinon.assert.calledOnce(requestReceivedSpy);

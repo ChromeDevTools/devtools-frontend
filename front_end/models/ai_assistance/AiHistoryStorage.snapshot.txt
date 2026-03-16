@@ -12,7 +12,7 @@ What is the color of the sky?
 
 ## AI
 
-### Analyzing context
+### Analyzing data
 
 **Detail 1:**
 ````

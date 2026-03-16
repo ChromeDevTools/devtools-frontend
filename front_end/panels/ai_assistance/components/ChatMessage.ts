@@ -8,13 +8,13 @@ import '../../../ui/kit/kit.js';
 import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
-import type * as Platform from '../../../core/platform/platform.js';
+import * as Platform from '../../../core/platform/platform.js';
 import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import type {
-  AiWidget, ComputedStyleAiWidget, CoreVitalsAiWidget, DomTreeAiWidget, StylePropertiesAiWidget} from
-  '../../../models/ai_assistance/agents/AiAgent.js';
+  AiWidget, ComputedStyleAiWidget, CoreVitalsAiWidget, DomTreeAiWidget, PerformanceTraceAiWidget,
+  StylePropertiesAiWidget} from '../../../models/ai_assistance/agents/AiAgent.js';
 import * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
 import * as ComputedStyle from '../../../models/computed_style/computed_style.js';
 import * as Marked from '../../../third_party/marked/marked.js';
@@ -28,6 +28,7 @@ import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import * as Elements from '../../elements/elements.js';
 import * as TimelineComponents from '../../timeline/components/components.js';
+import * as Timeline from '../../timeline/timeline.js';
 import * as TimelineUtils from '../../timeline/utils/utils.js';
 
 import chatMessageStyles from './chatMessage.css.js';
@@ -174,7 +175,11 @@ const UIStringsNotTranslate = {
   /**
    * @description Title for the button that takes the user into other DevTools panels to reveal items the AI references.
    */
-  reveal: 'Reveal'
+  reveal: 'Reveal',
+  /**
+   * @description Title used for revealing the performance trace.
+   */
+  revealTrace: 'Reveal trace'
 } as const;
 
 export interface Step {
@@ -644,8 +649,10 @@ export function renderStep({step, isLoading, markdownRenderer, isLast}: {
 }
 
 interface WidgetMakerResponse {
-  renderedWidget: Lit.LitTemplate;
+  // Can be null if the widget is only used to add the Reveal CTA.
+  renderedWidget: Lit.LitTemplate|null;
   revealable: unknown;
+  customRevealTitle?: Platform.UIString.LocalizedString;
 }
 
 const nodeCache = new Map<Protocol.DOM.BackendNodeId, SDK.DOMModel.DOMNode>();
@@ -732,22 +739,36 @@ function renderWidgetResponse(response: WidgetMakerResponse|null): Lit.LitTempla
     void Common.Revealer.reveal(response?.revealable);
   }
 
+  const classes = Lit.Directives.classMap({
+    'widget-and-revealer-container': true,
+    'revealer-only': response.renderedWidget === null,
+  });
   // clang-format off
   return html`
-    <div class="widget-and-revealer-container">
-      <div class="widget-content-container">
-        ${response.renderedWidget}
-      </div>
+    <div class=${classes}>
+      ${response.renderedWidget ? html`
+        <div class="widget-content-container">
+          ${response.renderedWidget}
+        </div>` : Lit.nothing
+      }
       <div class="widget-reveal-container">
         <devtools-button class="widget-reveal"
           .iconName=${'tab-move'}
           .variant=${Buttons.Button.Variant.TEXT}
           @click=${onReveal}
-        >${lockedString(UIStringsNotTranslate.reveal)}</devtools-button>
+        >${response.customRevealTitle ?? lockedString(UIStringsNotTranslate.reveal)}</devtools-button>
       </div>
     </div>
     `;
   // clang-format on
+}
+
+async function makePerformanceTraceWidget(widgetData: PerformanceTraceAiWidget): Promise<WidgetMakerResponse|null> {
+  return {
+    renderedWidget: null,
+    revealable: new Timeline.TimelinePanel.ParsedTraceRevealable(widgetData.data.parsedTrace),
+    customRevealTitle: lockedString(UIStringsNotTranslate.revealTrace),
+  };
 }
 
 async function makeDomTreeWidget(widgetData: DomTreeAiWidget): Promise<WidgetMakerResponse|null> {
@@ -802,14 +823,24 @@ async function renderWidgets(
   }
   const ui = await Promise.all(widgets.map(async widgetData => {
     let response: WidgetMakerResponse|null = null;
-    if (widgetData.name === 'COMPUTED_STYLES') {
-      response = await makeComputedStyleWidget(widgetData);
-    } else if (widgetData.name === 'CORE_VITALS') {
-      response = await makeCoreVitalsWidget(widgetData);
-    } else if (widgetData.name === 'STYLE_PROPERTIES') {
-      response = await makeStylePropertiesWidget(widgetData);
-    } else if (widgetData.name === 'DOM_TREE') {
-      response = await makeDomTreeWidget(widgetData);
+    switch (widgetData.name) {
+      case 'COMPUTED_STYLES':
+        response = await makeComputedStyleWidget(widgetData);
+        break;
+      case 'CORE_VITALS':
+        response = await makeCoreVitalsWidget(widgetData);
+        break;
+      case 'STYLE_PROPERTIES':
+        response = await makeStylePropertiesWidget(widgetData);
+        break;
+      case 'DOM_TREE':
+        response = await makeDomTreeWidget(widgetData);
+        break;
+      case 'PERFORMANCE_TRACE':
+        response = await makePerformanceTraceWidget(widgetData);
+        break;
+      default:
+        Platform.assertNever(widgetData, 'Unknown AiWidget name');
     }
     return renderWidgetResponse(response);
   }));

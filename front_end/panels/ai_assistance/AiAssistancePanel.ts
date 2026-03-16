@@ -1911,9 +1911,9 @@ export class AiAssistancePanel extends UI.Panel.Panel {
           case AiAssistanceModel.AiAgent.ResponseType.CONTEXT_CHANGE: {
             this.#handleConversationContextChange(data.context);
             step.isLoading = false;
+            step.widgets = data.widgets;
             commitStep();
             step = {isLoading: true};
-
             break;
           }
         }

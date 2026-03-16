@@ -31,7 +31,7 @@ import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import * as PanelsCommon from '../../common/common.js';
-import {getThrottlingRecommendations} from '../utils/Helpers.js';
+import * as Utils from '../utils/utils.js';
 
 import {CPUThrottlingSelector} from './CPUThrottlingSelector.js';
 import {md} from './insights/Helpers.js';
@@ -636,7 +636,7 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
     networkRecEl.classList.add('environment-rec');
     networkRecEl.textContent = this.#getNetworkRecTitle() || i18nString(UIStrings.notEnoughData);
 
-    const recs = getThrottlingRecommendations();
+    const recs = Utils.Helpers.getThrottlingRecommendations();
 
     // clang-format off
     return html`

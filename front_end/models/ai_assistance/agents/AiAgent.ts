@@ -102,6 +102,7 @@ export interface ContextChangeResponse {
    */
   description: string;
   context: ConversationContext<unknown>;
+  widgets?: AiWidget[];
 }
 
 interface SerializedSideEffectResponse extends Omit<SideEffectResponse, 'confirm'> {}
@@ -256,8 +257,16 @@ export interface DomTreeAiWidget {
   };
 }
 
+export interface PerformanceTraceAiWidget {
+  name: 'PERFORMANCE_TRACE';
+  data: {
+    parsedTrace: Trace.TraceModel.ParsedTrace,
+  };
+}
+
 // This type will grow as we add more widgets.
-export type AiWidget = ComputedStyleAiWidget|CoreVitalsAiWidget|StylePropertiesAiWidget|DomTreeAiWidget;
+export type AiWidget =
+    ComputedStyleAiWidget|CoreVitalsAiWidget|StylePropertiesAiWidget|DomTreeAiWidget|PerformanceTraceAiWidget;
 
 export type FunctionCallHandlerResult<Result> = {
   requiresApproval: true,
@@ -272,6 +281,7 @@ export type FunctionCallHandlerResult<Result> = {
 }|{
   context: ConversationContext<unknown>,
   description: string,
+  widgets?: AiWidget[],
 }|{
   error: string,
 };
@@ -692,6 +702,7 @@ export abstract class AiAgent<T> {
               type: ResponseType.CONTEXT_CHANGE,
               description: result.description,
               context: result.context,
+              widgets: result.widgets,
             };
 
             return;

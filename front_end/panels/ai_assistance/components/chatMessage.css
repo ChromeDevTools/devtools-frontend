@@ -380,6 +380,11 @@
     padding: 0 var(--sys-size-4) var(--sys-size-4) 0;
   }
 
+  .revealer-only .widget-reveal-container {
+    background: none;
+    border-radius: unset;
+  }
+
   .widget-content-container {
     padding: var(--sys-size-4);
     border-top-left-radius: var(--sys-shape-corner-medium);

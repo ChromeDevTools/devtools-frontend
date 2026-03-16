@@ -1678,6 +1678,23 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     }
   }
 
+  revealParsedTrace(revealable: ParsedTraceRevealable): void {
+    const index = this.model.indexForTrace(revealable.parsedTrace);
+    if (index === -1) {
+      return;
+    }
+
+    if (this.#activeTraceIndex() === index) {
+      // Already viewing this trace.
+      return;
+    }
+
+    this.#changeView({
+      mode: 'VIEWING_TRACE',
+      traceIndex: index,
+    });
+  }
+
   navigateHistory(direction: number): boolean {
     const recordingData = this.#historyManager.navigate(direction);
     // When navigating programmatically, you cannot navigate to the landing page
@@ -3232,6 +3249,18 @@ export class TraceRevealer implements Common.Revealer.Revealer<SDK.TraceObject.T
   async reveal(trace: SDK.TraceObject.TraceObject): Promise<void> {
     await UI.ViewManager.ViewManager.instance().showView('timeline');
     TimelinePanel.instance().loadFromTraceFile(trace);
+  }
+}
+
+export class ParsedTraceRevealer implements Common.Revealer.Revealer<ParsedTraceRevealable> {
+  async reveal(traceRevealer: ParsedTraceRevealable): Promise<void> {
+    await UI.ViewManager.ViewManager.instance().showView('timeline');
+    TimelinePanel.instance().revealParsedTrace(traceRevealer);
+  }
+}
+
+export class ParsedTraceRevealable {
+  constructor(public parsedTrace: Trace.TraceModel.ParsedTrace) {
   }
 }
 

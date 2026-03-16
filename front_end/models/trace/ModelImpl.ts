@@ -173,6 +173,10 @@ export class Model extends EventTarget {
     this.#recordingsAvailable.splice(recordingIndex, 1);
   }
 
+  indexForTrace(trace: ParsedTrace): number {
+    return this.#traces.indexOf(trace);
+  }
+
   getRecordingsAvailable(): string[] {
     return this.#recordingsAvailable;
   }

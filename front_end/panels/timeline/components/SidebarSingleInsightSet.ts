@@ -15,7 +15,6 @@ import type {ActiveInsight} from './Sidebar.js';
 import sidebarSingleInsightSetStyles from './sidebarSingleInsightSet.css.js';
 
 const {html} = Lit.StaticHtml;
-const {ref} = Lit.Directives;
 
 /**
  * Every insight (INCLUDING experimental ones).
@@ -126,7 +125,7 @@ const DEFAULT_VIEW: View = (input, output, target) => {
 
 export class SidebarSingleInsightSet extends UI.Widget.Widget {
   #view: View;
-  #activeInsightElement: HTMLElement|null = null;
+  #isActiveInsightHighlighted = false;
   #activeHighlightTimeout = -1;
 
   #data: SidebarSingleInsightSetData = {
@@ -151,21 +150,19 @@ export class SidebarSingleInsightSet extends UI.Widget.Widget {
     window.clearTimeout(this.#activeHighlightTimeout);
   }
 
-  highlightActiveInsight(): void {
-    if (!this.#activeInsightElement) {
-      return;
-    }
-
-    // First clear any existing highlight that is going on.
-    this.#activeInsightElement.removeAttribute('highlight-insight');
+  async highlightActiveInsight(): Promise<void> {
     window.clearTimeout(this.#activeHighlightTimeout);
+    this.#isActiveInsightHighlighted = false;
+    this.requestUpdate();
+    await this.updateComplete;
 
-    requestAnimationFrame(() => {
-      this.#activeInsightElement?.setAttribute('highlight-insight', 'true');
-      this.#activeHighlightTimeout = window.setTimeout(() => {
-        this.#activeInsightElement?.removeAttribute('highlight-insight');
-      }, 2_000);
-    });
+    this.#isActiveInsightHighlighted = true;
+    this.requestUpdate();
+
+    this.#activeHighlightTimeout = window.setTimeout(() => {
+      this.#isActiveInsightHighlighted = false;
+      this.requestUpdate();
+    }, 2_000);
   }
 
   static categorizeInsights(
@@ -226,11 +223,7 @@ export class SidebarSingleInsightSet extends UI.Widget.Widget {
     };
 
     // clang-format off
-    return html`<devtools-widget class="insight-component-widget" ${ref((element?: Element) => {
-        if (element instanceof HTMLElement && isActiveInsight) {
-          this.#activeInsightElement = element;
-        }
-      })}
+    return html`<devtools-widget class="insight-component-widget" ?highlight-insight=${isActiveInsight && this.#isActiveInsightHighlighted}
       ${widget(componentClass, widgetConfig)}
     ></devtools-widget>`;
     // clang-format on

@@ -239,7 +239,7 @@ export class SidebarInsightsTab extends UI.Widget.Widget {
     // Find the right set for this insight via the set key.
     const set = this.element.shadowRoot?.querySelector<UI.Widget.WidgetElement<SidebarSingleInsightSet>>(
         `[data-insight-set-key="${this.#activeInsight.insightSetKey}"]`);
-    set?.getWidget()?.highlightActiveInsight();
+    void set?.getWidget()?.highlightActiveInsight();
   }
 
   override performUpdate(): void {

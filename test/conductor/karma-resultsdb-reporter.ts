@@ -126,6 +126,11 @@ export const ResultsDBReporter = function(
       }
     } else if (skipped) {
       this.write(`==== ${status}: ${testId}\n\n`);
+    } else {
+      // TODO(szuend): Only here temporarily to investigate random karma disconnects.
+      //               We'll remove this `else` branch again once we figure out what is
+      //               going on.
+      this.write(`==== ${status}: ${testId}\n\n`);
     }
 
     const testResult: ResultsDb.TestResult = {testId, duration, status, expected, summaryHtml};

@@ -150,6 +150,9 @@ const CustomChrome = function(this: any, _baseBrowserDecorator: unknown, args: B
       '--window-size=1280,768',
       '--enable-crash-reporter-for-testing',  // Works only on linux
       `--crash-dumps-dir=${TestConfig.artifactsDir}`,
+      '--enable-logging',
+      '--v=2',
+      `--log-file=${path.join(TestConfig.artifactsDir, 'chrome-log.txt')}`,
       ...flagsDisabledWithDebugging,
       ...args.flags,
       url,

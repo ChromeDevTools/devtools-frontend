@@ -269,7 +269,7 @@ const UIStrings = {
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/console/ConsoleView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-let consoleViewInstance: ConsoleView;
+let consoleViewInstance: ConsoleView|null;
 
 const MIN_HISTORY_LENGTH_FOR_DISABLING_SELF_XSS_WARNING = 5;
 const DISCLAIMER_TOOLTIP_ID = 'console-ai-code-completion-disclaimer-tooltip';
@@ -637,6 +637,10 @@ export class ConsoleView extends UI.Widget.VBox implements
         IssuesManager.IssuesManager.Events.ISSUES_COUNT_UPDATED, this.#onIssuesCountUpdateBound);
   }
 
+  static clearConsoleViewInstanceForTest(): void {
+    consoleViewInstance = null;
+  }
+
   static instance(opts?: {forceNew: boolean, viewportThrottlerTimeout?: number}): ConsoleView {
     if (!consoleViewInstance || opts?.forceNew) {
       consoleViewInstance = new ConsoleView(opts?.viewportThrottlerTimeout ?? 50);
@@ -787,6 +791,22 @@ export class ConsoleView extends UI.Widget.VBox implements
   override willHide(): void {
     super.willHide();
     this.hidePromptSuggestBox();
+  }
+
+  dispose(): void {
+    SDK.TargetManager.TargetManager.instance().removeModelListener(
+        SDK.ConsoleModel.ConsoleModel, SDK.ConsoleModel.Events.ConsoleCleared, this.consoleCleared, this);
+    SDK.TargetManager.TargetManager.instance().removeModelListener(
+        SDK.ConsoleModel.ConsoleModel, SDK.ConsoleModel.Events.MessageAdded, this.onConsoleMessageAdded, this);
+    SDK.TargetManager.TargetManager.instance().removeModelListener(
+        SDK.ConsoleModel.ConsoleModel, SDK.ConsoleModel.Events.MessageUpdated, this.onConsoleMessageUpdated, this);
+    SDK.TargetManager.TargetManager.instance().removeModelListener(
+        SDK.ConsoleModel.ConsoleModel, SDK.ConsoleModel.Events.CommandEvaluated, this.commandEvaluated, this);
+    SDK.TargetManager.TargetManager.instance().unobserveModels(SDK.ConsoleModel.ConsoleModel, this);
+
+    const issuesManager = IssuesManager.IssuesManager.IssuesManager.instance();
+    issuesManager.removeEventListener(
+        IssuesManager.IssuesManager.Events.ISSUES_COUNT_UPDATED, this.#onIssuesCountUpdateBound);
   }
 
   override wasShown(): void {
@@ -1103,7 +1123,9 @@ export class ConsoleView extends UI.Widget.VBox implements
       if (parentGroup) {
         showGroup(parentGroup, visibleViewMessages);
       }
-      visibleViewMessages.push(currentGroup);
+      if (!parentGroup?.messagesHidden()) {
+        visibleViewMessages.push(currentGroup);
+      }
     }
   }
 

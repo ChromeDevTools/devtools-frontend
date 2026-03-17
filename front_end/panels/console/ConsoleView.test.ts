@@ -33,6 +33,8 @@ describeWithMockConnection('ConsoleView', () => {
   });
 
   afterEach(() => {
+    consoleView.dispose();
+    Console.ConsoleView.ConsoleView.clearConsoleViewInstanceForTest();
     consoleView.detach();
   });
 
@@ -413,17 +415,28 @@ describeWithMockConnection('ConsoleView', () => {
   describe('group visibility', () => {
     let target: ReturnType<typeof createTarget>;
     let consoleModel: SDK.ConsoleModel.ConsoleModel|null;
+    let messageTimestamp = 0;
 
     beforeEach(() => {
       target = createTarget();
       SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
       consoleModel = target.model(SDK.ConsoleModel.ConsoleModel);
       assert.exists(consoleModel);
+      messageTimestamp = 0;
+      Common.Settings.Settings.instance().createSetting('console-group-similar', true).set(true);
+    });
+
+    afterEach(() => {
+      if (target) {
+        target.dispose('test cleanup');
+      }
     });
 
     function addMessage(
         message: string, type: Protocol.Runtime.ConsoleAPICalledEventType, level: Protocol.Log.LogEntryLevel) {
-      consoleModel!.addMessage(createConsoleMessage(target, message, type, level));
+      const consoleMessage = createConsoleMessage(target, message, type, level);
+      consoleMessage.timestamp = ++messageTimestamp;
+      consoleModel!.addMessage(consoleMessage);
     }
 
     for (const level
@@ -483,6 +496,39 @@ describeWithMockConnection('ConsoleView', () => {
       const messages = await getConsoleMessages();
       assert.notInclude(messages, 'group');
       assert.notInclude(messages, 'message');
+    });
+
+    it('hides nested groups when parent is collapsed', async () => {
+      consoleView.markAsRoot();
+      renderElementIntoDOM(consoleView);
+
+      /* Emulate the following scenario pasted in the console:
+         console.group('A')
+         console.group('B')
+         console.log('C')
+         console.groupEnd() // B
+         console.groupEnd() // A
+      */
+      addMessage('A', Protocol.Runtime.ConsoleAPICalledEventType.StartGroup, Protocol.Log.LogEntryLevel.Info);
+      addMessage('B', Protocol.Runtime.ConsoleAPICalledEventType.StartGroup, Protocol.Log.LogEntryLevel.Info);
+      addMessage('C', Protocol.Runtime.ConsoleAPICalledEventType.Log, Protocol.Log.LogEntryLevel.Info);
+      addMessage('', Protocol.Runtime.ConsoleAPICalledEventType.EndGroup, Protocol.Log.LogEntryLevel.Info);
+      addMessage('', Protocol.Runtime.ConsoleAPICalledEventType.EndGroup, Protocol.Log.LogEntryLevel.Info);
+
+      let messages = await getConsoleMessages();
+      assert.include(messages, 'A', 'A should be visible');
+      assert.include(messages, 'B', 'B should be visible');
+      assert.include(messages, 'C', 'C should be visible');
+
+      // Find the group A message view and collapse it
+      const viewMessageA = consoleView.itemElement(0);
+      (viewMessageA as Console.ConsoleViewMessage.ConsoleGroupViewMessage)!.setCollapsed(true);
+      await consoleView.getScheduledRefreshPromiseForTest();
+
+      messages = await getConsoleMessages();
+      assert.include(messages, 'A', 'A should be visible after collapsing');
+      assert.notInclude(messages, 'B', 'B should be hidden after collapsing parent A');
+      assert.notInclude(messages, 'C', 'C should be hidden after collapsing parent A');
     });
   });
 });

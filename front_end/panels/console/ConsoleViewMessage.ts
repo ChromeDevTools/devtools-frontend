@@ -2172,7 +2172,7 @@ export class ConsoleGroupViewMessage extends ConsoleViewMessage {
     this.groupEndMessageInternal = null;
   }
 
-  private setCollapsed(collapsed: boolean): void {
+  setCollapsed(collapsed: boolean): void {
     this.collapsedInternal = collapsed;
     if (this.expandGroupIcon) {
       this.expandGroupIcon.name = this.collapsedInternal ? 'triangle-right' : 'triangle-down';

@@ -361,6 +361,8 @@ export const knownContextValues = new Set([
   'ai-code-generation-upgrade-dialog.manage-in-settings',
   'ai-code-generation-used',
   'ai-explorer',
+  'ai-export-for-agents',
+  'ai-export-for-agents.copy-to-clipboard',
   'ai-hide-walkthrough-sidebar',
   'ai-show-walkthrough-sidebar',
   'ai_assistance',

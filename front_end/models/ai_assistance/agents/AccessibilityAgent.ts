@@ -5,6 +5,7 @@
 import * as Host from '../../../core/host/host.js';
 import * as Root from '../../../core/root/root.js';
 import type * as LHModel from '../../lighthouse/lighthouse.js';
+import {LighthouseFormatter} from '../data_formatters/LighthouseFormatter.js';
 
 import {
   AiAgent,
@@ -78,35 +79,34 @@ export class AccessibilityAgent extends AiAgent<LHModel.ReporterTypes.ReportJSON
   }
 
   async *
-      handleContextDetails(selectedFile: ConversationContext<LHModel.ReporterTypes.ReportJSON>|null):
+      handleContextDetails(lhr: ConversationContext<LHModel.ReporterTypes.ReportJSON>|null):
           AsyncGenerator<ContextResponse, void, void> {
-    if (!selectedFile) {
+    if (!lhr) {
       return;
     }
 
     yield {
       type: ResponseType.CONTEXT,
-      details: createContextDetails(selectedFile),
+      details: createContextDetails(lhr),
     };
   }
 
   override async enhanceQuery(query: string, lhr: ConversationContext<LHModel.ReporterTypes.ReportJSON>|null):
       Promise<string> {
     const enhancedQuery = lhr ?
-        // TODO: formatter for LH report.
-        `# Lighthouse Report\n${JSON.stringify(lhr.getItem(), null, 2)}\n\n# User request\n\n` :
+        `# Lighthouse Report\n${new LighthouseFormatter().summary(lhr.getItem())}\n\n${
+            new LighthouseFormatter().audits(lhr.getItem(), 'accessibility')}\n\n# User request\n\n` :
         '';
     return `${enhancedQuery}${query}`;
   }
 }
 
-function createContextDetails(_lhr: ConversationContext<LHModel.ReporterTypes.ReportJSON>):
+function createContextDetails(lhr: ConversationContext<LHModel.ReporterTypes.ReportJSON>):
     [ContextDetail, ...ContextDetail[]] {
   return [
     {
       title: 'Lighthouse report',
-      // TODO(b/491772868);
-      text: ''
+      text: new LighthouseFormatter().summary(lhr.getItem()),
     },
   ];
 }

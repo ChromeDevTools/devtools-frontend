@@ -1,0 +1,32 @@
+Title: LighthouseFormatter generates a summary
+Content:
+# Lighthouse Report Summary
+URL: https://example.com
+Fetch Time: 2025-01-01T00:00:00.000Z
+Lighthouse Version: 12.0.0
+
+## Category Scores
+- Performance: 80
+- Accessibility: 100
+=== end content
+
+Title: LighthouseFormatter generates audits for a category
+Content:
+# Audits for Performance
+
+The following audits in this category have a score below 90 and may need attention:
+- **First Audit**: 80 (1.2s)
+  * Description of first audit
+=== end content
+
+Title: LighthouseFormatter indicates when all audits passed
+Content:
+# Audits for Accessibility
+
+All audits in this category passed (score >= 90).
+=== end content
+
+Title: LighthouseFormatter handles missing category
+Content:
+Category "seo" not found.
+=== end content

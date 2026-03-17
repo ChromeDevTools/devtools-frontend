@@ -1100,6 +1100,7 @@ grd_files_unbundled_sources = [
   "front_end/models/ai_assistance/agents/PerformanceAnnotationsAgent.js",
   "front_end/models/ai_assistance/agents/StylingAgent.js",
   "front_end/models/ai_assistance/data_formatters/FileFormatter.js",
+  "front_end/models/ai_assistance/data_formatters/LighthouseFormatter.js",
   "front_end/models/ai_assistance/data_formatters/NetworkRequestFormatter.js",
   "front_end/models/ai_assistance/data_formatters/PerformanceInsightFormatter.js",
   "front_end/models/ai_assistance/data_formatters/PerformanceTraceFormatter.js",

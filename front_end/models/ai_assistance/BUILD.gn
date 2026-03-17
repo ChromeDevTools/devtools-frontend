@@ -31,6 +31,7 @@ devtools_module("ai_assistance") {
     "agents/PerformanceAnnotationsAgent.ts",
     "agents/StylingAgent.ts",
     "data_formatters/FileFormatter.ts",
+    "data_formatters/LighthouseFormatter.ts",
     "data_formatters/NetworkRequestFormatter.ts",
     "data_formatters/PerformanceInsightFormatter.ts",
     "data_formatters/PerformanceTraceFormatter.ts",

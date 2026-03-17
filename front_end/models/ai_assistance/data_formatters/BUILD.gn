@@ -32,6 +32,7 @@ devtools_foundation_module("foundation_unittests") {
   testonly = true
 
   sources = [
+    "LighthouseFormatter.test.ts",
     "PerformanceInsightFormatter.test.ts",
     "PerformanceTraceFormatter.test.ts",
   ]

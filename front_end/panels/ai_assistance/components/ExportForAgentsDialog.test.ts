@@ -10,6 +10,7 @@ import * as UI from '../../../ui/legacy/legacy.js';
 import * as AiAssistance from '../ai_assistance.js';
 
 describe('ExportForAgentsDialog', () => {
+  const noop = () => {};
   let dialog: UI.Dialog.Dialog;
   let inspectorFrontendHostStub:
       sinon.SinonStubbedInstance<typeof Host.InspectorFrontendHost.InspectorFrontendHostInstance>;
@@ -33,6 +34,7 @@ describe('ExportForAgentsDialog', () => {
       dialog,
       promptText,
       markdownText,
+      onConversationSaveAs: noop,
     });
     renderElementIntoDOM(component);
     await component.updateComplete;
@@ -57,6 +59,7 @@ describe('ExportForAgentsDialog', () => {
       dialog,
       promptText,
       markdownText,
+      onConversationSaveAs: noop,
     });
     renderElementIntoDOM(component);
     await component.updateComplete;
@@ -80,6 +83,7 @@ describe('ExportForAgentsDialog', () => {
       dialog,
       promptText,
       markdownText,
+      onConversationSaveAs: noop,
     });
     renderElementIntoDOM(component);
     await component.updateComplete;
@@ -92,5 +96,27 @@ describe('ExportForAgentsDialog', () => {
     sinon.assert.calledWith(inspectorFrontendHostStub.copyText, promptText);
   });
 
-  // TODO(b/493191546): Add test for 'Save as Markdown' action once functionality is hooked up.
+  it('calls onConversationSaveAs when the save as button is clicked in markdown mode', async () => {
+    const onConversationSaveAs = sinon.stub();
+    const component = new AiAssistance.ExportForAgentsDialog.ExportForAgentsDialog({
+      dialog,
+      promptText,
+      markdownText,
+      onConversationSaveAs,
+    });
+    renderElementIntoDOM(component);
+    await component.updateComplete;
+
+    const markdownRadioButton =
+        querySelectorErrorOnMissing<HTMLInputElement>(component.contentElement, 'input[value="conversation"]');
+    markdownRadioButton.click();
+    await component.updateComplete;
+
+    const primaryButton = component.contentElement.querySelector<Buttons.Button.Button>('devtools-button');
+    assert.isNotNull(primaryButton);
+    primaryButton.click();
+    await component.updateComplete;
+
+    sinon.assert.calledOnce(onConversationSaveAs);
+  });
 });

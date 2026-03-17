@@ -23,6 +23,8 @@ describeWithEnvironment('ChatView', () => {
       onContextClick: noop,
       onCopyResponseClick: noop,
       onNewConversation: noop,
+      onExportConversation: noop,
+      conversationMarkdown: 'placeholder conversation markdown',
       onContextRemoved: noop,
       onContextAdd: noop,
       changeManager: new AiAssistanceModel.ChangeManager.ChangeManager(),

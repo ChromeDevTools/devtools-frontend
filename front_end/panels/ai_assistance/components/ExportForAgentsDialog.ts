@@ -122,12 +122,14 @@ export class ExportForAgentsDialog extends UI.Widget.VBox {
   readonly #view: View;
   readonly #dialog: UI.Dialog.Dialog;
   #state: State;
+  #onConversationSaveAs: () => void;
 
   constructor(
       options: {
         dialog: UI.Dialog.Dialog,
         promptText: string,
         markdownText: string,
+        onConversationSaveAs: () => void,
       },
       view: View = DEFAULT_VIEW) {
     super();
@@ -137,6 +139,7 @@ export class ExportForAgentsDialog extends UI.Widget.VBox {
       promptText: options.promptText,
       conversationText: options.markdownText,
     };
+    this.#onConversationSaveAs = options.onConversationSaveAs;
     this.#view = view;
     this.requestUpdate();
   }
@@ -164,10 +167,9 @@ export class ExportForAgentsDialog extends UI.Widget.VBox {
         break;
       case StateType.CONVERSATION:
         jslogContext = 'ai-export-for-agents.save-as-markdown';
-        onButtonClick = (event: Event): void => {
-          event.preventDefault();
-          // TODO(b/493191546): migrate the existing "Save as" functionality into this dialog.
+        onButtonClick = (): void => {
           this.#dialog.hide();
+          this.#onConversationSaveAs();
         };
         break;
     }
@@ -185,9 +187,11 @@ export class ExportForAgentsDialog extends UI.Widget.VBox {
   static show({
     promptText,
     markdownText,
+    onConversationSaveAs,
   }: {
     promptText: string,
     markdownText: string,
+    onConversationSaveAs: () => void,
   }): void {
     const dialog = new UI.Dialog.Dialog();
     dialog.setAriaLabel(i18nString(UIStrings.exportForAgents));
@@ -201,7 +205,7 @@ export class ExportForAgentsDialog extends UI.Widget.VBox {
     dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.MEASURE_CONTENT);
     dialog.setDimmed(true);
 
-    const exportDialog = new ExportForAgentsDialog({dialog, promptText, markdownText});
+    const exportDialog = new ExportForAgentsDialog({dialog, promptText, markdownText, onConversationSaveAs});
     exportDialog.show(dialog.contentElement);
     // Because the Dialog sets its height based off its content, we need
     // the Export Dialog widget to have rendered fully before we show

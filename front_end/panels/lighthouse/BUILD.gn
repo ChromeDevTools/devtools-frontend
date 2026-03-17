@@ -95,6 +95,7 @@ devtools_ui_module("unittests") {
     "LighthouseProtocolService.test.ts",
     "LighthouseReportRenderer.test.ts",
     "LighthouseStartView.test.ts",
+    "LighthouseStatusView.test.ts",
     "LighthouseTimespanView.test.ts",
     "RadioSetting.test.ts",
   ]

@@ -34,6 +34,15 @@ const UIStrings = {
    */
   auditingYourWebPage: 'Auditing your web page',
   /**
+   * @description Status text in Lighthouse splash screen while an AI assistant is performing an audit
+   * @example {github.com} PH1
+   */
+  aiAuditingS: 'AI assistance is auditing {PH1}',
+  /**
+   * @description Status text in Lighthouse splash screen while an AI assistant is performing an audit
+   */
+  aiAuditingYourWebPage: 'AI assistance is auditing your web page',
+  /**
    * @description Status text in Lighthouse splash screen while an audit is being performed, and cancellation to take effect
    */
   cancelling: 'Cancelling…',
@@ -245,13 +254,14 @@ export class StatusView {
   private currentPhase: StatusPhase|null;
   private scheduledFastFactTimeout: number|null;
   private dialogRoot: ShadowRoot|null = null;
-  private readonly dialog: UI.Dialog.Dialog;
+  readonly dialog: UI.Dialog.Dialog;
 
   private statusHeader: string;
   private statusText: string;
   private progressBarClass: string;
   private progressBarValue: number;
   private cancelButtonVisible: boolean;
+  private isAIControlled: boolean;
   private bugReport: {error: Error, auditURL: string, knownBugPattern?: boolean}|null;
 
   constructor(panel: LighthousePanel) {
@@ -273,6 +283,7 @@ export class StatusView {
     this.progressBarClass = '';
     this.progressBarValue = 0;
     this.cancelButtonVisible = true;
+    this.isAIControlled = false;
     this.bugReport = null;
 
     this.render();
@@ -317,13 +328,22 @@ export class StatusView {
     this.reset();
     this.updateStatus(i18nString(UIStrings.loading));
 
-    const parsedURL = Common.ParsedURL.ParsedURL.fromString(this.inspectedURL);
-    const pageHost = parsedURL?.host;
-    const statusHeader =
-        pageHost ? i18nString(UIStrings.auditingS, {PH1: pageHost}) : i18nString(UIStrings.auditingYourWebPage);
+    const statusHeader = this.getStatusHeader();
     this.renderStatusHeader(statusHeader);
     this.dialog.show(dialogRenderElement);
     this.render();
+  }
+
+  private getStatusHeader(): string {
+    const parsedURL = Common.ParsedURL.ParsedURL.fromString(this.inspectedURL);
+    const pageHost = parsedURL?.host;
+
+    if (this.isAIControlled) {
+      return pageHost ? i18nString(UIStrings.aiAuditingS, {PH1: pageHost}) :
+                        i18nString(UIStrings.aiAuditingYourWebPage);
+    }
+
+    return pageHost ? i18nString(UIStrings.auditingS, {PH1: pageHost}) : i18nString(UIStrings.auditingYourWebPage);
   }
 
   private renderStatusHeader(statusHeader?: string): void {
@@ -335,6 +355,10 @@ export class StatusView {
     if (this.dialog.isShowing()) {
       this.dialog.hide();
     }
+  }
+
+  setAIControlled(isAIControlled: boolean): void {
+    this.isAIControlled = isAIControlled;
   }
 
   setInspectedURL(url = ''): void {

@@ -191,6 +191,7 @@ class LighthouseRun {
     formFactor: (string|undefined),
     mode: string,
   };
+  readonly isAIControlled: boolean;
   private emulationStateBefore?: {
     emulation: {
       type: EmulationModel.DeviceModeModel.Type,
@@ -209,12 +210,13 @@ class LighthouseRun {
 
   constructor(
       controller: LighthouseController, protocolService: ProtocolService, inspectedURL: Platform.DevToolsPath.UrlString,
-      categoryIDs: string[], flags: {formFactor: (string|undefined), mode: string}) {
+      categoryIDs: string[], flags: {formFactor: (string|undefined), mode: string}, isAIControlled: boolean) {
     this.controller = controller;
     this.protocolService = protocolService;
     this.inspectedURL = inspectedURL;
     this.categoryIDs = categoryIDs;
     this.flags = flags;
+    this.isAIControlled = isAIControlled;
     this.#isRunning = false;
   }
 
@@ -550,6 +552,7 @@ export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper<Eve
       inspectedURL: this.currentLighthouseRun.inspectedURL,
       categoryIDs: this.currentLighthouseRun.categoryIDs,
       flags: this.currentLighthouseRun.flags,
+      isAIControlled: this.currentLighthouseRun.isAIControlled,
     };
   }
 
@@ -661,7 +664,8 @@ export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper<Eve
 
       this.recordMetrics(flags, categoryIDs);
 
-      this.currentLighthouseRun = new LighthouseRun(this, this.protocolService, inspectedURL, categoryIDs, flags);
+      this.currentLighthouseRun = new LighthouseRun(
+          this, this.protocolService, inspectedURL, categoryIDs, flags, Boolean(overrides?.isAIControlled));
       await this.currentLighthouseRun.start();
       resolve();
     });

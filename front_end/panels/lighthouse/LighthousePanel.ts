@@ -289,9 +289,10 @@ export class LighthousePanel extends UI.Panel.Panel {
   }
 
   private renderStatusView(): void {
-    const inspectedURL = this.controller.getCurrentRun()?.inspectedURL;
+    const currentRun = this.controller.getCurrentRun();
     this.contentElement.classList.toggle('in-progress', true);
-    this.statusView.setInspectedURL(inspectedURL);
+    this.statusView.setInspectedURL(currentRun?.inspectedURL);
+    this.statusView.setAIControlled(Boolean(currentRun?.isAIControlled));
     this.statusView.show(this.contentElement);
   }
 

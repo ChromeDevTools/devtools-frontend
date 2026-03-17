@@ -55,6 +55,7 @@ export interface LighthouseRun {
     formFactor: (string|undefined),
     mode: string,
   };
+  isAIControlled?: boolean;
 }
 
 /**

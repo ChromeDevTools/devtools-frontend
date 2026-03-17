@@ -1383,6 +1383,9 @@ describe('StylesSidebarPane', () => {
     describe('AI code completion', () => {
       let aiCodeCompletionProvider:
           sinon.SinonStubbedInstance<Elements.StylesAiCodeCompletionProvider.StylesAiCodeCompletionProvider>;
+      let attachedElement: HTMLDivElement;
+      let cssPropertyPrompt: Elements.StylesSidebarPane.CSSPropertyPrompt;
+
       beforeEach(() => {
         updateHostConfig({
           devToolsAiCodeCompletionStyles: {
@@ -1399,12 +1402,13 @@ describe('StylesSidebarPane', () => {
             sinon.createStubInstance(Elements.StylesAiCodeCompletionProvider.StylesAiCodeCompletionProvider);
         sinon.stub(Elements.StylesAiCodeCompletionProvider.StylesAiCodeCompletionProvider, 'createInstance')
             .returns(aiCodeCompletionProvider);
+
+        attachedElement = document.createElement('div');
+        renderElementIntoDOM(attachedElement);
+        cssPropertyPrompt = new Elements.StylesSidebarPane.CSSPropertyPrompt(mockTreeItem, false);
       });
 
       it('getCompletionHint returns null if suggestBox is not visible', () => {
-        const attachedElement = document.createElement('div');
-        renderElementIntoDOM(attachedElement);
-        const cssPropertyPrompt = new CSSPropertyPrompt(mockTreeItem, false);
         cssPropertyPrompt.attachAndStartEditing(attachedElement, noop);
 
         assert.exists(cssPropertyPrompt.aiCodeCompletionConfig);
@@ -1413,10 +1417,6 @@ describe('StylesSidebarPane', () => {
       });
 
       it('getCompletionHint returns the correct completion hint', async () => {
-        const attachedElement = document.createElement('div');
-        renderElementIntoDOM(attachedElement);
-        const cssPropertyPrompt = new CSSPropertyPrompt(mockTreeItem, false);
-
         cssPropertyPrompt.attachAndStartEditing(attachedElement, noop);
         cssPropertyPrompt.setText('var(--rgb');
         await cssPropertyPrompt.complete(true);
@@ -1426,9 +1426,6 @@ describe('StylesSidebarPane', () => {
 
       it('debounces triggerAiCodeCompletion', async () => {
         const clock = sinon.useFakeTimers();
-        const attachedElement = document.createElement('div');
-        renderElementIntoDOM(attachedElement);
-        const cssPropertyPrompt = new CSSPropertyPrompt(mockTreeItem, false);
         cssPropertyPrompt.attachAndStartEditing(attachedElement, noop);
 
         cssPropertyPrompt.setText('backgr');
@@ -1447,9 +1444,6 @@ describe('StylesSidebarPane', () => {
 
       it('triggerAiCodeCompletion calls the provider with correct arguments', () => {
         const clock = sinon.useFakeTimers();
-        const attachedElement = document.createElement('div');
-        renderElementIntoDOM(attachedElement);
-        const cssPropertyPrompt = new CSSPropertyPrompt(mockTreeItem, false);
         cssPropertyPrompt.attachAndStartEditing(attachedElement, noop);
 
         cssPropertyPrompt.setText('backgrou');
@@ -1463,9 +1457,6 @@ describe('StylesSidebarPane', () => {
       });
 
       it('setAiAutoCompletion sets activeAiSuggestion on the section', async () => {
-        const attachedElement = document.createElement('div');
-        renderElementIntoDOM(attachedElement);
-        const cssPropertyPrompt = new CSSPropertyPrompt(mockTreeItem, true);
         cssPropertyPrompt.attachAndStartEditing(attachedElement, noop);
 
         cssPropertyPrompt.aiCodeCompletionConfig?.setAiAutoCompletion?.({
@@ -1481,8 +1472,6 @@ describe('StylesSidebarPane', () => {
       });
 
       it('setAiAutoCompletion correctly parses complex CSS and sets activeAiSuggestion on the section', async () => {
-        const attachedElement = document.createElement('div');
-        renderElementIntoDOM(attachedElement);
         const cssPropertyPrompt = new CSSPropertyPrompt(mockTreeItem, true);
         cssPropertyPrompt.attachAndStartEditing(attachedElement, noop);
         const complexCss = `background-image: url("https://example.com/image;v=1?query:part=true");
@@ -1506,6 +1495,120 @@ color: pink !important;`;
           {name: '--custom-property', value: 'var(--other, "fallback;value")'},
           {name: 'width', value: 'calc(100% - 20px)'}, {name: 'color', value: 'pink !important'}
         ]);
+      });
+
+      it('only hides suggest box on Escape when suggest box is visible but does not clear AI suggestion', async () => {
+        cssPropertyPrompt.attachAndStartEditing(attachedElement, noop);
+        cssPropertyPrompt.setText('var(--rgb');
+        await cssPropertyPrompt.complete(true);
+
+        cssPropertyPrompt.aiCodeCompletionConfig?.setAiAutoCompletion?.({
+          text: 'color: var(--rgb-color);',
+          from: 0,
+          startTime: 0,
+          clearCachedRequest: () => {},
+          onImpression: () => {},
+        });
+
+        assert.isTrue(cssPropertyPrompt.isSuggestBoxVisible());
+        const escapeEvent = new KeyboardEvent('keydown', {key: 'Escape'});
+        cssPropertyPrompt.onKeyDown(escapeEvent);
+
+        assert.isFalse(cssPropertyPrompt.isSuggestBoxVisible());
+        assert.strictEqual(section.activeAiSuggestion?.text, 'color: var(--rgb-color);');
+      });
+
+      it('clears active AI suggestion on ArrowDown', async () => {
+        cssPropertyPrompt.attachAndStartEditing(attachedElement, noop);
+        cssPropertyPrompt.setText('var(--rgb');
+        await cssPropertyPrompt.complete(true);
+
+        cssPropertyPrompt.aiCodeCompletionConfig?.setAiAutoCompletion?.({
+          text: 'color: var(--rgb-color);',
+          from: 0,
+          startTime: 0,
+          clearCachedRequest: () => {},
+          onImpression: () => {},
+        });
+
+        assert.strictEqual(section.activeAiSuggestion?.text, 'color: var(--rgb-color);');
+        assert.isTrue(cssPropertyPrompt.isSuggestBoxVisible());
+
+        const arrowDownEvent = new KeyboardEvent('keydown', {key: 'ArrowDown'});
+        cssPropertyPrompt.onKeyDown(arrowDownEvent);
+
+        assert.notExists(section.activeAiSuggestion);
+      });
+
+      describe('acceptAiCodeComplete', () => {
+        it('accepts suggestion on Tab when suggest box is hidden', async () => {
+          cssPropertyPrompt = new Elements.StylesSidebarPane.CSSPropertyPrompt(mockTreeItem, true);
+          cssPropertyPrompt.attachAndStartEditing(attachedElement, noop);
+
+          cssPropertyPrompt.aiCodeCompletionConfig?.setAiAutoCompletion?.({
+            text: 'color: pink;',
+            from: 0,
+            startTime: 0,
+            clearCachedRequest: () => {},
+            onImpression: () => {},
+          });
+          const tabEvent = new KeyboardEvent('keydown', {key: 'Tab'});
+          cssPropertyPrompt.onKeyDown(tabEvent);
+
+          sinon.assert.calledOnce(section.commitActiveAiSuggestion);
+        });
+
+        it('accepts auto complete suggestion and re-applies ghost text on first Tab accept when suggest box is visible',
+           async () => {
+             const cssPropertyPrompt = new CSSPropertyPrompt(mockTreeItem, false, ['green']);
+             cssPropertyPrompt.attachAndStartEditing(attachedElement, noop);
+
+             cssPropertyPrompt.setText('gre');
+             await cssPropertyPrompt.complete(true);
+             cssPropertyPrompt.aiCodeCompletionConfig?.setAiAutoCompletion?.({
+               text: 'color: greenyellow;',
+               from: 0,
+               startTime: 0,
+               clearCachedRequest: () => {},
+               onImpression: () => {},
+             });
+
+             assert.isTrue(cssPropertyPrompt.isSuggestBoxVisible());
+             const applySuggestionSpy = sinon.spy(cssPropertyPrompt, 'applySuggestion');
+             const tabEvent = new KeyboardEvent('keydown', {key: 'Tab'});
+             cssPropertyPrompt.onKeyDown(tabEvent);
+
+             // On first Tab, the suggestion from auto complete menu is applied.
+             // And the AI suggestion text is set as ghost text.
+             assert.strictEqual(applySuggestionSpy.lastCall.args[0]?.text, 'greenyellow');
+             assert.strictEqual(cssPropertyPrompt.text(), 'green');
+           });
+
+        it('accepts AI suggestion on second Tab when suggest box is visible', async () => {
+          cssPropertyPrompt.attachAndStartEditing(attachedElement, noop);
+
+          cssPropertyPrompt.setText('var(--rgb');
+          await cssPropertyPrompt.complete(true);
+          cssPropertyPrompt.aiCodeCompletionConfig?.setAiAutoCompletion?.({
+            text: 'color: var(--rgb-color); background-color: white;',
+            from: 0,
+            startTime: 0,
+            clearCachedRequest: () => {},
+            onImpression: () => {},
+          });
+
+          assert.isTrue(cssPropertyPrompt.isSuggestBoxVisible());
+          const tabEvent = new KeyboardEvent('keydown', {key: 'Tab'});
+          cssPropertyPrompt.onKeyDown(tabEvent);
+
+          // On first Tab, the suggestion from auto complete menu is applied.
+          assert.strictEqual(cssPropertyPrompt.text(), 'var(--rgb-color)');
+
+          cssPropertyPrompt.onKeyDown(tabEvent);
+
+          // On second Tab, the AI suggestion is committed.
+          sinon.assert.calledOnce(section.commitActiveAiSuggestion);
+        });
       });
     });
   });

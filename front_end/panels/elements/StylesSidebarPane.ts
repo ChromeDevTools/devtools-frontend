@@ -1817,6 +1817,9 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
       case 'ArrowDown':
       case 'PageUp':
       case 'PageDown':
+        if (this.aiCodeCompletionProvider && this.treeElement.section().activeAiSuggestion) {
+          this.setAiAutoCompletion(null);
+        }
         if (!this.isSuggestBoxVisible() && this.handleNameOrValueUpDown(keyboardEvent)) {
           keyboardEvent.preventDefault();
           return;
@@ -1830,6 +1833,11 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
         this.tabKeyPressed();
         keyboardEvent.preventDefault();
         return;
+      case 'Escape':
+        if (this.#handleEscape(keyboardEvent)) {
+          return;
+        }
+        break;
       case ' ':
         if (this.isEditingName) {
           // Since property names cannot contain a space
@@ -1852,8 +1860,11 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
   }
 
   override tabKeyPressed(): boolean {
-    this.acceptAutoComplete();
+    if (this.aiCodeCompletionProvider) {
+      return this.acceptCodeComplete();
+    }
 
+    this.acceptAutoComplete();
     // Always tab to the next field.
     return false;
   }
@@ -1863,6 +1874,21 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
     if (this.aiCodeCompletionProvider) {
       this.#debouncedTriggerAiCodeCompletion();
     }
+  }
+
+  #handleEscape(keyboardEvent: KeyboardEvent): boolean {
+    if (!this.aiCodeCompletionProvider || !this.treeElement.section().activeAiSuggestion) {
+      return false;
+    }
+    keyboardEvent.preventDefault();
+    if (this.isSuggestBoxVisible()) {
+      this.suggestBox?.hide();
+      // Required for ensuring the suggestion is not cleared.
+      keyboardEvent.consume(true);
+    } else {
+      this.setAiAutoCompletion(null);
+    }
+    return true;
   }
 
   private handleNameOrValueUpDown(event: Event): boolean {
@@ -2110,6 +2136,7 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
     }
 
     this.treeElement.section().activeAiSuggestion = {
+      text: args.text,
       properties: this.#getAiSuggestedProperties(args.text),
       cursorPosition: args.from,
       clearCachedRequest: args.clearCachedRequest,
@@ -2174,6 +2201,55 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
       }
     }
     return completionHint;
+  }
+
+  private acceptCodeComplete(): boolean {
+    if (this.isSuggestBoxVisible()) {
+      // accept the suggestion from the traditional autocomplete menu
+      this.acceptAutoComplete();
+
+      const textAfterAccept = this.text();
+      if (!this.treeElement.section().activeAiSuggestion?.properties.length) {
+        this.setAiAutoCompletion(null);
+        // Tab to the next field as suggestion is no longer valid
+        return false;
+      }
+
+      const suggestionForCurrentElement = this.treeElement.section().activeAiSuggestion?.properties[0];
+      if (!suggestionForCurrentElement) {
+        this.setAiAutoCompletion(null);
+        // Tab to the next field as suggestion is no longer valid
+        return false;
+      }
+
+      const suggestionForCurrentPrompt =
+          this.isEditingName ? suggestionForCurrentElement.name : suggestionForCurrentElement.value;
+      if (!suggestionForCurrentPrompt.startsWith(textAfterAccept)) {
+        this.setAiAutoCompletion(null);
+        // Tab to the next field as suggestion is no longer valid
+        return false;
+      }
+
+      if (suggestionForCurrentPrompt !== textAfterAccept) {
+        // Re-apply the ghost text for the remainder
+        this.applySuggestion({text: suggestionForCurrentPrompt}, true);
+      }
+      return true;
+    }
+
+    if (!this.treeElement.section().activeAiSuggestion) {
+      // Tab to the next field.
+      return false;
+    }
+
+    void this.commitAiSuggestion();
+    return true;
+  }
+
+  async commitAiSuggestion(): Promise<void> {
+    await this.treeElement.section().commitActiveAiSuggestion();
+    // Clear state and return
+    this.setAiAutoCompletion(null);
   }
 }
 

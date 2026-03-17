@@ -3300,6 +3300,21 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     this.editingEnded(context);
   }
 
+  async commitAiSuggestion(fullText: string): Promise<void> {
+    const isEditingName = UI.UIUtils.isBeingEdited(this.nameElement);
+    const context = {
+      expanded: this.expanded,
+      hasChildren: this.isExpandable(),
+      isEditingName,
+      originalProperty: this.property,
+      previousContent: isEditingName ? this.name : this.value
+    };
+
+    this.removePrompt();
+    this.editingEnded(context);
+    await this.applyStyleText(fullText, true);
+  }
+
   private async applyOriginalStyle(context: Context): Promise<void> {
     await this.applyStyleText(this.originalPropertyText, false, context.originalProperty);
   }

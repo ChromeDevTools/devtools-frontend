@@ -141,6 +141,7 @@ export interface ActiveAiSuggestionProperty {
 }
 
 export interface ActiveAiSuggestion {
+  text: string;
   properties: ActiveAiSuggestionProperty[];
   cursorPosition: number;
   clearCachedRequest?: () => void;
@@ -894,6 +895,15 @@ export class StylePropertiesSection {
 
   get activeAiSuggestion(): ActiveAiSuggestion|undefined {
     return this.#activeAiSuggestion;
+  }
+
+  async commitActiveAiSuggestion(): Promise<void> {
+    if (!this.#activeAiSuggestion) {
+      return;
+    }
+    const sourceTreeElement = this.#getAiSuggestionSourceTreeElement();
+    // Apply everything atomically
+    await sourceTreeElement?.commitAiSuggestion(this.#activeAiSuggestion.text);
   }
 
   #clearActiveAiSuggestion(): void {

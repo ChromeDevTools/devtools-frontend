@@ -2371,5 +2371,19 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
 
       assert.isNull(stylePropertyTreeElement.valueElement?.querySelector('.ghost-value-prediction'));
     });
+
+    it('commitAiSuggestion calls applyStyleText and ends editing', async () => {
+      const stylePropertyTreeElement = getTreeElement('color', '');
+      stylePropertyTreeElement.updateTitle();
+      stylePropertyTreeElement.startEditingValue();
+
+      const applyStyleTextStub = sinon.stub(stylePropertyTreeElement, 'applyStyleText').resolves();
+      const editingEndedSpy = sinon.spy(stylePropertyTreeElement, 'editingEnded');
+
+      await stylePropertyTreeElement.commitAiSuggestion('color: blue;');
+
+      sinon.assert.calledOnceWithExactly(applyStyleTextStub, 'color: blue;', true);
+      sinon.assert.calledOnce(editingEndedSpy);
+    });
   });
 });

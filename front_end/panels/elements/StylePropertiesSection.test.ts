@@ -353,6 +353,7 @@ describeWithMockConnection('StylesPropertySection', () => {
     it('setting activeAiSuggestion triggers rendering', async () => {
       const renderActiveAiSuggestionSpy = sinon.spy(sourceTreeElement, 'renderActiveAiSuggestion');
       const activeAiSuggestion = {
+        text: 'background-color: white; color: red; font-size: 10px;',
         properties: [
           {name: 'background-color', value: 'white'}, {name: 'color', value: 'red'}, {name: 'font-size', value: '10px'}
         ],
@@ -378,6 +379,7 @@ describeWithMockConnection('StylesPropertySection', () => {
       const clearActiveAiSuggestionSpy = sinon.spy(sourceTreeElement, 'clearActiveAiSuggestion');
       const rootElement = section.propertiesTreeOutline.rootElement();
       const activeAiSuggestion = {
+        text: 'color: red; font-size: 10px;',
         properties: [{name: 'color', value: 'red'}, {name: 'font-size', value: '10px'}],
         cssProperty,
         cursorPosition: 0,
@@ -397,6 +399,33 @@ describeWithMockConnection('StylesPropertySection', () => {
       ghostElements = rootElement.children().filter(
           e => e instanceof Elements.StylePropertyTreeElement.GhostStylePropertyTreeElement);
       assert.lengthOf(ghostElements, 0);
+    });
+
+    it('commitActiveAiSuggestion calls commitAiSuggestion with correct text', async () => {
+      const renderActiveAiSuggestionSpy = sinon.spy(sourceTreeElement, 'renderActiveAiSuggestion');
+      const commitAiSuggestionStub = sinon.stub(sourceTreeElement, 'commitAiSuggestion').resolves();
+      const rootElement = section.propertiesTreeOutline.rootElement();
+      const activeAiSuggestion = {
+        text: 'background-color: white; color: red; font-size: 10px;',
+        properties: [
+          {name: 'background-color', value: 'white'}, {name: 'color', value: 'red'}, {name: 'font-size', value: '10px'}
+        ],
+        cssProperty,
+        cursorPosition: 0,
+      };
+
+      section.activeAiSuggestion = activeAiSuggestion;
+
+      sinon.assert.calledOnce(renderActiveAiSuggestionSpy);
+      assert.deepEqual(renderActiveAiSuggestionSpy.firstCall.args[0], activeAiSuggestion.properties[0]);
+      const ghostElements = rootElement.children().filter(
+          e => e instanceof Elements.StylePropertyTreeElement.GhostStylePropertyTreeElement);
+      assert.lengthOf(ghostElements, 2);
+
+      await section.commitActiveAiSuggestion();
+
+      sinon.assert.calledOnceWithExactly(
+          commitAiSuggestionStub, 'background-color: white; color: red; font-size: 10px;');
     });
   });
 

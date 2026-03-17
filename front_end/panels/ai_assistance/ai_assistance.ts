@@ -13,3 +13,4 @@ export * as ExportForAgentsDialog from './components/ExportForAgentsDialog.js';
 export * as PatchWidget from './PatchWidget.js';
 export * as DisabledWidget from './components/DisabledWidget.js';
 export * as WalkthroughView from './components/WalkthroughView.js';
+export * as ExportConversation from './ExportConversation.js';

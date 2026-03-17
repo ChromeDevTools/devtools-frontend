@@ -14,7 +14,6 @@ import * as AiAssistanceModel from '../../models/ai_assistance/ai_assistance.js'
 import * as Annotations from '../../models/annotations/annotations.js';
 import * as Badges from '../../models/badges/badges.js';
 import * as Greendev from '../../models/greendev/greendev.js';
-import * as TextUtils from '../../models/text_utils/text_utils.js';
 import type * as Trace from '../../models/trace/trace.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
@@ -48,6 +47,7 @@ import {StylingAgentMarkdownRenderer} from './components/StylingAgentMarkdownRen
 import {
   WalkthroughView,
 } from './components/WalkthroughView.js';
+import {saveToDisk} from './ExportConversation.js';
 import {isAiAssistancePatchingEnabled} from './PatchWidget.js';
 
 const {html} = Lit;
@@ -1553,22 +1553,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     if (!this.#conversation) {
       return;
     }
-
-    const markdownContent = this.#conversation.getConversationMarkdown();
-    const contentData = new TextUtils.ContentData.ContentData(markdownContent, false, 'text/markdown');
-
-    const titleFormatted = Platform.StringUtilities.toSnakeCase(this.#conversation.title || '');
-    const prefix = 'devtools_';
-    const suffix = '.md';
-    const maxTitleLength = 64 - prefix.length - suffix.length;
-    let finalTitle = titleFormatted || 'conversation';
-    if (finalTitle.length > maxTitleLength) {
-      finalTitle = finalTitle.substring(0, maxTitleLength);
-    }
-    const filename = `${prefix}${finalTitle}${suffix}` as Platform.DevToolsPath.RawPathString;
-
-    await Workspace.FileManager.FileManager.instance().save(filename, contentData, true);
-    Workspace.FileManager.FileManager.instance().close(filename);
+    return await saveToDisk(this.#conversation);
   }
 
   async #openHistoricConversation(conversation: AiAssistanceModel.AiConversation.AiConversation): Promise<void> {

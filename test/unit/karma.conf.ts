@@ -172,6 +172,13 @@ const ProgressWithDiffReporter = function(
       this.write(`\n${patch}\n\n`);
     }
   };
+
+  const baseSpecSuccess = this.specSuccess;
+  this.specSuccess = function(this: any, _browser: unknown, _result: unknown) {
+    if (!TestConfig.isAiAgent) {
+      baseSpecSuccess.apply(this, arguments);
+    }
+  };
 };
 ProgressWithDiffReporter.$inject =
     ['formatError', 'config.reportSlowerThan', 'config.colors', 'config.browserConsoleLogOptions'];

@@ -10,8 +10,10 @@ import * as ResultsDb from '../conductor/resultsdb.js';
 import {
   ScreenshotError,
 } from '../conductor/screenshot-error.js';
+import {TestConfig} from '../conductor/test_config.js';
 
 const {
+  EVENT_RUN_END,
   EVENT_TEST_FAIL,
   EVENT_TEST_PASS,
   EVENT_TEST_RETRY,
@@ -50,7 +52,7 @@ interface HookWithParent {
   parent: Record<string, any>;
 }
 
-class ResultsDbReporter extends Mocha.reporters.Spec {
+class ResultsDbReporter extends (TestConfig.isAiAgent ? Mocha.reporters.Base : Mocha.reporters.Spec) {
   // The max length of the summary is 4000, but we need to leave some room for
   // the rest of the HTML formatting (e.g. <pre> and </pre>).
   static readonly SUMMARY_LENGTH_CUTOFF = 3985;
@@ -78,6 +80,11 @@ class ResultsDbReporter extends Mocha.reporters.Spec {
     runner.on(EVENT_TEST_FAIL, this.onTestFail.bind(this));
     runner.on(EVENT_TEST_RETRY, this.onTestFail.bind(this));
     runner.on(EVENT_TEST_PENDING, this.onTestSkip.bind(this));
+
+    if (TestConfig.isAiAgent) {
+      // Base doesn't report anything so we just report the final result.
+      runner.once(EVENT_RUN_END, this.epilogue.bind(this));
+    }
   }
 
   private onTestPass(test: Mocha.Test) {

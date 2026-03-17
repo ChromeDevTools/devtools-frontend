@@ -40,6 +40,7 @@ interface Config {
   shardCount: number;
   shardNumber: number;
   shardBias: number;
+  isAiAgent: boolean;
 }
 
 function sliceArrayFromElement(array: string[], element: string) {
@@ -141,6 +142,8 @@ export const TestConfig: Config = {
   shardCount: options['shard-count'],
   shardNumber: options['shard-number'],
   shardBias: options['shard-bias'],
+  isAiAgent:
+      ['GEMINI_CLI', 'CLAUDECODE', 'CODEX_SANDBOX', 'CURSOR_AGENT', 'AI_AGENT'].some(agent => agent in process.env),
 };
 
 export function loadTests(testDirectory: string, filename = 'tests.txt') {

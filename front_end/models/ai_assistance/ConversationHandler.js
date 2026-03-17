@@ -10,7 +10,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as NetworkTimeCalculator from '../network_time_calculator/network_time_calculator.js';
 import { NetworkAgent, RequestContext } from './agents/NetworkAgent.js';
 import { NodeContext, StylingAgent } from './agents/StylingAgent.js';
-import { AiConversation } from './AiConversation.js';
+import { AiConversation, CONTEXT_TITLE } from './AiConversation.js';
 import { getDisabledReasons } from './AiUtils.js';
 /*
 * Strings that don't need to be translated at this time.
@@ -153,10 +153,16 @@ export class ConversationHandler extends Common.ObjectWrapper.ObjectWrapper {
             if (data.type !== "answer" /* ResponseType.ANSWER */ || data.complete) {
                 devToolsLogs.push(data);
             }
-            if (data.type === "context" /* ResponseType.CONTEXT */ || data.type === "title" /* ResponseType.TITLE */) {
+            if (data.type === "title" /* ResponseType.TITLE */) {
                 yield {
                     type: "notification" /* ExternalRequestResponseType.NOTIFICATION */,
                     message: data.title,
+                };
+            }
+            if (data.type === "context" /* ResponseType.CONTEXT */) {
+                yield {
+                    type: "notification" /* ExternalRequestResponseType.NOTIFICATION */,
+                    message: CONTEXT_TITLE,
                 };
             }
             if (data.type === "side-effect" /* ResponseType.SIDE_EFFECT */) {

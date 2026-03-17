@@ -11,6 +11,32 @@ import { shouldRenderForCategory } from './insights/Helpers.js';
 import * as Insights from './insights/insights.js';
 import sidebarSingleInsightSetStyles from './sidebarSingleInsightSet.css.js';
 const { html } = Lit.StaticHtml;
+/**
+ * Every insight (INCLUDING experimental ones).
+ *
+ * Order does not matter (but keep alphabetized).
+ */
+const INSIGHT_NAME_TO_COMPONENT = {
+    Cache: Insights.Cache.Cache,
+    CharacterSet: Insights.CharacterSet.CharacterSet,
+    CLSCulprits: Insights.CLSCulprits.CLSCulprits,
+    DocumentLatency: Insights.DocumentLatency.DocumentLatency,
+    DOMSize: Insights.DOMSize.DOMSize,
+    DuplicatedJavaScript: Insights.DuplicatedJavaScript.DuplicatedJavaScript,
+    FontDisplay: Insights.FontDisplay.FontDisplay,
+    ForcedReflow: Insights.ForcedReflow.ForcedReflow,
+    ImageDelivery: Insights.ImageDelivery.ImageDelivery,
+    INPBreakdown: Insights.INPBreakdown.INPBreakdown,
+    LCPDiscovery: Insights.LCPDiscovery.LCPDiscovery,
+    LCPBreakdown: Insights.LCPBreakdown.LCPBreakdown,
+    LegacyJavaScript: Insights.LegacyJavaScript.LegacyJavaScript,
+    ModernHTTP: Insights.ModernHTTP.ModernHTTP,
+    NetworkDependencyTree: Insights.NetworkDependencyTree.NetworkDependencyTree,
+    RenderBlocking: Insights.RenderBlocking.RenderBlocking,
+    SlowCSSSelector: Insights.SlowCSSSelector.SlowCSSSelector,
+    ThirdParties: Insights.ThirdParties.ThirdParties,
+    Viewport: Insights.Viewport.Viewport,
+};
 const UIStrings = {
     /**
      * @description Summary text for an expandable dropdown that contains all insights in a passing state.
@@ -58,8 +84,7 @@ const DEFAULT_VIEW = (input, output, target) => {
 };
 export class SidebarSingleInsightSet extends UI.Widget.Widget {
     #view;
-    #insightRenderer = new Insights.InsightRenderer.InsightRenderer();
-    #activeInsightElement = null;
+    #isActiveInsightHighlighted = false;
     #activeHighlightTimeout = -1;
     #data = {
         insightSetKey: null,
@@ -79,19 +104,17 @@ export class SidebarSingleInsightSet extends UI.Widget.Widget {
         super.willHide();
         window.clearTimeout(this.#activeHighlightTimeout);
     }
-    highlightActiveInsight() {
-        if (!this.#activeInsightElement) {
-            return;
-        }
-        // First clear any existing highlight that is going on.
-        this.#activeInsightElement.removeAttribute('highlight-insight');
+    async highlightActiveInsight() {
         window.clearTimeout(this.#activeHighlightTimeout);
-        requestAnimationFrame(() => {
-            this.#activeInsightElement?.setAttribute('highlight-insight', 'true');
-            this.#activeHighlightTimeout = window.setTimeout(() => {
-                this.#activeInsightElement?.removeAttribute('highlight-insight');
-            }, 2_000);
-        });
+        this.#isActiveInsightHighlighted = false;
+        this.requestUpdate();
+        await this.updateComplete;
+        this.#isActiveInsightHighlighted = true;
+        this.requestUpdate();
+        this.#activeHighlightTimeout = window.setTimeout(() => {
+            this.#isActiveInsightHighlighted = false;
+            this.requestUpdate();
+        }, 2_000);
     }
     static categorizeInsights(insightSets, insightSetKey, activeCategory) {
         if (!insightSets || !(insightSets instanceof Map)) {
@@ -123,15 +146,26 @@ export class SidebarSingleInsightSet extends UI.Widget.Widget {
         const { insightName, model } = insightData;
         const activeInsight = this.#data.activeInsight;
         const agentFocus = AIAssistance.AIContext.AgentFocus.fromInsight(this.#data.parsedTrace, model);
-        const widgetElement = this.#insightRenderer.renderInsightToWidgetElement(this.#data.parsedTrace, insightSet, model, insightName, {
-            selected: activeInsight?.model === model,
+        const isActiveInsight = activeInsight?.model === model;
+        const componentClass = INSIGHT_NAME_TO_COMPONENT[insightName];
+        const widgetConfig = {
+            selected: isActiveInsight,
+            // The `model` passed in as a parameter is the base type, but since
+            // `componentClass` is the union of every derived insight component, the
+            // `model` for the widget config is the union of every model. That can't be
+            // satisfied, so disable typescript.
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            model: model,
+            bounds: insightSet.bounds,
+            insightSetKey: insightSet.id,
             agentFocus,
             fieldMetrics,
-        });
-        if (activeInsight?.model === model) {
-            this.#activeInsightElement = widgetElement;
-        }
-        return html `${widgetElement}`;
+        };
+        // clang-format off
+        return html `<devtools-widget class="insight-component-widget" ?highlight-insight=${isActiveInsight && this.#isActiveInsightHighlighted}
+      ${widget(componentClass, widgetConfig)}
+    ></devtools-widget>`;
+        // clang-format on
     }
     performUpdate() {
         const { parsedTrace, insightSetKey, } = this.#data;

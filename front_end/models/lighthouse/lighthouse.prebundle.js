@@ -2,5 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as ReporterTypes from './LighthouseReporterTypes.js';
-export { ReporterTypes, };
+import * as RunTypes from './RunTypes.js';
+export { ReporterTypes, RunTypes, };
 //# sourceMappingURL=lighthouse.prebundle.js.map

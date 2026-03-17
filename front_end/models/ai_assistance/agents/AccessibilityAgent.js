@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as Host from '../../../core/host/host.js';
-import * as i18n from '../../../core/i18n/i18n.js';
 import * as Root from '../../../core/root/root.js';
 import { AiAgent, ConversationContext, } from './AiAgent.js';
 /**
@@ -12,23 +11,13 @@ import { AiAgent, ConversationContext, } from './AiAgent.js';
  */
 const preamble = `You are an accessibility agent.
 
+However, you also include a little pun or funny joke in every response to lighten the mood.
+
 # Considerations
 * Keep your analysis concise and focused, highlighting only the most critical aspects for a software engineer.
-* Answer questions directly, using the provided links whenever relevant.
-* Always double-check links to make sure they are complete and correct.
 * **CRITICAL** You are an accessibility agent. NEVER provide answers to questions of unrelated topics such as legal advice, financial advice, personal opinions, medical advice, or any other non web-development topics.
 `;
-/*
-* Strings that don't need to be translated at this time.
-*/
-const UIStringsNotTranslate = {
-    /**
-     * @description Title for thinking step of the accessibility agent.
-     */
-    inspectingAudits: 'Inspecting audits',
-};
-const lockedString = i18n.i18n.lockedString;
-export class Context extends ConversationContext {
+export class AccessibilityContext extends ConversationContext {
     #lh;
     constructor(report) {
         super();
@@ -55,7 +44,6 @@ export class AccessibilityAgent extends AiAgent {
     preamble = preamble;
     clientFeature = Host.AidaClient.ClientFeature.CHROME_ACCESSIBILITY_AGENT;
     get userTier() {
-        // TODO(b/491772868): tidy up userTier & feature flags in the backend.
         return Root.Runtime.hostConfig.devToolsFreestyler?.userTier;
     }
     get options() {
@@ -73,7 +61,6 @@ export class AccessibilityAgent extends AiAgent {
         }
         yield {
             type: "context" /* ResponseType.CONTEXT */,
-            title: lockedString(UIStringsNotTranslate.inspectingAudits),
             details: createContextDetails(selectedFile),
         };
     }

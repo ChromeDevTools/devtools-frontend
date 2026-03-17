@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 export const defaults = () => ({
-    includeRuntimeCallStats: false,
     showAllEvents: false,
     debugMode: false,
     maxInvalidationEventsPerEvent: 20,

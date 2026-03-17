@@ -710,7 +710,6 @@ var MainImpl = class {
     Root2.Runtime.experiments.register(Root2.ExperimentNames.ExperimentName.SHOW_OPTION_TO_EXPOSE_INTERNALS_IN_HEAP_SNAPSHOT, "Show option to expose internals in heap snapshots");
     Root2.Runtime.experiments.register(Root2.ExperimentNames.ExperimentName.TIMELINE_INVALIDATION_TRACKING, "Performance panel: invalidation tracking");
     Root2.Runtime.experiments.register(Root2.ExperimentNames.ExperimentName.TIMELINE_SHOW_ALL_EVENTS, "Performance panel: show all events");
-    Root2.Runtime.experiments.register(Root2.ExperimentNames.ExperimentName.TIMELINE_V8_RUNTIME_CALL_STATS, "Performance panel: V8 runtime call stats");
     Root2.Runtime.experiments.register(Root2.ExperimentNames.ExperimentName.TIMELINE_DEBUG_MODE, "Performance panel: debug mode (trace event details, etc)");
     Root2.Runtime.experiments.register(Root2.ExperimentNames.ExperimentName.INSTRUMENTATION_BREAKPOINTS, "Instrumentation breakpoints");
     Root2.Runtime.experiments.register(Root2.ExperimentNames.ExperimentName.USE_SOURCE_MAP_SCOPES, "Use scope information from source maps");

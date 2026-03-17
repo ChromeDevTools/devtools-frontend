@@ -67,7 +67,6 @@ export class ConversationSummaryAgent extends AiAgent {
         }
         yield {
             type: "context" /* ResponseType.CONTEXT */,
-            title: 'Summarizing conversation',
             details: [
                 {
                     title: 'Conversation transcript',

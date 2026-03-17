@@ -520,7 +520,6 @@ export declare enum DevtoolsExperiments {
     'show-option-to-expose-internals-in-heap-snapshot' = 18,
     'timeline-invalidation-tracking' = 26,
     'timeline-show-all-events' = 27,
-    'timeline-v8-runtime-call-stats' = 28,
     apca = 39,
     'font-editor' = 41,
     'full-accessibility-tree' = 42,

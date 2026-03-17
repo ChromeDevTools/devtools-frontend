@@ -34130,26 +34130,28 @@ var i18nString16 = i18n35.i18n.getLocalizedString.bind(void 0, str_16);
 var i18nLazyString2 = i18n35.i18n.getLazilyComputedLocalizedString.bind(void 0, str_16);
 var throttlingManagerInstance;
 var CPUThrottlingManager = class _CPUThrottlingManager extends Common37.ObjectWrapper.ObjectWrapper {
+  #targetManager;
   #cpuThrottlingOption;
   #calibratedThrottlingSetting;
   #hardwareConcurrency;
   #pendingMainTargetPromise;
-  constructor() {
+  constructor(settings, targetManager) {
     super();
+    this.#targetManager = targetManager;
     this.#cpuThrottlingOption = NoThrottlingOption;
-    this.#calibratedThrottlingSetting = Common37.Settings.Settings.instance().createSetting(
+    this.#calibratedThrottlingSetting = settings.createSetting(
       "calibrated-cpu-throttling",
       {},
       "Global"
       /* Common.Settings.SettingStorageType.GLOBAL */
     );
     this.#calibratedThrottlingSetting.addChangeListener(this.#onCalibratedSettingChanged, this);
-    TargetManager.instance().observeModels(EmulationModel, this);
+    targetManager.observeModels(EmulationModel, this);
   }
   static instance(opts = { forceNew: null }) {
     const { forceNew } = opts;
     if (!throttlingManagerInstance || forceNew) {
-      throttlingManagerInstance = new _CPUThrottlingManager();
+      throttlingManagerInstance = new _CPUThrottlingManager(Common37.Settings.Settings.instance(), TargetManager.instance());
     }
     return throttlingManagerInstance;
   }
@@ -34172,7 +34174,7 @@ var CPUThrottlingManager = class _CPUThrottlingManager extends Common37.ObjectWr
       this.setCPUThrottlingOption(NoThrottlingOption);
       return;
     }
-    for (const emulationModel of TargetManager.instance().models(EmulationModel)) {
+    for (const emulationModel of this.#targetManager.models(EmulationModel)) {
       void emulationModel.setCPUThrottlingRate(rate);
     }
     this.dispatchEventToListeners("RateChanged", rate);
@@ -34182,27 +34184,27 @@ var CPUThrottlingManager = class _CPUThrottlingManager extends Common37.ObjectWr
       return;
     }
     this.#cpuThrottlingOption = option;
-    for (const emulationModel of TargetManager.instance().models(EmulationModel)) {
+    for (const emulationModel of this.#targetManager.models(EmulationModel)) {
       void emulationModel.setCPUThrottlingRate(this.#cpuThrottlingOption.rate());
     }
     this.dispatchEventToListeners("RateChanged", this.#cpuThrottlingOption.rate());
   }
   setHardwareConcurrency(concurrency) {
     this.#hardwareConcurrency = concurrency;
-    for (const emulationModel of TargetManager.instance().models(EmulationModel)) {
+    for (const emulationModel of this.#targetManager.models(EmulationModel)) {
       void emulationModel.setHardwareConcurrency(concurrency);
     }
     this.dispatchEventToListeners("HardwareConcurrencyChanged", this.#hardwareConcurrency);
   }
   hasPrimaryPageTargetSet() {
     try {
-      return TargetManager.instance().primaryPageTarget() !== null;
+      return this.#targetManager.primaryPageTarget() !== null;
     } catch {
       return false;
     }
   }
   async getHardwareConcurrency() {
-    const target = TargetManager.instance().primaryPageTarget();
+    const target = this.#targetManager.primaryPageTarget();
     const existingCallback = this.#pendingMainTargetPromise;
     if (!target) {
       if (existingCallback) {

@@ -1763,16 +1763,20 @@ var LinearMemoryInspector = class extends Common.ObjectWrapper.eventMixin(UI5.Wi
     void this.requestUpdate();
   }
   #onValueTypeToggled(type, checked) {
+    const valueTypes = new Set(this.#valueTypes);
     if (checked) {
-      this.#valueTypes.add(type);
+      valueTypes.add(type);
     } else {
-      this.#valueTypes.delete(type);
+      valueTypes.delete(type);
     }
+    this.#valueTypes = valueTypes;
     this.dispatchEventToListeners("SettingsChanged", this.#createSettings());
     void this.requestUpdate();
   }
   #onValueTypeModeChanged(type, mode) {
-    this.#valueTypeModes.set(type, mode);
+    const valueTypeModes = new Map(this.#valueTypeModes);
+    valueTypeModes.set(type, mode);
+    this.#valueTypeModes = valueTypeModes;
     this.dispatchEventToListeners("SettingsChanged", this.#createSettings());
     void this.requestUpdate();
   }

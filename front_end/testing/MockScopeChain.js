@@ -2,8 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import { assertNotNullOrUndefined } from '../core/platform/platform.js';
+import * as ProtocolClient from '../core/protocol_client/protocol_client.js';
 import * as SDK from '../core/sdk/sdk.js';
+import { MockCDPConnection } from './MockCDPConnection.js';
 import { dispatchEvent, setMockConnectionResponseHandler, } from './MockConnection.js';
+import { createTarget } from './TargetHelpers.js';
+import { TestUniverse } from './TestUniverse.js';
+/**
+ * @deprecated Use {@link MockDebuggerBackend} instead.
+ */
 export class MockProtocolBackend {
     #scriptSources = new Map();
     #sourceMapContents = new Map();
@@ -301,5 +308,259 @@ export function parseScopeChain(scopeDescriptor) {
         scopeChain.unshift(scopePositionFromOffsets(scopeDescriptor, "block" /* Protocol.Debugger.ScopeType.Block */, blockScopeStart, blockScopeEnd + 1));
     }
     return scopeChain;
+}
+/**
+ * Drop-in replacement for {@link MockProtocolBackend} but doesn't use any global state.
+ *
+ * Creates a new {@link TestUniverse}, accessible via `mockDebuggerBackend.universe`.
+ */
+export class MockDebuggerBackend {
+    universe;
+    /** The mock connection used for all targets created with this MockDebuggerBackend instance */
+    cdpConnection;
+    #scriptSources = new Map();
+    #sourceMapContents = new Map();
+    #objectProperties = new Map();
+    #setBreakpointByUrlResponses = new Map();
+    #removeBreakpointCallbacks = new Map();
+    #nextObjectIndex = 0;
+    #nextScriptIndex = 0;
+    constructor() {
+        this.universe = new TestUniverse({
+            pageResourceLoaderOptions: {
+                loadOverride: async (url) => this.#loadSourceMap(url),
+            },
+        });
+        this.cdpConnection = new MockCDPConnection();
+        this.cdpConnection.setHandler('Debugger.getScriptSource', this.#getScriptSourceHandler.bind(this));
+        this.cdpConnection.setHandler('Runtime.getProperties', this.#getPropertiesHandler.bind(this));
+        this.cdpConnection.setHandler('Debugger.setBreakpointByUrl', this.#setBreakpointByUrlHandler.bind(this));
+        this.cdpConnection.setHandler('Storage.getStorageKey', () => ({ result: { storageKey: 'test-key' } }));
+        this.cdpConnection.setHandler('Debugger.removeBreakpoint', this.#removeBreakpointHandler.bind(this));
+        this.cdpConnection.setHandler('Debugger.resume', () => ({ result: {} }));
+        this.cdpConnection.setHandler('Debugger.enable', () => ({ result: { debuggerId: 'DEBUGGER_ID' } }));
+        this.cdpConnection.setHandler('Debugger.setInstrumentationBreakpoint', () => ({ result: {} }));
+        this.universe.pageResourceLoader; // Eagerly trigger creation.
+    }
+    createTarget(options) {
+        return createTarget({
+            ...options,
+            targetManager: this.universe.targetManager,
+            connection: Boolean(options?.parentTarget) ? undefined : this.cdpConnection,
+        });
+    }
+    dispatchDebuggerPause(script, reason, functionName = '', scopeChain = []) {
+        const target = script.debuggerModel.target();
+        if (reason === "instrumentation" /* Protocol.Debugger.PausedEventReason.Instrumentation */) {
+            // Instrumentation pauses don't pass call frames, they only pass the script id in the 'data' field.
+            dispatchEvent(target, 'Debugger.paused', {
+                callFrames: [],
+                reason,
+                data: { scriptId: script.scriptId },
+            });
+        }
+        else {
+            const callFrames = [
+                {
+                    callFrameId: '1',
+                    functionName,
+                    url: script.sourceURL,
+                    scopeChain,
+                    location: {
+                        scriptId: script.scriptId,
+                        lineNumber: 0,
+                    },
+                    this: { type: 'object' },
+                },
+            ];
+            dispatchEvent(target, 'Debugger.paused', {
+                callFrames,
+                reason,
+            });
+        }
+    }
+    dispatchDebuggerPauseWithNoCallFrames(target, reason) {
+        dispatchEvent(target, 'Debugger.paused', {
+            callFrames: [],
+            reason,
+        });
+    }
+    async addScript(target, scriptDescription, sourceMap) {
+        const scriptId = 'SCRIPTID.' + this.#nextScriptIndex++;
+        this.#scriptSources.set(scriptId, scriptDescription.content);
+        const startLine = scriptDescription.startLine ?? 0;
+        const startColumn = scriptDescription.startColumn ?? 0;
+        const endLine = startLine + (scriptDescription.content.match(/^/gm)?.length ?? 1) - 1;
+        let endColumn = scriptDescription.content.length - scriptDescription.content.lastIndexOf('\n') - 1;
+        if (startLine === endLine) {
+            endColumn += startColumn;
+        }
+        dispatchEvent(target, 'Debugger.scriptParsed', {
+            scriptId: scriptId,
+            url: scriptDescription.url,
+            startLine,
+            startColumn,
+            endLine,
+            endColumn,
+            buildId: '',
+            executionContextId: (scriptDescription?.executionContextId ?? 1),
+            executionContextAuxData: { isDefault: !scriptDescription.isContentScript },
+            hash: '',
+            hasSourceURL: Boolean(scriptDescription.hasSourceURL),
+            ...(sourceMap ? { sourceMapURL: sourceMap.url } : null),
+            embedderName: scriptDescription.embedderName,
+        });
+        const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
+        const scriptObject = debuggerModel.scriptForId(scriptId);
+        assertNotNullOrUndefined(scriptObject);
+        if (sourceMap) {
+            let { content } = sourceMap;
+            if (typeof content !== 'string') {
+                content = JSON.stringify(content);
+            }
+            this.#sourceMapContents.set(sourceMap.url, content);
+            // Wait until the source map loads.
+            const loadedSourceMap = await debuggerModel.sourceMapManager().sourceMapForClientPromise(scriptObject);
+            assert.strictEqual(loadedSourceMap?.url(), sourceMap.url);
+        }
+        return scriptObject;
+    }
+    #createProtocolLocation(scriptId, lineNumber, columnNumber) {
+        return { scriptId: scriptId, lineNumber, columnNumber };
+    }
+    #createProtocolScope(type, object, scriptId, startLine, startColumn, endLine, endColumn) {
+        return {
+            type,
+            object,
+            startLocation: this.#createProtocolLocation(scriptId, startLine, startColumn),
+            endLocation: this.#createProtocolLocation(scriptId, endLine, endColumn),
+        };
+    }
+    createSimpleRemoteObject(properties) {
+        const objectId = 'OBJECTID.' + this.#nextObjectIndex++;
+        this.#objectProperties.set(objectId, properties);
+        return { type: "object" /* Protocol.Runtime.RemoteObjectType.Object */, objectId: objectId };
+    }
+    // In the |scopeDescriptor|, '{' and '}' characters mark the positions of function
+    // offset start and end, '<' and '>' mark the positions of the nested scope
+    // start and end (if '<', '>' are missing then the nested scope is the function scope).
+    // Other characters in |scopeDescriptor| are not significant (so that tests can use the other characters in
+    // the descriptors to describe other assertions).
+    async createCallFrame(target, script, scopeDescriptor, sourceMap, scopeObjects = []) {
+        const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
+        const scriptObject = await this.addScript(target, script, sourceMap);
+        const parsedScopes = parseScopeChain(scopeDescriptor);
+        const scopeChain = parsedScopes.map(s => this.#createProtocolScope(s.type, { type: "object" /* Protocol.Runtime.RemoteObjectType.Object */ }, scriptObject.scriptId, s.startLine, s.startColumn, s.endLine, s.endColumn));
+        const innerScope = scopeChain[0];
+        console.assert(scopeObjects.length < scopeChain.length);
+        for (let i = 0; i < scopeObjects.length; ++i) {
+            scopeChain[i].object = scopeObjects[i];
+        }
+        const payload = {
+            callFrameId: '0',
+            functionName: 'test',
+            location: innerScope.startLocation,
+            url: scriptObject.sourceURL,
+            scopeChain,
+            this: { type: 'object' },
+            canBeRestarted: false,
+        };
+        return new SDK.DebuggerModel.CallFrame(debuggerModel, scriptObject, payload, 0);
+    }
+    #getBreakpointKey(url, lineNumber) {
+        return url + '@:' + lineNumber;
+    }
+    responderToBreakpointByUrlRequest(url, lineNumber) {
+        const { promise: responsePromise, resolve: responseCallback } = Promise.withResolvers();
+        const { promise: requestPromise, resolve: requestCallback } = Promise.withResolvers();
+        const key = this.#getBreakpointKey(url, lineNumber);
+        this.#setBreakpointByUrlResponses.set(key, { response: responsePromise, callback: requestCallback, isOneShot: true });
+        return async (response) => {
+            responseCallback(response);
+            await requestPromise;
+        };
+    }
+    setBreakpointByUrlToFail(url, lineNumber) {
+        const key = this.#getBreakpointKey(url, lineNumber);
+        const responsePromise = Promise.resolve(serverError('Breakpoint error'));
+        this.#setBreakpointByUrlResponses.set(key, { response: responsePromise, callback: () => { }, isOneShot: false });
+    }
+    breakpointRemovedPromise(breakpointId) {
+        return new Promise(resolve => this.#removeBreakpointCallbacks.set(breakpointId, resolve));
+    }
+    #getScriptSourceHandler(request) {
+        const scriptSource = this.#scriptSources.get(request.scriptId);
+        if (scriptSource) {
+            return { result: { scriptSource } };
+        }
+        return serverError('Unknown script');
+    }
+    #setBreakpointByUrlHandler(request) {
+        const key = this.#getBreakpointKey(request.url ?? '', request.lineNumber);
+        const responseCallback = this.#setBreakpointByUrlResponses.get(key);
+        if (responseCallback) {
+            if (responseCallback.isOneShot) {
+                this.#setBreakpointByUrlResponses.delete(key);
+            }
+            // Announce to the client that the breakpoint request arrived.
+            responseCallback.callback();
+            // Return the response promise.
+            return responseCallback.response;
+        }
+        console.error('Unexpected setBreakpointByUrl request', request);
+        return Promise.resolve(serverError('Unknown breakpoint'));
+    }
+    #removeBreakpointHandler(request) {
+        const callback = this.#removeBreakpointCallbacks.get(request.breakpointId);
+        if (callback) {
+            callback();
+        }
+        return { result: {} };
+    }
+    #getPropertiesHandler(request) {
+        const objectProperties = this.#objectProperties.get(request.objectId);
+        if (!objectProperties) {
+            return { result: { result: [] } };
+        }
+        const result = [];
+        for (const property of objectProperties) {
+            result.push({
+                name: property.name,
+                value: {
+                    type: "number" /* Protocol.Runtime.RemoteObjectType.Number */,
+                    value: property.value,
+                    description: `${property.value}`,
+                },
+                writable: true,
+                configurable: true,
+                enumerable: true,
+                isOwn: true,
+            });
+        }
+        return { result: { result } };
+    }
+    #loadSourceMap(url) {
+        const content = this.#sourceMapContents.get(url);
+        if (!content) {
+            return {
+                success: false,
+                content: '',
+                errorDescription: { message: 'source map not found', statusCode: 123, netError: 0, netErrorName: '', urlValid: true },
+            };
+        }
+        return {
+            success: true,
+            content,
+            errorDescription: { message: '', statusCode: 0, netError: 0, netErrorName: '', urlValid: true },
+        };
+    }
+}
+function serverError(message) {
+    return {
+        error: {
+            code: ProtocolClient.CDPConnection.CDPErrorStatus.SERVER_ERROR,
+            message,
+        }
+    };
 }
 //# sourceMappingURL=MockScopeChain.js.map

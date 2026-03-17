@@ -20,10 +20,6 @@ import { AiAgent, ConversationContext } from './AiAgent.js';
 */
 const UIStringsNotTranslate = {
     /**
-     * @description Title for context details for Freestyler.
-     */
-    analyzingThePrompt: 'Analyzing the prompt',
-    /**
      * @description Heading text for context details of Freestyler agent.
      */
     dataUsed: 'Data used',
@@ -878,7 +874,6 @@ const data = {
         }
         yield {
             type: "context" /* ResponseType.CONTEXT */,
-            title: lockedString(UIStringsNotTranslate.analyzingThePrompt),
             details: [{
                     title: lockedString(UIStringsNotTranslate.dataUsed),
                     text: await StylingAgent.describeElement(selectedElement.getItem()),

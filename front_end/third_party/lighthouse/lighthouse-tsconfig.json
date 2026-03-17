@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "composite": true
+  },
+  "files": [
+    "report-assets/report.js",
+    "report-assets/report-generator.mjs",
+    "report-assets/report-generator.mjs.d.ts",
+    "lighthouse-dt-bundle.js"
+  ]
+}

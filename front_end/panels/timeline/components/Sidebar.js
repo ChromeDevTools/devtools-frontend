@@ -155,7 +155,7 @@ class InsightsView extends UI.Widget.VBox {
             // might highlight the wrong insight. The UI needs to be fully
             // re-rendered before we can highlight the newly-expanded insight.
             void widget.updateComplete.then(() => {
-                widget.highlightActiveInsight();
+                void widget.highlightActiveInsight();
             });
         }
     }

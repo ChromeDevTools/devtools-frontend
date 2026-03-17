@@ -202,7 +202,11 @@ var UIStrings = {
    * @description Success message for screen readers when device is added.
    * @example {TestDevice} PH1
    */
-  deviceAddedOrUpdated: "Device {PH1} successfully added/updated."
+  deviceAddedOrUpdated: "Device {PH1} successfully added/updated.",
+  /**
+   * @description Error message in the Devices settings pane shown when the user agent string is empty.
+   */
+  userAgentStringCannotBeEmpty: "User agent string cannot be empty."
 };
 var str_ = i18n.i18n.registerUIStrings("panels/settings/emulation/DevicesSettingsTab.ts", UIStrings);
 var i18nString = i18n.i18n.getLocalizedString.bind(void 0, str_);
@@ -355,7 +359,9 @@ var DevicesSettingsTab = class extends UI.Widget.VBox {
       );
     }
     const userAgentControlValue = editor.control("ua-metadata").value.metaData;
-    if (userAgentControlValue) {
+    const hasUserAgentOverride = device.userAgent.trim().length > 0;
+    device.userAgentMetadata = null;
+    if (hasUserAgentOverride && userAgentControlValue) {
       device.userAgentMetadata = {
         ...userAgentControlValue,
         mobile: uaType === "Mobile" || uaType === "Mobile (no touch)"
@@ -408,9 +414,7 @@ var DevicesSettingsTab = class extends UI.Widget.VBox {
     const uaStringFields = content.createChild("div", "devices-edit-fields");
     UI.UIUtils.createTextChild(uaStringFields.createChild("b"), i18nString(UIStrings.userAgentString));
     const ua = uaStringFields.createChild("div", "hbox");
-    ua.appendChild(editor.createInput("user-agent", "text", i18nString(UIStrings.userAgentString), () => {
-      return { valid: true };
-    }));
+    ua.appendChild(editor.createInput("user-agent", "text", i18nString(UIStrings.userAgentString), userAgentValidator));
     const uaTypeOptions = [
       "Mobile",
       "Mobile (no touch)",
@@ -429,6 +433,12 @@ var DevicesSettingsTab = class extends UI.Widget.VBox {
     return editor;
     function userAgentMetadataValidator() {
       return uaMetadata.validate();
+    }
+    function userAgentValidator(_item, _index, input) {
+      if (input.value.trim().length > 0) {
+        return { valid: true };
+      }
+      return { valid: false, errorMessage: i18nString(UIStrings.userAgentStringCannotBeEmpty) };
     }
     function titleValidator(_item, _index, input) {
       let valid = false;

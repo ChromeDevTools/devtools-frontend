@@ -2549,15 +2549,15 @@ var WidgetElement = class extends HTMLElement {
   }
   set widgetConfig(config) {
     const widget2 = Widget.get(this);
-    if (widget2) {
+    if (widget2 && config.widgetParams) {
       let needsUpdate = false;
       for (const key in config.widgetParams) {
-        if (config.widgetParams.hasOwnProperty(key) && config.widgetParams[key] !== this.#widgetParams?.[key]) {
+        if (Object.prototype.hasOwnProperty.call(config.widgetParams, key) && config.widgetParams[key] !== this.#widgetParams?.[key]) {
+          widget2[key] = config.widgetParams[key];
           needsUpdate = true;
         }
       }
       if (needsUpdate) {
-        Object.assign(widget2, config.widgetParams);
         widget2.requestUpdate();
       }
     }

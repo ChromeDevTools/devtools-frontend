@@ -109,6 +109,7 @@ export const DEFAULT_SETTING_REGISTRATIONS_FOR_TEST = [
     createSettingValue("EMULATION" /* Common.Settings.SettingCategory.EMULATION */, 'emulation.touch', '', "enum" /* Common.Settings.SettingType.ENUM */),
     createSettingValue("EMULATION" /* Common.Settings.SettingCategory.EMULATION */, 'emulation.idle-detection', '', "enum" /* Common.Settings.SettingType.ENUM */),
     createSettingValue("EMULATION" /* Common.Settings.SettingCategory.EMULATION */, 'emulation.cpu-pressure', '', "enum" /* Common.Settings.SettingType.ENUM */),
+    createSettingValue("EMULATION" /* Common.Settings.SettingCategory.EMULATION */, 'emulation.locations', [], "array" /* Common.Settings.SettingType.ARRAY */),
     createSettingValue("GRID" /* Common.Settings.SettingCategory.GRID */, 'show-grid-line-labels', 'none', "enum" /* Common.Settings.SettingType.ENUM */),
     createSettingValue("GRID" /* Common.Settings.SettingCategory.GRID */, 'extend-grid-lines', true),
     createSettingValue("GRID" /* Common.Settings.SettingCategory.GRID */, 'show-grid-areas', true),

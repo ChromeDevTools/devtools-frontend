@@ -242,6 +242,7 @@ export class ContextSelectionAgent extends AiAgent {
                 return {
                     context: PerformanceTraceContext.fromParsedTrace(result),
                     description: 'User recorded a performance trace',
+                    widgets: [{ name: 'PERFORMANCE_TRACE', data: { parsedTrace: result } }]
                 };
             }
         });

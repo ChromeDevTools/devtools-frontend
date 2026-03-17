@@ -59,6 +59,7 @@ export declare class Model extends EventTarget {
     syntheticTraceEventsManager(index?: number): Helpers.SyntheticEvents.SyntheticEventsManager | null;
     size(): number;
     deleteTraceByIndex(recordingIndex: number): void;
+    indexForTrace(trace: ParsedTrace): number;
     getRecordingsAvailable(): string[];
     resetProcessor(): void;
 }

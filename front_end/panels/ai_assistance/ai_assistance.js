@@ -9,7 +9,7 @@ import "./../../ui/kit/kit.js";
 import * as Common6 from "./../../core/common/common.js";
 import * as Host6 from "./../../core/host/host.js";
 import * as i18n17 from "./../../core/i18n/i18n.js";
-import * as Platform5 from "./../../core/platform/platform.js";
+import * as Platform6 from "./../../core/platform/platform.js";
 import * as Root6 from "./../../core/root/root.js";
 import * as SDK5 from "./../../core/sdk/sdk.js";
 import * as AiAssistanceModel6 from "./../../models/ai_assistance/ai_assistance.js";
@@ -24,9 +24,10 @@ import * as UIHelpers2 from "./../../ui/helpers/helpers.js";
 import * as UI9 from "./../../ui/legacy/legacy.js";
 import * as Lit7 from "./../../ui/lit/lit.js";
 import * as VisualLogging6 from "./../../ui/visual_logging/visual_logging.js";
+import * as LighthousePanel from "./../lighthouse/lighthouse.js";
 import * as NetworkForward from "./../network/forward/forward.js";
 import * as NetworkPanel from "./../network/network.js";
-import * as TimelinePanel from "./../timeline/timeline.js";
+import * as TimelinePanel2 from "./../timeline/timeline.js";
 
 // gen/front_end/panels/ai_assistance/aiAssistancePanel.css.js
 var aiAssistancePanel_css_default = `/*
@@ -1841,7 +1842,7 @@ var DEFAULT_VIEW2 = (input, _output, target) => {
     }
   })}
                               ></devtools-widget>` : html3`
-                          ${input.context instanceof AiAssistanceModel2.NetworkAgent.RequestContext ? PanelUtils.PanelUtils.getIconForNetworkRequest(input.context.getItem()) : input.context instanceof AiAssistanceModel2.FileAgent.FileContext ? PanelUtils.PanelUtils.getIconForSourceFile(input.context.getItem()) : input.context instanceof AiAssistanceModel2.PerformanceAgent.PerformanceTraceContext ? html3`<devtools-icon class="icon" name="performance" title="Performance"></devtools-icon>` : Lit.nothing}
+                          ${input.context instanceof AiAssistanceModel2.NetworkAgent.RequestContext ? PanelUtils.PanelUtils.getIconForNetworkRequest(input.context.getItem()) : input.context instanceof AiAssistanceModel2.FileAgent.FileContext ? PanelUtils.PanelUtils.getIconForSourceFile(input.context.getItem()) : input.context instanceof AiAssistanceModel2.AccessibilityAgent.AccessibilityContext ? html3`<devtools-icon class="icon" name="performance" title="Lighthouse"></devtools-icon>` : input.context instanceof AiAssistanceModel2.PerformanceAgent.PerformanceTraceContext ? html3`<devtools-icon class="icon" name="performance" title="Performance"></devtools-icon>` : Lit.nothing}
                             <span 
                               role="button"
                               class="title"
@@ -2217,6 +2218,7 @@ import "./../../ui/kit/kit.js";
 import * as Common3 from "./../../core/common/common.js";
 import * as Host3 from "./../../core/host/host.js";
 import * as i18n9 from "./../../core/i18n/i18n.js";
+import * as Platform4 from "./../../core/platform/platform.js";
 import * as Root3 from "./../../core/root/root.js";
 import * as SDK2 from "./../../core/sdk/sdk.js";
 import * as AiAssistanceModel3 from "./../../models/ai_assistance/ai_assistance.js";
@@ -2230,7 +2232,10 @@ import * as Lit3 from "./../../ui/lit/lit.js";
 import * as VisualLogging3 from "./../../ui/visual_logging/visual_logging.js";
 import * as Elements from "./../elements/elements.js";
 import * as TimelineComponents from "./../timeline/components/components.js";
+import * as TimelineInsights from "./../timeline/components/insights/insights.js";
+import * as Timeline from "./../timeline/timeline.js";
 import * as TimelineUtils from "./../timeline/utils/utils.js";
+import { PanelUtils as PanelUtils3 } from "./../utils/utils.js";
 
 // gen/front_end/panels/ai_assistance/components/chatMessage.css.js
 var chatMessage_css_default = `/*
@@ -2615,6 +2620,11 @@ var chatMessage_css_default = `/*
     padding: 0 var(--sys-size-4) var(--sys-size-4) 0;
   }
 
+  .revealer-only .widget-reveal-container {
+    background: none;
+    border-radius: unset;
+  }
+
   .widget-content-container {
     padding: var(--sys-size-4);
     border-top-left-radius: var(--sys-shape-corner-medium);
@@ -2623,6 +2633,62 @@ var chatMessage_css_default = `/*
     background-color: var(--sys-color-surface3);
 
     --override-computed-style-property-white-space: normal;
+  }
+
+  .network-request-preview {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sys-size-4);
+    margin-bottom: var(--sys-size-5);
+    padding-bottom: var(--sys-size-5);
+    border-bottom: 1px solid var(--sys-color-divider);
+
+    .network-request-header {
+      display: flex;
+      align-items: center;
+      gap: var(--sys-size-5);
+
+      .network-request-icon {
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: var(--sys-color-surface1);
+        border-radius: var(--sys-shape-corner-small);
+        border: 1px solid var(--sys-color-divider);
+        overflow: hidden;
+
+        img {
+          max-width: 100%;
+          max-height: 100%;
+          object-fit: contain;
+        }
+
+        devtools-icon {
+          width: 20px;
+          height: 20px;
+        }
+      }
+
+      .network-request-details {
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+
+        .network-request-name {
+          font: var(--sys-typescale-body4-bold);
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
+        .network-request-size {
+          font: var(--sys-typescale-body4-regular);
+          color: var(--sys-color-on-surface-subtle);
+        }
+      }
+    }
   }
 }
 
@@ -3099,7 +3165,11 @@ var UIStringsNotTranslate4 = {
   /**
    * @description Title for the button that takes the user into other DevTools panels to reveal items the AI references.
    */
-  reveal: "Reveal"
+  reveal: "Reveal",
+  /**
+   * @description Title used for revealing the performance trace.
+   */
+  revealTrace: "Reveal trace"
 };
 var DEFAULT_VIEW4 = (input, output, target) => {
   const message = input.message;
@@ -3396,6 +3466,20 @@ async function makeStylePropertiesWidget(widgetData) {
   </devtools-widget>`;
   return { renderedWidget, revealable: domNodeForId };
 }
+async function makeLcpBreakdownWidget(widgetData) {
+  const insight = widgetData.data.lcpData;
+  if (!insight) {
+    return null;
+  }
+  const widgetConfig = UI5.Widget.widgetConfig(TimelineInsights.LCPBreakdown.LCPBreakdown, {
+    model: insight,
+    minimal: true
+  });
+  const renderedWidget = html5`<devtools-widget
+    class="lcp-breakdown-widget"
+    .widgetConfig=${widgetConfig}></devtools-widget>`;
+  return { renderedWidget, revealable: new TimelineUtils.Helpers.RevealableInsight(insight) };
+}
 function renderWidgetResponse(response) {
   if (response === null) {
     return Lit3.nothing;
@@ -3406,20 +3490,53 @@ function renderWidgetResponse(response) {
     }
     void Common3.Revealer.reveal(response?.revealable);
   }
+  const classes = Lit3.Directives.classMap({
+    "widget-and-revealer-container": true,
+    "revealer-only": response.renderedWidget === null
+  });
   return html5`
-    <div class="widget-and-revealer-container">
-      <div class="widget-content-container">
-        ${response.renderedWidget}
-      </div>
+    <div class=${classes}>
+      ${response.renderedWidget ? html5`
+        <div class="widget-content-container">
+          ${response.renderedWidget}
+        </div>` : Lit3.nothing}
       <div class="widget-reveal-container">
         <devtools-button class="widget-reveal"
           .iconName=${"tab-move"}
           .variant=${"text"}
           @click=${onReveal}
-        >${lockedString5(UIStringsNotTranslate4.reveal)}</devtools-button>
+        >${response.customRevealTitle ?? lockedString5(UIStringsNotTranslate4.reveal)}</devtools-button>
       </div>
     </div>
     `;
+}
+async function makePerformanceTraceWidget(widgetData) {
+  return {
+    renderedWidget: null,
+    revealable: new Timeline.TimelinePanel.ParsedTraceRevealable(widgetData.data.parsedTrace),
+    customRevealTitle: lockedString5(UIStringsNotTranslate4.revealTrace)
+  };
+}
+function renderNetworkRequestPreview(networkRequest) {
+  const filename = networkRequest.url.split("/").pop() || networkRequest.url;
+  const size = i18n9.ByteUtilities.bytesToString(networkRequest.size);
+  const resourceType = Common3.ResourceType.resourceTypes[networkRequest.resourceType];
+  const { iconName, color } = PanelUtils3.iconDataForResourceType(resourceType);
+  return html5`
+    <div class="network-request-preview">
+      <div class="network-request-header">
+        <div class="network-request-icon">
+          ${resourceType.isImage() ? html5`<img src=${networkRequest.imageUrl ?? networkRequest.url} alt=${filename} />` : html5`<devtools-icon name=${iconName} style=${Lit3.Directives.styleMap({
+    color: color ?? ""
+  })}></devtools-icon>`}
+        </div>
+        <div class="network-request-details">
+          <div class="network-request-name" title=${networkRequest.url}>${filename}</div>
+          <div class="network-request-size">${size}</div>
+        </div>
+      </div>
+    </div>
+  `;
 }
 async function makeDomTreeWidget(widgetData) {
   const root = widgetData.data.root;
@@ -3437,9 +3554,13 @@ async function makeDomTreeWidget(widgetData) {
     visibleWidth: 400,
     wrap: true
   });
-  const widget5 = html5`<devtools-widget class="dom-tree-widget" .widgetConfig=${widgetConfig}></devtools-widget>`;
+  const networkRequest = widgetData.data.networkRequest;
+  const renderedWidget = html5`
+    ${networkRequest ? renderNetworkRequestPreview(networkRequest) : Lit3.nothing}
+    <devtools-widget class="dom-tree-widget" .widgetConfig=${widgetConfig}></devtools-widget>
+  `;
   return {
-    renderedWidget: widget5,
+    renderedWidget,
     revealable: new SDK2.DOMModel.DeferredDOMNode(root.domModel().target(), root.backendNodeId())
   };
 }
@@ -3449,14 +3570,27 @@ async function renderWidgets(widgets, options = {}) {
   }
   const ui = await Promise.all(widgets.map(async (widgetData) => {
     let response = null;
-    if (widgetData.name === "COMPUTED_STYLES") {
-      response = await makeComputedStyleWidget(widgetData);
-    } else if (widgetData.name === "CORE_VITALS") {
-      response = await makeCoreVitalsWidget(widgetData);
-    } else if (widgetData.name === "STYLE_PROPERTIES") {
-      response = await makeStylePropertiesWidget(widgetData);
-    } else if (widgetData.name === "DOM_TREE") {
-      response = await makeDomTreeWidget(widgetData);
+    switch (widgetData.name) {
+      case "COMPUTED_STYLES":
+        response = await makeComputedStyleWidget(widgetData);
+        break;
+      case "CORE_VITALS":
+        response = await makeCoreVitalsWidget(widgetData);
+        break;
+      case "STYLE_PROPERTIES":
+        response = await makeStylePropertiesWidget(widgetData);
+        break;
+      case "DOM_TREE":
+        response = await makeDomTreeWidget(widgetData);
+        break;
+      case "PERFORMANCE_TRACE":
+        response = await makePerformanceTraceWidget(widgetData);
+        break;
+      case "LCP_BREAKDOWN":
+        response = await makeLcpBreakdownWidget(widgetData);
+        break;
+      default:
+        Platform4.assertNever(widgetData, "Unknown AiWidget name");
     }
     return renderWidgetResponse(response);
   }));
@@ -4939,7 +5073,7 @@ var ExploreWidget = class extends UI8.Widget.Widget {
 
 // gen/front_end/panels/ai_assistance/components/MarkdownRendererWithCodeBlock.js
 import * as Common4 from "./../../core/common/common.js";
-import * as Platform4 from "./../../core/platform/platform.js";
+import * as Platform5 from "./../../core/platform/platform.js";
 import * as AiAssistanceModel5 from "./../../models/ai_assistance/ai_assistance.js";
 import * as Logs from "./../../models/logs/logs.js";
 import * as MarkdownView from "./../../ui/components/markdown_view/markdown_view.js";
@@ -4951,7 +5085,7 @@ var MarkdownRendererWithCodeBlock = class extends MarkdownView.MarkdownView.Mark
       e.preventDefault();
       e.stopPropagation();
       void Common4.Revealer.reveal(revealable);
-    }}>${Platform4.StringUtilities.trimEndWithMaxLength(label, 100)}</devtools-link>`;
+    }}>${Platform5.StringUtilities.trimEndWithMaxLength(label, 100)}</devtools-link>`;
   }
   #renderLink(href, fallbackText) {
     if (href.startsWith("#req-")) {
@@ -5313,6 +5447,10 @@ var UIStringsNotTranslate7 = {
    */
   answerReady: "Answer ready",
   /**
+   * @description Title for the first step of the walkthrough.
+   */
+  analyzingData: "Analyzing data",
+  /**
    * @description Placeholder text for the input shown when the conversation is blocked because a cross-origin context was selected.
    */
   crossOriginError: "To talk about data from another origin, start a new chat",
@@ -5399,7 +5537,23 @@ var UIStringsNotTranslate7 = {
   /**
    * @description Disclaimer text right after the chat input.
    */
-  inputDisclaimerForNoContextEnterpriseNoLogging: "Chat messages, any data the inspected page can see using Web APIs, and the items you select such as files, network requests, and performance traces are sent to Google. This data will not be used to improve Google\u2019s AI models. This is an experimental AI feature and won\u2019t always get it right."
+  inputDisclaimerForNoContextEnterpriseNoLogging: "Chat messages, any data the inspected page can see using Web APIs, and the items you select such as files, network requests, and performance traces are sent to Google. This data will not be used to improve Google\u2019s AI models. This is an experimental AI feature and won\u2019t always get it right.",
+  /**
+   * @description Placeholder text for the chat UI input.
+   */
+  inputPlaceholderForAccessibility: "Ask a question about the selected Lighthouse report",
+  /**
+   * @description Placeholder text for the chat UI input when there is no context selected.
+   */
+  inputPlaceholderForAccessibilityNoContext: "Generate a Lighthouse report to ask a question",
+  /**
+   * @description Disclaimer text right after the chat input.
+   */
+  inputDisclaimerForAccessibility: "Chat messages and the selected Lighthouse report are sent to Google and may be seen by human reviewers to improve this feature. This is an experimental AI feature and won\u2019t always get it right.",
+  /**
+   * @description Disclaimer text right after the chat input.
+   */
+  inputDisclaimerForAccessibilityEnterpriseNoLogging: "Chat messages and the selected Lighthouse report are sent to Google. The content you submit and that is generated by this feature will not be used to improve Google\u2019s AI models. This is an experimental AI feature and won\u2019t always get it right."
 };
 var str_4 = i18n17.i18n.registerUIStrings("panels/ai_assistance/AiAssistancePanel.ts", UIStrings4);
 var i18nString4 = i18n17.i18n.getLocalizedString.bind(void 0, str_4);
@@ -5440,6 +5594,12 @@ async function getEmptyStateSuggestions(conversation) {
         { title: "Is the script optimized for performance?", jslogContext: "file-default" },
         { title: "Does the script handle user input safely?", jslogContext: "file-default" }
       ];
+    case "accessibility":
+      return [
+        { title: "What are the accessibility issues on this page?", jslogContext: "accessibility-default" },
+        { title: "How can I fix these accessibility issues?", jslogContext: "accessibility-default" },
+        { title: "What does this Lighthouse report say about accessibility?", jslogContext: "accessibility-default" }
+      ];
     case "drjones-network-request":
       return [
         { title: "Why is this network request taking so long?", jslogContext: "network-default" },
@@ -5466,7 +5626,7 @@ async function getEmptyStateSuggestions(conversation) {
       ];
     }
     default:
-      Platform5.assertNever(conversation.type, "Unknown conversation type");
+      Platform6.assertNever(conversation.type, "Unknown conversation type");
   }
 }
 function getMarkdownRenderer(conversation) {
@@ -5631,6 +5791,12 @@ function createBreakpointContext(uiLocation) {
   }
   return new AiAssistanceModel6.BreakpointDebuggerAgent.BreakpointContext(uiLocation);
 }
+function createAccessibilityContext(report) {
+  if (!report) {
+    return null;
+  }
+  return new AiAssistanceModel6.AccessibilityAgent.AccessibilityContext(report.report);
+}
 function createRequestContext(request) {
   if (!request) {
     return null;
@@ -5662,6 +5828,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
   #selectedPerformanceTrace = null;
   #selectedRequest = null;
   #selectedBreakpoint = null;
+  #selectedAccessibility = null;
   // Messages displayed in the `ChatView` component.
   #messages = [];
   // Whether the UI should show loading or not.
@@ -5829,7 +5996,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
    * the performance panel but have no trace imported.
    */
   #bindTimelineTraceListener() {
-    const timelinePanel = UI9.Context.Context.instance().flavor(TimelinePanel.TimelinePanel.TimelinePanel);
+    const timelinePanel = UI9.Context.Context.instance().flavor(TimelinePanel2.TimelinePanel.TimelinePanel);
     if (timelinePanel === this.#timelinePanelInstance) {
       return;
     }
@@ -5840,7 +6007,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
     }
   }
   async #handlePerformanceRecordAndReload() {
-    return await TimelinePanel.TimelinePanel.TimelinePanel.executeRecordAndReload();
+    return await TimelinePanel2.TimelinePanel.TimelinePanel.executeRecordAndReload();
   }
   #getDefaultConversationType() {
     const { hostConfig } = Root6.Runtime;
@@ -5849,6 +6016,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
     const isNetworkPanelVisible = viewManager.isViewVisible("network");
     const isSourcesPanelVisible = viewManager.isViewVisible("sources");
     const isPerformancePanelVisible = viewManager.isViewVisible("timeline");
+    const isLighthousePanelVisible = viewManager.isViewVisible("lighthouse");
     let targetConversationType;
     if (isElementsPanelVisible && hostConfig.devToolsFreestyler?.enabled) {
       targetConversationType = "freestyler";
@@ -5860,6 +6028,8 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
       targetConversationType = "drjones-file";
     } else if (isPerformancePanelVisible && hostConfig.devToolsAiAssistancePerformanceAgent?.enabled) {
       targetConversationType = "drjones-performance-full";
+    } else if (isLighthousePanelVisible && hostConfig.devToolsAiAssistanceAccessibilityAgent?.enabled) {
+      targetConversationType = "accessibility";
     }
     if (isAiAssistanceContextSelectionAgentEnabled() && !targetConversationType) {
       return "none";
@@ -5901,7 +6071,8 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
     }
     if (this.#conversation) {
       if (this.#conversation.isEmpty && isAiAssistanceContextSelectionAgentEnabled()) {
-        this.#conversation.setContext(this.#getConversationContext(this.#getDefaultConversationType()));
+        const context = this.#getConversationContext(this.#getDefaultConversationType());
+        this.#conversation.setContext(context);
       } else {
         const context = this.#getConversationContext(this.#conversation.type);
         if (context || !isAiAssistanceContextSelectionAgentEnabled()) {
@@ -5932,6 +6103,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
     this.#selectedPerformanceTrace = createPerformanceTraceContext(UI9.Context.Context.instance().flavor(AiAssistanceModel6.AIContext.AgentFocus));
     this.#selectedFile = createFileContext(UI9.Context.Context.instance().flavor(Workspace5.UISourceCode.UISourceCode));
     this.#selectedBreakpoint = createBreakpointContext(UI9.Context.Context.instance().flavor(Workspace5.UISourceCode.UILocation));
+    this.#selectedAccessibility = createAccessibilityContext(UI9.Context.Context.instance().flavor(LighthousePanel.LighthousePanel.ActiveLighthouseReport));
     this.#updateConversationState(this.#conversation);
     this.#aiAssistanceEnabledSetting?.addChangeListener(this.requestUpdate, this);
     Host6.AidaClient.HostConfigTracker.instance().addEventListener("aidaAvailabilityChanged", this.#handleAidaAvailabilityChange);
@@ -5941,10 +6113,11 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
     UI9.Context.Context.instance().addFlavorChangeListener(AiAssistanceModel6.AIContext.AgentFocus, this.#handlePerformanceTraceFlavorChange);
     UI9.Context.Context.instance().addFlavorChangeListener(Workspace5.UISourceCode.UISourceCode, this.#handleUISourceCodeFlavorChange);
     UI9.Context.Context.instance().addFlavorChangeListener(Workspace5.UISourceCode.UILocation, this.#handleBreakpointFlavorChange);
+    UI9.Context.Context.instance().addFlavorChangeListener(LighthousePanel.LighthousePanel.ActiveLighthouseReport, this.#handleLighthouseReportFlavorChange);
     UI9.ViewManager.ViewManager.instance().addEventListener("ViewVisibilityChanged", this.#selectDefaultAgentIfNeeded, this);
     SDK5.TargetManager.TargetManager.instance().addModelListener(SDK5.DOMModel.DOMModel, SDK5.DOMModel.Events.AttrModified, this.#handleDOMNodeAttrChange, this);
     SDK5.TargetManager.TargetManager.instance().addModelListener(SDK5.DOMModel.DOMModel, SDK5.DOMModel.Events.AttrRemoved, this.#handleDOMNodeAttrChange, this);
-    UI9.Context.Context.instance().addFlavorChangeListener(TimelinePanel.TimelinePanel.TimelinePanel, this.#bindTimelineTraceListener, this);
+    UI9.Context.Context.instance().addFlavorChangeListener(TimelinePanel2.TimelinePanel.TimelinePanel, this.#bindTimelineTraceListener, this);
     this.#bindTimelineTraceListener();
     this.#selectDefaultAgentIfNeeded();
     Host6.userMetrics.actionTaken(Host6.UserMetrics.Action.AiAssistancePanelOpened);
@@ -5958,8 +6131,9 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
     UI9.Context.Context.instance().removeFlavorChangeListener(SDK5.NetworkRequest.NetworkRequest, this.#handleNetworkRequestFlavorChange);
     UI9.Context.Context.instance().removeFlavorChangeListener(AiAssistanceModel6.AIContext.AgentFocus, this.#handlePerformanceTraceFlavorChange);
     UI9.Context.Context.instance().removeFlavorChangeListener(Workspace5.UISourceCode.UISourceCode, this.#handleUISourceCodeFlavorChange);
+    UI9.Context.Context.instance().removeFlavorChangeListener(LighthousePanel.LighthousePanel.ActiveLighthouseReport, this.#handleLighthouseReportFlavorChange);
     UI9.ViewManager.ViewManager.instance().removeEventListener("ViewVisibilityChanged", this.#selectDefaultAgentIfNeeded, this);
-    UI9.Context.Context.instance().removeFlavorChangeListener(TimelinePanel.TimelinePanel.TimelinePanel, this.#bindTimelineTraceListener, this);
+    UI9.Context.Context.instance().removeFlavorChangeListener(TimelinePanel2.TimelinePanel.TimelinePanel, this.#bindTimelineTraceListener, this);
     SDK5.TargetManager.TargetManager.instance().removeModelListener(SDK5.DOMModel.DOMModel, SDK5.DOMModel.Events.AttrModified, this.#handleDOMNodeAttrChange, this);
     SDK5.TargetManager.TargetManager.instance().removeModelListener(SDK5.DOMModel.DOMModel, SDK5.DOMModel.Events.AttrRemoved, this.#handleDOMNodeAttrChange, this);
     if (this.#timelinePanelInstance) {
@@ -6021,6 +6195,14 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
       return;
     }
     this.#selectedBreakpoint = new AiAssistanceModel6.BreakpointDebuggerAgent.BreakpointContext(newBreakpoint);
+    this.#updateConversationState(this.#conversation);
+  };
+  #handleLighthouseReportFlavorChange = (ev) => {
+    const newReport = ev.data;
+    if (this.#selectedAccessibility?.getItem() === newReport?.report) {
+      return;
+    }
+    this.#selectedAccessibility = createAccessibilityContext(newReport);
     this.#updateConversationState(this.#conversation);
   };
   #getChangeSummary() {
@@ -6091,7 +6273,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
       case "drjones-network-request":
         return this.#conversation.selectedContext ? lockedString8(UIStringsNotTranslate7.inputPlaceholderForNetwork) : lockedString8(UIStringsNotTranslate7.inputPlaceholderForNetworkNoContext);
       case "drjones-performance-full": {
-        const perfPanel = UI9.Context.Context.instance().flavor(TimelinePanel.TimelinePanel.TimelinePanel);
+        const perfPanel = UI9.Context.Context.instance().flavor(TimelinePanel2.TimelinePanel.TimelinePanel);
         if (perfPanel?.hasActiveTrace()) {
           return this.#conversation.selectedContext ? lockedString8(UIStringsNotTranslate7.inputPlaceholderForPerformanceTrace) : lockedString8(UIStringsNotTranslate7.inputPlaceholderForPerformanceTraceNoContext);
         }
@@ -6099,6 +6281,8 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
       }
       case "breakpoint":
         return lockedString8(UIStringsNotTranslate7.inputPlaceholderForNoContext);
+      case "accessibility":
+        return this.#conversation.selectedContext ? lockedString8(UIStringsNotTranslate7.inputPlaceholderForAccessibility) : lockedString8(UIStringsNotTranslate7.inputPlaceholderForAccessibilityNoContext);
       case "none":
         if (AiAssistanceModel6.AiUtils.isGeminiBranding()) {
           return lockedString8(UIStringsNotTranslate7.inputPlaceholderForNoContextBranded);
@@ -6134,6 +6318,11 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
           return lockedString8(UIStringsNotTranslate7.inputDisclaimerForPerformanceEnterpriseNoLogging);
         }
         return lockedString8(UIStringsNotTranslate7.inputDisclaimerForPerformance);
+      case "accessibility":
+        if (noLogging) {
+          return lockedString8(UIStringsNotTranslate7.inputDisclaimerForAccessibilityEnterpriseNoLogging);
+        }
+        return lockedString8(UIStringsNotTranslate7.inputDisclaimerForAccessibility);
       case "breakpoint":
       case "none":
         if (noLogging) {
@@ -6312,7 +6501,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
     }
     const markdownContent = this.#conversation.getConversationMarkdown();
     const contentData = new TextUtils.ContentData.ContentData(markdownContent, false, "text/markdown");
-    const titleFormatted = Platform5.StringUtilities.toSnakeCase(this.#conversation.title || "");
+    const titleFormatted = Platform6.StringUtilities.toSnakeCase(this.#conversation.title || "");
     const prefix = "devtools_";
     const suffix = ".md";
     const maxTitleLength = 64 - prefix.length - suffix.length;
@@ -6354,6 +6543,8 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
         return this.#selectedPerformanceTrace;
       case "breakpoint":
         return this.#selectedBreakpoint;
+      case "accessibility":
+        return this.#selectedAccessibility;
       case "none":
       case void 0:
         return null;
@@ -6370,6 +6561,8 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
       this.#selectedPerformanceTrace = data;
     } else if (data instanceof AiAssistanceModel6.BreakpointDebuggerAgent.BreakpointContext) {
       this.#selectedBreakpoint = data;
+    } else if (data instanceof AiAssistanceModel6.AccessibilityAgent.AccessibilityContext) {
+      this.#selectedAccessibility = data;
     }
     void VisualLogging6.logFunctionCall(`context-change-${this.#conversation?.type}`);
     this.requestUpdate();
@@ -6490,7 +6683,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
             break;
           }
           case "context": {
-            step.title = data.title;
+            step.title = lockedString8(UIStringsNotTranslate7.analyzingData);
             step.contextDetails = data.details;
             step.widgets = data.widgets;
             step.isLoading = false;
@@ -6599,6 +6792,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
           case "context-change": {
             this.#handleConversationContextChange(data.context);
             step.isLoading = false;
+            step.widgets = data.widgets;
             commitStep();
             step = { isLoading: true };
             break;
@@ -6611,7 +6805,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
           }
           switch (data.type) {
             case "context":
-              UI9.ARIAUtils.LiveAnnouncer.status(data.title);
+              UI9.ARIAUtils.LiveAnnouncer.status(lockedString8(UIStringsNotTranslate7.analyzingData));
               break;
             case "answer": {
               if (!data.complete && !announcedAnswerLoading) {

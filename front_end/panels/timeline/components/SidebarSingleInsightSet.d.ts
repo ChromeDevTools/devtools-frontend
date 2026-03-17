@@ -25,7 +25,7 @@ export declare class SidebarSingleInsightSet extends UI.Widget.Widget {
     constructor(element?: HTMLElement, view?: View);
     set data(data: SidebarSingleInsightSetData);
     willHide(): void;
-    highlightActiveInsight(): void;
+    highlightActiveInsight(): Promise<void>;
     static categorizeInsights(insightSets: Trace.Insights.Types.TraceInsightSets | null, insightSetKey: string, activeCategory: Trace.Insights.Types.InsightCategory): {
         shownInsights: InsightData[];
         passedInsights: InsightData[];

@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as Host from '../../../core/host/host.js';
-import * as i18n from '../../../core/i18n/i18n.js';
 import * as Root from '../../../core/root/root.js';
 import { FileFormatter } from '../data_formatters/FileFormatter.js';
 import { AiAgent, ConversationContext, } from './AiAgent.js';
@@ -49,16 +48,6 @@ Relevant Technologies: JavaScript, functions, arithmetic operations.
 External Resources:
 MDN Web Docs: JavaScript Functions: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Functions
 `;
-/*
-* Strings that don't need to be translated at this time.
-*/
-const UIStringsNotTranslate = {
-    /**
-     * @description Title for thinking step of File agent.
-     */
-    analyzingFile: 'Analyzing file',
-};
-const lockedString = i18n.i18n.lockedString;
 export class FileContext extends ConversationContext {
     #file;
     constructor(file) {
@@ -102,7 +91,6 @@ export class FileAgent extends AiAgent {
         }
         yield {
             type: "context" /* ResponseType.CONTEXT */,
-            title: lockedString(UIStringsNotTranslate.analyzingFile),
             details: createContextDetailsForFileAgent(selectedFile),
         };
     }

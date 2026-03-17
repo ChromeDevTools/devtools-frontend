@@ -438,20 +438,13 @@ export class SamplesIntegrator {
         if (showAllEvents) {
             return;
         }
-        let previousNativeFrameName = null;
         let j = 0;
         for (let i = 0; i < stack.length; ++i) {
             const frame = stack[i].callFrame;
             const nativeRuntimeFrame = _a.isNativeRuntimeFrame(frame);
-            if (nativeRuntimeFrame &&
-                !_a.showNativeName(frame.functionName, engineConfig.includeRuntimeCallStats)) {
+            if (nativeRuntimeFrame) {
                 continue;
             }
-            const nativeFrameName = nativeRuntimeFrame ? _a.nativeGroup(frame.functionName) : null;
-            if (previousNativeFrameName && previousNativeFrameName === nativeFrameName) {
-                continue;
-            }
-            previousNativeFrameName = nativeFrameName;
             stack[j++] = stack[i];
         }
         stack.length = j;

@@ -125,6 +125,9 @@
       "path": "../elements/bundle-tsconfig.json"
     },
     {
+      "path": "../lighthouse/bundle-tsconfig.json"
+    },
+    {
       "path": "../network/bundle-tsconfig.json"
     },
     {

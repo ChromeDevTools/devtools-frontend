@@ -3,9 +3,11 @@
 // found in the LICENSE file.
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Greendev from '../greendev/greendev.js';
+import { AccessibilityAgent, AccessibilityContext } from './agents/AccessibilityAgent.js';
 import { BreakpointDebuggerAgent } from './agents/BreakpointDebuggerAgent.js';
 import { ContextSelectionAgent } from './agents/ContextSelectionAgent.js';
 import { FileAgent, FileContext } from './agents/FileAgent.js';
@@ -14,6 +16,7 @@ import { PerformanceAgent, PerformanceTraceContext } from './agents/PerformanceA
 import { NodeContext, StylingAgent } from './agents/StylingAgent.js';
 import { AiHistoryStorage } from './AiHistoryStorage.js';
 export const NOT_FOUND_IMAGE_DATA = '';
+export const CONTEXT_TITLE = 'Analyzing data';
 const MAX_TITLE_LENGTH = 80;
 export function generateContextDetailsMarkdown(details) {
     const detailsMarkdown = [];
@@ -104,6 +107,9 @@ export class AiConversation {
             else if (updateContext instanceof PerformanceTraceContext) {
                 this.#updateAgent("drjones-performance-full" /* ConversationType.PERFORMANCE */);
             }
+            else if (updateContext instanceof AccessibilityContext) {
+                this.#updateAgent("accessibility" /* ConversationType.ACCESSIBILITY */);
+            }
         }
     }
     get selectedContext() {
@@ -148,7 +154,7 @@ export class AiConversation {
                     break;
                 }
                 case "context" /* ResponseType.CONTEXT */: {
-                    contentParts.push(`### ${item.title}`);
+                    contentParts.push(`### ${CONTEXT_TITLE}`);
                     if (item.details && item.details.length > 0) {
                         contentParts.push(generateContextDetailsMarkdown(item.details));
                     }
@@ -278,10 +284,16 @@ export class AiConversation {
                 }
                 break;
             }
+            case "accessibility" /* ConversationType.ACCESSIBILITY */: {
+                this.#agent = new AccessibilityAgent(options);
+                break;
+            }
             case "none" /* ConversationType.NONE */: {
                 this.#agent = new ContextSelectionAgent(options);
                 break;
             }
+            default:
+                Platform.assertNever(type, 'Unknown conversation type');
         }
     }
     async *run(initialQuery, options = {}) {

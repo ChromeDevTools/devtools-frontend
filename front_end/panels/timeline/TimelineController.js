@@ -217,10 +217,6 @@ export class TimelineController {
             'cppgc',
             'navigation,rail',
         ];
-        if (Root.Runtime.experiments.isEnabled(Root.ExperimentNames.ExperimentName.TIMELINE_V8_RUNTIME_CALL_STATS) &&
-            options.enableJSSampling) {
-            categoriesArray.push(disabledByDefault('v8.runtime_stats_sampling'));
-        }
         if (options.enableJSSampling) {
             categoriesArray.push(disabledByDefault('v8.cpu_profiler'));
         }

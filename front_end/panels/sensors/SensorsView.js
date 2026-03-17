@@ -175,6 +175,7 @@ export class SensorsView extends UI.Widget.VBox {
     #locationSetting;
     #location;
     #locationOverrideEnabled;
+    #locationSectionElement;
     fieldsetElement;
     timezoneError;
     locationSelectElement;
@@ -218,7 +219,10 @@ export class SensorsView extends UI.Widget.VBox {
         this.#locationSetting = Common.Settings.Settings.instance().createSetting('emulation.location-override', '');
         this.#location = SDK.EmulationModel.Location.parseSetting(this.#locationSetting.get());
         this.#locationOverrideEnabled = false;
-        this.createLocationSection(this.#location);
+        this.#locationSectionElement = this.contentElement.createChild('section', 'sensors-group');
+        const customLocationsSetting = Common.Settings.Settings.instance().moduleSetting('emulation.locations');
+        this.renderLocationSection(this.#location, customLocationsSetting);
+        customLocationsSetting.addChangeListener(() => this.renderLocationSection(this.#location, customLocationsSetting));
         this.createPanelSeparator();
         this.deviceOrientationSetting =
             Common.Settings.Settings.instance().createSetting('emulation.device-orientation-override', '');
@@ -238,12 +242,13 @@ export class SensorsView extends UI.Widget.VBox {
     createPanelSeparator() {
         this.contentElement.createChild('div').classList.add('panel-section-separator');
     }
-    createLocationSection(location) {
-        const geogroup = this.contentElement.createChild('section', 'sensors-group');
-        geogroup.setAttribute('jslog', `${VisualLogging.section('location')}`);
+    renderLocationSection(location, customLocationsSetting) {
+        const customLocations = customLocationsSetting.get();
+        this.#locationSectionElement.removeChildren();
+        this.#locationSectionElement.setAttribute('jslog', `${VisualLogging.section('location')}`);
         const geogroupTitle = UI.UIUtils.createLabel(i18nString(UIStrings.location), 'sensors-group-title');
-        geogroup.appendChild(geogroupTitle);
-        const fields = geogroup.createChild('div', 'geo-fields');
+        this.#locationSectionElement.appendChild(geogroupTitle);
+        const fields = this.#locationSectionElement.createChild('div', 'geo-fields');
         let selectedIndex = 0;
         const noOverrideOption = { title: i18nString(UIStrings.noOverride), location: NonPresetOptions.NoOverride };
         this.locationSelectElement = fields.createChild('select');
@@ -253,25 +258,27 @@ export class SensorsView extends UI.Widget.VBox {
         this.locationSelectElement.appendChild(UI.UIUtils.createOption(noOverrideOption.title, noOverrideOption.location, 'no-override'));
         this.customLocationsGroup = this.locationSelectElement.createChild('optgroup');
         this.customLocationsGroup.label = i18nString(UIStrings.overrides);
-        const customLocations = Common.Settings.Settings.instance().moduleSetting('emulation.locations');
-        const manageButton = UI.UIUtils.createTextButton(i18nString(UIStrings.manage), () => Common.Revealer.reveal(customLocations), { className: 'manage-locations', jslogContext: 'sensors.manage-locations' });
+        const manageButton = UI.UIUtils.createTextButton(i18nString(UIStrings.manage), () => Common.Revealer.reveal(customLocationsSetting), { className: 'manage-locations', jslogContext: 'sensors.manage-locations' });
         UI.ARIAUtils.setLabel(manageButton, i18nString(UIStrings.manageTheListOfLocations));
         fields.appendChild(manageButton);
-        const fillCustomSettings = () => {
-            if (!this.customLocationsGroup) {
-                return;
+        if (this.#locationOverrideEnabled) {
+            if (location.unavailable) {
+                selectedIndex = customLocations.length + 2;
             }
-            this.customLocationsGroup.removeChildren();
-            for (const [i, customLocation] of customLocations.get().entries()) {
-                this.customLocationsGroup.appendChild(UI.UIUtils.createOption(customLocation.title, JSON.stringify(customLocation), 'custom'));
-                if (location.latitude === customLocation.lat && location.longitude === customLocation.long) {
-                    // If the location coming from settings matches the custom location, use its index to select the option
-                    selectedIndex = i + 1;
+            else {
+                selectedIndex = customLocations.length + 1;
+                for (const [i, customLocation] of customLocations.entries()) {
+                    if (location.latitude === customLocation.lat && location.longitude === customLocation.long &&
+                        location.timezoneId === customLocation.timezoneId && location.locale === customLocation.locale) {
+                        selectedIndex = i + 1;
+                        break;
+                    }
                 }
             }
-        };
-        customLocations.addChangeListener(fillCustomSettings);
-        fillCustomSettings();
+        }
+        for (const customLocation of customLocations) {
+            this.customLocationsGroup.appendChild(UI.UIUtils.createOption(customLocation.title, JSON.stringify(customLocation), 'custom'));
+        }
         // Other location
         const customLocationOption = { title: i18nString(UIStrings.other), location: NonPresetOptions.Custom };
         this.locationSelectElement.appendChild(UI.UIUtils.createOption(customLocationOption.title, customLocationOption.location, 'other'));

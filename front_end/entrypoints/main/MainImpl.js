@@ -325,7 +325,6 @@ export class MainImpl {
         // Timeline
         Root.Runtime.experiments.register(Root.ExperimentNames.ExperimentName.TIMELINE_INVALIDATION_TRACKING, 'Performance panel: invalidation tracking');
         Root.Runtime.experiments.register(Root.ExperimentNames.ExperimentName.TIMELINE_SHOW_ALL_EVENTS, 'Performance panel: show all events');
-        Root.Runtime.experiments.register(Root.ExperimentNames.ExperimentName.TIMELINE_V8_RUNTIME_CALL_STATS, 'Performance panel: V8 runtime call stats');
         Root.Runtime.experiments.register(Root.ExperimentNames.ExperimentName.TIMELINE_DEBUG_MODE, 'Performance panel: debug mode (trace event details, etc)');
         // Debugging
         Root.Runtime.experiments.register(Root.ExperimentNames.ExperimentName.INSTRUMENTATION_BREAKPOINTS, 'Instrumentation breakpoints');

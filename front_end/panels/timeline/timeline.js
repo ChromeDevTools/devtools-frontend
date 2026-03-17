@@ -2854,7 +2854,7 @@ import * as TraceBounds13 from "./../../services/trace_bounds/trace_bounds.js";
 import * as Tracing5 from "./../../services/tracing/tracing.js";
 import * as Components3 from "./../../ui/legacy/components/utils/utils.js";
 import * as UI16 from "./../../ui/legacy/legacy.js";
-import { Directives as Directives2, html as html4, nothing, render as render4 } from "./../../ui/lit/lit.js";
+import { Directives as Directives2, html as html5, nothing as nothing2, render as render5 } from "./../../ui/lit/lit.js";
 import * as VisualLogging9 from "./../../ui/visual_logging/visual_logging.js";
 import * as TimelineComponents5 from "./components/components.js";
 
@@ -3099,7 +3099,7 @@ var imagePreview_css_default = `/*
 import * as LegacyComponents from "./../../ui/legacy/components/utils/utils.js";
 import * as UI11 from "./../../ui/legacy/legacy.js";
 import * as ThemeSupport19 from "./../../ui/legacy/theme_support/theme_support.js";
-import { html, render } from "./../../ui/lit/lit.js";
+import { html as html2, render as render2 } from "./../../ui/lit/lit.js";
 import * as PanelsCommon from "./../common/common.js";
 import * as TimelineComponents4 from "./components/components.js";
 import * as Extensions3 from "./extensions/extensions.js";
@@ -4837,6 +4837,8 @@ __export(TimelinePanel_exports, {
   CoreVitalsRevealer: () => CoreVitalsRevealer,
   EventRevealer: () => EventRevealer,
   InsightRevealer: () => InsightRevealer,
+  ParsedTraceRevealable: () => ParsedTraceRevealable,
+  ParsedTraceRevealer: () => ParsedTraceRevealer,
   SelectedInsight: () => SelectedInsight,
   TimelinePanel: () => TimelinePanel,
   TraceRevealer: () => TraceRevealer,
@@ -5023,7 +5025,9 @@ import * as i18n25 from "./../../core/i18n/i18n.js";
 import * as Platform8 from "./../../core/platform/platform.js";
 import * as TextUtils from "./../../models/text_utils/text_utils.js";
 import * as Workspace from "./../../models/workspace/workspace.js";
+import * as Buttons2 from "./../../ui/components/buttons/buttons.js";
 import * as UI5 from "./../../ui/legacy/legacy.js";
+import { html, nothing, render } from "./../../ui/lit/lit.js";
 import * as VisualLogging3 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/timeline/timelineStatusDialog.css.js
@@ -5150,61 +5154,96 @@ var UIStrings13 = {
 };
 var str_13 = i18n25.i18n.registerUIStrings("panels/timeline/StatusDialog.ts", UIStrings13);
 var i18nString13 = i18n25.i18n.getLocalizedString.bind(void 0, str_13);
+var DEFAULT_VIEW = (input, output, target) => {
+  render(html`
+    <style>${timelineStatusDialog_css_default}</style>
+    <div class="timeline-status-dialog">
+      <div class="status-dialog-line status">
+        <div class="label">${i18nString13(UIStrings13.status)}</div>
+        <div class="content" role="status">${input.statusText}</div>
+      </div>
+      ${input.showTimer ? html`
+        <div class="status-dialog-line time">
+          <div class="label">${i18nString13(UIStrings13.time)}</div>
+          <div class="content">${input.timeText}</div>
+        </div>
+      ` : nothing}
+      ${input.showProgress ? html`
+        <div class="status-dialog-line progress">
+          <div class="label">${input.progressActivity}</div>
+          <div class="indicator-container">
+            <div class="indicator"
+              style="width: ${input.progressPercent.toFixed(1)}%"
+              role="progressbar"
+              aria-valuemin="0"
+              aria-valuemax="100"
+              aria-valuenow=${input.progressPercent}>
+            </div>
+          </div>
+        </div>
+      ` : nothing}
+      ${input.descriptionText !== void 0 ? html`
+        <div class="status-dialog-line description">
+          <div class="label">${i18nString13(UIStrings13.description)}</div>
+          <div class="content">${input.descriptionText}</div>
+        </div>
+      ` : nothing}
+      <div class="stop-button">
+        ${input.showDownloadButton ? html`
+          <devtools-button
+            .variant=${"outlined"}
+            .disabled=${input.downloadButtonDisabled}
+            @click=${input.onDownloadClick}
+            .jslogContext=${"timeline.download-after-error"}
+          >${i18nString13(UIStrings13.downloadAfterError)}</devtools-button>
+        ` : nothing}
+        ${!input.hideStopButton ? html`
+          <devtools-button
+            .variant=${"primary"}
+            @click=${input.onStopClick}
+            .jslogContext=${"timeline.stop-recording"}
+            ?autofocus=${input.focusStopButton}
+          >${input.buttonText}</devtools-button>
+        ` : nothing}
+      </div>
+    </div>
+  `, target);
+};
 var StatusDialog = class extends UI5.Widget.VBox {
-  status;
-  time;
-  progressLabel;
-  progressBar;
-  description;
-  button;
-  downloadTraceButton;
-  startTime;
-  timeUpdateTimer;
+  #view;
+  #statusText = "";
+  #showTimer;
+  #timeText = "";
+  #showProgress;
+  #progressActivity = "";
+  #progressPercent = 0;
+  #descriptionText;
+  #buttonText;
+  #hideStopButton;
+  #focusStopButton = false;
+  #showDownloadButton = false;
+  #downloadButtonDisabled = true;
+  #onButtonClickCallback;
+  #startTime;
+  #timeUpdateTimer;
   #rawEvents;
-  constructor(options, onButtonClickCallback) {
+  constructor(options, onButtonClickCallback, view = DEFAULT_VIEW) {
     super({
       jslog: `${VisualLogging3.dialog("timeline-status").track({ resize: true })}`,
       useShadowDom: true
     });
-    this.contentElement.classList.add("timeline-status-dialog");
-    const statusLine = this.contentElement.createChild("div", "status-dialog-line status");
-    statusLine.createChild("div", "label").textContent = i18nString13(UIStrings13.status);
-    this.status = statusLine.createChild("div", "content");
-    UI5.ARIAUtils.markAsStatus(this.status);
-    if (options.showTimer) {
-      const timeLine = this.contentElement.createChild("div", "status-dialog-line time");
-      timeLine.createChild("div", "label").textContent = i18nString13(UIStrings13.time);
-      this.time = timeLine.createChild("div", "content");
-    }
-    if (options.showProgress) {
-      const progressBarContainer = this.contentElement.createChild("div", "status-dialog-line progress");
-      this.progressLabel = progressBarContainer.createChild("div", "label");
-      this.progressBar = progressBarContainer.createChild("div", "indicator-container").createChild("div", "indicator");
-      UI5.ARIAUtils.markAsProgressBar(this.progressBar);
-    }
-    if (typeof options.description === "string") {
-      const descriptionLine = this.contentElement.createChild("div", "status-dialog-line description");
-      descriptionLine.createChild("div", "label").textContent = i18nString13(UIStrings13.description);
-      this.description = descriptionLine.createChild("div", "content");
-      this.description.innerText = options.description;
-    }
-    const buttonContainer = this.contentElement.createChild("div", "stop-button");
-    this.downloadTraceButton = UI5.UIUtils.createTextButton(i18nString13(UIStrings13.downloadAfterError), () => {
-      void this.#downloadRawTraceAfterError();
-    }, { jslogContext: "timeline.download-after-error" });
-    this.downloadTraceButton.disabled = true;
-    this.downloadTraceButton.classList.add("hidden");
-    const buttonText = options.buttonText || i18nString13(UIStrings13.stop);
-    this.button = UI5.UIUtils.createTextButton(buttonText, onButtonClickCallback, {
-      jslogContext: "timeline.stop-recording"
-    });
-    this.button.classList.toggle("hidden", options.hideStopButton);
-    buttonContainer.append(this.downloadTraceButton);
-    buttonContainer.append(this.button);
+    this.#view = view;
+    this.#showTimer = Boolean(options.showTimer);
+    this.#showProgress = Boolean(options.showProgress);
+    this.#descriptionText = options.description;
+    this.#buttonText = options.buttonText || i18nString13(UIStrings13.stop);
+    this.#hideStopButton = options.hideStopButton;
+    this.#onButtonClickCallback = onButtonClickCallback;
   }
   finish() {
     this.stopTimer();
-    this.button.classList.add("hidden");
+    this.#hideStopButton = true;
+    this.requestUpdate();
   }
   async #downloadRawTraceAfterError() {
     if (!this.#rawEvents || this.#rawEvents.length === 0) {
@@ -5229,8 +5268,9 @@ var StatusDialog = class extends UI5.Widget.VBox {
   }
   enableDownloadOfEvents(rawEvents) {
     this.#rawEvents = rawEvents;
-    this.downloadTraceButton.disabled = false;
-    this.downloadTraceButton.classList.remove("hidden");
+    this.#showDownloadButton = true;
+    this.#downloadButtonDisabled = false;
+    this.requestUpdate();
   }
   remove() {
     this.element.parentNode?.classList.remove("opaque", "tinted");
@@ -5243,45 +5283,67 @@ var StatusDialog = class extends UI5.Widget.VBox {
     parent.classList.toggle("opaque", mode === "opaque");
   }
   enableAndFocusButton() {
-    this.button.classList.remove("hidden");
-    this.button.focus();
+    this.#hideStopButton = false;
+    this.#focusStopButton = true;
+    this.requestUpdate();
   }
   updateStatus(text) {
-    this.status.textContent = text;
+    this.#statusText = text;
+    this.requestUpdate();
   }
   updateProgressBar(activity, percent) {
-    if (this.progressLabel) {
-      this.progressLabel.textContent = activity;
-    }
-    if (this.progressBar) {
-      this.progressBar.style.width = percent.toFixed(1) + "%";
-      UI5.ARIAUtils.setValueNow(this.progressBar, percent);
-    }
-    this.updateTimer();
+    this.#progressActivity = activity;
+    this.#progressPercent = percent;
+    this.#updateTimerTick();
+    this.requestUpdate();
   }
   startTimer() {
-    this.startTime = Date.now();
-    this.timeUpdateTimer = window.setInterval(this.updateTimer.bind(this), 100);
-    this.updateTimer();
+    this.#startTime = Date.now();
+    this.#timeUpdateTimer = window.setInterval(this.#updateTimerTick.bind(this), 100);
+    this.#updateTimerTick();
   }
   stopTimer() {
-    if (!this.timeUpdateTimer) {
+    if (!this.#timeUpdateTimer) {
       return;
     }
-    clearInterval(this.timeUpdateTimer);
-    this.updateTimer();
-    delete this.timeUpdateTimer;
+    clearInterval(this.#timeUpdateTimer);
+    this.#updateTimerTick();
+    this.#timeUpdateTimer = void 0;
   }
-  updateTimer() {
-    if (!this.timeUpdateTimer || !this.time) {
+  #updateTimerTick() {
+    if (!this.#timeUpdateTimer || !this.#showTimer) {
       return;
     }
-    const seconds = (Date.now() - this.startTime) / 1e3;
-    this.time.textContent = i18n25.TimeUtilities.preciseSecondsToString(seconds, 1);
+    const seconds = (Date.now() - this.#startTime) / 1e3;
+    this.#timeText = i18n25.TimeUtilities.preciseSecondsToString(seconds, 1);
+    this.requestUpdate();
+  }
+  performUpdate() {
+    this.#view({
+      statusText: this.#statusText,
+      showTimer: this.#showTimer,
+      timeText: this.#timeText,
+      showProgress: this.#showProgress,
+      progressActivity: this.#progressActivity,
+      progressPercent: this.#progressPercent,
+      descriptionText: this.#descriptionText,
+      buttonText: this.#buttonText,
+      hideStopButton: this.#hideStopButton,
+      focusStopButton: this.#focusStopButton,
+      showDownloadButton: this.#showDownloadButton,
+      downloadButtonDisabled: this.#downloadButtonDisabled,
+      onStopClick: () => {
+        void this.#onButtonClickCallback();
+      },
+      onDownloadClick: () => {
+        void this.#downloadRawTraceAfterError();
+      }
+    }, {}, this.contentElement);
+    this.#focusStopButton = false;
   }
   wasShown() {
     super.wasShown();
-    this.registerRequiredCSS(timelineStatusDialog_css_default);
+    this.requestUpdate();
   }
 };
 
@@ -5536,9 +5598,6 @@ var TimelineController = class {
       "cppgc",
       "navigation,rail"
     ];
-    if (Root2.Runtime.experiments.isEnabled(Root2.ExperimentNames.ExperimentName.TIMELINE_V8_RUNTIME_CALL_STATS) && options.enableJSSampling) {
-      categoriesArray.push(disabledByDefault("v8.runtime_stats_sampling"));
-    }
     if (options.enableJSSampling) {
       categoriesArray.push(disabledByDefault("v8.cpu_profiler"));
     }
@@ -7760,7 +7819,7 @@ __export(TrackConfigBanner_exports, {
   createHiddenTracksOverlay: () => createHiddenTracksOverlay
 });
 import * as i18n35 from "./../../core/i18n/i18n.js";
-import * as Buttons2 from "./../../ui/components/buttons/buttons.js";
+import * as Buttons3 from "./../../ui/components/buttons/buttons.js";
 import * as UI9 from "./../../ui/legacy/legacy.js";
 var UIStrings18 = {
   /**
@@ -8573,7 +8632,6 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
   #instantiateNewModel() {
     const config = Trace24.Types.Configuration.defaults();
     config.showAllEvents = Root4.Runtime.experiments.isEnabled(Root4.ExperimentNames.ExperimentName.TIMELINE_SHOW_ALL_EVENTS);
-    config.includeRuntimeCallStats = Root4.Runtime.experiments.isEnabled(Root4.ExperimentNames.ExperimentName.TIMELINE_V8_RUNTIME_CALL_STATS);
     config.debugMode = Root4.Runtime.experiments.isEnabled(Root4.ExperimentNames.ExperimentName.TIMELINE_DEBUG_MODE);
     const traceEngineModel = Trace24.TraceModel.Model.createWithAllHandlers(config);
     traceEngineModel.addEventListener(Trace24.TraceModel.ModelUpdateEvent.eventName, (e) => {
@@ -9290,6 +9348,19 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
         });
       }
     }
+  }
+  revealParsedTrace(revealable) {
+    const index = this.model.indexForTrace(revealable.parsedTrace);
+    if (index === -1) {
+      return;
+    }
+    if (this.#activeTraceIndex() === index) {
+      return;
+    }
+    this.#changeView({
+      mode: "VIEWING_TRACE",
+      traceIndex: index
+    });
   }
   navigateHistory(direction) {
     const recordingData = this.#historyManager.navigate(direction);
@@ -10550,6 +10621,18 @@ var TraceRevealer = class {
     TimelinePanel.instance().loadFromTraceFile(trace);
   }
 };
+var ParsedTraceRevealer = class {
+  async reveal(traceRevealer) {
+    await UI10.ViewManager.ViewManager.instance().showView("timeline");
+    TimelinePanel.instance().revealParsedTrace(traceRevealer);
+  }
+};
+var ParsedTraceRevealable = class {
+  parsedTrace;
+  constructor(parsedTrace) {
+    this.parsedTrace = parsedTrace;
+  }
+};
 var EventRevealer = class {
   async reveal(rEvent) {
     await UI10.ViewManager.ViewManager.instance().showView("timeline");
@@ -11299,7 +11382,7 @@ var TimelineUIUtils = class _TimelineUIUtils {
         break;
     }
     const div = document.createElement("div");
-    render(html`<devtools-link href=${link}>${i18nString21(UIStrings21.learnMore)}</devtools-link> about ${name}.`, div);
+    render2(html2`<devtools-link href=${link}>${i18nString21(UIStrings21.learnMore)}</devtools-link> about ${name}.`, div);
     return div;
   }
   static buildConsumeCacheDetails(eventData, contentHelper) {
@@ -13009,7 +13092,7 @@ var TimelineLayersView = class extends UI13.SplitWidget.SplitWidget {
 // gen/front_end/panels/timeline/TimelinePaintProfilerView.js
 var TimelinePaintProfilerView_exports = {};
 __export(TimelinePaintProfilerView_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW,
+  DEFAULT_VIEW: () => DEFAULT_VIEW2,
   TimelinePaintImageView: () => TimelinePaintImageView,
   TimelinePaintProfilerView: () => TimelinePaintProfilerView
 });
@@ -13393,7 +13476,7 @@ async function getPaintProfilerSnapshot(paintProfilerModel, paint) {
 }
 
 // gen/front_end/panels/timeline/TimelinePaintProfilerView.js
-var { html: html2, render: render2 } = Lit;
+var { html: html3, render: render3 } = Lit;
 var { createRef, ref } = Lit.Directives;
 var TimelinePaintProfilerView = class extends UI14.SplitWidget.SplitWidget {
   logAndImageSplitWidget;
@@ -13541,9 +13624,9 @@ var TimelinePaintProfilerView = class extends UI14.SplitWidget.SplitWidget {
     this.logTreeView.updateWindow(this.paintProfilerView.selectionWindow());
   }
 };
-var DEFAULT_VIEW = (input, output, target) => {
+var DEFAULT_VIEW2 = (input, output, target) => {
   const imageElementRef = createRef();
-  render2(html2`
+  render3(html3`
   <div class="paint-profiler-image-view fill">
     <div class="paint-profiler-image-container" style="-webkit-transform: ${input.imageContainerWebKitTransform}">
       <img src=${input.imageURL} display=${input.imageContainerHidden ? "none" : "block"} ${ref(imageElementRef)}>
@@ -13572,7 +13655,7 @@ var TimelinePaintImageView = class extends UI14.Widget.Widget {
   };
   #view;
   #imageElementDimensions;
-  constructor(view = DEFAULT_VIEW) {
+  constructor(view = DEFAULT_VIEW2) {
     super();
     this.registerRequiredCSS(timelinePaintProfiler_css_default);
     this.#view = view;
@@ -13648,7 +13731,7 @@ import * as i18n45 from "./../../core/i18n/i18n.js";
 import * as SDK11 from "./../../core/sdk/sdk.js";
 import * as Trace29 from "./../../models/trace/trace.js";
 import * as UI15 from "./../../ui/legacy/legacy.js";
-import { html as html3, render as render3 } from "./../../ui/lit/lit.js";
+import { html as html4, render as render4 } from "./../../ui/lit/lit.js";
 import * as VisualLogging8 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/timeline/timelineSelectorStatsView.css.js
@@ -13758,8 +13841,8 @@ var UIStrings23 = {
 var str_23 = i18n45.i18n.registerUIStrings("panels/timeline/TimelineSelectorStatsView.ts", UIStrings23);
 var i18nString23 = i18n45.i18n.getLocalizedString.bind(void 0, str_23);
 var SelectorTimingsKey = Trace29.Types.Events.SelectorTimingsKey;
-var DEFAULT_VIEW2 = (input, _output, target) => {
-  render3(html3`
+var DEFAULT_VIEW3 = (input, _output, target) => {
+  render4(html4`
       <devtools-data-grid striped name=${i18nString23(UIStrings23.selectorStats)}
           @contextmenu=${input.onContextMenu.bind(input)}>
         <table>
@@ -13797,7 +13880,7 @@ var DEFAULT_VIEW2 = (input, _output, target) => {
     const styleSheetId = timing[SelectorTimingsKey.StyleSheetId];
     const locations = timing.locations;
     const locationMessage = locations ? null : locations === null ? "" : i18nString23(UIStrings23.unableToLinkViaStyleSheetId, { PH1: styleSheetId });
-    return html3`<tr>
+    return html4`<tr>
             <td data-value=${timing[SelectorTimingsKey.Elapsed]}>
               ${(timing[SelectorTimingsKey.Elapsed] / 1e3).toFixed(3)}
             </td>
@@ -13812,7 +13895,7 @@ var DEFAULT_VIEW2 = (input, _output, target) => {
             <td title=${timing[SelectorTimingsKey.Selector]}>
              ${timing[SelectorTimingsKey.Selector]}
             </td>
-            <td data-value=${styleSheetId}>${locations ? html3`${locations.map((location, itemIndex) => html3`
+            <td data-value=${styleSheetId}>${locations ? html4`${locations.map((location, itemIndex) => html4`
                 <devtools-linkifier .data=${location}></devtools-linkifier
                 >${itemIndex !== locations.length - 1 ? "," : ""}`)}` : locationMessage}
             </td>
@@ -13835,7 +13918,7 @@ var TimelineSelectorStatsView = class extends UI15.Widget.VBox {
   #lastStatsSourceEventOrEvents = null;
   #view;
   #timings = [];
-  constructor(parsedTrace, view = DEFAULT_VIEW2) {
+  constructor(parsedTrace, view = DEFAULT_VIEW3) {
     super({ jslog: `${VisualLogging8.pane("selector-stats").track({ resize: true })}` });
     this.registerRequiredCSS(timelineSelectorStatsView_css_default);
     this.#view = view;
@@ -14520,10 +14603,10 @@ var Tab;
   Tab2["SelectorStats"] = "selector-stats";
 })(Tab || (Tab = {}));
 var SUMMARY_DEFAULT_VIEW = (input, _output, target) => {
-  render4(html4`
+  render5(html5`
         <style>${timelineDetailsView_css_default}</style>
         ${Directives2.until(renderSelectedEventDetails(input))}
-        ${input.selectedRange ? generateRangeSummaryDetails(input) : nothing}
+        ${input.selectedRange ? generateRangeSummaryDetails(input) : nothing2}
         <devtools-widget data-related-insight-chips ${widget(TimelineComponents5.RelatedInsightChips.RelatedInsightChips, {
     activeEvent: input.selectedEvent,
     eventToInsightsMap: input.eventToRelatedInsightsMap
@@ -14560,7 +14643,7 @@ var SummaryView = class extends UI16.Widget.Widget {
 function generateRangeSummaryDetails(input) {
   const { parsedTrace, selectedRange } = input;
   if (!selectedRange || !parsedTrace) {
-    return nothing;
+    return nothing2;
   }
   const minBoundsMilli = Trace30.Helpers.Timing.microToMilli(parsedTrace.data.Meta.traceBounds.min);
   const { events, startTime, endTime, thirdPartyTree } = selectedRange;
@@ -14568,16 +14651,16 @@ function generateRangeSummaryDetails(input) {
   const startOffset = startTime - minBoundsMilli;
   const endOffset = endTime - minBoundsMilli;
   const summaryDetailElem = TimelineUIUtils.generateSummaryDetails(aggregatedStats, startOffset, endOffset, events, thirdPartyTree);
-  return html4`${summaryDetailElem}`;
+  return html5`${summaryDetailElem}`;
 }
 async function renderSelectedEventDetails(input) {
   const { selectedEvent, parsedTrace, linkifier } = input;
   if (!selectedEvent || !parsedTrace || !linkifier) {
-    return nothing;
+    return nothing2;
   }
   const traceRecordingIsFresh = parsedTrace ? Tracing5.FreshRecording.Tracker.instance().recordingIsFresh(parsedTrace) : false;
   if (Trace30.Types.Events.isSyntheticLayoutShift(selectedEvent) || Trace30.Types.Events.isSyntheticLayoutShiftCluster(selectedEvent)) {
-    return html4`
+    return html5`
       <devtools-widget data-layout-shift-details ${widget(TimelineComponents5.LayoutShiftDetails.LayoutShiftDetails, {
       event: selectedEvent,
       parsedTrace: input.parsedTrace,
@@ -14586,7 +14669,7 @@ async function renderSelectedEventDetails(input) {
       ></devtools-widget>`;
   }
   if (Trace30.Types.Events.isSyntheticNetworkRequest(selectedEvent)) {
-    return html4`
+    return html5`
       <devtools-widget data-network-request-details ${widget(TimelineComponents5.NetworkRequestDetails.NetworkRequestDetails, {
       request: selectedEvent,
       entityMapper: input.entityMapper,
@@ -14600,10 +14683,10 @@ async function renderSelectedEventDetails(input) {
   if (Trace30.Types.Events.isLegacyTimelineFrame(selectedEvent) && input.filmStrip) {
     const matchedFilmStripFrame = getFilmStripFrame(input.filmStrip, selectedEvent);
     const content = TimelineUIUtils.generateDetailsContentForFrame(selectedEvent, input.filmStrip, matchedFilmStripFrame);
-    return html4`${content}`;
+    return html5`${content}`;
   }
   const traceEventDetails = await TimelineUIUtils.buildTraceEventDetails(parsedTrace, selectedEvent, linkifier, true, input.entityMapper);
-  return html4`${traceEventDetails}`;
+  return html5`${traceEventDetails}`;
 }
 var filmStripFrameCache = /* @__PURE__ */ new WeakMap();
 function getFilmStripFrame(filmStrip, frame) {

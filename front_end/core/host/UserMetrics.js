@@ -711,7 +711,6 @@ export var DevtoolsExperiments;
     DevtoolsExperiments[DevtoolsExperiments["show-option-to-expose-internals-in-heap-snapshot"] = 18] = "show-option-to-expose-internals-in-heap-snapshot";
     DevtoolsExperiments[DevtoolsExperiments["timeline-invalidation-tracking"] = 26] = "timeline-invalidation-tracking";
     DevtoolsExperiments[DevtoolsExperiments["timeline-show-all-events"] = 27] = "timeline-show-all-events";
-    DevtoolsExperiments[DevtoolsExperiments["timeline-v8-runtime-call-stats"] = 28] = "timeline-v8-runtime-call-stats";
     DevtoolsExperiments[DevtoolsExperiments["apca"] = 39] = "apca";
     DevtoolsExperiments[DevtoolsExperiments["font-editor"] = 41] = "font-editor";
     DevtoolsExperiments[DevtoolsExperiments["full-accessibility-tree"] = 42] = "full-accessibility-tree";

@@ -10,7 +10,6 @@ const REGISTERED_EXPERIMENTS = [
     Root.ExperimentNames.ExperimentName.PROTOCOL_MONITOR,
     Root.ExperimentNames.ExperimentName.TIMELINE_INVALIDATION_TRACKING,
     Root.ExperimentNames.ExperimentName.TIMELINE_SHOW_ALL_EVENTS,
-    Root.ExperimentNames.ExperimentName.TIMELINE_V8_RUNTIME_CALL_STATS,
     Root.ExperimentNames.ExperimentName.FONT_EDITOR,
     Root.ExperimentNames.ExperimentName.FULL_ACCESSIBILITY_TREE,
     Root.ExperimentNames.ExperimentName.INSTRUMENTATION_BREAKPOINTS,

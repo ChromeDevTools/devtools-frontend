@@ -14,7 +14,11 @@ var LighthouseReportGenerator = class {
     return "";
   }
 };
+
+// gen/front_end/models/lighthouse/RunTypes.js
+var RunTypes_exports = {};
 export {
-  LighthouseReporterTypes_exports as ReporterTypes
+  LighthouseReporterTypes_exports as ReporterTypes,
+  RunTypes_exports as RunTypes
 };
 //# sourceMappingURL=lighthouse.js.map

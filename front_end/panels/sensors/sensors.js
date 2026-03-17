@@ -997,6 +997,7 @@ var SensorsView = class extends UI2.Widget.VBox {
   #locationSetting;
   #location;
   #locationOverrideEnabled;
+  #locationSectionElement;
   fieldsetElement;
   timezoneError;
   locationSelectElement;
@@ -1040,7 +1041,10 @@ var SensorsView = class extends UI2.Widget.VBox {
     this.#locationSetting = Common2.Settings.Settings.instance().createSetting("emulation.location-override", "");
     this.#location = SDK2.EmulationModel.Location.parseSetting(this.#locationSetting.get());
     this.#locationOverrideEnabled = false;
-    this.createLocationSection(this.#location);
+    this.#locationSectionElement = this.contentElement.createChild("section", "sensors-group");
+    const customLocationsSetting = Common2.Settings.Settings.instance().moduleSetting("emulation.locations");
+    this.renderLocationSection(this.#location, customLocationsSetting);
+    customLocationsSetting.addChangeListener(() => this.renderLocationSection(this.#location, customLocationsSetting));
     this.createPanelSeparator();
     this.deviceOrientationSetting = Common2.Settings.Settings.instance().createSetting("emulation.device-orientation-override", "");
     this.deviceOrientation = SDK2.EmulationModel.DeviceOrientation.parseSetting(this.deviceOrientationSetting.get());
@@ -1059,12 +1063,13 @@ var SensorsView = class extends UI2.Widget.VBox {
   createPanelSeparator() {
     this.contentElement.createChild("div").classList.add("panel-section-separator");
   }
-  createLocationSection(location) {
-    const geogroup = this.contentElement.createChild("section", "sensors-group");
-    geogroup.setAttribute("jslog", `${VisualLogging2.section("location")}`);
+  renderLocationSection(location, customLocationsSetting) {
+    const customLocations = customLocationsSetting.get();
+    this.#locationSectionElement.removeChildren();
+    this.#locationSectionElement.setAttribute("jslog", `${VisualLogging2.section("location")}`);
     const geogroupTitle = UI2.UIUtils.createLabel(i18nString2(UIStrings2.location), "sensors-group-title");
-    geogroup.appendChild(geogroupTitle);
-    const fields = geogroup.createChild("div", "geo-fields");
+    this.#locationSectionElement.appendChild(geogroupTitle);
+    const fields = this.#locationSectionElement.createChild("div", "geo-fields");
     let selectedIndex = 0;
     const noOverrideOption = { title: i18nString2(UIStrings2.noOverride), location: NonPresetOptions.NoOverride };
     this.locationSelectElement = fields.createChild("select");
@@ -1073,24 +1078,25 @@ var SensorsView = class extends UI2.Widget.VBox {
     this.locationSelectElement.appendChild(UI2.UIUtils.createOption(noOverrideOption.title, noOverrideOption.location, "no-override"));
     this.customLocationsGroup = this.locationSelectElement.createChild("optgroup");
     this.customLocationsGroup.label = i18nString2(UIStrings2.overrides);
-    const customLocations = Common2.Settings.Settings.instance().moduleSetting("emulation.locations");
-    const manageButton = UI2.UIUtils.createTextButton(i18nString2(UIStrings2.manage), () => Common2.Revealer.reveal(customLocations), { className: "manage-locations", jslogContext: "sensors.manage-locations" });
+    const manageButton = UI2.UIUtils.createTextButton(i18nString2(UIStrings2.manage), () => Common2.Revealer.reveal(customLocationsSetting), { className: "manage-locations", jslogContext: "sensors.manage-locations" });
     UI2.ARIAUtils.setLabel(manageButton, i18nString2(UIStrings2.manageTheListOfLocations));
     fields.appendChild(manageButton);
-    const fillCustomSettings = () => {
-      if (!this.customLocationsGroup) {
-        return;
-      }
-      this.customLocationsGroup.removeChildren();
-      for (const [i, customLocation] of customLocations.get().entries()) {
-        this.customLocationsGroup.appendChild(UI2.UIUtils.createOption(customLocation.title, JSON.stringify(customLocation), "custom"));
-        if (location.latitude === customLocation.lat && location.longitude === customLocation.long) {
-          selectedIndex = i + 1;
+    if (this.#locationOverrideEnabled) {
+      if (location.unavailable) {
+        selectedIndex = customLocations.length + 2;
+      } else {
+        selectedIndex = customLocations.length + 1;
+        for (const [i, customLocation] of customLocations.entries()) {
+          if (location.latitude === customLocation.lat && location.longitude === customLocation.long && location.timezoneId === customLocation.timezoneId && location.locale === customLocation.locale) {
+            selectedIndex = i + 1;
+            break;
+          }
         }
       }
-    };
-    customLocations.addChangeListener(fillCustomSettings);
-    fillCustomSettings();
+    }
+    for (const customLocation of customLocations) {
+      this.customLocationsGroup.appendChild(UI2.UIUtils.createOption(customLocation.title, JSON.stringify(customLocation), "custom"));
+    }
     const customLocationOption = { title: i18nString2(UIStrings2.other), location: NonPresetOptions.Custom };
     this.locationSelectElement.appendChild(UI2.UIUtils.createOption(customLocationOption.title, customLocationOption.location, "other"));
     const group = this.locationSelectElement.createChild("optgroup");

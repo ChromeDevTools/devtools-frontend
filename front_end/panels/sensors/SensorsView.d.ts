@@ -36,7 +36,7 @@ export declare class SensorsView extends UI.Widget.VBox {
     private originalBoxMatrix?;
     constructor();
     private createPanelSeparator;
-    private createLocationSection;
+    private renderLocationSection;
     private applyLocationUserInput;
     private applyLocation;
     private clearFieldsetElementInputs;

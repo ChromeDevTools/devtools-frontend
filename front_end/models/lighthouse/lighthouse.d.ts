@@ -1,2 +1,3 @@
 import * as ReporterTypes from './LighthouseReporterTypes.js';
-export { ReporterTypes, };
+import * as RunTypes from './RunTypes.js';
+export { ReporterTypes, RunTypes, };

@@ -206,4 +206,11 @@ dd.dl-title {
   text-align: center;
 }
 
+.insight.minimal {
+  .insight-section {
+    border-top: none;
+    padding: 0;
+  }
+}
+
 /*# sourceURL=${import.meta.resolve('./baseInsightComponent.css')} */`;

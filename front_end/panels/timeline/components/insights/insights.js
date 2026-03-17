@@ -223,6 +223,13 @@ dd.dl-title {
   text-align: center;
 }
 
+.insight.minimal {
+  .insight-section {
+    border-top: none;
+    padding: 0;
+  }
+}
+
 /*# sourceURL=${import.meta.resolve("./baseInsightComponent.css")} */`;
 
 // gen/front_end/panels/timeline/components/insights/Helpers.js
@@ -339,17 +346,18 @@ var UIStrings = {
 var str_ = i18n.i18n.registerUIStrings("panels/timeline/components/insights/BaseInsightComponent.ts", UIStrings);
 var i18nString = i18n.i18n.getLocalizedString.bind(void 0, str_);
 var DEFAULT_VIEW = (input, _output, target) => {
-  const { internalName, model, selected, estimatedSavingsString, estimatedSavingsAriaLabel, showAskAI, dispatchInsightToggle, renderContent, onHeaderKeyDown, onAskAIButtonClick } = input;
+  const { internalName, model, selected, estimatedSavingsString, estimatedSavingsAriaLabel, showAskAI, dispatchInsightToggle, renderContent, onHeaderKeyDown, onAskAIButtonClick, minimal } = input;
   const containerClasses = Lit2.Directives.classMap({
     insight: true,
-    closed: !selected
+    closed: !selected && !minimal,
+    minimal: Boolean(minimal)
   });
   let ariaLabel = `${i18nString(UIStrings.viewDetails, { PH1: model.title })}`;
   if (estimatedSavingsAriaLabel) {
     ariaLabel += ` ${estimatedSavingsAriaLabel}`;
   }
   function renderInsightContent() {
-    if (!selected) {
+    if (!selected && !minimal) {
       return Lit2.nothing;
     }
     const aiLabel = AIAssistance.AiUtils.isGeminiBranding() ? "Ask Gemini" : "Ask AI";
@@ -358,9 +366,9 @@ var DEFAULT_VIEW = (input, _output, target) => {
     const iconName = AIAssistance.AiUtils.getIconName();
     return html2`
       <div class="insight-body">
-        <div class="insight-description">${md(model.description)}</div>
+        ${minimal ? Lit2.nothing : html2`<div class="insight-description">${md(model.description)}</div>`}
         <div class="insight-content">${content}</div>
-        ${showAskAI ? html2`
+        ${showAskAI && !minimal ? html2`
           <div class="ask-ai-btn-wrap">
             <devtools-button class="ask-ai"
               .variant=${"outlined"}
@@ -393,23 +401,24 @@ var DEFAULT_VIEW = (input, _output, target) => {
   Lit2.render(html2`
     <style>${baseInsightComponent_css_default}</style>
     <div class=${containerClasses}>
-      <header @click=${dispatchInsightToggle}
-        @keydown=${onHeaderKeyDown}
-        jslog=${VisualLogging.action(`timeline.toggle-insight.${internalName}`).track({ click: true })}
-        data-insight-header-title=${model?.title}
-        tabIndex="0"
-        role="button"
-        aria-expanded=${selected}
-        aria-label=${ariaLabel}
-      >
-        ${renderHoverIcon()}
-        <h3 class="insight-title">${model?.title}</h3>
-        ${estimatedSavingsString ? html2`
-          <slot name="insight-savings" class="insight-savings">
-            <span title=${estimatedSavingsAriaLabel ?? ""}>${estimatedSavingsString}</span>
-          </slot>
-        </div>` : Lit2.nothing}
-      </header>
+      ${minimal ? Lit2.nothing : html2`
+        <header @click=${dispatchInsightToggle}
+          @keydown=${onHeaderKeyDown}
+          jslog=${VisualLogging.action(`timeline.toggle-insight.${internalName}`).track({ click: true })}
+          data-insight-header-title=${model?.title}
+          tabIndex="0"
+          role="button"
+          aria-expanded=${selected}
+          aria-label=${ariaLabel}
+        >
+          ${renderHoverIcon()}
+          <h3 class="insight-title">${model?.title}</h3>
+          ${estimatedSavingsString ? html2`
+            <slot name="insight-savings" class="insight-savings">
+              <span title=${estimatedSavingsAriaLabel ?? ""}>${estimatedSavingsString}</span>
+            </slot>` : Lit2.nothing}
+        </header>
+      `}
       ${renderInsightContent()}
     </div>
   `, target);
@@ -420,6 +429,7 @@ var DEFAULT_VIEW = (input, _output, target) => {
 var BaseInsightComponent = class extends UI.Widget.Widget {
   #view;
   #selected = false;
+  #minimal = false;
   #model = null;
   #agentFocus = null;
   #fieldMetrics = null;
@@ -448,8 +458,10 @@ var BaseInsightComponent = class extends UI.Widget.Widget {
   }
   set selected(selected) {
     if (!this.#selected && selected) {
-      const options = this.getOverlayOptionsForInitialOverlays();
-      this.element.dispatchEvent(new InsightProvideOverlays(this.getInitialOverlays(), options));
+      if (!this.#minimal) {
+        const options = this.getOverlayOptionsForInitialOverlays();
+        this.element.dispatchEvent(new InsightProvideOverlays(this.getInitialOverlays(), options));
+      }
     }
     if (this.#selected !== selected) {
       this.#selected = selected;
@@ -458,6 +470,14 @@ var BaseInsightComponent = class extends UI.Widget.Widget {
   }
   get selected() {
     return this.#selected;
+  }
+  set minimal(minimal) {
+    this.#minimal = minimal;
+    this.#selected = this.#selected || minimal;
+    this.requestUpdate();
+  }
+  get minimal() {
+    return this.#minimal;
   }
   set model(model) {
     this.#model = model;
@@ -528,11 +548,12 @@ var BaseInsightComponent = class extends UI.Widget.Widget {
    * This enables the hover/click table interactions.
    */
   toggleTemporaryOverlays(overlays, options) {
-    if (!this.#selected) {
+    if (!this.#selected && !this.#minimal) {
       return;
     }
     if (!overlays) {
-      this.element.dispatchEvent(new InsightProvideOverlays(this.getInitialOverlays(), this.getOverlayOptionsForInitialOverlays()));
+      const initialOverlays = this.#minimal ? [] : this.getInitialOverlays();
+      this.element.dispatchEvent(new InsightProvideOverlays(initialOverlays, this.getOverlayOptionsForInitialOverlays()));
       return;
     }
     this.element.dispatchEvent(new InsightProvideOverlays(overlays, options));
@@ -561,7 +582,8 @@ var BaseInsightComponent = class extends UI.Widget.Widget {
       dispatchInsightToggle: () => this.#dispatchInsightToggle(),
       renderContent: () => this.renderContent(),
       onHeaderKeyDown: this.#onHeaderKeyDown.bind(this),
-      onAskAIButtonClick: () => this.#onAskAIButtonClick()
+      onAskAIButtonClick: () => this.#onAskAIButtonClick(),
+      minimal: this.#minimal
     };
     this.#view(input, void 0, this.contentElement);
   }
@@ -1979,13 +2001,6 @@ var INPBreakdown = class extends BaseInsightComponent {
   }
 };
 
-// gen/front_end/panels/timeline/components/insights/InsightRenderer.js
-var InsightRenderer_exports = {};
-__export(InsightRenderer_exports, {
-  InsightRenderer: () => InsightRenderer
-});
-import * as UI24 from "./../../../../ui/legacy/legacy.js";
-
 // gen/front_end/panels/timeline/components/insights/LCPBreakdown.js
 var LCPBreakdown_exports = {};
 __export(LCPBreakdown_exports, {
@@ -2831,6 +2846,9 @@ var ThirdParties = class extends BaseInsightComponent {
   }
 };
 
+// gen/front_end/panels/timeline/components/insights/types.js
+var types_exports = {};
+
 // gen/front_end/panels/timeline/components/insights/Viewport.js
 var Viewport_exports = {};
 __export(Viewport_exports, {
@@ -2865,59 +2883,6 @@ var Viewport = class extends BaseInsightComponent {
       </div>`;
   }
 };
-
-// gen/front_end/panels/timeline/components/insights/InsightRenderer.js
-var { widgetConfig } = UI24.Widget;
-var INSIGHT_NAME_TO_COMPONENT = {
-  Cache,
-  CharacterSet,
-  CLSCulprits,
-  DocumentLatency,
-  DOMSize,
-  DuplicatedJavaScript,
-  FontDisplay,
-  ForcedReflow,
-  ImageDelivery,
-  INPBreakdown,
-  LCPDiscovery,
-  LCPBreakdown,
-  LegacyJavaScript,
-  ModernHTTP,
-  NetworkDependencyTree,
-  RenderBlocking,
-  SlowCSSSelector,
-  ThirdParties,
-  Viewport
-};
-var InsightRenderer = class {
-  #insightWidgetCache = /* @__PURE__ */ new WeakMap();
-  renderInsightToWidgetElement(parsedTrace, insightSet, model, insightName, options) {
-    let widgetElement = this.#insightWidgetCache.get(model);
-    if (!widgetElement) {
-      widgetElement = document.createElement("devtools-widget");
-      widgetElement.classList.add("insight-component-widget");
-      this.#insightWidgetCache.set(model, widgetElement);
-    }
-    const componentClass = INSIGHT_NAME_TO_COMPONENT[insightName];
-    widgetElement.widgetConfig = widgetConfig(componentClass, {
-      selected: options.selected ?? false,
-      // The `model` passed in as a parameter is the base type, but since
-      // `componentClass` is the union of every derived insight component, the
-      // `model` for the widget config is the union of every model. That can't be
-      // satisfied, so disable typescript.
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      model,
-      bounds: insightSet.bounds,
-      insightSetKey: insightSet.id,
-      agentFocus: options.agentFocus ?? null,
-      fieldMetrics: options.fieldMetrics ?? null
-    });
-    return widgetElement;
-  }
-};
-
-// gen/front_end/panels/timeline/components/insights/types.js
-var types_exports = {};
 export {
   BaseInsightComponent_exports as BaseInsightComponent,
   CLSCulprits_exports as CLSCulprits,
@@ -2933,7 +2898,6 @@ export {
   Helpers_exports as Helpers,
   INPBreakdown_exports as INPBreakdown,
   ImageDelivery_exports as ImageDelivery,
-  InsightRenderer_exports as InsightRenderer,
   LCPBreakdown_exports as LCPBreakdown,
   LCPDiscovery_exports as LCPDiscovery,
   LegacyJavaScript_exports as LegacyJavaScript,

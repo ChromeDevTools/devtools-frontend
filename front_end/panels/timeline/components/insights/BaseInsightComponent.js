@@ -54,10 +54,11 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/insights/BaseInsightComponent.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const DEFAULT_VIEW = (input, _output, target) => {
-    const { internalName, model, selected, estimatedSavingsString, estimatedSavingsAriaLabel, showAskAI, dispatchInsightToggle, renderContent, onHeaderKeyDown, onAskAIButtonClick, } = input;
+    const { internalName, model, selected, estimatedSavingsString, estimatedSavingsAriaLabel, showAskAI, dispatchInsightToggle, renderContent, onHeaderKeyDown, onAskAIButtonClick, minimal, } = input;
     const containerClasses = Lit.Directives.classMap({
         insight: true,
-        closed: !selected,
+        closed: !selected && !minimal,
+        minimal: Boolean(minimal),
     });
     let ariaLabel = `${i18nString(UIStrings.viewDetails, { PH1: model.title })}`;
     if (estimatedSavingsAriaLabel) {
@@ -65,7 +66,7 @@ const DEFAULT_VIEW = (input, _output, target) => {
         ariaLabel += ` ${estimatedSavingsAriaLabel}`;
     }
     function renderInsightContent() {
-        if (!selected) {
+        if (!selected && !minimal) {
             return Lit.nothing;
         }
         const aiLabel = AIAssistance.AiUtils.isGeminiBranding() ? 'Ask Gemini' : 'Ask AI';
@@ -75,9 +76,9 @@ const DEFAULT_VIEW = (input, _output, target) => {
         // clang-format off
         return html `
       <div class="insight-body">
-        <div class="insight-description">${md(model.description)}</div>
+        ${minimal ? Lit.nothing : html `<div class="insight-description">${md(model.description)}</div>`}
         <div class="insight-content">${content}</div>
-        ${showAskAI ? html `
+        ${showAskAI && !minimal ? html `
           <div class="ask-ai-btn-wrap">
             <devtools-button class="ask-ai"
               .variant=${"outlined" /* Buttons.Button.Variant.OUTLINED */}
@@ -114,25 +115,26 @@ const DEFAULT_VIEW = (input, _output, target) => {
     Lit.render(html `
     <style>${baseInsightComponentStyles}</style>
     <div class=${containerClasses}>
-      <header @click=${dispatchInsightToggle}
-        @keydown=${onHeaderKeyDown}
-        jslog=${VisualLogging.action(`timeline.toggle-insight.${internalName}`).track({ click: true })}
-        data-insight-header-title=${model?.title}
-        tabIndex="0"
-        role="button"
-        aria-expanded=${selected}
-        aria-label=${ariaLabel}
-      >
-        ${renderHoverIcon()}
-        <h3 class="insight-title">${model?.title}</h3>
-        ${estimatedSavingsString ?
+      ${minimal ? Lit.nothing : html `
+        <header @click=${dispatchInsightToggle}
+          @keydown=${onHeaderKeyDown}
+          jslog=${VisualLogging.action(`timeline.toggle-insight.${internalName}`).track({ click: true })}
+          data-insight-header-title=${model?.title}
+          tabIndex="0"
+          role="button"
+          aria-expanded=${selected}
+          aria-label=${ariaLabel}
+        >
+          ${renderHoverIcon()}
+          <h3 class="insight-title">${model?.title}</h3>
+          ${estimatedSavingsString ?
         html `
-          <slot name="insight-savings" class="insight-savings">
-            <span title=${estimatedSavingsAriaLabel ?? ''}>${estimatedSavingsString}</span>
-          </slot>
-        </div>`
+            <slot name="insight-savings" class="insight-savings">
+              <span title=${estimatedSavingsAriaLabel ?? ''}>${estimatedSavingsString}</span>
+            </slot>`
         : Lit.nothing}
-      </header>
+        </header>
+      `}
       ${renderInsightContent()}
     </div>
   `, target);
@@ -144,6 +146,7 @@ const DEFAULT_VIEW = (input, _output, target) => {
 export class BaseInsightComponent extends UI.Widget.Widget {
     #view;
     #selected = false;
+    #minimal = false;
     #model = null;
     #agentFocus = null;
     #fieldMetrics = null;
@@ -172,8 +175,10 @@ export class BaseInsightComponent extends UI.Widget.Widget {
     }
     set selected(selected) {
         if (!this.#selected && selected) {
-            const options = this.getOverlayOptionsForInitialOverlays();
-            this.element.dispatchEvent(new SidebarInsight.InsightProvideOverlays(this.getInitialOverlays(), options));
+            if (!this.#minimal) {
+                const options = this.getOverlayOptionsForInitialOverlays();
+                this.element.dispatchEvent(new SidebarInsight.InsightProvideOverlays(this.getInitialOverlays(), options));
+            }
         }
         if (this.#selected !== selected) {
             this.#selected = selected;
@@ -182,6 +187,14 @@ export class BaseInsightComponent extends UI.Widget.Widget {
     }
     get selected() {
         return this.#selected;
+    }
+    set minimal(minimal) {
+        this.#minimal = minimal;
+        this.#selected = this.#selected || minimal;
+        this.requestUpdate();
+    }
+    get minimal() {
+        return this.#minimal;
     }
     set model(model) {
         this.#model = model;
@@ -254,11 +267,12 @@ export class BaseInsightComponent extends UI.Widget.Widget {
      * This enables the hover/click table interactions.
      */
     toggleTemporaryOverlays(overlays, options) {
-        if (!this.#selected) {
+        if (!this.#selected && !this.#minimal) {
             return;
         }
         if (!overlays) {
-            this.element.dispatchEvent(new SidebarInsight.InsightProvideOverlays(this.getInitialOverlays(), this.getOverlayOptionsForInitialOverlays()));
+            const initialOverlays = this.#minimal ? [] : this.getInitialOverlays();
+            this.element.dispatchEvent(new SidebarInsight.InsightProvideOverlays(initialOverlays, this.getOverlayOptionsForInitialOverlays()));
             return;
         }
         this.element.dispatchEvent(new SidebarInsight.InsightProvideOverlays(overlays, options));
@@ -288,6 +302,7 @@ export class BaseInsightComponent extends UI.Widget.Widget {
             renderContent: () => this.renderContent(),
             onHeaderKeyDown: this.#onHeaderKeyDown.bind(this),
             onAskAIButtonClick: () => this.#onAskAIButtonClick(),
+            minimal: this.#minimal,
         };
         this.#view(input, undefined, this.contentElement);
     }

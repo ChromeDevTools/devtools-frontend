@@ -4671,8 +4671,8 @@ customElements.define("devtools-metric-card", MetricCard);
 import * as Common5 from "./../../../core/common/common.js";
 import * as i18n29 from "./../../../core/i18n/i18n.js";
 import * as Root from "./../../../core/root/root.js";
-import * as SDK7 from "./../../../core/sdk/sdk.js";
-import * as CrUXManager11 from "./../../../models/crux-manager/crux-manager.js";
+import * as SDK6 from "./../../../core/sdk/sdk.js";
+import * as CrUXManager9 from "./../../../models/crux-manager/crux-manager.js";
 import * as EmulationModel from "./../../../models/emulation/emulation.js";
 import * as LiveMetrics from "./../../../models/live-metrics/live-metrics.js";
 import * as Trace6 from "./../../../models/trace/trace.js";
@@ -4685,27 +4685,7 @@ import * as UI10 from "./../../../ui/legacy/legacy.js";
 import * as Lit14 from "./../../../ui/lit/lit.js";
 import * as VisualLogging7 from "./../../../ui/visual_logging/visual_logging.js";
 import * as PanelsCommon2 from "./../../common/common.js";
-
-// gen/front_end/panels/timeline/utils/Helpers.js
-import * as Platform7 from "./../../../core/platform/platform.js";
-import * as SDK6 from "./../../../core/sdk/sdk.js";
-import * as CrUXManager9 from "./../../../models/crux-manager/crux-manager.js";
-function getThrottlingRecommendations() {
-  let cpuOption = SDK6.CPUThrottlingManager.CalibratedMidTierMobileThrottlingOption;
-  if (cpuOption.rate() === 0) {
-    cpuOption = SDK6.CPUThrottlingManager.MidTierThrottlingOption;
-  }
-  let networkConditions = null;
-  const response = CrUXManager9.CrUXManager.instance().getSelectedFieldMetricData("round_trip_time");
-  if (response?.percentiles) {
-    const rtt = Number(response.percentiles.p75);
-    networkConditions = SDK6.NetworkManager.getRecommendedNetworkPreset(rtt);
-  }
-  return {
-    cpuOption,
-    networkConditions
-  };
-}
+import * as Utils from "./../utils/utils.js";
 
 // gen/front_end/panels/timeline/components/liveMetricsView.css.js
 var liveMetricsView_css_default = `/*
@@ -5106,7 +5086,7 @@ devtools-link {
 // gen/front_end/panels/timeline/components/LiveMetricsView.js
 var { html: html14, nothing: nothing12 } = Lit14;
 var { widget: widget2 } = UI10.Widget;
-var DEVICE_OPTION_LIST = ["AUTO", ...CrUXManager11.DEVICE_SCOPE_LIST];
+var DEVICE_OPTION_LIST = ["AUTO", ...CrUXManager9.DEVICE_SCOPE_LIST];
 var RTT_MINIMUM = 60;
 var UIStrings15 = {
   /**
@@ -5368,7 +5348,7 @@ var LiveMetricsView = class extends LegacyWrapper.LegacyWrapper.WrappableCompone
   #inpValue;
   #interactions = /* @__PURE__ */ new Map();
   #layoutShifts = [];
-  #cruxManager = CrUXManager11.CrUXManager.instance();
+  #cruxManager = CrUXManager9.CrUXManager.instance();
   #toggleRecordAction;
   #recordReloadAction;
   #logsEl;
@@ -5431,7 +5411,7 @@ var LiveMetricsView = class extends LegacyWrapper.LegacyWrapper.WrappableCompone
   connectedCallback() {
     const liveMetrics = LiveMetrics.LiveMetrics.instance();
     liveMetrics.addEventListener("status", this.#onMetricStatus, this);
-    const cruxManager = CrUXManager11.CrUXManager.instance();
+    const cruxManager = CrUXManager9.CrUXManager.instance();
     cruxManager.addEventListener("field-data-changed", this.#onFieldDataChanged, this);
     this.#deviceModeModel?.addEventListener("Updated", this.#onEmulationChanged, this);
     if (cruxManager.getConfigSetting().get().enabled) {
@@ -5446,7 +5426,7 @@ var LiveMetricsView = class extends LegacyWrapper.LegacyWrapper.WrappableCompone
   }
   disconnectedCallback() {
     LiveMetrics.LiveMetrics.instance().removeEventListener("status", this.#onMetricStatus, this);
-    const cruxManager = CrUXManager11.CrUXManager.instance();
+    const cruxManager = CrUXManager9.CrUXManager.instance();
     cruxManager.removeEventListener("field-data-changed", this.#onFieldDataChanged, this);
     this.#deviceModeModel?.removeEventListener("Updated", this.#onEmulationChanged, this);
   }
@@ -5586,7 +5566,7 @@ var LiveMetricsView = class extends LegacyWrapper.LegacyWrapper.WrappableCompone
     if (rtt < RTT_MINIMUM) {
       return i18nString14(UIStrings15.tryDisablingThrottling);
     }
-    const conditions = SDK7.NetworkManager.getRecommendedNetworkPreset(rtt);
+    const conditions = SDK6.NetworkManager.getRecommendedNetworkPreset(rtt);
     if (!conditions) {
       return null;
     }
@@ -5611,7 +5591,7 @@ var LiveMetricsView = class extends LegacyWrapper.LegacyWrapper.WrappableCompone
     const networkRecEl = document.createElement("span");
     networkRecEl.classList.add("environment-rec");
     networkRecEl.textContent = this.#getNetworkRecTitle() || i18nString14(UIStrings15.notEnoughData);
-    const recs = getThrottlingRecommendations();
+    const recs = Utils.Helpers.getThrottlingRecommendations();
     return html14`
       <h3 class="card-title">${i18nString14(UIStrings15.environmentSettings)}</h3>
       <div class="device-toolbar-description">${md(i18nString14(UIStrings15.useDeviceToolbar))}</div>
@@ -6148,8 +6128,8 @@ __export(NetworkRequestDetails_exports, {
 });
 import "./../../../ui/components/request_link_icon/request_link_icon.js";
 import * as i18n33 from "./../../../core/i18n/i18n.js";
-import * as SDK9 from "./../../../core/sdk/sdk.js";
-import * as Helpers7 from "./../../../models/trace/helpers/helpers.js";
+import * as SDK8 from "./../../../core/sdk/sdk.js";
+import * as Helpers8 from "./../../../models/trace/helpers/helpers.js";
 import * as Trace8 from "./../../../models/trace/trace.js";
 import * as LegacyComponents3 from "./../../../ui/legacy/components/utils/utils.js";
 import * as UI12 from "./../../../ui/legacy/legacy.js";
@@ -6447,8 +6427,8 @@ __export(NetworkRequestTooltip_exports, {
 });
 import "./../../../ui/kit/kit.js";
 import * as i18n31 from "./../../../core/i18n/i18n.js";
-import * as Platform8 from "./../../../core/platform/platform.js";
-import * as SDK8 from "./../../../core/sdk/sdk.js";
+import * as Platform7 from "./../../../core/platform/platform.js";
+import * as SDK7 from "./../../../core/sdk/sdk.js";
 import * as Trace7 from "./../../../models/trace/trace.js";
 import * as PerfUI from "./../../../ui/legacy/components/perf_ui/perf_ui.js";
 import * as UI11 from "./../../../ui/legacy/legacy.js";
@@ -6509,7 +6489,7 @@ var DEFAULT_VIEW6 = (input, output, target) => {
   Lit15.render(html15`
     <style>${networkRequestTooltip_css_default}</style>
     <div class="performance-card">
-      <div class="url">${Platform8.StringUtilities.trimMiddle(url.href.replace(url.origin, ""), MAX_URL_LENGTH2)}</div>
+      <div class="url">${Platform7.StringUtilities.trimMiddle(url.href.replace(url.origin, ""), MAX_URL_LENGTH2)}</div>
       <div class="url url--host">${originWithEntity}</div>
 
       <div class="divider"></div>
@@ -6579,8 +6559,8 @@ var NetworkRequestTooltip = class _NetworkRequestTooltip extends UI11.Widget.Wid
     const styleForDownloading = {
       backgroundColor: color
     };
-    const sdkNetworkRequest = SDK8.TraceObject.RevealableNetworkRequest.create(networkRequest);
-    const wasThrottled = sdkNetworkRequest && SDK8.NetworkManager.MultitargetNetworkManager.instance().appliedRequestConditions(sdkNetworkRequest.networkRequest);
+    const sdkNetworkRequest = SDK7.TraceObject.RevealableNetworkRequest.create(networkRequest);
+    const wasThrottled = sdkNetworkRequest && SDK7.NetworkManager.MultitargetNetworkManager.instance().appliedRequestConditions(sdkNetworkRequest.networkRequest);
     const throttledTitle = wasThrottled ? i18nString15(UIStrings16.wasThrottled, {
       PH1: typeof wasThrottled.conditions.title === "string" ? wasThrottled.conditions.title : wasThrottled.conditions.title()
     }) : void 0;
@@ -6642,8 +6622,8 @@ var NetworkRequestTooltip = class _NetworkRequestTooltip extends UI11.Widget.Wid
     if (!this.#networkRequest) {
       return;
     }
-    const sdkNetworkRequest = SDK8.TraceObject.RevealableNetworkRequest.create(this.#networkRequest);
-    const networkConditions = sdkNetworkRequest && SDK8.NetworkManager.MultitargetNetworkManager.instance().appliedRequestConditions(sdkNetworkRequest.networkRequest);
+    const sdkNetworkRequest = SDK7.TraceObject.RevealableNetworkRequest.create(this.#networkRequest);
+    const networkConditions = sdkNetworkRequest && SDK7.NetworkManager.MultitargetNetworkManager.instance().appliedRequestConditions(sdkNetworkRequest.networkRequest);
     let throttlingTitle = void 0;
     if (networkConditions) {
       throttlingTitle = typeof networkConditions.conditions.title === "string" ? networkConditions.conditions.title : networkConditions.conditions.title();
@@ -6784,7 +6764,7 @@ var NetworkRequestDetails = class extends UI12.Widget.Widget {
       const headerName = header.name.toLocaleLowerCase();
       if (headerName === "server-timing" || headerName === "server-timing-test") {
         header.name = "server-timing";
-        this.#serverTimings = SDK9.ServerTiming.ServerTiming.parseHeaders([header]);
+        this.#serverTimings = SDK8.ServerTiming.ServerTiming.parseHeaders([header]);
         break;
       }
     }
@@ -6872,7 +6852,7 @@ function renderURL(request) {
     maxLength: MAX_URL_LENGTH3
   };
   const linkifiedURL = LegacyComponents3.Linkifier.Linkifier.linkifyURL(request.args.data.url, options);
-  const networkRequest = SDK9.TraceObject.RevealableNetworkRequest.create(request);
+  const networkRequest = SDK8.TraceObject.RevealableNetworkRequest.create(request);
   if (networkRequest) {
     linkifiedURL.addEventListener("contextmenu", (event) => {
       const contextMenu = new UI12.ContextMenu.ContextMenu(event);
@@ -6940,7 +6920,7 @@ function renderEncodedDataLength(request) {
   return renderRow(i18nString16(UIStrings17.encodedData), lengthText);
 }
 function renderBlockingRow(request) {
-  if (!Helpers7.Network.isSyntheticNetworkRequestEventRenderBlocking(request)) {
+  if (!Helpers8.Network.isSyntheticNetworkRequestEventRenderBlocking(request)) {
     return Lit16.nothing;
   }
   let renderBlockingText;
@@ -7247,7 +7227,7 @@ __export(SidebarAnnotationsTab_exports, {
 import "./../../../ui/components/settings/settings.js";
 import * as Common6 from "./../../../core/common/common.js";
 import * as i18n37 from "./../../../core/i18n/i18n.js";
-import * as Platform9 from "./../../../core/platform/platform.js";
+import * as Platform8 from "./../../../core/platform/platform.js";
 import * as Trace9 from "./../../../models/trace/trace.js";
 import * as TraceBounds3 from "./../../../services/trace_bounds/trace_bounds.js";
 import * as UI14 from "./../../../ui/legacy/legacy.js";
@@ -7485,7 +7465,7 @@ var SidebarAnnotationsTab = class extends UI14.Widget.Widget {
         return annotation.bounds.min;
       }
       default: {
-        Platform9.assertNever(annotation, `Invalid annotation type ${annotation}`);
+        Platform8.assertNever(annotation, `Invalid annotation type ${annotation}`);
       }
     }
   }
@@ -7552,7 +7532,7 @@ function detailedAriaDescriptionForAnnotation(annotation) {
       });
     }
     default:
-      Platform9.assertNever(annotation, "Unsupported annotation");
+      Platform8.assertNever(annotation, "Unsupported annotation");
   }
 }
 function findTextColorForContrast(bgColorText) {
@@ -7611,7 +7591,7 @@ function renderAnnotationIdentifier(annotation, annotationEntryToColorMap) {
     `;
     }
     default:
-      Platform9.assertNever(annotation, "Unsupported annotation type");
+      Platform8.assertNever(annotation, "Unsupported annotation type");
   }
 }
 function renderEntryToIdentifier(annotation, annotationEntryToColorMap) {
@@ -7639,7 +7619,7 @@ function jslogForAnnotation(annotation) {
     case "ENTRIES_LINK":
       return "entries-link";
     default:
-      Platform9.assertNever(annotation, "unknown annotation type");
+      Platform8.assertNever(annotation, "unknown annotation type");
   }
 }
 function renderTutorial() {
@@ -7715,7 +7695,7 @@ import * as Trace11 from "./../../../models/trace/trace.js";
 import * as Buttons9 from "./../../../ui/components/buttons/buttons.js";
 import * as UI16 from "./../../../ui/legacy/legacy.js";
 import * as Lit20 from "./../../../ui/lit/lit.js";
-import * as Utils from "./../utils/utils.js";
+import * as Utils2 from "./../utils/utils.js";
 import * as Insights8 from "./insights/insights.js";
 
 // gen/front_end/panels/timeline/components/sidebarInsightsTab.css.js
@@ -7833,6 +7813,27 @@ var sidebarSingleInsightSet_css_default = `/*
 
 // gen/front_end/panels/timeline/components/SidebarSingleInsightSet.js
 var { html: html19 } = Lit19.StaticHtml;
+var INSIGHT_NAME_TO_COMPONENT = {
+  Cache: Insights6.Cache.Cache,
+  CharacterSet: Insights6.CharacterSet.CharacterSet,
+  CLSCulprits: Insights6.CLSCulprits.CLSCulprits,
+  DocumentLatency: Insights6.DocumentLatency.DocumentLatency,
+  DOMSize: Insights6.DOMSize.DOMSize,
+  DuplicatedJavaScript: Insights6.DuplicatedJavaScript.DuplicatedJavaScript,
+  FontDisplay: Insights6.FontDisplay.FontDisplay,
+  ForcedReflow: Insights6.ForcedReflow.ForcedReflow,
+  ImageDelivery: Insights6.ImageDelivery.ImageDelivery,
+  INPBreakdown: Insights6.INPBreakdown.INPBreakdown,
+  LCPDiscovery: Insights6.LCPDiscovery.LCPDiscovery,
+  LCPBreakdown: Insights6.LCPBreakdown.LCPBreakdown,
+  LegacyJavaScript: Insights6.LegacyJavaScript.LegacyJavaScript,
+  ModernHTTP: Insights6.ModernHTTP.ModernHTTP,
+  NetworkDependencyTree: Insights6.NetworkDependencyTree.NetworkDependencyTree,
+  RenderBlocking: Insights6.RenderBlocking.RenderBlocking,
+  SlowCSSSelector: Insights6.SlowCSSSelector.SlowCSSSelector,
+  ThirdParties: Insights6.ThirdParties.ThirdParties,
+  Viewport: Insights6.Viewport.Viewport
+};
 var UIStrings20 = {
   /**
    * @description Summary text for an expandable dropdown that contains all insights in a passing state.
@@ -7876,8 +7877,7 @@ var DEFAULT_VIEW10 = (input, output, target) => {
 };
 var SidebarSingleInsightSet = class _SidebarSingleInsightSet extends UI15.Widget.Widget {
   #view;
-  #insightRenderer = new Insights6.InsightRenderer.InsightRenderer();
-  #activeInsightElement = null;
+  #isActiveInsightHighlighted = false;
   #activeHighlightTimeout = -1;
   #data = {
     insightSetKey: null,
@@ -7897,18 +7897,17 @@ var SidebarSingleInsightSet = class _SidebarSingleInsightSet extends UI15.Widget
     super.willHide();
     window.clearTimeout(this.#activeHighlightTimeout);
   }
-  highlightActiveInsight() {
-    if (!this.#activeInsightElement) {
-      return;
-    }
-    this.#activeInsightElement.removeAttribute("highlight-insight");
+  async highlightActiveInsight() {
     window.clearTimeout(this.#activeHighlightTimeout);
-    requestAnimationFrame(() => {
-      this.#activeInsightElement?.setAttribute("highlight-insight", "true");
-      this.#activeHighlightTimeout = window.setTimeout(() => {
-        this.#activeInsightElement?.removeAttribute("highlight-insight");
-      }, 2e3);
-    });
+    this.#isActiveInsightHighlighted = false;
+    this.requestUpdate();
+    await this.updateComplete;
+    this.#isActiveInsightHighlighted = true;
+    this.requestUpdate();
+    this.#activeHighlightTimeout = window.setTimeout(() => {
+      this.#isActiveInsightHighlighted = false;
+      this.requestUpdate();
+    }, 2e3);
   }
   static categorizeInsights(insightSets, insightSetKey, activeCategory) {
     if (!insightSets || !(insightSets instanceof Map)) {
@@ -7939,15 +7938,24 @@ var SidebarSingleInsightSet = class _SidebarSingleInsightSet extends UI15.Widget
     const { insightName, model } = insightData;
     const activeInsight = this.#data.activeInsight;
     const agentFocus = AIAssistance.AIContext.AgentFocus.fromInsight(this.#data.parsedTrace, model);
-    const widgetElement = this.#insightRenderer.renderInsightToWidgetElement(this.#data.parsedTrace, insightSet, model, insightName, {
-      selected: activeInsight?.model === model,
+    const isActiveInsight = activeInsight?.model === model;
+    const componentClass = INSIGHT_NAME_TO_COMPONENT[insightName];
+    const widgetConfig2 = {
+      selected: isActiveInsight,
+      // The `model` passed in as a parameter is the base type, but since
+      // `componentClass` is the union of every derived insight component, the
+      // `model` for the widget config is the union of every model. That can't be
+      // satisfied, so disable typescript.
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      model,
+      bounds: insightSet.bounds,
+      insightSetKey: insightSet.id,
       agentFocus,
       fieldMetrics
-    });
-    if (activeInsight?.model === model) {
-      this.#activeInsightElement = widgetElement;
-    }
-    return html19`${widgetElement}`;
+    };
+    return html19`<devtools-widget class="insight-component-widget" ?highlight-insight=${isActiveInsight && this.#isActiveInsightHighlighted}
+      ${widget3(componentClass, widgetConfig2)}
+    ></devtools-widget>`;
   }
   performUpdate() {
     const { parsedTrace, insightSetKey } = this.#data;
@@ -8129,7 +8137,7 @@ var SidebarInsightsTab = class extends UI16.Widget.Widget {
       return;
     }
     const set = this.element.shadowRoot?.querySelector(`[data-insight-set-key="${this.#activeInsight.insightSetKey}"]`);
-    set?.getWidget()?.highlightActiveInsight();
+    void set?.getWidget()?.highlightActiveInsight();
   }
   performUpdate() {
     if (!this.#parsedTrace?.insights) {
@@ -8138,7 +8146,7 @@ var SidebarInsightsTab = class extends UI16.Widget.Widget {
     const insightSets = [...this.#parsedTrace.insights.values()];
     const input = {
       parsedTrace: this.#parsedTrace,
-      labels: Utils.Helpers.createUrlLabels(insightSets.map(({ url }) => url)),
+      labels: Utils2.Helpers.createUrlLabels(insightSets.map(({ url }) => url)),
       activeInsightSet: this.#selectedInsightSet,
       activeInsight: this.#activeInsight,
       selectedCategory: this.#selectedCategory,
@@ -8306,7 +8314,7 @@ var InsightsView = class extends UI17.Widget.VBox {
     widget4.activeInsight = active;
     if (opts.highlight && active) {
       void widget4.updateComplete.then(() => {
-        widget4.highlightActiveInsight();
+        void widget4.highlightActiveInsight();
       });
     }
   }

@@ -544,7 +544,6 @@ export class BreakpointDebuggerAgent extends AiAgent {
         }
         yield {
             type: "context" /* ResponseType.CONTEXT */,
-            title: 'Analyzing breakpoint location',
             details: [{ title: 'Location', text: selectedBreakpoint.getTitle() }]
         };
     }

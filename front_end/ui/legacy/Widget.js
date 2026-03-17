@@ -155,15 +155,17 @@ export class WidgetElement extends HTMLElement {
     }
     set widgetConfig(config) {
         const widget = Widget.get(this);
-        if (widget) {
+        if (widget && config.widgetParams) {
             let needsUpdate = false;
             for (const key in config.widgetParams) {
-                if (config.widgetParams.hasOwnProperty(key) && config.widgetParams[key] !== this.#widgetParams?.[key]) {
+                if (Object.prototype.hasOwnProperty.call(config.widgetParams, key) &&
+                    config.widgetParams[key] !== this.#widgetParams?.[key]) {
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    widget[key] = config.widgetParams[key];
                     needsUpdate = true;
                 }
             }
             if (needsUpdate) {
-                Object.assign(widget, config.widgetParams);
                 widget.requestUpdate();
             }
         }

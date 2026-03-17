@@ -11,7 +11,6 @@ __export(Configuration_exports, {
   defaults: () => defaults
 });
 var defaults = () => ({
-  includeRuntimeCallStats: false,
   showAllEvents: false,
   debugMode: false,
   maxInvalidationEventsPerEvent: 20,

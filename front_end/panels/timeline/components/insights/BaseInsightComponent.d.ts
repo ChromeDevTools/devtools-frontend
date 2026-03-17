@@ -17,6 +17,13 @@ interface ViewInput {
     dispatchInsightToggle: () => void;
     onHeaderKeyDown: (event: KeyboardEvent) => void;
     onAskAIButtonClick: () => void;
+    /**
+     * Minimal mode hides the component's header and AI buttons, and ensures that the
+     * component is rendered as expanded (not closed).
+     *
+     * It is used when rendering an insight in a widget within the AI assistance panel.
+     */
+    minimal?: boolean;
 }
 type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 export interface BaseInsightData {
@@ -35,6 +42,8 @@ export declare abstract class BaseInsightComponent<T extends InsightModel> exten
     protected hasAskAiSupport(): boolean;
     set selected(selected: boolean);
     get selected(): boolean;
+    set minimal(minimal: boolean);
+    get minimal(): boolean;
     set model(model: T);
     set insightSetKey(insightSetKey: string | null);
     get bounds(): Trace.Types.Timing.TraceWindowMicro | null;

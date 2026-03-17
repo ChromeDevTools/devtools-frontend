@@ -9,7 +9,9 @@ import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as Tracing from '../../../services/tracing/tracing.js';
 import * as Annotations from '../../annotations/annotations.js';
+import * as Logs from '../../logs/logs.js';
 import * as SourceMapScopes from '../../source_map_scopes/source_map_scopes.js';
+import * as TextUtils from '../../text_utils/text_utils.js';
 import * as Trace from '../../trace/trace.js';
 import { PerformanceInsightFormatter, } from '../data_formatters/PerformanceInsightFormatter.js';
 import { PerformanceTraceFormatter } from '../data_formatters/PerformanceTraceFormatter.js';
@@ -18,10 +20,6 @@ import { AICallTree } from '../performance/AICallTree.js';
 import { AgentFocus } from '../performance/AIContext.js';
 import { AiAgent, ConversationContext, } from './AiAgent.js';
 const UIStringsNotTranslated = {
-    /**
-     *@description Shown when the agent is investigating a trace
-     */
-    analyzingTrace: 'Analyzing trace',
     /**
      * @description Shown when the agent is investigating network activity
      */
@@ -269,7 +267,6 @@ export class PerformanceAgent extends AiAgent {
     #formatter = null;
     #lastEventForEnhancedQuery;
     #lastInsightForEnhancedQuery;
-    #hasShownAnalyzeTraceContext = false;
     /**
      * Cache of all function calls made by the agent. This allows us to include (as a
      * fact) every function call to conversation requests, allowing the AI to access
@@ -322,9 +319,6 @@ export class PerformanceAgent extends AiAgent {
         if (!context) {
             return;
         }
-        if (this.#hasShownAnalyzeTraceContext) {
-            return;
-        }
         const widgets = [];
         const primaryInsightSet = context.getItem().primaryInsightSet;
         if (primaryInsightSet) {
@@ -338,7 +332,6 @@ export class PerformanceAgent extends AiAgent {
         }
         yield {
             type: "context" /* ResponseType.CONTEXT */,
-            title: lockedString(UIStringsNotTranslated.analyzingTrace),
             details: [
                 {
                     title: 'Trace',
@@ -347,7 +340,6 @@ export class PerformanceAgent extends AiAgent {
             ],
             widgets,
         };
-        this.#hasShownAnalyzeTraceContext = true;
     }
     #callTreeContextSet = new WeakSet();
     #isFunctionResponseTooLarge(response) {
@@ -628,7 +620,8 @@ export class PerformanceAgent extends AiAgent {
                 }
                 const details = new PerformanceInsightFormatter(focus, insight).formatInsight();
                 const widgets = [];
-                if (params.insightName === 'LCPDiscovery' || params.insightName === 'LCPBreakdown') {
+                if (Trace.Insights.Models.LCPDiscovery.isLCPDiscoveryInsight(insight) ||
+                    Trace.Insights.Models.LCPBreakdown.isLCPBreakdownInsight(insight)) {
                     const lcpMetric = Trace.Insights.Common.getLCP(insightSet);
                     const lcpEvent = lcpMetric?.event;
                     if (lcpEvent && Trace.Types.Events.isAnyLargestContentfulPaintCandidate(lcpEvent)) {
@@ -643,14 +636,37 @@ export class PerformanceAgent extends AiAgent {
                                 const node = nodeMap?.get(nodeId);
                                 if (node) {
                                     const snapshot = await node.takeSnapshot();
+                                    let networkRequest;
+                                    const lcpSyntheticRequest = insight.lcpRequest;
+                                    if (lcpSyntheticRequest) {
+                                        networkRequest = {
+                                            url: lcpSyntheticRequest.args.data.url,
+                                            size: lcpSyntheticRequest.args.data.decodedBodyLength ??
+                                                lcpSyntheticRequest.args.data.encodedDataLength ?? 0,
+                                            resourceType: lcpSyntheticRequest.args.data.resourceType,
+                                            mimeType: lcpSyntheticRequest.args.data.mimeType ?? '',
+                                            imageUrl: await this.#getNetworkRequestImageData(lcpSyntheticRequest),
+                                        };
+                                    }
                                     widgets.push({
                                         name: 'DOM_TREE',
-                                        data: { root: snapshot },
+                                        data: {
+                                            root: snapshot,
+                                            networkRequest,
+                                        },
                                     });
                                     processedNodeIds.add(nodeId);
                                 }
                             }
                         }
+                    }
+                    if (params.insightName === 'LCPBreakdown') {
+                        widgets.push({
+                            name: 'LCP_BREAKDOWN',
+                            data: {
+                                lcpData: insight,
+                            },
+                        });
                     }
                 }
                 const key = `getInsightDetails('${params.insightSetId}', '${params.insightName}')`;
@@ -1057,6 +1073,23 @@ export class PerformanceAgent extends AiAgent {
         }
         Annotations.AnnotationRepository.instance().addNetworkRequestAnnotation(annotationMessage, requestId);
         return { result: { success: true } };
+    }
+    async #getNetworkRequestImageData(lcpRequest) {
+        const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+        const networkManager = target?.model(SDK.NetworkManager.NetworkManager);
+        if (!target || !networkManager) {
+            return undefined;
+        }
+        const networkLog = Logs.NetworkLog.NetworkLog.instance();
+        const requestId = lcpRequest.args.data.requestId;
+        const sdkRequest = networkLog.requestByManagerAndId(networkManager, requestId);
+        if (sdkRequest?.contentType().isImage()) {
+            const contentData = await sdkRequest.requestContentData();
+            if (!TextUtils.ContentData.ContentData.isError(contentData)) {
+                return contentData.asDataUrl() ?? undefined;
+            }
+        }
+        return undefined;
     }
 }
 //# sourceMappingURL=PerformanceAgent.js.map

@@ -325,6 +325,7 @@ export class AiAgent {
                             type: "context-change" /* ResponseType.CONTEXT_CHANGE */,
                             description: result.description,
                             context: result.context,
+                            widgets: result.widgets,
                         };
                         return;
                     }

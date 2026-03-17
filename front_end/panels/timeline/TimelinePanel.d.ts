@@ -131,6 +131,7 @@ export declare class TimelinePanel extends TimelinePanel_base implements Client,
     }): Promise<void>;
     handleSaveToFileAction(): Promise<void>;
     showHistoryDropdown(): Promise<void>;
+    revealParsedTrace(revealable: ParsedTraceRevealable): void;
     navigateHistory(direction: number): boolean;
     selectFileToLoad(): void;
     loadFromFile(file: File): Promise<void>;
@@ -218,6 +219,13 @@ export interface TimelineModeViewDelegate {
 }
 export declare class TraceRevealer implements Common.Revealer.Revealer<SDK.TraceObject.TraceObject> {
     reveal(trace: SDK.TraceObject.TraceObject): Promise<void>;
+}
+export declare class ParsedTraceRevealer implements Common.Revealer.Revealer<ParsedTraceRevealable> {
+    reveal(traceRevealer: ParsedTraceRevealable): Promise<void>;
+}
+export declare class ParsedTraceRevealable {
+    parsedTrace: Trace.TraceModel.ParsedTrace;
+    constructor(parsedTrace: Trace.TraceModel.ParsedTrace);
 }
 export declare class EventRevealer implements Common.Revealer.Revealer<SDK.TraceObject.RevealableEvent> {
     reveal(rEvent: SDK.TraceObject.RevealableEvent): Promise<void>;

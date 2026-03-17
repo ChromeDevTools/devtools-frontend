@@ -48,10 +48,6 @@ This request aims to retrieve a list of products matching the search query "lapt
 */
 const UIStringsNotTranslate = {
     /**
-     * @description Title for thinking step of Network agent.
-     */
-    analyzingNetworkData: 'Analyzing network data',
-    /**
      * @description Heading text for the block that shows the network request details.
      */
     request: 'Request',
@@ -118,7 +114,6 @@ export class NetworkAgent extends AiAgent {
         }
         yield {
             type: "context" /* ResponseType.CONTEXT */,
-            title: lockedString(UIStringsNotTranslate.analyzingNetworkData),
             details: await createContextDetailsForNetworkAgent(selectedNetworkRequest),
         };
     }

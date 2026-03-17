@@ -2,17 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as Host from '../../../core/host/host.js';
-import * as i18n from '../../../core/i18n/i18n.js';
 import * as Root from '../../../core/root/root.js';
 import { AiAgent } from './AiAgent.js';
 import { PerformanceTraceContext } from './PerformanceAgent.js';
-const UIStringsNotTranslated = {
-    analyzingCallTree: 'Analyzing call tree',
-    /**
-     * @description Shown when the agent is investigating network activity
-     */
-};
-const lockedString = i18n.i18n.lockedString;
 /**
  * Preamble clocks in at ~970 tokens.
  *   The prose is around 4.5 chars per token.
@@ -108,7 +100,6 @@ export class PerformanceAnnotationsAgent extends AiAgent {
         const callTree = focus.callTree;
         yield {
             type: "context" /* ResponseType.CONTEXT */,
-            title: lockedString(UIStringsNotTranslated.analyzingCallTree),
             details: [
                 {
                     title: 'Selected call tree',

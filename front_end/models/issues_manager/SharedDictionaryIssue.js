@@ -14,8 +14,8 @@ const str_ = i18n.i18n.registerUIStrings('models/issues_manager/SharedDictionary
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 function getIssueCode(details) {
     switch (details.sharedDictionaryError) {
-        case "UseErrorCrossOriginNoCorsRequest" /* Protocol.Audits.SharedDictionaryError.UseErrorCrossOriginNoCorsRequest */:
-            return "SharedDictionaryIssue::UseErrorCrossOriginNoCorsRequest" /* IssueCode.USE_ERROR_CROSS_ORIGIN_NO_CORS_REQUEST */;
+        case "UseErrorNoCorpCrossOriginNoCorsRequest" /* Protocol.Audits.SharedDictionaryError.UseErrorNoCorpCrossOriginNoCorsRequest */:
+            return "SharedDictionaryIssue::UseErrorNoCorpCrossOriginNoCorsRequest" /* IssueCode.USE_ERROR_NO_CORP_CROSS_ORIGIN_NO_CORS_REQUEST */;
         case "UseErrorDictionaryLoadFailure" /* Protocol.Audits.SharedDictionaryError.UseErrorDictionaryLoadFailure */:
             return "SharedDictionaryIssue::UseErrorDictionaryLoadFailure" /* IssueCode.USE_ERROR_DICTIONARY_LOAD_FAILURE */;
         case "UseErrorMatchingDictionaryNotUsed" /* Protocol.Audits.SharedDictionaryError.UseErrorMatchingDictionaryNotUsed */:
@@ -40,6 +40,8 @@ function getIssueCode(details) {
             return "SharedDictionaryIssue::WriteErrorInvalidTTLField" /* IssueCode.WRITE_ERROR_INVALID_TTL_FIELD */;
         case "WriteErrorNavigationRequest" /* Protocol.Audits.SharedDictionaryError.WriteErrorNavigationRequest */:
             return "SharedDictionaryIssue::WriteErrorNavigationRequest" /* IssueCode.WRITE_ERROR_NAVIGATION_REQUEST */;
+        case "WriteErrorNoCorpCossOriginNoCorsRequest" /* Protocol.Audits.SharedDictionaryError.WriteErrorNoCorpCossOriginNoCorsRequest */:
+            return "SharedDictionaryIssue::WriteErrorNoCorpCossOriginNoCorsRequest" /* IssueCode.WRITE_ERROR_NO_CORP_COSS_ORIGIN_NO_CORS_REQUEST */;
         case "WriteErrorNoMatchField" /* Protocol.Audits.SharedDictionaryError.WriteErrorNoMatchField */:
             return "SharedDictionaryIssue::WriteErrorNoMatchField" /* IssueCode.WRITE_ERROR_NO_MATCH_FIELD */;
         case "WriteErrorNonIntegerTTLField" /* Protocol.Audits.SharedDictionaryError.WriteErrorNonIntegerTTLField */:
@@ -115,9 +117,9 @@ const specLinks = [{
     }];
 const issueDescriptions = new Map([
     [
-        "UseErrorCrossOriginNoCorsRequest" /* Protocol.Audits.SharedDictionaryError.UseErrorCrossOriginNoCorsRequest */,
+        "UseErrorNoCorpCrossOriginNoCorsRequest" /* Protocol.Audits.SharedDictionaryError.UseErrorNoCorpCrossOriginNoCorsRequest */,
         {
-            file: 'sharedDictionaryUseErrorCrossOriginNoCorsRequest.md',
+            file: 'sharedDictionaryUseErrorNoCorpCrossOriginNoCorsRequest.md',
             links: specLinks,
         },
     ],
@@ -202,6 +204,13 @@ const issueDescriptions = new Map([
         "WriteErrorNavigationRequest" /* Protocol.Audits.SharedDictionaryError.WriteErrorNavigationRequest */,
         {
             file: 'sharedDictionaryWriteErrorNavigationRequest.md',
+            links: specLinks,
+        },
+    ],
+    [
+        "WriteErrorNoCorpCossOriginNoCorsRequest" /* Protocol.Audits.SharedDictionaryError.WriteErrorNoCorpCossOriginNoCorsRequest */,
+        {
+            file: 'sharedDictionaryWriteErrorNoCorpCossOriginNoCorsRequest.md',
             links: specLinks,
         },
     ],

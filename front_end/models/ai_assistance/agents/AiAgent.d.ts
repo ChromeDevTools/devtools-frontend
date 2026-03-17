@@ -54,7 +54,6 @@ export interface ContextDetail {
 }
 export interface ContextResponse {
     type: ResponseType.CONTEXT;
-    title: string;
     details: [ContextDetail, ...ContextDetail[]];
     widgets?: AiWidget[];
 }
@@ -83,6 +82,7 @@ export interface ContextChangeResponse {
      */
     description: string;
     context: ConversationContext<unknown>;
+    widgets?: AiWidget[];
 }
 interface SerializedSideEffectResponse extends Omit<SideEffectResponse, 'confirm'> {
 }
@@ -191,9 +191,28 @@ export interface DomTreeAiWidget {
     name: 'DOM_TREE';
     data: {
         root: SDK.DOMModel.DOMNodeSnapshot;
+        networkRequest?: {
+            url: string;
+            size: number;
+            resourceType: Protocol.Network.ResourceType;
+            mimeType: string;
+            imageUrl?: string;
+        };
     };
 }
-export type AiWidget = ComputedStyleAiWidget | CoreVitalsAiWidget | StylePropertiesAiWidget | DomTreeAiWidget;
+export interface PerformanceTraceAiWidget {
+    name: 'PERFORMANCE_TRACE';
+    data: {
+        parsedTrace: Trace.TraceModel.ParsedTrace;
+    };
+}
+export interface LcpBreakdownAiWidget {
+    name: 'LCP_BREAKDOWN';
+    data: {
+        lcpData: Trace.Insights.Models.LCPBreakdown.LCPBreakdownInsightModel;
+    };
+}
+export type AiWidget = ComputedStyleAiWidget | CoreVitalsAiWidget | StylePropertiesAiWidget | DomTreeAiWidget | PerformanceTraceAiWidget | LcpBreakdownAiWidget;
 export type FunctionCallHandlerResult<Result> = {
     requiresApproval: true;
     /**
@@ -207,6 +226,7 @@ export type FunctionCallHandlerResult<Result> = {
 } | {
     context: ConversationContext<unknown>;
     description: string;
+    widgets?: AiWidget[];
 } | {
     error: string;
 };

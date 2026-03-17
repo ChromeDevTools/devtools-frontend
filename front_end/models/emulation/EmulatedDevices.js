@@ -166,7 +166,8 @@ export class EmulatedDevice {
             result.order = parseValue(json, 'order', 'number', 0);
             const rawUserAgent = parseValue(json, 'user-agent', 'string');
             result.userAgent = SDK.NetworkManager.MultitargetNetworkManager.patchUserAgentWithChromeVersion(rawUserAgent);
-            result.userAgentMetadata = parseValue(json, 'user-agent-metadata', 'object', null);
+            const userAgentMetadata = parseValue(json, 'user-agent-metadata', 'object', null);
+            result.userAgentMetadata = result.userAgent ? userAgentMetadata : null;
             const capabilities = parseValue(json, 'capabilities', 'object', []);
             if (!Array.isArray(capabilities)) {
                 throw new Error('Emulated device capabilities must be an array');
@@ -311,7 +312,7 @@ export class EmulatedDevice {
         json['dual-screen'] = this.isDualScreen;
         json['foldable-screen'] = this.isFoldableScreen;
         json['show'] = this.#show;
-        if (this.userAgentMetadata) {
+        if (this.userAgent && this.userAgentMetadata) {
             json['user-agent-metadata'] = this.userAgentMetadata;
         }
         return json;

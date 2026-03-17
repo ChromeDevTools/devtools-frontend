@@ -60,22 +60,6 @@ const CustomChrome = function(this: any, _baseBrowserDecorator: unknown, args: B
       this._onProcessExit(code, signal, '');
     });
 
-    await (async function dumpCommandLineVariationsToFile() {
-      const versionPage = await browser.newPage();
-      await versionPage.goto('chrome://version/?show-variations-cmd');
-      const commandLineText =
-          await versionPage.waitForSelector('#variations-cmd').then(handle => handle?.evaluate(el => el.textContent));
-      await versionPage.close();
-
-      if (commandLineText) {
-        fs.writeFileSync(
-            path.join(TestConfig.artifactsDir, 'variations-cmd.txt'),
-            commandLineText,
-            {encoding: 'utf-8'},
-        );
-      }
-    })();
-
     const page = await browser.newPage();
 
     async function setupBindings(page: Page) {

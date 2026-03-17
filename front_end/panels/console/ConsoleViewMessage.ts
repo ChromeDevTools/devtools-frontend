@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-imperative-dom-api */
+/* eslint-disable @devtools/no-lit-render-outside-of-view */
 
 /*
  * Copyright (C) 2011 Google Inc.  All rights reserved.
@@ -59,7 +60,7 @@ import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import objectValueStyles from '../../ui/legacy/components/object_ui/objectValue.css.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import {render} from '../../ui/lit/lit.js';
+import {type LitTemplate, nothing, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as AiAssistancePanel from '../ai_assistance/ai_assistance.js';
 
@@ -374,22 +375,20 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     this.consoleGroupInternal = null;
   }
 
-  setInsight(insight: HTMLElement): void {
-    this.elementInternal?.querySelector('.devtools-console-insight')?.remove();
-    this.elementInternal?.append(insight);
-    this.elementInternal?.classList.toggle('has-insight', true);
-    insight.addEventListener('close', () => {
-      Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightClosed);
-      this.elementInternal?.classList.toggle('has-insight', false);
-      const widget = UI.Widget.Widget.get(insight);
-      if (widget) {
-        widget.detach();
-      } else {
-        this.elementInternal?.removeChild(insight);
-      }
-      this.#teaser?.setInactive(false);
-    }, {once: true});
-    this.#teaser?.setInactive(true);
+  setInsight(insight: LitTemplate): void {
+    if (this.elementInternal) {
+      render(insight, this.elementInternal);
+      this.elementInternal.classList.toggle('has-insight', true);
+      this.elementInternal.addEventListener('closeinsight', () => {
+        Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightClosed);
+        if (this.elementInternal) {
+          this.elementInternal.classList.toggle('has-insight', false);
+          render(nothing, this.elementInternal);
+        }
+        this.#teaser?.setInactive(false);
+      }, {once: true});
+      this.#teaser?.setInactive(true);
+    }
   }
 
   element(): HTMLElement {
@@ -870,7 +869,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     const renderPreview = (includeNullOrUndefined: boolean): void => {
       if (obj.preview) {
         titleElement.classList.add('console-object-preview');
-        /* eslint-disable-next-line  @devtools/no-lit-render-outside-of-view */
+
         render(this.previewFormatter.renderObjectPreview(obj.preview, includeNullOrUndefined), titleElement);
         ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection.appendMemoryIcon(titleElement, obj);
       }
@@ -1043,7 +1042,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
       type: string, subtype: string|undefined, className: string|null|undefined,
       description: string|undefined): DocumentFragment {
     const fragment = document.createDocumentFragment();
-    /* eslint-disable-next-line  @devtools/no-lit-render-outside-of-view */
+
     render(this.previewFormatter.renderPropertyPreview(type, subtype, className, description), fragment);
     return fragment;
   }

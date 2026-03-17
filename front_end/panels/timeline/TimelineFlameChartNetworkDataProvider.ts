@@ -1,6 +1,7 @@
 // Copyright 2016 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+/* eslint-disable @devtools/no-lit-render-outside-of-view */
 
 import type * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -10,6 +11,7 @@ import * as Trace from '../../models/trace/trace.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
+import {html, render} from '../../ui/lit/lit.js';
 
 import * as TimelineComponents from './components/components.js';
 import {initiatorsDataToDrawForNetwork} from './Initiators.js';
@@ -399,10 +401,13 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
     if (Trace.Types.Events.isSyntheticNetworkRequest(event)) {
       const element = document.createElement('div');
       const root = UI.UIUtils.createShadowRootWithCoreStyles(element, {cssFile: timelineFlamechartPopoverStyles});
-      const contents = root.createChild('div', 'timeline-flamechart-popover');
-      const infoElement = TimelineComponents.NetworkRequestTooltip.NetworkRequestTooltip.createWidgetElement(
-          event, this.#entityMapper || undefined);
-      contents.appendChild(infoElement);
+      // clang-format off
+      render(html`
+        <div class="timeline-flamechart-popover">
+          ${TimelineComponents.NetworkRequestTooltip.NetworkRequestTooltip.createWidgetElement(
+                    event, this.#entityMapper || undefined)}
+        </div>`, root);
+      // clang-format on
       return element;
     }
 

@@ -140,6 +140,7 @@ function renderDropdownIcon(insightSetToggled: boolean): Lit.TemplateResult {
 export class SidebarInsightsTab extends UI.Widget.Widget {
   static createWidgetElement(): UI.Widget.WidgetElement<SidebarInsightsTab> {
     const widgetElement = document.createElement('devtools-widget') as UI.Widget.WidgetElement<SidebarInsightsTab>;
+    new SidebarInsightsTab(widgetElement);
     return widgetElement;
   }
 

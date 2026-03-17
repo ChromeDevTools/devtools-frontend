@@ -189,27 +189,24 @@ class InsightsView extends UI.Widget.VBox {
   constructor() {
     super();
     this.element.classList.add('sidebar-insights');
-    this.element.appendChild(this.#component);
+    this.#getWidget().show(this.element);
+  }
+
+  #getWidget(): SidebarInsightsTab {
+    return UI.Widget.Widget.get(this.#component) as SidebarInsightsTab;
   }
 
   setParsedTrace(parsedTrace: Trace.TraceModel.ParsedTrace|null): void {
-    this.#component.widgetConfig = UI.Widget.widgetConfig(SidebarInsightsTab, {parsedTrace});
+    const widget = this.#getWidget();
+    widget.parsedTrace = parsedTrace;
   }
 
   getActiveInsight(): ActiveInsight|null {
-    const widget = this.#component.getWidget();
-    if (widget) {
-      return widget.activeInsight;
-    }
-
-    return null;
+    return this.#getWidget().activeInsight;
   }
 
   setActiveInsight(active: ActiveInsight|null, opts: {highlight: boolean}): void {
-    const widget = this.#component.getWidget();
-    if (!widget) {
-      return;
-    }
+    const widget = this.#getWidget();
 
     widget.activeInsight = active;
     if (opts.highlight && active) {
@@ -223,12 +220,7 @@ class InsightsView extends UI.Widget.VBox {
   }
 
   setActiveInsightSet(insightSetKey: string): void {
-    const widget = this.#component.getWidget();
-    if (!widget) {
-      return;
-    }
-
-    widget.setActiveInsightSet(insightSetKey);
+    this.#getWidget().setActiveInsightSet(insightSetKey);
   }
 }
 

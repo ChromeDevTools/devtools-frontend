@@ -291,10 +291,12 @@ export abstract class BaseInsightComponent<T extends InsightModel> extends UI.Wi
 
   set agentFocus(agentFocus: AIAssistance.AIContext.AgentFocus|null) {
     this.#agentFocus = agentFocus;
+    this.requestUpdate();
   }
 
   set fieldMetrics(fieldMetrics: Trace.Insights.Common.CrUXFieldMetricResults|null) {
     this.#fieldMetrics = fieldMetrics;
+    this.requestUpdate();
   }
 
   get fieldMetrics(): Trace.Insights.Common.CrUXFieldMetricResults|null {

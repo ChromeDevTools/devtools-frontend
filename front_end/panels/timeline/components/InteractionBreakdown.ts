@@ -58,7 +58,8 @@ export class InteractionBreakdown extends UI.Widget.Widget {
   static createWidgetElement(entry: Trace.Types.Events.SyntheticInteractionPair):
       UI.Widget.WidgetElement<InteractionBreakdown> {
     const widgetElement = document.createElement('devtools-widget') as UI.Widget.WidgetElement<InteractionBreakdown>;
-    widgetElement.widgetConfig = UI.Widget.widgetConfig(InteractionBreakdown, {entry});
+    const widget = new InteractionBreakdown(widgetElement);
+    widget.entry = entry;
     return widgetElement;
   }
 

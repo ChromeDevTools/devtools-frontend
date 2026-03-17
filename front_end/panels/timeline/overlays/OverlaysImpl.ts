@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-imperative-dom-api */
+/* eslint-disable @devtools/no-lit-render-outside-of-view */
 
 import * as Common from '../../../core/common/common.js';
 import * as i18n from '../../../core/i18n/i18n.js';
@@ -10,6 +11,7 @@ import * as AIAssistance from '../../../models/ai_assistance/ai_assistance.js';
 import * as Trace from '../../../models/trace/trace.js';
 import type * as PerfUI from '../../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../../ui/legacy/legacy.js';
+import {html, render} from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import * as Components from './components/components.js';
@@ -39,6 +41,7 @@ const UIStrings = {
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/overlays/OverlaysImpl.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+const {widget} = UI.Widget;
 
 /**
  * Below the network track there is a resize bar the user can click and drag.
@@ -1561,16 +1564,13 @@ export class Overlays extends EventTarget {
         return overlayElement;
       }
       case 'TIMESPAN_BREAKDOWN': {
-        const widget = document.createElement('devtools-widget') as
-            UI.Widget.WidgetElement<Components.TimespanBreakdownOverlay.TimespanBreakdownOverlay>;
-
-        widget.widgetConfig = UI.Widget.widgetConfig(Components.TimespanBreakdownOverlay.TimespanBreakdownOverlay, {
+        // clang-format off
+        render(html`${widget(Components.TimespanBreakdownOverlay.TimespanBreakdownOverlay, {
           isBelowEntry: overlay.renderLocation === 'BELOW_EVENT',
           canvasRect: this.#charts.mainChart.canvasBoundingClientRect(),
           sections: overlay.sections,
-        });
-
-        overlayElement.appendChild(widget);
+        })}`, overlayElement);
+        // clang-format on
 
         return overlayElement;
       }

@@ -882,7 +882,12 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       popoverContents.appendChild(warningElement);
     }
     for (const elem of additionalContent) {
-      popoverContents.appendChild(elem);
+      const widget = UI.Widget.Widget.get(elem);
+      if (widget) {
+        widget.show(popoverContents, undefined, /* suppressOprhanWidgetError= */ true);
+      } else {
+        popoverContents.appendChild(elem);
+      }
     }
     return popoverElement;
   }

@@ -17,6 +17,7 @@ import networkRequestTooltipStyles from './networkRequestTooltip.css.js';
 import {colorForNetworkRequest, networkResourceCategory} from './Utils.js';
 
 const {html, nothing, Directives: {classMap, ifDefined}} = Lit;
+const {widget} = UI.Widget;
 
 const MAX_URL_LENGTH = 60;
 
@@ -123,13 +124,8 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
 export class NetworkRequestTooltip extends UI.Widget.Widget {
   static createWidgetElement(
       request: Trace.Types.Events.SyntheticNetworkRequest,
-      entityMapper?: Trace.EntityMapper.EntityMapper): UI.Widget.WidgetElement<NetworkRequestTooltip> {
-    const widgetElement = document.createElement('devtools-widget') as UI.Widget.WidgetElement<NetworkRequestTooltip>;
-    widgetElement.widgetConfig = UI.Widget.widgetConfig(NetworkRequestTooltip, {
-      networkRequest: request,
-      entityMapper,
-    });
-    return widgetElement;
+      entityMapper?: Trace.EntityMapper.EntityMapper): Lit.LitTemplate {
+    return html`${widget(NetworkRequestTooltip, {networkRequest: request, entityMapper})}`;
   }
 
   #view: View;

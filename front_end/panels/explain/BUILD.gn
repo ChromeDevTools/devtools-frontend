@@ -27,6 +27,7 @@ devtools_ui_module("explain") {
     "../../third_party/marked:bundle",
     "../../ui/components/markdown_view:bundle",
     "../../ui/legacy:bundle",
+    "../../ui/lit:bundle",
     "../console:bundle",
     "../sources:bundle",
   ]

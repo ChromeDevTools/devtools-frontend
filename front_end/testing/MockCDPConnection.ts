@@ -4,10 +4,13 @@
 
 import * as ProtocolClient from '../core/protocol_client/protocol_client.js';
 
+export type CommandHandlerResponse<C extends ProtocolClient.CDPConnection.Command> = {
+  result: ProtocolClient.CDPConnection.CommandResult<C>,
+}|{error: ProtocolClient.CDPConnection.CDPError};
+
 export type CommandHandler<C extends ProtocolClient.CDPConnection.Command> =
     (params: ProtocolClient.CDPConnection.CommandParams<C>, sessionId: string|undefined) =>
-        Promise<{result: ProtocolClient.CDPConnection.CommandResult<C>}|{error: ProtocolClient.CDPConnection.CDPError}>|
-    {result: ProtocolClient.CDPConnection.CommandResult<C>}|{error: ProtocolClient.CDPConnection.CDPError};
+        Promise<CommandHandlerResponse<C>>|CommandHandlerResponse<C>;
 
 export type CommandAndHandler<C extends ProtocolClient.CDPConnection.Command> = [C, CommandHandler<C>];
 

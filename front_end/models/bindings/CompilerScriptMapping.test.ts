@@ -6,9 +6,9 @@ import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
-import {createTarget} from '../../testing/EnvironmentHelpers.js';
-import {describeWithMockConnection} from '../../testing/MockConnection.js';
-import {MockProtocolBackend} from '../../testing/MockScopeChain.js';
+import {MockDebuggerBackend} from '../../testing/MockScopeChain.js';
+import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
+import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
 import {encodeSourceMap, waitForAllSourceMapsProcessed} from '../../testing/SourceMapEncoder.js';
 import {protocolCallFrame, stringifyFrame} from '../../testing/StackTraceHelpers.js';
 import * as ScopesCodec from '../../third_party/source-map-scopes-codec/source-map-scopes-codec.js';
@@ -19,24 +19,17 @@ import * as Bindings from './bindings.js';
 
 const {urlString} = Platform.DevToolsPath;
 
-describeWithMockConnection('CompilerScriptMapping', () => {
-  let backend: MockProtocolBackend;
+describe('CompilerScriptMapping', () => {
+  setupRuntimeHooks();
+  setupSettingsHooks();
+
+  let backend: MockDebuggerBackend;
   let debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding;
   let workspace: Workspace.Workspace.WorkspaceImpl;
 
   beforeEach(() => {
-    const targetManager = SDK.TargetManager.TargetManager.instance();
-    workspace = Workspace.Workspace.WorkspaceImpl.instance({forceNew: true});
-    const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
-    const ignoreListManager = Workspace.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
-    debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
-      forceNew: true,
-      resourceMapping,
-      targetManager,
-      ignoreListManager,
-      workspace,
-    });
-    backend = new MockProtocolBackend();
+    backend = new MockDebuggerBackend();
+    ({debuggerWorkspaceBinding, workspace} = backend.universe);
   });
 
   afterEach(async () => {
@@ -58,7 +51,7 @@ describeWithMockConnection('CompilerScriptMapping', () => {
       });
 
   it('creates UISourceCodes with the correct content type', async () => {
-    const target = createTarget();
+    const target = backend.createTarget();
 
     const sourceRoot = 'http://example.com';
     const sources = ['foo.js', 'bar.ts', 'baz.jsx'];
@@ -75,7 +68,7 @@ describeWithMockConnection('CompilerScriptMapping', () => {
   });
 
   it('removes webpack hashes from display names', async () => {
-    const target = createTarget();
+    const target = backend.createTarget();
 
     const sourceRoot = 'http://example.com';
     const sources = ['foo.js?a1b2', 'two%20words.ts?c3d4', '?e5f6'];
@@ -93,7 +86,7 @@ describeWithMockConnection('CompilerScriptMapping', () => {
   });
 
   it('creates UISourceCodes with the correct media type', async () => {
-    const target = createTarget();
+    const target = backend.createTarget();
 
     const sourceRoot = 'http://example.com';
     const scriptInfo = {
@@ -118,7 +111,7 @@ describeWithMockConnection('CompilerScriptMapping', () => {
   });
 
   it('creates UISourceCodes with the correct content and metadata', async () => {
-    const target = createTarget();
+    const target = backend.createTarget();
 
     const sourceRoot = 'http://example.com';
     const sourceContent = 'const x = 1; console.log(x)';
@@ -145,11 +138,11 @@ describeWithMockConnection('CompilerScriptMapping', () => {
 
   it('creates separate UISourceCodes for separate targets', async () => {
     // Create a main target and a worker child target.
-    const mainTarget = createTarget({
+    const mainTarget = backend.createTarget({
       id: 'main' as Protocol.Target.TargetID,
       type: SDK.Target.Type.FRAME,
     });
-    const workerTarget = createTarget({
+    const workerTarget = backend.createTarget({
       id: 'worker' as Protocol.Target.TargetID,
       type: SDK.Target.Type.ServiceWorker,
       parentTarget: mainTarget,
@@ -186,14 +179,19 @@ describeWithMockConnection('CompilerScriptMapping', () => {
       const uiLocation = await debuggerWorkspaceBinding.rawLocationToUILocation(rawLocation);
       assert.strictEqual(uiLocation!.uiSourceCode, uiSourceCode);
     }
+
+    await Promise.all([
+      mainTarget.model(SDK.DebuggerModel.DebuggerModel)!.sourceMapManager().waitForSourceMapsProcessedForTest(),
+      workerTarget.model(SDK.DebuggerModel.DebuggerModel)!.sourceMapManager().waitForSourceMapsProcessedForTest(),
+    ]);
   });
 
   it('creates separate UISourceCodes for content scripts', async () => {
     // By default content scripts are ignore listed, which will prevent processing the
     // source map. We need to disable that option.
-    Workspace.IgnoreListManager.IgnoreListManager.instance().unIgnoreListContentScripts();
+    backend.universe.ignoreListManager.unIgnoreListContentScripts();
 
-    const target = createTarget();
+    const target = backend.createTarget();
 
     const sourceRoot = 'http://example.com';
     const scriptInfo = {
@@ -233,7 +231,7 @@ describeWithMockConnection('CompilerScriptMapping', () => {
   });
 
   it('correctly marks known 3rdparty UISourceCodes', async () => {
-    const target = createTarget();
+    const target = backend.createTarget();
 
     const sourceRoot = 'http://example.com';
     const scriptInfo = {
@@ -263,7 +261,7 @@ describeWithMockConnection('CompilerScriptMapping', () => {
   });
 
   it('correctly maps to inline <script>s with `//# sourceURL` annotations', async () => {
-    const target = createTarget();
+    const target = backend.createTarget();
 
     const sourceRoot = 'http://example.com';
     const scriptInfo = {
@@ -303,7 +301,7 @@ describeWithMockConnection('CompilerScriptMapping', () => {
   });
 
   it('correctly removes UISourceCodes when detaching a sourcemap', async () => {
-    const target = createTarget();
+    const target = backend.createTarget();
 
     const sourceRoot = 'http://example.com';
     const scriptInfo = {
@@ -335,7 +333,7 @@ describeWithMockConnection('CompilerScriptMapping', () => {
   });
 
   it('correctly reports source-mapped lines', async () => {
-    const target = createTarget();
+    const target = backend.createTarget();
 
     const sourceRoot = 'http://example.com';
     const scriptInfo = {
@@ -371,7 +369,7 @@ describeWithMockConnection('CompilerScriptMapping', () => {
       // out a dedicated bundle for each route (`route1.js` and `route2.js`). The demo can be
       // found at https://devtools-source-identities.glitch.me/webpack-code-split/ for further
       // reference.
-      const target = createTarget();
+      const target = backend.createTarget();
       const sourceRoot = 'webpack:///src';
 
       // Load the script and source map for the first route.
@@ -453,7 +451,7 @@ describeWithMockConnection('CompilerScriptMapping', () => {
       //
       // This is a generalization of https://crbug.com/1403362 and http://crbug.com/1403432,
       // which both present special cases of the general stale mapping problem.
-      const target = createTarget();
+      const target = backend.createTarget();
       const sourceRoot = 'webpack:///src';
 
       // Load the original bundle.
@@ -533,7 +531,7 @@ describeWithMockConnection('CompilerScriptMapping', () => {
   });
 
   it('assumes UTF-8 encoding for source files embedded in source maps', async () => {
-    const target = createTarget();
+    const target = backend.createTarget();
 
     const sourceRoot = 'http://example.com';
     const sourceContent = 'console.log("Ahoj světe!");';
@@ -558,7 +556,7 @@ describeWithMockConnection('CompilerScriptMapping', () => {
 
   describe('translateRawFramesStep', () => {
     it('returns false for builtin frames', async () => {
-      const target = createTarget();
+      const target = backend.createTarget();
       const compilerScriptMapping = new Bindings.CompilerScriptMapping.CompilerScriptMapping(
           target.model(SDK.DebuggerModel.DebuggerModel)!, workspace, debuggerWorkspaceBinding);
 
@@ -569,7 +567,7 @@ describeWithMockConnection('CompilerScriptMapping', () => {
     it('translates a single frame using "proposal scopes" information', async () => {
       Root.Runtime.experiments.enableForTest(Root.ExperimentNames.ExperimentName.USE_SOURCE_MAP_SCOPES);
 
-      const target = createTarget();
+      const target = backend.createTarget();
       const compilerScriptMapping = new Bindings.CompilerScriptMapping.CompilerScriptMapping(
           target.model(SDK.DebuggerModel.DebuggerModel)!, workspace, debuggerWorkspaceBinding);
       const sourceMap = encodeSourceMap([
@@ -615,7 +613,7 @@ describeWithMockConnection('CompilerScriptMapping', () => {
     });
 
     it('translates a single frame using "fallback" scope information (created from AST and mappigns)', async () => {
-      const target = createTarget();
+      const target = backend.createTarget();
       const compilerScriptMapping = new Bindings.CompilerScriptMapping.CompilerScriptMapping(
           target.model(SDK.DebuggerModel.DebuggerModel)!, workspace, debuggerWorkspaceBinding);
       const sourceMap = encodeSourceMap([
@@ -654,7 +652,7 @@ describeWithMockConnection('CompilerScriptMapping', () => {
     it('expands inlined frames and populates UISourceCode', async () => {
       Root.Runtime.experiments.enableForTest(Root.ExperimentNames.ExperimentName.USE_SOURCE_MAP_SCOPES);
 
-      const target = createTarget();
+      const target = backend.createTarget();
       const compilerScriptMapping = new Bindings.CompilerScriptMapping.CompilerScriptMapping(
           target.model(SDK.DebuggerModel.DebuggerModel)!, workspace, debuggerWorkspaceBinding);
       //

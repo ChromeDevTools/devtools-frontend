@@ -131,6 +131,9 @@ export class TestUniverse {
           if (ctor === SDK.FrameManager.FrameManager.prototype.constructor) {
             return universe.frameManager as T;
           }
+          if (ctor === SDK.PageResourceLoader.PageResourceLoader.prototype.constructor) {
+            return universe.pageResourceLoader as T;
+          }
           throw new Error(`Class ${
               ctor.name} not set-up as a dependency for SDKModels in TestUniverse.ts. Add it to LazyContext#get in TestUniverse.ts`);
         }

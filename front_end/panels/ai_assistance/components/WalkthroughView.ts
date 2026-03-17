@@ -15,7 +15,9 @@ import walkthroughViewStyles from './walkthroughView.css.js';
 
 const lockedString = i18n.i18n.lockedString;
 
-const {html, render} = Lit;
+const {html, render, Directives} = Lit;
+const {ref} = Directives;
+const SCROLL_ROUND_OFFSET = 2;
 
 const UIStrings = {
   /**
@@ -46,6 +48,12 @@ export interface ViewInput {
   isExpanded: boolean;
   onToggle: (isOpen: boolean) => void;
   onOpen: (message: ModelChatMessage) => void;
+  handleScroll: (ev: Event) => void;
+}
+
+export interface ViewOutput {
+  scrollContainer?: HTMLElement;
+  stepsContainer?: HTMLElement;
 }
 
 export function walkthroughTitle(input: {
@@ -121,27 +129,33 @@ function renderSidebarWalkthrough(input: ViewInput, stepsOutput: Lit.LitTemplate
 
 export const DEFAULT_VIEW = (
     input: ViewInput,
-    _output: null,
+    output: ViewOutput,
     target: HTMLElement|DocumentFragment,
     ): void => {
   const steps = input.message?.parts.filter(t => t.type === 'step')?.map(p => p.step) ?? [];
 
   // clang-format off
   const stepsOutput = steps.length > 0 ? html`
-    <div class="steps-container">
-      ${steps.map((step, index) => html`
-        <div class="walkthrough-step">
-          <span class="step-number">${index+1}</span>
-          <div class="step-wrapper">
-            ${renderStep({
-              step,
-              isLoading: input.isLoading,
-              markdownRenderer: input.markdownRenderer,
-              isLast: index === steps.length - 1
-            })}
+    <div class="steps-container" @scroll=${input.handleScroll} ${ref(el => {
+      output.scrollContainer = el as HTMLElement;
+    })}>
+      <div class="steps-scroll-content" ${ref(el => {
+        output.stepsContainer = el as HTMLElement;
+    })}>
+        ${steps.map((step, index) => html`
+          <div class="walkthrough-step">
+            <span class="step-number">${index + 1}</span>
+            <div class="step-wrapper">
+              ${renderStep({
+                step,
+                isLoading: input.isLoading,
+                markdownRenderer: input.markdownRenderer,
+                isLast: index === steps.length - 1
+              })}
+            </div>
           </div>
-        </div>
-      `)}
+        `)}
+      </div>
     </div>
   ` : Lit.nothing;
 
@@ -172,10 +186,82 @@ export class WalkthroughView extends UI.Widget.Widget {
   #isInlined = false;
   #isExpanded = false;
 
+  #pinScrollToBottom = true;
+  #isProgrammaticScroll = false;
+
+  #output: ViewOutput = {};
+  #stepsContainerResizeObserver = new ResizeObserver(() => this.#handleStepsContainerResize());
+
   constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
     super(element);
     this.#view = view;
   }
+
+  override wasShown(): void {
+    super.wasShown();
+    this.#registerResizeObservers();
+  }
+
+  override willHide(): void {
+    super.willHide();
+    this.#stepsContainerResizeObserver.disconnect();
+  }
+
+  #registerResizeObservers(): void {
+    if (this.#output.stepsContainer) {
+      this.#stepsContainerResizeObserver.observe(this.#output.stepsContainer);
+    }
+  }
+
+  override onResize(): void {
+    this.#handleStepsContainerResize();
+  }
+
+  #handleStepsContainerResize(): void {
+    if (!this.#pinScrollToBottom) {
+      return;
+    }
+
+    this.scrollToBottom();
+  }
+
+  scrollToBottom(): void {
+    if (!this.#output.stepsContainer) {
+      return;
+    }
+
+    this.#isProgrammaticScroll = true;
+    window.requestAnimationFrame(() => {
+      const lastElement = this.#output.stepsContainer?.lastElementChild;
+      if (lastElement) {
+        lastElement.scrollIntoView({
+          behavior: 'smooth',
+          block: 'end',
+        });
+      }
+    });
+  }
+
+  #handleScroll = (ev: Event): void => {
+    if (!ev.target || !(ev.target instanceof HTMLElement)) {
+      return;
+    }
+
+    if (this.#isProgrammaticScroll) {
+      // For smooth scrolling, multiple scroll events will be fired.
+      // We only reset the flag once we've reached the bottom,
+      // or we can just rely on the fact that if it's programmatic,
+      // we don't want to change the pinning state based on mid-scroll positions.
+      const isAtBottom = ev.target.scrollTop + ev.target.clientHeight + SCROLL_ROUND_OFFSET >= ev.target.scrollHeight;
+      if (isAtBottom) {
+        this.#isProgrammaticScroll = false;
+      }
+      return;
+    }
+
+    this.#pinScrollToBottom =
+        ev.target.scrollTop + ev.target.clientHeight + SCROLL_ROUND_OFFSET >= ev.target.scrollHeight;
+  };
 
   set isLoading(isLoading: boolean) {
     this.#isLoading = isLoading;
@@ -241,7 +327,14 @@ export class WalkthroughView extends UI.Widget.Widget {
           isInlined: this.#isInlined,
           isExpanded: this.#isExpanded,
           message: this.#message,
+          handleScroll: this.#handleScroll,
         },
-        null, this.contentElement);
+        this.#output, this.contentElement);
+
+    this.#registerResizeObservers();
+
+    if (this.#pinScrollToBottom) {
+      this.scrollToBottom();
+    }
   }
 }

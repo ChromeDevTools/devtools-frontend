@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
 import {querySelectorErrorOnMissing, renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import * as AiAssistance from '../ai_assistance.js';
@@ -128,5 +129,82 @@ describeWithEnvironment('WalkthroughView', () => {
 
     const title = querySelectorErrorOnMissing(view.contentElement, '.walkthrough-title');
     assert.strictEqual(title.innerText, 'Agent walkthrough');
+  });
+
+  it('calls scrollIntoView on the last step', async () => {
+    const message: AiAssistance.ChatMessage.ModelChatMessage = {
+      entity: AiAssistance.ChatMessage.ChatMessageEntity.MODEL,
+      parts: [
+        {
+          type: 'step',
+          step: {
+            isLoading: false,
+            title: 'Step 1',
+            widgets: [
+              {
+                name: 'CORE_VITALS',
+              } as unknown as AiAssistanceModel.AiAgent.AiWidget,
+            ]
+          }
+        },
+        {type: 'step', step: {isLoading: false, title: 'Step 2', widgets: []}}
+      ],
+    };
+
+    const view = new WalkthroughView();
+    renderElementIntoDOM(view);
+    view.markdownRenderer = new AiAssistance.MarkdownRendererWithCodeBlock();
+
+    const scrollIntoViewSpy = sinon.spy(HTMLElement.prototype, 'scrollIntoView');
+
+    view.message = message;
+    view.performUpdate();
+    await view.updateComplete;
+
+    // We need to wait for the requestAnimationFrame in scrollToBottom
+    await new Promise(resolve => window.requestAnimationFrame(resolve));
+
+    const steps = view.contentElement.querySelectorAll('.walkthrough-step');
+    const lastStep = steps[steps.length - 1] as HTMLElement;
+
+    // Verify it was called with the right options
+    sinon.assert.calledWithMatch(scrollIntoViewSpy, {behavior: 'smooth', block: 'end'});
+    // Verify it was called on the last element
+    sinon.assert.calledOn(scrollIntoViewSpy, lastStep);
+
+    scrollIntoViewSpy.restore();
+  });
+
+  it('calls scrollIntoView when the widget is resized', async () => {
+    const message: AiAssistance.ChatMessage.ModelChatMessage = {
+      entity: AiAssistance.ChatMessage.ChatMessageEntity.MODEL,
+      parts: [{
+        type: 'step',
+        step: {
+          isLoading: false,
+          title: 'Step 1',
+        }
+      }],
+    };
+
+    const view = new WalkthroughView();
+    renderElementIntoDOM(view);
+    view.markdownRenderer = new AiAssistance.MarkdownRendererWithCodeBlock();
+
+    const scrollIntoViewSpy = sinon.spy(HTMLElement.prototype, 'scrollIntoView');
+
+    view.message = message;
+    view.performUpdate();
+    await view.updateComplete;
+
+    // Trigger resize
+    view.onResize();
+
+    // We need to wait for the requestAnimationFrame in scrollToBottom
+    await new Promise(resolve => window.requestAnimationFrame(resolve));
+
+    sinon.assert.calledWithMatch(scrollIntoViewSpy, {behavior: 'smooth', block: 'end'});
+
+    scrollIntoViewSpy.restore();
   });
 });

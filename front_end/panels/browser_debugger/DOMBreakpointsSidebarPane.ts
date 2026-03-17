@@ -142,13 +142,14 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
               const checkedStateText = breakpoint.enabled ? i18nString(UIStrings.checked) : i18nString(UIStrings.unchecked);
               const linkified = PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(
                 breakpoint.node, {preventKeyboardFocus: true, tooltip: undefined});
+              const linkifiedText = breakpoint.node.simpleSelector();
               return html`
                 <li class=${`breakpoint-entry ${item.isHighlighted ? 'breakpoint-hit' : ''}`}
                     tabindex=${item.isFocused ? '0' : '-1'}
                     @click=${() => input.onBreakpointClick(breakpoint)}
                     @contextmenu=${(e: Event) => input.onBreakpointContextMenu(breakpoint, e)}
                     @keydown=${(e: Event) => input.onBreakpointKeyDown(breakpoint, e)}
-                    aria-label=${i18nString(UIStrings.sSS, { PH1: item.label, PH2: linkified.deepTextContent(), PH3: checkedStateText })}
+                    aria-label=${i18nString(UIStrings.sSS, { PH1: item.label, PH2: linkifiedText, PH3: checkedStateText })}
                     aria-description=${item.isHighlighted ? i18nString(UIStrings.sBreakpointHit, { PH1: checkedStateText }) : checkedStateText}
                     jslog=${VisualLogging.domBreakpoint().context(breakpoint.type).track({ keydown: 'ArrowUp|ArrowDown|PageUp|PageDown' })}>
                   <devtools-checkbox
@@ -157,7 +158,7 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
                     @click=${(e: Event) => e.stopPropagation()}
                     @change=${() => input.onBreakpointCheckboxClick(breakpoint)}
                     tabindex="-1"
-                    aria-label=${i18nString(UIStrings.sS, { PH1: item.label, PH2: linkified.deepTextContent() })}
+                    aria-label=${i18nString(UIStrings.sS, { PH1: item.label, PH2: linkifiedText })}
                     aria-description=${Directives.ifDefined(item.isHighlighted ? i18nString(UIStrings.breakpointHit) : undefined)}
                     jslog=${VisualLogging.toggle().track({ click: true })}>
                   </devtools-checkbox>

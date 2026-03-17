@@ -469,14 +469,14 @@ export class MockDebuggerBackend {
     const target = script.debuggerModel.target();
     if (reason === Protocol.Debugger.PausedEventReason.Instrumentation) {
       // Instrumentation pauses don't pass call frames, they only pass the script id in the 'data' field.
-      dispatchEvent(
-          target,
+      this.cdpConnection.dispatchEvent(
           'Debugger.paused',
           {
             callFrames: [],
             reason,
             data: {scriptId: script.scriptId},
           },
+          target.sessionId,
       );
     } else {
       const callFrames: Protocol.Debugger.CallFrame[] = [
@@ -493,25 +493,25 @@ export class MockDebuggerBackend {
         },
 
       ];
-      dispatchEvent(
-          target,
+      this.cdpConnection.dispatchEvent(
           'Debugger.paused',
           {
             callFrames,
             reason,
           },
+          target.sessionId,
       );
     }
   }
 
   dispatchDebuggerPauseWithNoCallFrames(target: SDK.Target.Target, reason: Protocol.Debugger.PausedEventReason): void {
-    dispatchEvent(
-        target,
+    this.cdpConnection.dispatchEvent(
         'Debugger.paused',
         {
           callFrames: [],
           reason,
         },
+        target.sessionId,
     );
   }
 
@@ -529,21 +529,23 @@ export class MockDebuggerBackend {
       endColumn += startColumn;
     }
 
-    dispatchEvent(target, 'Debugger.scriptParsed', {
-      scriptId: scriptId as Protocol.Runtime.ScriptId,
-      url: scriptDescription.url,
-      startLine,
-      startColumn,
-      endLine,
-      endColumn,
-      buildId: '',
-      executionContextId: (scriptDescription?.executionContextId ?? 1) as Protocol.Runtime.ExecutionContextId,
-      executionContextAuxData: {isDefault: !scriptDescription.isContentScript},
-      hash: '',
-      hasSourceURL: Boolean(scriptDescription.hasSourceURL),
-      ...(sourceMap ? {sourceMapURL: sourceMap.url} : null),
-      embedderName: scriptDescription.embedderName,
-    });
+    this.cdpConnection.dispatchEvent(
+        'Debugger.scriptParsed', {
+          scriptId: scriptId as Protocol.Runtime.ScriptId,
+          url: scriptDescription.url,
+          startLine,
+          startColumn,
+          endLine,
+          endColumn,
+          buildId: '',
+          executionContextId: (scriptDescription?.executionContextId ?? 1) as Protocol.Runtime.ExecutionContextId,
+          executionContextAuxData: {isDefault: !scriptDescription.isContentScript},
+          hash: '',
+          hasSourceURL: Boolean(scriptDescription.hasSourceURL),
+          ...(sourceMap ? {sourceMapURL: sourceMap.url} : null),
+          embedderName: scriptDescription.embedderName,
+        },
+        target.sessionId);
 
     const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel) as SDK.DebuggerModel.DebuggerModel;
     const scriptObject = debuggerModel.scriptForId(scriptId);

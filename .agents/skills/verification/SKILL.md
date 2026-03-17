@@ -1,6 +1,6 @@
 ---
 name: devtools-verification
-description: Guidelines for verifying changes in DevTools. Covers npm test, autoninja build, linting, and using fast builds.
+description: MANDATORY: Activate this skill ANY TIME you need to build the project, run tests, or verify code health in DevTools. You MUST use this skill before executing commands like npm test, npm run build, autoninja, or linters, as it contains critical, repository-specific instructions on how to correctly format these commands, filter test runs, and interpret failures.
 ---
 
 # Instructions on how to verify your changes

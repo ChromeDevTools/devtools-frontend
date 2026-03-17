@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-imperative-dom-api */
+/* eslint-disable @devtools/no-lit-render-outside-of-view */
 
 /*
  * Copyright (C) 2007 Apple Inc.  All rights reserved.
@@ -50,6 +51,7 @@ import * as Tooltips from '../../ui/components/tooltips/tooltips.js';
 import {createIcon, type Icon} from '../../ui/kit/kit.js';
 import type * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import {html, type LitTemplate, nothing, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as PanelsCommon from '../common/common.js';
 
@@ -128,6 +130,7 @@ const UIStrings = {
 
 const str_ = i18n.i18n.registerUIStrings('panels/elements/StylePropertiesSection.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+const {widget} = UI.Widget;
 
 const STYLE_TAG = '<style>';
 const DEFAULT_MAX_PROPERTIES = 50;
@@ -468,9 +471,9 @@ export class StylePropertiesSection {
 
   static createRuleOriginNode(
       matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, linkifier: Components.Linkifier.Linkifier,
-      rule: SDK.CSSRule.CSSRule|null): Node {
+      rule: SDK.CSSRule.CSSRule|null): LitTemplate {
     if (!rule) {
-      return document.createTextNode('');
+      return nothing;
     }
 
     const ruleLocation = StylePropertiesSection.getRuleLocationFromCSSRule(rule);
@@ -490,24 +493,22 @@ export class StylePropertiesSection {
       return null;
     }
 
-    function linkifyNode(label: string): Node|null {
+    function linkifyNode(label: string): LitTemplate|null {
       if (header?.ownerNode) {
-        const link = document.createElement('devtools-widget') as
-            UI.Widget.WidgetElement<PanelsCommon.DOMLinkifier.DeferredDOMNodeLink>;
-        link.widgetConfig =
-            UI.Widget.widgetConfig(e => new PanelsCommon.DOMLinkifier.DeferredDOMNodeLink(e, header.ownerNode));
-        link.textContent = label;
-        return link;
+        return html`<devtools-widget ${
+            widget(e => new PanelsCommon.DOMLinkifier.DeferredDOMNodeLink(e, header.ownerNode))}>
+          ${label}
+        </devtools-widget>`;
       }
       if (rule && rule.style.styleSheetId && rule.treeScope) {
         // Make link for adopted stylesheet.
         const ownerNode = new SDK.DOMModel.DeferredDOMNode(rule.cssModelInternal.target(), rule.treeScope);
-        const link = document.createElement('devtools-widget') as
-            UI.Widget.WidgetElement<PanelsCommon.DOMLinkifier.DeferredDOMNodeLink>;
-        link.widgetConfig = UI.Widget.widgetConfig(
-            e => new PanelsCommon.DOMLinkifier.DeferredDOMNodeLink(e, ownerNode, undefined, rule.style.styleSheetId));
-        link.textContent = label;
-        return link;
+        // clang-format off
+        return html`<devtools-widget ${widget(
+            e => new PanelsCommon.DOMLinkifier.DeferredDOMNodeLink(e, ownerNode, undefined, rule.style.styleSheetId))}>
+          ${label}
+        </devtools-widget>`;
+        // clang-format on
       }
       return null;
     }
@@ -515,29 +516,29 @@ export class StylePropertiesSection {
     if (header?.isMutable && !header.isViaInspector()) {
       const location = header.isConstructedByNew() && !header.sourceMapURL ? null : linkifyRuleLocation();
       if (location) {
-        return location;
+        return html`${location}`;
       }
       const label = header.isConstructedByNew() ? i18nString(UIStrings.constructedStylesheet) : STYLE_TAG;
       const node = linkifyNode(label);
       if (node) {
         return node;
       }
-      return document.createTextNode(label);
+      return html`${label}`;
     }
 
     const location = linkifyRuleLocation();
     if (location) {
-      return location;
+      return html`${location}`;
     }
 
     if (rule.isUserAgent()) {
-      return document.createTextNode(i18nString(UIStrings.userAgentStylesheet));
+      return html`${i18nString(UIStrings.userAgentStylesheet)}`;
     }
     if (rule.isInjected()) {
-      return document.createTextNode(i18nString(UIStrings.injectedStylesheet));
+      return html`${i18nString(UIStrings.injectedStylesheet)}`;
     }
     if (rule.isViaInspector()) {
-      return document.createTextNode(i18nString(UIStrings.viaInspector));
+      return html`${i18nString(UIStrings.viaInspector)}`;
     }
 
     const node = linkifyNode(STYLE_TAG);
@@ -545,12 +546,12 @@ export class StylePropertiesSection {
       return node;
     }
 
-    return document.createTextNode('');
+    return nothing;
   }
 
   protected createRuleOriginNode(
       matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, linkifier: Components.Linkifier.Linkifier,
-      rule: SDK.CSSRule.CSSRule|null): Node {
+      rule: SDK.CSSRule.CSSRule|null): LitTemplate {
     return StylePropertiesSection.createRuleOriginNode(matchedStyles, linkifier, rule);
   }
 
@@ -1922,9 +1923,9 @@ export class StylePropertiesSection {
   }
 
   protected updateRuleOrigin(): void {
-    this.selectorRefElement.removeChildren();
-    this.selectorRefElement.appendChild(
-        this.createRuleOriginNode(this.matchedStyles, this.stylesContainer.linkifier, this.styleInternal.parentRule));
+    const origin =
+        this.createRuleOriginNode(this.matchedStyles, this.stylesContainer.linkifier, this.styleInternal.parentRule);
+    render(origin, this.selectorRefElement, {host: this});
   }
 
   protected editingSelectorEnded(): void {
@@ -1970,9 +1971,9 @@ export class BlankStylePropertiesSection extends StylePropertiesSection {
     this.normal = false;
     this.ruleLocation = ruleLocation;
     this.styleSheetHeader = styleSheetHeader;
-    this.selectorRefElement.removeChildren();
-    this.selectorRefElement.appendChild(StylePropertiesSection.linkifyRuleLocation(
-        cssModel, this.stylesContainer.linkifier, styleSheetHeader, this.actualRuleLocation()));
+    const locationNode = StylePropertiesSection.linkifyRuleLocation(
+        cssModel, this.stylesContainer.linkifier, styleSheetHeader, this.actualRuleLocation());
+    render(html`${locationNode}`, this.selectorRefElement, {host: this});
     this.maybeCreateAncestorRules(insertAfterStyle);
     this.element.classList.add('blank-section');
   }
@@ -2090,11 +2091,11 @@ export class RegisteredPropertiesSection extends StylePropertiesSection {
 
   override createRuleOriginNode(
       matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, linkifier: Components.Linkifier.Linkifier,
-      rule: SDK.CSSRule.CSSRule|null): Node {
+      rule: SDK.CSSRule.CSSRule|null): LitTemplate {
     if (rule) {
       return super.createRuleOriginNode(matchedStyles, linkifier, rule);
     }
-    return document.createTextNode('CSS.registerProperty');
+    return html`CSS.registerProperty`;
   }
 }
 

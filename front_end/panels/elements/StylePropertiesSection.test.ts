@@ -12,6 +12,7 @@ import {expectCalled} from '../../testing/ExpectStubCall.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import {getMatchedStylesWithBlankRule, getMatchedStylesWithStylesheet} from '../../testing/StyleHelpers.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
+import {render} from '../../ui/lit/lit.js';
 
 import * as Elements from './elements.js';
 
@@ -82,7 +83,9 @@ describeWithMockConnection('StylesPropertySection', () => {
     const linkifier = sinon.createStubInstance(Components.Linkifier.Linkifier);
     const originNode =
         Elements.StylePropertiesSection.StylePropertiesSection.createRuleOriginNode(matchedStyles, linkifier, rule);
-    assert.strictEqual(originNode.textContent, '<style>');
+    const div = document.createElement('div');
+    render(originNode, div);
+    assert.strictEqual(div.textContent, '<style>');
     sinon.assert.calledOnce(linkifier.linkifyCSSLocation);
     assert.strictEqual(linkifier.linkifyCSSLocation.args[0][0].styleSheetId, styleSheetId);
     assert.strictEqual(linkifier.linkifyCSSLocation.args[0][0].url, 'constructed.css');
@@ -126,7 +129,9 @@ describeWithMockConnection('StylesPropertySection', () => {
     const linkifier = sinon.createStubInstance(Components.Linkifier.Linkifier);
     const originNode =
         Elements.StylePropertiesSection.StylePropertiesSection.createRuleOriginNode(matchedStyles, linkifier, rule);
-    assert.strictEqual(originNode.textContent, 'constructed stylesheet');
+    const div = document.createElement('div');
+    render(originNode, div);
+    assert.strictEqual(div.textContent, 'constructed stylesheet');
     sinon.assert.calledOnce(linkifier.linkifyCSSLocation);
     // Since we already asserted that a sourcemap exists for our header, it's sufficient to check that
     // linkifyCSSLocation has been called. Verifying that linkifyCSSLocation applies source mapping is out of scope

@@ -1241,54 +1241,66 @@ describe('StylesSidebarPane', () => {
     };
 
     let section: sinon.SinonStubbedInstance<Elements.StylePropertiesSection.StylePropertiesSection>;
-
-    const mockTreeItem = {
-      property: {
-        name: 'color',
-      },
-      node() {
-        return {
-          isSVGNode() {
-            return false;
-          },
-          domModel() {
-            return {
-              cssModel() {
-                return {
-                  getComputedStyle() {
-                    return new Map<string, string>();
-                  },
-                };
-              },
-            };
-          },
-        };
-      },
-      matchedStyles() {
-        return {
-          availableCSSVariables(): string[] {
-            return ['--rgb-color', '--wide-gamut-color'];
-          },
-          computeCSSVariable(_: unknown, completion: string): {value: string, declaration: null} |
-              undefined {
-                return {value: CSS_VARIABLES_FOR_TEST[completion], declaration: null};
-              },
-        };
-      },
-      section() {
-        section = sinon.createStubInstance(Elements.StylePropertiesSection.StylePropertiesSection);
-        return section;
-      },
-      showGhostTextInValue(_text: string): void{},
-      stylesContainer() {
-        const pane = sinon.createStubInstance(Elements.StylesSidebarPane.StylesSidebarPane);
-        const cssModel = sinon.createStubInstance(SDK.CSSModel.CSSModel);
-        pane.cssModel.returns(cssModel);
-        return pane;
-      }
-    } as unknown as Elements.StylePropertyTreeElement.StylePropertyTreeElement;
+    let mockTreeItem: Elements.StylePropertyTreeElement.StylePropertyTreeElement;
 
     const noop = () => {};
+
+    beforeEach(() => {
+      section = sinon.createStubInstance(Elements.StylePropertiesSection.StylePropertiesSection);
+      let activeAiSuggestion: Elements.StylePropertiesSection.ActiveAiSuggestion|undefined;
+      Object.defineProperty(section, 'activeAiSuggestion', {
+        get: () => activeAiSuggestion,
+        set: aiSuggestion => {
+          activeAiSuggestion = aiSuggestion;
+        },
+        configurable: true,
+      });
+      sinon.stub(section, 'activeAiSuggestion').get(() => activeAiSuggestion);
+      mockTreeItem = {
+        property: {
+          name: 'color',
+        },
+        node() {
+          return {
+            isSVGNode() {
+              return false;
+            },
+            domModel() {
+              return {
+                cssModel() {
+                  return {
+                    getComputedStyle() {
+                      return new Map<string, string>();
+                    },
+                  };
+                },
+              };
+            },
+          };
+        },
+        matchedStyles() {
+          return {
+            availableCSSVariables(): string[] {
+              return ['--rgb-color', '--wide-gamut-color'];
+            },
+            computeCSSVariable(_: unknown, completion: string): {value: string, declaration: null} |
+                undefined {
+                  return {value: CSS_VARIABLES_FOR_TEST[completion], declaration: null};
+                },
+          };
+        },
+        section() {
+          return section;
+        },
+        showGhostTextInValue(_text: string): void{},
+        stylesContainer() {
+          const pane = sinon.createStubInstance(Elements.StylesSidebarPane.StylesSidebarPane);
+          const cssModel = sinon.createStubInstance(SDK.CSSModel.CSSModel);
+          pane.cssModel.returns(cssModel);
+          return pane;
+        }
+      } as unknown as Elements.StylePropertyTreeElement.StylePropertyTreeElement;
+    });
 
     describeWithEnvironment('value autocompletion', () => {
       it('shows autocomplete item with color swatch for CSS variables with RGB color', async () => {
@@ -1450,16 +1462,13 @@ describe('StylesSidebarPane', () => {
         clock.restore();
       });
 
-      it('setAiAutoCompletion shows ghost value', async () => {
+      it('setAiAutoCompletion sets activeAiSuggestion on the section', async () => {
         const attachedElement = document.createElement('div');
         renderElementIntoDOM(attachedElement);
-        const showGhostTextInValueSpy = sinon.spy(mockTreeItem, 'showGhostTextInValue');
         const cssPropertyPrompt = new CSSPropertyPrompt(mockTreeItem, true);
-        const applySuggestionSpy = sinon.spy(cssPropertyPrompt, 'applySuggestion');
         cssPropertyPrompt.attachAndStartEditing(attachedElement, noop);
 
-        assert.exists(cssPropertyPrompt.aiCodeCompletionConfig?.setAiAutoCompletion);
-        cssPropertyPrompt.aiCodeCompletionConfig.setAiAutoCompletion({
+        cssPropertyPrompt.aiCodeCompletionConfig?.setAiAutoCompletion?.({
           text: 'color: pink;',
           from: 0,
           startTime: 0,
@@ -1467,41 +1476,36 @@ describe('StylesSidebarPane', () => {
           onImpression: () => {},
         });
 
-        sinon.assert.calledOnce(showGhostTextInValueSpy);
-        sinon.assert.calledWith(showGhostTextInValueSpy, 'pink');
-        sinon.assert.calledOnce(applySuggestionSpy);
-        sinon.assert.calledWith(applySuggestionSpy, {text: 'color'}, true);
+        assert.exists(section.activeAiSuggestion);
+        assert.deepEqual(section.activeAiSuggestion.properties, [{name: 'color', value: 'pink'}]);
       });
 
-      it('setAiAutoCompletion renders a ghost tree element for multiline suggestions', async () => {
+      it('setAiAutoCompletion correctly parses complex CSS and sets activeAiSuggestion on the section', async () => {
         const attachedElement = document.createElement('div');
         renderElementIntoDOM(attachedElement);
-        const cssPropertyPrompt = new CSSPropertyPrompt(mockTreeItem, false);
+        const cssPropertyPrompt = new CSSPropertyPrompt(mockTreeItem, true);
         cssPropertyPrompt.attachAndStartEditing(attachedElement, noop);
+        const complexCss = `background-image: url("https://example.com/image;v=1?query:part=true");
+content: "This is a semicolon; and this is a colon: inside a string";
+--custom-property: var(--other, "fallback;value");
+width: calc(100% - 20px);
+color: pink !important;`;
 
-        assert.exists(cssPropertyPrompt.aiCodeCompletionConfig?.setAiAutoCompletion);
-        cssPropertyPrompt.aiCodeCompletionConfig.setAiAutoCompletion({
-          text: 'color: pink; background-color: white;',
+        cssPropertyPrompt.aiCodeCompletionConfig?.setAiAutoCompletion?.({
+          text: complexCss,
           from: 0,
           startTime: 0,
           clearCachedRequest: () => {},
           onImpression: () => {},
         });
 
-        sinon.assert.calledOnce(section.renderGhostStyleTreeElements);
-        sinon.assert.calledWith(section.renderGhostStyleTreeElements, 'background-color: white;');
-      });
-
-      it('setAiAutoCompletion clears ghost tree element when completion is null', async () => {
-        const attachedElement = document.createElement('div');
-        renderElementIntoDOM(attachedElement);
-        const cssPropertyPrompt = new CSSPropertyPrompt(mockTreeItem, false);
-        cssPropertyPrompt.attachAndStartEditing(attachedElement, noop);
-
-        assert.exists(cssPropertyPrompt.aiCodeCompletionConfig?.setAiAutoCompletion);
-        cssPropertyPrompt.aiCodeCompletionConfig.setAiAutoCompletion(null);
-
-        sinon.assert.calledOnce(section.clearGhostStyleTreeElements);
+        assert.exists(section.activeAiSuggestion);
+        assert.deepEqual(section.activeAiSuggestion.properties, [
+          {name: 'background-image', value: 'url("https://example.com/image;v=1?query:part=true")'},
+          {name: 'content', value: '"This is a semicolon; and this is a colon: inside a string"'},
+          {name: '--custom-property', value: 'var(--other, "fallback;value")'},
+          {name: 'width', value: 'calc(100% - 20px)'}, {name: 'color', value: 'pink !important'}
+        ]);
       });
     });
   });

@@ -135,6 +135,18 @@ const {widget} = UI.Widget;
 const STYLE_TAG = '<style>';
 const DEFAULT_MAX_PROPERTIES = 50;
 
+export interface ActiveAiSuggestionProperty {
+  name: string;
+  value: string;
+}
+
+export interface ActiveAiSuggestion {
+  properties: ActiveAiSuggestionProperty[];
+  cursorPosition: number;
+  clearCachedRequest?: () => void;
+  cssProperty: SDK.CSSProperty.CSSProperty;
+}
+
 export class StylePropertiesSection {
   protected stylesContainer: StylesContainer;
   styleInternal: SDK.CSSStyleDeclaration.CSSStyleDeclaration;
@@ -182,6 +194,7 @@ export class StylePropertiesSection {
   readonly sectionTooltipIdPrefix = StylePropertiesSection.#nextSectionTooltipIdPrefix++;
 
   private ghostStyleTreeElements: GhostStylePropertyTreeElement[] = [];
+  #activeAiSuggestion?: ActiveAiSuggestion;
 
   constructor(
       stylesContainer: StylesContainer, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles,
@@ -871,7 +884,20 @@ export class StylePropertiesSection {
     return;
   }
 
-  clearGhostStyleTreeElements(): void {
+  set activeAiSuggestion(activeAiSuggestion: ActiveAiSuggestion|undefined) {
+    this.#clearActiveAiSuggestion();
+    this.#activeAiSuggestion = activeAiSuggestion;
+    if (this.#activeAiSuggestion) {
+      this.#renderActiveAiSuggestion();
+    }
+  }
+
+  get activeAiSuggestion(): ActiveAiSuggestion|undefined {
+    return this.#activeAiSuggestion;
+  }
+
+  #clearActiveAiSuggestion(): void {
+    this.#getAiSuggestionSourceTreeElement()?.clearActiveAiSuggestion();
     // Clear existing ghost elements
     for (const ghost of this.ghostStyleTreeElements) {
       this.propertiesTreeOutline.removeChild(ghost);
@@ -879,31 +905,30 @@ export class StylePropertiesSection {
     this.ghostStyleTreeElements = [];
   }
 
-  renderGhostStyleTreeElements(suggestion: string): void {
-    this.clearGhostStyleTreeElements();
-    if (!suggestion) {
+  #renderActiveAiSuggestion(): void {
+    if (!this.#activeAiSuggestion) {
       return;
     }
 
-    const suggestionLines = suggestion.split(';').map(line => line.trim());
-    for (const line of suggestionLines) {
-      const colonIdx = line.indexOf(':');
-      if (colonIdx === -1) {
-        continue;
-      }
+    const sourceTreeElement = this.#getAiSuggestionSourceTreeElement();
+    if (!sourceTreeElement || !this.#activeAiSuggestion.properties.length) {
+      return;
+    }
+    sourceTreeElement.renderActiveAiSuggestion(this.#activeAiSuggestion.properties[0]);
 
-      const name = line.substring(0, colonIdx).trim();
-      const value = line.substring(colonIdx + 1).trim();
-      if (!name || !value) {
-        continue;
-      }
-
+    if (this.#activeAiSuggestion.properties.length <= 1) {
+      return;
+    }
+    const index = this.propertiesTreeOutline.rootElement().children().indexOf(sourceTreeElement);
+    const properties = this.#activeAiSuggestion.properties.slice(1);
+    for (let i = 0; i < properties.length; i++) {
+      const property = properties[i];
       // Create a fake property attached to this style
       const fakeProperty = new SDK.CSSProperty.CSSProperty(
           this.styleInternal,
           this.styleInternal.allProperties().length,
-          name,
-          value,
+          property.name,
+          property.value,
           false,
           false,
           true,
@@ -911,9 +936,21 @@ export class StylePropertiesSection {
       );
 
       const ghost = new GhostStylePropertyTreeElement(this.stylesContainer, this, this.matchedStyles, fakeProperty);
-      this.propertiesTreeOutline.appendChild(ghost);
+      this.propertiesTreeOutline.insertChild(ghost, index + i + 1);
       this.ghostStyleTreeElements.push(ghost);
     }
+  }
+
+  #getAiSuggestionSourceTreeElement(): StylePropertyTreeElement|undefined {
+    if (!this.#activeAiSuggestion) {
+      return;
+    }
+    const sourceTreeElement = this.closestPropertyForEditing(this.#activeAiSuggestion.cssProperty.index);
+    if (!(sourceTreeElement instanceof StylePropertyTreeElement) ||
+        sourceTreeElement.property !== this.#activeAiSuggestion.cssProperty) {
+      return;
+    }
+    return sourceTreeElement;
   }
 
   private onNewRuleClick(event: Common.EventTarget.EventTargetEvent<Event>): void {

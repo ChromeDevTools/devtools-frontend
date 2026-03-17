@@ -46,6 +46,7 @@ import * as AiCodeCompletion from '../../models/ai_code_completion/ai_code_compl
 import * as Bindings from '../../models/bindings/bindings.js';
 import type * as ComputedStyle from '../../models/computed_style/computed_style.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
+import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
 import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 import {createIcon, Icon} from '../../ui/kit/kit.js';
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
@@ -61,6 +62,7 @@ import {ImagePreviewPopover} from './ImagePreviewPopover.js';
 import * as LayersWidget from './LayersWidget.js';
 import {StyleEditorWidget} from './StyleEditorWidget.js';
 import {
+  type ActiveAiSuggestionProperty,
   AtRuleSection,
   BlankStylePropertiesSection,
   FunctionRuleSection,
@@ -2103,34 +2105,52 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
     sampleId?: number,
   }|null): void {
     if (!args) {
-      this.treeElement.section().clearGhostStyleTreeElements();
+      this.treeElement.section().activeAiSuggestion = undefined;
       return;
     }
-    this.showAiGhostText(args?.text);
+
+    this.treeElement.section().activeAiSuggestion = {
+      properties: this.#getAiSuggestedProperties(args.text),
+      cursorPosition: args.from,
+      clearCachedRequest: args.clearCachedRequest,
+      cssProperty: this.treeElement.property,
+    };
     const latency = performance.now() - args.startTime;
     if (args.rpcGlobalId) {
       args.onImpression(args.rpcGlobalId, latency, args.sampleId);
     }
   }
 
-  private showAiGhostText(text: string): void {
-    const [currentLine, ...nextLinesList] = text.split(';');
-    const nextLines = nextLinesList.join(';').trim();
+  #getAiSuggestedProperties(suggestionText: string): ActiveAiSuggestionProperty[] {
+    const cssParser = CodeMirror.css.cssLanguage.parser.configure({top: 'Styles'});
+    const parsed = cssParser.parse(suggestionText);
+    const properties: ActiveAiSuggestionProperty[] = [];
+    parsed.iterate({
+      enter: node => {
+        if (node.name === 'Declaration') {
+          let name = '';
+          let value = '';
 
-    if (this.isEditingName && currentLine.includes(':')) {
-      const [namePart, valuePart] = currentLine.split(':').map(s => s.trim());
-      this.applySuggestion({text: this.text() + namePart}, true);
-      this.treeElement.showGhostTextInValue(valuePart);
-    } else {
-      // Only has ghost text for one field - name part or value part
-      this.applySuggestion({text: this.text() + currentLine}, true);
-    }
+          const cursor = node.node.cursor();
+          if (cursor.firstChild()) {
+            do {
+              if (cursor.name === ':') {
+                name = suggestionText.slice(node.from, cursor.from);
+                value = suggestionText.slice(cursor.to + 1, node.to);
+              }
+            } while (cursor.nextSibling());
+          }
 
-    if (nextLines) {
-      this.treeElement.section().renderGhostStyleTreeElements(nextLines);
-    } else {
-      this.treeElement.section().clearGhostStyleTreeElements();
-    }
+          if (name && value) {
+            properties.push({
+              name: name.trim(),
+              value: value.trim(),
+            });
+          }
+        }
+      }
+    });
+    return properties;
   }
 
   /**

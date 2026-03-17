@@ -335,18 +335,35 @@ describeWithMockConnection('StylesPropertySection', () => {
     assert.isTrue(section2.propertiesTreeOutline.element.classList.contains('no-affect'));
   });
 
-  describe('GhostStylePropertyTreeElement', () => {
+  describe('activeAiSuggestion', () => {
     let section: Elements.StylePropertiesSection.StylePropertiesSection;
+    let cssProperty: SDK.CSSProperty.CSSProperty;
+    const sourceTreeElement = sinon.createStubInstance(Elements.StylePropertyTreeElement.StylePropertyTreeElement);
+
     beforeEach(async () => {
       const matchedStyles = await getMatchedStylesWithBlankRule({cssModel: new SDK.CSSModel.CSSModel(createTarget())});
       section = new Elements.StylePropertiesSection.StylePropertiesSection(
           new Elements.StylesSidebarPane.StylesSidebarPane(computedStyleModel), matchedStyles,
           matchedStyles.nodeStyles()[0], 0, new Map(), new Map(), null);
+      cssProperty = new SDK.CSSProperty.CSSProperty(section.styleInternal, 0, '', '', true, false, true, false);
+      sourceTreeElement.property = cssProperty;
+      sinon.stub(section, 'closestPropertyForEditing').returns(sourceTreeElement);
     });
 
-    it('renders ghost elements correctly from suggestion', async () => {
-      section.renderGhostStyleTreeElements('color: red; font-size: 10px;');
+    it('setting activeAiSuggestion triggers rendering', async () => {
+      const renderActiveAiSuggestionSpy = sinon.spy(sourceTreeElement, 'renderActiveAiSuggestion');
+      const activeAiSuggestion = {
+        properties: [
+          {name: 'background-color', value: 'white'}, {name: 'color', value: 'red'}, {name: 'font-size', value: '10px'}
+        ],
+        cssProperty,
+        cursorPosition: 0,
+      };
 
+      section.activeAiSuggestion = activeAiSuggestion;
+
+      sinon.assert.calledOnce(renderActiveAiSuggestionSpy);
+      assert.deepEqual(renderActiveAiSuggestionSpy.firstCall.args[0], activeAiSuggestion.properties[0]);
       const ghostElements = section.propertiesTreeOutline.rootElement().children().filter(
           e => e instanceof Elements.StylePropertyTreeElement.GhostStylePropertyTreeElement);
       assert.lengthOf(ghostElements, 2);
@@ -356,16 +373,27 @@ describeWithMockConnection('StylesPropertySection', () => {
       assert.strictEqual(ghostElements[1].property.value, '10px');
     });
 
-    it('clears ghost elements correctly', async () => {
+    it('clearing activeAiSuggestion triggers cleanup', async () => {
+      const renderActiveAiSuggestionSpy = sinon.spy(sourceTreeElement, 'renderActiveAiSuggestion');
+      const clearActiveAiSuggestionSpy = sinon.spy(sourceTreeElement, 'clearActiveAiSuggestion');
       const rootElement = section.propertiesTreeOutline.rootElement();
-      section.renderGhostStyleTreeElements('color: red;');
+      const activeAiSuggestion = {
+        properties: [{name: 'color', value: 'red'}, {name: 'font-size', value: '10px'}],
+        cssProperty,
+        cursorPosition: 0,
+      };
 
+      section.activeAiSuggestion = activeAiSuggestion;
+
+      sinon.assert.calledOnce(renderActiveAiSuggestionSpy);
+      assert.deepEqual(renderActiveAiSuggestionSpy.firstCall.args[0], activeAiSuggestion.properties[0]);
       let ghostElements = rootElement.children().filter(
           e => e instanceof Elements.StylePropertyTreeElement.GhostStylePropertyTreeElement);
       assert.lengthOf(ghostElements, 1);
 
-      section.clearGhostStyleTreeElements();
+      section.activeAiSuggestion = undefined;
 
+      sinon.assert.calledOnce(clearActiveAiSuggestionSpy);
       ghostElements = rootElement.children().filter(
           e => e instanceof Elements.StylePropertyTreeElement.GhostStylePropertyTreeElement);
       assert.lengthOf(ghostElements, 0);

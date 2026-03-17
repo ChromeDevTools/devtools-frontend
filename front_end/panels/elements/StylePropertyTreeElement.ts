@@ -45,7 +45,7 @@ import {
   URLRenderer
 } from './PropertyRenderer.js';
 import {StyleEditorWidget} from './StyleEditorWidget.js';
-import type {StylePropertiesSection} from './StylePropertiesSection.js';
+import type {ActiveAiSuggestionProperty, StylePropertiesSection} from './StylePropertiesSection.js';
 import {getCssDeclarationAsJavascriptProperty} from './StylePropertyUtils.js';
 import type {StylesContainer} from './StylesContainer.js';
 import {CSSPropertyPrompt, REGISTERED_PROPERTY_SECTION_NAME} from './StylesSidebarPane.js';
@@ -3594,15 +3594,34 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     return event.target === this.expandElement;
   }
 
-  showGhostTextInValue(text: string): void {
+  renderActiveAiSuggestion(activeAiSuggestion: ActiveAiSuggestionProperty): void {
+    if (!this.prompt) {
+      return;
+    }
+    const isEditingName = UI.UIUtils.isBeingEdited(this.nameElement);
+    if (isEditingName) {
+      this.prompt.applySuggestion({text: activeAiSuggestion.name}, true);
+      this.#showGhostTextInValue(activeAiSuggestion.value);
+    } else {
+      // Only has ghost text for one field - name part or value part
+      const currentSuggestedText = isEditingName ? activeAiSuggestion.name : activeAiSuggestion.value;
+      this.prompt.applySuggestion({text: currentSuggestedText}, true);
+    }
+  }
+
+  clearActiveAiSuggestion(): void {
+    this.#clearGhostTextInValue();
+  }
+
+  #showGhostTextInValue(text: string): void {
     if (!this.valueElement) {
       return;
     }
-    this.clearGhostTextInValue();
+    this.#clearGhostTextInValue();
     this.valueElement.createChild('span', 'ghost-value-prediction').textContent = text;
   }
 
-  clearGhostTextInValue(): void {
+  #clearGhostTextInValue(): void {
     if (!this.valueElement) {
       return;
     }

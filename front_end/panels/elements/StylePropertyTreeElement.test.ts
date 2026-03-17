@@ -2319,4 +2319,57 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       assert.strictEqual(shouldCommit, positions[i] === '+', `\n${inputText}\n${' '.repeat(i)}^`);
     }
   });
+
+  describe('AI suggestions', () => {
+    it('renderActiveAiSuggestion applies suggestion to name and shows ghost text in value correctly when editing name',
+       async () => {
+         const applySuggestionSpy =
+             sinon.spy(Elements.StylesSidebarPane.CSSPropertyPrompt.prototype, 'applySuggestion');
+         const stylePropertyTreeElement = getTreeElement('', '');
+         stylePropertyTreeElement.updateTitle();
+         stylePropertyTreeElement.startEditingName();
+
+         assert.exists(stylePropertyTreeElement.nameElement);
+         stylePropertyTreeElement.nameElement.textContent = 'col';
+
+         stylePropertyTreeElement.renderActiveAiSuggestion({name: 'color', value: 'red'});
+
+         sinon.assert.calledOnce(applySuggestionSpy);
+         assert.deepEqual(applySuggestionSpy.firstCall.args, [{text: 'color'}, true]);
+         const valueGhostElement = stylePropertyTreeElement.valueElement?.querySelector('.ghost-value-prediction');
+         assert.exists(valueGhostElement);
+         assert.strictEqual(valueGhostElement.textContent, 'red');
+       });
+
+    it('renderActiveAiSuggestion applies suggestion to value correctly when editing value', async () => {
+      const applySuggestionSpy = sinon.spy(Elements.StylesSidebarPane.CSSPropertyPrompt.prototype, 'applySuggestion');
+      const stylePropertyTreeElement = getTreeElement('color', '');
+      stylePropertyTreeElement.updateTitle();
+      stylePropertyTreeElement.startEditingValue();
+
+      assert.exists(stylePropertyTreeElement.valueElement);
+      stylePropertyTreeElement.valueElement.textContent = 'p';
+
+      stylePropertyTreeElement.renderActiveAiSuggestion({name: 'color', value: 'purple'});
+
+      sinon.assert.calledOnce(applySuggestionSpy);
+      assert.deepEqual(applySuggestionSpy.firstCall.args, [{text: 'purple'}, true]);
+    });
+
+    it('clearActiveAiSuggestion removes ghost text', async () => {
+      const stylePropertyTreeElement = getTreeElement('', '');
+      stylePropertyTreeElement.updateTitle();
+      stylePropertyTreeElement.startEditingName();
+
+      stylePropertyTreeElement.renderActiveAiSuggestion({name: 'color', value: 'red'});
+
+      const valueGhostElement = stylePropertyTreeElement.valueElement?.querySelector('.ghost-value-prediction');
+      assert.exists(valueGhostElement);
+      assert.strictEqual(valueGhostElement.textContent, 'red');
+
+      stylePropertyTreeElement.clearActiveAiSuggestion();
+
+      assert.isNull(stylePropertyTreeElement.valueElement?.querySelector('.ghost-value-prediction'));
+    });
+  });
 });

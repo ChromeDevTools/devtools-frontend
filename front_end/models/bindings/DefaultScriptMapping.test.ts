@@ -4,20 +4,22 @@
 
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import {createTarget} from '../../testing/EnvironmentHelpers.js';
-import {describeWithMockConnection} from '../../testing/MockConnection.js';
-import {MockProtocolBackend} from '../../testing/MockScopeChain.js';
+import {MockDebuggerBackend} from '../../testing/MockScopeChain.js';
+import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
+import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
 import * as TextUtils from '../text_utils/text_utils.js';
-import * as Workspace from '../workspace/workspace.js';
 
 import * as Bindings from './bindings.js';
 
 const {urlString} = Platform.DevToolsPath;
 
-describeWithMockConnection('DefaultScriptMapping', () => {
+describe('DefaultScriptMapping', () => {
+  setupRuntimeHooks();
+  setupSettingsHooks();
+
   const url = urlString`file:///tmp/example.js`;
   let target: SDK.Target.Target;
-  let backend: MockProtocolBackend;
+  let backend: MockDebuggerBackend;
   let defaultScriptMapping: Bindings.DefaultScriptMapping.DefaultScriptMapping;
   const contentWithSourceUrl = `<p>
   Hello!
@@ -36,23 +38,11 @@ describeWithMockConnection('DefaultScriptMapping', () => {
 </script>`;
 
   beforeEach(() => {
-    const workspace = Workspace.Workspace.WorkspaceImpl.instance();
-    const targetManager = SDK.TargetManager.TargetManager.instance();
-    const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
-    const ignoreListManager = Workspace.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
-    Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
-      forceNew: true,
-      resourceMapping,
-      targetManager,
-      ignoreListManager,
-      workspace,
-    });
-    backend = new MockProtocolBackend();
-    target = createTarget();
+    backend = new MockDebuggerBackend();
+    target = backend.createTarget();
     defaultScriptMapping = new Bindings.DefaultScriptMapping.DefaultScriptMapping(
-        target.model(SDK.DebuggerModel.DebuggerModel) as SDK.DebuggerModel.DebuggerModel,
-        Workspace.Workspace.WorkspaceImpl.instance(),
-        Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance());
+        target.model(SDK.DebuggerModel.DebuggerModel)!, backend.universe.workspace,
+        backend.universe.debuggerWorkspaceBinding);
   });
 
   describe('rawLocationToUILocation', () => {

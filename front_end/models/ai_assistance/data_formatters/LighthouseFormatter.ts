@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type {ReportJSON} from '../../lighthouse/LighthouseReporterTypes.js';
+import type * as LHModel from '../../lighthouse/lighthouse.js';
 
 /**
  * A formatter that takes a raw Lighthouse report JSON and creates a markdown
@@ -12,7 +12,7 @@ export class LighthouseFormatter {
   /**
    * Returns an overall summary and high-level overview of the Lighthouse report.
    */
-  summary(report: ReportJSON): string {
+  summary(report: LHModel.ReporterTypes.ReportJSON): string {
     const lines: string[] = [];
     lines.push('# Lighthouse Report Summary');
     lines.push(`URL: ${report.finalDisplayedUrl}`);
@@ -31,7 +31,7 @@ export class LighthouseFormatter {
    * Returns a markdown list of all audits in a given category.
    * Highlight failing audits (score < 90).
    */
-  audits(report: ReportJSON, categoryId: string): string {
+  audits(report: LHModel.ReporterTypes.ReportJSON, categoryId: LHModel.RunTypes.CategoryId): string {
     const category = report.categories[categoryId];
     if (!category) {
       return `Category "${categoryId}" not found.`;

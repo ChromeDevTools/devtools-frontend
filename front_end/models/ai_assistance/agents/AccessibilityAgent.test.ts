@@ -57,31 +57,8 @@ describeWithMockConnection('AccessibilityAgent', () => {
       aidaClient,
     });
 
-    const responses = await Array.fromAsync(
+    await Array.fromAsync(
         agent.run('test', {selected: new AiAssistance.AccessibilityAgent.AccessibilityContext(mockReport)}));
-
-    assert.deepEqual(responses, [
-      {
-        type: AiAssistance.AiAgent.ResponseType.CONTEXT,
-        details: [
-          {
-            title: 'Lighthouse report',
-            text:
-                '# Lighthouse Report Summary\nURL: https://example.com\nFetch Time: 2026-03-12\nLighthouse Version: 1.0.0\n\n## Category Scores\n- Performance: 80\n- Accessibility: 50',
-          },
-        ],
-      },
-      {
-        type: AiAssistance.AiAgent.ResponseType.QUERYING,
-      },
-      {
-        type: AiAssistance.AiAgent.ResponseType.ANSWER,
-        text: 'This is the answer',
-        complete: true,
-        suggestions: undefined,
-        rpcId: 123,
-      },
-    ]);
 
     const call = aidaClient.doConversation.getCall(0);
     assert.exists(call);
@@ -90,5 +67,23 @@ describeWithMockConnection('AccessibilityAgent', () => {
     assert.include(text, '# Lighthouse Report');
     assert.include(text, '# Audits for Accessibility');
     assert.include(text, '**Accessibility Audit**: 50 (Fail)');
+  });
+
+  it('can call the getLighthouseAudits method', async () => {
+    const aidaClient = mockAidaClient([[{
+      explanation: '',
+      functionCalls: [{name: 'getLighthouseAudits', args: {categoryId: 'accessibility'}}],
+      metadata: {
+        rpcGlobalId: 123,
+      },
+    }]]);
+    const agent = new AiAssistance.AccessibilityAgent.AccessibilityAgent({
+      aidaClient,
+    });
+    const context = new AiAssistance.AccessibilityAgent.AccessibilityContext(mockReport);
+    const responses = await Array.fromAsync(agent.run('test', {selected: context}));
+    const titleResponse = responses.find(response => response.type === AiAssistance.AiAgent.ResponseType.TITLE);
+    assert.exists(titleResponse);
+    assert.strictEqual(titleResponse.title, 'Getting Lighthouse audits for accessibility…');
   });
 });

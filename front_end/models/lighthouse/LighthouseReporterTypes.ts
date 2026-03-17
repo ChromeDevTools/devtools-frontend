@@ -5,6 +5,8 @@
 import type * as Platform from '../../core/platform/platform.js';
 import type * as Trace from '../../models/trace/trace.js';
 
+import type {CategoryId} from './RunTypes.js';
+
 export class LighthouseReportGenerator {
   generateReportHtml(_lhr: ReportJSON): string {
     return '';
@@ -73,7 +75,7 @@ export interface ReportJSON {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   artifacts: {Trace: {traceEvents: unknown[]}};
   audits: Record<string, AuditResultJSON>;
-  categories: Record<string, CategoryJSON>;
+  categories: Record<CategoryId, CategoryJSON>;
   categoryGroups: Record<string, GroupJSON>;
 }
 
@@ -99,14 +101,6 @@ export interface TableHeadingJSON {
  * based on the 'valueType' specified in headings.
  */
 export type TableItemValue =|string|number|NodeDetailsJSON|SourceLocationDetailsJSON|Platform.DevToolsPath.UrlString;
-
-export interface TableDetailsJSON {
-  type: 'table';
-  headings: TableHeadingJSON[];
-  // Instead of any, use a record of known possible values
-  items: Array<Record<string, TableItemValue>>;
-  summary?: OpportunitySummary;
-}
 
 export interface OpportunityDetailsJSON {
   type: 'opportunity';

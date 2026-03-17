@@ -14,6 +14,7 @@ import * as AiAssistanceModel from '../../models/ai_assistance/ai_assistance.js'
 import * as Annotations from '../../models/annotations/annotations.js';
 import * as Badges from '../../models/badges/badges.js';
 import * as Greendev from '../../models/greendev/greendev.js';
+import type * as LHModel from '../../models/lighthouse/lighthouse.js';
 import type * as Trace from '../../models/trace/trace.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
@@ -871,6 +872,10 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     return await TimelinePanel.TimelinePanel.TimelinePanel.executeRecordAndReload();
   }
 
+  async #handleLighthouseRun(): Promise<LHModel.ReporterTypes.ReportJSON|null> {
+    return await LighthousePanel.LighthousePanel.LighthousePanel.executeLighthouseRecording();
+  }
+
   #getDefaultConversationType(): AiAssistanceModel.AiHistoryStorage.ConversationType|undefined {
     const {hostConfig} = Root.Runtime;
     const viewManager = UI.ViewManager.ViewManager.instance();
@@ -931,7 +936,8 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         new AiAssistanceModel.AiConversation.AiConversation(
             targetConversationType, [], undefined, false, this.#aidaClient, this.#changeManager, false,
             this.#handlePerformanceRecordAndReload.bind(this), this.#handleInspectElement.bind(this),
-            NetworkPanel.NetworkPanel.NetworkPanel.instance().networkLogView.timeCalculator()) :
+            NetworkPanel.NetworkPanel.NetworkPanel.instance().networkLogView.timeCalculator(),
+            this.#handleLighthouseRun.bind(this)) :
         undefined;
 
     this.#updateConversationState(conversation);

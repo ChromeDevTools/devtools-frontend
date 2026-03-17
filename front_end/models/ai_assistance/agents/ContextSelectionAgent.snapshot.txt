@@ -101,6 +101,17 @@ Content:
       }
     },
     {
+      "name": "runLighthouseAudits",
+      "description": "Records a Lighthouse audit on the current page, to help debug accessibility issues.",
+      "parameters": {
+        "type": 6,
+        "description": "",
+        "nullable": true,
+        "required": [],
+        "properties": {}
+      }
+    },
+    {
       "name": "inspectDom",
       "description": "Prompts user to select a DOM element from the page. Use this when you don't know which element is selected.",
       "parameters": {

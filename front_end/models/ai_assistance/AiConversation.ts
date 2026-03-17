@@ -6,6 +6,7 @@ import * as Host from '../../core/host/host.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import type * as LHModel from '../../models/lighthouse/lighthouse.js';
 import type * as Trace from '../../models/trace/trace.js';
 import * as Greendev from '../greendev/greendev.js';
 import type * as NetworkTimeCalculator from '../network_time_calculator/network_time_calculator.js';
@@ -80,6 +81,7 @@ export class AiConversation {
   #contexts: Array<ConversationContext<unknown>> = [];
 
   #performanceRecordAndReload?: () => Promise<Trace.TraceModel.ParsedTrace>;
+  #lighthouseRecording?: () => Promise<LHModel.ReporterTypes.ReportJSON|null>;
   #onInspectElement?: () => Promise<SDK.DOMModel.DOMNode|null>;
   #networkTimeCalculator?: NetworkTimeCalculator.NetworkTransferTimeCalculator;
 
@@ -94,12 +96,14 @@ export class AiConversation {
       performanceRecordAndReload?: () => Promise<Trace.TraceModel.ParsedTrace>,
       onInspectElement?: () => Promise<SDK.DOMModel.DOMNode|null>,
       networkTimeCalculator?: NetworkTimeCalculator.NetworkTransferTimeCalculator,
+      lighthouseRecording?: () => Promise<LHModel.ReporterTypes.ReportJSON|null>,
   ) {
     this.#changeManager = changeManager;
     this.#aidaClient = aidaClient;
     this.#performanceRecordAndReload = performanceRecordAndReload;
     this.#onInspectElement = onInspectElement;
     this.#networkTimeCalculator = networkTimeCalculator;
+    this.#lighthouseRecording = lighthouseRecording;
 
     this.id = id;
     this.#isReadOnly = isReadOnly;
@@ -319,6 +323,7 @@ export class AiConversation {
       sessionId: this.id,
       changeManager: this.#changeManager,
       performanceRecordAndReload: this.#performanceRecordAndReload,
+      lighthouseRecording: this.#lighthouseRecording,
       onInspectElement: this.#onInspectElement,
       networkTimeCalculator: this.#networkTimeCalculator,
       allowedOrigin: this.allowedOrigin,

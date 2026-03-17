@@ -6,11 +6,13 @@ import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Root from '../../../core/root/root.js';
 import type * as SDK from '../../../core/sdk/sdk.js';
+import type * as LHModel from '../../lighthouse/lighthouse.js';
 import * as Logs from '../../logs/logs.js';
 import * as NetworkTimeCalculator from '../../network_time_calculator/network_time_calculator.js';
 import type * as Trace from '../../trace/trace.js';
 import * as Workspace from '../../workspace/workspace.js';
 
+import {AccessibilityContext} from './AccessibilityAgent.js';
 import {
   type AgentOptions,
   AiAgent,
@@ -80,15 +82,18 @@ export class ContextSelectionAgent extends AiAgent<never> {
   readonly #performanceRecordAndReload?: () => Promise<Trace.TraceModel.ParsedTrace>;
   readonly #onInspectElement?: () => Promise<SDK.DOMModel.DOMNode|null>;
   readonly #networkTimeCalculator?: NetworkTimeCalculator.NetworkTransferTimeCalculator;
+  readonly #lighthouseRecording?: (() => Promise<LHModel.ReporterTypes.ReportJSON|null>);
   #allowedOrigin: () => string | undefined;
 
   constructor(opts: AgentOptions&{
     performanceRecordAndReload?: () => Promise<Trace.TraceModel.ParsedTrace>,
     onInspectElement?: () => Promise<SDK.DOMModel.DOMNode|null>,
     networkTimeCalculator?: NetworkTimeCalculator.NetworkTransferTimeCalculator,
+    lighthouseRecording?: () => Promise<LHModel.ReporterTypes.ReportJSON|null>,
   }) {
     super(opts);
     this.#performanceRecordAndReload = opts.performanceRecordAndReload;
+    this.#lighthouseRecording = opts.lighthouseRecording;
     this.#onInspectElement = opts.onInspectElement;
     this.#networkTimeCalculator = opts.networkTimeCalculator;
     this.#allowedOrigin = opts.allowedOrigin ?? (() => undefined);
@@ -279,6 +284,39 @@ export class ContextSelectionAgent extends AiAgent<never> {
           context: PerformanceTraceContext.fromParsedTrace(result),
           description: 'User recorded a performance trace',
           widgets: [{name: 'PERFORMANCE_TRACE', data: {parsedTrace: result}}]
+        };
+      }
+    });
+
+    this.declareFunction('runLighthouseAudits', {
+      description: 'Records a Lighthouse audit on the current page, to help debug accessibility issues.',
+      parameters: {
+        type: Host.AidaClient.ParametersTypes.OBJECT,
+        description: '',
+        nullable: true,
+        required: [],
+        properties: {},
+      },
+      displayInfoFromArgs: () => {
+        return {
+          title: 'Auditing your page with Lighthouse…',
+          action: 'runLighthouseAudits()',
+        };
+      },
+      handler: async () => {
+        if (!this.#lighthouseRecording) {
+          return {
+            error: 'Lighthouse report is not available.',
+          };
+        }
+        const result = await this.#lighthouseRecording();
+        if (!result) {
+          return {error: 'Failed to generate Lighthouse report.'};
+        }
+
+        return {
+          context: new AccessibilityContext(result),
+          description: 'User has selected a Lighthouse report',
         };
       }
     });

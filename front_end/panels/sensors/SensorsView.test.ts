@@ -82,5 +82,41 @@ describeWithEnvironment('SensorsView', () => {
       const locationSetting = Common.Settings.Settings.instance().createSetting('emulation.location-override', '');
       assert.isTrue(locationSetting.get().includes('45'));
     });
+
+    it('modifies latitude input on ArrowUp key', () => {
+      const latitudeInput = view.contentElement.querySelectorAll('.latlong-group input')[0] as HTMLInputElement;
+      assert.exists(latitudeInput);
+      latitudeInput.value = '45';
+
+      const event = new KeyboardEvent('keydown', {key: 'ArrowUp'});
+      latitudeInput.dispatchEvent(event);
+
+      // modifierMultiplier = 0.1, ArrowUp = 1. Result: 45 + 0.1*1 = 45.1
+      assert.strictEqual(latitudeInput.value, '45.1');
+    });
+
+    it('modifies latitude input on ArrowDown key with Shift', () => {
+      const latitudeInput = view.contentElement.querySelectorAll('.latlong-group input')[0] as HTMLInputElement;
+      assert.exists(latitudeInput);
+      latitudeInput.value = '45';
+
+      const event = new KeyboardEvent('keydown', {key: 'ArrowDown', shiftKey: true});
+      latitudeInput.dispatchEvent(event);
+
+      // modifierMultiplier = 0.1, Shift = 10. Result: 45 - 0.1*10 = 44
+      assert.strictEqual(latitudeInput.value, '44');
+    });
+
+    it('modifies latitude input on ArrowUp key with Alt', () => {
+      const latitudeInput = view.contentElement.querySelectorAll('.latlong-group input')[0] as HTMLInputElement;
+      assert.exists(latitudeInput);
+      latitudeInput.value = '45';
+
+      const event = new KeyboardEvent('keydown', {key: 'ArrowUp', altKey: true});
+      latitudeInput.dispatchEvent(event);
+
+      // modifierMultiplier = 0.1, Alt = 0.1. Result: 45 + 0.1*0.1 = 45.01
+      assert.strictEqual(latitudeInput.value, '45.01');
+    });
   });
 });

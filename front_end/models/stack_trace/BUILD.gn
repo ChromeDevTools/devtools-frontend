@@ -6,10 +6,14 @@ import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
 
 devtools_foundation_module("stack_trace") {
-  sources = [ "StackTrace.ts" ]
+  sources = [
+    "ErrorStackParser.ts",
+    "StackTrace.ts",
+  ]
 
   deps = [
     "../../core/common:bundle",
+    "../../core/platform:bundle",
     "../../core/sdk:bundle",
     "../../generated:protocol",
     "../workspace:bundle",
@@ -58,6 +62,7 @@ devtools_foundation_module("unittests") {
   testonly = true
 
   sources = [
+    "ErrorStackParser.test.ts",
     "StackTrace.test.ts",
     "StackTraceImpl.test.ts",
     "StackTraceModel.test.ts",
@@ -67,6 +72,7 @@ devtools_foundation_module("unittests") {
   deps = [
     ":bundle",
     ":impl",
+    "../../core/platform:bundle",
     "../../core/sdk:bundle",
     "../../generated",
     "../../testing",

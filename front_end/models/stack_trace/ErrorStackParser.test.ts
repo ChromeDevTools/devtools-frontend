@@ -6,14 +6,14 @@ import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 
-import * as Console from './console.js';
+import * as StackTrace from './stack_trace.js';
 
 const {urlString} = Platform.DevToolsPath;
-const {parseSourcePositionsFromErrorStack} = Console.ErrorStackParser;
+const {parseSourcePositionsFromErrorStack} = StackTrace.ErrorStackParser;
 
 describe('ErrorStackParser', () => {
   let runtimeModel;
-  let parseErrorStack: (stack: string) => Console.ErrorStackParser.ParsedErrorFrame[] | null;
+  let parseErrorStack: (stack: string) => StackTrace.ErrorStackParser.ParsedErrorFrame[] | null;
   const fileTestingUrl = urlString`file:///testing.js`;
 
   beforeEach(() => {
@@ -283,7 +283,7 @@ describe('ErrorStackParser', () => {
         },
       ];
 
-      Console.ErrorStackParser.augmentErrorStackWithScriptIds(parsedFrames, {callFrames: protocolFrames});
+      StackTrace.ErrorStackParser.augmentErrorStackWithScriptIds(parsedFrames, {callFrames: protocolFrames});
 
       assert.strictEqual(parsedFrames[1].link?.scriptId, sid('25'));
       assert.strictEqual(parsedFrames[2].link?.scriptId, sid('30'));
@@ -301,7 +301,7 @@ describe('ErrorStackParser', () => {
         functionName: 'foo',
       }];
 
-      Console.ErrorStackParser.augmentErrorStackWithScriptIds(parsedFrames, {callFrames: protocolFrames});
+      StackTrace.ErrorStackParser.augmentErrorStackWithScriptIds(parsedFrames, {callFrames: protocolFrames});
 
       assert.exists(parsedFrames[1].link);
       assert.isUndefined(parsedFrames[1].link.scriptId);
@@ -330,7 +330,7 @@ describe('ErrorStackParser', () => {
         },
       ];
 
-      Console.ErrorStackParser.augmentErrorStackWithScriptIds(parsedFrames, {callFrames: protocolFrames});
+      StackTrace.ErrorStackParser.augmentErrorStackWithScriptIds(parsedFrames, {callFrames: protocolFrames});
 
       assert.strictEqual(parsedFrames[1].link?.scriptId, sid('25'));
       assert.isUndefined(parsedFrames[2].link);

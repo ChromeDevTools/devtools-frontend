@@ -32,7 +32,6 @@ devtools_ui_module("console") {
     "ConsoleView.ts",
     "ConsoleViewMessage.ts",
     "ConsoleViewport.ts",
-    "ErrorStackParser.ts",
     "PromptBuilder.ts",
   ]
 
@@ -125,7 +124,6 @@ devtools_ui_module("unittests") {
     "ConsoleView.test.ts",
     "ConsoleViewMessage.test.ts",
     "ConsoleViewport.test.ts",
-    "ErrorStackParser.test.ts",
     "PromptBuilder.test.ts",
   ]
 

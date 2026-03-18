@@ -189,11 +189,6 @@ export class SensorsView extends UI.Widget.VBox {
   private timezoneInput!: HTMLInputElement;
   private localeInput!: HTMLInputElement;
   private accuracyInput!: HTMLInputElement;
-  private latitudeSetter!: (arg0: string) => void;
-  private longitudeSetter!: (arg0: string) => void;
-  private timezoneSetter!: (arg0: string) => void;
-  private localeSetter!: (arg0: string) => void;
-  private accuracySetter!: (arg0: string) => void;
   private localeError!: HTMLElement;
   private accuracyError!: HTMLElement;
   private customLocationsGroup!: HTMLOptGroupElement;
@@ -340,10 +335,11 @@ export class SensorsView extends UI.Widget.VBox {
     latitudeGroup.appendChild(this.latitudeInput);
     this.latitudeInput.setAttribute('step', 'any');
     this.latitudeInput.value = '0';
-    this.latitudeSetter = UI.UIUtils.bindInput(
-        this.latitudeInput, this.applyLocationUserInput.bind(this), SDK.EmulationModel.Location.latitudeValidator, true,
-        0.1);
-    this.latitudeSetter(String(location.latitude));
+    this.latitudeInput.addEventListener('change', this.#onLocationChange.bind(this), false);
+    this.latitudeInput.addEventListener('input', this.#onLocationInput.bind(this), false);
+    this.latitudeInput.addEventListener('keydown', this.#onLocationKeyDown.bind(this), false);
+    this.latitudeInput.addEventListener('focus', this.#onLocationFocus.bind(this), false);
+    this.#setInputValue(this.latitudeInput, String(location.latitude));
     UI.Tooltip.Tooltip.install(this.latitudeInput, modifierKeyMessage);
     latitudeGroup.appendChild(
         UI.UIUtils.createLabel(i18nString(UIStrings.latitude), 'latlong-title', this.latitudeInput));
@@ -352,10 +348,11 @@ export class SensorsView extends UI.Widget.VBox {
     longitudeGroup.appendChild(this.longitudeInput);
     this.longitudeInput.setAttribute('step', 'any');
     this.longitudeInput.value = '0';
-    this.longitudeSetter = UI.UIUtils.bindInput(
-        this.longitudeInput, this.applyLocationUserInput.bind(this), SDK.EmulationModel.Location.longitudeValidator,
-        true, 0.1);
-    this.longitudeSetter(String(location.longitude));
+    this.longitudeInput.addEventListener('change', this.#onLocationChange.bind(this), false);
+    this.longitudeInput.addEventListener('input', this.#onLocationInput.bind(this), false);
+    this.longitudeInput.addEventListener('keydown', this.#onLocationKeyDown.bind(this), false);
+    this.longitudeInput.addEventListener('focus', this.#onLocationFocus.bind(this), false);
+    this.#setInputValue(this.longitudeInput, String(location.longitude));
     UI.Tooltip.Tooltip.install(this.longitudeInput, modifierKeyMessage);
     longitudeGroup.appendChild(
         UI.UIUtils.createLabel(i18nString(UIStrings.longitude), 'latlong-title', this.longitudeInput));
@@ -363,10 +360,11 @@ export class SensorsView extends UI.Widget.VBox {
     this.timezoneInput = UI.UIUtils.createInput('', 'text', 'timezone');
     timezoneGroup.appendChild(this.timezoneInput);
     this.timezoneInput.value = 'Europe/Berlin';
-    this.timezoneSetter = UI.UIUtils.bindInput(
-        this.timezoneInput, this.applyLocationUserInput.bind(this), SDK.EmulationModel.Location.timezoneIdValidator,
-        false);
-    this.timezoneSetter(location.timezoneId);
+    this.timezoneInput.addEventListener('change', this.#onLocationChange.bind(this), false);
+    this.timezoneInput.addEventListener('input', this.#onLocationInput.bind(this), false);
+    this.timezoneInput.addEventListener('keydown', this.#onLocationKeyDown.bind(this), false);
+    this.timezoneInput.addEventListener('focus', this.#onLocationFocus.bind(this), false);
+    this.#setInputValue(this.timezoneInput, location.timezoneId);
     timezoneGroup.appendChild(
         UI.UIUtils.createLabel(i18nString(UIStrings.timezoneId), 'timezone-title', this.timezoneInput));
     this.timezoneError = timezoneGroup.createChild('div', 'timezone-error');
@@ -374,9 +372,11 @@ export class SensorsView extends UI.Widget.VBox {
     this.localeInput = UI.UIUtils.createInput('', 'text', 'locale');
     localeGroup.appendChild(this.localeInput);
     this.localeInput.value = 'en-US';
-    this.localeSetter = UI.UIUtils.bindInput(
-        this.localeInput, this.applyLocationUserInput.bind(this), SDK.EmulationModel.Location.localeValidator, false);
-    this.localeSetter(location.locale);
+    this.localeInput.addEventListener('change', this.#onLocationChange.bind(this), false);
+    this.localeInput.addEventListener('input', this.#onLocationInput.bind(this), false);
+    this.localeInput.addEventListener('keydown', this.#onLocationKeyDown.bind(this), false);
+    this.localeInput.addEventListener('focus', this.#onLocationFocus.bind(this), false);
+    this.#setInputValue(this.localeInput, location.locale);
     localeGroup.appendChild(UI.UIUtils.createLabel(i18nString(UIStrings.locale), 'locale-title', this.localeInput));
     this.localeError = localeGroup.createChild('div', 'locale-error');
 
@@ -384,10 +384,11 @@ export class SensorsView extends UI.Widget.VBox {
     accuracyGroup.appendChild(this.accuracyInput);
     this.accuracyInput.step = 'any';
     this.accuracyInput.value = SDK.EmulationModel.Location.DEFAULT_ACCURACY.toString();
-    this.accuracySetter = UI.UIUtils.bindInput(
-        this.accuracyInput, this.applyLocationUserInput.bind(this),
-        (value: string) => SDK.EmulationModel.Location.accuracyValidator(value).valid, true, 1);
-    this.accuracySetter(String(location.accuracy || SDK.EmulationModel.Location.DEFAULT_ACCURACY));
+    this.accuracyInput.addEventListener('change', this.#onLocationChange.bind(this), false);
+    this.accuracyInput.addEventListener('input', this.#onLocationInput.bind(this), false);
+    this.accuracyInput.addEventListener('keydown', this.#onLocationKeyDown.bind(this), false);
+    this.accuracyInput.addEventListener('focus', this.#onLocationFocus.bind(this), false);
+    this.#setInputValue(this.accuracyInput, String(location.accuracy || SDK.EmulationModel.Location.DEFAULT_ACCURACY));
     accuracyGroup.appendChild(
         UI.UIUtils.createLabel(i18nString(UIStrings.accuracy), 'accuracy-title', this.accuracyInput));
     this.accuracyError = accuracyGroup.createChild('div', 'accuracy-error');
@@ -421,17 +422,95 @@ export class SensorsView extends UI.Widget.VBox {
       this.#location = new SDK.EmulationModel.Location(
           coordinates.lat, coordinates.long, coordinates.timezoneId, coordinates.locale,
           coordinates.accuracy || SDK.EmulationModel.Location.DEFAULT_ACCURACY, false);
-      this.latitudeSetter(coordinates.lat);
-      this.longitudeSetter(coordinates.long);
-      this.timezoneSetter(coordinates.timezoneId);
-      this.localeSetter(coordinates.locale);
-      this.accuracySetter(String(coordinates.accuracy || SDK.EmulationModel.Location.DEFAULT_ACCURACY));
+      this.#setInputValue(this.latitudeInput, coordinates.lat);
+      this.#setInputValue(this.longitudeInput, coordinates.long);
+      this.#setInputValue(this.timezoneInput, coordinates.timezoneId);
+      this.#setInputValue(this.localeInput, coordinates.locale);
+      this.#setInputValue(
+          this.accuracyInput, String(coordinates.accuracy || SDK.EmulationModel.Location.DEFAULT_ACCURACY));
     }
 
     this.applyLocation();
     if (value === NonPresetOptions.Custom) {
       this.latitudeInput.focus();
     }
+  }
+
+  #onLocationInput(event: Event): void {
+    const input = event.currentTarget as HTMLInputElement;
+    const valid = this.#validateInput(input, input.value);
+    input.classList.toggle('error-input', !valid);
+  }
+
+  #onLocationChange(event: Event): void {
+    const input = event.currentTarget as HTMLInputElement;
+    const valid = this.#validateInput(input, input.value);
+    input.classList.toggle('error-input', !valid);
+    if (valid) {
+      this.applyLocationUserInput();
+    }
+  }
+
+  #onLocationKeyDown(event: KeyboardEvent): void {
+    const input = event.currentTarget as HTMLInputElement;
+    if (event.key === 'Enter') {
+      const valid = this.#validateInput(input, input.value);
+      if (valid) {
+        this.applyLocationUserInput();
+      }
+      event.preventDefault();
+      return;
+    }
+
+    const isNumeric = input === this.latitudeInput || input === this.longitudeInput || input === this.accuracyInput;
+    if (!isNumeric) {
+      return;
+    }
+
+    const multiplier = input === this.accuracyInput ? 1 : 0.1;
+    const value = UI.UIUtils.modifiedFloatNumber(parseFloat(input.value), event, multiplier);
+    if (value === null) {
+      return;
+    }
+    const stringValue = String(value);
+    const valid = this.#validateInput(input, stringValue);
+    if (valid) {
+      this.#setInputValue(input, stringValue);
+    }
+    event.preventDefault();
+  }
+
+  #onLocationFocus(event: Event): void {
+    const input = event.currentTarget as HTMLInputElement;
+    input.select();
+  }
+
+  #validateInput(input: HTMLInputElement, value: string): boolean {
+    if (input === this.latitudeInput) {
+      return SDK.EmulationModel.Location.latitudeValidator(value);
+    }
+    if (input === this.longitudeInput) {
+      return SDK.EmulationModel.Location.longitudeValidator(value);
+    }
+    if (input === this.timezoneInput) {
+      return SDK.EmulationModel.Location.timezoneIdValidator(value);
+    }
+    if (input === this.localeInput) {
+      return SDK.EmulationModel.Location.localeValidator(value);
+    }
+    if (input === this.accuracyInput) {
+      return SDK.EmulationModel.Location.accuracyValidator(value).valid;
+    }
+    return false;
+  }
+
+  #setInputValue(input: HTMLInputElement, value: string): void {
+    if (value === input.value) {
+      return;
+    }
+    const valid = this.#validateInput(input, value);
+    input.classList.toggle('error-input', !valid);
+    input.value = value;
   }
 
   private applyLocationUserInput(): void {
@@ -477,11 +556,11 @@ export class SensorsView extends UI.Widget.VBox {
   }
 
   private clearFieldsetElementInputs(): void {
-    this.latitudeSetter('0');
-    this.longitudeSetter('0');
-    this.timezoneSetter('');
-    this.localeSetter('');
-    this.accuracySetter(SDK.EmulationModel.Location.DEFAULT_ACCURACY.toString());
+    this.#setInputValue(this.latitudeInput, '0');
+    this.#setInputValue(this.longitudeInput, '0');
+    this.#setInputValue(this.timezoneInput, '');
+    this.#setInputValue(this.localeInput, '');
+    this.#setInputValue(this.accuracyInput, SDK.EmulationModel.Location.DEFAULT_ACCURACY.toString());
   }
 
   private createDeviceOrientationSection(): void {

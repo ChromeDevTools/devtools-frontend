@@ -46,7 +46,7 @@ describeWithEnvironment('SensorsView', () => {
     });
 
     it('validates latitude input and adds error class if invalid', () => {
-      const latitudeInput = view.contentElement.querySelectorAll('.latlong-group input')[0] as HTMLInputElement;
+      const latitudeInput = view.contentElement.querySelector('#latitude-input') as HTMLInputElement;
       assert.exists(latitudeInput);
 
       latitudeInput.value = 'invalid-value';
@@ -59,7 +59,7 @@ describeWithEnvironment('SensorsView', () => {
     });
 
     it('validates timezone input and adds error class if invalid', () => {
-      const timezoneInput = view.contentElement.querySelectorAll('.latlong-group input')[2] as HTMLInputElement;
+      const timezoneInput = view.contentElement.querySelector('#timezone-input') as HTMLInputElement;
       assert.exists(timezoneInput);
 
       timezoneInput.value = '12345';
@@ -72,7 +72,7 @@ describeWithEnvironment('SensorsView', () => {
     });
 
     it('updates emulation.location-override setting on valid input', () => {
-      const latitudeInput = view.contentElement.querySelectorAll('.latlong-group input')[0] as HTMLInputElement;
+      const latitudeInput = view.contentElement.querySelector('#latitude-input') as HTMLInputElement;
       assert.exists(latitudeInput);
 
       latitudeInput.value = '45';
@@ -84,7 +84,7 @@ describeWithEnvironment('SensorsView', () => {
     });
 
     it('modifies latitude input on ArrowUp key', () => {
-      const latitudeInput = view.contentElement.querySelectorAll('.latlong-group input')[0] as HTMLInputElement;
+      const latitudeInput = view.contentElement.querySelector('#latitude-input') as HTMLInputElement;
       assert.exists(latitudeInput);
       latitudeInput.value = '45';
 
@@ -96,7 +96,7 @@ describeWithEnvironment('SensorsView', () => {
     });
 
     it('modifies latitude input on ArrowDown key with Shift', () => {
-      const latitudeInput = view.contentElement.querySelectorAll('.latlong-group input')[0] as HTMLInputElement;
+      const latitudeInput = view.contentElement.querySelector('#latitude-input') as HTMLInputElement;
       assert.exists(latitudeInput);
       latitudeInput.value = '45';
 
@@ -108,7 +108,7 @@ describeWithEnvironment('SensorsView', () => {
     });
 
     it('modifies latitude input on ArrowUp key with Alt', () => {
-      const latitudeInput = view.contentElement.querySelectorAll('.latlong-group input')[0] as HTMLInputElement;
+      const latitudeInput = view.contentElement.querySelector('#latitude-input') as HTMLInputElement;
       assert.exists(latitudeInput);
       latitudeInput.value = '45';
 

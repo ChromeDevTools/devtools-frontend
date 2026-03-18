@@ -3,6 +3,7 @@ Short Name: acorn
 URL: https://github.com/acornjs/acorn
 Version: 8.10.0
 Revision: 8da1fdd1918c9a9a5748501017262ce18bb2f2cc
+Update Mechanism: Manual
 License: MIT
 License File: package/LICENSE
 Security Critical: no

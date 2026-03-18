@@ -1,5 +1,6 @@
 import * as Host from '../../core/host/host.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import type * as LHModel from '../../models/lighthouse/lighthouse.js';
 import type * as Trace from '../../models/trace/trace.js';
 import type * as NetworkTimeCalculator from '../network_time_calculator/network_time_calculator.js';
 import { type ContextDetail, type ConversationContext, type MultimodalInput, type ResponseData } from './agents/AiAgent.js';
@@ -13,7 +14,7 @@ export declare class AiConversation {
     static fromSerializedConversation(serializedConversation: SerializedConversation): AiConversation;
     readonly id: string;
     readonly history: ResponseData[];
-    constructor(type: ConversationType, data?: ResponseData[], id?: string, isReadOnly?: boolean, aidaClient?: Host.AidaClient.AidaClient, changeManager?: ChangeManager, isExternal?: boolean, performanceRecordAndReload?: () => Promise<Trace.TraceModel.ParsedTrace>, onInspectElement?: () => Promise<SDK.DOMModel.DOMNode | null>, networkTimeCalculator?: NetworkTimeCalculator.NetworkTransferTimeCalculator);
+    constructor(type: ConversationType, data?: ResponseData[], id?: string, isReadOnly?: boolean, aidaClient?: Host.AidaClient.AidaClient, changeManager?: ChangeManager, isExternal?: boolean, performanceRecordAndReload?: () => Promise<Trace.TraceModel.ParsedTrace>, onInspectElement?: () => Promise<SDK.DOMModel.DOMNode | null>, networkTimeCalculator?: NetworkTimeCalculator.NetworkTransferTimeCalculator, lighthouseRecording?: () => Promise<LHModel.ReporterTypes.ReportJSON | null>);
     get isReadOnly(): boolean;
     get title(): string | undefined;
     get isEmpty(): boolean;

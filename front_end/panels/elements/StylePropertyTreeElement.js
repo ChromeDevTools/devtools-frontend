@@ -2762,6 +2762,19 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
         // This should happen last, as it clears the info necessary to restore the property value after [Page]Up/Down changes.
         this.editingEnded(context);
     }
+    async commitAiSuggestion(fullText) {
+        const isEditingName = UI.UIUtils.isBeingEdited(this.nameElement);
+        const context = {
+            expanded: this.expanded,
+            hasChildren: this.isExpandable(),
+            isEditingName,
+            originalProperty: this.property,
+            previousContent: isEditingName ? this.name : this.value
+        };
+        this.removePrompt();
+        this.editingEnded(context);
+        await this.applyStyleText(fullText, true);
+    }
     async applyOriginalStyle(context) {
         await this.applyStyleText(this.originalPropertyText, false, context.originalProperty);
     }
@@ -3030,14 +3043,32 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     isEventWithinDisclosureTriangle(event) {
         return event.target === this.expandElement;
     }
-    showGhostTextInValue(text) {
+    renderActiveAiSuggestion(activeAiSuggestion) {
+        if (!this.prompt) {
+            return;
+        }
+        const isEditingName = UI.UIUtils.isBeingEdited(this.nameElement);
+        if (isEditingName) {
+            this.prompt.applySuggestion({ text: activeAiSuggestion.name }, true);
+            this.#showGhostTextInValue(activeAiSuggestion.value);
+        }
+        else {
+            // Only has ghost text for one field - name part or value part
+            const currentSuggestedText = isEditingName ? activeAiSuggestion.name : activeAiSuggestion.value;
+            this.prompt.applySuggestion({ text: currentSuggestedText }, true);
+        }
+    }
+    clearActiveAiSuggestion() {
+        this.#clearGhostTextInValue();
+    }
+    #showGhostTextInValue(text) {
         if (!this.valueElement) {
             return;
         }
-        this.clearGhostTextInValue();
+        this.#clearGhostTextInValue();
         this.valueElement.createChild('span', 'ghost-value-prediction').textContent = text;
     }
-    clearGhostTextInValue() {
+    #clearGhostTextInValue() {
         if (!this.valueElement) {
             return;
         }

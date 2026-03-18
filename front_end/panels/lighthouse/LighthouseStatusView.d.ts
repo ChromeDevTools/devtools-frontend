@@ -1,4 +1,5 @@
 import * as Common from '../../core/common/common.js';
+import * as UI from '../../ui/legacy/legacy.js';
 import type { LighthousePanel } from './LighthousePanel.js';
 export interface ViewInput {
     statusHeader: string;
@@ -23,19 +24,22 @@ export declare class StatusView {
     private currentPhase;
     private scheduledFastFactTimeout;
     private dialogRoot;
-    private readonly dialog;
+    readonly dialog: UI.Dialog.Dialog;
     private statusHeader;
     private statusText;
     private progressBarClass;
     private progressBarValue;
     private cancelButtonVisible;
+    private isAIControlled;
     private bugReport;
     constructor(panel: LighthousePanel);
     private render;
     private reset;
     show(dialogRenderElement: Element): void;
+    private getStatusHeader;
     private renderStatusHeader;
     hide(): void;
+    setAIControlled(isAIControlled: boolean): void;
     setInspectedURL(url?: string): void;
     updateStatus(message: string | null): void;
     private cancel;

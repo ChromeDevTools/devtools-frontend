@@ -57,6 +57,10 @@ export class StylesAiCodeCompletionProvider {
         }
     }
     async triggerAiCodeCompletion(text, cursorPosition, isEditingName, cssProperty, cssModel) {
+        if (!this.#aiCodeCompletion) {
+            AiCodeCompletion.debugLog('Ai Code Completion is not initialized');
+            return;
+        }
         const styleSheetId = cssProperty.ownerStyle.styleSheetId;
         if (!styleSheetId) {
             return;
@@ -76,6 +80,7 @@ export class StylesAiCodeCompletionProvider {
             return;
         }
         const contentText = new TextUtils.Text.Text(content);
+        let currentPropertyString = '';
         const propertyStartOffset = contentText.offsetFromPosition(propertyRange.startLine, propertyRange.startColumn);
         const propertyEndOffset = contentText.offsetFromPosition(propertyRange.endLine, propertyRange.endColumn);
         let prefix = content.substring(0, propertyStartOffset);
@@ -84,58 +89,56 @@ export class StylesAiCodeCompletionProvider {
             if (nameRange) {
                 const nameEndOffset = contentText.offsetFromPosition(nameRange.endLine, nameRange.endColumn);
                 prefix = prefix + content.substring(propertyStartOffset, nameEndOffset) + ': ';
+                currentPropertyString = content.substring(propertyStartOffset, nameEndOffset) + ': ';
             }
         }
+        currentPropertyString = currentPropertyString + text;
         prefix = prefix + text;
         const suffix = content.substring(propertyEndOffset);
+        const startTime = performance.now();
         // TODO(b/476098133): Consider adjusting cursor position
-        await this.#requestAidaSuggestion(prefix, suffix, cursorPosition);
-    }
-    async #requestAidaSuggestion(prefix, suffix, cursorPositionAtRequest) {
-        if (!this.#aiCodeCompletion) {
-            AiCodeCompletion.debugLog('Ai Code Completion is not initialized');
-            this.#aiCodeCompletionConfig?.onResponseReceived();
-            Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiCodeCompletionError);
+        const aidaSuggestion = await this.#requestAidaSuggestion(prefix, suffix, cursorPosition);
+        if (!aidaSuggestion) {
             return;
         }
-        const startTime = performance.now();
+        this.#aiCodeCompletionConfig?.setAiAutoCompletion?.({
+            text: currentPropertyString + aidaSuggestion.suggestionText,
+            from: cursorPosition,
+            rpcGlobalId: aidaSuggestion.rpcGlobalId,
+            sampleId: aidaSuggestion.sampleId,
+            startTime,
+            clearCachedRequest: this.clearCache.bind(this),
+            onImpression: this.#aiCodeCompletion.registerUserImpression.bind(this.#aiCodeCompletion),
+        });
+    }
+    async #requestAidaSuggestion(prefix, suffix, cursorPositionAtRequest) {
         this.#aiCodeCompletionConfig?.onRequestTriggered();
         // Registering AiCodeCompletionRequestTriggered metric even if the request is served from cache
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiCodeCompletionRequestTriggered);
         try {
-            const completionResponse = await this.#aiCodeCompletion.completeCode(prefix, suffix, cursorPositionAtRequest, "CSS" /* Host.AidaClient.AidaInferenceLanguage.CSS */);
+            const completionResponse = await this.#aiCodeCompletion?.completeCode(prefix, suffix, cursorPositionAtRequest, "CSS" /* Host.AidaClient.AidaInferenceLanguage.CSS */);
             this.#aiCodeCompletionConfig?.onResponseReceived();
             if (!completionResponse) {
-                return;
+                return null;
             }
             const { response, fromCache } = completionResponse;
             if (!response) {
-                return;
+                return null;
             }
-            const sampleResponse = await this.#generateSampleForRequest(response, prefix, suffix);
-            if (!sampleResponse) {
-                return;
-            }
-            if (fromCache) {
+            const sampleResponse = await this.#generateSampleForRequest(response, suffix);
+            if (sampleResponse && fromCache) {
                 Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiCodeCompletionResponseServedFromCache);
             }
-            this.#aiCodeCompletionConfig?.setAiAutoCompletion?.({
-                text: sampleResponse.suggestionText,
-                from: cursorPositionAtRequest,
-                rpcGlobalId: sampleResponse.rpcGlobalId,
-                sampleId: sampleResponse.sampleId,
-                startTime,
-                clearCachedRequest: this.clearCache.bind(this),
-                onImpression: this.#aiCodeCompletion?.registerUserImpression.bind(this.#aiCodeCompletion),
-            });
+            return sampleResponse;
         }
         catch (e) {
             AiCodeCompletion.debugLog('Error while fetching code completion suggestions from AIDA', e);
             this.#aiCodeCompletionConfig?.onResponseReceived();
             Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiCodeCompletionError);
         }
+        return null;
     }
-    async #generateSampleForRequest(response, prefix, suffix) {
+    async #generateSampleForRequest(response, suffix) {
         const suggestionSample = this.#pickSampleFromResponse(response);
         if (!suggestionSample) {
             return null;

@@ -16,8 +16,6 @@ export var ExperimentName;
     ExperimentName["FULL_ACCESSIBILITY_TREE"] = "full-accessibility-tree";
     ExperimentName["EXPERIMENTAL_COOKIE_FEATURES"] = "experimental-cookie-features";
     ExperimentName["INSTRUMENTATION_BREAKPOINTS"] = "instrumentation-breakpoints";
-    ExperimentName["AUTHORED_DEPLOYED_GROUPING"] = "authored-deployed-grouping";
-    ExperimentName["JUST_MY_CODE"] = "just-my-code";
     ExperimentName["USE_SOURCE_MAP_SCOPES"] = "use-source-map-scopes";
     ExperimentName["TIMELINE_DEBUG_MODE"] = "timeline-debug-mode";
     ExperimentName["DURABLE_MESSAGES"] = "durable-messages";

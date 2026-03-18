@@ -525,8 +525,6 @@ export declare enum DevtoolsExperiments {
     'full-accessibility-tree' = 42,
     'experimental-cookie-features' = 45,
     'instrumentation-breakpoints' = 61,
-    'authored-deployed-grouping' = 63,
-    'just-my-code' = 65,
     'use-source-map-scopes' = 76,
     'timeline-debug-mode' = 93,
     'durable-messages' = 110,

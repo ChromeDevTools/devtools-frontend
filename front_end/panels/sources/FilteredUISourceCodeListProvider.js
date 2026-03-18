@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import '../../ui/components/highlighting/highlighting.js';
+import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import * as Root from '../../core/root/root.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as QuickOpen from '../../ui/legacy/components/quick_open/quick_open.js';
@@ -62,7 +62,7 @@ export class FilteredUISourceCodeListProvider extends QuickOpen.FilteredListWidg
         if (this.uiSourceCodeIds.has(uiSourceCode.canonicalScriptId())) {
             return false;
         }
-        if (Root.Runtime.experiments.isEnabled(Root.ExperimentNames.ExperimentName.JUST_MY_CODE) &&
+        if (Common.Settings.Settings.instance().moduleSetting('navigator-just-my-code').get() &&
             Workspace.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(uiSourceCode)) {
             return false;
         }

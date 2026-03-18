@@ -145,8 +145,9 @@ const str_ = i18n.i18n.registerUIStrings('panels/explain/components/ConsoleInsig
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const i18nTemplate = Lit.i18nTemplate.bind(undefined, str_);
 const { render, html, Directives } = Lit;
+const { widget } = UI.Widget;
 export class CloseEvent extends Event {
-    static eventName = 'close';
+    static eventName = 'closeinsight';
     constructor() {
         super(CloseEvent.eventName, { composed: true, bubbles: true });
     }
@@ -611,10 +612,8 @@ export const DEFAULT_VIEW = (input, output, target) => {
 export class ConsoleInsight extends UI.Widget.Widget {
     static async create(promptBuilder, aidaClient) {
         const aidaPreconditions = await Host.AidaClient.AidaClient.checkAccessPreconditions();
-        const widget = document.createElement('devtools-widget');
-        widget.classList.add('devtools-console-insight');
-        widget.widgetConfig = UI.Widget.widgetConfig(element => new ConsoleInsight(promptBuilder, aidaClient, aidaPreconditions, element));
-        return widget;
+        return html `<devtools-widget class="devtools-console-insight" ${widget(element => new ConsoleInsight(promptBuilder, aidaClient, aidaPreconditions, element))}>
+    </devtools-widget>`;
     }
     disableAnimations = false;
     #view;

@@ -8,6 +8,7 @@ export interface LighthouseRun {
         formFactor: (string | undefined);
         mode: string;
     };
+    isAIControlled?: boolean;
 }
 /**
  * ProtocolService manages a connection between the frontend (Lighthouse panel) and the Lighthouse worker.

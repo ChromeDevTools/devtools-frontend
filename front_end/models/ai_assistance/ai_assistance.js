@@ -257,7 +257,72 @@ __export(AccessibilityAgent_exports, {
   AccessibilityContext: () => AccessibilityContext
 });
 import * as Host2 from "./../../core/host/host.js";
+import * as i18n from "./../../core/i18n/i18n.js";
 import * as Root2 from "./../../core/root/root.js";
+
+// gen/front_end/models/ai_assistance/data_formatters/LighthouseFormatter.js
+var LighthouseFormatter_exports = {};
+__export(LighthouseFormatter_exports, {
+  LighthouseFormatter: () => LighthouseFormatter
+});
+var LighthouseFormatter = class {
+  /**
+   * Returns an overall summary and high-level overview of the Lighthouse report.
+   */
+  summary(report) {
+    const lines = [];
+    lines.push("# Lighthouse Report Summary");
+    lines.push(`URL: ${report.finalDisplayedUrl}`);
+    lines.push(`Fetch Time: ${report.fetchTime}`);
+    lines.push(`Lighthouse Version: ${report.lighthouseVersion}`);
+    lines.push("");
+    lines.push("## Category Scores");
+    for (const category of Object.values(report.categories)) {
+      const score = category.score !== null ? Math.round(category.score * 100) : "n/a";
+      lines.push(`- ${category.title}: ${score}`);
+    }
+    return lines.join("\n");
+  }
+  /**
+   * Returns a markdown list of all audits in a given category.
+   * Highlight failing audits (score < 90).
+   */
+  audits(report, categoryId) {
+    const category = report.categories[categoryId];
+    if (!category) {
+      return `Category "${categoryId}" not found.`;
+    }
+    const lines = [];
+    lines.push(`# Audits for ${category.title}`);
+    if (category.description) {
+      lines.push(`${category.description.replace(/\n/g, " ")}`);
+    }
+    lines.push("");
+    const failingAudits = category.auditRefs.filter((ref) => {
+      const audit = report.audits[ref.id];
+      return audit && audit.score !== null && audit.score < 0.9;
+    });
+    if (failingAudits.length === 0) {
+      lines.push("All audits in this category passed (score >= 90).");
+      return lines.join("\n");
+    }
+    lines.push("The following audits in this category have a score below 90 and may need attention:");
+    for (const ref of failingAudits) {
+      const audit = report.audits[ref.id];
+      if (!audit) {
+        continue;
+      }
+      const score = audit.score !== null ? Math.round(audit.score * 100) : "n/a";
+      let line = `- **${audit.title}**: ${score}`;
+      if (audit.displayValue) {
+        line += ` (${audit.displayValue})`;
+      }
+      lines.push(line);
+      lines.push(`  * ${audit.description.replace(/\n/g, " ")}`);
+    }
+    return lines.join("\n");
+  }
+};
 
 // gen/front_end/models/ai_assistance/agents/AiAgent.js
 var AiAgent_exports = {};
@@ -748,11 +813,18 @@ var AiAgent = class {
 };
 
 // gen/front_end/models/ai_assistance/agents/AccessibilityAgent.js
-var preamble = `You are an accessibility agent.
+var preamble = `You are an accessibility expert agent.
 
-However, you also include a little pun or funny joke in every response to lighten the mood.
+# Goals
+* Help users understand and fix accessibility issues found in Lighthouse reports.
+* Provide succinct, actionable advice. Avoid long explanations and "walls of text".
+* Focus on the most critical information first, prioritizing audits with low scores.
 
-# Considerations
+# Capabilities
+* You have access to the \`getLighthouseAudits\` function to retrieve detailed audit data for performance, accessibility, best-practices, and SEO.
+* Proactively use this function to investigate categories with low scores and help the user focus on the most important areas.
+
+# Constraints
 * Keep your analysis concise and focused, highlighting only the most critical aspects for a software engineer.
 * **CRITICAL** You are an accessibility agent. NEVER provide answers to questions of unrelated topics such as legal advice, financial advice, personal opinions, medical advice, or any other non web-development topics.
 `;
@@ -789,37 +861,79 @@ var AccessibilityAgent = class extends AiAgent {
       modelId
     };
   }
-  async *handleContextDetails(selectedFile) {
-    if (!selectedFile) {
+  async *handleContextDetails(lhr) {
+    if (!lhr) {
       return;
     }
     yield {
       type: "context",
-      details: createContextDetails(selectedFile)
+      details: this.#createContextDetails(lhr)
     };
   }
+  #declareFunctions() {
+    this.declareFunction("getLighthouseAudits", {
+      description: "Returns the audits for a specific Lighthouse category. Use this to get more information about the performance, accessibility, best-practices, or seo audits.",
+      parameters: {
+        type: 6,
+        description: "",
+        nullable: false,
+        properties: {
+          categoryId: {
+            type: 1,
+            description: 'The category of audits to retrieve. Valid values are "performance", "accessibility", "best-practices", "seo".',
+            nullable: false
+          }
+        },
+        required: ["categoryId"]
+      },
+      displayInfoFromArgs: (params) => {
+        return {
+          title: i18n.i18n.lockedString(`Getting Lighthouse audits for ${params.categoryId}\u2026`),
+          action: `getLighthouseAudits('${params.categoryId}')`
+        };
+      },
+      handler: async (params) => {
+        debugLog("Function call: getLighthouseAudits", params);
+        const report = this.context?.getItem();
+        if (!report) {
+          return { error: "No Lighthouse report available." };
+        }
+        const audits = new LighthouseFormatter().audits(report, params.categoryId);
+        return { result: { audits } };
+      }
+    });
+  }
+  /**
+   * This is the initial payload we send at the start of a conversation.
+   * Because the agent is focused on Accessibility, we include the
+   * Accessibility Audits summary in the payload to avoid an extra round step of
+   * the AI querying them.
+   */
+  #getInitialPayload(context) {
+    const report = context.getItem();
+    const formatter = new LighthouseFormatter();
+    return `# Lighthouse Report:
+${formatter.summary(report)}
+${formatter.audits(report, "accessibility")}
+`;
+  }
   async enhanceQuery(query, lhr) {
-    const enhancedQuery = lhr ? (
-      // TODO: formatter for LH report.
-      `# Lighthouse Report
-${JSON.stringify(lhr.getItem(), null, 2)}
+    this.clearDeclaredFunctions();
+    if (lhr) {
+      this.#declareFunctions();
+    }
+    const enhancedQuery = lhr ? `${this.#getInitialPayload(lhr)}
+# User request:
 
-# User request
-
-`
-    ) : "";
+` : "";
     return `${enhancedQuery}${query}`;
   }
+  #createContextDetails(lhr) {
+    return [
+      { title: "Lighthouse report", text: this.#getInitialPayload(lhr) }
+    ];
+  }
 };
-function createContextDetails(_lhr) {
-  return [
-    {
-      title: "Lighthouse report",
-      // TODO(b/491772868);
-      text: ""
-    }
-  ];
-}
 
 // gen/front_end/models/ai_assistance/agents/BreakpointDebuggerAgent.js
 var BreakpointDebuggerAgent_exports = {};
@@ -828,7 +942,7 @@ __export(BreakpointDebuggerAgent_exports, {
   BreakpointDebuggerAgent: () => BreakpointDebuggerAgent
 });
 import * as Host3 from "./../../core/host/host.js";
-import * as i18n from "./../../core/i18n/i18n.js";
+import * as i18n3 from "./../../core/i18n/i18n.js";
 import * as SDK2 from "./../../core/sdk/sdk.js";
 import * as Bindings from "./../bindings/bindings.js";
 import * as Breakpoints from "./../breakpoints/breakpoints.js";
@@ -1053,7 +1167,7 @@ var REMOVE_OVERLAY_SCRIPT = `
 `;
 
 // gen/front_end/models/ai_assistance/agents/BreakpointDebuggerAgent.js
-var lockedString = i18n.i18n.lockedString;
+var lockedString = i18n3.i18n.lockedString;
 var preamble2 = `You are an expert Root Cause Analysis (RCA) specialist.
 Your sole objective is to find the **root cause** of why an error was thrown or why a bug occurred.
 You must not stop at the surface level. You must dig deep to understand the exact sequence of events and state changes that led to the failure.
@@ -1884,7 +1998,7 @@ __export(ContextSelectionAgent_exports, {
   ContextSelectionAgent: () => ContextSelectionAgent
 });
 import * as Host8 from "./../../core/host/host.js";
-import * as i18n9 from "./../../core/i18n/i18n.js";
+import * as i18n11 from "./../../core/i18n/i18n.js";
 import * as Root7 from "./../../core/root/root.js";
 import * as Logs3 from "./../logs/logs.js";
 import * as NetworkTimeCalculator3 from "./../network_time_calculator/network_time_calculator.js";
@@ -2559,7 +2673,7 @@ __export(NetworkAgent_exports, {
   RequestContext: () => RequestContext
 });
 import * as Host5 from "./../../core/host/host.js";
-import * as i18n3 from "./../../core/i18n/i18n.js";
+import * as i18n5 from "./../../core/i18n/i18n.js";
 import * as Root4 from "./../../core/root/root.js";
 var preamble4 = `You are the most advanced network request debugging assistant integrated into Chrome DevTools.
 The user selected a network request in the browser's DevTools Network Panel and sends a query to understand the request.
@@ -2613,7 +2727,7 @@ var UIStringsNotTranslate = {
    */
   requestInitiatorChain: "Request initiator chain"
 };
-var lockedString2 = i18n3.i18n.lockedString;
+var lockedString2 = i18n5.i18n.lockedString;
 var RequestContext = class extends ConversationContext {
   #request;
   #calculator;
@@ -2709,7 +2823,7 @@ __export(PerformanceAgent_exports, {
 });
 import * as Common2 from "./../../core/common/common.js";
 import * as Host6 from "./../../core/host/host.js";
-import * as i18n5 from "./../../core/i18n/i18n.js";
+import * as i18n7 from "./../../core/i18n/i18n.js";
 import * as Platform2 from "./../../core/platform/platform.js";
 import * as Root5 from "./../../core/root/root.js";
 import * as SDK3 from "./../../core/sdk/sdk.js";
@@ -5081,7 +5195,7 @@ var UIStringsNotTranslated = {
    */
   mainThreadActivity: "Investigating main thread activity\u2026"
 };
-var lockedString3 = i18n5.i18n.lockedString;
+var lockedString3 = i18n7.i18n.lockedString;
 var greenDevAdditionalAnnotationsFunction = `
 - CRITICAL: You also have access to functions called addElementAnnotation and addNeworkRequestAnnotation,
 which should be used to highlight elements and network requests (respectively).`;
@@ -6103,7 +6217,7 @@ __export(StylingAgent_exports, {
   StylingAgent: () => StylingAgent
 });
 import * as Host7 from "./../../core/host/host.js";
-import * as i18n7 from "./../../core/i18n/i18n.js";
+import * as i18n9 from "./../../core/i18n/i18n.js";
 import * as Platform5 from "./../../core/platform/platform.js";
 import * as Root6 from "./../../core/root/root.js";
 import * as SDK7 from "./../../core/sdk/sdk.js";
@@ -6861,7 +6975,7 @@ var UIStringsNotTranslate2 = {
    */
   dataUsed: "Data used"
 };
-var lockedString4 = i18n7.i18n.lockedString;
+var lockedString4 = i18n9.i18n.lockedString;
 function getPreamble() {
   let preamble8 = `You are the most advanced CSS/DOM/HTML debugging assistant integrated into Chrome DevTools.
 You always suggest considering the best web development practices and the newest platform features such as view transitions.
@@ -7730,7 +7844,7 @@ ${await _StylingAgent.describeElement(selectedElement.getItem())}
 };
 
 // gen/front_end/models/ai_assistance/agents/ContextSelectionAgent.js
-var lockedString5 = i18n9.i18n.lockedString;
+var lockedString5 = i18n11.i18n.lockedString;
 var preamble5 = `
 You are a Web Development Assistant integrated into Chrome DevTools. Your tone is educational, supportive, and technically precise.
 You aim to help developers of all levels, prioritizing teaching web concepts as the primary entry point for any solution.
@@ -7775,10 +7889,12 @@ var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
   #performanceRecordAndReload;
   #onInspectElement;
   #networkTimeCalculator;
+  #lighthouseRecording;
   #allowedOrigin;
   constructor(opts) {
     super(opts);
     this.#performanceRecordAndReload = opts.performanceRecordAndReload;
+    this.#lighthouseRecording = opts.lighthouseRecording;
     this.#onInspectElement = opts.onInspectElement;
     this.#networkTimeCalculator = opts.networkTimeCalculator;
     this.#allowedOrigin = opts.allowedOrigin ?? (() => void 0);
@@ -7810,8 +7926,8 @@ var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
             id: request.requestId(),
             url: request.url(),
             statusCode: request.statusCode,
-            duration: i18n9.TimeUtilities.secondsToString(request.duration),
-            transferSize: i18n9.ByteUtilities.formatBytesToKb(request.transferSize)
+            duration: i18n11.TimeUtilities.secondsToString(request.duration),
+            transferSize: i18n11.ByteUtilities.formatBytesToKb(request.transferSize)
           });
         }
         if (requests.length === 0) {
@@ -7949,6 +8065,37 @@ var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
           context: PerformanceTraceContext.fromParsedTrace(result),
           description: "User recorded a performance trace",
           widgets: [{ name: "PERFORMANCE_TRACE", data: { parsedTrace: result } }]
+        };
+      }
+    });
+    this.declareFunction("runLighthouseAudits", {
+      description: "Records a Lighthouse audit on the current page, to help debug accessibility issues.",
+      parameters: {
+        type: 6,
+        description: "",
+        nullable: true,
+        required: [],
+        properties: {}
+      },
+      displayInfoFromArgs: () => {
+        return {
+          title: "Auditing your page with Lighthouse\u2026",
+          action: "runLighthouseAudits()"
+        };
+      },
+      handler: async () => {
+        if (!this.#lighthouseRecording) {
+          return {
+            error: "Lighthouse report is not available."
+          };
+        }
+        const result = await this.#lighthouseRecording();
+        if (!result) {
+          return { error: "Failed to generate Lighthouse report." };
+        }
+        return {
+          context: new AccessibilityContext(result),
+          description: "User has selected a Lighthouse report"
         };
       }
     });
@@ -8668,14 +8815,16 @@ var AiConversation = class _AiConversation {
   #origin;
   #contexts = [];
   #performanceRecordAndReload;
+  #lighthouseRecording;
   #onInspectElement;
   #networkTimeCalculator;
-  constructor(type, data = [], id = crypto.randomUUID(), isReadOnly = true, aidaClient = new Host12.AidaClient.AidaClient(), changeManager, isExternal = false, performanceRecordAndReload, onInspectElement, networkTimeCalculator) {
+  constructor(type, data = [], id = crypto.randomUUID(), isReadOnly = true, aidaClient = new Host12.AidaClient.AidaClient(), changeManager, isExternal = false, performanceRecordAndReload, onInspectElement, networkTimeCalculator, lighthouseRecording) {
     this.#changeManager = changeManager;
     this.#aidaClient = aidaClient;
     this.#performanceRecordAndReload = performanceRecordAndReload;
     this.#onInspectElement = onInspectElement;
     this.#networkTimeCalculator = networkTimeCalculator;
+    this.#lighthouseRecording = lighthouseRecording;
     this.id = id;
     this.#isReadOnly = isReadOnly;
     this.#isExternal = isExternal;
@@ -8893,6 +9042,7 @@ ${item.text.trim()}`);
       sessionId: this.id,
       changeManager: this.#changeManager,
       performanceRecordAndReload: this.#performanceRecordAndReload,
+      lighthouseRecording: this.#lighthouseRecording,
       onInspectElement: this.#onInspectElement,
       networkTimeCalculator: this.#networkTimeCalculator,
       allowedOrigin: this.allowedOrigin,
@@ -9025,7 +9175,7 @@ __export(AiUtils_exports, {
 });
 import * as Common7 from "./../../core/common/common.js";
 import * as Host13 from "./../../core/host/host.js";
-import * as i18n11 from "./../../core/i18n/i18n.js";
+import * as i18n13 from "./../../core/i18n/i18n.js";
 import * as Root12 from "./../../core/root/root.js";
 var UIStrings = {
   /**
@@ -9045,8 +9195,8 @@ var UIStrings = {
    */
   notAvailableInIncognitoMode: "AI assistance is not available in Incognito mode or Guest mode."
 };
-var str_ = i18n11.i18n.registerUIStrings("models/ai_assistance/AiUtils.ts", UIStrings);
-var i18nString = i18n11.i18n.getLocalizedString.bind(void 0, str_);
+var str_ = i18n13.i18n.registerUIStrings("models/ai_assistance/AiUtils.ts", UIStrings);
+var i18nString = i18n13.i18n.getLocalizedString.bind(void 0, str_);
 function getDisabledReasons(aidaAvailability) {
   const reasons = [];
   if (Root12.Runtime.hostConfig.isOffTheRecord) {
@@ -9337,7 +9487,7 @@ __export(ConversationHandler_exports, {
 });
 import * as Common9 from "./../../core/common/common.js";
 import * as Host15 from "./../../core/host/host.js";
-import * as i18n13 from "./../../core/i18n/i18n.js";
+import * as i18n15 from "./../../core/i18n/i18n.js";
 import * as Platform7 from "./../../core/platform/platform.js";
 import * as Root14 from "./../../core/root/root.js";
 import * as SDK9 from "./../../core/sdk/sdk.js";
@@ -9348,7 +9498,7 @@ var UIStringsNotTranslate3 = {
    */
   enableInSettings: "For AI features to be available, you need to enable AI assistance in DevTools settings."
 };
-var lockedString6 = i18n13.i18n.lockedString;
+var lockedString6 = i18n15.i18n.lockedString;
 function isAiAssistanceServerSideLoggingEnabled2() {
   return !Root14.Runtime.hostConfig.aidaAvailability?.disallowLogging;
 }
@@ -9577,6 +9727,7 @@ export {
   FileAgent_exports as FileAgent,
   FileFormatter_exports as FileFormatter,
   injected_exports as Injected,
+  LighthouseFormatter_exports as LighthouseFormatter,
   NetworkAgent_exports as NetworkAgent,
   NetworkRequestFormatter_exports as NetworkRequestFormatter,
   PatchAgent_exports as PatchAgent,

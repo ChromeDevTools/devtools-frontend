@@ -10,7 +10,9 @@ import chatMessageStyles from './chatMessage.css.js';
 import { renderStep, titleForStep } from './ChatMessage.js';
 import walkthroughViewStyles from './walkthroughView.css.js';
 const lockedString = i18n.i18n.lockedString;
-const { html, render } = Lit;
+const { html, render, Directives } = Lit;
+const { ref } = Directives;
+const SCROLL_ROUND_OFFSET = 2;
 const UIStrings = {
     /**
      * @description Title for the close button in the walkthrough view.
@@ -91,24 +93,30 @@ function renderSidebarWalkthrough(input, stepsOutput, stepsCount) {
   `;
     // clang-format on
 }
-export const DEFAULT_VIEW = (input, _output, target) => {
+export const DEFAULT_VIEW = (input, output, target) => {
     const steps = input.message?.parts.filter(t => t.type === 'step')?.map(p => p.step) ?? [];
     // clang-format off
     const stepsOutput = steps.length > 0 ? html `
-    <div class="steps-container">
-      ${steps.map((step, index) => html `
-        <div class="walkthrough-step">
-          <span class="step-number">${index + 1}</span>
-          <div class="step-wrapper">
-            ${renderStep({
+    <div class="steps-container" @scroll=${input.handleScroll} ${ref(el => {
+        output.scrollContainer = el;
+    })}>
+      <div class="steps-scroll-content" ${ref(el => {
+        output.stepsContainer = el;
+    })}>
+        ${steps.map((step, index) => html `
+          <div class="walkthrough-step">
+            <span class="step-number">${index + 1}</span>
+            <div class="step-wrapper">
+              ${renderStep({
         step,
         isLoading: input.isLoading,
         markdownRenderer: input.markdownRenderer,
         isLast: index === steps.length - 1
     })}
+            </div>
           </div>
-        </div>
-      `)}
+        `)}
+      </div>
     </div>
   ` : Lit.nothing;
     render(html `
@@ -132,10 +140,69 @@ export class WalkthroughView extends UI.Widget.Widget {
     #onOpen = () => { };
     #isInlined = false;
     #isExpanded = false;
+    #pinScrollToBottom = true;
+    #isProgrammaticScroll = false;
+    #output = {};
+    #stepsContainerResizeObserver = new ResizeObserver(() => this.#handleStepsContainerResize());
     constructor(element, view = DEFAULT_VIEW) {
         super(element);
         this.#view = view;
     }
+    wasShown() {
+        super.wasShown();
+        this.#registerResizeObservers();
+    }
+    willHide() {
+        super.willHide();
+        this.#stepsContainerResizeObserver.disconnect();
+    }
+    #registerResizeObservers() {
+        if (this.#output.stepsContainer) {
+            this.#stepsContainerResizeObserver.observe(this.#output.stepsContainer);
+        }
+    }
+    onResize() {
+        this.#handleStepsContainerResize();
+    }
+    #handleStepsContainerResize() {
+        if (!this.#pinScrollToBottom) {
+            return;
+        }
+        this.scrollToBottom();
+    }
+    scrollToBottom() {
+        if (!this.#output.stepsContainer) {
+            return;
+        }
+        this.#isProgrammaticScroll = true;
+        window.requestAnimationFrame(() => {
+            const lastElement = this.#output.stepsContainer?.lastElementChild;
+            if (lastElement) {
+                lastElement.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'end',
+                });
+            }
+        });
+    }
+    #handleScroll = (ev) => {
+        if (!ev.target || !(ev.target instanceof HTMLElement)) {
+            return;
+        }
+        if (this.#isProgrammaticScroll) {
+            // For smooth scrolling, multiple scroll events will be fired.
+            // We only reset the flag once we've reached the bottom,
+            // or we can just rely on the fact that if it's programmatic,
+            // we don't want to change the pinning state based on mid-scroll positions.
+            const isAtBottom = ev.target.scrollTop + ev.target.clientHeight + SCROLL_ROUND_OFFSET >= ev.target.scrollHeight;
+            if (isAtBottom) {
+                this.#isProgrammaticScroll = false;
+            }
+            return;
+        }
+        this.#pinScrollToBottom =
+            ev.target.scrollTop + ev.target.clientHeight + SCROLL_ROUND_OFFSET >= ev.target.scrollHeight;
+    };
     set isLoading(isLoading) {
         this.#isLoading = isLoading;
         this.requestUpdate();
@@ -188,7 +255,12 @@ export class WalkthroughView extends UI.Widget.Widget {
             isInlined: this.#isInlined,
             isExpanded: this.#isExpanded,
             message: this.#message,
-        }, null, this.contentElement);
+            handleScroll: this.#handleScroll,
+        }, this.#output, this.contentElement);
+        this.#registerResizeObservers();
+        if (this.#pinScrollToBottom) {
+            this.scrollToBottom();
+        }
     }
 }
 //# sourceMappingURL=WalkthroughView.js.map

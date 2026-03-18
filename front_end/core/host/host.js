@@ -2424,8 +2424,6 @@ var DevtoolsExperiments;
   DevtoolsExperiments2[DevtoolsExperiments2["full-accessibility-tree"] = 42] = "full-accessibility-tree";
   DevtoolsExperiments2[DevtoolsExperiments2["experimental-cookie-features"] = 45] = "experimental-cookie-features";
   DevtoolsExperiments2[DevtoolsExperiments2["instrumentation-breakpoints"] = 61] = "instrumentation-breakpoints";
-  DevtoolsExperiments2[DevtoolsExperiments2["authored-deployed-grouping"] = 63] = "authored-deployed-grouping";
-  DevtoolsExperiments2[DevtoolsExperiments2["just-my-code"] = 65] = "just-my-code";
   DevtoolsExperiments2[DevtoolsExperiments2["use-source-map-scopes"] = 76] = "use-source-map-scopes";
   DevtoolsExperiments2[DevtoolsExperiments2["timeline-debug-mode"] = 93] = "timeline-debug-mode";
   DevtoolsExperiments2[DevtoolsExperiments2["durable-messages"] = 110] = "durable-messages";

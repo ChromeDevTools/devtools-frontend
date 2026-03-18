@@ -8,7 +8,7 @@ import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_e
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
 import { type MatchRenderer, RenderingContext } from './PropertyRenderer.js';
-import type { StylePropertiesSection } from './StylePropertiesSection.js';
+import type { ActiveAiSuggestionProperty, StylePropertiesSection } from './StylePropertiesSection.js';
 import type { StylesContainer } from './StylesContainer.js';
 interface StylePropertyTreeElementParams {
     stylesContainer: StylesContainer;
@@ -354,6 +354,7 @@ export declare class StylePropertyTreeElement extends UI.TreeOutline.TreeElement
     kickFreeFlowStyleEditForTest(): Promise<void>;
     editingEnded(context: Context): void;
     editingCancelled(context: Context): void;
+    commitAiSuggestion(fullText: string): Promise<void>;
     private applyOriginalStyle;
     private findSibling;
     private editingCommitted;
@@ -363,8 +364,8 @@ export declare class StylePropertyTreeElement extends UI.TreeOutline.TreeElement
     private innerApplyStyleText;
     ondblclick(): boolean;
     isEventWithinDisclosureTriangle(event: Event): boolean;
-    showGhostTextInValue(text: string): void;
-    clearGhostTextInValue(): void;
+    renderActiveAiSuggestion(activeAiSuggestion: ActiveAiSuggestionProperty): void;
+    clearActiveAiSuggestion(): void;
 }
 export declare class GhostStylePropertyTreeElement extends StylePropertyTreeElement {
     constructor(stylesContainer: StylesContainer, section: StylePropertiesSection, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, property: SDK.CSSProperty.CSSProperty);

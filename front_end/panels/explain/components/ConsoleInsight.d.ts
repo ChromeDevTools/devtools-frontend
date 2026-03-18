@@ -6,7 +6,7 @@ import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as Console from '../../console/console.js';
 export declare class CloseEvent extends Event {
-    static readonly eventName = "close";
+    static readonly eventName = "closeinsight";
     constructor();
 }
 export type PublicPromptBuilder = Pick<Console.PromptBuilder.PromptBuilder, 'buildPrompt' | 'getSearchQuery'>;
@@ -88,7 +88,7 @@ export declare const DEFAULT_VIEW: (input: ViewInput, output: ViewOutput, target
 export type ViewFunction = typeof DEFAULT_VIEW;
 export declare class ConsoleInsight extends UI.Widget.Widget {
     #private;
-    static create(promptBuilder: PublicPromptBuilder, aidaClient: PublicAidaClient): Promise<UI.Widget.WidgetElement<ConsoleInsight>>;
+    static create(promptBuilder: PublicPromptBuilder, aidaClient: PublicAidaClient): Promise<Lit.LitTemplate>;
     disableAnimations: boolean;
     constructor(promptBuilder: PublicPromptBuilder, aidaClient: PublicAidaClient, aidaPreconditions: Host.AidaClient.AidaAccessPreconditions, element?: HTMLElement, view?: ViewFunction);
     wasShown(): void;

@@ -14722,6 +14722,7 @@ import * as Trace32 from "./../../models/trace/trace.js";
 import * as PerfUI15 from "./../../ui/legacy/components/perf_ui/perf_ui.js";
 import * as UI17 from "./../../ui/legacy/legacy.js";
 import * as ThemeSupport23 from "./../../ui/legacy/theme_support/theme_support.js";
+import { html as html6, render as render6 } from "./../../ui/lit/lit.js";
 import * as TimelineComponents6 from "./components/components.js";
 
 // gen/front_end/panels/timeline/NetworkTrackAppender.js
@@ -15256,9 +15257,10 @@ var TimelineFlameChartNetworkDataProvider = class {
     if (Trace32.Types.Events.isSyntheticNetworkRequest(event)) {
       const element = document.createElement("div");
       const root = UI17.UIUtils.createShadowRootWithCoreStyles(element, { cssFile: timelineFlamechartPopover_css_default });
-      const contents = root.createChild("div", "timeline-flamechart-popover");
-      const infoElement = TimelineComponents6.NetworkRequestTooltip.NetworkRequestTooltip.createWidgetElement(event, this.#entityMapper || void 0);
-      contents.appendChild(infoElement);
+      render6(html6`
+        <div class="timeline-flamechart-popover">
+          ${TimelineComponents6.NetworkRequestTooltip.NetworkRequestTooltip.createWidgetElement(event, this.#entityMapper || void 0)}
+        </div>`, root);
       return element;
     }
     return null;
@@ -17822,7 +17824,17 @@ var TimelineFlameChartDataProvider = class extends Common16.ObjectWrapper.Object
       popoverContents.appendChild(warningElement);
     }
     for (const elem of additionalContent) {
-      popoverContents.appendChild(elem);
+      const widget2 = UI19.Widget.Widget.get(elem);
+      if (widget2) {
+        widget2.show(
+          popoverContents,
+          void 0,
+          /* suppressOprhanWidgetError= */
+          true
+        );
+      } else {
+        popoverContents.appendChild(elem);
+      }
     }
     return popoverElement;
   }

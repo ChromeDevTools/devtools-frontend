@@ -138,7 +138,7 @@ export class LighthouseReportRenderer {
             const url = detailsItem.sourceUrl;
             const line = Number(detailsItem.sourceLine);
             const column = Number(detailsItem.sourceColumn);
-            const element = await Components.Linkifier.Linkifier.linkifyURL(url, {
+            const element = Components.Linkifier.Linkifier.linkifyURL(url, {
                 lineNumber: line,
                 columnNumber: column,
                 showColumnNumber: false,

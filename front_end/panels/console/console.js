@@ -979,7 +979,7 @@ var objectValue_css_default = `/*
 // gen/front_end/panels/console/ConsoleViewMessage.js
 import * as Components from "./../../ui/legacy/components/utils/utils.js";
 import * as UI2 from "./../../ui/legacy/legacy.js";
-import { render as render2 } from "./../../ui/lit/lit.js";
+import { nothing as nothing2, render as render2 } from "./../../ui/lit/lit.js";
 import * as VisualLogging from "./../../ui/visual_logging/visual_logging.js";
 import * as AiAssistancePanel from "./../ai_assistance/ai_assistance.js";
 
@@ -2049,21 +2049,19 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
     this.consoleGroupInternal = null;
   }
   setInsight(insight) {
-    this.elementInternal?.querySelector(".devtools-console-insight")?.remove();
-    this.elementInternal?.append(insight);
-    this.elementInternal?.classList.toggle("has-insight", true);
-    insight.addEventListener("close", () => {
-      Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightClosed);
-      this.elementInternal?.classList.toggle("has-insight", false);
-      const widget2 = UI2.Widget.Widget.get(insight);
-      if (widget2) {
-        widget2.detach();
-      } else {
-        this.elementInternal?.removeChild(insight);
-      }
-      this.#teaser?.setInactive(false);
-    }, { once: true });
-    this.#teaser?.setInactive(true);
+    if (this.elementInternal) {
+      render2(insight, this.elementInternal);
+      this.elementInternal.classList.toggle("has-insight", true);
+      this.elementInternal.addEventListener("closeinsight", () => {
+        Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightClosed);
+        if (this.elementInternal) {
+          this.elementInternal.classList.toggle("has-insight", false);
+          render2(nothing2, this.elementInternal);
+        }
+        this.#teaser?.setInactive(false);
+      }, { once: true });
+      this.#teaser?.setInactive(true);
+    }
   }
   element() {
     return this.toMessageElement();
@@ -4709,7 +4707,7 @@ import * as Buttons2 from "./../../ui/components/buttons/buttons.js";
 import * as TextEditor from "./../../ui/components/text_editor/text_editor.js";
 import * as ObjectUI2 from "./../../ui/legacy/components/object_ui/object_ui.js";
 import * as UI5 from "./../../ui/legacy/legacy.js";
-import { Directives, html as html3, nothing as nothing3, render as render4 } from "./../../ui/lit/lit.js";
+import { Directives, html as html3, nothing as nothing4, render as render4 } from "./../../ui/lit/lit.js";
 import * as VisualLogging3 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/console/consolePinPane.css.js
@@ -4964,13 +4962,13 @@ var DEFAULT_VIEW3 = (input, output, target) => {
 var FORMATTER = new ObjectUI2.RemoteObjectPreviewFormatter.RemoteObjectPreviewFormatter();
 function renderResult(result, isEditing) {
   if (!result) {
-    return nothing3;
+    return nothing4;
   }
   if (result && SDK5.RuntimeModel.RuntimeModel.isSideEffectFailure(result)) {
     return html3`<span class='object-value-calculate-value-button' title=${i18nString3(UIStrings3.evaluateAllowingSideEffects)}>(…)</span>`;
   }
   const renderedPreview = FORMATTER.renderEvaluationResultPreview(result, !isEditing);
-  if (renderedPreview === nothing3 && !isEditing) {
+  if (renderedPreview === nothing4 && !isEditing) {
     return html3`${i18nString3(UIStrings3.notAvailable)}`;
   }
   return renderedPreview;
@@ -5372,7 +5370,7 @@ var UIStrings4 = {
 };
 var str_4 = i18n9.i18n.registerUIStrings("panels/console/ConsoleSidebar.ts", UIStrings4);
 var i18nString4 = i18n9.i18n.getLocalizedString.bind(void 0, str_4);
-var { render: render5, html: html4, nothing: nothing4 } = Lit3;
+var { render: render5, html: html4, nothing: nothing5 } = Lit3;
 var GROUP_ICONS = {
   [
     "message"
@@ -5416,7 +5414,7 @@ var DEFAULT_VIEW4 = (input, output, target) => {
   i18nString4(GROUP_ICONS[group.name].label, {
     n: group.messageCount
   })}
-                  ${group.messageCount === 0 ? nothing4 : html4`
+                  ${group.messageCount === 0 ? nothing5 : html4`
                   <ul role="group">
                     ${group.urlGroups.values().map((urlGroup) => html4`
                       <li

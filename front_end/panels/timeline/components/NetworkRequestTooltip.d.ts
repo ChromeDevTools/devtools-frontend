@@ -11,7 +11,7 @@ type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 export declare const DEFAULT_VIEW: View;
 export declare class NetworkRequestTooltip extends UI.Widget.Widget {
     #private;
-    static createWidgetElement(request: Trace.Types.Events.SyntheticNetworkRequest, entityMapper?: Trace.EntityMapper.EntityMapper): UI.Widget.WidgetElement<NetworkRequestTooltip>;
+    static createWidgetElement(request: Trace.Types.Events.SyntheticNetworkRequest, entityMapper?: Trace.EntityMapper.EntityMapper): Lit.LitTemplate;
     constructor(element?: HTMLElement, view?: View);
     set networkRequest(networkRequest: Trace.Types.Events.SyntheticNetworkRequest);
     set entityMapper(entityMapper: Trace.EntityMapper.EntityMapper | undefined);

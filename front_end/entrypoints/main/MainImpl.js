@@ -337,10 +337,6 @@ export class MainImpl {
         Root.Runtime.experiments.register(Root.ExperimentNames.ExperimentName.FONT_EDITOR, 'New font editor in the Styles tab', 'https://developer.chrome.com/blog/new-in-devtools-89/#font');
         // New cookie features.
         Root.Runtime.experiments.register(Root.ExperimentNames.ExperimentName.EXPERIMENTAL_COOKIE_FEATURES, 'Experimental cookie features');
-        // Change grouping of sources panel to use Authored/Deployed trees
-        Root.Runtime.experiments.register(Root.ExperimentNames.ExperimentName.AUTHORED_DEPLOYED_GROUPING, 'Group sources into authored and deployed trees', 'https://goo.gle/authored-deployed', 'https://goo.gle/authored-deployed-feedback');
-        // Hide third party code (as determined by ignore lists or source maps)
-        Root.Runtime.experiments.register(Root.ExperimentNames.ExperimentName.JUST_MY_CODE, 'Hide ignore-listed code in Sources tree view');
         Root.Runtime.experiments.registerHostExperiment({
             name: Root.ExperimentNames.ExperimentName.DURABLE_MESSAGES,
             title: 'Durable Messages',

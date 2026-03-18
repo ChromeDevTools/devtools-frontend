@@ -67,6 +67,9 @@
       "path": "../../ui/legacy/bundle-tsconfig.json"
     },
     {
+      "path": "../../ui/lit/bundle-tsconfig.json"
+    },
+    {
       "path": "../console/bundle-tsconfig.json"
     },
     {

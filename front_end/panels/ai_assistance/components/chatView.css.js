@@ -417,4 +417,12 @@ main {
   }
 }
 
+.export-for-agents-button {
+  /* Bottom margin to ensure it's not right up against the chat box when
+   * the conversation requires a scrollbar */
+  margin: 0 auto var(--sys-size-8) auto;
+  display: block;
+
+}
+
 /*# sourceURL=${import.meta.resolve('././components/chatView.css')} */`;

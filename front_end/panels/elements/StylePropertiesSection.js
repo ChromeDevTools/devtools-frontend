@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-imperative-dom-api */
+/* eslint-disable @devtools/no-lit-render-outside-of-view */
 /*
  * Copyright (C) 2007 Apple Inc.  All rights reserved.
  * Copyright (C) 2009 Joseph Pecoraro
@@ -45,6 +46,7 @@ import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as Tooltips from '../../ui/components/tooltips/tooltips.js';
 import { createIcon } from '../../ui/kit/kit.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import { html, nothing, render } from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as PanelsCommon from '../common/common.js';
 import { FontEditorSectionManager } from './ColorSwatchPopoverIcon.js';
@@ -119,6 +121,7 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/elements/StylePropertiesSection.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+const { widget } = UI.Widget;
 const STYLE_TAG = '<style>';
 const DEFAULT_MAX_PROPERTIES = 50;
 export class StylePropertiesSection {
@@ -164,6 +167,7 @@ export class StylePropertiesSection {
     static #nextSectionTooltipIdPrefix = 0;
     sectionTooltipIdPrefix = StylePropertiesSection.#nextSectionTooltipIdPrefix++;
     ghostStyleTreeElements = [];
+    #activeAiSuggestion;
     constructor(stylesContainer, matchedStyles, style, sectionIdx, computedStyles, parentsComputedStyles, computedStyleExtraFields, customHeaderText) {
         this.#customHeaderText = customHeaderText;
         this.stylesContainer = stylesContainer;
@@ -410,7 +414,7 @@ export class StylePropertiesSection {
     }
     static createRuleOriginNode(matchedStyles, linkifier, rule) {
         if (!rule) {
-            return document.createTextNode('');
+            return nothing;
         }
         const ruleLocation = StylePropertiesSection.getRuleLocationFromCSSRule(rule);
         const header = rule.header;
@@ -427,52 +431,51 @@ export class StylePropertiesSection {
         }
         function linkifyNode(label) {
             if (header?.ownerNode) {
-                const link = document.createElement('devtools-widget');
-                link.widgetConfig =
-                    UI.Widget.widgetConfig(e => new PanelsCommon.DOMLinkifier.DeferredDOMNodeLink(e, header.ownerNode));
-                link.textContent = label;
-                return link;
+                return html `<devtools-widget ${widget(e => new PanelsCommon.DOMLinkifier.DeferredDOMNodeLink(e, header.ownerNode))}>
+          ${label}
+        </devtools-widget>`;
             }
             if (rule && rule.style.styleSheetId && rule.treeScope) {
                 // Make link for adopted stylesheet.
                 const ownerNode = new SDK.DOMModel.DeferredDOMNode(rule.cssModelInternal.target(), rule.treeScope);
-                const link = document.createElement('devtools-widget');
-                link.widgetConfig = UI.Widget.widgetConfig(e => new PanelsCommon.DOMLinkifier.DeferredDOMNodeLink(e, ownerNode, undefined, rule.style.styleSheetId));
-                link.textContent = label;
-                return link;
+                // clang-format off
+                return html `<devtools-widget ${widget(e => new PanelsCommon.DOMLinkifier.DeferredDOMNodeLink(e, ownerNode, undefined, rule.style.styleSheetId))}>
+          ${label}
+        </devtools-widget>`;
+                // clang-format on
             }
             return null;
         }
         if (header?.isMutable && !header.isViaInspector()) {
             const location = header.isConstructedByNew() && !header.sourceMapURL ? null : linkifyRuleLocation();
             if (location) {
-                return location;
+                return html `${location}`;
             }
             const label = header.isConstructedByNew() ? i18nString(UIStrings.constructedStylesheet) : STYLE_TAG;
             const node = linkifyNode(label);
             if (node) {
                 return node;
             }
-            return document.createTextNode(label);
+            return html `${label}`;
         }
         const location = linkifyRuleLocation();
         if (location) {
-            return location;
+            return html `${location}`;
         }
         if (rule.isUserAgent()) {
-            return document.createTextNode(i18nString(UIStrings.userAgentStylesheet));
+            return html `${i18nString(UIStrings.userAgentStylesheet)}`;
         }
         if (rule.isInjected()) {
-            return document.createTextNode(i18nString(UIStrings.injectedStylesheet));
+            return html `${i18nString(UIStrings.injectedStylesheet)}`;
         }
         if (rule.isViaInspector()) {
-            return document.createTextNode(i18nString(UIStrings.viaInspector));
+            return html `${i18nString(UIStrings.viaInspector)}`;
         }
         const node = linkifyNode(STYLE_TAG);
         if (node) {
             return node;
         }
-        return document.createTextNode('');
+        return nothing;
     }
     createRuleOriginNode(matchedStyles, linkifier, rule) {
         return StylePropertiesSection.createRuleOriginNode(matchedStyles, linkifier, rule);
@@ -747,35 +750,65 @@ export class StylePropertiesSection {
         }
         return;
     }
-    clearGhostStyleTreeElements() {
+    set activeAiSuggestion(activeAiSuggestion) {
+        this.#clearActiveAiSuggestion();
+        this.#activeAiSuggestion = activeAiSuggestion;
+        if (this.#activeAiSuggestion) {
+            this.#renderActiveAiSuggestion();
+        }
+    }
+    get activeAiSuggestion() {
+        return this.#activeAiSuggestion;
+    }
+    async commitActiveAiSuggestion() {
+        if (!this.#activeAiSuggestion) {
+            return;
+        }
+        const sourceTreeElement = this.#getAiSuggestionSourceTreeElement();
+        // Apply everything atomically
+        await sourceTreeElement?.commitAiSuggestion(this.#activeAiSuggestion.text);
+    }
+    #clearActiveAiSuggestion() {
+        this.#getAiSuggestionSourceTreeElement()?.clearActiveAiSuggestion();
         // Clear existing ghost elements
         for (const ghost of this.ghostStyleTreeElements) {
             this.propertiesTreeOutline.removeChild(ghost);
         }
         this.ghostStyleTreeElements = [];
     }
-    renderGhostStyleTreeElements(suggestion) {
-        this.clearGhostStyleTreeElements();
-        if (!suggestion) {
+    #renderActiveAiSuggestion() {
+        if (!this.#activeAiSuggestion) {
             return;
         }
-        const suggestionLines = suggestion.split(';').map(line => line.trim());
-        for (const line of suggestionLines) {
-            const colonIdx = line.indexOf(':');
-            if (colonIdx === -1) {
-                continue;
-            }
-            const name = line.substring(0, colonIdx).trim();
-            const value = line.substring(colonIdx + 1).trim();
-            if (!name || !value) {
-                continue;
-            }
+        const sourceTreeElement = this.#getAiSuggestionSourceTreeElement();
+        if (!sourceTreeElement || !this.#activeAiSuggestion.properties.length) {
+            return;
+        }
+        sourceTreeElement.renderActiveAiSuggestion(this.#activeAiSuggestion.properties[0]);
+        if (this.#activeAiSuggestion.properties.length <= 1) {
+            return;
+        }
+        const index = this.propertiesTreeOutline.rootElement().children().indexOf(sourceTreeElement);
+        const properties = this.#activeAiSuggestion.properties.slice(1);
+        for (let i = 0; i < properties.length; i++) {
+            const property = properties[i];
             // Create a fake property attached to this style
-            const fakeProperty = new SDK.CSSProperty.CSSProperty(this.styleInternal, this.styleInternal.allProperties().length, name, value, false, false, true, false);
+            const fakeProperty = new SDK.CSSProperty.CSSProperty(this.styleInternal, this.styleInternal.allProperties().length, property.name, property.value, false, false, true, false);
             const ghost = new GhostStylePropertyTreeElement(this.stylesContainer, this, this.matchedStyles, fakeProperty);
-            this.propertiesTreeOutline.appendChild(ghost);
+            this.propertiesTreeOutline.insertChild(ghost, index + i + 1);
             this.ghostStyleTreeElements.push(ghost);
         }
+    }
+    #getAiSuggestionSourceTreeElement() {
+        if (!this.#activeAiSuggestion) {
+            return;
+        }
+        const sourceTreeElement = this.closestPropertyForEditing(this.#activeAiSuggestion.cssProperty.index);
+        if (!(sourceTreeElement instanceof StylePropertyTreeElement) ||
+            sourceTreeElement.property !== this.#activeAiSuggestion.cssProperty) {
+            return;
+        }
+        return sourceTreeElement;
     }
     onNewRuleClick(event) {
         event.data.consume();
@@ -1642,8 +1675,8 @@ export class StylePropertiesSection {
     editingSelectorCommittedForTest() {
     }
     updateRuleOrigin() {
-        this.selectorRefElement.removeChildren();
-        this.selectorRefElement.appendChild(this.createRuleOriginNode(this.matchedStyles, this.stylesContainer.linkifier, this.styleInternal.parentRule));
+        const origin = this.createRuleOriginNode(this.matchedStyles, this.stylesContainer.linkifier, this.styleInternal.parentRule);
+        render(origin, this.selectorRefElement, { host: this });
     }
     editingSelectorEnded() {
         this.stylesContainer.setEditingStyle(false);
@@ -1679,8 +1712,8 @@ export class BlankStylePropertiesSection extends StylePropertiesSection {
         this.normal = false;
         this.ruleLocation = ruleLocation;
         this.styleSheetHeader = styleSheetHeader;
-        this.selectorRefElement.removeChildren();
-        this.selectorRefElement.appendChild(StylePropertiesSection.linkifyRuleLocation(cssModel, this.stylesContainer.linkifier, styleSheetHeader, this.actualRuleLocation()));
+        const locationNode = StylePropertiesSection.linkifyRuleLocation(cssModel, this.stylesContainer.linkifier, styleSheetHeader, this.actualRuleLocation());
+        render(html `${locationNode}`, this.selectorRefElement, { host: this });
         this.maybeCreateAncestorRules(insertAfterStyle);
         this.element.classList.add('blank-section');
     }
@@ -1777,7 +1810,7 @@ export class RegisteredPropertiesSection extends StylePropertiesSection {
         if (rule) {
             return super.createRuleOriginNode(matchedStyles, linkifier, rule);
         }
-        return document.createTextNode('CSS.registerProperty');
+        return html `CSS.registerProperty`;
     }
 }
 export class FunctionRuleSection extends StylePropertiesSection {

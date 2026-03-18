@@ -93,9 +93,11 @@ export class SourceMap {
         // Ensure scriptUrl is associated with sourceMap sources
         const sourceIdx = this.#sourceIndex(scriptUrl);
         if (sourceIdx >= 0) {
-            if (!this.#scopesInfo) {
-                // First time seeing this sourcemap, create an new empty scopesInfo object
+            if (!this.#scopesInfo || this.#scopesFallbackPromise !== undefined) {
+                // First time seeing this sourcemap, create an new empty scopesInfo object.
+                // Also reset the fallback scope info since the extension will provide it.
                 this.#scopesInfo = new SourceMapScopesInfo(this, { scopes: [], ranges: [] });
+                this.#scopesFallbackPromise = undefined;
             }
             if (!this.#scopesInfo.hasOriginalScopes(sourceIdx)) {
                 const originalScopes = buildOriginalScopes(ranges);

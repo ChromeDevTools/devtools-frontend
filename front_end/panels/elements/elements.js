@@ -1203,6 +1203,7 @@ import * as SDK8 from "./../../core/sdk/sdk.js";
 import * as AiCodeCompletion3 from "./../../models/ai_code_completion/ai_code_completion.js";
 import * as Bindings4 from "./../../models/bindings/bindings.js";
 import * as TextUtils5 from "./../../models/text_utils/text_utils.js";
+import * as CodeMirror from "./../../third_party/codemirror.next/codemirror.next.js";
 import * as TextEditor2 from "./../../ui/components/text_editor/text_editor.js";
 import { createIcon as createIcon4, Icon as Icon2 } from "./../../ui/kit/kit.js";
 import * as InlineEditor3 from "./../../ui/legacy/components/inline_editor/inline_editor.js";
@@ -5387,6 +5388,19 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI7.TreeO
     this.updateTitle();
     this.editingEnded(context);
   }
+  async commitAiSuggestion(fullText) {
+    const isEditingName = UI7.UIUtils.isBeingEdited(this.nameElement);
+    const context = {
+      expanded: this.expanded,
+      hasChildren: this.isExpandable(),
+      isEditingName,
+      originalProperty: this.property,
+      previousContent: isEditingName ? this.name : this.value
+    };
+    this.removePrompt();
+    this.editingEnded(context);
+    await this.applyStyleText(fullText, true);
+  }
   async applyOriginalStyle(context) {
     await this.applyStyleText(this.originalPropertyText, false, context.originalProperty);
   }
@@ -5610,14 +5624,30 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI7.TreeO
   isEventWithinDisclosureTriangle(event) {
     return event.target === this.expandElement;
   }
-  showGhostTextInValue(text) {
+  renderActiveAiSuggestion(activeAiSuggestion) {
+    if (!this.prompt) {
+      return;
+    }
+    const isEditingName = UI7.UIUtils.isBeingEdited(this.nameElement);
+    if (isEditingName) {
+      this.prompt.applySuggestion({ text: activeAiSuggestion.name }, true);
+      this.#showGhostTextInValue(activeAiSuggestion.value);
+    } else {
+      const currentSuggestedText = isEditingName ? activeAiSuggestion.name : activeAiSuggestion.value;
+      this.prompt.applySuggestion({ text: currentSuggestedText }, true);
+    }
+  }
+  clearActiveAiSuggestion() {
+    this.#clearGhostTextInValue();
+  }
+  #showGhostTextInValue(text) {
     if (!this.valueElement) {
       return;
     }
-    this.clearGhostTextInValue();
+    this.#clearGhostTextInValue();
     this.valueElement.createChild("span", "ghost-value-prediction").textContent = text;
   }
-  clearGhostTextInValue() {
+  #clearGhostTextInValue() {
     if (!this.valueElement) {
       return;
     }
@@ -5742,21 +5772,21 @@ var StyleEditorWidget = class _StyleEditorWidget extends UI8.Widget.VBox {
     triggerButton.onclick = async (event) => {
       event.stopPropagation();
       const popoverHelper = stylesContainer.swatchPopoverHelper();
-      const widget2 = _StyleEditorWidget.instance();
-      widget2.element.classList.toggle("with-padding", true);
-      widget2.setEditor(editorClass);
-      widget2.bindContext(stylesContainer, section4);
-      widget2.setTriggerKey(triggerKey);
-      await widget2.render();
-      widget2.focus();
+      const widget3 = _StyleEditorWidget.instance();
+      widget3.element.classList.toggle("with-padding", true);
+      widget3.setEditor(editorClass);
+      widget3.bindContext(stylesContainer, section4);
+      widget3.setTriggerKey(triggerKey);
+      await widget3.render();
+      widget3.focus();
       const scrollerElement = triggerButton.enclosingNodeOrSelfWithClass("style-panes-wrapper");
       const onScroll = () => {
         popoverHelper.hide(true);
       };
-      const onStylesUpdateCompleted = widget2.requestUpdate.bind(widget2);
+      const onStylesUpdateCompleted = widget3.requestUpdate.bind(widget3);
       stylesContainer.addStyleUpdateListener(onStylesUpdateCompleted);
-      popoverHelper.show(widget2, triggerButton, () => {
-        widget2.unbindContext();
+      popoverHelper.show(widget3, triggerButton, () => {
+        widget3.unbindContext();
         if (scrollerElement) {
           scrollerElement.removeEventListener("scroll", onScroll);
         }
@@ -5824,6 +5854,7 @@ import * as Buttons from "./../../ui/components/buttons/buttons.js";
 import * as Tooltips2 from "./../../ui/components/tooltips/tooltips.js";
 import { createIcon as createIcon3 } from "./../../ui/kit/kit.js";
 import * as UI9 from "./../../ui/legacy/legacy.js";
+import { html as html5, nothing as nothing2, render as render4 } from "./../../ui/lit/lit.js";
 import * as VisualLogging4 from "./../../ui/visual_logging/visual_logging.js";
 import * as PanelsCommon from "./../common/common.js";
 import * as ElementsComponents2 from "./components/components.js";
@@ -5894,6 +5925,7 @@ var UIStrings5 = {
 };
 var str_5 = i18n9.i18n.registerUIStrings("panels/elements/StylePropertiesSection.ts", UIStrings5);
 var i18nString5 = i18n9.i18n.getLocalizedString.bind(void 0, str_5);
+var { widget } = UI9.Widget;
 var STYLE_TAG = "<style>";
 var DEFAULT_MAX_PROPERTIES = 50;
 var StylePropertiesSection = class _StylePropertiesSection {
@@ -5939,6 +5971,7 @@ var StylePropertiesSection = class _StylePropertiesSection {
   static #nextSectionTooltipIdPrefix = 0;
   sectionTooltipIdPrefix = _StylePropertiesSection.#nextSectionTooltipIdPrefix++;
   ghostStyleTreeElements = [];
+  #activeAiSuggestion;
   constructor(stylesContainer, matchedStyles, style, sectionIdx, computedStyles, parentsComputedStyles, computedStyleExtraFields, customHeaderText) {
     this.#customHeaderText = customHeaderText;
     this.stylesContainer = stylesContainer;
@@ -6177,7 +6210,7 @@ var StylePropertiesSection = class _StylePropertiesSection {
   }
   static createRuleOriginNode(matchedStyles, linkifier, rule) {
     if (!rule) {
-      return document.createTextNode("");
+      return nothing2;
     }
     const ruleLocation = _StylePropertiesSection.getRuleLocationFromCSSRule(rule);
     const header = rule.header;
@@ -6192,50 +6225,48 @@ var StylePropertiesSection = class _StylePropertiesSection {
     }
     function linkifyNode(label) {
       if (header?.ownerNode) {
-        const link2 = document.createElement("devtools-widget");
-        link2.widgetConfig = UI9.Widget.widgetConfig((e) => new PanelsCommon.DOMLinkifier.DeferredDOMNodeLink(e, header.ownerNode));
-        link2.textContent = label;
-        return link2;
+        return html5`<devtools-widget ${widget((e) => new PanelsCommon.DOMLinkifier.DeferredDOMNodeLink(e, header.ownerNode))}>
+          ${label}
+        </devtools-widget>`;
       }
       if (rule && rule.style.styleSheetId && rule.treeScope) {
         const ownerNode = new SDK7.DOMModel.DeferredDOMNode(rule.cssModelInternal.target(), rule.treeScope);
-        const link2 = document.createElement("devtools-widget");
-        link2.widgetConfig = UI9.Widget.widgetConfig((e) => new PanelsCommon.DOMLinkifier.DeferredDOMNodeLink(e, ownerNode, void 0, rule.style.styleSheetId));
-        link2.textContent = label;
-        return link2;
+        return html5`<devtools-widget ${widget((e) => new PanelsCommon.DOMLinkifier.DeferredDOMNodeLink(e, ownerNode, void 0, rule.style.styleSheetId))}>
+          ${label}
+        </devtools-widget>`;
       }
       return null;
     }
     if (header?.isMutable && !header.isViaInspector()) {
       const location2 = header.isConstructedByNew() && !header.sourceMapURL ? null : linkifyRuleLocation();
       if (location2) {
-        return location2;
+        return html5`${location2}`;
       }
       const label = header.isConstructedByNew() ? i18nString5(UIStrings5.constructedStylesheet) : STYLE_TAG;
       const node2 = linkifyNode(label);
       if (node2) {
         return node2;
       }
-      return document.createTextNode(label);
+      return html5`${label}`;
     }
     const location = linkifyRuleLocation();
     if (location) {
-      return location;
+      return html5`${location}`;
     }
     if (rule.isUserAgent()) {
-      return document.createTextNode(i18nString5(UIStrings5.userAgentStylesheet));
+      return html5`${i18nString5(UIStrings5.userAgentStylesheet)}`;
     }
     if (rule.isInjected()) {
-      return document.createTextNode(i18nString5(UIStrings5.injectedStylesheet));
+      return html5`${i18nString5(UIStrings5.injectedStylesheet)}`;
     }
     if (rule.isViaInspector()) {
-      return document.createTextNode(i18nString5(UIStrings5.viaInspector));
+      return html5`${i18nString5(UIStrings5.viaInspector)}`;
     }
     const node = linkifyNode(STYLE_TAG);
     if (node) {
       return node;
     }
-    return document.createTextNode("");
+    return nothing2;
   }
   createRuleOriginNode(matchedStyles, linkifier, rule) {
     return _StylePropertiesSection.createRuleOriginNode(matchedStyles, linkifier, rule);
@@ -6494,33 +6525,61 @@ var StylePropertiesSection = class _StylePropertiesSection {
     }
     return;
   }
-  clearGhostStyleTreeElements() {
+  set activeAiSuggestion(activeAiSuggestion) {
+    this.#clearActiveAiSuggestion();
+    this.#activeAiSuggestion = activeAiSuggestion;
+    if (this.#activeAiSuggestion) {
+      this.#renderActiveAiSuggestion();
+    }
+  }
+  get activeAiSuggestion() {
+    return this.#activeAiSuggestion;
+  }
+  async commitActiveAiSuggestion() {
+    if (!this.#activeAiSuggestion) {
+      return;
+    }
+    const sourceTreeElement = this.#getAiSuggestionSourceTreeElement();
+    await sourceTreeElement?.commitAiSuggestion(this.#activeAiSuggestion.text);
+  }
+  #clearActiveAiSuggestion() {
+    this.#getAiSuggestionSourceTreeElement()?.clearActiveAiSuggestion();
     for (const ghost of this.ghostStyleTreeElements) {
       this.propertiesTreeOutline.removeChild(ghost);
     }
     this.ghostStyleTreeElements = [];
   }
-  renderGhostStyleTreeElements(suggestion) {
-    this.clearGhostStyleTreeElements();
-    if (!suggestion) {
+  #renderActiveAiSuggestion() {
+    if (!this.#activeAiSuggestion) {
       return;
     }
-    const suggestionLines = suggestion.split(";").map((line) => line.trim());
-    for (const line of suggestionLines) {
-      const colonIdx = line.indexOf(":");
-      if (colonIdx === -1) {
-        continue;
-      }
-      const name = line.substring(0, colonIdx).trim();
-      const value5 = line.substring(colonIdx + 1).trim();
-      if (!name || !value5) {
-        continue;
-      }
-      const fakeProperty = new SDK7.CSSProperty.CSSProperty(this.styleInternal, this.styleInternal.allProperties().length, name, value5, false, false, true, false);
+    const sourceTreeElement = this.#getAiSuggestionSourceTreeElement();
+    if (!sourceTreeElement || !this.#activeAiSuggestion.properties.length) {
+      return;
+    }
+    sourceTreeElement.renderActiveAiSuggestion(this.#activeAiSuggestion.properties[0]);
+    if (this.#activeAiSuggestion.properties.length <= 1) {
+      return;
+    }
+    const index = this.propertiesTreeOutline.rootElement().children().indexOf(sourceTreeElement);
+    const properties = this.#activeAiSuggestion.properties.slice(1);
+    for (let i = 0; i < properties.length; i++) {
+      const property = properties[i];
+      const fakeProperty = new SDK7.CSSProperty.CSSProperty(this.styleInternal, this.styleInternal.allProperties().length, property.name, property.value, false, false, true, false);
       const ghost = new GhostStylePropertyTreeElement(this.stylesContainer, this, this.matchedStyles, fakeProperty);
-      this.propertiesTreeOutline.appendChild(ghost);
+      this.propertiesTreeOutline.insertChild(ghost, index + i + 1);
       this.ghostStyleTreeElements.push(ghost);
     }
+  }
+  #getAiSuggestionSourceTreeElement() {
+    if (!this.#activeAiSuggestion) {
+      return;
+    }
+    const sourceTreeElement = this.closestPropertyForEditing(this.#activeAiSuggestion.cssProperty.index);
+    if (!(sourceTreeElement instanceof StylePropertyTreeElement) || sourceTreeElement.property !== this.#activeAiSuggestion.cssProperty) {
+      return;
+    }
+    return sourceTreeElement;
   }
   onNewRuleClick(event) {
     event.data.consume();
@@ -7353,8 +7412,8 @@ ${allDeclarationText}
   editingSelectorCommittedForTest() {
   }
   updateRuleOrigin() {
-    this.selectorRefElement.removeChildren();
-    this.selectorRefElement.appendChild(this.createRuleOriginNode(this.matchedStyles, this.stylesContainer.linkifier, this.styleInternal.parentRule));
+    const origin = this.createRuleOriginNode(this.matchedStyles, this.stylesContainer.linkifier, this.styleInternal.parentRule);
+    render4(origin, this.selectorRefElement, { host: this });
   }
   editingSelectorEnded() {
     this.stylesContainer.setEditingStyle(false);
@@ -7388,8 +7447,8 @@ var BlankStylePropertiesSection = class extends StylePropertiesSection {
     this.normal = false;
     this.ruleLocation = ruleLocation;
     this.styleSheetHeader = styleSheetHeader;
-    this.selectorRefElement.removeChildren();
-    this.selectorRefElement.appendChild(StylePropertiesSection.linkifyRuleLocation(cssModel, this.stylesContainer.linkifier, styleSheetHeader, this.actualRuleLocation()));
+    const locationNode = StylePropertiesSection.linkifyRuleLocation(cssModel, this.stylesContainer.linkifier, styleSheetHeader, this.actualRuleLocation());
+    render4(html5`${locationNode}`, this.selectorRefElement, { host: this });
     this.maybeCreateAncestorRules(insertAfterStyle);
     this.element.classList.add("blank-section");
   }
@@ -7483,7 +7542,7 @@ var RegisteredPropertiesSection = class extends StylePropertiesSection {
     if (rule) {
       return super.createRuleOriginNode(matchedStyles, linkifier, rule);
     }
-    return document.createTextNode("CSS.registerProperty");
+    return html5`CSS.registerProperty`;
   }
 };
 var FunctionRuleSection = class extends StylePropertiesSection {
@@ -7761,6 +7820,10 @@ var StylesAiCodeCompletionProvider = class _StylesAiCodeCompletionProvider {
     }
   }
   async triggerAiCodeCompletion(text, cursorPosition, isEditingName, cssProperty, cssModel) {
+    if (!this.#aiCodeCompletion) {
+      AiCodeCompletion.debugLog("Ai Code Completion is not initialized");
+      return;
+    }
     const styleSheetId = cssProperty.ownerStyle.styleSheetId;
     if (!styleSheetId) {
       return;
@@ -7780,6 +7843,7 @@ var StylesAiCodeCompletionProvider = class _StylesAiCodeCompletionProvider {
       return;
     }
     const contentText = new TextUtils4.Text.Text(content);
+    let currentPropertyString = "";
     const propertyStartOffset = contentText.offsetFromPosition(propertyRange.startLine, propertyRange.startColumn);
     const propertyEndOffset = contentText.offsetFromPosition(propertyRange.endLine, propertyRange.endColumn);
     let prefix = content.substring(0, propertyStartOffset);
@@ -7788,24 +7852,32 @@ var StylesAiCodeCompletionProvider = class _StylesAiCodeCompletionProvider {
       if (nameRange) {
         const nameEndOffset = contentText.offsetFromPosition(nameRange.endLine, nameRange.endColumn);
         prefix = prefix + content.substring(propertyStartOffset, nameEndOffset) + ": ";
+        currentPropertyString = content.substring(propertyStartOffset, nameEndOffset) + ": ";
       }
     }
+    currentPropertyString = currentPropertyString + text;
     prefix = prefix + text;
     const suffix = content.substring(propertyEndOffset);
-    await this.#requestAidaSuggestion(prefix, suffix, cursorPosition);
-  }
-  async #requestAidaSuggestion(prefix, suffix, cursorPositionAtRequest) {
-    if (!this.#aiCodeCompletion) {
-      AiCodeCompletion.debugLog("Ai Code Completion is not initialized");
-      this.#aiCodeCompletionConfig?.onResponseReceived();
-      Host3.userMetrics.actionTaken(Host3.UserMetrics.Action.AiCodeCompletionError);
+    const startTime = performance.now();
+    const aidaSuggestion = await this.#requestAidaSuggestion(prefix, suffix, cursorPosition);
+    if (!aidaSuggestion) {
       return;
     }
-    const startTime = performance.now();
+    this.#aiCodeCompletionConfig?.setAiAutoCompletion?.({
+      text: currentPropertyString + aidaSuggestion.suggestionText,
+      from: cursorPosition,
+      rpcGlobalId: aidaSuggestion.rpcGlobalId,
+      sampleId: aidaSuggestion.sampleId,
+      startTime,
+      clearCachedRequest: this.clearCache.bind(this),
+      onImpression: this.#aiCodeCompletion.registerUserImpression.bind(this.#aiCodeCompletion)
+    });
+  }
+  async #requestAidaSuggestion(prefix, suffix, cursorPositionAtRequest) {
     this.#aiCodeCompletionConfig?.onRequestTriggered();
     Host3.userMetrics.actionTaken(Host3.UserMetrics.Action.AiCodeCompletionRequestTriggered);
     try {
-      const completionResponse = await this.#aiCodeCompletion.completeCode(
+      const completionResponse = await this.#aiCodeCompletion?.completeCode(
         prefix,
         suffix,
         cursorPositionAtRequest,
@@ -7814,35 +7886,25 @@ var StylesAiCodeCompletionProvider = class _StylesAiCodeCompletionProvider {
       );
       this.#aiCodeCompletionConfig?.onResponseReceived();
       if (!completionResponse) {
-        return;
+        return null;
       }
       const { response, fromCache } = completionResponse;
       if (!response) {
-        return;
+        return null;
       }
-      const sampleResponse = await this.#generateSampleForRequest(response, prefix, suffix);
-      if (!sampleResponse) {
-        return;
-      }
-      if (fromCache) {
+      const sampleResponse = await this.#generateSampleForRequest(response, suffix);
+      if (sampleResponse && fromCache) {
         Host3.userMetrics.actionTaken(Host3.UserMetrics.Action.AiCodeCompletionResponseServedFromCache);
       }
-      this.#aiCodeCompletionConfig?.setAiAutoCompletion?.({
-        text: sampleResponse.suggestionText,
-        from: cursorPositionAtRequest,
-        rpcGlobalId: sampleResponse.rpcGlobalId,
-        sampleId: sampleResponse.sampleId,
-        startTime,
-        clearCachedRequest: this.clearCache.bind(this),
-        onImpression: this.#aiCodeCompletion?.registerUserImpression.bind(this.#aiCodeCompletion)
-      });
+      return sampleResponse;
     } catch (e) {
       AiCodeCompletion.debugLog("Error while fetching code completion suggestions from AIDA", e);
       this.#aiCodeCompletionConfig?.onResponseReceived();
       Host3.userMetrics.actionTaken(Host3.UserMetrics.Action.AiCodeCompletionError);
     }
+    return null;
   }
-  async #generateSampleForRequest(response, prefix, suffix) {
+  async #generateSampleForRequest(response, suffix) {
     const suggestionSample = this.#pickSampleFromResponse(response);
     if (!suggestionSample) {
       return null;
@@ -9264,17 +9326,17 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common5.ObjectWrapper.e
     const toolbarPaneContent = toolbarPaneContainer.createChild("div", "styles-sidebar-toolbar-pane");
     return toolbarPaneContent;
   }
-  showToolbarPane(widget2, toggle4) {
+  showToolbarPane(widget3, toggle4) {
     if (this.pendingWidgetToggle) {
       this.pendingWidgetToggle.setToggled(false);
     }
     this.pendingWidgetToggle = toggle4;
     if (this.animatedToolbarPane) {
-      this.pendingWidget = widget2;
+      this.pendingWidget = widget3;
     } else {
-      this.startToolbarPaneAnimation(widget2);
+      this.startToolbarPaneAnimation(widget3);
     }
-    if (widget2 && toggle4) {
+    if (widget3 && toggle4) {
       toggle4.setToggled(true);
     }
   }
@@ -9289,25 +9351,25 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common5.ObjectWrapper.e
   removeStyleUpdateListener(listener) {
     this.removeEventListener("StylesUpdateCompleted", listener);
   }
-  startToolbarPaneAnimation(widget2) {
-    if (widget2 === this.currentToolbarPane) {
+  startToolbarPaneAnimation(widget3) {
+    if (widget3 === this.currentToolbarPane) {
       return;
     }
-    if (widget2 && this.currentToolbarPane) {
+    if (widget3 && this.currentToolbarPane) {
       this.currentToolbarPane.detach();
-      widget2.show(this.toolbarPaneElement);
-      this.currentToolbarPane = widget2;
+      widget3.show(this.toolbarPaneElement);
+      this.currentToolbarPane = widget3;
       this.currentToolbarPane.focus();
       return;
     }
-    this.animatedToolbarPane = widget2;
+    this.animatedToolbarPane = widget3;
     if (this.currentToolbarPane) {
       this.toolbarPaneElement.style.animationName = "styles-element-state-pane-slideout";
-    } else if (widget2) {
+    } else if (widget3) {
       this.toolbarPaneElement.style.animationName = "styles-element-state-pane-slidein";
     }
-    if (widget2) {
-      widget2.show(this.toolbarPaneElement);
+    if (widget3) {
+      widget3.show(this.toolbarPaneElement);
     }
     const listener = onAnimationEnd.bind(this);
     this.toolbarPaneElement.addEventListener("animationend", listener, false);
@@ -9636,6 +9698,9 @@ var CSSPropertyPrompt = class extends UI10.TextPrompt.TextPrompt {
       case "ArrowDown":
       case "PageUp":
       case "PageDown":
+        if (this.aiCodeCompletionProvider && this.treeElement.section().activeAiSuggestion) {
+          this.setAiAutoCompletion(null);
+        }
         if (!this.isSuggestBoxVisible() && this.handleNameOrValueUpDown(keyboardEvent)) {
           keyboardEvent.preventDefault();
           return;
@@ -9648,6 +9713,11 @@ var CSSPropertyPrompt = class extends UI10.TextPrompt.TextPrompt {
         this.tabKeyPressed();
         keyboardEvent.preventDefault();
         return;
+      case "Escape":
+        if (this.#handleEscape(keyboardEvent)) {
+          return;
+        }
+        break;
       case " ":
         if (this.isEditingName) {
           this.tabKeyPressed();
@@ -9665,6 +9735,9 @@ var CSSPropertyPrompt = class extends UI10.TextPrompt.TextPrompt {
     super.onMouseWheel(event);
   }
   tabKeyPressed() {
+    if (this.aiCodeCompletionProvider) {
+      return this.acceptCodeComplete();
+    }
     this.acceptAutoComplete();
     return false;
   }
@@ -9673,6 +9746,19 @@ var CSSPropertyPrompt = class extends UI10.TextPrompt.TextPrompt {
     if (this.aiCodeCompletionProvider) {
       this.#debouncedTriggerAiCodeCompletion();
     }
+  }
+  #handleEscape(keyboardEvent) {
+    if (!this.aiCodeCompletionProvider || !this.treeElement.section().activeAiSuggestion) {
+      return false;
+    }
+    keyboardEvent.preventDefault();
+    if (this.isSuggestBoxVisible()) {
+      this.suggestBox?.hide();
+      keyboardEvent.consume(true);
+    } else {
+      this.setAiAutoCompletion(null);
+    }
+    return true;
   }
   handleNameOrValueUpDown(event) {
     function finishHandler(_originalValue, _replacementString) {
@@ -9881,30 +9967,49 @@ var CSSPropertyPrompt = class extends UI10.TextPrompt.TextPrompt {
   }
   setAiAutoCompletion(args) {
     if (!args) {
-      this.treeElement.section().clearGhostStyleTreeElements();
+      this.treeElement.section().activeAiSuggestion = void 0;
       return;
     }
-    this.showAiGhostText(args?.text);
+    this.treeElement.section().activeAiSuggestion = {
+      text: args.text,
+      properties: this.#getAiSuggestedProperties(args.text),
+      cursorPosition: args.from,
+      clearCachedRequest: args.clearCachedRequest,
+      cssProperty: this.treeElement.property
+    };
     const latency = performance.now() - args.startTime;
     if (args.rpcGlobalId) {
       args.onImpression(args.rpcGlobalId, latency, args.sampleId);
     }
   }
-  showAiGhostText(text) {
-    const [currentLine, ...nextLinesList] = text.split(";");
-    const nextLines = nextLinesList.join(";").trim();
-    if (this.isEditingName && currentLine.includes(":")) {
-      const [namePart, valuePart] = currentLine.split(":").map((s) => s.trim());
-      this.applySuggestion({ text: this.text() + namePart }, true);
-      this.treeElement.showGhostTextInValue(valuePart);
-    } else {
-      this.applySuggestion({ text: this.text() + currentLine }, true);
-    }
-    if (nextLines) {
-      this.treeElement.section().renderGhostStyleTreeElements(nextLines);
-    } else {
-      this.treeElement.section().clearGhostStyleTreeElements();
-    }
+  #getAiSuggestedProperties(suggestionText) {
+    const cssParser = CodeMirror.css.cssLanguage.parser.configure({ top: "Styles" });
+    const parsed = cssParser.parse(suggestionText);
+    const properties = [];
+    parsed.iterate({
+      enter: (node) => {
+        if (node.name === "Declaration") {
+          let name = "";
+          let value5 = "";
+          const cursor = node.node.cursor();
+          if (cursor.firstChild()) {
+            do {
+              if (cursor.name === ":") {
+                name = suggestionText.slice(node.from, cursor.from);
+                value5 = suggestionText.slice(cursor.to + 1, node.to);
+              }
+            } while (cursor.nextSibling());
+          }
+          if (name && value5) {
+            properties.push({
+              name: name.trim(),
+              value: value5.trim()
+            });
+          }
+        }
+      }
+    });
+    return properties;
   }
   /**
    * Extracts the remaining portion of the suggestion text that follows the
@@ -9926,6 +10031,39 @@ var CSSPropertyPrompt = class extends UI10.TextPrompt.TextPrompt {
       }
     }
     return completionHint;
+  }
+  acceptCodeComplete() {
+    if (this.isSuggestBoxVisible()) {
+      this.acceptAutoComplete();
+      const textAfterAccept = this.text();
+      if (!this.treeElement.section().activeAiSuggestion?.properties.length) {
+        this.setAiAutoCompletion(null);
+        return false;
+      }
+      const suggestionForCurrentElement = this.treeElement.section().activeAiSuggestion?.properties[0];
+      if (!suggestionForCurrentElement) {
+        this.setAiAutoCompletion(null);
+        return false;
+      }
+      const suggestionForCurrentPrompt = this.isEditingName ? suggestionForCurrentElement.name : suggestionForCurrentElement.value;
+      if (!suggestionForCurrentPrompt.startsWith(textAfterAccept)) {
+        this.setAiAutoCompletion(null);
+        return false;
+      }
+      if (suggestionForCurrentPrompt !== textAfterAccept) {
+        this.applySuggestion({ text: suggestionForCurrentPrompt }, true);
+      }
+      return true;
+    }
+    if (!this.treeElement.section().activeAiSuggestion) {
+      return false;
+    }
+    void this.commitAiSuggestion();
+    return true;
+  }
+  async commitAiSuggestion() {
+    await this.treeElement.section().commitActiveAiSuggestion();
+    this.setAiAutoCompletion(null);
   }
 };
 function unescapeCssString(input) {
@@ -10443,7 +10581,7 @@ var BinOpRenderer = class extends rendererBase(SDK9.CSSPropertyParserMatchers.Bi
 };
 
 // gen/front_end/panels/elements/ComputedStyleWidget.js
-var { html: html5, render: render4 } = Lit5;
+var { html: html6, render: render5 } = Lit5;
 var { bindToSetting } = UI12.UIUtils;
 var UIStrings8 = {
   /**
@@ -10504,7 +10642,7 @@ function renderPropertyContents(node, cache, propertyName, propertyValue) {
 }
 var createPropertyElement = (node, cache, propertyName, propertyValue, traceable, inherited, activeProperty, onContextMenu) => {
   const { name, value: value5 } = renderPropertyContents(node, cache, propertyName, propertyValue);
-  return html5`<devtools-computed-style-property
+  return html6`<devtools-computed-style-property
         .traceable=${traceable}
         .inherited=${inherited}
         @oncontextmenu=${onContextMenu}
@@ -10585,9 +10723,9 @@ var propertySorter = (propA, propB) => {
   return Platform6.StringUtilities.compare(canonicalA, canonicalB);
 };
 var DEFAULT_VIEW2 = (input, _output, target) => {
-  render4(html5`
+  render5(html6`
     <style>${computedStyleWidget_css_default}</style>
-    ${input.includeToolbar ? html5`
+    ${input.includeToolbar ? html6`
       <div class="styles-sidebar-pane-toolbar">
         <devtools-toolbar class="styles-pane-toolbar" role="presentation">
           <devtools-toolbar-input
@@ -10610,7 +10748,7 @@ var DEFAULT_VIEW2 = (input, _output, target) => {
       </div>
       ` : Lit5.nothing}
     ${input.computedStylesTree}
-    ${!input.hasMatches ? html5`<div class="gray-info-message">${i18nString8(UIStrings8.noMatchingProperty)}</div>` : ""}
+    ${!input.hasMatches ? html6`<div class="gray-info-message">${i18nString8(UIStrings8.noMatchingProperty)}</div>` : ""}
   `, target);
 };
 var ComputedStyleWidget = class extends UI12.Widget.VBox {
@@ -10898,9 +11036,9 @@ var ComputedStyleWidget = class extends UI12.Widget.VBox {
         const isPropertyOverloaded = matchedStyles.propertyState(data.property) === "Overloaded";
         const traceElement = createTraceElement(domNode, data.property, isPropertyOverloaded, matchedStyles, this.linkifier);
         traceElement.addEventListener("contextmenu", this.handleContextMenuEvent.bind(this, matchedStyles, data.property));
-        return html5`${traceElement}`;
+        return html6`${traceElement}`;
       }
-      return html5`<span style="cursor: text; color: var(--sys-color-on-surface-subtle);">${data.name}</span>`;
+      return html6`<span style="cursor: text; color: var(--sys-color-on-surface-subtle);">${data.name}</span>`;
     };
   }
   buildTreeNode(propertyTraces, propertyName, propertyValue, isInherited) {
@@ -11142,7 +11280,7 @@ import * as Highlighting3 from "./../../ui/components/highlighting/highlighting.
 import * as IssueCounter from "./../../ui/components/issue_counter/issue_counter.js";
 import * as UIComponentUtils from "./../../ui/legacy/components/utils/utils.js";
 import * as UI17 from "./../../ui/legacy/legacy.js";
-import { html as html9, nothing as nothing4, render as render8 } from "./../../ui/lit/lit.js";
+import { html as html10, nothing as nothing5, render as render9 } from "./../../ui/lit/lit.js";
 import * as VisualLogging9 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/elements/AdoptedStyleSheetTreeElement.js
@@ -11470,7 +11608,7 @@ import * as AIAssistance from "./../../models/ai_assistance/ai_assistance.js";
 import * as Badges3 from "./../../models/badges/badges.js";
 import * as TextUtils7 from "./../../models/text_utils/text_utils.js";
 import * as Workspace from "./../../models/workspace/workspace.js";
-import * as CodeMirror from "./../../third_party/codemirror.next/codemirror.next.js";
+import * as CodeMirror2 from "./../../third_party/codemirror.next/codemirror.next.js";
 import * as CodeHighlighter3 from "./../../ui/components/code_highlighter/code_highlighter.js";
 import * as Highlighting2 from "./../../ui/components/highlighting/highlighting.js";
 import * as TextEditor3 from "./../../ui/components/text_editor/text_editor.js";
@@ -11813,7 +11951,7 @@ function getRegisteredDecorators() {
 }
 
 // gen/front_end/panels/elements/ElementsTreeElement.js
-var { html: html7, nothing: nothing3, render: render6, Directives: { ref: ref2, repeat } } = Lit6;
+var { html: html8, nothing: nothing4, render: render7, Directives: { ref: ref2, repeat } } = Lit6;
 var { animateOn } = UI14.UIUtils;
 var UIStrings11 = {
   /**
@@ -12143,7 +12281,7 @@ function renderTitle(node, isClosingTag, expanded, isExpandable, isXMLMimeType, 
         if (pseudoIdentifier) {
           pseudoElementName += `(${pseudoIdentifier})`;
         }
-        return html7`<span class="webkit-html-pseudo-element">${pseudoElementName}</span>\u200B`;
+        return html8`<span class="webkit-html-pseudo-element">${pseudoElementName}</span>\u200B`;
       }
       const tagName = node.nodeNameInCorrectCase();
       if (isClosingTag) {
@@ -12152,7 +12290,7 @@ function renderTitle(node, isClosingTag, expanded, isExpandable, isXMLMimeType, 
       const openingTag = renderTag(node, tagName, false, expanded, false, updateRecord);
       if (isExpandable) {
         if (!expanded) {
-          return html7`${openingTag}<devtools-elements-tree-expand-button .data=${{ clickHandler: onExpand }}></devtools-elements-tree-expand-button><span style="font-size: 0;"
+          return html8`${openingTag}<devtools-elements-tree-expand-button .data=${{ clickHandler: onExpand }}></devtools-elements-tree-expand-button><span style="font-size: 0;"
                   >…</span>\u200B${renderTag(node, tagName, true, expanded, false, updateRecord)}`;
         }
         return openingTag;
@@ -12170,10 +12308,10 @@ function renderTitle(node, isClosingTag, expanded, isExpandable, isXMLMimeType, 
             Highlighting2.highlightRangesWithStyleClass(el, result.entityRanges, "webkit-html-entity-value");
           }
         });
-        return html7`${openingTag}<span class="webkit-html-text-node" jslog=${VisualLogging8.value("text-node").track({ change: true, dblclick: true })} ${animateOn(Boolean(updateRecord?.hasChangedChildren() || updateRecord?.isCharDataModified()), DOM_UPDATE_ANIMATION_CLASS_NAME)} ${renderTextNode}></span>\u200B${renderTag(node, tagName, true, expanded, false, updateRecord)}`;
+        return html8`${openingTag}<span class="webkit-html-text-node" jslog=${VisualLogging8.value("text-node").track({ change: true, dblclick: true })} ${animateOn(Boolean(updateRecord?.hasChangedChildren() || updateRecord?.isCharDataModified()), DOM_UPDATE_ANIMATION_CLASS_NAME)} ${renderTextNode}></span>\u200B${renderTag(node, tagName, true, expanded, false, updateRecord)}`;
       }
       if (isXMLMimeType || !ForbiddenClosingTagElements.has(tagName)) {
-        return html7`${openingTag}${renderTag(node, tagName, true, expanded, false, updateRecord)}`;
+        return html8`${openingTag}${renderTag(node, tagName, true, expanded, false, updateRecord)}`;
       }
       return openingTag;
     }
@@ -12186,7 +12324,7 @@ function renderTitle(node, isClosingTag, expanded, isExpandable, isXMLMimeType, 
             void CodeHighlighter3.CodeHighlighter.highlightNode(el, "text/javascript").then(onUpdateSearchHighlight);
           }
         });
-        return html7`<span class="webkit-html-text-node webkit-html-js-node" jslog=${VisualLogging8.value("script-text-node").track({ change: true, dblclick: true })} ${highlightNode}></span>`;
+        return html8`<span class="webkit-html-text-node webkit-html-js-node" jslog=${VisualLogging8.value("script-text-node").track({ change: true, dblclick: true })} ${highlightNode}></span>`;
       }
       if (node.parentNode && node.parentNode.nodeName().toLowerCase() === "style") {
         const text = node.nodeValue();
@@ -12196,7 +12334,7 @@ function renderTitle(node, isClosingTag, expanded, isExpandable, isXMLMimeType, 
             void CodeHighlighter3.CodeHighlighter.highlightNode(el, "text/css").then(onUpdateSearchHighlight);
           }
         });
-        return html7`<span class="webkit-html-text-node webkit-html-css-node" jslog=${VisualLogging8.value("css-text-node").track({ change: true, dblclick: true })} ${highlightNode}></span>`;
+        return html8`<span class="webkit-html-text-node webkit-html-css-node" jslog=${VisualLogging8.value("css-text-node").track({ change: true, dblclick: true })} ${highlightNode}></span>`;
       }
       const result = convertUnicodeCharsToHTMLEntities(node.nodeValue());
       const textContent = Platform7.StringUtilities.collapseWhitespace(result.text);
@@ -12206,13 +12344,13 @@ function renderTitle(node, isClosingTag, expanded, isExpandable, isXMLMimeType, 
           Highlighting2.highlightRangesWithStyleClass(el, result.entityRanges, "webkit-html-entity-value");
         }
       });
-      return html7`"<span class="webkit-html-text-node" jslog=${VisualLogging8.value("text-node").track({
+      return html8`"<span class="webkit-html-text-node" jslog=${VisualLogging8.value("text-node").track({
         change: true,
         dblclick: true
       })} ${animateOn(Boolean(updateRecord?.isCharDataModified()), DOM_UPDATE_ANIMATION_CLASS_NAME)} ${renderTextNode}></span>"`;
     }
     case Node.COMMENT_NODE: {
-      return html7`<span class="webkit-html-comment">&lt;!--${node.nodeValue()}--&gt;</span>`;
+      return html8`<span class="webkit-html-comment">&lt;!--${node.nodeValue()}--&gt;</span>`;
     }
     case Node.DOCUMENT_TYPE_NODE: {
       let doctype = "<!DOCTYPE " + node.nodeName();
@@ -12228,14 +12366,14 @@ function renderTitle(node, isClosingTag, expanded, isExpandable, isXMLMimeType, 
         doctype += " [" + node.internalSubset + "]";
       }
       doctype += ">";
-      return html7`<span class="webkit-html-doctype">${doctype}</span>`;
+      return html8`<span class="webkit-html-doctype">${doctype}</span>`;
     }
     case Node.CDATA_SECTION_NODE: {
-      return html7`<span class="webkit-html-text-node">&lt;![CDATA[${node.nodeValue()}]]&gt;</span>`;
+      return html8`<span class="webkit-html-text-node">&lt;![CDATA[${node.nodeValue()}]]&gt;</span>`;
     }
     case Node.DOCUMENT_NODE: {
       const text = node.documentURL;
-      return html7`<span>#document (<span>${Components6.Linkifier.Linkifier.renderLinkifiedUrl(text, {
+      return html8`<span>#document (<span>${Components6.Linkifier.Linkifier.renderLinkifiedUrl(text, {
         text,
         preventClick: true,
         showColumnNumber: false,
@@ -12243,24 +12381,24 @@ function renderTitle(node, isClosingTag, expanded, isExpandable, isXMLMimeType, 
       })}</span>)</span>`;
     }
     case Node.DOCUMENT_FRAGMENT_NODE: {
-      return html7`<span class="webkit-html-fragment">${Platform7.StringUtilities.collapseWhitespace(node.nodeNameInCorrectCase())}</span>`;
+      return html8`<span class="webkit-html-fragment">${Platform7.StringUtilities.collapseWhitespace(node.nodeNameInCorrectCase())}</span>`;
     }
     case Node.PROCESSING_INSTRUCTION_NODE: {
       const nodeValue = node.nodeValue();
       const maybeSpace = nodeValue ? " " : "";
-      return html7`<span class="webkit-html-processing-instruction">&lt;?<span
+      return html8`<span class="webkit-html-processing-instruction">&lt;?<span
           class="webkit-html-tag-name" jslog=${VisualLogging8.value("tag-name").track({ change: true, dblclick: true })}>${node.nodeName()}</span>${maybeSpace}<span class="webkit-html-processing-instruction-value" jslog=${VisualLogging8.value("processing-instruction-value").track({
         change: true,
         dblclick: true
       })}>${nodeValue}</span>?&gt;</span>`;
     }
     default: {
-      return html7`${Platform7.StringUtilities.collapseWhitespace(node.nodeNameInCorrectCase())}`;
+      return html8`${Platform7.StringUtilities.collapseWhitespace(node.nodeNameInCorrectCase())}`;
     }
   }
 }
 function renderLinkifiedSrcset(tokens, node) {
-  return html7`${repeat(tokens, (token) => {
+  return html8`${repeat(tokens, (token) => {
     switch (token.type) {
       case 1:
         return renderLinkifiedValue(token.value, node);
@@ -12294,7 +12432,7 @@ function setValueWithEntities(element, value5) {
 function renderLinkifiedValue(value5, node) {
   const rewrittenHref = node ? node.resolveURL(value5) : null;
   if (rewrittenHref === null) {
-    return html7`<span ${ref2((el) => {
+    return html8`<span ${ref2((el) => {
       if (el) {
         setValueWithEntities(el, value5);
       }
@@ -12306,7 +12444,7 @@ function renderLinkifiedValue(value5, node) {
   }
   const isAnchor = node && node.nodeName().toLowerCase() === "a";
   if (isAnchor) {
-    return html7`<devtools-link class="devtools-link image-url" href=${rewrittenHref} ${ref2((el) => {
+    return html8`<devtools-link class="devtools-link image-url" href=${rewrittenHref} ${ref2((el) => {
       if (el) {
         ImagePreviewPopover.setImageUrl(el, rewrittenHref);
       }
@@ -12386,12 +12524,12 @@ function renderAttribute(attr, updateRecord, isDiff, node) {
     if (el) {
       setValueWithEntities(el, value5);
     }
-  }) : nothing3;
-  return html7`<span class="webkit-html-attribute" jslog=${jslog}><span class="webkit-html-attribute-name"
-      ${animateOn(Boolean(updateRecord?.isAttributeModified(name) && !hasText), DOM_UPDATE_ANIMATION_CLASS_NAME)} ${relationRefDirective}>${name}</span>${hasText ? html7`=\u200B"<span class="webkit-html-attribute-value" ${animateOn(Boolean(updateRecord?.isAttributeModified(name) && hasText), DOM_UPDATE_ANIMATION_CLASS_NAME)} ${valueRelationRefDirective} ${withEntitiesRef}>
-                        ${valueType === 1 ? renderLinkifiedValue(value5, node) : nothing3}
-                        ${valueType === 2 ? renderLinkifiedSrcset(Common8.Srcset.parseSrcset(value5), node) : nothing3}
-                </span>"` : nothing3}</span>`;
+  }) : nothing4;
+  return html8`<span class="webkit-html-attribute" jslog=${jslog}><span class="webkit-html-attribute-name"
+      ${animateOn(Boolean(updateRecord?.isAttributeModified(name) && !hasText), DOM_UPDATE_ANIMATION_CLASS_NAME)} ${relationRefDirective}>${name}</span>${hasText ? html8`=\u200B"<span class="webkit-html-attribute-value" ${animateOn(Boolean(updateRecord?.isAttributeModified(name) && hasText), DOM_UPDATE_ANIMATION_CLASS_NAME)} ${valueRelationRefDirective} ${withEntitiesRef}>
+                        ${valueType === 1 ? renderLinkifiedValue(value5, node) : nothing4}
+                        ${valueType === 2 ? renderLinkifiedSrcset(Common8.Srcset.parseSrcset(value5), node) : nothing4}
+                </span>"` : nothing4}</span>`;
 }
 function renderTag(node, tagName, isClosingTag, expanded, isDistinctTreeElement, updateRecord) {
   const classMap3 = {
@@ -12412,9 +12550,9 @@ function renderTag(node, tagName, isClosingTag, expanded, isDistinctTreeElement,
   const tagNameClass = isClosingTag ? "webkit-html-close-tag-name" : "webkit-html-tag-name";
   const tagString = (isClosingTag ? "/" : "") + tagName;
   const jslog = !isClosingTag ? VisualLogging8.value("tag-name").track({ change: true, dblclick: true }) : "";
-  return html7`<span
+  return html8`<span
       class=${Lit6.Directives.classMap(classMap3)} ${setAriaLabel}
-      >&lt;<span class=${tagNameClass} jslog=${jslog || nothing3} ${animateOn(hasUpdates, DOM_UPDATE_ANIMATION_CLASS_NAME)}>${tagString}</span>${attributes.map((attr) => html7` ${renderAttribute(attr, updateRecord, false, node)}`)}&gt;</span>\u200B`;
+      >&lt;<span class=${tagNameClass} jslog=${jslog || nothing4} ${animateOn(hasUpdates, DOM_UPDATE_ANIMATION_CLASS_NAME)}>${tagString}</span>${attributes.map((attr) => html8` ${renderAttribute(attr, updateRecord, false, node)}`)}&gt;</span>\u200B`;
 }
 var DEFAULT_VIEW3 = (input, output, target) => {
   const hasAdorners = input.showAdAdorner || input.showContainerAdorner || input.showFlexAdorner || input.showGridAdorner || input.showGridLanesAdorner || input.showMediaAdorner || input.showPopoverAdorner || input.showTopLayerAdorner || input.showViewSourceAdorner || input.showScrollAdorner || input.showScrollSnapAdorner || input.showSlotAdorner || input.showStartingStyleAdorner;
@@ -12422,42 +12560,42 @@ var DEFAULT_VIEW3 = (input, output, target) => {
     "has-decorations": input.decorations.length || input.descendantDecorations.length,
     "gutter-container": true
   };
-  render6(html7`
+  render7(html8`
     <div ${ref2((el) => {
     output.contentElement = el;
   })}>
-      ${input.node ? html7`<span class="highlight">${renderTitle(input.node, input.isClosingTag, input.expanded, input.isExpandable, input.isXMLMimeType, input.updateRecord, input.onHighlightSearchResults, input.onExpand)}</span>` : nothing3}
-      ${input.isHovered || input.isSelected ? html7`
+      ${input.node ? html8`<span class="highlight">${renderTitle(input.node, input.isClosingTag, input.expanded, input.isExpandable, input.isXMLMimeType, input.updateRecord, input.onHighlightSearchResults, input.onExpand)}</span>` : nothing4}
+      ${input.isHovered || input.isSelected ? html8`
         <div class="selection fill" style=${`margin-left: ${-input.indent}px`}></div>
-      ` : nothing3}
+      ` : nothing4}
       <div class=${Lit6.Directives.classMap(gutterContainerClasses)}
            style="left: ${-input.indent}px"
            @click=${input.onGutterClick}>
         <devtools-icon name="dots-horizontal"></devtools-icon>
-        ${input.decorations.length || input.descendantDecorations.length ? html7`
+        ${input.decorations.length || input.descendantDecorations.length ? html8`
         <div class="elements-gutter-decoration-container"
              title=${input.decorationsTooltip}>
-             ${input.decorations.map((d) => html7`<div class="elements-gutter-decoration" style="--decoration-color: ${d.color}"></div>`)}
-             ${input.descendantDecorations.map((d) => html7`<div class="elements-gutter-decoration elements-has-decorated-children" style="--decoration-color: ${d.color}"></div>`)}
-        </div>` : nothing3}
+             ${input.decorations.map((d) => html8`<div class="elements-gutter-decoration" style="--decoration-color: ${d.color}"></div>`)}
+             ${input.descendantDecorations.map((d) => html8`<div class="elements-gutter-decoration elements-has-decorated-children" style="--decoration-color: ${d.color}"></div>`)}
+        </div>` : nothing4}
       </div>
-      ${hasAdorners ? html7`<div class="adorner-container ${!hasAdorners ? "hidden" : ""}">
-        ${input.showAdAdorner ? html7`<devtools-adorner
+      ${hasAdorners ? html8`<div class="adorner-container ${!hasAdorners ? "hidden" : ""}">
+        ${input.showAdAdorner ? html8`<devtools-adorner
           aria-label=${i18nString10(UIStrings11.thisFrameWasIdentifiedAsAnAd)}
           .name=${ElementsComponents5.AdornerManager.RegisteredAdorners.AD}
           jslog=${VisualLogging8.adorner(ElementsComponents5.AdornerManager.RegisteredAdorners.AD)}
           ${adornerRef()}>
           <span>${ElementsComponents5.AdornerManager.RegisteredAdorners.AD}</span>
-        </devtools-adorner>` : nothing3}
-        ${input.showViewSourceAdorner ? html7`<devtools-adorner
+        </devtools-adorner>` : nothing4}
+        ${input.showViewSourceAdorner ? html8`<devtools-adorner
           .name=${ElementsComponents5.AdornerManager.RegisteredAdorners.VIEW_SOURCE}
           jslog=${VisualLogging8.adorner(ElementsComponents5.AdornerManager.RegisteredAdorners.VIEW_SOURCE)}
           aria-label=${i18nString10(UIStrings11.viewSourceCode)}
           @click=${input.onViewSourceAdornerClick}
           ${adornerRef()}>
           <span>${ElementsComponents5.AdornerManager.RegisteredAdorners.VIEW_SOURCE}</span>
-        </devtools-adorner>` : nothing3}
-        ${input.showContainerAdorner ? html7`<devtools-adorner
+        </devtools-adorner>` : nothing4}
+        ${input.showContainerAdorner ? html8`<devtools-adorner
           class=clickable
           role=button
           toggleable=true
@@ -12473,8 +12611,8 @@ var DEFAULT_VIEW3 = (input, output, target) => {
             <devtools-icon name="container"></devtools-icon>
             <span>${input.containerType}</span>
           </span>
-        </devtools-adorner>` : nothing3}
-        ${input.showFlexAdorner ? html7`<devtools-adorner
+        </devtools-adorner>` : nothing4}
+        ${input.showFlexAdorner ? html8`<devtools-adorner
           class=clickable
           role=button
           toggleable=true
@@ -12487,8 +12625,8 @@ var DEFAULT_VIEW3 = (input, output, target) => {
           @keydown=${handleAdornerKeydown(input.onFlexAdornerClick)}
           ${adornerRef()}>
           <span>${ElementsComponents5.AdornerManager.RegisteredAdorners.FLEX}</span>
-        </devtools-adorner>` : nothing3}
-        ${input.showGridAdorner ? html7`<devtools-adorner
+        </devtools-adorner>` : nothing4}
+        ${input.showGridAdorner ? html8`<devtools-adorner
           class=clickable
           role=button
           toggleable=true
@@ -12501,8 +12639,8 @@ var DEFAULT_VIEW3 = (input, output, target) => {
           @keydown=${handleAdornerKeydown(input.onGridAdornerClick)}
           ${adornerRef()}>
           <span>${input.isSubgrid ? ElementsComponents5.AdornerManager.RegisteredAdorners.SUBGRID : ElementsComponents5.AdornerManager.RegisteredAdorners.GRID}</span>
-        </devtools-adorner>` : nothing3}
-        ${input.showGridLanesAdorner ? html7`<devtools-adorner
+        </devtools-adorner>` : nothing4}
+        ${input.showGridLanesAdorner ? html8`<devtools-adorner
           class=clickable
           role=button
           toggleable=true
@@ -12515,8 +12653,8 @@ var DEFAULT_VIEW3 = (input, output, target) => {
           @keydown=${handleAdornerKeydown(input.onGridAdornerClick)}
           ${adornerRef()}>
           <span>${ElementsComponents5.AdornerManager.RegisteredAdorners.GRID_LANES}</span>
-        </devtools-adorner>` : nothing3}
-        ${input.showMediaAdorner ? html7`<devtools-adorner
+        </devtools-adorner>` : nothing4}
+        ${input.showMediaAdorner ? html8`<devtools-adorner
           class=clickable
           role=button
           tabindex=0
@@ -12529,8 +12667,8 @@ var DEFAULT_VIEW3 = (input, output, target) => {
           <span class="adorner-with-icon">
             ${ElementsComponents5.AdornerManager.RegisteredAdorners.MEDIA}<devtools-icon name="select-element"></devtools-icon>
           </span>
-        </devtools-adorner>` : nothing3}
-        ${input.showPopoverAdorner ? html7`<devtools-adorner
+        </devtools-adorner>` : nothing4}
+        ${input.showPopoverAdorner ? html8`<devtools-adorner
           class=clickable
           role=button
           toggleable=true
@@ -12543,8 +12681,8 @@ var DEFAULT_VIEW3 = (input, output, target) => {
           @keydown=${handleAdornerKeydown(input.onPopoverAdornerClick)}
           ${adornerRef()}>
           <span>${ElementsComponents5.AdornerManager.RegisteredAdorners.POPOVER}</span>
-        </devtools-adorner>` : nothing3}
-        ${input.showTopLayerAdorner ? html7`<devtools-adorner
+        </devtools-adorner>` : nothing4}
+        ${input.showTopLayerAdorner ? html8`<devtools-adorner
           class=clickable
           role=button
           tabindex=0
@@ -12557,8 +12695,8 @@ var DEFAULT_VIEW3 = (input, output, target) => {
           <span class="adorner-with-icon">
             ${`top-layer (${input.topLayerIndex})`}<devtools-icon name="select-element"></devtools-icon>
           </span>
-        </devtools-adorner>` : nothing3}
-        ${input.showStartingStyleAdorner ? html7`<devtools-adorner
+        </devtools-adorner>` : nothing4}
+        ${input.showStartingStyleAdorner ? html8`<devtools-adorner
           class="starting-style"
           .name=${ElementsComponents5.AdornerManager.RegisteredAdorners.STARTING_STYLE}
           jslog=${VisualLogging8.adorner(ElementsComponents5.AdornerManager.RegisteredAdorners.STARTING_STYLE).track({ click: true })}
@@ -12569,16 +12707,16 @@ var DEFAULT_VIEW3 = (input, output, target) => {
           @keydown=${handleAdornerKeydown(input.onStartingStyleAdornerClick)}
           ${adornerRef()}>
           <span>${ElementsComponents5.AdornerManager.RegisteredAdorners.STARTING_STYLE}</span>
-        </devtools-adorner>` : nothing3}
-        ${input.showScrollAdorner ? html7`<devtools-adorner
+        </devtools-adorner>` : nothing4}
+        ${input.showScrollAdorner ? html8`<devtools-adorner
           class="scroll"
           .name=${ElementsComponents5.AdornerManager.RegisteredAdorners.SCROLL}
           jslog=${VisualLogging8.adorner(ElementsComponents5.AdornerManager.RegisteredAdorners.SCROLL).track({ click: true })}
           aria-label=${i18nString10(UIStrings11.elementHasScrollableOverflow)}
           ${adornerRef()}>
           <span>${ElementsComponents5.AdornerManager.RegisteredAdorners.SCROLL}</span>
-        </devtools-adorner>` : nothing3}
-        ${input.showSlotAdorner ? html7`<devtools-adorner
+        </devtools-adorner>` : nothing4}
+        ${input.showSlotAdorner ? html8`<devtools-adorner
           class=clickable
           role=button
           tabindex=0
@@ -12591,8 +12729,8 @@ var DEFAULT_VIEW3 = (input, output, target) => {
             <devtools-icon name="select-element"></devtools-icon>
             <span>${ElementsComponents5.AdornerManager.RegisteredAdorners.SLOT}</span>
           </span>
-        </devtools-adorner>` : nothing3}
-        ${input.showScrollSnapAdorner ? html7`<devtools-adorner
+        </devtools-adorner>` : nothing4}
+        ${input.showScrollSnapAdorner ? html8`<devtools-adorner
           class="scroll-snap"
           .name=${ElementsComponents5.AdornerManager.RegisteredAdorners.SCROLL_SNAP}
           jslog=${VisualLogging8.adorner(ElementsComponents5.AdornerManager.RegisteredAdorners.SCROLL_SNAP).track({ click: true })}
@@ -12603,12 +12741,12 @@ var DEFAULT_VIEW3 = (input, output, target) => {
           @keydown=${handleAdornerKeydown(input.onScrollSnapAdornerClick)}
           ${adornerRef()}>
           <span>${ElementsComponents5.AdornerManager.RegisteredAdorners.SCROLL_SNAP}</span>
-        </devtools-adorner>` : nothing3}
-      </div>` : nothing3}
-      ${input.isSelected ? html7`
+        </devtools-adorner>` : nothing4}
+      </div>` : nothing4}
+      ${input.isSelected ? html8`
         <span class="selected-hint" title=${i18nString10(UIStrings11.useSInTheConsoleToReferToThis, { PH1: "$0" })} aria-hidden="true"></span>
-      ` : nothing3}
-      ${input.showAiButton ? html7`
+      ` : nothing4}
+      ${input.showAiButton ? html8`
         <span class="ai-button-container">
           <devtools-floating-button
             icon-name=${AIAssistance.AiUtils.getIconName()}
@@ -12618,7 +12756,7 @@ var DEFAULT_VIEW3 = (input, output, target) => {
             @mousedown=${(e) => e.stopPropagation()}>
           </devtools-floating-button>
         </span>
-      ` : nothing3}
+      ` : nothing4}
     </div>
   `, target);
 };
@@ -12892,10 +13030,10 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
     await UI14.ViewManager.ViewManager.instance().showView("medias");
     const view = UI14.ViewManager.ViewManager.instance().view("medias");
     if (view) {
-      const widget2 = await view.widget();
-      if (widget2 instanceof Media.MainView.MainView) {
-        await widget2.waitForInitialPlayers();
-        widget2.selectPlayerByDOMNodeId(this.node().backendNodeId());
+      const widget3 = await view.widget();
+      if (widget3 instanceof Media.MainView.MainView) {
+        await widget3.waitForInitialPlayers();
+        widget3.selectPlayerByDOMNodeId(this.node().backendNodeId());
       }
     }
   }
@@ -13741,10 +13879,10 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
         event.consume(true);
       }
     });
-    const editor = new TextEditor3.TextEditor.TextEditor(CodeMirror.EditorState.create({
+    const editor = new TextEditor3.TextEditor.TextEditor(CodeMirror2.EditorState.create({
       doc: initialValue,
       extensions: [
-        CodeMirror.keymap.of([
+        CodeMirror2.keymap.of([
           {
             key: "Mod-Enter",
             run: () => {
@@ -13763,13 +13901,13 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
         TextEditor3.Config.baseConfiguration(initialValue),
         TextEditor3.Config.closeBrackets.instance(),
         TextEditor3.Config.autocompletion.instance(),
-        CodeMirror.html.html({ autoCloseTags: false, selfClosingTags: true }),
+        CodeMirror2.html.html({ autoCloseTags: false, selfClosingTags: true }),
         TextEditor3.Config.domWordWrap.instance(),
-        CodeMirror.EditorView.theme({
+        CodeMirror2.EditorView.theme({
           "&.cm-editor": { maxHeight: "300px" },
           ".cm-scroller": { overflowY: "auto" }
         }),
-        CodeMirror.EditorView.domEventHandlers({
+        CodeMirror2.EditorView.domEventHandlers({
           focusout: (event) => {
             const relatedTarget = event.relatedTarget;
             if (relatedTarget && !relatedTarget.isSelfOrDescendant(editor)) {
@@ -14648,7 +14786,7 @@ import * as UI15 from "./../../ui/legacy/legacy.js";
 import * as Lit7 from "./../../ui/lit/lit.js";
 import * as VisualElements from "./../../ui/visual_logging/visual_logging.js";
 import * as ElementsComponents6 from "./components/components.js";
-var { html: html8, render: render7 } = Lit7;
+var { html: html9, render: render8 } = Lit7;
 var UIStrings12 = {
   /**
    * @description Link text content in Elements Tree Outline of the Elements panel
@@ -14658,7 +14796,7 @@ var UIStrings12 = {
 var str_12 = i18n24.i18n.registerUIStrings("panels/elements/ShortcutTreeElement.ts", UIStrings12);
 var i18nString11 = i18n24.i18n.getLocalizedString.bind(void 0, str_12);
 var DEFAULT_VIEW4 = (input, _output, target) => {
-  render7(html8`
+  render8(html9`
     <div class="selection fill"></div>
     <span class="elements-tree-shortcut-title">\u21AA ${input.title}</span>
     <devtools-adorner
@@ -15301,16 +15439,16 @@ var ElementsTreeOutline = class _ElementsTreeOutline extends Common10.ObjectWrap
         box: hoveredNode.boxInWindow(),
         show: async (popover) => {
           popover.setIgnoreLeftMargin(true);
-          render8(html9`
+          render9(html10`
             <div class="squiggles-content">
               ${issues.map((issue) => {
             const elementIssueDetails = getElementIssueDetails(issue);
             if (!elementIssueDetails) {
-              return nothing4;
+              return nothing5;
             }
             const issueKindIconName = IssueCounter.IssueCounter.getIssueKindIconName(issue.getKind());
             const openIssueEvent = () => Common10.Revealer.reveal(issue);
-            return html9`
+            return html10`
                   <div class="squiggles-content-item">
                   <devtools-icon .name=${issueKindIconName} @click=${openIssueEvent}></devtools-icon>
                   <devtools-link class="link" @click=${openIssueEvent}>${i18nString12(UIStrings13.viewIssue)}</devtools-link>
@@ -16748,7 +16886,7 @@ var UIStrings14 = {
 };
 var str_14 = i18n28.i18n.registerUIStrings("panels/elements/LayoutPane.ts", UIStrings14);
 var i18nString13 = i18n28.i18n.getLocalizedString.bind(void 0, str_14);
-var { render: render9, html: html10 } = Lit8;
+var { render: render10, html: html11 } = Lit8;
 var nodeToLayoutElement = (node) => {
   const className = node.getAttribute("class");
   const nodeId = node.id;
@@ -16844,7 +16982,7 @@ var DEFAULT_VIEW6 = (input, output, target) => {
       event.preventDefault();
     }
   };
-  const renderElement = (element) => html10`<div
+  const renderElement = (element) => html11`<div
           class="element"
           jslog=${VisualLogging10.item().track({ resize: true })}>
         <devtools-checkbox
@@ -16893,8 +17031,8 @@ var DEFAULT_VIEW6 = (input, output, target) => {
            @click=${(e) => input.onElementClick(element, e)}
            ></devtools-button>
       </div>`;
-  render9(
-    html10`
+  render10(
+    html11`
       <div style="min-width: min-content;" jslog=${VisualLogging10.pane("layout").track({ resize: true })}>
         <style>${layoutPane_css_default}</style>
         <style>@scope to (devtools-widget > *) { ${UI18.inspectorCommonStyles} }</style>
@@ -16907,12 +17045,12 @@ var DEFAULT_VIEW6 = (input, output, target) => {
           <div class="content-section" jslog=${VisualLogging10.section("grid-settings")}>
             <h3 class="content-section-title">${i18nString13(UIStrings14.overlayDisplaySettings)}</h3>
             <div class="select-settings">
-              ${input.enumSettings.map((setting) => html10`<label data-enum-setting="true" class="select-label" title=${setting.title}>
+              ${input.enumSettings.map((setting) => html11`<label data-enum-setting="true" class="select-label" title=${setting.title}>
                       <select
                         data-input="true"
                         jslog=${VisualLogging10.dropDown().track({ change: true }).context(setting.name)}
                         @change=${(e) => input.onEnumSettingChange(setting, e)}>
-                        ${setting.options.map((opt) => html10`<option
+                        ${setting.options.map((opt) => html11`<option
                                 value=${opt.value}
                                 .selected=${setting.value === opt.value}
                                 jslog=${VisualLogging10.item(Platform8.StringUtilities.toKebabCase(opt.value)).track({
@@ -16922,7 +17060,7 @@ var DEFAULT_VIEW6 = (input, output, target) => {
                     </label>`)}
             </div>
             <div class="checkbox-settings">
-              ${input.booleanSettings.map((setting) => html10`<div><devtools-checkbox
+              ${input.booleanSettings.map((setting) => html11`<div><devtools-checkbox
                       data-boolean-setting="true"
                       class="checkbox-label"
                       title=${setting.title}
@@ -16933,14 +17071,14 @@ var DEFAULT_VIEW6 = (input, output, target) => {
                   </devtools-checkbox></div>`)}
             </div>
           </div>
-          ${input.gridElements ? html10`<div class="content-section" jslog=${VisualLogging10.section("grid-overlays")}>
+          ${input.gridElements ? html11`<div class="content-section" jslog=${VisualLogging10.section("grid-overlays")}>
               <h3 class="content-section-title">
                 ${input.gridElements.length ? i18nString13(UIStrings14.gridOrGridLanesOverlays) : i18nString13(UIStrings14.noGridOrGridLanesLayoutsFoundOnThisPage)}
               </h3>
-              ${input.gridElements.length ? html10`<div class="elements">${input.gridElements.map(renderElement)}</div>` : ""}
+              ${input.gridElements.length ? html11`<div class="elements">${input.gridElements.map(renderElement)}</div>` : ""}
             </div>` : ""}
         </details>
-        ${input.flexContainerElements !== void 0 ? html10`
+        ${input.flexContainerElements !== void 0 ? html11`
           <details open>
             <summary
                 class="header"
@@ -16948,11 +17086,11 @@ var DEFAULT_VIEW6 = (input, output, target) => {
                 jslog=${VisualLogging10.sectionHeader("flexbox-overlays").track({ click: true })}>
               ${i18nString13(UIStrings14.flexbox)}
             </summary>
-            ${input.flexContainerElements ? html10`<div class="content-section" jslog=${VisualLogging10.section("flexbox-overlays")}>
+            ${input.flexContainerElements ? html11`<div class="content-section" jslog=${VisualLogging10.section("flexbox-overlays")}>
                 <h3 class="content-section-title">
                   ${input.flexContainerElements.length ? i18nString13(UIStrings14.flexboxOverlays) : i18nString13(UIStrings14.noFlexboxLayoutsFoundOnThisPage)}
                 </h3>
-                ${input.flexContainerElements.length ? html10`<div class="elements">${input.flexContainerElements.map(renderElement)}</div>` : ""}
+                ${input.flexContainerElements.length ? html11`<div class="elements">${input.flexContainerElements.map(renderElement)}</div>` : ""}
               </div>` : ""}
           </details>` : ""}
       </div>`,
@@ -17169,7 +17307,7 @@ import * as Common12 from "./../../core/common/common.js";
 import * as Platform9 from "./../../core/platform/platform.js";
 import * as SDK17 from "./../../core/sdk/sdk.js";
 import * as UI19 from "./../../ui/legacy/legacy.js";
-import { Directives as Directives2, html as html11, nothing as nothing5, render as render10 } from "./../../ui/lit/lit.js";
+import { Directives as Directives2, html as html12, nothing as nothing6, render as render11 } from "./../../ui/lit/lit.js";
 import * as VisualLogging11 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/elements/metricsSidebarPane.css.js
@@ -17339,7 +17477,7 @@ var DEFAULT_VIEW7 = (input, output, target) => {
     }
     value5 = value5?.replace(/px$/, "");
     value5 = value5 ? Platform9.NumberUtilities.toFixedIfFloating(value5) : value5;
-    return html11`<div class=${side} jslog=${VisualLogging11.value(propertyName).track({
+    return html12`<div class=${side} jslog=${VisualLogging11.value(propertyName).track({
       dblclick: true,
       keydown: "Enter|Escape|ArrowUp|ArrowDown|PageUp|PageDown",
       change: true
@@ -17375,7 +17513,7 @@ var DEFAULT_VIEW7 = (input, output, target) => {
     Common12.Color.Legacy.fromRGBA([0, 0, 0, 0])
   ];
   const boxLabels = ["content", "padding", "border", "margin", "position"];
-  let previousBox = nothing5;
+  let previousBox = nothing6;
   for (let i = 0; i < boxes.length; ++i) {
     const name = boxes[i];
     const display = style.get("display");
@@ -17398,7 +17536,7 @@ var DEFAULT_VIEW7 = (input, output, target) => {
       /* Common.Color.Format.RGBA */
     ) || "";
     const suffix = name === "border" ? "-width" : "";
-    const box = html11`
+    const box = html12`
       <div
           class="${name} ${shouldHighlight ? "highlighted" : ""}"
           style="background-color: ${shouldHighlight ? backgroundColor : ""}"
@@ -17407,7 +17545,7 @@ var DEFAULT_VIEW7 = (input, output, target) => {
       e.consume();
       onHighlightNode(true, name === "position" ? "all" : name);
     }}>
-      ${name === "content" ? html11`
+      ${name === "content" ? html12`
         <span jslog=${VisualLogging11.value("width").track({
       dblclick: true,
       keydown: "Enter|Escape|ArrowUp|ArrowDown|PageUp|PageDown",
@@ -17424,7 +17562,7 @@ var DEFAULT_VIEW7 = (input, output, target) => {
     })}
             @dblclick=${(e) => onStartEditing(e.currentTarget, "height", "height", style)}
             .innerText=${live(contentHeight)}>
-        </span>` : html11`
+        </span>` : html12`
         <div class="label">${boxLabels[i]}</div>
           ${createBoxPartElement(style, name, "top", suffix)}
           <br>
@@ -17436,7 +17574,7 @@ var DEFAULT_VIEW7 = (input, output, target) => {
         </div>`;
     previousBox = box;
   }
-  render10(html11`
+  render11(html12`
     <div class="metrics ${!node ? "collapsed" : ""}" @mouseover=${(e) => {
     e.consume();
     onHighlightNode(true, "all");
@@ -17710,7 +17848,7 @@ __export(PlatformFontsWidget_exports, {
 import * as i18n30 from "./../../core/i18n/i18n.js";
 import * as ComputedStyle3 from "./../../models/computed_style/computed_style.js";
 import * as UI20 from "./../../ui/legacy/legacy.js";
-import { html as html12, render as render11 } from "./../../ui/lit/lit.js";
+import { html as html13, render as render12 } from "./../../ui/lit/lit.js";
 
 // gen/front_end/panels/elements/platformFontsWidget.css.js
 var platformFontsWidget_css_default = `/**
@@ -17796,16 +17934,16 @@ var str_15 = i18n30.i18n.registerUIStrings("panels/elements/PlatformFontsWidget.
 var i18nString14 = i18n30.i18n.getLocalizedString.bind(void 0, str_15);
 var DEFAULT_VIEW8 = (input, _output, target) => {
   const isEmptySection = !input.platformFonts?.length;
-  render11(html12`
+  render12(html13`
     <style>${platformFontsWidget_css_default}</style>
     <div class="platform-fonts">
-      ${isEmptySection ? "" : html12`
+      ${isEmptySection ? "" : html13`
         <div class="title">${i18nString14(UIStrings15.renderedFonts)}</div>
         <div class="stats-section">
           ${input.platformFonts?.map((platformFont) => {
     const fontOrigin = platformFont.isCustomFont ? i18nString14(UIStrings15.networkResource) : i18nString14(UIStrings15.localFile);
     const usage = platformFont.glyphCount;
-    return html12`
+    return html13`
               <div class="font-stats-item">
                 <div><span class="font-property-name">${i18nString14(UIStrings15.familyName)}</span>: ${platformFont.familyName}</div>
                 <div><span class="font-property-name">${i18nString14(UIStrings15.postScriptName)}</span>: ${platformFont.postScriptName}</div>
@@ -18153,8 +18291,8 @@ var ElementsPanel = class _ElementsPanel extends UI21.Panel.Panel {
   resolveLocation(_locationName) {
     return this.sidebarPaneView || null;
   }
-  showToolbarPane(widget2, toggle4) {
-    this.stylesWidget.showToolbarPane(widget2, toggle4);
+  showToolbarPane(widget3, toggle4) {
+    this.stylesWidget.showToolbarPane(widget3, toggle4);
   }
   modelAdded(domModel) {
     this.setupStyleTracking(domModel.cssModel());
@@ -19248,7 +19386,7 @@ import * as Common15 from "./../../core/common/common.js";
 import * as i18n34 from "./../../core/i18n/i18n.js";
 import * as SDK20 from "./../../core/sdk/sdk.js";
 import * as UI23 from "./../../ui/legacy/legacy.js";
-import { html as html13, render as render12 } from "./../../ui/lit/lit.js";
+import { html as html14, render as render13 } from "./../../ui/lit/lit.js";
 import * as VisualLogging14 from "./../../ui/visual_logging/visual_logging.js";
 import * as EventListeners from "./../event_listeners/event_listeners.js";
 var { bindToAction, bindToSetting: bindToSetting2 } = UI23.UIUtils;
@@ -19288,10 +19426,10 @@ var UIStrings17 = {
 };
 var str_17 = i18n34.i18n.registerUIStrings("panels/elements/EventListenersWidget.ts", UIStrings17);
 var i18nString16 = i18n34.i18n.getLocalizedString.bind(void 0, str_17);
-var { widget } = UI23.Widget;
+var { widget: widget2 } = UI23.Widget;
 var eventListenersWidgetInstance;
 var DEFAULT_VIEW9 = (input, _output, target) => {
-  render12(html13`
+  render13(html14`
     <div jslog=${VisualLogging14.pane("elements.event-listeners").track({ resize: true })}>
       <devtools-toolbar class="event-listener-toolbar" role="presentation">
         <devtools-button ${bindToAction(input.refreshEventListenersActionName)}></devtools-button>
@@ -19304,7 +19442,7 @@ var DEFAULT_VIEW9 = (input, _output, target) => {
           aria-label=${i18nString16(UIStrings17.eventListenersCategory)}
           jslog=${VisualLogging14.filterDropdown().track({ change: true })}
           @change=${(e) => input.onDispatchFilterTypeChange(e.target.value)}>
-          ${input.dispatchFilters.map((filter) => html13`
+          ${input.dispatchFilters.map((filter) => html14`
             <option value=${filter.value} ?selected=${filter.value === input.selectedDispatchFilter}>
               ${filter.name}
             </option>`)}
@@ -19314,7 +19452,7 @@ var DEFAULT_VIEW9 = (input, _output, target) => {
           ${i18nString16(UIStrings17.frameworkListeners)}
         </devtools-checkbox>
       </devtools-toolbar>
-      ${widget(EventListeners.EventListenersView.EventListenersView, {
+      ${widget2(EventListeners.EventListenersView.EventListenersView, {
     changeCallback: input.onEventListenersViewChange,
     objects: input.eventListenerObjects,
     filter: input.filter
@@ -19465,7 +19603,7 @@ import * as Platform11 from "./../../core/platform/platform.js";
 import * as SDK21 from "./../../core/sdk/sdk.js";
 import * as ObjectUI from "./../../ui/legacy/components/object_ui/object_ui.js";
 import * as UI24 from "./../../ui/legacy/legacy.js";
-import { html as html14, nothing as nothing6, render as render13 } from "./../../ui/lit/lit.js";
+import { html as html15, nothing as nothing7, render as render14 } from "./../../ui/lit/lit.js";
 import * as VisualLogging15 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/elements/propertiesWidget.css.js
@@ -19516,7 +19654,7 @@ var UIStrings18 = {
 var str_18 = i18n36.i18n.registerUIStrings("panels/elements/PropertiesWidget.ts", UIStrings18);
 var i18nString17 = i18n36.i18n.getLocalizedString.bind(void 0, str_18);
 var DEFAULT_VIEW10 = (input, _output, target) => {
-  render13(html14`
+  render14(html15`
     <div jslog=${VisualLogging15.pane("element-properties").track({ resize: true })}>
       <div class="hbox properties-widget-toolbar">
         <devtools-toolbar class="styles-pane-toolbar" role="presentation">
@@ -19532,9 +19670,9 @@ var DEFAULT_VIEW10 = (input, _output, target) => {
           </devtools-checkbox>
         </devtools-toolbar>
       </div>
-      ${input.objectTree && input.allChildrenFiltered ? html14`
+      ${input.objectTree && input.allChildrenFiltered ? html15`
         <div class="gray-info-message">${i18nString17(UIStrings18.noMatchingProperty)}</div>
-      ` : nothing6}
+      ` : nothing7}
       ${input.treeOutline.element}
     </div>`, target);
 };
@@ -19684,7 +19822,7 @@ import * as SDK22 from "./../../core/sdk/sdk.js";
 import * as Bindings5 from "./../../models/bindings/bindings.js";
 import * as Components7 from "./../../ui/legacy/components/utils/utils.js";
 import * as UI25 from "./../../ui/legacy/legacy.js";
-import { html as html15, render as render14 } from "./../../ui/lit/lit.js";
+import { html as html16, render as render15 } from "./../../ui/lit/lit.js";
 
 // gen/front_end/panels/elements/nodeStackTraceWidget.css.js
 var nodeStackTraceWidget_css_default = `/*
@@ -19712,12 +19850,12 @@ var str_19 = i18n38.i18n.registerUIStrings("panels/elements/NodeStackTraceWidget
 var i18nString18 = i18n38.i18n.getLocalizedString.bind(void 0, str_19);
 var DEFAULT_VIEW11 = (input, _output, target) => {
   const { stackTrace } = input;
-  render14(html15`
+  render15(html16`
     <style>${nodeStackTraceWidget_css_default}</style>
-    ${target && stackTrace ? html15`<devtools-widget
+    ${target && stackTrace ? html16`<devtools-widget
                 class="stack-trace"
                 .widgetConfig=${UI25.Widget.widgetConfig(Components7.JSPresentationUtils.StackTracePreviewContent, { stackTrace })}>
-              </devtools-widget>` : html15`<div class="gray-info-message">${i18nString18(UIStrings19.noStackTraceAvailable)}</div>`}`, target);
+              </devtools-widget>` : html16`<div class="gray-info-message">${i18nString18(UIStrings19.noStackTraceAvailable)}</div>`}`, target);
 };
 var NodeStackTraceWidget = class extends UI25.Widget.VBox {
   #view;
@@ -20125,7 +20263,7 @@ import * as SDK24 from "./../../core/sdk/sdk.js";
 import * as Buttons4 from "./../../ui/components/buttons/buttons.js";
 import * as UIHelpers from "./../../ui/helpers/helpers.js";
 import * as UI27 from "./../../ui/legacy/legacy.js";
-import { html as html16, render as render15 } from "./../../ui/lit/lit.js";
+import { html as html17, render as render16 } from "./../../ui/lit/lit.js";
 import * as VisualLogging17 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/elements/elementStatePaneWidget.css.js
@@ -20243,7 +20381,7 @@ var SpecificPseudoStates;
 })(SpecificPseudoStates || (SpecificPseudoStates = {}));
 var DEFAULT_VIEW12 = (input, _output, target) => {
   const createElementStateCheckbox = (state) => {
-    return html16`
+    return html17`
         <div id=${state.state}>
           <devtools-checkbox class="small" @click=${input.onStateCheckboxClicked}
               jslog=${VisualLogging17.toggle(state.state).track({ change: true })} ?checked=${state.checked} ?disabled=${state.disabled}
@@ -20252,7 +20390,7 @@ var DEFAULT_VIEW12 = (input, _output, target) => {
         </devtools-checkbox>
         </div>`;
   };
-  render15(html16`
+  render16(html17`
     <style>${elementStatePaneWidget_css_default}</style>
     <div class="styles-element-state-pane"
         jslog=${VisualLogging17.pane("element-states")}>
@@ -20614,11 +20752,11 @@ import * as ComputedStyle5 from "./../../models/computed_style/computed_style.js
 import * as InlineEditor5 from "./../../ui/legacy/components/inline_editor/inline_editor.js";
 import * as Components8 from "./../../ui/legacy/components/utils/utils.js";
 import * as UI29 from "./../../ui/legacy/legacy.js";
-import { html as html17, render as render16 } from "./../../ui/lit/lit.js";
+import { html as html18, render as render17 } from "./../../ui/lit/lit.js";
 import * as VisualLogging18 from "./../../ui/visual_logging/visual_logging.js";
 import * as ElementsComponents8 from "./components/components.js";
 var DEFAULT_VIEW13 = (input, _output, target) => {
-  render16(html17`
+  render17(html18`
     <style>${stylesSidebarPane_css_default}</style>
     <div class="style-panes-wrapper" jslog=${VisualLogging18.section("standalone-styles").track({
     resize: true

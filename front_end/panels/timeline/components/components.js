@@ -2773,7 +2773,8 @@ var DEFAULT_VIEW3 = (input, output, target) => {
 var InteractionBreakdown = class _InteractionBreakdown extends UI7.Widget.Widget {
   static createWidgetElement(entry) {
     const widgetElement = document.createElement("devtools-widget");
-    widgetElement.widgetConfig = UI7.Widget.widgetConfig(_InteractionBreakdown, { entry });
+    const widget5 = new _InteractionBreakdown(widgetElement);
+    widget5.entry = entry;
     return widgetElement;
   }
   #view;
@@ -6435,6 +6436,7 @@ import * as UI11 from "./../../../ui/legacy/legacy.js";
 import * as Lit15 from "./../../../ui/lit/lit.js";
 import * as TimelineUtils from "./../utils/utils.js";
 var { html: html15, nothing: nothing14, Directives: { classMap, ifDefined: ifDefined2 } } = Lit15;
+var { widget: widget3 } = UI11.Widget;
 var MAX_URL_LENGTH2 = 60;
 var UIStrings16 = {
   /**
@@ -6516,12 +6518,7 @@ var DEFAULT_VIEW6 = (input, output, target) => {
 };
 var NetworkRequestTooltip = class _NetworkRequestTooltip extends UI11.Widget.Widget {
   static createWidgetElement(request, entityMapper) {
-    const widgetElement = document.createElement("devtools-widget");
-    widgetElement.widgetConfig = UI11.Widget.widgetConfig(_NetworkRequestTooltip, {
-      networkRequest: request,
-      entityMapper
-    });
-    return widgetElement;
+    return html15`${widget3(_NetworkRequestTooltip, { networkRequest: request, entityMapper })}`;
   }
   #view;
   #networkRequest;
@@ -7843,14 +7840,14 @@ var UIStrings20 = {
 };
 var str_20 = i18n39.i18n.registerUIStrings("panels/timeline/components/SidebarSingleInsightSet.ts", UIStrings20);
 var i18nString19 = i18n39.i18n.getLocalizedString.bind(void 0, str_20);
-var { widget: widget3 } = UI15.Widget;
+var { widget: widget4 } = UI15.Widget;
 var DEFAULT_VIEW10 = (input, output, target) => {
   const { shownInsights, passedInsights, insightSetKey, parsedTrace, renderInsightComponent } = input;
   function renderMetrics() {
     if (!insightSetKey || !parsedTrace) {
       return Lit19.nothing;
     }
-    return html19`${widget3(CWVMetrics, { data: { insightSetKey, parsedTrace } })}`;
+    return html19`${widget4(CWVMetrics, { data: { insightSetKey, parsedTrace } })}`;
   }
   function renderInsights() {
     const shownInsightTemplates = shownInsights.map(renderInsightComponent);
@@ -7954,7 +7951,7 @@ var SidebarSingleInsightSet = class _SidebarSingleInsightSet extends UI15.Widget
       fieldMetrics
     };
     return html19`<devtools-widget class="insight-component-widget" ?highlight-insight=${isActiveInsight && this.#isActiveInsightHighlighted}
-      ${widget3(componentClass, widgetConfig2)}
+      ${widget4(componentClass, widgetConfig2)}
     ></devtools-widget>`;
   }
   performUpdate() {
@@ -8062,9 +8059,10 @@ function renderDropdownIcon(insightSetToggled) {
     ></devtools-button></div>
   `;
 }
-var SidebarInsightsTab = class extends UI16.Widget.Widget {
+var SidebarInsightsTab = class _SidebarInsightsTab extends UI16.Widget.Widget {
   static createWidgetElement() {
     const widgetElement = document.createElement("devtools-widget");
+    new _SidebarInsightsTab(widgetElement);
     return widgetElement;
   }
   #view;
@@ -8294,36 +8292,29 @@ var InsightsView = class extends UI17.Widget.VBox {
   constructor() {
     super();
     this.element.classList.add("sidebar-insights");
-    this.element.appendChild(this.#component);
+    this.#getWidget().show(this.element);
+  }
+  #getWidget() {
+    return UI17.Widget.Widget.get(this.#component);
   }
   setParsedTrace(parsedTrace) {
-    this.#component.widgetConfig = UI17.Widget.widgetConfig(SidebarInsightsTab, { parsedTrace });
+    const widget5 = this.#getWidget();
+    widget5.parsedTrace = parsedTrace;
   }
   getActiveInsight() {
-    const widget4 = this.#component.getWidget();
-    if (widget4) {
-      return widget4.activeInsight;
-    }
-    return null;
+    return this.#getWidget().activeInsight;
   }
   setActiveInsight(active, opts) {
-    const widget4 = this.#component.getWidget();
-    if (!widget4) {
-      return;
-    }
-    widget4.activeInsight = active;
+    const widget5 = this.#getWidget();
+    widget5.activeInsight = active;
     if (opts.highlight && active) {
-      void widget4.updateComplete.then(() => {
-        void widget4.highlightActiveInsight();
+      void widget5.updateComplete.then(() => {
+        void widget5.highlightActiveInsight();
       });
     }
   }
   setActiveInsightSet(insightSetKey) {
-    const widget4 = this.#component.getWidget();
-    if (!widget4) {
-      return;
-    }
-    widget4.setActiveInsightSet(insightSetKey);
+    this.#getWidget().setActiveInsightSet(insightSetKey);
   }
 };
 var AnnotationsView = class extends UI17.Widget.VBox {

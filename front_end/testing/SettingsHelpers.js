@@ -65,6 +65,8 @@ export const DEFAULT_SETTING_REGISTRATIONS_FOR_TEST = [
     createSettingValue("DEBUGGER" /* Common.Settings.SettingCategory.DEBUGGER */, 'enable-ignore-listing', true),
     createSettingValue("DEBUGGER" /* Common.Settings.SettingCategory.DEBUGGER */, 'skip-stack-frames-pattern', '/node_modules/|^node:', "regex" /* Common.Settings.SettingType.REGEX */),
     createSettingValue("DEBUGGER" /* Common.Settings.SettingCategory.DEBUGGER */, 'navigator-group-by-folder', true),
+    createSettingValue("DEBUGGER" /* Common.Settings.SettingCategory.DEBUGGER */, 'navigator-group-by-authored', false),
+    createSettingValue("DEBUGGER" /* Common.Settings.SettingCategory.DEBUGGER */, 'navigator-just-my-code', false),
     createSettingValue("ELEMENTS" /* Common.Settings.SettingCategory.ELEMENTS */, 'dom-word-wrap', true),
     createSettingValue("ELEMENTS" /* Common.Settings.SettingCategory.ELEMENTS */, 'show-detailed-inspect-tooltip', true),
     createSettingValue("ELEMENTS" /* Common.Settings.SettingCategory.ELEMENTS */, 'show-html-comments', true),

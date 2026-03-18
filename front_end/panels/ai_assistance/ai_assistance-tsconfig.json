@@ -36,6 +36,7 @@
   },
   "files": [
     "../../../../../../front_end/panels/ai_assistance/AiAssistancePanel.ts",
+    "../../../../../../front_end/panels/ai_assistance/ExportConversation.ts",
     "../../../../../../front_end/panels/ai_assistance/PatchWidget.ts",
     "../../../../../../front_end/panels/ai_assistance/SelectWorkspaceDialog.ts",
     "../../../../../../front_end/panels/ai_assistance/components/ChatInput.ts",
@@ -43,6 +44,7 @@
     "../../../../../../front_end/panels/ai_assistance/components/ChatView.ts",
     "../../../../../../front_end/panels/ai_assistance/components/DisabledWidget.ts",
     "../../../../../../front_end/panels/ai_assistance/components/ExploreWidget.ts",
+    "../../../../../../front_end/panels/ai_assistance/components/ExportForAgentsDialog.ts",
     "../../../../../../front_end/panels/ai_assistance/components/MarkdownRendererWithCodeBlock.ts",
     "../../../../../../front_end/panels/ai_assistance/components/PerformanceAgentMarkdownRenderer.ts",
     "../../../../../../front_end/panels/ai_assistance/components/StylingAgentMarkdownRenderer.ts",

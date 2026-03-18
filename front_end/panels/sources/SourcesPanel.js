@@ -551,32 +551,15 @@ export class SourcesPanel extends UI.Panel.Panel {
             }
         }
     }
-    addExperimentMenuItem(menuSection, experiment, menuItem) {
-        /** menu handler **/
-        function toggleExperiment() {
-            const checked = Root.Runtime.experiments.isEnabled(experiment);
-            Root.Runtime.experiments.setEnabled(experiment, !checked);
-            Host.userMetrics.experimentChanged(experiment, checked);
-            // Need to signal to the NavigatorView that grouping has changed. Unfortunately,
-            // it can't listen to an experiment, and this class doesn't directly interact
-            // with it, so we will convince it a different grouping setting changed. When we switch
-            // from using an experiment to a setting, it will listen to that setting and we
-            // won't need to do this.
-            const groupByFolderSetting = Common.Settings.Settings.instance().moduleSetting('navigator-group-by-folder');
-            groupByFolderSetting.set(groupByFolderSetting.get());
-        }
-        menuSection.appendCheckboxItem(menuItem, toggleExperiment, {
-            checked: Root.Runtime.experiments.isEnabled(experiment),
-            experimental: true,
-            jslogContext: Platform.StringUtilities.toKebabCase(experiment),
-        });
+    addSettingMenuItem(contextMenu, settingName, menuText) {
+        const setting = Common.Settings.Settings.instance().moduleSetting(settingName);
+        contextMenu.appendCheckboxItem(menuText, () => setting.set(!setting.get()), { checked: setting.get(), jslogContext: setting.name });
     }
     populateNavigatorMenu(contextMenu) {
-        const groupByFolderSetting = Common.Settings.Settings.instance().moduleSetting('navigator-group-by-folder');
         contextMenu.appendItemsAtLocation('navigatorMenu');
-        contextMenu.viewSection().appendCheckboxItem(i18nString(UIStrings.groupByFolder), () => groupByFolderSetting.set(!groupByFolderSetting.get()), { checked: groupByFolderSetting.get(), jslogContext: groupByFolderSetting.name });
-        this.addExperimentMenuItem(contextMenu.viewSection(), Root.ExperimentNames.ExperimentName.AUTHORED_DEPLOYED_GROUPING, i18nString(UIStrings.groupByAuthored));
-        this.addExperimentMenuItem(contextMenu.viewSection(), Root.ExperimentNames.ExperimentName.JUST_MY_CODE, i18nString(UIStrings.hideIgnoreListed));
+        this.addSettingMenuItem(contextMenu.viewSection(), 'navigator-group-by-folder', i18nString(UIStrings.groupByFolder));
+        this.addSettingMenuItem(contextMenu.viewSection(), 'navigator-group-by-authored', i18nString(UIStrings.groupByAuthored));
+        this.addSettingMenuItem(contextMenu.viewSection(), 'navigator-just-my-code', i18nString(UIStrings.hideIgnoreListed));
     }
     updateLastModificationTime() {
         this.lastModificationTime = window.performance.now();
@@ -807,7 +790,7 @@ export class SourcesPanel extends UI.Panel.Panel {
         const eventTarget = event.target;
         if (!uiSourceCode.project().isServiceProject() &&
             !eventTarget.isSelfOrDescendant(this.navigatorTabbedLocation.widget().element) &&
-            !(Root.Runtime.experiments.isEnabled(Root.ExperimentNames.ExperimentName.JUST_MY_CODE) &&
+            !(Common.Settings.Settings.instance().moduleSetting('navigator-just-my-code').get() &&
                 Workspace.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(uiSourceCode))) {
             contextMenu.revealSection().appendItem(i18nString(UIStrings.revealInSidebar), this.revealInNavigator.bind(this, uiSourceCode), {
                 jslogContext: 'sources.reveal-in-navigator-sidebar',

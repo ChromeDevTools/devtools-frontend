@@ -7,6 +7,7 @@ import * as Root from '../../../core/root/root.js';
 import * as Logs from '../../logs/logs.js';
 import * as NetworkTimeCalculator from '../../network_time_calculator/network_time_calculator.js';
 import * as Workspace from '../../workspace/workspace.js';
+import { AccessibilityContext } from './AccessibilityAgent.js';
 import { AiAgent, } from './AiAgent.js';
 import { FileContext } from './FileAgent.js';
 import { RequestContext } from './NetworkAgent.js';
@@ -67,10 +68,12 @@ export class ContextSelectionAgent extends AiAgent {
     #performanceRecordAndReload;
     #onInspectElement;
     #networkTimeCalculator;
+    #lighthouseRecording;
     #allowedOrigin;
     constructor(opts) {
         super(opts);
         this.#performanceRecordAndReload = opts.performanceRecordAndReload;
+        this.#lighthouseRecording = opts.lighthouseRecording;
         this.#onInspectElement = opts.onInspectElement;
         this.#networkTimeCalculator = opts.networkTimeCalculator;
         this.#allowedOrigin = opts.allowedOrigin ?? (() => undefined);
@@ -243,6 +246,37 @@ export class ContextSelectionAgent extends AiAgent {
                     context: PerformanceTraceContext.fromParsedTrace(result),
                     description: 'User recorded a performance trace',
                     widgets: [{ name: 'PERFORMANCE_TRACE', data: { parsedTrace: result } }]
+                };
+            }
+        });
+        this.declareFunction('runLighthouseAudits', {
+            description: 'Records a Lighthouse audit on the current page, to help debug accessibility issues.',
+            parameters: {
+                type: 6 /* Host.AidaClient.ParametersTypes.OBJECT */,
+                description: '',
+                nullable: true,
+                required: [],
+                properties: {},
+            },
+            displayInfoFromArgs: () => {
+                return {
+                    title: 'Auditing your page with Lighthouse…',
+                    action: 'runLighthouseAudits()',
+                };
+            },
+            handler: async () => {
+                if (!this.#lighthouseRecording) {
+                    return {
+                        error: 'Lighthouse report is not available.',
+                    };
+                }
+                const result = await this.#lighthouseRecording();
+                if (!result) {
+                    return { error: 'Failed to generate Lighthouse report.' };
+                }
+                return {
+                    context: new AccessibilityContext(result),
+                    description: 'User has selected a Lighthouse report',
                 };
             }
         });

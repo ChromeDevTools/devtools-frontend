@@ -21,6 +21,7 @@ import * as BuiltInAi from './BuiltInAi.js';
 import * as ChangeManager from './ChangeManager.js';
 import * as ConversationHandler from './ConversationHandler.js';
 import * as FileFormatter from './data_formatters/FileFormatter.js';
+import * as LighthouseFormatter from './data_formatters/LighthouseFormatter.js';
 import * as NetworkRequestFormatter from './data_formatters/NetworkRequestFormatter.js';
 import * as PerformanceInsightFormatter from './data_formatters/PerformanceInsightFormatter.js';
 import * as PerformanceTraceFormatter from './data_formatters/PerformanceTraceFormatter.js';
@@ -55,6 +56,7 @@ export {
   FileAgent,
   FileFormatter,
   Injected,
+  LighthouseFormatter,
   NetworkAgent,
   NetworkRequestFormatter,
   PatchAgent,

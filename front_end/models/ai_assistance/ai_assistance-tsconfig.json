@@ -57,6 +57,7 @@
     "../../../../../../front_end/models/ai_assistance/agents/PerformanceAnnotationsAgent.ts",
     "../../../../../../front_end/models/ai_assistance/agents/StylingAgent.ts",
     "../../../../../../front_end/models/ai_assistance/data_formatters/FileFormatter.ts",
+    "../../../../../../front_end/models/ai_assistance/data_formatters/LighthouseFormatter.ts",
     "../../../../../../front_end/models/ai_assistance/data_formatters/NetworkRequestFormatter.ts",
     "../../../../../../front_end/models/ai_assistance/data_formatters/PerformanceInsightFormatter.ts",
     "../../../../../../front_end/models/ai_assistance/data_formatters/PerformanceTraceFormatter.ts",

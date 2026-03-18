@@ -100,6 +100,7 @@ function renderDropdownIcon(insightSetToggled) {
 export class SidebarInsightsTab extends UI.Widget.Widget {
     static createWidgetElement() {
         const widgetElement = document.createElement('devtools-widget');
+        new SidebarInsightsTab(widgetElement);
         return widgetElement;
     }
     #view;

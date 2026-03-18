@@ -19577,8 +19577,9 @@ var SourceMap = class {
     }
     const sourceIdx = this.#sourceIndex(scriptUrl);
     if (sourceIdx >= 0) {
-      if (!this.#scopesInfo) {
+      if (!this.#scopesInfo || this.#scopesFallbackPromise !== void 0) {
         this.#scopesInfo = new SourceMapScopesInfo(this, { scopes: [], ranges: [] });
+        this.#scopesFallbackPromise = void 0;
       }
       if (!this.#scopesInfo.hasOriginalScopes(sourceIdx)) {
         const originalScopes = buildOriginalScopes(ranges);

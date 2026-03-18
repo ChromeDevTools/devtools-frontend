@@ -213,9 +213,11 @@ export class BaseInsightComponent extends UI.Widget.Widget {
     }
     set agentFocus(agentFocus) {
         this.#agentFocus = agentFocus;
+        this.requestUpdate();
     }
     set fieldMetrics(fieldMetrics) {
         this.#fieldMetrics = fieldMetrics;
+        this.requestUpdate();
     }
     get fieldMetrics() {
         return this.#fieldMetrics;

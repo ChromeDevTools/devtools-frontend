@@ -40,7 +40,8 @@ export const DEFAULT_VIEW = (input, output, target) => {
 export class InteractionBreakdown extends UI.Widget.Widget {
     static createWidgetElement(entry) {
         const widgetElement = document.createElement('devtools-widget');
-        widgetElement.widgetConfig = UI.Widget.widgetConfig(InteractionBreakdown, { entry });
+        const widget = new InteractionBreakdown(widgetElement);
+        widget.entry = entry;
         return widgetElement;
     }
     #view;

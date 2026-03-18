@@ -12,7 +12,6 @@ import * as AiAssistanceModel from '../../models/ai_assistance/ai_assistance.js'
 import * as Annotations from '../../models/annotations/annotations.js';
 import * as Badges from '../../models/badges/badges.js';
 import * as Greendev from '../../models/greendev/greendev.js';
-import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as Snackbars from '../../ui/components/snackbars/snackbars.js';
@@ -32,6 +31,7 @@ import { MarkdownRendererWithCodeBlock } from './components/MarkdownRendererWith
 import { PerformanceAgentMarkdownRenderer } from './components/PerformanceAgentMarkdownRenderer.js';
 import { StylingAgentMarkdownRenderer } from './components/StylingAgentMarkdownRenderer.js';
 import { WalkthroughView, } from './components/WalkthroughView.js';
+import { saveToDisk } from './ExportConversation.js';
 import { isAiAssistancePatchingEnabled } from './PatchWidget.js';
 const { html } = Lit;
 const { widget } = UI.Widget;
@@ -702,6 +702,9 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     async #handlePerformanceRecordAndReload() {
         return await TimelinePanel.TimelinePanel.TimelinePanel.executeRecordAndReload();
     }
+    async #handleLighthouseRun() {
+        return await LighthousePanel.LighthousePanel.LighthousePanel.executeLighthouseRecording();
+    }
     #getDefaultConversationType() {
         const { hostConfig } = Root.Runtime;
         const viewManager = UI.ViewManager.ViewManager.instance();
@@ -757,7 +760,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
             return;
         }
         const conversation = targetConversationType ?
-            new AiAssistanceModel.AiConversation.AiConversation(targetConversationType, [], undefined, false, this.#aidaClient, this.#changeManager, false, this.#handlePerformanceRecordAndReload.bind(this), this.#handleInspectElement.bind(this), NetworkPanel.NetworkPanel.NetworkPanel.instance().networkLogView.timeCalculator()) :
+            new AiAssistanceModel.AiConversation.AiConversation(targetConversationType, [], undefined, false, this.#aidaClient, this.#changeManager, false, this.#handlePerformanceRecordAndReload.bind(this), this.#handleInspectElement.bind(this), NetworkPanel.NetworkPanel.NetworkPanel.instance().networkLogView.timeCalculator(), this.#handleLighthouseRun.bind(this)) :
             undefined;
         this.#updateConversationState(conversation);
     }
@@ -1227,19 +1230,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         if (!this.#conversation) {
             return;
         }
-        const markdownContent = this.#conversation.getConversationMarkdown();
-        const contentData = new TextUtils.ContentData.ContentData(markdownContent, false, 'text/markdown');
-        const titleFormatted = Platform.StringUtilities.toSnakeCase(this.#conversation.title || '');
-        const prefix = 'devtools_';
-        const suffix = '.md';
-        const maxTitleLength = 64 - prefix.length - suffix.length;
-        let finalTitle = titleFormatted || 'conversation';
-        if (finalTitle.length > maxTitleLength) {
-            finalTitle = finalTitle.substring(0, maxTitleLength);
-        }
-        const filename = `${prefix}${finalTitle}${suffix}`;
-        await Workspace.FileManager.FileManager.instance().save(filename, contentData, true);
-        Workspace.FileManager.FileManager.instance().close(filename);
+        return await saveToDisk(this.#conversation);
     }
     async #openHistoricConversation(conversation) {
         if (this.#conversation?.id === conversation.id) {

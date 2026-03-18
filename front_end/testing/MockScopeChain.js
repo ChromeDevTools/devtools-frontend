@@ -353,11 +353,11 @@ export class MockDebuggerBackend {
         const target = script.debuggerModel.target();
         if (reason === "instrumentation" /* Protocol.Debugger.PausedEventReason.Instrumentation */) {
             // Instrumentation pauses don't pass call frames, they only pass the script id in the 'data' field.
-            dispatchEvent(target, 'Debugger.paused', {
+            this.cdpConnection.dispatchEvent('Debugger.paused', {
                 callFrames: [],
                 reason,
                 data: { scriptId: script.scriptId },
-            });
+            }, target.sessionId);
         }
         else {
             const callFrames = [
@@ -373,17 +373,17 @@ export class MockDebuggerBackend {
                     this: { type: 'object' },
                 },
             ];
-            dispatchEvent(target, 'Debugger.paused', {
+            this.cdpConnection.dispatchEvent('Debugger.paused', {
                 callFrames,
                 reason,
-            });
+            }, target.sessionId);
         }
     }
     dispatchDebuggerPauseWithNoCallFrames(target, reason) {
-        dispatchEvent(target, 'Debugger.paused', {
+        this.cdpConnection.dispatchEvent('Debugger.paused', {
             callFrames: [],
             reason,
-        });
+        }, target.sessionId);
     }
     async addScript(target, scriptDescription, sourceMap) {
         const scriptId = 'SCRIPTID.' + this.#nextScriptIndex++;
@@ -395,7 +395,7 @@ export class MockDebuggerBackend {
         if (startLine === endLine) {
             endColumn += startColumn;
         }
-        dispatchEvent(target, 'Debugger.scriptParsed', {
+        this.cdpConnection.dispatchEvent('Debugger.scriptParsed', {
             scriptId: scriptId,
             url: scriptDescription.url,
             startLine,
@@ -409,7 +409,7 @@ export class MockDebuggerBackend {
             hasSourceURL: Boolean(scriptDescription.hasSourceURL),
             ...(sourceMap ? { sourceMapURL: sourceMap.url } : null),
             embedderName: scriptDescription.embedderName,
-        });
+        }, target.sessionId);
         const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
         const scriptObject = debuggerModel.scriptForId(scriptId);
         assertNotNullOrUndefined(scriptObject);

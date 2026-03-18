@@ -185,12 +185,13 @@ export declare class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
     private buildPropertyCompletions;
     private triggerAiCodeCompletion;
     private setAiAutoCompletion;
-    private showAiGhostText;
     /**
      * Extracts the remaining portion of the suggestion text that follows the
      * user's current input.
      */
     private getCompletionHint;
+    private acceptCodeComplete;
+    commitAiSuggestion(): Promise<void>;
 }
 export declare function unescapeCssString(input: string): string;
 export declare function escapeUrlAsCssComment(urlText: string): string;

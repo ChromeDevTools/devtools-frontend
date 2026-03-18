@@ -2342,7 +2342,7 @@ import * as Common12 from "./../../core/common/common.js";
 import * as Host8 from "./../../core/host/host.js";
 import * as i18n35 from "./../../core/i18n/i18n.js";
 import * as Platform12 from "./../../core/platform/platform.js";
-import * as Root2 from "./../../core/root/root.js";
+import * as Root from "./../../core/root/root.js";
 import * as SDK11 from "./../../core/sdk/sdk.js";
 import * as Badges2 from "./../../models/badges/badges.js";
 import * as Bindings8 from "./../../models/bindings/bindings.js";
@@ -2945,7 +2945,6 @@ import * as Common6 from "./../../core/common/common.js";
 import * as Host3 from "./../../core/host/host.js";
 import * as i18n14 from "./../../core/i18n/i18n.js";
 import * as Platform5 from "./../../core/platform/platform.js";
-import * as Root from "./../../core/root/root.js";
 import * as SDK5 from "./../../core/sdk/sdk.js";
 import * as AiAssistance from "./../../models/ai_assistance/ai_assistance.js";
 import * as Bindings3 from "./../../models/bindings/bindings.js";
@@ -3583,7 +3582,8 @@ var NavigatorView = class _NavigatorView extends UI8.Widget.VBox {
   authoredNode;
   deployedNode;
   navigatorGroupByFolderSetting;
-  navigatorGroupByAuthoredExperiment;
+  navigatorJustMyCodeSetting;
+  navigatorGroupByAuthoredSetting;
   #workspace;
   groupByFrame;
   groupByAuthored;
@@ -3615,8 +3615,11 @@ var NavigatorView = class _NavigatorView extends UI8.Widget.VBox {
     UI8.ShortcutRegistry.ShortcutRegistry.instance().addShortcutListener(this.contentElement, { "sources.rename": this.renameShortcut.bind(this) });
     this.navigatorGroupByFolderSetting = Common6.Settings.Settings.instance().moduleSetting("navigator-group-by-folder");
     this.navigatorGroupByFolderSetting.addChangeListener(this.groupingChanged.bind(this));
+    this.navigatorJustMyCodeSetting = Common6.Settings.Settings.instance().moduleSetting("navigator-just-my-code");
+    this.navigatorJustMyCodeSetting.addChangeListener(this.groupingChanged.bind(this));
     if (enableAuthoredGrouping) {
-      this.navigatorGroupByAuthoredExperiment = Root.ExperimentNames.ExperimentName.AUTHORED_DEPLOYED_GROUPING;
+      this.navigatorGroupByAuthoredSetting = Common6.Settings.Settings.instance().moduleSetting("navigator-group-by-authored");
+      this.navigatorGroupByAuthoredSetting.addChangeListener(this.groupingChanged.bind(this));
     }
     Workspace6.IgnoreListManager.IgnoreListManager.instance().addChangeListener(this.ignoreListChanged.bind(this));
     this.initGrouping();
@@ -3798,7 +3801,7 @@ var NavigatorView = class _NavigatorView extends UI8.Widget.VBox {
     return this.acceptProject(uiSourceCode.project());
   }
   addUISourceCode(uiSourceCode) {
-    if (Root.Runtime.experiments.isEnabled(Root.ExperimentNames.ExperimentName.JUST_MY_CODE) && Workspace6.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(uiSourceCode)) {
+    if (this.navigatorJustMyCodeSetting.get() && Workspace6.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(uiSourceCode)) {
       return;
     }
     if (!this.acceptsUISourceCode(uiSourceCode)) {
@@ -4361,7 +4364,7 @@ var NavigatorView = class _NavigatorView extends UI8.Widget.VBox {
     this.#workspace.uiSourceCodes().forEach(this.addUISourceCode.bind(this));
   }
   ignoreListChanged() {
-    if (Root.Runtime.experiments.isEnabled(Root.ExperimentNames.ExperimentName.JUST_MY_CODE)) {
+    if (this.navigatorJustMyCodeSetting.get()) {
       this.groupingChanged();
     } else {
       this.rootNode.updateTitleRecursive();
@@ -4371,8 +4374,8 @@ var NavigatorView = class _NavigatorView extends UI8.Widget.VBox {
     this.groupByFrame = true;
     this.groupByDomain = this.navigatorGroupByFolderSetting.get();
     this.groupByFolder = this.groupByDomain;
-    if (this.navigatorGroupByAuthoredExperiment) {
-      this.groupByAuthored = Root.Runtime.experiments.isEnabled(this.navigatorGroupByAuthoredExperiment);
+    if (this.navigatorGroupByAuthoredSetting) {
+      this.groupByAuthored = this.navigatorGroupByAuthoredSetting.get();
     } else {
       this.groupByAuthored = false;
     }
@@ -10749,7 +10752,7 @@ var SourcesPanel = class _SourcesPanel extends UI18.Panel.Panel {
     const initialDebugSidebarWidth = 225;
     this.splitWidget = new UI18.SplitWidget.SplitWidget(true, true, "sources-panel-split-view-state", initialDebugSidebarWidth);
     this.splitWidget.show(this.element);
-    if (Root2.Runtime.Runtime.isTraceApp()) {
+    if (Root.Runtime.Runtime.isTraceApp()) {
       this.splitWidget.hideSidebar();
     } else {
       this.splitWidget.enableShowModeSaving();
@@ -10822,7 +10825,7 @@ var SourcesPanel = class _SourcesPanel extends UI18.Panel.Panel {
     }
     if (!isInWrapper) {
       panel2.#sourcesView.leftToolbar().appendToolbarItem(panel2.toggleNavigatorSidebarButton);
-      if (!Root2.Runtime.Runtime.isTraceApp()) {
+      if (!Root.Runtime.Runtime.isTraceApp()) {
         if (panel2.splitWidget.isVertical()) {
           panel2.#sourcesView.rightToolbar().appendToolbarItem(panel2.toggleDebuggerSidebarButton);
         } else {
@@ -11038,26 +11041,15 @@ var SourcesPanel = class _SourcesPanel extends UI18.Panel.Panel {
       }
     }
   }
-  addExperimentMenuItem(menuSection, experiment, menuItem) {
-    function toggleExperiment() {
-      const checked = Root2.Runtime.experiments.isEnabled(experiment);
-      Root2.Runtime.experiments.setEnabled(experiment, !checked);
-      Host8.userMetrics.experimentChanged(experiment, checked);
-      const groupByFolderSetting = Common12.Settings.Settings.instance().moduleSetting("navigator-group-by-folder");
-      groupByFolderSetting.set(groupByFolderSetting.get());
-    }
-    menuSection.appendCheckboxItem(menuItem, toggleExperiment, {
-      checked: Root2.Runtime.experiments.isEnabled(experiment),
-      experimental: true,
-      jslogContext: Platform12.StringUtilities.toKebabCase(experiment)
-    });
+  addSettingMenuItem(contextMenu, settingName, menuText) {
+    const setting = Common12.Settings.Settings.instance().moduleSetting(settingName);
+    contextMenu.appendCheckboxItem(menuText, () => setting.set(!setting.get()), { checked: setting.get(), jslogContext: setting.name });
   }
   populateNavigatorMenu(contextMenu) {
-    const groupByFolderSetting = Common12.Settings.Settings.instance().moduleSetting("navigator-group-by-folder");
     contextMenu.appendItemsAtLocation("navigatorMenu");
-    contextMenu.viewSection().appendCheckboxItem(i18nString16(UIStrings17.groupByFolder), () => groupByFolderSetting.set(!groupByFolderSetting.get()), { checked: groupByFolderSetting.get(), jslogContext: groupByFolderSetting.name });
-    this.addExperimentMenuItem(contextMenu.viewSection(), Root2.ExperimentNames.ExperimentName.AUTHORED_DEPLOYED_GROUPING, i18nString16(UIStrings17.groupByAuthored));
-    this.addExperimentMenuItem(contextMenu.viewSection(), Root2.ExperimentNames.ExperimentName.JUST_MY_CODE, i18nString16(UIStrings17.hideIgnoreListed));
+    this.addSettingMenuItem(contextMenu.viewSection(), "navigator-group-by-folder", i18nString16(UIStrings17.groupByFolder));
+    this.addSettingMenuItem(contextMenu.viewSection(), "navigator-group-by-authored", i18nString16(UIStrings17.groupByAuthored));
+    this.addSettingMenuItem(contextMenu.viewSection(), "navigator-just-my-code", i18nString16(UIStrings17.hideIgnoreListed));
   }
   updateLastModificationTime() {
     this.lastModificationTime = window.performance.now();
@@ -11278,7 +11270,7 @@ var SourcesPanel = class _SourcesPanel extends UI18.Panel.Panel {
       return;
     }
     const eventTarget = event.target;
-    if (!uiSourceCode.project().isServiceProject() && !eventTarget.isSelfOrDescendant(this.navigatorTabbedLocation.widget().element) && !(Root2.Runtime.experiments.isEnabled(Root2.ExperimentNames.ExperimentName.JUST_MY_CODE) && Workspace22.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(uiSourceCode))) {
+    if (!uiSourceCode.project().isServiceProject() && !eventTarget.isSelfOrDescendant(this.navigatorTabbedLocation.widget().element) && !(Common12.Settings.Settings.instance().moduleSetting("navigator-just-my-code").get() && Workspace22.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(uiSourceCode))) {
       contextMenu.revealSection().appendItem(i18nString16(UIStrings17.revealInSidebar), this.revealInNavigator.bind(this, uiSourceCode), {
         jslogContext: "sources.reveal-in-navigator-sidebar"
       });
@@ -11454,7 +11446,7 @@ var SourcesPanel = class _SourcesPanel extends UI18.Panel.Panel {
     this.splitWidget.setVertical(!vertically);
     this.splitWidget.element.classList.toggle("sources-split-view-vertical", vertically);
     _SourcesPanel.updateResizerAndSidebarButtons(this);
-    if (Root2.Runtime.Runtime.isTraceApp()) {
+    if (Root.Runtime.Runtime.isTraceApp()) {
       return;
     }
     const vbox = new UI18.Widget.VBox();
@@ -12310,8 +12302,8 @@ __export(FilteredUISourceCodeListProvider_exports, {
   FilteredUISourceCodeListProvider: () => FilteredUISourceCodeListProvider
 });
 import "./../../ui/components/highlighting/highlighting.js";
+import * as Common14 from "./../../core/common/common.js";
 import * as i18n39 from "./../../core/i18n/i18n.js";
-import * as Root3 from "./../../core/root/root.js";
 import * as Persistence12 from "./../../models/persistence/persistence.js";
 import * as Workspace25 from "./../../models/workspace/workspace.js";
 import * as QuickOpen3 from "./../../ui/legacy/components/quick_open/quick_open.js";
@@ -12415,7 +12407,7 @@ var FilteredUISourceCodeListProvider = class extends QuickOpen3.FilteredListWidg
     if (this.uiSourceCodeIds.has(uiSourceCode.canonicalScriptId())) {
       return false;
     }
-    if (Root3.Runtime.experiments.isEnabled(Root3.ExperimentNames.ExperimentName.JUST_MY_CODE) && Workspace25.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(uiSourceCode)) {
+    if (Common14.Settings.Settings.instance().moduleSetting("navigator-just-my-code").get() && Workspace25.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(uiSourceCode)) {
       return false;
     }
     if (uiSourceCode.isFetchXHR()) {
@@ -12725,7 +12717,7 @@ var InplaceFormatterEditorAction_exports = {};
 __export(InplaceFormatterEditorAction_exports, {
   InplaceFormatterEditorAction: () => InplaceFormatterEditorAction
 });
-import * as Common14 from "./../../core/common/common.js";
+import * as Common15 from "./../../core/common/common.js";
 import * as i18n43 from "./../../core/i18n/i18n.js";
 import * as Formatter2 from "./../../models/formatter/formatter.js";
 import * as Persistence14 from "./../../models/persistence/persistence.js";
@@ -12769,7 +12761,7 @@ var InplaceFormatterEditorAction = class _InplaceFormatterEditorAction {
   }
   updateButton(uiSourceCode) {
     if (this.uiSourceCodeTitleChangedEvent) {
-      Common14.EventTarget.removeEventListeners([this.uiSourceCodeTitleChangedEvent]);
+      Common15.EventTarget.removeEventListeners([this.uiSourceCodeTitleChangedEvent]);
     }
     this.uiSourceCodeTitleChangedEvent = uiSourceCode ? uiSourceCode.addEventListener(Workspace27.UISourceCode.Events.TitleChanged, (event) => this.updateButton(event.data), this) : null;
     const isFormattable = this.isFormattable(uiSourceCode);
@@ -12797,8 +12789,8 @@ var InplaceFormatterEditorAction = class _InplaceFormatterEditorAction {
     if (!Persistence14.Persistence.PersistenceImpl.instance().hasEditableContent(uiSourceCode)) {
       return false;
     }
-    const mimeType = Common14.ResourceType.ResourceType.simplifyContentType(uiSourceCode.mimeType());
-    return Common14.ResourceType.ResourceType.isJavaScriptMimeType(mimeType);
+    const mimeType = Common15.ResourceType.ResourceType.simplifyContentType(uiSourceCode.mimeType());
+    return Common15.ResourceType.ResourceType.isJavaScriptMimeType(mimeType);
   }
   formatSourceInPlace() {
     const sourceFrame = this.sourcesView.currentSourceFrame();
@@ -12836,7 +12828,7 @@ __export(OpenFileQuickOpen_exports, {
   OpenFileQuickOpen: () => OpenFileQuickOpen
 });
 import "./../../ui/kit/kit.js";
-import * as Common15 from "./../../core/common/common.js";
+import * as Common16 from "./../../core/common/common.js";
 import * as Host10 from "./../../core/host/host.js";
 import { PanelUtils as PanelUtils2 } from "./../utils/utils.js";
 import { Directives as Directives4, html as html10 } from "./../../ui/lit/lit.js";
@@ -12852,9 +12844,9 @@ var OpenFileQuickOpen = class extends FilteredUISourceCodeListProvider {
       return;
     }
     if (typeof lineNumber === "number") {
-      void Common15.Revealer.reveal(uiSourceCode.uiLocation(lineNumber, columnNumber));
+      void Common16.Revealer.reveal(uiSourceCode.uiLocation(lineNumber, columnNumber));
     } else {
-      void Common15.Revealer.reveal(uiSourceCode);
+      void Common16.Revealer.reveal(uiSourceCode);
     }
   }
   filterProject(project) {
@@ -13233,7 +13225,7 @@ var PersistenceActions_exports = {};
 __export(PersistenceActions_exports, {
   ContextMenuProvider: () => ContextMenuProvider
 });
-import * as Common16 from "./../../core/common/common.js";
+import * as Common17 from "./../../core/common/common.js";
 import * as Host11 from "./../../core/host/host.js";
 import * as i18n47 from "./../../core/i18n/i18n.js";
 import * as SDK12 from "./../../core/sdk/sdk.js";
@@ -13297,7 +13289,7 @@ var ContextMenuProvider = class {
       const maybeScript = getScript(contentProvider);
       if (maybeScript?.isWasm()) {
         try {
-          const base64 = await maybeScript.getWasmBytecode().then(Common16.Base64.encode);
+          const base64 = await maybeScript.getWasmBytecode().then(Common17.Base64.encode);
           contentData = new TextUtils12.ContentData.ContentData(
             base64,
             /* isBase64=*/
@@ -13306,7 +13298,7 @@ var ContextMenuProvider = class {
           );
         } catch (e) {
           console.error(`Unable to convert WASM byte code for ${url} to base64. Not saving to disk`, e.stack);
-          Common16.Console.Console.instance().error(
+          Common17.Console.Console.instance().error(
             i18nString22(UIStrings23.saveWasmFailed),
             /* show=*/
             false
@@ -13317,7 +13309,7 @@ var ContextMenuProvider = class {
         const contentDataOrError = await contentProvider.requestContentData();
         if (TextUtils12.ContentData.ContentData.isError(contentDataOrError)) {
           console.error(`Failed to retrieve content for ${url}: ${contentDataOrError}`);
-          Common16.Console.Console.instance().error(
+          Common17.Console.Console.instance().error(
             i18nString22(UIStrings23.saveFailed),
             /* show=*/
             false
@@ -13352,8 +13344,8 @@ var ContextMenuProvider = class {
     const networkPersistenceManager = Persistence16.NetworkPersistenceManager.NetworkPersistenceManager.instance();
     const binding = uiSourceCode && Persistence16.Persistence.PersistenceImpl.instance().binding(uiSourceCode);
     const fileURL = binding ? binding.fileSystem.contentURL() : contentProvider.contentURL();
-    if (Common16.ParsedURL.schemeIs(fileURL, "file:")) {
-      const path = Common16.ParsedURL.ParsedURL.urlToRawPathString(fileURL, Host11.Platform.isWin());
+    if (Common17.ParsedURL.schemeIs(fileURL, "file:")) {
+      const path = Common17.ParsedURL.ParsedURL.urlToRawPathString(fileURL, Host11.Platform.isWin());
       contextMenu.revealSection().appendItem(i18nString22(UIStrings23.openInContainingFolder), () => Host11.InspectorFrontendHost.InspectorFrontendHostInstance.showItemInFolder(path), { jslogContext: "open-in-containing-folder" });
     }
     if (contentProvider instanceof Workspace28.UISourceCode.UISourceCode && contentProvider.project().type() === Workspace28.Workspace.projectTypes.FileSystem) {
@@ -13386,7 +13378,7 @@ var ContextMenuProvider = class {
     const networkPersistenceManager = Persistence16.NetworkPersistenceManager.NetworkPersistenceManager.instance();
     const isSuccess = await networkPersistenceManager.setupAndStartLocalOverrides(uiSourceCode);
     if (isSuccess) {
-      await Common16.Revealer.reveal(uiSourceCode);
+      await Common17.Revealer.reveal(uiSourceCode);
     }
     if (contentProvider instanceof SDK12.NetworkRequest.NetworkRequest) {
       Host11.userMetrics.actionTaken(Host11.UserMetrics.Action.OverrideContentFromNetworkContextMenu);
@@ -13431,7 +13423,7 @@ var ContextMenuProvider = class {
     if (!deployedStylesUrl) {
       return null;
     }
-    const deployedUiSourceCode = Workspace28.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(deployedStylesUrl) || Workspace28.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(Common16.ParsedURL.ParsedURL.urlWithoutHash(deployedStylesUrl));
+    const deployedUiSourceCode = Workspace28.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(deployedStylesUrl) || Workspace28.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(Common17.ParsedURL.ParsedURL.urlWithoutHash(deployedStylesUrl));
     return deployedUiSourceCode;
   }
 };
@@ -13666,7 +13658,7 @@ __export(SourcesNavigator_exports, {
   SnippetsNavigatorView: () => SnippetsNavigatorView
 });
 import "./../../ui/legacy/legacy.js";
-import * as Common17 from "./../../core/common/common.js";
+import * as Common18 from "./../../core/common/common.js";
 import * as Host12 from "./../../core/host/host.js";
 import * as i18n51 from "./../../core/i18n/i18n.js";
 import * as Platform15 from "./../../core/platform/platform.js";
@@ -13877,7 +13869,7 @@ var FilesNavigatorView = class extends NavigatorView {
     this.#automaticFileSystemChanged({ data: this.#automaticFileSystemManager.automaticFileSystem });
   }
   willHide() {
-    Common17.EventTarget.removeEventListeners(this.#eventListeners);
+    Common18.EventTarget.removeEventListeners(this.#eventListeners);
     this.#automaticFileSystemChanged({ data: null });
     super.willHide();
   }
@@ -13947,12 +13939,12 @@ var OverridesNavigatorView = class _OverridesNavigatorView extends NavigatorView
     this.toolbar.removeToolbarItems();
     const project = Persistence18.NetworkPersistenceManager.NetworkPersistenceManager.instance().project();
     if (project) {
-      const enableCheckbox = new UI25.Toolbar.ToolbarSettingCheckbox(Common17.Settings.Settings.instance().moduleSetting("persistence-network-overrides-enabled"));
+      const enableCheckbox = new UI25.Toolbar.ToolbarSettingCheckbox(Common18.Settings.Settings.instance().moduleSetting("persistence-network-overrides-enabled"));
       this.toolbar.appendToolbarItem(enableCheckbox);
       this.toolbar.appendToolbarItem(new UI25.Toolbar.ToolbarSeparator(true));
       const clearButton = new UI25.Toolbar.ToolbarButton(i18nString24(UIStrings25.clearConfiguration), "clear");
       clearButton.addEventListener("Click", () => {
-        Common17.Settings.Settings.instance().moduleSetting("persistence-network-overrides-enabled").set(false);
+        Common18.Settings.Settings.instance().moduleSetting("persistence-network-overrides-enabled").set(false);
         project.remove();
       });
       this.toolbar.appendToolbarItem(clearButton);
@@ -13970,7 +13962,7 @@ var OverridesNavigatorView = class _OverridesNavigatorView extends NavigatorView
     if (!fileSystem) {
       return;
     }
-    Common17.Settings.Settings.instance().moduleSetting("persistence-network-overrides-enabled").set(true);
+    Common18.Settings.Settings.instance().moduleSetting("persistence-network-overrides-enabled").set(true);
   }
   sourceSelected(uiSourceCode, focusSource) {
     Host12.userMetrics.actionTaken(Host12.UserMetrics.Action.OverridesSourceSelected);
@@ -14028,7 +14020,7 @@ var SnippetsNavigatorView = class extends NavigatorView {
     const contentData = await uiSourceCode.requestContentData();
     if (TextUtils13.ContentData.ContentData.isError(contentData)) {
       console.error(`Failed to retrieve content for ${uiSourceCode.url()}: ${contentData}`);
-      Common17.Console.Console.instance().error(
+      Common18.Console.Console.instance().error(
         i18nString24(UIStrings25.saveAsFailed),
         /* show=*/
         false
@@ -14044,14 +14036,14 @@ var SnippetsNavigatorView = class extends NavigatorView {
     Workspace30.FileManager.FileManager.instance().close(uiSourceCode.url());
   }
   addJSExtension(url) {
-    return Common17.ParsedURL.ParsedURL.concatenate(url, ".js");
+    return Common18.ParsedURL.ParsedURL.concatenate(url, ".js");
   }
 };
 var ActionDelegate5 = class {
   handleAction(_context, actionId) {
     switch (actionId) {
       case "sources.create-snippet":
-        void Snippets5.ScriptSnippetFileSystem.findSnippetsProject().createFile(Platform15.DevToolsPath.EmptyEncodedPathString, null, "").then((uiSourceCode) => Common17.Revealer.reveal(uiSourceCode));
+        void Snippets5.ScriptSnippetFileSystem.findSnippetsProject().createFile(Platform15.DevToolsPath.EmptyEncodedPathString, null, "").then((uiSourceCode) => Common18.Revealer.reveal(uiSourceCode));
         return true;
       case "sources.add-folder-to-workspace":
         void Persistence18.IsolatedFileSystemManager.IsolatedFileSystemManager.instance().addFileSystem();
@@ -14067,7 +14059,7 @@ __export(WatchExpressionsSidebarPane_exports, {
   WatchExpression: () => WatchExpression,
   WatchExpressionsSidebarPane: () => WatchExpressionsSidebarPane
 });
-import * as Common18 from "./../../core/common/common.js";
+import * as Common19 from "./../../core/common/common.js";
 import * as Host13 from "./../../core/host/host.js";
 import * as i18n53 from "./../../core/i18n/i18n.js";
 import * as Platform16 from "./../../core/platform/platform.js";
@@ -14412,7 +14404,7 @@ var WatchExpressionsSidebarPane = class _WatchExpressionsSidebarPane extends UI2
     super({ useShadowDom: true });
     this.registerRequiredCSS(watchExpressionsSidebarPane_css_default, objectValue_css_default);
     this.watchExpressions = [];
-    this.watchExpressionsSetting = Common18.Settings.Settings.instance().createLocalSetting("watch-expressions", []);
+    this.watchExpressionsSetting = Common19.Settings.Settings.instance().createLocalSetting("watch-expressions", []);
     this.addButton = new UI26.Toolbar.ToolbarButton(i18nString25(UIStrings26.addWatchExpression), "plus", void 0, "add-watch-expression");
     this.addButton.setSize(
       "SMALL"
@@ -14580,7 +14572,7 @@ var ObjectPropertyPrompt = class extends UI26.TextPrompt.TextPrompt {
     this.initialize(TextEditor6.JavaScript.completeInContext);
   }
 };
-var WatchExpression = class _WatchExpression extends Common18.ObjectWrapper.ObjectWrapper {
+var WatchExpression = class _WatchExpression extends Common19.ObjectWrapper.ObjectWrapper {
   #treeElement;
   nameElement;
   valueElement;

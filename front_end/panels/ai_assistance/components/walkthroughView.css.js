@@ -13,7 +13,9 @@ export default `/*
   .walkthrough-view {
     height: 100%;
     background-color: var(--sys-color-cdt-base-container);
-    overflow: auto;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
   }
 }
 
@@ -37,6 +39,9 @@ export default `/*
   .steps-container {
     flex: 1;
     overflow-y: auto;
+  }
+
+  .steps-scroll-content {
     padding: var(--sys-size-6);
     display: flex;
     flex-direction: column;
@@ -48,6 +53,7 @@ export default `/*
     gap: var(--sys-size-6);
     align-items: flex-start;
     justify-content: flex-start;
+    flex-shrink: 0;
 
     .step-number {
       font: var(--sys-typescale-body4-regular);
@@ -62,6 +68,7 @@ export default `/*
     display: flex;
     flex-direction: column;
     gap: var(--sys-size-5);
+    min-width: 0;
   }
 
   .step-container {

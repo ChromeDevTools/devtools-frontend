@@ -49,14 +49,16 @@ export class AiConversation {
     #origin;
     #contexts = [];
     #performanceRecordAndReload;
+    #lighthouseRecording;
     #onInspectElement;
     #networkTimeCalculator;
-    constructor(type, data = [], id = crypto.randomUUID(), isReadOnly = true, aidaClient = new Host.AidaClient.AidaClient(), changeManager, isExternal = false, performanceRecordAndReload, onInspectElement, networkTimeCalculator) {
+    constructor(type, data = [], id = crypto.randomUUID(), isReadOnly = true, aidaClient = new Host.AidaClient.AidaClient(), changeManager, isExternal = false, performanceRecordAndReload, onInspectElement, networkTimeCalculator, lighthouseRecording) {
         this.#changeManager = changeManager;
         this.#aidaClient = aidaClient;
         this.#performanceRecordAndReload = performanceRecordAndReload;
         this.#onInspectElement = onInspectElement;
         this.#networkTimeCalculator = networkTimeCalculator;
+        this.#lighthouseRecording = lighthouseRecording;
         this.id = id;
         this.#isReadOnly = isReadOnly;
         this.#isExternal = isExternal;
@@ -255,6 +257,7 @@ export class AiConversation {
             sessionId: this.id,
             changeManager: this.#changeManager,
             performanceRecordAndReload: this.#performanceRecordAndReload,
+            lighthouseRecording: this.#lighthouseRecording,
             onInspectElement: this.#onInspectElement,
             networkTimeCalculator: this.#networkTimeCalculator,
             allowedOrigin: this.allowedOrigin,

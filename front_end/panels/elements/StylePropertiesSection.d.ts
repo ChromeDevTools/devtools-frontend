@@ -4,9 +4,21 @@ import * as Protocol from '../../generated/protocol.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import type * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import { type LitTemplate } from '../../ui/lit/lit.js';
 import * as ElementsComponents from './components/components.js';
 import { type Context, StylePropertyTreeElement } from './StylePropertyTreeElement.js';
 import type { StylesContainer } from './StylesContainer.js';
+export interface ActiveAiSuggestionProperty {
+    name: string;
+    value: string;
+}
+export interface ActiveAiSuggestion {
+    text: string;
+    properties: ActiveAiSuggestionProperty[];
+    cursorPosition: number;
+    clearCachedRequest?: () => void;
+    cssProperty: SDK.CSSProperty.CSSProperty;
+}
 export declare class StylePropertiesSection {
     #private;
     protected stylesContainer: StylesContainer;
@@ -51,8 +63,8 @@ export declare class StylePropertiesSection {
     getSectionIdx(): number;
     registerFontProperty(treeElement: StylePropertyTreeElement): void;
     resetToolbars(): void;
-    static createRuleOriginNode(matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, linkifier: Components.Linkifier.Linkifier, rule: SDK.CSSRule.CSSRule | null): Node;
-    protected createRuleOriginNode(matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, linkifier: Components.Linkifier.Linkifier, rule: SDK.CSSRule.CSSRule | null): Node;
+    static createRuleOriginNode(matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, linkifier: Components.Linkifier.Linkifier, rule: SDK.CSSRule.CSSRule | null): LitTemplate;
+    protected createRuleOriginNode(matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, linkifier: Components.Linkifier.Linkifier, rule: SDK.CSSRule.CSSRule | null): LitTemplate;
     private static getRuleLocationFromCSSRule;
     static tryNavigateToRuleLocation(matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, rule: SDK.CSSRule.CSSRule | null): void;
     protected static linkifyRuleLocation(cssModel: SDK.CSSModel.CSSModel, linkifier: Components.Linkifier.Linkifier, styleSheetHeader: SDK.CSSStyleSheetHeader.CSSStyleSheetHeader, ruleLocation: TextUtils.TextRange.TextRange): Node;
@@ -75,8 +87,9 @@ export declare class StylePropertiesSection {
     lastSibling(): StylePropertiesSection | null;
     nextSibling(): StylePropertiesSection | undefined;
     previousSibling(): StylePropertiesSection | undefined;
-    clearGhostStyleTreeElements(): void;
-    renderGhostStyleTreeElements(suggestion: string): void;
+    set activeAiSuggestion(activeAiSuggestion: ActiveAiSuggestion | undefined);
+    get activeAiSuggestion(): ActiveAiSuggestion | undefined;
+    commitActiveAiSuggestion(): Promise<void>;
     private onNewRuleClick;
     styleSheetEdited(edit: SDK.CSSModel.Edit): void;
     protected createAncestorRules(rule: SDK.CSSRule.CSSStyleRule): void;
@@ -167,7 +180,7 @@ export declare class BlankStylePropertiesSection extends StylePropertiesSection 
 export declare class RegisteredPropertiesSection extends StylePropertiesSection {
     constructor(stylesContainer: StylesContainer, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, style: SDK.CSSStyleDeclaration.CSSStyleDeclaration, sectionIdx: number, propertyName: string, expandedByDefault: boolean);
     setHeaderText(rule: SDK.CSSRule.CSSRule, newContent: string): Promise<void>;
-    createRuleOriginNode(matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, linkifier: Components.Linkifier.Linkifier, rule: SDK.CSSRule.CSSRule | null): Node;
+    createRuleOriginNode(matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, linkifier: Components.Linkifier.Linkifier, rule: SDK.CSSRule.CSSRule | null): LitTemplate;
 }
 export declare class FunctionRuleSection extends StylePropertiesSection {
     constructor(stylesContainer: StylesContainer, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, style: SDK.CSSStyleDeclaration.CSSStyleDeclaration, children: SDK.CSSRule.CSSNestedStyle[], sectionIdx: number, functionName: string, expandedByDefault: boolean);

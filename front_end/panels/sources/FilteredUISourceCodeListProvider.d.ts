@@ -1,5 +1,5 @@
 import '../../ui/components/highlighting/highlighting.js';
-import type * as Common from '../../core/common/common.js';
+import * as Common from '../../core/common/common.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as QuickOpen from '../../ui/legacy/components/quick_open/quick_open.js';
 import { type TemplateResult } from '../../ui/lit/lit.js';

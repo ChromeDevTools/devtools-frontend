@@ -55,6 +55,7 @@ entrypoints/formatter_worker/JavaScriptFormatter.test.js
 entrypoints/formatter_worker/ScopeParser.test.js
 entrypoints/formatter_worker/Substitute.test.js
 foundation/Universe.test.js
+models/ai_assistance/data_formatters/LighthouseFormatter.test.js
 models/ai_assistance/data_formatters/PerformanceInsightFormatter.test.js
 models/ai_assistance/data_formatters/PerformanceTraceFormatter.test.js
 models/crux-manager/CrUXManager.test.js
@@ -312,6 +313,7 @@ models/workspace_diff/WorkspaceDiff.test.js
 panels/accessibility/ARIAAttributesView.test.js
 panels/accessibility/AccessibilitySidebarView.test.js
 panels/ai_assistance/AiAssistancePanel.test.js
+panels/ai_assistance/ExportConversation.test.js
 panels/ai_assistance/PatchWidget.test.js
 panels/ai_assistance/SelectWorkspaceDialog.test.js
 panels/ai_assistance/components/ChatInput.test.js
@@ -319,6 +321,7 @@ panels/ai_assistance/components/ChatMessage.test.js
 panels/ai_assistance/components/ChatView.test.js
 panels/ai_assistance/components/DisabledWidget.test.js
 panels/ai_assistance/components/ExploreWidget.test.js
+panels/ai_assistance/components/ExportForAgentsDialog.test.js
 panels/ai_assistance/components/MarkdownRendererWithCodeBlock.test.js
 panels/ai_assistance/components/WalkthroughView.test.js
 panels/animation/AnimationTimeline.test.js
@@ -456,6 +459,7 @@ panels/lighthouse/LighthousePanel.test.js
 panels/lighthouse/LighthouseProtocolService.test.js
 panels/lighthouse/LighthouseReportRenderer.test.js
 panels/lighthouse/LighthouseStartView.test.js
+panels/lighthouse/LighthouseStatusView.test.js
 panels/lighthouse/LighthouseTimespanView.test.js
 panels/lighthouse/RadioSetting.test.js
 panels/linear_memory_inspector/LinearMemoryInspectorController.test.js

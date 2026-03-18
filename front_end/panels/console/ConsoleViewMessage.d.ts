@@ -6,6 +6,7 @@ import * as Logs from '../../models/logs/logs.js';
 import { Icon } from '../../ui/kit/kit.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import { type LitTemplate } from '../../ui/lit/lit.js';
 import type { ConsoleViewportElement } from './ConsoleViewport.js';
 export declare const getMessageForElement: (element: Element) => ConsoleViewMessage | undefined;
 /**
@@ -51,7 +52,7 @@ export declare class ConsoleViewMessage implements ConsoleViewportElement {
     private requestResolver;
     private issueResolver;
     constructor(consoleMessage: SDK.ConsoleModel.ConsoleMessage, linkifier: Components.Linkifier.Linkifier, requestResolver: Logs.RequestResolver.RequestResolver, issueResolver: IssuesManager.IssueResolver.IssueResolver, onResize: (arg0: Common.EventTarget.EventTargetEvent<HTMLElement | UI.TreeOutline.TreeElement>) => void);
-    setInsight(insight: HTMLElement): void;
+    setInsight(insight: LitTemplate): void;
     element(): HTMLElement;
     wasShown(): void;
     onResize(): void;

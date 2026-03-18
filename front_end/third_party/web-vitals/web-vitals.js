@@ -709,7 +709,6 @@ var onINP2 = (onReport, opts = {}) => {
         group.startTime = Math.min(entry.startTime, group.startTime);
         group.processingStart = Math.min(entry.processingStart, group.processingStart);
         group.processingEnd = Math.max(entry.processingEnd, group.processingEnd);
-        group.entries.push(entry);
         break;
       }
     }
@@ -719,7 +718,12 @@ var onINP2 = (onReport, opts = {}) => {
         processingStart: entry.processingStart,
         processingEnd: entry.processingEnd,
         renderTime,
-        entries: [entry]
+        // Entries are not needed in DevTools since we're only displaying the
+        // summary information, and also emiting events as they come in. Stop
+        // holding a reference to avoid memory issues.
+        // See https://crbug.com/484342204
+        // entries: [entry],
+        entries: []
       };
       pendingEntriesGroups.push(group);
     }

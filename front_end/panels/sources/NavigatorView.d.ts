@@ -26,7 +26,8 @@ export declare class NavigatorView extends UI.Widget.VBox implements SDK.TargetM
     private authoredNode?;
     private deployedNode?;
     private navigatorGroupByFolderSetting;
-    private navigatorGroupByAuthoredExperiment?;
+    private navigatorJustMyCodeSetting;
+    private navigatorGroupByAuthoredSetting?;
     private groupByFrame?;
     private groupByAuthored?;
     private groupByDomain?;

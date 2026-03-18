@@ -1443,6 +1443,11 @@ Common.Settings.registerSettingExtension({
     defaultValue: false,
 });
 Common.Settings.registerSettingExtension({
+    settingName: 'navigator-just-my-code',
+    settingType: "boolean" /* Common.Settings.SettingType.BOOLEAN */,
+    defaultValue: false,
+});
+Common.Settings.registerSettingExtension({
     category: "SOURCES" /* Common.Settings.SettingCategory.SOURCES */,
     storageType: "Synced" /* Common.Settings.SettingStorageType.SYNCED */,
     title: i18nLazyString(UIStrings.searchInAnonymousAndContent),

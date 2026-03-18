@@ -1445,6 +1445,11 @@ Common.Settings.registerSettingExtension({
   defaultValue: false
 });
 Common.Settings.registerSettingExtension({
+  settingName: "navigator-just-my-code",
+  settingType: "boolean",
+  defaultValue: false
+});
+Common.Settings.registerSettingExtension({
   category: "SOURCES",
   storageType: "Synced",
   title: i18nLazyString(UIStrings.searchInAnonymousAndContent),

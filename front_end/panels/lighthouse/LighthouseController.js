@@ -173,16 +173,18 @@ class LighthouseRun {
     inspectedURL;
     categoryIDs;
     flags;
+    isAIControlled;
     emulationStateBefore;
     protocolService;
     #isRunning;
     #cancelPromise = null;
-    constructor(controller, protocolService, inspectedURL, categoryIDs, flags) {
+    constructor(controller, protocolService, inspectedURL, categoryIDs, flags, isAIControlled) {
         this.controller = controller;
         this.protocolService = protocolService;
         this.inspectedURL = inspectedURL;
         this.categoryIDs = categoryIDs;
         this.flags = flags;
+        this.isAIControlled = isAIControlled;
         this.#isRunning = false;
     }
     isRunning() {
@@ -463,6 +465,7 @@ export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper {
             inspectedURL: this.currentLighthouseRun.inspectedURL,
             categoryIDs: this.currentLighthouseRun.categoryIDs,
             flags: this.currentLighthouseRun.flags,
+            isAIControlled: this.currentLighthouseRun.isAIControlled,
         };
     }
     getFlags() {
@@ -555,7 +558,7 @@ export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper {
             const categoryIDs = overrides?.categoryIds ?? this.getCategoryIDs();
             const flags = this.getFlags();
             this.recordMetrics(flags, categoryIDs);
-            this.currentLighthouseRun = new LighthouseRun(this, this.protocolService, inspectedURL, categoryIDs, flags);
+            this.currentLighthouseRun = new LighthouseRun(this, this.protocolService, inspectedURL, categoryIDs, flags, Boolean(overrides?.isAIControlled));
             await this.currentLighthouseRun.start();
             resolve();
         });

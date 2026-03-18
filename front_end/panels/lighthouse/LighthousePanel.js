@@ -231,9 +231,10 @@ export class LighthousePanel extends UI.Panel.Panel {
         this.setDefaultFocusedChild(this.startView);
     }
     renderStatusView() {
-        const inspectedURL = this.controller.getCurrentRun()?.inspectedURL;
+        const currentRun = this.controller.getCurrentRun();
         this.contentElement.classList.toggle('in-progress', true);
-        this.statusView.setInspectedURL(inspectedURL);
+        this.statusView.setInspectedURL(currentRun?.inspectedURL);
+        this.statusView.setAIControlled(Boolean(currentRun?.isAIControlled));
         this.statusView.show(this.contentElement);
     }
     beforePrint() {

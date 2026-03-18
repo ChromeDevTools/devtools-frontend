@@ -66,8 +66,6 @@ var ExperimentName;
   ExperimentName2["FULL_ACCESSIBILITY_TREE"] = "full-accessibility-tree";
   ExperimentName2["EXPERIMENTAL_COOKIE_FEATURES"] = "experimental-cookie-features";
   ExperimentName2["INSTRUMENTATION_BREAKPOINTS"] = "instrumentation-breakpoints";
-  ExperimentName2["AUTHORED_DEPLOYED_GROUPING"] = "authored-deployed-grouping";
-  ExperimentName2["JUST_MY_CODE"] = "just-my-code";
   ExperimentName2["USE_SOURCE_MAP_SCOPES"] = "use-source-map-scopes";
   ExperimentName2["TIMELINE_DEBUG_MODE"] = "timeline-debug-mode";
   ExperimentName2["DURABLE_MESSAGES"] = "durable-messages";

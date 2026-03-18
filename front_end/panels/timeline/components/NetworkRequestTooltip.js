@@ -13,6 +13,7 @@ import * as TimelineUtils from '../utils/utils.js';
 import networkRequestTooltipStyles from './networkRequestTooltip.css.js';
 import { colorForNetworkRequest, networkResourceCategory } from './Utils.js';
 const { html, nothing, Directives: { classMap, ifDefined } } = Lit;
+const { widget } = UI.Widget;
 const MAX_URL_LENGTH = 60;
 const UIStrings = {
     /**
@@ -97,12 +98,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
 };
 export class NetworkRequestTooltip extends UI.Widget.Widget {
     static createWidgetElement(request, entityMapper) {
-        const widgetElement = document.createElement('devtools-widget');
-        widgetElement.widgetConfig = UI.Widget.widgetConfig(NetworkRequestTooltip, {
-            networkRequest: request,
-            entityMapper,
-        });
-        return widgetElement;
+        return html `${widget(NetworkRequestTooltip, { networkRequest: request, entityMapper })}`;
     }
     #view;
     #networkRequest;

@@ -132,23 +132,20 @@ class InsightsView extends UI.Widget.VBox {
     constructor() {
         super();
         this.element.classList.add('sidebar-insights');
-        this.element.appendChild(this.#component);
+        this.#getWidget().show(this.element);
+    }
+    #getWidget() {
+        return UI.Widget.Widget.get(this.#component);
     }
     setParsedTrace(parsedTrace) {
-        this.#component.widgetConfig = UI.Widget.widgetConfig(SidebarInsightsTab, { parsedTrace });
+        const widget = this.#getWidget();
+        widget.parsedTrace = parsedTrace;
     }
     getActiveInsight() {
-        const widget = this.#component.getWidget();
-        if (widget) {
-            return widget.activeInsight;
-        }
-        return null;
+        return this.#getWidget().activeInsight;
     }
     setActiveInsight(active, opts) {
-        const widget = this.#component.getWidget();
-        if (!widget) {
-            return;
-        }
+        const widget = this.#getWidget();
         widget.activeInsight = active;
         if (opts.highlight && active) {
             // Wait for the rendering of the component to be done, otherwise we
@@ -160,11 +157,7 @@ class InsightsView extends UI.Widget.VBox {
         }
     }
     setActiveInsightSet(insightSetKey) {
-        const widget = this.#component.getWidget();
-        if (!widget) {
-            return;
-        }
-        widget.setActiveInsightSet(insightSetKey);
+        this.#getWidget().setActiveInsightSet(insightSetKey);
     }
 }
 class AnnotationsView extends UI.Widget.VBox {

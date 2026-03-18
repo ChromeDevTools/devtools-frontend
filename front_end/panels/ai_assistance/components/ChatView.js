@@ -4,6 +4,7 @@
 import '../../../ui/components/spinners/spinners.js';
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
+import * as Root from '../../../core/root/root.js';
 import * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as UI from '../../../ui/legacy/legacy.js';
@@ -12,6 +13,7 @@ import { PatchWidget } from '../PatchWidget.js';
 import { ChatInput } from './ChatInput.js';
 import { ChatMessage } from './ChatMessage.js';
 import chatViewStyles from './chatView.css.js';
+import { ExportForAgentsDialog } from './ExportForAgentsDialog.js';
 export { ChatInput } from './ChatInput.js';
 const { ref, repeat, classMap, } = Directives;
 const { widget } = UI.Widget;
@@ -39,6 +41,8 @@ const DEFAULT_VIEW = (input, output, target) => {
         'chat-input-widget': true,
         sticky: !input.isReadOnly,
     });
+    const hasAiV2Flag = Boolean(Root.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled);
+    const shouldShowExportToAgent = !input.isLoading && input.messages.length > 0 && hasAiV2Flag;
     // clang-format off
     render(html `
       <style>${chatViewStyles}</style>
@@ -60,6 +64,15 @@ const DEFAULT_VIEW = (input, output, target) => {
             ...input.walkthrough,
         }
     }))}
+              ${shouldShowExportToAgent ? html `
+                <devtools-button
+                  class="export-for-agents-button"
+                  .jslogContext=${'ai-export-for-agents'}
+                  .variant=${"text" /* Buttons.Button.Variant.TEXT */}
+                  .iconName=${'copy'}
+                  @click=${input.exportForAgentsClick}
+                >Export for agents</devtools-button>
+              ` : nothing}
               ${input.isLoading ? nothing : widget(PatchWidget, {
         changeSummary: input.changeSummary ?? '',
         changeManager: input.changeManager,
@@ -249,12 +262,17 @@ export class ChatView extends HTMLElement {
         this.focusTextInput();
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceDynamicSuggestionClicked);
     };
+    #exportForAgentsClick() {
+        // TODO(b/493191546, b/493191387): generate accurate text here.
+        void ExportForAgentsDialog.show({ promptText: '(placeholder prompt, feature WIP)', markdownText: '(placeholder conversation, feature WIP)' });
+    }
     #render() {
         this.#view({
             ...this.#props,
             handleScroll: this.#handleScroll,
             handleSuggestionClick: this.#handleSuggestionClick,
             handleMessageContainerRef: this.#handleMessageContainerRef,
+            exportForAgentsClick: this.#exportForAgentsClick,
         }, this.#output, this.#shadow);
     }
 }

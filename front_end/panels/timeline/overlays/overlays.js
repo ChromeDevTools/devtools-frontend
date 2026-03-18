@@ -28,6 +28,7 @@ import * as Platform from "./../../../core/platform/platform.js";
 import * as AIAssistance from "./../../../models/ai_assistance/ai_assistance.js";
 import * as Trace from "./../../../models/trace/trace.js";
 import * as UI from "./../../../ui/legacy/legacy.js";
+import { html, render } from "./../../../ui/lit/lit.js";
 import * as VisualLogging from "./../../../ui/visual_logging/visual_logging.js";
 import * as Components from "./components/components.js";
 var UIStrings = {
@@ -53,6 +54,7 @@ var UIStrings = {
 };
 var str_ = i18n.i18n.registerUIStrings("panels/timeline/overlays/OverlaysImpl.ts", UIStrings);
 var i18nString = i18n.i18n.getLocalizedString.bind(void 0, str_);
+var { widget } = UI.Widget;
 var NETWORK_RESIZE_ELEM_HEIGHT_PX = 8;
 function traceWindowContainingOverlays(overlays) {
   const windows = overlays.map(Trace.Helpers.Timing.traceWindowFromOverlay).filter((b) => !!b);
@@ -636,15 +638,15 @@ var Overlays = class extends EventTarget {
     if (!component) {
       return;
     }
-    const widget = UI.Widget.Widget.get(component);
+    const widget2 = UI.Widget.Widget.get(component);
     const leftEdgePixel = this.#xPixelForMicroSeconds("main", overlay.sections[0].bounds.min);
     const rightEdgePixel = this.#xPixelForMicroSeconds("main", overlay.sections[overlay.sections.length - 1].bounds.max);
     if (leftEdgePixel === null || rightEdgePixel === null) {
       return;
     }
     const rangeWidth = rightEdgePixel - leftEdgePixel;
-    widget.left = leftEdgePixel;
-    widget.width = rangeWidth;
+    widget2.left = leftEdgePixel;
+    widget2.width = rangeWidth;
     const widths = [];
     for (const section of overlay.sections) {
       const leftPixel = this.#xPixelForMicroSeconds("main", section.bounds.min);
@@ -655,10 +657,10 @@ var Overlays = class extends EventTarget {
       const rangeWidth2 = rightPixel - leftPixel;
       widths.push({ left: leftPixel, width: rangeWidth2 });
     }
-    widget.widths = widths;
+    widget2.widths = widths;
     if (overlay.entry && (overlay.renderLocation === "BELOW_EVENT" || overlay.renderLocation === "ABOVE_EVENT")) {
       const MAX_BOX_HEIGHT = 50;
-      widget.maxHeight = MAX_BOX_HEIGHT;
+      widget2.maxHeight = MAX_BOX_HEIGHT;
       const y = this.yPixelForEventOnChart(overlay.entry);
       if (y === null) {
         return;
@@ -669,14 +671,14 @@ var Overlays = class extends EventTarget {
       }
       if (overlay.renderLocation === "BELOW_EVENT") {
         const top = y + eventHeight;
-        widget.top = top;
+        widget2.top = top;
       } else {
         const PADDING = 7;
         const bottom = y - PADDING;
         const minSpace = Math.max(bottom, 0);
         const height = Math.min(MAX_BOX_HEIGHT, minSpace);
         const top = bottom - height;
-        widget.top = top;
+        widget2.top = top;
       }
     }
   }
@@ -1086,13 +1088,11 @@ var Overlays = class extends EventTarget {
         return overlayElement;
       }
       case "TIMESPAN_BREAKDOWN": {
-        const widget = document.createElement("devtools-widget");
-        widget.widgetConfig = UI.Widget.widgetConfig(Components.TimespanBreakdownOverlay.TimespanBreakdownOverlay, {
+        render(html`${widget(Components.TimespanBreakdownOverlay.TimespanBreakdownOverlay, {
           isBelowEntry: overlay.renderLocation === "BELOW_EVENT",
           canvasRect: this.#charts.mainChart.canvasBoundingClientRect(),
           sections: overlay.sections
-        });
-        overlayElement.appendChild(widget);
+        })}`, overlayElement);
         return overlayElement;
       }
       case "TIMINGS_MARKER": {
@@ -1199,10 +1199,10 @@ var Overlays = class extends EventTarget {
         if (!component) {
           return;
         }
-        const widget = UI.Widget.Widget.get(component);
-        if (widget) {
-          widget.sections = overlay.sections;
-          widget.canvasRect = this.#charts.mainChart.canvasBoundingClientRect();
+        const widget2 = UI.Widget.Widget.get(component);
+        if (widget2) {
+          widget2.sections = overlay.sections;
+          widget2.canvasRect = this.#charts.mainChart.canvasBoundingClientRect();
         }
         break;
       }
@@ -1251,8 +1251,8 @@ var Overlays = class extends EventTarget {
         if (!component) {
           return;
         }
-        const widget = UI.Widget.Widget.get(component);
-        widget?.checkSectionLabelPositioning();
+        const widget2 = UI.Widget.Widget.get(component);
+        widget2?.checkSectionLabelPositioning();
         break;
       }
       case "TIMESTAMP_MARKER":

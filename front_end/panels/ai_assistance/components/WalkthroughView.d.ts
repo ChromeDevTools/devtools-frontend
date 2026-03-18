@@ -9,17 +9,26 @@ export interface ViewInput {
     isExpanded: boolean;
     onToggle: (isOpen: boolean) => void;
     onOpen: (message: ModelChatMessage) => void;
+    handleScroll: (ev: Event) => void;
+}
+export interface ViewOutput {
+    scrollContainer?: HTMLElement;
+    stepsContainer?: HTMLElement;
 }
 export declare function walkthroughTitle(input: {
     isLoading: boolean;
     hasWidgets: boolean;
     lastStep: Step;
 }): string;
-export declare const DEFAULT_VIEW: (input: ViewInput, _output: null, target: HTMLElement | DocumentFragment) => void;
+export declare const DEFAULT_VIEW: (input: ViewInput, output: ViewOutput, target: HTMLElement | DocumentFragment) => void;
 export type View = typeof DEFAULT_VIEW;
 export declare class WalkthroughView extends UI.Widget.Widget {
     #private;
     constructor(element?: HTMLElement, view?: View);
+    wasShown(): void;
+    willHide(): void;
+    onResize(): void;
+    scrollToBottom(): void;
     set isLoading(isLoading: boolean);
     get isLoading(): boolean;
     get markdownRenderer(): MarkdownLitRenderer | null;

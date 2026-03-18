@@ -6,57 +6,78 @@ import * as OnEachLayoutShift from './OnEachLayoutShift.js';
 import * as Spec from './spec/spec.js';
 const { onLCP, onCLS, onINP } = WebVitals.Attribution;
 const { onEachLayoutShift } = OnEachLayoutShift;
-const windowListeners = [];
-const documentListeners = [];
-const observers = [];
-const originalWindowAddListener = Window.prototype.addEventListener;
-Window.prototype.addEventListener = function (...args) {
-    windowListeners.push(args);
-    return originalWindowAddListener.call(this, ...args);
+const eventListenerCleanupController = new AbortController();
+const patchAddListener = (proto) => {
+    const original = proto.addEventListener;
+    proto.addEventListener = function (type, listener, options) {
+        // Standardize options into an object
+        const navOptions = typeof options === 'boolean' ? { capture: options } : { ...options };
+        // If we already have a signal, we should respect it,
+        // but also link it to our global cleanup signal.
+        if (navOptions.signal) {
+            navOptions.signal = AbortSignal.any([navOptions.signal, eventListenerCleanupController.signal]);
+        }
+        else {
+            navOptions.signal = eventListenerCleanupController.signal;
+        }
+        return original.call(this, type, listener, navOptions);
+    };
 };
-const originalDocumentAddListener = Document.prototype.addEventListener;
-Document.prototype.addEventListener = function (...args) {
-    documentListeners.push(args);
-    return originalDocumentAddListener.call(this, ...args);
-};
-class InternalPerformanceObserver extends PerformanceObserver {
-    constructor(...args) {
-        super(...args);
-        observers.push(this);
+// Patch the core targets
+patchAddListener(Window.prototype);
+patchAddListener(Document.prototype);
+// Use a class wrapper that auto-registers and auto-unregisters
+const activeObservers = new Set();
+class TrackedPerformanceObserver extends globalThis.PerformanceObserver {
+    constructor(callback) {
+        super(callback);
+        activeObservers.add(this);
+    }
+    // Override disconnect to remove it from our tracking set
+    disconnect() {
+        super.disconnect();
+        activeObservers.delete(this);
     }
 }
-globalThis.PerformanceObserver = InternalPerformanceObserver;
-let killed = false;
+const nodeList = [];
+const nodeToIdMap = new WeakMap();
+function establishNodeIndex(node) {
+    let index = nodeToIdMap.get(node);
+    if (index !== undefined) {
+        return index;
+    }
+    index = nodeList.length;
+    nodeList.push(new WeakRef(node));
+    nodeToIdMap.set(node, index);
+    return index;
+}
+// Replace the global constructor
+globalThis.PerformanceObserver = TrackedPerformanceObserver;
 /**
  * This is a hack solution to remove any listeners that were added by web-vitals.js
  * or additional services in this bundle. Once this function is called, the execution
  * context should be considered dead and a new one will need to be created for live metrics
  * to be served again.
  */
+let killed = false;
 window[Spec.INTERNAL_KILL_SWITCH] = () => {
     if (killed) {
         return;
     }
-    for (const observer of observers) {
+    for (const observer of activeObservers) {
+        // This calls the overridden disconnect above,
+        // cleaning up BOTH the browser resource and our Set.
         observer.disconnect();
     }
-    for (const args of windowListeners) {
-        window.removeEventListener(...args);
-    }
-    for (const args of documentListeners) {
-        document.removeEventListener(...args);
-    }
+    activeObservers.clear();
+    eventListenerCleanupController.abort();
+    // Explicitly clear the Node List to help GC
+    nodeList.length = 0;
     killed = true;
 };
 function sendEventToDevTools(event) {
     const payload = JSON.stringify(event);
     window[Spec.EVENT_BINDING_NAME](payload);
-}
-const nodeList = [];
-function establishNodeIndex(node) {
-    const index = nodeList.length;
-    nodeList.push(new WeakRef(node));
-    return index;
 }
 /**
  * The data sent over the event binding needs to be JSON serializable, so we

@@ -12,8 +12,6 @@ export declare enum ExperimentName {
     FULL_ACCESSIBILITY_TREE = "full-accessibility-tree",
     EXPERIMENTAL_COOKIE_FEATURES = "experimental-cookie-features",
     INSTRUMENTATION_BREAKPOINTS = "instrumentation-breakpoints",
-    AUTHORED_DEPLOYED_GROUPING = "authored-deployed-grouping",
-    JUST_MY_CODE = "just-my-code",
     USE_SOURCE_MAP_SCOPES = "use-source-map-scopes",
     TIMELINE_DEBUG_MODE = "timeline-debug-mode",
     DURABLE_MESSAGES = "durable-messages",

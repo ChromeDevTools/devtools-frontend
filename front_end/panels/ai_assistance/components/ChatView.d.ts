@@ -52,6 +52,7 @@ interface ChatWidgetInput extends Props {
     handleScroll: (ev: Event) => void;
     handleSuggestionClick: (title: string) => void;
     handleMessageContainerRef: (el: Element | undefined) => void;
+    exportForAgentsClick: () => void;
 }
 /**
  * ChatView is a web component for historical reasons and generally should not

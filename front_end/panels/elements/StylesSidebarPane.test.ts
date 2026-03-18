@@ -1610,6 +1610,92 @@ color: pink !important;`;
           sinon.assert.calledOnce(section.commitActiveAiSuggestion);
         });
       });
+
+      describe('updateAiCodeSuggestion', () => {
+        it('clears suggestion if user input does not match', async () => {
+          cssPropertyPrompt.attachAndStartEditing(attachedElement, noop);
+
+          assert.exists(cssPropertyPrompt.aiCodeCompletionConfig);
+          cssPropertyPrompt.aiCodeCompletionConfig.setAiAutoCompletion?.({
+            text: 'color: pink;',
+            from: 0,
+            startTime: 0,
+            clearCachedRequest: () => {},
+            onImpression: () => {},
+          });
+          assert.exists(section.activeAiSuggestion);
+
+          cssPropertyPrompt.setText('bac');
+          cssPropertyPrompt.onInput(new Event('input'));
+
+          assert.isUndefined(section.activeAiSuggestion);
+        });
+
+        it('clears suggestion if cursor is moved before trigger point', async () => {
+          cssPropertyPrompt.attachAndStartEditing(attachedElement, noop);
+
+          cssPropertyPrompt.setText('pin');
+          cssPropertyPrompt.aiCodeCompletionConfig?.setAiAutoCompletion?.({
+            text: 'color: pink;',
+            from: 3,
+            startTime: 0,
+            clearCachedRequest: () => {},
+            onImpression: () => {},
+          });
+          assert.exists(section.activeAiSuggestion);
+
+          const mockSelection = ({
+                                  rangeCount: 1,
+                                  getRangeAt: () => ({
+                                    endOffset: 2,
+                                  }),
+                                }) as unknown as Selection;
+          sinon.stub(cssPropertyPrompt.element(), 'getComponentSelection').returns(mockSelection);
+
+          cssPropertyPrompt.onInput(new Event('input'));
+          assert.isUndefined(section.activeAiSuggestion);
+        });
+
+        it('clears suggestion if suggest box shows inconsistent top suggestion', async () => {
+          cssPropertyPrompt.attachAndStartEditing(attachedElement, noop);
+
+          cssPropertyPrompt.setText('var(--rgb');
+          await cssPropertyPrompt.complete(true);
+          cssPropertyPrompt.aiCodeCompletionConfig?.setAiAutoCompletion?.({
+            text: 'color: var(--rgb-background-color);',
+            from: 0,
+            startTime: 0,
+            clearCachedRequest: () => {},
+            onImpression: () => {},
+          });
+
+          assert.exists(section.activeAiSuggestion);
+
+          await cssPropertyPrompt.onInput(new Event('input'));
+
+          assert.isUndefined(section.activeAiSuggestion);
+        });
+
+        it('keeps suggestion if input matches', async () => {
+          cssPropertyPrompt.attachAndStartEditing(attachedElement, noop);
+
+          cssPropertyPrompt.setText('p');
+          cssPropertyPrompt.aiCodeCompletionConfig?.setAiAutoCompletion?.({
+            text: 'color: pink;',
+            from: 1,
+            startTime: 0,
+            clearCachedRequest: () => {},
+            onImpression: () => {},
+          });
+          assert.exists(section.activeAiSuggestion);
+
+          cssPropertyPrompt.setText('pi');
+          cssPropertyPrompt.onInput(new Event('input'));
+
+          assert.exists(section.activeAiSuggestion);
+          assert.deepEqual(section.activeAiSuggestion.properties, [{name: 'color', value: 'pink'}]);
+        });
+      });
     });
   });
 });

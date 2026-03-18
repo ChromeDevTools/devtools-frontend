@@ -1872,6 +1872,7 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
   override onInput(event: Event): void {
     super.onInput(event);
     if (this.aiCodeCompletionProvider) {
+      this.#updateAiCodeSuggestion();
       this.#debouncedTriggerAiCodeCompletion();
     }
   }
@@ -2102,6 +2103,36 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
     }
   }
 
+  #updateAiCodeSuggestion(): void {
+    const activeAiSuggestion = this.treeElement.section().activeAiSuggestion;
+    if (!activeAiSuggestion) {
+      return;
+    }
+
+    const userInput = this.text();
+    const selection = this.element().getComponentSelection();
+    if (!selection || selection.rangeCount === 0) {
+      return;
+    }
+
+    const range = selection.getRangeAt(0);
+    const cursorOffset = range.endOffset;
+    const currentAiSuggestedText = this.#getAiSuggestionForCurrentPrompt();
+    if (!currentAiSuggestedText?.startsWith(userInput) || cursorOffset < activeAiSuggestion.cursorPosition) {
+      this.setAiAutoCompletion(null);
+      return;
+    }
+    const hint = this.getCompletionHint();
+    if (!hint) {
+      return;
+    }
+    const textWithTopSuggestion = userInput + hint;
+    if (textWithTopSuggestion && !currentAiSuggestedText.startsWith(textWithTopSuggestion)) {
+      this.setAiAutoCompletion(null);
+      return;
+    }
+  }
+
   private async triggerAiCodeCompletion(): Promise<void> {
     const selection = this.element().getComponentSelection();
     if (!this.aiCodeCompletionProvider || !selection || selection.rangeCount === 0) {
@@ -2215,16 +2246,8 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
         return false;
       }
 
-      const suggestionForCurrentElement = this.treeElement.section().activeAiSuggestion?.properties[0];
-      if (!suggestionForCurrentElement) {
-        this.setAiAutoCompletion(null);
-        // Tab to the next field as suggestion is no longer valid
-        return false;
-      }
-
-      const suggestionForCurrentPrompt =
-          this.isEditingName ? suggestionForCurrentElement.name : suggestionForCurrentElement.value;
-      if (!suggestionForCurrentPrompt.startsWith(textAfterAccept)) {
+      const suggestionForCurrentPrompt = this.#getAiSuggestionForCurrentPrompt();
+      if (!suggestionForCurrentPrompt?.startsWith(textAfterAccept)) {
         this.setAiAutoCompletion(null);
         // Tab to the next field as suggestion is no longer valid
         return false;
@@ -2250,6 +2273,17 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
     await this.treeElement.section().commitActiveAiSuggestion();
     // Clear state and return
     this.setAiAutoCompletion(null);
+  }
+
+  #getAiSuggestionForCurrentPrompt(): string|undefined {
+    const suggestionForCurrentElement = this.treeElement.section().activeAiSuggestion?.properties[0];
+    if (!suggestionForCurrentElement) {
+      return;
+    }
+
+    const suggestionForCurrentPrompt =
+        this.isEditingName ? suggestionForCurrentElement.name : suggestionForCurrentElement.value;
+    return suggestionForCurrentPrompt;
   }
 }
 

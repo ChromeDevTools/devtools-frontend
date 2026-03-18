@@ -64,12 +64,30 @@ export class StandaloneStylesContainer extends Common.ObjectWrapper.eventMixin<E
   #computedStyleModelInternal = new ComputedStyle.ComputedStyleModel.ComputedStyleModel();
   #view: View;
   #filter: RegExp|null = null;
+  #rebuildThrottler = new Common.Throttler.Throttler(200);
 
   constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
     super(element, {useShadowDom: true});
     this.#view = view;
     this.#computedStyleModelInternal.addEventListener(
         ComputedStyle.ComputedStyleModel.Events.CSS_MODEL_CHANGED, this.#onCSSModelChanged, this);
+    this.#computedStyleModelInternal.addEventListener(
+        ComputedStyle.ComputedStyleModel.Events.COMPUTED_STYLE_CHANGED, this.#onComputedStyleChanged, this);
+  }
+
+  #onComputedStyleChanged(): void {
+    if (this.isEditingStyle || this.userOperation) {
+      return;
+    }
+    this.#rebuildAndUpdate();
+  }
+
+  #rebuildAndUpdate(): void {
+    void this.#rebuildThrottler.schedule(async () => {
+      this.node()?.domModel().cssModel().discardCachedMatchedCascade();
+      await this.#updateSections();
+      this.requestUpdate();
+    });
   }
 
   async #onCSSModelChanged(
@@ -85,9 +103,7 @@ export class StandaloneStylesContainer extends Common.ObjectWrapper.eventMixin<E
       return;
     }
 
-    this.node()?.domModel().cssModel().discardCachedMatchedCascade();
-    await this.#updateSections();
-    this.requestUpdate();
+    this.#rebuildAndUpdate();
   }
 
   get webCustomData(): WebCustomData|undefined {
@@ -135,8 +151,6 @@ export class StandaloneStylesContainer extends Common.ObjectWrapper.eventMixin<E
   }
 
   override async performUpdate(): Promise<void> {
-    this.hideAllPopovers();
-
     const viewInput: ViewInput = {
       sections: this.#sections.filter(section => !section.isHidden()),
     };
@@ -219,10 +233,8 @@ export class StandaloneStylesContainer extends Common.ObjectWrapper.eventMixin<E
   }
 
   forceUpdate(): void {
-    this.node()?.domModel().cssModel().discardCachedMatchedCascade();
-    void this.#updateSections().then(() => {
-      this.requestUpdate();
-    });
+    this.hideAllPopovers();
+    this.#rebuildAndUpdate();
   }
 
   hideAllPopovers(): void {

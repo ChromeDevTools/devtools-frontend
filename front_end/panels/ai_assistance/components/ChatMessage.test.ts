@@ -401,6 +401,73 @@ describeWithEnvironment('ChatMessage', () => {
 
       assert.isTrue(sideEffectContainer.textContent.includes(sideEffectDescription));
     });
+
+    it('renders side effect confirmation when inline and walkthrough is hidden', () => {
+      const sideEffectDescription = 'Proceed with cation!';
+
+      const sideEffectMessage: AiAssistance.ChatMessage.ModelChatMessage = {
+        entity: AiAssistance.ChatMessage.ChatMessageEntity.MODEL,
+        parts: [{
+          type: 'step',
+          step: {
+            isLoading: false,
+            title: 'Side Effect Step',
+            code: 'doSomethingDangerous()',
+            requestApproval: {
+              description: sideEffectDescription,
+              onAnswer: () => {},
+            },
+          },
+        }],
+        rpcId: 99,
+      };
+
+      const target = renderView({
+        message: sideEffectMessage,
+        walkthrough: {
+          ...DEFAULT_WALKTHROUGH,
+          isInlined: true,
+          isExpanded: false,
+        }
+      });
+      const sideEffectContainer = target.querySelector('.side-effect-container');
+      assert.isNotNull(sideEffectContainer);
+
+      assert.isTrue(sideEffectContainer.textContent.includes(sideEffectDescription));
+    });
+
+    it('does not force walkthrough expansion when there are side-effect steps', () => {
+      const sideEffectMessage: AiAssistance.ChatMessage.ModelChatMessage = {
+        entity: AiAssistance.ChatMessage.ChatMessageEntity.MODEL,
+        parts: [{
+          type: 'step',
+          step: {
+            isLoading: false,
+            title: 'Side Effect Step',
+            code: 'doSomethingDangerous()',
+            requestApproval: {
+              description: 'Confirm!',
+              onAnswer: () => {},
+            },
+          },
+        }],
+        rpcId: 99,
+      };
+
+      const target = renderView({
+        message: sideEffectMessage,
+        walkthrough: {
+          ...DEFAULT_WALKTHROUGH,
+          isInlined: true,
+          isExpanded: false,
+        }
+      });
+
+      const walkthrough = target.querySelector('.walkthrough-inline');
+      if (walkthrough) {
+        assert.isFalse(walkthrough.hasAttribute('open'));
+      }
+    });
   });
 
   describe('view', () => {

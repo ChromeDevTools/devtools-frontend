@@ -77,7 +77,12 @@ function renderInlineWalkthrough(input: ViewInput, stepsOutput: Lit.LitTemplate,
   }
 
   function onToggle(event: Event): void {
-    input.onToggle((event.target as HTMLDetailsElement).open);
+    const isOpen = (event.target as HTMLDetailsElement).open;
+    if (isOpen && input.message) {
+      input.onOpen(input.message);
+    } else {
+      input.onToggle(isOpen);
+    }
   }
 
   const hasWidgets = steps.some(s => s.widgets?.length);

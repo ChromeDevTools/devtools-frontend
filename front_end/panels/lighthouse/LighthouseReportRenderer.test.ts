@@ -4,6 +4,7 @@
 
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
+import {stripLitHtmlCommentNodes} from '../../testing/DOMHelpers.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -104,7 +105,8 @@ describeWithMockConnection('LighthouseReportRenderer', () => {
     await Lighthouse.LighthouseReportRenderer.LighthouseReportRenderer.linkifyNodeDetails(sourceElement);
 
     assert.strictEqual(
-        sourceElement.firstElementChild.innerHTML, '<div class="lh-element-screenshot"></div><div>link</div>');
+        stripLitHtmlCommentNodes(sourceElement.firstElementChild.innerHTML),
+        '<div class="lh-element-screenshot"></div><div>link</div>');
   });
 
   it('skips malformed nodes', async () => {

@@ -881,7 +881,7 @@ export class CSSOverviewCompletedView extends UI.Widget.VBox {
 interface ElementDetailsViewInput {
   items: Array<{
     data: PopulateNodesEventNodeTypes,
-    link?: HTMLElement,
+    link?: LitTemplate,
     showNode?: () => void,
   }>;
   visibility: Set<string>;
@@ -996,18 +996,18 @@ export class ElementDetailsView extends UI.Widget.Widget {
           const lineNumber = styleSheetHeader.lineNumberInSource(ruleLocation.startLine);
           const columnNumber = styleSheetHeader.columnNumberInSource(ruleLocation.startLine, ruleLocation.startColumn);
           const matchingSelectorLocation = new SDK.CSSModel.CSSLocation(styleSheetHeader, lineNumber, columnNumber);
-          link = this.#linkifier.linkifyCSSLocation(matchingSelectorLocation) as HTMLElement;
+          link = html`${this.#linkifier.linkifyCSSLocation(matchingSelectorLocation)}`;
         }
       }
 
-      return {data: item, link, showNode};
+      return {data: item, link: link as LitTemplate | undefined, showNode};
     }));
 
     this.#view({items, visibility}, {}, this.element);
   }
 }
 
-function renderNode(data: PopulateNodesEventNodeTypes, link?: HTMLElement, showNode?: () => void): LitTemplate {
+function renderNode(data: PopulateNodesEventNodeTypes, link?: LitTemplate, showNode?: () => void): LitTemplate {
   if (!link) {
     return nothing;
   }
@@ -1027,7 +1027,7 @@ function renderDeclaration(data: PopulateNodesEventNodeTypes): TemplateResult {
   return html`<td>${data.declaration}</td>`;
 }
 
-function renderSourceURL(data: PopulateNodesEventNodeTypes, link?: HTMLElement): TemplateResult {
+function renderSourceURL(data: PopulateNodesEventNodeTypes, link?: LitTemplate): TemplateResult {
   if ('range' in data && data.range) {
     if (!link) {
       return html`<td>${i18nString(UIStrings.unableToLink)}</td>`;

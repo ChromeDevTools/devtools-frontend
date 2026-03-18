@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-imperative-dom-api */
+/* eslint-disable @devtools/no-lit-render-outside-of-view */
 
 /*
  * Copyright (C) 2007 Apple Inc.  All rights reserved.
@@ -52,6 +53,7 @@ import {createIcon, Icon} from '../../ui/kit/kit.js';
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import {render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as PanelsCommon from '../common/common.js';
 
@@ -1566,10 +1568,8 @@ export class SectionBlock {
     const pseudoArgumentString = pseudoArgument ? `(${pseudoArgument})` : '';
     const pseudoTypeString = `${pseudoType}${pseudoArgumentString}`;
     UI.UIUtils.createTextChild(separatorElement, i18nString(UIStrings.inheritedFromSPseudoOf, {PH1: pseudoTypeString}));
-    const link = PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(node, {
-      preventKeyboardFocus: true,
-    });
-    separatorElement.appendChild(link);
+    const link = PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(node, {preventKeyboardFocus: true});
+    render(link, separatorElement);
     return new SectionBlock(separatorElement);
   }
 
@@ -1621,7 +1621,7 @@ export class SectionBlock {
     const link = PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(node, {
       preventKeyboardFocus: true,
     });
-    separatorElement.appendChild(link);
+    render(link, separatorElement);
     return new SectionBlock(separatorElement);
   }
 

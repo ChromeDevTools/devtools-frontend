@@ -1,6 +1,7 @@
 // Copyright 2018 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+/* eslint-disable @devtools/no-lit-render-outside-of-view */
 
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
@@ -13,6 +14,7 @@ import * as LighthouseReport from '../../third_party/lighthouse/report/report.js
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
+import {html, nothing, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as PanelsCommon from '../common/common.js';
 
@@ -154,10 +156,7 @@ export class LighthouseReportRenderer {
 
       const screenshotElement = origHTMLElement.querySelector('.lh-element-screenshot');
       origHTMLElement.textContent = '';
-      if (screenshotElement) {
-        origHTMLElement.append(screenshotElement);
-      }
-      origHTMLElement.appendChild(element);
+      render(html`${screenshotElement ?? nothing}${element}`, origHTMLElement);
     }
   }
 

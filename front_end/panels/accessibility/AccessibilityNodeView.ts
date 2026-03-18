@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-imperative-dom-api */
+/* eslint-disable @devtools/no-lit-render-outside-of-view */
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -9,6 +10,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as uiI18n from '../../ui/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import {render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as PanelsCommon from '../common/common.js';
 
@@ -591,9 +593,11 @@ export class AXRelatedNodeElement {
         if (!node) {
           return;
         }
-        valueElement.appendChild(PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(node, {
-          preventKeyboardFocus: true,
-        }));
+        render(
+            PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(node, {
+              preventKeyboardFocus: true,
+            }),
+            valueElement);
       });
     } else if (this.idref) {
       element.classList.add('invalid');

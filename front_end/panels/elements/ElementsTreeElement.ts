@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-imperative-dom-api */
+/* eslint-disable @devtools/no-lit-render-outside-of-view */
 
 /*
  * Copyright (C) 2007, 2008 Apple Inc.  All rights reserved.
@@ -748,8 +749,7 @@ function renderAttribute(
                 textContent: el.textContent || undefined,
                 isDynamicLink: true,
               });
-              el.removeChildren();
-              el.append(link);
+              render(link, el as HTMLElement);
             })();
           });
 
@@ -2217,7 +2217,6 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     // a parent node. Use a temporary span container for the HTML.
     const container = document.createElement('span');
 
-    // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
     Lit.render(renderAttribute({name: ' ', value: ''}, null, false, this.nodeInternal), container);
     const attr = container.firstElementChild as HTMLElement;
     attr.style.marginLeft = '2px';   // overrides the .editing margin rule

@@ -737,8 +737,13 @@ describeWithMockConnection('BreakpointsSidebarController', () => {
       ignoreListManager,
       workspace,
     });
-    Breakpoints.BreakpointManager.BreakpointManager.instance(
-        {forceNew: true, targetManager, workspace, debuggerWorkspaceBinding});
+    Breakpoints.BreakpointManager.BreakpointManager.instance({
+      forceNew: true,
+      targetManager,
+      workspace,
+      debuggerWorkspaceBinding,
+      settings: Common.Settings.Settings.instance()
+    });
   });
 
   const DEFAULT_BREAKPOINT:
@@ -925,8 +930,13 @@ describeWithMockConnection('BreakpointsView', () => {
       ignoreListManager,
       workspace,
     });
-    Breakpoints.BreakpointManager.BreakpointManager.instance(
-        {forceNew: true, targetManager, workspace, debuggerWorkspaceBinding});
+    Breakpoints.BreakpointManager.BreakpointManager.instance({
+      forceNew: true,
+      targetManager,
+      workspace,
+      debuggerWorkspaceBinding,
+      settings: Common.Settings.Settings.instance()
+    });
   });
 
   it('correctly expands breakpoint groups', async () => {

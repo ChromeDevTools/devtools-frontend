@@ -52,8 +52,13 @@ describeWithMockConnection('NavigatorView', () => {
       ignoreListManager,
       workspace,
     });
-    const breakpointManager = Breakpoints.BreakpointManager.BreakpointManager.instance(
-        {forceNew: true, targetManager, workspace, debuggerWorkspaceBinding});
+    const breakpointManager = Breakpoints.BreakpointManager.BreakpointManager.instance({
+      forceNew: true,
+      targetManager,
+      workspace,
+      debuggerWorkspaceBinding,
+      settings: Common.Settings.Settings.instance(),
+    });
     Persistence.Persistence.PersistenceImpl.instance({forceNew: true, workspace, breakpointManager});
     Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance({forceNew: true, workspace});
   });

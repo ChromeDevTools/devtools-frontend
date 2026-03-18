@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../../../core/common/common.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../../generated/protocol.js';
@@ -54,7 +55,7 @@ describeWithMockConnection('Linkifier', () => {
       workspace,
     });
     Breakpoints.BreakpointManager.BreakpointManager.instance(
-        {forceNew, targetManager, workspace, debuggerWorkspaceBinding});
+        {forceNew, targetManager, workspace, debuggerWorkspaceBinding, settings: Common.Settings.Settings.instance()});
     const backend = new MockProtocolBackend();
     return {target, linkifier, backend};
   }

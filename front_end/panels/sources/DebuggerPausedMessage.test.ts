@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
@@ -33,6 +34,7 @@ describeWithEnvironment('DebuggerPausedMessage', () => {
       targetManager,
       workspace,
       debuggerWorkspaceBinding,
+      settings: Common.Settings.Settings.instance(),
     });
     pausedMessage = new Sources.DebuggerPausedMessage.DebuggerPausedMessage();
   });

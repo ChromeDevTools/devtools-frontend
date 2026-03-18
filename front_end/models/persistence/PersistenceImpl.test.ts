@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
@@ -63,8 +64,13 @@ describeWithMockConnection('PersistenceImpl', () => {
       ignoreListManager,
       workspace,
     });
-    breakpointManager = Breakpoints.BreakpointManager.BreakpointManager.instance(
-        {forceNew: true, targetManager, workspace, debuggerWorkspaceBinding});
+    breakpointManager = Breakpoints.BreakpointManager.BreakpointManager.instance({
+      forceNew: true,
+      targetManager,
+      workspace,
+      debuggerWorkspaceBinding,
+      settings: Common.Settings.Settings.instance()
+    });
 
     Persistence.Persistence.PersistenceImpl.instance({forceNew: true, workspace, breakpointManager});
   });

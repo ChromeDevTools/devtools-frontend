@@ -64,8 +64,13 @@ describeWithEnvironment('ChangesSidebar', () => {
     const ignoreListManager = Workspace.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
     const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance(
         {forceNew: true, resourceMapping, targetManager, ignoreListManager, workspace});
-    const breakpointManager = Breakpoints.BreakpointManager.BreakpointManager.instance(
-        {forceNew: true, targetManager, workspace, debuggerWorkspaceBinding});
+    const breakpointManager = Breakpoints.BreakpointManager.BreakpointManager.instance({
+      forceNew: true,
+      targetManager,
+      workspace,
+      debuggerWorkspaceBinding,
+      settings: Common.Settings.Settings.instance()
+    });
     Persistence.Persistence.PersistenceImpl.instance({forceNew: true, workspace, breakpointManager});
     const workspaceDiff = new WorkspaceDiff.WorkspaceDiff.WorkspaceDiffImpl(workspace);
     const viewFunction = createViewFunctionStub(Changes.ChangesSidebar.ChangesSidebar);

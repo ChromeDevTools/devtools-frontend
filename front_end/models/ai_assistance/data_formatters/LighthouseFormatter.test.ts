@@ -65,4 +65,127 @@ describe('LighthouseFormatter', function() {
     const output = formatter.audits(report, 'seo');
     snapshotTester.assert(this, output);
   });
+
+  it('formats table details', function() {
+    const tableReport = {
+      ...report,
+      categories: {
+        performance: {
+          title: 'Performance',
+          score: 0.5,
+          auditRefs: [{id: 'table-audit', score: 0.5, weight: 1}],
+        },
+      },
+      audits: {
+        'table-audit': {
+          id: 'table-audit',
+          title: 'Table Audit',
+          description: 'Audit with a table',
+          score: 0.5,
+          details: {
+            type: 'table',
+            headings: [
+              {key: 'url', label: 'URL', valueType: 'url'},
+              {key: 'wastedBytes', label: 'Wasted Bytes', valueType: 'bytes'},
+              {key: 'node', label: 'Node', valueType: 'node'},
+              {key: 'location', label: 'Location', valueType: 'source-location'},
+            ],
+            items: [
+              {
+                url: 'https://example.com/script.js',
+                wastedBytes: 1024,
+                node: {type: 'node', nodeLabel: 'div.main'},
+                location: {type: 'source-location', url: 'https://example.com/script.js', line: 10, column: 5},
+              },
+              {
+                url: 'https://example.com/style.css',
+                wastedBytes: 512,
+                node: {type: 'node', selector: 'body > p'},
+                location: {type: 'source-location', url: 'https://example.com/style.css'},
+              },
+            ],
+          },
+        },
+      },
+    } as unknown as ReportJSON;
+    const formatter = new AiAssistance.LighthouseFormatter.LighthouseFormatter();
+    const output = formatter.audits(tableReport, 'performance');
+    snapshotTester.assert(this, output);
+  });
+
+  it('formats opportunity details', function() {
+    const opportunityReport = {
+      ...report,
+      categories: {
+        performance: {
+          title: 'Performance',
+          score: 0.5,
+          auditRefs: [{id: 'opportunity-audit', score: 0.5, weight: 1}],
+        },
+      },
+      audits: {
+        'opportunity-audit': {
+          id: 'opportunity-audit',
+          title: 'Opportunity Audit',
+          description: 'Audit with an opportunity',
+          score: 0.5,
+          details: {
+            type: 'opportunity',
+            overallSavingsMs: 500,
+            overallSavingsBytes: 2048,
+            headings: [
+              {key: 'url', label: 'URL', valueType: 'url'},
+              {key: 'wastedBytes', label: 'Wasted Bytes', valueType: 'bytes'},
+            ],
+            items: [
+              {
+                url: 'https://example.com/large-script.js',
+                wastedBytes: 2048,
+              },
+            ],
+          },
+        },
+      },
+    } as unknown as ReportJSON;
+    const formatter = new AiAssistance.LighthouseFormatter.LighthouseFormatter();
+    const output = formatter.audits(opportunityReport, 'performance');
+    snapshotTester.assert(this, output);
+  });
+
+  it('formats table details with summary', function() {
+    const summaryReport = {
+      ...report,
+      categories: {
+        performance: {
+          title: 'Performance',
+          score: 0.5,
+          auditRefs: [{id: 'summary-audit', score: 0.5, weight: 1}],
+        },
+      },
+      audits: {
+        'summary-audit': {
+          id: 'summary-audit',
+          title: 'Summary Audit',
+          description: 'Audit with a table summary',
+          score: 0.5,
+          details: {
+            type: 'table',
+            summary: {
+              wastedMs: 100,
+              wastedBytes: 512,
+            },
+            headings: [
+              {key: 'text', label: 'Text', valueType: 'text'},
+            ],
+            items: [
+              {text: 'Some detail'},
+            ],
+          },
+        },
+      },
+    } as unknown as ReportJSON;
+    const formatter = new AiAssistance.LighthouseFormatter.LighthouseFormatter();
+    const output = formatter.audits(summaryReport, 'performance');
+    snapshotTester.assert(this, output);
+  });
 });

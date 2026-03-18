@@ -30,3 +30,43 @@ Title: LighthouseFormatter handles missing category
 Content:
 Category "seo" not found.
 === end content
+
+Title: LighthouseFormatter formats table details
+Content:
+# Audits for Performance
+
+The following audits in this category have a score below 90 and may need attention:
+- **Table Audit**: 50
+  * Audit with a table
+
+    | URL | Wasted Bytes | Node | Location |
+    | https://example.com/script.js | 1024 | div.main | https://example.com/script.js:10:5 |
+    | https://example.com/style.css | 512 | body > p | https://example.com/style.css |
+=== end content
+
+Title: LighthouseFormatter formats opportunity details
+Content:
+# Audits for Performance
+
+The following audits in this category have a score below 90 and may need attention:
+- **Opportunity Audit**: 50
+  * Audit with an opportunity
+
+    Potential savings: 500ms, Potential savings: 2048 bytes
+    | URL | Wasted Bytes |
+    | https://example.com/large-script.js | 2048 |
+=== end content
+
+Title: LighthouseFormatter formats table details with summary
+Content:
+# Audits for Performance
+
+The following audits in this category have a score below 90 and may need attention:
+- **Summary Audit**: 50
+  * Audit with a table summary
+
+    Wasted time: 100ms
+    Wasted bytes: 512
+    | Text |
+    | Some detail |
+=== end content

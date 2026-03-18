@@ -20,7 +20,6 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import {ActiveFilters} from './ActiveFilters.js';
 import * as Extensions from './extensions/extensions.js';
 import {targetForEvent} from './TargetForEvent.js';
-import * as ThirdPartyTreeView from './ThirdPartyTreeView.js';
 import {TimelineRegExp} from './TimelineFilters.js';
 import {rangeForSelection, type TimelineSelection} from './TimelineSelection.js';
 import timelineTreeViewStyles from './timelineTreeView.css.js';
@@ -242,6 +241,18 @@ export class TimelineTreeView extends
   }
   parsedTrace(): Trace.TraceModel.ParsedTrace|null {
     return this.#parsedTrace;
+  }
+
+  isThirdPartyTreeView(): boolean {
+    return false;
+  }
+
+  nodeIsFirstParty(_node: Trace.Extras.TraceTree.Node): boolean {
+    return false;
+  }
+
+  nodeIsExtension(_node: Trace.Extras.TraceTree.Node): boolean {
+    return false;
   }
 
   init(): void {
@@ -777,7 +788,7 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode<Gri
       }
 
       // Include badges with the name, if relevant.
-      if (columnId === 'site' && this.treeView instanceof ThirdPartyTreeView.ThirdPartyTreeViewWidget) {
+      if (columnId === 'site' && this.treeView.isThirdPartyTreeView()) {
         const thirdPartyTree = this.treeView;
         let badgeText = '';
 
@@ -840,7 +851,7 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode<Gri
         value = this.profileNode.selfTime;
         maxTime = this.maxSelfTime;
         showPercents = true;
-        showBottomUpButton = thirdPartyView instanceof ThirdPartyTreeView.ThirdPartyTreeViewWidget;
+        showBottomUpButton = thirdPartyView.isThirdPartyTreeView();
         break;
       case 'total':
         value = this.profileNode.totalTime;

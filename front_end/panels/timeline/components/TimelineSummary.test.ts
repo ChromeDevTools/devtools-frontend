@@ -13,7 +13,7 @@ describeWithMockConnection('TimelineSummary', () => {
     view: ViewFunctionStub<typeof TimelineComponents.TimelineSummary.CategorySummary>,
   }> {
     const view = createViewFunctionStub(TimelineComponents.TimelineSummary.CategorySummary);
-    const widget = new TimelineComponents.TimelineSummary.CategorySummary(view);
+    const widget = new TimelineComponents.TimelineSummary.CategorySummary(undefined, view);
     await view.nextInput;
     return {widget, view};
   }
@@ -28,10 +28,12 @@ describeWithMockConnection('TimelineSummary', () => {
     ];
 
     const {widget, view} = await setupWidget();
-    widget.rangeStart = 0;
-    widget.rangeEnd = 110;
-    widget.total = 110;
-    widget.categories = categories;
+    widget.data = {
+      rangeStart: 0,
+      rangeEnd: 110,
+      total: 110,
+      categories,
+    };
     await view.nextInput;
 
     assert.deepEqual(view.input.categories, categories);
@@ -43,10 +45,12 @@ describeWithMockConnection('TimelineSummary', () => {
     const categories: TimelineComponents.TimelineSummary.CategoryData[] = [];
 
     const {widget, view} = await setupWidget();
-    widget.rangeStart = 0;
-    widget.rangeEnd = 110;
-    widget.total = 110;
-    widget.categories = categories;
+    widget.data = {
+      rangeStart: 0,
+      rangeEnd: 110,
+      total: 110,
+      categories,
+    };
     await view.nextInput;
 
     assert.deepEqual(view.input.categories, []);

@@ -52,6 +52,10 @@ export class ThirdPartyTreeViewWidget extends TimelineTreeView.TimelineTreeView 
     this.dataGrid.expandNodesWhenArrowing = false;
   }
 
+  override isThirdPartyTreeView(): boolean {
+    return true;
+  }
+
   override wasShown(): void {
     super.wasShown();
     this.registerRequiredCSS(thirdPartyTreeViewStyles);
@@ -231,7 +235,7 @@ export class ThirdPartyTreeViewWidget extends TimelineTreeView.TimelineTreeView 
     };
   }
 
-  nodeIsFirstParty(node: Trace.Extras.TraceTree.Node): boolean {
+  override nodeIsFirstParty(node: Trace.Extras.TraceTree.Node): boolean {
     const mapper = this.entityMapper();
     if (!mapper) {
       return false;
@@ -240,7 +244,7 @@ export class ThirdPartyTreeViewWidget extends TimelineTreeView.TimelineTreeView 
     return firstParty === mapper.entityForEvent(node.event);
   }
 
-  nodeIsExtension(node: Trace.Extras.TraceTree.Node): boolean {
+  override nodeIsExtension(node: Trace.Extras.TraceTree.Node): boolean {
     const mapper = this.entityMapper();
     if (!mapper) {
       return false;

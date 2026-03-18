@@ -157,8 +157,9 @@ describeWithEnvironment('TimelineDetailsView', function() {
     await raf();
 
     const detailsContentElement = detailsView.getDetailsContentElementForTest();
-    const component = detailsContentElement.querySelector('div.timeline-summary');
-    const range = component?.querySelector<HTMLElement>('.summary-range');
+    const rangeSummaryWidget = detailsContentElement.querySelector('devtools-widget');
+    const categorySummaryWidget = rangeSummaryWidget?.shadowRoot?.querySelector('devtools-widget.timeline-summary');
+    const range = categorySummaryWidget?.querySelector<HTMLElement>('.summary-range');
     assert.strictEqual(range?.innerText, 'Range: 0 ms – 5.39 s');
   });
 });

@@ -66,7 +66,6 @@ import * as TimelineComponents from './components/components.js';
 import * as Extensions from './extensions/extensions.js';
 import {ModificationsManager} from './ModificationsManager.js';
 import {targetForEvent} from './TargetForEvent.js';
-import * as ThirdPartyTreeView from './ThirdPartyTreeView.js';
 import {TimelinePanel} from './TimelinePanel.js';
 import {selectionFromEvent} from './TimelineSelection.js';
 import * as Utils from './utils/utils.js';
@@ -462,10 +461,6 @@ const UIStrings = {
    * @description Label for a string that describes the priority at which a task was scheduled, like 'background' for low-priority tasks, and 'user-blocking' for high priority.
    */
   priority: 'Priority',
-  /**
-   * @description Label for third party table.
-   */
-  thirdPartyTable: '1st / 3rd party table',
   /**
    * @description Label for the a source URL.
    */
@@ -2105,55 +2100,6 @@ export class TimelineUIUtils {
     };
     const pieChartContainer = element.createChild('div', 'vbox');
     pieChartContainer.appendChild(pieChart);
-
-    return element;
-  }
-  // Generates a Summary component given a aggregated stats for categories.
-  static generateSummaryDetails(
-      aggregatedStats: Record<string, number>, rangeStart: number, rangeEnd: number,
-      selectedEvents: Trace.Types.Events.Event[],
-      thirdPartyTree: ThirdPartyTreeView.ThirdPartyTreeViewWidget): Element {
-    const element = document.createElement('div');
-    element.classList.add('timeline-details-range-summary', 'hbox');
-
-    // First, the category bar chart.
-    let total = 0;
-    let categories: TimelineComponents.TimelineSummary.CategoryData[] = [];
-    // Calculate total of all categories.
-    for (const categoryName in aggregatedStats) {
-      total += aggregatedStats[categoryName];
-    }
-
-    // Get stats values from categories.
-    for (const categoryName in Trace.Styles.getCategoryStyles()) {
-      const category = Trace.Styles.getCategoryStyles()[categoryName as keyof Trace.Styles.CategoryPalette];
-      if (category.name === Trace.Styles.EventCategory.IDLE) {
-        continue;
-      }
-      const value = aggregatedStats[category.name];
-      if (!value) {
-        continue;
-      }
-      const title = category.title;
-      const color = category.getCSSValue();
-      categories.push({value, color, title});
-    }
-
-    // Keeps the most useful categories on top.
-    categories = categories.sort((a, b) => b.value - a.value);
-    const start = Trace.Types.Timing.Milli(rangeStart);
-    const end = Trace.Types.Timing.Milli(rangeEnd);
-    const categorySummaryTable = new TimelineComponents.TimelineSummary.CategorySummary();
-    categorySummaryTable.rangeStart = start;
-    categorySummaryTable.rangeEnd = end;
-    categorySummaryTable.total = total;
-    categorySummaryTable.categories = categories;
-    element.append(categorySummaryTable.contentElement);
-    // Add the 3p datagrid
-    const treeView = new ThirdPartyTreeView.ThirdPartyTreeElement();
-    treeView.treeView = thirdPartyTree;
-    UI.ARIAUtils.setLabel(treeView, i18nString(UIStrings.thirdPartyTable));
-    element.append(treeView);
 
     return element;
   }

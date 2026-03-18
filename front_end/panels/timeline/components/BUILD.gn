@@ -28,6 +28,7 @@ generate_css("css_files") {
     "sidebarAnnotationsTab.css",
     "sidebarInsightsTab.css",
     "sidebarSingleInsightSet.css",
+    "timelineRangeSummaryView.css",
     "timelineSummary.css",
   ]
 }
@@ -56,6 +57,7 @@ devtools_ui_module("components") {
     "SidebarAnnotationsTab.ts",
     "SidebarInsightsTab.ts",
     "SidebarSingleInsightSet.ts",
+    "TimelineRangeSummaryView.ts",
     "TimelineSummary.ts",
     "Utils.ts",
   ]

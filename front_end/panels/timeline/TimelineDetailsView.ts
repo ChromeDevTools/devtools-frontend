@@ -668,9 +668,41 @@ function generateRangeSummaryDetails(input: SummaryViewInput): LitTemplate {
   const aggregatedStats = TimelineUIUtils.statsForTimeRange(events, startTime, endTime);
   const startOffset = startTime - minBoundsMilli;
   const endOffset = endTime - minBoundsMilli;
-  const summaryDetailElem =
-      TimelineUIUtils.generateSummaryDetails(aggregatedStats, startOffset, endOffset, events, thirdPartyTree);
-  return html`${summaryDetailElem}`;
+
+  let total = 0;
+  for (const categoryName in aggregatedStats) {
+    total += aggregatedStats[categoryName];
+  }
+
+  const categories: TimelineComponents.TimelineSummary.CategoryData[] = [];
+  for (const categoryName in Trace.Styles.getCategoryStyles()) {
+    const category = Trace.Styles.getCategoryStyles()[categoryName as keyof Trace.Styles.CategoryPalette];
+    if (category.name === Trace.Styles.EventCategory.IDLE) {
+      continue;
+    }
+    const value = aggregatedStats[category.name];
+    if (!value) {
+      continue;
+    }
+    categories.push({value, color: category.getCSSValue(), title: category.title});
+  }
+  categories.sort((a, b) => b.value - a.value);
+
+  // clang-format off
+  return html`
+    <devtools-widget
+      ${widget(TimelineComponents.TimelineRangeSummaryView.TimelineRangeSummaryView, {
+        data: {
+          rangeStart: startOffset,
+          rangeEnd: endOffset,
+          total,
+          categories,
+          thirdPartyTreeTemplate: html`<devtools-performance-third-party-tree-view
+            .treeView=${thirdPartyTree}></devtools-performance-third-party-tree-view>`,
+        } as TimelineComponents.TimelineRangeSummaryView.TimelineRangeSummaryViewData,
+      })}
+    ></devtools-widget>`;
+  // clang-format on
 }
 
 async function renderSelectedEventDetails(

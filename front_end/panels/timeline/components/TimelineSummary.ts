@@ -89,29 +89,17 @@ export class CategorySummary extends UI.Widget.Widget {
   #total = 0;
   #categories: CategoryData[] = [];
 
-  constructor(view?: View) {
-    super();
+  constructor(element?: HTMLElement, view?: View) {
+    super(element);
     this.#view = view ?? CATEGORY_SUMMARY_DEFAULT_VIEW;
     this.requestUpdate();
   }
 
-  set total(total: number) {
-    this.#total = total;
-    this.requestUpdate();
-  }
-
-  set rangeStart(rangeStart: number) {
-    this.#rangeStart = rangeStart;
-    this.requestUpdate();
-  }
-
-  set rangeEnd(rangeEnd: number) {
-    this.#rangeEnd = rangeEnd;
-    this.requestUpdate();
-  }
-
-  set categories(categories: CategoryData[]) {
-    this.#categories = categories;
+  set data(data: ViewInput) {
+    this.#rangeStart = data.rangeStart;
+    this.#rangeEnd = data.rangeEnd;
+    this.#total = data.total;
+    this.#categories = data.categories;
     this.requestUpdate();
   }
 

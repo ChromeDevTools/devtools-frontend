@@ -17,12 +17,16 @@ import {
   getDisplayedStyleRules,
   getDisplayedStyleRulesCompact,
   getGhostText,
+  getGhostTextInCurrentTextPrompt,
   getMultilineGhostElements,
   getStyleRule,
   getStyleRuleSelector,
   getStyleSectionSubtitles,
+  GHOST_ROW_SELECTOR,
+  GHOST_VALUE_PREDICTION_SELECTOR,
   goToResourceAndWaitForStyleSection,
   mockAidaCodeComplete,
+  TEXT_PROMPT_GHOST_TEXT_SELECTOR,
   waitForAndClickTreeElementWithPartialText,
   waitForChildrenOfSelectedElementNode,
   waitForContentOfSelectedElementsNode,
@@ -2042,7 +2046,7 @@ describe('The Styles pane', () => {
       await devToolsPage.useSoftMenu();
     }
 
-    it('triggers a suggestion when typing in a property name', async ({devToolsPage, inspectedPage}) => {
+    async function setupAndWaitForFooStylePropertiesSection(devToolsPage: DevToolsPage, inspectedPage: InspectedPage) {
       await setupAiCompletion(devToolsPage);
       await goToResourceAndWaitForStyleSection('elements/elements-panel-styles.html', devToolsPage, inspectedPage);
       await prepareElementsTab(devToolsPage);
@@ -2052,6 +2056,11 @@ describe('The Styles pane', () => {
       await waitForStyleRule('.foo', devToolsPage);
 
       const propertiesSection = await getStyleRule('#container .foo', devToolsPage);
+      return propertiesSection;
+    }
+
+    it('triggers a suggestion when typing in a property name', async ({devToolsPage, inspectedPage}) => {
+      const propertiesSection = await setupAndWaitForFooStylePropertiesSection(devToolsPage, inspectedPage);
       await propertiesSection.focus();
 
       // Mock Aida response
@@ -2078,14 +2087,7 @@ describe('The Styles pane', () => {
     });
 
     it('shows multiline ghost rows for multiline suggestions', async ({devToolsPage, inspectedPage}) => {
-      await setupAiCompletion(devToolsPage);
-      await goToResourceAndWaitForStyleSection('elements/elements-panel-styles.html', devToolsPage, inspectedPage);
-      await prepareElementsTab(devToolsPage);
-      await waitForAndClickTreeElementWithPartialText('id=\u200B"container"', devToolsPage);
-      await waitForStyleRule('#container', devToolsPage);
-      await waitForAndClickTreeElementWithPartialText('id=\u200B"foo"', devToolsPage);
-
-      const propertiesSection = await getStyleRule('#container .foo', devToolsPage);
+      const propertiesSection = await setupAndWaitForFooStylePropertiesSection(devToolsPage, inspectedPage);
       await propertiesSection.focus();
 
       // Mock multiline Aida response
@@ -2114,6 +2116,261 @@ describe('The Styles pane', () => {
       const multilineGhosts = await getMultilineGhostElements(devToolsPage);
       assert.lengthOf(multilineGhosts, 1);
       assert.include(multilineGhosts[0], 'background: red');
+    });
+
+    it('handles suggestions with complex values (data URLs with semicolons)', async ({devToolsPage, inspectedPage}) => {
+      const propertiesSection = await setupAndWaitForFooStylePropertiesSection(devToolsPage, inspectedPage);
+      await propertiesSection.focus();
+
+      const complexValue = 'url("data:image/png;base64,ABC;123")';
+      await mockAidaCodeComplete(devToolsPage, {
+        generatedSamples: [{
+          generationString: `ground: ${complexValue};`,
+          sampleId: 1,
+          score: 1.0,
+        }],
+        metadata: {rpcGlobalId: '123'}
+      });
+
+      await devToolsPage.typeText('back');
+
+      await devToolsPage.waitForFunction(async () => {
+        const ghostText = await getGhostText(devToolsPage);
+        return ghostText === complexValue;
+      });
+    });
+
+    it('accepts a single-line suggestion on Tab', async ({devToolsPage, inspectedPage}) => {
+      const propertiesSection = await setupAndWaitForFooStylePropertiesSection(devToolsPage, inspectedPage);
+      await propertiesSection.focus();
+
+      await mockAidaCodeComplete(devToolsPage, {
+        generatedSamples: [{
+          generationString: 'or: red;',
+          sampleId: 1,
+          score: 1.0,
+        }],
+        metadata: {rpcGlobalId: '123'}
+      });
+
+      await devToolsPage.typeText('col');
+
+      await devToolsPage.waitForFunction(async () => {
+        const ghostTextInCurrentTextPrompt = await getGhostTextInCurrentTextPrompt(devToolsPage);
+        const ghostText = await getGhostText(devToolsPage);
+        return ghostTextInCurrentTextPrompt === 'or' && ghostText === 'red';
+      });
+
+      await devToolsPage.pressKey('Tab');
+
+      // The first tab will accept suggestion from autocomplete menu
+      await devToolsPage.waitForNone(TEXT_PROMPT_GHOST_TEXT_SELECTOR);
+      await devToolsPage.waitForFunction(async () => {
+        const ghostText = await getGhostText(devToolsPage);
+        return ghostText === 'red';
+      });
+
+      await devToolsPage.pressKey('Tab');
+
+      // The second tab will accept rest of the AI suggestion
+      await devToolsPage.waitForNone(GHOST_VALUE_PREDICTION_SELECTOR);
+      await devToolsPage.waitForFunction(async () => {
+        const rules = await getDisplayedCSSDeclarations(devToolsPage);
+        return rules.includes('color: red;');
+      });
+    });
+
+    it('accepts multiline suggestions on Tab', async ({devToolsPage, inspectedPage}) => {
+      const propertiesSection = await setupAndWaitForFooStylePropertiesSection(devToolsPage, inspectedPage);
+      await propertiesSection.focus();
+
+      await mockAidaCodeComplete(devToolsPage, {
+        generatedSamples: [{
+          generationString: 'or: pink;\nbackground: red;',
+          sampleId: 1,
+          score: 1.0,
+        }],
+        metadata: {rpcGlobalId: '123'}
+      });
+
+      await devToolsPage.typeText('col');
+
+      await devToolsPage.waitForFunction(async () => {
+        const ghostTextInCurrentTextPrompt = await getGhostTextInCurrentTextPrompt(devToolsPage);
+        const ghostText = await getGhostText(devToolsPage);
+        return ghostTextInCurrentTextPrompt === 'or' && ghostText === 'pink';
+      });
+      let multilineGhosts = await getMultilineGhostElements(devToolsPage);
+      assert.deepEqual(multilineGhosts, ['background: red;']);
+
+      // Press Tab to accept
+      await devToolsPage.pressKey('Tab');
+
+      // The first tab will accept suggestion from autocomplete menu
+      await devToolsPage.waitForNone(TEXT_PROMPT_GHOST_TEXT_SELECTOR);
+      await devToolsPage.waitForFunction(async () => {
+        const ghostText = await getGhostText(devToolsPage);
+        return ghostText === 'pink';
+      });
+      multilineGhosts = await getMultilineGhostElements(devToolsPage);
+      assert.deepEqual(multilineGhosts, ['background: red;']);
+
+      // Press Tab to accept
+      await devToolsPage.pressKey('Tab');
+
+      // The second tab will accept rest of the AI suggestion
+      await devToolsPage.waitForNone(GHOST_VALUE_PREDICTION_SELECTOR);
+      await devToolsPage.waitForNone(GHOST_ROW_SELECTOR);
+      await devToolsPage.waitForFunction(async () => {
+        const rules = await getDisplayedCSSDeclarations(devToolsPage);
+        return rules.includes('color: pink;') && rules.includes('background: red;');
+      });
+    });
+
+    it('rejects suggestions via Escape key', async ({devToolsPage, inspectedPage}) => {
+      const propertiesSection = await setupAndWaitForFooStylePropertiesSection(devToolsPage, inspectedPage);
+      await propertiesSection.focus();
+
+      await mockAidaCodeComplete(devToolsPage, {
+        generatedSamples: [{
+          generationString: 'or: pink;\nbackground: red;',
+          sampleId: 1,
+          score: 1.0,
+        }],
+        metadata: {rpcGlobalId: '123'}
+      });
+
+      await devToolsPage.typeText('col');
+
+      await devToolsPage.waitFor('.suggest-box');
+      await devToolsPage.waitForFunction(async () => {
+        const ghostTextInCurrentTextPrompt = await getGhostTextInCurrentTextPrompt(devToolsPage);
+        const ghostText = await getGhostText(devToolsPage);
+        return ghostTextInCurrentTextPrompt === 'or' && ghostText === 'pink';
+      });
+      let multilineGhosts = await getMultilineGhostElements(devToolsPage);
+      assert.deepEqual(multilineGhosts, ['background: red;']);
+
+      // Press Escape
+      await devToolsPage.pressKey('Escape');
+
+      // The first Escape press will get rid of the autocomplete menu
+      await devToolsPage.waitForNone('.suggest-box');
+      await devToolsPage.waitForFunction(async () => {
+        const ghostTextInCurrentTextPrompt = await getGhostTextInCurrentTextPrompt(devToolsPage);
+        const ghostText = await getGhostText(devToolsPage);
+        return ghostTextInCurrentTextPrompt === 'or' && ghostText === 'pink';
+      });
+      multilineGhosts = await getMultilineGhostElements(devToolsPage);
+      assert.deepEqual(multilineGhosts, ['background: red;']);
+
+      // Press Escape
+      await devToolsPage.pressKey('Escape');
+
+      // The second Escape press will get rid of the AI suggestion
+      await devToolsPage.waitForNone(TEXT_PROMPT_GHOST_TEXT_SELECTOR);
+      await devToolsPage.waitForNone(GHOST_VALUE_PREDICTION_SELECTOR);
+      await devToolsPage.waitForNone(GHOST_ROW_SELECTOR);
+
+      // Verify input remains
+      const nameText = await devToolsPage.activeElementTextContent();
+      assert.strictEqual(nameText, 'col');
+    });
+
+    it('rejects suggestions via ArrowDown key', async ({devToolsPage, inspectedPage}) => {
+      const propertiesSection = await setupAndWaitForFooStylePropertiesSection(devToolsPage, inspectedPage);
+      await propertiesSection.focus();
+
+      await mockAidaCodeComplete(devToolsPage, {
+        generatedSamples: [{
+          generationString: 'or: pink;\nbackground: red;',
+          sampleId: 1,
+          score: 1.0,
+        }],
+        metadata: {rpcGlobalId: '123'}
+      });
+
+      await devToolsPage.typeText('col');
+
+      await devToolsPage.waitFor('.suggest-box');
+      await devToolsPage.waitForFunction(async () => {
+        const ghostTextInCurrentTextPrompt = await getGhostTextInCurrentTextPrompt(devToolsPage);
+        const ghostText = await getGhostText(devToolsPage);
+        return ghostTextInCurrentTextPrompt === 'or' && ghostText === 'pink';
+      });
+      const multilineGhosts = await getMultilineGhostElements(devToolsPage);
+      assert.deepEqual(multilineGhosts, ['background: red;']);
+
+      // Press ArrowDown
+      await devToolsPage.pressKey('ArrowDown');
+
+      // Verify all of the AI suggestion is gone
+      await devToolsPage.waitForNone(GHOST_VALUE_PREDICTION_SELECTOR);
+      await devToolsPage.waitForNone(GHOST_ROW_SELECTOR);
+    });
+
+    it('rejects suggestions when typing a non-matching character', async ({devToolsPage, inspectedPage}) => {
+      const propertiesSection = await setupAndWaitForFooStylePropertiesSection(devToolsPage, inspectedPage);
+      await propertiesSection.focus();
+
+      await mockAidaCodeComplete(devToolsPage, {
+        generatedSamples: [{
+          generationString: 'or: pink;\nbackground: red;',
+          sampleId: 1,
+          score: 1.0,
+        }],
+        metadata: {rpcGlobalId: '123'}
+      });
+
+      await devToolsPage.typeText('col');
+
+      await devToolsPage.waitForFunction(async () => {
+        const ghostTextInCurrentTextPrompt = await getGhostTextInCurrentTextPrompt(devToolsPage);
+        const ghostText = await getGhostText(devToolsPage);
+        return ghostTextInCurrentTextPrompt === 'or' && ghostText === 'pink';
+      });
+      const multilineGhosts = await getMultilineGhostElements(devToolsPage);
+      assert.deepEqual(multilineGhosts, ['background: red;']);
+
+      await devToolsPage.typeText('x');
+
+      // Verify all of the AI suggestion is gone
+      await devToolsPage.waitForNone(GHOST_VALUE_PREDICTION_SELECTOR);
+      await devToolsPage.waitForNone(GHOST_ROW_SELECTOR);
+    });
+
+    it('rejects suggestions when character is typed in the middle of text', async ({devToolsPage, inspectedPage}) => {
+      const propertiesSection = await setupAndWaitForFooStylePropertiesSection(devToolsPage, inspectedPage);
+      await propertiesSection.focus();
+
+      await mockAidaCodeComplete(devToolsPage, {
+        generatedSamples: [{
+          generationString: 'or: pink;\nbackground: red;',
+          sampleId: 1,
+          score: 1.0,
+        }],
+        metadata: {rpcGlobalId: '123'}
+      });
+
+      await devToolsPage.typeText('col');
+
+      await devToolsPage.waitForFunction(async () => {
+        const ghostTextInCurrentTextPrompt = await getGhostTextInCurrentTextPrompt(devToolsPage);
+        const ghostText = await getGhostText(devToolsPage);
+        return ghostTextInCurrentTextPrompt === 'or' && ghostText === 'pink';
+      });
+      const multilineGhosts = await getMultilineGhostElements(devToolsPage);
+      assert.deepEqual(multilineGhosts, ['background: red;']);
+
+      // Move caret to the middle of line
+      await devToolsPage.page.keyboard.press('ArrowLeft');
+      await devToolsPage.page.keyboard.press('ArrowLeft');
+      // Type a character
+      await devToolsPage.typeText('x');
+
+      // Verify all of the AI suggestion is gone
+      await devToolsPage.waitForNone(GHOST_VALUE_PREDICTION_SELECTOR);
+      await devToolsPage.waitForNone(GHOST_ROW_SELECTOR);
     });
   });
 });

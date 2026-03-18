@@ -1886,10 +1886,10 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
       this.suggestBox?.hide();
       // Required for ensuring the suggestion is not cleared.
       keyboardEvent.consume(true);
-    } else {
-      this.setAiAutoCompletion(null);
+      return true;
     }
-    return true;
+    this.setAiAutoCompletion(null);
+    return false;
   }
 
   private handleNameOrValueUpDown(event: Event): boolean {

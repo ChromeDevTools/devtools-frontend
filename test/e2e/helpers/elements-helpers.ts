@@ -1183,8 +1183,9 @@ export const checkStyleAttributes = async (expectedStyles: string[], devToolsPag
   return actual.sort().join(' ') === expectedStyles.sort().join(' ');
 };
 
-const GHOST_VALUE_PREDICTION_SELECTOR = '.ghost-value-prediction';
-const GHOST_ROW_SELECTOR = '.ghost-row';
+export const TEXT_PROMPT_GHOST_TEXT_SELECTOR = '.auto-complete-text';
+export const GHOST_VALUE_PREDICTION_SELECTOR = '.ghost-value-prediction';
+export const GHOST_ROW_SELECTOR = '.ghost-row';
 
 export const mockAidaCodeComplete =
     async (devToolsPage: DevToolsPage, response: Host.AidaClient.CompletionResponse) => {
@@ -1196,6 +1197,14 @@ export const mockAidaCodeComplete =
       callback({response: responseString});
     };
   }, JSON.stringify(response));
+};
+
+export const getGhostTextInCurrentTextPrompt = async (devToolsPage: DevToolsPage) => {
+  const ghostElement = await devToolsPage.waitFor(TEXT_PROMPT_GHOST_TEXT_SELECTOR);
+  if (!ghostElement) {
+    return null;
+  }
+  return await ghostElement.evaluate(node => node.textContent);
 };
 
 export const getGhostText = async (devToolsPage: DevToolsPage) => {

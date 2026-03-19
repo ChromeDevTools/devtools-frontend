@@ -1550,57 +1550,5 @@ class SomeWidget extends UI.Widget.Widget {
 }`,
       errors: [{messageId: 'preferTemplateLiterals'}],
     },
-    {
-      filename: 'front_end/ui/components/component/file.ts',
-      code: `
-function createDiv() {
-  return document.createElement('div');
-}`,
-      output: `
-function createDiv() {
-  return html\`
-    <div></div>\`;
-}`,
-      errors: [{messageId: 'preferTemplateLiterals'}],
-    },
-    {
-      filename: 'front_end/ui/components/component/file.ts',
-      code: `
-function createTextNode() {
-  return document.createTextNode('my-text');
-}`,
-      output: `
-function createTextNode() {
-  return html\`
-    my-text\`;
-}`,
-      errors: [{messageId: 'preferTemplateLiterals'}],
-    },
-    {
-      filename: 'front_end/ui/components/component/file.ts',
-      code: `
-function createTextNodeWithVar(myVar) {
-  return document.createTextNode(myVar);
-}`,
-      output: `
-function createTextNodeWithVar(myVar) {
-  return html\`
-    \${myVar}\`;
-}`,
-      errors: [{messageId: 'preferTemplateLiterals'}],
-    },
-    {
-      filename: 'front_end/ui/components/component/file.ts',
-      code: `
-function createDivWithVar(myVar) {
-  return document.createElement(myVar);
-}`,
-      output: `
-function createDivWithVar(myVar) {
-  return html\`
-    <\${myVar}></\${myVar}>\`;
-}`,
-      errors: [{messageId: 'preferTemplateLiterals'}],
-    },
   ],
 });

@@ -87,9 +87,6 @@ export default createRule({
       if (!parent) {
         return false;
       }
-      if (!domFragment.tagName) {
-        return false;
-      }
       const isPropertyAccess =
           parent.type === 'MemberExpression' && parent.object === reference && parent.property.type === 'Identifier';
       const property = isPropertyAccess ? parent.property as Identifier : null;
@@ -201,11 +198,8 @@ export default createRule({
     }
 
     function maybeReportDomFragment(domFragment: DomFragment): void {
-      const isStandalone = domFragment.references.length === 1 && !domFragment.initializer && !domFragment.replacer &&
-          domFragment.references[0].node.parent?.type === 'ReturnStatement';
-      if ((!isStandalone && !domFragment.initializer && !domFragment.replacer) || domFragment.parent ||
-          !(domFragment.tagName || domFragment.expression) ||
-          (!isStandalone && domFragment.references.every(r => !r.processed))) {
+      if ((!domFragment.initializer && !domFragment.replacer) || domFragment.parent || !domFragment.tagName ||
+          domFragment.references.every(r => !r.processed)) {
         return;
       }
       context.report({
@@ -222,7 +216,7 @@ export default createRule({
             return result;
           }
           const result = [
-            fixer.replaceText((domFragment.initializer ?? domFragment.references[0].node) as Node, template),
+            fixer.replaceText(domFragment.initializer as Node, template),
             ...getRangesToRemove(domFragment, true).map(range => fixer.removeRange(range)),
           ];
           return result;
@@ -260,7 +254,7 @@ export default createRule({
         do {
           processedSome = false;
           for (const domFragment of DomFragment.values()) {
-            if (!domFragment.tagName && !domFragment.expression) {
+            if (!domFragment.tagName) {
               continue;
             }
             for (const reference of domFragment.references) {

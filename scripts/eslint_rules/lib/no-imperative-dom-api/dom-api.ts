@@ -130,13 +130,8 @@ export const domApi: RuleCreator = {
         if (isIdentifier(node.object, 'document') && isIdentifier(node.property, 'createElement') &&
             node.parent.type === 'CallExpression' && node.parent.callee === node) {
           const domFragment = DomFragment.getOrCreate(node.parent, sourceCode);
-          if (node.parent.arguments.length >= 1) {
-            if (node.parent.arguments[0].type === 'Literal') {
-              domFragment.tagName = String(node.parent.arguments[0].value);
-            } else {
-              const varName = sourceCode.getText(node.parent.arguments[0]);
-              domFragment.tagName = '${' + varName + '}';
-            }
+          if (node.parent.arguments.length >= 1 && node.parent.arguments[0].type === 'Literal') {
+            domFragment.tagName = String(node.parent.arguments[0].value);
           }
         } else if (
             isIdentifier(node.object, 'document') && isIdentifier(node.property, 'createTextNode') &&

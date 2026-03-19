@@ -18,6 +18,7 @@ import {createStubbedDomNodeWithModels, getMatchedStyles} from '../../testing/St
 import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import {html} from '../../ui/lit/lit.js';
 import * as PanelsCommon from '../common/common.js';
 
 import * as Elements from './elements.js';
@@ -776,7 +777,7 @@ describe('StylesSidebarPane', () => {
       }
 
       beforeEach(() => {
-        sinon.stub(PanelsCommon.DOMLinkifier.Linkifier.instance(), 'linkify').returns(document.createElement('div'));
+        sinon.stub(PanelsCommon.DOMLinkifier.Linkifier.instance(), 'linkify').returns(html`<div></div>`);
         sinon.stub(UI.ViewManager.ViewManager.instance(), 'isViewVisible').returns(false);
         updateHostConfig({
           devToolsAnimationStylesInStylesTab: {

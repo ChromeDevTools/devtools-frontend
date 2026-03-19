@@ -15,7 +15,7 @@ const {html} = Lit;
 const {widget} = UI.Widget;
 
 interface ViewInput {
-  relatedNodeEl: Node|undefined;
+  relatedNodeEl: Lit.LitTemplate|undefined;
   fallbackUrl?: Platform.DevToolsPath.UrlString;
   fallbackHtmlSnippet?: string;
   fallbackText?: string;
@@ -92,7 +92,7 @@ export class NodeLink extends UI.Widget.Widget {
    * Track the linkified Node for a given backend NodeID to avoid repeated lookups on re-render.
    * Also tracks if we fail to resolve a node, to ensure we don't try on each subsequent re-render.
    */
-  #linkifiedNodeForBackendId = new Map<Protocol.DOM.BackendNodeId, Node|'NO_NODE_FOUND'>();
+  #linkifiedNodeForBackendId = new Map<Protocol.DOM.BackendNodeId, Lit.LitTemplate|'NO_NODE_FOUND'>();
 
   constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
     super(element, {useShadowDom: true});
@@ -109,7 +109,7 @@ export class NodeLink extends UI.Widget.Widget {
     this.requestUpdate();
   }
 
-  async #linkify(): Promise<Node|undefined> {
+  async #linkify(): Promise<Lit.LitTemplate|undefined> {
     if (this.#backendNodeId === undefined) {
       return;
     }

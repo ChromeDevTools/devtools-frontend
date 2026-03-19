@@ -11,6 +11,7 @@ import {
   describeWithMockConnection,
   setMockConnectionResponseHandler
 } from '../../../../testing/MockConnection.js';
+import {html} from '../../../../ui/lit/lit.js';
 import * as PanelsCommon from '../../../common/common.js';
 
 import * as Insights from './insights.js';
@@ -26,9 +27,7 @@ describeWithMockConnection('NodeLink', () => {
 
   it('renders a node link', async () => {
     const linkifyStub = sinon.stub(PanelsCommon.DOMLinkifier.Linkifier.instance(), 'linkify').callsFake(() => {
-      const elem = document.createElement('div');
-      elem.classList.add('fake-linkify-node');
-      return elem;
+      return html`<div class="fake-linkify-node"></div>`;
     });
 
     // Create a mock target, dom model, document and node.

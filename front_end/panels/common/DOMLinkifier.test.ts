@@ -6,6 +6,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import {raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {render} from '../../ui/lit/lit.js';
 
 import * as PanelsCommon from './common.js';
 
@@ -26,19 +27,24 @@ describeWithEnvironment('DOMLinkifier', () => {
     });
     it('includes pseudo identifier in the label', async () => {
       const domLinkifier = PanelsCommon.DOMLinkifier.Linkifier.instance({forceNew: true});
-      const el = domLinkifier.linkify(viewTransitionNode) as HTMLElement;
-      renderElementIntoDOM(el);
+      const container = document.createElement('div');
+      render(domLinkifier.linkify(viewTransitionNode), container);
+      renderElementIntoDOM(container);
       await raf();
-      const pseudoLabel = el.shadowRoot?.querySelector('.node-label-pseudo')?.textContent;
-      assert.strictEqual(pseudoLabel, '::view-transition-group(root)');
+
+      const el = container.firstElementChild as HTMLElement;
+      assert.strictEqual(el.deepInnerText(), '::view-transition-group(root)');
     });
 
     it('does not include ancestor name for a view transition pseudo', async () => {
       const domLinkifier = PanelsCommon.DOMLinkifier.Linkifier.instance({forceNew: true});
 
-      const el = domLinkifier.linkify(viewTransitionNode) as HTMLElement;
-      renderElementIntoDOM(el);
+      const container = document.createElement('div');
+      render(domLinkifier.linkify(viewTransitionNode), container);
+      renderElementIntoDOM(container);
       await raf();
+
+      const el = container.firstElementChild as HTMLElement;
       const nodeLabel = el.shadowRoot?.querySelector('.node-label-name');
       assert.isNull(nodeLabel);
     });
@@ -50,11 +56,16 @@ describeWithEnvironment('DOMLinkifier', () => {
       nodeType: Node.ELEMENT_NODE,
     });
 
-    const el = domLinkifier.linkify(node, {
-      textContent: 'sample content',
-    }) as HTMLElement;
-    renderElementIntoDOM(el);
+    const container = document.createElement('div');
+    render(
+        domLinkifier.linkify(node, {
+          textContent: 'sample content',
+        }),
+        container);
+    renderElementIntoDOM(container);
     await raf();
-    assert.strictEqual(el.shadowRoot?.querySelector('button')?.textContent, 'sample content');
+
+    const el = container.firstElementChild as HTMLElement;
+    assert.strictEqual(el.deepInnerText(), 'sample content');
   });
 });

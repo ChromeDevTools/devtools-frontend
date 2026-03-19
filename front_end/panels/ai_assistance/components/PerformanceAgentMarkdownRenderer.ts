@@ -57,7 +57,7 @@ export class PerformanceAgentMarkdownRenderer extends MarkdownRendererWithCodeBl
   // Taken from front_end/panels/timeline/components/insights/NodeLink.ts
   // Would be nice to move the above component to somewhere that allows the AI
   // Assistance panel to also use it.
-  async #linkifyNode(backendNodeId: Protocol.DOM.BackendNodeId, label: string): Promise<Node|undefined> {
+  async #linkifyNode(backendNodeId: Protocol.DOM.BackendNodeId, label: string): Promise<Lit.LitTemplate|undefined> {
     if (backendNodeId === undefined) {
       return;
     }

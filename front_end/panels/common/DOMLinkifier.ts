@@ -7,12 +7,13 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import {Directives, html, nothing, render} from '../../ui/lit/lit.js';
+import {Directives, html, type LitTemplate, nothing, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import domLinkifierStyles from './domLinkifier.css.js';
 
 const {classMap, ifDefined} = Directives;
+const {widget} = UI.Widget;
 
 const UIStrings = {
   /**
@@ -271,22 +272,14 @@ export class Linkifier {
 
     return linkifierInstance;
   }
-  linkify(node: SDK.DOMModel.DOMNode|SDK.DOMModel.DeferredDOMNode, options?: Options): HTMLElement {
+  linkify(node: SDK.DOMModel.DOMNode|SDK.DOMModel.DeferredDOMNode, options?: Options): LitTemplate {
     if (node instanceof SDK.DOMModel.DOMNode) {
-      const link = document.createElement('devtools-widget') as UI.Widget.WidgetElement<DOMNodeLink>;
-      link.widgetConfig = UI.Widget.widgetConfig(e => new DOMNodeLink(e, node, options));
-      if (options?.textContent) {
-        link.textContent = options.textContent;
-      }
-      return link;
+      return html`<devtools-widget ${widget(e => new DOMNodeLink(e, node, options))}>${
+          options?.textContent ? html`${options.textContent}` : nothing}</devtools-widget>`;
     }
     if (node instanceof SDK.DOMModel.DeferredDOMNode) {
-      const link = document.createElement('devtools-widget') as UI.Widget.WidgetElement<DeferredDOMNodeLink>;
-      link.widgetConfig = UI.Widget.widgetConfig(e => new DeferredDOMNodeLink(e, node, options));
-      if (options?.textContent) {
-        link.textContent = options.textContent;
-      }
-      return link;
+      return html`<devtools-widget ${widget(e => new DeferredDOMNodeLink(e, node, options))}>${
+          options?.textContent ? html`${options.textContent}` : nothing}</devtools-widget>`;
     }
     throw new Error('Can\'t linkify non-node');
   }

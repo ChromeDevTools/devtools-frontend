@@ -152,7 +152,7 @@ export class StylingAgentMarkdownRenderer extends MarkdownRendererWithCodeBlock 
     return html`<span>${until(this.#linkifyNode(nodeId, label).then(node => node || label), label)}</span>`;
   }
 
-  async #linkifyNode(backendNodeId: Protocol.DOM.BackendNodeId, label: string): Promise<Node|undefined> {
+  async #linkifyNode(backendNodeId: Protocol.DOM.BackendNodeId, label: string): Promise<Lit.LitTemplate|undefined> {
     if (backendNodeId === undefined) {
       return;
     }

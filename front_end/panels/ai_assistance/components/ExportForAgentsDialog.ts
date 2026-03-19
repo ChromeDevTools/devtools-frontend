@@ -42,6 +42,11 @@ const UIStrings = {
    * @description Text displayed while the summary is being generated.
    */
   generatingSummary: 'Generating summary…',
+  /**
+   * @description Disclaimer text for the export for agents dialog.
+   */
+  disclaimer:
+      'This is an experimental AI feature and won’t always get it right. Double check this text before pasting into another tool.',
 } as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/ai_assistance/components/ExportForAgentsDialog.ts', UIStrings);
@@ -108,6 +113,7 @@ export const DEFAULT_VIEW: View = (input, _output, target): void => {
       <main>
         <textarea readonly .value=${exportText}></textarea>
       </main>
+      ${isPrompt ? html`<div class="disclaimer">${i18nString(UIStrings.disclaimer)}</div>` : Lit.nothing}
       <footer>
         <div class="right-buttons">
           <devtools-button

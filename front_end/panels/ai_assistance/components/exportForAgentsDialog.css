@@ -63,6 +63,12 @@
     border: none;
   }
 
+  .export-for-agents-dialog .disclaimer {
+    margin-top: var(--sys-size-5);
+    font: var(--sys-typescale-body4-regular);
+    color: var(--sys-color-on-surface-subtle);
+  }
+
   .export-for-agents-dialog footer {
     display: flex;
     justify-content: flex-end;

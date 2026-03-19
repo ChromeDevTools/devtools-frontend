@@ -54,6 +54,42 @@ describe('ExportForAgentsDialog', () => {
     assert.strictEqual(primaryButton?.textContent?.trim(), 'Copy to clipboard');
   });
 
+  it('renders disclaimer text in prompt mode', async () => {
+    const component = new AiAssistance.ExportForAgentsDialog.ExportForAgentsDialog({
+      dialog,
+      promptText,
+      markdownText,
+      onConversationSaveAs: noop,
+    });
+    renderElementIntoDOM(component);
+    await component.updateComplete;
+
+    const disclaimer = component.contentElement.querySelector('.disclaimer');
+    assert.isNotNull(disclaimer);
+    assert.strictEqual(
+        disclaimer?.textContent?.trim(),
+        'This is an experimental AI feature and won’t always get it right. Double check this text before pasting into another tool.');
+  });
+
+  it('does not render disclaimer text in markdown mode', async () => {
+    const component = new AiAssistance.ExportForAgentsDialog.ExportForAgentsDialog({
+      dialog,
+      promptText,
+      markdownText,
+      onConversationSaveAs: noop,
+    });
+    renderElementIntoDOM(component);
+    await component.updateComplete;
+
+    const markdownRadioButton =
+        querySelectorErrorOnMissing<HTMLInputElement>(component.contentElement, 'input[value="conversation"]');
+    markdownRadioButton.click();
+    await component.updateComplete;
+
+    const disclaimer = component.contentElement.querySelector('.disclaimer');
+    assert.isNull(disclaimer);
+  });
+
   it('switches to markdown state on radio button click', async () => {
     const component = new AiAssistance.ExportForAgentsDialog.ExportForAgentsDialog({
       dialog,

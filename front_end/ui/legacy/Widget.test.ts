@@ -610,18 +610,19 @@ describeWithEnvironment('Widget', () => {
     });
 
     it('does not recursively call focus when the widget element has autofocus', () => {
-      const widgetElement = new UI.Widget.WidgetElement();
-      widgetElement.setAttribute('autofocus', '');
-      widgetElement.tabIndex = -1;
-
       class FocusableWidget extends UI.Widget.Widget {
         override performUpdate(): void {
           // no-op
         }
       }
 
-      widgetElement.widgetConfig = UI.Widget.widgetConfig(FocusableWidget);
-      renderElementIntoDOM(widgetElement);
+      const container = document.createElement('div');
+      renderElementIntoDOM(container);
+      Lit.render(
+          html`<devtools-widget autofocus tabindex="-1" ${UI.Widget.widget(FocusableWidget)}></devtools-widget>`,
+          container);
+
+      const widgetElement = container.querySelector('devtools-widget') as UI.Widget.WidgetElement<FocusableWidget>;
 
       const widget = widgetElement.getWidget();
       assert.exists(widget);
@@ -773,14 +774,14 @@ describeWithEnvironment('Widget', () => {
 
   describe('WidgetElement', () => {
     it('renders WidgetElement into DOM without a root element', async () => {
-      const widget = new UI.Widget.WidgetElement();
       class WidgetInstance extends UI.Widget.Widget {
         override performUpdate(): void {
           // no-op
         }
       }
-      widget.widgetConfig = UI.Widget.widgetConfig(WidgetInstance);
-      renderElementIntoDOM(widget);
+      const container = document.createElement('div');
+      Lit.render(html`<devtools-widget ${UI.Widget.widget(WidgetInstance)}></devtools-widget>`, container);
+      renderElementIntoDOM(container.firstElementChild as HTMLElement);
     });
   });
 });

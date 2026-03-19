@@ -149,51 +149,32 @@ function runNextUpdate(): void {
   });
 }
 
-export class WidgetElement<WidgetT extends Widget> extends HTMLElement {
-  #widgetClass?: WidgetFactory<WidgetT>;
-  #widgetParams?: Partial<WidgetT>;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const widgetConfigs = new WeakMap<WidgetElement<any>, WidgetConfig<any>>();
 
+export class WidgetElement<WidgetT extends Widget> extends HTMLElement {
   createWidget(): WidgetT {
-    const widget = this.#instantiateWidget();
-    if (this.#widgetParams) {
-      Object.assign(widget, this.#widgetParams);
+    const config = widgetConfigs.get(this) as WidgetConfig<WidgetT>;
+    const widget = this.#instantiateWidget(config.widgetClass);
+    if (config.widgetParams) {
+      Object.assign(widget, config.widgetParams);
     }
     widget.requestUpdate();
     return widget;
   }
 
-  #instantiateWidget(): WidgetT {
-    if (!this.#widgetClass) {
+  #instantiateWidget(widgetClass: WidgetFactory<WidgetT>): WidgetT {
+    if (!widgetClass) {
       throw new Error('No widgetClass defined');
     }
 
-    if (Widget.isPrototypeOf(this.#widgetClass)) {
-      const ctor = this.#widgetClass as WidgetConstructor<WidgetT>;
+    if (Widget.isPrototypeOf(widgetClass)) {
+      const ctor = widgetClass as WidgetConstructor<WidgetT>;
       return new ctor(this);
     }
 
-    const factory = this.#widgetClass as WidgetProducer<WidgetT>;
+    const factory = widgetClass as WidgetProducer<WidgetT>;
     return factory(this);
-  }
-
-  set widgetConfig(config: WidgetConfig<WidgetT>) {
-    const widget = Widget.get(this);
-    if (widget && config.widgetParams) {
-      let needsUpdate = false;
-      for (const key in config.widgetParams) {
-        if (Object.prototype.hasOwnProperty.call(config.widgetParams, key) &&
-            config.widgetParams[key] !== this.#widgetParams?.[key]) {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          (widget as any)[key] = config.widgetParams[key];
-          needsUpdate = true;
-        }
-      }
-      if (needsUpdate) {
-        widget.requestUpdate();
-      }
-    }
-    this.#widgetClass = config.widgetClass;
-    this.#widgetParams = config.widgetParams;
   }
 
   getWidget(): WidgetT|undefined {
@@ -252,14 +233,12 @@ export class WidgetElement<WidgetT extends Widget> extends HTMLElement {
   }
 
   override cloneNode(deep: boolean): Node {
-    const clone = cloneCustomElement(this, deep);
-    if (!this.#widgetClass) {
+    const clone = cloneCustomElement(this, deep) as WidgetElement<WidgetT>;
+    const config = widgetConfigs.get(this);
+    if (!config?.widgetClass) {
       throw new Error('No widgetClass defined');
     }
-    clone.widgetConfig = {
-      widgetClass: this.#widgetClass,
-      widgetParams: this.#widgetParams,
-    };
+    widgetConfigs.set(clone, config);
     return clone;
   }
 
@@ -290,7 +269,24 @@ export class WidgetDirective extends Lit.Directive.Directive {
       if (!(element instanceof WidgetElement)) {
         throw new Error('Widget directive must be used on a devtools-widget element.');
       }
-      element.widgetConfig = widgetConfig(widgetClass, widgetParams);
+      const config = widgetConfig(widgetClass, widgetParams);
+      const oldConfig = widgetConfigs.get(element);
+      const widget = Widget.get(element);
+      if (widget && config.widgetParams) {
+        let needsUpdate = false;
+        for (const key in config.widgetParams) {
+          if (Object.prototype.hasOwnProperty.call(config.widgetParams, key) &&
+              config.widgetParams[key] !== oldConfig?.widgetParams?.[key]) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            (widget as any)[key] = config.widgetParams[key];
+            needsUpdate = true;
+          }
+        }
+        if (needsUpdate) {
+          widget.requestUpdate();
+        }
+      }
+      widgetConfigs.set(element, config);
       return Lit.nothing;
     }
     return this.render(widgetClass, widgetParams);
@@ -309,8 +305,7 @@ export class WidgetDirective extends Lit.Directive.Directive {
     // which does not properly recreate the widget instance.
     return Lit.Directives.repeat(
         [widgetClass], () => widgetClass,
-        () => html`<devtools-widget .widgetConfig=${
-            widgetConfig<F, ParamKeys>(widgetClass, widgetParams)}></devtools-widget>`);
+        () => html`<devtools-widget ${widget<F, ParamKeys>(widgetClass, widgetParams)}></devtools-widget>`);
   }
 }
 

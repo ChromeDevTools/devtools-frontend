@@ -94,6 +94,10 @@ export interface TableHeadingJSON {
   valueType: 'url'|'text'|'numeric'|'timespanMs'|'bytes'|'node'|'source-location'|'code';
   label: string;
   itemType?: string;
+  subItemsHeading?: {
+    key: string,
+    valueType: string,
+  };
 }
 
 /**
@@ -159,6 +163,15 @@ export interface NodeDetailsJSON {
   selector?: string;
   nodeLabel?: string;
   snippet?: string;
+  boundingRect?: {
+    top: number,
+    bottom: number,
+    left: number,
+    right: number,
+    width: number,
+    height: number,
+  };
+  explanation?: string;
 }
 
 export interface SourceLocationDetailsJSON {

@@ -37,6 +37,6 @@ export interface Flags {
 }
 
 export interface RunOverrides {
-  categoryIds: CategoryId[];
+  categoryIds?: CategoryId[];
   isAIControlled?: boolean;
 }

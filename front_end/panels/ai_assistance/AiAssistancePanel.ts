@@ -889,7 +889,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   }
 
   async #handleLighthouseRun(): Promise<LHModel.ReporterTypes.ReportJSON|null> {
-    return await LighthousePanel.LighthousePanel.LighthousePanel.executeLighthouseRecording();
+    return await LighthousePanel.LighthousePanel.LighthousePanel.executeLighthouseRecording({isAIControlled: true});
   }
 
   #getDefaultConversationType(): AiAssistanceModel.AiHistoryStorage.ConversationType|undefined {

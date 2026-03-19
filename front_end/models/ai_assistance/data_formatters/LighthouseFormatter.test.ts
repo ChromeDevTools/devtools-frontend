@@ -94,13 +94,13 @@ describe('LighthouseFormatter', function() {
               {
                 url: 'https://example.com/script.js',
                 wastedBytes: 1024,
-                node: {type: 'node', nodeLabel: 'div.main'},
+                node: {type: 'node', nodeLabel: 'div.main', path: '1,HTML,1,BODY,5,DIV'},
                 location: {type: 'source-location', url: 'https://example.com/script.js', line: 10, column: 5},
               },
               {
                 url: 'https://example.com/style.css',
                 wastedBytes: 512,
-                node: {type: 'node', selector: 'body > p'},
+                node: {type: 'node', selector: 'body > p', path: '1,HTML,1,BODY,10,P'},
                 location: {type: 'source-location', url: 'https://example.com/style.css'},
               },
             ],
@@ -186,6 +186,66 @@ describe('LighthouseFormatter', function() {
     } as unknown as ReportJSON;
     const formatter = new AiAssistance.LighthouseFormatter.LighthouseFormatter();
     const output = formatter.audits(summaryReport, 'performance');
+    snapshotTester.assert(this, output);
+  });
+
+  it('formats landmark-one-main audit with node explanation', function() {
+    const reportWithLandmark = {
+      ...report,
+      categories: {
+        accessibility: {
+          title: 'Accessibility',
+          score: 0.5,
+          auditRefs: [{id: 'landmark-one-main', score: 0, weight: 1}],
+        },
+      },
+      audits: {
+        'landmark-one-main': {
+          id: 'landmark-one-main',
+          title: 'Document does not have a main landmark.',
+          description:
+              'One main landmark helps screen reader users navigate a web page. [Learn more about landmarks](https://dequeuniversity.com/rules/axe/4.11/landmark-one-main).',
+          score: 0,
+          scoreDisplayMode: 'binary',
+          details: {
+            type: 'table',
+            headings: [
+              {
+                key: 'node',
+                valueType: 'node',
+                subItemsHeading: {
+                  key: 'relatedNode',
+                  valueType: 'node',
+                },
+                label: 'Failing Elements',
+              },
+            ],
+            items: [
+              {
+                node: {
+                  type: 'node',
+                  path: '1,HTML',
+                  selector: 'html',
+                  boundingRect: {
+                    top: 0,
+                    bottom: 1564,
+                    left: 0,
+                    right: 412,
+                    width: 412,
+                    height: 1564,
+                  },
+                  snippet: '<html lang="not-a-real-language">',
+                  nodeLabel: 'html',
+                  explanation: 'Fix all of the following:\n  Document does not have a main landmark',
+                },
+              },
+            ],
+          },
+        },
+      },
+    } as unknown as ReportJSON;
+    const formatter = new AiAssistance.LighthouseFormatter.LighthouseFormatter();
+    const output = formatter.audits(reportWithLandmark, 'accessibility');
     snapshotTester.assert(this, output);
   });
 });

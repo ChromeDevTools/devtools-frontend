@@ -40,8 +40,8 @@ The following audits in this category have a score below 90 and may need attenti
   * Audit with a table
 
     | URL | Wasted Bytes | Node | Location |
-    | https://example.com/script.js | 1024 | div.main | https://example.com/script.js:10:5 |
-    | https://example.com/style.css | 512 | body > p | https://example.com/style.css |
+    | https://example.com/script.js | 1024 | div.main (path: 1,HTML,1,BODY,5,DIV) | https://example.com/script.js:10:5 |
+    | https://example.com/style.css | 512 | body > p (selector: body > p) (path: 1,HTML,1,BODY,10,P) | https://example.com/style.css |
 === end content
 
 Title: LighthouseFormatter formats opportunity details
@@ -69,4 +69,16 @@ The following audits in this category have a score below 90 and may need attenti
     Wasted bytes: 512
     | Text |
     | Some detail |
+=== end content
+
+Title: LighthouseFormatter formats landmark-one-main audit with node explanation
+Content:
+# Audits for Accessibility
+
+The following audits in this category have a score below 90 and may need attention:
+- **Document does not have a main landmark.**: 0
+  * One main landmark helps screen reader users navigate a web page. [Learn more about landmarks](https://dequeuniversity.com/rules/axe/4.11/landmark-one-main).
+
+    | Failing Elements |
+    | html (selector: html) (path: 1,HTML) (explanation: Fix all of the following:   Document does not have a main landmark) |
 === end content

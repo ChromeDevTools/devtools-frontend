@@ -33,11 +33,17 @@ const flags = yargs(hideBin(process.argv))
   })
   .option('debug', {
     type: 'boolean',
+    default: false,
+    describe:
+      'Disable cache validations during debugging, useful for custom rule creation/debugging.',
+  })
+  .option('lint-only', {
+    type: 'boolean',
     // LUCI_CONTEXT is an env that exists on the bots
     // We want to disable caches and run more logging there.
     default: false || Boolean(process.env['LUCI_CONTEXT']),
     describe:
-      'Disable cache validations during debugging, useful for custom rule creation/debugging.',
+      'Runs the linter against all files, ignores passed files, ignores caches, ignores --fix.',
   })
   .usage('$0 [<files...>]', 'Run the linter on the provided files', yargs => {
     return yargs.positional('files', {
@@ -60,7 +66,8 @@ if (flags.forceFix && !flags.fix) {
 if (flags.debug) {
   console.log('[lint]: Cache disabled, linting may take longer.');
 }
-const cacheLinters = !flags.debug;
+const linterFixer = flags.fix && !flags.lintOnly;
+const cacheLinters = !flags.debug || flags.lintOnly;
 
 const LIT_ANALYZER_EXCLUDED_FOLDERS = [
   'front_end/core',
@@ -89,7 +96,7 @@ async function runESLint(scriptFiles) {
   debugLogging(messages, '[lint]: Running EsLint...');
   const cli = new ESLint({
     cwd: join(import.meta.dirname, '..', '..'),
-    fix: flags.fix,
+    fix: linterFixer,
     cache: cacheLinters,
     allowInlineConfig: !flags.forceFix,
   });
@@ -140,7 +147,7 @@ async function runESLint(scriptFiles) {
     }
   }
 
-  if (flags.fix) {
+  if (linterFixer) {
     await ESLint.outputFixes(results);
   }
 
@@ -167,7 +174,7 @@ async function runStylelint(files) {
   const { report, errored } = await stylelint.lint({
     configFile: join(import.meta.dirname, '..', '..', '.stylelintrc.json'),
     ignorePath: join(import.meta.dirname, '..', '..', '.stylelintignore'),
-    fix: flags.fix,
+    fix: linterFixer,
     files,
     formatter: 'string',
     cache: cacheLinters,
@@ -365,8 +372,20 @@ async function runEslintRulesTypeCheck(files) {
   return { status: result.status, output: messages.join('\n') };
 }
 
+function getFilesToLint() {
+  if (flags.lintOnly) {
+    return ['.'];
+  }
+
+  if (Array.isArray(flags.files)) {
+    return flags.files;
+  }
+
+  return [flags.files];
+}
+
 async function run() {
-  const files = Array.isArray(flags.files) ? flags.files : [flags.files];
+  const files = getFilesToLint();
   const scripts = [];
   const styles = [];
   for (const path of sync(files, {

@@ -16,6 +16,7 @@ import {
 } from '../../../testing/EnvironmentHelpers.js';
 import {getInsightOrError} from '../../../testing/InsightHelpers.js';
 import {describeWithMockConnection} from '../../../testing/MockConnection.js';
+import {SnapshotTester} from '../../../testing/SnapshotTester.js';
 import {allThreadEntriesInTrace} from '../../../testing/TraceHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as Bindings from '../../bindings/bindings.js';
@@ -28,7 +29,24 @@ import {
   PerformanceTraceFormatter,
 } from '../ai_assistance.js';
 
-describeWithMockConnection('PerformanceAgent', () => {
+/**
+ * Widget data can be huge (e.g. an entire perf trace) and if we snapshot or
+ * try to assert on these, it is not useful and also can crash Karma etc with
+ * the size of the output.
+ */
+function deleteAllWidgetData(responses: AiAgent.ResponseData[]): void {
+  for (const response of responses) {
+    if ('widgets' in response) {
+      response.widgets?.forEach(w => {
+        // @ts-expect-error
+        delete w.data;
+      });
+    }
+  }
+}
+
+describeWithMockConnection('PerformanceAgent', function() {
+  const snapshotTester = new SnapshotTester(this, import.meta);
   function mockHostConfig(modelId?: string, temperature?: number) {
     updateHostConfig({
       devToolsAiAssistancePerformanceAgent: {
@@ -124,172 +142,143 @@ describeWithMockConnection('PerformanceAgent', () => {
       restoreUserAgentForTesting();
     });
   });
-});
 
-describeWithMockConnection('PerformanceAgent – call tree focus', () => {
-  beforeEach(() => {
-    const workspace = Workspace.Workspace.WorkspaceImpl.instance();
-    const targetManager = SDK.TargetManager.TargetManager.instance();
-    const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
-    const ignoreListManager = Workspace.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
-    Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
-      forceNew: true,
-      resourceMapping,
-      targetManager,
-      ignoreListManager,
-      workspace,
+  describe('PerformanceAgent – call tree focus', function() {
+    beforeEach(() => {
+      const workspace = Workspace.Workspace.WorkspaceImpl.instance();
+      const targetManager = SDK.TargetManager.TargetManager.instance();
+      const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
+      const ignoreListManager = Workspace.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
+      Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
+        forceNew: true,
+        resourceMapping,
+        targetManager,
+        ignoreListManager,
+        workspace,
+      });
+      createTarget();
     });
-    createTarget();
-  });
 
-  describe('run', function() {
-    it('generates an answer', async function() {
-      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-outermost-frames.json.gz');
-      // A basic Layout.
-      const layoutEvt = allThreadEntriesInTrace(parsedTrace).find(event => event.ts === 465457096322);
-      assert.exists(layoutEvt);
-      const aiCallTree = AICallTree.AICallTree.fromEvent(layoutEvt, parsedTrace);
-      assert.exists(aiCallTree);
+    describe('run', function() {
+      it('generates an answer', async function() {
+        const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-outermost-frames.json.gz');
+        // A basic Layout.
+        const layoutEvt = allThreadEntriesInTrace(parsedTrace).find(event => event.ts === 465457096322);
+        assert.exists(layoutEvt);
+        const aiCallTree = AICallTree.AICallTree.fromEvent(layoutEvt, parsedTrace);
+        assert.exists(aiCallTree);
 
-      const agent = new PerformanceAgent.PerformanceAgent({
-        aidaClient: mockAidaClient([[{
-          explanation: 'This is the answer',
-          metadata: {
-            rpcGlobalId: 123,
+        const agent = new PerformanceAgent.PerformanceAgent({
+          aidaClient: mockAidaClient([[{
+            explanation: 'This is the answer',
+            metadata: {
+              rpcGlobalId: 123,
+            },
+          }]]),
+        });
+
+        const context = PerformanceAgent.PerformanceTraceContext.fromCallTree(aiCallTree);
+        const responses = await Array.fromAsync(agent.run('test', {selected: context}));
+        deleteAllWidgetData(responses);
+        snapshotTester.assert(this, JSON.stringify(responses, null, 2));
+
+        assert.deepEqual(agent.buildRequest({text: ''}, Host.AidaClient.Role.USER).historical_contexts, [
+          {
+            role: 1,
+            parts:
+                [{text: `User selected the following call tree:\n\n${aiCallTree.serialize()}\n\n# User query\n\ntest`}],
           },
-        }]]),
+          {
+            role: 2,
+            parts: [{text: 'This is the answer'}],
+          },
+        ]);
       });
+    });
 
-      const context = PerformanceAgent.PerformanceTraceContext.fromCallTree(aiCallTree);
-      const responses = await Array.fromAsync(agent.run('test', {selected: context}));
-      const expectedData =
-          new PerformanceTraceFormatter.PerformanceTraceFormatter(context.getItem()).formatTraceSummary();
+    describe('enhanceQuery', () => {
+      it('does not send the serialized calltree again if it is a followup chat about the same calltree', async () => {
+        const agent = new PerformanceAgent.PerformanceAgent({
+          aidaClient: {} as Host.AidaClient.AidaClient,
+        });
 
-      // Delete widget data from test because deepEqual on the trace is causing CI issues.
-      // @ts-expect-error
-      delete responses[0].widgets[0].data;
+        const mockAiCallTree = {
+          serialize: () => 'Mock call tree',
+          parsedTrace: FAKE_PARSED_TRACE,
+          rootNode: {event: {ts: 0, dur: 0}},
+        } as unknown as AICallTree.AICallTree;
 
-      assert.deepEqual(responses, [
-        {
-          type: AiAgent.ResponseType.CONTEXT,
-          details: [
-            {title: 'Trace', text: expectedData},
-          ],
-          widgets: [
-            {
-              name: 'CORE_VITALS',
-            } as unknown as AiAgent.AiWidget,
-          ],
-        },
-        {
-          type: AiAgent.ResponseType.QUERYING,
-        },
-        {
-          type: AiAgent.ResponseType.ANSWER,
-          text: 'This is the answer',
-          complete: true,
-          suggestions: undefined,
-          rpcId: 123,
-        },
-      ]);
+        const context1 = PerformanceAgent.PerformanceTraceContext.fromCallTree(mockAiCallTree);
+        const context2 = PerformanceAgent.PerformanceTraceContext.fromCallTree(mockAiCallTree);
+        const context3 = PerformanceAgent.PerformanceTraceContext.fromCallTree(mockAiCallTree);
 
-      assert.deepEqual(agent.buildRequest({text: ''}, Host.AidaClient.Role.USER).historical_contexts, [
-        {
-          role: 1,
-          parts:
-              [{text: `User selected the following call tree:\n\n${aiCallTree.serialize()}\n\n# User query\n\ntest`}],
-        },
-        {
-          role: 2,
-          parts: [{text: 'This is the answer'}],
-        },
-      ]);
+        const enhancedQuery1 = await agent.enhanceQuery('What is this?', context1);
+        assert.strictEqual(
+            enhancedQuery1,
+            'User selected the following call tree:\n\nMock call tree\n\n# User query\n\nWhat is this?');
+
+        const query2 = 'But what about this follow-up question?';
+        const enhancedQuery2 = await agent.enhanceQuery(query2, context2);
+        assert.strictEqual(enhancedQuery2, query2);
+        assert.isFalse(enhancedQuery2.includes(mockAiCallTree.serialize()));
+
+        // Just making sure any subsequent chat doesnt include it either.
+        const query3 = 'And this 3rd question?';
+        const enhancedQuery3 = await agent.enhanceQuery(query3, context3);
+        assert.strictEqual(enhancedQuery3, query3);
+        assert.isFalse(enhancedQuery3.includes(mockAiCallTree.serialize()));
+      });
     });
   });
 
-  describe('enhanceQuery', () => {
-    it('does not send the serialized calltree again if it is a followup chat about the same calltree', async () => {
-      const agent = new PerformanceAgent.PerformanceAgent({
-        aidaClient: {} as Host.AidaClient.AidaClient,
-      });
+  const FAKE_LCP_MODEL = {
+    insightKey: Trace.Insights.Types.InsightKeys.LCP_BREAKDOWN,
+    strings: {},
+    title: 'LCP breakdown' as Common.UIString.LocalizedString,
+    description: 'some description' as Common.UIString.LocalizedString,
+    docs: '',
+    category: Trace.Insights.Types.InsightCategory.ALL,
+    state: 'fail',
+    frameId: '123',
+  } as const;
+  const FAKE_INP_MODEL = {
+    insightKey: Trace.Insights.Types.InsightKeys.INP_BREAKDOWN,
+    strings: {},
+    title: 'INP breakdown' as Common.UIString.LocalizedString,
+    description: 'some description' as Common.UIString.LocalizedString,
+    docs: '',
+    category: Trace.Insights.Types.InsightCategory.ALL,
+    state: 'fail',
+    frameId: '123',
+  } as const;
+  const FAKE_HANDLER_DATA = {
+    Meta: {traceBounds: {min: 0, max: 10}, mainFrameURL: 'https://www.example.com'},
+  } as unknown as Trace.Handlers.Types.HandlerData;
+  const FAKE_INSIGHTS = new Map([
+                          [
+                            '', {
+                              model: {
+                                LCPBreakdown: FAKE_LCP_MODEL,
+                                INPBreakdown: FAKE_INP_MODEL,
+                              },
+                              bounds: {min: 0, max: 0, range: 0},
+                            }
+                          ],
+                        ]) as unknown as Trace.Insights.Types.TraceInsightSets;
+  const FAKE_METADATA = {} as unknown as Trace.Types.File.MetaData;
+  const FAKE_PARSED_TRACE = {
+    data: FAKE_HANDLER_DATA,
+    insights: FAKE_INSIGHTS,
+    metadata: FAKE_METADATA,
+  } as unknown as Trace.TraceModel.ParsedTrace;
 
-      const mockAiCallTree = {
-        serialize: () => 'Mock call tree',
-        parsedTrace: FAKE_PARSED_TRACE,
-        rootNode: {event: {ts: 0, dur: 0}},
-      } as unknown as AICallTree.AICallTree;
+  function createAgentForConversation(opts: {aidaClient?: Host.AidaClient.AidaClient} = {}) {
+    const agent = new PerformanceAgent.PerformanceAgent({aidaClient: opts.aidaClient ?? mockAidaClient()});
+    const context = PerformanceAgent.PerformanceTraceContext.fromParsedTrace(FAKE_PARSED_TRACE);
+    agent.run('', {selected: context});
+    return agent;
+  }
 
-      const context1 = PerformanceAgent.PerformanceTraceContext.fromCallTree(mockAiCallTree);
-      const context2 = PerformanceAgent.PerformanceTraceContext.fromCallTree(mockAiCallTree);
-      const context3 = PerformanceAgent.PerformanceTraceContext.fromCallTree(mockAiCallTree);
-
-      const enhancedQuery1 = await agent.enhanceQuery('What is this?', context1);
-      assert.strictEqual(
-          enhancedQuery1, 'User selected the following call tree:\n\nMock call tree\n\n# User query\n\nWhat is this?');
-
-      const query2 = 'But what about this follow-up question?';
-      const enhancedQuery2 = await agent.enhanceQuery(query2, context2);
-      assert.strictEqual(enhancedQuery2, query2);
-      assert.isFalse(enhancedQuery2.includes(mockAiCallTree.serialize()));
-
-      // Just making sure any subsequent chat doesnt include it either.
-      const query3 = 'And this 3rd question?';
-      const enhancedQuery3 = await agent.enhanceQuery(query3, context3);
-      assert.strictEqual(enhancedQuery3, query3);
-      assert.isFalse(enhancedQuery3.includes(mockAiCallTree.serialize()));
-    });
-  });
-});
-
-const FAKE_LCP_MODEL = {
-  insightKey: Trace.Insights.Types.InsightKeys.LCP_BREAKDOWN,
-  strings: {},
-  title: 'LCP breakdown' as Common.UIString.LocalizedString,
-  description: 'some description' as Common.UIString.LocalizedString,
-  docs: '',
-  category: Trace.Insights.Types.InsightCategory.ALL,
-  state: 'fail',
-  frameId: '123',
-} as const;
-const FAKE_INP_MODEL = {
-  insightKey: Trace.Insights.Types.InsightKeys.INP_BREAKDOWN,
-  strings: {},
-  title: 'INP breakdown' as Common.UIString.LocalizedString,
-  description: 'some description' as Common.UIString.LocalizedString,
-  docs: '',
-  category: Trace.Insights.Types.InsightCategory.ALL,
-  state: 'fail',
-  frameId: '123',
-} as const;
-const FAKE_HANDLER_DATA = {
-  Meta: {traceBounds: {min: 0, max: 10}, mainFrameURL: 'https://www.example.com'},
-} as unknown as Trace.Handlers.Types.HandlerData;
-const FAKE_INSIGHTS = new Map([
-                        [
-                          '', {
-                            model: {
-                              LCPBreakdown: FAKE_LCP_MODEL,
-                              INPBreakdown: FAKE_INP_MODEL,
-                            },
-                            bounds: {min: 0, max: 0, range: 0},
-                          }
-                        ],
-                      ]) as unknown as Trace.Insights.Types.TraceInsightSets;
-const FAKE_METADATA = {} as unknown as Trace.Types.File.MetaData;
-const FAKE_PARSED_TRACE = {
-  data: FAKE_HANDLER_DATA,
-  insights: FAKE_INSIGHTS,
-  metadata: FAKE_METADATA,
-} as unknown as Trace.TraceModel.ParsedTrace;
-
-function createAgentForConversation(opts: {aidaClient?: Host.AidaClient.AidaClient} = {}) {
-  const agent = new PerformanceAgent.PerformanceAgent({aidaClient: opts.aidaClient ?? mockAidaClient()});
-  const context = PerformanceAgent.PerformanceTraceContext.fromParsedTrace(FAKE_PARSED_TRACE);
-  agent.run('', {selected: context});
-  return agent;
-}
-
-describeWithMockConnection('PerformanceAgent', () => {
   beforeEach(() => {
     const workspace = Workspace.Workspace.WorkspaceImpl.instance();
     const targetManager = SDK.TargetManager.TargetManager.instance();
@@ -375,38 +364,9 @@ code
         }]])
       });
 
-      const expectedDetailText =
-          new PerformanceTraceFormatter.PerformanceTraceFormatter(context.getItem()).formatTraceSummary();
-
       const responses = await Array.fromAsync(agent.run('test', {selected: context}));
-      // Delete widget data from test because deepEqual on the trace is causing CI issues.
-      // @ts-expect-error
-      delete responses[0].widgets[0].data;
-
-      assert.deepEqual(responses, [
-
-        {
-          type: AiAgent.ResponseType.CONTEXT,
-          details: [
-            {title: 'Trace', text: expectedDetailText},
-          ],
-          widgets: [
-            {
-              name: 'CORE_VITALS',
-            } as unknown as AiAgent.AiWidget,
-          ],
-        },
-        {
-          type: AiAgent.ResponseType.QUERYING,
-        },
-        {
-          type: AiAgent.ResponseType.ANSWER,
-          text: 'This is the answer',
-          complete: true,
-          suggestions: undefined,
-          rpcId: 123,
-        },
-      ]);
+      deleteAllWidgetData(responses);
+      snapshotTester.assert(this, JSON.stringify(responses, null, 2));
     });
   });
 

@@ -198,6 +198,7 @@ devtools_ui_module("unittests") {
     "../../testing",
     "../../ui/components/render_coordinator:bundle",
     "../../ui/legacy:bundle",
+    "../../ui/legacy/components/object_ui:bundle",
     "./components",
     "./preloading/components",
   ]

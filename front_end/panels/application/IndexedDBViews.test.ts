@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as SDK from '../../core/sdk/sdk.js';
 import {
   getCleanTextContentFromElements,
   getElementWithinComponent,
@@ -9,6 +10,7 @@ import {
 } from '../../testing/DOMHelpers.js';
 import * as RenderCoordinator from '../../ui/components/render_coordinator/render_coordinator.js';
 import * as ReportView from '../../ui/components/report_view/report_view.js';
+import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Application from './application.js';
@@ -227,5 +229,21 @@ describe.skip('[crbug.com/1473557]: IDBDatabaseView', () => {
     assert.strictEqual(buttons[1].textContent?.trim(), 'Refresh database');
     buttons[1].click();
     sinon.assert.calledOnceWithExactly(model.refreshDatabase, databaseId);
+  });
+});
+
+describe('IDBDataGridNode', () => {
+  it('creates a read-only object properties section for value column', async () => {
+    const remoteObject = SDK.RemoteObject.RemoteObject.fromLocalObject({foo: 'bar'});
+    const node = new Application.IndexedDBViews.IDBDataGridNode({value: remoteObject});
+
+    node.createCell('value');
+
+    assert.exists(node.valueObjectPresentation);
+    const rootElement = node.valueObjectPresentation.objectTreeElement();
+    await rootElement.onpopulate();
+    const child = rootElement.childAt(0);
+    assert.instanceOf(child, ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement);
+    assert.isFalse(child.editable);
   });
 });

@@ -6,6 +6,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import {assertScreenshot, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {render} from '../../ui/lit/lit.js';
 
@@ -252,5 +253,37 @@ describeWithEnvironment('RequestPayloadView', () => {
     assert.exists(getButton('View source'));
     // And check that source text is gone
     assert.isNull(shadowRoot.querySelector('.payload-value'));
+  });
+
+  it('renders read-only object properties for payload', async () => {
+    const request = SDK.NetworkRequest.NetworkRequest.create(
+        'requestId' as Protocol.Network.RequestId, urlString`https://example.com/api`, urlString``, null, null, null);
+    request.setRequestHeaders([{name: 'Content-Type', value: 'application/json'}]);
+    sinon.stub(request, 'requestFormData').resolves('{"foo": "bar"}');
+
+    const view = new Network.RequestPayloadView.RequestPayloadView();
+    view.request = request;
+    renderElementIntoDOM(view);
+    view.wasShown();
+
+    await view.updateComplete;
+
+    const treeOutline = view.element.querySelector<HTMLElement>('.request-payload-tree');
+    assert.exists(treeOutline);
+    const shadowRoot = treeOutline.shadowRoot;
+    assert.exists(shadowRoot);
+
+    const firstChildNode = shadowRoot.querySelector('li.object-properties-section-root-element');
+    assert.exists(firstChildNode);
+
+    const rootElement = UI.TreeOutline.TreeElement.getTreeElementBylistItemNode(firstChildNode);
+    assert.exists(rootElement);
+
+    // Ensure children are populated
+    await rootElement.onpopulate();
+
+    const firstProperty = rootElement.childAt(0);
+    assert.instanceOf(firstProperty, ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement);
+    assert.isFalse(firstProperty.editable);
   });
 });

@@ -12,6 +12,7 @@ import * as UI from '../../legacy.js';
 
 import customPreviewComponentStyles from './customPreviewComponent.css.js';
 import {
+  ObjectPropertiesMode,
   ObjectPropertiesSection,
   ObjectPropertiesSectionsTreeOutline,
   ObjectPropertyTreeElement,
@@ -167,11 +168,15 @@ export class CustomPreviewSection {
       if (bodyJsonML === null) {
         // Per https://firefox-source-docs.mozilla.org/devtools-user/custom_formatters/index.html#custom-formatter-structure
         // we are supposed to fall back to the default format when the `body()` callback returns `null`.
-        this.defaultBodyTreeOutline = new ObjectPropertiesSectionsTreeOutline({readOnly: true});
+        this.defaultBodyTreeOutline = new ObjectPropertiesSectionsTreeOutline();
         this.defaultBodyTreeOutline.setShowSelectionOnKeyboardFocus(/* show */ true, /* preventTabOrder */ false);
         this.defaultBodyTreeOutline.element.classList.add('custom-expandable-section-default-body');
         void ObjectPropertyTreeElement.populate(
-            this.defaultBodyTreeOutline.rootElement(), new ObjectTree(this.object), false, false);
+            this.defaultBodyTreeOutline.rootElement(), new ObjectTree(this.object, {
+              readOnly: true,
+              propertiesMode: ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED,
+            }),
+            false, false);
 
         this.cachedContent = this.defaultBodyTreeOutline.element;
       } else {

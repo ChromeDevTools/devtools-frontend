@@ -140,7 +140,7 @@ export class PropertiesWidget extends UI.Widget.VBox {
     UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, this.setNode, this);
 
     this.#view = view;
-    this.treeOutline = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionsTreeOutline({readOnly: true});
+    this.treeOutline = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionsTreeOutline();
     this.treeOutline.setShowSelectionOnKeyboardFocus(/* show */ true, /* preventTabOrder */ false);
 
     this.treeOutline.addEventListener(UI.TreeOutline.Events.ElementExpanded, () => {
@@ -209,8 +209,10 @@ export class PropertiesWidget extends UI.Widget.VBox {
       return;
     }
 
-    this.#objectTree = new ObjectUI.ObjectPropertiesSection.ObjectTree(
-        object, ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED);
+    this.#objectTree = new ObjectUI.ObjectPropertiesSection.ObjectTree(object, {
+      propertiesMode: ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED,
+      readOnly: true,
+    });
     this.#updateFilter();
   }
 

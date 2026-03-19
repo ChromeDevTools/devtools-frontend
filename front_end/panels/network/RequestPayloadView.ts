@@ -173,7 +173,10 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
   const createPayload = (parsedFormData: unknown): TemplateResult => {
     const object = new SDK.RemoteObject.LocalJSONObject(parsedFormData);
     const section =
-        new ObjectUI.ObjectPropertiesSection.RootElement(new ObjectUI.ObjectPropertiesSection.ObjectTree(object));
+        new ObjectUI.ObjectPropertiesSection.RootElement(new ObjectUI.ObjectPropertiesSection.ObjectTree(object, {
+          readOnly: true,
+          propertiesMode: ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED,
+        }));
     section.title = document.createTextNode(object.description);
     section.listItemElement.classList.add('source-code', 'object-properties-section');
     section.childrenListElement.classList.add('source-code', 'object-properties-section');

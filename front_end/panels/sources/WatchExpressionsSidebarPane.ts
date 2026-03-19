@@ -525,7 +525,11 @@ export class WatchExpression extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     if (!exceptionDetails && expressionValue && expressionValue.hasChildren && !expressionValue.customPreview()) {
       headerElement.classList.add('watch-expression-object-header');
       this.#treeElement = new ObjectUI.ObjectPropertiesSection.RootElement(
-          new ObjectUI.ObjectPropertiesSection.ObjectTree(expressionValue), this.linkifier);
+          new ObjectUI.ObjectPropertiesSection.ObjectTree(expressionValue, {
+            readOnly: true,
+            propertiesMode: ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED,
+          }),
+          this.linkifier);
       this.expandController.watchSection(
           (this.#expression as string), (this.#treeElement as ObjectUI.ObjectPropertiesSection.RootElement));
       this.#treeElement.toggleOnClick = false;

@@ -595,7 +595,10 @@ export class RequestTimingView extends UI.Widget.VBox {
     if (origRequest) {
       const requestObject = SDK.RemoteObject.RemoteObject.fromLocalObject(origRequest);
       const requestTreeElement = new ObjectUI.ObjectPropertiesSection.RootElement(
-          new ObjectUI.ObjectPropertiesSection.ObjectTree(requestObject));
+          new ObjectUI.ObjectPropertiesSection.ObjectTree(requestObject, {
+            readOnly: true,
+            propertiesMode: ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED,
+          }));
       requestTreeElement.title = i18nString(UIStrings.originalRequest);
       detailsView.appendChild(requestTreeElement);
     }
@@ -604,7 +607,10 @@ export class RequestTimingView extends UI.Widget.VBox {
     if (response) {
       const responseObject = SDK.RemoteObject.RemoteObject.fromLocalObject(response);
       const responseTreeElement = new ObjectUI.ObjectPropertiesSection.RootElement(
-          new ObjectUI.ObjectPropertiesSection.ObjectTree(responseObject));
+          new ObjectUI.ObjectPropertiesSection.ObjectTree(responseObject, {
+            readOnly: true,
+            propertiesMode: ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED,
+          }));
       responseTreeElement.title = i18nString(UIStrings.responseReceived);
       detailsView.appendChild(responseTreeElement);
     }

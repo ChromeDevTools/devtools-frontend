@@ -124,11 +124,17 @@ describeWithEnvironment('ObjectPropertyTreeElement', () => {
   it('populates the context menu with a copy option for LocalJSONObjects', () => {
     const parentObject = SDK.RemoteObject.RemoteObject.fromLocalObject({foo: 'bar'});
     const parentProperty = new SDK.RemoteObject.RemoteObjectProperty('parentNode', parentObject);
-    const parentNode = new ObjectUI.ObjectPropertiesSection.ObjectTreeNode(parentProperty);
+    const parentNode = new ObjectUI.ObjectPropertiesSection.ObjectTreeNode(parentProperty, undefined, {
+      readOnly: false,
+      propertiesMode: ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED
+    });
 
     const childObject = SDK.RemoteObject.RemoteObject.fromLocalObject('bar');
     const childProperty = new SDK.RemoteObject.RemoteObjectProperty('foo', childObject);
-    const childNode = new ObjectUI.ObjectPropertiesSection.ObjectTreeNode(childProperty, undefined, parentNode);
+    const childNode = new ObjectUI.ObjectPropertiesSection.ObjectTreeNode(childProperty, parentNode, {
+      readOnly: false,
+      propertiesMode: ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED
+    });
 
     const treeElement = new ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement(childNode);
 
@@ -140,7 +146,7 @@ describeWithEnvironment('ObjectPropertyTreeElement', () => {
     assert.exists(copyValueItem);
 
     const copyText = sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'copyText');
-    contextMenu.invokeHandler(copyValueItem!.id());
+    contextMenu.invokeHandler(copyValueItem.id());
     sinon.assert.calledWith(copyText, 'bar');
   });
 
@@ -159,7 +165,10 @@ describeWithEnvironment('ObjectPropertyTreeElement', () => {
       editing: false,
       editingEnded: sinon.stub(),
       editingCommitted: sinon.stub(),
-      node: new ObjectUI.ObjectPropertiesSection.ObjectTreeNode(property),
+      node: new ObjectUI.ObjectPropertiesSection.ObjectTreeNode(property, undefined, {
+        readOnly: false,
+        propertiesMode: ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED
+      }),
     };
     const output = {valueElement: undefined, nameElement: undefined};
     ObjectUI.ObjectPropertiesSection.OBJECT_PROPERTY_DEFAULT_VIEW(input, output, container);
@@ -188,7 +197,10 @@ describeWithEnvironment('ObjectPropertyTreeElement', () => {
       editing: false,
       editingEnded: sinon.stub(),
       editingCommitted: sinon.stub(),
-      node: new ObjectUI.ObjectPropertiesSection.ObjectTreeNode(property),
+      node: new ObjectUI.ObjectPropertiesSection.ObjectTreeNode(property, undefined, {
+        readOnly: false,
+        propertiesMode: ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED
+      }),
     };
     const output = {valueElement: undefined, nameElement: undefined};
     ObjectUI.ObjectPropertiesSection.OBJECT_PROPERTY_DEFAULT_VIEW(input, output, container);
@@ -203,7 +215,10 @@ describeWithEnvironment('ObjectPropertyTreeElement', () => {
 
     const viewFunction = sinon.stub<[ObjectUI.ObjectPropertiesSection.ObjectPropertyViewInput, object, HTMLElement]>();
     const section = new ObjectUI.ObjectPropertiesSection.ObjectPropertyWidget(undefined, viewFunction);
-    section.property = new ObjectUI.ObjectPropertiesSection.ObjectTreeNode(property),
+    section.property = new ObjectUI.ObjectPropertiesSection.ObjectTreeNode(property, undefined, {
+      readOnly: false,
+      propertiesMode: ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED
+    });
 
     renderElementIntoDOM(section);
     const firstExpectedCall = expectCall(viewFunction);

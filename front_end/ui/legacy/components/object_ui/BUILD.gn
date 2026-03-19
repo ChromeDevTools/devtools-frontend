@@ -94,12 +94,16 @@ devtools_ui_module("unittests") {
   testonly = true
 
   sources = [
+    "CustomPreviewComponent.test.ts",
     "JavaScriptREPL.test.ts",
+    "ObjectPopoverHelper.test.ts",
     "ObjectPropertiesSection.test.ts",
   ]
 
   deps = [
     ":bundle",
+    "../../../../core/sdk:bundle",
+    "../../../../generated:protocol",
     "../../../../testing",
     "../../../legacy:bundle",
   ]

@@ -199,7 +199,7 @@ export class ScopeChainSidebarPane extends UI.Widget.VBox implements UI.ContextF
     titleElement.createChild('div', 'scope-chain-sidebar-pane-section-title').textContent = title;
 
     const root = new ObjectUI.ObjectPropertiesSection.ObjectTree(
-        scope.object(), ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.ALL);
+        scope.object(), {propertiesMode: ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.ALL, readOnly: false});
     root.addExtraProperties(...scope.extraProperties());
     const section = new ObjectUI.ObjectPropertiesSection.RootElement(root, this.linkifier, emptyPlaceholder);
     section.title = titleElement;

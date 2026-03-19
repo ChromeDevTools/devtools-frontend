@@ -297,14 +297,26 @@ export class ObjectEventListenerBar extends UI.TreeOutline.TreeElement {
     const eventListener = this.#eventListener;
     const runtimeModel = eventListener.domDebuggerModel().runtimeModel();
     properties.push(new ObjectUI.ObjectPropertiesSection.ObjectTreeNode(
-        runtimeModel.createRemotePropertyFromPrimitiveValue('useCapture', eventListener.useCapture())));
+        runtimeModel.createRemotePropertyFromPrimitiveValue('useCapture', eventListener.useCapture()), undefined, {
+          readOnly: false,
+          propertiesMode: ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED
+        }));
     properties.push(new ObjectUI.ObjectPropertiesSection.ObjectTreeNode(
-        runtimeModel.createRemotePropertyFromPrimitiveValue('passive', eventListener.passive())));
+        runtimeModel.createRemotePropertyFromPrimitiveValue('passive', eventListener.passive()), undefined, {
+          readOnly: false,
+          propertiesMode: ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED
+        }));
     properties.push(new ObjectUI.ObjectPropertiesSection.ObjectTreeNode(
-        runtimeModel.createRemotePropertyFromPrimitiveValue('once', eventListener.once())));
+        runtimeModel.createRemotePropertyFromPrimitiveValue('once', eventListener.once()), undefined, {
+          readOnly: false,
+          propertiesMode: ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED
+        }));
     if (typeof eventListener.handler() !== 'undefined') {
       properties.push(new ObjectUI.ObjectPropertiesSection.ObjectTreeNode(
-          new SDK.RemoteObject.RemoteObjectProperty('handler', eventListener.handler())));
+          new SDK.RemoteObject.RemoteObjectProperty('handler', eventListener.handler()), undefined, {
+            readOnly: false,
+            propertiesMode: ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED
+          }));
     }
     ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement.populateWithProperties(
         this, {properties}, true, true, undefined);

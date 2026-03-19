@@ -6,11 +6,14 @@ import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
+import * as Logs from '../../models/logs/logs.js';
 import * as NetworkTimeCalculator from '../../models/network_time_calculator/network_time_calculator.js';
 import {assertScreenshot, getCleanTextContentFromElements, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
+import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Network from './network.js';
 
@@ -270,5 +273,61 @@ describe('ResourceTimingView', () => {
     Network.RequestTimingView.DEFAULT_VIEW({...baseInput, requestUnfinished: false}, {}, container);
     const cautionElementFalse = container.querySelector('.caution');
     assert.isNull(cautionElementFalse, 'caution element should not exist when requestUnfinished is false');
+  });
+
+  it('renders read-only object properties for Service Worker fetch details', async () => {
+    stubNoopSettings();
+    const request = createNetworkRequest(
+        Protocol.Network.ServiceWorkerRouterSource.Network, Protocol.Network.ServiceWorkerRouterSource.Network);
+    request.fetchedViaServiceWorker = true;
+
+    const origRequest = {
+      url: request.url(),
+      method: 'GET',
+      headers: {},
+      initialPriority: Protocol.Network.ResourcePriority.High,
+      referrerPolicy: Protocol.Network.RequestReferrerPolicy.StrictOriginWhenCrossOrigin,
+    } as Protocol.Network.Request;
+
+    const response = {
+      url: request.url(),
+      status: 200,
+      statusText: 'OK',
+      headers: {},
+      mimeType: 'text/html',
+      charset: '',
+      connectionReused: false,
+      connectionId: 0,
+      encodedDataLength: 0,
+      securityState: Protocol.Security.SecurityState.Secure,
+    } as Protocol.Network.Response;
+
+    sinon.stub(Logs.NetworkLog.NetworkLog.instance(), 'originalRequestForURL').returns(origRequest);
+    sinon.stub(Logs.NetworkLog.NetworkLog.instance(), 'originalResponseForURL').returns(response);
+
+    const component = Network.RequestTimingView.RequestTimingView.create(
+        request, new NetworkTimeCalculator.NetworkTimeCalculator(true));
+    const div = document.createElement('div');
+    renderElementIntoDOM(div);
+    component.markAsRoot();
+    component.show(div);
+
+    await component.updateComplete;
+
+    const detailsTreeElement = component.contentElement.querySelector('.network-fetch-timing-bar-details > *');
+    assert.exists(detailsTreeElement);
+    assert.exists(detailsTreeElement.shadowRoot);
+
+    const rootElements = detailsTreeElement.shadowRoot.querySelectorAll('li.object-properties-section-root-element');
+    assert.lengthOf(rootElements, 2);
+
+    for (const rootElementNode of rootElements) {
+      const rootElement = UI.TreeOutline.TreeElement.getTreeElementBylistItemNode(rootElementNode);
+      assert.exists(rootElement);
+      await rootElement.onpopulate();
+      const firstProperty = rootElement.childAt(0);
+      assert.instanceOf(firstProperty, ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement);
+      assert.isFalse(firstProperty.editable);
+    }
   });
 });

@@ -148,16 +148,28 @@ interface NodeChildren {
   accessors?: ObjectTreeNode[];
 }
 
+export interface ObjectTreeOptions {
+  readonly propertiesMode: ObjectPropertiesMode;
+  readonly readOnly: boolean;
+}
+
 export abstract class ObjectTreeNodeBase extends Common.ObjectWrapper.ObjectWrapper<ObjectTreeNodeBase.EventTypes> {
   #children?: NodeChildren;
   protected filter: {includeNullOrUndefinedValues: boolean, regex: RegExp|null}|null = null;
   protected extraProperties: ObjectTreeNode[] = [];
   expanded = false;
-  constructor(
-      readonly parent?: ObjectTreeNodeBase,
-      readonly propertiesMode: ObjectPropertiesMode = ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED) {
+
+  constructor(readonly parent: ObjectTreeNodeBase|undefined, protected readonly options: ObjectTreeOptions) {
     super();
     this.filter = parent?.filter ?? null;
+  }
+
+  get readOnly(): boolean {
+    return this.options.readOnly;
+  }
+
+  get propertiesMode(): ObjectPropertiesMode {
+    return this.options.propertiesMode;
   }
 
   get includeNullOrUndefinedValues(): boolean {
@@ -258,7 +270,9 @@ export abstract class ObjectTreeNodeBase extends Common.ObjectWrapper.ObjectWrap
     if (this.arrayLength > ARRAY_LOAD_THRESHOLD) {
       const ranges = await arrayRangeGroups(object, 0, this.arrayLength - 1);
       const arrayRanges = ranges?.ranges.map(
-          ([fromIndex, toIndex, count]) => new ArrayGroupTreeNode(object, {fromIndex, toIndex, count}));
+          ([fromIndex, toIndex, count]) => new ArrayGroupTreeNode(
+              object, {fromIndex, toIndex, count}, effectiveParent,
+              {readOnly: this.readOnly, propertiesMode: this.propertiesMode}));
       if (!arrayRanges) {
         return {};
       }
@@ -267,10 +281,15 @@ export abstract class ObjectTreeNodeBase extends Common.ObjectWrapper.ObjectWrap
           await SDK.RemoteObject.RemoteObject.loadFromObjectPerProto(
               this.object, true /* generatePreview */, true /* nonIndexedPropertiesOnly */);
 
-      const properties = objectProperties?.map(p => new ObjectTreeNode(p, undefined, effectiveParent, undefined));
+      const properties = objectProperties?.map(
+          p => new ObjectTreeNode(
+              p, effectiveParent,
+              {readOnly: this.readOnly, propertiesMode: ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED}));
 
-      const internalProperties =
-          objectInternalProperties?.map(p => new ObjectTreeNode(p, undefined, effectiveParent, undefined));
+      const internalProperties = objectInternalProperties?.map(
+          p => new ObjectTreeNode(
+              p, effectiveParent,
+              {readOnly: this.readOnly, propertiesMode: ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED}));
       return {arrayRanges, properties, internalProperties};
     }
 
@@ -287,13 +306,18 @@ export abstract class ObjectTreeNodeBase extends Common.ObjectWrapper.ObjectWrap
         break;
     }
 
-    const properties = objectProperties?.map(p => new ObjectTreeNode(p, undefined, effectiveParent, undefined));
+    const properties = objectProperties?.map(
+        p => new ObjectTreeNode(
+            p, effectiveParent,
+            {readOnly: this.readOnly, propertiesMode: ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED}));
     properties?.push(...this.extraProperties);
     properties?.sort(ObjectPropertiesSection.compareProperties);
     const accessors = properties && ObjectTreeNodeBase.getGettersAndSetters(properties);
 
-    const internalProperties =
-        objectInternalProperties?.map(p => new ObjectTreeNode(p, undefined, effectiveParent, undefined));
+    const internalProperties = objectInternalProperties?.map(
+        p => new ObjectTreeNode(
+            p, effectiveParent,
+            {readOnly: this.readOnly, propertiesMode: ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED}));
     return {properties, internalProperties, accessors};
   }
 
@@ -311,7 +335,9 @@ export abstract class ObjectTreeNodeBase extends Common.ObjectWrapper.ObjectWrap
   }
 
   addExtraProperties(...properties: SDK.RemoteObject.RemoteObjectProperty[]): void {
-    this.extraProperties.push(...properties.map(p => new ObjectTreeNode(p, undefined, this, undefined)));
+    this.extraProperties.push(...properties.map(
+        p => new ObjectTreeNode(
+            p, this, {readOnly: this.readOnly, propertiesMode: ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED})));
   }
 
   static getGettersAndSetters(properties: ObjectTreeNode[]): ObjectTreeNode[] {
@@ -321,12 +347,14 @@ export abstract class ObjectTreeNodeBase extends Common.ObjectWrapper.ObjectWrap
         if (property.property.getter) {
           const getterProperty = new SDK.RemoteObject.RemoteObjectProperty(
               'get ' + property.property.name, property.property.getter, false);
-          gettersAndSetters.push(new ObjectTreeNode(getterProperty, property.propertiesMode, property.parent));
+          gettersAndSetters.push(new ObjectTreeNode(
+              getterProperty, property.parent, {propertiesMode: property.propertiesMode, readOnly: property.readOnly}));
         }
         if (property.property.setter) {
           const setterProperty = new SDK.RemoteObject.RemoteObjectProperty(
               'set ' + property.property.name, property.property.setter, false);
-          gettersAndSetters.push(new ObjectTreeNode(setterProperty, property.propertiesMode, property.parent));
+          gettersAndSetters.push(new ObjectTreeNode(
+              setterProperty, property.parent, {propertiesMode: property.propertiesMode, readOnly: property.readOnly}));
         }
       }
     }
@@ -350,10 +378,8 @@ export namespace ObjectTreeNodeBase {
 export class ObjectTree extends ObjectTreeNodeBase {
   readonly #object: SDK.RemoteObject.RemoteObject;
 
-  constructor(
-      object: SDK.RemoteObject.RemoteObject,
-      propertiesMode: ObjectPropertiesMode = ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED) {
-    super(undefined, propertiesMode);
+  constructor(object: SDK.RemoteObject.RemoteObject, options: ObjectTreeOptions) {
+    super(undefined, options);
     this.#object = object;
   }
   override get object(): SDK.RemoteObject.RemoteObject {
@@ -366,9 +392,8 @@ class ArrayGroupTreeNode extends ObjectTreeNodeBase {
   readonly #range: {fromIndex: number, toIndex: number, count: number};
   constructor(
       object: SDK.RemoteObject.RemoteObject, range: {fromIndex: number, toIndex: number, count: number},
-      parent?: ObjectTreeNodeBase,
-      propertiesMode: ObjectPropertiesMode = ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED) {
-    super(parent, propertiesMode);
+      parent: ObjectTreeNodeBase, options: ObjectTreeOptions) {
+    super(parent, options);
     this.#object = object;
     this.#range = range;
   }
@@ -377,7 +402,9 @@ class ArrayGroupTreeNode extends ObjectTreeNodeBase {
     if (this.#range.count > ArrayGroupingTreeElement.bucketThreshold) {
       const ranges = await arrayRangeGroups(this.object, this.#range.fromIndex, this.#range.toIndex);
       const arrayRanges = ranges?.ranges.map(
-          ([fromIndex, toIndex, count]) => new ArrayGroupTreeNode(this.object, {fromIndex, toIndex, count}));
+          ([fromIndex, toIndex, count]) => new ArrayGroupTreeNode(
+              this.object, {fromIndex, toIndex, count}, this,
+              {readOnly: this.readOnly, propertiesMode: this.propertiesMode}));
       return {arrayRanges};
     }
 
@@ -393,7 +420,8 @@ class ArrayGroupTreeNode extends ObjectTreeNodeBase {
     const allProperties =
         await arrayFragment.getAllProperties(false /* accessorPropertiesOnly */, true /* generatePreview */);
     arrayFragment.release();
-    const properties = allProperties.properties?.map(p => new ObjectTreeNode(p, this.propertiesMode, this, undefined));
+    const properties = allProperties.properties?.map(
+        p => new ObjectTreeNode(p, this, {propertiesMode: this.propertiesMode, readOnly: this.readOnly}));
     properties?.push(...this.extraProperties);
     properties?.sort(ObjectPropertiesSection.compareProperties);
     const accessors = properties && ObjectTreeNodeBase.getGettersAndSetters(properties);
@@ -417,11 +445,11 @@ export class ObjectTreeNode extends ObjectTreeNodeBase {
   #path?: string;
   constructor(
       readonly property: SDK.RemoteObject.RemoteObjectProperty,
-      propertiesMode: ObjectPropertiesMode = ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED,
-      parent?: ObjectTreeNodeBase,
+      parent: ObjectTreeNodeBase|undefined,
+      options: ObjectTreeOptions,
       readonly nonSyntheticParent?: SDK.RemoteObject.RemoteObject,
   ) {
-    super(parent, propertiesMode);
+    super(parent, options);
   }
   override get object(): SDK.RemoteObject.RemoteObject|undefined {
     return this.property.value;
@@ -522,7 +550,6 @@ export const getObjectPropertiesSectionFrom = (element: Element): ObjectProperti
 
 export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow {
   readonly root: ObjectTree;
-  readonly editable: boolean;
   readonly #objectTreeElement: RootElement;
   titleElement: Element;
   skipProtoInternal?: boolean;
@@ -531,8 +558,8 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
       object: SDK.RemoteObject.RemoteObject, title?: string|Element|null, linkifier?: Components.Linkifier.Linkifier,
       showOverflow?: boolean, editable = true) {
     super();
-    this.root = new ObjectTree(object);
-    this.editable = editable;
+    this.root = new ObjectTree(
+        object, {readOnly: !editable, propertiesMode: ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED});
     if (!showOverflow) {
       this.setHideOverflow(true);
     }
@@ -935,11 +962,9 @@ export interface TreeOutlineOptions {
 }
 
 export class ObjectPropertiesSectionsTreeOutline extends UI.TreeOutline.TreeOutlineInShadow {
-  readonly editable: boolean;
-  constructor(options?: TreeOutlineOptions|null) {
+  constructor() {
     super();
     this.registerRequiredCSS(objectValueStyles, objectPropertiesSectionStyles);
-    this.editable = !(options?.readOnly);
     this.contentElement.classList.add('source-code');
     this.contentElement.classList.add('object-properties-section');
   }
@@ -1478,10 +1503,7 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
     this.#widget.show(this.listItemElement);
     this.#widget.property = this.property;
     this.#widget.linkifier = this.linkifier;
-    this.#widget.editable = this.treeOutline instanceof ObjectPropertiesSectionsTreeOutline ||
-            this.treeOutline instanceof ObjectPropertiesSection ?
-        this.treeOutline.editable :
-        false;
+    this.#widget.editable = !this.property.readOnly;
   }
 
   override onexpand(): void {

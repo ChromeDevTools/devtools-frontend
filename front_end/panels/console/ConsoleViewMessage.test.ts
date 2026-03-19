@@ -16,6 +16,7 @@ import {
 import {raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -126,6 +127,30 @@ describeWithMockConnection('ConsoleViewMessage', () => {
     });
   });
 
+  describe('formatParameter', () => {
+    it('creates an editable object properties section for objects', async () => {
+      const target = createTarget();
+      const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
+      const remoteObject = SDK.RemoteObject.RemoteObject.fromLocalObject({foo: 'bar'});
+      const rawMessage = new SDK.ConsoleModel.ConsoleMessage(
+          runtimeModel, Common.Console.FrontendMessageSource.ConsoleAPI, Protocol.Log.LogEntryLevel.Info, '',
+          {parameters: [remoteObject]});
+      const {message} = createConsoleViewMessageWithStubDeps(rawMessage);
+      const messageElement = message.toMessageElement();
+
+      const propertiesSectionElement = messageElement.querySelector('.console-view-object-properties-section');
+      assert.exists(propertiesSectionElement);
+
+      const section = ObjectUI.ObjectPropertiesSection.getObjectPropertiesSectionFrom(propertiesSectionElement);
+      assert.exists(section);
+
+      const rootElement = section.objectTreeElement();
+      await rootElement.onpopulate();
+      const child = rootElement.childAt(0);
+      assert.instanceOf(child, ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement);
+      assert.isTrue(child.editable);
+    });
+  });
   describe('console insights', () => {
     const createMessage =
         (source: SDK.ConsoleModel.MessageSource, level: Protocol.Log.LogEntryLevel, messageText: string):

@@ -119,12 +119,15 @@ devtools_ui_module("unittests") {
     "AiCodeGenerationTeaser.test.ts",
     "BadgeNotification.test.ts",
     "DOMLinkifier.test.ts",
+    "ExtensionPanel.test.ts",
     "ExtensionServer.test.ts",
     "GdpSignUpDialog.test.ts",
   ]
 
   deps = [
     ":bundle",
+    "../../core/platform:bundle",
     "../../testing",
+    "../../ui/legacy:bundle",
   ]
 }

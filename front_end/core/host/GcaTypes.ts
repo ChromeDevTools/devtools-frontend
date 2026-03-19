@@ -203,9 +203,11 @@ export interface FileEdit {
 }
 /* eslint-enable @typescript-eslint/naming-convention */
 
+export type Role = 'user'|'model';
+
 export interface Content {
   parts?: Part[];
-  role: string;
+  role: Role;
 }
 
 /* eslint-disable @typescript-eslint/naming-convention */

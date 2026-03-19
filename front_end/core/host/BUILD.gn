@@ -8,6 +8,7 @@ import("../../../scripts/build/ninja/devtools_module.gni")
 devtools_module("host") {
   sources = [
     "AidaClient.ts",
+    "AidaGcaTranslation.ts",
     "DispatchHttpRequestClient.ts",
     "GcaTypes.ts",
     "GdpClient.ts",
@@ -40,6 +41,7 @@ ts_library("unittests") {
 
   sources = [
     "AidaClient.test.ts",
+    "AidaGcaTranslation.test.ts",
     "DispatchHttpRequestClient.test.ts",
     "GdpClient.test.ts",
   ]

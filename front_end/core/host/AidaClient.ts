@@ -67,10 +67,10 @@ interface BaseFunctionParam {
 }
 
 export interface FunctionPrimitiveParams extends BaseFunctionParam {
-  type: ParametersTypes.BOOLEAN|ParametersTypes.INTEGER|ParametersTypes.STRING|ParametersTypes.BOOLEAN;
+  type: ParametersTypes.BOOLEAN|ParametersTypes.INTEGER|ParametersTypes.STRING;
 }
 
-interface FunctionArrayParam extends BaseFunctionParam {
+export interface FunctionArrayParam extends BaseFunctionParam {
   type: ParametersTypes.ARRAY;
   items: FunctionPrimitiveParams;
 }
@@ -301,6 +301,9 @@ export enum UseCase {
 
   // Code generation use case is expected to generate code from scratch
   CODE_GENERATION = 1,
+
+  // Code transformation or code editing use case.
+  CODE_TRANSFORMATION = 2,
 }
 
 /* eslint-disable @typescript-eslint/naming-convention */

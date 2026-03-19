@@ -86,4 +86,41 @@ describeWithMockConnection('AccessibilityAgent', () => {
     assert.exists(titleResponse);
     assert.strictEqual(titleResponse.title, 'Getting Lighthouse audits for accessibility…');
   });
+
+  it('can call the getStyles method', async () => {
+    const aidaClient = mockAidaClient([[{
+      explanation: '',
+      functionCalls:
+          [{name: 'getStyles', args: {path: '1,HTML,1,BODY', styleProperties: ['color'], explanation: 'testing'}}],
+      metadata: {
+        rpcGlobalId: 123,
+      },
+    }]]);
+    const agent = new AiAssistance.AccessibilityAgent.AccessibilityAgent({
+      aidaClient,
+    });
+    const context = new AiAssistance.AccessibilityAgent.AccessibilityContext(mockReport);
+    const responses = await Array.fromAsync(agent.run('test', {selected: context}));
+    const titleResponse = responses.find(response => response.type === AiAssistance.AiAgent.ResponseType.TITLE);
+    assert.exists(titleResponse);
+    assert.strictEqual(titleResponse.title, 'Reading computed styles');
+  });
+
+  it('can call the getElementAccessibilityDetails method', async () => {
+    const aidaClient = mockAidaClient([[{
+      explanation: '',
+      functionCalls: [{name: 'getElementAccessibilityDetails', args: {path: '1,HTML,1,BODY', explanation: 'testing'}}],
+      metadata: {
+        rpcGlobalId: 123,
+      },
+    }]]);
+    const agent = new AiAssistance.AccessibilityAgent.AccessibilityAgent({
+      aidaClient,
+    });
+    const context = new AiAssistance.AccessibilityAgent.AccessibilityContext(mockReport);
+    const responses = await Array.fromAsync(agent.run('test', {selected: context}));
+    const titleResponse = responses.find(response => response.type === AiAssistance.AiAgent.ResponseType.TITLE);
+    assert.exists(titleResponse);
+    assert.strictEqual(titleResponse.title, 'Reading accessibility details');
+  });
 });

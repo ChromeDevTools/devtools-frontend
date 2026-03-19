@@ -657,6 +657,7 @@ interface WidgetMakerResponse {
   renderedWidget: Lit.LitTemplate|null;
   revealable: unknown;
   customRevealTitle?: Platform.UIString.LocalizedString;
+  widgetName?: string;
 }
 
 const nodeCache = new Map<Protocol.DOM.BackendNodeId, SDK.DOMModel.DOMNode>();
@@ -765,21 +766,36 @@ function renderWidgetResponse(response: WidgetMakerResponse|null): Lit.LitTempla
     'widget-and-revealer-container': true,
     'revealer-only': response.renderedWidget === null,
   });
+
+  const revealButton = html`
+    <devtools-button class="widget-reveal"
+      .iconName=${'tab-move'}
+      .variant=${Buttons.Button.Variant.TEXT}
+      @click=${onReveal}
+    >${response.customRevealTitle ?? lockedString(UIStringsNotTranslate.reveal)}</devtools-button>
+  `;
+
   // clang-format off
   return html`
     <div class=${classes}>
+      ${response.widgetName ? html`
+        <div class="widget-header">
+          <div class="widget-name">${response.widgetName}</div>
+          <div class="widget-reveal-container">
+            ${revealButton}
+          </div>
+        </div>
+      ` : Lit.nothing}
       ${response.renderedWidget ? html`
         <div class="widget-content-container">
           ${response.renderedWidget}
         </div>` : Lit.nothing
       }
-      <div class="widget-reveal-container">
-        <devtools-button class="widget-reveal"
-          .iconName=${'tab-move'}
-          .variant=${Buttons.Button.Variant.TEXT}
-          @click=${onReveal}
-        >${response.customRevealTitle ?? lockedString(UIStringsNotTranslate.reveal)}</devtools-button>
-      </div>
+      ${!response.widgetName ? html`
+        <div class="widget-reveal-container">
+          ${revealButton}
+        </div>
+      ` : Lit.nothing}
     </div>
     `;
   // clang-format on
@@ -847,6 +863,7 @@ async function makeDomTreeWidget(widgetData: DomTreeAiWidget): Promise<WidgetMak
   return {
     renderedWidget,
     revealable: new SDK.DOMModel.DeferredDOMNode(root.domModel().target(), root.backendNodeId()),
+    widgetName: 'LCP element',
   };
 }
 

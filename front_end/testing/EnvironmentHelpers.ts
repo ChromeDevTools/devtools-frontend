@@ -232,3 +232,13 @@ export function resetHostConfig() {
 export function updateHostConfig(config: Root.Runtime.HostConfig) {
   Object.assign(Root.Runtime.hostConfig, config);
 }
+
+export async function waitFor(selector: string, root?: Element|ShadowRoot): Promise<Element|null> {
+  let element = null;
+  // Poll for element until found
+  while (!element) {
+    element = root ? root.querySelector(selector) : document.querySelector(selector);
+    await new Promise(resolve => setTimeout(resolve, 10));
+  }
+  return element;
+}

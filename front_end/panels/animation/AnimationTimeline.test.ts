@@ -8,6 +8,7 @@ import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {
   createTarget,
   stubNoopSettings,
+  waitFor,
 } from '../../testing/EnvironmentHelpers.js';
 import {expectCall} from '../../testing/ExpectStubCall.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
@@ -110,15 +111,6 @@ const stubAnimationDOMNode = (): AnimationDOMNodeStubs => {
     addScrollEventListener,
     removeScrollEventListener,
   };
-};
-
-const waitFor = async(selector: string, root?: Element|ShadowRoot): Promise<Element|null> => {
-  let element = null;
-  while (!element) {
-    element = root ? root.querySelector(selector) : document.querySelector(selector);
-    await new Promise(resolve => setTimeout(resolve, 10));
-  }
-  return element;
 };
 
 const waitForAll = async(selector: string, root?: Element|ShadowRoot): Promise<NodeListOf<Element>|null> => {

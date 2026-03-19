@@ -4,10 +4,13 @@
 
 import * as Host from '../../../core/host/host.js';
 import * as Root from '../../../core/root/root.js';
+import * as SDK from '../../../core/sdk/sdk.js';
+import type * as Protocol from '../../../generated/protocol.js';
 import type * as AIAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
 import {assertScreenshot, querySelectorErrorOnMissing, renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import {
   describeWithEnvironment,
+  waitFor,
 } from '../../../testing/EnvironmentHelpers.js';
 import {createViewFunctionStub, type ViewFunctionStub} from '../../../testing/ViewFunctionHelpers.js';
 import * as AiAssistance from '../ai_assistance.js';
@@ -467,6 +470,63 @@ describeWithEnvironment('ChatMessage', () => {
       if (walkthrough) {
         assert.isFalse(walkthrough.hasAttribute('open'));
       }
+    });
+
+    it('renders widget name and top reveal button when widgetName is provided', async () => {
+      const root = sinon.createStubInstance(SDK.DOMModel.DOMNodeSnapshot);
+      const domModel = sinon.createStubInstance(SDK.DOMModel.DOMModel);
+      const target = sinon.createStubInstance(SDK.Target.Target);
+      root.domModel.returns(domModel);
+      domModel.target.returns(target);
+      root.backendNodeId.returns(1 as Protocol.DOM.BackendNodeId);
+
+      const messageWithNamedWidget: AiAssistance.ChatMessage.ModelChatMessage = {
+        entity: AiAssistance.ChatMessage.ChatMessageEntity.MODEL,
+        parts: [{
+          type: 'widget',
+          widgets: [{
+            name: 'DOM_TREE',
+            data: {
+              root,
+            },
+          }],
+        }],
+        rpcId: 99,
+      };
+
+      // We need to mock the widget maker to return a name
+      const targetElement = document.createElement('div');
+      AiAssistance.ChatMessage.DEFAULT_VIEW(
+          {
+            onRatingClick: () => {},
+            onReportClick: () => {},
+            onCopyResponseClick: () => {},
+            scrollSuggestionsScrollContainer: () => {},
+            onSuggestionsScrollOrResize: () => {},
+            onSuggestionClick: () => {},
+            onSubmit: () => {},
+            onClose: () => {},
+            onInputChange: () => {},
+            onFeedbackSubmit: () => {},
+            showRateButtons: false,
+            isSubmitButtonDisabled: false,
+            isShowingFeedbackForm: false,
+            isLastMessage: true,
+            showActions: true,
+            message: messageWithNamedWidget,
+            isLoading: false,
+            isReadOnly: false,
+            canShowFeedbackForm: false,
+            markdownRenderer: new AiAssistance.MarkdownRendererWithCodeBlock(),
+            currentRating: undefined,
+            walkthrough: {...DEFAULT_WALKTHROUGH},
+          },
+          {}, targetElement);
+
+      // We need to wait for the async renderWidgets
+      const widgetHeader = await waitFor('.widget-header', targetElement);
+      assert.isNotNull(widgetHeader);
+      assert.strictEqual(widgetHeader.querySelector('.widget-name')?.textContent, 'LCP element');
     });
   });
 

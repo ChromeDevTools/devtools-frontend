@@ -5,7 +5,7 @@
 import {
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
-import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
+import {describeWithEnvironment, waitFor} from '../../../testing/EnvironmentHelpers.js';
 import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 
 import * as TimelineComponents from './components.js';
@@ -36,16 +36,6 @@ describeWithEnvironment('Export Trace Options ', () => {
     await RenderCoordinator.done();
     return exportTraceOptions;
   }
-
-  const waitFor = async(selector: string, root?: Element|ShadowRoot): Promise<Element|null> => {
-    let element = null;
-    // Poll for element until found
-    while (!element) {
-      element = root ? root.querySelector(selector) : document.querySelector(selector);
-      await new Promise(resolve => setTimeout(resolve, 10));
-    }
-    return element;
-  };
 
   it('should render dialog button', async () => {
     const component = await renderExportTraceOptionsDialog();

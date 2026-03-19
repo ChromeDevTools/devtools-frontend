@@ -14,7 +14,7 @@ import sidebarInsightsTabStyles from './sidebarInsightsTab.css.js';
 import {SidebarSingleInsightSet, type SidebarSingleInsightSetData} from './SidebarSingleInsightSet.js';
 
 const {html} = Lit;
-const {widgetConfig} = UI.Widget;
+const {widget} = UI.Widget;
 
 interface ViewInput {
   parsedTrace: Trace.TraceModel.ParsedTrace;
@@ -67,7 +67,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
         const contents = html`
           <devtools-widget
             data-insight-set-key=${id}
-            .widgetConfig=${widgetConfig(SidebarSingleInsightSet, {data})}
+            ${widget(SidebarSingleInsightSet, {data})}
           ></devtools-widget>
         `;
 

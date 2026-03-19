@@ -55,6 +55,7 @@ const ASTUtils = SDK.CSSPropertyParser.ASTUtils;
 const FlexboxEditor = ElementsComponents.StylePropertyEditor.FlexboxEditor;
 const GridEditor = ElementsComponents.StylePropertyEditor.GridEditor;
 const GridLanesEditor = ElementsComponents.StylePropertyEditor.GridLanesEditor;
+const {widget} = UI.Widget;
 
 const UIStrings = {
   /**
@@ -2688,7 +2689,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
                 e.consume(true);
               }
             }}
-            .widgetConfig=${UI.Widget.widgetConfig(CSSValueTraceView)}>
+            ${widget(CSSValueTraceView)}>
           </devtools-widget>
         </devtools-tooltip>`;
     // clang-format on

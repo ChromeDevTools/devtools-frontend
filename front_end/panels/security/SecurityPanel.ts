@@ -29,7 +29,7 @@ import {
 } from './SecurityModel.js';
 import {SecurityPanelSidebar} from './SecurityPanelSidebar.js';
 
-const {widgetConfig} = UI.Widget;
+const {widget, widgetRef} = UI.Widget;
 
 const UIStrings = {
   /**
@@ -552,8 +552,8 @@ const DEFAULT_VIEW: View = (input: ViewInput, output: ViewOutput, target: HTMLEl
       ${UI.Widget.widgetRef(UI.SplitWidget.SplitWidget, e => {output.splitWidget = e;})}>
       <devtools-widget
         slot="sidebar"
-        .widgetConfig=${widgetConfig(SecurityPanelSidebar)}
-        ${UI.Widget.widgetRef(SecurityPanelSidebar, e => {output.sidebar = e;})}>
+        ${widget(SecurityPanelSidebar)}
+        ${widgetRef(SecurityPanelSidebar, e => {output.sidebar = e;})}>
       </devtools-widget>
   </devtools-split-view>`,
     target);

@@ -151,6 +151,7 @@ const UIStrings = {
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/recorder/RecorderController.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+const {widget} = UI.Widget;
 
 const GET_EXTENSIONS_MENU_ITEM = 'get-extensions-link';
 const GET_EXTENSIONS_URL = 'https://goo.gle/recorder-extension-list' as Platform.DevToolsPath.UrlString;
@@ -1203,7 +1204,7 @@ export class RecorderController extends LitElement {
     // clang-format off
     return html`
       <devtools-widget
-        .widgetConfig=${UI.Widget.widgetConfig(Components.RecordingListView.RecordingListView, {
+        ${widget(Components.RecordingListView.RecordingListView, {
           recordings: recordings.map(recording => ({
             storageName: recording.storageName,
             name: recording.flow.title,
@@ -1244,7 +1245,7 @@ export class RecorderController extends LitElement {
     return html`
       <devtools-widget
           class="recording-view"
-          .widgetConfig=${UI.Widget.widgetConfig(Components.RecordingView.RecordingView, {
+          ${widget(Components.RecordingView.RecordingView, {
             recording: this.currentRecording?.flow ?? {title: '', steps: []},
             replayState: this.#replayState,
             isRecording: this.isRecording,
@@ -1291,7 +1292,7 @@ export class RecorderController extends LitElement {
     return html`
       <devtools-widget
         class="recording-view"
-        .widgetConfig=${UI.Widget.widgetConfig(Components.CreateRecordingView.CreateRecordingView, {
+        ${widget(Components.CreateRecordingView.CreateRecordingView, {
           recorderSettings: this.#recorderSettings,
           onRecordingStarted: this.#onRecordingStarted.bind(this),
           onRecordingCancelled: this.onRecordingCancelled.bind(this),

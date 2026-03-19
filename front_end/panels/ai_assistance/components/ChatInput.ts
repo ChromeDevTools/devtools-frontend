@@ -22,6 +22,7 @@ import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import chatInputStyles from './chatInput.css.js';
 
 const {html, Directives: {createRef, ref}} = Lit;
+const {widget} = UI.Widget;
 
 const UIStrings = {
   /**
@@ -332,7 +333,7 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: ViewOutput, target: HTML
                             html`
                               <devtools-widget
                                 class="title"
-                                .widgetConfig=${UI.Widget.widgetConfig(PanelsCommon.DOMLinkifier.DOMNodeLink, {
+                                ${widget(PanelsCommon.DOMLinkifier.DOMNodeLink, {
                                   node: input.context.getItem(),
                                   options: {
                                     disabled: !input.isContextSelected,
@@ -352,7 +353,7 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: ViewOutput, target: HTML
                             input.context instanceof AiAssistanceModel.PerformanceAgent.PerformanceTraceContext ?
                             html`<devtools-icon class="icon" name="performance" title="Performance"></devtools-icon>` :
                             Lit.nothing}
-                            <span 
+                            <span
                               role="button"
                               class="title"
                               tabindex="0"

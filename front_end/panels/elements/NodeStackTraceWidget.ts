@@ -20,6 +20,7 @@ const UIStrings = {
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/elements/NodeStackTraceWidget.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+const {widget} = UI.Widget;
 
 interface ViewInput {
   stackTrace?: StackTrace.StackTrace.StackTrace;
@@ -35,7 +36,7 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
     ${target && stackTrace ?
          html`<devtools-widget
                 class="stack-trace"
-                .widgetConfig=${UI.Widget.widgetConfig(Components.JSPresentationUtils.StackTracePreviewContent, {stackTrace})}>
+                ${widget(Components.JSPresentationUtils.StackTracePreviewContent, {stackTrace})}>
               </devtools-widget>` :
          html`<div class="gray-info-message">${i18nString(UIStrings.noStackTraceAvailable)}</div>`}`,
     target);

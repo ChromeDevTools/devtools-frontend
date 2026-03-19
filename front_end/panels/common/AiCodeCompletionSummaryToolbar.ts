@@ -27,6 +27,7 @@ const UIStringsNotTranslate = {
 } as const;
 
 const lockedString = i18n.i18n.lockedString;
+const {widget} = UI.Widget;
 
 export interface AiCodeCompletionSummaryToolbarProps {
   citationsTooltipId: string;
@@ -64,7 +65,7 @@ export const DEFAULT_SUMMARY_TOOLBAR_VIEW: View = (input, _output, target) => {
   // clang-format off
   const disclaimer = input.disclaimerTooltipId && input.spinnerTooltipId ?
     html`<devtools-widget
-            .widgetConfig=${UI.Widget.widgetConfig(AiCodeCompletionDisclaimer, {
+            ${widget(AiCodeCompletionDisclaimer, {
       disclaimerTooltipId: input.disclaimerTooltipId,
       spinnerTooltipId: input.spinnerTooltipId,
       loading: input.loading,

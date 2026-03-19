@@ -597,7 +597,7 @@ function renderSections(input: ViewInput): Lit.LitTemplate {
                     return html`
                       <devtools-widget
                       @copystep=${input.onCopyStep}
-                      .widgetConfig=${UI.Widget.widgetConfig(StepView, {
+                      ${widget(StepView, {
                         step,
                         state: input.getStepState(step),
                         error: input.currentStep === step ? (input.currentError ?? undefined) : undefined,
@@ -812,7 +812,7 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
           <div class="controls">
             <devtools-widget
               class="control-button"
-              .widgetConfig=${UI.Widget.widgetConfig(ControlButton, {
+              ${widget(ControlButton, {
                 label: footerButtonTitle,
                 shape: 'square',
                 disabled: input.recordingTogglingInProgress,

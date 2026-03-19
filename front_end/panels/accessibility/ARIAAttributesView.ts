@@ -26,6 +26,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/accessibility/ARIAAttributesView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const {render, html} = Lit;
+const {widget} = UI.Widget;
 
 interface ViewInput {
   propertyCompletions: Map<SDK.DOMModel.Attribute, string[]>;
@@ -62,8 +63,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
          html`
           <style>${accessibilityPropertiesStyles}</style>
           <devtools-widget
-            .widgetConfig=${UI.Widget.widgetConfig(UI.EmptyWidget.EmptyWidget,
-                                                   {text: i18nString(UIStrings.noAriaAttributes)})}
+            ${widget(UI.EmptyWidget.EmptyWidget, {text: i18nString(UIStrings.noAriaAttributes)})}
             class="gray-info-message info-message-overflow"></devtools-widget>` :
          html`<devtools-tree
            hide-overflow

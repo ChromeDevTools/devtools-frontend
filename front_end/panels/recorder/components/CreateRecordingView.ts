@@ -101,6 +101,7 @@ const str_ = i18n.i18n.registerUIStrings(
     UIStrings,
 );
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+const {widget} = UI.Widget;
 
 export interface ViewInput {
   name: string;
@@ -269,7 +270,7 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
         <div class="controls">
           <devtools-widget
             class="control-button"
-            .widgetConfig=${UI.Widget.widgetConfig(ControlButton, {
+            ${widget(ControlButton, {
               label: i18nString(UIStrings.startRecording),
               shape: 'circle',
               onClick: onRecordingStarted,

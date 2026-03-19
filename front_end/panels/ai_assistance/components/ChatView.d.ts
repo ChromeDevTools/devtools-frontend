@@ -22,6 +22,8 @@ export interface Props {
     onCopyResponseClick: (message: ModelChatMessage) => void;
     onContextRemoved: (() => void) | null;
     onContextAdd: (() => void) | null;
+    conversationMarkdown: string;
+    onExportConversation: (() => void) | null;
     changeManager: AiAssistanceModel.ChangeManager.ChangeManager;
     inspectElementToggled: boolean;
     messages: Message[];

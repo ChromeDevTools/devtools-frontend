@@ -37,10 +37,25 @@ export class StandaloneStylesContainer extends Common.ObjectWrapper.eventMixin(U
     #computedStyleModelInternal = new ComputedStyle.ComputedStyleModel.ComputedStyleModel();
     #view;
     #filter = null;
+    #rebuildThrottler = new Common.Throttler.Throttler(200);
     constructor(element, view = DEFAULT_VIEW) {
         super(element, { useShadowDom: true });
         this.#view = view;
         this.#computedStyleModelInternal.addEventListener("CSSModelChanged" /* ComputedStyle.ComputedStyleModel.Events.CSS_MODEL_CHANGED */, this.#onCSSModelChanged, this);
+        this.#computedStyleModelInternal.addEventListener("ComputedStyleChanged" /* ComputedStyle.ComputedStyleModel.Events.COMPUTED_STYLE_CHANGED */, this.#onComputedStyleChanged, this);
+    }
+    #onComputedStyleChanged() {
+        if (this.isEditingStyle || this.userOperation) {
+            return;
+        }
+        this.#rebuildAndUpdate();
+    }
+    #rebuildAndUpdate() {
+        void this.#rebuildThrottler.schedule(async () => {
+            this.node()?.domModel().cssModel().discardCachedMatchedCascade();
+            await this.#updateSections();
+            this.requestUpdate();
+        });
     }
     async #onCSSModelChanged(event) {
         // We only recreate sections if this update is more than an "edit" operation.
@@ -51,9 +66,7 @@ export class StandaloneStylesContainer extends Common.ObjectWrapper.eventMixin(U
         if (this.isEditingStyle || this.userOperation) {
             return;
         }
-        this.node()?.domModel().cssModel().discardCachedMatchedCascade();
-        await this.#updateSections();
-        this.requestUpdate();
+        this.#rebuildAndUpdate();
     }
     get webCustomData() {
         if (!this.#webCustomData &&
@@ -93,7 +106,6 @@ export class StandaloneStylesContainer extends Common.ObjectWrapper.eventMixin(U
         this.swatchPopoverHelper().reposition();
     }
     async performUpdate() {
-        this.hideAllPopovers();
         const viewInput = {
             sections: this.#sections.filter(section => !section.isHidden()),
         };
@@ -160,10 +172,8 @@ export class StandaloneStylesContainer extends Common.ObjectWrapper.eventMixin(U
         this.userOperation = userOperation;
     }
     forceUpdate() {
-        this.node()?.domModel().cssModel().discardCachedMatchedCascade();
-        void this.#updateSections().then(() => {
-            this.requestUpdate();
-        });
+        this.hideAllPopovers();
+        this.#rebuildAndUpdate();
     }
     hideAllPopovers() {
         this.#swatchPopoverHelper.hide();

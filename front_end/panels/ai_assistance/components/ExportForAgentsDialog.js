@@ -94,6 +94,7 @@ export class ExportForAgentsDialog extends UI.Widget.VBox {
     #view;
     #dialog;
     #state;
+    #onConversationSaveAs;
     constructor(options, view = DEFAULT_VIEW) {
         super();
         this.#dialog = options.dialog;
@@ -102,6 +103,7 @@ export class ExportForAgentsDialog extends UI.Widget.VBox {
             promptText: options.promptText,
             conversationText: options.markdownText,
         };
+        this.#onConversationSaveAs = options.onConversationSaveAs;
         this.#view = view;
         this.requestUpdate();
     }
@@ -126,10 +128,9 @@ export class ExportForAgentsDialog extends UI.Widget.VBox {
                 break;
             case "conversation" /* StateType.CONVERSATION */:
                 jslogContext = 'ai-export-for-agents.save-as-markdown';
-                onButtonClick = (event) => {
-                    event.preventDefault();
-                    // TODO(b/493191546): migrate the existing "Save as" functionality into this dialog.
+                onButtonClick = () => {
                     this.#dialog.hide();
+                    this.#onConversationSaveAs();
                 };
                 break;
         }
@@ -141,7 +142,7 @@ export class ExportForAgentsDialog extends UI.Widget.VBox {
         };
         this.#view(viewInput, undefined, this.contentElement);
     }
-    static show({ promptText, markdownText, }) {
+    static show({ promptText, markdownText, onConversationSaveAs, }) {
         const dialog = new UI.Dialog.Dialog();
         dialog.setAriaLabel(i18nString(UIStrings.exportForAgents));
         dialog.setOutsideClickCallback(ev => {
@@ -151,7 +152,7 @@ export class ExportForAgentsDialog extends UI.Widget.VBox {
         dialog.addCloseButton();
         dialog.setSizeBehavior("MeasureContent" /* UI.GlassPane.SizeBehavior.MEASURE_CONTENT */);
         dialog.setDimmed(true);
-        const exportDialog = new ExportForAgentsDialog({ dialog, promptText, markdownText });
+        const exportDialog = new ExportForAgentsDialog({ dialog, promptText, markdownText, onConversationSaveAs });
         exportDialog.show(dialog.contentElement);
         // Because the Dialog sets its height based off its content, we need
         // the Export Dialog widget to have rendered fully before we show

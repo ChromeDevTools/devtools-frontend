@@ -147,7 +147,7 @@ export declare class ConsoleGroupViewMessage extends ConsoleViewMessage {
     private readonly onToggle;
     private groupEndMessageInternal;
     constructor(consoleMessage: SDK.ConsoleModel.ConsoleMessage, linkifier: Components.Linkifier.Linkifier, requestResolver: Logs.RequestResolver.RequestResolver, issueResolver: IssuesManager.IssueResolver.IssueResolver, onToggle: () => void, onResize: (arg0: Common.EventTarget.EventTargetEvent<HTMLElement | UI.TreeOutline.TreeElement>) => void);
-    private setCollapsed;
+    setCollapsed(collapsed: boolean): void;
     collapsed(): boolean;
     maybeHandleOnKeyDown(event: KeyboardEvent): boolean;
     toMessageElement(): HTMLElement;

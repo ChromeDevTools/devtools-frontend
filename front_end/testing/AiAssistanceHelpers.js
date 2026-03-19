@@ -225,6 +225,7 @@ export function initializePersistenceImplForTests() {
         targetManager: SDK.TargetManager.TargetManager.instance(),
         workspace,
         debuggerWorkspaceBinding,
+        settings: Common.Settings.Settings.instance(),
     });
     Persistence.Persistence.PersistenceImpl.instance({ forceNew: true, workspace, breakpointManager });
     WorkspaceDiff.WorkspaceDiff.workspaceDiff({ forceNew: true });

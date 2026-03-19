@@ -8,7 +8,7 @@ import * as Lit from '../../../ui/lit/lit.js';
 import * as PanelsCommon from '../../common/common.js';
 import { MarkdownRendererWithCodeBlock } from './MarkdownRendererWithCodeBlock.js';
 const { html } = Lit.StaticHtml;
-const { ref, createRef } = Lit.Directives;
+const { until } = Lit.Directives;
 export class PerformanceAgentMarkdownRenderer extends MarkdownRendererWithCodeBlock {
     mainFrameId;
     lookupEvent;
@@ -21,15 +21,7 @@ export class PerformanceAgentMarkdownRenderer extends MarkdownRendererWithCodeBl
         if (token.type === 'link' && token.href.startsWith('#')) {
             if (token.href.startsWith('#node-')) {
                 const nodeId = Number(token.href.replace('#node-', ''));
-                const templateRef = createRef();
-                void this.#linkifyNode(nodeId, token.text).then(node => {
-                    if (!templateRef.value || !node) {
-                        return;
-                    }
-                    templateRef.value.textContent = '';
-                    templateRef.value.append(node);
-                });
-                return html `<span ${ref(templateRef)}>${token.text}</span>`;
+                return html `<span>${until(this.#linkifyNode(nodeId, token.text).then(node => node || token.text), token.text)}</span>`;
             }
             const event = this.lookupEvent(token.href.slice(1));
             if (!event) {

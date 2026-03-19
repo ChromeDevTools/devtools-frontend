@@ -54,16 +54,17 @@ export default `/*
 
   .export-for-agents-dialog textarea {
     width: 100%;
+    min-height: var(--sys-size-30); /* 288px */
     max-height: var(--sys-size-34); /* 512px */
     resize: none;
-    border: 1px solid var(--sys-color-outline);
     padding: var(--sys-size-5);
     box-sizing: border-box;
     font-family: var(--monospace-font-family);
     font-size: var(--monospace-font-size);
-    background-color: var(--sys-color-surface);
+    background-color: var(--sys-color-surface5);
     color: var(--sys-color-on-surface);
     border-radius: var(--sys-shape-corner-small);
+    border: none;
   }
 
   .export-for-agents-dialog footer {

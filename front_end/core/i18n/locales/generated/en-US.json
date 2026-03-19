@@ -16715,9 +16715,6 @@
   "panels/timeline/TimelineUIUtils.ts | stylesheetUrl": {
     "message": "Stylesheet URL"
   },
-  "panels/timeline/TimelineUIUtils.ts | thirdPartyTable": {
-    "message": "1st / 3rd party table"
-  },
   "panels/timeline/TimelineUIUtils.ts | timeout": {
     "message": "Timeout"
   },

@@ -2773,8 +2773,8 @@ var DEFAULT_VIEW3 = (input, output, target) => {
 var InteractionBreakdown = class _InteractionBreakdown extends UI7.Widget.Widget {
   static createWidgetElement(entry) {
     const widgetElement = document.createElement("devtools-widget");
-    const widget5 = new _InteractionBreakdown(widgetElement);
-    widget5.entry = entry;
+    const widget6 = new _InteractionBreakdown(widgetElement);
+    widget6.entry = entry;
     return widgetElement;
   }
   #view;
@@ -8298,18 +8298,18 @@ var InsightsView = class extends UI17.Widget.VBox {
     return UI17.Widget.Widget.get(this.#component);
   }
   setParsedTrace(parsedTrace) {
-    const widget5 = this.#getWidget();
-    widget5.parsedTrace = parsedTrace;
+    const widget6 = this.#getWidget();
+    widget6.parsedTrace = parsedTrace;
   }
   getActiveInsight() {
     return this.#getWidget().activeInsight;
   }
   setActiveInsight(active, opts) {
-    const widget5 = this.#getWidget();
-    widget5.activeInsight = active;
+    const widget6 = this.#getWidget();
+    widget6.activeInsight = active;
     if (opts.highlight && active) {
-      void widget5.updateComplete.then(() => {
-        void widget5.highlightActiveInsight();
+      void widget6.updateComplete.then(() => {
+        void widget6.highlightActiveInsight();
       });
     }
   }
@@ -8337,6 +8337,39 @@ var AnnotationsView = class extends UI17.Widget.VBox {
     return this.#component.deduplicatedAnnotations();
   }
 };
+
+// gen/front_end/panels/timeline/components/TimelineRangeSummaryView.js
+var TimelineRangeSummaryView_exports = {};
+__export(TimelineRangeSummaryView_exports, {
+  TIMELINE_RANGE_SUMMARY_VIEW_DEFAULT_VIEW: () => TIMELINE_RANGE_SUMMARY_VIEW_DEFAULT_VIEW,
+  TimelineRangeSummaryView: () => TimelineRangeSummaryView
+});
+import * as UI19 from "./../../../ui/legacy/legacy.js";
+import * as Lit22 from "./../../../ui/lit/lit.js";
+
+// gen/front_end/panels/timeline/components/timelineRangeSummaryView.css.js
+var timelineRangeSummaryView_css_default = `/*
+ * Copyright 2026 The Chromium Authors
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+  :host {
+    display: block;
+    height: 100%;
+  }
+
+  .timeline-details-range-summary {
+    display: flex;
+    padding: var(--sys-size-4) 0 0;
+    height: 100%;
+  }
+
+  .timeline-summary {
+    flex-grow: 0;
+  }
+
+/*# sourceURL=${import.meta.resolve("./timelineRangeSummaryView.css")} */`;
 
 // gen/front_end/panels/timeline/components/TimelineSummary.js
 var TimelineSummary_exports = {};
@@ -8484,25 +8517,16 @@ var CategorySummary = class extends UI18.Widget.Widget {
   #rangeEnd = 0;
   #total = 0;
   #categories = [];
-  constructor(view) {
-    super();
+  constructor(element, view) {
+    super(element);
     this.#view = view ?? CATEGORY_SUMMARY_DEFAULT_VIEW;
     this.requestUpdate();
   }
-  set total(total) {
-    this.#total = total;
-    this.requestUpdate();
-  }
-  set rangeStart(rangeStart) {
-    this.#rangeStart = rangeStart;
-    this.requestUpdate();
-  }
-  set rangeEnd(rangeEnd) {
-    this.#rangeEnd = rangeEnd;
-    this.requestUpdate();
-  }
-  set categories(categories) {
-    this.#categories = categories;
+  set data(data) {
+    this.#rangeStart = data.rangeStart;
+    this.#rangeEnd = data.rangeEnd;
+    this.#total = data.total;
+    this.#categories = data.categories;
     this.requestUpdate();
   }
   performUpdate() {
@@ -8513,6 +8537,47 @@ var CategorySummary = class extends UI18.Widget.Widget {
       categories: this.#categories
     };
     this.#view(viewInput, void 0, this.contentElement);
+  }
+};
+
+// gen/front_end/panels/timeline/components/TimelineRangeSummaryView.js
+var { render: render21, html: html22 } = Lit22;
+var { widget: widget5 } = UI19.Widget;
+var TIMELINE_RANGE_SUMMARY_VIEW_DEFAULT_VIEW = (input, _output, target) => {
+  render21(html22`
+    <style>${timelineRangeSummaryView_css_default}</style>
+    <div class="timeline-details-range-summary">
+      <devtools-widget class="timeline-summary"
+        ${widget5(CategorySummary, {
+    data: {
+      rangeStart: input.rangeStart,
+      rangeEnd: input.rangeEnd,
+      categories: input.categories,
+      total: input.total
+    }
+  })}
+      ></devtools-widget>
+      ${input.thirdPartyTreeTemplate ?? Lit22.nothing}
+    </div>
+  `, target);
+};
+var TimelineRangeSummaryView = class extends UI19.Widget.Widget {
+  #view;
+  #summaryData;
+  constructor(element, view = TIMELINE_RANGE_SUMMARY_VIEW_DEFAULT_VIEW) {
+    super(element, { useShadowDom: true });
+    this.#view = view;
+    this.requestUpdate();
+  }
+  set data(data) {
+    this.#summaryData = data;
+    this.requestUpdate();
+  }
+  performUpdate() {
+    if (!this.#summaryData) {
+      return;
+    }
+    this.#view(this.#summaryData, void 0, this.contentElement);
   }
 };
 export {
@@ -8537,6 +8602,7 @@ export {
   SidebarAnnotationsTab_exports as SidebarAnnotationsTab,
   SidebarInsightsTab_exports as SidebarInsightsTab,
   SidebarSingleInsightSet_exports as SidebarSingleInsightSet,
+  TimelineRangeSummaryView_exports as TimelineRangeSummaryView,
   TimelineSummary_exports as TimelineSummary,
   Utils_exports as Utils
 };

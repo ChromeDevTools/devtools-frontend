@@ -27,7 +27,7 @@ var _a;
 var breakpointManagerInstance;
 var INITIAL_RESTORE_BREAKPOINT_COUNT = 100;
 var BreakpointManager = class extends Common.ObjectWrapper.ObjectWrapper {
-  storage = new Storage();
+  storage;
   #workspace;
   targetManager;
   debuggerWorkspaceBinding;
@@ -41,11 +41,12 @@ var BreakpointManager = class extends Common.ObjectWrapper.ObjectWrapper {
   #breakpointsForUISourceCode = /* @__PURE__ */ new Map();
   #breakpointByStorageId = /* @__PURE__ */ new Map();
   #updateBindingsCallbacks = [];
-  constructor(targetManager, workspace, debuggerWorkspaceBinding, restoreInitialBreakpointCount) {
+  constructor(targetManager, workspace, debuggerWorkspaceBinding, settings, restoreInitialBreakpointCount) {
     super();
     this.#workspace = workspace;
     this.targetManager = targetManager;
     this.debuggerWorkspaceBinding = debuggerWorkspaceBinding;
+    this.storage = new Storage(settings);
     this.storage.mute();
     this.#setInitialBreakpoints(restoreInitialBreakpointCount ?? INITIAL_RESTORE_BREAKPOINT_COUNT);
     this.storage.unmute();
@@ -72,13 +73,19 @@ var BreakpointManager = class extends Common.ObjectWrapper.ObjectWrapper {
       this.#breakpointByStorageId.set(storageId, breakpoint);
     }
   }
-  static instance(opts = { forceNew: null, targetManager: null, workspace: null, debuggerWorkspaceBinding: null }) {
-    const { forceNew, targetManager, workspace, debuggerWorkspaceBinding, restoreInitialBreakpointCount } = opts;
+  static instance(opts = {
+    forceNew: null,
+    targetManager: null,
+    workspace: null,
+    debuggerWorkspaceBinding: null,
+    settings: null
+  }) {
+    const { forceNew, targetManager, workspace, debuggerWorkspaceBinding, settings, restoreInitialBreakpointCount } = opts;
     if (!breakpointManagerInstance || forceNew) {
-      if (!targetManager || !workspace || !debuggerWorkspaceBinding) {
-        throw new Error(`Unable to create settings: targetManager, workspace, and debuggerWorkspaceBinding must be provided: ${new Error().stack}`);
+      if (!targetManager || !workspace || !debuggerWorkspaceBinding || !settings) {
+        throw new Error(`Unable to create settings: targetManager, workspace, debuggerWorkspaceBinding, and settings must be provided: ${new Error().stack}`);
       }
-      breakpointManagerInstance = new _a(targetManager, workspace, debuggerWorkspaceBinding, restoreInitialBreakpointCount);
+      breakpointManagerInstance = new _a(targetManager, workspace, debuggerWorkspaceBinding, settings, restoreInitialBreakpointCount);
     }
     return breakpointManagerInstance;
   }
@@ -776,7 +783,7 @@ var ModelBreakpoint = class {
       let debuggerLocations = [];
       for (const uiSourceCode of this.#breakpoint.getUiSourceCodes()) {
         const { lineNumber: uiLineNumber, columnNumber: uiColumnNumber } = BreakpointManager.uiLocationFromBreakpointLocation(uiSourceCode, lineNumber, columnNumber);
-        const locations2 = await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().uiLocationToRawLocations(uiSourceCode, uiLineNumber, uiColumnNumber);
+        const locations2 = await this.#debuggerWorkspaceBinding.uiLocationToRawLocations(uiSourceCode, uiLineNumber, uiColumnNumber);
         debuggerLocations = locations2.filter((location) => location.debuggerModel === this.#debuggerModel);
         if (debuggerLocations.length) {
           break;
@@ -960,8 +967,8 @@ var Storage = class _Storage {
   setting;
   breakpoints;
   #muted;
-  constructor() {
-    this.setting = Common.Settings.Settings.instance().createLocalSetting("breakpoints", []);
+  constructor(settings) {
+    this.setting = settings.createLocalSetting("breakpoints", []);
     this.breakpoints = /* @__PURE__ */ new Map();
     this.#muted = false;
     for (const breakpoint of this.setting.get()) {

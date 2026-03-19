@@ -698,7 +698,7 @@ __export(ConsoleInsightTeaser_exports, {
 });
 import "./../../ui/components/tooltips/tooltips.js";
 import "./../../ui/kit/kit.js";
-import * as Common5 from "./../../core/common/common.js";
+import * as Common4 from "./../../core/common/common.js";
 import * as Host2 from "./../../core/host/host.js";
 import * as i18n5 from "./../../core/i18n/i18n.js";
 import * as Root from "./../../core/root/root.js";
@@ -848,7 +848,7 @@ __export(ConsoleViewMessage_exports, {
   setLongStringVisibleLength: () => setLongStringVisibleLength,
   setMaxTokenizableStringLength: () => setMaxTokenizableStringLength
 });
-import * as Common4 from "./../../core/common/common.js";
+import * as Common3 from "./../../core/common/common.js";
 import * as Host from "./../../core/host/host.js";
 import * as i18n3 from "./../../core/i18n/i18n.js";
 import * as Platform2 from "./../../core/platform/platform.js";
@@ -858,6 +858,7 @@ import * as Bindings from "./../../models/bindings/bindings.js";
 import * as Breakpoints from "./../../models/breakpoints/breakpoints.js";
 import * as Greendev from "./../../models/greendev/greendev.js";
 import * as Logs from "./../../models/logs/logs.js";
+import * as StackTrace3 from "./../../models/stack_trace/stack_trace.js";
 import * as TextUtils3 from "./../../models/text_utils/text_utils.js";
 import * as Workspace from "./../../models/workspace/workspace.js";
 import * as CodeHighlighter from "./../../ui/components/code_highlighter/code_highlighter.js";
@@ -1664,112 +1665,6 @@ var consoleView_css_default = `/* Copyright 2021 The Chromium Authors
 
 /*# sourceURL=${import.meta.resolve("./consoleView.css")} */`;
 
-// gen/front_end/panels/console/ErrorStackParser.js
-var ErrorStackParser_exports = {};
-__export(ErrorStackParser_exports, {
-  augmentErrorStackWithScriptIds: () => augmentErrorStackWithScriptIds,
-  parseSourcePositionsFromErrorStack: () => parseSourcePositionsFromErrorStack
-});
-import * as Common3 from "./../../core/common/common.js";
-function parseSourcePositionsFromErrorStack(runtimeModel, stack) {
-  if (!(/\n\s*at\s/.test(stack) || stack.startsWith("SyntaxError:"))) {
-    return null;
-  }
-  const debuggerModel = runtimeModel.debuggerModel();
-  const baseURL = runtimeModel.target().inspectedURL();
-  const lines = stack.split("\n");
-  const linkInfos = [];
-  for (const line of lines) {
-    const match = /^\s*at\s(async\s)?/.exec(line);
-    if (!match) {
-      if (linkInfos.length && linkInfos[linkInfos.length - 1].isCallFrame) {
-        return null;
-      }
-      linkInfos.push({ line });
-      continue;
-    }
-    const isCallFrame = true;
-    let left = match[0].length;
-    let right = line.length;
-    let enclosedInBraces = false;
-    if (line[right - 1] === ")") {
-      right--;
-      enclosedInBraces = true;
-      left = line.lastIndexOf(" (", right);
-      if (left < 0) {
-        return null;
-      }
-      left += 2;
-      const newRight = line.indexOf("), ", left);
-      if (newRight > left) {
-        right = newRight;
-      }
-    }
-    const linkCandidate = line.substring(left, right);
-    const splitResult = Common3.ParsedURL.ParsedURL.splitLineAndColumn(linkCandidate);
-    if (splitResult.url === "<anonymous>") {
-      if (linkInfos.length && linkInfos[linkInfos.length - 1].isCallFrame && !linkInfos[linkInfos.length - 1].link) {
-        linkInfos[linkInfos.length - 1].line += `
-${line}`;
-      } else {
-        linkInfos.push({ line, isCallFrame });
-      }
-      continue;
-    }
-    let url = parseOrScriptMatch(debuggerModel, splitResult.url);
-    if (!url && Common3.ParsedURL.ParsedURL.isRelativeURL(splitResult.url)) {
-      url = parseOrScriptMatch(debuggerModel, Common3.ParsedURL.ParsedURL.completeURL(baseURL, splitResult.url));
-    }
-    if (!url) {
-      return null;
-    }
-    linkInfos.push({
-      line,
-      isCallFrame,
-      link: {
-        url,
-        prefix: line.substring(0, left),
-        suffix: line.substring(right),
-        enclosedInBraces,
-        lineNumber: splitResult.lineNumber,
-        columnNumber: splitResult.columnNumber
-      }
-    });
-  }
-  return linkInfos;
-}
-function parseOrScriptMatch(debuggerModel, url) {
-  if (!url) {
-    return null;
-  }
-  if (Common3.ParsedURL.ParsedURL.isValidUrlString(url)) {
-    return url;
-  }
-  if (debuggerModel.scriptsForSourceURL(url).length) {
-    return url;
-  }
-  const fileUrl = new URL(url, "file://");
-  if (debuggerModel.scriptsForSourceURL(fileUrl.href).length) {
-    return fileUrl.href;
-  }
-  return null;
-}
-function augmentErrorStackWithScriptIds(parsedFrames, protocolStackTrace) {
-  for (const parsedFrame of parsedFrames) {
-    const protocolFrame = protocolStackTrace.callFrames.find((frame) => framesMatch(parsedFrame, frame));
-    if (protocolFrame && parsedFrame.link) {
-      parsedFrame.link.scriptId = protocolFrame.scriptId;
-    }
-  }
-}
-function framesMatch(parsedFrame, protocolFrame) {
-  if (!parsedFrame.link) {
-    return false;
-  }
-  const { url, lineNumber, columnNumber } = parsedFrame.link;
-  return url === protocolFrame.url && lineNumber === protocolFrame.lineNumber && columnNumber === protocolFrame.columnNumber;
-}
-
 // gen/front_end/panels/console/ConsoleViewMessage.js
 var UIStrings2 = {
   /**
@@ -2096,7 +1991,7 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
   buildMessage() {
     let messageElement;
     let messageText = this.message.messageText;
-    if (this.message.source === Common4.Console.FrontendMessageSource.ConsoleAPI) {
+    if (this.message.source === Common3.Console.FrontendMessageSource.ConsoleAPI) {
       switch (this.message.type) {
         case "trace":
           messageElement = this.format(this.message.parameters || ["console.trace"]);
@@ -2104,7 +1999,7 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
         case "clear":
           messageElement = document.createElement("span");
           messageElement.classList.add("console-info");
-          if (Common4.Settings.Settings.instance().moduleSetting("preserve-console-log").get()) {
+          if (Common3.Settings.Settings.instance().moduleSetting("preserve-console-log").get()) {
             messageElement.textContent = i18nString2(UIStrings2.consoleclearWasPreventedDueTo);
           } else {
             messageElement.textContent = i18nString2(UIStrings2.consoleWasCleared);
@@ -2307,7 +2202,7 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
       event.consume();
     };
     clickableElement.addEventListener("click", toggleStackTrace, false);
-    if (this.message.type === "trace" && Common4.Settings.Settings.instance().moduleSetting("console-trace-expand").get()) {
+    if (this.message.type === "trace" && Common3.Settings.Settings.instance().moduleSetting("console-trace-expand").get()) {
       this.expandTrace(true);
     }
     toggleElement._expandStackTraceForTest = this.expandTrace.bind(this, true);
@@ -2739,7 +2634,7 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
     if (!this.contentElementInternal) {
       return;
     }
-    if (Common4.Settings.Settings.instance().moduleSetting("console-timestamps-enabled").get()) {
+    if (Common3.Settings.Settings.instance().moduleSetting("console-timestamps-enabled").get()) {
       if (!this.timestampElement) {
         this.timestampElement = document.createElement("span");
         this.timestampElement.classList.add("console-timestamp");
@@ -2981,7 +2876,7 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
     if (this.message.isGroupStartMessage()) {
       this.elementInternal.classList.add("console-group-title");
     }
-    if (this.message.source === Common4.Console.FrontendMessageSource.ConsoleAPI) {
+    if (this.message.source === Common3.Console.FrontendMessageSource.ConsoleAPI) {
       this.elementInternal.classList.add("console-from-api");
     }
     if (this.inSimilarGroup) {
@@ -3035,10 +2930,10 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
     }
   }
   shouldShowInsights() {
-    if (this.message.source === Common4.Console.FrontendMessageSource.ConsoleAPI && this.message.stackTrace?.callFrames[0]?.url === "") {
+    if (this.message.source === Common3.Console.FrontendMessageSource.ConsoleAPI && this.message.stackTrace?.callFrames[0]?.url === "") {
       return false;
     }
-    if (this.message.messageText === "" || this.message.source === Common4.Console.FrontendMessageSource.SELF_XSS) {
+    if (this.message.messageText === "" || this.message.source === Common3.Console.FrontendMessageSource.SELF_XSS) {
       return false;
     }
     return this.message.level === "error" || this.message.level === "warning";
@@ -3047,7 +2942,7 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
     if (!this.shouldShowInsights()) {
       return false;
     }
-    if (!Common4.Settings.Settings.instance().moduleSetting("console-insight-teasers-enabled").getIfNotDisabled() || !AiAssistanceModel.BuiltInAi.BuiltInAi.instance().isEventuallyAvailable()) {
+    if (!Common3.Settings.Settings.instance().moduleSetting("console-insight-teasers-enabled").getIfNotDisabled() || !AiAssistanceModel.BuiltInAi.BuiltInAi.instance().isEventuallyAvailable()) {
       return false;
     }
     const devtoolsLocale = i18n3.DevToolsLocale.DevToolsLocale.instance();
@@ -3161,7 +3056,7 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
         }
       }
       if (uiLocation) {
-        await Common4.Revealer.reveal(uiLocation);
+        await Common3.Revealer.reveal(uiLocation);
         const breakpointManager = Breakpoints.BreakpointManager.BreakpointManager.instance();
         await breakpointManager.setBreakpoint(
           uiLocation.uiSourceCode,
@@ -3389,12 +3284,12 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
     if (typeof issueSummary === "string") {
       string = concatErrorDescriptionAndIssueSummary(string, issueSummary);
     }
-    const linkInfos = parseSourcePositionsFromErrorStack(runtimeModel, string);
+    const linkInfos = StackTrace3.ErrorStackParser.parseSourcePositionsFromErrorStack(runtimeModel, string);
     if (!linkInfos?.length) {
       return null;
     }
     if (exceptionDetails?.stackTrace) {
-      augmentErrorStackWithScriptIds(linkInfos, exceptionDetails.stackTrace);
+      StackTrace3.ErrorStackParser.augmentErrorStackWithScriptIds(linkInfos, exceptionDetails.stackTrace);
     }
     const debuggerModel = runtimeModel.debuggerModel();
     const formattedResult = document.createElement("span");
@@ -3475,8 +3370,8 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
       switch (token.type) {
         case "url": {
           const realURL = token.text.startsWith("www.") ? "http://" + token.text : token.text;
-          const splitResult = Common4.ParsedURL.ParsedURL.splitLineAndColumn(realURL);
-          const sourceURL = Common4.ParsedURL.ParsedURL.removeWasmFunctionInfoFromURL(splitResult.url);
+          const splitResult = Common3.ParsedURL.ParsedURL.splitLineAndColumn(realURL);
+          const sourceURL = Common3.ParsedURL.ParsedURL.removeWasmFunctionInfoFromURL(splitResult.url);
           let linkNode;
           if (splitResult) {
             linkNode = linkifier(token.text, sourceURL, splitResult.lineNumber, splitResult.columnNumber);
@@ -4419,13 +4314,13 @@ var ConsoleInsightTeaser = class extends UI4.Widget.Widget {
   }
   #getConsoleInsightsEnabledSetting() {
     try {
-      return Common5.Settings.moduleSetting("console-insights-enabled");
+      return Common4.Settings.moduleSetting("console-insights-enabled");
     } catch {
       return;
     }
   }
   #getOnboardingCompletedSetting() {
-    return Common5.Settings.Settings.instance().createLocalSetting("console-insights-onboarding-finished", true);
+    return Common4.Settings.Settings.instance().createLocalSetting("console-insights-onboarding-finished", true);
   }
   async #onAidaAvailabilityChange() {
     const currentAidaAvailability = await Host2.AidaClient.AidaClient.checkAccessPreconditions();
@@ -4504,7 +4399,7 @@ var ConsoleInsightTeaser = class extends UI4.Widget.Widget {
   }
   maybeGenerateTeaser() {
     const startGeneratingTeaser = () => {
-      if (!this.#isInactive && Common5.Settings.Settings.instance().moduleSetting("console-insight-teasers-enabled").get()) {
+      if (!this.#isInactive && Common4.Settings.Settings.instance().moduleSetting("console-insight-teasers-enabled").get()) {
         void this.#generateTeaserText();
       }
     };
@@ -4564,7 +4459,7 @@ var ConsoleInsightTeaser = class extends UI4.Widget.Widget {
     if (this.#timeoutId) {
       clearTimeout(this.#timeoutId);
     }
-    Common5.EventTarget.removeEventListeners(this.#eventListeners);
+    Common4.EventTarget.removeEventListeners(this.#eventListeners);
     return {
       okToRemove: this.#state !== "teaser"
       /* State.TEASER */
@@ -4641,7 +4536,7 @@ var ConsoleInsightTeaser = class extends UI4.Widget.Widget {
   }
   #dontShowChanged(e) {
     const showTeasers = !e.target.checked;
-    Common5.Settings.Settings.instance().moduleSetting("console-insight-teasers-enabled").set(showTeasers);
+    Common4.Settings.Settings.instance().moduleSetting("console-insight-teasers-enabled").set(showTeasers);
   }
   #hasTellMeMoreButton() {
     if (!UI4.ActionRegistry.ActionRegistry.instance().hasAction(EXPLAIN_TEASER_ACTION_ID)) {
@@ -4662,7 +4557,7 @@ var ConsoleInsightTeaser = class extends UI4.Widget.Widget {
       uuid: this.#uuid,
       headerText: this.#headerText,
       mainText: this.#mainText,
-      isInactive: this.#isInactive || !Common5.Settings.Settings.instance().moduleSetting("console-insight-teasers-enabled").get(),
+      isInactive: this.#isInactive || !Common4.Settings.Settings.instance().moduleSetting("console-insight-teasers-enabled").get(),
       dontShowChanged: this.#dontShowChanged.bind(this),
       hasTellMeMoreButton: this.#hasTellMeMoreButton(),
       isSlowGeneration: this.#isSlow,
@@ -4697,7 +4592,7 @@ __export(ConsolePinPane_exports, {
   DEFAULT_PANE_VIEW: () => DEFAULT_PANE_VIEW,
   DEFAULT_VIEW: () => DEFAULT_VIEW3
 });
-import * as Common6 from "./../../core/common/common.js";
+import * as Common5 from "./../../core/common/common.js";
 import * as i18n7 from "./../../core/i18n/i18n.js";
 import * as Platform3 from "./../../core/platform/platform.js";
 import * as Root2 from "./../../core/root/root.js";
@@ -4849,7 +4744,7 @@ var ConsolePinPane = class extends UI5.Widget.VBox {
     super({ useShadowDom: true });
     this.#focusOut = focusOut;
     this.#view = view;
-    this.#pinModel = new ConsolePinModel(Common6.Settings.Settings.instance());
+    this.#pinModel = new ConsolePinModel(Common5.Settings.Settings.instance());
   }
   willHide() {
     super.willHide();
@@ -5133,7 +5028,7 @@ var ConsolePinPresenter = class extends UI5.Widget.Widget {
       onPreviewHoverChange: (hovered) => this.setHovered(hovered),
       onPreviewClick: (event) => {
         if (this.#lastNode) {
-          void Common6.Revealer.reveal(this.#lastNode);
+          void Common5.Revealer.reveal(this.#lastNode);
           event.consume();
         }
       }
@@ -5158,7 +5053,7 @@ var ConsolePinPresenter = class extends UI5.Widget.Widget {
 var ConsolePinModel = class {
   #setting;
   #pins = /* @__PURE__ */ new Set();
-  #throttler = new Common6.Throttler.Throttler(250);
+  #throttler = new Common5.Throttler.Throttler(250);
   #active = false;
   constructor(settings) {
     this.#setting = settings.createLocalSetting("console-pins", []);
@@ -5205,7 +5100,7 @@ var ConsolePinModel = class {
     this.#setting.set(expressions);
   }
 };
-var ConsolePin = class extends Common6.ObjectWrapper.ObjectWrapper {
+var ConsolePin = class extends Common5.ObjectWrapper.ObjectWrapper {
   #expression;
   #onCommit;
   #editor;
@@ -5289,7 +5184,7 @@ __export(ConsoleSidebar_exports, {
   ConsoleSidebar: () => ConsoleSidebar,
   DEFAULT_VIEW: () => DEFAULT_VIEW4
 });
-import * as Common7 from "./../../core/common/common.js";
+import * as Common6 from "./../../core/common/common.js";
 import * as i18n9 from "./../../core/i18n/i18n.js";
 import * as SDK6 from "./../../core/sdk/sdk.js";
 import * as UI6 from "./../../ui/legacy/legacy.js";
@@ -5460,7 +5355,7 @@ var ConsoleFilterGroup = class {
     }
     const filter = this.filter.clone();
     child = { filter, url, count: 0 };
-    const parsedURL = url ? Common7.ParsedURL.ParsedURL.fromString(url) : null;
+    const parsedURL = url ? Common6.ParsedURL.ParsedURL.fromString(url) : null;
     if (url) {
       filter.name = parsedURL ? parsedURL.displayName : url;
     } else {
@@ -5473,11 +5368,11 @@ var ConsoleFilterGroup = class {
 };
 var CONSOLE_API_PARSED_FILTERS = [{
   key: FilterType.Source,
-  text: Common7.Console.FrontendMessageSource.ConsoleAPI,
+  text: Common6.Console.FrontendMessageSource.ConsoleAPI,
   negative: false,
   regex: void 0
 }];
-var ConsoleSidebar = class extends Common7.ObjectWrapper.eventMixin(UI6.Widget.VBox) {
+var ConsoleSidebar = class extends Common6.ObjectWrapper.eventMixin(UI6.Widget.VBox) {
   #view;
   #groups = [
     new ConsoleFilterGroup("message", [], ConsoleFilter.allLevelsFilterValue()),
@@ -5499,7 +5394,7 @@ var ConsoleSidebar = class extends Common7.ObjectWrapper.eventMixin(UI6.Widget.V
       /* Protocol.Log.LogEntryLevel.Verbose */
     ))
   ];
-  #selectedFilterSetting = Common7.Settings.Settings.instance().createSetting("console.sidebar-selected-filter", null);
+  #selectedFilterSetting = Common6.Settings.Settings.instance().createSetting("console.sidebar-selected-filter", null);
   #selectedFilter = this.#groups.find((group) => group.name === this.#selectedFilterSetting.get())?.filter;
   constructor(element, view = DEFAULT_VIEW4) {
     super(element, {
@@ -6149,7 +6044,7 @@ var ConsolePrompt_exports = {};
 __export(ConsolePrompt_exports, {
   ConsolePrompt: () => ConsolePrompt
 });
-import * as Common9 from "./../../core/common/common.js";
+import * as Common8 from "./../../core/common/common.js";
 import * as Host4 from "./../../core/host/host.js";
 import * as i18n13 from "./../../core/i18n/i18n.js";
 import * as Root4 from "./../../core/root/root.js";
@@ -6182,7 +6077,7 @@ __export(ConsoleView_exports, {
   ConsoleViewFilter: () => ConsoleViewFilter
 });
 import "./../../ui/legacy/legacy.js";
-import * as Common8 from "./../../core/common/common.js";
+import * as Common7 from "./../../core/common/common.js";
 import * as Host3 from "./../../core/host/host.js";
 import * as i18n11 from "./../../core/i18n/i18n.js";
 import * as Platform5 from "./../../core/platform/platform.js";
@@ -6509,13 +6404,13 @@ var ConsoleView = class _ConsoleView extends UI8.Widget.VBox {
     this.consoleContextSelector = new ConsoleContextSelector();
     this.filterStatusText = new UI8.Toolbar.ToolbarText();
     this.filterStatusText.element.classList.add("dimmed");
-    this.showSettingsPaneSetting = Common8.Settings.Settings.instance().createSetting("console-show-settings-toolbar", false);
+    this.showSettingsPaneSetting = Common7.Settings.Settings.instance().createSetting("console-show-settings-toolbar", false);
     this.showSettingsPaneButton = new UI8.Toolbar.ToolbarSettingToggle(this.showSettingsPaneSetting, "gear", i18nString5(UIStrings5.consoleSettings), "gear-filled");
     this.showSettingsPaneButton.element.setAttribute("jslog", `${VisualLogging5.toggleSubpane("console-settings").track({ click: true })}`);
     this.progressToolbarItem = new UI8.Toolbar.ToolbarItem(document.createElement("div"));
-    this.groupSimilarSetting = Common8.Settings.Settings.instance().moduleSetting("console-group-similar");
+    this.groupSimilarSetting = Common7.Settings.Settings.instance().moduleSetting("console-group-similar");
     this.groupSimilarSetting.addChangeListener(() => this.updateMessageList());
-    this.showCorsErrorsSetting = Common8.Settings.Settings.instance().moduleSetting("console-shows-cors-errors");
+    this.showCorsErrorsSetting = Common7.Settings.Settings.instance().moduleSetting("console-shows-cors-errors");
     this.showCorsErrorsSetting.addChangeListener(() => this.updateMessageList());
     const toolbar2 = this.consoleToolbarContainer.createChild("devtools-toolbar", "console-main-toolbar");
     toolbar2.setAttribute("jslog", `${VisualLogging5.toolbar()}`);
@@ -6554,10 +6449,10 @@ var ConsoleView = class _ConsoleView extends UI8.Widget.VBox {
     toolbar2.appendSeparator();
     toolbar2.appendToolbarItem(this.filterStatusText);
     toolbar2.appendToolbarItem(this.showSettingsPaneButton);
-    const monitoringXHREnabledSetting = Common8.Settings.Settings.instance().moduleSetting("monitoring-xhr-enabled");
-    this.timestampsSetting = Common8.Settings.Settings.instance().moduleSetting("console-timestamps-enabled");
-    this.consoleHistoryAutocompleteSetting = Common8.Settings.Settings.instance().moduleSetting("console-history-autocomplete");
-    this.selfXssWarningDisabledSetting = Common8.Settings.Settings.instance().createSetting(
+    const monitoringXHREnabledSetting = Common7.Settings.Settings.instance().moduleSetting("monitoring-xhr-enabled");
+    this.timestampsSetting = Common7.Settings.Settings.instance().moduleSetting("console-timestamps-enabled");
+    this.consoleHistoryAutocompleteSetting = Common7.Settings.Settings.instance().moduleSetting("console-history-autocomplete");
+    this.selfXssWarningDisabledSetting = Common7.Settings.Settings.instance().createSetting(
       "disable-self-xss-warning",
       false,
       "Synced"
@@ -6566,9 +6461,9 @@ var ConsoleView = class _ConsoleView extends UI8.Widget.VBox {
     const settingsPane = this.contentsElement.createChild("div", "console-settings-pane");
     UI8.ARIAUtils.setLabel(settingsPane, i18nString5(UIStrings5.consoleSettings));
     UI8.ARIAUtils.markAsGroup(settingsPane);
-    const consoleEagerEvalSetting = Common8.Settings.Settings.instance().moduleSetting("console-eager-eval");
-    const preserveConsoleLogSetting = Common8.Settings.Settings.instance().moduleSetting("preserve-console-log");
-    const userActivationEvalSetting = Common8.Settings.Settings.instance().moduleSetting("console-user-activation-eval");
+    const consoleEagerEvalSetting = Common7.Settings.Settings.instance().moduleSetting("console-eager-eval");
+    const preserveConsoleLogSetting = Common7.Settings.Settings.instance().moduleSetting("preserve-console-log");
+    const userActivationEvalSetting = Common7.Settings.Settings.instance().moduleSetting("console-user-activation-eval");
     settingsPane.append(SettingsUI.SettingsUI.createSettingCheckbox(i18nString5(UIStrings5.networkMessages), this.filter.networkMessagesSetting, this.filter.networkMessagesSetting.title()), SettingsUI.SettingsUI.createSettingCheckbox(i18nString5(UIStrings5.logXMLHttpRequests), monitoringXHREnabledSetting), SettingsUI.SettingsUI.createSettingCheckbox(i18nString5(UIStrings5.preserveLog), preserveConsoleLogSetting, i18nString5(UIStrings5.doNotClearLogOnPageReload)), SettingsUI.SettingsUI.createSettingCheckbox(consoleEagerEvalSetting.title(), consoleEagerEvalSetting, i18nString5(UIStrings5.eagerlyEvaluateTextInThePrompt)), SettingsUI.SettingsUI.createSettingCheckbox(i18nString5(UIStrings5.selectedContextOnly), this.filter.filterByExecutionContextSetting, i18nString5(UIStrings5.onlyShowMessagesFromTheCurrentContext)), SettingsUI.SettingsUI.createSettingCheckbox(this.consoleHistoryAutocompleteSetting.title(), this.consoleHistoryAutocompleteSetting, i18nString5(UIStrings5.autocompleteFromHistory)), SettingsUI.SettingsUI.createSettingCheckbox(this.groupSimilarSetting.title(), this.groupSimilarSetting, i18nString5(UIStrings5.groupSimilarMessagesInConsole)), SettingsUI.SettingsUI.createSettingCheckbox(userActivationEvalSetting.title(), userActivationEvalSetting, i18nString5(UIStrings5.treatEvaluationAsUserActivation)), SettingsUI.SettingsUI.createSettingCheckbox(this.showCorsErrorsSetting.title(), this.showCorsErrorsSetting, i18nString5(UIStrings5.showCorsErrorsInConsole)));
     if (!this.showSettingsPaneSetting.get()) {
       settingsPane.classList.add("hidden");
@@ -6591,7 +6486,7 @@ var ConsoleView = class _ConsoleView extends UI8.Widget.VBox {
     });
     this.messagesCountElement = this.consoleToolbarContainer.createChild("div", "message-count");
     UI8.ARIAUtils.markAsPoliteLiveRegion(this.messagesCountElement, false);
-    this.viewportThrottler = new Common8.Throttler.Throttler(viewportThrottlerTimeout);
+    this.viewportThrottler = new Common7.Throttler.Throttler(viewportThrottlerTimeout);
     this.pendingBatchResize = false;
     this.onMessageResizedBound = (e) => {
       void this.onMessageResized(e);
@@ -6603,7 +6498,7 @@ var ConsoleView = class _ConsoleView extends UI8.Widget.VBox {
     UI8.ARIAUtils.setHidden(selectAllFixer, true);
     this.registerShortcuts();
     this.messagesElement.addEventListener("contextmenu", this.handleContextMenuEvent.bind(this), false);
-    const throttler = new Common8.Throttler.Throttler(100);
+    const throttler = new Common7.Throttler.Throttler(100);
     const refilterMessages = () => throttler.schedule(async () => this.onFilterChanged());
     this.linkifier = new Components4.Linkifier.Linkifier(UI8.UIUtils.MaxLengthForDisplayedURLsInConsole);
     this.linkifier.addEventListener("liveLocationUpdated", refilterMessages);
@@ -6663,8 +6558,11 @@ var ConsoleView = class _ConsoleView extends UI8.Widget.VBox {
     SDK7.TargetManager.TargetManager.instance().addModelListener(SDK7.ConsoleModel.ConsoleModel, SDK7.ConsoleModel.Events.CommandEvaluated, this.commandEvaluated, this, { scoped: true });
     SDK7.TargetManager.TargetManager.instance().observeModels(SDK7.ConsoleModel.ConsoleModel, this, { scoped: true });
     const issuesManager = IssuesManager.IssuesManager.IssuesManager.instance();
-    this.issueToolbarThrottle = new Common8.Throttler.Throttler(100);
+    this.issueToolbarThrottle = new Common7.Throttler.Throttler(100);
     issuesManager.addEventListener("IssuesCountUpdated", this.#onIssuesCountUpdateBound);
+  }
+  static clearConsoleViewInstanceForTest() {
+    consoleViewInstance = null;
   }
   static instance(opts) {
     if (!consoleViewInstance || opts?.forceNew) {
@@ -6712,7 +6610,7 @@ var ConsoleView = class _ConsoleView extends UI8.Widget.VBox {
     model.messages().forEach(this.addConsoleMessage, this);
   }
   modelRemoved(model) {
-    if (!Common8.Settings.Settings.instance().moduleSetting("preserve-console-log").get() && model.target().outermostTarget() === model.target()) {
+    if (!Common7.Settings.Settings.instance().moduleSetting("preserve-console-log").get() && model.target().outermostTarget() === model.target()) {
       this.consoleCleared();
     }
   }
@@ -6754,8 +6652,8 @@ var ConsoleView = class _ConsoleView extends UI8.Widget.VBox {
     return 16;
   }
   registerWithMessageSink() {
-    Common8.Console.Console.instance().messages().forEach(this.addSinkMessage, this);
-    Common8.Console.Console.instance().addEventListener("messageAdded", ({ data: message }) => {
+    Common7.Console.Console.instance().messages().forEach(this.addSinkMessage, this);
+    Common7.Console.Console.instance().addEventListener("messageAdded", ({ data: message }) => {
       this.addSinkMessage(message);
     }, this);
   }
@@ -6787,6 +6685,15 @@ var ConsoleView = class _ConsoleView extends UI8.Widget.VBox {
   willHide() {
     super.willHide();
     this.hidePromptSuggestBox();
+  }
+  dispose() {
+    SDK7.TargetManager.TargetManager.instance().removeModelListener(SDK7.ConsoleModel.ConsoleModel, SDK7.ConsoleModel.Events.ConsoleCleared, this.consoleCleared, this);
+    SDK7.TargetManager.TargetManager.instance().removeModelListener(SDK7.ConsoleModel.ConsoleModel, SDK7.ConsoleModel.Events.MessageAdded, this.onConsoleMessageAdded, this);
+    SDK7.TargetManager.TargetManager.instance().removeModelListener(SDK7.ConsoleModel.ConsoleModel, SDK7.ConsoleModel.Events.MessageUpdated, this.onConsoleMessageUpdated, this);
+    SDK7.TargetManager.TargetManager.instance().removeModelListener(SDK7.ConsoleModel.ConsoleModel, SDK7.ConsoleModel.Events.CommandEvaluated, this.commandEvaluated, this);
+    SDK7.TargetManager.TargetManager.instance().unobserveModels(SDK7.ConsoleModel.ConsoleModel, this);
+    const issuesManager = IssuesManager.IssuesManager.IssuesManager.instance();
+    issuesManager.removeEventListener("IssuesCountUpdated", this.#onIssuesCountUpdateBound);
   }
   wasShown() {
     super.wasShown();
@@ -7046,7 +6953,9 @@ var ConsoleView = class _ConsoleView extends UI8.Widget.VBox {
       if (parentGroup) {
         showGroup(parentGroup, visibleViewMessages);
       }
-      visibleViewMessages.push(currentGroup2);
+      if (!parentGroup?.messagesHidden()) {
+        visibleViewMessages.push(currentGroup2);
+      }
     }
   }
   messageAppendedForTests() {
@@ -7141,7 +7050,7 @@ var ConsoleView = class _ConsoleView extends UI8.Widget.VBox {
       );
     }
     if (consoleMessage?.url) {
-      const menuTitle = i18nString5(UIStrings5.hideMessagesFromS, { PH1: new Common8.ParsedURL.ParsedURL(consoleMessage.url).displayName });
+      const menuTitle = i18nString5(UIStrings5.hideMessagesFromS, { PH1: new Common7.ParsedURL.ParsedURL(consoleMessage.url).displayName });
       contextMenu.headerSection().appendItem(menuTitle, this.filter.addMessageURLFilter.bind(this.filter, consoleMessage.url), { jslogContext: "hide-messages-from" });
     }
     contextMenu.defaultSection().appendAction("console.clear");
@@ -7161,7 +7070,7 @@ var ConsoleView = class _ConsoleView extends UI8.Widget.VBox {
   }
   async saveConsole() {
     const url = SDK7.TargetManager.TargetManager.instance().scopeTarget().inspectedURL();
-    const parsedURL = Common8.ParsedURL.ParsedURL.fromString(url);
+    const parsedURL = Common7.ParsedURL.ParsedURL.fromString(url);
     const filename = Platform5.StringUtilities.sprintf("%s-%d.log", parsedURL ? parsedURL.host : "console", Date.now());
     const stream = new Bindings3.FileUtils.FileOutputStream();
     const progressIndicator = document.createElement("devtools-progress");
@@ -7563,8 +7472,8 @@ var ConsoleViewFilter = class _ConsoleViewFilter {
   constructor(filterChangedCallback) {
     this.filterChanged = filterChangedCallback;
     this.messageLevelFiltersSetting = _ConsoleViewFilter.levelFilterSetting();
-    this.networkMessagesSetting = Common8.Settings.Settings.instance().moduleSetting("network-messages");
-    this.filterByExecutionContextSetting = Common8.Settings.Settings.instance().moduleSetting("selected-context-filter-enabled");
+    this.networkMessagesSetting = Common7.Settings.Settings.instance().moduleSetting("network-messages");
+    this.filterByExecutionContextSetting = Common7.Settings.Settings.instance().moduleSetting("selected-context-filter-enabled");
     this.messageLevelFiltersSetting.addChangeListener(this.onFilterChanged.bind(this));
     this.networkMessagesSetting.addChangeListener(this.onFilterChanged.bind(this));
     this.filterByExecutionContextSetting.addChangeListener(this.onFilterChanged.bind(this));
@@ -7572,7 +7481,7 @@ var ConsoleViewFilter = class _ConsoleViewFilter {
     const filterKeys = Object.values(FilterType);
     this.suggestionBuilder = new UI8.FilterSuggestionBuilder.FilterSuggestionBuilder(filterKeys);
     this.textFilterUI = new UI8.Toolbar.ToolbarFilter(void 0, 1, 1, i18nString5(UIStrings5.egEventdCdnUrlacom), this.suggestionBuilder.completions.bind(this.suggestionBuilder), true);
-    this.textFilterSetting = Common8.Settings.Settings.instance().createSetting("console.text-filter", "");
+    this.textFilterSetting = Common7.Settings.Settings.instance().createSetting("console.text-filter", "");
     if (this.textFilterSetting.get()) {
       this.textFilterUI.setValue(this.textFilterSetting.get());
     }
@@ -7621,7 +7530,7 @@ var ConsoleViewFilter = class _ConsoleViewFilter {
     }
   }
   static levelFilterSetting() {
-    return Common8.Settings.Settings.instance().createSetting("message-level-filters", ConsoleFilter.defaultLevelsFilterValue());
+    return Common7.Settings.Settings.instance().createSetting("message-level-filters", ConsoleFilter.defaultLevelsFilterValue());
   }
   updateCurrentFilter() {
     const parsedFilters = this.filterParser.parse(this.textFilterUI.value());
@@ -7724,7 +7633,7 @@ var ActionDelegate = class {
           return true;
         }
         Host3.InspectorFrontendHost.InspectorFrontendHostInstance.bringToFront();
-        Common8.Console.Console.instance().show();
+        Common7.Console.Console.instance().show();
         ConsoleView.instance().focusPrompt();
         return true;
       case "console.clear":
@@ -7906,7 +7815,7 @@ var UIStrings6 = {
 };
 var str_6 = i18n13.i18n.registerUIStrings("panels/console/ConsolePrompt.ts", UIStrings6);
 var i18nString6 = i18n13.i18n.getLocalizedString.bind(void 0, str_6);
-var ConsolePrompt = class extends Common9.ObjectWrapper.eventMixin(UI10.Widget.Widget) {
+var ConsolePrompt = class extends Common8.ObjectWrapper.eventMixin(UI10.Widget.Widget) {
   addCompletionsFromHistory;
   #history;
   initialText;
@@ -7956,11 +7865,11 @@ var ConsolePrompt = class extends Common9.ObjectWrapper.eventMixin(UI10.Widget.W
     });
     this.registerRequiredCSS(consolePrompt_css_default);
     this.addCompletionsFromHistory = true;
-    this.#history = new TextEditor2.AutocompleteHistory.AutocompleteHistory(Common9.Settings.Settings.instance().createLocalSetting("console-history", []));
+    this.#history = new TextEditor2.AutocompleteHistory.AutocompleteHistory(Common8.Settings.Settings.instance().createLocalSetting("console-history", []));
     this.initialText = "";
     this.eagerPreviewElement = document.createElement("div");
     this.eagerPreviewElement.classList.add("console-eager-preview");
-    this.textChangeThrottler = new Common9.Throttler.Throttler(150);
+    this.textChangeThrottler = new Common8.Throttler.Throttler(150);
     this.requestPreviewBound = this.requestPreview.bind(this);
     this.innerPreviewElement = this.eagerPreviewElement.createChild("div", "console-eager-inner-preview");
     const previewIcon = new Icon2();
@@ -7974,8 +7883,8 @@ var ConsolePrompt = class extends Common9.ObjectWrapper.eventMixin(UI10.Widget.W
     this.promptIcon.style.color = "var(--icon-action)";
     this.promptIcon.classList.add("console-prompt-icon", "medium");
     this.element.appendChild(this.promptIcon);
-    this.iconThrottler = new Common9.Throttler.Throttler(0);
-    this.eagerEvalSetting = Common9.Settings.Settings.instance().moduleSetting("console-eager-eval");
+    this.iconThrottler = new Common8.Throttler.Throttler(0);
+    this.eagerEvalSetting = Common8.Settings.Settings.instance().moduleSetting("console-eager-eval");
     this.eagerEvalSetting.addChangeListener(this.eagerSettingChanged.bind(this));
     this.eagerPreviewElement.classList.toggle("hidden", !this.eagerEvalSetting.get());
     this.element.tabIndex = 0;
@@ -8181,19 +8090,19 @@ var ConsolePrompt = class extends Common9.ObjectWrapper.eventMixin(UI10.Widget.W
     return isExpressionComplete;
   }
   showSelfXssWarning() {
-    Common9.Console.Console.instance().warn(i18nString6(UIStrings6.selfXssWarning, { PH1: i18nString6(UIStrings6.allowPasting) }), Common9.Console.FrontendMessageSource.SELF_XSS);
+    Common8.Console.Console.instance().warn(i18nString6(UIStrings6.selfXssWarning, { PH1: i18nString6(UIStrings6.allowPasting) }), Common8.Console.FrontendMessageSource.SELF_XSS);
     this.#selfXssWarningShown = true;
     Host4.userMetrics.actionTaken(Host4.UserMetrics.Action.SelfXssWarningConsoleMessageShown);
     this.#updateJavaScriptCompletionCompartment();
   }
   async handleEnter(forceEvaluate) {
     if (this.#selfXssWarningShown && (this.text() === i18nString6(UIStrings6.allowPasting) || this.text() === `'${i18nString6(UIStrings6.allowPasting)}'`)) {
-      Common9.Console.Console.instance().log(this.text());
+      Common8.Console.Console.instance().log(this.text());
       this.editor.dispatch({
         changes: { from: 0, to: this.editor.state.doc.length },
         scrollIntoView: true
       });
-      Common9.Settings.Settings.instance().createSetting(
+      Common8.Settings.Settings.instance().createSetting(
         "disable-self-xss-warning",
         false,
         "Synced"
@@ -8286,7 +8195,6 @@ export {
   ConsoleView_exports as ConsoleView,
   ConsoleViewMessage_exports as ConsoleViewMessage,
   ConsoleViewport_exports as ConsoleViewport,
-  ErrorStackParser_exports as ErrorStackParser,
   PromptBuilder_exports as PromptBuilder
 };
 //# sourceMappingURL=console.js.map

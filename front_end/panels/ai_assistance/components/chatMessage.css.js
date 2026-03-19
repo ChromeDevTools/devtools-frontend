@@ -371,11 +371,14 @@ export default `/*
   }
 
   .step-widgets-wrapper {
-    width: fit-content;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     gap: var(--sys-size-5);
+  }
+
+  .widget-and-revealer-container {
+    width: 100%;
   }
 
   .widget-reveal-container {

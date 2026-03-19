@@ -1252,16 +1252,22 @@ var AppManifestView = class extends Common2.ObjectWrapper.eventMixin(UI2.Widget.
     if (!frameId) {
       throw new Error("no main frame found");
     }
-    const { content } = await SDK.PageResourceLoader.PageResourceLoader.instance().loadResource(
-      url,
-      {
-        target: this.target,
-        frameId,
-        initiatorUrl: this.target.inspectedURL()
-      },
-      /* isBinary=*/
-      true
-    );
+    let content;
+    try {
+      const response = await SDK.PageResourceLoader.PageResourceLoader.instance().loadResource(
+        url,
+        {
+          target: this.target,
+          frameId,
+          initiatorUrl: this.target.inspectedURL()
+        },
+        /* isBinary=*/
+        true
+      );
+      content = response.content;
+    } catch {
+      return null;
+    }
     const image = document.createElement("img");
     const result = new Promise((resolve, reject) => {
       image.onload = resolve;

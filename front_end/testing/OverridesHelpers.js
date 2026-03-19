@@ -1,6 +1,7 @@
 // Copyright 2022 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+import * as Common from '../core/common/common.js';
 import * as Platform from '../core/platform/platform.js';
 import * as SDK from '../core/sdk/sdk.js';
 import * as Bindings from '../models/bindings/bindings.js';
@@ -20,7 +21,13 @@ export function setUpEnvironment() {
         workspace,
         ignoreListManager: Workspace.IgnoreListManager.IgnoreListManager.instance({ forceNew: true }),
     });
-    const breakpointManager = Breakpoints.BreakpointManager.BreakpointManager.instance({ forceNew: true, targetManager, workspace, debuggerWorkspaceBinding });
+    const breakpointManager = Breakpoints.BreakpointManager.BreakpointManager.instance({
+        forceNew: true,
+        targetManager,
+        workspace,
+        debuggerWorkspaceBinding,
+        settings: Common.Settings.Settings.instance()
+    });
     Persistence.Persistence.PersistenceImpl.instance({ forceNew: true, workspace, breakpointManager });
     const networkPersistenceManager = Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance({ forceNew: true, workspace });
     return { networkPersistenceManager, workspace, debuggerWorkspaceBinding };

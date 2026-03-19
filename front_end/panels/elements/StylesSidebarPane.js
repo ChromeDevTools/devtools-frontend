@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-imperative-dom-api */
+/* eslint-disable @devtools/no-lit-render-outside-of-view */
 /*
  * Copyright (C) 2007 Apple Inc.  All rights reserved.
  * Copyright (C) 2009 Joseph Pecoraro
@@ -47,6 +48,7 @@ import { createIcon, Icon } from '../../ui/kit/kit.js';
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import { render } from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as PanelsCommon from '../common/common.js';
 import * as ElementsComponents from './components/components.js';
@@ -1258,10 +1260,8 @@ export class SectionBlock {
         const pseudoArgumentString = pseudoArgument ? `(${pseudoArgument})` : '';
         const pseudoTypeString = `${pseudoType}${pseudoArgumentString}`;
         UI.UIUtils.createTextChild(separatorElement, i18nString(UIStrings.inheritedFromSPseudoOf, { PH1: pseudoTypeString }));
-        const link = PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(node, {
-            preventKeyboardFocus: true,
-        });
-        separatorElement.appendChild(link);
+        const link = PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(node, { preventKeyboardFocus: true });
+        render(link, separatorElement);
         return new SectionBlock(separatorElement);
     }
     static createRegisteredPropertiesBlock(expandedByDefault) {
@@ -1307,7 +1307,7 @@ export class SectionBlock {
         const link = PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(node, {
             preventKeyboardFocus: true,
         });
-        separatorElement.appendChild(link);
+        render(link, separatorElement);
         return new SectionBlock(separatorElement);
     }
     static createLayerBlock(rule) {
@@ -1537,6 +1537,7 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
     onInput(event) {
         super.onInput(event);
         if (this.aiCodeCompletionProvider) {
+            this.#updateAiCodeSuggestion();
             this.#debouncedTriggerAiCodeCompletion();
         }
     }
@@ -1745,6 +1746,33 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
             return subtitleElement;
         }
     }
+    #updateAiCodeSuggestion() {
+        const activeAiSuggestion = this.treeElement.section().activeAiSuggestion;
+        if (!activeAiSuggestion) {
+            return;
+        }
+        const userInput = this.text();
+        const selection = this.element().getComponentSelection();
+        if (!selection || selection.rangeCount === 0) {
+            return;
+        }
+        const range = selection.getRangeAt(0);
+        const cursorOffset = range.endOffset;
+        const currentAiSuggestedText = this.#getAiSuggestionForCurrentPrompt();
+        if (!currentAiSuggestedText?.startsWith(userInput) || cursorOffset < activeAiSuggestion.cursorPosition) {
+            this.setAiAutoCompletion(null);
+            return;
+        }
+        const hint = this.getCompletionHint();
+        if (!hint) {
+            return;
+        }
+        const textWithTopSuggestion = userInput + hint;
+        if (textWithTopSuggestion && !currentAiSuggestedText.startsWith(textWithTopSuggestion)) {
+            this.setAiAutoCompletion(null);
+            return;
+        }
+    }
     async triggerAiCodeCompletion() {
         const selection = this.element().getComponentSelection();
         if (!this.aiCodeCompletionProvider || !selection || selection.rangeCount === 0) {
@@ -1840,14 +1868,8 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
                 // Tab to the next field as suggestion is no longer valid
                 return false;
             }
-            const suggestionForCurrentElement = this.treeElement.section().activeAiSuggestion?.properties[0];
-            if (!suggestionForCurrentElement) {
-                this.setAiAutoCompletion(null);
-                // Tab to the next field as suggestion is no longer valid
-                return false;
-            }
-            const suggestionForCurrentPrompt = this.isEditingName ? suggestionForCurrentElement.name : suggestionForCurrentElement.value;
-            if (!suggestionForCurrentPrompt.startsWith(textAfterAccept)) {
+            const suggestionForCurrentPrompt = this.#getAiSuggestionForCurrentPrompt();
+            if (!suggestionForCurrentPrompt?.startsWith(textAfterAccept)) {
                 this.setAiAutoCompletion(null);
                 // Tab to the next field as suggestion is no longer valid
                 return false;
@@ -1869,6 +1891,14 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
         await this.treeElement.section().commitActiveAiSuggestion();
         // Clear state and return
         this.setAiAutoCompletion(null);
+    }
+    #getAiSuggestionForCurrentPrompt() {
+        const suggestionForCurrentElement = this.treeElement.section().activeAiSuggestion?.properties[0];
+        if (!suggestionForCurrentElement) {
+            return;
+        }
+        const suggestionForCurrentPrompt = this.isEditingName ? suggestionForCurrentElement.name : suggestionForCurrentElement.value;
+        return suggestionForCurrentPrompt;
     }
 }
 export function unescapeCssString(input) {

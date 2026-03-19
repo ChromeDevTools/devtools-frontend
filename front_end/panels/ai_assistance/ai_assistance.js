@@ -2606,11 +2606,14 @@ var chatMessage_css_default = `/*
   }
 
   .step-widgets-wrapper {
-    width: fit-content;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     gap: var(--sys-size-5);
+  }
+
+  .widget-and-revealer-container {
+    width: 100%;
   }
 
   .widget-reveal-container {
@@ -2774,6 +2777,7 @@ var walkthroughView_css_default = `/*
     flex-direction: column;
     gap: var(--sys-size-5);
     min-width: 0;
+    width: 100%;
   }
 
   .step-container {
@@ -4532,16 +4536,17 @@ var exportForAgentsDialog_css_default = `/*
 
   .export-for-agents-dialog textarea {
     width: 100%;
+    min-height: var(--sys-size-30); /* 288px */
     max-height: var(--sys-size-34); /* 512px */
     resize: none;
-    border: 1px solid var(--sys-color-outline);
     padding: var(--sys-size-5);
     box-sizing: border-box;
     font-family: var(--monospace-font-family);
     font-size: var(--monospace-font-size);
-    background-color: var(--sys-color-surface);
+    background-color: var(--sys-color-surface5);
     color: var(--sys-color-on-surface);
     border-radius: var(--sys-shape-corner-small);
+    border: none;
   }
 
   .export-for-agents-dialog footer {
@@ -4649,6 +4654,7 @@ var ExportForAgentsDialog = class _ExportForAgentsDialog extends UI6.Widget.VBox
   #view;
   #dialog;
   #state;
+  #onConversationSaveAs;
   constructor(options, view = DEFAULT_VIEW5) {
     super();
     this.#dialog = options.dialog;
@@ -4657,6 +4663,7 @@ var ExportForAgentsDialog = class _ExportForAgentsDialog extends UI6.Widget.VBox
       promptText: options.promptText,
       conversationText: options.markdownText
     };
+    this.#onConversationSaveAs = options.onConversationSaveAs;
     this.#view = view;
     this.requestUpdate();
   }
@@ -4681,9 +4688,9 @@ var ExportForAgentsDialog = class _ExportForAgentsDialog extends UI6.Widget.VBox
         break;
       case "conversation":
         jslogContext = "ai-export-for-agents.save-as-markdown";
-        onButtonClick = (event) => {
-          event.preventDefault();
+        onButtonClick = () => {
           this.#dialog.hide();
+          this.#onConversationSaveAs();
         };
         break;
     }
@@ -4695,7 +4702,7 @@ var ExportForAgentsDialog = class _ExportForAgentsDialog extends UI6.Widget.VBox
     };
     this.#view(viewInput, void 0, this.contentElement);
   }
-  static show({ promptText, markdownText }) {
+  static show({ promptText, markdownText, onConversationSaveAs }) {
     const dialog = new UI6.Dialog.Dialog();
     dialog.setAriaLabel(i18nString3(UIStrings3.exportForAgents));
     dialog.setOutsideClickCallback((ev) => {
@@ -4708,7 +4715,7 @@ var ExportForAgentsDialog = class _ExportForAgentsDialog extends UI6.Widget.VBox
       /* UI.GlassPane.SizeBehavior.MEASURE_CONTENT */
     );
     dialog.setDimmed(true);
-    const exportDialog = new _ExportForAgentsDialog({ dialog, promptText, markdownText });
+    const exportDialog = new _ExportForAgentsDialog({ dialog, promptText, markdownText, onConversationSaveAs });
     exportDialog.show(dialog.contentElement);
     void exportDialog.updateComplete.then(() => {
       dialog.show();
@@ -4946,7 +4953,12 @@ var ChatView = class extends HTMLElement {
     Host5.userMetrics.actionTaken(Host5.UserMetrics.Action.AiAssistanceDynamicSuggestionClicked);
   };
   #exportForAgentsClick() {
-    void ExportForAgentsDialog.show({ promptText: "(placeholder prompt, feature WIP)", markdownText: "(placeholder conversation, feature WIP)" });
+    void ExportForAgentsDialog.show({
+      promptText: "(placeholder prompt, feature WIP)",
+      markdownText: this.#props.conversationMarkdown,
+      onConversationSaveAs: this.#props.onExportConversation ?? (async () => {
+      })
+    });
   }
   #render() {
     this.#view({
@@ -4954,7 +4966,7 @@ var ChatView = class extends HTMLElement {
       handleScroll: this.#handleScroll,
       handleSuggestionClick: this.#handleSuggestionClick,
       handleMessageContainerRef: this.#handleMessageContainerRef,
-      exportForAgentsClick: this.#exportForAgentsClick
+      exportForAgentsClick: this.#exportForAgentsClick.bind(this)
     }, this.#output, this.#shadow);
   }
 };
@@ -5484,7 +5496,7 @@ import * as Trace from "./../../models/trace/trace.js";
 import * as Lit6 from "./../../ui/lit/lit.js";
 import * as PanelsCommon2 from "./../common/common.js";
 var { html: html11 } = Lit6.StaticHtml;
-var { ref: ref5, createRef: createRef2 } = Lit6.Directives;
+var { until } = Lit6.Directives;
 var PerformanceAgentMarkdownRenderer = class extends MarkdownRendererWithCodeBlock {
   mainFrameId;
   lookupEvent;
@@ -5497,15 +5509,7 @@ var PerformanceAgentMarkdownRenderer = class extends MarkdownRendererWithCodeBlo
     if (token.type === "link" && token.href.startsWith("#")) {
       if (token.href.startsWith("#node-")) {
         const nodeId = Number(token.href.replace("#node-", ""));
-        const templateRef = createRef2();
-        void this.#linkifyNode(nodeId, token.text).then((node) => {
-          if (!templateRef.value || !node) {
-            return;
-          }
-          templateRef.value.textContent = "";
-          templateRef.value.append(node);
-        });
-        return html11`<span ${ref5(templateRef)}>${token.text}</span>`;
+        return html11`<span>${until(this.#linkifyNode(nodeId, token.text).then((node) => node || token.text), token.text)}</span>`;
       }
       const event = this.lookupEvent(token.href.slice(1));
       if (!event) {
@@ -5556,7 +5560,7 @@ import * as Marked3 from "./../../third_party/marked/marked.js";
 import * as Lit7 from "./../../ui/lit/lit.js";
 import * as PanelsCommon3 from "./../common/common.js";
 var { html: html12 } = Lit7.StaticHtml;
-var { ref: ref6, createRef: createRef3 } = Lit7.Directives;
+var { until: until2 } = Lit7.Directives;
 var StylingAgentMarkdownRenderer = class _StylingAgentMarkdownRenderer extends MarkdownRendererWithCodeBlock {
   mainFrameId;
   constructor(mainFrameId = "") {
@@ -5632,15 +5636,7 @@ var StylingAgentMarkdownRenderer = class _StylingAgentMarkdownRenderer extends M
         nodeId = Number(token.href.replace("#", ""));
       }
       if (nodeId) {
-        const templateRef = createRef3();
-        void this.#linkifyNode(nodeId, token.text).then((node) => {
-          if (!templateRef.value || !node) {
-            return;
-          }
-          templateRef.value.textContent = "";
-          templateRef.value.append(node);
-        });
-        return html12`<span ${ref6(templateRef)}>${token.text}</span>`;
+        return html12`<span>${until2(this.#linkifyNode(nodeId, token.text).then((node) => node || token.text), token.text)}</span>`;
       }
     }
     return super.templateForToken(token);
@@ -5682,19 +5678,7 @@ var StylingAgentMarkdownRenderer = class _StylingAgentMarkdownRenderer extends M
   }
   #renderSingleLink(nodeId) {
     const label = `link`;
-    const templateRef = createRef3();
-    void this.#linkifyNode(nodeId, label).then((node) => {
-      if (!templateRef.value) {
-        return;
-      }
-      templateRef.value.textContent = "";
-      if (node) {
-        templateRef.value.append(node);
-      } else {
-        templateRef.value.append(document.createTextNode(label));
-      }
-    });
-    return html12`<span ${ref6(templateRef)}>${label}</span>`;
+    return html12`<span>${until2(this.#linkifyNode(nodeId, label).then((node) => node || label), label)}</span>`;
   }
   async #linkifyNode(backendNodeId, label) {
     if (backendNodeId === void 0) {
@@ -6017,6 +6001,7 @@ function getMarkdownRenderer(conversation) {
   return new MarkdownRendererWithCodeBlock();
 }
 function toolbarView(input) {
+  const hasAiV2 = Boolean(Root7.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled);
   return html13`
     <div class="toolbar-container" role="toolbar" jslog=${VisualLogging6.toolbar()}>
       <devtools-toolbar class="freestyler-left-toolbar" role="presentation">
@@ -6044,15 +6029,17 @@ function toolbarView(input) {
               .variant=${"toolbar"}
               @click=${input.onDeleteClick}>
           </devtools-button>
-          <devtools-button
-            title=${i18nString5(UIStrings5.exportConversation)}
-            aria-label=${i18nString5(UIStrings5.exportConversation)}
-            .iconName=${"download"}
-            .disabled=${input.isLoading}
-            .jslogContext=${"export-ai-conversation"}
-            .variant=${"toolbar"}
-            @click=${input.onExportConversationClick}>
-          </devtools-button>` : Lit8.nothing}
+          ${hasAiV2 ? Lit8.nothing : html13`
+            <devtools-button
+              title=${i18nString5(UIStrings5.exportConversation)}
+              aria-label=${i18nString5(UIStrings5.exportConversation)}
+              .iconName=${"download"}
+              .disabled=${input.isLoading}
+              .jslogContext=${"export-ai-conversation"}
+              .variant=${"toolbar"}
+              @click=${input.onExportConversationClick}>
+            </devtools-button>
+            `}` : Lit8.nothing}
       </devtools-toolbar>
       <devtools-toolbar class="freestyler-right-toolbar" role="presentation">
         <devtools-link
@@ -6288,9 +6275,11 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI10.Panel.Panel {
           emptyStateSuggestions,
           inputPlaceholder: this.#getChatInputPlaceholder(),
           disclaimerText: this.#getDisclaimerText(),
+          onExportConversation: this.#onExportConversationClick.bind(this),
           changeManager: this.#changeManager,
           uploadImageInputEnabled: isAiAssistanceMultimodalUploadInputEnabled() && this.#conversation.type === "freestyler",
           markdownRenderer,
+          conversationMarkdown: this.#conversation.getConversationMarkdown(),
           onTextSubmit: async (text, imageInput, multimodalInputType) => {
             Host7.userMetrics.actionTaken(Host7.UserMetrics.Action.AiAssistanceQuerySubmitted);
             await this.#startConversation(text, imageInput, multimodalInputType);

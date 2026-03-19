@@ -23,6 +23,7 @@
         "sidebarAnnotationsTab.css.js",
         "sidebarInsightsTab.css.js",
         "sidebarSingleInsightSet.css.js",
+        "timelineRangeSummaryView.css.js",
         "timelineSummary.css.js"
     ]
 }

@@ -264,7 +264,11 @@ export class ChatView extends HTMLElement {
     };
     #exportForAgentsClick() {
         // TODO(b/493191546, b/493191387): generate accurate text here.
-        void ExportForAgentsDialog.show({ promptText: '(placeholder prompt, feature WIP)', markdownText: '(placeholder conversation, feature WIP)' });
+        void ExportForAgentsDialog.show({
+            promptText: '(placeholder prompt, feature WIP)',
+            markdownText: this.#props.conversationMarkdown,
+            onConversationSaveAs: this.#props.onExportConversation ?? (async () => { }),
+        });
     }
     #render() {
         this.#view({
@@ -272,7 +276,7 @@ export class ChatView extends HTMLElement {
             handleScroll: this.#handleScroll,
             handleSuggestionClick: this.#handleSuggestionClick,
             handleMessageContainerRef: this.#handleMessageContainerRef,
-            exportForAgentsClick: this.#exportForAgentsClick,
+            exportForAgentsClick: this.#exportForAgentsClick.bind(this),
         }, this.#output, this.#shadow);
     }
 }

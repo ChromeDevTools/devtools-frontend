@@ -1956,7 +1956,7 @@ var ElementDetailsView = class extends UI3.Widget.Widget {
           const lineNumber = styleSheetHeader.lineNumberInSource(ruleLocation.startLine);
           const columnNumber = styleSheetHeader.columnNumberInSource(ruleLocation.startLine, ruleLocation.startColumn);
           const matchingSelectorLocation = new SDK2.CSSModel.CSSLocation(styleSheetHeader, lineNumber, columnNumber);
-          link = this.#linkifier.linkifyCSSLocation(matchingSelectorLocation);
+          link = html3`${this.#linkifier.linkifyCSSLocation(matchingSelectorLocation)}`;
         }
       }
       return { data: item2, link, showNode };

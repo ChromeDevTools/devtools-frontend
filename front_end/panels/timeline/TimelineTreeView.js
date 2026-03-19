@@ -17,7 +17,6 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import { ActiveFilters } from './ActiveFilters.js';
 import * as Extensions from './extensions/extensions.js';
 import { targetForEvent } from './TargetForEvent.js';
-import * as ThirdPartyTreeView from './ThirdPartyTreeView.js';
 import { TimelineRegExp } from './TimelineFilters.js';
 import { rangeForSelection } from './TimelineSelection.js';
 import timelineTreeViewStyles from './timelineTreeView.css.js';
@@ -224,6 +223,15 @@ export class TimelineTreeView extends Common.ObjectWrapper.eventMixin(UI.Widget.
     }
     parsedTrace() {
         return this.#parsedTrace;
+    }
+    isThirdPartyTreeView() {
+        return false;
+    }
+    nodeIsFirstParty(_node) {
+        return false;
+    }
+    nodeIsExtension(_node) {
+        return false;
     }
     init() {
         this.linkifier = new Components.Linkifier.Linkifier();
@@ -656,7 +664,7 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode {
                 iconContainer.insertBefore(info.icon, icon);
             }
             // Include badges with the name, if relevant.
-            if (columnId === 'site' && this.treeView instanceof ThirdPartyTreeView.ThirdPartyTreeViewWidget) {
+            if (columnId === 'site' && this.treeView.isThirdPartyTreeView()) {
                 const thirdPartyTree = this.treeView;
                 let badgeText = '';
                 if (thirdPartyTree.nodeIsFirstParty(this.profileNode)) {
@@ -718,7 +726,7 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode {
                 value = this.profileNode.selfTime;
                 maxTime = this.maxSelfTime;
                 showPercents = true;
-                showBottomUpButton = thirdPartyView instanceof ThirdPartyTreeView.ThirdPartyTreeViewWidget;
+                showBottomUpButton = thirdPartyView.isThirdPartyTreeView();
                 break;
             case 'total':
                 value = this.profileNode.totalTime;

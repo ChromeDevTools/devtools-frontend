@@ -22,11 +22,13 @@ export declare class ExportForAgentsDialog extends UI.Widget.VBox {
         dialog: UI.Dialog.Dialog;
         promptText: string;
         markdownText: string;
+        onConversationSaveAs: () => void;
     }, view?: View);
     performUpdate(): void;
-    static show({ promptText, markdownText, }: {
+    static show({ promptText, markdownText, onConversationSaveAs, }: {
         promptText: string;
         markdownText: string;
+        onConversationSaveAs: () => void;
     }): void;
 }
 export {};

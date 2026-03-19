@@ -50,6 +50,9 @@ export declare class TimelineTreeView extends TimelineTreeView_base implements U
     setModelWithEvents(selectedEvents: Trace.Types.Events.Event[] | null, parsedTrace?: Trace.TraceModel.ParsedTrace | null, entityMappings?: Trace.EntityMapper.EntityMapper | null): void;
     entityMapper(): Trace.EntityMapper.EntityMapper | null;
     parsedTrace(): Trace.TraceModel.ParsedTrace | null;
+    isThirdPartyTreeView(): boolean;
+    nodeIsFirstParty(_node: Trace.Extras.TraceTree.Node): boolean;
+    nodeIsExtension(_node: Trace.Extras.TraceTree.Node): boolean;
     init(): void;
     lastSelectedNode(): Trace.Extras.TraceTree.Node | null | undefined;
     updateContents(selection: TimelineSelection): void;

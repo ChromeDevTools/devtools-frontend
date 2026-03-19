@@ -14,11 +14,8 @@ type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 export declare const CATEGORY_SUMMARY_DEFAULT_VIEW: View;
 export declare class CategorySummary extends UI.Widget.Widget {
     #private;
-    constructor(view?: View);
-    set total(total: number);
-    set rangeStart(rangeStart: number);
-    set rangeEnd(rangeEnd: number);
-    set categories(categories: CategoryData[]);
+    constructor(element?: HTMLElement, view?: View);
+    set data(data: ViewInput);
     performUpdate(): void;
 }
 export {};

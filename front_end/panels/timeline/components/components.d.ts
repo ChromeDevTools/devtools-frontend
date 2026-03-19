@@ -19,6 +19,7 @@ import * as Sidebar from './Sidebar.js';
 import * as SidebarAnnotationsTab from './SidebarAnnotationsTab.js';
 import * as SidebarInsightsTab from './SidebarInsightsTab.js';
 import * as SidebarSingleInsightSet from './SidebarSingleInsightSet.js';
+import * as TimelineRangeSummaryView from './TimelineRangeSummaryView.js';
 import * as TimelineSummary from './TimelineSummary.js';
 import * as Utils from './Utils.js';
-export { Breadcrumbs, BreadcrumbsUI, CPUThrottlingSelector, CWVMetrics, DetailsView, ExportTraceOptions, FieldSettingsDialog, IgnoreListSetting, InteractionBreakdown, LayoutShiftDetails, LiveMetricsView, MetricCard, NetworkRequestDetails, NetworkRequestTooltip, NetworkThrottlingSelector, OriginMap, RelatedInsightChips, Sidebar, SidebarAnnotationsTab, SidebarInsightsTab, SidebarSingleInsightSet, TimelineSummary, Utils, };
+export { Breadcrumbs, BreadcrumbsUI, CPUThrottlingSelector, CWVMetrics, DetailsView, ExportTraceOptions, FieldSettingsDialog, IgnoreListSetting, InteractionBreakdown, LayoutShiftDetails, LiveMetricsView, MetricCard, NetworkRequestDetails, NetworkRequestTooltip, NetworkThrottlingSelector, OriginMap, RelatedInsightChips, Sidebar, SidebarAnnotationsTab, SidebarInsightsTab, SidebarSingleInsightSet, TimelineRangeSummaryView, TimelineSummary, Utils, };

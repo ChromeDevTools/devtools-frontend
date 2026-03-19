@@ -3802,8 +3802,8 @@ var str_20 = i18n39.i18n.registerUIStrings("models/issues_manager/SharedDictiona
 var i18nLazyString10 = i18n39.i18n.getLazilyComputedLocalizedString.bind(void 0, str_20);
 function getIssueCode3(details) {
   switch (details.sharedDictionaryError) {
-    case "UseErrorNoCorpCrossOriginNoCorsRequest":
-      return "SharedDictionaryIssue::UseErrorNoCorpCrossOriginNoCorsRequest";
+    case "UseErrorCrossOriginNoCorsRequest":
+      return "SharedDictionaryIssue::UseErrorCrossOriginNoCorsRequest";
     case "UseErrorDictionaryLoadFailure":
       return "SharedDictionaryIssue::UseErrorDictionaryLoadFailure";
     case "UseErrorMatchingDictionaryNotUsed":
@@ -3828,8 +3828,6 @@ function getIssueCode3(details) {
       return "SharedDictionaryIssue::WriteErrorInvalidTTLField";
     case "WriteErrorNavigationRequest":
       return "SharedDictionaryIssue::WriteErrorNavigationRequest";
-    case "WriteErrorNoCorpCossOriginNoCorsRequest":
-      return "SharedDictionaryIssue::WriteErrorNoCorpCossOriginNoCorsRequest";
     case "WriteErrorNoMatchField":
       return "SharedDictionaryIssue::WriteErrorNoMatchField";
     case "WriteErrorNonIntegerTTLField":
@@ -3905,9 +3903,9 @@ var specLinks = [{
 }];
 var issueDescriptions9 = /* @__PURE__ */ new Map([
   [
-    "UseErrorNoCorpCrossOriginNoCorsRequest",
+    "UseErrorCrossOriginNoCorsRequest",
     {
-      file: "sharedDictionaryUseErrorNoCorpCrossOriginNoCorsRequest.md",
+      file: "sharedDictionaryUseErrorCrossOriginNoCorsRequest.md",
       links: specLinks
     }
   ],
@@ -3992,13 +3990,6 @@ var issueDescriptions9 = /* @__PURE__ */ new Map([
     "WriteErrorNavigationRequest",
     {
       file: "sharedDictionaryWriteErrorNavigationRequest.md",
-      links: specLinks
-    }
-  ],
-  [
-    "WriteErrorNoCorpCossOriginNoCorsRequest",
-    {
-      file: "sharedDictionaryWriteErrorNoCorpCossOriginNoCorsRequest.md",
       links: specLinks
     }
   ],

@@ -57,6 +57,7 @@
     "../../../../../../../front_end/panels/timeline/components/SidebarAnnotationsTab.ts",
     "../../../../../../../front_end/panels/timeline/components/SidebarInsightsTab.ts",
     "../../../../../../../front_end/panels/timeline/components/SidebarSingleInsightSet.ts",
+    "../../../../../../../front_end/panels/timeline/components/TimelineRangeSummaryView.ts",
     "../../../../../../../front_end/panels/timeline/components/TimelineSummary.ts",
     "../../../../../../../front_end/panels/timeline/components/Utils.ts",
     "../../../../../../../front_end/legacy/legacy-defs.d.ts",

@@ -16,6 +16,7 @@ export declare class BreakpointManager extends Common.ObjectWrapper.ObjectWrappe
         targetManager: SDK.TargetManager.TargetManager | null;
         workspace: Workspace.Workspace.WorkspaceImpl | null;
         debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding | null;
+        settings: Common.Settings.Settings | null;
         restoreInitialBreakpointCount?: number;
     }): BreakpointManager;
     modelAdded(debuggerModel: SDK.DebuggerModel.DebuggerModel): void;
@@ -166,7 +167,7 @@ declare class Storage {
     #private;
     readonly setting: Common.Settings.Setting<BreakpointStorageState[]>;
     readonly breakpoints: Map<string, BreakpointStorageState>;
-    constructor();
+    constructor(settings: Common.Settings.Settings);
     mute(): void;
     unmute(): void;
     breakpointItems(url: Platform.DevToolsPath.UrlString, resourceTypeName?: string): BreakpointStorageState[];

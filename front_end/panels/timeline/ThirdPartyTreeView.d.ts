@@ -6,6 +6,7 @@ export declare class ThirdPartyTreeViewWidget extends TimelineTreeView.TimelineT
     #private;
     protected autoSelectFirstChildOnRefresh: boolean;
     constructor();
+    isThirdPartyTreeView(): boolean;
     wasShown(): void;
     setModelWithEvents(selectedEvents: Trace.Types.Events.Event[] | null, parsedTrace?: Trace.TraceModel.ParsedTrace | null, entityMappings?: Trace.EntityMapper.EntityMapper | null): void;
     buildTree(): Trace.Extras.TraceTree.Node;

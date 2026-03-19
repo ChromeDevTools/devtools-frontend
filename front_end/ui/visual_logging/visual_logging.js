@@ -367,6 +367,7 @@ var knownContextValues = /* @__PURE__ */ new Set([
   "ai-explorer",
   "ai-export-for-agents",
   "ai-export-for-agents.copy-to-clipboard",
+  "ai-export-for-agents.save-as-markdown",
   "ai-hide-walkthrough-sidebar",
   "ai-show-walkthrough-sidebar",
   "ai_assistance",

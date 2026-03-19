@@ -7,7 +7,7 @@ import * as Lit from '../../../ui/lit/lit.js';
 import * as PanelsCommon from '../../common/common.js';
 import { MarkdownRendererWithCodeBlock } from './MarkdownRendererWithCodeBlock.js';
 const { html } = Lit.StaticHtml;
-const { ref, createRef } = Lit.Directives;
+const { until } = Lit.Directives;
 export class StylingAgentMarkdownRenderer extends MarkdownRendererWithCodeBlock {
     mainFrameId;
     constructor(mainFrameId = '') {
@@ -88,15 +88,7 @@ export class StylingAgentMarkdownRenderer extends MarkdownRendererWithCodeBlock 
                 nodeId = Number(token.href.replace('#', ''));
             }
             if (nodeId) {
-                const templateRef = createRef();
-                void this.#linkifyNode(nodeId, token.text).then(node => {
-                    if (!templateRef.value || !node) {
-                        return;
-                    }
-                    templateRef.value.textContent = '';
-                    templateRef.value.append(node);
-                });
-                return html `<span ${ref(templateRef)}>${token.text}</span>`;
+                return html `<span>${until(this.#linkifyNode(nodeId, token.text).then(node => node || token.text), token.text)}</span>`;
             }
         }
         return super.templateForToken(token);
@@ -141,22 +133,7 @@ export class StylingAgentMarkdownRenderer extends MarkdownRendererWithCodeBlock 
     }
     #renderSingleLink(nodeId) {
         const label = `link`;
-        const templateRef = createRef();
-        void this.#linkifyNode(nodeId, label).then(node => {
-            if (!templateRef.value) {
-                return;
-            }
-            templateRef.value.textContent = '';
-            if (node) {
-                templateRef.value.append(node);
-            }
-            else {
-                // Fallback to plain text if linkification fails
-                templateRef.value.append(document.createTextNode(label));
-            }
-        });
-        // Placeholder for async link
-        return html `<span ${ref(templateRef)}>${label}</span>`;
+        return html `<span>${until(this.#linkifyNode(nodeId, label).then(node => node || label), label)}</span>`;
     }
     async #linkifyNode(backendNodeId, label) {
         if (backendNodeId === undefined) {

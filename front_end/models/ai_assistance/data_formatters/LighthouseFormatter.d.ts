@@ -4,6 +4,7 @@ import type * as LHModel from '../../lighthouse/lighthouse.js';
  * summary for an AI Agent.
  */
 export declare class LighthouseFormatter {
+    #private;
     /**
      * Returns an overall summary and high-level overview of the Lighthouse report.
      */

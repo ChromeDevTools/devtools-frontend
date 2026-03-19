@@ -166,8 +166,7 @@ export class StylesAiCodeCompletionProvider {
         if (!completionHint) {
             return response.generatedSamples[0];
         }
-        return response.generatedSamples.find(sample => sample.generationString.startsWith(completionHint)) ??
-            response.generatedSamples[0];
+        return response.generatedSamples.find(sample => sample.generationString.startsWith(completionHint)) ?? null;
     }
     clearCache() {
         this.#aiCodeCompletion?.clearCachedRequest();

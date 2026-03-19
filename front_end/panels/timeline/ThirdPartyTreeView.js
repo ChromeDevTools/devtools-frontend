@@ -46,6 +46,9 @@ export class ThirdPartyTreeViewWidget extends TimelineTreeView.TimelineTreeView 
          */
         this.dataGrid.expandNodesWhenArrowing = false;
     }
+    isThirdPartyTreeView() {
+        return true;
+    }
     wasShown() {
         super.wasShown();
         this.registerRequiredCSS(thirdPartyTreeViewStyles);

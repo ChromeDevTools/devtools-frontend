@@ -61,15 +61,6 @@ export default `/*
     font-size: 13px;
   }
 
-  .timeline-details-range-summary {
-    padding: var(--sys-size-4) 0 0;
-    height: 100%;
-
-    >.widget:has(.timeline-summary) {
-      flex-grow: 0;
-    }
-  }
-
   /* This is the coloured box that shows next to the event name */
   .timeline-details-chip-title > div {
     width: 14px;

@@ -59,8 +59,92 @@ export class LighthouseFormatter {
             }
             lines.push(line);
             lines.push(`  * ${audit.description.replace(/\n/g, ' ')}`);
+            if (audit.details) {
+                const formattedDetails = this.#formatDetails(audit.details);
+                if (formattedDetails) {
+                    lines.push('');
+                    lines.push(formattedDetails.split('\n').map(l => `    ${l}`).join('\n'));
+                }
+            }
         }
         return lines.join('\n');
+    }
+    #formatDetails(details) {
+        switch (details.type) {
+            case 'table': {
+                const lines = [];
+                if (details.summary) {
+                    const summaryParts = [];
+                    // Purposefully rule out 0 because we want to skip if there is 0 wasted time.
+                    if (details.summary.wastedMs) {
+                        summaryParts.push(`Wasted time: ${details.summary.wastedMs}ms`);
+                    }
+                    // Purposefully rule out 0 because we want to skip if there is 0 wasted time.
+                    if (details.summary.wastedBytes) {
+                        summaryParts.push(`Wasted bytes: ${details.summary.wastedBytes}`);
+                    }
+                    if (summaryParts.length > 0) {
+                        lines.push(summaryParts.join('\n'));
+                    }
+                }
+                lines.push(this.#formatTable(details.headings, details.items));
+                return lines.join('\n');
+            }
+            case 'opportunity': {
+                const lines = [];
+                const summaryParts = [];
+                if (details.overallSavingsMs) {
+                    summaryParts.push(`Potential savings: ${details.overallSavingsMs}ms`);
+                }
+                if (details.overallSavingsBytes) {
+                    summaryParts.push(`Potential savings: ${details.overallSavingsBytes} bytes`);
+                }
+                if (summaryParts.length > 0) {
+                    lines.push(summaryParts.join(', '));
+                }
+                lines.push(this.#formatTable(details.headings, details.items));
+                return lines.join('\n');
+            }
+            default:
+                return '';
+        }
+    }
+    #formatTable(headings, items) {
+        const lines = [];
+        lines.push(`| ${headings.map(h => h.label).join(' | ')} |`);
+        for (const item of items) {
+            const row = headings.map(h => this.#formatTableValue(item[h.key]));
+            lines.push(`| ${row.join(' | ')} |`);
+        }
+        return lines.join('\n');
+    }
+    #formatTableValue(value) {
+        if (value === undefined || value === null) {
+            return '';
+        }
+        if (typeof value === 'string' || typeof value === 'number') {
+            return String(value);
+        }
+        if (typeof value === 'object' && 'type' in value) {
+            switch (value.type) {
+                case 'node':
+                    return value.nodeLabel || value.selector || value.snippet || '(node)';
+                case 'source-location': {
+                    const parts = [];
+                    if (value.url) {
+                        parts.push(value.url);
+                    }
+                    if (value.line) {
+                        parts.push(String(value.line));
+                    }
+                    if (value.column) {
+                        parts.push(String(value.column));
+                    }
+                    return parts.join(':');
+                }
+            }
+        }
+        return '';
     }
 }
 //# sourceMappingURL=LighthouseFormatter.js.map

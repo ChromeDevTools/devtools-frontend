@@ -1060,12 +1060,19 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin(UI.Widget.V
         if (!frameId) {
             throw new Error('no main frame found');
         }
-        const { content } = await SDK.PageResourceLoader.PageResourceLoader.instance().loadResource(url, {
-            target: this.target,
-            frameId,
-            initiatorUrl: this.target.inspectedURL(),
-        }, 
-        /* isBinary=*/ true);
+        let content;
+        try {
+            const response = await SDK.PageResourceLoader.PageResourceLoader.instance().loadResource(url, {
+                target: this.target,
+                frameId,
+                initiatorUrl: this.target.inspectedURL(),
+            }, 
+            /* isBinary=*/ true);
+            content = response.content;
+        }
+        catch {
+            return null;
+        }
         // Just loading the image, not building UI.
         /* eslint-disable @devtools/no-imperative-dom-api */
         const image = document.createElement('img');

@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-imperative-dom-api */
+/* eslint-disable @devtools/no-lit-render-outside-of-view */
 /*
  * Copyright (C) 2007, 2008 Apple Inc.  All rights reserved.
  * Copyright (C) 2008 Matt Lilek <webkit@mattlilek.com>
@@ -599,8 +600,7 @@ function renderAttribute(attr, updateRecord, isDiff, node) {
                 textContent: el.textContent || undefined,
                 isDynamicLink: true,
             });
-            el.removeChildren();
-            el.append(link);
+            render(link, el);
         })();
     });
     let relationRefDirective = ref(() => { });
@@ -1843,7 +1843,6 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
         // Cannot just convert the textual html into an element without
         // a parent node. Use a temporary span container for the HTML.
         const container = document.createElement('span');
-        // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
         Lit.render(renderAttribute({ name: ' ', value: '' }, null, false, this.nodeInternal), container);
         const attr = container.firstElementChild;
         attr.style.marginLeft = '2px'; // overrides the .editing margin rule

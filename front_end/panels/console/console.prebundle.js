@@ -24,7 +24,6 @@ import * as ConsoleSidebar from './ConsoleSidebar.js';
 import * as ConsoleView from './ConsoleView.js';
 import * as ConsoleViewMessage from './ConsoleViewMessage.js';
 import * as ConsoleViewport from './ConsoleViewport.js';
-import * as ErrorStackParser from './ErrorStackParser.js';
 import * as PromptBuilder from './PromptBuilder.js';
-export { ConsoleContextSelector, ConsoleFilter, ConsoleFormat, ConsoleInsightTeaser, ConsolePanel, ConsolePinPane, ConsolePrompt, ConsoleSidebar, ConsoleView, ConsoleViewMessage, ConsoleViewport, ErrorStackParser, PromptBuilder, };
+export { ConsoleContextSelector, ConsoleFilter, ConsoleFormat, ConsoleInsightTeaser, ConsolePanel, ConsolePinPane, ConsolePrompt, ConsoleSidebar, ConsoleView, ConsoleViewMessage, ConsoleViewport, PromptBuilder, };
 //# sourceMappingURL=console.prebundle.js.map

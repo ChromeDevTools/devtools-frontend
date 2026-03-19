@@ -40,6 +40,7 @@
     "useUnknownInCatchVariables": false
   },
   "files": [
+    "../../../../../../front_end/models/stack_trace/ErrorStackParser.ts",
     "../../../../../../front_end/models/stack_trace/StackTrace.ts",
     "../../../../../../front_end/legacy/legacy-defs.d.ts",
     "../../../../../../front_end/global_typings/global_defs.d.ts",
@@ -48,6 +49,9 @@
   "references": [
     {
       "path": "../../core/common/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../core/platform/bundle-tsconfig.json"
     },
     {
       "path": "../../core/sdk/bundle-tsconfig.json"

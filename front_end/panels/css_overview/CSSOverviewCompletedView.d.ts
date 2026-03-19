@@ -5,6 +5,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import { type LitTemplate } from '../../ui/lit/lit.js';
 import type { GlobalStyleStats } from './CSSOverviewModel.js';
 import type { UnusedDeclaration } from './CSSOverviewUnusedDeclarations.js';
 export type NodeStyleStats = Map<string, Set<number>>;
@@ -124,7 +125,7 @@ export declare class CSSOverviewCompletedView extends UI.Widget.VBox {
 interface ElementDetailsViewInput {
     items: Array<{
         data: PopulateNodesEventNodeTypes;
-        link?: HTMLElement;
+        link?: LitTemplate;
         showNode?: () => void;
     }>;
     visibility: Set<string>;

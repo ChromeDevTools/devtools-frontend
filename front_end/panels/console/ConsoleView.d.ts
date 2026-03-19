@@ -67,6 +67,7 @@ export declare class ConsoleView extends UI.Widget.VBox implements UI.Searchable
     private aiCodeCompletionSummaryToolbarContainer?;
     private aiCodeCompletionSummaryToolbar?;
     constructor(viewportThrottlerTimeout: number);
+    static clearConsoleViewInstanceForTest(): void;
     static instance(opts?: {
         forceNew: boolean;
         viewportThrottlerTimeout?: number;
@@ -90,6 +91,7 @@ export declare class ConsoleView extends UI.Widget.VBox implements UI.Searchable
     private consoleTimestampsSettingChanged;
     private executionContextChanged;
     willHide(): void;
+    dispose(): void;
     wasShown(): void;
     focus(): void;
     focusPrompt(): void;

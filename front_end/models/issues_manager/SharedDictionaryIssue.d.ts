@@ -3,7 +3,7 @@ import * as Protocol from '../../generated/protocol.js';
 import { Issue, IssueCategory, IssueKind } from './Issue.js';
 import { type MarkdownIssueDescription } from './MarkdownIssueDescription.js';
 export declare const enum IssueCode {
-    USE_ERROR_NO_CORP_CROSS_ORIGIN_NO_CORS_REQUEST = "SharedDictionaryIssue::UseErrorNoCorpCrossOriginNoCorsRequest",
+    USE_ERROR_CROSS_ORIGIN_NO_CORS_REQUEST = "SharedDictionaryIssue::UseErrorCrossOriginNoCorsRequest",
     USE_ERROR_DICTIONARY_LOAD_FAILURE = "SharedDictionaryIssue::UseErrorDictionaryLoadFailure",
     USE_ERROR_MATCHING_DICTIONARY_NOT_USED = "SharedDictionaryIssue::UseErrorMatchingDictionaryNotUsed",
     USE_ERROR_UNEXPECTED_CONTENT_DICTIONARY_HEADER = "SharedDictionaryIssue::UseErrorUnexpectedContentDictionaryHeader",
@@ -16,7 +16,6 @@ export declare const enum IssueCode {
     WRITE_ERROR_INVALID_STRUCTURED_HEADER = "SharedDictionaryIssue::WriteErrorInvalidStructuredHeader",
     WRITE_ERROR_INVALID_TTL_FIELD = "SharedDictionaryIssue::WriteErrorInvalidTTLField",
     WRITE_ERROR_NAVIGATION_REQUEST = "SharedDictionaryIssue::WriteErrorNavigationRequest",
-    WRITE_ERROR_NO_CORP_COSS_ORIGIN_NO_CORS_REQUEST = "SharedDictionaryIssue::WriteErrorNoCorpCossOriginNoCorsRequest",
     WRITE_ERROR_NO_MATCH_FIELD = "SharedDictionaryIssue::WriteErrorNoMatchField",
     WRITE_ERROR_NON_INTEGER_TTL_FIELD = "SharedDictionaryIssue::WriteErrorNonIntegerTTLField",
     WRITE_ERROR_NON_LIST_MATCH_DEST_FIELD = "SharedDictionaryIssue::WriteErrorNonListMatchDestField",

@@ -69,6 +69,7 @@ export default `/*
     flex-direction: column;
     gap: var(--sys-size-5);
     min-width: 0;
+    width: 100%;
   }
 
   .step-container {

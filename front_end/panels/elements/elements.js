@@ -1209,6 +1209,7 @@ import { createIcon as createIcon4, Icon as Icon2 } from "./../../ui/kit/kit.js"
 import * as InlineEditor3 from "./../../ui/legacy/components/inline_editor/inline_editor.js";
 import * as Components2 from "./../../ui/legacy/components/utils/utils.js";
 import * as UI10 from "./../../ui/legacy/legacy.js";
+import { render as render5 } from "./../../ui/lit/lit.js";
 import * as VisualLogging5 from "./../../ui/visual_logging/visual_logging.js";
 import * as PanelsCommon2 from "./../common/common.js";
 import * as ElementsComponents3 from "./components/components.js";
@@ -7932,7 +7933,7 @@ var StylesAiCodeCompletionProvider = class _StylesAiCodeCompletionProvider {
     if (!completionHint) {
       return response.generatedSamples[0];
     }
-    return response.generatedSamples.find((sample) => sample.generationString.startsWith(completionHint)) ?? response.generatedSamples[0];
+    return response.generatedSamples.find((sample) => sample.generationString.startsWith(completionHint)) ?? null;
   }
   clearCache() {
     this.#aiCodeCompletion?.clearCachedRequest();
@@ -9475,10 +9476,8 @@ var SectionBlock = class _SectionBlock {
     const pseudoArgumentString = pseudoArgument ? `(${pseudoArgument})` : "";
     const pseudoTypeString = `${pseudoType}${pseudoArgumentString}`;
     UI10.UIUtils.createTextChild(separatorElement, i18nString6(UIStrings6.inheritedFromSPseudoOf, { PH1: pseudoTypeString }));
-    const link2 = PanelsCommon2.DOMLinkifier.Linkifier.instance().linkify(node, {
-      preventKeyboardFocus: true
-    });
-    separatorElement.appendChild(link2);
+    const link2 = PanelsCommon2.DOMLinkifier.Linkifier.instance().linkify(node, { preventKeyboardFocus: true });
+    render5(link2, separatorElement);
     return new _SectionBlock(separatorElement);
   }
   static createRegisteredPropertiesBlock(expandedByDefault) {
@@ -9524,7 +9523,7 @@ var SectionBlock = class _SectionBlock {
     const link2 = PanelsCommon2.DOMLinkifier.Linkifier.instance().linkify(node, {
       preventKeyboardFocus: true
     });
-    separatorElement.appendChild(link2);
+    render5(link2, separatorElement);
     return new _SectionBlock(separatorElement);
   }
   static createLayerBlock(rule) {
@@ -9744,6 +9743,7 @@ var CSSPropertyPrompt = class extends UI10.TextPrompt.TextPrompt {
   onInput(event) {
     super.onInput(event);
     if (this.aiCodeCompletionProvider) {
+      this.#updateAiCodeSuggestion();
       this.#debouncedTriggerAiCodeCompletion();
     }
   }
@@ -9949,6 +9949,33 @@ var CSSPropertyPrompt = class extends UI10.TextPrompt.TextPrompt {
       return subtitleElement;
     }
   }
+  #updateAiCodeSuggestion() {
+    const activeAiSuggestion = this.treeElement.section().activeAiSuggestion;
+    if (!activeAiSuggestion) {
+      return;
+    }
+    const userInput = this.text();
+    const selection = this.element().getComponentSelection();
+    if (!selection || selection.rangeCount === 0) {
+      return;
+    }
+    const range = selection.getRangeAt(0);
+    const cursorOffset = range.endOffset;
+    const currentAiSuggestedText = this.#getAiSuggestionForCurrentPrompt();
+    if (!currentAiSuggestedText?.startsWith(userInput) || cursorOffset < activeAiSuggestion.cursorPosition) {
+      this.setAiAutoCompletion(null);
+      return;
+    }
+    const hint = this.getCompletionHint();
+    if (!hint) {
+      return;
+    }
+    const textWithTopSuggestion = userInput + hint;
+    if (textWithTopSuggestion && !currentAiSuggestedText.startsWith(textWithTopSuggestion)) {
+      this.setAiAutoCompletion(null);
+      return;
+    }
+  }
   async triggerAiCodeCompletion() {
     const selection = this.element().getComponentSelection();
     if (!this.aiCodeCompletionProvider || !selection || selection.rangeCount === 0) {
@@ -10040,13 +10067,8 @@ var CSSPropertyPrompt = class extends UI10.TextPrompt.TextPrompt {
         this.setAiAutoCompletion(null);
         return false;
       }
-      const suggestionForCurrentElement = this.treeElement.section().activeAiSuggestion?.properties[0];
-      if (!suggestionForCurrentElement) {
-        this.setAiAutoCompletion(null);
-        return false;
-      }
-      const suggestionForCurrentPrompt = this.isEditingName ? suggestionForCurrentElement.name : suggestionForCurrentElement.value;
-      if (!suggestionForCurrentPrompt.startsWith(textAfterAccept)) {
+      const suggestionForCurrentPrompt = this.#getAiSuggestionForCurrentPrompt();
+      if (!suggestionForCurrentPrompt?.startsWith(textAfterAccept)) {
         this.setAiAutoCompletion(null);
         return false;
       }
@@ -10064,6 +10086,14 @@ var CSSPropertyPrompt = class extends UI10.TextPrompt.TextPrompt {
   async commitAiSuggestion() {
     await this.treeElement.section().commitActiveAiSuggestion();
     this.setAiAutoCompletion(null);
+  }
+  #getAiSuggestionForCurrentPrompt() {
+    const suggestionForCurrentElement = this.treeElement.section().activeAiSuggestion?.properties[0];
+    if (!suggestionForCurrentElement) {
+      return;
+    }
+    const suggestionForCurrentPrompt = this.isEditingName ? suggestionForCurrentElement.name : suggestionForCurrentElement.value;
+    return suggestionForCurrentPrompt;
   }
 };
 function unescapeCssString(input) {
@@ -10581,7 +10611,7 @@ var BinOpRenderer = class extends rendererBase(SDK9.CSSPropertyParserMatchers.Bi
 };
 
 // gen/front_end/panels/elements/ComputedStyleWidget.js
-var { html: html6, render: render5 } = Lit5;
+var { html: html6, render: render6 } = Lit5;
 var { bindToSetting } = UI12.UIUtils;
 var UIStrings8 = {
   /**
@@ -10723,7 +10753,7 @@ var propertySorter = (propA, propB) => {
   return Platform6.StringUtilities.compare(canonicalA, canonicalB);
 };
 var DEFAULT_VIEW2 = (input, _output, target) => {
-  render5(html6`
+  render6(html6`
     <style>${computedStyleWidget_css_default}</style>
     ${input.includeToolbar ? html6`
       <div class="styles-sidebar-pane-toolbar">
@@ -11280,7 +11310,7 @@ import * as Highlighting3 from "./../../ui/components/highlighting/highlighting.
 import * as IssueCounter from "./../../ui/components/issue_counter/issue_counter.js";
 import * as UIComponentUtils from "./../../ui/legacy/components/utils/utils.js";
 import * as UI17 from "./../../ui/legacy/legacy.js";
-import { html as html10, nothing as nothing5, render as render9 } from "./../../ui/lit/lit.js";
+import { html as html10, nothing as nothing5, render as render10 } from "./../../ui/lit/lit.js";
 import * as VisualLogging9 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/elements/AdoptedStyleSheetTreeElement.js
@@ -11951,7 +11981,7 @@ function getRegisteredDecorators() {
 }
 
 // gen/front_end/panels/elements/ElementsTreeElement.js
-var { html: html8, nothing: nothing4, render: render7, Directives: { ref: ref2, repeat } } = Lit6;
+var { html: html8, nothing: nothing4, render: render8, Directives: { ref: ref2, repeat } } = Lit6;
 var { animateOn } = UI14.UIUtils;
 var UIStrings11 = {
   /**
@@ -12485,8 +12515,7 @@ function renderAttribute(attr, updateRecord, isDiff, node) {
         textContent: el.textContent || void 0,
         isDynamicLink: true
       });
-      el.removeChildren();
-      el.append(link2);
+      render8(link2, el);
     })();
   });
   let relationRefDirective = ref2(() => {
@@ -12560,7 +12589,7 @@ var DEFAULT_VIEW3 = (input, output, target) => {
     "has-decorations": input.decorations.length || input.descendantDecorations.length,
     "gutter-container": true
   };
-  render7(html8`
+  render8(html8`
     <div ${ref2((el) => {
     output.contentElement = el;
   })}>
@@ -14786,7 +14815,7 @@ import * as UI15 from "./../../ui/legacy/legacy.js";
 import * as Lit7 from "./../../ui/lit/lit.js";
 import * as VisualElements from "./../../ui/visual_logging/visual_logging.js";
 import * as ElementsComponents6 from "./components/components.js";
-var { html: html9, render: render8 } = Lit7;
+var { html: html9, render: render9 } = Lit7;
 var UIStrings12 = {
   /**
    * @description Link text content in Elements Tree Outline of the Elements panel
@@ -14796,7 +14825,7 @@ var UIStrings12 = {
 var str_12 = i18n24.i18n.registerUIStrings("panels/elements/ShortcutTreeElement.ts", UIStrings12);
 var i18nString11 = i18n24.i18n.getLocalizedString.bind(void 0, str_12);
 var DEFAULT_VIEW4 = (input, _output, target) => {
-  render8(html9`
+  render9(html9`
     <div class="selection fill"></div>
     <span class="elements-tree-shortcut-title">\u21AA ${input.title}</span>
     <devtools-adorner
@@ -15439,7 +15468,7 @@ var ElementsTreeOutline = class _ElementsTreeOutline extends Common10.ObjectWrap
         box: hoveredNode.boxInWindow(),
         show: async (popover) => {
           popover.setIgnoreLeftMargin(true);
-          render9(html10`
+          render10(html10`
             <div class="squiggles-content">
               ${issues.map((issue) => {
             const elementIssueDetails = getElementIssueDetails(issue);
@@ -16886,7 +16915,7 @@ var UIStrings14 = {
 };
 var str_14 = i18n28.i18n.registerUIStrings("panels/elements/LayoutPane.ts", UIStrings14);
 var i18nString13 = i18n28.i18n.getLocalizedString.bind(void 0, str_14);
-var { render: render10, html: html11 } = Lit8;
+var { render: render11, html: html11 } = Lit8;
 var nodeToLayoutElement = (node) => {
   const className = node.getAttribute("class");
   const nodeId = node.id;
@@ -17031,7 +17060,7 @@ var DEFAULT_VIEW6 = (input, output, target) => {
            @click=${(e) => input.onElementClick(element, e)}
            ></devtools-button>
       </div>`;
-  render10(
+  render11(
     html11`
       <div style="min-width: min-content;" jslog=${VisualLogging10.pane("layout").track({ resize: true })}>
         <style>${layoutPane_css_default}</style>
@@ -17307,7 +17336,7 @@ import * as Common12 from "./../../core/common/common.js";
 import * as Platform9 from "./../../core/platform/platform.js";
 import * as SDK17 from "./../../core/sdk/sdk.js";
 import * as UI19 from "./../../ui/legacy/legacy.js";
-import { Directives as Directives2, html as html12, nothing as nothing6, render as render11 } from "./../../ui/lit/lit.js";
+import { Directives as Directives2, html as html12, nothing as nothing6, render as render12 } from "./../../ui/lit/lit.js";
 import * as VisualLogging11 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/elements/metricsSidebarPane.css.js
@@ -17574,7 +17603,7 @@ var DEFAULT_VIEW7 = (input, output, target) => {
         </div>`;
     previousBox = box;
   }
-  render11(html12`
+  render12(html12`
     <div class="metrics ${!node ? "collapsed" : ""}" @mouseover=${(e) => {
     e.consume();
     onHighlightNode(true, "all");
@@ -17848,7 +17877,7 @@ __export(PlatformFontsWidget_exports, {
 import * as i18n30 from "./../../core/i18n/i18n.js";
 import * as ComputedStyle3 from "./../../models/computed_style/computed_style.js";
 import * as UI20 from "./../../ui/legacy/legacy.js";
-import { html as html13, render as render12 } from "./../../ui/lit/lit.js";
+import { html as html13, render as render13 } from "./../../ui/lit/lit.js";
 
 // gen/front_end/panels/elements/platformFontsWidget.css.js
 var platformFontsWidget_css_default = `/**
@@ -17934,7 +17963,7 @@ var str_15 = i18n30.i18n.registerUIStrings("panels/elements/PlatformFontsWidget.
 var i18nString14 = i18n30.i18n.getLocalizedString.bind(void 0, str_15);
 var DEFAULT_VIEW8 = (input, _output, target) => {
   const isEmptySection = !input.platformFonts?.length;
-  render12(html13`
+  render13(html13`
     <style>${platformFontsWidget_css_default}</style>
     <div class="platform-fonts">
       ${isEmptySection ? "" : html13`
@@ -19386,7 +19415,7 @@ import * as Common15 from "./../../core/common/common.js";
 import * as i18n34 from "./../../core/i18n/i18n.js";
 import * as SDK20 from "./../../core/sdk/sdk.js";
 import * as UI23 from "./../../ui/legacy/legacy.js";
-import { html as html14, render as render13 } from "./../../ui/lit/lit.js";
+import { html as html14, render as render14 } from "./../../ui/lit/lit.js";
 import * as VisualLogging14 from "./../../ui/visual_logging/visual_logging.js";
 import * as EventListeners from "./../event_listeners/event_listeners.js";
 var { bindToAction, bindToSetting: bindToSetting2 } = UI23.UIUtils;
@@ -19429,7 +19458,7 @@ var i18nString16 = i18n34.i18n.getLocalizedString.bind(void 0, str_17);
 var { widget: widget2 } = UI23.Widget;
 var eventListenersWidgetInstance;
 var DEFAULT_VIEW9 = (input, _output, target) => {
-  render13(html14`
+  render14(html14`
     <div jslog=${VisualLogging14.pane("elements.event-listeners").track({ resize: true })}>
       <devtools-toolbar class="event-listener-toolbar" role="presentation">
         <devtools-button ${bindToAction(input.refreshEventListenersActionName)}></devtools-button>
@@ -19603,7 +19632,7 @@ import * as Platform11 from "./../../core/platform/platform.js";
 import * as SDK21 from "./../../core/sdk/sdk.js";
 import * as ObjectUI from "./../../ui/legacy/components/object_ui/object_ui.js";
 import * as UI24 from "./../../ui/legacy/legacy.js";
-import { html as html15, nothing as nothing7, render as render14 } from "./../../ui/lit/lit.js";
+import { html as html15, nothing as nothing7, render as render15 } from "./../../ui/lit/lit.js";
 import * as VisualLogging15 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/elements/propertiesWidget.css.js
@@ -19654,7 +19683,7 @@ var UIStrings18 = {
 var str_18 = i18n36.i18n.registerUIStrings("panels/elements/PropertiesWidget.ts", UIStrings18);
 var i18nString17 = i18n36.i18n.getLocalizedString.bind(void 0, str_18);
 var DEFAULT_VIEW10 = (input, _output, target) => {
-  render14(html15`
+  render15(html15`
     <div jslog=${VisualLogging15.pane("element-properties").track({ resize: true })}>
       <div class="hbox properties-widget-toolbar">
         <devtools-toolbar class="styles-pane-toolbar" role="presentation">
@@ -19822,7 +19851,7 @@ import * as SDK22 from "./../../core/sdk/sdk.js";
 import * as Bindings5 from "./../../models/bindings/bindings.js";
 import * as Components7 from "./../../ui/legacy/components/utils/utils.js";
 import * as UI25 from "./../../ui/legacy/legacy.js";
-import { html as html16, render as render15 } from "./../../ui/lit/lit.js";
+import { html as html16, render as render16 } from "./../../ui/lit/lit.js";
 
 // gen/front_end/panels/elements/nodeStackTraceWidget.css.js
 var nodeStackTraceWidget_css_default = `/*
@@ -19850,7 +19879,7 @@ var str_19 = i18n38.i18n.registerUIStrings("panels/elements/NodeStackTraceWidget
 var i18nString18 = i18n38.i18n.getLocalizedString.bind(void 0, str_19);
 var DEFAULT_VIEW11 = (input, _output, target) => {
   const { stackTrace } = input;
-  render15(html16`
+  render16(html16`
     <style>${nodeStackTraceWidget_css_default}</style>
     ${target && stackTrace ? html16`<devtools-widget
                 class="stack-trace"
@@ -20263,7 +20292,7 @@ import * as SDK24 from "./../../core/sdk/sdk.js";
 import * as Buttons4 from "./../../ui/components/buttons/buttons.js";
 import * as UIHelpers from "./../../ui/helpers/helpers.js";
 import * as UI27 from "./../../ui/legacy/legacy.js";
-import { html as html17, render as render16 } from "./../../ui/lit/lit.js";
+import { html as html17, render as render17 } from "./../../ui/lit/lit.js";
 import * as VisualLogging17 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/elements/elementStatePaneWidget.css.js
@@ -20390,7 +20419,7 @@ var DEFAULT_VIEW12 = (input, _output, target) => {
         </devtools-checkbox>
         </div>`;
   };
-  render16(html17`
+  render17(html17`
     <style>${elementStatePaneWidget_css_default}</style>
     <div class="styles-element-state-pane"
         jslog=${VisualLogging17.pane("element-states")}>
@@ -20752,11 +20781,11 @@ import * as ComputedStyle5 from "./../../models/computed_style/computed_style.js
 import * as InlineEditor5 from "./../../ui/legacy/components/inline_editor/inline_editor.js";
 import * as Components8 from "./../../ui/legacy/components/utils/utils.js";
 import * as UI29 from "./../../ui/legacy/legacy.js";
-import { html as html18, render as render17 } from "./../../ui/lit/lit.js";
+import { html as html18, render as render18 } from "./../../ui/lit/lit.js";
 import * as VisualLogging18 from "./../../ui/visual_logging/visual_logging.js";
 import * as ElementsComponents8 from "./components/components.js";
 var DEFAULT_VIEW13 = (input, _output, target) => {
-  render17(html18`
+  render18(html18`
     <style>${stylesSidebarPane_css_default}</style>
     <div class="style-panes-wrapper" jslog=${VisualLogging18.section("standalone-styles").track({
     resize: true
@@ -20784,10 +20813,25 @@ var StandaloneStylesContainer = class extends Common18.ObjectWrapper.eventMixin(
   #computedStyleModelInternal = new ComputedStyle5.ComputedStyleModel.ComputedStyleModel();
   #view;
   #filter = null;
+  #rebuildThrottler = new Common18.Throttler.Throttler(200);
   constructor(element, view = DEFAULT_VIEW13) {
     super(element, { useShadowDom: true });
     this.#view = view;
     this.#computedStyleModelInternal.addEventListener("CSSModelChanged", this.#onCSSModelChanged, this);
+    this.#computedStyleModelInternal.addEventListener("ComputedStyleChanged", this.#onComputedStyleChanged, this);
+  }
+  #onComputedStyleChanged() {
+    if (this.isEditingStyle || this.userOperation) {
+      return;
+    }
+    this.#rebuildAndUpdate();
+  }
+  #rebuildAndUpdate() {
+    void this.#rebuildThrottler.schedule(async () => {
+      this.node()?.domModel().cssModel().discardCachedMatchedCascade();
+      await this.#updateSections();
+      this.requestUpdate();
+    });
   }
   async #onCSSModelChanged(event) {
     if (event?.data && "edit" in event.data && event?.data.edit) {
@@ -20796,9 +20840,7 @@ var StandaloneStylesContainer = class extends Common18.ObjectWrapper.eventMixin(
     if (this.isEditingStyle || this.userOperation) {
       return;
     }
-    this.node()?.domModel().cssModel().discardCachedMatchedCascade();
-    await this.#updateSections();
-    this.requestUpdate();
+    this.#rebuildAndUpdate();
   }
   get webCustomData() {
     if (!this.#webCustomData && Common18.Settings.Settings.instance().moduleSetting("show-css-property-documentation-on-hover").get()) {
@@ -20838,7 +20880,6 @@ var StandaloneStylesContainer = class extends Common18.ObjectWrapper.eventMixin(
     this.swatchPopoverHelper().reposition();
   }
   async performUpdate() {
-    this.hideAllPopovers();
     const viewInput = {
       sections: this.#sections.filter((section4) => !section4.isHidden())
     };
@@ -20908,10 +20949,8 @@ var StandaloneStylesContainer = class extends Common18.ObjectWrapper.eventMixin(
     this.userOperation = userOperation;
   }
   forceUpdate() {
-    this.node()?.domModel().cssModel().discardCachedMatchedCascade();
-    void this.#updateSections().then(() => {
-      this.requestUpdate();
-    });
+    this.hideAllPopovers();
+    this.#rebuildAndUpdate();
   }
   hideAllPopovers() {
     this.#swatchPopoverHelper.hide();

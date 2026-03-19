@@ -9,14 +9,8 @@ export declare class SensorsView extends UI.Widget.VBox {
     private timezoneInput;
     private localeInput;
     private accuracyInput;
-    private latitudeSetter;
-    private longitudeSetter;
-    private timezoneSetter;
-    private localeSetter;
-    private accuracySetter;
     private localeError;
     private accuracyError;
-    private customLocationsGroup;
     private readonly deviceOrientationSetting;
     private deviceOrientation;
     private deviceOrientationOverrideEnabled;

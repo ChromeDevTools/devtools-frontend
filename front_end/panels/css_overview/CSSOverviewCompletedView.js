@@ -799,10 +799,10 @@ export class ElementDetailsView extends UI.Widget.Widget {
                     const lineNumber = styleSheetHeader.lineNumberInSource(ruleLocation.startLine);
                     const columnNumber = styleSheetHeader.columnNumberInSource(ruleLocation.startLine, ruleLocation.startColumn);
                     const matchingSelectorLocation = new SDK.CSSModel.CSSLocation(styleSheetHeader, lineNumber, columnNumber);
-                    link = this.#linkifier.linkifyCSSLocation(matchingSelectorLocation);
+                    link = html `${this.#linkifier.linkifyCSSLocation(matchingSelectorLocation)}`;
                 }
             }
-            return { data: item, link, showNode };
+            return { data: item, link: link, showNode };
         }));
         this.#view({ items, visibility }, {}, this.element);
     }

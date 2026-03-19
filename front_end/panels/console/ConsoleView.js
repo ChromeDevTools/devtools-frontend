@@ -532,6 +532,9 @@ export class ConsoleView extends UI.Widget.VBox {
         this.issueToolbarThrottle = new Common.Throttler.Throttler(100);
         issuesManager.addEventListener("IssuesCountUpdated" /* IssuesManager.IssuesManager.Events.ISSUES_COUNT_UPDATED */, this.#onIssuesCountUpdateBound);
     }
+    static clearConsoleViewInstanceForTest() {
+        consoleViewInstance = null;
+    }
     static instance(opts) {
         if (!consoleViewInstance || opts?.forceNew) {
             consoleViewInstance = new ConsoleView(opts?.viewportThrottlerTimeout ?? 50);
@@ -656,6 +659,15 @@ export class ConsoleView extends UI.Widget.VBox {
     willHide() {
         super.willHide();
         this.hidePromptSuggestBox();
+    }
+    dispose() {
+        SDK.TargetManager.TargetManager.instance().removeModelListener(SDK.ConsoleModel.ConsoleModel, SDK.ConsoleModel.Events.ConsoleCleared, this.consoleCleared, this);
+        SDK.TargetManager.TargetManager.instance().removeModelListener(SDK.ConsoleModel.ConsoleModel, SDK.ConsoleModel.Events.MessageAdded, this.onConsoleMessageAdded, this);
+        SDK.TargetManager.TargetManager.instance().removeModelListener(SDK.ConsoleModel.ConsoleModel, SDK.ConsoleModel.Events.MessageUpdated, this.onConsoleMessageUpdated, this);
+        SDK.TargetManager.TargetManager.instance().removeModelListener(SDK.ConsoleModel.ConsoleModel, SDK.ConsoleModel.Events.CommandEvaluated, this.commandEvaluated, this);
+        SDK.TargetManager.TargetManager.instance().unobserveModels(SDK.ConsoleModel.ConsoleModel, this);
+        const issuesManager = IssuesManager.IssuesManager.IssuesManager.instance();
+        issuesManager.removeEventListener("IssuesCountUpdated" /* IssuesManager.IssuesManager.Events.ISSUES_COUNT_UPDATED */, this.#onIssuesCountUpdateBound);
     }
     wasShown() {
         super.wasShown();
@@ -941,7 +953,9 @@ export class ConsoleView extends UI.Widget.VBox {
             if (parentGroup) {
                 showGroup(parentGroup, visibleViewMessages);
             }
-            visibleViewMessages.push(currentGroup);
+            if (!parentGroup?.messagesHidden()) {
+                visibleViewMessages.push(currentGroup);
+            }
         }
     }
     messageAppendedForTests() {

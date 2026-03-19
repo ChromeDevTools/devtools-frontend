@@ -317,6 +317,7 @@ function getMarkdownRenderer(conversation) {
     return new MarkdownRendererWithCodeBlock();
 }
 function toolbarView(input) {
+    const hasAiV2 = Boolean(Root.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled);
     // clang-format off
     return html `
     <div class="toolbar-container" role="toolbar" jslog=${VisualLogging.toolbar()}>
@@ -347,16 +348,17 @@ function toolbarView(input) {
               .variant=${"toolbar" /* Buttons.Button.Variant.TOOLBAR */}
               @click=${input.onDeleteClick}>
           </devtools-button>
-          <devtools-button
-            title=${i18nString(UIStrings.exportConversation)}
-            aria-label=${i18nString(UIStrings.exportConversation)}
-            .iconName=${'download'}
-            .disabled=${input.isLoading}
-            .jslogContext=${'export-ai-conversation'}
-            .variant=${"toolbar" /* Buttons.Button.Variant.TOOLBAR */}
-            @click=${input.onExportConversationClick}>
-          </devtools-button>`
-        : Lit.nothing}
+          ${hasAiV2 ? Lit.nothing : html `
+            <devtools-button
+              title=${i18nString(UIStrings.exportConversation)}
+              aria-label=${i18nString(UIStrings.exportConversation)}
+              .iconName=${'download'}
+              .disabled=${input.isLoading}
+              .jslogContext=${'export-ai-conversation'}
+              .variant=${"toolbar" /* Buttons.Button.Variant.TOOLBAR */}
+              @click=${input.onExportConversationClick}>
+            </devtools-button>
+            `}` : Lit.nothing}
       </devtools-toolbar>
       <devtools-toolbar class="freestyler-right-toolbar" role="presentation">
         <devtools-link
@@ -606,10 +608,12 @@ export class AiAssistancePanel extends UI.Panel.Panel {
                     emptyStateSuggestions,
                     inputPlaceholder: this.#getChatInputPlaceholder(),
                     disclaimerText: this.#getDisclaimerText(),
+                    onExportConversation: this.#onExportConversationClick.bind(this),
                     changeManager: this.#changeManager,
                     uploadImageInputEnabled: isAiAssistanceMultimodalUploadInputEnabled() &&
                         this.#conversation.type === "freestyler" /* AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING */,
                     markdownRenderer,
+                    conversationMarkdown: this.#conversation.getConversationMarkdown(),
                     onTextSubmit: async (text, imageInput, multimodalInputType) => {
                         Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceQuerySubmitted);
                         await this.#startConversation(text, imageInput, multimodalInputType);

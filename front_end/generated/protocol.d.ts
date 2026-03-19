@@ -995,9 +995,9 @@ export declare namespace Audits {
         NavigationRegistrationUniqueScopeAlreadySet = "NavigationRegistrationUniqueScopeAlreadySet"
     }
     const enum SharedDictionaryError {
+        UseErrorCrossOriginNoCorsRequest = "UseErrorCrossOriginNoCorsRequest",
         UseErrorDictionaryLoadFailure = "UseErrorDictionaryLoadFailure",
         UseErrorMatchingDictionaryNotUsed = "UseErrorMatchingDictionaryNotUsed",
-        UseErrorNoCorpCrossOriginNoCorsRequest = "UseErrorNoCorpCrossOriginNoCorsRequest",
         UseErrorUnexpectedContentDictionaryHeader = "UseErrorUnexpectedContentDictionaryHeader",
         WriteErrorCossOriginNoCorsRequest = "WriteErrorCossOriginNoCorsRequest",
         WriteErrorDisallowedBySettings = "WriteErrorDisallowedBySettings",
@@ -1008,7 +1008,6 @@ export declare namespace Audits {
         WriteErrorInvalidStructuredHeader = "WriteErrorInvalidStructuredHeader",
         WriteErrorInvalidTTLField = "WriteErrorInvalidTTLField",
         WriteErrorNavigationRequest = "WriteErrorNavigationRequest",
-        WriteErrorNoCorpCossOriginNoCorsRequest = "WriteErrorNoCorpCossOriginNoCorsRequest",
         WriteErrorNoMatchField = "WriteErrorNoMatchField",
         WriteErrorNonIntegerTTLField = "WriteErrorNonIntegerTTLField",
         WriteErrorNonListMatchDestField = "WriteErrorNonListMatchDestField",

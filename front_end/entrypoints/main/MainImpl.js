@@ -421,6 +421,7 @@ export class MainImpl {
             workspace: Workspace.Workspace.WorkspaceImpl.instance(),
             targetManager,
             debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance(),
+            settings: Common.Settings.Settings.instance(),
         });
         // @ts-expect-error e2e test global
         self.Extensions.extensionServer = PanelCommon.ExtensionServer.ExtensionServer.instance({ forceNew: true });

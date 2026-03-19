@@ -210,7 +210,7 @@ export class GlobalAiButtonToolbarProvider implements UI.Toolbar.Provider {
 
   private constructor() {
     this.#widgetElement = document.createElement('devtools-widget') as UI.Widget.WidgetElement<GlobalAiButton>;
-    this.#widgetElement.widgetConfig = UI.Widget.widgetConfig(GlobalAiButton);
+    new GlobalAiButton(this.#widgetElement);
 
     this.#toolbarItem = new UI.Toolbar.ToolbarItemWithCompactLayout(this.#widgetElement);
     this.#toolbarItem.setVisible(false);

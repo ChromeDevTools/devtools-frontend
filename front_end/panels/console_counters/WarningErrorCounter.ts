@@ -72,14 +72,8 @@ const DEFAULT_VIEW: View = (input, _output, target) => {
     accessibleName: consoleTitle,
     compact,
     groups: [
-      {
-        iconName: 'cross-circle-filled',
-        text: countToText(errors)
-      },
-      {
-        iconName: 'warning-filled',
-        text: countToText(warnings)
-      },
+      {iconName: 'cross-circle-filled', text: countToText(errors)},
+      {iconName: 'warning-filled', text: countToText(warnings)},
     ],
   };
 
@@ -201,12 +195,11 @@ export class WarningErrorCounter implements UI.Toolbar.Provider {
         document.createElement('devtools-widget') as UI.Widget.WidgetElement<WarningErrorCounterWidget>;
     const toolbarItem = new UI.Toolbar.ToolbarItemWithCompactLayout(widgetElement);
     toolbarItem.setVisible(false);
-    widgetElement.widgetConfig = UI.Widget.widgetConfig(e => {
-      const widget = new WarningErrorCounterWidget(e, toolbarItem.setVisible.bind(toolbarItem));
-      toolbarItem.addEventListener(
-          UI.Toolbar.ToolbarItemWithCompactLayoutEvents.COMPACT_LAYOUT_UPDATED, widget.onSetCompactLayout, widget);
-      return widget;
-    });
+
+    const widget = new WarningErrorCounterWidget(widgetElement, toolbarItem.setVisible.bind(toolbarItem));
+    toolbarItem.addEventListener(
+        UI.Toolbar.ToolbarItemWithCompactLayoutEvents.COMPACT_LAYOUT_UPDATED, widget.onSetCompactLayout, widget);
+
     this.toolbarItem = toolbarItem;
   }
 

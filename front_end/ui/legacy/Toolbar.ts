@@ -22,6 +22,7 @@ import {Events as TextPromptEvents, TextPrompt} from './TextPrompt.js';
 import toolbarStyles from './toolbar.css.js';
 import {Tooltip} from './Tooltip.js';
 import {bindCheckbox, CheckboxLabel, LongClickController} from './UIUtils.js';
+import {Widget} from './Widget.js';
 
 const UIStrings = {
   /**
@@ -343,7 +344,12 @@ export class Toolbar extends HTMLElement {
       item.applyEnabledState(false);
     }
     if (item.element.parentElement !== this) {
-      this.appendChild(item.element);
+      const widget = Widget.get(item.element);
+      if (widget) {
+        widget.show(this);
+      } else {
+        this.appendChild(item.element);
+      }
     }
     this.hideSeparatorDupes();
   }
@@ -359,7 +365,14 @@ export class Toolbar extends HTMLElement {
     if (!this.enabled) {
       item.applyEnabledState(false);
     }
-    this.prepend(item.element);
+    if (item.element.parentElement !== this) {
+      const widget = Widget.get(item.element);
+      if (widget) {
+        widget.show(this, this.firstChild);
+      } else {
+        this.prepend(item.element);
+      }
+    }
     this.hideSeparatorDupes();
   }
 
@@ -379,7 +392,12 @@ export class Toolbar extends HTMLElement {
     const updatedItems = [];
     for (const item of this.items) {
       if (item === itemToRemove) {
-        item.element.remove();
+        const widget = Widget.get(item.element);
+        if (widget) {
+          widget.detach();
+        } else {
+          item.element.remove();
+        }
       } else {
         updatedItems.push(item);
       }
@@ -390,6 +408,10 @@ export class Toolbar extends HTMLElement {
   removeToolbarItems(): void {
     for (const item of this.items) {
       item.toolbar = null;
+      const widget = Widget.get(item.element);
+      if (widget) {
+        widget.detach();
+      }
     }
     this.items = [];
     this.removeChildren();

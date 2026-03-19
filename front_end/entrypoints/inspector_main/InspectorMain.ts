@@ -214,7 +214,7 @@ export class NodeIndicatorProvider implements UI.Toolbar.Provider {
 
   private constructor() {
     this.#widgetElement = document.createElement('devtools-widget') as UI.Widget.WidgetElement<NodeIndicator>;
-    this.#widgetElement.widgetConfig = UI.Widget.widgetConfig(NodeIndicator);
+    new NodeIndicator(this.#widgetElement);
 
     this.#toolbarItem = new UI.Toolbar.ToolbarItem(this.#widgetElement);
     this.#toolbarItem.setVisible(false);

@@ -15,6 +15,7 @@
 
   .export-for-agents-dialog {
     width: var(--sys-size-33); /* 512px */
+    max-width: 100%; /* deal with the dialog being squashed on smaller devices */
   }
 
   .export-for-agents-dialog header {

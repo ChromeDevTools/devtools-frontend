@@ -85,6 +85,7 @@ export interface Props {
   disclaimerText: Platform.UIString.LocalizedString;
   uploadImageInputEnabled?: boolean;
   markdownRenderer: MarkdownLitRenderer;
+  generateConversationSummary: (markdown: string) => Promise<string>;
   walkthrough: {
     onOpen: (message: ModelChatMessage) => void,
     onToggle: (isOpen: boolean) => void,
@@ -250,6 +251,7 @@ export class ChatView extends HTMLElement {
    */
   #isProgrammaticScroll = false;
   #view: View;
+  #cachedSummary: {markdown: string, summary: string}|null = null;
 
   constructor(props: Props, view = DEFAULT_VIEW) {
     super();
@@ -363,10 +365,25 @@ export class ChatView extends HTMLElement {
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceDynamicSuggestionClicked);
   };
 
-  #exportForAgentsClick(): void {
-    // TODO(b/493191546, b/493191387): generate accurate text here.
+  async #getSummary(): Promise<string> {
+    if (this.#cachedSummary?.markdown === this.#props.conversationMarkdown) {
+      return this.#cachedSummary.summary;
+    }
+    try {
+      const summary = await this.#props.generateConversationSummary(this.#props.conversationMarkdown);
+      this.#cachedSummary = {markdown: this.#props.conversationMarkdown, summary};
+      return summary;
+    } catch (err) {
+      console.error(err);
+      return 'Failed to generate summary.';
+    }
+  }
+
+  async #exportForAgentsClick(): Promise<void> {
+    const summaryPromise = this.#getSummary();
+
     void ExportForAgentsDialog.show({
-      promptText: '(placeholder prompt, feature WIP)',
+      promptText: summaryPromise,
       markdownText: this.#props.conversationMarkdown,
       onConversationSaveAs: this.#props.onExportConversation ?? (async () => {}),
     });

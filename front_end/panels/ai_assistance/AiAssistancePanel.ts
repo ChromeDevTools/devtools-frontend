@@ -639,6 +639,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   // NodeJS debugging does not have Elements panel, thus this action might not exist.
   #toggleSearchElementAction?: UI.ActionRegistration.Action;
   #aidaClient: Host.AidaClient.AidaClient;
+  #conversationSummaryAgent?: AiAssistanceModel.ConversationSummaryAgent.ConversationSummaryAgent;
   #viewOutput: PanelViewOutput = {};
   #serverSideLoggingEnabled = isAiAssistanceServerSideLoggingEnabled();
   #aiAssistanceEnabledSetting: Common.Settings.Setting<boolean>|undefined;
@@ -766,7 +767,17 @@ export class AiAssistancePanel extends UI.Panel.Panel {
               this.#conversation.type === AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING,
           markdownRenderer,
           conversationMarkdown: this.#conversation.getConversationMarkdown(),
+          generateConversationSummary: async (markdown: string) => {
+            if (!this.#conversationSummaryAgent) {
+              this.#conversationSummaryAgent = new AiAssistanceModel.ConversationSummaryAgent.ConversationSummaryAgent({
+                aidaClient: this.#aidaClient,
+                serverSideLoggingEnabled: this.#serverSideLoggingEnabled,
+              });
+            }
+            return await this.#conversationSummaryAgent.summarizeConversation(markdown);
+          },
           onTextSubmit: async (
+
               text: string, imageInput?: Host.AidaClient.Part,
               multimodalInputType?: AiAssistanceModel.AiAgent.MultimodalInputType) => {
             Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceQuerySubmitted);

@@ -24,6 +24,7 @@ describeWithEnvironment('ChatView', () => {
       onCopyResponseClick: noop,
       onNewConversation: noop,
       onExportConversation: noop,
+      generateConversationSummary: async () => '',
       conversationMarkdown: 'placeholder conversation markdown',
       onContextRemoved: noop,
       onContextAdd: noop,

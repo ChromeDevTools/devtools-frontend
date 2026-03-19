@@ -43,6 +43,20 @@ export function generateContextDetailsMarkdown(details: ContextDetail[]): string
   }
   return detailsMarkdown.join('\n\n');
 }
+export interface AiConversationOptions {
+  type: ConversationType;
+  data?: ResponseData[];
+  id?: string;
+  isReadOnly?: boolean;
+  aidaClient?: Host.AidaClient.AidaClient;
+  changeManager?: ChangeManager;
+  isExternal?: boolean;
+  performanceRecordAndReload?: () => Promise<Trace.TraceModel.ParsedTrace>;
+  onInspectElement?: () => Promise<SDK.DOMModel.DOMNode|null>;
+  networkTimeCalculator?: NetworkTimeCalculator.NetworkTransferTimeCalculator;
+  lighthouseRecording?: () => Promise<LHModel.ReporterTypes.ReportJSON|null>;
+}
+
 export class AiConversation {
   static fromSerializedConversation(serializedConversation: SerializedConversation): AiConversation {
     const history = serializedConversation.history.map(entry => {
@@ -51,17 +65,13 @@ export class AiConversation {
       }
       return entry;
     });
-    return new AiConversation(
-        serializedConversation.type,
-        history,
-        serializedConversation.id,
-        true,
-        undefined,
-        undefined,
-        serializedConversation.isExternal,
-        undefined,
-        undefined,
-    );
+    return new AiConversation({
+      type: serializedConversation.type,
+      data: history,
+      id: serializedConversation.id,
+      isReadOnly: true,
+      isExternal: serializedConversation.isExternal,
+    });
   }
 
   readonly id: string;
@@ -85,19 +95,20 @@ export class AiConversation {
   #onInspectElement?: () => Promise<SDK.DOMModel.DOMNode|null>;
   #networkTimeCalculator?: NetworkTimeCalculator.NetworkTransferTimeCalculator;
 
-  constructor(
-      type: ConversationType,
-      data: ResponseData[] = [],
-      id: string = crypto.randomUUID(),
+  constructor(options: AiConversationOptions) {
+    const {
+      type,
+      data = [],
+      id = crypto.randomUUID(),
       isReadOnly = true,
-      aidaClient: Host.AidaClient.AidaClient = new Host.AidaClient.AidaClient(),
-      changeManager?: ChangeManager,
+      aidaClient = new Host.AidaClient.AidaClient(),
+      changeManager,
       isExternal = false,
-      performanceRecordAndReload?: () => Promise<Trace.TraceModel.ParsedTrace>,
-      onInspectElement?: () => Promise<SDK.DOMModel.DOMNode|null>,
-      networkTimeCalculator?: NetworkTimeCalculator.NetworkTransferTimeCalculator,
-      lighthouseRecording?: () => Promise<LHModel.ReporterTypes.ReportJSON|null>,
-  ) {
+      performanceRecordAndReload,
+      onInspectElement,
+      networkTimeCalculator,
+      lighthouseRecording,
+    } = options;
     this.#changeManager = changeManager;
     this.#aidaClient = aidaClient;
     this.#performanceRecordAndReload = performanceRecordAndReload;

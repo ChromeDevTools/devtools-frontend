@@ -13,10 +13,15 @@ import * as AiAssistancePanel from './ai_assistance.js';
 describeWithEnvironment('Export Conversation as Markdown', () => {
   it('generates a filename based on the query', async () => {
     const fileManager = stubFileManager();
-    const conversation = new AiAssistanceModel.AiConversation.AiConversation(
-        AiAssistanceModel.AiHistoryStorage.ConversationType.NONE, [], 'test-id', false, mockAidaClient([
-          [{explanation: 'Answer'}],
-        ]));
+    const conversation = new AiAssistanceModel.AiConversation.AiConversation({
+      type: AiAssistanceModel.AiHistoryStorage.ConversationType.NONE,
+      data: [],
+      id: 'test-id',
+      isReadOnly: false,
+      aidaClient: mockAidaClient([
+        [{explanation: 'Answer'}],
+      ]),
+    });
 
     await Array.fromAsync(conversation.run('test query'));
     await AiAssistancePanel.ExportConversation.saveToDisk(conversation);
@@ -29,10 +34,15 @@ describeWithEnvironment('Export Conversation as Markdown', () => {
 
   it('truncates the filename if the prompt is large', async () => {
     const fileManager = stubFileManager();
-    const conversation = new AiAssistanceModel.AiConversation.AiConversation(
-        AiAssistanceModel.AiHistoryStorage.ConversationType.NONE, [], 'test-id', false, mockAidaClient([
-          [{explanation: 'Answer'}],
-        ]));
+    const conversation = new AiAssistanceModel.AiConversation.AiConversation({
+      type: AiAssistanceModel.AiHistoryStorage.ConversationType.NONE,
+      data: [],
+      id: 'test-id',
+      isReadOnly: false,
+      aidaClient: mockAidaClient([
+        [{explanation: 'Answer'}],
+      ]),
+    });
 
     await Array.fromAsync(conversation.run(
         'this is a very long title that should be truncated when exporting the conversation to a file'));
@@ -46,10 +56,15 @@ describeWithEnvironment('Export Conversation as Markdown', () => {
 
   it('saves a markdown representation of the conversation', async () => {
     const fileManager = stubFileManager();
-    const conversation = new AiAssistanceModel.AiConversation.AiConversation(
-        AiAssistanceModel.AiHistoryStorage.ConversationType.NONE, [], 'test-id', false, mockAidaClient([
-          [{explanation: 'Answer'}],
-        ]));
+    const conversation = new AiAssistanceModel.AiConversation.AiConversation({
+      type: AiAssistanceModel.AiHistoryStorage.ConversationType.NONE,
+      data: [],
+      id: 'test-id',
+      isReadOnly: false,
+      aidaClient: mockAidaClient([
+        [{explanation: 'Answer'}],
+      ]),
+    });
 
     sinon.stub(conversation, 'getConversationMarkdown').callsFake(() => {
       return 'FAKE CONVERSATION TEXT';

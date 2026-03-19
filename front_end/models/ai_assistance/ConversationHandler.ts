@@ -210,15 +210,14 @@ export class ConversationHandler extends Common.ObjectWrapper.ObjectWrapper<Even
     selected: NodeContext|PerformanceTraceContext|RequestContext|null,
   }): AsyncGenerator<ExternalRequestResponse, ExternalRequestResponse> {
     const {conversationType, aiAgent, prompt, selected} = opts;
-    const conversation = new AiConversation(
-        conversationType,
-        [],
-        aiAgent.sessionId,
-        /* isReadOnly */ true,
-        this.#aidaClient,
-        undefined,
-        /* isExternal */ true,
-    );
+    const conversation = new AiConversation({
+      type: conversationType,
+      data: [],
+      id: aiAgent.sessionId,
+      isReadOnly: true,
+      aidaClient: this.#aidaClient,
+      isExternal: true,
+    });
     return yield* this.#doExternalConversation({conversation, prompt, selected});
   }
 

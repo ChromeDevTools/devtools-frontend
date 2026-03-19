@@ -39,7 +39,7 @@ describeWithEnvironment('AiConversation', () => {
     updateHostConfig({devToolsAiAssistanceContextSelectionAgent: {enabled: true}});
 
     const conversation =
-        new AiAssistance.AiConversation.AiConversation(AiAssistance.AiHistoryStorage.ConversationType.STYLING);
+        new AiAssistance.AiConversation.AiConversation({type: AiAssistance.AiHistoryStorage.ConversationType.STYLING});
     const networkRequest = new AiAssistance.NetworkAgent.RequestContext(
         createNetworkRequest(), new NetworkTimeCalculator.NetworkTransferTimeCalculator());
 
@@ -52,7 +52,7 @@ describeWithEnvironment('AiConversation', () => {
     updateHostConfig({devToolsAiAssistanceContextSelectionAgent: {enabled: true}});
 
     const conversation =
-        new AiAssistance.AiConversation.AiConversation(AiAssistance.AiHistoryStorage.ConversationType.STYLING);
+        new AiAssistance.AiConversation.AiConversation({type: AiAssistance.AiHistoryStorage.ConversationType.STYLING});
 
     conversation.setContext(null);
 
@@ -73,19 +73,24 @@ describeWithEnvironment('AiConversation', () => {
         Common.ResourceType.resourceTypes.Script);
     sinon.stub(workspace, 'projects').returns([project]);
 
-    const conversation = new AiAssistance.AiConversation.AiConversation(
-        AiAssistance.AiHistoryStorage.ConversationType.NONE, [], 'test-id', false, mockAidaClient([
-          [{
-            functionCalls: [{
-              name: 'selectSourceFile',
-              args: {
-                id: 1,
-              },
-            }],
-            explanation: '',
+    const conversation = new AiAssistance.AiConversation.AiConversation({
+      type: AiAssistance.AiHistoryStorage.ConversationType.NONE,
+      data: [],
+      id: 'test-id',
+      isReadOnly: false,
+      aidaClient: mockAidaClient([
+        [{
+          functionCalls: [{
+            name: 'selectSourceFile',
+            args: {
+              id: 1,
+            },
           }],
-          [{explanation: 'Done'}],
-        ]));
+          explanation: '',
+        }],
+        [{explanation: 'Done'}],
+      ]),
+    });
 
     await Array.fromAsync(conversation.run('test'));
 
@@ -94,10 +99,15 @@ describeWithEnvironment('AiConversation', () => {
   });
 
   it('should yield UserQuery when run is called', async () => {
-    const conversation = new AiAssistance.AiConversation.AiConversation(
-        AiAssistance.AiHistoryStorage.ConversationType.NONE, [], 'test-id', false, mockAidaClient([
-          [{explanation: 'Answer'}],
-        ]));
+    const conversation = new AiAssistance.AiConversation.AiConversation({
+      type: AiAssistance.AiHistoryStorage.ConversationType.NONE,
+      data: [],
+      id: 'test-id',
+      isReadOnly: false,
+      aidaClient: mockAidaClient([
+        [{explanation: 'Answer'}],
+      ]),
+    });
 
     const result = await Array.fromAsync(conversation.run('test query'));
 
@@ -110,10 +120,15 @@ describeWithEnvironment('AiConversation', () => {
   });
 
   it('should add UserQuery to history when run is called', async () => {
-    const conversation = new AiAssistance.AiConversation.AiConversation(
-        AiAssistance.AiHistoryStorage.ConversationType.NONE, [], 'test-id', false, mockAidaClient([
-          [{explanation: 'Answer'}],
-        ]));
+    const conversation = new AiAssistance.AiConversation.AiConversation({
+      type: AiAssistance.AiHistoryStorage.ConversationType.NONE,
+      data: [],
+      id: 'test-id',
+      isReadOnly: false,
+      aidaClient: mockAidaClient([
+        [{explanation: 'Answer'}],
+      ]),
+    });
 
     await Array.fromAsync(conversation.run('test query'));
 
@@ -145,13 +160,13 @@ describeWithEnvironment('AiConversation', () => {
       ],
     ]);
 
-    const conversation = new AiAssistance.AiConversation.AiConversation(
-        AiAssistance.AiHistoryStorage.ConversationType.NONE,
-        [],
-        'test-id',
-        false,
-        aidaClient,
-    );
+    const conversation = new AiAssistance.AiConversation.AiConversation({
+      type: AiAssistance.AiHistoryStorage.ConversationType.NONE,
+      data: [],
+      id: 'test-id',
+      isReadOnly: false,
+      aidaClient,
+    });
 
     const networkRequest = createNetworkRequest({url: Platform.DevToolsPath.urlString`https://example.com/test`});
     const contentData = new TextUtils.ContentData.ContentData('test content', false, 'text/plain');
@@ -202,13 +217,13 @@ describeWithEnvironment('AiConversation', () => {
       ]
     ]);
 
-    const conversation = new AiAssistance.AiConversation.AiConversation(
-        AiAssistance.AiHistoryStorage.ConversationType.NONE,
-        [],
-        'test-id',
-        false,
-        aidaClient,
-    );
+    const conversation = new AiAssistance.AiConversation.AiConversation({
+      type: AiAssistance.AiHistoryStorage.ConversationType.NONE,
+      data: [],
+      id: 'test-id',
+      isReadOnly: false,
+      aidaClient,
+    });
     const networkRequest = createNetworkRequest({url: Platform.DevToolsPath.urlString`https://example.com`});
     sinon.stub(networkRequest, 'requestContentData')
         .resolves(new TextUtils.ContentData.ContentData('test content', false, 'text/plain'));
@@ -285,13 +300,13 @@ describeWithEnvironment('AiConversation', () => {
       }],
       [{explanation: 'Done'}],
     ]);
-    const conversation = new AiAssistance.AiConversation.AiConversation(
-        AiAssistance.AiHistoryStorage.ConversationType.NONE,
-        [],
-        'test-id',
-        false,
-        aidaClient,
-    );
+    const conversation = new AiAssistance.AiConversation.AiConversation({
+      type: AiAssistance.AiHistoryStorage.ConversationType.NONE,
+      data: [],
+      id: 'test-id',
+      isReadOnly: false,
+      aidaClient,
+    });
 
     await Array.fromAsync(conversation.run('test'));
 
@@ -354,13 +369,13 @@ describeWithEnvironment('AiConversation', () => {
       }],
       [{explanation: 'Done2'}],
     ]);
-    const conversation = new AiAssistance.AiConversation.AiConversation(
-        AiAssistance.AiHistoryStorage.ConversationType.NONE,
-        [],
-        'test-id',
-        false,
-        aidaClient,
-    );
+    const conversation = new AiAssistance.AiConversation.AiConversation({
+      type: AiAssistance.AiHistoryStorage.ConversationType.NONE,
+      data: [],
+      id: 'test-id',
+      isReadOnly: false,
+      aidaClient,
+    });
 
     await Array.fromAsync(conversation.run('test'));
 
@@ -394,7 +409,7 @@ describeWithEnvironment('AiConversation', () => {
 
   it('should correctly serialize history by removing non-serializable data', async () => {
     const conversation =
-        new AiAssistance.AiConversation.AiConversation(AiAssistance.AiHistoryStorage.ConversationType.STYLING);
+        new AiAssistance.AiConversation.AiConversation({type: AiAssistance.AiHistoryStorage.ConversationType.STYLING});
 
     const userQuery: AiAssistance.AiAgent.UserQuery = {
       type: AiAssistance.AiAgent.ResponseType.USER_QUERY,

@@ -1073,6 +1073,7 @@ const data = {
     ];
     return answer;
   }
+
   override async enhanceQuery(
       query: string, selectedElement: ConversationContext<SDK.DOMModel.DOMNode>|null,
       multimodalInputType?: MultimodalInputType): Promise<string> {

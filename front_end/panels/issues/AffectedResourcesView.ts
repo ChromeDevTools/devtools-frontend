@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-imperative-dom-api */
+/* eslint-disable @devtools/no-lit-render-outside-of-view */
 
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
@@ -16,6 +17,7 @@ import * as RequestLinkIcon from '../../ui/components/request_link_icon/request_
 import {Icon} from '../../ui/kit/kit.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import {render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as PanelsCommon from '../common/common.js';
 
@@ -231,17 +233,11 @@ export abstract class AffectedResourcesView extends UI.TreeOutline.TreeElement {
     }
 
     const deferredDOMNode = new SDK.DOMModel.DeferredDOMNode(target, backendNodeId);
-    const anchorElement = PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(deferredDOMNode) as HTMLElement;
-    anchorElement.textContent = nodeName;
-    anchorElement.addEventListener('click', () => sendTelemetry());
-    anchorElement.addEventListener('keydown', (event: Event) => {
-      if ((event as KeyboardEvent).key === 'Enter') {
-        sendTelemetry();
-      }
-    });
+    const anchor = PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(
+        deferredDOMNode, {textContent: nodeName || undefined, onClick: sendTelemetry});
     const cellElement = document.createElement('td');
     cellElement.classList.add('affected-resource-element', 'devtools-link');
-    cellElement.appendChild(anchorElement);
+    render(anchor, cellElement);
     return cellElement;
   }
 

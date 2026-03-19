@@ -34,6 +34,7 @@ export interface Options {
   hiddenClassList?: string[];
   disabled?: boolean;
   ariaDescription?: string;
+  onClick?: () => void;
 }
 
 interface ViewInput {
@@ -125,6 +126,7 @@ export class DOMNodeLink extends UI.Widget.Widget {
       onClick: () => {
         void Common.Revealer.reveal(this.#node);
         void this.#node?.scrollIntoView();
+        options.onClick?.();
         return false;
       },
       onMouseOver: () => {
@@ -248,6 +250,7 @@ export class DeferredDOMNodeLink extends UI.Widget.Widget {
           }
           void Common.Revealer.reveal(node);
           void node?.scrollIntoView();
+          this.#options?.onClick?.();
         });
       },
     };
@@ -272,11 +275,17 @@ export class Linkifier {
     if (node instanceof SDK.DOMModel.DOMNode) {
       const link = document.createElement('devtools-widget') as UI.Widget.WidgetElement<DOMNodeLink>;
       link.widgetConfig = UI.Widget.widgetConfig(e => new DOMNodeLink(e, node, options));
+      if (options?.textContent) {
+        link.textContent = options.textContent;
+      }
       return link;
     }
     if (node instanceof SDK.DOMModel.DeferredDOMNode) {
       const link = document.createElement('devtools-widget') as UI.Widget.WidgetElement<DeferredDOMNodeLink>;
       link.widgetConfig = UI.Widget.widgetConfig(e => new DeferredDOMNodeLink(e, node, options));
+      if (options?.textContent) {
+        link.textContent = options.textContent;
+      }
       return link;
     }
     throw new Error('Can\'t linkify non-node');

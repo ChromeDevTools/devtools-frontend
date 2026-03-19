@@ -8,7 +8,6 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import type * as Bindings from '../../models/bindings/bindings.js';
 import type * as BreakpointManager from '../../models/breakpoints/breakpoints.js';
-import * as uiI18n from '../../ui/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -117,6 +116,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/sources/DebuggerPausedMessage.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
+const i18nTemplate = Lit.i18nTemplate.bind(undefined, str_);
 
 interface DOMBreakpointData {
   type: Protocol.DOMDebugger.DOMBreakpointType;
@@ -134,22 +134,22 @@ interface ViewInput {
 }
 
 function domBreakpointSubtext(data: DOMBreakpointData): Lit.LitTemplate {
-  let messageElement: HTMLElement|undefined;
+  let message: Lit.LitTemplate = Lit.nothing;
   if (data.targetNode) {
     const targetNodeLink = PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(data.targetNode);
     if (data.insertion) {
       if (data.targetNode === data.node) {
-        messageElement = uiI18n.getFormatLocalizedString(str_, UIStrings.childSAdded, {PH1: targetNodeLink});
+        message = i18nTemplate(UIStrings.childSAdded, {PH1: html`${targetNodeLink}`});
       } else {
-        messageElement = uiI18n.getFormatLocalizedString(str_, UIStrings.descendantSAdded, {PH1: targetNodeLink});
+        message = i18nTemplate(UIStrings.descendantSAdded, {PH1: html`${targetNodeLink}`});
       }
     } else {
-      messageElement = uiI18n.getFormatLocalizedString(str_, UIStrings.descendantSRemoved, {PH1: targetNodeLink});
+      message = i18nTemplate(UIStrings.descendantSRemoved, {PH1: html`${targetNodeLink}`});
     }
   }
   return html`
       ${PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(data.node)}
-      ${data.targetNode ? html`<br/>${messageElement}` : nothing}
+      ${data.targetNode ? html`<br/>${message}` : nothing}
   `;
 }
 

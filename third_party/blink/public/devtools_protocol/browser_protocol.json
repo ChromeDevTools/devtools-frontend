@@ -2230,49 +2230,6 @@
                     ]
                 },
                 {
-                    "id": "AdScriptIdentifier",
-                    "description": "Metadata about the ad script that was on the stack that caused the current\nscript in the `AdAncestry` to be considered ad related.",
-                    "type": "object",
-                    "properties": [
-                        {
-                            "name": "scriptId",
-                            "description": "The script's v8 identifier.",
-                            "$ref": "Runtime.ScriptId"
-                        },
-                        {
-                            "name": "debuggerId",
-                            "description": "v8's debugging id for the v8::Context.",
-                            "$ref": "Runtime.UniqueDebuggerId"
-                        },
-                        {
-                            "name": "name",
-                            "description": "The script's url (or generated name based on id if inline script).",
-                            "type": "string"
-                        }
-                    ]
-                },
-                {
-                    "id": "AdAncestry",
-                    "description": "Providence about how an ad script was determined to be such. It is an ad\nbecause its url matched a filterlist rule, or because some other ad script\nwas on the stack when this script was loaded.",
-                    "type": "object",
-                    "properties": [
-                        {
-                            "name": "adAncestryChain",
-                            "description": "The ad-script in the stack when the offending script was loaded. This is\nrecursive down to the root script that was tagged due to the filterlist\nrule.",
-                            "type": "array",
-                            "items": {
-                                "$ref": "AdScriptIdentifier"
-                            }
-                        },
-                        {
-                            "name": "rootScriptFilterlistRule",
-                            "description": "The filterlist rule that caused the root (last) script in\n`adAncestry` to be ad-tagged.",
-                            "optional": true,
-                            "type": "string"
-                        }
-                    ]
-                },
-                {
                     "id": "SelectivePermissionsInterventionIssueDetails",
                     "description": "The issue warns about blocked calls to privacy sensitive APIs via the\nSelective Permissions Intervention.",
                     "type": "object",
@@ -2285,7 +2242,7 @@
                         {
                             "name": "adAncestry",
                             "description": "Why the ad script using the API is considered an ad.",
-                            "$ref": "AdAncestry"
+                            "$ref": "Network.AdAncestry"
                         },
                         {
                             "name": "stackTrace",
@@ -5551,6 +5508,13 @@
                             "items": {
                                 "$ref": "CSSFunctionNode"
                             }
+                        },
+                        {
+                            "name": "originTreeScopeNodeId",
+                            "description": "The BackendNodeId of the DOM node that constitutes the origin tree scope of this rule.",
+                            "experimental": true,
+                            "optional": true,
+                            "$ref": "DOM.BackendNodeId"
                         }
                     ]
                 },
@@ -17288,6 +17252,51 @@
                     ]
                 },
                 {
+                    "id": "AdScriptIdentifier",
+                    "description": "Identifies the script on the stack that caused a resource or element to be\nlabeled as an ad. For resources, this indicates the context that triggered\nthe fetch. For elements, this indicates the context that caused the element\nto be appended to the DOM.",
+                    "experimental": true,
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "scriptId",
+                            "description": "The script's V8 identifier.",
+                            "$ref": "Runtime.ScriptId"
+                        },
+                        {
+                            "name": "debuggerId",
+                            "description": "V8's debugging ID for the v8::Context.",
+                            "$ref": "Runtime.UniqueDebuggerId"
+                        },
+                        {
+                            "name": "name",
+                            "description": "The script's url (or generated name based on id if inline script).",
+                            "type": "string"
+                        }
+                    ]
+                },
+                {
+                    "id": "AdAncestry",
+                    "description": "Encapsulates the script ancestry and the root script filter list rule that\ncaused the resource or element to be labeled as an ad.",
+                    "experimental": true,
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "ancestryChain",
+                            "description": "A chain of `AdScriptIdentifier`s representing the ancestry of an ad\nscript that led to the creation of a resource or element. The chain is\nordered from the script itself (lowest level) up to its root ancestor\nthat was flagged by a filter list.",
+                            "type": "array",
+                            "items": {
+                                "$ref": "AdScriptIdentifier"
+                            }
+                        },
+                        {
+                            "name": "rootScriptFilterlistRule",
+                            "description": "The filter list rule that caused the root (last) script in\n`ancestryChain` to be tagged as an ad.",
+                            "optional": true,
+                            "type": "string"
+                        }
+                    ]
+                },
+                {
                     "id": "CrossOriginOpenerPolicyValue",
                     "experimental": true,
                     "type": "string",
@@ -21472,46 +21481,6 @@
                     ]
                 },
                 {
-                    "id": "AdScriptId",
-                    "description": "Identifies the script which caused a script or frame to be labelled as an\nad.",
-                    "experimental": true,
-                    "type": "object",
-                    "properties": [
-                        {
-                            "name": "scriptId",
-                            "description": "Script Id of the script which caused a script or frame to be labelled as\nan ad.",
-                            "$ref": "Runtime.ScriptId"
-                        },
-                        {
-                            "name": "debuggerId",
-                            "description": "Id of scriptId's debugger.",
-                            "$ref": "Runtime.UniqueDebuggerId"
-                        }
-                    ]
-                },
-                {
-                    "id": "AdScriptAncestry",
-                    "description": "Encapsulates the script ancestry and the root script filterlist rule that\ncaused the frame to be labelled as an ad. Only created when `ancestryChain`\nis not empty.",
-                    "experimental": true,
-                    "type": "object",
-                    "properties": [
-                        {
-                            "name": "ancestryChain",
-                            "description": "A chain of `AdScriptId`s representing the ancestry of an ad script that\nled to the creation of a frame. The chain is ordered from the script\nitself (lower level) up to its root ancestor that was flagged by\nfilterlist.",
-                            "type": "array",
-                            "items": {
-                                "$ref": "AdScriptId"
-                            }
-                        },
-                        {
-                            "name": "rootScriptFilterlistRule",
-                            "description": "The filterlist rule that caused the root (last) script in\n`ancestryChain` to be ad-tagged. Only populated if the rule is\navailable.",
-                            "optional": true,
-                            "type": "string"
-                        }
-                    ]
-                },
-                {
                     "id": "SecureContextType",
                     "description": "Indicates whether the frame is a secure context and why it is the case.",
                     "experimental": true,
@@ -23448,7 +23417,7 @@
                             "name": "adScriptAncestry",
                             "description": "The ancestry chain of ad script identifiers leading to this frame's\ncreation, along with the root script's filterlist rule. The ancestry\nchain is ordered from the most immediate script (in the frame creation\nstack) to more distant ancestors (that created the immediately preceding\nscript). Only sent if frame is labelled as an ad and ids are available.",
                             "optional": true,
-                            "$ref": "AdScriptAncestry"
+                            "$ref": "Network.AdAncestry"
                         }
                     ]
                 },

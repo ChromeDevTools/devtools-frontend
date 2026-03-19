@@ -1534,44 +1534,6 @@ export namespace Audits {
   }
 
   /**
-   * Metadata about the ad script that was on the stack that caused the current
-   * script in the `AdAncestry` to be considered ad related.
-   */
-  export interface AdScriptIdentifier {
-    /**
-     * The script's v8 identifier.
-     */
-    scriptId: Runtime.ScriptId;
-    /**
-     * v8's debugging id for the v8::Context.
-     */
-    debuggerId: Runtime.UniqueDebuggerId;
-    /**
-     * The script's url (or generated name based on id if inline script).
-     */
-    name: string;
-  }
-
-  /**
-   * Providence about how an ad script was determined to be such. It is an ad
-   * because its url matched a filterlist rule, or because some other ad script
-   * was on the stack when this script was loaded.
-   */
-  export interface AdAncestry {
-    /**
-     * The ad-script in the stack when the offending script was loaded. This is
-     * recursive down to the root script that was tagged due to the filterlist
-     * rule.
-     */
-    adAncestryChain: AdScriptIdentifier[];
-    /**
-     * The filterlist rule that caused the root (last) script in
-     * `adAncestry` to be ad-tagged.
-     */
-    rootScriptFilterlistRule?: string;
-  }
-
-  /**
    * The issue warns about blocked calls to privacy sensitive APIs via the
    * Selective Permissions Intervention.
    */
@@ -1583,7 +1545,7 @@ export namespace Audits {
     /**
      * Why the ad script using the API is considered an ad.
      */
-    adAncestry: AdAncestry;
+    adAncestry: Network.AdAncestry;
     /**
      * The stack trace at the time of the intervention.
      */
@@ -3740,6 +3702,10 @@ export namespace CSS {
      * Function body.
      */
     children: CSSFunctionNode[];
+    /**
+     * The BackendNodeId of the DOM node that constitutes the origin tree scope of this rule.
+     */
+    originTreeScopeNodeId?: DOM.BackendNodeId;
   }
 
   /**
@@ -11498,6 +11464,46 @@ export namespace Network {
     localNetworkAccessRequestPolicy: LocalNetworkAccessRequestPolicy;
   }
 
+  /**
+   * Identifies the script on the stack that caused a resource or element to be
+   * labeled as an ad. For resources, this indicates the context that triggered
+   * the fetch. For elements, this indicates the context that caused the element
+   * to be appended to the DOM.
+   */
+  export interface AdScriptIdentifier {
+    /**
+     * The script's V8 identifier.
+     */
+    scriptId: Runtime.ScriptId;
+    /**
+     * V8's debugging ID for the v8::Context.
+     */
+    debuggerId: Runtime.UniqueDebuggerId;
+    /**
+     * The script's url (or generated name based on id if inline script).
+     */
+    name: string;
+  }
+
+  /**
+   * Encapsulates the script ancestry and the root script filter list rule that
+   * caused the resource or element to be labeled as an ad.
+   */
+  export interface AdAncestry {
+    /**
+     * A chain of `AdScriptIdentifier`s representing the ancestry of an ad
+     * script that led to the creation of a resource or element. The chain is
+     * ordered from the script itself (lowest level) up to its root ancestor
+     * that was flagged by a filter list.
+     */
+    ancestryChain: AdScriptIdentifier[];
+    /**
+     * The filter list rule that caused the root (last) script in
+     * `ancestryChain` to be tagged as an ad.
+     */
+    rootScriptFilterlistRule?: string;
+  }
+
   export const enum CrossOriginOpenerPolicyValue {
     SameOrigin = 'SameOrigin',
     SameOriginAllowPopups = 'SameOriginAllowPopups',
@@ -14320,43 +14326,6 @@ export namespace Page {
   }
 
   /**
-   * Identifies the script which caused a script or frame to be labelled as an
-   * ad.
-   */
-  export interface AdScriptId {
-    /**
-     * Script Id of the script which caused a script or frame to be labelled as
-     * an ad.
-     */
-    scriptId: Runtime.ScriptId;
-    /**
-     * Id of scriptId's debugger.
-     */
-    debuggerId: Runtime.UniqueDebuggerId;
-  }
-
-  /**
-   * Encapsulates the script ancestry and the root script filterlist rule that
-   * caused the frame to be labelled as an ad. Only created when `ancestryChain`
-   * is not empty.
-   */
-  export interface AdScriptAncestry {
-    /**
-     * A chain of `AdScriptId`s representing the ancestry of an ad script that
-     * led to the creation of a frame. The chain is ordered from the script
-     * itself (lower level) up to its root ancestor that was flagged by
-     * filterlist.
-     */
-    ancestryChain: AdScriptId[];
-    /**
-     * The filterlist rule that caused the root (last) script in
-     * `ancestryChain` to be ad-tagged. Only populated if the rule is
-     * available.
-     */
-    rootScriptFilterlistRule?: string;
-  }
-
-  /**
    * Indicates whether the frame is a secure context and why it is the case.
    */
   export const enum SecureContextType {
@@ -15618,7 +15587,7 @@ export namespace Page {
      * stack) to more distant ancestors (that created the immediately preceding
      * script). Only sent if frame is labelled as an ad and ids are available.
      */
-    adScriptAncestry?: AdScriptAncestry;
+    adScriptAncestry?: Network.AdAncestry;
   }
 
   export interface GetFrameTreeResponse extends ProtocolResponseWithError {

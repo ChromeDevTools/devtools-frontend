@@ -265,14 +265,14 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export interface FrameDetailsReportViewData {
   frame: SDK.ResourceTreeModel.ResourceTreeFrame;
   target?: SDK.Target.Target;
-  adScriptAncestry: Protocol.Page.AdScriptAncestry|null;
+  adScriptAncestry: Protocol.Network.AdAncestry|null;
 }
 
 interface FrameDetailsViewInput {
   frame: SDK.ResourceTreeModel.ResourceTreeFrame;
   target: SDK.Target.Target|null;
   creationStackTrace: StackTrace.StackTrace.StackTrace|null;
-  adScriptAncestry: Protocol.Page.AdScriptAncestry|null;
+  adScriptAncestry: Protocol.Network.AdAncestry|null;
   linkTargetDOMNode: SDK.DOMModel.DOMNode|null;
   permissionsPolicies: Protocol.Page.PermissionsPolicyFeatureState[]|null;
   protocolMonitorExperimentEnabled: boolean;
@@ -506,7 +506,7 @@ function maybeRenderAdStatus(
 
 function maybeRenderCreatorAdScriptAncestry(
     adFrameType: Protocol.Page.AdFrameType|null, target: SDK.Target.Target|null,
-    adScriptAncestry: Protocol.Page.AdScriptAncestry|null): LitTemplate {
+    adScriptAncestry: Protocol.Network.AdAncestry|null): LitTemplate {
   if (adFrameType === Protocol.Page.AdFrameType.None) {
     return nothing;
   }
@@ -842,7 +842,7 @@ export class FrameDetailsReportView extends UI.Widget.Widget {
   #protocolMonitorExperimentEnabled = false;
   #permissionsPolicies: Protocol.Page.PermissionsPolicyFeatureState[]|null = null;
   #linkifier = new Components.Linkifier.Linkifier();
-  #adScriptAncestry: Protocol.Page.AdScriptAncestry|null = null;
+  #adScriptAncestry: Protocol.Network.AdAncestry|null = null;
   #view: View;
 
   constructor(element?: HTMLElement, view = DEFAULT_VIEW) {

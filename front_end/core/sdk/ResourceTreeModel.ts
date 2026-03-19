@@ -754,7 +754,7 @@ export class ResourceTreeFrame {
     return this.#domainAndRegistry;
   }
 
-  async getAdScriptAncestry(frameId: Protocol.Page.FrameId): Promise<Protocol.Page.AdScriptAncestry|null> {
+  async getAdScriptAncestry(frameId: Protocol.Page.FrameId): Promise<Protocol.Network.AdAncestry|null> {
     const res = await this.#model.agent.invoke_getAdScriptAncestry({frameId});
     return res.adScriptAncestry || null;
   }

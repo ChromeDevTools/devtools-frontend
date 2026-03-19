@@ -119,4 +119,59 @@ describeWithEnvironment('SensorsView', () => {
       assert.strictEqual(latitudeInput.value, '45.01');
     });
   });
+
+  describe('Device Orientation input events', () => {
+    let alphaInput: HTMLInputElement;
+
+    beforeEach(() => {
+      const select = view.contentElement.querySelector('.orientation-content select') as HTMLSelectElement;
+      assert.exists(select);
+      select.value = 'custom';
+      select.dispatchEvent(new Event('change'));
+
+      alphaInput =
+          view.contentElement.querySelectorAll('.orientation-axis-input-container input')[0] as HTMLInputElement;
+      assert.exists(alphaInput);
+    });
+
+    it('validates alpha input and adds error class if invalid', () => {
+      alphaInput.value = '1000';  // alpha must be [0, 360)
+      alphaInput.dispatchEvent(new Event('input'));
+      assert.isTrue(alphaInput.classList.contains('error-input'));
+
+      alphaInput.value = '45';
+      alphaInput.dispatchEvent(new Event('input'));
+      assert.isFalse(alphaInput.classList.contains('error-input'));
+    });
+
+    it('updates emulation.device-orientation-override setting on valid input', () => {
+      alphaInput.value = '45';
+      alphaInput.dispatchEvent(new Event('input'));
+      alphaInput.dispatchEvent(new Event('change'));
+
+      const orientationSetting =
+          Common.Settings.Settings.instance().createSetting('emulation.device-orientation-override', '');
+      assert.isTrue(orientationSetting.get().includes('45'));
+    });
+
+    it('modifies alpha input on ArrowUp key', () => {
+      alphaInput.value = '45';
+
+      const event = new KeyboardEvent('keydown', {key: 'ArrowUp'});
+      alphaInput.dispatchEvent(event);
+
+      // Default step for orientation (without modifier) is 1
+      assert.strictEqual(alphaInput.value, '46');
+    });
+
+    it('modifies alpha input on ArrowDown key with Shift', () => {
+      alphaInput.value = '45';
+
+      const event = new KeyboardEvent('keydown', {key: 'ArrowDown', shiftKey: true});
+      alphaInput.dispatchEvent(event);
+
+      // Shift increases/decreases by 10
+      assert.strictEqual(alphaInput.value, '35');
+    });
+  });
 });

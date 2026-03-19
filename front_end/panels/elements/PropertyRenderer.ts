@@ -354,7 +354,7 @@ export class RenderingContext {
               MatchRenderer<SDK.CSSPropertyParser.Match>>,
       readonly matchedResult: SDK.CSSPropertyParser.BottomUpTreeMatching,
       readonly cssControls?: SDK.CSSPropertyParser.CSSControlMap, readonly options: {readonly?: boolean} = {},
-      readonly tracing?: TracingContext) {
+      readonly tracing?: TracingContext, readonly signal?: AbortSignal) {
   }
 
   addControl(cssType: string, control: HTMLElement): void {
@@ -414,11 +414,12 @@ export class Renderer extends SDK.CSSPropertyParser.TreeWalker {
         readonly?: boolean,
       },
       tracing: TracingContext|undefined,
+      signal: AbortSignal|undefined,
   ) {
     super(ast);
     this.#matchedResult = matchedResult;
     this.#context =
-        new RenderingContext(this.ast, property, renderers, this.#matchedResult, cssControls, options, tracing);
+        new RenderingContext(this.ast, property, renderers, this.#matchedResult, cssControls, options, tracing, signal);
   }
 
   static render(nodeOrNodes: CodeMirror.SyntaxNode|CodeMirror.SyntaxNode[], context: RenderingContext):
@@ -430,7 +431,7 @@ export class Renderer extends SDK.CSSPropertyParser.TreeWalker {
     const renderers = nodeOrNodes.map(
         node => this.walkExcludingSuccessors(
             context.ast.subtree(node), context.property, context.renderers, context.matchedResult, cssControls,
-            context.options, context.tracing));
+            context.options, context.tracing, context.signal));
     const nodes = renderers.map(node => node.#output).reduce(mergeWithSpacing, []);
     return {nodes, cssControls};
   }
@@ -491,8 +492,8 @@ export class Renderer extends SDK.CSSPropertyParser.TreeWalker {
   static renderValueElement(
       property: SDK.CSSProperty.CSSProperty|{name: string, value: string},
       matchedResult: SDK.CSSPropertyParser.BottomUpTreeMatching|null,
-      renderers: Array<MatchRenderer<SDK.CSSPropertyParser.Match>>,
-      tracing?: TracingContext): {valueElement: HTMLElement, cssControls: SDK.CSSPropertyParser.CSSControlMap} {
+      renderers: Array<MatchRenderer<SDK.CSSPropertyParser.Match>>, tracing?: TracingContext,
+      signal?: AbortSignal): {valueElement: HTMLElement, cssControls: SDK.CSSPropertyParser.CSSControlMap} {
     const valueElement = document.createElement('span');
     valueElement.setAttribute(
         'jslog', `${VisualLogging.value().track({
@@ -502,7 +503,7 @@ export class Renderer extends SDK.CSSPropertyParser.TreeWalker {
     UI.ARIAUtils.setLabel(valueElement, i18nString(UIStrings.cssPropertyValue, {PH1: property.value}));
     valueElement.className = 'value';
     valueElement.tabIndex = -1;
-    const {nodes, cssControls} = this.renderValueNodes(property, matchedResult, renderers, tracing);
+    const {nodes, cssControls} = this.renderValueNodes(property, matchedResult, renderers, tracing, signal);
     nodes.forEach(node => valueElement.appendChild(node));
     valueElement.normalize();
     return {valueElement, cssControls};
@@ -511,8 +512,8 @@ export class Renderer extends SDK.CSSPropertyParser.TreeWalker {
   static renderValueNodes(
       property: SDK.CSSProperty.CSSProperty|{name: string, value: string},
       matchedResult: SDK.CSSPropertyParser.BottomUpTreeMatching|null,
-      renderers: Array<MatchRenderer<SDK.CSSPropertyParser.Match>>,
-      tracing?: TracingContext): {nodes: Node[], cssControls: SDK.CSSPropertyParser.CSSControlMap} {
+      renderers: Array<MatchRenderer<SDK.CSSPropertyParser.Match>>, tracing?: TracingContext,
+      signal?: AbortSignal): {nodes: Node[], cssControls: SDK.CSSPropertyParser.CSSControlMap} {
     if (!matchedResult) {
       return {nodes: [document.createTextNode(property.value)], cssControls: new Map()};
     }
@@ -524,7 +525,7 @@ export class Renderer extends SDK.CSSPropertyParser.TreeWalker {
 
     const context = new RenderingContext(
         matchedResult.ast, property instanceof SDK.CSSProperty.CSSProperty ? property : null, rendererMap,
-        matchedResult, undefined, {}, tracing);
+        matchedResult, undefined, {}, tracing, signal);
     return Renderer.render([matchedResult.ast.tree, ...matchedResult.ast.trailingNodes], context);
   }
 }

@@ -831,6 +831,9 @@ export class LightDarkColorRenderer extends rendererBase(SDK.CSSPropertyParserMa
       lightControls: SDK.CSSPropertyParser.CSSControlMap,
       darkControls: SDK.CSSPropertyParser.CSSControlMap): Promise<void> {
     const activeColor = await this.#activeColor(match);
+    if (context.signal?.aborted) {
+      return;
+    }
     if (!activeColor) {
       return;
     }
@@ -967,6 +970,9 @@ export class ColorMixRenderer extends rendererBase(SDK.CSSPropertyParserMatchers
         context.addControl('color', swatch);
         const asyncEvalCallback = async(): Promise<boolean> => {
           const results = await this.#stylesContainer.cssModel()?.resolveValues(undefined, nodeId, colorMixText);
+          if (context.signal?.aborted) {
+            return false;
+          }
           if (results) {
             const color = Common.Color.parse(results[0]);
             if (color) {
@@ -1702,6 +1708,10 @@ export class LengthRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.L
       valueElement: HTMLElement, match: SDK.CSSPropertyParser.Match, context: RenderingContext): Promise<boolean> {
     const pixelValue = await resolveValues(this.#stylesContainer, this.#propertyName, match, context, match.text);
 
+    if (context.signal?.aborted) {
+      return false;
+    }
+
     if (pixelValue?.[0] && pixelValue?.[0] !== match.text) {
       valueElement.textContent = pixelValue[0];
       return true;
@@ -1726,6 +1736,9 @@ export class LengthRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.L
   async getTooltipValue(
       tooltip: Tooltips.Tooltip.Tooltip, match: SDK.CSSPropertyParser.Match, context: RenderingContext): Promise<void> {
     const pixelValue = await resolveValues(this.#stylesContainer, this.#propertyName, match, context, match.text);
+    if (context.signal?.aborted) {
+      return;
+    }
     if (!pixelValue) {
       return;
     }
@@ -1799,6 +1812,9 @@ export class BaseFunctionRenderer extends rendererBase(SDK.CSSPropertyParserMatc
       return null;
     });
     const evaled = await resolveValues(this.#stylesContainer, this.#propertyName, match, context, value);
+    if (context.signal?.aborted) {
+      return false;
+    }
     if (!evaled?.[0] || evaled[0] === value) {
       return false;
     }
@@ -1815,6 +1831,9 @@ export class BaseFunctionRenderer extends rendererBase(SDK.CSSPropertyParserMatc
     const values = match.args.map(arg => context.matchedResult.getComputedTextRange(arg[0], arg[arg.length - 1]));
     values.unshift(context.matchedResult.getComputedText(match.node));
     const evaledArgs = await resolveValues(this.#stylesContainer, this.#propertyName, match, context, ...values);
+    if (context.signal?.aborted) {
+      return;
+    }
     if (!evaledArgs) {
       return;
     }

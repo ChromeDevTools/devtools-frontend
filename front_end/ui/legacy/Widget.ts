@@ -129,6 +129,10 @@ function runNextUpdate(): void {
         const controller = new AbortController();
         widget.addUpdateController(controller);
         await widget.performUpdate(controller.signal);
+      } catch (e) {
+        if (e.name !== 'AbortError') {
+          throw e;
+        }
       } finally {
         resolve();
       }
@@ -1055,6 +1059,7 @@ export class Widget {
   }
 
   addUpdateController(controller: AbortController): void {
+    this.#updateController?.abort();
     this.#updateController = controller;
   }
 

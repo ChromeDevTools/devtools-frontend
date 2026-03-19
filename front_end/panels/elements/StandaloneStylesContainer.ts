@@ -114,7 +114,7 @@ export class StandaloneStylesContainer extends Common.ObjectWrapper.eventMixin<E
     return this.#webCustomData;
   }
 
-  async #updateSections(): Promise<void> {
+  async #updateSections(signal?: AbortSignal): Promise<void> {
     for (const section of this.#sections) {
       section.dispose();
     }
@@ -126,12 +126,20 @@ export class StandaloneStylesContainer extends Common.ObjectWrapper.eventMixin<E
 
     const cssModel = node.domModel().cssModel();
     const matchedStyles = await cssModel.cachedMatchedCascadeForNode(node);
+    if (signal?.aborted) {
+      return;
+    }
+
     const parentNodeId = matchedStyles?.getParentLayoutNodeId();
 
     const [parentStyles, computedStyles, extraStyles] = await Promise.all([
       parentNodeId ? cssModel.getComputedStyle(parentNodeId) : null, cssModel.getComputedStyle(node.id),
       cssModel.getComputedStyleExtraFields(node.id)
     ]);
+
+    if (signal?.aborted) {
+      return;
+    }
 
     if (!matchedStyles) {
       return;
@@ -142,6 +150,7 @@ export class StandaloneStylesContainer extends Common.ObjectWrapper.eventMixin<E
     for (const style of matchedStyles.nodeStyles()) {
       const section = new StylePropertiesSection(
           this, matchedStyles, style, sectionIdx++, computedStyles, parentStyles, extraStyles);
+      section.update(true);
       newSections.push(section);
       this.sectionByElement.set(section.element, section);
     }
@@ -150,7 +159,10 @@ export class StandaloneStylesContainer extends Common.ObjectWrapper.eventMixin<E
     this.swatchPopoverHelper().reposition();
   }
 
-  override async performUpdate(): Promise<void> {
+  override async performUpdate(signal?: AbortSignal): Promise<void> {
+    await this.#updateSections(signal);
+    signal?.throwIfAborted();
+
     const viewInput: ViewInput = {
       sections: this.#sections.filter(section => !section.isHidden()),
     };
@@ -178,6 +190,7 @@ export class StandaloneStylesContainer extends Common.ObjectWrapper.eventMixin<E
       return;
     }
     this.#computedStyleModelInternal.node = node;
+    this.forceUpdate();
   }
 
   set filter(regex: RegExp|null) {

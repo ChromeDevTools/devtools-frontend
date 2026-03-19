@@ -128,6 +128,7 @@ export class CSSValueTraceView extends UI.Widget.VBox {
       expandPercentagesInShorthands: boolean,
       shorthandPositionOffset: number,
       focus: boolean,
+      signal?: AbortSignal,
       ): Promise<void> {
     const matchedResult = subexpression === null ?
         property.parseValue(matchedStyles, computedStyles) :
@@ -136,7 +137,7 @@ export class CSSValueTraceView extends UI.Widget.VBox {
       return undefined;
     }
     return await this.#showTrace(
-        property, matchedResult, renderers, expandPercentagesInShorthands, shorthandPositionOffset, focus);
+        property, matchedResult, renderers, expandPercentagesInShorthands, shorthandPositionOffset, focus, signal);
   }
 
   async #showTrace(
@@ -146,6 +147,7 @@ export class CSSValueTraceView extends UI.Widget.VBox {
       expandPercentagesInShorthands: boolean,
       shorthandPositionOffset: number,
       focus: boolean,
+      signal?: AbortSignal,
       ): Promise<void> {
     this.#highlighting = new Highlighting();
     const rendererMap = new Map(renderers.map(r => [r.matchType, r]));
@@ -165,6 +167,7 @@ export class CSSValueTraceView extends UI.Widget.VBox {
           /* cssControls */ undefined,
           /* options */ {},
           tracing,
+          signal,
       );
       substitutions.push(Renderer.render(matchedResult.ast.tree, context).nodes);
     }
@@ -180,6 +183,7 @@ export class CSSValueTraceView extends UI.Widget.VBox {
           /* cssControls */ undefined,
           /* options */ {},
           tracing,
+          signal,
       );
       evaluations.push(Renderer.render(matchedResult.ast.tree, context).nodes);
       asyncCallbackResults.push(tracing.runAsyncEvaluations());
@@ -199,6 +203,10 @@ export class CSSValueTraceView extends UI.Widget.VBox {
           property,
           rendererMap,
           matchedResult,
+          undefined,
+          {},
+          undefined,
+          signal,
       );
       this.#evaluations.push(Renderer.render(matchedResult.ast.tree, context).nodes);
     }

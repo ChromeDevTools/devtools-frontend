@@ -472,5 +472,33 @@ describe('StackTraceModel', () => {
       assert.strictEqual(stackTrace.syncFragment.frames[2].sdkFrame.inlineFrameIndex, 2);
       assert.strictEqual(stackTrace.syncFragment.frames[2].sdkFrame.functionName, 'baz');
     });
+
+    it('preserves the raw function name', async () => {
+      const {model} = setup();
+      const details = [
+        'foo.js:id1:foo:1:10',
+        'bar.js:id2:bar:2:20',
+      ].map(protocolCallFrame);
+
+      const stackTrace = await model.createFromProtocolRuntime({callFrames: details}, identityTranslateFn);
+
+      assert.strictEqual(stackTrace.syncFragment.frames[0].rawName, 'foo');
+      assert.strictEqual(stackTrace.syncFragment.frames[1].rawName, 'bar');
+    });
+
+    it('preserves the raw function name for inlined frames', async () => {
+      const {model} = setup();
+      const details = [protocolCallFrame('foo.js:id1:foo:1:10')];
+
+      const stackTrace = await model.createFromProtocolRuntime({callFrames: details}, () => Promise.resolve([[
+        {url: 'foo.ts', name: 'foo', line: 10, column: 20},
+        {url: 'bar.ts', name: 'bar', line: 20, column: 30},
+        {url: 'baz.ts', name: 'baz', line: 40, column: 50},
+      ]]));
+
+      assert.strictEqual(stackTrace.syncFragment.frames[0].rawName, 'foo');
+      assert.strictEqual(stackTrace.syncFragment.frames[1].rawName, 'foo');
+      assert.strictEqual(stackTrace.syncFragment.frames[2].rawName, 'foo');
+    });
   });
 });

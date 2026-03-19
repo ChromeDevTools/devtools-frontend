@@ -34,6 +34,11 @@ export interface Frame {
   readonly column: number;
 
   readonly missingDebugInfo?: MissingDebugInfo;
+  /**
+   * The untranslated function name. For inlined frames this will be the name
+   * of the containing function.
+   */
+  readonly rawName?: string;
 }
 
 export interface DebuggableFrame extends Frame {

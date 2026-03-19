@@ -84,16 +84,18 @@ export class FrameImpl implements StackTrace.StackTrace.Frame {
   readonly column: number;
 
   readonly missingDebugInfo?: StackTrace.StackTrace.MissingDebugInfo;
+  readonly rawName?: string;
 
   constructor(
       url: string|undefined, uiSourceCode: Workspace.UISourceCode.UISourceCode|undefined, name: string|undefined,
-      line: number, column: number, missingDebugInfo?: StackTrace.StackTrace.MissingDebugInfo) {
+      line: number, column: number, missingDebugInfo?: StackTrace.StackTrace.MissingDebugInfo, rawName?: string) {
     this.url = url;
     this.uiSourceCode = uiSourceCode;
     this.name = name;
     this.line = line;
     this.column = column;
     this.missingDebugInfo = missingDebugInfo;
+    this.rawName = rawName;
   }
 }
 
@@ -164,6 +166,10 @@ export class DebuggableFrameImpl implements StackTrace.StackTrace.DebuggableFram
 
   get missingDebugInfo(): StackTrace.StackTrace.MissingDebugInfo|undefined {
     return this.#frame.missingDebugInfo;
+  }
+
+  get rawName(): string|undefined {
+    return this.#frame.rawName;
   }
 
   get sdkFrame(): SDK.DebuggerModel.CallFrame {

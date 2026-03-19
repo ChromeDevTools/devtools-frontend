@@ -166,7 +166,8 @@ export class StackTraceModel extends SDK.SDKModel.SDKModel<unknown> {
     for (const node of fragment.node.getCallStack()) {
       node.frames = uiFrames[i++].map(
           frame => new FrameImpl(
-              frame.url, frame.uiSourceCode, frame.name, frame.line, frame.column, frame.missingDebugInfo));
+              frame.url, frame.uiSourceCode, frame.name, frame.line, frame.column, frame.missingDebugInfo,
+              node.rawFrame.functionName));
     }
   }
 

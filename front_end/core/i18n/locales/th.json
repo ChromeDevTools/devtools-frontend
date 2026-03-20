@@ -593,6 +593,9 @@
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "ปิดใช้ JavaScript"
   },
+  "core/sdk/sdk-meta.ts | disableJpegXlFormat": {
+    "message": "ปิดใช้รูปแบบ JPEG XL"
+  },
   "core/sdk/sdk-meta.ts | disableLocalFonts": {
     "message": "ปิดใช้แบบอักษรในเครื่อง"
   },
@@ -639,7 +642,7 @@
     "message": "ไม่ต้องแสดงขนาดแทร็กตารางกริด"
   },
   "core/sdk/sdk-meta.ts | doNotShowRulersOnHover": {
-    "message": "ไม่ต้องแสดงไม้บรรทัดเมื่อวางเหนือ"
+    "message": "ไม่ต้องแสดงไม้บรรทัดเมื่อวางเมาส์เหนือ"
   },
   "core/sdk/sdk-meta.ts | emulateAFocusedPage": {
     "message": "จำลองหน้าที่โฟกัส"
@@ -700,6 +703,9 @@
   },
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "เปิดใช้ JavaScript"
+  },
+  "core/sdk/sdk-meta.ts | enableJpegXlFormat": {
+    "message": "เปิดใช้รูปแบบ JPEG XL"
   },
   "core/sdk/sdk-meta.ts | enableLocalFonts": {
     "message": "เปิดใช้แบบอักษรในเครื่อง"
@@ -797,6 +803,9 @@
   "core/sdk/sdk-meta.ts | remoteFileLoadingInfo": {
     "message": "แหล่งข้อมูลตัวอย่างคือการแมปแหล่งที่มา ปิดใช้อยู่โดยค่าเริ่มต้นเพื่อความปลอดภัย"
   },
+  "core/sdk/sdk-meta.ts | rulersOnHover": {
+    "message": "แสดงไม้บรรทัดเมื่อวางเมาส์เหนือ"
+  },
   "core/sdk/sdk-meta.ts | screen": {
     "message": "หน้าจอ"
   },
@@ -862,6 +871,9 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableAvifImageFormat": {
     "message": "ปิดใช้รูปแบบรูปภาพ AVIF"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | disableJpegXlImageFormat": {
+    "message": "ปิดใช้รูปแบบรูปภาพ JPEG XL"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableLocalFonts": {
     "message": "ปิดใช้แบบอักษรในเครื่อง"
@@ -1116,10 +1128,10 @@
     "message": "รับป้าย"
   },
   "entrypoints/main/main-meta.ts | enableCtrlShortcutToSwitchPanels": {
-    "message": "เปิดใช้แป้นพิมพ์ลัด Ctrl + 1-9 เพื่อเปลี่ยนแผง"
+    "message": "ใช้ Ctrl + 1-9 เพื่อสลับแผง"
   },
   "entrypoints/main/main-meta.ts | enableShortcutToSwitchPanels": {
-    "message": "เปิดใช้แป้นพิมพ์ลัด ⌘ + 1-9 เพื่อเปลี่ยนแผง"
+    "message": "ใช้ ⌘ + 1-9 เพื่อสลับแผง"
   },
   "entrypoints/main/main-meta.ts | findNextResult": {
     "message": "ค้นหาผลการค้นหาถัดไป"
@@ -1256,6 +1268,9 @@
   "entrypoints/node_app/app/NodeMain.ts | nodejsS": {
     "message": "Node.js: {PH1}"
   },
+  "entrypoints/node_app/node_app.ts | application": {
+    "message": "แอปพลิเคชัน"
+  },
   "entrypoints/node_app/node_app.ts | connection": {
     "message": "การเชื่อมต่อ"
   },
@@ -1264,6 +1279,9 @@
   },
   "entrypoints/node_app/node_app.ts | node": {
     "message": "โหนด"
+  },
+  "entrypoints/node_app/node_app.ts | showApplication": {
+    "message": "แสดงแอปพลิเคชัน"
   },
   "entrypoints/node_app/node_app.ts | showConnection": {
     "message": "แสดงการเชื่อมต่อ"
@@ -1339,6 +1357,27 @@
   },
   "generated/Deprecation.ts | IntlV8BreakIterator": {
     "message": "Intl.v8BreakIterator เลิกใช้งานแล้ว โปรดใช้ Intl.Segmenter แทน"
+  },
+  "generated/Deprecation.ts | LanguageModelParams": {
+    "message": "เลิกใช้งาน LanguageModel.params() แล้ว และตอนนี้พร้อมใช้งานในบริบทส่วนขยายเท่านั้น นอกจากนี้ ระบบยังเลิกใช้งานช่องที่เกี่ยวข้องกับ topK และ temperature ภายในผลลัพธ์ด้วย"
+  },
+  "generated/Deprecation.ts | LanguageModelTemperature": {
+    "message": "เลิกใช้งานพารามิเตอร์/แอตทริบิวต์ \"temperature\" สำหรับ LanguageModel แล้ว ฟีเจอร์นี้ใช้งานได้เฉพาะในส่วนขยายและอาจถูกนำออกในอนาคต"
+  },
+  "generated/Deprecation.ts | LanguageModelTopK": {
+    "message": "เลิกใช้งานพารามิเตอร์/แอตทริบิวต์ \"topK\" สำหรับ LanguageModel แล้ว ฟีเจอร์นี้ใช้งานได้เฉพาะในส่วนขยายและอาจถูกนำออกในอนาคต"
+  },
+  "generated/Deprecation.ts | LanguageModel_InputQuota": {
+    "message": "เลิกใช้งาน LanguageModel.inputQuota แล้ว โปรดใช้ LanguageModel.contextWindow แทน อีเมลแทนนี้ใช้ได้ในส่วนขยายเท่านั้น"
+  },
+  "generated/Deprecation.ts | LanguageModel_InputUsage": {
+    "message": "เลิกใช้งาน LanguageModel.inputUsage แล้ว โปรดใช้ LanguageModel.contextUsage แทน อีเมลแทนนี้ใช้ได้ในส่วนขยายเท่านั้น"
+  },
+  "generated/Deprecation.ts | LanguageModel_MeasureInputUsage": {
+    "message": "เลิกใช้งาน LanguageModel.measureInputUsage() แล้ว โปรดใช้ LanguageModel.measureContextUsage() แทน อีเมลแทนนี้ใช้ได้ในส่วนขยายเท่านั้น"
+  },
+  "generated/Deprecation.ts | LanguageModel_OnQuotaOverflow": {
+    "message": "เลิกใช้งาน LanguageModel.onquotaoverflow แล้ว โปรดใช้ LanguageModel.oncontextoverflow แทน อีเมลแทน LanguageModel.onquotaoverflow ใช้ได้ในส่วนขยายเท่านั้น"
   },
   "generated/Deprecation.ts | LocalCSSFileExtensionRejected": {
     "message": "โหลด CSS จาก URL file: ไม่ได้ เว้นแต่จะลงท้ายด้วยนามสกุลไฟล์ .css"
@@ -1550,6 +1589,9 @@
   "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
     "message": "โครงสร้างพื้นฐาน Client Hints"
   },
+  "models/issues_manager/ConnectionAllowlistIssue.ts | connectionAllowlistHeader": {
+    "message": "ข้อกำหนดรายการการเชื่อมต่อที่อนุญาต"
+  },
   "models/issues_manager/ContentSecurityPolicyIssue.ts | contentSecurityPolicyEval": {
     "message": "นโยบายรักษาความปลอดภัยเนื้อหา - Eval"
   },
@@ -1646,9 +1688,6 @@
   "models/issues_manager/Issue.ts | pageErrors": {
     "message": "ข้อผิดพลาดของหน้าเว็บ"
   },
-  "models/issues_manager/LowTextContrastIssue.ts | colorAndContrastAccessibility": {
-    "message": "การช่วยเหลือพิเศษด้วยสีและคอนทราสต์"
-  },
   "models/issues_manager/MixedContentIssue.ts | preventingMixedContent": {
     "message": "การป้องกันเนื้อหาผสม"
   },
@@ -1666,6 +1705,9 @@
   },
   "models/issues_manager/SRIMessageSignatureIssue.ts | signatureBasedIntegrity": {
     "message": "ความสมบูรณ์ตามลายเซ็น"
+  },
+  "models/issues_manager/SelectivePermissionsInterventionIssue.ts | selectivePermissionsIntervention": {
+    "message": "การแทรกแซงสิทธิ์แบบเลือก"
   },
   "models/issues_manager/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
     "message": "กำลังเปิดใช้ SharedArrayBuffer"
@@ -1751,14 +1793,14 @@
   "models/persistence/persistence-meta.ts | disableOverrideNetworkRequests": {
     "message": "ปิดใช้การลบล้างคำขอของเครือข่าย"
   },
-  "models/persistence/persistence-meta.ts | enableLocalOverrides": {
-    "message": "เปิดใช้การลบล้างในเครื่อง"
-  },
   "models/persistence/persistence-meta.ts | enableOverrideNetworkRequests": {
     "message": "เปิดใช้การลบล้างคำขอของเครือข่าย"
   },
   "models/persistence/persistence-meta.ts | interception": {
     "message": "การสกัดกั้น"
+  },
+  "models/persistence/persistence-meta.ts | localOverrides": {
+    "message": "การลบล้างค่าในเครื่อง"
   },
   "models/persistence/persistence-meta.ts | network": {
     "message": "เครือข่าย"
@@ -2526,7 +2568,7 @@
     "message": "คำขอ"
   },
   "models/trace/insights/RenderBlocking.ts | title": {
-    "message": "แสดงผลคำขอบล็อก"
+    "message": "คำขอบล็อกการแสดงผล"
   },
   "models/trace/insights/SlowCSSSelector.ts | description": {
     "message": "หากต้นทุนในการคำนวณรูปแบบอีกครั้งยังคงสูงอยู่ การเพิ่มประสิทธิภาพตัวเลือกจะลดต้นทุนได้ [เพิ่มประสิทธิภาพตัวเลือก](https://developer.chrome.com/docs/performance/insights/slow-css-selector)ด้วยทั้งเวลาที่ผ่านไปนานและ % ของเส้นทางที่ช้าที่สูง ตัวเลือกที่เรียบง่ายขึ้น, ตัวเลือกที่น้อยลง, DOM ที่เล็กลง และ DOM ที่ตื้นขึ้นจะช่วยลดต้นทุนการจับคู่ได้ทั้งหมด"
@@ -3133,6 +3175,18 @@
   },
   "panels/ai_assistance/components/DisabledWidget.ts | turnOnForStylesRequestsPerformanceAndFiles": {
     "message": "เปิด{PH1}เพื่อรับความช่วยเหลือเกี่ยวกับรูปแบบ คำขอเครือข่าย ประสิทธิภาพ และไฟล์"
+  },
+  "panels/ai_assistance/components/WalkthroughView.ts | close": {
+    "message": "ปิด"
+  },
+  "panels/ai_assistance/components/WalkthroughView.ts | showAgentWalkthrough": {
+    "message": "แสดงคำแนะนำแบบทีละขั้นของ Agent"
+  },
+  "panels/ai_assistance/components/WalkthroughView.ts | showThinking": {
+    "message": "แสดงวิธีคิด"
+  },
+  "panels/ai_assistance/components/WalkthroughView.ts | title": {
+    "message": "ขั้นตอนการตรวจสอบ"
   },
   "panels/animation/AnimationTimeline.ts | animationDescription": {
     "message": "ในหน้านี้ คุณจะตรวจสอบและแก้ไขภาพเคลื่อนไหวได้"
@@ -3796,6 +3850,18 @@
   },
   "panels/application/DeviceBoundSessionsView.ts | expiryDate": {
     "message": "วันที่หมดอายุ"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | failedRequestNetError": {
+    "message": "ข้อผิดพลาดเกี่ยวกับเครือข่าย"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | failedRequestResponseBody": {
+    "message": "เนื้อหาการตอบกลับ"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | failedRequestResponseCode": {
+    "message": "รหัสข้อผิดพลาดในการตอบกลับ"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | failedRequestUrl": {
+    "message": "URL คำขอที่ไม่สำเร็จ"
   },
   "panels/application/DeviceBoundSessionsView.ts | failedToRestoreKey": {
     "message": "กู้คืนคีย์จากดิสก์ไม่สำเร็จ"
@@ -5747,6 +5813,9 @@
   "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedNon2XX": {
     "message": "การดึงข้อมูลล่วงหน้าไม่สำเร็จเนื่องจากมีรหัสสถานะการตอบกลับ HTTP ที่ไม่ใช่ 2xx"
   },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedNon2XXWithStatusCode": {
+    "message": "ดึงข้อมูลล่วงหน้าไม่สำเร็จเนื่องจากมีรหัสสถานะการตอบกลับ HTTP ที่ไม่ใช่ 2xx ({PH1})"
+  },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchIneligibleRetryAfter": {
     "message": "การดึงข้อมูลล่วงหน้าไปยังต้นทางครั้งก่อนหน้าได้รับการตอบกลับ HTTP 503 ที่มีส่วนหัว Retry-After ซึ่งยังไม่ผ่านไป"
   },
@@ -6612,7 +6681,7 @@
     "message": "ค้นหาสตริงในบันทึก"
   },
   "panels/console/ConsoleView.ts | groupSimilarMessagesInConsole": {
-    "message": "จัดกลุ่มข้อความที่คล้ายกันในคอนโซล"
+    "message": "จัดกลุ่มข้อความที่คล้ายกัน"
   },
   "panels/console/ConsoleView.ts | hideAll": {
     "message": "ซ่อนทั้งหมด"
@@ -6622,9 +6691,6 @@
   },
   "panels/console/ConsoleView.ts | hideMessagesFromS": {
     "message": "ซ่อนข้อความจาก {PH1}"
-  },
-  "panels/console/ConsoleView.ts | hideNetwork": {
-    "message": "ซ่อนเครือข่าย"
   },
   "panels/console/ConsoleView.ts | info": {
     "message": "ข้อมูล"
@@ -6646,6 +6712,9 @@
   },
   "panels/console/ConsoleView.ts | logXMLHttpRequests": {
     "message": "บันทึก XMLHttpRequests"
+  },
+  "panels/console/ConsoleView.ts | networkMessages": {
+    "message": "ข้อความเครือข่าย"
   },
   "panels/console/ConsoleView.ts | onlyShowMessagesFromTheCurrentContext": {
     "message": "แสดงเฉพาะข้อความจากบริบทปัจจุบัน (top, iframe, worker, ส่วนขยาย)"
@@ -6678,7 +6747,7 @@
     "message": "แสดงแถบด้านข้างของคอนโซล"
   },
   "panels/console/ConsoleView.ts | showCorsErrorsInConsole": {
-    "message": "แสดงข้อผิดพลาด CORS ในคอนโซล"
+    "message": "ข้อผิดพลาด CORS ในคอนโซล"
   },
   "panels/console/ConsoleView.ts | treatEvaluationAsUserActivation": {
     "message": "ถือว่าการประเมินเป็นการเปิดใช้งานของผู้ใช้"
@@ -6818,6 +6887,12 @@
   "panels/console/console-meta.ts | console": {
     "message": "คอนโซล"
   },
+  "panels/console/console-meta.ts | consoleInsightTeasers": {
+    "message": "ข้อมูลสรุปโดย AI สำหรับข้อความในคอนโซล"
+  },
+  "panels/console/console-meta.ts | corsErrorsInConsole": {
+    "message": "ข้อผิดพลาด CORS ในคอนโซล"
+  },
   "panels/console/console-meta.ts | createLiveExpression": {
     "message": "สร้างนิพจน์แบบเรียลไทม์"
   },
@@ -6830,8 +6905,8 @@
   "panels/console/console-meta.ts | doNotEagerlyEvaluateConsole": {
     "message": "ไม่ต้องประเมินข้อความแจ้งของคอนโซลอย่างตั้งใจ"
   },
-  "panels/console/console-meta.ts | doNotGroupSimilarMessagesIn": {
-    "message": "ไม่จัดกลุ่มข้อความที่คล้ายกันในคอนโซล"
+  "panels/console/console-meta.ts | doNotGroupSimilarMessages": {
+    "message": "ไม่จัดกลุ่มข้อความที่คล้ายกัน"
   },
   "panels/console/console-meta.ts | doNotShowCorsErrorsIn": {
     "message": "ไม่ต้องแสดงข้อผิดพลาด CORS ในคอนโซล"
@@ -6851,14 +6926,17 @@
   "panels/console/console-meta.ts | expandConsoleTraceMessagesByDefault": {
     "message": "ขยายข้อความ console.trace() โดยอัตโนมัติ"
   },
-  "panels/console/console-meta.ts | groupSimilarMessagesInConsole": {
-    "message": "จัดกลุ่มข้อความที่คล้ายกันในคอนโซล"
+  "panels/console/console-meta.ts | groupSimilarMessages": {
+    "message": "จัดกลุ่มข้อความที่คล้ายกัน"
   },
   "panels/console/console-meta.ts | hideNetworkMessages": {
     "message": "ซ่อนข้อความเครือข่าย"
   },
   "panels/console/console-meta.ts | hideTimestamps": {
     "message": "ซ่อนการประทับเวลา"
+  },
+  "panels/console/console-meta.ts | networkMessages": {
+    "message": "ข้อความเครือข่าย"
   },
   "panels/console/console-meta.ts | onlyShowMessagesFromTheCurrent": {
     "message": "แสดงเฉพาะข้อความจากบริบทปัจจุบัน (top, iframe, worker, ส่วนขยาย)"
@@ -6868,9 +6946,6 @@
   },
   "panels/console/console-meta.ts | showConsole": {
     "message": "แสดงคอนโซล"
-  },
-  "panels/console/console-meta.ts | showConsoleInsightTeasers": {
-    "message": "แสดงข้อมูลสรุปโดย AI สำหรับข้อความในคอนโซล"
   },
   "panels/console/console-meta.ts | showCorsErrorsInConsole": {
     "message": "แสดงข้อผิดพลาด CORS ในคอนโซล"
@@ -7553,6 +7628,9 @@
   "panels/elements/ElementsTreeElement.ts | editAttribute": {
     "message": "แก้ไขแอตทริบิวต์"
   },
+  "panels/elements/ElementsTreeElement.ts | editData": {
+    "message": "แก้ไขข้อมูล"
+  },
   "panels/elements/ElementsTreeElement.ts | editText": {
     "message": "แก้ไขข้อความ"
   },
@@ -7991,11 +8069,17 @@
   "panels/elements/components/StylePropertyEditor.ts | selectButton": {
     "message": "เพิ่ม {propertyName}: {propertyValue}"
   },
+  "panels/elements/elements-meta.ts | CSSDocumentationTooltip": {
+    "message": "เคล็ดลับเครื่องมือเอกสารประกอบ CSS"
+  },
   "panels/elements/elements-meta.ts | captureAreaScreenshot": {
     "message": "บันทึกภาพหน้าจอของพื้นที่ที่เลือก"
   },
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "คัดลอกรูปแบบ"
+  },
+  "panels/elements/elements-meta.ts | detailedInspectTooltip": {
+    "message": "เคล็ดลับเครื่องมือการตรวจสอบอย่างละเอียด"
   },
   "panels/elements/elements-meta.ts | duplicateElement": {
     "message": "ทำองค์ประกอบซ้ำ"
@@ -8014,6 +8098,9 @@
   },
   "panels/elements/elements-meta.ts | hideHtmlComments": {
     "message": "ซ่อนความคิดเห็นแบบ HTML"
+  },
+  "panels/elements/elements-meta.ts | htmlComments": {
+    "message": "ความคิดเห็นใน HTML"
   },
   "panels/elements/elements-meta.ts | layout": {
     "message": "เลย์เอาต์"
@@ -8036,14 +8123,8 @@
   "panels/elements/elements-meta.ts | selectAnElementInThePageTo": {
     "message": "เลือกองค์ประกอบในหน้าเพื่อตรวจสอบ"
   },
-  "panels/elements/elements-meta.ts | showCSSDocumentationTooltip": {
-    "message": "แสดงเคล็ดลับเครื่องมือของเอกสารประกอบ CSS"
-  },
   "panels/elements/elements-meta.ts | showComputedStyles": {
     "message": "แสดงสไตล์ที่คำนวณแล้ว"
-  },
-  "panels/elements/elements-meta.ts | showDetailedInspectTooltip": {
-    "message": "แสดงเคล็ดลับเครื่องมือตรวจสอบอย่างละเอียด"
   },
   "panels/elements/elements-meta.ts | showElements": {
     "message": "แสดงองค์ประกอบ"
@@ -8066,9 +8147,6 @@
   "panels/elements/elements-meta.ts | showStyles": {
     "message": "แสดงสไตล์"
   },
-  "panels/elements/elements-meta.ts | showUserAgentShadowDOM": {
-    "message": "แสดงเงาของ User Agent DOM"
-  },
   "panels/elements/elements-meta.ts | stackTrace": {
     "message": "สแต็กเทรซ"
   },
@@ -8083,6 +8161,9 @@
   },
   "panels/elements/elements-meta.ts | undo": {
     "message": "เลิกทำ"
+  },
+  "panels/elements/elements-meta.ts | userAgentShadowDOM": {
+    "message": "เงาของ User Agent DOM"
   },
   "panels/elements/elements-meta.ts | wordWrap": {
     "message": "การตัดคำ"
@@ -8100,7 +8181,7 @@
     "message": "ปิดเครื่องมือสำหรับนักพัฒนาเว็บ"
   },
   "panels/emulation/DeviceModeToolbar.ts | defaultF": {
-    "message": "ค่าเริ่มต้น: {PH1}"
+    "message": "{PH1} (ค่าเริ่มต้น)"
   },
   "panels/emulation/DeviceModeToolbar.ts | devicePixelRatio": {
     "message": "อัตราส่วนพิกเซลของอุปกรณ์"
@@ -8112,13 +8193,16 @@
     "message": "ประเภทอุปกรณ์"
   },
   "panels/emulation/DeviceModeToolbar.ts | dimensions": {
-    "message": "ขนาด"
+    "message": "ขนาด: {PH1}"
+  },
+  "panels/emulation/DeviceModeToolbar.ts | dpr": {
+    "message": "DPR: {PH1}"
   },
   "panels/emulation/DeviceModeToolbar.ts | edit": {
     "message": "แก้ไข…"
   },
-  "panels/emulation/DeviceModeToolbar.ts | fitToWindowF": {
-    "message": "พอดีกับหน้าต่าง ({PH1}%)"
+  "panels/emulation/DeviceModeToolbar.ts | fitToWindowPercentage": {
+    "message": "{PH1}% (พอดีกับหน้าต่าง)"
   },
   "panels/emulation/DeviceModeToolbar.ts | heightLeaveEmptyForFull": {
     "message": "ความสูง (เว้นว่างไว้สำหรับความสูงแบบเต็ม)"
@@ -8138,9 +8222,6 @@
   "panels/emulation/DeviceModeToolbar.ts | moreOptions": {
     "message": "ตัวเลือกอื่น"
   },
-  "panels/emulation/DeviceModeToolbar.ts | none": {
-    "message": "ไม่มี"
-  },
   "panels/emulation/DeviceModeToolbar.ts | portrait": {
     "message": "แนวตั้ง"
   },
@@ -8159,6 +8240,9 @@
   "panels/emulation/DeviceModeToolbar.ts | rotate": {
     "message": "หมุน"
   },
+  "panels/emulation/DeviceModeToolbar.ts | screenOrientationLocked": {
+    "message": "หน้าเว็บล็อกการวางแนวหน้าจอ"
+  },
   "panels/emulation/DeviceModeToolbar.ts | screenOrientationOptions": {
     "message": "ตัวเลือกการวางแนวหน้าจอ"
   },
@@ -8170,6 +8254,9 @@
   },
   "panels/emulation/DeviceModeToolbar.ts | showRulers": {
     "message": "แสดงไม้บรรทัด"
+  },
+  "panels/emulation/DeviceModeToolbar.ts | throttling": {
+    "message": "การควบคุม"
   },
   "panels/emulation/DeviceModeToolbar.ts | toggleDualscreenMode": {
     "message": "เปิด/ปิดโหมดหน้าจอคู่"
@@ -8441,24 +8528,6 @@
   "panels/issues/AffectedElementsView.ts | nElements": {
     "message": "{n,plural, =1{องค์ประกอบ # รายการ}other{องค์ประกอบ # รายการ}}"
   },
-  "panels/issues/AffectedElementsWithLowContrastView.ts | contrastRatio": {
-    "message": "อัตราส่วนความคมชัด"
-  },
-  "panels/issues/AffectedElementsWithLowContrastView.ts | element": {
-    "message": "องค์ประกอบ"
-  },
-  "panels/issues/AffectedElementsWithLowContrastView.ts | minimumAA": {
-    "message": "อัตราส่วน AA ขั้นต่ำ"
-  },
-  "panels/issues/AffectedElementsWithLowContrastView.ts | minimumAAA": {
-    "message": "อัตราส่วน AAA ขั้นต่ำ"
-  },
-  "panels/issues/AffectedElementsWithLowContrastView.ts | textSize": {
-    "message": "ขนาดข้อความ"
-  },
-  "panels/issues/AffectedElementsWithLowContrastView.ts | textWeight": {
-    "message": "น้ำหนักข้อความ"
-  },
   "panels/issues/AffectedHeavyAdView.ts | cpuPeakLimit": {
     "message": "การใช้งาน CPU สูงสุด"
   },
@@ -8511,6 +8580,24 @@
     "message": "ไม่มีข้อมูล"
   },
   "panels/issues/AffectedResourcesView.ts | unknown": {
+    "message": "ไม่รู้จัก"
+  },
+  "panels/issues/AffectedSelectivePermissionsInterventionView.ts | adAncestry": {
+    "message": "ลำดับชั้นของโฆษณา"
+  },
+  "panels/issues/AffectedSelectivePermissionsInterventionView.ts | api": {
+    "message": "API"
+  },
+  "panels/issues/AffectedSelectivePermissionsInterventionView.ts | loading": {
+    "message": "กำลังโหลด…"
+  },
+  "panels/issues/AffectedSelectivePermissionsInterventionView.ts | nViolations": {
+    "message": "{n,plural, =1{การละเมิด # รายการ}other{การละเมิด # รายการ}}"
+  },
+  "panels/issues/AffectedSelectivePermissionsInterventionView.ts | script": {
+    "message": "สคริปต์"
+  },
+  "panels/issues/AffectedSelectivePermissionsInterventionView.ts | unknown": {
     "message": "ไม่รู้จัก"
   },
   "panels/issues/AffectedSharedArrayBufferIssueDetailsView.ts | aSharedarraybufferWas": {
@@ -8764,6 +8851,9 @@
   },
   "panels/issues/IssuesPane.ts | samesiteCookie": {
     "message": "คุกกี้ SameSite"
+  },
+  "panels/issues/IssuesPane.ts | selectivePermissionsIntervention": {
+    "message": "การแทรกแซงสิทธิ์แบบเลือก"
   },
   "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
     "message": "ซ่อนปัญหา"
@@ -10694,6 +10784,57 @@
   "panels/network/RequestDeviceBoundSessionsView.ts | sessionId": {
     "message": "รหัสเซสชัน"
   },
+  "panels/network/RequestHeadersView.ts | earlyHintsHeaders": {
+    "message": "ส่วนหัวของคำแนะนำเบื้องต้น"
+  },
+  "panels/network/RequestHeadersView.ts | fromDiskCache": {
+    "message": "(จากแคชดิสก์)"
+  },
+  "panels/network/RequestHeadersView.ts | fromEarlyHints": {
+    "message": "(จากคำแนะนำเบื้องต้น)"
+  },
+  "panels/network/RequestHeadersView.ts | fromMemoryCache": {
+    "message": "(จากแคชหน่วยความจำ)"
+  },
+  "panels/network/RequestHeadersView.ts | fromPrefetchCache": {
+    "message": "(จากแคชที่ดึงข้อมูลล่วงหน้า)"
+  },
+  "panels/network/RequestHeadersView.ts | fromServiceWorker": {
+    "message": "(จาก service worker)"
+  },
+  "panels/network/RequestHeadersView.ts | fromSignedexchange": {
+    "message": "(จาก Signed Exchange)"
+  },
+  "panels/network/RequestHeadersView.ts | general": {
+    "message": "ทั่วไป"
+  },
+  "panels/network/RequestHeadersView.ts | raw": {
+    "message": "ไฟล์ข้อมูล RAW"
+  },
+  "panels/network/RequestHeadersView.ts | referrerPolicy": {
+    "message": "นโยบาย URL ที่มา"
+  },
+  "panels/network/RequestHeadersView.ts | remoteAddress": {
+    "message": "ที่อยู่ระยะไกล"
+  },
+  "panels/network/RequestHeadersView.ts | requestHeaders": {
+    "message": "ส่วนหัวของคำขอ"
+  },
+  "panels/network/RequestHeadersView.ts | requestMethod": {
+    "message": "เมธอดคำขอ"
+  },
+  "panels/network/RequestHeadersView.ts | requestUrl": {
+    "message": "URL คำขอ"
+  },
+  "panels/network/RequestHeadersView.ts | responseHeaders": {
+    "message": "ส่วนหัวการตอบกลับ"
+  },
+  "panels/network/RequestHeadersView.ts | revealHeaderOverrides": {
+    "message": "แสดงคำจำกัดความของการลบล้างส่วนหัว"
+  },
+  "panels/network/RequestHeadersView.ts | statusCode": {
+    "message": "รหัสสถานะ"
+  },
   "panels/network/RequestInitiatorView.ts | noInitiator": {
     "message": "ไม่มีข้อมูลผู้เริ่ม"
   },
@@ -11131,60 +11272,6 @@
   },
   "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShownDisableCache": {
     "message": "ส่วนหัวที่จัดสรรไว้แสดงอยู่ ปิดใช้แคชเพื่อดูส่วนหัวแบบเต็ม"
-  },
-  "panels/network/components/RequestHeadersView.ts | earlyHintsHeaders": {
-    "message": "ส่วนหัวของคำแนะนำเบื้องต้น"
-  },
-  "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
-    "message": "(จากแคชดิสก์)"
-  },
-  "panels/network/components/RequestHeadersView.ts | fromEarlyHints": {
-    "message": "(จากคำแนะนำเบื้องต้น)"
-  },
-  "panels/network/components/RequestHeadersView.ts | fromMemoryCache": {
-    "message": "(จากแคชหน่วยความจำ)"
-  },
-  "panels/network/components/RequestHeadersView.ts | fromPrefetchCache": {
-    "message": "(จากแคชที่ดึงข้อมูลล่วงหน้า)"
-  },
-  "panels/network/components/RequestHeadersView.ts | fromServiceWorker": {
-    "message": "(จาก service worker)"
-  },
-  "panels/network/components/RequestHeadersView.ts | fromSignedexchange": {
-    "message": "(จาก Signed Exchange)"
-  },
-  "panels/network/components/RequestHeadersView.ts | general": {
-    "message": "ทั่วไป"
-  },
-  "panels/network/components/RequestHeadersView.ts | raw": {
-    "message": "ไฟล์ข้อมูล RAW"
-  },
-  "panels/network/components/RequestHeadersView.ts | referrerPolicy": {
-    "message": "นโยบาย URL ที่มา"
-  },
-  "panels/network/components/RequestHeadersView.ts | remoteAddress": {
-    "message": "ที่อยู่ระยะไกล"
-  },
-  "panels/network/components/RequestHeadersView.ts | requestHeaders": {
-    "message": "ส่วนหัวของคำขอ"
-  },
-  "panels/network/components/RequestHeadersView.ts | requestMethod": {
-    "message": "เมธอดคำขอ"
-  },
-  "panels/network/components/RequestHeadersView.ts | requestUrl": {
-    "message": "URL คำขอ"
-  },
-  "panels/network/components/RequestHeadersView.ts | responseHeaders": {
-    "message": "ส่วนหัวการตอบกลับ"
-  },
-  "panels/network/components/RequestHeadersView.ts | revealHeaderOverrides": {
-    "message": "แสดงคำจำกัดความของการลบล้างส่วนหัว"
-  },
-  "panels/network/components/RequestHeadersView.ts | showMore": {
-    "message": "แสดงเพิ่มเติม"
-  },
-  "panels/network/components/RequestHeadersView.ts | statusCode": {
-    "message": "รหัสสถานะ"
   },
   "panels/network/components/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
     "message": "อาร์กิวเมนต์ที่ไคลเอ็นต์ระบุผิดรูปแบบหรือไม่ถูกต้อง"
@@ -13349,9 +13436,6 @@
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | customExclusionRules": {
     "message": "กฎการยกเว้นที่กำหนดเอง"
   },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | enableIgnoreListing": {
-    "message": "เปิดใช้รายการละเว้น"
-  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | enableIgnoreListingTooltip": {
     "message": "ยกเลิกการเลือกเพื่อปิดใช้รายการละเว้นทั้งหมด"
   },
@@ -13366,6 +13450,9 @@
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreListContentScripts": {
     "message": "สคริปต์เนื้อหาที่ส่วนขยายแทรก"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreListing": {
+    "message": "รายการละเว้น"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreListingDescription": {
     "message": "เมื่อเปิดใช้ โปรแกรมแก้ไขข้อบกพร่องจะข้ามสคริปต์ที่อยู่ในรายการละเว้น และจะละเว้นข้อยกเว้นที่มีผลกับสคริปต์เหล่านี้เท่านั้น รวมถึงแผงประสิทธิภาพจะยุบรายการแผนภูมิ Flame Chart ที่ตรงกัน"
@@ -13477,6 +13564,9 @@
   },
   "panels/settings/SettingsScreen.ts | settingsChangedReloadDevTools": {
     "message": "เปลี่ยนการตั้งค่าแล้ว โหลดเครื่องมือสำหรับนักพัฒนาเว็บซ้ำเพื่อให้มีผล"
+  },
+  "panels/settings/SettingsScreen.ts | settingsChangedRestartChrome": {
+    "message": "เปลี่ยนการตั้งค่าแล้ว โปรดรีสตาร์ท Chrome เพื่อให้มีผล"
   },
   "panels/settings/SettingsScreen.ts | shortcuts": {
     "message": "แป้นพิมพ์ลัด"
@@ -14616,7 +14706,7 @@
     "message": "ไม่ต้องตรวจหาการเยื้อง"
   },
   "panels/sources/sources-meta.ts | doNotDisplayVariableValuesInline": {
-    "message": "ไม่แสดงค่าตัวแปรในบรรทัดขณะแก้ไขข้อบกพร่อง"
+    "message": "ไม่แสดงค่าตัวแปรในบรรทัด"
   },
   "panels/sources/sources-meta.ts | doNotSearchInAnonymousAndContent": {
     "message": "ไม่ต้องค้นหาในสคริปต์แบบไม่ระบุชื่อและสคริปต์เนื้อหา"
@@ -14815,6 +14905,9 @@
   },
   "panels/sources/sources-meta.ts | trailing": {
     "message": "ต่อท้าย"
+  },
+  "panels/sources/sources-meta.ts | variableValuesInlineWhile": {
+    "message": "ค่าตัวแปรในบรรทัด"
   },
   "panels/sources/sources-meta.ts | wasmAutoStepping": {
     "message": "ไบต์โค้ดการดำเนินการอัตโนมัติของ Wasm"
@@ -15731,9 +15824,6 @@
   "panels/timeline/TimelineUIUtils.ts | stylesheetUrl": {
     "message": "URL ของสไตล์ชีต"
   },
-  "panels/timeline/TimelineUIUtils.ts | thirdPartyTable": {
-    "message": "ตารางบุคคลที่หนึ่ง/บุคคลที่สาม"
-  },
   "panels/timeline/TimelineUIUtils.ts | timeSpentInRendering": {
     "message": "เวลาที่ใช้ในการแสดงภาพ"
   },
@@ -16511,32 +16601,8 @@
   "panels/timeline/components/SidebarAnnotationsTab.ts | timeRangeTutorialTitle": {
     "message": "กำหนดช่วงเวลา"
   },
-  "panels/timeline/components/SidebarSingleInsightSet.ts | dismissTitle": {
-    "message": "ปิด"
-  },
-  "panels/timeline/components/SidebarSingleInsightSet.ts | fieldMismatchNotice": {
-    "message": "มีสาเหตุหลายประการที่ทำให้เมตริกในเครื่องและจากข้อมูลภาคสนาม[อาจไม่ตรงกัน](https://web.dev/articles/lab-and-field-data-differences) ปรับ[การตั้งค่าการควบคุมและการจำลองอุปกรณ์](https://developer.chrome.com/docs/devtools/device-mode)เพื่อวิเคราะห์การติดตามที่คล้ายกับสภาพแวดล้อมของผู้ใช้โดยเฉลี่ยมากขึ้น"
-  },
-  "panels/timeline/components/SidebarSingleInsightSet.ts | fieldMismatchTitle": {
-    "message": "เมตริกจากข้อมูลภาคสนามและเมตริกในเครื่องไม่ตรงกัน"
-  },
-  "panels/timeline/components/SidebarSingleInsightSet.ts | fieldScoreLabel": {
-    "message": "จากข้อมูลภาคสนาม ({PH1})"
-  },
-  "panels/timeline/components/SidebarSingleInsightSet.ts | metricScore": {
-    "message": "{PH1}: {PH2} {PH3} คะแนน"
-  },
-  "panels/timeline/components/SidebarSingleInsightSet.ts | metricScoreUnavailable": {
-    "message": "{PH1}: ไม่มีข้อมูล"
-  },
-  "panels/timeline/components/SidebarSingleInsightSet.ts | originOption": {
-    "message": "ต้นทาง"
-  },
   "panels/timeline/components/SidebarSingleInsightSet.ts | passedInsights": {
     "message": "ข้อมูลเชิงลึกที่ผ่าน ({PH1})"
-  },
-  "panels/timeline/components/SidebarSingleInsightSet.ts | urlOption": {
-    "message": "URL"
   },
   "panels/timeline/components/TimelineSummary.ts | rangeSS": {
     "message": "ช่วง:  {PH1} – {PH2}"
@@ -16613,8 +16679,8 @@
   "panels/timeline/overlays/components/TimeRangeOverlay.ts | timeRange": {
     "message": "ช่วงเวลา"
   },
-  "panels/timeline/timeline-meta.ts | hideChromeFrameInLayersView": {
-    "message": "ซ่อนเฟรม chrome ในมุมมองเลเยอร์"
+  "panels/timeline/timeline-meta.ts | chromeFrameInLayersView": {
+    "message": "เฟรม Chrome ในมุมมองเลเยอร์"
   },
   "panels/timeline/timeline-meta.ts | loadProfile": {
     "message": "โหลดโปรไฟล์…"
@@ -17054,6 +17120,9 @@
   "ui/legacy/Infobar.ts | dontShowAgain": {
     "message": "ไม่ต้องแสดงอีก"
   },
+  "ui/legacy/InspectorView.ts | areYouSureYouWantToRestartChrome": {
+    "message": "คุณแน่ใจไหมว่าต้องการรีสตาร์ท Chrome"
+  },
   "ui/legacy/InspectorView.ts | closeDrawer": {
     "message": "ปิดลิ้นชัก"
   },
@@ -17089,6 +17158,9 @@
   },
   "ui/legacy/InspectorView.ts | reloadDevtools": {
     "message": "โหลดเครื่องมือสำหรับนักพัฒนาเว็บซ้ำ"
+  },
+  "ui/legacy/InspectorView.ts | restartChrome": {
+    "message": "รีสตาร์ท Chrome"
   },
   "ui/legacy/InspectorView.ts | selectFolder": {
     "message": "เลือกโฟลเดอร์"
@@ -17257,6 +17329,9 @@
   },
   "ui/legacy/Toolbar.ts | pressed": {
     "message": "กดแล้ว"
+  },
+  "ui/legacy/Toolbar.ts | useRegularExpression": {
+    "message": "ใช้นิพจน์ทั่วไป"
   },
   "ui/legacy/UIUtils.ts | anonymous": {
     "message": "(ไม่ระบุชื่อ)"
@@ -17962,9 +18037,6 @@
   },
   "ui/legacy/components/utils/JSPresentationUtils.ts | showMoreFrames": {
     "message": "แสดงเฟรมที่อยู่ในรายการละเว้น"
-  },
-  "ui/legacy/components/utils/JSPresentationUtils.ts | unknownSource": {
-    "message": "ไม่รู้จัก"
   },
   "ui/legacy/components/utils/Linkifier.ts | auto": {
     "message": "อัตโนมัติ"

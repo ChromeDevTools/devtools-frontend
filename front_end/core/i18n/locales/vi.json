@@ -593,6 +593,9 @@
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "Tắt JavaScript"
   },
+  "core/sdk/sdk-meta.ts | disableJpegXlFormat": {
+    "message": "Tắt định dạng JPEG XL"
+  },
   "core/sdk/sdk-meta.ts | disableLocalFonts": {
     "message": "Tắt phông chữ trên máy"
   },
@@ -701,6 +704,9 @@
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "Bật JavaScript"
   },
+  "core/sdk/sdk-meta.ts | enableJpegXlFormat": {
+    "message": "Bật định dạng JPEG XL"
+  },
   "core/sdk/sdk-meta.ts | enableLocalFonts": {
     "message": "Bật phông chữ trên máy"
   },
@@ -747,7 +753,7 @@
     "message": "Việc tắt bộ nhớ đệm mạng sẽ mô phỏng trải nghiệm mạng tương tự như của khách truy cập lần đầu."
   },
   "core/sdk/sdk-meta.ts | networkRequestBlocking": {
-    "message": "Chặn yêu cầu kết nối mạng"
+    "message": "Chặn yêu cầu mạng"
   },
   "core/sdk/sdk-meta.ts | noEmulation": {
     "message": "Không mô phỏng"
@@ -796,6 +802,9 @@
   },
   "core/sdk/sdk-meta.ts | remoteFileLoadingInfo": {
     "message": "Bản đồ nguồn là ví dụ về tài nguyên. Bị tắt theo mặc định vì lý do bảo mật."
+  },
+  "core/sdk/sdk-meta.ts | rulersOnHover": {
+    "message": "Thước kẻ khi di chuột"
   },
   "core/sdk/sdk-meta.ts | screen": {
     "message": "màn ảnh"
@@ -862,6 +871,9 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableAvifImageFormat": {
     "message": "Tắt định dạng hình ảnh AVIF"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | disableJpegXlImageFormat": {
+    "message": "Tắt định dạng hình ảnh JPEG XL"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableLocalFonts": {
     "message": "Tắt phông chữ trên máy"
@@ -1116,10 +1128,10 @@
     "message": "Nhận huy hiệu"
   },
   "entrypoints/main/main-meta.ts | enableCtrlShortcutToSwitchPanels": {
-    "message": "Bật phím tắt Ctrl + 1-9 để chuyển đổi bảng điều khiển"
+    "message": "Dùng tổ hợp phím Ctrl + 1-9 để chuyển đổi bảng điều khiển"
   },
   "entrypoints/main/main-meta.ts | enableShortcutToSwitchPanels": {
-    "message": "Bật phím tắt ⌘ + 1-9 để chuyển đổi bảng điều khiển"
+    "message": "Dùng tổ hợp phím ⌘ + 1-9 để chuyển đổi bảng điều khiển"
   },
   "entrypoints/main/main-meta.ts | findNextResult": {
     "message": "Tìm kết quả tiếp theo"
@@ -1256,6 +1268,9 @@
   "entrypoints/node_app/app/NodeMain.ts | nodejsS": {
     "message": "Node.js: {PH1}"
   },
+  "entrypoints/node_app/node_app.ts | application": {
+    "message": "Ứng dụng"
+  },
   "entrypoints/node_app/node_app.ts | connection": {
     "message": "Kết nối"
   },
@@ -1264,6 +1279,9 @@
   },
   "entrypoints/node_app/node_app.ts | node": {
     "message": "nút"
+  },
+  "entrypoints/node_app/node_app.ts | showApplication": {
+    "message": "Hiển thị ứng dụng"
   },
   "entrypoints/node_app/node_app.ts | showConnection": {
     "message": "Hiển thị phần Kết nối"
@@ -1339,6 +1357,27 @@
   },
   "generated/Deprecation.ts | IntlV8BreakIterator": {
     "message": "Intl.v8BreakIterator không được dùng nữa. Thay vào đó, hãy sử dụng Intl.Segmenter."
+  },
+  "generated/Deprecation.ts | LanguageModelParams": {
+    "message": "LanguageModel.params() không được dùng nữa và hiện chỉ có trong ngữ cảnh của tiện ích. Các trường liên quan đến topK và temperature trong kết quả của trường này cũng không còn được dùng nữa."
+  },
+  "generated/Deprecation.ts | LanguageModelTemperature": {
+    "message": "Tham số/thuộc tính \"temperature\" cho LanguageModel không được dùng nữa. Lựa chọn này chỉ hoạt động trong các tiện ích và có thể bị xoá trong tương lai."
+  },
+  "generated/Deprecation.ts | LanguageModelTopK": {
+    "message": "Tham số/thuộc tính \"topK\" cho LanguageModel không được dùng nữa. Lựa chọn này chỉ hoạt động trong các tiện ích và có thể bị xoá trong tương lai."
+  },
+  "generated/Deprecation.ts | LanguageModel_InputQuota": {
+    "message": "LanguageModel.inputQuota không được dùng nữa. Thay vào đó, vui lòng sử dụng LanguageModel.contextWindow. Bạn chỉ có thể sử dụng bí danh này trong các tiện ích."
+  },
+  "generated/Deprecation.ts | LanguageModel_InputUsage": {
+    "message": "LanguageModel.inputUsage không được dùng nữa. Thay vào đó, vui lòng sử dụng LanguageModel.contextUsage. Bạn chỉ có thể sử dụng bí danh này trong các tiện ích."
+  },
+  "generated/Deprecation.ts | LanguageModel_MeasureInputUsage": {
+    "message": "LanguageModel.measureInputUsage() không được dùng nữa. Thay vào đó, vui lòng sử dụng LanguageModel.measureContextUsage(). Bạn chỉ có thể sử dụng bí danh này trong các tiện ích."
+  },
+  "generated/Deprecation.ts | LanguageModel_OnQuotaOverflow": {
+    "message": "LanguageModel.onquotaoverflow không được dùng nữa. Thay vào đó, vui lòng sử dụng LanguageModel.oncontextoverflow. Bạn chỉ có thể sử dụng bí danh LanguageModel.onquotaoverflow trong các tiện ích."
   },
   "generated/Deprecation.ts | LocalCSSFileExtensionRejected": {
     "message": "Không tải được CSS qua các URL file: trừ phi chúng kết thúc bằng đuôi tệp .css."
@@ -1550,6 +1589,9 @@
   "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
     "message": "Client Hints Infrastructure"
   },
+  "models/issues_manager/ConnectionAllowlistIssue.ts | connectionAllowlistHeader": {
+    "message": "Thông số kỹ thuật của danh sách kết nối được cho phép"
+  },
   "models/issues_manager/ContentSecurityPolicyIssue.ts | contentSecurityPolicyEval": {
     "message": "Chính sách bảo mật nội dung – Eval"
   },
@@ -1646,9 +1688,6 @@
   "models/issues_manager/Issue.ts | pageErrors": {
     "message": "Các lỗi trên trang"
   },
-  "models/issues_manager/LowTextContrastIssue.ts | colorAndContrastAccessibility": {
-    "message": "Hỗ trợ tiếp cận bằng màu sắc và độ tương phản"
-  },
   "models/issues_manager/MixedContentIssue.ts | preventingMixedContent": {
     "message": "Ngăn chặn nội dung hỗn hợp"
   },
@@ -1666,6 +1705,9 @@
   },
   "models/issues_manager/SRIMessageSignatureIssue.ts | signatureBasedIntegrity": {
     "message": "Tính toàn vẹn dựa trên chữ ký"
+  },
+  "models/issues_manager/SelectivePermissionsInterventionIssue.ts | selectivePermissionsIntervention": {
+    "message": "Can thiệp vào quyền có chọn lọc"
   },
   "models/issues_manager/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
     "message": "Bật SharedArrayBuffer"
@@ -1751,14 +1793,14 @@
   "models/persistence/persistence-meta.ts | disableOverrideNetworkRequests": {
     "message": "Tắt tính năng ghi đè các yêu cầu mạng"
   },
-  "models/persistence/persistence-meta.ts | enableLocalOverrides": {
-    "message": "Bật cơ chế Ghi đè cục bộ"
-  },
   "models/persistence/persistence-meta.ts | enableOverrideNetworkRequests": {
     "message": "Bật tính năng ghi đè các yêu cầu mạng"
   },
   "models/persistence/persistence-meta.ts | interception": {
     "message": "chặn"
+  },
+  "models/persistence/persistence-meta.ts | localOverrides": {
+    "message": "Ghi đè cục bộ"
   },
   "models/persistence/persistence-meta.ts | network": {
     "message": "mạng"
@@ -2520,13 +2562,13 @@
     "message": "Thời lượng"
   },
   "models/trace/insights/RenderBlocking.ts | noRenderBlocking": {
-    "message": "Không có yêu cầu chặn hiển thị cho thao tác điều hướng này"
+    "message": "Không có yêu cầu chặn hiển thị đối với thao tác điều hướng này"
   },
   "models/trace/insights/RenderBlocking.ts | renderBlockingRequest": {
     "message": "Yêu cầu"
   },
   "models/trace/insights/RenderBlocking.ts | title": {
-    "message": "Yêu cầu chặn quá trình hiển thị"
+    "message": "Yêu cầu chặn hiển thị"
   },
   "models/trace/insights/SlowCSSSelector.ts | description": {
     "message": "Nếu thấy chi phí của Tính toán lại kiểu vẫn cao, bạn có thể tối ưu hoá bộ chọn để giảm chi phí. [Tối ưu hoá bộ chọn](https://developer.chrome.com/docs/performance/insights/slow-css-selector) có tỷ lệ phần trăm đường dẫn chậm và thời gian trôi qua đều cao. Bộ chọn đơn giản hơn, số lượng bộ chọn ít hơn, DOM nhỏ hơn và DOM nông hơn sẽ giúp giảm chi phí khớp."
@@ -3133,6 +3175,18 @@
   },
   "panels/ai_assistance/components/DisabledWidget.ts | turnOnForStylesRequestsPerformanceAndFiles": {
     "message": "Bật {PH1} để được trợ giúp về kiểu, yêu cầu mạng, hiệu suất và tệp"
+  },
+  "panels/ai_assistance/components/WalkthroughView.ts | close": {
+    "message": "Đóng"
+  },
+  "panels/ai_assistance/components/WalkthroughView.ts | showAgentWalkthrough": {
+    "message": "Hiện hướng dẫn từng bước của nhân viên hỗ trợ"
+  },
+  "panels/ai_assistance/components/WalkthroughView.ts | showThinking": {
+    "message": "Hiển thị tiến trình tư duy"
+  },
+  "panels/ai_assistance/components/WalkthroughView.ts | title": {
+    "message": "Các bước kiểm tra"
   },
   "panels/animation/AnimationTimeline.ts | animationDescription": {
     "message": "Trên trang này, bạn có thể kiểm tra và sửa đổi ảnh động."
@@ -3796,6 +3850,18 @@
   },
   "panels/application/DeviceBoundSessionsView.ts | expiryDate": {
     "message": "Ngày hết hạn"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | failedRequestNetError": {
+    "message": "Lỗi mạng"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | failedRequestResponseBody": {
+    "message": "Nội dung phản hồi"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | failedRequestResponseCode": {
+    "message": "Mã lỗi phản hồi"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | failedRequestUrl": {
+    "message": "URL của yêu cầu không thành công"
   },
   "panels/application/DeviceBoundSessionsView.ts | failedToRestoreKey": {
     "message": "Không khôi phục được khoá từ ổ đĩa"
@@ -5747,6 +5813,9 @@
   "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedNon2XX": {
     "message": "Quá trình tìm nạp trước không thành công do mã trạng thái phản hồi HTTP không phải 2xx."
   },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedNon2XXWithStatusCode": {
+    "message": "Quá trình tìm nạp trước không thành công do mã trạng thái phản hồi HTTP ({PH1}) không phải 2xx."
+  },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchIneligibleRetryAfter": {
     "message": "Lần tìm nạp trước nguồn gốc diễn ra trước đó đã nhận được phản hồi HTTP 503 có tiêu đề Retry-After chưa trôi qua."
   },
@@ -6612,7 +6681,7 @@
     "message": "Tìm chuỗi trong nhật ký"
   },
   "panels/console/ConsoleView.ts | groupSimilarMessagesInConsole": {
-    "message": "Nhóm các thông báo tương tự trong bảng điều khiển"
+    "message": "Nhóm các thông báo tương tự"
   },
   "panels/console/ConsoleView.ts | hideAll": {
     "message": "Ẩn tất cả"
@@ -6622,9 +6691,6 @@
   },
   "panels/console/ConsoleView.ts | hideMessagesFromS": {
     "message": "Ẩn thông báo của {PH1}"
-  },
-  "panels/console/ConsoleView.ts | hideNetwork": {
-    "message": "Ẩn mạng"
   },
   "panels/console/ConsoleView.ts | info": {
     "message": "Thông tin"
@@ -6646,6 +6712,9 @@
   },
   "panels/console/ConsoleView.ts | logXMLHttpRequests": {
     "message": "Ghi lại XMLHttpRequests"
+  },
+  "panels/console/ConsoleView.ts | networkMessages": {
+    "message": "Thông báo về hoạt động trên mạng"
   },
   "panels/console/ConsoleView.ts | onlyShowMessagesFromTheCurrentContext": {
     "message": "Chỉ hiển thị thông báo từ bối cảnh hiện tại (top, iframe, worker, tiện ích)"
@@ -6678,7 +6747,7 @@
     "message": "Hiển thị thanh bên bảng điều khiển"
   },
   "panels/console/ConsoleView.ts | showCorsErrorsInConsole": {
-    "message": "Hiện các lỗi CORS trong bảng điều khiển"
+    "message": "Lỗi CORS trong bảng điều khiển"
   },
   "panels/console/ConsoleView.ts | treatEvaluationAsUserActivation": {
     "message": "Coi việc đánh giá là hoạt động của người dùng"
@@ -6818,6 +6887,12 @@
   "panels/console/console-meta.ts | console": {
     "message": "Bảng điều khiển"
   },
+  "panels/console/console-meta.ts | consoleInsightTeasers": {
+    "message": "Bản tóm tắt do AI tạo cho thông báo trên bảng điều khiển"
+  },
+  "panels/console/console-meta.ts | corsErrorsInConsole": {
+    "message": "Lỗi CORS trong bảng điều khiển"
+  },
   "panels/console/console-meta.ts | createLiveExpression": {
     "message": "Tạo biểu thức theo thời gian thực"
   },
@@ -6830,11 +6905,11 @@
   "panels/console/console-meta.ts | doNotEagerlyEvaluateConsole": {
     "message": "Không đánh giá nghiêm ngặt văn bản gợi ý trong bảng điều khiển"
   },
-  "panels/console/console-meta.ts | doNotGroupSimilarMessagesIn": {
-    "message": "Không nhóm các thông báo tương tự trong bảng điều khiển"
+  "panels/console/console-meta.ts | doNotGroupSimilarMessages": {
+    "message": "Không nhóm các thông báo tương tự"
   },
   "panels/console/console-meta.ts | doNotShowCorsErrorsIn": {
-    "message": "Không hiện các lỗi CORS trong bảng điều khiển"
+    "message": "Không hiện lỗi CORS trong bảng điều khiển"
   },
   "panels/console/console-meta.ts | doNotTreatEvaluationAsUser": {
     "message": "Không coi việc đánh giá là hoạt động kích hoạt của người dùng"
@@ -6851,14 +6926,17 @@
   "panels/console/console-meta.ts | expandConsoleTraceMessagesByDefault": {
     "message": "Tự động mở rộng thông báo console.trace()"
   },
-  "panels/console/console-meta.ts | groupSimilarMessagesInConsole": {
-    "message": "Nhóm các thông báo tương tự trong bảng điều khiển"
+  "panels/console/console-meta.ts | groupSimilarMessages": {
+    "message": "Nhóm các thông báo tương tự"
   },
   "panels/console/console-meta.ts | hideNetworkMessages": {
     "message": "Ẩn thông báo của mạng"
   },
   "panels/console/console-meta.ts | hideTimestamps": {
     "message": "Ẩn dấu thời gian"
+  },
+  "panels/console/console-meta.ts | networkMessages": {
+    "message": "Thông báo về hoạt động trên mạng"
   },
   "panels/console/console-meta.ts | onlyShowMessagesFromTheCurrent": {
     "message": "Chỉ hiển thị thông báo từ bối cảnh hiện tại (top, iframe, worker, tiện ích)"
@@ -6869,11 +6947,8 @@
   "panels/console/console-meta.ts | showConsole": {
     "message": "Hiện bảng điều khiển"
   },
-  "panels/console/console-meta.ts | showConsoleInsightTeasers": {
-    "message": "Hiển thị bản tóm tắt do AI tạo cho thông báo trên bảng điều khiển"
-  },
   "panels/console/console-meta.ts | showCorsErrorsInConsole": {
-    "message": "Hiện các lỗi CORS trong bảng điều khiển"
+    "message": "Hiện lỗi CORS trong bảng điều khiển"
   },
   "panels/console/console-meta.ts | showMessagesFromAllContexts": {
     "message": "Hiện thông báo của mọi ngữ cảnh"
@@ -7553,6 +7628,9 @@
   "panels/elements/ElementsTreeElement.ts | editAttribute": {
     "message": "Chỉnh sửa thuộc tính"
   },
+  "panels/elements/ElementsTreeElement.ts | editData": {
+    "message": "Chỉnh sửa dữ liệu"
+  },
   "panels/elements/ElementsTreeElement.ts | editText": {
     "message": "Chỉnh sửa văn bản"
   },
@@ -7991,11 +8069,17 @@
   "panels/elements/components/StylePropertyEditor.ts | selectButton": {
     "message": "Thêm {propertyName}: {propertyValue}"
   },
+  "panels/elements/elements-meta.ts | CSSDocumentationTooltip": {
+    "message": "Chú thích tài liệu CSS"
+  },
   "panels/elements/elements-meta.ts | captureAreaScreenshot": {
     "message": "Chụp ảnh màn hình khu vực"
   },
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "Sao chép kiểu"
+  },
+  "panels/elements/elements-meta.ts | detailedInspectTooltip": {
+    "message": "Chú thích tính năng kiểm tra chi tiết"
   },
   "panels/elements/elements-meta.ts | duplicateElement": {
     "message": "Phần tử trùng lặp"
@@ -8014,6 +8098,9 @@
   },
   "panels/elements/elements-meta.ts | hideHtmlComments": {
     "message": "Ẩn nhận xét trong HTML"
+  },
+  "panels/elements/elements-meta.ts | htmlComments": {
+    "message": "Nhận xét HTML"
   },
   "panels/elements/elements-meta.ts | layout": {
     "message": "Bố cục"
@@ -8036,14 +8123,8 @@
   "panels/elements/elements-meta.ts | selectAnElementInThePageTo": {
     "message": "Chọn một phần tử trên trang để kiểm tra"
   },
-  "panels/elements/elements-meta.ts | showCSSDocumentationTooltip": {
-    "message": "Hiện chú giải công cụ tài liệu CSS"
-  },
   "panels/elements/elements-meta.ts | showComputedStyles": {
     "message": "Hiện kiểu đã tính toán"
-  },
-  "panels/elements/elements-meta.ts | showDetailedInspectTooltip": {
-    "message": "Hiển thị chú giải công cụ kiểm tra chi tiết"
   },
   "panels/elements/elements-meta.ts | showElements": {
     "message": "Hiển thị phần tử"
@@ -8066,9 +8147,6 @@
   "panels/elements/elements-meta.ts | showStyles": {
     "message": "Hiện kiểu"
   },
-  "panels/elements/elements-meta.ts | showUserAgentShadowDOM": {
-    "message": "Hiển thị shadow DOM tác nhân người dùng DOM"
-  },
   "panels/elements/elements-meta.ts | stackTrace": {
     "message": "Dấu vết ngăn xếp"
   },
@@ -8083,6 +8161,9 @@
   },
   "panels/elements/elements-meta.ts | undo": {
     "message": "Hủy"
+  },
+  "panels/elements/elements-meta.ts | userAgentShadowDOM": {
+    "message": "Shadow DOM của tác nhân người dùng"
   },
   "panels/elements/elements-meta.ts | wordWrap": {
     "message": "Tự động ngắt dòng"
@@ -8100,7 +8181,7 @@
     "message": "Đóng Công cụ cho nhà phát triển"
   },
   "panels/emulation/DeviceModeToolbar.ts | defaultF": {
-    "message": "Mặc định: {PH1}"
+    "message": "{PH1} (mặc định)"
   },
   "panels/emulation/DeviceModeToolbar.ts | devicePixelRatio": {
     "message": "Tỷ lệ pixel của thiết bị"
@@ -8112,13 +8193,16 @@
     "message": "Loại thiết bị"
   },
   "panels/emulation/DeviceModeToolbar.ts | dimensions": {
-    "message": "Kích thước"
+    "message": "Kích thước: {PH1}"
+  },
+  "panels/emulation/DeviceModeToolbar.ts | dpr": {
+    "message": "DPR: {PH1}"
   },
   "panels/emulation/DeviceModeToolbar.ts | edit": {
     "message": "Chỉnh sửa…"
   },
-  "panels/emulation/DeviceModeToolbar.ts | fitToWindowF": {
-    "message": "Vừa với cửa sổ ({PH1}%)"
+  "panels/emulation/DeviceModeToolbar.ts | fitToWindowPercentage": {
+    "message": "{PH1}% (vừa với cửa sổ)"
   },
   "panels/emulation/DeviceModeToolbar.ts | heightLeaveEmptyForFull": {
     "message": "Chiều cao (để trống để mở trên toàn màn hình)"
@@ -8138,9 +8222,6 @@
   "panels/emulation/DeviceModeToolbar.ts | moreOptions": {
     "message": "Tùy chọn khác"
   },
-  "panels/emulation/DeviceModeToolbar.ts | none": {
-    "message": "Không có"
-  },
   "panels/emulation/DeviceModeToolbar.ts | portrait": {
     "message": "Dọc"
   },
@@ -8159,6 +8240,9 @@
   "panels/emulation/DeviceModeToolbar.ts | rotate": {
     "message": "Xoay"
   },
+  "panels/emulation/DeviceModeToolbar.ts | screenOrientationLocked": {
+    "message": "Trang đã khoá hướng màn hình"
+  },
   "panels/emulation/DeviceModeToolbar.ts | screenOrientationOptions": {
     "message": "Tùy chọn về hướng màn hình"
   },
@@ -8170,6 +8254,9 @@
   },
   "panels/emulation/DeviceModeToolbar.ts | showRulers": {
     "message": "Hiện thước kẻ"
+  },
+  "panels/emulation/DeviceModeToolbar.ts | throttling": {
+    "message": "Điều tiết băng thông"
   },
   "panels/emulation/DeviceModeToolbar.ts | toggleDualscreenMode": {
     "message": "Bật/tắt chế độ màn hình đôi"
@@ -8441,24 +8528,6 @@
   "panels/issues/AffectedElementsView.ts | nElements": {
     "message": "{n,plural, =1{# phần tử}other{# phần tử}}"
   },
-  "panels/issues/AffectedElementsWithLowContrastView.ts | contrastRatio": {
-    "message": "Tỷ lệ tương phản"
-  },
-  "panels/issues/AffectedElementsWithLowContrastView.ts | element": {
-    "message": "Phần tử"
-  },
-  "panels/issues/AffectedElementsWithLowContrastView.ts | minimumAA": {
-    "message": "Tỉ lệ AA tối thiểu"
-  },
-  "panels/issues/AffectedElementsWithLowContrastView.ts | minimumAAA": {
-    "message": "Tỉ lệ AAA tối thiểu"
-  },
-  "panels/issues/AffectedElementsWithLowContrastView.ts | textSize": {
-    "message": "Cỡ chữ"
-  },
-  "panels/issues/AffectedElementsWithLowContrastView.ts | textWeight": {
-    "message": "Độ đậm của văn bản"
-  },
   "panels/issues/AffectedHeavyAdView.ts | cpuPeakLimit": {
     "message": "Giới hạn giờ cao điểm của CPU"
   },
@@ -8511,6 +8580,24 @@
     "message": "không còn nữa"
   },
   "panels/issues/AffectedResourcesView.ts | unknown": {
+    "message": "không xác định"
+  },
+  "panels/issues/AffectedSelectivePermissionsInterventionView.ts | adAncestry": {
+    "message": "Nguồn gốc quảng cáo"
+  },
+  "panels/issues/AffectedSelectivePermissionsInterventionView.ts | api": {
+    "message": "API"
+  },
+  "panels/issues/AffectedSelectivePermissionsInterventionView.ts | loading": {
+    "message": "đang tải…"
+  },
+  "panels/issues/AffectedSelectivePermissionsInterventionView.ts | nViolations": {
+    "message": "{n,plural, =1{# trường hợp vi phạm}other{# trường hợp vi phạm}}"
+  },
+  "panels/issues/AffectedSelectivePermissionsInterventionView.ts | script": {
+    "message": "Tập lệnh"
+  },
+  "panels/issues/AffectedSelectivePermissionsInterventionView.ts | unknown": {
     "message": "không xác định"
   },
   "panels/issues/AffectedSharedArrayBufferIssueDetailsView.ts | aSharedarraybufferWas": {
@@ -8764,6 +8851,9 @@
   },
   "panels/issues/IssuesPane.ts | samesiteCookie": {
     "message": "Cookie SameSite"
+  },
+  "panels/issues/IssuesPane.ts | selectivePermissionsIntervention": {
+    "message": "Can thiệp vào quyền có chọn lọc"
   },
   "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
     "message": "Ẩn vấn đề"
@@ -10694,6 +10784,57 @@
   "panels/network/RequestDeviceBoundSessionsView.ts | sessionId": {
     "message": "Mã phiên"
   },
+  "panels/network/RequestHeadersView.ts | earlyHintsHeaders": {
+    "message": "Tiêu đề gợi ý ban đầu"
+  },
+  "panels/network/RequestHeadersView.ts | fromDiskCache": {
+    "message": "(từ bộ nhớ đệm của ổ đĩa)"
+  },
+  "panels/network/RequestHeadersView.ts | fromEarlyHints": {
+    "message": "(từ gợi ý ban đầu)"
+  },
+  "panels/network/RequestHeadersView.ts | fromMemoryCache": {
+    "message": "(từ bộ nhớ đệm của bộ nhớ)"
+  },
+  "panels/network/RequestHeadersView.ts | fromPrefetchCache": {
+    "message": "(từ bộ nhớ đệm tìm nạp trước)"
+  },
+  "panels/network/RequestHeadersView.ts | fromServiceWorker": {
+    "message": "(từ service worker)"
+  },
+  "panels/network/RequestHeadersView.ts | fromSignedexchange": {
+    "message": "(từ signed-exchange)"
+  },
+  "panels/network/RequestHeadersView.ts | general": {
+    "message": "Chung"
+  },
+  "panels/network/RequestHeadersView.ts | raw": {
+    "message": "Thô"
+  },
+  "panels/network/RequestHeadersView.ts | referrerPolicy": {
+    "message": "Chính sách về người giới thiệu"
+  },
+  "panels/network/RequestHeadersView.ts | remoteAddress": {
+    "message": "Địa chỉ từ xa"
+  },
+  "panels/network/RequestHeadersView.ts | requestHeaders": {
+    "message": "Tiêu đề của yêu cầu"
+  },
+  "panels/network/RequestHeadersView.ts | requestMethod": {
+    "message": "Phương thức yêu cầu"
+  },
+  "panels/network/RequestHeadersView.ts | requestUrl": {
+    "message": "Yêu cầu URL"
+  },
+  "panels/network/RequestHeadersView.ts | responseHeaders": {
+    "message": "Tiêu đề phản hồi"
+  },
+  "panels/network/RequestHeadersView.ts | revealHeaderOverrides": {
+    "message": "Hiển thị định nghĩa ghi đè tiêu đề"
+  },
+  "panels/network/RequestHeadersView.ts | statusCode": {
+    "message": "Mã trạng thái"
+  },
   "panels/network/RequestInitiatorView.ts | noInitiator": {
     "message": "Không có dữ liệu của trình khởi tạo"
   },
@@ -11131,60 +11272,6 @@
   },
   "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShownDisableCache": {
     "message": "Các tiêu đề tạm thời sẽ hiển thị. Hãy vô hiệu hóa bộ nhớ đệm để xem toàn bộ tiêu đề."
-  },
-  "panels/network/components/RequestHeadersView.ts | earlyHintsHeaders": {
-    "message": "Tiêu đề gợi ý ban đầu"
-  },
-  "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
-    "message": "(từ bộ nhớ đệm của ổ đĩa)"
-  },
-  "panels/network/components/RequestHeadersView.ts | fromEarlyHints": {
-    "message": "(từ gợi ý ban đầu)"
-  },
-  "panels/network/components/RequestHeadersView.ts | fromMemoryCache": {
-    "message": "(từ bộ nhớ đệm của bộ nhớ)"
-  },
-  "panels/network/components/RequestHeadersView.ts | fromPrefetchCache": {
-    "message": "(từ bộ nhớ đệm tìm nạp trước)"
-  },
-  "panels/network/components/RequestHeadersView.ts | fromServiceWorker": {
-    "message": "(từ service worker)"
-  },
-  "panels/network/components/RequestHeadersView.ts | fromSignedexchange": {
-    "message": "(từ signed-exchange)"
-  },
-  "panels/network/components/RequestHeadersView.ts | general": {
-    "message": "Chung"
-  },
-  "panels/network/components/RequestHeadersView.ts | raw": {
-    "message": "Thô"
-  },
-  "panels/network/components/RequestHeadersView.ts | referrerPolicy": {
-    "message": "Chính sách về người giới thiệu"
-  },
-  "panels/network/components/RequestHeadersView.ts | remoteAddress": {
-    "message": "Địa chỉ từ xa"
-  },
-  "panels/network/components/RequestHeadersView.ts | requestHeaders": {
-    "message": "Tiêu đề của yêu cầu"
-  },
-  "panels/network/components/RequestHeadersView.ts | requestMethod": {
-    "message": "Phương thức yêu cầu"
-  },
-  "panels/network/components/RequestHeadersView.ts | requestUrl": {
-    "message": "Yêu cầu URL"
-  },
-  "panels/network/components/RequestHeadersView.ts | responseHeaders": {
-    "message": "Tiêu đề phản hồi"
-  },
-  "panels/network/components/RequestHeadersView.ts | revealHeaderOverrides": {
-    "message": "Hiển thị định nghĩa ghi đè tiêu đề"
-  },
-  "panels/network/components/RequestHeadersView.ts | showMore": {
-    "message": "Xem thêm"
-  },
-  "panels/network/components/RequestHeadersView.ts | statusCode": {
-    "message": "Mã trạng thái"
   },
   "panels/network/components/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
     "message": "Một đối số do ứng dụng cung cấp không chính xác hoặc không hợp lệ."
@@ -13349,9 +13436,6 @@
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | customExclusionRules": {
     "message": "Quy tắc loại trừ tuỳ chỉnh"
   },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | enableIgnoreListing": {
-    "message": "Bật danh sách bỏ qua"
-  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | enableIgnoreListingTooltip": {
     "message": "Bỏ đánh dấu để tắt toàn bộ danh sách bỏ qua"
   },
@@ -13366,6 +13450,9 @@
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreListContentScripts": {
     "message": "Tập lệnh nội dung do các tiện ích chèn"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreListing": {
+    "message": "Danh sách bỏ qua"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreListingDescription": {
     "message": "Khi bạn bật tính năng này, trình gỡ lỗi sẽ bỏ qua các tập lệnh trong danh sách bỏ qua và sẽ bỏ qua các trường hợp ngoại lệ chỉ ảnh hưởng đến các tập lệnh đó, đồng thời bảng điều khiển Hiệu suất sẽ thu gọn các mục trùng khớp trong biểu đồ hình ngọn lửa."
@@ -13477,6 +13564,9 @@
   },
   "panels/settings/SettingsScreen.ts | settingsChangedReloadDevTools": {
     "message": "Đã thay đổi cài đặt. Để áp dụng, hãy tải lại Công cụ cho nhà phát triển."
+  },
+  "panels/settings/SettingsScreen.ts | settingsChangedRestartChrome": {
+    "message": "Đã thay đổi chế độ cài đặt. Để áp dụng, hãy khởi động lại Chrome."
   },
   "panels/settings/SettingsScreen.ts | shortcuts": {
     "message": "Phím tắt"
@@ -14616,7 +14706,7 @@
     "message": "Không phát hiện thụt lề"
   },
   "panels/sources/sources-meta.ts | doNotDisplayVariableValuesInline": {
-    "message": "Không hiển thị các giá trị biến cùng dòng trong khi gỡ lỗi"
+    "message": "Không hiện các giá trị biến cùng dòng"
   },
   "panels/sources/sources-meta.ts | doNotSearchInAnonymousAndContent": {
     "message": "Không tìm kiếm trong tập lệnh nội dung và tập lệnh ẩn danh"
@@ -14815,6 +14905,9 @@
   },
   "panels/sources/sources-meta.ts | trailing": {
     "message": "Ký tự trống ở cuối"
+  },
+  "panels/sources/sources-meta.ts | variableValuesInlineWhile": {
+    "message": "Giá trị biến cùng dòng"
   },
   "panels/sources/sources-meta.ts | wasmAutoStepping": {
     "message": "Mã byte tự động bước vào Wasm"
@@ -15731,9 +15824,6 @@
   "panels/timeline/TimelineUIUtils.ts | stylesheetUrl": {
     "message": "URL của biểu định kiểu"
   },
-  "panels/timeline/TimelineUIUtils.ts | thirdPartyTable": {
-    "message": "Bảng của bên thứ nhất/bên thứ ba"
-  },
   "panels/timeline/TimelineUIUtils.ts | timeSpentInRendering": {
     "message": "Thời gian sử dụng trong kết xuất hình ảnh"
   },
@@ -16511,32 +16601,8 @@
   "panels/timeline/components/SidebarAnnotationsTab.ts | timeRangeTutorialTitle": {
     "message": "Xác định phạm vi thời gian"
   },
-  "panels/timeline/components/SidebarSingleInsightSet.ts | dismissTitle": {
-    "message": "Đóng"
-  },
-  "panels/timeline/components/SidebarSingleInsightSet.ts | fieldMismatchNotice": {
-    "message": "Có nhiều lý do khiến các chỉ số cục bộ và chỉ số thực địa [có thể không khớp](https://web.dev/articles/lab-and-field-data-differences). Điều chỉnh [chế độ cài đặt điều tiết và mô phỏng thiết bị](https://developer.chrome.com/docs/devtools/device-mode) để phân tích các dấu vết tương tự hơn với môi trường của người dùng thông thường."
-  },
-  "panels/timeline/components/SidebarSingleInsightSet.ts | fieldMismatchTitle": {
-    "message": "Chỉ số thực địa và chỉ số cục bộ không khớp"
-  },
-  "panels/timeline/components/SidebarSingleInsightSet.ts | fieldScoreLabel": {
-    "message": "Thực địa ({PH1})"
-  },
-  "panels/timeline/components/SidebarSingleInsightSet.ts | metricScore": {
-    "message": "{PH1}: {PH2} {PH3} điểm"
-  },
-  "panels/timeline/components/SidebarSingleInsightSet.ts | metricScoreUnavailable": {
-    "message": "{PH1}: không dùng được"
-  },
-  "panels/timeline/components/SidebarSingleInsightSet.ts | originOption": {
-    "message": "Nguồn gốc"
-  },
   "panels/timeline/components/SidebarSingleInsightSet.ts | passedInsights": {
     "message": "Thông tin chi tiết đã truyền ({PH1})"
-  },
-  "panels/timeline/components/SidebarSingleInsightSet.ts | urlOption": {
-    "message": "URL"
   },
   "panels/timeline/components/TimelineSummary.ts | rangeSS": {
     "message": "Phạm vi:  {PH1} – {PH2}"
@@ -16613,8 +16679,8 @@
   "panels/timeline/overlays/components/TimeRangeOverlay.ts | timeRange": {
     "message": "Phạm vi thời gian"
   },
-  "panels/timeline/timeline-meta.ts | hideChromeFrameInLayersView": {
-    "message": "Ẩn khung chrome trong chế độ xem Lớp"
+  "panels/timeline/timeline-meta.ts | chromeFrameInLayersView": {
+    "message": "Khung Chrome trong chế độ xem Lớp"
   },
   "panels/timeline/timeline-meta.ts | loadProfile": {
     "message": "Tải hồ sơ…"
@@ -17054,6 +17120,9 @@
   "ui/legacy/Infobar.ts | dontShowAgain": {
     "message": "Không hiện lại"
   },
+  "ui/legacy/InspectorView.ts | areYouSureYouWantToRestartChrome": {
+    "message": "Bạn có chắc chắn muốn khởi động lại Chrome không?"
+  },
   "ui/legacy/InspectorView.ts | closeDrawer": {
     "message": "Đóng ngăn"
   },
@@ -17089,6 +17158,9 @@
   },
   "ui/legacy/InspectorView.ts | reloadDevtools": {
     "message": "Tải lại Công cụ cho nhà phát triển"
+  },
+  "ui/legacy/InspectorView.ts | restartChrome": {
+    "message": "Khởi động lại Chrome"
   },
   "ui/legacy/InspectorView.ts | selectFolder": {
     "message": "Chọn thư mục"
@@ -17257,6 +17329,9 @@
   },
   "ui/legacy/Toolbar.ts | pressed": {
     "message": "đã nhấn"
+  },
+  "ui/legacy/Toolbar.ts | useRegularExpression": {
+    "message": "Sử dụng biểu thức chính quy"
   },
   "ui/legacy/UIUtils.ts | anonymous": {
     "message": "(ẩn danh)"
@@ -17962,9 +18037,6 @@
   },
   "ui/legacy/components/utils/JSPresentationUtils.ts | showMoreFrames": {
     "message": "Hiển thị các khung có trong danh sách bỏ qua"
-  },
-  "ui/legacy/components/utils/JSPresentationUtils.ts | unknownSource": {
-    "message": "không xác định"
   },
   "ui/legacy/components/utils/Linkifier.ts | auto": {
     "message": "tự động"

@@ -4,6 +4,7 @@
 
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
+import("../../../scripts/build/typescript/typescript.gni")
 
 devtools_module("live-metrics") {
   sources = [ "LiveMetrics.ts" ]
@@ -32,5 +33,19 @@ devtools_entrypoint("bundle") {
     ":*",
     "../../entrypoints/main/*",
     "../../panels/timeline/*",
+  ]
+}
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [ "LiveMetrics.test.ts" ]
+
+  deps = [
+    ":bundle",
+    "../../core/sdk:bundle",
+    "../../generated:protocol",
+    "../../testing",
+    "../trace:bundle",
   ]
 }

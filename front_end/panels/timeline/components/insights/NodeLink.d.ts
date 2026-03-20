@@ -4,7 +4,7 @@ import * as UI from '../../../../ui/legacy/legacy.js';
 import * as Lit from '../../../../ui/lit/lit.js';
 import * as PanelsCommon from '../../../common/common.js';
 interface ViewInput {
-    relatedNodeEl: Node | undefined;
+    relatedNodeEl: Lit.LitTemplate | undefined;
     fallbackUrl?: Platform.DevToolsPath.UrlString;
     fallbackHtmlSnippet?: string;
     fallbackText?: string;

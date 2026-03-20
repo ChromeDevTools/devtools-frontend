@@ -4797,6 +4797,7 @@ var domLinkifier_css_default = `/*
 
 // gen/front_end/panels/common/DOMLinkifier.js
 var { classMap, ifDefined: ifDefined2 } = Directives4;
+var { widget } = UI14.Widget;
 var UIStrings6 = {
   /**
    * @description Text displayed when trying to create a link to a node in the UI, but the node
@@ -4871,6 +4872,7 @@ var DOMNodeLink = class extends UI14.Widget.Widget {
       onClick: () => {
         void Common8.Revealer.reveal(this.#node);
         void this.#node?.scrollIntoView();
+        options.onClick?.();
         return false;
       },
       onMouseOver: () => {
@@ -4970,6 +4972,7 @@ var DeferredDOMNodeLink = class extends UI14.Widget.Widget {
           }
           void Common8.Revealer.reveal(node);
           void node?.scrollIntoView();
+          this.#options?.onClick?.();
         });
       }
     };
@@ -4987,14 +4990,10 @@ var Linkifier2 = class _Linkifier {
   }
   linkify(node, options) {
     if (node instanceof SDK3.DOMModel.DOMNode) {
-      const link4 = document.createElement("devtools-widget");
-      link4.widgetConfig = UI14.Widget.widgetConfig((e) => new DOMNodeLink(e, node, options));
-      return link4;
+      return html13`<devtools-widget ${widget((e) => new DOMNodeLink(e, node, options))}>${options?.textContent ? html13`${options.textContent}` : nothing7}</devtools-widget>`;
     }
     if (node instanceof SDK3.DOMModel.DeferredDOMNode) {
-      const link4 = document.createElement("devtools-widget");
-      link4.widgetConfig = UI14.Widget.widgetConfig((e) => new DeferredDOMNodeLink(e, node, options));
-      return link4;
+      return html13`<devtools-widget ${widget((e) => new DeferredDOMNodeLink(e, node, options))}>${options?.textContent ? html13`${options.textContent}` : nothing7}</devtools-widget>`;
     }
     throw new Error("Can't linkify non-node");
   }

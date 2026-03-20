@@ -84,7 +84,7 @@ import * as Root4 from "./../../core/root/root.js";
 import * as AiAssistanceModel4 from "./../../models/ai_assistance/ai_assistance.js";
 import * as Buttons7 from "./../../ui/components/buttons/buttons.js";
 import * as UI7 from "./../../ui/legacy/legacy.js";
-import { Directives as Directives5, html as html7, nothing as nothing6, render as render7 } from "./../../ui/lit/lit.js";
+import { Directives as Directives5, html as html7, nothing as nothing7, render as render7 } from "./../../ui/lit/lit.js";
 
 // gen/front_end/panels/ai_assistance/PatchWidget.js
 var PatchWidget_exports = {};
@@ -2903,7 +2903,12 @@ function renderInlineWalkthrough(input, stepsOutput, steps) {
     return Lit2.nothing;
   }
   function onToggle(event) {
-    input.onToggle(event.target.open);
+    const isOpen = event.target.open;
+    if (isOpen && input.message) {
+      input.onOpen(input.message);
+    } else {
+      input.onToggle(isOpen);
+    }
   }
   const hasWidgets = steps.some((s) => s.widgets?.length);
   return html4`
@@ -3413,7 +3418,8 @@ function renderWalkthroughUI(input, steps) {
   }
   const sideEffectSteps = steps.filter((s) => s.requestApproval);
   const openWalkThroughSidebarButton = !input.walkthrough.isInlined ? renderWalkthroughSidebarButton(input, steps) : Lit3.nothing;
-  const sideEffectStepsUI = !input.walkthrough.isInlined && !input.walkthrough.isExpanded && sideEffectSteps.length > 0 ? sideEffectSteps.map((step) => html5`
+  const isExpanded = input.walkthrough.isExpanded && input.walkthrough.activeMessage === input.message;
+  const sideEffectStepsUI = !isExpanded && sideEffectSteps.length > 0 ? sideEffectSteps.map((step) => html5`
     <div class="side-effect-container">
       ${renderStep({
     step,
@@ -3422,7 +3428,6 @@ function renderWalkthroughUI(input, steps) {
     isLast: true
   })}
     </div> `) : Lit3.nothing;
-  const isExpanded = input.walkthrough.isExpanded && input.walkthrough.activeMessage === input.message || steps.some((s) => s.requestApproval);
   const walkthroughInline = input.walkthrough.isInlined ? html5`
     <div class="walkthrough-container">
       ${widget2(WalkthroughView, {
@@ -3438,8 +3443,8 @@ function renderWalkthroughUI(input, steps) {
   ` : Lit3.nothing;
   return html5`
     ${openWalkThroughSidebarButton}
-    ${sideEffectStepsUI}
     ${walkthroughInline}
+    ${sideEffectStepsUI}
   `;
 }
 function renderStepBadge({ step, isLoading, isLast }) {
@@ -4502,6 +4507,7 @@ var exportForAgentsDialog_css_default = `/*
 
   .export-for-agents-dialog {
     width: var(--sys-size-33); /* 512px */
+    max-width: 100%; /* deal with the dialog being squashed on smaller devices */
   }
 
   .export-for-agents-dialog header {
@@ -4549,6 +4555,12 @@ var exportForAgentsDialog_css_default = `/*
     border: none;
   }
 
+  .export-for-agents-dialog .disclaimer {
+    margin-top: var(--sys-size-5);
+    font: var(--sys-typescale-body4-regular);
+    color: var(--sys-color-on-surface-subtle);
+  }
+
   .export-for-agents-dialog footer {
     display: flex;
     justify-content: flex-end;
@@ -4589,14 +4601,22 @@ var UIStrings3 = {
   /**
    * @description Button text for saving content as a markdown file.
    */
-  saveAsMarkdown: "Save as\u2026"
+  saveAsMarkdown: "Save as\u2026",
+  /**
+   * @description Text displayed while the summary is being generated.
+   */
+  generatingSummary: "Generating summary\u2026",
+  /**
+   * @description Disclaimer text for the export for agents dialog.
+   */
+  disclaimer: "This is an experimental AI feature and won\u2019t always get it right. Double check this text before pasting into another tool."
 };
 var str_3 = i18n11.i18n.registerUIStrings("panels/ai_assistance/components/ExportForAgentsDialog.ts", UIStrings3);
 var i18nString3 = i18n11.i18n.getLocalizedString.bind(void 0, str_3);
 var DEFAULT_VIEW5 = (input, _output, target) => {
   const isPrompt = input.state.activeType === "prompt";
   const buttonText = isPrompt ? i18nString3(UIStrings3.copyToClipboard) : i18nString3(UIStrings3.saveAsMarkdown);
-  const exportText = isPrompt ? input.state.promptText : input.state.conversationText;
+  const exportText = isPrompt && input.state.isPromptLoading ? i18nString3(UIStrings3.generatingSummary) : isPrompt ? input.state.promptText : input.state.conversationText;
   render6(html6`
     <style>${exportForAgentsDialog_css_default}</style>
     <div class="export-for-agents-dialog">
@@ -4636,12 +4656,14 @@ var DEFAULT_VIEW5 = (input, _output, target) => {
       <main>
         <textarea readonly .value=${exportText}></textarea>
       </main>
+      ${isPrompt ? html6`<div class="disclaimer">${i18nString3(UIStrings3.disclaimer)}</div>` : Lit4.nothing}
       <footer>
         <div class="right-buttons">
           <devtools-button
             @click=${input.onButtonClick}
             .jslogContext=${input.jslogContext}
             .variant=${"primary"}
+            .disabled=${isPrompt && input.state.isPromptLoading}
           >
             ${buttonText}
           </devtools-button>
@@ -4660,11 +4682,19 @@ var ExportForAgentsDialog = class _ExportForAgentsDialog extends UI6.Widget.VBox
     this.#dialog = options.dialog;
     this.#state = {
       activeType: "prompt",
-      promptText: options.promptText,
-      conversationText: options.markdownText
+      promptText: typeof options.promptText === "string" ? options.promptText : "",
+      conversationText: options.markdownText,
+      isPromptLoading: typeof options.promptText !== "string"
     };
     this.#onConversationSaveAs = options.onConversationSaveAs;
     this.#view = view;
+    if (options.promptText instanceof Promise) {
+      void options.promptText.then((promptText) => {
+        this.#state.promptText = promptText;
+        this.#state.isPromptLoading = false;
+        this.requestUpdate();
+      });
+    }
     this.requestUpdate();
   }
   #onStateChange = (newState) => {
@@ -4779,8 +4809,8 @@ var DEFAULT_VIEW6 = (input, output, target) => {
                   .iconName=${"copy"}
                   @click=${input.exportForAgentsClick}
                 >Export for agents</devtools-button>
-              ` : nothing6}
-              ${input.isLoading ? nothing6 : widget3(PatchWidget, {
+              ` : nothing7}
+              ${input.isLoading ? nothing7 : widget3(PatchWidget, {
     changeSummary: input.changeSummary ?? "",
     changeManager: input.changeManager
   })}
@@ -4867,6 +4897,7 @@ var ChatView = class extends HTMLElement {
    */
   #isProgrammaticScroll = false;
   #view;
+  #cachedSummary = null;
   constructor(props, view = DEFAULT_VIEW6) {
     super();
     this.#props = props;
@@ -4952,9 +4983,23 @@ var ChatView = class extends HTMLElement {
     this.focusTextInput();
     Host5.userMetrics.actionTaken(Host5.UserMetrics.Action.AiAssistanceDynamicSuggestionClicked);
   };
-  #exportForAgentsClick() {
+  async #getSummary() {
+    if (this.#cachedSummary?.markdown === this.#props.conversationMarkdown) {
+      return this.#cachedSummary.summary;
+    }
+    try {
+      const summary = await this.#props.generateConversationSummary(this.#props.conversationMarkdown);
+      this.#cachedSummary = { markdown: this.#props.conversationMarkdown, summary };
+      return summary;
+    } catch (err) {
+      console.error(err);
+      return "Failed to generate summary.";
+    }
+  }
+  async #exportForAgentsClick() {
+    const summaryPromise = this.#getSummary();
     void ExportForAgentsDialog.show({
-      promptText: "(placeholder prompt, feature WIP)",
+      promptText: summaryPromise,
       markdownText: this.#props.conversationMarkdown,
       onConversationSaveAs: this.#props.onExportConversation ?? (async () => {
       })
@@ -6174,6 +6219,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI10.Panel.Panel {
   // NodeJS debugging does not have Elements panel, thus this action might not exist.
   #toggleSearchElementAction;
   #aidaClient;
+  #conversationSummaryAgent;
   #viewOutput = {};
   #serverSideLoggingEnabled = isAiAssistanceServerSideLoggingEnabled();
   #aiAssistanceEnabledSetting;
@@ -6280,6 +6326,15 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI10.Panel.Panel {
           uploadImageInputEnabled: isAiAssistanceMultimodalUploadInputEnabled() && this.#conversation.type === "freestyler",
           markdownRenderer,
           conversationMarkdown: this.#conversation.getConversationMarkdown(),
+          generateConversationSummary: async (markdown) => {
+            if (!this.#conversationSummaryAgent) {
+              this.#conversationSummaryAgent = new AiAssistanceModel6.ConversationSummaryAgent.ConversationSummaryAgent({
+                aidaClient: this.#aidaClient,
+                serverSideLoggingEnabled: this.#serverSideLoggingEnabled
+              });
+            }
+            return await this.#conversationSummaryAgent.summarizeConversation(markdown);
+          },
           onTextSubmit: async (text, imageInput, multimodalInputType) => {
             Host7.userMetrics.actionTaken(Host7.UserMetrics.Action.AiAssistanceQuerySubmitted);
             await this.#startConversation(text, imageInput, multimodalInputType);
@@ -6369,7 +6424,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI10.Panel.Panel {
     return await TimelinePanel2.TimelinePanel.TimelinePanel.executeRecordAndReload();
   }
   async #handleLighthouseRun() {
-    return await LighthousePanel.LighthousePanel.LighthousePanel.executeLighthouseRecording();
+    return await LighthousePanel.LighthousePanel.LighthousePanel.executeLighthouseRecording({ isAIControlled: true });
   }
   #getDefaultConversationType() {
     const { hostConfig } = Root7.Runtime;
@@ -6414,7 +6469,18 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI10.Panel.Panel {
       this.requestUpdate();
       return;
     }
-    const conversation = targetConversationType ? new AiAssistanceModel6.AiConversation.AiConversation(targetConversationType, [], void 0, false, this.#aidaClient, this.#changeManager, false, this.#handlePerformanceRecordAndReload.bind(this), this.#handleInspectElement.bind(this), NetworkPanel.NetworkPanel.NetworkPanel.instance().networkLogView.timeCalculator(), this.#handleLighthouseRun.bind(this)) : void 0;
+    const conversation = targetConversationType ? new AiAssistanceModel6.AiConversation.AiConversation({
+      type: targetConversationType,
+      data: [],
+      isReadOnly: false,
+      aidaClient: this.#aidaClient,
+      changeManager: this.#changeManager,
+      isExternal: false,
+      performanceRecordAndReload: this.#handlePerformanceRecordAndReload.bind(this),
+      onInspectElement: this.#handleInspectElement.bind(this),
+      networkTimeCalculator: NetworkPanel.NetworkPanel.NetworkPanel.instance().networkLogView.timeCalculator(),
+      lighthouseRecording: this.#handleLighthouseRun.bind(this)
+    }) : void 0;
     this.#updateConversationState(conversation);
   }
   #updateConversationState(conversation) {
@@ -6426,7 +6492,17 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI10.Panel.Panel {
       if (!conversation) {
         const conversationType = this.#getDefaultConversationType();
         if (conversationType) {
-          conversation = new AiAssistanceModel6.AiConversation.AiConversation(conversationType, [], void 0, false, this.#aidaClient, this.#changeManager, false, this.#handlePerformanceRecordAndReload.bind(this), this.#handleInspectElement.bind(this), NetworkPanel.NetworkPanel.NetworkPanel.instance().networkLogView.timeCalculator());
+          conversation = new AiAssistanceModel6.AiConversation.AiConversation({
+            type: conversationType,
+            data: [],
+            isReadOnly: false,
+            aidaClient: this.#aidaClient,
+            changeManager: this.#changeManager,
+            isExternal: false,
+            performanceRecordAndReload: this.#handlePerformanceRecordAndReload.bind(this),
+            onInspectElement: this.#handleInspectElement.bind(this),
+            networkTimeCalculator: NetworkPanel.NetworkPanel.NetworkPanel.instance().networkLogView.timeCalculator()
+          });
         }
       }
       this.#conversation = conversation;
@@ -6447,7 +6523,17 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI10.Panel.Panel {
   async handleBreakpointConversation(uiLocation, errorMsg) {
     const context = new AiAssistanceModel6.BreakpointDebuggerAgent.BreakpointContext(uiLocation);
     this.#selectedBreakpoint = context;
-    const conversation = new AiAssistanceModel6.AiConversation.AiConversation("breakpoint", [], void 0, false, this.#aidaClient, this.#changeManager, false, this.#handlePerformanceRecordAndReload.bind(this), this.#handleInspectElement.bind(this), NetworkPanel.NetworkPanel.NetworkPanel.instance().networkLogView.timeCalculator());
+    const conversation = new AiAssistanceModel6.AiConversation.AiConversation({
+      type: "breakpoint",
+      data: [],
+      isReadOnly: false,
+      aidaClient: this.#aidaClient,
+      changeManager: this.#changeManager,
+      isExternal: false,
+      performanceRecordAndReload: this.#handlePerformanceRecordAndReload.bind(this),
+      onInspectElement: this.#handleInspectElement.bind(this),
+      networkTimeCalculator: NetworkPanel.NetworkPanel.NetworkPanel.instance().networkLogView.timeCalculator()
+    });
     this.#updateConversationState(conversation);
     this.#conversation?.setContext(context);
     this.requestUpdate();
@@ -6801,7 +6887,17 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI10.Panel.Panel {
     }
     let conversation = this.#conversation;
     if (!this.#conversation || this.#conversation.type !== targetConversationType || this.#conversation.isEmpty) {
-      conversation = new AiAssistanceModel6.AiConversation.AiConversation(targetConversationType, [], void 0, false, this.#aidaClient, this.#changeManager, false, this.#handlePerformanceRecordAndReload.bind(this), this.#handleInspectElement.bind(this), NetworkPanel.NetworkPanel.NetworkPanel.instance().networkLogView.timeCalculator());
+      conversation = new AiAssistanceModel6.AiConversation.AiConversation({
+        type: targetConversationType,
+        data: [],
+        isReadOnly: false,
+        aidaClient: this.#aidaClient,
+        changeManager: this.#changeManager,
+        isExternal: false,
+        performanceRecordAndReload: this.#handlePerformanceRecordAndReload.bind(this),
+        onInspectElement: this.#handleInspectElement.bind(this),
+        networkTimeCalculator: NetworkPanel.NetworkPanel.NetworkPanel.instance().networkLogView.timeCalculator()
+      });
     }
     this.#updateConversationState(conversation);
     const predefinedPrompt = opts?.["prompt"];

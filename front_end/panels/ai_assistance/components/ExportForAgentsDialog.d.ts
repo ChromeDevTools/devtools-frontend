@@ -7,6 +7,7 @@ export interface State {
     activeType: StateType;
     promptText: string;
     conversationText: string;
+    isPromptLoading: boolean;
 }
 interface ViewInput {
     onButtonClick: (event: Event) => void;
@@ -20,13 +21,13 @@ export declare class ExportForAgentsDialog extends UI.Widget.VBox {
     #private;
     constructor(options: {
         dialog: UI.Dialog.Dialog;
-        promptText: string;
+        promptText: string | Promise<string>;
         markdownText: string;
         onConversationSaveAs: () => void;
     }, view?: View);
     performUpdate(): void;
     static show({ promptText, markdownText, onConversationSaveAs, }: {
-        promptText: string;
+        promptText: string | Promise<string>;
         markdownText: string;
         onConversationSaveAs: () => void;
     }): void;

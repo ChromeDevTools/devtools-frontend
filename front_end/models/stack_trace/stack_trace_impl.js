@@ -74,13 +74,15 @@ var FrameImpl = class {
   line;
   column;
   missingDebugInfo;
-  constructor(url, uiSourceCode, name, line, column, missingDebugInfo) {
+  rawName;
+  constructor(url, uiSourceCode, name, line, column, missingDebugInfo, rawName) {
     this.url = url;
     this.uiSourceCode = uiSourceCode;
     this.name = name;
     this.line = line;
     this.column = column;
     this.missingDebugInfo = missingDebugInfo;
+    this.rawName = rawName;
   }
 };
 var DebuggableFragmentImpl = class {
@@ -130,6 +132,9 @@ var DebuggableFrameImpl = class {
   }
   get missingDebugInfo() {
     return this.#frame.missingDebugInfo;
+  }
+  get rawName() {
+    return this.#frame.rawName;
   }
   get sdkFrame() {
     return this.#sdkFrame;
@@ -359,7 +364,7 @@ var StackTraceModel = class extends SDK.SDKModel.SDKModel {
     console.assert(rawFrames.length === uiFrames.length, "Broken rawFramesToUIFrames implementation");
     let i = 0;
     for (const node of fragment.node.getCallStack()) {
-      node.frames = uiFrames[i++].map((frame) => new FrameImpl(frame.url, frame.uiSourceCode, frame.name, frame.line, frame.column, frame.missingDebugInfo));
+      node.frames = uiFrames[i++].map((frame) => new FrameImpl(frame.url, frame.uiSourceCode, frame.name, frame.line, frame.column, frame.missingDebugInfo, node.rawFrame.functionName));
     }
   }
   #affectedFragments(script) {

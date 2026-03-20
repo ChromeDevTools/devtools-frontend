@@ -30,6 +30,6 @@ export interface Flags {
     mode?: string | boolean;
 }
 export interface RunOverrides {
-    categoryIds: CategoryId[];
+    categoryIds?: CategoryId[];
     isAIControlled?: boolean;
 }

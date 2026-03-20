@@ -42,6 +42,7 @@ export interface Props {
     disclaimerText: Platform.UIString.LocalizedString;
     uploadImageInputEnabled?: boolean;
     markdownRenderer: MarkdownLitRenderer;
+    generateConversationSummary: (markdown: string) => Promise<string>;
     walkthrough: {
         onOpen: (message: ModelChatMessage) => void;
         onToggle: (isOpen: boolean) => void;

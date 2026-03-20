@@ -48,7 +48,13 @@ function renderInlineWalkthrough(input, stepsOutput, steps) {
         return Lit.nothing;
     }
     function onToggle(event) {
-        input.onToggle(event.target.open);
+        const isOpen = event.target.open;
+        if (isOpen && input.message) {
+            input.onOpen(input.message);
+        }
+        else {
+            input.onToggle(isOpen);
+        }
     }
     const hasWidgets = steps.some(s => s.widgets?.length);
     // clang-format off

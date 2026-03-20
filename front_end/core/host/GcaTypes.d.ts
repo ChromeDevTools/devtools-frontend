@@ -171,9 +171,10 @@ export interface FileEdit {
     file_uri: string;
     content: string;
 }
+export type Role = 'user' | 'model';
 export interface Content {
     parts?: Part[];
-    role: string;
+    role: Role;
 }
 export interface Part {
     text?: string;

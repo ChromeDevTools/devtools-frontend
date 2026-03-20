@@ -127,8 +127,19 @@ export class LighthouseFormatter {
         }
         if (typeof value === 'object' && 'type' in value) {
             switch (value.type) {
-                case 'node':
-                    return value.nodeLabel || value.selector || value.snippet || '(node)';
+                case 'node': {
+                    let label = value.nodeLabel || value.selector || value.snippet || '(node)';
+                    if (value.selector) {
+                        label += ` (selector: ${value.selector})`;
+                    }
+                    if (value.path) {
+                        label += ` (path: ${value.path})`;
+                    }
+                    if (value.explanation) {
+                        label += ` (explanation: ${value.explanation.replace(/\n/g, ' ')})`;
+                    }
+                    return label;
+                }
                 case 'source-location': {
                     const parts = [];
                     if (value.url) {

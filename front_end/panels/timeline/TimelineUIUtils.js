@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-imperative-dom-api */
+/* eslint-disable @devtools/no-lit-render-outside-of-view */
 /*
  * Copyright (C) 2013 Google Inc. All rights reserved.
  * Copyright (C) 2012 Intel Inc. All rights reserved.
@@ -777,7 +778,6 @@ export class TimelineUIUtils {
                 break;
         }
         const div = document.createElement('div');
-        // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
         render(html `<devtools-link href=${link}>${i18nString(UIStrings.learnMore)}</devtools-link> about ${name}.`, div);
         return div;
     }
@@ -1326,7 +1326,8 @@ export class TimelineUIUtils {
         const relatedNodes = relatedNodesMap?.values() || [];
         for (const relatedNode of relatedNodes) {
             if (relatedNode) {
-                const nodeSpan = PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(relatedNode);
+                const nodeSpan = document.createElement('span');
+                render(PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(relatedNode), nodeSpan);
                 contentHelper.appendElementRow(relatedNodeLabel || i18nString(UIStrings.relatedNode), nodeSpan);
             }
         }
@@ -1618,7 +1619,7 @@ export class TimelineUIUtils {
                 null;
             if (node) {
                 const nodeSpan = document.createElement('span');
-                nodeSpan.appendChild(PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(node));
+                render(PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(node), nodeSpan);
                 return nodeSpan;
             }
             if (invalidation.args.data.nodeName) {

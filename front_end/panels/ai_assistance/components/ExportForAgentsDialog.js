@@ -34,13 +34,23 @@ const UIStrings = {
      * @description Button text for saving content as a markdown file.
      */
     saveAsMarkdown: 'Save as…',
+    /**
+     * @description Text displayed while the summary is being generated.
+     */
+    generatingSummary: 'Generating summary…',
+    /**
+     * @description Disclaimer text for the export for agents dialog.
+     */
+    disclaimer: 'This is an experimental AI feature and won’t always get it right. Double check this text before pasting into another tool.',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/ai_assistance/components/ExportForAgentsDialog.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export const DEFAULT_VIEW = (input, _output, target) => {
     const isPrompt = input.state.activeType === "prompt" /* StateType.PROMPT */;
     const buttonText = isPrompt ? i18nString(UIStrings.copyToClipboard) : i18nString(UIStrings.saveAsMarkdown);
-    const exportText = isPrompt ? input.state.promptText : input.state.conversationText;
+    const exportText = isPrompt && input.state.isPromptLoading ?
+        i18nString(UIStrings.generatingSummary) :
+        (isPrompt ? input.state.promptText : input.state.conversationText);
     // clang-format off
     render(html `
     <style>${styles}</style>
@@ -75,12 +85,14 @@ export const DEFAULT_VIEW = (input, _output, target) => {
       <main>
         <textarea readonly .value=${exportText}></textarea>
       </main>
+      ${isPrompt ? html `<div class="disclaimer">${i18nString(UIStrings.disclaimer)}</div>` : Lit.nothing}
       <footer>
         <div class="right-buttons">
           <devtools-button
             @click=${input.onButtonClick}
             .jslogContext=${input.jslogContext}
             .variant=${"primary" /* Buttons.Button.Variant.PRIMARY */}
+            .disabled=${isPrompt && input.state.isPromptLoading}
           >
             ${buttonText}
           </devtools-button>
@@ -100,11 +112,19 @@ export class ExportForAgentsDialog extends UI.Widget.VBox {
         this.#dialog = options.dialog;
         this.#state = {
             activeType: "prompt" /* StateType.PROMPT */,
-            promptText: options.promptText,
+            promptText: typeof options.promptText === 'string' ? options.promptText : '',
             conversationText: options.markdownText,
+            isPromptLoading: typeof options.promptText !== 'string',
         };
         this.#onConversationSaveAs = options.onConversationSaveAs;
         this.#view = view;
+        if (options.promptText instanceof Promise) {
+            void options.promptText.then(promptText => {
+                this.#state.promptText = promptText;
+                this.#state.isPromptLoading = false;
+                this.requestUpdate();
+            });
+        }
         this.requestUpdate();
     }
     #onStateChange = (newState) => {

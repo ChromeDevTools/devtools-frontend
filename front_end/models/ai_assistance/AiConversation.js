@@ -34,7 +34,13 @@ export class AiConversation {
             }
             return entry;
         });
-        return new AiConversation(serializedConversation.type, history, serializedConversation.id, true, undefined, undefined, serializedConversation.isExternal, undefined, undefined);
+        return new AiConversation({
+            type: serializedConversation.type,
+            data: history,
+            id: serializedConversation.id,
+            isReadOnly: true,
+            isExternal: serializedConversation.isExternal,
+        });
     }
     id;
     // Handled in #updateAgent
@@ -52,7 +58,8 @@ export class AiConversation {
     #lighthouseRecording;
     #onInspectElement;
     #networkTimeCalculator;
-    constructor(type, data = [], id = crypto.randomUUID(), isReadOnly = true, aidaClient = new Host.AidaClient.AidaClient(), changeManager, isExternal = false, performanceRecordAndReload, onInspectElement, networkTimeCalculator, lighthouseRecording) {
+    constructor(options) {
+        const { type, data = [], id = crypto.randomUUID(), isReadOnly = true, aidaClient = new Host.AidaClient.AidaClient(), changeManager, isExternal = false, performanceRecordAndReload, onInspectElement, networkTimeCalculator, lighthouseRecording, } = options;
         this.#changeManager = changeManager;
         this.#aidaClient = aidaClient;
         this.#performanceRecordAndReload = performanceRecordAndReload;

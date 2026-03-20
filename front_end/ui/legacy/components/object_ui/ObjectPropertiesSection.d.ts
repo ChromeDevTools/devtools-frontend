@@ -10,17 +10,23 @@ interface NodeChildren {
     arrayRanges?: ArrayGroupTreeNode[];
     accessors?: ObjectTreeNode[];
 }
+export interface ObjectTreeOptions {
+    readonly propertiesMode: ObjectPropertiesMode;
+    readonly readOnly: boolean;
+}
 export declare abstract class ObjectTreeNodeBase extends Common.ObjectWrapper.ObjectWrapper<ObjectTreeNodeBase.EventTypes> {
     #private;
-    readonly parent?: ObjectTreeNodeBase | undefined;
-    readonly propertiesMode: ObjectPropertiesMode;
+    readonly parent: ObjectTreeNodeBase | undefined;
+    protected readonly options: ObjectTreeOptions;
     protected filter: {
         includeNullOrUndefinedValues: boolean;
         regex: RegExp | null;
     } | null;
     protected extraProperties: ObjectTreeNode[];
     expanded: boolean;
-    constructor(parent?: ObjectTreeNodeBase | undefined, propertiesMode?: ObjectPropertiesMode);
+    constructor(parent: ObjectTreeNodeBase | undefined, options: ObjectTreeOptions);
+    get readOnly(): boolean;
+    get propertiesMode(): ObjectPropertiesMode;
     get includeNullOrUndefinedValues(): boolean;
     set includeNullOrUndefinedValues(value: boolean);
     expandRecursively(maxDepth: number): Promise<void>;
@@ -56,7 +62,7 @@ export declare namespace ObjectTreeNodeBase {
 }
 export declare class ObjectTree extends ObjectTreeNodeBase {
     #private;
-    constructor(object: SDK.RemoteObject.RemoteObject, propertiesMode?: ObjectPropertiesMode);
+    constructor(object: SDK.RemoteObject.RemoteObject, options: ObjectTreeOptions);
     get object(): SDK.RemoteObject.RemoteObject;
 }
 declare class ArrayGroupTreeNode extends ObjectTreeNodeBase {
@@ -65,7 +71,7 @@ declare class ArrayGroupTreeNode extends ObjectTreeNodeBase {
         fromIndex: number;
         toIndex: number;
         count: number;
-    }, parent?: ObjectTreeNodeBase, propertiesMode?: ObjectPropertiesMode);
+    }, parent: ObjectTreeNodeBase, options: ObjectTreeOptions);
     populateChildrenIfNeededImpl(): Promise<NodeChildren>;
     get singular(): boolean;
     get range(): {
@@ -79,7 +85,7 @@ export declare class ObjectTreeNode extends ObjectTreeNodeBase {
     #private;
     readonly property: SDK.RemoteObject.RemoteObjectProperty;
     readonly nonSyntheticParent?: SDK.RemoteObject.RemoteObject | undefined;
-    constructor(property: SDK.RemoteObject.RemoteObjectProperty, propertiesMode?: ObjectPropertiesMode, parent?: ObjectTreeNodeBase, nonSyntheticParent?: SDK.RemoteObject.RemoteObject | undefined);
+    constructor(property: SDK.RemoteObject.RemoteObjectProperty, parent: ObjectTreeNodeBase | undefined, options: ObjectTreeOptions, nonSyntheticParent?: SDK.RemoteObject.RemoteObject | undefined);
     get object(): SDK.RemoteObject.RemoteObject | undefined;
     get isFiltered(): boolean;
     get name(): string;
@@ -92,7 +98,6 @@ export declare const getObjectPropertiesSectionFrom: (element: Element) => Objec
 export declare class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow {
     #private;
     readonly root: ObjectTree;
-    readonly editable: boolean;
     titleElement: Element;
     skipProtoInternal?: boolean;
     constructor(object: SDK.RemoteObject.RemoteObject, title?: string | Element | null, linkifier?: Components.Linkifier.Linkifier, showOverflow?: boolean, editable?: boolean);
@@ -118,8 +123,7 @@ export interface TreeOutlineOptions {
     readOnly?: boolean;
 }
 export declare class ObjectPropertiesSectionsTreeOutline extends UI.TreeOutline.TreeOutlineInShadow {
-    readonly editable: boolean;
-    constructor(options?: TreeOutlineOptions | null);
+    constructor();
 }
 export declare const enum ObjectPropertiesMode {
     ALL = 0,// All properties, including prototype properties

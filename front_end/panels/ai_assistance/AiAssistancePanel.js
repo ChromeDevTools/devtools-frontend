@@ -503,6 +503,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     // NodeJS debugging does not have Elements panel, thus this action might not exist.
     #toggleSearchElementAction;
     #aidaClient;
+    #conversationSummaryAgent;
     #viewOutput = {};
     #serverSideLoggingEnabled = isAiAssistanceServerSideLoggingEnabled();
     #aiAssistanceEnabledSetting;
@@ -614,6 +615,15 @@ export class AiAssistancePanel extends UI.Panel.Panel {
                         this.#conversation.type === "freestyler" /* AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING */,
                     markdownRenderer,
                     conversationMarkdown: this.#conversation.getConversationMarkdown(),
+                    generateConversationSummary: async (markdown) => {
+                        if (!this.#conversationSummaryAgent) {
+                            this.#conversationSummaryAgent = new AiAssistanceModel.ConversationSummaryAgent.ConversationSummaryAgent({
+                                aidaClient: this.#aidaClient,
+                                serverSideLoggingEnabled: this.#serverSideLoggingEnabled,
+                            });
+                        }
+                        return await this.#conversationSummaryAgent.summarizeConversation(markdown);
+                    },
                     onTextSubmit: async (text, imageInput, multimodalInputType) => {
                         Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceQuerySubmitted);
                         await this.#startConversation(text, imageInput, multimodalInputType);
@@ -707,7 +717,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         return await TimelinePanel.TimelinePanel.TimelinePanel.executeRecordAndReload();
     }
     async #handleLighthouseRun() {
-        return await LighthousePanel.LighthousePanel.LighthousePanel.executeLighthouseRecording();
+        return await LighthousePanel.LighthousePanel.LighthousePanel.executeLighthouseRecording({ isAIControlled: true });
     }
     #getDefaultConversationType() {
         const { hostConfig } = Root.Runtime;
@@ -763,8 +773,18 @@ export class AiAssistancePanel extends UI.Panel.Panel {
             // So we can just reuse it
             return;
         }
-        const conversation = targetConversationType ?
-            new AiAssistanceModel.AiConversation.AiConversation(targetConversationType, [], undefined, false, this.#aidaClient, this.#changeManager, false, this.#handlePerformanceRecordAndReload.bind(this), this.#handleInspectElement.bind(this), NetworkPanel.NetworkPanel.NetworkPanel.instance().networkLogView.timeCalculator(), this.#handleLighthouseRun.bind(this)) :
+        const conversation = targetConversationType ? new AiAssistanceModel.AiConversation.AiConversation({
+            type: targetConversationType,
+            data: [],
+            isReadOnly: false,
+            aidaClient: this.#aidaClient,
+            changeManager: this.#changeManager,
+            isExternal: false,
+            performanceRecordAndReload: this.#handlePerformanceRecordAndReload.bind(this),
+            onInspectElement: this.#handleInspectElement.bind(this),
+            networkTimeCalculator: NetworkPanel.NetworkPanel.NetworkPanel.instance().networkLogView.timeCalculator(),
+            lighthouseRecording: this.#handleLighthouseRun.bind(this),
+        }) :
             undefined;
         this.#updateConversationState(conversation);
     }
@@ -778,7 +798,17 @@ export class AiAssistancePanel extends UI.Panel.Panel {
             if (!conversation) {
                 const conversationType = this.#getDefaultConversationType();
                 if (conversationType) {
-                    conversation = new AiAssistanceModel.AiConversation.AiConversation(conversationType, [], undefined, false, this.#aidaClient, this.#changeManager, false, this.#handlePerformanceRecordAndReload.bind(this), this.#handleInspectElement.bind(this), NetworkPanel.NetworkPanel.NetworkPanel.instance().networkLogView.timeCalculator());
+                    conversation = new AiAssistanceModel.AiConversation.AiConversation({
+                        type: conversationType,
+                        data: [],
+                        isReadOnly: false,
+                        aidaClient: this.#aidaClient,
+                        changeManager: this.#changeManager,
+                        isExternal: false,
+                        performanceRecordAndReload: this.#handlePerformanceRecordAndReload.bind(this),
+                        onInspectElement: this.#handleInspectElement.bind(this),
+                        networkTimeCalculator: NetworkPanel.NetworkPanel.NetworkPanel.instance().networkLogView.timeCalculator(),
+                    });
                 }
             }
             this.#conversation = conversation;
@@ -803,7 +833,17 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     async handleBreakpointConversation(uiLocation, errorMsg) {
         const context = new AiAssistanceModel.BreakpointDebuggerAgent.BreakpointContext(uiLocation);
         this.#selectedBreakpoint = context;
-        const conversation = new AiAssistanceModel.AiConversation.AiConversation("breakpoint" /* AiAssistanceModel.AiHistoryStorage.ConversationType.BREAKPOINT */, [], undefined, false, this.#aidaClient, this.#changeManager, false, this.#handlePerformanceRecordAndReload.bind(this), this.#handleInspectElement.bind(this), NetworkPanel.NetworkPanel.NetworkPanel.instance().networkLogView.timeCalculator());
+        const conversation = new AiAssistanceModel.AiConversation.AiConversation({
+            type: "breakpoint" /* AiAssistanceModel.AiHistoryStorage.ConversationType.BREAKPOINT */,
+            data: [],
+            isReadOnly: false,
+            aidaClient: this.#aidaClient,
+            changeManager: this.#changeManager,
+            isExternal: false,
+            performanceRecordAndReload: this.#handlePerformanceRecordAndReload.bind(this),
+            onInspectElement: this.#handleInspectElement.bind(this),
+            networkTimeCalculator: NetworkPanel.NetworkPanel.NetworkPanel.instance().networkLogView.timeCalculator(),
+        });
         this.#updateConversationState(conversation);
         this.#conversation?.setContext(context);
         this.requestUpdate();
@@ -1173,7 +1213,17 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         }
         let conversation = this.#conversation;
         if (!this.#conversation || this.#conversation.type !== targetConversationType || this.#conversation.isEmpty) {
-            conversation = new AiAssistanceModel.AiConversation.AiConversation(targetConversationType, [], undefined, false, this.#aidaClient, this.#changeManager, false, this.#handlePerformanceRecordAndReload.bind(this), this.#handleInspectElement.bind(this), NetworkPanel.NetworkPanel.NetworkPanel.instance().networkLogView.timeCalculator());
+            conversation = new AiAssistanceModel.AiConversation.AiConversation({
+                type: targetConversationType,
+                data: [],
+                isReadOnly: false,
+                aidaClient: this.#aidaClient,
+                changeManager: this.#changeManager,
+                isExternal: false,
+                performanceRecordAndReload: this.#handlePerformanceRecordAndReload.bind(this),
+                onInspectElement: this.#handleInspectElement.bind(this),
+                networkTimeCalculator: NetworkPanel.NetworkPanel.NetworkPanel.instance().networkLogView.timeCalculator(),
+            });
         }
         this.#updateConversationState(conversation);
         const predefinedPrompt = opts?.['prompt'];

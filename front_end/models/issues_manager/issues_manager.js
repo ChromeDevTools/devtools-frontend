@@ -1649,6 +1649,14 @@ var UIStrings9 = {
    */
   DataUrlInSvgUse: "Support for data: URLs in SVGUseElement is deprecated and it will be removed in the future.",
   /**
+   * @description Warning displayed to developers when document.createEvent() is called with 'KeyboardEvents', which is a non-standard event interface that will be removed.
+   */
+  DocumentCreateEventKeyboardEvents: "document.createEvent('KeyboardEvents') is deprecated and will be removed. Use `new KeyboardEvent()` instead.",
+  /**
+   * @description Warning displayed to developers when document.createEvent() is called with 'TransitionEvent', which is a non-standard event interface that will be removed.
+   */
+  DocumentCreateEventTransitionEvent: "document.createEvent('TransitionEvent') is deprecated and will be removed. Use `new TransitionEvent()` instead.",
+  /**
    * @description Translation is not needed, this will never be exposed in production code.
    */
   ExampleBrowserProcessDeprecation: "This is an example for showing the code required for a browser process reported deprecation.",
@@ -1900,6 +1908,14 @@ var DEPRECATIONS_METADATA = {
   "DataUrlInSvgUse": {
     "chromeStatusFeature": 5128825141198848,
     "milestone": 119
+  },
+  "DocumentCreateEventKeyboardEvents": {
+    "chromeStatusFeature": 5095987863486464,
+    "milestone": 151
+  },
+  "DocumentCreateEventTransitionEvent": {
+    "chromeStatusFeature": 5095987863486464,
+    "milestone": 151
   },
   "IdentityInCanMakePaymentEvent": {
     "chromeStatusFeature": 5190978431352832

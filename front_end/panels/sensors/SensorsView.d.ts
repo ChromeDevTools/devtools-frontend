@@ -20,9 +20,6 @@ export declare class SensorsView extends UI.Widget.VBox {
     private alphaElement;
     private betaElement;
     private gammaElement;
-    private alphaSetter;
-    private betaSetter;
-    private gammaSetter;
     private orientationLayer;
     private boxElement?;
     private boxMatrix?;
@@ -43,7 +40,6 @@ export declare class SensorsView extends UI.Widget.VBox {
     private applyDeviceOrientationUserInput;
     private resetDeviceOrientation;
     private setDeviceOrientation;
-    private createAxisInput;
     private createDeviceOrientationOverrideElement;
     private setBoxOrientation;
     private onBoxDrag;

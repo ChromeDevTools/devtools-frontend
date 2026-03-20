@@ -108,6 +108,8 @@ export var UseCase;
     UseCase[UseCase["USE_CASE_UNSPECIFIED"] = 0] = "USE_CASE_UNSPECIFIED";
     // Code generation use case is expected to generate code from scratch
     UseCase[UseCase["CODE_GENERATION"] = 1] = "CODE_GENERATION";
+    // Code transformation or code editing use case.
+    UseCase[UseCase["CODE_TRANSFORMATION"] = 2] = "CODE_TRANSFORMATION";
 })(UseCase || (UseCase = {}));
 /* eslint-enable @typescript-eslint/naming-convention */
 export var RecitationAction;

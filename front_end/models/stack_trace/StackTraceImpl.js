@@ -61,13 +61,15 @@ export class FrameImpl {
     line;
     column;
     missingDebugInfo;
-    constructor(url, uiSourceCode, name, line, column, missingDebugInfo) {
+    rawName;
+    constructor(url, uiSourceCode, name, line, column, missingDebugInfo, rawName) {
         this.url = url;
         this.uiSourceCode = uiSourceCode;
         this.name = name;
         this.line = line;
         this.column = column;
         this.missingDebugInfo = missingDebugInfo;
+        this.rawName = rawName;
     }
 }
 /**
@@ -129,6 +131,9 @@ export class DebuggableFrameImpl {
     }
     get missingDebugInfo() {
         return this.#frame.missingDebugInfo;
+    }
+    get rawName() {
+        return this.#frame.rawName;
     }
     get sdkFrame() {
         return this.#sdkFrame;

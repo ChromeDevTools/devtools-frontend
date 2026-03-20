@@ -67,7 +67,7 @@ export class AffectedSelectivePermissionsInterventionView extends AffectedResour
         <td>${Directives.until(stackTracePromise, html `<span>${i18nString(UIStrings.loading)}</span>`)}</td>
         <td class="affected-resource-cell">
           <div class="ad-ancestry-list">
-            ${(details.adAncestry?.adAncestryChain || []).map(script => {
+            ${(details.adAncestry?.ancestryChain || []).map(script => {
             const link = this.#linkifier.linkifyScriptLocation(target, script.scriptId, script.name, 0);
             return html `<div>${link}</div>`;
         })}

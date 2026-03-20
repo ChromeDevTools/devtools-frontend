@@ -142,7 +142,7 @@ export declare class VersionController {
     static readonly GLOBAL_VERSION_SETTING_NAME = "inspectorVersion";
     static readonly SYNCED_VERSION_SETTING_NAME = "syncedInspectorVersion";
     static readonly LOCAL_VERSION_SETTING_NAME = "localInspectorVersion";
-    static readonly CURRENT_VERSION = 41;
+    static readonly CURRENT_VERSION = 42;
     constructor(settings: Settings);
     /**
      * Force re-sets all version number settings to the current version without
@@ -207,6 +207,12 @@ export declare class VersionController {
      */
     updateVersionFrom39To40(): void;
     updateVersionFrom40To41(): void;
+    /**
+     * The recording in recorder panel may have unreasonably long titles
+     * or a lot of steps which can cause renderer crashes.
+     * Similar to https://crbug.com/40918380
+     */
+    updateVersionFrom41To42(): void;
     private migrateSettingsFromLocalStorage;
     private clearBreakpointsWhenTooMany;
 }

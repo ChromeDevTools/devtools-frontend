@@ -1,0 +1,9 @@
+import * as AIDA from './AidaClient.js';
+import * as GCA from './GcaTypes.js';
+export declare function aidaDoConversationRequestToGcaRequest(request: AIDA.DoConversationRequest): GCA.GenerateContentRequest;
+export declare function gcaResponseToAidaDoConversationResponse(response: GCA.GenerateContentResponse): AIDA.DoConversationResponse;
+export declare function aidaEventToGcaTelemetryRequest(clientEvent: AIDA.AidaRegisterClientEvent): GCA.SendTelemetryRequest;
+export declare function aidaCompletionRequestToGcaRequest(request: AIDA.CompletionRequest): GCA.GenerateContentRequest;
+export declare function gcaResponseToAidaCompletionResponse(response: GCA.GenerateContentResponse): AIDA.CompletionResponse;
+export declare function aidaGenerateCodeRequestToGcaRequest(request: AIDA.GenerateCodeRequest): GCA.GenerateContentRequest;
+export declare function gcaResponseToAidaGenerateCodeResponse(response: GCA.GenerateContentResponse): AIDA.GenerateCodeResponse;

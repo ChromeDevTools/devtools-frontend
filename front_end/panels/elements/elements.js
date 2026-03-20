@@ -9755,10 +9755,10 @@ var CSSPropertyPrompt = class extends UI10.TextPrompt.TextPrompt {
     if (this.isSuggestBoxVisible()) {
       this.suggestBox?.hide();
       keyboardEvent.consume(true);
-    } else {
-      this.setAiAutoCompletion(null);
+      return true;
     }
-    return true;
+    this.setAiAutoCompletion(null);
+    return false;
   }
   handleNameOrValueUpDown(event) {
     function finishHandler(_originalValue, _replacementString) {
@@ -19731,7 +19731,7 @@ var PropertiesWidget = class extends UI24.Widget.VBox {
     SDK21.TargetManager.TargetManager.instance().addModelListener(SDK21.DOMModel.DOMModel, SDK21.DOMModel.Events.ChildNodeCountUpdated, this.onNodeChange, this, { scoped: true });
     UI24.Context.Context.instance().addFlavorChangeListener(SDK21.DOMModel.DOMNode, this.setNode, this);
     this.#view = view;
-    this.treeOutline = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionsTreeOutline({ readOnly: true });
+    this.treeOutline = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionsTreeOutline();
     this.treeOutline.setShowSelectionOnKeyboardFocus(
       /* show */
       true,
@@ -19794,11 +19794,10 @@ var PropertiesWidget = class extends UI24.Widget.VBox {
     if (!object) {
       return;
     }
-    this.#objectTree = new ObjectUI.ObjectPropertiesSection.ObjectTree(
-      object,
-      1
-      /* ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED */
-    );
+    this.#objectTree = new ObjectUI.ObjectPropertiesSection.ObjectTree(object, {
+      propertiesMode: 1,
+      readOnly: true
+    });
     this.#updateFilter();
   }
   async performUpdate() {

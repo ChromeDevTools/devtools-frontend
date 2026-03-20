@@ -96,10 +96,13 @@ export declare class NetworkRequestNode extends NetworkNode {
     private isOnInitiatorPathInternal;
     private isOnInitiatedPathInternal;
     private linkifiedInitiatorAnchor?;
+    private static readonly requestNumberByRequest;
     constructor(parentView: NetworkLogViewInterface, request: SDK.NetworkRequest.NetworkRequest);
+    private static requestNumber;
     static NameComparator(a: NetworkNode, b: NetworkNode): number;
     static RemoteAddressComparator(a: NetworkNode, b: NetworkNode): number;
     static SizeComparator(a: NetworkNode, b: NetworkNode): number;
+    static RequestNumberComparator(a: NetworkNode, b: NetworkNode): number;
     static TypeComparator(a: NetworkNode, b: NetworkNode): number;
     static InitiatorComparator(a: NetworkNode, b: NetworkNode): number;
     static InitiatorAddressSpaceComparator(a: NetworkNode, b: NetworkNode): number;

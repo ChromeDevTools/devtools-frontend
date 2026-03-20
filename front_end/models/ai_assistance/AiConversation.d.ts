@@ -9,12 +9,25 @@ import type { ChangeManager } from './ChangeManager.js';
 export declare const NOT_FOUND_IMAGE_DATA = "";
 export declare const CONTEXT_TITLE = "Analyzing data";
 export declare function generateContextDetailsMarkdown(details: ContextDetail[]): string;
+export interface AiConversationOptions {
+    type: ConversationType;
+    data?: ResponseData[];
+    id?: string;
+    isReadOnly?: boolean;
+    aidaClient?: Host.AidaClient.AidaClient;
+    changeManager?: ChangeManager;
+    isExternal?: boolean;
+    performanceRecordAndReload?: () => Promise<Trace.TraceModel.ParsedTrace>;
+    onInspectElement?: () => Promise<SDK.DOMModel.DOMNode | null>;
+    networkTimeCalculator?: NetworkTimeCalculator.NetworkTransferTimeCalculator;
+    lighthouseRecording?: () => Promise<LHModel.ReporterTypes.ReportJSON | null>;
+}
 export declare class AiConversation {
     #private;
     static fromSerializedConversation(serializedConversation: SerializedConversation): AiConversation;
     readonly id: string;
     readonly history: ResponseData[];
-    constructor(type: ConversationType, data?: ResponseData[], id?: string, isReadOnly?: boolean, aidaClient?: Host.AidaClient.AidaClient, changeManager?: ChangeManager, isExternal?: boolean, performanceRecordAndReload?: () => Promise<Trace.TraceModel.ParsedTrace>, onInspectElement?: () => Promise<SDK.DOMModel.DOMNode | null>, networkTimeCalculator?: NetworkTimeCalculator.NetworkTransferTimeCalculator, lighthouseRecording?: () => Promise<LHModel.ReporterTypes.ReportJSON | null>);
+    constructor(options: AiConversationOptions);
     get isReadOnly(): boolean;
     get title(): string | undefined;
     get isEmpty(): boolean;

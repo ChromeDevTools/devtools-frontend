@@ -147,7 +147,7 @@ export class ScopeChainSidebarPane extends UI.Widget.VBox {
         }
         titleElement.createChild('div', 'scope-chain-sidebar-pane-section-subtitle').textContent = subtitle;
         titleElement.createChild('div', 'scope-chain-sidebar-pane-section-title').textContent = title;
-        const root = new ObjectUI.ObjectPropertiesSection.ObjectTree(scope.object(), 0 /* ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.ALL */);
+        const root = new ObjectUI.ObjectPropertiesSection.ObjectTree(scope.object(), { propertiesMode: 0 /* ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.ALL */, readOnly: false });
         root.addExtraProperties(...scope.extraProperties());
         const section = new ObjectUI.ObjectPropertiesSection.RootElement(root, this.linkifier, emptyPlaceholder);
         section.title = titleElement;

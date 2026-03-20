@@ -35,7 +35,8 @@ export declare class FrameImpl implements StackTrace.StackTrace.Frame {
     readonly line: number;
     readonly column: number;
     readonly missingDebugInfo?: StackTrace.StackTrace.MissingDebugInfo;
-    constructor(url: string | undefined, uiSourceCode: Workspace.UISourceCode.UISourceCode | undefined, name: string | undefined, line: number, column: number, missingDebugInfo?: StackTrace.StackTrace.MissingDebugInfo);
+    readonly rawName?: string;
+    constructor(url: string | undefined, uiSourceCode: Workspace.UISourceCode.UISourceCode | undefined, name: string | undefined, line: number, column: number, missingDebugInfo?: StackTrace.StackTrace.MissingDebugInfo, rawName?: string);
 }
 /**
  * A DebuggableFragmentImpl wraps an existing FragmentImpl. This is important: We can pause at the
@@ -62,5 +63,6 @@ export declare class DebuggableFrameImpl implements StackTrace.StackTrace.Debugg
     get line(): number;
     get column(): number;
     get missingDebugInfo(): StackTrace.StackTrace.MissingDebugInfo | undefined;
+    get rawName(): string | undefined;
     get sdkFrame(): SDK.DebuggerModel.CallFrame;
 }

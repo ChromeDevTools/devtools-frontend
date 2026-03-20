@@ -117,7 +117,7 @@ export class StackTraceModel extends SDK.SDKModel.SDKModel {
         console.assert(rawFrames.length === uiFrames.length, 'Broken rawFramesToUIFrames implementation');
         let i = 0;
         for (const node of fragment.node.getCallStack()) {
-            node.frames = uiFrames[i++].map(frame => new FrameImpl(frame.url, frame.uiSourceCode, frame.name, frame.line, frame.column, frame.missingDebugInfo));
+            node.frames = uiFrames[i++].map(frame => new FrameImpl(frame.url, frame.uiSourceCode, frame.name, frame.line, frame.column, frame.missingDebugInfo, node.rawFrame.functionName));
         }
     }
     #affectedFragments(script) {

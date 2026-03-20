@@ -110,7 +110,7 @@ export class PropertiesWidget extends UI.Widget.VBox {
         SDK.TargetManager.TargetManager.instance().addModelListener(SDK.DOMModel.DOMModel, SDK.DOMModel.Events.ChildNodeCountUpdated, this.onNodeChange, this, { scoped: true });
         UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, this.setNode, this);
         this.#view = view;
-        this.treeOutline = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionsTreeOutline({ readOnly: true });
+        this.treeOutline = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionsTreeOutline();
         this.treeOutline.setShowSelectionOnKeyboardFocus(/* show */ true, /* preventTabOrder */ false);
         this.treeOutline.addEventListener(UI.TreeOutline.Events.ElementExpanded, () => {
             Host.userMetrics.actionTaken(Host.UserMetrics.Action.DOMPropertiesExpanded);
@@ -170,7 +170,10 @@ export class PropertiesWidget extends UI.Widget.VBox {
         if (!object) {
             return;
         }
-        this.#objectTree = new ObjectUI.ObjectPropertiesSection.ObjectTree(object, 1 /* ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED */);
+        this.#objectTree = new ObjectUI.ObjectPropertiesSection.ObjectTree(object, {
+            propertiesMode: 1 /* ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED */,
+            readOnly: true,
+        });
         this.#updateFilter();
     }
     async performUpdate() {

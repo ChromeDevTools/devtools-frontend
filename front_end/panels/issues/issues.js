@@ -13,7 +13,7 @@ import * as i18n3 from "./../../core/i18n/i18n.js";
 import * as Bindings from "./../../models/bindings/bindings.js";
 import * as Components2 from "./../../ui/legacy/components/utils/utils.js";
 import * as UI2 from "./../../ui/legacy/legacy.js";
-import { Directives, html, nothing, render } from "./../../ui/lit/lit.js";
+import { Directives, html, nothing, render as render2 } from "./../../ui/lit/lit.js";
 
 // gen/front_end/panels/issues/AffectedResourcesView.js
 import * as Common from "./../../core/common/common.js";
@@ -25,6 +25,7 @@ import * as RequestLinkIcon from "./../../ui/components/request_link_icon/reques
 import { Icon } from "./../../ui/kit/kit.js";
 import * as Components from "./../../ui/legacy/components/utils/utils.js";
 import * as UI from "./../../ui/legacy/legacy.js";
+import { render } from "./../../ui/lit/lit.js";
 import * as VisualLogging from "./../../ui/visual_logging/visual_logging.js";
 import * as PanelsCommon from "./../common/common.js";
 var UIStrings = {
@@ -201,17 +202,10 @@ var AffectedResourcesView = class extends UI.TreeOutline.TreeElement {
       );
     }
     const deferredDOMNode = new SDK.DOMModel.DeferredDOMNode(target, backendNodeId);
-    const anchorElement = PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(deferredDOMNode);
-    anchorElement.textContent = nodeName;
-    anchorElement.addEventListener("click", () => sendTelemetry());
-    anchorElement.addEventListener("keydown", (event) => {
-      if (event.key === "Enter") {
-        sendTelemetry();
-      }
-    });
+    const anchor = PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(deferredDOMNode, { textContent: nodeName || void 0, onClick: sendTelemetry });
     const cellElement = document.createElement("td");
     cellElement.classList.add("affected-resource-element", "devtools-link");
-    cellElement.appendChild(anchorElement);
+    render(anchor, cellElement);
     return cellElement;
   }
   appendSourceLocation(element, sourceLocation, target) {
@@ -290,7 +284,7 @@ var AffectedSelectivePermissionsInterventionView = class extends AffectedResourc
   }
   #render() {
     const issues = Array.from(this.issue.getSelectivePermissionsInterventionIssues());
-    render(html`
+    render2(html`
       <tr>
         <td class="affected-resource-header">${i18nString2(UIStrings2.api)}</td>
         <td class="affected-resource-header">${i18nString2(UIStrings2.script)}</td>
@@ -311,7 +305,7 @@ var AffectedSelectivePermissionsInterventionView = class extends AffectedResourc
         <td>${Directives.until(stackTracePromise, html`<span>${i18nString2(UIStrings2.loading)}</span>`)}</td>
         <td class="affected-resource-cell">
           <div class="ad-ancestry-list">
-            ${(details.adAncestry?.adAncestryChain || []).map((script) => {
+            ${(details.adAncestry?.ancestryChain || []).map((script) => {
       const link4 = this.#linkifier.linkifyScriptLocation(target, script.scriptId, script.name, 0);
       return html`<div>${link4}</div>`;
     })}
@@ -364,7 +358,7 @@ import * as i18n5 from "./../../core/i18n/i18n.js";
 import * as IssuesManager from "./../../models/issues_manager/issues_manager.js";
 import * as Buttons from "./../../ui/components/buttons/buttons.js";
 import * as UI3 from "./../../ui/legacy/legacy.js";
-import { html as html2, render as render2 } from "./../../ui/lit/lit.js";
+import { html as html2, render as render3 } from "./../../ui/lit/lit.js";
 import * as VisualLogging2 from "./../../ui/visual_logging/visual_logging.js";
 var UIStrings3 = {
   /**
@@ -384,7 +378,7 @@ var DEFAULT_VIEW = (input, _output, target) => {
       event.stopImmediatePropagation();
     }
   };
-  render2(html2`
+  render3(html2`
   <div class="header">
     <devtools-adorner class="aggregated-issues-count" .name=${"countWrapper"}>
       <span>${input.count}</span>
@@ -1065,7 +1059,7 @@ import * as IssueCounter3 from "./../../ui/components/issue_counter/issue_counte
 import * as MarkdownView from "./../../ui/components/markdown_view/markdown_view.js";
 import { Icon as Icon3 } from "./../../ui/kit/kit.js";
 import * as UI5 from "./../../ui/legacy/legacy.js";
-import { html as html4, render as render4 } from "./../../ui/lit/lit.js";
+import { html as html4, render as render5 } from "./../../ui/lit/lit.js";
 
 // gen/front_end/panels/issues/AffectedBlockedByResponseView.js
 import * as Host2 from "./../../core/host/host.js";
@@ -1815,7 +1809,7 @@ var AffectedPartitioningBlobURLView = class extends AffectedResourcesView {
 
 // gen/front_end/panels/issues/AffectedPermissionElementsView.js
 import * as i18n27 from "./../../core/i18n/i18n.js";
-import { html as html3, render as render3 } from "./../../ui/lit/lit.js";
+import { html as html3, render as render4 } from "./../../ui/lit/lit.js";
 var UIStrings14 = {
   /**
    * @description Noun for singular or plural number of affected element resource indication in issue view.
@@ -1843,7 +1837,7 @@ var AffectedPermissionElementsView = class extends AffectedElementsView {
         </tr>`);
       }
     }
-    render3(html3`${templates}`, this.affectedResources);
+    render4(html3`${templates}`, this.affectedResources);
     this.updateAffectedResourceCount(count);
   }
 };
@@ -3050,7 +3044,7 @@ var IssueView = class _IssueView extends UI5.TreeOutline.TreeElement {
     const linkList = linkWrapper.listItemElement.createChild("ul", "link-list");
     for (const description of this.#description.links) {
       const linkListItem = linkList.createChild("li");
-      render4(html4`<devtools-link class="link devtools-link" href=${description.link} jslogcontext="learn-more">${i18nString21(UIStrings21.learnMoreS, { PH1: description.linkTitle })}</devtools-link>`, linkListItem);
+      render5(html4`<devtools-link class="link devtools-link" href=${description.link} jslogcontext="learn-more">${i18nString21(UIStrings21.learnMoreS, { PH1: description.linkTitle })}</devtools-link>`, linkListItem);
     }
     this.appendChild(linkWrapper);
   }

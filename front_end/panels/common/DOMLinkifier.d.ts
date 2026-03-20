@@ -1,6 +1,7 @@
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import { type LitTemplate } from '../../ui/lit/lit.js';
 export interface Options {
     tooltip?: string;
     preventKeyboardFocus?: boolean;
@@ -9,6 +10,7 @@ export interface Options {
     hiddenClassList?: string[];
     disabled?: boolean;
     ariaDescription?: string;
+    onClick?: () => void;
 }
 interface ViewInput {
     dynamic?: boolean;
@@ -45,6 +47,6 @@ export declare class Linkifier {
     static instance(opts?: {
         forceNew: boolean | null;
     }): Linkifier;
-    linkify(node: SDK.DOMModel.DOMNode | SDK.DOMModel.DeferredDOMNode, options?: Options): HTMLElement;
+    linkify(node: SDK.DOMModel.DOMNode | SDK.DOMModel.DeferredDOMNode, options?: Options): LitTemplate;
 }
 export {};

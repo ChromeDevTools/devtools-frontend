@@ -20,6 +20,7 @@ export default `/*
 
   .export-for-agents-dialog {
     width: var(--sys-size-33); /* 512px */
+    max-width: 100%; /* deal with the dialog being squashed on smaller devices */
   }
 
   .export-for-agents-dialog header {
@@ -65,6 +66,12 @@ export default `/*
     color: var(--sys-color-on-surface);
     border-radius: var(--sys-shape-corner-small);
     border: none;
+  }
+
+  .export-for-agents-dialog .disclaimer {
+    margin-top: var(--sys-size-5);
+    font: var(--sys-typescale-body4-regular);
+    color: var(--sys-color-on-surface-subtle);
   }
 
   .export-for-agents-dialog footer {

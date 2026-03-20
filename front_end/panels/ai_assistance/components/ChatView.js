@@ -172,6 +172,7 @@ export class ChatView extends HTMLElement {
      */
     #isProgrammaticScroll = false;
     #view;
+    #cachedSummary = null;
     constructor(props, view = DEFAULT_VIEW) {
         super();
         this.#props = props;
@@ -262,10 +263,24 @@ export class ChatView extends HTMLElement {
         this.focusTextInput();
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceDynamicSuggestionClicked);
     };
-    #exportForAgentsClick() {
-        // TODO(b/493191546, b/493191387): generate accurate text here.
+    async #getSummary() {
+        if (this.#cachedSummary?.markdown === this.#props.conversationMarkdown) {
+            return this.#cachedSummary.summary;
+        }
+        try {
+            const summary = await this.#props.generateConversationSummary(this.#props.conversationMarkdown);
+            this.#cachedSummary = { markdown: this.#props.conversationMarkdown, summary };
+            return summary;
+        }
+        catch (err) {
+            console.error(err);
+            return 'Failed to generate summary.';
+        }
+    }
+    async #exportForAgentsClick() {
+        const summaryPromise = this.#getSummary();
         void ExportForAgentsDialog.show({
-            promptText: '(placeholder prompt, feature WIP)',
+            promptText: summaryPromise,
             markdownText: this.#props.conversationMarkdown,
             onConversationSaveAs: this.#props.onExportConversation ?? (async () => { }),
         });

@@ -385,8 +385,19 @@ var LighthouseFormatter = class {
     }
     if (typeof value === "object" && "type" in value) {
       switch (value.type) {
-        case "node":
-          return value.nodeLabel || value.selector || value.snippet || "(node)";
+        case "node": {
+          let label = value.nodeLabel || value.selector || value.snippet || "(node)";
+          if (value.selector) {
+            label += ` (selector: ${value.selector})`;
+          }
+          if (value.path) {
+            label += ` (path: ${value.path})`;
+          }
+          if (value.explanation) {
+            label += ` (explanation: ${value.explanation.replace(/\n/g, " ")})`;
+          }
+          return label;
+        }
         case "source-location": {
           const parts = [];
           if (value.url) {
@@ -5522,6 +5533,29 @@ var PerformanceAgent = class extends AiAgent {
     metadata: { source: "devtools", score: ScorePriority.CRITICAL }
   };
   #traceFacts = [];
+  /**
+   * These facts do not contain page data, they are static instructions to the
+   * LLM, so we don't need to add them to the disclosure.
+   */
+  #factsToNeverDisclose = /* @__PURE__ */ new Set([
+    this.#callFrameDataDescriptionFact,
+    this.#networkDataDescriptionFact,
+    this.#freshTraceExtraPreambleFact,
+    this.#notExternalExtraPreambleFact
+  ]);
+  /**
+   * When we enhance the query with additional information, we need to know it
+   * so we can show it in the disclosure UI. This is cleared and then populated
+   * on each prompt.
+   */
+  #additionalSelectionsForQuery = [];
+  /**
+   * The CWV widget is shown when we analyze the trace summary, but we don't
+   * want to show it on every single "Analyzing data..." pill, as we show one
+   * after every prompt. So we make sure for a given Insight Set (which is based on navigation)
+   * we only show it once.
+   */
+  #hasShownWidgetForInsightSet = /* @__PURE__ */ new WeakSet();
   get preamble() {
     return buildPreamble();
   }
@@ -5543,9 +5577,17 @@ var PerformanceAgent = class extends AiAgent {
     if (!context) {
       return;
     }
+    const contextDisclosure = [];
+    for (const fact of this.currentFacts()) {
+      if (this.#factsToNeverDisclose.has(fact)) {
+        continue;
+      }
+      contextDisclosure.push(fact.text);
+    }
+    contextDisclosure.push(...this.#additionalSelectionsForQuery);
     const widgets = [];
     const primaryInsightSet = context.getItem().primaryInsightSet;
-    if (primaryInsightSet) {
+    if (primaryInsightSet && !this.#hasShownWidgetForInsightSet.has(primaryInsightSet)) {
       widgets.push({
         name: "CORE_VITALS",
         data: {
@@ -5553,13 +5595,14 @@ var PerformanceAgent = class extends AiAgent {
           insightSetKey: primaryInsightSet.id
         }
       });
+      this.#hasShownWidgetForInsightSet.add(primaryInsightSet);
     }
     yield {
       type: "context",
       details: [
         {
-          title: "Trace",
-          text: this.#formatter?.formatTraceSummary() ?? ""
+          title: "Trace details",
+          text: contextDisclosure.join("\n")
         }
       ],
       widgets
@@ -5660,6 +5703,7 @@ ${contextString}
 `);
       }
     }
+    this.#additionalSelectionsForQuery = selected;
     if (!selected.length) {
       return query;
     }
@@ -8271,18 +8315,61 @@ __export(ConversationSummaryAgent_exports, {
 });
 import * as Host9 from "./../../core/host/host.js";
 import * as Root8 from "./../../core/root/root.js";
-var preamble6 = `You are an expert technical assistant specializing in summarizing debugging conversations from Chrome DevTools.
-You will receive a markdown-formatted transcript of a conversation between a user and a DevTools AI assistant.
-Your goal is to produce a succinct, structured summary that a local AI agent in the user's IDE can use to apply code fixes.
+var preamble6 = `### Role
+You are a Performance Expert. Your task is to extract a diagnostic narrative from raw DevTools logs and present it as a self-contained, actionable Markdown summary. You provide high-density technical analysis without conversational fluff.
 
-Focus on extracting:
-1. **Core Issue:** The primary problem or question the user was investigating.
-2. **Diagnostic Findings:** Key technical details discovered (e.g., specific functions, bottlenecks, error messages, URLs, or CSS properties).
-3. **Proposed Solution:** The specific changes or optimizations recommended by the DevTools assistant.
-4. **Actionable Steps:** A clear, step-by-step list of instructions for the IDE agent to implement the fix.
+### Critical Constraints
+- **Persona:** Do not mention that you are an AI or refer to yourself in the third person.
+- **Domain Scope:** Do not provide answers on non-web-development topics (e.g., legal, financial, medical, or personal advice).
+- **Sensitive Topics:** If the conversation history touches on sensitive topics (religion, race, politics, sexuality, gender, etc.), respond only with: "My expertise is limited to website performance analysis. I cannot provide information on that topic."
+- **Data Portability:** The recipient of this summary does NOT have access to the raw logs.
+    - **No UIDs/Internal IDs:** Never refer to elements by internal IDs (e.g., \`uid=123\`).
+    - **Standard Selectors:** Identify elements using HTML tags, classes, or IDs (e.g., \`button.submit-form\`).
+    - **No Metadata:** Remove internal constants like \`NAVIGATION_0\` or \`INSIGHT_0\`.
+- **No Process Narration:** Do not describe internal "thinking" or API calls. Skip phrases like "The agent investigated..." or "The user then asked...". Jump straight to the findings.
 
-Maintain a professional, technical, and extremely concise tone. Avoid conversational filler or introductory/concluding remarks.
-The output must be structured markdown.`;
+### Objectives
+1. **Identify Intent:** Define the core technical goal of the session.
+2. **Value-Only Diagnostics:** List only the technical data points discovered. Omit steps that didn't yield a result.
+3. **Focus on Code Intent:** When code is executed in the logs, summarize the **purpose** and the **result**. Do not include the raw JavaScript unless it is a specific fix for the user to implement.
+4. **Actionable Recommendations:** Provide specific code/strategy fixes based on the findings.
+
+### Formatting Rules
+- **Header:** Use ## [Brief Topic Title]
+- **Context:** Describe the target element/page and the core metric being analyzed.
+- **Diagnostics:** A bulleted list of technical findings.
+- **Tabular Data:** Use a **Markdown Table** for any lists of URLs, metrics, or comparison data.
+- **Code Fixes:** Use fenced code blocks for suggested CSS/JS optimizations.
+
+---
+
+### Example (Few-Shot)
+
+**User Input:** "The agent analyzed the page and found three render-blocking CSS files: app.css (36ms) and fonts.css (80ms). It also checked UID 456 which is a div.hero."
+
+**Desired Agent Output:**
+## Performance Analysis: web.dev Home
+
+**Context**
+Analysis of the web.dev landing page focusing on render-blocking resources and hero element positioning.
+
+**Diagnostics**
+The following resources were identified as render-blocking:
+
+| Resource URL | Load Duration |
+| :--- | :--- |
+| \`app.css\` | 36 ms |
+| \`fonts.css\` | 80 ms |
+
+**Actionable Findings**
+* **Hero Element:** The \`div.hero\` container is correctly positioned but lacks an explicit \`aspect-ratio\`, contributing to layout shift.
+* **Optimization:** Inline critical CSS from \`app.css\` to improve First Contentful Paint.
+
+---
+
+### Tone & Style
+- Professional, objective, and dense.
+- Past tense for actions; Present tense for technical facts.`;
 var ConversationSummaryContext = class extends ConversationContext {
   #conversation;
   constructor(conversation) {
@@ -8882,7 +8969,13 @@ var AiConversation = class _AiConversation {
       }
       return entry;
     });
-    return new _AiConversation(serializedConversation.type, history, serializedConversation.id, true, void 0, void 0, serializedConversation.isExternal, void 0, void 0);
+    return new _AiConversation({
+      type: serializedConversation.type,
+      data: history,
+      id: serializedConversation.id,
+      isReadOnly: true,
+      isExternal: serializedConversation.isExternal
+    });
   }
   id;
   // Handled in #updateAgent
@@ -8900,7 +8993,8 @@ var AiConversation = class _AiConversation {
   #lighthouseRecording;
   #onInspectElement;
   #networkTimeCalculator;
-  constructor(type, data = [], id = crypto.randomUUID(), isReadOnly = true, aidaClient = new Host12.AidaClient.AidaClient(), changeManager, isExternal = false, performanceRecordAndReload, onInspectElement, networkTimeCalculator, lighthouseRecording) {
+  constructor(options) {
+    const { type, data = [], id = crypto.randomUUID(), isReadOnly = true, aidaClient = new Host12.AidaClient.AidaClient(), changeManager, isExternal = false, performanceRecordAndReload, onInspectElement, networkTimeCalculator, lighthouseRecording } = options;
     this.#changeManager = changeManager;
     this.#aidaClient = aidaClient;
     this.#performanceRecordAndReload = performanceRecordAndReload;
@@ -9694,17 +9788,14 @@ var ConversationHandler = class _ConversationHandler extends Common9.ObjectWrapp
   }
   async *#createAndDoExternalConversation(opts) {
     const { conversationType, aiAgent, prompt, selected } = opts;
-    const conversation = new AiConversation(
-      conversationType,
-      [],
-      aiAgent.sessionId,
-      /* isReadOnly */
-      true,
-      this.#aidaClient,
-      void 0,
-      /* isExternal */
-      true
-    );
+    const conversation = new AiConversation({
+      type: conversationType,
+      data: [],
+      id: aiAgent.sessionId,
+      isReadOnly: true,
+      aidaClient: this.#aidaClient,
+      isExternal: true
+    });
     return yield* this.#doExternalConversation({ conversation, prompt, selected });
   }
   async *#doExternalConversation(opts) {

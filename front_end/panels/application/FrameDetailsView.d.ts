@@ -8,13 +8,13 @@ import * as UI from '../../ui/legacy/legacy.js';
 export interface FrameDetailsReportViewData {
     frame: SDK.ResourceTreeModel.ResourceTreeFrame;
     target?: SDK.Target.Target;
-    adScriptAncestry: Protocol.Page.AdScriptAncestry | null;
+    adScriptAncestry: Protocol.Network.AdAncestry | null;
 }
 interface FrameDetailsViewInput {
     frame: SDK.ResourceTreeModel.ResourceTreeFrame;
     target: SDK.Target.Target | null;
     creationStackTrace: StackTrace.StackTrace.StackTrace | null;
-    adScriptAncestry: Protocol.Page.AdScriptAncestry | null;
+    adScriptAncestry: Protocol.Network.AdAncestry | null;
     linkTargetDOMNode: SDK.DOMModel.DOMNode | null;
     permissionsPolicies: Protocol.Page.PermissionsPolicyFeatureState[] | null;
     protocolMonitorExperimentEnabled: boolean;

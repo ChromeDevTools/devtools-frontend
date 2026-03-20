@@ -139,9 +139,14 @@ export class ConversationHandler extends Common.ObjectWrapper.ObjectWrapper {
     }
     async *#createAndDoExternalConversation(opts) {
         const { conversationType, aiAgent, prompt, selected } = opts;
-        const conversation = new AiConversation(conversationType, [], aiAgent.sessionId, 
-        /* isReadOnly */ true, this.#aidaClient, undefined, 
-        /* isExternal */ true);
+        const conversation = new AiConversation({
+            type: conversationType,
+            data: [],
+            id: aiAgent.sessionId,
+            isReadOnly: true,
+            aidaClient: this.#aidaClient,
+            isExternal: true,
+        });
         return yield* this.#doExternalConversation({ conversation, prompt, selected });
     }
     async *#doExternalConversation(opts) {

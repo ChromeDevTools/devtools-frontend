@@ -141,7 +141,7 @@ export declare class ResourceTreeFrame {
     get name(): string;
     get url(): Platform.DevToolsPath.UrlString;
     domainAndRegistry(): string;
-    getAdScriptAncestry(frameId: Protocol.Page.FrameId): Promise<Protocol.Page.AdScriptAncestry | null>;
+    getAdScriptAncestry(frameId: Protocol.Page.FrameId): Promise<Protocol.Network.AdAncestry | null>;
     get securityOrigin(): string | null;
     get securityOriginDetails(): Protocol.Page.SecurityOriginDetails | null;
     getStorageKey(forceFetch: boolean): Promise<string | null>;

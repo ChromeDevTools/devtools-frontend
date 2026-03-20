@@ -296,6 +296,29 @@ export class PerformanceAgent extends AiAgent {
         metadata: { source: 'devtools', score: ScorePriority.CRITICAL }
     };
     #traceFacts = [];
+    /**
+     * These facts do not contain page data, they are static instructions to the
+     * LLM, so we don't need to add them to the disclosure.
+     */
+    #factsToNeverDisclose = new Set([
+        this.#callFrameDataDescriptionFact,
+        this.#networkDataDescriptionFact,
+        this.#freshTraceExtraPreambleFact,
+        this.#notExternalExtraPreambleFact,
+    ]);
+    /**
+     * When we enhance the query with additional information, we need to know it
+     * so we can show it in the disclosure UI. This is cleared and then populated
+     * on each prompt.
+     */
+    #additionalSelectionsForQuery = [];
+    /**
+     * The CWV widget is shown when we analyze the trace summary, but we don't
+     * want to show it on every single "Analyzing data..." pill, as we show one
+     * after every prompt. So we make sure for a given Insight Set (which is based on navigation)
+     * we only show it once.
+     */
+    #hasShownWidgetForInsightSet = new WeakSet();
     get preamble() {
         return buildPreamble();
     }
@@ -319,9 +342,17 @@ export class PerformanceAgent extends AiAgent {
         if (!context) {
             return;
         }
+        const contextDisclosure = [];
+        for (const fact of this.currentFacts()) {
+            if (this.#factsToNeverDisclose.has(fact)) {
+                continue;
+            }
+            contextDisclosure.push(fact.text);
+        }
+        contextDisclosure.push(...this.#additionalSelectionsForQuery);
         const widgets = [];
         const primaryInsightSet = context.getItem().primaryInsightSet;
-        if (primaryInsightSet) {
+        if (primaryInsightSet && !this.#hasShownWidgetForInsightSet.has(primaryInsightSet)) {
             widgets.push({
                 name: 'CORE_VITALS',
                 data: {
@@ -329,13 +360,14 @@ export class PerformanceAgent extends AiAgent {
                     insightSetKey: primaryInsightSet.id,
                 },
             });
+            this.#hasShownWidgetForInsightSet.add(primaryInsightSet);
         }
         yield {
             type: "context" /* ResponseType.CONTEXT */,
             details: [
                 {
-                    title: 'Trace',
-                    text: this.#formatter?.formatTraceSummary() ?? '',
+                    title: 'Trace details',
+                    text: contextDisclosure.join('\n'),
                 },
             ],
             widgets,
@@ -447,6 +479,7 @@ export class PerformanceAgent extends AiAgent {
                 selected.push(`User selected the ${focus.insight.insightKey} insight.\n\n`);
             }
         }
+        this.#additionalSelectionsForQuery = selected;
         if (!selected.length) {
             return query;
         }

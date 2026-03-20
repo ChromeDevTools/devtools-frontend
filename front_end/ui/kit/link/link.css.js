@@ -18,8 +18,8 @@ export default `/*
 
 @media (forced-colors: active) {
   :host {
-    background: Highlight;
-    color: HighlightText;
+    forced-color-adjust: none;
+    color: linktext;
   }
 }
 

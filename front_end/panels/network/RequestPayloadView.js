@@ -138,7 +138,10 @@ export const DEFAULT_VIEW = (input, output, target) => {
     })();
     const createPayload = (parsedFormData) => {
         const object = new SDK.RemoteObject.LocalJSONObject(parsedFormData);
-        const section = new ObjectUI.ObjectPropertiesSection.RootElement(new ObjectUI.ObjectPropertiesSection.ObjectTree(object));
+        const section = new ObjectUI.ObjectPropertiesSection.RootElement(new ObjectUI.ObjectPropertiesSection.ObjectTree(object, {
+            readOnly: true,
+            propertiesMode: 1 /* ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED */,
+        }));
         section.title = document.createTextNode(object.description);
         section.listItemElement.classList.add('source-code', 'object-properties-section');
         section.childrenListElement.classList.add('source-code', 'object-properties-section');

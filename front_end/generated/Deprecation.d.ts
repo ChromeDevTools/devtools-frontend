@@ -48,6 +48,14 @@ export declare const UIStrings: {
      */
     readonly DataUrlInSvgUse: "Support for data: URLs in SVGUseElement is deprecated and it will be removed in the future.";
     /**
+     * @description Warning displayed to developers when document.createEvent() is called with 'KeyboardEvents', which is a non-standard event interface that will be removed.
+     */
+    readonly DocumentCreateEventKeyboardEvents: "document.createEvent('KeyboardEvents') is deprecated and will be removed. Use `new KeyboardEvent()` instead.";
+    /**
+     * @description Warning displayed to developers when document.createEvent() is called with 'TransitionEvent', which is a non-standard event interface that will be removed.
+     */
+    readonly DocumentCreateEventTransitionEvent: "document.createEvent('TransitionEvent') is deprecated and will be removed. Use `new TransitionEvent()` instead.";
+    /**
      * @description Translation is not needed, this will never be exposed in production code.
      */
     readonly ExampleBrowserProcessDeprecation: "This is an example for showing the code required for a browser process reported deprecation.";

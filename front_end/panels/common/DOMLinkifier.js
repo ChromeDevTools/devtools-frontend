@@ -9,6 +9,7 @@ import { Directives, html, nothing, render } from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import domLinkifierStyles from './domLinkifier.css.js';
 const { classMap, ifDefined } = Directives;
+const { widget } = UI.Widget;
 const UIStrings = {
     /**
      * @description Text displayed when trying to create a link to a node in the UI, but the node
@@ -85,6 +86,7 @@ export class DOMNodeLink extends UI.Widget.Widget {
             onClick: () => {
                 void Common.Revealer.reveal(this.#node);
                 void this.#node?.scrollIntoView();
+                options.onClick?.();
                 return false;
             },
             onMouseOver: () => {
@@ -189,6 +191,7 @@ export class DeferredDOMNodeLink extends UI.Widget.Widget {
                     }
                     void Common.Revealer.reveal(node);
                     void node?.scrollIntoView();
+                    this.#options?.onClick?.();
                 });
             },
         };
@@ -206,14 +209,10 @@ export class Linkifier {
     }
     linkify(node, options) {
         if (node instanceof SDK.DOMModel.DOMNode) {
-            const link = document.createElement('devtools-widget');
-            link.widgetConfig = UI.Widget.widgetConfig(e => new DOMNodeLink(e, node, options));
-            return link;
+            return html `<devtools-widget ${widget(e => new DOMNodeLink(e, node, options))}>${options?.textContent ? html `${options.textContent}` : nothing}</devtools-widget>`;
         }
         if (node instanceof SDK.DOMModel.DeferredDOMNode) {
-            const link = document.createElement('devtools-widget');
-            link.widgetConfig = UI.Widget.widgetConfig(e => new DeferredDOMNodeLink(e, node, options));
-            return link;
+            return html `<devtools-widget ${widget(e => new DeferredDOMNodeLink(e, node, options))}>${options?.textContent ? html `${options.textContent}` : nothing}</devtools-widget>`;
         }
         throw new Error('Can\'t linkify non-node');
     }

@@ -548,14 +548,20 @@ export class RequestTimingView extends UI.Widget.VBox {
         const origRequest = Logs.NetworkLog.NetworkLog.instance().originalRequestForURL(this.#request.url());
         if (origRequest) {
             const requestObject = SDK.RemoteObject.RemoteObject.fromLocalObject(origRequest);
-            const requestTreeElement = new ObjectUI.ObjectPropertiesSection.RootElement(new ObjectUI.ObjectPropertiesSection.ObjectTree(requestObject));
+            const requestTreeElement = new ObjectUI.ObjectPropertiesSection.RootElement(new ObjectUI.ObjectPropertiesSection.ObjectTree(requestObject, {
+                readOnly: true,
+                propertiesMode: 1 /* ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED */,
+            }));
             requestTreeElement.title = i18nString(UIStrings.originalRequest);
             detailsView.appendChild(requestTreeElement);
         }
         const response = Logs.NetworkLog.NetworkLog.instance().originalResponseForURL(this.#request.url());
         if (response) {
             const responseObject = SDK.RemoteObject.RemoteObject.fromLocalObject(response);
-            const responseTreeElement = new ObjectUI.ObjectPropertiesSection.RootElement(new ObjectUI.ObjectPropertiesSection.ObjectTree(responseObject));
+            const responseTreeElement = new ObjectUI.ObjectPropertiesSection.RootElement(new ObjectUI.ObjectPropertiesSection.ObjectTree(responseObject, {
+                readOnly: true,
+                propertiesMode: 1 /* ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED */,
+            }));
             responseTreeElement.title = i18nString(UIStrings.responseReceived);
             detailsView.appendChild(responseTreeElement);
         }

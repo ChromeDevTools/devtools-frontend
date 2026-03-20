@@ -2580,6 +2580,7 @@ var NetworkRequestNode = class _NetworkRequestNode extends NetworkNode {
   isOnInitiatorPathInternal;
   isOnInitiatedPathInternal;
   linkifiedInitiatorAnchor;
+  static requestNumberByRequest = /* @__PURE__ */ new WeakMap();
   constructor(parentView, request) {
     super(parentView);
     this.initiatorCell = null;
@@ -2588,6 +2589,18 @@ var NetworkRequestNode = class _NetworkRequestNode extends NetworkNode {
     this.selectable = true;
     this.isOnInitiatorPathInternal = false;
     this.isOnInitiatedPathInternal = false;
+  }
+  static requestNumber(request) {
+    const cachedRequestNumber = _NetworkRequestNode.requestNumberByRequest.get(request);
+    if (cachedRequestNumber !== void 0) {
+      return cachedRequestNumber;
+    }
+    const requestNumber = Logs2.NetworkLog.NetworkLog.instance().requests().indexOf(request) + 1;
+    if (requestNumber > 0) {
+      _NetworkRequestNode.requestNumberByRequest.set(request, requestNumber);
+      return requestNumber;
+    }
+    return 0;
   }
   static NameComparator(a, b) {
     const aName = a.displayName().toLowerCase();
@@ -2631,6 +2644,16 @@ var NetworkRequestNode = class _NetworkRequestNode extends NetworkNode {
       return -1;
     }
     return aRequest.transferSize - bRequest.transferSize || aRequest.resourceSize - bRequest.resourceSize || aRequest.identityCompare(bRequest);
+  }
+  static RequestNumberComparator(a, b) {
+    const aRequest = a.requestOrFirstKnownChildRequest();
+    const bRequest = b.requestOrFirstKnownChildRequest();
+    if (!aRequest || !bRequest) {
+      return !aRequest ? -1 : 1;
+    }
+    const aRequestNumber = _NetworkRequestNode.requestNumber(aRequest);
+    const bRequestNumber = _NetworkRequestNode.requestNumber(bRequest);
+    return aRequestNumber - bRequestNumber || aRequest.identityCompare(bRequest);
   }
   static TypeComparator(a, b) {
     const aRequest = a.requestOrFirstKnownChildRequest();
@@ -2941,6 +2964,11 @@ var NetworkRequestNode = class _NetworkRequestNode extends NetworkNode {
       }
       case "url": {
         this.renderPrimaryCell(cell, columnId, this.requestInternal.url());
+        break;
+      }
+      case "request-number": {
+        const requestNumber = _NetworkRequestNode.requestNumber(this.requestInternal);
+        this.setTextAndTitle(cell, requestNumber ? String(requestNumber) : "");
         break;
       }
       case "method": {
@@ -4995,7 +5023,10 @@ var DEFAULT_VIEW7 = (input, output, target) => {
   })();
   const createPayload = (parsedFormData2) => {
     const object = new SDK9.RemoteObject.LocalJSONObject(parsedFormData2);
-    const section5 = new ObjectUI.ObjectPropertiesSection.RootElement(new ObjectUI.ObjectPropertiesSection.ObjectTree(object));
+    const section5 = new ObjectUI.ObjectPropertiesSection.RootElement(new ObjectUI.ObjectPropertiesSection.ObjectTree(object, {
+      readOnly: true,
+      propertiesMode: 1
+    }));
     section5.title = document.createTextNode(object.description);
     section5.listItemElement.classList.add("source-code", "object-properties-section");
     section5.childrenListElement.classList.add("source-code", "object-properties-section");
@@ -6659,14 +6690,20 @@ var RequestTimingView = class _RequestTimingView extends UI16.Widget.VBox {
     const origRequest = Logs4.NetworkLog.NetworkLog.instance().originalRequestForURL(this.#request.url());
     if (origRequest) {
       const requestObject = SDK10.RemoteObject.RemoteObject.fromLocalObject(origRequest);
-      const requestTreeElement = new ObjectUI2.ObjectPropertiesSection.RootElement(new ObjectUI2.ObjectPropertiesSection.ObjectTree(requestObject));
+      const requestTreeElement = new ObjectUI2.ObjectPropertiesSection.RootElement(new ObjectUI2.ObjectPropertiesSection.ObjectTree(requestObject, {
+        readOnly: true,
+        propertiesMode: 1
+      }));
       requestTreeElement.title = i18nString15(UIStrings15.originalRequest);
       detailsView.appendChild(requestTreeElement);
     }
     const response = Logs4.NetworkLog.NetworkLog.instance().originalResponseForURL(this.#request.url());
     if (response) {
       const responseObject = SDK10.RemoteObject.RemoteObject.fromLocalObject(response);
-      const responseTreeElement = new ObjectUI2.ObjectPropertiesSection.RootElement(new ObjectUI2.ObjectPropertiesSection.ObjectTree(responseObject));
+      const responseTreeElement = new ObjectUI2.ObjectPropertiesSection.RootElement(new ObjectUI2.ObjectPropertiesSection.ObjectTree(responseObject, {
+        readOnly: true,
+        propertiesMode: 1
+      }));
       responseTreeElement.title = i18nString15(UIStrings15.responseReceived);
       detailsView.appendChild(responseTreeElement);
     }
@@ -9506,6 +9543,10 @@ var UIStrings21 = {
    */
   url: "Url",
   /**
+   * @description Column header in the Network log view of the Network panel
+   */
+  requestNumber: "Request #",
+  /**
    * @description Text for one or a group of functions
    */
   method: "Method",
@@ -10253,6 +10294,12 @@ var DEFAULT_COLUMNS = [
     hideable: true,
     hideableGroup: "path",
     sortingFunction: NetworkRequestNode.RequestURLComparator
+  },
+  {
+    id: "request-number",
+    title: i18nLazyString3(UIStrings21.requestNumber),
+    align: "right",
+    sortingFunction: NetworkRequestNode.RequestNumberComparator
   },
   {
     id: "method",

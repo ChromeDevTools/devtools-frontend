@@ -85,6 +85,7 @@ models/stack_trace/Trie.test.js
 core/common/Base64.browser.test.js
 core/dom_extension/DOMExtension.test.js
 core/host/AidaClient.test.js
+core/host/AidaGcaTranslation.test.js
 core/host/DispatchHttpRequestClient.test.js
 core/host/GdpClient.test.js
 core/i18n/i18nImpl.test.js
@@ -386,6 +387,7 @@ panels/common/AiCodeCompletionTeaser.test.js
 panels/common/AiCodeGenerationTeaser.test.js
 panels/common/BadgeNotification.test.js
 panels/common/DOMLinkifier.test.js
+panels/common/ExtensionPanel.test.js
 panels/common/ExtensionServer.test.js
 panels/common/GdpSignUpDialog.test.js
 panels/console/ConsoleContextSelector.test.js
@@ -560,6 +562,7 @@ panels/sources/SourcesView.test.js
 panels/sources/TabbedEditorContainer.test.js
 panels/sources/ThreadsSidebarPane.test.js
 panels/sources/UISourceCodeFrame.test.js
+panels/sources/WatchExpressionsSidebarPane.test.js
 panels/sources/components/HeadersView.test.js
 panels/timeline/AnnotationHelpers.test.js
 panels/timeline/Breadcrumbs.test.js
@@ -736,7 +739,9 @@ ui/legacy/components/inline_editor/ColorSwatch.test.js
 ui/legacy/components/inline_editor/FontEditorUnitConverter.test.js
 ui/legacy/components/inline_editor/FontEditorUtils.test.js
 ui/legacy/components/inline_editor/LinkSwatch.test.js
+ui/legacy/components/object_ui/CustomPreviewComponent.test.js
 ui/legacy/components/object_ui/JavaScriptREPL.test.js
+ui/legacy/components/object_ui/ObjectPopoverHelper.test.js
 ui/legacy/components/object_ui/ObjectPropertiesSection.test.js
 ui/legacy/components/perf_ui/ChartViewport.test.js
 ui/legacy/components/perf_ui/FilmStripView.test.js
@@ -748,6 +753,7 @@ ui/legacy/components/perf_ui/TimelineOverviewCalculator.test.js
 ui/legacy/components/quick_open/CommandMenu.test.js
 ui/legacy/components/quick_open/FilteredListWidget.test.js
 ui/legacy/components/source_frame/BinaryResourceViewFactory.test.js
+ui/legacy/components/source_frame/JSONView.test.js
 ui/legacy/components/source_frame/ResourceSourceFrame.test.js
 ui/legacy/components/source_frame/SourceFrame.test.js
 ui/legacy/components/source_frame/StreamingContentHexView.test.js

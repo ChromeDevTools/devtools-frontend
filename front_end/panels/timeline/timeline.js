@@ -7143,17 +7143,13 @@ var TimelinePanel = class _TimelinePanel extends Common9.ObjectWrapper.eventMixi
       if (!focus) {
         throw new Error("could not create performance agent focus");
       }
-      const conversation = new AiAssistanceModel.AiConversation.AiConversation(
-        "drjones-performance-full",
-        [],
-        void 0,
-        /* isReadOnly */
-        true,
-        conversationHandler.aidaClient,
-        void 0,
-        /* isExternal */
-        true
-      );
+      const conversation = new AiAssistanceModel.AiConversation.AiConversation({
+        type: "drjones-performance-full",
+        data: [],
+        isReadOnly: true,
+        aidaClient: conversationHandler.aidaClient,
+        isExternal: true
+      });
       const selected = new AiAssistanceModel.PerformanceAgent.PerformanceTraceContext(focus);
       selected.external = true;
       this.#externalAIConversationData = {
@@ -10250,7 +10246,8 @@ var TimelineUIUtils = class _TimelineUIUtils {
     const relatedNodes = relatedNodesMap?.values() || [];
     for (const relatedNode of relatedNodes) {
       if (relatedNode) {
-        const nodeSpan = PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(relatedNode);
+        const nodeSpan = document.createElement("span");
+        render2(PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(relatedNode), nodeSpan);
         contentHelper.appendElementRow(relatedNodeLabel || i18nString19(UIStrings19.relatedNode), nodeSpan);
       }
     }
@@ -10509,7 +10506,7 @@ var TimelineUIUtils = class _TimelineUIUtils {
       const node = invalidation.args.data.nodeId && relatedNodesMap ? relatedNodesMap.get(invalidation.args.data.nodeId) : null;
       if (node) {
         const nodeSpan2 = document.createElement("span");
-        nodeSpan2.appendChild(PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(node));
+        render2(PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(node), nodeSpan2);
         return nodeSpan2;
       }
       if (invalidation.args.data.nodeName) {

@@ -50,9 +50,9 @@ interface BaseFunctionParam {
     nullable?: boolean;
 }
 export interface FunctionPrimitiveParams extends BaseFunctionParam {
-    type: ParametersTypes.BOOLEAN | ParametersTypes.INTEGER | ParametersTypes.STRING | ParametersTypes.BOOLEAN;
+    type: ParametersTypes.BOOLEAN | ParametersTypes.INTEGER | ParametersTypes.STRING;
 }
-interface FunctionArrayParam extends BaseFunctionParam {
+export interface FunctionArrayParam extends BaseFunctionParam {
     type: ParametersTypes.ARRAY;
     items: FunctionPrimitiveParams;
 }
@@ -198,7 +198,8 @@ export interface CompletionRequest {
 }
 export declare enum UseCase {
     USE_CASE_UNSPECIFIED = 0,
-    CODE_GENERATION = 1
+    CODE_GENERATION = 1,
+    CODE_TRANSFORMATION = 2
 }
 export interface GenerateCodeRequest {
     client: string;

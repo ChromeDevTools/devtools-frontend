@@ -364,8 +364,8 @@ function renderWalkthroughSidebarButton(input, steps) {
 /**
  * Responsible for rendering the AI Walkthrough UI. This can take different
  * shapes and involve different parts depending on if the walkthrough is
- * inlined, expanded, or if we have side-effect steps that need the user to
- * view them.
+ * inlined, expanded, or if we have side-effect steps. In cases where the
+ * walkthrough is closed, side-effect steps are rendered inline in the chat.
  */
 function renderWalkthroughUI(input, steps) {
     const lastStep = steps.at(-1);
@@ -377,11 +377,16 @@ function renderWalkthroughUI(input, steps) {
     // If the walkthrough is in the sidebar, we render a button into the
     // ChatView to open it.
     const openWalkThroughSidebarButton = !input.walkthrough.isInlined ? renderWalkthroughSidebarButton(input, steps) : Lit.nothing;
-    // If there are side-effect steps, and the walkthrough is not open, we render
-    // those inline so that the user can see them and approve them.
-    // Note: this is a temporary approach and needs more UX discussion; b/487921578
+    // A message's walkthrough is considered expanded if the walkthrough is
+    // open and it is specifically targeting this message. This is necessary
+    // because the walkthrough state is shared across all messages in the chat.
+    const isExpanded = (input.walkthrough.isExpanded && input.walkthrough.activeMessage === input.message);
+    // When a side-effect step is present, it's shown in the main chat UI if the
+    // walkthrough is closed, allowing the user to approve it without opening
+    // the walkthrough. If the walkthrough is already open, the side-effect
+    // step is displayed within the walkthrough instead.
     // clang-format off
-    const sideEffectStepsUI = !input.walkthrough.isInlined && !input.walkthrough.isExpanded && sideEffectSteps.length > 0 ? sideEffectSteps.map(step => html `
+    const sideEffectStepsUI = !isExpanded && sideEffectSteps.length > 0 ? sideEffectSteps.map(step => html `
     <div class="side-effect-container">
       ${renderStep({
         step,
@@ -391,10 +396,6 @@ function renderWalkthroughUI(input, steps) {
     })}
     </div> `) : Lit.nothing;
     // clang-format on
-    // If the walkthrough is inlined (narrow width screens), render it here.
-    // Note that we force it open if there is a side-effect.
-    const isExpanded = (input.walkthrough.isExpanded && input.walkthrough.activeMessage === input.message) ||
-        steps.some(s => s.requestApproval);
     // clang-format off
     const walkthroughInline = input.walkthrough.isInlined ? html `
     <div class="walkthrough-container">
@@ -411,8 +412,8 @@ function renderWalkthroughUI(input, steps) {
   ` : Lit.nothing;
     return html `
     ${openWalkThroughSidebarButton}
-    ${sideEffectStepsUI}
     ${walkthroughInline}
+    ${sideEffectStepsUI}
   `;
     // clang-format on
 }

@@ -1019,9 +1019,6 @@ var SensorsView = class extends UI2.Widget.VBox {
   alphaElement;
   betaElement;
   gammaElement;
-  alphaSetter;
-  betaSetter;
-  gammaSetter;
   orientationLayer;
   boxElement;
   boxMatrix;
@@ -1530,9 +1527,9 @@ var SensorsView = class extends UI2.Widget.VBox {
       return Math.round(angle * 1e4) / 1e4;
     }
     if (modificationSource !== "userInput") {
-      this.alphaSetter(String(roundAngle(deviceOrientation.alpha)));
-      this.betaSetter(String(roundAngle(deviceOrientation.beta)));
-      this.gammaSetter(String(roundAngle(deviceOrientation.gamma)));
+      this.#setOrientationInputValue(this.alphaElement, String(roundAngle(deviceOrientation.alpha)));
+      this.#setOrientationInputValue(this.betaElement, String(roundAngle(deviceOrientation.beta)));
+      this.#setOrientationInputValue(this.gammaElement, String(roundAngle(deviceOrientation.gamma)));
     }
     const animate = modificationSource !== "userDrag";
     this.setBoxOrientation(deviceOrientation, animate);
@@ -1540,7 +1537,87 @@ var SensorsView = class extends UI2.Widget.VBox {
     this.applyDeviceOrientation();
     UI2.ARIAUtils.LiveAnnouncer.alert(i18nString2(UIStrings2.deviceOrientationSetToAlphaSBeta, { PH1: deviceOrientation.alpha, PH2: deviceOrientation.beta, PH3: deviceOrientation.gamma }));
   }
-  createAxisInput(parentElement, input, label, validator) {
+  #onOrientationInput(event) {
+    const input = event.currentTarget;
+    const valid = this.#validateOrientationInput(input, input.value);
+    input.classList.toggle("error-input", !valid);
+  }
+  #onOrientationChange(event) {
+    const input = event.currentTarget;
+    const valid = this.#validateOrientationInput(input, input.value);
+    input.classList.toggle("error-input", !valid);
+    if (valid) {
+      this.applyDeviceOrientationUserInput();
+    }
+  }
+  #onOrientationKeyDown(event) {
+    const input = event.currentTarget;
+    if (event.key === "Enter") {
+      const valid2 = this.#validateOrientationInput(input, input.value);
+      if (valid2) {
+        this.applyDeviceOrientationUserInput();
+      }
+      event.preventDefault();
+      return;
+    }
+    const value = UI2.UIUtils.modifiedFloatNumber(parseFloat(input.value), event, 1);
+    if (value === null) {
+      return;
+    }
+    const stringValue = String(value);
+    const valid = this.#validateOrientationInput(input, stringValue);
+    if (valid) {
+      this.#setOrientationInputValue(input, stringValue);
+    }
+    event.preventDefault();
+  }
+  #onOrientationFocus(event) {
+    const input = event.currentTarget;
+    input.select();
+  }
+  #validateOrientationInput(input, value) {
+    if (input === this.alphaElement) {
+      return SDK2.EmulationModel.DeviceOrientation.alphaAngleValidator(value);
+    }
+    if (input === this.betaElement) {
+      return SDK2.EmulationModel.DeviceOrientation.betaAngleValidator(value);
+    }
+    if (input === this.gammaElement) {
+      return SDK2.EmulationModel.DeviceOrientation.gammaAngleValidator(value);
+    }
+    return false;
+  }
+  #setOrientationInputValue(input, value) {
+    if (input.value === value) {
+      return;
+    }
+    input.value = value;
+    const valid = this.#validateOrientationInput(input, value);
+    input.classList.toggle("error-input", !valid);
+  }
+  createDeviceOrientationOverrideElement(deviceOrientation) {
+    const fieldsetElement = document.createElement("fieldset");
+    fieldsetElement.classList.add("device-orientation-override-section");
+    const cellElement = fieldsetElement.createChild("td", "orientation-inputs-cell");
+    this.alphaElement = UI2.UIUtils.createInput("", "number", "alpha");
+    this.alphaElement.setAttribute("step", "any");
+    this.#setupAxisInput(cellElement, this.alphaElement, i18nString2(UIStrings2.alpha));
+    this.#setOrientationInputValue(this.alphaElement, String(deviceOrientation.alpha));
+    this.betaElement = UI2.UIUtils.createInput("", "number", "beta");
+    this.betaElement.setAttribute("step", "any");
+    this.#setupAxisInput(cellElement, this.betaElement, i18nString2(UIStrings2.beta));
+    this.#setOrientationInputValue(this.betaElement, String(deviceOrientation.beta));
+    this.gammaElement = UI2.UIUtils.createInput("", "number", "gamma");
+    this.gammaElement.setAttribute("step", "any");
+    this.#setupAxisInput(cellElement, this.gammaElement, i18nString2(UIStrings2.gamma));
+    this.#setOrientationInputValue(this.gammaElement, String(deviceOrientation.gamma));
+    const resetButton = UI2.UIUtils.createTextButton(i18nString2(UIStrings2.reset), this.resetDeviceOrientation.bind(this), { className: "orientation-reset-button", jslogContext: "sensors.reset-device-orientiation" });
+    UI2.ARIAUtils.setLabel(resetButton, i18nString2(UIStrings2.resetDeviceOrientation));
+    resetButton.setAttribute("type", "reset");
+    cellElement.appendChild(resetButton);
+    return fieldsetElement;
+  }
+  #setupAxisInput(parentElement, input, label) {
     const div = parentElement.createChild("div", "orientation-axis-input-container");
     div.appendChild(input);
     div.appendChild(UI2.UIUtils.createLabel(
@@ -1549,29 +1626,10 @@ var SensorsView = class extends UI2.Widget.VBox {
       "",
       input
     ));
-    return UI2.UIUtils.bindInput(input, this.applyDeviceOrientationUserInput.bind(this), validator, true);
-  }
-  createDeviceOrientationOverrideElement(deviceOrientation) {
-    const fieldsetElement = document.createElement("fieldset");
-    fieldsetElement.classList.add("device-orientation-override-section");
-    const cellElement = fieldsetElement.createChild("td", "orientation-inputs-cell");
-    this.alphaElement = UI2.UIUtils.createInput("", "number", "alpha");
-    this.alphaElement.setAttribute("step", "any");
-    this.alphaSetter = this.createAxisInput(cellElement, this.alphaElement, i18nString2(UIStrings2.alpha), SDK2.EmulationModel.DeviceOrientation.alphaAngleValidator);
-    this.alphaSetter(String(deviceOrientation.alpha));
-    this.betaElement = UI2.UIUtils.createInput("", "number", "beta");
-    this.betaElement.setAttribute("step", "any");
-    this.betaSetter = this.createAxisInput(cellElement, this.betaElement, i18nString2(UIStrings2.beta), SDK2.EmulationModel.DeviceOrientation.betaAngleValidator);
-    this.betaSetter(String(deviceOrientation.beta));
-    this.gammaElement = UI2.UIUtils.createInput("", "number", "gamma");
-    this.gammaElement.setAttribute("step", "any");
-    this.gammaSetter = this.createAxisInput(cellElement, this.gammaElement, i18nString2(UIStrings2.gamma), SDK2.EmulationModel.DeviceOrientation.gammaAngleValidator);
-    this.gammaSetter(String(deviceOrientation.gamma));
-    const resetButton = UI2.UIUtils.createTextButton(i18nString2(UIStrings2.reset), this.resetDeviceOrientation.bind(this), { className: "orientation-reset-button", jslogContext: "sensors.reset-device-orientiation" });
-    UI2.ARIAUtils.setLabel(resetButton, i18nString2(UIStrings2.resetDeviceOrientation));
-    resetButton.setAttribute("type", "reset");
-    cellElement.appendChild(resetButton);
-    return fieldsetElement;
+    input.addEventListener("change", this.#onOrientationChange.bind(this), false);
+    input.addEventListener("input", this.#onOrientationInput.bind(this), false);
+    input.addEventListener("keydown", this.#onOrientationKeyDown.bind(this), false);
+    input.addEventListener("focus", this.#onOrientationFocus.bind(this), false);
   }
   setBoxOrientation(deviceOrientation, animate) {
     if (animate) {

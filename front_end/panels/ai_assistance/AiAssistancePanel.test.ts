@@ -1381,9 +1381,10 @@ describeWithMockConnection('AI Assistance Panel', () => {
       Network.NetworkPanel.NetworkPanel.instance().detach();
     });
 
-    it('blocks input on cross origin requests', async () => {
+    it('blocks input on requests with a different document origin', async () => {
       const networkRequest = createNetworkRequest({
-        url: urlString`https://a.test`,
+        url: urlString`https://a.test/app.js`,
+        documentURL: urlString`https://a.test`,
       });
       UI.Context.Context.instance().setFlavor(SDK.NetworkRequest.NetworkRequest, networkRequest);
 
@@ -1409,7 +1410,8 @@ describeWithMockConnection('AI Assistance Panel', () => {
 
       // Change context to https://b.test.
       const networkRequest2 = createNetworkRequest({
-        url: urlString`https://b.test`,
+        url: urlString`https://b.test/app.js`,
+        documentURL: urlString`https://b.test`,
       });
       UI.Context.Context.instance().setFlavor(SDK.NetworkRequest.NetworkRequest, networkRequest2);
 
@@ -1494,6 +1496,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
          viewManagerIsViewVisibleStub.callsFake(viewName => viewName === 'network');
          const networkRequest = createNetworkRequest({
            url: urlString`https://a.test`,
+           documentURL: urlString`https://a.test`,
          });
          UI.Context.Context.instance().setFlavor(SDK.NetworkRequest.NetworkRequest, networkRequest);
 
@@ -1522,6 +1525,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
          // Change context to https://b.test.
          const networkRequest2 = createNetworkRequest({
            url: urlString`https://b.test`,
+           documentURL: urlString`https://b.test`,
          });
          UI.Context.Context.instance().setFlavor(SDK.NetworkRequest.NetworkRequest, networkRequest2);
 
@@ -1777,9 +1781,8 @@ describeWithMockConnection('AI Assistance Panel', () => {
       it('should be disabled when the next message is blocked by cross origin and show crossOriginError placeholder',
          async () => {
            Common.Settings.moduleSetting('ai-assistance-enabled').set(true);
-           const networkRequest = createNetworkRequest({
-             url: urlString`https://a.test`,
-           });
+           const networkRequest =
+               createNetworkRequest({url: urlString`https://a.test`, documentURL: urlString`https://a.test`});
            UI.Context.Context.instance().setFlavor(SDK.NetworkRequest.NetworkRequest, networkRequest);
 
            const {panel, view} = await createAiAssistancePanel({
@@ -1802,9 +1805,8 @@ describeWithMockConnection('AI Assistance Panel', () => {
            assert(nextInput.state === AiAssistancePanel.ViewState.CHAT_VIEW);
 
            // Change context to https://b.test.
-           const networkRequest2 = createNetworkRequest({
-             url: urlString`https://b.test`,
-           });
+           const networkRequest2 =
+               createNetworkRequest({url: urlString`https://b.test`, documentURL: urlString`https://b.test`});
            UI.Context.Context.instance().setFlavor(SDK.NetworkRequest.NetworkRequest, networkRequest2);
 
            void panel.handleAction('drjones.network-floating-button');

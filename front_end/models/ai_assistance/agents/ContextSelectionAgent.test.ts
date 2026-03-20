@@ -220,6 +220,209 @@ describeWithMockConnection('ContextSelectionAgent', function() {
         },
       ]);
     });
+
+    it('filters network requests by origin', async () => {
+      const request1 = SDK.NetworkRequest.NetworkRequest.create(
+          'requestId1' as Protocol.Network.RequestId,
+          urlString`https://example.com/`,
+          urlString`https://example.com/`,
+          null,
+          null,
+          null,
+      );
+      request1.statusCode = 200;
+      request1.setIssueTime(0, 0);
+      request1.endTime = 1;
+      const request2 = SDK.NetworkRequest.NetworkRequest.create(
+          'requestId2' as Protocol.Network.RequestId,
+          urlString`https://another.com/`,
+          urlString`https://another.com/`,
+          null,
+          null,
+          null,
+      );
+      request2.statusCode = 200;
+      request2.setIssueTime(0, 0);
+      request2.endTime = 1;
+
+      const networkLog = Logs.NetworkLog.NetworkLog.instance();
+      sinon.stub(networkLog, 'requests').returns([request1, request2]);
+
+      const agent = new ContextSelectionAgent.ContextSelectionAgent({
+        aidaClient: mockAidaClient([
+          [{
+            functionCalls: [{
+              name: 'listNetworkRequests',
+              args: {},
+            }],
+            explanation: '',
+          }],
+          [{explanation: 'Done'}],
+        ]),
+        allowedOrigin: () => 'https://example.com',
+      });
+
+      await Array.fromAsync(agent.run('test', {selected: null}));
+
+      const requestToAida = agent.buildRequest({text: ''}, Host.AidaClient.Role.USER);
+      assert.deepEqual(requestToAida.historical_contexts, [
+        {
+          role: 1,
+          parts: [{text: 'test'}],
+        },
+        {
+          role: 2,
+          parts: [{
+            functionCall: {
+              name: 'listNetworkRequests',
+              args: {},
+            },
+          }],
+        },
+        {
+          role: Host.AidaClient.Role.ROLE_UNSPECIFIED,
+          parts: [{
+            functionResponse: {
+              name: 'listNetworkRequests',
+              response: {
+                result: [
+                  {
+                    id: 'requestId1',
+                    url: 'https://example.com/',
+                    statusCode: 200,
+                    duration: '1.00\xA0s',
+                    transferSize: '0.0\xA0kB',
+                  },
+                ],
+                widgets: undefined,
+              },
+            },
+          }],
+        },
+        {
+          role: 2,
+          parts: [{text: 'Done'}],
+        },
+      ]);
+    });
+
+    it('returns error when all network requests are cross-origin', async () => {
+      const request1 = SDK.NetworkRequest.NetworkRequest.create(
+          'requestId1' as Protocol.Network.RequestId,
+          urlString`https://another.com/`,
+          urlString`https://another.com/`,
+          null,
+          null,
+          null,
+      );
+      request1.statusCode = 200;
+
+      const networkLog = Logs.NetworkLog.NetworkLog.instance();
+      sinon.stub(networkLog, 'requests').returns([request1]);
+
+      const agent = new ContextSelectionAgent.ContextSelectionAgent({
+        aidaClient: mockAidaClient([
+          [{
+            functionCalls: [{
+              name: 'listNetworkRequests',
+              args: {},
+            }],
+            explanation: '',
+          }],
+          [{explanation: 'Done'}],
+        ]),
+        allowedOrigin: () => 'https://example.com',
+      });
+
+      await Array.fromAsync(agent.run('test', {selected: null}));
+
+      const requestToAida = agent.buildRequest({text: ''}, Host.AidaClient.Role.USER);
+      assert.deepEqual(requestToAida.historical_contexts, [
+        {
+          role: 1,
+          parts: [{text: 'test'}],
+        },
+        {
+          role: 2,
+          parts: [{
+            functionCall: {
+              name: 'listNetworkRequests',
+              args: {},
+            },
+          }],
+        },
+        {
+          role: Host.AidaClient.Role.ROLE_UNSPECIFIED,
+          parts: [{
+            functionResponse: {
+              name: 'listNetworkRequests',
+              response: {
+                error: 'No requests showing with origin https://example.com. Tell the user to start a new chat',
+                widgets: undefined,
+              },
+            },
+          }],
+        },
+        {
+          role: 2,
+          parts: [{text: 'Done'}],
+        },
+      ]);
+    });
+
+    it('returns error when there are no network requests', async () => {
+      const networkLog = Logs.NetworkLog.NetworkLog.instance();
+      sinon.stub(networkLog, 'requests').returns([]);
+
+      const agent = new ContextSelectionAgent.ContextSelectionAgent({
+        aidaClient: mockAidaClient([
+          [{
+            functionCalls: [{
+              name: 'listNetworkRequests',
+              args: {},
+            }],
+            explanation: '',
+          }],
+          [{explanation: 'Done'}],
+        ]),
+        allowedOrigin: () => 'https://example.com',
+      });
+
+      await Array.fromAsync(agent.run('test', {selected: null}));
+
+      const requestToAida = agent.buildRequest({text: ''}, Host.AidaClient.Role.USER);
+      assert.deepEqual(requestToAida.historical_contexts, [
+        {
+          role: 1,
+          parts: [{text: 'test'}],
+        },
+        {
+          role: 2,
+          parts: [{
+            functionCall: {
+              name: 'listNetworkRequests',
+              args: {},
+            },
+          }],
+        },
+        {
+          role: Host.AidaClient.Role.ROLE_UNSPECIFIED,
+          parts: [{
+            functionResponse: {
+              name: 'listNetworkRequests',
+              response: {
+                error: 'No requests recorded by DevTools',
+                widgets: undefined,
+              },
+            },
+          }],
+        },
+        {
+          role: 2,
+          parts: [{text: 'Done'}],
+        },
+      ]);
+    });
   });
 
   describe('inspect_dom', () => {
@@ -289,6 +492,52 @@ describeWithMockConnection('ContextSelectionAgent', function() {
       assert.exists(contextChange);
       assert.instanceOf(contextChange.context, NetworkAgent.RequestContext);
       assert.strictEqual(contextChange.context.getItem(), request);
+    });
+
+    it('returns an error when selecting cross-origin network request', async () => {
+      const request = SDK.NetworkRequest.NetworkRequest.create(
+          'requestId' as Protocol.Network.RequestId,
+          urlString`https://another.com/`,
+          urlString`https://another.com/`,
+          null,
+          null,
+          null,
+      );
+      request.statusCode = 200;
+
+      const networkLog = Logs.NetworkLog.NetworkLog.instance();
+      sinon.stub(networkLog, 'requests').returns([request]);
+
+      const agent = new ContextSelectionAgent.ContextSelectionAgent({
+        aidaClient: mockAidaClient([
+          [{
+            functionCalls: [{
+              name: 'selectNetworkRequest',
+              args: {
+                id: 'requestId',
+              },
+            }],
+            explanation: '',
+          }],
+          [{explanation: 'Done'}],
+        ]),
+        allowedOrigin: () => 'https://example.com',
+      });
+
+      const responses = await Array.fromAsync(agent.run('test', {selected: null}));
+      // No context change because we didn't find a suitable nextwork request.
+      assert.isUndefined(responses.find(r => r.type === AiAgent.ResponseType.CONTEXT_CHANGE));
+
+      const requestToAida = agent.buildRequest({text: ''}, Host.AidaClient.Role.USER);
+      assert.deepEqual(requestToAida.historical_contexts?.[2].parts?.[0], {
+        functionResponse: {
+          name: 'selectNetworkRequest',
+          response: {
+            error: 'No request found',
+            widgets: undefined,
+          },
+        },
+      });
     });
   });
 

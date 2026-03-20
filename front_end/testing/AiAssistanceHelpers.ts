@@ -125,11 +125,12 @@ export async function createUISourceCode(options?: {
 export function createNetworkRequest(opts?: {
   url?: Platform.DevToolsPath.UrlString,
   includeInitiators?: boolean,
+  documentURL?: Platform.DevToolsPath.UrlString,
 }): SDK.NetworkRequest.NetworkRequest {
   const networkRequest = SDK.NetworkRequest.NetworkRequest.create(
       'requestId-0' as Protocol.Network.RequestId,
       opts?.url ?? Platform.DevToolsPath.urlString`https://www.example.com/script.js`,
-      Platform.DevToolsPath.urlString``, null, null, null);
+      opts?.documentURL ?? Platform.DevToolsPath.urlString``, null, null, null);
   networkRequest.statusCode = 200;
   networkRequest.setRequestHeaders([{name: 'content-type', value: 'bar1'}]);
   networkRequest.responseHeaders = [{name: 'content-type', value: 'bar2'}, {name: 'x-forwarded-for', value: 'bar3'}];

@@ -95,8 +95,14 @@ export class RequestContext extends ConversationContext<SDK.NetworkRequest.Netwo
     this.#calculator = calculator;
   }
 
+  /**
+   * Note: this is not the literal origin of the network request. This origin
+   * is used to determine when we should force the user to start a new AI
+   * conversation when the context changes. We allow a single AI conversation to
+   * inspect all network requests that were made for that given target URL.
+   */
   override getOrigin(): string {
-    return new URL(this.#request.url()).origin;
+    return this.#request.documentURL;
   }
 
   override getItem(): SDK.NetworkRequest.NetworkRequest {

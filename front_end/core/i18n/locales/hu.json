@@ -593,6 +593,9 @@
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "JavaScript letiltása"
   },
+  "core/sdk/sdk-meta.ts | disableJpegXlFormat": {
+    "message": "JPEG XL-formátum letiltása"
+  },
   "core/sdk/sdk-meta.ts | disableLocalFonts": {
     "message": "Helyi betűtípusok letiltása"
   },
@@ -639,7 +642,7 @@
     "message": "Ne jelenjenek meg a rácsméretek"
   },
   "core/sdk/sdk-meta.ts | doNotShowRulersOnHover": {
-    "message": "Ne mutasson vonalzókat az egérrel rámutatáskor"
+    "message": "Ne jelenjenek meg vonalzók az egérrel rámutatáskor"
   },
   "core/sdk/sdk-meta.ts | emulateAFocusedPage": {
     "message": "Fókuszált oldal emulálása"
@@ -700,6 +703,9 @@
   },
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "JavaScript engedélyezése"
+  },
+  "core/sdk/sdk-meta.ts | enableJpegXlFormat": {
+    "message": "JPEG XL-formátum engedélyezése"
   },
   "core/sdk/sdk-meta.ts | enableLocalFonts": {
     "message": "Helyi betűtípusok engedélyezése"
@@ -797,6 +803,9 @@
   "core/sdk/sdk-meta.ts | remoteFileLoadingInfo": {
     "message": "A példa erőforrások forrás-hozzárendelések. Biztonsági okokból alapértelmezés szerint le van tiltva."
   },
+  "core/sdk/sdk-meta.ts | rulersOnHover": {
+    "message": "Vonalzók az egérrel rámutatáskor"
+  },
   "core/sdk/sdk-meta.ts | screen": {
     "message": "képernyő"
   },
@@ -862,6 +871,9 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableAvifImageFormat": {
     "message": "AVIF-képformátum letiltása"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | disableJpegXlImageFormat": {
+    "message": "JPEG XL-képformátum letiltása"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableLocalFonts": {
     "message": "Helyi betűtípusok letiltása"
@@ -1116,10 +1128,10 @@
     "message": "Jelvények szerzése"
   },
   "entrypoints/main/main-meta.ts | enableCtrlShortcutToSwitchPanels": {
-    "message": "Panelváltás engedélyezése a Ctrl + 1-9 billentyűkombinációval"
+    "message": "A Ctrl + 1–9 billentyűkombinációval válthat a panelek között"
   },
   "entrypoints/main/main-meta.ts | enableShortcutToSwitchPanels": {
-    "message": "Panelváltás engedélyezése a ⌘ + 1-9 billentyűkombinációval"
+    "message": "A ⌘ + 1–9 billentyűkombinációval válthat a panelek között"
   },
   "entrypoints/main/main-meta.ts | findNextResult": {
     "message": "Következő találat megkeresése"
@@ -1256,6 +1268,9 @@
   "entrypoints/node_app/app/NodeMain.ts | nodejsS": {
     "message": "Node.js: {PH1}"
   },
+  "entrypoints/node_app/node_app.ts | application": {
+    "message": "Alkalmazás"
+  },
   "entrypoints/node_app/node_app.ts | connection": {
     "message": "Kapcsolat"
   },
@@ -1264,6 +1279,9 @@
   },
   "entrypoints/node_app/node_app.ts | node": {
     "message": "csomópont"
+  },
+  "entrypoints/node_app/node_app.ts | showApplication": {
+    "message": "Alkalmazás megjelenítése"
   },
   "entrypoints/node_app/node_app.ts | showConnection": {
     "message": "Kapcsolat megjelenítése"
@@ -1339,6 +1357,27 @@
   },
   "generated/Deprecation.ts | IntlV8BreakIterator": {
     "message": "A(z) Intl.v8BreakIterator paramétert megszüntettük. Használja helyette a következőt: Intl.Segmenter."
+  },
+  "generated/Deprecation.ts | LanguageModelParams": {
+    "message": "A LanguageModel.params() elavult, és mostantól csak bővítménykörnyezetekben áll rendelkezésre. Az eredményen belüli topK és a hőmérséklettel kapcsolatos mezők is elavultak."
+  },
+  "generated/Deprecation.ts | LanguageModelTemperature": {
+    "message": "A LanguageModel „temperature” paramétere/attribútuma elavult. Csak bővítményeken belül működik, és lehet, hogy a jövőben el lesz távolítva."
+  },
+  "generated/Deprecation.ts | LanguageModelTopK": {
+    "message": "A LanguageModel „topK” paramétere/attribútuma elavult. Csak bővítményeken belül működik, és lehet, hogy a jövőben el lesz távolítva."
+  },
+  "generated/Deprecation.ts | LanguageModel_InputQuota": {
+    "message": "A LanguageModel.inputQuota elavult. Használja helyette a LanguageModel.contextWindow attribútumot. Ez az alias csak bővítményekben áll rendelkezésre."
+  },
+  "generated/Deprecation.ts | LanguageModel_InputUsage": {
+    "message": "A LanguageModel.inputUsage elavult. Használja helyette a LanguageModel.contextUsage attribútumot. Ez az alias csak bővítményekben áll rendelkezésre."
+  },
+  "generated/Deprecation.ts | LanguageModel_MeasureInputUsage": {
+    "message": "A LanguageModel.measureInputUsage() elavult. Használja helyette a LanguageModel.measureContextUsage() attribútumot. Ez az alias csak bővítményekben áll rendelkezésre."
+  },
+  "generated/Deprecation.ts | LanguageModel_OnQuotaOverflow": {
+    "message": "A LanguageModel.onquotaoverflow elavult. Használja helyette a LanguageModel.oncontextoverflow aliast. A LanguageModel.onquotaoverflow alias csak bővítményekben áll rendelkezésre."
   },
   "generated/Deprecation.ts | LocalCSSFileExtensionRejected": {
     "message": "file: URL-ekből csak akkor lehet CSS-t betölteni, ha az URL-ek .css fájlkiterjesztésre végződnek."
@@ -1550,6 +1589,9 @@
   "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
     "message": "Client Hints-infrastruktúra"
   },
+  "models/issues_manager/ConnectionAllowlistIssue.ts | connectionAllowlistHeader": {
+    "message": "Kapcsolatok engedélyezőlistájának specifikációja"
+  },
   "models/issues_manager/ContentSecurityPolicyIssue.ts | contentSecurityPolicyEval": {
     "message": "Tartalombiztonsági irányelvek – Eval"
   },
@@ -1646,9 +1688,6 @@
   "models/issues_manager/Issue.ts | pageErrors": {
     "message": "Hibák az oldalon"
   },
-  "models/issues_manager/LowTextContrastIssue.ts | colorAndContrastAccessibility": {
-    "message": "Kisegítő színek és kontraszt"
-  },
   "models/issues_manager/MixedContentIssue.ts | preventingMixedContent": {
     "message": "Vegyes tartalom megelőzése"
   },
@@ -1666,6 +1705,9 @@
   },
   "models/issues_manager/SRIMessageSignatureIssue.ts | signatureBasedIntegrity": {
     "message": "Aláírásalapú integritás"
+  },
+  "models/issues_manager/SelectivePermissionsInterventionIssue.ts | selectivePermissionsIntervention": {
+    "message": "Szelektív engedélyekkel kapcsolatos beavatkozás"
   },
   "models/issues_manager/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
     "message": "SharedArrayBuffer engedélyezése…"
@@ -1751,14 +1793,14 @@
   "models/persistence/persistence-meta.ts | disableOverrideNetworkRequests": {
     "message": "Hálózati kérések felülbírálásának letiltása"
   },
-  "models/persistence/persistence-meta.ts | enableLocalOverrides": {
-    "message": "Helyi felülbírálások engedélyezése"
-  },
   "models/persistence/persistence-meta.ts | enableOverrideNetworkRequests": {
     "message": "Hálózati kérések felülírásának engedélyezése"
   },
   "models/persistence/persistence-meta.ts | interception": {
     "message": "elfogás"
+  },
+  "models/persistence/persistence-meta.ts | localOverrides": {
+    "message": "Helyi felülbírálások"
   },
   "models/persistence/persistence-meta.ts | network": {
     "message": "hálózat"
@@ -2526,7 +2568,7 @@
     "message": "Kérelem"
   },
   "models/trace/insights/RenderBlocking.ts | title": {
-    "message": "Renderelést blokkoló kérelmek megjelenítése"
+    "message": "Renderelést letiltó kérelmek"
   },
   "models/trace/insights/SlowCSSSelector.ts | description": {
     "message": "Ha a stílus-újraszámítási költségek magasak maradnak, a választó optimalizálása csökkentheti őket. [Optimalizálja azokat a választókat](https://developer.chrome.com/docs/performance/insights/slow-css-selector), amelyek magas eltelt idővel és magas lassú útvonali százalékkal rendelkeznek. Az egyszerűbb választók, a kevesebb választó, a kisebb DOM és a sekélyebb DOM használata egyaránt csökkenti az egyezési költségeket."
@@ -3133,6 +3175,18 @@
   },
   "panels/ai_assistance/components/DisabledWidget.ts | turnOnForStylesRequestsPerformanceAndFiles": {
     "message": "Ha szeretne segítséget kapni a stílusokkal, a hálózati kérelmekkel, a teljesítménnyel és a fájlokkal kapcsolatban, kapcsolja be a következőt: {PH1}"
+  },
+  "panels/ai_assistance/components/WalkthroughView.ts | close": {
+    "message": "Bezárás"
+  },
+  "panels/ai_assistance/components/WalkthroughView.ts | showAgentWalkthrough": {
+    "message": "Ügynöki bemutató megjelenítése"
+  },
+  "panels/ai_assistance/components/WalkthroughView.ts | showThinking": {
+    "message": "Gondolatmenet megjelenítése"
+  },
+  "panels/ai_assistance/components/WalkthroughView.ts | title": {
+    "message": "Vizsgálati lépések"
   },
   "panels/animation/AnimationTimeline.ts | animationDescription": {
     "message": "Ezen az oldalon megtekintheti és módosíthatja az animációkat."
@@ -3796,6 +3850,18 @@
   },
   "panels/application/DeviceBoundSessionsView.ts | expiryDate": {
     "message": "Lejárat dátuma"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | failedRequestNetError": {
+    "message": "Hálózati hiba"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | failedRequestResponseBody": {
+    "message": "Válasz szövegtörzse"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | failedRequestResponseCode": {
+    "message": "Válasz hibakódja"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | failedRequestUrl": {
+    "message": "Sikertelen kérelem URL-je"
   },
   "panels/application/DeviceBoundSessionsView.ts | failedToRestoreKey": {
     "message": "Nem sikerült visszaállítani a kulcsot a lemezről"
@@ -5747,6 +5813,9 @@
   "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedNon2XX": {
     "message": "Az előzetes lekérés a nem 2xx HTTP-válasz állapotkódja miatt sikertelen volt."
   },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedNon2XXWithStatusCode": {
+    "message": "Az előzetes lekérés a nem 2xx HTTP-válasz állapotkódja miatt sikertelen volt ({PH1})."
+  },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchIneligibleRetryAfter": {
     "message": "Az eredet egy korábbi előzetes lekérése 503-as HTTP-választ eredényezett, amelynek „Retry-After” fejléce még nem járt le."
   },
@@ -6612,7 +6681,7 @@
     "message": "Karakterláncok keresése a naplókban"
   },
   "panels/console/ConsoleView.ts | groupSimilarMessagesInConsole": {
-    "message": "Hasonló üzenetek csoportosítása a konzolban"
+    "message": "Hasonló üzenetek csoportosítása"
   },
   "panels/console/ConsoleView.ts | hideAll": {
     "message": "Összes elrejtése"
@@ -6622,9 +6691,6 @@
   },
   "panels/console/ConsoleView.ts | hideMessagesFromS": {
     "message": "Üzenetek elrejtése a következőtől: {PH1}"
-  },
-  "panels/console/ConsoleView.ts | hideNetwork": {
-    "message": "Hálózat elrejtése"
   },
   "panels/console/ConsoleView.ts | info": {
     "message": "Információ"
@@ -6646,6 +6712,9 @@
   },
   "panels/console/ConsoleView.ts | logXMLHttpRequests": {
     "message": "XMLHttpRequest-kérelmek naplózása"
+  },
+  "panels/console/ConsoleView.ts | networkMessages": {
+    "message": "Hálózati üzenetek"
   },
   "panels/console/ConsoleView.ts | onlyShowMessagesFromTheCurrentContext": {
     "message": "Csak az aktuális kontextusból mutasson üzeneteket (top, iframe, worker, bővítmény)"
@@ -6678,7 +6747,7 @@
     "message": "Konzol oldalsávjának megjelenítése"
   },
   "panels/console/ConsoleView.ts | showCorsErrorsInConsole": {
-    "message": "Jelenjenek meg a(z) CORS-hibák a konzolon"
+    "message": "CORS-hibák a konzolban"
   },
   "panels/console/ConsoleView.ts | treatEvaluationAsUserActivation": {
     "message": "Értékelés felhasználói aktivitásként való kezelése"
@@ -6818,6 +6887,12 @@
   "panels/console/console-meta.ts | console": {
     "message": "Konzol"
   },
+  "panels/console/console-meta.ts | consoleInsightTeasers": {
+    "message": "AI-összefoglalók a konzolüzenetekhez"
+  },
+  "panels/console/console-meta.ts | corsErrorsInConsole": {
+    "message": "CORS-hibák a konzolban"
+  },
   "panels/console/console-meta.ts | createLiveExpression": {
     "message": "Élő kifejezés létrehozása"
   },
@@ -6830,11 +6905,11 @@
   "panels/console/console-meta.ts | doNotEagerlyEvaluateConsole": {
     "message": "Ne legyen korai kiértékelés a konzolértesítés szövegénél"
   },
-  "panels/console/console-meta.ts | doNotGroupSimilarMessagesIn": {
-    "message": "A hasonló üzenetek konzolon belüli csoportosításának mellőzése"
+  "panels/console/console-meta.ts | doNotGroupSimilarMessages": {
+    "message": "Ne legyenek csoportosítva a hasonló üzenetek"
   },
   "panels/console/console-meta.ts | doNotShowCorsErrorsIn": {
-    "message": "Ne jelenjenek meg a(z) CORS-hibák a konzolon"
+    "message": "Ne jelenjenek meg a CORS-hibák a konzolban"
   },
   "panels/console/console-meta.ts | doNotTreatEvaluationAsUser": {
     "message": "Az értékelést ne tekintse felhasználói tevékenységnek"
@@ -6851,14 +6926,17 @@
   "panels/console/console-meta.ts | expandConsoleTraceMessagesByDefault": {
     "message": "A(z) console.trace() üzenetek automatikus kibontása"
   },
-  "panels/console/console-meta.ts | groupSimilarMessagesInConsole": {
-    "message": "Hasonló üzenetek csoportosítása a konzolban"
+  "panels/console/console-meta.ts | groupSimilarMessages": {
+    "message": "Hasonló üzenetek csoportosítása"
   },
   "panels/console/console-meta.ts | hideNetworkMessages": {
     "message": "Hálózati üzenetek elrejtése"
   },
   "panels/console/console-meta.ts | hideTimestamps": {
     "message": "Időbélyegek elrejtése"
+  },
+  "panels/console/console-meta.ts | networkMessages": {
+    "message": "Hálózati üzenetek"
   },
   "panels/console/console-meta.ts | onlyShowMessagesFromTheCurrent": {
     "message": "Csak az aktuális kontextusból mutasson üzeneteket (top, iframe, worker, bővítmény)"
@@ -6869,11 +6947,8 @@
   "panels/console/console-meta.ts | showConsole": {
     "message": "A konzol megjelenítése"
   },
-  "panels/console/console-meta.ts | showConsoleInsightTeasers": {
-    "message": "AI-összefoglalók megjelenítése a konzolüzenetekhez"
-  },
   "panels/console/console-meta.ts | showCorsErrorsInConsole": {
-    "message": "Jelenjenek meg a(z) CORS-hibák a konzolon"
+    "message": "CORS-hibák megjelenítése a konzolban"
   },
   "panels/console/console-meta.ts | showMessagesFromAllContexts": {
     "message": "Üzenetek megjelenítése minden kontextusból"
@@ -7553,6 +7628,9 @@
   "panels/elements/ElementsTreeElement.ts | editAttribute": {
     "message": "Attribútum szerkesztése"
   },
+  "panels/elements/ElementsTreeElement.ts | editData": {
+    "message": "Adatok szerkesztése"
+  },
   "panels/elements/ElementsTreeElement.ts | editText": {
     "message": "Szöveg módosítása"
   },
@@ -7991,11 +8069,17 @@
   "panels/elements/components/StylePropertyEditor.ts | selectButton": {
     "message": "{propertyName} hozzáadása: {propertyValue}"
   },
+  "panels/elements/elements-meta.ts | CSSDocumentationTooltip": {
+    "message": "CSS-dokumentáció elemleírása"
+  },
   "panels/elements/elements-meta.ts | captureAreaScreenshot": {
     "message": "Képernyőkép készítése kiválasztott területről"
   },
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "Stílusok másolása"
+  },
+  "panels/elements/elements-meta.ts | detailedInspectTooltip": {
+    "message": "Részletes vizsgálat elemleírása"
   },
   "panels/elements/elements-meta.ts | duplicateElement": {
     "message": "Ismétlődő elem"
@@ -8014,6 +8098,9 @@
   },
   "panels/elements/elements-meta.ts | hideHtmlComments": {
     "message": "HTML-megjegyzések elrejtése"
+  },
+  "panels/elements/elements-meta.ts | htmlComments": {
+    "message": "HTML-megjegyzések"
   },
   "panels/elements/elements-meta.ts | layout": {
     "message": "Elrendezés"
@@ -8036,14 +8123,8 @@
   "panels/elements/elements-meta.ts | selectAnElementInThePageTo": {
     "message": "Válassza ki az oldalon a megvizsgálni kívánt elemet"
   },
-  "panels/elements/elements-meta.ts | showCSSDocumentationTooltip": {
-    "message": "CSS-dokumentáció elemleírásának megjelenítése"
-  },
   "panels/elements/elements-meta.ts | showComputedStyles": {
     "message": "Számított stílusok megjelenítése"
-  },
-  "panels/elements/elements-meta.ts | showDetailedInspectTooltip": {
-    "message": "Részletes vizsgálat elemleírásának megjelenítése"
   },
   "panels/elements/elements-meta.ts | showElements": {
     "message": "Elemek megjelenítése"
@@ -8066,9 +8147,6 @@
   "panels/elements/elements-meta.ts | showStyles": {
     "message": "Stílusok megjelenítése"
   },
-  "panels/elements/elements-meta.ts | showUserAgentShadowDOM": {
-    "message": "Felhasználóiügynök-árnyék (DOM) megjelenítése"
-  },
   "panels/elements/elements-meta.ts | stackTrace": {
     "message": "Veremkivonat"
   },
@@ -8083,6 +8161,9 @@
   },
   "panels/elements/elements-meta.ts | undo": {
     "message": "Visszavonás"
+  },
+  "panels/elements/elements-meta.ts | userAgentShadowDOM": {
+    "message": "Felhasználóiügynök-árnyék: DOM"
   },
   "panels/elements/elements-meta.ts | wordWrap": {
     "message": "Szavak tördelése"
@@ -8100,7 +8181,7 @@
     "message": "A DevTools bezárása"
   },
   "panels/emulation/DeviceModeToolbar.ts | defaultF": {
-    "message": "Alapértelmezett: {PH1}"
+    "message": "{PH1} (alapértelmezett)"
   },
   "panels/emulation/DeviceModeToolbar.ts | devicePixelRatio": {
     "message": "Eszköz képpontaránya"
@@ -8112,13 +8193,16 @@
     "message": "Eszköztípus"
   },
   "panels/emulation/DeviceModeToolbar.ts | dimensions": {
-    "message": "Méretek"
+    "message": "Méretek: {PH1}"
+  },
+  "panels/emulation/DeviceModeToolbar.ts | dpr": {
+    "message": "DPR: {PH1}"
   },
   "panels/emulation/DeviceModeToolbar.ts | edit": {
     "message": "Szerkesztés…"
   },
-  "panels/emulation/DeviceModeToolbar.ts | fitToWindowF": {
-    "message": "Igazítás az ablakhoz ({PH1}%)"
+  "panels/emulation/DeviceModeToolbar.ts | fitToWindowPercentage": {
+    "message": "{PH1}% (igazítás az ablakhoz)"
   },
   "panels/emulation/DeviceModeToolbar.ts | heightLeaveEmptyForFull": {
     "message": "Magasság (a teljes magassághoz hagyja üresen)"
@@ -8138,9 +8222,6 @@
   "panels/emulation/DeviceModeToolbar.ts | moreOptions": {
     "message": "További lehetőségek"
   },
-  "panels/emulation/DeviceModeToolbar.ts | none": {
-    "message": "Nincs"
-  },
   "panels/emulation/DeviceModeToolbar.ts | portrait": {
     "message": "Álló"
   },
@@ -8159,6 +8240,9 @@
   "panels/emulation/DeviceModeToolbar.ts | rotate": {
     "message": "Elforgatás"
   },
+  "panels/emulation/DeviceModeToolbar.ts | screenOrientationLocked": {
+    "message": "Az oldal zárolta a képernyő tájolását"
+  },
   "panels/emulation/DeviceModeToolbar.ts | screenOrientationOptions": {
     "message": "Képernyőtájolási lehetőségek"
   },
@@ -8170,6 +8254,9 @@
   },
   "panels/emulation/DeviceModeToolbar.ts | showRulers": {
     "message": "Vonalzók megjelenítése"
+  },
+  "panels/emulation/DeviceModeToolbar.ts | throttling": {
+    "message": "Korlátozás"
   },
   "panels/emulation/DeviceModeToolbar.ts | toggleDualscreenMode": {
     "message": "Két képernyős mód be-/kikapcsolása"
@@ -8441,24 +8528,6 @@
   "panels/issues/AffectedElementsView.ts | nElements": {
     "message": "{n,plural, =1{# elem}other{# elem}}"
   },
-  "panels/issues/AffectedElementsWithLowContrastView.ts | contrastRatio": {
-    "message": "Kontrasztarány"
-  },
-  "panels/issues/AffectedElementsWithLowContrastView.ts | element": {
-    "message": "Elemek"
-  },
-  "panels/issues/AffectedElementsWithLowContrastView.ts | minimumAA": {
-    "message": "Minimális AA-arány"
-  },
-  "panels/issues/AffectedElementsWithLowContrastView.ts | minimumAAA": {
-    "message": "Legkisebb AAA-arány"
-  },
-  "panels/issues/AffectedElementsWithLowContrastView.ts | textSize": {
-    "message": "Szövegméret"
-  },
-  "panels/issues/AffectedElementsWithLowContrastView.ts | textWeight": {
-    "message": "Szövegméret"
-  },
   "panels/issues/AffectedHeavyAdView.ts | cpuPeakLimit": {
     "message": "CPU-korlát"
   },
@@ -8511,6 +8580,24 @@
     "message": "nem áll rendelkezésre"
   },
   "panels/issues/AffectedResourcesView.ts | unknown": {
+    "message": "ismeretlen"
+  },
+  "panels/issues/AffectedSelectivePermissionsInterventionView.ts | adAncestry": {
+    "message": "Hirdetés eredete"
+  },
+  "panels/issues/AffectedSelectivePermissionsInterventionView.ts | api": {
+    "message": "API"
+  },
+  "panels/issues/AffectedSelectivePermissionsInterventionView.ts | loading": {
+    "message": "betöltés…"
+  },
+  "panels/issues/AffectedSelectivePermissionsInterventionView.ts | nViolations": {
+    "message": "{n,plural, =1{# irányelvsértés}other{# irányelvsértés}}"
+  },
+  "panels/issues/AffectedSelectivePermissionsInterventionView.ts | script": {
+    "message": "Szkript"
+  },
+  "panels/issues/AffectedSelectivePermissionsInterventionView.ts | unknown": {
     "message": "ismeretlen"
   },
   "panels/issues/AffectedSharedArrayBufferIssueDetailsView.ts | aSharedarraybufferWas": {
@@ -8764,6 +8851,9 @@
   },
   "panels/issues/IssuesPane.ts | samesiteCookie": {
     "message": "SameSite-cookie"
+  },
+  "panels/issues/IssuesPane.ts | selectivePermissionsIntervention": {
+    "message": "Szelektív engedélyekkel kapcsolatos beavatkozás"
   },
   "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
     "message": "Problémák elrejtése"
@@ -9870,7 +9960,7 @@
     "message": "(letiltva: {PH1})"
   },
   "panels/network/NetworkDataGridNode.ts | blocking": {
-    "message": "Letiltó"
+    "message": "Letiltás"
   },
   "panels/network/NetworkDataGridNode.ts | broken": {
     "message": "A(z) Chrome nem próbált HTTP/3-kapcsolatot létrehozni, mert hibásként lett megjelölve."
@@ -10431,7 +10521,7 @@
     "message": "Távoli címtér"
   },
   "panels/network/NetworkLogViewColumns.ts | renderBlocking": {
-    "message": "Rendereléstiltó"
+    "message": "Renderelést letiltó"
   },
   "panels/network/NetworkLogViewColumns.ts | requestHeaders": {
     "message": "Kérelemfejlécek"
@@ -10693,6 +10783,57 @@
   },
   "panels/network/RequestDeviceBoundSessionsView.ts | sessionId": {
     "message": "Munkamenet-azonosító"
+  },
+  "panels/network/RequestHeadersView.ts | earlyHintsHeaders": {
+    "message": "Korai tippek fejlécei"
+  },
+  "panels/network/RequestHeadersView.ts | fromDiskCache": {
+    "message": "(a lemez gyorsítótárából)"
+  },
+  "panels/network/RequestHeadersView.ts | fromEarlyHints": {
+    "message": "(a korai tippekből)"
+  },
+  "panels/network/RequestHeadersView.ts | fromMemoryCache": {
+    "message": "(memória-gyorsítótárból)"
+  },
+  "panels/network/RequestHeadersView.ts | fromPrefetchCache": {
+    "message": "(előzetes lekérésű gyorsítótárból)"
+  },
+  "panels/network/RequestHeadersView.ts | fromServiceWorker": {
+    "message": "(innen: service worker)"
+  },
+  "panels/network/RequestHeadersView.ts | fromSignedexchange": {
+    "message": "(innen: signed-exchange)"
+  },
+  "panels/network/RequestHeadersView.ts | general": {
+    "message": "Általános"
+  },
+  "panels/network/RequestHeadersView.ts | raw": {
+    "message": "Nyers"
+  },
+  "panels/network/RequestHeadersView.ts | referrerPolicy": {
+    "message": "Hivatkozói irányelv"
+  },
+  "panels/network/RequestHeadersView.ts | remoteAddress": {
+    "message": "Távoli cím"
+  },
+  "panels/network/RequestHeadersView.ts | requestHeaders": {
+    "message": "Kérelem fejlécei"
+  },
+  "panels/network/RequestHeadersView.ts | requestMethod": {
+    "message": "Kérési mód"
+  },
+  "panels/network/RequestHeadersView.ts | requestUrl": {
+    "message": "URL kérése"
+  },
+  "panels/network/RequestHeadersView.ts | responseHeaders": {
+    "message": "Válaszfejlécek"
+  },
+  "panels/network/RequestHeadersView.ts | revealHeaderOverrides": {
+    "message": "Fejléc-felülbírálás definícióinak megjelenítése"
+  },
+  "panels/network/RequestHeadersView.ts | statusCode": {
+    "message": "Állapotkód"
   },
   "panels/network/RequestInitiatorView.ts | noInitiator": {
     "message": "Nincsenek kezdeményező adatok"
@@ -11131,60 +11272,6 @@
   },
   "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShownDisableCache": {
     "message": "Előzetes fejlécek láthatók. A teljes fejlécek megjelenítéséhez tiltsa le a gyorsítótárat."
-  },
-  "panels/network/components/RequestHeadersView.ts | earlyHintsHeaders": {
-    "message": "Korai tippek fejlécei"
-  },
-  "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
-    "message": "(a lemez gyorsítótárából)"
-  },
-  "panels/network/components/RequestHeadersView.ts | fromEarlyHints": {
-    "message": "(a korai tippekből)"
-  },
-  "panels/network/components/RequestHeadersView.ts | fromMemoryCache": {
-    "message": "(memória-gyorsítótárból)"
-  },
-  "panels/network/components/RequestHeadersView.ts | fromPrefetchCache": {
-    "message": "(előzetes lekérésű gyorsítótárból)"
-  },
-  "panels/network/components/RequestHeadersView.ts | fromServiceWorker": {
-    "message": "(innen: service worker)"
-  },
-  "panels/network/components/RequestHeadersView.ts | fromSignedexchange": {
-    "message": "(innen: signed-exchange)"
-  },
-  "panels/network/components/RequestHeadersView.ts | general": {
-    "message": "Általános"
-  },
-  "panels/network/components/RequestHeadersView.ts | raw": {
-    "message": "Nyers"
-  },
-  "panels/network/components/RequestHeadersView.ts | referrerPolicy": {
-    "message": "Hivatkozói irányelv"
-  },
-  "panels/network/components/RequestHeadersView.ts | remoteAddress": {
-    "message": "Távoli cím"
-  },
-  "panels/network/components/RequestHeadersView.ts | requestHeaders": {
-    "message": "Kérelem fejlécei"
-  },
-  "panels/network/components/RequestHeadersView.ts | requestMethod": {
-    "message": "Kérési mód"
-  },
-  "panels/network/components/RequestHeadersView.ts | requestUrl": {
-    "message": "URL kérése"
-  },
-  "panels/network/components/RequestHeadersView.ts | responseHeaders": {
-    "message": "Válaszfejlécek"
-  },
-  "panels/network/components/RequestHeadersView.ts | revealHeaderOverrides": {
-    "message": "Fejléc-felülbírálás definícióinak megjelenítése"
-  },
-  "panels/network/components/RequestHeadersView.ts | showMore": {
-    "message": "Több megjelenítése"
-  },
-  "panels/network/components/RequestHeadersView.ts | statusCode": {
-    "message": "Állapotkód"
   },
   "panels/network/components/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
     "message": "Az egyik, ügyfél által biztosított argumentum rosszul van formázva, vagy más módon érvénytelen."
@@ -13349,9 +13436,6 @@
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | customExclusionRules": {
     "message": "Egyéni kizárási szabályok"
   },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | enableIgnoreListing": {
-    "message": "Mellőzési listák engedélyezése"
-  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | enableIgnoreListingTooltip": {
     "message": "Távolítsa el a jelölést az összes mellőzési lista letiltásához"
   },
@@ -13366,6 +13450,9 @@
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreListContentScripts": {
     "message": "Bővítmények által beszúrt tartalomszkriptek"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreListing": {
+    "message": "Mellőzési lista"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreListingDescription": {
     "message": "Ha engedélyezve van, a hibaelhárító kihagyja a mellőzési listán szereplő szkripteket, és figyelmen kívül hagyja a kizárólag őket érintő kivételeket, a Teljesítmény párbeszédpanel pedig összecsukja a nyomonkövetési diagram megfelelő elemeit."
@@ -13477,6 +13564,9 @@
   },
   "panels/settings/SettingsScreen.ts | settingsChangedReloadDevTools": {
     "message": "A beállítások módosultak. Az alkalmazásukhoz töltse be újra a DevToolst."
+  },
+  "panels/settings/SettingsScreen.ts | settingsChangedRestartChrome": {
+    "message": "A beállítások módosultak. Az alkalmazáshoz indítsa újra a Chrome-ot."
   },
   "panels/settings/SettingsScreen.ts | shortcuts": {
     "message": "Parancsikonok"
@@ -14616,7 +14706,7 @@
     "message": "Ne észleljen behúzást"
   },
   "panels/sources/sources-meta.ts | doNotDisplayVariableValuesInline": {
-    "message": "Ne jelenjenek meg változó értékek a soron belül hibakeresés közben"
+    "message": "Ne jelenjenek meg változóértékek a soron belül"
   },
   "panels/sources/sources-meta.ts | doNotSearchInAnonymousAndContent": {
     "message": "Ne keressen névtelen és tartalomszkriptekben"
@@ -14815,6 +14905,9 @@
   },
   "panels/sources/sources-meta.ts | trailing": {
     "message": "A végén lévők"
+  },
+  "panels/sources/sources-meta.ts | variableValuesInlineWhile": {
+    "message": "Változóértékek soron belül"
   },
   "panels/sources/sources-meta.ts | wasmAutoStepping": {
     "message": "Wasm automatikus léptetési bájtkódja"
@@ -15731,9 +15824,6 @@
   "panels/timeline/TimelineUIUtils.ts | stylesheetUrl": {
     "message": "Stíluslap URL-je"
   },
-  "panels/timeline/TimelineUIUtils.ts | thirdPartyTable": {
-    "message": "Belső/harmadik fél táblázata"
-  },
   "panels/timeline/TimelineUIUtils.ts | timeSpentInRendering": {
     "message": "Rendereléssel töltött idő"
   },
@@ -16386,7 +16476,7 @@
     "message": "Protokoll"
   },
   "panels/timeline/components/NetworkRequestDetails.ts | renderBlocking": {
-    "message": "Rendereléstiltó"
+    "message": "Renderelést letiltó"
   },
   "panels/timeline/components/NetworkRequestDetails.ts | requestMethod": {
     "message": "Kérési mód"
@@ -16416,7 +16506,7 @@
     "message": "Átirányítások"
   },
   "panels/timeline/components/NetworkRequestTooltip.ts | renderBlocking": {
-    "message": "Rendereléstiltó"
+    "message": "Renderelést letiltó"
   },
   "panels/timeline/components/NetworkRequestTooltip.ts | requestSentAndWaiting": {
     "message": "Kérelemküldési és várakozási idő"
@@ -16511,32 +16601,8 @@
   "panels/timeline/components/SidebarAnnotationsTab.ts | timeRangeTutorialTitle": {
     "message": "Időtartomány meghatározása"
   },
-  "panels/timeline/components/SidebarSingleInsightSet.ts | dismissTitle": {
-    "message": "Elvetés"
-  },
-  "panels/timeline/components/SidebarSingleInsightSet.ts | fieldMismatchNotice": {
-    "message": "Számos oka lehet annak, hogy a helyi és a mezőmutatók [nem egyeznek](https://web.dev/articles/lab-and-field-data-differences). A [korlátozási beállítások és az eszközemuláció](https://developer.chrome.com/docs/devtools/device-mode) módosításával az átlagos felhasználói környezetre jobban hasonlító nyomokat elemezhet."
-  },
-  "panels/timeline/components/SidebarSingleInsightSet.ts | fieldMismatchTitle": {
-    "message": "A mező- és a helyi mutatók nem egyeznek"
-  },
-  "panels/timeline/components/SidebarSingleInsightSet.ts | fieldScoreLabel": {
-    "message": "Mező ({PH1})"
-  },
-  "panels/timeline/components/SidebarSingleInsightSet.ts | metricScore": {
-    "message": "{PH1}: {PH2} {PH3} eredmény"
-  },
-  "panels/timeline/components/SidebarSingleInsightSet.ts | metricScoreUnavailable": {
-    "message": "{PH1}: nem áll rendelkezésre"
-  },
-  "panels/timeline/components/SidebarSingleInsightSet.ts | originOption": {
-    "message": "Eredet"
-  },
   "panels/timeline/components/SidebarSingleInsightSet.ts | passedInsights": {
     "message": "Átadott statisztikák ({PH1})"
-  },
-  "panels/timeline/components/SidebarSingleInsightSet.ts | urlOption": {
-    "message": "URL"
   },
   "panels/timeline/components/TimelineSummary.ts | rangeSS": {
     "message": "Tartomány: {PH1} – {PH2}"
@@ -16613,8 +16679,8 @@
   "panels/timeline/overlays/components/TimeRangeOverlay.ts | timeRange": {
     "message": "Időtartomány"
   },
-  "panels/timeline/timeline-meta.ts | hideChromeFrameInLayersView": {
-    "message": "chrome-keret elrejtése a Rétegek nézetben"
+  "panels/timeline/timeline-meta.ts | chromeFrameInLayersView": {
+    "message": "Chrome-keret a Rétegek nézetben"
   },
   "panels/timeline/timeline-meta.ts | loadProfile": {
     "message": "Profil betöltése…"
@@ -17054,6 +17120,9 @@
   "ui/legacy/Infobar.ts | dontShowAgain": {
     "message": "Ne jelenjen meg többé"
   },
+  "ui/legacy/InspectorView.ts | areYouSureYouWantToRestartChrome": {
+    "message": "Biztosan újraindítja a Chrome-ot?"
+  },
   "ui/legacy/InspectorView.ts | closeDrawer": {
     "message": "Fiók bezárása"
   },
@@ -17089,6 +17158,9 @@
   },
   "ui/legacy/InspectorView.ts | reloadDevtools": {
     "message": "A DevTools újratöltése"
+  },
+  "ui/legacy/InspectorView.ts | restartChrome": {
+    "message": "A Chrome újraindítása"
   },
   "ui/legacy/InspectorView.ts | selectFolder": {
     "message": "Mappa kijelölése"
@@ -17257,6 +17329,9 @@
   },
   "ui/legacy/Toolbar.ts | pressed": {
     "message": "bekapcsolva"
+  },
+  "ui/legacy/Toolbar.ts | useRegularExpression": {
+    "message": "Reguláris kifejezés használata"
   },
   "ui/legacy/UIUtils.ts | anonymous": {
     "message": "(névtelen)"
@@ -17962,9 +18037,6 @@
   },
   "ui/legacy/components/utils/JSPresentationUtils.ts | showMoreFrames": {
     "message": "Mellőzési listára tett keretek megjelenítése"
-  },
-  "ui/legacy/components/utils/JSPresentationUtils.ts | unknownSource": {
-    "message": "ismeretlen"
   },
   "ui/legacy/components/utils/Linkifier.ts | auto": {
     "message": "automatikus"

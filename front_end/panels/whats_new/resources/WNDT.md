@@ -1,11 +1,11 @@
-### [MCP server](mcp-server)
+### [Start AI assistance chats without prior context](ai-assistance)
 
-CrUX data in performance trace summaries, a new --slim mode, specialized skills and experimental screen recording support.
+AI assistance chats can now be started from anywhere in DevTools and AI assistance will find required context based on the initial prompt.
 
-### [Preserve Console history edits](console-history)
+### [MCP server & CLI](mcp-server)
 
-Modify a previous command, browse for another one, and return to your draft without losing your work.
+Optionally expose DevTools and automation capabilities through CLI, enabling coding agents to batch tool calls and improve token efficiency.
 
-### [Improved support for adopted stylesheets](adopted-stylesheets)
+### [Code generation in the Console & Sources panels](code-generation)
 
-Adopted Style Sheets are now grouped under a dedicated #adopted-style-sheets node within the DOM tree in the Elements panel.
+Generate entire code blocks directly in the Console and Sources panels by typing natural language comments.

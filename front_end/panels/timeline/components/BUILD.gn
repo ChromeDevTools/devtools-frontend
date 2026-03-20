@@ -150,6 +150,7 @@ devtools_ui_module("unittests") {
     "SidebarAnnotationsTab.test.ts",
     "SidebarInsightsTab.test.ts",
     "SidebarSingleInsightSet.test.ts",
+    "TimelineRangeSummaryView.test.ts",
     "TimelineSummary.test.ts",
     "Utils.test.ts",
   ]

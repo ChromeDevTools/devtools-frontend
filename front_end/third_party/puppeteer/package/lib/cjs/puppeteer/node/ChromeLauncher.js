@@ -187,6 +187,10 @@ class ChromeLauncher extends BrowserLauncher_js_1.BrowserLauncher {
             return arg !== '';
         });
         const { devtools = false, headless = !devtools, args = [], userDataDir, enableExtensions = false, } = options;
+        if (process.env['PUPPETEER_DANGEROUS_NO_SANDBOX'] === 'true' &&
+            !args.includes('--no-sandbox')) {
+            chromeArguments.push('--no-sandbox');
+        }
         if (userDataDir) {
             // If absolute (for any platform) path is given, we should not resolve it.
             chromeArguments.push(`--user-data-dir=${node_path_1.default.posix.isAbsolute(userDataDir) || node_path_1.default.win32.isAbsolute(userDataDir) ? userDataDir : node_path_1.default.resolve(userDataDir)}`);

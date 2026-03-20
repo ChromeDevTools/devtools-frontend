@@ -3049,7 +3049,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    */
   // If moved update release-please config
   // x-release-please-start-version
-  const packageVersion = '24.39.1';
+  const packageVersion = '24.40.0';
   // x-release-please-end
 
   /**
@@ -25257,8 +25257,8 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    * @internal
    */
   const PUPPETEER_REVISIONS = Object.freeze({
-    chrome: '146.0.7680.76',
-    'chrome-headless-shell': '146.0.7680.76',
+    chrome: '146.0.7680.153',
+    'chrome-headless-shell': '146.0.7680.153',
     firefox: 'stable_148.0.2'
   });
 

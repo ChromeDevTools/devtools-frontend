@@ -329,8 +329,8 @@ export class SensorsView extends UI.Widget.VBox {
             }
           })}
         >
-          <!-- @ts-ignore -->
           <div class="latlong-group">
+            <!-- @ts-ignore -->
             <input
               id="latitude-input"
               type="number"
@@ -347,8 +347,8 @@ export class SensorsView extends UI.Widget.VBox {
             >
             <label class="latlong-title" for="latitude-input">${i18nString(UIStrings.latitude)}</label>
           </div>
-          <!-- @ts-ignore -->
           <div class="latlong-group">
+            <!-- @ts-ignore -->
             <input
               id="longitude-input"
               type="number"
@@ -397,8 +397,8 @@ export class SensorsView extends UI.Widget.VBox {
             <label class="locale-title" for="locale-input">${i18nString(UIStrings.locale)}</label>
             <div class="locale-error" ${Directives.ref((el: Element | undefined) => { if (el) { this.localeError = el as HTMLElement; } })}></div>
           </div>
-          <!-- @ts-ignore -->
           <div class="latlong-group">
+            <!-- @ts-ignore -->
             <input
               id="accuracy-input"
               type="number"
@@ -593,10 +593,6 @@ export class SensorsView extends UI.Widget.VBox {
   private createDeviceOrientationSection(): void {
     const orientationGroup = this.contentElement.createChild('section', 'sensors-group');
     orientationGroup.setAttribute('jslog', `${VisualLogging.section('device-orientation')}`);
-    const orientationTitle = UI.UIUtils.createLabel(i18nString(UIStrings.orientation), 'sensors-group-title');
-    orientationGroup.appendChild(orientationTitle);
-    const orientationContent = orientationGroup.createChild('div', 'orientation-content');
-    const fields = orientationContent.createChild('div', 'orientation-fields');
 
     const orientationOffOption = {
       title: i18nString(UIStrings.off),
@@ -622,46 +618,136 @@ export class SensorsView extends UI.Widget.VBox {
         {title: i18nString(UIStrings.displayDown), orientation: '[0, -180, 0]', jslogContext: 'displayUp-down'},
       ],
     }];
-    this.orientationSelectElement = this.contentElement.createChild('select');
-    this.orientationSelectElement.setAttribute('jslog', `${VisualLogging.dropDown().track({change: true})}`);
-    UI.ARIAUtils.bindLabelToControl(orientationTitle, this.orientationSelectElement);
-    this.orientationSelectElement.appendChild(UI.UIUtils.createOption(
-        orientationOffOption.title, orientationOffOption.orientation, orientationOffOption.jslogContext));
-    this.orientationSelectElement.appendChild(
-        UI.UIUtils.createOption(customOrientationOption.title, customOrientationOption.orientation, 'custom'));
 
-    for (let i = 0; i < orientationGroups.length; ++i) {
-      const groupElement = this.orientationSelectElement.createChild('optgroup');
-      groupElement.label = orientationGroups[i].title;
-      const group = orientationGroups[i].value;
-      for (let j = 0; j < group.length; ++j) {
-        groupElement.appendChild(UI.UIUtils.createOption(group[j].title, group[j].orientation, group[j].jslogContext));
-      }
-    }
-    this.orientationSelectElement.selectedIndex = 0;
-    fields.appendChild(this.orientationSelectElement);
-    this.orientationSelectElement.addEventListener('change', this.orientationSelectChanged.bind(this));
+    // clang-format off
+    // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
+    render(
+      html`
+        <label class="sensors-group-title" for="orientation-select">${i18nString(UIStrings.orientation)}</label>
+        <div class="orientation-content">
+          <div class="orientation-fields">
+            <select
+              id="orientation-select"
+              ${Directives.ref((el: Element | undefined) => {
+                if (el) {
+                  this.orientationSelectElement = el as HTMLSelectElement;
+                }
+              })}
+              @change=${this.orientationSelectChanged.bind(this)}
+              jslog=${VisualLogging.dropDown().track({change: true})}
+            >
+              <option value=${orientationOffOption.orientation} jslog=${VisualLogging.item(orientationOffOption.jslogContext)}>${orientationOffOption.title}</option>
+              <option value=${customOrientationOption.orientation} jslog=${VisualLogging.item('custom')}>${customOrientationOption.title}</option>
+              ${orientationGroups.map(group => html`
+                <optgroup label=${group.title}>
+                  ${group.value.map(preset => html`
+                    <option value=${preset.orientation} jslog=${VisualLogging.item(preset.jslogContext)}>${preset.title}</option>
+                  `)}
+                </optgroup>
+              `)}
+            </select>
+            <fieldset
+              class="device-orientation-override-section"
+              ${Directives.ref((el: Element | undefined) => {
+                if (el) {
+                  this.deviceOrientationFieldset = el as HTMLFieldSetElement;
+                }
+              })}
+            >
+              <div class="orientation-inputs-cell">
+                <div class="orientation-axis-input-container">
+                  <!-- @ts-ignore -->
+                  <input
+                    id="alpha-input"
+                    type="number"
+                    step="any"
+                    ${Directives.ref((el: Element | undefined) => { if (el) { this.alphaElement = el as HTMLInputElement; } })}
+                    @change=${this.#onOrientationChange.bind(this)}
+                    @input=${this.#onOrientationInput.bind(this)}
+                    @keydown=${this.#onOrientationKeyDown.bind(this)}
+                    @focus=${this.#onOrientationFocus.bind(this)}
+                  >
+                  <label for="alpha-input">${i18nString(UIStrings.alpha)}</label>
+                </div>
+                <div class="orientation-axis-input-container">
+                  <!-- @ts-ignore -->
+                  <input
+                    id="beta-input"
+                    type="number"
+                    step="any"
+                    ${Directives.ref((el: Element | undefined) => { if (el) { this.betaElement = el as HTMLInputElement; } })}
+                    @change=${this.#onOrientationChange.bind(this)}
+                    @input=${this.#onOrientationInput.bind(this)}
+                    @keydown=${this.#onOrientationKeyDown.bind(this)}
+                    @focus=${this.#onOrientationFocus.bind(this)}
+                  >
+                  <label for="beta-input">${i18nString(UIStrings.beta)}</label>
+                </div>
+                <div class="orientation-axis-input-container">
+                  <!-- @ts-ignore -->
+                  <input
+                    id="gamma-input"
+                    type="number"
+                    step="any"
+                    ${Directives.ref((el: Element | undefined) => { if (el) { this.gammaElement = el as HTMLInputElement; } })}
+                    @change=${this.#onOrientationChange.bind(this)}
+                    @input=${this.#onOrientationInput.bind(this)}
+                    @keydown=${this.#onOrientationKeyDown.bind(this)}
+                    @focus=${this.#onOrientationFocus.bind(this)}
+                  >
+                  <label for="gamma-input">${i18nString(UIStrings.gamma)}</label>
+                </div>
+                <devtools-button
+                  .variant=${Buttons.Button.Variant.OUTLINED}
+                  class="orientation-reset-button"
+                  type="reset"
+                  aria-label=${i18nString(UIStrings.resetDeviceOrientation)}
+                  @click=${this.resetDeviceOrientation.bind(this)}
+                  jslog=${VisualLogging.action('sensors.reset-device-orientiation').track({click: true})}
+                >
+                  ${i18nString(UIStrings.reset)}
+                </devtools-button>
+              </div>
+            </fieldset>
+          </div>
+          <div
+            class="orientation-stage"
+            jslog=${VisualLogging.preview().track({drag: true})}
+            ${Directives.ref((el: Element | undefined) => {
+              if (el && !this.stageElement) {
+                this.stageElement = el as HTMLElement;
+                UI.UIUtils.installDragHandle(this.stageElement, this.onBoxDragStart.bind(this), event => {
+                  this.onBoxDrag(event);
+                }, null, '-webkit-grabbing', '-webkit-grab');
+              }
+            })}
+          >
+            <div class="orientation-layer" ${Directives.ref((el: Element | undefined) => { if (el) { this.orientationLayer = el as HTMLDivElement; } })}>
+              <section
+                class="orientation-box orientation-element"
+                ${Directives.ref((el: Element | undefined) => { if (el) { this.boxElement = el as HTMLElement; } })}
+              >
+                <section class="orientation-front orientation-element"></section>
+                <section class="orientation-top orientation-element"></section>
+                <section class="orientation-back orientation-element"></section>
+                <section class="orientation-left orientation-element"></section>
+                <section class="orientation-right orientation-element"></section>
+                <section class="orientation-bottom orientation-element"></section>
+              </section>
+            </div>
+          </div>
+        </div>
+      `,
+      orientationGroup
+    );
+    // clang-format on
 
-    this.deviceOrientationFieldset = this.createDeviceOrientationOverrideElement(this.deviceOrientation);
-    this.stageElement = orientationContent.createChild('div', 'orientation-stage');
-    this.stageElement.setAttribute('jslog', `${VisualLogging.preview().track({drag: true})}`);
-    this.orientationLayer = this.stageElement.createChild('div', 'orientation-layer');
-    this.boxElement = this.orientationLayer.createChild('section', 'orientation-box orientation-element');
-
-    this.boxElement.createChild('section', 'orientation-front orientation-element');
-    this.boxElement.createChild('section', 'orientation-top orientation-element');
-    this.boxElement.createChild('section', 'orientation-back orientation-element');
-    this.boxElement.createChild('section', 'orientation-left orientation-element');
-    this.boxElement.createChild('section', 'orientation-right orientation-element');
-    this.boxElement.createChild('section', 'orientation-bottom orientation-element');
-
-    UI.UIUtils.installDragHandle(this.stageElement, this.onBoxDragStart.bind(this), event => {
-      this.onBoxDrag(event);
-    }, null, '-webkit-grabbing', '-webkit-grab');
-
-    fields.appendChild(this.deviceOrientationFieldset);
     this.enableOrientationFields(true);
     this.setBoxOrientation(this.deviceOrientation, false);
+
+    this.#setOrientationInputValue(this.alphaElement, String(this.deviceOrientation.alpha));
+    this.#setOrientationInputValue(this.betaElement, String(this.deviceOrientation.beta));
+    this.#setOrientationInputValue(this.gammaElement, String(this.deviceOrientation.gamma));
   }
 
   private createPressureSection(): void {
@@ -824,52 +910,9 @@ export class SensorsView extends UI.Widget.VBox {
   }
 
   #setOrientationInputValue(input: HTMLInputElement, value: string): void {
-    if (input.value === value) {
-      return;
-    }
     input.value = value;
     const valid = this.#validateOrientationInput(input, value);
     input.classList.toggle('error-input', !valid);
-  }
-
-  private createDeviceOrientationOverrideElement(deviceOrientation: SDK.EmulationModel.DeviceOrientation):
-      HTMLFieldSetElement {
-    const fieldsetElement = document.createElement('fieldset');
-    fieldsetElement.classList.add('device-orientation-override-section');
-    const cellElement = fieldsetElement.createChild('td', 'orientation-inputs-cell');
-
-    this.alphaElement = UI.UIUtils.createInput('', 'number', 'alpha');
-    this.alphaElement.setAttribute('step', 'any');
-    this.#setupAxisInput(cellElement, this.alphaElement, i18nString(UIStrings.alpha));
-    this.#setOrientationInputValue(this.alphaElement, String(deviceOrientation.alpha));
-
-    this.betaElement = UI.UIUtils.createInput('', 'number', 'beta');
-    this.betaElement.setAttribute('step', 'any');
-    this.#setupAxisInput(cellElement, this.betaElement, i18nString(UIStrings.beta));
-    this.#setOrientationInputValue(this.betaElement, String(deviceOrientation.beta));
-
-    this.gammaElement = UI.UIUtils.createInput('', 'number', 'gamma');
-    this.gammaElement.setAttribute('step', 'any');
-    this.#setupAxisInput(cellElement, this.gammaElement, i18nString(UIStrings.gamma));
-    this.#setOrientationInputValue(this.gammaElement, String(deviceOrientation.gamma));
-
-    const resetButton = UI.UIUtils.createTextButton(
-        i18nString(UIStrings.reset), this.resetDeviceOrientation.bind(this),
-        {className: 'orientation-reset-button', jslogContext: 'sensors.reset-device-orientiation'});
-    UI.ARIAUtils.setLabel(resetButton, i18nString(UIStrings.resetDeviceOrientation));
-    resetButton.setAttribute('type', 'reset');
-    cellElement.appendChild(resetButton);
-    return fieldsetElement;
-  }
-
-  #setupAxisInput(parentElement: Element, input: HTMLInputElement, label: string): void {
-    const div = parentElement.createChild('div', 'orientation-axis-input-container');
-    div.appendChild(input);
-    div.appendChild(UI.UIUtils.createLabel(label, /* className */ '', input));
-    input.addEventListener('change', this.#onOrientationChange.bind(this), false);
-    input.addEventListener('input', this.#onOrientationInput.bind(this), false);
-    input.addEventListener('keydown', this.#onOrientationKeyDown.bind(this), false);
-    input.addEventListener('focus', this.#onOrientationFocus.bind(this), false);
   }
 
   private setBoxOrientation(deviceOrientation: SDK.EmulationModel.DeviceOrientation, animate: boolean): void {

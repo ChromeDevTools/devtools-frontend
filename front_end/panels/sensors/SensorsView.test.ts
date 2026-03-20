@@ -129,8 +129,7 @@ describeWithEnvironment('SensorsView', () => {
       select.value = 'custom';
       select.dispatchEvent(new Event('change'));
 
-      alphaInput =
-          view.contentElement.querySelectorAll('.orientation-axis-input-container input')[0] as HTMLInputElement;
+      alphaInput = view.contentElement.querySelector('#alpha-input') as HTMLInputElement;
       assert.exists(alphaInput);
     });
 

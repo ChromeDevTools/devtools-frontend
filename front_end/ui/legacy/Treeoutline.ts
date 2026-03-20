@@ -1779,20 +1779,21 @@ export class TreeViewElement extends HTMLElementWithLightDOMTemplate {
     return this.#treeOutline;
   }
 
-  #getParentTreeElement(element: HTMLLIElement|TreeElementWrapper): {treeElement: TreeElement, expanded: boolean}|null {
+  #getParentTreeElement(element: HTMLLIElement|TreeElementWrapper):
+      {treeElement: TreeElement, expanded: boolean, classes: DOMTokenList}|null {
     const subtreeRoot = element.parentElement;
     if (!(subtreeRoot instanceof HTMLUListElement)) {
       return null;
     }
     if (subtreeRoot.role === 'tree') {
-      return {treeElement: this.#treeOutline.rootElement(), expanded: false};
+      return {treeElement: this.#treeOutline.rootElement(), expanded: false, classes: subtreeRoot.classList};
     }
     if (subtreeRoot.role !== 'group' || !subtreeRoot.parentElement) {
       return null;
     }
     const treeElement = TreeViewTreeElement.get(subtreeRoot.parentElement);
     const expanded = treeElement ? treeElement.expanded : hasBooleanAttribute(subtreeRoot.parentElement, 'open');
-    return treeElement ? {expanded, treeElement} : null;
+    return treeElement ? {expanded, treeElement, classes: subtreeRoot.classList} : null;
   }
 
   protected override updateNode(node: Node, attributeName: string|null): void {
@@ -1824,6 +1825,9 @@ export class TreeViewElement extends HTMLElementWithLightDOMTemplate {
       const parent = this.#getParentTreeElement(node);
       if (!parent) {
         continue;
+      }
+      if (parent.treeElement.childCount() === 0) {
+        parent.treeElement.childrenListElement.classList.add(...parent.classes.values());
       }
       while (nextSibling && nextSibling.nodeType !== Node.ELEMENT_NODE) {
         nextSibling = nextSibling.nextSibling;

@@ -47,12 +47,11 @@ describeWithMockConnection('PropertiesWidget', () => {
     renderElementIntoDOM(view);
     await view.updateComplete;
 
-    const populateWithProperties =
-        sinon.spy(ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement, 'populateWithProperties');
+    const performUpdate = sinon.spy(view, 'performUpdate');
     model.dispatchEventToListeners(
         event, ...[node] as unknown as Common.EventTarget.EventPayloadToRestParameters<SDK.DOMModel.EventTypes, T>);
     await view.updateComplete;
-    assert.strictEqual(populateWithProperties.called, inScope);
+    assert.strictEqual(performUpdate.called, inScope);
   };
 
   it('updates UI on in scope attribute modified event', updatesUiOnEvent(SDK.DOMModel.Events.AttrModified, true));
@@ -110,21 +109,34 @@ describeWithMockConnection('PropertiesWidget', () => {
     setMockConnectionResponseHandler('Runtime.callFunctionOn', callFunctionOn);
 
     sinon.stub(node, 'resolveToObject').withArgs('properties-sidebar-pane').resolves(object);
+    const viewFunction = createViewFunctionStub(Elements.PropertiesWidget.PropertiesWidget);
+    new Elements.PropertiesWidget.PropertiesWidget(viewFunction);
     UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, node);
 
-    const viewFunction = createViewFunctionStub(Elements.PropertiesWidget.PropertiesWidget);
-    const view = new Elements.PropertiesWidget.PropertiesWidget(viewFunction);
-    renderElementIntoDOM(view);
-    await viewFunction.nextInput;
-    // Wait for the property widgets to update
+    const {objectTree} = await viewFunction.nextInput;
+    assert.exists(objectTree);
+    await objectTree.populateChildrenIfNeeded();
+
+    const nodes = Array.from(ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement.createPropertyNodes(
+        objectTree.children || {properties: [], internalProperties: [], accessors: []}, true, true));
+
+    // We need to attach the node to a TreeOutline so that its onattach() lifecycle hook
+    // is triggered and the DOM is fully constructed.
+    const dummyTree = new UI.TreeOutline.TreeOutlineInShadow();
+    for (const node of nodes) {
+      dummyTree.appendChild(node);
+    }
     await UI.Widget.Widget.allUpdatesComplete;
 
-    const {treeOutline} = viewFunction.input;
-    const treeShadowRoot = treeOutline.element.shadowRoot;
-    assert.exists(treeShadowRoot);
-    const invokeButton = treeShadowRoot.querySelector('.object-value-calculate-value-button');
-    assert.exists(invokeButton);
-    (invokeButton as HTMLElement).click();
+    // The second node should be the accessor
+    const accessorNode = nodes.find(
+        n =>
+            n instanceof ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement && n.property?.name === 'myGetter');
+    assert.instanceOf(accessorNode, ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement);
+
+    const invokeButton = accessorNode.listItemElement.querySelector('.object-value-calculate-value-button');
+    assert.instanceOf(invokeButton, HTMLElement);
+    invokeButton.click();
     sinon.assert.calledWith(callFunctionOn, sinon.match({
       objectId: '1',
       arguments: sinon.match([{objectId: '2'}]),
@@ -257,36 +269,46 @@ describeWithEnvironment('PropertiesWidget DEFAULT_VIEW', () => {
 
     const viewFunction = createViewFunctionStub(Elements.PropertiesWidget.PropertiesWidget);
     new Elements.PropertiesWidget.PropertiesWidget(viewFunction);
-    const {treeOutline} = await viewFunction.nextInput;
 
     if (filter) {
       objectTree.setFilter({includeNullOrUndefinedValues: false, regex: new RegExp(filter, 'i')});
     }
 
-    ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement.populateWithProperties(
-        treeOutline.rootElement(), await objectTree.populateChildrenIfNeeded(), true, true);
+    await objectTree.populateChildrenIfNeeded();
 
-    return {container, treeOutline, objectTree};
+    return {container, objectTree};
   }
 
   it('creates a read-only tree outline', async () => {
-    const {treeOutline, objectTree} = await setUpView();
+    const {container, objectTree} = await setUpView();
 
-    ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement.populateWithProperties(
-        treeOutline.rootElement(), await objectTree.populateChildrenIfNeeded(), true, true);
+    Elements.PropertiesWidget.DEFAULT_VIEW(
+        {
+          onFilterChanged: () => {},
+          objectTree,
+          allChildrenFiltered: false,
+          onRegexToggled: function(): void {
+            throw new Error('Function not implemented.');
+          },
+          isRegex: false
+        },
+        {}, container);
 
+    await UI.Widget.Widget.allUpdatesComplete;
+    const tree = container.querySelector('devtools-tree') as UI.TreeOutline.TreeViewElement;
+    assert.exists(tree);
+    const treeOutline = tree.getInternalTreeOutlineForTest();
     const child = treeOutline.rootElement().childAt(0);
     assert.instanceOf(child, ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement);
     assert.isFalse(child.editable);
   });
 
   it('renders the view without filter', async () => {
-    const {container, treeOutline, objectTree} = await setUpView();
+    const {container, objectTree} = await setUpView();
 
     Elements.PropertiesWidget.DEFAULT_VIEW(
         {
           onFilterChanged: () => {},
-          treeOutline,
           objectTree,
           allChildrenFiltered: false,
           onRegexToggled: function(): void {
@@ -299,12 +321,11 @@ describeWithEnvironment('PropertiesWidget DEFAULT_VIEW', () => {
   });
 
   it('renders the view with a partial filter match', async () => {
-    const {container, treeOutline, objectTree} = await setUpView('first');
+    const {container, objectTree} = await setUpView('first');
 
     Elements.PropertiesWidget.DEFAULT_VIEW(
         {
           onFilterChanged: () => {},
-          treeOutline,
           objectTree,
           allChildrenFiltered: false,
           onRegexToggled: function(): void {
@@ -317,12 +338,11 @@ describeWithEnvironment('PropertiesWidget DEFAULT_VIEW', () => {
   });
 
   it('renders the view with no filter matches', async () => {
-    const {container, treeOutline, objectTree} = await setUpView('third');
+    const {container, objectTree} = await setUpView('third');
 
     Elements.PropertiesWidget.DEFAULT_VIEW(
         {
           onFilterChanged: () => {},
-          treeOutline,
           objectTree,
           allChildrenFiltered: true,
           onRegexToggled: function(): void {

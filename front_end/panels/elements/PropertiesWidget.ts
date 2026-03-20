@@ -40,7 +40,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import {html, nothing, render} from '../../ui/lit/lit.js';
+import {Directives, html, nothing, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import propertiesWidgetStyles from './propertiesWidget.css.js';
@@ -48,6 +48,7 @@ import propertiesWidgetStyles from './propertiesWidget.css.js';
 const OBJECT_GROUP_NAME = 'properties-sidebar-pane';
 
 const {bindToSetting} = UI.UIUtils;
+const {repeat} = Directives;
 
 const UIStrings = {
   /**
@@ -75,7 +76,6 @@ interface PropertiesWidgetInput {
   onFilterChanged: (e: CustomEvent<string>) => void;
   onRegexToggled: () => void;
   isRegex: boolean;
-  treeOutline: ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionsTreeOutline;
   objectTree: ObjectUI.ObjectPropertiesSection.ObjectTree|null;
   allChildrenFiltered: boolean;
 }
@@ -103,7 +103,17 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
       ${input.objectTree && input.allChildrenFiltered ? html`
         <div class="gray-info-message">${i18nString(UIStrings.noMatchingProperty)}</div>
       ` : nothing}
-      ${input.treeOutline.element}
+      <devtools-tree .template=${html`
+        <ul role=tree class="source-code object-properties-section">
+          <style>${ObjectUI.ObjectPropertiesSection.objectValueStyles}</style>;
+          <style>${ObjectUI.ObjectPropertiesSection.objectPropertiesSectionStyles}</style>;
+          ${repeat(ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement.createPropertyNodes(
+                        input.objectTree?.children ?? {},
+                        true /* skipProto */,
+                        true /* skipGettersAndSetters */),
+                   node => html`<devtools-tree-wrapper .treeElement=${node}></devtools-tree-wrapper>`)}
+        </ul>
+      `}></devtools-tree>
     </div>`, target);
   // clang-format on
 };
@@ -218,15 +228,7 @@ export class PropertiesWidget extends UI.Widget.VBox {
 
   override async performUpdate(): Promise<void> {
     await this.#updateNodeIfRequired();
-    if (!this.#objectTree) {
-      this.treeOutline.removeChildren();
-    } else {
-      const treeElement = this.treeOutline.rootElement();
-      treeElement.removeChildren();
-      ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement.populateWithProperties(
-          treeElement, await this.#objectTree.populateChildrenIfNeeded(), true /* skipProto */,
-          true /* skipGettersAndSetters */);
-    }
+    await this.#objectTree?.populateChildrenIfNeeded();
     const allChildrenFiltered =
         !(this.#objectTree?.children?.accessors?.some(c => !c.isFiltered) ||
           this.#objectTree?.children?.arrayRanges?.some(() => true) ||
@@ -237,7 +239,6 @@ export class PropertiesWidget extends UI.Widget.VBox {
           onFilterChanged: this.onFilterChanged.bind(this),
           onRegexToggled: this.onRegexToggled.bind(this),
           isRegex: this.#isRegex,
-          treeOutline: this.treeOutline,
           allChildrenFiltered,
           objectTree: this.#objectTree,
         },

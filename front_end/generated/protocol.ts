@@ -4790,7 +4790,7 @@ export namespace DOM {
     isScrollable?: boolean;
     affectedByStartingStyles?: boolean;
     adoptedStyleSheets?: StyleSheetId[];
-    isAdRelated?: boolean;
+    adProvenance?: Network.AdProvenance;
   }
 
   /**
@@ -5857,9 +5857,9 @@ export namespace DOM {
      */
     nodeId: DOM.NodeId;
     /**
-     * If the node is ad related.
+     * The provenance of the ad related node, if it is ad related.
      */
-    isAdRelated: boolean;
+    adProvenance?: Network.AdProvenance;
   }
 
   /**
@@ -11503,6 +11503,25 @@ export namespace Network {
      * `ancestryChain` to be tagged as an ad.
      */
     rootScriptFilterlistRule?: string;
+  }
+
+  /**
+   * Represents the provenance of an ad resource or element. Only one of
+   * `filterlistRule` or `adScriptAncestry` can be set. If `filterlistRule`
+   * is provided, the resource URL directly matches a filter list rule. If
+   * `adScriptAncestry` is provided, an ad script initiated the resource fetch or
+   * appended the element to the DOM. If neither is provided, the entity is
+   * known to be an ad, but provenance tracking information is unavailable.
+   */
+  export interface AdProvenance {
+    /**
+     * The filterlist rule that matched, if any.
+     */
+    filterlistRule?: string;
+    /**
+     * The script ancestry that created the ad, if any.
+     */
+    adScriptAncestry?: AdAncestry;
   }
 
   export const enum CrossOriginOpenerPolicyValue {

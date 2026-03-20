@@ -291,7 +291,7 @@ export class DOMNode extends Common.ObjectWrapper.ObjectWrapper<DOMNodeEventType
 
     this.setPseudoElements(payload.pseudoElements);
 
-    if (payload.isAdRelated) {
+    if (payload.adProvenance) {
       this.#isAdRelatedInternal = true;
     }
 
@@ -1831,7 +1831,8 @@ export class DOMModel extends SDKModel<EventTypes> {
     node.setIsScrollable(isScrollable);
   }
 
-  adRelatedStateUpdated(nodeId: Protocol.DOM.NodeId, isAdRelated: boolean): void {
+  adRelatedStateUpdated(nodeId: Protocol.DOM.NodeId, adProvenance?: Protocol.Network.AdProvenance): void {
+    const isAdRelated = adProvenance !== undefined;
     const node = this.nodeForId(nodeId);
     if (!node || node.isAdRelatedNode() === isAdRelated) {
       return;
@@ -2203,8 +2204,8 @@ class DOMDispatcher implements ProtocolProxyApi.DOMDispatcher {
     this.#domModel.affectedByStartingStylesFlagUpdated(nodeId, affectedByStartingStyles);
   }
 
-  adRelatedStateUpdated({nodeId, isAdRelated}: Protocol.DOM.AdRelatedStateUpdatedEvent): void {
-    this.#domModel.adRelatedStateUpdated(nodeId, isAdRelated);
+  adRelatedStateUpdated({nodeId, adProvenance}: Protocol.DOM.AdRelatedStateUpdatedEvent): void {
+    this.#domModel.adRelatedStateUpdated(nodeId, adProvenance);
   }
 }
 

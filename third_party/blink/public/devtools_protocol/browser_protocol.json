@@ -6928,7 +6928,8 @@
             "domain": "DOM",
             "description": "This domain exposes DOM read/write operations. Each DOM Node is represented with its mirror object\nthat has an `id`. This `id` can be used to get additional information on the Node, resolve it into\nthe JavaScript object wrapper, etc. It is important that client receives DOM events only for the\nnodes that are known to the client. Backend keeps track of the nodes that were sent to the client\nand never sends the same node twice. It is client's responsibility to collect information about\nthe nodes that were sent to the client. Note that `iframe` owner elements will return\ncorresponding document elements as their child nodes.",
             "dependencies": [
-                "Runtime"
+                "Runtime",
+                "Network"
             ],
             "types": [
                 {
@@ -7285,10 +7286,10 @@
                             }
                         },
                         {
-                            "name": "isAdRelated",
+                            "name": "adProvenance",
                             "experimental": true,
                             "optional": true,
-                            "type": "boolean"
+                            "$ref": "Network.AdProvenance"
                         }
                     ]
                 },
@@ -8854,9 +8855,10 @@
                             "$ref": "DOM.NodeId"
                         },
                         {
-                            "name": "isAdRelated",
-                            "description": "If the node is ad related.",
-                            "type": "boolean"
+                            "name": "adProvenance",
+                            "description": "The provenance of the ad related node, if it is ad related.",
+                            "optional": true,
+                            "$ref": "Network.AdProvenance"
                         }
                     ]
                 },
@@ -17294,6 +17296,26 @@
                             "description": "The filter list rule that caused the root (last) script in\n`ancestryChain` to be tagged as an ad.",
                             "optional": true,
                             "type": "string"
+                        }
+                    ]
+                },
+                {
+                    "id": "AdProvenance",
+                    "description": "Represents the provenance of an ad resource or element. Only one of\n`filterlistRule` or `adScriptAncestry` can be set. If `filterlistRule`\nis provided, the resource URL directly matches a filter list rule. If\n`adScriptAncestry` is provided, an ad script initiated the resource fetch or\nappended the element to the DOM. If neither is provided, the entity is\nknown to be an ad, but provenance tracking information is unavailable.",
+                    "experimental": true,
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "filterlistRule",
+                            "description": "The filterlist rule that matched, if any.",
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
+                            "name": "adScriptAncestry",
+                            "description": "The script ancestry that created the ad, if any.",
+                            "optional": true,
+                            "$ref": "AdAncestry"
                         }
                     ]
                 },

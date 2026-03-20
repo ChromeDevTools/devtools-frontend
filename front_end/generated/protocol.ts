@@ -4576,6 +4576,7 @@ export namespace DOM {
     Checkmark = 'checkmark',
     Before = 'before',
     After = 'after',
+    ExpandIcon = 'expand-icon',
     PickerIcon = 'picker-icon',
     InterestHint = 'interest-hint',
     Marker = 'marker',
@@ -20302,6 +20303,7 @@ export namespace WebAuthn {
   export const enum Ctap2Version {
     Ctap2_0 = 'ctap2_0',
     Ctap2_1 = 'ctap2_1',
+    Ctap2_2 = 'ctap2_2',
   }
 
   export const enum AuthenticatorTransport {
@@ -20351,6 +20353,18 @@ export namespace WebAuthn {
      * Defaults to false.
      */
     hasPrf?: boolean;
+    /**
+     * If set to true, the authenticator will support the hmac-secret extension.
+     * https://fidoalliance.org/specs/fido-v2.1-ps-20210615/fido-client-to-authenticator-protocol-v2.1-ps-20210615.html#sctn-hmac-secret-extension
+     * Defaults to false.
+     */
+    hasHmacSecret?: boolean;
+    /**
+     * If set to true, the authenticator will support the hmac-secret-mc extension.
+     * https://fidoalliance.org/specs/fido-v2.2-rd-20241003/fido-client-to-authenticator-protocol-v2.2-rd-20241003.html#sctn-hmac-secret-make-cred-extension
+     * Defaults to false.
+     */
+    hasHmacSecretMc?: boolean;
     /**
      * If set to true, tests of user presence will succeed immediately.
      * Otherwise, they will not be resolved. Defaults to true.

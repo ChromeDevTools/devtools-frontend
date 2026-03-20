@@ -6977,6 +6977,7 @@
                         "checkmark",
                         "before",
                         "after",
+                        "expand-icon",
                         "picker-icon",
                         "interest-hint",
                         "marker",
@@ -30933,7 +30934,8 @@
                     "type": "string",
                     "enum": [
                         "ctap2_0",
-                        "ctap2_1"
+                        "ctap2_1",
+                        "ctap2_2"
                     ]
                 },
                 {
@@ -30998,6 +31000,18 @@
                         {
                             "name": "hasPrf",
                             "description": "If set to true, the authenticator will support the prf extension.\nhttps://w3c.github.io/webauthn/#prf-extension\nDefaults to false.",
+                            "optional": true,
+                            "type": "boolean"
+                        },
+                        {
+                            "name": "hasHmacSecret",
+                            "description": "If set to true, the authenticator will support the hmac-secret extension.\nhttps://fidoalliance.org/specs/fido-v2.1-ps-20210615/fido-client-to-authenticator-protocol-v2.1-ps-20210615.html#sctn-hmac-secret-extension\nDefaults to false.",
+                            "optional": true,
+                            "type": "boolean"
+                        },
+                        {
+                            "name": "hasHmacSecretMc",
+                            "description": "If set to true, the authenticator will support the hmac-secret-mc extension.\nhttps://fidoalliance.org/specs/fido-v2.2-rd-20241003/fido-client-to-authenticator-protocol-v2.2-rd-20241003.html#sctn-hmac-secret-make-cred-extension\nDefaults to false.",
                             "optional": true,
                             "type": "boolean"
                         },

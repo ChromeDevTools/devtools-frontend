@@ -1598,6 +1598,7 @@ button.link {
 
 // gen/front_end/panels/ai_assistance/components/ChatInput.js
 var { html: html3, Directives: { createRef, ref } } = Lit;
+var { widget: widget2 } = UI3.Widget;
 var UIStrings = {
   /**
    * @description Label added to the text input to describe the context for screen readers. Not shown visibly on screen.
@@ -1833,7 +1834,7 @@ var DEFAULT_VIEW2 = (input, _output, target) => {
                         ${input.context instanceof AiAssistanceModel2.StylingAgent.NodeContext ? html3`
                               <devtools-widget
                                 class="title"
-                                .widgetConfig=${UI3.Widget.widgetConfig(PanelsCommon.DOMLinkifier.DOMNodeLink, {
+                                ${widget2(PanelsCommon.DOMLinkifier.DOMNodeLink, {
     node: input.context.getItem(),
     options: {
       disabled: !input.isContextSelected,
@@ -1843,7 +1844,7 @@ var DEFAULT_VIEW2 = (input, _output, target) => {
   })}
                               ></devtools-widget>` : html3`
                           ${input.context instanceof AiAssistanceModel2.NetworkAgent.RequestContext ? PanelUtils.PanelUtils.getIconForNetworkRequest(input.context.getItem()) : input.context instanceof AiAssistanceModel2.FileAgent.FileContext ? PanelUtils.PanelUtils.getIconForSourceFile(input.context.getItem()) : input.context instanceof AiAssistanceModel2.AccessibilityAgent.AccessibilityContext ? html3`<devtools-icon class="icon" name="performance" title="Lighthouse"></devtools-icon>` : input.context instanceof AiAssistanceModel2.PerformanceAgent.PerformanceTraceContext ? html3`<devtools-icon class="icon" name="performance" title="Performance"></devtools-icon>` : Lit.nothing}
-                            <span 
+                            <span
                               role="button"
                               class="title"
                               tabindex="0"
@@ -3117,7 +3118,7 @@ var WalkthroughView = class extends UI4.Widget.Widget {
 // gen/front_end/panels/ai_assistance/components/ChatMessage.js
 var { html: html5, Directives: { ref: ref3, ifDefined } } = Lit3;
 var lockedString5 = i18n9.i18n.lockedString;
-var { widget: widget2 } = UI5.Widget;
+var { widget: widget3 } = UI5.Widget;
 var REPORT_URL = "https://crbug.com/364805393";
 var SCROLL_ROUNDING_OFFSET = 1;
 var UIStringsNotTranslate4 = {
@@ -3430,7 +3431,7 @@ function renderWalkthroughUI(input, steps) {
     </div> `) : Lit3.nothing;
   const walkthroughInline = input.walkthrough.isInlined ? html5`
     <div class="walkthrough-container">
-      ${widget2(WalkthroughView, {
+      ${widget3(WalkthroughView, {
     message: input.message,
     isLoading: input.isLoading && input.isLastMessage,
     markdownRenderer: input.markdownRenderer,
@@ -3519,7 +3520,7 @@ async function makeComputedStyleWidget(widgetData) {
   }
   const styles = new ComputedStyle.ComputedStyleModel.ComputedStyle(domNodeForId, widgetData.data.computedStyles);
   const renderedWidget = html5`<devtools-widget
-      class="computed-styles-widget" ${widget2(Elements.ComputedStyleWidget.ComputedStyleWidget, {
+      class="computed-styles-widget" ${widget3(Elements.ComputedStyleWidget.ComputedStyleWidget, {
     nodeStyle: styles,
     matchedStyles: widgetData.data.matchedCascade,
     // This disables showing the nested traces and detailed information in the widget.
@@ -3531,7 +3532,7 @@ async function makeComputedStyleWidget(widgetData) {
 }
 async function makeCoreVitalsWidget(widgetData) {
   const renderedWidget = html5`<devtools-widget
-      class="core-vitals-widget" ${widget2(TimelineComponents.CWVMetrics.CWVMetrics, { data: widgetData.data })}>
+      class="core-vitals-widget" ${widget3(TimelineComponents.CWVMetrics.CWVMetrics, { data: widgetData.data })}>
   </devtools-widget>`;
   return { renderedWidget, revealable: new TimelineUtils.Helpers.RevealableCoreVitals(widgetData.data.insightSetKey) };
 }
@@ -3542,7 +3543,7 @@ async function makeStylePropertiesWidget(widgetData) {
   }
   const renderedWidget = html5`<devtools-widget
       class="styling-preview-widget"
-      ${widget2(Elements.StandaloneStylesContainer.StandaloneStylesContainer, {
+      ${widget3(Elements.StandaloneStylesContainer.StandaloneStylesContainer, {
     domNode: domNodeForId,
     filter: widgetData.data.selector ? new RegExp(widgetData.data.selector) : null
   })}>
@@ -3554,13 +3555,12 @@ async function makeLcpBreakdownWidget(widgetData) {
   if (!insight) {
     return null;
   }
-  const widgetConfig = UI5.Widget.widgetConfig(TimelineInsights.LCPBreakdown.LCPBreakdown, {
-    model: insight,
-    minimal: true
-  });
   const renderedWidget = html5`<devtools-widget
     class="lcp-breakdown-widget"
-    .widgetConfig=${widgetConfig}></devtools-widget>`;
+    ${widget3(TimelineInsights.LCPBreakdown.LCPBreakdown, {
+    model: insight,
+    minimal: true
+  })}></devtools-widget>`;
   return { renderedWidget, revealable: new TimelineUtils.Helpers.RevealableInsight(insight) };
 }
 function renderWidgetResponse(response) {
@@ -3626,7 +3626,10 @@ async function makeDomTreeWidget(widgetData) {
   if (!(root instanceof SDK2.DOMModel.DOMNodeSnapshot)) {
     return null;
   }
-  const widgetConfig = UI5.Widget.widgetConfig(Elements.ElementsTreeOutline.DOMTreeWidget, {
+  const networkRequest = widgetData.data.networkRequest;
+  const renderedWidget = html5`
+    ${networkRequest ? renderNetworkRequestPreview(networkRequest) : Lit3.nothing}
+    <devtools-widget class="dom-tree-widget" ${widget3(Elements.ElementsTreeOutline.DOMTreeWidget, {
     maxTreeDepth: 2,
     enableContextMenu: false,
     showComments: false,
@@ -3636,11 +3639,7 @@ async function makeDomTreeWidget(widgetData) {
     rootDOMNode: root,
     visibleWidth: 400,
     wrap: true
-  });
-  const networkRequest = widgetData.data.networkRequest;
-  const renderedWidget = html5`
-    ${networkRequest ? renderNetworkRequestPreview(networkRequest) : Lit3.nothing}
-    <devtools-widget class="dom-tree-widget" .widgetConfig=${widgetConfig}></devtools-widget>
+  })}></devtools-widget>
   `;
   return {
     renderedWidget,
@@ -4755,7 +4754,7 @@ var ExportForAgentsDialog = class _ExportForAgentsDialog extends UI6.Widget.VBox
 
 // gen/front_end/panels/ai_assistance/components/ChatView.js
 var { ref: ref4, repeat, classMap } = Directives5;
-var { widget: widget3 } = UI7.Widget;
+var { widget: widget4 } = UI7.Widget;
 var UIStringsNotTranslate5 = {
   /**
    * @description Text for the empty state of the AI assistance panel.
@@ -4787,7 +4786,7 @@ var DEFAULT_VIEW6 = (input, output, target) => {
   })}>
           ${input.messages.length > 0 ? html7`
             <div class="messages-container" ${ref4(input.handleMessageContainerRef)}>
-              ${repeat(input.messages, (message) => widget3(ChatMessage, {
+              ${repeat(input.messages, (message) => widget4(ChatMessage, {
     message,
     isLoading: input.isLoading && input.messages.at(-1) === message,
     isReadOnly: input.isReadOnly,
@@ -4810,7 +4809,7 @@ var DEFAULT_VIEW6 = (input, output, target) => {
                   @click=${input.exportForAgentsClick}
                 >Export for agents</devtools-button>
               ` : nothing7}
-              ${input.isLoading ? nothing7 : widget3(PatchWidget, {
+              ${input.isLoading ? nothing7 : widget4(PatchWidget, {
     changeSummary: input.changeSummary ?? "",
     changeManager: input.changeManager
   })}
@@ -4845,7 +4844,7 @@ var DEFAULT_VIEW6 = (input, output, target) => {
               </div>
             </div>
           `}
-          <devtools-widget class=${inputWidgetClasses} ${widget3(ChatInput, {
+          <devtools-widget class=${inputWidgetClasses} ${widget4(ChatInput, {
     isLoading: input.isLoading,
     blockedByCrossOrigin: input.blockedByCrossOrigin,
     isTextInputDisabled: input.isTextInputDisabled,
@@ -5773,7 +5772,7 @@ async function saveToDisk(conversation) {
 
 // gen/front_end/panels/ai_assistance/AiAssistancePanel.js
 var { html: html13 } = Lit8;
-var { widget: widget4 } = UI10.Widget;
+var { widget: widget5 } = UI10.Widget;
 var AI_ASSISTANCE_SEND_FEEDBACK = "https://crbug.com/364805393";
 var AI_ASSISTANCE_HELP = "https://developer.chrome.com/docs/devtools/ai-assistance";
 var WALKTHROUGH_SIDEBAR_BREAKPOINT = 700;
@@ -6127,10 +6126,10 @@ function defaultView(input, output, target) {
         ></devtools-ai-chat-view>`;
       }
       case "explore-view":
-        return html13`<devtools-widget class="fill-panel" ${widget4(ExploreWidget)}>
+        return html13`<devtools-widget class="fill-panel" ${widget5(ExploreWidget)}>
                     </devtools-widget>`;
       case "disabled-view":
-        return html13`<devtools-widget class="fill-panel" ${widget4(DisabledWidget, input.props)}>
+        return html13`<devtools-widget class="fill-panel" ${widget5(DisabledWidget, input.props)}>
                     </devtools-widget>`;
     }
   }
@@ -6158,7 +6157,7 @@ function defaultView(input, output, target) {
           </div>
           <div slot="sidebar" class="sidebar-view">
             ${shouldShowWalkthrough ? html13`
-              <devtools-widget ${widget4(WalkthroughView, {
+              <devtools-widget ${widget5(WalkthroughView, {
       message: input.props.walkthrough.activeMessage,
       isLoading: input.props.isLoading && walkthroughIsForLastMessage,
       markdownRenderer: input.props.markdownRenderer,
@@ -7327,8 +7326,8 @@ var ActionDelegate = class {
           if (UI10.InspectorView.InspectorView.instance().drawerSize() < minDrawerSize) {
             UI10.InspectorView.InspectorView.instance().setDrawerSize(minDrawerSize);
           }
-          const widget5 = await view.widget();
-          void widget5.handleAction(actionId, opts);
+          const widget6 = await view.widget();
+          void widget6.handleAction(actionId, opts);
         })();
         return true;
       }

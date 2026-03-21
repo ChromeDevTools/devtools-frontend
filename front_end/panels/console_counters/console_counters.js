@@ -62,14 +62,8 @@ var DEFAULT_VIEW = (input, _output, target) => {
     accessibleName: consoleTitle,
     compact,
     groups: [
-      {
-        iconName: "cross-circle-filled",
-        text: countToText(errors)
-      },
-      {
-        iconName: "warning-filled",
-        text: countToText(warnings)
-      }
+      { iconName: "cross-circle-filled", text: countToText(errors) },
+      { iconName: "warning-filled", text: countToText(warnings) }
     ]
   };
   const issueEnumeration = IssueCounter.IssueCounter.getIssueCountsEnumeration(issuesManager);
@@ -163,11 +157,8 @@ var WarningErrorCounter = class _WarningErrorCounter {
     const widgetElement = document.createElement("devtools-widget");
     const toolbarItem = new UI.Toolbar.ToolbarItemWithCompactLayout(widgetElement);
     toolbarItem.setVisible(false);
-    widgetElement.widgetConfig = UI.Widget.widgetConfig((e) => {
-      const widget = new WarningErrorCounterWidget(e, toolbarItem.setVisible.bind(toolbarItem));
-      toolbarItem.addEventListener("CompactLayoutUpdated", widget.onSetCompactLayout, widget);
-      return widget;
-    });
+    const widget = new WarningErrorCounterWidget(widgetElement, toolbarItem.setVisible.bind(toolbarItem));
+    toolbarItem.addEventListener("CompactLayoutUpdated", widget.onSetCompactLayout, widget);
     this.toolbarItem = toolbarItem;
   }
   item() {

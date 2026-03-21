@@ -258,7 +258,7 @@ export declare class DOMModel extends SDKModel<EventTypes> {
     pseudoElementAdded(parentId: Protocol.DOM.NodeId, pseudoElement: Protocol.DOM.Node): void;
     adoptedStyleSheetsModified(parentId: Protocol.DOM.NodeId, styleSheets: Protocol.DOM.StyleSheetId[]): void;
     scrollableFlagUpdated(nodeId: Protocol.DOM.NodeId, isScrollable: boolean): void;
-    adRelatedStateUpdated(nodeId: Protocol.DOM.NodeId, isAdRelated: boolean): void;
+    adRelatedStateUpdated(nodeId: Protocol.DOM.NodeId, adProvenance?: Protocol.Network.AdProvenance): void;
     affectedByStartingStylesFlagUpdated(nodeId: Protocol.DOM.NodeId, affectedByStartingStyles: boolean): void;
     pseudoElementRemoved(parentId: Protocol.DOM.NodeId, pseudoElementId: Protocol.DOM.NodeId): void;
     distributedNodesUpdated(insertionPointId: Protocol.DOM.NodeId, distributedNodes: Protocol.DOM.BackendNode[]): void;

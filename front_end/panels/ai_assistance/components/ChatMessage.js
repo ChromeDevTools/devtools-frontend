@@ -533,14 +533,13 @@ async function makeLcpBreakdownWidget(widgetData) {
     if (!insight) {
         return null;
     }
-    const widgetConfig = UI.Widget.widgetConfig(TimelineInsights.LCPBreakdown.LCPBreakdown, {
-        model: insight,
-        minimal: true,
-    });
     // clang-format off
     const renderedWidget = html `<devtools-widget
     class="lcp-breakdown-widget"
-    .widgetConfig=${widgetConfig}></devtools-widget>`;
+    ${widget(TimelineInsights.LCPBreakdown.LCPBreakdown, {
+        model: insight,
+        minimal: true,
+    })}></devtools-widget>`;
     // clang-format on
     return { renderedWidget, revealable: new TimelineUtils.Helpers.RevealableInsight(insight) };
 }
@@ -610,7 +609,11 @@ async function makeDomTreeWidget(widgetData) {
     if (!(root instanceof SDK.DOMModel.DOMNodeSnapshot)) {
         return null;
     }
-    const widgetConfig = UI.Widget.widgetConfig(Elements.ElementsTreeOutline.DOMTreeWidget, {
+    const networkRequest = widgetData.data.networkRequest;
+    // clang-format off
+    const renderedWidget = html `
+    ${networkRequest ? renderNetworkRequestPreview(networkRequest) : Lit.nothing}
+    <devtools-widget class="dom-tree-widget" ${widget(Elements.ElementsTreeOutline.DOMTreeWidget, {
         maxTreeDepth: 2,
         enableContextMenu: false,
         showComments: false,
@@ -620,12 +623,7 @@ async function makeDomTreeWidget(widgetData) {
         rootDOMNode: root,
         visibleWidth: 400,
         wrap: true,
-    });
-    const networkRequest = widgetData.data.networkRequest;
-    // clang-format off
-    const renderedWidget = html `
-    ${networkRequest ? renderNetworkRequestPreview(networkRequest) : Lit.nothing}
-    <devtools-widget class="dom-tree-widget" .widgetConfig=${widgetConfig}></devtools-widget>
+    })}></devtools-widget>
   `;
     // clang-format on
     return {

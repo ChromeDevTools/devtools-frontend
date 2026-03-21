@@ -4225,6 +4225,7 @@ export declare namespace DOM {
         Checkmark = "checkmark",
         Before = "before",
         After = "after",
+        ExpandIcon = "expand-icon",
         PickerIcon = "picker-icon",
         InterestHint = "interest-hint",
         Marker = "marker",
@@ -4432,7 +4433,7 @@ export declare namespace DOM {
         isScrollable?: boolean;
         affectedByStartingStyles?: boolean;
         adoptedStyleSheets?: StyleSheetId[];
-        isAdRelated?: boolean;
+        adProvenance?: Network.AdProvenance;
     }
     /**
      * A structure to hold the top-level node of a detached tree and an array of its retained descendants.
@@ -5402,9 +5403,9 @@ export declare namespace DOM {
          */
         nodeId: DOM.NodeId;
         /**
-         * If the node is ad related.
+         * The provenance of the ad related node, if it is ad related.
          */
-        isAdRelated: boolean;
+        adProvenance?: Network.AdProvenance;
     }
     /**
      * Fired when a node's starting styles changes.
@@ -10660,6 +10661,24 @@ export declare namespace Network {
          * `ancestryChain` to be tagged as an ad.
          */
         rootScriptFilterlistRule?: string;
+    }
+    /**
+     * Represents the provenance of an ad resource or element. Only one of
+     * `filterlistRule` or `adScriptAncestry` can be set. If `filterlistRule`
+     * is provided, the resource URL directly matches a filter list rule. If
+     * `adScriptAncestry` is provided, an ad script initiated the resource fetch or
+     * appended the element to the DOM. If neither is provided, the entity is
+     * known to be an ad, but provenance tracking information is unavailable.
+     */
+    interface AdProvenance {
+        /**
+         * The filterlist rule that matched, if any.
+         */
+        filterlistRule?: string;
+        /**
+         * The script ancestry that created the ad, if any.
+         */
+        adScriptAncestry?: AdAncestry;
     }
     const enum CrossOriginOpenerPolicyValue {
         SameOrigin = "SameOrigin",
@@ -18778,7 +18797,8 @@ export declare namespace WebAuthn {
     }
     const enum Ctap2Version {
         Ctap2_0 = "ctap2_0",
-        Ctap2_1 = "ctap2_1"
+        Ctap2_1 = "ctap2_1",
+        Ctap2_2 = "ctap2_2"
     }
     const enum AuthenticatorTransport {
         Usb = "usb",
@@ -18826,6 +18846,18 @@ export declare namespace WebAuthn {
          * Defaults to false.
          */
         hasPrf?: boolean;
+        /**
+         * If set to true, the authenticator will support the hmac-secret extension.
+         * https://fidoalliance.org/specs/fido-v2.1-ps-20210615/fido-client-to-authenticator-protocol-v2.1-ps-20210615.html#sctn-hmac-secret-extension
+         * Defaults to false.
+         */
+        hasHmacSecret?: boolean;
+        /**
+         * If set to true, the authenticator will support the hmac-secret-mc extension.
+         * https://fidoalliance.org/specs/fido-v2.2-rd-20241003/fido-client-to-authenticator-protocol-v2.2-rd-20241003.html#sctn-hmac-secret-make-cred-extension
+         * Defaults to false.
+         */
+        hasHmacSecretMc?: boolean;
         /**
          * If set to true, tests of user presence will succeed immediately.
          * Otherwise, they will not be resolved. Defaults to true.

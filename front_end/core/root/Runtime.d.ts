@@ -208,12 +208,6 @@ export interface HostConfigAnimationStylesInStylesTab {
 export interface HostConfigJpegXlImageFormat {
     enabled: boolean;
 }
-export interface HostConfigThirdPartyCookieControls {
-    thirdPartyCookieRestrictionEnabled: boolean;
-    thirdPartyCookieMetadataEnabled: boolean;
-    thirdPartyCookieHeuristicsEnabled: boolean;
-    managedBlockThirdPartyCookies: string | boolean;
-}
 export interface HostConfigAiAssistanceV2 {
     enabled: boolean;
 }
@@ -301,7 +295,6 @@ export type HostConfig = Platform.TypeScriptUtilities.RecursivePartial<{
     devToolsEnableOriginBoundCookies: HostConfigEnableOriginBoundCookies;
     devToolsAnimationStylesInStylesTab: HostConfigAnimationStylesInStylesTab;
     devToolsJpegXlImageFormat: HostConfigJpegXlImageFormat;
-    thirdPartyCookieControls: HostConfigThirdPartyCookieControls;
     devToolsAiGeneratedTimelineLabels: AiGeneratedTimelineLabels;
     devToolsAllowPopoverForcing: AllowPopoverForcing;
     devToolsGlobalAiButton: GlobalAiButton;

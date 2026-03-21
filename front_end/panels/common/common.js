@@ -2511,6 +2511,7 @@ var UIStringsNotTranslate5 = {
   viewSources: "View Sources"
 };
 var lockedString5 = i18n15.i18n.lockedString;
+var { widget } = UI9.Widget;
 var DEFAULT_SUMMARY_TOOLBAR_VIEW2 = (input, _output, target) => {
   if (input.aidaAvailability !== "available") {
     render9(nothing5, target);
@@ -2523,7 +2524,7 @@ var DEFAULT_SUMMARY_TOOLBAR_VIEW2 = (input, _output, target) => {
     "has-top-border": input.hasTopBorder
   });
   const disclaimer = input.disclaimerTooltipId && input.spinnerTooltipId ? html9`<devtools-widget
-            .widgetConfig=${UI9.Widget.widgetConfig(AiCodeCompletionDisclaimer, {
+            ${widget(AiCodeCompletionDisclaimer, {
     disclaimerTooltipId: input.disclaimerTooltipId,
     spinnerTooltipId: input.spinnerTooltipId,
     loading: input.loading,
@@ -4797,7 +4798,7 @@ var domLinkifier_css_default = `/*
 
 // gen/front_end/panels/common/DOMLinkifier.js
 var { classMap, ifDefined: ifDefined2 } = Directives4;
-var { widget } = UI14.Widget;
+var { widget: widget2 } = UI14.Widget;
 var UIStrings6 = {
   /**
    * @description Text displayed when trying to create a link to a node in the UI, but the node
@@ -4990,10 +4991,10 @@ var Linkifier2 = class _Linkifier {
   }
   linkify(node, options) {
     if (node instanceof SDK3.DOMModel.DOMNode) {
-      return html13`<devtools-widget ${widget((e) => new DOMNodeLink(e, node, options))}>${options?.textContent ? html13`${options.textContent}` : nothing7}</devtools-widget>`;
+      return html13`<devtools-widget ${widget2((e) => new DOMNodeLink(e, node, options))}>${options?.textContent ? html13`${options.textContent}` : nothing7}</devtools-widget>`;
     }
     if (node instanceof SDK3.DOMModel.DeferredDOMNode) {
-      return html13`<devtools-widget ${widget((e) => new DeferredDOMNodeLink(e, node, options))}>${options?.textContent ? html13`${options.textContent}` : nothing7}</devtools-widget>`;
+      return html13`<devtools-widget ${widget2((e) => new DeferredDOMNodeLink(e, node, options))}>${options?.textContent ? html13`${options.textContent}` : nothing7}</devtools-widget>`;
     }
     throw new Error("Can't linkify non-node");
   }

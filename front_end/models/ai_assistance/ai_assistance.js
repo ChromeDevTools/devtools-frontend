@@ -259,6 +259,7 @@ __export(AccessibilityAgent_exports, {
 import * as Host2 from "./../../core/host/host.js";
 import * as i18n from "./../../core/i18n/i18n.js";
 import * as Root2 from "./../../core/root/root.js";
+import * as SDK from "./../../core/sdk/sdk.js";
 
 // gen/front_end/models/ai_assistance/data_formatters/LighthouseFormatter.js
 var LighthouseFormatter_exports = {};
@@ -906,20 +907,29 @@ var AiAgent = class {
 };
 
 // gen/front_end/models/ai_assistance/agents/AccessibilityAgent.js
-var preamble = `You are an accessibility expert agent.
+var preamble = `You are an accessibility expert agent integrated into Chrome DevTools.
+Your role is to help users understand and fix accessibility issues found in Lighthouse reports.
 
-# Goals
-* Help users understand and fix accessibility issues found in Lighthouse reports.
-* Provide succinct, actionable advice. Avoid long explanations and "walls of text".
-* Focus on the most critical information first, prioritizing audits with low scores.
+# Style Guidelines
+* **Concise and Direct**: Use short sentences and bullet points. Avoid paragraphs and long explanations.
+* **Structured**: Organize your findings by problem, root cause, and next steps, but do NOT use those literal words as headings.
+* **No Internal Identifiers**: NEVER show Lighthouse paths (e.g., "1,HTML,1,BODY...") to the user. Refer to elements by their tag name, classes, or IDs.
+* **Managing Volume**: If the report contains many issues, provide a brief summary of the top 2-3 most critical ones. Tell the user that there are more issues and invite them to ask for more details or to explore a specific area.
+
+# Workflow
+1. **Identify**: Find the most critical accessibility issues in the Lighthouse report.
+2. **Investigate**: For any element identified as failing, you **MUST** call \`getStyles\` or \`getElementAccessibilityDetails\` first to confirm its current state and gather details.
+3. **Analyze**: Use the live data from your tools to determine the exact root cause.
+4. **Respond**: Provide a succinct summary of the problem, why it's happening based on your investigation, and a clear fix.
 
 # Capabilities
-* You have access to the \`getLighthouseAudits\` function to retrieve detailed audit data for performance, accessibility, best-practices, and SEO.
-* Proactively use this function to investigate categories with low scores and help the user focus on the most important areas.
+* \`getLighthouseAudits\`: Get detailed audit data.
+* \`getStyles\`: Get computed styles for an element by its path.
+* \`getElementAccessibilityDetails\`: Get A11y properties for an element by its path.
 
 # Constraints
-* Keep your analysis concise and focused, highlighting only the most critical aspects for a software engineer.
-* **CRITICAL** You are an accessibility agent. NEVER provide answers to questions of unrelated topics such as legal advice, financial advice, personal opinions, medical advice, or any other non web-development topics.
+* **CRITICAL**: ALWAYS call a tool before providing an answer if an element path is available.
+* **CRITICAL**: You are an accessibility agent. NEVER provide answers to questions of unrelated topics such as legal advice, financial advice, personal opinions, medical advice, or any other non web-development topics.
 `;
 var AccessibilityContext = class extends ConversationContext {
   #lh;
@@ -963,6 +973,21 @@ var AccessibilityAgent = class extends AiAgent {
       details: this.#createContextDetails(lhr)
     };
   }
+  async #resolvePathToNode(path) {
+    const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+    if (!target) {
+      return null;
+    }
+    const domModel = target.model(SDK.DOMModel.DOMModel);
+    if (!domModel) {
+      return null;
+    }
+    const nodeId = await domModel.pushNodeByPathToFrontend(path);
+    if (!nodeId) {
+      return null;
+    }
+    return domModel.nodeForId(nodeId);
+  }
   #declareFunctions() {
     this.declareFunction("getLighthouseAudits", {
       description: "Returns the audits for a specific Lighthouse category. Use this to get more information about the performance, accessibility, best-practices, or seo audits.",
@@ -993,6 +1018,119 @@ var AccessibilityAgent = class extends AiAgent {
         }
         const audits = new LighthouseFormatter().audits(report, params.categoryId);
         return { result: { audits } };
+      }
+    });
+    this.declareFunction("getStyles", {
+      description: "Get computed styles for an element on the inspected page by its Lighthouse path.",
+      parameters: {
+        type: 6,
+        description: "",
+        nullable: false,
+        properties: {
+          explanation: {
+            type: 1,
+            description: "Explain why you want to get styles.",
+            nullable: false
+          },
+          path: {
+            type: 1,
+            description: 'The Lighthouse path of the element (e.g., "1,HTML,1,BODY,2,DIV"). Find this in the report data.',
+            nullable: false
+          },
+          styleProperties: {
+            type: 5,
+            description: "One or more CSS style property names to fetch.",
+            nullable: false,
+            items: {
+              type: 1,
+              description: "A CSS style property name to retrieve. For example, 'background-color'."
+            }
+          }
+        },
+        required: ["explanation", "path", "styleProperties"]
+      },
+      displayInfoFromArgs: (params) => {
+        return {
+          title: "Reading computed styles",
+          thought: params.explanation,
+          action: `getStyles('${params.path}', ${JSON.stringify(params.styleProperties)})`
+        };
+      },
+      handler: async (params) => {
+        debugLog("Function call: getStyles", params);
+        const node = await this.#resolvePathToNode(params.path);
+        if (!node) {
+          return { error: `Could not find the element with path: ${params.path}` };
+        }
+        const styles = await node.domModel().cssModel().getComputedStyle(node.id);
+        if (!styles) {
+          return { error: "Could not get computed styles." };
+        }
+        const result = {};
+        for (const prop of params.styleProperties) {
+          result[prop] = styles.get(prop);
+        }
+        return { result: JSON.stringify(result, null, 2) };
+      }
+    });
+    this.declareFunction("getElementAccessibilityDetails", {
+      description: "Get detailed accessibility information for an element on the inspected page by its Lighthouse path.",
+      parameters: {
+        type: 6,
+        description: "",
+        nullable: false,
+        properties: {
+          explanation: {
+            type: 1,
+            description: "Explain why you want to get accessibility details.",
+            nullable: false
+          },
+          path: {
+            type: 1,
+            description: 'The Lighthouse path of the element (e.g., "1,HTML,1,BODY,2,DIV"). Find this in the report data.',
+            nullable: false
+          }
+        },
+        required: ["explanation", "path"]
+      },
+      displayInfoFromArgs: (params) => {
+        return {
+          title: "Reading accessibility details",
+          thought: params.explanation,
+          action: `getElementAccessibilityDetails('${params.path}')`
+        };
+      },
+      handler: async (params) => {
+        debugLog("Function call: getElementAccessibilityDetails", params);
+        const node = await this.#resolvePathToNode(params.path);
+        if (!node) {
+          return { error: `Could not find the element with path: ${params.path}` };
+        }
+        const accessibilityModel = node.domModel().target().model(SDK.AccessibilityModel.AccessibilityModel);
+        if (!accessibilityModel) {
+          return { error: "Accessibility model not found." };
+        }
+        await accessibilityModel.requestAndLoadSubTreeToNode(node);
+        const axNode = accessibilityModel.axNodeForDOMNode(node);
+        if (!axNode) {
+          return { error: "Could not find accessibility node for the element." };
+        }
+        const result = {
+          role: axNode.role()?.value,
+          name: axNode.name()?.value,
+          nameSource: axNode.name()?.sources?.[0]?.type,
+          properties: {
+            focusable: node.getAttribute("tabindex") !== void 0 || axNode.role()?.value === "button" || axNode.role()?.value === "link",
+            hidden: axNode.ignored()
+          },
+          ariaAttributes: node.attributes().filter((attr) => attr.name.startsWith("aria-") || attr.name === "role").reduce((acc, attr) => {
+            acc[attr.name] = attr.value;
+            return acc;
+          }, {}),
+          isIgnored: axNode.ignored(),
+          ignoredReasons: axNode.ignoredReasons()
+        };
+        return { result: JSON.stringify(result, null, 2) };
       }
     });
   }
@@ -1036,7 +1174,7 @@ __export(BreakpointDebuggerAgent_exports, {
 });
 import * as Host3 from "./../../core/host/host.js";
 import * as i18n3 from "./../../core/i18n/i18n.js";
-import * as SDK2 from "./../../core/sdk/sdk.js";
+import * as SDK3 from "./../../core/sdk/sdk.js";
 import * as Bindings from "./../bindings/bindings.js";
 import * as Breakpoints from "./../breakpoints/breakpoints.js";
 
@@ -1191,16 +1329,16 @@ import * as TextUtils3 from "./../text_utils/text_utils.js";
 import * as Workspace from "./../workspace/workspace.js";
 
 // gen/front_end/models/ai_assistance/agents/BreakpointDebuggerAgentOverlay.js
-import * as SDK from "./../../core/sdk/sdk.js";
+import * as SDK2 from "./../../core/sdk/sdk.js";
 async function injectOverlay() {
-  const targetManager = SDK.TargetManager.TargetManager.instance();
+  const targetManager = SDK2.TargetManager.TargetManager.instance();
   const primaryTarget = targetManager.primaryPageTarget();
   await primaryTarget?.runtimeAgent().invoke_evaluate({
     expression: WAIT_FOR_USER_ACTION_OVERLAY_SCRIPT
   });
 }
 async function removeOverlay() {
-  const targetManager = SDK.TargetManager.TargetManager.instance();
+  const targetManager = SDK2.TargetManager.TargetManager.instance();
   const primaryTarget = targetManager.primaryPageTarget();
   await primaryTarget?.runtimeAgent().invoke_evaluate({
     expression: REMOVE_OVERLAY_SCRIPT
@@ -1542,8 +1680,8 @@ var BreakpointDebuggerAgent = class extends AiAgent {
         };
       },
       handler: async () => {
-        const targetManager = SDK2.TargetManager.TargetManager.instance();
-        const debuggerModel = targetManager.models(SDK2.DebuggerModel.DebuggerModel).find((m) => m.isPaused());
+        const targetManager = SDK3.TargetManager.TargetManager.instance();
+        const debuggerModel = targetManager.models(SDK3.DebuggerModel.DebuggerModel).find((m) => m.isPaused());
         if (debuggerModel) {
           debuggerModel.resume();
         }
@@ -1682,8 +1820,8 @@ var BreakpointDebuggerAgent = class extends AiAgent {
             description: lockedString("This code may modify page content. Continue?")
           };
         }
-        const targetManager = SDK2.TargetManager.TargetManager.instance();
-        const debuggerModel = targetManager.models(SDK2.DebuggerModel.DebuggerModel).find((m) => m.isPaused());
+        const targetManager = SDK3.TargetManager.TargetManager.instance();
+        const debuggerModel = targetManager.models(SDK3.DebuggerModel.DebuggerModel).find((m) => m.isPaused());
         if (!debuggerModel) {
           return { error: "Execution is not paused." };
         }
@@ -1790,8 +1928,8 @@ var BreakpointDebuggerAgent = class extends AiAgent {
     };
   }
   async #getCallStack() {
-    const targetManager = SDK2.TargetManager.TargetManager.instance();
-    const debuggerModel = targetManager.models(SDK2.DebuggerModel.DebuggerModel).find((m) => m.isPaused());
+    const targetManager = SDK3.TargetManager.TargetManager.instance();
+    const debuggerModel = targetManager.models(SDK3.DebuggerModel.DebuggerModel).find((m) => m.isPaused());
     if (!debuggerModel) {
       return {
         error: "Execution is not paused. I cannot access runtime variables or the call stack. I am currently in STATIC MODE. I must set a breakpoint and use waitForUserActionToTriggerBreakpoint to enter RUNTIME MODE."
@@ -1813,8 +1951,8 @@ var BreakpointDebuggerAgent = class extends AiAgent {
     return { result: { callFrames } };
   }
   async #getScopeVariables() {
-    const targetManager = SDK2.TargetManager.TargetManager.instance();
-    const debuggerModel = targetManager.models(SDK2.DebuggerModel.DebuggerModel).find((m) => m.isPaused());
+    const targetManager = SDK3.TargetManager.TargetManager.instance();
+    const debuggerModel = targetManager.models(SDK3.DebuggerModel.DebuggerModel).find((m) => m.isPaused());
     if (!debuggerModel) {
       return {
         error: "Execution is not paused. I cannot access runtime variables or the call stack. I am currently in STATIC MODE. I must set a breakpoint and use waitForUserActionToTriggerBreakpoint to enter RUNTIME MODE."
@@ -1911,8 +2049,8 @@ var BreakpointDebuggerAgent = class extends AiAgent {
         actualLineNumber = resolvedState[0].lineNumber + 1;
       }
     }
-    const targetManager = SDK2.TargetManager.TargetManager.instance();
-    const debuggerModel = targetManager.models(SDK2.DebuggerModel.DebuggerModel).find((m) => m.isPaused());
+    const targetManager = SDK3.TargetManager.TargetManager.instance();
+    const debuggerModel = targetManager.models(SDK3.DebuggerModel.DebuggerModel).find((m) => m.isPaused());
     let warning = "";
     if (debuggerModel) {
       const details = debuggerModel.debuggerPausedDetails();
@@ -1951,16 +2089,16 @@ var BreakpointDebuggerAgent = class extends AiAgent {
     return { result: { status: `Breakpoint removed at ${args.url}:${args.lineNumber}.` } };
   }
   async #debuggerAction(action) {
-    const targetManager = SDK2.TargetManager.TargetManager.instance();
-    const debuggerModel = targetManager.models(SDK2.DebuggerModel.DebuggerModel).find((m) => m.isPaused());
+    const targetManager = SDK3.TargetManager.TargetManager.instance();
+    const debuggerModel = targetManager.models(SDK3.DebuggerModel.DebuggerModel).find((m) => m.isPaused());
     if (!debuggerModel) {
       return { error: "Execution is not paused. I cannot step or resume in STATIC MODE." };
     }
     return await this.#waitForNextPause(() => action(debuggerModel), 3e3);
   }
   async #waitForUserActionToTriggerBreakpoint() {
-    const targetManager = SDK2.TargetManager.TargetManager.instance();
-    const debuggerModels = targetManager.models(SDK2.DebuggerModel.DebuggerModel);
+    const targetManager = SDK3.TargetManager.TargetManager.instance();
+    const debuggerModels = targetManager.models(SDK3.DebuggerModel.DebuggerModel);
     if (debuggerModels.length === 0) {
       return { error: "No debugger attached" };
     }
@@ -1985,11 +2123,11 @@ var BreakpointDebuggerAgent = class extends AiAgent {
    */
   async #waitForNextPause(triggerAction = () => {
   }, timeoutMs) {
-    const targetManager = SDK2.TargetManager.TargetManager.instance();
+    const targetManager = SDK3.TargetManager.TargetManager.instance();
     return await new Promise((resolve) => {
       let timeoutId;
       const listener = async (event) => {
-        targetManager.removeModelListener(SDK2.DebuggerModel.DebuggerModel, SDK2.DebuggerModel.Events.DebuggerPaused, listener);
+        targetManager.removeModelListener(SDK3.DebuggerModel.DebuggerModel, SDK3.DebuggerModel.Events.DebuggerPaused, listener);
         if (timeoutId) {
           clearTimeout(timeoutId);
         }
@@ -2008,10 +2146,10 @@ var BreakpointDebuggerAgent = class extends AiAgent {
         }
         resolve({ result: { status: `Paused at ${location}` } });
       };
-      targetManager.addModelListener(SDK2.DebuggerModel.DebuggerModel, SDK2.DebuggerModel.Events.DebuggerPaused, listener);
+      targetManager.addModelListener(SDK3.DebuggerModel.DebuggerModel, SDK3.DebuggerModel.Events.DebuggerPaused, listener);
       if (timeoutMs !== void 0) {
         timeoutId = setTimeout(() => {
-          targetManager.removeModelListener(SDK2.DebuggerModel.DebuggerModel, SDK2.DebuggerModel.Events.DebuggerPaused, listener);
+          targetManager.removeModelListener(SDK3.DebuggerModel.DebuggerModel, SDK3.DebuggerModel.Events.DebuggerPaused, listener);
           resolve({
             result: {
               status: "Execution resumed but did not pause again. There is nothing to step into or the execution finished."
@@ -2023,8 +2161,8 @@ var BreakpointDebuggerAgent = class extends AiAgent {
     });
   }
   async #getExecutionLocation() {
-    const targetManager = SDK2.TargetManager.TargetManager.instance();
-    const debuggerModel = targetManager.models(SDK2.DebuggerModel.DebuggerModel).find((m) => m.isPaused());
+    const targetManager = SDK3.TargetManager.TargetManager.instance();
+    const debuggerModel = targetManager.models(SDK3.DebuggerModel.DebuggerModel).find((m) => m.isPaused());
     if (!debuggerModel) {
       return { error: "Execution is not paused. I cannot determine execution location in STATIC MODE." };
     }
@@ -2074,8 +2212,8 @@ ${query}`;
       for (const bp of allBreakpoints) {
         await bp.breakpoint.remove(false);
       }
-      const targetManager = SDK2.TargetManager.TargetManager.instance();
-      const debuggerModels = targetManager.models(SDK2.DebuggerModel.DebuggerModel);
+      const targetManager = SDK3.TargetManager.TargetManager.instance();
+      const debuggerModels = targetManager.models(SDK3.DebuggerModel.DebuggerModel);
       for (const model of debuggerModels) {
         if (model.isPaused()) {
           model.resume();
@@ -2919,7 +3057,7 @@ import * as Host6 from "./../../core/host/host.js";
 import * as i18n7 from "./../../core/i18n/i18n.js";
 import * as Platform2 from "./../../core/platform/platform.js";
 import * as Root5 from "./../../core/root/root.js";
-import * as SDK3 from "./../../core/sdk/sdk.js";
+import * as SDK4 from "./../../core/sdk/sdk.js";
 import * as Tracing from "./../../services/tracing/tracing.js";
 import * as Annotations3 from "./../annotations/annotations.js";
 import * as Logs2 from "./../logs/logs.js";
@@ -5796,7 +5934,7 @@ ${text}`, metadata: { source: "devtools", score: ScorePriority.REQUIRED } });
     this.addFact(this.#callFrameDataDescriptionFact);
     this.addFact(this.#networkDataDescriptionFact);
     if (!this.#traceFacts.length) {
-      const target = SDK3.TargetManager.TargetManager.instance().primaryPageTarget();
+      const target = SDK4.TargetManager.TargetManager.instance().primaryPageTarget();
       if (!target) {
         throw new Error("missing target");
       }
@@ -5883,8 +6021,8 @@ ${result}`,
           if (lcpEvent && Trace6.Types.Events.isAnyLargestContentfulPaintCandidate(lcpEvent)) {
             const nodeId = lcpEvent.args.data?.nodeId;
             if (nodeId && !processedNodeIds.has(nodeId)) {
-              const target = SDK3.TargetManager.TargetManager.instance().primaryPageTarget();
-              const domModel = target?.model(SDK3.DOMModel.DOMModel);
+              const target = SDK4.TargetManager.TargetManager.instance().primaryPageTarget();
+              const domModel = target?.model(SDK4.DOMModel.DOMModel);
               if (domModel) {
                 const nodeMap = await domModel.pushNodesByBackendIdsToFrontend(/* @__PURE__ */ new Set([nodeId]));
                 const node = nodeMap?.get(nodeId);
@@ -6195,7 +6333,7 @@ ${result}`,
         if (!this.#formatter) {
           throw new Error("missing formatter");
         }
-        const target = SDK3.TargetManager.TargetManager.instance().primaryPageTarget();
+        const target = SDK4.TargetManager.TargetManager.instance().primaryPageTarget();
         if (!target) {
           throw new Error("missing target");
         }
@@ -6238,7 +6376,7 @@ ${result}`,
         if (script?.content !== void 0) {
           content = script.content;
         } else if (isFresh || isTraceApp) {
-          const resource = SDK3.ResourceTreeModel.ResourceTreeModel.resourceForURL(url);
+          const resource = SDK4.ResourceTreeModel.ResourceTreeModel.resourceForURL(url);
           if (!resource) {
             return { error: "Resource not found" };
           }
@@ -6280,7 +6418,7 @@ ${result}`,
           if (!event) {
             return { error: "Invalid eventKey" };
           }
-          const revealable = new SDK3.TraceObject.RevealableEvent(event);
+          const revealable = new SDK4.TraceObject.RevealableEvent(event);
           await Common2.Revealer.reveal(revealable);
           return { result: { success: true } };
         }
@@ -6317,8 +6455,8 @@ ${result}`,
     return { result: { success: true } };
   }
   async #getNetworkRequestImageData(lcpRequest) {
-    const target = SDK3.TargetManager.TargetManager.instance().primaryPageTarget();
-    const networkManager = target?.model(SDK3.NetworkManager.NetworkManager);
+    const target = SDK4.TargetManager.TargetManager.instance().primaryPageTarget();
+    const networkManager = target?.model(SDK4.NetworkManager.NetworkManager);
     if (!target || !networkManager) {
       return void 0;
     }
@@ -6346,7 +6484,7 @@ import * as Host7 from "./../../core/host/host.js";
 import * as i18n9 from "./../../core/i18n/i18n.js";
 import * as Platform5 from "./../../core/platform/platform.js";
 import * as Root6 from "./../../core/root/root.js";
-import * as SDK7 from "./../../core/sdk/sdk.js";
+import * as SDK8 from "./../../core/sdk/sdk.js";
 import * as Greendev2 from "./../greendev/greendev.js";
 import * as Annotations4 from "./../annotations/annotations.js";
 import * as Emulation from "./../emulation/emulation.js";
@@ -6358,7 +6496,7 @@ __export(ChangeManager_exports, {
 });
 import * as Common3 from "./../../core/common/common.js";
 import * as Platform3 from "./../../core/platform/platform.js";
-import * as SDK4 from "./../../core/sdk/sdk.js";
+import * as SDK5 from "./../../core/sdk/sdk.js";
 function formatStyles(styles, indent = 2) {
   const lines = Object.entries(styles).map(([key, value]) => `${" ".repeat(indent)}${key}: ${value};`);
   return lines.join("\n");
@@ -6369,7 +6507,7 @@ var ChangeManager = class {
   #stylesheetChanges = /* @__PURE__ */ new Map();
   #backupStylesheetChanges = /* @__PURE__ */ new Map();
   constructor() {
-    SDK4.TargetManager.TargetManager.instance().addModelListener(SDK4.ResourceTreeModel.ResourceTreeModel, SDK4.ResourceTreeModel.Events.PrimaryPageChanged, this.clear, this);
+    SDK5.TargetManager.TargetManager.instance().addModelListener(SDK5.ResourceTreeModel.ResourceTreeModel, SDK5.ResourceTreeModel.Events.PrimaryPageChanged, this.clear, this);
   }
   async stashChanges() {
     for (const [cssModel, stylesheetMap] of this.#cssModelToStylesheetId.entries()) {
@@ -6466,7 +6604,7 @@ ${formatStyles(change.styles)}
       if (!frameToStylesheet) {
         frameToStylesheet = /* @__PURE__ */ new Map();
         this.#cssModelToStylesheetId.set(cssModel, frameToStylesheet);
-        cssModel.addEventListener(SDK4.CSSModel.Events.ModelDisposed, this.#onCssModelDisposed, this);
+        cssModel.addEventListener(SDK5.CSSModel.Events.ModelDisposed, this.#onCssModelDisposed, this);
       }
       let stylesheetId = frameToStylesheet.get(frameId);
       if (!stylesheetId) {
@@ -6487,7 +6625,7 @@ ${formatStyles(change.styles)}
   async #onCssModelDisposed(event) {
     return await this.#stylesheetMutex.run(async () => {
       const cssModel = event.data;
-      cssModel.removeEventListener(SDK4.CSSModel.Events.ModelDisposed, this.#onCssModelDisposed, this);
+      cssModel.removeEventListener(SDK5.CSSModel.Events.ModelDisposed, this.#onCssModelDisposed, this);
       const stylesheetIds = Array.from(this.#cssModelToStylesheetId.get(cssModel)?.values() ?? []);
       const results = await Promise.allSettled(stylesheetIds.map(async (id) => {
         this.#stylesheetChanges.delete(id);
@@ -6513,7 +6651,7 @@ __export(EvaluateAction_exports, {
   stringifyObjectOnThePage: () => stringifyObjectOnThePage,
   stringifyRemoteObject: () => stringifyRemoteObject
 });
-import * as SDK5 from "./../../core/sdk/sdk.js";
+import * as SDK6 from "./../../core/sdk/sdk.js";
 
 // gen/front_end/models/ai_assistance/injected.js
 var injected_exports = {};
@@ -6732,7 +6870,7 @@ var EvaluateAction = class _EvaluateAction {
       }
       if (response.exceptionDetails) {
         const exceptionDescription = response.exceptionDetails.exception?.description;
-        if (SDK5.RuntimeModel.RuntimeModel.isSideEffectFailure(response)) {
+        if (SDK6.RuntimeModel.RuntimeModel.isSideEffectFailure(response)) {
           throw new SideEffectError(exceptionDescription);
         }
         return formatError(exceptionDescription ?? "JS exception");
@@ -6799,7 +6937,7 @@ __export(ExtensionScope_exports, {
 });
 import * as Common4 from "./../../core/common/common.js";
 import * as Platform4 from "./../../core/platform/platform.js";
-import * as SDK6 from "./../../core/sdk/sdk.js";
+import * as SDK7 from "./../../core/sdk/sdk.js";
 import * as Bindings3 from "./../bindings/bindings.js";
 var _a2;
 var ExtensionScope = class {
@@ -6831,14 +6969,14 @@ var ExtensionScope = class {
     if (this.#frameId) {
       return this.#frameId;
     }
-    const resourceTreeModel = this.target.model(SDK6.ResourceTreeModel.ResourceTreeModel);
+    const resourceTreeModel = this.target.model(SDK7.ResourceTreeModel.ResourceTreeModel);
     if (!resourceTreeModel?.mainFrame) {
       throw new Error("Main frame is not found for executing code");
     }
     return resourceTreeModel.mainFrame.id;
   }
   async install() {
-    const runtimeModel = this.target.model(SDK6.RuntimeModel.RuntimeModel);
+    const runtimeModel = this.target.model(SDK7.RuntimeModel.RuntimeModel);
     const pageAgent = this.target.pageAgent();
     const { executionContextId } = await pageAgent.invoke_createIsolatedWorld({ frameId: this.frameId, worldName: FREESTYLER_WORLD_NAME });
     const isolatedWorldContext = runtimeModel?.executionContext(executionContextId);
@@ -6846,7 +6984,7 @@ var ExtensionScope = class {
       throw new Error("Execution context is not found for executing code");
     }
     const handler = this.#bindingCalled.bind(this, isolatedWorldContext);
-    runtimeModel?.addEventListener(SDK6.RuntimeModel.Events.BindingCalled, handler);
+    runtimeModel?.addEventListener(SDK7.RuntimeModel.Events.BindingCalled, handler);
     this.#listeners.push(handler);
     await this.target.runtimeAgent().invoke_addBinding({
       name: FREESTYLER_BINDING_NAME,
@@ -6856,9 +6994,9 @@ var ExtensionScope = class {
     await this.#simpleEval(isolatedWorldContext, injectedFunctions);
   }
   async uninstall() {
-    const runtimeModel = this.target.model(SDK6.RuntimeModel.RuntimeModel);
+    const runtimeModel = this.target.model(SDK7.RuntimeModel.RuntimeModel);
     for (const handler of this.#listeners) {
-      runtimeModel?.removeEventListener(SDK6.RuntimeModel.Events.BindingCalled, handler);
+      runtimeModel?.removeEventListener(SDK7.RuntimeModel.Events.BindingCalled, handler);
     }
     this.#listeners = [];
     await this.target.runtimeAgent().invoke_removeBinding({
@@ -6903,7 +7041,7 @@ var ExtensionScope = class {
       if (rule?.origin === "user-agent") {
         break;
       }
-      if (rule instanceof SDK6.CSSRule.CSSStyleRule) {
+      if (rule instanceof SDK7.CSSRule.CSSStyleRule) {
         if (rule.nestingSelectors?.at(0)?.includes(AI_ASSISTANCE_CSS_CLASS_NAME) || rule.selectors.every((selector) => selector.text.includes(AI_ASSISTANCE_CSS_CLASS_NAME))) {
           continue;
         }
@@ -6963,7 +7101,7 @@ var ExtensionScope = class {
     }
     const lineNumber = styleSheetHeader.lineNumberInSource(range.startLine);
     const columnNumber = styleSheetHeader.columnNumberInSource(range.startLine, range.startColumn);
-    const location = new SDK6.CSSModel.CSSLocation(styleSheetHeader, lineNumber, columnNumber);
+    const location = new SDK7.CSSModel.CSSLocation(styleSheetHeader, lineNumber, columnNumber);
     const uiLocation = Bindings3.CSSWorkspaceBinding.CSSWorkspaceBinding.instance().rawLocationToUILocation(location);
     return uiLocation?.linkText(
       /* skipTrim= */
@@ -6976,11 +7114,11 @@ var ExtensionScope = class {
     if (!remoteObject.objectId) {
       throw new Error("DOMModel is not found");
     }
-    const cssModel = this.target.model(SDK6.CSSModel.CSSModel);
+    const cssModel = this.target.model(SDK7.CSSModel.CSSModel);
     if (!cssModel) {
       throw new Error("CSSModel is not found");
     }
-    const domModel = this.target.model(SDK6.DOMModel.DOMModel);
+    const domModel = this.target.model(SDK7.DOMModel.DOMModel);
     if (!domModel) {
       throw new Error("DOMModel is not found");
     }
@@ -7021,7 +7159,7 @@ var ExtensionScope = class {
       return;
     }
     await this.#bindingMutex.run(async () => {
-      const cssModel = this.target.model(SDK6.CSSModel.CSSModel);
+      const cssModel = this.target.model(SDK7.CSSModel.CSSModel);
       if (!cssModel) {
         throw new Error("CSSModel is not found");
       }
@@ -7199,12 +7337,12 @@ async function executeJsCode(functionDeclaration, { throwOnSideEffect, contextNo
   if (!target) {
     throw new Error("Target is not found for executing code");
   }
-  const resourceTreeModel = target.model(SDK7.ResourceTreeModel.ResourceTreeModel);
+  const resourceTreeModel = target.model(SDK8.ResourceTreeModel.ResourceTreeModel);
   const frameId = contextNode.frameId() ?? resourceTreeModel?.mainFrame?.id;
   if (!frameId) {
     throw new Error("Main frame is not found for executing code");
   }
-  const runtimeModel = target.model(SDK7.RuntimeModel.RuntimeModel);
+  const runtimeModel = target.model(SDK8.RuntimeModel.RuntimeModel);
   const pageAgent = target.pageAgent();
   const { executionContextId } = await pageAgent.invoke_createIsolatedWorld({ frameId, worldName: FREESTYLER_WORLD_NAME });
   const executionContext = runtimeModel?.executionContext(executionContextId);
@@ -7636,7 +7774,7 @@ const data = {
       if (!selectedNode) {
         return { error: "Error: Could not find the currently selected element." };
       }
-      const node = new SDK7.DOMModel.DeferredDOMNode(selectedNode.domModel().target(), Number(uid));
+      const node = new SDK8.DOMModel.DeferredDOMNode(selectedNode.domModel().target(), Number(uid));
       const resolved = await node.resolvePromise();
       if (!resolved) {
         return { error: "Error: Could not find the element with uid=" + uid };
@@ -7695,7 +7833,7 @@ const data = {
       return { error: "Error: no selected node found." };
     }
     const target = selectedNode.domModel().target();
-    if (target.model(SDK7.DebuggerModel.DebuggerModel)?.selectedCallFrame()) {
+    if (target.model(SDK8.DebuggerModel.DebuggerModel)?.selectedCallFrame()) {
       return {
         error: "Error: Cannot evaluate JavaScript because the execution is paused on a breakpoint."
       };
@@ -7813,7 +7951,7 @@ const data = {
     try {
       if (selectedNode) {
         const target = selectedNode.domModel().target();
-        const emulationModel = target.model(SDK7.EmulationModel.EmulationModel);
+        const emulationModel = target.model(SDK8.EmulationModel.EmulationModel);
         if (emulationModel) {
           let type = "none";
           if (visionDeficiency && visionDeficiency !== "none") {
@@ -7873,7 +8011,7 @@ const data = {
     }
     try {
       if (selectedNode) {
-        const accessibilityModel = selectedNode.domModel().target().model(SDK7.AccessibilityModel.AccessibilityModel);
+        const accessibilityModel = selectedNode.domModel().target().model(SDK8.AccessibilityModel.AccessibilityModel);
         if (accessibilityModel) {
           await accessibilityModel.resumeModel();
           const axResponse = await accessibilityModel.agent.invoke_getFullAXTree({});
@@ -8832,7 +8970,7 @@ import * as Common6 from "./../../core/common/common.js";
 import * as Host12 from "./../../core/host/host.js";
 import * as Platform6 from "./../../core/platform/platform.js";
 import * as Root11 from "./../../core/root/root.js";
-import * as SDK8 from "./../../core/sdk/sdk.js";
+import * as SDK9 from "./../../core/sdk/sdk.js";
 import * as Greendev3 from "./../greendev/greendev.js";
 
 // gen/front_end/models/ai_assistance/AiHistoryStorage.js
@@ -9329,7 +9467,7 @@ Original user query: ${initialQuery}`;
     if (this.#origin) {
       return this.#origin;
     }
-    const target = SDK8.TargetManager.TargetManager.instance().primaryPageTarget();
+    const target = SDK9.TargetManager.TargetManager.instance().primaryPageTarget();
     const inspectedURL = target?.inspectedURL();
     this.#origin = inspectedURL ? new Common6.ParsedURL.ParsedURL(inspectedURL).securityOrigin() : void 0;
     return this.#origin;
@@ -9666,7 +9804,7 @@ import * as Host15 from "./../../core/host/host.js";
 import * as i18n15 from "./../../core/i18n/i18n.js";
 import * as Platform7 from "./../../core/platform/platform.js";
 import * as Root14 from "./../../core/root/root.js";
-import * as SDK9 from "./../../core/sdk/sdk.js";
+import * as SDK10 from "./../../core/sdk/sdk.js";
 import * as NetworkTimeCalculator4 from "./../network_time_calculator/network_time_calculator.js";
 var UIStringsNotTranslate3 = {
   /**
@@ -9684,7 +9822,7 @@ async function inspectElementBySelector(selector) {
     return null;
   }
   const showUAShadowDOM = Common9.Settings.Settings.instance().moduleSetting("show-ua-shadow-dom").get();
-  const domModels = SDK9.TargetManager.TargetManager.instance().models(SDK9.DOMModel.DOMModel, { scoped: true });
+  const domModels = SDK10.TargetManager.TargetManager.instance().models(SDK10.DOMModel.DOMModel, { scoped: true });
   const performSearchPromises = domModels.map((domModel) => domModel.performSearch(whitespaceTrimmedQuery, showUAShadowDOM));
   const resultCounts = await Promise.all(performSearchPromises);
   const index = resultCounts.findIndex((value) => value > 0);
@@ -9694,7 +9832,7 @@ async function inspectElementBySelector(selector) {
   return null;
 }
 async function inspectNetworkRequestByUrl(selector) {
-  const networkManagers = SDK9.TargetManager.TargetManager.instance().models(SDK9.NetworkManager.NetworkManager, { scoped: true });
+  const networkManagers = SDK10.TargetManager.TargetManager.instance().models(SDK10.NetworkManager.NetworkManager, { scoped: true });
   const results = networkManagers.map((networkManager) => {
     let request2 = networkManager.requestForURL(Platform7.DevToolsPath.urlString`${selector}`);
     if (!request2 && selector.at(-1) === "/") {

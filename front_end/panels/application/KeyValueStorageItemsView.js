@@ -36,7 +36,7 @@ import * as ApplicationComponents from './components/components.js';
 import { StorageItemsToolbar } from './StorageItemsToolbar.js';
 const { ARIAUtils } = UI;
 const { EmptyWidget } = UI.EmptyWidget;
-const { VBox, widgetConfig } = UI.Widget;
+const { VBox, widget } = UI.Widget;
 const { Size } = Geometry;
 const { repeat } = LitDirectives;
 const UIStrings = {
@@ -86,14 +86,14 @@ export class KeyValueStorageItemsView extends UI.Widget.VBox {
                 // clang-format off
                 render(html `
             <devtools-widget
-              .widgetConfig=${widgetConfig(StorageItemsToolbar, { metadataView })}
+              ${widget(StorageItemsToolbar, { metadataView })}
               class=flex-none
               ${UI.Widget.widgetRef(StorageItemsToolbar, view => { output.toolbar = view; })}
             ></devtools-widget>
             <devtools-split-view sidebar-position="second" name="${id}-split-view-state">
                <devtools-widget
                   slot="main"
-                  .widgetConfig=${widgetConfig(VBox, { minimumSize: new Size(0, 50) })}>
+                  ${widget(VBox, { minimumSize: new Size(0, 50) })}>
                 <devtools-data-grid
                   .name=${`${id}-datagrid-with-preview`}
                   striped
@@ -127,7 +127,7 @@ export class KeyValueStorageItemsView extends UI.Widget.VBox {
               </devtools-widget>
               <devtools-widget
                   slot="sidebar"
-                  .widgetConfig=${widgetConfig(VBox, { minimumSize: new Size(0, 50) })}
+                  ${widget(VBox, { minimumSize: new Size(0, 50) })}
                   jslog=${VisualLogging.pane('preview').track({ resize: true })}>
                ${input.preview?.element}
               </devtools-widget>

@@ -2756,6 +2756,7 @@ var ASTUtils = SDK6.CSSPropertyParser.ASTUtils;
 var FlexboxEditor = ElementsComponents.StylePropertyEditor.FlexboxEditor;
 var GridEditor = ElementsComponents.StylePropertyEditor.GridEditor;
 var GridLanesEditor = ElementsComponents.StylePropertyEditor.GridLanesEditor;
+var { widget } = UI7.Widget;
 var UIStrings4 = {
   /**
    * @description Text in Color Swatch Popover Icon of the Elements panel
@@ -4907,7 +4908,7 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI7.TreeO
         e.consume(true);
       }
     }}
-            .widgetConfig=${UI7.Widget.widgetConfig(CSSValueTraceView)}>
+            ${widget(CSSValueTraceView)}>
           </devtools-widget>
         </devtools-tooltip>`;
   }
@@ -5773,21 +5774,21 @@ var StyleEditorWidget = class _StyleEditorWidget extends UI8.Widget.VBox {
     triggerButton.onclick = async (event) => {
       event.stopPropagation();
       const popoverHelper = stylesContainer.swatchPopoverHelper();
-      const widget3 = _StyleEditorWidget.instance();
-      widget3.element.classList.toggle("with-padding", true);
-      widget3.setEditor(editorClass);
-      widget3.bindContext(stylesContainer, section4);
-      widget3.setTriggerKey(triggerKey);
-      await widget3.render();
-      widget3.focus();
+      const widget5 = _StyleEditorWidget.instance();
+      widget5.element.classList.toggle("with-padding", true);
+      widget5.setEditor(editorClass);
+      widget5.bindContext(stylesContainer, section4);
+      widget5.setTriggerKey(triggerKey);
+      await widget5.render();
+      widget5.focus();
       const scrollerElement = triggerButton.enclosingNodeOrSelfWithClass("style-panes-wrapper");
       const onScroll = () => {
         popoverHelper.hide(true);
       };
-      const onStylesUpdateCompleted = widget3.requestUpdate.bind(widget3);
+      const onStylesUpdateCompleted = widget5.requestUpdate.bind(widget5);
       stylesContainer.addStyleUpdateListener(onStylesUpdateCompleted);
-      popoverHelper.show(widget3, triggerButton, () => {
-        widget3.unbindContext();
+      popoverHelper.show(widget5, triggerButton, () => {
+        widget5.unbindContext();
         if (scrollerElement) {
           scrollerElement.removeEventListener("scroll", onScroll);
         }
@@ -5926,7 +5927,7 @@ var UIStrings5 = {
 };
 var str_5 = i18n9.i18n.registerUIStrings("panels/elements/StylePropertiesSection.ts", UIStrings5);
 var i18nString5 = i18n9.i18n.getLocalizedString.bind(void 0, str_5);
-var { widget } = UI9.Widget;
+var { widget: widget2 } = UI9.Widget;
 var STYLE_TAG = "<style>";
 var DEFAULT_MAX_PROPERTIES = 50;
 var StylePropertiesSection = class _StylePropertiesSection {
@@ -6226,13 +6227,13 @@ var StylePropertiesSection = class _StylePropertiesSection {
     }
     function linkifyNode(label) {
       if (header?.ownerNode) {
-        return html5`<devtools-widget ${widget((e) => new PanelsCommon.DOMLinkifier.DeferredDOMNodeLink(e, header.ownerNode))}>
+        return html5`<devtools-widget ${widget2((e) => new PanelsCommon.DOMLinkifier.DeferredDOMNodeLink(e, header.ownerNode))}>
           ${label}
         </devtools-widget>`;
       }
       if (rule && rule.style.styleSheetId && rule.treeScope) {
         const ownerNode = new SDK7.DOMModel.DeferredDOMNode(rule.cssModelInternal.target(), rule.treeScope);
-        return html5`<devtools-widget ${widget((e) => new PanelsCommon.DOMLinkifier.DeferredDOMNodeLink(e, ownerNode, void 0, rule.style.styleSheetId))}>
+        return html5`<devtools-widget ${widget2((e) => new PanelsCommon.DOMLinkifier.DeferredDOMNodeLink(e, ownerNode, void 0, rule.style.styleSheetId))}>
           ${label}
         </devtools-widget>`;
       }
@@ -9327,17 +9328,17 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common5.ObjectWrapper.e
     const toolbarPaneContent = toolbarPaneContainer.createChild("div", "styles-sidebar-toolbar-pane");
     return toolbarPaneContent;
   }
-  showToolbarPane(widget3, toggle4) {
+  showToolbarPane(widget5, toggle4) {
     if (this.pendingWidgetToggle) {
       this.pendingWidgetToggle.setToggled(false);
     }
     this.pendingWidgetToggle = toggle4;
     if (this.animatedToolbarPane) {
-      this.pendingWidget = widget3;
+      this.pendingWidget = widget5;
     } else {
-      this.startToolbarPaneAnimation(widget3);
+      this.startToolbarPaneAnimation(widget5);
     }
-    if (widget3 && toggle4) {
+    if (widget5 && toggle4) {
       toggle4.setToggled(true);
     }
   }
@@ -9352,25 +9353,25 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common5.ObjectWrapper.e
   removeStyleUpdateListener(listener) {
     this.removeEventListener("StylesUpdateCompleted", listener);
   }
-  startToolbarPaneAnimation(widget3) {
-    if (widget3 === this.currentToolbarPane) {
+  startToolbarPaneAnimation(widget5) {
+    if (widget5 === this.currentToolbarPane) {
       return;
     }
-    if (widget3 && this.currentToolbarPane) {
+    if (widget5 && this.currentToolbarPane) {
       this.currentToolbarPane.detach();
-      widget3.show(this.toolbarPaneElement);
-      this.currentToolbarPane = widget3;
+      widget5.show(this.toolbarPaneElement);
+      this.currentToolbarPane = widget5;
       this.currentToolbarPane.focus();
       return;
     }
-    this.animatedToolbarPane = widget3;
+    this.animatedToolbarPane = widget5;
     if (this.currentToolbarPane) {
       this.toolbarPaneElement.style.animationName = "styles-element-state-pane-slideout";
-    } else if (widget3) {
+    } else if (widget5) {
       this.toolbarPaneElement.style.animationName = "styles-element-state-pane-slidein";
     }
-    if (widget3) {
-      widget3.show(this.toolbarPaneElement);
+    if (widget5) {
+      widget5.show(this.toolbarPaneElement);
     }
     const listener = onAnimationEnd.bind(this);
     this.toolbarPaneElement.addEventListener("animationend", listener, false);
@@ -13059,10 +13060,10 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
     await UI14.ViewManager.ViewManager.instance().showView("medias");
     const view = UI14.ViewManager.ViewManager.instance().view("medias");
     if (view) {
-      const widget3 = await view.widget();
-      if (widget3 instanceof Media.MainView.MainView) {
-        await widget3.waitForInitialPlayers();
-        widget3.selectPlayerByDOMNodeId(this.node().backendNodeId());
+      const widget5 = await view.widget();
+      if (widget5 instanceof Media.MainView.MainView) {
+        await widget5.waitForInitialPlayers();
+        widget5.selectPlayerByDOMNodeId(this.node().backendNodeId());
       }
     }
   }
@@ -18320,8 +18321,8 @@ var ElementsPanel = class _ElementsPanel extends UI21.Panel.Panel {
   resolveLocation(_locationName) {
     return this.sidebarPaneView || null;
   }
-  showToolbarPane(widget3, toggle4) {
-    this.stylesWidget.showToolbarPane(widget3, toggle4);
+  showToolbarPane(widget5, toggle4) {
+    this.stylesWidget.showToolbarPane(widget5, toggle4);
   }
   modelAdded(domModel) {
     this.setupStyleTracking(domModel.cssModel());
@@ -19455,7 +19456,7 @@ var UIStrings17 = {
 };
 var str_17 = i18n34.i18n.registerUIStrings("panels/elements/EventListenersWidget.ts", UIStrings17);
 var i18nString16 = i18n34.i18n.getLocalizedString.bind(void 0, str_17);
-var { widget: widget2 } = UI23.Widget;
+var { widget: widget3 } = UI23.Widget;
 var eventListenersWidgetInstance;
 var DEFAULT_VIEW9 = (input, _output, target) => {
   render14(html14`
@@ -19481,7 +19482,7 @@ var DEFAULT_VIEW9 = (input, _output, target) => {
           ${i18nString16(UIStrings17.frameworkListeners)}
         </devtools-checkbox>
       </devtools-toolbar>
-      ${widget2(EventListeners.EventListenersView.EventListenersView, {
+      ${widget3(EventListeners.EventListenersView.EventListenersView, {
     changeCallback: input.onEventListenersViewChange,
     objects: input.eventListenerObjects,
     filter: input.filter
@@ -19876,13 +19877,14 @@ var UIStrings19 = {
 };
 var str_19 = i18n38.i18n.registerUIStrings("panels/elements/NodeStackTraceWidget.ts", UIStrings19);
 var i18nString18 = i18n38.i18n.getLocalizedString.bind(void 0, str_19);
+var { widget: widget4 } = UI25.Widget;
 var DEFAULT_VIEW11 = (input, _output, target) => {
   const { stackTrace } = input;
   render16(html16`
     <style>${nodeStackTraceWidget_css_default}</style>
     ${target && stackTrace ? html16`<devtools-widget
                 class="stack-trace"
-                .widgetConfig=${UI25.Widget.widgetConfig(Components7.JSPresentationUtils.StackTracePreviewContent, { stackTrace })}>
+                ${widget4(Components7.JSPresentationUtils.StackTracePreviewContent, { stackTrace })}>
               </devtools-widget>` : html16`<div class="gray-info-message">${i18nString18(UIStrings19.noStackTraceAvailable)}</div>`}`, target);
 };
 var NodeStackTraceWidget = class extends UI25.Widget.VBox {

@@ -21,6 +21,7 @@ const UIStringsNotTranslate = {
     viewSources: 'View Sources',
 };
 const lockedString = i18n.i18n.lockedString;
+const { widget } = UI.Widget;
 export const DEFAULT_SUMMARY_TOOLBAR_VIEW = (input, _output, target) => {
     if (input.aidaAvailability !== "available" /* Host.AidaClient.AidaAccessPreconditions.AVAILABLE */) {
         render(nothing, target);
@@ -35,7 +36,7 @@ export const DEFAULT_SUMMARY_TOOLBAR_VIEW = (input, _output, target) => {
     // clang-format off
     const disclaimer = input.disclaimerTooltipId && input.spinnerTooltipId ?
         html `<devtools-widget
-            .widgetConfig=${UI.Widget.widgetConfig(AiCodeCompletionDisclaimer, {
+            ${widget(AiCodeCompletionDisclaimer, {
             disclaimerTooltipId: input.disclaimerTooltipId,
             spinnerTooltipId: input.spinnerTooltipId,
             loading: input.loading,

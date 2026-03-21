@@ -2579,7 +2579,7 @@ var DEFAULT_VIEW2 = (input, output, target) => {
 var IgnoreListSetting = class _IgnoreListSetting extends UI6.Widget.Widget {
   static createWidgetElement() {
     const widgetElement = document.createElement("devtools-widget");
-    widgetElement.widgetConfig = UI6.Widget.widgetConfig(_IgnoreListSetting);
+    new _IgnoreListSetting(widgetElement);
     return widgetElement;
   }
   #view;
@@ -2773,8 +2773,8 @@ var DEFAULT_VIEW3 = (input, output, target) => {
 var InteractionBreakdown = class _InteractionBreakdown extends UI7.Widget.Widget {
   static createWidgetElement(entry) {
     const widgetElement = document.createElement("devtools-widget");
-    const widget6 = new _InteractionBreakdown(widgetElement);
-    widget6.entry = entry;
+    const widget7 = new _InteractionBreakdown(widgetElement);
+    widget7.entry = entry;
     return widgetElement;
   }
   #view;
@@ -7937,7 +7937,7 @@ var SidebarSingleInsightSet = class _SidebarSingleInsightSet extends UI15.Widget
     const agentFocus = AIAssistance.AIContext.AgentFocus.fromInsight(this.#data.parsedTrace, model);
     const isActiveInsight = activeInsight?.model === model;
     const componentClass = INSIGHT_NAME_TO_COMPONENT[insightName];
-    const widgetConfig2 = {
+    const widgetConfig = {
       selected: isActiveInsight,
       // The `model` passed in as a parameter is the base type, but since
       // `componentClass` is the union of every derived insight component, the
@@ -7951,7 +7951,7 @@ var SidebarSingleInsightSet = class _SidebarSingleInsightSet extends UI15.Widget
       fieldMetrics
     };
     return html19`<devtools-widget class="insight-component-widget" ?highlight-insight=${isActiveInsight && this.#isActiveInsightHighlighted}
-      ${widget4(componentClass, widgetConfig2)}
+      ${widget4(componentClass, widgetConfig)}
     ></devtools-widget>`;
   }
   performUpdate() {
@@ -7978,7 +7978,7 @@ var SidebarSingleInsightSet = class _SidebarSingleInsightSet extends UI15.Widget
 
 // gen/front_end/panels/timeline/components/SidebarInsightsTab.js
 var { html: html20 } = Lit20;
-var { widgetConfig } = UI16.Widget;
+var { widget: widget5 } = UI16.Widget;
 var DEFAULT_VIEW11 = (input, output, target) => {
   const { parsedTrace, labels, activeInsightSet, activeInsight, selectedCategory, onInsightSetToggled, onInsightSetHovered, onInsightSetUnhovered, onZoomClick } = input;
   const insights = parsedTrace.insights;
@@ -8001,7 +8001,7 @@ var DEFAULT_VIEW11 = (input, output, target) => {
     const contents = html20`
           <devtools-widget
             data-insight-set-key=${id}
-            .widgetConfig=${widgetConfig(SidebarSingleInsightSet, { data })}
+            ${widget5(SidebarSingleInsightSet, { data })}
           ></devtools-widget>
         `;
     if (hasMultipleInsightSets) {
@@ -8298,18 +8298,18 @@ var InsightsView = class extends UI17.Widget.VBox {
     return UI17.Widget.Widget.get(this.#component);
   }
   setParsedTrace(parsedTrace) {
-    const widget6 = this.#getWidget();
-    widget6.parsedTrace = parsedTrace;
+    const widget7 = this.#getWidget();
+    widget7.parsedTrace = parsedTrace;
   }
   getActiveInsight() {
     return this.#getWidget().activeInsight;
   }
   setActiveInsight(active, opts) {
-    const widget6 = this.#getWidget();
-    widget6.activeInsight = active;
+    const widget7 = this.#getWidget();
+    widget7.activeInsight = active;
     if (opts.highlight && active) {
-      void widget6.updateComplete.then(() => {
-        void widget6.highlightActiveInsight();
+      void widget7.updateComplete.then(() => {
+        void widget7.highlightActiveInsight();
       });
     }
   }
@@ -8342,8 +8342,11 @@ var AnnotationsView = class extends UI17.Widget.VBox {
 var TimelineRangeSummaryView_exports = {};
 __export(TimelineRangeSummaryView_exports, {
   TIMELINE_RANGE_SUMMARY_VIEW_DEFAULT_VIEW: () => TIMELINE_RANGE_SUMMARY_VIEW_DEFAULT_VIEW,
-  TimelineRangeSummaryView: () => TimelineRangeSummaryView
+  TimelineRangeSummaryView: () => TimelineRangeSummaryView,
+  statsForTimeRange: () => statsForTimeRange
 });
+import * as Platform9 from "./../../../core/platform/platform.js";
+import * as Trace12 from "./../../../models/trace/trace.js";
 import * as UI19 from "./../../../ui/legacy/legacy.js";
 import * as Lit22 from "./../../../ui/lit/lit.js";
 
@@ -8354,20 +8357,32 @@ var timelineRangeSummaryView_css_default = `/*
  * found in the LICENSE file.
  */
 
-  :host {
-    display: block;
-    height: 100%;
-  }
+:host {
+  display: block;
+  height: 100%;
+  container-type: inline-size;
+}
 
+.timeline-details-range-summary {
+  display: flex;
+  padding: var(--sys-size-4) 0 0;
+  height: 100%;
+}
+
+@container (max-width: 450px) {
   .timeline-details-range-summary {
-    display: flex;
-    padding: var(--sys-size-4) 0 0;
-    height: 100%;
+    flex-direction: column;
+    gap: var(--sys-size-4);
   }
 
   .timeline-summary {
-    flex-grow: 0;
+    width: 100%;
   }
+}
+
+.timeline-summary {
+  flex-grow: 0;
+}
 
 /*# sourceURL=${import.meta.resolve("./timelineRangeSummaryView.css")} */`;
 
@@ -8542,18 +8557,45 @@ var CategorySummary = class extends UI18.Widget.Widget {
 
 // gen/front_end/panels/timeline/components/TimelineRangeSummaryView.js
 var { render: render21, html: html22 } = Lit22;
-var { widget: widget5 } = UI19.Widget;
+var { widget: widget6 } = UI19.Widget;
+var categoryBreakdownCacheSymbol = Symbol("categoryBreakdownCache");
 var TIMELINE_RANGE_SUMMARY_VIEW_DEFAULT_VIEW = (input, _output, target) => {
+  const { parsedTrace, events, startTime, endTime } = input;
+  if (!events || !parsedTrace) {
+    render21(html22`<div class="timeline-details-range-summary"></div>`, target);
+    return;
+  }
+  const minBoundsMilli = Trace12.Helpers.Timing.microToMilli(parsedTrace.data.Meta.traceBounds.min);
+  const aggregatedStats = statsForTimeRange(events, startTime, endTime);
+  const startOffset = startTime - minBoundsMilli;
+  const endOffset = endTime - minBoundsMilli;
+  let total = 0;
+  for (const categoryName in aggregatedStats) {
+    total += aggregatedStats[categoryName];
+  }
+  const categories = [];
+  for (const categoryName in Trace12.Styles.getCategoryStyles()) {
+    const category = Trace12.Styles.getCategoryStyles()[categoryName];
+    if (category.name === Trace12.Styles.EventCategory.IDLE) {
+      continue;
+    }
+    const value = aggregatedStats[category.name];
+    if (!value) {
+      continue;
+    }
+    categories.push({ value, color: category.getCSSValue(), title: category.title });
+  }
+  categories.sort((a, b) => b.value - a.value);
   render21(html22`
     <style>${timelineRangeSummaryView_css_default}</style>
     <div class="timeline-details-range-summary">
       <devtools-widget class="timeline-summary"
-        ${widget5(CategorySummary, {
+        ${widget6(CategorySummary, {
     data: {
-      rangeStart: input.rangeStart,
-      rangeEnd: input.rangeEnd,
-      categories: input.categories,
-      total: input.total
+      rangeStart: startOffset,
+      rangeEnd: endOffset,
+      categories,
+      total
     }
   })}
       ></devtools-widget>
@@ -8580,6 +8622,98 @@ var TimelineRangeSummaryView = class extends UI19.Widget.Widget {
     this.#view(this.#summaryData, void 0, this.contentElement);
   }
 };
+function statsForTimeRange(events, startTime, endTime) {
+  if (!events.length) {
+    return { idle: endTime - startTime };
+  }
+  buildRangeStatsCacheIfNeeded(events);
+  const aggregatedStats = subtractStats(aggregatedStatsAtTime(endTime), aggregatedStatsAtTime(startTime));
+  const aggregatedTotal = Object.values(aggregatedStats).reduce((a, b) => a + b, 0);
+  aggregatedStats["idle"] = Math.max(0, endTime - startTime - aggregatedTotal);
+  return aggregatedStats;
+  function aggregatedStatsAtTime(time) {
+    const stats = {};
+    const cache = events[categoryBreakdownCacheSymbol];
+    for (const category in cache) {
+      const categoryCache = cache[category];
+      const index = Platform9.ArrayUtilities.upperBound(categoryCache.time, time, Platform9.ArrayUtilities.DEFAULT_COMPARATOR);
+      let value;
+      if (index === 0) {
+        value = 0;
+      } else if (index === categoryCache.time.length) {
+        value = categoryCache.value[categoryCache.value.length - 1];
+      } else {
+        const t0 = categoryCache.time[index - 1];
+        const t1 = categoryCache.time[index];
+        const v0 = categoryCache.value[index - 1];
+        const v1 = categoryCache.value[index];
+        value = v0 + (v1 - v0) * (time - t0) / (t1 - t0);
+      }
+      stats[category] = value;
+    }
+    return stats;
+  }
+  function subtractStats(a, b) {
+    const result = Object.assign({}, a);
+    for (const key in b) {
+      result[key] -= b[key];
+    }
+    return result;
+  }
+  function buildRangeStatsCacheIfNeeded(events2) {
+    if (events2[categoryBreakdownCacheSymbol]) {
+      return;
+    }
+    const aggregatedStats2 = {};
+    const categoryStack = [];
+    let lastTime = 0;
+    Trace12.Helpers.Trace.forEachEvent(events2, {
+      onStartEvent,
+      onEndEvent
+    });
+    function updateCategory(category, time) {
+      let statsArrays = aggregatedStats2[category];
+      if (!statsArrays) {
+        statsArrays = { time: [], value: [] };
+        aggregatedStats2[category] = statsArrays;
+      }
+      if (statsArrays.time.length && statsArrays.time[statsArrays.time.length - 1] === time || lastTime > time) {
+        return;
+      }
+      const lastValue = statsArrays.value.length > 0 ? statsArrays.value[statsArrays.value.length - 1] : 0;
+      statsArrays.value.push(lastValue + time - lastTime);
+      statsArrays.time.push(time);
+    }
+    function categoryChange(from, to, time) {
+      if (from) {
+        updateCategory(from, time);
+      }
+      lastTime = time;
+      if (to) {
+        updateCategory(to, time);
+      }
+    }
+    function onStartEvent(e) {
+      const { startTime: startTime2 } = Trace12.Helpers.Timing.eventTimingsMilliSeconds(e);
+      const category = Trace12.Styles.getEventStyle(e.name)?.category.name || Trace12.Styles.getCategoryStyles().other.name;
+      const parentCategory = categoryStack.length ? categoryStack[categoryStack.length - 1] : null;
+      if (category !== parentCategory) {
+        categoryChange(parentCategory || null, category, startTime2);
+      }
+      categoryStack.push(category);
+    }
+    function onEndEvent(e) {
+      const { endTime: endTime2 } = Trace12.Helpers.Timing.eventTimingsMilliSeconds(e);
+      const category = categoryStack.pop();
+      const parentCategory = categoryStack.length ? categoryStack[categoryStack.length - 1] : null;
+      if (category !== parentCategory) {
+        categoryChange(category || null, parentCategory || null, endTime2 || 0);
+      }
+    }
+    const obj = events2;
+    obj[categoryBreakdownCacheSymbol] = aggregatedStats2;
+  }
+}
 export {
   Breadcrumbs_exports as Breadcrumbs,
   BreadcrumbsUI_exports as BreadcrumbsUI,

@@ -288,11 +288,6 @@ export class InspectorFrontendHostStub {
             devToolsVeLogging: {
                 enabled: true,
             },
-            thirdPartyCookieControls: {
-                thirdPartyCookieMetadataEnabled: true,
-                thirdPartyCookieHeuristicsEnabled: true,
-                managedBlockThirdPartyCookies: 'Unset',
-            },
             devToolsFlexibleLayout: {
                 verticalDrawerEnabled: true,
             },

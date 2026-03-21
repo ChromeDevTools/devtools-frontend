@@ -6820,10 +6820,10 @@ var PreloadingRuleSetView = class extends UI10.Widget.VBox {
   }
   updateRuleSetDetails() {
     const ruleSet = this.getRuleSet();
-    const widget8 = this.ruleSetDetailsRef.value?.getWidget();
-    if (widget8) {
-      widget8.shouldPrettyPrint = this.shouldPrettyPrint;
-      widget8.ruleSet = ruleSet;
+    const widget9 = this.ruleSetDetailsRef.value?.getWidget();
+    if (widget9) {
+      widget9.shouldPrettyPrint = this.shouldPrettyPrint;
+      widget9.ruleSet = ruleSet;
     }
     if (ruleSet === null) {
       this.hsplit.setAttribute("sidebar-visibility", "hidden");
@@ -10241,7 +10241,7 @@ var StorageItemsToolbar = class extends Common14.ObjectWrapper.eventMixin(UI17.W
 // gen/front_end/panels/application/KeyValueStorageItemsView.js
 var { ARIAUtils: ARIAUtils8 } = UI18;
 var { EmptyWidget: EmptyWidget8 } = UI18.EmptyWidget;
-var { VBox, widgetConfig } = UI18.Widget;
+var { VBox, widget: widget6 } = UI18.Widget;
 var { Size } = Geometry;
 var { repeat } = LitDirectives;
 var UIStrings24 = {
@@ -10287,7 +10287,7 @@ var KeyValueStorageItemsView = class extends UI18.Widget.VBox {
         render7(
           html8`
             <devtools-widget
-              .widgetConfig=${widgetConfig(StorageItemsToolbar, { metadataView })}
+              ${widget6(StorageItemsToolbar, { metadataView })}
               class=flex-none
               ${UI18.Widget.widgetRef(StorageItemsToolbar, (view2) => {
             output.toolbar = view2;
@@ -10296,7 +10296,7 @@ var KeyValueStorageItemsView = class extends UI18.Widget.VBox {
             <devtools-split-view sidebar-position="second" name="${id}-split-view-state">
                <devtools-widget
                   slot="main"
-                  .widgetConfig=${widgetConfig(VBox, { minimumSize: new Size(0, 50) })}>
+                  ${widget6(VBox, { minimumSize: new Size(0, 50) })}>
                 <devtools-data-grid
                   .name=${`${id}-datagrid-with-preview`}
                   striped
@@ -10330,7 +10330,7 @@ var KeyValueStorageItemsView = class extends UI18.Widget.VBox {
               </devtools-widget>
               <devtools-widget
                   slot="sidebar"
-                  .widgetConfig=${widgetConfig(VBox, { minimumSize: new Size(0, 50) })}
+                  ${widget6(VBox, { minimumSize: new Size(0, 50) })}
                   jslog=${VisualLogging13.pane("preview").track({ resize: true })}>
                ${input.preview?.element}
               </devtools-widget>
@@ -13615,7 +13615,7 @@ var UIStrings30 = {
 var str_30 = i18n59.i18n.registerUIStrings("panels/application/CookieItemsView.ts", UIStrings30);
 var i18nString30 = i18n59.i18n.getLocalizedString.bind(void 0, str_30);
 var { Size: Size2 } = Geometry2;
-var { widget: widget6 } = UI23.Widget;
+var { widget: widget7 } = UI23.Widget;
 var DEFAULT_COOKIE_PREVIEW_WIDGET_VIEW = (input, output, target) => {
   const cookieValue = input.cookie ? input.showDecoded ? decodeURIComponent(input.cookie.value()) : input.cookie.value() : "";
   function handleDblClickOnCookieValue(event) {
@@ -13683,8 +13683,8 @@ var CookiePreviewWidget = class extends UI23.Widget.VBox {
 var DEFAULT_VIEW6 = (input, output, target) => {
   render8(
     html9`<style>${cookieItemsView_css_default}</style>
-    <devtools-widget class="storage-view" ${widget6(UI23.Widget.VBox, { minimumSize: new Size2(0, 50) })}>
-      <devtools-widget ${widget6(StorageItemsToolbar, {
+    <devtools-widget class="storage-view" ${widget7(UI23.Widget.VBox, { minimumSize: new Size2(0, 50) })}>
+      <devtools-widget ${widget7(StorageItemsToolbar, {
       onDeleteSelectedCallback: input.onDeleteSelectedItems,
       onDeleteAllCallback: input.onDeleteAllItems,
       onRefreshCallback: input.onRefreshItems
@@ -13695,8 +13695,8 @@ var DEFAULT_VIEW6 = (input, output, target) => {
     })}
       ></devtools-widget>
       <devtools-split-view sidebar-position="second" name="cookie-items-split-view-state">
-        <devtools-widget slot="main" ${widget6(UI23.Widget.VBox, { minimumSize: new Size2(0, 50) })}>
-          <devtools-widget slot="main" ${widget6(CookieTable.CookiesTable.CookiesTable, {
+        <devtools-widget slot="main" ${widget7(UI23.Widget.VBox, { minimumSize: new Size2(0, 50) })}>
+          <devtools-widget slot="main" ${widget7(CookieTable.CookiesTable.CookiesTable, {
       cookieDomain: input.cookieDomain,
       cookiesData: input.cookiesData,
       saveCallback: input.onSaveCookie,
@@ -13707,10 +13707,10 @@ var DEFAULT_VIEW6 = (input, output, target) => {
     })}
           ></devtools-widget>
         </devtools-widget>
-        <devtools-widget slot="sidebar" ${widget6(UI23.Widget.VBox, { minimumSize: new Size2(0, 50) })}
+        <devtools-widget slot="sidebar" ${widget7(UI23.Widget.VBox, { minimumSize: new Size2(0, 50) })}
           jslog=${VisualLogging16.pane("preview").track({ resize: true })}>
-          ${input.selectedCookie ? html9`<devtools-widget ${widget6(CookiePreviewWidget, { cookie: input.selectedCookie })}>
-                 </devtools-widget>` : html9`<devtools-widget ${widget6(UI23.EmptyWidget.EmptyWidget, {
+          ${input.selectedCookie ? html9`<devtools-widget ${widget7(CookiePreviewWidget, { cookie: input.selectedCookie })}>
+                 </devtools-widget>` : html9`<devtools-widget ${widget7(UI23.EmptyWidget.EmptyWidget, {
       header: i18nString30(UIStrings30.noCookieSelected),
       text: i18nString30(UIStrings30.selectACookieToPreviewItsValue)
     })}></devtools-widget>`}
@@ -13909,7 +13909,7 @@ var deviceBoundSessionsView_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./deviceBoundSessionsView.css")} */`;
 
 // gen/front_end/panels/application/DeviceBoundSessionsView.js
-var { widget: widget7 } = UI24.Widget;
+var { widget: widget8 } = UI24.Widget;
 var UIStrings31 = {
   /**
    *@description Label for a site, e.g. https://example.com/.
@@ -14451,7 +14451,7 @@ var DEFAULT_VIEW7 = (input, _output, target) => {
       <style>${UI24.inspectorCommonStyles}</style>
       <style>${deviceBoundSessionsView_css_default}</style>
       ${toolbarHtml}
-      <devtools-widget ${widget7(UI24.EmptyWidget.EmptyWidget, { header: defaultTitle, text: defaultDescription })} jslog=${VisualLogging17.pane("device-bound-sessions-empty")}></devtools-widget>
+      <devtools-widget ${widget8(UI24.EmptyWidget.EmptyWidget, { header: defaultTitle, text: defaultDescription })} jslog=${VisualLogging17.pane("device-bound-sessions-empty")}></devtools-widget>
     `, target);
     return;
   }
@@ -14585,7 +14585,7 @@ var DEFAULT_VIEW7 = (input, _output, target) => {
         ${failedRequest.responseErrorBody && html10`
           <devtools-report-key>${i18nString31(UIStrings31.failedRequestResponseBody)}</devtools-report-key>
           <devtools-report-value>
-            ${widget7(SourceFrame6.JSONView.SearchableJsonView, {
+            ${widget8(SourceFrame6.JSONView.SearchableJsonView, {
       jsonObject: tryParseJson(failedRequest.responseErrorBody)
     })}
           </devtools-report-value>`}`;

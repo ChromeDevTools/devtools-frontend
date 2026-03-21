@@ -47,7 +47,6 @@ export declare class TimelineUIUtils {
      */
     static parseStringForLinks(rawString: string): DocumentFragment;
     static buildTraceEventDetails(parsedTrace: Trace.TraceModel.ParsedTrace, event: Trace.Types.Events.Event, linkifier: LegacyComponents.Linkifier.Linkifier, canShowPieChart: boolean, entityMapper: Trace.EntityMapper.EntityMapper | null): Promise<DocumentFragment>;
-    static statsForTimeRange(events: Trace.Types.Events.Event[], startTime: Trace.Types.Timing.Milli, endTime: Trace.Types.Timing.Milli): TimeRangeCategoryStats;
     private static renderEventJson;
     private static renderObjectJson;
     static stackTraceFromCallFrames(callFrames: Protocol.Runtime.CallFrame[] | Trace.Types.Events.CallFrame[]): Protocol.Runtime.StackTrace;

@@ -495,7 +495,7 @@ var NodeIndicatorProvider = class _NodeIndicatorProvider {
   #widgetElement;
   constructor() {
     this.#widgetElement = document.createElement("devtools-widget");
-    this.#widgetElement.widgetConfig = UI2.Widget.widgetConfig(NodeIndicator);
+    new NodeIndicator(this.#widgetElement);
     this.#toolbarItem = new UI2.Toolbar.ToolbarItem(this.#widgetElement);
     this.#toolbarItem.setVisible(false);
   }

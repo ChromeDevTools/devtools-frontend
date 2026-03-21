@@ -9,19 +9,31 @@ export default `/*
  * found in the LICENSE file.
  */
 
-  :host {
-    display: block;
-    height: 100%;
-  }
+:host {
+  display: block;
+  height: 100%;
+  container-type: inline-size;
+}
 
+.timeline-details-range-summary {
+  display: flex;
+  padding: var(--sys-size-4) 0 0;
+  height: 100%;
+}
+
+@container (max-width: 450px) {
   .timeline-details-range-summary {
-    display: flex;
-    padding: var(--sys-size-4) 0 0;
-    height: 100%;
+    flex-direction: column;
+    gap: var(--sys-size-4);
   }
 
   .timeline-summary {
-    flex-grow: 0;
+    width: 100%;
   }
+}
+
+.timeline-summary {
+  flex-grow: 0;
+}
 
 /*# sourceURL=${import.meta.resolve('./timelineRangeSummaryView.css')} */`;

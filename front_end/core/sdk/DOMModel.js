@@ -223,7 +223,7 @@ export class DOMNode extends Common.ObjectWrapper.ObjectWrapper {
             this.setChildrenPayload(payload.children);
         }
         this.setPseudoElements(payload.pseudoElements);
-        if (payload.isAdRelated) {
+        if (payload.adProvenance) {
             this.#isAdRelatedInternal = true;
         }
         if (this.#nodeType === Node.ELEMENT_NODE) {
@@ -1551,7 +1551,8 @@ export class DOMModel extends SDKModel {
         }
         node.setIsScrollable(isScrollable);
     }
-    adRelatedStateUpdated(nodeId, isAdRelated) {
+    adRelatedStateUpdated(nodeId, adProvenance) {
+        const isAdRelated = adProvenance !== undefined;
         const node = this.nodeForId(nodeId);
         if (!node || node.isAdRelatedNode() === isAdRelated) {
             return;
@@ -1846,8 +1847,8 @@ class DOMDispatcher {
     affectedByStartingStylesFlagUpdated({ nodeId, affectedByStartingStyles }) {
         this.#domModel.affectedByStartingStylesFlagUpdated(nodeId, affectedByStartingStyles);
     }
-    adRelatedStateUpdated({ nodeId, isAdRelated }) {
-        this.#domModel.adRelatedStateUpdated(nodeId, isAdRelated);
+    adRelatedStateUpdated({ nodeId, adProvenance }) {
+        this.#domModel.adRelatedStateUpdated(nodeId, adProvenance);
     }
 }
 let domModelUndoStackInstance = null;

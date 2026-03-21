@@ -2525,44 +2525,27 @@ function runNextUpdate() {
     }
   });
 }
+var widgetConfigs = /* @__PURE__ */ new WeakMap();
 var WidgetElement = class extends HTMLElement {
-  #widgetClass;
-  #widgetParams;
   createWidget() {
-    const widget2 = this.#instantiateWidget();
-    if (this.#widgetParams) {
-      Object.assign(widget2, this.#widgetParams);
+    const config = widgetConfigs.get(this);
+    const widget2 = this.#instantiateWidget(config.widgetClass);
+    if (config.widgetParams) {
+      Object.assign(widget2, config.widgetParams);
     }
     widget2.requestUpdate();
     return widget2;
   }
-  #instantiateWidget() {
-    if (!this.#widgetClass) {
+  #instantiateWidget(widgetClass) {
+    if (!widgetClass) {
       throw new Error("No widgetClass defined");
     }
-    if (Widget.isPrototypeOf(this.#widgetClass)) {
-      const ctor = this.#widgetClass;
+    if (Widget.isPrototypeOf(widgetClass)) {
+      const ctor = widgetClass;
       return new ctor(this);
     }
-    const factory = this.#widgetClass;
+    const factory = widgetClass;
     return factory(this);
-  }
-  set widgetConfig(config) {
-    const widget2 = Widget.get(this);
-    if (widget2 && config.widgetParams) {
-      let needsUpdate = false;
-      for (const key in config.widgetParams) {
-        if (Object.prototype.hasOwnProperty.call(config.widgetParams, key) && config.widgetParams[key] !== this.#widgetParams?.[key]) {
-          widget2[key] = config.widgetParams[key];
-          needsUpdate = true;
-        }
-      }
-      if (needsUpdate) {
-        widget2.requestUpdate();
-      }
-    }
-    this.#widgetClass = config.widgetClass;
-    this.#widgetParams = config.widgetParams;
   }
   getWidget() {
     return Widget.get(this);
@@ -2619,13 +2602,11 @@ var WidgetElement = class extends HTMLElement {
   }
   cloneNode(deep) {
     const clone = cloneCustomElement(this, deep);
-    if (!this.#widgetClass) {
+    const config = widgetConfigs.get(this);
+    if (!config?.widgetClass) {
       throw new Error("No widgetClass defined");
     }
-    clone.widgetConfig = {
-      widgetClass: this.#widgetClass,
-      widgetParams: this.#widgetParams
-    };
+    widgetConfigs.set(clone, config);
     return clone;
   }
   focus() {
@@ -2651,7 +2632,22 @@ var WidgetDirective = class extends Lit.Directive.Directive {
       if (!(element instanceof WidgetElement)) {
         throw new Error("Widget directive must be used on a devtools-widget element.");
       }
-      element.widgetConfig = widgetConfig(widgetClass, widgetParams);
+      const config = widgetConfig(widgetClass, widgetParams);
+      const oldConfig = widgetConfigs.get(element);
+      const widget2 = Widget.get(element);
+      if (widget2 && config.widgetParams) {
+        let needsUpdate = false;
+        for (const key in config.widgetParams) {
+          if (Object.prototype.hasOwnProperty.call(config.widgetParams, key) && config.widgetParams[key] !== oldConfig?.widgetParams?.[key]) {
+            widget2[key] = config.widgetParams[key];
+            needsUpdate = true;
+          }
+        }
+        if (needsUpdate) {
+          widget2.requestUpdate();
+        }
+      }
+      widgetConfigs.set(element, config);
       return Lit.nothing;
     }
     return this.render(widgetClass, widgetParams);
@@ -2660,7 +2656,7 @@ var WidgetDirective = class extends Lit.Directive.Directive {
     if (this.#partType === Lit.Directive.PartType.ELEMENT) {
       return Lit.nothing;
     }
-    return Lit.Directives.repeat([widgetClass], () => widgetClass, () => html`<devtools-widget .widgetConfig=${widgetConfig(widgetClass, widgetParams)}></devtools-widget>`);
+    return Lit.Directives.repeat([widgetClass], () => widgetClass, () => html`<devtools-widget ${widget(widgetClass, widgetParams)}></devtools-widget>`);
   }
 };
 var widget = Lit.Directive.directive(WidgetDirective);
@@ -11561,7 +11557,12 @@ var Toolbar = class _Toolbar extends HTMLElement {
       item8.applyEnabledState(false);
     }
     if (item8.element.parentElement !== this) {
-      this.appendChild(item8.element);
+      const widget2 = Widget.get(item8.element);
+      if (widget2) {
+        widget2.show(this);
+      } else {
+        this.appendChild(item8.element);
+      }
     }
     this.hideSeparatorDupes();
   }
@@ -11575,7 +11576,14 @@ var Toolbar = class _Toolbar extends HTMLElement {
     if (!this.enabled) {
       item8.applyEnabledState(false);
     }
-    this.prepend(item8.element);
+    if (item8.element.parentElement !== this) {
+      const widget2 = Widget.get(item8.element);
+      if (widget2) {
+        widget2.show(this, this.firstChild);
+      } else {
+        this.prepend(item8.element);
+      }
+    }
     this.hideSeparatorDupes();
   }
   appendSeparator() {
@@ -11591,7 +11599,12 @@ var Toolbar = class _Toolbar extends HTMLElement {
     const updatedItems = [];
     for (const item8 of this.items) {
       if (item8 === itemToRemove) {
-        item8.element.remove();
+        const widget2 = Widget.get(item8.element);
+        if (widget2) {
+          widget2.detach();
+        } else {
+          item8.element.remove();
+        }
       } else {
         updatedItems.push(item8);
       }
@@ -11601,6 +11614,10 @@ var Toolbar = class _Toolbar extends HTMLElement {
   removeToolbarItems() {
     for (const item8 of this.items) {
       item8.toolbar = null;
+      const widget2 = Widget.get(item8.element);
+      if (widget2) {
+        widget2.detach();
+      }
     }
     this.items = [];
     this.removeChildren();

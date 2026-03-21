@@ -531,43 +531,17 @@ class SummaryView extends UI.Widget.Widget {
     }
 }
 function generateRangeSummaryDetails(input) {
-    const { parsedTrace, selectedRange } = input;
-    if (!selectedRange || !parsedTrace) {
-        return nothing;
-    }
-    const minBoundsMilli = Trace.Helpers.Timing.microToMilli(parsedTrace.data.Meta.traceBounds.min);
-    const { events, startTime, endTime, thirdPartyTree } = selectedRange;
-    const aggregatedStats = TimelineUIUtils.statsForTimeRange(events, startTime, endTime);
-    const startOffset = startTime - minBoundsMilli;
-    const endOffset = endTime - minBoundsMilli;
-    let total = 0;
-    for (const categoryName in aggregatedStats) {
-        total += aggregatedStats[categoryName];
-    }
-    const categories = [];
-    for (const categoryName in Trace.Styles.getCategoryStyles()) {
-        const category = Trace.Styles.getCategoryStyles()[categoryName];
-        if (category.name === Trace.Styles.EventCategory.IDLE) {
-            continue;
-        }
-        const value = aggregatedStats[category.name];
-        if (!value) {
-            continue;
-        }
-        categories.push({ value, color: category.getCSSValue(), title: category.title });
-    }
-    categories.sort((a, b) => b.value - a.value);
     // clang-format off
     return html `
     <devtools-widget
       ${widget(TimelineComponents.TimelineRangeSummaryView.TimelineRangeSummaryView, {
         data: {
-            rangeStart: startOffset,
-            rangeEnd: endOffset,
-            total,
-            categories,
-            thirdPartyTreeTemplate: html `<devtools-performance-third-party-tree-view
-            .treeView=${thirdPartyTree}></devtools-performance-third-party-tree-view>`,
+            parsedTrace: input.parsedTrace,
+            events: input.selectedRange?.events,
+            startTime: input.selectedRange?.startTime,
+            endTime: input.selectedRange?.endTime,
+            thirdPartyTreeTemplate: input.selectedRange?.thirdPartyTree ? html `<devtools-performance-third-party-tree-view
+            .treeView=${input.selectedRange?.thirdPartyTree}></devtools-performance-third-party-tree-view>` : nothing,
         },
     })}
     ></devtools-widget>`;

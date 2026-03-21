@@ -47,7 +47,7 @@ import requestPayloadTreeStyles from './requestPayloadTree.css.js';
 import requestPayloadViewStyles from './requestPayloadView.css.js';
 import { ShowMoreDetailsWidget } from './ShowMoreDetailsWidget.js';
 const { classMap } = Directives;
-const { widgetConfig } = UI.Widget;
+const { widget } = UI.Widget;
 const { ifExpanded } = UI.TreeOutline;
 const UIStrings = {
     /**
@@ -120,7 +120,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
     };
     const createSourceText = (text) => html `<li role=treeitem
       @contextmenu=${copyValueContextmenu(i18nString(UIStrings.copyPayload), () => text, 'copy-payload')}>
-        <devtools-widget class='payload-value source-code' .widgetConfig=${widgetConfig(ShowMoreDetailsWidget, { text })}>
+        <devtools-widget class='payload-value source-code' ${widget(ShowMoreDetailsWidget, { text })}>
         </devtools-widget>
       </li>`;
     const createParsedParams = (params) => params.map(param => html `<li role=treeitem @contextmenu=${copyValueContextmenu(i18nString(UIStrings.copyValue), () => decodeURIComponent(param.value), 'copy-value')}>${param.name !== '' ?

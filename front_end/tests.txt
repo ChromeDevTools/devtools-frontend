@@ -201,7 +201,6 @@ models/issues_manager/CheckFormsIssuesTrigger.test.js
 models/issues_manager/IssuesManager.test.js
 models/issues_manager/SelectivePermissionsInterventionIssue.test.js
 models/javascript_metadata/JavaScriptMetadata.test.js
-models/live-metrics/LiveMetrics.test.js
 models/logs/NetworkLog.test.js
 models/logs/RequestResolver.test.js
 models/persistence/AutomaticFileSystemManager.test.js
@@ -607,6 +606,7 @@ panels/timeline/components/Sidebar.test.js
 panels/timeline/components/SidebarAnnotationsTab.test.js
 panels/timeline/components/SidebarInsightsTab.test.js
 panels/timeline/components/SidebarSingleInsightSet.test.js
+panels/timeline/components/TimelineRangeSummaryView.test.js
 panels/timeline/components/TimelineSummary.test.js
 panels/timeline/components/Utils.test.js
 panels/timeline/components/insights/BaseInsightComponent.test.js

@@ -129,7 +129,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
 export class IgnoreListSetting extends UI.Widget.Widget {
     static createWidgetElement() {
         const widgetElement = document.createElement('devtools-widget');
-        widgetElement.widgetConfig = UI.Widget.widgetConfig(IgnoreListSetting);
+        new IgnoreListSetting(widgetElement);
         return widgetElement;
     }
     #view;

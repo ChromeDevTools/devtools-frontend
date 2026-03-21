@@ -40,7 +40,6 @@ export declare class SensorsView extends UI.Widget.VBox {
     private applyDeviceOrientationUserInput;
     private resetDeviceOrientation;
     private setDeviceOrientation;
-    private createDeviceOrientationOverrideElement;
     private setBoxOrientation;
     private onBoxDrag;
     private onBoxDragStart;

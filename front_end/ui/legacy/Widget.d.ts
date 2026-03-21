@@ -15,7 +15,6 @@ export declare function widgetConfig<F extends WidgetFactory<Widget>, ParamKeys 
 export declare class WidgetElement<WidgetT extends Widget> extends HTMLElement {
     #private;
     createWidget(): WidgetT;
-    set widgetConfig(config: WidgetConfig<WidgetT>);
     getWidget(): WidgetT | undefined;
     connectedCallback(): void;
     disconnectedCallback(): void;

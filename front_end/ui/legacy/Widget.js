@@ -131,46 +131,28 @@ function runNextUpdate() {
         }
     });
 }
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const widgetConfigs = new WeakMap();
 export class WidgetElement extends HTMLElement {
-    #widgetClass;
-    #widgetParams;
     createWidget() {
-        const widget = this.#instantiateWidget();
-        if (this.#widgetParams) {
-            Object.assign(widget, this.#widgetParams);
+        const config = widgetConfigs.get(this);
+        const widget = this.#instantiateWidget(config.widgetClass);
+        if (config.widgetParams) {
+            Object.assign(widget, config.widgetParams);
         }
         widget.requestUpdate();
         return widget;
     }
-    #instantiateWidget() {
-        if (!this.#widgetClass) {
+    #instantiateWidget(widgetClass) {
+        if (!widgetClass) {
             throw new Error('No widgetClass defined');
         }
-        if (Widget.isPrototypeOf(this.#widgetClass)) {
-            const ctor = this.#widgetClass;
+        if (Widget.isPrototypeOf(widgetClass)) {
+            const ctor = widgetClass;
             return new ctor(this);
         }
-        const factory = this.#widgetClass;
+        const factory = widgetClass;
         return factory(this);
-    }
-    set widgetConfig(config) {
-        const widget = Widget.get(this);
-        if (widget && config.widgetParams) {
-            let needsUpdate = false;
-            for (const key in config.widgetParams) {
-                if (Object.prototype.hasOwnProperty.call(config.widgetParams, key) &&
-                    config.widgetParams[key] !== this.#widgetParams?.[key]) {
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    widget[key] = config.widgetParams[key];
-                    needsUpdate = true;
-                }
-            }
-            if (needsUpdate) {
-                widget.requestUpdate();
-            }
-        }
-        this.#widgetClass = config.widgetClass;
-        this.#widgetParams = config.widgetParams;
     }
     getWidget() {
         return Widget.get(this);
@@ -222,13 +204,11 @@ export class WidgetElement extends HTMLElement {
     }
     cloneNode(deep) {
         const clone = cloneCustomElement(this, deep);
-        if (!this.#widgetClass) {
+        const config = widgetConfigs.get(this);
+        if (!config?.widgetClass) {
             throw new Error('No widgetClass defined');
         }
-        clone.widgetConfig = {
-            widgetClass: this.#widgetClass,
-            widgetParams: this.#widgetParams,
-        };
+        widgetConfigs.set(clone, config);
         return clone;
     }
     focus() {
@@ -254,7 +234,24 @@ export class WidgetDirective extends Lit.Directive.Directive {
             if (!(element instanceof WidgetElement)) {
                 throw new Error('Widget directive must be used on a devtools-widget element.');
             }
-            element.widgetConfig = widgetConfig(widgetClass, widgetParams);
+            const config = widgetConfig(widgetClass, widgetParams);
+            const oldConfig = widgetConfigs.get(element);
+            const widget = Widget.get(element);
+            if (widget && config.widgetParams) {
+                let needsUpdate = false;
+                for (const key in config.widgetParams) {
+                    if (Object.prototype.hasOwnProperty.call(config.widgetParams, key) &&
+                        config.widgetParams[key] !== oldConfig?.widgetParams?.[key]) {
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                        widget[key] = config.widgetParams[key];
+                        needsUpdate = true;
+                    }
+                }
+                if (needsUpdate) {
+                    widget.requestUpdate();
+                }
+            }
+            widgetConfigs.set(element, config);
             return Lit.nothing;
         }
         return this.render(widgetClass, widgetParams);
@@ -268,7 +265,7 @@ export class WidgetDirective extends Lit.Directive.Directive {
         // even if `widgetClass` changed (for example, in a ternary operator `condition ? widget(A) : widget(B)`).
         // This is because the template string is the same, so Lit reuses the DOM node and only updates `.widgetConfig`,
         // which does not properly recreate the widget instance.
-        return Lit.Directives.repeat([widgetClass], () => widgetClass, () => html `<devtools-widget .widgetConfig=${widgetConfig(widgetClass, widgetParams)}></devtools-widget>`);
+        return Lit.Directives.repeat([widgetClass], () => widgetClass, () => html `<devtools-widget ${widget(widgetClass, widgetParams)}></devtools-widget>`);
     }
 }
 export const widget = Lit.Directive.directive(WidgetDirective);

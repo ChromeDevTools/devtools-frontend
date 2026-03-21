@@ -10277,98 +10277,6 @@ var TimelineUIUtils = class _TimelineUIUtils {
     }
     return contentHelper.fragment;
   }
-  static statsForTimeRange(events, startTime, endTime) {
-    if (!events.length) {
-      return { idle: endTime - startTime };
-    }
-    buildRangeStatsCacheIfNeeded(events);
-    const aggregatedStats = subtractStats(aggregatedStatsAtTime(endTime), aggregatedStatsAtTime(startTime));
-    const aggregatedTotal = Object.values(aggregatedStats).reduce((a, b) => a + b, 0);
-    aggregatedStats["idle"] = Math.max(0, endTime - startTime - aggregatedTotal);
-    return aggregatedStats;
-    function aggregatedStatsAtTime(time) {
-      const stats = {};
-      const cache = events[categoryBreakdownCacheSymbol];
-      for (const category in cache) {
-        const categoryCache = cache[category];
-        const index = Platform11.ArrayUtilities.upperBound(categoryCache.time, time, Platform11.ArrayUtilities.DEFAULT_COMPARATOR);
-        let value;
-        if (index === 0) {
-          value = 0;
-        } else if (index === categoryCache.time.length) {
-          value = categoryCache.value[categoryCache.value.length - 1];
-        } else {
-          const t0 = categoryCache.time[index - 1];
-          const t1 = categoryCache.time[index];
-          const v0 = categoryCache.value[index - 1];
-          const v1 = categoryCache.value[index];
-          value = v0 + (v1 - v0) * (time - t0) / (t1 - t0);
-        }
-        stats[category] = value;
-      }
-      return stats;
-    }
-    function subtractStats(a, b) {
-      const result = Object.assign({}, a);
-      for (const key in b) {
-        result[key] -= b[key];
-      }
-      return result;
-    }
-    function buildRangeStatsCacheIfNeeded(events2) {
-      if (events2[categoryBreakdownCacheSymbol]) {
-        return;
-      }
-      const aggregatedStats2 = {};
-      const categoryStack = [];
-      let lastTime = 0;
-      Trace23.Helpers.Trace.forEachEvent(events2, {
-        onStartEvent,
-        onEndEvent
-      });
-      function updateCategory(category, time) {
-        let statsArrays = aggregatedStats2[category];
-        if (!statsArrays) {
-          statsArrays = { time: [], value: [] };
-          aggregatedStats2[category] = statsArrays;
-        }
-        if (statsArrays.time.length && statsArrays.time[statsArrays.time.length - 1] === time || lastTime > time) {
-          return;
-        }
-        const lastValue = statsArrays.value.length > 0 ? statsArrays.value[statsArrays.value.length - 1] : 0;
-        statsArrays.value.push(lastValue + time - lastTime);
-        statsArrays.time.push(time);
-      }
-      function categoryChange(from, to, time) {
-        if (from) {
-          updateCategory(from, time);
-        }
-        lastTime = time;
-        if (to) {
-          updateCategory(to, time);
-        }
-      }
-      function onStartEvent(e) {
-        const { startTime: startTime2 } = Trace23.Helpers.Timing.eventTimingsMilliSeconds(e);
-        const category = Trace23.Styles.getEventStyle(e.name)?.category.name || Trace23.Styles.getCategoryStyles().other.name;
-        const parentCategory = categoryStack.length ? categoryStack[categoryStack.length - 1] : null;
-        if (category !== parentCategory) {
-          categoryChange(parentCategory || null, category, startTime2);
-        }
-        categoryStack.push(category);
-      }
-      function onEndEvent(e) {
-        const { endTime: endTime2 } = Trace23.Helpers.Timing.eventTimingsMilliSeconds(e);
-        const category = categoryStack.pop();
-        const parentCategory = categoryStack.length ? categoryStack[categoryStack.length - 1] : null;
-        if (category !== parentCategory) {
-          categoryChange(category || null, parentCategory || null, endTime2 || 0);
-        }
-      }
-      const obj = events2;
-      obj[categoryBreakdownCacheSymbol] = aggregatedStats2;
-    }
-  }
   static renderEventJson(event, contentHelper) {
     contentHelper.addSection(i18nString19(UIStrings19.traceEvent));
     contentHelper.appendElementRow("eventKey", new Trace23.EventsSerializer.EventsSerializer().keyForEvent(event) ?? "?");
@@ -14600,42 +14508,16 @@ var SummaryView = class extends UI16.Widget.Widget {
   }
 };
 function generateRangeSummaryDetails(input) {
-  const { parsedTrace, selectedRange } = input;
-  if (!selectedRange || !parsedTrace) {
-    return nothing2;
-  }
-  const minBoundsMilli = Trace30.Helpers.Timing.microToMilli(parsedTrace.data.Meta.traceBounds.min);
-  const { events, startTime, endTime, thirdPartyTree } = selectedRange;
-  const aggregatedStats = TimelineUIUtils.statsForTimeRange(events, startTime, endTime);
-  const startOffset = startTime - minBoundsMilli;
-  const endOffset = endTime - minBoundsMilli;
-  let total = 0;
-  for (const categoryName in aggregatedStats) {
-    total += aggregatedStats[categoryName];
-  }
-  const categories2 = [];
-  for (const categoryName in Trace30.Styles.getCategoryStyles()) {
-    const category = Trace30.Styles.getCategoryStyles()[categoryName];
-    if (category.name === Trace30.Styles.EventCategory.IDLE) {
-      continue;
-    }
-    const value = aggregatedStats[category.name];
-    if (!value) {
-      continue;
-    }
-    categories2.push({ value, color: category.getCSSValue(), title: category.title });
-  }
-  categories2.sort((a, b) => b.value - a.value);
   return html5`
     <devtools-widget
       ${widget(TimelineComponents5.TimelineRangeSummaryView.TimelineRangeSummaryView, {
     data: {
-      rangeStart: startOffset,
-      rangeEnd: endOffset,
-      total,
-      categories: categories2,
-      thirdPartyTreeTemplate: html5`<devtools-performance-third-party-tree-view
-            .treeView=${thirdPartyTree}></devtools-performance-third-party-tree-view>`
+      parsedTrace: input.parsedTrace,
+      events: input.selectedRange?.events,
+      startTime: input.selectedRange?.startTime,
+      endTime: input.selectedRange?.endTime,
+      thirdPartyTreeTemplate: input.selectedRange?.thirdPartyTree ? html5`<devtools-performance-third-party-tree-view
+            .treeView=${input.selectedRange?.thirdPartyTree}></devtools-performance-third-party-tree-view>` : nothing2
     }
   })}
     ></devtools-widget>`;

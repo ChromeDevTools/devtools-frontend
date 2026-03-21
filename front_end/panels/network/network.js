@@ -4935,7 +4935,7 @@ var requestPayloadView_css_default = `/*
 
 // gen/front_end/panels/network/RequestPayloadView.js
 var { classMap } = Directives2;
-var { widgetConfig } = UI11.Widget;
+var { widget: widget5 } = UI11.Widget;
 var { ifExpanded } = UI11.TreeOutline;
 var UIStrings11 = {
   /**
@@ -5008,7 +5008,7 @@ var DEFAULT_VIEW7 = (input, output, target) => {
   };
   const createSourceText = (text) => html7`<li role=treeitem
       @contextmenu=${copyValueContextmenu(i18nString11(UIStrings11.copyPayload), () => text, "copy-payload")}>
-        <devtools-widget class='payload-value source-code' .widgetConfig=${widgetConfig(ShowMoreDetailsWidget, { text })}>
+        <devtools-widget class='payload-value source-code' ${widget5(ShowMoreDetailsWidget, { text })}>
         </devtools-widget>
       </li>`;
   const createParsedParams = (params) => params.map((param) => html7`<li role=treeitem @contextmenu=${copyValueContextmenu(i18nString11(UIStrings11.copyValue), () => decodeURIComponent(param.value), "copy-value")}>${param.name !== "" ? html7`${RequestPayloadView.formatParameter(param.name, "payload-name", input.decodeRequestParameters)}${RequestPayloadView.formatParameter(param.value, "payload-value source-code", input.decodeRequestParameters)}` : RequestPayloadView.formatParameter(i18nString11(UIStrings11.empty), "empty-request-payload", input.decodeRequestParameters)}</li>`);
@@ -5804,20 +5804,20 @@ var UIStrings14 = {
 };
 var str_14 = i18n27.i18n.registerUIStrings("panels/network/RequestResponseView.ts", UIStrings14);
 var i18nString14 = i18n27.i18n.getLocalizedString.bind(void 0, str_14);
-var { widgetRef, widget: widget5 } = UI15.Widget;
+var { widgetRef, widget: widget6 } = UI15.Widget;
 var DEFAULT_VIEW9 = (input, output, target) => {
   let widgetTemplate;
   if (TextUtils2.StreamingContentData.isError(input.contentData)) {
-    widgetTemplate = html9`${widget5((element) => new UI15.EmptyWidget.EmptyWidget(i18nString14(UIStrings14.failedToLoadResponseData), input.contentData.error, element))}`;
+    widgetTemplate = html9`${widget6((element) => new UI15.EmptyWidget.EmptyWidget(i18nString14(UIStrings14.failedToLoadResponseData), input.contentData.error, element))}`;
   } else if (input.request.statusCode === 204 || input.request.failed) {
-    widgetTemplate = html9`${widget5((element) => new UI15.EmptyWidget.EmptyWidget(i18nString14(UIStrings14.noPreview), i18nString14(UIStrings14.thisRequestHasNoResponseData), element))}`;
+    widgetTemplate = html9`${widget6((element) => new UI15.EmptyWidget.EmptyWidget(i18nString14(UIStrings14.noPreview), i18nString14(UIStrings14.thisRequestHasNoResponseData), element))}`;
   } else if (input.renderAsText) {
-    widgetTemplate = html9`<devtools-widget ${widget5((element) => new SourceFrame3.ResourceSourceFrame.SearchableContainer(input.request, input.mimeType, element))}
-                    ${widgetRef(SourceFrame3.ResourceSourceFrame.SearchableContainer, (widget6) => {
-      output.revealPosition = widget6.revealPosition.bind(widget6);
+    widgetTemplate = html9`<devtools-widget ${widget6((element) => new SourceFrame3.ResourceSourceFrame.SearchableContainer(input.request, input.mimeType, element))}
+                    ${widgetRef(SourceFrame3.ResourceSourceFrame.SearchableContainer, (widget7) => {
+      output.revealPosition = widget7.revealPosition.bind(widget7);
     })}></devtools-widget>`;
   } else {
-    widgetTemplate = html9`${widget5((element) => new BinaryResourceView(input.contentData, input.request.url(), input.request.resourceType(), element))}`;
+    widgetTemplate = html9`${widget6((element) => new BinaryResourceView(input.contentData, input.request.url(), input.request.resourceType(), element))}`;
   }
   render10(widgetTemplate, target);
 };
@@ -9737,9 +9737,9 @@ var NetworkLogViewColumns = class _NetworkLogViewColumns {
     this.activeWaterfallSortId = WaterfallSortIds.StartTime;
     this.#dataGrid.markColumnAsSortedBy(INITIAL_SORT_COLUMN, DataGrid7.DataGrid.Order.Ascending);
     this.splitWidget = new UI24.SplitWidget.SplitWidget(true, true, "network-panel-split-view-waterfall", 200);
-    const widget6 = this.#dataGrid.asWidget();
-    widget6.setMinimumSize(150, 0);
-    this.splitWidget.setMainWidget(widget6);
+    const widget7 = this.#dataGrid.asWidget();
+    widget7.setMinimumSize(150, 0);
+    this.splitWidget.setMainWidget(widget7);
   }
   setupWaterfall() {
     this.waterfallColumn = new NetworkWaterfallColumn(this.networkLogView.calculator());

@@ -298,9 +298,6 @@ export class ProfileView extends UI.View.SimpleView implements UI.SearchableView
     if (!this.profileDataGridTree) {
       return;
     }
-    const selectedProfileNode =
-        this.dataGrid.selectedNode ? (this.dataGrid.selectedNode as ProfileDataGridNode).profileNode : null;
-
     this.dataGrid.rootNode().removeChildren();
 
     const children = this.profileDataGridTree.children;
@@ -308,12 +305,6 @@ export class ProfileView extends UI.View.SimpleView implements UI.SearchableView
 
     for (let index = 0; index < count; ++index) {
       this.dataGrid.rootNode().appendChild(children[index]);
-    }
-
-    if (selectedProfileNode) {
-      // TODO(crbug.com/1011811): Cleanup the added `selected` property to this SDK class.
-      // @ts-expect-error
-      selectedProfileNode.selected = true;
     }
   }
 

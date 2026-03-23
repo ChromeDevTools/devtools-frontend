@@ -39,9 +39,18 @@ The following audits in this category have a score below 90 and may need attenti
 - **Table Audit**: 50
   * Audit with a table
 
-    | URL | Wasted Bytes | Node | Location |
-    | https://example.com/script.js | 1024 | div.main (path: 1,HTML,1,BODY,5,DIV) | https://example.com/script.js:10:5 |
-    | https://example.com/style.css | 512 | body > p (selector: body > p) (path: 1,HTML,1,BODY,10,P) | https://example.com/style.css |
+    - Item:
+      * **URL**: https://example.com/script.js
+      * **Wasted Bytes**: 1 kB
+      * **Node**: div.main
+      * **Node path**: 1,HTML,1,BODY,5,DIV
+      * **Location**: https://example.com/script.js:10:5
+    - Item:
+      * **URL**: https://example.com/style.css
+      * **Wasted Bytes**: 512 B
+      * **Node**: body > p
+      * **Node path**: 1,HTML,1,BODY,10,P
+      * **Location**: https://example.com/style.css
 === end content
 
 Title: LighthouseFormatter formats opportunity details
@@ -53,8 +62,9 @@ The following audits in this category have a score below 90 and may need attenti
   * Audit with an opportunity
 
     Potential savings: 500ms, Potential savings: 2048 bytes
-    | URL | Wasted Bytes |
-    | https://example.com/large-script.js | 2048 |
+    - Item:
+      * **URL**: https://example.com/large-script.js
+      * **Wasted Bytes**: 2 kB
 === end content
 
 Title: LighthouseFormatter formats table details with summary
@@ -67,8 +77,8 @@ The following audits in this category have a score below 90 and may need attenti
 
     Wasted time: 100ms
     Wasted bytes: 512
-    | Text |
-    | Some detail |
+    - Item:
+      * **Text**: Some detail
 === end content
 
 Title: LighthouseFormatter formats landmark-one-main audit with node explanation
@@ -79,6 +89,47 @@ The following audits in this category have a score below 90 and may need attenti
 - **Document does not have a main landmark.**: 0
   * One main landmark helps screen reader users navigate a web page. [Learn more about landmarks](https://dequeuniversity.com/rules/axe/4.11/landmark-one-main).
 
-    | Failing Elements |
-    | html (selector: html) (path: 1,HTML) (explanation: Fix all of the following:   Document does not have a main landmark) |
+    - Item:
+      * **Failing Elements**: html
+      * **Failing Elements path**: 1,HTML
+      * **Failing Elements explanation**: Fix all of the following:   Document does not have a main landmark
+=== end content
+
+Title: LighthouseFormatter formats table details with subItems
+Content:
+# Audits for Performance
+
+The following audits in this category have a score below 90 and may need attention:
+- **SubItems Audit**: 50
+  * Audit with subItems
+
+    - Item:
+      * **URL**: https://example.com/script.js
+        * Failed to load sourcemap
+        * Another error
+      * **Map URL**: https://example.com/script.js.map
+=== end content
+
+Title: LighthouseFormatter formats image-delivery-insight audit from realistic data
+Content:
+# Audits for Performance
+
+The following audits in this category have a score below 90 and may need attention:
+- **Improve image delivery**: 50 (Est savings of 35 KiB)
+  * Reducing the download time of images can improve the perceived load time of the page and LCP. [Learn more about optimizing image size](https://developer.chrome.com/docs/performance/insights/image-delivery)
+
+    - Item:
+      * **node**: div.devsite-landing-row-item-media > figure.devsite-landing-row-item-image > picture > img
+      * **node path**: 1,HTML,1,BODY,2,SECTION,6,SECTION,0,MAIN,1,DEVSITE-CONTENT,0,ARTICLE,4,DIV,0,SECTION,0,DIV,0,DIV,0,DIV,0,DIV,0,FIGURE,0,PICTURE,0,IMG
+      * **URL**: https://web.dev/static/images/home-blue_856.png
+        * This image file is larger than it needs to be (856x505) for its displayed dimensions (568x335). Use responsive images to reduce the image download size.
+      * **Resource Size**: 33.3 kB
+      * **Est Savings**: 18.6 kB
+    - Item:
+      * **node**: figure.devsite-landing-row-item-image > a > picture > img
+      * **node path**: 1,HTML,1,BODY,2,SECTION,6,SECTION,0,MAIN,1,DEVSITE-CONTENT,0,ARTICLE,4,DIV,1,SECTION,0,DIV,0,DIV,3,DIV,0,DIV,0,FIGURE,0,A,0,PICTURE,0,IMG
+      * **URL**: https://web.dev/static/identity/image/hero-identity_480.png
+        * This image file is larger than it needs to be (1296x881) for its displayed dimensions (632x430). Use responsive images to reduce the image download size.
+      * **Resource Size**: 22.2 kB
+      * **Est Savings**: 16.9 kB
 === end content

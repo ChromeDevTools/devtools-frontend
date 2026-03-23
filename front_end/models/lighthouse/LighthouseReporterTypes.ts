@@ -82,10 +82,17 @@ export interface ReportJSON {
 export type DetailsJSON =
     |TableDetailsJSON|OpportunityDetailsJSON|FilmstripDetailsJSON|ScreenshotDetailsJSON|DebugDataDetailsJSON;
 
+export interface SubItemsJSON {
+  type: 'subitems';
+  items: Array<Record<string, TableItemValue>>;
+}
+
+export type TableItem = Record<string, TableItemValue|SubItemsJSON|undefined>;
+
 export interface TableDetailsJSON {
   type: 'table';
   headings: TableHeadingJSON[];
-  items: Array<Record<string, TableItemValue>>;
+  items: TableItem[];
   summary?: OpportunitySummary;
 }
 
@@ -96,7 +103,7 @@ export interface TableHeadingJSON {
   itemType?: string;
   subItemsHeading?: {
     key: string,
-    valueType: string,
+    valueType?: string,
   };
 }
 
@@ -109,12 +116,7 @@ export type TableItemValue =|string|number|NodeDetailsJSON|SourceLocationDetails
 export interface OpportunityDetailsJSON {
   type: 'opportunity';
   headings: TableHeadingJSON[];
-  items: Array<{
-    url: string,
-    wastedBytes?: number,
-    wastedMs?: number,
-    totalBytes?: number, [key: string]: unknown,
-  }>;
+  items: TableItem[];
   overallSavingsMs: number;
   overallSavingsBytes?: number;
 }

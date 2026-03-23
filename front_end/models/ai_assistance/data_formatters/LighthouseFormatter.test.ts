@@ -248,4 +248,183 @@ describe('LighthouseFormatter', function() {
     const output = formatter.audits(reportWithLandmark, 'accessibility');
     snapshotTester.assert(this, output);
   });
+
+  it('formats table details with subItems', function() {
+    const subItemsReport = {
+      ...report,
+      categories: {
+        performance: {
+          title: 'Performance',
+          score: 0.5,
+          auditRefs: [{id: 'subitems-audit', score: 0.5, weight: 1}],
+        },
+      },
+      audits: {
+        'subitems-audit': {
+          id: 'subitems-audit',
+          title: 'SubItems Audit',
+          description: 'Audit with subItems',
+          score: 0.5,
+          details: {
+            type: 'table',
+            headings: [
+              {
+                key: 'scriptUrl',
+                label: 'URL',
+                valueType: 'url',
+                subItemsHeading: {key: 'error', valueType: 'text'},
+              },
+              {key: 'sourceMapUrl', label: 'Map URL', valueType: 'url'},
+            ],
+            items: [
+              {
+                scriptUrl: 'https://example.com/script.js',
+                sourceMapUrl: 'https://example.com/script.js.map',
+                subItems: {
+                  type: 'subitems',
+                  items: [
+                    {error: 'Failed to load sourcemap'},
+                    {error: 'Another error'},
+                  ],
+                },
+              },
+            ],
+          },
+        },
+      },
+    } as unknown as ReportJSON;
+    const formatter = new AiAssistance.LighthouseFormatter.LighthouseFormatter();
+    const output = formatter.audits(subItemsReport, 'performance');
+    snapshotTester.assert(this, output);
+  });
+
+  it('formats image-delivery-insight audit from realistic data', function() {
+    const imageInsightReport = {
+      ...report,
+      categories: {
+        performance: {
+          title: 'Performance',
+          score: 0.5,
+          auditRefs: [{id: 'image-delivery-insight', score: 0.5, weight: 1}],
+        },
+      },
+      audits: {
+        'image-delivery-insight': {
+          id: 'image-delivery-insight',
+          title: 'Improve image delivery',
+          description:
+              'Reducing the download time of images can improve the perceived load time of the page and LCP. [Learn more about optimizing image size](https://developer.chrome.com/docs/performance/insights/image-delivery)',
+          score: 0.5,
+          scoreDisplayMode: 'metricSavings',
+          displayValue: 'Est savings of 35 KiB',
+          details: {
+            type: 'table',
+            headings: [
+              {
+                key: 'node',
+                valueType: 'node',
+                label: '',
+              },
+              {
+                key: 'url',
+                valueType: 'url',
+                label: 'URL',
+                subItemsHeading: {
+                  key: 'reason',
+                  valueType: 'text',
+                },
+              },
+              {
+                key: 'totalBytes',
+                valueType: 'bytes',
+                label: 'Resource Size',
+              },
+              {
+                key: 'wastedBytes',
+                valueType: 'bytes',
+                label: 'Est Savings',
+                subItemsHeading: {
+                  key: 'wastedBytes',
+                  valueType: 'bytes',
+                },
+              },
+            ],
+            items: [
+              {
+                node: {
+                  type: 'node',
+                  lhId: 'page-7-IMG',
+                  path:
+                      '1,HTML,1,BODY,2,SECTION,6,SECTION,0,MAIN,1,DEVSITE-CONTENT,0,ARTICLE,4,DIV,0,SECTION,0,DIV,0,DIV,0,DIV,0,DIV,0,FIGURE,0,PICTURE,0,IMG',
+                  selector:
+                      'div.devsite-landing-row-item-media > figure.devsite-landing-row-item-image > picture > img',
+                  boundingRect: {
+                    top: 289,
+                    bottom: 457,
+                    left: 64,
+                    right: 348,
+                    width: 284,
+                    height: 168,
+                  },
+                  snippet:
+                      '<img alt="" src="https://web.dev/static/images/home-blue_856.png" srcset="https://web.dev/static/images/home-blue_36.png 36w,https://web.dev/static/…" sizes="(max-width: 600px) 100vw, (max-width: 840px) 50vw, 708px" fetchpriority="high">',
+                  nodeLabel:
+                      'div.devsite-landing-row-item-media > figure.devsite-landing-row-item-image > picture > img',
+                },
+                url: 'https://web.dev/static/images/home-blue_856.png',
+                totalBytes: 33263,
+                wastedBytes: 18618,
+                subItems: {
+                  type: 'subitems',
+                  items: [
+                    {
+                      reason:
+                          'This image file is larger than it needs to be (856x505) for its displayed dimensions (568x335). Use responsive images to reduce the image download size.',
+                      wastedBytes: 18618,
+                    },
+                  ],
+                },
+              },
+              {
+                node: {
+                  type: 'node',
+                  lhId: 'page-8-IMG',
+                  path:
+                      '1,HTML,1,BODY,2,SECTION,6,SECTION,0,MAIN,1,DEVSITE-CONTENT,0,ARTICLE,4,DIV,1,SECTION,0,DIV,0,DIV,3,DIV,0,DIV,0,FIGURE,0,A,0,PICTURE,0,IMG',
+                  selector: 'figure.devsite-landing-row-item-image > a > picture > img',
+                  boundingRect: {
+                    top: 2784,
+                    bottom: 2999,
+                    left: 48,
+                    right: 364,
+                    width: 316,
+                    height: 215,
+                  },
+                  snippet:
+                      '<img alt="" src="https://web.dev/static/identity/image/hero-identity_480.png" srcset="https://web.dev/static/identity/image/hero-identity_36.png 36w,https://web…" sizes="(max-width: 600px) 50vw, (max-width: 840px) 25vw, 342px" loading="lazy">',
+                  nodeLabel: 'figure.devsite-landing-row-item-image > a > picture > img',
+                },
+                url: 'https://web.dev/static/identity/image/hero-identity_480.png',
+                totalBytes: 22215,
+                wastedBytes: 16932,
+                subItems: {
+                  type: 'subitems',
+                  items: [
+                    {
+                      reason:
+                          'This image file is larger than it needs to be (1296x881) for its displayed dimensions (632x430). Use responsive images to reduce the image download size.',
+                      wastedBytes: 16932,
+                    },
+                  ],
+                },
+              },
+            ],
+          },
+        },
+      },
+    } as unknown as ReportJSON;
+    const formatter = new AiAssistance.LighthouseFormatter.LighthouseFormatter();
+    const output = formatter.audits(imageInsightReport, 'performance');
+    snapshotTester.assert(this, output);
+  });
 });

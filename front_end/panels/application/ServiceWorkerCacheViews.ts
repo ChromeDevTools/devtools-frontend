@@ -210,8 +210,8 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
   }
 
   private createDataGrid(): DataGrid.DataGrid.DataGridImpl<DataGridNode> {
-    const columns = ([
-      {id: 'number', title: '#', sortable: false, width: '3px'},
+    const columns: DataGrid.DataGrid.ColumnDescriptor[] = [
+      {id: 'number', title: '#' as Common.UIString.LocalizedString, sortable: false, width: '3px'},
       {id: 'name', title: i18nString(UIStrings.name), weight: 4, sortable: true},
       {
         id: 'response-type',
@@ -237,7 +237,7 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
         sortable: true,
       },
       {id: 'vary-header', title: i18n.i18n.lockedString('Vary Header'), weight: 1, sortable: true},
-    ] as DataGrid.DataGrid.ColumnDescriptor[]);
+    ];
     const dataGrid = new DataGrid.DataGrid.DataGridImpl({
       displayName: i18nString(UIStrings.serviceWorkerCache),
       columns,

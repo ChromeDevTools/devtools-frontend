@@ -87,13 +87,13 @@ export class EventsTimelineTreeView extends TimelineTreeView {
   }
 
   override populateColumns(columns: DataGrid.DataGrid.ColumnDescriptor[]): void {
-    columns.push(({
+    columns.push({
       id: 'start-time',
       title: i18nString(UIStrings.startTime),
       width: '80px',
       fixedWidth: true,
       sortable: true,
-    } as DataGrid.DataGrid.ColumnDescriptor));
+    });
     super.populateColumns(columns);
     columns.filter(c => c.fixedWidth).forEach(c => {
       c.width = '80px';

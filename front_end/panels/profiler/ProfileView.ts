@@ -138,7 +138,7 @@ export class ProfileView extends UI.View.SimpleView implements UI.SearchableView
     this.searchableViewInternal.setPlaceholder(i18nString(UIStrings.findByCostMsNameOrFile));
     this.searchableViewInternal.show(this.element);
 
-    const columns = ([] as DataGrid.DataGrid.ColumnDescriptor[]);
+    const columns: DataGrid.DataGrid.ColumnDescriptor[] = [];
     columns.push({
       id: 'self',
       title: this.columnHeader('self'),

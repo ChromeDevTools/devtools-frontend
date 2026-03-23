@@ -266,7 +266,7 @@ export class TimelineTreeView extends
     this.currentThreadSetting = Common.Settings.Settings.instance().createSetting('timeline-tree-current-thread', 0);
     this.currentThreadSetting.addChangeListener(() => this.refreshTree());
 
-    const columns = ([] as DataGrid.DataGrid.ColumnDescriptor[]);
+    const columns: DataGrid.DataGrid.ColumnDescriptor[] = [];
     this.populateColumns(columns);
 
     this.splitWidget = new UI.SplitWidget.SplitWidget(true, true, 'timeline-tree-view-details-split-widget');
@@ -469,15 +469,10 @@ export class TimelineTreeView extends
   }
 
   populateColumns(columns: DataGrid.DataGrid.ColumnDescriptor[]): void {
+    columns.push({id: 'self', title: i18nString(UIStrings.selfTime), width: '120px', fixedWidth: true, sortable: true});
     columns.push(
-        ({id: 'self', title: i18nString(UIStrings.selfTime), width: '120px', fixedWidth: true, sortable: true} as
-         DataGrid.DataGrid.ColumnDescriptor));
-    columns.push(
-        ({id: 'total', title: i18nString(UIStrings.totalTime), width: '120px', fixedWidth: true, sortable: true} as
-         DataGrid.DataGrid.ColumnDescriptor));
-    columns.push(
-        ({id: 'activity', title: i18nString(UIStrings.activity), disclosure: true, sortable: true} as
-         DataGrid.DataGrid.ColumnDescriptor));
+        {id: 'total', title: i18nString(UIStrings.totalTime), width: '120px', fixedWidth: true, sortable: true});
+    columns.push({id: 'activity', title: i18nString(UIStrings.activity), disclosure: true, sortable: true});
   }
 
   sortingChanged(): void {
@@ -1304,10 +1299,10 @@ export class TimelineStackView extends
     const header = this.element.createChild('div', 'timeline-stack-view-header');
     header.textContent = i18nString(UIStrings.heaviestStack);
     this.treeView = treeView;
-    const columns = ([
-      {id: 'total', title: i18nString(UIStrings.totalTime), fixedWidth: true, width: '110px'},
-      {id: 'activity', title: i18nString(UIStrings.activity)},
-    ] as DataGrid.DataGrid.ColumnDescriptor[]);
+    const columns: DataGrid.DataGrid.ColumnDescriptor[] = [
+      {id: 'total', title: i18nString(UIStrings.totalTime), fixedWidth: true, width: '110px', sortable: false},
+      {id: 'activity', title: i18nString(UIStrings.activity), sortable: false},
+    ];
     this.dataGrid = new DataGrid.ViewportDataGrid.ViewportDataGrid({
       displayName: i18nString(UIStrings.timelineStack),
       columns,

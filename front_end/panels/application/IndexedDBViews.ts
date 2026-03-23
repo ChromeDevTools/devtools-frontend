@@ -320,7 +320,7 @@ export class IDBDataView extends UI.View.SimpleView {
   private createDataGrid(): DataGrid.DataGrid.DataGridImpl<unknown> {
     const keyPath = this.isIndex && this.index ? this.index.keyPath : this.objectStore.keyPath;
 
-    const columns = ([] as DataGrid.DataGrid.ColumnDescriptor[]);
+    const columns: DataGrid.DataGrid.ColumnDescriptor[] = [];
 
     // Create column defaults so that we avoid repetition below.
     const columnDefaults: Partial<DataGrid.DataGrid.ColumnDescriptor> = {

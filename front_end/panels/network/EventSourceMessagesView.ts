@@ -86,12 +86,12 @@ export class EventSourceMessagesView extends UI.Widget.VBox {
     }
     this.mainToolbar.appendToolbarItem(this.filterTextInput);
 
-    const columns = ([
+    const columns: DataGrid.DataGrid.ColumnDescriptor[] = [
       {id: 'id', title: i18nString(UIStrings.id), sortable: true, weight: 8},
       {id: 'type', title: i18nString(UIStrings.type), sortable: true, weight: 8},
       {id: 'data', title: i18nString(UIStrings.data), sortable: false, weight: 88},
       {id: 'time', title: i18nString(UIStrings.time), sortable: true, weight: 8},
-    ] as DataGrid.DataGrid.ColumnDescriptor[]);
+    ];
 
     this.dataGrid = new DataGrid.SortableDataGrid.SortableDataGrid({
       displayName: i18nString(UIStrings.eventSource),

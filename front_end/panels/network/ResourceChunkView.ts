@@ -199,7 +199,7 @@ export abstract class ResourceChunkView<Chunk> extends UI.Widget.VBox {
         weight: 5,
       },
       {id: 'time', title: i18nString(UIStrings.time), sortable: true, weight: 7},
-    ] as DataGrid.DataGrid.ColumnDescriptor[];
+    ];
   }
 
   chunkAdded(chunk: Chunk): void {

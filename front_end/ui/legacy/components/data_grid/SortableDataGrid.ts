@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 /* eslint-disable @typescript-eslint/naming-convention */
-
+import type * as Common from '../../../../core/common/common.js';
 import * as Platform from '../../../../core/platform/platform.js';
 
 import {type ColumnDescriptor, type DataGridData, Events, type Parameters} from './DataGrid.js';
@@ -61,7 +61,7 @@ export class SortableDataGrid<T> extends ViewportDataGrid<SortableDataGridNode<T
     const columns: ColumnDescriptor[] = [];
     for (let i = 0; i < columnNames.length; ++i) {
       const id = String(i);
-      columns.push(({id, title: columnNames[i], sortable: true} as ColumnDescriptor));
+      columns.push(({id, title: columnNames[i] as Common.UIString.LocalizedString, sortable: true}));
     }
 
     const nodes = [];

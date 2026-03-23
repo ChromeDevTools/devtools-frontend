@@ -219,7 +219,7 @@ export class PermissionsPolicySection extends UI.Widget.Widget {
   #view: View;
 
   constructor(element?: HTMLElement, view = DEFAULT_VIEW) {
-    super(element, {useShadowDom: true});
+    super(element, {useShadowDom: false});
     this.#view = view;
   }
 

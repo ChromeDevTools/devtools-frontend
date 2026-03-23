@@ -226,7 +226,7 @@ Response headers
 
 The result of the checks for this insight are:
 - fetchpriority=high should be applied: FAILED
-- lazy load not applied: PASSED
+- LCP resources should not use loading=lazy: PASSED
 - Request is discoverable in initial document: PASSED
 
 ## Estimated savings: none

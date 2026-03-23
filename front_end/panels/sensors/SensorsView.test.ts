@@ -134,13 +134,20 @@ describeWithEnvironment('SensorsView', () => {
     });
 
     it('validates alpha input and adds error class if invalid', () => {
-      alphaInput.value = '1000';  // alpha must be [0, 360)
+      alphaInput.value = '1000';  // alpha must be <= 359.9999
       alphaInput.dispatchEvent(new Event('input'));
-      assert.isTrue(alphaInput.classList.contains('error-input'));
+      assert.isFalse(alphaInput.checkValidity());
+      assert.isTrue(alphaInput.matches(':invalid'));
+
+      alphaInput.value = '360';  // exclusive bound
+      alphaInput.dispatchEvent(new Event('input'));
+      assert.isFalse(alphaInput.checkValidity());
+      assert.isTrue(alphaInput.matches(':invalid'));
 
       alphaInput.value = '45';
       alphaInput.dispatchEvent(new Event('input'));
-      assert.isFalse(alphaInput.classList.contains('error-input'));
+      assert.isTrue(alphaInput.checkValidity());
+      assert.isFalse(alphaInput.matches(':invalid'));
     });
 
     it('updates emulation.device-orientation-override setting on valid input', () => {

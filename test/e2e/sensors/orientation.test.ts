@@ -18,18 +18,18 @@ import {
 async function assertValidationFails(
     inputElement: ElementHandle<Element>,
     value: number,
-    devtoolsPage: DevToolsPage,
+    devToolsPage: DevToolsPage,
 ) {
   await inputElement.type(value.toString());
   assert.strictEqual(await getInputFieldValue(inputElement), value.toString());
-  await devtoolsPage.tabForward();
+  await devToolsPage.tabForward();
 
-  assert.isTrue(await inputElement.evaluate(element => element.classList.contains('error-input')));
+  assert.isTrue(await inputElement.evaluate(element => element.matches(':invalid')));
 
   // Clean up so that this function can be called again.
-  const resetButton = await devtoolsPage.waitFor('.orientation-reset-button');
+  const resetButton = await devToolsPage.waitFor('.orientation-reset-button');
   await resetButton.click();
-  await devtoolsPage.waitForNone('.error-input');
+  await devToolsPage.waitForNone(':invalid');
 }
 
 describe('Orientation emulation on Sensors panel', () => {

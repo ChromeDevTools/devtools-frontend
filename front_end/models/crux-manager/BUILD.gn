@@ -27,6 +27,8 @@ devtools_entrypoint("bundle") {
     ":*",
     "../../../mcp/*",
     "../../entrypoints/main",
+    "../../panels/common/*",
+    "../../panels/mobile_throttling/*",
     "../../panels/timeline/*",
     "../ai_assistance/*",
     "../trace/*",

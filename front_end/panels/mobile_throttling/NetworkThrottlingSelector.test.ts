@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as SDK from '../../core/sdk/sdk.js';
+import * as CrUXManager from '../../models/crux-manager/crux-manager.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 
 import * as MobileThrottling from './mobile_throttling.js';
@@ -100,5 +101,66 @@ describeWithEnvironment('NetworkThrottlingSelector', () => {
     select.dispatchEvent(new Event('change'));
 
     sinon.assert.calledOnceWithExactly(onConditionsChanged, SDK.NetworkManager.Slow4GConditions);
+  });
+});
+
+describeWithEnvironment('createForGlobalConditions CrUX integration', () => {
+  it('shows recommended label when CrUX data provides RTT', () => {
+    const cruxManager = CrUXManager.CrUXManager.instance({forceNew: true});
+    sinon.stub(cruxManager, 'getSelectedFieldMetricData').returns({
+      percentiles: {p75: '150'},
+      histogram: [],
+    });
+
+    const container = document.createElement('div');
+    const select = MobileThrottling.NetworkThrottlingSelector.NetworkThrottlingSelect.createForGlobalConditions(
+        container, 'Network throttling');
+    assert.isNotNull(select.recommendedConditions);
+    assert.strictEqual(select.recommendedConditions, SDK.NetworkManager.Slow4GConditions);
+
+    // Verify the recommended label appears in the rendered DOM.
+    const options = container.querySelectorAll('option');
+    const slow4gOption = Array.from(options).find(opt => opt.textContent?.includes('Slow 4G'));
+    assert.isDefined(slow4gOption);
+    assert.include(slow4gOption.textContent, 'recommended');
+  });
+
+  it('updates recommendation when CrUX field data changes', () => {
+    const cruxManager = CrUXManager.CrUXManager.instance({forceNew: true});
+    const stub = sinon.stub(cruxManager, 'getSelectedFieldMetricData').returns(undefined);
+
+    const container = document.createElement('div');
+    const select = MobileThrottling.NetworkThrottlingSelector.NetworkThrottlingSelect.createForGlobalConditions(
+        container, 'Network throttling');
+    assert.isNull(select.recommendedConditions);
+
+    // Simulate CrUX data becoming available.
+    stub.returns({
+      percentiles: {p75: '150'},
+      histogram: [],
+    });
+    cruxManager.dispatchEventToListeners(CrUXManager.Events.FIELD_DATA_CHANGED, undefined);
+
+    assert.isNotNull(select.recommendedConditions);
+    assert.strictEqual(select.recommendedConditions, SDK.NetworkManager.Slow4GConditions);
+  });
+
+  it('clears recommendation when CrUX data is removed', () => {
+    const cruxManager = CrUXManager.CrUXManager.instance({forceNew: true});
+    const stub = sinon.stub(cruxManager, 'getSelectedFieldMetricData').returns({
+      percentiles: {p75: '150'},
+      histogram: [],
+    });
+
+    const container = document.createElement('div');
+    const select = MobileThrottling.NetworkThrottlingSelector.NetworkThrottlingSelect.createForGlobalConditions(
+        container, 'Network throttling');
+    assert.isNotNull(select.recommendedConditions);
+
+    // Simulate CrUX data being removed.
+    stub.returns(undefined);
+    cruxManager.dispatchEventToListeners(CrUXManager.Events.FIELD_DATA_CHANGED, undefined);
+
+    assert.isNull(select.recommendedConditions);
   });
 });

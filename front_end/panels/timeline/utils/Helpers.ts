@@ -3,34 +3,9 @@
 // found in the LICENSE file.
 
 import * as Platform from '../../../core/platform/platform.js';
-import * as SDK from '../../../core/sdk/sdk.js';
-import * as CrUXManager from '../../../models/crux-manager/crux-manager.js';
 import type * as Trace from '../../../models/trace/trace.js';
 
 const MAX_ORIGIN_LENGTH = 60;
-
-export function getThrottlingRecommendations(): {
-  cpuOption: SDK.CPUThrottlingManager.CPUThrottlingOption|null,
-  networkConditions: SDK.NetworkManager.Conditions|null,
-} {
-  let cpuOption: SDK.CPUThrottlingManager.CPUThrottlingOption =
-      SDK.CPUThrottlingManager.CalibratedMidTierMobileThrottlingOption;
-  if (cpuOption.rate() === 0) {
-    cpuOption = SDK.CPUThrottlingManager.MidTierThrottlingOption;
-  }
-
-  let networkConditions = null;
-  const response = CrUXManager.CrUXManager.instance().getSelectedFieldMetricData('round_trip_time');
-  if (response?.percentiles) {
-    const rtt = Number(response.percentiles.p75);
-    networkConditions = SDK.NetworkManager.getRecommendedNetworkPreset(rtt);
-  }
-
-  return {
-    cpuOption,
-    networkConditions,
-  };
-}
 
 function createTrimmedUrlSearch(url: URL): string {
   const maxSearchValueLength = 8;

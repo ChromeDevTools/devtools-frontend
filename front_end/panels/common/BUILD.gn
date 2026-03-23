@@ -44,6 +44,7 @@ devtools_ui_module("common") {
     "GdpSignUpDialog.ts",
     "GeminiRebrandPromoDialog.ts",
     "PersistenceUtils.ts",
+    "ThrottlingUtils.ts",
   ]
 
   deps = [
@@ -61,6 +62,7 @@ devtools_ui_module("common") {
     "../../models/annotations:bundle",
     "../../models/badges:bundle",
     "../../models/bindings:bundle",
+    "../../models/crux-manager:bundle",
     "../../models/extensions:bundle",
     "../../models/geometry:bundle",
     "../../models/greendev:bundle",
@@ -122,6 +124,7 @@ devtools_ui_module("unittests") {
     "ExtensionPanel.test.ts",
     "ExtensionServer.test.ts",
     "GdpSignUpDialog.test.ts",
+    "ThrottlingUtils.test.ts",
   ]
 
   deps = [

@@ -62,6 +62,7 @@ import * as SettingsUI from '../../ui/legacy/components/settings_ui/settings_ui.
 import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
+import * as PanelsCommon from '../common/common.js';
 import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
 
 import {ActiveFilters} from './ActiveFilters.js';
@@ -93,7 +94,7 @@ import {TimelineUIUtils} from './TimelineUIUtils.js';
 import {createHiddenTracksOverlay} from './TrackConfigBanner.js';
 import {UIDevtoolsController} from './UIDevtoolsController.js';
 import {UIDevtoolsUtils} from './UIDevtoolsUtils.js';
-import * as Utils from './utils/utils.js';
+import type * as Utils from './utils/utils.js';
 
 const UIStrings = {
   /**
@@ -800,7 +801,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
   }
 
   #onFieldDataChanged(): void {
-    const recs = Utils.Helpers.getThrottlingRecommendations();
+    const recs = PanelsCommon.ThrottlingUtils.getThrottlingRecommendations();
     this.cpuThrottlingSelect?.updateRecommendedOption(recs.cpuOption);
     if (this.networkThrottlingSelect) {
       this.networkThrottlingSelect.recommendedConditions = recs.networkConditions;

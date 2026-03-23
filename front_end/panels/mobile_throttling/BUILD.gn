@@ -30,11 +30,13 @@ devtools_ui_module("mobile_throttling") {
     "../../core/platform:bundle",
     "../../core/sdk:bundle",
     "../../models/badges:bundle",
+    "../../models/crux-manager:bundle",
     "../../ui/components/buttons:bundle",
     "../../ui/kit:bundle",
     "../../ui/legacy:bundle",
     "../../ui/lit:bundle",
     "../../ui/visual_logging:bundle",
+    "../common:bundle",
   ]
 }
 
@@ -85,6 +87,7 @@ devtools_ui_module("unittests") {
   deps = [
     ":bundle",
     "../../core/sdk:bundle",
+    "../../models/crux-manager:bundle",
     "../../testing",
   ]
 }

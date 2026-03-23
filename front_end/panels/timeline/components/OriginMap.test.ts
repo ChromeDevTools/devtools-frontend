@@ -135,6 +135,7 @@ describeWithMockConnection('OriginMap', () => {
       ],
     });
     const view = createOriginMap();
+    await view.updateComplete;
     await RenderCoordinator.done();
 
     const mappings = getOriginMappings(view);
@@ -153,6 +154,7 @@ describeWithMockConnection('OriginMap', () => {
       ],
     });
     const view = createOriginMap();
+    await view.updateComplete;
     await RenderCoordinator.done();
 
     const mappings = getOriginMappings(view);
@@ -175,6 +177,7 @@ describeWithMockConnection('OriginMap', () => {
       ],
     });
     const view = createOriginMap();
+    await view.updateComplete;
     await RenderCoordinator.done();
 
     const mappings = getOriginMappings(view);
@@ -192,6 +195,7 @@ describeWithMockConnection('OriginMap', () => {
       ],
     });
     const view = createOriginMap();
+    await view.updateComplete;
     await RenderCoordinator.done();
 
     {
@@ -209,6 +213,7 @@ describeWithMockConnection('OriginMap', () => {
         {developmentOrigin: 'http://localhost:8081', productionOrigin: 'https://example2.com'},
       ],
     });
+    await view.updateComplete;
     await RenderCoordinator.done();
 
     {
@@ -223,6 +228,7 @@ describeWithMockConnection('OriginMap', () => {
   it('should pre-fill new mapping fields', async () => {
     const originMap = createOriginMap();
     originMap.startCreation();
+    await originMap.updateComplete;
     await RenderCoordinator.done();
 
     const devInput = getDevInput(originMap);
@@ -235,12 +241,14 @@ describeWithMockConnection('OriginMap', () => {
   it('should accept new entries', async () => {
     const originMap = createOriginMap();
     originMap.startCreation();
+    await originMap.updateComplete;
     await RenderCoordinator.done();
 
     const developmentOrigin = 'http://localhost:8080';
     const productionOrigin = 'https://example.com';
     const dataGrid = getDataGrid(originMap);
     dataGrid.dispatchEvent(new CustomEvent('create', {detail: {developmentOrigin, productionOrigin}}));
+    await originMap.updateComplete;
     await RenderCoordinator.done();
 
     const mappings = getOriginMappings(originMap);
@@ -252,12 +260,14 @@ describeWithMockConnection('OriginMap', () => {
   it('should ignore cancelled entries', async () => {
     const originMap = createOriginMap();
     originMap.startCreation();
+    await originMap.updateComplete;
     await RenderCoordinator.done();
 
     const developmentOrigin = 'http://localhost:8080';
     const productionOrigin = '';
     const dataGrid = getDataGrid(originMap);
     dataGrid.dispatchEvent(new CustomEvent('create', {detail: {developmentOrigin, productionOrigin}}));
+    await originMap.updateComplete;
     await RenderCoordinator.done();
 
     const mappings = getOriginMappings(originMap);
@@ -267,12 +277,14 @@ describeWithMockConnection('OriginMap', () => {
   it('should coerce inputs to origin values', async () => {
     const originMap = createOriginMap();
     originMap.startCreation();
+    await originMap.updateComplete;
     await RenderCoordinator.done();
 
     const developmentOrigin = 'http://localhost:8080/path/to/something';
     const productionOrigin = 'https://example.com?hello';
     const dataGrid = getDataGrid(originMap);
     dataGrid.dispatchEvent(new CustomEvent('create', {detail: {developmentOrigin, productionOrigin}}));
+    await originMap.updateComplete;
     await RenderCoordinator.done();
 
     const mappings = getOriginMappings(originMap);
@@ -284,12 +296,14 @@ describeWithMockConnection('OriginMap', () => {
   it('should show errors from invalid origins', async () => {
     const originMap = createOriginMap();
     originMap.startCreation();
+    await originMap.updateComplete;
     await RenderCoordinator.done();
 
     const developmentOrigin = 'bad-origin';
     const productionOrigin = 'jj**Sdafsdf';
     const dataGrid = getDataGrid(originMap);
     dataGrid.dispatchEvent(new CustomEvent('create', {detail: {developmentOrigin, productionOrigin}}));
+    await originMap.updateComplete;
     await RenderCoordinator.done();
 
     const errors = getValidationErrors(originMap);
@@ -307,12 +321,14 @@ describeWithMockConnection('OriginMap', () => {
 
     const originMap = createOriginMap();
     originMap.startCreation();
+    await originMap.updateComplete;
     await RenderCoordinator.done();
 
     const developmentOrigin = 'http://localhost:8080';
     const productionOrigin = 'https://example2.com';
     const dataGrid = getDataGrid(originMap);
     dataGrid.dispatchEvent(new CustomEvent('create', {detail: {developmentOrigin, productionOrigin}}));
+    await originMap.updateComplete;
     await RenderCoordinator.done();
 
     const errors = getValidationErrors(originMap);

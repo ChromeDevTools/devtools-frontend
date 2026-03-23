@@ -1,8 +1,6 @@
 // Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-lit-render-outside-of-view */
-
 import '../../../ui/kit/kit.js';
 import '../../../ui/legacy/components/data_grid/data_grid.js';
 
@@ -52,15 +50,117 @@ interface ListItem extends CrUXManager.OriginMapping {
   isTitleRow?: boolean;
 }
 
+export interface ViewInput {
+  mappings: ListItem[];
+  prefillDevelopmentOrigin: string;
+  errorMessage: string;
+  isCrUXEnabled: boolean;
+  getFieldDataForPage: (url: string) => Promise<CrUXManager.PageResult>;
+  onCommitEdit: (event: CustomEvent<{columnId: string, valueBeforeEditing: string, newText: string}>) => void;
+  onRemoveItemRequested: (event: CustomEvent) => void;
+  onCreate: (event: CustomEvent<{developmentOrigin?: string, productionOrigin?: string}>) => void;
+}
+
+export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
+
+function renderOriginWarning(input: ViewInput, url: string): Promise<Lit.LitTemplate> {
+  return RenderCoordinator.write(async () => {
+    if (!input.isCrUXEnabled) {
+      return Lit.nothing;
+    }
+
+    const result = await input.getFieldDataForPage(url);
+
+    const hasFieldData = Object.entries(result).some(([key, value]) => {
+      if (key === 'warnings') {
+        return false;
+      }
+      return Boolean(value);
+    });
+    if (hasFieldData) {
+      return Lit.nothing;
+    }
+
+    return html`
+      <devtools-icon
+        class="origin-warning-icon"
+        name="warning-filled"
+        title=${i18nString(UIStrings.pageHasNoData)}
+      ></devtools-icon>
+    `;
+  });
+}
+
+function renderItem(input: ViewInput, originMapping: ListItem, index: number): Lit.LitTemplate {
+  const warningIcon = Lit.Directives.until(renderOriginWarning(input, originMapping.productionOrigin));
+  // clang-format off
+  return html`
+    <tr data-index=${index} @edit=${input.onCommitEdit} @delete=${input.onRemoveItemRequested}>
+      <td data-value=${originMapping.developmentOrigin}>
+        <div class="origin" title=${originMapping.developmentOrigin}>${originMapping.developmentOrigin}</div>
+      </td>
+      <td data-value=${originMapping.productionOrigin}>
+        ${warningIcon}
+        <div class="origin" title=${originMapping.productionOrigin}>${originMapping.productionOrigin}</div>
+      </td>
+    </tr>
+  `;
+  // clang-format on
+}
+
+export const DEFAULT_VIEW: View = (input, _output, target) => {
+  if (!input.prefillDevelopmentOrigin && input.mappings.length === 0) {
+    Lit.render(Lit.nothing, target);
+    return;
+  }
+  // clang-format off
+  Lit.render(html`
+    <devtools-data-grid striped inline
+        @click=${(e: Event) => { e.stopPropagation(); }}
+        @create=${input.onCreate}>
+      <table>
+        <tr>
+          <th id=${DEV_ORIGIN_CONTROL} editable weight="1">${i18nString(UIStrings.developmentOrigin)}</th>
+          <th id=${PROD_ORIGIN_CONTROL} editable weight="1">${i18nString(UIStrings.productionOrigin)}</th>
+        </tr>
+        ${input.mappings.map((mapping, index) => renderItem(input, mapping, index))}
+        ${input.prefillDevelopmentOrigin ? html`
+          <tr placeholder>
+            <td>${input.prefillDevelopmentOrigin}</td>
+            <td></td>
+          </tr>` : Lit.nothing}
+      </table>
+    </devtools-data-grid>
+    ${input.errorMessage ? html`<div class="error-message">${input.errorMessage}</div>` : Lit.nothing}
+  `, target);
+  // clang-format on
+};
+
 export class OriginMap extends UI.Widget.VBox {
+  readonly #view: View;
   #errorMessage = '';
   #prefillDevelopmentOrigin = '';
 
-  constructor(element?: HTMLElement) {
+  constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
     super(element, {useShadowDom: true});
+    this.#view = view;
     this.registerRequiredCSS(originMapStyles);
-    CrUXManager.CrUXManager.instance().getConfigSetting().addChangeListener(this.#updateListFromSetting, this);
-    this.#updateListFromSetting();
+    CrUXManager.CrUXManager.instance().getConfigSetting().addChangeListener(this.requestUpdate, this);
+    this.requestUpdate();
+  }
+
+  override performUpdate(): void {
+    const input: ViewInput = {
+      mappings: this.#pullMappingsFromSetting(),
+      prefillDevelopmentOrigin: this.#prefillDevelopmentOrigin,
+      errorMessage: this.#errorMessage,
+      isCrUXEnabled: CrUXManager.CrUXManager.instance().isEnabled(),
+      getFieldDataForPage: (url: string) => CrUXManager.CrUXManager.instance().getFieldDataForPage(url),
+      onCommitEdit: this.#commitEdit.bind(this),
+      onRemoveItemRequested: this.#removeItemRequested.bind(this),
+      onCreate: this.#onCreate.bind(this),
+    };
+    this.#view(input, undefined, this.contentElement);
   }
 
   #pullMappingsFromSetting(): ListItem[] {
@@ -74,35 +174,6 @@ export class OriginMap extends UI.Widget.VBox {
     setting.set(settingCopy);
   }
 
-  #updateListFromSetting(): void {
-    const mappings = this.#pullMappingsFromSetting();
-    if (!this.#prefillDevelopmentOrigin && mappings.length === 0) {
-      Lit.render(Lit.nothing, this.contentElement, {host: this});
-      return;
-    }
-    // clang-format off
-    Lit.render(html`
-      <devtools-data-grid striped inline
-          @click=${(e: Event) => { e.stopPropagation(); }}
-          @create=${this.#onCreate}>
-        <table>
-          <tr>
-            <th id=${DEV_ORIGIN_CONTROL} editable weight="1">${i18nString(UIStrings.developmentOrigin)}</th>
-            <th id=${PROD_ORIGIN_CONTROL} editable weight="1">${i18nString(UIStrings.productionOrigin)}</th>
-          </tr>
-          ${mappings.map((mapping, index) => this.renderItem(mapping, index))}
-          ${this.#prefillDevelopmentOrigin ? html`
-            <tr placeholder>
-              <td>${this.#prefillDevelopmentOrigin}</td>
-              <td></td>
-            </tr>` : Lit.nothing}
-        </table>
-      </devtools-data-grid>
-      ${this.#errorMessage ? html`<div class="error-message">${this.#errorMessage}</div>` : Lit.nothing}
-    `, this.contentElement, {host: this});
-    // clang-format on
-  }
-
   #getOrigin(url: string): string|null {
     try {
       return new URL(url).origin;
@@ -111,61 +182,15 @@ export class OriginMap extends UI.Widget.VBox {
     }
   }
 
-  #renderOriginWarning(url: string): Promise<Lit.LitTemplate> {
-    return RenderCoordinator.write(async () => {
-      if (!CrUXManager.CrUXManager.instance().isEnabled()) {
-        return Lit.nothing;
-      }
-
-      const cruxManager = CrUXManager.CrUXManager.instance();
-      const result = await cruxManager.getFieldDataForPage(url);
-
-      const hasFieldData = Object.entries(result).some(([key, value]) => {
-        if (key === 'warnings') {
-          return false;
-        }
-        return Boolean(value);
-      });
-      if (hasFieldData) {
-        return Lit.nothing;
-      }
-
-      return html`
-        <devtools-icon
-          class="origin-warning-icon"
-          name="warning-filled"
-          title=${i18nString(UIStrings.pageHasNoData)}
-        ></devtools-icon>
-      `;
-    });
-  }
-
   startCreation(): void {
     const targetManager = SDK.TargetManager.TargetManager.instance();
     const inspectedURL = targetManager.inspectedURL();
     const currentOrigin = this.#getOrigin(inspectedURL) || '';
     this.#prefillDevelopmentOrigin = currentOrigin;
-    this.#updateListFromSetting();
+    this.requestUpdate();
   }
 
-  renderItem(originMapping: ListItem, index: number): Lit.LitTemplate {
-    const warningIcon = Lit.Directives.until(this.#renderOriginWarning(originMapping.productionOrigin));
-    // clang-format off
-    return html`
-      <tr data-index=${index} @edit=${this.commitEdit} @delete=${this.removeItemRequested}>
-        <td data-value=${originMapping.developmentOrigin}>
-          <div class="origin" title=${originMapping.developmentOrigin}>${originMapping.developmentOrigin}</div>
-        </td>
-        <td data-value=${originMapping.productionOrigin}>
-          ${warningIcon}
-          <div class="origin" title=${originMapping.productionOrigin}>${originMapping.productionOrigin}</div>
-        </td>
-      </tr>
-    `;
-    // clang-format on
-  }
-
-  removeItemRequested(event: CustomEvent): void {
+  #removeItemRequested(event: CustomEvent): void {
     const target = event.currentTarget as HTMLElement;
     const index = Number.parseInt(target.dataset.index ?? '-1', 10);
     if (index < 0) {
@@ -177,7 +202,7 @@ export class OriginMap extends UI.Widget.VBox {
     this.#pushMappingsToSetting(mappings);
   }
 
-  commitEdit(event: CustomEvent<{columnId: string, valueBeforeEditing: string, newText: string}>): void {
+  #commitEdit(event: CustomEvent<{columnId: string, valueBeforeEditing: string, newText: string}>): void {
     const target = event.currentTarget as HTMLElement;
     const index = Number.parseInt(target.dataset.index ?? '-1', 10);
     if (index < 0) {
@@ -197,7 +222,7 @@ export class OriginMap extends UI.Widget.VBox {
 
     if (errorMessage) {
       this.#errorMessage = errorMessage;
-      this.#updateListFromSetting();
+      this.requestUpdate();
       return;
     }
     this.#errorMessage = '';
@@ -239,7 +264,7 @@ export class OriginMap extends UI.Widget.VBox {
     return null;
   }
 
-  #onCreate(event: CustomEvent<{developmentorigin?: string, productionorigin?: string}>): void {
+  #onCreate(event: CustomEvent<{developmentOrigin?: string, productionOrigin?: string}>): void {
     const devOrigin = event.detail[DEV_ORIGIN_CONTROL as keyof typeof event.detail] ?? '';
     const prodOrigin = event.detail[PROD_ORIGIN_CONTROL as keyof typeof event.detail] ?? '';
 
@@ -247,14 +272,14 @@ export class OriginMap extends UI.Widget.VBox {
     if ((!devOrigin && !prodOrigin) || (devOrigin === this.#prefillDevelopmentOrigin && !prodOrigin)) {
       this.#prefillDevelopmentOrigin = '';
       this.#errorMessage = '';
-      this.#updateListFromSetting();
+      this.requestUpdate();
       return;
     }
 
     const errors = [this.#developmentValidator(devOrigin), this.#productionValidator(prodOrigin)].filter(Boolean);
     if (errors.length > 0) {
       this.#errorMessage = errors.join('\n');
-      this.#updateListFromSetting();
+      this.requestUpdate();
       return;
     }
 

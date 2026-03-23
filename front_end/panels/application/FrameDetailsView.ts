@@ -268,7 +268,7 @@ export interface FrameDetailsReportViewData {
   adScriptAncestry: Protocol.Network.AdAncestry|null;
 }
 
-interface FrameDetailsViewInput {
+export interface FrameDetailsViewInput {
   frame: SDK.ResourceTreeModel.ResourceTreeFrame;
   target: SDK.Target.Target|null;
   creationStackTrace: StackTrace.StackTrace.StackTrace|null;
@@ -282,9 +282,9 @@ interface FrameDetailsViewInput {
   onRevealInSources: () => void;
 }
 
-type View = (input: FrameDetailsViewInput, output: undefined, target: HTMLElement) => void;
+export type View = (input: FrameDetailsViewInput, output: undefined, target: HTMLElement) => void;
 
-const DEFAULT_VIEW: View = (input, _output, target) => {
+export const DEFAULT_VIEW: View = (input, _output, target) => {
   if (!input.frame) {
     return;
   }

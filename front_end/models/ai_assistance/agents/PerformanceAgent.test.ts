@@ -458,13 +458,12 @@ code
       assert.exists(titleResponse);
       assert.strictEqual(titleResponse.title, 'Investigating network activity…');
 
-      assert.exists(action);
       assert.deepEqual(action, {
         type: 'action' as AiAgent.ActionResponse['type'],
+        widgets: undefined,
         output: expectedOutput,
         code: 'getNetworkTrackSummary({min: 658799706428, max: 658804825864})',
         canceled: false,
-        widgets: undefined,
       });
     });
 
@@ -504,12 +503,20 @@ code
 
       const expectedOutput = JSON.stringify({summary});
 
+      assert.exists(action);
+      assert.exists(action.widgets);
+      assert.lengthOf(action.widgets, 1);
+      assert.strictEqual(action.widgets[0].name, 'TIMELINE_RANGE_SUMMARY');
+      // @ts-expect-error
+      assert.deepEqual(action.widgets[0].data.bounds, bounds);
+
+      delete action.widgets;
+
       assert.deepEqual(action, {
         type: 'action' as AiAgent.ActionResponse['type'],
         output: expectedOutput,
         code: 'getMainThreadTrackSummary({min: 197695826524, max: 197698633660})',
         canceled: false,
-        widgets: undefined,
       });
     });
 

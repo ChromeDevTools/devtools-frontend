@@ -279,9 +279,20 @@ export interface LcpBreakdownAiWidget {
   };
 }
 
+export interface TimelineRangeSummaryAiWidget {
+  name: 'TIMELINE_RANGE_SUMMARY';
+  data: {
+    bounds: Trace.Types.Timing.TraceWindowMicro,
+    parsedTrace: Trace.TraceModel.ParsedTrace,
+    // We can use this component for other tracks summaries later, so
+    // we include the track in the data.
+    track: 'main',
+  };
+}
+
 // This type will grow as we add more widgets.
 export type AiWidget = ComputedStyleAiWidget|CoreVitalsAiWidget|StylePropertiesAiWidget|DomTreeAiWidget|
-    PerformanceTraceAiWidget|LcpBreakdownAiWidget;
+    PerformanceTraceAiWidget|LcpBreakdownAiWidget|TimelineRangeSummaryAiWidget;
 
 export type FunctionCallHandlerResult<Result> = {
   requiresApproval: true,

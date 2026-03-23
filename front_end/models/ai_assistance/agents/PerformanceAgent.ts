@@ -942,7 +942,17 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
 
         const key = `getMainThreadTrackSummary({min: ${bounds.min}, max: ${bounds.max}})`;
         this.#cacheFunctionResult(focus, key, summary);
-        return {result: {summary}};
+        return {
+          result: {summary},
+          widgets: [{
+            name: 'TIMELINE_RANGE_SUMMARY',
+            data: {
+              parsedTrace,
+              bounds,
+              track: 'main',
+            },
+          }],
+        };
       },
 
     });
@@ -999,7 +1009,9 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
 
         const key = `getNetworkTrackSummary({min: ${bounds.min}, max: ${bounds.max}})`;
         this.#cacheFunctionResult(focus, key, summary);
-        return {result: {summary}};
+        return {
+          result: {summary},
+        };
       },
 
     });

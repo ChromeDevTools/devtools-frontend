@@ -264,7 +264,7 @@ export class TimelineTreeView extends
     this.textFilterInternal = new TimelineRegExp();
 
     this.currentThreadSetting = Common.Settings.Settings.instance().createSetting('timeline-tree-current-thread', 0);
-    this.currentThreadSetting.addChangeListener(this.refreshTree, this);
+    this.currentThreadSetting.addChangeListener(() => this.refreshTree());
 
     const columns = ([] as DataGrid.DataGrid.ColumnDescriptor[]);
     this.populateColumns(columns);
@@ -403,8 +403,15 @@ export class TimelineTreeView extends
     }
   }
 
-  refreshTree(): void {
-    if (!this.element.parentElement) {
+  /**
+   * Refreshes the tree. By default, it will only do this
+   * if the tree is mounted into the DOM - as in the UI we
+   * have multiple trees and we only want to refresh the
+   * active one. Pass `true` into this function to force a
+   * refresh regardless.
+   */
+  refreshTree(forceRefresh = false): void {
+    if (!this.element.parentElement && !forceRefresh) {
       // This function can be called in different views (Bottom-Up and
       // Call Tree) by the same single event whenever the group-by
       // dropdown changes value. Thus, we bail out whenever the view is
@@ -959,7 +966,7 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
     super();
     this.groupBySetting = Common.Settings.Settings.instance().createSetting(
         'timeline-tree-group-by', AggregatedTimelineTreeView.GroupBy.None);
-    this.groupBySetting.addChangeListener(this.refreshTree.bind(this));
+    this.groupBySetting.addChangeListener(() => this.refreshTree());
     this.init();
     this.stackView = new TimelineStackView(this);
     this.stackView.addEventListener(TimelineStackView.Events.SELECTION_CHANGED, this.onStackViewSelectionChanged, this);

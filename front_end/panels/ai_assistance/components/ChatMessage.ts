@@ -14,9 +14,10 @@ import * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import type {
   AiWidget, ComputedStyleAiWidget, CoreVitalsAiWidget, DomTreeAiWidget, LcpBreakdownAiWidget, PerformanceTraceAiWidget,
-  StylePropertiesAiWidget} from '../../../models/ai_assistance/agents/AiAgent.js';
+  StylePropertiesAiWidget, TimelineRangeSummaryAiWidget} from '../../../models/ai_assistance/agents/AiAgent.js';
 import * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
 import * as ComputedStyle from '../../../models/computed_style/computed_style.js';
+import * as Trace from '../../../models/trace/trace.js';
 import * as Marked from '../../../third_party/marked/marked.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as Input from '../../../ui/components/input/input.js';
@@ -892,6 +893,9 @@ async function renderWidgets(
       case 'LCP_BREAKDOWN':
         response = await makeLcpBreakdownWidget(widgetData);
         break;
+      case 'TIMELINE_RANGE_SUMMARY':
+        response = await makeTimelineRangeSummaryWidget(widgetData);
+        break;
       default:
         Platform.assertNever(widgetData, 'Unknown AiWidget name');
     }
@@ -1317,4 +1321,44 @@ export class ChatMessage extends UI.Widget.Widget {
     this.#isSubmitButtonDisabled = true;
     void this.performUpdate();
   }
+}
+
+async function makeTimelineRangeSummaryWidget(widgetData: TimelineRangeSummaryAiWidget):
+    Promise<WidgetMakerResponse|null> {
+  const {bounds, parsedTrace, track} = widgetData.data;
+  let events: readonly Trace.Types.Events.Event[] = [];
+  if (track === 'main') {
+    const flameChartView = Timeline.TimelinePanel.TimelinePanel.instance().getFlameChart();
+    const mainDataProvider = flameChartView.getMainDataProvider();
+    const mainTrack =
+        mainDataProvider.timelineData().groups.find((group: {name: string}) => group.name.startsWith('Main \u2014 '));
+    if (mainTrack) {
+      events = mainDataProvider.groupTreeEvents(mainTrack) ?? [];
+    }
+  }
+  const eventsArray = Array.from(events);
+  eventsArray.sort((a, b) => a.ts - b.ts);
+
+  const thirdPartyTree = new Timeline.ThirdPartyTreeView.ThirdPartyTreeViewWidget();
+  const mapper = new Trace.EntityMapper.EntityMapper(parsedTrace);
+  thirdPartyTree.setModelWithEvents(eventsArray, parsedTrace, mapper);
+  thirdPartyTree.refreshTree(true);
+
+  // clang-format off
+  const template = html`
+    <devtools-widget
+      ${widget(TimelineComponents.TimelineRangeSummaryView.TimelineRangeSummaryView, {
+        data: {
+          parsedTrace,
+          events,
+          startTime: Trace.Helpers.Timing.microToMilli(bounds.min),
+          endTime: Trace.Helpers.Timing.microToMilli(bounds.max),
+          thirdPartyTreeTemplate: html`<devtools-performance-third-party-tree-view
+            .treeView=${thirdPartyTree}></devtools-performance-third-party-tree-view>`,
+        } as TimelineComponents.TimelineRangeSummaryView.TimelineRangeSummaryViewData,
+      })}
+    ></devtools-widget>`;
+  // clang-format on
+
+  return {renderedWidget: template, revealable: null};
 }

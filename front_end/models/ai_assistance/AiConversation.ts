@@ -54,7 +54,7 @@ export interface AiConversationOptions {
   performanceRecordAndReload?: () => Promise<Trace.TraceModel.ParsedTrace>;
   onInspectElement?: () => Promise<SDK.DOMModel.DOMNode|null>;
   networkTimeCalculator?: NetworkTimeCalculator.NetworkTransferTimeCalculator;
-  lighthouseRecording?: () => Promise<LHModel.ReporterTypes.ReportJSON|null>;
+  lighthouseRecording?: (overrides?: LHModel.RunTypes.RunOverrides) => Promise<LHModel.ReporterTypes.ReportJSON|null>;
 }
 
 export class AiConversation {
@@ -91,7 +91,7 @@ export class AiConversation {
   #contexts: Array<ConversationContext<unknown>> = [];
 
   #performanceRecordAndReload?: () => Promise<Trace.TraceModel.ParsedTrace>;
-  #lighthouseRecording?: () => Promise<LHModel.ReporterTypes.ReportJSON|null>;
+  #lighthouseRecording?: (overrides?: LHModel.RunTypes.RunOverrides) => Promise<LHModel.ReporterTypes.ReportJSON|null>;
   #onInspectElement?: () => Promise<SDK.DOMModel.DOMNode|null>;
   #networkTimeCalculator?: NetworkTimeCalculator.NetworkTransferTimeCalculator;
 
@@ -334,9 +334,9 @@ export class AiConversation {
       sessionId: this.id,
       changeManager: this.#changeManager,
       performanceRecordAndReload: this.#performanceRecordAndReload,
-      lighthouseRecording: this.#lighthouseRecording,
       onInspectElement: this.#onInspectElement,
       networkTimeCalculator: this.#networkTimeCalculator,
+      lighthouseRecording: this.#lighthouseRecording,
       allowedOrigin: this.allowedOrigin,
       history,
     };

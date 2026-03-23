@@ -82,14 +82,14 @@ export class ContextSelectionAgent extends AiAgent<never> {
   readonly #performanceRecordAndReload?: () => Promise<Trace.TraceModel.ParsedTrace>;
   readonly #onInspectElement?: () => Promise<SDK.DOMModel.DOMNode|null>;
   readonly #networkTimeCalculator?: NetworkTimeCalculator.NetworkTransferTimeCalculator;
-  readonly #lighthouseRecording?: (() => Promise<LHModel.ReporterTypes.ReportJSON|null>);
+  readonly #lighthouseRecording?:
+      (overrides?: LHModel.RunTypes.RunOverrides) => Promise<LHModel.ReporterTypes.ReportJSON|null>;
   #allowedOrigin: () => string | undefined;
 
   constructor(opts: AgentOptions&{
     performanceRecordAndReload?: () => Promise<Trace.TraceModel.ParsedTrace>,
     onInspectElement?: () => Promise<SDK.DOMModel.DOMNode|null>,
     networkTimeCalculator?: NetworkTimeCalculator.NetworkTransferTimeCalculator,
-    lighthouseRecording?: () => Promise<LHModel.ReporterTypes.ReportJSON|null>,
   }) {
     super(opts);
     this.#performanceRecordAndReload = opts.performanceRecordAndReload;

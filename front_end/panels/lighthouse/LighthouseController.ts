@@ -661,6 +661,9 @@ export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper<Eve
       const inspectedURL = await this.getInspectedURL({force: true});
       const categoryIDs = overrides?.categoryIds ?? this.getCategoryIDs();
       const flags = this.getFlags();
+      if (overrides?.mode) {
+        flags.mode = overrides.mode;
+      }
 
       this.recordMetrics(flags, categoryIDs);
 
@@ -783,7 +786,7 @@ export function getRuntimeSettings(): LighthouseModel.RunTypes.RuntimeSetting[] 
         title: i18nLazyString(UIStrings.lighthouseMode),
         description: i18nLazyString(UIStrings.runLighthouseInMode),
         setFlags: (flags: LighthouseModel.RunTypes.Flags, value: string|boolean) => {
-          flags.mode = value;
+          flags.mode = value as LighthouseModel.RunTypes.RunMode;
         },
         options: [
           {

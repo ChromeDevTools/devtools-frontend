@@ -6,6 +6,7 @@ import type * as Host from '../../core/host/host.js';
 import type * as Platform from '../../core/platform/platform.js';
 
 export type CategoryId = 'performance'|'accessibility'|'best-practices'|'seo';
+export type RunMode = 'navigation'|'timespan'|'snapshot';
 
 export interface Preset {
   setting: Common.Settings.Setting<boolean>;
@@ -33,10 +34,11 @@ export interface Flags {
   disableStorageReset?: boolean;
   throttlingMethod?: string;
   formFactor?: string|boolean;
-  mode?: string|boolean;
+  mode?: RunMode;
 }
 
 export interface RunOverrides {
   categoryIds?: CategoryId[];
+  mode?: RunMode;
   isAIControlled?: boolean;
 }

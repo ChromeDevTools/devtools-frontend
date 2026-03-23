@@ -888,8 +888,12 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     return await TimelinePanel.TimelinePanel.TimelinePanel.executeRecordAndReload();
   }
 
-  async #handleLighthouseRun(): Promise<LHModel.ReporterTypes.ReportJSON|null> {
-    return await LighthousePanel.LighthousePanel.LighthousePanel.executeLighthouseRecording({isAIControlled: true});
+  async #handleLighthouseRun(overrides?: LHModel.RunTypes.RunOverrides):
+      Promise<LHModel.ReporterTypes.ReportJSON|null> {
+    return await LighthousePanel.LighthousePanel.LighthousePanel.executeLighthouseRecording({
+      isAIControlled: true,
+      ...overrides,
+    });
   }
 
   #getDefaultConversationType(): AiAssistanceModel.AiHistoryStorage.ConversationType|undefined {
@@ -988,6 +992,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
             performanceRecordAndReload: this.#handlePerformanceRecordAndReload.bind(this),
             onInspectElement: this.#handleInspectElement.bind(this),
             networkTimeCalculator: NetworkPanel.NetworkPanel.NetworkPanel.instance().networkLogView.timeCalculator(),
+            lighthouseRecording: this.#handleLighthouseRun.bind(this),
           });
         }
       }
@@ -1026,6 +1031,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       performanceRecordAndReload: this.#handlePerformanceRecordAndReload.bind(this),
       onInspectElement: this.#handleInspectElement.bind(this),
       networkTimeCalculator: NetworkPanel.NetworkPanel.NetworkPanel.instance().networkLogView.timeCalculator(),
+      lighthouseRecording: this.#handleLighthouseRun.bind(this),
     });
     this.#updateConversationState(conversation);
     this.#conversation?.setContext(context);
@@ -1501,6 +1507,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         performanceRecordAndReload: this.#handlePerformanceRecordAndReload.bind(this),
         onInspectElement: this.#handleInspectElement.bind(this),
         networkTimeCalculator: NetworkPanel.NetworkPanel.NetworkPanel.instance().networkLogView.timeCalculator(),
+        lighthouseRecording: this.#handleLighthouseRun.bind(this),
       });
     }
     this.#updateConversationState(conversation);

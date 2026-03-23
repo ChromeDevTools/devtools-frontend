@@ -123,4 +123,29 @@ describeWithMockConnection('AccessibilityAgent', () => {
     assert.exists(titleResponse);
     assert.strictEqual(titleResponse.title, 'Reading accessibility details');
   });
+
+  it('can call the runAccessibilityAudits method', async () => {
+    const aidaClient = mockAidaClient([[{
+      explanation: '',
+      functionCalls: [{name: 'runAccessibilityAudits', args: {explanation: 'testing'}}],
+      metadata: {
+        rpcGlobalId: 123,
+      },
+    }]]);
+    const lighthouseRecording = sinon.stub().resolves(mockReport);
+    const agent = new AiAssistance.AccessibilityAgent.AccessibilityAgent({
+      aidaClient,
+      lighthouseRecording,
+    });
+    const context = new AiAssistance.AccessibilityAgent.AccessibilityContext(mockReport);
+    const responses = await Array.fromAsync(agent.run('test', {selected: context}));
+    const titleResponse = responses.find(response => response.type === AiAssistance.AiAgent.ResponseType.TITLE);
+    assert.exists(titleResponse);
+    assert.strictEqual(titleResponse.title, 'Running accessibility audits…');
+    assert.isTrue(lighthouseRecording.calledOnceWith({
+      mode: 'snapshot',
+      categoryIds: ['accessibility'],
+      isAIControlled: true,
+    }));
+  });
 });

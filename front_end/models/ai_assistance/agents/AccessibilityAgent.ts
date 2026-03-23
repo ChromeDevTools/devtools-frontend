@@ -11,6 +11,7 @@ import {LighthouseFormatter} from '../data_formatters/LighthouseFormatter.js';
 import {debugLog} from '../debug.js';
 
 import {
+  type AgentOptions,
   AiAgent,
   type ContextDetail,
   type ContextResponse,
@@ -41,6 +42,7 @@ Your role is to help users understand and fix accessibility issues found in Ligh
 
 # Capabilities
 * \`getLighthouseAudits\`: Get detailed audit data.
+* \`runAccessibilityAudits\`: Trigger new accessibility snapshot audits.
 * \`getStyles\`: Get computed styles for an element by its path.
 * \`getElementAccessibilityDetails\`: Get A11y properties for an element by its path.
 
@@ -81,6 +83,13 @@ export class AccessibilityContext extends ConversationContext<LHModel.ReporterTy
 export class AccessibilityAgent extends AiAgent<LHModel.ReporterTypes.ReportJSON> {
   readonly preamble = preamble;
   readonly clientFeature = Host.AidaClient.ClientFeature.CHROME_ACCESSIBILITY_AGENT;
+  readonly #lighthouseRecording?:
+      (overrides?: LHModel.RunTypes.RunOverrides) => Promise<LHModel.ReporterTypes.ReportJSON|null>;
+
+  constructor(opts: AgentOptions) {
+    super(opts);
+    this.#lighthouseRecording = opts.lighthouseRecording;
+  }
 
   get userTier(): string|undefined {
     return Root.Runtime.hostConfig.devToolsFreestyler?.userTier;
@@ -127,6 +136,47 @@ export class AccessibilityAgent extends AiAgent<LHModel.ReporterTypes.ReportJSON
   }
 
   #declareFunctions(): void {
+    this.declareFunction<{explanation: string}, {audits: string}>('runAccessibilityAudits', {
+      description:
+          'Triggers new Lighthouse accessibility audits in snapshot mode. Use this if the user has made changes to the page and you want to re-evaluate the accessibility audits.',
+      parameters: {
+        type: Host.AidaClient.ParametersTypes.OBJECT,
+        description: '',
+        nullable: false,
+        properties: {
+          explanation: {
+            type: Host.AidaClient.ParametersTypes.STRING,
+            description: 'Explain why you want to run new audits.',
+            nullable: false,
+          },
+        },
+        required: ['explanation'],
+      },
+      displayInfoFromArgs: params => {
+        return {
+          title: i18n.i18n.lockedString('Running accessibility audits…'),
+          thought: params.explanation,
+          action: 'runAccessibilityAudits()'
+        };
+      },
+      handler: async params => {
+        debugLog('Function call: runAccessibilityAudits', params);
+        if (!this.#lighthouseRecording) {
+          return {error: 'Lighthouse recording is not available.'};
+        }
+        const report = await this.#lighthouseRecording({
+          mode: 'snapshot',
+          categoryIds: ['accessibility'],
+          isAIControlled: true,
+        });
+        if (!report) {
+          return {error: 'Failed to run accessibility audits.'};
+        }
+        const audits = new LighthouseFormatter().audits(report, 'accessibility');
+        return {result: {audits}};
+      }
+    });
+
     this.declareFunction<{categoryId: LHModel.RunTypes.CategoryId}, {audits: string}>('getLighthouseAudits', {
       description:
           'Returns the audits for a specific Lighthouse category. Use this to get more information about the performance, accessibility, best-practices, or seo audits.',

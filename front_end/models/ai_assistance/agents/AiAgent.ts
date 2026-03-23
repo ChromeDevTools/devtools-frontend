@@ -7,6 +7,7 @@ import * as Root from '../../../core/root/root.js';
 import type * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import * as Greendev from '../../greendev/greendev.js';
+import type * as LHModel from '../../lighthouse/lighthouse.js';
 import type * as Trace from '../../trace/trace.js';
 import {debugLog, isStructuredLogEnabled} from '../debug.js';
 
@@ -151,6 +152,7 @@ export interface AgentOptions {
   onInspectElement?: () => Promise<SDK.DOMModel.DOMNode|null>;
   history?: Host.AidaClient.Content[];
   allowedOrigin?: () => string | undefined;
+  lighthouseRecording?: (overrides?: LHModel.RunTypes.RunOverrides) => Promise<LHModel.ReporterTypes.ReportJSON|null>;
 }
 
 export interface ParsedAnswer {

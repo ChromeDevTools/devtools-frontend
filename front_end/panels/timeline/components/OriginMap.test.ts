@@ -11,12 +11,16 @@ import * as UI from '../../../ui/legacy/legacy.js';
 
 import * as Components from './components.js';
 
-function getDataGrid(view: Element): HTMLElement {
-  return view.shadowRoot!.querySelector('devtools-data-grid')!;
+function getDataGrid(view: Components.OriginMap.OriginMap): HTMLElement {
+  return view.contentElement.querySelector('devtools-data-grid')!;
 }
 
-function getOriginMappings(view: Element): Array<[string, string, string?]> {
-  const rows = getDataGrid(view).querySelectorAll('tr[data-index]');
+function getOriginMappings(view: Components.OriginMap.OriginMap): Array<[string, string, string?]> {
+  const dataGrid = getDataGrid(view);
+  if (!dataGrid) {
+    return [];
+  }
+  const rows = dataGrid.querySelectorAll('tr[data-index]');
   return Array.from(rows).map(row => {
     const warning = row.querySelector<HTMLElement>('.origin-warning-icon');
     return [
@@ -27,20 +31,20 @@ function getOriginMappings(view: Element): Array<[string, string, string?]> {
   });
 }
 
-function getPlaceholderRow(view: Element): HTMLElement {
-  return view.shadowRoot!.querySelector('tr[placeholder]')!;
+function getPlaceholderRow(view: Components.OriginMap.OriginMap): HTMLElement {
+  return view.contentElement.querySelector('tr[placeholder]')!;
 }
 
-function getDevInput(view: Element): HTMLElement|null {
+function getDevInput(view: Components.OriginMap.OriginMap): HTMLElement|null {
   return getPlaceholderRow(view).querySelector('td:nth-child(1)');
 }
 
-function getProdInput(view: Element): HTMLElement|null {
+function getProdInput(view: Components.OriginMap.OriginMap): HTMLElement|null {
   return getPlaceholderRow(view).querySelector('td:nth-child(2)');
 }
 
-function getValidationErrors(view: Element): string {
-  const errors = view.shadowRoot!.querySelector('.error-message') as HTMLElement | null;
+function getValidationErrors(view: Components.OriginMap.OriginMap): string {
+  const errors = view.contentElement.querySelector('.error-message') as HTMLElement | null;
   return errors?.innerText || '';
 }
 
@@ -83,7 +87,7 @@ function createOriginMap(): Components.OriginMap.OriginMap {
   widget.show(root);
 
   const view = new Components.OriginMap.OriginMap();
-  widget.contentElement.append(view);
+  view.show(widget.contentElement);
 
   return view;
 }

@@ -52,21 +52,15 @@ interface ListItem extends CrUXManager.OriginMapping {
   isTitleRow?: boolean;
 }
 
-export class OriginMap extends UI.Widget.WidgetElement<UI.Widget.Widget> {
+export class OriginMap extends UI.Widget.VBox {
   #errorMessage = '';
   #prefillDevelopmentOrigin = '';
 
-  constructor() {
-    super();
+  constructor(element?: HTMLElement) {
+    super(element, {useShadowDom: true});
+    this.registerRequiredCSS(originMapStyles);
     CrUXManager.CrUXManager.instance().getConfigSetting().addChangeListener(this.#updateListFromSetting, this);
     this.#updateListFromSetting();
-  }
-
-  override createWidget(): UI.Widget.Widget {
-    const containerWidget = new UI.Widget.Widget(this, {useShadowDom: true});
-    containerWidget.registerRequiredCSS(originMapStyles);
-    this.#updateListFromSetting();
-    return containerWidget;
   }
 
   #pullMappingsFromSetting(): ListItem[] {
@@ -83,9 +77,9 @@ export class OriginMap extends UI.Widget.WidgetElement<UI.Widget.Widget> {
   #updateListFromSetting(): void {
     const mappings = this.#pullMappingsFromSetting();
     if (!this.#prefillDevelopmentOrigin && mappings.length === 0) {
+      Lit.render(Lit.nothing, this.contentElement, {host: this});
       return;
     }
-    const containerWidget = UI.Widget.Widget.getOrCreateWidget(this);
     // clang-format off
     Lit.render(html`
       <devtools-data-grid striped inline
@@ -105,7 +99,7 @@ export class OriginMap extends UI.Widget.WidgetElement<UI.Widget.Widget> {
         </table>
       </devtools-data-grid>
       ${this.#errorMessage ? html`<div class="error-message">${this.#errorMessage}</div>` : Lit.nothing}
-    `, containerWidget.contentElement, {host: this});
+    `, this.contentElement, {host: this});
     // clang-format on
   }
 
@@ -274,13 +268,5 @@ export class OriginMap extends UI.Widget.WidgetElement<UI.Widget.Widget> {
       productionOrigin: this.#getOrigin(prodOrigin) || '',
     });
     this.#pushMappingsToSetting(mappings);
-  }
-}
-
-customElements.define('devtools-origin-map', OriginMap);
-
-declare global {
-  interface HTMLElementTagNameMap {
-    'devtools-origin-map': OriginMap;
   }
 }

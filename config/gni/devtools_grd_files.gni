@@ -1039,6 +1039,7 @@ grd_files_unbundled_sources = [
   "front_end/core/sdk/TargetManager.js",
   "front_end/core/sdk/TraceObject.js",
   "front_end/core/sdk/WebAuthnModel.js",
+  "front_end/core/sdk/WebMCPModel.js",
   "front_end/entrypoints/formatter_worker/AcornTokenizer.js",
   "front_end/entrypoints/formatter_worker/CSSFormatter.js",
   "front_end/entrypoints/formatter_worker/CSSRuleParser.js",

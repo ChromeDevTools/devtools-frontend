@@ -491,6 +491,10 @@ export class TargetBase {
     return this.getAgent('WebAuthn');
   }
 
+  webMCPAgent(): ProtocolProxyApi.WebMCPApi {
+    return this.getAgent('WebMCP');
+  }
+
   // Dispatcher registration and de-registration, keep alphabetically sorted.
 
   /**
@@ -637,6 +641,10 @@ export class TargetBase {
 
   registerWebAuthnDispatcher(dispatcher: ProtocolProxyApi.WebAuthnDispatcher): void {
     this.registerDispatcher('WebAuthn', dispatcher);
+  }
+
+  registerWebMCPDispatcher(dispatcher: ProtocolProxyApi.WebMCPDispatcher): void {
+    this.registerDispatcher('WebMCP', dispatcher);
   }
 }
 

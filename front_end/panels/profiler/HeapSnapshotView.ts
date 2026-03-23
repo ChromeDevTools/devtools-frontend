@@ -964,8 +964,6 @@ export class HeapSnapshotView extends UI.View.SimpleView implements DataDisplayD
     }
     let objectPopoverHelper: ObjectUI.ObjectPopoverHelper.ObjectPopoverHelper|null;
     return {
-      // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-      // @ts-expect-error
       box: span.boxInWindow(),
       show: async (popover: UI.GlassPane.GlassPane) => {
         if (!heapProfilerModel) {
@@ -1364,7 +1362,7 @@ export class HeapSnapshotProfileType extends
       return;
     }
 
-    let profile: HeapProfileHeader = new HeapProfileHeader(heapProfilerModel, this);
+    let profile = new HeapProfileHeader(heapProfilerModel, this);
     this.setProfileBeingRecorded(profile);
     this.addProfile(profile);
     profile.updateStatus(i18nString(UIStrings.snapshotting));
@@ -1649,33 +1647,29 @@ export interface TrackingHeapSnapshotProfileTypeEventTypes {
 
 export class HeapProfileHeader extends ProfileHeader {
   readonly heapProfilerModelInternal: SDK.HeapProfilerModel.HeapProfilerModel|null;
-  maxJSObjectId: number;
-  workerProxy: HeapSnapshotWorkerProxy|null;
-  receiver: Common.StringOutputStream.OutputStream|null;
-  snapshotProxy: HeapSnapshotProxy|null;
+  maxJSObjectId = -1;
+  workerProxy: HeapSnapshotWorkerProxy|null = null;
+  receiver: Common.StringOutputStream.OutputStream|null = null;
+  snapshotProxy: HeapSnapshotProxy|null = null;
   readonly loadPromise: Promise<HeapSnapshotProxy>;
   fulfillLoad: (value: HeapSnapshotProxy|PromiseLike<HeapSnapshotProxy>) => void;
-  totalNumberOfChunks: number;
-  bufferedWriter: Bindings.TempFile.TempFile|null;
-  onTempFileReady: (() => void)|null;
+  totalNumberOfChunks = 0;
+  bufferedWriter: Bindings.TempFile.TempFile|null = null;
+  onTempFileReady: (() => void)|null = null;
   failedToCreateTempFile?: boolean;
   wasDisposed?: boolean;
   fileName?: Platform.DevToolsPath.RawPathString;
 
   constructor(
-      heapProfilerModel: SDK.HeapProfilerModel.HeapProfilerModel|null, type: HeapSnapshotProfileType, title?: string) {
+      heapProfilerModel: SDK.HeapProfilerModel.HeapProfilerModel|null,
+      type: HeapSnapshotProfileType,
+      title?: string,
+  ) {
     super(type, title || i18nString(UIStrings.snapshotD, {PH1: type.nextProfileUid()}));
     this.heapProfilerModelInternal = heapProfilerModel;
-    this.maxJSObjectId = -1;
-    this.workerProxy = null;
-    this.receiver = null;
-    this.snapshotProxy = null;
     const {promise, resolve} = Promise.withResolvers<HeapSnapshotProxy>();
     this.loadPromise = promise;
     this.fulfillLoad = resolve;
-    this.totalNumberOfChunks = 0;
-    this.bufferedWriter = null;
-    this.onTempFileReady = null;
   }
 
   heapProfilerModel(): SDK.HeapProfilerModel.HeapProfilerModel|null {

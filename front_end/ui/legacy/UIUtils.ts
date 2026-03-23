@@ -1691,19 +1691,21 @@ export function createSVGChild<K extends keyof SVGElementTagNameMap>(
   return child;
 }
 
-export const enclosingNodeOrSelfWithNodeNameInArray = (initialNode: Node, nameArray: string[]): Node|null => {
-  let node: (Node|null)|Node = initialNode;
-  for (; node && node !== initialNode.ownerDocument; node = node.parentNodeOrShadowHost()) {
-    for (let i = 0; i < nameArray.length; ++i) {
-      if (node.nodeName.toLowerCase() === nameArray[i].toLowerCase()) {
-        return node;
+export const enclosingNodeOrSelfWithNodeNameInArray =
+    <T extends keyof HTMLElementTagNameMap>(initialNode: Node, nameArray: T[]): HTMLElementTagNameMap[T]|null => {
+      let node: (Node|null)|Node = initialNode;
+      for (; node && node !== initialNode.ownerDocument; node = node.parentNodeOrShadowHost()) {
+        for (let i = 0; i < nameArray.length; ++i) {
+          if (node.nodeName.toLowerCase() === nameArray[i].toLowerCase()) {
+            return node as HTMLElementTagNameMap[T];
+          }
+        }
       }
-    }
-  }
-  return null;
-};
+      return null;
+    };
 
-export const enclosingNodeOrSelfWithNodeName = function(node: Node, nodeName: string): Node|null {
+export const enclosingNodeOrSelfWithNodeName = function<T extends keyof HTMLElementTagNameMap>(
+    node: Node, nodeName: T): HTMLElementTagNameMap[T]|null {
   return enclosingNodeOrSelfWithNodeNameInArray(node, [nodeName]);
 };
 

@@ -457,11 +457,15 @@ export class SamplingHeapProfileHeader extends WritableProfileHeader {
     nodes: never[],
   };
   constructor(
-      heapProfilerModel: SDK.HeapProfilerModel.HeapProfilerModel|null, type: SamplingHeapProfileTypeBase,
-      title?: string) {
+      heapProfilerModel: SDK.HeapProfilerModel.HeapProfilerModel|null,
+      type: SamplingHeapProfileTypeBase,
+      title?: string,
+  ) {
     super(
-        heapProfilerModel?.debuggerModel() ?? null, type,
-        title || i18nString(UIStrings.profileD, {PH1: type.nextProfileUid()}));
+        heapProfilerModel?.debuggerModel() ?? null,
+        type,
+        title || i18nString(UIStrings.profileD, {PH1: type.nextProfileUid()}),
+    );
     this.heapProfilerModelInternal = heapProfilerModel;
     this.protocolProfileInternal = {
       head: {

@@ -168,11 +168,16 @@ export class DetachedElementsProfileHeader extends WritableProfileHeader {
   readonly #heapProfilerModel: SDK.HeapProfilerModel.HeapProfilerModel|null;
   readonly detachedElements: Protocol.DOM.DetachedElementInfo[]|null;
   constructor(
-      heapProfilerModel: SDK.HeapProfilerModel.HeapProfilerModel|null, type: DetachedElementsProfileType,
-      detachedElements: Protocol.DOM.DetachedElementInfo[]|null, title?: string) {
+      heapProfilerModel: SDK.HeapProfilerModel.HeapProfilerModel|null,
+      type: DetachedElementsProfileType,
+      detachedElements: Protocol.DOM.DetachedElementInfo[]|null,
+      title?: string,
+  ) {
     super(
-        heapProfilerModel?.debuggerModel() ?? null, type,
-        title || i18nString(UIStrings.detachedElementProfile, {PH1: type.nextProfileUid()}));
+        heapProfilerModel?.debuggerModel() ?? null,
+        type,
+        title || i18nString(UIStrings.detachedElementProfile, {PH1: type.nextProfileUid()}),
+    );
     this.detachedElements = detachedElements;
     this.#heapProfilerModel = heapProfilerModel;
   }

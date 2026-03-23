@@ -331,6 +331,7 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
 
   #computedStylesTree = new TreeOutline.TreeOutline.TreeOutline<ComputedStyleData>();
   #treeData?: TreeOutline.TreeOutline.TreeOutlineData<ComputedStyleData>;
+  #enableNarrowViewResizing = true;
   readonly #view: View;
 
   /**
@@ -378,8 +379,17 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
   }
 
   override onResize(): void {
-    const isNarrow = this.contentElement.offsetWidth < 260;
+    const isNarrow = this.#enableNarrowViewResizing && this.contentElement.offsetWidth < 260;
     this.#computedStylesTree.classList.toggle('computed-narrow', isNarrow);
+  }
+
+  get enableNarrowViewResizing(): boolean {
+    return this.#enableNarrowViewResizing;
+  }
+
+  set enableNarrowViewResizing(enable: boolean) {
+    this.#enableNarrowViewResizing = enable;
+    this.onResize();
   }
 
   get filterText(): RegExp|string {

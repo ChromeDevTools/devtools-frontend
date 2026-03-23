@@ -701,7 +701,8 @@ async function makeComputedStyleWidget(widgetData: ComputedStyleAiWidget): Promi
         // This disables showing the nested traces and detailed information in the widget.
         propertyTraces: null,
         allowUserControl: false,
-        filterText: new RegExp(widgetData.data.properties.join('|'), 'i')
+        filterText: new RegExp(widgetData.data.properties.join('|'), 'i'),
+        enableNarrowViewResizing: false,
       })}></devtools-widget>`;
   // clang-format on
 

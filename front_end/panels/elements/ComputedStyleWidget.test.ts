@@ -316,4 +316,40 @@ describeWithMockConnection('ComputedStyleWidget', () => {
       assert.sameMembers(matchedPropertyNames, ['display', 'width']);
     });
   });
+
+  describe('narrow view', () => {
+    it('applies the computed-narrow class when width is less than 260px by default', async () => {
+      const properties = new Map([
+        ['display', 'block'],
+      ]);
+      computedStyleWidget = createWidgetWithMultipleProperties(properties);
+      const treeOutline = computedStyleWidget.contentElement.querySelector('devtools-tree-outline');
+      assert.exists(treeOutline);
+
+      // Set width to 200px
+      sinon.stub(computedStyleWidget.contentElement, 'offsetWidth').get(() => 200);
+      computedStyleWidget.onResize();
+      assert.isTrue(treeOutline.classList.contains('computed-narrow'));
+
+      // Set width to 300px
+      sinon.stub(computedStyleWidget.contentElement, 'offsetWidth').get(() => 300);
+      computedStyleWidget.onResize();
+      assert.isFalse(treeOutline.classList.contains('computed-narrow'));
+    });
+
+    it('does not apply the computed-narrow class when enableNarrowViewResizing is false', async () => {
+      const properties = new Map([
+        ['display', 'block'],
+      ]);
+      computedStyleWidget = createWidgetWithMultipleProperties(properties);
+      computedStyleWidget.enableNarrowViewResizing = false;
+      const treeOutline = computedStyleWidget.contentElement.querySelector('devtools-tree-outline');
+      assert.exists(treeOutline);
+
+      // Set width to 200px
+      sinon.stub(computedStyleWidget.contentElement, 'offsetWidth').get(() => 200);
+      computedStyleWidget.onResize();
+      assert.isFalse(treeOutline.classList.contains('computed-narrow'));
+    });
+  });
 });

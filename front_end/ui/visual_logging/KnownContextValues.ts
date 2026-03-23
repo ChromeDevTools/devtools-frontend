@@ -793,6 +793,7 @@ export const knownContextValues = new Set([
   'close',
   'close-all',
   'close-dev-tools',
+  'close-drawer',
   'close-others',
   'close-search',
   'close-tabs-to-the-right',

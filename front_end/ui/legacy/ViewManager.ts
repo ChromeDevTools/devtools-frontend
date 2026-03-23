@@ -51,6 +51,8 @@ export const defaultOptionsForTabs = {
   freestyler: true,
 };
 
+type TabbedPaneFactory = () => TabbedPane;
+
 export class PreRegisteredView implements View {
   private readonly viewRegistration: ViewRegistration;
   private readonly universe?: Foundation.Universe.Universe;
@@ -389,8 +391,11 @@ export class ViewManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
 
   createTabbedLocation(
       revealCallback: (() => void), location: string, restoreSelection?: boolean, allowReorder?: boolean,
-      defaultTab?: string|null): TabbedViewLocation {
-    return new TabbedLocation(this, revealCallback, location, restoreSelection, allowReorder, defaultTab);
+      defaultTab?: string|null, isLocationVisible?: (() => boolean),
+      tabbedPaneFactory?: TabbedPaneFactory): TabbedViewLocation {
+    return new TabbedLocation(
+        this, revealCallback, location, restoreSelection, allowReorder, defaultTab, isLocationVisible,
+        tabbedPaneFactory);
   }
 
   createStackLocation(revealCallback?: (() => void), location?: string, jslogContext?: string): ViewLocation {
@@ -645,12 +650,14 @@ class TabbedLocation extends Location implements TabbedViewLocation {
   private readonly tabOrderSetting: Common.Settings.Setting<TabOrderSetting>;
   private readonly lastSelectedTabSetting?: Common.Settings.Setting<string>;
   private readonly defaultTab: string|null|undefined;
+  private readonly isLocationVisible: (() => boolean)|undefined;
   private readonly views = new Map<string, View>();
 
   constructor(
       manager: ViewManager, revealCallback: (() => void), location: string, restoreSelection?: boolean,
-      allowReorder?: boolean, defaultTab?: string|null) {
-    const tabbedPane = new TabbedPane();
+      allowReorder?: boolean, defaultTab?: string|null, isLocationVisible?: (() => boolean),
+      tabbedPaneFactory?: TabbedPaneFactory) {
+    const tabbedPane = tabbedPaneFactory ? tabbedPaneFactory() : new TabbedPane();
     if (allowReorder) {
       tabbedPane.setAllowTabReorder(true);
     }
@@ -675,6 +682,7 @@ class TabbedLocation extends Location implements TabbedViewLocation {
       this.lastSelectedTabSetting = Common.Settings.Settings.instance().createSetting(location + '-selected-tab', '');
     }
     this.defaultTab = defaultTab;
+    this.isLocationVisible = isLocationVisible;
 
     if (location) {
       this.appendApplicableItems(location);
@@ -853,7 +861,8 @@ class TabbedLocation extends Location implements TabbedViewLocation {
   }
 
   override isViewVisible(view: View): boolean {
-    return this.#tabbedPane.isShowing() && this.#tabbedPane?.selectedTabId === view.viewId();
+    const locationVisible = this.isLocationVisible ? this.isLocationVisible() : this.#tabbedPane.isShowing();
+    return locationVisible && this.#tabbedPane.selectedTabId === view.viewId();
   }
 
   private tabbedPaneVisibilityChanged(event: Common.EventTarget.EventTargetEvent<{isVisible: boolean}>): void {

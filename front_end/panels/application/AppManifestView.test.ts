@@ -319,4 +319,34 @@ describeWithMockConnection('AppManifestView', () => {
     Application.AppManifestView.DEFAULT_VIEW(viewInput, viewOutput, container);
     await assertScreenshot('application/app_manifest_view_screenshots.png');
   });
+
+  it('renders icons section even when maskedIcons is false', async () => {
+    const container = document.createElement('div');
+    renderElementIntoDOM(container);
+    const viewInput = {
+      iconsData: {
+        icons: new Map([[
+          '320x320\nimage/png', [{
+            imageResourceErrors: [],
+            squareSizedIconAvailable: true,
+            naturalWidth: 320,
+            naturalHeight: 320,
+            title: '320x320\nimage/png',
+            imageSrc:
+                'data:application/octet-stream;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=',
+            imageUrl: 'http://example.com/icon.png',
+          }]
+        ]]),
+        imageResourceErrors: [],
+      },
+      maskedIcons: false,
+      onToggleIconMasked: () => {},
+    };
+    const viewOutput = {scrollToSection: new Map(), focusOnSection: new Map()};
+    Application.AppManifestView.DEFAULT_VIEW(viewInput, viewOutput, container);
+
+    const report = container.querySelector('devtools-report');
+    assert.exists(report);
+    assert.isTrue(report.shadowRoot?.innerHTML.includes('Icons') || report.innerHTML.includes('Icons'));
+  });
 });

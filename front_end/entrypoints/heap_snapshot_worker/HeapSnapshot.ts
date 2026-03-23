@@ -875,7 +875,7 @@ export abstract class HeapSnapshot {
     interfaceDefinitions: string,
     aggregates: Record<string, HeapSnapshotModel.HeapSnapshotModel.AggregateForDiff>,
   };
-  #aggregates: Record<string, Record<string, AggregatedInfo>> = {};
+  #aggregates: Record<string, Record<string, HeapSnapshotModel.HeapSnapshotModel.AggregatedInfo>> = {};
   #aggregatesSortedFlags: Record<string, boolean> = {};
   profile: Profile;
   nodeTypeOffset!: number;
@@ -1288,7 +1288,7 @@ export abstract class HeapSnapshot {
   }
 
   aggregatesWithFilter(nodeFilter: HeapSnapshotModel.HeapSnapshotModel.NodeFilter):
-      Record<string, HeapSnapshotModel.HeapSnapshotModel.Aggregate> {
+      Record<string, HeapSnapshotModel.HeapSnapshotModel.AggregatedInfo> {
     const filter = this.createFilter(nodeFilter);
     // @ts-expect-error key is added in createFilter
     const key = filter ? filter.key : 'allObjects';
@@ -1473,8 +1473,8 @@ export abstract class HeapSnapshot {
   }
 
   getAggregatesByClassKey(sortedIndexes: boolean, key?: string, filter?: ((arg0: HeapSnapshotNode) => boolean)):
-      Record<string, HeapSnapshotModel.HeapSnapshotModel.Aggregate> {
-    let aggregates: Record<string, HeapSnapshotModel.HeapSnapshotModel.Aggregate>;
+      Record<string, HeapSnapshotModel.HeapSnapshotModel.AggregatedInfo> {
+    let aggregates: Record<string, HeapSnapshotModel.HeapSnapshotModel.AggregatedInfo>;
     if (key && this.#aggregates[key]) {
       aggregates = this.#aggregates[key];
     } else {
@@ -1504,7 +1504,7 @@ export abstract class HeapSnapshot {
       }
     }
 
-    return aggregates as Record<string, HeapSnapshotModel.HeapSnapshotModel.Aggregate>;
+    return aggregates;
   }
 
   allocationTracesTops(): HeapSnapshotModel.HeapSnapshotModel.SerializedAllocationNode[] {
@@ -1653,8 +1653,9 @@ export abstract class HeapSnapshot {
     }
   }
 
-  private buildAggregates(filter?: ((arg0: HeapSnapshotNode) => boolean)): Map<string|number, AggregatedInfo> {
-    const aggregates = new Map<string|number, AggregatedInfo>();
+  private buildAggregates(filter?: ((arg0: HeapSnapshotNode) => boolean)):
+      Map<string|number, HeapSnapshotModel.HeapSnapshotModel.AggregatedInfo> {
+    const aggregates = new Map<string|number, HeapSnapshotModel.HeapSnapshotModel.AggregatedInfo>();
 
     const nodes = this.nodes;
     const nodesLength = nodes.length;
@@ -1703,7 +1704,8 @@ export abstract class HeapSnapshot {
   }
 
   private calculateClassesRetainedSize(
-      aggregates: Map<string|number, AggregatedInfo>, filter?: ((arg0: HeapSnapshotNode) => boolean)): void {
+      aggregates: Map<string|number, HeapSnapshotModel.HeapSnapshotModel.AggregatedInfo>,
+      filter?: ((arg0: HeapSnapshotNode) => boolean)): void {
     const rootNodeIndex = this.rootNodeIndexInternal;
     const node = this.createNode(rootNodeIndex);
     const list = [rootNodeIndex];
@@ -1725,7 +1727,7 @@ export abstract class HeapSnapshot {
       const dominatedIndexTo = firstDominatedNodeIndex[nodeOrdinal + 1];
 
       if (!seen && (!filter || filter(node)) && node.selfSize()) {
-        (aggregates.get(classKey) as AggregatedInfo).maxRet += node.retainedSize();
+        (aggregates.get(classKey) as HeapSnapshotModel.HeapSnapshotModel.AggregatedInfo).maxRet += node.retainedSize();
         if (dominatedIndexFrom !== dominatedIndexTo) {
           seenClassKeys.set(classKey, true);
           sizes.push(list.length);
@@ -1745,7 +1747,7 @@ export abstract class HeapSnapshot {
     }
   }
 
-  private sortAggregateIndexes(aggregates: Record<string, AggregatedInfo>): void {
+  private sortAggregateIndexes(aggregates: Record<string, HeapSnapshotModel.HeapSnapshotModel.AggregatedInfo>): void {
     const nodeA = this.createNode();
     const nodeB = this.createNode();
 
@@ -2700,7 +2702,7 @@ export abstract class HeapSnapshot {
 
   private calculateDiffForClass(
       baseAggregate: HeapSnapshotModel.HeapSnapshotModel.AggregateForDiff,
-      aggregate?: HeapSnapshotModel.HeapSnapshotModel.Aggregate): HeapSnapshotModel.HeapSnapshotModel.Diff|null {
+      aggregate?: HeapSnapshotModel.HeapSnapshotModel.AggregatedInfo): HeapSnapshotModel.HeapSnapshotModel.Diff|null {
     const baseIds = baseAggregate.ids;
     const baseIndexes = baseAggregate.indexes;
     const baseSelfSizes = baseAggregate.selfSizes;
@@ -4023,12 +4025,4 @@ export class JSHeapSnapshotRetainerEdge extends HeapSnapshotRetainerEdge {
   isWeak(): boolean {
     return this.edge().isWeak();
   }
-}
-export interface AggregatedInfo {
-  count: number;
-  distance: number;
-  self: number;
-  maxRet: number;
-  name: string;
-  idxs: number[];
 }

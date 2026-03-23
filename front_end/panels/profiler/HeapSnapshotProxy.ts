@@ -290,7 +290,7 @@ export class HeapSnapshotProxy extends HeapSnapshotProxyObject {
   }
 
   aggregatesWithFilter(filter: HeapSnapshotModel.HeapSnapshotModel.NodeFilter):
-      Promise<Record<string, HeapSnapshotModel.HeapSnapshotModel.Aggregate>> {
+      Promise<Record<string, HeapSnapshotModel.HeapSnapshotModel.AggregatedInfo>> {
     return this.callMethodPromise('aggregatesWithFilter', filter);
   }
 

@@ -1120,7 +1120,7 @@ export class HeapSnapshotConstructorNode extends HeapSnapshotGridNode {
 
   constructor(
       dataGrid: HeapSnapshotConstructorsDataGrid, classKey: string,
-      aggregate: HeapSnapshotModel.HeapSnapshotModel.Aggregate,
+      aggregate: HeapSnapshotModel.HeapSnapshotModel.AggregatedInfo,
       nodeFilter: HeapSnapshotModel.HeapSnapshotModel.NodeFilter) {
     super(dataGrid, aggregate.count > 0);
     this.nameInternal = aggregate.name;

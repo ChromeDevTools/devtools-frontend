@@ -108,13 +108,13 @@ export class Edge {
   }
 }
 
-export class Aggregate {
-  count!: number;
-  distance!: number;
-  self!: number;
-  maxRet!: number;
-  name!: string;
-  idxs!: number[];
+export interface AggregatedInfo {
+  count: number;
+  distance: number;
+  self: number;
+  maxRet: number;
+  name: string;
+  idxs: number[];
 }
 
 export class AggregateForDiff {

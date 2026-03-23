@@ -372,7 +372,6 @@
     gap: var(--sys-size-5);
   }
 
-
   .widget-header {
     display: flex;
     justify-content: space-between;
@@ -391,6 +390,12 @@
       background: none;
       border-radius: 0;
     }
+  }
+
+  .widget-and-revealer-container {
+    width: 100%;
+    min-width: var(--sys-size-30);
+    max-width: var(--sys-size-33);
   }
 
   .widget-reveal-container {

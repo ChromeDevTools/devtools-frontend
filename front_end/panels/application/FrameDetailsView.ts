@@ -892,16 +892,7 @@ export class FrameDetailsReportView extends UI.Widget.Widget {
     const result = await this.#frame?.parentFrame()?.getAdScriptAncestry(this.#frame?.id);
     if (result && result.ancestryChain.length > 0) {
       this.#adScriptAncestry = result;
-
-      // Obtain the Target associated with the first ad script, because in most scenarios all
-      // scripts share the same debuggerId. However, discrepancies might arise when content scripts
-      // from browser extensions are involved. We will monitor the debugging experiences and revisit
-      // this approach if it proves problematic.
-      const firstScript = this.#adScriptAncestry.ancestryChain[0];
-      const debuggerModel = firstScript?.debuggerId ?
-          await SDK.DebuggerModel.DebuggerModel.modelForDebuggerId(firstScript.debuggerId) :
-          null;
-      this.#target = debuggerModel?.target() ?? null;
+      this.#target = this.#frame?.resourceTreeModel().target() ?? null;
     }
 
     const frame = this.#frame;

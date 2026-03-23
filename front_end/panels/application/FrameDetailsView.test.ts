@@ -112,9 +112,6 @@ describeWithMockConnection('FrameDetailsView', () => {
   it('renders report keys and values', async () => {
 
     const target = createTarget();
-    const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
-    assert.exists(debuggerModel);
-    sinon.stub(SDK.DebuggerModel.DebuggerModel, 'modelForDebuggerId').resolves(debuggerModel);
 
     const scriptParsedEvent1: Protocol.Debugger.ScriptParsedEvent = {
       scriptId: '123' as Protocol.Runtime.ScriptId,
@@ -149,11 +146,11 @@ describeWithMockConnection('FrameDetailsView', () => {
         ancestryChain: [
           {
             scriptId: '123' as Protocol.Runtime.ScriptId,
-            debuggerId: '42' as Protocol.Runtime.UniqueDebuggerId,
+            debuggerId: '' as Protocol.Runtime.UniqueDebuggerId,
           },
           {
             scriptId: '456' as Protocol.Runtime.ScriptId,
-            debuggerId: '42' as Protocol.Runtime.UniqueDebuggerId,
+            debuggerId: '' as Protocol.Runtime.UniqueDebuggerId,
           }
         ],
         rootScriptFilterlistRule: '/ad-script2.$script',

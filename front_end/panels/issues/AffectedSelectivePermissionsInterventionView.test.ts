@@ -2,26 +2,42 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as SDK from '../../core/sdk/sdk.js';
+import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
+import * as Bindings from '../../models/bindings/bindings.js';
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
-import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import * as Workspace from '../../models/workspace/workspace.js';
+import {raf} from '../../testing/DOMHelpers.js';
+import {createTarget} from '../../testing/EnvironmentHelpers.js';
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
+import {describeWithMockConnection, dispatchEvent} from '../../testing/MockConnection.js';
 import {MockIssuesModel} from '../../testing/MockIssuesModel.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Issues from './issues.js';
 
-describeWithEnvironment('AffectedSelectivePermissionsInterventionView', () => {
+describeWithMockConnection('AffectedSelectivePermissionsInterventionView', () => {
   setupLocaleHooks();
 
   const mockModel = new MockIssuesModel([]) as unknown as SDK.IssuesModel.IssuesModel;
-  const mockTarget = {
-    id: () => 'fake-id',
-    isDisposed: () => false,
-    model: () => null,
-  };
-  mockModel.target = () => mockTarget as unknown as SDK.Target.Target;
+  let target: SDK.Target.Target;
+
+  beforeEach(() => {
+    // Initialize the workspace and bindings
+    const workspace = Workspace.Workspace.WorkspaceImpl.instance({forceNew: true});
+    const targetManager = SDK.TargetManager.TargetManager.instance();
+    const ignoreListManager = Workspace.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
+    Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
+      forceNew: true,
+      resourceMapping: new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace),
+      targetManager,
+      ignoreListManager,
+      workspace,
+    });
+
+    target = createTarget();
+    mockModel.target = () => target;
+  });
 
   function createProtocolIssueWithDetails(
       selectivePermissionsInterventionIssueDetails: Protocol.Audits.SelectivePermissionsInterventionIssueDetails):
@@ -49,15 +65,28 @@ describeWithEnvironment('AffectedSelectivePermissionsInterventionView', () => {
       ancestryChain: [
         {
           scriptId: '2' as Protocol.Runtime.ScriptId,
-          debuggerId: '123' as Protocol.Runtime.UniqueDebuggerId,
-          name: 'https://ads.com/ad.js',
+          debuggerId: '' as Protocol.Runtime.UniqueDebuggerId,
+          name: '',
         },
       ],
       rootScriptFilterlistRule: '||ads.com^',
     },
   };
 
-  it('appends details correctly', () => {
+  it('appends details correctly', async () => {
+    const scriptParsedEvent: Protocol.Debugger.ScriptParsedEvent = {
+      scriptId: '2' as Protocol.Runtime.ScriptId,
+      url: 'https://ads.com/ad.js',
+      startLine: 0,
+      startColumn: 0,
+      endLine: 10,
+      endColumn: 10,
+      executionContextId: 1234 as Protocol.Runtime.ExecutionContextId,
+      hash: '',
+      buildId: '',
+    };
+    dispatchEvent(target, 'Debugger.scriptParsed', scriptParsedEvent);
+
     const issue = createProtocolIssueWithDetails(issueDetails);
     const interventionIssues =
         IssuesManager.SelectivePermissionsInterventionIssue.SelectivePermissionsInterventionIssue.fromInspectorIssue(
@@ -80,13 +109,16 @@ describeWithEnvironment('AffectedSelectivePermissionsInterventionView', () => {
     treeOutline.appendChild(view);
     view.update();
 
+    // Wait for the Linkifier to asynchronously resolve and render the script URL.
+    await raf();
+
     const resourceRows = (view as unknown as {
                            affectedResources: HTMLElement,
                          }).affectedResources.querySelectorAll('.affected-resource-directive');
     assert.lengthOf(resourceRows, 1);
     const row = resourceRows[0] as HTMLTableRowElement;
     assert.strictEqual(row.cells[0].textContent, 'geolocation');
-    assert.include(row.cells[2].textContent || '', 'ads.com/ad.js');
+    assert.include(row.cells[2].textContent || '', 'ad.js:1');
     assert.include(row.cells[2].textContent || '', 'Rule: ||ads.com^');
   });
 

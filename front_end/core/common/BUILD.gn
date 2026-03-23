@@ -43,6 +43,7 @@ devtools_module("common") {
     "TextDictionary.ts",
     "Throttler.ts",
     "Trie.ts",
+    "VersionController.ts",
   ]
 
   deps = [
@@ -114,6 +115,7 @@ devtools_foundation_module("foundation_unittests") {
     "TextDictionary.test.ts",
     "Throttler.test.ts",
     "Trie.test.ts",
+    "VersionController.test.ts",
   ]
 
   deps = [

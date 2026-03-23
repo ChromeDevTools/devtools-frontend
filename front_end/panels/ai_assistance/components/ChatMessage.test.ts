@@ -257,6 +257,19 @@ describeWithEnvironment('ChatMessage', () => {
       assert.strictEqual(button.innerText, 'Show thinking');
     });
 
+    it('renders "Close agent walkthrough" when the walkthrough is open for the message', () => {
+      const target = renderView({
+        message: stepMessage,
+        walkthrough: {
+          ...DEFAULT_WALKTHROUGH,
+          isInlined: false,
+          activeMessage: stepMessage,
+        }
+      });
+      const button = querySelectorErrorOnMissing(target, '[data-show-walkthrough]');
+      assert.strictEqual(button.innerText, 'Close agent walkthrough');
+    });
+
     it('when the step is loading, the walkthrough CTA shows the title of the step', async () => {
       const loadingMessage: AiAssistance.ChatMessage.ModelChatMessage = {
         entity: AiAssistance.ChatMessage.ChatMessageEntity.MODEL,

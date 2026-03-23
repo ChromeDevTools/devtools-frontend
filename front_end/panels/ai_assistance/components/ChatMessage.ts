@@ -48,7 +48,10 @@ const SCROLL_ROUNDING_OFFSET = 1;
 * Strings that don't need to be translated at this time.
 */
 const UIStringsNotTranslate = {
-
+  /**
+   * @description Text used in the button to close an open walkthrough
+   */
+  closeAgentWalkthrough: 'Close agent walkthrough',
   /**
    * @description The title of the button that allows submitting positive
    * feedback about the response for AI assistance.
@@ -496,7 +499,9 @@ function renderWalkthroughSidebarButton(
   }
 
   const hasOneStepWithWidget = steps.some(step => step.widgets?.length);
-  const title = walkthroughTitle({
+  const isOpen = input.message === input.walkthrough.activeMessage;
+
+  const title = isOpen ? lockedString(UIStringsNotTranslate.closeAgentWalkthrough) : walkthroughTitle({
     isLoading: input.isLoading,
     hasWidgets: hasOneStepWithWidget,
     lastStep,

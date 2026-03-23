@@ -135,6 +135,7 @@
     overflow-y: auto;
     border-top: 1px solid var(--sys-color-divider);
     background-color: transparent;
+    scrollbar-width: thin;
   }
 
   .walkthrough-inline > summary > devtools-icon {

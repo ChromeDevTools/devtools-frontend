@@ -20,7 +20,6 @@ import {AI_ASSISTANCE_CSS_CLASS_NAME, FREESTYLER_WORLD_NAME} from '../injected.j
 import {
   type AgentOptions as BaseAgentOptions,
   AiAgent,
-  type AnswerResponse,
   type ComputedStyleAiWidget,
   type ContextResponse,
   ConversationContext,
@@ -1050,28 +1049,6 @@ const data = {
 
   protected override async preRun(): Promise<void> {
     this.#currentTurnId++;
-  }
-
-  protected override async finalizeAnswer(answer: AnswerResponse): Promise<AnswerResponse> {
-    if (!Root.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled) {
-      return answer;
-    }
-
-    const changedNodeIds = this.#changes.getChangedNodesForGroupId(this.sessionId, this.#currentTurnId);
-    if (changedNodeIds.length === 0) {
-      return answer;
-    }
-    answer.widgets = [
-      ...(answer.widgets ?? []),
-      ...changedNodeIds.map(id => ({
-                              name: 'STYLE_PROPERTIES' as const,
-                              data: {
-                                backendNodeId: id,
-                                selector: AI_ASSISTANCE_FILTER_REGEX,
-                              },
-                            })),
-    ];
-    return answer;
   }
 
   override async enhanceQuery(

@@ -2372,5 +2372,29 @@ describe('The Styles pane', () => {
       await devToolsPage.waitForNone(GHOST_VALUE_PREDICTION_SELECTOR);
       await devToolsPage.waitForNone(GHOST_ROW_SELECTOR);
     });
+
+    it('clears suggestions when editing a different property', async ({devToolsPage, inspectedPage}) => {
+      const propertiesSection = await setupAndWaitForFooStylePropertiesSection(devToolsPage, inspectedPage);
+      await propertiesSection.focus();
+
+      await mockAidaCodeComplete(devToolsPage, {
+        generatedSamples: [{generationString: 'or: red;', sampleId: 1, score: 1.0}],
+        metadata: {rpcGlobalId: '123'}
+      });
+
+      await devToolsPage.typeText('col');
+      await devToolsPage.waitForFunction(async () => {
+        const ghostTextInCurrentTextPrompt = await getGhostTextInCurrentTextPrompt(devToolsPage);
+        const ghostText = await getGhostText(devToolsPage);
+        return ghostTextInCurrentTextPrompt === 'or' && ghostText === 'red';
+      });
+
+      const displayProperty = await devToolsPage.waitFor(
+          '.webkit-css-property[aria-label="CSS property name: font-style"]', propertiesSection);
+      await displayProperty.click();
+
+      await devToolsPage.waitForNone(TEXT_PROMPT_GHOST_TEXT_SELECTOR);
+      await devToolsPage.waitForNone(GHOST_VALUE_PREDICTION_SELECTOR);
+    });
   });
 });

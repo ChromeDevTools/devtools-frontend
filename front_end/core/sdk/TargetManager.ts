@@ -26,6 +26,11 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
   readonly context: Root.DevToolsContext.DevToolsContext;
   #targets: Set<Target>;
   readonly #observers: Set<Observer>;
+
+  get settings(): Common.Settings.Settings {
+    return this.context.get(Common.Settings.Settings);
+  }
+
   /* eslint-disable @typescript-eslint/no-explicit-any */
   #modelListeners: Platform.MapUtilities.Multimap<string|symbol|number, {
     modelClass: SDKModelConstructor,

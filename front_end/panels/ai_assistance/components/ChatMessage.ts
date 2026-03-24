@@ -18,6 +18,7 @@ import type {
 import * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
 import * as ComputedStyle from '../../../models/computed_style/computed_style.js';
 import * as Trace from '../../../models/trace/trace.js';
+import * as PanelsCommon from '../../../panels/common/common.js';
 import * as Marked from '../../../third_party/marked/marked.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as Input from '../../../ui/components/input/input.js';
@@ -187,17 +188,9 @@ const UIStringsNotTranslate = {
    */
   revealTrace: 'Reveal trace',
   /**
-   * @description Title for the computed styles widget.
-   */
-  computedStyles: 'Computed styles',
-  /**
    * @description Title for the core web vitals widget.
    */
   coreVitals: 'Core Web Vitals',
-  /**
-   * @description Title for the styles widget.
-   */
-  styles: 'Styles',
   /**
    * @description Title for the LCP breakdown widget.
    */
@@ -694,7 +687,7 @@ interface WidgetMakerResponse {
   revealable: unknown;
   customRevealTitle?: Platform.UIString.LocalizedString;
   // Can be null if the widget is only used to add the Reveal CTA.
-  title: Platform.UIString.LocalizedString|null;
+  title: Lit.LitTemplate|Platform.UIString.LocalizedString|null;
 }
 
 const nodeCache = new Map<Protocol.DOM.BackendNodeId, SDK.DOMModel.DOMNode>();
@@ -741,7 +734,11 @@ async function makeComputedStyleWidget(widgetData: ComputedStyleAiWidget): Promi
   return {
     renderedWidget,
     revealable: new Elements.ElementsPanel.NodeComputedStyles(domNodeForId),
-    title: lockedString(UIStringsNotTranslate.computedStyles),
+    title: html`<devtools-widget
+      ${widget(PanelsCommon.DOMLinkifier.DOMNodeLink, {
+      node: domNodeForId,
+    })}
+    ></devtools-widget>`,
   };
 }
 
@@ -778,7 +775,11 @@ async function makeStylePropertiesWidget(widgetData: StylePropertiesAiWidget): P
   return {
     renderedWidget,
     revealable: domNodeForId,
-    title: lockedString(UIStringsNotTranslate.styles),
+    title: html`<devtools-widget
+      ${widget(PanelsCommon.DOMLinkifier.DOMNodeLink, {
+      node: domNodeForId,
+    })}
+    ></devtools-widget>`,
   };
 }
 

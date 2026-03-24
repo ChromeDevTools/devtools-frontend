@@ -156,3 +156,8 @@ export class RevealableCoreVitals {
   constructor(public insightSetKey: string) {
   }
 }
+
+export class RevealableTimeRange {
+  constructor(public bounds: Trace.Types.Timing.TraceWindowMicro) {
+  }
+}

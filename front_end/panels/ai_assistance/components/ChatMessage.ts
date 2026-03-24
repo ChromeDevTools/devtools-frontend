@@ -1436,7 +1436,7 @@ async function makeTimelineRangeSummaryWidget(widgetData: TimelineRangeSummaryAi
 
   return {
     renderedWidget: template,
-    revealable: null,
+    revealable: new TimelineUtils.Helpers.RevealableTimeRange(bounds),
     title: lockedString(UIStringsNotTranslate.performanceSummary),
   };
 }

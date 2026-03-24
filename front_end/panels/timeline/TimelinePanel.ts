@@ -3281,6 +3281,17 @@ export class CoreVitalsRevealer implements Common.Revealer.Revealer<Utils.Helper
   }
 }
 
+export class TimeRangeRevealer implements Common.Revealer.Revealer<Utils.Helpers.RevealableTimeRange> {
+  async reveal(revealable: Utils.Helpers.RevealableTimeRange): Promise<void> {
+    await UI.ViewManager.ViewManager.instance().showView('timeline');
+    const panel = TimelinePanel.instance();
+    TraceBounds.TraceBounds.BoundsManager.instance().setTimelineVisibleWindow(
+        revealable.bounds, {ignoreMiniMapBounds: true, shouldAnimate: true});
+    panel.select(null);
+    panel.getFlameChart().selectDetailsViewTab(Tab.Details, null);
+  }
+}
+
 export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
   handleAction(context: UI.Context.Context, actionId: string): boolean {
     const panel = context.flavor(TimelinePanel);

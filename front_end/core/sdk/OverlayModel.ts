@@ -97,10 +97,10 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
     target.registerOverlayDispatcher(this);
     this.overlayAgent = target.overlayAgent();
 
+    const settings = this.target().targetManager().settings;
     this.#debuggerModel = target.model(DebuggerModel);
     if (this.#debuggerModel) {
-      Common.Settings.Settings.instance()
-          .moduleSetting('disable-paused-state-overlay')
+      settings.moduleSetting('disable-paused-state-overlay')
           .addChangeListener(this.updatePausedInDebuggerMessage, this);
       this.#debuggerModel.addEventListener(
           DebuggerModelEvents.DebuggerPaused, this.updatePausedInDebuggerMessage, this);
@@ -114,21 +114,19 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
     this.#defaultHighlighter = new DefaultHighlighter(this);
     this.#highlighter = this.#defaultHighlighter;
 
-    this.#showPaintRectsSetting = Common.Settings.Settings.instance().moduleSetting<boolean>('show-paint-rects');
-    this.#showLayoutShiftRegionsSetting =
-        Common.Settings.Settings.instance().moduleSetting<boolean>('show-layout-shift-regions');
-    this.#showAdHighlightsSetting = Common.Settings.Settings.instance().moduleSetting<boolean>('show-ad-highlights');
-    this.#showDebugBordersSetting = Common.Settings.Settings.instance().moduleSetting<boolean>('show-debug-borders');
-    this.#showFPSCounterSetting = Common.Settings.Settings.instance().moduleSetting<boolean>('show-fps-counter');
-    this.#showScrollBottleneckRectsSetting =
-        Common.Settings.Settings.instance().moduleSetting<boolean>('show-scroll-bottleneck-rects');
+    this.#showPaintRectsSetting = settings.moduleSetting<boolean>('show-paint-rects');
+    this.#showLayoutShiftRegionsSetting = settings.moduleSetting<boolean>('show-layout-shift-regions');
+    this.#showAdHighlightsSetting = settings.moduleSetting<boolean>('show-ad-highlights');
+    this.#showDebugBordersSetting = settings.moduleSetting<boolean>('show-debug-borders');
+    this.#showFPSCounterSetting = settings.moduleSetting<boolean>('show-fps-counter');
+    this.#showScrollBottleneckRectsSetting = settings.moduleSetting<boolean>('show-scroll-bottleneck-rects');
 
     if (!target.suspended()) {
       void this.overlayAgent.invoke_enable();
       void this.wireAgentToSettings();
     }
 
-    this.#persistentHighlighter = new OverlayPersistentHighlighter(this, {
+    this.#persistentHighlighter = new OverlayPersistentHighlighter(this, settings, {
       onGridOverlayStateChanged: ({nodeId, enabled}) => {
         this.#domModel.nodeForId(nodeId)?.dispatchEventToListeners(DOMNodeEvents.GRID_OVERLAY_STATE_CHANGED, {enabled});
         this.dispatchEventToListeners(Events.PERSISTENT_GRID_OVERLAY_STATE_CHANGED, {nodeId, enabled});
@@ -291,8 +289,9 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
     if (this.target().suspended()) {
       return;
     }
+    const settings = this.target().targetManager().settings;
     const message = this.#debuggerModel && this.#debuggerModel.isPaused() &&
-            !Common.Settings.Settings.instance().moduleSetting('disable-paused-state-overlay').get() ?
+            !settings.moduleSetting('disable-paused-state-overlay').get() ?
         i18nString(UIStrings.pausedInDebugger) :
         undefined;
     void this.overlayAgent.invoke_setPausedInDebuggerMessage({message});
@@ -524,7 +523,8 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
 
   private buildHighlightConfig(mode: string|undefined = 'all', showDetailedToolip: boolean|undefined = false):
       Protocol.Overlay.HighlightConfig {
-    const showRulers = Common.Settings.Settings.instance().moduleSetting('show-metrics-rulers').get();
+    const settings = this.target().targetManager().settings;
+    const showRulers = settings.moduleSetting('show-metrics-rulers').get();
     const highlightConfig: Protocol.Overlay.HighlightConfig = {
       showInfo: mode === 'all' || mode === 'container-outline',
       showRulers,

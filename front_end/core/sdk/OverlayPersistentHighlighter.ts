@@ -33,9 +33,7 @@ export interface PersistentHighlighterCallbacks {
 export class OverlayPersistentHighlighter {
   readonly #model: OverlayModel;
   readonly #colors = new Map<Protocol.DOM.NodeId, Common.Color.Color>();
-  readonly #persistentHighlightSetting =
-      Common.Settings.Settings.instance().createLocalSetting<PersistentHighlightSettingItem[]>(
-          'persistent-highlight-setting', []);
+  readonly #persistentHighlightSetting: Common.Settings.Setting<PersistentHighlightSettingItem[]>;
   #gridHighlights = new Map<Protocol.DOM.NodeId, Protocol.Overlay.GridHighlightConfig>();
   #scrollSnapHighlights = new Map<Protocol.DOM.NodeId, Protocol.Overlay.ScrollSnapContainerHighlightConfig>();
   #flexHighlights = new Map<Protocol.DOM.NodeId, Protocol.Overlay.FlexContainerHighlightConfig>();
@@ -47,17 +45,22 @@ export class OverlayPersistentHighlighter {
   /**
    * @see `front_end/core/sdk/sdk-meta.ts`
    */
-  readonly #showGridLineLabelsSetting =
-      Common.Settings.Settings.instance().moduleSetting<string>('show-grid-line-labels');
-  readonly #extendGridLinesSetting = Common.Settings.Settings.instance().moduleSetting<boolean>('extend-grid-lines');
-  readonly #showGridAreasSetting = Common.Settings.Settings.instance().moduleSetting<boolean>('show-grid-areas');
-  readonly #showGridTrackSizesSetting =
-      Common.Settings.Settings.instance().moduleSetting<boolean>('show-grid-track-sizes');
+  readonly #showGridLineLabelsSetting: Common.Settings.Setting<string>;
+  readonly #extendGridLinesSetting: Common.Settings.Setting<boolean>;
+  readonly #showGridAreasSetting: Common.Settings.Setting<boolean>;
+  readonly #showGridTrackSizesSetting: Common.Settings.Setting<boolean>;
 
   readonly #callbacks: PersistentHighlighterCallbacks;
-  constructor(model: OverlayModel, callbacks: PersistentHighlighterCallbacks) {
+  constructor(model: OverlayModel, settings: Common.Settings.Settings, callbacks: PersistentHighlighterCallbacks) {
     this.#model = model;
     this.#callbacks = callbacks;
+
+    this.#persistentHighlightSetting =
+        settings.createLocalSetting<PersistentHighlightSettingItem[]>('persistent-highlight-setting', []);
+    this.#showGridLineLabelsSetting = settings.moduleSetting<string>('show-grid-line-labels');
+    this.#extendGridLinesSetting = settings.moduleSetting<boolean>('extend-grid-lines');
+    this.#showGridAreasSetting = settings.moduleSetting<boolean>('show-grid-areas');
+    this.#showGridTrackSizesSetting = settings.moduleSetting<boolean>('show-grid-track-sizes');
 
     this.#showGridLineLabelsSetting.addChangeListener(this.onSettingChange, this);
     this.#extendGridLinesSetting.addChangeListener(this.onSettingChange, this);

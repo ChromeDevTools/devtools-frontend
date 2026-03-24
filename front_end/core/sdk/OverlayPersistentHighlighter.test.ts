@@ -95,7 +95,8 @@ describeWithEnvironment('OverlayPersistentHighlighter', () => {
       }),
     });
 
-    highlighter = new SDK.OverlayPersistentHighlighter.OverlayPersistentHighlighter(mockOverlayModel, stubbedCallbacks);
+    highlighter = new SDK.OverlayPersistentHighlighter.OverlayPersistentHighlighter(
+        mockOverlayModel, Common.Settings.Settings.instance(), stubbedCallbacks);
     resetSavedSetting();
   });
 

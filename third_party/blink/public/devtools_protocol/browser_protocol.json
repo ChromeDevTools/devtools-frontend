@@ -31419,6 +31419,16 @@
                     ]
                 },
                 {
+                    "id": "InvocationStatus",
+                    "description": "Represents the status of a tool invocation.",
+                    "type": "string",
+                    "enum": [
+                        "Success",
+                        "Canceled",
+                        "Error"
+                    ]
+                },
+                {
                     "id": "Tool",
                     "description": "Definition of a tool that can be invoked.",
                     "type": "object",
@@ -31497,6 +31507,66 @@
                             "items": {
                                 "$ref": "Tool"
                             }
+                        }
+                    ]
+                },
+                {
+                    "name": "toolInvoked",
+                    "description": "Event fired when a tool invocation starts.",
+                    "parameters": [
+                        {
+                            "name": "toolName",
+                            "description": "Name of the tool to invoke.",
+                            "type": "string"
+                        },
+                        {
+                            "name": "frameId",
+                            "description": "Frame id",
+                            "$ref": "Page.FrameId"
+                        },
+                        {
+                            "name": "invocationId",
+                            "description": "Invocation identifier.",
+                            "type": "string"
+                        },
+                        {
+                            "name": "input",
+                            "description": "The input parameters used for the invocation.",
+                            "type": "string"
+                        }
+                    ]
+                },
+                {
+                    "name": "toolResponded",
+                    "description": "Event fired when a tool invocation completes or fails.",
+                    "parameters": [
+                        {
+                            "name": "invocationId",
+                            "description": "Invocation identifier.",
+                            "type": "string"
+                        },
+                        {
+                            "name": "status",
+                            "description": "Status of the invocation.",
+                            "$ref": "InvocationStatus"
+                        },
+                        {
+                            "name": "output",
+                            "description": "Output or error delivered as delivered to the agent. Missing if `status` is anything other than Success.",
+                            "optional": true,
+                            "type": "object"
+                        },
+                        {
+                            "name": "errorText",
+                            "description": "Error text for protocol users.",
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
+                            "name": "exception",
+                            "description": "The exception object, if the javascript tool threw an error>",
+                            "optional": true,
+                            "$ref": "Runtime.RemoteObject"
                         }
                     ]
                 }

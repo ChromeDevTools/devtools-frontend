@@ -93,6 +93,12 @@ class WebMCPDispatcher implements ProtocolProxyApi.WebMCPDispatcher {
   toolsRemoved(params: Protocol.WebMCP.ToolsRemovedEvent): void {
     this.#model.onToolsRemoved(params.tools);
   }
+
+  toolInvoked(): void {
+  }
+
+  toolResponded(): void {
+  }
 }
 
 SDKModel.register(WebMCPModel, {capabilities: Capability.WEB_MCP, autostart: true});

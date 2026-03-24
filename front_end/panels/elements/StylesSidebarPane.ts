@@ -189,7 +189,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
   private readonly decorator: StylePropertyHighlighter;
 
   private lastRevealedProperty: SDK.CSSProperty.CSSProperty|null = null;
-  userOperation = false;
+  private userOperation = false;
   isEditingStyle = false;
   #filterRegex: RegExp|null = null;
   #isRegex = false;
@@ -211,6 +211,8 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
   #webCustomData?: WebCustomData;
 
   activeCSSAngle: InlineEditor.CSSAngle.CSSAngle|null = null;
+  #updateAbortController?: AbortController;
+  #updateComputedStylesAbortController?: AbortController;
 
   constructor(computedStyleModel: ComputedStyle.ComputedStyleModel.ComputedStyleModel) {
     super(computedStyleModel, {delegatesFocus: true});
@@ -688,9 +690,12 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
 
   override onCSSModelChanged(
       event: Common.EventTarget.EventTargetEvent<ComputedStyle.ComputedStyleModel.CSSModelChangedEvent>): void {
-    // We only recreate sections if this update is more than an "edit" operation.
-    // Sections will pull their own updates in the case of an "edit".
-    if (event?.data && 'edit' in event.data && event.data.edit) {
+    const edit = event?.data && 'edit' in event.data ? event.data.edit : null;
+    if (edit) {
+      for (const section of this.allSections()) {
+        section.styleSheetEdited(edit);
+      }
+      void this.#refreshComputedStyles();
       return;
     }
 
@@ -713,6 +718,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
 
   #resetUpdateIfNotEditing(): void {
     if (this.userOperation || this.isEditingStyle) {
+      void this.#refreshComputedStyles();
       return;
     }
 
@@ -861,6 +867,28 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     }
   }
 
+  async #refreshComputedStyles(): Promise<void> {
+    this.#updateComputedStylesAbortController?.abort();
+    this.#updateAbortController = new AbortController();
+    const signal = this.#updateAbortController.signal;
+    const matchedStyles = await this.fetchMatchedCascade();
+    const nodeId = this.node()?.id;
+    const parentNodeId = matchedStyles?.getParentLayoutNodeId();
+
+    const [computedStyles, parentsComputedStyles] =
+        await Promise.all([this.fetchComputedStylesFor(nodeId), this.fetchComputedStylesFor(parentNodeId)]);
+
+    if (signal.aborted) {
+      return;
+    }
+
+    for (const section of this.allSections()) {
+      section.setComputedStyles(computedStyles);
+      section.setParentsComputedStyles(parentsComputedStyles);
+      section.updateAuthoringHint();
+    }
+  }
+
   focusedSectionIndex(): number {
     let index = 0;
     for (const block of this.sectionBlocks) {
@@ -903,9 +931,6 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
 
     this.linkifier.reset();
     const prevSections = this.sectionBlocks.map(block => block.sections).flat();
-    for (const section of prevSections) {
-      section.dispose();
-    }
     this.sectionBlocks = [];
 
     const node = this.node();

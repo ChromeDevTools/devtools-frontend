@@ -2,11 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {assert} from 'chai';
+
 import {
   clickNthChildOfSelectedElementNode,
   focusElementsTree,
+  getCSSPropertyInRule,
   waitForContentOfSelectedElementsNode,
-  waitForCSSPropertyIsUnset,
   waitForCSSPropertyValue,
 } from '../helpers/elements-helpers.js';
 import {clickPropertyButton, clickStylePropertyEditorButton} from '../helpers/style-property-editor-helpers.js';
@@ -36,6 +38,7 @@ describe('Grid Editor', function() {
     // Wait for the button's title to be updated so that we know the change
     // was made.
     await devToolsPage.waitFor('[title="Add align-items: start"]');
-    await waitForCSSPropertyIsUnset('#target', 'align-items', undefined, devToolsPage);
+    const property = await getCSSPropertyInRule('#target', 'align-items', undefined, devToolsPage);
+    assert.isUndefined(property);
   });
 });

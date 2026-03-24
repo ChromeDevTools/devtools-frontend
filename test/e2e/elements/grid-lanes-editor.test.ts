@@ -2,11 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {assert} from 'chai';
+
 import {
   clickNthChildOfSelectedElementNode,
   focusElementsTree,
+  getCSSPropertyInRule,
   waitForContentOfSelectedElementsNode,
-  waitForCSSPropertyIsUnset,
   waitForCSSPropertyValue,
 } from '../helpers/elements-helpers.js';
 import {clickPropertyButton, clickStylePropertyEditorButton} from '../helpers/style-property-editor-helpers.js';
@@ -36,6 +38,7 @@ describe('Grid Lanes Editor', function() {
     await waitForCSSPropertyValue('#target', 'justify-items', 'start', undefined, devToolsPage);
     await clickPropertyButton('[title="Remove justify-items: start"]', devToolsPage);
     await devToolsPage.waitFor('[title="Add justify-items: start"]');
-    await waitForCSSPropertyIsUnset('#target', 'justify-items', undefined, devToolsPage);
+    const property = await getCSSPropertyInRule('#target', 'justify-items', undefined, devToolsPage);
+    assert.isUndefined(property);
   });
 });

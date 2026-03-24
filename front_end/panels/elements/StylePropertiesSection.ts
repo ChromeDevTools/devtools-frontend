@@ -44,7 +44,6 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as Badges from '../../models/badges/badges.js';
 import * as Bindings from '../../models/bindings/bindings.js';
-import * as ComputedStyle from '../../models/computed_style/computed_style.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as Tooltips from '../../ui/components/tooltips/tooltips.js';
@@ -375,53 +374,10 @@ export class StylePropertiesSection {
     this.markSelectorMatches();
     this.onpopulate();
     this.#updateCollapsedState();
-
-    this.stylesContainer.computedStyleModel().addEventListener(
-        ComputedStyle.ComputedStyleModel.Events.CSS_MODEL_CHANGED, this.#onCSSModelChanged, this);
   }
 
   setComputedStyles(computedStyles: Map<string, string>|null): void {
     this.computedStyles = computedStyles;
-  }
-
-  #onCSSModelChanged(event: Common.EventTarget.EventTargetEvent<ComputedStyle.ComputedStyleModel.CSSModelChangedEvent>):
-      void {
-    const edit = event?.data && 'edit' in event.data ? event.data.edit : null;
-    if (edit) {
-      this.styleSheetEdited(edit);
-      void this.refreshComputedValues();
-      return;
-    }
-
-    if (this.stylesContainer.isEditingStyle || this.stylesContainer.userOperation) {
-      void this.refreshComputedValues();
-    }
-  }
-
-  async refreshComputedValues(): Promise<void> {
-    const node = this.stylesContainer.node();
-    if (!node) {
-      return;
-    }
-
-    const cssModel = node.domModel().cssModel();
-    const computedStyleModel = this.stylesContainer.computedStyleModel();
-
-    const matchedStyles = await cssModel.cachedMatchedCascadeForNode(node);
-    const parentNodeId = matchedStyles?.getParentLayoutNodeId();
-
-    const [computedStyles, parentsComputedStyles] = await Promise.all([
-      computedStyleModel.fetchComputedStyle(),
-      parentNodeId ? cssModel.getComputedStyle(parentNodeId) : null,
-    ]);
-
-    if (computedStyles) {
-      this.setComputedStyles(computedStyles.computedStyle);
-    }
-    if (parentsComputedStyles) {
-      this.setParentsComputedStyles(parentsComputedStyles);
-    }
-    this.updateAuthoringHint();
   }
 
   setParentsComputedStyles(parentsComputedStyles: Map<string, string>|null): void {
@@ -442,11 +398,6 @@ export class StylePropertiesSection {
       }
       child = child.nextSibling;
     }
-  }
-
-  dispose(): void {
-    this.stylesContainer.computedStyleModel().removeEventListener(
-        ComputedStyle.ComputedStyleModel.Events.CSS_MODEL_CHANGED, this.#onCSSModelChanged, this);
   }
 
   setSectionIdx(sectionIdx: number): void {

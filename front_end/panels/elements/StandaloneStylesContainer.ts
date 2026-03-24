@@ -115,9 +115,6 @@ export class StandaloneStylesContainer extends Common.ObjectWrapper.eventMixin<E
   }
 
   async #updateSections(signal?: AbortSignal): Promise<void> {
-    for (const section of this.#sections) {
-      section.dispose();
-    }
     const node = this.node();
     if (!node) {
       this.#sections = [];

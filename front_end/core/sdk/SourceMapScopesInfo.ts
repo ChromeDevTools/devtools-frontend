@@ -49,70 +49,21 @@ export class SourceMapScopesInfo {
 
     // Convert the entire scopeTree. Returns a root range that encompasses everything,
     // and inserts scopes by sourceIndex into the above scopeBySourceUrl.
-    const {range} = convertScope(scopeTree, undefined);
-    return new SourceMapScopesInfo(sourceMap, {scopes: scopeBySourceUrl, ranges: [range]});
+    const stack: Array<{
+      node: Formatter.FormatterWorkerPool.ScopeTreeNode,
+      parentRange?: ScopesCodec.GeneratedRange,
+      parentScopeHint?: ScopesCodec.OriginalScope,
+    }> = [{node: scopeTree}];
 
-    /**
-     * Recursively finds the correct place in the tree to insert the new scope.
-     * Maintains the invariant that children are sorted and contained by their parent.
-     */
-    function insertInScope(parent: ScopesCodec.OriginalScope, newScope: ScopesCodec.OriginalScope): void {
-      // Check if the newScope fits strictly inside any of the existing children.
-      for (const child of parent.children) {
-        if (contains(child, newScope)) {
-          insertInScope(child, newScope);
-          return;
-        }
+    let rootRange: ScopesCodec.GeneratedRange|undefined = undefined;
+
+    while (stack.length > 0) {
+      const popped = stack.pop();
+      if (!popped) {
+        break;
       }
+      const {node, parentRange, parentScopeHint} = popped;
 
-      // When here, newScope belongs directly in parent.
-      // However, newScope might encompass some of parent's existing children (due
-      // to compiler transform quirks or arbitrary insertion order). We must move
-      // those children inside newScope.
-      const childrenToKeep: ScopesCodec.OriginalScope[] = [];
-      for (const child of parent.children) {
-        if (contains(newScope, child)) {
-          // child is actually inside newScope, so re-parent it.
-          newScope.children.push(child);
-          child.parent = newScope;
-        } else {
-          childrenToKeep.push(child);
-        }
-      }
-
-      // Find the correct index in the remaining children to insert newScope.
-      // We look for the first child that starts after the new scope.
-      const insertIndex = childrenToKeep.findIndex(child => compareScopes(newScope, child) < 0);
-      if (insertIndex === -1) {
-        // If no child starts after, it goes at the end.
-        childrenToKeep.push(newScope);
-      } else {
-        childrenToKeep.splice(insertIndex, 0, newScope);
-      }
-
-      // Update parent's children to only be the ones that don't belong to newScope.
-      parent.children = childrenToKeep;
-      newScope.parent = parent;
-    }
-
-    function contains(outer: ScopesCodec.OriginalScope, inner: ScopesCodec.OriginalScope): boolean {
-      return comparePositions(outer.start, inner.start) <= 0 && comparePositions(outer.end, inner.end) >= 0;
-    }
-
-    function compareScopes(a: ScopesCodec.OriginalScope, b: ScopesCodec.OriginalScope): number {
-      return comparePositions(a.start, b.start);
-    }
-
-    function comparePositions(a: ScopesCodec.Position, b: ScopesCodec.Position): number {
-      if (a.line !== b.line) {
-        return a.line - b.line;
-      }
-      return a.column - b.column;
-    }
-
-    function convertScope(
-        node: Formatter.FormatterWorkerPool.ScopeTreeNode,
-        parentRange: ScopesCodec.GeneratedRange|undefined): {range: ScopesCodec.GeneratedRange} {
       const start = positionFromOffset(node.start);
       const end = positionFromOffset(node.end);
       const startEntry = sourceMap.findEntry(start.line, start.column);
@@ -156,15 +107,94 @@ export class SourceMapScopesInfo {
         children: [],
       };
 
+      if (!rootRange) {
+        rootRange = range;
+      }
       parentRange?.children.push(range);
+
+      let nextParentScopeHint = parentScopeHint;
       if (canMapOriginalPosition && scope) {
         const rootScope = scopeBySourceUrl[sourceIndex];
-        insertInScope(rootScope, scope);
+        const startSearchFrom =
+            (parentScopeHint && containsOriginal(parentScopeHint, scope)) ? parentScopeHint : rootScope;
+        insertInScope(startSearchFrom, scope);
+        nextParentScopeHint = scope;
       }
 
-      node.children.forEach(child => convertScope(child, range));
+      for (let i = node.children.length - 1; i >= 0; --i) {
+        stack.push({node: node.children[i], parentRange: range, parentScopeHint: nextParentScopeHint});
+      }
+    }
 
-      return {range};
+    return new SourceMapScopesInfo(sourceMap, {scopes: scopeBySourceUrl, ranges: rootRange ? [rootRange] : []});
+
+    /**
+     * Finds the correct place in the tree to insert the new scope.
+     * Maintains the invariant that children are sorted and contained by their parent.
+     */
+    function insertInScope(rootScope: ScopesCodec.OriginalScope, newScope: ScopesCodec.OriginalScope): void {
+      let parent = rootScope;
+      // Check if the newScope fits strictly inside any of the existing children.
+      // We iterate to find the deepest parent to avoid Maximum Call Stack Size Exceeded
+      // errors on highly nested scripts.
+      while (true) {
+        let deeperParent: ScopesCodec.OriginalScope|null = null;
+        for (const child of parent.children) {
+          if (containsOriginal(child, newScope)) {
+            deeperParent = child;
+            break;
+          }
+        }
+        if (deeperParent) {
+          parent = deeperParent;
+        } else {
+          break;
+        }
+      }
+
+      // When here, newScope belongs directly in parent.
+      // However, newScope might encompass some of parent's existing children (due
+      // to compiler transform quirks or arbitrary insertion order). We must move
+      // those children inside newScope.
+      const childrenToKeep: ScopesCodec.OriginalScope[] = [];
+      for (const child of parent.children) {
+        if (containsOriginal(newScope, child)) {
+          // child is actually inside newScope, so re-parent it.
+          newScope.children.push(child);
+          child.parent = newScope;
+        } else {
+          childrenToKeep.push(child);
+        }
+      }
+
+      // Find the correct index in the remaining children to insert newScope.
+      // We look for the first child that starts after the new scope.
+      const insertIndex = childrenToKeep.findIndex(child => compareScopes(newScope, child) < 0);
+      if (insertIndex === -1) {
+        // If no child starts after, it goes at the end.
+        childrenToKeep.push(newScope);
+      } else {
+        childrenToKeep.splice(insertIndex, 0, newScope);
+      }
+
+      // Update parent's children to only be the ones that don't belong to newScope.
+      parent.children = childrenToKeep;
+      newScope.parent = parent;
+    }
+
+    function containsOriginal(outer: ScopesCodec.OriginalScope, inner: ScopesCodec.OriginalScope): boolean {
+      return comparePositions(outer.start, inner.start) <= 0 && comparePositions(outer.end, inner.end) >= 0;
+    }
+
+    function compareScopes(a: ScopesCodec.OriginalScope, b: ScopesCodec.OriginalScope): number {
+      return comparePositions(a.start, b.start);
+    }
+
+    function comparePositions(a: ScopesCodec.Position, b: ScopesCodec.Position): number {
+      if (a.line !== b.line) {
+        return a.line - b.line;
+      }
+      return a.column - b.column;
     }
 
     function positionFromOffset(offset: number): ScopesCodec.Position {

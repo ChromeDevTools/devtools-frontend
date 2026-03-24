@@ -14,18 +14,16 @@ import {Capability, type Target} from './Target.js';
 import {TargetManager} from './TargetManager.js';
 
 export class HeapProfilerModel extends SDKModel<EventTypes> {
-  #enabled: boolean;
+  #enabled = false;
   readonly #heapProfilerAgent: ProtocolProxyApi.HeapProfilerApi;
   readonly #runtimeModel: RuntimeModel;
-  #samplingProfilerDepth: number;
+  #samplingProfilerDepth = 0;
 
   constructor(target: Target) {
     super(target);
     target.registerHeapProfilerDispatcher(new HeapProfilerDispatcher(this));
-    this.#enabled = false;
     this.#heapProfilerAgent = target.heapProfilerAgent();
     this.#runtimeModel = (target.model(RuntimeModel) as RuntimeModel);
-    this.#samplingProfilerDepth = 0;
   }
 
   debuggerModel(): DebuggerModel {

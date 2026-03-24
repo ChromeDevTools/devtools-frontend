@@ -743,9 +743,9 @@ export enum HeapSnapshotRetainmentDataGridEvents {
 }
 
 export class HeapSnapshotConstructorsDataGrid extends HeapSnapshotViewportDataGrid {
-  profileIndex: number;
-  objectIdToSelect: string|null;
-  nextRequestedFilter: HeapSnapshotModel.HeapSnapshotModel.NodeFilter|null;
+  profileIndex = -1;
+  objectIdToSelect: string|null = null;
+  nextRequestedFilter: HeapSnapshotModel.HeapSnapshotModel.NodeFilter|null = null;
   lastFilter?: HeapSnapshotModel.HeapSnapshotModel.NodeFilter|null;
   filterInProgress?: HeapSnapshotModel.HeapSnapshotModel.NodeFilter|null;
 
@@ -773,14 +773,13 @@ export class HeapSnapshotConstructorsDataGrid extends HeapSnapshotViewportDataGr
       },
     ];
     super(
-        heapProfilerModel, dataDisplayDelegate,
-        ({displayName: i18nString(UIStrings.heapSnapshotConstructors).toString(), columns} as
-         DataGrid.DataGrid.Parameters));
-    // clang-format on
-    this.profileIndex = -1;
-    this.objectIdToSelect = null;
-
-    this.nextRequestedFilter = null;
+        heapProfilerModel,
+        dataDisplayDelegate,
+        {
+          displayName: i18nString(UIStrings.heapSnapshotConstructors).toString(),
+          columns,
+        },
+    );
   }
 
   override sortFields(sortColumn: string, sortAscending: boolean):
@@ -1015,7 +1014,6 @@ export class AllocationDataGrid extends HeapSnapshotViewportDataGrid {
     super(
         heapProfilerModel, dataDisplayDelegate,
         ({displayName: i18nString(UIStrings.allocation).toString(), columns} as DataGrid.DataGrid.Parameters));
-    // clang-format on
     this.linkifierInternal = new Components.Linkifier.Linkifier();
   }
 

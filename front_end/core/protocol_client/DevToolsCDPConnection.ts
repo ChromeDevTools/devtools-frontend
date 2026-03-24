@@ -112,7 +112,7 @@ export class DevToolsCDPConnection implements CDPConnection {
       if ('error' in response && response.error) {
         callback?.(response.error, null);
       } else if ('result' in response) {
-        callback?.(null, response.result as Object | null);
+        callback?.(null, response.result);
       }
     });
   }

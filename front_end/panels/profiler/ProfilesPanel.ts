@@ -499,7 +499,10 @@ export class ProfileTypeSidebarSection extends UI.TreeOutline.TreeElement {
       const profileTitle = profile.title;
       let group: ProfileGroup = this.profileGroups[profileTitle];
       if (!group) {
-        group = new ProfileGroup();
+        group = {
+          profileSidebarTreeElements: [],
+          sidebarTreeElement: null,
+        };
         this.profileGroups[profileTitle] = group;
       }
       group.profileSidebarTreeElements.push(profileTreeElement);
@@ -604,19 +607,14 @@ export class ProfileTypeSidebarSection extends UI.TreeOutline.TreeElement {
   }
 }
 
-export class ProfileGroup {
+export interface ProfileGroup {
   profileSidebarTreeElements: ProfileSidebarTreeElement[];
   sidebarTreeElement: ProfileGroupSidebarTreeElement|null;
-  constructor() {
-    this.profileSidebarTreeElements = [];
-    this.sidebarTreeElement = null;
-  }
 }
 
 export class ProfileGroupSidebarTreeElement extends UI.TreeOutline.TreeElement {
   readonly dataDisplayDelegate: DataDisplayDelegate;
   profileTitle: string;
-  override toggleOnClick: boolean;
 
   constructor(dataDisplayDelegate: DataDisplayDelegate, title: string) {
     super('', true);

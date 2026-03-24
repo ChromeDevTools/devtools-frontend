@@ -1180,16 +1180,31 @@ export const TEXT_PROMPT_GHOST_TEXT_SELECTOR = '.auto-complete-text';
 export const GHOST_VALUE_PREDICTION_SELECTOR = '.ghost-value-prediction';
 export const GHOST_ROW_SELECTOR = '.ghost-row';
 
+declare global {
+  interface Window {
+    /* eslint-disable @typescript-eslint/naming-convention */
+    __lastAidaRequest: string;
+    /* eslint-enable @typescript-eslint/naming-convention */
+  }
+}
+
 export const mockAidaCodeComplete =
     async (devToolsPage: DevToolsPage, response: Host.AidaClient.CompletionResponse) => {
   await devToolsPage.evaluate(responseString => {
     if (!window.InspectorFrontendHost) {
       return;
     }
-    window.InspectorFrontendHost.aidaCodeComplete = (_request, callback) => {
+    window.InspectorFrontendHost.aidaCodeComplete = (request, callback) => {
+      window.__lastAidaRequest = request;
       callback({response: responseString});
     };
   }, JSON.stringify(response));
+};
+
+export const getLastAidaRequest = async (devToolsPage: DevToolsPage) => {
+  return await devToolsPage.evaluate(() => {
+    return window.__lastAidaRequest;
+  });
 };
 
 export const getGhostTextInCurrentTextPrompt = async (devToolsPage: DevToolsPage) => {

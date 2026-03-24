@@ -18,6 +18,7 @@ import {
   getDisplayedStyleRulesCompact,
   getGhostText,
   getGhostTextInCurrentTextPrompt,
+  getLastAidaRequest,
   getMultilineGhostElements,
   getStyleRule,
   getStyleRuleSelector,
@@ -2395,6 +2396,161 @@ describe('The Styles pane', () => {
 
       await devToolsPage.waitForNone(TEXT_PROMPT_GHOST_TEXT_SELECTOR);
       await devToolsPage.waitForNone(GHOST_VALUE_PREDICTION_SELECTOR);
+    });
+
+    it('updates context when the stylesheet is modified via CSSOM (addRule)', async ({devToolsPage, inspectedPage}) => {
+      await setupAiCompletion(devToolsPage);
+      await inspectedPage.goToHtml(`
+        <style>
+        #container { background-color: green; }
+        #inspected { background-color: orange; }
+        </style>
+        <div id="container">
+            <div id="inspected">Text</div>
+        </div>
+      `);
+      await waitForElementsStyleSection(undefined, devToolsPage);
+
+      await waitForAndClickTreeElementWithPartialText('container', devToolsPage);
+      await expandSelectedNodeRecursively(devToolsPage);
+      await waitForAndClickTreeElementWithPartialText('inspected', devToolsPage);
+      await waitForStyleRule('#inspected', devToolsPage);
+
+      // dynamically update the stylesheet
+      await inspectedPage.evaluate(() => {
+        const sheet = document.styleSheets[0] as CSSStyleSheet;
+        sheet.addRule('div#inspected', 'display: block');
+      });
+
+      // re-select the element to update devtools
+      await waitForAndClickTreeElementWithPartialText('inspected', devToolsPage);
+      await expandSelectedNodeRecursively(devToolsPage);
+      const propertiesSection = await getStyleRule('#inspected', devToolsPage);
+      await propertiesSection.focus();
+
+      await mockAidaCodeComplete(devToolsPage, {
+        generatedSamples: [{
+          generationString: 'or: red;',
+          sampleId: 1,
+          score: 1.0,
+        }],
+        metadata: {rpcGlobalId: '123'}
+      });
+
+      // trigger code completion
+      await devToolsPage.typeText('col');
+      await devToolsPage.waitForFunction(async () => {
+        const ghostTextInCurrentTextPrompt = await getGhostTextInCurrentTextPrompt(devToolsPage);
+        const ghostText = await getGhostText(devToolsPage);
+        return ghostTextInCurrentTextPrompt === 'or' && ghostText === 'red';
+      });
+
+      // check if the request sent to AIDA contains the new rule
+      const lastRequest = await getLastAidaRequest(devToolsPage);
+      assert.exists(lastRequest);
+      assert.include(lastRequest, 'div#inspected { display: block; }');
+    });
+
+    it('updates context when pasting a large block of properties', async ({devToolsPage, inspectedPage}) => {
+      await setupAiCompletion(devToolsPage);
+      await inspectedPage.goToHtml(`
+        <style>
+        #inspected { background-color: orange; }
+        </style>
+        <div id="inspected">Text</div>
+      `);
+      await waitForElementsStyleSection(undefined, devToolsPage);
+
+      await waitForAndClickTreeElementWithPartialText('inspected', devToolsPage);
+      await waitForStyleRule('#inspected', devToolsPage);
+
+      const propertiesSection = await getStyleRule('#inspected', devToolsPage);
+      await propertiesSection.focus();
+
+      // paste a large block of css properties
+      await devToolsPage.typeText('m');
+      await devToolsPage.pasteText(`argin: 10px; padding: 20px;
+          font-weight: bold; font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+          background-image: url('https://example.com/image;v=1?query:part=true');`);
+      await propertiesSection.click();
+
+      await mockAidaCodeComplete(devToolsPage, {
+        generatedSamples: [{generationString: 'or: red;', sampleId: 1, score: 1.0}],
+        metadata: {rpcGlobalId: '123'}
+      });
+
+      // trigger code completion
+      await propertiesSection.focus();
+      await devToolsPage.typeText('col');
+      await devToolsPage.waitForFunction(async () => {
+        const ghostTextInCurrentTextPrompt = await getGhostTextInCurrentTextPrompt(devToolsPage);
+        const ghostText = await getGhostText(devToolsPage);
+        return ghostTextInCurrentTextPrompt === 'or' && ghostText === 'red';
+      });
+
+      const lastRequest = await getLastAidaRequest(devToolsPage);
+      assert.exists(lastRequest);
+      assert.include(lastRequest, 'margin: 10px;');
+      assert.include(lastRequest, 'padding: 20px;');
+      assert.include(lastRequest, 'font-weight: bold;');
+      assert.include(lastRequest, 'font-family: \'Franklin Gothic Medium\', \'Arial Narrow\', Arial, sans-serif;');
+      assert.include(lastRequest, 'background-image: url(\'https://example.com/image;v=1?query:part=true\');');
+    });
+
+    it('updates context when deleting a large block of properties', async ({devToolsPage, inspectedPage}) => {
+      await setupAiCompletion(devToolsPage);
+      await inspectedPage.goToHtml(`
+        <style>
+        #inspected {
+          margin: 10px;
+          padding: 20px;
+          font-weight: bold;
+          font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+          background-image: url('https://example.com/image;v=1?query:part=true');
+
+        }
+        </style>
+        <div id="inspected">Text</div>
+      `);
+      await waitForElementsStyleSection(undefined, devToolsPage);
+
+      await waitForAndClickTreeElementWithPartialText('inspected', devToolsPage);
+      await waitForStyleRule('#inspected', devToolsPage);
+
+      const propertiesSection = await getStyleRule('#inspected', devToolsPage);
+      await propertiesSection.focus();
+
+      // Delete multiple properties
+      await deletePropertyByBackspace(
+          devToolsPage, '.webkit-css-property[aria-label="CSS property name: font-family"]', propertiesSection);
+      await deletePropertyByBackspace(
+          devToolsPage, '.webkit-css-property[aria-label="CSS property name: background-image"]', propertiesSection);
+      await deletePropertyByBackspace(
+          devToolsPage, '.webkit-css-property[aria-label="CSS property name: font-weight"]', propertiesSection);
+      await deletePropertyByBackspace(
+          devToolsPage, '.webkit-css-property[aria-label="CSS property name: padding"]', propertiesSection);
+
+      await mockAidaCodeComplete(devToolsPage, {
+        generatedSamples: [{generationString: 'or: red;', sampleId: 1, score: 1.0}],
+        metadata: {rpcGlobalId: '123'}
+      });
+
+      // trigger code completion
+      await propertiesSection.focus();
+      await devToolsPage.typeText('col');
+      await devToolsPage.waitForFunction(async () => {
+        const ghostTextInCurrentTextPrompt = await getGhostTextInCurrentTextPrompt(devToolsPage);
+        const ghostText = await getGhostText(devToolsPage);
+        return ghostTextInCurrentTextPrompt === 'or' && ghostText === 'red';
+      });
+
+      const lastRequest = await getLastAidaRequest(devToolsPage);
+      assert.exists(lastRequest);
+      assert.include(lastRequest, 'margin: 10px;');
+      assert.notInclude(lastRequest, 'padding: 20px;');
+      assert.notInclude(lastRequest, 'font-weight: bold;');
+      assert.notInclude(lastRequest, 'font-family');
+      assert.notInclude(lastRequest, 'background-image');
     });
   });
 });

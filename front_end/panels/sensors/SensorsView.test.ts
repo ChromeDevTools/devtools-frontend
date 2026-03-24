@@ -49,26 +49,35 @@ describeWithEnvironment('SensorsView', () => {
       const latitudeInput = view.contentElement.querySelector('#latitude-input') as HTMLInputElement;
       assert.exists(latitudeInput);
 
-      latitudeInput.value = 'invalid-value';
+      latitudeInput.value = '100';  // Latitude must be <= 90
       latitudeInput.dispatchEvent(new Event('input'));
-      assert.isTrue(latitudeInput.classList.contains('error-input'));
+      assert.isFalse(latitudeInput.checkValidity());
+      assert.isTrue(latitudeInput.matches(':invalid'));
+
+      latitudeInput.value = '90';  // Inclusive bound
+      latitudeInput.dispatchEvent(new Event('input'));
+      assert.isTrue(latitudeInput.checkValidity());
+      assert.isFalse(latitudeInput.matches(':invalid'));
 
       latitudeInput.value = '45';
       latitudeInput.dispatchEvent(new Event('input'));
-      assert.isFalse(latitudeInput.classList.contains('error-input'));
+      assert.isTrue(latitudeInput.checkValidity());
+      assert.isFalse(latitudeInput.matches(':invalid'));
     });
 
     it('validates timezone input and adds error class if invalid', () => {
       const timezoneInput = view.contentElement.querySelector('#timezone-input') as HTMLInputElement;
       assert.exists(timezoneInput);
 
-      timezoneInput.value = '12345';
+      timezoneInput.value = '12345';  // Pattern requires a-zA-Z
       timezoneInput.dispatchEvent(new Event('input'));
-      assert.isTrue(timezoneInput.classList.contains('error-input'));
+      assert.isFalse(timezoneInput.checkValidity());
+      assert.isTrue(timezoneInput.matches(':invalid'));
 
       timezoneInput.value = 'Europe/Berlin';
       timezoneInput.dispatchEvent(new Event('input'));
-      assert.isFalse(timezoneInput.classList.contains('error-input'));
+      assert.isTrue(timezoneInput.checkValidity());
+      assert.isFalse(timezoneInput.matches(':invalid'));
     });
 
     it('updates emulation.location-override setting on valid input', () => {

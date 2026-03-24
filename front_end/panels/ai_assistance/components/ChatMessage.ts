@@ -1416,6 +1416,7 @@ async function makeTimelineRangeSummaryWidget(widgetData: TimelineRangeSummaryAi
   const thirdPartyTree = new Timeline.ThirdPartyTreeView.ThirdPartyTreeViewWidget();
   const mapper = new Trace.EntityMapper.EntityMapper(parsedTrace);
   thirdPartyTree.setModelWithEvents(eventsArray, parsedTrace, mapper);
+  thirdPartyTree.updateContents(Timeline.TimelineSelection.selectionFromRangeMicroSeconds(bounds.min, bounds.max));
   thirdPartyTree.refreshTree(true);
 
   // clang-format off

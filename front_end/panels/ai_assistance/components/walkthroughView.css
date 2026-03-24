@@ -152,11 +152,8 @@
 
   .walkthrough-inline .steps-container {
     padding: var(--sys-size-6);
-    max-height: 300px; /* Limit height for inline view */
-    overflow-y: auto;
     border-top: 1px solid var(--sys-color-divider);
     background-color: transparent;
-    scrollbar-width: thin;
   }
 
   .walkthrough-inline > summary > devtools-icon {

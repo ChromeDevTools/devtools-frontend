@@ -1332,7 +1332,7 @@ describeWithMockConnection('MultitargetNetworkManager', () => {
   });
 
   it('can reorder the conditions', () => {
-    const requestConditions = new SDK.NetworkManager.RequestConditions();
+    const requestConditions = new SDK.NetworkManager.RequestConditions(Common.Settings.Settings.instance());
     const condition1 = SDK.NetworkManager.RequestCondition.createFromSetting({url: 'url1', enabled: true});
     const condition2 = SDK.NetworkManager.RequestCondition.createFromSetting({url: 'url2', enabled: true});
     const condition3 = SDK.NetworkManager.RequestCondition.createFromSetting({url: 'url3', enabled: true});
@@ -1462,7 +1462,7 @@ describeWithEnvironment('RequestConditions', () => {
         conditions: SDK.NetworkManager.PredefinedThrottlingConditionKey.NO_THROTTLING,
       },
     ]);
-    const conditions = new SDK.NetworkManager.RequestConditions();
+    const conditions = new SDK.NetworkManager.RequestConditions(Common.Settings.Settings.instance());
     const condition = conditions.conditions.next().value as SDK.NetworkManager.RequestCondition;
     assert.exists(condition);
     assert.isUndefined(condition.wildcardURL);
@@ -1472,7 +1472,7 @@ describeWithEnvironment('RequestConditions', () => {
 
   it('loads settings with url', () => {
     getSetting([{enabled: true, url: 'foo'}]);
-    const conditions = new SDK.NetworkManager.RequestConditions();
+    const conditions = new SDK.NetworkManager.RequestConditions(Common.Settings.Settings.instance());
     const condition = conditions.conditions.next().value as SDK.NetworkManager.RequestCondition;
     assert.exists(condition);
     assert.strictEqual(condition.wildcardURL, 'foo');
@@ -1481,7 +1481,7 @@ describeWithEnvironment('RequestConditions', () => {
 
   it('stores settings correctly', () => {
     const setting = getSetting([]);
-    const conditions = new SDK.NetworkManager.RequestConditions();
+    const conditions = new SDK.NetworkManager.RequestConditions(Common.Settings.Settings.instance());
     const patternCondition = SDK.NetworkManager.RequestCondition.createFromSetting({
       enabled: true,
       urlPattern: '*://example.com' as SDK.NetworkManager.URLPatternConstructorString,
@@ -1507,7 +1507,7 @@ describeWithEnvironment('RequestConditions', () => {
 
   it('upgrades url to url pattern', () => {
     const setting = getSetting([]);
-    const conditions = new SDK.NetworkManager.RequestConditions();
+    const conditions = new SDK.NetworkManager.RequestConditions(Common.Settings.Settings.instance());
     const condition = SDK.NetworkManager.RequestCondition.createFromSetting({
       enabled: true,
       url: 'foo',
@@ -1536,7 +1536,7 @@ describeWithEnvironment('RequestConditions', () => {
 
     it('applies blocking, global, and local throttling if individual request throttling is enabled', () => {
       const {agent, setBlockedURLs, emulateNetworkConditions, emulateNetworkConditionsByRule} = stubAgent();
-      const conditions = new SDK.NetworkManager.RequestConditions();
+      const conditions = new SDK.NetworkManager.RequestConditions(Common.Settings.Settings.instance());
       conditions.conditionsEnabled = true;
       conditions.add(SDK.NetworkManager.RequestCondition.createFromSetting({url: 'foo', enabled: true}));
       conditions.add(SDK.NetworkManager.RequestCondition.createFromSetting({url: 'bar', enabled: false}));
@@ -1757,6 +1757,9 @@ describe('NetworkDispatcher', () => {
           new Common.ObjectWrapper.ObjectWrapper();
       networkManager.target = () => ({
         model: () => null,
+        targetManager: () => ({
+          settings: Common.Settings.Settings.instance(),
+        }),
       });
       networkDispatcher = new SDK.NetworkManager.NetworkDispatcher(networkManager as SDK.NetworkManager.NetworkManager);
     });

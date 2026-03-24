@@ -129,13 +129,15 @@ const CONNECTION_TYPES = new Map([
  * to in multiple places, and this ensures we don't have accidental typos which
  * mean extra settings get mistakenly created.
  */
-export function customUserNetworkConditionsSetting(): Common.Settings.Setting<Conditions[]> {
-  return Common.Settings.Settings.instance().moduleSetting<Conditions[]>('custom-network-conditions');
+export function customUserNetworkConditionsSetting(
+    settings: Common.Settings.Settings = Common.Settings.Settings.instance()): Common.Settings.Setting<Conditions[]> {
+  return settings.moduleSetting<Conditions[]>('custom-network-conditions');
 }
 
-export function activeNetworkThrottlingKeySetting(): Common.Settings.Setting<ThrottlingConditionKey> {
-  return Common.Settings.Settings.instance().createSetting(
-      'active-network-condition-key', PredefinedThrottlingConditionKey.NO_THROTTLING);
+export function activeNetworkThrottlingKeySetting(
+    settings: Common.Settings.Settings =
+        Common.Settings.Settings.instance()): Common.Settings.Setting<ThrottlingConditionKey> {
+  return settings.createSetting('active-network-condition-key', PredefinedThrottlingConditionKey.NO_THROTTLING);
 }
 
 export class NetworkManager extends SDKModel<EventTypes> {
@@ -144,8 +146,7 @@ export class NetworkManager extends SDKModel<EventTypes> {
   readonly #networkAgent: ProtocolProxyApi.NetworkApi;
   readonly #bypassServiceWorkerSetting: Common.Settings.Setting<boolean>;
 
-  readonly activeNetworkThrottlingKey: Common.Settings.Setting<ThrottlingConditionKey> =
-      activeNetworkThrottlingKeySetting();
+  readonly activeNetworkThrottlingKey: Common.Settings.Setting<ThrottlingConditionKey>;
 
   constructor(target: Target) {
     super(target);
@@ -154,7 +155,11 @@ export class NetworkManager extends SDKModel<EventTypes> {
     this.#networkAgent = target.networkAgent();
     target.registerNetworkDispatcher(this.dispatcher);
     target.registerFetchDispatcher(this.fetchDispatcher);
-    if (Common.Settings.Settings.instance().moduleSetting('cache-disabled').get()) {
+
+    const settings = this.target().targetManager().settings;
+    this.activeNetworkThrottlingKey = activeNetworkThrottlingKeySetting(settings);
+
+    if (settings.moduleSetting('cache-disabled').get()) {
       void this.#networkAgent.invoke_setCacheDisabled({cacheDisabled: true});
     }
 
@@ -166,16 +171,13 @@ export class NetworkManager extends SDKModel<EventTypes> {
     });
     void this.#networkAgent.invoke_setAttachDebugStack({enabled: true});
 
-    this.#bypassServiceWorkerSetting =
-        Common.Settings.Settings.instance().createSetting('bypass-service-worker', false);
+    this.#bypassServiceWorkerSetting = settings.createSetting('bypass-service-worker', false);
     if (this.#bypassServiceWorkerSetting.get()) {
       this.bypassServiceWorkerChanged();
     }
     this.#bypassServiceWorkerSetting.addChangeListener(this.bypassServiceWorkerChanged, this);
 
-    Common.Settings.Settings.instance()
-        .moduleSetting('cache-disabled')
-        .addChangeListener(this.cacheDisabledSettingChanged, this);
+    settings.moduleSetting('cache-disabled').addChangeListener(this.cacheDisabledSettingChanged, this);
   }
 
   static forRequest(request: NetworkRequest): NetworkManager|null {
@@ -372,9 +374,8 @@ export class NetworkManager extends SDKModel<EventTypes> {
   }
 
   override dispose(): void {
-    Common.Settings.Settings.instance()
-        .moduleSetting('cache-disabled')
-        .removeChangeListener(this.cacheDisabledSettingChanged, this);
+    const settings = this.target().targetManager().settings;
+    settings.moduleSetting('cache-disabled').removeChangeListener(this.cacheDisabledSettingChanged, this);
   }
 
   private bypassServiceWorkerChanged(): void {
@@ -1212,7 +1213,8 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
     this.#manager.dispatchEventToListeners(Events.RequestFinished, networkRequest);
     MultitargetNetworkManager.instance().inflightMainResourceRequests.delete(networkRequest.requestId());
 
-    if (Common.Settings.Settings.instance().moduleSetting('monitoring-xhr-enabled').get() &&
+    const settings = this.#manager.target().targetManager().settings;
+    if (settings.moduleSetting('monitoring-xhr-enabled').get() &&
         networkRequest.resourceType().category() === Common.ResourceType.resourceCategories.XHR) {
       let message;
       const failedToLoad = networkRequest.failed || networkRequest.hasErrorStatusCode();
@@ -1677,7 +1679,9 @@ export class RequestCondition extends Common.ObjectWrapper.ObjectWrapper<Request
   #conditions: ThrottlingConditions;
   #ruleIds = new Set<string>();
 
-  static createFromSetting(setting: RequestConditionsSetting): RequestCondition {
+  static createFromSetting(
+      setting: RequestConditionsSetting,
+      settings: Common.Settings.Settings = Common.Settings.Settings.instance()): RequestCondition {
     if ('urlPattern' in setting) {
       const pattern = RequestURLPattern.create(setting.urlPattern) ?? {
         wildcardURL: setting.urlPattern,
@@ -1685,7 +1689,7 @@ export class RequestCondition extends Common.ObjectWrapper.ObjectWrapper<Request
       };
 
       const conditions = getPredefinedOrBlockingCondition(setting.conditions) ??
-          customUserNetworkConditionsSetting().get().find(condition => condition.key === setting.conditions) ??
+          customUserNetworkConditionsSetting(settings).get().find(condition => condition.key === setting.conditions) ??
           NoThrottlingConditions;
 
       return new this(pattern, setting.enabled, conditions);
@@ -1785,10 +1789,8 @@ export namespace RequestCondition {
 }
 
 export class RequestConditions extends Common.ObjectWrapper.ObjectWrapper<RequestConditions.EventTypes> {
-  readonly #setting =
-      Common.Settings.Settings.instance().createSetting<RequestConditionsSetting[]>('network-blocked-patterns', []);
-  readonly #conditionsEnabledSetting =
-      Common.Settings.Settings.instance().moduleSetting<boolean>('request-blocking-enabled');
+  readonly #setting: Common.Settings.Setting<RequestConditionsSetting[]>;
+  readonly #conditionsEnabledSetting: Common.Settings.Setting<boolean>;
   readonly #conditions: RequestCondition[] = [];
   readonly #requestConditionsById = new Map<string, {
     conditions: Conditions,
@@ -1796,11 +1798,13 @@ export class RequestConditions extends Common.ObjectWrapper.ObjectWrapper<Reques
   }>();
   #conditionsAppliedForTestPromise: Promise<unknown> = Promise.resolve();
 
-  constructor() {
+  constructor(settings: Common.Settings.Settings) {
     super();
+    this.#setting = settings.createSetting<RequestConditionsSetting[]>('network-blocked-patterns', []);
+    this.#conditionsEnabledSetting = settings.moduleSetting<boolean>('request-blocking-enabled');
     for (const condition of this.#setting.get()) {
       try {
-        this.#conditions.push(RequestCondition.createFromSetting(condition));
+        this.#conditions.push(RequestCondition.createFromSetting(condition, settings));
       } catch (e) {
         console.error('Error loading throttling settings: ', e);
       }
@@ -2003,7 +2007,7 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
   readonly inflightMainResourceRequests = new Map<string, NetworkRequest>();
   #networkConditions: Conditions = NoThrottlingConditions;
   #updatingInterceptionPatternsPromise: Promise<void>|null = null;
-  readonly #requestConditions = new RequestConditions();
+  readonly #requestConditions: RequestConditions;
   readonly #urlsForRequestInterceptor:
       Platform.MapUtilities.Multimap<(arg0: InterceptedRequest) => Promise<void>, InterceptionPattern> =
       new Platform.MapUtilities.Multimap();
@@ -2014,6 +2018,8 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
   constructor(targetManager: TargetManager) {
     super();
     this.#targetManager = targetManager;
+    const settings = targetManager.settings;
+    this.#requestConditions = new RequestConditions(settings);
 
     // TODO(allada) Remove these and merge it with request interception.
     const blockedPatternChanged: () => void = () => {
@@ -2264,8 +2270,9 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
   }
 
   private async updateInterceptionPatterns(): Promise<void> {
-    if (!Common.Settings.Settings.instance().moduleSetting('cache-disabled').get()) {
-      Common.Settings.Settings.instance().moduleSetting('cache-disabled').set(true);
+    const settings = this.#targetManager.settings;
+    if (!settings.moduleSetting('cache-disabled').get()) {
+      settings.moduleSetting('cache-disabled').set(true);
     }
     this.#updatingInterceptionPatternsPromise = null;
     const promises = ([] as Array<Promise<unknown>>);

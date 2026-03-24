@@ -821,7 +821,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       return;
     }
     // If the UI changed, we reset the visibility of the AI Walkthrough.
-    this.#clearWalkthrough();
+    this.#resetWalkthrough();
     this.#walkthrough.isInlined = isNarrow;
     this.requestUpdate();
   }
@@ -1563,7 +1563,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     this.#updateConversationState();
   }
 
-  #clearWalkthrough(): void {
+  #resetWalkthrough(): void {
     this.#walkthrough.isExpanded = false;
     this.#walkthrough.activeMessage = null;
   }
@@ -1574,7 +1574,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     }
 
     // Ensure we clear the walkthrough so it doesn't hold onto a chat that is about to be deleted.
-    this.#clearWalkthrough();
+    this.#resetWalkthrough();
 
     void AiAssistanceModel.AiHistoryStorage.AiHistoryStorage.instance().deleteHistoryEntry(this.#conversation.id);
     this.#updateConversationState();
@@ -1599,6 +1599,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
 
   #handleNewChatRequest(): void {
     this.#updateConversationState();
+    this.#resetWalkthrough();
     UI.ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.newChatCreated));
 
     if (Annotations.AnnotationRepository.annotationsEnabled()) {

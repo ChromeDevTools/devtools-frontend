@@ -100,6 +100,7 @@
   .walkthrough-inline {
     border-radius: var(--sys-size-5);
     overflow: hidden;
+    background-color: var(--sys-color-surface2);
     width: fit-content;
 
     &[open] {
@@ -165,6 +166,11 @@
     border-radius: var(--sys-shape-corner-medium-small);
     border-bottom-right-radius: 0;
     border-bottom-left-radius: 0;
+    background: var(--sys-color-surface5);
+  }
+
+  .walkthrough-inline .step {
+    background-color: var(--sys-color-surface5);
   }
 
   .walkthrough-inline[open] > summary > devtools-icon {

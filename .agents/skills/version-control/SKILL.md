@@ -1,6 +1,6 @@
 ---
 name: devtools-version-control
-description: Use when managing branches, creating CLs, or handling stacked changes in the DevTools Gerrit-based workflow.
+description: Use when managing branches, creating and uploading CLs, or handling stacked changes in the DevTools Gerrit-based workflow.
 ---
 
 # DevTools Version Control
@@ -27,7 +27,6 @@ To update your CL after feedback or more work:
 1. Make more changes.
 2. Stage them: `git add <files>`.
 3. Amend the commit: `git commit --amend`.
-4. Upload: `git cl upload`.
 
 ### Stacked CLs
 If CL B depends on CL A:
@@ -52,6 +51,22 @@ git reparent-branch <branch-C>
 To update all your branches with the latest changes from `main` and their respective upstreams:
 ```bash
 git rebase-update
+```
+
+### Initial upload
+When a CL is ready, upload it with:
+```bash
+git cl upload -d --commit-description="<description>"
+```
+* Use the same writing style as the current committer
+* Keep line length below 72
+* Add a "Bug: <issue number>" or "Bug: None" trailer on a separate line.
+* Amend formatter/linter changes and fix linter issues.
+
+### Subsequent upload
+To upload an updated CL:
+```bash
+git cl upload -d -t "<one sentence patch set description>"
 ```
 
 ## Quick Reference

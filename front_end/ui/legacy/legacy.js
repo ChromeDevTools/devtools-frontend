@@ -2506,6 +2506,10 @@ function runNextUpdate() {
         const controller = new AbortController();
         widget2.addUpdateController(controller);
         await widget2.performUpdate(controller.signal);
+      } catch (e) {
+        if (e.name !== "AbortError") {
+          throw e;
+        }
       } finally {
         resolve();
       }
@@ -3217,6 +3221,7 @@ var Widget = class _Widget {
   performUpdate(_signal) {
   }
   addUpdateController(controller) {
+    this.#updateController?.abort();
     this.#updateController = controller;
   }
   cancelUpdateController() {
@@ -20489,6 +20494,10 @@ var treeoutline_css_default = `/*
   padding: 2px 0 0;
 }
 
+:host(devtools-tree) {
+  display: inline-block;
+}
+
 .tree-outline-disclosure:not(.tree-outline-disclosure-hide-overflow) {
   min-width: 100%;
   display: inline-block;
@@ -22169,14 +22178,14 @@ var TreeViewElement = class _TreeViewElement extends HTMLElementWithLightDOMTemp
       return null;
     }
     if (subtreeRoot.role === "tree") {
-      return { treeElement: this.#treeOutline.rootElement(), expanded: false };
+      return { treeElement: this.#treeOutline.rootElement(), expanded: false, classes: subtreeRoot.classList };
     }
     if (subtreeRoot.role !== "group" || !subtreeRoot.parentElement) {
       return null;
     }
     const treeElement = TreeViewTreeElement.get(subtreeRoot.parentElement);
     const expanded = treeElement ? treeElement.expanded : hasBooleanAttribute(subtreeRoot.parentElement, "open");
-    return treeElement ? { expanded, treeElement } : null;
+    return treeElement ? { expanded, treeElement, classes: subtreeRoot.classList } : null;
   }
   updateNode(node, attributeName) {
     while (node?.parentNode && !(node instanceof HTMLElement)) {
@@ -22206,6 +22215,9 @@ var TreeViewElement = class _TreeViewElement extends HTMLElementWithLightDOMTemp
       const parent = this.#getParentTreeElement(node);
       if (!parent) {
         continue;
+      }
+      if (parent.treeElement.childCount() === 0) {
+        parent.treeElement.childrenListElement.classList.add(...parent.classes.values());
       }
       while (nextSibling && nextSibling.nodeType !== Node.ELEMENT_NODE) {
         nextSibling = nextSibling.nextSibling;

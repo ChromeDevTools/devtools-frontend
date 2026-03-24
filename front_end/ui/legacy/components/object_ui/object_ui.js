@@ -61,7 +61,9 @@ __export(ObjectPropertiesSection_exports, {
   ObjectTreeNodeBase: () => ObjectTreeNodeBase,
   Renderer: () => Renderer,
   RootElement: () => RootElement,
-  getObjectPropertiesSectionFrom: () => getObjectPropertiesSectionFrom
+  getObjectPropertiesSectionFrom: () => getObjectPropertiesSectionFrom,
+  objectPropertiesSectionStyles: () => objectPropertiesSection_css_default,
+  objectValueStyles: () => objectValue_css_default
 });
 import * as Common from "./../../../../core/common/common.js";
 import * as Host from "./../../../../core/host/host.js";
@@ -1680,17 +1682,22 @@ var ObjectPropertyTreeElement = class _ObjectPropertyTreeElement extends UI2.Tre
       _ObjectPropertyTreeElement.populateWithProperties(treeElement, properties, skipProto, skipGettersAndSetters, linkifier, emptyPlaceholder);
     }
   }
-  static populateWithProperties(treeNode, { properties, internalProperties, accessors }, skipProto, skipGettersAndSetters, linkifier, emptyPlaceholder) {
+  static *createPropertyNodes({ properties, internalProperties, accessors, arrayRanges }, skipProto, skipGettersAndSetters, linkifier, emptyPlaceholder, isNotDisplayablePropertyCallback) {
+    let empty = true;
+    if (arrayRanges && arrayRanges.length > 0) {
+      empty = false;
+    }
     properties?.sort(ObjectPropertiesSection.compareProperties);
     const entriesProperty = internalProperties?.find(({ property }) => property.name === "[[Entries]]");
     if (entriesProperty) {
       const treeElement = new _ObjectPropertyTreeElement(entriesProperty, linkifier);
       treeElement.setExpandable(true);
       treeElement.expand();
-      treeNode.appendChild(treeElement);
+      empty = false;
+      yield treeElement;
     }
     for (const property of properties ?? []) {
-      if (treeNode instanceof _ObjectPropertyTreeElement && !ObjectPropertiesSection.isDisplayableProperty(property.property, treeNode.property?.property)) {
+      if (isNotDisplayablePropertyCallback?.(property.property)) {
         continue;
       }
       const canShowProperty = property.property.getter || !property.property.isAccessorProperty();
@@ -1702,11 +1709,12 @@ var ObjectPropertyTreeElement = class _ObjectPropertyTreeElement extends UI2.Tre
             element.expand();
           }
         }
-        treeNode.appendChild(element);
+        empty = false;
+        yield element;
       }
     }
     for (const accessor of accessors ?? []) {
-      treeNode.appendChild(new _ObjectPropertyTreeElement(accessor, linkifier));
+      yield new _ObjectPropertyTreeElement(accessor, linkifier);
     }
     for (const property of internalProperties ?? []) {
       const treeElement = new _ObjectPropertyTreeElement(property, linkifier);
@@ -1716,9 +1724,21 @@ var ObjectPropertyTreeElement = class _ObjectPropertyTreeElement extends UI2.Tre
       if (property.property.name === "[[Prototype]]" && skipProto) {
         continue;
       }
-      treeNode.appendChild(treeElement);
+      empty = false;
+      yield treeElement;
     }
-    _ObjectPropertyTreeElement.appendEmptyPlaceholderIfNeeded(treeNode, emptyPlaceholder);
+    if (empty) {
+      const title = document.createElement("div");
+      title.classList.add("gray-info-message");
+      title.textContent = emptyPlaceholder || i18nString2(UIStrings2.noProperties);
+      const infoElement = new UI2.TreeOutline.TreeElement(title);
+      yield infoElement;
+    }
+  }
+  static populateWithProperties(treeNode, children, skipProto, skipGettersAndSetters, linkifier, emptyPlaceholder) {
+    for (const childNode of this.createPropertyNodes(children, skipProto, skipGettersAndSetters, linkifier, emptyPlaceholder, (property) => treeNode instanceof _ObjectPropertyTreeElement && !ObjectPropertiesSection.isDisplayableProperty(property, treeNode.property?.property))) {
+      treeNode.appendChild(childNode);
+    }
   }
   revertHighlightChanges() {
     this.#widget.revertHighlightChanges();
@@ -1743,16 +1763,6 @@ var ObjectPropertyTreeElement = class _ObjectPropertyTreeElement extends UI2.Tre
   // This is called by layout tests
   async applyExpression(expression) {
     await this.property.setValue(expression);
-  }
-  static appendEmptyPlaceholderIfNeeded(treeNode, emptyPlaceholder) {
-    if (treeNode.childCount()) {
-      return;
-    }
-    const title = document.createElement("div");
-    title.classList.add("gray-info-message");
-    title.textContent = emptyPlaceholder || i18nString2(UIStrings2.noProperties);
-    const infoElement = new UI2.TreeOutline.TreeElement(title);
-    treeNode.appendChild(infoElement);
   }
   showAllPropertiesElementSelected(element) {
     this.removeChild(element);

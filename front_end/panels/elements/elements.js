@@ -2342,6 +2342,11 @@ var stylePropertiesTreeOutline_css_default = `/*
     font-style: italic;
     pointer-events: none;
   }
+
+  &.ghost-row {
+    /* As there is no checkbox to the left of the ghost rows, explicitly set padding-left */
+    padding-left: 56px;
+  }
 }
 
 .tree-outline > li {
@@ -2662,14 +2667,14 @@ var CSSValueTraceView = class extends UI6.Widget.VBox {
     this.#view = view;
     this.requestUpdate();
   }
-  async showTrace(property, subexpression, matchedStyles, computedStyles, renderers, expandPercentagesInShorthands, shorthandPositionOffset, focus) {
+  async showTrace(property, subexpression, matchedStyles, computedStyles, renderers, expandPercentagesInShorthands, shorthandPositionOffset, focus, signal) {
     const matchedResult = subexpression === null ? property.parseValue(matchedStyles, computedStyles) : property.parseExpression(subexpression, matchedStyles, computedStyles);
     if (!matchedResult) {
       return void 0;
     }
-    return await this.#showTrace(property, matchedResult, renderers, expandPercentagesInShorthands, shorthandPositionOffset, focus);
+    return await this.#showTrace(property, matchedResult, renderers, expandPercentagesInShorthands, shorthandPositionOffset, focus, signal);
   }
-  async #showTrace(property, matchedResult, renderers, expandPercentagesInShorthands, shorthandPositionOffset, focus) {
+  async #showTrace(property, matchedResult, renderers, expandPercentagesInShorthands, shorthandPositionOffset, focus, signal) {
     this.#highlighting = new Highlighting();
     const rendererMap = new Map(renderers.map((r) => [r.matchType, r]));
     const substitutions = [];
@@ -2685,7 +2690,8 @@ var CSSValueTraceView = class extends UI6.Widget.VBox {
         void 0,
         /* options */
         {},
-        tracing
+        tracing,
+        signal
       );
       substitutions.push(Renderer.render(matchedResult.ast.tree, context).nodes);
     }
@@ -2700,7 +2706,8 @@ var CSSValueTraceView = class extends UI6.Widget.VBox {
         void 0,
         /* options */
         {},
-        tracing
+        tracing,
+        signal
       );
       evaluations.push(Renderer.render(matchedResult.ast.tree, context).nodes);
       asyncCallbackResults.push(tracing.runAsyncEvaluations());
@@ -2713,7 +2720,7 @@ var CSSValueTraceView = class extends UI6.Widget.VBox {
       }
     }
     if (this.#substitutions.length === 0 && this.#evaluations.length === 0) {
-      const context = new RenderingContext(matchedResult.ast, property, rendererMap, matchedResult);
+      const context = new RenderingContext(matchedResult.ast, property, rendererMap, matchedResult, void 0, {}, void 0, signal);
       this.#evaluations.push(Renderer.render(matchedResult.ast.tree, context).nodes);
     }
     this.#pendingFocus = focus;
@@ -3388,6 +3395,9 @@ var LightDarkColorRenderer = class extends rendererBase(SDK6.CSSPropertyParserMa
   }
   async applyColorScheme(match, context, colorSwatch, light, dark, lightControls, darkControls) {
     const activeColor = await this.#activeColor(match);
+    if (context.signal?.aborted) {
+      return;
+    }
     if (!activeColor) {
       return;
     }
@@ -3492,6 +3502,9 @@ var ColorMixRenderer = class extends rendererBase(SDK6.CSSPropertyParserMatchers
         context.addControl("color", swatch2);
         const asyncEvalCallback = async () => {
           const results = await this.#stylesContainer.cssModel()?.resolveValues(void 0, nodeId, colorMixText);
+          if (context.signal?.aborted) {
+            return false;
+          }
           if (results) {
             const color = Common2.Color.parse(results[0]);
             if (color) {
@@ -4117,6 +4130,9 @@ var LengthRenderer = class extends rendererBase(SDK6.CSSPropertyParserMatchers.L
   }
   async #applyEvaluation(valueElement, match, context) {
     const pixelValue = await resolveValues(this.#stylesContainer, this.#propertyName, match, context, match.text);
+    if (context.signal?.aborted) {
+      return false;
+    }
     if (pixelValue?.[0] && pixelValue?.[0] !== match.text) {
       valueElement.textContent = pixelValue[0];
       return true;
@@ -4135,6 +4151,9 @@ var LengthRenderer = class extends rendererBase(SDK6.CSSPropertyParserMatchers.L
   }
   async getTooltipValue(tooltip, match, context) {
     const pixelValue = await resolveValues(this.#stylesContainer, this.#propertyName, match, context, match.text);
+    if (context.signal?.aborted) {
+      return;
+    }
     if (!pixelValue) {
       return;
     }
@@ -4186,6 +4205,9 @@ var BaseFunctionRenderer = class extends rendererBase(SDK6.CSSPropertyParserMatc
       return null;
     });
     const evaled = await resolveValues(this.#stylesContainer, this.#propertyName, match, context, value5);
+    if (context.signal?.aborted) {
+      return false;
+    }
     if (!evaled?.[0] || evaled[0] === value5) {
       return false;
     }
@@ -4196,6 +4218,9 @@ var BaseFunctionRenderer = class extends rendererBase(SDK6.CSSPropertyParserMatc
     const values = match.args.map((arg) => context.matchedResult.getComputedTextRange(arg[0], arg[arg.length - 1]));
     values.unshift(context.matchedResult.getComputedText(match.node));
     const evaledArgs = await resolveValues(this.#stylesContainer, this.#propertyName, match, context, ...values);
+    if (context.signal?.aborted) {
+      return;
+    }
     if (!evaledArgs) {
       return;
     }
@@ -5544,6 +5569,7 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI7.TreeO
     if (this.prompt) {
       this.prompt.detach();
       this.prompt = null;
+      this.#clearGhostTextInValue();
     }
   }
   styleTextAppliedForTest() {
@@ -8437,7 +8463,6 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common5.ObjectWrapper.e
   imagePreviewPopover;
   #webCustomData;
   activeCSSAngle = null;
-  #updateAbortController;
   constructor(computedStyleModel) {
     super(computedStyleModel, { delegatesFocus: true });
     this.setMinimumSize(96, 26);
@@ -8519,7 +8544,6 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common5.ObjectWrapper.e
   forceUpdate() {
     this.needsForceUpdate = true;
     this.#swatchPopoverHelper.hide();
-    this.#updateAbortController?.abort();
     this.resetCache();
     this.requestUpdate();
   }
@@ -8675,10 +8699,8 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common5.ObjectWrapper.e
     this.swatchPopoverHelper().reposition();
     this.nodeStylesUpdatedForTest(node, false);
   }
-  async performUpdate() {
-    this.#updateAbortController?.abort();
-    this.#updateAbortController = new AbortController();
-    await this.#innerDoUpdate(this.#updateAbortController.signal);
+  async performUpdate(signal) {
+    await this.#innerDoUpdate(signal);
     const scrollerElementLists = this?.contentElement?.enclosingNodeOrSelfWithClass("style-panes-wrapper")?.parentElement?.querySelectorAll(".style-panes-wrapper");
     if (scrollerElementLists.length > 0) {
       for (const element of scrollerElementLists) {
@@ -8691,7 +8713,7 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common5.ObjectWrapper.e
     if (!this.initialUpdateCompleted) {
       window.setTimeout(
         () => {
-          if (signal.aborted) {
+          if (signal?.aborted) {
             return;
           }
           if (!this.initialUpdateCompleted) {
@@ -8703,9 +8725,7 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common5.ObjectWrapper.e
       );
     }
     const matchedStyles = await this.fetchMatchedCascade();
-    if (signal.aborted) {
-      return;
-    }
+    signal?.throwIfAborted();
     this.matchedStyles = matchedStyles;
     const nodeId = this.node()?.id;
     const parentNodeId = this.matchedStyles?.getParentLayoutNodeId();
@@ -8714,13 +8734,9 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common5.ObjectWrapper.e
       this.fetchComputedStylesFor(parentNodeId),
       this.fetchComputedStyleExtraFieldsFor(nodeId)
     ]);
-    if (signal.aborted) {
-      return;
-    }
+    signal?.throwIfAborted();
     await this.innerRebuildUpdate(signal, this.matchedStyles, computedStyles, parentsComputedStyles, computedStyleExtraFields);
-    if (signal.aborted) {
-      return;
-    }
+    signal?.throwIfAborted();
     if (!this.initialUpdateCompleted) {
       this.initialUpdateCompleted = true;
       this.appendToolbarItem(this.createRenderingShortcuts());
@@ -8982,10 +8998,8 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common5.ObjectWrapper.e
       this.noMatchesElement.classList.remove("hidden");
       return;
     }
-    const blocks = await this.rebuildSectionsForMatchedStyleRules(matchedStyles, computedStyles, parentsComputedStyles, computedStyleExtraFields);
-    if (signal.aborted) {
-      return;
-    }
+    const blocks = await this.rebuildSectionsForMatchedStyleRules(signal, matchedStyles, computedStyles, parentsComputedStyles, computedStyleExtraFields);
+    signal?.throwIfAborted();
     this.sectionBlocks = blocks;
     const newSections = this.sectionBlocks.map((block) => block.sections).flat();
     const styleEditorWidget = StyleEditorWidget.instance();
@@ -9043,9 +9057,9 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common5.ObjectWrapper.e
     this.matchedStyles = matchedStyles;
   }
   rebuildSectionsForMatchedStyleRulesForTest(matchedStyles, computedStyles, parentsComputedStyles, computedStyleExtraFields) {
-    return this.rebuildSectionsForMatchedStyleRules(matchedStyles, computedStyles, parentsComputedStyles, computedStyleExtraFields);
+    return this.rebuildSectionsForMatchedStyleRules(void 0, matchedStyles, computedStyles, parentsComputedStyles, computedStyleExtraFields);
   }
-  async rebuildSectionsForMatchedStyleRules(matchedStyles, computedStyles, parentsComputedStyles, computedStyleExtraFields) {
+  async rebuildSectionsForMatchedStyleRules(signal, matchedStyles, computedStyles, parentsComputedStyles, computedStyleExtraFields) {
     if (this.idleCallbackManager) {
       this.idleCallbackManager.discard();
     }
@@ -9087,6 +9101,9 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common5.ObjectWrapper.e
       const lastBlock = blocks[blocks.length - 1];
       if (lastBlock && (!isTransitionOrAnimationStyle || style.allProperties().length > 0)) {
         this.idleCallbackManager.schedule(() => {
+          if (signal?.aborted) {
+            return;
+          }
           const section4 = new StylePropertiesSection(this, matchedStyles, style, sectionIdx, computedStyles, parentsComputedStyles, computedStyleExtraFields);
           sectionIdx++;
           lastBlock.sections.push(section4);
@@ -9140,6 +9157,9 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common5.ObjectWrapper.e
         addLayerSeparator(style);
         const lastBlock = blocks[blocks.length - 1];
         this.idleCallbackManager.schedule(() => {
+          if (signal?.aborted) {
+            return;
+          }
           const section4 = new HighlightPseudoStylePropertiesSection(this, matchedStyles, style, sectionIdx, computedStyles, parentsComputedStyles, computedStyleExtraFields);
           sectionIdx++;
           lastBlock.sections.push(section4);
@@ -9150,6 +9170,9 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common5.ObjectWrapper.e
       const block = SectionBlock.createKeyframesBlock(keyframesRule.name().text);
       for (const keyframe of keyframesRule.keyframes()) {
         this.idleCallbackManager.schedule(() => {
+          if (signal?.aborted) {
+            return;
+          }
           block.sections.push(new KeyframePropertiesSection(this, matchedStyles, keyframe.style, sectionIdx));
           sectionIdx++;
         });
@@ -9162,6 +9185,9 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common5.ObjectWrapper.e
       const block = SectionBlock.createAtRuleBlock(expandedByDefault);
       for (const atRule of atRules) {
         this.idleCallbackManager.schedule(() => {
+          if (signal?.aborted) {
+            return;
+          }
           block.sections.push(new AtRuleSection(this, matchedStyles, atRule.style, sectionIdx, expandedByDefault));
           sectionIdx++;
         });
@@ -9171,6 +9197,9 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common5.ObjectWrapper.e
     for (const positionTryRule of matchedStyles.positionTryRules()) {
       const block = SectionBlock.createPositionTryBlock(positionTryRule.name().text);
       this.idleCallbackManager.schedule(() => {
+        if (signal?.aborted) {
+          return;
+        }
         block.sections.push(new PositionTryRuleSection(this, matchedStyles, positionTryRule.style, sectionIdx, positionTryRule.active()));
         sectionIdx++;
       });
@@ -9181,6 +9210,9 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common5.ObjectWrapper.e
       const block = SectionBlock.createRegisteredPropertiesBlock(expandedByDefault);
       for (const propertyRule of matchedStyles.registeredProperties()) {
         this.idleCallbackManager.schedule(() => {
+          if (signal?.aborted) {
+            return;
+          }
           block.sections.push(new RegisteredPropertiesSection(this, matchedStyles, propertyRule.style(), sectionIdx, propertyRule.propertyName(), expandedByDefault));
           sectionIdx++;
         });
@@ -9192,6 +9224,9 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common5.ObjectWrapper.e
       const block = SectionBlock.createFunctionBlock(expandedByDefault);
       for (const functionRule of matchedStyles.functionRules()) {
         this.idleCallbackManager.schedule(() => {
+          if (signal?.aborted) {
+            return;
+          }
           block.sections.push(new FunctionRuleSection(this, matchedStyles, functionRule.style, functionRule.children(), sectionIdx, functionRule.nameWithParameters(), expandedByDefault));
           sectionIdx++;
         });
@@ -10424,7 +10459,8 @@ var RenderingContext = class {
   cssControls;
   options;
   tracing;
-  constructor(ast, property, renderers, matchedResult, cssControls, options = {}, tracing) {
+  signal;
+  constructor(ast, property, renderers, matchedResult, cssControls, options = {}, tracing, signal) {
     this.ast = ast;
     this.property = property;
     this.renderers = renderers;
@@ -10432,6 +10468,7 @@ var RenderingContext = class {
     this.cssControls = cssControls;
     this.options = options;
     this.tracing = tracing;
+    this.signal = signal;
   }
   addControl(cssType, control) {
     if (this.cssControls) {
@@ -10472,17 +10509,17 @@ var Renderer = class _Renderer extends SDK9.CSSPropertyParser.TreeWalker {
   #matchedResult;
   #output = [];
   #context;
-  constructor(ast, property, renderers, matchedResult, cssControls, options, tracing) {
+  constructor(ast, property, renderers, matchedResult, cssControls, options, tracing, signal) {
     super(ast);
     this.#matchedResult = matchedResult;
-    this.#context = new RenderingContext(this.ast, property, renderers, this.#matchedResult, cssControls, options, tracing);
+    this.#context = new RenderingContext(this.ast, property, renderers, this.#matchedResult, cssControls, options, tracing, signal);
   }
   static render(nodeOrNodes, context) {
     if (!Array.isArray(nodeOrNodes)) {
       return this.render([nodeOrNodes], context);
     }
     const cssControls = new SDK9.CSSPropertyParser.CSSControlMap();
-    const renderers = nodeOrNodes.map((node) => this.walkExcludingSuccessors(context.ast.subtree(node), context.property, context.renderers, context.matchedResult, cssControls, context.options, context.tracing));
+    const renderers = nodeOrNodes.map((node) => this.walkExcludingSuccessors(context.ast.subtree(node), context.property, context.renderers, context.matchedResult, cssControls, context.options, context.tracing, context.signal));
     const nodes = renderers.map((node) => node.#output).reduce(mergeWithSpacing, []);
     return { nodes, cssControls };
   }
@@ -10529,7 +10566,7 @@ var Renderer = class _Renderer extends SDK9.CSSPropertyParser.TreeWalker {
   //
   // More general, longer matches take precedence over shorter, more specific matches. Whitespaces are normalized, for
   // unmatched text and around rendered matching results.
-  static renderValueElement(property, matchedResult, renderers, tracing) {
+  static renderValueElement(property, matchedResult, renderers, tracing, signal) {
     const valueElement = document.createElement("span");
     valueElement.setAttribute("jslog", `${VisualLogging6.value().track({
       change: true,
@@ -10538,12 +10575,12 @@ var Renderer = class _Renderer extends SDK9.CSSPropertyParser.TreeWalker {
     UI11.ARIAUtils.setLabel(valueElement, i18nString7(UIStrings7.cssPropertyValue, { PH1: property.value }));
     valueElement.className = "value";
     valueElement.tabIndex = -1;
-    const { nodes, cssControls } = this.renderValueNodes(property, matchedResult, renderers, tracing);
+    const { nodes, cssControls } = this.renderValueNodes(property, matchedResult, renderers, tracing, signal);
     nodes.forEach((node) => valueElement.appendChild(node));
     valueElement.normalize();
     return { valueElement, cssControls };
   }
-  static renderValueNodes(property, matchedResult, renderers, tracing) {
+  static renderValueNodes(property, matchedResult, renderers, tracing, signal) {
     if (!matchedResult) {
       return { nodes: [document.createTextNode(property.value)], cssControls: /* @__PURE__ */ new Map() };
     }
@@ -10551,7 +10588,7 @@ var Renderer = class _Renderer extends SDK9.CSSPropertyParser.TreeWalker {
     for (const renderer of renderers) {
       rendererMap.set(renderer.matchType, renderer);
     }
-    const context = new RenderingContext(matchedResult.ast, property instanceof SDK9.CSSProperty.CSSProperty ? property : null, rendererMap, matchedResult, void 0, {}, tracing);
+    const context = new RenderingContext(matchedResult.ast, property instanceof SDK9.CSSProperty.CSSProperty ? property : null, rendererMap, matchedResult, void 0, {}, tracing, signal);
     return _Renderer.render([matchedResult.ast.tree, ...matchedResult.ast.trailingNodes], context);
   }
 };
@@ -19633,7 +19670,7 @@ import * as Platform11 from "./../../core/platform/platform.js";
 import * as SDK21 from "./../../core/sdk/sdk.js";
 import * as ObjectUI from "./../../ui/legacy/components/object_ui/object_ui.js";
 import * as UI24 from "./../../ui/legacy/legacy.js";
-import { html as html15, nothing as nothing7, render as render15 } from "./../../ui/lit/lit.js";
+import { Directives as Directives3, html as html15, nothing as nothing7, render as render15 } from "./../../ui/lit/lit.js";
 import * as VisualLogging15 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/elements/propertiesWidget.css.js
@@ -19662,6 +19699,7 @@ var propertiesWidget_css_default = `/*
 // gen/front_end/panels/elements/PropertiesWidget.js
 var OBJECT_GROUP_NAME = "properties-sidebar-pane";
 var { bindToSetting: bindToSetting3 } = UI24.UIUtils;
+var { repeat: repeat2 } = Directives3;
 var UIStrings18 = {
   /**
    * @description Text on the checkbox in the Properties tab of the Elements panel, which controls whether
@@ -19703,7 +19741,18 @@ var DEFAULT_VIEW10 = (input, _output, target) => {
       ${input.objectTree && input.allChildrenFiltered ? html15`
         <div class="gray-info-message">${i18nString17(UIStrings18.noMatchingProperty)}</div>
       ` : nothing7}
-      ${input.treeOutline.element}
+      <devtools-tree .template=${html15`
+        <ul role=tree class="source-code object-properties-section">
+          <style>${ObjectUI.ObjectPropertiesSection.objectValueStyles}</style>;
+          <style>${ObjectUI.ObjectPropertiesSection.objectPropertiesSectionStyles}</style>;
+          ${repeat2(ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement.createPropertyNodes(
+    input.objectTree?.children ?? {},
+    true,
+    true
+    /* skipGettersAndSetters */
+  ), (node) => html15`<devtools-tree-wrapper .treeElement=${node}></devtools-tree-wrapper>`)}
+        </ul>
+      `}></devtools-tree>
     </div>`, target);
 };
 var getShowAllPropertiesSetting = () => Common16.Settings.Settings.instance().createSetting(
@@ -19803,25 +19852,12 @@ var PropertiesWidget = class extends UI24.Widget.VBox {
   }
   async performUpdate() {
     await this.#updateNodeIfRequired();
-    if (!this.#objectTree) {
-      this.treeOutline.removeChildren();
-    } else {
-      const treeElement = this.treeOutline.rootElement();
-      treeElement.removeChildren();
-      ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement.populateWithProperties(
-        treeElement,
-        await this.#objectTree.populateChildrenIfNeeded(),
-        true,
-        true
-        /* skipGettersAndSetters */
-      );
-    }
+    await this.#objectTree?.populateChildrenIfNeeded();
     const allChildrenFiltered = !(this.#objectTree?.children?.accessors?.some((c) => !c.isFiltered) || this.#objectTree?.children?.arrayRanges?.some(() => true) || this.#objectTree?.children?.internalProperties?.some((c) => !c.isFiltered) || this.#objectTree?.children?.properties?.some((c) => !c.isFiltered));
     this.#view({
       onFilterChanged: this.onFilterChanged.bind(this),
       onRegexToggled: this.onRegexToggled.bind(this),
       isRegex: this.#isRegex,
-      treeOutline: this.treeOutline,
       allChildrenFiltered,
       objectTree: this.#objectTree
     }, {}, this.contentElement);
@@ -20849,7 +20885,7 @@ var StandaloneStylesContainer = class extends Common18.ObjectWrapper.eventMixin(
     }
     return this.#webCustomData;
   }
-  async #updateSections() {
+  async #updateSections(signal) {
     for (const section4 of this.#sections) {
       section4.dispose();
     }
@@ -20860,12 +20896,18 @@ var StandaloneStylesContainer = class extends Common18.ObjectWrapper.eventMixin(
     }
     const cssModel = node.domModel().cssModel();
     const matchedStyles = await cssModel.cachedMatchedCascadeForNode(node);
+    if (signal?.aborted) {
+      return;
+    }
     const parentNodeId = matchedStyles?.getParentLayoutNodeId();
     const [parentStyles, computedStyles, extraStyles] = await Promise.all([
       parentNodeId ? cssModel.getComputedStyle(parentNodeId) : null,
       cssModel.getComputedStyle(node.id),
       cssModel.getComputedStyleExtraFields(node.id)
     ]);
+    if (signal?.aborted) {
+      return;
+    }
     if (!matchedStyles) {
       return;
     }
@@ -20873,6 +20915,7 @@ var StandaloneStylesContainer = class extends Common18.ObjectWrapper.eventMixin(
     let sectionIdx = 0;
     for (const style of matchedStyles.nodeStyles()) {
       const section4 = new StylePropertiesSection(this, matchedStyles, style, sectionIdx++, computedStyles, parentStyles, extraStyles);
+      section4.update(true);
       newSections.push(section4);
       this.sectionByElement.set(section4.element, section4);
     }
@@ -20880,7 +20923,9 @@ var StandaloneStylesContainer = class extends Common18.ObjectWrapper.eventMixin(
     this.#updateFilter();
     this.swatchPopoverHelper().reposition();
   }
-  async performUpdate() {
+  async performUpdate(signal) {
+    await this.#updateSections(signal);
+    signal?.throwIfAborted();
     const viewInput = {
       sections: this.#sections.filter((section4) => !section4.isHidden())
     };
@@ -20907,6 +20952,7 @@ var StandaloneStylesContainer = class extends Common18.ObjectWrapper.eventMixin(
       return;
     }
     this.#computedStyleModelInternal.node = node;
+    this.forceUpdate();
   }
   set filter(regex) {
     this.#filter = regex;

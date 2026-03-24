@@ -795,7 +795,17 @@ export class PerformanceAgent extends AiAgent {
                 Host.userMetrics.performanceAIMainThreadActivityResponseSize(byteCount);
                 const key = `getMainThreadTrackSummary({min: ${bounds.min}, max: ${bounds.max}})`;
                 this.#cacheFunctionResult(focus, key, summary);
-                return { result: { summary } };
+                return {
+                    result: { summary },
+                    widgets: [{
+                            name: 'TIMELINE_RANGE_SUMMARY',
+                            data: {
+                                parsedTrace,
+                                bounds,
+                                track: 'main',
+                            },
+                        }],
+                };
             },
         });
         this.declareFunction('getNetworkTrackSummary', {
@@ -843,7 +853,9 @@ export class PerformanceAgent extends AiAgent {
                 Host.userMetrics.performanceAINetworkSummaryResponseSize(byteCount);
                 const key = `getNetworkTrackSummary({min: ${bounds.min}, max: ${bounds.max}})`;
                 this.#cacheFunctionResult(focus, key, summary);
-                return { result: { summary } };
+                return {
+                    result: { summary },
+                };
             },
         });
         this.declareFunction('getDetailedCallTree', {

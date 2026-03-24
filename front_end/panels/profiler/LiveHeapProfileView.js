@@ -91,7 +91,6 @@ export class LiveHeapProfileView extends UI.Widget.VBox {
     }
     createDataGrid() {
         const defaultColumnConfig = {
-            id: '',
             title: Common.UIString.LocalizedEmptyString,
             fixedWidth: true,
             sortable: true,

@@ -91,6 +91,11 @@ export default `/*
     font-style: italic;
     pointer-events: none;
   }
+
+  &.ghost-row {
+    /* As there is no checkbox to the left of the ghost rows, explicitly set padding-left */
+    padding-left: 56px;
+  }
 }
 
 .tree-outline > li {

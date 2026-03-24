@@ -16964,6 +16964,12 @@
   "panels/webauthn/WebauthnPane.ts | signCount": {
     "message": "Signature Count"
   },
+  "panels/webauthn/WebauthnPane.ts | supportsHmacSecret": {
+    "message": "Supports hmac-secret"
+  },
+  "panels/webauthn/WebauthnPane.ts | supportsHmacSecretMc": {
+    "message": "Supports hmac-secret-mc"
+  },
   "panels/webauthn/WebauthnPane.ts | supportsLargeBlob": {
     "message": "Supports large blob"
   },
@@ -17587,6 +17593,9 @@
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | sSelected": {
     "message": "{PH1} selected"
+  },
+  "ui/legacy/components/perf_ui/GCActionDelegate.ts | garbageCollectionCompleted": {
+    "message": "Garbage collection completed"
   },
   "ui/legacy/components/perf_ui/NetworkPriorities.ts | high": {
     "message": "High"

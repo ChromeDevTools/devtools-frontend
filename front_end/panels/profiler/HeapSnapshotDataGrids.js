@@ -525,28 +525,27 @@ export class HeapSnapshotViewportDataGrid extends HeapSnapshotSortableDataGrid {
 }
 export class HeapSnapshotContainmentDataGrid extends HeapSnapshotSortableDataGrid {
     constructor(heapProfilerModel, dataDisplayDelegate, displayName, columns) {
-        columns =
-            columns || [
-                { id: 'object', title: i18nString(UIStrings.object), disclosure: true, sortable: true },
-                { id: 'distance', title: i18nString(UIStrings.distance), width: '70px', sortable: true, fixedWidth: true },
-                {
-                    id: 'shallowSize',
-                    title: i18nString(UIStrings.shallowSize),
-                    width: '110px',
-                    sortable: true,
-                    fixedWidth: true,
-                },
-                {
-                    id: 'retainedSize',
-                    title: i18nString(UIStrings.retainedSize),
-                    width: '110px',
-                    sortable: true,
-                    fixedWidth: true,
-                    sort: DataGrid.DataGrid.Order.Descending,
-                },
-            ];
-        const dataGridParameters = { displayName, columns };
-        super(heapProfilerModel, dataDisplayDelegate, dataGridParameters);
+        const defaultColumns = [
+            { id: 'object', title: i18nString(UIStrings.object), disclosure: true, sortable: true },
+            { id: 'distance', title: i18nString(UIStrings.distance), width: '70px', sortable: true, fixedWidth: true },
+            {
+                id: 'shallowSize',
+                title: i18nString(UIStrings.shallowSize),
+                width: '110px',
+                sortable: true,
+                fixedWidth: true,
+            },
+            {
+                id: 'retainedSize',
+                title: i18nString(UIStrings.retainedSize),
+                width: '110px',
+                sortable: true,
+                fixedWidth: true,
+                sort: DataGrid.DataGrid.Order.Descending,
+            },
+        ];
+        columns = columns || defaultColumns;
+        super(heapProfilerModel, dataDisplayDelegate, { displayName, columns });
     }
     async setDataSource(snapshot, nodeIndex, nodeId) {
         this.snapshot = snapshot;
@@ -641,7 +640,13 @@ export class HeapSnapshotConstructorsDataGrid extends HeapSnapshotViewportDataGr
         const columns = [
             { id: 'object', title: i18nString(UIStrings.constructorString), disclosure: true, sortable: true },
             { id: 'distance', title: i18nString(UIStrings.distance), width: '70px', sortable: true, fixedWidth: true },
-            { id: 'shallowSize', title: i18nString(UIStrings.shallowSize), width: '110px', sortable: true, fixedWidth: true },
+            {
+                id: 'shallowSize',
+                title: i18nString(UIStrings.shallowSize),
+                width: '110px',
+                sortable: true,
+                fixedWidth: true,
+            },
             {
                 id: 'retainedSize',
                 title: i18nString(UIStrings.retainedSize),

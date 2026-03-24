@@ -180,7 +180,6 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsS
     imagePreviewPopover;
     #webCustomData;
     activeCSSAngle = null;
-    #updateAbortController;
     constructor(computedStyleModel) {
         super(computedStyleModel, { delegatesFocus: true });
         this.setMinimumSize(96, 26);
@@ -265,7 +264,6 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsS
     forceUpdate() {
         this.needsForceUpdate = true;
         this.#swatchPopoverHelper.hide();
-        this.#updateAbortController?.abort();
         this.resetCache();
         this.requestUpdate();
     }
@@ -420,10 +418,8 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsS
         this.swatchPopoverHelper().reposition();
         this.nodeStylesUpdatedForTest(node, false);
     }
-    async performUpdate() {
-        this.#updateAbortController?.abort();
-        this.#updateAbortController = new AbortController();
-        await this.#innerDoUpdate(this.#updateAbortController.signal);
+    async performUpdate(signal) {
+        await this.#innerDoUpdate(signal);
         // Hide all popovers when scrolling.
         // Styles and Computed panels both have popover (e.g. imagePreviewPopover),
         // so we need to bind both scroll events.
@@ -439,7 +435,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsS
     async #innerDoUpdate(signal) {
         if (!this.initialUpdateCompleted) {
             window.setTimeout(() => {
-                if (signal.aborted) {
+                if (signal?.aborted) {
                     return;
                 }
                 if (!this.initialUpdateCompleted) {
@@ -449,9 +445,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsS
             }, 200 /* only spin for loading time > 200ms to avoid unpleasant render flashes */);
         }
         const matchedStyles = await this.fetchMatchedCascade();
-        if (signal.aborted) {
-            return;
-        }
+        signal?.throwIfAborted();
         this.matchedStyles = matchedStyles;
         const nodeId = this.node()?.id;
         const parentNodeId = this.matchedStyles?.getParentLayoutNodeId();
@@ -459,13 +453,9 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsS
             this.fetchComputedStylesFor(nodeId), this.fetchComputedStylesFor(parentNodeId),
             this.fetchComputedStyleExtraFieldsFor(nodeId)
         ]);
-        if (signal.aborted) {
-            return;
-        }
+        signal?.throwIfAborted();
         await this.innerRebuildUpdate(signal, this.matchedStyles, computedStyles, parentsComputedStyles, computedStyleExtraFields);
-        if (signal.aborted) {
-            return;
-        }
+        signal?.throwIfAborted();
         if (!this.initialUpdateCompleted) {
             this.initialUpdateCompleted = true;
             this.appendToolbarItem(this.createRenderingShortcuts());
@@ -755,10 +745,8 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsS
             this.noMatchesElement.classList.remove('hidden');
             return;
         }
-        const blocks = await this.rebuildSectionsForMatchedStyleRules(matchedStyles, computedStyles, parentsComputedStyles, computedStyleExtraFields);
-        if (signal.aborted) {
-            return;
-        }
+        const blocks = await this.rebuildSectionsForMatchedStyleRules(signal, matchedStyles, computedStyles, parentsComputedStyles, computedStyleExtraFields);
+        signal?.throwIfAborted();
         this.sectionBlocks = blocks;
         // Style sections maybe re-created when flexbox editor is activated.
         // With the following code we re-bind the flexbox editor to the new
@@ -822,9 +810,9 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsS
         this.matchedStyles = matchedStyles;
     }
     rebuildSectionsForMatchedStyleRulesForTest(matchedStyles, computedStyles, parentsComputedStyles, computedStyleExtraFields) {
-        return this.rebuildSectionsForMatchedStyleRules(matchedStyles, computedStyles, parentsComputedStyles, computedStyleExtraFields);
+        return this.rebuildSectionsForMatchedStyleRules(undefined, matchedStyles, computedStyles, parentsComputedStyles, computedStyleExtraFields);
     }
-    async rebuildSectionsForMatchedStyleRules(matchedStyles, computedStyles, parentsComputedStyles, computedStyleExtraFields) {
+    async rebuildSectionsForMatchedStyleRules(signal, matchedStyles, computedStyles, parentsComputedStyles, computedStyleExtraFields) {
         if (this.idleCallbackManager) {
             this.idleCallbackManager.discard();
         }
@@ -869,6 +857,9 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsS
             const lastBlock = blocks[blocks.length - 1];
             if (lastBlock && (!isTransitionOrAnimationStyle || style.allProperties().length > 0)) {
                 this.idleCallbackManager.schedule(() => {
+                    if (signal?.aborted) {
+                        return;
+                    }
                     const section = new StylePropertiesSection(this, matchedStyles, style, sectionIdx, computedStyles, parentsComputedStyles, computedStyleExtraFields);
                     sectionIdx++;
                     lastBlock.sections.push(section);
@@ -927,6 +918,9 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsS
                 addLayerSeparator(style);
                 const lastBlock = blocks[blocks.length - 1];
                 this.idleCallbackManager.schedule(() => {
+                    if (signal?.aborted) {
+                        return;
+                    }
                     const section = new HighlightPseudoStylePropertiesSection(this, matchedStyles, style, sectionIdx, computedStyles, parentsComputedStyles, computedStyleExtraFields);
                     sectionIdx++;
                     lastBlock.sections.push(section);
@@ -937,6 +931,9 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsS
             const block = SectionBlock.createKeyframesBlock(keyframesRule.name().text);
             for (const keyframe of keyframesRule.keyframes()) {
                 this.idleCallbackManager.schedule(() => {
+                    if (signal?.aborted) {
+                        return;
+                    }
                     block.sections.push(new KeyframePropertiesSection(this, matchedStyles, keyframe.style, sectionIdx));
                     sectionIdx++;
                 });
@@ -949,6 +946,9 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsS
             const block = SectionBlock.createAtRuleBlock(expandedByDefault);
             for (const atRule of atRules) {
                 this.idleCallbackManager.schedule(() => {
+                    if (signal?.aborted) {
+                        return;
+                    }
                     block.sections.push(new AtRuleSection(this, matchedStyles, atRule.style, sectionIdx, expandedByDefault));
                     sectionIdx++;
                 });
@@ -958,6 +958,9 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsS
         for (const positionTryRule of matchedStyles.positionTryRules()) {
             const block = SectionBlock.createPositionTryBlock(positionTryRule.name().text);
             this.idleCallbackManager.schedule(() => {
+                if (signal?.aborted) {
+                    return;
+                }
                 block.sections.push(new PositionTryRuleSection(this, matchedStyles, positionTryRule.style, sectionIdx, positionTryRule.active()));
                 sectionIdx++;
             });
@@ -968,6 +971,9 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsS
             const block = SectionBlock.createRegisteredPropertiesBlock(expandedByDefault);
             for (const propertyRule of matchedStyles.registeredProperties()) {
                 this.idleCallbackManager.schedule(() => {
+                    if (signal?.aborted) {
+                        return;
+                    }
                     block.sections.push(new RegisteredPropertiesSection(this, matchedStyles, propertyRule.style(), sectionIdx, propertyRule.propertyName(), expandedByDefault));
                     sectionIdx++;
                 });
@@ -979,6 +985,9 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsS
             const block = SectionBlock.createFunctionBlock(expandedByDefault);
             for (const functionRule of matchedStyles.functionRules()) {
                 this.idleCallbackManager.schedule(() => {
+                    if (signal?.aborted) {
+                        return;
+                    }
                     block.sections.push(new FunctionRuleSection(this, matchedStyles, functionRule.style, functionRule.children(), sectionIdx, functionRule.nameWithParameters(), expandedByDefault));
                     sectionIdx++;
                 });

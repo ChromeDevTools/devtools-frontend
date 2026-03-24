@@ -83,7 +83,7 @@ export declare class StylesSidebarPane extends StylesSidebarPane_base implements
     private onRegexToggled;
     setFilter(regex: RegExp | null): void;
     refreshUpdate(editedSection: StylePropertiesSection, editedTreeElement?: StylePropertyTreeElement): void;
-    performUpdate(): Promise<void>;
+    performUpdate(signal?: AbortSignal): Promise<void>;
     getVariableParserError(matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, variableName: string): ElementsComponents.CSSVariableValueView.CSSVariableParserError | null;
     getVariablePopoverContents(matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, variableName: string, computedValue: string | null): ElementsComponents.CSSVariableValueView.CSSVariableValueView;
     private fetchComputedStylesFor;

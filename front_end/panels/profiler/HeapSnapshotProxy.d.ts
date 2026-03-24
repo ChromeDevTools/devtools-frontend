@@ -54,7 +54,7 @@ export declare class HeapSnapshotProxy extends HeapSnapshotProxyObject {
     constructor(worker: HeapSnapshotWorkerProxy, objectId: number);
     search(searchConfig: HeapSnapshotModel.HeapSnapshotModel.SearchConfig, filter: HeapSnapshotModel.HeapSnapshotModel.NodeFilter): Promise<number[]>;
     interfaceDefinitions(): Promise<string>;
-    aggregatesWithFilter(filter: HeapSnapshotModel.HeapSnapshotModel.NodeFilter): Promise<Record<string, HeapSnapshotModel.HeapSnapshotModel.Aggregate>>;
+    aggregatesWithFilter(filter: HeapSnapshotModel.HeapSnapshotModel.NodeFilter): Promise<Record<string, HeapSnapshotModel.HeapSnapshotModel.AggregatedInfo>>;
     aggregatesForDiff(interfaceDefinitions: string): Promise<Record<string, HeapSnapshotModel.HeapSnapshotModel.AggregateForDiff>>;
     calculateSnapshotDiff(baseSnapshotId: string, baseSnapshotAggregates: Record<string, HeapSnapshotModel.HeapSnapshotModel.AggregateForDiff>): Promise<Record<string, HeapSnapshotModel.HeapSnapshotModel.Diff>>;
     nodeClassKey(snapshotObjectId: number): Promise<string | null>;

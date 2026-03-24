@@ -226,8 +226,8 @@ export interface Options {
 }
 export declare const isScrolledToBottom: (element: Element) => boolean;
 export declare function createSVGChild<K extends keyof SVGElementTagNameMap>(element: Element, childType: K, className?: string): SVGElementTagNameMap[K];
-export declare const enclosingNodeOrSelfWithNodeNameInArray: (initialNode: Node, nameArray: string[]) => Node | null;
-export declare const enclosingNodeOrSelfWithNodeName: (node: Node, nodeName: string) => Node | null;
+export declare const enclosingNodeOrSelfWithNodeNameInArray: <T extends keyof HTMLElementTagNameMap>(initialNode: Node, nameArray: T[]) => HTMLElementTagNameMap[T] | null;
+export declare const enclosingNodeOrSelfWithNodeName: <T extends keyof HTMLElementTagNameMap>(node: Node, nodeName: T) => HTMLElementTagNameMap[T] | null;
 export declare const deepElementFromPoint: (document: Document | ShadowRoot | null | undefined, x: number, y: number) => Node | null;
 export declare const deepElementFromEvent: (ev: Event) => Node | null;
 export declare function registerRenderer(registration: RendererRegistration): void;

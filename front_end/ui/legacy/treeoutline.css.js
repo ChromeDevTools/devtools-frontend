@@ -14,6 +14,10 @@ export default `/*
   padding: 2px 0 0;
 }
 
+:host(devtools-tree) {
+  display: inline-block;
+}
+
 .tree-outline-disclosure:not(.tree-outline-disclosure-hide-overflow) {
   min-width: 100%;
   display: inline-block;

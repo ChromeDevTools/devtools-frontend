@@ -1908,6 +1908,8 @@ export const knownContextValues = new Set([
     'history',
     'historyRedo',
     'historyUndo',
+    'hmac-secret',
+    'hmac-secret-mc',
     'hostname',
     'hover',
     'hr',

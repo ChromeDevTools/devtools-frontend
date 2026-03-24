@@ -248,11 +248,11 @@ var IS_BROWSER = (
   typeof window !== "undefined" || typeof self !== "undefined" && typeof self.postMessage === "function"
 );
 var HOST_RUNTIME = await (async () => {
-  if (IS_NODE) {
-    return (await import("./node/node.js")).HostRuntime.HOST_RUNTIME;
-  }
   if (IS_BROWSER) {
     return (await import("./browser/browser.js")).HostRuntime.HOST_RUNTIME;
+  }
+  if (IS_NODE) {
+    return (await import("./node/node.js")).HostRuntime.HOST_RUNTIME;
   }
   throw new Error("Unknown runtime!");
 })();

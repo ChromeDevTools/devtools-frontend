@@ -10,7 +10,7 @@ export interface FrameDetailsReportViewData {
     target?: SDK.Target.Target;
     adScriptAncestry: Protocol.Network.AdAncestry | null;
 }
-interface FrameDetailsViewInput {
+export interface FrameDetailsViewInput {
     frame: SDK.ResourceTreeModel.ResourceTreeFrame;
     target: SDK.Target.Target | null;
     creationStackTrace: StackTrace.StackTrace.StackTrace | null;
@@ -23,7 +23,8 @@ interface FrameDetailsViewInput {
     onRevealInNetwork?: () => void;
     onRevealInSources: () => void;
 }
-type View = (input: FrameDetailsViewInput, output: undefined, target: HTMLElement) => void;
+export type View = (input: FrameDetailsViewInput, output: undefined, target: HTMLElement) => void;
+export declare const DEFAULT_VIEW: View;
 export declare class FrameDetailsReportView extends UI.Widget.Widget {
     #private;
     constructor(element?: HTMLElement, view?: View);
@@ -31,4 +32,3 @@ export declare class FrameDetailsReportView extends UI.Widget.Widget {
     get frame(): SDK.ResourceTreeModel.ResourceTreeFrame | undefined;
     performUpdate(): Promise<void>;
 }
-export {};

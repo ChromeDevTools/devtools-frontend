@@ -1110,15 +1110,13 @@ var ProfileHeader = class extends Common.ObjectWrapper.ObjectWrapper {
   #profileType;
   title;
   uid;
-  #fromFile;
-  tempFile;
+  #fromFile = false;
+  tempFile = null;
   constructor(profileType, title) {
     super();
     this.#profileType = profileType;
     this.title = title;
     this.uid = profileType.incrementProfileUid();
-    this.#fromFile = false;
-    this.tempFile = null;
   }
   setTitle(title) {
     this.title = title;
@@ -1175,16 +1173,13 @@ var StatusUpdate = class {
 var ProfileType = class extends Common.ObjectWrapper.ObjectWrapper {
   #id;
   #name;
-  profiles;
-  #profileBeingRecorded;
-  #nextProfileUid;
+  profiles = [];
+  #profileBeingRecorded = null;
+  #nextProfileUid = 1;
   constructor(id, name) {
     super();
     this.#id = id;
     this.#name = name;
-    this.profiles = [];
-    this.#profileBeingRecorded = null;
-    this.#nextProfileUid = 1;
     if (!window.opener) {
       window.addEventListener("pagehide", this.clearTempStorage.bind(this), false);
     }
@@ -6817,7 +6812,7 @@ var HeapSnapshotViewportDataGrid = class extends HeapSnapshotSortableDataGrid {
 };
 var HeapSnapshotContainmentDataGrid = class extends HeapSnapshotSortableDataGrid {
   constructor(heapProfilerModel, dataDisplayDelegate, displayName, columns) {
-    columns = columns || [
+    const defaultColumns = [
       { id: "object", title: i18nString11(UIStrings11.object), disclosure: true, sortable: true },
       { id: "distance", title: i18nString11(UIStrings11.distance), width: "70px", sortable: true, fixedWidth: true },
       {
@@ -6836,8 +6831,8 @@ var HeapSnapshotContainmentDataGrid = class extends HeapSnapshotSortableDataGrid
         sort: DataGrid9.DataGrid.Order.Descending
       }
     ];
-    const dataGridParameters = { displayName, columns };
-    super(heapProfilerModel, dataDisplayDelegate, dataGridParameters);
+    columns = columns || defaultColumns;
+    super(heapProfilerModel, dataDisplayDelegate, { displayName, columns });
   }
   async setDataSource(snapshot, nodeIndex, nodeId) {
     this.snapshot = snapshot;
@@ -6929,7 +6924,13 @@ var HeapSnapshotConstructorsDataGrid = class extends HeapSnapshotViewportDataGri
     const columns = [
       { id: "object", title: i18nString11(UIStrings11.constructorString), disclosure: true, sortable: true },
       { id: "distance", title: i18nString11(UIStrings11.distance), width: "70px", sortable: true, fixedWidth: true },
-      { id: "shallowSize", title: i18nString11(UIStrings11.shallowSize), width: "110px", sortable: true, fixedWidth: true },
+      {
+        id: "shallowSize",
+        title: i18nString11(UIStrings11.shallowSize),
+        width: "110px",
+        sortable: true,
+        fixedWidth: true
+      },
       {
         id: "retainedSize",
         title: i18nString11(UIStrings11.retainedSize),
@@ -8386,8 +8387,6 @@ var HeapSnapshotView = class _HeapSnapshotView extends UI14.View.SimpleView {
     }
     let objectPopoverHelper;
     return {
-      // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-      // @ts-expect-error
       box: span.boxInWindow(),
       show: async (popover) => {
         if (!heapProfilerModel) {
@@ -8937,31 +8936,24 @@ var TrackingHeapSnapshotProfileType = class _TrackingHeapSnapshotProfileType ext
 };
 var HeapProfileHeader = class extends ProfileHeader {
   heapProfilerModelInternal;
-  maxJSObjectId;
-  workerProxy;
-  receiver;
-  snapshotProxy;
+  maxJSObjectId = -1;
+  workerProxy = null;
+  receiver = null;
+  snapshotProxy = null;
   loadPromise;
   fulfillLoad;
-  totalNumberOfChunks;
-  bufferedWriter;
-  onTempFileReady;
+  totalNumberOfChunks = 0;
+  bufferedWriter = null;
+  onTempFileReady = null;
   failedToCreateTempFile;
   wasDisposed;
   fileName;
   constructor(heapProfilerModel, type, title) {
     super(type, title || i18nString13(UIStrings14.snapshotD, { PH1: type.nextProfileUid() }));
     this.heapProfilerModelInternal = heapProfilerModel;
-    this.maxJSObjectId = -1;
-    this.workerProxy = null;
-    this.receiver = null;
-    this.snapshotProxy = null;
     const { promise, resolve } = Promise.withResolvers();
     this.loadPromise = promise;
     this.fulfillLoad = resolve;
-    this.totalNumberOfChunks = 0;
-    this.bufferedWriter = null;
-    this.onTempFileReady = null;
   }
   heapProfilerModel() {
     return this.heapProfilerModelInternal;
@@ -9471,7 +9463,6 @@ var LiveHeapProfileView = class _LiveHeapProfileView extends UI16.Widget.VBox {
   }
   createDataGrid() {
     const defaultColumnConfig = {
-      id: "",
       title: Common14.UIString.LocalizedEmptyString,
       fixedWidth: true,
       sortable: true,

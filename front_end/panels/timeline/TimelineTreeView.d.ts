@@ -66,7 +66,14 @@ export declare class TimelineTreeView extends TimelineTreeView_base implements U
     selectedEvents(): Trace.Types.Events.Event[];
     appendContextMenuItems(_contextMenu: UI.ContextMenu.ContextMenu, _node: Trace.Extras.TraceTree.Node): void;
     selectProfileNode(treeNode: Trace.Extras.TraceTree.Node, suppressSelectedEvent: boolean): void;
-    refreshTree(): void;
+    /**
+     * Refreshes the tree. By default, it will only do this
+     * if the tree is mounted into the DOM - as in the UI we
+     * have multiple trees and we only want to refresh the
+     * active one. Pass `true` into this function to force a
+     * refresh regardless.
+     */
+    refreshTree(forceRefresh?: boolean): void;
     buildTree(): Trace.Extras.TraceTree.Node;
     buildTopDownTree(doNotAggregate: boolean, eventGroupIdCallback: ((arg0: Trace.Types.Events.Event) => string) | null): Trace.Extras.TraceTree.Node;
     populateColumns(columns: DataGrid.DataGrid.ColumnDescriptor[]): void;

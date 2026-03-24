@@ -302,7 +302,8 @@ export class RenderingContext {
     cssControls;
     options;
     tracing;
-    constructor(ast, property, renderers, matchedResult, cssControls, options = {}, tracing) {
+    signal;
+    constructor(ast, property, renderers, matchedResult, cssControls, options = {}, tracing, signal) {
         this.ast = ast;
         this.property = property;
         this.renderers = renderers;
@@ -310,6 +311,7 @@ export class RenderingContext {
         this.cssControls = cssControls;
         this.options = options;
         this.tracing = tracing;
+        this.signal = signal;
     }
     addControl(cssType, control) {
         if (this.cssControls) {
@@ -351,18 +353,18 @@ export class Renderer extends SDK.CSSPropertyParser.TreeWalker {
     #matchedResult;
     #output = [];
     #context;
-    constructor(ast, property, renderers, matchedResult, cssControls, options, tracing) {
+    constructor(ast, property, renderers, matchedResult, cssControls, options, tracing, signal) {
         super(ast);
         this.#matchedResult = matchedResult;
         this.#context =
-            new RenderingContext(this.ast, property, renderers, this.#matchedResult, cssControls, options, tracing);
+            new RenderingContext(this.ast, property, renderers, this.#matchedResult, cssControls, options, tracing, signal);
     }
     static render(nodeOrNodes, context) {
         if (!Array.isArray(nodeOrNodes)) {
             return this.render([nodeOrNodes], context);
         }
         const cssControls = new SDK.CSSPropertyParser.CSSControlMap();
-        const renderers = nodeOrNodes.map(node => this.walkExcludingSuccessors(context.ast.subtree(node), context.property, context.renderers, context.matchedResult, cssControls, context.options, context.tracing));
+        const renderers = nodeOrNodes.map(node => this.walkExcludingSuccessors(context.ast.subtree(node), context.property, context.renderers, context.matchedResult, cssControls, context.options, context.tracing, context.signal));
         const nodes = renderers.map(node => node.#output).reduce(mergeWithSpacing, []);
         return { nodes, cssControls };
     }
@@ -411,7 +413,7 @@ export class Renderer extends SDK.CSSPropertyParser.TreeWalker {
     //
     // More general, longer matches take precedence over shorter, more specific matches. Whitespaces are normalized, for
     // unmatched text and around rendered matching results.
-    static renderValueElement(property, matchedResult, renderers, tracing) {
+    static renderValueElement(property, matchedResult, renderers, tracing, signal) {
         const valueElement = document.createElement('span');
         valueElement.setAttribute('jslog', `${VisualLogging.value().track({
             change: true,
@@ -420,12 +422,12 @@ export class Renderer extends SDK.CSSPropertyParser.TreeWalker {
         UI.ARIAUtils.setLabel(valueElement, i18nString(UIStrings.cssPropertyValue, { PH1: property.value }));
         valueElement.className = 'value';
         valueElement.tabIndex = -1;
-        const { nodes, cssControls } = this.renderValueNodes(property, matchedResult, renderers, tracing);
+        const { nodes, cssControls } = this.renderValueNodes(property, matchedResult, renderers, tracing, signal);
         nodes.forEach(node => valueElement.appendChild(node));
         valueElement.normalize();
         return { valueElement, cssControls };
     }
-    static renderValueNodes(property, matchedResult, renderers, tracing) {
+    static renderValueNodes(property, matchedResult, renderers, tracing, signal) {
         if (!matchedResult) {
             return { nodes: [document.createTextNode(property.value)], cssControls: new Map() };
         }
@@ -433,7 +435,7 @@ export class Renderer extends SDK.CSSPropertyParser.TreeWalker {
         for (const renderer of renderers) {
             rendererMap.set(renderer.matchType, renderer);
         }
-        const context = new RenderingContext(matchedResult.ast, property instanceof SDK.CSSProperty.CSSProperty ? property : null, rendererMap, matchedResult, undefined, {}, tracing);
+        const context = new RenderingContext(matchedResult.ast, property instanceof SDK.CSSProperty.CSSProperty ? property : null, rendererMap, matchedResult, undefined, {}, tracing, signal);
         return Renderer.render([matchedResult.ast.tree, ...matchedResult.ast.trailingNodes], context);
     }
 }

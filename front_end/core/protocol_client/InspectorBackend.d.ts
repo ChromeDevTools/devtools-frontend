@@ -152,6 +152,7 @@ export declare class TargetBase {
     tracingAgent(): ProtocolProxyApi.TracingApi;
     webAudioAgent(): ProtocolProxyApi.WebAudioApi;
     webAuthnAgent(): ProtocolProxyApi.WebAuthnApi;
+    webMCPAgent(): ProtocolProxyApi.WebMCPApi;
     /**
      * Make sure that `Domain` is only ever instantiated with one protocol domain
      * name, because if `Domain` allows multiple domains, the type is unsound.
@@ -192,6 +193,7 @@ export declare class TargetBase {
     registerTracingDispatcher(dispatcher: ProtocolProxyApi.TracingDispatcher): void;
     registerWebAudioDispatcher(dispatcher: ProtocolProxyApi.WebAudioDispatcher): void;
     registerWebAuthnDispatcher(dispatcher: ProtocolProxyApi.WebAuthnDispatcher): void;
+    registerWebMCPDispatcher(dispatcher: ProtocolProxyApi.WebMCPDispatcher): void;
 }
 /**
  * This is a class that serves as the prototype for a domains #agents (every target

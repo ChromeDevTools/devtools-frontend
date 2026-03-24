@@ -240,7 +240,7 @@ export class TimelineTreeView extends Common.ObjectWrapper.eventMixin(UI.Widget.
         ]);
         this.textFilterInternal = new TimelineRegExp();
         this.currentThreadSetting = Common.Settings.Settings.instance().createSetting('timeline-tree-current-thread', 0);
-        this.currentThreadSetting.addChangeListener(this.refreshTree, this);
+        this.currentThreadSetting.addChangeListener(() => this.refreshTree());
         const columns = [];
         this.populateColumns(columns);
         this.splitWidget = new UI.SplitWidget.SplitWidget(true, true, 'timeline-tree-view-details-split-widget');
@@ -355,8 +355,15 @@ export class TimelineTreeView extends Common.ObjectWrapper.eventMixin(UI.Widget.
             gridNode.select(suppressSelectedEvent);
         }
     }
-    refreshTree() {
-        if (!this.element.parentElement) {
+    /**
+     * Refreshes the tree. By default, it will only do this
+     * if the tree is mounted into the DOM - as in the UI we
+     * have multiple trees and we only want to refresh the
+     * active one. Pass `true` into this function to force a
+     * refresh regardless.
+     */
+    refreshTree(forceRefresh = false) {
+        if (!this.element.parentElement && !forceRefresh) {
             // This function can be called in different views (Bottom-Up and
             // Call Tree) by the same single event whenever the group-by
             // dropdown changes value. Thus, we bail out whenever the view is
@@ -823,7 +830,7 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
     constructor() {
         super();
         this.groupBySetting = Common.Settings.Settings.instance().createSetting('timeline-tree-group-by', AggregatedTimelineTreeView.GroupBy.None);
-        this.groupBySetting.addChangeListener(this.refreshTree.bind(this));
+        this.groupBySetting.addChangeListener(() => this.refreshTree());
         this.init();
         this.stackView = new TimelineStackView(this);
         this.stackView.addEventListener("SelectionChanged" /* TimelineStackView.Events.SELECTION_CHANGED */, this.onStackViewSelectionChanged, this);
@@ -1123,8 +1130,8 @@ export class TimelineStackView extends Common.ObjectWrapper.eventMixin(UI.Widget
         header.textContent = i18nString(UIStrings.heaviestStack);
         this.treeView = treeView;
         const columns = [
-            { id: 'total', title: i18nString(UIStrings.totalTime), fixedWidth: true, width: '110px' },
-            { id: 'activity', title: i18nString(UIStrings.activity) },
+            { id: 'total', title: i18nString(UIStrings.totalTime), fixedWidth: true, width: '110px', sortable: false },
+            { id: 'activity', title: i18nString(UIStrings.activity), sortable: false },
         ];
         this.dataGrid = new DataGrid.ViewportDataGrid.ViewportDataGrid({
             displayName: i18nString(UIStrings.timelineStack),

@@ -377,8 +377,25 @@ export default `/*
     gap: var(--sys-size-5);
   }
 
-  .widget-and-revealer-container {
-    width: 100%;
+
+  .widget-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--sys-color-surface5);
+    padding: var(--sys-size-2) var(--sys-size-4);
+    border-top-left-radius: var(--sys-shape-corner-medium);
+    border-top-right-radius: var(--sys-shape-corner-medium);
+
+    .widget-name {
+      font: var(--sys-typescale-body3-regular);
+    }
+
+    .widget-reveal-container {
+      padding: 0;
+      background: none;
+      border-radius: 0;
+    }
   }
 
   .widget-reveal-container {
@@ -401,6 +418,18 @@ export default `/*
     background-color: var(--sys-color-surface3);
 
     --override-computed-style-property-white-space: normal;
+
+    /* When header is present, content follows it and shouldn't have top radii */
+    .widget-header+& {
+      border-top-left-radius: 0;
+      border-top-right-radius: 0;
+    }
+
+    /* When header is present, content is the last child and needs bottom radii */
+    .widget-header+&:last-child {
+      border-bottom-left-radius: var(--sys-shape-corner-medium);
+      border-bottom-right-radius: var(--sys-shape-corner-medium);
+    }
   }
 
   .network-request-preview {

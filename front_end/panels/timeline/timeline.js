@@ -11381,7 +11381,7 @@ var TimelineTreeView = class extends Common11.ObjectWrapper.eventMixin(UI10.Widg
     ]);
     this.textFilterInternal = new TimelineRegExp();
     this.currentThreadSetting = Common11.Settings.Settings.instance().createSetting("timeline-tree-current-thread", 0);
-    this.currentThreadSetting.addChangeListener(this.refreshTree, this);
+    this.currentThreadSetting.addChangeListener(() => this.refreshTree());
     const columns = [];
     this.populateColumns(columns);
     this.splitWidget = new UI10.SplitWidget.SplitWidget(true, true, "timeline-tree-view-details-split-widget");
@@ -11496,8 +11496,15 @@ var TimelineTreeView = class extends Common11.ObjectWrapper.eventMixin(UI10.Widg
       gridNode.select(suppressSelectedEvent);
     }
   }
-  refreshTree() {
-    if (!this.element.parentElement) {
+  /**
+   * Refreshes the tree. By default, it will only do this
+   * if the tree is mounted into the DOM - as in the UI we
+   * have multiple trees and we only want to refresh the
+   * active one. Pass `true` into this function to force a
+   * refresh regardless.
+   */
+  refreshTree(forceRefresh = false) {
+    if (!this.element.parentElement && !forceRefresh) {
       return;
     }
     this.linkifier.reset();
@@ -11939,7 +11946,7 @@ var AggregatedTimelineTreeView = class _AggregatedTimelineTreeView extends Timel
   constructor() {
     super();
     this.groupBySetting = Common11.Settings.Settings.instance().createSetting("timeline-tree-group-by", _AggregatedTimelineTreeView.GroupBy.None);
-    this.groupBySetting.addChangeListener(this.refreshTree.bind(this));
+    this.groupBySetting.addChangeListener(() => this.refreshTree());
     this.init();
     this.stackView = new TimelineStackView(this);
     this.stackView.addEventListener("SelectionChanged", this.onStackViewSelectionChanged, this);
@@ -12228,8 +12235,8 @@ var TimelineStackView = class extends Common11.ObjectWrapper.eventMixin(UI10.Wid
     header.textContent = i18nString20(UIStrings20.heaviestStack);
     this.treeView = treeView;
     const columns = [
-      { id: "total", title: i18nString20(UIStrings20.totalTime), fixedWidth: true, width: "110px" },
-      { id: "activity", title: i18nString20(UIStrings20.activity) }
+      { id: "total", title: i18nString20(UIStrings20.totalTime), fixedWidth: true, width: "110px", sortable: false },
+      { id: "activity", title: i18nString20(UIStrings20.activity), sortable: false }
     ];
     this.dataGrid = new DataGrid.ViewportDataGrid.ViewportDataGrid({
       displayName: i18nString20(UIStrings20.timelineStack),

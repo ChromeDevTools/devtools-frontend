@@ -83,16 +83,16 @@ export class CSSValueTraceView extends UI.Widget.VBox {
         this.#view = view;
         this.requestUpdate();
     }
-    async showTrace(property, subexpression, matchedStyles, computedStyles, renderers, expandPercentagesInShorthands, shorthandPositionOffset, focus) {
+    async showTrace(property, subexpression, matchedStyles, computedStyles, renderers, expandPercentagesInShorthands, shorthandPositionOffset, focus, signal) {
         const matchedResult = subexpression === null ?
             property.parseValue(matchedStyles, computedStyles) :
             property.parseExpression(subexpression, matchedStyles, computedStyles);
         if (!matchedResult) {
             return undefined;
         }
-        return await this.#showTrace(property, matchedResult, renderers, expandPercentagesInShorthands, shorthandPositionOffset, focus);
+        return await this.#showTrace(property, matchedResult, renderers, expandPercentagesInShorthands, shorthandPositionOffset, focus, signal);
     }
-    async #showTrace(property, matchedResult, renderers, expandPercentagesInShorthands, shorthandPositionOffset, focus) {
+    async #showTrace(property, matchedResult, renderers, expandPercentagesInShorthands, shorthandPositionOffset, focus, signal) {
         this.#highlighting = new Highlighting();
         const rendererMap = new Map(renderers.map(r => [r.matchType, r]));
         // Compute all trace lines
@@ -103,7 +103,7 @@ export class CSSValueTraceView extends UI.Widget.VBox {
         while (tracing.nextSubstitution()) {
             const context = new RenderingContext(matchedResult.ast, property, rendererMap, matchedResult, 
             /* cssControls */ undefined, 
-            /* options */ {}, tracing);
+            /* options */ {}, tracing, signal);
             substitutions.push(Renderer.render(matchedResult.ast.tree, context).nodes);
         }
         // 2nd: Apply evaluations for calc, min, max, etc.
@@ -111,7 +111,7 @@ export class CSSValueTraceView extends UI.Widget.VBox {
         while (tracing.nextEvaluation()) {
             const context = new RenderingContext(matchedResult.ast, property, rendererMap, matchedResult, 
             /* cssControls */ undefined, 
-            /* options */ {}, tracing);
+            /* options */ {}, tracing, signal);
             evaluations.push(Renderer.render(matchedResult.ast.tree, context).nodes);
             asyncCallbackResults.push(tracing.runAsyncEvaluations());
         }
@@ -123,7 +123,7 @@ export class CSSValueTraceView extends UI.Widget.VBox {
             }
         }
         if (this.#substitutions.length === 0 && this.#evaluations.length === 0) {
-            const context = new RenderingContext(matchedResult.ast, property, rendererMap, matchedResult);
+            const context = new RenderingContext(matchedResult.ast, property, rendererMap, matchedResult, undefined, {}, undefined, signal);
             this.#evaluations.push(Renderer.render(matchedResult.ast.tree, context).nodes);
         }
         this.#pendingFocus = focus;

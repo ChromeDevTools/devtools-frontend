@@ -264,9 +264,9 @@ export class AiConversation {
             sessionId: this.id,
             changeManager: this.#changeManager,
             performanceRecordAndReload: this.#performanceRecordAndReload,
-            lighthouseRecording: this.#lighthouseRecording,
             onInspectElement: this.#onInspectElement,
             networkTimeCalculator: this.#networkTimeCalculator,
+            lighthouseRecording: this.#lighthouseRecording,
             allowedOrigin: this.allowedOrigin,
             history,
         };

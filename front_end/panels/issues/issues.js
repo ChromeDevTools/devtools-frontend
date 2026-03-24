@@ -306,7 +306,7 @@ var AffectedSelectivePermissionsInterventionView = class extends AffectedResourc
         <td class="affected-resource-cell">
           <div class="ad-ancestry-list">
             ${(details.adAncestry?.ancestryChain || []).map((script) => {
-      const link4 = this.#linkifier.linkifyScriptLocation(target, script.scriptId, script.name, 0);
+      const link4 = this.#linkifier.linkifyScriptLocation(target, script.scriptId, "", 0);
       return html`<div>${link4}</div>`;
     })}
             ${details.adAncestry?.rootScriptFilterlistRule ? html`<div>Rule: ${details.adAncestry.rootScriptFilterlistRule}</div>` : nothing}

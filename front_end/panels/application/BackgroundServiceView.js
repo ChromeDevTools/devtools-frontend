@@ -327,13 +327,13 @@ export class BackgroundServiceView extends UI.Widget.VBox {
     }
     createDataGrid() {
         const columns = [
-            { id: 'id', title: '#', weight: 1 },
-            { id: 'timestamp', title: i18nString(UIStrings.timestamp), weight: 7 },
-            { id: 'event-name', title: i18nString(UIStrings.event), weight: 8 },
-            { id: 'origin', title: i18nString(UIStrings.origin), weight: 8 },
-            { id: 'storage-key', title: i18nString(UIStrings.storageKey), weight: 8 },
-            { id: 'sw-scope', title: i18nString(UIStrings.swScope), weight: 4 },
-            { id: 'instance-id', title: i18nString(UIStrings.instanceId), weight: 8 },
+            { id: 'id', title: '#', weight: 1, sortable: false },
+            { id: 'timestamp', title: i18nString(UIStrings.timestamp), weight: 7, sortable: false },
+            { id: 'event-name', title: i18nString(UIStrings.event), weight: 8, sortable: false },
+            { id: 'origin', title: i18nString(UIStrings.origin), weight: 8, sortable: false },
+            { id: 'storage-key', title: i18nString(UIStrings.storageKey), weight: 8, sortable: false },
+            { id: 'sw-scope', title: i18nString(UIStrings.swScope), weight: 4, sortable: false },
+            { id: 'instance-id', title: i18nString(UIStrings.instanceId), weight: 8, sortable: false },
         ];
         const dataGrid = new DataGrid.DataGrid.DataGridImpl({
             displayName: i18nString(UIStrings.backgroundServices),

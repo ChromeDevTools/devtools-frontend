@@ -202,4 +202,16 @@ export function resetHostConfig() {
 export function updateHostConfig(config) {
     Object.assign(Root.Runtime.hostConfig, config);
 }
+export async function waitFor(selector, root) {
+    let element = null;
+    let polls = 0;
+    // Poll for element until found
+    while (!element) {
+        assert.isBelow(polls, 200, `Element with selector ${selector} was not found.`);
+        element = root ? root.querySelector(selector) : document.querySelector(selector);
+        await new Promise(resolve => setTimeout(resolve, 10));
+        polls++;
+    }
+    return element;
+}
 //# sourceMappingURL=EnvironmentHelpers.js.map

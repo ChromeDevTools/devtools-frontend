@@ -1934,6 +1934,9 @@ var TargetBase = class {
   webAuthnAgent() {
     return this.getAgent("WebAuthn");
   }
+  webMCPAgent() {
+    return this.getAgent("WebMCP");
+  }
   // Dispatcher registration and de-registration, keep alphabetically sorted.
   /**
    * Make sure that `Domain` is only ever instantiated with one protocol domain
@@ -2046,6 +2049,9 @@ var TargetBase = class {
   }
   registerWebAuthnDispatcher(dispatcher) {
     this.registerDispatcher("WebAuthn", dispatcher);
+  }
+  registerWebMCPDispatcher(dispatcher) {
+    this.registerDispatcher("WebMCP", dispatcher);
   }
 };
 var IGNORED_ERRORS = /* @__PURE__ */ new Set([

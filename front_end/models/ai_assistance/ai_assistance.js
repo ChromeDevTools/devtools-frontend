@@ -924,6 +924,7 @@ Your role is to help users understand and fix accessibility issues found in Ligh
 
 # Capabilities
 * \`getLighthouseAudits\`: Get detailed audit data.
+* \`runAccessibilityAudits\`: Trigger new accessibility snapshot audits.
 * \`getStyles\`: Get computed styles for an element by its path.
 * \`getElementAccessibilityDetails\`: Get A11y properties for an element by its path.
 
@@ -953,6 +954,11 @@ var AccessibilityContext = class extends ConversationContext {
 var AccessibilityAgent = class extends AiAgent {
   preamble = preamble;
   clientFeature = Host2.AidaClient.ClientFeature.CHROME_ACCESSIBILITY_AGENT;
+  #lighthouseRecording;
+  constructor(opts) {
+    super(opts);
+    this.#lighthouseRecording = opts.lighthouseRecording;
+  }
   get userTier() {
     return Root2.Runtime.hostConfig.devToolsFreestyler?.userTier;
   }
@@ -989,6 +995,45 @@ var AccessibilityAgent = class extends AiAgent {
     return domModel.nodeForId(nodeId);
   }
   #declareFunctions() {
+    this.declareFunction("runAccessibilityAudits", {
+      description: "Triggers new Lighthouse accessibility audits in snapshot mode. Use this if the user has made changes to the page and you want to re-evaluate the accessibility audits.",
+      parameters: {
+        type: 6,
+        description: "",
+        nullable: false,
+        properties: {
+          explanation: {
+            type: 1,
+            description: "Explain why you want to run new audits.",
+            nullable: false
+          }
+        },
+        required: ["explanation"]
+      },
+      displayInfoFromArgs: (params) => {
+        return {
+          title: i18n.i18n.lockedString("Running accessibility audits\u2026"),
+          thought: params.explanation,
+          action: "runAccessibilityAudits()"
+        };
+      },
+      handler: async (params) => {
+        debugLog("Function call: runAccessibilityAudits", params);
+        if (!this.#lighthouseRecording) {
+          return { error: "Lighthouse recording is not available." };
+        }
+        const report = await this.#lighthouseRecording({
+          mode: "snapshot",
+          categoryIds: ["accessibility"],
+          isAIControlled: true
+        });
+        if (!report) {
+          return { error: "Failed to run accessibility audits." };
+        }
+        const audits = new LighthouseFormatter().audits(report, "accessibility");
+        return { result: { audits } };
+      }
+    });
     this.declareFunction("getLighthouseAudits", {
       description: "Returns the audits for a specific Lighthouse category. Use this to get more information about the performance, accessibility, best-practices, or seo audits.",
       parameters: {
@@ -2967,8 +3012,14 @@ var RequestContext = class extends ConversationContext {
     this.#request = request;
     this.#calculator = calculator;
   }
+  /**
+   * Note: this is not the literal origin of the network request. This origin
+   * is used to determine when we should force the user to start a new AI
+   * conversation when the context changes. We allow a single AI conversation to
+   * inspect all network requests that were made for that given target URL.
+   */
   getOrigin() {
-    return new URL(this.#request.url()).origin;
+    return this.#request.documentURL;
   }
   getItem() {
     return this.#request;
@@ -6152,7 +6203,17 @@ ${result}`,
         Host6.userMetrics.performanceAIMainThreadActivityResponseSize(byteCount);
         const key = `getMainThreadTrackSummary({min: ${bounds.min}, max: ${bounds.max}})`;
         this.#cacheFunctionResult(focus, key, summary);
-        return { result: { summary } };
+        return {
+          result: { summary },
+          widgets: [{
+            name: "TIMELINE_RANGE_SUMMARY",
+            data: {
+              parsedTrace,
+              bounds,
+              track: "main"
+            }
+          }]
+        };
       }
     });
     this.declareFunction("getNetworkTrackSummary", {
@@ -6200,7 +6261,9 @@ ${result}`,
         Host6.userMetrics.performanceAINetworkSummaryResponseSize(byteCount);
         const key = `getNetworkTrackSummary({min: ${bounds.min}, max: ${bounds.max}})`;
         this.#cacheFunctionResult(focus, key, summary);
-        return { result: { summary } };
+        return {
+          result: { summary }
+        };
       }
     });
     this.declareFunction("getDetailedCallTree", {
@@ -8070,26 +8133,6 @@ const data = {
   async preRun() {
     this.#currentTurnId++;
   }
-  async finalizeAnswer(answer) {
-    if (!Root6.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled) {
-      return answer;
-    }
-    const changedNodeIds = this.#changes.getChangedNodesForGroupId(this.sessionId, this.#currentTurnId);
-    if (changedNodeIds.length === 0) {
-      return answer;
-    }
-    answer.widgets = [
-      ...answer.widgets ?? [],
-      ...changedNodeIds.map((id) => ({
-        name: "STYLE_PROPERTIES",
-        data: {
-          backendNodeId: id,
-          selector: AI_ASSISTANCE_FILTER_REGEX
-        }
-      }))
-    ];
-    return answer;
-  }
   async enhanceQuery(query, selectedElement, multimodalInputType) {
     let multimodalInputEnhancementQuery = this.multimodalInputEnabled && multimodalInputType ? MULTIMODAL_ENHANCEMENT_PROMPTS[multimodalInputType] : "";
     if (this.#greenDevEmulationAxTree) {
@@ -8182,7 +8225,8 @@ var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
         const origin = this.#allowedOrigin();
         let hasCrossOriginRequest = false;
         for (const request of Logs3.NetworkLog.NetworkLog.instance().requests()) {
-          if (origin && request.securityOrigin() !== origin) {
+          const requestOrigin = new URL(request.documentURL).origin;
+          if (origin && requestOrigin !== origin) {
             hasCrossOriginRequest = true;
             continue;
           }
@@ -8226,8 +8270,13 @@ var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
         };
       },
       handler: async ({ id }) => {
+        const origin = this.#allowedOrigin();
         const request = Logs3.NetworkLog.NetworkLog.instance().requests().find((req) => {
-          return req.requestId() === id;
+          if (req.requestId() !== id) {
+            return false;
+          }
+          const requestOrigin = new URL(req.documentURL).origin;
+          return !origin || requestOrigin === origin;
         });
         if (request) {
           const calculator = this.#networkTimeCalculator ?? new NetworkTimeCalculator3.NetworkTransferTimeCalculator();
@@ -9356,9 +9405,9 @@ ${item.text.trim()}`);
       sessionId: this.id,
       changeManager: this.#changeManager,
       performanceRecordAndReload: this.#performanceRecordAndReload,
-      lighthouseRecording: this.#lighthouseRecording,
       onInspectElement: this.#onInspectElement,
       networkTimeCalculator: this.#networkTimeCalculator,
+      lighthouseRecording: this.#lighthouseRecording,
       allowedOrigin: this.allowedOrigin,
       history
     };

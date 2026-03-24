@@ -33,6 +33,7 @@ export declare function createUISourceCode(options?: {
 export declare function createNetworkRequest(opts?: {
     url?: Platform.DevToolsPath.UrlString;
     includeInitiators?: boolean;
+    documentURL?: Platform.DevToolsPath.UrlString;
 }): SDK.NetworkRequest.NetworkRequest;
 /**
  * Creates and shows an AiAssistancePanel instance returning the view

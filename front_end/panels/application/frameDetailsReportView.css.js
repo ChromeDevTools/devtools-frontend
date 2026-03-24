@@ -84,6 +84,18 @@ button.text-link {
   display: flex;
 }
 
+.inline-items devtools-button {
+  flex: 0 0 20px;
+  width: 20px;
+  height: 20px;
+}
+
+.inline-items .text-ellipsis {
+  flex: 0 1 auto;
+  min-width: 0;
+  padding-left: 2px;
+}
+
 .span-cols {
   grid-column-start: span 2;
   margin-left: var(--sys-size-9);
@@ -121,4 +133,5 @@ button.text-link {
     text-decoration-color: linktext;
   }
 }
+
 /*# sourceURL=${import.meta.resolve('./frameDetailsReportView.css')} */`;

@@ -97,7 +97,16 @@ export class ContextSelectionAgent extends AiAgent {
                 const origin = this.#allowedOrigin();
                 let hasCrossOriginRequest = false;
                 for (const request of Logs.NetworkLog.NetworkLog.instance().requests()) {
-                    if (origin && request.securityOrigin() !== origin) {
+                    const requestOrigin = new URL(request.documentURL).origin;
+                    /**
+                     * NOTE: this origin check does not ensure that all the requests are
+                     * from the same origin as the target page. Instead, it ensures that
+                     * the document that loaded the request is the same as the target
+                     * page. This ensures that we limit the scope to all requests fetched
+                     * during the loading of the target page, and do not leak URLs from
+                     * other pages.
+                     */
+                    if (origin && requestOrigin !== origin) {
                         hasCrossOriginRequest = true;
                         continue;
                     }
@@ -143,8 +152,13 @@ export class ContextSelectionAgent extends AiAgent {
                 };
             },
             handler: async ({ id }) => {
+                const origin = this.#allowedOrigin();
                 const request = Logs.NetworkLog.NetworkLog.instance().requests().find(req => {
-                    return req.requestId() === id;
+                    if (req.requestId() !== id) {
+                        return false;
+                    }
+                    const requestOrigin = new URL(req.documentURL).origin;
+                    return !origin || requestOrigin === origin;
                 });
                 if (request) {
                     const calculator = this.#networkTimeCalculator ?? new NetworkTimeCalculator.NetworkTransferTimeCalculator();

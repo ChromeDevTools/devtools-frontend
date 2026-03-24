@@ -1,7 +1,6 @@
 // Copyright 2014 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @typescript-eslint/naming-convention */
 import * as Platform from '../../../../core/platform/platform.js';
 import { ViewportDataGrid, ViewportDataGridNode } from './ViewportDataGrid.js';
 export class SortableDataGrid extends ViewportDataGrid {
@@ -47,7 +46,7 @@ export class SortableDataGrid extends ViewportDataGrid {
         const columns = [];
         for (let i = 0; i < columnNames.length; ++i) {
             const id = String(i);
-            columns.push({ id, title: columnNames[i], sortable: true });
+            columns.push(({ id, title: columnNames[i], sortable: true }));
         }
         const nodes = [];
         for (let i = 0; i < values.length / numColumns; ++i) {

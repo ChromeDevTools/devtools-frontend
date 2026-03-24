@@ -11,6 +11,7 @@ import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
 import * as ComputedStyle from '../../../models/computed_style/computed_style.js';
+import * as Trace from '../../../models/trace/trace.js';
 import * as Marked from '../../../third_party/marked/marked.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as Input from '../../../ui/components/input/input.js';
@@ -557,20 +558,33 @@ function renderWidgetResponse(response) {
         'widget-and-revealer-container': true,
         'revealer-only': response.renderedWidget === null,
     });
+    const revealButton = html `
+    <devtools-button class="widget-reveal"
+      .iconName=${'tab-move'}
+      .variant=${"text" /* Buttons.Button.Variant.TEXT */}
+      @click=${onReveal}
+    >${response.customRevealTitle ?? lockedString(UIStringsNotTranslate.reveal)}</devtools-button>
+  `;
     // clang-format off
     return html `
     <div class=${classes}>
+      ${response.widgetName ? html `
+        <div class="widget-header">
+          <div class="widget-name">${response.widgetName}</div>
+          <div class="widget-reveal-container">
+            ${revealButton}
+          </div>
+        </div>
+      ` : Lit.nothing}
       ${response.renderedWidget ? html `
         <div class="widget-content-container">
           ${response.renderedWidget}
         </div>` : Lit.nothing}
-      <div class="widget-reveal-container">
-        <devtools-button class="widget-reveal"
-          .iconName=${'tab-move'}
-          .variant=${"text" /* Buttons.Button.Variant.TEXT */}
-          @click=${onReveal}
-        >${response.customRevealTitle ?? lockedString(UIStringsNotTranslate.reveal)}</devtools-button>
-      </div>
+      ${!response.widgetName ? html `
+        <div class="widget-reveal-container">
+          ${revealButton}
+        </div>
+      ` : Lit.nothing}
     </div>
     `;
     // clang-format on
@@ -629,6 +643,7 @@ async function makeDomTreeWidget(widgetData) {
     return {
         renderedWidget,
         revealable: new SDK.DOMModel.DeferredDOMNode(root.domModel().target(), root.backendNodeId()),
+        widgetName: 'LCP element',
     };
 }
 /**
@@ -672,6 +687,9 @@ async function renderWidgets(widgets, options = {}) {
                 break;
             case 'LCP_BREAKDOWN':
                 response = await makeLcpBreakdownWidget(widgetData);
+                break;
+            case 'TIMELINE_RANGE_SUMMARY':
+                response = await makeTimelineRangeSummaryWidget(widgetData);
                 break;
             default:
                 Platform.assertNever(widgetData, 'Unknown AiWidget name');
@@ -1044,5 +1062,39 @@ export class ChatMessage extends UI.Widget.Widget {
         this.#isSubmitButtonDisabled = true;
         void this.performUpdate();
     }
+}
+async function makeTimelineRangeSummaryWidget(widgetData) {
+    const { bounds, parsedTrace, track } = widgetData.data;
+    let events = [];
+    if (track === 'main') {
+        const flameChartView = Timeline.TimelinePanel.TimelinePanel.instance().getFlameChart();
+        const mainDataProvider = flameChartView.getMainDataProvider();
+        const mainTrack = mainDataProvider.timelineData().groups.find((group) => group.name.startsWith('Main \u2014 '));
+        if (mainTrack) {
+            events = mainDataProvider.groupTreeEvents(mainTrack) ?? [];
+        }
+    }
+    const eventsArray = Array.from(events);
+    eventsArray.sort((a, b) => a.ts - b.ts);
+    const thirdPartyTree = new Timeline.ThirdPartyTreeView.ThirdPartyTreeViewWidget();
+    const mapper = new Trace.EntityMapper.EntityMapper(parsedTrace);
+    thirdPartyTree.setModelWithEvents(eventsArray, parsedTrace, mapper);
+    thirdPartyTree.refreshTree(true);
+    // clang-format off
+    const template = html `
+    <devtools-widget
+      ${widget(TimelineComponents.TimelineRangeSummaryView.TimelineRangeSummaryView, {
+        data: {
+            parsedTrace,
+            events,
+            startTime: Trace.Helpers.Timing.microToMilli(bounds.min),
+            endTime: Trace.Helpers.Timing.microToMilli(bounds.max),
+            thirdPartyTreeTemplate: html `<devtools-performance-third-party-tree-view
+            .treeView=${thirdPartyTree}></devtools-performance-third-party-tree-view>`,
+        },
+    })}
+    ></devtools-widget>`;
+    // clang-format on
+    return { renderedWidget: template, revealable: null };
 }
 //# sourceMappingURL=ChatMessage.js.map

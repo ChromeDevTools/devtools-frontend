@@ -7,7 +7,6 @@ var __export = (target, all) => {
 // gen/front_end/models/heap_snapshot_model/HeapSnapshotModel.js
 var HeapSnapshotModel_exports = {};
 __export(HeapSnapshotModel_exports, {
-  Aggregate: () => Aggregate,
   AggregateForDiff: () => AggregateForDiff,
   AllocationNodeCallers: () => AllocationNodeCallers,
   AllocationStackFrame: () => AllocationStackFrame,
@@ -121,14 +120,6 @@ var Edge = class {
     this.edgeIndex = edgeIndex;
     this.isAddedNotRemoved = null;
   }
-};
-var Aggregate = class {
-  count;
-  distance;
-  self;
-  maxRet;
-  name;
-  idxs;
 };
 var AggregateForDiff = class {
   name;

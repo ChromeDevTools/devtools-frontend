@@ -1049,7 +1049,7 @@ var DEFAULT_VIEW = (input, output, target) => {
       ${identityData && onCopyId ? renderIdentity(identityData, onCopyId, output) : nothing}
       ${presentationData ? renderPresentation(presentationData, output) : nothing}
       ${protocolHandlersData ? renderProtocolHandlers(protocolHandlersData, output) : nothing}
-      ${iconsData && onToggleIconMasked && maskedIcons ? renderIcons(iconsData, maskedIcons, onToggleIconMasked, output) : nothing}
+      ${iconsData && onToggleIconMasked ? renderIcons(iconsData, Boolean(maskedIcons), onToggleIconMasked, output) : nothing}
       ${windowControlsData && output ? renderWindowControlsSection(windowControlsData, selectedPlatform, onSelectOs, onToggleWcoToolbar, output) : nothing}
       ${shortcutsData ? renderShortcuts(shortcutsData) : nothing}
       ${screenshotsData ? renderScreenshots(screenshotsData) : nothing}
@@ -2089,13 +2089,13 @@ var BackgroundServiceView = class _BackgroundServiceView extends UI3.Widget.VBox
   }
   createDataGrid() {
     const columns = [
-      { id: "id", title: "#", weight: 1 },
-      { id: "timestamp", title: i18nString3(UIStrings3.timestamp), weight: 7 },
-      { id: "event-name", title: i18nString3(UIStrings3.event), weight: 8 },
-      { id: "origin", title: i18nString3(UIStrings3.origin), weight: 8 },
-      { id: "storage-key", title: i18nString3(UIStrings3.storageKey), weight: 8 },
-      { id: "sw-scope", title: i18nString3(UIStrings3.swScope), weight: 4 },
-      { id: "instance-id", title: i18nString3(UIStrings3.instanceId), weight: 8 }
+      { id: "id", title: "#", weight: 1, sortable: false },
+      { id: "timestamp", title: i18nString3(UIStrings3.timestamp), weight: 7, sortable: false },
+      { id: "event-name", title: i18nString3(UIStrings3.event), weight: 8, sortable: false },
+      { id: "origin", title: i18nString3(UIStrings3.origin), weight: 8, sortable: false },
+      { id: "storage-key", title: i18nString3(UIStrings3.storageKey), weight: 8, sortable: false },
+      { id: "sw-scope", title: i18nString3(UIStrings3.swScope), weight: 4, sortable: false },
+      { id: "instance-id", title: i18nString3(UIStrings3.instanceId), weight: 8, sortable: false }
     ];
     const dataGrid = new DataGrid.DataGrid.DataGridImpl({
       displayName: i18nString3(UIStrings3.backgroundServices),
@@ -3062,6 +3062,7 @@ SDK6.SDKModel.SDKModel.register(ExtensionStorageModel, { capabilities: 4, autost
 // gen/front_end/panels/application/FrameDetailsView.js
 var FrameDetailsView_exports = {};
 __export(FrameDetailsView_exports, {
+  DEFAULT_VIEW: () => DEFAULT_VIEW3,
   FrameDetailsReportView: () => FrameDetailsReportView
 });
 import "./../../ui/kit/kit.js";
@@ -3165,6 +3166,18 @@ button.text-link {
   display: flex;
 }
 
+.inline-items devtools-button {
+  flex: 0 0 20px;
+  width: 20px;
+  height: 20px;
+}
+
+.inline-items .text-ellipsis {
+  flex: 0 1 auto;
+  min-width: 0;
+  padding-left: 2px;
+}
+
 .span-cols {
   grid-column-start: span 2;
   margin-left: var(--sys-size-9);
@@ -3202,6 +3215,7 @@ button.text-link {
     text-decoration-color: linktext;
   }
 }
+
 /*# sourceURL=${import.meta.resolve("./frameDetailsReportView.css")} */`;
 
 // gen/front_end/panels/application/OriginTrialTreeView.js
@@ -4260,9 +4274,7 @@ var FrameDetailsReportView = class extends UI6.Widget.Widget {
     const result = await this.#frame?.parentFrame()?.getAdScriptAncestry(this.#frame?.id);
     if (result && result.ancestryChain.length > 0) {
       this.#adScriptAncestry = result;
-      const firstScript = this.#adScriptAncestry.ancestryChain[0];
-      const debuggerModel = firstScript?.debuggerId ? await SDK7.DebuggerModel.DebuggerModel.modelForDebuggerId(firstScript.debuggerId) : null;
-      this.#target = debuggerModel?.target() ?? null;
+      this.#target = this.#frame?.resourceTreeModel().target() ?? null;
     }
     const frame = this.#frame;
     if (!frame) {

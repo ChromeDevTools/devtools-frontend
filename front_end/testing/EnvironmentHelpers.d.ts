@@ -38,3 +38,4 @@ export declare function resetHostConfig(): void;
  * tests.
  */
 export declare function updateHostConfig(config: Root.Runtime.HostConfig): void;
+export declare function waitFor(selector: string, root?: Element | ShadowRoot): Promise<Element | null>;

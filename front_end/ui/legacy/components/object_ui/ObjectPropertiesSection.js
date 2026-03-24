@@ -44,6 +44,7 @@ import { JavaScriptREPL } from './JavaScriptREPL.js';
 import objectPropertiesSectionStyles from './objectPropertiesSection.css.js';
 import objectValueStyles from './objectValue.css.js';
 import { RemoteObjectPreviewFormatter, renderNodeTitle } from './RemoteObjectPreviewFormatter.js';
+export { objectPropertiesSectionStyles, objectValueStyles };
 const { widget } = UI.Widget;
 const { ref, repeat, ifDefined, classMap } = Directives;
 const UIStrings = {
@@ -1099,18 +1100,24 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
             ObjectPropertyTreeElement.populateWithProperties(treeElement, properties, skipProto, skipGettersAndSetters, linkifier, emptyPlaceholder);
         }
     }
-    static populateWithProperties(treeNode, { properties, internalProperties, accessors }, skipProto, skipGettersAndSetters, linkifier, emptyPlaceholder) {
+    static *createPropertyNodes({ properties, internalProperties, accessors, arrayRanges }, skipProto, skipGettersAndSetters, linkifier, emptyPlaceholder, isNotDisplayablePropertyCallback) {
+        let empty = true;
+        // Arrays with large numbers of elements are paginated into arrayRanges.
+        // If we have array ranges, the object is not empty.
+        if (arrayRanges && arrayRanges.length > 0) {
+            empty = false;
+        }
         properties?.sort(ObjectPropertiesSection.compareProperties);
         const entriesProperty = internalProperties?.find(({ property }) => property.name === '[[Entries]]');
         if (entriesProperty) {
             const treeElement = new ObjectPropertyTreeElement(entriesProperty, linkifier);
             treeElement.setExpandable(true);
             treeElement.expand();
-            treeNode.appendChild(treeElement);
+            empty = false;
+            yield treeElement;
         }
         for (const property of properties ?? []) {
-            if (treeNode instanceof ObjectPropertyTreeElement &&
-                !ObjectPropertiesSection.isDisplayableProperty(property.property, treeNode.property?.property)) {
+            if (isNotDisplayablePropertyCallback?.(property.property)) {
                 continue;
             }
             const canShowProperty = property.property.getter || !property.property.isAccessorProperty();
@@ -1122,11 +1129,12 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
                         element.expand();
                     }
                 }
-                treeNode.appendChild(element);
+                empty = false;
+                yield element;
             }
         }
         for (const accessor of accessors ?? []) {
-            treeNode.appendChild(new ObjectPropertyTreeElement(accessor, linkifier));
+            yield new ObjectPropertyTreeElement(accessor, linkifier);
         }
         for (const property of internalProperties ?? []) {
             const treeElement = new ObjectPropertyTreeElement(property, linkifier);
@@ -1136,9 +1144,22 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
             if (property.property.name === '[[Prototype]]' && skipProto) {
                 continue;
             }
-            treeNode.appendChild(treeElement);
+            empty = false;
+            yield treeElement;
         }
-        ObjectPropertyTreeElement.appendEmptyPlaceholderIfNeeded(treeNode, emptyPlaceholder);
+        if (empty) {
+            const title = document.createElement('div');
+            title.classList.add('gray-info-message');
+            title.textContent = emptyPlaceholder || i18nString(UIStrings.noProperties);
+            const infoElement = new UI.TreeOutline.TreeElement(title);
+            yield infoElement;
+        }
+    }
+    static populateWithProperties(treeNode, children, skipProto, skipGettersAndSetters, linkifier, emptyPlaceholder) {
+        for (const childNode of this.createPropertyNodes(children, skipProto, skipGettersAndSetters, linkifier, emptyPlaceholder, property => treeNode instanceof ObjectPropertyTreeElement &&
+            !ObjectPropertiesSection.isDisplayableProperty(property, treeNode.property?.property))) {
+            treeNode.appendChild(childNode);
+        }
     }
     revertHighlightChanges() {
         this.#widget.revertHighlightChanges();
@@ -1163,16 +1184,6 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
     // This is called by layout tests
     async applyExpression(expression) {
         await this.property.setValue(expression);
-    }
-    static appendEmptyPlaceholderIfNeeded(treeNode, emptyPlaceholder) {
-        if (treeNode.childCount()) {
-            return;
-        }
-        const title = document.createElement('div');
-        title.classList.add('gray-info-message');
-        title.textContent = emptyPlaceholder || i18nString(UIStrings.noProperties);
-        const infoElement = new UI.TreeOutline.TreeElement(title);
-        treeNode.appendChild(infoElement);
     }
     showAllPropertiesElementSelected(element) {
         this.removeChild(element);

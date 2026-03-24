@@ -1451,14 +1451,16 @@ var SensorsView = class extends UI2.Widget.VBox {
                   <input
                     id="alpha-input"
                     type="number"
+                    min="0"
+                    max="359.9999"
                     step="any"
+                    required
                     ${Directives.ref((el) => {
       if (el) {
         this.alphaElement = el;
       }
     })}
                     @change=${this.#onOrientationChange.bind(this)}
-                    @input=${this.#onOrientationInput.bind(this)}
                     @keydown=${this.#onOrientationKeyDown.bind(this)}
                     @focus=${this.#onOrientationFocus.bind(this)}
                   >
@@ -1469,14 +1471,16 @@ var SensorsView = class extends UI2.Widget.VBox {
                   <input
                     id="beta-input"
                     type="number"
+                    min="-180"
+                    max="179.9999"
                     step="any"
+                    required
                     ${Directives.ref((el) => {
       if (el) {
         this.betaElement = el;
       }
     })}
                     @change=${this.#onOrientationChange.bind(this)}
-                    @input=${this.#onOrientationInput.bind(this)}
                     @keydown=${this.#onOrientationKeyDown.bind(this)}
                     @focus=${this.#onOrientationFocus.bind(this)}
                   >
@@ -1487,14 +1491,16 @@ var SensorsView = class extends UI2.Widget.VBox {
                   <input
                     id="gamma-input"
                     type="number"
+                    min="-90"
+                    max="89.9999"
                     step="any"
+                    required
                     ${Directives.ref((el) => {
       if (el) {
         this.gammaElement = el;
       }
     })}
                     @change=${this.#onOrientationChange.bind(this)}
-                    @input=${this.#onOrientationInput.bind(this)}
                     @keydown=${this.#onOrientationKeyDown.bind(this)}
                     @focus=${this.#onOrientationFocus.bind(this)}
                   >
@@ -1551,9 +1557,9 @@ var SensorsView = class extends UI2.Widget.VBox {
       `, orientationGroup);
     this.enableOrientationFields(true);
     this.setBoxOrientation(this.deviceOrientation, false);
-    this.#setOrientationInputValue(this.alphaElement, String(this.deviceOrientation.alpha));
-    this.#setOrientationInputValue(this.betaElement, String(this.deviceOrientation.beta));
-    this.#setOrientationInputValue(this.gammaElement, String(this.deviceOrientation.gamma));
+    this.alphaElement.value = String(this.deviceOrientation.alpha);
+    this.betaElement.value = String(this.deviceOrientation.beta);
+    this.gammaElement.value = String(this.deviceOrientation.gamma);
   }
   createPressureSection() {
     const container = this.contentElement.createChild("div", "pressure-section");
@@ -1631,9 +1637,9 @@ var SensorsView = class extends UI2.Widget.VBox {
       return Math.round(angle * 1e4) / 1e4;
     }
     if (modificationSource !== "userInput") {
-      this.#setOrientationInputValue(this.alphaElement, String(roundAngle(deviceOrientation.alpha)));
-      this.#setOrientationInputValue(this.betaElement, String(roundAngle(deviceOrientation.beta)));
-      this.#setOrientationInputValue(this.gammaElement, String(roundAngle(deviceOrientation.gamma)));
+      this.alphaElement.value = String(roundAngle(deviceOrientation.alpha));
+      this.betaElement.value = String(roundAngle(deviceOrientation.beta));
+      this.gammaElement.value = String(roundAngle(deviceOrientation.gamma));
     }
     const animate = modificationSource !== "userDrag";
     this.setBoxOrientation(deviceOrientation, animate);
@@ -1641,24 +1647,16 @@ var SensorsView = class extends UI2.Widget.VBox {
     this.applyDeviceOrientation();
     UI2.ARIAUtils.LiveAnnouncer.alert(i18nString2(UIStrings2.deviceOrientationSetToAlphaSBeta, { PH1: deviceOrientation.alpha, PH2: deviceOrientation.beta, PH3: deviceOrientation.gamma }));
   }
-  #onOrientationInput(event) {
-    const input = event.currentTarget;
-    const valid = this.#validateOrientationInput(input, input.value);
-    input.classList.toggle("error-input", !valid);
-  }
   #onOrientationChange(event) {
     const input = event.currentTarget;
-    const valid = this.#validateOrientationInput(input, input.value);
-    input.classList.toggle("error-input", !valid);
-    if (valid) {
+    if (input.checkValidity()) {
       this.applyDeviceOrientationUserInput();
     }
   }
   #onOrientationKeyDown(event) {
     const input = event.currentTarget;
     if (event.key === "Enter") {
-      const valid2 = this.#validateOrientationInput(input, input.value);
-      if (valid2) {
+      if (input.checkValidity()) {
         this.applyDeviceOrientationUserInput();
       }
       event.preventDefault();
@@ -1668,33 +1666,18 @@ var SensorsView = class extends UI2.Widget.VBox {
     if (value === null) {
       return;
     }
-    const stringValue = String(value);
-    const valid = this.#validateOrientationInput(input, stringValue);
-    if (valid) {
-      this.#setOrientationInputValue(input, stringValue);
+    const prevValue = input.value;
+    input.value = String(value);
+    if (input.checkValidity()) {
+      this.applyDeviceOrientationUserInput();
+    } else {
+      input.value = prevValue;
     }
     event.preventDefault();
   }
   #onOrientationFocus(event) {
     const input = event.currentTarget;
     input.select();
-  }
-  #validateOrientationInput(input, value) {
-    if (input === this.alphaElement) {
-      return SDK2.EmulationModel.DeviceOrientation.alphaAngleValidator(value);
-    }
-    if (input === this.betaElement) {
-      return SDK2.EmulationModel.DeviceOrientation.betaAngleValidator(value);
-    }
-    if (input === this.gammaElement) {
-      return SDK2.EmulationModel.DeviceOrientation.gammaAngleValidator(value);
-    }
-    return false;
-  }
-  #setOrientationInputValue(input, value) {
-    input.value = value;
-    const valid = this.#validateOrientationInput(input, value);
-    input.classList.toggle("error-input", !valid);
   }
   setBoxOrientation(deviceOrientation, animate) {
     if (animate) {

@@ -1,6 +1,7 @@
 import * as Host from '../../../core/host/host.js';
 import type * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
+import type * as LHModel from '../../lighthouse/lighthouse.js';
 import type * as Trace from '../../trace/trace.js';
 export declare const enum ResponseType {
     CONTEXT = "context",
@@ -120,6 +121,7 @@ export interface AgentOptions {
     onInspectElement?: () => Promise<SDK.DOMModel.DOMNode | null>;
     history?: Host.AidaClient.Content[];
     allowedOrigin?: () => string | undefined;
+    lighthouseRecording?: (overrides?: LHModel.RunTypes.RunOverrides) => Promise<LHModel.ReporterTypes.ReportJSON | null>;
 }
 export interface ParsedAnswer {
     answer: string;
@@ -212,7 +214,15 @@ export interface LcpBreakdownAiWidget {
         lcpData: Trace.Insights.Models.LCPBreakdown.LCPBreakdownInsightModel;
     };
 }
-export type AiWidget = ComputedStyleAiWidget | CoreVitalsAiWidget | StylePropertiesAiWidget | DomTreeAiWidget | PerformanceTraceAiWidget | LcpBreakdownAiWidget;
+export interface TimelineRangeSummaryAiWidget {
+    name: 'TIMELINE_RANGE_SUMMARY';
+    data: {
+        bounds: Trace.Types.Timing.TraceWindowMicro;
+        parsedTrace: Trace.TraceModel.ParsedTrace;
+        track: 'main';
+    };
+}
+export type AiWidget = ComputedStyleAiWidget | CoreVitalsAiWidget | StylePropertiesAiWidget | DomTreeAiWidget | PerformanceTraceAiWidget | LcpBreakdownAiWidget | TimelineRangeSummaryAiWidget;
 export type FunctionCallHandlerResult<Result> = {
     requiresApproval: true;
     /**

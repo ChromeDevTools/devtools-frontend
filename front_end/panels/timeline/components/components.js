@@ -8371,7 +8371,9 @@ var timelineRangeSummaryView_css_default = `/*
 
 @container (max-width: 450px) {
   .timeline-details-range-summary {
-    flex-direction: column;
+    display: grid;
+    /* Make sure the 3P table is only as large as the range summary at most */
+    grid-template-rows: 1fr minmax(50px, 1fr);
     gap: var(--sys-size-4);
   }
 

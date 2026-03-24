@@ -883,26 +883,6 @@ const data = {
     async preRun() {
         this.#currentTurnId++;
     }
-    async finalizeAnswer(answer) {
-        if (!Root.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled) {
-            return answer;
-        }
-        const changedNodeIds = this.#changes.getChangedNodesForGroupId(this.sessionId, this.#currentTurnId);
-        if (changedNodeIds.length === 0) {
-            return answer;
-        }
-        answer.widgets = [
-            ...(answer.widgets ?? []),
-            ...changedNodeIds.map(id => ({
-                name: 'STYLE_PROPERTIES',
-                data: {
-                    backendNodeId: id,
-                    selector: AI_ASSISTANCE_FILTER_REGEX,
-                },
-            })),
-        ];
-        return answer;
-    }
     async enhanceQuery(query, selectedElement, multimodalInputType) {
         let multimodalInputEnhancementQuery = this.multimodalInputEnabled && multimodalInputType ? MULTIMODAL_ENHANCEMENT_PROMPTS[multimodalInputType] : '';
         if (this.#greenDevEmulationAxTree) {

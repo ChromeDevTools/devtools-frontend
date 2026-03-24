@@ -25,6 +25,7 @@ core/common/StringOutputStream.test.js
 core/common/TextDictionary.test.js
 core/common/Throttler.test.js
 core/common/Trie.test.js
+core/common/VersionController.test.js
 core/i18n/ByteUtilities.test.js
 core/i18n/DevToolsLocale.test.js
 core/i18n/NumberFormatter.test.js

@@ -4,6 +4,9 @@ import type * as Protocol from '../../../../generated/protocol.js';
 import { type LitTemplate } from '../../../lit/lit.js';
 import * as UI from '../../legacy.js';
 import type * as Components from '../utils/utils.js';
+import objectPropertiesSectionStyles from './objectPropertiesSection.css.js';
+import objectValueStyles from './objectValue.css.js';
+export { objectPropertiesSectionStyles, objectValueStyles };
 interface NodeChildren {
     properties?: ObjectTreeNode[];
     internalProperties?: ObjectTreeNode[];
@@ -190,7 +193,8 @@ export declare class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElemen
     private readonly maxNumPropertiesToShow;
     constructor(property: ObjectTreeNode, linkifier?: Components.Linkifier.Linkifier);
     static populate(treeElement: UI.TreeOutline.TreeElement, value: ObjectTreeNodeBase, skipProto: boolean, skipGettersAndSetters: boolean, linkifier?: Components.Linkifier.Linkifier, emptyPlaceholder?: string | null): Promise<void>;
-    static populateWithProperties(treeNode: UI.TreeOutline.TreeElement, { properties, internalProperties, accessors }: NodeChildren, skipProto: boolean, skipGettersAndSetters: boolean, linkifier?: Components.Linkifier.Linkifier, emptyPlaceholder?: string | null): void;
+    static createPropertyNodes({ properties, internalProperties, accessors, arrayRanges }: NodeChildren, skipProto: boolean, skipGettersAndSetters: boolean, linkifier?: Components.Linkifier.Linkifier, emptyPlaceholder?: string | null, isNotDisplayablePropertyCallback?: (property: SDK.RemoteObject.RemoteObjectProperty) => boolean): Generator<UI.TreeOutline.TreeElement>;
+    static populateWithProperties(treeNode: UI.TreeOutline.TreeElement, children: NodeChildren, skipProto: boolean, skipGettersAndSetters: boolean, linkifier?: Components.Linkifier.Linkifier, emptyPlaceholder?: string | null): void;
     revertHighlightChanges(): void;
     setSearchRegex(regex: RegExp, additionalCssClassName?: string): boolean;
     startEditing(): void;
@@ -198,7 +202,6 @@ export declare class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElemen
     get editable(): boolean;
     set editable(val: boolean);
     applyExpression(expression: string): Promise<void>;
-    private static appendEmptyPlaceholderIfNeeded;
     private showAllPropertiesElementSelected;
     private createShowAllPropertiesButton;
     onpopulate(): Promise<void>;
@@ -252,4 +255,3 @@ export declare class ExpandableTextPropertyValue extends UI.Widget.Widget {
     set maxLength(maxLength: number);
     performUpdate(): void;
 }
-export {};

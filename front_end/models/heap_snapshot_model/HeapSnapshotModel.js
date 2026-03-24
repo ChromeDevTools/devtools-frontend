@@ -95,14 +95,6 @@ export class Edge {
         this.isAddedNotRemoved = null;
     }
 }
-export class Aggregate {
-    count;
-    distance;
-    self;
-    maxRet;
-    name;
-    idxs;
-}
 export class AggregateForDiff {
     name;
     indexes;

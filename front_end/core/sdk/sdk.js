@@ -9453,7 +9453,7 @@ __export(CookieModel_exports, {
 });
 import * as Common25 from "./../common/common.js";
 import * as Platform16 from "./../platform/platform.js";
-import * as Root11 from "./../root/root.js";
+import * as Root12 from "./../root/root.js";
 
 // gen/front_end/core/sdk/Cookie.js
 var Cookie_exports = {};
@@ -9749,7 +9749,7 @@ import * as TextUtils from "./../../models/text_utils/text_utils.js";
 import * as Common5 from "./../common/common.js";
 import * as i18n from "./../i18n/i18n.js";
 import * as Platform3 from "./../platform/platform.js";
-import * as Root2 from "./../root/root.js";
+import * as Root3 from "./../root/root.js";
 
 // gen/front_end/core/sdk/TargetManager.js
 var TargetManager_exports = {};
@@ -9762,7 +9762,7 @@ import * as Common4 from "./../common/common.js";
 import * as Host from "./../host/host.js";
 import * as Platform2 from "./../platform/platform.js";
 import { assertNotNullOrUndefined } from "./../platform/platform.js";
-import * as Root from "./../root/root.js";
+import * as Root2 from "./../root/root.js";
 
 // gen/front_end/core/sdk/Target.js
 var Target_exports = {};
@@ -9773,6 +9773,7 @@ __export(Target_exports, {
 import * as Common3 from "./../common/common.js";
 import * as Platform from "./../platform/platform.js";
 import * as ProtocolClient from "./../protocol_client/protocol_client.js";
+import * as Root from "./../root/root.js";
 var Target = class extends ProtocolClient.InspectorBackend.TargetBase {
   #targetManager;
   #name;
@@ -9806,6 +9807,9 @@ var Target = class extends ProtocolClient.InspectorBackend.TargetBase {
     switch (type) {
       case Type.FRAME:
         this.#capabilitiesMask = 1 | 8192 | 2 | 4 | 8 | 16 | 32 | 128 | 256 | 1024 | 2048 | 32768 | 65536 | 131072 | 262144 | 524288 | 1048576;
+        if (Root.Runtime.hostConfig.devToolsWebMCPSupport?.enabled) {
+          this.#capabilitiesMask |= 2097152;
+        }
         if (parentTarget?.type() !== Type.FRAME) {
           this.#capabilitiesMask |= 4096 | 64 | 512 | 16384;
           if (Common3.ParsedURL.schemeIs(targetInfo?.url, "chrome-extension:")) {
@@ -10047,13 +10051,13 @@ var TargetManager = class _TargetManager extends Common4.ObjectWrapper.ObjectWra
     this.#overrideAutoStartModels = overrideAutoStartModels;
   }
   static instance({ forceNew } = { forceNew: false }) {
-    if (!Root.DevToolsContext.globalInstance().has(_TargetManager) || forceNew) {
-      Root.DevToolsContext.globalInstance().set(_TargetManager, new _TargetManager(Root.DevToolsContext.globalInstance()));
+    if (!Root2.DevToolsContext.globalInstance().has(_TargetManager) || forceNew) {
+      Root2.DevToolsContext.globalInstance().set(_TargetManager, new _TargetManager(Root2.DevToolsContext.globalInstance()));
     }
-    return Root.DevToolsContext.globalInstance().get(_TargetManager);
+    return Root2.DevToolsContext.globalInstance().get(_TargetManager);
   }
   static removeInstance() {
-    Root.DevToolsContext.globalInstance().delete(_TargetManager);
+    Root2.DevToolsContext.globalInstance().delete(_TargetManager);
   }
   onInspectedURLChange(target) {
     if (target !== this.#scopeTarget) {
@@ -10275,7 +10279,7 @@ var TargetManager = class _TargetManager extends Common4.ObjectWrapper.ObjectWra
     return this.#browserTarget;
   }
   async maybeAttachInitialTarget() {
-    if (!Boolean(Root.Runtime.Runtime.queryParam("browserConnection"))) {
+    if (!Boolean(Root2.Runtime.Runtime.queryParam("browserConnection"))) {
       return false;
     }
     if (!this.#browserTarget) {
@@ -10546,7 +10550,7 @@ var NetworkManager = class _NetworkManager extends SDKModel {
     }
     void this.#networkAgent.invoke_enable({
       maxPostDataSize: MAX_EAGER_POST_REQUEST_BODY_LENGTH,
-      enableDurableMessages: Root2.Runtime.hostConfig.devToolsEnableDurableMessages?.enabled,
+      enableDurableMessages: Root3.Runtime.hostConfig.devToolsEnableDurableMessages?.enabled,
       maxTotalBufferSize: MAX_RESPONSE_BODY_TOTAL_BUFFER_LENGTH,
       reportDirectSocketTraffic: true
     });
@@ -11991,16 +11995,16 @@ var MultitargetNetworkManager = class _MultitargetNetworkManager extends Common5
   }
   static instance(opts = { forceNew: null }) {
     const { forceNew, targetManager } = opts;
-    if (!Root2.DevToolsContext.globalInstance().has(_MultitargetNetworkManager) || forceNew) {
-      Root2.DevToolsContext.globalInstance().set(_MultitargetNetworkManager, new _MultitargetNetworkManager(targetManager ?? TargetManager.instance()));
+    if (!Root3.DevToolsContext.globalInstance().has(_MultitargetNetworkManager) || forceNew) {
+      Root3.DevToolsContext.globalInstance().set(_MultitargetNetworkManager, new _MultitargetNetworkManager(targetManager ?? TargetManager.instance()));
     }
-    return Root2.DevToolsContext.globalInstance().get(_MultitargetNetworkManager);
+    return Root3.DevToolsContext.globalInstance().get(_MultitargetNetworkManager);
   }
   static dispose() {
-    Root2.DevToolsContext.globalInstance().delete(_MultitargetNetworkManager);
+    Root3.DevToolsContext.globalInstance().delete(_MultitargetNetworkManager);
   }
   static patchUserAgentWithChromeVersion(uaString) {
-    const chromeVersion = Root2.Runtime.getChromeVersion();
+    const chromeVersion = Root3.Runtime.getChromeVersion();
     if (chromeVersion.length > 0) {
       const additionalAppVersion = chromeVersion.split(".", 1)[0] + ".0.100.0";
       return Platform3.StringUtilities.sprintf(uaString, chromeVersion, additionalAppVersion);
@@ -12011,7 +12015,7 @@ var MultitargetNetworkManager = class _MultitargetNetworkManager extends Common5
     if (!userAgentMetadata.brands) {
       return;
     }
-    const chromeVersion = Root2.Runtime.getChromeVersion();
+    const chromeVersion = Root3.Runtime.getChromeVersion();
     if (chromeVersion.length === 0) {
       return;
     }
@@ -12534,7 +12538,7 @@ __export(DOMModel_exports, {
 });
 import * as Common21 from "./../common/common.js";
 import * as Platform13 from "./../platform/platform.js";
-import * as Root10 from "./../root/root.js";
+import * as Root11 from "./../root/root.js";
 
 // gen/front_end/core/sdk/CSSModel.js
 var CSSModel_exports = {};
@@ -12550,7 +12554,7 @@ import * as TextUtils18 from "./../../models/text_utils/text_utils.js";
 import * as Common13 from "./../common/common.js";
 import * as Host3 from "./../host/host.js";
 import * as Platform10 from "./../platform/platform.js";
-import * as Root6 from "./../root/root.js";
+import * as Root7 from "./../root/root.js";
 
 // gen/front_end/core/sdk/CSSFontFace.js
 var CSSFontFace_exports = {};
@@ -12604,7 +12608,7 @@ import * as TextUtils3 from "./../../models/text_utils/text_utils.js";
 import * as Common7 from "./../common/common.js";
 import * as HostModule from "./../host/host.js";
 import * as Platform4 from "./../platform/platform.js";
-import * as Root3 from "./../root/root.js";
+import * as Root4 from "./../root/root.js";
 
 // gen/front_end/core/sdk/CSSPropertyParser.js
 var CSSPropertyParser_exports = {};
@@ -14605,7 +14609,7 @@ var CSSProperty = class _CSSProperty extends Common7.ObjectWrapper.ObjectWrapper
   #matchers(matchedStyles, computedStyles) {
     const matchers = matchedStyles.propertyMatchers(this.ownerStyle, computedStyles);
     matchers.push(new CSSWideKeywordMatcher(this, matchedStyles));
-    if (Root3.Runtime.experiments.isEnabled(Root3.ExperimentNames.ExperimentName.FONT_EDITOR)) {
+    if (Root4.Runtime.experiments.isEnabled(Root4.ExperimentNames.ExperimentName.FONT_EDITOR)) {
       matchers.push(new FontMatcher());
     }
     return matchers;
@@ -17433,7 +17437,7 @@ __export(PageResourceLoader_exports, {
 import * as Common10 from "./../common/common.js";
 import * as Host2 from "./../host/host.js";
 import * as i18n5 from "./../i18n/i18n.js";
-import * as Root4 from "./../root/root.js";
+import * as Root5 from "./../root/root.js";
 
 // gen/front_end/core/sdk/IOModel.js
 var IOModel_exports = {};
@@ -18451,12 +18455,12 @@ var PageResourceLoader = class _PageResourceLoader extends Common10.ObjectWrappe
     loadOverride: null
   }) {
     if (forceNew) {
-      Root4.DevToolsContext.globalInstance().set(_PageResourceLoader, new _PageResourceLoader(targetManager ?? TargetManager.instance(), settings ?? Common10.Settings.Settings.instance(), userAgentProvider ?? MultitargetNetworkManager.instance(), loadOverride, maxConcurrentLoads));
+      Root5.DevToolsContext.globalInstance().set(_PageResourceLoader, new _PageResourceLoader(targetManager ?? TargetManager.instance(), settings ?? Common10.Settings.Settings.instance(), userAgentProvider ?? MultitargetNetworkManager.instance(), loadOverride, maxConcurrentLoads));
     }
-    return Root4.DevToolsContext.globalInstance().get(_PageResourceLoader);
+    return Root5.DevToolsContext.globalInstance().get(_PageResourceLoader);
   }
   static removeInstance() {
-    Root4.DevToolsContext.globalInstance().delete(_PageResourceLoader);
+    Root5.DevToolsContext.globalInstance().delete(_PageResourceLoader);
   }
   onPrimaryPageChanged(event) {
     const { frame: mainFrame, type } = event.data;
@@ -18748,7 +18752,7 @@ import * as TextUtils17 from "./../../models/text_utils/text_utils.js";
 import * as ScopesCodec from "./../../third_party/source-map-scopes-codec/source-map-scopes-codec.js";
 import * as Common11 from "./../common/common.js";
 import * as Platform8 from "./../platform/platform.js";
-import * as Root5 from "./../root/root.js";
+import * as Root6 from "./../root/root.js";
 
 // gen/front_end/core/sdk/ScopeTreeCache.js
 var ScopeTreeCache_exports = {};
@@ -19883,7 +19887,7 @@ var SourceMap = class {
       nameIndex += tokenIter.nextVLQ();
       this.mappings().push(new SourceMapEntry(lineNumber, columnNumber, sourceIndex, sourceURL, sourceLineNumber, sourceColumnNumber, names[nameIndex]));
     }
-    if (Root5.Runtime.experiments.isEnabled(Root5.ExperimentNames.ExperimentName.USE_SOURCE_MAP_SCOPES)) {
+    if (Root6.Runtime.experiments.isEnabled(Root6.ExperimentNames.ExperimentName.USE_SOURCE_MAP_SCOPES)) {
       if (!this.#scopesInfo) {
         this.#scopesInfo = new SourceMapScopesInfo(this, { scopes: [], ranges: [] });
       }
@@ -20575,7 +20579,7 @@ var CSSModel = class _CSSModel extends SDKModel {
     if (!node) {
       return null;
     }
-    const shouldGetAnimatedStyles = Root6.Runtime.hostConfig.devToolsAnimationStylesInStylesTab?.enabled;
+    const shouldGetAnimatedStyles = Root7.Runtime.hostConfig.devToolsAnimationStylesInStylesTab?.enabled;
     const [matchedStylesResponse, animatedStylesResponse] = await Promise.all([
       this.agent.invoke_getMatchedStylesForNode({ nodeId }),
       shouldGetAnimatedStyles ? this.agent.invoke_getAnimatedStylesForNode({ nodeId }) : void 0
@@ -21235,7 +21239,7 @@ __export(FrameManager_exports, {
   FrameManager: () => FrameManager
 });
 import * as Common14 from "./../common/common.js";
-import * as Root7 from "./../root/root.js";
+import * as Root8 from "./../root/root.js";
 var FrameManager = class _FrameManager extends Common14.ObjectWrapper.ObjectWrapper {
   #eventListeners = /* @__PURE__ */ new WeakMap();
   // Maps frameIds to #frames and a count of how many ResourceTreeModels contain this frame.
@@ -21251,13 +21255,13 @@ var FrameManager = class _FrameManager extends Common14.ObjectWrapper.ObjectWrap
     targetManager.observeModels(ResourceTreeModel, this);
   }
   static instance({ forceNew } = { forceNew: false }) {
-    if (!Root7.DevToolsContext.globalInstance().has(_FrameManager) || forceNew) {
-      Root7.DevToolsContext.globalInstance().set(_FrameManager, new _FrameManager(TargetManager.instance()));
+    if (!Root8.DevToolsContext.globalInstance().has(_FrameManager) || forceNew) {
+      Root8.DevToolsContext.globalInstance().set(_FrameManager, new _FrameManager(TargetManager.instance()));
     }
-    return Root7.DevToolsContext.globalInstance().get(_FrameManager);
+    return Root8.DevToolsContext.globalInstance().get(_FrameManager);
   }
   static removeInstance() {
-    Root7.DevToolsContext.globalInstance().delete(_FrameManager);
+    Root8.DevToolsContext.globalInstance().delete(_FrameManager);
   }
   modelAdded(resourceTreeModel) {
     const addListener = resourceTreeModel.addEventListener(Events3.FrameAdded, this.frameAdded, this);
@@ -21415,7 +21419,7 @@ __export(OverlayModel_exports, {
 });
 import * as Common20 from "./../common/common.js";
 import * as i18n13 from "./../i18n/i18n.js";
-import * as Root9 from "./../root/root.js";
+import * as Root10 from "./../root/root.js";
 
 // gen/front_end/core/sdk/DebuggerModel.js
 var DebuggerModel_exports = {};
@@ -21435,7 +21439,7 @@ __export(DebuggerModel_exports, {
 });
 import * as Common17 from "./../common/common.js";
 import * as i18n11 from "./../i18n/i18n.js";
-import * as Root8 from "./../root/root.js";
+import * as Root9 from "./../root/root.js";
 
 // gen/front_end/core/sdk/RuntimeModel.js
 var RuntimeModel_exports = {};
@@ -22679,11 +22683,11 @@ var DebuggerModel = class _DebuggerModel extends SDKModel {
       return;
     }
     this.#debuggerEnabled = true;
-    const isRemoteFrontend = Root8.Runtime.Runtime.queryParam("remoteFrontend") || Root8.Runtime.Runtime.queryParam("ws");
+    const isRemoteFrontend = Root9.Runtime.Runtime.queryParam("remoteFrontend") || Root9.Runtime.Runtime.queryParam("ws");
     const maxScriptsCacheSize = isRemoteFrontend ? 1e7 : 1e8;
     const enablePromise = this.agent.invoke_enable({ maxScriptsCacheSize });
     let instrumentationPromise;
-    if (Root8.Runtime.experiments.isEnabled(Root8.ExperimentNames.ExperimentName.INSTRUMENTATION_BREAKPOINTS)) {
+    if (Root9.Runtime.experiments.isEnabled(Root9.ExperimentNames.ExperimentName.INSTRUMENTATION_BREAKPOINTS)) {
       instrumentationPromise = this.agent.invoke_setInstrumentationBreakpoint({
         instrumentation: "beforeScriptExecution"
       });
@@ -22698,7 +22702,7 @@ var DebuggerModel = class _DebuggerModel extends SDKModel {
     this.registerDebugger(enableResult);
   }
   async syncDebuggerId() {
-    const isRemoteFrontend = Root8.Runtime.Runtime.queryParam("remoteFrontend") || Root8.Runtime.Runtime.queryParam("ws");
+    const isRemoteFrontend = Root9.Runtime.Runtime.queryParam("remoteFrontend") || Root9.Runtime.Runtime.queryParam("ws");
     const maxScriptsCacheSize = isRemoteFrontend ? 1e7 : 1e8;
     const enablePromise = this.agent.invoke_enable({ maxScriptsCacheSize });
     void enablePromise.then(this.registerDebugger.bind(this));
@@ -24479,7 +24483,7 @@ var OverlayModel = class _OverlayModel extends SDKModel {
       gridHighlightConfig: {},
       flexContainerHighlightConfig: {},
       flexItemHighlightConfig: {},
-      contrastAlgorithm: Root9.Runtime.experiments.isEnabled(Root9.ExperimentNames.ExperimentName.APCA) ? "apca" : "aa"
+      contrastAlgorithm: Root10.Runtime.experiments.isEnabled(Root10.ExperimentNames.ExperimentName.APCA) ? "apca" : "aa"
     };
     if (mode === "all" || mode === "content") {
       highlightConfig.contentColor = Common20.Color.PageHighlight.Content.toProtocolRGBA();
@@ -26074,7 +26078,7 @@ var DOMModel = class _DOMModel extends SDKModel {
     if (!target.suspended()) {
       void this.agent.invoke_enable({});
     }
-    if (Root10.Runtime.experiments.isEnabled(Root10.ExperimentNames.ExperimentName.CAPTURE_NODE_CREATION_STACKS)) {
+    if (Root11.Runtime.experiments.isEnabled(Root11.ExperimentNames.ExperimentName.CAPTURE_NODE_CREATION_STACKS)) {
       void this.agent.invoke_setNodeStackTracesEnabled({ enable: true });
     }
   }
@@ -28048,7 +28052,7 @@ var CookieModel = class extends SDKModel {
     if (cookie.expires()) {
       expires = Math.floor(Date.parse(`${cookie.expires()}`) / 1e3);
     }
-    const enabled = Root11.Runtime.experiments.isEnabled(Root11.ExperimentNames.ExperimentName.EXPERIMENTAL_COOKIE_FEATURES);
+    const enabled = Root12.Runtime.experiments.isEnabled(Root12.ExperimentNames.ExperimentName.EXPERIMENTAL_COOKIE_FEATURES);
     const preserveUnset = (scheme) => scheme === "Unset" ? scheme : void 0;
     const protocolCookie = {
       name: cookie.name(),
@@ -31862,7 +31866,7 @@ import * as i18n29 from "./../i18n/i18n.js";
 import * as Common34 from "./../common/common.js";
 import * as Host7 from "./../host/host.js";
 import * as ProtocolClient3 from "./../protocol_client/protocol_client.js";
-import * as Root13 from "./../root/root.js";
+import * as Root14 from "./../root/root.js";
 
 // gen/front_end/core/sdk/RehydratingConnection.js
 var RehydratingConnection_exports = {};
@@ -31873,7 +31877,7 @@ __export(RehydratingConnection_exports, {
 import * as Common33 from "./../common/common.js";
 import * as i18n27 from "./../i18n/i18n.js";
 import * as ProtocolClient2 from "./../protocol_client/protocol_client.js";
-import * as Root12 from "./../root/root.js";
+import * as Root13 from "./../root/root.js";
 
 // gen/front_end/core/sdk/EnhancedTracesParser.js
 var EnhancedTracesParser_exports = {};
@@ -32273,9 +32277,9 @@ var RehydratingConnectionTransport = class {
   }
   /** Returns true if found a trace URL. */
   #maybeHandleLoadingFromUrl() {
-    let traceUrl = Root12.Runtime.Runtime.queryParam("traceURL");
+    let traceUrl = Root13.Runtime.Runtime.queryParam("traceURL");
     if (!traceUrl) {
-      const timelineUrl = Root12.Runtime.Runtime.queryParam("loadTimelineFromURL");
+      const timelineUrl = Root13.Runtime.Runtime.queryParam("loadTimelineFromURL");
       if (timelineUrl) {
         traceUrl = decodeURIComponent(timelineUrl);
       }
@@ -32808,11 +32812,11 @@ async function initMainConnection(createRootTarget, onConnectionLost) {
   Host7.InspectorFrontendHost.InspectorFrontendHostInstance.connectionReady();
 }
 function createMainTransport(onConnectionLost) {
-  if (Root13.Runtime.Runtime.isTraceApp()) {
+  if (Root14.Runtime.Runtime.isTraceApp()) {
     return new RehydratingConnectionTransport(onConnectionLost);
   }
-  const wsParam = Root13.Runtime.Runtime.queryParam("ws");
-  const wssParam = Root13.Runtime.Runtime.queryParam("wss");
+  const wsParam = Root14.Runtime.Runtime.queryParam("ws");
+  const wssParam = Root14.Runtime.Runtime.queryParam("wss");
   if (wsParam || wssParam) {
     const ws = wsParam ? `ws://${wsParam}` : `wss://${wssParam}`;
     return new WebSocketTransport(ws, onConnectionLost);
@@ -37377,6 +37381,75 @@ var WebAuthnDispatcher = class {
   }
 };
 SDKModel.register(WebAuthnModel, { capabilities: 65536, autostart: false });
+
+// gen/front_end/core/sdk/WebMCPModel.js
+var WebMCPModel_exports = {};
+__export(WebMCPModel_exports, {
+  WebMCPModel: () => WebMCPModel
+});
+var WebMCPModel = class extends SDKModel {
+  #tools = /* @__PURE__ */ new Map();
+  agent;
+  #enabled = false;
+  constructor(target) {
+    super(target);
+    this.agent = target.webMCPAgent();
+    target.registerWebMCPDispatcher(new WebMCPDispatcher(this));
+    const runtimeModel = target.model(RuntimeModel);
+    if (runtimeModel) {
+      runtimeModel.addEventListener(Events6.ExecutionContextDestroyed, this.#executionContextDestroyed, this);
+    }
+    void this.enable();
+  }
+  get tools() {
+    return this.#tools.values().flatMap((toolMap) => toolMap.values());
+  }
+  async enable() {
+    if (this.#enabled) {
+      return;
+    }
+    await this.agent.invoke_enable();
+    this.#enabled = true;
+  }
+  #executionContextDestroyed(event) {
+    const executionContext = event.data;
+    if (executionContext.isDefault && executionContext.frameId) {
+      const frameTools = this.#tools.get(executionContext.frameId);
+      if (frameTools) {
+        const toolsToRemove = [...frameTools.values()];
+        this.#tools.delete(executionContext.frameId);
+        this.dispatchEventToListeners("ToolsRemoved", toolsToRemove);
+      }
+    }
+  }
+  onToolsRemoved(tools) {
+    const deletedTools = tools.filter((tool) => this.#tools.get(tool.frameId)?.delete(tool.name));
+    this.dispatchEventToListeners("ToolsRemoved", deletedTools);
+  }
+  onToolsAdded(tools) {
+    for (const tool of tools) {
+      const frameTools = this.#tools.get(tool.frameId) ?? /* @__PURE__ */ new Map();
+      if (!this.#tools.has(tool.frameId)) {
+        this.#tools.set(tool.frameId, frameTools);
+      }
+      frameTools.set(tool.name, tool);
+    }
+    this.dispatchEventToListeners("ToolsAdded", tools);
+  }
+};
+var WebMCPDispatcher = class {
+  #model;
+  constructor(model) {
+    this.#model = model;
+  }
+  toolsAdded(params) {
+    this.#model.onToolsAdded(params.tools);
+  }
+  toolsRemoved(params) {
+    this.#model.onToolsRemoved(params.tools);
+  }
+};
+SDKModel.register(WebMCPModel, { capabilities: 2097152, autostart: true });
 export {
   AccessibilityModel_exports as AccessibilityModel,
   AnimationModel_exports as AnimationModel,
@@ -37458,6 +37531,7 @@ export {
   Target_exports as Target,
   TargetManager_exports as TargetManager,
   TraceObject_exports as TraceObject,
-  WebAuthnModel_exports as WebAuthnModel
+  WebAuthnModel_exports as WebAuthnModel,
+  WebMCPModel_exports as WebMCPModel
 };
 //# sourceMappingURL=sdk.js.map

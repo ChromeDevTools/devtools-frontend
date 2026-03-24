@@ -331,6 +331,9 @@ export class TargetBase {
     webAuthnAgent() {
         return this.getAgent('WebAuthn');
     }
+    webMCPAgent() {
+        return this.getAgent('WebMCP');
+    }
     // Dispatcher registration and de-registration, keep alphabetically sorted.
     /**
      * Make sure that `Domain` is only ever instantiated with one protocol domain
@@ -443,6 +446,9 @@ export class TargetBase {
     }
     registerWebAuthnDispatcher(dispatcher) {
         this.registerDispatcher('WebAuthn', dispatcher);
+    }
+    registerWebMCPDispatcher(dispatcher) {
+        this.registerDispatcher('WebMCP', dispatcher);
     }
 }
 /** These are not logged as console.error */

@@ -756,6 +756,9 @@ var LighthouseController = class extends Common.ObjectWrapper.ObjectWrapper {
       const inspectedURL = await this.getInspectedURL({ force: true });
       const categoryIDs = overrides?.categoryIds ?? this.getCategoryIDs();
       const flags = this.getFlags();
+      if (overrides?.mode) {
+        flags.mode = overrides.mode;
+      }
       this.recordMetrics(flags, categoryIDs);
       this.currentLighthouseRun = new LighthouseRun(this, this.protocolService, inspectedURL, categoryIDs, flags, Boolean(overrides?.isAIControlled));
       await this.currentLighthouseRun.start();

@@ -165,7 +165,7 @@ export declare class HeapSnapshotConstructorNode extends HeapSnapshotGridNode {
     readonly shallowSize: number;
     readonly retainedSize: number;
     readonly classKey: string;
-    constructor(dataGrid: HeapSnapshotConstructorsDataGrid, classKey: string, aggregate: HeapSnapshotModel.HeapSnapshotModel.Aggregate, nodeFilter: HeapSnapshotModel.HeapSnapshotModel.NodeFilter);
+    constructor(dataGrid: HeapSnapshotConstructorsDataGrid, classKey: string, aggregate: HeapSnapshotModel.HeapSnapshotModel.AggregatedInfo, nodeFilter: HeapSnapshotModel.HeapSnapshotModel.NodeFilter);
     get name(): string | undefined;
     createProvider(): HeapSnapshotProviderProxy;
     populateNodeBySnapshotObjectId(snapshotObjectId: number): Promise<HeapSnapshotGridNode[]>;

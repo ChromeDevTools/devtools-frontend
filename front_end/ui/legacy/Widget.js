@@ -111,6 +111,11 @@ function runNextUpdate() {
                 widget.addUpdateController(controller);
                 await widget.performUpdate(controller.signal);
             }
+            catch (e) {
+                if (e.name !== 'AbortError') {
+                    throw e;
+                }
+            }
             finally {
                 resolve();
             }
@@ -859,6 +864,7 @@ export class Widget {
     performUpdate(_signal) {
     }
     addUpdateController(controller) {
+        this.#updateController?.abort();
         this.#updateController = controller;
     }
     cancelUpdateController() {

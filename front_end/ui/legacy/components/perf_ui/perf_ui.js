@@ -5022,12 +5022,23 @@ var GCActionDelegate_exports = {};
 __export(GCActionDelegate_exports, {
   GCActionDelegate: () => GCActionDelegate
 });
+import * as i18n7 from "./../../../../core/i18n/i18n.js";
 import * as SDK from "./../../../../core/sdk/sdk.js";
+import * as Snackbars from "./../../../components/snackbars/snackbars.js";
+var UIStrings4 = {
+  /**
+   * @description Notification message shown to the user when garbage collection has completed.
+   */
+  garbageCollectionCompleted: "Garbage collection completed"
+};
+var str_4 = i18n7.i18n.registerUIStrings("ui/legacy/components/perf_ui/GCActionDelegate.ts", UIStrings4);
+var i18nString4 = i18n7.i18n.getLocalizedString.bind(void 0, str_4);
 var GCActionDelegate = class {
   handleAction(_context, _actionId) {
-    for (const heapProfilerModel of SDK.TargetManager.TargetManager.instance().models(SDK.HeapProfilerModel.HeapProfilerModel)) {
-      void heapProfilerModel.collectGarbage();
-    }
+    const promises = SDK.TargetManager.TargetManager.instance().models(SDK.HeapProfilerModel.HeapProfilerModel).map((heapProfilerModel) => heapProfilerModel.collectGarbage());
+    void Promise.all(promises).then(() => {
+      Snackbars.Snackbar.Snackbar.show({ message: i18nString4(UIStrings4.garbageCollectionCompleted) });
+    });
     return true;
   }
 };
@@ -5358,8 +5369,8 @@ __export(NetworkPriorities_exports, {
   uiLabelForNetworkPriority: () => uiLabelForNetworkPriority,
   uiLabelToNetworkPriority: () => uiLabelToNetworkPriority
 });
-import * as i18n7 from "./../../../../core/i18n/i18n.js";
-var UIStrings4 = {
+import * as i18n9 from "./../../../../core/i18n/i18n.js";
+var UIStrings5 = {
   /**
    * @description Text in Network Priorities of the Performance panel
    */
@@ -5381,8 +5392,8 @@ var UIStrings4 = {
    */
   highest: "Highest"
 };
-var str_4 = i18n7.i18n.registerUIStrings("ui/legacy/components/perf_ui/NetworkPriorities.ts", UIStrings4);
-var i18nString4 = i18n7.i18n.getLocalizedString.bind(void 0, str_4);
+var str_5 = i18n9.i18n.registerUIStrings("ui/legacy/components/perf_ui/NetworkPriorities.ts", UIStrings5);
+var i18nString5 = i18n9.i18n.getLocalizedString.bind(void 0, str_5);
 function uiLabelForNetworkPriority(priority) {
   return priorityUILabelMap().get(priority) || "";
 }
@@ -5400,11 +5411,11 @@ function uiLabelToNetworkPriority(priorityLabel) {
 var priorityUILabelMapInstance = /* @__PURE__ */ new Map();
 function priorityUILabelMap() {
   if (priorityUILabelMapInstance.size === 0) {
-    priorityUILabelMapInstance.set("VeryLow", i18nString4(UIStrings4.lowest));
-    priorityUILabelMapInstance.set("Low", i18nString4(UIStrings4.low));
-    priorityUILabelMapInstance.set("Medium", i18nString4(UIStrings4.medium));
-    priorityUILabelMapInstance.set("High", i18nString4(UIStrings4.high));
-    priorityUILabelMapInstance.set("VeryHigh", i18nString4(UIStrings4.highest));
+    priorityUILabelMapInstance.set("VeryLow", i18nString5(UIStrings5.lowest));
+    priorityUILabelMapInstance.set("Low", i18nString5(UIStrings5.low));
+    priorityUILabelMapInstance.set("Medium", i18nString5(UIStrings5.medium));
+    priorityUILabelMapInstance.set("High", i18nString5(UIStrings5.high));
+    priorityUILabelMapInstance.set("VeryHigh", i18nString5(UIStrings5.highest));
   }
   return priorityUILabelMapInstance;
 }
@@ -5428,7 +5439,7 @@ __export(OverviewGrid_exports, {
   WindowSelector: () => WindowSelector
 });
 import * as Common5 from "./../../../../core/common/common.js";
-import * as i18n9 from "./../../../../core/i18n/i18n.js";
+import * as i18n11 from "./../../../../core/i18n/i18n.js";
 import * as Platform5 from "./../../../../core/platform/platform.js";
 import { createIcon } from "./../../../kit/kit.js";
 import * as VisualLogging3 from "./../../../visual_logging/visual_logging.js";
@@ -5595,7 +5606,7 @@ var overviewGrid_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./overviewGrid.css")} */`;
 
 // gen/front_end/ui/legacy/components/perf_ui/OverviewGrid.js
-var UIStrings5 = {
+var UIStrings6 = {
   /**
    * @description Label for the window for Overview grids
    */
@@ -5609,8 +5620,8 @@ var UIStrings5 = {
    */
   rightResizer: "Right Resizer"
 };
-var str_5 = i18n9.i18n.registerUIStrings("ui/legacy/components/perf_ui/OverviewGrid.ts", UIStrings5);
-var i18nString5 = i18n9.i18n.getLocalizedString.bind(void 0, str_5);
+var str_6 = i18n11.i18n.registerUIStrings("ui/legacy/components/perf_ui/OverviewGrid.ts", UIStrings6);
+var i18nString6 = i18n11.i18n.getLocalizedString.bind(void 0, str_6);
 var OverviewGrid = class {
   element;
   grid;
@@ -5717,7 +5728,7 @@ var Window = class extends Common5.ObjectWrapper.ObjectWrapper {
     this.parentElement.classList.add("parent-element");
     UI6.ARIAUtils.markAsGroup(this.parentElement);
     this.calculator = calculator;
-    UI6.ARIAUtils.setLabel(this.parentElement, i18nString5(UIStrings5.overviewGridWindow));
+    UI6.ARIAUtils.setLabel(this.parentElement, i18nString6(UIStrings6.overviewGridWindow));
     UI6.UIUtils.installDragHandle(this.parentElement, this.startWindowSelectorDragging.bind(this), this.windowSelectorDragging.bind(this), this.endWindowSelectorDragging.bind(this), "text", null);
     if (dividersLabelBarElement) {
       UI6.UIUtils.installDragHandle(dividersLabelBarElement, this.startWindowDragging.bind(this), this.windowDragging.bind(this), null, "-webkit-grabbing", "-webkit-grab");
@@ -5729,12 +5740,12 @@ var Window = class extends Common5.ObjectWrapper.ObjectWrapper {
     UI6.UIUtils.installDragHandle(this.leftResizeElement, this.resizerElementStartDragging.bind(this), this.leftResizeElementDragging.bind(this), null, "ew-resize");
     this.rightResizeElement = parentElement.createChild("div", "overview-grid-window-resizer");
     UI6.UIUtils.installDragHandle(this.rightResizeElement, this.resizerElementStartDragging.bind(this), this.rightResizeElementDragging.bind(this), null, "ew-resize");
-    UI6.ARIAUtils.setLabel(this.leftResizeElement, i18nString5(UIStrings5.leftResizer));
+    UI6.ARIAUtils.setLabel(this.leftResizeElement, i18nString6(UIStrings6.leftResizer));
     UI6.ARIAUtils.markAsSlider(this.leftResizeElement);
     const leftKeyDown = (event) => this.handleKeyboardResizing(event, false);
     this.leftResizeElement.addEventListener("keydown", leftKeyDown);
     this.leftResizeElement.addEventListener("click", this.onResizerClicked);
-    UI6.ARIAUtils.setLabel(this.rightResizeElement, i18nString5(UIStrings5.rightResizer));
+    UI6.ARIAUtils.setLabel(this.rightResizeElement, i18nString6(UIStrings6.rightResizer));
     UI6.ARIAUtils.markAsSlider(this.rightResizeElement);
     const rightKeyDown = (event) => this.handleKeyboardResizing(event, true);
     this.rightResizeElement.addEventListener("keydown", rightKeyDown);
@@ -6174,7 +6185,7 @@ var PieChart_exports = {};
 __export(PieChart_exports, {
   PieChart: () => PieChart
 });
-import * as i18n11 from "./../../../../core/i18n/i18n.js";
+import * as i18n13 from "./../../../../core/i18n/i18n.js";
 import { html, render, svg } from "./../../../lit/lit.js";
 import * as VisualLogging4 from "./../../../visual_logging/visual_logging.js";
 
@@ -6281,14 +6292,14 @@ var pieChart_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./pieChart.css")} */`;
 
 // gen/front_end/ui/legacy/components/perf_ui/PieChart.js
-var UIStrings6 = {
+var UIStrings7 = {
   /**
    * @description Text for sum
    */
   total: "Total"
 };
-var str_6 = i18n11.i18n.registerUIStrings("ui/legacy/components/perf_ui/PieChart.ts", UIStrings6);
-var i18nString6 = i18n11.i18n.getLocalizedString.bind(void 0, str_6);
+var str_7 = i18n13.i18n.registerUIStrings("ui/legacy/components/perf_ui/PieChart.ts", UIStrings7);
+var i18nString7 = i18n13.i18n.getLocalizedString.bind(void 0, str_7);
 var PieChart = class extends HTMLElement {
   shadow = this.attachShadow({ mode: "open" });
   chartName = "";
@@ -6363,7 +6374,7 @@ var PieChart = class extends HTMLElement {
               @click=${this.selectTotal} tabIndex=${this.totalSelected ? "0" : "-1"}>
             <div class="pie-chart-size">${this.formatter(this.total)}</div>
             <div class="pie-chart-swatch"></div>
-            <div class="pie-chart-name">${i18nString6(UIStrings6.total)}</div>
+            <div class="pie-chart-name">${i18nString7(UIStrings7.total)}</div>
           </div>
         </div>
         ` : ""}
@@ -6463,7 +6474,7 @@ var TimelineOverviewCalculator_exports = {};
 __export(TimelineOverviewCalculator_exports, {
   TimelineOverviewCalculator: () => TimelineOverviewCalculator
 });
-import * as i18n13 from "./../../../../core/i18n/i18n.js";
+import * as i18n15 from "./../../../../core/i18n/i18n.js";
 import * as Trace3 from "./../../../../models/trace/trace.js";
 var TimelineOverviewCalculator = class {
   #minimumBoundary = Trace3.Types.Timing.Milli(0);
@@ -6508,7 +6519,7 @@ var TimelineOverviewCalculator = class {
         }
       }
     }
-    return i18n13.TimeUtilities.preciseMillisToString(time - this.zeroTime(), precision);
+    return i18n15.TimeUtilities.preciseMillisToString(time - this.zeroTime(), precision);
   }
   maximumBoundary() {
     return this.#maximumBoundary;

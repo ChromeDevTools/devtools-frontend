@@ -2224,6 +2224,7 @@ import * as Root3 from "./../../core/root/root.js";
 import * as SDK2 from "./../../core/sdk/sdk.js";
 import * as AiAssistanceModel3 from "./../../models/ai_assistance/ai_assistance.js";
 import * as ComputedStyle from "./../../models/computed_style/computed_style.js";
+import * as Trace from "./../../models/trace/trace.js";
 import * as Marked from "./../../third_party/marked/marked.js";
 import * as Buttons5 from "./../../ui/components/buttons/buttons.js";
 import * as Input3 from "./../../ui/components/input/input.js";
@@ -2613,8 +2614,25 @@ var chatMessage_css_default = `/*
     gap: var(--sys-size-5);
   }
 
-  .widget-and-revealer-container {
-    width: 100%;
+
+  .widget-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--sys-color-surface5);
+    padding: var(--sys-size-2) var(--sys-size-4);
+    border-top-left-radius: var(--sys-shape-corner-medium);
+    border-top-right-radius: var(--sys-shape-corner-medium);
+
+    .widget-name {
+      font: var(--sys-typescale-body3-regular);
+    }
+
+    .widget-reveal-container {
+      padding: 0;
+      background: none;
+      border-radius: 0;
+    }
   }
 
   .widget-reveal-container {
@@ -2637,6 +2655,18 @@ var chatMessage_css_default = `/*
     background-color: var(--sys-color-surface3);
 
     --override-computed-style-property-white-space: normal;
+
+    /* When header is present, content follows it and shouldn't have top radii */
+    .widget-header+& {
+      border-top-left-radius: 0;
+      border-top-right-radius: 0;
+    }
+
+    /* When header is present, content is the last child and needs bottom radii */
+    .widget-header+&:last-child {
+      border-bottom-left-radius: var(--sys-shape-corner-medium);
+      border-bottom-right-radius: var(--sys-shape-corner-medium);
+    }
   }
 
   .network-request-preview {
@@ -3577,19 +3607,32 @@ function renderWidgetResponse(response) {
     "widget-and-revealer-container": true,
     "revealer-only": response.renderedWidget === null
   });
+  const revealButton = html5`
+    <devtools-button class="widget-reveal"
+      .iconName=${"tab-move"}
+      .variant=${"text"}
+      @click=${onReveal}
+    >${response.customRevealTitle ?? lockedString5(UIStringsNotTranslate4.reveal)}</devtools-button>
+  `;
   return html5`
     <div class=${classes}>
+      ${response.widgetName ? html5`
+        <div class="widget-header">
+          <div class="widget-name">${response.widgetName}</div>
+          <div class="widget-reveal-container">
+            ${revealButton}
+          </div>
+        </div>
+      ` : Lit3.nothing}
       ${response.renderedWidget ? html5`
         <div class="widget-content-container">
           ${response.renderedWidget}
         </div>` : Lit3.nothing}
-      <div class="widget-reveal-container">
-        <devtools-button class="widget-reveal"
-          .iconName=${"tab-move"}
-          .variant=${"text"}
-          @click=${onReveal}
-        >${response.customRevealTitle ?? lockedString5(UIStringsNotTranslate4.reveal)}</devtools-button>
-      </div>
+      ${!response.widgetName ? html5`
+        <div class="widget-reveal-container">
+          ${revealButton}
+        </div>
+      ` : Lit3.nothing}
     </div>
     `;
 }
@@ -3643,7 +3686,8 @@ async function makeDomTreeWidget(widgetData) {
   `;
   return {
     renderedWidget,
-    revealable: new SDK2.DOMModel.DeferredDOMNode(root.domModel().target(), root.backendNodeId())
+    revealable: new SDK2.DOMModel.DeferredDOMNode(root.domModel().target(), root.backendNodeId()),
+    widgetName: "LCP element"
   };
 }
 async function renderWidgets(widgets, options = {}) {
@@ -3670,6 +3714,9 @@ async function renderWidgets(widgets, options = {}) {
         break;
       case "LCP_BREAKDOWN":
         response = await makeLcpBreakdownWidget(widgetData);
+        break;
+      case "TIMELINE_RANGE_SUMMARY":
+        response = await makeTimelineRangeSummaryWidget(widgetData);
         break;
       default:
         Platform4.assertNever(widgetData, "Unknown AiWidget name");
@@ -4049,6 +4096,38 @@ var ChatMessage = class extends UI5.Widget.Widget {
     void this.performUpdate();
   }
 };
+async function makeTimelineRangeSummaryWidget(widgetData) {
+  const { bounds, parsedTrace, track } = widgetData.data;
+  let events = [];
+  if (track === "main") {
+    const flameChartView = Timeline.TimelinePanel.TimelinePanel.instance().getFlameChart();
+    const mainDataProvider = flameChartView.getMainDataProvider();
+    const mainTrack = mainDataProvider.timelineData().groups.find((group) => group.name.startsWith("Main \u2014 "));
+    if (mainTrack) {
+      events = mainDataProvider.groupTreeEvents(mainTrack) ?? [];
+    }
+  }
+  const eventsArray = Array.from(events);
+  eventsArray.sort((a, b) => a.ts - b.ts);
+  const thirdPartyTree = new Timeline.ThirdPartyTreeView.ThirdPartyTreeViewWidget();
+  const mapper = new Trace.EntityMapper.EntityMapper(parsedTrace);
+  thirdPartyTree.setModelWithEvents(eventsArray, parsedTrace, mapper);
+  thirdPartyTree.refreshTree(true);
+  const template = html5`
+    <devtools-widget
+      ${widget3(TimelineComponents.TimelineRangeSummaryView.TimelineRangeSummaryView, {
+    data: {
+      parsedTrace,
+      events,
+      startTime: Trace.Helpers.Timing.microToMilli(bounds.min),
+      endTime: Trace.Helpers.Timing.microToMilli(bounds.max),
+      thirdPartyTreeTemplate: html5`<devtools-performance-third-party-tree-view
+            .treeView=${thirdPartyTree}></devtools-performance-third-party-tree-view>`
+    }
+  })}
+    ></devtools-widget>`;
+  return { renderedWidget: template, revealable: null };
+}
 
 // gen/front_end/panels/ai_assistance/components/chatView.css.js
 var chatView_css_default = `/*
@@ -5536,7 +5615,7 @@ var MarkdownRendererWithCodeBlock = class extends MarkdownView.MarkdownView.Mark
 // gen/front_end/panels/ai_assistance/components/PerformanceAgentMarkdownRenderer.js
 import * as Common5 from "./../../core/common/common.js";
 import * as SDK3 from "./../../core/sdk/sdk.js";
-import * as Trace from "./../../models/trace/trace.js";
+import * as Trace2 from "./../../models/trace/trace.js";
 import * as Lit6 from "./../../ui/lit/lit.js";
 import * as PanelsCommon2 from "./../common/common.js";
 var { html: html11 } = Lit6.StaticHtml;
@@ -5561,7 +5640,7 @@ var PerformanceAgentMarkdownRenderer = class extends MarkdownRendererWithCodeBlo
       }
       let label = token.text;
       let title = "";
-      if (Trace.Types.Events.isSyntheticNetworkRequest(event)) {
+      if (Trace2.Types.Events.isSyntheticNetworkRequest(event)) {
         title = event.args.data.url;
       } else {
         label += ` (${event.name})`;
@@ -6422,8 +6501,11 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI10.Panel.Panel {
   async #handlePerformanceRecordAndReload() {
     return await TimelinePanel2.TimelinePanel.TimelinePanel.executeRecordAndReload();
   }
-  async #handleLighthouseRun() {
-    return await LighthousePanel.LighthousePanel.LighthousePanel.executeLighthouseRecording({ isAIControlled: true });
+  async #handleLighthouseRun(overrides) {
+    return await LighthousePanel.LighthousePanel.LighthousePanel.executeLighthouseRecording({
+      isAIControlled: true,
+      ...overrides
+    });
   }
   #getDefaultConversationType() {
     const { hostConfig } = Root7.Runtime;
@@ -6500,7 +6582,8 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI10.Panel.Panel {
             isExternal: false,
             performanceRecordAndReload: this.#handlePerformanceRecordAndReload.bind(this),
             onInspectElement: this.#handleInspectElement.bind(this),
-            networkTimeCalculator: NetworkPanel.NetworkPanel.NetworkPanel.instance().networkLogView.timeCalculator()
+            networkTimeCalculator: NetworkPanel.NetworkPanel.NetworkPanel.instance().networkLogView.timeCalculator(),
+            lighthouseRecording: this.#handleLighthouseRun.bind(this)
           });
         }
       }
@@ -6531,7 +6614,8 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI10.Panel.Panel {
       isExternal: false,
       performanceRecordAndReload: this.#handlePerformanceRecordAndReload.bind(this),
       onInspectElement: this.#handleInspectElement.bind(this),
-      networkTimeCalculator: NetworkPanel.NetworkPanel.NetworkPanel.instance().networkLogView.timeCalculator()
+      networkTimeCalculator: NetworkPanel.NetworkPanel.NetworkPanel.instance().networkLogView.timeCalculator(),
+      lighthouseRecording: this.#handleLighthouseRun.bind(this)
     });
     this.#updateConversationState(conversation);
     this.#conversation?.setContext(context);
@@ -6895,7 +6979,8 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI10.Panel.Panel {
         isExternal: false,
         performanceRecordAndReload: this.#handlePerformanceRecordAndReload.bind(this),
         onInspectElement: this.#handleInspectElement.bind(this),
-        networkTimeCalculator: NetworkPanel.NetworkPanel.NetworkPanel.instance().networkLogView.timeCalculator()
+        networkTimeCalculator: NetworkPanel.NetworkPanel.NetworkPanel.instance().networkLogView.timeCalculator(),
+        lighthouseRecording: this.#handleLighthouseRun.bind(this)
       });
     }
     this.#updateConversationState(conversation);

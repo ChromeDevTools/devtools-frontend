@@ -9,58 +9,60 @@ export default `/*
  * found in the LICENSE file.
  */
 
-:host {
-  display: contents;
-}
+@scope to (devtools-widget > *) {
+  :scope {
+    display: contents;
+  }
 
-.text-ellipsis {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
+  .text-ellipsis {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 
-.link,
-.devtools-link {
-  color: var(--sys-color-primary);
-  text-decoration: underline;
-  cursor: pointer;
-  outline-offset: 2px;
-}
+  .link,
+  .devtools-link {
+    color: var(--sys-color-primary);
+    text-decoration: underline;
+    cursor: pointer;
+    outline-offset: 2px;
+  }
 
-button.link {
-  border: none;
-  background: none;
-  font-family: inherit;
-  font-size: inherit;
-}
+  button.link {
+    border: none;
+    background: none;
+    font-family: inherit;
+    font-size: inherit;
+  }
 
-.policies-list {
-  padding-top: 3px;
-}
+  .policies-list {
+    padding-top: 3px;
+  }
 
-.permissions-row {
-  display: flex;
-  line-height: 22px;
-}
+  .permissions-row {
+    display: flex;
+    line-height: 22px;
+  }
 
-.permissions-row div {
-  padding-right: 5px;
-}
+  .permissions-row div {
+    padding-right: 5px;
+  }
 
-.feature-name {
-  width: 135px;
-}
+  .feature-name {
+    width: 135px;
+  }
 
-.allowed-icon {
-  vertical-align: sub;
-}
+  .allowed-icon {
+    vertical-align: sub;
+  }
 
-.block-reason {
-  width: 215px;
-}
+  .block-reason {
+    width: 215px;
+  }
 
-.disabled-features-button {
-  padding-left: var(--sys-size-3);
+  .disabled-features-button {
+    padding-left: var(--sys-size-3);
+  }
 }
 
 /*# sourceURL=${import.meta.resolve('./permissionsPolicySection.css')} */`;

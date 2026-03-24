@@ -1,6 +1,5 @@
 import * as Host from '../../../core/host/host.js';
 import type * as SDK from '../../../core/sdk/sdk.js';
-import type * as LHModel from '../../lighthouse/lighthouse.js';
 import * as NetworkTimeCalculator from '../../network_time_calculator/network_time_calculator.js';
 import type * as Trace from '../../trace/trace.js';
 import * as Workspace from '../../workspace/workspace.js';
@@ -19,7 +18,6 @@ export declare class ContextSelectionAgent extends AiAgent<never> {
         performanceRecordAndReload?: () => Promise<Trace.TraceModel.ParsedTrace>;
         onInspectElement?: () => Promise<SDK.DOMModel.DOMNode | null>;
         networkTimeCalculator?: NetworkTimeCalculator.NetworkTransferTimeCalculator;
-        lighthouseRecording?: () => Promise<LHModel.ReporterTypes.ReportJSON | null>;
     });
     handleContextDetails(): AsyncGenerator<ContextResponse, void, void>;
     enhanceQuery(query: string): Promise<string>;

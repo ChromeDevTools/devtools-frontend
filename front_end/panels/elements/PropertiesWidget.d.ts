@@ -5,7 +5,6 @@ interface PropertiesWidgetInput {
     onFilterChanged: (e: CustomEvent<string>) => void;
     onRegexToggled: () => void;
     isRegex: boolean;
-    treeOutline: ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionsTreeOutline;
     objectTree: ObjectUI.ObjectPropertiesSection.ObjectTree | null;
     allChildrenFiltered: boolean;
 }

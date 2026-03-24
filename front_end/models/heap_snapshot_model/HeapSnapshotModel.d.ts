@@ -53,7 +53,7 @@ export declare class Edge {
     isAddedNotRemoved: boolean | null;
     constructor(name: string, node: Node, type: string, edgeIndex: number);
 }
-export declare class Aggregate {
+export interface AggregatedInfo {
     count: number;
     distance: number;
     self: number;

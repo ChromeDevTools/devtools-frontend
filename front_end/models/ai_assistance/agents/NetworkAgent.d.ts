@@ -5,6 +5,12 @@ import { AiAgent, type ContextResponse, ConversationContext, type RequestOptions
 export declare class RequestContext extends ConversationContext<SDK.NetworkRequest.NetworkRequest> {
     #private;
     constructor(request: SDK.NetworkRequest.NetworkRequest, calculator: NetworkTimeCalculator.NetworkTransferTimeCalculator);
+    /**
+     * Note: this is not the literal origin of the network request. This origin
+     * is used to determine when we should force the user to start a new AI
+     * conversation when the context changes. We allow a single AI conversation to
+     * inspect all network requests that were made for that given target URL.
+     */
     getOrigin(): string;
     getItem(): SDK.NetworkRequest.NetworkRequest;
     get calculator(): NetworkTimeCalculator.NetworkTimeCalculator;

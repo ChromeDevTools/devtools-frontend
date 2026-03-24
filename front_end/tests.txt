@@ -25,6 +25,7 @@ core/common/StringOutputStream.test.js
 core/common/TextDictionary.test.js
 core/common/Throttler.test.js
 core/common/Trie.test.js
+core/common/VersionController.test.js
 core/i18n/ByteUtilities.test.js
 core/i18n/DevToolsLocale.test.js
 core/i18n/NumberFormatter.test.js
@@ -136,6 +137,7 @@ core/sdk/SourceMapScopesInfo.test.js
 core/sdk/StorageBucketsModel.test.js
 core/sdk/StorageKeyManager.test.js
 core/sdk/TraceObject.test.js
+core/sdk/WebMCPModel.test.js
 entrypoints/heap_snapshot_worker/heap_snapshot_worker.test.js
 entrypoints/inspector_main/InspectorMain.test.js
 entrypoints/inspector_main/OutermostTargetSelector.test.js

@@ -852,8 +852,8 @@ export const DEFAULT_VIEW = (input, output, target) => {
       ${identityData && onCopyId ? renderIdentity(identityData, onCopyId, output) : nothing}
       ${presentationData ? renderPresentation(presentationData, output) : nothing}
       ${protocolHandlersData ? renderProtocolHandlers(protocolHandlersData, output) : nothing}
-      ${iconsData && onToggleIconMasked && maskedIcons ?
-        renderIcons(iconsData, maskedIcons, onToggleIconMasked, output) : nothing}
+      ${iconsData && onToggleIconMasked ?
+        renderIcons(iconsData, Boolean(maskedIcons), onToggleIconMasked, output) : nothing}
       ${windowControlsData && output ? renderWindowControlsSection(windowControlsData, selectedPlatform, onSelectOs, onToggleWcoToolbar, output) : nothing}
       ${shortcutsData ? renderShortcuts(shortcutsData) : nothing}
       ${screenshotsData ? renderScreenshots(screenshotsData) : nothing}

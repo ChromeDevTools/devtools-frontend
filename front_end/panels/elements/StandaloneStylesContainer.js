@@ -75,7 +75,7 @@ export class StandaloneStylesContainer extends Common.ObjectWrapper.eventMixin(U
         }
         return this.#webCustomData;
     }
-    async #updateSections() {
+    async #updateSections(signal) {
         for (const section of this.#sections) {
             section.dispose();
         }
@@ -86,11 +86,17 @@ export class StandaloneStylesContainer extends Common.ObjectWrapper.eventMixin(U
         }
         const cssModel = node.domModel().cssModel();
         const matchedStyles = await cssModel.cachedMatchedCascadeForNode(node);
+        if (signal?.aborted) {
+            return;
+        }
         const parentNodeId = matchedStyles?.getParentLayoutNodeId();
         const [parentStyles, computedStyles, extraStyles] = await Promise.all([
             parentNodeId ? cssModel.getComputedStyle(parentNodeId) : null, cssModel.getComputedStyle(node.id),
             cssModel.getComputedStyleExtraFields(node.id)
         ]);
+        if (signal?.aborted) {
+            return;
+        }
         if (!matchedStyles) {
             return;
         }
@@ -98,6 +104,7 @@ export class StandaloneStylesContainer extends Common.ObjectWrapper.eventMixin(U
         let sectionIdx = 0;
         for (const style of matchedStyles.nodeStyles()) {
             const section = new StylePropertiesSection(this, matchedStyles, style, sectionIdx++, computedStyles, parentStyles, extraStyles);
+            section.update(true);
             newSections.push(section);
             this.sectionByElement.set(section.element, section);
         }
@@ -105,7 +112,9 @@ export class StandaloneStylesContainer extends Common.ObjectWrapper.eventMixin(U
         this.#updateFilter();
         this.swatchPopoverHelper().reposition();
     }
-    async performUpdate() {
+    async performUpdate(signal) {
+        await this.#updateSections(signal);
+        signal?.throwIfAborted();
         const viewInput = {
             sections: this.#sections.filter(section => !section.isHidden()),
         };
@@ -129,6 +138,7 @@ export class StandaloneStylesContainer extends Common.ObjectWrapper.eventMixin(U
             return;
         }
         this.#computedStyleModelInternal.node = node;
+        this.forceUpdate();
     }
     set filter(regex) {
         this.#filter = regex;

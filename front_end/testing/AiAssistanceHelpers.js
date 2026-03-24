@@ -98,7 +98,7 @@ export async function createUISourceCode(options) {
     return uiSourceCode;
 }
 export function createNetworkRequest(opts) {
-    const networkRequest = SDK.NetworkRequest.NetworkRequest.create('requestId-0', opts?.url ?? Platform.DevToolsPath.urlString `https://www.example.com/script.js`, Platform.DevToolsPath.urlString ``, null, null, null);
+    const networkRequest = SDK.NetworkRequest.NetworkRequest.create('requestId-0', opts?.url ?? Platform.DevToolsPath.urlString `https://www.example.com/script.js`, opts?.documentURL ?? Platform.DevToolsPath.urlString ``, null, null, null);
     networkRequest.statusCode = 200;
     networkRequest.setRequestHeaders([{ name: 'content-type', value: 'bar1' }]);
     networkRequest.responseHeaders = [{ name: 'content-type', value: 'bar2' }, { name: 'x-forwarded-for', value: 'bar3' }];

@@ -30,5 +30,6 @@ import * as StringOutputStream from './StringOutputStream.js';
 import * as TextDictionary from './TextDictionary.js';
 import * as Throttler from './Throttler.js';
 import * as Trie from './Trie.js';
+import * as VersionController from './VersionController.js';
 export { UIString } from '../platform/platform.js';
-export { App, AppProvider, Base64, CharacterIdMap, Color, ColorConverter, ColorUtils, Console, Debouncer, EventTarget, Gzip, JavaScriptMetaData, Lazy, MapWithDefault, Mutex, ObjectWrapper, ParsedURL, Progress, ResolverBase, ResourceType, ReturnToPanel, Revealer, Runnable, SegmentedRange, SettingRegistration, Settings, SimpleHistoryManager, Srcset, StringOutputStream, TextDictionary, Throttler, Trie, };
+export { App, AppProvider, Base64, CharacterIdMap, Color, ColorConverter, ColorUtils, Console, Debouncer, EventTarget, Gzip, JavaScriptMetaData, Lazy, MapWithDefault, Mutex, ObjectWrapper, ParsedURL, Progress, ResolverBase, ResourceType, ReturnToPanel, Revealer, Runnable, SegmentedRange, SettingRegistration, Settings, SimpleHistoryManager, Srcset, StringOutputStream, TextDictionary, Throttler, Trie, VersionController, };

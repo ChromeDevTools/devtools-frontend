@@ -814,8 +814,6 @@ export class HeapSnapshotView extends UI.View.SimpleView {
         }
         let objectPopoverHelper;
         return {
-            // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-            // @ts-expect-error
             box: span.boxInWindow(),
             show: async (popover) => {
                 if (!heapProfilerModel) {
@@ -1377,31 +1375,24 @@ export class TrackingHeapSnapshotProfileType extends Common.ObjectWrapper.eventM
 }
 export class HeapProfileHeader extends ProfileHeader {
     heapProfilerModelInternal;
-    maxJSObjectId;
-    workerProxy;
-    receiver;
-    snapshotProxy;
+    maxJSObjectId = -1;
+    workerProxy = null;
+    receiver = null;
+    snapshotProxy = null;
     loadPromise;
     fulfillLoad;
-    totalNumberOfChunks;
-    bufferedWriter;
-    onTempFileReady;
+    totalNumberOfChunks = 0;
+    bufferedWriter = null;
+    onTempFileReady = null;
     failedToCreateTempFile;
     wasDisposed;
     fileName;
     constructor(heapProfilerModel, type, title) {
         super(type, title || i18nString(UIStrings.snapshotD, { PH1: type.nextProfileUid() }));
         this.heapProfilerModelInternal = heapProfilerModel;
-        this.maxJSObjectId = -1;
-        this.workerProxy = null;
-        this.receiver = null;
-        this.snapshotProxy = null;
         const { promise, resolve } = Promise.withResolvers();
         this.loadPromise = promise;
         this.fulfillLoad = resolve;
-        this.totalNumberOfChunks = 0;
-        this.bufferedWriter = null;
-        this.onTempFileReady = null;
     }
     heapProfilerModel() {
         return this.heapProfilerModelInternal;

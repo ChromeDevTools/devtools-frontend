@@ -194,6 +194,7 @@ export class WalkthroughView extends UI.Widget.Widget {
 
   #output: ViewOutput = {};
   #stepsContainerResizeObserver = new ResizeObserver(() => this.#handleStepsContainerResize());
+  #lastStepsContainerWidth = 0;
 
   constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
     super(element);
@@ -216,11 +217,20 @@ export class WalkthroughView extends UI.Widget.Widget {
     }
   }
 
-  override onResize(): void {
-    this.#handleStepsContainerResize();
-  }
-
   #handleStepsContainerResize(): void {
+    const width = this.#output.stepsContainer?.offsetWidth ?? 0;
+    /**
+     * If the width has changed, it's likely due to a manual resize (e.g., the
+     * user dragging the sidebar). In these cases, we want to avoid jumping the
+     * scroll position to the bottom, as it can be jarring for the user. We
+     * only auto-scroll if the width remains the same, meaning only the height
+     * has changed (likely due to new content being added).
+     */
+    if (width !== this.#lastStepsContainerWidth) {
+      this.#lastStepsContainerWidth = width;
+      return;
+    }
+
     /**
      * We only want to auto-scroll if the walkthrough is "live", which means it's
      * currently loading. If it's not loading, it's a walkthrough for a previous

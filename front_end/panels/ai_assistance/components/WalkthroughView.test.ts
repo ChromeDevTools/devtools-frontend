@@ -204,37 +204,4 @@ describeWithEnvironment('WalkthroughView', () => {
     scrollIntoViewSpy.restore();
   });
 
-  it('calls scrollIntoView when the widget is resized and it is loading', async () => {
-    const message: AiAssistance.ChatMessage.ModelChatMessage = {
-      entity: AiAssistance.ChatMessage.ChatMessageEntity.MODEL,
-      parts: [{
-        type: 'step',
-        step: {
-          isLoading: false,
-          title: 'Step 1',
-        }
-      }],
-    };
-
-    const view = new WalkthroughView();
-    renderElementIntoDOM(view);
-    view.markdownRenderer = new AiAssistance.MarkdownRendererWithCodeBlock();
-    view.isLoading = true;
-
-    const scrollIntoViewSpy = sinon.spy(HTMLElement.prototype, 'scrollIntoView');
-
-    view.message = message;
-    view.performUpdate();
-    await view.updateComplete;
-
-    // Trigger resize
-    view.onResize();
-
-    // We need to wait for the requestAnimationFrame in scrollToBottom
-    await new Promise(resolve => window.requestAnimationFrame(resolve));
-
-    sinon.assert.calledWithMatch(scrollIntoViewSpy, {behavior: 'smooth', block: 'end'});
-
-    scrollIntoViewSpy.restore();
-  });
 });

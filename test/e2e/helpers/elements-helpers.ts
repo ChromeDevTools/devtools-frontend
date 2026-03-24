@@ -965,7 +965,9 @@ export const navigateToElementsTab = async (devtoolsPage: DevToolsPage, options?
   await devtoolsPage.click('#tab-elements');
   await devtoolsPage.waitFor(ELEMENTS_PANEL_SELECTOR);
   await devtoolsPage.timeout(100);
-  await expectVeEvents([veImpressionForElementsPanel(options)], undefined, devtoolsPage);
+  if (!options?.expectExistingPanel) {
+    await expectVeEvents([veImpressionForElementsPanel(options)], undefined, devtoolsPage);
+  }
 };
 
 export const clickOnFirstLinkInStylesPanel = async (devToolsPage: DevToolsPage) => {

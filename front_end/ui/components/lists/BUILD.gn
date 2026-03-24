@@ -12,7 +12,7 @@ generate_css("css_files") {
   sources = [ "list.css" ]
 }
 
-devtools_module("list") {
+devtools_module("lists") {
   sources = [ "List.ts" ]
 
   deps = [
@@ -28,7 +28,7 @@ devtools_entrypoint("bundle") {
 
   deps = [
     ":css_files",
-    ":list",
+    ":lists",
   ]
 
   visibility = default_components_visibility

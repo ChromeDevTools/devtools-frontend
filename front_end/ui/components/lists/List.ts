@@ -21,7 +21,7 @@ const UIStrings = {
   remove: 'Remove',
 } as const;
 
-const str_ = i18n.i18n.registerUIStrings('ui/components/list/List.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('ui/components/lists/List.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export interface ListItemEventDetail {

@@ -11,14 +11,13 @@ import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
 import * as Lit from '../../lit/lit.js';
 import * as RenderCoordinator from '../render_coordinator/render_coordinator.js';
 
-import type {ItemEditEvent, ItemRemoveEvent} from './List.js';
-import * as List from './lists.js';  // eslint-disable-line @devtools/es-modules-import
+import * as Lists from './lists.js';
 
 const {html, render} = Lit;
 
 async function renderListComponent(
-    items: Lit.TemplateResult, editable?: boolean, deletable?: boolean): Promise<List.List.List> {
-  const component = new List.List.List();
+    items: Lit.TemplateResult, editable?: boolean, deletable?: boolean): Promise<Lists.List.List> {
+  const component = new Lists.List.List();
   if (editable) {
     component.editable = true;
   }
@@ -147,7 +146,7 @@ describe('List', () => {
     const editButton = secondItem.querySelector<HTMLElement>('devtools-button[title="Edit"]');
     assert.instanceOf(editButton, HTMLElement);
 
-    const eventPromise = getEventPromise<ItemEditEvent>(component, 'edit');
+    const eventPromise = getEventPromise<Lists.List.ItemEditEvent>(component, 'edit');
     dispatchClickEvent(editButton);
 
     const event = await eventPromise;
@@ -169,7 +168,7 @@ describe('List', () => {
     const removeButton = firstItem.querySelector<HTMLElement>('devtools-button[title="Remove"]');
     assert.instanceOf(removeButton, HTMLElement);
 
-    const eventPromise = getEventPromise<ItemRemoveEvent>(component, 'delete');
+    const eventPromise = getEventPromise<Lists.List.ItemRemoveEvent>(component, 'delete');
     dispatchClickEvent(removeButton);
 
     const event = await eventPromise;

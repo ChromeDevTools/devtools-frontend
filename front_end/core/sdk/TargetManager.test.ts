@@ -7,6 +7,7 @@ import {
 } from '../../testing/EnvironmentHelpers.js';
 import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
 import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
+import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 import * as Platform from '../platform/platform.js';
 import * as Root from '../root/root.js';
@@ -74,8 +75,9 @@ describe('TargetManager', () => {
   });
 
   it('allows overriding which models to autostart', () => {
-    const targetManager = new SDK.TargetManager.TargetManager(
-        new Root.DevToolsContext.WritableDevToolsContext(), new Set([SDK.DebuggerModel.DebuggerModel]));
+    const context = new Root.DevToolsContext.WritableDevToolsContext();
+    context.set(Common.Settings.Settings, Common.Settings.Settings.instance());
+    const targetManager = new SDK.TargetManager.TargetManager(context, new Set([SDK.DebuggerModel.DebuggerModel]));
     const target = createTarget({targetManager});
 
     assert.isTrue(target.models().has(SDK.DebuggerModel.DebuggerModel));

@@ -10,7 +10,7 @@ import yargs from 'yargs';
 import {hideBin} from 'yargs/helpers';
 
 import {asArray, commandLineArgs, DiffBehaviors} from './commandline.js';
-import {defaultChromePath, SOURCE_ROOT} from './paths.js';
+import {BUILD_ROOT, defaultChromePath, SOURCE_ROOT} from './paths.js';
 import {shardFilter} from './sharding.js';
 
 const argv = yargs(hideBin(process.argv)).parseSync()['_'] as string[];
@@ -114,7 +114,7 @@ function configureChrome(executablePath: string) {
 }
 
 const getDefaultArtifactDir = () => {
-  const artifactsPath = path.join(SOURCE_ROOT, 'artifacts');
+  const artifactsPath = path.join(BUILD_ROOT, 'artifacts');
   if (!fs.existsSync(artifactsPath)) {
     fs.mkdirSync(artifactsPath);
   }

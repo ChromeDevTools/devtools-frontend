@@ -507,12 +507,17 @@ function renderWalkthroughSidebarButton(
     lastStep,
   });
 
+  // The button should be tonal when there are widgets, but we only
+  // want to change it visually at the end once everything has stopped
+  // loading.
+  const variant = hasOneStepWithWidget && !input.isLoading ? Buttons.Button.Variant.TONAL : Buttons.Button.Variant.TEXT;
+
   // clang-format off
   return html`
     <div class="walkthrough-toggle-container">
       ${input.isLoading ? html`<devtools-spinner></devtools-spinner>` : Lit.nothing}
       <devtools-button
-        .variant=${Buttons.Button.Variant.OUTLINED}
+        .variant=${variant}
         .size=${Buttons.Button.Size.SMALL}
         .title=${lastStep.isLoading ? titleForStep(lastStep) : lockedString(UIStringsNotTranslate.showThinking)}
         .jslogContext=${walkthrough.isExpanded ? 'ai-hide-walkthrough-sidebar' : 'ai-show-walkthrough-sidebar'}
@@ -527,7 +532,9 @@ function renderWalkthroughSidebarButton(
             walkthrough.onOpen(message as ModelChatMessage);
           }
         }}
-      >${title}</devtools-button>
+      >
+        ${title}<devtools-icon class="chevron" .name=${'chevron-right'}></devtools-icon>
+      </devtools-button>
     </div>
   `;
   // clang-format on

@@ -346,6 +346,13 @@
     display: flex;
     gap: var(--sys-size-4);
     align-items: center;
+
+    .chevron {
+      color: var(--sys-color-primary);
+      width: var(--sys-size-8);
+      height: var(--sys-size-8);
+      margin-left: var(--sys-size-2);
+    }
   }
 
 

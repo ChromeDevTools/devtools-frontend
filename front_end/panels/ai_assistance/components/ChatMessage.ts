@@ -1428,6 +1428,7 @@ async function makeTimelineRangeSummaryWidget(widgetData: TimelineRangeSummaryAi
           startTime: Trace.Helpers.Timing.microToMilli(bounds.min),
           endTime: Trace.Helpers.Timing.microToMilli(bounds.max),
           thirdPartyTreeTemplate: html`<devtools-performance-third-party-tree-view
+            max-rows="10"
             .treeView=${thirdPartyTree}></devtools-performance-third-party-tree-view>`,
         } as TimelineComponents.TimelineRangeSummaryView.TimelineRangeSummaryViewData,
       })}

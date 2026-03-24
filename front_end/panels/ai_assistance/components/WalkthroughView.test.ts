@@ -131,7 +131,7 @@ describeWithEnvironment('WalkthroughView', () => {
     assert.strictEqual(title.innerText, 'Agent walkthrough');
   });
 
-  it('calls scrollIntoView on the last step', async () => {
+  it('calls scrollIntoView on the last step when it is loading', async () => {
     const message: AiAssistance.ChatMessage.ModelChatMessage = {
       entity: AiAssistance.ChatMessage.ChatMessageEntity.MODEL,
       parts: [
@@ -154,6 +154,7 @@ describeWithEnvironment('WalkthroughView', () => {
     const view = new WalkthroughView();
     renderElementIntoDOM(view);
     view.markdownRenderer = new AiAssistance.MarkdownRendererWithCodeBlock();
+    view.isLoading = true;
 
     const scrollIntoViewSpy = sinon.spy(HTMLElement.prototype, 'scrollIntoView');
 
@@ -175,7 +176,35 @@ describeWithEnvironment('WalkthroughView', () => {
     scrollIntoViewSpy.restore();
   });
 
-  it('calls scrollIntoView when the widget is resized', async () => {
+  it('does not call scrollIntoView on the last step when it is not loading', async () => {
+    const message: AiAssistance.ChatMessage.ModelChatMessage = {
+      entity: AiAssistance.ChatMessage.ChatMessageEntity.MODEL,
+      parts: [
+        {type: 'step', step: {isLoading: false, title: 'Step 1', widgets: []}},
+      ],
+    };
+
+    const view = new WalkthroughView();
+    renderElementIntoDOM(view);
+    view.markdownRenderer = new AiAssistance.MarkdownRendererWithCodeBlock();
+    view.isLoading = false;
+
+    const scrollIntoViewSpy = sinon.spy(HTMLElement.prototype, 'scrollIntoView');
+
+    view.message = message;
+    view.performUpdate();
+    await view.updateComplete;
+
+    // We need to wait for the requestAnimationFrame in scrollToBottom
+    await new Promise(resolve => window.requestAnimationFrame(resolve));
+
+    // Verify it was NOT called
+    sinon.assert.notCalled(scrollIntoViewSpy);
+
+    scrollIntoViewSpy.restore();
+  });
+
+  it('calls scrollIntoView when the widget is resized and it is loading', async () => {
     const message: AiAssistance.ChatMessage.ModelChatMessage = {
       entity: AiAssistance.ChatMessage.ChatMessageEntity.MODEL,
       parts: [{
@@ -190,6 +219,7 @@ describeWithEnvironment('WalkthroughView', () => {
     const view = new WalkthroughView();
     renderElementIntoDOM(view);
     view.markdownRenderer = new AiAssistance.MarkdownRendererWithCodeBlock();
+    view.isLoading = true;
 
     const scrollIntoViewSpy = sinon.spy(HTMLElement.prototype, 'scrollIntoView');
 

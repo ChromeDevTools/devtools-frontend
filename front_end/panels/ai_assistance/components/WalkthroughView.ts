@@ -182,8 +182,6 @@ export class WalkthroughView extends UI.Widget.Widget {
   #view: View;
 
   #message: ModelChatMessage|null = null;
-  // TODO(b/487921187): fix loading state - also unsure if we need this vs
-  // looking at the loading state in the message's steps.
   #isLoading = false;
   #markdownRenderer: MarkdownLitRenderer|null = null;
   #onToggle: (isOpen: boolean) => void = () => {};
@@ -223,7 +221,13 @@ export class WalkthroughView extends UI.Widget.Widget {
   }
 
   #handleStepsContainerResize(): void {
-    if (!this.#pinScrollToBottom) {
+    /**
+     * We only want to auto-scroll if the walkthrough is "live", which means it's
+     * currently loading. If it's not loading, it's a walkthrough for a previous
+     * message, and we don't want to jump the user to the bottom if they've
+     * scrolled away.
+     */
+    if (!this.#pinScrollToBottom || !this.#isLoading) {
       return;
     }
 
@@ -338,7 +342,13 @@ export class WalkthroughView extends UI.Widget.Widget {
 
     this.#registerResizeObservers();
 
-    if (this.#pinScrollToBottom) {
+    /**
+     * We only want to auto-scroll if the walkthrough is "live", which means it's
+     * currently loading. If it's not loading, it's a walkthrough for a previous
+     * message, and we don't want to jump the user to the bottom if they've
+     * scrolled away.
+     */
+    if (this.#pinScrollToBottom && this.#isLoading) {
       this.scrollToBottom();
     }
   }

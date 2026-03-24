@@ -185,7 +185,31 @@ const UIStringsNotTranslate = {
   /**
    * @description Title used for revealing the performance trace.
    */
-  revealTrace: 'Reveal trace'
+  revealTrace: 'Reveal trace',
+  /**
+   * @description Title for the computed styles widget.
+   */
+  computedStyles: 'Computed styles',
+  /**
+   * @description Title for the core web vitals widget.
+   */
+  coreVitals: 'Core Web Vitals',
+  /**
+   * @description Title for the styles widget.
+   */
+  styles: 'Styles',
+  /**
+   * @description Title for the LCP breakdown widget.
+   */
+  lcpBreakdown: 'LCP breakdown',
+  /**
+   * @description Title for the LCP element widget.
+   */
+  lcpElement: 'LCP element',
+  /**
+   * @description Title for the performance summary widget.
+   */
+  performanceSummary: 'Performance summary'
 } as const;
 
 export interface Step {
@@ -669,7 +693,8 @@ interface WidgetMakerResponse {
   renderedWidget: Lit.LitTemplate|null;
   revealable: unknown;
   customRevealTitle?: Platform.UIString.LocalizedString;
-  widgetName?: string;
+  // Can be null if the widget is only used to add the Reveal CTA.
+  title: Platform.UIString.LocalizedString|null;
 }
 
 const nodeCache = new Map<Protocol.DOM.BackendNodeId, SDK.DOMModel.DOMNode>();
@@ -713,7 +738,11 @@ async function makeComputedStyleWidget(widgetData: ComputedStyleAiWidget): Promi
       })}></devtools-widget>`;
   // clang-format on
 
-  return {renderedWidget, revealable: new Elements.ElementsPanel.NodeComputedStyles(domNodeForId)};
+  return {
+    renderedWidget,
+    revealable: new Elements.ElementsPanel.NodeComputedStyles(domNodeForId),
+    title: lockedString(UIStringsNotTranslate.computedStyles),
+  };
 }
 
 async function makeCoreVitalsWidget(widgetData: CoreVitalsAiWidget): Promise<WidgetMakerResponse|null> {
@@ -723,7 +752,11 @@ async function makeCoreVitalsWidget(widgetData: CoreVitalsAiWidget): Promise<Wid
   </devtools-widget>`;
   // clang-format on
 
-  return {renderedWidget, revealable: new TimelineUtils.Helpers.RevealableCoreVitals(widgetData.data.insightSetKey)};
+  return {
+    renderedWidget,
+    revealable: new TimelineUtils.Helpers.RevealableCoreVitals(widgetData.data.insightSetKey),
+    title: lockedString(UIStringsNotTranslate.coreVitals),
+  };
 }
 
 async function makeStylePropertiesWidget(widgetData: StylePropertiesAiWidget): Promise<WidgetMakerResponse|null> {
@@ -742,7 +775,11 @@ async function makeStylePropertiesWidget(widgetData: StylePropertiesAiWidget): P
   </devtools-widget>`;
   // clang-format on
 
-  return {renderedWidget, revealable: domNodeForId};
+  return {
+    renderedWidget,
+    revealable: domNodeForId,
+    title: lockedString(UIStringsNotTranslate.styles),
+  };
 }
 
 async function makeLcpBreakdownWidget(widgetData: LcpBreakdownAiWidget): Promise<WidgetMakerResponse|null> {
@@ -760,7 +797,11 @@ async function makeLcpBreakdownWidget(widgetData: LcpBreakdownAiWidget): Promise
     })}></devtools-widget>`;
   // clang-format on
 
-  return {renderedWidget, revealable: new TimelineUtils.Helpers.RevealableInsight(insight)};
+  return {
+    renderedWidget,
+    revealable: new TimelineUtils.Helpers.RevealableInsight(insight),
+    title: lockedString(UIStringsNotTranslate.lcpBreakdown),
+  };
 }
 
 function renderWidgetResponse(response: WidgetMakerResponse|null): Lit.LitTemplate {
@@ -781,19 +822,21 @@ function renderWidgetResponse(response: WidgetMakerResponse|null): Lit.LitTempla
   });
 
   const revealButton = html`
-    <devtools-button class="widget-reveal"
-      .iconName=${'tab-move'}
+    <devtools-button class="widget-reveal-button"
       .variant=${Buttons.Button.Variant.TEXT}
       @click=${onReveal}
-    >${response.customRevealTitle ?? lockedString(UIStringsNotTranslate.reveal)}</devtools-button>
+    >
+      ${response.customRevealTitle ?? lockedString(UIStringsNotTranslate.reveal)}
+      <devtools-icon name='tab-move'></devtools-icon>
+    </devtools-button>
   `;
 
   // clang-format off
   return html`
     <div class=${classes}>
-      ${response.widgetName ? html`
+      ${response.title ? html`
         <div class="widget-header">
-          <div class="widget-name">${response.widgetName}</div>
+          <div class="widget-name">${response.title}</div>
           <div class="widget-reveal-container">
             ${revealButton}
           </div>
@@ -804,7 +847,7 @@ function renderWidgetResponse(response: WidgetMakerResponse|null): Lit.LitTempla
           ${response.renderedWidget}
         </div>` : Lit.nothing
       }
-      ${!response.widgetName ? html`
+      ${!response.title ? html`
         <div class="widget-reveal-container">
           ${revealButton}
         </div>
@@ -817,6 +860,7 @@ function renderWidgetResponse(response: WidgetMakerResponse|null): Lit.LitTempla
 async function makePerformanceTraceWidget(widgetData: PerformanceTraceAiWidget): Promise<WidgetMakerResponse|null> {
   return {
     renderedWidget: null,
+    title: null,
     revealable: new Timeline.TimelinePanel.ParsedTraceRevealable(widgetData.data.parsedTrace),
     customRevealTitle: lockedString(UIStringsNotTranslate.revealTrace),
   };
@@ -876,7 +920,7 @@ async function makeDomTreeWidget(widgetData: DomTreeAiWidget): Promise<WidgetMak
   return {
     renderedWidget,
     revealable: new SDK.DOMModel.DeferredDOMNode(root.domModel().target(), root.backendNodeId()),
-    widgetName: 'LCP element',
+    title: lockedString(UIStringsNotTranslate.lcpElement),
   };
 }
 
@@ -1390,5 +1434,9 @@ async function makeTimelineRangeSummaryWidget(widgetData: TimelineRangeSummaryAi
     ></devtools-widget>`;
   // clang-format on
 
-  return {renderedWidget: template, revealable: null};
+  return {
+    renderedWidget: template,
+    revealable: null,
+    title: lockedString(UIStringsNotTranslate.performanceSummary),
+  };
 }

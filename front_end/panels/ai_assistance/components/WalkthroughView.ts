@@ -87,18 +87,10 @@ function renderInlineWalkthrough(input: ViewInput, stepsOutput: Lit.LitTemplate,
 
   const hasWidgets = steps.some(s => s.widgets?.length);
 
-  // Note: we apply data-*-widgets attributes because we need to alter styling
-  // based on if widgets are present. It's clearer to style each state rather
-  // than only apply one data-* and then override existing styles. The styling
-  // here is more complex because we have to make the summary element look just
-  // like a DevTools Button, so as the user resizes the view from wide > small
-  // or vice-versa, the CTA does not change.
   // clang-format off
   return html`
     <details class="walkthrough-inline" ?open=${input.isExpanded} @toggle=${onToggle}>
-      <summary
-        ?data-has-widgets=${!input.isLoading && hasWidgets}
-        ?data-no-widgets=${!hasWidgets}>
+      <summary ?data-has-widgets=${!input.isLoading && hasWidgets}>
         ${input.isLoading ? html`<devtools-spinner></devtools-spinner>` : Lit.nothing}
         ${walkthroughTitle({isLoading: input.isLoading, lastStep, hasWidgets})}
         <devtools-icon name="chevron-right"></devtools-icon>

@@ -120,17 +120,15 @@
     font-weight:var(--ref-typeface-weight-medium);
     user-select: none;
     list-style: none; /* Hide default triangle */
-    color: var(--sys-color-on-surface);
     justify-content: flex-start;
     gap: var(--sys-size-4);
+    color: var(--sys-color-primary);
 
-    &[data-no-widgets] {
-      /* To align with DevTools Button, but only when we don't have
-       * widgets, because when we do we stick with the colour used for
-       * the tonal button */
-      color: var(--sys-color-primary)
+    devtools-icon {
+      color: var(--sys-color-primary);
     }
 
+    /* Align the summary to look like the tonal button */
     &[data-has-widgets] {
       background: var(--sys-color-tonal-container);
       color: var(--sys-color-on-tonal-container);

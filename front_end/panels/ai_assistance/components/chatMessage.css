@@ -418,7 +418,7 @@
   }
 
   .widget-content-container {
-    padding: var(--sys-size-4);
+    padding: var(--sys-size-4) var(--sys-size-5);
     border-top-left-radius: var(--sys-shape-corner-medium);
     border-top-right-radius: var(--sys-shape-corner-medium);
     overflow-x: auto;

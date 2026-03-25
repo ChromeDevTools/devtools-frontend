@@ -52,7 +52,8 @@ function getLayoutShifts(view: Element): HTMLElement[] {
 }
 
 function selectVisibleLog(view: Element, logId: string): void {
-  view.shadowRoot!.querySelector('devtools-live-metrics-logs')!.shadowRoot!.querySelector('.tabbed-pane')!.shadowRoot!
+  view.shadowRoot!.querySelector('.logs-section devtools-widget')!.shadowRoot!.querySelector(
+                                                                                  '.tabbed-pane')!.shadowRoot!
       .getElementById(`tab-${logId}`)
       ?.dispatchEvent(
           new MouseEvent('mousedown', {bubbles: true}),
@@ -60,7 +61,7 @@ function selectVisibleLog(view: Element, logId: string): void {
 }
 
 function getClearLogButton(view: Element): HTMLElementTagNameMap['devtools-button'] {
-  return view.shadowRoot!.querySelector('devtools-live-metrics-logs')!.shadowRoot!.querySelector('.tabbed-pane')!
+  return view.shadowRoot!.querySelector('.logs-section devtools-widget')!.shadowRoot!.querySelector('.tabbed-pane')!
       .shadowRoot!.querySelector('devtools-toolbar devtools-button')!;
 }
 

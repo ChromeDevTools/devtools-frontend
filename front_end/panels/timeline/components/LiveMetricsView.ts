@@ -40,7 +40,7 @@ import metricValueStyles from './metricValueStyles.css.js';
 import {CLS_THRESHOLDS, INP_THRESHOLDS, renderMetricValue} from './Utils.js';
 
 const {html, nothing} = Lit;
-const {widget} = UI.Widget;
+const {widget, widgetRef} = UI.Widget;
 
 type DeviceOption = CrUXManager.DeviceScope|'AUTO';
 
@@ -922,16 +922,14 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
         class="logs-section"
         aria-label=${i18nString(UIStrings.eventLogs)}
       >
-        <devtools-live-metrics-logs
-          ${Lit.Directives.ref(el => {
-            if (el instanceof HTMLElement) {
-              this.#logsEl = el as LiveMetricsLogs;
-            }
+        <devtools-widget ${widget(LiveMetricsLogs)}
+          ${widgetRef(LiveMetricsLogs, widget => {
+            this.#logsEl = widget;
           })}
         >
           ${this.#renderInteractionsLog()}
           ${this.#renderLayoutShiftsLog()}
-        </devtools-live-metrics-logs>
+        </devtools-widget>
       </section>
     `;
     // clang-format on
@@ -1210,28 +1208,20 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
   // clang-format on
 }
 
-class LiveMetricsLogs extends UI.Widget.WidgetElement<UI.Widget.Widget> {
-  #tabbedPane?: UI.TabbedPane.TabbedPane;
-
-  constructor() {
-    super();
-    this.style.display = 'contents';
-  }
+class LiveMetricsLogs extends UI.Widget.Widget {
+  #tabbedPane: UI.TabbedPane.TabbedPane;
 
   /**
    * Returns `true` if selecting the tab was successful.
    */
   selectTab(tabId: string): boolean {
-    if (!this.#tabbedPane) {
-      return false;
-    }
     return this.#tabbedPane.selectTab(tabId);
   }
 
   #clearCurrentLog(): void {
     const liveMetrics = LiveMetrics.LiveMetrics.instance();
 
-    switch (this.#tabbedPane?.selectedTabId) {
+    switch (this.#tabbedPane.selectedTabId) {
       case 'interactions':
         liveMetrics.clearInteractions();
         break;
@@ -1240,16 +1230,12 @@ class LiveMetricsLogs extends UI.Widget.WidgetElement<UI.Widget.Widget> {
         break;
     }
   }
-
-  override createWidget(): UI.Widget.Widget {
-    // We need a generic widget with a shadow DOM as the container widget so that we can take advantage
-    // of web component slots. Passing `this` into the container widget will make `this` the root element
-    // of that widget.
-    //
+  constructor(element: HTMLElement) {
+    super(element, {useShadowDom: true});
+    this.element.style.display = 'contents';
     // Any children of the root element `this` will be matched to the slots defined within the container
     // widget's shadow DOM.
-    const containerWidget = new UI.Widget.Widget(this, {useShadowDom: true});
-    containerWidget.contentElement.style.display = 'contents';
+    this.contentElement.style.display = 'contents';
 
     this.#tabbedPane = new UI.TabbedPane.TabbedPane();
 
@@ -1273,18 +1259,14 @@ class LiveMetricsLogs extends UI.Widget.WidgetElement<UI.Widget.Widget> {
         i18nString(UIStrings.clearCurrentLog), 'clear', undefined, 'timeline.landing.clear-log');
     clearButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, this.#clearCurrentLog, this);
     this.#tabbedPane.rightToolbar().appendToolbarItem(clearButton);
-    this.#tabbedPane.show(containerWidget.contentElement);
-
-    return containerWidget;
+    this.#tabbedPane.show(this.contentElement);
   }
 }
 
 customElements.define('devtools-live-metrics-view', LiveMetricsView);
-customElements.define('devtools-live-metrics-logs', LiveMetricsLogs);
 
 declare global {
   interface HTMLElementTagNameMap {
     'devtools-live-metrics-view': LiveMetricsView;
-    'devtools-live-metrics-logs': LiveMetricsLogs;
   }
 }

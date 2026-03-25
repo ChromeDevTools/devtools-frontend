@@ -45,7 +45,8 @@ describeWithEnvironment('ChatMessage', () => {
     onToggle: () => {},
     isExpanded: false,
     isInlined: false,
-    activeMessage: null,
+    activeSidebarMessage: null,
+    inlineExpandedMessages: [],
   };
 
   it('should show the feedback form when canShowFeedbackForm is true', async () => {
@@ -262,9 +263,9 @@ describeWithEnvironment('ChatMessage', () => {
         message: stepMessage,
         walkthrough: {
           ...DEFAULT_WALKTHROUGH,
-          isInlined: false,
-          activeMessage: stepMessage,
-        }
+          isExpanded: true,
+          activeSidebarMessage: stepMessage,
+        },
       });
       const button = querySelectorErrorOnMissing(target, '[data-show-walkthrough]');
       assert.strictEqual(button.innerText, 'Close agent walkthrough');

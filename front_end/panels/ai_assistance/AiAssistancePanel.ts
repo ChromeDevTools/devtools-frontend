@@ -383,7 +383,9 @@ interface ToolbarViewInput {
   walkthrough: {
     isExpanded: boolean,
     isInlined: boolean,
-    onToggle: (isOpen: boolean) => void,
+    onToggle: (isOpen: boolean, message: ModelChatMessage) => void,
+    activeSidebarMessage: ModelChatMessage|null,
+    inlineExpandedMessages: ModelChatMessage[],
   };
 }
 
@@ -521,7 +523,7 @@ function defaultView(input: ViewInput, output: PanelViewOutput, target: HTMLElem
     let walkthroughIsForLastMessage = false;
     if(input.state === ViewState.CHAT_VIEW) {
       const lastMessage = input.props.messages.at(-1);
-      if(lastMessage && input.props.walkthrough.activeMessage === lastMessage) {
+      if(lastMessage && input.props.walkthrough.activeSidebarMessage === lastMessage) {
         walkthroughIsForLastMessage = true;
       }
     }
@@ -542,7 +544,7 @@ function defaultView(input: ViewInput, output: PanelViewOutput, target: HTMLElem
           <div slot="sidebar" class="sidebar-view">
             ${shouldShowWalkthrough ? html`
               <devtools-widget ${widget(WalkthroughView, {
-                message: input.props.walkthrough.activeMessage,
+                message: input.props.walkthrough.activeSidebarMessage,
                 isLoading: input.props.isLoading && walkthroughIsForLastMessage,
                 markdownRenderer: input.props.markdownRenderer,
                 onToggle: input.props.walkthrough.onToggle,
@@ -610,10 +612,15 @@ function createPerformanceTraceContext(focus: AiAssistanceModel.AIContext.AgentF
 
 /**
  * State relating to the visibility of the Walkthrough.
- * Note that we have to track the active message and the visibility as distinct
- * state, because you can toggle the walkthrough via the sidebar, in which case
- * we need to make it visible/hidden but keep track of the active message for
- * when the user expands it again.
+ *
+ * We track both an `activeSidebarMessage` and a list of `inlineExpandedMessages` because:
+ * 1. In Narrow (inline) mode, multiple walkthroughs can be expanded at once,
+ *    so we need to track them all to render them correctly in the chat.
+ * 2. In Wide (sidebar) mode, only one walkthrough can be visible at a time.
+ *    The `activeSidebarMessage` tracks which one is shown in the sidebar.
+ * 3. When transitioning from Narrow to Wide, we use the last message in
+ *    `inlineExpandedMessages` to determine which one should stay expanded
+ *    in the sidebar.
  */
 interface WalkthroughState {
   /**
@@ -625,11 +632,15 @@ interface WalkthroughState {
    */
   isExpanded: boolean;
   /**
-   * The message that the walkthrough is showing all the steps for. A
-   * conversation can have many Model messages (1 per each user prompt) so we
-   * need to track which one we are showing for the walkthrough.
+   * The message that the walkthrough is showing all the steps for. In Wide mode,
+   * this is the message shown in the sidebar. In Narrow mode, it tracks the
+   * most recently interacted message.
    */
-  activeMessage: ModelChatMessage|null;
+  activeSidebarMessage: ModelChatMessage|null;
+  /**
+   * Tracks which messages are expanded in inline mode.
+   */
+  inlineExpandedMessages: ModelChatMessage[];
 }
 
 let panelInstance: AiAssistancePanel;
@@ -667,7 +678,8 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   #walkthrough: WalkthroughState = {
     isInlined: false,
     isExpanded: false,
-    activeMessage: null,
+    activeSidebarMessage: null,
+    inlineExpandedMessages: [],
   };
 
   constructor(private view: View = defaultView, {aidaClient, aidaAvailability}: {
@@ -708,6 +720,8 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         isExpanded: this.#walkthrough.isExpanded,
         isInlined: this.#walkthrough.isInlined,
         onToggle: this.#toggleWalkthrough.bind(this),
+        activeSidebarMessage: this.#walkthrough.activeSidebarMessage,
+        inlineExpandedMessages: this.#walkthrough.inlineExpandedMessages,
       }
     };
   }
@@ -796,7 +810,8 @@ export class AiAssistancePanel extends UI.Panel.Panel {
             onOpen: this.#openWalkthrough.bind(this),
             isExpanded: this.#walkthrough.isExpanded,
             isInlined: this.#walkthrough.isInlined,
-            activeMessage: this.#walkthrough.activeMessage,
+            activeSidebarMessage: this.#walkthrough.activeSidebarMessage,
+            inlineExpandedMessages: this.#walkthrough.inlineExpandedMessages,
           },
         }
       };
@@ -820,20 +835,73 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     if (isNarrow === this.#walkthrough.isInlined) {
       return;
     }
-    // If the UI changed, we reset the visibility of the AI Walkthrough.
-    this.#resetWalkthrough();
+
     this.#walkthrough.isInlined = isNarrow;
+
+    if (!this.#walkthrough.isExpanded) {
+      // If nothing was expanded, we just ensure the state is clean.
+      this.#walkthrough.activeSidebarMessage = null;
+      this.#walkthrough.inlineExpandedMessages = [];
+      this.requestUpdate();
+      return;
+    }
+
+    if (isNarrow) {
+      // Wide -> Inline: the walkthrough that was open stays expanded
+      this.#walkthrough.inlineExpandedMessages =
+          this.#walkthrough.activeSidebarMessage ? [this.#walkthrough.activeSidebarMessage] : [];
+    } else {
+      // Inline -> Wide: the last walkthrough that the user opened stays expanded
+      this.#walkthrough.activeSidebarMessage = this.#walkthrough.inlineExpandedMessages.at(-1) ?? null;
+    }
+
     this.requestUpdate();
   }
 
   #openWalkthrough(message: ModelChatMessage): void {
-    this.#walkthrough.activeMessage = message;
+    if (!this.#walkthrough.inlineExpandedMessages.includes(message)) {
+      this.#walkthrough.inlineExpandedMessages.push(message);
+    }
+    this.#walkthrough.activeSidebarMessage = message;
     this.#walkthrough.isExpanded = true;
     this.requestUpdate();
   }
 
-  #toggleWalkthrough(isOpen: boolean): void {
-    this.#walkthrough.isExpanded = isOpen;
+  /**
+   * Toggles the expanded state of a walkthrough.
+   *
+   * In Wide (sidebar) mode:
+   * - Opening a message's walkthrough shows the sidebar for that message.
+   * - Closing the sidebar hides the walkthrough for the currently active message.
+   *
+   * In Narrow (inline) mode:
+   * - Any number of walkthroughs can be open at once.
+   * - Opening/closing a message's walkthrough only affects that message's inline display.
+   */
+  #toggleWalkthrough(isOpen: boolean, message: ModelChatMessage): void {
+    if (isOpen) {  // If we are opening a walkthrough, ensure it's in our list of expanded messages.
+      this.#openWalkthrough(message);
+      return;
+    }
+
+    // If we are closing a walkthrough, remove it from the list of expanded messages.
+    this.#walkthrough.inlineExpandedMessages = this.#walkthrough.inlineExpandedMessages.filter(m => m !== message);
+
+    if (this.#walkthrough.isInlined) {
+      // In Narrow mode, the global expanded state tracks if at least one walkthrough is open.
+      this.#walkthrough.isExpanded = this.#walkthrough.inlineExpandedMessages.length > 0;
+      // If the message we just closed was the active one, we pick a new active message
+      // from the remaining open ones (if any). This ensures that if the user
+      // re-opens the sidebar later, it shows the most recently opened walkthrough.
+      if (this.#walkthrough.activeSidebarMessage === message) {
+        this.#walkthrough.activeSidebarMessage = this.#walkthrough.inlineExpandedMessages.at(-1) ?? null;
+      }
+    } else {
+      // In Wide mode, closing the sidebar means we are no longer expanded globally.
+      this.#walkthrough.isExpanded = false;
+      this.#walkthrough.activeSidebarMessage = null;
+    }
+
     this.requestUpdate();
   }
 
@@ -1565,7 +1633,8 @@ export class AiAssistancePanel extends UI.Panel.Panel {
 
   #resetWalkthrough(): void {
     this.#walkthrough.isExpanded = false;
-    this.#walkthrough.activeMessage = null;
+    this.#walkthrough.activeSidebarMessage = null;
+    this.#walkthrough.inlineExpandedMessages = [];
   }
 
   #onDeleteClicked(): void {

@@ -1169,7 +1169,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
       assert.deepEqual(nextInput.props.messages, []);
       sinon.assert.callCount(deleteHistoryEntrySpy, 1);
       assert.isString(deleteHistoryEntrySpy.lastCall.args[0]);
-      assert.isNull(nextInput.props.walkthrough.activeMessage);
+      assert.isNull(nextInput.props.walkthrough.activeSidebarMessage);
 
       const menuAfterDelete = openHistoryContextMenu(view.input, 'User question to Freestyler?');
       assert.isUndefined(menuAfterDelete.id);
@@ -2376,7 +2376,8 @@ describeWithMockConnection('AI Assistance Panel', () => {
 
       assert(nextInput.state === AiAssistancePanel.ViewState.CHAT_VIEW);
       assert.isFalse(nextInput.walkthrough.isExpanded);
-      nextInput.walkthrough.onToggle(true);
+      const lastMessage = nextInput.props.messages.at(-1) as AiAssistancePanel.ChatMessage.ModelChatMessage;
+      nextInput.walkthrough.onToggle(true, lastMessage);
 
       nextInput = await view.nextInput;
       assert(nextInput.state === AiAssistancePanel.ViewState.CHAT_VIEW);
@@ -2456,8 +2457,10 @@ describeWithMockConnection('AI Assistance Panel', () => {
       assert(nextInput.state === AiAssistancePanel.ViewState.CHAT_VIEW);
       assert.isTrue(nextInput.walkthrough.isExpanded);
       // Verify steps match msg1
-      const msg1Steps =
-          nextInput.props.walkthrough.activeMessage?.parts.filter(p => p.type === 'step').map(p => p.step) ?? [];
+      const msg1Steps = nextInput.props.walkthrough.activeSidebarMessage?.parts
+                            .filter((p): p is AiAssistancePanel.ChatMessage.StepPart => p.type === 'step')
+                            .map(p => p.step) ??
+          [];
       assert.strictEqual(msg1Steps.at(0)?.thought, 'step 1');
 
       // 5. Open walkthrough for second message
@@ -2468,8 +2471,10 @@ describeWithMockConnection('AI Assistance Panel', () => {
       }
       assert.isTrue(nextInput.walkthrough.isExpanded);
       // Verify steps match msg2
-      const msg2Steps =
-          nextInput.props.walkthrough.activeMessage?.parts.filter(p => p.type === 'step').map(p => p.step) ?? [];
+      const msg2Steps = nextInput.props.walkthrough.activeSidebarMessage?.parts
+                            .filter((p): p is AiAssistancePanel.ChatMessage.StepPart => p.type === 'step')
+                            .map(p => p.step) ??
+          [];
       assert.strictEqual(msg2Steps.at(0)?.thought, 'step 2');
     });
 
@@ -2518,17 +2523,121 @@ describeWithMockConnection('AI Assistance Panel', () => {
          // The USER_QUERY response should trigger the walkthrough swap
          nextInput = await view.nextInput as AiAssistancePanel.ViewInput;  // User message
 
-         // Verify that after the user message is added, the walkthrough.activeMessage
+         // Verify that after the user message is added, the walkthrough.activeSidebarMessage
          // has been updated to the second model message.
          assert(nextInput.state === AiAssistancePanel.ViewState.CHAT_VIEW);
+         if (nextInput.state !== AiAssistancePanel.ViewState.CHAT_VIEW) {
+           assert.fail('Expected CHAT_VIEW');
+         }
          const modelMessages =
              nextInput.props.messages.filter(m => m.entity === AiAssistancePanel.ChatMessage.ChatMessageEntity.MODEL);
          const msg2 = modelMessages.at(-1) as AiAssistancePanel.ChatMessage.ModelChatMessage;
 
          // Verify the walkthrough is still expanded and the active message is the second message
-         assert.strictEqual(nextInput.props.walkthrough.activeMessage, msg2);
+         assert.strictEqual(nextInput.props.walkthrough.activeSidebarMessage, msg2);
          assert.isTrue(nextInput.walkthrough.isExpanded);
        });
+
+    describe('Responsiveness', () => {
+      it('should maintain expanded walkthroughs when resizing from wide to narrow', async () => {
+        const {panel, view} = await createAiAssistancePanel({aidaClient: mockAidaClient([[{explanation: 'test'}]])});
+        void panel.handleAction('freestyler.elements-floating-button');
+
+        // Start in wide mode
+        sinon.stub(panel.contentElement, 'offsetWidth').get(() => 1000);
+        panel.onResize();
+        let nextInput = await view.nextInput;
+        assert.isFalse(nextInput.walkthrough.isInlined);
+
+        if (nextInput.state !== AiAssistancePanel.ViewState.CHAT_VIEW) {
+          assert.fail('Expected CHAT_VIEW');
+        }
+        nextInput.props.onTextSubmit('test');
+        nextInput = await view.nextInput;  // User message
+        while (nextInput.state === AiAssistancePanel.ViewState.CHAT_VIEW && nextInput.props.isLoading) {
+          nextInput = await view.nextInput;
+        }
+
+        assert(nextInput.state === AiAssistancePanel.ViewState.CHAT_VIEW);
+        if (nextInput.state !== AiAssistancePanel.ViewState.CHAT_VIEW) {
+          assert.fail('Expected CHAT_VIEW');
+        }
+        const msg = nextInput.props.messages.at(-1) as AiAssistancePanel.ChatMessage.ModelChatMessage;
+        nextInput.props.walkthrough.onOpen(msg);
+        nextInput = await view.nextInput;
+        assert.isTrue(nextInput.walkthrough.isExpanded);
+        assert.strictEqual(nextInput.walkthrough.activeSidebarMessage, msg);
+
+        // Resize to narrow
+        sinon.restore();
+        sinon.stub(panel.contentElement, 'offsetWidth').get(() => 600);
+        panel.onResize();
+        nextInput = await view.nextInput;
+
+        assert.isTrue(nextInput.walkthrough.isInlined);
+        assert.deepEqual(nextInput.walkthrough.inlineExpandedMessages, [msg]);
+      });
+
+      it('should expand the last opened walkthrough when resizing from narrow to wide', async () => {
+        const {panel, view} = await createAiAssistancePanel(
+            {aidaClient: mockAidaClient([[{explanation: 'test 1'}], [{explanation: 'test 2'}]])});
+
+        // Start in narrow mode
+        sinon.stub(panel.contentElement, 'offsetWidth').get(() => 600);
+        panel.onResize();
+        void panel.handleAction('freestyler.elements-floating-button');
+        let nextInput = await view.nextInput;
+        assert.isTrue(nextInput.walkthrough.isInlined);
+
+        // Send 2 messages
+        if (nextInput.state !== AiAssistancePanel.ViewState.CHAT_VIEW) {
+          assert.fail('Expected CHAT_VIEW');
+        }
+        nextInput.props.onTextSubmit('test 1');
+        nextInput = await view.nextInput;  // User 1
+        while (nextInput.state === AiAssistancePanel.ViewState.CHAT_VIEW && nextInput.props.isLoading) {
+          nextInput = await view.nextInput;
+        }
+        assert(nextInput.state === AiAssistancePanel.ViewState.CHAT_VIEW);
+        if (nextInput.state !== AiAssistancePanel.ViewState.CHAT_VIEW) {
+          assert.fail('Expected CHAT_VIEW');
+        }
+        const msg1 = nextInput.props.messages.at(-1) as AiAssistancePanel.ChatMessage.ModelChatMessage;
+
+        nextInput.props.onTextSubmit('test 2');
+        nextInput = await view.nextInput;  // User 2
+        while (nextInput.state === AiAssistancePanel.ViewState.CHAT_VIEW && nextInput.props.isLoading) {
+          nextInput = await view.nextInput;
+        }
+        assert(nextInput.state === AiAssistancePanel.ViewState.CHAT_VIEW);
+        if (nextInput.state !== AiAssistancePanel.ViewState.CHAT_VIEW) {
+          assert.fail('Expected CHAT_VIEW');
+        }
+        const msg2 = nextInput.props.messages.at(-1) as AiAssistancePanel.ChatMessage.ModelChatMessage;
+
+        // Expand both
+        nextInput.props.walkthrough.onToggle(true, msg1);
+        nextInput = await view.nextInput;
+        if (nextInput.state !== AiAssistancePanel.ViewState.CHAT_VIEW) {
+          assert.fail('Expected CHAT_VIEW');
+        }
+        nextInput.props.walkthrough.onToggle(true, msg2);
+        nextInput = await view.nextInput;
+
+        assert.isTrue(nextInput.walkthrough.isInlined);
+        assert.deepEqual(nextInput.walkthrough.inlineExpandedMessages, [msg1, msg2]);
+
+        // Resize to wide
+        sinon.restore();
+        sinon.stub(panel.contentElement, 'offsetWidth').get(() => 1000);
+        panel.onResize();
+        nextInput = await view.nextInput;
+
+        assert.isFalse(nextInput.walkthrough.isInlined);
+        assert.isTrue(nextInput.walkthrough.isExpanded);
+        assert.strictEqual(nextInput.walkthrough.activeSidebarMessage, msg2);
+      });
+    });
   });
 });
 

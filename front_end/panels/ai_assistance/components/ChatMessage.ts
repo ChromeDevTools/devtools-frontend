@@ -310,9 +310,10 @@ export interface MessageInput {
   walkthrough: {
     onOpen: (message: ModelChatMessage) => void,
     isExpanded: boolean,
-    onToggle: (isOpen: boolean) => void,
+    onToggle: (isOpen: boolean, message: ModelChatMessage) => void,
     isInlined: boolean,
-    activeMessage: ModelChatMessage|null,
+    activeSidebarMessage: ModelChatMessage|null,
+    inlineExpandedMessages: ModelChatMessage[],
   };
 }
 
@@ -516,7 +517,7 @@ function renderWalkthroughSidebarButton(
   }
 
   const hasOneStepWithWidget = steps.some(step => step.widgets?.length);
-  const isOpen = input.message === input.walkthrough.activeMessage;
+  const isOpen = input.message === input.walkthrough.activeSidebarMessage;
 
   const title = isOpen ? lockedString(UIStringsNotTranslate.closeAgentWalkthrough) : walkthroughTitle({
     isLoading: input.isLoading,
@@ -540,8 +541,8 @@ function renderWalkthroughSidebarButton(
         .jslogContext=${walkthrough.isExpanded ? 'ai-hide-walkthrough-sidebar' : 'ai-show-walkthrough-sidebar'}
         data-show-walkthrough
         @click=${() => {
-          if(walkthrough.activeMessage === input.message && walkthrough.isExpanded) {
-            walkthrough.onToggle(false);
+          if(walkthrough.activeSidebarMessage === input.message && walkthrough.isExpanded) {
+            walkthrough.onToggle(false, message as ModelChatMessage);
           } else {
             // Can't just toggle the visibility here; we need to ensure we
             // update the state with this message as the user could have had
@@ -577,7 +578,9 @@ function renderWalkthroughUI(input: ChatMessageViewInput, steps: Step[]): Lit.Li
   // A message's walkthrough is considered expanded if the walkthrough is
   // open and it is specifically targeting this message. This is necessary
   // because the walkthrough state is shared across all messages in the chat.
-  const isExpanded = (input.walkthrough.isExpanded && input.walkthrough.activeMessage === input.message);
+  const isExpanded = input.walkthrough.isInlined ?
+      input.walkthrough.inlineExpandedMessages.includes(input.message as ModelChatMessage) :
+      (input.walkthrough.isExpanded && input.walkthrough.activeSidebarMessage === input.message);
 
   // When a side-effect step is present, it's shown in the main chat UI if the
   // walkthrough is closed, allowing the user to approve it without opening
@@ -1238,7 +1241,8 @@ export class ChatMessage extends UI.Widget.Widget {
     onToggle: () => {},
     isInlined: false,
     isExpanded: false,
-    activeMessage: null,
+    activeSidebarMessage: null,
+    inlineExpandedMessages: [],
   };
 
   #suggestionsResizeObserver = new ResizeObserver(() => this.#handleSuggestionsScrollOrResize());

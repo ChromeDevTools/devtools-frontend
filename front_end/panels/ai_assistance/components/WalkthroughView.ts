@@ -46,7 +46,7 @@ export interface ViewInput {
   markdownRenderer: MarkdownLitRenderer;
   isInlined: boolean;
   isExpanded: boolean;
-  onToggle: (isOpen: boolean) => void;
+  onToggle: (isOpen: boolean, message: ModelChatMessage) => void;
   onOpen: (message: ModelChatMessage) => void;
   handleScroll: (ev: Event) => void;
 }
@@ -78,10 +78,13 @@ function renderInlineWalkthrough(input: ViewInput, stepsOutput: Lit.LitTemplate,
 
   function onToggle(event: Event): void {
     const isOpen = (event.target as HTMLDetailsElement).open;
-    if (isOpen && input.message) {
+    if (!input.message) {
+      return;
+    }
+    if (isOpen) {
       input.onOpen(input.message);
     } else {
-      input.onToggle(isOpen);
+      input.onToggle(isOpen, input.message);
     }
   }
 
@@ -118,7 +121,11 @@ function renderSidebarWalkthrough(input: ViewInput, stepsOutput: Lit.LitTemplate
             title: i18nString(UIStrings.close),
             jslogContext: 'close-walkthrough',
           } as Buttons.Button.ButtonData}
-          @click=${() => input.onToggle(false)}
+          @click=${() => {
+            if (input.message) {
+              input.onToggle(false, input.message);
+            }
+          }}
         ></devtools-button>
       </div>
       ${stepsOutput}
@@ -184,7 +191,7 @@ export class WalkthroughView extends UI.Widget.Widget {
   #message: ModelChatMessage|null = null;
   #isLoading = false;
   #markdownRenderer: MarkdownLitRenderer|null = null;
-  #onToggle: (isOpen: boolean) => void = () => {};
+  #onToggle: (isOpen: boolean, message: ModelChatMessage) => void = () => {};
   #onOpen: (message: ModelChatMessage) => void = () => {};
   #isInlined = false;
   #isExpanded = false;
@@ -318,7 +325,7 @@ export class WalkthroughView extends UI.Widget.Widget {
     this.requestUpdate();
   }
 
-  set onToggle(onToggle: (isOpen: boolean) => void) {
+  set onToggle(onToggle: (isOpen: boolean, message: ModelChatMessage) => void) {
     this.#onToggle = onToggle;
     this.requestUpdate();
   }

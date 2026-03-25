@@ -88,10 +88,11 @@ export interface Props {
   generateConversationSummary: (markdown: string) => Promise<string>;
   walkthrough: {
     onOpen: (message: ModelChatMessage) => void,
-    onToggle: (isOpen: boolean) => void,
+    onToggle: (isOpen: boolean, message: ModelChatMessage) => void,
     isExpanded: boolean,
     isInlined: boolean,
-    activeMessage: ModelChatMessage|null,
+    activeSidebarMessage: ModelChatMessage|null,
+    inlineExpandedMessages: ModelChatMessage[],
   };
 }
 

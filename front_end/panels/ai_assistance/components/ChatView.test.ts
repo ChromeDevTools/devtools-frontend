@@ -48,7 +48,8 @@ describeWithEnvironment('ChatView', () => {
         onOpen: () => {},
         isInlined: false,
         isExpanded: false,
-        activeMessage: null,
+        activeSidebarMessage: null,
+        inlineExpandedMessages: [],
       },
       ...options,
     };

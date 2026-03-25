@@ -6607,15 +6607,11 @@ export const NativeFunctions = [
     signatures: [["html","?options"]]
   },
   {
-    name: "streamBeforeHTMLUnsafe",
-    signatures: [["?options"]]
-  },
-  {
     name: "streamBeforeHTML",
     signatures: [["?options"]]
   },
   {
-    name: "streamAfterHTMLUnsafe",
+    name: "streamBeforeHTMLUnsafe",
     signatures: [["?options"]]
   },
   {
@@ -6623,11 +6619,15 @@ export const NativeFunctions = [
     signatures: [["?options"]]
   },
   {
-    name: "streamReplaceWithHTMLUnsafe",
+    name: "streamAfterHTMLUnsafe",
     signatures: [["?options"]]
   },
   {
     name: "streamReplaceWithHTML",
+    signatures: [["?options"]]
+  },
+  {
+    name: "streamReplaceWithHTMLUnsafe",
     signatures: [["?options"]]
   },
   {

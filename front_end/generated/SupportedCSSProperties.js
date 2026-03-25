@@ -2805,7 +2805,8 @@ export const generatedProperties = [
   "keywords": [
    "normal",
    "running",
-   "paused"
+   "paused",
+   "stopped"
   ],
   "name": "image-animation"
  },
@@ -6220,7 +6221,8 @@ export const generatedPropertyValues = {
   "values": [
    "normal",
    "running",
-   "paused"
+   "paused",
+   "stopped"
   ]
  },
  "image-rendering": {

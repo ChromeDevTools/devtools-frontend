@@ -56,12 +56,18 @@ export class EventBreakpointsModel extends SDKModel<void> {
  * instrumentation breakpoints in targets that run JS but do not have a DOM.
  **/
 class EventListenerBreakpoint extends CategorizedBreakpoint {
+  readonly #targetManager: TargetManager;
+  constructor(category: Category, name: string, targetManager: TargetManager) {
+    super(category, name);
+    this.#targetManager = targetManager;
+  }
+
   override setEnabled(enabled: boolean): void {
     if (this.enabled() === enabled) {
       return;
     }
     super.setEnabled(enabled);
-    for (const model of TargetManager.instance().models(EventBreakpointsModel)) {
+    for (const model of this.#targetManager.models(EventBreakpointsModel)) {
       this.updateOnModel(model);
     }
   }
@@ -81,8 +87,10 @@ let eventBreakpointManagerInstance: EventBreakpointsManager;
 
 export class EventBreakpointsManager implements SDKModelObserver<EventBreakpointsModel> {
   readonly #eventListenerBreakpoints: EventListenerBreakpoint[] = [];
+  readonly #targetManager: TargetManager;
 
-  constructor() {
+  constructor(targetManager: TargetManager = TargetManager.instance()) {
+    this.#targetManager = targetManager;
     this.createInstrumentationBreakpoints(Category.AUCTION_WORKLET, [
       InstrumentationNames.BEFORE_BIDDER_WORKLET_BIDDING_START,
       InstrumentationNames.BEFORE_BIDDER_WORKLET_REPORTING_START,
@@ -135,15 +143,16 @@ export class EventBreakpointsManager implements SDKModelObserver<EventBreakpoint
       InstrumentationNames.AUDIO_CONTEXT_SUSPENDED,
     ]);
 
-    TargetManager.instance().observeModels(EventBreakpointsModel, this);
+    this.#targetManager.observeModels(EventBreakpointsModel, this);
   }
 
   static instance(opts: {
     forceNew: boolean|null,
+    targetManager?: TargetManager,
   } = {forceNew: null}): EventBreakpointsManager {
-    const {forceNew} = opts;
+    const {forceNew, targetManager} = opts;
     if (!eventBreakpointManagerInstance || forceNew) {
-      eventBreakpointManagerInstance = new EventBreakpointsManager();
+      eventBreakpointManagerInstance = new EventBreakpointsManager(targetManager);
     }
 
     return eventBreakpointManagerInstance;
@@ -151,7 +160,8 @@ export class EventBreakpointsManager implements SDKModelObserver<EventBreakpoint
 
   private createInstrumentationBreakpoints(category: Category, instrumentationNames: InstrumentationNames[]): void {
     for (const instrumentationName of instrumentationNames) {
-      this.#eventListenerBreakpoints.push(new EventListenerBreakpoint(category, instrumentationName));
+      this.#eventListenerBreakpoints.push(
+          new EventListenerBreakpoint(category, instrumentationName, this.#targetManager));
     }
   }
 

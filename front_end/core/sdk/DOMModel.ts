@@ -190,7 +190,7 @@ export class DOMNode extends Common.ObjectWrapper.ObjectWrapper<DOMNodeEventType
   /**
    * Set if a DOMNode is ad related.
    */
-  #isAdRelatedInternal = false;
+  #adProvenance?: Protocol.Network.AdProvenance;
 
   constructor(domModel: DOMModel) {
     super();
@@ -292,7 +292,7 @@ export class DOMNode extends Common.ObjectWrapper.ObjectWrapper<DOMNodeEventType
     this.setPseudoElements(payload.pseudoElements);
 
     if (payload.adProvenance) {
-      this.#isAdRelatedInternal = true;
+      this.#adProvenance = payload.adProvenance;
     }
 
     if (this.#nodeType === Node.ELEMENT_NODE) {
@@ -331,21 +331,24 @@ export class DOMNode extends Common.ObjectWrapper.ObjectWrapper<DOMNodeEventType
     return this.#topLayerIndex;
   }
 
-  isAdRelatedNode(): boolean {
-    // For iframes, we rely on `AdFrameType` to preserve legacy behavior and
-    // prevent regressions.
-    //
-    // TODO(yaoxia): Deprecate the iframe-specific logic and consolidate
-    // everything to use `#isAdRelatedInternal`.
-    if (this.isIframe() && this.#frameOwnerFrameId) {
-      const frame = FrameManager.instance().getFrame(this.#frameOwnerFrameId);
-      if (!frame) {
-        return false;
-      }
-      return frame.adFrameType() !== Protocol.Page.AdFrameType.None;
+  adProvenance(): Protocol.Network.AdProvenance|undefined {
+    if (this.#adProvenance !== undefined) {
+      return this.#adProvenance;
     }
 
-    return this.#isAdRelatedInternal;
+    // AdProvenance can be unavailable for deeply nested OOPIF ad iframes
+    // (crbug.com/421202278). We rely on `AdFrameType` as a fallback.
+    if (!this.isIframe() || !this.#frameOwnerFrameId) {
+      return undefined;
+    }
+
+    const frame = FrameManager.instance().getFrame(this.#frameOwnerFrameId);
+    if (frame && frame.adFrameType() !== Protocol.Page.AdFrameType.None) {
+      // The frame is ad-related, but provenance information is unavailable.
+      return {};
+    }
+
+    return undefined;
   }
 
   isRootNode(): boolean {
@@ -425,8 +428,8 @@ export class DOMNode extends Common.ObjectWrapper.ObjectWrapper<DOMNodeEventType
     }
   }
 
-  setIsAdRelated(isAdRelated: boolean): void {
-    this.#isAdRelatedInternal = isAdRelated;
+  setIsAdRelated(adProvenance?: Protocol.Network.AdProvenance): void {
+    this.#adProvenance = adProvenance;
     this.dispatchEventToListeners(DOMNodeEvents.AD_RELATED_STATE_UPDATED);
   }
 
@@ -1832,12 +1835,11 @@ export class DOMModel extends SDKModel<EventTypes> {
   }
 
   adRelatedStateUpdated(nodeId: Protocol.DOM.NodeId, adProvenance?: Protocol.Network.AdProvenance): void {
-    const isAdRelated = adProvenance !== undefined;
     const node = this.nodeForId(nodeId);
-    if (!node || node.isAdRelatedNode() === isAdRelated) {
+    if (!node) {
       return;
     }
-    node.setIsAdRelated(isAdRelated);
+    node.setIsAdRelated(adProvenance);
   }
 
   affectedByStartingStylesFlagUpdated(nodeId: Protocol.DOM.NodeId, affectedByStartingStyles: boolean): void {

@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-lit-render-outside-of-view */
 import '../../../ui/kit/kit.js';
-import './OriginMap.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as CrUXManager from '../../../models/crux-manager/crux-manager.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
@@ -11,9 +10,11 @@ import * as Dialogs from '../../../ui/components/dialogs/dialogs.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as Input from '../../../ui/components/input/input.js';
 import * as uiI18n from '../../../ui/i18n/i18n.js';
+import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import fieldSettingsDialogStyles from './fieldSettingsDialog.css.js';
+import { OriginMap } from './OriginMap.js';
 const UIStrings = {
     /**
      * @description Text label for a button that opens a dialog to set up field metrics.
@@ -85,6 +86,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/FieldSettingsDialog.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const { html, nothing, Directives: { ifDefined } } = Lit;
+const { widget, widgetRef } = UI.Widget;
 export class ShowDialog extends Event {
     static eventName = 'showdialog';
     constructor() {
@@ -271,13 +273,8 @@ export class FieldSettingsDialog extends HTMLElement {
         // clang-format off
         return html `
       <div class="origin-mapping-description">${i18nString(UIStrings.mapDevelopmentOrigins)}</div>
-      <devtools-origin-map
-        ${Lit.Directives.ref(el => {
-            if (el instanceof HTMLElement) {
-                this.#originMap = el;
-            }
-        })}
-      ></devtools-origin-map>
+      <devtools-widget ${widget(OriginMap)} ${widgetRef(OriginMap, el => { this.#originMap = el; })}>
+      </devtools-widget>
       <div class="origin-mapping-button-section">
         <devtools-button
           @click=${() => this.#originMap?.startCreation()}

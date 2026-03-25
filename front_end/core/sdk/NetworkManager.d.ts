@@ -15,8 +15,8 @@ import { type SDKModelObserver, TargetManager } from './TargetManager.js';
  * to in multiple places, and this ensures we don't have accidental typos which
  * mean extra settings get mistakenly created.
  */
-export declare function customUserNetworkConditionsSetting(): Common.Settings.Setting<Conditions[]>;
-export declare function activeNetworkThrottlingKeySetting(): Common.Settings.Setting<ThrottlingConditionKey>;
+export declare function customUserNetworkConditionsSetting(settings?: Common.Settings.Settings): Common.Settings.Setting<Conditions[]>;
+export declare function activeNetworkThrottlingKeySetting(settings?: Common.Settings.Settings): Common.Settings.Setting<ThrottlingConditionKey>;
 export declare class NetworkManager extends SDKModel<EventTypes> {
     #private;
     readonly dispatcher: NetworkDispatcher;
@@ -200,7 +200,7 @@ export declare class RequestURLPattern {
 }
 export declare class RequestCondition extends Common.ObjectWrapper.ObjectWrapper<RequestCondition.EventTypes> {
     #private;
-    static createFromSetting(setting: RequestConditionsSetting): RequestCondition;
+    static createFromSetting(setting: RequestConditionsSetting, settings?: Common.Settings.Settings): RequestCondition;
     static create(pattern: RequestURLPattern, conditions: ThrottlingConditions): RequestCondition;
     private constructor();
     get isBlocking(): boolean;
@@ -226,7 +226,7 @@ export declare namespace RequestCondition {
 }
 export declare class RequestConditions extends Common.ObjectWrapper.ObjectWrapper<RequestConditions.EventTypes> {
     #private;
-    constructor();
+    constructor(settings: Common.Settings.Settings);
     get count(): number;
     get conditionsEnabled(): boolean;
     set conditionsEnabled(enabled: boolean);

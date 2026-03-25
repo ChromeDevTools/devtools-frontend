@@ -1,6 +1,7 @@
 // Copyright 2026 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+import { bytes, millis } from './UnitFormatters.js';
 /**
  * A formatter that takes a raw Lighthouse report JSON and creates a markdown
  * summary for an AI Agent.
@@ -111,34 +112,67 @@ export class LighthouseFormatter {
     }
     #formatTable(headings, items) {
         const lines = [];
-        lines.push(`| ${headings.map(h => h.label).join(' | ')} |`);
         for (const item of items) {
-            const row = headings.map(h => this.#formatTableValue(item[h.key]));
-            lines.push(`| ${row.join(' | ')} |`);
+            const itemLines = [];
+            for (const heading of headings) {
+                const value = item[heading.key];
+                const formattedValues = this.#formatTableValues(value, heading.valueType);
+                for (const { labelSuffix, value: v } of formattedValues) {
+                    const baseLabel = heading.label || heading.key;
+                    const label = labelSuffix ? `${baseLabel} ${labelSuffix}` : baseLabel;
+                    itemLines.push(`  * **${label}**: ${v}`);
+                }
+                const subItems = item.subItems;
+                // subItems can technically be a string (TableItemValue), but we
+                // only care about it here if it's a SubItemsJSON (type:
+                // 'subitems'), which represents a nested table of values.
+                if (subItems && typeof subItems === 'object' && 'type' in subItems && subItems.type === 'subitems' &&
+                    heading.subItemsHeading) {
+                    for (const subItem of subItems.items) {
+                        const subValue = subItem[heading.subItemsHeading.key];
+                        // Skip sub-item values that are identical to the main item's value
+                        // for the same heading to avoid redundant output (e.g. if both
+                        // show the same "Est Savings" value).
+                        if (subValue === value) {
+                            continue;
+                        }
+                        const formattedSubValues = this.#formatTableValues(subValue, heading.subItemsHeading.valueType);
+                        for (const { value: v } of formattedSubValues) {
+                            itemLines.push(`    * ${v}`);
+                        }
+                    }
+                }
+            }
+            if (itemLines.length > 0) {
+                lines.push(`- Item:`);
+                lines.push(...itemLines);
+            }
         }
         return lines.join('\n');
     }
-    #formatTableValue(value) {
+    #formatTableValues(value, valueType) {
         if (value === undefined || value === null) {
-            return '';
+            return [];
         }
         if (typeof value === 'string' || typeof value === 'number') {
-            return String(value);
+            return [{ value: this.#formatValue(value, valueType) }];
         }
         if (typeof value === 'object' && 'type' in value) {
             switch (value.type) {
                 case 'node': {
-                    let label = value.nodeLabel || value.selector || value.snippet || '(node)';
-                    if (value.selector) {
-                        label += ` (selector: ${value.selector})`;
+                    const results = [];
+                    const label = value.nodeLabel || value.selector || value.snippet || '(node)';
+                    results.push({ value: label });
+                    if (value.selector && value.selector !== label) {
+                        results.push({ labelSuffix: 'selector', value: value.selector });
                     }
                     if (value.path) {
-                        label += ` (path: ${value.path})`;
+                        results.push({ labelSuffix: 'path', value: value.path });
                     }
                     if (value.explanation) {
-                        label += ` (explanation: ${value.explanation.replace(/\n/g, ' ')})`;
+                        results.push({ labelSuffix: 'explanation', value: value.explanation.replace(/\n/g, ' ') });
                     }
-                    return label;
+                    return results;
                 }
                 case 'source-location': {
                     const parts = [];
@@ -151,11 +185,27 @@ export class LighthouseFormatter {
                     if (value.column) {
                         parts.push(String(value.column));
                     }
-                    return parts.join(':');
+                    return [{ value: parts.join(':') }];
                 }
             }
         }
-        return '';
+        return [];
+    }
+    #formatValue(value, valueType) {
+        if (typeof value === 'string') {
+            return value;
+        }
+        switch (valueType) {
+            case 'bytes': {
+                return bytes(value);
+            }
+            case 'timespanMs':
+            case 'ms': {
+                return millis(value);
+            }
+            default:
+                return String(value);
+        }
     }
 }
 //# sourceMappingURL=LighthouseFormatter.js.map

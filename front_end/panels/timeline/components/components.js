@@ -1623,301 +1623,6 @@ __export(FieldSettingsDialog_exports, {
   ShowDialog: () => ShowDialog
 });
 import "./../../../ui/kit/kit.js";
-
-// gen/front_end/panels/timeline/components/OriginMap.js
-var OriginMap_exports = {};
-__export(OriginMap_exports, {
-  OriginMap: () => OriginMap
-});
-import "./../../../ui/kit/kit.js";
-import * as i18n13 from "./../../../core/i18n/i18n.js";
-import * as SDK2 from "./../../../core/sdk/sdk.js";
-import * as CrUXManager3 from "./../../../models/crux-manager/crux-manager.js";
-import * as RenderCoordinator from "./../../../ui/components/render_coordinator/render_coordinator.js";
-import * as UI5 from "./../../../ui/legacy/legacy.js";
-import * as Lit6 from "./../../../ui/lit/lit.js";
-
-// gen/front_end/panels/timeline/components/originMap.css.js
-var originMap_css_default = `/*
- * Copyright 2024 The Chromium Authors
- * Use of this source code is governed by a BSD-style license that can be
- * found in the LICENSE file.
- */
-
-.list {
-  max-height: 200px;
-}
-
-.list-item:has(.origin-mapping-row.header) {
-  position: sticky;
-  top: 0;
-  z-index: 1;
-  background-color: var(--sys-color-cdt-base-container);
-}
-
-.origin-mapping-row {
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-  /* Needs to be 30px because list items have a min height of 30px */
-  height: 30px;
-}
-
-.origin-mapping-row.header {
-  font-weight: var(--ref-typeface-weight-medium);
-  border-bottom: 1px solid var(--sys-color-divider);
-}
-
-.origin-mapping-cell {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  padding: 4px;
-  border-right: 1px solid var(--sys-color-divider);
-}
-
-.origin-warning-icon {
-  width: 16px;
-  height: 16px;
-  margin-right: 4px;
-  color: var(--icon-warning);
-}
-
-.origin {
-  text-overflow: ellipsis;
-  overflow-x: hidden;
-}
-
-.origin-mapping-cell:last-child {
-  border: none;
-}
-
-.origin-mapping-editor {
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-  padding: 12px 8px;
-  gap: 12px;
-}
-
-.origin-mapping-editor label {
-  flex: 1;
-  font-weight: var(--ref-typeface-weight-medium);
-}
-
-.origin-mapping-editor input {
-  margin-top: 4px;
-  width: 100%;
-}
-
-/*# sourceURL=${import.meta.resolve("./originMap.css")} */`;
-
-// gen/front_end/panels/timeline/components/OriginMap.js
-var { html: html6 } = Lit6;
-var UIStrings7 = {
-  /**
-   * @description Title for a column in a data table representing a site origin used for development
-   */
-  developmentOrigin: "Development origin",
-  /**
-   * @description Title for a column in a data table representing a site origin used by real users in a production environment
-   */
-  productionOrigin: "Production origin",
-  /**
-   * @description Warning message explaining that an input origin is not a valid origin or URL.
-   * @example {http//malformed.com} PH1
-   */
-  invalidOrigin: '"{PH1}" is not a valid origin or URL.',
-  /**
-   * @description Warning message explaining that an development origin is already mapped to a productionOrigin.
-   * @example {https://example.com} PH1
-   */
-  alreadyMapped: '"{PH1}" is already mapped to a production origin.',
-  /**
-   * @description Warning message explaining that a page doesn't have enough real user data to show any information for. "Chrome UX Report" is a product name and should not be translated.
-   */
-  pageHasNoData: "The Chrome UX Report does not have sufficient real user data for this page."
-};
-var str_7 = i18n13.i18n.registerUIStrings("panels/timeline/components/OriginMap.ts", UIStrings7);
-var i18nString7 = i18n13.i18n.getLocalizedString.bind(void 0, str_7);
-var DEV_ORIGIN_CONTROL = "developmentOrigin";
-var PROD_ORIGIN_CONTROL = "productionOrigin";
-var OriginMap = class extends UI5.Widget.WidgetElement {
-  #list;
-  #editor;
-  constructor() {
-    super();
-    this.#list = new UI5.ListWidget.ListWidget(
-      this,
-      false,
-      true
-      /* isTable */
-    );
-    CrUXManager3.CrUXManager.instance().getConfigSetting().addChangeListener(this.#updateListFromSetting, this);
-    this.#updateListFromSetting();
-  }
-  createWidget() {
-    const containerWidget = new UI5.Widget.Widget(this);
-    this.#list.registerRequiredCSS(originMap_css_default);
-    this.#list.show(containerWidget.contentElement);
-    return containerWidget;
-  }
-  #pullMappingsFromSetting() {
-    return CrUXManager3.CrUXManager.instance().getConfigSetting().get().originMappings || [];
-  }
-  #pushMappingsToSetting(originMappings) {
-    const setting = CrUXManager3.CrUXManager.instance().getConfigSetting();
-    const settingCopy = { ...setting.get() };
-    settingCopy.originMappings = originMappings;
-    setting.set(settingCopy);
-  }
-  #updateListFromSetting() {
-    const mappings = this.#pullMappingsFromSetting();
-    this.#list.clear();
-    this.#list.appendItem({
-      developmentOrigin: i18nString7(UIStrings7.developmentOrigin),
-      productionOrigin: i18nString7(UIStrings7.productionOrigin),
-      isTitleRow: true
-    }, false);
-    for (const originMapping of mappings) {
-      this.#list.appendItem(originMapping, true);
-    }
-  }
-  #getOrigin(url) {
-    try {
-      return new URL(url).origin;
-    } catch {
-      return null;
-    }
-  }
-  #renderOriginWarning(url) {
-    return RenderCoordinator.write(async () => {
-      if (!CrUXManager3.CrUXManager.instance().isEnabled()) {
-        return Lit6.nothing;
-      }
-      const cruxManager = CrUXManager3.CrUXManager.instance();
-      const result = await cruxManager.getFieldDataForPage(url);
-      const hasFieldData = Object.entries(result).some(([key, value]) => {
-        if (key === "warnings") {
-          return false;
-        }
-        return Boolean(value);
-      });
-      if (hasFieldData) {
-        return Lit6.nothing;
-      }
-      return html6`
-        <devtools-icon
-          class="origin-warning-icon"
-          name="warning-filled"
-          title=${i18nString7(UIStrings7.pageHasNoData)}
-        ></devtools-icon>
-      `;
-    });
-  }
-  startCreation() {
-    const targetManager = SDK2.TargetManager.TargetManager.instance();
-    const inspectedURL = targetManager.inspectedURL();
-    const currentOrigin = this.#getOrigin(inspectedURL) || "";
-    this.#list.addNewItem(-1, {
-      developmentOrigin: currentOrigin,
-      productionOrigin: ""
-    });
-  }
-  renderItem(originMapping) {
-    const element = document.createElement("div");
-    element.classList.add("origin-mapping-row");
-    element.role = "row";
-    let cellRole;
-    let warningIcon;
-    if (originMapping.isTitleRow) {
-      element.classList.add("header");
-      cellRole = "columnheader";
-      warningIcon = Lit6.nothing;
-    } else {
-      cellRole = "cell";
-      warningIcon = Lit6.Directives.until(this.#renderOriginWarning(originMapping.productionOrigin));
-    }
-    Lit6.render(html6`
-      <div class="origin-mapping-cell development-origin" role=${cellRole}>
-        <div class="origin" title=${originMapping.developmentOrigin}>${originMapping.developmentOrigin}</div>
-      </div>
-      <div class="origin-mapping-cell production-origin" role=${cellRole}>
-        ${warningIcon}
-        <div class="origin" title=${originMapping.productionOrigin}>${originMapping.productionOrigin}</div>
-      </div>
-    `, element, { host: this });
-    return element;
-  }
-  removeItemRequested(_item, index) {
-    const mappings = this.#pullMappingsFromSetting();
-    mappings.splice(index - 1, 1);
-    this.#pushMappingsToSetting(mappings);
-  }
-  commitEdit(originMapping, editor, isNew) {
-    originMapping.developmentOrigin = this.#getOrigin(editor.control(DEV_ORIGIN_CONTROL).value) || "";
-    originMapping.productionOrigin = this.#getOrigin(editor.control(PROD_ORIGIN_CONTROL).value) || "";
-    const mappings = this.#pullMappingsFromSetting();
-    if (isNew) {
-      mappings.push(originMapping);
-    }
-    this.#pushMappingsToSetting(mappings);
-  }
-  beginEdit(originMapping) {
-    const editor = this.#createEditor();
-    editor.control(DEV_ORIGIN_CONTROL).value = originMapping.developmentOrigin;
-    editor.control(PROD_ORIGIN_CONTROL).value = originMapping.productionOrigin;
-    return editor;
-  }
-  #developmentValidator(_item, index, input) {
-    const origin = this.#getOrigin(input.value);
-    if (!origin) {
-      return { valid: false, errorMessage: i18nString7(UIStrings7.invalidOrigin, { PH1: input.value }) };
-    }
-    const mappings = this.#pullMappingsFromSetting();
-    for (let i = 0; i < mappings.length; ++i) {
-      if (i === index - 1) {
-        continue;
-      }
-      const mapping = mappings[i];
-      if (mapping.developmentOrigin === origin) {
-        return { valid: true, errorMessage: i18nString7(UIStrings7.alreadyMapped, { PH1: origin }) };
-      }
-    }
-    return { valid: true };
-  }
-  #productionValidator(_item, _index, input) {
-    const origin = this.#getOrigin(input.value);
-    if (!origin) {
-      return { valid: false, errorMessage: i18nString7(UIStrings7.invalidOrigin, { PH1: input.value }) };
-    }
-    return { valid: true };
-  }
-  #createEditor() {
-    if (this.#editor) {
-      return this.#editor;
-    }
-    const editor = new UI5.ListWidget.Editor();
-    this.#editor = editor;
-    const content = editor.contentElement().createChild("div", "origin-mapping-editor");
-    const devInput = editor.createInput(DEV_ORIGIN_CONTROL, "text", i18nString7(UIStrings7.developmentOrigin), this.#developmentValidator.bind(this));
-    const prodInput = editor.createInput(PROD_ORIGIN_CONTROL, "text", i18nString7(UIStrings7.productionOrigin), this.#productionValidator.bind(this));
-    Lit6.render(html6`
-      <label class="development-origin-input">
-        ${i18nString7(UIStrings7.developmentOrigin)}
-        ${devInput}
-      </label>
-      <label class="production-origin-input">
-        ${i18nString7(UIStrings7.productionOrigin)}
-        ${prodInput}
-      </label>
-    `, content, { host: this });
-    return editor;
-  }
-};
-customElements.define("devtools-origin-map", OriginMap);
-
-// gen/front_end/panels/timeline/components/FieldSettingsDialog.js
 import * as i18n15 from "./../../../core/i18n/i18n.js";
 import * as CrUXManager5 from "./../../../models/crux-manager/crux-manager.js";
 import * as Buttons3 from "./../../../ui/components/buttons/buttons.js";
@@ -1925,6 +1630,7 @@ import * as Dialogs2 from "./../../../ui/components/dialogs/dialogs.js";
 import * as ComponentHelpers3 from "./../../../ui/components/helpers/helpers.js";
 import * as Input from "./../../../ui/components/input/input.js";
 import * as uiI18n2 from "./../../../ui/i18n/i18n.js";
+import * as UI6 from "./../../../ui/legacy/legacy.js";
 import * as Lit7 from "./../../../ui/lit/lit.js";
 import * as VisualLogging5 from "./../../../ui/visual_logging/visual_logging.js";
 
@@ -2048,6 +1754,279 @@ devtools-link {
 
 /*# sourceURL=${import.meta.resolve("./fieldSettingsDialog.css")} */`;
 
+// gen/front_end/panels/timeline/components/OriginMap.js
+var OriginMap_exports = {};
+__export(OriginMap_exports, {
+  DEFAULT_VIEW: () => DEFAULT_VIEW2,
+  OriginMap: () => OriginMap
+});
+import "./../../../ui/kit/kit.js";
+import "./../../../ui/legacy/components/data_grid/data_grid.js";
+import * as i18n13 from "./../../../core/i18n/i18n.js";
+import * as SDK2 from "./../../../core/sdk/sdk.js";
+import * as CrUXManager3 from "./../../../models/crux-manager/crux-manager.js";
+import * as RenderCoordinator from "./../../../ui/components/render_coordinator/render_coordinator.js";
+import * as UI5 from "./../../../ui/legacy/legacy.js";
+import * as Lit6 from "./../../../ui/lit/lit.js";
+
+// gen/front_end/panels/timeline/components/originMap.css.js
+var originMap_css_default = `/*
+ * Copyright 2024 The Chromium Authors
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+.origin-warning-icon {
+  width: 16px;
+  height: 16px;
+  margin-right: 4px;
+  color: var(--icon-warning);
+}
+
+.origin {
+  text-overflow: ellipsis;
+  overflow-x: hidden;
+}
+
+.error-message {
+  color: var(--sys-color-error);
+  margin-top: 8px;
+  font-weight: var(--ref-typeface-weight-medium);
+  white-space: pre-wrap;
+}
+
+/*# sourceURL=${import.meta.resolve("./originMap.css")} */`;
+
+// gen/front_end/panels/timeline/components/OriginMap.js
+var { html: html6 } = Lit6;
+var UIStrings7 = {
+  /**
+   * @description Title for a column in a data table representing a site origin used for development
+   */
+  developmentOrigin: "Development origin",
+  /**
+   * @description Title for a column in a data table representing a site origin used by real users in a production environment
+   */
+  productionOrigin: "Production origin",
+  /**
+   * @description Warning message explaining that an input origin is not a valid origin or URL.
+   * @example {http//malformed.com} PH1
+   */
+  invalidOrigin: '"{PH1}" is not a valid origin or URL.',
+  /**
+   * @description Warning message explaining that an development origin is already mapped to a productionOrigin.
+   * @example {https://example.com} PH1
+   */
+  alreadyMapped: '"{PH1}" is already mapped to a production origin.',
+  /**
+   * @description Warning message explaining that a page doesn't have enough real user data to show any information for. "Chrome UX Report" is a product name and should not be translated.
+   */
+  pageHasNoData: "The Chrome UX Report does not have sufficient real user data for this page."
+};
+var str_7 = i18n13.i18n.registerUIStrings("panels/timeline/components/OriginMap.ts", UIStrings7);
+var i18nString7 = i18n13.i18n.getLocalizedString.bind(void 0, str_7);
+var DEV_ORIGIN_CONTROL = "developmentOrigin";
+var PROD_ORIGIN_CONTROL = "productionOrigin";
+function renderOriginWarning(input, url) {
+  return RenderCoordinator.write(async () => {
+    if (!input.isCrUXEnabled) {
+      return Lit6.nothing;
+    }
+    const result = await input.getFieldDataForPage(url);
+    const hasFieldData = Object.entries(result).some(([key, value]) => {
+      if (key === "warnings") {
+        return false;
+      }
+      return Boolean(value);
+    });
+    if (hasFieldData) {
+      return Lit6.nothing;
+    }
+    return html6`
+      <devtools-icon
+        class="origin-warning-icon"
+        name="warning-filled"
+        title=${i18nString7(UIStrings7.pageHasNoData)}
+      ></devtools-icon>
+    `;
+  });
+}
+function renderItem(input, originMapping, index) {
+  const warningIcon = Lit6.Directives.until(renderOriginWarning(input, originMapping.productionOrigin));
+  return html6`
+    <tr data-index=${index} @edit=${input.onCommitEdit} @delete=${input.onRemoveItemRequested}>
+      <td data-value=${originMapping.developmentOrigin}>
+        <div class="origin" title=${originMapping.developmentOrigin}>${originMapping.developmentOrigin}</div>
+      </td>
+      <td data-value=${originMapping.productionOrigin}>
+        ${warningIcon}
+        <div class="origin" title=${originMapping.productionOrigin}>${originMapping.productionOrigin}</div>
+      </td>
+    </tr>
+  `;
+}
+var DEFAULT_VIEW2 = (input, _output, target) => {
+  if (!input.prefillDevelopmentOrigin && input.mappings.length === 0) {
+    Lit6.render(Lit6.nothing, target);
+    return;
+  }
+  Lit6.render(html6`
+    <devtools-data-grid striped inline
+        @click=${(e) => {
+    e.stopPropagation();
+  }}
+        @create=${input.onCreate}>
+      <table>
+        <tr>
+          <th id=${DEV_ORIGIN_CONTROL} editable weight="1">${i18nString7(UIStrings7.developmentOrigin)}</th>
+          <th id=${PROD_ORIGIN_CONTROL} editable weight="1">${i18nString7(UIStrings7.productionOrigin)}</th>
+        </tr>
+        ${input.mappings.map((mapping, index) => renderItem(input, mapping, index))}
+        ${input.prefillDevelopmentOrigin ? html6`
+          <tr placeholder>
+            <td>${input.prefillDevelopmentOrigin}</td>
+            <td></td>
+          </tr>` : Lit6.nothing}
+      </table>
+    </devtools-data-grid>
+    ${input.errorMessage ? html6`<div class="error-message">${input.errorMessage}</div>` : Lit6.nothing}
+  `, target);
+};
+var OriginMap = class extends UI5.Widget.VBox {
+  #view;
+  #errorMessage = "";
+  #prefillDevelopmentOrigin = "";
+  constructor(element, view = DEFAULT_VIEW2) {
+    super(element, { useShadowDom: true });
+    this.#view = view;
+    this.registerRequiredCSS(originMap_css_default);
+    CrUXManager3.CrUXManager.instance().getConfigSetting().addChangeListener(this.requestUpdate, this);
+    this.requestUpdate();
+  }
+  performUpdate() {
+    const input = {
+      mappings: this.#pullMappingsFromSetting(),
+      prefillDevelopmentOrigin: this.#prefillDevelopmentOrigin,
+      errorMessage: this.#errorMessage,
+      isCrUXEnabled: CrUXManager3.CrUXManager.instance().isEnabled(),
+      getFieldDataForPage: (url) => CrUXManager3.CrUXManager.instance().getFieldDataForPage(url),
+      onCommitEdit: this.#commitEdit.bind(this),
+      onRemoveItemRequested: this.#removeItemRequested.bind(this),
+      onCreate: this.#onCreate.bind(this)
+    };
+    this.#view(input, void 0, this.contentElement);
+  }
+  #pullMappingsFromSetting() {
+    return CrUXManager3.CrUXManager.instance().getConfigSetting().get().originMappings || [];
+  }
+  #pushMappingsToSetting(originMappings) {
+    const setting = CrUXManager3.CrUXManager.instance().getConfigSetting();
+    const settingCopy = { ...setting.get() };
+    settingCopy.originMappings = originMappings;
+    setting.set(settingCopy);
+  }
+  #getOrigin(url) {
+    try {
+      return new URL(url).origin;
+    } catch {
+      return null;
+    }
+  }
+  startCreation() {
+    const targetManager = SDK2.TargetManager.TargetManager.instance();
+    const inspectedURL = targetManager.inspectedURL();
+    const currentOrigin = this.#getOrigin(inspectedURL) || "";
+    this.#prefillDevelopmentOrigin = currentOrigin;
+    this.requestUpdate();
+  }
+  #removeItemRequested(event) {
+    const target = event.currentTarget;
+    const index = Number.parseInt(target.dataset.index ?? "-1", 10);
+    if (index < 0) {
+      return;
+    }
+    const mappings = this.#pullMappingsFromSetting();
+    mappings.splice(index, 1);
+    this.#pushMappingsToSetting(mappings);
+  }
+  #commitEdit(event) {
+    const target = event.currentTarget;
+    const index = Number.parseInt(target.dataset.index ?? "-1", 10);
+    if (index < 0) {
+      return;
+    }
+    const mappings = this.#pullMappingsFromSetting();
+    const originMapping = mappings[index];
+    const isDevOrigin = event.detail.columnId === DEV_ORIGIN_CONTROL;
+    let errorMessage = null;
+    if (isDevOrigin) {
+      errorMessage = this.#developmentValidator(event.detail.newText, index);
+    } else {
+      errorMessage = this.#productionValidator(event.detail.newText);
+    }
+    if (errorMessage) {
+      this.#errorMessage = errorMessage;
+      this.requestUpdate();
+      return;
+    }
+    this.#errorMessage = "";
+    if (isDevOrigin) {
+      originMapping.developmentOrigin = this.#getOrigin(event.detail.newText) || "";
+    } else {
+      originMapping.productionOrigin = this.#getOrigin(event.detail.newText) || "";
+    }
+    this.#pushMappingsToSetting(mappings);
+  }
+  #developmentValidator(value, indexToIgnore) {
+    const origin = this.#getOrigin(value);
+    if (!origin) {
+      return i18nString7(UIStrings7.invalidOrigin, { PH1: value });
+    }
+    const mappings = this.#pullMappingsFromSetting();
+    for (let i = 0; i < mappings.length; ++i) {
+      if (i === indexToIgnore) {
+        continue;
+      }
+      const mapping = mappings[i];
+      if (mapping.developmentOrigin === origin) {
+        return i18nString7(UIStrings7.alreadyMapped, { PH1: origin });
+      }
+    }
+    return null;
+  }
+  #productionValidator(value) {
+    const origin = this.#getOrigin(value);
+    if (!origin) {
+      return i18nString7(UIStrings7.invalidOrigin, { PH1: value });
+    }
+    return null;
+  }
+  #onCreate(event) {
+    const devOrigin = event.detail[DEV_ORIGIN_CONTROL] ?? "";
+    const prodOrigin = event.detail[PROD_ORIGIN_CONTROL] ?? "";
+    if (!devOrigin && !prodOrigin || devOrigin === this.#prefillDevelopmentOrigin && !prodOrigin) {
+      this.#prefillDevelopmentOrigin = "";
+      this.#errorMessage = "";
+      this.requestUpdate();
+      return;
+    }
+    const errors = [this.#developmentValidator(devOrigin), this.#productionValidator(prodOrigin)].filter(Boolean);
+    if (errors.length > 0) {
+      this.#errorMessage = errors.join("\n");
+      this.requestUpdate();
+      return;
+    }
+    this.#errorMessage = "";
+    this.#prefillDevelopmentOrigin = "";
+    const mappings = this.#pullMappingsFromSetting();
+    mappings.push({
+      developmentOrigin: this.#getOrigin(devOrigin) || "",
+      productionOrigin: this.#getOrigin(prodOrigin) || ""
+    });
+    this.#pushMappingsToSetting(mappings);
+  }
+};
+
 // gen/front_end/panels/timeline/components/FieldSettingsDialog.js
 var UIStrings8 = {
   /**
@@ -2120,6 +2099,7 @@ var UIStrings8 = {
 var str_8 = i18n15.i18n.registerUIStrings("panels/timeline/components/FieldSettingsDialog.ts", UIStrings8);
 var i18nString8 = i18n15.i18n.getLocalizedString.bind(void 0, str_8);
 var { html: html7, nothing: nothing5, Directives: { ifDefined } } = Lit7;
+var { widget, widgetRef } = UI6.Widget;
 var ShowDialog = class _ShowDialog extends Event {
   static eventName = "showdialog";
   constructor() {
@@ -2296,13 +2276,10 @@ var FieldSettingsDialog = class extends HTMLElement {
   #renderOriginMapGrid() {
     return html7`
       <div class="origin-mapping-description">${i18nString8(UIStrings8.mapDevelopmentOrigins)}</div>
-      <devtools-origin-map
-        ${Lit7.Directives.ref((el) => {
-      if (el instanceof HTMLElement) {
-        this.#originMap = el;
-      }
-    })}
-      ></devtools-origin-map>
+      <devtools-widget ${widget(OriginMap)} ${widgetRef(OriginMap, (el) => {
+      this.#originMap = el;
+    })}>
+      </devtools-widget>
       <div class="origin-mapping-button-section">
         <devtools-button
           @click=${() => this.#originMap?.startCreation()}
@@ -2390,7 +2367,7 @@ customElements.define("devtools-field-settings-dialog", FieldSettingsDialog);
 // gen/front_end/panels/timeline/components/IgnoreListSetting.js
 var IgnoreListSetting_exports = {};
 __export(IgnoreListSetting_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW2,
+  DEFAULT_VIEW: () => DEFAULT_VIEW3,
   IgnoreListSetting: () => IgnoreListSetting,
   regexInputIsValid: () => regexInputIsValid
 });
@@ -2401,7 +2378,7 @@ import * as Platform4 from "./../../../core/platform/platform.js";
 import * as Workspace from "./../../../models/workspace/workspace.js";
 import * as Buttons4 from "./../../../ui/components/buttons/buttons.js";
 import * as Dialogs3 from "./../../../ui/components/dialogs/dialogs.js";
-import * as UI6 from "./../../../ui/legacy/legacy.js";
+import * as UI7 from "./../../../ui/legacy/legacy.js";
 import * as Lit8 from "./../../../ui/lit/lit.js";
 
 // gen/front_end/panels/timeline/components/ignoreListSetting.css.js
@@ -2505,9 +2482,9 @@ var UIStrings9 = {
 };
 var str_9 = i18n17.i18n.registerUIStrings("panels/timeline/components/IgnoreListSetting.ts", UIStrings9);
 var i18nString9 = i18n17.i18n.getLocalizedString.bind(void 0, str_9);
-var DEFAULT_VIEW2 = (input, output, target) => {
+var DEFAULT_VIEW3 = (input, output, target) => {
   const { ignoreListEnabled, regexes, newRegexValue, newRegexChecked, onExistingRegexEnableToggle, onRemoveRegexByIndex, onNewRegexInputBlur, onNewRegexInputChange, onNewRegexInputFocus, onNewRegexAdd, onNewRegexCancel } = input;
-  function renderItem(regex, index) {
+  function renderItem2(regex, index) {
     const helpText = i18nString9(UIStrings9.ignoreScriptsWhoseNamesMatchS, { regex: regex.pattern });
     return html8`
       <div class='regex-row'>
@@ -2543,7 +2520,7 @@ var DEFAULT_VIEW2 = (input, output, target) => {
   }}>
       <div class='ignore-list-setting-content'>
         <div class='ignore-list-setting-description'>${i18nString9(UIStrings9.ignoreListDescription)}</div>
-        ${regexes.map(renderItem)}
+        ${regexes.map(renderItem2)}
 
         <div class='new-regex-row'>
           <devtools-checkbox
@@ -2576,7 +2553,7 @@ var DEFAULT_VIEW2 = (input, output, target) => {
     </devtools-button-dialog>
   `, target);
 };
-var IgnoreListSetting = class _IgnoreListSetting extends UI6.Widget.Widget {
+var IgnoreListSetting = class _IgnoreListSetting extends UI7.Widget.Widget {
   static createWidgetElement() {
     const widgetElement = document.createElement("devtools-widget");
     new _IgnoreListSetting(widgetElement);
@@ -2588,7 +2565,7 @@ var IgnoreListSetting = class _IgnoreListSetting extends UI6.Widget.Widget {
   #newRegexValue = "";
   #newRegexChecked = false;
   #editingRegexSetting = null;
-  constructor(element, view = DEFAULT_VIEW2) {
+  constructor(element, view = DEFAULT_VIEW3) {
     super(element, { useShadowDom: true });
     this.#view = view;
     this.element.classList.remove("vbox", "flex-auto");
@@ -2704,11 +2681,11 @@ function regexInputIsValid(inputValue) {
 // gen/front_end/panels/timeline/components/InteractionBreakdown.js
 var InteractionBreakdown_exports = {};
 __export(InteractionBreakdown_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW3,
+  DEFAULT_VIEW: () => DEFAULT_VIEW4,
   InteractionBreakdown: () => InteractionBreakdown
 });
 import * as i18n19 from "./../../../core/i18n/i18n.js";
-import * as UI7 from "./../../../ui/legacy/legacy.js";
+import * as UI8 from "./../../../ui/legacy/legacy.js";
 import * as Lit9 from "./../../../ui/lit/lit.js";
 
 // gen/front_end/panels/timeline/components/interactionBreakdown.css.js
@@ -2757,7 +2734,7 @@ var UIStrings10 = {
 };
 var str_10 = i18n19.i18n.registerUIStrings("panels/timeline/components/InteractionBreakdown.ts", UIStrings10);
 var i18nString10 = i18n19.i18n.getLocalizedString.bind(void 0, str_10);
-var DEFAULT_VIEW3 = (input, output, target) => {
+var DEFAULT_VIEW4 = (input, output, target) => {
   const { entry } = input;
   const inputDelay = i18n19.TimeUtilities.formatMicroSecondsAsMillisFixed(entry.inputDelay);
   const mainThreadTime = i18n19.TimeUtilities.formatMicroSecondsAsMillisFixed(entry.mainThreadHandling);
@@ -2770,16 +2747,16 @@ var DEFAULT_VIEW3 = (input, output, target) => {
       </ul>
   `, target);
 };
-var InteractionBreakdown = class _InteractionBreakdown extends UI7.Widget.Widget {
+var InteractionBreakdown = class _InteractionBreakdown extends UI8.Widget.Widget {
   static createWidgetElement(entry) {
     const widgetElement = document.createElement("devtools-widget");
-    const widget7 = new _InteractionBreakdown(widgetElement);
-    widget7.entry = entry;
+    const widget8 = new _InteractionBreakdown(widgetElement);
+    widget8.entry = entry;
     return widgetElement;
   }
   #view;
   #entry = null;
-  constructor(element, view = DEFAULT_VIEW3) {
+  constructor(element, view = DEFAULT_VIEW4) {
     super(element, { useShadowDom: true });
     this.#view = view;
   }
@@ -2804,7 +2781,7 @@ var InteractionBreakdown = class _InteractionBreakdown extends UI7.Widget.Widget
 // gen/front_end/panels/timeline/components/LayoutShiftDetails.js
 var LayoutShiftDetails_exports = {};
 __export(LayoutShiftDetails_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW5,
+  DEFAULT_VIEW: () => DEFAULT_VIEW6,
   LayoutShiftDetails: () => LayoutShiftDetails
 });
 import * as i18n21 from "./../../../core/i18n/i18n.js";
@@ -2813,7 +2790,7 @@ import * as Helpers4 from "./../../../models/trace/helpers/helpers.js";
 import * as Trace5 from "./../../../models/trace/trace.js";
 import * as Buttons6 from "./../../../ui/components/buttons/buttons.js";
 import * as LegacyComponents2 from "./../../../ui/legacy/components/utils/utils.js";
-import * as UI9 from "./../../../ui/legacy/legacy.js";
+import * as UI10 from "./../../../ui/legacy/legacy.js";
 import * as Lit11 from "./../../../ui/lit/lit.js";
 import * as Insights4 from "./insights/insights.js";
 
@@ -2821,12 +2798,12 @@ import * as Insights4 from "./insights/insights.js";
 import * as SDK3 from "./../../../core/sdk/sdk.js";
 import * as Buttons5 from "./../../../ui/components/buttons/buttons.js";
 import * as LegacyComponents from "./../../../ui/legacy/components/utils/utils.js";
-import * as UI8 from "./../../../ui/legacy/legacy.js";
+import * as UI9 from "./../../../ui/legacy/legacy.js";
 import * as Lit10 from "./../../../ui/lit/lit.js";
 import * as PanelsCommon from "./../../common/common.js";
 var { html: html10 } = Lit10;
-var { widget } = UI8.Widget;
-var DEFAULT_VIEW4 = (input, output, target) => {
+var { widget: widget2 } = UI9.Widget;
+var DEFAULT_VIEW5 = (input, output, target) => {
   const { relatedNodeEl, fallbackUrl, fallbackHtmlSnippet, fallbackText } = input;
   let template;
   if (relatedNodeEl) {
@@ -2853,7 +2830,7 @@ var DEFAULT_VIEW4 = (input, output, target) => {
   }
   Lit10.render(template, target);
 };
-var NodeLink = class extends UI8.Widget.Widget {
+var NodeLink = class extends UI9.Widget.Widget {
   #view;
   #backendNodeId;
   #frame;
@@ -2866,7 +2843,7 @@ var NodeLink = class extends UI8.Widget.Widget {
    * Also tracks if we fail to resolve a node, to ensure we don't try on each subsequent re-render.
    */
   #linkifiedNodeForBackendId = /* @__PURE__ */ new Map();
-  constructor(element, view = DEFAULT_VIEW4) {
+  constructor(element, view = DEFAULT_VIEW5) {
     super(element, { useShadowDom: true });
     this.#view = view;
   }
@@ -2920,7 +2897,7 @@ var NodeLink = class extends UI8.Widget.Widget {
   }
 };
 function nodeLink(data) {
-  return html10`${widget(NodeLink, { data })}`;
+  return html10`${widget2(NodeLink, { data })}`;
 }
 
 // gen/front_end/panels/timeline/components/layoutShiftDetails.css.js
@@ -3110,12 +3087,12 @@ var UIStrings11 = {
 };
 var str_11 = i18n21.i18n.registerUIStrings("panels/timeline/components/LayoutShiftDetails.ts", UIStrings11);
 var i18nString11 = i18n21.i18n.getLocalizedString.bind(void 0, str_11);
-var LayoutShiftDetails = class extends UI9.Widget.Widget {
+var LayoutShiftDetails = class extends UI10.Widget.Widget {
   #view;
   #event = null;
   #parsedTrace = null;
   #isFreshRecording = false;
-  constructor(element, view = DEFAULT_VIEW5) {
+  constructor(element, view = DEFAULT_VIEW6) {
     super(element);
     this.#view = view;
   }
@@ -3160,7 +3137,7 @@ var LayoutShiftDetails = class extends UI9.Widget.Widget {
     }, {}, this.contentElement);
   }
 };
-var DEFAULT_VIEW5 = (input, _output, target) => {
+var DEFAULT_VIEW6 = (input, _output, target) => {
   if (!input.event || !input.parsedTrace) {
     render10(Lit11.nothing, target);
     return;
@@ -4682,11 +4659,10 @@ import * as ComponentHelpers6 from "./../../../ui/components/helpers/helpers.js"
 import * as LegacyWrapper from "./../../../ui/components/legacy_wrapper/legacy_wrapper.js";
 import * as RenderCoordinator2 from "./../../../ui/components/render_coordinator/render_coordinator.js";
 import * as uiI18n4 from "./../../../ui/i18n/i18n.js";
-import * as UI10 from "./../../../ui/legacy/legacy.js";
+import * as UI11 from "./../../../ui/legacy/legacy.js";
 import * as Lit14 from "./../../../ui/lit/lit.js";
 import * as VisualLogging7 from "./../../../ui/visual_logging/visual_logging.js";
 import * as PanelsCommon2 from "./../../common/common.js";
-import * as Utils from "./../utils/utils.js";
 
 // gen/front_end/panels/timeline/components/liveMetricsView.css.js
 var liveMetricsView_css_default = `/*
@@ -5086,7 +5062,7 @@ devtools-link {
 
 // gen/front_end/panels/timeline/components/LiveMetricsView.js
 var { html: html14, nothing: nothing12 } = Lit14;
-var { widget: widget2 } = UI10.Widget;
+var { widget: widget3 } = UI11.Widget;
 var DEVICE_OPTION_LIST = ["AUTO", ...CrUXManager9.DEVICE_SCOPE_LIST];
 var RTT_MINIMUM = 60;
 var UIStrings15 = {
@@ -5360,8 +5336,8 @@ var LiveMetricsView = class extends LegacyWrapper.LegacyWrapper.WrappableCompone
   #deviceModeModel = EmulationModel.DeviceModeModel.DeviceModeModel.tryInstance();
   constructor() {
     super();
-    this.#toggleRecordAction = UI10.ActionRegistry.ActionRegistry.instance().getAction("timeline.toggle-recording");
-    this.#recordReloadAction = UI10.ActionRegistry.ActionRegistry.instance().getAction("timeline.record-reload");
+    this.#toggleRecordAction = UI11.ActionRegistry.ActionRegistry.instance().getAction("timeline.toggle-recording");
+    this.#recordReloadAction = UI11.ActionRegistry.ActionRegistry.instance().getAction("timeline.record-reload");
   }
   #onMetricStatus(event) {
     this.#lcpValue = event.data.lcp;
@@ -5470,7 +5446,7 @@ var LiveMetricsView = class extends LegacyWrapper.LegacyWrapper.WrappableCompone
             <div class="related-info" slot="extra-info">
               <span class="related-info-label">${i18nString14(UIStrings15.lcpElement)}</span>
               <span class="related-info-link">
-               ${widget2(PanelsCommon2.DOMLinkifier.DOMNodeLink, { node: this.#lcpValue?.nodeRef })}
+               ${widget3(PanelsCommon2.DOMLinkifier.DOMNodeLink, { node: this.#lcpValue?.nodeRef })}
               </span>
             </div>
           ` : nothing12}
@@ -5551,7 +5527,7 @@ var LiveMetricsView = class extends LegacyWrapper.LegacyWrapper.WrappableCompone
     }}>
           ${action6.title()}
         </devtools-button>
-        <span class="shortcut-label">${UI10.ShortcutRegistry.ShortcutRegistry.instance().shortcutTitleForAction(action6.id())}</span>
+        <span class="shortcut-label">${UI11.ShortcutRegistry.ShortcutRegistry.instance().shortcutTitleForAction(action6.id())}</span>
       </div>
     `;
   }
@@ -5592,7 +5568,7 @@ var LiveMetricsView = class extends LegacyWrapper.LegacyWrapper.WrappableCompone
     const networkRecEl = document.createElement("span");
     networkRecEl.classList.add("environment-rec");
     networkRecEl.textContent = this.#getNetworkRecTitle() || i18nString14(UIStrings15.notEnoughData);
-    const recs = Utils.Helpers.getThrottlingRecommendations();
+    const recs = PanelsCommon2.ThrottlingUtils.getThrottlingRecommendations();
     return html14`
       <h3 class="card-title">${i18nString14(UIStrings15.environmentSettings)}</h3>
       <div class="device-toolbar-description">${md(i18nString14(UIStrings15.useDeviceToolbar))}</div>
@@ -5603,7 +5579,7 @@ var LiveMetricsView = class extends LegacyWrapper.LegacyWrapper.WrappableCompone
         </ul>
       ` : nothing12}
       <div class="environment-option">
-        ${widget2(CPUThrottlingSelector, { recommendedOption: recs.cpuOption })}
+        ${widget3(CPUThrottlingSelector, { recommendedOption: recs.cpuOption })}
       </div>
       <div class="environment-option">
         <devtools-network-throttling-selector .recommendedConditions=${recs.networkConditions}></devtools-network-throttling-selector>
@@ -5851,7 +5827,7 @@ var LiveMetricsView = class extends LegacyWrapper.LegacyWrapper.WrappableCompone
         block: "center"
       });
       interactionEl.focus();
-      UI10.UIUtils.runCSSAnimationOnce(interactionEl, "highlight");
+      UI11.UIUtils.runCSSAnimationOnce(interactionEl, "highlight");
     });
   }
   async #logExtraInteractionDetails(interaction) {
@@ -5885,7 +5861,7 @@ var LiveMetricsView = class extends LegacyWrapper.LegacyWrapper.WrappableCompone
                     ${interaction.interactionType} ${isInp ? html14`<span class="interaction-inp-chip" title=${i18nString14(UIStrings15.inpInteraction)}>INP</span>` : nothing12}
                   </span>
                   <span class="interaction-node">
-                    ${widget2(PanelsCommon2.DOMLinkifier.DOMNodeLink, { node: interaction.nodeRef })}
+                    ${widget3(PanelsCommon2.DOMLinkifier.DOMNodeLink, { node: interaction.nodeRef })}
                   </span>
                   ${isP98Excluded ? html14`<devtools-icon
                     class="interaction-info"
@@ -5951,7 +5927,7 @@ var LiveMetricsView = class extends LegacyWrapper.LegacyWrapper.WrappableCompone
       });
       layoutShiftEls[0].focus();
       for (const layoutShiftEl of layoutShiftEls) {
-        UI10.UIUtils.runCSSAnimationOnce(layoutShiftEl, "highlight");
+        UI11.UIUtils.runCSSAnimationOnce(layoutShiftEl, "highlight");
       }
     });
   }
@@ -5984,7 +5960,7 @@ var LiveMetricsView = class extends LegacyWrapper.LegacyWrapper.WrappableCompone
               <div class="layout-shift-nodes">
                 ${layoutShift.affectedNodeRefs.map((node) => html14`
                   <div class="layout-shift-node">
-                    ${widget2(PanelsCommon2.DOMLinkifier.DOMNodeLink, { node })}
+                    ${widget3(PanelsCommon2.DOMLinkifier.DOMNodeLink, { node })}
                   </div>
                 `)}
               </div>
@@ -6073,7 +6049,7 @@ var LiveMetricsView = class extends LegacyWrapper.LegacyWrapper.WrappableCompone
     Lit14.render(output, this.#shadow, { host: this });
   };
 };
-var LiveMetricsLogs = class extends UI10.Widget.WidgetElement {
+var LiveMetricsLogs = class extends UI11.Widget.WidgetElement {
   #tabbedPane;
   constructor() {
     super();
@@ -6100,18 +6076,18 @@ var LiveMetricsLogs = class extends UI10.Widget.WidgetElement {
     }
   }
   createWidget() {
-    const containerWidget = new UI10.Widget.Widget(this, { useShadowDom: true });
+    const containerWidget = new UI11.Widget.Widget(this, { useShadowDom: true });
     containerWidget.contentElement.style.display = "contents";
-    this.#tabbedPane = new UI10.TabbedPane.TabbedPane();
+    this.#tabbedPane = new UI11.TabbedPane.TabbedPane();
     const interactionsSlot = document.createElement("slot");
     interactionsSlot.name = "interactions-log-content";
-    const interactionsTab = UI10.Widget.Widget.getOrCreateWidget(interactionsSlot);
+    const interactionsTab = UI11.Widget.Widget.getOrCreateWidget(interactionsSlot);
     this.#tabbedPane.appendTab("interactions", i18nString14(UIStrings15.interactions), interactionsTab, void 0, void 0, void 0, void 0, void 0, "timeline.landing.interactions-log");
     const layoutShiftsSlot = document.createElement("slot");
     layoutShiftsSlot.name = "layout-shifts-log-content";
-    const layoutShiftsTab = UI10.Widget.Widget.getOrCreateWidget(layoutShiftsSlot);
+    const layoutShiftsTab = UI11.Widget.Widget.getOrCreateWidget(layoutShiftsSlot);
     this.#tabbedPane.appendTab("layout-shifts", i18nString14(UIStrings15.layoutShifts), layoutShiftsTab, void 0, void 0, void 0, void 0, void 0, "timeline.landing.layout-shifts-log");
-    const clearButton = new UI10.Toolbar.ToolbarButton(i18nString14(UIStrings15.clearCurrentLog), "clear", void 0, "timeline.landing.clear-log");
+    const clearButton = new UI11.Toolbar.ToolbarButton(i18nString14(UIStrings15.clearCurrentLog), "clear", void 0, "timeline.landing.clear-log");
     clearButton.addEventListener("Click", this.#clearCurrentLog, this);
     this.#tabbedPane.rightToolbar().appendToolbarItem(clearButton);
     this.#tabbedPane.show(containerWidget.contentElement);
@@ -6124,16 +6100,16 @@ customElements.define("devtools-live-metrics-logs", LiveMetricsLogs);
 // gen/front_end/panels/timeline/components/NetworkRequestDetails.js
 var NetworkRequestDetails_exports = {};
 __export(NetworkRequestDetails_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW7,
+  DEFAULT_VIEW: () => DEFAULT_VIEW8,
   NetworkRequestDetails: () => NetworkRequestDetails
 });
 import "./../../../ui/components/request_link_icon/request_link_icon.js";
 import * as i18n33 from "./../../../core/i18n/i18n.js";
 import * as SDK8 from "./../../../core/sdk/sdk.js";
-import * as Helpers8 from "./../../../models/trace/helpers/helpers.js";
+import * as Helpers7 from "./../../../models/trace/helpers/helpers.js";
 import * as Trace8 from "./../../../models/trace/trace.js";
 import * as LegacyComponents3 from "./../../../ui/legacy/components/utils/utils.js";
-import * as UI12 from "./../../../ui/legacy/legacy.js";
+import * as UI13 from "./../../../ui/legacy/legacy.js";
 import * as Lit16 from "./../../../ui/lit/lit.js";
 
 // gen/front_end/panels/timeline/components/networkRequestDetails.css.js
@@ -6423,7 +6399,7 @@ var networkRequestTooltip_css_default = `/*
 // gen/front_end/panels/timeline/components/NetworkRequestTooltip.js
 var NetworkRequestTooltip_exports = {};
 __export(NetworkRequestTooltip_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW6,
+  DEFAULT_VIEW: () => DEFAULT_VIEW7,
   NetworkRequestTooltip: () => NetworkRequestTooltip
 });
 import "./../../../ui/kit/kit.js";
@@ -6432,11 +6408,11 @@ import * as Platform7 from "./../../../core/platform/platform.js";
 import * as SDK7 from "./../../../core/sdk/sdk.js";
 import * as Trace7 from "./../../../models/trace/trace.js";
 import * as PerfUI from "./../../../ui/legacy/components/perf_ui/perf_ui.js";
-import * as UI11 from "./../../../ui/legacy/legacy.js";
+import * as UI12 from "./../../../ui/legacy/legacy.js";
 import * as Lit15 from "./../../../ui/lit/lit.js";
 import * as TimelineUtils from "./../utils/utils.js";
 var { html: html15, nothing: nothing14, Directives: { classMap, ifDefined: ifDefined2 } } = Lit15;
-var { widget: widget3 } = UI11.Widget;
+var { widget: widget4 } = UI12.Widget;
 var MAX_URL_LENGTH2 = 60;
 var UIStrings16 = {
   /**
@@ -6479,7 +6455,7 @@ var UIStrings16 = {
 };
 var str_16 = i18n31.i18n.registerUIStrings("panels/timeline/components/NetworkRequestTooltip.ts", UIStrings16);
 var i18nString15 = i18n31.i18n.getLocalizedString.bind(void 0, str_16);
-var DEFAULT_VIEW6 = (input, output, target) => {
+var DEFAULT_VIEW7 = (input, output, target) => {
   const { networkRequest, entityMapper, throttlingTitle } = input;
   const chipStyle = {
     backgroundColor: `${colorForNetworkRequest(networkRequest)}`
@@ -6516,14 +6492,14 @@ var DEFAULT_VIEW6 = (input, output, target) => {
     </div>
   `, target);
 };
-var NetworkRequestTooltip = class _NetworkRequestTooltip extends UI11.Widget.Widget {
+var NetworkRequestTooltip = class _NetworkRequestTooltip extends UI12.Widget.Widget {
   static createWidgetElement(request, entityMapper) {
-    return html15`${widget3(_NetworkRequestTooltip, { networkRequest: request, entityMapper })}`;
+    return html15`${widget4(_NetworkRequestTooltip, { networkRequest: request, entityMapper })}`;
   }
   #view;
   #networkRequest;
   #entityMapper;
-  constructor(element, view = DEFAULT_VIEW6) {
+  constructor(element, view = DEFAULT_VIEW7) {
     super(element, { useShadowDom: true });
     this.#view = view;
   }
@@ -6729,7 +6705,7 @@ var UIStrings17 = {
 };
 var str_17 = i18n33.i18n.registerUIStrings("panels/timeline/components/NetworkRequestDetails.ts", UIStrings17);
 var i18nString16 = i18n33.i18n.getLocalizedString.bind(void 0, str_17);
-var NetworkRequestDetails = class extends UI12.Widget.Widget {
+var NetworkRequestDetails = class extends UI13.Widget.Widget {
   #view;
   #request = null;
   #requestPreviewElements = /* @__PURE__ */ new WeakMap();
@@ -6738,7 +6714,7 @@ var NetworkRequestDetails = class extends UI12.Widget.Widget {
   #linkifier = null;
   #serverTimings = null;
   #parsedTrace = null;
-  constructor(element, view = DEFAULT_VIEW7) {
+  constructor(element, view = DEFAULT_VIEW8) {
     super(element);
     this.#view = view;
     this.requestUpdate();
@@ -6783,7 +6759,7 @@ var NetworkRequestDetails = class extends UI12.Widget.Widget {
     }, {}, this.contentElement);
   }
 };
-var DEFAULT_VIEW7 = (input, _output, target) => {
+var DEFAULT_VIEW8 = (input, _output, target) => {
   if (!input.request) {
     render15(Lit16.nothing, target);
     return;
@@ -6852,7 +6828,7 @@ function renderURL(request) {
   const networkRequest = SDK8.TraceObject.RevealableNetworkRequest.create(request);
   if (networkRequest) {
     linkifiedURL.addEventListener("contextmenu", (event) => {
-      const contextMenu = new UI12.ContextMenu.ContextMenu(event);
+      const contextMenu = new UI13.ContextMenu.ContextMenu(event);
       contextMenu.appendApplicableItems(networkRequest);
       void contextMenu.show();
     });
@@ -6917,7 +6893,7 @@ function renderEncodedDataLength(request) {
   return renderRow(i18nString16(UIStrings17.encodedData), lengthText);
 }
 function renderBlockingRow(request) {
-  if (!Helpers8.Network.isSyntheticNetworkRequestEventRenderBlocking(request)) {
+  if (!Helpers7.Network.isSyntheticNetworkRequestEventRenderBlocking(request)) {
     return Lit16.nothing;
   }
   let renderBlockingText;
@@ -7009,11 +6985,11 @@ function renderInitiatedBy(request, parsedTrace, target, linkifier) {
 // gen/front_end/panels/timeline/components/RelatedInsightChips.js
 var RelatedInsightChips_exports = {};
 __export(RelatedInsightChips_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW8,
+  DEFAULT_VIEW: () => DEFAULT_VIEW9,
   RelatedInsightChips: () => RelatedInsightChips
 });
 import * as i18n35 from "./../../../core/i18n/i18n.js";
-import * as UI13 from "./../../../ui/legacy/legacy.js";
+import * as UI14 from "./../../../ui/legacy/legacy.js";
 import * as Lit17 from "./../../../ui/lit/lit.js";
 
 // gen/front_end/panels/timeline/components/relatedInsightChips.css.js
@@ -7113,11 +7089,11 @@ var UIStrings18 = {
 };
 var str_18 = i18n35.i18n.registerUIStrings("panels/timeline/components/RelatedInsightChips.ts", UIStrings18);
 var i18nString17 = i18n35.i18n.getLocalizedString.bind(void 0, str_18);
-var RelatedInsightChips = class extends UI13.Widget.Widget {
+var RelatedInsightChips = class extends UI14.Widget.Widget {
   #view;
   #activeEvent = null;
   #eventToInsightsMap = /* @__PURE__ */ new Map();
-  constructor(element, view = DEFAULT_VIEW8) {
+  constructor(element, view = DEFAULT_VIEW9) {
     super(element);
     this.#view = view;
   }
@@ -7143,7 +7119,7 @@ var RelatedInsightChips = class extends UI13.Widget.Widget {
     this.#view(input, {}, this.contentElement);
   }
 };
-var DEFAULT_VIEW8 = (input, _output, target) => {
+var DEFAULT_VIEW9 = (input, _output, target) => {
   const { activeEvent, eventToInsightsMap } = input;
   const relatedInsights = activeEvent ? eventToInsightsMap.get(activeEvent) ?? [] : [];
   if (!activeEvent || eventToInsightsMap.size === 0 || relatedInsights.length === 0) {
@@ -7195,7 +7171,7 @@ __export(Sidebar_exports, {
   SidebarWidget: () => SidebarWidget
 });
 import * as Common7 from "./../../../core/common/common.js";
-import * as UI17 from "./../../../ui/legacy/legacy.js";
+import * as UI18 from "./../../../ui/legacy/legacy.js";
 
 // gen/front_end/panels/timeline/components/insights/SidebarInsight.js
 var InsightActivated = class _InsightActivated extends Event {
@@ -7218,7 +7194,7 @@ var InsightDeactivated = class _InsightDeactivated extends Event {
 // gen/front_end/panels/timeline/components/SidebarAnnotationsTab.js
 var SidebarAnnotationsTab_exports = {};
 __export(SidebarAnnotationsTab_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW9,
+  DEFAULT_VIEW: () => DEFAULT_VIEW10,
   SidebarAnnotationsTab: () => SidebarAnnotationsTab
 });
 import "./../../../ui/components/settings/settings.js";
@@ -7227,7 +7203,7 @@ import * as i18n37 from "./../../../core/i18n/i18n.js";
 import * as Platform8 from "./../../../core/platform/platform.js";
 import * as Trace9 from "./../../../models/trace/trace.js";
 import * as TraceBounds3 from "./../../../services/trace_bounds/trace_bounds.js";
-import * as UI14 from "./../../../ui/legacy/legacy.js";
+import * as UI15 from "./../../../ui/legacy/legacy.js";
 import * as ThemeSupport3 from "./../../../ui/legacy/theme_support/theme_support.js";
 import * as Lit18 from "./../../../ui/lit/lit.js";
 import * as VisualLogging8 from "./../../../ui/visual_logging/visual_logging.js";
@@ -7412,14 +7388,14 @@ var UIStrings19 = {
 };
 var str_19 = i18n37.i18n.registerUIStrings("panels/timeline/components/SidebarAnnotationsTab.ts", UIStrings19);
 var i18nString18 = i18n37.i18n.getLocalizedString.bind(void 0, str_19);
-var SidebarAnnotationsTab = class extends UI14.Widget.Widget {
+var SidebarAnnotationsTab = class extends UI15.Widget.Widget {
   #annotations = [];
   // A map with annotated entries and the colours that are used to display them in the FlameChart.
   // We need this map to display the entries in the sidebar with the same colours.
   #annotationEntryToColorMap = /* @__PURE__ */ new Map();
   #annotationsHiddenSetting;
   #view;
-  constructor(view = DEFAULT_VIEW9) {
+  constructor(view = DEFAULT_VIEW10) {
     super();
     this.#view = view;
     this.#annotationsHiddenSetting = Common6.Settings.Settings.instance().moduleSetting("annotations-hidden");
@@ -7644,7 +7620,7 @@ function renderTutorial() {
       </div>
     </div>`;
 }
-var DEFAULT_VIEW9 = (input, _output, target) => {
+var DEFAULT_VIEW10 = (input, _output, target) => {
   render17(html18`
       <style>${sidebarAnnotationsTab_css_default}</style>
       <span class="annotations">
@@ -7685,14 +7661,14 @@ var DEFAULT_VIEW9 = (input, _output, target) => {
 // gen/front_end/panels/timeline/components/SidebarInsightsTab.js
 var SidebarInsightsTab_exports = {};
 __export(SidebarInsightsTab_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW11,
+  DEFAULT_VIEW: () => DEFAULT_VIEW12,
   SidebarInsightsTab: () => SidebarInsightsTab
 });
 import * as Trace11 from "./../../../models/trace/trace.js";
 import * as Buttons9 from "./../../../ui/components/buttons/buttons.js";
-import * as UI16 from "./../../../ui/legacy/legacy.js";
+import * as UI17 from "./../../../ui/legacy/legacy.js";
 import * as Lit20 from "./../../../ui/lit/lit.js";
-import * as Utils2 from "./../utils/utils.js";
+import * as Utils from "./../utils/utils.js";
 import * as Insights8 from "./insights/insights.js";
 
 // gen/front_end/panels/timeline/components/sidebarInsightsTab.css.js
@@ -7782,7 +7758,7 @@ __export(SidebarSingleInsightSet_exports, {
 import * as i18n39 from "./../../../core/i18n/i18n.js";
 import * as AIAssistance from "./../../../models/ai_assistance/ai_assistance.js";
 import * as Trace10 from "./../../../models/trace/trace.js";
-import * as UI15 from "./../../../ui/legacy/legacy.js";
+import * as UI16 from "./../../../ui/legacy/legacy.js";
 import * as Lit19 from "./../../../ui/lit/lit.js";
 import * as Insights6 from "./insights/insights.js";
 
@@ -7840,14 +7816,14 @@ var UIStrings20 = {
 };
 var str_20 = i18n39.i18n.registerUIStrings("panels/timeline/components/SidebarSingleInsightSet.ts", UIStrings20);
 var i18nString19 = i18n39.i18n.getLocalizedString.bind(void 0, str_20);
-var { widget: widget4 } = UI15.Widget;
-var DEFAULT_VIEW10 = (input, output, target) => {
+var { widget: widget5 } = UI16.Widget;
+var DEFAULT_VIEW11 = (input, output, target) => {
   const { shownInsights, passedInsights, insightSetKey, parsedTrace, renderInsightComponent } = input;
   function renderMetrics() {
     if (!insightSetKey || !parsedTrace) {
       return Lit19.nothing;
     }
-    return html19`${widget4(CWVMetrics, { data: { insightSetKey, parsedTrace } })}`;
+    return html19`${widget5(CWVMetrics, { data: { insightSetKey, parsedTrace } })}`;
   }
   function renderInsights() {
     const shownInsightTemplates = shownInsights.map(renderInsightComponent);
@@ -7872,7 +7848,7 @@ var DEFAULT_VIEW10 = (input, output, target) => {
     </div>
   `, target);
 };
-var SidebarSingleInsightSet = class _SidebarSingleInsightSet extends UI15.Widget.Widget {
+var SidebarSingleInsightSet = class _SidebarSingleInsightSet extends UI16.Widget.Widget {
   #view;
   #isActiveInsightHighlighted = false;
   #activeHighlightTimeout = -1;
@@ -7882,7 +7858,7 @@ var SidebarSingleInsightSet = class _SidebarSingleInsightSet extends UI15.Widget
     activeInsight: null,
     parsedTrace: null
   };
-  constructor(element, view = DEFAULT_VIEW10) {
+  constructor(element, view = DEFAULT_VIEW11) {
     super(element, { useShadowDom: true });
     this.#view = view;
   }
@@ -7951,7 +7927,7 @@ var SidebarSingleInsightSet = class _SidebarSingleInsightSet extends UI15.Widget
       fieldMetrics
     };
     return html19`<devtools-widget class="insight-component-widget" ?highlight-insight=${isActiveInsight && this.#isActiveInsightHighlighted}
-      ${widget4(componentClass, widgetConfig)}
+      ${widget5(componentClass, widgetConfig)}
     ></devtools-widget>`;
   }
   performUpdate() {
@@ -7978,8 +7954,8 @@ var SidebarSingleInsightSet = class _SidebarSingleInsightSet extends UI15.Widget
 
 // gen/front_end/panels/timeline/components/SidebarInsightsTab.js
 var { html: html20 } = Lit20;
-var { widget: widget5 } = UI16.Widget;
-var DEFAULT_VIEW11 = (input, output, target) => {
+var { widget: widget6 } = UI17.Widget;
+var DEFAULT_VIEW12 = (input, output, target) => {
   const { parsedTrace, labels, activeInsightSet, activeInsight, selectedCategory, onInsightSetToggled, onInsightSetHovered, onInsightSetUnhovered, onZoomClick } = input;
   const insights = parsedTrace.insights;
   if (!insights) {
@@ -8001,7 +7977,7 @@ var DEFAULT_VIEW11 = (input, output, target) => {
     const contents = html20`
           <devtools-widget
             data-insight-set-key=${id}
-            ${widget5(SidebarSingleInsightSet, { data })}
+            ${widget6(SidebarSingleInsightSet, { data })}
           ></devtools-widget>
         `;
     if (hasMultipleInsightSets) {
@@ -8059,7 +8035,7 @@ function renderDropdownIcon(insightSetToggled) {
     ></devtools-button></div>
   `;
 }
-var SidebarInsightsTab = class _SidebarInsightsTab extends UI16.Widget.Widget {
+var SidebarInsightsTab = class _SidebarInsightsTab extends UI17.Widget.Widget {
   static createWidgetElement() {
     const widgetElement = document.createElement("devtools-widget");
     new _SidebarInsightsTab(widgetElement);
@@ -8076,7 +8052,7 @@ var SidebarInsightsTab = class _SidebarInsightsTab extends UI16.Widget.Widget {
    * You can only have one of these open at any time.
    */
   #selectedInsightSet = null;
-  constructor(element, view = DEFAULT_VIEW11) {
+  constructor(element, view = DEFAULT_VIEW12) {
     super(element, { useShadowDom: true });
     this.#view = view;
   }
@@ -8144,7 +8120,7 @@ var SidebarInsightsTab = class _SidebarInsightsTab extends UI16.Widget.Widget {
     const insightSets = [...this.#parsedTrace.insights.values()];
     const input = {
       parsedTrace: this.#parsedTrace,
-      labels: Utils2.Helpers.createUrlLabels(insightSets.map(({ url }) => url)),
+      labels: Utils.Helpers.createUrlLabels(insightSets.map(({ url }) => url)),
       activeInsightSet: this.#selectedInsightSet,
       activeInsight: this.#activeInsight,
       selectedCategory: this.#selectedCategory,
@@ -8191,8 +8167,8 @@ var AnnotationHoverOut = class _AnnotationHoverOut extends Event {
 var DEFAULT_SIDEBAR_TAB = "insights";
 var DEFAULT_SIDEBAR_WIDTH_PX = 240;
 var MIN_SIDEBAR_WIDTH_PX = 170;
-var SidebarWidget = class extends UI17.Widget.VBox {
-  #tabbedPane = new UI17.TabbedPane.TabbedPane();
+var SidebarWidget = class extends UI18.Widget.VBox {
+  #tabbedPane = new UI18.TabbedPane.TabbedPane();
   #insightsView = new InsightsView();
   #annotationsView = new AnnotationsView();
   /**
@@ -8287,7 +8263,7 @@ var SidebarWidget = class extends UI17.Widget.VBox {
     return this.#hasOpenedOnce.get();
   }
 };
-var InsightsView = class extends UI17.Widget.VBox {
+var InsightsView = class extends UI18.Widget.VBox {
   #component = SidebarInsightsTab.createWidgetElement();
   constructor() {
     super();
@@ -8295,21 +8271,21 @@ var InsightsView = class extends UI17.Widget.VBox {
     this.#getWidget().show(this.element);
   }
   #getWidget() {
-    return UI17.Widget.Widget.get(this.#component);
+    return UI18.Widget.Widget.get(this.#component);
   }
   setParsedTrace(parsedTrace) {
-    const widget7 = this.#getWidget();
-    widget7.parsedTrace = parsedTrace;
+    const widget8 = this.#getWidget();
+    widget8.parsedTrace = parsedTrace;
   }
   getActiveInsight() {
     return this.#getWidget().activeInsight;
   }
   setActiveInsight(active, opts) {
-    const widget7 = this.#getWidget();
-    widget7.activeInsight = active;
+    const widget8 = this.#getWidget();
+    widget8.activeInsight = active;
     if (opts.highlight && active) {
-      void widget7.updateComplete.then(() => {
-        void widget7.highlightActiveInsight();
+      void widget8.updateComplete.then(() => {
+        void widget8.highlightActiveInsight();
       });
     }
   }
@@ -8317,7 +8293,7 @@ var InsightsView = class extends UI17.Widget.VBox {
     this.#getWidget().setActiveInsightSet(insightSetKey);
   }
 };
-var AnnotationsView = class extends UI17.Widget.VBox {
+var AnnotationsView = class extends UI18.Widget.VBox {
   #component = new SidebarAnnotationsTab();
   constructor() {
     super();
@@ -8347,7 +8323,7 @@ __export(TimelineRangeSummaryView_exports, {
 });
 import * as Platform9 from "./../../../core/platform/platform.js";
 import * as Trace12 from "./../../../models/trace/trace.js";
-import * as UI19 from "./../../../ui/legacy/legacy.js";
+import * as UI20 from "./../../../ui/legacy/legacy.js";
 import * as Lit22 from "./../../../ui/lit/lit.js";
 
 // gen/front_end/panels/timeline/components/timelineRangeSummaryView.css.js
@@ -8396,7 +8372,7 @@ __export(TimelineSummary_exports, {
 });
 import * as i18n41 from "./../../../core/i18n/i18n.js";
 import * as Buttons10 from "./../../../ui/components/buttons/buttons.js";
-import * as UI18 from "./../../../ui/legacy/legacy.js";
+import * as UI19 from "./../../../ui/legacy/legacy.js";
 import * as Lit21 from "./../../../ui/lit/lit.js";
 
 // gen/front_end/panels/timeline/components/timelineSummary.css.js
@@ -8494,7 +8470,7 @@ var i18nString20 = i18n41.i18n.getLocalizedString.bind(void 0, str_21);
 var CATEGORY_SUMMARY_DEFAULT_VIEW = (input, _output, target) => {
   render20(html21`
         <style>${timelineSummary_css_default}</style>
-        <style>@scope to (devtools-widget > *) { ${UI18.inspectorCommonStyles} }</style>
+        <style>@scope to (devtools-widget > *) { ${UI19.inspectorCommonStyles} }</style>
         <style>@scope to (devtools-widget > *) { ${Buttons10.textButtonStyles} }</style>
         <div class="timeline-summary">
             <div class="summary-range">${i18nString20(UIStrings21.rangeSS, { PH1: i18n41.TimeUtilities.millisToString(input.rangeStart), PH2: i18n41.TimeUtilities.millisToString(input.rangeEnd) })}</div>
@@ -8528,7 +8504,7 @@ var CATEGORY_SUMMARY_DEFAULT_VIEW = (input, _output, target) => {
 
       </div>`, target);
 };
-var CategorySummary = class extends UI18.Widget.Widget {
+var CategorySummary = class extends UI19.Widget.Widget {
   #view;
   #rangeStart = 0;
   #rangeEnd = 0;
@@ -8559,7 +8535,7 @@ var CategorySummary = class extends UI18.Widget.Widget {
 
 // gen/front_end/panels/timeline/components/TimelineRangeSummaryView.js
 var { render: render21, html: html22 } = Lit22;
-var { widget: widget6 } = UI19.Widget;
+var { widget: widget7 } = UI20.Widget;
 var categoryBreakdownCacheSymbol = Symbol("categoryBreakdownCache");
 var TIMELINE_RANGE_SUMMARY_VIEW_DEFAULT_VIEW = (input, _output, target) => {
   const { parsedTrace, events, startTime, endTime } = input;
@@ -8592,7 +8568,7 @@ var TIMELINE_RANGE_SUMMARY_VIEW_DEFAULT_VIEW = (input, _output, target) => {
     <style>${timelineRangeSummaryView_css_default}</style>
     <div class="timeline-details-range-summary">
       <devtools-widget class="timeline-summary"
-        ${widget6(CategorySummary, {
+        ${widget7(CategorySummary, {
     data: {
       rangeStart: startOffset,
       rangeEnd: endOffset,
@@ -8605,7 +8581,7 @@ var TIMELINE_RANGE_SUMMARY_VIEW_DEFAULT_VIEW = (input, _output, target) => {
     </div>
   `, target);
 };
-var TimelineRangeSummaryView = class extends UI19.Widget.Widget {
+var TimelineRangeSummaryView = class extends UI20.Widget.Widget {
   #view;
   #summaryData;
   constructor(element, view = TIMELINE_RANGE_SUMMARY_VIEW_DEFAULT_VIEW) {

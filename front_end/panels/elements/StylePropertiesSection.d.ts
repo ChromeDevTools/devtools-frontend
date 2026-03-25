@@ -54,11 +54,9 @@ export declare class StylePropertiesSection {
     private ghostStyleTreeElements;
     constructor(stylesContainer: StylesContainer, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, style: SDK.CSSStyleDeclaration.CSSStyleDeclaration, sectionIdx: number, computedStyles: Map<string, string> | null, parentsComputedStyles: Map<string, string> | null, computedStyleExtraFields: Protocol.CSS.ComputedStyleExtraFields | null, customHeaderText?: string);
     setComputedStyles(computedStyles: Map<string, string> | null): void;
-    refreshComputedValues(): Promise<void>;
     setParentsComputedStyles(parentsComputedStyles: Map<string, string> | null): void;
     setComputedStyleExtraFields(computedStyleExtraFields: Protocol.CSS.ComputedStyleExtraFields | null): void;
     updateAuthoringHint(): void;
-    dispose(): void;
     setSectionIdx(sectionIdx: number): void;
     getSectionIdx(): number;
     registerFontProperty(treeElement: StylePropertyTreeElement): void;

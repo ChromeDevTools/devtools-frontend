@@ -9,7 +9,7 @@ import * as TimelineComponents from './components/components.js';
 import { type Client } from './TimelineController.js';
 import { TimelineFlameChartView } from './TimelineFlameChartView.js';
 import { type TimelineSelection } from './TimelineSelection.js';
-import * as Utils from './utils/utils.js';
+import type * as Utils from './utils/utils.js';
 declare const TimelinePanel_base: (new (...args: any[]) => {
     "__#private@#events": Common.ObjectWrapper.ObjectWrapper<EventTypes>;
     addEventListener<T extends keyof EventTypes>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<EventTypes[T], any>) => void, thisObject?: Object): Common.EventTarget.EventDescriptor<EventTypes, T>;
@@ -235,6 +235,9 @@ export declare class InsightRevealer implements Common.Revealer.Revealer<Utils.H
 }
 export declare class CoreVitalsRevealer implements Common.Revealer.Revealer<Utils.Helpers.RevealableCoreVitals> {
     reveal(revealable: Utils.Helpers.RevealableCoreVitals): Promise<void>;
+}
+export declare class TimeRangeRevealer implements Common.Revealer.Revealer<Utils.Helpers.RevealableTimeRange> {
+    reveal(revealable: Utils.Helpers.RevealableTimeRange): Promise<void>;
 }
 export declare class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
     handleAction(context: UI.Context.Context, actionId: string): boolean;

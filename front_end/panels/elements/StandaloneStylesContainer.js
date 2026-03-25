@@ -76,9 +76,6 @@ export class StandaloneStylesContainer extends Common.ObjectWrapper.eventMixin(U
         return this.#webCustomData;
     }
     async #updateSections(signal) {
-        for (const section of this.#sections) {
-            section.dispose();
-        }
         const node = this.node();
         if (!node) {
             this.#sections = [];

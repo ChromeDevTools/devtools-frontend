@@ -5,17 +5,15 @@ import { RuntimeModel } from './RuntimeModel.js';
 import { SDKModel } from './SDKModel.js';
 import { TargetManager } from './TargetManager.js';
 export class HeapProfilerModel extends SDKModel {
-    #enabled;
+    #enabled = false;
     #heapProfilerAgent;
     #runtimeModel;
-    #samplingProfilerDepth;
+    #samplingProfilerDepth = 0;
     constructor(target) {
         super(target);
         target.registerHeapProfilerDispatcher(new HeapProfilerDispatcher(this));
-        this.#enabled = false;
         this.#heapProfilerAgent = target.heapProfilerAgent();
         this.#runtimeModel = target.model(RuntimeModel);
-        this.#samplingProfilerDepth = 0;
     }
     debuggerModel() {
         return this.#runtimeModel.debuggerModel();

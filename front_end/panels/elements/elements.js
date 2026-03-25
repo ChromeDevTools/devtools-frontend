@@ -35,7 +35,7 @@ import * as Platform10 from "./../../core/platform/platform.js";
 import * as Root6 from "./../../core/root/root.js";
 import * as SDK18 from "./../../core/sdk/sdk.js";
 import * as Annotations from "./../../models/annotations/annotations.js";
-import * as ComputedStyle4 from "./../../models/computed_style/computed_style.js";
+import * as ComputedStyle3 from "./../../models/computed_style/computed_style.js";
 import * as PanelCommon from "./../common/common.js";
 import * as Buttons3 from "./../../ui/components/buttons/buttons.js";
 import * as TreeOutline13 from "./../../ui/components/tree_outline/tree_outline.js";
@@ -5876,7 +5876,6 @@ import * as Root2 from "./../../core/root/root.js";
 import * as SDK7 from "./../../core/sdk/sdk.js";
 import * as Badges2 from "./../../models/badges/badges.js";
 import * as Bindings3 from "./../../models/bindings/bindings.js";
-import * as ComputedStyle2 from "./../../models/computed_style/computed_style.js";
 import * as TextUtils3 from "./../../models/text_utils/text_utils.js";
 import * as Buttons from "./../../ui/components/buttons/buttons.js";
 import * as Tooltips2 from "./../../ui/components/tooltips/tooltips.js";
@@ -6150,42 +6149,9 @@ var StylePropertiesSection = class _StylePropertiesSection {
     this.markSelectorMatches();
     this.onpopulate();
     this.#updateCollapsedState();
-    this.stylesContainer.computedStyleModel().addEventListener("CSSModelChanged", this.#onCSSModelChanged, this);
   }
   setComputedStyles(computedStyles) {
     this.computedStyles = computedStyles;
-  }
-  #onCSSModelChanged(event) {
-    const edit = event?.data && "edit" in event.data ? event.data.edit : null;
-    if (edit) {
-      this.styleSheetEdited(edit);
-      void this.refreshComputedValues();
-      return;
-    }
-    if (this.stylesContainer.isEditingStyle || this.stylesContainer.userOperation) {
-      void this.refreshComputedValues();
-    }
-  }
-  async refreshComputedValues() {
-    const node = this.stylesContainer.node();
-    if (!node) {
-      return;
-    }
-    const cssModel = node.domModel().cssModel();
-    const computedStyleModel = this.stylesContainer.computedStyleModel();
-    const matchedStyles = await cssModel.cachedMatchedCascadeForNode(node);
-    const parentNodeId = matchedStyles?.getParentLayoutNodeId();
-    const [computedStyles, parentsComputedStyles] = await Promise.all([
-      computedStyleModel.fetchComputedStyle(),
-      parentNodeId ? cssModel.getComputedStyle(parentNodeId) : null
-    ]);
-    if (computedStyles) {
-      this.setComputedStyles(computedStyles.computedStyle);
-    }
-    if (parentsComputedStyles) {
-      this.setParentsComputedStyles(parentsComputedStyles);
-    }
-    this.updateAuthoringHint();
   }
   setParentsComputedStyles(parentsComputedStyles) {
     this.parentsComputedStyles = parentsComputedStyles;
@@ -6203,9 +6169,6 @@ var StylePropertiesSection = class _StylePropertiesSection {
       }
       child = child.nextSibling;
     }
-  }
-  dispose() {
-    this.stylesContainer.computedStyleModel().removeEventListener("CSSModelChanged", this.#onCSSModelChanged, this);
   }
   setSectionIdx(sectionIdx) {
     this.sectionIdx = sectionIdx;
@@ -8463,6 +8426,8 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common5.ObjectWrapper.e
   imagePreviewPopover;
   #webCustomData;
   activeCSSAngle = null;
+  #updateAbortController;
+  #updateComputedStylesAbortController;
   constructor(computedStyleModel) {
     super(computedStyleModel, { delegatesFocus: true });
     this.setMinimumSize(96, 26);
@@ -8844,7 +8809,12 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common5.ObjectWrapper.e
     }
   }
   onCSSModelChanged(event) {
-    if (event?.data && "edit" in event.data && event.data.edit) {
+    const edit = event?.data && "edit" in event.data ? event.data.edit : null;
+    if (edit) {
+      for (const section4 of this.allSections()) {
+        section4.styleSheetEdited(edit);
+      }
+      void this.#refreshComputedStyles();
       return;
     }
     this.#resetUpdateIfNotEditing();
@@ -8862,6 +8832,7 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common5.ObjectWrapper.e
   }
   #resetUpdateIfNotEditing() {
     if (this.userOperation || this.isEditingStyle) {
+      void this.#refreshComputedStyles();
       return;
     }
     this.resetCache();
@@ -8954,6 +8925,23 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common5.ObjectWrapper.e
       updateStyleSection(currentInheritedAnimationsStyle, newInheritedAnimationsStyle ?? null);
     }
   }
+  async #refreshComputedStyles() {
+    this.#updateComputedStylesAbortController?.abort();
+    this.#updateAbortController = new AbortController();
+    const signal = this.#updateAbortController.signal;
+    const matchedStyles = await this.fetchMatchedCascade();
+    const nodeId = this.node()?.id;
+    const parentNodeId = matchedStyles?.getParentLayoutNodeId();
+    const [computedStyles, parentsComputedStyles] = await Promise.all([this.fetchComputedStylesFor(nodeId), this.fetchComputedStylesFor(parentNodeId)]);
+    if (signal.aborted) {
+      return;
+    }
+    for (const section4 of this.allSections()) {
+      section4.setComputedStyles(computedStyles);
+      section4.setParentsComputedStyles(parentsComputedStyles);
+      section4.updateAuthoringHint();
+    }
+  }
   focusedSectionIndex() {
     let index = 0;
     for (const block of this.sectionBlocks) {
@@ -8986,9 +8974,6 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common5.ObjectWrapper.e
     const focusedIndex = this.focusedSectionIndex();
     this.linkifier.reset();
     const prevSections = this.sectionBlocks.map((block) => block.sections).flat();
-    for (const section4 of prevSections) {
-      section4.dispose();
-    }
     this.sectionBlocks = [];
     const node = this.node();
     this.hasMatchedStyles = matchedStyles !== null && node !== null;
@@ -10856,6 +10841,7 @@ var ComputedStyleWidget = class extends UI12.Widget.VBox {
   #propertyElementsCache = /* @__PURE__ */ new Map();
   #computedStylesTree = new TreeOutline6.TreeOutline.TreeOutline();
   #treeData;
+  #enableNarrowViewResizing = true;
   #view;
   /**
    * TODO(b/407751272): the state here is confusing (3 instance variables relating to filtering).
@@ -10891,8 +10877,15 @@ var ComputedStyleWidget = class extends UI12.Widget.VBox {
     this.#updateView({ hasMatches: true });
   }
   onResize() {
-    const isNarrow = this.contentElement.offsetWidth < 260;
+    const isNarrow = this.#enableNarrowViewResizing && this.contentElement.offsetWidth < 260;
     this.#computedStylesTree.classList.toggle("computed-narrow", isNarrow);
+  }
+  get enableNarrowViewResizing() {
+    return this.#enableNarrowViewResizing;
+  }
+  set enableNarrowViewResizing(enable) {
+    this.#enableNarrowViewResizing = enable;
+    this.onResize();
   }
   get filterText() {
     if (this.#filterIsRegex) {
@@ -17913,7 +17906,7 @@ __export(PlatformFontsWidget_exports, {
   PlatformFontsWidget: () => PlatformFontsWidget
 });
 import * as i18n30 from "./../../core/i18n/i18n.js";
-import * as ComputedStyle3 from "./../../models/computed_style/computed_style.js";
+import * as ComputedStyle2 from "./../../models/computed_style/computed_style.js";
 import * as UI20 from "./../../ui/legacy/legacy.js";
 import { html as html13, render as render13 } from "./../../ui/lit/lit.js";
 
@@ -18244,7 +18237,7 @@ var ElementsPanel = class _ElementsPanel extends UI21.Panel.Panel {
       this.crumbNodeSelected(event);
     });
     crumbsContainer.appendChild(this.breadcrumbs);
-    this.#computedStyleModel = new ComputedStyle4.ComputedStyleModel.ComputedStyleModel(UI21.Context.Context.instance().flavor(SDK18.DOMModel.DOMNode));
+    this.#computedStyleModel = new ComputedStyle3.ComputedStyleModel.ComputedStyleModel(UI21.Context.Context.instance().flavor(SDK18.DOMModel.DOMNode));
     UI21.Context.Context.instance().addFlavorChangeListener(SDK18.DOMModel.DOMNode, (event) => {
       this.#computedStyleModel.node = event.data;
       this.evaluateTrackingComputedStyleUpdatesForNode();
@@ -20814,7 +20807,7 @@ __export(StandaloneStylesContainer_exports, {
   StandaloneStylesContainer: () => StandaloneStylesContainer
 });
 import * as Common18 from "./../../core/common/common.js";
-import * as ComputedStyle5 from "./../../models/computed_style/computed_style.js";
+import * as ComputedStyle4 from "./../../models/computed_style/computed_style.js";
 import * as InlineEditor5 from "./../../ui/legacy/components/inline_editor/inline_editor.js";
 import * as Components8 from "./../../ui/legacy/components/utils/utils.js";
 import * as UI29 from "./../../ui/legacy/legacy.js";
@@ -20847,7 +20840,7 @@ var StandaloneStylesContainer = class extends Common18.ObjectWrapper.eventMixin(
   userOperation = false;
   #sections = [];
   #swatchPopoverHelper = new InlineEditor5.SwatchPopoverHelper.SwatchPopoverHelper();
-  #computedStyleModelInternal = new ComputedStyle5.ComputedStyleModel.ComputedStyleModel();
+  #computedStyleModelInternal = new ComputedStyle4.ComputedStyleModel.ComputedStyleModel();
   #view;
   #filter = null;
   #rebuildThrottler = new Common18.Throttler.Throttler(200);
@@ -20886,9 +20879,6 @@ var StandaloneStylesContainer = class extends Common18.ObjectWrapper.eventMixin(
     return this.#webCustomData;
   }
   async #updateSections(signal) {
-    for (const section4 of this.#sections) {
-      section4.dispose();
-    }
     const node = this.node();
     if (!node) {
       this.#sections = [];

@@ -27,7 +27,6 @@ export declare class WalkthroughView extends UI.Widget.Widget {
     constructor(element?: HTMLElement, view?: View);
     wasShown(): void;
     willHide(): void;
-    onResize(): void;
     scrollToBottom(): void;
     set isLoading(isLoading: boolean);
     get isLoading(): boolean;

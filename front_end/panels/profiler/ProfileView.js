@@ -254,17 +254,11 @@ export class ProfileView extends UI.View.SimpleView {
         if (!this.profileDataGridTree) {
             return;
         }
-        const selectedProfileNode = this.dataGrid.selectedNode ? this.dataGrid.selectedNode.profileNode : null;
         this.dataGrid.rootNode().removeChildren();
         const children = this.profileDataGridTree.children;
         const count = children.length;
         for (let index = 0; index < count; ++index) {
             this.dataGrid.rootNode().appendChild(children[index]);
-        }
-        if (selectedProfileNode) {
-            // TODO(crbug.com/1011811): Cleanup the added `selected` property to this SDK class.
-            // @ts-expect-error
-            selectedProfileNode.selected = true;
         }
     }
     refreshVisibleData() {

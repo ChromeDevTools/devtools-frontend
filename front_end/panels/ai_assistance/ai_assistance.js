@@ -2225,6 +2225,7 @@ import * as SDK2 from "./../../core/sdk/sdk.js";
 import * as AiAssistanceModel3 from "./../../models/ai_assistance/ai_assistance.js";
 import * as ComputedStyle from "./../../models/computed_style/computed_style.js";
 import * as Trace from "./../../models/trace/trace.js";
+import * as PanelsCommon2 from "./../common/common.js";
 import * as Marked from "./../../third_party/marked/marked.js";
 import * as Buttons5 from "./../../ui/components/buttons/buttons.js";
 import * as Input3 from "./../../ui/components/input/input.js";
@@ -2588,6 +2589,13 @@ var chatMessage_css_default = `/*
     display: flex;
     gap: var(--sys-size-4);
     align-items: center;
+
+    .chevron {
+      color: var(--sys-color-primary);
+      width: var(--sys-size-8);
+      height: var(--sys-size-8);
+      margin-left: var(--sys-size-2);
+    }
   }
 
 
@@ -2614,18 +2622,18 @@ var chatMessage_css_default = `/*
     gap: var(--sys-size-5);
   }
 
-
   .widget-header {
     display: flex;
     justify-content: space-between;
+    height: var(--sys-size-11);
     align-items: center;
     background: var(--sys-color-surface5);
     padding: var(--sys-size-2) var(--sys-size-4);
-    border-top-left-radius: var(--sys-shape-corner-medium);
-    border-top-right-radius: var(--sys-shape-corner-medium);
+    border-top-left-radius: var(--sys-shape-corner-small);
+    border-top-right-radius: var(--sys-shape-corner-small);
 
     .widget-name {
-      font: var(--sys-typescale-body3-regular);
+      font: var(--sys-typescale-body4-regular);
     }
 
     .widget-reveal-container {
@@ -2635,10 +2643,29 @@ var chatMessage_css_default = `/*
     }
   }
 
+  .widget-reveal-button {
+    display: flex;
+    align-items: center;
+
+    devtools-icon {
+      margin-left: var(--sys-size-3);
+      color: var(--sys-color-primary);
+      width: var(--sys-size-8);
+      height: var(--sys-size-8);
+    }
+
+  }
+
+  .widget-and-revealer-container {
+    width: 100%;
+    min-width: var(--sys-size-30);
+    max-width: var(--sys-size-33);
+  }
+
   .widget-reveal-container {
     background: var(--sys-color-surface5);
-    border-bottom-right-radius: var(--sys-shape-corner-medium);
-    border-bottom-left-radius: var(--sys-shape-corner-medium);
+    border-bottom-right-radius: var(--sys-shape-corner-small);
+    border-bottom-left-radius: var(--sys-shape-corner-small);
     padding: 0 var(--sys-size-4) var(--sys-size-4) 0;
   }
 
@@ -2648,7 +2675,7 @@ var chatMessage_css_default = `/*
   }
 
   .widget-content-container {
-    padding: var(--sys-size-4);
+    padding: var(--sys-size-4) var(--sys-size-5);
     border-top-left-radius: var(--sys-shape-corner-medium);
     border-top-right-radius: var(--sys-shape-corner-medium);
     overflow-x: auto;
@@ -2844,25 +2871,45 @@ var walkthroughView_css_default = `/*
   .walkthrough-inline {
     border-radius: var(--sys-size-5);
     overflow: hidden;
-    background-color: var(--sys-color-surface1);
+    background-color: var(--sys-color-surface2);
     width: fit-content;
 
     &[open] {
       width: auto;
+      background-color: var(--sys-color-surface1);
     }
   }
 
   .walkthrough-inline > summary {
     display: flex;
     align-items: center;
-    padding: var(--sys-size-4) var(--sys-size-6);
+    padding: 0 var(--sys-size-6);
     cursor: pointer;
     background-color: transparent;
+    /* The same height as a DevTools Button */
+    height: var(--sys-size-11);
     font: var(--sys-typescale-body4-regular);
+    font-weight:var(--ref-typeface-weight-medium);
     user-select: none;
     list-style: none; /* Hide default triangle */
     justify-content: flex-start;
     gap: var(--sys-size-4);
+    color: var(--sys-color-primary);
+
+    devtools-icon {
+      color: var(--sys-color-primary);
+    }
+
+    /* Align the summary to look like the tonal button */
+    &[data-has-widgets] {
+      background: var(--sys-color-tonal-container);
+      color: var(--sys-color-on-tonal-container);
+      border-radius: var(--sys-shape-corner-full);
+
+      devtools-icon {
+        color: var(--sys-color-on-tonal-container);
+      }
+    }
   }
 
   .walkthrough-inline > summary::-webkit-details-marker {
@@ -2875,8 +2922,6 @@ var walkthroughView_css_default = `/*
 
   .walkthrough-inline .steps-container {
     padding: var(--sys-size-6);
-    max-height: 300px; /* Limit height for inline view */
-    overflow-y: auto;
     border-top: 1px solid var(--sys-color-divider);
     background-color: transparent;
   }
@@ -2885,10 +2930,22 @@ var walkthroughView_css_default = `/*
     width: var(--sys-size-8);
     height: var(--sys-size-8);
     transition: transform 0.2s;
+    margin-left: auto;
+  }
+
+  .walkthrough-inline[open] > summary {
+    border-radius: var(--sys-shape-corner-medium-small);
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+    background: var(--sys-color-surface5);
+  }
+
+  .walkthrough-inline .step {
+    background-color: var(--sys-color-surface5);
   }
 
   .walkthrough-inline[open] > summary > devtools-icon {
-    transform: rotate(180deg);
+    transform: rotate(270deg);
   }
 }
 
@@ -2944,10 +3001,10 @@ function renderInlineWalkthrough(input, stepsOutput, steps) {
   const hasWidgets = steps.some((s) => s.widgets?.length);
   return html4`
     <details class="walkthrough-inline" ?open=${input.isExpanded} @toggle=${onToggle}>
-      <summary>
+      <summary ?data-has-widgets=${!input.isLoading && hasWidgets}>
         ${input.isLoading ? html4`<devtools-spinner></devtools-spinner>` : Lit2.nothing}
         ${walkthroughTitle({ isLoading: input.isLoading, lastStep, hasWidgets })}
-        <devtools-icon name="chevron-down"></devtools-icon>
+        <devtools-icon name="chevron-right"></devtools-icon>
       </summary>
       ${stepsOutput}
     </details>
@@ -3016,8 +3073,6 @@ var DEFAULT_VIEW3 = (input, output, target) => {
 var WalkthroughView = class extends UI4.Widget.Widget {
   #view;
   #message = null;
-  // TODO(b/487921187): fix loading state - also unsure if we need this vs
-  // looking at the loading state in the message's steps.
   #isLoading = false;
   #markdownRenderer = null;
   #onToggle = () => {
@@ -3030,6 +3085,7 @@ var WalkthroughView = class extends UI4.Widget.Widget {
   #isProgrammaticScroll = false;
   #output = {};
   #stepsContainerResizeObserver = new ResizeObserver(() => this.#handleStepsContainerResize());
+  #lastStepsContainerWidth = 0;
   constructor(element, view = DEFAULT_VIEW3) {
     super(element);
     this.#view = view;
@@ -3047,11 +3103,13 @@ var WalkthroughView = class extends UI4.Widget.Widget {
       this.#stepsContainerResizeObserver.observe(this.#output.stepsContainer);
     }
   }
-  onResize() {
-    this.#handleStepsContainerResize();
-  }
   #handleStepsContainerResize() {
-    if (!this.#pinScrollToBottom) {
+    const width = this.#output.stepsContainer?.offsetWidth ?? 0;
+    if (width !== this.#lastStepsContainerWidth) {
+      this.#lastStepsContainerWidth = width;
+      return;
+    }
+    if (!this.#pinScrollToBottom || !this.#isLoading) {
       return;
     }
     this.scrollToBottom();
@@ -3139,7 +3197,7 @@ var WalkthroughView = class extends UI4.Widget.Widget {
       handleScroll: this.#handleScroll
     }, this.#output, this.contentElement);
     this.#registerResizeObservers();
-    if (this.#pinScrollToBottom) {
+    if (this.#pinScrollToBottom && this.#isLoading) {
       this.scrollToBottom();
     }
   }
@@ -3152,6 +3210,10 @@ var { widget: widget3 } = UI5.Widget;
 var REPORT_URL = "https://crbug.com/364805393";
 var SCROLL_ROUNDING_OFFSET = 1;
 var UIStringsNotTranslate4 = {
+  /**
+   * @description Text used in the button to close an open walkthrough
+   */
+  closeAgentWalkthrough: "Close agent walkthrough",
   /**
    * @description The title of the button that allows submitting positive
    * feedback about the response for AI assistance.
@@ -3283,7 +3345,23 @@ var UIStringsNotTranslate4 = {
   /**
    * @description Title used for revealing the performance trace.
    */
-  revealTrace: "Reveal trace"
+  revealTrace: "Reveal trace",
+  /**
+   * @description Title for the core web vitals widget.
+   */
+  coreVitals: "Core Web Vitals",
+  /**
+   * @description Title for the LCP breakdown widget.
+   */
+  lcpBreakdown: "LCP breakdown",
+  /**
+   * @description Title for the LCP element widget.
+   */
+  lcpElement: "LCP element",
+  /**
+   * @description Title for the performance summary widget.
+   */
+  performanceSummary: "Performance summary"
 };
 var DEFAULT_VIEW4 = (input, output, target) => {
   const message = input.message;
@@ -3417,16 +3495,18 @@ function renderWalkthroughSidebarButton(input, steps) {
     return Lit3.nothing;
   }
   const hasOneStepWithWidget = steps.some((step) => step.widgets?.length);
-  const title = walkthroughTitle({
+  const isOpen = input.message === input.walkthrough.activeMessage;
+  const title = isOpen ? lockedString5(UIStringsNotTranslate4.closeAgentWalkthrough) : walkthroughTitle({
     isLoading: input.isLoading,
     hasWidgets: hasOneStepWithWidget,
     lastStep
   });
+  const variant = hasOneStepWithWidget && !input.isLoading ? "tonal" : "text";
   return html5`
     <div class="walkthrough-toggle-container">
       ${input.isLoading ? html5`<devtools-spinner></devtools-spinner>` : Lit3.nothing}
       <devtools-button
-        .variant=${"outlined"}
+        .variant=${variant}
         .size=${"SMALL"}
         .title=${lastStep.isLoading ? titleForStep(lastStep) : lockedString5(UIStringsNotTranslate4.showThinking)}
         .jslogContext=${walkthrough.isExpanded ? "ai-hide-walkthrough-sidebar" : "ai-show-walkthrough-sidebar"}
@@ -3438,7 +3518,9 @@ function renderWalkthroughSidebarButton(input, steps) {
       walkthrough.onOpen(message);
     }
   }}
-      >${title}</devtools-button>
+      >
+        ${title}<devtools-icon class="chevron" .name=${"chevron-right"}></devtools-icon>
+      </devtools-button>
     </div>
   `;
 }
@@ -3556,15 +3638,28 @@ async function makeComputedStyleWidget(widgetData) {
     // This disables showing the nested traces and detailed information in the widget.
     propertyTraces: null,
     allowUserControl: false,
-    filterText: new RegExp(widgetData.data.properties.join("|"), "i")
+    filterText: new RegExp(widgetData.data.properties.join("|"), "i"),
+    enableNarrowViewResizing: false
   })}></devtools-widget>`;
-  return { renderedWidget, revealable: new Elements.ElementsPanel.NodeComputedStyles(domNodeForId) };
+  return {
+    renderedWidget,
+    revealable: new Elements.ElementsPanel.NodeComputedStyles(domNodeForId),
+    title: html5`<devtools-widget
+      ${widget3(PanelsCommon2.DOMLinkifier.DOMNodeLink, {
+      node: domNodeForId
+    })}
+    ></devtools-widget>`
+  };
 }
 async function makeCoreVitalsWidget(widgetData) {
   const renderedWidget = html5`<devtools-widget
       class="core-vitals-widget" ${widget3(TimelineComponents.CWVMetrics.CWVMetrics, { data: widgetData.data })}>
   </devtools-widget>`;
-  return { renderedWidget, revealable: new TimelineUtils.Helpers.RevealableCoreVitals(widgetData.data.insightSetKey) };
+  return {
+    renderedWidget,
+    revealable: new TimelineUtils.Helpers.RevealableCoreVitals(widgetData.data.insightSetKey),
+    title: lockedString5(UIStringsNotTranslate4.coreVitals)
+  };
 }
 async function makeStylePropertiesWidget(widgetData) {
   const domNodeForId = await resolveNode(widgetData.data.backendNodeId);
@@ -3578,7 +3673,15 @@ async function makeStylePropertiesWidget(widgetData) {
     filter: widgetData.data.selector ? new RegExp(widgetData.data.selector) : null
   })}>
   </devtools-widget>`;
-  return { renderedWidget, revealable: domNodeForId };
+  return {
+    renderedWidget,
+    revealable: domNodeForId,
+    title: html5`<devtools-widget
+      ${widget3(PanelsCommon2.DOMLinkifier.DOMNodeLink, {
+      node: domNodeForId
+    })}
+    ></devtools-widget>`
+  };
 }
 async function makeLcpBreakdownWidget(widgetData) {
   const insight = widgetData.data.lcpData;
@@ -3591,7 +3694,11 @@ async function makeLcpBreakdownWidget(widgetData) {
     model: insight,
     minimal: true
   })}></devtools-widget>`;
-  return { renderedWidget, revealable: new TimelineUtils.Helpers.RevealableInsight(insight) };
+  return {
+    renderedWidget,
+    revealable: new TimelineUtils.Helpers.RevealableInsight(insight),
+    title: lockedString5(UIStringsNotTranslate4.lcpBreakdown)
+  };
 }
 function renderWidgetResponse(response) {
   if (response === null) {
@@ -3608,17 +3715,19 @@ function renderWidgetResponse(response) {
     "revealer-only": response.renderedWidget === null
   });
   const revealButton = html5`
-    <devtools-button class="widget-reveal"
-      .iconName=${"tab-move"}
+    <devtools-button class="widget-reveal-button"
       .variant=${"text"}
       @click=${onReveal}
-    >${response.customRevealTitle ?? lockedString5(UIStringsNotTranslate4.reveal)}</devtools-button>
+    >
+      ${response.customRevealTitle ?? lockedString5(UIStringsNotTranslate4.reveal)}
+      <devtools-icon name='tab-move'></devtools-icon>
+    </devtools-button>
   `;
   return html5`
     <div class=${classes}>
-      ${response.widgetName ? html5`
+      ${response.title ? html5`
         <div class="widget-header">
-          <div class="widget-name">${response.widgetName}</div>
+          <div class="widget-name">${response.title}</div>
           <div class="widget-reveal-container">
             ${revealButton}
           </div>
@@ -3628,7 +3737,7 @@ function renderWidgetResponse(response) {
         <div class="widget-content-container">
           ${response.renderedWidget}
         </div>` : Lit3.nothing}
-      ${!response.widgetName ? html5`
+      ${!response.title ? html5`
         <div class="widget-reveal-container">
           ${revealButton}
         </div>
@@ -3639,6 +3748,7 @@ function renderWidgetResponse(response) {
 async function makePerformanceTraceWidget(widgetData) {
   return {
     renderedWidget: null,
+    title: null,
     revealable: new Timeline.TimelinePanel.ParsedTraceRevealable(widgetData.data.parsedTrace),
     customRevealTitle: lockedString5(UIStringsNotTranslate4.revealTrace)
   };
@@ -3687,7 +3797,7 @@ async function makeDomTreeWidget(widgetData) {
   return {
     renderedWidget,
     revealable: new SDK2.DOMModel.DeferredDOMNode(root.domModel().target(), root.backendNodeId()),
-    widgetName: "LCP element"
+    title: lockedString5(UIStringsNotTranslate4.lcpElement)
   };
 }
 async function renderWidgets(widgets, options = {}) {
@@ -4112,6 +4222,7 @@ async function makeTimelineRangeSummaryWidget(widgetData) {
   const thirdPartyTree = new Timeline.ThirdPartyTreeView.ThirdPartyTreeViewWidget();
   const mapper = new Trace.EntityMapper.EntityMapper(parsedTrace);
   thirdPartyTree.setModelWithEvents(eventsArray, parsedTrace, mapper);
+  thirdPartyTree.updateContents(Timeline.TimelineSelection.selectionFromRangeMicroSeconds(bounds.min, bounds.max));
   thirdPartyTree.refreshTree(true);
   const template = html5`
     <devtools-widget
@@ -4122,11 +4233,16 @@ async function makeTimelineRangeSummaryWidget(widgetData) {
       startTime: Trace.Helpers.Timing.microToMilli(bounds.min),
       endTime: Trace.Helpers.Timing.microToMilli(bounds.max),
       thirdPartyTreeTemplate: html5`<devtools-performance-third-party-tree-view
+            max-rows="10"
             .treeView=${thirdPartyTree}></devtools-performance-third-party-tree-view>`
     }
   })}
     ></devtools-widget>`;
-  return { renderedWidget: template, revealable: null };
+  return {
+    renderedWidget: template,
+    revealable: new TimelineUtils.Helpers.RevealableTimeRange(bounds),
+    title: lockedString5(UIStringsNotTranslate4.performanceSummary)
+  };
 }
 
 // gen/front_end/panels/ai_assistance/components/chatView.css.js
@@ -5617,7 +5733,7 @@ import * as Common5 from "./../../core/common/common.js";
 import * as SDK3 from "./../../core/sdk/sdk.js";
 import * as Trace2 from "./../../models/trace/trace.js";
 import * as Lit6 from "./../../ui/lit/lit.js";
-import * as PanelsCommon2 from "./../common/common.js";
+import * as PanelsCommon3 from "./../common/common.js";
 var { html: html11 } = Lit6.StaticHtml;
 var { until } = Lit6.Directives;
 var PerformanceAgentMarkdownRenderer = class extends MarkdownRendererWithCodeBlock {
@@ -5672,7 +5788,7 @@ var PerformanceAgentMarkdownRenderer = class extends MarkdownRendererWithCodeBlo
     if (node.frameId() !== this.mainFrameId) {
       return;
     }
-    const linkedNode = PanelsCommon2.DOMLinkifier.Linkifier.instance().linkify(node, { textContent: label });
+    const linkedNode = PanelsCommon3.DOMLinkifier.Linkifier.instance().linkify(node, { textContent: label });
     return linkedNode;
   }
 };
@@ -5681,7 +5797,7 @@ var PerformanceAgentMarkdownRenderer = class extends MarkdownRendererWithCodeBlo
 import * as SDK4 from "./../../core/sdk/sdk.js";
 import * as Marked3 from "./../../third_party/marked/marked.js";
 import * as Lit7 from "./../../ui/lit/lit.js";
-import * as PanelsCommon3 from "./../common/common.js";
+import * as PanelsCommon4 from "./../common/common.js";
 var { html: html12 } = Lit7.StaticHtml;
 var { until: until2 } = Lit7.Directives;
 var StylingAgentMarkdownRenderer = class _StylingAgentMarkdownRenderer extends MarkdownRendererWithCodeBlock {
@@ -5820,7 +5936,7 @@ var StylingAgentMarkdownRenderer = class _StylingAgentMarkdownRenderer extends M
     if (node.frameId() !== this.mainFrameId) {
       return;
     }
-    const linkedNode = PanelsCommon3.DOMLinkifier.Linkifier.instance().linkify(node, { textContent: label });
+    const linkedNode = PanelsCommon4.DOMLinkifier.Linkifier.instance().linkify(node, { textContent: label });
     return linkedNode;
   }
 };
@@ -6451,7 +6567,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI10.Panel.Panel {
     if (isNarrow === this.#walkthrough.isInlined) {
       return;
     }
-    this.#clearWalkthrough();
+    this.#resetWalkthrough();
     this.#walkthrough.isInlined = isNarrow;
     this.requestUpdate();
   }
@@ -7024,7 +7140,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI10.Panel.Panel {
   #onHistoryDeleted() {
     this.#updateConversationState();
   }
-  #clearWalkthrough() {
+  #resetWalkthrough() {
     this.#walkthrough.isExpanded = false;
     this.#walkthrough.activeMessage = null;
   }
@@ -7032,7 +7148,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI10.Panel.Panel {
     if (!this.#conversation) {
       return;
     }
-    this.#clearWalkthrough();
+    this.#resetWalkthrough();
     void AiAssistanceModel6.AiHistoryStorage.AiHistoryStorage.instance().deleteHistoryEntry(this.#conversation.id);
     this.#updateConversationState();
     UI10.ARIAUtils.LiveAnnouncer.alert(i18nString5(UIStrings5.chatDeleted));
@@ -7052,6 +7168,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI10.Panel.Panel {
   }
   #handleNewChatRequest() {
     this.#updateConversationState();
+    this.#resetWalkthrough();
     UI10.ARIAUtils.LiveAnnouncer.alert(i18nString5(UIStrings5.newChatCreated));
     if (Annotations.AnnotationRepository.annotationsEnabled()) {
       Annotations.AnnotationRepository.instance().deleteAllAnnotations();

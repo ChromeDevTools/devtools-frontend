@@ -105,25 +105,45 @@ export default `/*
   .walkthrough-inline {
     border-radius: var(--sys-size-5);
     overflow: hidden;
-    background-color: var(--sys-color-surface1);
+    background-color: var(--sys-color-surface2);
     width: fit-content;
 
     &[open] {
       width: auto;
+      background-color: var(--sys-color-surface1);
     }
   }
 
   .walkthrough-inline > summary {
     display: flex;
     align-items: center;
-    padding: var(--sys-size-4) var(--sys-size-6);
+    padding: 0 var(--sys-size-6);
     cursor: pointer;
     background-color: transparent;
+    /* The same height as a DevTools Button */
+    height: var(--sys-size-11);
     font: var(--sys-typescale-body4-regular);
+    font-weight:var(--ref-typeface-weight-medium);
     user-select: none;
     list-style: none; /* Hide default triangle */
     justify-content: flex-start;
     gap: var(--sys-size-4);
+    color: var(--sys-color-primary);
+
+    devtools-icon {
+      color: var(--sys-color-primary);
+    }
+
+    /* Align the summary to look like the tonal button */
+    &[data-has-widgets] {
+      background: var(--sys-color-tonal-container);
+      color: var(--sys-color-on-tonal-container);
+      border-radius: var(--sys-shape-corner-full);
+
+      devtools-icon {
+        color: var(--sys-color-on-tonal-container);
+      }
+    }
   }
 
   .walkthrough-inline > summary::-webkit-details-marker {
@@ -136,8 +156,6 @@ export default `/*
 
   .walkthrough-inline .steps-container {
     padding: var(--sys-size-6);
-    max-height: 300px; /* Limit height for inline view */
-    overflow-y: auto;
     border-top: 1px solid var(--sys-color-divider);
     background-color: transparent;
   }
@@ -146,10 +164,22 @@ export default `/*
     width: var(--sys-size-8);
     height: var(--sys-size-8);
     transition: transform 0.2s;
+    margin-left: auto;
+  }
+
+  .walkthrough-inline[open] > summary {
+    border-radius: var(--sys-shape-corner-medium-small);
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+    background: var(--sys-color-surface5);
+  }
+
+  .walkthrough-inline .step {
+    background-color: var(--sys-color-surface5);
   }
 
   .walkthrough-inline[open] > summary > devtools-icon {
-    transform: rotate(180deg);
+    transform: rotate(270deg);
   }
 }
 

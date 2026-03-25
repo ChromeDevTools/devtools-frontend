@@ -60,10 +60,10 @@ function renderInlineWalkthrough(input, stepsOutput, steps) {
     // clang-format off
     return html `
     <details class="walkthrough-inline" ?open=${input.isExpanded} @toggle=${onToggle}>
-      <summary>
+      <summary ?data-has-widgets=${!input.isLoading && hasWidgets}>
         ${input.isLoading ? html `<devtools-spinner></devtools-spinner>` : Lit.nothing}
         ${walkthroughTitle({ isLoading: input.isLoading, lastStep, hasWidgets })}
-        <devtools-icon name="chevron-down"></devtools-icon>
+        <devtools-icon name="chevron-right"></devtools-icon>
       </summary>
       ${stepsOutput}
     </details>
@@ -138,8 +138,6 @@ export const DEFAULT_VIEW = (input, output, target) => {
 export class WalkthroughView extends UI.Widget.Widget {
     #view;
     #message = null;
-    // TODO(b/487921187): fix loading state - also unsure if we need this vs
-    // looking at the loading state in the message's steps.
     #isLoading = false;
     #markdownRenderer = null;
     #onToggle = () => { };
@@ -150,6 +148,7 @@ export class WalkthroughView extends UI.Widget.Widget {
     #isProgrammaticScroll = false;
     #output = {};
     #stepsContainerResizeObserver = new ResizeObserver(() => this.#handleStepsContainerResize());
+    #lastStepsContainerWidth = 0;
     constructor(element, view = DEFAULT_VIEW) {
         super(element);
         this.#view = view;
@@ -167,11 +166,26 @@ export class WalkthroughView extends UI.Widget.Widget {
             this.#stepsContainerResizeObserver.observe(this.#output.stepsContainer);
         }
     }
-    onResize() {
-        this.#handleStepsContainerResize();
-    }
     #handleStepsContainerResize() {
-        if (!this.#pinScrollToBottom) {
+        const width = this.#output.stepsContainer?.offsetWidth ?? 0;
+        /**
+         * If the width has changed, it's likely due to a manual resize (e.g., the
+         * user dragging the sidebar). In these cases, we want to avoid jumping the
+         * scroll position to the bottom, as it can be jarring for the user. We
+         * only auto-scroll if the width remains the same, meaning only the height
+         * has changed (likely due to new content being added).
+         */
+        if (width !== this.#lastStepsContainerWidth) {
+            this.#lastStepsContainerWidth = width;
+            return;
+        }
+        /**
+         * We only want to auto-scroll if the walkthrough is "live", which means it's
+         * currently loading. If it's not loading, it's a walkthrough for a previous
+         * message, and we don't want to jump the user to the bottom if they've
+         * scrolled away.
+         */
+        if (!this.#pinScrollToBottom || !this.#isLoading) {
             return;
         }
         this.scrollToBottom();
@@ -264,7 +278,13 @@ export class WalkthroughView extends UI.Widget.Widget {
             handleScroll: this.#handleScroll,
         }, this.#output, this.contentElement);
         this.#registerResizeObservers();
-        if (this.#pinScrollToBottom) {
+        /**
+         * We only want to auto-scroll if the walkthrough is "live", which means it's
+         * currently loading. If it's not loading, it's a walkthrough for a previous
+         * message, and we don't want to jump the user to the bottom if they've
+         * scrolled away.
+         */
+        if (this.#pinScrollToBottom && this.#isLoading) {
             this.scrollToBottom();
         }
     }

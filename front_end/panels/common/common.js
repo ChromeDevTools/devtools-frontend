@@ -5000,6 +5000,35 @@ var Linkifier2 = class _Linkifier {
   }
 };
 
+// gen/front_end/panels/common/ThrottlingUtils.js
+var ThrottlingUtils_exports = {};
+__export(ThrottlingUtils_exports, {
+  getRecommendedNetworkConditions: () => getRecommendedNetworkConditions,
+  getThrottlingRecommendations: () => getThrottlingRecommendations
+});
+import * as SDK4 from "./../../core/sdk/sdk.js";
+import * as CrUXManager from "./../../models/crux-manager/crux-manager.js";
+function getThrottlingRecommendations() {
+  const cruxManager = CrUXManager.CrUXManager.instance();
+  const roundTripTimeMetricData = cruxManager.getSelectedFieldMetricData("round_trip_time");
+  let cpuOption = SDK4.CPUThrottlingManager.CalibratedMidTierMobileThrottlingOption;
+  if (cpuOption.rate() === 0) {
+    cpuOption = SDK4.CPUThrottlingManager.MidTierThrottlingOption;
+  }
+  const networkConditions = getRecommendedNetworkConditions(roundTripTimeMetricData);
+  return {
+    cpuOption,
+    networkConditions
+  };
+}
+function getRecommendedNetworkConditions(roundTripTimeMetricData) {
+  if (roundTripTimeMetricData?.percentiles) {
+    const rtt = Number(roundTripTimeMetricData.percentiles.p75);
+    return SDK4.NetworkManager.getRecommendedNetworkPreset(rtt);
+  }
+  return null;
+}
+
 // gen/front_end/panels/common/CopyChangesToPrompt.js
 import * as Host10 from "./../../core/host/host.js";
 import * as i18n25 from "./../../core/i18n/i18n.js";
@@ -5264,6 +5293,7 @@ export {
   GdpSignUpDialog,
   GeminiRebrandPromoDialog,
   PersistenceUtils_exports as PersistenceUtils,
+  ThrottlingUtils_exports as ThrottlingUtils,
   TypeToAllowDialog
 };
 //# sourceMappingURL=common.js.map

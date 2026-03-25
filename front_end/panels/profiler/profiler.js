@@ -726,7 +726,6 @@ import * as UI15 from "./../../ui/legacy/legacy.js";
 var ProfilesPanel_exports = {};
 __export(ProfilesPanel_exports, {
   ActionDelegate: () => ActionDelegate,
-  ProfileGroup: () => ProfileGroup,
   ProfileGroupSidebarTreeElement: () => ProfileGroupSidebarTreeElement,
   ProfileTypeSidebarSection: () => ProfileTypeSidebarSection,
   ProfilesPanel: () => ProfilesPanel,
@@ -2795,7 +2794,10 @@ var ProfileTypeSidebarSection = class extends UI5.TreeOutline.TreeElement {
       const profileTitle = profile.title;
       let group = this.profileGroups[profileTitle];
       if (!group) {
-        group = new ProfileGroup();
+        group = {
+          profileSidebarTreeElements: [],
+          sidebarTreeElement: null
+        };
         this.profileGroups[profileTitle] = group;
       }
       group.profileSidebarTreeElements.push(profileTreeElement);
@@ -2882,18 +2884,9 @@ var ProfileTypeSidebarSection = class extends UI5.TreeOutline.TreeElement {
     this.listItemElement.classList.add("profiles-tree-section");
   }
 };
-var ProfileGroup = class {
-  profileSidebarTreeElements;
-  sidebarTreeElement;
-  constructor() {
-    this.profileSidebarTreeElements = [];
-    this.sidebarTreeElement = null;
-  }
-};
 var ProfileGroupSidebarTreeElement = class extends UI5.TreeOutline.TreeElement {
   dataDisplayDelegate;
   profileTitle;
-  toggleOnClick;
   constructor(dataDisplayDelegate, title) {
     super("", true);
     this.selectable = false;
@@ -3802,15 +3795,11 @@ var ProfileView = class extends UI8.View.SimpleView {
     if (!this.profileDataGridTree) {
       return;
     }
-    const selectedProfileNode = this.dataGrid.selectedNode ? this.dataGrid.selectedNode.profileNode : null;
     this.dataGrid.rootNode().removeChildren();
     const children = this.profileDataGridTree.children;
     const count = children.length;
     for (let index = 0; index < count; ++index) {
       this.dataGrid.rootNode().appendChild(children[index]);
-    }
-    if (selectedProfileNode) {
-      selectedProfileNode.selected = true;
     }
   }
   refreshVisibleData() {
@@ -6915,9 +6904,9 @@ var HeapSnapshotRetainmentDataGridEvents;
   HeapSnapshotRetainmentDataGridEvents2["ExpandRetainersComplete"] = "ExpandRetainersComplete";
 })(HeapSnapshotRetainmentDataGridEvents || (HeapSnapshotRetainmentDataGridEvents = {}));
 var HeapSnapshotConstructorsDataGrid = class extends HeapSnapshotViewportDataGrid {
-  profileIndex;
-  objectIdToSelect;
-  nextRequestedFilter;
+  profileIndex = -1;
+  objectIdToSelect = null;
+  nextRequestedFilter = null;
   lastFilter;
   filterInProgress;
   constructor(heapProfilerModel, dataDisplayDelegate) {
@@ -6940,10 +6929,10 @@ var HeapSnapshotConstructorsDataGrid = class extends HeapSnapshotViewportDataGri
         fixedWidth: true
       }
     ];
-    super(heapProfilerModel, dataDisplayDelegate, { displayName: i18nString11(UIStrings11.heapSnapshotConstructors).toString(), columns });
-    this.profileIndex = -1;
-    this.objectIdToSelect = null;
-    this.nextRequestedFilter = null;
+    super(heapProfilerModel, dataDisplayDelegate, {
+      displayName: i18nString11(UIStrings11.heapSnapshotConstructors).toString(),
+      columns
+    });
   }
   sortFields(sortColumn, sortAscending) {
     switch (sortColumn) {

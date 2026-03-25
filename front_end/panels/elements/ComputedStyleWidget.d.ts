@@ -38,6 +38,8 @@ export declare class ComputedStyleWidget extends UI.Widget.VBox {
     private readonly imagePreviewPopover;
     constructor(element?: HTMLElement, view?: View);
     onResize(): void;
+    get enableNarrowViewResizing(): boolean;
+    set enableNarrowViewResizing(enable: boolean);
     get filterText(): RegExp | string;
     get filterIsRegex(): boolean;
     set filterText(newFilter: RegExp | string);

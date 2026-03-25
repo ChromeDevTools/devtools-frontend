@@ -4872,6 +4872,16 @@ declare namespace ProtocolProxyApi {
      */
     toolsRemoved(params: Protocol.WebMCP.ToolsRemovedEvent): void;
 
+    /**
+     * Event fired when a tool invocation starts.
+     */
+    toolInvoked(params: Protocol.WebMCP.ToolInvokedEvent): void;
+
+    /**
+     * Event fired when a tool invocation completes or fails.
+     */
+    toolResponded(params: Protocol.WebMCP.ToolRespondedEvent): void;
+
   }
 
   export interface DebuggerApi {

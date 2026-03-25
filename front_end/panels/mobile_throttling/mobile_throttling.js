@@ -680,9 +680,11 @@ import * as Common3 from "./../../core/common/common.js";
 import * as i18n9 from "./../../core/i18n/i18n.js";
 import * as Platform from "./../../core/platform/platform.js";
 import * as SDK5 from "./../../core/sdk/sdk.js";
+import * as CrUXManager from "./../../models/crux-manager/crux-manager.js";
 import * as UI3 from "./../../ui/legacy/legacy.js";
 import * as Lit from "./../../ui/lit/lit.js";
 import * as VisualLogging2 from "./../../ui/visual_logging/visual_logging.js";
+import * as PanelsCommon from "./../common/common.js";
 var { render, html, Directives, nothing } = Lit;
 var UIStrings5 = {
   /**
@@ -812,6 +814,13 @@ var NetworkThrottlingSelect = class _NetworkThrottlingSelect extends Common3.Obj
     SDK5.NetworkManager.MultitargetNetworkManager.instance().addEventListener("ConditionsChanged", () => {
       select.currentConditions = SDK5.NetworkManager.MultitargetNetworkManager.instance().networkConditions();
     });
+    const cruxManager = CrUXManager.CrUXManager.instance();
+    const updateRecommendation = () => {
+      const roundTripTimeMetricData = cruxManager.getSelectedFieldMetricData("round_trip_time");
+      select.recommendedConditions = PanelsCommon.ThrottlingUtils.getRecommendedNetworkConditions(roundTripTimeMetricData);
+    };
+    cruxManager.addEventListener("field-data-changed", updateRecommendation);
+    updateRecommendation();
     return select;
   }
   constructor(element, options = {}, view = DEFAULT_VIEW) {

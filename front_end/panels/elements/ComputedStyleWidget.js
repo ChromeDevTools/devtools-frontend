@@ -266,6 +266,7 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
     #propertyElementsCache = new Map();
     #computedStylesTree = new TreeOutline.TreeOutline.TreeOutline();
     #treeData;
+    #enableNarrowViewResizing = true;
     #view;
     /**
      * TODO(b/407751272): the state here is confusing (3 instance variables relating to filtering).
@@ -302,8 +303,15 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
         this.#updateView({ hasMatches: true });
     }
     onResize() {
-        const isNarrow = this.contentElement.offsetWidth < 260;
+        const isNarrow = this.#enableNarrowViewResizing && this.contentElement.offsetWidth < 260;
         this.#computedStylesTree.classList.toggle('computed-narrow', isNarrow);
+    }
+    get enableNarrowViewResizing() {
+        return this.#enableNarrowViewResizing;
+    }
+    set enableNarrowViewResizing(enable) {
+        this.#enableNarrowViewResizing = enable;
+        this.onResize();
     }
     get filterText() {
         if (this.#filterIsRegex) {

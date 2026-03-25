@@ -31,8 +31,10 @@ export declare class ThirdPartyTreeViewWidget extends TimelineTreeView.TimelineT
 }
 export declare class ThirdPartyTreeElement extends UI.Widget.WidgetElement<UI.Widget.Widget> {
     #private;
+    static readonly observedAttributes: string[];
     set treeView(treeView: ThirdPartyTreeViewWidget);
     constructor();
+    attributeChangedCallback(name: string, _oldValue: string | null, newValue: string | null): void;
     createWidget(): UI.Widget.Widget;
 }
 declare global {

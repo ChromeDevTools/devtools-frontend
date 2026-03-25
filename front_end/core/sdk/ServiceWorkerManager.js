@@ -69,8 +69,10 @@ export class ServiceWorkerManager extends SDKModel {
         target.registerServiceWorkerDispatcher(new ServiceWorkerDispatcher(this));
         this.#agent = target.serviceWorkerAgent();
         void this.enable();
-        this.#forceUpdateSetting =
-            Common.Settings.Settings.instance().createSetting('service-worker-update-on-reload', false);
+        this.#forceUpdateSetting = this.target()
+            .targetManager()
+            .context.get(Common.Settings.Settings)
+            .createSetting('service-worker-update-on-reload', false);
         if (this.#forceUpdateSetting.get()) {
             this.forceUpdateSettingChanged();
         }

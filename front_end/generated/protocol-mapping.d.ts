@@ -939,6 +939,14 @@ export namespace ProtocolMapping {
      */
     'WebMCP.toolsRemoved': [Protocol.WebMCP.ToolsRemovedEvent];
     /**
+     * Event fired when a tool invocation starts.
+     */
+    'WebMCP.toolInvoked': [Protocol.WebMCP.ToolInvokedEvent];
+    /**
+     * Event fired when a tool invocation completes or fails.
+     */
+    'WebMCP.toolResponded': [Protocol.WebMCP.ToolRespondedEvent];
+    /**
      * Fired when breakpoint is resolved to an actual script and location.
      * Deprecated in favor of `resolvedBreakpoints` in the `scriptParsed` event.
      */

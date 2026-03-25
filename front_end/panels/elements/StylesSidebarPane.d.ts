@@ -47,7 +47,7 @@ export declare class StylesSidebarPane extends StylesSidebarPane_base implements
     readonly linkifier: Components.Linkifier.Linkifier;
     private readonly decorator;
     private lastRevealedProperty;
-    userOperation: boolean;
+    private userOperation;
     isEditingStyle: boolean;
     private isActivePropertyHighlighted;
     private initialUpdateCompleted;

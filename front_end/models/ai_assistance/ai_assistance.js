@@ -266,6 +266,140 @@ var LighthouseFormatter_exports = {};
 __export(LighthouseFormatter_exports, {
   LighthouseFormatter: () => LighthouseFormatter
 });
+
+// gen/front_end/models/ai_assistance/data_formatters/UnitFormatters.js
+var UnitFormatters_exports = {};
+__export(UnitFormatters_exports, {
+  bytes: () => bytes,
+  micros: () => micros,
+  millis: () => millis,
+  seconds: () => seconds
+});
+var defaultTimeFormatterOptions = {
+  style: "unit",
+  unitDisplay: "narrow",
+  minimumFractionDigits: 0,
+  maximumFractionDigits: 0
+};
+var defaultByteFormatterOptions = {
+  style: "unit",
+  unitDisplay: "narrow",
+  minimumFractionDigits: 0,
+  maximumFractionDigits: 1
+};
+var timeFormatters = {
+  milli: new Intl.NumberFormat("en-US", {
+    ...defaultTimeFormatterOptions,
+    unit: "millisecond"
+  }),
+  milliWithPrecision: new Intl.NumberFormat("en-US", {
+    ...defaultTimeFormatterOptions,
+    maximumFractionDigits: 1,
+    unit: "millisecond"
+  }),
+  second: new Intl.NumberFormat("en-US", {
+    ...defaultTimeFormatterOptions,
+    maximumFractionDigits: 1,
+    unit: "second"
+  }),
+  micro: new Intl.NumberFormat("en-US", {
+    ...defaultTimeFormatterOptions,
+    unit: "microsecond"
+  })
+};
+var byteFormatters = {
+  bytes: new Intl.NumberFormat("en-US", {
+    ...defaultByteFormatterOptions,
+    // Don't need as much precision on bytes.
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+    unit: "byte"
+  }),
+  kilobytes: new Intl.NumberFormat("en-US", {
+    ...defaultByteFormatterOptions,
+    unit: "kilobyte"
+  }),
+  megabytes: new Intl.NumberFormat("en-US", {
+    ...defaultByteFormatterOptions,
+    unit: "megabyte"
+  })
+};
+function numberIsTooLarge(x) {
+  return !Number.isFinite(x) || x === Number.MAX_VALUE;
+}
+function seconds(x) {
+  if (numberIsTooLarge(x)) {
+    return "-";
+  }
+  if (x === 0) {
+    return formatAndEnsureSpace(timeFormatters.second, x);
+  }
+  const asMilli = x * 1e3;
+  if (asMilli < 1) {
+    return micros(x * 1e6);
+  }
+  if (asMilli < 1e3) {
+    return millis(asMilli);
+  }
+  return formatAndEnsureSpace(timeFormatters.second, x);
+}
+function millis(x) {
+  if (numberIsTooLarge(x)) {
+    return "-";
+  }
+  if (x < 1) {
+    return formatAndEnsureSpace(timeFormatters.milliWithPrecision, x);
+  }
+  return formatAndEnsureSpace(timeFormatters.milli, x);
+}
+function micros(x) {
+  if (numberIsTooLarge(x)) {
+    return "-";
+  }
+  if (x < 100) {
+    return formatAndEnsureSpace(timeFormatters.micro, x);
+  }
+  const asMilli = x / 1e3;
+  return millis(asMilli);
+}
+function bytes(x) {
+  if (x < 1e3) {
+    return formatAndEnsureSpace(byteFormatters.bytes, x);
+  }
+  const kilobytes = x / 1e3;
+  if (kilobytes < 1e3) {
+    return formatAndEnsureSpace(byteFormatters.kilobytes, kilobytes);
+  }
+  const megabytes = kilobytes / 1e3;
+  return formatAndEnsureSpace(byteFormatters.megabytes, megabytes);
+}
+function formatAndEnsureSpace(formatter, value, separator = "\xA0") {
+  const parts = formatter.formatToParts(value);
+  let hasSpace = false;
+  for (const part of parts) {
+    if (part.type === "literal") {
+      if (part.value === " ") {
+        hasSpace = true;
+        part.value = separator;
+      } else if (part.value === separator) {
+        hasSpace = true;
+      }
+    }
+  }
+  if (hasSpace) {
+    return parts.map((part) => part.value).join("");
+  }
+  const unitIndex = parts.findIndex((part) => part.type === "unit");
+  if (unitIndex === -1) {
+    return parts.map((part) => part.value).join("");
+  }
+  if (unitIndex === 0) {
+    return parts[0].value + separator + parts.slice(1).map((part) => part.value).join("");
+  }
+  return parts.slice(0, unitIndex).map((part) => part.value).join("") + separator + parts.slice(unitIndex).map((part) => part.value).join("");
+}
+
+// gen/front_end/models/ai_assistance/data_formatters/LighthouseFormatter.js
 var LighthouseFormatter = class {
   /**
    * Returns an overall summary and high-level overview of the Lighthouse report.
@@ -370,34 +504,60 @@ var LighthouseFormatter = class {
   }
   #formatTable(headings, items) {
     const lines = [];
-    lines.push(`| ${headings.map((h) => h.label).join(" | ")} |`);
     for (const item of items) {
-      const row = headings.map((h) => this.#formatTableValue(item[h.key]));
-      lines.push(`| ${row.join(" | ")} |`);
+      const itemLines = [];
+      for (const heading of headings) {
+        const value = item[heading.key];
+        const formattedValues = this.#formatTableValues(value, heading.valueType);
+        for (const { labelSuffix, value: v } of formattedValues) {
+          const baseLabel = heading.label || heading.key;
+          const label = labelSuffix ? `${baseLabel} ${labelSuffix}` : baseLabel;
+          itemLines.push(`  * **${label}**: ${v}`);
+        }
+        const subItems = item.subItems;
+        if (subItems && typeof subItems === "object" && "type" in subItems && subItems.type === "subitems" && heading.subItemsHeading) {
+          for (const subItem of subItems.items) {
+            const subValue = subItem[heading.subItemsHeading.key];
+            if (subValue === value) {
+              continue;
+            }
+            const formattedSubValues = this.#formatTableValues(subValue, heading.subItemsHeading.valueType);
+            for (const { value: v } of formattedSubValues) {
+              itemLines.push(`    * ${v}`);
+            }
+          }
+        }
+      }
+      if (itemLines.length > 0) {
+        lines.push(`- Item:`);
+        lines.push(...itemLines);
+      }
     }
     return lines.join("\n");
   }
-  #formatTableValue(value) {
+  #formatTableValues(value, valueType) {
     if (value === void 0 || value === null) {
-      return "";
+      return [];
     }
     if (typeof value === "string" || typeof value === "number") {
-      return String(value);
+      return [{ value: this.#formatValue(value, valueType) }];
     }
     if (typeof value === "object" && "type" in value) {
       switch (value.type) {
         case "node": {
-          let label = value.nodeLabel || value.selector || value.snippet || "(node)";
-          if (value.selector) {
-            label += ` (selector: ${value.selector})`;
+          const results = [];
+          const label = value.nodeLabel || value.selector || value.snippet || "(node)";
+          results.push({ value: label });
+          if (value.selector && value.selector !== label) {
+            results.push({ labelSuffix: "selector", value: value.selector });
           }
           if (value.path) {
-            label += ` (path: ${value.path})`;
+            results.push({ labelSuffix: "path", value: value.path });
           }
           if (value.explanation) {
-            label += ` (explanation: ${value.explanation.replace(/\n/g, " ")})`;
+            results.push({ labelSuffix: "explanation", value: value.explanation.replace(/\n/g, " ") });
           }
-          return label;
+          return results;
         }
         case "source-location": {
           const parts = [];
@@ -410,11 +570,27 @@ var LighthouseFormatter = class {
           if (value.column) {
             parts.push(String(value.column));
           }
-          return parts.join(":");
+          return [{ value: parts.join(":") }];
         }
       }
     }
-    return "";
+    return [];
+  }
+  #formatValue(value, valueType) {
+    if (typeof value === "string") {
+      return value;
+    }
+    switch (valueType) {
+      case "bytes": {
+        return bytes(value);
+      }
+      case "timespanMs":
+      case "ms": {
+        return millis(value);
+      }
+      default:
+        return String(value);
+    }
   }
 };
 
@@ -2306,140 +2482,6 @@ import * as Annotations from "./../annotations/annotations.js";
 import * as Logs from "./../logs/logs.js";
 import * as NetworkTimeCalculator from "./../network_time_calculator/network_time_calculator.js";
 import * as TextUtils4 from "./../text_utils/text_utils.js";
-
-// gen/front_end/models/ai_assistance/data_formatters/UnitFormatters.js
-var UnitFormatters_exports = {};
-__export(UnitFormatters_exports, {
-  bytes: () => bytes,
-  micros: () => micros,
-  millis: () => millis,
-  seconds: () => seconds
-});
-var defaultTimeFormatterOptions = {
-  style: "unit",
-  unitDisplay: "narrow",
-  minimumFractionDigits: 0,
-  maximumFractionDigits: 0
-};
-var defaultByteFormatterOptions = {
-  style: "unit",
-  unitDisplay: "narrow",
-  minimumFractionDigits: 0,
-  maximumFractionDigits: 1
-};
-var timeFormatters = {
-  milli: new Intl.NumberFormat("en-US", {
-    ...defaultTimeFormatterOptions,
-    unit: "millisecond"
-  }),
-  milliWithPrecision: new Intl.NumberFormat("en-US", {
-    ...defaultTimeFormatterOptions,
-    maximumFractionDigits: 1,
-    unit: "millisecond"
-  }),
-  second: new Intl.NumberFormat("en-US", {
-    ...defaultTimeFormatterOptions,
-    maximumFractionDigits: 1,
-    unit: "second"
-  }),
-  micro: new Intl.NumberFormat("en-US", {
-    ...defaultTimeFormatterOptions,
-    unit: "microsecond"
-  })
-};
-var byteFormatters = {
-  bytes: new Intl.NumberFormat("en-US", {
-    ...defaultByteFormatterOptions,
-    // Don't need as much precision on bytes.
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-    unit: "byte"
-  }),
-  kilobytes: new Intl.NumberFormat("en-US", {
-    ...defaultByteFormatterOptions,
-    unit: "kilobyte"
-  }),
-  megabytes: new Intl.NumberFormat("en-US", {
-    ...defaultByteFormatterOptions,
-    unit: "megabyte"
-  })
-};
-function numberIsTooLarge(x) {
-  return !Number.isFinite(x) || x === Number.MAX_VALUE;
-}
-function seconds(x) {
-  if (numberIsTooLarge(x)) {
-    return "-";
-  }
-  if (x === 0) {
-    return formatAndEnsureSpace(timeFormatters.second, x);
-  }
-  const asMilli = x * 1e3;
-  if (asMilli < 1) {
-    return micros(x * 1e6);
-  }
-  if (asMilli < 1e3) {
-    return millis(asMilli);
-  }
-  return formatAndEnsureSpace(timeFormatters.second, x);
-}
-function millis(x) {
-  if (numberIsTooLarge(x)) {
-    return "-";
-  }
-  if (x < 1) {
-    return formatAndEnsureSpace(timeFormatters.milliWithPrecision, x);
-  }
-  return formatAndEnsureSpace(timeFormatters.milli, x);
-}
-function micros(x) {
-  if (numberIsTooLarge(x)) {
-    return "-";
-  }
-  if (x < 100) {
-    return formatAndEnsureSpace(timeFormatters.micro, x);
-  }
-  const asMilli = x / 1e3;
-  return millis(asMilli);
-}
-function bytes(x) {
-  if (x < 1e3) {
-    return formatAndEnsureSpace(byteFormatters.bytes, x);
-  }
-  const kilobytes = x / 1e3;
-  if (kilobytes < 1e3) {
-    return formatAndEnsureSpace(byteFormatters.kilobytes, kilobytes);
-  }
-  const megabytes = kilobytes / 1e3;
-  return formatAndEnsureSpace(byteFormatters.megabytes, megabytes);
-}
-function formatAndEnsureSpace(formatter, value, separator = "\xA0") {
-  const parts = formatter.formatToParts(value);
-  let hasSpace = false;
-  for (const part of parts) {
-    if (part.type === "literal") {
-      if (part.value === " ") {
-        hasSpace = true;
-        part.value = separator;
-      } else if (part.value === separator) {
-        hasSpace = true;
-      }
-    }
-  }
-  if (hasSpace) {
-    return parts.map((part) => part.value).join("");
-  }
-  const unitIndex = parts.findIndex((part) => part.type === "unit");
-  if (unitIndex === -1) {
-    return parts.map((part) => part.value).join("");
-  }
-  if (unitIndex === 0) {
-    return parts[0].value + separator + parts.slice(1).map((part) => part.value).join("");
-  }
-  return parts.slice(0, unitIndex).map((part) => part.value).join("") + separator + parts.slice(unitIndex).map((part) => part.value).join("");
-}
-
-// gen/front_end/models/ai_assistance/data_formatters/NetworkRequestFormatter.js
 var _a;
 var MAX_HEADERS_SIZE = 1e3;
 var MAX_BODY_SIZE = 1e4;
@@ -5497,9 +5539,9 @@ Your primary goal is to provide actionable advice to web developers about their 
 
 You will be provided a summary of a trace: some performance metrics; the most critical network requests; a bottom-up call graph summary; and a brief overview of available insights. Each insight has information about potential performance issues with the page.
 
-Don't mention anything about an insight without first getting more data about it by calling \`getInsightDetails\`.
+Don't mention anything about an insight or the actual LCP element without first getting more data about it by calling \`getInsightDetails\`.
 
-You have many functions available to learn more about the trace. Use these to confirm hypotheses, or to further explore the trace when diagnosing performance issues.
+You have functions available to learn more about the trace. Use these to confirm hypotheses, or to further explore the trace when diagnosing performance issues.
 
 ${annotationsEnabled ? greenDevAdditionalAnnotationsFunction : ""}
 
@@ -5521,14 +5563,15 @@ Note: if the user asks a specific question about the trace (such as "What is my 
 ### Step 1: Determine a performance problem to investigate
 
 - With help from the user, determine what performance problem to focus on.
-- If the user is not specific about what problem to investigate, help them by doing a high-level investigation yourself. Present to the user a few options with 1-sentence summaries. Mention what performance metrics each option impacts. Call as many functions and confirm the data thoroughly: never present an option without being certain it is a real performance issue. Don't suggest solutions yet.
+- If the user is not specific about what problem to investigate, help them by doing a investigation yourself. Present to the user options with 1-sentence summaries. Mention what performance metrics each option impacts. Call as many functions and confirm the data thoroughly: never present an option without being certain it is a real performance issue. Don't suggest solutions yet.
 - Rank the options from most impactful to least impactful, and present them to the user in that order.
-- Don't present more than 5 options.
+- Don't present more than 2 options.
 - Once a performance problem has been identified for investigation, move on to step 2.
 
 ### Step 2: Suggest solutions
 
-- Suggest possible solutions to remedy the identified performance problem. Be as specific as possible, using data from the trace via the provided functions to back up everything you say. You should prefer specific solutions, but absent any specific solution you may suggest general solutions (such as from an insight's documentation links).
+- Suggest solutions to remedy the identified performance problem. Be as specific as possible, using data from the trace via the provided functions to back up everything you say. You should prefer specific solutions, but absent any specific solution you may suggest general solutions (such as from an insight's documentation links).
+- If you are unsure, be honest and present information that can be helpful for further investigation.
 - A good first step to discover solutions is to consider the insights, but you should also validate all potential advice by analyzing the trace until you are confident about the root cause of a performance issue.
 
 ## Guidelines
@@ -5560,6 +5603,16 @@ Adhere to the following critical requirements:
 - Do not mention that you are an AI, or refer to yourself in the third person. You are simulating a performance expert.
 - If asked about sensitive topics (religion, race, politics, sexuality, gender, etc.), respond with: "My expertise is limited to website performance analysis. I cannot provide information on that topic.".
 - Do not provide answers on non-web-development topics, such as legal, financial, medical, or personal advice.
+- Use the precision of Strunk & White, the brevity of Hemingway, and the simple clarity of Vonnegut. Don't add repeated information, and keep the whole answer short.
+
+## Response Structure
+
+- If available, point out the root cause of the problem. It may be a bullet point list.
+  - Example: "**Root Cause**: The page is slow because of [reason]."
+- if applicable, list actionable solution suggestion(s) in order of impact:
+  - Example: "**Suggestions**:
+    - [Suggestion 1]
+    - [Suggestion 2]
 `;
 };
 var extraPreambleWhenNotExternal = `Additional notes:

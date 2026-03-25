@@ -2,25 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as Platform from '../../../core/platform/platform.js';
-import * as SDK from '../../../core/sdk/sdk.js';
-import * as CrUXManager from '../../../models/crux-manager/crux-manager.js';
 const MAX_ORIGIN_LENGTH = 60;
-export function getThrottlingRecommendations() {
-    let cpuOption = SDK.CPUThrottlingManager.CalibratedMidTierMobileThrottlingOption;
-    if (cpuOption.rate() === 0) {
-        cpuOption = SDK.CPUThrottlingManager.MidTierThrottlingOption;
-    }
-    let networkConditions = null;
-    const response = CrUXManager.CrUXManager.instance().getSelectedFieldMetricData('round_trip_time');
-    if (response?.percentiles) {
-        const rtt = Number(response.percentiles.p75);
-        networkConditions = SDK.NetworkManager.getRecommendedNetworkPreset(rtt);
-    }
-    return {
-        cpuOption,
-        networkConditions,
-    };
-}
 function createTrimmedUrlSearch(url) {
     const maxSearchValueLength = 8;
     let search = '';
@@ -135,6 +117,12 @@ export class RevealableCoreVitals {
     insightSetKey;
     constructor(insightSetKey) {
         this.insightSetKey = insightSetKey;
+    }
+}
+export class RevealableTimeRange {
+    bounds;
+    constructor(bounds) {
+        this.bounds = bounds;
     }
 }
 //# sourceMappingURL=Helpers.js.map

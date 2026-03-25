@@ -110,18 +110,18 @@ const CONNECTION_TYPES = new Map([
  * to in multiple places, and this ensures we don't have accidental typos which
  * mean extra settings get mistakenly created.
  */
-export function customUserNetworkConditionsSetting() {
-    return Common.Settings.Settings.instance().moduleSetting('custom-network-conditions');
+export function customUserNetworkConditionsSetting(settings = Common.Settings.Settings.instance()) {
+    return settings.moduleSetting('custom-network-conditions');
 }
-export function activeNetworkThrottlingKeySetting() {
-    return Common.Settings.Settings.instance().createSetting('active-network-condition-key', "NO_THROTTLING" /* PredefinedThrottlingConditionKey.NO_THROTTLING */);
+export function activeNetworkThrottlingKeySetting(settings = Common.Settings.Settings.instance()) {
+    return settings.createSetting('active-network-condition-key', "NO_THROTTLING" /* PredefinedThrottlingConditionKey.NO_THROTTLING */);
 }
 export class NetworkManager extends SDKModel {
     dispatcher;
     fetchDispatcher;
     #networkAgent;
     #bypassServiceWorkerSetting;
-    activeNetworkThrottlingKey = activeNetworkThrottlingKeySetting();
+    activeNetworkThrottlingKey;
     constructor(target) {
         super(target);
         this.dispatcher = new NetworkDispatcher(this);
@@ -129,7 +129,9 @@ export class NetworkManager extends SDKModel {
         this.#networkAgent = target.networkAgent();
         target.registerNetworkDispatcher(this.dispatcher);
         target.registerFetchDispatcher(this.fetchDispatcher);
-        if (Common.Settings.Settings.instance().moduleSetting('cache-disabled').get()) {
+        const settings = this.target().targetManager().settings;
+        this.activeNetworkThrottlingKey = activeNetworkThrottlingKeySetting(settings);
+        if (settings.moduleSetting('cache-disabled').get()) {
             void this.#networkAgent.invoke_setCacheDisabled({ cacheDisabled: true });
         }
         void this.#networkAgent.invoke_enable({
@@ -139,15 +141,12 @@ export class NetworkManager extends SDKModel {
             reportDirectSocketTraffic: true,
         });
         void this.#networkAgent.invoke_setAttachDebugStack({ enabled: true });
-        this.#bypassServiceWorkerSetting =
-            Common.Settings.Settings.instance().createSetting('bypass-service-worker', false);
+        this.#bypassServiceWorkerSetting = settings.createSetting('bypass-service-worker', false);
         if (this.#bypassServiceWorkerSetting.get()) {
             this.bypassServiceWorkerChanged();
         }
         this.#bypassServiceWorkerSetting.addChangeListener(this.bypassServiceWorkerChanged, this);
-        Common.Settings.Settings.instance()
-            .moduleSetting('cache-disabled')
-            .addChangeListener(this.cacheDisabledSettingChanged, this);
+        settings.moduleSetting('cache-disabled').addChangeListener(this.cacheDisabledSettingChanged, this);
     }
     static forRequest(request) {
         return requestToManagerMap.get(request) || null;
@@ -322,9 +321,8 @@ export class NetworkManager extends SDKModel {
         void this.#networkAgent.invoke_setCacheDisabled({ cacheDisabled: enabled });
     }
     dispose() {
-        Common.Settings.Settings.instance()
-            .moduleSetting('cache-disabled')
-            .removeChangeListener(this.cacheDisabledSettingChanged, this);
+        const settings = this.target().targetManager().settings;
+        settings.moduleSetting('cache-disabled').removeChangeListener(this.cacheDisabledSettingChanged, this);
     }
     bypassServiceWorkerChanged() {
         void this.#networkAgent.invoke_setBypassServiceWorker({ bypass: this.#bypassServiceWorkerSetting.get() });
@@ -972,7 +970,8 @@ export class NetworkDispatcher {
         }
         this.#manager.dispatchEventToListeners(Events.RequestFinished, networkRequest);
         MultitargetNetworkManager.instance().inflightMainResourceRequests.delete(networkRequest.requestId());
-        if (Common.Settings.Settings.instance().moduleSetting('monitoring-xhr-enabled').get() &&
+        const settings = this.#manager.target().targetManager().settings;
+        if (settings.moduleSetting('monitoring-xhr-enabled').get() &&
             networkRequest.resourceType().category() === Common.ResourceType.resourceCategories.XHR) {
             let message;
             const failedToLoad = networkRequest.failed || networkRequest.hasErrorStatusCode();
@@ -1365,14 +1364,14 @@ export class RequestCondition extends Common.ObjectWrapper.ObjectWrapper {
     #enabled;
     #conditions;
     #ruleIds = new Set();
-    static createFromSetting(setting) {
+    static createFromSetting(setting, settings = Common.Settings.Settings.instance()) {
         if ('urlPattern' in setting) {
             const pattern = RequestURLPattern.create(setting.urlPattern) ?? {
                 wildcardURL: setting.urlPattern,
                 upgradedPattern: RequestURLPattern.upgradeFromWildcard(setting.urlPattern) ?? undefined,
             };
             const conditions = getPredefinedOrBlockingCondition(setting.conditions) ??
-                customUserNetworkConditionsSetting().get().find(condition => condition.key === setting.conditions) ??
+                customUserNetworkConditionsSetting(settings).get().find(condition => condition.key === setting.conditions) ??
                 NoThrottlingConditions;
             return new this(pattern, setting.enabled, conditions);
         }
@@ -1443,16 +1442,18 @@ export class RequestCondition extends Common.ObjectWrapper.ObjectWrapper {
     }
 }
 export class RequestConditions extends Common.ObjectWrapper.ObjectWrapper {
-    #setting = Common.Settings.Settings.instance().createSetting('network-blocked-patterns', []);
-    #conditionsEnabledSetting = Common.Settings.Settings.instance().moduleSetting('request-blocking-enabled');
+    #setting;
+    #conditionsEnabledSetting;
     #conditions = [];
     #requestConditionsById = new Map();
     #conditionsAppliedForTestPromise = Promise.resolve();
-    constructor() {
+    constructor(settings) {
         super();
+        this.#setting = settings.createSetting('network-blocked-patterns', []);
+        this.#conditionsEnabledSetting = settings.moduleSetting('request-blocking-enabled');
         for (const condition of this.#setting.get()) {
             try {
-                this.#conditions.push(RequestCondition.createFromSetting(condition));
+                this.#conditions.push(RequestCondition.createFromSetting(condition, settings));
             }
             catch (e) {
                 console.error('Error loading throttling settings: ', e);
@@ -1626,7 +1627,7 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
     inflightMainResourceRequests = new Map();
     #networkConditions = NoThrottlingConditions;
     #updatingInterceptionPatternsPromise = null;
-    #requestConditions = new RequestConditions();
+    #requestConditions;
     #urlsForRequestInterceptor = new Platform.MapUtilities.Multimap();
     #extraHeaders;
     #customUserAgent;
@@ -1634,6 +1635,8 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
     constructor(targetManager) {
         super();
         this.#targetManager = targetManager;
+        const settings = targetManager.settings;
+        this.#requestConditions = new RequestConditions(settings);
         // TODO(allada) Remove these and merge it with request interception.
         const blockedPatternChanged = () => {
             this.updateBlockedPatterns();
@@ -1843,8 +1846,9 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
         return this.#updatingInterceptionPatternsPromise;
     }
     async updateInterceptionPatterns() {
-        if (!Common.Settings.Settings.instance().moduleSetting('cache-disabled').get()) {
-            Common.Settings.Settings.instance().moduleSetting('cache-disabled').set(true);
+        const settings = this.#targetManager.settings;
+        if (!settings.moduleSetting('cache-disabled').get()) {
+            settings.moduleSetting('cache-disabled').set(true);
         }
         this.#updatingInterceptionPatternsPromise = null;
         const promises = [];

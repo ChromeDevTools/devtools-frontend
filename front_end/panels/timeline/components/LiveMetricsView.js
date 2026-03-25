@@ -26,7 +26,6 @@ import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import * as PanelsCommon from '../../common/common.js';
-import * as Utils from '../utils/utils.js';
 import { CPUThrottlingSelector } from './CPUThrottlingSelector.js';
 import { md } from './insights/Helpers.js';
 import liveMetricsViewStyles from './liveMetricsView.css.js';
@@ -559,7 +558,7 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
         const networkRecEl = document.createElement('span');
         networkRecEl.classList.add('environment-rec');
         networkRecEl.textContent = this.#getNetworkRecTitle() || i18nString(UIStrings.notEnoughData);
-        const recs = Utils.Helpers.getThrottlingRecommendations();
+        const recs = PanelsCommon.ThrottlingUtils.getThrottlingRecommendations();
         // clang-format off
         return html `
       <h3 class="card-title">${i18nString(UIStrings.environmentSettings)}</h3>

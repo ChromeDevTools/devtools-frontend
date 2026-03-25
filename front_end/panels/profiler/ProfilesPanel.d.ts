@@ -63,15 +63,13 @@ export declare class ProfileTypeSidebarSection extends UI.TreeOutline.TreeElemen
     sidebarElementIndex(profile: ProfileHeader): number;
     onattach(): void;
 }
-export declare class ProfileGroup {
+export interface ProfileGroup {
     profileSidebarTreeElements: ProfileSidebarTreeElement[];
     sidebarTreeElement: ProfileGroupSidebarTreeElement | null;
-    constructor();
 }
 export declare class ProfileGroupSidebarTreeElement extends UI.TreeOutline.TreeElement {
     readonly dataDisplayDelegate: DataDisplayDelegate;
     profileTitle: string;
-    toggleOnClick: boolean;
     constructor(dataDisplayDelegate: DataDisplayDelegate, title: string);
     onselect(): boolean;
     onattach(): void;

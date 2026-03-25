@@ -21,6 +21,9 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper {
     context;
     #targets;
     #observers;
+    get settings() {
+        return this.context.get(Common.Settings.Settings);
+    }
     /* eslint-disable @typescript-eslint/no-explicit-any */
     #modelListeners;
     #modelObservers;

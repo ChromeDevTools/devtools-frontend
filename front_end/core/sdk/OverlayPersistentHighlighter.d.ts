@@ -34,7 +34,7 @@ export interface PersistentHighlighterCallbacks {
 }
 export declare class OverlayPersistentHighlighter {
     #private;
-    constructor(model: OverlayModel, callbacks: PersistentHighlighterCallbacks);
+    constructor(model: OverlayModel, settings: Common.Settings.Settings, callbacks: PersistentHighlighterCallbacks);
     private onSettingChange;
     private buildGridHighlightConfig;
     private buildFlexContainerHighlightConfig;

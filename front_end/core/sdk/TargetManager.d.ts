@@ -16,6 +16,7 @@ export declare class TargetManager extends Common.ObjectWrapper.ObjectWrapper<Ev
      * SDKModels don't require things from the next layer.
      */
     readonly context: Root.DevToolsContext.DevToolsContext;
+    get settings(): Common.Settings.Settings;
     /**
      * @param overrideAutoStartModels If provided, then the `autostart` flag on {@link RegistrationInfo} will be ignored.
      */

@@ -12,6 +12,7 @@ import * as SDK from '../../../core/sdk/sdk.js';
 import * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
 import * as ComputedStyle from '../../../models/computed_style/computed_style.js';
 import * as Trace from '../../../models/trace/trace.js';
+import * as PanelsCommon from '../../../panels/common/common.js';
 import * as Marked from '../../../third_party/marked/marked.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as Input from '../../../ui/components/input/input.js';
@@ -36,6 +37,10 @@ const SCROLL_ROUNDING_OFFSET = 1;
 * Strings that don't need to be translated at this time.
 */
 const UIStringsNotTranslate = {
+    /**
+     * @description Text used in the button to close an open walkthrough
+     */
+    closeAgentWalkthrough: 'Close agent walkthrough',
     /**
      * @description The title of the button that allows submitting positive
      * feedback about the response for AI assistance.
@@ -167,7 +172,23 @@ const UIStringsNotTranslate = {
     /**
      * @description Title used for revealing the performance trace.
      */
-    revealTrace: 'Reveal trace'
+    revealTrace: 'Reveal trace',
+    /**
+     * @description Title for the core web vitals widget.
+     */
+    coreVitals: 'Core Web Vitals',
+    /**
+     * @description Title for the LCP breakdown widget.
+     */
+    lcpBreakdown: 'LCP breakdown',
+    /**
+     * @description Title for the LCP element widget.
+     */
+    lcpElement: 'LCP element',
+    /**
+     * @description Title for the performance summary widget.
+     */
+    performanceSummary: 'Performance summary'
 };
 export const DEFAULT_VIEW = (input, output, target) => {
     const message = input.message;
@@ -331,17 +352,22 @@ function renderWalkthroughSidebarButton(input, steps) {
         return Lit.nothing;
     }
     const hasOneStepWithWidget = steps.some(step => step.widgets?.length);
-    const title = walkthroughTitle({
+    const isOpen = input.message === input.walkthrough.activeMessage;
+    const title = isOpen ? lockedString(UIStringsNotTranslate.closeAgentWalkthrough) : walkthroughTitle({
         isLoading: input.isLoading,
         hasWidgets: hasOneStepWithWidget,
         lastStep,
     });
+    // The button should be tonal when there are widgets, but we only
+    // want to change it visually at the end once everything has stopped
+    // loading.
+    const variant = hasOneStepWithWidget && !input.isLoading ? "tonal" /* Buttons.Button.Variant.TONAL */ : "text" /* Buttons.Button.Variant.TEXT */;
     // clang-format off
     return html `
     <div class="walkthrough-toggle-container">
       ${input.isLoading ? html `<devtools-spinner></devtools-spinner>` : Lit.nothing}
       <devtools-button
-        .variant=${"outlined" /* Buttons.Button.Variant.OUTLINED */}
+        .variant=${variant}
         .size=${"SMALL" /* Buttons.Button.Size.SMALL */}
         .title=${lastStep.isLoading ? titleForStep(lastStep) : lockedString(UIStringsNotTranslate.showThinking)}
         .jslogContext=${walkthrough.isExpanded ? 'ai-hide-walkthrough-sidebar' : 'ai-show-walkthrough-sidebar'}
@@ -357,7 +383,9 @@ function renderWalkthroughSidebarButton(input, steps) {
             walkthrough.onOpen(message);
         }
     }}
-      >${title}</devtools-button>
+      >
+        ${title}<devtools-icon class="chevron" .name=${'chevron-right'}></devtools-icon>
+      </devtools-button>
     </div>
   `;
     // clang-format on
@@ -500,10 +528,19 @@ async function makeComputedStyleWidget(widgetData) {
         // This disables showing the nested traces and detailed information in the widget.
         propertyTraces: null,
         allowUserControl: false,
-        filterText: new RegExp(widgetData.data.properties.join('|'), 'i')
+        filterText: new RegExp(widgetData.data.properties.join('|'), 'i'),
+        enableNarrowViewResizing: false,
     })}></devtools-widget>`;
     // clang-format on
-    return { renderedWidget, revealable: new Elements.ElementsPanel.NodeComputedStyles(domNodeForId) };
+    return {
+        renderedWidget,
+        revealable: new Elements.ElementsPanel.NodeComputedStyles(domNodeForId),
+        title: html `<devtools-widget
+      ${widget(PanelsCommon.DOMLinkifier.DOMNodeLink, {
+            node: domNodeForId,
+        })}
+    ></devtools-widget>`,
+    };
 }
 async function makeCoreVitalsWidget(widgetData) {
     // clang-format off
@@ -511,7 +548,11 @@ async function makeCoreVitalsWidget(widgetData) {
       class="core-vitals-widget" ${widget(TimelineComponents.CWVMetrics.CWVMetrics, { data: widgetData.data })}>
   </devtools-widget>`;
     // clang-format on
-    return { renderedWidget, revealable: new TimelineUtils.Helpers.RevealableCoreVitals(widgetData.data.insightSetKey) };
+    return {
+        renderedWidget,
+        revealable: new TimelineUtils.Helpers.RevealableCoreVitals(widgetData.data.insightSetKey),
+        title: lockedString(UIStringsNotTranslate.coreVitals),
+    };
 }
 async function makeStylePropertiesWidget(widgetData) {
     const domNodeForId = await resolveNode(widgetData.data.backendNodeId);
@@ -527,7 +568,15 @@ async function makeStylePropertiesWidget(widgetData) {
     })}>
   </devtools-widget>`;
     // clang-format on
-    return { renderedWidget, revealable: domNodeForId };
+    return {
+        renderedWidget,
+        revealable: domNodeForId,
+        title: html `<devtools-widget
+      ${widget(PanelsCommon.DOMLinkifier.DOMNodeLink, {
+            node: domNodeForId,
+        })}
+    ></devtools-widget>`,
+    };
 }
 async function makeLcpBreakdownWidget(widgetData) {
     const insight = widgetData.data.lcpData;
@@ -542,7 +591,11 @@ async function makeLcpBreakdownWidget(widgetData) {
         minimal: true,
     })}></devtools-widget>`;
     // clang-format on
-    return { renderedWidget, revealable: new TimelineUtils.Helpers.RevealableInsight(insight) };
+    return {
+        renderedWidget,
+        revealable: new TimelineUtils.Helpers.RevealableInsight(insight),
+        title: lockedString(UIStringsNotTranslate.lcpBreakdown),
+    };
 }
 function renderWidgetResponse(response) {
     if (response === null) {
@@ -559,18 +612,20 @@ function renderWidgetResponse(response) {
         'revealer-only': response.renderedWidget === null,
     });
     const revealButton = html `
-    <devtools-button class="widget-reveal"
-      .iconName=${'tab-move'}
+    <devtools-button class="widget-reveal-button"
       .variant=${"text" /* Buttons.Button.Variant.TEXT */}
       @click=${onReveal}
-    >${response.customRevealTitle ?? lockedString(UIStringsNotTranslate.reveal)}</devtools-button>
+    >
+      ${response.customRevealTitle ?? lockedString(UIStringsNotTranslate.reveal)}
+      <devtools-icon name='tab-move'></devtools-icon>
+    </devtools-button>
   `;
     // clang-format off
     return html `
     <div class=${classes}>
-      ${response.widgetName ? html `
+      ${response.title ? html `
         <div class="widget-header">
-          <div class="widget-name">${response.widgetName}</div>
+          <div class="widget-name">${response.title}</div>
           <div class="widget-reveal-container">
             ${revealButton}
           </div>
@@ -580,7 +635,7 @@ function renderWidgetResponse(response) {
         <div class="widget-content-container">
           ${response.renderedWidget}
         </div>` : Lit.nothing}
-      ${!response.widgetName ? html `
+      ${!response.title ? html `
         <div class="widget-reveal-container">
           ${revealButton}
         </div>
@@ -592,6 +647,7 @@ function renderWidgetResponse(response) {
 async function makePerformanceTraceWidget(widgetData) {
     return {
         renderedWidget: null,
+        title: null,
         revealable: new Timeline.TimelinePanel.ParsedTraceRevealable(widgetData.data.parsedTrace),
         customRevealTitle: lockedString(UIStringsNotTranslate.revealTrace),
     };
@@ -643,7 +699,7 @@ async function makeDomTreeWidget(widgetData) {
     return {
         renderedWidget,
         revealable: new SDK.DOMModel.DeferredDOMNode(root.domModel().target(), root.backendNodeId()),
-        widgetName: 'LCP element',
+        title: lockedString(UIStringsNotTranslate.lcpElement),
     };
 }
 /**
@@ -1079,6 +1135,7 @@ async function makeTimelineRangeSummaryWidget(widgetData) {
     const thirdPartyTree = new Timeline.ThirdPartyTreeView.ThirdPartyTreeViewWidget();
     const mapper = new Trace.EntityMapper.EntityMapper(parsedTrace);
     thirdPartyTree.setModelWithEvents(eventsArray, parsedTrace, mapper);
+    thirdPartyTree.updateContents(Timeline.TimelineSelection.selectionFromRangeMicroSeconds(bounds.min, bounds.max));
     thirdPartyTree.refreshTree(true);
     // clang-format off
     const template = html `
@@ -1090,11 +1147,16 @@ async function makeTimelineRangeSummaryWidget(widgetData) {
             startTime: Trace.Helpers.Timing.microToMilli(bounds.min),
             endTime: Trace.Helpers.Timing.microToMilli(bounds.max),
             thirdPartyTreeTemplate: html `<devtools-performance-third-party-tree-view
+            max-rows="10"
             .treeView=${thirdPartyTree}></devtools-performance-third-party-tree-view>`,
         },
     })}
     ></devtools-widget>`;
     // clang-format on
-    return { renderedWidget: template, revealable: null };
+    return {
+        renderedWidget: template,
+        revealable: new TimelineUtils.Helpers.RevealableTimeRange(bounds),
+        title: lockedString(UIStringsNotTranslate.performanceSummary),
+    };
 }
 //# sourceMappingURL=ChatMessage.js.map

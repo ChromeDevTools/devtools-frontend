@@ -5,9 +5,11 @@ import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import * as CrUXManager from '../../models/crux-manager/crux-manager.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
+import * as PanelsCommon from '../common/common.js';
 import { ThrottlingManager } from './ThrottlingManager.js';
 const { render, html, Directives, nothing } = Lit;
 const UIStrings = {
@@ -147,6 +149,16 @@ export class NetworkThrottlingSelect extends Common.ObjectWrapper.ObjectWrapper 
         SDK.NetworkManager.MultitargetNetworkManager.instance().addEventListener("ConditionsChanged" /* SDK.NetworkManager.MultitargetNetworkManager.Events.CONDITIONS_CHANGED */, () => {
             select.currentConditions = SDK.NetworkManager.MultitargetNetworkManager.instance().networkConditions();
         });
+        // Subscribe to CrUX field data changes to show recommended throttling
+        // presets based on real-user RTT data.
+        const cruxManager = CrUXManager.CrUXManager.instance();
+        const updateRecommendation = () => {
+            const roundTripTimeMetricData = cruxManager.getSelectedFieldMetricData('round_trip_time');
+            select.recommendedConditions =
+                PanelsCommon.ThrottlingUtils.getRecommendedNetworkConditions(roundTripTimeMetricData);
+        };
+        cruxManager.addEventListener("field-data-changed" /* CrUXManager.Events.FIELD_DATA_CHANGED */, updateRecommendation);
+        updateRecommendation();
         return select;
     }
     constructor(element, options = {}, view = DEFAULT_VIEW) {

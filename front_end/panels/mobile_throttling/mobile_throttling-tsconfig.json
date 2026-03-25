@@ -66,6 +66,9 @@
       "path": "../../models/badges/bundle-tsconfig.json"
     },
     {
+      "path": "../../models/crux-manager/bundle-tsconfig.json"
+    },
+    {
       "path": "../../ui/components/buttons/bundle-tsconfig.json"
     },
     {
@@ -79,6 +82,9 @@
     },
     {
       "path": "../../ui/visual_logging/bundle-tsconfig.json"
+    },
+    {
+      "path": "../common/bundle-tsconfig.json"
     }
   ]
 }

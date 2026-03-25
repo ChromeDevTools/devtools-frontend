@@ -351,6 +351,13 @@ export default `/*
     display: flex;
     gap: var(--sys-size-4);
     align-items: center;
+
+    .chevron {
+      color: var(--sys-color-primary);
+      width: var(--sys-size-8);
+      height: var(--sys-size-8);
+      margin-left: var(--sys-size-2);
+    }
   }
 
 
@@ -377,18 +384,18 @@ export default `/*
     gap: var(--sys-size-5);
   }
 
-
   .widget-header {
     display: flex;
     justify-content: space-between;
+    height: var(--sys-size-11);
     align-items: center;
     background: var(--sys-color-surface5);
     padding: var(--sys-size-2) var(--sys-size-4);
-    border-top-left-radius: var(--sys-shape-corner-medium);
-    border-top-right-radius: var(--sys-shape-corner-medium);
+    border-top-left-radius: var(--sys-shape-corner-small);
+    border-top-right-radius: var(--sys-shape-corner-small);
 
     .widget-name {
-      font: var(--sys-typescale-body3-regular);
+      font: var(--sys-typescale-body4-regular);
     }
 
     .widget-reveal-container {
@@ -398,10 +405,29 @@ export default `/*
     }
   }
 
+  .widget-reveal-button {
+    display: flex;
+    align-items: center;
+
+    devtools-icon {
+      margin-left: var(--sys-size-3);
+      color: var(--sys-color-primary);
+      width: var(--sys-size-8);
+      height: var(--sys-size-8);
+    }
+
+  }
+
+  .widget-and-revealer-container {
+    width: 100%;
+    min-width: var(--sys-size-30);
+    max-width: var(--sys-size-33);
+  }
+
   .widget-reveal-container {
     background: var(--sys-color-surface5);
-    border-bottom-right-radius: var(--sys-shape-corner-medium);
-    border-bottom-left-radius: var(--sys-shape-corner-medium);
+    border-bottom-right-radius: var(--sys-shape-corner-small);
+    border-bottom-left-radius: var(--sys-shape-corner-small);
     padding: 0 var(--sys-size-4) var(--sys-size-4) 0;
   }
 
@@ -411,7 +437,7 @@ export default `/*
   }
 
   .widget-content-container {
-    padding: var(--sys-size-4);
+    padding: var(--sys-size-4) var(--sys-size-5);
     border-top-left-radius: var(--sys-shape-corner-medium);
     border-top-right-radius: var(--sys-shape-corner-medium);
     overflow-x: auto;

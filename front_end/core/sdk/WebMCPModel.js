@@ -64,6 +64,10 @@ class WebMCPDispatcher {
     toolsRemoved(params) {
         this.#model.onToolsRemoved(params.tools);
     }
+    toolInvoked() {
+    }
+    toolResponded() {
+    }
 }
 SDKModel.register(WebMCPModel, { capabilities: 2097152 /* Capability.WEB_MCP */, autostart: true });
 //# sourceMappingURL=WebMCPModel.js.map

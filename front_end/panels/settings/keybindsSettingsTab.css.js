@@ -40,7 +40,7 @@ export default `/*
   background-color: var(--sys-color-tonal-container);
 }
 
-.keybinds-list-item.keybinds-editing {
+.keybinds-list-item-wrapper:has(.keybinds-list-item.keybinds-editing) {
   background-color: var(--sys-color-neutral-container);
 }
 
@@ -173,31 +173,30 @@ button.text-button {
 }
 
 @media (forced-colors: active) {
-  /* Keyboard focus on wrapper element (shortcut items) */
+  .keybinds-list-item.keybinds-editing .keybinds-shortcut {
+    & devtools-button {
+      --sys-color-primary: buttonFace;
+    }
+  }
+
+  .keybinds-list-text input {
+    color: buttonText;
+  }
+
+  /* Keyboard focus / hover on wrapper element (shortcut items) */
   .keybinds-list-item-wrapper {
+    &:has(.keybinds-list-item:hover),
+    &:has(.keybinds-list-item:not(.keybinds-editing)):focus-within,
     &:focus,
     &:focus-visible {
-      background-color: Highlight !important; /* stylelint-disable-line declaration-no-important */
+      background-color: Highlight;
       forced-color-adjust: none;
+
+      --icon-default: HighlightText;
 
       & .keybinds-list-text,
       & .keybinds-action-name {
-        color: HighlightText !important; /* stylelint-disable-line declaration-no-important */
-      }
-
-      & .keybinds-key {
-        background: HighlightText;
-        color: Highlight;
-      }
-    }
-
-    /* Hover state (shortcut items) */
-    &:has(.keybinds-list-item:hover) {
-      background-color: Highlight !important; /* stylelint-disable-line declaration-no-important */
-      forced-color-adjust: none;
-
-      & .keybinds-list-text {
-        color: HighlightText !important; /* stylelint-disable-line declaration-no-important */
+        color: HighlightText;
       }
 
       & .keybinds-key {
@@ -208,23 +207,18 @@ button.text-button {
   }
 
   /* Editing state */
-  .keybinds-list-item.keybinds-editing {
-    background-color: Highlight !important; /* stylelint-disable-line declaration-no-important */
+  .keybinds-list-item-wrapper:has(.keybinds-list-item.keybinds-editing) {
+    background-color: Highlight;
     forced-color-adjust: none;
 
-    & .keybinds-list-text {
-      color: HighlightText !important; /* stylelint-disable-line declaration-no-important */
-    }
-  }
+    --icon-default: HighlightText;
 
-  /* Category headers (e.g., "Background Services", "Debugger") */
-  .keybinds-category-header {
-    &:hover,
-    &:focus,
-    &:focus-visible {
-      background-color: Highlight !important; /* stylelint-disable-line declaration-no-important */
-      color: HighlightText !important; /* stylelint-disable-line declaration-no-important */
-      forced-color-adjust: none;
+    & .keybinds-list-text {
+      color: HighlightText;
+    }
+
+    & .keybinds-error {
+    color: highlightText;
     }
   }
 }

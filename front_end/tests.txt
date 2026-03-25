@@ -391,6 +391,7 @@ panels/common/DOMLinkifier.test.js
 panels/common/ExtensionPanel.test.js
 panels/common/ExtensionServer.test.js
 panels/common/GdpSignUpDialog.test.js
+panels/common/ThrottlingUtils.test.js
 panels/console/ConsoleContextSelector.test.js
 panels/console/ConsoleFormat.test.js
 panels/console/ConsoleInsightTeaser.test.js
@@ -666,7 +667,7 @@ ui/components/icon_button/IconButton.test.js
 ui/components/issue_counter/IssueCounter.test.js
 ui/components/issue_counter/IssueLinkIcon.test.js
 ui/components/linkifier/LinkifierImpl.test.js
-ui/components/list/List.test.js
+ui/components/lists/List.test.js
 ui/components/markdown_view/CodeBlock.test.js
 ui/components/markdown_view/MarkdownImage.test.js
 ui/components/markdown_view/MarkdownView.test.js

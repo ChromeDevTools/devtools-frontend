@@ -11,7 +11,6 @@ export interface StylesContainer {
     activeCSSAngle: InlineEditor.CSSAngle.CSSAngle | null;
     readonly webCustomData: WebCustomData | undefined;
     isEditingStyle: boolean;
-    userOperation: boolean;
     readonly sectionByElement: WeakMap<Node, StylePropertiesSection>;
     readonly element: HTMLElement;
     readonly linkifier: Components.Linkifier.Linkifier;

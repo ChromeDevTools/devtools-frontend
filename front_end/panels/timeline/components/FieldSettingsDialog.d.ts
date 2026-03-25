@@ -1,5 +1,4 @@
 import '../../../ui/kit/kit.js';
-import './OriginMap.js';
 export declare class ShowDialog extends Event {
     static readonly eventName = "showdialog";
     constructor();

@@ -481,11 +481,11 @@ class DataGridElementNode extends SortableDataGridNode {
         }
         const cell = this.createTD(columnId);
         cell.setAttribute('part', `${columnId}-column`);
-        if (this.isCreationNode) {
-            return cell;
-        }
         const configCells = [...this.#configElement.children].filter(c => c.tagName === 'TD');
         const configCell = configCells[index];
+        if (this.isCreationNode && !configCell) {
+            return cell;
+        }
         if (!configCell) {
             throw new Error(`Column ${columnId} not found in the data grid`);
         }

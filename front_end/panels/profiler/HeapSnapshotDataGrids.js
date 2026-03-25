@@ -631,9 +631,9 @@ export var HeapSnapshotRetainmentDataGridEvents;
     /* eslint-enable @typescript-eslint/naming-convention */
 })(HeapSnapshotRetainmentDataGridEvents || (HeapSnapshotRetainmentDataGridEvents = {}));
 export class HeapSnapshotConstructorsDataGrid extends HeapSnapshotViewportDataGrid {
-    profileIndex;
-    objectIdToSelect;
-    nextRequestedFilter;
+    profileIndex = -1;
+    objectIdToSelect = null;
+    nextRequestedFilter = null;
     lastFilter;
     filterInProgress;
     constructor(heapProfilerModel, dataDisplayDelegate) {
@@ -656,11 +656,10 @@ export class HeapSnapshotConstructorsDataGrid extends HeapSnapshotViewportDataGr
                 fixedWidth: true,
             },
         ];
-        super(heapProfilerModel, dataDisplayDelegate, { displayName: i18nString(UIStrings.heapSnapshotConstructors).toString(), columns });
-        // clang-format on
-        this.profileIndex = -1;
-        this.objectIdToSelect = null;
-        this.nextRequestedFilter = null;
+        super(heapProfilerModel, dataDisplayDelegate, {
+            displayName: i18nString(UIStrings.heapSnapshotConstructors).toString(),
+            columns,
+        });
     }
     sortFields(sortColumn, sortAscending) {
         switch (sortColumn) {
@@ -856,7 +855,6 @@ export class AllocationDataGrid extends HeapSnapshotViewportDataGrid {
             { id: 'name', title: i18nString(UIStrings.function), disclosure: true, sortable: true },
         ];
         super(heapProfilerModel, dataDisplayDelegate, { displayName: i18nString(UIStrings.allocation).toString(), columns });
-        // clang-format on
         this.linkifierInternal = new Components.Linkifier.Linkifier();
     }
     get linkifier() {

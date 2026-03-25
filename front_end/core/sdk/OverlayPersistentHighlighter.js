@@ -7,7 +7,7 @@ import { OverlayColorGenerator } from './OverlayColorGenerator.js';
 export class OverlayPersistentHighlighter {
     #model;
     #colors = new Map();
-    #persistentHighlightSetting = Common.Settings.Settings.instance().createLocalSetting('persistent-highlight-setting', []);
+    #persistentHighlightSetting;
     #gridHighlights = new Map();
     #scrollSnapHighlights = new Map();
     #flexHighlights = new Map();
@@ -18,14 +18,20 @@ export class OverlayPersistentHighlighter {
     /**
      * @see `front_end/core/sdk/sdk-meta.ts`
      */
-    #showGridLineLabelsSetting = Common.Settings.Settings.instance().moduleSetting('show-grid-line-labels');
-    #extendGridLinesSetting = Common.Settings.Settings.instance().moduleSetting('extend-grid-lines');
-    #showGridAreasSetting = Common.Settings.Settings.instance().moduleSetting('show-grid-areas');
-    #showGridTrackSizesSetting = Common.Settings.Settings.instance().moduleSetting('show-grid-track-sizes');
+    #showGridLineLabelsSetting;
+    #extendGridLinesSetting;
+    #showGridAreasSetting;
+    #showGridTrackSizesSetting;
     #callbacks;
-    constructor(model, callbacks) {
+    constructor(model, settings, callbacks) {
         this.#model = model;
         this.#callbacks = callbacks;
+        this.#persistentHighlightSetting =
+            settings.createLocalSetting('persistent-highlight-setting', []);
+        this.#showGridLineLabelsSetting = settings.moduleSetting('show-grid-line-labels');
+        this.#extendGridLinesSetting = settings.moduleSetting('extend-grid-lines');
+        this.#showGridAreasSetting = settings.moduleSetting('show-grid-areas');
+        this.#showGridTrackSizesSetting = settings.moduleSetting('show-grid-track-sizes');
         this.#showGridLineLabelsSetting.addChangeListener(this.onSettingChange, this);
         this.#extendGridLinesSetting.addChangeListener(this.onSettingChange, this);
         this.#showGridAreasSetting.addChangeListener(this.onSettingChange, this);

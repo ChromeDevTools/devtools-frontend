@@ -208,12 +208,18 @@ export class ThirdPartyTreeViewWidget extends TimelineTreeView.TimelineTreeView 
 }
 export class ThirdPartyTreeElement extends UI.Widget.WidgetElement {
     #treeView;
+    static observedAttributes = ['max-rows'];
     set treeView(treeView) {
         this.#treeView = treeView;
     }
     constructor() {
         super();
         this.style.display = 'contents';
+    }
+    attributeChangedCallback(name, _oldValue, newValue) {
+        if (name === 'max-rows' && newValue) {
+            this.style.setProperty('--max-rows', newValue);
+        }
     }
     createWidget() {
         const containerWidget = new UI.Widget.Widget(this);

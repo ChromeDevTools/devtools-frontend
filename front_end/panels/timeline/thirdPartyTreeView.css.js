@@ -90,6 +90,12 @@ devtools-performance-third-party-tree-view {
     border-left: var(--sys-size-1) solid var(--sys-color-divider);
   }
 
+  &[max-rows] .widget.vbox.timeline-tree-view {
+    /* 21px for header + max-rows * 22px rows */
+    max-height: calc(21px + (var(--max-rows) * 22px));
+    padding: var(--sys-size-3);
+  }
+
   /* While timeline treeview name-container uses flexbox to layout, it's overkill for this table's purposes.
      By not using it, we can benefit from text-overflow:ellipsis applying correctly to names and entity-badges */
  .timeline-tree-view .data-grid .name-container {

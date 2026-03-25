@@ -10021,6 +10021,9 @@ var TargetManager = class _TargetManager extends Common4.ObjectWrapper.ObjectWra
   context;
   #targets;
   #observers;
+  get settings() {
+    return this.context.get(Common4.Settings.Settings);
+  }
   /* eslint-disable @typescript-eslint/no-explicit-any */
   #modelListeners;
   #modelObservers;
@@ -10522,11 +10525,11 @@ var CONNECTION_TYPES = /* @__PURE__ */ new Map([
     /* Protocol.Network.ConnectionType.Wimax */
   ]
 ]);
-function customUserNetworkConditionsSetting() {
-  return Common5.Settings.Settings.instance().moduleSetting("custom-network-conditions");
+function customUserNetworkConditionsSetting(settings = Common5.Settings.Settings.instance()) {
+  return settings.moduleSetting("custom-network-conditions");
 }
-function activeNetworkThrottlingKeySetting() {
-  return Common5.Settings.Settings.instance().createSetting(
+function activeNetworkThrottlingKeySetting(settings = Common5.Settings.Settings.instance()) {
+  return settings.createSetting(
     "active-network-condition-key",
     "NO_THROTTLING"
     /* PredefinedThrottlingConditionKey.NO_THROTTLING */
@@ -10537,7 +10540,7 @@ var NetworkManager = class _NetworkManager extends SDKModel {
   fetchDispatcher;
   #networkAgent;
   #bypassServiceWorkerSetting;
-  activeNetworkThrottlingKey = activeNetworkThrottlingKeySetting();
+  activeNetworkThrottlingKey;
   constructor(target) {
     super(target);
     this.dispatcher = new NetworkDispatcher(this);
@@ -10545,7 +10548,9 @@ var NetworkManager = class _NetworkManager extends SDKModel {
     this.#networkAgent = target.networkAgent();
     target.registerNetworkDispatcher(this.dispatcher);
     target.registerFetchDispatcher(this.fetchDispatcher);
-    if (Common5.Settings.Settings.instance().moduleSetting("cache-disabled").get()) {
+    const settings = this.target().targetManager().settings;
+    this.activeNetworkThrottlingKey = activeNetworkThrottlingKeySetting(settings);
+    if (settings.moduleSetting("cache-disabled").get()) {
       void this.#networkAgent.invoke_setCacheDisabled({ cacheDisabled: true });
     }
     void this.#networkAgent.invoke_enable({
@@ -10555,12 +10560,12 @@ var NetworkManager = class _NetworkManager extends SDKModel {
       reportDirectSocketTraffic: true
     });
     void this.#networkAgent.invoke_setAttachDebugStack({ enabled: true });
-    this.#bypassServiceWorkerSetting = Common5.Settings.Settings.instance().createSetting("bypass-service-worker", false);
+    this.#bypassServiceWorkerSetting = settings.createSetting("bypass-service-worker", false);
     if (this.#bypassServiceWorkerSetting.get()) {
       this.bypassServiceWorkerChanged();
     }
     this.#bypassServiceWorkerSetting.addChangeListener(this.bypassServiceWorkerChanged, this);
-    Common5.Settings.Settings.instance().moduleSetting("cache-disabled").addChangeListener(this.cacheDisabledSettingChanged, this);
+    settings.moduleSetting("cache-disabled").addChangeListener(this.cacheDisabledSettingChanged, this);
   }
   static forRequest(request) {
     return requestToManagerMap.get(request) || null;
@@ -10731,7 +10736,8 @@ var NetworkManager = class _NetworkManager extends SDKModel {
     void this.#networkAgent.invoke_setCacheDisabled({ cacheDisabled: enabled });
   }
   dispose() {
-    Common5.Settings.Settings.instance().moduleSetting("cache-disabled").removeChangeListener(this.cacheDisabledSettingChanged, this);
+    const settings = this.target().targetManager().settings;
+    settings.moduleSetting("cache-disabled").removeChangeListener(this.cacheDisabledSettingChanged, this);
   }
   bypassServiceWorkerChanged() {
     void this.#networkAgent.invoke_setBypassServiceWorker({ bypass: this.#bypassServiceWorkerSetting.get() });
@@ -11328,7 +11334,8 @@ var NetworkDispatcher = class {
     }
     this.#manager.dispatchEventToListeners(Events2.RequestFinished, networkRequest);
     MultitargetNetworkManager.instance().inflightMainResourceRequests.delete(networkRequest.requestId());
-    if (Common5.Settings.Settings.instance().moduleSetting("monitoring-xhr-enabled").get() && networkRequest.resourceType().category() === Common5.ResourceType.resourceCategories.XHR) {
+    const settings = this.#manager.target().targetManager().settings;
+    if (settings.moduleSetting("monitoring-xhr-enabled").get() && networkRequest.resourceType().category() === Common5.ResourceType.resourceCategories.XHR) {
       let message;
       const failedToLoad = networkRequest.failed || networkRequest.hasErrorStatusCode();
       if (failedToLoad) {
@@ -11703,13 +11710,13 @@ var RequestCondition = class extends Common5.ObjectWrapper.ObjectWrapper {
   #enabled;
   #conditions;
   #ruleIds = /* @__PURE__ */ new Set();
-  static createFromSetting(setting) {
+  static createFromSetting(setting, settings = Common5.Settings.Settings.instance()) {
     if ("urlPattern" in setting) {
       const pattern2 = RequestURLPattern.create(setting.urlPattern) ?? {
         wildcardURL: setting.urlPattern,
         upgradedPattern: RequestURLPattern.upgradeFromWildcard(setting.urlPattern) ?? void 0
       };
-      const conditions = getPredefinedOrBlockingCondition(setting.conditions) ?? customUserNetworkConditionsSetting().get().find((condition) => condition.key === setting.conditions) ?? NoThrottlingConditions;
+      const conditions = getPredefinedOrBlockingCondition(setting.conditions) ?? customUserNetworkConditionsSetting(settings).get().find((condition) => condition.key === setting.conditions) ?? NoThrottlingConditions;
       return new this(pattern2, setting.enabled, conditions);
     }
     const pattern = {
@@ -11790,16 +11797,18 @@ var RequestCondition = class extends Common5.ObjectWrapper.ObjectWrapper {
   }
 };
 var RequestConditions = class extends Common5.ObjectWrapper.ObjectWrapper {
-  #setting = Common5.Settings.Settings.instance().createSetting("network-blocked-patterns", []);
-  #conditionsEnabledSetting = Common5.Settings.Settings.instance().moduleSetting("request-blocking-enabled");
+  #setting;
+  #conditionsEnabledSetting;
   #conditions = [];
   #requestConditionsById = /* @__PURE__ */ new Map();
   #conditionsAppliedForTestPromise = Promise.resolve();
-  constructor() {
+  constructor(settings) {
     super();
+    this.#setting = settings.createSetting("network-blocked-patterns", []);
+    this.#conditionsEnabledSetting = settings.moduleSetting("request-blocking-enabled");
     for (const condition of this.#setting.get()) {
       try {
-        this.#conditions.push(RequestCondition.createFromSetting(condition));
+        this.#conditions.push(RequestCondition.createFromSetting(condition, settings));
       } catch (e) {
         console.error("Error loading throttling settings: ", e);
       }
@@ -11974,7 +11983,7 @@ var MultitargetNetworkManager = class _MultitargetNetworkManager extends Common5
   inflightMainResourceRequests = /* @__PURE__ */ new Map();
   #networkConditions = NoThrottlingConditions;
   #updatingInterceptionPatternsPromise = null;
-  #requestConditions = new RequestConditions();
+  #requestConditions;
   #urlsForRequestInterceptor = new Platform3.MapUtilities.Multimap();
   #extraHeaders;
   #customUserAgent;
@@ -11982,6 +11991,8 @@ var MultitargetNetworkManager = class _MultitargetNetworkManager extends Common5
   constructor(targetManager) {
     super();
     this.#targetManager = targetManager;
+    const settings = targetManager.settings;
+    this.#requestConditions = new RequestConditions(settings);
     const blockedPatternChanged = () => {
       this.updateBlockedPatterns();
       this.dispatchEventToListeners(
@@ -12193,8 +12204,9 @@ var MultitargetNetworkManager = class _MultitargetNetworkManager extends Common5
     return this.#updatingInterceptionPatternsPromise;
   }
   async updateInterceptionPatterns() {
-    if (!Common5.Settings.Settings.instance().moduleSetting("cache-disabled").get()) {
-      Common5.Settings.Settings.instance().moduleSetting("cache-disabled").set(true);
+    const settings = this.#targetManager.settings;
+    if (!settings.moduleSetting("cache-disabled").get()) {
+      settings.moduleSetting("cache-disabled").set(true);
     }
     this.#updatingInterceptionPatternsPromise = null;
     const promises = [];
@@ -21457,17 +21469,15 @@ __export(HeapProfilerModel_exports, {
   HeapProfilerModel: () => HeapProfilerModel
 });
 var HeapProfilerModel = class extends SDKModel {
-  #enabled;
+  #enabled = false;
   #heapProfilerAgent;
   #runtimeModel;
-  #samplingProfilerDepth;
+  #samplingProfilerDepth = 0;
   constructor(target) {
     super(target);
     target.registerHeapProfilerDispatcher(new HeapProfilerDispatcher(this));
-    this.#enabled = false;
     this.#heapProfilerAgent = target.heapProfilerAgent();
     this.#runtimeModel = target.model(RuntimeModel);
-    this.#samplingProfilerDepth = 0;
   }
   debuggerModel() {
     return this.#runtimeModel.debuggerModel();
@@ -21597,10 +21607,11 @@ var RuntimeModel = class extends SDKModel {
     this.agent = target.runtimeAgent();
     this.target().registerRuntimeDispatcher(new RuntimeDispatcher(this));
     void this.agent.invoke_enable();
-    if (Common15.Settings.Settings.instance().moduleSetting("custom-formatters").get()) {
+    const settings = this.target().targetManager().context.get(Common15.Settings.Settings);
+    if (settings.moduleSetting("custom-formatters").get()) {
       void this.agent.invoke_setCustomObjectFormatterEnabled({ enabled: true });
     }
-    Common15.Settings.Settings.instance().moduleSetting("custom-formatters").addChangeListener(this.customFormattersStateChanged.bind(this));
+    settings.moduleSetting("custom-formatters").addChangeListener(this.customFormattersStateChanged.bind(this));
   }
   static isSideEffectFailure(response) {
     const exceptionDetails = "exceptionDetails" in response && response.exceptionDetails;
@@ -21803,7 +21814,7 @@ var RuntimeModel = class extends SDKModel {
       Host4.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(object.unserializableValue() || object.value);
       return;
     }
-    const indent = Common15.Settings.Settings.instance().moduleSetting("text-editor-indent").get();
+    const indent = this.target().targetManager().context.get(Common15.Settings.Settings).moduleSetting("text-editor-indent").get();
     void object.callFunctionJSON(toStringForClipboard, [{
       value: {
         subtype: object.subtype,
@@ -23690,7 +23701,7 @@ var OverlayColorGenerator = class {
 var OverlayPersistentHighlighter = class {
   #model;
   #colors = /* @__PURE__ */ new Map();
-  #persistentHighlightSetting = Common19.Settings.Settings.instance().createLocalSetting("persistent-highlight-setting", []);
+  #persistentHighlightSetting;
   #gridHighlights = /* @__PURE__ */ new Map();
   #scrollSnapHighlights = /* @__PURE__ */ new Map();
   #flexHighlights = /* @__PURE__ */ new Map();
@@ -23701,14 +23712,19 @@ var OverlayPersistentHighlighter = class {
   /**
    * @see `front_end/core/sdk/sdk-meta.ts`
    */
-  #showGridLineLabelsSetting = Common19.Settings.Settings.instance().moduleSetting("show-grid-line-labels");
-  #extendGridLinesSetting = Common19.Settings.Settings.instance().moduleSetting("extend-grid-lines");
-  #showGridAreasSetting = Common19.Settings.Settings.instance().moduleSetting("show-grid-areas");
-  #showGridTrackSizesSetting = Common19.Settings.Settings.instance().moduleSetting("show-grid-track-sizes");
+  #showGridLineLabelsSetting;
+  #extendGridLinesSetting;
+  #showGridAreasSetting;
+  #showGridTrackSizesSetting;
   #callbacks;
-  constructor(model, callbacks) {
+  constructor(model, settings, callbacks) {
     this.#model = model;
     this.#callbacks = callbacks;
+    this.#persistentHighlightSetting = settings.createLocalSetting("persistent-highlight-setting", []);
+    this.#showGridLineLabelsSetting = settings.moduleSetting("show-grid-line-labels");
+    this.#extendGridLinesSetting = settings.moduleSetting("extend-grid-lines");
+    this.#showGridAreasSetting = settings.moduleSetting("show-grid-areas");
+    this.#showGridTrackSizesSetting = settings.moduleSetting("show-grid-track-sizes");
     this.#showGridLineLabelsSetting.addChangeListener(this.onSettingChange, this);
     this.#extendGridLinesSetting.addChangeListener(this.onSettingChange, this);
     this.#showGridAreasSetting.addChangeListener(this.onSettingChange, this);
@@ -24129,26 +24145,27 @@ var OverlayModel = class _OverlayModel extends SDKModel {
     this.#domModel = target.model(DOMModel);
     target.registerOverlayDispatcher(this);
     this.overlayAgent = target.overlayAgent();
+    const settings = this.target().targetManager().settings;
     this.#debuggerModel = target.model(DebuggerModel);
     if (this.#debuggerModel) {
-      Common20.Settings.Settings.instance().moduleSetting("disable-paused-state-overlay").addChangeListener(this.updatePausedInDebuggerMessage, this);
+      settings.moduleSetting("disable-paused-state-overlay").addChangeListener(this.updatePausedInDebuggerMessage, this);
       this.#debuggerModel.addEventListener(Events7.DebuggerPaused, this.updatePausedInDebuggerMessage, this);
       this.#debuggerModel.addEventListener(Events7.DebuggerResumed, this.updatePausedInDebuggerMessage, this);
       this.#debuggerModel.addEventListener(Events7.GlobalObjectCleared, this.updatePausedInDebuggerMessage, this);
     }
     this.#defaultHighlighter = new DefaultHighlighter(this);
     this.#highlighter = this.#defaultHighlighter;
-    this.#showPaintRectsSetting = Common20.Settings.Settings.instance().moduleSetting("show-paint-rects");
-    this.#showLayoutShiftRegionsSetting = Common20.Settings.Settings.instance().moduleSetting("show-layout-shift-regions");
-    this.#showAdHighlightsSetting = Common20.Settings.Settings.instance().moduleSetting("show-ad-highlights");
-    this.#showDebugBordersSetting = Common20.Settings.Settings.instance().moduleSetting("show-debug-borders");
-    this.#showFPSCounterSetting = Common20.Settings.Settings.instance().moduleSetting("show-fps-counter");
-    this.#showScrollBottleneckRectsSetting = Common20.Settings.Settings.instance().moduleSetting("show-scroll-bottleneck-rects");
+    this.#showPaintRectsSetting = settings.moduleSetting("show-paint-rects");
+    this.#showLayoutShiftRegionsSetting = settings.moduleSetting("show-layout-shift-regions");
+    this.#showAdHighlightsSetting = settings.moduleSetting("show-ad-highlights");
+    this.#showDebugBordersSetting = settings.moduleSetting("show-debug-borders");
+    this.#showFPSCounterSetting = settings.moduleSetting("show-fps-counter");
+    this.#showScrollBottleneckRectsSetting = settings.moduleSetting("show-scroll-bottleneck-rects");
     if (!target.suspended()) {
       void this.overlayAgent.invoke_enable();
       void this.wireAgentToSettings();
     }
-    this.#persistentHighlighter = new OverlayPersistentHighlighter(this, {
+    this.#persistentHighlighter = new OverlayPersistentHighlighter(this, settings, {
       onGridOverlayStateChanged: ({ nodeId, enabled }) => {
         this.#domModel.nodeForId(nodeId)?.dispatchEventToListeners(DOMNodeEvents.GRID_OVERLAY_STATE_CHANGED, { enabled });
         this.dispatchEventToListeners("PersistentGridOverlayStateChanged", { nodeId, enabled });
@@ -24276,7 +24293,8 @@ var OverlayModel = class _OverlayModel extends SDKModel {
     if (this.target().suspended()) {
       return;
     }
-    const message = this.#debuggerModel && this.#debuggerModel.isPaused() && !Common20.Settings.Settings.instance().moduleSetting("disable-paused-state-overlay").get() ? i18nString7(UIStrings7.pausedInDebugger) : void 0;
+    const settings = this.target().targetManager().settings;
+    const message = this.#debuggerModel && this.#debuggerModel.isPaused() && !settings.moduleSetting("disable-paused-state-overlay").get() ? i18nString7(UIStrings7.pausedInDebugger) : void 0;
     void this.overlayAgent.invoke_setPausedInDebuggerMessage({ message });
   }
   setHighlighter(highlighter) {
@@ -24473,7 +24491,8 @@ var OverlayModel = class _OverlayModel extends SDKModel {
     this.setShowViewportSizeOnResize(!show);
   }
   buildHighlightConfig(mode = "all", showDetailedToolip = false) {
-    const showRulers = Common20.Settings.Settings.instance().moduleSetting("show-metrics-rulers").get();
+    const settings = this.target().targetManager().settings;
+    const showRulers = settings.moduleSetting("show-metrics-rulers").get();
     const highlightConfig = {
       showInfo: mode === "all" || mode === "container-outline",
       showRulers,
@@ -36856,7 +36875,7 @@ var ServiceWorkerManager = class extends SDKModel {
     target.registerServiceWorkerDispatcher(new ServiceWorkerDispatcher(this));
     this.#agent = target.serviceWorkerAgent();
     void this.enable();
-    this.#forceUpdateSetting = Common41.Settings.Settings.instance().createSetting("service-worker-update-on-reload", false);
+    this.#forceUpdateSetting = this.target().targetManager().context.get(Common41.Settings.Settings).createSetting("service-worker-update-on-reload", false);
     if (this.#forceUpdateSetting.get()) {
       this.forceUpdateSettingChanged();
     }
@@ -37447,6 +37466,10 @@ var WebMCPDispatcher = class {
   }
   toolsRemoved(params) {
     this.#model.onToolsRemoved(params.tools);
+  }
+  toolInvoked() {
+  }
+  toolResponded() {
   }
 };
 SDKModel.register(WebMCPModel, { capabilities: 2097152, autostart: true });

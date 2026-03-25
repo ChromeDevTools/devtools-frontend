@@ -1,9 +1,4 @@
-import * as SDK from '../../../core/sdk/sdk.js';
 import type * as Trace from '../../../models/trace/trace.js';
-export declare function getThrottlingRecommendations(): {
-    cpuOption: SDK.CPUThrottlingManager.CPUThrottlingOption | null;
-    networkConditions: SDK.NetworkManager.Conditions | null;
-};
 /**
  * Shortens URLs as much as possible while keeping important context.
  *
@@ -40,4 +35,8 @@ export declare class RevealableInsight {
 export declare class RevealableCoreVitals {
     insightSetKey: string;
     constructor(insightSetKey: string);
+}
+export declare class RevealableTimeRange {
+    bounds: Trace.Types.Timing.TraceWindowMicro;
+    constructor(bounds: Trace.Types.Timing.TraceWindowMicro);
 }

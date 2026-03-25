@@ -1236,7 +1236,7 @@ export class ChatMessage extends UI.Widget.Widget {
   };
 
   #suggestionsResizeObserver = new ResizeObserver(() => this.#handleSuggestionsScrollOrResize());
-  #suggestionsEvaluateLayoutThrottler = new Common.Throttler.Throttler(50);
+  #suggestionsEvaluateLayoutThrottler = new Common.Throttler.Throttler(100);
 
   #feedbackValue = '';
   #currentRating: Host.AidaClient.Rating|undefined;
@@ -1245,6 +1245,8 @@ export class ChatMessage extends UI.Widget.Widget {
 
   #view: View;
   #viewOutput: ViewOutput = {};
+
+  #isObservingSuggestions = false;
 
   constructor(element?: HTMLElement, view?: View) {
     super(element);
@@ -1255,10 +1257,6 @@ export class ChatMessage extends UI.Widget.Widget {
     super.wasShown();
     void this.performUpdate();
     this.#evaluateSuggestionsLayout();
-
-    if (this.#viewOutput.suggestionsScrollContainer) {
-      this.#suggestionsResizeObserver.observe(this.#viewOutput.suggestionsScrollContainer);
-    }
   }
 
   override performUpdate(): Promise<void>|void {
@@ -1297,6 +1295,11 @@ export class ChatMessage extends UI.Widget.Widget {
           walkthrough: this.walkthrough,
         },
         this.#viewOutput, this.contentElement);
+
+    if (this.#viewOutput.suggestionsScrollContainer && !this.#isObservingSuggestions) {
+      this.#suggestionsResizeObserver.observe(this.#viewOutput.suggestionsScrollContainer);
+      this.#isObservingSuggestions = true;
+    }
   }
 
   #handleInputChange(value: string): void {
@@ -1320,6 +1323,7 @@ export class ChatMessage extends UI.Widget.Widget {
     const shouldShowRightButton = suggestionsScrollContainer.scrollLeft +
             (suggestionsScrollContainer as HTMLElement).offsetWidth + SCROLL_ROUNDING_OFFSET <
         suggestionsScrollContainer.scrollWidth;
+
     leftScrollButtonContainer.classList.toggle('hidden', !shouldShowLeftButton);
     rightScrollButtonContainer.classList.toggle('hidden', !shouldShowRightButton);
   };
@@ -1327,6 +1331,7 @@ export class ChatMessage extends UI.Widget.Widget {
   override willHide(): void {
     super.willHide();
     this.#suggestionsResizeObserver.disconnect();
+    this.#isObservingSuggestions = false;
   }
 
   #handleSuggestionsScrollOrResize(): void {

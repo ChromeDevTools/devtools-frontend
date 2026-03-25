@@ -602,6 +602,10 @@ interface ConsoleInsightsTeasers {
   allowWithoutGpu: boolean;
 }
 
+interface UseGcaApi {
+  enabled: boolean;
+}
+
 interface DevToolsProtocolMonitor {
   enabled: boolean;
 }
@@ -662,6 +666,7 @@ export type HostConfig = Platform.TypeScriptUtilities.RecursivePartial<{
   devToolsGeminiRebranding: HostConfigGeminiRebranding,
   devToolsProtocolMonitor: DevToolsProtocolMonitor,
   devToolsWebMCPSupport: DevToolsWebMCPSupport,
+  devToolsUseGcaApi: UseGcaApi,
 }>;
 
 /**

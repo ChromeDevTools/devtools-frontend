@@ -11,6 +11,7 @@ devtools_module("host") {
     "AidaClientTypes.ts",
     "AidaGcaTranslation.ts",
     "DispatchHttpRequestClient.ts",
+    "GcaClient.ts",
     "GcaTypes.ts",
     "GdpClient.ts",
     "InspectorFrontendHost.ts",
@@ -44,6 +45,7 @@ ts_library("unittests") {
     "AidaClient.test.ts",
     "AidaGcaTranslation.test.ts",
     "DispatchHttpRequestClient.test.ts",
+    "GcaClient.test.ts",
     "GdpClient.test.ts",
   ]
 

@@ -1557,9 +1557,6 @@ export class TrackingHeapSnapshotProfileType extends
     }
     this.setProfileBeingRecorded(new HeapProfileHeader(heapProfilerModel, this, undefined));
     this.profileSamples = new Samples();
-    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (this.profileBeingRecorded() as any)._profileSamples = this.profileSamples;
     this.recording = true;
     this.addProfile((this.profileBeingRecorded() as ProfileHeader));
     (this.profileBeingRecorded() as HeapProfileHeader).updateStatus(i18nString(UIStrings.recording));
@@ -1733,20 +1730,16 @@ export class HeapProfileHeader extends ProfileHeader {
     this.receiver = this.workerProxy.createLoader(this.uid, this.snapshotReceived.bind(this));
   }
 
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  handleWorkerEvent(eventName: string, data: any): void {
+  handleWorkerEvent(eventName: string, data: string): void {
     if (HeapSnapshotModel.HeapSnapshotModel.HeapSnapshotProgressEvent.BrokenSnapshot === eventName) {
-      const error = (data as string);
-      Common.Console.Console.instance().error(error);
+      Common.Console.Console.instance().error(data);
       return;
     }
 
     if (HeapSnapshotModel.HeapSnapshotModel.HeapSnapshotProgressEvent.Update !== eventName) {
       return;
     }
-    const serializedMessage = (data as string);
-    const messageObject = i18n.i18n.deserializeUIString(serializedMessage);
+    const messageObject = i18n.i18n.deserializeUIString(data);
     // We know all strings from the worker are declared inside a single file so we can
     // use a custom function.
     this.updateStatus(moduleI18nString(messageObject.string, messageObject.values));

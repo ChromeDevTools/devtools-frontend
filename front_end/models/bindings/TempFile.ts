@@ -7,10 +7,7 @@ import * as Common from '../../core/common/common.js';
 import {ChunkedFileReader, type ChunkedReader} from './FileUtils.js';
 
 export class TempFile {
-  #lastBlob: Blob|null;
-  constructor() {
-    this.#lastBlob = null;
-  }
+  #lastBlob: Blob|null = null;
 
   write(pieces: Array<string|Blob>): void {
     if (this.#lastBlob) {

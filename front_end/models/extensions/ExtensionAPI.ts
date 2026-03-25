@@ -616,7 +616,7 @@ self.injectedExtensionAPI = function(
           entries[i].__proto__ = new (Constructor(Request))(entries[i]._requestId as number);
           delete entries[i]._requestId;
         }
-        callback?.(result as Object);
+        callback?.(result);
       }
       extensionServer.sendRequest({command: PrivateAPI.Commands.GetHAR}, callback && callbackWrapper);
     },

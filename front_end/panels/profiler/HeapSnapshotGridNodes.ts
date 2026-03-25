@@ -1290,8 +1290,10 @@ export class HeapSnapshotDiffNode extends HeapSnapshotGridNode {
   readonly classKey: string;
 
   constructor(
-      dataGrid: HeapSnapshotDiffDataGrid, classKey: string,
-      diffForClass: HeapSnapshotModel.HeapSnapshotModel.DiffForClass) {
+      dataGrid: HeapSnapshotDiffDataGrid,
+      classKey: string,
+      diffForClass: HeapSnapshotModel.HeapSnapshotModel.Diff,
+  ) {
     super(dataGrid, true);
     this.nameInternal = diffForClass.name;
     this.addedCount = diffForClass.addedCount;

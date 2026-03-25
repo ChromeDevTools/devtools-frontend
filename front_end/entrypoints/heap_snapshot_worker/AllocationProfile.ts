@@ -8,26 +8,15 @@ import type {LiveObjects, Profile} from './HeapSnapshot.js';
 
 export class AllocationProfile {
   readonly #strings: string[];
-  #nextNodeId: number;
-  #functionInfos: FunctionAllocationInfo[];
-  #idToNode: Record<number, BottomUpAllocationNode|null>;
-  readonly #idToTopDownNode: Record<number, TopDownAllocationNode>;
-  #collapsedTopNodeIdToFunctionInfo: Record<number, FunctionAllocationInfo>;
-  #traceTops: HeapSnapshotModel.HeapSnapshotModel.SerializedAllocationNode[]|null;
+  #nextNodeId = 1;
+  #functionInfos: FunctionAllocationInfo[] = [];
+  #idToNode: Record<number, BottomUpAllocationNode|null> = {};
+  readonly #idToTopDownNode: Record<number, TopDownAllocationNode> = {};
+  #collapsedTopNodeIdToFunctionInfo: Record<number, FunctionAllocationInfo> = {};
+  #traceTops: HeapSnapshotModel.HeapSnapshotModel.SerializedAllocationNode[]|null = null;
 
   constructor(profile: Profile, liveObjectStats: LiveObjects) {
     this.#strings = profile.strings;
-
-    this.#nextNodeId = 1;
-    this.#functionInfos = [];
-
-    this.#idToNode = {};
-
-    this.#idToTopDownNode = {};
-
-    this.#collapsedTopNodeIdToFunctionInfo = {};
-
-    this.#traceTops = null;
 
     this.#buildFunctionAllocationInfos(profile);
     this.#buildAllocationTree(profile, liveObjectStats);
@@ -71,7 +60,7 @@ export class AllocationProfile {
     function traverseNode(
         // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        rawNodeArray: any, nodeOffset: any, parent: TopDownAllocationNode|null): TopDownAllocationNode {
+        rawNodeArray: any, nodeOffset: number, parent: TopDownAllocationNode|null): TopDownAllocationNode {
       const functionInfo = functionInfos[rawNodeArray[nodeOffset + functionInfoIndexOffset]];
       const id = rawNodeArray[nodeOffset + nodeIdOffset];
       const stats = liveObjectStats[id];
@@ -188,7 +177,7 @@ export class TopDownAllocationNode {
   liveCount: number;
   liveSize: number;
   parent: TopDownAllocationNode|null;
-  children: TopDownAllocationNode[];
+  children: TopDownAllocationNode[] = [];
   constructor(
       id: number, functionInfo: FunctionAllocationInfo, count: number, size: number, liveCount: number,
       liveSize: number, parent: TopDownAllocationNode|null) {
@@ -199,29 +188,20 @@ export class TopDownAllocationNode {
     this.liveCount = liveCount;
     this.liveSize = liveSize;
     this.parent = parent;
-
-    this.children = [];
   }
 }
 
 export class BottomUpAllocationNode {
   functionInfo: FunctionAllocationInfo;
-  allocationCount: number;
-  allocationSize: number;
-  liveCount: number;
-  liveSize: number;
-  traceTopIds: number[];
-  readonly #callers: BottomUpAllocationNode[];
+  allocationCount = 0;
+  allocationSize = 0;
+  liveCount = 0;
+  liveSize = 0;
+  traceTopIds: number[] = [];
+  readonly #callers: BottomUpAllocationNode[] = [];
+
   constructor(functionInfo: FunctionAllocationInfo) {
     this.functionInfo = functionInfo;
-    this.allocationCount = 0;
-    this.allocationSize = 0;
-    this.liveCount = 0;
-    this.liveSize = 0;
-
-    this.traceTopIds = [];
-
-    this.#callers = [];
   }
 
   addCaller(traceNode: TopDownAllocationNode): BottomUpAllocationNode {
@@ -256,11 +236,11 @@ export class FunctionAllocationInfo {
   scriptId: number;
   line: number;
   column: number;
-  totalCount: number;
-  totalSize: number;
-  totalLiveCount: number;
-  totalLiveSize: number;
-  #traceTops: TopDownAllocationNode[];
+  totalCount = 0;
+  totalSize = 0;
+  totalLiveCount = 0;
+  totalLiveSize = 0;
+  #traceTops: TopDownAllocationNode[] = [];
   #bottomUpTree?: BottomUpAllocationNode;
   constructor(functionName: string, scriptName: string, scriptId: number, line: number, column: number) {
     this.functionName = functionName;
@@ -268,12 +248,6 @@ export class FunctionAllocationInfo {
     this.scriptId = scriptId;
     this.line = line;
     this.column = column;
-    this.totalCount = 0;
-    this.totalSize = 0;
-    this.totalLiveCount = 0;
-    this.totalLiveSize = 0;
-
-    this.#traceTops = [];
   }
 
   addTraceTopNode(node: TopDownAllocationNode): void {
@@ -294,14 +268,14 @@ export class FunctionAllocationInfo {
     if (!this.#bottomUpTree) {
       this.#buildAllocationTraceTree();
     }
-    return this.#bottomUpTree as BottomUpAllocationNode;
+    return this.#bottomUpTree ?? null;
   }
 
   #buildAllocationTraceTree(): void {
     this.#bottomUpTree = new BottomUpAllocationNode(this);
 
     for (let i = 0; i < this.#traceTops.length; i++) {
-      let node: (TopDownAllocationNode|null)|TopDownAllocationNode = this.#traceTops[i];
+      let node: TopDownAllocationNode|null = this.#traceTops[i];
       let bottomUpNode: BottomUpAllocationNode = this.#bottomUpTree;
       const count = node.allocationCount;
       const size = node.allocationSize;

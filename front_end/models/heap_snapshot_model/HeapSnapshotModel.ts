@@ -71,13 +71,19 @@ export class Node {
   retainedSize: number;
   selfSize: number;
   type: string;
-  canBeQueried: boolean;
-  detachedDOMTreeNode: boolean;
-  isAddedNotRemoved: boolean|null;
-  ignored: boolean;
+  canBeQueried = false;
+  detachedDOMTreeNode = false;
+  isAddedNotRemoved: boolean|null = null;
+  ignored = false;
   constructor(
-      id: number, name: string, distance: number, nodeIndex: number, retainedSize: number, selfSize: number,
-      type: string) {
+      id: number,
+      name: string,
+      distance: number,
+      nodeIndex: number,
+      retainedSize: number,
+      selfSize: number,
+      type: string,
+  ) {
     this.id = id;
     this.name = name;
     this.distance = distance;
@@ -85,11 +91,6 @@ export class Node {
     this.retainedSize = retainedSize;
     this.selfSize = selfSize;
     this.type = type;
-
-    this.canBeQueried = false;
-    this.detachedDOMTreeNode = false;
-    this.isAddedNotRemoved = null;
-    this.ignored = false;
   }
 }
 
@@ -98,13 +99,12 @@ export class Edge {
   node: Node;
   type: string;
   edgeIndex: number;
-  isAddedNotRemoved: boolean|null;
+  isAddedNotRemoved: boolean|null = null;
   constructor(name: string, node: Node, type: string, edgeIndex: number) {
     this.name = name;
     this.node = node;
     this.type = type;
     this.edgeIndex = edgeIndex;
-    this.isAddedNotRemoved = null;
   }
 }
 
@@ -132,35 +132,17 @@ export class AggregateForDiff {
 
 export class Diff {
   name: string;
-  addedCount: number;
-  removedCount: number;
-  addedSize: number;
-  removedSize: number;
-  deletedIndexes: number[];
-  addedIndexes: number[];
+  addedCount = 0;
+  removedCount = 0;
+  addedSize = 0;
+  removedSize = 0;
+  deletedIndexes: number[] = [];
+  addedIndexes: number[] = [];
   countDelta!: number;
   sizeDelta!: number;
   constructor(name: string) {
     this.name = name;
-    this.addedCount = 0;
-    this.removedCount = 0;
-    this.addedSize = 0;
-    this.removedSize = 0;
-    this.deletedIndexes = [];
-    this.addedIndexes = [];
   }
-}
-
-export class DiffForClass {
-  name!: string;
-  addedCount!: number;
-  removedCount!: number;
-  addedSize!: number;
-  removedSize!: number;
-  deletedIndexes!: number[];
-  addedIndexes!: number[];
-  countDelta!: number;
-  sizeDelta!: number;
 }
 
 export class ComparatorConfig {
@@ -176,16 +158,16 @@ export class ComparatorConfig {
   }
 }
 
-export class WorkerCommand {
-  callId!: number;
-  disposition!: string;
-  objectId!: number;
-  newObjectId!: number;
-  methodName!: string;
+export interface WorkerCommand {
+  callId: number;
+  disposition: string;
+  objectId: number;
+  newObjectId: number;
+  methodName: string;
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  methodArguments!: any[];
-  source!: string;
+  methodArguments: any[];
+  source: string;
 }
 
 export class ItemsRange {
@@ -244,8 +226,13 @@ export class SearchConfig {
   shouldJump: boolean;
   jumpBackward: boolean;
   constructor(
-      query: string, caseSensitive: boolean, wholeWord: boolean, isRegex: boolean, shouldJump: boolean,
-      jumpBackward: boolean) {
+      query: string,
+      caseSensitive: boolean,
+      wholeWord: boolean,
+      isRegex: boolean,
+      shouldJump: boolean,
+      jumpBackward: boolean,
+  ) {
     this.query = query;
     this.caseSensitive = caseSensitive;
     this.wholeWord = wholeWord;

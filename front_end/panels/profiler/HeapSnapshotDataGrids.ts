@@ -132,13 +132,13 @@ class HeapSnapshotSortableDataGridBase extends DataGrid.DataGrid.DataGridImpl<He
 export class HeapSnapshotSortableDataGrid extends Common.ObjectWrapper
                                                       .eventMixin<EventTypes, typeof HeapSnapshotSortableDataGridBase>(
                                                           HeapSnapshotSortableDataGridBase) {
-  snapshot: HeapSnapshotProxy|null;
-  override selectedNode: HeapSnapshotGridNode|null;
+  snapshot: HeapSnapshotProxy|null = null;
+  override selectedNode: HeapSnapshotGridNode|null = null;
   readonly heapProfilerModelInternal: SDK.HeapProfilerModel.HeapProfilerModel|null;
   readonly dataDisplayDelegateInternal: DataDisplayDelegate;
-  recursiveSortingDepth: number;
-  populatedAndSorted: boolean;
-  nameFilter: UI.Toolbar.ToolbarInput|null;
+  recursiveSortingDepth = 0;
+  populatedAndSorted = false;
+  nameFilter: UI.Toolbar.ToolbarInput|null = null;
   nodeFilterInternal: HeapSnapshotModel.HeapSnapshotModel.NodeFilter|undefined;
   lastSortColumnId?: string|null;
   lastSortAscending?: boolean;
@@ -147,8 +147,6 @@ export class HeapSnapshotSortableDataGrid extends Common.ObjectWrapper
       dataGridParameters: DataGrid.DataGrid.Parameters) {
     // TODO(allada) This entire class needs to be converted to use the templates in DataGridNode.
     super(dataGridParameters);
-    this.snapshot = null;
-    this.selectedNode = null;
     this.heapProfilerModelInternal = heapProfilerModel;
     this.dataDisplayDelegateInternal = dataDisplayDelegate;
     const tooltips = [

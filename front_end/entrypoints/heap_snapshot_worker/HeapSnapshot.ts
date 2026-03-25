@@ -2675,7 +2675,7 @@ export abstract class HeapSnapshot {
     if (snapshotDiff) {
       return snapshotDiff;
     }
-    snapshotDiff = ({} as Record<string, HeapSnapshotModel.HeapSnapshotModel.Diff>);
+    snapshotDiff = {};
 
     const aggregates = this.getAggregatesByClassKey(true, 'allObjects');
     for (const classKey in baseSnapshotAggregates) {

@@ -19,18 +19,21 @@ export class IsolateManager extends Common.ObjectWrapper.ObjectWrapper<EventType
   #isolateIdByModel = new Map<RuntimeModel, string|null>();
   #observers = new Set<Observer>();
   #pollId = 0;
+  readonly #targetManager: TargetManager;
 
-  constructor() {
+  constructor(targetManager: TargetManager = TargetManager.instance()) {
     super();
+    this.#targetManager = targetManager;
 
-    TargetManager.instance().observeModels(RuntimeModel, this);
+    this.#targetManager.observeModels(RuntimeModel, this);
   }
 
-  static instance({forceNew}: {
+  static instance({forceNew, targetManager}: {
     forceNew: boolean,
+    targetManager?: TargetManager,
   } = {forceNew: false}): IsolateManager {
     if (!isolateManagerInstance || forceNew) {
-      isolateManagerInstance = new IsolateManager();
+      isolateManagerInstance = new IsolateManager(targetManager);
     }
 
     return isolateManagerInstance;
@@ -67,7 +70,7 @@ export class IsolateManager extends Common.ObjectWrapper.ObjectWrapper<EventType
     this.#isolateIdByModel.set(model, isolateId);
     let isolate = this.#isolates.get(isolateId);
     if (!isolate) {
-      isolate = new Isolate(isolateId);
+      isolate = new Isolate(isolateId, this);
       this.#isolates.set(isolateId, isolate);
     }
     isolate.models().add(model);
@@ -145,9 +148,11 @@ export class Isolate {
   readonly #models: Set<RuntimeModel>;
   #usedHeapSize: number;
   readonly #memoryTrend: MemoryTrend;
+  readonly #manager: IsolateManager;
 
-  constructor(id: string) {
+  constructor(id: string, manager: IsolateManager) {
     this.#id = id;
+    this.#manager = manager;
     this.#models = new Set();
     this.#usedHeapSize = 0;
     const count = MemoryTrendWindowMs / PollIntervalMs;
@@ -179,7 +184,7 @@ export class Isolate {
     }
     this.#usedHeapSize = usage.usedSize + (usage.embedderHeapUsedSize ?? 0) + (usage.backingStorageSize ?? 0);
     this.#memoryTrend.add(this.#usedHeapSize);
-    IsolateManager.instance().dispatchEventToListeners(Events.MEMORY_CHANGED, this);
+    this.#manager.dispatchEventToListeners(Events.MEMORY_CHANGED, this);
   }
 
   samplesCount(): number {

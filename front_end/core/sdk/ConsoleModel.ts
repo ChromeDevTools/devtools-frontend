@@ -353,25 +353,25 @@ export class ConsoleModel extends SDKModel<EventTypes> {
   }
 
   // messages[] are not ordered by timestamp.
-  static allMessagesUnordered(): ConsoleMessage[] {
+  static allMessagesUnordered(targetManager: TargetManager = TargetManager.instance()): ConsoleMessage[] {
     const messages = [];
-    for (const target of TargetManager.instance().targets()) {
+    for (const target of targetManager.targets()) {
       const targetMessages = target.model(ConsoleModel)?.messages() || [];
       messages.push(...targetMessages);
     }
     return messages;
   }
 
-  static requestClearMessages(): void {
-    for (const logModel of TargetManager.instance().models(LogModel)) {
+  static requestClearMessages(targetManager: TargetManager = TargetManager.instance()): void {
+    for (const logModel of targetManager.models(LogModel)) {
       logModel.requestClear();
     }
-    for (const runtimeModel of TargetManager.instance().models(RuntimeModel)) {
+    for (const runtimeModel of targetManager.models(RuntimeModel)) {
       runtimeModel.discardConsoleEntries();
       // Runtime.discardConsoleEntries implies Runtime.releaseObjectGroup('console').
       runtimeModel.releaseObjectGroup('live-expression');
     }
-    for (const target of TargetManager.instance().targets()) {
+    for (const target of targetManager.targets()) {
       target.model(ConsoleModel)?.clear();
     }
   }
@@ -390,9 +390,9 @@ export class ConsoleModel extends SDKModel<EventTypes> {
     return this.#errors;
   }
 
-  static allErrors(): number {
+  static allErrors(targetManager: TargetManager = TargetManager.instance()): number {
     let errors = 0;
-    for (const target of TargetManager.instance().targets()) {
+    for (const target of targetManager.targets()) {
       errors += target.model(ConsoleModel)?.errors() || 0;
     }
     return errors;
@@ -402,9 +402,9 @@ export class ConsoleModel extends SDKModel<EventTypes> {
     return this.#warnings;
   }
 
-  static allWarnings(): number {
+  static allWarnings(targetManager: TargetManager = TargetManager.instance()): number {
     let warnings = 0;
-    for (const target of TargetManager.instance().targets()) {
+    for (const target of targetManager.targets()) {
       warnings += target.model(ConsoleModel)?.warnings() || 0;
     }
     return warnings;

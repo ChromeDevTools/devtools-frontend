@@ -168,40 +168,34 @@ export enum Mode {
   NONE = 3,
 }
 
-/* eslint-disable @typescript-eslint/naming-convention */
 export interface GenerateContentRequest {
   model?: string;
   aicode?: AiCodeConfig;
   contents: Content[];
-  system_instruction?: Content;
+  systemInstruction?: Content;
   tools?: Tool[];
-  tool_config?: ToolConfig;
+  toolConfig?: ToolConfig;
   labels?: Record<string, string>;
-  safety_settings?: SafetySetting[];
-  generation_config?: GenerationConfig;
-  session_id?: string;
+  safetySettings?: SafetySetting[];
+  generationConfig?: GenerationConfig;
+  sessionId?: string;
 }
-/* eslint-enable @typescript-eslint/naming-convention */
 
 export interface AiCodeConfig {
   experience: string;
   files?: SourceFile[];
 }
 
-/* eslint-disable @typescript-eslint/naming-convention */
 export interface SourceFile {
-  inclusion_reason?: InclusionReason[];
-  file_uri: string;
-  programming_language?: string;
+  inclusionReason?: InclusionReason[];
+  fileUri: string;
+  programmingLanguage?: string;
 }
-/* eslint-enable @typescript-eslint/naming-convention */
 
-/* eslint-disable @typescript-eslint/naming-convention */
 export interface FileEdit {
-  file_uri: string;
+  fileUri: string;
   content: string;
 }
-/* eslint-enable @typescript-eslint/naming-convention */
 
 export type Role = 'user'|'model';
 
@@ -210,34 +204,28 @@ export interface Content {
   role: Role;
 }
 
-/* eslint-disable @typescript-eslint/naming-convention */
 export interface Part {
   text?: string;
-  inline_data?: Blob;
-  file_data?: FileData;
-  function_call?: FunctionCall;
-  function_response?: FunctionResponse;
-  executable_code?: ExecutableCode;
-  code_execution_result?: CodeExecutionResult;
-  video_metadata?: VideoMetadata;
+  inlineData?: Blob;
+  fileData?: FileData;
+  functionCall?: FunctionCall;
+  functionResponse?: FunctionResponse;
+  executableCode?: ExecutableCode;
+  codeExecutionResult?: CodeExecutionResult;
+  videoMetadata?: VideoMetadata;
   thought?: boolean;
-  thought_signature?: string;  // bytes as base64 string
+  thoughtSignature?: string;  // bytes as base64 string
 }
-/* eslint-enable @typescript-eslint/naming-convention */
 
-/* eslint-disable @typescript-eslint/naming-convention */
 export interface Blob {
-  mime_type: string;
+  mimeType: string;
   data: string;  // bytes as base64 string
 }
-/* eslint-enable @typescript-eslint/naming-convention */
 
-/* eslint-disable @typescript-eslint/naming-convention */
 export interface FileData {
-  mime_type: string;
-  file_uri: string;
+  mimeType: string;
+  fileUri: string;
 }
-/* eslint-enable @typescript-eslint/naming-convention */
 
 export interface FunctionCall {
   name: string;
@@ -261,30 +249,25 @@ export interface CodeExecutionResult {
   output: string;
 }
 
-/* eslint-disable @typescript-eslint/naming-convention */
 export interface Tool {
-  function_declarations?: FunctionDeclaration[];
-  google_search?: {
-    time_range_filter?: {
-      start_time?: string,  // Timestamp
-      end_time?: string,    // Timestamp
+  functionDeclarations?: FunctionDeclaration[];
+  googleSearch?: {
+    timeRangeFilter?: {
+      startTime?: string,  // Timestamp
+      endTime?: string,    // Timestamp
     },
   };
 }
-/* eslint-enable @typescript-eslint/naming-convention */
 
-/* eslint-disable @typescript-eslint/naming-convention */
 export interface FunctionDeclaration {
   name: string;
   description: string;
   parameters?: Schema;
-  parameters_json_schema?: unknown;  // google.protobuf.Value
+  parametersJsonSchema?: unknown;  // google.protobuf.Value
   response?: Schema;
-  response_json_schema?: unknown;  // google.protobuf.Value
+  responseJsonSchema?: unknown;  // google.protobuf.Value
 }
-/* eslint-enable @typescript-eslint/naming-convention */
 
-/* eslint-disable @typescript-eslint/naming-convention */
 export interface Schema {
   type?: Type;
   format?: string;
@@ -296,25 +279,20 @@ export interface Schema {
   required?: string[];
   minimum?: number;
   maximum?: number;
-  min_length?: number;
-  max_length?: number;
+  minLength?: number;
+  maxLength?: number;
   pattern?: string;
   example?: unknown;  // google.protobuf.Value
 }
-/* eslint-enable @typescript-eslint/naming-convention */
 
-/* eslint-disable @typescript-eslint/naming-convention */
 export interface ToolConfig {
-  function_calling_config?: FunctionCallingConfig;
+  functionCallingConfig?: FunctionCallingConfig;
 }
-/* eslint-enable @typescript-eslint/naming-convention */
 
-/* eslint-disable @typescript-eslint/naming-convention */
 export interface FunctionCallingConfig {
   mode: Mode;
-  allowed_function_names?: string[];
+  allowedFunctionNames?: string[];
 }
-/* eslint-enable @typescript-eslint/naming-convention */
 
 export interface SafetySetting {
   category: HarmCategory;
@@ -322,52 +300,44 @@ export interface SafetySetting {
   method?: HarmBlockMethod;
 }
 
-/* eslint-disable @typescript-eslint/naming-convention */
 export interface GenerationConfig {
-  candidate_count?: number;
-  stop_sequences?: string[];
-  max_output_tokens?: number;
+  candidateCount?: number;
+  stopSequences?: string[];
+  maxOutputTokens?: number;
   temperature?: number;
-  top_p?: number;
-  top_k?: number;
+  topP?: number;
+  topK?: number;
   seed?: number;
-  response_mime_type?: string;
-  response_schema?: Schema;
-  response_json_schema?: unknown;  // google.protobuf.Value
-  presence_penalty?: number;
-  frequency_penalty?: number;
-  thinking_config?: ThinkingConfig;
+  responseMimeType?: string;
+  responseSchema?: Schema;
+  responseJsonSchema?: unknown;  // google.protobuf.Value
+  presencePenalty?: number;
+  frequencyPenalty?: number;
+  thinkingConfig?: ThinkingConfig;
 }
-/* eslint-enable @typescript-eslint/naming-convention */
 
-/* eslint-disable @typescript-eslint/naming-convention */
 export interface ThinkingConfig {
-  include_thoughts?: boolean;
-  thinking_budget?: number;
+  includeThoughts?: boolean;
+  thinkingBudget?: number;
 }
-/* eslint-enable @typescript-eslint/naming-convention */
 
-/* eslint-disable @typescript-eslint/naming-convention */
 export interface GenerateContentResponse {
   candidates: Candidate[];
-  prompt_feedback: PromptFeedback;
-  usage_metadata: UsageMetadata;
-  model_version: string;
-  response_id: string;
+  promptFeedback: PromptFeedback;
+  usageMetadata: UsageMetadata;
+  modelVersion: string;
+  responseId: string;
 }
-/* eslint-enable @typescript-eslint/naming-convention */
 
-/* eslint-disable @typescript-eslint/naming-convention */
 export interface Candidate {
   index: number;
   content: Content;
-  finish_reason: FinishReason;
-  safety_ratings: SafetyRating[];
-  citation_metadata: CitationMetadata;
-  grounding_metadata: GroundingMetadata;
-  aicode_output: AiCodeOutput;
+  finishReason: FinishReason;
+  safetyRatings: SafetyRating[];
+  citationMetadata: CitationMetadata;
+  groundingMetadata: GroundingMetadata;
+  aicodeOutput: AiCodeOutput;
 }
-/* eslint-enable @typescript-eslint/naming-convention */
 
 export interface SafetyRating {
   category: HarmCategory;
@@ -379,142 +349,118 @@ export interface CitationMetadata {
   citations: Citation[];
 }
 
-/* eslint-disable @typescript-eslint/naming-convention */
 export interface Citation {
-  start_index: number;
-  end_index: number;
+  startIndex: number;
+  endIndex: number;
   uri: string;
   license: string;
 }
-/* eslint-enable @typescript-eslint/naming-convention */
 
-/* eslint-disable @typescript-eslint/naming-convention */
 export interface GroundingMetadata {
-  web_search_queries?: string[];
-  search_entry_point?: {
-    rendered_content?: string,
-    sdk_blob?: string,  // bytes as base64 string
+  webSearchQueries?: string[];
+  searchEntryPoint?: {
+    renderedContent?: string,
+    sdkBlob?: string,  // bytes as base64 string
   };
-  grounding_chunks?: Array<{
+  groundingChunks?: Array<{
     web?: {
       uri?: string,
       title?: string,
     },
   }>;
-  grounding_supports?: Array<{
+  groundingSupports?: Array<{
     segment?: {
-      part_index?: number,
-      start_index?: number,
-      end_index?: number,
+      partIndex?: number,
+      startIndex?: number,
+      endIndex?: number,
       text?: string,
     },
-    grounding_chunk_indices?: number[],
-    confidence_scores?: number[],
+    groundingChunkIndices?: number[],
+    confidenceScores?: number[],
   }>;
-  retrieval_metadata?: {
-    google_search_dynamic_retrieval_score?: number,
+  retrievalMetadata?: {
+    googleSearchDynamicRetrievalScore?: number,
   };
 }
-/* eslint-enable @typescript-eslint/naming-convention */
 
 export interface AiCodeOutput {
   contents: DerivedContent[];
 }
 
-/* eslint-disable @typescript-eslint/naming-convention */
 export interface DerivedContent {
-  start_index?: number;
-  end_index?: number;
+  startIndex?: number;
+  endIndex?: number;
   file?: OutputSourceFile;
-  code_block?: CodeBlock;
-  text_block?: TextBlock;
-  prediction_metadata?: PredictionMetadata;
+  codeBlock?: CodeBlock;
+  textBlock?: TextBlock;
+  predictionMetadata?: PredictionMetadata;
 }
-/* eslint-enable @typescript-eslint/naming-convention */
 
-/* eslint-disable @typescript-eslint/naming-convention */
 export interface OutputSourceFile {
-  file_uri: string;
+  fileUri: string;
   content: string;
 }
 
-/* eslint-disable @typescript-eslint/naming-convention */
 export interface CodeBlock {
   content: string;
-  programming_language: string;
+  programmingLanguage: string;
 }
-/* eslint-enable @typescript-eslint/naming-convention */
 
 export interface TextBlock {
   content: string;
 }
 
-/* eslint-disable @typescript-eslint/naming-convention */
 export interface PredictionMetadata {
   score: number;
-  classifier_score: number;
+  classifierScore: number;
 }
 
-/* eslint-disable @typescript-eslint/naming-convention */
 export interface PromptFeedback {
-  block_reason: BlockReason;
-  safety_ratings: SafetyRating[];
-  block_reason_message: string;
+  blockReason: BlockReason;
+  safetyRatings: SafetyRating[];
+  blockReasonMessage: string;
 }
-/* eslint-enable @typescript-eslint/naming-convention */
 
-/* eslint-disable @typescript-eslint/naming-convention */
 export interface UsageMetadata {
-  prompt_token_count: number;
-  candidates_token_count: number;
-  total_token_count: number;
-  thoughts_token_count: number;
-  cached_content_token_count: number;
+  promptTokenCount: number;
+  candidatesTokenCount: number;
+  totalTokenCount: number;
+  thoughtsTokenCount: number;
+  cachedContentTokenCount: number;
 }
-/* eslint-enable @typescript-eslint/naming-convention */
 
-/* eslint-disable @typescript-eslint/naming-convention */
 export interface VideoMetadata {
-  start_offset?: string;  // Duration
-  end_offset?: string;    // Duration
+  startOffset?: string;  // Duration
+  endOffset?: string;    // Duration
   fps?: number;
 }
-/* eslint-enable @typescript-eslint/naming-convention */
 
-/* eslint-disable @typescript-eslint/naming-convention */
 export interface SendTelemetryRequest {
-  feedback_metrics: FeedbackMetric[];
+  feedbackMetrics: FeedbackMetric[];
 }
-/* eslint-enable @typescript-eslint/naming-convention */
 
-/* eslint-disable @typescript-eslint/naming-convention */
 export interface FeedbackMetric {
-  event_time: string;  // Timestamp
-  response_id: string;
-  suggestion_offered?: SuggestionOffered;
-  suggestion_interaction?: SuggestionInteraction;
+  eventTime: string;  // Timestamp
+  responseId: string;
+  suggestionOffered?: SuggestionOffered;
+  suggestionInteraction?: SuggestionInteraction;
 }
-/* eslint-enable @typescript-eslint/naming-convention */
 
-/* eslint-disable @typescript-eslint/naming-convention */
 export interface SuggestionOffered {
   method?: Method;
   status?: SuggestionStatus;
-  first_message_latency?: string;  // Duration
-  response_latency?: string;       // Duration
+  firstMessageLatency?: string;  // Duration
+  responseLatency?: string;      // Duration
   displayed?: boolean;
-  e2e_latency?: string;       // Duration
-  display_duration?: string;  // Duration
-  programming_language?: string;
+  e2eLatency?: string;       // Duration
+  displayDuration?: string;  // Duration
+  programmingLanguage?: string;
 }
-/* eslint-enable @typescript-eslint/naming-convention */
 
-/* eslint-disable @typescript-eslint/naming-convention */
 export interface SuggestionInteraction {
   interaction?: InteractionType;
-  accepted_lines?: number;
-  accepted_characters?: number;
-  accepted_comment_lines?: number;
-  candidate_index?: number;
+  acceptedLines?: number;
+  acceptedCharacters?: number;
+  acceptedCommentLines?: number;
+  candidateIndex?: number;
 }
-/* eslint-enable @typescript-eslint/naming-convention */

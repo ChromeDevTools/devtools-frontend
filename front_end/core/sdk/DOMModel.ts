@@ -1476,8 +1476,8 @@ export class DOMModel extends SDKModel<EventTypes> {
     return this.target().model(OverlayModel) as OverlayModel;
   }
 
-  static cancelSearch(): void {
-    for (const domModel of TargetManager.instance().models(DOMModel)) {
+  static cancelSearch(targetManager: TargetManager = TargetManager.instance()): void {
+    for (const domModel of targetManager.models(DOMModel)) {
       domModel.cancelSearch();
     }
   }

@@ -204,4 +204,63 @@ describeWithEnvironment('WalkthroughView', () => {
     scrollIntoViewSpy.restore();
   });
 
+  describe('walkthrough titles', () => {
+    it('returns the correct walkthrough title when not loading', () => {
+      const lastStep = {isLoading: false, title: 'Step 1'};
+      assert.strictEqual(
+          AiAssistance.WalkthroughView.walkthroughTitle({
+            isLoading: false,
+            hasWidgets: false,
+            lastStep,
+          }),
+          'Show thinking');
+
+      assert.strictEqual(
+          AiAssistance.WalkthroughView.walkthroughTitle({
+            isLoading: false,
+            hasWidgets: true,
+            lastStep,
+          }),
+          'Show agent walkthrough');
+    });
+
+    it('returns the step title when loading', () => {
+      const lastStep = {isLoading: true, title: 'Investigating...'};
+      assert.strictEqual(
+          AiAssistance.WalkthroughView.walkthroughTitle({
+            isLoading: true,
+            hasWidgets: false,
+            lastStep,
+          }),
+          'Investigating...');
+    });
+
+    it('returns the correct walkthrough close title', () => {
+      assert.strictEqual(
+          AiAssistance.WalkthroughView.walkthroughCloseTitle({
+            hasWidgets: false,
+          }),
+          'Hide thinking');
+
+      assert.strictEqual(
+          AiAssistance.WalkthroughView.walkthroughCloseTitle({
+            hasWidgets: true,
+          }),
+          'Hide agent walkthrough');
+
+      assert.strictEqual(
+          AiAssistance.WalkthroughView.walkthroughCloseTitle({
+            hasWidgets: false,
+            isInlined: true,
+          }),
+          'Agent walkthrough');
+
+      assert.strictEqual(
+          AiAssistance.WalkthroughView.walkthroughCloseTitle({
+            hasWidgets: true,
+            isInlined: true,
+          }),
+          'Agent walkthrough');
+    });
+  });
 });

@@ -258,17 +258,63 @@ describeWithEnvironment('ChatMessage', () => {
       assert.strictEqual(button.innerText, 'Show thinking');
     });
 
-    it('renders "Close agent walkthrough" when the walkthrough is open for the message', () => {
+    it('renders "Hide thinking" when the walkthrough is open for the message', () => {
       const target = renderView({
         message: stepMessage,
         walkthrough: {
           ...DEFAULT_WALKTHROUGH,
           isExpanded: true,
           activeSidebarMessage: stepMessage,
-        },
+          isInlined: false,
+        }
       });
       const button = querySelectorErrorOnMissing(target, '[data-show-walkthrough]');
-      assert.strictEqual(button.innerText, 'Close agent walkthrough');
+      assert.strictEqual(button.innerText, 'Hide thinking');
+    });
+
+    it('renders "Show thinking" when the walkthrough is closed but was the active message', () => {
+      const target = renderView({
+        message: stepMessage,
+        walkthrough: {
+          ...DEFAULT_WALKTHROUGH,
+          isInlined: false,
+          isExpanded: false,
+          activeSidebarMessage: stepMessage,
+        }
+      });
+      const button = querySelectorErrorOnMissing(target, '[data-show-walkthrough]');
+      assert.strictEqual(button.innerText, 'Show thinking');
+    });
+
+    it('renders "Hide agent walkthrough" when the walkthrough is open and has widgets', () => {
+      const widgetMessage: AiAssistance.ChatMessage.ModelChatMessage = {
+        entity: AiAssistance.ChatMessage.ChatMessageEntity.MODEL,
+        parts: [{
+          type: 'step',
+          step: {
+            isLoading: false,
+            title: 'Step with widget',
+            widgets: [
+              {
+                name: 'CORE_VITALS',
+              } as unknown as AIAssistanceModel.AiAgent.AiWidget,
+            ],
+          },
+        }],
+        rpcId: 99,
+      };
+
+      const target = renderView({
+        message: widgetMessage,
+        walkthrough: {
+          ...DEFAULT_WALKTHROUGH,
+          isInlined: false,
+          isExpanded: true,
+          activeSidebarMessage: widgetMessage,
+        }
+      });
+      const button = querySelectorErrorOnMissing(target, '[data-show-walkthrough]');
+      assert.strictEqual(button.innerText, 'Hide agent walkthrough');
     });
 
     it('when the step is loading, the walkthrough CTA shows the title of the step', async () => {

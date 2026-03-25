@@ -36,7 +36,7 @@ import * as TimelineUtils from '../../timeline/utils/utils.js';
 import {PanelUtils} from '../../utils/utils.js';
 
 import chatMessageStyles from './chatMessage.css.js';
-import {walkthroughTitle, WalkthroughView} from './WalkthroughView.js';
+import {walkthroughCloseTitle, walkthroughTitle, WalkthroughView} from './WalkthroughView.js';
 
 const {html, Directives: {ref, ifDefined}} = Lit;
 const lockedString = i18n.i18n.lockedString;
@@ -49,10 +49,6 @@ const SCROLL_ROUNDING_OFFSET = 1;
 * Strings that don't need to be translated at this time.
 */
 const UIStringsNotTranslate = {
-  /**
-   * @description Text used in the button to close an open walkthrough
-   */
-  closeAgentWalkthrough: 'Close agent walkthrough',
   /**
    * @description The title of the button that allows submitting positive
    * feedback about the response for AI assistance.
@@ -174,11 +170,6 @@ const UIStringsNotTranslate = {
    * @description Alt text for image when it is not available.
    */
   imageUnavailable: 'Image unavailable',
-  /**
-   * @description Title for the button that shows the thinking process (walkthrough).
-   */
-  showThinking: 'Show thinking',
-
   /**
    * @description Title for the button that takes the user into other DevTools panels to reveal items the AI references.
    */
@@ -517,9 +508,8 @@ function renderWalkthroughSidebarButton(
   }
 
   const hasOneStepWithWidget = steps.some(step => step.widgets?.length);
-  const isOpen = input.message === input.walkthrough.activeSidebarMessage;
-
-  const title = isOpen ? lockedString(UIStringsNotTranslate.closeAgentWalkthrough) : walkthroughTitle({
+  const isExpanded = walkthrough.isExpanded && input.message === input.walkthrough.activeSidebarMessage;
+  const title = isExpanded ? walkthroughCloseTitle({hasWidgets: hasOneStepWithWidget}) : walkthroughTitle({
     isLoading: input.isLoading,
     hasWidgets: hasOneStepWithWidget,
     lastStep,
@@ -537,7 +527,7 @@ function renderWalkthroughSidebarButton(
       <devtools-button
         .variant=${variant}
         .size=${Buttons.Button.Size.SMALL}
-        .title=${lastStep.isLoading ? titleForStep(lastStep) : lockedString(UIStringsNotTranslate.showThinking)}
+        .title=${lastStep.isLoading ? titleForStep(lastStep) : title}
         .jslogContext=${walkthrough.isExpanded ? 'ai-hide-walkthrough-sidebar' : 'ai-show-walkthrough-sidebar'}
         data-show-walkthrough
         @click=${() => {

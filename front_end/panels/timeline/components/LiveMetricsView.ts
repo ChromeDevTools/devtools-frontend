@@ -303,6 +303,146 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/LiveMetricsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
+function getLcpFieldPhases(cruxManager: CrUXManager.CrUXManager): LiveMetrics.LcpValue['phases']|null {
+  const ttfb =
+      cruxManager.getSelectedFieldMetricData('largest_contentful_paint_image_time_to_first_byte')?.percentiles?.p75;
+  const loadDelay =
+      cruxManager.getSelectedFieldMetricData('largest_contentful_paint_image_resource_load_delay')?.percentiles?.p75;
+  const loadDuration =
+      cruxManager.getSelectedFieldMetricData('largest_contentful_paint_image_resource_load_duration')?.percentiles?.p75;
+  const renderDelay =
+      cruxManager.getSelectedFieldMetricData('largest_contentful_paint_image_element_render_delay')?.percentiles?.p75;
+
+  if (typeof ttfb !== 'number' || typeof loadDelay !== 'number' || typeof loadDuration !== 'number' ||
+      typeof renderDelay !== 'number') {
+    return null;
+  }
+
+  return {
+    timeToFirstByte: Trace.Types.Timing.Milli(ttfb),
+    resourceLoadDelay: Trace.Types.Timing.Milli(loadDelay),
+    resourceLoadTime: Trace.Types.Timing.Milli(loadDuration),
+    elementRenderDelay: Trace.Types.Timing.Milli(renderDelay),
+  };
+}
+
+function getNetworkRecTitle(cruxManager: CrUXManager.CrUXManager): string|null {
+  const response = cruxManager.getSelectedFieldMetricData('round_trip_time');
+  if (!response?.percentiles) {
+    return null;
+  }
+
+  const rtt = Number(response.percentiles.p75);
+  if (!Number.isFinite(rtt)) {
+    return null;
+  }
+
+  if (rtt < RTT_MINIMUM) {
+    return i18nString(UIStrings.tryDisablingThrottling);
+  }
+
+  const conditions = SDK.NetworkManager.getRecommendedNetworkPreset(rtt);
+  if (!conditions) {
+    return null;
+  }
+
+  const title = typeof conditions.title === 'function' ? conditions.title() : conditions.title;
+  return i18nString(UIStrings.tryUsingThrottling, {PH1: title});
+}
+
+function getDeviceRec(cruxManager: CrUXManager.CrUXManager): string|null {
+  // `form_factors` metric is only populated if CrUX data is fetched for all devices.
+  const fractions =
+      cruxManager.getFieldResponse(cruxManager.fieldPageScope, 'ALL')?.record.metrics.form_factors?.fractions;
+  if (!fractions) {
+    return null;
+  }
+
+  return i18nString(UIStrings.percentDevices, {
+    PH1: Math.round(fractions.phone * 100),
+    PH2: Math.round(fractions.desktop * 100),
+  });
+}
+
+function getPageScopeLabel(cruxManager: CrUXManager.CrUXManager, pageScope: CrUXManager.PageScope): string {
+  const key = cruxManager.pageResult?.[`${pageScope}-ALL` as const]?.record.key[pageScope];
+  if (key) {
+    return pageScope === 'url' ? i18nString(UIStrings.urlOptionWithKey, {PH1: key}) :
+                                 i18nString(UIStrings.originOptionWithKey, {PH1: key});
+  }
+
+  const baseLabel = pageScope === 'url' ? i18nString(UIStrings.urlOption) : i18nString(UIStrings.originOption);
+  return i18nString(UIStrings.needsDataOption, {PH1: baseLabel});
+}
+
+function getDeviceScopeDisplayName(deviceScope: CrUXManager.DeviceScope): string {
+  switch (deviceScope) {
+    case 'ALL':
+      return i18nString(UIStrings.allDevices);
+    case 'DESKTOP':
+      return i18nString(UIStrings.desktop);
+    case 'PHONE':
+      return i18nString(UIStrings.mobile);
+    case 'TABLET':
+      return i18nString(UIStrings.tablet);
+  }
+}
+
+function getLabelForDeviceOption(cruxManager: CrUXManager.CrUXManager, deviceOption: DeviceOption): string {
+  let baseLabel;
+  if (deviceOption === 'AUTO') {
+    const deviceScope = cruxManager.resolveDeviceOptionToScope(deviceOption);
+    const deviceScopeLabel = getDeviceScopeDisplayName(deviceScope);
+    baseLabel = i18nString(UIStrings.auto, {PH1: deviceScopeLabel});
+  } else {
+    baseLabel = getDeviceScopeDisplayName(deviceOption);
+  }
+
+  if (!cruxManager.pageResult) {
+    return i18nString(UIStrings.loadingOption, {PH1: baseLabel});
+  }
+
+  const result = cruxManager.getSelectedFieldResponse();
+  if (!result) {
+    return i18nString(UIStrings.needsDataOption, {PH1: baseLabel});
+  }
+
+  return baseLabel;
+}
+
+function getCollectionPeriodRange(cruxManager: CrUXManager.CrUXManager): string|null {
+  const selectedResponse = cruxManager.getSelectedFieldResponse();
+  if (!selectedResponse) {
+    return null;
+  }
+
+  const {firstDate, lastDate} = selectedResponse.record.collectionPeriod;
+
+  const formattedFirstDate = new Date(
+      firstDate.year,
+      // CrUX month is 1-indexed but `Date` month is 0-indexed
+      firstDate.month - 1,
+      firstDate.day,
+  );
+  const formattedLastDate = new Date(
+      lastDate.year,
+      // CrUX month is 1-indexed but `Date` month is 0-indexed
+      lastDate.month - 1,
+      lastDate.day,
+  );
+
+  const options: Intl.DateTimeFormatOptions = {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  };
+
+  return i18nString(UIStrings.dateRange, {
+    PH1: formattedFirstDate.toLocaleDateString(undefined, options),
+    PH2: formattedLastDate.toLocaleDateString(undefined, options),
+  });
+}
+
 export class LiveMetricsView extends UI.Widget.Widget {
   isNode = Root.Runtime.Runtime.isNode();
 
@@ -428,39 +568,13 @@ export class LiveMetricsView extends UI.Widget.Widget {
         EmulationModel.DeviceModeModel.Events.UPDATED, this.#onEmulationChanged, this);
   }
 
-  #getLcpFieldPhases(): LiveMetrics.LcpValue['phases']|null {
-    const ttfb = this.#cruxManager.getSelectedFieldMetricData('largest_contentful_paint_image_time_to_first_byte')
-                     ?.percentiles?.p75;
-    const loadDelay =
-        this.#cruxManager.getSelectedFieldMetricData('largest_contentful_paint_image_resource_load_delay')
-            ?.percentiles?.p75;
-    const loadDuration =
-        this.#cruxManager.getSelectedFieldMetricData('largest_contentful_paint_image_resource_load_duration')
-            ?.percentiles?.p75;
-    const renderDelay =
-        this.#cruxManager.getSelectedFieldMetricData('largest_contentful_paint_image_element_render_delay')
-            ?.percentiles?.p75;
-
-    if (typeof ttfb !== 'number' || typeof loadDelay !== 'number' || typeof loadDuration !== 'number' ||
-        typeof renderDelay !== 'number') {
-      return null;
-    }
-
-    return {
-      timeToFirstByte: Trace.Types.Timing.Milli(ttfb),
-      resourceLoadDelay: Trace.Types.Timing.Milli(loadDelay),
-      resourceLoadTime: Trace.Types.Timing.Milli(loadDuration),
-      elementRenderDelay: Trace.Types.Timing.Milli(renderDelay),
-    };
-  }
-
   #renderLcpCard(): Lit.LitTemplate {
     const fieldData = this.#cruxManager.getSelectedFieldMetricData('largest_contentful_paint');
     const nodeLink =
         this.#lcpValue?.nodeRef && PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(this.#lcpValue?.nodeRef);
     const phases = this.#lcpValue?.phases;
 
-    const fieldPhases = this.#getLcpFieldPhases();
+    const fieldPhases = getLcpFieldPhases(this.#cruxManager);
 
     // clang-format off
     return html`
@@ -584,54 +698,16 @@ export class LiveMetricsView extends UI.Widget.Widget {
     // clang-format on
   }
 
-  #getNetworkRecTitle(): string|null {
-    const response = this.#cruxManager.getSelectedFieldMetricData('round_trip_time');
-    if (!response?.percentiles) {
-      return null;
-    }
-
-    const rtt = Number(response.percentiles.p75);
-    if (!Number.isFinite(rtt)) {
-      return null;
-    }
-
-    if (rtt < RTT_MINIMUM) {
-      return i18nString(UIStrings.tryDisablingThrottling);
-    }
-
-    const conditions = SDK.NetworkManager.getRecommendedNetworkPreset(rtt);
-    if (!conditions) {
-      return null;
-    }
-
-    const title = typeof conditions.title === 'function' ? conditions.title() : conditions.title;
-    return i18nString(UIStrings.tryUsingThrottling, {PH1: title});
-  }
-
-  #getDeviceRec(): string|null {
-    // `form_factors` metric is only populated if CrUX data is fetched for all devices.
-    const fractions = this.#cruxManager.getFieldResponse(this.#cruxManager.fieldPageScope, 'ALL')
-                          ?.record.metrics.form_factors?.fractions;
-    if (!fractions) {
-      return null;
-    }
-
-    return i18nString(UIStrings.percentDevices, {
-      PH1: Math.round(fractions.phone * 100),
-      PH2: Math.round(fractions.desktop * 100),
-    });
-  }
-
   #renderRecordingSettings(): Lit.LitTemplate {
     const fieldEnabled = this.#cruxManager.getConfigSetting().get().enabled;
 
     const deviceRecEl = document.createElement('span');
     deviceRecEl.classList.add('environment-rec');
-    deviceRecEl.textContent = this.#getDeviceRec() || i18nString(UIStrings.notEnoughData);
+    deviceRecEl.textContent = getDeviceRec(this.#cruxManager) || i18nString(UIStrings.notEnoughData);
 
     const networkRecEl = document.createElement('span');
     networkRecEl.classList.add('environment-rec');
-    networkRecEl.textContent = this.#getNetworkRecTitle() || i18nString(UIStrings.notEnoughData);
+    networkRecEl.textContent = getNetworkRecTitle(this.#cruxManager) || i18nString(UIStrings.notEnoughData);
 
     const recs = PanelsCommon.ThrottlingUtils.getThrottlingRecommendations();
 
@@ -664,17 +740,6 @@ export class LiveMetricsView extends UI.Widget.Widget {
     // clang-format on
   }
 
-  #getPageScopeLabel(pageScope: CrUXManager.PageScope): string {
-    const key = this.#cruxManager.pageResult?.[`${pageScope}-ALL`]?.record.key[pageScope];
-    if (key) {
-      return pageScope === 'url' ? i18nString(UIStrings.urlOptionWithKey, {PH1: key}) :
-                                   i18nString(UIStrings.originOptionWithKey, {PH1: key});
-    }
-
-    const baseLabel = pageScope === 'url' ? i18nString(UIStrings.urlOption) : i18nString(UIStrings.originOption);
-    return i18nString(UIStrings.needsDataOption, {PH1: baseLabel});
-  }
-
   #onPageScopeMenuItemSelected(event: Menus.SelectMenu.SelectMenuItemSelectedEvent): void {
     if (event.itemValue === 'url') {
       this.#cruxManager.fieldPageScope = 'url';
@@ -689,8 +754,8 @@ export class LiveMetricsView extends UI.Widget.Widget {
       return Lit.nothing;
     }
 
-    const urlLabel = this.#getPageScopeLabel('url');
-    const originLabel = this.#getPageScopeLabel('origin');
+    const urlLabel = getPageScopeLabel(this.#cruxManager, 'url');
+    const originLabel = getPageScopeLabel(this.#cruxManager, 'origin');
 
     const buttonTitle = this.#cruxManager.fieldPageScope === 'url' ? urlLabel : originLabel;
     const accessibleTitle = i18nString(UIStrings.showFieldDataForPage, {PH1: buttonTitle});
@@ -729,41 +794,6 @@ export class LiveMetricsView extends UI.Widget.Widget {
     /* eslint-enable @devtools/no-deprecated-component-usages */
   }
 
-  #getDeviceScopeDisplayName(deviceScope: CrUXManager.DeviceScope): string {
-    switch (deviceScope) {
-      case 'ALL':
-        return i18nString(UIStrings.allDevices);
-      case 'DESKTOP':
-        return i18nString(UIStrings.desktop);
-      case 'PHONE':
-        return i18nString(UIStrings.mobile);
-      case 'TABLET':
-        return i18nString(UIStrings.tablet);
-    }
-  }
-
-  #getLabelForDeviceOption(deviceOption: DeviceOption): string {
-    let baseLabel;
-    if (deviceOption === 'AUTO') {
-      const deviceScope = this.#cruxManager.resolveDeviceOptionToScope(deviceOption);
-      const deviceScopeLabel = this.#getDeviceScopeDisplayName(deviceScope);
-      baseLabel = i18nString(UIStrings.auto, {PH1: deviceScopeLabel});
-    } else {
-      baseLabel = this.#getDeviceScopeDisplayName(deviceOption);
-    }
-
-    if (!this.#cruxManager.pageResult) {
-      return i18nString(UIStrings.loadingOption, {PH1: baseLabel});
-    }
-
-    const result = this.#cruxManager.getSelectedFieldResponse();
-    if (!result) {
-      return i18nString(UIStrings.needsDataOption, {PH1: baseLabel});
-    }
-
-    return baseLabel;
-  }
-
   #onDeviceOptionMenuItemSelected(event: Menus.SelectMenu.SelectMenuItemSelectedEvent): void {
     this.#cruxManager.fieldDeviceOption = event.itemValue as DeviceOption;
     this.requestUpdate();
@@ -778,7 +808,7 @@ export class LiveMetricsView extends UI.Widget.Widget {
     // before coming back to this option.
     const shouldDisable = !this.#cruxManager.getFieldResponse(this.#cruxManager.fieldPageScope, 'ALL');
 
-    const currentDeviceLabel = this.#getLabelForDeviceOption(this.#cruxManager.fieldDeviceOption);
+    const currentDeviceLabel = getLabelForDeviceOption(this.#cruxManager, this.#cruxManager.fieldDeviceOption);
 
     // clang-format off
     /* eslint-disable @devtools/no-deprecated-component-usages */
@@ -801,7 +831,7 @@ export class LiveMetricsView extends UI.Widget.Widget {
               .value=${deviceOption}
               .selected=${this.#cruxManager.fieldDeviceOption === deviceOption}
             >
-              ${this.#getLabelForDeviceOption(deviceOption)}
+              ${getLabelForDeviceOption(this.#cruxManager, deviceOption)}
             </devtools-menu-item>
           `;
         })}
@@ -809,39 +839,6 @@ export class LiveMetricsView extends UI.Widget.Widget {
     `;
     /* eslint-enable @devtools/no-deprecated-component-usages */
     // clang-format on
-  }
-
-  #getCollectionPeriodRange(): string|null {
-    const selectedResponse = this.#cruxManager.getSelectedFieldResponse();
-    if (!selectedResponse) {
-      return null;
-    }
-
-    const {firstDate, lastDate} = selectedResponse.record.collectionPeriod;
-
-    const formattedFirstDate = new Date(
-        firstDate.year,
-        // CrUX month is 1-indexed but `Date` month is 0-indexed
-        firstDate.month - 1,
-        firstDate.day,
-    );
-    const formattedLastDate = new Date(
-        lastDate.year,
-        // CrUX month is 1-indexed but `Date` month is 0-indexed
-        lastDate.month - 1,
-        lastDate.day,
-    );
-
-    const options: Intl.DateTimeFormatOptions = {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-    };
-
-    return i18nString(UIStrings.dateRange, {
-      PH1: formattedFirstDate.toLocaleDateString(undefined, options),
-      PH2: formattedLastDate.toLocaleDateString(undefined, options),
-    });
   }
 
   #renderFieldDataHistoryLink(): Lit.LitTemplate {
@@ -871,7 +868,7 @@ export class LiveMetricsView extends UI.Widget.Widget {
   }
 
   #renderCollectionPeriod(): Lit.LitTemplate {
-    const range = this.#getCollectionPeriodRange();
+    const range = getCollectionPeriodRange(this.#cruxManager);
 
     const dateEl = document.createElement('span');
     dateEl.classList.add('collection-period-range');

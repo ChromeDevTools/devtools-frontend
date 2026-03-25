@@ -38,6 +38,8 @@ declare namespace ProtocolProxyApi {
 
     Cast: CastApi;
 
+    CrashReportContext: CrashReportContextApi;
+
     DOM: DOMApi;
 
     DOMDebugger: DOMDebuggerApi;
@@ -148,6 +150,8 @@ declare namespace ProtocolProxyApi {
     CacheStorage: CacheStorageDispatcher;
 
     Cast: CastDispatcher;
+
+    CrashReportContext: CrashReportContextDispatcher;
 
     DOM: DOMDispatcher;
 
@@ -1044,6 +1048,16 @@ declare namespace ProtocolProxyApi {
      */
     issueUpdated(params: Protocol.Cast.IssueUpdatedEvent): void;
 
+  }
+
+  export interface CrashReportContextApi {
+    /**
+     * Returns all entries in the CrashReportContext across all frames in the page.
+     */
+    invoke_getEntries(): Promise<Protocol.CrashReportContext.GetEntriesResponse>;
+
+  }
+  export interface CrashReportContextDispatcher {
   }
 
   export interface DOMApi {

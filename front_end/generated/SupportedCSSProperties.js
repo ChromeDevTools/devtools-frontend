@@ -1747,10 +1747,16 @@ export const generatedProperties = [
  },
  {
   "inherited": false,
+  "keywords": [
+   "overlap-join"
+  ],
   "name": "column-rule-edge-inset-end"
  },
  {
   "inherited": false,
+  "keywords": [
+   "overlap-join"
+  ],
   "name": "column-rule-edge-inset-start"
  },
  {
@@ -1785,10 +1791,16 @@ export const generatedProperties = [
  },
  {
   "inherited": false,
+  "keywords": [
+   "overlap-join"
+  ],
   "name": "column-rule-interior-inset-end"
  },
  {
   "inherited": false,
+  "keywords": [
+   "overlap-join"
+  ],
   "name": "column-rule-interior-inset-start"
  },
  {
@@ -3815,10 +3827,16 @@ export const generatedProperties = [
  },
  {
   "inherited": false,
+  "keywords": [
+   "overlap-join"
+  ],
   "name": "row-rule-edge-inset-end"
  },
  {
   "inherited": false,
+  "keywords": [
+   "overlap-join"
+  ],
   "name": "row-rule-edge-inset-start"
  },
  {
@@ -3853,10 +3871,16 @@ export const generatedProperties = [
  },
  {
   "inherited": false,
+  "keywords": [
+   "overlap-join"
+  ],
   "name": "row-rule-interior-inset-end"
  },
  {
   "inherited": false,
+  "keywords": [
+   "overlap-join"
+  ],
   "name": "row-rule-interior-inset-start"
  },
  {
@@ -5599,6 +5623,26 @@ export const generatedPropertyValues = {
    "currentcolor"
   ]
  },
+ "column-rule-edge-inset-end": {
+  "values": [
+   "overlap-join"
+  ]
+ },
+ "column-rule-edge-inset-start": {
+  "values": [
+   "overlap-join"
+  ]
+ },
+ "column-rule-interior-inset-end": {
+  "values": [
+   "overlap-join"
+  ]
+ },
+ "column-rule-interior-inset-start": {
+  "values": [
+   "overlap-join"
+  ]
+ },
  "column-rule-style": {
   "values": [
    "none",
@@ -6737,6 +6781,26 @@ export const generatedPropertyValues = {
  "row-rule-color": {
   "values": [
    "currentcolor"
+  ]
+ },
+ "row-rule-edge-inset-end": {
+  "values": [
+   "overlap-join"
+  ]
+ },
+ "row-rule-edge-inset-start": {
+  "values": [
+   "overlap-join"
+  ]
+ },
+ "row-rule-interior-inset-end": {
+  "values": [
+   "overlap-join"
+  ]
+ },
+ "row-rule-interior-inset-start": {
+  "values": [
+   "overlap-join"
   ]
  },
  "row-rule-style": {

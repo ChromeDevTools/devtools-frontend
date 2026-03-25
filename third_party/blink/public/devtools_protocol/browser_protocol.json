@@ -6925,6 +6925,51 @@
             ]
         },
         {
+            "domain": "CrashReportContext",
+            "description": "This domain exposes the current state of the CrashReportContext API.",
+            "experimental": true,
+            "dependencies": [
+                "Page"
+            ],
+            "types": [
+                {
+                    "id": "CrashReportContextEntry",
+                    "description": "Key-value pair in CrashReportContext.",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "key",
+                            "type": "string"
+                        },
+                        {
+                            "name": "value",
+                            "type": "string"
+                        },
+                        {
+                            "name": "frameId",
+                            "description": "The ID of the frame where the key-value pair was set.",
+                            "$ref": "Page.FrameId"
+                        }
+                    ]
+                }
+            ],
+            "commands": [
+                {
+                    "name": "getEntries",
+                    "description": "Returns all entries in the CrashReportContext across all frames in the page.",
+                    "returns": [
+                        {
+                            "name": "entries",
+                            "type": "array",
+                            "items": {
+                                "$ref": "CrashReportContextEntry"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
             "domain": "DOM",
             "description": "This domain exposes DOM read/write operations. Each DOM Node is represented with its mirror object\nthat has an `id`. This `id` can be used to get additional information on the Node, resolve it into\nthe JavaScript object wrapper, etc. It is important that client receives DOM events only for the\nnodes that are known to the client. Backend keeps track of the nodes that were sent to the client\nand never sends the same node twice. It is client's responsibility to collect information about\nthe nodes that were sent to the client. Note that `iframe` owner elements will return\ncorresponding document elements as their child nodes.",
             "dependencies": [

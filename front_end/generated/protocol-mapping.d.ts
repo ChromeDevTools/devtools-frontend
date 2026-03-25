@@ -1893,6 +1893,13 @@ export namespace ProtocolMapping {
       returnType: void;
     };
     /**
+     * Returns all entries in the CrashReportContext across all frames in the page.
+     */
+    'CrashReportContext.getEntries': {
+      paramsType: [];
+      returnType: Protocol.CrashReportContext.GetEntriesResponse;
+    };
+    /**
      * Collects class names for the node with given id and all of it's child nodes.
      */
     'DOM.collectClassNamesFromSubtree': {

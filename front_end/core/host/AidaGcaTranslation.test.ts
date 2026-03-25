@@ -21,12 +21,17 @@ function createAidaDoConversationRequest(overrides: Partial<AidaClient.DoConvers
   };
 }
 
-function createGcaRequest(overrides: Partial<GcaTypes.GenerateContentRequest> = {}): GcaTypes.GenerateContentRequest {
-  const {labels, ...otherOverrides} = overrides;
+function createGcaRequest(
+    experience: string, overrides: Partial<GcaTypes.GenerateContentRequest> = {}): GcaTypes.GenerateContentRequest {
+  const {labels, aicode, ...otherOverrides} = overrides;
   return {
     contents: [{role: 'user', parts: [{text: 'Hello'}]}],
     ...otherOverrides,
     labels: {client: DEFAULT_CLIENT, ...labels},
+    aicode: aicode ||
+        {
+          experience
+        }
   };
 }
 
@@ -78,7 +83,7 @@ function describeCommonRequestFields(
       });
       const result = translateFn(aidaRequest);
       assert.strictEqual(result.model, 'test-model');
-      assert.strictEqual(result.sessionId, 'session-123');
+      assert.strictEqual(result.labels?.['session_id'], 'session-123');
       assert.strictEqual(result.generationConfig?.temperature, 0.5);
     });
 
@@ -103,7 +108,7 @@ describe('AidaGcaTranslation', () => {
     it('translates a basic request', () => {
       assert.deepEqual(
           AidaGcaTranslation.aidaDoConversationRequestToGcaRequest(createAidaDoConversationRequest()),
-          createGcaRequest());
+          createGcaRequest('chat_console_insights'));
     });
 
     it('translates a request with preamble and options', () => {
@@ -112,7 +117,7 @@ describe('AidaGcaTranslation', () => {
         options: {temperature: 0.5, model_id: 'test-model'},
       });
 
-      const expectedGcaRequest = createGcaRequest({
+      const expectedGcaRequest = createGcaRequest('chat_console_insights', {
         model: 'test-model',
         systemInstruction: {role: 'user', parts: [{text: 'You are an AI assistant'}]},
         generationConfig: {temperature: 0.5},
@@ -130,7 +135,7 @@ describe('AidaGcaTranslation', () => {
         current_message: {parts: [{text: 'How are you?'}], role: AidaClient.Role.USER},
       });
 
-      const expectedGcaRequest = createGcaRequest({
+      const expectedGcaRequest = createGcaRequest('chat_console_insights', {
         contents: [
           {role: 'user', parts: [{text: 'Hello'}]},
           {role: 'model', parts: [{text: 'Hi there!'}]},
@@ -155,7 +160,7 @@ describe('AidaGcaTranslation', () => {
         }],
       });
 
-      const expectedGcaRequest = createGcaRequest({
+      const expectedGcaRequest = createGcaRequest('chat_console_insights', {
         tools: [{
           functionDeclarations: [{
             name: 'my_func',
@@ -351,7 +356,20 @@ describe('AidaGcaTranslation', () => {
     it('translates a basic completion request', () => {
       assert.deepEqual(
           AidaGcaTranslation.aidaCompletionRequestToGcaRequest(createAidaCompletionRequest()),
-          createGcaRequest({contents: [{role: 'user', parts: [{text: 'function foo() {}'}]}]}));
+          createGcaRequest('complete_code', {
+            contents: [],
+            aicode: {
+              experience: 'complete_code',
+              files: [{
+                fileUri: 'devtools-code-completion',
+                inclusionReason: [GcaTypes.InclusionReason.ACTIVE],
+                segments: [
+                  {content: 'function foo() {', isSelected: false}, {content: '', isSelected: true},
+                  {content: '}', isSelected: false}
+                ],
+              }]
+            }
+          }));
     });
 
     it('translates a completion request with options and additional files', () => {
@@ -371,16 +389,27 @@ describe('AidaGcaTranslation', () => {
         ],
       });
 
-      const expectedGcaRequest = createGcaRequest({
-        contents: [{role: 'user', parts: [{text: 'console.log('}]}],
+      const expectedGcaRequest = createGcaRequest('complete_code', {
+        contents: [],
 
         model: 'code-model',
-        sessionId: 'session-456',
         generationConfig: {stopSequences: ['\n'], temperature: 0},
-        labels: {client: DEFAULT_CLIENT, last_user_action: 'ADD', inference_language: 'JAVASCRIPT'},
+        labels: {
+          client: DEFAULT_CLIENT,
+          last_user_action: 'ADD',
+          inference_language: 'JAVASCRIPT',
+          session_id: 'session-456',
+        },
         aicode: {
-          experience: 'completion',
-          files: [{fileUri: 'utils.js', inclusionReason: [GcaTypes.InclusionReason.OPEN]}],
+          experience: 'complete_code',
+          files: [
+            {
+              fileUri: 'devtools-code-completion',
+              inclusionReason: [1],
+              segments: [{content: 'console.log(', isSelected: false}, {content: '', isSelected: true}]
+            },
+            {fileUri: 'utils.js', inclusionReason: [GcaTypes.InclusionReason.OPEN]}
+          ],
         },
       });
 
@@ -434,6 +463,7 @@ describe('AidaGcaTranslation', () => {
 
     it('translates a basic generate code request', () => {
       assert.deepEqual(AidaGcaTranslation.aidaGenerateCodeRequestToGcaRequest(createAidaGenerateCodeRequest()), {
+        aicode: {experience: 'generate_code'},
         contents: [{role: 'user', parts: [{text: 'that adds two numbers'}]}],
         systemInstruction: {role: 'user', parts: [{text: 'Generate a function'}]},
         labels: {client: DEFAULT_CLIENT, use_case: 'CODE_GENERATION'},
@@ -459,11 +489,10 @@ describe('AidaGcaTranslation', () => {
         }],
       });
 
-      const expectedGcaRequest = createGcaRequest({
+      const expectedGcaRequest = createGcaRequest('generate_code', {
         contents: [{role: 'user', parts: [{text: 'fix the bug'}]}],
         systemInstruction: {role: 'user', parts: [{text: 'Help me with this'}]},
         model: 'gen-model',
-        sessionId: 'session-789',
         generationConfig: {temperature: 0.7},
         labels: {
           client: DEFAULT_CLIENT,
@@ -471,6 +500,7 @@ describe('AidaGcaTranslation', () => {
           inference_language: 'TYPESCRIPT',
           expect_code_output: 'true',
           client_feature: 'CHROME_FILE_AGENT',
+          session_id: 'session-789',
         },
         aicode: {
           experience: 'generate_code',

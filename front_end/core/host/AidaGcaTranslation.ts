@@ -2,13 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as AIDA from './AidaClient.js';
+import * as AIDA from './AidaClientTypes.js';
 import * as GCA from './GcaTypes.js';
 
 type AidaRequest = AIDA.DoConversationRequest|AIDA.CompletionRequest|AIDA.GenerateCodeRequest;
 
-function createBaseGcaRequest(request: AidaRequest, contents: GCA.Content[]): GCA.GenerateContentRequest {
-  const gcaRequest: GCA.GenerateContentRequest = {contents};
+function createBaseGcaRequest(
+    request: AidaRequest, contents: GCA.Content[], experience: string): GCA.GenerateContentRequest {
+  const gcaRequest: GCA.GenerateContentRequest = {contents, aicode: {experience}};
   mapCommonAidaRequestFields(request, gcaRequest);
   buildLabels(request, gcaRequest);
 
@@ -23,34 +24,37 @@ function createBaseGcaRequest(request: AidaRequest, contents: GCA.Content[]): GC
 }
 
 export function aidaDoConversationRequestToGcaRequest(request: AIDA.DoConversationRequest): GCA.GenerateContentRequest {
-  const contents: GCA.Content[] = [];
+  try {
+    const contents: GCA.Content[] = [];
 
-  if (request.historical_contexts) {
-    contents.push(...request.historical_contexts.map(convertAidaContentToGcaContent));
+    if (request.historical_contexts) {
+      contents.push(...(request.historical_contexts).map(convertAidaContentToGcaContent));
+    }
+    contents.push(convertAidaContentToGcaContent(request.current_message));
+
+    const gcaRequest = createBaseGcaRequest(request, contents, 'chat_console_insights');
+
+    if (request.function_declarations) {
+      gcaRequest.tools = [{
+        functionDeclarations:
+            (request.function_declarations).map(fd => ({
+                                                  name: fd.name,
+                                                  description: fd.description,
+                                                  parameters: convertAidaParamToGcaSchema(fd.parameters),
+                                                })),
+      }];
+    }
+    AIDA.debugLog('Translation succeded:', JSON.stringify(request), JSON.stringify(gcaRequest));
+    return gcaRequest;
+  } catch (e) {
+    AIDA.debugLog('Translation error:', JSON.stringify(request), e);
+    throw e;
   }
-  contents.push(convertAidaContentToGcaContent(request.current_message));
-
-  const gcaRequest = createBaseGcaRequest(request, contents);
-
-  if (request.function_declarations) {
-    gcaRequest.tools = [{
-      functionDeclarations: request.function_declarations.map(fd => ({
-                                                                name: fd.name,
-                                                                description: fd.description,
-                                                                parameters: convertAidaParamToGcaSchema(fd.parameters),
-                                                              })),
-    }];
-  }
-
-  return gcaRequest;
 }
 
 function mapCommonAidaRequestFields(aidaRequest: AidaRequest, gcaRequest: GCA.GenerateContentRequest): void {
   if (aidaRequest.options?.model_id) {
     gcaRequest.model = aidaRequest.options.model_id;
-  }
-  if (aidaRequest.metadata.string_session_id) {
-    gcaRequest.sessionId = aidaRequest.metadata.string_session_id;
   }
   if (aidaRequest.options?.temperature !== undefined) {
     gcaRequest.generationConfig = {
@@ -62,11 +66,10 @@ function mapCommonAidaRequestFields(aidaRequest: AidaRequest, gcaRequest: GCA.Ge
 
 export function gcaResponseToAidaDoConversationResponse(response: GCA.GenerateContentResponse):
     AIDA.DoConversationResponse {
-  const candidate = response.candidates[0];
   const functionCalls: AIDA.AidaFunctionCallResponse[] = [];
 
-  if (candidate?.content?.parts) {
-    for (const part of candidate.content.parts) {
+  if (response.candidates?.[0].content?.parts) {
+    for (const part of response.candidates[0].content.parts) {
       if (part.functionCall) {
         functionCalls.push({
           name: part.functionCall.name,
@@ -77,7 +80,7 @@ export function gcaResponseToAidaDoConversationResponse(response: GCA.GenerateCo
   }
 
   return {
-    explanation: extractTextFromGcaParts(candidate?.content?.parts),
+    explanation: extractTextFromGcaParts(response.candidates[0].content?.parts),
     metadata: {
       rpcGlobalId: response.responseId,
     },
@@ -96,33 +99,41 @@ function extractTextFromGcaParts(parts: GCA.Part[]|undefined): string {
 }
 
 export function aidaEventToGcaTelemetryRequest(clientEvent: AIDA.AidaRegisterClientEvent): GCA.SendTelemetryRequest {
-  const feedbackMetrics: GCA.FeedbackMetric[] = [];
-  const responseId = String(clientEvent.corresponding_aida_rpc_global_id);
-  const eventTime = new Date().toISOString();
+  try {
+    const feedbackMetrics: GCA.FeedbackMetric[] = [];
+    const responseId = String(clientEvent.corresponding_aida_rpc_global_id);
+    const eventTime = new Date().toISOString();
 
-  if (clientEvent.do_conversation_client_event) {
-    const feedback = clientEvent.do_conversation_client_event.user_feedback;
-    if (feedback.sentiment) {
-      let interaction: GCA.InteractionType = GCA.InteractionType.INTERACTION_TYPE_UNSPECIFIED;
-      if (feedback.sentiment === AIDA.Rating.POSITIVE) {
-        interaction = GCA.InteractionType.THUMBS_UP;
-      } else if (feedback.sentiment === AIDA.Rating.NEGATIVE) {
-        interaction = GCA.InteractionType.THUMBS_DOWN;
+    if (clientEvent.do_conversation_client_event) {
+      const feedback = clientEvent.do_conversation_client_event.user_feedback;
+      if (feedback.sentiment) {
+        let interaction: GCA.InteractionType = GCA.InteractionType.INTERACTION_TYPE_UNSPECIFIED;
+        if (feedback.sentiment === AIDA.Rating.POSITIVE) {
+          interaction = GCA.InteractionType.THUMBS_UP;
+        } else if (feedback.sentiment === AIDA.Rating.NEGATIVE) {
+          interaction = GCA.InteractionType.THUMBS_DOWN;
+        }
+        feedbackMetrics.push({
+          eventTime,
+          responseId,
+          suggestionInteraction: {interaction},
+        });
       }
-      feedbackMetrics.push({
-        eventTime,
-        responseId,
-        suggestionInteraction: {interaction},
-      });
     }
+
+    feedbackMetrics.push(...convertCodeTelemetry(
+        clientEvent.complete_code_client_event, GCA.Method.COMPLETE_CODE, responseId, eventTime));
+    feedbackMetrics.push(...convertCodeTelemetry(
+        clientEvent.generate_code_client_event, GCA.Method.GENERATE_CODE, responseId, eventTime));
+    const gcaTelemetryRequest: GCA.SendTelemetryRequest = {
+      feedbackMetrics,
+    };
+    AIDA.debugLog('Translation succeeded:', JSON.stringify(clientEvent), JSON.stringify(gcaTelemetryRequest));
+    return gcaTelemetryRequest;
+  } catch (e) {
+    AIDA.debugLog('Translation error:', JSON.stringify(clientEvent), e);
+    throw e;
   }
-
-  feedbackMetrics.push(
-      ...convertCodeTelemetry(clientEvent.complete_code_client_event, GCA.Method.COMPLETE_CODE, responseId, eventTime));
-  feedbackMetrics.push(
-      ...convertCodeTelemetry(clientEvent.generate_code_client_event, GCA.Method.GENERATE_CODE, responseId, eventTime));
-
-  return {feedbackMetrics};
 }
 
 /* eslint-disable @typescript-eslint/naming-convention */
@@ -160,33 +171,56 @@ function convertCodeTelemetry(
 /* eslint-enable @typescript-eslint/naming-convention */
 
 export function aidaCompletionRequestToGcaRequest(request: AIDA.CompletionRequest): GCA.GenerateContentRequest {
-  const contents: GCA.Content[] = [
-    {
-      role: 'user',
-      parts: [{text: request.prefix + (request.suffix || '')}],
-    },
-  ];
+  try {
+    let additionalFiles: GCA.SourceFile[] =
+        (request.additional_files ?? []).map(f => ({
+                                               fileUri: f.path,
+                                               inclusionReason: [AidaReasonToGcaInclusionReason[f.included_reason]],
+                                             }));
 
-  const gcaRequest = createBaseGcaRequest(request, contents);
+    const inEditorFile: GCA.SourceFile = inFileEditRequestToSourceFile(request);
+    if (inEditorFile) {
+      additionalFiles = [inEditorFile, ...additionalFiles];
+    }
 
-  if (request.options?.stop_sequences) {
-    gcaRequest.generationConfig = {
-      ...gcaRequest.generationConfig,
-      stopSequences: request.options.stop_sequences,
-    };
+    const gcaRequest = createBaseGcaRequest(request, [], 'complete_code');
+    gcaRequest.aicode.files = additionalFiles;
+    if (request.options?.stop_sequences) {
+      gcaRequest.generationConfig = {
+        ...gcaRequest.generationConfig,
+        stopSequences: request.options.stop_sequences,
+      };
+    }
+    AIDA.debugLog('Translation succeeded:', JSON.stringify(request), JSON.stringify(gcaRequest));
+    return gcaRequest;
+  } catch (e) {
+    AIDA.debugLog('Translation error:', JSON.stringify(request), e);
+    throw e;
   }
+}
 
-  if (request.additional_files) {
-    gcaRequest.aicode = {
-      experience: 'completion',
-      files: request.additional_files.map(f => ({
-                                            fileUri: f.path,
-                                            inclusionReason: [AidaReasonToGcaInclusionReason[f.included_reason]],
-                                          })),
-    };
+function inFileEditRequestToSourceFile(request: AIDA.CompletionRequest): GCA.SourceFile {
+  const sourceFile: GCA.SourceFile = {
+    inclusionReason: [GCA.InclusionReason.ACTIVE],
+    fileUri: 'devtools-code-completion',
+    segments: [
+      {
+        content: request.prefix,
+        isSelected: false,
+      },
+      {
+        content: '',
+        isSelected: true,  // Cursor position
+      }
+    ],
+  };
+  if (request.suffix) {
+    sourceFile.segments?.push({
+      content: request.suffix,
+      isSelected: false,
+    });
   }
-
-  return gcaRequest;
+  return sourceFile;
 }
 
 /* eslint-disable @typescript-eslint/naming-convention */
@@ -206,6 +240,9 @@ function buildLabels(request: AidaRequest, gcaRequest: GCA.GenerateContentReques
   }
   if ('use_case' in request && request.use_case !== undefined) {
     labels['use_case'] = AIDA.UseCase[request.use_case];
+  }
+  if (request.metadata.string_session_id) {
+    labels['session_id'] = request.metadata.string_session_id;
   }
   const options = request.options as {
     inference_language?: string,
@@ -236,11 +273,18 @@ const AidaReasonToGcaInclusionReason: Record<AIDA.Reason, GCA.InclusionReason> =
 };
 
 export function gcaResponseToAidaCompletionResponse(response: GCA.GenerateContentResponse): AIDA.CompletionResponse {
-  const {samples, metadata} = gcaResponseToAidaSamplesAndMetadata(response);
-  return {
-    generatedSamples: samples,
-    metadata,
-  };
+  try {
+    const {samples, metadata} = gcaResponseToAidaSamplesAndMetadata(response);
+    const aidaResponse: AIDA.CompletionResponse = {
+      generatedSamples: samples,
+      metadata,
+    };
+    AIDA.debugLog('Translation succeeded:', JSON.stringify(response), JSON.stringify(aidaResponse));
+    return aidaResponse;
+  } catch (e) {
+    AIDA.debugLog('Translation error', JSON.stringify(response), e);
+    throw e;
+  }
 }
 
 function gcaResponseToAidaSamplesAndMetadata(response: GCA.GenerateContentResponse): {
@@ -248,7 +292,7 @@ function gcaResponseToAidaSamplesAndMetadata(response: GCA.GenerateContentRespon
   metadata: AIDA.ResponseMetadata,
 } {
   return {
-    samples: response.candidates.map(gcaCandidateToAidaGenerationSample),
+    samples: (response.candidates ?? []).map(gcaCandidateToAidaGenerationSample),
     metadata: {
       rpcGlobalId: response.responseId,
     },
@@ -256,24 +300,33 @@ function gcaResponseToAidaSamplesAndMetadata(response: GCA.GenerateContentRespon
 }
 
 export function aidaGenerateCodeRequestToGcaRequest(request: AIDA.GenerateCodeRequest): GCA.GenerateContentRequest {
-  const gcaRequest = createBaseGcaRequest(request, [convertAidaContentToGcaContent(request.current_message)]);
-
-  if (request.context_files) {
-    gcaRequest.aicode = {
-      experience: 'generate_code',
-      files: request.context_files.map(f => ({
-                                         fileUri: f.path,
-                                         programmingLanguage: f.programming_language,
-                                       })),
-    };
+  try {
+    const gcaRequest =
+        createBaseGcaRequest(request, [convertAidaContentToGcaContent(request.current_message)], 'generate_code');
+    if (request.context_files) {
+      gcaRequest.aicode.files = (request.context_files).map(f => ({
+                                                              fileUri: f.path,
+                                                              programmingLanguage: f.programming_language,
+                                                            }));
+    }
+    AIDA.debugLog('Translation succeeded:', JSON.stringify(request), JSON.stringify(gcaRequest));
+    return gcaRequest;
+  } catch (e) {
+    AIDA.debugLog('Translation error', JSON.stringify(request), e);
+    throw e;
   }
-
-  return gcaRequest;
 }
 
 export function gcaResponseToAidaGenerateCodeResponse(response: GCA.GenerateContentResponse):
     AIDA.GenerateCodeResponse {
-  return gcaResponseToAidaSamplesAndMetadata(response);
+  try {
+    const aidaResponse: AIDA.GenerateCodeResponse = gcaResponseToAidaSamplesAndMetadata(response);
+    AIDA.debugLog('Translation succeeded:', JSON.stringify(response), JSON.stringify(aidaResponse));
+    return aidaResponse;
+  } catch (e) {
+    AIDA.debugLog('translation error', JSON.stringify(response), e);
+    throw e;
+  }
 }
 
 function gcaCandidateToAidaGenerationSample(candidate: GCA.Candidate): AIDA.GenerationSample {
@@ -285,11 +338,11 @@ function gcaCandidateToAidaGenerationSample(candidate: GCA.Candidate): AIDA.Gene
   if (candidate.citationMetadata) {
     generationSample.attributionMetadata = {
       attributionAction: AIDA.RecitationAction.CITE,
-      citations: candidate.citationMetadata.citations.map(c => ({
-                                                            startIndex: c.startIndex,
-                                                            endIndex: c.endIndex,
-                                                            uri: c.uri,
-                                                          })),
+      citations: (candidate.citationMetadata.citations ?? []).map(c => ({
+                                                                    startIndex: c.startIndex,
+                                                                    endIndex: c.endIndex,
+                                                                    uri: c.uri,
+                                                                  })),
     };
   }
   return generationSample;
@@ -305,7 +358,7 @@ function convertAidaContentToGcaContent(content: AIDA.Content): GCA.Content {
   }
   return {
     role,
-    parts: content.parts.map(convertAidaPartToGcaPart),
+    parts: (content.parts ?? []).map(convertAidaPartToGcaPart),
   };
 }
 
@@ -370,8 +423,58 @@ function convertAidaParamToGcaSchema<T extends string|number|symbol = string>(pa
     for (const [key, value] of Object.entries(param.properties)) {
       schema.properties[key] = convertAidaParamToGcaSchema(value as FunctionParam);
     }
-    schema.required = param.required.map(r => r.toString());
+    schema.required = (param.required ?? []).map(r => r.toString());
   }
 
   return schema;
+}
+
+export function gcaChunkResponseToAidaChunkResponse(response: GCA.GenerateContentResponse): AIDA.AidaChunkResponse[] {
+  try {
+    const candidate = response.candidates?.[0];
+    const parts = candidate?.content?.parts || [];
+    const metadata: AIDA.ResponseMetadata = {
+      rpcGlobalId: response.responseId,
+    };
+
+    if (candidate?.citationMetadata?.citations) {
+      metadata.attributionMetadata = {
+        attributionAction: AIDA.RecitationAction.CITE,
+        citations: candidate.citationMetadata.citations.map(c => ({
+                                                              startIndex: c.startIndex,
+                                                              endIndex: c.endIndex,
+                                                              uri: c.uri,
+                                                            })),
+      };
+    }
+    const chunks: AIDA.AidaChunkResponse[] = (parts).map(part => {
+      const aidaChunkResponse: AIDA.AidaChunkResponse = {metadata};
+      if (part.text) {
+        aidaChunkResponse.textChunk = {
+          text: extractTextFromGcaParts(parts),
+        };
+      }
+      if (part.functionCall) {
+        aidaChunkResponse.functionCallChunk = {
+          functionCall: {
+            name: part.functionCall.name,
+            args: part.functionCall.args || {},
+          },
+        };
+      }
+      if (part.executableCode) {
+        aidaChunkResponse.codeChunk = {
+          code: part.executableCode.code,
+          inferenceLanguage: part.executableCode.language ? AIDA.AidaInferenceLanguage.PYTHON :
+                                                            AIDA.AidaInferenceLanguage.UNKNOWN,
+        };
+      }
+      return aidaChunkResponse;
+    });
+    AIDA.debugLog('Translation succeeded:', JSON.stringify(response), JSON.stringify(chunks));
+    return chunks;
+  } catch (e) {
+    AIDA.debugLog('Translation error', JSON.stringify(response), e);
+    throw e;
+  }
 }

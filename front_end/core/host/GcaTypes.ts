@@ -170,7 +170,7 @@ export enum Mode {
 
 export interface GenerateContentRequest {
   model?: string;
-  aicode?: AiCodeConfig;
+  aicode: AiCodeConfig;
   contents: Content[];
   systemInstruction?: Content;
   tools?: Tool[];
@@ -190,6 +190,12 @@ export interface SourceFile {
   inclusionReason?: InclusionReason[];
   fileUri: string;
   programmingLanguage?: string;
+  segments?: FileSegment[];
+}
+
+export interface FileSegment {
+  content: string;
+  isSelected: boolean;
 }
 
 export interface FileEdit {

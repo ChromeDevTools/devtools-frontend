@@ -441,3 +441,30 @@ export const enum AidaInferenceLanguage {
   XML = 'XML',
   UNKNOWN = 'UNKNOWN',
 }
+
+export interface AidaChunkResponse {
+  metadata?: ResponseMetadata;
+  textChunk?: {
+    text: string,
+  };
+  codeChunk?: {
+    code: string,
+    inferenceLanguage: AidaInferenceLanguage,
+  };
+  functionCallChunk?: {
+    functionCall: {
+      name: string,
+      args: Record<string, unknown>,
+    },
+  };
+  error?: string;
+}
+
+export function debugLog(...log: unknown[]): void {
+  if (!Boolean(localStorage.getItem('debugAiServicesEnabled'))) {
+    return;
+  }
+
+  // eslint-disable-next-line no-console
+  console.log(...log);
+}

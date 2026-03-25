@@ -397,10 +397,6 @@ export class MainImpl {
         Root.ExperimentNames.ExperimentName.FONT_EDITOR, 'New font editor in the Styles tab',
         'https://developer.chrome.com/blog/new-in-devtools-89/#font');
 
-    // New cookie features.
-    Root.Runtime.experiments.register(
-        Root.ExperimentNames.ExperimentName.EXPERIMENTAL_COOKIE_FEATURES, 'Experimental cookie features');
-
     Root.Runtime.experiments.registerHostExperiment({
       name: Root.ExperimentNames.ExperimentName.DURABLE_MESSAGES,
       title: 'Durable Messages',

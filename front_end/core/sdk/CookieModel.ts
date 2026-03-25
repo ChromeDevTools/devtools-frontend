@@ -99,8 +99,9 @@ export class CookieModel extends SDKModel<EventTypes> {
     if (cookie.expires()) {
       expires = Math.floor(Date.parse(`${cookie.expires()}`) / 1000);
     }
-    const enabled =
-        Root.Runtime.experiments.isEnabled(Root.ExperimentNames.ExperimentName.EXPERIMENTAL_COOKIE_FEATURES);
+    const schemeBindingEnabled =
+        Boolean(Root.Runtime.hostConfig.devToolsEnableOriginBoundCookies?.schemeBindingEnabled);
+    const portBindingEnabled = Boolean(Root.Runtime.hostConfig.devToolsEnableOriginBoundCookies?.portBindingEnabled);
     const preserveUnset = (scheme: Protocol.Network.CookieSourceScheme): Protocol.Network.CookieSourceScheme.Unset|
                           undefined => scheme === Protocol.Network.CookieSourceScheme.Unset ? scheme : undefined;
     const protocolCookie = {
@@ -115,8 +116,8 @@ export class CookieModel extends SDKModel<EventTypes> {
       expires,
       priority: cookie.priority(),
       partitionKey: cookie.partitionKey(),
-      sourceScheme: enabled ? cookie.sourceScheme() : preserveUnset(cookie.sourceScheme()),
-      sourcePort: enabled ? cookie.sourcePort() : undefined,
+      sourceScheme: schemeBindingEnabled ? cookie.sourceScheme() : preserveUnset(cookie.sourceScheme()),
+      sourcePort: portBindingEnabled ? cookie.sourcePort() : undefined,
     };
     const response = await this.target().networkAgent().invoke_setCookie(protocolCookie);
     const error = response.getError();

@@ -1568,7 +1568,6 @@ export const knownContextValues = new Set([
   'exclude-folder-confirmation',
   'expand',
   'expand-recursively',
-  'experimental-cookie-features',
   'experimental-item',
   'experiments',
   'experiments-filter',

@@ -821,7 +821,6 @@ export enum DevtoolsExperiments {
   apca = 39,
   'font-editor' = 41,
   'full-accessibility-tree' = 42,
-  'experimental-cookie-features' = 45,
   'instrumentation-breakpoints' = 61,
   'use-source-map-scopes' = 76,
   'timeline-debug-mode' = 93,

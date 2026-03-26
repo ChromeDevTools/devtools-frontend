@@ -797,6 +797,167 @@ function renderFieldDataMessage(cruxManager: CrUXManager.CrUXManager): Lit.LitTe
   // clang-format on
 }
 
+const listIsScrolling = new WeakMap<HTMLElement, boolean>();
+
+function shouldKeepScrolledToBottom(listEl: HTMLElement): boolean {
+  if (!listEl.checkVisibility()) {
+    return false;
+  }
+
+  const isAtBottom = Math.abs(listEl.scrollHeight - listEl.clientHeight - listEl.scrollTop) <= 1;
+
+  // We shouldn't scroll to the bottom if the list wasn't already at the bottom.
+  // However, if a new item appears while the animation for a previous item is still going,
+  // then we should "finish" the scroll by sending another scroll command even if the scroll position
+  // the element hasn't scrolled all the way to the bottom yet.
+  return isAtBottom || Boolean(listIsScrolling.get(listEl));
+}
+
+function keepScrolledToBottom(listEl: HTMLElement): void {
+  requestAnimationFrame(() => {
+    listIsScrolling.set(listEl, true);
+    listEl.addEventListener('scrollend', () => {
+      listIsScrolling.set(listEl, false);
+    }, {once: true});
+    listEl.scrollTo({top: listEl.scrollHeight, behavior: 'smooth'});
+  });
+}
+
+function renderInteractionsLog(input: ViewInput, output: ViewOutput): Lit.LitTemplate {
+  if (!input.interactions.size) {
+    return Lit.nothing;
+  }
+
+  // clang-format off
+  return html`
+    <ol class="log"
+      slot="interactions-log-content"
+      ${Lit.Directives.ref(el => {
+        if (el instanceof HTMLElement) {
+          output.shouldKeepInteractionsScrolledToBottom = () => {
+            return shouldKeepScrolledToBottom(el);
+          };
+          output.keepInteractionsScrolledToBottom = () => {
+            keepScrolledToBottom(el);
+          };
+        }
+      })}
+    >
+      ${input.interactions.values().map(interaction => {
+        const metricValue = renderMetricValue(
+          'timeline.landing.interaction-event-timing',
+          interaction.duration,
+          INP_THRESHOLDS,
+          v => i18n.TimeUtilities.preciseMillisToString(v),
+          {dim: true},
+        );
+
+        const isP98Excluded = input.inpValue && input.inpValue.value < interaction.duration;
+        const isInp = input.inpValue?.interactionId === interaction.interactionId;
+
+        return html`
+          <li id=${interaction.interactionId} class="log-item interaction" tabindex="-1">
+            <details>
+              <summary>
+                <span class="interaction-type">
+                  ${interaction.interactionType} ${isInp ?
+                    html`<span class="interaction-inp-chip" title=${i18nString(UIStrings.inpInteraction)}>INP</span>`
+                  : nothing}
+                </span>
+                <span class="interaction-node">
+                  ${widget(PanelsCommon.DOMLinkifier.DOMNodeLink, {node: interaction.nodeRef})}
+                </span>
+                ${isP98Excluded ? html`<devtools-icon
+                  class="interaction-info"
+                  name="info"
+                  title=${i18nString(UIStrings.interactionExcluded)}
+                ></devtools-icon>` : nothing}
+                <span class="interaction-duration">${metricValue}</span>
+              </summary>
+              <div class="phase-table" role="table">
+                <div class="phase-table-row phase-table-header-row" role="row">
+                  <div role="columnheader">${i18nString(UIStrings.phase)}</div>
+                  <div role="columnheader">
+                    ${interaction.longAnimationFrameTimings.length ? html`
+                      <button
+                        class="log-extra-details-button"
+                        title=${i18nString(UIStrings.logToConsole)}
+                        @click=${() => input.logExtraInteractionDetails(interaction)}
+                      >${i18nString(UIStrings.duration)}</button>
+                    ` : i18nString(UIStrings.duration)}
+                  </div>
+                </div>
+                <div class="phase-table-row" role="row">
+                  <div role="cell">${i18nString(UIStrings.inputDelay)}</div>
+                  <div role="cell">${Math.round(interaction.phases.inputDelay)}</div>
+                </div>
+                <div class="phase-table-row" role="row">
+                  <div role="cell">${i18nString(UIStrings.processingDuration)}</div>
+                  <div role="cell">${Math.round(interaction.phases.processingDuration)}</div>
+                </div>
+                <div class="phase-table-row" role="row">
+                  <div role="cell">${i18nString(UIStrings.presentationDelay)}</div>
+                  <div role="cell">${Math.round(interaction.phases.presentationDelay)}</div>
+                </div>
+              </div>
+            </details>
+          </li>
+        `;
+      })}
+    </ol>
+  `;
+  // clang-format on
+}
+
+function renderLayoutShiftsLog(input: ViewInput, output: ViewOutput): Lit.LitTemplate {
+  if (!input.layoutShifts.length) {
+    return Lit.nothing;
+  }
+
+  // clang-format off
+  return html`
+    <ol class="log"
+      slot="layout-shifts-log-content"
+      ${Lit.Directives.ref(el => {
+        if (el instanceof HTMLElement) {
+          output.shouldKeepLayoutShiftsScrolledToBottom = () => {
+            return shouldKeepScrolledToBottom(el);
+          };
+          output.keepLayoutShiftsScrolledToBottom = () => {
+            keepScrolledToBottom(el);
+          };
+        }
+      })}
+    >
+      ${input.layoutShifts.map(layoutShift => {
+        const metricValue = renderMetricValue(
+          'timeline.landing.layout-shift-event-score',
+          layoutShift.score,
+          CLS_THRESHOLDS,
+          // CLS value is 2 decimal places, but individual shift scores tend to be much smaller
+          // so we expand the precision here.
+          v => v.toFixed(4),
+          {dim: true},
+        );
+
+        return html`
+          <li id=${layoutShift.uniqueLayoutShiftId} class="log-item layout-shift" tabindex="-1">
+            <div class="layout-shift-score">Layout shift score: ${metricValue}</div>
+            <div class="layout-shift-nodes">
+              ${layoutShift.affectedNodeRefs.map(node => html`
+                <div class="layout-shift-node">
+                  ${widget(PanelsCommon.DOMLinkifier.DOMNodeLink, {node})}
+                </div>
+              `)}
+            </div>
+          </li>
+        `;
+      })}
+    </ol>
+  `;
+  // clang-format on
+}
+
 export class LiveMetricsView extends UI.Widget.Widget {
   isNode = Root.Runtime.Runtime.isNode();
 
@@ -812,9 +973,7 @@ export class LiveMetricsView extends UI.Widget.Widget {
   #recordReloadAction: UI.ActionRegistration.Action;
 
   #logsEl?: LiveMetricsLogs;
-  #interactionsListEl?: HTMLElement;
-  #layoutShiftsListEl?: HTMLElement;
-  #listIsScrolling = false;
+  #viewOutput: ViewOutput = {};
   #deviceModeModel = EmulationModel.DeviceModeModel.DeviceModeModel.tryInstance();
 
   constructor(element?: HTMLElement) {
@@ -824,7 +983,7 @@ export class LiveMetricsView extends UI.Widget.Widget {
     this.#recordReloadAction = UI.ActionRegistry.ActionRegistry.instance().getAction('timeline.record-reload');
   }
 
-  #onMetricStatus(event: {data: LiveMetrics.StatusEvent}): void {
+  async #onMetricStatus(event: {data: LiveMetrics.StatusEvent}): Promise<void> {
     this.#lcpValue = event.data.lcp;
     this.#clsValue = event.data.cls;
     this.#inpValue = event.data.inp;
@@ -835,41 +994,19 @@ export class LiveMetricsView extends UI.Widget.Widget {
     const hasNewInteraction = this.#interactions.size < event.data.interactions.size;
     this.#interactions = new Map(event.data.interactions);
 
+    const shouldScrollInteractions = hasNewInteraction && this.#viewOutput.shouldKeepInteractionsScrolledToBottom?.();
+    const shouldScrollLS = hasNewLS && this.#viewOutput.shouldKeepLayoutShiftsScrolledToBottom?.();
+
     this.requestUpdate();
+    await this.updateComplete;
 
-    if (hasNewInteraction && this.#interactionsListEl) {
-      this.#keepScrolledToBottom(this.updateComplete, this.#interactionsListEl);
+    if (shouldScrollInteractions) {
+      this.#viewOutput.keepInteractionsScrolledToBottom?.();
     }
 
-    if (hasNewLS && this.#layoutShiftsListEl) {
-      this.#keepScrolledToBottom(this.updateComplete, this.#layoutShiftsListEl);
+    if (shouldScrollLS) {
+      this.#viewOutput.keepLayoutShiftsScrolledToBottom?.();
     }
-  }
-
-  #keepScrolledToBottom(renderPromise: Promise<void>, listEl: HTMLElement): void {
-    if (!listEl.checkVisibility()) {
-      return;
-    }
-
-    const isAtBottom = Math.abs(listEl.scrollHeight - listEl.clientHeight - listEl.scrollTop) <= 1;
-
-    // We shouldn't scroll to the bottom if the list wasn't already at the bottom.
-    // However, if a new item appears while the animation for a previous item is still going,
-    // then we should "finish" the scroll by sending another scroll command even if the scroll position
-    // the element hasn't scrolled all the way to the bottom yet.
-    if (!isAtBottom && !this.#listIsScrolling) {
-      return;
-    }
-
-    void renderPromise.then(() => {
-      requestAnimationFrame(() => {
-        this.#listIsScrolling = true;
-        listEl.addEventListener('scrollend', () => {
-          this.#listIsScrolling = false;
-        }, {once: true});
-        listEl.scrollTo({top: listEl.scrollHeight, behavior: 'smooth'});
-      });
-    });
   }
 
   #onFieldDataChanged(): void {
@@ -935,7 +1072,7 @@ export class LiveMetricsView extends UI.Widget.Widget {
     this.requestUpdate();
   }
 
-  #renderLogSection(): Lit.LitTemplate {
+  #renderLogSection(input: ViewInput): Lit.LitTemplate {
     // clang-format off
     return html`
       <section
@@ -947,8 +1084,8 @@ export class LiveMetricsView extends UI.Widget.Widget {
             this.#logsEl = widget;
           })}
         >
-          ${this.#renderInteractionsLog()}
-          ${this.#renderLayoutShiftsLog()}
+          ${renderInteractionsLog(input, this.#viewOutput)}
+          ${renderLayoutShiftsLog(input, this.#viewOutput)}
         </devtools-widget>
       </section>
     `;
@@ -982,87 +1119,6 @@ export class LiveMetricsView extends UI.Widget.Widget {
     }
   }
 
-  #renderInteractionsLog(): Lit.LitTemplate {
-    if (!this.#interactions.size) {
-      return Lit.nothing;
-    }
-
-    // clang-format off
-    return html`
-      <ol class="log"
-        slot="interactions-log-content"
-        ${Lit.Directives.ref(el => {
-          if (el instanceof HTMLElement) {
-            this.#interactionsListEl = el as HTMLElement;
-          }
-        })}
-      >
-        ${this.#interactions.values().map(interaction => {
-          const metricValue = renderMetricValue(
-            'timeline.landing.interaction-event-timing',
-            interaction.duration,
-            INP_THRESHOLDS,
-            v => i18n.TimeUtilities.preciseMillisToString(v),
-            {dim: true},
-          );
-
-          const isP98Excluded = this.#inpValue && this.#inpValue.value < interaction.duration;
-          const isInp = this.#inpValue?.interactionId === interaction.interactionId;
-
-          return html`
-            <li id=${interaction.interactionId} class="log-item interaction" tabindex="-1">
-              <details>
-                <summary>
-                  <span class="interaction-type">
-                    ${interaction.interactionType} ${isInp ?
-                      html`<span class="interaction-inp-chip" title=${i18nString(UIStrings.inpInteraction)}>INP</span>`
-                    : nothing}
-                  </span>
-                  <span class="interaction-node">
-                    ${widget(PanelsCommon.DOMLinkifier.DOMNodeLink, {node: interaction.nodeRef})}
-                  </span>
-                  ${isP98Excluded ? html`<devtools-icon
-                    class="interaction-info"
-                    name="info"
-                    title=${i18nString(UIStrings.interactionExcluded)}
-                  ></devtools-icon>` : nothing}
-                  <span class="interaction-duration">${metricValue}</span>
-                </summary>
-                <div class="phase-table" role="table">
-                  <div class="phase-table-row phase-table-header-row" role="row">
-                    <div role="columnheader">${i18nString(UIStrings.phase)}</div>
-                    <div role="columnheader">
-                      ${interaction.longAnimationFrameTimings.length ? html`
-                        <button
-                          class="log-extra-details-button"
-                          title=${i18nString(UIStrings.logToConsole)}
-                          @click=${() => this.#logExtraInteractionDetails(interaction)}
-                        >${i18nString(UIStrings.duration)}</button>
-                      ` : i18nString(UIStrings.duration)}
-                    </div>
-                  </div>
-                  <div class="phase-table-row" role="row">
-                    <div role="cell">${i18nString(UIStrings.inputDelay)}</div>
-                    <div role="cell">${Math.round(interaction.phases.inputDelay)}</div>
-                  </div>
-                  <div class="phase-table-row" role="row">
-                    <div role="cell">${i18nString(UIStrings.processingDuration)}</div>
-                    <div role="cell">${Math.round(interaction.phases.processingDuration)}</div>
-                  </div>
-                  <div class="phase-table-row" role="row">
-                    <div role="cell">${i18nString(UIStrings.presentationDelay)}</div>
-                    <div role="cell">${Math.round(interaction.phases.presentationDelay)}</div>
-                  </div>
-                </div>
-              </details>
-            </li>
-          `;
-        })}
-      </ol>
-    `;
-    // clang-format on
-  }
-
   async #revealLayoutShiftCluster(clusterIds: Set<LiveMetrics.LayoutShift['uniqueLayoutShiftId']>): Promise<void> {
     if (!this.#logsEl) {
       return;
@@ -1094,50 +1150,6 @@ export class LiveMetricsView extends UI.Widget.Widget {
         UI.UIUtils.runCSSAnimationOnce(layoutShiftEl, 'highlight');
       }
     });
-  }
-
-  #renderLayoutShiftsLog(): Lit.LitTemplate {
-    if (!this.#layoutShifts.length) {
-      return Lit.nothing;
-    }
-
-    // clang-format off
-    return html`
-      <ol class="log"
-        slot="layout-shifts-log-content"
-        ${Lit.Directives.ref(el => {
-          if (el instanceof HTMLElement) {
-            this.#layoutShiftsListEl = el as HTMLElement;
-          }
-        })}
-      >
-        ${this.#layoutShifts.map(layoutShift => {
-          const metricValue = renderMetricValue(
-            'timeline.landing.layout-shift-event-score',
-            layoutShift.score,
-            CLS_THRESHOLDS,
-            // CLS value is 2 decimal places, but individual shift scores tend to be much smaller
-            // so we expand the precision here.
-            v => v.toFixed(4),
-            {dim: true},
-          );
-
-          return html`
-            <li id=${layoutShift.uniqueLayoutShiftId} class="log-item layout-shift" tabindex="-1">
-              <div class="layout-shift-score">Layout shift score: ${metricValue}</div>
-              <div class="layout-shift-nodes">
-                ${layoutShift.affectedNodeRefs.map(node => html`
-                  <div class="layout-shift-node">
-                    ${widget(PanelsCommon.DOMLinkifier.DOMNodeLink, {node})}
-                  </div>
-                `)}
-              </div>
-            </li>
-          `;
-        })}
-      </ol>
-    `;
-    // clang-format on
   }
 
   #renderNodeView(input: ViewInput): Lit.LitTemplate {
@@ -1208,7 +1220,7 @@ export class LiveMetricsView extends UI.Widget.Widget {
               class="local-field-link"
               title=${i18nString(UIStrings.localFieldLearnMoreTooltip)}
             >${i18nString(UIStrings.localFieldLearnMoreLink)}</devtools-link>
-            ${this.#renderLogSection()}
+            ${this.#renderLogSection(viewInput)}
           </main>
           <aside class="next-steps" aria-labelledby="next-steps-section-title">
             <h2 id="next-steps-section-title" class="section-title">${i18nString(UIStrings.nextSteps)}</h2>

@@ -19,4 +19,24 @@ await Promise.all([
           judge: example => LLMComparison.judge(example, loadInstructions('lcp-breakdown')),
         });
       }),
+
+  evalGroup(
+      {type: 'performance', label: 'cls-breakdown'},
+      async function() {
+        await itEval({
+          test: 'calls getInsightDetails with CLS insight',
+          succeed: example =>
+              FunctionCalled.nameAndArguments(example, 'getInsightDetails', {insightName: 'CLSCulprits'}),
+        });
+
+        await itEval({
+          test: 'is an accurate response to \'Why is the CLS for my page bad?\'',
+          judge: example => LLMComparison.judge(example, loadInstructions('cls-breakdown')),
+        });
+
+        await itEval({
+          test: 'ROUGE-Lsum',
+          rouge: true,
+        });
+      }),
 ]);

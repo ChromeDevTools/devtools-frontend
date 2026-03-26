@@ -37,7 +37,7 @@ Run `cd scripts/ai_assistance && npm run eval-suite` to execute the suite.
 
 ## Adding new outputs
 
-To get outputs, you should use the auto-run tool but pass the `--eval` flag. This will cause it to output a secondary file named `*.eval.json` that contains the output in the format the evaluation suiteexpects.
+To get outputs, you should use the auto-run tool but pass the `--eval` flag. This will cause it to output a secondary file named `*.eval.json` that contains the output in the format the evaluation suite expects.
 
 Once you have new outputs you want to put into the set, move them into the right place in the `suite/outputs/outputs` folder.
 

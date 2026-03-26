@@ -125,6 +125,17 @@ export class FunctionCalled extends Evaluator {
       return q.response.functionCallRequests?.some(call => call.name === funcName);
     });
   }
+
+  static nameAndArguments(example: Conversation, funcName: string, argCheck: Record<string, unknown>): boolean {
+    return example.queries.some(q => {
+      return q.response.functionCallRequests?.some(call => {
+        if (call.name !== funcName) {
+          return false;
+        }
+        return Object.entries(argCheck).every(([key, value]) => call.args[key] === value);
+      });
+    });
+  }
 }
 
 export class LLMComparison extends Evaluator {

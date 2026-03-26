@@ -9,6 +9,11 @@ const DEFAULT_METADATA: AidaClient.RequestMetadata = {
   disable_user_content_logging: false,
   client_version: '1.2.3.4',
 };
+const DEFAULT_LABELS = {
+  client: DEFAULT_CLIENT,
+  client_version: '1.2.3.4',
+  disable_user_content_logging: 'false',
+};
 
 function createAidaDoConversationRequest(overrides: Partial<AidaClient.DoConversationRequest> = {}):
     AidaClient.DoConversationRequest {
@@ -27,7 +32,7 @@ function createGcaRequest(
   return {
     contents: [{role: 'user', parts: [{text: 'Hello'}]}],
     ...otherOverrides,
-    labels: {client: DEFAULT_CLIENT, ...labels},
+    labels: {...DEFAULT_LABELS, ...labels},
     aicode: aicode ||
         {
           experience
@@ -84,6 +89,8 @@ function describeCommonRequestFields(
       const result = translateFn(aidaRequest);
       assert.strictEqual(result.model, 'test-model');
       assert.strictEqual(result.labels?.['session_id'], 'session-123');
+      assert.strictEqual(result.labels?.['client_version'], '1.2.3.4');
+      assert.strictEqual(result.labels?.['disable_user_content_logging'], 'false');
       assert.strictEqual(result.generationConfig?.temperature, 0.5);
     });
 
@@ -395,10 +402,10 @@ describe('AidaGcaTranslation', () => {
         model: 'code-model',
         generationConfig: {stopSequences: ['\n'], temperature: 0},
         labels: {
-          client: DEFAULT_CLIENT,
-          last_user_action: 'ADD',
           inference_language: 'JAVASCRIPT',
+          last_user_action: 'ADD',
           session_id: 'session-456',
+          ...DEFAULT_LABELS,
         },
         aicode: {
           experience: 'complete_code',
@@ -466,7 +473,7 @@ describe('AidaGcaTranslation', () => {
         aicode: {experience: 'generate_code'},
         contents: [{role: 'user', parts: [{text: 'that adds two numbers'}]}],
         systemInstruction: {role: 'user', parts: [{text: 'Generate a function'}]},
-        labels: {client: DEFAULT_CLIENT, use_case: 'CODE_GENERATION'},
+        labels: {use_case: 'CODE_GENERATION', ...DEFAULT_LABELS},
       });
     });
 
@@ -495,12 +502,12 @@ describe('AidaGcaTranslation', () => {
         model: 'gen-model',
         generationConfig: {temperature: 0.7},
         labels: {
-          client: DEFAULT_CLIENT,
-          use_case: 'CODE_GENERATION',
           inference_language: 'TYPESCRIPT',
           expect_code_output: 'true',
           client_feature: 'CHROME_FILE_AGENT',
           session_id: 'session-789',
+          use_case: 'CODE_GENERATION',
+          ...DEFAULT_LABELS,
         },
         aicode: {
           experience: 'generate_code',

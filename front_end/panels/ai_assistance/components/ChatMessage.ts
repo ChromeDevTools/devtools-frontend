@@ -342,12 +342,13 @@ export const DEFAULT_VIEW = (input: ChatMessageViewInput, output: ViewOutput, ta
       class="chat-message answer ${input.isLastMessage ? 'is-last-message' : ''}"
       jslog=${VisualLogging.section('answer')}
     >
-      <div class="message-info">
-        <devtools-icon name=${icon}></devtools-icon>
-        <div class="message-name">
-          <h2>${AiAssistanceModel.AiUtils.isGeminiBranding() ? lockedString(UIStringsNotTranslate.gemini) : lockedString(UIStringsNotTranslate.ai)}</h2>
-        </div>
-      </div>
+      ${aiAssistanceV2 ? Lit.nothing : html`
+        <div class="message-info">
+          <devtools-icon name=${icon}></devtools-icon>
+          <div class="message-name">
+            <h2>${AiAssistanceModel.AiUtils.isGeminiBranding() ? lockedString(UIStringsNotTranslate.gemini) : lockedString(UIStringsNotTranslate.ai)}</h2>
+          </div>
+        </div>`}
       ${aiAssistanceV2 ? renderWalkthroughUI(input, steps) : Lit.nothing}
       ${Lit.Directives.repeat(
         message.parts,
@@ -519,11 +520,14 @@ function renderWalkthroughSidebarButton(
   // want to change it visually at the end once everything has stopped
   // loading.
   const variant = hasOneStepWithWidget && !input.isLoading ? Buttons.Button.Variant.TONAL : Buttons.Button.Variant.TEXT;
+  const icon = AiAssistanceModel.AiUtils.getIconName();
 
   // clang-format off
   return html`
-    <div class="walkthrough-toggle-container">
-      ${input.isLoading ? html`<devtools-spinner></devtools-spinner>` : Lit.nothing}
+    <div class="walkthrough-toggle-container ${hasOneStepWithWidget ? 'has-widgets' : ''}">
+      ${input.isLoading ?
+        html`<devtools-spinner></devtools-spinner>` :
+        html`<devtools-icon name=${icon}></devtools-icon>`}
       <devtools-button
         .variant=${variant}
         .size=${Buttons.Button.Size.SMALL}
@@ -540,8 +544,8 @@ function renderWalkthroughSidebarButton(
             walkthrough.onOpen(message as ModelChatMessage);
           }
         }}
-      >
-        ${title}<devtools-icon class="chevron" .name=${'chevron-right'}></devtools-icon>
+>
+        ${title}<devtools-icon class="chevron" .name=${isExpanded ? 'cross' : 'chevron-right'}></devtools-icon>
       </devtools-button>
     </div>
   `;

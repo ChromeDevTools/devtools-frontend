@@ -294,10 +294,24 @@ describeWithMockConnection('PerformanceAgent', function() {
     createTarget();
   });
 
-  it('uses the min and max bounds of the trace as the origin', async function() {
-    const parsedTrace = await TraceLoader.traceEngine(this, 'lcp-images.json.gz');
+  it('uses the mainFrameURL as the origin if it is valid', async function() {
+    const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
     const context = PerformanceAgent.PerformanceTraceContext.fromParsedTrace(parsedTrace);
-    assert.strictEqual(context.getOrigin(), 'trace-658799706428-658804825864');
+    assert.strictEqual(context.getOrigin(), 'https://web.dev');
+  });
+
+  it('falls back to the min and max bounds if the URL is invalid', () => {
+    const parsedTrace = {
+      data: {
+        Meta: {
+          traceBounds: {min: 100, max: 200},
+          mainFrameURL: 'not-a-url',
+        },
+      },
+      insights: new Map(),
+    } as unknown as Trace.TraceModel.ParsedTrace;
+    const context = PerformanceAgent.PerformanceTraceContext.fromParsedTrace(parsedTrace);
+    assert.strictEqual(context.getOrigin(), 'trace-100-200');
   });
 
   it('outputs the right title for the selected insight', async () => {

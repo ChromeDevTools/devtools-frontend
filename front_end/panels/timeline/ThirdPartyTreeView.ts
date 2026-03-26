@@ -6,7 +6,6 @@
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
-import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import thirdPartyTreeViewStyles from './thirdPartyTreeView.css.js';
@@ -43,8 +42,8 @@ export class ThirdPartyTreeViewWidget extends TimelineTreeView.TimelineTreeView 
   #onBottomUpButtonClicked?: (node: Trace.Extras.TraceTree.Node|null) => void;
   #onRowClicked?: (node: Trace.Extras.TraceTree.Node|null, events?: Trace.Types.Events.Event[]) => void;
 
-  constructor() {
-    super();
+  constructor(element?: HTMLElement) {
+    super(element);
     this.element.setAttribute('jslog', `${VisualLogging.pane('third-party-tree').track({hover: true})}`);
     this.init();
     this.dataGrid.markColumnAsSortedBy('self', DataGrid.DataGrid.Order.Descending);
@@ -289,43 +288,5 @@ export class ThirdPartyTreeViewWidget extends TimelineTreeView.TimelineTreeView 
       });
     }
     this.#onRowClicked = callback;
-  }
-}
-
-export class ThirdPartyTreeElement extends UI.Widget.WidgetElement<UI.Widget.Widget> {
-  #treeView?: ThirdPartyTreeViewWidget;
-
-  static readonly observedAttributes = ['max-rows'];
-
-  set treeView(treeView: ThirdPartyTreeViewWidget) {
-    this.#treeView = treeView;
-  }
-
-  constructor() {
-    super();
-    this.style.display = 'contents';
-  }
-
-  attributeChangedCallback(name: string, _oldValue: string|null, newValue: string|null): void {
-    if (name === 'max-rows' && newValue) {
-      this.style.setProperty('--max-rows', newValue);
-    }
-  }
-
-  override createWidget(): UI.Widget.Widget {
-    const containerWidget = new UI.Widget.Widget(this);
-    containerWidget.contentElement.style.display = 'contents';
-    if (this.#treeView) {
-      this.#treeView.show(containerWidget.contentElement);
-    }
-    return containerWidget;
-  }
-}
-
-customElements.define('devtools-performance-third-party-tree-view', ThirdPartyTreeElement);
-
-declare global {
-  interface HTMLElementTagNameMap {
-    'devtools-performance-third-party-tree-view': ThirdPartyTreeElement;
   }
 }

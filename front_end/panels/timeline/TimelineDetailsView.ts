@@ -91,7 +91,6 @@ export class TimelineDetailsPane extends
   #parsedTrace: Trace.TraceModel.ParsedTrace|null = null;
   #eventToRelatedInsightsMap: TimelineComponents.RelatedInsightChips.EventToRelatedInsightsMap|null = null;
   #onTraceBoundsChangeBound = this.#onTraceBoundsChange.bind(this);
-  #thirdPartyTree = new ThirdPartyTreeViewWidget();
   #entityMapper: Trace.EntityMapper.EntityMapper|null = null;
 
   constructor(delegate: TimelineModeViewDelegate) {
@@ -148,20 +147,18 @@ export class TimelineDetailsPane extends
             node => this.dispatchEventToListeners(TimelineTreeView.Events.TREE_ROW_HOVERED, {node: node.data}));
       }
     });
-    this.#thirdPartyTree.addEventListener(TimelineTreeView.Events.TREE_ROW_HOVERED, node => {
-      // Re-dispatch through 3P event to get 3P dimmer.
-      this.dispatchEventToListeners(
-          TimelineTreeView.Events.TREE_ROW_HOVERED, {node: node.data.node, events: node.data.events});
-    });
 
-    this.#thirdPartyTree.addEventListener(TimelineTreeView.Events.BOTTOM_UP_BUTTON_CLICKED, node => {
-      this.selectTab(Tab.BottomUp, node.data, AggregatedTimelineTreeView.GroupBy.ThirdParties);
-    });
-    this.#thirdPartyTree.addEventListener(TimelineTreeView.Events.TREE_ROW_CLICKED, node => {
+    this.#summaryContent.onTreeRowHovered = (node, events) => {
       // Re-dispatch through 3P event to get 3P dimmer.
-      this.dispatchEventToListeners(
-          TimelineTreeView.Events.TREE_ROW_CLICKED, {node: node.data.node, events: node.data.events});
-    });
+      this.dispatchEventToListeners(TimelineTreeView.Events.TREE_ROW_HOVERED, {node, events});
+    };
+    this.#summaryContent.onBottomUpButtonClicked = node => {
+      this.selectTab(Tab.BottomUp, node, AggregatedTimelineTreeView.GroupBy.ThirdParties);
+    };
+    this.#summaryContent.onTreeRowClicked = (node, events) => {
+      // Re-dispatch through 3P event to get 3P dimmer.
+      this.dispatchEventToListeners(TimelineTreeView.Events.TREE_ROW_CLICKED, {node, events});
+    };
 
     this.tabbedPane.addEventListener(UI.TabbedPane.Events.TabSelected, this.tabSelected, this);
 
@@ -300,9 +297,6 @@ export class TimelineDetailsPane extends
         entityMapper: data.entityMapper
       };
     }
-    // Set the 3p tree model.
-    this.#thirdPartyTree
-        .model = {selectedEvents: data.selectedEvents, parsedTrace: data.parsedTrace, entityMapper: data.entityMapper};
     this.#summaryContent.requestUpdate();
     this.lazyPaintProfilerView = null;
     this.lazyLayersView = null;
@@ -549,21 +543,12 @@ export class TimelineDetailsPane extends
     this.#summaryContent.selectedEvent = null;
     this.#summaryContent.selectedRange = {
       events: this.#selectedEvents,
-      thirdPartyTree: this.#thirdPartyTree,
       startTime,
       endTime,
+      selection: this.selection ?? null,
     };
 
-    // This is a bit of a hack as we are midway through migrating this to
-    // the new UI Eng vision.
-    // The 3P tree view will only bother to update its DOM if it has a
-    // parentElement, so we trigger the rendering of the summary content
-    // (so the 3P Tree View is attached to the DOM) and then we tell it to
-    // update.
-    // This will be fixed once we migrate this component fully to the new vision (b/407751379)
-    void this.updateSummaryPane().then(() => {
-      this.#thirdPartyTree.activeSelection = this.selection || selectionFromRangeMilliSeconds(startTime, endTime);
-    });
+    void this.updateSummaryPane();
 
     // Find all recalculate style events data from range
     const isSelectorStatsEnabled =
@@ -597,7 +582,7 @@ interface SelectedRange {
   startTime: Trace.Types.Timing.Milli;
   endTime: Trace.Types.Timing.Milli;
   events: Trace.Types.Events.Event[];
-  thirdPartyTree: ThirdPartyTreeViewWidget;
+  selection: TimelineSelection|null;
 }
 
 interface SummaryViewInput {
@@ -609,6 +594,9 @@ interface SummaryViewInput {
   linkifier: Components.Linkifier.Linkifier|null;
   filmStrip: Trace.Extras.FilmStrip.Data|null;
   selectedRange: SelectedRange|null;
+  onTreeRowHovered: (_node: Trace.Extras.TraceTree.Node|null, _events?: Trace.Types.Events.Event[]) => void;
+  onBottomUpButtonClicked: (_node: Trace.Extras.TraceTree.Node|null) => void;
+  onTreeRowClicked: (_node: Trace.Extras.TraceTree.Node|null, _events?: Trace.Types.Events.Event[]) => void;
 }
 
 type View = (input: SummaryViewInput, output: object, target: HTMLElement) => void;
@@ -639,6 +627,9 @@ class SummaryView extends UI.Widget.Widget {
   linkifier: Components.Linkifier.Linkifier|null = null;
   filmStrip: Trace.Extras.FilmStrip.Data|null = null;
   selectedRange: SelectedRange|null = null;
+  onTreeRowHovered = (_node: Trace.Extras.TraceTree.Node|null, _events?: Trace.Types.Events.Event[]): void => {};
+  onBottomUpButtonClicked = (_node: Trace.Extras.TraceTree.Node|null): void => {};
+  onTreeRowClicked = (_node: Trace.Extras.TraceTree.Node|null, _events?: Trace.Types.Events.Event[]): void => {};
 
   constructor(element?: HTMLElement, view = SUMMARY_DEFAULT_VIEW) {
     super(element);
@@ -656,6 +647,9 @@ class SummaryView extends UI.Widget.Widget {
           linkifier: this.linkifier,
           filmStrip: this.filmStrip,
           selectedRange: this.selectedRange,
+          onTreeRowHovered: this.onTreeRowHovered,
+          onBottomUpButtonClicked: this.onBottomUpButtonClicked,
+          onTreeRowClicked: this.onTreeRowClicked,
         },
         {}, this.contentElement);
   }
@@ -663,19 +657,26 @@ class SummaryView extends UI.Widget.Widget {
 
 function generateRangeSummaryDetails(input: SummaryViewInput): LitTemplate {
   // clang-format off
-  return html`
-    <devtools-widget
-      ${widget(TimelineComponents.TimelineRangeSummaryView.TimelineRangeSummaryView, {
-        data: {
+  return html`${widget(TimelineComponents.TimelineRangeSummaryView.TimelineRangeSummaryView, {
+    data: {
+      parsedTrace: input.parsedTrace,
+      events: input.selectedRange?.events,
+      startTime: input.selectedRange?.startTime,
+      endTime: input.selectedRange?.endTime,
+      thirdPartyTreeTemplate:  input.selectedRange ? html`${widget(ThirdPartyTreeViewWidget, {
+        model: {
           parsedTrace: input.parsedTrace,
-          events: input.selectedRange?.events,
-          startTime: input.selectedRange?.startTime,
-          endTime: input.selectedRange?.endTime,
-          thirdPartyTreeTemplate: input.selectedRange?.thirdPartyTree ? html`<devtools-performance-third-party-tree-view
-            .treeView=${input.selectedRange?.thirdPartyTree}></devtools-performance-third-party-tree-view>` : nothing,
-        } as TimelineComponents.TimelineRangeSummaryView.TimelineRangeSummaryViewData,
-      })}
-    ></devtools-widget>`;
+          entityMapper: input.entityMapper,
+          selectedEvents: input.selectedRange.events ?? null,
+        },
+        activeSelection: input.selectedRange.selection ||
+            selectionFromRangeMilliSeconds(input.selectedRange.startTime, input.selectedRange.endTime),
+        onRowHovered: input.onTreeRowHovered,
+        onBottomUpButtonClicked: input.onBottomUpButtonClicked,
+        onRowClicked: input.onTreeRowClicked,
+        })}` : nothing,
+    } as TimelineComponents.TimelineRangeSummaryView.TimelineRangeSummaryViewData,
+  })}`;
   // clang-format on
 }
 

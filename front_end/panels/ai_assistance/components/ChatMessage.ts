@@ -1432,9 +1432,16 @@ async function makeTimelineRangeSummaryWidget(widgetData: TimelineRangeSummaryAi
           events,
           startTime: Trace.Helpers.Timing.microToMilli(bounds.min),
           endTime: Trace.Helpers.Timing.microToMilli(bounds.max),
-          thirdPartyTreeTemplate: html`<devtools-performance-third-party-tree-view
-            max-rows="10"
-            .treeView=${thirdPartyTree}></devtools-performance-third-party-tree-view>`,
+          thirdPartyTreeTemplate: html`${
+            widget(Timeline.ThirdPartyTreeView.ThirdPartyTreeViewWidget, {
+              maxRows: 10,
+              model: {
+                selectedEvents: thirdPartyTree.selectedEvents() ?? null,
+                parsedTrace,
+                entityMapper: thirdPartyTree.entityMapper(),
+              },
+              activeSelection: { bounds },
+            })}`,
         } as TimelineComponents.TimelineRangeSummaryView.TimelineRangeSummaryViewData,
       })}
     ></devtools-widget>`;

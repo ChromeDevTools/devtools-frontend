@@ -204,8 +204,8 @@ export class TimelineTreeView extends
    */
   protected autoSelectFirstChildOnRefresh = true;
 
-  constructor() {
-    super();
+  constructor(element?: HTMLElement) {
+    super(element);
     this.#selectedEvents = null;
     this.element.classList.add('timeline-tree-view');
     this.registerRequiredCSS(timelineTreeViewStyles);

@@ -133,6 +133,18 @@ describeWithMockConnection('ApplicationPanelSidebar', () => {
     setMockConnectionResponseHandler('Storage.setSharedStorageTracking', () => ({}));
   });
 
+  it('shows WebMCP only if the WebMCP config is enabled', async () => {
+    updateHostConfig({devToolsWebMCPSupport: {enabled: true}});
+    Application.ResourcesPanel.ResourcesPanel.instance({forceNew: true});
+    let sidebar = await Application.ResourcesPanel.ResourcesPanel.showAndGetSidebar();
+    assert.exists(sidebar.webMcpTreeElement);
+
+    updateHostConfig({devToolsWebMCPSupport: {enabled: false}});
+    Application.ResourcesPanel.ResourcesPanel.instance({forceNew: true});
+    sidebar = await Application.ResourcesPanel.ResourcesPanel.showAndGetSidebar();
+    assert.isUndefined(sidebar.webMcpTreeElement);
+  });
+
   it('shows cookies for all frames', async () => {
     Application.ResourcesPanel.ResourcesPanel.instance({forceNew: true});
     const sidebar = await Application.ResourcesPanel.ResourcesPanel.showAndGetSidebar();

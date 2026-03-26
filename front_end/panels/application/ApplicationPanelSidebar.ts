@@ -92,6 +92,7 @@ import {SharedStorageTreeElement} from './SharedStorageTreeElement.js';
 import {StorageBucketsTreeParentElement} from './StorageBucketsTreeElement.js';
 import {StorageView} from './StorageView.js';
 import {TrustTokensTreeElement} from './TrustTokensTreeElement.js';
+import {WebMCPTreeElement} from './WebMCPTreeElement.js';
 
 const UIStrings = {
   /**
@@ -346,6 +347,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
   periodicBackgroundSyncTreeElement: BackgroundServiceTreeElement;
   pushMessagingTreeElement: BackgroundServiceTreeElement;
   reportingApiTreeElement: ReportingApiTreeElement;
+  webMcpTreeElement?: WebMCPTreeElement;
   deviceBoundSessionsRootTreeElement: DeviceBoundSessionsRootTreeElement|undefined;
   deviceBoundSessionsModel: DeviceBoundSessionsModel|undefined;
   preloadingSummaryTreeElement: PreloadingSummaryTreeElement|undefined;
@@ -390,6 +392,10 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
     this.applicationTreeElement.appendChild(this.serviceWorkersTreeElement);
     const clearStorageTreeElement = new ClearStorageTreeElement(panel);
     this.applicationTreeElement.appendChild(clearStorageTreeElement);
+    if (Root.Runtime.hostConfig.devToolsWebMCPSupport?.enabled) {
+      this.webMcpTreeElement = new WebMCPTreeElement(panel);
+      this.applicationTreeElement.appendChild(this.webMcpTreeElement);
+    }
 
     const storageSectionTitle = i18nString(UIStrings.storage);
     const storageTreeElement = this.addSidebarSection(storageSectionTitle, 'storage');

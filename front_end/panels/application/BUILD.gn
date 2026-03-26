@@ -29,6 +29,7 @@ generate_css("css_files") {
     "serviceWorkersView.css",
     "sharedStorageEventsView.css",
     "storageView.css",
+    "webMCPView.css",
   ]
 }
 
@@ -75,6 +76,8 @@ devtools_ui_module("application") {
     "StorageItemsToolbar.ts",
     "StorageView.ts",
     "TrustTokensTreeElement.ts",
+    "WebMCPTreeElement.ts",
+    "WebMCPView.ts",
     "preloading/PreloadingView.ts",
   ]
 
@@ -189,6 +192,7 @@ devtools_ui_module("unittests") {
     "SharedStorageTreeElement.test.ts",
     "StorageBucketsTreeElement.test.ts",
     "StorageView.test.ts",
+    "WebMCPView.test.ts",
     "preloading/PreloadingView.test.ts",
   ]
 

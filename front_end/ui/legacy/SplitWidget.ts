@@ -13,7 +13,7 @@ import * as ARIAUtils from './ARIAUtils.js';
 import {Events as ResizerWidgetEvents, type ResizeUpdatePositionEvent, SimpleResizerWidget} from './ResizerWidget.js';
 import splitWidgetStyles from './splitWidget.css.js';
 import {ToolbarButton} from './Toolbar.js';
-import {Widget, WidgetElement} from './Widget.js';
+import {registerWidgetConfig, Widget, widgetConfig, WidgetElement} from './Widget.js';
 import {Events as ZoomManagerEvents, ZoomManager} from './ZoomManager.js';
 
 export class SplitWidget extends Common.ObjectWrapper.eventMixin<EventTypes, typeof Widget>(Widget) {
@@ -882,32 +882,38 @@ export class SplitWidget extends Common.ObjectWrapper.eventMixin<EventTypes, typ
 export class SplitWidgetElement extends WidgetElement<SplitWidget> {
   static readonly observedAttributes = ['direction', 'sidebar-position', 'sidebar-initial-size', 'sidebar-visibility'];
 
-  override createWidget(): SplitWidget {
-    const vertical = this.getAttribute('direction') === 'column';
-    const autoAdjustOrientation = this.getAttribute('direction') === 'auto';
-    const secondIsSidebar = this.getAttribute('sidebar-position') === 'second';
-    const settingName = this.getAttribute('name') ?? undefined;
-    const sidebarSize = parseInt(this.getAttribute('sidebar-initial-size') || '', 10);
-    const defaultSidebarWidth = !isNaN(sidebarSize) ? sidebarSize : undefined;
-    const defaultSidebarHeight = !isNaN(sidebarSize) ? sidebarSize : undefined;
-    const widget = new SplitWidget(
-        vertical, secondIsSidebar, settingName, defaultSidebarWidth, defaultSidebarHeight,
-        /* constraintsInDip=*/ false, this);
-    if (this.getAttribute('sidebar-initial-size') === 'minimized') {
-      widget.setSidebarMinimized(true);
-    }
-    if (autoAdjustOrientation) {
-      widget.setAutoAdjustOrientation(true);
-    }
-    const sidebarHidden = this.getAttribute('sidebar-visibility') === 'hidden';
-    if (sidebarHidden) {
-      widget.hideSidebar();
-    }
-    widget.addEventListener(Events.SHOW_MODE_CHANGED, () => {
-      this.dispatchEvent(new CustomEvent('change', {detail: widget.showMode()}));
-    });
+  constructor() {
+    super();
 
-    return widget;
+    registerWidgetConfig(this, widgetConfig(element => {
+                           const vertical = element.getAttribute('direction') === 'column';
+                           const autoAdjustOrientation = element.getAttribute('direction') === 'auto';
+                           const secondIsSidebar = element.getAttribute('sidebar-position') === 'second';
+                           const settingName = element.getAttribute('name') ?? undefined;
+                           const sidebarSize = parseInt(element.getAttribute('sidebar-initial-size') || '', 10);
+                           const defaultSidebarWidth = !isNaN(sidebarSize) ? sidebarSize : undefined;
+                           const defaultSidebarHeight = !isNaN(sidebarSize) ? sidebarSize : undefined;
+
+                           const widget = new SplitWidget(
+                               vertical, secondIsSidebar, settingName, defaultSidebarWidth, defaultSidebarHeight,
+                               /* constraintsInDip=*/ false, element as SplitWidgetElement);
+
+                           if (element.getAttribute('sidebar-initial-size') === 'minimized') {
+                             widget.setSidebarMinimized(true);
+                           }
+                           if (autoAdjustOrientation) {
+                             widget.setAutoAdjustOrientation(true);
+                           }
+                           const sidebarHidden = element.getAttribute('sidebar-visibility') === 'hidden';
+                           if (sidebarHidden) {
+                             widget.hideSidebar();
+                           }
+                           widget.addEventListener(Events.SHOW_MODE_CHANGED, () => {
+                             element.dispatchEvent(new CustomEvent('change', {detail: widget.showMode()}));
+                           });
+
+                           return widget;
+                         }));
   }
 
   attributeChangedCallback(name: string, _oldValue: string, newValue: string): void {

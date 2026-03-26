@@ -156,31 +156,33 @@ function runNextUpdate(): void {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const widgetConfigs = new WeakMap<WidgetElement<any>, WidgetConfig<any>>();
 
+export function registerWidgetConfig<WidgetT extends Widget>(
+    element: WidgetElement<WidgetT>, config: WidgetConfig<WidgetT>): void {
+  widgetConfigs.set(element, config);
+}
+
+function instantiateWidget<WidgetT extends Widget>(element: HTMLElement, widgetConfig: WidgetConfig<WidgetT>): WidgetT {
+  if (!widgetConfig.widgetClass) {
+    throw new Error('No widgetClass defined');
+  }
+
+  let newWidget: WidgetT;
+  if (Widget.isPrototypeOf(widgetConfig.widgetClass)) {
+    const ctor = widgetConfig.widgetClass as WidgetConstructor<WidgetT>;
+    newWidget = new ctor(element as WidgetElement<WidgetT>);
+  } else {
+    const factory = widgetConfig.widgetClass as WidgetProducer<WidgetT>;
+    newWidget = factory(element as WidgetElement<WidgetT>);
+  }
+
+  if (widgetConfig.widgetParams) {
+    Object.assign(newWidget, widgetConfig.widgetParams);
+  }
+  newWidget.requestUpdate();
+  return newWidget;
+}
+
 export class WidgetElement<WidgetT extends Widget> extends HTMLElement {
-  createWidget(): WidgetT {
-    const config = widgetConfigs.get(this) as WidgetConfig<WidgetT>;
-    const widget = this.#instantiateWidget(config.widgetClass);
-    if (config.widgetParams) {
-      Object.assign(widget, config.widgetParams);
-    }
-    widget.requestUpdate();
-    return widget;
-  }
-
-  #instantiateWidget(widgetClass: WidgetFactory<WidgetT>): WidgetT {
-    if (!widgetClass) {
-      throw new Error('No widgetClass defined');
-    }
-
-    if (Widget.isPrototypeOf(widgetClass)) {
-      const ctor = widgetClass as WidgetConstructor<WidgetT>;
-      return new ctor(this);
-    }
-
-    const factory = widgetClass as WidgetProducer<WidgetT>;
-    return factory(this);
-  }
-
   getWidget(): WidgetT|undefined {
     return Widget.get(this) as WidgetT | undefined;
   }
@@ -202,16 +204,18 @@ export class WidgetElement<WidgetT extends Widget> extends HTMLElement {
   }
 
   override appendChild<T extends Node>(child: T): T {
-    if (child instanceof HTMLElement && child.tagName !== 'STYLE') {
-      Widget.getOrCreateWidget(child).show(this);
+    const widget = child instanceof HTMLElement ? Widget.get(child) : null;
+    if (widget) {
+      widget.show(this, undefined, /* suppressOrphanWidgetError= */ true);
       return child;
     }
     return super.appendChild(child);
   }
 
   override insertBefore<T extends Node>(child: T, referenceChild: Node): T {
-    if (child instanceof HTMLElement && child.tagName !== 'STYLE') {
-      Widget.getOrCreateWidget(child).show(this, referenceChild, true);
+    const widget = child instanceof HTMLElement ? Widget.get(child) : null;
+    if (widget) {
+      widget.show(this, referenceChild, /* suppressOrphanWidgetError= */ true);
       return child;
     }
     return super.insertBefore(child, referenceChild);
@@ -329,7 +333,7 @@ export function widgetRef<T extends Widget, Args extends unknown[]>(
     if (!(widget instanceof type)) {
       throw new Error(`Expected an element with a widget of type ${type.name} but got ${e?.constructor?.name}`);
     }
-    callback(widget);
+    callback(widget as T);
   });
 }
 
@@ -491,10 +495,14 @@ export class Widget {
     if (widget) {
       return widget;
     }
-    if (element instanceof WidgetElement) {
-      return element.createWidget();
+    let config = widgetConfigs.get(element as WidgetElement<Widget>);
+    if (!config) {
+      config = widgetConfig(element => new Widget(element));
+      if (element instanceof WidgetElement) {
+        widgetConfigs.set(element, config);
+      }
     }
-    return new Widget(element);
+    return instantiateWidget(element, config);
   }
 
   markAsRoot(): void {

@@ -781,7 +781,10 @@ describeWithEnvironment('Widget', () => {
       }
       const container = document.createElement('div');
       Lit.render(html`<devtools-widget ${UI.Widget.widget(WidgetInstance)}></devtools-widget>`, container);
-      renderElementIntoDOM(container.firstElementChild as HTMLElement);
+
+      const devtoolsWidget = container.firstElementChild as UI.Widget.WidgetElement<WidgetInstance>;
+      assert.exists(devtoolsWidget);
+      renderElementIntoDOM(devtoolsWidget);
     });
   });
 });

@@ -608,6 +608,195 @@ function renderRecordAction(action: UI.ActionRegistration.Action): Lit.LitTempla
   // clang-format on
 }
 
+function renderRecordingSettings(input: ViewInput): Lit.LitTemplate {
+  const fieldEnabled = input.cruxManager.getConfigSetting().get().enabled;
+
+  const deviceRec = getDeviceRec(input.cruxManager) || i18nString(UIStrings.notEnoughData);
+  const networkRec = getNetworkRecTitle(input.cruxManager) || i18nString(UIStrings.notEnoughData);
+
+  const recs = PanelsCommon.ThrottlingUtils.getThrottlingRecommendations();
+
+  // clang-format off
+  return html`
+    <h3 class="card-title">${i18nString(UIStrings.environmentSettings)}</h3>
+    <div class="device-toolbar-description">${md(i18nString(UIStrings.useDeviceToolbar))}</div>
+    ${fieldEnabled ? html`
+      <ul class="environment-recs-list">
+        <li>${uiI18n.getFormatLocalizedStringTemplate(str_, UIStrings.device, {PH1: html`<span class="environment-rec">${deviceRec}</span>`})}</li>
+        <li>${uiI18n.getFormatLocalizedStringTemplate(str_, UIStrings.network, {PH1: html`<span class="environment-rec">${networkRec}</span>`})}</li>
+      </ul>
+    ` : nothing}
+    <div class="environment-option">
+      ${widget(CPUThrottlingSelector, {recommendedOption: recs.cpuOption})}
+    </div>
+    <div class="environment-option">
+      <devtools-network-throttling-selector .recommendedConditions=${recs.networkConditions}></devtools-network-throttling-selector>
+    </div>
+    <div class="environment-option">
+      <setting-checkbox
+        class="network-cache-setting"
+        .data=${{
+          setting: Common.Settings.Settings.instance().moduleSetting('cache-disabled'),
+          textOverride: i18nString(UIStrings.disableNetworkCache),
+        } as Settings.SettingCheckbox.SettingCheckboxData}
+      ></setting-checkbox>
+    </div>
+  `;
+  // clang-format on
+}
+
+function renderPageScopeSetting(input: ViewInput): Lit.LitTemplate {
+  if (!input.cruxManager.getConfigSetting().get().enabled) {
+    return Lit.nothing;
+  }
+
+  const urlLabel = getPageScopeLabel(input.cruxManager, 'url');
+  const originLabel = getPageScopeLabel(input.cruxManager, 'origin');
+
+  const buttonTitle = input.cruxManager.fieldPageScope === 'url' ? urlLabel : originLabel;
+  const accessibleTitle = i18nString(UIStrings.showFieldDataForPage, {PH1: buttonTitle});
+
+  // If there is no data at all we should force users to switch pages or reconfigure CrUX.
+  const shouldDisable = !input.cruxManager.pageResult?.['url-ALL'] && !input.cruxManager.pageResult?.['origin-ALL'];
+
+  /* eslint-disable @devtools/no-deprecated-component-usages */
+  return html`
+    <devtools-select-menu
+      id="page-scope-select"
+      class="field-data-option"
+      @selectmenuselected=${input.handlePageScopeSelected}
+      .showDivider=${true}
+      .showArrow=${true}
+      .sideButton=${false}
+      .showSelectedItem=${true}
+      .buttonTitle=${buttonTitle}
+      .disabled=${shouldDisable}
+      title=${accessibleTitle}
+    >
+      <devtools-menu-item
+        .value=${'url'}
+        .selected=${input.cruxManager.fieldPageScope === 'url'}
+      >
+        ${urlLabel}
+      </devtools-menu-item>
+      <devtools-menu-item
+        .value=${'origin'}
+        .selected=${input.cruxManager.fieldPageScope === 'origin'}
+      >
+        ${originLabel}
+      </devtools-menu-item>
+    </devtools-select-menu>
+  `;
+  /* eslint-enable @devtools/no-deprecated-component-usages */
+}
+
+function renderDeviceScopeSetting(input: ViewInput): Lit.LitTemplate {
+  if (!input.cruxManager.getConfigSetting().get().enabled) {
+    return Lit.nothing;
+  }
+
+  // If there is no data at all we should force users to try adjusting the page scope
+  // before coming back to this option.
+  const shouldDisable = !input.cruxManager.getFieldResponse(input.cruxManager.fieldPageScope, 'ALL');
+
+  const currentDeviceLabel = getLabelForDeviceOption(input.cruxManager, input.cruxManager.fieldDeviceOption);
+
+  // clang-format off
+  /* eslint-disable @devtools/no-deprecated-component-usages */
+  return html`
+    <devtools-select-menu
+      id="device-scope-select"
+      class="field-data-option"
+      @selectmenuselected=${input.handleDeviceOptionSelected}
+      .showDivider=${true}
+      .showArrow=${true}
+      .sideButton=${false}
+      .showSelectedItem=${true}
+      .buttonTitle=${i18nString(UIStrings.device, {PH1: currentDeviceLabel})}
+      .disabled=${shouldDisable}
+      title=${i18nString(UIStrings.showFieldDataForDevice, {PH1: currentDeviceLabel})}
+    >
+      ${DEVICE_OPTION_LIST.map(deviceOption => {
+        return html`
+          <devtools-menu-item
+            .value=${deviceOption}
+            .selected=${input.cruxManager.fieldDeviceOption === deviceOption}
+          >
+            ${getLabelForDeviceOption(input.cruxManager, deviceOption)}
+          </devtools-menu-item>
+        `;
+      })}
+    </devtools-select-menu>
+  `;
+  /* eslint-enable @devtools/no-deprecated-component-usages */
+  // clang-format on
+}
+
+function renderFieldDataHistoryLink(cruxManager: CrUXManager.CrUXManager): Lit.LitTemplate {
+  if (!cruxManager.getConfigSetting().get().enabled) {
+    return Lit.nothing;
+  }
+  const normalizedUrl = cruxManager.pageResult?.normalizedUrl;
+  if (!normalizedUrl) {
+    return Lit.nothing;
+  }
+  const tmp = new URL('https://cruxvis.withgoogle.com/');
+  tmp.searchParams.set('view', 'cwvsummary');
+  tmp.searchParams.set('url', normalizedUrl);
+  // identifier must be 'origin' or 'url'.
+  const identifier = cruxManager.fieldPageScope;
+  tmp.searchParams.set('identifier', identifier);
+  // device must be one 'PHONE', 'DESKTOP', 'TABLET', or 'ALL'.
+  const device = cruxManager.getSelectedDeviceScope();
+  tmp.searchParams.set('device', device);
+  const cruxVis = `${tmp.origin}/#/${tmp.search}`;
+  return html`
+      (<devtools-link href=${cruxVis}
+               class="local-field-link"
+               title=${i18nString(UIStrings.fieldDataHistoryTooltip)}
+      >${i18nString(UIStrings.fieldDataHistoryLink)}</devtools-link>)
+    `;
+}
+
+function renderCollectionPeriod(cruxManager: CrUXManager.CrUXManager): Lit.LitTemplate {
+  const range = getCollectionPeriodRange(cruxManager);
+
+  const dateText = range || i18nString(UIStrings.notEnoughData);
+
+  const fieldDataHistoryLink = range ? renderFieldDataHistoryLink(cruxManager) : Lit.nothing;
+
+  const warnings = cruxManager.pageResult?.warnings || [];
+
+  return html`
+    <div class="field-data-message">
+      <div>${uiI18n.getFormatLocalizedStringTemplate(str_, UIStrings.collectionPeriod, {
+    PH1: html`<span class="collection-period-range">${dateText}</span>`,
+  })} ${fieldDataHistoryLink}</div>
+      ${warnings.map(warning => html`
+        <div class="field-data-warning">${warning}</div>
+      `)}
+    </div>
+  `;
+}
+
+function renderFieldDataMessage(cruxManager: CrUXManager.CrUXManager): Lit.LitTemplate {
+  if (cruxManager.getConfigSetting().get().enabled) {
+    return renderCollectionPeriod(cruxManager);
+  }
+
+  // clang-format off
+  return html`
+    <div class="field-data-message">
+      ${uiI18n.getFormatLocalizedStringTemplate(
+        str_,
+        UIStrings.seeHowYourLocalMetricsCompare,
+        { PH1: html`<devtools-link href="https://developer.chrome.com/docs/crux">${i18n.i18n.lockedString('Chrome UX Report')}</devtools-link>` },
+      )}
+    </div>
+  `;
+  // clang-format on
+}
+
 export class LiveMetricsView extends UI.Widget.Widget {
   isNode = Root.Runtime.Runtime.isNode();
 
@@ -732,48 +921,6 @@ export class LiveMetricsView extends UI.Widget.Widget {
         EmulationModel.DeviceModeModel.Events.UPDATED, this.#onEmulationChanged, this);
   }
 
-  #renderRecordingSettings(): Lit.LitTemplate {
-    const fieldEnabled = this.#cruxManager.getConfigSetting().get().enabled;
-
-    const deviceRecEl = document.createElement('span');
-    deviceRecEl.classList.add('environment-rec');
-    deviceRecEl.textContent = getDeviceRec(this.#cruxManager) || i18nString(UIStrings.notEnoughData);
-
-    const networkRecEl = document.createElement('span');
-    networkRecEl.classList.add('environment-rec');
-    networkRecEl.textContent = getNetworkRecTitle(this.#cruxManager) || i18nString(UIStrings.notEnoughData);
-
-    const recs = PanelsCommon.ThrottlingUtils.getThrottlingRecommendations();
-
-    // clang-format off
-    return html`
-      <h3 class="card-title">${i18nString(UIStrings.environmentSettings)}</h3>
-      <div class="device-toolbar-description">${md(i18nString(UIStrings.useDeviceToolbar))}</div>
-      ${fieldEnabled ? html`
-        <ul class="environment-recs-list">
-          <li>${uiI18n.getFormatLocalizedString(str_, UIStrings.device, {PH1: deviceRecEl})}</li>
-          <li>${uiI18n.getFormatLocalizedString(str_, UIStrings.network, {PH1: networkRecEl})}</li>
-        </ul>
-      ` : nothing}
-      <div class="environment-option">
-        ${widget(CPUThrottlingSelector, {recommendedOption: recs.cpuOption})}
-      </div>
-      <div class="environment-option">
-        <devtools-network-throttling-selector .recommendedConditions=${recs.networkConditions}></devtools-network-throttling-selector>
-      </div>
-      <div class="environment-option">
-        <setting-checkbox
-          class="network-cache-setting"
-          .data=${{
-            setting: Common.Settings.Settings.instance().moduleSetting('cache-disabled'),
-            textOverride: i18nString(UIStrings.disableNetworkCache),
-          } as Settings.SettingCheckbox.SettingCheckboxData}
-        ></setting-checkbox>
-      </div>
-    `;
-    // clang-format on
-  }
-
   #onPageScopeMenuItemSelected(event: Menus.SelectMenu.SelectMenuItemSelectedEvent): void {
     if (event.itemValue === 'url') {
       this.#cruxManager.fieldPageScope = 'url';
@@ -783,165 +930,9 @@ export class LiveMetricsView extends UI.Widget.Widget {
     this.requestUpdate();
   }
 
-  #renderPageScopeSetting(): Lit.LitTemplate {
-    if (!this.#cruxManager.getConfigSetting().get().enabled) {
-      return Lit.nothing;
-    }
-
-    const urlLabel = getPageScopeLabel(this.#cruxManager, 'url');
-    const originLabel = getPageScopeLabel(this.#cruxManager, 'origin');
-
-    const buttonTitle = this.#cruxManager.fieldPageScope === 'url' ? urlLabel : originLabel;
-    const accessibleTitle = i18nString(UIStrings.showFieldDataForPage, {PH1: buttonTitle});
-
-    // If there is no data at all we should force users to switch pages or reconfigure CrUX.
-    const shouldDisable = !this.#cruxManager.pageResult?.['url-ALL'] && !this.#cruxManager.pageResult?.['origin-ALL'];
-
-    /* eslint-disable @devtools/no-deprecated-component-usages */
-    return html`
-      <devtools-select-menu
-        id="page-scope-select"
-        class="field-data-option"
-        @selectmenuselected=${this.#onPageScopeMenuItemSelected}
-        .showDivider=${true}
-        .showArrow=${true}
-        .sideButton=${false}
-        .showSelectedItem=${true}
-        .buttonTitle=${buttonTitle}
-        .disabled=${shouldDisable}
-        title=${accessibleTitle}
-      >
-        <devtools-menu-item
-          .value=${'url'}
-          .selected=${this.#cruxManager.fieldPageScope === 'url'}
-        >
-          ${urlLabel}
-        </devtools-menu-item>
-        <devtools-menu-item
-          .value=${'origin'}
-          .selected=${this.#cruxManager.fieldPageScope === 'origin'}
-        >
-          ${originLabel}
-        </devtools-menu-item>
-      </devtools-select-menu>
-    `;
-    /* eslint-enable @devtools/no-deprecated-component-usages */
-  }
-
   #onDeviceOptionMenuItemSelected(event: Menus.SelectMenu.SelectMenuItemSelectedEvent): void {
     this.#cruxManager.fieldDeviceOption = event.itemValue as DeviceOption;
     this.requestUpdate();
-  }
-
-  #renderDeviceScopeSetting(): Lit.LitTemplate {
-    if (!this.#cruxManager.getConfigSetting().get().enabled) {
-      return Lit.nothing;
-    }
-
-    // If there is no data at all we should force users to try adjusting the page scope
-    // before coming back to this option.
-    const shouldDisable = !this.#cruxManager.getFieldResponse(this.#cruxManager.fieldPageScope, 'ALL');
-
-    const currentDeviceLabel = getLabelForDeviceOption(this.#cruxManager, this.#cruxManager.fieldDeviceOption);
-
-    // clang-format off
-    /* eslint-disable @devtools/no-deprecated-component-usages */
-    return html`
-      <devtools-select-menu
-        id="device-scope-select"
-        class="field-data-option"
-        @selectmenuselected=${this.#onDeviceOptionMenuItemSelected}
-        .showDivider=${true}
-        .showArrow=${true}
-        .sideButton=${false}
-        .showSelectedItem=${true}
-        .buttonTitle=${i18nString(UIStrings.device, {PH1: currentDeviceLabel})}
-        .disabled=${shouldDisable}
-        title=${i18nString(UIStrings.showFieldDataForDevice, {PH1: currentDeviceLabel})}
-      >
-        ${DEVICE_OPTION_LIST.map(deviceOption => {
-          return html`
-            <devtools-menu-item
-              .value=${deviceOption}
-              .selected=${this.#cruxManager.fieldDeviceOption === deviceOption}
-            >
-              ${getLabelForDeviceOption(this.#cruxManager, deviceOption)}
-            </devtools-menu-item>
-          `;
-        })}
-      </devtools-select-menu>
-    `;
-    /* eslint-enable @devtools/no-deprecated-component-usages */
-    // clang-format on
-  }
-
-  #renderFieldDataHistoryLink(): Lit.LitTemplate {
-    if (!this.#cruxManager.getConfigSetting().get().enabled) {
-      return Lit.nothing;
-    }
-    const normalizedUrl = this.#cruxManager.pageResult?.normalizedUrl;
-    if (!normalizedUrl) {
-      return Lit.nothing;
-    }
-    const tmp = new URL('https://cruxvis.withgoogle.com/');
-    tmp.searchParams.set('view', 'cwvsummary');
-    tmp.searchParams.set('url', normalizedUrl);
-    // identifier must be 'origin' or 'url'.
-    const identifier = this.#cruxManager.fieldPageScope;
-    tmp.searchParams.set('identifier', identifier);
-    // device must be one 'PHONE', 'DESKTOP', 'TABLET', or 'ALL'.
-    const device = this.#cruxManager.getSelectedDeviceScope();
-    tmp.searchParams.set('device', device);
-    const cruxVis = `${tmp.origin}/#/${tmp.search}`;
-    return html`
-        (<devtools-link href=${cruxVis}
-                 class="local-field-link"
-                 title=${i18nString(UIStrings.fieldDataHistoryTooltip)}
-        >${i18nString(UIStrings.fieldDataHistoryLink)}</devtools-link>)
-      `;
-  }
-
-  #renderCollectionPeriod(): Lit.LitTemplate {
-    const range = getCollectionPeriodRange(this.#cruxManager);
-
-    const dateEl = document.createElement('span');
-    dateEl.classList.add('collection-period-range');
-    dateEl.textContent = range || i18nString(UIStrings.notEnoughData);
-
-    const message = uiI18n.getFormatLocalizedString(str_, UIStrings.collectionPeriod, {
-      PH1: dateEl,
-    });
-
-    const fieldDataHistoryLink = range ? this.#renderFieldDataHistoryLink() : Lit.nothing;
-
-    const warnings = this.#cruxManager.pageResult?.warnings || [];
-
-    return html`
-      <div class="field-data-message">
-        <div>${message} ${fieldDataHistoryLink}</div>
-        ${warnings.map(warning => html`
-          <div class="field-data-warning">${warning}</div>
-        `)}
-      </div>
-    `;
-  }
-
-  #renderFieldDataMessage(): Lit.LitTemplate {
-    if (this.#cruxManager.getConfigSetting().get().enabled) {
-      return this.#renderCollectionPeriod();
-    }
-
-    // clang-format off
-    return html`
-      <div class="field-data-message">
-        ${uiI18n.getFormatLocalizedStringTemplate(
-          str_,
-          UIStrings.seeHowYourLocalMetricsCompare,
-          { PH1: html`<devtools-link href="https://developer.chrome.com/docs/crux">${i18n.i18n.lockedString('Chrome UX Report')}</devtools-link>` },
-        )}
-      </div>
-    `;
-    // clang-format on
   }
 
   #renderLogSection(): Lit.LitTemplate {
@@ -1223,15 +1214,15 @@ export class LiveMetricsView extends UI.Widget.Widget {
             <h2 id="next-steps-section-title" class="section-title">${i18nString(UIStrings.nextSteps)}</h2>
             <div id="field-setup" class="settings-card">
               <h3 class="card-title">${i18nString(UIStrings.fieldMetricsTitle)}</h3>
-              ${this.#renderFieldDataMessage()}
-              ${this.#renderPageScopeSetting()}
-              ${this.#renderDeviceScopeSetting()}
+              ${renderFieldDataMessage(viewInput.cruxManager)}
+              ${renderPageScopeSetting(viewInput)}
+              ${renderDeviceScopeSetting(viewInput)}
               <div class="field-setup-buttons">
                 <devtools-field-settings-dialog></devtools-field-settings-dialog>
               </div>
             </div>
             <div id="recording-settings" class="settings-card">
-              ${this.#renderRecordingSettings()}
+              ${renderRecordingSettings(viewInput)}
             </div>
             <div id="record" class="record-action-card">
               ${renderRecordAction(viewInput.toggleRecordAction)}

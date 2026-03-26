@@ -318,6 +318,8 @@ export interface ViewInput {
   revealLayoutShiftCluster: (clusterIds: Set<LiveMetrics.LayoutShift['uniqueLayoutShiftId']>) => void;
   revealInteraction: (interaction: LiveMetrics.Interaction) => void;
   logExtraInteractionDetails: (interaction: LiveMetrics.Interaction) => void;
+  highlightedInteractionId?: string;
+  highlightedLayoutShiftClusterIds?: Set<string>;
 }
 
 export interface ViewOutput {
@@ -958,6 +960,145 @@ function renderLayoutShiftsLog(input: ViewInput, output: ViewOutput): Lit.LitTem
   // clang-format on
 }
 
+function renderLogSection(input: ViewInput, output: ViewOutput): Lit.LitTemplate {
+  // clang-format off
+  return html`
+    <section
+      class="logs-section"
+      aria-label=${i18nString(UIStrings.eventLogs)}
+    >
+      <devtools-widget ${widget(LiveMetricsLogs)}
+        ${widgetRef(LiveMetricsLogs, widget => {
+          if (input.highlightedInteractionId) {
+            widget.selectTab('interactions');
+          } else if (input.highlightedLayoutShiftClusterIds?.size) {
+            widget.selectTab('layout-shifts');
+          }
+        })}
+      >
+        ${renderInteractionsLog(input, output)}
+        ${renderLayoutShiftsLog(input, output)}
+      </devtools-widget>
+    </section>
+  `;
+  // clang-format on
+}
+
+function renderNodeView(input: ViewInput): Lit.LitTemplate {
+  return html`
+    <style>${liveMetricsViewStyles}</style>
+    <style>${metricValueStyles}</style>
+    <div class="node-view">
+      <main>
+        <h2 class="section-title">${i18nString(UIStrings.nodePerformanceTimeline)}</h2>
+        <div class="node-description">${i18nString(UIStrings.nodeClickToRecord)}</div>
+        <div class="record-action-card">${renderRecordAction(input.toggleRecordAction)}</div>
+      </main>
+    </div>
+  `;
+}
+
+export const DEFAULT_VIEW: View = (input, output, target) => {
+  if (input.isNode) {
+    Lit.render(renderNodeView(input), target, {host: input});
+    return;
+  }
+
+  const fieldEnabled = input.cruxManager.getConfigSetting().get().enabled;
+  const liveMetricsTitle =
+      fieldEnabled ? i18nString(UIStrings.localAndFieldMetrics) : i18nString(UIStrings.localMetrics);
+
+  const helpLink = 'https://web.dev/articles/lab-and-field-data-differences#lab_data_versus_field_data' as
+      Platform.DevToolsPath.UrlString;
+
+  // clang-format off
+  const outputTemplate = html`
+    <style>${liveMetricsViewStyles}</style>
+    <style>${metricValueStyles}</style>
+    <div class="container">
+      <div class="live-metrics-view">
+        <main class="live-metrics">
+          <h2 class="section-title">${liveMetricsTitle}</h2>
+          <div class="metric-cards">
+            <div id="lcp">
+              ${renderLcpCard(input)}
+            </div>
+            <div id="cls">
+              ${renderClsCard(input)}
+            </div>
+            <div id="inp">
+              ${renderInpCard(input)}
+            </div>
+          </div>
+          <devtools-link
+            href=${helpLink}
+            class="local-field-link"
+            title=${i18nString(UIStrings.localFieldLearnMoreTooltip)}
+          >${i18nString(UIStrings.localFieldLearnMoreLink)}</devtools-link>
+          ${renderLogSection(input, output)}
+        </main>
+        <aside class="next-steps" aria-labelledby="next-steps-section-title">
+          <h2 id="next-steps-section-title" class="section-title">${i18nString(UIStrings.nextSteps)}</h2>
+          <div id="field-setup" class="settings-card">
+            <h3 class="card-title">${i18nString(UIStrings.fieldMetricsTitle)}</h3>
+            ${renderFieldDataMessage(input.cruxManager)}
+            ${renderPageScopeSetting(input)}
+            ${renderDeviceScopeSetting(input)}
+            <div class="field-setup-buttons">
+              <devtools-field-settings-dialog></devtools-field-settings-dialog>
+            </div>
+          </div>
+          <div id="recording-settings" class="settings-card">
+            ${renderRecordingSettings(input)}
+          </div>
+          <div id="record" class="record-action-card">
+            ${renderRecordAction(input.toggleRecordAction)}
+          </div>
+          <div id="record-page-load" class="record-action-card">
+            ${renderRecordAction(input.recordReloadAction)}
+          </div>
+        </aside>
+      </div>
+    </div>
+  `;
+  Lit.render(outputTemplate, target, {host: input});
+
+  if (input.highlightedInteractionId) {
+    const interactionEl = target.querySelector<HTMLElement>('#' + CSS.escape(input.highlightedInteractionId));
+    if (interactionEl) {
+      void RenderCoordinator.write(() => {
+        interactionEl.scrollIntoView({
+          block: 'center',
+        });
+        interactionEl.focus();
+        UI.UIUtils.runCSSAnimationOnce(interactionEl, 'highlight');
+      });
+    }
+  }
+
+  if (input.highlightedLayoutShiftClusterIds?.size) {
+    const layoutShiftEls: HTMLElement[] = [];
+    for (const shiftId of input.highlightedLayoutShiftClusterIds) {
+      const layoutShiftEl = target.querySelector<HTMLElement>('#' + CSS.escape(shiftId));
+      if (layoutShiftEl) {
+        layoutShiftEls.push(layoutShiftEl);
+      }
+    }
+
+    if (layoutShiftEls.length) {
+      void RenderCoordinator.write(() => {
+        layoutShiftEls[0].scrollIntoView({
+          block: 'start',
+        });
+        layoutShiftEls[0].focus();
+        for (const layoutShiftEl of layoutShiftEls) {
+          UI.UIUtils.runCSSAnimationOnce(layoutShiftEl, 'highlight');
+        }
+      });
+    }
+  }
+};
+
 export class LiveMetricsView extends UI.Widget.Widget {
   isNode = Root.Runtime.Runtime.isNode();
 
@@ -967,17 +1108,21 @@ export class LiveMetricsView extends UI.Widget.Widget {
   #interactions: LiveMetrics.InteractionMap = new Map();
   #layoutShifts: LiveMetrics.LayoutShift[] = [];
 
+  #highlightedInteractionId = '';
+  #highlightedLayoutShiftClusterIds = new Set<string>();
+
   #cruxManager = CrUXManager.CrUXManager.instance();
 
   #toggleRecordAction: UI.ActionRegistration.Action;
   #recordReloadAction: UI.ActionRegistration.Action;
 
-  #logsEl?: LiveMetricsLogs;
+  #view: View;
   #viewOutput: ViewOutput = {};
   #deviceModeModel = EmulationModel.DeviceModeModel.DeviceModeModel.tryInstance();
 
-  constructor(element?: HTMLElement) {
+  constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
     super(element, {useShadowDom: true});
+    this.#view = view;
 
     this.#toggleRecordAction = UI.ActionRegistry.ActionRegistry.instance().getAction('timeline.toggle-recording');
     this.#recordReloadAction = UI.ActionRegistry.ActionRegistry.instance().getAction('timeline.record-reload');
@@ -1072,44 +1217,11 @@ export class LiveMetricsView extends UI.Widget.Widget {
     this.requestUpdate();
   }
 
-  #renderLogSection(input: ViewInput): Lit.LitTemplate {
-    // clang-format off
-    return html`
-      <section
-        class="logs-section"
-        aria-label=${i18nString(UIStrings.eventLogs)}
-      >
-        <devtools-widget ${widget(LiveMetricsLogs)}
-          ${widgetRef(LiveMetricsLogs, widget => {
-            this.#logsEl = widget;
-          })}
-        >
-          ${renderInteractionsLog(input, this.#viewOutput)}
-          ${renderLayoutShiftsLog(input, this.#viewOutput)}
-        </devtools-widget>
-      </section>
-    `;
-    // clang-format on
-  }
-
   async #revealInteraction(interaction: LiveMetrics.Interaction): Promise<void> {
-    const interactionEl = this.contentElement.querySelector<HTMLElement>('#' + CSS.escape(interaction.interactionId));
-    if (!interactionEl || !this.#logsEl) {
-      return;
-    }
-
-    const success = this.#logsEl.selectTab('interactions');
-    if (!success) {
-      return;
-    }
-
-    await RenderCoordinator.write(() => {
-      interactionEl.scrollIntoView({
-        block: 'center',
-      });
-      interactionEl.focus();
-      UI.UIUtils.runCSSAnimationOnce(interactionEl, 'highlight');
-    });
+    this.#highlightedInteractionId = interaction.interactionId;
+    this.requestUpdate();
+    await this.updateComplete;
+    this.#highlightedInteractionId = '';
   }
 
   async #logExtraInteractionDetails(interaction: LiveMetrics.Interaction): Promise<void> {
@@ -1120,50 +1232,10 @@ export class LiveMetricsView extends UI.Widget.Widget {
   }
 
   async #revealLayoutShiftCluster(clusterIds: Set<LiveMetrics.LayoutShift['uniqueLayoutShiftId']>): Promise<void> {
-    if (!this.#logsEl) {
-      return;
-    }
-
-    const layoutShiftEls: HTMLElement[] = [];
-    for (const shiftId of clusterIds) {
-      const layoutShiftEl = this.contentElement.querySelector<HTMLElement>('#' + CSS.escape(shiftId));
-      if (layoutShiftEl) {
-        layoutShiftEls.push(layoutShiftEl);
-      }
-    }
-
-    if (!layoutShiftEls.length) {
-      return;
-    }
-
-    const success = this.#logsEl.selectTab('layout-shifts');
-    if (!success) {
-      return;
-    }
-
-    await RenderCoordinator.write(() => {
-      layoutShiftEls[0].scrollIntoView({
-        block: 'start',
-      });
-      layoutShiftEls[0].focus();
-      for (const layoutShiftEl of layoutShiftEls) {
-        UI.UIUtils.runCSSAnimationOnce(layoutShiftEl, 'highlight');
-      }
-    });
-  }
-
-  #renderNodeView(input: ViewInput): Lit.LitTemplate {
-    return html`
-      <style>${liveMetricsViewStyles}</style>
-      <style>${metricValueStyles}</style>
-      <div class="node-view">
-        <main>
-          <h2 class="section-title">${i18nString(UIStrings.nodePerformanceTimeline)}</h2>
-          <div class="node-description">${i18nString(UIStrings.nodeClickToRecord)}</div>
-          <div class="record-action-card">${renderRecordAction(input.toggleRecordAction)}</div>
-        </main>
-      </div>
-    `;
+    this.#highlightedLayoutShiftClusterIds = clusterIds;
+    this.requestUpdate();
+    await this.updateComplete;
+    this.#highlightedLayoutShiftClusterIds = new Set();
   }
 
   override performUpdate(): void {
@@ -1182,73 +1254,12 @@ export class LiveMetricsView extends UI.Widget.Widget {
       revealLayoutShiftCluster: this.#revealLayoutShiftCluster.bind(this),
       revealInteraction: this.#revealInteraction.bind(this),
       logExtraInteractionDetails: this.#logExtraInteractionDetails.bind(this),
+      highlightedInteractionId: this.#highlightedInteractionId,
+      highlightedLayoutShiftClusterIds: this.#highlightedLayoutShiftClusterIds,
     };
 
-    if (this.isNode) {
-      Lit.render(this.#renderNodeView(viewInput), this.contentElement, {host: this});
-      return;
-    }
-
-    const fieldEnabled = this.#cruxManager.getConfigSetting().get().enabled;
-    const liveMetricsTitle =
-        fieldEnabled ? i18nString(UIStrings.localAndFieldMetrics) : i18nString(UIStrings.localMetrics);
-
-    const helpLink = 'https://web.dev/articles/lab-and-field-data-differences#lab_data_versus_field_data' as
-        Platform.DevToolsPath.UrlString;
-
-    // clang-format off
-    const output = html`
-      <style>${liveMetricsViewStyles}</style>
-      <style>${metricValueStyles}</style>
-      <div class="container">
-        <div class="live-metrics-view">
-          <main class="live-metrics">
-            <h2 class="section-title">${liveMetricsTitle}</h2>
-            <div class="metric-cards">
-              <div id="lcp">
-                ${renderLcpCard(viewInput)}
-              </div>
-              <div id="cls">
-                ${renderClsCard(viewInput)}
-              </div>
-              <div id="inp">
-                ${renderInpCard(viewInput)}
-              </div>
-            </div>
-            <devtools-link
-              href=${helpLink}
-              class="local-field-link"
-              title=${i18nString(UIStrings.localFieldLearnMoreTooltip)}
-            >${i18nString(UIStrings.localFieldLearnMoreLink)}</devtools-link>
-            ${this.#renderLogSection(viewInput)}
-          </main>
-          <aside class="next-steps" aria-labelledby="next-steps-section-title">
-            <h2 id="next-steps-section-title" class="section-title">${i18nString(UIStrings.nextSteps)}</h2>
-            <div id="field-setup" class="settings-card">
-              <h3 class="card-title">${i18nString(UIStrings.fieldMetricsTitle)}</h3>
-              ${renderFieldDataMessage(viewInput.cruxManager)}
-              ${renderPageScopeSetting(viewInput)}
-              ${renderDeviceScopeSetting(viewInput)}
-              <div class="field-setup-buttons">
-                <devtools-field-settings-dialog></devtools-field-settings-dialog>
-              </div>
-            </div>
-            <div id="recording-settings" class="settings-card">
-              ${renderRecordingSettings(viewInput)}
-            </div>
-            <div id="record" class="record-action-card">
-              ${renderRecordAction(viewInput.toggleRecordAction)}
-            </div>
-            <div id="record-page-load" class="record-action-card">
-              ${renderRecordAction(viewInput.recordReloadAction)}
-            </div>
-          </aside>
-        </div>
-      </div>
-    `;
-    Lit.render(output, this.contentElement, {host: this});
+    this.#view(viewInput, this.#viewOutput, this.contentElement);
   }
-  // clang-format on
 }
 
 class LiveMetricsLogs extends UI.Widget.Widget {

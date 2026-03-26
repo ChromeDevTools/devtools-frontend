@@ -153,7 +153,7 @@ export class ConsoleModel extends SDKModel<EventTypes> {
           replMode: true,
           allowUnsafeEvalBlockedByCSP: false,
         },
-        Common.Settings.Settings.instance().moduleSetting('console-user-activation-eval').get(),
+        this.target().targetManager().settings.moduleSetting('console-user-activation-eval').get(),
         /* awaitPromise */ false);
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.ConsoleEvaluated);
     if ('error' in result) {
@@ -284,7 +284,8 @@ export class ConsoleModel extends SDKModel<EventTypes> {
   }
 
   private clearIfNecessary(): void {
-    if (!Common.Settings.Settings.instance().moduleSetting('preserve-console-log').get()) {
+    const settings = this.target().targetManager().settings;
+    if (!settings.moduleSetting('preserve-console-log').get()) {
       this.clear();
     }
     ++this.#pageLoadSequenceNumber;
@@ -292,7 +293,8 @@ export class ConsoleModel extends SDKModel<EventTypes> {
 
   private primaryPageChanged(
       event: Common.EventTarget.EventTargetEvent<{frame: ResourceTreeFrame, type: PrimaryPageChangeType}>): void {
-    if (Common.Settings.Settings.instance().moduleSetting('preserve-console-log').get()) {
+    const settings = this.target().targetManager().settings;
+    if (settings.moduleSetting('preserve-console-log').get()) {
       const {frame} = event.data;
       if (frame.backForwardCacheDetails.restoredFromCache) {
         Common.Console.Console.instance().log(i18nString(UIStrings.bfcacheNavigation, {PH1: frame.url}));

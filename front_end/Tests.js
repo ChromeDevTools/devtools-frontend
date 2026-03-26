@@ -1086,20 +1086,36 @@
     this.takeControl({slownessFactor: 10});
   };
 
-  TestSuite.prototype.waitForTestResultsAsMessage = function() {
-    const onMessage = event => {
-      if (!event.data.testOutput) {
-        return;
-      }
-      top.removeEventListener('message', onMessage);
+  const earlyTestResults = [];
+  let testResultsWaiter = null;
+
+  top.addEventListener('message', event => {
+    if (event.data && event.data.testOutput) {
       const text = event.data.testOutput;
+      if (testResultsWaiter) {
+        testResultsWaiter(text);
+      } else {
+        earlyTestResults.push(text);
+      }
+    }
+  });
+
+  TestSuite.prototype.waitForTestResultsAsMessage = function() {
+    const handleMessage = text => {
+      testResultsWaiter = null;
       if (text === 'PASS') {
         this.releaseControl();
       } else {
         this.fail(text);
       }
     };
-    top.addEventListener('message', onMessage);
+
+    if (earlyTestResults.length) {
+      handleMessage(earlyTestResults.shift());
+      return;
+    }
+
+    testResultsWaiter = handleMessage;
     this.takeControl();
   };
 

@@ -30,6 +30,14 @@ const UIStrings = {
      * @description Title for the button that shows the walkthrough when there are widgets in the walkthrough.
      */
     showAgentWalkthrough: 'Show agent walkthrough',
+    /**
+     * @description Title for the button that hides the walkthrough when there are no widgets in the walkthrough.
+     */
+    hideThinking: 'Hide thinking',
+    /**
+     * @description Title for the button that hides the walkthrough when there are widgets in the walkthrough.
+     */
+    hideAgentWalkthrough: 'Hide agent walkthrough',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/ai_assistance/components/WalkthroughView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -42,6 +50,15 @@ export function walkthroughTitle(input) {
     }
     return lockedString(UIStrings.showThinking);
 }
+export function walkthroughCloseTitle(input) {
+    if (input.isInlined) {
+        return i18nString(UIStrings.title);
+    }
+    if (input.hasWidgets) {
+        return lockedString(UIStrings.hideAgentWalkthrough);
+    }
+    return lockedString(UIStrings.hideThinking);
+}
 function renderInlineWalkthrough(input, stepsOutput, steps) {
     const lastStep = steps.at(-1);
     if (!input.isInlined || !lastStep) {
@@ -49,11 +66,14 @@ function renderInlineWalkthrough(input, stepsOutput, steps) {
     }
     function onToggle(event) {
         const isOpen = event.target.open;
-        if (isOpen && input.message) {
+        if (!input.message) {
+            return;
+        }
+        if (isOpen) {
             input.onOpen(input.message);
         }
         else {
-            input.onToggle(isOpen);
+            input.onToggle(isOpen, input.message);
         }
     }
     const hasWidgets = steps.some(s => s.widgets?.length);
@@ -62,7 +82,7 @@ function renderInlineWalkthrough(input, stepsOutput, steps) {
     <details class="walkthrough-inline" ?open=${input.isExpanded} @toggle=${onToggle}>
       <summary ?data-has-widgets=${!input.isLoading && hasWidgets}>
         ${input.isLoading ? html `<devtools-spinner></devtools-spinner>` : Lit.nothing}
-        ${walkthroughTitle({ isLoading: input.isLoading, lastStep, hasWidgets })}
+        ${input.isExpanded ? walkthroughCloseTitle({ hasWidgets, isInlined: true }) : walkthroughTitle({ isLoading: input.isLoading, lastStep, hasWidgets })}
         <devtools-icon name="chevron-right"></devtools-icon>
       </summary>
       ${stepsOutput}
@@ -86,7 +106,11 @@ function renderSidebarWalkthrough(input, stepsOutput, stepsCount) {
         title: i18nString(UIStrings.close),
         jslogContext: 'close-walkthrough',
     }}
-          @click=${() => input.onToggle(false)}
+          @click=${() => {
+        if (input.message) {
+            input.onToggle(false, input.message);
+        }
+    }}
         ></devtools-button>
       </div>
       ${stepsOutput}

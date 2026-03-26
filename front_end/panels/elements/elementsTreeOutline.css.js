@@ -390,4 +390,22 @@ li.hovered:not(.always-parent) + ol.children:not(.shadow-root) {
   padding-bottom: 1px;
 }
 
+/* Ad Provenance Tooltip */
+.ad-provenance-tooltip {
+  user-select: text;
+}
+
+.ad-provenance-tooltip-title {
+  color: var(--sys-color-on-surface-subtle);
+  margin-top: 4px;
+}
+
+.ad-provenance-tooltip-title:first-child {
+  margin-top: 0;
+}
+
+.ad-provenance-tooltip-content {
+  padding-left: 16px;
+}
+
 /*# sourceURL=${import.meta.resolve('./elementsTreeOutline.css')} */`;

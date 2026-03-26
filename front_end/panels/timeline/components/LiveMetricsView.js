@@ -18,8 +18,6 @@ import * as EmulationModel from '../../../models/emulation/emulation.js';
 import * as LiveMetrics from '../../../models/live-metrics/live-metrics.js';
 import * as Trace from '../../../models/trace/trace.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
-import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
-import * as LegacyWrapper from '../../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import * as uiI18n from '../../../ui/i18n/i18n.js';
 import * as UI from '../../../ui/legacy/legacy.js';
@@ -32,7 +30,7 @@ import liveMetricsViewStyles from './liveMetricsView.css.js';
 import metricValueStyles from './metricValueStyles.css.js';
 import { CLS_THRESHOLDS, INP_THRESHOLDS, renderMetricValue } from './Utils.js';
 const { html, nothing } = Lit;
-const { widget } = UI.Widget;
+const { widget, widgetRef } = UI.Widget;
 const DEVICE_OPTION_LIST = ['AUTO', ...CrUXManager.DEVICE_SCOPE_LIST];
 const RTT_MINIMUM = 60;
 const UIStrings = {
@@ -287,8 +285,7 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/LiveMetricsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableComponent {
-    #shadow = this.attachShadow({ mode: 'open' });
+export class LiveMetricsView extends UI.Widget.Widget {
     isNode = Root.Runtime.Runtime.isNode();
     #lcpValue;
     #clsValue;
@@ -304,8 +301,8 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
     #layoutShiftsListEl;
     #listIsScrolling = false;
     #deviceModeModel = EmulationModel.DeviceModeModel.DeviceModeModel.tryInstance();
-    constructor() {
-        super();
+    constructor(element) {
+        super(element, { useShadowDom: true });
         this.#toggleRecordAction = UI.ActionRegistry.ActionRegistry.instance().getAction('timeline.toggle-recording');
         this.#recordReloadAction = UI.ActionRegistry.ActionRegistry.instance().getAction('timeline.record-reload');
     }
@@ -317,12 +314,12 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
         this.#layoutShifts = [...event.data.layoutShifts];
         const hasNewInteraction = this.#interactions.size < event.data.interactions.size;
         this.#interactions = new Map(event.data.interactions);
-        const renderPromise = ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
+        this.requestUpdate();
         if (hasNewInteraction && this.#interactionsListEl) {
-            this.#keepScrolledToBottom(renderPromise, this.#interactionsListEl);
+            this.#keepScrolledToBottom(this.updateComplete, this.#interactionsListEl);
         }
         if (hasNewLS && this.#layoutShiftsListEl) {
-            this.#keepScrolledToBottom(renderPromise, this.#layoutShiftsListEl);
+            this.#keepScrolledToBottom(this.updateComplete, this.#layoutShiftsListEl);
         }
     }
     #keepScrolledToBottom(renderPromise, listEl) {
@@ -348,18 +345,19 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
         });
     }
     #onFieldDataChanged() {
-        void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
+        this.requestUpdate();
     }
     #onEmulationChanged() {
-        void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
+        this.requestUpdate();
     }
     async #refreshFieldDataForCurrentPage() {
         if (!this.isNode) {
             await this.#cruxManager.refresh();
         }
-        void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
+        this.requestUpdate();
     }
-    connectedCallback() {
+    wasShown() {
+        super.wasShown();
         const liveMetrics = LiveMetrics.LiveMetrics.instance();
         liveMetrics.addEventListener("status" /* LiveMetrics.Events.STATUS */, this.#onMetricStatus, this);
         const cruxManager = CrUXManager.CrUXManager.instance();
@@ -373,9 +371,10 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
         this.#inpValue = liveMetrics.inpValue;
         this.#interactions = liveMetrics.interactions;
         this.#layoutShifts = liveMetrics.layoutShifts;
-        void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
+        this.requestUpdate();
     }
-    disconnectedCallback() {
+    willHide() {
+        super.willHide();
         LiveMetrics.LiveMetrics.instance().removeEventListener("status" /* LiveMetrics.Events.STATUS */, this.#onMetricStatus, this);
         const cruxManager = CrUXManager.CrUXManager.instance();
         cruxManager.removeEventListener("field-data-changed" /* CrUXManager.Events.FIELD_DATA_CHANGED */, this.#onFieldDataChanged, this);
@@ -603,7 +602,7 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
         else {
             this.#cruxManager.fieldPageScope = 'origin';
         }
-        void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
+        this.requestUpdate();
     }
     #renderPageScopeSetting() {
         if (!this.#cruxManager.getConfigSetting().get().enabled) {
@@ -678,7 +677,7 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
     }
     #onDeviceOptionMenuItemSelected(event) {
         this.#cruxManager.fieldDeviceOption = event.itemValue;
-        void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
+        this.requestUpdate();
     }
     #renderDeviceScopeSetting() {
         if (!this.#cruxManager.getConfigSetting().get().enabled) {
@@ -803,22 +802,20 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
         class="logs-section"
         aria-label=${i18nString(UIStrings.eventLogs)}
       >
-        <devtools-live-metrics-logs
-          ${Lit.Directives.ref(el => {
-            if (el instanceof HTMLElement) {
-                this.#logsEl = el;
-            }
+        <devtools-widget ${widget(LiveMetricsLogs)}
+          ${widgetRef(LiveMetricsLogs, widget => {
+            this.#logsEl = widget;
         })}
         >
           ${this.#renderInteractionsLog()}
           ${this.#renderLayoutShiftsLog()}
-        </devtools-live-metrics-logs>
+        </devtools-widget>
       </section>
     `;
         // clang-format on
     }
     async #revealInteraction(interaction) {
-        const interactionEl = this.#shadow.getElementById(interaction.interactionId);
+        const interactionEl = this.contentElement.querySelector('#' + CSS.escape(interaction.interactionId));
         if (!interactionEl || !this.#logsEl) {
             return;
         }
@@ -917,7 +914,7 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
         }
         const layoutShiftEls = [];
         for (const shiftId of clusterIds) {
-            const layoutShiftEl = this.#shadow.getElementById(shiftId);
+            const layoutShiftEl = this.contentElement.querySelector('#' + CSS.escape(shiftId));
             if (layoutShiftEl) {
                 layoutShiftEls.push(layoutShiftEl);
             }
@@ -988,9 +985,9 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
       </div>
     `;
     }
-    #render = () => {
+    performUpdate() {
         if (this.isNode) {
-            Lit.render(this.#renderNodeView(), this.#shadow, { host: this });
+            Lit.render(this.#renderNodeView(), this.contentElement, { host: this });
             return;
         }
         const fieldEnabled = this.#cruxManager.getConfigSetting().get().enabled;
@@ -1052,27 +1049,20 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
         </div>
       </div>
     `;
-        Lit.render(output, this.#shadow, { host: this });
-    };
-}
-class LiveMetricsLogs extends UI.Widget.WidgetElement {
-    #tabbedPane;
-    constructor() {
-        super();
-        this.style.display = 'contents';
+        Lit.render(output, this.contentElement, { host: this });
     }
+}
+class LiveMetricsLogs extends UI.Widget.Widget {
+    #tabbedPane;
     /**
      * Returns `true` if selecting the tab was successful.
      */
     selectTab(tabId) {
-        if (!this.#tabbedPane) {
-            return false;
-        }
         return this.#tabbedPane.selectTab(tabId);
     }
     #clearCurrentLog() {
         const liveMetrics = LiveMetrics.LiveMetrics.instance();
-        switch (this.#tabbedPane?.selectedTabId) {
+        switch (this.#tabbedPane.selectedTabId) {
             case 'interactions':
                 liveMetrics.clearInteractions();
                 break;
@@ -1081,15 +1071,12 @@ class LiveMetricsLogs extends UI.Widget.WidgetElement {
                 break;
         }
     }
-    createWidget() {
-        // We need a generic widget with a shadow DOM as the container widget so that we can take advantage
-        // of web component slots. Passing `this` into the container widget will make `this` the root element
-        // of that widget.
-        //
+    constructor(element) {
+        super(element, { useShadowDom: true });
+        this.element.style.display = 'contents';
         // Any children of the root element `this` will be matched to the slots defined within the container
         // widget's shadow DOM.
-        const containerWidget = new UI.Widget.Widget(this, { useShadowDom: true });
-        containerWidget.contentElement.style.display = 'contents';
+        this.contentElement.style.display = 'contents';
         this.#tabbedPane = new UI.TabbedPane.TabbedPane();
         // Taking advantage of web component slots allows us to render updates in the lit templates defined in the
         // main component. This should be more performant and doesn't require us to inject live metrics styles twice.
@@ -1104,10 +1091,7 @@ class LiveMetricsLogs extends UI.Widget.WidgetElement {
         const clearButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clearCurrentLog), 'clear', undefined, 'timeline.landing.clear-log');
         clearButton.addEventListener("Click" /* UI.Toolbar.ToolbarButton.Events.CLICK */, this.#clearCurrentLog, this);
         this.#tabbedPane.rightToolbar().appendToolbarItem(clearButton);
-        this.#tabbedPane.show(containerWidget.contentElement);
-        return containerWidget;
+        this.#tabbedPane.show(this.contentElement);
     }
 }
-customElements.define('devtools-live-metrics-view', LiveMetricsView);
-customElements.define('devtools-live-metrics-logs', LiveMetricsLogs);
 //# sourceMappingURL=LiveMetricsView.js.map

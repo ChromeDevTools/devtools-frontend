@@ -6,6 +6,7 @@ import { RemoteObject } from './RemoteObject.js';
 import { type ExecutionContext, RuntimeModel } from './RuntimeModel.js';
 import { SDKModel } from './SDKModel.js';
 import { type Target } from './Target.js';
+import { TargetManager } from './TargetManager.js';
 export { FrontendMessageType } from './ConsoleModelTypes.js';
 export declare class ConsoleModel extends SDKModel<EventTypes> {
     #private;
@@ -26,13 +27,13 @@ export declare class ConsoleModel extends SDKModel<EventTypes> {
     private addConsoleProfileMessage;
     private incrementErrorWarningCount;
     messages(): ConsoleMessage[];
-    static allMessagesUnordered(): ConsoleMessage[];
-    static requestClearMessages(): void;
+    static allMessagesUnordered(targetManager?: TargetManager): ConsoleMessage[];
+    static requestClearMessages(targetManager?: TargetManager): void;
     private clear;
     errors(): number;
-    static allErrors(): number;
+    static allErrors(targetManager?: TargetManager): number;
     warnings(): number;
-    static allWarnings(): number;
+    static allWarnings(targetManager?: TargetManager): number;
     violations(): number;
     saveToTempVariable(currentExecutionContext: ExecutionContext | null, remoteObject: RemoteObject | null): Promise<void>;
 }

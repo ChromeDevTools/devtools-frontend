@@ -12,7 +12,6 @@ __export(HeapSnapshotModel_exports, {
   AllocationStackFrame: () => AllocationStackFrame,
   ComparatorConfig: () => ComparatorConfig,
   Diff: () => Diff,
-  DiffForClass: () => DiffForClass,
   Edge: () => Edge,
   HeapSnapshotProgressEvent: () => HeapSnapshotProgressEvent,
   ItemsRange: () => ItemsRange,
@@ -23,7 +22,6 @@ __export(HeapSnapshotModel_exports, {
   SearchConfig: () => SearchConfig,
   SerializedAllocationNode: () => SerializedAllocationNode,
   StaticData: () => StaticData,
-  WorkerCommand: () => WorkerCommand,
   baseSystemDistance: () => baseSystemDistance,
   baseUnreachableDistance: () => baseUnreachableDistance
 });
@@ -89,10 +87,10 @@ var Node = class {
   retainedSize;
   selfSize;
   type;
-  canBeQueried;
-  detachedDOMTreeNode;
-  isAddedNotRemoved;
-  ignored;
+  canBeQueried = false;
+  detachedDOMTreeNode = false;
+  isAddedNotRemoved = null;
+  ignored = false;
   constructor(id, name, distance, nodeIndex, retainedSize, selfSize, type) {
     this.id = id;
     this.name = name;
@@ -101,10 +99,6 @@ var Node = class {
     this.retainedSize = retainedSize;
     this.selfSize = selfSize;
     this.type = type;
-    this.canBeQueried = false;
-    this.detachedDOMTreeNode = false;
-    this.isAddedNotRemoved = null;
-    this.ignored = false;
   }
 };
 var Edge = class {
@@ -112,13 +106,12 @@ var Edge = class {
   node;
   type;
   edgeIndex;
-  isAddedNotRemoved;
+  isAddedNotRemoved = null;
   constructor(name, node, type, edgeIndex) {
     this.name = name;
     this.node = node;
     this.type = type;
     this.edgeIndex = edgeIndex;
-    this.isAddedNotRemoved = null;
   }
 };
 var AggregateForDiff = class {
@@ -135,34 +128,17 @@ var AggregateForDiff = class {
 };
 var Diff = class {
   name;
-  addedCount;
-  removedCount;
-  addedSize;
-  removedSize;
-  deletedIndexes;
-  addedIndexes;
+  addedCount = 0;
+  removedCount = 0;
+  addedSize = 0;
+  removedSize = 0;
+  deletedIndexes = [];
+  addedIndexes = [];
   countDelta;
   sizeDelta;
   constructor(name) {
     this.name = name;
-    this.addedCount = 0;
-    this.removedCount = 0;
-    this.addedSize = 0;
-    this.removedSize = 0;
-    this.deletedIndexes = [];
-    this.addedIndexes = [];
   }
-};
-var DiffForClass = class {
-  name;
-  addedCount;
-  removedCount;
-  addedSize;
-  removedSize;
-  deletedIndexes;
-  addedIndexes;
-  countDelta;
-  sizeDelta;
 };
 var ComparatorConfig = class {
   fieldName1;
@@ -175,17 +151,6 @@ var ComparatorConfig = class {
     this.fieldName2 = fieldName2;
     this.ascending2 = ascending2;
   }
-};
-var WorkerCommand = class {
-  callId;
-  disposition;
-  objectId;
-  newObjectId;
-  methodName;
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  methodArguments;
-  source;
 };
 var ItemsRange = class {
   startPosition;

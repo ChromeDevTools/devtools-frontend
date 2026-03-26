@@ -21,7 +21,6 @@ export declare class SensorsView extends UI.Widget.VBox {
     private betaElement;
     private gammaElement;
     private orientationLayer;
-    private boxElement?;
     private boxMatrix?;
     private mouseDownVector?;
     private originalBoxMatrix?;

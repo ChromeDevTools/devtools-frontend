@@ -1,6 +1,7 @@
 import '../../ui/components/adorners/adorners.js';
 import '../../ui/components/buttons/buttons.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import * as Protocol from '../../generated/protocol.js';
 import type * as Elements from '../../models/elements/elements.js';
 import type * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
@@ -35,7 +36,9 @@ export interface ViewInput {
     flexAdornerActive: boolean;
     gridAdornerActive: boolean;
     popoverAdornerActive: boolean;
-    showAdAdorner: boolean;
+    adProvenance?: Protocol.Network.AdProvenance;
+    target?: SDK.Target.Target;
+    adTooltipId: string;
     showContainerAdorner: boolean;
     containerType?: string;
     showFlexAdorner: boolean;

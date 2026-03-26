@@ -3138,7 +3138,6 @@ import * as TraceBounds9 from "./../../services/trace_bounds/trace_bounds.js";
 import * as Tracing2 from "./../../services/tracing/tracing.js";
 import * as Adorners from "./../../ui/components/adorners/adorners.js";
 import * as Dialogs from "./../../ui/components/dialogs/dialogs.js";
-import * as LegacyWrapper from "./../../ui/components/legacy_wrapper/legacy_wrapper.js";
 import * as Snackbars from "./../../ui/components/snackbars/snackbars.js";
 import { Link } from "./../../ui/kit/kit.js";
 import * as PerfUI12 from "./../../ui/legacy/components/perf_ui/perf_ui.js";
@@ -8393,8 +8392,7 @@ var TimelinePanel = class _TimelinePanel extends Common9.ObjectWrapper.eventMixi
       this.landingPage.show(this.statusPaneContainer);
       return;
     }
-    const liveMetrics = new TimelineComponents3.LiveMetricsView.LiveMetricsView();
-    this.landingPage = LegacyWrapper.LegacyWrapper.legacyWrapper(UI8.Widget.Widget, liveMetrics);
+    this.landingPage = new TimelineComponents3.LiveMetricsView.LiveMetricsView();
     this.landingPage.element.classList.add("timeline-landing-page", "fill");
     this.landingPage.contentElement.classList.add("fill");
     this.landingPage.show(this.statusPaneContainer);

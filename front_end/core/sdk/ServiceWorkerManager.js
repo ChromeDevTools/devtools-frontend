@@ -6,7 +6,6 @@ import * as i18n from '../i18n/i18n.js';
 import { Events as RuntimeModelEvents, RuntimeModel } from './RuntimeModel.js';
 import { SDKModel } from './SDKModel.js';
 import { Type } from './Target.js';
-import { TargetManager } from './TargetManager.js';
 const UIStrings = {
     /**
      * @description Service worker running status displayed in the Service Workers view in the Application panel
@@ -457,7 +456,7 @@ class ServiceWorkerContextNamer {
         this.#serviceWorkerManager = serviceWorkerManager;
         serviceWorkerManager.addEventListener("RegistrationUpdated" /* Events.REGISTRATION_UPDATED */, this.registrationsUpdated, this);
         serviceWorkerManager.addEventListener("RegistrationDeleted" /* Events.REGISTRATION_DELETED */, this.registrationsUpdated, this);
-        TargetManager.instance().addModelListener(RuntimeModel, RuntimeModelEvents.ExecutionContextCreated, this.executionContextCreated, this);
+        this.#target.targetManager().addModelListener(RuntimeModel, RuntimeModelEvents.ExecutionContextCreated, this.executionContextCreated, this);
     }
     registrationsUpdated() {
         this.#versionByTargetId.clear();
@@ -486,7 +485,7 @@ class ServiceWorkerContextNamer {
         return target.id();
     }
     updateAllContextLabels() {
-        for (const target of TargetManager.instance().targets()) {
+        for (const target of this.#target.targetManager().targets()) {
             const serviceWorkerTargetId = this.serviceWorkerTargetId(target);
             if (!serviceWorkerTargetId) {
                 continue;

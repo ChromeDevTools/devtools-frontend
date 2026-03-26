@@ -284,6 +284,18 @@ export const generatedPropertyValues: {
     "column-rule-color": {
         values: string[];
     };
+    "column-rule-edge-inset-end": {
+        values: string[];
+    };
+    "column-rule-edge-inset-start": {
+        values: string[];
+    };
+    "column-rule-interior-inset-end": {
+        values: string[];
+    };
+    "column-rule-interior-inset-start": {
+        values: string[];
+    };
     "column-rule-style": {
         values: string[];
     };
@@ -732,6 +744,18 @@ export const generatedPropertyValues: {
         values: string[];
     };
     "row-rule-color": {
+        values: string[];
+    };
+    "row-rule-edge-inset-end": {
+        values: string[];
+    };
+    "row-rule-edge-inset-start": {
+        values: string[];
+    };
+    "row-rule-interior-inset-end": {
+        values: string[];
+    };
+    "row-rule-interior-inset-start": {
         values: string[];
     };
     "row-rule-style": {

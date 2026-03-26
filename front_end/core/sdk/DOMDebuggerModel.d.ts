@@ -8,7 +8,7 @@ import { RemoteObject } from './RemoteObject.js';
 import { RuntimeModel } from './RuntimeModel.js';
 import { SDKModel } from './SDKModel.js';
 import { type Target } from './Target.js';
-import { type SDKModelObserver } from './TargetManager.js';
+import { type SDKModelObserver, TargetManager } from './TargetManager.js';
 export declare class DOMDebuggerModel extends SDKModel<EventTypes> {
     #private;
     readonly agent: ProtocolProxyApi.DOMDebuggerApi;
@@ -95,17 +95,19 @@ export declare class CSPViolationBreakpoint extends CategorizedBreakpoint {
     type(): Protocol.DOMDebugger.CSPViolationType;
 }
 export declare class DOMEventListenerBreakpoint extends CategorizedBreakpoint {
+    #private;
     readonly eventTargetNames: string[];
-    constructor(eventName: string, eventTargetNames: string[], category: Category);
+    constructor(eventName: string, eventTargetNames: string[], category: Category, targetManager: TargetManager);
     setEnabled(enabled: boolean): void;
     updateOnModel(model: DOMDebuggerModel): void;
     static readonly listener = "listener:";
 }
 export declare class DOMDebuggerManager implements SDKModelObserver<DOMDebuggerModel> {
     #private;
-    constructor();
+    constructor(targetManager?: TargetManager);
     static instance(opts?: {
         forceNew: boolean | null;
+        targetManager?: TargetManager;
     }): DOMDebuggerManager;
     cspViolationBreakpoints(): CSPViolationBreakpoint[];
     private createEventListenerBreakpoints;

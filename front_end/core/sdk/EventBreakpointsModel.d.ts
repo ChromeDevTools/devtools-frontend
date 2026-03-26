@@ -1,9 +1,9 @@
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
-import { CategorizedBreakpoint } from './CategorizedBreakpoint.js';
+import { CategorizedBreakpoint, Category } from './CategorizedBreakpoint.js';
 import type { EventListenerPausedDetailsAuxData } from './DebuggerModel.js';
 import { SDKModel } from './SDKModel.js';
 import { type Target } from './Target.js';
-import { type SDKModelObserver } from './TargetManager.js';
+import { type SDKModelObserver, TargetManager } from './TargetManager.js';
 export declare const enum InstrumentationNames {
     BEFORE_BIDDER_WORKLET_BIDDING_START = "beforeBidderWorkletBiddingStart",
     BEFORE_BIDDER_WORKLET_REPORTING_START = "beforeBidderWorkletReportingStart",
@@ -44,15 +44,18 @@ export declare class EventBreakpointsModel extends SDKModel<void> {
  * instrumentation breakpoints in targets that run JS but do not have a DOM.
  **/
 declare class EventListenerBreakpoint extends CategorizedBreakpoint {
+    #private;
+    constructor(category: Category, name: string, targetManager: TargetManager);
     setEnabled(enabled: boolean): void;
     updateOnModel(model: EventBreakpointsModel): void;
     static readonly instrumentationPrefix = "instrumentation:";
 }
 export declare class EventBreakpointsManager implements SDKModelObserver<EventBreakpointsModel> {
     #private;
-    constructor();
+    constructor(targetManager?: TargetManager);
     static instance(opts?: {
         forceNew: boolean | null;
+        targetManager?: TargetManager;
     }): EventBreakpointsManager;
     private createInstrumentationBreakpoints;
     eventListenerBreakpoints(): EventListenerBreakpoint[];

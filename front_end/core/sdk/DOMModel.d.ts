@@ -8,6 +8,7 @@ import { RemoteObject } from './RemoteObject.js';
 import { RuntimeModel } from './RuntimeModel.js';
 import { SDKModel } from './SDKModel.js';
 import { type Target } from './Target.js';
+import { TargetManager } from './TargetManager.js';
 /** Keep this list in sync with https://w3c.github.io/aria/#state_prop_def **/
 export declare const ARIA_ATTRIBUTES: Set<string>;
 export declare enum DOMNodeEvents {
@@ -73,7 +74,7 @@ export declare class DOMNode extends Common.ObjectWrapper.ObjectWrapper<DOMNodeE
     private requestChildDocument;
     setTopLayerIndex(idx: number): void;
     topLayerIndex(): number;
-    isAdRelatedNode(): boolean;
+    adProvenance(): Protocol.Network.AdProvenance | undefined;
     isRootNode(): boolean;
     isSVGNode(): boolean;
     isScrollable(): boolean;
@@ -87,7 +88,7 @@ export declare class DOMNode extends Common.ObjectWrapper.ObjectWrapper<DOMNodeE
     children(): DOMNode[] | null;
     setChildren(children: DOMNode[]): void;
     setIsScrollable(isScrollable: boolean): void;
-    setIsAdRelated(isAdRelated: boolean): void;
+    setIsAdRelated(adProvenance?: Protocol.Network.AdProvenance): void;
     setAffectedByStartingStyles(affectedByStartingStyles: boolean): void;
     hasAttributes(): boolean;
     childNodeCount(): number;
@@ -229,7 +230,7 @@ export declare class DOMModel extends SDKModel<EventTypes> {
     runtimeModel(): RuntimeModel;
     cssModel(): CSSModel;
     overlayModel(): OverlayModel;
-    static cancelSearch(): void;
+    static cancelSearch(targetManager?: TargetManager): void;
     private scheduleMutationEvent;
     private onDocumentOpened;
     requestDocument(): Promise<DOMDocument | null>;

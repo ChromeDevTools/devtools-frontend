@@ -42,6 +42,10 @@ export default `/*
   flex-direction: column;
 }
 
+.live-metrics > * {
+  flex-shrink: 0;
+}
+
 .next-steps {
   flex: 0 0 336px;
   box-sizing: border-box;

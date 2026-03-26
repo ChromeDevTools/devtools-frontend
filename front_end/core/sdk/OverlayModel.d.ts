@@ -6,6 +6,7 @@ import { DeferredDOMNode, DOMModel, type DOMNode } from './DOMModel.js';
 import type { RemoteObject } from './RemoteObject.js';
 import { SDKModel } from './SDKModel.js';
 import { type Target } from './Target.js';
+import { TargetManager } from './TargetManager.js';
 export interface HighlightColor {
     r: number;
     g: number;
@@ -38,11 +39,11 @@ export declare class OverlayModel extends SDKModel<EventTypes> implements Protoc
     overlayAgent: ProtocolProxyApi.OverlayApi;
     constructor(target: Target);
     static highlightObjectAsDOMNode(object: RemoteObject): void;
-    static hideDOMNodeHighlight(): void;
-    static muteHighlight(): Promise<void[]>;
-    static unmuteHighlight(): Promise<void[]>;
-    static highlightRect(rect: HighlightRect): void;
-    static clearHighlight(): void;
+    static hideDOMNodeHighlight(targetManager?: TargetManager): void;
+    static muteHighlight(targetManager?: TargetManager): Promise<void[]>;
+    static unmuteHighlight(targetManager?: TargetManager): Promise<void[]>;
+    static highlightRect(rect: HighlightRect, targetManager?: TargetManager): void;
+    static clearHighlight(targetManager?: TargetManager): void;
     getDOMModel(): DOMModel;
     highlightRect({ x, y, width, height, color, outlineColor }: HighlightRect): Promise<Protocol.ProtocolResponseWithError>;
     clearHighlight(): Promise<Protocol.ProtocolResponseWithError>;

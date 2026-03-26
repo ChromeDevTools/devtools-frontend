@@ -50,7 +50,6 @@ import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
 import * as Tracing from '../../services/tracing/tracing.js';
 import * as Adorners from '../../ui/components/adorners/adorners.js';
 import * as Dialogs from '../../ui/components/dialogs/dialogs.js';
-import * as LegacyWrapper from '../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import * as Snackbars from '../../ui/components/snackbars/snackbars.js';
 import { Link } from '../../ui/kit/kit.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
@@ -2084,8 +2083,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin(UI.Panel.Pane
             this.landingPage.show(this.statusPaneContainer);
             return;
         }
-        const liveMetrics = new TimelineComponents.LiveMetricsView.LiveMetricsView();
-        this.landingPage = LegacyWrapper.LegacyWrapper.legacyWrapper(UI.Widget.Widget, liveMetrics);
+        this.landingPage = new TimelineComponents.LiveMetricsView.LiveMetricsView();
         this.landingPage.element.classList.add('timeline-landing-page', 'fill');
         this.landingPage.contentElement.classList.add('fill');
         this.landingPage.show(this.statusPaneContainer);

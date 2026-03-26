@@ -196,7 +196,7 @@ export declare class HeapSnapshotDiffNode extends HeapSnapshotGridNode {
     readonly sizeDelta: number;
     readonly deletedIndexes: number[];
     readonly classKey: string;
-    constructor(dataGrid: HeapSnapshotDiffDataGrid, classKey: string, diffForClass: HeapSnapshotModel.HeapSnapshotModel.DiffForClass);
+    constructor(dataGrid: HeapSnapshotDiffDataGrid, classKey: string, diffForClass: HeapSnapshotModel.HeapSnapshotModel.Diff);
     get name(): string | undefined;
     createProvider(): HeapSnapshotDiffNodesProvider;
     createCell(columnId: string): HTMLElement;

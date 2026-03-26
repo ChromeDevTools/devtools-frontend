@@ -16,12 +16,17 @@ export class EventBreakpointsModel extends SDKModel {
  * instrumentation breakpoints in targets that run JS but do not have a DOM.
  **/
 class EventListenerBreakpoint extends CategorizedBreakpoint {
+    #targetManager;
+    constructor(category, name, targetManager) {
+        super(category, name);
+        this.#targetManager = targetManager;
+    }
     setEnabled(enabled) {
         if (this.enabled() === enabled) {
             return;
         }
         super.setEnabled(enabled);
-        for (const model of TargetManager.instance().models(EventBreakpointsModel)) {
+        for (const model of this.#targetManager.models(EventBreakpointsModel)) {
             this.updateOnModel(model);
         }
     }
@@ -38,7 +43,9 @@ class EventListenerBreakpoint extends CategorizedBreakpoint {
 let eventBreakpointManagerInstance;
 export class EventBreakpointsManager {
     #eventListenerBreakpoints = [];
-    constructor() {
+    #targetManager;
+    constructor(targetManager = TargetManager.instance()) {
+        this.#targetManager = targetManager;
         this.createInstrumentationBreakpoints("auction-worklet" /* Category.AUCTION_WORKLET */, [
             "beforeBidderWorkletBiddingStart" /* InstrumentationNames.BEFORE_BIDDER_WORKLET_BIDDING_START */,
             "beforeBidderWorkletReportingStart" /* InstrumentationNames.BEFORE_BIDDER_WORKLET_REPORTING_START */,
@@ -90,18 +97,18 @@ export class EventBreakpointsManager {
             "audioContextResumed" /* InstrumentationNames.AUDIO_CONTEXT_RESUMED */,
             "audioContextSuspended" /* InstrumentationNames.AUDIO_CONTEXT_SUSPENDED */,
         ]);
-        TargetManager.instance().observeModels(EventBreakpointsModel, this);
+        this.#targetManager.observeModels(EventBreakpointsModel, this);
     }
     static instance(opts = { forceNew: null }) {
-        const { forceNew } = opts;
+        const { forceNew, targetManager } = opts;
         if (!eventBreakpointManagerInstance || forceNew) {
-            eventBreakpointManagerInstance = new EventBreakpointsManager();
+            eventBreakpointManagerInstance = new EventBreakpointsManager(targetManager);
         }
         return eventBreakpointManagerInstance;
     }
     createInstrumentationBreakpoints(category, instrumentationNames) {
         for (const instrumentationName of instrumentationNames) {
-            this.#eventListenerBreakpoints.push(new EventListenerBreakpoint(category, instrumentationName));
+            this.#eventListenerBreakpoints.push(new EventListenerBreakpoint(category, instrumentationName, this.#targetManager));
         }
     }
     eventListenerBreakpoints() {

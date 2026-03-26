@@ -1,12 +1,13 @@
 import * as Common from '../common/common.js';
 import type { HeapProfilerModel } from './HeapProfilerModel.js';
 import { RuntimeModel } from './RuntimeModel.js';
-import { type SDKModelObserver } from './TargetManager.js';
+import { type SDKModelObserver, TargetManager } from './TargetManager.js';
 export declare class IsolateManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> implements SDKModelObserver<RuntimeModel> {
     #private;
-    constructor();
-    static instance({ forceNew }?: {
+    constructor(targetManager?: TargetManager);
+    static instance({ forceNew, targetManager }?: {
         forceNew: boolean;
+        targetManager?: TargetManager;
     }): IsolateManager;
     observeIsolates(observer: Observer): void;
     modelAdded(model: RuntimeModel): void;
@@ -29,7 +30,7 @@ export interface EventTypes {
 export declare const MemoryTrendWindowMs = 120000;
 export declare class Isolate {
     #private;
-    constructor(id: string);
+    constructor(id: string, manager: IsolateManager);
     id(): string;
     models(): Set<RuntimeModel>;
     runtimeModel(): RuntimeModel | null;

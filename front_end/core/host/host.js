@@ -22,10 +22,94 @@ __export(AidaClient_exports, {
   SERVICE_NAME: () => SERVICE_NAME,
   UseCase: () => UseCase,
   UserTier: () => UserTier,
-  convertToUserTierEnum: () => convertToUserTierEnum
+  convertToUserTierEnum: () => convertToUserTierEnum,
+  debugLog: () => debugLog
 });
 import * as Common4 from "./../common/common.js";
 import * as Root2 from "./../root/root.js";
+
+// gen/front_end/core/host/AidaClientTypes.js
+var Role;
+(function(Role2) {
+  Role2[Role2["ROLE_UNSPECIFIED"] = 0] = "ROLE_UNSPECIFIED";
+  Role2[Role2["USER"] = 1] = "USER";
+  Role2[Role2["MODEL"] = 2] = "MODEL";
+})(Role || (Role = {}));
+var FunctionalityType;
+(function(FunctionalityType2) {
+  FunctionalityType2[FunctionalityType2["FUNCTIONALITY_TYPE_UNSPECIFIED"] = 0] = "FUNCTIONALITY_TYPE_UNSPECIFIED";
+  FunctionalityType2[FunctionalityType2["CHAT"] = 1] = "CHAT";
+  FunctionalityType2[FunctionalityType2["EXPLAIN_ERROR"] = 2] = "EXPLAIN_ERROR";
+  FunctionalityType2[FunctionalityType2["AGENTIC_CHAT"] = 5] = "AGENTIC_CHAT";
+})(FunctionalityType || (FunctionalityType = {}));
+var ClientFeature;
+(function(ClientFeature2) {
+  ClientFeature2[ClientFeature2["CLIENT_FEATURE_UNSPECIFIED"] = 0] = "CLIENT_FEATURE_UNSPECIFIED";
+  ClientFeature2[ClientFeature2["CHROME_CONSOLE_INSIGHTS"] = 1] = "CHROME_CONSOLE_INSIGHTS";
+  ClientFeature2[ClientFeature2["CHROME_STYLING_AGENT"] = 2] = "CHROME_STYLING_AGENT";
+  ClientFeature2[ClientFeature2["CHROME_NETWORK_AGENT"] = 7] = "CHROME_NETWORK_AGENT";
+  ClientFeature2[ClientFeature2["CHROME_PERFORMANCE_ANNOTATIONS_AGENT"] = 20] = "CHROME_PERFORMANCE_ANNOTATIONS_AGENT";
+  ClientFeature2[ClientFeature2["CHROME_FILE_AGENT"] = 9] = "CHROME_FILE_AGENT";
+  ClientFeature2[ClientFeature2["CHROME_PATCH_AGENT"] = 12] = "CHROME_PATCH_AGENT";
+  ClientFeature2[ClientFeature2["CHROME_PERFORMANCE_FULL_AGENT"] = 24] = "CHROME_PERFORMANCE_FULL_AGENT";
+  ClientFeature2[ClientFeature2["CHROME_CONTEXT_SELECTION_AGENT"] = 25] = "CHROME_CONTEXT_SELECTION_AGENT";
+  ClientFeature2[ClientFeature2["CHROME_ACCESSIBILITY_AGENT"] = 26] = "CHROME_ACCESSIBILITY_AGENT";
+  ClientFeature2[ClientFeature2["CHROME_CONVERSATION_SUMMARY_AGENT"] = 27] = "CHROME_CONVERSATION_SUMMARY_AGENT";
+})(ClientFeature || (ClientFeature = {}));
+var UserTier;
+(function(UserTier2) {
+  UserTier2[UserTier2["USER_TIER_UNSPECIFIED"] = 0] = "USER_TIER_UNSPECIFIED";
+  UserTier2[UserTier2["TESTERS"] = 1] = "TESTERS";
+  UserTier2[UserTier2["BETA"] = 2] = "BETA";
+  UserTier2[UserTier2["PUBLIC"] = 3] = "PUBLIC";
+})(UserTier || (UserTier = {}));
+var EditType;
+(function(EditType2) {
+  EditType2[EditType2["EDIT_TYPE_UNSPECIFIED"] = 0] = "EDIT_TYPE_UNSPECIFIED";
+  EditType2[EditType2["ADD"] = 1] = "ADD";
+  EditType2[EditType2["DELETE"] = 2] = "DELETE";
+  EditType2[EditType2["PASTE"] = 3] = "PASTE";
+  EditType2[EditType2["UNDO"] = 4] = "UNDO";
+  EditType2[EditType2["REDO"] = 5] = "REDO";
+  EditType2[EditType2["ACCEPT_COMPLETION"] = 6] = "ACCEPT_COMPLETION";
+})(EditType || (EditType = {}));
+var Reason;
+(function(Reason2) {
+  Reason2[Reason2["UNKNOWN"] = 0] = "UNKNOWN";
+  Reason2[Reason2["CURRENTLY_OPEN"] = 1] = "CURRENTLY_OPEN";
+  Reason2[Reason2["RECENTLY_OPENED"] = 2] = "RECENTLY_OPENED";
+  Reason2[Reason2["RECENTLY_EDITED"] = 3] = "RECENTLY_EDITED";
+  Reason2[Reason2["COLOCATED"] = 4] = "COLOCATED";
+  Reason2[Reason2["RELATED_FILE"] = 5] = "RELATED_FILE";
+})(Reason || (Reason = {}));
+var UseCase;
+(function(UseCase2) {
+  UseCase2[UseCase2["USE_CASE_UNSPECIFIED"] = 0] = "USE_CASE_UNSPECIFIED";
+  UseCase2[UseCase2["CODE_GENERATION"] = 1] = "CODE_GENERATION";
+  UseCase2[UseCase2["CODE_TRANSFORMATION"] = 2] = "CODE_TRANSFORMATION";
+})(UseCase || (UseCase = {}));
+var RecitationAction;
+(function(RecitationAction2) {
+  RecitationAction2["ACTION_UNSPECIFIED"] = "ACTION_UNSPECIFIED";
+  RecitationAction2["CITE"] = "CITE";
+  RecitationAction2["BLOCK"] = "BLOCK";
+  RecitationAction2["NO_ACTION"] = "NO_ACTION";
+  RecitationAction2["EXEMPT_FOUND_IN_PROMPT"] = "EXEMPT_FOUND_IN_PROMPT";
+})(RecitationAction || (RecitationAction = {}));
+var CitationSourceType;
+(function(CitationSourceType2) {
+  CitationSourceType2["CITATION_SOURCE_TYPE_UNSPECIFIED"] = "CITATION_SOURCE_TYPE_UNSPECIFIED";
+  CitationSourceType2["TRAINING_DATA"] = "TRAINING_DATA";
+  CitationSourceType2["WORLD_FACTS"] = "WORLD_FACTS";
+  CitationSourceType2["LOCAL_FACTS"] = "LOCAL_FACTS";
+  CitationSourceType2["INDIRECT"] = "INDIRECT";
+})(CitationSourceType || (CitationSourceType = {}));
+function debugLog(...log) {
+  if (!Boolean(localStorage.getItem("debugAiServicesEnabled"))) {
+    return;
+  }
+  console.log(...log);
+}
 
 // gen/front_end/core/host/DispatchHttpRequestClient.js
 var DispatchHttpRequestClient_exports = {};
@@ -825,7 +909,7 @@ async function makeHttpRequest(request, options) {
       resolve(result);
     });
   });
-  debugLog({ request, response });
+  debugLog2({ request, response });
   if (response.statusCode === 404) {
     throw new DispatchHttpRequestError(ErrorType.NOT_FOUND, response);
   }
@@ -844,7 +928,7 @@ async function makeHttpRequest(request, options) {
 function isDebugMode() {
   return Boolean(localStorage.getItem("debugDispatchHttpRequestEnabled"));
 }
-function debugLog(...log) {
+function debugLog2(...log) {
   if (!isDebugMode()) {
     return;
   }
@@ -860,101 +944,75 @@ function setDebugDispatchHttpRequestEnabled(enabled) {
 globalThis.setDebugDispatchHttpRequestEnabled = setDebugDispatchHttpRequestEnabled;
 
 // gen/front_end/core/host/AidaClient.js
-var Role;
-(function(Role2) {
-  Role2[Role2["ROLE_UNSPECIFIED"] = 0] = "ROLE_UNSPECIFIED";
-  Role2[Role2["USER"] = 1] = "USER";
-  Role2[Role2["MODEL"] = 2] = "MODEL";
-})(Role || (Role = {}));
-var FunctionalityType;
-(function(FunctionalityType2) {
-  FunctionalityType2[FunctionalityType2["FUNCTIONALITY_TYPE_UNSPECIFIED"] = 0] = "FUNCTIONALITY_TYPE_UNSPECIFIED";
-  FunctionalityType2[FunctionalityType2["CHAT"] = 1] = "CHAT";
-  FunctionalityType2[FunctionalityType2["EXPLAIN_ERROR"] = 2] = "EXPLAIN_ERROR";
-  FunctionalityType2[FunctionalityType2["AGENTIC_CHAT"] = 5] = "AGENTIC_CHAT";
-})(FunctionalityType || (FunctionalityType = {}));
-var ClientFeature;
-(function(ClientFeature2) {
-  ClientFeature2[ClientFeature2["CLIENT_FEATURE_UNSPECIFIED"] = 0] = "CLIENT_FEATURE_UNSPECIFIED";
-  ClientFeature2[ClientFeature2["CHROME_CONSOLE_INSIGHTS"] = 1] = "CHROME_CONSOLE_INSIGHTS";
-  ClientFeature2[ClientFeature2["CHROME_STYLING_AGENT"] = 2] = "CHROME_STYLING_AGENT";
-  ClientFeature2[ClientFeature2["CHROME_NETWORK_AGENT"] = 7] = "CHROME_NETWORK_AGENT";
-  ClientFeature2[ClientFeature2["CHROME_PERFORMANCE_ANNOTATIONS_AGENT"] = 20] = "CHROME_PERFORMANCE_ANNOTATIONS_AGENT";
-  ClientFeature2[ClientFeature2["CHROME_FILE_AGENT"] = 9] = "CHROME_FILE_AGENT";
-  ClientFeature2[ClientFeature2["CHROME_PATCH_AGENT"] = 12] = "CHROME_PATCH_AGENT";
-  ClientFeature2[ClientFeature2["CHROME_PERFORMANCE_FULL_AGENT"] = 24] = "CHROME_PERFORMANCE_FULL_AGENT";
-  ClientFeature2[ClientFeature2["CHROME_CONTEXT_SELECTION_AGENT"] = 25] = "CHROME_CONTEXT_SELECTION_AGENT";
-  ClientFeature2[ClientFeature2["CHROME_ACCESSIBILITY_AGENT"] = 26] = "CHROME_ACCESSIBILITY_AGENT";
-  ClientFeature2[ClientFeature2["CHROME_CONVERSATION_SUMMARY_AGENT"] = 27] = "CHROME_CONVERSATION_SUMMARY_AGENT";
-})(ClientFeature || (ClientFeature = {}));
-var UserTier;
-(function(UserTier2) {
-  UserTier2[UserTier2["USER_TIER_UNSPECIFIED"] = 0] = "USER_TIER_UNSPECIFIED";
-  UserTier2[UserTier2["TESTERS"] = 1] = "TESTERS";
-  UserTier2[UserTier2["BETA"] = 2] = "BETA";
-  UserTier2[UserTier2["PUBLIC"] = 3] = "PUBLIC";
-})(UserTier || (UserTier = {}));
-var EditType;
-(function(EditType2) {
-  EditType2[EditType2["EDIT_TYPE_UNSPECIFIED"] = 0] = "EDIT_TYPE_UNSPECIFIED";
-  EditType2[EditType2["ADD"] = 1] = "ADD";
-  EditType2[EditType2["DELETE"] = 2] = "DELETE";
-  EditType2[EditType2["PASTE"] = 3] = "PASTE";
-  EditType2[EditType2["UNDO"] = 4] = "UNDO";
-  EditType2[EditType2["REDO"] = 5] = "REDO";
-  EditType2[EditType2["ACCEPT_COMPLETION"] = 6] = "ACCEPT_COMPLETION";
-})(EditType || (EditType = {}));
-var Reason;
-(function(Reason2) {
-  Reason2[Reason2["UNKNOWN"] = 0] = "UNKNOWN";
-  Reason2[Reason2["CURRENTLY_OPEN"] = 1] = "CURRENTLY_OPEN";
-  Reason2[Reason2["RECENTLY_OPENED"] = 2] = "RECENTLY_OPENED";
-  Reason2[Reason2["RECENTLY_EDITED"] = 3] = "RECENTLY_EDITED";
-  Reason2[Reason2["COLOCATED"] = 4] = "COLOCATED";
-  Reason2[Reason2["RELATED_FILE"] = 5] = "RELATED_FILE";
-})(Reason || (Reason = {}));
-var UseCase;
-(function(UseCase2) {
-  UseCase2[UseCase2["USE_CASE_UNSPECIFIED"] = 0] = "USE_CASE_UNSPECIFIED";
-  UseCase2[UseCase2["CODE_GENERATION"] = 1] = "CODE_GENERATION";
-  UseCase2[UseCase2["CODE_TRANSFORMATION"] = 2] = "CODE_TRANSFORMATION";
-})(UseCase || (UseCase = {}));
-var RecitationAction;
-(function(RecitationAction2) {
-  RecitationAction2["ACTION_UNSPECIFIED"] = "ACTION_UNSPECIFIED";
-  RecitationAction2["CITE"] = "CITE";
-  RecitationAction2["BLOCK"] = "BLOCK";
-  RecitationAction2["NO_ACTION"] = "NO_ACTION";
-  RecitationAction2["EXEMPT_FOUND_IN_PROMPT"] = "EXEMPT_FOUND_IN_PROMPT";
-})(RecitationAction || (RecitationAction = {}));
-var CitationSourceType;
-(function(CitationSourceType2) {
-  CitationSourceType2["CITATION_SOURCE_TYPE_UNSPECIFIED"] = "CITATION_SOURCE_TYPE_UNSPECIFIED";
-  CitationSourceType2["TRAINING_DATA"] = "TRAINING_DATA";
-  CitationSourceType2["WORLD_FACTS"] = "WORLD_FACTS";
-  CitationSourceType2["LOCAL_FACTS"] = "LOCAL_FACTS";
-  CitationSourceType2["INDIRECT"] = "INDIRECT";
-})(CitationSourceType || (CitationSourceType = {}));
-var AidaLanguageToMarkdown = {
-  CPP: "cpp",
-  PYTHON: "py",
-  KOTLIN: "kt",
-  JAVA: "java",
-  JAVASCRIPT: "js",
-  GO: "go",
-  TYPESCRIPT: "ts",
-  HTML: "html",
-  BASH: "sh",
-  CSS: "css",
-  DART: "dart",
-  JSON: "json",
-  MARKDOWN: "md",
-  VUE: "vue",
-  XML: "xml"
-};
 var CLIENT_NAME = "CHROME_DEVTOOLS";
 var SERVICE_NAME = "aidaService";
 var CODE_CHUNK_SEPARATOR = (lang = "") => "\n`````" + lang + "\n";
+var AidaLanguageToMarkdown = {
+  [
+    "CPP"
+    /* AidaInferenceLanguage.CPP */
+  ]: "cpp",
+  [
+    "PYTHON"
+    /* AidaInferenceLanguage.PYTHON */
+  ]: "py",
+  [
+    "KOTLIN"
+    /* AidaInferenceLanguage.KOTLIN */
+  ]: "kt",
+  [
+    "JAVA"
+    /* AidaInferenceLanguage.JAVA */
+  ]: "java",
+  [
+    "JAVASCRIPT"
+    /* AidaInferenceLanguage.JAVASCRIPT */
+  ]: "js",
+  [
+    "GO"
+    /* AidaInferenceLanguage.GO */
+  ]: "go",
+  [
+    "TYPESCRIPT"
+    /* AidaInferenceLanguage.TYPESCRIPT */
+  ]: "ts",
+  [
+    "HTML"
+    /* AidaInferenceLanguage.HTML */
+  ]: "html",
+  [
+    "BASH"
+    /* AidaInferenceLanguage.BASH */
+  ]: "sh",
+  [
+    "CSS"
+    /* AidaInferenceLanguage.CSS */
+  ]: "css",
+  [
+    "DART"
+    /* AidaInferenceLanguage.DART */
+  ]: "dart",
+  [
+    "JSON"
+    /* AidaInferenceLanguage.JSON */
+  ]: "json",
+  [
+    "MARKDOWN"
+    /* AidaInferenceLanguage.MARKDOWN */
+  ]: "md",
+  [
+    "VUE"
+    /* AidaInferenceLanguage.VUE */
+  ]: "vue",
+  [
+    "XML"
+    /* AidaInferenceLanguage.XML */
+  ]: "xml",
+  [
+    "UNKNOWN"
+    /* AidaInferenceLanguage.UNKNOWN */
+  ]: "unknown"
+};
 var AidaAbortError = class extends Error {
 };
 var AidaBlockError = class extends Error {
@@ -1268,6 +1326,7 @@ __export(AidaGcaTranslation_exports, {
   aidaDoConversationRequestToGcaRequest: () => aidaDoConversationRequestToGcaRequest,
   aidaEventToGcaTelemetryRequest: () => aidaEventToGcaTelemetryRequest,
   aidaGenerateCodeRequestToGcaRequest: () => aidaGenerateCodeRequestToGcaRequest,
+  gcaChunkResponseToAidaChunkResponse: () => gcaChunkResponseToAidaChunkResponse,
   gcaResponseToAidaCompletionResponse: () => gcaResponseToAidaCompletionResponse,
   gcaResponseToAidaDoConversationResponse: () => gcaResponseToAidaDoConversationResponse,
   gcaResponseToAidaGenerateCodeResponse: () => gcaResponseToAidaGenerateCodeResponse
@@ -1419,12 +1478,12 @@ var Mode;
 })(Mode || (Mode = {}));
 
 // gen/front_end/core/host/AidaGcaTranslation.js
-function createBaseGcaRequest(request, contents) {
-  const gcaRequest = { contents };
+function createBaseGcaRequest(request, contents, experience) {
+  const gcaRequest = { contents, aicode: { experience } };
   mapCommonAidaRequestFields(request, gcaRequest);
   buildLabels(request, gcaRequest);
   if ("preamble" in request && request.preamble) {
-    gcaRequest.system_instruction = {
+    gcaRequest.systemInstruction = {
       role: "user",
       parts: [{ text: request.preamble }]
     };
@@ -1432,54 +1491,56 @@ function createBaseGcaRequest(request, contents) {
   return gcaRequest;
 }
 function aidaDoConversationRequestToGcaRequest(request) {
-  const contents = [];
-  if (request.historical_contexts) {
-    contents.push(...request.historical_contexts.map(convertAidaContentToGcaContent));
+  try {
+    const contents = [];
+    if (request.historical_contexts) {
+      contents.push(...request.historical_contexts.map(convertAidaContentToGcaContent));
+    }
+    contents.push(convertAidaContentToGcaContent(request.current_message));
+    const gcaRequest = createBaseGcaRequest(request, contents, "chat_console_insights");
+    if (request.function_declarations) {
+      gcaRequest.tools = [{
+        functionDeclarations: request.function_declarations.map((fd) => ({
+          name: fd.name,
+          description: fd.description,
+          parameters: convertAidaParamToGcaSchema(fd.parameters)
+        }))
+      }];
+    }
+    debugLog("Translation succeded:", JSON.stringify(request), JSON.stringify(gcaRequest));
+    return gcaRequest;
+  } catch (e) {
+    debugLog("Translation error:", JSON.stringify(request), e);
+    throw e;
   }
-  contents.push(convertAidaContentToGcaContent(request.current_message));
-  const gcaRequest = createBaseGcaRequest(request, contents);
-  if (request.function_declarations) {
-    gcaRequest.tools = [{
-      function_declarations: request.function_declarations.map((fd) => ({
-        name: fd.name,
-        description: fd.description,
-        parameters: convertAidaParamToGcaSchema(fd.parameters)
-      }))
-    }];
-  }
-  return gcaRequest;
 }
 function mapCommonAidaRequestFields(aidaRequest, gcaRequest) {
   if (aidaRequest.options?.model_id) {
     gcaRequest.model = aidaRequest.options.model_id;
   }
-  if (aidaRequest.metadata.string_session_id) {
-    gcaRequest.session_id = aidaRequest.metadata.string_session_id;
-  }
   if (aidaRequest.options?.temperature !== void 0) {
-    gcaRequest.generation_config = {
-      ...gcaRequest.generation_config,
+    gcaRequest.generationConfig = {
+      ...gcaRequest.generationConfig,
       temperature: aidaRequest.options.temperature
     };
   }
 }
 function gcaResponseToAidaDoConversationResponse(response) {
-  const candidate = response.candidates[0];
   const functionCalls = [];
-  if (candidate?.content?.parts) {
-    for (const part of candidate.content.parts) {
-      if (part.function_call) {
+  if (response.candidates?.[0].content?.parts) {
+    for (const part of response.candidates[0].content.parts) {
+      if (part.functionCall) {
         functionCalls.push({
-          name: part.function_call.name,
-          args: part.function_call.args || {}
+          name: part.functionCall.name,
+          args: part.functionCall.args || {}
         });
       }
     }
   }
   return {
-    explanation: extractTextFromGcaParts(candidate?.content?.parts),
+    explanation: extractTextFromGcaParts(response.candidates[0].content?.parts),
     metadata: {
-      rpcGlobalId: response.response_id
+      rpcGlobalId: response.responseId
     },
     functionCalls: functionCalls.length > 0 ? functionCalls : void 0,
     completed: true
@@ -1492,28 +1553,37 @@ function extractTextFromGcaParts(parts) {
   return parts.map((p) => p.text || "").join("");
 }
 function aidaEventToGcaTelemetryRequest(clientEvent) {
-  const feedbackMetrics = [];
-  const responseId = String(clientEvent.corresponding_aida_rpc_global_id);
-  const eventTime = (/* @__PURE__ */ new Date()).toISOString();
-  if (clientEvent.do_conversation_client_event) {
-    const feedback = clientEvent.do_conversation_client_event.user_feedback;
-    if (feedback.sentiment) {
-      let interaction = InteractionType.INTERACTION_TYPE_UNSPECIFIED;
-      if (feedback.sentiment === "POSITIVE") {
-        interaction = InteractionType.THUMBS_UP;
-      } else if (feedback.sentiment === "NEGATIVE") {
-        interaction = InteractionType.THUMBS_DOWN;
+  try {
+    const feedbackMetrics = [];
+    const responseId = String(clientEvent.corresponding_aida_rpc_global_id);
+    const eventTime = (/* @__PURE__ */ new Date()).toISOString();
+    if (clientEvent.do_conversation_client_event) {
+      const feedback = clientEvent.do_conversation_client_event.user_feedback;
+      if (feedback.sentiment) {
+        let interaction = InteractionType.INTERACTION_TYPE_UNSPECIFIED;
+        if (feedback.sentiment === "POSITIVE") {
+          interaction = InteractionType.THUMBS_UP;
+        } else if (feedback.sentiment === "NEGATIVE") {
+          interaction = InteractionType.THUMBS_DOWN;
+        }
+        feedbackMetrics.push({
+          eventTime,
+          responseId,
+          suggestionInteraction: { interaction }
+        });
       }
-      feedbackMetrics.push({
-        event_time: eventTime,
-        response_id: responseId,
-        suggestion_interaction: { interaction }
-      });
     }
+    feedbackMetrics.push(...convertCodeTelemetry(clientEvent.complete_code_client_event, Method.COMPLETE_CODE, responseId, eventTime));
+    feedbackMetrics.push(...convertCodeTelemetry(clientEvent.generate_code_client_event, Method.GENERATE_CODE, responseId, eventTime));
+    const gcaTelemetryRequest = {
+      feedbackMetrics
+    };
+    debugLog("Translation succeeded:", JSON.stringify(clientEvent), JSON.stringify(gcaTelemetryRequest));
+    return gcaTelemetryRequest;
+  } catch (e) {
+    debugLog("Translation error:", JSON.stringify(clientEvent), e);
+    throw e;
   }
-  feedbackMetrics.push(...convertCodeTelemetry(clientEvent.complete_code_client_event, Method.COMPLETE_CODE, responseId, eventTime));
-  feedbackMetrics.push(...convertCodeTelemetry(clientEvent.generate_code_client_event, Method.GENERATE_CODE, responseId, eventTime));
-  return { feedback_metrics: feedbackMetrics };
 }
 function convertCodeTelemetry(event, method, responseId, eventTime) {
   if (!event) {
@@ -1522,52 +1592,76 @@ function convertCodeTelemetry(event, method, responseId, eventTime) {
   if ("user_impression" in event && event.user_impression) {
     const impression = event.user_impression;
     return [{
-      event_time: eventTime,
-      response_id: responseId,
-      suggestion_offered: {
+      eventTime,
+      responseId,
+      suggestionOffered: {
         method,
         status: SuggestionStatus.NO_ERROR,
-        response_latency: `${impression.latency.duration.seconds + impression.latency.duration.nanos / 1e9}s`
+        responseLatency: `${impression.latency.duration.seconds + impression.latency.duration.nanos / 1e9}s`
       }
     }];
   }
   if ("user_acceptance" in event && event.user_acceptance) {
     const acceptance = event.user_acceptance;
     return [{
-      event_time: eventTime,
-      response_id: responseId,
-      suggestion_interaction: {
+      eventTime,
+      responseId,
+      suggestionInteraction: {
         interaction: InteractionType.ACCEPT,
-        candidate_index: acceptance.sample.sample_id
+        candidateIndex: acceptance.sample.sample_id
       }
     }];
   }
   return [];
 }
 function aidaCompletionRequestToGcaRequest(request) {
-  const contents = [
-    {
-      role: "user",
-      parts: [{ text: request.prefix + (request.suffix || "") }]
+  try {
+    let additionalFiles = (request.additional_files ?? []).map((f) => ({
+      fileUri: f.path,
+      inclusionReason: [AidaReasonToGcaInclusionReason[f.included_reason]]
+    }));
+    const inEditorFile = inFileEditRequestToSourceFile(request);
+    if (inEditorFile) {
+      additionalFiles = [inEditorFile, ...additionalFiles];
     }
-  ];
-  const gcaRequest = createBaseGcaRequest(request, contents);
-  if (request.options?.stop_sequences) {
-    gcaRequest.generation_config = {
-      ...gcaRequest.generation_config,
-      stop_sequences: request.options.stop_sequences
-    };
+    const gcaRequest = createBaseGcaRequest(request, [], "complete_code");
+    gcaRequest.aicode.files = additionalFiles;
+    if (request.options?.stop_sequences) {
+      gcaRequest.generationConfig = {
+        ...gcaRequest.generationConfig,
+        stopSequences: request.options.stop_sequences
+      };
+    }
+    debugLog("Translation succeeded:", JSON.stringify(request), JSON.stringify(gcaRequest));
+    return gcaRequest;
+  } catch (e) {
+    debugLog("Translation error:", JSON.stringify(request), e);
+    throw e;
   }
-  if (request.additional_files) {
-    gcaRequest.aicode = {
-      experience: "completion",
-      files: request.additional_files.map((f) => ({
-        file_uri: f.path,
-        inclusion_reason: [AidaReasonToGcaInclusionReason[f.included_reason]]
-      }))
-    };
+}
+function inFileEditRequestToSourceFile(request) {
+  const sourceFile = {
+    inclusionReason: [InclusionReason.ACTIVE],
+    fileUri: "devtools-code-completion",
+    segments: [
+      {
+        content: request.prefix,
+        isSelected: false
+      },
+      {
+        content: "",
+        isSelected: true
+        // Cursor position
+      }
+    ]
+  };
+  if (request.suffix) {
+    sourceFile.segments?.push({
+      content: request.suffix,
+      isSelected: false
+    });
   }
-  return gcaRequest;
+  return sourceFile;
 }
 function buildLabels(request, gcaRequest) {
   const labels = {};
@@ -1585,6 +1679,9 @@ function buildLabels(request, gcaRequest) {
   }
   if ("use_case" in request && request.use_case !== void 0) {
     labels["use_case"] = UseCase[request.use_case];
+  }
+  if (request.metadata.string_session_id) {
+    labels["session_id"] = request.metadata.string_session_id;
   }
   const options = request.options;
   if (options?.inference_language) {
@@ -1608,35 +1705,52 @@ var AidaReasonToGcaInclusionReason = {
   [Reason.RELATED_FILE]: InclusionReason.RELATED
 };
 function gcaResponseToAidaCompletionResponse(response) {
-  const { samples, metadata } = gcaResponseToAidaSamplesAndMetadata(response);
-  return {
-    generatedSamples: samples,
-    metadata
-  };
+  try {
+    const { samples, metadata } = gcaResponseToAidaSamplesAndMetadata(response);
+    const aidaResponse = {
+      generatedSamples: samples,
+      metadata
+    };
+    debugLog("Translation succeeded:", JSON.stringify(response), JSON.stringify(aidaResponse));
+    return aidaResponse;
+  } catch (e) {
+    debugLog("Translation error", JSON.stringify(response), e);
+    throw e;
+  }
 }
 function gcaResponseToAidaSamplesAndMetadata(response) {
   return {
-    samples: response.candidates.map(gcaCandidateToAidaGenerationSample),
+    samples: (response.candidates ?? []).map(gcaCandidateToAidaGenerationSample),
     metadata: {
-      rpcGlobalId: response.response_id
+      rpcGlobalId: response.responseId
     }
   };
 }
 function aidaGenerateCodeRequestToGcaRequest(request) {
-  const gcaRequest = createBaseGcaRequest(request, [convertAidaContentToGcaContent(request.current_message)]);
-  if (request.context_files) {
-    gcaRequest.aicode = {
-      experience: "generate_code",
-      files: request.context_files.map((f) => ({
-        file_uri: f.path,
-        programming_language: f.programming_language
-      }))
-    };
+  try {
+    const gcaRequest = createBaseGcaRequest(request, [convertAidaContentToGcaContent(request.current_message)], "generate_code");
+    if (request.context_files) {
+      gcaRequest.aicode.files = request.context_files.map((f) => ({
+        fileUri: f.path,
+        programmingLanguage: f.programming_language
+      }));
+    }
+    debugLog("Translation succeeded:", JSON.stringify(request), JSON.stringify(gcaRequest));
+    return gcaRequest;
+  } catch (e) {
+    debugLog("Translation error", JSON.stringify(request), e);
+    throw e;
   }
-  return gcaRequest;
 }
 function gcaResponseToAidaGenerateCodeResponse(response) {
-  return gcaResponseToAidaSamplesAndMetadata(response);
+  try {
+    const aidaResponse = gcaResponseToAidaSamplesAndMetadata(response);
+    debugLog("Translation succeeded:", JSON.stringify(response), JSON.stringify(aidaResponse));
+    return aidaResponse;
+  } catch (e) {
+    debugLog("translation error", JSON.stringify(response), e);
+    throw e;
+  }
 }
 function gcaCandidateToAidaGenerationSample(candidate) {
   const generationSample = {
@@ -1644,12 +1758,12 @@ function gcaCandidateToAidaGenerationSample(candidate) {
     score: 0,
     sampleId: candidate.index
   };
-  if (candidate.citation_metadata) {
+  if (candidate.citationMetadata) {
     generationSample.attributionMetadata = {
       attributionAction: RecitationAction.CITE,
-      citations: candidate.citation_metadata.citations.map((c) => ({
-        startIndex: c.start_index,
-        endIndex: c.end_index,
+      citations: (candidate.citationMetadata.citations ?? []).map((c) => ({
+        startIndex: c.startIndex,
+        endIndex: c.endIndex,
         uri: c.uri
       }))
     };
@@ -1663,7 +1777,7 @@ function convertAidaContentToGcaContent(content) {
   }
   return {
     role,
-    parts: content.parts.map(convertAidaPartToGcaPart)
+    parts: (content.parts ?? []).map(convertAidaPartToGcaPart)
   };
 }
 function convertAidaPartToGcaPart(part) {
@@ -1672,7 +1786,7 @@ function convertAidaPartToGcaPart(part) {
   }
   if ("functionCall" in part) {
     return {
-      function_call: {
+      functionCall: {
         name: part.functionCall.name,
         args: part.functionCall.args
       }
@@ -1691,7 +1805,7 @@ function convertAidaPartToGcaPart(part) {
       fResponse.error = part.functionResponse.response["error"];
     }
     return {
-      function_response: {
+      functionResponse: {
         name: part.functionResponse.name,
         response: fResponse
       }
@@ -1699,8 +1813,8 @@ function convertAidaPartToGcaPart(part) {
   }
   if ("inlineData" in part) {
     return {
-      inline_data: {
-        mime_type: part.inlineData.mimeType,
+      inlineData: {
+        mimeType: part.inlineData.mimeType,
         data: part.inlineData.data
       }
     };
@@ -1722,9 +1836,56 @@ function convertAidaParamToGcaSchema(param) {
     for (const [key, value] of Object.entries(param.properties)) {
       schema.properties[key] = convertAidaParamToGcaSchema(value);
     }
-    schema.required = param.required.map((r) => r.toString());
+    schema.required = (param.required ?? []).map((r) => r.toString());
   }
   return schema;
+}
+function gcaChunkResponseToAidaChunkResponse(response) {
+  try {
+    const candidate = response.candidates?.[0];
+    const parts = candidate?.content?.parts || [];
+    const metadata = {
+      rpcGlobalId: response.responseId
+    };
+    if (candidate?.citationMetadata?.citations) {
+      metadata.attributionMetadata = {
+        attributionAction: RecitationAction.CITE,
+        citations: candidate.citationMetadata.citations.map((c) => ({
+          startIndex: c.startIndex,
+          endIndex: c.endIndex,
+          uri: c.uri
+        }))
+      };
+    }
+    const chunks = parts.map((part) => {
+      const aidaChunkResponse = { metadata };
+      if (part.text) {
+        aidaChunkResponse.textChunk = {
+          text: extractTextFromGcaParts(parts)
+        };
+      }
+      if (part.functionCall) {
+        aidaChunkResponse.functionCallChunk = {
+          functionCall: {
+            name: part.functionCall.name,
+            args: part.functionCall.args || {}
+          }
+        };
+      }
+      if (part.executableCode) {
+        aidaChunkResponse.codeChunk = {
+          code: part.executableCode.code,
+          inferenceLanguage: part.executableCode.language ? "PYTHON" : "UNKNOWN"
+        };
+      }
+      return aidaChunkResponse;
+    });
+    debugLog("Translation succeeded:", JSON.stringify(response), JSON.stringify(chunks));
+    return chunks;
+  } catch (e) {
+    debugLog("Translation error", JSON.stringify(response), e);
+    throw e;
+  }
 }
 
 // gen/front_end/core/host/GdpClient.js

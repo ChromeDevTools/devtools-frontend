@@ -250,7 +250,7 @@ export declare class HeapProfileHeader extends ProfileHeader {
     finishLoad(): void;
     didWriteToTempFile(tempFile: Bindings.TempFile.TempFile): void;
     setupWorker(): void;
-    handleWorkerEvent(eventName: string, data: any): void;
+    handleWorkerEvent(eventName: string, data: string): void;
     dispose(): void;
     didCompleteSnapshotTransfer(): void;
     transferChunk(chunk: string): void;

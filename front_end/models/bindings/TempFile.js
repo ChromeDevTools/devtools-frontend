@@ -4,10 +4,7 @@
 import * as Common from '../../core/common/common.js';
 import { ChunkedFileReader } from './FileUtils.js';
 export class TempFile {
-    #lastBlob;
-    constructor() {
-        this.#lastBlob = null;
-    }
+    #lastBlob = null;
     write(pieces) {
         if (this.#lastBlob) {
             pieces.unshift(this.#lastBlob);

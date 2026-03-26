@@ -63,10 +63,10 @@ export class Node {
     retainedSize;
     selfSize;
     type;
-    canBeQueried;
-    detachedDOMTreeNode;
-    isAddedNotRemoved;
-    ignored;
+    canBeQueried = false;
+    detachedDOMTreeNode = false;
+    isAddedNotRemoved = null;
+    ignored = false;
     constructor(id, name, distance, nodeIndex, retainedSize, selfSize, type) {
         this.id = id;
         this.name = name;
@@ -75,10 +75,6 @@ export class Node {
         this.retainedSize = retainedSize;
         this.selfSize = selfSize;
         this.type = type;
-        this.canBeQueried = false;
-        this.detachedDOMTreeNode = false;
-        this.isAddedNotRemoved = null;
-        this.ignored = false;
     }
 }
 export class Edge {
@@ -86,13 +82,12 @@ export class Edge {
     node;
     type;
     edgeIndex;
-    isAddedNotRemoved;
+    isAddedNotRemoved = null;
     constructor(name, node, type, edgeIndex) {
         this.name = name;
         this.node = node;
         this.type = type;
         this.edgeIndex = edgeIndex;
-        this.isAddedNotRemoved = null;
     }
 }
 export class AggregateForDiff {
@@ -109,34 +104,17 @@ export class AggregateForDiff {
 }
 export class Diff {
     name;
-    addedCount;
-    removedCount;
-    addedSize;
-    removedSize;
-    deletedIndexes;
-    addedIndexes;
+    addedCount = 0;
+    removedCount = 0;
+    addedSize = 0;
+    removedSize = 0;
+    deletedIndexes = [];
+    addedIndexes = [];
     countDelta;
     sizeDelta;
     constructor(name) {
         this.name = name;
-        this.addedCount = 0;
-        this.removedCount = 0;
-        this.addedSize = 0;
-        this.removedSize = 0;
-        this.deletedIndexes = [];
-        this.addedIndexes = [];
     }
-}
-export class DiffForClass {
-    name;
-    addedCount;
-    removedCount;
-    addedSize;
-    removedSize;
-    deletedIndexes;
-    addedIndexes;
-    countDelta;
-    sizeDelta;
 }
 export class ComparatorConfig {
     fieldName1;
@@ -149,17 +127,6 @@ export class ComparatorConfig {
         this.fieldName2 = fieldName2;
         this.ascending2 = ascending2;
     }
-}
-export class WorkerCommand {
-    callId;
-    disposition;
-    objectId;
-    newObjectId;
-    methodName;
-    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    methodArguments;
-    source;
 }
 export class ItemsRange {
     startPosition;

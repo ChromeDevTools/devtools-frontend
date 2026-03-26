@@ -80,17 +80,6 @@ export declare class Diff {
     sizeDelta: number;
     constructor(name: string);
 }
-export declare class DiffForClass {
-    name: string;
-    addedCount: number;
-    removedCount: number;
-    addedSize: number;
-    removedSize: number;
-    deletedIndexes: number[];
-    addedIndexes: number[];
-    countDelta: number;
-    sizeDelta: number;
-}
 export declare class ComparatorConfig {
     fieldName1: string;
     ascending1: boolean;
@@ -98,7 +87,7 @@ export declare class ComparatorConfig {
     ascending2: boolean;
     constructor(fieldName1: string, ascending1: boolean, fieldName2: string, ascending2: boolean);
 }
-export declare class WorkerCommand {
+export interface WorkerCommand {
     callId: number;
     disposition: string;
     objectId: number;

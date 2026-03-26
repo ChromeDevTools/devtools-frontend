@@ -198,7 +198,6 @@ export class SensorsView extends UI.Widget.VBox {
     betaElement;
     gammaElement;
     orientationLayer;
-    boxElement;
     boxMatrix;
     mouseDownVector;
     originalBoxMatrix;
@@ -705,9 +704,6 @@ export class SensorsView extends UI.Widget.VBox {
         } })}>
               <section
                 class="orientation-box orientation-element"
-                ${Directives.ref((el) => { if (el) {
-            this.boxElement = el;
-        } })}
               >
                 <section class="orientation-front orientation-element"></section>
                 <section class="orientation-top orientation-element"></section>

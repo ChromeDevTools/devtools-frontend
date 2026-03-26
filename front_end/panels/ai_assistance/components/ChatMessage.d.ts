@@ -94,9 +94,10 @@ export interface MessageInput {
     walkthrough: {
         onOpen: (message: ModelChatMessage) => void;
         isExpanded: boolean;
-        onToggle: (isOpen: boolean) => void;
+        onToggle: (isOpen: boolean, message: ModelChatMessage) => void;
         isInlined: boolean;
-        activeMessage: ModelChatMessage | null;
+        activeSidebarMessage: ModelChatMessage | null;
+        inlineExpandedMessages: ModelChatMessage[];
     };
 }
 export declare const DEFAULT_VIEW: (input: ChatMessageViewInput, output: ViewOutput, target: HTMLElement) => void;

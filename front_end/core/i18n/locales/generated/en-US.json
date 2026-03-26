@@ -3233,6 +3233,12 @@
   "panels/ai_assistance/components/WalkthroughView.ts | close": {
     "message": "Close"
   },
+  "panels/ai_assistance/components/WalkthroughView.ts | hideAgentWalkthrough": {
+    "message": "Hide agent walkthrough"
+  },
+  "panels/ai_assistance/components/WalkthroughView.ts | hideThinking": {
+    "message": "Hide thinking"
+  },
   "panels/ai_assistance/components/WalkthroughView.ts | showAgentWalkthrough": {
     "message": "Show agent walkthrough"
   },
@@ -7811,6 +7817,9 @@
   "panels/elements/ElementsTreeElement.ts | copyXpath": {
     "message": "Copy XPath"
   },
+  "panels/elements/ElementsTreeElement.ts | creatorAdScriptAncestry": {
+    "message": "Creator ad script ancestry"
+  },
   "panels/elements/ElementsTreeElement.ts | cut": {
     "message": "Cut"
   },
@@ -7898,6 +7907,9 @@
   "panels/elements/ElementsTreeElement.ts | explainSubgrids": {
     "message": "Explain subgrids"
   },
+  "panels/elements/ElementsTreeElement.ts | filterListRule": {
+    "message": "Filter list rule"
+  },
   "panels/elements/ElementsTreeElement.ts | findGridDefinition": {
     "message": "Find grid definition"
   },
@@ -7913,6 +7925,9 @@
   "panels/elements/ElementsTreeElement.ts | hideElement": {
     "message": "Hide element"
   },
+  "panels/elements/ElementsTreeElement.ts | noProvenanceAvailable": {
+    "message": "No provenance data is available"
+  },
   "panels/elements/ElementsTreeElement.ts | openMediaPanel": {
     "message": "Jump to Media panel"
   },
@@ -7924,6 +7939,9 @@
   },
   "panels/elements/ElementsTreeElement.ts | reveal": {
     "message": "reveal"
+  },
+  "panels/elements/ElementsTreeElement.ts | rootScriptFilterListRule": {
+    "message": "Root script filter list rule"
   },
   "panels/elements/ElementsTreeElement.ts | scrollIntoView": {
     "message": "Scroll into view"
@@ -7949,8 +7967,8 @@
   "panels/elements/ElementsTreeElement.ts | styleScrollbars": {
     "message": "Style scrollbars"
   },
-  "panels/elements/ElementsTreeElement.ts | thisFrameWasIdentifiedAsAnAd": {
-    "message": "This frame was identified as an ad frame"
+  "panels/elements/ElementsTreeElement.ts | thisElementWasIdentifiedAsAnAd": {
+    "message": "This element was identified as an ad"
   },
   "panels/elements/ElementsTreeElement.ts | useSInTheConsoleToReferToThis": {
     "message": "Use {PH1} in the console to refer to this element."

@@ -13,13 +13,15 @@ export class IsolateManager extends Common.ObjectWrapper.ObjectWrapper {
     #isolateIdByModel = new Map();
     #observers = new Set();
     #pollId = 0;
-    constructor() {
+    #targetManager;
+    constructor(targetManager = TargetManager.instance()) {
         super();
-        TargetManager.instance().observeModels(RuntimeModel, this);
+        this.#targetManager = targetManager;
+        this.#targetManager.observeModels(RuntimeModel, this);
     }
-    static instance({ forceNew } = { forceNew: false }) {
+    static instance({ forceNew, targetManager } = { forceNew: false }) {
         if (!isolateManagerInstance || forceNew) {
-            isolateManagerInstance = new IsolateManager();
+            isolateManagerInstance = new IsolateManager(targetManager);
         }
         return isolateManagerInstance;
     }
@@ -52,7 +54,7 @@ export class IsolateManager extends Common.ObjectWrapper.ObjectWrapper {
         this.#isolateIdByModel.set(model, isolateId);
         let isolate = this.#isolates.get(isolateId);
         if (!isolate) {
-            isolate = new Isolate(isolateId);
+            isolate = new Isolate(isolateId, this);
             this.#isolates.set(isolateId, isolate);
         }
         isolate.models().add(model);
@@ -110,8 +112,10 @@ export class Isolate {
     #models;
     #usedHeapSize;
     #memoryTrend;
-    constructor(id) {
+    #manager;
+    constructor(id, manager) {
         this.#id = id;
+        this.#manager = manager;
         this.#models = new Set();
         this.#usedHeapSize = 0;
         const count = MemoryTrendWindowMs / PollIntervalMs;
@@ -138,7 +142,7 @@ export class Isolate {
         }
         this.#usedHeapSize = usage.usedSize + (usage.embedderHeapUsedSize ?? 0) + (usage.backingStorageSize ?? 0);
         this.#memoryTrend.add(this.#usedHeapSize);
-        IsolateManager.instance().dispatchEventToListeners("MemoryChanged" /* Events.MEMORY_CHANGED */, this);
+        this.#manager.dispatchEventToListeners("MemoryChanged" /* Events.MEMORY_CHANGED */, this);
     }
     samplesCount() {
         return this.#memoryTrend.count();

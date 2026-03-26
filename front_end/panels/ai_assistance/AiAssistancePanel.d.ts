@@ -17,7 +17,9 @@ interface ToolbarViewInput {
     walkthrough: {
         isExpanded: boolean;
         isInlined: boolean;
-        onToggle: (isOpen: boolean) => void;
+        onToggle: (isOpen: boolean, message: ModelChatMessage) => void;
+        activeSidebarMessage: ModelChatMessage | null;
+        inlineExpandedMessages: ModelChatMessage[];
     };
 }
 export declare const enum ViewState {

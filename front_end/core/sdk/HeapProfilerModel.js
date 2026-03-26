@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 import { RuntimeModel } from './RuntimeModel.js';
 import { SDKModel } from './SDKModel.js';
-import { TargetManager } from './TargetManager.js';
 export class HeapProfilerModel extends SDKModel {
     #enabled = false;
     #heapProfilerAgent;
@@ -79,12 +78,12 @@ export class HeapProfilerModel extends SDKModel {
         return Boolean(response.getError());
     }
     async takeHeapSnapshot(heapSnapshotOptions) {
-        await TargetManager.instance().suspendAllTargets('heap-snapshot');
+        await this.target().targetManager().suspendAllTargets('heap-snapshot');
         try {
             await this.#heapProfilerAgent.invoke_takeHeapSnapshot(heapSnapshotOptions);
         }
         finally {
-            await TargetManager.instance().resumeAllTargets();
+            await this.target().targetManager().resumeAllTargets();
         }
     }
     async startTrackingHeapObjects(recordAllocationStacks) {

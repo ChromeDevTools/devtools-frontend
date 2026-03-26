@@ -5,7 +5,6 @@ import { MapWithDefault } from '../common/MapWithDefault.js';
 import { assertNotNullOrUndefined } from '../platform/platform.js';
 import { Events as ResourceTreeModelEvents, ResourceTreeModel, } from './ResourceTreeModel.js';
 import { SDKModel } from './SDKModel.js';
-import { TargetManager } from './TargetManager.js';
 /**
  * Holds preloading related information.
  *
@@ -26,13 +25,13 @@ export class PreloadingModel extends SDKModel {
         void this.agent.invoke_enable();
         const targetInfo = target.targetInfo();
         if (targetInfo?.subtype === 'prerender') {
-            this.lastPrimaryPageModel = TargetManager.instance().primaryPageTarget()?.model(PreloadingModel) || null;
+            this.lastPrimaryPageModel = target.targetManager().primaryPageTarget()?.model(PreloadingModel) || null;
         }
-        TargetManager.instance().addModelListener(ResourceTreeModel, ResourceTreeModelEvents.PrimaryPageChanged, this.onPrimaryPageChanged, this);
+        target.targetManager().addModelListener(ResourceTreeModel, ResourceTreeModelEvents.PrimaryPageChanged, this.onPrimaryPageChanged, this);
     }
     dispose() {
         super.dispose();
-        TargetManager.instance().removeModelListener(ResourceTreeModel, ResourceTreeModelEvents.PrimaryPageChanged, this.onPrimaryPageChanged, this);
+        this.target().targetManager().removeModelListener(ResourceTreeModel, ResourceTreeModelEvents.PrimaryPageChanged, this.onPrimaryPageChanged, this);
         void this.agent.invoke_disable();
     }
     reset() {

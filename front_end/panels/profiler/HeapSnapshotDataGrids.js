@@ -115,21 +115,19 @@ class HeapSnapshotSortableDataGridBase extends DataGrid.DataGrid.DataGridImpl {
 }
 export class HeapSnapshotSortableDataGrid extends Common.ObjectWrapper
     .eventMixin(HeapSnapshotSortableDataGridBase) {
-    snapshot;
-    selectedNode;
+    snapshot = null;
+    selectedNode = null;
     heapProfilerModelInternal;
     dataDisplayDelegateInternal;
-    recursiveSortingDepth;
-    populatedAndSorted;
-    nameFilter;
+    recursiveSortingDepth = 0;
+    populatedAndSorted = false;
+    nameFilter = null;
     nodeFilterInternal;
     lastSortColumnId;
     lastSortAscending;
     constructor(heapProfilerModel, dataDisplayDelegate, dataGridParameters) {
         // TODO(allada) This entire class needs to be converted to use the templates in DataGridNode.
         super(dataGridParameters);
-        this.snapshot = null;
-        this.selectedNode = null;
         this.heapProfilerModelInternal = heapProfilerModel;
         this.dataDisplayDelegateInternal = dataDisplayDelegate;
         const tooltips = [

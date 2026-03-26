@@ -141,7 +141,7 @@ export class DOMNode extends Common.ObjectWrapper.ObjectWrapper {
     /**
      * Set if a DOMNode is ad related.
      */
-    #isAdRelatedInternal = false;
+    #adProvenance;
     constructor(domModel) {
         super();
         this.#domModel = domModel;
@@ -224,7 +224,7 @@ export class DOMNode extends Common.ObjectWrapper.ObjectWrapper {
         }
         this.setPseudoElements(payload.pseudoElements);
         if (payload.adProvenance) {
-            this.#isAdRelatedInternal = true;
+            this.#adProvenance = payload.adProvenance;
         }
         if (this.#nodeType === Node.ELEMENT_NODE) {
             // HTML and BODY from internal iframes should not overwrite top-level ones.
@@ -260,20 +260,21 @@ export class DOMNode extends Common.ObjectWrapper.ObjectWrapper {
     topLayerIndex() {
         return this.#topLayerIndex;
     }
-    isAdRelatedNode() {
-        // For iframes, we rely on `AdFrameType` to preserve legacy behavior and
-        // prevent regressions.
-        //
-        // TODO(yaoxia): Deprecate the iframe-specific logic and consolidate
-        // everything to use `#isAdRelatedInternal`.
-        if (this.isIframe() && this.#frameOwnerFrameId) {
-            const frame = FrameManager.instance().getFrame(this.#frameOwnerFrameId);
-            if (!frame) {
-                return false;
-            }
-            return frame.adFrameType() !== "none" /* Protocol.Page.AdFrameType.None */;
+    adProvenance() {
+        if (this.#adProvenance !== undefined) {
+            return this.#adProvenance;
         }
-        return this.#isAdRelatedInternal;
+        // AdProvenance can be unavailable for deeply nested OOPIF ad iframes
+        // (crbug.com/421202278). We rely on `AdFrameType` as a fallback.
+        if (!this.isIframe() || !this.#frameOwnerFrameId) {
+            return undefined;
+        }
+        const frame = FrameManager.instance().getFrame(this.#frameOwnerFrameId);
+        if (frame && frame.adFrameType() !== "none" /* Protocol.Page.AdFrameType.None */) {
+            // The frame is ad-related, but provenance information is unavailable.
+            return {};
+        }
+        return undefined;
     }
     isRootNode() {
         if (this.nodeType() === Node.ELEMENT_NODE && this.nodeName() === 'HTML') {
@@ -337,8 +338,8 @@ export class DOMNode extends Common.ObjectWrapper.ObjectWrapper {
             this.ownerDocument?.documentElement?.setIsScrollable(isScrollable);
         }
     }
-    setIsAdRelated(isAdRelated) {
-        this.#isAdRelatedInternal = isAdRelated;
+    setIsAdRelated(adProvenance) {
+        this.#adProvenance = adProvenance;
         this.dispatchEventToListeners(DOMNodeEvents.AD_RELATED_STATE_UPDATED);
     }
     setAffectedByStartingStyles(affectedByStartingStyles) {
@@ -1232,8 +1233,8 @@ export class DOMModel extends SDKModel {
     overlayModel() {
         return this.target().model(OverlayModel);
     }
-    static cancelSearch() {
-        for (const domModel of TargetManager.instance().models(DOMModel)) {
+    static cancelSearch(targetManager = TargetManager.instance()) {
+        for (const domModel of targetManager.models(DOMModel)) {
             domModel.cancelSearch();
         }
     }
@@ -1552,12 +1553,11 @@ export class DOMModel extends SDKModel {
         node.setIsScrollable(isScrollable);
     }
     adRelatedStateUpdated(nodeId, adProvenance) {
-        const isAdRelated = adProvenance !== undefined;
         const node = this.nodeForId(nodeId);
-        if (!node || node.isAdRelatedNode() === isAdRelated) {
+        if (!node) {
             return;
         }
-        node.setIsAdRelated(isAdRelated);
+        node.setIsAdRelated(adProvenance);
     }
     affectedByStartingStylesFlagUpdated(nodeId, affectedByStartingStyles) {
         const node = this.nodeForId(nodeId);

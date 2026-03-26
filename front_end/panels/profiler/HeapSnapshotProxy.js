@@ -14,26 +14,18 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/profiler/HeapSnapshotProxy.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class HeapSnapshotWorkerProxy extends Common.ObjectWrapper.ObjectWrapper {
-    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     eventHandler;
-    nextObjectId;
-    nextCallId;
+    nextObjectId = 1;
+    nextCallId = 1;
     // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    callbacks;
-    previousCallbacks;
+    callbacks = new Map();
+    previousCallbacks = new Set();
     worker;
     interval;
-    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     constructor(eventHandler) {
         super();
         this.eventHandler = eventHandler;
-        this.nextObjectId = 1;
-        this.nextCallId = 1;
-        this.callbacks = new Map();
-        this.previousCallbacks = new Set();
         this.worker = Platform.HostRuntime.HOST_RUNTIME.createWorker(new URL('../../entrypoints/heap_snapshot_worker/heap_snapshot_worker-entrypoint.js', import.meta.url)
             .toString());
         this.worker.onmessage = this.messageReceived.bind(this);

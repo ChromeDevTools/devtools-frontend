@@ -148,27 +148,32 @@ export declare enum Mode {
 }
 export interface GenerateContentRequest {
     model?: string;
-    aicode?: AiCodeConfig;
+    aicode: AiCodeConfig;
     contents: Content[];
-    system_instruction?: Content;
+    systemInstruction?: Content;
     tools?: Tool[];
-    tool_config?: ToolConfig;
+    toolConfig?: ToolConfig;
     labels?: Record<string, string>;
-    safety_settings?: SafetySetting[];
-    generation_config?: GenerationConfig;
-    session_id?: string;
+    safetySettings?: SafetySetting[];
+    generationConfig?: GenerationConfig;
+    sessionId?: string;
 }
 export interface AiCodeConfig {
     experience: string;
     files?: SourceFile[];
 }
 export interface SourceFile {
-    inclusion_reason?: InclusionReason[];
-    file_uri: string;
-    programming_language?: string;
+    inclusionReason?: InclusionReason[];
+    fileUri: string;
+    programmingLanguage?: string;
+    segments?: FileSegment[];
+}
+export interface FileSegment {
+    content: string;
+    isSelected: boolean;
 }
 export interface FileEdit {
-    file_uri: string;
+    fileUri: string;
     content: string;
 }
 export type Role = 'user' | 'model';
@@ -178,23 +183,23 @@ export interface Content {
 }
 export interface Part {
     text?: string;
-    inline_data?: Blob;
-    file_data?: FileData;
-    function_call?: FunctionCall;
-    function_response?: FunctionResponse;
-    executable_code?: ExecutableCode;
-    code_execution_result?: CodeExecutionResult;
-    video_metadata?: VideoMetadata;
+    inlineData?: Blob;
+    fileData?: FileData;
+    functionCall?: FunctionCall;
+    functionResponse?: FunctionResponse;
+    executableCode?: ExecutableCode;
+    codeExecutionResult?: CodeExecutionResult;
+    videoMetadata?: VideoMetadata;
     thought?: boolean;
-    thought_signature?: string;
+    thoughtSignature?: string;
 }
 export interface Blob {
-    mime_type: string;
+    mimeType: string;
     data: string;
 }
 export interface FileData {
-    mime_type: string;
-    file_uri: string;
+    mimeType: string;
+    fileUri: string;
 }
 export interface FunctionCall {
     name: string;
@@ -215,11 +220,11 @@ export interface CodeExecutionResult {
     output: string;
 }
 export interface Tool {
-    function_declarations?: FunctionDeclaration[];
-    google_search?: {
-        time_range_filter?: {
-            start_time?: string;
-            end_time?: string;
+    functionDeclarations?: FunctionDeclaration[];
+    googleSearch?: {
+        timeRangeFilter?: {
+            startTime?: string;
+            endTime?: string;
         };
     };
 }
@@ -227,9 +232,9 @@ export interface FunctionDeclaration {
     name: string;
     description: string;
     parameters?: Schema;
-    parameters_json_schema?: unknown;
+    parametersJsonSchema?: unknown;
     response?: Schema;
-    response_json_schema?: unknown;
+    responseJsonSchema?: unknown;
 }
 export interface Schema {
     type?: Type;
@@ -242,17 +247,17 @@ export interface Schema {
     required?: string[];
     minimum?: number;
     maximum?: number;
-    min_length?: number;
-    max_length?: number;
+    minLength?: number;
+    maxLength?: number;
     pattern?: string;
     example?: unknown;
 }
 export interface ToolConfig {
-    function_calling_config?: FunctionCallingConfig;
+    functionCallingConfig?: FunctionCallingConfig;
 }
 export interface FunctionCallingConfig {
     mode: Mode;
-    allowed_function_names?: string[];
+    allowedFunctionNames?: string[];
 }
 export interface SafetySetting {
     category: HarmCategory;
@@ -260,39 +265,39 @@ export interface SafetySetting {
     method?: HarmBlockMethod;
 }
 export interface GenerationConfig {
-    candidate_count?: number;
-    stop_sequences?: string[];
-    max_output_tokens?: number;
+    candidateCount?: number;
+    stopSequences?: string[];
+    maxOutputTokens?: number;
     temperature?: number;
-    top_p?: number;
-    top_k?: number;
+    topP?: number;
+    topK?: number;
     seed?: number;
-    response_mime_type?: string;
-    response_schema?: Schema;
-    response_json_schema?: unknown;
-    presence_penalty?: number;
-    frequency_penalty?: number;
-    thinking_config?: ThinkingConfig;
+    responseMimeType?: string;
+    responseSchema?: Schema;
+    responseJsonSchema?: unknown;
+    presencePenalty?: number;
+    frequencyPenalty?: number;
+    thinkingConfig?: ThinkingConfig;
 }
 export interface ThinkingConfig {
-    include_thoughts?: boolean;
-    thinking_budget?: number;
+    includeThoughts?: boolean;
+    thinkingBudget?: number;
 }
 export interface GenerateContentResponse {
     candidates: Candidate[];
-    prompt_feedback: PromptFeedback;
-    usage_metadata: UsageMetadata;
-    model_version: string;
-    response_id: string;
+    promptFeedback: PromptFeedback;
+    usageMetadata: UsageMetadata;
+    modelVersion: string;
+    responseId: string;
 }
 export interface Candidate {
     index: number;
     content: Content;
-    finish_reason: FinishReason;
-    safety_ratings: SafetyRating[];
-    citation_metadata: CitationMetadata;
-    grounding_metadata: GroundingMetadata;
-    aicode_output: AiCodeOutput;
+    finishReason: FinishReason;
+    safetyRatings: SafetyRating[];
+    citationMetadata: CitationMetadata;
+    groundingMetadata: GroundingMetadata;
+    aicodeOutput: AiCodeOutput;
 }
 export interface SafetyRating {
     category: HarmCategory;
@@ -303,103 +308,103 @@ export interface CitationMetadata {
     citations: Citation[];
 }
 export interface Citation {
-    start_index: number;
-    end_index: number;
+    startIndex: number;
+    endIndex: number;
     uri: string;
     license: string;
 }
 export interface GroundingMetadata {
-    web_search_queries?: string[];
-    search_entry_point?: {
-        rendered_content?: string;
-        sdk_blob?: string;
+    webSearchQueries?: string[];
+    searchEntryPoint?: {
+        renderedContent?: string;
+        sdkBlob?: string;
     };
-    grounding_chunks?: Array<{
+    groundingChunks?: Array<{
         web?: {
             uri?: string;
             title?: string;
         };
     }>;
-    grounding_supports?: Array<{
+    groundingSupports?: Array<{
         segment?: {
-            part_index?: number;
-            start_index?: number;
-            end_index?: number;
+            partIndex?: number;
+            startIndex?: number;
+            endIndex?: number;
             text?: string;
         };
-        grounding_chunk_indices?: number[];
-        confidence_scores?: number[];
+        groundingChunkIndices?: number[];
+        confidenceScores?: number[];
     }>;
-    retrieval_metadata?: {
-        google_search_dynamic_retrieval_score?: number;
+    retrievalMetadata?: {
+        googleSearchDynamicRetrievalScore?: number;
     };
 }
 export interface AiCodeOutput {
     contents: DerivedContent[];
 }
 export interface DerivedContent {
-    start_index?: number;
-    end_index?: number;
+    startIndex?: number;
+    endIndex?: number;
     file?: OutputSourceFile;
-    code_block?: CodeBlock;
-    text_block?: TextBlock;
-    prediction_metadata?: PredictionMetadata;
+    codeBlock?: CodeBlock;
+    textBlock?: TextBlock;
+    predictionMetadata?: PredictionMetadata;
 }
 export interface OutputSourceFile {
-    file_uri: string;
+    fileUri: string;
     content: string;
 }
 export interface CodeBlock {
     content: string;
-    programming_language: string;
+    programmingLanguage: string;
 }
 export interface TextBlock {
     content: string;
 }
 export interface PredictionMetadata {
     score: number;
-    classifier_score: number;
+    classifierScore: number;
 }
 export interface PromptFeedback {
-    block_reason: BlockReason;
-    safety_ratings: SafetyRating[];
-    block_reason_message: string;
+    blockReason: BlockReason;
+    safetyRatings: SafetyRating[];
+    blockReasonMessage: string;
 }
 export interface UsageMetadata {
-    prompt_token_count: number;
-    candidates_token_count: number;
-    total_token_count: number;
-    thoughts_token_count: number;
-    cached_content_token_count: number;
+    promptTokenCount: number;
+    candidatesTokenCount: number;
+    totalTokenCount: number;
+    thoughtsTokenCount: number;
+    cachedContentTokenCount: number;
 }
 export interface VideoMetadata {
-    start_offset?: string;
-    end_offset?: string;
+    startOffset?: string;
+    endOffset?: string;
     fps?: number;
 }
 export interface SendTelemetryRequest {
-    feedback_metrics: FeedbackMetric[];
+    feedbackMetrics: FeedbackMetric[];
 }
 export interface FeedbackMetric {
-    event_time: string;
-    response_id: string;
-    suggestion_offered?: SuggestionOffered;
-    suggestion_interaction?: SuggestionInteraction;
+    eventTime: string;
+    responseId: string;
+    suggestionOffered?: SuggestionOffered;
+    suggestionInteraction?: SuggestionInteraction;
 }
 export interface SuggestionOffered {
     method?: Method;
     status?: SuggestionStatus;
-    first_message_latency?: string;
-    response_latency?: string;
+    firstMessageLatency?: string;
+    responseLatency?: string;
     displayed?: boolean;
-    e2e_latency?: string;
-    display_duration?: string;
-    programming_language?: string;
+    e2eLatency?: string;
+    displayDuration?: string;
+    programmingLanguage?: string;
 }
 export interface SuggestionInteraction {
     interaction?: InteractionType;
-    accepted_lines?: number;
-    accepted_characters?: number;
-    accepted_comment_lines?: number;
-    candidate_index?: number;
+    acceptedLines?: number;
+    acceptedCharacters?: number;
+    acceptedCommentLines?: number;
+    candidateIndex?: number;
 }

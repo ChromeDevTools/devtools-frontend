@@ -67,9 +67,25 @@ const { html, nothing, render, Directives: { ref, repeat } } = Lit;
 const { animateOn } = UI.UIUtils;
 const UIStrings = {
     /**
-     * @description Title for Ad adorner. This iframe is marked as advertisement frame.
+     * @description Title for Ad adorner. This element is marked as advertisement element.
      */
-    thisFrameWasIdentifiedAsAnAd: 'This frame was identified as an ad frame',
+    thisElementWasIdentifiedAsAnAd: 'This element was identified as an ad',
+    /**
+     * @description Title of a section in the Ad adorner tooltip. Lists the ad script(s) responsible for generating this element.
+     */
+    creatorAdScriptAncestry: 'Creator ad script ancestry',
+    /**
+     * @description Title of a section in the Ad adorner tooltip. The filter list rule that flagged the root script in 'Creator ad script ancestry' as an ad.
+     */
+    rootScriptFilterListRule: 'Root script filter list rule',
+    /**
+     * @description Title of a section in the Ad adorner tooltip. The filter list rule that flagged the element's current resource.
+     */
+    filterListRule: 'Filter list rule',
+    /**
+     * @description Title of a section in the Ad adorner tooltip. This element was identified as an ad, but no provenance data is available.
+     */
+    noProvenanceAvailable: 'No provenance data is available',
     /**
      * @description A context menu item in the Elements panel. Force is used as a verb, indicating intention to make the state change.
      */
@@ -678,8 +694,64 @@ function renderTag(node, tagName, isClosingTag, expanded, isDistinctTreeElement,
       class=${Lit.Directives.classMap(classMap)} ${setAriaLabel}
       >&lt;<span class=${tagNameClass} jslog=${jslog || nothing} ${animateOn(hasUpdates, DOM_UPDATE_ANIMATION_CLASS_NAME)}>${tagString}</span>${attributes.map(attr => html ` ${renderAttribute(attr, updateRecord, false, node)}`)}&gt;</span>\u200B`;
 }
+function maybeRenderAdAdorner(input) {
+    if (!input.adProvenance) {
+        return nothing;
+    }
+    // clang-format off
+    return html `
+    <devtools-adorner
+      aria-describedby=${input.adTooltipId}
+      aria-label=${i18nString(UIStrings.thisElementWasIdentifiedAsAnAd)}
+      .name=${ElementsComponents.AdornerManager.RegisteredAdorners.AD}
+      jslog=${VisualLogging.adorner(ElementsComponents.AdornerManager.RegisteredAdorners.AD)}
+      ${adornerRef()}>
+      <span>${ElementsComponents.AdornerManager.RegisteredAdorners.AD}</span>
+    </devtools-adorner>
+
+    <!--
+      Prevent the copy event from bubbling up to the Elements tree outline. Otherwise, DevTools
+      copies the underlying DOM node's HTML instead of the user's highlighted text.
+    -->
+    <devtools-tooltip id=${input.adTooltipId} variant=rich @copy=${(e) => e.stopPropagation()}>
+      <div class="ad-provenance-tooltip">
+        ${input.adProvenance.filterlistRule ? html `
+          <div class="ad-provenance-tooltip-title">${i18nString(UIStrings.filterListRule)}</div>
+          <div class="ad-provenance-tooltip-content">${input.adProvenance.filterlistRule}</div>
+        ` : nothing}
+
+        ${input.adProvenance.adScriptAncestry && input.target ? html `
+          <div class="ad-provenance-tooltip-title">${i18nString(UIStrings.creatorAdScriptAncestry)}</div>
+          <div class="ad-provenance-tooltip-content">
+            ${input.adProvenance.adScriptAncestry.ancestryChain.map(script => html `
+              <div>
+                ${UI.Widget.widget(Components.Linkifier.ScriptLocationLink, {
+        target: input.target,
+        scriptId: script.scriptId,
+        options: { jslogContext: 'ad-script' },
+    })}
+              </div>
+            `)}
+          </div>
+
+          ${input.adProvenance.adScriptAncestry.rootScriptFilterlistRule ? html `
+            <div class="ad-provenance-tooltip-title">${i18nString(UIStrings.rootScriptFilterListRule)}</div>
+            <div class="ad-provenance-tooltip-content">
+              ${input.adProvenance.adScriptAncestry.rootScriptFilterlistRule}
+            </div>
+          ` : nothing}
+        ` : nothing}
+
+        ${!input.adProvenance.adScriptAncestry && !input.adProvenance.filterlistRule ? html `
+            <div class="ad-provenance-tooltip-title">${i18nString(UIStrings.noProvenanceAvailable)}</div>
+          ` : nothing}
+      </div>
+    </devtools-tooltip>
+  `;
+    // clang-format on
+}
 export const DEFAULT_VIEW = (input, output, target) => {
-    const hasAdorners = input.showAdAdorner || input.showContainerAdorner || input.showFlexAdorner ||
+    const hasAdorners = !!input.adProvenance || input.showContainerAdorner || input.showFlexAdorner ||
         input.showGridAdorner || input.showGridLanesAdorner || input.showMediaAdorner || input.showPopoverAdorner ||
         input.showTopLayerAdorner || input.showViewSourceAdorner || input.showScrollAdorner ||
         input.showScrollSnapAdorner || input.showSlotAdorner || input.showStartingStyleAdorner;
@@ -706,13 +778,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
         </div>` : nothing}
       </div>
       ${hasAdorners ? html `<div class="adorner-container ${!hasAdorners ? 'hidden' : ''}">
-        ${input.showAdAdorner ? html `<devtools-adorner
-          aria-label=${i18nString(UIStrings.thisFrameWasIdentifiedAsAnAd)}
-          .name=${ElementsComponents.AdornerManager.RegisteredAdorners.AD}
-          jslog=${VisualLogging.adorner(ElementsComponents.AdornerManager.RegisteredAdorners.AD)}
-          ${adornerRef()}>
-          <span>${ElementsComponents.AdornerManager.RegisteredAdorners.AD}</span>
-        </devtools-adorner>` : nothing}
+        ${maybeRenderAdAdorner(input)}
         ${input.showViewSourceAdorner ? html `<devtools-adorner
           .name=${ElementsComponents.AdornerManager.RegisteredAdorners.VIEW_SOURCE}
           jslog=${VisualLogging.adorner(ElementsComponents.AdornerManager.RegisteredAdorners.VIEW_SOURCE)}
@@ -913,6 +979,8 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     #decorations = [];
     #descendantDecorations = [];
     #decorationsTooltip = '';
+    static #adTooltipIdCounter = 0;
+    #adTooltipId = `ad-tooltip-${++ElementsTreeElement.#adTooltipIdCounter}`;
     #updateRecord = null;
     // Used to add the content to TreeElement's title element.
     // Relied on by web tests.
@@ -1021,7 +1089,9 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
             onHighlightSearchResults: () => this.#highlightSearchResults(),
             onExpand: () => this.expand(),
             containerAdornerActive: this.#containerAdornerActive,
-            showAdAdorner: this.nodeInternal.isAdRelatedNode(),
+            adProvenance: this.nodeInternal.adProvenance(),
+            adTooltipId: this.#adTooltipId,
+            target: this.nodeInternal.domModel().target(),
             showContainerAdorner: Boolean(this.#layout?.containerType) && !this.isClosingTag(),
             containerType: this.#layout?.containerType,
             showFlexAdorner: Boolean(this.#layout?.isFlex) && !this.isClosingTag(),
@@ -1316,7 +1386,9 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
             onHighlightSearchResults: () => { },
             onExpand: () => { },
             containerAdornerActive: false,
-            showAdAdorner: false,
+            adProvenance: undefined,
+            target: undefined,
+            adTooltipId: '',
             showContainerAdorner: false,
             containerType: this.#layout?.containerType,
             showFlexAdorner: false,

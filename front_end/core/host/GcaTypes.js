@@ -166,5 +166,4 @@ export var Mode;
     Mode[Mode["ANY"] = 2] = "ANY";
     Mode[Mode["NONE"] = 3] = "NONE";
 })(Mode || (Mode = {}));
-/* eslint-enable @typescript-eslint/naming-convention */
 //# sourceMappingURL=GcaTypes.js.map

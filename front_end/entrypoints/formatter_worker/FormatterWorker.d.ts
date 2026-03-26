@@ -1,7 +1,7 @@
 import { type FormatResult } from './FormatterActions.js';
 import { substituteExpression } from './Substitute.js';
 export interface Chunk {
-    chunk: any[];
+    chunk: unknown[];
     isLastChunk: boolean;
 }
 export type ChunkCallback = (arg0: Chunk) => void;

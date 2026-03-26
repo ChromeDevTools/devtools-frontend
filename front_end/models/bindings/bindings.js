@@ -4951,10 +4951,7 @@ __export(TempFile_exports, {
 });
 import * as Common15 from "./../../core/common/common.js";
 var TempFile = class {
-  #lastBlob;
-  constructor() {
-    this.#lastBlob = null;
-  }
+  #lastBlob = null;
   write(pieces) {
     if (this.#lastBlob) {
       pieces.unshift(this.#lastBlob);

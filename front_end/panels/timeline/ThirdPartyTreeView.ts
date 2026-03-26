@@ -61,12 +61,14 @@ export class ThirdPartyTreeViewWidget extends TimelineTreeView.TimelineTreeView 
     this.registerRequiredCSS(thirdPartyTreeViewStyles);
   }
 
-  override setModelWithEvents(
-      selectedEvents: Trace.Types.Events.Event[]|null, parsedTrace?: Trace.TraceModel.ParsedTrace|null,
-      entityMappings?: Trace.EntityMapper.EntityMapper|null): void {
-    super.setModelWithEvents(selectedEvents, parsedTrace, entityMappings);
+  override set model(model: {
+    selectedEvents: Trace.Types.Events.Event[]|null,
+    parsedTrace: Trace.TraceModel.ParsedTrace|null,
+    entityMapper: Trace.EntityMapper.EntityMapper|null,
+  }) {
+    super.model = model;
 
-    const hasEvents = Boolean(selectedEvents && selectedEvents.length > 0);
+    const hasEvents = Boolean(model.selectedEvents && model.selectedEvents.length > 0);
     this.element.classList.toggle('empty-table', !hasEvents);
   }
 

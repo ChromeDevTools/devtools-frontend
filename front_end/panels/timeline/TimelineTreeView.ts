@@ -225,14 +225,14 @@ export class TimelineTreeView extends
     this.searchableView = searchableView;
   }
 
-  setModelWithEvents(
-      selectedEvents: Trace.Types.Events.Event[]|null,
-      parsedTrace: Trace.TraceModel.ParsedTrace|null = null,
-      entityMappings: Trace.EntityMapper.EntityMapper|null = null,
-      ): void {
-    this.#parsedTrace = parsedTrace;
-    this.#selectedEvents = selectedEvents;
-    this.#entityMapper = entityMappings;
+  set model(model: {
+    selectedEvents: Trace.Types.Events.Event[]|null,
+    parsedTrace: Trace.TraceModel.ParsedTrace|null,
+    entityMapper: Trace.EntityMapper.EntityMapper|null,
+  }) {
+    this.#parsedTrace = model.parsedTrace;
+    this.#selectedEvents = model.selectedEvents;
+    this.#entityMapper = model.entityMapper;
     this.refreshTree();
   }
 
@@ -303,7 +303,7 @@ export class TimelineTreeView extends
     return this.lastSelectedNodeInternal;
   }
 
-  updateContents(selection: TimelineSelection): void {
+  set activeSelection(selection: TimelineSelection) {
     const timings = rangeForSelection(selection);
     const timingMilli = Trace.Helpers.Timing.traceWindowMicroSecondsToMilliSeconds(timings);
     this.setRange(timingMilli.min, timingMilli.max);
@@ -971,8 +971,8 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
     this.groupBySetting.set(groupBy);
   }
 
-  override updateContents(selection: TimelineSelection): void {
-    super.updateContents(selection);
+  override set activeSelection(selection: TimelineSelection) {
+    super.activeSelection = selection;
     const rootNode = this.dataGrid.rootNode();
     if (rootNode.children.length) {
       rootNode.children[0].select(/* suppressSelectedEvent */ true);

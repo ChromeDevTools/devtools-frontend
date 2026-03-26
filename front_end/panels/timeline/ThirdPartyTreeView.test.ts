@@ -16,13 +16,13 @@ describeWithEnvironment('Third party tree', function() {
     const treeView = new Timeline.ThirdPartyTreeView.ThirdPartyTreeViewWidget();
     const mapper = new Trace.EntityMapper.EntityMapper(parsedTrace);
     const events = [...mapper.mappings().eventsByEntity.values()].flat().sort((a, b) => a.ts - b.ts);
-    treeView.setModelWithEvents(events, parsedTrace, mapper);
+    treeView.model = {selectedEvents: events, parsedTrace, entityMapper: mapper};
     const sel: Timeline.TimelineSelection.TimeRangeSelection = {
       bounds: parsedTrace.data.Meta.traceBounds,
     };
     const box = new UI.Widget.VBox();
     treeView.show(box.element);
-    treeView.updateContents(sel);
+    treeView.activeSelection = sel;
     assert.isNull(treeView.dataGrid.selectedNode);
   });
 
@@ -31,14 +31,14 @@ describeWithEnvironment('Third party tree', function() {
     const mapper = new Trace.EntityMapper.EntityMapper(parsedTrace);
     const treeView = new Timeline.ThirdPartyTreeView.ThirdPartyTreeViewWidget();
     renderElementIntoDOM(treeView);
-    treeView.setModelWithEvents(null, parsedTrace, mapper);
+    treeView.model = {selectedEvents: null, parsedTrace, entityMapper: mapper};
     assert.isTrue(treeView.element.classList.contains('empty-table'));
 
     const events = [...mapper.mappings().eventsByEntity.values()].flat().sort((a, b) => a.ts - b.ts);
-    treeView.setModelWithEvents(events, parsedTrace, mapper);
+    treeView.model = {selectedEvents: events, parsedTrace, entityMapper: mapper};
     assert.isFalse(treeView.element.classList.contains('empty-table'));
 
-    treeView.setModelWithEvents([], parsedTrace, mapper);
+    treeView.model = {selectedEvents: [], parsedTrace, entityMapper: mapper};
     assert.isTrue(treeView.element.classList.contains('empty-table'));
   });
 
@@ -50,11 +50,11 @@ describeWithEnvironment('Third party tree', function() {
     const mapper = new Trace.EntityMapper.EntityMapper(parsedTrace);
     const events = [...mapper.mappings().eventsByEntity.values()].flat().sort((a, b) => a.ts - b.ts);
 
-    treeView.setModelWithEvents(events, parsedTrace, mapper);
+    treeView.model = {selectedEvents: events, parsedTrace, entityMapper: mapper};
     const sel: Timeline.TimelineSelection.TimeRangeSelection = {
       bounds: parsedTrace.data.Meta.traceBounds,
     };
-    treeView.updateContents(sel);
+    treeView.activeSelection = sel;
     const tree = treeView.buildTree() as Trace.Extras.TraceTree.BottomUpRootNode;
     const topNodesIterator = [...tree.children().values()].flat().sort((a, b) => b.selfTime - a.selfTime);
 

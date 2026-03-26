@@ -294,10 +294,15 @@ export class TimelineDetailsPane extends
     this.#summaryContent.entityMapper = this.#entityMapper;
     this.tabbedPane.closeTabs([Tab.PaintProfiler, Tab.LayerViewer], false);
     for (const view of this.rangeDetailViews.values()) {
-      view.setModelWithEvents(data.selectedEvents, data.parsedTrace, data.entityMapper);
+      view.model = {
+        selectedEvents: data.selectedEvents,
+        parsedTrace: data.parsedTrace,
+        entityMapper: data.entityMapper
+      };
     }
     // Set the 3p tree model.
-    this.#thirdPartyTree.setModelWithEvents(data.selectedEvents, data.parsedTrace, data.entityMapper);
+    this.#thirdPartyTree
+        .model = {selectedEvents: data.selectedEvents, parsedTrace: data.parsedTrace, entityMapper: data.entityMapper};
     this.#summaryContent.requestUpdate();
     this.lazyPaintProfilerView = null;
     this.lazyLayersView = null;
@@ -329,7 +334,7 @@ export class TimelineDetailsPane extends
     // Update the view that we currently have selected.
     const view = this.rangeDetailViews.get(this.tabbedPane.selectedTabId || '');
     if (view) {
-      view.updateContents(this.selection || selectionFromRangeMilliSeconds(visibleWindow.min, visibleWindow.max));
+      view.activeSelection = this.selection || selectionFromRangeMilliSeconds(visibleWindow.min, visibleWindow.max);
     }
   }
 
@@ -557,7 +562,7 @@ export class TimelineDetailsPane extends
     // update.
     // This will be fixed once we migrate this component fully to the new vision (b/407751379)
     void this.updateSummaryPane().then(() => {
-      this.#thirdPartyTree.updateContents(this.selection || selectionFromRangeMilliSeconds(startTime, endTime));
+      this.#thirdPartyTree.activeSelection = this.selection || selectionFromRangeMilliSeconds(startTime, endTime);
     });
 
     // Find all recalculate style events data from range

@@ -16,6 +16,17 @@ export class StylesAiCodeCompletionProvider {
   #aiCodeCompletion?: AiCodeCompletion.AiCodeCompletion.AiCodeCompletion;
   #aiCodeCompletionConfig?: TextEditor.AiCodeCompletionProvider.AiCodeCompletionConfig;
 
+  getCompletionHint?: () => string | null;
+  setAiAutoCompletion?: (args: {
+    text: string,
+    from: number,
+    startTime: number,
+    onImpression: (rpcGlobalId: Host.AidaClient.RpcGlobalId, latency: number, sampleId?: number) => void,
+    clearCachedRequest: () => void,
+    rpcGlobalId?: Host.AidaClient.RpcGlobalId,
+    sampleId?: number,
+  }|null) => void;
+
   #boundOnUpdateAiCodeCompletionState = this.#updateAiCodeCompletionState.bind(this);
 
   private constructor(aiCodeCompletionConfig: TextEditor.AiCodeCompletionProvider.AiCodeCompletionConfig) {
@@ -123,7 +134,7 @@ export class StylesAiCodeCompletionProvider {
       return;
     }
 
-    this.#aiCodeCompletionConfig?.setAiAutoCompletion?.({
+    this.setAiAutoCompletion?.({
       text: currentPropertyString + aidaSuggestion.suggestionText,
       from: cursorPosition,
       rpcGlobalId: aidaSuggestion.rpcGlobalId,
@@ -206,7 +217,7 @@ export class StylesAiCodeCompletionProvider {
       return null;
     }
 
-    const completionHint = this.#aiCodeCompletionConfig?.getCompletionHint?.();
+    const completionHint = this.getCompletionHint?.();
     if (!completionHint) {
       return response.generatedSamples[0];
     }

@@ -16,7 +16,7 @@ function createProvider(): {
   provider: Elements.StylesAiCodeCompletionProvider.StylesAiCodeCompletionProvider,
   config: TextEditor.AiCodeCompletionProvider.AiCodeCompletionConfig,
 } {
-  const config = {
+  const config: TextEditor.AiCodeCompletionProvider.AiCodeCompletionConfig = {
     panel: AiCodeCompletion.AiCodeCompletion.ContextFlavor.STYLES,
     completionContext: {},
     generationContext: {},
@@ -25,11 +25,10 @@ function createProvider(): {
     onSuggestionAccepted: () => {},
     onRequestTriggered: () => {},
     onResponseReceived: () => {},
-    getCompletionHint: () => null,
-    getCurrentText: () => '',
-    setAiAutoCompletion: () => {},
   };
   const provider = Elements.StylesAiCodeCompletionProvider.StylesAiCodeCompletionProvider.createInstance(config);
+  provider.getCompletionHint = () => null;
+  provider.setAiAutoCompletion = () => {};
   return {provider, config};
 }
 
@@ -140,7 +139,7 @@ describeWithEnvironment('StylesAiCodeCompletionProvider', () => {
           fromCache: false,
         });
     const {provider, config} = createProvider();
-    const setAiAutoCompletionSpy = sinon.spy(config, 'setAiAutoCompletion');
+    const setAiAutoCompletionSpy = sinon.spy(provider, 'setAiAutoCompletion');
     const onRequestTriggeredSpy = sinon.spy(config, 'onRequestTriggered');
     const onResponseReceivedSpy = sinon.spy(config, 'onResponseReceived');
     const {cssModel, cssProperty} = createCssModelAndProperty();

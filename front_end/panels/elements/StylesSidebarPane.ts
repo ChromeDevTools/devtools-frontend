@@ -214,6 +214,9 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
   #updateAbortController?: AbortController;
   #updateComputedStylesAbortController?: AbortController;
 
+  aiCodeCompletionConfig?: TextEditor.AiCodeCompletionProvider.AiCodeCompletionConfig;
+  aiCodeCompletionProvider?: StylesAiCodeCompletionProvider.StylesAiCodeCompletionProvider;
+
   constructor(computedStyleModel: ComputedStyle.ComputedStyleModel.ComputedStyleModel) {
     super(computedStyleModel, {delegatesFocus: true});
     this.setMinimumSize(96, 26);
@@ -259,6 +262,22 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
         this.#scheduleResetUpdateIfNotEditing();
       }
     });
+
+    const devtoolsLocale = i18n.DevToolsLocale.DevToolsLocale.instance();
+    if (AiCodeCompletion.AiCodeCompletion.AiCodeCompletion.isAiCodeCompletionStylesEnabled(devtoolsLocale.locale)) {
+      this.aiCodeCompletionConfig = {
+        completionContext: {},
+        generationContext: {},
+        onFeatureEnabled: () => {},
+        onFeatureDisabled: () => {},
+        onSuggestionAccepted: () => {},
+        onRequestTriggered: () => {},
+        onResponseReceived: () => {},
+        panel: AiCodeCompletion.AiCodeCompletion.ContextFlavor.STYLES,
+      };
+      this.aiCodeCompletionProvider =
+          StylesAiCodeCompletionProvider.StylesAiCodeCompletionProvider.createInstance(this.aiCodeCompletionConfig);
+    }
   }
 
   get webCustomData(): WebCustomData|undefined {
@@ -1757,7 +1776,6 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
   private treeElement: StylePropertyTreeElement;
   private isEditingName: boolean;
   private readonly cssVariables: string[];
-  aiCodeCompletionConfig?: TextEditor.AiCodeCompletionProvider.AiCodeCompletionConfig;
   aiCodeCompletionProvider?: StylesAiCodeCompletionProvider.StylesAiCodeCompletionProvider;
 
   #debouncedTriggerAiCodeCompletion = Common.Debouncer.debounce(() => {
@@ -1822,25 +1840,13 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
       }
     }
 
-    const devtoolsLocale = i18n.DevToolsLocale.DevToolsLocale.instance();
-    if (AiCodeCompletion.AiCodeCompletion.AiCodeCompletion.isAiCodeCompletionStylesEnabled(devtoolsLocale.locale)) {
-      this.aiCodeCompletionConfig = {
-        completionContext: {},
-        generationContext: {},
-        onFeatureEnabled: () => {},
-        onFeatureDisabled: () => {},
-        onSuggestionAccepted: () => {},
-        onRequestTriggered: () => {},
-        onResponseReceived: () => {},
-        panel: AiCodeCompletion.AiCodeCompletion.ContextFlavor.STYLES,
-        getCompletionHint: this.getCompletionHint.bind(this),
-        getCurrentText: () => {
-          return this.text();
-        },
-        setAiAutoCompletion: this.setAiAutoCompletion.bind(this),
-      };
-      this.aiCodeCompletionProvider =
-          StylesAiCodeCompletionProvider.StylesAiCodeCompletionProvider.createInstance(this.aiCodeCompletionConfig);
+    const stylesContainer = this.treeElement.stylesContainer();
+    if (stylesContainer instanceof StylesSidebarPane) {
+      this.aiCodeCompletionProvider = stylesContainer.aiCodeCompletionProvider;
+      if (this.aiCodeCompletionProvider) {
+        this.aiCodeCompletionProvider.getCompletionHint = this.getCompletionHint.bind(this);
+        this.aiCodeCompletionProvider.setAiAutoCompletion = this.setAiAutoCompletion.bind(this);
+      }
     }
   }
 

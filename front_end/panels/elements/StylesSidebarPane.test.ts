@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Host from '../../core/host/host.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as ComputedStyle from '../../models/computed_style/computed_style.js';
@@ -35,6 +36,11 @@ describe('StylesSidebarPane', () => {
       const target = createTarget();
       const cssModel = target.model(SDK.CSSModel.CSSModel);
       sinon.stub(ComputedStyle.ComputedStyleModel.ComputedStyleModel.prototype, 'cssModel').returns(cssModel);
+      sinon.stub(Host.AidaClient.HostConfigTracker, 'instance').returns({
+        addEventListener: () => {},
+        removeEventListener: () => {},
+        dispose: () => {},
+      } as unknown as Host.AidaClient.HostConfigTracker);
     });
 
     it('unescapes CSS strings', () => {
@@ -1241,6 +1247,8 @@ describe('StylesSidebarPane', () => {
       '--wide-gamut-color': 'lch(0 0 0)',
     };
 
+    let aiCodeCompletionProvider:
+        sinon.SinonStubbedInstance<Elements.StylesAiCodeCompletionProvider.StylesAiCodeCompletionProvider>;
     let section: sinon.SinonStubbedInstance<Elements.StylePropertiesSection.StylePropertiesSection>;
     let mockTreeItem: Elements.StylePropertyTreeElement.StylePropertyTreeElement;
 
@@ -1298,6 +1306,9 @@ describe('StylesSidebarPane', () => {
           const pane = sinon.createStubInstance(Elements.StylesSidebarPane.StylesSidebarPane);
           const cssModel = sinon.createStubInstance(SDK.CSSModel.CSSModel);
           pane.cssModel.returns(cssModel);
+          aiCodeCompletionProvider =
+              sinon.createStubInstance(Elements.StylesAiCodeCompletionProvider.StylesAiCodeCompletionProvider);
+          pane.aiCodeCompletionProvider = aiCodeCompletionProvider;
           return pane;
         }
       } as unknown as Elements.StylePropertyTreeElement.StylePropertyTreeElement;
@@ -1382,8 +1393,6 @@ describe('StylesSidebarPane', () => {
     });
 
     describe('AI code completion', () => {
-      let aiCodeCompletionProvider:
-          sinon.SinonStubbedInstance<Elements.StylesAiCodeCompletionProvider.StylesAiCodeCompletionProvider>;
       let attachedElement: HTMLDivElement;
       let cssPropertyPrompt: Elements.StylesSidebarPane.CSSPropertyPrompt;
 
@@ -1399,11 +1408,6 @@ describe('StylesSidebarPane', () => {
           }
         });
 
-        aiCodeCompletionProvider =
-            sinon.createStubInstance(Elements.StylesAiCodeCompletionProvider.StylesAiCodeCompletionProvider);
-        sinon.stub(Elements.StylesAiCodeCompletionProvider.StylesAiCodeCompletionProvider, 'createInstance')
-            .returns(aiCodeCompletionProvider);
-
         attachedElement = document.createElement('div');
         renderElementIntoDOM(attachedElement);
         cssPropertyPrompt = new Elements.StylesSidebarPane.CSSPropertyPrompt(mockTreeItem, false);
@@ -1412,9 +1416,8 @@ describe('StylesSidebarPane', () => {
       it('getCompletionHint returns null if suggestBox is not visible', () => {
         cssPropertyPrompt.attachAndStartEditing(attachedElement, noop);
 
-        assert.exists(cssPropertyPrompt.aiCodeCompletionConfig);
-        assert.exists(cssPropertyPrompt.aiCodeCompletionConfig.getCompletionHint);
-        assert.isNull(cssPropertyPrompt.aiCodeCompletionConfig.getCompletionHint());
+        assert.exists(cssPropertyPrompt.aiCodeCompletionProvider?.getCompletionHint);
+        assert.isNull(cssPropertyPrompt.aiCodeCompletionProvider.getCompletionHint());
       });
 
       it('getCompletionHint returns the correct completion hint', async () => {
@@ -1422,11 +1425,12 @@ describe('StylesSidebarPane', () => {
         cssPropertyPrompt.setText('var(--rgb');
         await cssPropertyPrompt.complete(true);
 
-        assert.strictEqual(cssPropertyPrompt.aiCodeCompletionConfig?.getCompletionHint?.(), '-color)');
+        assert.strictEqual(cssPropertyPrompt.aiCodeCompletionProvider?.getCompletionHint?.(), '-color)');
       });
 
       it('debounces triggerAiCodeCompletion', async () => {
         const clock = sinon.useFakeTimers();
+        const triggerAiCodeCompletionStub = aiCodeCompletionProvider.triggerAiCodeCompletion.resolves();
         cssPropertyPrompt.attachAndStartEditing(attachedElement, noop);
 
         cssPropertyPrompt.setText('backgr');
@@ -1437,30 +1441,31 @@ describe('StylesSidebarPane', () => {
         cssPropertyPrompt.onInput(new Event('input'));
         await clock.tickAsync(TextEditor.AiCodeCompletionProvider.AIDA_REQUEST_DEBOUNCE_TIMEOUT_MS + 1);
 
-        sinon.assert.calledOnce(aiCodeCompletionProvider.triggerAiCodeCompletion);
-        assert.strictEqual(aiCodeCompletionProvider.triggerAiCodeCompletion.firstCall.args[0], 'backgrou');
-        assert.strictEqual(aiCodeCompletionProvider.triggerAiCodeCompletion.firstCall.args[1], 8);
+        sinon.assert.calledOnce(triggerAiCodeCompletionStub);
+        assert.strictEqual(triggerAiCodeCompletionStub.firstCall.args[0], 'backgrou');
+        assert.strictEqual(triggerAiCodeCompletionStub.firstCall.args[1], 8);
         clock.restore();
       });
 
       it('triggerAiCodeCompletion calls the provider with correct arguments', () => {
         const clock = sinon.useFakeTimers();
+        const triggerAiCodeCompletionStub = aiCodeCompletionProvider.triggerAiCodeCompletion.resolves();
         cssPropertyPrompt.attachAndStartEditing(attachedElement, noop);
 
         cssPropertyPrompt.setText('backgrou');
         cssPropertyPrompt.onInput(new Event('input'));
         clock.tick(TextEditor.AiCodeCompletionProvider.AIDA_REQUEST_DEBOUNCE_TIMEOUT_MS + 1);
 
-        sinon.assert.calledOnce(aiCodeCompletionProvider.triggerAiCodeCompletion);
-        assert.strictEqual(aiCodeCompletionProvider.triggerAiCodeCompletion.firstCall.args[0], 'backgrou');
-        assert.strictEqual(aiCodeCompletionProvider.triggerAiCodeCompletion.firstCall.args[1], 8);
+        sinon.assert.calledOnce(triggerAiCodeCompletionStub);
+        assert.strictEqual(triggerAiCodeCompletionStub.firstCall.args[0], 'backgrou');
+        assert.strictEqual(triggerAiCodeCompletionStub.firstCall.args[1], 8);
         clock.restore();
       });
 
       it('setAiAutoCompletion sets activeAiSuggestion on the section', async () => {
         cssPropertyPrompt.attachAndStartEditing(attachedElement, noop);
 
-        cssPropertyPrompt.aiCodeCompletionConfig?.setAiAutoCompletion?.({
+        cssPropertyPrompt.aiCodeCompletionProvider?.setAiAutoCompletion?.({
           text: 'color: pink;',
           from: 0,
           startTime: 0,
@@ -1481,7 +1486,7 @@ content: "This is a semicolon; and this is a colon: inside a string";
 width: calc(100% - 20px);
 color: pink !important;`;
 
-        cssPropertyPrompt.aiCodeCompletionConfig?.setAiAutoCompletion?.({
+        cssPropertyPrompt.aiCodeCompletionProvider?.setAiAutoCompletion?.({
           text: complexCss,
           from: 0,
           startTime: 0,
@@ -1503,7 +1508,7 @@ color: pink !important;`;
         cssPropertyPrompt.setText('var(--rgb');
         await cssPropertyPrompt.complete(true);
 
-        cssPropertyPrompt.aiCodeCompletionConfig?.setAiAutoCompletion?.({
+        cssPropertyPrompt.aiCodeCompletionProvider?.setAiAutoCompletion?.({
           text: 'color: var(--rgb-color);',
           from: 0,
           startTime: 0,
@@ -1524,7 +1529,7 @@ color: pink !important;`;
         cssPropertyPrompt.setText('var(--rgb');
         await cssPropertyPrompt.complete(true);
 
-        cssPropertyPrompt.aiCodeCompletionConfig?.setAiAutoCompletion?.({
+        cssPropertyPrompt.aiCodeCompletionProvider?.setAiAutoCompletion?.({
           text: 'color: var(--rgb-color);',
           from: 0,
           startTime: 0,
@@ -1546,7 +1551,7 @@ color: pink !important;`;
           cssPropertyPrompt = new Elements.StylesSidebarPane.CSSPropertyPrompt(mockTreeItem, true);
           cssPropertyPrompt.attachAndStartEditing(attachedElement, noop);
 
-          cssPropertyPrompt.aiCodeCompletionConfig?.setAiAutoCompletion?.({
+          cssPropertyPrompt.aiCodeCompletionProvider?.setAiAutoCompletion?.({
             text: 'color: pink;',
             from: 0,
             startTime: 0,
@@ -1566,7 +1571,7 @@ color: pink !important;`;
 
              cssPropertyPrompt.setText('gre');
              await cssPropertyPrompt.complete(true);
-             cssPropertyPrompt.aiCodeCompletionConfig?.setAiAutoCompletion?.({
+             cssPropertyPrompt.aiCodeCompletionProvider?.setAiAutoCompletion?.({
                text: 'color: greenyellow;',
                from: 0,
                startTime: 0,
@@ -1590,7 +1595,7 @@ color: pink !important;`;
 
           cssPropertyPrompt.setText('var(--rgb');
           await cssPropertyPrompt.complete(true);
-          cssPropertyPrompt.aiCodeCompletionConfig?.setAiAutoCompletion?.({
+          cssPropertyPrompt.aiCodeCompletionProvider?.setAiAutoCompletion?.({
             text: 'color: var(--rgb-color); background-color: white;',
             from: 0,
             startTime: 0,
@@ -1616,8 +1621,8 @@ color: pink !important;`;
         it('clears suggestion if user input does not match', async () => {
           cssPropertyPrompt.attachAndStartEditing(attachedElement, noop);
 
-          assert.exists(cssPropertyPrompt.aiCodeCompletionConfig);
-          cssPropertyPrompt.aiCodeCompletionConfig.setAiAutoCompletion?.({
+          assert.exists(cssPropertyPrompt.aiCodeCompletionProvider);
+          cssPropertyPrompt.aiCodeCompletionProvider.setAiAutoCompletion?.({
             text: 'color: pink;',
             from: 0,
             startTime: 0,
@@ -1636,7 +1641,7 @@ color: pink !important;`;
           cssPropertyPrompt.attachAndStartEditing(attachedElement, noop);
 
           cssPropertyPrompt.setText('pin');
-          cssPropertyPrompt.aiCodeCompletionConfig?.setAiAutoCompletion?.({
+          cssPropertyPrompt.aiCodeCompletionProvider?.setAiAutoCompletion?.({
             text: 'color: pink;',
             from: 3,
             startTime: 0,
@@ -1662,7 +1667,7 @@ color: pink !important;`;
 
           cssPropertyPrompt.setText('var(--rgb');
           await cssPropertyPrompt.complete(true);
-          cssPropertyPrompt.aiCodeCompletionConfig?.setAiAutoCompletion?.({
+          cssPropertyPrompt.aiCodeCompletionProvider?.setAiAutoCompletion?.({
             text: 'color: var(--rgb-background-color);',
             from: 0,
             startTime: 0,
@@ -1681,7 +1686,7 @@ color: pink !important;`;
           cssPropertyPrompt.attachAndStartEditing(attachedElement, noop);
 
           cssPropertyPrompt.setText('p');
-          cssPropertyPrompt.aiCodeCompletionConfig?.setAiAutoCompletion?.({
+          cssPropertyPrompt.aiCodeCompletionProvider?.setAiAutoCompletion?.({
             text: 'color: pink;',
             from: 1,
             startTime: 0,

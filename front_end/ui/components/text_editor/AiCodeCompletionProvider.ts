@@ -56,17 +56,6 @@ export interface AiCodeCompletionConfig {
   onRequestTriggered: () => void;
   onResponseReceived: () => void;
   panel: AiCodeCompletion.AiCodeCompletion.ContextFlavor;
-  getCompletionHint?: () => string | null;
-  getCurrentText?: () => string;
-  setAiAutoCompletion?: (args: {
-    text: string,
-    from: number,
-    startTime: number,
-    onImpression: (rpcGlobalId: Host.AidaClient.RpcGlobalId, latency: number, sampleId?: number) => void,
-    clearCachedRequest: () => void,
-    rpcGlobalId?: Host.AidaClient.RpcGlobalId,
-    sampleId?: number,
-  }|null) => void;
 }
 
 export const DELAY_BEFORE_SHOWING_RESPONSE_MS = 500;

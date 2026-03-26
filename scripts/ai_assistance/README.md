@@ -5,7 +5,7 @@ This directory contains scripts for the prompt iteration & evaluation process fo
 Mainly, `auto-run/auto-run.ts` script takes example URLs, runs the examples and outputs the results to the `auto-run/data/` directory. Then, the HTML page in `eval/` folder takes these results and presents them in a UI for evaluation.
 
 **NOTE: looking for the automatic evaluation suite?**
-As of September 2025, we also have an evaluation suite where we can define evaluations to apply to an output and have them automatically evaluated, including using an LLM as judge. See the README in `suites/` for more detail on this.
+As of September 2025, we also have an evaluation suite where we can define evaluations to apply to an output and have them automatically evaluated, including using an LLM as judge. See the [README in `suite/`](suite/README.md) for more detail on this.
 
 ## Running
 
@@ -36,6 +36,8 @@ Tip: You can add a `--label <label>` argument to the run to label the dataset. F
 ```bash
 npm run auto-run -- --label title-change --example-urls <example-url-1> <example-url-2>
 ```
+
+Tip: You can add a `--eval` flag to the run to generate a secondary file named `*.eval.json` that contains the output in the format the evaluation suite expects.
 
 ## `--test-target` values
 

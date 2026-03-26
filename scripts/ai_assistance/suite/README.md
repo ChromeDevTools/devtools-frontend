@@ -31,6 +31,29 @@ Note that you have to be a Google employee to access this.
 
 Evaluations that engage an LLM will expect to find a `GEMINI_API_KEY` environment variable defined.
 
+## Defining new evaluations
+
+To define a new evaluation, follow these steps:
+
+1. **Create an example**: There should already be existing examples for most panels. For example, for performance, you can see an example for CLS in `dev-community/client/public/index.html` (look for the "Prompt" comment). These examples are located in the [base-apps repo](https://github.com/ChromeDevTools/base-apps).
+2. **Generate data**: Run the `auto-run` tool with the `--eval` and `--label <label>` flags targeting your example URL. This will generate a `*.eval.json` file in `auto-run/data/`.
+3. **Move data**: Move the generated `*.eval.json` file to the appropriate folder in `suite/outputs/outputs/type/YYYY-MM-DD/`. Ensure the file name starts with your chosen `<label>`. See [Adding new outputs](#adding-new-outputs) for more details on the file structure and how to upload them.
+4. **Create instruction file**: Create a new Markdown file in `scripts/ai_assistance/suite/instructions/<label>.md`. This file should contain the rubrics and criteria for the LLM judge. You can refer to `scoring.md` for standard rubrics.
+5. **Define the test**: Open (or create) the `scripts/ai_assistance/suite/<type>.eval.ts` file and add a new `evalGroup` that matches your `<type>` and `<label>`. Use `itEval` to define specific assertions or LLM-based judgments.
+
+Example:
+```typescript
+await evalGroup(
+    {type: 'performance', label: 'cls-breakdown'},
+    async function() {
+      await itEval({
+        test: 'is an accurate response',
+        judge: example => LLMComparison.judge(example, loadInstructions('cls-breakdown')),
+      });
+    });
+```
+6. **Run the evaluation**: Run `npm run eval-suite` or execute the specific file with `node scripts/ai_assistance/suite/<type>.eval.ts`.
+
 ## Running the suite
 
 Run `cd scripts/ai_assistance && npm run eval-suite` to execute the suite.
@@ -56,7 +79,7 @@ node scripts/ai_assistance/suite/upload_to_gcp.ts
 This will upload the changes to the GCP bucket and update the `DEPS` file for you, which you should ensure you commit in a CL. The best workflow is:
 
 1. Generate your new output file(s).
-2. Move any new files into `suites/outputs/...`.
+2. Move any new files into `suite/outputs/...`.
 3. Use the `upload_to_gcp.ts` script.
 4. Commit the `DEPS` change and send the CL for review.
 

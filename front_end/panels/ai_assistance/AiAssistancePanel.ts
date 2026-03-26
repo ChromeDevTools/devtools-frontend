@@ -379,14 +379,6 @@ interface ToolbarViewInput {
   showChatActions: boolean;
   showActiveConversationActions: boolean;
   isLoading: boolean;
-
-  walkthrough: {
-    isExpanded: boolean,
-    isInlined: boolean,
-    onToggle: (isOpen: boolean, message: ModelChatMessage) => void,
-    activeSidebarMessage: ModelChatMessage|null,
-    inlineExpandedMessages: ModelChatMessage[],
-  };
 }
 
 export const enum ViewState {
@@ -514,7 +506,7 @@ function defaultView(input: ViewInput, output: PanelViewOutput, target: HTMLElem
   if (Root.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled ||
     Greendev.Prototypes.instance().isEnabled('breakpointDebuggerAgent')) {
 
-    const shouldShowWalkthrough = input.state === ViewState.CHAT_VIEW && input.walkthrough.isExpanded;
+    const shouldShowWalkthrough = input.state === ViewState.CHAT_VIEW && input.props.walkthrough.isExpanded;
     /**
      * We want to mark the walkthrough as loading only if it's showing the last
      * message. Otherwise, a previous walkthrough will show as loading if we
@@ -535,7 +527,7 @@ function defaultView(input: ViewInput, output: PanelViewOutput, target: HTMLElem
           name="ai-assistance-split-view-state"
           direction="column"
           sidebar-position="second"
-          sidebar-visibility=${shouldShowWalkthrough && !input.walkthrough.isInlined ? 'visible' : 'hidden'}
+          sidebar-visibility=${shouldShowWalkthrough && !input.props.walkthrough.isInlined ? 'visible' : 'hidden'}
           sidebar-initial-size=${WALKTHROUGH_SIDEBAR_INITIAL_WIDTH}
         >
           <div slot="main" class="main-view">
@@ -716,13 +708,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       onSettingsClick: () => {
         void UI.ViewManager.ViewManager.instance().showView('chrome-ai');
       },
-      walkthrough: {
-        isExpanded: this.#walkthrough.isExpanded,
-        isInlined: this.#walkthrough.isInlined,
-        onToggle: this.#toggleWalkthrough.bind(this),
-        activeSidebarMessage: this.#walkthrough.activeSidebarMessage,
-        inlineExpandedMessages: this.#walkthrough.inlineExpandedMessages,
-      }
     };
   }
 

@@ -303,6 +303,32 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/LiveMetricsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
+export interface ViewInput {
+  isNode: boolean;
+  lcpValue?: LiveMetrics.LcpValue;
+  clsValue?: LiveMetrics.ClsValue;
+  inpValue?: LiveMetrics.InpValue;
+  interactions: LiveMetrics.InteractionMap;
+  layoutShifts: LiveMetrics.LayoutShift[];
+  toggleRecordAction: UI.ActionRegistration.Action;
+  recordReloadAction: UI.ActionRegistration.Action;
+  cruxManager: CrUXManager.CrUXManager;
+  handlePageScopeSelected: (event: Menus.SelectMenu.SelectMenuItemSelectedEvent) => void;
+  handleDeviceOptionSelected: (event: Menus.SelectMenu.SelectMenuItemSelectedEvent) => void;
+  revealLayoutShiftCluster: (clusterIds: Set<LiveMetrics.LayoutShift['uniqueLayoutShiftId']>) => void;
+  revealInteraction: (interaction: LiveMetrics.Interaction) => void;
+  logExtraInteractionDetails: (interaction: LiveMetrics.Interaction) => void;
+}
+
+export interface ViewOutput {
+  shouldKeepInteractionsScrolledToBottom?: () => boolean;
+  keepInteractionsScrolledToBottom?: () => void;
+  shouldKeepLayoutShiftsScrolledToBottom?: () => boolean;
+  keepLayoutShiftsScrolledToBottom?: () => void;
+}
+
+export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement|DocumentFragment) => void;
+
 function getLcpFieldPhases(cruxManager: CrUXManager.CrUXManager): LiveMetrics.LcpValue['phases']|null {
   const ttfb =
       cruxManager.getSelectedFieldMetricData('largest_contentful_paint_image_time_to_first_byte')?.percentiles?.p75;
@@ -443,6 +469,145 @@ function getCollectionPeriodRange(cruxManager: CrUXManager.CrUXManager): string|
   });
 }
 
+function createMetricCardRef(cardData: Omit<MetricCardData, 'tooltipContainer'>):
+    ReturnType<typeof Lit.Directives.ref> {
+  return Lit.Directives.ref(el => {
+    if (el instanceof HTMLElement) {
+      (el as HTMLElement & {data: MetricCardData}).data = {
+        ...cardData,
+        tooltipContainer: (el.closest('.metric-cards') as HTMLElement) || undefined,
+      };
+    }
+  });
+}
+
+function renderLcpCard(input: ViewInput): Lit.LitTemplate {
+  const fieldData = input.cruxManager.getSelectedFieldMetricData('largest_contentful_paint');
+  const nodeLink =
+      input.lcpValue?.nodeRef && PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(input.lcpValue?.nodeRef);
+  const phases = input.lcpValue?.phases;
+
+  const fieldPhases = getLcpFieldPhases(input.cruxManager);
+
+  // clang-format off
+  return html`
+    <devtools-metric-card ${createMetricCardRef({
+      metric: 'LCP',
+      localValue: input.lcpValue?.value,
+      fieldValue: fieldData?.percentiles?.p75,
+      histogram: fieldData?.histogram,
+      warnings: input.lcpValue?.warnings,
+      phases: phases && [
+        [i18nString(UIStrings.timeToFirstByte), phases.timeToFirstByte, fieldPhases?.timeToFirstByte],
+        [i18nString(UIStrings.resourceLoadDelay), phases.resourceLoadDelay, fieldPhases?.resourceLoadDelay],
+        [i18nString(UIStrings.resourceLoadDuration), phases.resourceLoadTime, fieldPhases?.resourceLoadTime],
+        [i18nString(UIStrings.elementRenderDelay), phases.elementRenderDelay, fieldPhases?.elementRenderDelay],
+      ],
+    })}>
+      ${nodeLink ? html`
+          <div class="related-info" slot="extra-info">
+            <span class="related-info-label">${i18nString(UIStrings.lcpElement)}</span>
+            <span class="related-info-link">
+             ${widget(PanelsCommon.DOMLinkifier.DOMNodeLink, {node: input.lcpValue?.nodeRef})}
+            </span>
+          </div>
+        `
+        : nothing}
+    </devtools-metric-card>
+  `;
+  // clang-format on
+}
+
+function renderClsCard(input: ViewInput): Lit.LitTemplate {
+  const fieldData = input.cruxManager.getSelectedFieldMetricData('cumulative_layout_shift');
+
+  const clusterIds = new Set(input.clsValue?.clusterShiftIds || []);
+  const clusterIsVisible =
+      clusterIds.size > 0 && input.layoutShifts.some(layoutShift => clusterIds.has(layoutShift.uniqueLayoutShiftId));
+
+  // clang-format off
+  return html`
+    <devtools-metric-card ${createMetricCardRef({
+      metric: 'CLS',
+      localValue: input.clsValue?.value,
+      fieldValue: fieldData?.percentiles?.p75,
+      histogram: fieldData?.histogram,
+      warnings: input.clsValue?.warnings,
+    })}>
+      ${clusterIsVisible ? html`
+        <div class="related-info" slot="extra-info">
+          <span class="related-info-label">${i18nString(UIStrings.worstCluster)}</span>
+          <button
+            class="link-to-log"
+            title=${i18nString(UIStrings.showClsCluster)}
+            @click=${() => input.revealLayoutShiftCluster(clusterIds)}
+            jslog=${VisualLogging.action('timeline.landing.show-cls-cluster').track({click: true})}
+          >${i18nString(UIStrings.numShifts, {shiftCount: clusterIds.size})}</button>
+        </div>
+      ` : nothing}
+    </devtools-metric-card>
+  `;
+  // clang-format on
+}
+
+function renderInpCard(input: ViewInput): Lit.LitTemplate {
+  const fieldData = input.cruxManager.getSelectedFieldMetricData('interaction_to_next_paint');
+  const phases = input.inpValue?.phases;
+  const interaction = input.inpValue && input.interactions.get(input.inpValue.interactionId);
+
+  // clang-format off
+  return html`
+    <devtools-metric-card ${createMetricCardRef({
+      metric: 'INP',
+      localValue: input.inpValue?.value,
+      fieldValue: fieldData?.percentiles?.p75,
+      histogram: fieldData?.histogram,
+      warnings: input.inpValue?.warnings,
+      phases: phases && [
+        [i18nString(UIStrings.inputDelay), phases.inputDelay],
+        [i18nString(UIStrings.processingDuration), phases.processingDuration],
+        [i18nString(UIStrings.presentationDelay), phases.presentationDelay],
+      ],
+    })}>
+      ${interaction ? html`
+        <div class="related-info" slot="extra-info">
+          <span class="related-info-label">${i18nString(UIStrings.inpInteractionLink)}</span>
+          <button
+            class="link-to-log"
+            title=${i18nString(UIStrings.showInpInteraction)}
+            @click=${() => input.revealInteraction(interaction)}
+            jslog=${VisualLogging.action('timeline.landing.show-inp-interaction').track({click: true})}
+          >${interaction.interactionType}</button>
+        </div>
+      ` : nothing}
+    </devtools-metric-card>
+  `;
+  // clang-format on
+}
+
+function renderRecordAction(action: UI.ActionRegistration.Action): Lit.LitTemplate {
+  function onClick(): void {
+    void action.execute();
+  }
+
+  // clang-format off
+  return html`
+    <div class="record-action">
+      <devtools-button @click=${onClick} .data=${{
+          variant: Buttons.Button.Variant.TEXT,
+          size: Buttons.Button.Size.REGULAR,
+          iconName: action.icon(),
+          title: action.title(),
+          jslogContext: action.id(),
+      } as Buttons.Button.ButtonData}>
+        ${action.title()}
+      </devtools-button>
+      <span class="shortcut-label">${UI.ShortcutRegistry.ShortcutRegistry.instance().shortcutTitleForAction(action.id())}</span>
+    </div>
+  `;
+  // clang-format on
+}
+
 export class LiveMetricsView extends UI.Widget.Widget {
   isNode = Root.Runtime.Runtime.isNode();
 
@@ -458,7 +623,6 @@ export class LiveMetricsView extends UI.Widget.Widget {
   #recordReloadAction: UI.ActionRegistration.Action;
 
   #logsEl?: LiveMetricsLogs;
-  #tooltipContainerEl?: Element;
   #interactionsListEl?: HTMLElement;
   #layoutShiftsListEl?: HTMLElement;
   #listIsScrolling = false;
@@ -566,136 +730,6 @@ export class LiveMetricsView extends UI.Widget.Widget {
 
     this.#deviceModeModel?.removeEventListener(
         EmulationModel.DeviceModeModel.Events.UPDATED, this.#onEmulationChanged, this);
-  }
-
-  #renderLcpCard(): Lit.LitTemplate {
-    const fieldData = this.#cruxManager.getSelectedFieldMetricData('largest_contentful_paint');
-    const nodeLink =
-        this.#lcpValue?.nodeRef && PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(this.#lcpValue?.nodeRef);
-    const phases = this.#lcpValue?.phases;
-
-    const fieldPhases = getLcpFieldPhases(this.#cruxManager);
-
-    // clang-format off
-    return html`
-      <devtools-metric-card .data=${{
-        metric: 'LCP',
-        localValue: this.#lcpValue?.value,
-        fieldValue: fieldData?.percentiles?.p75,
-        histogram: fieldData?.histogram,
-        tooltipContainer: this.#tooltipContainerEl,
-        warnings: this.#lcpValue?.warnings,
-        phases: phases && [
-          [i18nString(UIStrings.timeToFirstByte), phases.timeToFirstByte, fieldPhases?.timeToFirstByte],
-          [i18nString(UIStrings.resourceLoadDelay), phases.resourceLoadDelay, fieldPhases?.resourceLoadDelay],
-          [i18nString(UIStrings.resourceLoadDuration), phases.resourceLoadTime, fieldPhases?.resourceLoadTime],
-          [i18nString(UIStrings.elementRenderDelay), phases.elementRenderDelay, fieldPhases?.elementRenderDelay],
-        ],
-      } as MetricCardData}>
-        ${nodeLink ? html`
-            <div class="related-info" slot="extra-info">
-              <span class="related-info-label">${i18nString(UIStrings.lcpElement)}</span>
-              <span class="related-info-link">
-               ${widget(PanelsCommon.DOMLinkifier.DOMNodeLink, {node: this.#lcpValue?.nodeRef})}
-              </span>
-            </div>
-          `
-          : nothing}
-      </devtools-metric-card>
-    `;
-    // clang-format on
-  }
-
-  #renderClsCard(): Lit.LitTemplate {
-    const fieldData = this.#cruxManager.getSelectedFieldMetricData('cumulative_layout_shift');
-
-    const clusterIds = new Set(this.#clsValue?.clusterShiftIds || []);
-    const clusterIsVisible =
-        clusterIds.size > 0 && this.#layoutShifts.some(layoutShift => clusterIds.has(layoutShift.uniqueLayoutShiftId));
-
-    // clang-format off
-    return html`
-      <devtools-metric-card .data=${{
-        metric: 'CLS',
-        localValue: this.#clsValue?.value,
-        fieldValue: fieldData?.percentiles?.p75,
-        histogram: fieldData?.histogram,
-        tooltipContainer: this.#tooltipContainerEl,
-        warnings: this.#clsValue?.warnings,
-      } as MetricCardData}>
-        ${clusterIsVisible ? html`
-          <div class="related-info" slot="extra-info">
-            <span class="related-info-label">${i18nString(UIStrings.worstCluster)}</span>
-            <button
-              class="link-to-log"
-              title=${i18nString(UIStrings.showClsCluster)}
-              @click=${() => this.#revealLayoutShiftCluster(clusterIds)}
-              jslog=${VisualLogging.action('timeline.landing.show-cls-cluster').track({click: true})}
-            >${i18nString(UIStrings.numShifts, {shiftCount: clusterIds.size})}</button>
-          </div>
-        ` : nothing}
-      </devtools-metric-card>
-    `;
-    // clang-format on
-  }
-
-  #renderInpCard(): Lit.LitTemplate {
-    const fieldData = this.#cruxManager.getSelectedFieldMetricData('interaction_to_next_paint');
-    const phases = this.#inpValue?.phases;
-    const interaction = this.#inpValue && this.#interactions.get(this.#inpValue.interactionId);
-
-    // clang-format off
-    return html`
-      <devtools-metric-card .data=${{
-        metric: 'INP',
-        localValue: this.#inpValue?.value,
-        fieldValue: fieldData?.percentiles?.p75,
-        histogram: fieldData?.histogram,
-        tooltipContainer: this.#tooltipContainerEl,
-        warnings: this.#inpValue?.warnings,
-        phases: phases && [
-          [i18nString(UIStrings.inputDelay), phases.inputDelay],
-          [i18nString(UIStrings.processingDuration), phases.processingDuration],
-          [i18nString(UIStrings.presentationDelay), phases.presentationDelay],
-        ],
-      } as MetricCardData}>
-        ${interaction ? html`
-          <div class="related-info" slot="extra-info">
-            <span class="related-info-label">${i18nString(UIStrings.inpInteractionLink)}</span>
-            <button
-              class="link-to-log"
-              title=${i18nString(UIStrings.showInpInteraction)}
-              @click=${() => this.#revealInteraction(interaction)}
-              jslog=${VisualLogging.action('timeline.landing.show-inp-interaction').track({click: true})}
-            >${interaction.interactionType}</button>
-          </div>
-        ` : nothing}
-      </devtools-metric-card>
-    `;
-    // clang-format on
-  }
-
-  #renderRecordAction(action: UI.ActionRegistration.Action): Lit.LitTemplate {
-    function onClick(): void {
-      void action.execute();
-    }
-
-    // clang-format off
-    return html`
-      <div class="record-action">
-        <devtools-button @click=${onClick} .data=${{
-            variant: Buttons.Button.Variant.TEXT,
-            size: Buttons.Button.Size.REGULAR,
-            iconName: action.icon(),
-            title: action.title(),
-            jslogContext: action.id(),
-        } as Buttons.Button.ButtonData}>
-          ${action.title()}
-        </devtools-button>
-        <span class="shortcut-label">${UI.ShortcutRegistry.ShortcutRegistry.instance().shortcutTitleForAction(action.id())}</span>
-      </div>
-    `;
-    // clang-format on
   }
 
   #renderRecordingSettings(): Lit.LitTemplate {
@@ -1115,7 +1149,7 @@ export class LiveMetricsView extends UI.Widget.Widget {
     // clang-format on
   }
 
-  #renderNodeView(): Lit.LitTemplate {
+  #renderNodeView(input: ViewInput): Lit.LitTemplate {
     return html`
       <style>${liveMetricsViewStyles}</style>
       <style>${metricValueStyles}</style>
@@ -1123,15 +1157,32 @@ export class LiveMetricsView extends UI.Widget.Widget {
         <main>
           <h2 class="section-title">${i18nString(UIStrings.nodePerformanceTimeline)}</h2>
           <div class="node-description">${i18nString(UIStrings.nodeClickToRecord)}</div>
-          <div class="record-action-card">${this.#renderRecordAction(this.#toggleRecordAction)}</div>
+          <div class="record-action-card">${renderRecordAction(input.toggleRecordAction)}</div>
         </main>
       </div>
     `;
   }
 
   override performUpdate(): void {
+    const viewInput: ViewInput = {
+      isNode: this.isNode,
+      lcpValue: this.#lcpValue,
+      clsValue: this.#clsValue,
+      inpValue: this.#inpValue,
+      interactions: this.#interactions,
+      layoutShifts: this.#layoutShifts,
+      toggleRecordAction: this.#toggleRecordAction,
+      recordReloadAction: this.#recordReloadAction,
+      cruxManager: this.#cruxManager,
+      handlePageScopeSelected: this.#onPageScopeMenuItemSelected.bind(this),
+      handleDeviceOptionSelected: this.#onDeviceOptionMenuItemSelected.bind(this),
+      revealLayoutShiftCluster: this.#revealLayoutShiftCluster.bind(this),
+      revealInteraction: this.#revealInteraction.bind(this),
+      logExtraInteractionDetails: this.#logExtraInteractionDetails.bind(this),
+    };
+
     if (this.isNode) {
-      Lit.render(this.#renderNodeView(), this.contentElement, {host: this});
+      Lit.render(this.#renderNodeView(viewInput), this.contentElement, {host: this});
       return;
     }
 
@@ -1150,21 +1201,15 @@ export class LiveMetricsView extends UI.Widget.Widget {
         <div class="live-metrics-view">
           <main class="live-metrics">
             <h2 class="section-title">${liveMetricsTitle}</h2>
-            <div class="metric-cards"
-              ${Lit.Directives.ref(el => {
-                if (el instanceof HTMLElement) {
-                  this.#tooltipContainerEl = el;
-                }
-              })}
-            >
+            <div class="metric-cards">
               <div id="lcp">
-                ${this.#renderLcpCard()}
+                ${renderLcpCard(viewInput)}
               </div>
               <div id="cls">
-                ${this.#renderClsCard()}
+                ${renderClsCard(viewInput)}
               </div>
               <div id="inp">
-                ${this.#renderInpCard()}
+                ${renderInpCard(viewInput)}
               </div>
             </div>
             <devtools-link
@@ -1189,10 +1234,10 @@ export class LiveMetricsView extends UI.Widget.Widget {
               ${this.#renderRecordingSettings()}
             </div>
             <div id="record" class="record-action-card">
-              ${this.#renderRecordAction(this.#toggleRecordAction)}
+              ${renderRecordAction(viewInput.toggleRecordAction)}
             </div>
             <div id="record-page-load" class="record-action-card">
-              ${this.#renderRecordAction(this.#recordReloadAction)}
+              ${renderRecordAction(viewInput.recordReloadAction)}
             </div>
           </aside>
         </div>

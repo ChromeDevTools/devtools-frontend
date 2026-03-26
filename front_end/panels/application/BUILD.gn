@@ -105,6 +105,7 @@ devtools_ui_module("application") {
     "../../ui/components/buttons:bundle",
     "../../ui/components/expandable_list:bundle",
     "../../ui/components/legacy_wrapper:bundle",
+    "../../ui/components/lists:bundle",
     "../../ui/components/report_view:bundle",
     "../../ui/components/tree_outline:bundle",
     "../../ui/i18n:bundle",

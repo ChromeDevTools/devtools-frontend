@@ -3,10 +3,12 @@
 // found in the LICENSE file.
 
 import '../../ui/components/icon_button/icon_button.js';
+import '../../ui/components/lists/lists.js';
 import '../../ui/legacy/legacy.js';
 
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import type * as Protocol from '../../generated/protocol.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {
   html,
@@ -41,8 +43,13 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/application/WebMCPView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export type View = (input: object, output: object, target: HTMLElement) => void;
+export interface ViewInput {
+  tools: Protocol.WebMCP.Tool[];
+}
+
+export type View = (input: ViewInput, output: object, target: HTMLElement) => void;
 export const DEFAULT_VIEW: View = (input, output, target) => {
+  const tools = input.tools;
   // clang-format off
   render(html`
     <style>${webMCPViewStyles}</style>
@@ -53,8 +60,21 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
       </div>
       <div slot="sidebar" class="tool-list">
         <div class="section-title">${i18nString(UIStrings.toolRegistry)}</div>
+        ${tools.length === 0 ? html`
         ${UI.Widget.widget(UI.EmptyWidget.EmptyWidget, {header: i18nString(UIStrings.noToolsPlaceholderTitle),
                                                         text: i18nString(UIStrings.noToolsPlaceholder)})}
+        ` : html`
+          <devtools-list>
+            ${tools.map(tool => html`
+                <div class="tool-item">
+                  <div class="tool-name-container">
+                    <div class="tool-name source-code">${tool.name}</div>
+                  </div>
+                  <div class="tool-description">${tool.description}</div>
+                </div>
+              `)}
+          </devtools-list>
+        `}
       </div>
     </devtools-split-view>
   `, target);
@@ -67,12 +87,10 @@ export class WebMCPView extends UI.Widget.VBox {
   constructor(target?: HTMLElement, view: View = DEFAULT_VIEW) {
     super();
     this.#view = view;
-    SDK.TargetManager.TargetManager.instance().observeModels(
-        SDK.WebMCPModel.WebMCPModel, {
-          modelAdded: (model: SDK.WebMCPModel.WebMCPModel) => this.#webMCPModelAdded(model),
-          modelRemoved: (model: SDK.WebMCPModel.WebMCPModel) => this.#webMCPModelRemoved(model),
-        },
-        {scoped: true});
+    SDK.TargetManager.TargetManager.instance().observeModels(SDK.WebMCPModel.WebMCPModel, {
+      modelAdded: (model: SDK.WebMCPModel.WebMCPModel) => this.#webMCPModelAdded(model),
+      modelRemoved: (model: SDK.WebMCPModel.WebMCPModel) => this.#webMCPModelRemoved(model),
+    });
     this.requestUpdate();
   }
 
@@ -87,6 +105,14 @@ export class WebMCPView extends UI.Widget.VBox {
   }
 
   override performUpdate(): void {
-    this.#view({}, {}, this.contentElement);
+    const tools = SDK.TargetManager.TargetManager.instance()
+                      .models(SDK.WebMCPModel.WebMCPModel)
+                      .flatMap(m => m.tools.toArray())
+                      .sort((a, b) => a.name.localeCompare(b.name));
+    this.#view(
+        {
+          tools,
+        },
+        {}, this.contentElement);
   }
 }

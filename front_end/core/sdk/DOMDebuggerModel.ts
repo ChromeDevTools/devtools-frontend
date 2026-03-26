@@ -4,7 +4,7 @@
 
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import * as Protocol from '../../generated/protocol.js';
-import * as Common from '../common/common.js';
+import type * as Common from '../common/common.js';
 import * as Platform from '../platform/platform.js';
 
 import {CategorizedBreakpoint, Category} from './CategorizedBreakpoint.js';
@@ -38,7 +38,7 @@ export class DOMDebuggerModel extends SDKModel<EventTypes> {
     this.#domModel.addEventListener(DOMModelEvents.NodeRemoved, this.nodeRemoved, this);
 
     this.#domBreakpoints = [];
-    this.#domBreakpointsSetting = Common.Settings.Settings.instance().createLocalSetting('dom-breakpoints', []);
+    this.#domBreakpointsSetting = this.target().targetManager().settings.createLocalSetting('dom-breakpoints', []);
     if (this.#domModel.existingDocument()) {
       void this.documentUpdated();
     }
@@ -540,7 +540,7 @@ export class DOMDebuggerManager implements SDKModelObserver<DOMDebuggerModel> {
 
   constructor(targetManager: TargetManager = TargetManager.instance()) {
     this.#targetManager = targetManager;
-    this.#xhrBreakpointsSetting = Common.Settings.Settings.instance().createLocalSetting('xhr-breakpoints', []);
+    this.#xhrBreakpointsSetting = this.#targetManager.settings.createLocalSetting('xhr-breakpoints', []);
     for (const breakpoint of this.#xhrBreakpointsSetting.get()) {
       this.#xhrBreakpoints.set(breakpoint.url, breakpoint.enabled);
     }

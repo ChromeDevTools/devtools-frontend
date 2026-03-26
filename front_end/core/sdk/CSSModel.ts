@@ -79,10 +79,9 @@ export class CSSModel extends SDKModel<EventTypes> {
       void this.enable();
     }
 
-    this.#sourceMapManager.setEnabled(
-        Common.Settings.Settings.instance().moduleSetting<boolean>('css-source-maps-enabled').get());
-    Common.Settings.Settings.instance()
-        .moduleSetting<boolean>('css-source-maps-enabled')
+    const settings = this.target().targetManager().settings;
+    this.#sourceMapManager.setEnabled(settings.moduleSetting<boolean>('css-source-maps-enabled').get());
+    settings.moduleSetting<boolean>('css-source-maps-enabled')
         .addChangeListener(event => this.#sourceMapManager.setEnabled(event.data));
   }
 

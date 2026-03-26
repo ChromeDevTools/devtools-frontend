@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../../core/common/common.js';
+import type * as Common from '../../core/common/common.js';
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as Host from '../host/host.js';
@@ -19,8 +19,9 @@ export class AutofillModel extends SDKModel<EventTypes> implements ProtocolProxy
     super(target);
 
     this.agent = target.autofillAgent();
+    const settings = this.target().targetManager().settings;
     this.#showTestAddressesInAutofillMenu =
-        Common.Settings.Settings.instance().createSetting('show-test-addresses-in-autofill-menu-on-event', false);
+        settings.createSetting('show-test-addresses-in-autofill-menu-on-event', false);
     this.#showTestAddressesInAutofillMenu.addChangeListener(this.#setTestAddresses, this);
     target.registerAutofillDispatcher(this);
     this.enable();

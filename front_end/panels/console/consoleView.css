@@ -633,6 +633,10 @@
   }
 }
 
+.ai-code-completion-summary-toolbar-container {
+  container-type: inline-size;
+}
+
 @media (forced-colors: active) {
   .console-message-expand-icon,
   .console-warning-level .expand-group-icon {

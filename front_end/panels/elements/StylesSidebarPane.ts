@@ -169,6 +169,10 @@ const HIGHLIGHTABLE_PROPERTIES = [
   {mode: 'flexibility', properties: ['flex', 'flex-basis', 'flex-grow', 'flex-shrink']},
 ];
 
+const DISCLAIMER_TOOLTIP_ID = 'styles-ai-code-completion-disclaimer-tooltip';
+const SPINNER_TOOLTIP_ID = 'styles-ai-code-completion-spinner-tooltip';
+const CITATIONS_TOOLTIP_ID = 'styles-ai-code-completion-citations-tooltip';
+
 export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventTypes, typeof ElementsSidebarPane>(
     ElementsSidebarPane) implements StylesContainer {
   private matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles|null = null;
@@ -216,6 +220,8 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
 
   aiCodeCompletionConfig?: TextEditor.AiCodeCompletionProvider.AiCodeCompletionConfig;
   aiCodeCompletionProvider?: StylesAiCodeCompletionProvider.StylesAiCodeCompletionProvider;
+  #aiCodeCompletionSummaryToolbarContainer?: HTMLElement;
+  #aiCodeCompletionSummaryToolbar?: PanelsCommon.AiCodeCompletionSummaryToolbar;
 
   constructor(computedStyleModel: ComputedStyle.ComputedStyleModel.ComputedStyleModel) {
     super(computedStyleModel, {delegatesFocus: true});
@@ -268,11 +274,15 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
       this.aiCodeCompletionConfig = {
         completionContext: {},
         generationContext: {},
-        onFeatureEnabled: () => {},
-        onFeatureDisabled: () => {},
-        onSuggestionAccepted: () => {},
-        onRequestTriggered: () => {},
-        onResponseReceived: () => {},
+        onFeatureEnabled: () => {
+          this.#createAiCodeCompletionSummaryToolbar();
+        },
+        onFeatureDisabled: () => {
+          this.#cleanupAiCodeCompletion();
+        },
+        onSuggestionAccepted: this.#onAiCodeCompletionSuggestionAccepted.bind(this),
+        onRequestTriggered: this.#onAiCodeCompletionRequestTriggered.bind(this),
+        onResponseReceived: this.#onAiCodeCompletionResponseReceived.bind(this),
         panel: AiCodeCompletion.AiCodeCompletion.ContextFlavor.STYLES,
       };
       this.aiCodeCompletionProvider =
@@ -1547,6 +1557,45 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
 
     return button;
   }
+
+  #cleanupAiCodeCompletion(): void {
+    this.#aiCodeCompletionSummaryToolbarContainer?.remove();
+    this.#aiCodeCompletionSummaryToolbarContainer = undefined;
+    this.#aiCodeCompletionSummaryToolbar = undefined;
+  }
+
+  #createAiCodeCompletionSummaryToolbar(): void {
+    if (this.#aiCodeCompletionSummaryToolbar) {
+      return;
+    }
+    this.#aiCodeCompletionSummaryToolbar = new PanelsCommon.AiCodeCompletionSummaryToolbar({
+      citationsTooltipId: CITATIONS_TOOLTIP_ID,
+      disclaimerTooltipId: DISCLAIMER_TOOLTIP_ID,
+      spinnerTooltipId: SPINNER_TOOLTIP_ID,
+      panel: AiCodeCompletion.AiCodeCompletion.ContextFlavor.STYLES,
+    });
+    const containingPane = this.contentElement.enclosingNodeOrSelfWithClass('style-panes-wrapper') as HTMLElement;
+    this.#aiCodeCompletionSummaryToolbarContainer =
+        containingPane.createChild('div', 'ai-code-completion-summary-toolbar-container');
+    this.#aiCodeCompletionSummaryToolbarContainer.role = 'toolbar';
+    this.#aiCodeCompletionSummaryToolbar.show(this.#aiCodeCompletionSummaryToolbarContainer, undefined, true);
+  }
+
+  #onAiCodeCompletionSuggestionAccepted(citations: Host.AidaClient.Citation[]): void {
+    if (!this.#aiCodeCompletionSummaryToolbar || citations.length === 0) {
+      return;
+    }
+    const citationsUri = citations.map(citation => citation.uri).filter((uri): uri is string => Boolean(uri));
+    this.#aiCodeCompletionSummaryToolbar.updateCitations(citationsUri);
+  }
+
+  #onAiCodeCompletionRequestTriggered(): void {
+    this.#aiCodeCompletionSummaryToolbar?.setLoading(true);
+  }
+
+  #onAiCodeCompletionResponseReceived(): void {
+    this.#aiCodeCompletionSummaryToolbar?.setLoading(false);
+  }
 }
 
 export const enum Events {
@@ -1777,6 +1826,8 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
   private isEditingName: boolean;
   private readonly cssVariables: string[];
   aiCodeCompletionProvider?: StylesAiCodeCompletionProvider.StylesAiCodeCompletionProvider;
+  private activeAiSuggestionInfo?:
+      {citations: Host.AidaClient.Citation[], rpcGlobalId?: Host.AidaClient.RpcGlobalId, sampleId?: number};
 
   #debouncedTriggerAiCodeCompletion = Common.Debouncer.debounce(() => {
     void this.triggerAiCodeCompletion();
@@ -2198,11 +2249,13 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
     startTime: number,
     onImpression: (rpcGlobalId: Host.AidaClient.RpcGlobalId, latency: number, sampleId?: number) => void,
     clearCachedRequest: () => void,
+    citations: Host.AidaClient.Citation[],
     rpcGlobalId?: Host.AidaClient.RpcGlobalId,
     sampleId?: number,
   }|null): void {
     if (!args) {
       this.treeElement.section().activeAiSuggestion = undefined;
+      this.activeAiSuggestionInfo = undefined;
       return;
     }
 
@@ -2213,6 +2266,7 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
       clearCachedRequest: args.clearCachedRequest,
       cssProperty: this.treeElement.property,
     };
+    this.activeAiSuggestionInfo = {citations: args.citations, rpcGlobalId: args.rpcGlobalId, sampleId: args.sampleId};
     const latency = performance.now() - args.startTime;
     if (args.rpcGlobalId) {
       args.onImpression(args.rpcGlobalId, latency, args.sampleId);
@@ -2311,6 +2365,11 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
 
   async commitAiSuggestion(): Promise<void> {
     await this.treeElement.section().commitActiveAiSuggestion();
+    if (this.activeAiSuggestionInfo) {
+      this.aiCodeCompletionProvider?.onSuggestionAccepted(
+          this.activeAiSuggestionInfo.citations, this.activeAiSuggestionInfo.rpcGlobalId,
+          this.activeAiSuggestionInfo.sampleId);
+    }
     // Clear state and return
     this.setAiAutoCompletion(null);
   }

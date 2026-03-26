@@ -23,6 +23,7 @@ export class StylesAiCodeCompletionProvider {
     startTime: number,
     onImpression: (rpcGlobalId: Host.AidaClient.RpcGlobalId, latency: number, sampleId?: number) => void,
     clearCachedRequest: () => void,
+    citations: Host.AidaClient.Citation[],
     rpcGlobalId?: Host.AidaClient.RpcGlobalId,
     sampleId?: number,
   }|null) => void;
@@ -142,6 +143,7 @@ export class StylesAiCodeCompletionProvider {
       startTime,
       clearCachedRequest: this.clearCache.bind(this),
       onImpression: this.#aiCodeCompletion.registerUserImpression.bind(this.#aiCodeCompletion),
+      citations: aidaSuggestion.citations,
     });
   }
 
@@ -226,5 +228,13 @@ export class StylesAiCodeCompletionProvider {
 
   clearCache(): void {
     this.#aiCodeCompletion?.clearCachedRequest();
+  }
+
+  onSuggestionAccepted(
+      citations: Host.AidaClient.Citation[], rpcGlobalId?: Host.AidaClient.RpcGlobalId, sampleId?: number): void {
+    this.#aiCodeCompletionConfig?.onSuggestionAccepted(citations);
+    if (rpcGlobalId) {
+      this.#aiCodeCompletion?.registerUserAcceptance(rpcGlobalId, sampleId);
+    }
   }
 }

@@ -39,6 +39,10 @@ export class ThirdPartyTreeViewWidget extends TimelineTreeView.TimelineTreeView 
   // want to do this when the user hovers.
   protected override autoSelectFirstChildOnRefresh = false;
 
+  #onRowHovered?: (node: Trace.Extras.TraceTree.Node|null, events?: Trace.Types.Events.Event[]) => void;
+  #onBottomUpButtonClicked?: (node: Trace.Extras.TraceTree.Node|null) => void;
+  #onRowClicked?: (node: Trace.Extras.TraceTree.Node|null, events?: Trace.Types.Events.Event[]) => void;
+
   constructor() {
     super();
     this.element.setAttribute('jslog', `${VisualLogging.pane('third-party-tree').track({hover: true})}`);
@@ -253,6 +257,38 @@ export class ThirdPartyTreeViewWidget extends TimelineTreeView.TimelineTreeView 
     }
     const entity = mapper.entityForEvent(node.event);
     return Boolean(entity) && entity?.category === 'Chrome Extension';
+  }
+
+  set maxRows(maxRows: number) {
+    this.element.style.setProperty('--max-rows', String(maxRows));
+    this.element.classList.toggle('has-max-rows', Boolean(maxRows));
+  }
+
+  set onRowHovered(callback: (node: Trace.Extras.TraceTree.Node|null, events?: Trace.Types.Events.Event[]) => void) {
+    if (!this.#onRowHovered) {
+      this.addEventListener(TimelineTreeView.TimelineTreeView.Events.TREE_ROW_HOVERED, ({data}) => {
+        this.#onRowHovered?.(data.node, data.events);
+      });
+    }
+    this.#onRowHovered = callback;
+  }
+
+  set onBottomUpButtonClicked(callback: (node: Trace.Extras.TraceTree.Node|null) => void) {
+    if (!this.#onBottomUpButtonClicked) {
+      this.addEventListener(TimelineTreeView.TimelineTreeView.Events.BOTTOM_UP_BUTTON_CLICKED, ({data}) => {
+        this.#onBottomUpButtonClicked?.(data);
+      });
+    }
+    this.#onBottomUpButtonClicked = callback;
+  }
+
+  set onRowClicked(callback: (node: Trace.Extras.TraceTree.Node|null, events?: Trace.Types.Events.Event[]) => void) {
+    if (!this.#onRowClicked) {
+      this.addEventListener(TimelineTreeView.TimelineTreeView.Events.TREE_ROW_CLICKED, ({data}) => {
+        this.#onRowClicked?.(data.node, data.events);
+      });
+    }
+    this.#onRowClicked = callback;
   }
 }
 

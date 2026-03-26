@@ -88,4 +88,41 @@ describeWithEnvironment('Third party tree', function() {
     gotBadgeName = entity.querySelector<HTMLTableRowElement>('.entity-badge')?.textContent || '';
     assert.strictEqual(gotBadgeName, 'Extension');
   });
+
+  it('allows setting maxRows', async function() {
+    const treeView = new Timeline.ThirdPartyTreeView.ThirdPartyTreeViewWidget();
+    treeView.maxRows = 5;
+    assert.strictEqual(treeView.element.style.getPropertyValue('--max-rows'), '5');
+    assert.isTrue(treeView.element.classList.contains('has-max-rows'));
+  });
+
+  it('allows setting onRowHovered', async function() {
+    const treeView = new Timeline.ThirdPartyTreeView.ThirdPartyTreeViewWidget();
+    let hoveredNode: Trace.Extras.TraceTree.Node|null|undefined;
+    treeView.onRowHovered = node => {
+      hoveredNode = node;
+    };
+    treeView.dispatchEventToListeners(Timeline.TimelineTreeView.TimelineTreeView.Events.TREE_ROW_HOVERED, {node: null});
+    assert.isNull(hoveredNode);
+  });
+
+  it('allows setting onRowClicked', async function() {
+    const treeView = new Timeline.ThirdPartyTreeView.ThirdPartyTreeViewWidget();
+    let clickedNode: Trace.Extras.TraceTree.Node|null|undefined;
+    treeView.onRowClicked = node => {
+      clickedNode = node;
+    };
+    treeView.dispatchEventToListeners(Timeline.TimelineTreeView.TimelineTreeView.Events.TREE_ROW_CLICKED, {node: null});
+    assert.isNull(clickedNode);
+  });
+
+  it('allows setting onBottomUpButtonClicked', async function() {
+    const treeView = new Timeline.ThirdPartyTreeView.ThirdPartyTreeViewWidget();
+    let bottomUpNode: Trace.Extras.TraceTree.Node|null|undefined;
+    treeView.onBottomUpButtonClicked = node => {
+      bottomUpNode = node;
+    };
+    treeView.dispatchEventToListeners(Timeline.TimelineTreeView.TimelineTreeView.Events.BOTTOM_UP_BUTTON_CLICKED, null);
+    assert.isNull(bottomUpNode);
+  });
 });

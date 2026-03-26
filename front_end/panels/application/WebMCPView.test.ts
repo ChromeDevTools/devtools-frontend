@@ -4,14 +4,14 @@
 
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
-import {assertScreenshot, raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {findMenuItemWithLabel, getMenuForToolbarButton} from '../../testing/ContextMenuHelpers.js';
+import {assertScreenshot, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, describeWithEnvironment, updateHostConfig} from '../../testing/EnvironmentHelpers.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 
 import * as Application from './application.js';
 
 const {DEFAULT_VIEW, WebMCPView} = Application.WebMCPView;
-type WebMCPView = Application.WebMCPView.WebMCPView;
 
 describeWithEnvironment('WebMCPView (View)', () => {
   it('renders empty when no tools are available', async () => {
@@ -19,9 +19,15 @@ describeWithEnvironment('WebMCPView (View)', () => {
     target.style.width = '600px';
     target.style.height = '400px';
     renderElementIntoDOM(target);
+    const filterButtons = WebMCPView.createFilterButtons(() => {}, () => {});
+
     DEFAULT_VIEW(
         {
+          filters: {text: ''},
           tools: [],
+          filterButtons,
+          onClearLogClick: () => {},
+          onFilterChange: () => {},
         },
         {}, target);
 
@@ -48,41 +54,95 @@ describeWithEnvironment('WebMCPView (View)', () => {
     container.style.height = '400px';
     renderElementIntoDOM(container);
 
+    const tools = [
+      {name: 'calculator', description: 'Calculates math expressions', frameId: 'frame1' as Protocol.Page.FrameId},
+      {name: 'weather', description: 'Gets the current weather', frameId: 'frame1' as Protocol.Page.FrameId}
+    ];
+
+    const filterButtons = WebMCPView.createFilterButtons(() => {}, () => {});
+
     DEFAULT_VIEW(
         {
-          tools: [
-            {
-              name: 'calculator',
-              description: 'Calculates math expressions',
-              frameId: 'frame1' as Protocol.Page.FrameId
-            },
-            {name: 'weather', description: 'Gets the current weather', frameId: 'frame1' as Protocol.Page.FrameId}
-          ],
+          filters: {text: ''},
+          tools,
+          filterButtons,
+          onClearLogClick: () => {},
+          onFilterChange: () => {},
         },
         {}, container);
-
-    await raf();
     await assertScreenshot('application/webmcp_view.png');
   });
 
   it('renders a list of tools', async () => {
     const target = document.createElement('div');
     renderElementIntoDOM(target);
+    const tools = [
+      {name: 'tool1', description: 'desc1', frameId: 'frame1' as Protocol.Page.FrameId},
+      {name: 'tool2', description: 'desc2', frameId: 'frame1' as Protocol.Page.FrameId}
+    ];
+    const filterButtons = WebMCPView.createFilterButtons(() => {}, () => {});
+
     DEFAULT_VIEW(
         {
-          tools: [
-            {name: 'tool1', description: 'desc1', frameId: 'frame1' as Protocol.Page.FrameId},
-            {name: 'tool2', description: 'desc2', frameId: 'frame1' as Protocol.Page.FrameId}
-          ],
+          filters: {text: ''},
+          tools,
+          filterButtons,
+          onClearLogClick: () => {},
+          onFilterChange: () => {},
         },
         {}, target);
-
-    await raf();
     const listElements = target.querySelectorAll('.tool-item');
     assert.lengthOf(listElements, 2);
     assert.strictEqual(listElements[0].querySelector('.tool-name')?.textContent, 'tool1');
     assert.strictEqual(listElements[0].querySelector('.tool-description')?.textContent, 'desc1');
     assert.isNull(target.querySelector('.tool-list .empty-state'));
+  });
+
+  it('renders filter bar with filters applied (screenshot)', async () => {
+    const container = document.createElement('div');
+    container.style.width = '600px';
+    container.style.height = '400px';
+    renderElementIntoDOM(container);
+
+    const filterButtons = WebMCPView.createFilterButtons(() => {}, () => {});
+
+    // Simulate setting an active filter visually
+    filterButtons.toolTypes.setCount(1);
+
+    DEFAULT_VIEW(
+        {
+          filters: {text: 'test', toolTypes: {imperative: true}},
+          tools: [],
+          filterButtons,
+          onClearLogClick: () => {},
+          onFilterChange: () => {},
+        },
+        {}, container);
+
+    await assertScreenshot('application/webmcp_filter_bar_applied.png');
+  });
+
+  it('calls onClearLogClick when clear log button is clicked', async () => {
+    const target = document.createElement('div');
+    renderElementIntoDOM(target);
+
+    const onClearLogClick = sinon.spy();
+    const filterButtons = WebMCPView.createFilterButtons(() => {}, () => {});
+
+    DEFAULT_VIEW(
+        {
+          filters: {text: ''},
+          tools: [],
+          filterButtons,
+          onClearLogClick,
+          onFilterChange: () => {},
+        },
+        {}, target);
+
+    const clearButton = target.querySelector('devtools-button[title="Clear log"]') as HTMLElement;
+    assert.isNotNull(clearButton);
+    clearButton.click();
+    sinon.assert.calledOnce(onClearLogClick);
   });
 });
 
@@ -100,7 +160,6 @@ describeWithEnvironment('WebMCPView Presenter', () => {
 
     return {model, viewStub};
   }
-
   afterEach(() => {
     target?.dispose('test');
   });
@@ -128,5 +187,37 @@ describeWithEnvironment('WebMCPView Presenter', () => {
     model.onToolsRemoved([tool]);
     const input = await viewStub.nextInput;
     assert.lengthOf(input.tools, 0);
+  });
+
+  it('updates filter state when text filter is set', async () => {
+    const {viewStub} = await setup();
+    viewStub.input.onFilterChange({text: 'test filter'});
+    const input = await viewStub.nextInput;
+    assert.strictEqual(input.filters.text, 'test filter');
+  });
+
+  it('updates filter state when drop down filters are set', async () => {
+    const {viewStub} = await setup();
+
+    const contextMenu = getMenuForToolbarButton(viewStub.input.filterButtons.toolTypes.button);
+    const imperativeItem = findMenuItemWithLabel(contextMenu.defaultSection(), 'Imperative');
+    assert.isDefined(imperativeItem);
+
+    contextMenu.invokeHandler(imperativeItem.id());
+
+    const input = await viewStub.nextInput;
+    assert.isTrue(input.filters.toolTypes?.imperative);
+  });
+
+  it('clears all filters when clear filters button is clicked', async () => {
+    const {viewStub} = await setup();
+    viewStub.input.onFilterChange({text: 'test filter', toolTypes: {imperative: false}});
+    await viewStub.nextInput;
+
+    viewStub.input.onFilterChange({text: ''});
+    const input = await viewStub.nextInput;
+    assert.strictEqual(input.filters.text, '');
+    assert.isUndefined(input.filters.toolTypes);
+    assert.isUndefined(input.filters.statusTypes);
   });
 });

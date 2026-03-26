@@ -61,5 +61,8 @@
         color: var(--sys-color-on-surface);
     }
 
-
+    devtools-toolbar-input {
+        flex-grow: 1;
+        flex-shrink: 1;
+    }
 }

@@ -21,6 +21,8 @@ import {Tooltip} from './Tooltip.js';
 import {bindCheckbox, CheckboxLabel, createTextChild} from './UIUtils.js';
 import {HBox} from './Widget.js';
 
+export {filterStyles};
+
 const UIStrings = {
   /**
    * @description Text to filter result items

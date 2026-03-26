@@ -236,13 +236,13 @@ export class NetworkLogViewColumns {
     const title = columnConfig.title instanceof Function ? columnConfig.title() : columnConfig.title;
     return {
       id: columnConfig.id,
-      title,
+      title: title as Common.UIString.LocalizedString,
       sortable: columnConfig.sortable,
       align: columnConfig.align,
       nonSelectable: columnConfig.nonSelectable,
       weight: columnConfig.weight,
       allowInSortByEvenWhenHidden: columnConfig.allowInSortByEvenWhenHidden,
-    } as DataGrid.DataGrid.ColumnDescriptor;
+    };
   }
 
   wasShown(): void {
@@ -1251,7 +1251,7 @@ export interface Descriptor {
   hideableGroup: string|null;
   nonSelectable: boolean;
   sortable: boolean;
-  align?: string|null;
+  align?: DataGrid.DataGrid.Align|null;
   isResponseHeader: boolean;
   isRequestHeader: boolean;
   sortingFunction: (arg0: NetworkNode, arg1: NetworkNode) => number | undefined;

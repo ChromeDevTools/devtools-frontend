@@ -321,27 +321,19 @@ export class IDBDataView extends UI.View.SimpleView {
     const keyPath = this.isIndex && this.index ? this.index.keyPath : this.objectStore.keyPath;
 
     const columns: DataGrid.DataGrid.ColumnDescriptor[] = [];
-
-    // Create column defaults so that we avoid repetition below.
-    const columnDefaults: Partial<DataGrid.DataGrid.ColumnDescriptor> = {
-      sortable: false,
-    };
     columns.push({
-      ...columnDefaults,
       id: 'number',
       title: '#' as Platform.UIString.LocalizedString,
       sortable: false,
       width: '50px',
     });
     columns.push({
-      ...columnDefaults,
       id: 'key',
       titleDOMFragment: this.keyColumnHeaderFragment(i18nString(UIStrings.keyString), keyPath),
       sortable: false,
     });
     if (this.isIndex) {
       columns.push({
-        ...columnDefaults,
         id: 'primary-key',
         titleDOMFragment: this.keyColumnHeaderFragment(i18nString(UIStrings.primaryKey), this.objectStore.keyPath),
         sortable: false,
@@ -349,7 +341,6 @@ export class IDBDataView extends UI.View.SimpleView {
     }
     const title = i18nString(UIStrings.valueString);
     columns.push({
-      ...columnDefaults,
       id: 'value',
       title,
       sortable: false,

@@ -797,7 +797,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
 
     if (this.#emulationModel && this.#device && this.#mode) {
       const orientation = this.#device.orientationByName(this.#mode.orientation);
-      const deviceMetrics: Protocol.Page.SetDeviceMetricsOverrideRequest = {
+      const deviceMetrics: Protocol.Emulation.SetDeviceMetricsOverrideRequest = {
         width: orientation.width,
         height: orientation.height,
         deviceScaleFactor: this.#device.deviceScaleFactor,
@@ -805,7 +805,6 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       };
       const dispFeature = this.getDisplayFeature();
       if (dispFeature) {
-        // @ts-expect-error: Experimental foldable support
         deviceMetrics.displayFeature = dispFeature;
       }
       await this.#emulationModel.emulateDevice(deviceMetrics);

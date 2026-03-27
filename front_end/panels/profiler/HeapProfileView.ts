@@ -487,10 +487,6 @@ export class SamplingHeapProfileHeader extends WritableProfileHeader {
     };
   }
 
-  override createView(): HeapProfileView {
-    return new HeapProfileView(this);
-  }
-
   protocolProfile(): Protocol.HeapProfiler.SamplingHeapProfile {
     return this.protocolProfileInternal;
   }

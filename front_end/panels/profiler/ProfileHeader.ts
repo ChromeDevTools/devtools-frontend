@@ -34,17 +34,6 @@ export class ProfileHeader extends Common.ObjectWrapper.ObjectWrapper<EventTypes
     this.dispatchEventToListeners(Events.UPDATE_STATUS, new StatusUpdate(subtitle, wait));
   }
 
-  /**
-   * Must be implemented by subclasses.
-   */
-  createSidebarTreeElement(_dataDisplayDelegate: DataDisplayDelegate): UI.TreeOutline.TreeElement {
-    throw new Error('Not implemented.');
-  }
-
-  createView(_dataDisplayDelegate: DataDisplayDelegate): UI.Widget.Widget {
-    throw new Error('Not implemented.');
-  }
-
   removeTempFile(): void {
     if (this.tempFile) {
       this.tempFile.remove();

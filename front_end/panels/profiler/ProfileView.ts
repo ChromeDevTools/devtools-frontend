@@ -19,8 +19,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import {BottomUpProfileDataGridTree} from './BottomUpProfileDataGrid.js';
 import {type Formatter, type ProfileDataGridNode, ProfileDataGridTree} from './ProfileDataGrid.js';
 import {ProfileFlameChart, type ProfileFlameChartDataProvider} from './ProfileFlameChartDataProvider.js';
-import {type DataDisplayDelegate, ProfileHeader, type ProfileType} from './ProfileHeader.js';
-import {ProfileSidebarTreeElement} from './ProfileSidebarTreeElement.js';
+import {ProfileHeader, type ProfileType} from './ProfileHeader.js';
 import {TopDownProfileDataGridTree} from './TopDownProfileDataGrid.js';
 
 const UIStrings = {
@@ -545,10 +544,6 @@ export class WritableProfileHeader extends ProfileHeader implements Common.Strin
 
   override dispose(): void {
     this.removeTempFile();
-  }
-
-  override createSidebarTreeElement(panel: DataDisplayDelegate): ProfileSidebarTreeElement {
-    return new ProfileSidebarTreeElement(panel, this, 'profile-sidebar-tree-item');
   }
 
   override canSaveToFile(): boolean {

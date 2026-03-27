@@ -655,7 +655,7 @@ HeapProfilerTestRunner.switchToView = function(title, callback) {
 HeapProfilerTestRunner.takeAndOpenSnapshot = async function(generator, callback) {
   callback = TestRunner.safeWrap(callback);
   const snapshot = generator();
-  const profileType = Profiler.ProfileTypeRegistry.instance.heapSnapshotProfileType;
+  const profileType = Profiler.HeapProfilerPanel.HeapProfilerPanel.registry.heapSnapshotProfileType;
 
   async function pushGeneratedSnapshot(reportProgress) {
     if (reportProgress) {
@@ -681,7 +681,7 @@ HeapProfilerTestRunner.takeAndOpenSnapshot = async function(generator, callback)
  */
 HeapProfilerTestRunner.takeSnapshotPromise = function() {
   return new Promise(resolve => {
-    const heapProfileType = Profiler.ProfileTypeRegistry.instance.heapSnapshotProfileType;
+    const heapProfileType = Profiler.HeapProfilerPanel.HeapProfilerPanel.registry.heapSnapshotProfileType;
     heapProfileType.addEventListener(
         Profiler.HeapSnapshotView.HeapSnapshotProfileType.SnapshotReceived, finishHeapSnapshot);
     heapProfileType.takeHeapSnapshot();

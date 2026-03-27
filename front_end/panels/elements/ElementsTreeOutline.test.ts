@@ -5,6 +5,7 @@
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
+import {doubleRaf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, expectConsoleLogs} from '../../testing/EnvironmentHelpers.js';
 import {
   describeWithMockConnection,
@@ -473,6 +474,91 @@ describeWithMockConnection('ElementsTreeOutline', () => {
       const childTreeElement = shadowRootTreeElement.childAt(0) as Elements.ElementsTreeElement.ElementsTreeElement;
       assert.isNotNull(childTreeElement);
       assert.isFalse(childTreeElement.isExpandable(), 'Child inside ShadowRoot should NOT be expandable');
+    });
+
+    it('limits the total number of rows and shows a "Show all" button', async () => {
+      const snapshotTreeOutline = new Elements.ElementsTreeOutline.ElementsTreeOutline(
+          /* omitRootDOMNode */ false, /* selectEnabled */ true, /* hideGutter */ true, /* maxTreeDepth */ 2,
+          /* enableContextMenu */ false, /* showComments */ false, /* showAIButton */ false, /* disableEdits */ true,
+          /* expandRoot */ true);
+      snapshotTreeOutline.addEventListener(Elements.ElementsTreeOutline.ElementsTreeOutline.Events.ShowAllRows, () => {
+        snapshotTreeOutline.maxRowsShown = undefined;
+      });
+
+      // Root -> 3 Children (Total 4 rows)
+      const rootPayload = {
+        nodeId: 1 as Protocol.DOM.NodeId,
+        backendNodeId: 1 as Protocol.DOM.BackendNodeId,
+        nodeType: Node.ELEMENT_NODE,
+        nodeName: 'BODY',
+        localName: 'body',
+        nodeValue: '',
+        childNodeCount: 3,
+        children: [
+          {
+            nodeId: 2 as Protocol.DOM.NodeId,
+            parentId: 1 as Protocol.DOM.NodeId,
+            backendNodeId: 2 as Protocol.DOM.BackendNodeId,
+            nodeType: Node.ELEMENT_NODE,
+            nodeName: 'DIV',
+            localName: 'div',
+            nodeValue: 'Child 1',
+            childNodeCount: 0,
+            attributes: [],
+          },
+          {
+            nodeId: 3 as Protocol.DOM.NodeId,
+            parentId: 1 as Protocol.DOM.NodeId,
+            backendNodeId: 3 as Protocol.DOM.BackendNodeId,
+            nodeType: Node.ELEMENT_NODE,
+            nodeName: 'DIV',
+            localName: 'div',
+            nodeValue: 'Child 2',
+            childNodeCount: 0,
+            attributes: [],
+          },
+          {
+            nodeId: 4 as Protocol.DOM.NodeId,
+            parentId: 1 as Protocol.DOM.NodeId,
+            backendNodeId: 4 as Protocol.DOM.BackendNodeId,
+            nodeType: Node.ELEMENT_NODE,
+            nodeName: 'DIV',
+            localName: 'div',
+            nodeValue: 'Child 3',
+            childNodeCount: 0,
+            attributes: [],
+          },
+        ] as Protocol.DOM.Node[],
+        attributes: [],
+      };
+
+      const rootNode = SDK.DOMModel.DOMNode.create(model, null, false, rootPayload);
+      const snapshot = await rootNode.takeSnapshot();
+      snapshotTreeOutline.rootDOMNode = snapshot;
+
+      renderElementIntoDOM(snapshotTreeOutline.element);
+      snapshotTreeOutline.maxRowsShown = 2;  // Limit to 2 rows after rendering
+      await doubleRaf();
+
+      const shadowRoot = snapshotTreeOutline.element.shadowRoot!;
+      const container = shadowRoot.querySelector('.elements-disclosure') as HTMLElement;
+      assert.isTrue(container.classList.contains('elements-tree-truncated'), 'Container should have truncated class');
+      assert.strictEqual(container.style.getPropertyValue('--max-rows'), '2', 'Max rows CSS variable should be set');
+
+      const showAllButton = shadowRoot.querySelector('.elements-tree-show-all') as HTMLElement;
+      assert.isNotNull(showAllButton, 'Show all button should be present');
+      assert.isFalse(showAllButton.classList.contains('hidden'), 'Show all button should be visible');
+      // Root (1) + 3 children (3) = 4 total rows/lines.
+      assert.include(showAllButton.textContent, 'Show all (2 lines)');
+
+      // Click show all
+      showAllButton.click();
+      await doubleRaf();
+
+      assert.isTrue(showAllButton.classList.contains('hidden'), 'Show all button should be hidden after click');
+      assert.isFalse(
+          container.classList.contains('elements-tree-truncated'),
+          'Container should not have truncated class after click');
     });
   });
 });

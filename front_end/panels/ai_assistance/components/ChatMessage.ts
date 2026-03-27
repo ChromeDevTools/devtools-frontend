@@ -938,6 +938,7 @@ async function makeDomTreeWidget(widgetData: DomTreeAiWidget): Promise<WidgetMak
       rootDOMNode: root,
       visibleWidth: 400,
       wrap: true,
+      maxRows: 10,
     })}></devtools-widget>
   `;
   // clang-format on

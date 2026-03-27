@@ -3584,6 +3584,7 @@ export const knownContextValues = new Set([
   'show-ad-highlights-true',
   'show-adorner-settings',
   'show-all',
+  'show-all-nodes',
   'show-all-properties',
   'show-as-javascript-object',
   'show-console-insight-teasers',

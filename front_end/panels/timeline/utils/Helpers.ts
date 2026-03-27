@@ -136,3 +136,8 @@ export class RevealableTimeRange {
   constructor(public bounds: Trace.Types.Timing.TraceWindowMicro) {
   }
 }
+
+export class RevealableBottomUpProfile {
+  constructor(public bounds: Trace.Types.Timing.TraceWindowMicro) {
+  }
+}

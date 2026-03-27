@@ -854,7 +854,11 @@ async function makeBottomUpTimelineTreeWidget(widgetData: BottomUpTreeAiWidget):
     compactMode: true,
   })}></devtools-widget>`;
 
-  return {renderedWidget, revealable: null, title: lockedString(UIStringsNotTranslate.bottomUpTree)};
+  return {
+    renderedWidget,
+    revealable: new TimelineUtils.Helpers.RevealableBottomUpProfile(widgetData.data.bounds),
+    title: lockedString(UIStringsNotTranslate.bottomUpTree)
+  };
 }
 
 function renderWidgetResponse(response: WidgetMakerResponse|null): Lit.LitTemplate {

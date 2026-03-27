@@ -133,6 +133,7 @@ devtools_svg_sources = [
   "dog-paw.svg",
   "dom-detective-badge.svg",
   "domain.svg",
+  "dots-circle.svg",
   "dots-horizontal.svg",
   "dots-vertical.svg",
   "download.svg",

@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as SDK from '../../core/sdk/sdk.js';
-import type * as Protocol from '../../generated/protocol.js';
+import * as Protocol from '../../generated/protocol.js';
 import {findMenuItemWithLabel, getMenuForToolbarButton} from '../../testing/ContextMenuHelpers.js';
 import {assertScreenshot, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, describeWithEnvironment, updateHostConfig} from '../../testing/EnvironmentHelpers.js';
@@ -25,6 +25,7 @@ describeWithEnvironment('WebMCPView (View)', () => {
         {
           filters: {text: ''},
           tools: [],
+          toolCalls: [],
           filterButtons,
           onClearLogClick: () => {},
           onFilterChange: () => {},
@@ -48,6 +49,64 @@ describeWithEnvironment('WebMCPView (View)', () => {
     await assertScreenshot('application/webmcp-empty.png');
   });
 
+  it('renders tool calls with different statuses', async () => {
+    const target = document.createElement('div');
+    target.style.width = '600px';
+    target.style.height = '400px';
+    renderElementIntoDOM(target);
+    const toolCalls = [
+      {
+        invocationId: '1',
+        toolName: 'list_files',
+        input: '{"dir": "/tmp"}',
+      },
+      {
+        invocationId: '2',
+        toolName: 'read_file',
+        input: '{"path": "/tmp/test.txt"}',
+        result: {
+          status: Protocol.WebMCP.InvocationStatus.Success,
+          output: 'File content here',
+        },
+      },
+      {
+        invocationId: '3',
+        toolName: 'write_file',
+        input: '{"path": "/root/secret.txt"}',
+        result: {
+          status: Protocol.WebMCP.InvocationStatus.Error,
+          errorText: 'Permission denied',
+        },
+      },
+      {
+        invocationId: '4',
+        toolName: 'long_running_task',
+        input: '{"timeout": 100}',
+        result: {
+          status: Protocol.WebMCP.InvocationStatus.Canceled,
+        },
+      },
+    ];
+    const filterButtons = WebMCPView.createFilterButtons(() => {}, () => {});
+    DEFAULT_VIEW(
+        {
+          tools: [],
+          toolCalls,
+          filters: {text: ''},
+          filterButtons,
+          onClearLogClick: function(): void {
+            throw new Error('Function not implemented.');
+          },
+          onFilterChange: function(): void {
+            throw new Error('Function not implemented.');
+          }
+        },
+        {}, target);
+
+    const grid = target.querySelector('devtools-data-grid');
+    assert.isNotNull(grid);
+    await assertScreenshot('application/webmcp-tool-calls.png');
+  });
   it('renders a list of tools correctly (screenshot)', async () => {
     const container = document.createElement('div');
     container.style.width = '600px';
@@ -60,7 +119,6 @@ describeWithEnvironment('WebMCPView (View)', () => {
     ];
 
     const filterButtons = WebMCPView.createFilterButtons(() => {}, () => {});
-
     DEFAULT_VIEW(
         {
           filters: {text: ''},
@@ -68,8 +126,10 @@ describeWithEnvironment('WebMCPView (View)', () => {
           filterButtons,
           onClearLogClick: () => {},
           onFilterChange: () => {},
+          toolCalls: [],
         },
         {}, container);
+
     await assertScreenshot('application/webmcp_view.png');
   });
 
@@ -89,15 +149,16 @@ describeWithEnvironment('WebMCPView (View)', () => {
           filterButtons,
           onClearLogClick: () => {},
           onFilterChange: () => {},
+          toolCalls: [],
         },
         {}, target);
+
     const listElements = target.querySelectorAll('.tool-item');
     assert.lengthOf(listElements, 2);
     assert.strictEqual(listElements[0].querySelector('.tool-name')?.textContent, 'tool1');
     assert.strictEqual(listElements[0].querySelector('.tool-description')?.textContent, 'desc1');
     assert.isNull(target.querySelector('.tool-list .empty-state'));
   });
-
   it('renders filter bar with filters applied (screenshot)', async () => {
     const container = document.createElement('div');
     container.style.width = '600px';
@@ -113,6 +174,7 @@ describeWithEnvironment('WebMCPView (View)', () => {
         {
           filters: {text: 'test', toolTypes: {imperative: true}},
           tools: [],
+          toolCalls: [],
           filterButtons,
           onClearLogClick: () => {},
           onFilterChange: () => {},
@@ -133,6 +195,7 @@ describeWithEnvironment('WebMCPView (View)', () => {
         {
           filters: {text: ''},
           tools: [],
+          toolCalls: [],
           filterButtons,
           onClearLogClick,
           onFilterChange: () => {},
@@ -160,6 +223,7 @@ describeWithEnvironment('WebMCPView Presenter', () => {
 
     return {model, viewStub};
   }
+
   afterEach(() => {
     target?.dispose('test');
   });

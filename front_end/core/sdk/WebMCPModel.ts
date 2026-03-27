@@ -13,15 +13,32 @@ import {Capability, type Target} from './Target.js';
 export const enum Events {
   TOOLS_ADDED = 'ToolsAdded',
   TOOLS_REMOVED = 'ToolsRemoved',
+  TOOL_INVOKED = 'ToolInvoked',
+  TOOL_RESPONDED = 'ToolResponded',
+}
+
+export interface Call {
+  invocationId: string;
+  toolName: string;
+  input: string;
+  result?: {
+    status: Protocol.WebMCP.InvocationStatus,
+    output?: unknown,
+    errorText?: string,
+    exception?: Protocol.Runtime.RemoteObject,
+  };
 }
 
 export interface EventTypes {
   [Events.TOOLS_ADDED]: ReadonlyArray<Readonly<Protocol.WebMCP.Tool>>;
   [Events.TOOLS_REMOVED]: ReadonlyArray<Readonly<Protocol.WebMCP.Tool>>;
+  [Events.TOOL_INVOKED]: Call;
+  [Events.TOOL_RESPONDED]: Call;
 }
 
 export class WebMCPModel extends SDKModel<EventTypes> {
   readonly #tools = new Map<Protocol.Page.FrameId, Map<string, Protocol.WebMCP.Tool>>();
+  readonly #calls = new Map<string, Call>();
   readonly agent: ProtocolProxyApi.WebMCPApi;
   #enabled = false;
 
@@ -41,6 +58,10 @@ export class WebMCPModel extends SDKModel<EventTypes> {
 
   get tools(): IteratorObject<Protocol.WebMCP.Tool> {
     return this.#tools.values().flatMap(toolMap => toolMap.values());
+  }
+
+  get toolCalls(): Call[] {
+    return [...this.#calls.values()];
   }
 
   async enable(): Promise<void> {
@@ -78,6 +99,30 @@ export class WebMCPModel extends SDKModel<EventTypes> {
     }
     this.dispatchEventToListeners(Events.TOOLS_ADDED, tools);
   }
+
+  toolInvoked(params: Protocol.WebMCP.ToolInvokedEvent): void {
+    const call: Call = {
+      invocationId: params.invocationId,
+      toolName: params.toolName,
+      input: params.input,
+    };
+    this.#calls.set(params.invocationId, call);
+    this.dispatchEventToListeners(Events.TOOL_INVOKED, call);
+  }
+
+  toolResponded(params: Protocol.WebMCP.ToolRespondedEvent): void {
+    const call = this.#calls.get(params.invocationId);
+    if (!call) {
+      return;
+    }
+    call.result = {
+      status: params.status,
+      output: params.output,
+      errorText: params.errorText,
+      exception: params.exception,
+    };
+    this.dispatchEventToListeners(Events.TOOL_RESPONDED, call);
+  }
 }
 
 class WebMCPDispatcher implements ProtocolProxyApi.WebMCPDispatcher {
@@ -94,10 +139,12 @@ class WebMCPDispatcher implements ProtocolProxyApi.WebMCPDispatcher {
     this.#model.onToolsRemoved(params.tools);
   }
 
-  toolInvoked(): void {
+  toolInvoked(params: Protocol.WebMCP.ToolInvokedEvent): void {
+    this.#model.toolInvoked(params);
   }
 
-  toolResponded(): void {
+  toolResponded(params: Protocol.WebMCP.ToolRespondedEvent): void {
+    this.#model.toolResponded(params);
   }
 }
 

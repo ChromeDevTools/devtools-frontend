@@ -4,15 +4,17 @@
 
 import '../../ui/components/icon_button/icon_button.js';
 import '../../ui/components/lists/lists.js';
+import '../../ui/legacy/components/data_grid/data_grid.js';
 import '../../ui/legacy/legacy.js';
 
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import type * as Protocol from '../../generated/protocol.js';
+import * as Protocol from '../../generated/protocol.js';
 import * as Adorners from '../../ui/components/adorners/adorners.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {
+  Directives,
   html,
   render,
 } from '../../ui/lit/lit.js';
@@ -43,6 +45,26 @@ const UIStrings = {
    */
   noCallsPlaceholder: 'Start interacting with your `WebMCP` agent to see real-time tool calls and executions here.',
   /**
+   * @description Text for the name of a tool call
+   */
+  name: 'Name',
+  /**
+   * @description Text for the status of a tool call
+   */
+  status: 'Status',
+  /**
+   * @description Text for the input of a tool call
+   */
+  input: 'Input',
+  /**
+   * @description Text for the output of a tool call
+   */
+  output: 'Output',
+  /**
+   * @description Text for the status of a tool call that is in progress
+   */
+  inProgress: 'In Progress',
+  /**
    * @description Tooltip for the clear log button
    */
   clearLog: 'Clear log',
@@ -71,20 +93,25 @@ const UIStrings = {
    */
   declarative: 'Declarative',
   /**
-   * @description Filter option for success status
-   */
-  success: 'Success',
-  /**
-   * @description Filter option for error status
+   * @description Text for the status of a tool call that has failed
    */
   error: 'Error',
   /**
-   * @description Filter option for pending status
+   * @description Text for the status of a tool call that was canceled
    */
-  pending: 'Pending',
+  canceled: 'Canceled',
+  /**
+   * @description Text for the status of a tool call that succeeded
+   */
+  success: 'Success',
+  /**
+   * @description Text for the status of a tool call that has failed
+   */
+  pending: 'In Progress',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/application/WebMCPView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+const {classMap} = Directives;
 
 export interface FilterState {
   text: string;
@@ -114,6 +141,7 @@ export interface ViewInput {
   filterButtons: FilterMenuButtons;
   onClearLogClick: () => void;
   onFilterChange: (filters: FilterState) => void;
+  toolCalls: SDK.WebMCPModel.Call[];
 }
 
 export type View = (input: ViewInput, output: object, target: HTMLElement) => void;
@@ -121,6 +149,30 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
   const tools = input.tools;
   const isFilterActive =
       Boolean(input.filters.text) || Boolean(input.filters.toolTypes) || Boolean(input.filters.statusTypes);
+  const iconName = (call: SDK.WebMCPModel.Call): string => {
+    switch (call.result?.status) {
+      case Protocol.WebMCP.InvocationStatus.Error:
+        return 'cross-circle-filled';
+      case Protocol.WebMCP.InvocationStatus.Canceled:
+        return 'record-stop';
+      case undefined:
+        return 'dots-circle';
+      default:
+        return '';
+    }
+  };
+  const statusString = (call: SDK.WebMCPModel.Call): string => {
+    switch (call.result?.status) {
+      case Protocol.WebMCP.InvocationStatus.Error:
+        return i18nString(UIStrings.error);
+      case Protocol.WebMCP.InvocationStatus.Canceled:
+        return i18nString(UIStrings.canceled);
+      case Protocol.WebMCP.InvocationStatus.Success:
+        return i18nString(UIStrings.success);
+      default:
+        return i18nString(UIStrings.inProgress);
+    }
+  };
   // clang-format off
   render(html`
     <style>${webMCPViewStyles}</style>
@@ -152,8 +204,41 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
                              ?hidden=${!isFilterActive}></devtools-button>
           </devtools-toolbar>
         </div>
+        ${input.toolCalls.length > 0 ? html`
+          <devtools-data-grid striped>
+            <table>
+              <tr>
+                <th id="name" weight="20">
+                  ${i18nString(UIStrings.name)}
+                </th>
+                <th id="status" weight="20">${i18nString(UIStrings.status)}</th>
+                <th id="input" weight="30">${i18nString(UIStrings.input)}</th>
+                <th id="output" weight="30">${i18nString(UIStrings.output)}</th>
+              </tr>
+              ${input.toolCalls.map(call => html`
+                <tr class=${classMap({
+                  'status-error': call.result?.status === Protocol.WebMCP.InvocationStatus.Error,
+                  'status-cancelled': call.result?.status === Protocol.WebMCP.InvocationStatus.Canceled,
+                })}>
+                  <style>${webMCPViewStyles}</style>
+                  <td>${call.toolName}</td>
+                  <td>
+                    <div class="status-cell">
+                      ${iconName(call) ? html`<devtools-icon class="small" name=${iconName(call)}></devtools-icon>`
+                                       : ''}
+                      <span>${statusString(call)}</span>
+                    </div>
+                  </td>
+                  <td>${call.input}</td>
+                  <td>${call.result?.output ? JSON.stringify(call.result.output) : call.result?.errorText ?? ''}</td>
+                </tr>
+              `)}
+              </table>
+          </devtools-data-grid>
+        ` : html`
         ${UI.Widget.widget(UI.EmptyWidget.EmptyWidget, {header: i18nString(UIStrings.noCallsPlaceholderTitle),
-                                                        text: i18nString(UIStrings.noCallsPlaceholder)})}
+                                                          text: i18nString(UIStrings.noCallsPlaceholder)})}
+        `}
       </div>
       <div slot="sidebar" class="tool-list">
         <div class="section-title">${i18nString(UIStrings.toolRegistry)}</div>
@@ -276,15 +361,18 @@ export class WebMCPView extends UI.Widget.VBox {
         i18nString(UIStrings.pending), () => toggle('pending'),
         {checked: this.#filterState.statusTypes?.['pending'] ?? false, jslogContext: 'webmcp.pending'});
   }
-
   #webMCPModelAdded(model: SDK.WebMCPModel.WebMCPModel): void {
     model.addEventListener(SDK.WebMCPModel.Events.TOOLS_ADDED, this.requestUpdate, this);
     model.addEventListener(SDK.WebMCPModel.Events.TOOLS_REMOVED, this.requestUpdate, this);
+    model.addEventListener(SDK.WebMCPModel.Events.TOOL_INVOKED, this.requestUpdate, this);
+    model.addEventListener(SDK.WebMCPModel.Events.TOOL_RESPONDED, this.requestUpdate, this);
   }
 
   #webMCPModelRemoved(model: SDK.WebMCPModel.WebMCPModel): void {
     model.removeEventListener(SDK.WebMCPModel.Events.TOOLS_ADDED, this.requestUpdate, this);
     model.removeEventListener(SDK.WebMCPModel.Events.TOOLS_REMOVED, this.requestUpdate, this);
+    model.removeEventListener(SDK.WebMCPModel.Events.TOOL_INVOKED, this.requestUpdate, this);
+    model.removeEventListener(SDK.WebMCPModel.Events.TOOL_RESPONDED, this.requestUpdate, this);
   }
 
   #handleClearLogClick = (): void => {
@@ -311,9 +399,13 @@ export class WebMCPView extends UI.Widget.VBox {
     const tools = models.flatMap(model => model.tools.toArray());
     return tools.sort((a, b) => a.name.localeCompare(b.name));
   }
+
   override performUpdate(): void {
+    const models = SDK.TargetManager.TargetManager.instance().models(SDK.WebMCPModel.WebMCPModel);
+    const toolCalls = models.flatMap(model => model.toolCalls);
     const input: ViewInput = {
       tools: this.#getTools(),
+      toolCalls,
       filters: this.#filterState,
       filterButtons: this.#filterButtons,
       onClearLogClick: this.#handleClearLogClick,

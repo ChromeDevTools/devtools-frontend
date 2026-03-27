@@ -76,7 +76,7 @@ export class ThirdPartyTreeViewWidget extends TimelineTreeView.TimelineTreeView 
   }
 
   override buildTree(): Trace.Extras.TraceTree.Node {
-    const parsedTrace = this.parsedTrace();
+    const parsedTrace = this.parsedTrace;
     const entityMapper = this.entityMapper();
 
     if (!parsedTrace || !entityMapper) {
@@ -96,7 +96,7 @@ export class ThirdPartyTreeViewWidget extends TimelineTreeView.TimelineTreeView 
     const filter = new Trace.Extras.TraceFilter.VisibleEventsFilter(
         Trace.Styles.visibleTypes().concat([Trace.Types.Events.Name.SYNTHETIC_NETWORK_REQUEST]));
 
-    const node = new Trace.Extras.TraceTree.BottomUpRootNode(this.selectedEvents(), {
+    const node = new Trace.Extras.TraceTree.BottomUpRootNode(this.selectedEvents, {
       textFilter: this.textFilter(),
       filters: [filter],
       startTime: this.startTime,

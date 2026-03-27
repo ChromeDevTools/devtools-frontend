@@ -290,9 +290,17 @@ export interface TimelineRangeSummaryAiWidget {
   };
 }
 
+export interface BottomUpTreeAiWidget {
+  name: 'BOTTOM_UP_TREE';
+  data: {
+    bounds: Trace.Types.Timing.TraceWindowMicro,
+    parsedTrace: Trace.TraceModel.ParsedTrace,
+  };
+}
+
 // This type will grow as we add more widgets.
 export type AiWidget = ComputedStyleAiWidget|CoreVitalsAiWidget|StylePropertiesAiWidget|DomTreeAiWidget|
-    PerformanceTraceAiWidget|LcpBreakdownAiWidget|TimelineRangeSummaryAiWidget;
+    PerformanceTraceAiWidget|LcpBreakdownAiWidget|TimelineRangeSummaryAiWidget|BottomUpTreeAiWidget;
 
 export type FunctionCallHandlerResult<Result> = {
   requiresApproval: true,

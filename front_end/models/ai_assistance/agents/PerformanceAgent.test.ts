@@ -519,8 +519,9 @@ code
 
       assert.exists(action);
       assert.exists(action.widgets);
-      assert.lengthOf(action.widgets, 1);
+      assert.lengthOf(action.widgets, 2);
       assert.strictEqual(action.widgets[0].name, 'TIMELINE_RANGE_SUMMARY');
+      assert.strictEqual(action.widgets[1].name, 'BOTTOM_UP_TREE');
       // @ts-expect-error
       assert.deepEqual(action.widgets[0].data.bounds, bounds);
 

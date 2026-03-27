@@ -106,7 +106,7 @@ export class EventsTimelineTreeView extends TimelineTreeView {
   }
 
   override showDetailsForNode(node: Trace.Extras.TraceTree.Node): boolean {
-    const parsedTrace = this.parsedTrace();
+    const parsedTrace = this.parsedTrace;
     if (!parsedTrace) {
       return false;
     }

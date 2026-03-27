@@ -13,8 +13,9 @@ import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import type {
-  AiWidget, ComputedStyleAiWidget, CoreVitalsAiWidget, DomTreeAiWidget, LcpBreakdownAiWidget, PerformanceTraceAiWidget,
-  StylePropertiesAiWidget, TimelineRangeSummaryAiWidget} from '../../../models/ai_assistance/agents/AiAgent.js';
+  AiWidget, BottomUpTreeAiWidget, ComputedStyleAiWidget, CoreVitalsAiWidget, DomTreeAiWidget, LcpBreakdownAiWidget,
+  PerformanceTraceAiWidget, StylePropertiesAiWidget,
+  TimelineRangeSummaryAiWidget} from '../../../models/ai_assistance/agents/AiAgent.js';
 import * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
 import * as ComputedStyle from '../../../models/computed_style/computed_style.js';
 import * as Trace from '../../../models/trace/trace.js';
@@ -197,7 +198,11 @@ const UIStringsNotTranslate = {
   /**
    * @description The title of the button that allows exporting the conversation for agents.
    */
-  exportForAgents: 'Copy for your coding agent'
+  exportForAgents: 'Copy for your coding agent',
+  /**
+   * @description Title for the bottom up thread activity widget.
+   */
+  bottomUpTree: 'Bottom-up thread activity',
 } as const;
 
 export interface Step {
@@ -829,6 +834,29 @@ async function makeLcpBreakdownWidget(widgetData: LcpBreakdownAiWidget): Promise
   };
 }
 
+async function makeBottomUpTimelineTreeWidget(widgetData: BottomUpTreeAiWidget): Promise<WidgetMakerResponse|null> {
+  const bottomUpRootNode = AiAssistanceModel.AIQueries.AIQueries.mainThreadActivityBottomUp(
+      widgetData.data.bounds, widgetData.data.parsedTrace);
+  if (!bottomUpRootNode) {
+    return null;
+  }
+  const events = bottomUpRootNode.events;
+  const startTime = Trace.Helpers.Timing.microToMilli(widgetData.data.bounds.min);
+  const endTime = Trace.Helpers.Timing.microToMilli(widgetData.data.bounds.max);
+
+  const renderedWidget = html`<devtools-widget
+      class="bottom-up-timeline-tree-widget"
+      ${widget(Timeline.TimelineTreeView.BottomUpTimelineTreeView, {
+    selectedEvents: events,
+    parsedTrace: widgetData.data.parsedTrace,
+    startTime,
+    endTime,
+    compactMode: true,
+  })}></devtools-widget>`;
+
+  return {renderedWidget, revealable: null, title: lockedString(UIStringsNotTranslate.bottomUpTree)};
+}
+
 function renderWidgetResponse(response: WidgetMakerResponse|null): Lit.LitTemplate {
   if (response === null) {
     return Lit.nothing;
@@ -995,6 +1023,9 @@ async function renderWidgets(
         break;
       case 'TIMELINE_RANGE_SUMMARY':
         response = await makeTimelineRangeSummaryWidget(widgetData);
+        break;
+      case 'BOTTOM_UP_TREE':
+        response = await makeBottomUpTimelineTreeWidget(widgetData);
         break;
       default:
         Platform.assertNever(widgetData, 'Unknown AiWidget name');
@@ -1486,7 +1517,7 @@ async function makeTimelineRangeSummaryWidget(widgetData: TimelineRangeSummaryAi
             widget(Timeline.ThirdPartyTreeView.ThirdPartyTreeViewWidget, {
               maxRows: 10,
               model: {
-                selectedEvents: thirdPartyTree.selectedEvents() ?? null,
+                selectedEvents: thirdPartyTree.selectedEvents ?? null,
                 parsedTrace,
                 entityMapper: thirdPartyTree.entityMapper(),
               },

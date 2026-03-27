@@ -200,6 +200,7 @@ export class TimelineTreeView extends
   // Compact mode is used to render the tree view in a more compact UI,
   // suitable for AI assistance widgets. It removes sidebars and toolbars.
   #compactMode = false;
+  #maxLinkLength: number|undefined = undefined;
 
   /**
    * Determines if the first child in the data grid will be selected
@@ -270,6 +271,14 @@ export class TimelineTreeView extends
     if (this.dataGrid) {
       this.#applyCompactMode();
     }
+  }
+
+  get maxLinkLength(): number|undefined {
+    return this.#maxLinkLength;
+  }
+
+  set maxLinkLength(maxLinkLength: number|undefined) {
+    this.#maxLinkLength = maxLinkLength;
   }
 
   #applyCompactMode(): void {
@@ -900,7 +909,8 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode<Gri
       const linkifier = this.treeView.linkifier;
       const isFreshOrEnhanced =
           Boolean(parsedTrace && Tracing.FreshRecording.Tracker.instance().recordingIsFreshOrEnhanced(parsedTrace));
-      this.linkElement = TimelineUIUtils.linkifyTopCallFrame(event, target, linkifier, isFreshOrEnhanced);
+      const maxLength = this.treeView.maxLinkLength;
+      this.linkElement = TimelineUIUtils.linkifyTopCallFrame(event, target, linkifier, isFreshOrEnhanced, maxLength);
       if (this.linkElement) {
         container.createChild('div', 'activity-link').appendChild(this.linkElement);
       }

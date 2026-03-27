@@ -785,7 +785,7 @@ export class TimelineUIUtils {
 
   static linkifyTopCallFrame(
       event: Trace.Types.Events.Event, target: SDK.Target.Target|null, linkifier: LegacyComponents.Linkifier.Linkifier,
-      isFreshOrEnhanced = false): Element|null {
+      isFreshOrEnhanced = false, maxLength?: number): Element|null {
     let frame = Trace.Helpers.Trace.getZeroIndexedStackTraceInEventPayload(event)?.[0];
     if (Trace.Types.Events.isProfileCall(event)) {
       frame = event.callFrame;
@@ -800,6 +800,7 @@ export class TimelineUIUtils {
       showColumnNumber: true,
       columnNumber: frame.columnNumber,
       lineNumber: frame.lineNumber,
+      maxLength,
     };
     if (isFreshOrEnhanced) {
       return linkifier.maybeLinkifyConsoleCallFrame(target, frame, {showColumnNumber: true, inlineFrameIndex: 0});

@@ -132,6 +132,7 @@ const DEFAULT_VIEW: View = (input, output, target) => {
                   canShowFeedbackForm: input.canShowFeedbackForm,
                   markdownRenderer: input.markdownRenderer,
                   isLastMessage: input.messages.at(-1) === message,
+                  isFirstMessage: input.messages.at(0) === message,
                   onSuggestionClick: input.handleSuggestionClick,
                   onFeedbackSubmit: input.onFeedbackSubmit,
                   onCopyResponseClick: input.onCopyResponseClick,

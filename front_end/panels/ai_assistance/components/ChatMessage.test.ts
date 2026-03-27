@@ -29,6 +29,7 @@ describeWithEnvironment('ChatMessage', () => {
       isLoading: false,
       isReadOnly: false,
       isLastMessage: true,
+      isFirstMessage: false,
       markdownRenderer: new AiAssistance.MarkdownRendererWithCodeBlock(),
       canShowFeedbackForm: true,
       onSuggestionClick: sinon.stub(),
@@ -212,6 +213,7 @@ describeWithEnvironment('ChatMessage', () => {
             isSubmitButtonDisabled: false,
             isShowingFeedbackForm: false,
             isLastMessage: true,
+            isFirstMessage: false,
             showActions: true,
             message: {
               entity: AiAssistance.ChatMessage.ChatMessageEntity.MODEL,
@@ -572,6 +574,7 @@ describeWithEnvironment('ChatMessage', () => {
             isSubmitButtonDisabled: false,
             isShowingFeedbackForm: false,
             isLastMessage: true,
+            isFirstMessage: false,
             showActions: true,
             message: messageWithNamedWidget,
             isLoading: false,
@@ -610,6 +613,7 @@ describeWithEnvironment('ChatMessage', () => {
             isSubmitButtonDisabled: false,
             isShowingFeedbackForm: true,
             isLastMessage: true,
+            isFirstMessage: false,
             showActions: true,
             message: {
               entity: AiAssistance.ChatMessage.ChatMessageEntity.MODEL,
@@ -646,6 +650,7 @@ describeWithEnvironment('ChatMessage', () => {
             isSubmitButtonDisabled: false,
             isShowingFeedbackForm: true,
             isLastMessage: true,
+            isFirstMessage: false,
             showActions: true,
             message: {
               entity: AiAssistance.ChatMessage.ChatMessageEntity.MODEL,
@@ -699,6 +704,7 @@ describeWithEnvironment('ChatMessage', () => {
             isSubmitButtonDisabled: false,
             isShowingFeedbackForm: false,
             isLastMessage: true,
+            isFirstMessage: false,
             showActions: false,
             message: {
               entity: AiAssistance.ChatMessage.ChatMessageEntity.USER,
@@ -713,6 +719,76 @@ describeWithEnvironment('ChatMessage', () => {
           },
           {}, target);
       await assertScreenshot('ai_assistance/user_action_row_user_message.png');
+    });
+
+    it('should apply is-first-message class when isFirstMessage is true', () => {
+      const userTarget = document.createElement('div');
+      AiAssistance.ChatMessage.DEFAULT_VIEW(
+          {
+            onRatingClick: () => {},
+            onReportClick: () => {},
+            onCopyResponseClick: () => {},
+            scrollSuggestionsScrollContainer: () => {},
+            onSuggestionsScrollOrResize: () => {},
+            onSuggestionClick: () => {},
+            onSubmit: () => {},
+            onClose: () => {},
+            onInputChange: () => {},
+            onFeedbackSubmit: () => {},
+            showRateButtons: false,
+            isSubmitButtonDisabled: false,
+            isShowingFeedbackForm: false,
+            isLastMessage: false,
+            isFirstMessage: true,
+            showActions: false,
+            message: {
+              entity: AiAssistance.ChatMessage.ChatMessageEntity.USER,
+              text: 'First user message',
+            },
+            isLoading: false,
+            isReadOnly: false,
+            canShowFeedbackForm: false,
+            markdownRenderer: new AiAssistance.MarkdownRendererWithCodeBlock(),
+            currentRating: undefined,
+            walkthrough: {...DEFAULT_WALKTHROUGH},
+          },
+          {}, userTarget);
+      const userMessage = querySelectorErrorOnMissing(userTarget, '.chat-message');
+      assert.isTrue(userMessage.classList.contains('is-first-message'));
+
+      const modelTarget = document.createElement('div');
+      AiAssistance.ChatMessage.DEFAULT_VIEW(
+          {
+            onRatingClick: () => {},
+            onReportClick: () => {},
+            onCopyResponseClick: () => {},
+            scrollSuggestionsScrollContainer: () => {},
+            onSuggestionsScrollOrResize: () => {},
+            onSuggestionClick: () => {},
+            onSubmit: () => {},
+            onClose: () => {},
+            onInputChange: () => {},
+            onFeedbackSubmit: () => {},
+            showRateButtons: false,
+            isSubmitButtonDisabled: false,
+            isShowingFeedbackForm: false,
+            isLastMessage: false,
+            isFirstMessage: true,
+            showActions: false,
+            message: {
+              entity: AiAssistance.ChatMessage.ChatMessageEntity.MODEL,
+              parts: [],
+            },
+            isLoading: false,
+            isReadOnly: false,
+            canShowFeedbackForm: false,
+            markdownRenderer: new AiAssistance.MarkdownRendererWithCodeBlock(),
+            currentRating: undefined,
+            walkthrough: {...DEFAULT_WALKTHROUGH},
+          },
+          {}, modelTarget);
+      const modelMessage = querySelectorErrorOnMissing(modelTarget, '.chat-message');
+      assert.isTrue(modelMessage.classList.contains('is-first-message'));
     });
   });
 });

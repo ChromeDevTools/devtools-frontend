@@ -293,6 +293,7 @@ export interface MessageInput {
   isLoading: boolean;
   isReadOnly: boolean;
   isLastMessage: boolean;
+  isFirstMessage: boolean;
   canShowFeedbackForm: boolean;
   markdownRenderer: MarkdownLitRenderer;
   onSuggestionClick: (suggestion: string) => void;
@@ -309,22 +310,37 @@ export interface MessageInput {
 }
 
 export const DEFAULT_VIEW = (input: ChatMessageViewInput, output: ViewOutput, target: HTMLElement): void => {
+  const hasAiV2 = Boolean(Root.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled);
   const message = input.message;
+
   if (message.entity === ChatMessageEntity.USER) {
     const imageInput = message.imageInput && 'inlineData' in message.imageInput ?
         renderImageChatMessage(message.imageInput.inlineData) :
         Lit.nothing;
+
+    const messageClasses = Lit.Directives.classMap({
+      'chat-message': true,
+      query: true,
+      'is-last-message': input.isLastMessage,
+      'is-first-message': input.isFirstMessage,
+      'ai-v2': hasAiV2,
+    });
+
+    const userQueryWrapperClasses = Lit.Directives.classMap({
+      // Don't need to style at all unless we are on the V2 flag.
+      // Once we ship this can be removed entirely.
+      'user-query-wrapper': hasAiV2
+    });
     // clang-format off
     Lit.render(html`
       <style>${Input.textInputStyles}</style>
       <style>${chatMessageStyles}</style>
-      <section
-        class="chat-message query ${input.isLastMessage ? 'is-last-message' : ''}"
-        jslog=${VisualLogging.section('question')}
-      >
-        ${imageInput}
-        <div class="message-content">${renderTextAsMarkdown(message.text, input.markdownRenderer)}</div>
-      </section>
+      <div class=${userQueryWrapperClasses}>
+        <section class=${messageClasses} jslog=${VisualLogging.section('question')}>
+          ${imageInput}
+          <div class="message-content">${renderTextAsMarkdown(message.text, input.markdownRenderer)}</div>
+        </section>
+      </div>
     `, target);
     // clang-format on
     return;
@@ -332,48 +348,53 @@ export const DEFAULT_VIEW = (input: ChatMessageViewInput, output: ViewOutput, ta
 
   const steps = message.parts.filter(part => part.type === 'step').map(part => part.step);
   const icon = AiAssistanceModel.AiUtils.getIconName();
-  const aiAssistanceV2 = Root.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled;
 
+  const messageClasses = Lit.Directives.classMap({
+    'chat-message': true,
+    answer: true,
+    'is-last-message': input.isLastMessage,
+    'is-first-message': input.isFirstMessage,
+    'ai-v2': hasAiV2,
+  });
   // clang-format off
   Lit.render(html`
     <style>${Input.textInputStyles}</style>
     <style>${chatMessageStyles}</style>
-    <section
-      class="chat-message answer ${input.isLastMessage ? 'is-last-message' : ''}"
-      jslog=${VisualLogging.section('answer')}
-    >
-      ${aiAssistanceV2 ? Lit.nothing : html`
+    <section class=${messageClasses} jslog=${VisualLogging.section('answer')}>
+      ${hasAiV2 ? Lit.nothing : html`
         <div class="message-info">
           <devtools-icon name=${icon}></devtools-icon>
           <div class="message-name">
             <h2>${AiAssistanceModel.AiUtils.isGeminiBranding() ? lockedString(UIStringsNotTranslate.gemini) : lockedString(UIStringsNotTranslate.ai)}</h2>
           </div>
         </div>`}
-      ${aiAssistanceV2 ? renderWalkthroughUI(input, steps) : Lit.nothing}
-      ${Lit.Directives.repeat(
-        message.parts,
-        (_, index) => index,
-        (part, index) => {
-          const isLastPart = index === message.parts.length - 1;
-          if (part.type === 'answer') {
-            return html`<p>${renderTextAsMarkdown(part.text, input.markdownRenderer, { animate: !input.isReadOnly && input.isLoading && isLastPart && input.isLastMessage })}</p>`;
-          }
-          if (part.type === 'widget') {
-            return html`${Lit.Directives.until(renderWidgets(part.widgets, {wrapperClass: 'main-widgets-wrapper'}))}`;
-          }
-          if (!aiAssistanceV2 && part.type === 'step') {
-            return renderStep({
-              step: part.step,
-              isLoading: input.isLoading,
-              markdownRenderer: input.markdownRenderer,
-              isLast: isLastPart,
-            });
-          }
-          return Lit.nothing;
-        },
-      )}
-      ${renderError(message)}
-      ${input.showActions ? renderActions(input, output) : Lit.nothing}
+      ${hasAiV2 ? renderWalkthroughUI(input, steps) : Lit.nothing}
+      <div class="answer-body-wrapper">
+        ${Lit.Directives.repeat(
+          message.parts,
+          (_, index) => index,
+          (part, index) => {
+            const isLastPart = index === message.parts.length - 1;
+            if (part.type === 'answer') {
+              return html`<p>${renderTextAsMarkdown(part.text, input.markdownRenderer, { animate: !input.isReadOnly && input.isLoading && isLastPart && input.isLastMessage })}</p>`;
+            }
+            if (part.type === 'widget') {
+              return html`${Lit.Directives.until(renderWidgets(part.widgets, {wrapperClass: 'main-widgets-wrapper'}))}`;
+            }
+            if (!hasAiV2 && part.type === 'step') {
+              return renderStep({
+                step: part.step,
+                isLoading: input.isLoading,
+                markdownRenderer: input.markdownRenderer,
+                isLast: isLastPart,
+              });
+            }
+            return Lit.nothing;
+          },
+        )}
+        ${renderError(message)}
+        ${input.showActions ? renderActions(input, output) : Lit.nothing}
+      </div>
     </section>
   `, target);
   // clang-format on
@@ -1225,6 +1246,7 @@ export class ChatMessage extends UI.Widget.Widget {
   isReadOnly = false;
   canShowFeedbackForm = false;
   isLastMessage = false;
+  isFirstMessage = false;
   markdownRenderer!: MarkdownLitRenderer;
   onSuggestionClick: (suggestion: string) => void = () => {};
   onFeedbackSubmit:
@@ -1272,6 +1294,7 @@ export class ChatMessage extends UI.Widget.Widget {
           canShowFeedbackForm: this.canShowFeedbackForm,
           markdownRenderer: this.markdownRenderer,
           isLastMessage: this.isLastMessage,
+          isFirstMessage: this.isFirstMessage,
           onSuggestionClick: this.onSuggestionClick,
           onRatingClick: this.#handleRateClick.bind(this),
           onReportClick: () => UIHelpers.openInNewTab(REPORT_URL),

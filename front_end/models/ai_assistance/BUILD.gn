@@ -24,6 +24,7 @@ devtools_module("ai_assistance") {
     "agents/BreakpointDebuggerAgentOverlay.ts",
     "agents/ContextSelectionAgent.ts",
     "agents/ConversationSummaryAgent.ts",
+    "agents/ExecuteJavascript.ts",
     "agents/FileAgent.ts",
     "agents/NetworkAgent.ts",
     "agents/PatchAgent.ts",

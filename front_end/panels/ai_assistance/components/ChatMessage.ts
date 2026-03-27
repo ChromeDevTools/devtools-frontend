@@ -771,10 +771,9 @@ async function makeComputedStyleWidget(widgetData: ComputedStyleAiWidget): Promi
   };
 }
 
-async function makeCoreVitalsWidget(widgetData: CoreVitalsAiWidget): Promise<WidgetMakerResponse|null> {
+async function makeCoreWebVitalsWidget(widgetData: CoreVitalsAiWidget): Promise<WidgetMakerResponse|null> {
   // clang-format off
-  const renderedWidget = html`<devtools-widget
-      class="core-vitals-widget" ${widget(TimelineComponents.CWVMetrics.CWVMetrics, {data: widgetData.data})}>
+  const renderedWidget = html`<devtools-widget class="core-vitals-widget" ${widget(TimelineComponents.CWVMetrics.CWVMetrics, {data: widgetData.data, skipBottomBorder: true})}>
   </devtools-widget>`;
   // clang-format on
 
@@ -1011,7 +1010,7 @@ async function renderWidgets(
         response = await makeComputedStyleWidget(widgetData);
         break;
       case 'CORE_VITALS':
-        response = await makeCoreVitalsWidget(widgetData);
+        response = await makeCoreWebVitalsWidget(widgetData);
         break;
       case 'STYLE_PROPERTIES':
         response = await makeStylePropertiesWidget(widgetData);

@@ -121,6 +121,7 @@ interface MetricsViewInput {
   didDismissFieldMismatchNotice: boolean;
   onDismisFieldMismatchNotice: () => void;
   onClickMetric: (traceEvent: Trace.Types.Events.Event) => void;
+  skipBottomBorder: boolean;
 }
 
 type MetricsView = (input: MetricsViewInput, output: undefined, target: HTMLElement) => void;
@@ -210,7 +211,7 @@ const CWV_METRICS_VIEW: MetricsView = (input, _output, target) => {
       <span>${clsEl}</span>
       <span class="row-label">Local</span>
     </div>
-    <span class="row-border"></span>
+    ${!field && input.skipBottomBorder ? Lit.nothing : html`<span class="row-border"></span>`}
   `;
 
   let fieldMetricsTemplateResult;
@@ -234,7 +235,7 @@ const CWV_METRICS_VIEW: MetricsView = (input, _output, target) => {
         <span>${clsEl}</span>
         <span class="row-label">${i18nString(UIStrings.fieldScoreLabel, {PH1: scope})}</span>
       </div>
-      <span class="row-border"></span>
+      ${input.skipBottomBorder ? Lit.nothing : html`<span class="row-border"></span>`}
     `;
     // clang-format on
   }
@@ -293,6 +294,8 @@ export class CWVMetrics extends UI.Widget.Widget {
 
   #didDismissFieldMismatchNotice = false;
 
+  #skipBottomBorder = false;
+
   constructor(element?: HTMLElement, view: MetricsView = CWV_METRICS_VIEW) {
     super(element, {useShadowDom: true});
     this.#view = view;
@@ -300,6 +303,18 @@ export class CWVMetrics extends UI.Widget.Widget {
 
   set data(data: CWVMetricsData) {
     this.#data = data;
+    this.requestUpdate();
+  }
+
+  get skipBottomBorder(): boolean {
+    return this.#skipBottomBorder;
+  }
+
+  set skipBottomBorder(x: boolean) {
+    if (x === this.#skipBottomBorder) {
+      return;
+    }
+    this.#skipBottomBorder = x;
     this.requestUpdate();
   }
 
@@ -333,6 +348,7 @@ export class CWVMetrics extends UI.Widget.Widget {
       didDismissFieldMismatchNotice: this.#didDismissFieldMismatchNotice,
       onDismisFieldMismatchNotice: this.#onDismisFieldMismatchNotice.bind(this),
       onClickMetric: this.#onClickMetric.bind(this),
+      skipBottomBorder: this.#skipBottomBorder,
     };
     this.#view(input, undefined, this.contentElement);
   }

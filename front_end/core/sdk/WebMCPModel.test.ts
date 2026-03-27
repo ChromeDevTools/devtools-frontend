@@ -98,4 +98,25 @@ describeWithEnvironment('WebMCPModel', () => {
     const eventTools = await toolsRemovedPromise;
     assert.deepEqual(eventTools, [tool1]);
   });
+
+  it('clears the call log when clearCalls is called', async () => {
+    const tool = createTool('test-tool', 'frame-1' as Protocol.Page.FrameId);
+    webMCPModel.onToolsAdded([tool]);
+
+    const toolInvokedPromise = webMCPModel.once(SDK.WebMCPModel.Events.TOOL_INVOKED);
+    const invokedEvent: Protocol.WebMCP.ToolInvokedEvent = {
+      toolName: 'test-tool',
+      frameId: 'frame-1' as Protocol.Page.FrameId,
+      invocationId: '1',
+      input: 'test input',
+    };
+    webMCPModel.toolInvoked(invokedEvent);
+    await toolInvokedPromise;
+
+    assert.lengthOf(webMCPModel.toolCalls, 1);
+
+    webMCPModel.clearCalls();
+
+    assert.isEmpty(webMCPModel.toolCalls);
+  });
 });

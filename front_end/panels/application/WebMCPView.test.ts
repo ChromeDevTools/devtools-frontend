@@ -11,7 +11,7 @@ import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 
 import * as Application from './application.js';
 
-const {DEFAULT_VIEW, WebMCPView} = Application.WebMCPView;
+const {DEFAULT_VIEW, WebMCPView, filterToolCalls} = Application.WebMCPView;
 
 describeWithEnvironment('WebMCPView (View)', () => {
   it('renders empty when no tools are available', async () => {
@@ -54,16 +54,24 @@ describeWithEnvironment('WebMCPView (View)', () => {
     target.style.width = '600px';
     target.style.height = '400px';
     renderElementIntoDOM(target);
-    const toolCalls = [
+    const toolCalls: SDK.WebMCPModel.Call[] = [
       {
         invocationId: '1',
-        toolName: 'list_files',
         input: '{"dir": "/tmp"}',
+        tool: {
+          name: 'list_files',
+          description: 'desc',
+          frameId: 'frame-1' as Protocol.Page.FrameId,
+        },
       },
       {
         invocationId: '2',
-        toolName: 'read_file',
         input: '{"path": "/tmp/test.txt"}',
+        tool: {
+          name: 'read_file',
+          description: 'desc',
+          frameId: 'frame-1' as Protocol.Page.FrameId,
+        },
         result: {
           status: Protocol.WebMCP.InvocationStatus.Success,
           output: 'File content here',
@@ -71,8 +79,12 @@ describeWithEnvironment('WebMCPView (View)', () => {
       },
       {
         invocationId: '3',
-        toolName: 'write_file',
         input: '{"path": "/root/secret.txt"}',
+        tool: {
+          name: 'write_file',
+          description: 'desc',
+          frameId: 'frame-1' as Protocol.Page.FrameId,
+        },
         result: {
           status: Protocol.WebMCP.InvocationStatus.Error,
           errorText: 'Permission denied',
@@ -80,8 +92,12 @@ describeWithEnvironment('WebMCPView (View)', () => {
       },
       {
         invocationId: '4',
-        toolName: 'long_running_task',
         input: '{"timeout": 100}',
+        tool: {
+          name: 'long_running_task',
+          description: 'desc',
+          frameId: 'frame-1' as Protocol.Page.FrameId,
+        },
         result: {
           status: Protocol.WebMCP.InvocationStatus.Canceled,
         },
@@ -283,5 +299,134 @@ describeWithEnvironment('WebMCPView Presenter', () => {
     assert.strictEqual(input.filters.text, '');
     assert.isUndefined(input.filters.toolTypes);
     assert.isUndefined(input.filters.statusTypes);
+  });
+});
+
+describe('filterToolCalls', () => {
+  const mockCalls: SDK.WebMCPModel.Call[] = [
+    {
+      invocationId: '1',
+      input: '{"dir": "/tmp"}',
+      tool: {
+        name: 'list_files',
+        description: 'desc',
+        frameId: 'frame-1' as Protocol.Page.FrameId,
+      },
+    },
+    {
+      invocationId: '2',
+      input: '{"path": "/tmp/test.txt"}',
+      tool: {
+        name: 'read_file',
+        description: 'desc',
+        frameId: 'frame-1' as Protocol.Page.FrameId,
+      },
+      result: {
+        status: Protocol.WebMCP.InvocationStatus.Success,
+        output: 'File content here',
+      },
+    },
+    {
+      invocationId: '3',
+      input: '{"path": "/root/secret.txt"}',
+      tool: {
+        name: 'write_file',
+        description: 'desc',
+        frameId: 'frame-1' as Protocol.Page.FrameId,
+      },
+      result: {
+        status: Protocol.WebMCP.InvocationStatus.Error,
+        errorText: 'Permission denied',
+      },
+    },
+    {
+      invocationId: '4',
+      input: '{"timeout": 100}',
+      tool: {
+        name: 'long_running_task',
+        description: 'desc',
+        frameId: 'frame-1' as Protocol.Page.FrameId,
+        backendNodeId: 1 as Protocol.DOM.BackendNodeId,
+      },
+    },
+    {
+      invocationId: '5',
+      input: '{}',
+      tool: {
+        name: 'declarative_success',
+        description: 'desc',
+        frameId: 'frame-1' as Protocol.Page.FrameId,
+        backendNodeId: 2 as Protocol.DOM.BackendNodeId,
+      },
+      result: {
+        status: Protocol.WebMCP.InvocationStatus.Success,
+        output: 'Declarative success content',
+      },
+    },
+  ];
+
+  it('filters by name/text', () => {
+    const result = filterToolCalls(mockCalls, {text: 'secret.txt'});
+    assert.lengthOf(result, 1);
+    assert.strictEqual(result[0].invocationId, '3');
+  });
+
+  it('filters by status', () => {
+    const result = filterToolCalls(mockCalls, {
+      text: '',
+      statusTypes: {
+        success: true,
+      },
+    });
+    assert.lengthOf(result, 2);
+    assert.strictEqual(result[0].invocationId, '2');
+    assert.strictEqual(result[1].invocationId, '5');
+
+    const resultPending = filterToolCalls(mockCalls, {
+      text: '',
+      statusTypes: {
+        pending: true,
+      },
+    });
+    assert.lengthOf(resultPending, 2);
+    assert.strictEqual(resultPending[0].invocationId, '1');
+    assert.strictEqual(resultPending[1].invocationId, '4');
+  });
+
+  it('filters by type', () => {
+    const resultDeclarative = filterToolCalls(mockCalls, {
+      text: '',
+      toolTypes: {
+        declarative: true,
+      },
+    });
+    assert.lengthOf(resultDeclarative, 2);
+    assert.strictEqual(resultDeclarative[0].invocationId, '4');
+    assert.strictEqual(resultDeclarative[1].invocationId, '5');
+
+    const resultImperative = filterToolCalls(mockCalls, {
+      text: '',
+      toolTypes: {
+        imperative: true,
+      },
+    });
+    assert.lengthOf(resultImperative, 3);
+    assert.strictEqual(resultImperative[0].invocationId, '1');
+    assert.strictEqual(resultImperative[1].invocationId, '2');
+    assert.strictEqual(resultImperative[2].invocationId, '3');
+  });
+
+  it('filters by all three together', () => {
+    const result = filterToolCalls(mockCalls, {
+      text: 'success',
+      statusTypes: {
+        success: true,
+      },
+      toolTypes: {
+        declarative: true,
+      },
+    });
+    assert.lengthOf(result, 1);
+    assert.strictEqual(result[0].invocationId, '5');
   });
 });

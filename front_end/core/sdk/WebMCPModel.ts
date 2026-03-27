@@ -19,8 +19,8 @@ export const enum Events {
 
 export interface Call {
   invocationId: string;
-  toolName: string;
   input: string;
+  tool: Protocol.WebMCP.Tool;
   result?: {
     status: Protocol.WebMCP.InvocationStatus,
     output?: unknown,
@@ -64,6 +64,10 @@ export class WebMCPModel extends SDKModel<EventTypes> {
     return [...this.#calls.values()];
   }
 
+  clearCalls(): void {
+    this.#calls.clear();
+  }
+
   async enable(): Promise<void> {
     if (this.#enabled) {
       return;
@@ -101,10 +105,14 @@ export class WebMCPModel extends SDKModel<EventTypes> {
   }
 
   toolInvoked(params: Protocol.WebMCP.ToolInvokedEvent): void {
+    const tool = this.#tools.get(params.frameId)?.get(params.toolName);
+    if (!tool) {
+      return;
+    }
     const call: Call = {
       invocationId: params.invocationId,
-      toolName: params.toolName,
       input: params.input,
+      tool,
     };
     this.#calls.set(params.invocationId, call);
     this.dispatchEventToListeners(Events.TOOL_INVOKED, call);

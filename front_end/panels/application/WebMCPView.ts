@@ -8,6 +8,7 @@ import '../../ui/legacy/components/data_grid/data_grid.js';
 import '../../ui/legacy/legacy.js';
 
 import * as i18n from '../../core/i18n/i18n.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as Adorners from '../../ui/components/adorners/adorners.js';
@@ -111,7 +112,6 @@ const UIStrings = {
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/application/WebMCPView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-const {classMap} = Directives;
 
 export interface FilterState {
   text: string;
@@ -142,6 +142,53 @@ export interface ViewInput {
   onClearLogClick: () => void;
   onFilterChange: (filters: FilterState) => void;
   toolCalls: SDK.WebMCPModel.Call[];
+}
+
+export function filterToolCalls(toolCalls: SDK.WebMCPModel.Call[], filterState: FilterState): SDK.WebMCPModel.Call[] {
+  let filtered = [...toolCalls];
+
+  const statusTypes = filterState.statusTypes;
+  if (statusTypes) {
+    filtered = filtered.filter(call => {
+      const {success, error, pending} = statusTypes;
+      if (success && call.result?.status === Protocol.WebMCP.InvocationStatus.Success) {
+        return true;
+      }
+      if (error && call.result?.status === Protocol.WebMCP.InvocationStatus.Error) {
+        return true;
+      }
+      if (pending && call.result === undefined) {
+        return true;
+      }
+      return false;
+    });
+  }
+
+  const toolTypes = filterState.toolTypes;
+  if (toolTypes) {
+    filtered = filtered.filter(call => {
+      const {imperative, declarative} = toolTypes;
+      const isDeclarative = call.tool?.backendNodeId !== undefined;
+      if (imperative && !isDeclarative) {
+        return true;
+      }
+      if (declarative && isDeclarative) {
+        return true;
+      }
+      return false;
+    });
+  }
+
+  if (filterState.text) {
+    const regex = Platform.StringUtilities.createPlainTextSearchRegex(filterState.text, 'i');
+    filtered = filtered.filter(call => {
+      return regex.test(call.tool.name) || regex.test(call.input) ||
+          (call.result?.output && regex.test(JSON.stringify(call.result.output))) ||
+          (call.result?.errorText && regex.test(call.result.errorText));
+    });
+  }
+
+  return filtered;
 }
 
 export type View = (input: ViewInput, output: object, target: HTMLElement) => void;
@@ -215,13 +262,13 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
                 <th id="input" weight="30">${i18nString(UIStrings.input)}</th>
                 <th id="output" weight="30">${i18nString(UIStrings.output)}</th>
               </tr>
-              ${input.toolCalls.map(call => html`
-                <tr class=${classMap({
-                  'status-error': call.result?.status === Protocol.WebMCP.InvocationStatus.Error,
-                  'status-cancelled': call.result?.status === Protocol.WebMCP.InvocationStatus.Canceled,
-                })}>
+              ${Directives.repeat(input.toolCalls, call => call.invocationId + '-' + (call.result?.status ?? ''), call => html`
+                <tr class=${
+                  call.result?.status === Protocol.WebMCP.InvocationStatus.Error ? 'status-error' :
+                  call.result?.status === Protocol.WebMCP.InvocationStatus.Canceled ? 'status-cancelled' : ''
+                }>
                   <style>${webMCPViewStyles}</style>
-                  <td>${call.toolName}</td>
+                  <td>${call.tool.name}</td>
                   <td>
                     <div class="status-cell">
                       ${iconName(call) ? html`<devtools-icon class="small" name=${iconName(call)}></devtools-icon>`
@@ -376,7 +423,10 @@ export class WebMCPView extends UI.Widget.VBox {
   }
 
   #handleClearLogClick = (): void => {
-    // Clear log logic
+    const models = SDK.TargetManager.TargetManager.instance().models(SDK.WebMCPModel.WebMCPModel);
+    for (const model of models) {
+      model.clearCalls();
+    }
     this.requestUpdate();
   };
 
@@ -403,9 +453,11 @@ export class WebMCPView extends UI.Widget.VBox {
   override performUpdate(): void {
     const models = SDK.TargetManager.TargetManager.instance().models(SDK.WebMCPModel.WebMCPModel);
     const toolCalls = models.flatMap(model => model.toolCalls);
+    const filteredCalls = filterToolCalls(toolCalls, this.#filterState);
+
     const input: ViewInput = {
       tools: this.#getTools(),
-      toolCalls,
+      toolCalls: filteredCalls,
       filters: this.#filterState,
       filterButtons: this.#filterButtons,
       onClearLogClick: this.#handleClearLogClick,

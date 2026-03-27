@@ -8,12 +8,67 @@ import type * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
+import * as Bindings from '../../models/bindings/bindings.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
-import {assertScreenshot, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import * as Workspace from '../../models/workspace/workspace.js';
+import {assertScreenshot, raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, registerActions} from '../../testing/EnvironmentHelpers.js';
-import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import {describeWithMockConnection, dispatchEvent} from '../../testing/MockConnection.js';
 
 import * as Elements from './elements.js';
+
+function getBaseViewInput(): Elements.ElementsTreeElement.ViewInput {
+  return {
+    node: null,
+    isClosingTag: false,
+    expanded: false,
+    isExpandable: false,
+    isXMLMimeType: false,
+    updateRecord: null,
+    onHighlightSearchResults: () => {},
+    onExpand: () => {},
+    containerAdornerActive: false,
+    showContainerAdorner: false,
+    showFlexAdorner: false,
+    flexAdornerActive: false,
+    showGridAdorner: false,
+    showGridLanesAdorner: false,
+    showMediaAdorner: false,
+    showPopoverAdorner: false,
+    showTopLayerAdorner: false,
+    gridAdornerActive: false,
+    popoverAdornerActive: false,
+    isSubgrid: false,
+    showViewSourceAdorner: false,
+    showScrollAdorner: false,
+    showScrollSnapAdorner: false,
+    scrollSnapAdornerActive: false,
+    showSlotAdorner: false,
+    showStartingStyleAdorner: false,
+    startingStyleAdornerActive: false,
+    onStartingStyleAdornerClick: () => {},
+    onSlotAdornerClick: () => {},
+    topLayerIndex: -1,
+    onViewSourceAdornerClick: () => {},
+    onGutterClick: () => {},
+    onContainerAdornerClick: () => {},
+    onFlexAdornerClick: () => {},
+    onGridAdornerClick: () => {},
+    onMediaAdornerClick: () => {},
+    onPopoverAdornerClick: () => {},
+    onScrollSnapAdornerClick: () => {},
+    onTopLayerAdornerClick: () => {},
+    isHovered: false,
+    isSelected: false,
+    showAiButton: false,
+    onAiButtonClick: () => {},
+    decorations: [],
+    descendantDecorations: [],
+    decorationsTooltip: '',
+    indent: 0,
+    adTooltipId: '',
+  };
+}
 
 describe('ElementsTreeElement', () => {
   describe('convertUnicodeCharsToHTMLEntities', () => {
@@ -69,52 +124,7 @@ describe('ElementsTreeElement', () => {
     ];
     Elements.ElementsTreeElement.DEFAULT_VIEW(
         {
-          node: null,
-          isClosingTag: false,
-          expanded: false,
-          isExpandable: false,
-          isXMLMimeType: false,
-          updateRecord: null,
-          onHighlightSearchResults: () => {},
-          onExpand: () => {},
-          containerAdornerActive: false,
-          adProvenance: undefined,
-          target: undefined,
-          adTooltipId: '',
-          showContainerAdorner: false,
-          showFlexAdorner: false,
-          flexAdornerActive: false,
-          showGridAdorner: false,
-          showGridLanesAdorner: false,
-          showMediaAdorner: false,
-          showPopoverAdorner: false,
-          showTopLayerAdorner: false,
-          gridAdornerActive: false,
-          popoverAdornerActive: false,
-          isSubgrid: false,
-          showViewSourceAdorner: false,
-          showScrollAdorner: false,
-          showScrollSnapAdorner: false,
-          scrollSnapAdornerActive: false,
-          showSlotAdorner: false,
-          showStartingStyleAdorner: false,
-          startingStyleAdornerActive: false,
-          onStartingStyleAdornerClick: () => {},
-          onSlotAdornerClick: () => {},
-          topLayerIndex: -1,
-          onViewSourceAdornerClick: () => {},
-          onGutterClick: () => {},
-          onContainerAdornerClick: () => {},
-          onFlexAdornerClick: () => {},
-          onGridAdornerClick: () => {},
-          onMediaAdornerClick: () => {},
-          onPopoverAdornerClick: () => {},
-          onScrollSnapAdornerClick: () => {},
-          onTopLayerAdornerClick: () => {},
-          isHovered: false,
-          isSelected: false,
-          showAiButton: false,
-          onAiButtonClick: () => {},
+          ...getBaseViewInput(),
           decorations,
           descendantDecorations,
           decorationsTooltip: 'Title',
@@ -141,6 +151,121 @@ describeWithMockConnection('ElementsTreeElement', () => {
       title: () => 'Debug with AI' as Platform.UIString.LocalizedString,
       category: UI.ActionRegistration.ActionCategory.GLOBAL,
     }]);
+  });
+
+  describe('Ad Adorner Tooltip', () => {
+    let target: SDK.Target.Target;
+
+    beforeEach(() => {
+      const workspace = Workspace.Workspace.WorkspaceImpl.instance({forceNew: true});
+      const targetManager = SDK.TargetManager.TargetManager.instance();
+      const ignoreListManager = Workspace.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
+      Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
+        forceNew: true,
+        resourceMapping: new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace),
+        targetManager,
+        ignoreListManager,
+        workspace,
+      });
+
+      target = createTarget();
+    });
+
+    it('renders fallback tooltip when no provenance is available', () => {
+      const domTarget = document.createElement('div');
+      renderElementIntoDOM(domTarget);
+      Elements.ElementsTreeElement.DEFAULT_VIEW(
+          {
+            ...getBaseViewInput(),
+            adTooltipId: 'ad-tooltip-test',
+            target,
+            adProvenance: {},
+          },
+          {}, domTarget);
+
+      const adorners = domTarget.querySelectorAll('devtools-adorner');
+      const adorner = Array.from(adorners).find(a => a.name === 'ad');
+      assert.exists(adorner);
+      const tooltip = domTarget.querySelector('devtools-tooltip');
+      assert.exists(tooltip);
+      assert.strictEqual(
+          tooltip.querySelector('.ad-provenance-tooltip-title')?.textContent, 'No provenance data is available');
+    });
+
+    it('renders filter list rule', () => {
+      const domTarget = document.createElement('div');
+      renderElementIntoDOM(domTarget);
+      Elements.ElementsTreeElement.DEFAULT_VIEW(
+          {
+            ...getBaseViewInput(),
+            adTooltipId: 'ad-tooltip-test',
+            target,
+            adProvenance: {filterlistRule: '||ads.com^'},
+          },
+          {}, domTarget);
+
+      const tooltip = domTarget.querySelector('devtools-tooltip');
+      assert.exists(tooltip);
+      const title = tooltip.querySelector('.ad-provenance-tooltip-title');
+      const content = tooltip.querySelector('.ad-provenance-tooltip-content');
+      assert.strictEqual(title?.textContent, 'Filter list rule');
+      assert.strictEqual(content?.textContent, '||ads.com^');
+    });
+
+    it('renders script ancestry with root script rules', async () => {
+      const domTarget = document.createElement('div');
+      renderElementIntoDOM(domTarget);
+
+      // Mock the script parsing event so the Linkifier knows about this scriptId.
+      const scriptId = '123' as Protocol.Runtime.ScriptId;
+      const debuggerId = '' as Protocol.Runtime.UniqueDebuggerId;
+
+      const scriptParsedEvent: Protocol.Debugger.ScriptParsedEvent = {
+        scriptId,
+        url: 'https://www.example.com/ad-script.js',
+        startLine: 0,
+        startColumn: 0,
+        endLine: 10,
+        endColumn: 10,
+        executionContextId: 1234 as Protocol.Runtime.ExecutionContextId,
+        hash: '',
+        buildId: '',
+      };
+      dispatchEvent(target, 'Debugger.scriptParsed', scriptParsedEvent);
+
+      // Render the view.
+      Elements.ElementsTreeElement.DEFAULT_VIEW(
+          {
+            ...getBaseViewInput(),
+            adTooltipId: 'ad-tooltip-test',
+            target,
+            adProvenance: {
+              adScriptAncestry: {
+                ancestryChain: [{scriptId, debuggerId, name: ''}],
+                rootScriptFilterlistRule: '/ad-script.$script',
+              },
+            },
+          },
+          {}, domTarget);
+
+      // Wait for the asynchronous Linkifier to render the script name.
+      await raf();
+
+      const tooltip = domTarget.querySelector('devtools-tooltip');
+      assert.exists(tooltip);
+
+      const titles = Array.from(tooltip.querySelectorAll('.ad-provenance-tooltip-title')).map(el => el.textContent);
+      assert.deepEqual(titles, ['Creator ad script ancestry', 'Root script filter list rule']);
+
+      // Assert that the Linkifier correctly resolved the script URL to a short name.
+      const link = tooltip.querySelector('.devtools-link');
+      assert.exists(link);
+      assert.strictEqual(link.textContent?.trim(), 'ad-script.js:1');
+
+      const contents =
+          Array.from(tooltip.querySelectorAll('.ad-provenance-tooltip-content')).map(el => el.textContent?.trim());
+      assert.include(contents[1], '/ad-script.$script');
+    });
   });
 
   async function getContextMenuForElementWithLayoutProperties(layoutProperties: SDK.CSSModel.LayoutProperties|null):

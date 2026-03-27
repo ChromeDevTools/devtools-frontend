@@ -1620,6 +1620,10 @@ var consoleView_css_default = `/* Copyright 2021 The Chromium Authors
   }
 }
 
+.ai-code-completion-summary-toolbar-container {
+  container-type: inline-size;
+}
+
 @media (forced-colors: active) {
   .console-message-expand-icon,
   .console-warning-level .expand-group-icon {

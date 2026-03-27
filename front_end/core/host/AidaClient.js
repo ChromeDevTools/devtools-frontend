@@ -3,8 +3,10 @@
 // found in the LICENSE file.
 import * as Common from '../common/common.js';
 import * as Root from '../root/root.js';
-import { ClientFeature, FunctionalityType, RecitationAction, Role, UserTier, } from './AidaClientTypes.js';
+import { ClientFeature, debugLog, FunctionalityType, RecitationAction, Role, UserTier, } from './AidaClientTypes.js';
+import { gcaChunkResponseToAidaChunkResponse } from './AidaGcaTranslation.js';
 import * as DispatchHttpRequestClient from './DispatchHttpRequestClient.js';
+import * as GcaClient from './GcaClient.js';
 import { InspectorFrontendHostInstance } from './InspectorFrontendHost.js';
 import { bindOutputStream } from './ResourceLoader.js';
 export * from './AidaClientTypes.js';
@@ -34,6 +36,8 @@ export class AidaAbortError extends Error {
 export class AidaBlockError extends Error {
 }
 export class AidaClient {
+    // Delegate client
+    #gcaClient = new GcaClient.GcaClient();
     static buildConsoleInsightsRequest(input) {
         const disallowLogging = Root.Runtime.hostConfig.aidaAvailability?.disallowLogging ?? true;
         const chromeVersion = Root.Runtime.getChromeVersion();
@@ -109,17 +113,24 @@ export class AidaClient {
             };
         })();
         const streamId = bindOutputStream(stream);
-        DispatchHttpRequestClient
-            .makeHttpRequest({
-            service: SERVICE_NAME,
-            path: '/v1/aida:doConversation',
-            method: 'POST',
-            body: JSON.stringify(request),
-            streamId,
-        }, options)
-            .then(() => {
+        let response;
+        if (this.#gcaClient.enabled()) {
+            // Inline and remove the else clause after migration
+            response = this.#gcaClient.conversationRequest(request, streamId, options);
+        }
+        else {
+            response = DispatchHttpRequestClient.makeHttpRequest({
+                service: SERVICE_NAME,
+                path: '/v1/aida:doConversation',
+                method: 'POST',
+                body: JSON.stringify(request),
+                streamId,
+            }, options);
+        }
+        response.then(() => {
             void stream.close();
         }, err => {
+            debugLog('doConversation failed with error:', JSON.stringify(err));
             if (err instanceof DispatchHttpRequestClient.DispatchHttpRequestError && err.response) {
                 const result = err.response;
                 if (result.statusCode === 403) {
@@ -141,45 +152,26 @@ export class AidaClient {
             }
             stream.fail(err);
         });
+        await (yield* this.#handleResponseStream(stream));
+    }
+    async *#handleResponseStream(stream) {
         let chunk;
         const text = [];
         let inCodeChunk = false;
         const functionCalls = [];
         let metadata = { rpcGlobalId: 0 };
         while ((chunk = await stream.read())) {
+            debugLog('doConversation stream chunk:', chunk);
             let textUpdated = false;
-            // The AIDA response is a JSON array of objects, split at the object
-            // boundary. Therefore each chunk may start with `[` or `,` and possibly
-            // followed by `]`. Each chunk may include one or more objects, so we
-            // make sure that each chunk becomes a well-formed JSON array when we
-            // parse it by adding `[` and `]` and removing `,` where appropriate.
-            if (!chunk.length) {
-                continue;
-            }
-            if (chunk.startsWith(',')) {
-                chunk = chunk.slice(1);
-            }
-            if (!chunk.startsWith('[')) {
-                chunk = '[' + chunk;
-            }
-            if (!chunk.endsWith(']')) {
-                chunk = chunk + ']';
-            }
-            let results;
-            try {
-                results = JSON.parse(chunk);
-            }
-            catch (error) {
-                throw new Error('Cannot parse chunk: ' + chunk, { cause: error });
-            }
+            const results = this.#parseAndTranslate(chunk);
             for (const result of results) {
-                if ('metadata' in result) {
+                if (result.metadata) {
                     metadata = result.metadata;
                     if (metadata?.attributionMetadata?.attributionAction === RecitationAction.BLOCK) {
                         throw new AidaBlockError();
                     }
                 }
-                if ('textChunk' in result) {
+                if (result.textChunk) {
                     if (inCodeChunk) {
                         text.push(CODE_CHUNK_SEPARATOR());
                         inCodeChunk = false;
@@ -187,7 +179,7 @@ export class AidaClient {
                     text.push(result.textChunk.text);
                     textUpdated = true;
                 }
-                else if ('codeChunk' in result) {
+                else if (result.codeChunk) {
                     if (!inCodeChunk) {
                         const language = AidaLanguageToMarkdown[result.codeChunk.inferenceLanguage] ?? '';
                         text.push(CODE_CHUNK_SEPARATOR(language));
@@ -196,7 +188,7 @@ export class AidaClient {
                     text.push(result.codeChunk.code);
                     textUpdated = true;
                 }
-                else if ('functionCallChunk' in result) {
+                else if (result.functionCallChunk) {
                     functionCalls.push({
                         name: result.functionCallChunk.functionCall.name,
                         args: result.functionCallChunk.functionCall.args,
@@ -225,12 +217,48 @@ export class AidaClient {
             completed: true,
         };
     }
+    #parseAndTranslate(chunk) {
+        const results = this.#parseStreamChunk(chunk);
+        if (this.#gcaClient.enabled()) {
+            return results.flatMap(gcaChunkResponseToAidaChunkResponse);
+        }
+        return results;
+    }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    #parseStreamChunk(chunk) {
+        // The streamed response is a JSON array of objects, split at the object
+        // boundary. Therefore each chunk may start with `[` or `,` and possibly
+        // followed by `]`. Each chunk may include one or more objects, so we
+        // make sure that each chunk becomes a well-formed JSON array when we
+        // parse it by adding `[` and `]` and removing `,` where appropriate.
+        if (!chunk.length) {
+            return [];
+        }
+        if (chunk.startsWith(',')) {
+            chunk = chunk.slice(1);
+        }
+        if (!chunk.startsWith('[')) {
+            chunk = '[' + chunk;
+        }
+        if (!chunk.endsWith(']')) {
+            chunk = chunk + ']';
+        }
+        try {
+            return JSON.parse(chunk);
+        }
+        catch (error) {
+            throw new Error('Cannot parse chunk: ' + chunk, { cause: error });
+        }
+    }
     registerClientEvent(clientEvent) {
         // Disable logging for now.
         // For context, see b/454563259#comment35.
         // We should be able to remove this ~end of April.
         if (Root.Runtime.hostConfig.devToolsGeminiRebranding?.enabled) {
             clientEvent.disable_user_content_logging = true;
+        }
+        if (this.#gcaClient.enabled()) {
+            return this.#gcaClient.registerClientEvent(clientEvent);
         }
         const { promise, resolve } = Promise.withResolvers();
         InspectorFrontendHostInstance.registerAidaClientEvent(JSON.stringify({
@@ -249,6 +277,9 @@ export class AidaClient {
         // We should be able to remove this ~end of April.
         if (Root.Runtime.hostConfig.devToolsGeminiRebranding?.enabled) {
             request.metadata.disable_user_content_logging = true;
+        }
+        if (this.#gcaClient.enabled()) {
+            return await this.#gcaClient.completeCode(request);
         }
         const { promise, resolve } = Promise.withResolvers();
         InspectorFrontendHostInstance.aidaCodeComplete(JSON.stringify(request), resolve);
@@ -296,6 +327,10 @@ export class AidaClient {
         // We should be able to remove this ~end of April.
         if (Root.Runtime.hostConfig.devToolsGeminiRebranding?.enabled) {
             request.metadata.disable_user_content_logging = true;
+        }
+        if (this.#gcaClient.enabled()) {
+            // Inline and remove the else clause after migration
+            return await this.#gcaClient.generateCode(request, options);
         }
         const response = await DispatchHttpRequestClient.makeHttpRequest({
             service: SERVICE_NAME,

@@ -9,7 +9,7 @@ export default `/*
  * found in the LICENSE file.
  */
 
-devtools-performance-third-party-tree-view {
+:host {
   .background-bar-container {
     /* Dont need the bars in 3p table */
     display: none;
@@ -90,7 +90,7 @@ devtools-performance-third-party-tree-view {
     border-left: var(--sys-size-1) solid var(--sys-color-divider);
   }
 
-  &[max-rows] .widget.vbox.timeline-tree-view {
+  .has-max-rows {
     /* 21px for header + max-rows * 22px rows */
     max-height: calc(21px + (var(--max-rows) * 22px));
     padding: var(--sys-size-3);

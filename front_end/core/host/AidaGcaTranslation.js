@@ -223,6 +223,12 @@ function buildLabels(request, gcaRequest) {
     if (options?.expect_code_output !== undefined) {
         labels['expect_code_output'] = String(options.expect_code_output);
     }
+    if (request.metadata.disable_user_content_logging !== undefined) {
+        labels['disable_user_content_logging'] = String(request.metadata.disable_user_content_logging);
+    }
+    if (request.metadata.client_version) {
+        labels['client_version'] = request.metadata.client_version;
+    }
     if (Object.keys(labels).length > 0) {
         gcaRequest.labels = labels;
     }

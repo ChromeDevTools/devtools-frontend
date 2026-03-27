@@ -45,9 +45,13 @@ export declare class TimelineTreeView extends TimelineTreeView_base implements U
      * by default when refreshTree() gets called.
      */
     protected autoSelectFirstChildOnRefresh: boolean;
-    constructor();
+    constructor(element?: HTMLElement);
     setSearchableView(searchableView: UI.SearchableView.SearchableView): void;
-    setModelWithEvents(selectedEvents: Trace.Types.Events.Event[] | null, parsedTrace?: Trace.TraceModel.ParsedTrace | null, entityMappings?: Trace.EntityMapper.EntityMapper | null): void;
+    set model(model: {
+        selectedEvents: Trace.Types.Events.Event[] | null;
+        parsedTrace: Trace.TraceModel.ParsedTrace | null;
+        entityMapper: Trace.EntityMapper.EntityMapper | null;
+    });
     entityMapper(): Trace.EntityMapper.EntityMapper | null;
     parsedTrace(): Trace.TraceModel.ParsedTrace | null;
     isThirdPartyTreeView(): boolean;
@@ -55,7 +59,7 @@ export declare class TimelineTreeView extends TimelineTreeView_base implements U
     nodeIsExtension(_node: Trace.Extras.TraceTree.Node): boolean;
     init(): void;
     lastSelectedNode(): Trace.Extras.TraceTree.Node | null | undefined;
-    updateContents(selection: TimelineSelection): void;
+    set activeSelection(selection: TimelineSelection);
     setRange(startTime: Trace.Types.Timing.Milli, endTime: Trace.Types.Timing.Milli): void;
     highlightEventInTree(event: Trace.Types.Events.Event | null): void;
     filters(): Trace.Extras.TraceFilter.TraceFilter[];
@@ -151,7 +155,7 @@ export declare class AggregatedTimelineTreeView extends TimelineTreeView {
     readonly stackView: TimelineStackView;
     constructor();
     setGroupBySetting(groupBy: AggregatedTimelineTreeView.GroupBy): void;
-    updateContents(selection: TimelineSelection): void;
+    set activeSelection(selection: TimelineSelection);
     private beautifyDomainName;
     displayInfoForGroupNode(node: Trace.Extras.TraceTree.Node): {
         name: string;

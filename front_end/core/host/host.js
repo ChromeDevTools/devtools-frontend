@@ -19,14 +19,14 @@ __export(AidaClient_exports, {
   Reason: () => Reason,
   RecitationAction: () => RecitationAction,
   Role: () => Role,
-  SERVICE_NAME: () => SERVICE_NAME,
+  SERVICE_NAME: () => SERVICE_NAME2,
   UseCase: () => UseCase,
   UserTier: () => UserTier,
   convertToUserTierEnum: () => convertToUserTierEnum,
   debugLog: () => debugLog
 });
 import * as Common4 from "./../common/common.js";
-import * as Root2 from "./../root/root.js";
+import * as Root3 from "./../root/root.js";
 
 // gen/front_end/core/host/AidaClientTypes.js
 var Role;
@@ -109,6 +109,581 @@ function debugLog(...log) {
     return;
   }
   console.log(...log);
+}
+
+// gen/front_end/core/host/AidaGcaTranslation.js
+var AidaGcaTranslation_exports = {};
+__export(AidaGcaTranslation_exports, {
+  aidaCompletionRequestToGcaRequest: () => aidaCompletionRequestToGcaRequest,
+  aidaDoConversationRequestToGcaRequest: () => aidaDoConversationRequestToGcaRequest,
+  aidaEventToGcaTelemetryRequest: () => aidaEventToGcaTelemetryRequest,
+  aidaGenerateCodeRequestToGcaRequest: () => aidaGenerateCodeRequestToGcaRequest,
+  gcaChunkResponseToAidaChunkResponse: () => gcaChunkResponseToAidaChunkResponse,
+  gcaResponseToAidaCompletionResponse: () => gcaResponseToAidaCompletionResponse,
+  gcaResponseToAidaDoConversationResponse: () => gcaResponseToAidaDoConversationResponse,
+  gcaResponseToAidaGenerateCodeResponse: () => gcaResponseToAidaGenerateCodeResponse
+});
+
+// gen/front_end/core/host/GcaTypes.js
+var GcaTypes_exports = {};
+__export(GcaTypes_exports, {
+  BlockReason: () => BlockReason,
+  FinishReason: () => FinishReason,
+  HarmBlockMethod: () => HarmBlockMethod,
+  HarmBlockThreshold: () => HarmBlockThreshold,
+  HarmCategory: () => HarmCategory,
+  HarmProbability: () => HarmProbability,
+  InclusionReason: () => InclusionReason,
+  InteractionType: () => InteractionType,
+  Language: () => Language,
+  Method: () => Method,
+  Mode: () => Mode,
+  Outcome: () => Outcome,
+  SuggestionStatus: () => SuggestionStatus,
+  Type: () => Type
+});
+var Type;
+(function(Type2) {
+  Type2[Type2["TYPE_UNSPECIFIED"] = 0] = "TYPE_UNSPECIFIED";
+  Type2[Type2["STRING"] = 1] = "STRING";
+  Type2[Type2["NUMBER"] = 2] = "NUMBER";
+  Type2[Type2["INTEGER"] = 3] = "INTEGER";
+  Type2[Type2["BOOLEAN"] = 4] = "BOOLEAN";
+  Type2[Type2["ARRAY"] = 5] = "ARRAY";
+  Type2[Type2["OBJECT"] = 6] = "OBJECT";
+  Type2[Type2["NULL"] = 7] = "NULL";
+})(Type || (Type = {}));
+var HarmCategory;
+(function(HarmCategory2) {
+  HarmCategory2[HarmCategory2["HARM_CATEGORY_UNSPECIFIED"] = 0] = "HARM_CATEGORY_UNSPECIFIED";
+  HarmCategory2[HarmCategory2["HARM_CATEGORY_HARASSMENT"] = 7] = "HARM_CATEGORY_HARASSMENT";
+  HarmCategory2[HarmCategory2["HARM_CATEGORY_HATE_SPEECH"] = 8] = "HARM_CATEGORY_HATE_SPEECH";
+  HarmCategory2[HarmCategory2["HARM_CATEGORY_SEXUALLY_EXPLICIT"] = 9] = "HARM_CATEGORY_SEXUALLY_EXPLICIT";
+  HarmCategory2[HarmCategory2["HARM_CATEGORY_DANGEROUS_CONTENT"] = 10] = "HARM_CATEGORY_DANGEROUS_CONTENT";
+})(HarmCategory || (HarmCategory = {}));
+var HarmProbability;
+(function(HarmProbability2) {
+  HarmProbability2[HarmProbability2["HARM_PROBABILITY_UNSPECIFIED"] = 0] = "HARM_PROBABILITY_UNSPECIFIED";
+  HarmProbability2[HarmProbability2["NEGLIGIBLE"] = 1] = "NEGLIGIBLE";
+  HarmProbability2[HarmProbability2["LOW"] = 2] = "LOW";
+  HarmProbability2[HarmProbability2["MEDIUM"] = 3] = "MEDIUM";
+  HarmProbability2[HarmProbability2["HIGH"] = 4] = "HIGH";
+})(HarmProbability || (HarmProbability = {}));
+var HarmBlockThreshold;
+(function(HarmBlockThreshold2) {
+  HarmBlockThreshold2[HarmBlockThreshold2["HARM_BLOCK_THRESHOLD_UNSPECIFIED"] = 0] = "HARM_BLOCK_THRESHOLD_UNSPECIFIED";
+  HarmBlockThreshold2[HarmBlockThreshold2["BLOCK_LOW_AND_ABOVE"] = 1] = "BLOCK_LOW_AND_ABOVE";
+  HarmBlockThreshold2[HarmBlockThreshold2["BLOCK_MEDIUM_AND_ABOVE"] = 2] = "BLOCK_MEDIUM_AND_ABOVE";
+  HarmBlockThreshold2[HarmBlockThreshold2["BLOCK_ONLY_HIGH"] = 3] = "BLOCK_ONLY_HIGH";
+  HarmBlockThreshold2[HarmBlockThreshold2["BLOCK_NONE"] = 4] = "BLOCK_NONE";
+  HarmBlockThreshold2[HarmBlockThreshold2["OFF"] = 5] = "OFF";
+})(HarmBlockThreshold || (HarmBlockThreshold = {}));
+var HarmBlockMethod;
+(function(HarmBlockMethod2) {
+  HarmBlockMethod2[HarmBlockMethod2["HARM_BLOCK_METHOD_UNSPECIFIED"] = 0] = "HARM_BLOCK_METHOD_UNSPECIFIED";
+  HarmBlockMethod2[HarmBlockMethod2["SEVERITY"] = 1] = "SEVERITY";
+  HarmBlockMethod2[HarmBlockMethod2["PROBABILITY"] = 2] = "PROBABILITY";
+})(HarmBlockMethod || (HarmBlockMethod = {}));
+var FinishReason;
+(function(FinishReason2) {
+  FinishReason2[FinishReason2["FINISH_REASON_UNSPECIFIED"] = 0] = "FINISH_REASON_UNSPECIFIED";
+  FinishReason2[FinishReason2["STOP"] = 1] = "STOP";
+  FinishReason2[FinishReason2["MAX_TOKENS"] = 2] = "MAX_TOKENS";
+  FinishReason2[FinishReason2["SAFETY"] = 3] = "SAFETY";
+  FinishReason2[FinishReason2["RECITATION"] = 4] = "RECITATION";
+  FinishReason2[FinishReason2["OTHER"] = 5] = "OTHER";
+  FinishReason2[FinishReason2["BLOCKLIST"] = 6] = "BLOCKLIST";
+  FinishReason2[FinishReason2["PROHIBITED_CONTENT"] = 7] = "PROHIBITED_CONTENT";
+  FinishReason2[FinishReason2["SPII"] = 8] = "SPII";
+  FinishReason2[FinishReason2["MALFORMED_FUNCTION_CALL"] = 9] = "MALFORMED_FUNCTION_CALL";
+  FinishReason2[FinishReason2["IMAGE_SAFETY"] = 10] = "IMAGE_SAFETY";
+  FinishReason2[FinishReason2["IMAGE_PROHIBITED_CONTENT"] = 11] = "IMAGE_PROHIBITED_CONTENT";
+  FinishReason2[FinishReason2["IMAGE_RECITATION"] = 12] = "IMAGE_RECITATION";
+  FinishReason2[FinishReason2["IMAGE_OTHER"] = 13] = "IMAGE_OTHER";
+  FinishReason2[FinishReason2["UNEXPECTED_TOOL_CALL"] = 14] = "UNEXPECTED_TOOL_CALL";
+  FinishReason2[FinishReason2["NO_IMAGE"] = 15] = "NO_IMAGE";
+})(FinishReason || (FinishReason = {}));
+var Method;
+(function(Method2) {
+  Method2[Method2["METHOD_UNSPECIFIED"] = 0] = "METHOD_UNSPECIFIED";
+  Method2[Method2["GENERATE_CODE"] = 1] = "GENERATE_CODE";
+  Method2[Method2["COMPLETE_CODE"] = 2] = "COMPLETE_CODE";
+  Method2[Method2["TRANSFORM_CODE"] = 3] = "TRANSFORM_CODE";
+  Method2[Method2["CHAT"] = 4] = "CHAT";
+})(Method || (Method = {}));
+var SuggestionStatus;
+(function(SuggestionStatus2) {
+  SuggestionStatus2[SuggestionStatus2["STATUS_UNSPECIFIED"] = 0] = "STATUS_UNSPECIFIED";
+  SuggestionStatus2[SuggestionStatus2["NO_ERROR"] = 1] = "NO_ERROR";
+  SuggestionStatus2[SuggestionStatus2["ERROR"] = 2] = "ERROR";
+  SuggestionStatus2[SuggestionStatus2["CANCELLED"] = 3] = "CANCELLED";
+  SuggestionStatus2[SuggestionStatus2["EMPTY"] = 4] = "EMPTY";
+})(SuggestionStatus || (SuggestionStatus = {}));
+var InteractionType;
+(function(InteractionType2) {
+  InteractionType2[InteractionType2["INTERACTION_TYPE_UNSPECIFIED"] = 0] = "INTERACTION_TYPE_UNSPECIFIED";
+  InteractionType2[InteractionType2["THUMBS_UP"] = 1] = "THUMBS_UP";
+  InteractionType2[InteractionType2["THUMBS_DOWN"] = 2] = "THUMBS_DOWN";
+  InteractionType2[InteractionType2["ACCEPT"] = 3] = "ACCEPT";
+  InteractionType2[InteractionType2["ACCEPT_PARTIALLY"] = 4] = "ACCEPT_PARTIALLY";
+  InteractionType2[InteractionType2["REJECT"] = 5] = "REJECT";
+  InteractionType2[InteractionType2["COPY"] = 6] = "COPY";
+})(InteractionType || (InteractionType = {}));
+var InclusionReason;
+(function(InclusionReason2) {
+  InclusionReason2[InclusionReason2["INCLUSION_REASON_UNSPECIFIED"] = 0] = "INCLUSION_REASON_UNSPECIFIED";
+  InclusionReason2[InclusionReason2["ACTIVE"] = 1] = "ACTIVE";
+  InclusionReason2[InclusionReason2["OPEN"] = 2] = "OPEN";
+  InclusionReason2[InclusionReason2["RECENTLY_CLOSED"] = 3] = "RECENTLY_CLOSED";
+  InclusionReason2[InclusionReason2["RECENTLY_EDITED"] = 4] = "RECENTLY_EDITED";
+  InclusionReason2[InclusionReason2["COLOCATED"] = 5] = "COLOCATED";
+  InclusionReason2[InclusionReason2["RELATED"] = 6] = "RELATED";
+  InclusionReason2[InclusionReason2["USER_SELECTED"] = 7] = "USER_SELECTED";
+})(InclusionReason || (InclusionReason = {}));
+var BlockReason;
+(function(BlockReason2) {
+  BlockReason2[BlockReason2["BLOCKED_REASON_UNSPECIFIED"] = 0] = "BLOCKED_REASON_UNSPECIFIED";
+  BlockReason2[BlockReason2["SAFETY"] = 1] = "SAFETY";
+  BlockReason2[BlockReason2["OTHER"] = 2] = "OTHER";
+  BlockReason2[BlockReason2["BLOCKLIST"] = 3] = "BLOCKLIST";
+  BlockReason2[BlockReason2["PROHIBITED_CONTENT"] = 4] = "PROHIBITED_CONTENT";
+  BlockReason2[BlockReason2["IMAGE_SAFETY"] = 5] = "IMAGE_SAFETY";
+})(BlockReason || (BlockReason = {}));
+var Language;
+(function(Language3) {
+  Language3[Language3["LANGUAGE_UNSPECIFIED"] = 0] = "LANGUAGE_UNSPECIFIED";
+  Language3[Language3["PYTHON"] = 1] = "PYTHON";
+})(Language || (Language = {}));
+var Outcome;
+(function(Outcome2) {
+  Outcome2[Outcome2["OUTCOME_UNSPECIFIED"] = 0] = "OUTCOME_UNSPECIFIED";
+  Outcome2[Outcome2["OUTCOME_OK"] = 1] = "OUTCOME_OK";
+  Outcome2[Outcome2["OUTCOME_FAILED"] = 2] = "OUTCOME_FAILED";
+  Outcome2[Outcome2["OUTCOME_DEADLINE_EXCEEDED"] = 3] = "OUTCOME_DEADLINE_EXCEEDED";
+})(Outcome || (Outcome = {}));
+var Mode;
+(function(Mode2) {
+  Mode2[Mode2["MODE_UNSPECIFIED"] = 0] = "MODE_UNSPECIFIED";
+  Mode2[Mode2["AUTO"] = 1] = "AUTO";
+  Mode2[Mode2["ANY"] = 2] = "ANY";
+  Mode2[Mode2["NONE"] = 3] = "NONE";
+})(Mode || (Mode = {}));
+
+// gen/front_end/core/host/AidaGcaTranslation.js
+function createBaseGcaRequest(request, contents, experience) {
+  const gcaRequest = { contents, aicode: { experience } };
+  mapCommonAidaRequestFields(request, gcaRequest);
+  buildLabels(request, gcaRequest);
+  if ("preamble" in request && request.preamble) {
+    gcaRequest.systemInstruction = {
+      role: "user",
+      parts: [{ text: request.preamble }]
+    };
+  }
+  return gcaRequest;
+}
+function aidaDoConversationRequestToGcaRequest(request) {
+  try {
+    const contents = [];
+    if (request.historical_contexts) {
+      contents.push(...request.historical_contexts.map(convertAidaContentToGcaContent));
+    }
+    contents.push(convertAidaContentToGcaContent(request.current_message));
+    const gcaRequest = createBaseGcaRequest(request, contents, "chat_console_insights");
+    if (request.function_declarations) {
+      gcaRequest.tools = [{
+        functionDeclarations: request.function_declarations.map((fd) => ({
+          name: fd.name,
+          description: fd.description,
+          parameters: convertAidaParamToGcaSchema(fd.parameters)
+        }))
+      }];
+    }
+    debugLog("Translation succeded:", JSON.stringify(request), JSON.stringify(gcaRequest));
+    return gcaRequest;
+  } catch (e) {
+    debugLog("Translation error:", JSON.stringify(request), e);
+    throw e;
+  }
+}
+function mapCommonAidaRequestFields(aidaRequest, gcaRequest) {
+  if (aidaRequest.options?.model_id) {
+    gcaRequest.model = aidaRequest.options.model_id;
+  }
+  if (aidaRequest.options?.temperature !== void 0) {
+    gcaRequest.generationConfig = {
+      ...gcaRequest.generationConfig,
+      temperature: aidaRequest.options.temperature
+    };
+  }
+}
+function gcaResponseToAidaDoConversationResponse(response) {
+  const functionCalls = [];
+  if (response.candidates?.[0].content?.parts) {
+    for (const part of response.candidates[0].content.parts) {
+      if (part.functionCall) {
+        functionCalls.push({
+          name: part.functionCall.name,
+          args: part.functionCall.args || {}
+        });
+      }
+    }
+  }
+  return {
+    explanation: extractTextFromGcaParts(response.candidates[0].content?.parts),
+    metadata: {
+      rpcGlobalId: response.responseId
+    },
+    functionCalls: functionCalls.length > 0 ? functionCalls : void 0,
+    completed: true
+  };
+}
+function extractTextFromGcaParts(parts) {
+  if (!parts) {
+    return "";
+  }
+  return parts.map((p) => p.text || "").join("");
+}
+function aidaEventToGcaTelemetryRequest(clientEvent) {
+  try {
+    const feedbackMetrics = [];
+    const responseId = String(clientEvent.corresponding_aida_rpc_global_id);
+    const eventTime = (/* @__PURE__ */ new Date()).toISOString();
+    if (clientEvent.do_conversation_client_event) {
+      const feedback = clientEvent.do_conversation_client_event.user_feedback;
+      if (feedback.sentiment) {
+        let interaction = InteractionType.INTERACTION_TYPE_UNSPECIFIED;
+        if (feedback.sentiment === "POSITIVE") {
+          interaction = InteractionType.THUMBS_UP;
+        } else if (feedback.sentiment === "NEGATIVE") {
+          interaction = InteractionType.THUMBS_DOWN;
+        }
+        feedbackMetrics.push({
+          eventTime,
+          responseId,
+          suggestionInteraction: { interaction }
+        });
+      }
+    }
+    feedbackMetrics.push(...convertCodeTelemetry(clientEvent.complete_code_client_event, Method.COMPLETE_CODE, responseId, eventTime));
+    feedbackMetrics.push(...convertCodeTelemetry(clientEvent.generate_code_client_event, Method.GENERATE_CODE, responseId, eventTime));
+    const gcaTelemetryRequest = {
+      feedbackMetrics
+    };
+    debugLog("Translation succeeded:", JSON.stringify(clientEvent), JSON.stringify(gcaTelemetryRequest));
+    return gcaTelemetryRequest;
+  } catch (e) {
+    debugLog("Translation error:", JSON.stringify(clientEvent), e);
+    throw e;
+  }
+}
+function convertCodeTelemetry(event, method, responseId, eventTime) {
+  if (!event) {
+    return [];
+  }
+  if ("user_impression" in event && event.user_impression) {
+    const impression = event.user_impression;
+    return [{
+      eventTime,
+      responseId,
+      suggestionOffered: {
+        method,
+        status: SuggestionStatus.NO_ERROR,
+        responseLatency: `${impression.latency.duration.seconds + impression.latency.duration.nanos / 1e9}s`
+      }
+    }];
+  }
+  if ("user_acceptance" in event && event.user_acceptance) {
+    const acceptance = event.user_acceptance;
+    return [{
+      eventTime,
+      responseId,
+      suggestionInteraction: {
+        interaction: InteractionType.ACCEPT,
+        candidateIndex: acceptance.sample.sample_id
+      }
+    }];
+  }
+  return [];
+}
+function aidaCompletionRequestToGcaRequest(request) {
+  try {
+    let additionalFiles = (request.additional_files ?? []).map((f) => ({
+      fileUri: f.path,
+      inclusionReason: [AidaReasonToGcaInclusionReason[f.included_reason]]
+    }));
+    const inEditorFile = inFileEditRequestToSourceFile(request);
+    if (inEditorFile) {
+      additionalFiles = [inEditorFile, ...additionalFiles];
+    }
+    const gcaRequest = createBaseGcaRequest(request, [], "complete_code");
+    gcaRequest.aicode.files = additionalFiles;
+    if (request.options?.stop_sequences) {
+      gcaRequest.generationConfig = {
+        ...gcaRequest.generationConfig,
+        stopSequences: request.options.stop_sequences
+      };
+    }
+    debugLog("Translation succeeded:", JSON.stringify(request), JSON.stringify(gcaRequest));
+    return gcaRequest;
+  } catch (e) {
+    debugLog("Translation error:", JSON.stringify(request), e);
+    throw e;
+  }
+}
+function inFileEditRequestToSourceFile(request) {
+  const sourceFile = {
+    inclusionReason: [InclusionReason.ACTIVE],
+    fileUri: "devtools-code-completion",
+    segments: [
+      {
+        content: request.prefix,
+        isSelected: false
+      },
+      {
+        content: "",
+        isSelected: true
+        // Cursor position
+      }
+    ]
+  };
+  if (request.suffix) {
+    sourceFile.segments?.push({
+      content: request.suffix,
+      isSelected: false
+    });
+  }
+  return sourceFile;
+}
+function buildLabels(request, gcaRequest) {
+  const labels = {};
+  if (request.client) {
+    labels["client"] = request.client;
+  }
+  if ("functionality_type" in request && request.functionality_type !== void 0) {
+    labels["functionality_type"] = FunctionalityType[request.functionality_type];
+  }
+  if ("client_feature" in request && request.client_feature !== void 0) {
+    labels["client_feature"] = ClientFeature[request.client_feature];
+  }
+  if ("last_user_action" in request && request.last_user_action !== void 0) {
+    labels["last_user_action"] = EditType[request.last_user_action];
+  }
+  if ("use_case" in request && request.use_case !== void 0) {
+    labels["use_case"] = UseCase[request.use_case];
+  }
+  if (request.metadata.string_session_id) {
+    labels["session_id"] = request.metadata.string_session_id;
+  }
+  const options = request.options;
+  if (options?.inference_language) {
+    labels["inference_language"] = options.inference_language;
+  }
+  if (options?.expect_code_output !== void 0) {
+    labels["expect_code_output"] = String(options.expect_code_output);
+  }
+  if (request.metadata.disable_user_content_logging !== void 0) {
+    labels["disable_user_content_logging"] = String(request.metadata.disable_user_content_logging);
+  }
+  if (request.metadata.client_version) {
+    labels["client_version"] = request.metadata.client_version;
+  }
+  if (Object.keys(labels).length > 0) {
+    gcaRequest.labels = labels;
+  }
+}
+var AidaReasonToGcaInclusionReason = {
+  [Reason.UNKNOWN]: InclusionReason.INCLUSION_REASON_UNSPECIFIED,
+  [Reason.CURRENTLY_OPEN]: InclusionReason.OPEN,
+  // Intentional mapping due to type mismatch
+  // TODO(liviurau): find a way to validate this mapping
+  [Reason.RECENTLY_OPENED]: InclusionReason.RECENTLY_CLOSED,
+  [Reason.RECENTLY_EDITED]: InclusionReason.RECENTLY_EDITED,
+  [Reason.COLOCATED]: InclusionReason.COLOCATED,
+  [Reason.RELATED_FILE]: InclusionReason.RELATED
+};
+function gcaResponseToAidaCompletionResponse(response) {
+  try {
+    const { samples, metadata } = gcaResponseToAidaSamplesAndMetadata(response);
+    const aidaResponse = {
+      generatedSamples: samples,
+      metadata
+    };
+    debugLog("Translation succeeded:", JSON.stringify(response), JSON.stringify(aidaResponse));
+    return aidaResponse;
+  } catch (e) {
+    debugLog("Translation error", JSON.stringify(response), e);
+    throw e;
+  }
+}
+function gcaResponseToAidaSamplesAndMetadata(response) {
+  return {
+    samples: (response.candidates ?? []).map(gcaCandidateToAidaGenerationSample),
+    metadata: {
+      rpcGlobalId: response.responseId
+    }
+  };
+}
+function aidaGenerateCodeRequestToGcaRequest(request) {
+  try {
+    const gcaRequest = createBaseGcaRequest(request, [convertAidaContentToGcaContent(request.current_message)], "generate_code");
+    if (request.context_files) {
+      gcaRequest.aicode.files = request.context_files.map((f) => ({
+        fileUri: f.path,
+        programmingLanguage: f.programming_language
+      }));
+    }
+    debugLog("Translation succeeded:", JSON.stringify(request), JSON.stringify(gcaRequest));
+    return gcaRequest;
+  } catch (e) {
+    debugLog("Translation error", JSON.stringify(request), e);
+    throw e;
+  }
+}
+function gcaResponseToAidaGenerateCodeResponse(response) {
+  try {
+    const aidaResponse = gcaResponseToAidaSamplesAndMetadata(response);
+    debugLog("Translation succeeded:", JSON.stringify(response), JSON.stringify(aidaResponse));
+    return aidaResponse;
+  } catch (e) {
+    debugLog("translation error", JSON.stringify(response), e);
+    throw e;
+  }
+}
+function gcaCandidateToAidaGenerationSample(candidate) {
+  const generationSample = {
+    generationString: extractTextFromGcaParts(candidate.content?.parts),
+    score: 0,
+    sampleId: candidate.index
+  };
+  if (candidate.citationMetadata) {
+    generationSample.attributionMetadata = {
+      attributionAction: RecitationAction.CITE,
+      citations: (candidate.citationMetadata.citations ?? []).map((c) => ({
+        startIndex: c.startIndex,
+        endIndex: c.endIndex,
+        uri: c.uri
+      }))
+    };
+  }
+  return generationSample;
+}
+function convertAidaContentToGcaContent(content) {
+  let role = "user";
+  if (content.role === Role.MODEL) {
+    role = "model";
+  }
+  return {
+    role,
+    parts: (content.parts ?? []).map(convertAidaPartToGcaPart)
+  };
+}
+function convertAidaPartToGcaPart(part) {
+  if ("text" in part) {
+    return { text: part.text };
+  }
+  if ("functionCall" in part) {
+    return {
+      functionCall: {
+        name: part.functionCall.name,
+        args: part.functionCall.args
+      }
+    };
+  }
+  if ("functionResponse" in part) {
+    const fResponse = {};
+    if ("result" in part.functionResponse.response) {
+      fResponse.output = part.functionResponse.response["result"];
+    } else if ("output" in part.functionResponse.response) {
+      fResponse.output = part.functionResponse.response["output"];
+    } else if (!("error" in part.functionResponse.response)) {
+      fResponse.output = part.functionResponse.response;
+    }
+    if ("error" in part.functionResponse.response) {
+      fResponse.error = part.functionResponse.response["error"];
+    }
+    return {
+      functionResponse: {
+        name: part.functionResponse.name,
+        response: fResponse
+      }
+    };
+  }
+  if ("inlineData" in part) {
+    return {
+      inlineData: {
+        mimeType: part.inlineData.mimeType,
+        data: part.inlineData.data
+      }
+    };
+  }
+  return {};
+}
+function convertAidaParamToGcaSchema(param) {
+  const schema = {
+    type: param.type,
+    description: param.description
+  };
+  if (param.nullable) {
+    schema.nullable = param.nullable;
+  }
+  if (param.type === 5 && param.items) {
+    schema.items = convertAidaParamToGcaSchema(param.items);
+  } else if (param.type === 6 && param.properties) {
+    schema.properties = {};
+    for (const [key, value] of Object.entries(param.properties)) {
+      schema.properties[key] = convertAidaParamToGcaSchema(value);
+    }
+    schema.required = (param.required ?? []).map((r) => r.toString());
+  }
+  return schema;
+}
+function gcaChunkResponseToAidaChunkResponse(response) {
+  try {
+    const candidate = response.candidates?.[0];
+    const parts = candidate?.content?.parts || [];
+    const metadata = {
+      rpcGlobalId: response.responseId
+    };
+    if (candidate?.citationMetadata?.citations) {
+      metadata.attributionMetadata = {
+        attributionAction: RecitationAction.CITE,
+        citations: candidate.citationMetadata.citations.map((c) => ({
+          startIndex: c.startIndex,
+          endIndex: c.endIndex,
+          uri: c.uri
+        }))
+      };
+    }
+    const chunks = parts.map((part) => {
+      const aidaChunkResponse = { metadata };
+      if (part.text) {
+        aidaChunkResponse.textChunk = {
+          text: extractTextFromGcaParts(parts)
+        };
+      }
+      if (part.functionCall) {
+        aidaChunkResponse.functionCallChunk = {
+          functionCall: {
+            name: part.functionCall.name,
+            args: part.functionCall.args || {}
+          }
+        };
+      }
+      if (part.executableCode) {
+        aidaChunkResponse.codeChunk = {
+          code: part.executableCode.code,
+          inferenceLanguage: part.executableCode.language ? "PYTHON" : "UNKNOWN"
+        };
+      }
+      return aidaChunkResponse;
+    });
+    debugLog("Translation succeeded:", JSON.stringify(response), JSON.stringify(chunks));
+    return chunks;
+  } catch (e) {
+    debugLog("Translation error", JSON.stringify(response), e);
+    throw e;
+  }
 }
 
 // gen/front_end/core/host/DispatchHttpRequestClient.js
@@ -943,9 +1518,85 @@ function setDebugDispatchHttpRequestEnabled(enabled) {
 }
 globalThis.setDebugDispatchHttpRequestEnabled = setDebugDispatchHttpRequestEnabled;
 
+// gen/front_end/core/host/GcaClient.js
+var GcaClient_exports = {};
+__export(GcaClient_exports, {
+  GcaClient: () => GcaClient
+});
+import * as Root2 from "./../root/root.js";
+var SERVICE_NAME = "gcaService";
+var ENDPOINTS = {
+  CONTENT: "/v1beta:generateContent",
+  SEND_TELEMETRY: "/v1beta:sendTelemetry",
+  STREAM_CONTENT: "/v1beta:streamGenerateContent"
+};
+var GcaClient = class {
+  enabled() {
+    return Root2.Runtime.hostConfig.devToolsUseGcaApi?.enabled;
+  }
+  async conversationRequest(request, streamId, options) {
+    try {
+      const gcaRequest = aidaDoConversationRequestToGcaRequest(request);
+      const response = await makeHttpRequest({
+        service: SERVICE_NAME,
+        path: ENDPOINTS.STREAM_CONTENT,
+        method: "POST",
+        body: JSON.stringify(gcaRequest),
+        streamId
+      }, options);
+      debugLog("GCA conversation request succeeded:", JSON.stringify(request), JSON.stringify(response));
+    } catch (err) {
+      debugLog("GCA request failed:", JSON.stringify(request), err);
+      throw err;
+    }
+  }
+  registerClientEvent(clientEvent) {
+    const gcaEvent = aidaEventToGcaTelemetryRequest(clientEvent);
+    const response = makeHttpRequest({
+      service: SERVICE_NAME,
+      path: ENDPOINTS.SEND_TELEMETRY,
+      method: "POST",
+      body: JSON.stringify(gcaEvent)
+    });
+    return response.then((result) => {
+      debugLog("GCA register event succeeded:", JSON.stringify(gcaEvent), JSON.stringify(result));
+      return {};
+    }, (err) => {
+      debugLog("GCA register event failed:", JSON.stringify(gcaEvent), err);
+      return { error: JSON.stringify(err) };
+    });
+  }
+  async completeCode(request) {
+    const gcaRequest = aidaCompletionRequestToGcaRequest(request);
+    const result = await this.#requestContent(gcaRequest);
+    const aidaResult = result ? gcaResponseToAidaCompletionResponse(result) : null;
+    return aidaResult;
+  }
+  async generateCode(request, options) {
+    const gcaRequest = aidaGenerateCodeRequestToGcaRequest(request);
+    const result = await this.#requestContent(gcaRequest, options);
+    return result ? gcaResponseToAidaGenerateCodeResponse(result) : null;
+  }
+  async #requestContent(request, options) {
+    try {
+      const response = await makeHttpRequest({
+        service: SERVICE_NAME,
+        path: ENDPOINTS.CONTENT,
+        method: "POST",
+        body: JSON.stringify(request)
+      }, options);
+      debugLog("GCA request succeeded:", JSON.stringify(request), JSON.stringify(response));
+      return response;
+    } catch (err) {
+      debugLog("GCA request failed:", JSON.stringify(request), err);
+      return null;
+    }
+  }
+};
+
 // gen/front_end/core/host/AidaClient.js
 var CLIENT_NAME = "CHROME_DEVTOOLS";
-var SERVICE_NAME = "aidaService";
+var SERVICE_NAME2 = "aidaService";
 var CODE_CHUNK_SEPARATOR = (lang = "") => "\n`````" + lang + "\n";
 var AidaLanguageToMarkdown = {
   [
@@ -1018,9 +1669,11 @@ var AidaAbortError = class extends Error {
 var AidaBlockError = class extends Error {
 };
 var AidaClient = class {
+  // Delegate client
+  #gcaClient = new GcaClient();
   static buildConsoleInsightsRequest(input) {
-    const disallowLogging = Root2.Runtime.hostConfig.aidaAvailability?.disallowLogging ?? true;
-    const chromeVersion = Root2.Runtime.getChromeVersion();
+    const disallowLogging = Root3.Runtime.hostConfig.aidaAvailability?.disallowLogging ?? true;
+    const chromeVersion = Root3.Runtime.getChromeVersion();
     if (!chromeVersion) {
       throw new Error("Cannot determine Chrome version");
     }
@@ -1036,9 +1689,9 @@ var AidaClient = class {
     };
     let temperature = -1;
     let modelId;
-    if (Root2.Runtime.hostConfig.devToolsConsoleInsights?.enabled) {
-      temperature = Root2.Runtime.hostConfig.devToolsConsoleInsights.temperature ?? -1;
-      modelId = Root2.Runtime.hostConfig.devToolsConsoleInsights.modelId;
+    if (Root3.Runtime.hostConfig.devToolsConsoleInsights?.enabled) {
+      temperature = Root3.Runtime.hostConfig.devToolsConsoleInsights.temperature ?? -1;
+      modelId = Root3.Runtime.hostConfig.devToolsConsoleInsights.modelId;
     }
     if (temperature >= 0) {
       request.options ??= {};
@@ -1067,7 +1720,7 @@ var AidaClient = class {
     if (!InspectorFrontendHostInstance.dispatchHttpRequest) {
       throw new Error("dispatchHttpRequest is not available");
     }
-    if (Root2.Runtime.hostConfig.devToolsGeminiRebranding?.enabled) {
+    if (Root3.Runtime.hostConfig.devToolsGeminiRebranding?.enabled) {
       request.metadata.disable_user_content_logging = true;
     }
     const stream = (() => {
@@ -1090,15 +1743,22 @@ var AidaClient = class {
       };
     })();
     const streamId = bindOutputStream(stream);
-    makeHttpRequest({
-      service: SERVICE_NAME,
-      path: "/v1/aida:doConversation",
-      method: "POST",
-      body: JSON.stringify(request),
-      streamId
-    }, options).then(() => {
+    let response;
+    if (this.#gcaClient.enabled()) {
+      response = this.#gcaClient.conversationRequest(request, streamId, options);
+    } else {
+      response = makeHttpRequest({
+        service: SERVICE_NAME2,
+        path: "/v1/aida:doConversation",
+        method: "POST",
+        body: JSON.stringify(request),
+        streamId
+      }, options);
+    }
+    response.then(() => {
       void stream.close();
     }, (err) => {
+      debugLog("doConversation failed with error:", JSON.stringify(err));
       if (err instanceof DispatchHttpRequestError && err.response) {
         const result = err.response;
         if (result.statusCode === 403) {
@@ -1120,46 +1780,33 @@ var AidaClient = class {
       }
       stream.fail(err);
     });
+    await (yield* this.#handleResponseStream(stream));
+  }
+  async *#handleResponseStream(stream) {
     let chunk;
     const text = [];
     let inCodeChunk = false;
     const functionCalls = [];
     let metadata = { rpcGlobalId: 0 };
     while (chunk = await stream.read()) {
+      debugLog("doConversation stream chunk:", chunk);
       let textUpdated = false;
-      if (!chunk.length) {
-        continue;
-      }
-      if (chunk.startsWith(",")) {
-        chunk = chunk.slice(1);
-      }
-      if (!chunk.startsWith("[")) {
-        chunk = "[" + chunk;
-      }
-      if (!chunk.endsWith("]")) {
-        chunk = chunk + "]";
-      }
-      let results;
-      try {
-        results = JSON.parse(chunk);
-      } catch (error) {
-        throw new Error("Cannot parse chunk: " + chunk, { cause: error });
-      }
+      const results = this.#parseAndTranslate(chunk);
       for (const result of results) {
-        if ("metadata" in result) {
+        if (result.metadata) {
           metadata = result.metadata;
           if (metadata?.attributionMetadata?.attributionAction === RecitationAction.BLOCK) {
             throw new AidaBlockError();
           }
         }
-        if ("textChunk" in result) {
+        if (result.textChunk) {
           if (inCodeChunk) {
             text.push(CODE_CHUNK_SEPARATOR());
             inCodeChunk = false;
           }
           text.push(result.textChunk.text);
           textUpdated = true;
-        } else if ("codeChunk" in result) {
+        } else if (result.codeChunk) {
           if (!inCodeChunk) {
             const language = AidaLanguageToMarkdown[result.codeChunk.inferenceLanguage] ?? "";
             text.push(CODE_CHUNK_SEPARATOR(language));
@@ -1167,7 +1814,7 @@ var AidaClient = class {
           }
           text.push(result.codeChunk.code);
           textUpdated = true;
-        } else if ("functionCallChunk" in result) {
+        } else if (result.functionCallChunk) {
           functionCalls.push({
             name: result.functionCallChunk.functionCall.name,
             args: result.functionCallChunk.functionCall.args
@@ -1193,9 +1840,39 @@ var AidaClient = class {
       completed: true
     };
   }
+  #parseAndTranslate(chunk) {
+    const results = this.#parseStreamChunk(chunk);
+    if (this.#gcaClient.enabled()) {
+      return results.flatMap(gcaChunkResponseToAidaChunkResponse);
+    }
+    return results;
+  }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  #parseStreamChunk(chunk) {
+    if (!chunk.length) {
+      return [];
+    }
+    if (chunk.startsWith(",")) {
+      chunk = chunk.slice(1);
+    }
+    if (!chunk.startsWith("[")) {
+      chunk = "[" + chunk;
+    }
+    if (!chunk.endsWith("]")) {
+      chunk = chunk + "]";
+    }
+    try {
+      return JSON.parse(chunk);
+    } catch (error) {
+      throw new Error("Cannot parse chunk: " + chunk, { cause: error });
+    }
+  }
   registerClientEvent(clientEvent) {
-    if (Root2.Runtime.hostConfig.devToolsGeminiRebranding?.enabled) {
+    if (Root3.Runtime.hostConfig.devToolsGeminiRebranding?.enabled) {
       clientEvent.disable_user_content_logging = true;
+    }
+    if (this.#gcaClient.enabled()) {
+      return this.#gcaClient.registerClientEvent(clientEvent);
     }
     const { promise, resolve } = Promise.withResolvers();
     InspectorFrontendHostInstance.registerAidaClientEvent(JSON.stringify({
@@ -1209,8 +1886,11 @@ var AidaClient = class {
     if (!InspectorFrontendHostInstance.aidaCodeComplete) {
       throw new Error("aidaCodeComplete is not available");
     }
-    if (Root2.Runtime.hostConfig.devToolsGeminiRebranding?.enabled) {
+    if (Root3.Runtime.hostConfig.devToolsGeminiRebranding?.enabled) {
       request.metadata.disable_user_content_logging = true;
+    }
+    if (this.#gcaClient.enabled()) {
+      return await this.#gcaClient.completeCode(request);
     }
     const { promise, resolve } = Promise.withResolvers();
     InspectorFrontendHostInstance.aidaCodeComplete(JSON.stringify(request), resolve);
@@ -1251,11 +1931,14 @@ var AidaClient = class {
     return { generatedSamples, metadata };
   }
   async generateCode(request, options) {
-    if (Root2.Runtime.hostConfig.devToolsGeminiRebranding?.enabled) {
+    if (Root3.Runtime.hostConfig.devToolsGeminiRebranding?.enabled) {
       request.metadata.disable_user_content_logging = true;
     }
+    if (this.#gcaClient.enabled()) {
+      return await this.#gcaClient.generateCode(request, options);
+    }
     const response = await makeHttpRequest({
-      service: SERVICE_NAME,
+      service: SERVICE_NAME2,
       path: "/v1/aida:generateCode",
       method: "POST",
       body: JSON.stringify(request)
@@ -1310,7 +1993,7 @@ var HostConfigTracker = class _HostConfigTracker extends Common4.ObjectWrapper.O
     if (currentAidaAvailability !== this.#aidaAvailability) {
       this.#aidaAvailability = currentAidaAvailability;
       const config = await new Promise((resolve) => InspectorFrontendHostInstance.getHostConfig(resolve));
-      Object.assign(Root2.Runtime.hostConfig, config);
+      Object.assign(Root3.Runtime.hostConfig, config);
       this.dispatchEventToListeners(
         "aidaAvailabilityChanged"
         /* Events.AIDA_AVAILABILITY_CHANGED */
@@ -1318,575 +2001,6 @@ var HostConfigTracker = class _HostConfigTracker extends Common4.ObjectWrapper.O
     }
   }
 };
-
-// gen/front_end/core/host/AidaGcaTranslation.js
-var AidaGcaTranslation_exports = {};
-__export(AidaGcaTranslation_exports, {
-  aidaCompletionRequestToGcaRequest: () => aidaCompletionRequestToGcaRequest,
-  aidaDoConversationRequestToGcaRequest: () => aidaDoConversationRequestToGcaRequest,
-  aidaEventToGcaTelemetryRequest: () => aidaEventToGcaTelemetryRequest,
-  aidaGenerateCodeRequestToGcaRequest: () => aidaGenerateCodeRequestToGcaRequest,
-  gcaChunkResponseToAidaChunkResponse: () => gcaChunkResponseToAidaChunkResponse,
-  gcaResponseToAidaCompletionResponse: () => gcaResponseToAidaCompletionResponse,
-  gcaResponseToAidaDoConversationResponse: () => gcaResponseToAidaDoConversationResponse,
-  gcaResponseToAidaGenerateCodeResponse: () => gcaResponseToAidaGenerateCodeResponse
-});
-
-// gen/front_end/core/host/GcaTypes.js
-var GcaTypes_exports = {};
-__export(GcaTypes_exports, {
-  BlockReason: () => BlockReason,
-  FinishReason: () => FinishReason,
-  HarmBlockMethod: () => HarmBlockMethod,
-  HarmBlockThreshold: () => HarmBlockThreshold,
-  HarmCategory: () => HarmCategory,
-  HarmProbability: () => HarmProbability,
-  InclusionReason: () => InclusionReason,
-  InteractionType: () => InteractionType,
-  Language: () => Language,
-  Method: () => Method,
-  Mode: () => Mode,
-  Outcome: () => Outcome,
-  SuggestionStatus: () => SuggestionStatus,
-  Type: () => Type
-});
-var Type;
-(function(Type2) {
-  Type2[Type2["TYPE_UNSPECIFIED"] = 0] = "TYPE_UNSPECIFIED";
-  Type2[Type2["STRING"] = 1] = "STRING";
-  Type2[Type2["NUMBER"] = 2] = "NUMBER";
-  Type2[Type2["INTEGER"] = 3] = "INTEGER";
-  Type2[Type2["BOOLEAN"] = 4] = "BOOLEAN";
-  Type2[Type2["ARRAY"] = 5] = "ARRAY";
-  Type2[Type2["OBJECT"] = 6] = "OBJECT";
-  Type2[Type2["NULL"] = 7] = "NULL";
-})(Type || (Type = {}));
-var HarmCategory;
-(function(HarmCategory2) {
-  HarmCategory2[HarmCategory2["HARM_CATEGORY_UNSPECIFIED"] = 0] = "HARM_CATEGORY_UNSPECIFIED";
-  HarmCategory2[HarmCategory2["HARM_CATEGORY_HARASSMENT"] = 7] = "HARM_CATEGORY_HARASSMENT";
-  HarmCategory2[HarmCategory2["HARM_CATEGORY_HATE_SPEECH"] = 8] = "HARM_CATEGORY_HATE_SPEECH";
-  HarmCategory2[HarmCategory2["HARM_CATEGORY_SEXUALLY_EXPLICIT"] = 9] = "HARM_CATEGORY_SEXUALLY_EXPLICIT";
-  HarmCategory2[HarmCategory2["HARM_CATEGORY_DANGEROUS_CONTENT"] = 10] = "HARM_CATEGORY_DANGEROUS_CONTENT";
-})(HarmCategory || (HarmCategory = {}));
-var HarmProbability;
-(function(HarmProbability2) {
-  HarmProbability2[HarmProbability2["HARM_PROBABILITY_UNSPECIFIED"] = 0] = "HARM_PROBABILITY_UNSPECIFIED";
-  HarmProbability2[HarmProbability2["NEGLIGIBLE"] = 1] = "NEGLIGIBLE";
-  HarmProbability2[HarmProbability2["LOW"] = 2] = "LOW";
-  HarmProbability2[HarmProbability2["MEDIUM"] = 3] = "MEDIUM";
-  HarmProbability2[HarmProbability2["HIGH"] = 4] = "HIGH";
-})(HarmProbability || (HarmProbability = {}));
-var HarmBlockThreshold;
-(function(HarmBlockThreshold2) {
-  HarmBlockThreshold2[HarmBlockThreshold2["HARM_BLOCK_THRESHOLD_UNSPECIFIED"] = 0] = "HARM_BLOCK_THRESHOLD_UNSPECIFIED";
-  HarmBlockThreshold2[HarmBlockThreshold2["BLOCK_LOW_AND_ABOVE"] = 1] = "BLOCK_LOW_AND_ABOVE";
-  HarmBlockThreshold2[HarmBlockThreshold2["BLOCK_MEDIUM_AND_ABOVE"] = 2] = "BLOCK_MEDIUM_AND_ABOVE";
-  HarmBlockThreshold2[HarmBlockThreshold2["BLOCK_ONLY_HIGH"] = 3] = "BLOCK_ONLY_HIGH";
-  HarmBlockThreshold2[HarmBlockThreshold2["BLOCK_NONE"] = 4] = "BLOCK_NONE";
-  HarmBlockThreshold2[HarmBlockThreshold2["OFF"] = 5] = "OFF";
-})(HarmBlockThreshold || (HarmBlockThreshold = {}));
-var HarmBlockMethod;
-(function(HarmBlockMethod2) {
-  HarmBlockMethod2[HarmBlockMethod2["HARM_BLOCK_METHOD_UNSPECIFIED"] = 0] = "HARM_BLOCK_METHOD_UNSPECIFIED";
-  HarmBlockMethod2[HarmBlockMethod2["SEVERITY"] = 1] = "SEVERITY";
-  HarmBlockMethod2[HarmBlockMethod2["PROBABILITY"] = 2] = "PROBABILITY";
-})(HarmBlockMethod || (HarmBlockMethod = {}));
-var FinishReason;
-(function(FinishReason2) {
-  FinishReason2[FinishReason2["FINISH_REASON_UNSPECIFIED"] = 0] = "FINISH_REASON_UNSPECIFIED";
-  FinishReason2[FinishReason2["STOP"] = 1] = "STOP";
-  FinishReason2[FinishReason2["MAX_TOKENS"] = 2] = "MAX_TOKENS";
-  FinishReason2[FinishReason2["SAFETY"] = 3] = "SAFETY";
-  FinishReason2[FinishReason2["RECITATION"] = 4] = "RECITATION";
-  FinishReason2[FinishReason2["OTHER"] = 5] = "OTHER";
-  FinishReason2[FinishReason2["BLOCKLIST"] = 6] = "BLOCKLIST";
-  FinishReason2[FinishReason2["PROHIBITED_CONTENT"] = 7] = "PROHIBITED_CONTENT";
-  FinishReason2[FinishReason2["SPII"] = 8] = "SPII";
-  FinishReason2[FinishReason2["MALFORMED_FUNCTION_CALL"] = 9] = "MALFORMED_FUNCTION_CALL";
-  FinishReason2[FinishReason2["IMAGE_SAFETY"] = 10] = "IMAGE_SAFETY";
-  FinishReason2[FinishReason2["IMAGE_PROHIBITED_CONTENT"] = 11] = "IMAGE_PROHIBITED_CONTENT";
-  FinishReason2[FinishReason2["IMAGE_RECITATION"] = 12] = "IMAGE_RECITATION";
-  FinishReason2[FinishReason2["IMAGE_OTHER"] = 13] = "IMAGE_OTHER";
-  FinishReason2[FinishReason2["UNEXPECTED_TOOL_CALL"] = 14] = "UNEXPECTED_TOOL_CALL";
-  FinishReason2[FinishReason2["NO_IMAGE"] = 15] = "NO_IMAGE";
-})(FinishReason || (FinishReason = {}));
-var Method;
-(function(Method2) {
-  Method2[Method2["METHOD_UNSPECIFIED"] = 0] = "METHOD_UNSPECIFIED";
-  Method2[Method2["GENERATE_CODE"] = 1] = "GENERATE_CODE";
-  Method2[Method2["COMPLETE_CODE"] = 2] = "COMPLETE_CODE";
-  Method2[Method2["TRANSFORM_CODE"] = 3] = "TRANSFORM_CODE";
-  Method2[Method2["CHAT"] = 4] = "CHAT";
-})(Method || (Method = {}));
-var SuggestionStatus;
-(function(SuggestionStatus2) {
-  SuggestionStatus2[SuggestionStatus2["STATUS_UNSPECIFIED"] = 0] = "STATUS_UNSPECIFIED";
-  SuggestionStatus2[SuggestionStatus2["NO_ERROR"] = 1] = "NO_ERROR";
-  SuggestionStatus2[SuggestionStatus2["ERROR"] = 2] = "ERROR";
-  SuggestionStatus2[SuggestionStatus2["CANCELLED"] = 3] = "CANCELLED";
-  SuggestionStatus2[SuggestionStatus2["EMPTY"] = 4] = "EMPTY";
-})(SuggestionStatus || (SuggestionStatus = {}));
-var InteractionType;
-(function(InteractionType2) {
-  InteractionType2[InteractionType2["INTERACTION_TYPE_UNSPECIFIED"] = 0] = "INTERACTION_TYPE_UNSPECIFIED";
-  InteractionType2[InteractionType2["THUMBS_UP"] = 1] = "THUMBS_UP";
-  InteractionType2[InteractionType2["THUMBS_DOWN"] = 2] = "THUMBS_DOWN";
-  InteractionType2[InteractionType2["ACCEPT"] = 3] = "ACCEPT";
-  InteractionType2[InteractionType2["ACCEPT_PARTIALLY"] = 4] = "ACCEPT_PARTIALLY";
-  InteractionType2[InteractionType2["REJECT"] = 5] = "REJECT";
-  InteractionType2[InteractionType2["COPY"] = 6] = "COPY";
-})(InteractionType || (InteractionType = {}));
-var InclusionReason;
-(function(InclusionReason2) {
-  InclusionReason2[InclusionReason2["INCLUSION_REASON_UNSPECIFIED"] = 0] = "INCLUSION_REASON_UNSPECIFIED";
-  InclusionReason2[InclusionReason2["ACTIVE"] = 1] = "ACTIVE";
-  InclusionReason2[InclusionReason2["OPEN"] = 2] = "OPEN";
-  InclusionReason2[InclusionReason2["RECENTLY_CLOSED"] = 3] = "RECENTLY_CLOSED";
-  InclusionReason2[InclusionReason2["RECENTLY_EDITED"] = 4] = "RECENTLY_EDITED";
-  InclusionReason2[InclusionReason2["COLOCATED"] = 5] = "COLOCATED";
-  InclusionReason2[InclusionReason2["RELATED"] = 6] = "RELATED";
-  InclusionReason2[InclusionReason2["USER_SELECTED"] = 7] = "USER_SELECTED";
-})(InclusionReason || (InclusionReason = {}));
-var BlockReason;
-(function(BlockReason2) {
-  BlockReason2[BlockReason2["BLOCKED_REASON_UNSPECIFIED"] = 0] = "BLOCKED_REASON_UNSPECIFIED";
-  BlockReason2[BlockReason2["SAFETY"] = 1] = "SAFETY";
-  BlockReason2[BlockReason2["OTHER"] = 2] = "OTHER";
-  BlockReason2[BlockReason2["BLOCKLIST"] = 3] = "BLOCKLIST";
-  BlockReason2[BlockReason2["PROHIBITED_CONTENT"] = 4] = "PROHIBITED_CONTENT";
-  BlockReason2[BlockReason2["IMAGE_SAFETY"] = 5] = "IMAGE_SAFETY";
-})(BlockReason || (BlockReason = {}));
-var Language;
-(function(Language3) {
-  Language3[Language3["LANGUAGE_UNSPECIFIED"] = 0] = "LANGUAGE_UNSPECIFIED";
-  Language3[Language3["PYTHON"] = 1] = "PYTHON";
-})(Language || (Language = {}));
-var Outcome;
-(function(Outcome2) {
-  Outcome2[Outcome2["OUTCOME_UNSPECIFIED"] = 0] = "OUTCOME_UNSPECIFIED";
-  Outcome2[Outcome2["OUTCOME_OK"] = 1] = "OUTCOME_OK";
-  Outcome2[Outcome2["OUTCOME_FAILED"] = 2] = "OUTCOME_FAILED";
-  Outcome2[Outcome2["OUTCOME_DEADLINE_EXCEEDED"] = 3] = "OUTCOME_DEADLINE_EXCEEDED";
-})(Outcome || (Outcome = {}));
-var Mode;
-(function(Mode2) {
-  Mode2[Mode2["MODE_UNSPECIFIED"] = 0] = "MODE_UNSPECIFIED";
-  Mode2[Mode2["AUTO"] = 1] = "AUTO";
-  Mode2[Mode2["ANY"] = 2] = "ANY";
-  Mode2[Mode2["NONE"] = 3] = "NONE";
-})(Mode || (Mode = {}));
-
-// gen/front_end/core/host/AidaGcaTranslation.js
-function createBaseGcaRequest(request, contents, experience) {
-  const gcaRequest = { contents, aicode: { experience } };
-  mapCommonAidaRequestFields(request, gcaRequest);
-  buildLabels(request, gcaRequest);
-  if ("preamble" in request && request.preamble) {
-    gcaRequest.systemInstruction = {
-      role: "user",
-      parts: [{ text: request.preamble }]
-    };
-  }
-  return gcaRequest;
-}
-function aidaDoConversationRequestToGcaRequest(request) {
-  try {
-    const contents = [];
-    if (request.historical_contexts) {
-      contents.push(...request.historical_contexts.map(convertAidaContentToGcaContent));
-    }
-    contents.push(convertAidaContentToGcaContent(request.current_message));
-    const gcaRequest = createBaseGcaRequest(request, contents, "chat_console_insights");
-    if (request.function_declarations) {
-      gcaRequest.tools = [{
-        functionDeclarations: request.function_declarations.map((fd) => ({
-          name: fd.name,
-          description: fd.description,
-          parameters: convertAidaParamToGcaSchema(fd.parameters)
-        }))
-      }];
-    }
-    debugLog("Translation succeded:", JSON.stringify(request), JSON.stringify(gcaRequest));
-    return gcaRequest;
-  } catch (e) {
-    debugLog("Translation error:", JSON.stringify(request), e);
-    throw e;
-  }
-}
-function mapCommonAidaRequestFields(aidaRequest, gcaRequest) {
-  if (aidaRequest.options?.model_id) {
-    gcaRequest.model = aidaRequest.options.model_id;
-  }
-  if (aidaRequest.options?.temperature !== void 0) {
-    gcaRequest.generationConfig = {
-      ...gcaRequest.generationConfig,
-      temperature: aidaRequest.options.temperature
-    };
-  }
-}
-function gcaResponseToAidaDoConversationResponse(response) {
-  const functionCalls = [];
-  if (response.candidates?.[0].content?.parts) {
-    for (const part of response.candidates[0].content.parts) {
-      if (part.functionCall) {
-        functionCalls.push({
-          name: part.functionCall.name,
-          args: part.functionCall.args || {}
-        });
-      }
-    }
-  }
-  return {
-    explanation: extractTextFromGcaParts(response.candidates[0].content?.parts),
-    metadata: {
-      rpcGlobalId: response.responseId
-    },
-    functionCalls: functionCalls.length > 0 ? functionCalls : void 0,
-    completed: true
-  };
-}
-function extractTextFromGcaParts(parts) {
-  if (!parts) {
-    return "";
-  }
-  return parts.map((p) => p.text || "").join("");
-}
-function aidaEventToGcaTelemetryRequest(clientEvent) {
-  try {
-    const feedbackMetrics = [];
-    const responseId = String(clientEvent.corresponding_aida_rpc_global_id);
-    const eventTime = (/* @__PURE__ */ new Date()).toISOString();
-    if (clientEvent.do_conversation_client_event) {
-      const feedback = clientEvent.do_conversation_client_event.user_feedback;
-      if (feedback.sentiment) {
-        let interaction = InteractionType.INTERACTION_TYPE_UNSPECIFIED;
-        if (feedback.sentiment === "POSITIVE") {
-          interaction = InteractionType.THUMBS_UP;
-        } else if (feedback.sentiment === "NEGATIVE") {
-          interaction = InteractionType.THUMBS_DOWN;
-        }
-        feedbackMetrics.push({
-          eventTime,
-          responseId,
-          suggestionInteraction: { interaction }
-        });
-      }
-    }
-    feedbackMetrics.push(...convertCodeTelemetry(clientEvent.complete_code_client_event, Method.COMPLETE_CODE, responseId, eventTime));
-    feedbackMetrics.push(...convertCodeTelemetry(clientEvent.generate_code_client_event, Method.GENERATE_CODE, responseId, eventTime));
-    const gcaTelemetryRequest = {
-      feedbackMetrics
-    };
-    debugLog("Translation succeeded:", JSON.stringify(clientEvent), JSON.stringify(gcaTelemetryRequest));
-    return gcaTelemetryRequest;
-  } catch (e) {
-    debugLog("Translation error:", JSON.stringify(clientEvent), e);
-    throw e;
-  }
-}
-function convertCodeTelemetry(event, method, responseId, eventTime) {
-  if (!event) {
-    return [];
-  }
-  if ("user_impression" in event && event.user_impression) {
-    const impression = event.user_impression;
-    return [{
-      eventTime,
-      responseId,
-      suggestionOffered: {
-        method,
-        status: SuggestionStatus.NO_ERROR,
-        responseLatency: `${impression.latency.duration.seconds + impression.latency.duration.nanos / 1e9}s`
-      }
-    }];
-  }
-  if ("user_acceptance" in event && event.user_acceptance) {
-    const acceptance = event.user_acceptance;
-    return [{
-      eventTime,
-      responseId,
-      suggestionInteraction: {
-        interaction: InteractionType.ACCEPT,
-        candidateIndex: acceptance.sample.sample_id
-      }
-    }];
-  }
-  return [];
-}
-function aidaCompletionRequestToGcaRequest(request) {
-  try {
-    let additionalFiles = (request.additional_files ?? []).map((f) => ({
-      fileUri: f.path,
-      inclusionReason: [AidaReasonToGcaInclusionReason[f.included_reason]]
-    }));
-    const inEditorFile = inFileEditRequestToSourceFile(request);
-    if (inEditorFile) {
-      additionalFiles = [inEditorFile, ...additionalFiles];
-    }
-    const gcaRequest = createBaseGcaRequest(request, [], "complete_code");
-    gcaRequest.aicode.files = additionalFiles;
-    if (request.options?.stop_sequences) {
-      gcaRequest.generationConfig = {
-        ...gcaRequest.generationConfig,
-        stopSequences: request.options.stop_sequences
-      };
-    }
-    debugLog("Translation succeeded:", JSON.stringify(request), JSON.stringify(gcaRequest));
-    return gcaRequest;
-  } catch (e) {
-    debugLog("Translation error:", JSON.stringify(request), e);
-    throw e;
-  }
-}
-function inFileEditRequestToSourceFile(request) {
-  const sourceFile = {
-    inclusionReason: [InclusionReason.ACTIVE],
-    fileUri: "devtools-code-completion",
-    segments: [
-      {
-        content: request.prefix,
-        isSelected: false
-      },
-      {
-        content: "",
-        isSelected: true
-        // Cursor position
-      }
-    ]
-  };
-  if (request.suffix) {
-    sourceFile.segments?.push({
-      content: request.suffix,
-      isSelected: false
-    });
-  }
-  return sourceFile;
-}
-function buildLabels(request, gcaRequest) {
-  const labels = {};
-  if (request.client) {
-    labels["client"] = request.client;
-  }
-  if ("functionality_type" in request && request.functionality_type !== void 0) {
-    labels["functionality_type"] = FunctionalityType[request.functionality_type];
-  }
-  if ("client_feature" in request && request.client_feature !== void 0) {
-    labels["client_feature"] = ClientFeature[request.client_feature];
-  }
-  if ("last_user_action" in request && request.last_user_action !== void 0) {
-    labels["last_user_action"] = EditType[request.last_user_action];
-  }
-  if ("use_case" in request && request.use_case !== void 0) {
-    labels["use_case"] = UseCase[request.use_case];
-  }
-  if (request.metadata.string_session_id) {
-    labels["session_id"] = request.metadata.string_session_id;
-  }
-  const options = request.options;
-  if (options?.inference_language) {
-    labels["inference_language"] = options.inference_language;
-  }
-  if (options?.expect_code_output !== void 0) {
-    labels["expect_code_output"] = String(options.expect_code_output);
-  }
-  if (Object.keys(labels).length > 0) {
-    gcaRequest.labels = labels;
-  }
-}
-var AidaReasonToGcaInclusionReason = {
-  [Reason.UNKNOWN]: InclusionReason.INCLUSION_REASON_UNSPECIFIED,
-  [Reason.CURRENTLY_OPEN]: InclusionReason.OPEN,
-  // Intentional mapping due to type mismatch
-  // TODO(liviurau): find a way to validate this mapping
-  [Reason.RECENTLY_OPENED]: InclusionReason.RECENTLY_CLOSED,
-  [Reason.RECENTLY_EDITED]: InclusionReason.RECENTLY_EDITED,
-  [Reason.COLOCATED]: InclusionReason.COLOCATED,
-  [Reason.RELATED_FILE]: InclusionReason.RELATED
-};
-function gcaResponseToAidaCompletionResponse(response) {
-  try {
-    const { samples, metadata } = gcaResponseToAidaSamplesAndMetadata(response);
-    const aidaResponse = {
-      generatedSamples: samples,
-      metadata
-    };
-    debugLog("Translation succeeded:", JSON.stringify(response), JSON.stringify(aidaResponse));
-    return aidaResponse;
-  } catch (e) {
-    debugLog("Translation error", JSON.stringify(response), e);
-    throw e;
-  }
-}
-function gcaResponseToAidaSamplesAndMetadata(response) {
-  return {
-    samples: (response.candidates ?? []).map(gcaCandidateToAidaGenerationSample),
-    metadata: {
-      rpcGlobalId: response.responseId
-    }
-  };
-}
-function aidaGenerateCodeRequestToGcaRequest(request) {
-  try {
-    const gcaRequest = createBaseGcaRequest(request, [convertAidaContentToGcaContent(request.current_message)], "generate_code");
-    if (request.context_files) {
-      gcaRequest.aicode.files = request.context_files.map((f) => ({
-        fileUri: f.path,
-        programmingLanguage: f.programming_language
-      }));
-    }
-    debugLog("Translation succeeded:", JSON.stringify(request), JSON.stringify(gcaRequest));
-    return gcaRequest;
-  } catch (e) {
-    debugLog("Translation error", JSON.stringify(request), e);
-    throw e;
-  }
-}
-function gcaResponseToAidaGenerateCodeResponse(response) {
-  try {
-    const aidaResponse = gcaResponseToAidaSamplesAndMetadata(response);
-    debugLog("Translation succeeded:", JSON.stringify(response), JSON.stringify(aidaResponse));
-    return aidaResponse;
-  } catch (e) {
-    debugLog("translation error", JSON.stringify(response), e);
-    throw e;
-  }
-}
-function gcaCandidateToAidaGenerationSample(candidate) {
-  const generationSample = {
-    generationString: extractTextFromGcaParts(candidate.content?.parts),
-    score: 0,
-    sampleId: candidate.index
-  };
-  if (candidate.citationMetadata) {
-    generationSample.attributionMetadata = {
-      attributionAction: RecitationAction.CITE,
-      citations: (candidate.citationMetadata.citations ?? []).map((c) => ({
-        startIndex: c.startIndex,
-        endIndex: c.endIndex,
-        uri: c.uri
-      }))
-    };
-  }
-  return generationSample;
-}
-function convertAidaContentToGcaContent(content) {
-  let role = "user";
-  if (content.role === Role.MODEL) {
-    role = "model";
-  }
-  return {
-    role,
-    parts: (content.parts ?? []).map(convertAidaPartToGcaPart)
-  };
-}
-function convertAidaPartToGcaPart(part) {
-  if ("text" in part) {
-    return { text: part.text };
-  }
-  if ("functionCall" in part) {
-    return {
-      functionCall: {
-        name: part.functionCall.name,
-        args: part.functionCall.args
-      }
-    };
-  }
-  if ("functionResponse" in part) {
-    const fResponse = {};
-    if ("result" in part.functionResponse.response) {
-      fResponse.output = part.functionResponse.response["result"];
-    } else if ("output" in part.functionResponse.response) {
-      fResponse.output = part.functionResponse.response["output"];
-    } else if (!("error" in part.functionResponse.response)) {
-      fResponse.output = part.functionResponse.response;
-    }
-    if ("error" in part.functionResponse.response) {
-      fResponse.error = part.functionResponse.response["error"];
-    }
-    return {
-      functionResponse: {
-        name: part.functionResponse.name,
-        response: fResponse
-      }
-    };
-  }
-  if ("inlineData" in part) {
-    return {
-      inlineData: {
-        mimeType: part.inlineData.mimeType,
-        data: part.inlineData.data
-      }
-    };
-  }
-  return {};
-}
-function convertAidaParamToGcaSchema(param) {
-  const schema = {
-    type: param.type,
-    description: param.description
-  };
-  if (param.nullable) {
-    schema.nullable = param.nullable;
-  }
-  if (param.type === 5 && param.items) {
-    schema.items = convertAidaParamToGcaSchema(param.items);
-  } else if (param.type === 6 && param.properties) {
-    schema.properties = {};
-    for (const [key, value] of Object.entries(param.properties)) {
-      schema.properties[key] = convertAidaParamToGcaSchema(value);
-    }
-    schema.required = (param.required ?? []).map((r) => r.toString());
-  }
-  return schema;
-}
-function gcaChunkResponseToAidaChunkResponse(response) {
-  try {
-    const candidate = response.candidates?.[0];
-    const parts = candidate?.content?.parts || [];
-    const metadata = {
-      rpcGlobalId: response.responseId
-    };
-    if (candidate?.citationMetadata?.citations) {
-      metadata.attributionMetadata = {
-        attributionAction: RecitationAction.CITE,
-        citations: candidate.citationMetadata.citations.map((c) => ({
-          startIndex: c.startIndex,
-          endIndex: c.endIndex,
-          uri: c.uri
-        }))
-      };
-    }
-    const chunks = parts.map((part) => {
-      const aidaChunkResponse = { metadata };
-      if (part.text) {
-        aidaChunkResponse.textChunk = {
-          text: extractTextFromGcaParts(parts)
-        };
-      }
-      if (part.functionCall) {
-        aidaChunkResponse.functionCallChunk = {
-          functionCall: {
-            name: part.functionCall.name,
-            args: part.functionCall.args || {}
-          }
-        };
-      }
-      if (part.executableCode) {
-        aidaChunkResponse.codeChunk = {
-          code: part.executableCode.code,
-          inferenceLanguage: part.executableCode.language ? "PYTHON" : "UNKNOWN"
-        };
-      }
-      return aidaChunkResponse;
-    });
-    debugLog("Translation succeeded:", JSON.stringify(response), JSON.stringify(chunks));
-    return chunks;
-  } catch (e) {
-    debugLog("Translation error", JSON.stringify(response), e);
-    throw e;
-  }
-}
 
 // gen/front_end/core/host/GdpClient.js
 var GdpClient_exports = {};
@@ -1902,7 +2016,7 @@ __export(GdpClient_exports, {
   isGdpProfilesAvailable: () => isGdpProfilesAvailable,
   isStarterBadgeEnabled: () => isStarterBadgeEnabled
 });
-import * as Root3 from "./../root/root.js";
+import * as Root4 from "./../root/root.js";
 var SubscriptionStatus;
 (function(SubscriptionStatus2) {
   SubscriptionStatus2["ENABLED"] = "SUBSCRIPTION_STATE_ENABLED";
@@ -1941,7 +2055,7 @@ async function makeHttpRequest2(request) {
   const response = await makeHttpRequest(request);
   return response;
 }
-var SERVICE_NAME2 = "gdpService";
+var SERVICE_NAME3 = "gdpService";
 var gdpClientInstance = null;
 var GdpClient = class _GdpClient {
   #cachedProfilePromise;
@@ -1991,7 +2105,7 @@ var GdpClient = class _GdpClient {
       return await this.#cachedProfilePromise;
     }
     this.#cachedProfilePromise = makeHttpRequest2({
-      service: SERVICE_NAME2,
+      service: SERVICE_NAME3,
       path: "/v1beta1/profile:get",
       method: "GET"
     }).then((profile) => {
@@ -2004,7 +2118,7 @@ var GdpClient = class _GdpClient {
     if (this.#cachedEligibilityPromise) {
       return await this.#cachedEligibilityPromise;
     }
-    this.#cachedEligibilityPromise = makeHttpRequest2({ service: SERVICE_NAME2, path: "/v1beta1/eligibility:check", method: "GET" });
+    this.#cachedEligibilityPromise = makeHttpRequest2({ service: SERVICE_NAME3, path: "/v1beta1/eligibility:check", method: "GET" });
     return await this.#cachedEligibilityPromise;
   }
   /**
@@ -2013,7 +2127,7 @@ var GdpClient = class _GdpClient {
   async getAwardedBadgeNames({ names }) {
     try {
       const response = await makeHttpRequest2({
-        service: SERVICE_NAME2,
+        service: SERVICE_NAME3,
         path: "/v1beta1/profiles/me/awards:batchGet",
         method: "GET",
         queryParams: {
@@ -2029,7 +2143,7 @@ var GdpClient = class _GdpClient {
   async createProfile({ user, emailPreference }) {
     try {
       const response = await makeHttpRequest2({
-        service: SERVICE_NAME2,
+        service: SERVICE_NAME3,
         path: "/v1beta1/profiles",
         method: "POST",
         body: JSON.stringify({
@@ -2053,7 +2167,7 @@ var GdpClient = class _GdpClient {
   async createAward({ name }) {
     try {
       const response = await makeHttpRequest2({
-        service: SERVICE_NAME2,
+        service: SERVICE_NAME3,
         path: "/v1beta1/profiles/me/awards",
         method: "POST",
         body: JSON.stringify({
@@ -2068,22 +2182,22 @@ var GdpClient = class _GdpClient {
   }
 };
 function isGdpProfilesAvailable() {
-  const isBaseFeatureEnabled = Boolean(Root3.Runtime.hostConfig.devToolsGdpProfiles?.enabled);
-  const isBrandedBuild = Boolean(Root3.Runtime.hostConfig.devToolsGdpProfilesAvailability?.enabled);
-  const isOffTheRecordProfile = Root3.Runtime.hostConfig.isOffTheRecord;
-  const isDisabledByEnterprisePolicy = getGdpProfilesEnterprisePolicy() === Root3.Runtime.GdpProfilesEnterprisePolicyValue.DISABLED;
+  const isBaseFeatureEnabled = Boolean(Root4.Runtime.hostConfig.devToolsGdpProfiles?.enabled);
+  const isBrandedBuild = Boolean(Root4.Runtime.hostConfig.devToolsGdpProfilesAvailability?.enabled);
+  const isOffTheRecordProfile = Root4.Runtime.hostConfig.isOffTheRecord;
+  const isDisabledByEnterprisePolicy = getGdpProfilesEnterprisePolicy() === Root4.Runtime.GdpProfilesEnterprisePolicyValue.DISABLED;
   return isBaseFeatureEnabled && isBrandedBuild && !isOffTheRecordProfile && !isDisabledByEnterprisePolicy;
 }
 function getGdpProfilesEnterprisePolicy() {
-  return Root3.Runtime.hostConfig.devToolsGdpProfilesAvailability?.enterprisePolicyValue ?? Root3.Runtime.GdpProfilesEnterprisePolicyValue.DISABLED;
+  return Root4.Runtime.hostConfig.devToolsGdpProfilesAvailability?.enterprisePolicyValue ?? Root4.Runtime.GdpProfilesEnterprisePolicyValue.DISABLED;
 }
 function isBadgesEnabled() {
-  const isBadgesEnabledByEnterprisePolicy = getGdpProfilesEnterprisePolicy() === Root3.Runtime.GdpProfilesEnterprisePolicyValue.ENABLED;
-  const isBadgesEnabledByFeatureFlag = Boolean(Root3.Runtime.hostConfig.devToolsGdpProfiles?.badgesEnabled);
+  const isBadgesEnabledByEnterprisePolicy = getGdpProfilesEnterprisePolicy() === Root4.Runtime.GdpProfilesEnterprisePolicyValue.ENABLED;
+  const isBadgesEnabledByFeatureFlag = Boolean(Root4.Runtime.hostConfig.devToolsGdpProfiles?.badgesEnabled);
   return isBadgesEnabledByEnterprisePolicy && isBadgesEnabledByFeatureFlag;
 }
 function isStarterBadgeEnabled() {
-  return Boolean(Root3.Runtime.hostConfig.devToolsGdpProfiles?.starterBadgeEnabled);
+  return Boolean(Root4.Runtime.hostConfig.devToolsGdpProfiles?.starterBadgeEnabled);
 }
 
 // gen/front_end/core/host/Platform.js
@@ -2900,7 +3014,6 @@ var DevtoolsExperiments;
   DevtoolsExperiments2[DevtoolsExperiments2["apca"] = 39] = "apca";
   DevtoolsExperiments2[DevtoolsExperiments2["font-editor"] = 41] = "font-editor";
   DevtoolsExperiments2[DevtoolsExperiments2["full-accessibility-tree"] = 42] = "full-accessibility-tree";
-  DevtoolsExperiments2[DevtoolsExperiments2["experimental-cookie-features"] = 45] = "experimental-cookie-features";
   DevtoolsExperiments2[DevtoolsExperiments2["instrumentation-breakpoints"] = 61] = "instrumentation-breakpoints";
   DevtoolsExperiments2[DevtoolsExperiments2["use-source-map-scopes"] = 76] = "use-source-map-scopes";
   DevtoolsExperiments2[DevtoolsExperiments2["timeline-debug-mode"] = 93] = "timeline-debug-mode";
@@ -3144,6 +3257,7 @@ export {
   AidaClient_exports as AidaClient,
   AidaGcaTranslation_exports as AidaGcaTranslation,
   DispatchHttpRequestClient_exports as DispatchHttpRequestClient,
+  GcaClient_exports as GcaClient,
   GcaTypes_exports as GcaTypes,
   GdpClient_exports as GdpClient,
   InspectorFrontendHost_exports as InspectorFrontendHost,

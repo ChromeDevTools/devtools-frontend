@@ -821,6 +821,7 @@
   "front_end/ui/components/issue_counter/issue_counter.js",
   "front_end/ui/components/legacy_wrapper/legacy_wrapper.js",
   "front_end/ui/components/linkifier/linkifier.js",
+  "front_end/ui/components/lists/lists.js",
   "front_end/ui/components/markdown_view/markdown_view.js",
   "front_end/ui/components/menus/menus.js",
   "front_end/ui/components/node_text/node_text.js",

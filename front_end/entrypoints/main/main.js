@@ -716,7 +716,6 @@ var MainImpl = class {
     Root2.Runtime.experiments.register(Root2.ExperimentNames.ExperimentName.APCA, "Advanced Perceptual Contrast Algorithm (APCA) replacing previous contrast ratio and AA/AAA guidelines", "https://developer.chrome.com/blog/new-in-devtools-89/#apca");
     Root2.Runtime.experiments.register(Root2.ExperimentNames.ExperimentName.FULL_ACCESSIBILITY_TREE, "Full accessibility tree view in the Elements panel", "https://developer.chrome.com/blog/new-in-devtools-90/#accessibility-tree", "https://g.co/devtools/a11y-tree-feedback");
     Root2.Runtime.experiments.register(Root2.ExperimentNames.ExperimentName.FONT_EDITOR, "New font editor in the Styles tab", "https://developer.chrome.com/blog/new-in-devtools-89/#font");
-    Root2.Runtime.experiments.register(Root2.ExperimentNames.ExperimentName.EXPERIMENTAL_COOKIE_FEATURES, "Experimental cookie features");
     Root2.Runtime.experiments.registerHostExperiment({
       name: Root2.ExperimentNames.ExperimentName.DURABLE_MESSAGES,
       title: "Durable Messages",

@@ -11,7 +11,7 @@ export declare class EventsTimelineTreeView extends TimelineTreeView {
     private currentTree;
     constructor(delegate: TimelineModeViewDelegate);
     filters(): Trace.Extras.TraceFilter.TraceFilter[];
-    updateContents(selection: TimelineSelection): void;
+    set activeSelection(selection: TimelineSelection);
     buildTree(): Trace.Extras.TraceTree.Node;
     private onFilterChanged;
     private selectEvent;

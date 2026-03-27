@@ -76,6 +76,8 @@
     "../../../../../../front_end/panels/application/StorageItemsToolbar.ts",
     "../../../../../../front_end/panels/application/StorageView.ts",
     "../../../../../../front_end/panels/application/TrustTokensTreeElement.ts",
+    "../../../../../../front_end/panels/application/WebMCPTreeElement.ts",
+    "../../../../../../front_end/panels/application/WebMCPView.ts",
     "../../../../../../front_end/panels/application/preloading/PreloadingView.ts",
     "../../../../../../front_end/legacy/legacy-defs.d.ts",
     "../../../../../../front_end/global_typings/global_defs.d.ts",
@@ -150,6 +152,9 @@
     },
     {
       "path": "../../ui/components/legacy_wrapper/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../ui/components/lists/bundle-tsconfig.json"
     },
     {
       "path": "../../ui/components/report_view/bundle-tsconfig.json"

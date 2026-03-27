@@ -190,8 +190,8 @@ button {
     padding-left: var(--sys-size-4);
 
     devtools-icon {
-      width: var(--sys-size-9);
-      height: var(--sys-size-9);
+      width: var(--sys-size-8);
+      height: var(--sys-size-8);
       margin-right: var(--sys-size-2);
     }
   }

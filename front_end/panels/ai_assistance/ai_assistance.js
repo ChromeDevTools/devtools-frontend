@@ -2587,8 +2587,12 @@ var chatMessage_css_default = `/*
 
   .walkthrough-toggle-container {
     display: flex;
-    gap: var(--sys-size-4);
+    gap: var(--sys-size-2);
     align-items: center;
+
+    &.has-widgets {
+      gap: var(--sys-size-6);
+    }
 
     .chevron {
       color: var(--sys-color-primary);
@@ -3407,12 +3411,13 @@ var DEFAULT_VIEW4 = (input, output, target) => {
       class="chat-message answer ${input.isLastMessage ? "is-last-message" : ""}"
       jslog=${VisualLogging3.section("answer")}
     >
-      <div class="message-info">
-        <devtools-icon name=${icon}></devtools-icon>
-        <div class="message-name">
-          <h2>${AiAssistanceModel3.AiUtils.isGeminiBranding() ? lockedString5(UIStringsNotTranslate4.gemini) : lockedString5(UIStringsNotTranslate4.ai)}</h2>
-        </div>
-      </div>
+      ${aiAssistanceV2 ? Lit3.nothing : html5`
+        <div class="message-info">
+          <devtools-icon name=${icon}></devtools-icon>
+          <div class="message-name">
+            <h2>${AiAssistanceModel3.AiUtils.isGeminiBranding() ? lockedString5(UIStringsNotTranslate4.gemini) : lockedString5(UIStringsNotTranslate4.ai)}</h2>
+          </div>
+        </div>`}
       ${aiAssistanceV2 ? renderWalkthroughUI(input, steps) : Lit3.nothing}
       ${Lit3.Directives.repeat(message.parts, (_, index) => index, (part, index) => {
     const isLastPart = index === message.parts.length - 1;
@@ -3519,9 +3524,10 @@ function renderWalkthroughSidebarButton(input, steps) {
     lastStep
   });
   const variant = hasOneStepWithWidget && !input.isLoading ? "tonal" : "text";
+  const icon = AiAssistanceModel3.AiUtils.getIconName();
   return html5`
-    <div class="walkthrough-toggle-container">
-      ${input.isLoading ? html5`<devtools-spinner></devtools-spinner>` : Lit3.nothing}
+    <div class="walkthrough-toggle-container ${hasOneStepWithWidget ? "has-widgets" : ""}">
+      ${input.isLoading ? html5`<devtools-spinner></devtools-spinner>` : html5`<devtools-icon name=${icon}></devtools-icon>`}
       <devtools-button
         .variant=${variant}
         .size=${"SMALL"}
@@ -3535,8 +3541,8 @@ function renderWalkthroughSidebarButton(input, steps) {
       walkthrough.onOpen(message);
     }
   }}
-      >
-        ${title}<devtools-icon class="chevron" .name=${"chevron-right"}></devtools-icon>
+>
+        ${title}<devtools-icon class="chevron" .name=${isExpanded ? "cross" : "chevron-right"}></devtools-icon>
       </devtools-button>
     </div>
   `;
@@ -4091,13 +4097,14 @@ var ChatMessage = class extends UI5.Widget.Widget {
     inlineExpandedMessages: []
   };
   #suggestionsResizeObserver = new ResizeObserver(() => this.#handleSuggestionsScrollOrResize());
-  #suggestionsEvaluateLayoutThrottler = new Common3.Throttler.Throttler(50);
+  #suggestionsEvaluateLayoutThrottler = new Common3.Throttler.Throttler(100);
   #feedbackValue = "";
   #currentRating;
   #isShowingFeedbackForm = false;
   #isSubmitButtonDisabled = true;
   #view;
   #viewOutput = {};
+  #isObservingSuggestions = false;
   constructor(element, view) {
     super(element);
     this.#view = view ?? DEFAULT_VIEW4;
@@ -4106,9 +4113,6 @@ var ChatMessage = class extends UI5.Widget.Widget {
     super.wasShown();
     void this.performUpdate();
     this.#evaluateSuggestionsLayout();
-    if (this.#viewOutput.suggestionsScrollContainer) {
-      this.#suggestionsResizeObserver.observe(this.#viewOutput.suggestionsScrollContainer);
-    }
   }
   performUpdate() {
     this.#view({
@@ -4141,6 +4145,10 @@ var ChatMessage = class extends UI5.Widget.Widget {
       onFeedbackSubmit: this.onFeedbackSubmit,
       walkthrough: this.walkthrough
     }, this.#viewOutput, this.contentElement);
+    if (this.#viewOutput.suggestionsScrollContainer && !this.#isObservingSuggestions) {
+      this.#suggestionsResizeObserver.observe(this.#viewOutput.suggestionsScrollContainer);
+      this.#isObservingSuggestions = true;
+    }
   }
   #handleInputChange(value) {
     this.#feedbackValue = value;
@@ -4165,6 +4173,7 @@ var ChatMessage = class extends UI5.Widget.Widget {
   willHide() {
     super.willHide();
     this.#suggestionsResizeObserver.disconnect();
+    this.#isObservingSuggestions = false;
   }
   #handleSuggestionsScrollOrResize() {
     void this.#suggestionsEvaluateLayoutThrottler.schedule(() => {
@@ -4239,8 +4248,8 @@ async function makeTimelineRangeSummaryWidget(widgetData) {
   eventsArray.sort((a, b) => a.ts - b.ts);
   const thirdPartyTree = new Timeline.ThirdPartyTreeView.ThirdPartyTreeViewWidget();
   const mapper = new Trace.EntityMapper.EntityMapper(parsedTrace);
-  thirdPartyTree.setModelWithEvents(eventsArray, parsedTrace, mapper);
-  thirdPartyTree.updateContents(Timeline.TimelineSelection.selectionFromRangeMicroSeconds(bounds.min, bounds.max));
+  thirdPartyTree.model = { selectedEvents: eventsArray, parsedTrace, entityMapper: mapper };
+  thirdPartyTree.activeSelection = Timeline.TimelineSelection.selectionFromRangeMicroSeconds(bounds.min, bounds.max);
   thirdPartyTree.refreshTree(true);
   const template = html5`
     <devtools-widget
@@ -4250,9 +4259,15 @@ async function makeTimelineRangeSummaryWidget(widgetData) {
       events,
       startTime: Trace.Helpers.Timing.microToMilli(bounds.min),
       endTime: Trace.Helpers.Timing.microToMilli(bounds.max),
-      thirdPartyTreeTemplate: html5`<devtools-performance-third-party-tree-view
-            max-rows="10"
-            .treeView=${thirdPartyTree}></devtools-performance-third-party-tree-view>`
+      thirdPartyTreeTemplate: html5`${widget3(Timeline.ThirdPartyTreeView.ThirdPartyTreeViewWidget, {
+        maxRows: 10,
+        model: {
+          selectedEvents: thirdPartyTree.selectedEvents() ?? null,
+          parsedTrace,
+          entityMapper: thirdPartyTree.entityMapper()
+        },
+        activeSelection: { bounds }
+      })}`
     }
   })}
     ></devtools-widget>`;
@@ -6347,7 +6362,7 @@ function defaultView(input, output, target) {
     }
   }
   if (Root7.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled || Greendev.Prototypes.instance().isEnabled("breakpointDebuggerAgent")) {
-    const shouldShowWalkthrough = input.state === "chat-view" && input.walkthrough.isExpanded;
+    const shouldShowWalkthrough = input.state === "chat-view" && input.props.walkthrough.isExpanded;
     let walkthroughIsForLastMessage = false;
     if (input.state === "chat-view") {
       const lastMessage = input.props.messages.at(-1);
@@ -6362,7 +6377,7 @@ function defaultView(input, output, target) {
           name="ai-assistance-split-view-state"
           direction="column"
           sidebar-position="second"
-          sidebar-visibility=${shouldShowWalkthrough && !input.walkthrough.isInlined ? "visible" : "hidden"}
+          sidebar-visibility=${shouldShowWalkthrough && !input.props.walkthrough.isInlined ? "visible" : "hidden"}
           sidebar-initial-size=${WALKTHROUGH_SIDEBAR_INITIAL_WIDTH}
         >
           <div slot="main" class="main-view">
@@ -6484,13 +6499,6 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI10.Panel.Panel {
       },
       onSettingsClick: () => {
         void UI10.ViewManager.ViewManager.instance().showView("chrome-ai");
-      },
-      walkthrough: {
-        isExpanded: this.#walkthrough.isExpanded,
-        isInlined: this.#walkthrough.isInlined,
-        onToggle: this.#toggleWalkthrough.bind(this),
-        activeSidebarMessage: this.#walkthrough.activeSidebarMessage,
-        inlineExpandedMessages: this.#walkthrough.inlineExpandedMessages
       }
     };
   }

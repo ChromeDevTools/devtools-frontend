@@ -1,7 +1,6 @@
 // Copyright 2017 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-import * as Common from '../common/common.js';
 import * as Platform from '../platform/platform.js';
 import { CategorizedBreakpoint } from './CategorizedBreakpoint.js';
 import { DOMModel, Events as DOMModelEvents } from './DOMModel.js';
@@ -24,7 +23,7 @@ export class DOMDebuggerModel extends SDKModel {
         this.#domModel.addEventListener(DOMModelEvents.DocumentUpdated, this.documentUpdated, this);
         this.#domModel.addEventListener(DOMModelEvents.NodeRemoved, this.nodeRemoved, this);
         this.#domBreakpoints = [];
-        this.#domBreakpointsSetting = Common.Settings.Settings.instance().createLocalSetting('dom-breakpoints', []);
+        this.#domBreakpointsSetting = this.target().targetManager().settings.createLocalSetting('dom-breakpoints', []);
         if (this.#domModel.existingDocument()) {
             void this.documentUpdated();
         }
@@ -397,7 +396,7 @@ export class DOMDebuggerManager {
     #targetManager;
     constructor(targetManager = TargetManager.instance()) {
         this.#targetManager = targetManager;
-        this.#xhrBreakpointsSetting = Common.Settings.Settings.instance().createLocalSetting('xhr-breakpoints', []);
+        this.#xhrBreakpointsSetting = this.#targetManager.settings.createLocalSetting('xhr-breakpoints', []);
         for (const breakpoint of this.#xhrBreakpointsSetting.get()) {
             this.#xhrBreakpoints.set(breakpoint.url, breakpoint.enabled);
         }

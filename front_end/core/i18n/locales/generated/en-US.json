@@ -2105,8 +2105,11 @@
   "models/trace/insights/LCPDiscovery.ts | fetchPriorityShouldBeApplied": {
     "message": "fetchpriority=high should be applied"
   },
+  "models/trace/insights/LCPDiscovery.ts | fetchPriorityShouldBeAppliedToImagePreload": {
+    "message": "fetchpriority=high should be applied to the image preload request"
+  },
   "models/trace/insights/LCPDiscovery.ts | lazyLoadNotApplied": {
-    "message": "lazy load not applied"
+    "message": "LCP resources should not use loading=lazy"
   },
   "models/trace/insights/LCPDiscovery.ts | lcpLoadDelay": {
     "message": "LCP image loaded {PH1} after earliest start point."
@@ -6208,6 +6211,21 @@
   },
   "panels/application/TrustTokensTreeElement.ts | trustTokens": {
     "message": "Private state tokens"
+  },
+  "panels/application/WebMCPView.ts | noCallsPlaceholder": {
+    "message": "Start interacting with your WebMCP agent to see real-time tool calls and executions here."
+  },
+  "panels/application/WebMCPView.ts | noCallsPlaceholderTitle": {
+    "message": "Tool Activity"
+  },
+  "panels/application/WebMCPView.ts | noToolsPlaceholder": {
+    "message": "Registered WebMCP tools for this page will appear here. No tools have been registered or detected yet."
+  },
+  "panels/application/WebMCPView.ts | noToolsPlaceholderTitle": {
+    "message": "Available WebMCP Tools"
+  },
+  "panels/application/WebMCPView.ts | toolRegistry": {
+    "message": "Available Tools"
   },
   "panels/autofill/autofill-meta.ts | autofill": {
     "message": "Autofill"
@@ -17909,11 +17927,17 @@
   "ui/legacy/Infobar.ts | dontShowAgain": {
     "message": "Don't show again"
   },
+  "ui/legacy/InspectorDrawerView.ts | closeDrawer": {
+    "message": "Close drawer"
+  },
+  "ui/legacy/InspectorDrawerView.ts | moreTools": {
+    "message": "More Tools"
+  },
+  "ui/legacy/InspectorDrawerView.ts | toggleDrawerOrientation": {
+    "message": "Toggle drawer orientation"
+  },
   "ui/legacy/InspectorView.ts | areYouSureYouWantToRestartChrome": {
     "message": "Are you sure you want to restart Chrome?"
-  },
-  "ui/legacy/InspectorView.ts | closeDrawer": {
-    "message": "Close drawer"
   },
   "ui/legacy/InspectorView.ts | devToolsLanguageMissmatch": {
     "message": "DevTools is now available in {PH1}"
@@ -17929,9 +17953,6 @@
   },
   "ui/legacy/InspectorView.ts | mainToolbar": {
     "message": "Main toolbar"
-  },
-  "ui/legacy/InspectorView.ts | moreTools": {
-    "message": "More Tools"
   },
   "ui/legacy/InspectorView.ts | moveToDrawer": {
     "message": "Move to drawer"
@@ -17962,9 +17983,6 @@
   },
   "ui/legacy/InspectorView.ts | setToSpecificLanguage": {
     "message": "Switch DevTools to {PH1}"
-  },
-  "ui/legacy/InspectorView.ts | toggleDrawerOrientation": {
-    "message": "Toggle drawer orientation"
   },
   "ui/legacy/ListWidget.ts | addString": {
     "message": "Add"

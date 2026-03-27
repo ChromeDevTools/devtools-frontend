@@ -84,7 +84,7 @@ export interface Descriptor {
     hideableGroup: string | null;
     nonSelectable: boolean;
     sortable: boolean;
-    align?: string | null;
+    align?: DataGrid.DataGrid.Align | null;
     isResponseHeader: boolean;
     isRequestHeader: boolean;
     sortingFunction: (arg0: NetworkNode, arg1: NetworkNode) => number | undefined;

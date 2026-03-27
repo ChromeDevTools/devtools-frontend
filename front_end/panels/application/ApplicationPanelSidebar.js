@@ -69,6 +69,7 @@ import { SharedStorageTreeElement } from './SharedStorageTreeElement.js';
 import { StorageBucketsTreeParentElement } from './StorageBucketsTreeElement.js';
 import { StorageView } from './StorageView.js';
 import { TrustTokensTreeElement } from './TrustTokensTreeElement.js';
+import { WebMCPTreeElement } from './WebMCPTreeElement.js';
 const UIStrings = {
     /**
      * @description Text in Application Panel Sidebar of the Application panel
@@ -304,6 +305,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox {
     periodicBackgroundSyncTreeElement;
     pushMessagingTreeElement;
     reportingApiTreeElement;
+    webMcpTreeElement;
     deviceBoundSessionsRootTreeElement;
     deviceBoundSessionsModel;
     preloadingSummaryTreeElement;
@@ -342,6 +344,10 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox {
         this.applicationTreeElement.appendChild(this.serviceWorkersTreeElement);
         const clearStorageTreeElement = new ClearStorageTreeElement(panel);
         this.applicationTreeElement.appendChild(clearStorageTreeElement);
+        if (Root.Runtime.hostConfig.devToolsWebMCPSupport?.enabled) {
+            this.webMcpTreeElement = new WebMCPTreeElement(panel);
+            this.applicationTreeElement.appendChild(this.webMcpTreeElement);
+        }
         const storageSectionTitle = i18nString(UIStrings.storage);
         const storageTreeElement = this.addSidebarSection(storageSectionTitle, 'storage');
         this.localStorageListTreeElement = new ExpandableApplicationPanelTreeElement(panel, i18nString(UIStrings.localStorage), i18nString(UIStrings.noLocalStorage), i18nString(UIStrings.localStorageDescription), 'local-storage');

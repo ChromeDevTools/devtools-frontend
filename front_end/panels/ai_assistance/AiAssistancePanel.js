@@ -412,7 +412,7 @@ function defaultView(input, output, target) {
     }
     if (Root.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled ||
         Greendev.Prototypes.instance().isEnabled('breakpointDebuggerAgent')) {
-        const shouldShowWalkthrough = input.state === "chat-view" /* ViewState.CHAT_VIEW */ && input.walkthrough.isExpanded;
+        const shouldShowWalkthrough = input.state === "chat-view" /* ViewState.CHAT_VIEW */ && input.props.walkthrough.isExpanded;
         /**
          * We want to mark the walkthrough as loading only if it's showing the last
          * message. Otherwise, a previous walkthrough will show as loading if we
@@ -432,7 +432,7 @@ function defaultView(input, output, target) {
           name="ai-assistance-split-view-state"
           direction="column"
           sidebar-position="second"
-          sidebar-visibility=${shouldShowWalkthrough && !input.walkthrough.isInlined ? 'visible' : 'hidden'}
+          sidebar-visibility=${shouldShowWalkthrough && !input.props.walkthrough.isInlined ? 'visible' : 'hidden'}
           sidebar-initial-size=${WALKTHROUGH_SIDEBAR_INITIAL_WIDTH}
         >
           <div slot="main" class="main-view">
@@ -558,13 +558,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
             onSettingsClick: () => {
                 void UI.ViewManager.ViewManager.instance().showView('chrome-ai');
             },
-            walkthrough: {
-                isExpanded: this.#walkthrough.isExpanded,
-                isInlined: this.#walkthrough.isInlined,
-                onToggle: this.#toggleWalkthrough.bind(this),
-                activeSidebarMessage: this.#walkthrough.activeSidebarMessage,
-                inlineExpandedMessages: this.#walkthrough.inlineExpandedMessages,
-            }
         };
     }
     async #getPanelViewInput() {

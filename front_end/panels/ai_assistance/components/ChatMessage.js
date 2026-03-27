@@ -214,12 +214,13 @@ export const DEFAULT_VIEW = (input, output, target) => {
       class="chat-message answer ${input.isLastMessage ? 'is-last-message' : ''}"
       jslog=${VisualLogging.section('answer')}
     >
-      <div class="message-info">
-        <devtools-icon name=${icon}></devtools-icon>
-        <div class="message-name">
-          <h2>${AiAssistanceModel.AiUtils.isGeminiBranding() ? lockedString(UIStringsNotTranslate.gemini) : lockedString(UIStringsNotTranslate.ai)}</h2>
-        </div>
-      </div>
+      ${aiAssistanceV2 ? Lit.nothing : html `
+        <div class="message-info">
+          <devtools-icon name=${icon}></devtools-icon>
+          <div class="message-name">
+            <h2>${AiAssistanceModel.AiUtils.isGeminiBranding() ? lockedString(UIStringsNotTranslate.gemini) : lockedString(UIStringsNotTranslate.ai)}</h2>
+          </div>
+        </div>`}
       ${aiAssistanceV2 ? renderWalkthroughUI(input, steps) : Lit.nothing}
       ${Lit.Directives.repeat(message.parts, (_, index) => index, (part, index) => {
         const isLastPart = index === message.parts.length - 1;
@@ -354,10 +355,13 @@ function renderWalkthroughSidebarButton(input, steps) {
     // want to change it visually at the end once everything has stopped
     // loading.
     const variant = hasOneStepWithWidget && !input.isLoading ? "tonal" /* Buttons.Button.Variant.TONAL */ : "text" /* Buttons.Button.Variant.TEXT */;
+    const icon = AiAssistanceModel.AiUtils.getIconName();
     // clang-format off
     return html `
-    <div class="walkthrough-toggle-container">
-      ${input.isLoading ? html `<devtools-spinner></devtools-spinner>` : Lit.nothing}
+    <div class="walkthrough-toggle-container ${hasOneStepWithWidget ? 'has-widgets' : ''}">
+      ${input.isLoading ?
+        html `<devtools-spinner></devtools-spinner>` :
+        html `<devtools-icon name=${icon}></devtools-icon>`}
       <devtools-button
         .variant=${variant}
         .size=${"SMALL" /* Buttons.Button.Size.SMALL */}
@@ -375,8 +379,8 @@ function renderWalkthroughSidebarButton(input, steps) {
             walkthrough.onOpen(message);
         }
     }}
-      >
-        ${title}<devtools-icon class="chevron" .name=${'chevron-right'}></devtools-icon>
+>
+        ${title}<devtools-icon class="chevron" .name=${isExpanded ? 'cross' : 'chevron-right'}></devtools-icon>
       </devtools-button>
     </div>
   `;
@@ -978,13 +982,14 @@ export class ChatMessage extends UI.Widget.Widget {
         inlineExpandedMessages: [],
     };
     #suggestionsResizeObserver = new ResizeObserver(() => this.#handleSuggestionsScrollOrResize());
-    #suggestionsEvaluateLayoutThrottler = new Common.Throttler.Throttler(50);
+    #suggestionsEvaluateLayoutThrottler = new Common.Throttler.Throttler(100);
     #feedbackValue = '';
     #currentRating;
     #isShowingFeedbackForm = false;
     #isSubmitButtonDisabled = true;
     #view;
     #viewOutput = {};
+    #isObservingSuggestions = false;
     constructor(element, view) {
         super(element);
         this.#view = view ?? DEFAULT_VIEW;
@@ -993,9 +998,6 @@ export class ChatMessage extends UI.Widget.Widget {
         super.wasShown();
         void this.performUpdate();
         this.#evaluateSuggestionsLayout();
-        if (this.#viewOutput.suggestionsScrollContainer) {
-            this.#suggestionsResizeObserver.observe(this.#viewOutput.suggestionsScrollContainer);
-        }
     }
     performUpdate() {
         this.#view({
@@ -1031,6 +1033,10 @@ export class ChatMessage extends UI.Widget.Widget {
             onFeedbackSubmit: this.onFeedbackSubmit,
             walkthrough: this.walkthrough,
         }, this.#viewOutput, this.contentElement);
+        if (this.#viewOutput.suggestionsScrollContainer && !this.#isObservingSuggestions) {
+            this.#suggestionsResizeObserver.observe(this.#viewOutput.suggestionsScrollContainer);
+            this.#isObservingSuggestions = true;
+        }
     }
     #handleInputChange(value) {
         this.#feedbackValue = value;
@@ -1057,6 +1063,7 @@ export class ChatMessage extends UI.Widget.Widget {
     willHide() {
         super.willHide();
         this.#suggestionsResizeObserver.disconnect();
+        this.#isObservingSuggestions = false;
     }
     #handleSuggestionsScrollOrResize() {
         void this.#suggestionsEvaluateLayoutThrottler.schedule(() => {
@@ -1129,8 +1136,8 @@ async function makeTimelineRangeSummaryWidget(widgetData) {
     eventsArray.sort((a, b) => a.ts - b.ts);
     const thirdPartyTree = new Timeline.ThirdPartyTreeView.ThirdPartyTreeViewWidget();
     const mapper = new Trace.EntityMapper.EntityMapper(parsedTrace);
-    thirdPartyTree.setModelWithEvents(eventsArray, parsedTrace, mapper);
-    thirdPartyTree.updateContents(Timeline.TimelineSelection.selectionFromRangeMicroSeconds(bounds.min, bounds.max));
+    thirdPartyTree.model = { selectedEvents: eventsArray, parsedTrace, entityMapper: mapper };
+    thirdPartyTree.activeSelection = Timeline.TimelineSelection.selectionFromRangeMicroSeconds(bounds.min, bounds.max);
     thirdPartyTree.refreshTree(true);
     // clang-format off
     const template = html `
@@ -1141,9 +1148,15 @@ async function makeTimelineRangeSummaryWidget(widgetData) {
             events,
             startTime: Trace.Helpers.Timing.microToMilli(bounds.min),
             endTime: Trace.Helpers.Timing.microToMilli(bounds.max),
-            thirdPartyTreeTemplate: html `<devtools-performance-third-party-tree-view
-            max-rows="10"
-            .treeView=${thirdPartyTree}></devtools-performance-third-party-tree-view>`,
+            thirdPartyTreeTemplate: html `${widget(Timeline.ThirdPartyTreeView.ThirdPartyTreeViewWidget, {
+                maxRows: 10,
+                model: {
+                    selectedEvents: thirdPartyTree.selectedEvents() ?? null,
+                    parsedTrace,
+                    entityMapper: thirdPartyTree.entityMapper(),
+                },
+                activeSelection: { bounds },
+            })}`,
         },
     })}
     ></devtools-widget>`;

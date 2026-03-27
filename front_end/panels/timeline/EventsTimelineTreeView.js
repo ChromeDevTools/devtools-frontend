@@ -45,8 +45,8 @@ export class EventsTimelineTreeView extends TimelineTreeView {
     filters() {
         return [...super.filters(), ...this.filtersControl.filters()];
     }
-    updateContents(selection) {
-        super.updateContents(selection);
+    set activeSelection(selection) {
+        super.activeSelection = selection;
         if (selectionIsEvent(selection)) {
             this.selectEvent(selection.event, true);
         }

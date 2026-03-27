@@ -714,7 +714,6 @@ export var DevtoolsExperiments;
     DevtoolsExperiments[DevtoolsExperiments["apca"] = 39] = "apca";
     DevtoolsExperiments[DevtoolsExperiments["font-editor"] = 41] = "font-editor";
     DevtoolsExperiments[DevtoolsExperiments["full-accessibility-tree"] = 42] = "full-accessibility-tree";
-    DevtoolsExperiments[DevtoolsExperiments["experimental-cookie-features"] = 45] = "experimental-cookie-features";
     DevtoolsExperiments[DevtoolsExperiments["instrumentation-breakpoints"] = 61] = "instrumentation-breakpoints";
     DevtoolsExperiments[DevtoolsExperiments["use-source-map-scopes"] = 76] = "use-source-map-scopes";
     DevtoolsExperiments[DevtoolsExperiments["timeline-debug-mode"] = 93] = "timeline-debug-mode";

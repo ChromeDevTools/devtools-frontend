@@ -24,13 +24,17 @@ export declare const UIStrings: {
      */
     readonly fetchPriorityShouldBeApplied: "fetchpriority=high should be applied";
     /**
+     * @description Text to tell the user that a fetchpriority property value of "high" should be applied to the preload request that loads the LCP image.
+     */
+    readonly fetchPriorityShouldBeAppliedToImagePreload: "fetchpriority=high should be applied to the image preload request";
+    /**
      * @description Text to tell the user that the LCP request is discoverable in the initial document.
      */
     readonly requestDiscoverable: "Request is discoverable in initial document";
     /**
-     * @description Text to tell the user that the LCP request does not have the lazy load property applied.
+     * @description Text to tell the user that LCP resources should avoid using loading=lazy.
      */
-    readonly lazyLoadNotApplied: "lazy load not applied";
+    readonly lazyLoadNotApplied: "LCP resources should not use loading=lazy";
     /**
      * @description Text status indicating that the the Largest Contentful Paint (LCP) metric timing was not found. "LCP" is an acronym and should not be translated.
      */

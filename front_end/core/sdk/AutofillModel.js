@@ -1,7 +1,6 @@
 // Copyright 2023 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-import * as Common from '../../core/common/common.js';
 import * as Host from '../host/host.js';
 import { SDKModel } from './SDKModel.js';
 export class AutofillModel extends SDKModel {
@@ -11,8 +10,9 @@ export class AutofillModel extends SDKModel {
     constructor(target) {
         super(target);
         this.agent = target.autofillAgent();
+        const settings = this.target().targetManager().settings;
         this.#showTestAddressesInAutofillMenu =
-            Common.Settings.Settings.instance().createSetting('show-test-addresses-in-autofill-menu-on-event', false);
+            settings.createSetting('show-test-addresses-in-autofill-menu-on-event', false);
         this.#showTestAddressesInAutofillMenu.addChangeListener(this.#setTestAddresses, this);
         target.registerAutofillDispatcher(this);
         this.enable();

@@ -39,6 +39,7 @@
     "../../../../../../front_end/core/host/AidaClientTypes.ts",
     "../../../../../../front_end/core/host/AidaGcaTranslation.ts",
     "../../../../../../front_end/core/host/DispatchHttpRequestClient.ts",
+    "../../../../../../front_end/core/host/GcaClient.ts",
     "../../../../../../front_end/core/host/GcaTypes.ts",
     "../../../../../../front_end/core/host/GdpClient.ts",
     "../../../../../../front_end/core/host/InspectorFrontendHost.ts",

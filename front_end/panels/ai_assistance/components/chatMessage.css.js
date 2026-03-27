@@ -349,8 +349,12 @@ export default `/*
 
   .walkthrough-toggle-container {
     display: flex;
-    gap: var(--sys-size-4);
+    gap: var(--sys-size-2);
     align-items: center;
+
+    &.has-widgets {
+      gap: var(--sys-size-6);
+    }
 
     .chevron {
       color: var(--sys-color-primary);

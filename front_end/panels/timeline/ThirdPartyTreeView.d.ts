@@ -1,14 +1,17 @@
 import * as Trace from '../../models/trace/trace.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
-import * as UI from '../../ui/legacy/legacy.js';
 import * as TimelineTreeView from './TimelineTreeView.js';
 export declare class ThirdPartyTreeViewWidget extends TimelineTreeView.TimelineTreeView {
     #private;
     protected autoSelectFirstChildOnRefresh: boolean;
-    constructor();
+    constructor(element?: HTMLElement);
     isThirdPartyTreeView(): boolean;
     wasShown(): void;
-    setModelWithEvents(selectedEvents: Trace.Types.Events.Event[] | null, parsedTrace?: Trace.TraceModel.ParsedTrace | null, entityMappings?: Trace.EntityMapper.EntityMapper | null): void;
+    set model(model: {
+        selectedEvents: Trace.Types.Events.Event[] | null;
+        parsedTrace: Trace.TraceModel.ParsedTrace | null;
+        entityMapper: Trace.EntityMapper.EntityMapper | null;
+    });
     buildTree(): Trace.Extras.TraceTree.Node;
     /**
      * Third party tree view doesn't require the select feature, as this expands the node.
@@ -28,17 +31,8 @@ export declare class ThirdPartyTreeViewWidget extends TimelineTreeView.TimelineT
     };
     nodeIsFirstParty(node: Trace.Extras.TraceTree.Node): boolean;
     nodeIsExtension(node: Trace.Extras.TraceTree.Node): boolean;
-}
-export declare class ThirdPartyTreeElement extends UI.Widget.WidgetElement<UI.Widget.Widget> {
-    #private;
-    static readonly observedAttributes: string[];
-    set treeView(treeView: ThirdPartyTreeViewWidget);
-    constructor();
-    attributeChangedCallback(name: string, _oldValue: string | null, newValue: string | null): void;
-    createWidget(): UI.Widget.Widget;
-}
-declare global {
-    interface HTMLElementTagNameMap {
-        'devtools-performance-third-party-tree-view': ThirdPartyTreeElement;
-    }
+    set maxRows(maxRows: number);
+    set onRowHovered(callback: (node: Trace.Extras.TraceTree.Node | null, events?: Trace.Types.Events.Event[]) => void);
+    set onBottomUpButtonClicked(callback: (node: Trace.Extras.TraceTree.Node | null) => void);
+    set onRowClicked(callback: (node: Trace.Extras.TraceTree.Node | null, events?: Trace.Types.Events.Event[]) => void);
 }

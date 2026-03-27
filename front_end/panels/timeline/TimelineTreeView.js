@@ -195,8 +195,8 @@ export class TimelineTreeView extends Common.ObjectWrapper.eventMixin(UI.Widget.
      * by default when refreshTree() gets called.
      */
     autoSelectFirstChildOnRefresh = true;
-    constructor() {
-        super();
+    constructor(element) {
+        super(element);
         this.#selectedEvents = null;
         this.element.classList.add('timeline-tree-view');
         this.registerRequiredCSS(timelineTreeViewStyles);
@@ -212,10 +212,10 @@ export class TimelineTreeView extends Common.ObjectWrapper.eventMixin(UI.Widget.
     setSearchableView(searchableView) {
         this.searchableView = searchableView;
     }
-    setModelWithEvents(selectedEvents, parsedTrace = null, entityMappings = null) {
-        this.#parsedTrace = parsedTrace;
-        this.#selectedEvents = selectedEvents;
-        this.#entityMapper = entityMappings;
+    set model(model) {
+        this.#parsedTrace = model.parsedTrace;
+        this.#selectedEvents = model.selectedEvents;
+        this.#entityMapper = model.entityMapper;
         this.refreshTree();
     }
     entityMapper() {
@@ -272,7 +272,7 @@ export class TimelineTreeView extends Common.ObjectWrapper.eventMixin(UI.Widget.
     lastSelectedNode() {
         return this.lastSelectedNodeInternal;
     }
-    updateContents(selection) {
+    set activeSelection(selection) {
         const timings = rangeForSelection(selection);
         const timingMilli = Trace.Helpers.Timing.traceWindowMicroSecondsToMilliSeconds(timings);
         this.setRange(timingMilli.min, timingMilli.max);
@@ -838,8 +838,8 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
     setGroupBySetting(groupBy) {
         this.groupBySetting.set(groupBy);
     }
-    updateContents(selection) {
-        super.updateContents(selection);
+    set activeSelection(selection) {
+        super.activeSelection = selection;
         const rootNode = this.dataGrid.rootNode();
         if (rootNode.children.length) {
             rootNode.children[0].select(/* suppressSelectedEvent */ true);

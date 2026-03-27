@@ -2,6 +2,7 @@ import './Toolbar.js';
 import * as Common from '../../core/common/common.js';
 import type * as Root from '../../core/root/root.js';
 import type * as Foundation from '../../foundation/foundation.js';
+import { TabbedPane } from './TabbedPane.js';
 import { type ToolbarItem } from './Toolbar.js';
 import type { TabbedViewLocation, View, ViewLocation } from './View.js';
 import { getLocalizedViewLocationCategory, getRegisteredLocationResolvers, maybeRemoveViewExtension, registerLocationResolver, registerViewExtension, resetViewRegistration, ViewLocationCategory, ViewLocationValues, ViewPersistence, type ViewRegistration } from './ViewRegistration.js';
@@ -10,6 +11,7 @@ export declare const defaultOptionsForTabs: {
     security: boolean;
     freestyler: boolean;
 };
+type TabbedPaneFactory = () => TabbedPane;
 export declare class PreRegisteredView implements View {
     private readonly viewRegistration;
     private readonly universe?;
@@ -77,7 +79,7 @@ export declare class ViewManager extends Common.ObjectWrapper.ObjectWrapper<Even
     showView(viewId: string, userGesture?: boolean, omitFocus?: boolean): Promise<void>;
     isViewVisible(viewId: string): boolean;
     resolveLocation(location?: string): Promise<Location | null>;
-    createTabbedLocation(revealCallback: (() => void), location: string, restoreSelection?: boolean, allowReorder?: boolean, defaultTab?: string | null): TabbedViewLocation;
+    createTabbedLocation(revealCallback: (() => void), location: string, restoreSelection?: boolean, allowReorder?: boolean, defaultTab?: string | null, isLocationVisible?: (() => boolean), tabbedPaneFactory?: TabbedPaneFactory): TabbedViewLocation;
     createStackLocation(revealCallback?: (() => void), location?: string, jslogContext?: string): ViewLocation;
     hasViewsForLocation(location: string): boolean;
     viewsForLocation(location: string): View[];

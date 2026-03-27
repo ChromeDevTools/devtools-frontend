@@ -9,6 +9,7 @@ export declare class AidaAbortError extends Error {
 export declare class AidaBlockError extends Error {
 }
 export declare class AidaClient {
+    #private;
     static buildConsoleInsightsRequest(input: string): DoConversationRequest;
     static checkAccessPreconditions(): Promise<AidaAccessPreconditions>;
     doConversation(request: DoConversationRequest, options?: {

@@ -144,6 +144,9 @@ const HIGHLIGHTABLE_PROPERTIES = [
     { mode: 'align-items', properties: ['align-items'] },
     { mode: 'flexibility', properties: ['flex', 'flex-basis', 'flex-grow', 'flex-shrink'] },
 ];
+const DISCLAIMER_TOOLTIP_ID = 'styles-ai-code-completion-disclaimer-tooltip';
+const SPINNER_TOOLTIP_ID = 'styles-ai-code-completion-spinner-tooltip';
+const CITATIONS_TOOLTIP_ID = 'styles-ai-code-completion-citations-tooltip';
 export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsSidebarPane) {
     matchedStyles = null;
     currentToolbarPane = null;
@@ -182,6 +185,10 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsS
     activeCSSAngle = null;
     #updateAbortController;
     #updateComputedStylesAbortController;
+    aiCodeCompletionConfig;
+    aiCodeCompletionProvider;
+    #aiCodeCompletionSummaryToolbarContainer;
+    #aiCodeCompletionSummaryToolbar;
     constructor(computedStyleModel) {
         super(computedStyleModel, { delegatesFocus: true });
         this.setMinimumSize(96, 26);
@@ -217,6 +224,25 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsS
                 this.#scheduleResetUpdateIfNotEditing();
             }
         });
+        const devtoolsLocale = i18n.DevToolsLocale.DevToolsLocale.instance();
+        if (AiCodeCompletion.AiCodeCompletion.AiCodeCompletion.isAiCodeCompletionStylesEnabled(devtoolsLocale.locale)) {
+            this.aiCodeCompletionConfig = {
+                completionContext: {},
+                generationContext: {},
+                onFeatureEnabled: () => {
+                    this.#createAiCodeCompletionSummaryToolbar();
+                },
+                onFeatureDisabled: () => {
+                    this.#cleanupAiCodeCompletion();
+                },
+                onSuggestionAccepted: this.#onAiCodeCompletionSuggestionAccepted.bind(this),
+                onRequestTriggered: this.#onAiCodeCompletionRequestTriggered.bind(this),
+                onResponseReceived: this.#onAiCodeCompletionResponseReceived.bind(this),
+                panel: "styles" /* AiCodeCompletion.AiCodeCompletion.ContextFlavor.STYLES */,
+            };
+            this.aiCodeCompletionProvider =
+                StylesAiCodeCompletionProvider.StylesAiCodeCompletionProvider.createInstance(this.aiCodeCompletionConfig);
+        }
     }
     get webCustomData() {
         if (!this.#webCustomData &&
@@ -1241,6 +1267,40 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsS
         }, { capture: true });
         return button;
     }
+    #cleanupAiCodeCompletion() {
+        this.#aiCodeCompletionSummaryToolbarContainer?.remove();
+        this.#aiCodeCompletionSummaryToolbarContainer = undefined;
+        this.#aiCodeCompletionSummaryToolbar = undefined;
+    }
+    #createAiCodeCompletionSummaryToolbar() {
+        if (this.#aiCodeCompletionSummaryToolbar) {
+            return;
+        }
+        this.#aiCodeCompletionSummaryToolbar = new PanelsCommon.AiCodeCompletionSummaryToolbar({
+            citationsTooltipId: CITATIONS_TOOLTIP_ID,
+            disclaimerTooltipId: DISCLAIMER_TOOLTIP_ID,
+            spinnerTooltipId: SPINNER_TOOLTIP_ID,
+            panel: "styles" /* AiCodeCompletion.AiCodeCompletion.ContextFlavor.STYLES */,
+        });
+        const containingPane = this.contentElement.enclosingNodeOrSelfWithClass('style-panes-wrapper');
+        this.#aiCodeCompletionSummaryToolbarContainer =
+            containingPane.createChild('div', 'ai-code-completion-summary-toolbar-container');
+        this.#aiCodeCompletionSummaryToolbarContainer.role = 'toolbar';
+        this.#aiCodeCompletionSummaryToolbar.show(this.#aiCodeCompletionSummaryToolbarContainer, undefined, true);
+    }
+    #onAiCodeCompletionSuggestionAccepted(citations) {
+        if (!this.#aiCodeCompletionSummaryToolbar || citations.length === 0) {
+            return;
+        }
+        const citationsUri = citations.map(citation => citation.uri).filter((uri) => Boolean(uri));
+        this.#aiCodeCompletionSummaryToolbar.updateCitations(citationsUri);
+    }
+    #onAiCodeCompletionRequestTriggered() {
+        this.#aiCodeCompletionSummaryToolbar?.setLoading(true);
+    }
+    #onAiCodeCompletionResponseReceived() {
+        this.#aiCodeCompletionSummaryToolbar?.setLoading(false);
+    }
 }
 const MAX_LINK_LENGTH = 23;
 export class SectionBlock {
@@ -1428,8 +1488,8 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
     treeElement;
     isEditingName;
     cssVariables;
-    aiCodeCompletionConfig;
     aiCodeCompletionProvider;
+    activeAiSuggestionInfo;
     #debouncedTriggerAiCodeCompletion = Common.Debouncer.debounce(() => {
         void this.triggerAiCodeCompletion();
     }, TextEditor.AiCodeCompletionProvider.AIDA_REQUEST_DEBOUNCE_TIMEOUT_MS);
@@ -1488,25 +1548,13 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
                 }
             }
         }
-        const devtoolsLocale = i18n.DevToolsLocale.DevToolsLocale.instance();
-        if (AiCodeCompletion.AiCodeCompletion.AiCodeCompletion.isAiCodeCompletionStylesEnabled(devtoolsLocale.locale)) {
-            this.aiCodeCompletionConfig = {
-                completionContext: {},
-                generationContext: {},
-                onFeatureEnabled: () => { },
-                onFeatureDisabled: () => { },
-                onSuggestionAccepted: () => { },
-                onRequestTriggered: () => { },
-                onResponseReceived: () => { },
-                panel: "styles" /* AiCodeCompletion.AiCodeCompletion.ContextFlavor.STYLES */,
-                getCompletionHint: this.getCompletionHint.bind(this),
-                getCurrentText: () => {
-                    return this.text();
-                },
-                setAiAutoCompletion: this.setAiAutoCompletion.bind(this),
-            };
-            this.aiCodeCompletionProvider =
-                StylesAiCodeCompletionProvider.StylesAiCodeCompletionProvider.createInstance(this.aiCodeCompletionConfig);
+        const stylesContainer = this.treeElement.stylesContainer();
+        if (stylesContainer instanceof StylesSidebarPane) {
+            this.aiCodeCompletionProvider = stylesContainer.aiCodeCompletionProvider;
+            if (this.aiCodeCompletionProvider) {
+                this.aiCodeCompletionProvider.getCompletionHint = this.getCompletionHint.bind(this);
+                this.aiCodeCompletionProvider.setAiAutoCompletion = this.setAiAutoCompletion.bind(this);
+            }
         }
     }
     onKeyDown(event) {
@@ -1821,6 +1869,7 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
     setAiAutoCompletion(args) {
         if (!args) {
             this.treeElement.section().activeAiSuggestion = undefined;
+            this.activeAiSuggestionInfo = undefined;
             return;
         }
         this.treeElement.section().activeAiSuggestion = {
@@ -1830,6 +1879,7 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
             clearCachedRequest: args.clearCachedRequest,
             cssProperty: this.treeElement.property,
         };
+        this.activeAiSuggestionInfo = { citations: args.citations, rpcGlobalId: args.rpcGlobalId, sampleId: args.sampleId };
         const latency = performance.now() - args.startTime;
         if (args.rpcGlobalId) {
             args.onImpression(args.rpcGlobalId, latency, args.sampleId);
@@ -1917,6 +1967,9 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
     }
     async commitAiSuggestion() {
         await this.treeElement.section().commitActiveAiSuggestion();
+        if (this.activeAiSuggestionInfo) {
+            this.aiCodeCompletionProvider?.onSuggestionAccepted(this.activeAiSuggestionInfo.citations, this.activeAiSuggestionInfo.rpcGlobalId, this.activeAiSuggestionInfo.sampleId);
+        }
         // Clear state and return
         this.setAiAutoCompletion(null);
     }

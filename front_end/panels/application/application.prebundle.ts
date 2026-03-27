@@ -40,6 +40,8 @@ import * as StorageBucketsTreeElement from './StorageBucketsTreeElement.js';
 import * as StorageItemsToolbar from './StorageItemsToolbar.js';
 import * as StorageView from './StorageView.js';
 import * as TrustTokensTreeElement from './TrustTokensTreeElement.js';
+import * as WebMCPTreeElement from './WebMCPTreeElement.js';
+import * as WebMCPView from './WebMCPView.js';
 
 export {
   ApplicationPanelSidebar,
@@ -80,4 +82,6 @@ export {
   StorageItemsToolbar,
   StorageView,
   TrustTokensTreeElement,
+  WebMCPTreeElement,
+  WebMCPView,
 };

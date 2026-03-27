@@ -52,6 +52,7 @@
     "../../../../../../front_end/ui/legacy/GlassPane.ts",
     "../../../../../../front_end/ui/legacy/Infobar.ts",
     "../../../../../../front_end/ui/legacy/InplaceEditor.ts",
+    "../../../../../../front_end/ui/legacy/InspectorDrawerView.ts",
     "../../../../../../front_end/ui/legacy/InspectorView.ts",
     "../../../../../../front_end/ui/legacy/KeyboardShortcut.ts",
     "../../../../../../front_end/ui/legacy/LinkContextMenuProvider.ts",

@@ -74,7 +74,6 @@ export class TimelineDetailsPane extends Common.ObjectWrapper.eventMixin(UI.Widg
     #parsedTrace = null;
     #eventToRelatedInsightsMap = null;
     #onTraceBoundsChangeBound = this.#onTraceBoundsChange.bind(this);
-    #thirdPartyTree = new ThirdPartyTreeViewWidget();
     #entityMapper = null;
     constructor(delegate) {
         super();
@@ -114,17 +113,17 @@ export class TimelineDetailsPane extends Common.ObjectWrapper.eventMixin(UI.Widg
                 view.stackView.addEventListener("TreeRowHovered" /* TimelineStackView.Events.TREE_ROW_HOVERED */, node => this.dispatchEventToListeners("TreeRowHovered" /* TimelineTreeView.Events.TREE_ROW_HOVERED */, { node: node.data }));
             }
         });
-        this.#thirdPartyTree.addEventListener("TreeRowHovered" /* TimelineTreeView.Events.TREE_ROW_HOVERED */, node => {
+        this.#summaryContent.onTreeRowHovered = (node, events) => {
             // Re-dispatch through 3P event to get 3P dimmer.
-            this.dispatchEventToListeners("TreeRowHovered" /* TimelineTreeView.Events.TREE_ROW_HOVERED */, { node: node.data.node, events: node.data.events });
-        });
-        this.#thirdPartyTree.addEventListener("BottomUpButtonClicked" /* TimelineTreeView.Events.BOTTOM_UP_BUTTON_CLICKED */, node => {
-            this.selectTab(Tab.BottomUp, node.data, AggregatedTimelineTreeView.GroupBy.ThirdParties);
-        });
-        this.#thirdPartyTree.addEventListener("TreeRowClicked" /* TimelineTreeView.Events.TREE_ROW_CLICKED */, node => {
+            this.dispatchEventToListeners("TreeRowHovered" /* TimelineTreeView.Events.TREE_ROW_HOVERED */, { node, events });
+        };
+        this.#summaryContent.onBottomUpButtonClicked = node => {
+            this.selectTab(Tab.BottomUp, node, AggregatedTimelineTreeView.GroupBy.ThirdParties);
+        };
+        this.#summaryContent.onTreeRowClicked = (node, events) => {
             // Re-dispatch through 3P event to get 3P dimmer.
-            this.dispatchEventToListeners("TreeRowClicked" /* TimelineTreeView.Events.TREE_ROW_CLICKED */, { node: node.data.node, events: node.data.events });
-        });
+            this.dispatchEventToListeners("TreeRowClicked" /* TimelineTreeView.Events.TREE_ROW_CLICKED */, { node, events });
+        };
         this.tabbedPane.addEventListener(UI.TabbedPane.Events.TabSelected, this.tabSelected, this);
         TraceBounds.TraceBounds.onChange(this.#onTraceBoundsChangeBound);
         this.lazySelectorStatsView = null;
@@ -234,10 +233,12 @@ export class TimelineDetailsPane extends Common.ObjectWrapper.eventMixin(UI.Widg
         this.#summaryContent.entityMapper = this.#entityMapper;
         this.tabbedPane.closeTabs([Tab.PaintProfiler, Tab.LayerViewer], false);
         for (const view of this.rangeDetailViews.values()) {
-            view.setModelWithEvents(data.selectedEvents, data.parsedTrace, data.entityMapper);
+            view.model = {
+                selectedEvents: data.selectedEvents,
+                parsedTrace: data.parsedTrace,
+                entityMapper: data.entityMapper
+            };
         }
-        // Set the 3p tree model.
-        this.#thirdPartyTree.setModelWithEvents(data.selectedEvents, data.parsedTrace, data.entityMapper);
         this.#summaryContent.requestUpdate();
         this.lazyPaintProfilerView = null;
         this.lazyLayersView = null;
@@ -266,7 +267,7 @@ export class TimelineDetailsPane extends Common.ObjectWrapper.eventMixin(UI.Widg
         // Update the view that we currently have selected.
         const view = this.rangeDetailViews.get(this.tabbedPane.selectedTabId || '');
         if (view) {
-            view.updateContents(this.selection || selectionFromRangeMilliSeconds(visibleWindow.min, visibleWindow.max));
+            view.activeSelection = this.selection || selectionFromRangeMilliSeconds(visibleWindow.min, visibleWindow.max);
         }
     }
     appendTab(id, tabTitle, view, isCloseable) {
@@ -454,20 +455,11 @@ export class TimelineDetailsPane extends Common.ObjectWrapper.eventMixin(UI.Widg
         this.#summaryContent.selectedEvent = null;
         this.#summaryContent.selectedRange = {
             events: this.#selectedEvents,
-            thirdPartyTree: this.#thirdPartyTree,
             startTime,
             endTime,
+            selection: this.selection ?? null,
         };
-        // This is a bit of a hack as we are midway through migrating this to
-        // the new UI Eng vision.
-        // The 3P tree view will only bother to update its DOM if it has a
-        // parentElement, so we trigger the rendering of the summary content
-        // (so the 3P Tree View is attached to the DOM) and then we tell it to
-        // update.
-        // This will be fixed once we migrate this component fully to the new vision (b/407751379)
-        void this.updateSummaryPane().then(() => {
-            this.#thirdPartyTree.updateContents(this.selection || selectionFromRangeMilliSeconds(startTime, endTime));
-        });
+        void this.updateSummaryPane();
         // Find all recalculate style events data from range
         const isSelectorStatsEnabled = Common.Settings.Settings.instance().createSetting('timeline-capture-selector-stats', false).get();
         if (this.#selectedEvents && isSelectorStatsEnabled) {
@@ -513,6 +505,9 @@ class SummaryView extends UI.Widget.Widget {
     linkifier = null;
     filmStrip = null;
     selectedRange = null;
+    onTreeRowHovered = (_node, _events) => { };
+    onBottomUpButtonClicked = (_node) => { };
+    onTreeRowClicked = (_node, _events) => { };
     constructor(element, view = SUMMARY_DEFAULT_VIEW) {
         super(element);
         this.#view = view;
@@ -527,24 +522,34 @@ class SummaryView extends UI.Widget.Widget {
             linkifier: this.linkifier,
             filmStrip: this.filmStrip,
             selectedRange: this.selectedRange,
+            onTreeRowHovered: this.onTreeRowHovered,
+            onBottomUpButtonClicked: this.onBottomUpButtonClicked,
+            onTreeRowClicked: this.onTreeRowClicked,
         }, {}, this.contentElement);
     }
 }
 function generateRangeSummaryDetails(input) {
     // clang-format off
-    return html `
-    <devtools-widget
-      ${widget(TimelineComponents.TimelineRangeSummaryView.TimelineRangeSummaryView, {
+    return html `${widget(TimelineComponents.TimelineRangeSummaryView.TimelineRangeSummaryView, {
         data: {
             parsedTrace: input.parsedTrace,
             events: input.selectedRange?.events,
             startTime: input.selectedRange?.startTime,
             endTime: input.selectedRange?.endTime,
-            thirdPartyTreeTemplate: input.selectedRange?.thirdPartyTree ? html `<devtools-performance-third-party-tree-view
-            .treeView=${input.selectedRange?.thirdPartyTree}></devtools-performance-third-party-tree-view>` : nothing,
+            thirdPartyTreeTemplate: input.selectedRange ? html `${widget(ThirdPartyTreeViewWidget, {
+                model: {
+                    parsedTrace: input.parsedTrace,
+                    entityMapper: input.entityMapper,
+                    selectedEvents: input.selectedRange.events ?? null,
+                },
+                activeSelection: input.selectedRange.selection ||
+                    selectionFromRangeMilliSeconds(input.selectedRange.startTime, input.selectedRange.endTime),
+                onRowHovered: input.onTreeRowHovered,
+                onBottomUpButtonClicked: input.onBottomUpButtonClicked,
+                onRowClicked: input.onTreeRowClicked,
+            })}` : nothing,
         },
-    })}
-    ></devtools-widget>`;
+    })}`;
     // clang-format on
 }
 async function renderSelectedEventDetails(input) {

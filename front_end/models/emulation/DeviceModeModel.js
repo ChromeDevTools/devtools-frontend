@@ -672,34 +672,29 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
         if (overlayModel) {
             overlayModel.setShowViewportSizeOnResize(false);
         }
-        const screenshot = await screenCaptureModel.captureScreenshot("png" /* Protocol.Page.CaptureScreenshotRequestFormat.Png */, 100, screenshotMode, clip);
-        const deviceMetrics = {
-            width: 0,
-            height: 0,
-            deviceScaleFactor: 0,
-            mobile: false,
-        };
-        if (fullSize && this.#emulationModel) {
-            if (this.#device && this.#mode) {
-                const orientation = this.#device.orientationByName(this.#mode.orientation);
-                deviceMetrics.width = orientation.width;
-                deviceMetrics.height = orientation.height;
-                const dispFeature = this.getDisplayFeature();
-                if (dispFeature) {
-                    // @ts-expect-error: displayFeature isn't in protocol.ts but is an
-                    // experimental flag:
-                    // https://chromedevtools.github.io/devtools-protocol/tot/Emulation/#method-setDeviceMetricsOverride
-                    deviceMetrics.displayFeature = dispFeature;
-                }
-            }
-            else {
-                deviceMetrics.width = 0;
-                deviceMetrics.height = 0;
+        if (this.#emulationModel && this.#device && this.#mode) {
+            const orientation = this.#device.orientationByName(this.#mode.orientation);
+            const deviceMetrics = {
+                width: orientation.width,
+                height: orientation.height,
+                deviceScaleFactor: this.#device.deviceScaleFactor,
+                mobile: this.isMobile(),
+            };
+            const dispFeature = this.getDisplayFeature();
+            if (dispFeature) {
+                deviceMetrics.displayFeature = dispFeature;
             }
             await this.#emulationModel.emulateDevice(deviceMetrics);
         }
-        this.calculateAndEmulate(false);
-        return screenshot;
+        try {
+            const screenshot = await screenCaptureModel.captureScreenshot("png" /* Protocol.Page.CaptureScreenshotRequestFormat.Png */, 100, screenshotMode, clip);
+            return screenshot;
+        }
+        finally {
+            await this.#emulationModel?.emulateDevice(null);
+            overlayModel?.setShowViewportSizeOnResize(this.#type === Type.None);
+            this.calculateAndEmulate(false);
+        }
     }
     applyTouch(touchEnabled, mobile) {
         this.#touchEnabled = touchEnabled;

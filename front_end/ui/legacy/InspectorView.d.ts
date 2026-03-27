@@ -66,7 +66,6 @@ export declare class InspectorView extends VBox implements ViewLocationResolver 
         force?: Omit<DrawerOrientation, DrawerOrientation.UNSET>;
     }): void;
     isUserExplicitlyUpdatedDrawerOrientation(): boolean;
-    setDrawerRelatedMinimumSizes(): void;
     setDrawerMinimized(minimized: boolean): void;
     drawerSize(): number;
     setDrawerSize(size: number): void;

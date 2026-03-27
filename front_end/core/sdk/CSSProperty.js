@@ -167,7 +167,7 @@ export class CSSProperty extends Common.ObjectWrapper.ObjectWrapper {
         const range = this.range.relativeTo(this.ownerStyle.range.startLine, this.ownerStyle.range.startColumn);
         const indentation = this.ownerStyle.cssText ?
             this.detectIndentation(this.ownerStyle.cssText) :
-            Common.Settings.Settings.instance().moduleSetting('text-editor-indent').get();
+            this.ownerStyle.cssModel().target().targetManager().settings.moduleSetting('text-editor-indent').get();
         const endIndentation = this.ownerStyle.cssText ? indentation.substring(0, this.ownerStyle.range.endColumn) : '';
         const text = new TextUtils.Text.Text(this.ownerStyle.cssText || '');
         const newStyleText = text.replaceRange(range, Platform.StringUtilities.sprintf(';%s;', propertyText));

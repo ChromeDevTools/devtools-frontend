@@ -293,8 +293,8 @@ export class ViewManager extends Common.ObjectWrapper.ObjectWrapper {
         }
         throw new Error('Unresolved location: ' + location);
     }
-    createTabbedLocation(revealCallback, location, restoreSelection, allowReorder, defaultTab) {
-        return new TabbedLocation(this, revealCallback, location, restoreSelection, allowReorder, defaultTab);
+    createTabbedLocation(revealCallback, location, restoreSelection, allowReorder, defaultTab, isLocationVisible, tabbedPaneFactory) {
+        return new TabbedLocation(this, revealCallback, location, restoreSelection, allowReorder, defaultTab, isLocationVisible, tabbedPaneFactory);
     }
     createStackLocation(revealCallback, location, jslogContext) {
         return new StackLocation(this, revealCallback, location, jslogContext);
@@ -517,9 +517,10 @@ class TabbedLocation extends Location {
     tabOrderSetting;
     lastSelectedTabSetting;
     defaultTab;
+    isLocationVisible;
     views = new Map();
-    constructor(manager, revealCallback, location, restoreSelection, allowReorder, defaultTab) {
-        const tabbedPane = new TabbedPane();
+    constructor(manager, revealCallback, location, restoreSelection, allowReorder, defaultTab, isLocationVisible, tabbedPaneFactory) {
+        const tabbedPane = tabbedPaneFactory ? tabbedPaneFactory() : new TabbedPane();
         if (allowReorder) {
             tabbedPane.setAllowTabReorder(true);
         }
@@ -540,6 +541,7 @@ class TabbedLocation extends Location {
             this.lastSelectedTabSetting = Common.Settings.Settings.instance().createSetting(location + '-selected-tab', '');
         }
         this.defaultTab = defaultTab;
+        this.isLocationVisible = isLocationVisible;
         if (location) {
             this.appendApplicableItems(location);
         }
@@ -697,7 +699,8 @@ class TabbedLocation extends Location {
         this.views.delete(view.viewId());
     }
     isViewVisible(view) {
-        return this.#tabbedPane.isShowing() && this.#tabbedPane?.selectedTabId === view.viewId();
+        const locationVisible = this.isLocationVisible ? this.isLocationVisible() : this.#tabbedPane.isShowing();
+        return locationVisible && this.#tabbedPane.selectedTabId === view.viewId();
     }
     tabbedPaneVisibilityChanged(event) {
         if (!this.#tabbedPane.selectedTabId) {

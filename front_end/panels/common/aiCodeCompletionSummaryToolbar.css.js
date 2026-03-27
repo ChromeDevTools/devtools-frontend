@@ -54,7 +54,7 @@ export default `/*
       border-left: var(--sys-size-1) solid var(--sys-color-divider);
     }
 
-    @media (width < 545px) {
+    @container (width < 545px) {
       &.has-disclaimer.has-recitation-notice {
         height: 46px;
         flex-direction: column;

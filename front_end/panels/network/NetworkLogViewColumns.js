@@ -212,7 +212,7 @@ export class NetworkLogViewColumns {
         const title = columnConfig.title instanceof Function ? columnConfig.title() : columnConfig.title;
         return {
             id: columnConfig.id,
-            title,
+            title: title,
             sortable: columnConfig.sortable,
             align: columnConfig.align,
             nonSelectable: columnConfig.nonSelectable,

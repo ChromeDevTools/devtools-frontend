@@ -5,7 +5,6 @@
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
-import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import thirdPartyTreeViewStyles from './thirdPartyTreeView.css.js';
 import * as TimelineTreeView from './TimelineTreeView.js';
@@ -34,8 +33,11 @@ export class ThirdPartyTreeViewWidget extends TimelineTreeView.TimelineTreeView 
     // when the grid is refreshed but for the ThirdParty view we only
     // want to do this when the user hovers.
     autoSelectFirstChildOnRefresh = false;
-    constructor() {
-        super();
+    #onRowHovered;
+    #onBottomUpButtonClicked;
+    #onRowClicked;
+    constructor(element) {
+        super(element);
         this.element.setAttribute('jslog', `${VisualLogging.pane('third-party-tree').track({ hover: true })}`);
         this.init();
         this.dataGrid.markColumnAsSortedBy('self', DataGrid.DataGrid.Order.Descending);
@@ -53,9 +55,9 @@ export class ThirdPartyTreeViewWidget extends TimelineTreeView.TimelineTreeView 
         super.wasShown();
         this.registerRequiredCSS(thirdPartyTreeViewStyles);
     }
-    setModelWithEvents(selectedEvents, parsedTrace, entityMappings) {
-        super.setModelWithEvents(selectedEvents, parsedTrace, entityMappings);
-        const hasEvents = Boolean(selectedEvents && selectedEvents.length > 0);
+    set model(model) {
+        super.model = model;
+        const hasEvents = Boolean(model.selectedEvents && model.selectedEvents.length > 0);
         this.element.classList.toggle('empty-table', !hasEvents);
     }
     buildTree() {
@@ -205,30 +207,33 @@ export class ThirdPartyTreeViewWidget extends TimelineTreeView.TimelineTreeView 
         const entity = mapper.entityForEvent(node.event);
         return Boolean(entity) && entity?.category === 'Chrome Extension';
     }
-}
-export class ThirdPartyTreeElement extends UI.Widget.WidgetElement {
-    #treeView;
-    static observedAttributes = ['max-rows'];
-    set treeView(treeView) {
-        this.#treeView = treeView;
+    set maxRows(maxRows) {
+        this.element.style.setProperty('--max-rows', String(maxRows));
+        this.element.classList.toggle('has-max-rows', Boolean(maxRows));
     }
-    constructor() {
-        super();
-        this.style.display = 'contents';
-    }
-    attributeChangedCallback(name, _oldValue, newValue) {
-        if (name === 'max-rows' && newValue) {
-            this.style.setProperty('--max-rows', newValue);
+    set onRowHovered(callback) {
+        if (!this.#onRowHovered) {
+            this.addEventListener("TreeRowHovered" /* TimelineTreeView.TimelineTreeView.Events.TREE_ROW_HOVERED */, ({ data }) => {
+                this.#onRowHovered?.(data.node, data.events);
+            });
         }
+        this.#onRowHovered = callback;
     }
-    createWidget() {
-        const containerWidget = new UI.Widget.Widget(this);
-        containerWidget.contentElement.style.display = 'contents';
-        if (this.#treeView) {
-            this.#treeView.show(containerWidget.contentElement);
+    set onBottomUpButtonClicked(callback) {
+        if (!this.#onBottomUpButtonClicked) {
+            this.addEventListener("BottomUpButtonClicked" /* TimelineTreeView.TimelineTreeView.Events.BOTTOM_UP_BUTTON_CLICKED */, ({ data }) => {
+                this.#onBottomUpButtonClicked?.(data);
+            });
         }
-        return containerWidget;
+        this.#onBottomUpButtonClicked = callback;
+    }
+    set onRowClicked(callback) {
+        if (!this.#onRowClicked) {
+            this.addEventListener("TreeRowClicked" /* TimelineTreeView.TimelineTreeView.Events.TREE_ROW_CLICKED */, ({ data }) => {
+                this.#onRowClicked?.(data.node, data.events);
+            });
+        }
+        this.#onRowClicked = callback;
     }
 }
-customElements.define('devtools-performance-third-party-tree-view', ThirdPartyTreeElement);
 //# sourceMappingURL=ThirdPartyTreeView.js.map

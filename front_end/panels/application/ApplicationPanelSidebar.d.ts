@@ -20,6 +20,7 @@ import { ServiceWorkerCacheTreeElement } from './ServiceWorkerCacheTreeElement.j
 import { SharedStorageListTreeElement } from './SharedStorageListTreeElement.js';
 import { StorageBucketsTreeParentElement } from './StorageBucketsTreeElement.js';
 import { TrustTokensTreeElement } from './TrustTokensTreeElement.js';
+import { WebMCPTreeElement } from './WebMCPTreeElement.js';
 export declare namespace SharedStorageTreeElementDispatcher {
     const enum Events {
         SHARED_STORAGE_TREE_ELEMENT_ADDED = "SharedStorageTreeElementAdded"
@@ -55,6 +56,7 @@ export declare class ApplicationPanelSidebar extends UI.Widget.VBox implements S
     periodicBackgroundSyncTreeElement: BackgroundServiceTreeElement;
     pushMessagingTreeElement: BackgroundServiceTreeElement;
     reportingApiTreeElement: ReportingApiTreeElement;
+    webMcpTreeElement?: WebMCPTreeElement;
     deviceBoundSessionsRootTreeElement: DeviceBoundSessionsRootTreeElement | undefined;
     deviceBoundSessionsModel: DeviceBoundSessionsModel | undefined;
     preloadingSummaryTreeElement: PreloadingSummaryTreeElement | undefined;

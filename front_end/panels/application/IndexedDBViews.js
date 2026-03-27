@@ -277,26 +277,19 @@ export class IDBDataView extends UI.View.SimpleView {
     createDataGrid() {
         const keyPath = this.isIndex && this.index ? this.index.keyPath : this.objectStore.keyPath;
         const columns = [];
-        // Create column defaults so that we avoid repetition below.
-        const columnDefaults = {
-            sortable: false,
-        };
         columns.push({
-            ...columnDefaults,
             id: 'number',
             title: '#',
             sortable: false,
             width: '50px',
         });
         columns.push({
-            ...columnDefaults,
             id: 'key',
             titleDOMFragment: this.keyColumnHeaderFragment(i18nString(UIStrings.keyString), keyPath),
             sortable: false,
         });
         if (this.isIndex) {
             columns.push({
-                ...columnDefaults,
                 id: 'primary-key',
                 titleDOMFragment: this.keyColumnHeaderFragment(i18nString(UIStrings.primaryKey), this.objectStore.keyPath),
                 sortable: false,
@@ -304,7 +297,6 @@ export class IDBDataView extends UI.View.SimpleView {
         }
         const title = i18nString(UIStrings.valueString);
         columns.push({
-            ...columnDefaults,
             id: 'value',
             title,
             sortable: false,

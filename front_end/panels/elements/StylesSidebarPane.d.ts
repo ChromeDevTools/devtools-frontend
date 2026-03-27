@@ -62,6 +62,8 @@ export declare class StylesSidebarPane extends StylesSidebarPane_base implements
     private readonly boundOnScroll;
     private readonly imagePreviewPopover;
     activeCSSAngle: InlineEditor.CSSAngle.CSSAngle | null;
+    aiCodeCompletionConfig?: TextEditor.AiCodeCompletionProvider.AiCodeCompletionConfig;
+    aiCodeCompletionProvider?: StylesAiCodeCompletionProvider.StylesAiCodeCompletionProvider;
     constructor(computedStyleModel: ComputedStyle.ComputedStyleModel.ComputedStyleModel);
     get webCustomData(): WebCustomData | undefined;
     private onScroll;
@@ -173,8 +175,8 @@ export declare class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
     private treeElement;
     private isEditingName;
     private readonly cssVariables;
-    aiCodeCompletionConfig?: TextEditor.AiCodeCompletionProvider.AiCodeCompletionConfig;
     aiCodeCompletionProvider?: StylesAiCodeCompletionProvider.StylesAiCodeCompletionProvider;
+    private activeAiSuggestionInfo?;
     constructor(treeElement: StylePropertyTreeElement, isEditingName: boolean, completions?: string[]);
     onKeyDown(event: Event): void;
     onMouseWheel(event: Event): void;

@@ -12,6 +12,8 @@ export class StylesAiCodeCompletionProvider {
     #aiCodeCompletionSetting = Common.Settings.Settings.instance().createSetting('ai-code-completion-enabled', false);
     #aiCodeCompletion;
     #aiCodeCompletionConfig;
+    getCompletionHint;
+    setAiAutoCompletion;
     #boundOnUpdateAiCodeCompletionState = this.#updateAiCodeCompletionState.bind(this);
     constructor(aiCodeCompletionConfig) {
         const devtoolsLocale = i18n.DevToolsLocale.DevToolsLocale.instance();
@@ -101,7 +103,7 @@ export class StylesAiCodeCompletionProvider {
         if (!aidaSuggestion) {
             return;
         }
-        this.#aiCodeCompletionConfig?.setAiAutoCompletion?.({
+        this.setAiAutoCompletion?.({
             text: currentPropertyString + aidaSuggestion.suggestionText,
             from: cursorPosition,
             rpcGlobalId: aidaSuggestion.rpcGlobalId,
@@ -109,6 +111,7 @@ export class StylesAiCodeCompletionProvider {
             startTime,
             clearCachedRequest: this.clearCache.bind(this),
             onImpression: this.#aiCodeCompletion.registerUserImpression.bind(this.#aiCodeCompletion),
+            citations: aidaSuggestion.citations,
         });
     }
     async #requestAidaSuggestion(prefix, suffix, cursorPositionAtRequest) {
@@ -162,7 +165,7 @@ export class StylesAiCodeCompletionProvider {
         if (!response.generatedSamples.length) {
             return null;
         }
-        const completionHint = this.#aiCodeCompletionConfig?.getCompletionHint?.();
+        const completionHint = this.getCompletionHint?.();
         if (!completionHint) {
             return response.generatedSamples[0];
         }
@@ -170,6 +173,12 @@ export class StylesAiCodeCompletionProvider {
     }
     clearCache() {
         this.#aiCodeCompletion?.clearCachedRequest();
+    }
+    onSuggestionAccepted(citations, rpcGlobalId, sampleId) {
+        this.#aiCodeCompletionConfig?.onSuggestionAccepted(citations);
+        if (rpcGlobalId) {
+            this.#aiCodeCompletion?.registerUserAcceptance(rpcGlobalId, sampleId);
+        }
     }
 }
 //# sourceMappingURL=StylesAiCodeCompletionProvider.js.map

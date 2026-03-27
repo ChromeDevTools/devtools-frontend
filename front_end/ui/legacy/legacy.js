@@ -543,7 +543,7 @@ __export(Dialog_exports, {
   Dialog: () => Dialog
 });
 import * as Common15 from "./../../core/common/common.js";
-import * as VisualLogging15 from "./../visual_logging/visual_logging.js";
+import * as VisualLogging16 from "./../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/dialog.css.js
 var dialog_css_default = `/*
@@ -720,11 +720,11 @@ __export(Toolbar_exports, {
   registerToolbarItem: () => registerToolbarItem
 });
 import * as Common13 from "./../../core/common/common.js";
-import * as i18n19 from "./../../core/i18n/i18n.js";
+import * as i18n21 from "./../../core/i18n/i18n.js";
 import * as Platform13 from "./../../core/platform/platform.js";
 import * as Root5 from "./../../core/root/root.js";
 import * as Buttons5 from "./../components/buttons/buttons.js";
-import * as VisualLogging13 from "./../visual_logging/visual_logging.js";
+import * as VisualLogging14 from "./../visual_logging/visual_logging.js";
 import { createIcon as createIcon6 } from "./../kit/kit.js";
 
 // gen/front_end/ui/legacy/ContextMenu.js
@@ -743,7 +743,7 @@ import * as Host6 from "./../../core/host/host.js";
 import * as Root4 from "./../../core/root/root.js";
 import * as Buttons4 from "./../components/buttons/buttons.js";
 import { html as html2, render as render2 } from "./../lit/lit.js";
-import * as VisualLogging9 from "./../visual_logging/visual_logging.js";
+import * as VisualLogging10 from "./../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/ShortcutRegistry.js
 var ShortcutRegistry_exports = {};
@@ -1505,9 +1505,9 @@ var SoftContextMenu_exports = {};
 __export(SoftContextMenu_exports, {
   SoftContextMenu: () => SoftContextMenu
 });
-import * as i18n15 from "./../../core/i18n/i18n.js";
+import * as i18n17 from "./../../core/i18n/i18n.js";
 import { createIcon as createIcon5 } from "./../kit/kit.js";
-import * as VisualLogging8 from "./../visual_logging/visual_logging.js";
+import * as VisualLogging9 from "./../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/InspectorView.js
 var InspectorView_exports = {};
@@ -1520,12 +1520,12 @@ __export(InspectorView_exports, {
 });
 import * as Common10 from "./../../core/common/common.js";
 import * as Host5 from "./../../core/host/host.js";
-import * as i18n13 from "./../../core/i18n/i18n.js";
+import * as i18n15 from "./../../core/i18n/i18n.js";
 import * as Root3 from "./../../core/root/root.js";
 import * as SDK from "./../../core/sdk/sdk.js";
 import * as Buttons3 from "./../components/buttons/buttons.js";
 import { createIcon as createIcon4 } from "./../kit/kit.js";
-import * as VisualLogging7 from "./../visual_logging/visual_logging.js";
+import * as VisualLogging8 from "./../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/DockController.js
 var DockController_exports = {};
@@ -2054,151 +2054,40 @@ var TYPE_TO_ICON = {
   ]: "cross-circle"
 };
 
-// gen/front_end/ui/legacy/SplitWidget.js
-var SplitWidget_exports = {};
-__export(SplitWidget_exports, {
-  SplitWidget: () => SplitWidget,
-  SplitWidgetElement: () => SplitWidgetElement
+// gen/front_end/ui/legacy/InspectorDrawerView.js
+import * as i18n13 from "./../../core/i18n/i18n.js";
+import * as VisualLogging6 from "./../visual_logging/visual_logging.js";
+
+// gen/front_end/ui/legacy/inspectorDrawerTabbedPane.css.js
+var inspectorDrawerTabbedPane_css_default = `/*
+ * Copyright 2026 The Chromium Authors
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+/*# sourceURL=${import.meta.resolve("./inspectorDrawerTabbedPane.css")} */`;
+
+// gen/front_end/ui/legacy/TabbedPane.js
+var TabbedPane_exports = {};
+__export(TabbedPane_exports, {
+  Events: () => Events,
+  TabbedPane: () => TabbedPane,
+  TabbedPaneTab: () => TabbedPaneTab
 });
-import * as Common7 from "./../../core/common/common.js";
+import * as Common6 from "./../../core/common/common.js";
+import * as i18n7 from "./../../core/i18n/i18n.js";
 import * as Platform6 from "./../../core/platform/platform.js";
+import * as Annotations from "./../../models/annotations/annotations.js";
 import * as Geometry2 from "./../../models/geometry/geometry.js";
+import * as Buttons2 from "./../components/buttons/buttons.js";
+import { render } from "./../lit/lit.js";
 import * as VisualLogging4 from "./../visual_logging/visual_logging.js";
+import { createIcon as createIcon2, Icon } from "./../kit/kit.js";
 
-// gen/front_end/ui/legacy/ResizerWidget.js
-var ResizerWidget_exports = {};
-__export(ResizerWidget_exports, {
-  ResizerWidget: () => ResizerWidget,
-  SimpleResizerWidget: () => SimpleResizerWidget
-});
-import * as Common5 from "./../../core/common/common.js";
-var ResizerWidget = class extends Common5.ObjectWrapper.ObjectWrapper {
-  #isEnabled = true;
-  #elements = /* @__PURE__ */ new Set();
-  #installDragOnMouseDownBound;
-  #cursor = "nwse-resize";
-  #startX;
-  #startY;
-  constructor() {
-    super();
-    this.#installDragOnMouseDownBound = this.#installDragOnMouseDown.bind(this);
-  }
-  isEnabled() {
-    return this.#isEnabled;
-  }
-  setEnabled(enabled) {
-    this.#isEnabled = enabled;
-    this.updateElementCursors();
-  }
-  elements() {
-    return [...this.#elements];
-  }
-  addElement(element) {
-    if (!this.#elements.has(element)) {
-      this.#elements.add(element);
-      element.addEventListener("pointerdown", this.#installDragOnMouseDownBound, false);
-      this.#updateElementCursor(element);
-    }
-  }
-  removeElement(element) {
-    if (this.#elements.has(element)) {
-      this.#elements.delete(element);
-      element.removeEventListener("pointerdown", this.#installDragOnMouseDownBound, false);
-      element.style.removeProperty("cursor");
-    }
-  }
-  updateElementCursors() {
-    this.#elements.forEach(this.#updateElementCursor.bind(this));
-  }
-  #updateElementCursor(element) {
-    if (this.#isEnabled) {
-      element.style.setProperty("cursor", this.cursor());
-      element.style.setProperty("touch-action", "none");
-    } else {
-      element.style.removeProperty("cursor");
-      element.style.removeProperty("touch-action");
-    }
-  }
-  cursor() {
-    return this.#cursor;
-  }
-  setCursor(cursor) {
-    this.#cursor = cursor;
-    this.updateElementCursors();
-  }
-  #installDragOnMouseDown(event) {
-    const element = event.target;
-    if (!this.#elements.has(element)) {
-      return false;
-    }
-    elementDragStart(element, this.#dragStart.bind(this), (event2) => {
-      this.#drag(event2);
-    }, this.#dragEnd.bind(this), this.cursor(), event);
-    return void 0;
-  }
-  #dragStart(event) {
-    if (!this.#isEnabled) {
-      return false;
-    }
-    this.#startX = event.pageX;
-    this.#startY = event.pageY;
-    this.sendDragStart(this.#startX, this.#startY);
-    return true;
-  }
-  sendDragStart(x, y) {
-    this.dispatchEventToListeners("ResizeStart", { startX: x, currentX: x, startY: y, currentY: y });
-  }
-  #drag(event) {
-    if (!this.#isEnabled) {
-      this.#dragEnd(event);
-      return true;
-    }
-    this.sendDragMove(this.#startX, event.pageX, this.#startY, event.pageY, event.shiftKey);
-    event.preventDefault();
-    return false;
-  }
-  sendDragMove(startX, currentX, startY, currentY, shiftKey) {
-    this.dispatchEventToListeners("ResizeUpdateXY", { startX, currentX, startY, currentY, shiftKey });
-  }
-  #dragEnd(_event) {
-    this.dispatchEventToListeners(
-      "ResizeEnd"
-      /* Events.RESIZE_END */
-    );
-    this.#startX = void 0;
-    this.#startY = void 0;
-  }
-};
-var SimpleResizerWidget = class extends ResizerWidget {
-  #isVertical = true;
-  isVertical() {
-    return this.#isVertical;
-  }
-  /**
-   * Vertical widget resizes height (along y-axis).
-   */
-  setVertical(vertical) {
-    this.#isVertical = vertical;
-    this.updateElementCursors();
-  }
-  cursor() {
-    return this.#isVertical ? "ns-resize" : "ew-resize";
-  }
-  sendDragStart(x, y) {
-    const position = this.#isVertical ? y : x;
-    this.dispatchEventToListeners("ResizeStart", { startPosition: position, currentPosition: position });
-  }
-  sendDragMove(startX, currentX, startY, currentY, shiftKey) {
-    if (this.#isVertical) {
-      this.dispatchEventToListeners("ResizeUpdatePosition", { startPosition: startY, currentPosition: currentY, shiftKey });
-    } else {
-      this.dispatchEventToListeners("ResizeUpdatePosition", { startPosition: startX, currentPosition: currentX, shiftKey });
-    }
-  }
-};
-
-// gen/front_end/ui/legacy/splitWidget.css.js
-var splitWidget_css_default = `/*
+// gen/front_end/ui/legacy/tabbedPane.css.js
+var tabbedPane_css_default = `/*
+ * Copyright (C) 2006, 2007, 2008 Apple Inc.  All rights reserved.
+ * Copyright (C) 2009 Anthony Ricaud <rik@webkit.org>
  * Copyright (C) 2011 Google Inc. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -2226,76 +2115,526 @@ var splitWidget_css_default = `/*
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-.shadow-split-widget {
-  display: flex;
+.tabbed-pane {
+  flex: auto;
   overflow: hidden;
 }
 
-.shadow-split-widget-contents {
-  display: flex;
+.tabbed-pane-content {
   position: relative;
+  overflow: auto;
+  flex: auto;
+  display: flex;
   flex-direction: column;
-  contain: layout size style;
 }
 
-.shadow-split-widget-sidebar {
+.tabbed-pane-content.has-no-tabs {
+  background-color: var(--sys-color-cdt-base-container);
+}
+
+.tabbed-pane-placeholder {
+  text-align: center;
+  align-content: center;
+
+  .sources-placeholder {
+    display: inline-block;
+  }
+}
+
+.tabbed-pane-placeholder-row {
+  max-width: var(--sys-size-32);
+  min-width: var(--sys-size-28);
+  margin: 0 var(--sys-size-8);
+
+  &.workspace {
+    line-height: 18px;
+    display: inline-flex;
+    align-items: center;
+    border: var(--sys-size-2) dashed var(--sys-color-divider);
+    padding: var(--sys-size-8);
+    border-radius: var(--sys-shape-corner-medium);
+    margin: var(--sys-size-8) var(--sys-size-8) var(--sys-size-11);
+
+    > .icon-container {
+      flex-shrink: 0;
+      width: var(--sys-size-13);
+      height: var(--sys-size-13);
+      background: var(--sys-color-tonal-container);
+      align-content: center;
+      border-radius: var(--sys-shape-corner-full);
+      margin-right: var(--sys-size-8);
+
+      > devtools-icon {
+        color: var(--sys-color-on-tonal-container);
+      }
+    }
+  }
+
+  &.shortcuts-list {
+    padding: 0 var(--sys-size-6);
+
+    .shortcut-line {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      column-gap: var(--sys-size-10);
+      padding: var(--sys-size-4) 0;
+
+      &:not(:last-child) {
+        border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
+      }
+
+      .shortcuts {
+        display: flex;
+        flex-direction: row;
+        gap: var(--sys-size-4);
+        align-items: center;
+      }
+
+      .keybinds-key {
+        display: flex;
+        flex-shrink: 0;
+        align-items: center;
+        justify-content: center;
+        height: var(--sys-size-11);
+        min-width: var(--sys-size-11);
+        font: var(--sys-typescale-body5-medium);
+        white-space: nowrap;
+        border-radius: var(--sys-shape-corner-small);
+        background: var(--sys-color-tonal-container);
+        padding: 0 var(--sys-size-4);
+      }
+
+      & button {
+        margin-inline: 0;
+      }
+    }
+  }
+
+  & button {
+    cursor: pointer;
+    color: var(--text-link);
+    background: transparent;
+    border: none;
+    padding: 0;
+    text-decoration: underline;
+    margin-inline: var(--sys-size-3);
+    text-align: left;
+
+    &:focus-visible {
+      outline: 2px solid var(--sys-color-state-focus-ring);
+      outline-offset: 2px;
+      border-radius: 2px;
+    }
+  }
+}
+
+.tabbed-pane-header {
+  display: flex;
+  flex: 0 0 27px;
+  border-bottom: 1px solid var(--sys-color-divider);
+  overflow: visible;
+  width: 100%;
+  background-color: var(--app-color-toolbar-background);
+
+  & > * {
+    cursor: initial;
+  }
+}
+
+.tabbed-pane-header-contents {
+  flex: auto;
+  pointer-events: none;
+  margin-left: 0;
+  position: relative;
+  cursor: default;
+}
+
+.tabbed-pane-header-contents > * {
+  pointer-events: initial;
+}
+
+.tabbed-pane-header-tab-icon {
+  min-width: 14px;
+  display: flex;
+  align-items: center;
+  margin-right: var(--sys-size-2);
+}
+
+.tabbed-pane-header-tab-suffix-element {
+  height: var(--sys-size-8);
+  width: var(--sys-size-8);
+  padding-left: var(--sys-size-2);
+  align-content: center;
+
+  &:has(.badge) {
+    width: 17px;
+    margin-left: var(--sys-size-2);
+  }
+
+  &:has(.status-dot) {
+    width: 9px;
+  }
+}
+
+.badge {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  height: var(--sys-size-7);
+  min-width: var(--sys-size-7);
+  width: fit-content;
+  padding: 0 var(--sys-size-3);
+  line-height: var(--sys-size-7);
+  border-radius: var(--sys-shape-corner-full);
+  margin-left: var(--sys-size-2);
+  background-color: var(--sys-color-primary);
+  color: var(--sys-color-on-primary);
+  font-size: var(--sys-typescale-body5-size);
+  font-weight: var(--ref-typeface-weight-bold);
+
+  &.primary {
+    background: var(--sys-color-cdt-base-container);
+    color: var(--sys-color-primary);
+    border: var(--sys-size-1) solid var(--sys-color-primary);
+    font-weight: normal;
+  }
+}
+
+.status-dot {
+  height: var(--sys-size-4);
+  width: var(--sys-size-4);
+  border-radius: var(--sys-shape-corner-full);
+  background-color: var(--sys-color-purple-bright);
+  margin-left: var(--sys-size-1);
+  justify-self: center;
+  position: relative;
+  top: 0.75px;
+}
+
+.tabbed-pane-header-tab {
+  font: var(--sys-typescale-body4-medium);
+  color: var(--sys-color-on-surface-subtle);
+  height: var(--sys-size-12);
+  float: left;
+  padding: 0 10px;
+  white-space: nowrap;
+  cursor: default;
+  display: flex;
+  align-items: center;
+}
+
+.tabbed-pane-header-tab.closeable {
+  padding-right: var(--sys-size-3);
+}
+
+.tabbed-pane-header-tab devtools-icon.dot::before {
+  outline-color: var(--icon-gap-toolbar);
+}
+
+.tabbed-pane-header-tab:hover devtools-icon.dot::before {
+  outline-color: var(--icon-gap-toolbar-hover);
+}
+
+.tabbed-pane-header-tab:not(.vertical-tab-layout):hover,
+.tabbed-pane-shadow .tabbed-pane-header-tab:focus-visible {
+  color: var(--sys-color-on-surface);
+  background-color: var(--sys-color-state-hover-on-subtle);
+}
+
+.tabbed-pane-header-tab-title {
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.tabbed-pane-header-tab.measuring {
+  visibility: hidden;
+}
+
+.tabbed-pane-header-tab.selected {
+  border-bottom: none;
+  color: var(--sys-color-primary);
+}
+
+.tabbed-pane-header-tab.selected.dragging {
+  --override-dragging-box-shadow-color: rgb(0 0 0 / 37%);
+
+  position: relative;
+  box-shadow: 0 1px 4px 0 var(--override-dragging-box-shadow-color);
+  background-color: var(--app-color-toolbar-background);
+}
+
+.theme-with-dark-background .tabbed-pane-header-tab.dragging,
+:host-context(.theme-with-dark-background) .tabbed-pane-header-tab.dragging {
+  --override-dragging-box-shadow-color: rgb(230 230 230 / 37%);
+}
+
+.tabbed-pane-header-tab .tabbed-pane-close-button {
+  visibility: hidden;
+}
+
+.tabbed-pane-header-tab:hover .tabbed-pane-close-button,
+.tabbed-pane-header-tab.selected .tabbed-pane-close-button {
+  visibility: visible;
+}
+
+.tabbed-pane-header-tabs-drop-down-container {
+  float: left;
+  opacity: 80%;
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+.tabbed-pane-header-tabs-drop-down-container > .chevron-icon:hover,
+.tabbed-pane-header-tabs-drop-down-container > .chevron-icon:focus-visible {
+  color: var(--icon-default-hover);
+}
+
+.tabbed-pane-header-tabs-drop-down-container:hover,
+.tabbed-pane-header-tabs-drop-down-container:focus-visible {
+  background-color: var(--sys-color-state-hover-on-subtle);
+}
+
+.tabbed-pane-header-tabs-drop-down-container.measuring {
+  visibility: hidden;
+}
+
+.tabbed-pane-header-tabs-drop-down-container:active {
+  opacity: 80%;
+}
+/* Web page style */
+
+.tabbed-pane-shadow.vertical-tab-layout {
+  flex-direction: row !important; /* stylelint-disable-line declaration-no-important */
+}
+
+.tabbed-pane-shadow.vertical-tab-layout .tabbed-pane-header {
+  background-color: transparent;
+  border: none transparent !important; /* stylelint-disable-line declaration-no-important */
+  width: auto;
+  flex: 0 0 auto;
+  flex-direction: column;
+  padding-top: 5px;
+  overflow: hidden;
+}
+
+.tabbed-pane-shadow.vertical-tab-layout .tabbed-pane-content {
+  padding-top: var(--sys-size-10);
+  overflow-x: hidden;
+}
+
+.tabbed-pane-shadow.vertical-tab-layout .tabbed-pane-header-contents {
+  margin: 0;
   flex: none;
 }
 
-.shadow-split-widget-main,
-.shadow-split-widget-sidebar.maximized {
-  flex: auto;
+.tabbed-pane-shadow.vertical-tab-layout .tabbed-pane-header-tabs {
+  display: flex;
+  flex-direction: column;
+  width: var(--sys-size-24);
+  margin-right: var(--sys-size-5);
 }
 
-.shadow-split-widget.hbox > .shadow-split-widget-resizer {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 6px;
-  z-index: 4000;
+.tabbed-pane-shadow.vertical-tab-layout .tabbed-pane-header-tab {
+  height: var(--size-12, 28px);
+  padding: 0 var(--size-8, 16px) 0 var(--size-7, 14px);
+  border-radius: 0 100px 100px 0;
+  color: var(--sys-color-on-surface);
+  position: relative;
+
+  & > .tabbed-pane-header-tab-icon devtools-icon {
+    margin: 0;
+    margin-right: var(--sys-size-6);
+  }
+
+  &.selected {
+    color: var(--app-color-navigation-drawer-label-selected);
+    background-color: var(--app-color-navigation-drawer-background-selected);
+
+    & > .tabbed-pane-header-tab-icon devtools-icon {
+      color: var(--app-color-navigation-drawer-label-selected);
+    }
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--sys-color-state-focus-ring);
+  }
+
+  &:active::before {
+    background-color: var(--sys-color-state-ripple-neutral-on-subtle);
+    content: "";
+    height: 100%;
+    width: 100%;
+    border-radius: inherit;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
 }
 
-.shadow-split-widget.vbox > .shadow-split-widget-resizer {
+.tabbed-pane-tab-slider {
+  height: 3px;
   position: absolute;
+  bottom: -1px;
+  background-color: var(--sys-color-primary);
+  border-radius: var(--sys-shape-corner-full) var(--sys-shape-corner-full) 0 0;
   left: 0;
-  right: 0;
-  height: 6px;
-  z-index: 4000;
+  transform-origin: 0 100%;
+  transition: transform 150ms cubic-bezier(0, 0, 0.2, 1);
+  visibility: hidden;
 }
 
-.shadow-split-widget.vbox > .shadow-split-widget-sidebar.no-default-splitter {
-  border: 0 !important; /* stylelint-disable-line declaration-no-important */
+@media (-webkit-min-device-pixel-ratio: 1.1) {
+  .tabbed-pane-tab-slider {
+    border-top: none;
+  }
 }
 
-.shadow-split-widget.vbox > .shadow-split-widget-sidebar:not(.maximized) {
-  border: 0;
-  border-top: 1px solid var(--sys-color-divider);
+.tabbed-pane-tab-slider.enabled {
+  visibility: visible;
 }
 
-.shadow-split-widget.hbox > .shadow-split-widget-sidebar:not(.maximized) {
-  border: 0;
-  border-left: 1px solid var(--sys-color-divider);
-}
-
-.shadow-split-widget.vbox > .shadow-split-widget-sidebar:first-child:not(.maximized) {
-  border: 0;
-  border-bottom: 1px solid var(--sys-color-divider);
-}
-
-.shadow-split-widget.hbox > .shadow-split-widget-sidebar:first-child:not(.maximized) {
-  border: 0;
-  border-right: 1px solid var(--sys-color-divider);
-}
-
-:host-context(.disable-resizer-for-elements-hack) .shadow-split-widget-resizer {
+.tabbed-pane-header-tab.disabled {
+  opacity: 50%;
   pointer-events: none;
 }
 
-:host {
-  display: flex;
+.tabbed-pane-left-toolbar {
+  margin-right: -4px;
+  flex: none;
 }
 
-/*# sourceURL=${import.meta.resolve("./splitWidget.css")} */`;
+.tabbed-pane-right-toolbar {
+  margin-left: -4px;
+  flex: none;
+}
+
+.preview-icon {
+  --override-tabbed-pane-preview-icon-color: var(--icon-default);
+
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: var(--sys-size-2);
+  flex-shrink: 0;
+
+  devtools-icon {
+    color: var(--override-tabbed-pane-preview-icon-color);
+  }
+}
+
+@media (forced-colors: active) {
+  .tabbed-pane-tab-slider {
+    forced-color-adjust: none;
+    background-color: Highlight;
+  }
+
+  .tabbed-pane-header {
+    forced-color-adjust: none;
+    border-bottom: 1px solid transparent;
+    background-color: ButtonFace;
+  }
+
+  .tabbed-pane-header-contents .tabbed-pane-header-tabs .tabbed-pane-header-tab {
+    background: ButtonFace;
+    color: ButtonText;
+  }
+
+  .tabbed-pane-header-tabs .tabbed-pane-header-tab:hover,
+  .tabbed-pane-header-tabs .tabbed-pane-shadow .tabbed-pane-header-tab:focus-visible {
+    background-color: Highlight;
+    color: HighlightText;
+  }
+
+  .tabbed-pane-header-tab .tabbed-pane-header-tab-title {
+    color: inherit;
+  }
+
+  .tabbed-pane-header-contents .tabbed-pane-header-tabs .tabbed-pane-header-tab.selected,
+  .tabbed-pane-header-contents .tabbed-pane-header-tabs .tabbed-pane-header-tab.selected:focus-visible {
+    background-color: Highlight;
+    color: HighlightText;
+  }
+
+  .tabbed-pane-header-tab:hover .tabbed-pane-close-button,
+  .tabbed-pane-shadow .tabbed-pane-header-tab:focus-visible .tabbed-pane-close-button {
+    color: HighlightText;
+  }
+
+  .tabbed-pane-header-tabs-drop-down-container {
+    opacity: 100%;
+  }
+
+  .tabbed-pane-header-tabs-drop-down-container:hover,
+  .tabbed-pane-header-tabs-drop-down-container:focus-visible {
+    background-color: Highlight;
+  }
+
+  .tabbed-pane-header-tabs-drop-down-container > .chevron-icon {
+    color: ButtonText;
+  }
+
+  .tabbed-pane-header-tabs-drop-down-container:hover > .chevron-icon,
+  .tabbed-pane-header-tabs-drop-down-container:focus-visible > .chevron-icon {
+    color: HighlightText;
+  }
+
+  .tabbed-pane-header-tabs .tabbed-pane-header-tab .preview-icon {
+    --override-tabbed-pane-preview-icon-color: ButtonText;
+  }
+
+  .tabbed-pane-header-tab.selected .preview-icon,
+  .tabbed-pane-header-tab:hover .preview-icon {
+    --override-tabbed-pane-preview-icon-color: HighlightText;
+  }
+
+  .close-button {
+    --tabbed-pane-close-icon-color: ButtonText;
+
+    forced-color-adjust: none;
+  }
+
+  .close-button:hover,
+  .close-button:active {
+    --tabbed-pane-close-icon-color: HighlightText;
+
+    background-color: Highlight;
+  }
+
+  .selected .close-button {
+    --tabbed-pane-close-icon-color: HighlightText;
+  }
+}
+
+.spark {
+  position: absolute;
+  top: 2px;
+
+  --icon-default: var(--sys-color-primary);
+}
+
+/*# sourceURL=${import.meta.resolve("./tabbedPane.css")} */`;
+
+// gen/front_end/ui/legacy/Tooltip.js
+var Tooltip_exports = {};
+__export(Tooltip_exports, {
+  Tooltip: () => Tooltip
+});
+var Tooltip = class {
+  static install(element, tooltipContent) {
+    element.title = tooltipContent || "";
+  }
+  static installWithActionBinding(element, tooltipContent, actionId) {
+    let description = tooltipContent;
+    const shortcuts = ShortcutRegistry.instance().shortcutsForAction(actionId);
+    for (const shortcut of shortcuts) {
+      description += ` - ${shortcut.title()}`;
+    }
+    element.title = description;
+  }
+};
 
 // gen/front_end/ui/legacy/Widget.js
 var Widget_exports = {};
@@ -3359,9 +3698,9 @@ var ZoomManager_exports = {};
 __export(ZoomManager_exports, {
   ZoomManager: () => ZoomManager
 });
-import * as Common6 from "./../../core/common/common.js";
+import * as Common5 from "./../../core/common/common.js";
 var zoomManagerInstance;
-var ZoomManager = class _ZoomManager extends Common6.ObjectWrapper.ObjectWrapper {
+var ZoomManager = class _ZoomManager extends Common5.ObjectWrapper.ObjectWrapper {
   frontendHost;
   #zoomFactor;
   constructor(window2, frontendHost) {
@@ -3398,1333 +3737,6 @@ var ZoomManager = class _ZoomManager extends Common6.ObjectWrapper.ObjectWrapper
     if (oldZoomFactor !== this.#zoomFactor) {
       this.dispatchEventToListeners("ZoomChanged", { from: oldZoomFactor, to: this.#zoomFactor });
     }
-  }
-};
-
-// gen/front_end/ui/legacy/SplitWidget.js
-var SplitWidget = class extends Common7.ObjectWrapper.eventMixin(Widget) {
-  #sidebarElement;
-  #mainElement;
-  #resizerElement;
-  #resizerElementSize = null;
-  #resizerWidget;
-  #defaultSidebarWidth;
-  #defaultSidebarHeight;
-  #constraintsInDip;
-  #resizeStartSizeDIP = 0;
-  // TODO: Used in WebTests
-  setting;
-  #totalSizeCSS = 0;
-  #totalSizeOtherDimensionCSS = 0;
-  #mainWidget = null;
-  #sidebarWidget = null;
-  #animationFrameHandle = 0;
-  #animationCallback = null;
-  #showSidebarButtonTitle = Common7.UIString.LocalizedEmptyString;
-  #hideSidebarButtonTitle = Common7.UIString.LocalizedEmptyString;
-  #shownSidebarString = Common7.UIString.LocalizedEmptyString;
-  #hiddenSidebarString = Common7.UIString.LocalizedEmptyString;
-  #showHideSidebarButton = null;
-  #isVertical = false;
-  #sidebarMinimized = false;
-  #detaching = false;
-  #sidebarSizeDIP = -1;
-  #savedSidebarSizeDIP;
-  #secondIsSidebar = false;
-  #shouldSaveShowMode = false;
-  #savedVerticalMainSize = null;
-  #savedHorizontalMainSize = null;
-  #showMode = "Both";
-  #savedShowMode;
-  #autoAdjustOrientation = false;
-  constructor(isVertical, secondIsSidebar, settingName, defaultSidebarWidth, defaultSidebarHeight, constraintsInDip, element) {
-    super(element, { useShadowDom: true });
-    this.element.classList.add("split-widget");
-    this.registerRequiredCSS(splitWidget_css_default);
-    this.contentElement.classList.add("shadow-split-widget");
-    this.#sidebarElement = this.contentElement.createChild("div", "shadow-split-widget-contents shadow-split-widget-sidebar vbox");
-    this.#mainElement = this.contentElement.createChild("div", "shadow-split-widget-contents shadow-split-widget-main vbox");
-    const mainSlot = this.#mainElement.createChild("slot");
-    mainSlot.name = "main";
-    mainSlot.addEventListener("slotchange", (_) => {
-      const assignedNode = mainSlot.assignedNodes()[0];
-      const widget2 = assignedNode instanceof HTMLElement ? Widget.getOrCreateWidget(assignedNode) : null;
-      if (widget2 && widget2 !== this.#mainWidget) {
-        this.setMainWidget(widget2);
-      }
-    });
-    const sidebarSlot = this.#sidebarElement.createChild("slot");
-    sidebarSlot.name = "sidebar";
-    sidebarSlot.addEventListener("slotchange", (_) => {
-      const assignedNode = sidebarSlot.assignedNodes()[0];
-      const widget2 = assignedNode instanceof HTMLElement ? Widget.getOrCreateWidget(assignedNode) : null;
-      if (widget2 && widget2 !== this.#sidebarWidget) {
-        this.setSidebarWidget(widget2);
-      }
-    });
-    this.#resizerElement = this.contentElement.createChild("div", "shadow-split-widget-resizer");
-    this.#resizerWidget = new SimpleResizerWidget();
-    this.#resizerWidget.setEnabled(true);
-    this.#resizerWidget.addEventListener("ResizeStart", this.#onResizeStart, this);
-    this.#resizerWidget.addEventListener("ResizeUpdatePosition", this.#onResizeUpdate, this);
-    this.#resizerWidget.addEventListener("ResizeEnd", this.#onResizeEnd, this);
-    this.#defaultSidebarWidth = defaultSidebarWidth || 200;
-    this.#defaultSidebarHeight = defaultSidebarHeight || this.#defaultSidebarWidth;
-    this.#constraintsInDip = Boolean(constraintsInDip);
-    this.setting = settingName ? Common7.Settings.Settings.instance().createSetting(settingName, {}) : null;
-    this.#savedSidebarSizeDIP = this.#sidebarSizeDIP;
-    this.setSecondIsSidebar(secondIsSidebar);
-    this.#setVertical(isVertical);
-    this.#savedShowMode = this.#showMode;
-    this.installResizer(this.#resizerElement);
-  }
-  isVertical() {
-    return this.#isVertical;
-  }
-  setVertical(isVertical) {
-    if (this.#isVertical === isVertical) {
-      return;
-    }
-    this.#setVertical(isVertical);
-    if (this.isShowing()) {
-      this.#updateLayout();
-    }
-  }
-  setAutoAdjustOrientation(autoAdjustOrientation) {
-    this.#autoAdjustOrientation = autoAdjustOrientation;
-    this.#maybeAutoAdjustOrientation();
-  }
-  #setVertical(isVertical) {
-    this.contentElement.classList.toggle("vbox", !isVertical);
-    this.contentElement.classList.toggle("hbox", isVertical);
-    this.#isVertical = isVertical;
-    this.#resizerElementSize = null;
-    this.#sidebarSizeDIP = -1;
-    this.#restoreSidebarSizeFromSettings();
-    if (this.#shouldSaveShowMode) {
-      this.#restoreAndApplyShowModeFromSettings();
-    }
-    this.#updateShowHideSidebarButton();
-    this.#resizerWidget.setVertical(!isVertical);
-    this.invalidateConstraints();
-  }
-  #updateLayout(animate) {
-    this.#totalSizeCSS = 0;
-    this.#totalSizeOtherDimensionCSS = 0;
-    this.#mainElement.style.removeProperty("width");
-    this.#mainElement.style.removeProperty("height");
-    this.#sidebarElement.style.removeProperty("width");
-    this.#sidebarElement.style.removeProperty("height");
-    this.#setSidebarSizeDIP(this.#preferredSidebarSizeDIP(), Boolean(animate));
-  }
-  setMainWidget(widget2) {
-    if (this.#mainWidget === widget2) {
-      return;
-    }
-    this.suspendInvalidations();
-    if (this.#mainWidget) {
-      this.#mainWidget.detach();
-    }
-    this.#mainWidget = widget2;
-    if (widget2) {
-      widget2.element.slot = "main";
-      if (this.#showMode === "OnlyMain" || this.#showMode === "Both") {
-        widget2.show(this.element);
-      }
-    }
-    this.resumeInvalidations();
-  }
-  setSidebarWidget(widget2) {
-    if (this.#sidebarWidget === widget2) {
-      return;
-    }
-    this.suspendInvalidations();
-    if (this.#sidebarWidget) {
-      this.#sidebarWidget.detach();
-    }
-    this.#sidebarWidget = widget2;
-    if (widget2) {
-      widget2.element.slot = "sidebar";
-      if (this.#showMode === "OnlySidebar" || this.#showMode === "Both") {
-        widget2.show(this.element);
-      }
-    }
-    this.resumeInvalidations();
-  }
-  mainWidget() {
-    return this.#mainWidget;
-  }
-  sidebarWidget() {
-    return this.#sidebarWidget;
-  }
-  sidebarElement() {
-    return this.#sidebarElement;
-  }
-  childWasDetached(widget2) {
-    if (this.#detaching) {
-      return;
-    }
-    if (this.#mainWidget === widget2) {
-      this.#mainWidget = null;
-    }
-    if (this.#sidebarWidget === widget2) {
-      this.#sidebarWidget = null;
-    }
-    this.invalidateConstraints();
-  }
-  isSidebarSecond() {
-    return this.#secondIsSidebar;
-  }
-  enableShowModeSaving() {
-    this.#shouldSaveShowMode = true;
-    this.#restoreAndApplyShowModeFromSettings();
-  }
-  showMode() {
-    return this.#showMode;
-  }
-  sidebarIsShowing() {
-    return this.#showMode !== "OnlyMain";
-  }
-  setSecondIsSidebar(secondIsSidebar) {
-    if (secondIsSidebar === this.#secondIsSidebar) {
-      return;
-    }
-    this.#secondIsSidebar = secondIsSidebar;
-    if (!this.#mainWidget?.shouldHideOnDetach()) {
-      if (secondIsSidebar) {
-        this.contentElement.insertBefore(this.#mainElement, this.#sidebarElement);
-      } else {
-        this.contentElement.insertBefore(this.#mainElement, this.#resizerElement);
-      }
-    } else if (!this.#sidebarWidget?.shouldHideOnDetach()) {
-      if (secondIsSidebar) {
-        this.contentElement.insertBefore(this.#sidebarElement, this.#resizerElement);
-      } else {
-        this.contentElement.insertBefore(this.#sidebarElement, this.#mainElement);
-      }
-    } else {
-      console.error("Could not swap split widget side. Both children widgets contain iframes.");
-      this.#secondIsSidebar = !secondIsSidebar;
-    }
-  }
-  resizerElement() {
-    return this.#resizerElement;
-  }
-  hideMain(animate) {
-    this.#showOnly(this.#sidebarWidget, this.#mainWidget, this.#sidebarElement, this.#mainElement, animate);
-    this.#updateShowMode(
-      "OnlySidebar"
-      /* ShowMode.ONLY_SIDEBAR */
-    );
-  }
-  hideSidebar(animate) {
-    this.#showOnly(this.#mainWidget, this.#sidebarWidget, this.#mainElement, this.#sidebarElement, animate);
-    this.#updateShowMode(
-      "OnlyMain"
-      /* ShowMode.ONLY_MAIN */
-    );
-  }
-  setSidebarMinimized(minimized) {
-    this.#sidebarMinimized = minimized;
-    this.invalidateConstraints();
-  }
-  isSidebarMinimized() {
-    return this.#sidebarMinimized;
-  }
-  #showOnly(sideToShow, sideToHide, shadowToShow, shadowToHide, animate) {
-    this.#cancelAnimation();
-    function callback() {
-      if (sideToShow) {
-        if (sideToShow === this.#mainWidget) {
-          this.#mainWidget.show(this.element, this.#sidebarWidget ? this.#sidebarWidget.element : null);
-        } else if (this.#sidebarWidget) {
-          this.#sidebarWidget.show(this.element);
-        }
-      }
-      if (sideToHide) {
-        this.#detaching = true;
-        sideToHide.detach();
-        this.#detaching = false;
-      }
-      this.#resizerElement.classList.add("hidden");
-      shadowToShow.classList.remove("hidden");
-      shadowToShow.classList.add("maximized");
-      shadowToHide.classList.add("hidden");
-      shadowToHide.classList.remove("maximized");
-      this.#removeAllLayoutProperties();
-      this.doResize();
-      this.showFinishedForTest();
-    }
-    if (animate) {
-      this.#animate(true, callback.bind(this));
-    } else {
-      callback.call(this);
-    }
-    this.#sidebarSizeDIP = -1;
-    this.setResizable(false);
-  }
-  showFinishedForTest() {
-  }
-  #removeAllLayoutProperties() {
-    this.#sidebarElement.style.removeProperty("flexBasis");
-    this.#mainElement.style.removeProperty("width");
-    this.#mainElement.style.removeProperty("height");
-    this.#sidebarElement.style.removeProperty("width");
-    this.#sidebarElement.style.removeProperty("height");
-    this.#resizerElement.style.removeProperty("left");
-    this.#resizerElement.style.removeProperty("right");
-    this.#resizerElement.style.removeProperty("top");
-    this.#resizerElement.style.removeProperty("bottom");
-    this.#resizerElement.style.removeProperty("margin-left");
-    this.#resizerElement.style.removeProperty("margin-right");
-    this.#resizerElement.style.removeProperty("margin-top");
-    this.#resizerElement.style.removeProperty("margin-bottom");
-  }
-  showBoth(animate) {
-    if (this.#showMode === "Both") {
-      animate = false;
-    }
-    this.#cancelAnimation();
-    this.#mainElement.classList.remove("maximized", "hidden");
-    this.#sidebarElement.classList.remove("maximized", "hidden");
-    this.#resizerElement.classList.remove("hidden");
-    this.setResizable(true);
-    this.suspendInvalidations();
-    if (this.#sidebarWidget) {
-      this.#sidebarWidget.show(this.element);
-    }
-    if (this.#mainWidget) {
-      this.#mainWidget.show(this.element, this.#sidebarWidget ? this.#sidebarWidget.element : null);
-    }
-    this.resumeInvalidations();
-    this.setSecondIsSidebar(this.#secondIsSidebar);
-    this.#sidebarSizeDIP = -1;
-    this.#updateShowMode(
-      "Both"
-      /* ShowMode.BOTH */
-    );
-    this.#updateLayout(animate);
-  }
-  setResizable(resizable) {
-    this.#resizerWidget.setEnabled(resizable);
-  }
-  // Currently unused
-  forceSetSidebarWidth(width) {
-    this.#defaultSidebarWidth = width;
-    this.#savedSidebarSizeDIP = width;
-    this.#updateLayout();
-  }
-  isResizable() {
-    return this.#resizerWidget.isEnabled();
-  }
-  setSidebarSize(size) {
-    const sizeDIP = ZoomManager.instance().cssToDIP(size);
-    this.#savedSidebarSizeDIP = sizeDIP;
-    this.#saveSetting();
-    this.#setSidebarSizeDIP(sizeDIP, false, true);
-  }
-  sidebarSize() {
-    const sizeDIP = Math.max(0, this.#sidebarSizeDIP);
-    return ZoomManager.instance().dipToCSS(sizeDIP);
-  }
-  totalSize() {
-    const sizeDIP = Math.max(0, this.#totalSizeDIP());
-    return ZoomManager.instance().dipToCSS(sizeDIP);
-  }
-  /**
-   * Returns total size in DIP.
-   */
-  #totalSizeDIP() {
-    if (!this.#totalSizeCSS) {
-      this.#totalSizeCSS = this.#isVertical ? this.contentElement.offsetWidth : this.contentElement.offsetHeight;
-      this.#totalSizeOtherDimensionCSS = this.#isVertical ? this.contentElement.offsetHeight : this.contentElement.offsetWidth;
-    }
-    return ZoomManager.instance().cssToDIP(this.#totalSizeCSS);
-  }
-  #updateShowMode(showMode) {
-    this.#showMode = showMode;
-    this.#saveShowModeToSettings();
-    this.#updateShowHideSidebarButton();
-    this.dispatchEventToListeners("ShowModeChanged", showMode);
-    this.invalidateConstraints();
-  }
-  #setSidebarSizeDIP(sizeDIP, animate, userAction) {
-    if (this.#showMode !== "Both" || !this.isShowing()) {
-      return;
-    }
-    sizeDIP = this.#applyConstraints(sizeDIP, userAction);
-    if (this.#sidebarSizeDIP === sizeDIP) {
-      return;
-    }
-    if (!this.#resizerElementSize) {
-      this.#resizerElementSize = this.#isVertical ? this.#resizerElement.offsetWidth : this.#resizerElement.offsetHeight;
-    }
-    this.#removeAllLayoutProperties();
-    const roundSizeCSS = Math.round(ZoomManager.instance().dipToCSS(sizeDIP));
-    const sidebarSizeValue = roundSizeCSS + "px";
-    const mainSizeValue = this.#totalSizeCSS - roundSizeCSS + "px";
-    this.#sidebarElement.style.flexBasis = sidebarSizeValue;
-    if (this.#isVertical) {
-      this.#sidebarElement.style.width = sidebarSizeValue;
-      this.#mainElement.style.width = mainSizeValue;
-      this.#sidebarElement.style.height = this.#totalSizeOtherDimensionCSS + "px";
-      this.#mainElement.style.height = this.#totalSizeOtherDimensionCSS + "px";
-    } else {
-      this.#sidebarElement.style.height = sidebarSizeValue;
-      this.#mainElement.style.height = mainSizeValue;
-      this.#sidebarElement.style.width = this.#totalSizeOtherDimensionCSS + "px";
-      this.#mainElement.style.width = this.#totalSizeOtherDimensionCSS + "px";
-    }
-    if (this.#isVertical) {
-      if (this.#secondIsSidebar) {
-        this.#resizerElement.style.right = sidebarSizeValue;
-        this.#resizerElement.style.marginRight = -this.#resizerElementSize / 2 + "px";
-      } else {
-        this.#resizerElement.style.left = sidebarSizeValue;
-        this.#resizerElement.style.marginLeft = -this.#resizerElementSize / 2 + "px";
-      }
-    } else if (this.#secondIsSidebar) {
-      this.#resizerElement.style.bottom = sidebarSizeValue;
-      this.#resizerElement.style.marginBottom = -this.#resizerElementSize / 2 + "px";
-    } else {
-      this.#resizerElement.style.top = sidebarSizeValue;
-      this.#resizerElement.style.marginTop = -this.#resizerElementSize / 2 + "px";
-    }
-    this.#sidebarSizeDIP = sizeDIP;
-    if (animate) {
-      this.#animate(false);
-    } else {
-      this.doResize();
-      this.dispatchEventToListeners("SidebarSizeChanged", this.sidebarSize());
-    }
-  }
-  #animate(reverse, callback) {
-    const animationTime = 50;
-    this.#animationCallback = callback || null;
-    let animatedMarginPropertyName;
-    if (this.#isVertical) {
-      animatedMarginPropertyName = this.#secondIsSidebar ? "margin-right" : "margin-left";
-    } else {
-      animatedMarginPropertyName = this.#secondIsSidebar ? "margin-bottom" : "margin-top";
-    }
-    const marginFrom = reverse ? "0" : "-" + ZoomManager.instance().dipToCSS(this.#sidebarSizeDIP) + "px";
-    const marginTo = reverse ? "-" + ZoomManager.instance().dipToCSS(this.#sidebarSizeDIP) + "px" : "0";
-    this.contentElement.style.setProperty(animatedMarginPropertyName, marginFrom);
-    this.contentElement.style.setProperty("overflow", "hidden");
-    if (!reverse) {
-      suppressUnused(this.#mainElement.offsetWidth);
-      suppressUnused(this.#sidebarElement.offsetWidth);
-    }
-    if (!reverse && this.#sidebarWidget) {
-      this.#sidebarWidget.doResize();
-    }
-    this.contentElement.style.setProperty("transition", animatedMarginPropertyName + " " + animationTime + "ms linear");
-    const boundAnimationFrame = animationFrame.bind(this);
-    let startTime = null;
-    function animationFrame() {
-      this.#animationFrameHandle = 0;
-      if (!startTime) {
-        this.contentElement.style.setProperty(animatedMarginPropertyName, marginTo);
-        startTime = window.performance.now();
-      } else if (window.performance.now() < startTime + animationTime) {
-        if (this.#mainWidget) {
-          this.#mainWidget.doResize();
-        }
-      } else {
-        this.#cancelAnimation();
-        if (this.#mainWidget) {
-          this.#mainWidget.doResize();
-        }
-        this.dispatchEventToListeners("SidebarSizeChanged", this.sidebarSize());
-        return;
-      }
-      this.#animationFrameHandle = this.contentElement.window().requestAnimationFrame(boundAnimationFrame);
-    }
-    this.#animationFrameHandle = this.contentElement.window().requestAnimationFrame(boundAnimationFrame);
-  }
-  #cancelAnimation() {
-    this.contentElement.style.removeProperty("margin-top");
-    this.contentElement.style.removeProperty("margin-right");
-    this.contentElement.style.removeProperty("margin-bottom");
-    this.contentElement.style.removeProperty("margin-left");
-    this.contentElement.style.removeProperty("transition");
-    this.contentElement.style.removeProperty("overflow");
-    if (this.#animationFrameHandle) {
-      this.contentElement.window().cancelAnimationFrame(this.#animationFrameHandle);
-      this.#animationFrameHandle = 0;
-    }
-    if (this.#animationCallback) {
-      this.#animationCallback();
-      this.#animationCallback = null;
-    }
-  }
-  #applyConstraints(sidebarSize, userAction) {
-    const totalSize = this.#totalSizeDIP();
-    const zoomFactor = this.#constraintsInDip ? 1 : ZoomManager.instance().zoomFactor();
-    let constraints = this.#sidebarWidget ? this.#sidebarWidget.constraints() : new Geometry2.Constraints();
-    let minSidebarSize = this.isVertical() ? constraints.minimum.width : constraints.minimum.height;
-    if (!minSidebarSize) {
-      minSidebarSize = MinPadding;
-    }
-    minSidebarSize *= zoomFactor;
-    if (this.#sidebarMinimized) {
-      sidebarSize = minSidebarSize;
-    }
-    let preferredSidebarSize = this.isVertical() ? constraints.preferred.width : constraints.preferred.height;
-    if (!preferredSidebarSize) {
-      preferredSidebarSize = MinPadding;
-    }
-    preferredSidebarSize *= zoomFactor;
-    if (sidebarSize < preferredSidebarSize) {
-      preferredSidebarSize = Math.max(sidebarSize, minSidebarSize);
-    }
-    preferredSidebarSize += zoomFactor;
-    constraints = this.#mainWidget ? this.#mainWidget.constraints() : new Geometry2.Constraints();
-    let minMainSize = this.isVertical() ? constraints.minimum.width : constraints.minimum.height;
-    if (!minMainSize) {
-      minMainSize = MinPadding;
-    }
-    minMainSize *= zoomFactor;
-    let preferredMainSize = this.isVertical() ? constraints.preferred.width : constraints.preferred.height;
-    if (!preferredMainSize) {
-      preferredMainSize = MinPadding;
-    }
-    preferredMainSize *= zoomFactor;
-    const savedMainSize = this.isVertical() ? this.#savedVerticalMainSize : this.#savedHorizontalMainSize;
-    if (savedMainSize !== null) {
-      preferredMainSize = Math.min(preferredMainSize, savedMainSize * zoomFactor);
-    }
-    if (userAction) {
-      preferredMainSize = minMainSize;
-    }
-    const totalPreferred = preferredMainSize + preferredSidebarSize;
-    if (totalPreferred <= totalSize) {
-      return Platform6.NumberUtilities.clamp(sidebarSize, preferredSidebarSize, totalSize - preferredMainSize);
-    }
-    if (minMainSize + minSidebarSize <= totalSize) {
-      const delta = totalPreferred - totalSize;
-      const sidebarDelta = delta * preferredSidebarSize / totalPreferred;
-      sidebarSize = preferredSidebarSize - sidebarDelta;
-      return Platform6.NumberUtilities.clamp(sidebarSize, minSidebarSize, totalSize - minMainSize);
-    }
-    return Math.max(0, totalSize - minMainSize);
-  }
-  wasShown() {
-    super.wasShown();
-    this.#forceUpdateLayout();
-    ZoomManager.instance().addEventListener("ZoomChanged", this.onZoomChanged, this);
-  }
-  willHide() {
-    super.willHide();
-    ZoomManager.instance().removeEventListener("ZoomChanged", this.onZoomChanged, this);
-  }
-  onResize() {
-    this.#maybeAutoAdjustOrientation();
-    this.#updateLayout();
-  }
-  onLayout() {
-    this.#updateLayout();
-  }
-  calculateConstraints() {
-    if (this.#showMode === "OnlyMain") {
-      return this.#mainWidget ? this.#mainWidget.constraints() : new Geometry2.Constraints();
-    }
-    if (this.#showMode === "OnlySidebar") {
-      return this.#sidebarWidget ? this.#sidebarWidget.constraints() : new Geometry2.Constraints();
-    }
-    let mainConstraints = this.#mainWidget ? this.#mainWidget.constraints() : new Geometry2.Constraints();
-    let sidebarConstraints = this.#sidebarWidget ? this.#sidebarWidget.constraints() : new Geometry2.Constraints();
-    const min = MinPadding;
-    if (this.#isVertical) {
-      mainConstraints = mainConstraints.widthToMax(min).addWidth(1);
-      sidebarConstraints = sidebarConstraints.widthToMax(min);
-      return mainConstraints.addWidth(sidebarConstraints).heightToMax(sidebarConstraints);
-    }
-    mainConstraints = mainConstraints.heightToMax(min).addHeight(1);
-    sidebarConstraints = sidebarConstraints.heightToMax(min);
-    return mainConstraints.widthToMax(sidebarConstraints).addHeight(sidebarConstraints);
-  }
-  #maybeAutoAdjustOrientation() {
-    if (this.#autoAdjustOrientation) {
-      const width = this.isVertical() ? this.#totalSizeCSS : this.#totalSizeOtherDimensionCSS;
-      const height = this.isVertical() ? this.#totalSizeOtherDimensionCSS : this.#totalSizeCSS;
-      if (width <= 600 && height >= 600) {
-        this.setVertical(false);
-      } else {
-        this.setVertical(true);
-      }
-    }
-  }
-  #onResizeStart() {
-    this.#resizeStartSizeDIP = this.#sidebarSizeDIP;
-  }
-  #onResizeUpdate(event) {
-    const offset = event.data.currentPosition - event.data.startPosition;
-    const offsetDIP = ZoomManager.instance().cssToDIP(offset);
-    const newSizeDIP = this.#secondIsSidebar ? this.#resizeStartSizeDIP - offsetDIP : this.#resizeStartSizeDIP + offsetDIP;
-    const constrainedSizeDIP = this.#applyConstraints(newSizeDIP, true);
-    this.#savedSidebarSizeDIP = constrainedSizeDIP;
-    this.#saveSetting();
-    this.#setSidebarSizeDIP(constrainedSizeDIP, false, true);
-    if (this.isVertical()) {
-      this.#savedVerticalMainSize = this.#totalSizeDIP() - this.#sidebarSizeDIP;
-    } else {
-      this.#savedHorizontalMainSize = this.#totalSizeDIP() - this.#sidebarSizeDIP;
-    }
-  }
-  #onResizeEnd() {
-    this.#resizeStartSizeDIP = 0;
-  }
-  hideDefaultResizer(noSplitter) {
-    this.#resizerElement.classList.toggle("hidden", Boolean(noSplitter));
-    this.uninstallResizer(this.#resizerElement);
-    this.#sidebarElement.classList.toggle("no-default-splitter", Boolean(noSplitter));
-  }
-  installResizer(resizerElement) {
-    this.#resizerWidget.addElement(resizerElement);
-  }
-  uninstallResizer(resizerElement) {
-    this.#resizerWidget.removeElement(resizerElement);
-  }
-  toggleResizer(resizer, on) {
-    if (on) {
-      this.installResizer(resizer);
-    } else {
-      this.uninstallResizer(resizer);
-    }
-  }
-  #settingForOrientation() {
-    const state = this.setting ? this.setting.get() : {};
-    const orientationState = this.#isVertical ? state.vertical : state.horizontal;
-    return orientationState ?? null;
-  }
-  #preferredSidebarSizeDIP() {
-    let size = this.#savedSidebarSizeDIP;
-    if (!size) {
-      size = this.#isVertical ? this.#defaultSidebarWidth : this.#defaultSidebarHeight;
-      if (0 < size && size < 1) {
-        size *= this.#totalSizeDIP();
-      }
-    }
-    return size;
-  }
-  #restoreSidebarSizeFromSettings() {
-    const settingForOrientation = this.#settingForOrientation();
-    this.#savedSidebarSizeDIP = settingForOrientation ? settingForOrientation.size : 0;
-  }
-  #restoreAndApplyShowModeFromSettings() {
-    const orientationState = this.#settingForOrientation();
-    this.#savedShowMode = orientationState?.showMode ? orientationState.showMode : this.#showMode;
-    this.#showMode = this.#savedShowMode;
-    switch (this.#savedShowMode) {
-      case "Both":
-        this.showBoth();
-        break;
-      case "OnlyMain":
-        this.hideSidebar();
-        break;
-      case "OnlySidebar":
-        this.hideMain();
-        break;
-    }
-  }
-  #saveShowModeToSettings() {
-    this.#savedShowMode = this.#showMode;
-    this.#saveSetting();
-  }
-  #saveSetting() {
-    if (!this.setting) {
-      return;
-    }
-    const state = this.setting.get();
-    const orientationState = (this.#isVertical ? state.vertical : state.horizontal) || {};
-    orientationState.size = this.#savedSidebarSizeDIP;
-    if (this.#shouldSaveShowMode) {
-      orientationState.showMode = this.#savedShowMode;
-    }
-    if (this.#isVertical) {
-      state.vertical = orientationState;
-    } else {
-      state.horizontal = orientationState;
-    }
-    this.setting.set(state);
-  }
-  #forceUpdateLayout() {
-    this.#sidebarSizeDIP = -1;
-    this.#updateLayout();
-  }
-  onZoomChanged() {
-    this.#forceUpdateLayout();
-  }
-  createShowHideSidebarButton(showTitle, hideTitle, shownString, hiddenString, jslogContext) {
-    this.#showSidebarButtonTitle = showTitle;
-    this.#hideSidebarButtonTitle = hideTitle;
-    this.#shownSidebarString = shownString;
-    this.#hiddenSidebarString = hiddenString;
-    this.#showHideSidebarButton = new ToolbarButton("", "right-panel-open");
-    this.#showHideSidebarButton.addEventListener("Click", buttonClicked, this);
-    if (jslogContext) {
-      this.#showHideSidebarButton.element.setAttribute("jslog", `${VisualLogging4.toggleSubpane().track({ click: true }).context(jslogContext)}`);
-    }
-    this.#updateShowHideSidebarButton();
-    function buttonClicked() {
-      this.toggleSidebar();
-    }
-    return this.#showHideSidebarButton;
-  }
-  /**
-   * @returns true if this call makes the sidebar visible, and false otherwise.
-   */
-  toggleSidebar() {
-    if (this.#showMode !== "Both") {
-      this.showBoth(true);
-      LiveAnnouncer.alert(this.#shownSidebarString);
-      return true;
-    }
-    this.hideSidebar(true);
-    LiveAnnouncer.alert(this.#hiddenSidebarString);
-    return false;
-  }
-  #updateShowHideSidebarButton() {
-    if (!this.#showHideSidebarButton) {
-      return;
-    }
-    const sidebarHidden = this.#showMode === "OnlyMain";
-    let glyph = "";
-    if (sidebarHidden) {
-      glyph = this.isVertical() ? this.isSidebarSecond() ? "right-panel-open" : "left-panel-open" : this.isSidebarSecond() ? "bottom-panel-open" : "top-panel-open";
-    } else {
-      glyph = this.isVertical() ? this.isSidebarSecond() ? "right-panel-close" : "left-panel-close" : this.isSidebarSecond() ? "bottom-panel-close" : "top-panel-close";
-    }
-    this.#showHideSidebarButton.setGlyph(glyph);
-    this.#showHideSidebarButton.setTitle(sidebarHidden ? this.#showSidebarButtonTitle : this.#hideSidebarButtonTitle);
-  }
-};
-var SplitWidgetElement = class extends WidgetElement {
-  static observedAttributes = ["direction", "sidebar-position", "sidebar-initial-size", "sidebar-visibility"];
-  createWidget() {
-    const vertical = this.getAttribute("direction") === "column";
-    const autoAdjustOrientation = this.getAttribute("direction") === "auto";
-    const secondIsSidebar = this.getAttribute("sidebar-position") === "second";
-    const settingName = this.getAttribute("name") ?? void 0;
-    const sidebarSize = parseInt(this.getAttribute("sidebar-initial-size") || "", 10);
-    const defaultSidebarWidth = !isNaN(sidebarSize) ? sidebarSize : void 0;
-    const defaultSidebarHeight = !isNaN(sidebarSize) ? sidebarSize : void 0;
-    const widget2 = new SplitWidget(
-      vertical,
-      secondIsSidebar,
-      settingName,
-      defaultSidebarWidth,
-      defaultSidebarHeight,
-      /* constraintsInDip=*/
-      false,
-      this
-    );
-    if (this.getAttribute("sidebar-initial-size") === "minimized") {
-      widget2.setSidebarMinimized(true);
-    }
-    if (autoAdjustOrientation) {
-      widget2.setAutoAdjustOrientation(true);
-    }
-    const sidebarHidden = this.getAttribute("sidebar-visibility") === "hidden";
-    if (sidebarHidden) {
-      widget2.hideSidebar();
-    }
-    widget2.addEventListener("ShowModeChanged", () => {
-      this.dispatchEvent(new CustomEvent("change", { detail: widget2.showMode() }));
-    });
-    return widget2;
-  }
-  attributeChangedCallback(name, _oldValue, newValue) {
-    const widget2 = Widget.get(this);
-    if (!widget2) {
-      return;
-    }
-    if (name === "direction") {
-      widget2.setVertical(newValue === "column");
-      widget2.setAutoAdjustOrientation(newValue === "auto");
-    } else if (name === "sidebar-position") {
-      widget2.setSecondIsSidebar(newValue === "second");
-    } else if (name === "sidebar-visibility") {
-      if (newValue === "hidden") {
-        widget2.hideSidebar();
-      } else {
-        widget2.showBoth();
-      }
-    }
-  }
-};
-customElements.define("devtools-split-view", SplitWidgetElement);
-var MinPadding = 20;
-var suppressUnused = function(_value) {
-};
-
-// gen/front_end/ui/legacy/TabbedPane.js
-var TabbedPane_exports = {};
-__export(TabbedPane_exports, {
-  Events: () => Events,
-  TabbedPane: () => TabbedPane,
-  TabbedPaneTab: () => TabbedPaneTab
-});
-import * as Common8 from "./../../core/common/common.js";
-import * as i18n7 from "./../../core/i18n/i18n.js";
-import * as Platform7 from "./../../core/platform/platform.js";
-import * as Annotations from "./../../models/annotations/annotations.js";
-import * as Geometry3 from "./../../models/geometry/geometry.js";
-import * as Buttons2 from "./../components/buttons/buttons.js";
-import { render } from "./../lit/lit.js";
-import * as VisualLogging5 from "./../visual_logging/visual_logging.js";
-import { createIcon as createIcon2, Icon } from "./../kit/kit.js";
-
-// gen/front_end/ui/legacy/tabbedPane.css.js
-var tabbedPane_css_default = `/*
- * Copyright (C) 2006, 2007, 2008 Apple Inc.  All rights reserved.
- * Copyright (C) 2009 Anthony Ricaud <rik@webkit.org>
- * Copyright (C) 2011 Google Inc. All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are
- * met:
- *
- * 1. Redistributions of source code must retain the above copyright
- * notice, this list of conditions and the following disclaimer.
- *
- * 2. Redistributions in binary form must reproduce the above
- * copyright notice, this list of conditions and the following disclaimer
- * in the documentation and/or other materials provided with the
- * distribution.
- *
- * THIS SOFTWARE IS PROVIDED BY GOOGLE INC. AND ITS CONTRIBUTORS
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
- * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL GOOGLE INC.
- * OR ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
-.tabbed-pane {
-  flex: auto;
-  overflow: hidden;
-}
-
-.tabbed-pane-content {
-  position: relative;
-  overflow: auto;
-  flex: auto;
-  display: flex;
-  flex-direction: column;
-}
-
-.tabbed-pane-content.has-no-tabs {
-  background-color: var(--sys-color-cdt-base-container);
-}
-
-.tabbed-pane-placeholder {
-  text-align: center;
-  align-content: center;
-
-  .sources-placeholder {
-    display: inline-block;
-  }
-}
-
-.tabbed-pane-placeholder-row {
-  max-width: var(--sys-size-32);
-  min-width: var(--sys-size-28);
-  margin: 0 var(--sys-size-8);
-
-  &.workspace {
-    line-height: 18px;
-    display: inline-flex;
-    align-items: center;
-    border: var(--sys-size-2) dashed var(--sys-color-divider);
-    padding: var(--sys-size-8);
-    border-radius: var(--sys-shape-corner-medium);
-    margin: var(--sys-size-8) var(--sys-size-8) var(--sys-size-11);
-
-    > .icon-container {
-      flex-shrink: 0;
-      width: var(--sys-size-13);
-      height: var(--sys-size-13);
-      background: var(--sys-color-tonal-container);
-      align-content: center;
-      border-radius: var(--sys-shape-corner-full);
-      margin-right: var(--sys-size-8);
-
-      > devtools-icon {
-        color: var(--sys-color-on-tonal-container);
-      }
-    }
-  }
-
-  &.shortcuts-list {
-    padding: 0 var(--sys-size-6);
-
-    .shortcut-line {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      column-gap: var(--sys-size-10);
-      padding: var(--sys-size-4) 0;
-
-      &:not(:last-child) {
-        border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
-      }
-
-      .shortcuts {
-        display: flex;
-        flex-direction: row;
-        gap: var(--sys-size-4);
-        align-items: center;
-      }
-
-      .keybinds-key {
-        display: flex;
-        flex-shrink: 0;
-        align-items: center;
-        justify-content: center;
-        height: var(--sys-size-11);
-        min-width: var(--sys-size-11);
-        font: var(--sys-typescale-body5-medium);
-        white-space: nowrap;
-        border-radius: var(--sys-shape-corner-small);
-        background: var(--sys-color-tonal-container);
-        padding: 0 var(--sys-size-4);
-      }
-
-      & button {
-        margin-inline: 0;
-      }
-    }
-  }
-
-  & button {
-    cursor: pointer;
-    color: var(--text-link);
-    background: transparent;
-    border: none;
-    padding: 0;
-    text-decoration: underline;
-    margin-inline: var(--sys-size-3);
-    text-align: left;
-
-    &:focus-visible {
-      outline: 2px solid var(--sys-color-state-focus-ring);
-      outline-offset: 2px;
-      border-radius: 2px;
-    }
-  }
-}
-
-.tabbed-pane-header {
-  display: flex;
-  flex: 0 0 27px;
-  border-bottom: 1px solid var(--sys-color-divider);
-  overflow: visible;
-  width: 100%;
-  background-color: var(--app-color-toolbar-background);
-
-  & > * {
-    cursor: initial;
-  }
-}
-
-.tabbed-pane-header-contents {
-  flex: auto;
-  pointer-events: none;
-  margin-left: 0;
-  position: relative;
-  cursor: default;
-}
-
-.tabbed-pane-header-contents > * {
-  pointer-events: initial;
-}
-
-.tabbed-pane-header-tab-icon {
-  min-width: 14px;
-  display: flex;
-  align-items: center;
-  margin-right: var(--sys-size-2);
-}
-
-.tabbed-pane-header-tab-suffix-element {
-  height: var(--sys-size-8);
-  width: var(--sys-size-8);
-  padding-left: var(--sys-size-2);
-  align-content: center;
-
-  &:has(.badge) {
-    width: 17px;
-    margin-left: var(--sys-size-2);
-  }
-
-  &:has(.status-dot) {
-    width: 9px;
-  }
-}
-
-.badge {
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  height: var(--sys-size-7);
-  min-width: var(--sys-size-7);
-  width: fit-content;
-  padding: 0 var(--sys-size-3);
-  line-height: var(--sys-size-7);
-  border-radius: var(--sys-shape-corner-full);
-  margin-left: var(--sys-size-2);
-  background-color: var(--sys-color-primary);
-  color: var(--sys-color-on-primary);
-  font-size: var(--sys-typescale-body5-size);
-  font-weight: var(--ref-typeface-weight-bold);
-
-  &.primary {
-    background: var(--sys-color-cdt-base-container);
-    color: var(--sys-color-primary);
-    border: var(--sys-size-1) solid var(--sys-color-primary);
-    font-weight: normal;
-  }
-}
-
-.status-dot {
-  height: var(--sys-size-4);
-  width: var(--sys-size-4);
-  border-radius: var(--sys-shape-corner-full);
-  background-color: var(--sys-color-purple-bright);
-  margin-left: var(--sys-size-1);
-  justify-self: center;
-  position: relative;
-  top: 0.75px;
-}
-
-.tabbed-pane-header-tab {
-  font: var(--sys-typescale-body4-medium);
-  color: var(--sys-color-on-surface-subtle);
-  height: var(--sys-size-12);
-  float: left;
-  padding: 0 10px;
-  white-space: nowrap;
-  cursor: default;
-  display: flex;
-  align-items: center;
-}
-
-.tabbed-pane-header-tab.closeable {
-  padding-right: var(--sys-size-3);
-}
-
-.tabbed-pane-header-tab devtools-icon.dot::before {
-  outline-color: var(--icon-gap-toolbar);
-}
-
-.tabbed-pane-header-tab:hover devtools-icon.dot::before {
-  outline-color: var(--icon-gap-toolbar-hover);
-}
-
-.tabbed-pane-header-tab:not(.vertical-tab-layout):hover,
-.tabbed-pane-shadow .tabbed-pane-header-tab:focus-visible {
-  color: var(--sys-color-on-surface);
-  background-color: var(--sys-color-state-hover-on-subtle);
-}
-
-.tabbed-pane-header-tab-title {
-  text-overflow: ellipsis;
-  overflow: hidden;
-}
-
-.tabbed-pane-header-tab.measuring {
-  visibility: hidden;
-}
-
-.tabbed-pane-header-tab.selected {
-  border-bottom: none;
-  color: var(--sys-color-primary);
-}
-
-.tabbed-pane-header-tab.selected.dragging {
-  --override-dragging-box-shadow-color: rgb(0 0 0 / 37%);
-
-  position: relative;
-  box-shadow: 0 1px 4px 0 var(--override-dragging-box-shadow-color);
-  background-color: var(--app-color-toolbar-background);
-}
-
-.theme-with-dark-background .tabbed-pane-header-tab.dragging,
-:host-context(.theme-with-dark-background) .tabbed-pane-header-tab.dragging {
-  --override-dragging-box-shadow-color: rgb(230 230 230 / 37%);
-}
-
-.tabbed-pane-header-tab .tabbed-pane-close-button {
-  visibility: hidden;
-}
-
-.tabbed-pane-header-tab:hover .tabbed-pane-close-button,
-.tabbed-pane-header-tab.selected .tabbed-pane-close-button {
-  visibility: visible;
-}
-
-.tabbed-pane-header-tabs-drop-down-container {
-  float: left;
-  opacity: 80%;
-  display: flex;
-  align-items: center;
-  height: 100%;
-}
-
-.tabbed-pane-header-tabs-drop-down-container > .chevron-icon:hover,
-.tabbed-pane-header-tabs-drop-down-container > .chevron-icon:focus-visible {
-  color: var(--icon-default-hover);
-}
-
-.tabbed-pane-header-tabs-drop-down-container:hover,
-.tabbed-pane-header-tabs-drop-down-container:focus-visible {
-  background-color: var(--sys-color-state-hover-on-subtle);
-}
-
-.tabbed-pane-header-tabs-drop-down-container.measuring {
-  visibility: hidden;
-}
-
-.tabbed-pane-header-tabs-drop-down-container:active {
-  opacity: 80%;
-}
-/* Web page style */
-
-.tabbed-pane-shadow.vertical-tab-layout {
-  flex-direction: row !important; /* stylelint-disable-line declaration-no-important */
-}
-
-.tabbed-pane-shadow.vertical-tab-layout .tabbed-pane-header {
-  background-color: transparent;
-  border: none transparent !important; /* stylelint-disable-line declaration-no-important */
-  width: auto;
-  flex: 0 0 auto;
-  flex-direction: column;
-  padding-top: 5px;
-  overflow: hidden;
-}
-
-.tabbed-pane-shadow.vertical-tab-layout .tabbed-pane-content {
-  padding-top: var(--sys-size-10);
-  overflow-x: hidden;
-}
-
-.tabbed-pane-shadow.vertical-tab-layout .tabbed-pane-header-contents {
-  margin: 0;
-  flex: none;
-}
-
-.tabbed-pane-shadow.vertical-tab-layout .tabbed-pane-header-tabs {
-  display: flex;
-  flex-direction: column;
-  width: var(--sys-size-24);
-  margin-right: var(--sys-size-5);
-}
-
-.tabbed-pane-shadow.vertical-tab-layout .tabbed-pane-header-tab {
-  height: var(--size-12, 28px);
-  padding: 0 var(--size-8, 16px) 0 var(--size-7, 14px);
-  border-radius: 0 100px 100px 0;
-  color: var(--sys-color-on-surface);
-  position: relative;
-
-  & > .tabbed-pane-header-tab-icon devtools-icon {
-    margin: 0;
-    margin-right: var(--sys-size-6);
-  }
-
-  &.selected {
-    color: var(--app-color-navigation-drawer-label-selected);
-    background-color: var(--app-color-navigation-drawer-background-selected);
-
-    & > .tabbed-pane-header-tab-icon devtools-icon {
-      color: var(--app-color-navigation-drawer-label-selected);
-    }
-  }
-
-  &:focus-visible {
-    outline: 2px solid var(--sys-color-state-focus-ring);
-  }
-
-  &:active::before {
-    background-color: var(--sys-color-state-ripple-neutral-on-subtle);
-    content: "";
-    height: 100%;
-    width: 100%;
-    border-radius: inherit;
-    position: absolute;
-    top: 0;
-    left: 0;
-  }
-}
-
-.tabbed-pane-tab-slider {
-  height: 3px;
-  position: absolute;
-  bottom: -1px;
-  background-color: var(--sys-color-primary);
-  border-radius: var(--sys-shape-corner-full) var(--sys-shape-corner-full) 0 0;
-  left: 0;
-  transform-origin: 0 100%;
-  transition: transform 150ms cubic-bezier(0, 0, 0.2, 1);
-  visibility: hidden;
-}
-
-@media (-webkit-min-device-pixel-ratio: 1.1) {
-  .tabbed-pane-tab-slider {
-    border-top: none;
-  }
-}
-
-.tabbed-pane-tab-slider.enabled {
-  visibility: visible;
-}
-
-.tabbed-pane-header-tab.disabled {
-  opacity: 50%;
-  pointer-events: none;
-}
-
-.tabbed-pane-left-toolbar {
-  margin-right: -4px;
-  flex: none;
-}
-
-.tabbed-pane-right-toolbar {
-  margin-left: -4px;
-  flex: none;
-}
-
-.preview-icon {
-  --override-tabbed-pane-preview-icon-color: var(--icon-default);
-
-  width: 16px;
-  height: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-left: var(--sys-size-2);
-  flex-shrink: 0;
-
-  devtools-icon {
-    color: var(--override-tabbed-pane-preview-icon-color);
-  }
-}
-
-@media (forced-colors: active) {
-  .tabbed-pane-tab-slider {
-    forced-color-adjust: none;
-    background-color: Highlight;
-  }
-
-  .tabbed-pane-header {
-    forced-color-adjust: none;
-    border-bottom: 1px solid transparent;
-    background-color: ButtonFace;
-  }
-
-  .tabbed-pane-header-contents .tabbed-pane-header-tabs .tabbed-pane-header-tab {
-    background: ButtonFace;
-    color: ButtonText;
-  }
-
-  .tabbed-pane-header-tabs .tabbed-pane-header-tab:hover,
-  .tabbed-pane-header-tabs .tabbed-pane-shadow .tabbed-pane-header-tab:focus-visible {
-    background-color: Highlight;
-    color: HighlightText;
-  }
-
-  .tabbed-pane-header-tab .tabbed-pane-header-tab-title {
-    color: inherit;
-  }
-
-  .tabbed-pane-header-contents .tabbed-pane-header-tabs .tabbed-pane-header-tab.selected,
-  .tabbed-pane-header-contents .tabbed-pane-header-tabs .tabbed-pane-header-tab.selected:focus-visible {
-    background-color: Highlight;
-    color: HighlightText;
-  }
-
-  .tabbed-pane-header-tab:hover .tabbed-pane-close-button,
-  .tabbed-pane-shadow .tabbed-pane-header-tab:focus-visible .tabbed-pane-close-button {
-    color: HighlightText;
-  }
-
-  .tabbed-pane-header-tabs-drop-down-container {
-    opacity: 100%;
-  }
-
-  .tabbed-pane-header-tabs-drop-down-container:hover,
-  .tabbed-pane-header-tabs-drop-down-container:focus-visible {
-    background-color: Highlight;
-  }
-
-  .tabbed-pane-header-tabs-drop-down-container > .chevron-icon {
-    color: ButtonText;
-  }
-
-  .tabbed-pane-header-tabs-drop-down-container:hover > .chevron-icon,
-  .tabbed-pane-header-tabs-drop-down-container:focus-visible > .chevron-icon {
-    color: HighlightText;
-  }
-
-  .tabbed-pane-header-tabs .tabbed-pane-header-tab .preview-icon {
-    --override-tabbed-pane-preview-icon-color: ButtonText;
-  }
-
-  .tabbed-pane-header-tab.selected .preview-icon,
-  .tabbed-pane-header-tab:hover .preview-icon {
-    --override-tabbed-pane-preview-icon-color: HighlightText;
-  }
-
-  .close-button {
-    --tabbed-pane-close-icon-color: ButtonText;
-
-    forced-color-adjust: none;
-  }
-
-  .close-button:hover,
-  .close-button:active {
-    --tabbed-pane-close-icon-color: HighlightText;
-
-    background-color: Highlight;
-  }
-
-  .selected .close-button {
-    --tabbed-pane-close-icon-color: HighlightText;
-  }
-}
-
-.spark {
-  position: absolute;
-  top: 2px;
-
-  --icon-default: var(--sys-color-primary);
-}
-
-/*# sourceURL=${import.meta.resolve("./tabbedPane.css")} */`;
-
-// gen/front_end/ui/legacy/Tooltip.js
-var Tooltip_exports = {};
-__export(Tooltip_exports, {
-  Tooltip: () => Tooltip
-});
-var Tooltip = class {
-  static install(element, tooltipContent) {
-    element.title = tooltipContent || "";
-  }
-  static installWithActionBinding(element, tooltipContent, actionId) {
-    let description = tooltipContent;
-    const shortcuts = ShortcutRegistry.instance().shortcutsForAction(actionId);
-    for (const shortcut of shortcuts) {
-      description += ` - ${shortcut.title()}`;
-    }
-    element.title = description;
   }
 };
 
@@ -4774,7 +3786,7 @@ var UIStrings4 = {
 };
 var str_4 = i18n7.i18n.registerUIStrings("ui/legacy/TabbedPane.ts", UIStrings4);
 var i18nString4 = i18n7.i18n.getLocalizedString.bind(void 0, str_4);
-var TabbedPane = class extends Common8.ObjectWrapper.eventMixin(VBox) {
+var TabbedPane = class extends Common6.ObjectWrapper.eventMixin(VBox) {
   #headerElement;
   headerContentsElement;
   tabSlider;
@@ -4909,7 +3921,7 @@ var TabbedPane = class extends Common8.ObjectWrapper.eventMixin(VBox) {
     console.assert(!this.tabsById.has(id2), `Tabbed pane already contains a tab with id '${id2}'`);
     this.tabsById.set(id2, tab);
     tab.tabElement.tabIndex = -1;
-    tab.tabElement.setAttribute("jslog", `${VisualLogging5.panelTabHeader().track({ click: true, drag: true }).context(tab.jslogContext)}`);
+    tab.tabElement.setAttribute("jslog", `${VisualLogging4.panelTabHeader().track({ click: true, drag: true }).context(tab.jslogContext)}`);
     if (index !== void 0) {
       this.#tabs.splice(index, 0, tab);
     } else {
@@ -5031,12 +4043,12 @@ var TabbedPane = class extends Common8.ObjectWrapper.eventMixin(VBox) {
   }
   selectNextTab() {
     const index = this.#tabs.indexOf(this.currentTab);
-    const nextIndex = Platform7.NumberUtilities.mod(index + 1, this.#tabs.length);
+    const nextIndex = Platform6.NumberUtilities.mod(index + 1, this.#tabs.length);
     this.selectTab(this.#tabs[nextIndex].id, true);
   }
   selectPrevTab() {
     const index = this.#tabs.indexOf(this.currentTab);
-    const nextIndex = Platform7.NumberUtilities.mod(index - 1, this.#tabs.length);
+    const nextIndex = Platform6.NumberUtilities.mod(index - 1, this.#tabs.length);
     this.selectTab(this.#tabs[nextIndex].id, true);
   }
   getTabIndex(id2) {
@@ -5236,12 +4248,12 @@ var TabbedPane = class extends Common8.ObjectWrapper.eventMixin(VBox) {
   }
   calculateConstraints() {
     let constraints = super.calculateConstraints();
-    const minContentConstraints = new Geometry3.Constraints(new Geometry3.Size(0, 0), new Geometry3.Size(50, 50));
+    const minContentConstraints = new Geometry2.Constraints(new Geometry2.Size(0, 0), new Geometry2.Size(50, 50));
     constraints = constraints.widthToMax(minContentConstraints).heightToMax(minContentConstraints);
     if (this.verticalTabLayout) {
-      constraints = constraints.addWidth(new Geometry3.Constraints(new Geometry3.Size(120, 0)));
+      constraints = constraints.addWidth(new Geometry2.Constraints(new Geometry2.Size(120, 0)));
     } else {
-      constraints = constraints.addHeight(new Geometry3.Constraints(new Geometry3.Size(0, 30)));
+      constraints = constraints.addHeight(new Geometry2.Constraints(new Geometry2.Size(0, 30)));
     }
     return constraints;
   }
@@ -5340,7 +4352,7 @@ var TabbedPane = class extends Common8.ObjectWrapper.eventMixin(VBox) {
   createDropDownButton() {
     const dropDownContainer = document.createElement("div");
     dropDownContainer.classList.add("tabbed-pane-header-tabs-drop-down-container");
-    dropDownContainer.setAttribute("jslog", `${VisualLogging5.dropDown("more-tabs").track({ click: true })}`);
+    dropDownContainer.setAttribute("jslog", `${VisualLogging4.dropDown("more-tabs").track({ click: true })}`);
     const chevronIcon = createIcon2("chevron-double-right", "chevron-icon");
     const moreTabsString = i18nString4(UIStrings4.moreTabs);
     dropDownContainer.title = moreTabsString;
@@ -5388,7 +4400,7 @@ var TabbedPane = class extends Common8.ObjectWrapper.eventMixin(VBox) {
     void menu5.show().then(() => setExpanded(this.dropDownButton, menu5.isHostedMenuOpen()));
   }
   dropDownKeydown(event) {
-    if (Platform7.KeyboardUtilities.isEnterOrSpaceKey(event)) {
+    if (Platform6.KeyboardUtilities.isEnterOrSpaceKey(event)) {
       this.dropDownButton.click();
       event.consume(true);
     }
@@ -5912,7 +4924,7 @@ var TabbedPaneTab = class {
       title: i18nString4(UIStrings4.closeS, { PH1: this.title })
     };
     closeButton.classList.add("close-button", "tabbed-pane-close-button");
-    closeButton.setAttribute("jslog", `${VisualLogging5.close().track({ click: true })}`);
+    closeButton.setAttribute("jslog", `${VisualLogging4.close().track({ click: true })}`);
     closeButton.setAttribute("aria-label", i18nString4(UIStrings4.closeS, { PH1: this.title }));
     return closeButton;
   }
@@ -6080,12 +5092,12 @@ __export(ViewManager_exports, {
   registerViewExtension: () => registerViewExtension,
   resetViewRegistration: () => resetViewRegistration
 });
-import * as Common9 from "./../../core/common/common.js";
+import * as Common7 from "./../../core/common/common.js";
 import * as Host4 from "./../../core/host/host.js";
 import * as i18n11 from "./../../core/i18n/i18n.js";
-import * as Platform8 from "./../../core/platform/platform.js";
+import * as Platform7 from "./../../core/platform/platform.js";
 import { createIcon as createIcon3 } from "./../kit/kit.js";
-import * as VisualLogging6 from "./../visual_logging/visual_logging.js";
+import * as VisualLogging5 from "./../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/viewContainers.css.js
 var viewContainers_css_default = `/* Copyright 2025 The Chromium Authors
@@ -6364,7 +5376,7 @@ var PreRegisteredView = class {
   }
 };
 var viewManagerInstance;
-var ViewManager = class _ViewManager extends Common9.ObjectWrapper.ObjectWrapper {
+var ViewManager = class _ViewManager extends Common7.ObjectWrapper.ObjectWrapper {
   views = /* @__PURE__ */ new Map();
   locationNameByViewId = /* @__PURE__ */ new Map();
   locationOverrideSetting;
@@ -6373,7 +5385,7 @@ var ViewManager = class _ViewManager extends Common9.ObjectWrapper.ObjectWrapper
   //   on `instance()` to create ViewManagers lazily in after/afterEach blocks.
   constructor(universe) {
     super();
-    this.locationOverrideSetting = Common9.Settings.Settings.instance().createSetting("views-location-override", {});
+    this.locationOverrideSetting = Common7.Settings.Settings.instance().createSetting("views-location-override", {});
     const preferredExtensionLocations = this.locationOverrideSetting.get();
     const viewsByLocation = /* @__PURE__ */ new Map();
     for (const view of getRegisteredViewExtensions()) {
@@ -6400,7 +5412,7 @@ var ViewManager = class _ViewManager extends Common9.ObjectWrapper.ObjectWrapper
       if (this.views.has(viewId)) {
         throw new Error(`Duplicate view id '${viewId}'`);
       }
-      if (!Platform8.StringUtilities.isExtendedKebabCase(viewId)) {
+      if (!Platform7.StringUtilities.isExtendedKebabCase(viewId)) {
         throw new Error(`Invalid view ID '${viewId}'`);
       }
       this.views.set(viewId, view);
@@ -6423,11 +5435,11 @@ var ViewManager = class _ViewManager extends Common9.ObjectWrapper.ObjectWrapper
     if (!toolbarItems.length) {
       return null;
     }
-    const toolbar4 = document.createElement("devtools-toolbar");
+    const toolbar5 = document.createElement("devtools-toolbar");
     for (const item8 of toolbarItems) {
-      toolbar4.appendToolbarItem(item8);
+      toolbar5.appendToolbarItem(item8);
     }
-    return toolbar4;
+    return toolbar5;
   }
   getRegisteredViewExtensions() {
     return this.preRegisteredViews;
@@ -6546,8 +5558,8 @@ var ViewManager = class _ViewManager extends Common9.ObjectWrapper.ObjectWrapper
     }
     throw new Error("Unresolved location: " + location);
   }
-  createTabbedLocation(revealCallback, location, restoreSelection, allowReorder, defaultTab) {
-    return new TabbedLocation(this, revealCallback, location, restoreSelection, allowReorder, defaultTab);
+  createTabbedLocation(revealCallback, location, restoreSelection, allowReorder, defaultTab, isLocationVisible, tabbedPaneFactory) {
+    return new TabbedLocation(this, revealCallback, location, restoreSelection, allowReorder, defaultTab, isLocationVisible, tabbedPaneFactory);
   }
   createStackLocation(revealCallback, location, jslogContext) {
     return new StackLocation(this, revealCallback, location, jslogContext);
@@ -6627,7 +5639,7 @@ var ExpandableContainerWidget = class extends VBox {
     this.registerRequiredCSS(viewContainers_css_default);
     this.titleElement = document.createElement("div");
     this.titleElement.classList.add("expandable-view-title");
-    this.titleElement.setAttribute("jslog", `${VisualLogging6.sectionHeader().context(view.viewId()).track({
+    this.titleElement.setAttribute("jslog", `${VisualLogging5.sectionHeader().context(view.viewId()).track({
       click: true,
       keydown: "Enter|Space|ArrowLeft|ArrowRight"
     })}`);
@@ -6765,9 +5777,10 @@ var TabbedLocation = class _TabbedLocation extends Location {
   tabOrderSetting;
   lastSelectedTabSetting;
   defaultTab;
+  isLocationVisible;
   views = /* @__PURE__ */ new Map();
-  constructor(manager, revealCallback, location, restoreSelection, allowReorder, defaultTab) {
-    const tabbedPane = new TabbedPane();
+  constructor(manager, revealCallback, location, restoreSelection, allowReorder, defaultTab, isLocationVisible, tabbedPaneFactory) {
+    const tabbedPane = tabbedPaneFactory ? tabbedPaneFactory() : new TabbedPane();
     if (allowReorder) {
       tabbedPane.setAllowTabReorder(true);
     }
@@ -6778,14 +5791,15 @@ var TabbedLocation = class _TabbedLocation extends Location {
     this.#tabbedPane.addEventListener(Events.TabSelected, this.tabSelected, this);
     this.#tabbedPane.addEventListener(Events.TabClosed, this.tabClosed, this);
     this.#tabbedPane.addEventListener(Events.PaneVisibilityChanged, this.tabbedPaneVisibilityChanged, this);
-    this.closeableTabSetting = Common9.Settings.Settings.instance().createSetting("closeable-tabs", {});
+    this.closeableTabSetting = Common7.Settings.Settings.instance().createSetting("closeable-tabs", {});
     this.setOrUpdateCloseableTabsSetting();
-    this.tabOrderSetting = Common9.Settings.Settings.instance().createSetting(location + "-tab-order", {});
+    this.tabOrderSetting = Common7.Settings.Settings.instance().createSetting(location + "-tab-order", {});
     this.#tabbedPane.addEventListener(Events.TabOrderChanged, this.persistTabOrder, this);
     if (restoreSelection) {
-      this.lastSelectedTabSetting = Common9.Settings.Settings.instance().createSetting(location + "-selected-tab", "");
+      this.lastSelectedTabSetting = Common7.Settings.Settings.instance().createSetting(location + "-selected-tab", "");
     }
     this.defaultTab = defaultTab;
+    this.isLocationVisible = isLocationVisible;
     if (location) {
       this.appendApplicableItems(location);
     }
@@ -6941,7 +5955,8 @@ var TabbedLocation = class _TabbedLocation extends Location {
     this.views.delete(view.viewId());
   }
   isViewVisible(view) {
-    return this.#tabbedPane.isShowing() && this.#tabbedPane?.selectedTabId === view.viewId();
+    const locationVisible = this.isLocationVisible ? this.isLocationVisible() : this.#tabbedPane.isShowing();
+    return locationVisible && this.#tabbedPane.selectedTabId === view.viewId();
   }
   tabbedPaneVisibilityChanged(event) {
     if (!this.#tabbedPane.selectedTabId) {
@@ -7003,7 +6018,7 @@ var StackLocation = class extends Location {
   expandableContainers;
   constructor(manager, revealCallback, location, jslogContext) {
     const vbox = new VBox();
-    vbox.element.setAttribute("jslog", `${VisualLogging6.pane(jslogContext || "sidebar").track({ resize: true })}`);
+    vbox.element.setAttribute("jslog", `${VisualLogging5.pane(jslogContext || "sidebar").track({ resize: true })}`);
     super(manager, vbox, revealCallback);
     this.vbox = vbox;
     markAsTree(vbox.element);
@@ -7058,16 +6073,1148 @@ var StackLocation = class extends Location {
   }
 };
 
-// gen/front_end/ui/legacy/InspectorView.js
+// gen/front_end/ui/legacy/InspectorDrawerView.js
+var DrawerTabbedPane = class extends TabbedPane {
+  constructor() {
+    super();
+    this.registerRequiredCSS(inspectorDrawerTabbedPane_css_default);
+  }
+};
 var UIStrings7 = {
   /**
-   * @description Title of more tabs button in inspector view
+   * @description Title of more tabs button in the drawer view.
    */
   moreTools: "More Tools",
   /**
-   * @description Text that appears when hovor over the close button on the drawer view
+   * @description Text that appears when hover over the close button on the drawer view.
    */
   closeDrawer: "Close drawer",
+  /**
+   * @description Text that appears when hover the toggle orientation button.
+   */
+  toggleDrawerOrientation: "Toggle drawer orientation"
+};
+var str_7 = i18n13.i18n.registerUIStrings("ui/legacy/InspectorDrawerView.ts", UIStrings7);
+var i18nString7 = i18n13.i18n.getLocalizedString.bind(void 0, str_7);
+var InspectorDrawerView = class {
+  tabbedLocation;
+  tabbedPane;
+  #splitWidget;
+  #verticalExpandedMinimumWidth;
+  #minimumSizes;
+  #setInspectorMinimumSize;
+  #toggleOrientationButton;
+  #closeDrawerButton;
+  #moreTabsButton;
+  #onTabSelected;
+  constructor(options) {
+    this.#splitWidget = options.splitWidget;
+    this.#verticalExpandedMinimumWidth = options.verticalExpandedMinimumWidth;
+    this.#minimumSizes = options.minimumSizes;
+    this.#setInspectorMinimumSize = options.setInspectorMinimumSize;
+    this.#onTabSelected = options.onTabSelected;
+    this.tabbedLocation = ViewManager.instance().createTabbedLocation(options.revealDrawer, "drawer-view", true, true, void 0, options.isVisible, () => new DrawerTabbedPane());
+    this.#moreTabsButton = this.tabbedLocation.enableMoreTabsButton();
+    this.#moreTabsButton.setTitle(i18nString7(UIStrings7.moreTools));
+    this.tabbedPane = this.tabbedLocation.tabbedPane();
+    this.tabbedPane.element.classList.add("drawer-tabbed-pane");
+    this.tabbedPane.element.setAttribute("jslog", `${VisualLogging6.drawer()}`);
+    this.#closeDrawerButton = new ToolbarButton(i18nString7(UIStrings7.closeDrawer), "cross");
+    this.#closeDrawerButton.element.setAttribute("jslog", `${VisualLogging6.close().track({ click: true })}`);
+    this.#closeDrawerButton.addEventListener("Click", options.onHide);
+    this.#toggleOrientationButton = new ToolbarButton(i18nString7(UIStrings7.toggleDrawerOrientation), options.isVertical ? "dock-bottom" : "dock-right");
+    this.#toggleOrientationButton.element.setAttribute("jslog", `${VisualLogging6.toggle("toggle-drawer-orientation").track({ click: true })}`);
+    this.#toggleOrientationButton.addEventListener("Click", options.onToggleOrientation);
+    if (options.enableOrientationToggle) {
+      this.tabbedPane.rightToolbar().appendToolbarItem(this.#toggleOrientationButton);
+    }
+    this.tabbedPane.rightToolbar().appendToolbarItem(this.#closeDrawerButton);
+    this.tabbedPane.addEventListener(Events.TabSelected, this.#drawerTabSelected, this);
+    this.tabbedPane.setTabDelegate(options.tabDelegate);
+    const selectedDrawerTab = this.tabbedPane.selectedTabId;
+    if (this.#splitWidget.showMode() !== "OnlyMain" && selectedDrawerTab) {
+      this.#onTabSelected(selectedDrawerTab);
+    }
+    const drawerElement = this.tabbedPane.element;
+    markAsComplementary(drawerElement);
+    setLabel(drawerElement, options.drawerLabel);
+    this.#splitWidget.installResizer(this.tabbedPane.headerElement());
+    this.#splitWidget.setSidebarWidget(this.tabbedPane);
+    this.tabbedPane.headerElement().setAttribute("jslog", `${VisualLogging6.toolbar("drawer").track({
+      drag: true,
+      keydown: "ArrowUp|ArrowLeft|ArrowDown|ArrowRight|Enter|Space"
+    })}`);
+    this.#updatePresentation();
+  }
+  setVertical(shouldBeVertical) {
+    if (shouldBeVertical === this.#splitWidget.isVertical()) {
+      return;
+    }
+    const previousShowMode = this.#splitWidget.showMode();
+    this.#splitWidget.setVertical(shouldBeVertical);
+    this.#updatePresentation();
+    this.applyState(previousShowMode);
+  }
+  applyState(showMode) {
+    if (this.#splitWidget.showMode() !== showMode) {
+      switch (showMode) {
+        case "Both":
+          this.#splitWidget.showBoth();
+          break;
+        case "OnlyMain":
+          this.#splitWidget.hideSidebar();
+          break;
+        case "OnlySidebar":
+          this.#splitWidget.hideMain();
+          break;
+      }
+    }
+    this.#updatePresentation();
+  }
+  show(hasTargetDrawer) {
+    this.tabbedPane.setAutoSelectFirstItemOnShow(!hasTargetDrawer);
+    this.#splitWidget.showBoth();
+  }
+  hide() {
+    this.#splitWidget.hideSidebar(true);
+  }
+  drawerVisible() {
+    return this.tabbedPane.isShowing();
+  }
+  drawerSize() {
+    return this.#splitWidget.sidebarSize();
+  }
+  setDrawerSize(size) {
+    this.#splitWidget.setSidebarSize(size);
+  }
+  totalSize() {
+    return this.#splitWidget.totalSize();
+  }
+  isVertical() {
+    return this.#splitWidget.isVertical();
+  }
+  updatePresentation(isVertical) {
+    this.#toggleOrientationButton.setGlyph(isVertical ? "dock-bottom" : "dock-right");
+    if (isVertical) {
+      this.tabbedPane.setMinimumSize(this.#verticalExpandedMinimumWidth, 27);
+    } else {
+      this.tabbedPane.setMinimumSize(0, 27);
+    }
+  }
+  #updatePresentation() {
+    const drawerIsVertical = this.#splitWidget.isVertical();
+    this.#setInspectorMinimumSize(drawerIsVertical ? this.#minimumSizes.inspectorWidthWhenVertical : this.#minimumSizes.inspectorWidthWhenHorizontal, this.#minimumSizes.inspectorHeight);
+    this.updatePresentation(drawerIsVertical);
+  }
+  #drawerTabSelected(event) {
+    const { tabId } = event.data;
+    this.#onTabSelected(tabId);
+  }
+};
+
+// gen/front_end/ui/legacy/SplitWidget.js
+var SplitWidget_exports = {};
+__export(SplitWidget_exports, {
+  SplitWidget: () => SplitWidget,
+  SplitWidgetElement: () => SplitWidgetElement
+});
+import * as Common9 from "./../../core/common/common.js";
+import * as Platform8 from "./../../core/platform/platform.js";
+import * as Geometry3 from "./../../models/geometry/geometry.js";
+import * as VisualLogging7 from "./../visual_logging/visual_logging.js";
+
+// gen/front_end/ui/legacy/ResizerWidget.js
+var ResizerWidget_exports = {};
+__export(ResizerWidget_exports, {
+  ResizerWidget: () => ResizerWidget,
+  SimpleResizerWidget: () => SimpleResizerWidget
+});
+import * as Common8 from "./../../core/common/common.js";
+var ResizerWidget = class extends Common8.ObjectWrapper.ObjectWrapper {
+  #isEnabled = true;
+  #elements = /* @__PURE__ */ new Set();
+  #installDragOnMouseDownBound;
+  #cursor = "nwse-resize";
+  #startX;
+  #startY;
+  constructor() {
+    super();
+    this.#installDragOnMouseDownBound = this.#installDragOnMouseDown.bind(this);
+  }
+  isEnabled() {
+    return this.#isEnabled;
+  }
+  setEnabled(enabled) {
+    this.#isEnabled = enabled;
+    this.updateElementCursors();
+  }
+  elements() {
+    return [...this.#elements];
+  }
+  addElement(element) {
+    if (!this.#elements.has(element)) {
+      this.#elements.add(element);
+      element.addEventListener("pointerdown", this.#installDragOnMouseDownBound, false);
+      this.#updateElementCursor(element);
+    }
+  }
+  removeElement(element) {
+    if (this.#elements.has(element)) {
+      this.#elements.delete(element);
+      element.removeEventListener("pointerdown", this.#installDragOnMouseDownBound, false);
+      element.style.removeProperty("cursor");
+    }
+  }
+  updateElementCursors() {
+    this.#elements.forEach(this.#updateElementCursor.bind(this));
+  }
+  #updateElementCursor(element) {
+    if (this.#isEnabled) {
+      element.style.setProperty("cursor", this.cursor());
+      element.style.setProperty("touch-action", "none");
+    } else {
+      element.style.removeProperty("cursor");
+      element.style.removeProperty("touch-action");
+    }
+  }
+  cursor() {
+    return this.#cursor;
+  }
+  setCursor(cursor) {
+    this.#cursor = cursor;
+    this.updateElementCursors();
+  }
+  #installDragOnMouseDown(event) {
+    const element = event.target;
+    if (!this.#elements.has(element)) {
+      return false;
+    }
+    elementDragStart(element, this.#dragStart.bind(this), (event2) => {
+      this.#drag(event2);
+    }, this.#dragEnd.bind(this), this.cursor(), event);
+    return void 0;
+  }
+  #dragStart(event) {
+    if (!this.#isEnabled) {
+      return false;
+    }
+    this.#startX = event.pageX;
+    this.#startY = event.pageY;
+    this.sendDragStart(this.#startX, this.#startY);
+    return true;
+  }
+  sendDragStart(x, y) {
+    this.dispatchEventToListeners("ResizeStart", { startX: x, currentX: x, startY: y, currentY: y });
+  }
+  #drag(event) {
+    if (!this.#isEnabled) {
+      this.#dragEnd(event);
+      return true;
+    }
+    this.sendDragMove(this.#startX, event.pageX, this.#startY, event.pageY, event.shiftKey);
+    event.preventDefault();
+    return false;
+  }
+  sendDragMove(startX, currentX, startY, currentY, shiftKey) {
+    this.dispatchEventToListeners("ResizeUpdateXY", { startX, currentX, startY, currentY, shiftKey });
+  }
+  #dragEnd(_event) {
+    this.dispatchEventToListeners(
+      "ResizeEnd"
+      /* Events.RESIZE_END */
+    );
+    this.#startX = void 0;
+    this.#startY = void 0;
+  }
+};
+var SimpleResizerWidget = class extends ResizerWidget {
+  #isVertical = true;
+  isVertical() {
+    return this.#isVertical;
+  }
+  /**
+   * Vertical widget resizes height (along y-axis).
+   */
+  setVertical(vertical) {
+    this.#isVertical = vertical;
+    this.updateElementCursors();
+  }
+  cursor() {
+    return this.#isVertical ? "ns-resize" : "ew-resize";
+  }
+  sendDragStart(x, y) {
+    const position = this.#isVertical ? y : x;
+    this.dispatchEventToListeners("ResizeStart", { startPosition: position, currentPosition: position });
+  }
+  sendDragMove(startX, currentX, startY, currentY, shiftKey) {
+    if (this.#isVertical) {
+      this.dispatchEventToListeners("ResizeUpdatePosition", { startPosition: startY, currentPosition: currentY, shiftKey });
+    } else {
+      this.dispatchEventToListeners("ResizeUpdatePosition", { startPosition: startX, currentPosition: currentX, shiftKey });
+    }
+  }
+};
+
+// gen/front_end/ui/legacy/splitWidget.css.js
+var splitWidget_css_default = `/*
+ * Copyright (C) 2011 Google Inc. All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ * 1. Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above
+ * copyright notice, this list of conditions and the following disclaimer
+ * in the documentation and/or other materials provided with the
+ * distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY GOOGLE INC. AND ITS CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL GOOGLE INC.
+ * OR ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+.shadow-split-widget {
+  display: flex;
+  overflow: hidden;
+}
+
+.shadow-split-widget-contents {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  contain: layout size style;
+}
+
+.shadow-split-widget-sidebar {
+  flex: none;
+}
+
+.shadow-split-widget-main,
+.shadow-split-widget-sidebar.maximized {
+  flex: auto;
+}
+
+.shadow-split-widget.hbox > .shadow-split-widget-resizer {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 6px;
+  z-index: 4000;
+}
+
+.shadow-split-widget.vbox > .shadow-split-widget-resizer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 6px;
+  z-index: 4000;
+}
+
+.shadow-split-widget.vbox > .shadow-split-widget-sidebar.no-default-splitter {
+  border: 0 !important; /* stylelint-disable-line declaration-no-important */
+}
+
+.shadow-split-widget.vbox > .shadow-split-widget-sidebar:not(.maximized) {
+  border: 0;
+  border-top: 1px solid var(--sys-color-divider);
+}
+
+.shadow-split-widget.hbox > .shadow-split-widget-sidebar:not(.maximized) {
+  border: 0;
+  border-left: 1px solid var(--sys-color-divider);
+}
+
+.shadow-split-widget.vbox > .shadow-split-widget-sidebar:first-child:not(.maximized) {
+  border: 0;
+  border-bottom: 1px solid var(--sys-color-divider);
+}
+
+.shadow-split-widget.hbox > .shadow-split-widget-sidebar:first-child:not(.maximized) {
+  border: 0;
+  border-right: 1px solid var(--sys-color-divider);
+}
+
+:host-context(.disable-resizer-for-elements-hack) .shadow-split-widget-resizer {
+  pointer-events: none;
+}
+
+:host {
+  display: flex;
+}
+
+/*# sourceURL=${import.meta.resolve("./splitWidget.css")} */`;
+
+// gen/front_end/ui/legacy/SplitWidget.js
+var SplitWidget = class extends Common9.ObjectWrapper.eventMixin(Widget) {
+  #sidebarElement;
+  #mainElement;
+  #resizerElement;
+  #resizerElementSize = null;
+  #resizerWidget;
+  #defaultSidebarWidth;
+  #defaultSidebarHeight;
+  #constraintsInDip;
+  #resizeStartSizeDIP = 0;
+  // TODO: Used in WebTests
+  setting;
+  #totalSizeCSS = 0;
+  #totalSizeOtherDimensionCSS = 0;
+  #mainWidget = null;
+  #sidebarWidget = null;
+  #animationFrameHandle = 0;
+  #animationCallback = null;
+  #showSidebarButtonTitle = Common9.UIString.LocalizedEmptyString;
+  #hideSidebarButtonTitle = Common9.UIString.LocalizedEmptyString;
+  #shownSidebarString = Common9.UIString.LocalizedEmptyString;
+  #hiddenSidebarString = Common9.UIString.LocalizedEmptyString;
+  #showHideSidebarButton = null;
+  #isVertical = false;
+  #sidebarMinimized = false;
+  #detaching = false;
+  #sidebarSizeDIP = -1;
+  #savedSidebarSizeDIP;
+  #secondIsSidebar = false;
+  #shouldSaveShowMode = false;
+  #savedVerticalMainSize = null;
+  #savedHorizontalMainSize = null;
+  #showMode = "Both";
+  #savedShowMode;
+  #autoAdjustOrientation = false;
+  constructor(isVertical, secondIsSidebar, settingName, defaultSidebarWidth, defaultSidebarHeight, constraintsInDip, element) {
+    super(element, { useShadowDom: true });
+    this.element.classList.add("split-widget");
+    this.registerRequiredCSS(splitWidget_css_default);
+    this.contentElement.classList.add("shadow-split-widget");
+    this.#sidebarElement = this.contentElement.createChild("div", "shadow-split-widget-contents shadow-split-widget-sidebar vbox");
+    this.#mainElement = this.contentElement.createChild("div", "shadow-split-widget-contents shadow-split-widget-main vbox");
+    const mainSlot = this.#mainElement.createChild("slot");
+    mainSlot.name = "main";
+    mainSlot.addEventListener("slotchange", (_) => {
+      const assignedNode = mainSlot.assignedNodes()[0];
+      const widget2 = assignedNode instanceof HTMLElement ? Widget.getOrCreateWidget(assignedNode) : null;
+      if (widget2 && widget2 !== this.#mainWidget) {
+        this.setMainWidget(widget2);
+      }
+    });
+    const sidebarSlot = this.#sidebarElement.createChild("slot");
+    sidebarSlot.name = "sidebar";
+    sidebarSlot.addEventListener("slotchange", (_) => {
+      const assignedNode = sidebarSlot.assignedNodes()[0];
+      const widget2 = assignedNode instanceof HTMLElement ? Widget.getOrCreateWidget(assignedNode) : null;
+      if (widget2 && widget2 !== this.#sidebarWidget) {
+        this.setSidebarWidget(widget2);
+      }
+    });
+    this.#resizerElement = this.contentElement.createChild("div", "shadow-split-widget-resizer");
+    this.#resizerWidget = new SimpleResizerWidget();
+    this.#resizerWidget.setEnabled(true);
+    this.#resizerWidget.addEventListener("ResizeStart", this.#onResizeStart, this);
+    this.#resizerWidget.addEventListener("ResizeUpdatePosition", this.#onResizeUpdate, this);
+    this.#resizerWidget.addEventListener("ResizeEnd", this.#onResizeEnd, this);
+    this.#defaultSidebarWidth = defaultSidebarWidth || 200;
+    this.#defaultSidebarHeight = defaultSidebarHeight || this.#defaultSidebarWidth;
+    this.#constraintsInDip = Boolean(constraintsInDip);
+    this.setting = settingName ? Common9.Settings.Settings.instance().createSetting(settingName, {}) : null;
+    this.#savedSidebarSizeDIP = this.#sidebarSizeDIP;
+    this.setSecondIsSidebar(secondIsSidebar);
+    this.#setVertical(isVertical);
+    this.#savedShowMode = this.#showMode;
+    this.installResizer(this.#resizerElement);
+  }
+  isVertical() {
+    return this.#isVertical;
+  }
+  setVertical(isVertical) {
+    if (this.#isVertical === isVertical) {
+      return;
+    }
+    this.#setVertical(isVertical);
+    if (this.isShowing()) {
+      this.#updateLayout();
+    }
+  }
+  setAutoAdjustOrientation(autoAdjustOrientation) {
+    this.#autoAdjustOrientation = autoAdjustOrientation;
+    this.#maybeAutoAdjustOrientation();
+  }
+  #setVertical(isVertical) {
+    this.contentElement.classList.toggle("vbox", !isVertical);
+    this.contentElement.classList.toggle("hbox", isVertical);
+    this.#isVertical = isVertical;
+    this.#resizerElementSize = null;
+    this.#sidebarSizeDIP = -1;
+    this.#restoreSidebarSizeFromSettings();
+    if (this.#shouldSaveShowMode) {
+      this.#restoreAndApplyShowModeFromSettings();
+    }
+    this.#updateShowHideSidebarButton();
+    this.#resizerWidget.setVertical(!isVertical);
+    this.invalidateConstraints();
+  }
+  #updateLayout(animate) {
+    this.#totalSizeCSS = 0;
+    this.#totalSizeOtherDimensionCSS = 0;
+    this.#mainElement.style.removeProperty("width");
+    this.#mainElement.style.removeProperty("height");
+    this.#sidebarElement.style.removeProperty("width");
+    this.#sidebarElement.style.removeProperty("height");
+    this.#setSidebarSizeDIP(this.#preferredSidebarSizeDIP(), Boolean(animate));
+  }
+  setMainWidget(widget2) {
+    if (this.#mainWidget === widget2) {
+      return;
+    }
+    this.suspendInvalidations();
+    if (this.#mainWidget) {
+      this.#mainWidget.detach();
+    }
+    this.#mainWidget = widget2;
+    if (widget2) {
+      widget2.element.slot = "main";
+      if (this.#showMode === "OnlyMain" || this.#showMode === "Both") {
+        widget2.show(this.element);
+      }
+    }
+    this.resumeInvalidations();
+  }
+  setSidebarWidget(widget2) {
+    if (this.#sidebarWidget === widget2) {
+      return;
+    }
+    this.suspendInvalidations();
+    if (this.#sidebarWidget) {
+      this.#sidebarWidget.detach();
+    }
+    this.#sidebarWidget = widget2;
+    if (widget2) {
+      widget2.element.slot = "sidebar";
+      if (this.#showMode === "OnlySidebar" || this.#showMode === "Both") {
+        widget2.show(this.element);
+      }
+    }
+    this.resumeInvalidations();
+  }
+  mainWidget() {
+    return this.#mainWidget;
+  }
+  sidebarWidget() {
+    return this.#sidebarWidget;
+  }
+  sidebarElement() {
+    return this.#sidebarElement;
+  }
+  childWasDetached(widget2) {
+    if (this.#detaching) {
+      return;
+    }
+    if (this.#mainWidget === widget2) {
+      this.#mainWidget = null;
+    }
+    if (this.#sidebarWidget === widget2) {
+      this.#sidebarWidget = null;
+    }
+    this.invalidateConstraints();
+  }
+  isSidebarSecond() {
+    return this.#secondIsSidebar;
+  }
+  enableShowModeSaving() {
+    this.#shouldSaveShowMode = true;
+    this.#restoreAndApplyShowModeFromSettings();
+  }
+  showMode() {
+    return this.#showMode;
+  }
+  sidebarIsShowing() {
+    return this.#showMode !== "OnlyMain";
+  }
+  setSecondIsSidebar(secondIsSidebar) {
+    if (secondIsSidebar === this.#secondIsSidebar) {
+      return;
+    }
+    this.#secondIsSidebar = secondIsSidebar;
+    if (!this.#mainWidget?.shouldHideOnDetach()) {
+      if (secondIsSidebar) {
+        this.contentElement.insertBefore(this.#mainElement, this.#sidebarElement);
+      } else {
+        this.contentElement.insertBefore(this.#mainElement, this.#resizerElement);
+      }
+    } else if (!this.#sidebarWidget?.shouldHideOnDetach()) {
+      if (secondIsSidebar) {
+        this.contentElement.insertBefore(this.#sidebarElement, this.#resizerElement);
+      } else {
+        this.contentElement.insertBefore(this.#sidebarElement, this.#mainElement);
+      }
+    } else {
+      console.error("Could not swap split widget side. Both children widgets contain iframes.");
+      this.#secondIsSidebar = !secondIsSidebar;
+    }
+  }
+  resizerElement() {
+    return this.#resizerElement;
+  }
+  hideMain(animate) {
+    this.#showOnly(this.#sidebarWidget, this.#mainWidget, this.#sidebarElement, this.#mainElement, animate);
+    this.#updateShowMode(
+      "OnlySidebar"
+      /* ShowMode.ONLY_SIDEBAR */
+    );
+  }
+  hideSidebar(animate) {
+    this.#showOnly(this.#mainWidget, this.#sidebarWidget, this.#mainElement, this.#sidebarElement, animate);
+    this.#updateShowMode(
+      "OnlyMain"
+      /* ShowMode.ONLY_MAIN */
+    );
+  }
+  setSidebarMinimized(minimized) {
+    this.#sidebarMinimized = minimized;
+    this.invalidateConstraints();
+  }
+  isSidebarMinimized() {
+    return this.#sidebarMinimized;
+  }
+  #showOnly(sideToShow, sideToHide, shadowToShow, shadowToHide, animate) {
+    this.#cancelAnimation();
+    function callback() {
+      if (sideToShow) {
+        if (sideToShow === this.#mainWidget) {
+          this.#mainWidget.show(this.element, this.#sidebarWidget ? this.#sidebarWidget.element : null);
+        } else if (this.#sidebarWidget) {
+          this.#sidebarWidget.show(this.element);
+        }
+      }
+      if (sideToHide) {
+        this.#detaching = true;
+        sideToHide.detach();
+        this.#detaching = false;
+      }
+      this.#resizerElement.classList.add("hidden");
+      shadowToShow.classList.remove("hidden");
+      shadowToShow.classList.add("maximized");
+      shadowToHide.classList.add("hidden");
+      shadowToHide.classList.remove("maximized");
+      this.#removeAllLayoutProperties();
+      this.doResize();
+      this.showFinishedForTest();
+    }
+    if (animate) {
+      this.#animate(true, callback.bind(this));
+    } else {
+      callback.call(this);
+    }
+    this.#sidebarSizeDIP = -1;
+    this.setResizable(false);
+  }
+  showFinishedForTest() {
+  }
+  #removeAllLayoutProperties() {
+    this.#sidebarElement.style.removeProperty("flexBasis");
+    this.#mainElement.style.removeProperty("width");
+    this.#mainElement.style.removeProperty("height");
+    this.#sidebarElement.style.removeProperty("width");
+    this.#sidebarElement.style.removeProperty("height");
+    this.#resizerElement.style.removeProperty("left");
+    this.#resizerElement.style.removeProperty("right");
+    this.#resizerElement.style.removeProperty("top");
+    this.#resizerElement.style.removeProperty("bottom");
+    this.#resizerElement.style.removeProperty("margin-left");
+    this.#resizerElement.style.removeProperty("margin-right");
+    this.#resizerElement.style.removeProperty("margin-top");
+    this.#resizerElement.style.removeProperty("margin-bottom");
+  }
+  showBoth(animate) {
+    if (this.#showMode === "Both") {
+      animate = false;
+    }
+    this.#cancelAnimation();
+    this.#mainElement.classList.remove("maximized", "hidden");
+    this.#sidebarElement.classList.remove("maximized", "hidden");
+    this.#resizerElement.classList.remove("hidden");
+    this.setResizable(true);
+    this.suspendInvalidations();
+    if (this.#sidebarWidget) {
+      this.#sidebarWidget.show(this.element);
+    }
+    if (this.#mainWidget) {
+      this.#mainWidget.show(this.element, this.#sidebarWidget ? this.#sidebarWidget.element : null);
+    }
+    this.resumeInvalidations();
+    this.setSecondIsSidebar(this.#secondIsSidebar);
+    this.#sidebarSizeDIP = -1;
+    this.#updateShowMode(
+      "Both"
+      /* ShowMode.BOTH */
+    );
+    this.#updateLayout(animate);
+  }
+  setResizable(resizable) {
+    this.#resizerWidget.setEnabled(resizable);
+  }
+  // Currently unused
+  forceSetSidebarWidth(width) {
+    this.#defaultSidebarWidth = width;
+    this.#savedSidebarSizeDIP = width;
+    this.#updateLayout();
+  }
+  isResizable() {
+    return this.#resizerWidget.isEnabled();
+  }
+  setSidebarSize(size) {
+    const sizeDIP = ZoomManager.instance().cssToDIP(size);
+    this.#savedSidebarSizeDIP = sizeDIP;
+    this.#saveSetting();
+    this.#setSidebarSizeDIP(sizeDIP, false, true);
+  }
+  sidebarSize() {
+    const sizeDIP = Math.max(0, this.#sidebarSizeDIP);
+    return ZoomManager.instance().dipToCSS(sizeDIP);
+  }
+  totalSize() {
+    const sizeDIP = Math.max(0, this.#totalSizeDIP());
+    return ZoomManager.instance().dipToCSS(sizeDIP);
+  }
+  /**
+   * Returns total size in DIP.
+   */
+  #totalSizeDIP() {
+    if (!this.#totalSizeCSS) {
+      this.#totalSizeCSS = this.#isVertical ? this.contentElement.offsetWidth : this.contentElement.offsetHeight;
+      this.#totalSizeOtherDimensionCSS = this.#isVertical ? this.contentElement.offsetHeight : this.contentElement.offsetWidth;
+    }
+    return ZoomManager.instance().cssToDIP(this.#totalSizeCSS);
+  }
+  #updateShowMode(showMode) {
+    this.#showMode = showMode;
+    this.#saveShowModeToSettings();
+    this.#updateShowHideSidebarButton();
+    this.dispatchEventToListeners("ShowModeChanged", showMode);
+    this.invalidateConstraints();
+  }
+  #setSidebarSizeDIP(sizeDIP, animate, userAction) {
+    if (this.#showMode !== "Both" || !this.isShowing()) {
+      return;
+    }
+    sizeDIP = this.#applyConstraints(sizeDIP, userAction);
+    if (this.#sidebarSizeDIP === sizeDIP) {
+      return;
+    }
+    if (!this.#resizerElementSize) {
+      this.#resizerElementSize = this.#isVertical ? this.#resizerElement.offsetWidth : this.#resizerElement.offsetHeight;
+    }
+    this.#removeAllLayoutProperties();
+    const roundSizeCSS = Math.round(ZoomManager.instance().dipToCSS(sizeDIP));
+    const sidebarSizeValue = roundSizeCSS + "px";
+    const mainSizeValue = this.#totalSizeCSS - roundSizeCSS + "px";
+    this.#sidebarElement.style.flexBasis = sidebarSizeValue;
+    if (this.#isVertical) {
+      this.#sidebarElement.style.width = sidebarSizeValue;
+      this.#mainElement.style.width = mainSizeValue;
+      this.#sidebarElement.style.height = this.#totalSizeOtherDimensionCSS + "px";
+      this.#mainElement.style.height = this.#totalSizeOtherDimensionCSS + "px";
+    } else {
+      this.#sidebarElement.style.height = sidebarSizeValue;
+      this.#mainElement.style.height = mainSizeValue;
+      this.#sidebarElement.style.width = this.#totalSizeOtherDimensionCSS + "px";
+      this.#mainElement.style.width = this.#totalSizeOtherDimensionCSS + "px";
+    }
+    if (this.#isVertical) {
+      if (this.#secondIsSidebar) {
+        this.#resizerElement.style.right = sidebarSizeValue;
+        this.#resizerElement.style.marginRight = -this.#resizerElementSize / 2 + "px";
+      } else {
+        this.#resizerElement.style.left = sidebarSizeValue;
+        this.#resizerElement.style.marginLeft = -this.#resizerElementSize / 2 + "px";
+      }
+    } else if (this.#secondIsSidebar) {
+      this.#resizerElement.style.bottom = sidebarSizeValue;
+      this.#resizerElement.style.marginBottom = -this.#resizerElementSize / 2 + "px";
+    } else {
+      this.#resizerElement.style.top = sidebarSizeValue;
+      this.#resizerElement.style.marginTop = -this.#resizerElementSize / 2 + "px";
+    }
+    this.#sidebarSizeDIP = sizeDIP;
+    if (animate) {
+      this.#animate(false);
+    } else {
+      this.doResize();
+      this.dispatchEventToListeners("SidebarSizeChanged", this.sidebarSize());
+    }
+  }
+  #animate(reverse, callback) {
+    const animationTime = 50;
+    this.#animationCallback = callback || null;
+    let animatedMarginPropertyName;
+    if (this.#isVertical) {
+      animatedMarginPropertyName = this.#secondIsSidebar ? "margin-right" : "margin-left";
+    } else {
+      animatedMarginPropertyName = this.#secondIsSidebar ? "margin-bottom" : "margin-top";
+    }
+    const marginFrom = reverse ? "0" : "-" + ZoomManager.instance().dipToCSS(this.#sidebarSizeDIP) + "px";
+    const marginTo = reverse ? "-" + ZoomManager.instance().dipToCSS(this.#sidebarSizeDIP) + "px" : "0";
+    this.contentElement.style.setProperty(animatedMarginPropertyName, marginFrom);
+    this.contentElement.style.setProperty("overflow", "hidden");
+    if (!reverse) {
+      suppressUnused(this.#mainElement.offsetWidth);
+      suppressUnused(this.#sidebarElement.offsetWidth);
+    }
+    if (!reverse && this.#sidebarWidget) {
+      this.#sidebarWidget.doResize();
+    }
+    this.contentElement.style.setProperty("transition", animatedMarginPropertyName + " " + animationTime + "ms linear");
+    const boundAnimationFrame = animationFrame.bind(this);
+    let startTime = null;
+    function animationFrame() {
+      this.#animationFrameHandle = 0;
+      if (!startTime) {
+        this.contentElement.style.setProperty(animatedMarginPropertyName, marginTo);
+        startTime = window.performance.now();
+      } else if (window.performance.now() < startTime + animationTime) {
+        if (this.#mainWidget) {
+          this.#mainWidget.doResize();
+        }
+      } else {
+        this.#cancelAnimation();
+        if (this.#mainWidget) {
+          this.#mainWidget.doResize();
+        }
+        this.dispatchEventToListeners("SidebarSizeChanged", this.sidebarSize());
+        return;
+      }
+      this.#animationFrameHandle = this.contentElement.window().requestAnimationFrame(boundAnimationFrame);
+    }
+    this.#animationFrameHandle = this.contentElement.window().requestAnimationFrame(boundAnimationFrame);
+  }
+  #cancelAnimation() {
+    this.contentElement.style.removeProperty("margin-top");
+    this.contentElement.style.removeProperty("margin-right");
+    this.contentElement.style.removeProperty("margin-bottom");
+    this.contentElement.style.removeProperty("margin-left");
+    this.contentElement.style.removeProperty("transition");
+    this.contentElement.style.removeProperty("overflow");
+    if (this.#animationFrameHandle) {
+      this.contentElement.window().cancelAnimationFrame(this.#animationFrameHandle);
+      this.#animationFrameHandle = 0;
+    }
+    if (this.#animationCallback) {
+      this.#animationCallback();
+      this.#animationCallback = null;
+    }
+  }
+  #applyConstraints(sidebarSize, userAction) {
+    const totalSize = this.#totalSizeDIP();
+    const zoomFactor = this.#constraintsInDip ? 1 : ZoomManager.instance().zoomFactor();
+    let constraints = this.#sidebarWidget ? this.#sidebarWidget.constraints() : new Geometry3.Constraints();
+    let minSidebarSize = this.isVertical() ? constraints.minimum.width : constraints.minimum.height;
+    if (!minSidebarSize) {
+      minSidebarSize = MinPadding;
+    }
+    minSidebarSize *= zoomFactor;
+    if (this.#sidebarMinimized) {
+      sidebarSize = minSidebarSize;
+    }
+    let preferredSidebarSize = this.isVertical() ? constraints.preferred.width : constraints.preferred.height;
+    if (!preferredSidebarSize) {
+      preferredSidebarSize = MinPadding;
+    }
+    preferredSidebarSize *= zoomFactor;
+    if (sidebarSize < preferredSidebarSize) {
+      preferredSidebarSize = Math.max(sidebarSize, minSidebarSize);
+    }
+    preferredSidebarSize += zoomFactor;
+    constraints = this.#mainWidget ? this.#mainWidget.constraints() : new Geometry3.Constraints();
+    let minMainSize = this.isVertical() ? constraints.minimum.width : constraints.minimum.height;
+    if (!minMainSize) {
+      minMainSize = MinPadding;
+    }
+    minMainSize *= zoomFactor;
+    let preferredMainSize = this.isVertical() ? constraints.preferred.width : constraints.preferred.height;
+    if (!preferredMainSize) {
+      preferredMainSize = MinPadding;
+    }
+    preferredMainSize *= zoomFactor;
+    const savedMainSize = this.isVertical() ? this.#savedVerticalMainSize : this.#savedHorizontalMainSize;
+    if (savedMainSize !== null) {
+      preferredMainSize = Math.min(preferredMainSize, savedMainSize * zoomFactor);
+    }
+    if (userAction) {
+      preferredMainSize = minMainSize;
+    }
+    const totalPreferred = preferredMainSize + preferredSidebarSize;
+    if (totalPreferred <= totalSize) {
+      return Platform8.NumberUtilities.clamp(sidebarSize, preferredSidebarSize, totalSize - preferredMainSize);
+    }
+    if (minMainSize + minSidebarSize <= totalSize) {
+      const delta = totalPreferred - totalSize;
+      const sidebarDelta = delta * preferredSidebarSize / totalPreferred;
+      sidebarSize = preferredSidebarSize - sidebarDelta;
+      return Platform8.NumberUtilities.clamp(sidebarSize, minSidebarSize, totalSize - minMainSize);
+    }
+    return Math.max(0, totalSize - minMainSize);
+  }
+  wasShown() {
+    super.wasShown();
+    this.#forceUpdateLayout();
+    ZoomManager.instance().addEventListener("ZoomChanged", this.onZoomChanged, this);
+  }
+  willHide() {
+    super.willHide();
+    ZoomManager.instance().removeEventListener("ZoomChanged", this.onZoomChanged, this);
+  }
+  onResize() {
+    this.#maybeAutoAdjustOrientation();
+    this.#updateLayout();
+  }
+  onLayout() {
+    this.#updateLayout();
+  }
+  calculateConstraints() {
+    if (this.#showMode === "OnlyMain") {
+      return this.#mainWidget ? this.#mainWidget.constraints() : new Geometry3.Constraints();
+    }
+    if (this.#showMode === "OnlySidebar") {
+      return this.#sidebarWidget ? this.#sidebarWidget.constraints() : new Geometry3.Constraints();
+    }
+    let mainConstraints = this.#mainWidget ? this.#mainWidget.constraints() : new Geometry3.Constraints();
+    let sidebarConstraints = this.#sidebarWidget ? this.#sidebarWidget.constraints() : new Geometry3.Constraints();
+    const min = MinPadding;
+    if (this.#isVertical) {
+      mainConstraints = mainConstraints.widthToMax(min).addWidth(1);
+      sidebarConstraints = sidebarConstraints.widthToMax(min);
+      return mainConstraints.addWidth(sidebarConstraints).heightToMax(sidebarConstraints);
+    }
+    mainConstraints = mainConstraints.heightToMax(min).addHeight(1);
+    sidebarConstraints = sidebarConstraints.heightToMax(min);
+    return mainConstraints.widthToMax(sidebarConstraints).addHeight(sidebarConstraints);
+  }
+  #maybeAutoAdjustOrientation() {
+    if (this.#autoAdjustOrientation) {
+      const width = this.isVertical() ? this.#totalSizeCSS : this.#totalSizeOtherDimensionCSS;
+      const height = this.isVertical() ? this.#totalSizeOtherDimensionCSS : this.#totalSizeCSS;
+      if (width <= 600 && height >= 600) {
+        this.setVertical(false);
+      } else {
+        this.setVertical(true);
+      }
+    }
+  }
+  #onResizeStart() {
+    this.#resizeStartSizeDIP = this.#sidebarSizeDIP;
+  }
+  #onResizeUpdate(event) {
+    const offset = event.data.currentPosition - event.data.startPosition;
+    const offsetDIP = ZoomManager.instance().cssToDIP(offset);
+    const newSizeDIP = this.#secondIsSidebar ? this.#resizeStartSizeDIP - offsetDIP : this.#resizeStartSizeDIP + offsetDIP;
+    const constrainedSizeDIP = this.#applyConstraints(newSizeDIP, true);
+    this.#savedSidebarSizeDIP = constrainedSizeDIP;
+    this.#saveSetting();
+    this.#setSidebarSizeDIP(constrainedSizeDIP, false, true);
+    if (this.isVertical()) {
+      this.#savedVerticalMainSize = this.#totalSizeDIP() - this.#sidebarSizeDIP;
+    } else {
+      this.#savedHorizontalMainSize = this.#totalSizeDIP() - this.#sidebarSizeDIP;
+    }
+  }
+  #onResizeEnd() {
+    this.#resizeStartSizeDIP = 0;
+  }
+  hideDefaultResizer(noSplitter) {
+    this.#resizerElement.classList.toggle("hidden", Boolean(noSplitter));
+    this.uninstallResizer(this.#resizerElement);
+    this.#sidebarElement.classList.toggle("no-default-splitter", Boolean(noSplitter));
+  }
+  installResizer(resizerElement) {
+    this.#resizerWidget.addElement(resizerElement);
+  }
+  uninstallResizer(resizerElement) {
+    this.#resizerWidget.removeElement(resizerElement);
+  }
+  toggleResizer(resizer, on) {
+    if (on) {
+      this.installResizer(resizer);
+    } else {
+      this.uninstallResizer(resizer);
+    }
+  }
+  #settingForOrientation() {
+    const state = this.setting ? this.setting.get() : {};
+    const orientationState = this.#isVertical ? state.vertical : state.horizontal;
+    return orientationState ?? null;
+  }
+  #preferredSidebarSizeDIP() {
+    let size = this.#savedSidebarSizeDIP;
+    if (!size) {
+      size = this.#isVertical ? this.#defaultSidebarWidth : this.#defaultSidebarHeight;
+      if (0 < size && size < 1) {
+        size *= this.#totalSizeDIP();
+      }
+    }
+    return size;
+  }
+  #restoreSidebarSizeFromSettings() {
+    const settingForOrientation = this.#settingForOrientation();
+    this.#savedSidebarSizeDIP = settingForOrientation ? settingForOrientation.size : 0;
+  }
+  #restoreAndApplyShowModeFromSettings() {
+    const orientationState = this.#settingForOrientation();
+    this.#savedShowMode = orientationState?.showMode ? orientationState.showMode : this.#showMode;
+    this.#showMode = this.#savedShowMode;
+    switch (this.#savedShowMode) {
+      case "Both":
+        this.showBoth();
+        break;
+      case "OnlyMain":
+        this.hideSidebar();
+        break;
+      case "OnlySidebar":
+        this.hideMain();
+        break;
+    }
+  }
+  #saveShowModeToSettings() {
+    this.#savedShowMode = this.#showMode;
+    this.#saveSetting();
+  }
+  #saveSetting() {
+    if (!this.setting) {
+      return;
+    }
+    const state = this.setting.get();
+    const orientationState = (this.#isVertical ? state.vertical : state.horizontal) || {};
+    orientationState.size = this.#savedSidebarSizeDIP;
+    if (this.#shouldSaveShowMode) {
+      orientationState.showMode = this.#savedShowMode;
+    }
+    if (this.#isVertical) {
+      state.vertical = orientationState;
+    } else {
+      state.horizontal = orientationState;
+    }
+    this.setting.set(state);
+  }
+  #forceUpdateLayout() {
+    this.#sidebarSizeDIP = -1;
+    this.#updateLayout();
+  }
+  onZoomChanged() {
+    this.#forceUpdateLayout();
+  }
+  createShowHideSidebarButton(showTitle, hideTitle, shownString, hiddenString, jslogContext) {
+    this.#showSidebarButtonTitle = showTitle;
+    this.#hideSidebarButtonTitle = hideTitle;
+    this.#shownSidebarString = shownString;
+    this.#hiddenSidebarString = hiddenString;
+    this.#showHideSidebarButton = new ToolbarButton("", "right-panel-open");
+    this.#showHideSidebarButton.addEventListener("Click", buttonClicked, this);
+    if (jslogContext) {
+      this.#showHideSidebarButton.element.setAttribute("jslog", `${VisualLogging7.toggleSubpane().track({ click: true }).context(jslogContext)}`);
+    }
+    this.#updateShowHideSidebarButton();
+    function buttonClicked() {
+      this.toggleSidebar();
+    }
+    return this.#showHideSidebarButton;
+  }
+  /**
+   * @returns true if this call makes the sidebar visible, and false otherwise.
+   */
+  toggleSidebar() {
+    if (this.#showMode !== "Both") {
+      this.showBoth(true);
+      LiveAnnouncer.alert(this.#shownSidebarString);
+      return true;
+    }
+    this.hideSidebar(true);
+    LiveAnnouncer.alert(this.#hiddenSidebarString);
+    return false;
+  }
+  #updateShowHideSidebarButton() {
+    if (!this.#showHideSidebarButton) {
+      return;
+    }
+    const sidebarHidden = this.#showMode === "OnlyMain";
+    let glyph = "";
+    if (sidebarHidden) {
+      glyph = this.isVertical() ? this.isSidebarSecond() ? "right-panel-open" : "left-panel-open" : this.isSidebarSecond() ? "bottom-panel-open" : "top-panel-open";
+    } else {
+      glyph = this.isVertical() ? this.isSidebarSecond() ? "right-panel-close" : "left-panel-close" : this.isSidebarSecond() ? "bottom-panel-close" : "top-panel-close";
+    }
+    this.#showHideSidebarButton.setGlyph(glyph);
+    this.#showHideSidebarButton.setTitle(sidebarHidden ? this.#showSidebarButtonTitle : this.#hideSidebarButtonTitle);
+  }
+};
+var SplitWidgetElement = class extends WidgetElement {
+  static observedAttributes = ["direction", "sidebar-position", "sidebar-initial-size", "sidebar-visibility"];
+  createWidget() {
+    const vertical = this.getAttribute("direction") === "column";
+    const autoAdjustOrientation = this.getAttribute("direction") === "auto";
+    const secondIsSidebar = this.getAttribute("sidebar-position") === "second";
+    const settingName = this.getAttribute("name") ?? void 0;
+    const sidebarSize = parseInt(this.getAttribute("sidebar-initial-size") || "", 10);
+    const defaultSidebarWidth = !isNaN(sidebarSize) ? sidebarSize : void 0;
+    const defaultSidebarHeight = !isNaN(sidebarSize) ? sidebarSize : void 0;
+    const widget2 = new SplitWidget(
+      vertical,
+      secondIsSidebar,
+      settingName,
+      defaultSidebarWidth,
+      defaultSidebarHeight,
+      /* constraintsInDip=*/
+      false,
+      this
+    );
+    if (this.getAttribute("sidebar-initial-size") === "minimized") {
+      widget2.setSidebarMinimized(true);
+    }
+    if (autoAdjustOrientation) {
+      widget2.setAutoAdjustOrientation(true);
+    }
+    const sidebarHidden = this.getAttribute("sidebar-visibility") === "hidden";
+    if (sidebarHidden) {
+      widget2.hideSidebar();
+    }
+    widget2.addEventListener("ShowModeChanged", () => {
+      this.dispatchEvent(new CustomEvent("change", { detail: widget2.showMode() }));
+    });
+    return widget2;
+  }
+  attributeChangedCallback(name, _oldValue, newValue) {
+    const widget2 = Widget.get(this);
+    if (!widget2) {
+      return;
+    }
+    if (name === "direction") {
+      widget2.setVertical(newValue === "column");
+      widget2.setAutoAdjustOrientation(newValue === "auto");
+    } else if (name === "sidebar-position") {
+      widget2.setSecondIsSidebar(newValue === "second");
+    } else if (name === "sidebar-visibility") {
+      if (newValue === "hidden") {
+        widget2.hideSidebar();
+      } else {
+        widget2.showBoth();
+      }
+    }
+  }
+};
+customElements.define("devtools-split-view", SplitWidgetElement);
+var MinPadding = 20;
+var suppressUnused = function(_value) {
+};
+
+// gen/front_end/ui/legacy/InspectorView.js
+var UIStrings8 = {
   /**
    * @description The ARIA label for the main tab bar that contains the DevTools panels
    */
@@ -7140,14 +7287,10 @@ var UIStrings7 = {
   /**
    * @description Label for a button which opens a file picker.
    */
-  selectFolder: "Select folder",
-  /**
-   * @description Text that appears when hover the toggle orientation button
-   */
-  toggleDrawerOrientation: "Toggle drawer orientation"
+  selectFolder: "Select folder"
 };
-var str_7 = i18n13.i18n.registerUIStrings("ui/legacy/InspectorView.ts", UIStrings7);
-var i18nString7 = i18n13.i18n.getLocalizedString.bind(void 0, str_7);
+var str_8 = i18n15.i18n.registerUIStrings("ui/legacy/InspectorView.ts", UIStrings8);
+var i18nString8 = i18n15.i18n.getLocalizedString.bind(void 0, str_8);
 var inspectorViewInstance = null;
 var MIN_MAIN_PANEL_WIDTH = 240;
 var MIN_VERTICAL_DRAWER_WIDTH = 200;
@@ -7169,6 +7312,7 @@ var DockMode;
 var InspectorView = class _InspectorView extends VBox {
   drawerOrientationByDockSetting;
   drawerSplitWidget;
+  #drawerView;
   tabDelegate;
   drawerTabbedLocation;
   drawerTabbedPane;
@@ -7184,7 +7328,6 @@ var InspectorView = class _InspectorView extends VBox {
   #debuggedTabReloadRequiredInfobar;
   #selectOverrideFolderInfobar;
   #resizeObserver;
-  #toggleOrientationButton;
   constructor() {
     super();
     GlassPane.setContainer(this.element);
@@ -7201,41 +7344,30 @@ var InspectorView = class _InspectorView extends VBox {
     this.drawerSplitWidget.enableShowModeSaving();
     this.drawerSplitWidget.show(this.element);
     this.tabDelegate = new InspectorViewTabDelegate();
-    this.drawerTabbedLocation = ViewManager.instance().createTabbedLocation(this.showDrawer.bind(this, {
-      focus: false,
-      hasTargetDrawer: true
-    }), "drawer-view", true, true);
-    const moreTabsButton = this.drawerTabbedLocation.enableMoreTabsButton();
-    moreTabsButton.setTitle(i18nString7(UIStrings7.moreTools));
-    this.drawerTabbedPane = this.drawerTabbedLocation.tabbedPane();
-    this.setDrawerRelatedMinimumSizes();
-    this.drawerTabbedPane.element.classList.add("drawer-tabbed-pane");
-    this.drawerTabbedPane.element.setAttribute("jslog", `${VisualLogging7.drawer()}`);
-    const closeDrawerButton = new ToolbarButton(i18nString7(UIStrings7.closeDrawer), "cross");
-    closeDrawerButton.element.setAttribute("jslog", `${VisualLogging7.close().track({ click: true })}`);
-    closeDrawerButton.addEventListener("Click", this.closeDrawer, this);
-    this.#toggleOrientationButton = new ToolbarButton(i18nString7(UIStrings7.toggleDrawerOrientation), this.drawerSplitWidget.isVertical() ? "dock-bottom" : "dock-right");
-    this.#toggleOrientationButton.element.setAttribute("jslog", `${VisualLogging7.toggle("toggle-drawer-orientation").track({ click: true })}`);
-    this.#toggleOrientationButton.addEventListener("Click", () => this.toggleDrawerOrientation(), this);
-    this.drawerTabbedPane.addEventListener(Events.TabSelected, (event) => this.tabSelected(event.data.tabId), this);
-    const selectedDrawerTab = this.drawerTabbedPane.selectedTabId;
-    if (this.drawerSplitWidget.showMode() !== "OnlyMain" && selectedDrawerTab) {
-      Host5.userMetrics.panelShown(selectedDrawerTab, true);
-    }
-    this.drawerTabbedPane.setTabDelegate(this.tabDelegate);
-    const drawerElement = this.drawerTabbedPane.element;
-    markAsComplementary(drawerElement);
-    setLabel(drawerElement, i18nString7(UIStrings7.drawer));
-    this.drawerSplitWidget.installResizer(this.drawerTabbedPane.headerElement());
-    this.drawerSplitWidget.setSidebarWidget(this.drawerTabbedPane);
-    if (Root3.Runtime.hostConfig.devToolsFlexibleLayout?.verticalDrawerEnabled) {
-      this.drawerTabbedPane.rightToolbar().appendToolbarItem(this.#toggleOrientationButton);
-    }
-    this.drawerTabbedPane.rightToolbar().appendToolbarItem(closeDrawerButton);
-    this.drawerTabbedPane.headerElement().setAttribute("jslog", `${VisualLogging7.toolbar("drawer").track({
-      drag: true,
-      keydown: "ArrowUp|ArrowLeft|ArrowDown|ArrowRight|Enter|Space"
-    })}`);
+    this.#drawerView = new InspectorDrawerView({
+      splitWidget: this.drawerSplitWidget,
+      revealDrawer: this.showDrawer.bind(this, {
+        focus: false,
+        hasTargetDrawer: true
+      }),
+      isVisible: () => this.drawerSplitWidget.sidebarIsShowing(),
+      drawerLabel: i18nString8(UIStrings8.drawer),
+      onHide: this.closeDrawer.bind(this),
+      onToggleOrientation: this.toggleDrawerOrientation.bind(this),
+      onTabSelected: this.tabSelected.bind(this),
+      tabDelegate: this.tabDelegate,
+      enableOrientationToggle: Boolean(Root3.Runtime.hostConfig.devToolsFlexibleLayout?.verticalDrawerEnabled),
+      isVertical,
+      verticalExpandedMinimumWidth: MIN_VERTICAL_DRAWER_WIDTH,
+      minimumSizes: {
+        inspectorWidthWhenVertical: MIN_INSPECTOR_WIDTH_VERTICAL_DRAWER,
+        inspectorWidthWhenHorizontal: MIN_INSPECTOR_WIDTH_HORIZONTAL_DRAWER,
+        inspectorHeight: MIN_INSPECTOR_HEIGHT
+      },
+      setInspectorMinimumSize: this.setMinimumSize.bind(this)
+    });
+    this.drawerTabbedLocation = this.#drawerView.tabbedLocation;
+    this.drawerTabbedPane = this.#drawerView.tabbedPane;
     this.tabbedLocation = ViewManager.instance().createTabbedLocation(Host5.InspectorFrontendHost.InspectorFrontendHostInstance.bringToFront.bind(Host5.InspectorFrontendHost.InspectorFrontendHostInstance), "panel", true, true, Root3.Runtime.Runtime.queryParam("panel"));
     this.tabbedPane = this.tabbedLocation.tabbedPane();
     this.tabbedPane.setMinimumSize(MIN_MAIN_PANEL_WIDTH, 0);
@@ -7247,12 +7379,12 @@ var InspectorView = class _InspectorView extends VBox {
     if (selectedTab) {
       Host5.userMetrics.panelShown(selectedTab, true);
     }
-    this.tabbedPane.setAccessibleName(i18nString7(UIStrings7.panels));
+    this.tabbedPane.setAccessibleName(i18nString8(UIStrings8.panels));
     this.tabbedPane.setTabDelegate(this.tabDelegate);
     const mainHeaderElement = this.tabbedPane.headerElement();
     markAsNavigation(mainHeaderElement);
-    setLabel(mainHeaderElement, i18nString7(UIStrings7.mainToolbar));
-    mainHeaderElement.setAttribute("jslog", `${VisualLogging7.toolbar("main").track({
+    setLabel(mainHeaderElement, i18nString8(UIStrings8.mainToolbar));
+    mainHeaderElement.setAttribute("jslog", `${VisualLogging8.toolbar("main").track({
       drag: true,
       keydown: "ArrowUp|ArrowLeft|ArrowDown|ArrowRight|Enter|Space"
     })}`);
@@ -7273,6 +7405,7 @@ var InspectorView = class _InspectorView extends VBox {
       this.attachInfobar(infobar);
     }
     this.#resizeObserver = new ResizeObserver(this.#observedResize.bind(this));
+    DockController.instance().addEventListener("DockSideChanged", this.#applyDrawerOrientationForDockSide, this);
   }
   static instance(opts = { forceNew: null }) {
     const { forceNew } = opts;
@@ -7319,13 +7452,11 @@ var InspectorView = class _InspectorView extends VBox {
   }
   #applyDrawerOrientation(orientation) {
     const shouldBeVertical = orientation === DrawerOrientation.VERTICAL;
-    const isVertical = this.drawerSplitWidget.isVertical();
+    const isVertical = this.#drawerView.isVertical();
     if (shouldBeVertical === isVertical) {
       return;
     }
-    this.#toggleOrientationButton.setGlyph(shouldBeVertical ? "dock-bottom" : "dock-right");
-    this.drawerSplitWidget.setVertical(shouldBeVertical);
-    this.setDrawerRelatedMinimumSizes();
+    this.#drawerView.setVertical(shouldBeVertical);
   }
   #observedResize() {
     const rect = this.element.getBoundingClientRect();
@@ -7341,7 +7472,6 @@ var InspectorView = class _InspectorView extends VBox {
     this.#resizeObserver.observe(this.element);
     this.#observedResize();
     this.element.ownerDocument.addEventListener("keydown", this.keyDownBound, false);
-    DockController.instance().addEventListener("DockSideChanged", this.#applyDrawerOrientationForDockSide, this);
     this.#applyDrawerOrientationForDockSide();
   }
   willHide() {
@@ -7414,31 +7544,31 @@ var InspectorView = class _InspectorView extends VBox {
     return ViewManager.instance().materializedWidget(this.tabbedPane.selectedTabId || "");
   }
   showDrawer({ focus, hasTargetDrawer }) {
-    if (this.drawerTabbedPane.isShowing()) {
+    if (this.#drawerView.drawerVisible()) {
       return;
     }
-    this.drawerTabbedPane.setAutoSelectFirstItemOnShow(!hasTargetDrawer);
-    this.drawerSplitWidget.showBoth();
+    this.#drawerView.show(hasTargetDrawer);
     if (focus) {
       this.focusRestorer = new WidgetFocusRestorer(this.drawerTabbedPane);
     } else {
       this.focusRestorer = null;
     }
     this.#applyDrawerOrientationForDockSide();
-    LiveAnnouncer.alert(i18nString7(UIStrings7.drawerShown));
+    LiveAnnouncer.alert(i18nString8(UIStrings8.drawerShown));
   }
   drawerVisible() {
-    return this.drawerTabbedPane.isShowing();
+    return this.#drawerView.drawerVisible();
   }
   closeDrawer() {
-    if (!this.drawerTabbedPane.isShowing()) {
+    if (!this.#drawerView.drawerVisible()) {
       return;
     }
     if (this.focusRestorer) {
       this.focusRestorer.restore();
     }
-    this.drawerSplitWidget.hideSidebar(true);
-    LiveAnnouncer.alert(i18nString7(UIStrings7.drawerHidden));
+    this.focusRestorer = null;
+    this.#drawerView.hide();
+    LiveAnnouncer.alert(i18nString8(UIStrings8.drawerHidden));
   }
   toggleDrawerOrientation({ force } = {}) {
     if (!this.drawerTabbedPane.isShowing()) {
@@ -7462,34 +7592,24 @@ var InspectorView = class _InspectorView extends VBox {
     const dockMode = this.#getDockMode();
     return orientationSetting[dockMode] !== DrawerOrientation.UNSET;
   }
-  setDrawerRelatedMinimumSizes() {
-    const drawerIsVertical = this.drawerSplitWidget.isVertical();
-    if (drawerIsVertical) {
-      this.drawerTabbedPane.setMinimumSize(MIN_VERTICAL_DRAWER_WIDTH, 27);
-      this.setMinimumSize(MIN_INSPECTOR_WIDTH_VERTICAL_DRAWER, MIN_INSPECTOR_HEIGHT);
-    } else {
-      this.drawerTabbedPane.setMinimumSize(0, 27);
-      this.setMinimumSize(MIN_INSPECTOR_WIDTH_HORIZONTAL_DRAWER, MIN_INSPECTOR_HEIGHT);
-    }
-  }
   setDrawerMinimized(minimized) {
     this.drawerSplitWidget.setSidebarMinimized(minimized);
     this.drawerSplitWidget.setResizable(!minimized);
   }
   drawerSize() {
-    return this.drawerSplitWidget.sidebarSize();
+    return this.#drawerView.drawerSize();
   }
   setDrawerSize(size) {
-    this.drawerSplitWidget.setSidebarSize(size);
+    this.#drawerView.setDrawerSize(size);
   }
   totalSize() {
-    return this.drawerSplitWidget.totalSize();
+    return this.#drawerView.totalSize();
   }
   isDrawerMinimized() {
     return this.drawerSplitWidget.isSidebarMinimized();
   }
   isDrawerOrientationVertical() {
-    return this.drawerSplitWidget.isVertical();
+    return this.#drawerView.isVertical();
   }
   keyDown(event) {
     if (!KeyboardShortcut.eventHasCtrlEquivalentKey(event) || event.altKey || event.shiftKey) {
@@ -7508,7 +7628,7 @@ var InspectorView = class _InspectorView extends VBox {
         if (panelName) {
           if (!Dialog.hasInstance() && !this.currentPanelLocked) {
             void this.showPanel(panelName);
-            void VisualLogging7.logKeyDown(null, event, `panel-by-index-${panelName}`);
+            void VisualLogging8.logKeyDown(null, event, `panel-by-index-${panelName}`);
           }
           event.consume(true);
         }
@@ -7547,7 +7667,7 @@ var InspectorView = class _InspectorView extends VBox {
     if (!this.#debuggedTabReloadRequiredInfobar) {
       const infobar = new Infobar("info", message, [
         {
-          text: i18nString7(UIStrings7.reloadDebuggedTab),
+          text: i18nString8(UIStrings8.reloadDebuggedTab),
           delegate: () => {
             reloadDebuggedTab();
             this.removeDebuggedTabReloadRequiredWarning();
@@ -7576,7 +7696,7 @@ var InspectorView = class _InspectorView extends VBox {
     if (!this.reloadRequiredInfobar && !this.#chromeRestartRequiredInfobar) {
       const infobar = new Infobar("info", message, [
         {
-          text: i18nString7(UIStrings7.reloadDevtools),
+          text: i18nString8(UIStrings8.reloadDevtools),
           delegate: () => reloadDevTools(),
           dismiss: false,
           buttonVariant: "primary",
@@ -7598,9 +7718,9 @@ var InspectorView = class _InspectorView extends VBox {
     if (!this.#chromeRestartRequiredInfobar) {
       const infobar = new Infobar("info", message, [
         {
-          text: i18nString7(UIStrings7.restartChrome),
+          text: i18nString8(UIStrings8.restartChrome),
           delegate: () => {
-            if (confirm(i18nString7(UIStrings7.areYouSureYouWantToRestartChrome))) {
+            if (confirm(i18nString8(UIStrings8.areYouSureYouWantToRestartChrome))) {
               Host5.InspectorFrontendHost.InspectorFrontendHostInstance.requestRestart();
             }
           },
@@ -7619,9 +7739,9 @@ var InspectorView = class _InspectorView extends VBox {
   }
   displaySelectOverrideFolderInfobar(callback) {
     if (!this.#selectOverrideFolderInfobar) {
-      const infobar = new Infobar("info", i18nString7(UIStrings7.selectOverrideFolder), [
+      const infobar = new Infobar("info", i18nString8(UIStrings8.selectOverrideFolder), [
         {
-          text: i18nString7(UIStrings7.selectFolder),
+          text: i18nString8(UIStrings8.selectFolder),
           delegate: () => callback(),
           dismiss: true,
           buttonVariant: "tonal",
@@ -7659,17 +7779,17 @@ function shouldShowLocaleInfobar() {
   if (languageSettingValue !== "en-US") {
     return false;
   }
-  return !i18n13.DevToolsLocale.localeLanguagesMatch(navigator.language, languageSettingValue) && i18n13.DevToolsLocale.DevToolsLocale.instance().languageIsSupportedByDevTools(navigator.language);
+  return !i18n15.DevToolsLocale.localeLanguagesMatch(navigator.language, languageSettingValue) && i18n15.DevToolsLocale.DevToolsLocale.instance().languageIsSupportedByDevTools(navigator.language);
 }
 function createLocaleInfobar() {
-  const devtoolsLocale = i18n13.DevToolsLocale.DevToolsLocale.instance();
+  const devtoolsLocale = i18n15.DevToolsLocale.DevToolsLocale.instance();
   const closestSupportedLocale = devtoolsLocale.lookupClosestDevToolsLocale(navigator.language);
   const locale = new Intl.Locale(closestSupportedLocale);
   const closestSupportedLanguageInCurrentLocale = new Intl.DisplayNames([devtoolsLocale.locale], { type: "language" }).of(locale.language || "en") || "English";
   const languageSetting = Common10.Settings.Settings.instance().moduleSetting("language");
-  return new Infobar("info", i18nString7(UIStrings7.devToolsLanguageMissmatch, { PH1: closestSupportedLanguageInCurrentLocale }), [
+  return new Infobar("info", i18nString8(UIStrings8.devToolsLanguageMissmatch, { PH1: closestSupportedLanguageInCurrentLocale }), [
     {
-      text: i18nString7(UIStrings7.setToBrowserLanguage),
+      text: i18nString8(UIStrings8.setToBrowserLanguage),
       delegate: () => {
         languageSetting.set("browserLanguage");
         getDisableLocaleInfoBarSetting().set(true);
@@ -7679,7 +7799,7 @@ function createLocaleInfobar() {
       jslogContext: "set-to-browser-language"
     },
     {
-      text: i18nString7(UIStrings7.setToSpecificLanguage, { PH1: closestSupportedLanguageInCurrentLocale }),
+      text: i18nString8(UIStrings8.setToSpecificLanguage, { PH1: closestSupportedLanguageInCurrentLocale }),
       delegate: () => {
         languageSetting.set(closestSupportedLocale);
         getDisableLocaleInfoBarSetting().set(true);
@@ -7746,9 +7866,9 @@ var InspectorViewTabDelegate = class {
     }
     const locationName = ViewManager.instance().locationNameForViewId(tabId);
     if (locationName === "drawer-view") {
-      contextMenu.defaultSection().appendItem(i18nString7(UIStrings7.moveToMainTabBar), this.moveToMainTabBar.bind(this, tabId), { jslogContext: "move-to-top" });
+      contextMenu.defaultSection().appendItem(i18nString8(UIStrings8.moveToMainTabBar), this.moveToMainTabBar.bind(this, tabId), { jslogContext: "move-to-top" });
     } else {
-      contextMenu.defaultSection().appendItem(i18nString7(UIStrings7.moveToDrawer), this.moveToDrawer.bind(this, tabId), { jslogContext: "move-to-bottom" });
+      contextMenu.defaultSection().appendItem(i18nString8(UIStrings8.moveToDrawer), this.moveToDrawer.bind(this, tabId), { jslogContext: "move-to-bottom" });
     }
   }
 };
@@ -7909,7 +8029,7 @@ var softContextMenu_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./softContextMenu.css")} */`;
 
 // gen/front_end/ui/legacy/SoftContextMenu.js
-var UIStrings8 = {
+var UIStrings9 = {
   /**
    * @description Text exposed to screen readers on checked items.
    */
@@ -7936,8 +8056,8 @@ var UIStrings8 = {
    */
   newFeature: "This is a new feature"
 };
-var str_8 = i18n15.i18n.registerUIStrings("ui/legacy/SoftContextMenu.ts", UIStrings8);
-var i18nString8 = i18n15.i18n.getLocalizedString.bind(void 0, str_8);
+var str_9 = i18n17.i18n.registerUIStrings("ui/legacy/SoftContextMenu.ts", UIStrings9);
+var i18nString9 = i18n17.i18n.getLocalizedString.bind(void 0, str_9);
 var SoftContextMenu = class _SoftContextMenu {
   items;
   itemSelectedCallback;
@@ -7993,11 +8113,11 @@ var SoftContextMenu = class _SoftContextMenu {
       /* AnchorBehavior.PREFER_BOTTOM */
     );
     this.contextMenuElement = this.glassPane.contentElement.createChild("div", "soft-context-menu");
-    this.contextMenuElement.setAttribute("jslog", `${VisualLogging8.menu().track({ resize: true }).parent("mapped").track({
+    this.contextMenuElement.setAttribute("jslog", `${VisualLogging9.menu().track({ resize: true }).parent("mapped").track({
       keydown: "ArrowUp|ArrowDown|ArrowLeft|ArrowRight|Enter|Space|Escape"
     })}`);
     if (this.loggableParent) {
-      VisualLogging8.setMappedParent(this.contextMenuElement, this.loggableParent);
+      VisualLogging9.setMappedParent(this.contextMenuElement, this.loggableParent);
     }
     this.contextMenuElement.tabIndex = -1;
     markAsMenu(this.contextMenuElement);
@@ -8103,9 +8223,9 @@ var SoftContextMenu = class _SoftContextMenu {
     const detailsForElement = {};
     if (item8.jslogContext && item8.label) {
       if (item8.type === "checkbox") {
-        menuItemElement.setAttribute("jslog", `${VisualLogging8.toggle().track({ click: true }).context(item8.jslogContext)}`);
+        menuItemElement.setAttribute("jslog", `${VisualLogging9.toggle().track({ click: true }).context(item8.jslogContext)}`);
       } else {
-        menuItemElement.setAttribute("jslog", `${VisualLogging8.action().track({ click: true }).context(item8.jslogContext)}`);
+        menuItemElement.setAttribute("jslog", `${VisualLogging9.action().track({ click: true }).context(item8.jslogContext)}`);
       }
     }
     if (item8.element && !item8.label) {
@@ -8135,17 +8255,17 @@ var SoftContextMenu = class _SoftContextMenu {
     detailsForElement.actionId = item8.id;
     let accessibleName = item8.label || "";
     if (item8.type === "checkbox") {
-      const checkedState = item8.checked ? i18nString8(UIStrings8.checked) : i18nString8(UIStrings8.unchecked);
+      const checkedState = item8.checked ? i18nString9(UIStrings9.checked) : i18nString9(UIStrings9.unchecked);
       if (item8.shortcut) {
-        accessibleName = i18nString8(UIStrings8.sSS, { PH1: String(item8.label), PH2: item8.shortcut, PH3: checkedState });
+        accessibleName = i18nString9(UIStrings9.sSS, { PH1: String(item8.label), PH2: item8.shortcut, PH3: checkedState });
       } else {
-        accessibleName = i18nString8(UIStrings8.sS, { PH1: String(item8.label), PH2: checkedState });
+        accessibleName = i18nString9(UIStrings9.sS, { PH1: String(item8.label), PH2: checkedState });
       }
     } else if (item8.shortcut) {
-      accessibleName = i18nString8(UIStrings8.sS, { PH1: String(item8.label), PH2: item8.shortcut });
+      accessibleName = i18nString9(UIStrings9.sS, { PH1: String(item8.label), PH2: item8.shortcut });
     }
     if (item8.element?.className === "new-badge") {
-      accessibleName = i18nString8(UIStrings8.sS, { PH1: String(item8.label), PH2: i18nString8(UIStrings8.newFeature) });
+      accessibleName = i18nString9(UIStrings9.sS, { PH1: String(item8.label), PH2: i18nString9(UIStrings9.newFeature) });
     }
     setLabel(menuItemElement, accessibleName);
     if (item8.isExperimentalFeature) {
@@ -8176,7 +8296,7 @@ var SoftContextMenu = class _SoftContextMenu {
     menuItemElement.addEventListener("mouseover", this.menuItemMouseOver.bind(this), false);
     menuItemElement.addEventListener("mouseleave", this.menuItemMouseLeave.bind(this), false);
     if (item8.jslogContext) {
-      menuItemElement.setAttribute("jslog", `${VisualLogging8.item(item8.jslogContext).track({ click: true, resize: true })}`);
+      menuItemElement.setAttribute("jslog", `${VisualLogging9.item(item8.jslogContext).track({ click: true, resize: true })}`);
     }
     return menuItemElement;
   }
@@ -8194,7 +8314,7 @@ var SoftContextMenu = class _SoftContextMenu {
   }
   menuItemMouseUp(event) {
     this.triggerAction(event.target, event);
-    void VisualLogging8.logClick(event.target, event);
+    void VisualLogging9.logClick(event.target, event);
     event.consume();
   }
   root() {
@@ -8215,8 +8335,8 @@ var SoftContextMenu = class _SoftContextMenu {
     } else {
       element.removeAttribute("checked");
     }
-    const checkedState = item8.checked ? i18nString8(UIStrings8.checked) : i18nString8(UIStrings8.unchecked);
-    const accessibleName = item8.shortcut ? i18nString8(UIStrings8.sSS, { PH1: String(item8.label), PH2: item8.shortcut, PH3: checkedState }) : i18nString8(UIStrings8.sS, { PH1: String(item8.label), PH2: checkedState });
+    const checkedState = item8.checked ? i18nString9(UIStrings9.checked) : i18nString9(UIStrings9.unchecked);
+    const accessibleName = item8.shortcut ? i18nString9(UIStrings9.sSS, { PH1: String(item8.label), PH2: item8.shortcut, PH3: checkedState }) : i18nString9(UIStrings9.sS, { PH1: String(item8.label), PH2: checkedState });
     setLabel(element, accessibleName);
   }
   triggerAction(menuItemElement, event) {
@@ -8346,7 +8466,7 @@ var SoftContextMenu = class _SoftContextMenu {
       if (!detailsForElement || detailsForElement.customElement) {
         return;
       }
-      VisualLogging8.logClick(this.highlightedMenuItemElement, keyboardEvent);
+      VisualLogging9.logClick(this.highlightedMenuItemElement, keyboardEvent);
       this.triggerAction(this.highlightedMenuItemElement, keyboardEvent);
       if (detailsForElement.subItems && this.subMenu) {
         this.subMenu.highlightNext();
@@ -9014,11 +9134,11 @@ var ContextMenu = class _ContextMenu extends SubMenu {
     for (const descriptor of descriptors) {
       if (descriptor.jslogContext) {
         if (descriptor.type === "checkbox") {
-          VisualLogging9.registerLoggable(descriptor, `${VisualLogging9.toggle().track({ click: true }).context(descriptor.jslogContext)}`, parent || descriptors, new DOMRect(0, 0, MENU_ITEM_WIDTH_FOR_LOGGING, MENU_ITEM_HEIGHT_FOR_LOGGING));
+          VisualLogging10.registerLoggable(descriptor, `${VisualLogging10.toggle().track({ click: true }).context(descriptor.jslogContext)}`, parent || descriptors, new DOMRect(0, 0, MENU_ITEM_WIDTH_FOR_LOGGING, MENU_ITEM_HEIGHT_FOR_LOGGING));
         } else if (descriptor.type === "item") {
-          VisualLogging9.registerLoggable(descriptor, `${VisualLogging9.action().track({ click: true }).context(descriptor.jslogContext)}`, parent || descriptors, new DOMRect(0, 0, MENU_ITEM_WIDTH_FOR_LOGGING, MENU_ITEM_HEIGHT_FOR_LOGGING));
+          VisualLogging10.registerLoggable(descriptor, `${VisualLogging10.action().track({ click: true }).context(descriptor.jslogContext)}`, parent || descriptors, new DOMRect(0, 0, MENU_ITEM_WIDTH_FOR_LOGGING, MENU_ITEM_HEIGHT_FOR_LOGGING));
         } else if (descriptor.type === "subMenu") {
-          VisualLogging9.registerLoggable(descriptor, `${VisualLogging9.item().context(descriptor.jslogContext)}`, parent || descriptors, new DOMRect(0, 0, MENU_ITEM_WIDTH_FOR_LOGGING, MENU_ITEM_HEIGHT_FOR_LOGGING));
+          VisualLogging10.registerLoggable(descriptor, `${VisualLogging10.item().context(descriptor.jslogContext)}`, parent || descriptors, new DOMRect(0, 0, MENU_ITEM_WIDTH_FOR_LOGGING, MENU_ITEM_HEIGHT_FOR_LOGGING));
         }
         if (descriptor.subItems) {
           this.registerLoggablesWithin(descriptor.subItems, descriptor);
@@ -9050,7 +9170,7 @@ var ContextMenu = class _ContextMenu extends SubMenu {
         Host6.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host6.InspectorFrontendHostAPI.Events.ContextMenuItemSelected, this.onItemSelected, this);
       };
       Host6.InspectorFrontendHost.InspectorFrontendHostInstance.showContextMenuAtPoint(this.x, this.y, menuObject, ownerDocument);
-      VisualLogging9.registerLoggable(menuObject, `${VisualLogging9.menu()}`, this.loggableParent, new DOMRect(0, 0, MENU_ITEM_WIDTH_FOR_LOGGING, MENU_ITEM_HEIGHT_FOR_LOGGING * menuObject.length));
+      VisualLogging10.registerLoggable(menuObject, `${VisualLogging10.menu()}`, this.loggableParent, new DOMRect(0, 0, MENU_ITEM_WIDTH_FOR_LOGGING, MENU_ITEM_HEIGHT_FOR_LOGGING * menuObject.length));
       this.registerLoggablesWithin(menuObject);
       this.openHostedMenu = menuObject;
       queueMicrotask(listenToEvents.bind(this));
@@ -9120,7 +9240,7 @@ var ContextMenu = class _ContextMenu extends SubMenu {
       };
       const item8 = itemWithId(this.openHostedMenu, id2);
       if (item8?.jslogContext) {
-        void VisualLogging9.logClick(item8, new MouseEvent("click"));
+        void VisualLogging10.logClick(item8, new MouseEvent("click"));
       }
       if (item8 && featuresUsed.length > 0) {
         featuresUsed.map((feature) => Host6.InspectorFrontendHost.InspectorFrontendHostInstance.recordNewBadgeUsage(feature));
@@ -9132,7 +9252,7 @@ var ContextMenu = class _ContextMenu extends SubMenu {
     Host6.InspectorFrontendHost.InspectorFrontendHostInstance.events.removeEventListener(Host6.InspectorFrontendHostAPI.Events.ContextMenuCleared, this.menuCleared, this);
     Host6.InspectorFrontendHost.InspectorFrontendHostInstance.events.removeEventListener(Host6.InspectorFrontendHostAPI.Events.ContextMenuItemSelected, this.onItemSelected, this);
     if (this.openHostedMenu) {
-      void VisualLogging9.logResize(this.openHostedMenu, new DOMRect(0, 0, 0, 0));
+      void VisualLogging10.logResize(this.openHostedMenu, new DOMRect(0, 0, 0, 0));
     }
     this.openHostedMenu = null;
     if (!this.keepOpen) {
@@ -9221,7 +9341,7 @@ var MenuButton = class extends HTMLElement {
    * Reflects the `jslogContext` attribute. Sets the visual logging context for the button.
    */
   set jslogContext(jslogContext) {
-    this.setAttribute("jslog", VisualLogging9.dropDown(jslogContext).track({ click: true }).toString());
+    this.setAttribute("jslog", VisualLogging10.dropDown(jslogContext).track({ click: true }).toString());
   }
   get jslogContext() {
     return this.getAttribute("jslogContext");
@@ -9340,17 +9460,17 @@ __export(TextPrompt_exports, {
 import * as Common12 from "./../../core/common/common.js";
 import * as Platform12 from "./../../core/platform/platform.js";
 import * as TextUtils from "./../../models/text_utils/text_utils.js";
-import * as VisualLogging12 from "./../visual_logging/visual_logging.js";
+import * as VisualLogging13 from "./../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/SuggestBox.js
 var SuggestBox_exports = {};
 __export(SuggestBox_exports, {
   SuggestBox: () => SuggestBox
 });
-import * as i18n17 from "./../../core/i18n/i18n.js";
+import * as i18n19 from "./../../core/i18n/i18n.js";
 import * as Platform11 from "./../../core/platform/platform.js";
 import * as Geometry4 from "./../../models/geometry/geometry.js";
-import * as VisualLogging11 from "./../visual_logging/visual_logging.js";
+import * as VisualLogging12 from "./../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/ListControl.js
 var ListControl_exports = {};
@@ -9359,7 +9479,7 @@ __export(ListControl_exports, {
   ListMode: () => ListMode
 });
 import * as Platform9 from "./../../core/platform/platform.js";
-import * as VisualLogging10 from "./../visual_logging/visual_logging.js";
+import * as VisualLogging11 from "./../visual_logging/visual_logging.js";
 var ListMode;
 (function(ListMode2) {
   ListMode2["NonViewport"] = "UI.ListMode.NonViewport";
@@ -9682,7 +9802,7 @@ var ListControl = class {
     if (!element) {
       element = this.delegate.createElementForItem(item8);
       if (!element.hasAttribute("jslog")) {
-        element.setAttribute("jslog", `${VisualLogging10.item().track({
+        element.setAttribute("jslog", `${VisualLogging11.item().track({
           click: true,
           resize: true,
           keydown: "ArrowUp|ArrowDown|PageUp|PageDown|Home|End"
@@ -10101,7 +10221,7 @@ var suggestBox_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./suggestBox.css")} */`;
 
 // gen/front_end/ui/legacy/SuggestBox.js
-var UIStrings9 = {
+var UIStrings10 = {
   /**
    * @description Aria alert to read the suggestion for the suggestion box when typing in text editor
    * @example {name} PH1
@@ -10115,8 +10235,8 @@ var UIStrings9 = {
    */
   sSuggestionSSelected: "{PH1}, suggestion selected"
 };
-var str_9 = i18n17.i18n.registerUIStrings("ui/legacy/SuggestBox.ts", UIStrings9);
-var i18nString9 = i18n17.i18n.getLocalizedString.bind(void 0, str_9);
+var str_10 = i18n19.i18n.registerUIStrings("ui/legacy/SuggestBox.ts", UIStrings10);
+var i18nString10 = i18n19.i18n.getLocalizedString.bind(void 0, str_10);
 var SuggestBox = class {
   suggestBoxDelegate;
   maxItemsHeight;
@@ -10139,7 +10259,7 @@ var SuggestBox = class {
     this.element.classList.add("suggest-box");
     this.element.addEventListener("mousedown", (event) => event.preventDefault(), true);
     this.element.addEventListener("click", this.onClick.bind(this), false);
-    this.element.setAttribute("jslog", `${VisualLogging11.menu().parent("mapped").track({ resize: true, keydown: "ArrowUp|ArrowDown|PageUp|PageDown" })}`);
+    this.element.setAttribute("jslog", `${VisualLogging12.menu().parent("mapped").track({ resize: true, keydown: "ArrowUp|ArrowDown|PageUp|PageDown" })}`);
     this.glassPane = new GlassPane();
     this.glassPane.setAnchorBehavior(
       "PreferBottom"
@@ -10189,7 +10309,7 @@ var SuggestBox = class {
     if (this.visible()) {
       return;
     }
-    VisualLogging11.setMappedParent(this.element, this.suggestBoxDelegate.ownerElement());
+    VisualLogging12.setMappedParent(this.element, this.suggestBoxDelegate.ownerElement());
     this.glassPane.show(document);
     const suggestion = { text: "1", subtitle: "12" };
     this.rowHeight = measurePreferredSize(this.createElementForItem(suggestion), this.element).height;
@@ -10206,17 +10326,17 @@ var SuggestBox = class {
   }
   applySuggestion(isIntermediateSuggestion) {
     if (this.onlyCompletion) {
-      isIntermediateSuggestion ? LiveAnnouncer.alert(i18nString9(UIStrings9.sSuggestionSOfS, { PH1: this.onlyCompletion.text, PH2: this.list.selectedIndex() + 1, PH3: this.items.length })) : LiveAnnouncer.alert(i18nString9(UIStrings9.sSuggestionSSelected, { PH1: this.onlyCompletion.text }));
+      isIntermediateSuggestion ? LiveAnnouncer.alert(i18nString10(UIStrings10.sSuggestionSOfS, { PH1: this.onlyCompletion.text, PH2: this.list.selectedIndex() + 1, PH3: this.items.length })) : LiveAnnouncer.alert(i18nString10(UIStrings10.sSuggestionSSelected, { PH1: this.onlyCompletion.text }));
       this.suggestBoxDelegate.applySuggestion(this.onlyCompletion, isIntermediateSuggestion);
       return true;
     }
     const suggestion = this.list.selectedItem();
     if (suggestion?.text) {
-      isIntermediateSuggestion ? LiveAnnouncer.alert(i18nString9(UIStrings9.sSuggestionSOfS, {
+      isIntermediateSuggestion ? LiveAnnouncer.alert(i18nString10(UIStrings10.sSuggestionSOfS, {
         PH1: suggestion.title || suggestion.text,
         PH2: this.list.selectedIndex() + 1,
         PH3: this.items.length
-      })) : LiveAnnouncer.alert(i18nString9(UIStrings9.sSuggestionSSelected, { PH1: suggestion.title || suggestion.text }));
+      })) : LiveAnnouncer.alert(i18nString10(UIStrings10.sSuggestionSSelected, { PH1: suggestion.title || suggestion.text }));
     }
     this.suggestBoxDelegate.applySuggestion(suggestion, isIntermediateSuggestion);
     return this.visible() && Boolean(suggestion);
@@ -10688,7 +10808,7 @@ var TextPrompt = class extends Common12.ObjectWrapper.ObjectWrapper {
       element.parentElement.insertBefore(this.proxyElement, element);
     }
     this.contentElement.appendChild(element);
-    let jslog = VisualLogging12.textField().track({
+    let jslog = VisualLogging13.textField().track({
       keydown: "ArrowLeft|ArrowUp|PageUp|Home|PageDown|ArrowRight|ArrowDown|End|Space|Tab|Enter|Escape",
       change: true
     });
@@ -10870,7 +10990,7 @@ var TextPrompt = class extends Common12.ObjectWrapper.ObjectWrapper {
   onKeyDown(event) {
     let handled = false;
     if (this.isSuggestBoxVisible() && this.suggestBox?.keyPressed(event)) {
-      void VisualLogging12.logKeyDown(this.suggestBox.element, event);
+      void VisualLogging13.logKeyDown(this.suggestBox.element, event);
       event.consume(true);
       return;
     }
@@ -11293,7 +11413,7 @@ devtools-toolbar-input {
 /*# sourceURL=${import.meta.resolve("./toolbar.css")} */`;
 
 // gen/front_end/ui/legacy/Toolbar.js
-var UIStrings10 = {
+var UIStrings11 = {
   /**
    * @description Announced screen reader message for ToolbarSettingToggle when the setting is toggled on.
    */
@@ -11315,8 +11435,8 @@ var UIStrings10 = {
    */
   useRegularExpression: "Use regular expression"
 };
-var str_10 = i18n19.i18n.registerUIStrings("ui/legacy/Toolbar.ts", UIStrings10);
-var i18nString10 = i18n19.i18n.getLocalizedString.bind(void 0, str_10);
+var str_11 = i18n21.i18n.registerUIStrings("ui/legacy/Toolbar.ts", UIStrings11);
+var i18nString11 = i18n21.i18n.getLocalizedString.bind(void 0, str_11);
 var Toolbar = class _Toolbar extends HTMLElement {
   #shadowRoot = this.attachShadow({ mode: "open" });
   items = [];
@@ -11882,7 +12002,7 @@ var ToolbarInput = class extends ToolbarItem {
     if (shrinkFactor) {
       this.element.style.flexShrink = String(shrinkFactor);
     }
-    const clearButtonText = i18nString10(UIStrings10.clearInput);
+    const clearButtonText = i18nString11(UIStrings11.clearInput);
     const clearButton = new Buttons5.Button.Button();
     clearButton.data = {
       variant: "icon",
@@ -11891,8 +12011,8 @@ var ToolbarInput = class extends ToolbarItem {
       title: clearButtonText
     };
     clearButton.className = "toolbar-input-clear-button";
-    clearButton.setAttribute("jslog", `${VisualLogging13.action("clear").track({ click: true }).parent("mapped")}`);
-    VisualLogging13.setMappedParent(clearButton, internalPromptElement);
+    clearButton.setAttribute("jslog", `${VisualLogging14.action("clear").track({ click: true }).parent("mapped")}`);
+    VisualLogging14.setMappedParent(clearButton, internalPromptElement);
     clearButton.variant = "icon";
     clearButton.size = "SMALL";
     clearButton.iconName = "cross-circle-filled";
@@ -11956,7 +12076,7 @@ var ToolbarInput = class extends ToolbarItem {
 };
 var ToolbarFilter = class extends ToolbarInput {
   constructor(filterBy, growFactor, shrinkFactor, tooltip, completions, dynamicCompletions, jslogContext, element, showRegexToggle, onRegexToggle) {
-    const filterPlaceholder = filterBy ? filterBy : i18nString10(UIStrings10.filter);
+    const filterPlaceholder = filterBy ? filterBy : i18nString11(UIStrings11.filter);
     super(filterPlaceholder, filterPlaceholder, growFactor, shrinkFactor, tooltip, completions, dynamicCompletions, jslogContext || "filter", element);
     const filterIcon = createIcon6("filter");
     this.element.prepend(filterIcon);
@@ -11971,10 +12091,10 @@ var ToolbarFilter = class extends ToolbarInput {
         toggledIconName: regexIconName,
         toggleType: "primary-toggle",
         toggled: false,
-        title: i18nString10(UIStrings10.useRegularExpression),
+        title: i18nString11(UIStrings11.useRegularExpression),
         jslogContext: regexIconName
       };
-      setLabel(regexButton, i18nString10(UIStrings10.useRegularExpression));
+      setLabel(regexButton, i18nString11(UIStrings11.useRegularExpression));
       regexButton.addEventListener("click", () => {
         onRegexToggle?.();
       });
@@ -12103,7 +12223,7 @@ var ToolbarToggle = class extends ToolbarButton {
     );
     this.toggled(false);
     if (jslogContext) {
-      this.element.setAttribute("jslog", `${VisualLogging13.toggle().track({ click: true }).context(jslogContext)}`);
+      this.element.setAttribute("jslog", `${VisualLogging14.toggle().track({ click: true }).context(jslogContext)}`);
     }
     if (toggleOnClick !== void 0) {
       this.setToggleOnClick(toggleOnClick);
@@ -12156,7 +12276,7 @@ var ToolbarMenuButton = class extends ToolbarItem {
       this.element.appendChild(dropdownArrowIcon);
     }
     if (jslogContext) {
-      this.element.setAttribute("jslog", `${VisualLogging13.dropDown().track({ click: true }).context(jslogContext)}`);
+      this.element.setAttribute("jslog", `${VisualLogging14.dropDown().track({ click: true }).context(jslogContext)}`);
     }
     this.element.addEventListener("mousedown", this.mouseDown.bind(this), false);
     this.contextMenuHandler = contextMenuHandler;
@@ -12251,7 +12371,7 @@ var ToolbarSettingToggle = class extends ToolbarToggle {
   settingChanged() {
     const toggled = this.setting.get();
     this.setToggled(toggled);
-    const toggleAnnouncement = toggled ? i18nString10(UIStrings10.pressed) : i18nString10(UIStrings10.notPressed);
+    const toggleAnnouncement = toggled ? i18nString11(UIStrings11.pressed) : i18nString11(UIStrings11.notPressed);
     if (this.willAnnounceState) {
       LiveAnnouncer.alert(toggleAnnouncement);
     }
@@ -12286,7 +12406,7 @@ var ToolbarComboBox = class extends ToolbarItem {
       this.element.classList.add(className);
     }
     if (jslogContext) {
-      this.element.setAttribute("jslog", `${VisualLogging13.dropDown().track({ change: true }).context(jslogContext)}`);
+      this.element.setAttribute("jslog", `${VisualLogging14.dropDown().track({ change: true }).context(jslogContext)}`);
     }
   }
   turnShrinkable() {
@@ -12310,7 +12430,7 @@ var ToolbarComboBox = class extends ToolbarItem {
     if (!jslogContext) {
       jslogContext = value ? Platform13.StringUtilities.toKebabCase(value) : void 0;
     }
-    option.setAttribute("jslog", `${VisualLogging13.item(jslogContext).track({ click: true })}`);
+    option.setAttribute("jslog", `${VisualLogging14.item(jslogContext).track({ click: true })}`);
     return option;
   }
   applyEnabledState(enabled) {
@@ -12459,13 +12579,13 @@ function getRegisteredToolbarItems() {
 // gen/front_end/ui/legacy/UIUtils.js
 import * as Common14 from "./../../core/common/common.js";
 import * as Host7 from "./../../core/host/host.js";
-import * as i18n21 from "./../../core/i18n/i18n.js";
+import * as i18n23 from "./../../core/i18n/i18n.js";
 import * as Platform15 from "./../../core/platform/platform.js";
 import * as Geometry5 from "./../../models/geometry/geometry.js";
 import * as Buttons6 from "./../components/buttons/buttons.js";
 import { Icon as Icon2 } from "./../kit/kit.js";
 import * as Lit2 from "./../lit/lit.js";
-import * as VisualLogging14 from "./../visual_logging/visual_logging.js";
+import * as VisualLogging15 from "./../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/checkboxTextLabel.css.js
 var checkboxTextLabel_css_default = `/*
@@ -13978,7 +14098,7 @@ div.error {
 
 // gen/front_end/ui/legacy/UIUtils.js
 var { Directives: Directives2, render: render3 } = Lit2;
-var UIStrings11 = {
+var UIStrings12 = {
   /**
    * @description label to open link externally
    */
@@ -14028,8 +14148,8 @@ var UIStrings11 = {
    */
   new: "NEW"
 };
-var str_11 = i18n21.i18n.registerUIStrings("ui/legacy/UIUtils.ts", UIStrings11);
-var i18nString11 = i18n21.i18n.getLocalizedString.bind(void 0, str_11);
+var str_12 = i18n23.i18n.registerUIStrings("ui/legacy/UIUtils.ts", UIStrings12);
+var i18nString12 = i18n23.i18n.getLocalizedString.bind(void 0, str_12);
 function installDragHandle(element, elementDragStart2, elementDrag, elementDragEnd, cursor, hoverCursor, startDelay, mouseDownPreventDefault = true) {
   function onMouseDown(event) {
     const dragHandler = new DragHandler();
@@ -14384,7 +14504,7 @@ function handleElementValueModifications(event, element, finishHandler, suggesti
   if (!isElementValueModification(event)) {
     return false;
   }
-  void VisualLogging14.logKeyDown(event.currentTarget, event, "element-value-modification");
+  void VisualLogging15.logKeyDown(event.currentTarget, event, "element-value-modification");
   const selection = element.getComponentSelection();
   if (!selection?.rangeCount) {
     return false;
@@ -14419,27 +14539,27 @@ function handleElementValueModifications(event, element, finishHandler, suggesti
   return false;
 }
 function openLinkExternallyLabel() {
-  return i18nString11(UIStrings11.openInNewTab);
+  return i18nString12(UIStrings12.openInNewTab);
 }
 function copyLinkAddressLabel() {
-  return i18nString11(UIStrings11.copyLinkAddress);
+  return i18nString12(UIStrings12.copyLinkAddress);
 }
 function copyFileNameLabel() {
-  return i18nString11(UIStrings11.copyFileName);
+  return i18nString12(UIStrings12.copyFileName);
 }
 function anotherProfilerActiveLabel() {
-  return i18nString11(UIStrings11.anotherProfilerIsAlreadyActive);
+  return i18nString12(UIStrings12.anotherProfilerIsAlreadyActive);
 }
 function asyncFragmentLabel(stackTrace, asyncFragment) {
   const description = asyncFragment.description;
   if (!description) {
-    return i18nString11(UIStrings11.asyncCall);
+    return i18nString12(UIStrings12.asyncCall);
   }
   if (description === "Promise.resolve") {
-    return i18nString11(UIStrings11.promiseResolvedAsync);
+    return i18nString12(UIStrings12.promiseResolvedAsync);
   }
   if (description === "Promise.reject") {
-    return i18nString11(UIStrings11.promiseRejectedAsync);
+    return i18nString12(UIStrings12.promiseRejectedAsync);
   }
   if (description === "await") {
     const asyncFragments = stackTrace.asyncFragments;
@@ -14694,7 +14814,7 @@ function initializeUIUtils(document2) {
   GlassPane.setContainer(body);
 }
 function beautifyFunctionName(name) {
-  return name || i18nString11(UIStrings11.anonymous);
+  return name || i18nString12(UIStrings12.anonymous);
 }
 var createTextChild = (element, text) => {
   const textNode = element.ownerDocument.createTextNode(text);
@@ -14723,7 +14843,7 @@ function createTextButton(text, clickHandler, opts) {
     });
   }
   if (opts?.jslogContext) {
-    button.setAttribute("jslog", `${VisualLogging14.action().track({ click: true }).context(opts.jslogContext)}`);
+    button.setAttribute("jslog", `${VisualLogging15.action().track({ click: true }).context(opts.jslogContext)}`);
   }
   if (opts?.title) {
     button.setAttribute("title", opts.title);
@@ -14742,7 +14862,7 @@ function createInput(className, type, jslogContext) {
     element.type = type;
   }
   if (jslogContext) {
-    element.setAttribute("jslog", `${VisualLogging14.textField().track({ keydown: "Enter", change: true }).context(jslogContext)}`);
+    element.setAttribute("jslog", `${VisualLogging15.textField().track({ keydown: "Enter", change: true }).context(jslogContext)}`);
   }
   return element;
 }
@@ -14806,7 +14926,7 @@ function createSelect(name, options) {
 function createOption(title, value, jslogContext) {
   const result = new Option(title, value || title);
   if (jslogContext) {
-    result.setAttribute("jslog", `${VisualLogging14.item(jslogContext).track({ click: true })}`);
+    result.setAttribute("jslog", `${VisualLogging15.item(jslogContext).track({ click: true })}`);
   }
   return result;
 }
@@ -14839,7 +14959,7 @@ function createRadioButton(name, title, jslogContext) {
   const radio = label.createChild("input");
   radio.type = "radio";
   radio.name = name;
-  radio.setAttribute("jslog", `${VisualLogging14.toggle().track({ change: true }).context(jslogContext)}`);
+  radio.setAttribute("jslog", `${VisualLogging15.toggle().track({ change: true }).context(jslogContext)}`);
   createTextChild(label, title);
   return { label, radio };
 }
@@ -14878,7 +14998,7 @@ var CheckboxLabel = class _CheckboxLabel extends HTMLElement {
     const element = document.createElement("devtools-checkbox");
     element.#checkboxElement.checked = Boolean(checked);
     if (jslogContext) {
-      element.#checkboxElement.setAttribute("jslog", `${VisualLogging14.toggle().track({ change: true }).context(jslogContext)}`);
+      element.#checkboxElement.setAttribute("jslog", `${VisualLogging15.toggle().track({ change: true }).context(jslogContext)}`);
     }
     if (title !== void 0) {
       element.#textElement.textContent = title;
@@ -15006,9 +15126,9 @@ var DevToolsCloseButton = class extends HTMLElement {
     this.#button = new Buttons6.Button.Button();
     this.#button.data = { variant: "icon", iconName: "cross" };
     this.#button.classList.add("close-button");
-    this.#button.setAttribute("jslog", `${VisualLogging14.close().track({ click: true })}`);
-    Tooltip.install(this.#button, i18nString11(UIStrings11.close));
-    setLabel(this.#button, i18nString11(UIStrings11.close));
+    this.#button.setAttribute("jslog", `${VisualLogging15.close().track({ click: true })}`);
+    Tooltip.install(this.#button, i18nString12(UIStrings12.close));
+    setLabel(this.#button, i18nString12(UIStrings12.close));
     root.appendChild(this.#button);
   }
   setAccessibleName(name) {
@@ -15174,7 +15294,7 @@ var MessageDialog = class {
     const shadowRoot = createShadowRootWithCoreStyles(dialog3.contentElement, { cssFile: confirmDialog_css_default });
     const content = shadowRoot.createChild("div", "widget");
     await new Promise((resolve) => {
-      const okButton = createTextButton(i18nString11(UIStrings11.ok), resolve, {
+      const okButton = createTextButton(i18nString12(UIStrings12.ok), resolve, {
         jslogContext: "confirm",
         variant: "primary"
         /* Buttons.Button.Variant.PRIMARY */
@@ -15211,7 +15331,7 @@ var ConfirmDialog = class {
     const result = await new Promise((resolve) => {
       const okButton = createTextButton(
         /* text= */
-        options?.okButtonLabel || i18nString11(UIStrings11.ok),
+        options?.okButtonLabel || i18nString12(UIStrings12.ok),
         /* clickHandler= */
         () => resolve(true),
         {
@@ -15221,7 +15341,7 @@ var ConfirmDialog = class {
         }
       );
       buttonsBar.appendChild(okButton);
-      buttonsBar.appendChild(createTextButton(options?.cancelButtonLabel || i18nString11(UIStrings11.cancel), () => resolve(false), { jslogContext: "cancel" }));
+      buttonsBar.appendChild(createTextButton(options?.cancelButtonLabel || i18nString12(UIStrings12.cancel), () => resolve(false), { jslogContext: "cancel" }));
       dialog3.setOutsideClickCallback((event) => {
         event.consume();
         resolve(false);
@@ -15445,8 +15565,8 @@ function maybeCreateNewBadge(promotionId) {
   if (promotionManager.maybeShowPromotion(promotionId)) {
     const badge2 = document.createElement("div");
     badge2.className = "new-badge";
-    badge2.textContent = i18nString11(UIStrings11.new);
-    badge2.setAttribute("jslog", `${VisualLogging14.badge("new-badge")}`);
+    badge2.textContent = i18nString12(UIStrings12.new);
+    badge2.setAttribute("jslog", `${VisualLogging15.badge("new-badge")}`);
     return badge2;
   }
   return void 0;
@@ -15723,7 +15843,7 @@ var bindToSetting = (settingOrName, optionsOrValidator) => {
       jslog = optionsOrValidator.jslog;
     }
   }
-  const jslogBuilder = jslog ? VisualLogging14.toggle(setting.name).track({ change: true }) : null;
+  const jslogBuilder = jslog ? VisualLogging15.toggle(setting.name).track({ change: true }) : null;
   let setValue;
   function settingChanged() {
     setValue(setting.get());
@@ -16086,7 +16206,7 @@ var Dialog = class _Dialog extends Common15.ObjectWrapper.eventMixin(GlassPane) 
     this.contentElement.tabIndex = 0;
     this.contentElement.addEventListener("focus", () => this.widget().focus(), false);
     if (jslogContext) {
-      this.contentElement.setAttribute("jslog", `${VisualLogging15.dialog(jslogContext).track({ resize: true, keydown: "Escape" })}`);
+      this.contentElement.setAttribute("jslog", `${VisualLogging16.dialog(jslogContext).track({ resize: true, keydown: "Escape" })}`);
     }
     this.setPointerEventsBehavior(
       "BlockedByGlassPane"
@@ -16715,9 +16835,9 @@ __export(EmptyWidget_exports, {
   EmptyWidget: () => EmptyWidget
 });
 import "./../kit/kit.js";
-import * as i18n23 from "./../../core/i18n/i18n.js";
+import * as i18n25 from "./../../core/i18n/i18n.js";
 import { Directives as Directives3, html as html3, render as render4 } from "./../lit/lit.js";
-import * as VisualLogging16 from "./../visual_logging/visual_logging.js";
+import * as VisualLogging17 from "./../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/emptyWidget.css.js
 var emptyWidget_css_default = `/*
@@ -16733,27 +16853,27 @@ var emptyWidget_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./emptyWidget.css")} */`;
 
 // gen/front_end/ui/legacy/EmptyWidget.js
-var UIStrings12 = {
+var UIStrings13 = {
   /**
    * @description Text that is usually a hyperlink to more documentation
    */
   learnMore: "Learn more"
 };
-var str_12 = i18n23.i18n.registerUIStrings("ui/legacy/EmptyWidget.ts", UIStrings12);
-var i18nString12 = i18n23.i18n.getLocalizedString.bind(void 0, str_12);
+var str_13 = i18n25.i18n.registerUIStrings("ui/legacy/EmptyWidget.ts", UIStrings13);
+var i18nString13 = i18n25.i18n.getLocalizedString.bind(void 0, str_13);
 var { ref } = Directives3;
 var DEFAULT_VIEW = (input, output, target) => {
   render4(html3`
     <style>${inspectorCommon_css_default}</style>
     <style>${emptyWidget_css_default}</style>
-    <div class="empty-state" jslog=${VisualLogging16.section("empty-view")}
+    <div class="empty-state" jslog=${VisualLogging17.section("empty-view")}
          ${ref((e) => {
     output.contentElement = e;
   })}>
       <div class="empty-state-header">${input.header}</div>
       <div class="empty-state-description">
         <span>${input.text}</span>
-        ${input.link ? html3`<devtools-link href=${input.link} jslogContext=${"learn-more"}>${i18nString12(UIStrings12.learnMore)}</devtools-link>` : ""}
+        ${input.link ? html3`<devtools-link href=${input.link} jslogContext=${"learn-more"}>${i18nString13(UIStrings13.learnMore)}</devtools-link>` : ""}
       </div>
       ${input.extraElements}
     </div>`, target);
@@ -16818,9 +16938,9 @@ __export(FilterBar_exports, {
 });
 import * as Common16 from "./../../core/common/common.js";
 import * as Host8 from "./../../core/host/host.js";
-import * as i18n25 from "./../../core/i18n/i18n.js";
+import * as i18n27 from "./../../core/i18n/i18n.js";
 import * as Platform18 from "./../../core/platform/platform.js";
-import * as VisualLogging17 from "./../visual_logging/visual_logging.js";
+import * as VisualLogging18 from "./../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/filter.css.js
 var filter_css_default = `/*
@@ -17007,7 +17127,7 @@ var filter_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./filter.css")} */`;
 
 // gen/front_end/ui/legacy/FilterBar.js
-var UIStrings13 = {
+var UIStrings14 = {
   /**
    * @description Text to filter result items
    */
@@ -17026,8 +17146,8 @@ var UIStrings13 = {
    */
   allStrings: "All"
 };
-var str_13 = i18n25.i18n.registerUIStrings("ui/legacy/FilterBar.ts", UIStrings13);
-var i18nString13 = i18n25.i18n.getLocalizedString.bind(void 0, str_13);
+var str_14 = i18n27.i18n.registerUIStrings("ui/legacy/FilterBar.ts", UIStrings14);
+var i18nString14 = i18n27.i18n.getLocalizedString.bind(void 0, str_14);
 var FilterBar = class extends Common16.ObjectWrapper.eventMixin(HBox) {
   enabled;
   stateSetting;
@@ -17040,9 +17160,9 @@ var FilterBar = class extends Common16.ObjectWrapper.eventMixin(HBox) {
     this.registerRequiredCSS(filter_css_default);
     this.enabled = true;
     this.element.classList.add("filter-bar");
-    this.element.setAttribute("jslog", `${VisualLogging17.toolbar("filter-bar")}`);
+    this.element.setAttribute("jslog", `${VisualLogging18.toolbar("filter-bar")}`);
     this.stateSetting = Common16.Settings.Settings.instance().createSetting("filter-bar-" + name + "-toggled", Boolean(visibleByDefault));
-    this.#filterButton = new ToolbarSettingToggle(this.stateSetting, "filter", i18nString13(UIStrings13.filter), "filter-filled", "filter");
+    this.#filterButton = new ToolbarSettingToggle(this.stateSetting, "filter", i18nString14(UIStrings14.filter), "filter-filled", "filter");
     this.#filterButton.element.style.setProperty("--dot-toggle-top", "13px");
     this.#filterButton.element.style.setProperty("--dot-toggle-left", "14px");
     this.filters = [];
@@ -17134,7 +17254,7 @@ var TextFilterUI = class extends Common16.ObjectWrapper.ObjectWrapper {
     this.filterElement.classList.add("text-filter");
     const filterToolbar = this.filterElement.createChild("devtools-toolbar");
     filterToolbar.style.borderBottom = "none";
-    this.#filter = new ToolbarFilter(void 0, 1, 1, i18nString13(UIStrings13.egSmalldUrlacomb), this.completions.bind(this));
+    this.#filter = new ToolbarFilter(void 0, 1, 1, i18nString14(UIStrings14.egSmalldUrlacomb), this.completions.bind(this));
     filterToolbar.appendToolbarItem(this.#filter);
     this.#filter.addEventListener("TextChanged", () => this.valueChanged());
     this.suggestionProvider = null;
@@ -17217,13 +17337,13 @@ var NamedBitSetFilterUI = class _NamedBitSetFilterUI extends Common16.ObjectWrap
     super();
     this.filtersElement = document.createElement("div");
     this.filtersElement.classList.add("filter-bitset-filter");
-    this.filtersElement.setAttribute("jslog", `${VisualLogging17.section("filter-bitset")}`);
+    this.filtersElement.setAttribute("jslog", `${VisualLogging18.section("filter-bitset")}`);
     markAsListBox(this.filtersElement);
     markAsMultiSelectable(this.filtersElement);
-    Tooltip.install(this.filtersElement, i18nString13(UIStrings13.sclickToSelectMultipleTypes, {
+    Tooltip.install(this.filtersElement, i18nString14(UIStrings14.sclickToSelectMultipleTypes, {
       PH1: KeyboardShortcut.shortcutToString("", Modifiers.CtrlOrMeta.value)
     }));
-    this.addBit(_NamedBitSetFilterUI.ALL_TYPES, i18nString13(UIStrings13.allStrings), _NamedBitSetFilterUI.ALL_TYPES);
+    this.addBit(_NamedBitSetFilterUI.ALL_TYPES, i18nString14(UIStrings14.allStrings), _NamedBitSetFilterUI.ALL_TYPES);
     this.typeFilterElements[0].tabIndex = 0;
     this.filtersElement.createChild("div", "filter-bitset-filter-divider");
     for (let i = 0; i < items.length; ++i) {
@@ -17295,7 +17415,7 @@ var NamedBitSetFilterUI = class _NamedBitSetFilterUI extends Common16.ObjectWrap
     }
     typeFilterElement.addEventListener("click", this.onTypeFilterClicked.bind(this), false);
     typeFilterElement.addEventListener("keydown", this.onTypeFilterKeydown.bind(this), false);
-    typeFilterElement.setAttribute("jslog", `${VisualLogging17.item(jslogContext).track({ click: true })}`);
+    typeFilterElement.setAttribute("jslog", `${VisualLogging18.item(jslogContext).track({ click: true })}`);
     this.typeFilterElements.push(typeFilterElement);
   }
   onTypeFilterClicked(event) {
@@ -17719,11 +17839,11 @@ __export(ListWidget_exports, {
   Editor: () => Editor,
   ListWidget: () => ListWidget
 });
-import * as i18n27 from "./../../core/i18n/i18n.js";
+import * as i18n29 from "./../../core/i18n/i18n.js";
 import * as Platform21 from "./../../core/platform/platform.js";
 import * as Buttons7 from "./../components/buttons/buttons.js";
 import { html as html4, render as render5 } from "./../lit/lit.js";
-import * as VisualLogging18 from "./../visual_logging/visual_logging.js";
+import * as VisualLogging19 from "./../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/listWidget.css.js
 var listWidget_css_default = `/*
@@ -17894,7 +18014,7 @@ var listWidget_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./listWidget.css")} */`;
 
 // gen/front_end/ui/legacy/ListWidget.js
-var UIStrings14 = {
+var UIStrings15 = {
   /**
    * @description Text on a button to start editing text
    */
@@ -17924,8 +18044,8 @@ var UIStrings14 = {
    */
   removedItem: "Item has been removed"
 };
-var str_14 = i18n27.i18n.registerUIStrings("ui/legacy/ListWidget.ts", UIStrings14);
-var i18nString14 = i18n27.i18n.getLocalizedString.bind(void 0, str_14);
+var str_15 = i18n29.i18n.registerUIStrings("ui/legacy/ListWidget.ts", UIStrings15);
+var i18nString15 = i18n29.i18n.getLocalizedString.bind(void 0, str_15);
 var ListWidget = class extends VBox {
   delegate;
   list;
@@ -18010,7 +18130,7 @@ var ListWidget = class extends VBox {
     }
     const content = this.delegate.renderItem(item8, editable, this.#items.length - 1);
     if (!content.hasAttribute("jslog")) {
-      element.setAttribute("jslog", `${VisualLogging18.item().track({ resize: true })}`);
+      element.setAttribute("jslog", `${VisualLogging19.item().track({ resize: true })}`);
     }
     element.appendChild(content);
     if (editable) {
@@ -18065,13 +18185,13 @@ var ListWidget = class extends VBox {
           <devtools-button class=toolbar-button
                            .iconName=${"edit"}
                            .jslogContext=${"edit-item"}
-                           .title=${controlLabels?.edit ?? i18nString14(UIStrings14.editString)}
+                           .title=${controlLabels?.edit ?? i18nString15(UIStrings15.editString)}
                            .variant=${"icon"}
                            @click=${onEditClicked}></devtools-button>
           <devtools-button class=toolbar-button
                            .iconName=${"bin"}
                            .jslogContext=${"remove-item"}
-                           .title=${controlLabels?.delete ?? i18nString14(UIStrings14.removeString)}
+                           .title=${controlLabels?.delete ?? i18nString15(UIStrings15.removeString)}
                            .variant=${"icon"}
                            @click=${onRemoveClicked}></devtools-button>
         </devtools-toolbar>
@@ -18086,7 +18206,7 @@ var ListWidget = class extends VBox {
       const index = this.elements.indexOf(element);
       this.element.focus();
       this.delegate.removeItemRequested(this.#items[index], index);
-      LiveAnnouncer.alert(i18nString14(UIStrings14.removedItem));
+      LiveAnnouncer.alert(i18nString15(UIStrings15.removedItem));
       if (this.elements.length >= 1) {
         this.elements[Math.min(index, this.elements.length - 1)].focus();
       }
@@ -18123,7 +18243,7 @@ var ListWidget = class extends VBox {
     this.editor = this.delegate.beginEdit(item8);
     this.updatePlaceholder();
     this.list.insertBefore(this.editor.element, insertionPoint);
-    this.editor.beginEdit(item8, index, element ? i18nString14(UIStrings14.saveString) : i18nString14(UIStrings14.addString), this.commitEditing.bind(this), this.stopEditing.bind(this));
+    this.editor.beginEdit(item8, index, element ? i18nString15(UIStrings15.saveString) : i18nString15(UIStrings15.addString), this.commitEditing.bind(this), this.stopEditing.bind(this));
   }
   commitEditing() {
     const editItem = this.editItem;
@@ -18133,7 +18253,7 @@ var ListWidget = class extends VBox {
     this.stopEditing();
     if (editItem !== null) {
       this.delegate.commitEdit(editItem, editor, isNew);
-      LiveAnnouncer.alert(i18nString14(UIStrings14.changesSaved));
+      LiveAnnouncer.alert(i18nString15(UIStrings15.changesSaved));
       if (this.elements[focusElementIndex]) {
         this.elements[focusElementIndex].focus();
       }
@@ -18173,7 +18293,7 @@ var Editor = class {
   constructor() {
     this.element = document.createElement("div");
     this.element.classList.add("editor-container");
-    this.element.setAttribute("jslog", `${VisualLogging18.pane("editor").track({ resize: true })}`);
+    this.element.setAttribute("jslog", `${VisualLogging19.pane("editor").track({ resize: true })}`);
     this.element.addEventListener("keydown", onKeyDown.bind(null, Platform21.KeyboardUtilities.isEscKey, this.cancelClicked.bind(this)), false);
     this.#contentElement = this.element.createChild("div", "editor-content");
     this.#contentElement.addEventListener("keydown", onKeyDown.bind(null, (event) => {
@@ -18186,11 +18306,11 @@ var Editor = class {
       return true;
     }, this.commitClicked.bind(this)), false);
     const buttonsRow = this.element.createChild("div", "editor-buttons");
-    this.cancelButton = createTextButton(i18nString14(UIStrings14.cancelString), this.cancelClicked.bind(this), {
+    this.cancelButton = createTextButton(i18nString15(UIStrings15.cancelString), this.cancelClicked.bind(this), {
       jslogContext: "cancel",
       variant: "outlined"
     });
-    this.cancelButton.setAttribute("jslog", `${VisualLogging18.action("cancel").track({ click: true })}`);
+    this.cancelButton.setAttribute("jslog", `${VisualLogging19.action("cancel").track({ click: true })}`);
     buttonsRow.appendChild(this.cancelButton);
     this.commitButton = createTextButton("", this.commitClicked.bind(this), {
       jslogContext: "commit",
@@ -18213,7 +18333,7 @@ var Editor = class {
     const input = createInput("", type);
     input.placeholder = title;
     input.addEventListener("input", this.validateControls.bind(this, false), false);
-    input.setAttribute("jslog", `${VisualLogging18.textField().track({ change: true, keydown: "Enter" }).context(name)}`);
+    input.setAttribute("jslog", `${VisualLogging19.textField().track({ change: true, keydown: "Enter" }).context(name)}`);
     setLabel(input, title);
     this.controlByName.set(name, input);
     this.controls.push(input);
@@ -18222,12 +18342,12 @@ var Editor = class {
   }
   createSelect(name, options, validator, title) {
     const select = document.createElement("select");
-    select.setAttribute("jslog", `${VisualLogging18.dropDown().track({ change: true }).context(name)}`);
+    select.setAttribute("jslog", `${VisualLogging19.dropDown().track({ change: true }).context(name)}`);
     for (let index = 0; index < options.length; ++index) {
       const option = select.createChild("option");
       option.value = options[index];
       option.textContent = options[index];
-      option.setAttribute("jslog", `${VisualLogging18.item(Platform21.StringUtilities.toKebabCase(options[index])).track({ click: true })}`);
+      option.setAttribute("jslog", `${VisualLogging19.item(Platform21.StringUtilities.toKebabCase(options[index])).track({ click: true })}`);
     }
     if (title) {
       Tooltip.install(select, title);
@@ -18323,12 +18443,12 @@ __export(Panel_exports, {
   Panel: () => Panel,
   PanelWithSidebar: () => PanelWithSidebar
 });
-import * as VisualLogging19 from "./../visual_logging/visual_logging.js";
+import * as VisualLogging20 from "./../visual_logging/visual_logging.js";
 var Panel = class extends VBox {
   panelName;
   constructor(name, useShadowDom) {
     super({ useShadowDom });
-    this.element.setAttribute("jslog", `${VisualLogging19.panel().context(name).track({ resize: true })}`);
+    this.element.setAttribute("jslog", `${VisualLogging20.panel().context(name).track({ resize: true })}`);
     this.element.classList.add("panel");
     this.element.setAttribute("aria-label", name);
     this.element.classList.add(name);
@@ -18361,7 +18481,7 @@ var PanelWithSidebar = class extends Panel {
     this.sidebarWidget.setMinimumSize(100, 25);
     this.panelSplitWidget.setSidebarWidget(this.sidebarWidget);
     this.sidebarWidget.element.classList.add("panel-sidebar");
-    this.sidebarWidget.element.setAttribute("jslog", `${VisualLogging19.pane("sidebar").track({ resize: true })}`);
+    this.sidebarWidget.element.setAttribute("jslog", `${VisualLogging20.pane("sidebar").track({ resize: true })}`);
   }
   panelSidebarElement() {
     return this.sidebarWidget.element;
@@ -18379,7 +18499,7 @@ var PopoverHelper_exports = {};
 __export(PopoverHelper_exports, {
   PopoverHelper: () => PopoverHelper
 });
-import * as VisualLogging20 from "./../visual_logging/visual_logging.js";
+import * as VisualLogging21 from "./../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/popover.css.js
 var popover_css_default = `/*
@@ -18422,7 +18542,7 @@ var popover_css_default = `/*
 // gen/front_end/ui/legacy/PopoverHelper.js
 var PopoverHelper = class _PopoverHelper {
   static createPopover = (jslogContext) => {
-    const popover2 = new GlassPane(`${VisualLogging20.popover(jslogContext).parent("mapped")}`);
+    const popover2 = new GlassPane(`${VisualLogging21.popover(jslogContext).parent("mapped")}`);
     popover2.registerRequiredCSS(popover_css_default);
     popover2.setSizeBehavior(
       "MeasureContent"
@@ -18607,7 +18727,7 @@ var PopoverHelper = class _PopoverHelper {
         popoverHelperInstance.hidePopover();
       }
       popoverHelperInstance = this;
-      VisualLogging20.setMappedParent(popover2.contentElement, this.container);
+      VisualLogging21.setMappedParent(popover2.contentElement, this.container);
       popover2.contentElement.style.scrollbarGutter = "stable";
       popover2.contentElement.addEventListener("mousemove", this.popoverMouseMove.bind(this), true);
       popover2.contentElement.addEventListener("mouseout", this.popoverMouseOut.bind(this, popover2), true);
@@ -18757,7 +18877,7 @@ __export(RemoteDebuggingTerminatedScreen_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW2,
   RemoteDebuggingTerminatedScreen: () => RemoteDebuggingTerminatedScreen
 });
-import * as i18n29 from "./../../core/i18n/i18n.js";
+import * as i18n31 from "./../../core/i18n/i18n.js";
 import * as Buttons8 from "./../components/buttons/buttons.js";
 import { html as html5, render as render6 } from "./../lit/lit.js";
 
@@ -18794,7 +18914,7 @@ var remoteDebuggingTerminatedScreen_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./remoteDebuggingTerminatedScreen.css")} */`;
 
 // gen/front_end/ui/legacy/RemoteDebuggingTerminatedScreen.js
-var UIStrings15 = {
+var UIStrings16 = {
   /**
    * @description Text in a dialog box in DevTools stating that remote debugging has been terminated.
    * "Remote debugging" here means that DevTools on a PC is inspecting a website running on an actual mobile device
@@ -18821,20 +18941,20 @@ var UIStrings15 = {
    */
   reconnectDevtools: "Reconnect `DevTools`"
 };
-var str_15 = i18n29.i18n.registerUIStrings("ui/legacy/RemoteDebuggingTerminatedScreen.ts", UIStrings15);
-var i18nString15 = i18n29.i18n.getLocalizedString.bind(void 0, str_15);
+var str_16 = i18n31.i18n.registerUIStrings("ui/legacy/RemoteDebuggingTerminatedScreen.ts", UIStrings16);
+var i18nString16 = i18n31.i18n.getLocalizedString.bind(void 0, str_16);
 var DEFAULT_VIEW2 = (input, _output, target) => {
   render6(html5`
     <style>${remoteDebuggingTerminatedScreen_css_default}</style>
-    <div class="header">${i18nString15(UIStrings15.debuggingConnectionWasClosed)}</div>
+    <div class="header">${i18nString16(UIStrings16.debuggingConnectionWasClosed)}</div>
     <div class="content">
-      <div class="reason">${i18nString15(UIStrings15.connectionClosedReason, { PH1: input.reason })}</div>
-      <div class="message">${i18nString15(UIStrings15.reconnectWhenReadyByReopening)}</div>
+      <div class="reason">${i18nString16(UIStrings16.connectionClosedReason, { PH1: input.reason })}</div>
+      <div class="message">${i18nString16(UIStrings16.reconnectWhenReadyByReopening)}</div>
     </div>
     <div class="button-container">
       <div class="button">
         <devtools-button @click=${input.onReconnect} .jslogContext=${"reconnect"}
-            .variant=${"outlined"}>${i18nString15(UIStrings15.reconnectDevtools)}</devtools-button>
+            .variant=${"outlined"}>${i18nString16(UIStrings16.reconnectDevtools)}</devtools-button>
       </div>
     </div>`, target);
 };
@@ -18868,7 +18988,7 @@ __export(ReportView_exports, {
   ReportView: () => ReportView,
   Section: () => Section2
 });
-import * as VisualLogging21 from "./../visual_logging/visual_logging.js";
+import * as VisualLogging22 from "./../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/reportView.css.js
 var reportView_css_default = `/*
@@ -19057,7 +19177,7 @@ var ReportView = class extends VBox {
     if (link2) {
       this.urlElement.appendChild(link2);
     }
-    this.urlElement.setAttribute("jslog", `${VisualLogging21.link("source-location").track({ click: true })}`);
+    this.urlElement.setAttribute("jslog", `${VisualLogging22.link("source-location").track({ click: true })}`);
   }
   createToolbar() {
     return this.headerElement.createChild("devtools-toolbar");
@@ -19101,7 +19221,7 @@ var Section2 = class extends VBox {
       this.element.classList.add(className);
     }
     if (jslogContext) {
-      this.element.setAttribute("jslog", `${VisualLogging21.section(jslogContext)}`);
+      this.element.setAttribute("jslog", `${VisualLogging22.section(jslogContext)}`);
     }
     this.jslogContext = jslogContext;
     this.headerElement = this.element.createChild("div", "report-section-header");
@@ -19256,9 +19376,9 @@ __export(SearchableView_exports, {
   SearchableView: () => SearchableView
 });
 import * as Common17 from "./../../core/common/common.js";
-import * as i18n31 from "./../../core/i18n/i18n.js";
+import * as i18n33 from "./../../core/i18n/i18n.js";
 import * as Platform22 from "./../../core/platform/platform.js";
-import * as VisualLogging22 from "./../visual_logging/visual_logging.js";
+import * as VisualLogging23 from "./../visual_logging/visual_logging.js";
 import * as Buttons9 from "./../components/buttons/buttons.js";
 import { createIcon as createIcon7 } from "./../kit/kit.js";
 
@@ -19429,7 +19549,7 @@ var searchableView_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./searchableView.css")} */`;
 
 // gen/front_end/ui/legacy/SearchableView.js
-var UIStrings16 = {
+var UIStrings17 = {
   /**
    * @description Text on a button to replace one instance with input text for the ctrl+F search bar
    */
@@ -19500,18 +19620,18 @@ var UIStrings16 = {
    */
   clearInput: "Clear"
 };
-var str_16 = i18n31.i18n.registerUIStrings("ui/legacy/SearchableView.ts", UIStrings16);
-var i18nString16 = i18n31.i18n.getLocalizedString.bind(void 0, str_16);
+var str_17 = i18n33.i18n.registerUIStrings("ui/legacy/SearchableView.ts", UIStrings17);
+var i18nString17 = i18n33.i18n.getLocalizedString.bind(void 0, str_17);
 function createClearButton(jslogContext) {
   const button = new Buttons9.Button.Button();
   button.data = {
     variant: "icon",
     size: "SMALL",
     jslogContext,
-    title: i18nString16(UIStrings16.clearInput),
+    title: i18nString17(UIStrings17.clearInput),
     iconName: "cross-circle-filled"
   };
-  button.ariaLabel = i18nString16(UIStrings16.clearInput);
+  button.ariaLabel = i18nString17(UIStrings17.clearInput);
   button.classList.add("clear-button");
   button.tabIndex = -1;
   return button;
@@ -19553,10 +19673,10 @@ var SearchableView = class extends VBox {
     this.footerElementContainer = this.contentElement.createChild("div", "search-bar hidden");
     this.footerElementContainer.style.order = "100";
     this.footerElement = this.footerElementContainer.createChild("div", "toolbar-search");
-    this.footerElement.setAttribute("jslog", `${VisualLogging22.toolbar("search").track({ resize: true })}`);
+    this.footerElement.setAttribute("jslog", `${VisualLogging23.toolbar("search").track({ resize: true })}`);
     const replaceToggleToolbar = this.footerElement.createChild("devtools-toolbar", "replace-toggle-toolbar");
-    this.replaceToggleButton = new ToolbarToggle(i18nString16(UIStrings16.enableFindAndReplace), "replace", void 0, "replace");
-    setLabel(this.replaceToggleButton.element, i18nString16(UIStrings16.enableFindAndReplace));
+    this.replaceToggleButton = new ToolbarToggle(i18nString17(UIStrings17.enableFindAndReplace), "replace", void 0, "replace");
+    setLabel(this.replaceToggleButton.element, i18nString17(UIStrings17.enableFindAndReplace));
     this.replaceToggleButton.addEventListener("Click", this.toggleReplace, this);
     replaceToggleToolbar.appendToolbarItem(this.replaceToggleButton);
     const searchInputElements = this.footerElement.createChild("div", "search-inputs");
@@ -19566,16 +19686,16 @@ var SearchableView = class extends VBox {
     this.searchInputElement = createHistoryInput("search", "search-replace search");
     this.searchInputElement.id = "search-input-field";
     this.searchInputElement.autocomplete = "off";
-    this.searchInputElement.placeholder = i18nString16(UIStrings16.findString);
-    this.searchInputElement.setAttribute("jslog", `${VisualLogging22.textField("search").track({ change: true, keydown: "ArrowUp|ArrowDown|Enter|Escape" })}`);
+    this.searchInputElement.placeholder = i18nString17(UIStrings17.findString);
+    this.searchInputElement.setAttribute("jslog", `${VisualLogging23.textField("search").track({ change: true, keydown: "ArrowUp|ArrowDown|Enter|Escape" })}`);
     this.searchInputElement.addEventListener("keydown", this.onSearchKeyDown.bind(this), true);
     this.searchInputElement.addEventListener("input", this.onInput.bind(this), false);
     iconAndInput.appendChild(this.searchInputElement);
     const replaceInputElements = searchInputElements.createChild("div", "replace-element input-line");
     this.replaceInputElement = replaceInputElements.createChild("input", "search-replace");
     this.replaceInputElement.addEventListener("keydown", this.onReplaceKeyDown.bind(this), true);
-    this.replaceInputElement.placeholder = i18nString16(UIStrings16.replace);
-    this.replaceInputElement.setAttribute("jslog", `${VisualLogging22.textField("replace").track({ change: true, keydown: "Enter" })}`);
+    this.replaceInputElement.placeholder = i18nString17(UIStrings17.replace);
+    this.replaceInputElement.setAttribute("jslog", `${VisualLogging23.textField("replace").track({ change: true, keydown: "Enter" })}`);
     const replaceInputClearButton = createClearButton("clear-replace-input");
     replaceInputClearButton.addEventListener("click", () => {
       this.replaceInputElement.value = "";
@@ -19604,10 +19724,10 @@ var SearchableView = class extends VBox {
         toggledIconName: iconName,
         toggled: false,
         toggleType: "primary-toggle",
-        title: i18nString16(UIStrings16.matchCase),
+        title: i18nString17(UIStrings17.matchCase),
         jslogContext: iconName
       };
-      setLabel(this.caseSensitiveButton, i18nString16(UIStrings16.matchCase));
+      setLabel(this.caseSensitiveButton, i18nString17(UIStrings17.matchCase));
       this.caseSensitiveButton.addEventListener("click", saveSettingAndPerformSearch);
       searchConfigButtons.appendChild(this.caseSensitiveButton);
     }
@@ -19621,10 +19741,10 @@ var SearchableView = class extends VBox {
         toggledIconName: iconName,
         toggled: false,
         toggleType: "primary-toggle",
-        title: i18nString16(UIStrings16.matchWholeWord),
+        title: i18nString17(UIStrings17.matchWholeWord),
         jslogContext: iconName
       };
-      setLabel(this.wholeWordButton, i18nString16(UIStrings16.matchWholeWord));
+      setLabel(this.wholeWordButton, i18nString17(UIStrings17.matchWholeWord));
       this.wholeWordButton.addEventListener("click", saveSettingAndPerformSearch);
       searchConfigButtons.appendChild(this.wholeWordButton);
     }
@@ -19639,24 +19759,24 @@ var SearchableView = class extends VBox {
         toggleType: "primary-toggle",
         toggled: false,
         jslogContext: iconName,
-        title: i18nString16(UIStrings16.useRegularExpression)
+        title: i18nString17(UIStrings17.useRegularExpression)
       };
-      setLabel(this.regexButton, i18nString16(UIStrings16.useRegularExpression));
+      setLabel(this.regexButton, i18nString17(UIStrings17.useRegularExpression));
       this.regexButton.addEventListener("click", saveSettingAndPerformSearch);
       searchConfigButtons.appendChild(this.regexButton);
     }
     searchInputElements.createChild("div", "input-line search-input-background");
     const buttonsContainer = this.footerElement.createChild("div", "toolbar-search-buttons");
     const firstRowButtons = buttonsContainer.createChild("div", "first-row-buttons");
-    const toolbar4 = firstRowButtons.createChild("devtools-toolbar", "toolbar-search-options");
-    this.searchNavigationPrevElement = new ToolbarButton(i18nString16(UIStrings16.searchPrevious), "chevron-up", void 0, "select-previous");
+    const toolbar5 = firstRowButtons.createChild("devtools-toolbar", "toolbar-search-options");
+    this.searchNavigationPrevElement = new ToolbarButton(i18nString17(UIStrings17.searchPrevious), "chevron-up", void 0, "select-previous");
     this.searchNavigationPrevElement.addEventListener("Click", () => this.onPrevButtonSearch());
-    toolbar4.appendToolbarItem(this.searchNavigationPrevElement);
-    setLabel(this.searchNavigationPrevElement.element, i18nString16(UIStrings16.searchPrevious));
-    this.searchNavigationNextElement = new ToolbarButton(i18nString16(UIStrings16.searchNext), "chevron-down", void 0, "select-next");
+    toolbar5.appendToolbarItem(this.searchNavigationPrevElement);
+    setLabel(this.searchNavigationPrevElement.element, i18nString17(UIStrings17.searchPrevious));
+    this.searchNavigationNextElement = new ToolbarButton(i18nString17(UIStrings17.searchNext), "chevron-down", void 0, "select-next");
     this.searchNavigationNextElement.addEventListener("Click", () => this.onNextButtonSearch());
-    setLabel(this.searchNavigationNextElement.element, i18nString16(UIStrings16.searchNext));
-    toolbar4.appendToolbarItem(this.searchNavigationNextElement);
+    setLabel(this.searchNavigationNextElement.element, i18nString17(UIStrings17.searchNext));
+    toolbar5.appendToolbarItem(this.searchNavigationNextElement);
     const matchesText = new ToolbarText();
     this.matchesElement = matchesText.element;
     this.matchesElement.style.fontVariantNumeric = "tabular-nums";
@@ -19666,26 +19786,26 @@ var SearchableView = class extends VBox {
     markAsPoliteLiveRegion(this.matchesElement, false);
     this.matchesElementValue = this.matchesElement.createChild("span");
     setHidden(this.matchesElementValue, true);
-    toolbar4.appendToolbarItem(matchesText);
+    toolbar5.appendToolbarItem(matchesText);
     const cancelButtonElement = new Buttons9.Button.Button();
     cancelButtonElement.data = {
       variant: "toolbar",
       size: "REGULAR",
       iconName: "cross",
-      title: i18nString16(UIStrings16.closeSearchBar),
+      title: i18nString17(UIStrings17.closeSearchBar),
       jslogContext: "close-search"
     };
     cancelButtonElement.classList.add("close-search-button");
     cancelButtonElement.addEventListener("click", () => this.closeSearch());
     firstRowButtons.appendChild(cancelButtonElement);
     const secondRowButtons = buttonsContainer.createChild("div", "second-row-buttons replace-element");
-    this.replaceButtonElement = createTextButton(i18nString16(UIStrings16.replace), this.replace.bind(this), {
+    this.replaceButtonElement = createTextButton(i18nString17(UIStrings17.replace), this.replace.bind(this), {
       className: "search-action-button",
       jslogContext: "replace"
     });
     this.replaceButtonElement.disabled = true;
     secondRowButtons.appendChild(this.replaceButtonElement);
-    this.replaceAllButtonElement = createTextButton(i18nString16(UIStrings16.replaceAll), this.replaceAll.bind(this), {
+    this.replaceAllButtonElement = createTextButton(i18nString17(UIStrings17.replaceAll), this.replaceAll.bind(this), {
       className: "search-action-button",
       jslogContext: "replace-all"
     });
@@ -19704,7 +19824,7 @@ var SearchableView = class extends VBox {
   }
   toggleReplace() {
     const replaceEnabled = this.replaceToggleButton.isToggled();
-    const label = replaceEnabled ? i18nString16(UIStrings16.disableFindAndReplace) : i18nString16(UIStrings16.enableFindAndReplace);
+    const label = replaceEnabled ? i18nString17(UIStrings17.disableFindAndReplace) : i18nString17(UIStrings17.enableFindAndReplace);
     setLabel(this.replaceToggleButton.element, label);
     this.replaceToggleButton.element.title = label;
     this.updateSecondRowVisibility();
@@ -19830,14 +19950,14 @@ var SearchableView = class extends VBox {
     if (!this.currentQuery) {
       this.matchesElementValue.textContent = "";
     } else if (matches === 0 || currentMatchIndex >= 0) {
-      this.matchesElementValue.textContent = i18nString16(UIStrings16.dOfD, { PH1: currentMatchIndex + 1, PH2: matches });
-      setLabel(this.matchesElement, i18nString16(UIStrings16.accessibledOfD, { PH1: currentMatchIndex + 1, PH2: matches }));
+      this.matchesElementValue.textContent = i18nString17(UIStrings17.dOfD, { PH1: currentMatchIndex + 1, PH2: matches });
+      setLabel(this.matchesElement, i18nString17(UIStrings17.accessibledOfD, { PH1: currentMatchIndex + 1, PH2: matches }));
     } else if (matches === 1) {
-      this.matchesElementValue.textContent = i18nString16(UIStrings16.matchString);
-      setLabel(this.matchesElement, i18nString16(UIStrings16.matchString));
+      this.matchesElementValue.textContent = i18nString17(UIStrings17.matchString);
+      setLabel(this.matchesElement, i18nString17(UIStrings17.matchString));
     } else {
-      this.matchesElementValue.textContent = i18nString16(UIStrings16.dMatches, { PH1: matches });
-      setLabel(this.matchesElement, i18nString16(UIStrings16.dMatches, { PH1: matches }));
+      this.matchesElementValue.textContent = i18nString17(UIStrings17.dMatches, { PH1: matches });
+      setLabel(this.matchesElement, i18nString17(UIStrings17.dMatches, { PH1: matches }));
     }
     this.updateSearchNavigationButtonState(matches > 0);
   }
@@ -20027,10 +20147,10 @@ var SoftDropDown_exports = {};
 __export(SoftDropDown_exports, {
   SoftDropDown: () => SoftDropDown
 });
-import * as i18n33 from "./../../core/i18n/i18n.js";
+import * as i18n35 from "./../../core/i18n/i18n.js";
 import * as Geometry6 from "./../../models/geometry/geometry.js";
 import { createIcon as createIcon8 } from "./../kit/kit.js";
-import * as VisualLogging23 from "./../visual_logging/visual_logging.js";
+import * as VisualLogging24 from "./../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/softDropDown.css.js
 var softDropDown_css_default = `/*
@@ -20133,14 +20253,14 @@ button.soft-dropdown:hover:not(:active) > .title {
 /*# sourceURL=${import.meta.resolve("./softDropDownButton.css")} */`;
 
 // gen/front_end/ui/legacy/SoftDropDown.js
-var UIStrings17 = {
+var UIStrings18 = {
   /**
    * @description Placeholder text in Soft Drop Down
    */
   noItemSelected: "(no item selected)"
 };
-var str_17 = i18n33.i18n.registerUIStrings("ui/legacy/SoftDropDown.ts", UIStrings17);
-var i18nString17 = i18n33.i18n.getLocalizedString.bind(void 0, str_17);
+var str_18 = i18n35.i18n.registerUIStrings("ui/legacy/SoftDropDown.ts", UIStrings18);
+var i18nString18 = i18n35.i18n.getLocalizedString.bind(void 0, str_18);
 var SoftDropDown = class {
   delegate;
   selectedItem;
@@ -20156,10 +20276,10 @@ var SoftDropDown = class {
     this.delegate = delegate;
     this.selectedItem = null;
     this.model = model;
-    this.placeholderText = i18nString17(UIStrings17.noItemSelected);
+    this.placeholderText = i18nString18(UIStrings18.noItemSelected);
     this.element = document.createElement("button");
     if (jslogContext) {
-      this.element.setAttribute("jslog", `${VisualLogging23.dropDown().track({ click: true, keydown: "ArrowUp|ArrowDown|Enter" }).context(jslogContext)}`);
+      this.element.setAttribute("jslog", `${VisualLogging24.dropDown().track({ click: true, keydown: "ArrowUp|ArrowDown|Enter" }).context(jslogContext)}`);
     }
     this.element.classList.add("soft-dropdown");
     appendStyle(this.element, softDropDownButton_css_default);
@@ -20189,8 +20309,8 @@ var SoftDropDown = class {
       cssFile: softDropDown_css_default
     }).appendChild(this.list.element);
     markAsMenu(this.list.element);
-    VisualLogging23.setMappedParent(this.list.element, this.element);
-    this.list.element.setAttribute("jslog", `${VisualLogging23.menu().parent("mapped").track({ resize: true, keydown: "ArrowUp|ArrowDown|PageUp|PageDown" })}`);
+    VisualLogging24.setMappedParent(this.list.element, this.element);
+    this.list.element.setAttribute("jslog", `${VisualLogging24.menu().parent("mapped").track({ resize: true, keydown: "ArrowUp|ArrowDown|PageUp|PageDown" })}`);
     this.element.addEventListener("mousedown", (event) => {
       if (this.glassPane.isShowing()) {
         this.hide(event);
@@ -20208,7 +20328,7 @@ var SoftDropDown = class {
       }
       this.selectHighlightedItem();
       if (event.target instanceof Element && event.target?.parentElement) {
-        void VisualLogging23.logClick(event.target.parentElement, event);
+        void VisualLogging24.logClick(event.target.parentElement, event);
       }
       this.hide(event);
     }, false);
@@ -20407,7 +20527,7 @@ __export(TargetCrashedScreen_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW3,
   TargetCrashedScreen: () => TargetCrashedScreen
 });
-import * as i18n35 from "./../../core/i18n/i18n.js";
+import * as i18n37 from "./../../core/i18n/i18n.js";
 import { html as html6, render as render7 } from "./../lit/lit.js";
 
 // gen/front_end/ui/legacy/targetCrashedScreen.css.js
@@ -20431,7 +20551,7 @@ var targetCrashedScreen_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./targetCrashedScreen.css")} */`;
 
 // gen/front_end/ui/legacy/TargetCrashedScreen.js
-var UIStrings18 = {
+var UIStrings19 = {
   /**
    * @description Text in dialog box when the target page crashed
    */
@@ -20441,13 +20561,13 @@ var UIStrings18 = {
    */
   oncePageIsReloadedDevtoolsWill: "Once page is reloaded, DevTools will automatically reconnect."
 };
-var str_18 = i18n35.i18n.registerUIStrings("ui/legacy/TargetCrashedScreen.ts", UIStrings18);
-var i18nString18 = i18n35.i18n.getLocalizedString.bind(void 0, str_18);
+var str_19 = i18n37.i18n.registerUIStrings("ui/legacy/TargetCrashedScreen.ts", UIStrings19);
+var i18nString19 = i18n37.i18n.getLocalizedString.bind(void 0, str_19);
 var DEFAULT_VIEW3 = (input, _output, target) => {
   render7(html6`
     <style>${targetCrashedScreen_css_default}</style>
-    <div class="message">${i18nString18(UIStrings18.devtoolsWasDisconnectedFromThe)}</div>
-    <div class="message">${i18nString18(UIStrings18.oncePageIsReloadedDevtoolsWill)}</div>`, target);
+    <div class="message">${i18nString19(UIStrings19.devtoolsWasDisconnectedFromThe)}</div>
+    <div class="message">${i18nString19(UIStrings19.oncePageIsReloadedDevtoolsWill)}</div>`, target);
 };
 var TargetCrashedScreen = class extends VBox {
   hideCallback;
@@ -20480,7 +20600,7 @@ import * as Platform23 from "./../../core/platform/platform.js";
 import * as SDK2 from "./../../core/sdk/sdk.js";
 import * as Highlighting from "./../components/highlighting/highlighting.js";
 import * as Lit3 from "./../lit/lit.js";
-import * as VisualLogging24 from "./../visual_logging/visual_logging.js";
+import * as VisualLogging25 from "./../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/treeoutline.css.js
 var treeoutline_css_default = `/*
@@ -20844,7 +20964,7 @@ var TreeOutline = class extends Common18.ObjectWrapper.ObjectWrapper {
     this.focusable = true;
     this.setFocusable(true);
     this.element = this.contentElement;
-    this.element.setAttribute("jslog", `${VisualLogging24.tree()}`);
+    this.element.setAttribute("jslog", `${VisualLogging25.tree()}`);
     markAsTree(this.element);
     this.useLightSelectionColor = false;
     this.treeElementToScrollIntoView = null;
@@ -21171,7 +21291,7 @@ var TreeElement = class {
     this.listItemNode.addEventListener("mousedown", this.handleMouseDown.bind(this), false);
     this.listItemNode.addEventListener("click", this.treeElementToggled.bind(this), false);
     this.listItemNode.addEventListener("dblclick", this.handleDoubleClick.bind(this), false);
-    this.listItemNode.setAttribute("jslog", `${VisualLogging24.treeItem().parent("parentTreeItem").context(jslogContext).track({
+    this.listItemNode.setAttribute("jslog", `${VisualLogging25.treeItem().parent("parentTreeItem").context(jslogContext).track({
       click: true,
       resize: true,
       keydown: "ArrowUp|ArrowDown|ArrowLeft|ArrowRight|Backspace|Delete|Enter|Space|Home|End"
@@ -21468,7 +21588,7 @@ var TreeElement = class {
       this.collapse();
       unsetExpandable(this.listItemNode);
     } else {
-      VisualLogging24.registerLoggable(this.expandLoggable, `${VisualLogging24.expand()}`, this.listItemNode, new DOMRect(0, 0, 16, 16));
+      VisualLogging25.registerLoggable(this.expandLoggable, `${VisualLogging25.expand()}`, this.listItemNode, new DOMRect(0, 0, 16, 16));
       setExpanded(this.listItemNode, false);
     }
   }
@@ -21550,7 +21670,7 @@ var TreeElement = class {
     } else {
       this.expand();
     }
-    void VisualLogging24.logClick(this.expandLoggable, event);
+    void VisualLogging25.logClick(this.expandLoggable, event);
     event.consume();
   }
   handleMouseDown(event) {
@@ -22370,7 +22490,7 @@ function loggingParentProvider(e) {
   const parentElement = treeElement?.parent?.listItemElement;
   return parentElement?.isConnected && parentElement || treeElement?.treeOutline?.contentElement;
 }
-VisualLogging24.registerParentProvider("parentTreeItem", loggingParentProvider);
+VisualLogging25.registerParentProvider("parentTreeItem", loggingParentProvider);
 
 // gen/front_end/ui/legacy/View.js
 var View_exports = {};

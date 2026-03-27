@@ -738,6 +738,7 @@
   "front_end/panels/network/network.js",
   "front_end/third_party/csp_evaluator/csp_evaluator.js",
   "front_end/third_party/json5/json5.js",
+  "front_end/ui/components/lists/lists.js",
   "front_end/panels/application/components/components.js",
   "front_end/ui/components/dialogs/dialogs.js",
   "front_end/panels/application/preloading/helper/helper.js",

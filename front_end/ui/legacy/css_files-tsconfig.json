@@ -13,6 +13,7 @@
         "glassPane.css.js",
         "infobar.css.js",
         "inspectorCommon.css.js",
+        "inspectorDrawerTabbedPane.css.js",
         "listWidget.css.js",
         "popover.css.js",
         "progressIndicator.css.js",

@@ -88,6 +88,7 @@ core/dom_extension/DOMExtension.test.js
 core/host/AidaClient.test.js
 core/host/AidaGcaTranslation.test.js
 core/host/DispatchHttpRequestClient.test.js
+core/host/GcaClient.test.js
 core/host/GdpClient.test.js
 core/i18n/i18nImpl.test.js
 core/root/Runtime.browser.test.js
@@ -356,6 +357,7 @@ panels/application/SharedStorageModel.test.js
 panels/application/SharedStorageTreeElement.test.js
 panels/application/StorageBucketsTreeElement.test.js
 panels/application/StorageView.test.js
+panels/application/WebMCPView.test.js
 panels/application/preloading/PreloadingView.test.js
 panels/application/components/BackForwardCacheView.test.js
 panels/application/components/BounceTrackingMitigationsView.test.js
@@ -709,6 +711,7 @@ ui/legacy/Dialog.test.js
 ui/legacy/DockController.test.js
 ui/legacy/FilterBar.test.js
 ui/legacy/Infobar.test.js
+ui/legacy/InspectorDrawerView.test.js
 ui/legacy/InspectorView.test.js
 ui/legacy/KeyboardShortcut.test.js
 ui/legacy/ListModel.test.js

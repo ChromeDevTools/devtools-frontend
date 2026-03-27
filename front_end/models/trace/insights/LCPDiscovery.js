@@ -30,13 +30,17 @@ export const UIStrings = {
      */
     fetchPriorityShouldBeApplied: 'fetchpriority=high should be applied',
     /**
+     * @description Text to tell the user that a fetchpriority property value of "high" should be applied to the preload request that loads the LCP image.
+     */
+    fetchPriorityShouldBeAppliedToImagePreload: 'fetchpriority=high should be applied to the image preload request',
+    /**
      * @description Text to tell the user that the LCP request is discoverable in the initial document.
      */
     requestDiscoverable: 'Request is discoverable in initial document',
     /**
-     * @description Text to tell the user that the LCP request does not have the lazy load property applied.
+     * @description Text to tell the user that LCP resources should avoid using loading=lazy.
      */
-    lazyLoadNotApplied: 'lazy load not applied',
+    lazyLoadNotApplied: 'LCP resources should not use loading=lazy',
     /**
      * @description Text status indicating that the the Largest Contentful Paint (LCP) metric timing was not found. "LCP" is an acronym and should not be translated.
      */
@@ -101,23 +105,27 @@ export function generateInsight(data, context) {
     const initiatorUrl = lcpRequest.args.data.initiator?.url;
     const initiatedByMainDoc = lcpRequest?.args.data.initiator?.type === 'parser' && docRequest.args.data.url === initiatorUrl;
     const imgPreloadedOrFoundInHTML = lcpRequest?.args.data.isLinkPreload || initiatedByMainDoc;
-    const imageLoadingAttr = lcpEvent.args.data?.loadingAttr;
     const imageFetchPriorityHint = lcpRequest?.args.data.fetchPriorityHint;
     // This is the earliest discovery time an LCP request could have - it's TTFB (as an absolute timestamp).
     const earliestDiscoveryTime = calculateDocFirstByteTs(docRequest);
     const priorityHintFound = imageFetchPriorityHint === 'high';
+    const missingPriorityHintLabel = lcpRequest.args.data.isLinkPreload ?
+        i18nString(UIStrings.fetchPriorityShouldBeAppliedToImagePreload) :
+        i18nString(UIStrings.fetchPriorityShouldBeApplied);
+    // A lazy-loaded LCP image can still be eagerly loaded when its request is
+    // initiated by a preload.
+    const lcpNotLazyLoaded = lcpEvent.args.data?.loadingAttr !== 'lazy' || lcpRequest.args.data.isLinkPreload;
     return finalize({
         lcpEvent,
         lcpRequest,
         earliestDiscoveryTimeTs: earliestDiscoveryTime ? Types.Timing.Micro(earliestDiscoveryTime) : undefined,
         checklist: {
             priorityHinted: {
-                label: priorityHintFound ? i18nString(UIStrings.fetchPriorityApplied) :
-                    i18nString(UIStrings.fetchPriorityShouldBeApplied),
+                label: priorityHintFound ? i18nString(UIStrings.fetchPriorityApplied) : missingPriorityHintLabel,
                 value: priorityHintFound
             },
             requestDiscoverable: { label: i18nString(UIStrings.requestDiscoverable), value: imgPreloadedOrFoundInHTML },
-            eagerlyLoaded: { label: i18nString(UIStrings.lazyLoadNotApplied), value: imageLoadingAttr !== 'lazy' },
+            eagerlyLoaded: { label: i18nString(UIStrings.lazyLoadNotApplied), value: lcpNotLazyLoaded },
         },
     });
 }

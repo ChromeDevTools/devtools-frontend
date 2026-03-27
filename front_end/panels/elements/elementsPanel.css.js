@@ -52,6 +52,20 @@ export default `/*
     border-bottom: 1px solid var(--sys-color-divider);
 }
 
+.style-panes-wrapper > div:has(+ .ai-code-completion-summary-toolbar-container) {
+  border-bottom: 0;
+}
+
+.style-panes-wrapper .ai-code-completion-summary-toolbar-container {
+  container-type: inline-size;
+  flex-shrink: 0;
+  overflow: hidden;
+  position: fixed;
+  bottom: 0;
+  background-color: var(--sys-color-cdt-base-container);
+  width: 100%;
+}
+
 #elements-content:not(.elements-wrap) > div {
   display: inline-block;
   min-width: 100%;

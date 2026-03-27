@@ -225,6 +225,7 @@ describeWithEnvironment('ChatMessage', () => {
             canShowFeedbackForm: false,
             markdownRenderer: new AiAssistance.MarkdownRendererWithCodeBlock(),
             currentRating: undefined,
+            suggestions: props.suggestions,
             walkthrough: {
               ...DEFAULT_WALKTHROUGH,
               ...(props.walkthrough ?? {}),
@@ -590,6 +591,53 @@ describeWithEnvironment('ChatMessage', () => {
       const widgetHeader = await waitFor('.widget-header', targetElement);
       assert.isNotNull(widgetHeader);
       assert.strictEqual(widgetHeader.querySelector('.widget-name')?.textContent, 'LCP element');
+    });
+
+    it('renders the "Export for agents" button after action buttons and before suggestions when onExportClick is provided, it is the last message, and V2 is enabled',
+       async () => {
+         Root.Runtime.hostConfig.devToolsAiAssistanceV2 = {
+           enabled: true,
+         };
+         const onExportClick = sinon.stub();
+         const target = renderView({
+           onExportClick,
+           isLastMessage: true,
+           showActions: true,
+           suggestions: ['suggestion'],
+           message: {
+             entity: AiAssistance.ChatMessage.ChatMessageEntity.MODEL,
+             parts: [
+               {
+                 type: 'answer',
+                 text: 'test',
+                 suggestions: ['suggestion'],
+               },
+             ],
+             rpcId: 99,
+           },
+         });
+
+         const row = querySelectorErrorOnMissing(target, '.ai-assistance-feedback-row');
+         const exportButton = querySelectorErrorOnMissing(row, '.export-for-agents-button');
+
+         assert.strictEqual(exportButton.textContent?.trim(), 'Copy for your coding agent');
+         exportButton.click();
+         sinon.assert.calledOnce(onExportClick);
+       });
+
+    it('does not render the "Export for agents" button when V2 is disabled', async () => {
+      Root.Runtime.hostConfig.devToolsAiAssistanceV2 = {
+        enabled: false,
+      };
+      const onExportClick = sinon.stub();
+      const target = renderView({
+        onExportClick,
+        isLastMessage: true,
+        showActions: true,
+      });
+
+      const exportButton = target.querySelector('.export-for-agents-button');
+      assert.isNull(exportButton);
     });
   });
 

@@ -193,7 +193,11 @@ const UIStringsNotTranslate = {
   /**
    * @description Title for the performance summary widget.
    */
-  performanceSummary: 'Performance summary'
+  performanceSummary: 'Performance summary',
+  /**
+   * @description The title of the button that allows exporting the conversation for agents.
+   */
+  exportForAgents: 'Copy for your coding agent'
 } as const;
 
 export interface Step {
@@ -260,6 +264,7 @@ export interface RatingViewInput {
 export interface ActionViewInput {
   onReportClick: () => void;
   onCopyResponseClick: () => void;
+  onExportClick?: () => void;
   showActions: boolean;
 }
 
@@ -299,6 +304,7 @@ export interface MessageInput {
   onSuggestionClick: (suggestion: string) => void;
   onFeedbackSubmit: (rpcId: Host.AidaClient.RpcGlobalId, rate: Host.AidaClient.Rating, feedback?: string) => void;
   onCopyResponseClick: (message: ModelChatMessage) => void;
+  onExportClick?: () => void;
   walkthrough: {
     onOpen: (message: ModelChatMessage) => void,
     isExpanded: boolean,
@@ -1087,9 +1093,14 @@ function renderImageChatMessage(inlineData: Host.AidaClient.MediaBlob): Lit.LitT
 }
 
 function renderActions(input: ChatMessageViewInput, output: ViewOutput): Lit.LitTemplate {
+  const aiAssistanceV2 = Root.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled;
+  const rowClasses = Lit.Directives.classMap({
+    'ai-assistance-feedback-row': true,
+    'not-v2': !aiAssistanceV2,
+  });
   // clang-format off
   return html`
-    <div class="ai-assistance-feedback-row">
+    <div class=${rowClasses}>
       <div class="action-buttons">
         ${input.showRateButtons ? html`
           <devtools-button
@@ -1132,7 +1143,8 @@ function renderActions(input: ChatMessageViewInput, output: ViewOutput): Lit.Lit
           }
           @click=${input.onReportClick}
         ></devtools-button>
-        <div class="vertical-separator"></div>
+        ${aiAssistanceV2 ? Lit.nothing : html`
+          <div class="vertical-separator"></div>
           <devtools-button
             .data=${{
               variant: Buttons.Button.Variant.ICON,
@@ -1143,6 +1155,18 @@ function renderActions(input: ChatMessageViewInput, output: ViewOutput): Lit.Lit
             } as Buttons.Button.ButtonData}
             aria-label=${lockedString(UIStringsNotTranslate.copyResponse)}
             @click=${input.onCopyResponseClick}></devtools-button>
+        `}
+        ${input.onExportClick && aiAssistanceV2 && input.isLastMessage ? html`
+        <div class="vertical-separator"></div>
+          <devtools-button
+            class="export-for-agents-button"
+            .jslogContext=${'ai-export-for-agents'}
+            .variant=${Buttons.Button.Variant.OUTLINED}
+            .iconName=${'copy'}
+            @click=${input.onExportClick}
+          >${lockedString(UIStringsNotTranslate.exportForAgents)}</devtools-button>
+          <div class="vertical-separator"></div>
+        ` : Lit.nothing}
       </div>
       ${input.suggestions ? html`<div class="suggestions-container">
         <div class="scroll-button-container left hidden" ${ref(element => { output.suggestionsLeftScrollButtonContainer = element; } )}>
@@ -1252,6 +1276,7 @@ export class ChatMessage extends UI.Widget.Widget {
   onFeedbackSubmit:
       (rpcId: Host.AidaClient.RpcGlobalId, rate: Host.AidaClient.Rating, feedback?: string) => void = () => {};
   onCopyResponseClick: (message: ModelChatMessage) => void = () => {};
+  onExportClick: () => void = () => {};
   walkthrough: MessageInput['walkthrough'] = {
     onOpen: () => {},
     onToggle: () => {},
@@ -1303,6 +1328,7 @@ export class ChatMessage extends UI.Widget.Widget {
               this.onCopyResponseClick(this.message);
             }
           },
+          onExportClick: this.onExportClick,
           scrollSuggestionsScrollContainer: this.#scrollSuggestionsScrollContainer.bind(this),
           onSuggestionsScrollOrResize: this.#handleSuggestionsScrollOrResize.bind(this),
           onSubmit: this.#handleSubmit.bind(this),

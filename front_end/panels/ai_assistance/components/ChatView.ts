@@ -7,7 +7,6 @@ import '../../../ui/components/spinners/spinners.js';
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import type * as Platform from '../../../core/platform/platform.js';
-import * as Root from '../../../core/root/root.js';
 import * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import type {MarkdownLitRenderer} from '../../../ui/components/markdown_view/MarkdownView.js';
@@ -114,9 +113,6 @@ const DEFAULT_VIEW: View = (input, output, target) => {
     sticky: !input.isReadOnly,
   });
 
-  const hasAiV2Flag = Boolean(Root.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled);
-  const shouldShowExportToAgent = !input.isLoading && input.messages.length > 0 && hasAiV2Flag;
-
   // clang-format off
     render(html`
       <style>${chatViewStyles}</style>
@@ -136,20 +132,12 @@ const DEFAULT_VIEW: View = (input, output, target) => {
                   onSuggestionClick: input.handleSuggestionClick,
                   onFeedbackSubmit: input.onFeedbackSubmit,
                   onCopyResponseClick: input.onCopyResponseClick,
+                  onExportClick: input.exportForAgentsClick,
                   walkthrough: {
                     ...input.walkthrough,
                   }
                 })
               )}
-              ${shouldShowExportToAgent ? html`
-                <devtools-button
-                  class="export-for-agents-button"
-                  .jslogContext=${'ai-export-for-agents'}
-                  .variant=${Buttons.Button.Variant.TEXT}
-                  .iconName=${'copy'}
-                  @click=${input.exportForAgentsClick}
-                >Export for agents</devtools-button>
-              ` : nothing}
               ${input.isLoading ? nothing : widget(PatchWidget, {
                   changeSummary: input.changeSummary ?? '',
                   changeManager: input.changeManager,

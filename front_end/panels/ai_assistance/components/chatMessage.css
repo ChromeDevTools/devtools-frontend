@@ -9,10 +9,14 @@
     font-family: var(--default-font-family);
     width: 100%;
     display: flex;
-    gap: var(--sys-size-8);
     justify-content: space-between;
     align-items: center;
     margin-block: calc(-1 * var(--sys-size-3));
+
+    &.not-v2 {
+      /* Can be removed when AIv2 ships */
+      gap: var(--sys-size-8);
+    }
 
     .action-buttons {
       display: flex;

@@ -1,7 +1,6 @@
 // Copyright 2021 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 
 /*
  * Copyright (C) 2007, 2008 Apple Inc.  All rights reserved.
@@ -34,6 +33,7 @@
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import * as TextUtils from '../../../../models/text_utils/text_utils.js';
+import {Directives, html, render} from '../../../lit/lit.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 
@@ -52,24 +52,70 @@ const UIStrings = {
 } as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/source_frame/FontView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+
+const FONT_PREVIEW_LINES = ['ABCDEFGHIJKLM', 'NOPQRSTUVWXYZ', 'abcdefghijklm', 'nopqrstuvwxyz', '1234567890'];
+const MEASURE_FONT_SIZE = 50;
+
+export interface ViewInput {
+  url: Platform.DevToolsPath.UrlString;
+  fontFaceRule: string;
+  fontFamily: string;
+  previewFontSize: string;
+  previewVisible: boolean;
+}
+
+export interface ViewOutput {
+  measureDimensions?: () => {
+    width: number, height: number,
+  };
+}
+
+export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
+
+// clang-format off
+export const DEFAULT_VIEW: View = (input, output, target) => {
+  let dummyEl: HTMLElement|undefined;
+  render(html`
+    <style>${fontViewStyles}</style>
+    <style>${input.fontFaceRule}</style>
+    <div class="font-view"
+      aria-label=${i18nString(UIStrings.previewOfFontFromS, {PH1: input.url})}
+      style="font-family: ${input.fontFamily}; font-size: ${input.previewFontSize}"
+      aria-hidden="true"
+      ?hidden=${!input.previewVisible}
+    >${FONT_PREVIEW_LINES.map((line, i) => html`${i > 0 ? html`<br>` : ''}${line}`)}</div>
+    <div ${Directives.ref(el => { dummyEl = el as HTMLElement; })}
+      style="visibility: hidden; z-index: -1; display: inline; position: absolute; font-family: ${input.fontFamily}; font-size: ${MEASURE_FONT_SIZE}px"
+    >${FONT_PREVIEW_LINES.map((line, i) => html`${i > 0 ? html`<br>` : ''}${line}`)}</div>
+  `, target);
+  output.measureDimensions = () => {
+    if (!dummyEl) {
+      return {width: 0, height: 0};
+    }
+    return {width: dummyEl.offsetWidth, height: dummyEl.offsetHeight};
+  };
+};
+// clang-format on
+
 export class FontView extends UI.View.SimpleView {
   private readonly url: Platform.DevToolsPath.UrlString;
   private readonly contentProvider: TextUtils.ContentProvider.ContentProvider;
   private readonly mimeTypeLabel: UI.Toolbar.ToolbarText;
-  fontPreviewElement!: HTMLElement|null;
-  private dummyElement!: HTMLElement|null;
-  fontStyleElement!: HTMLStyleElement|null;
-  private inResize!: boolean|null;
-  constructor(mimeType: string, contentProvider: TextUtils.ContentProvider.ContentProvider) {
+  readonly #view: View;
+  #fontFaceRule = '';
+  #fontFamily = '';
+  #previewFontSize = '';
+  #previewVisible = false;
+  #contentLoaded = false;
+
+  constructor(mimeType: string, contentProvider: TextUtils.ContentProvider.ContentProvider, view: View = DEFAULT_VIEW) {
     super({
       title: i18nString(UIStrings.font),
       viewId: 'font',
       jslog: `${VisualLogging.pane('font-view')}`,
     });
-    this.registerRequiredCSS(fontViewStyles);
-    this.element.classList.add('font-view');
+    this.#view = view;
     this.url = contentProvider.contentURL();
-    UI.ARIAUtils.setLabel(this.element, i18nString(UIStrings.previewOfFontFromS, {PH1: this.url}));
     this.contentProvider = contentProvider;
     this.mimeTypeLabel = new UI.Toolbar.ToolbarText(mimeType);
   }
@@ -78,96 +124,39 @@ export class FontView extends UI.View.SimpleView {
     return [this.mimeTypeLabel];
   }
 
-  private onFontContentLoaded(uniqueFontName: string, contentData: TextUtils.ContentData.ContentDataOrError): void {
-    const url = TextUtils.ContentData.ContentData.isError(contentData) ? this.url : contentData.asDataUrl();
-    if (!this.fontStyleElement) {
+  #loadContentIfNeeded(): void {
+    if (this.#contentLoaded) {
       return;
     }
-    this.fontStyleElement.textContent =
-        Platform.StringUtilities.sprintf('@font-face { font-family: "%s"; src: url(%s); }', uniqueFontName, url);
-    this.updateFontPreviewSize();
-  }
+    this.#contentLoaded = true;
 
-  private createContentIfNeeded(): void {
-    if (this.fontPreviewElement) {
-      return;
-    }
-
-    const uniqueFontName = `WebInspectorFontPreview${++fontId}`;
-    this.fontStyleElement = document.createElement('style');
+    this.#fontFamily = `WebInspectorFontPreview${++fontId}`;
     void this.contentProvider.requestContentData().then(contentData => {
-      this.onFontContentLoaded(uniqueFontName, contentData);
+      const url = TextUtils.ContentData.ContentData.isError(contentData) ? this.url : contentData.asDataUrl();
+      this.#fontFaceRule =
+          Platform.StringUtilities.sprintf('@font-face { font-family: "%s"; src: url(%s); }', this.#fontFamily, url);
+      this.#previewVisible = true;
+      this.requestUpdate();
     });
-    this.element.appendChild(this.fontStyleElement);
-
-    const fontPreview = document.createElement('div');
-    for (let i = 0; i < FONT_PREVIEW_LINES.length; ++i) {
-      if (i > 0) {
-        fontPreview.createChild('br');
-      }
-      UI.UIUtils.createTextChild(fontPreview, FONT_PREVIEW_LINES[i]);
-    }
-    this.fontPreviewElement = (fontPreview.cloneNode(true) as HTMLDivElement);
-    if (!this.fontPreviewElement) {
-      return;
-    }
-    UI.ARIAUtils.setHidden(this.fontPreviewElement, true);
-    this.fontPreviewElement.style.overflow = 'hidden';
-    this.fontPreviewElement.style.setProperty('font-family', uniqueFontName);
-    this.fontPreviewElement.style.setProperty('visibility', 'hidden');
-
-    this.dummyElement = fontPreview;
-    this.dummyElement.style.visibility = 'hidden';
-    this.dummyElement.style.zIndex = '-1';
-    this.dummyElement.style.display = 'inline';
-    this.dummyElement.style.position = 'absolute';
-    this.dummyElement.style.setProperty('font-family', uniqueFontName);
-    this.dummyElement.style.setProperty('font-size', MEASUURE_FONT_SIZE + 'px');
-
-    this.element.appendChild(this.fontPreviewElement);
   }
 
   override wasShown(): void {
     super.wasShown();
-    this.createContentIfNeeded();
-
-    this.updateFontPreviewSize();
+    this.#loadContentIfNeeded();
+    this.requestUpdate();
   }
 
   override onResize(): void {
-    if (this.inResize) {
-      return;
-    }
-
-    this.inResize = true;
-    try {
-      this.updateFontPreviewSize();
-    } finally {
-      this.inResize = null;
-    }
+    this.requestUpdate();
   }
 
-  private measureElement(): {
+  #calculateFontPreviewSize(dimension: {
     width: number,
     height: number,
-  } {
-    if (!this.dummyElement) {
-      throw new Error('No font preview loaded');
+  }): string {
+    if (!this.#previewVisible || !this.isShowing()) {
+      return '';
     }
-    this.element.appendChild(this.dummyElement);
-    const result = {width: this.dummyElement.offsetWidth, height: this.dummyElement.offsetHeight};
-    this.element.removeChild(this.dummyElement);
-
-    return result;
-  }
-
-  updateFontPreviewSize(): void {
-    if (!this.fontPreviewElement || !this.isShowing()) {
-      return;
-    }
-
-    this.fontPreviewElement.style.removeProperty('visibility');
-    const dimension = this.measureElement();
 
     const height = dimension.height;
     const width = dimension.width;
@@ -177,18 +166,42 @@ export class FontView extends UI.View.SimpleView {
     const containerHeight = this.element.offsetHeight - 30;
 
     if (!height || !width || !containerWidth || !containerHeight) {
-      this.fontPreviewElement.style.removeProperty('font-size');
-      return;
+      return '';
     }
 
     const widthRatio = containerWidth / width;
     const heightRatio = containerHeight / height;
-    const finalFontSize = Math.floor(MEASUURE_FONT_SIZE * Math.min(widthRatio, heightRatio)) - 2;
+    const finalFontSize = Math.floor(MEASURE_FONT_SIZE * Math.min(widthRatio, heightRatio)) - 2;
 
-    this.fontPreviewElement.style.setProperty('font-size', finalFontSize + 'px', undefined);
+    return `${finalFontSize}px`;
+  }
+
+  override performUpdate(): void {
+    const output: ViewOutput = {};
+    this.#view(
+        {
+          url: this.url,
+          fontFaceRule: this.#fontFaceRule,
+          fontFamily: this.#fontFamily,
+          previewFontSize: this.#previewFontSize,
+          previewVisible: this.#previewVisible,
+        },
+        output,
+        this.contentElement,
+    );
+
+    if (!output.measureDimensions) {
+      return;
+    }
+
+    const requestedFontSize = this.#calculateFontPreviewSize(output.measureDimensions());
+    if (requestedFontSize === this.#previewFontSize) {
+      return;
+    }
+
+    this.#previewFontSize = requestedFontSize;
+    this.requestUpdate();
   }
 }
 
 let fontId = 0;
-const FONT_PREVIEW_LINES = ['ABCDEFGHIJKLM', 'NOPQRSTUVWXYZ', 'abcdefghijklm', 'nopqrstuvwxyz', '1234567890'];
-const MEASUURE_FONT_SIZE = 50;

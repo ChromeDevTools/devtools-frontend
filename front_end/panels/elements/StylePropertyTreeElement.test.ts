@@ -2386,4 +2386,19 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       sinon.assert.calledOnce(editingEndedSpy);
     });
   });
+
+  it('applies overflow-wrap: break-word to tree outline list items for long values', () => {
+    // Create a very long value without spaces that would otherwise overflow.
+    const longValue = '9'.repeat(500) + 'px';
+    const stylePropertyTreeElement = getTreeElement('width', longValue);
+    const section = stylePropertyTreeElement.section();
+    section.propertiesTreeOutline.appendChild(stylePropertyTreeElement);
+    stylePropertyTreeElement.updateTitle();
+    renderElementIntoDOM(section.element);
+
+    const li = section.propertiesTreeOutline.shadowRoot.querySelector('.tree-outline li');
+    assert.exists(li);
+    const computedStyle = getComputedStyle(li);
+    assert.strictEqual(computedStyle.overflowWrap, 'break-word');
+  });
 });

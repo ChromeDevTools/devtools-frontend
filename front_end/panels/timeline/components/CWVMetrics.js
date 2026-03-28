@@ -165,7 +165,7 @@ const CWV_METRICS_VIEW = (input, _output, target) => {
       <span>${clsEl}</span>
       <span class="row-label">Local</span>
     </div>
-    <span class="row-border"></span>
+    ${!field && input.skipBottomBorder ? Lit.nothing : html `<span class="row-border"></span>`}
   `;
     let fieldMetricsTemplateResult;
     if (field) {
@@ -185,7 +185,7 @@ const CWV_METRICS_VIEW = (input, _output, target) => {
         <span>${clsEl}</span>
         <span class="row-label">${i18nString(UIStrings.fieldScoreLabel, { PH1: scope })}</span>
       </div>
-      <span class="row-border"></span>
+      ${input.skipBottomBorder ? Lit.nothing : html `<span class="row-border"></span>`}
     `;
         // clang-format on
     }
@@ -231,12 +231,23 @@ export class CWVMetrics extends UI.Widget.Widget {
         parsedTrace: null,
     };
     #didDismissFieldMismatchNotice = false;
+    #skipBottomBorder = false;
     constructor(element, view = CWV_METRICS_VIEW) {
         super(element, { useShadowDom: true });
         this.#view = view;
     }
     set data(data) {
         this.#data = data;
+        this.requestUpdate();
+    }
+    get skipBottomBorder() {
+        return this.#skipBottomBorder;
+    }
+    set skipBottomBorder(x) {
+        if (x === this.#skipBottomBorder) {
+            return;
+        }
+        this.#skipBottomBorder = x;
         this.requestUpdate();
     }
     #onClickMetric(traceEvent) {
@@ -261,6 +272,7 @@ export class CWVMetrics extends UI.Widget.Widget {
             didDismissFieldMismatchNotice: this.#didDismissFieldMismatchNotice,
             onDismisFieldMismatchNotice: this.#onDismisFieldMismatchNotice.bind(this),
             onClickMetric: this.#onClickMetric.bind(this),
+            skipBottomBorder: this.#skipBottomBorder,
         };
         this.#view(input, undefined, this.contentElement);
     }

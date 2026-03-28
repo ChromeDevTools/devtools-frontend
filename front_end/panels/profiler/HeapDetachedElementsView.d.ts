@@ -52,7 +52,6 @@ export declare class DetachedElementsProfileHeader extends WritableProfileHeader
     #private;
     readonly detachedElements: Protocol.DOM.DetachedElementInfo[] | null;
     constructor(heapProfilerModel: SDK.HeapProfilerModel.HeapProfilerModel | null, type: DetachedElementsProfileType, detachedElements: Protocol.DOM.DetachedElementInfo[] | null, title?: string);
-    createView(dataDisplayDelegate: DataDisplayDelegate): DetachedElementsProfileView;
     heapProfilerModel(): SDK.HeapProfilerModel.HeapProfilerModel | null;
     profileType(): DetachedElementsProfileType;
 }

@@ -15,7 +15,6 @@ import { BottomUpProfileDataGridTree } from './BottomUpProfileDataGrid.js';
 import { ProfileDataGridTree } from './ProfileDataGrid.js';
 import { ProfileFlameChart } from './ProfileFlameChartDataProvider.js';
 import { ProfileHeader } from './ProfileHeader.js';
-import { ProfileSidebarTreeElement } from './ProfileSidebarTreeElement.js';
 import { TopDownProfileDataGridTree } from './TopDownProfileDataGrid.js';
 const UIStrings = {
     /**
@@ -454,9 +453,6 @@ export class WritableProfileHeader extends ProfileHeader {
     }
     dispose() {
         this.removeTempFile();
-    }
-    createSidebarTreeElement(panel) {
-        return new ProfileSidebarTreeElement(panel, this, 'profile-sidebar-tree-item');
     }
     canSaveToFile() {
         return !this.fromFile();

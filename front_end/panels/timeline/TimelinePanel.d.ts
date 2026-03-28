@@ -239,6 +239,9 @@ export declare class CoreVitalsRevealer implements Common.Revealer.Revealer<Util
 export declare class TimeRangeRevealer implements Common.Revealer.Revealer<Utils.Helpers.RevealableTimeRange> {
     reveal(revealable: Utils.Helpers.RevealableTimeRange): Promise<void>;
 }
+export declare class BottomUpProfileRevealer implements Common.Revealer.Revealer<Utils.Helpers.RevealableBottomUpProfile> {
+    reveal(revealable: Utils.Helpers.RevealableBottomUpProfile): Promise<void>;
+}
 export declare class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
     handleAction(context: UI.Context.Context, actionId: string): boolean;
 }

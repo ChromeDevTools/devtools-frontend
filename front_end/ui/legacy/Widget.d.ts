@@ -12,9 +12,8 @@ export declare class WidgetConfig<WidgetT extends Widget> {
     constructor(widgetClass: WidgetFactory<WidgetT>, widgetParams?: Partial<WidgetT> | undefined);
 }
 export declare function widgetConfig<F extends WidgetFactory<Widget>, ParamKeys extends keyof InferWidgetTFromFactory<F>>(widgetClass: F, widgetParams?: Pick<InferWidgetTFromFactory<F>, ParamKeys> & Partial<InferWidgetTFromFactory<F>>): WidgetConfig<any>;
+export declare function registerWidgetConfig<WidgetT extends Widget>(element: WidgetElement<WidgetT>, config: WidgetConfig<WidgetT>): void;
 export declare class WidgetElement<WidgetT extends Widget> extends HTMLElement {
-    #private;
-    createWidget(): WidgetT;
     getWidget(): WidgetT | undefined;
     connectedCallback(): void;
     disconnectedCallback(): void;

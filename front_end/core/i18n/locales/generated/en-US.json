@@ -3225,7 +3225,7 @@
     "message": "This is an experimental AI feature and won’t always get it right. Double check this text before pasting into another tool."
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | exportForAgents": {
-    "message": "Export for agents"
+    "message": "Copy for your coding agent"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | generatingSummary": {
     "message": "Generating summary…"
@@ -6212,6 +6212,36 @@
   "panels/application/TrustTokensTreeElement.ts | trustTokens": {
     "message": "Private state tokens"
   },
+  "panels/application/WebMCPView.ts | canceled": {
+    "message": "Canceled"
+  },
+  "panels/application/WebMCPView.ts | clearFilters": {
+    "message": "Clear filters"
+  },
+  "panels/application/WebMCPView.ts | clearLog": {
+    "message": "Clear log"
+  },
+  "panels/application/WebMCPView.ts | declarative": {
+    "message": "Declarative"
+  },
+  "panels/application/WebMCPView.ts | error": {
+    "message": "Error"
+  },
+  "panels/application/WebMCPView.ts | filter": {
+    "message": "Filter"
+  },
+  "panels/application/WebMCPView.ts | imperative": {
+    "message": "Imperative"
+  },
+  "panels/application/WebMCPView.ts | inProgress": {
+    "message": "In Progress"
+  },
+  "panels/application/WebMCPView.ts | input": {
+    "message": "Input"
+  },
+  "panels/application/WebMCPView.ts | name": {
+    "message": "Name"
+  },
   "panels/application/WebMCPView.ts | noCallsPlaceholder": {
     "message": "Start interacting with your WebMCP agent to see real-time tool calls and executions here."
   },
@@ -6224,8 +6254,26 @@
   "panels/application/WebMCPView.ts | noToolsPlaceholderTitle": {
     "message": "Available WebMCP Tools"
   },
+  "panels/application/WebMCPView.ts | output": {
+    "message": "Output"
+  },
+  "panels/application/WebMCPView.ts | pending": {
+    "message": "In Progress"
+  },
+  "panels/application/WebMCPView.ts | status": {
+    "message": "Status"
+  },
+  "panels/application/WebMCPView.ts | statusTypes": {
+    "message": "Status types"
+  },
+  "panels/application/WebMCPView.ts | success": {
+    "message": "Success"
+  },
   "panels/application/WebMCPView.ts | toolRegistry": {
     "message": "Available Tools"
+  },
+  "panels/application/WebMCPView.ts | toolTypes": {
+    "message": "Tool types"
   },
   "panels/autofill/autofill-meta.ts | autofill": {
     "message": "Autofill"
@@ -8002,6 +8050,9 @@
   },
   "panels/elements/ElementsTreeOutline.ts | pageDom": {
     "message": "Page DOM"
+  },
+  "panels/elements/ElementsTreeOutline.ts | showAllLines": {
+    "message": "Show all ({PH1} lines)"
   },
   "panels/elements/ElementsTreeOutline.ts | showAllNodesDMore": {
     "message": "Show all nodes ({PH1} more)"

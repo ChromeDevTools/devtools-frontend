@@ -35,12 +35,16 @@ import { createIcon } from '../../ui/kit/kit.js';
 import objectValueStyles from '../../ui/legacy/components/object_ui/objectValue.css.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
+import { DetachedElementsProfileHeader, DetachedElementsProfileType, DetachedElementsProfileView } from './HeapDetachedElementsView.js';
 import heapProfilerStyles from './heapProfiler.css.js';
+import { HeapProfileView, SamplingHeapProfileHeader, SamplingHeapProfileType } from './HeapProfileView.js';
+import { HeapProfileHeader, HeapSnapshotProfileType, HeapSnapshotView, TrackingHeapSnapshotProfileType } from './HeapSnapshotView.js';
 import { ProfileHeader, } from './ProfileHeader.js';
 import { ProfileLauncherView } from './ProfileLauncherView.js';
 import { ProfileSidebarTreeElement } from './ProfileSidebarTreeElement.js';
 import profilesPanelStyles from './profilesPanel.css.js';
 import profilesSidebarTreeStyles from './profilesSidebarTree.css.js';
+import { WritableProfileHeader } from './ProfileView.js';
 const UIStrings = {
     /**
      * @description Text in Profiles Panel of a profiler tool
@@ -72,8 +76,28 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/profiler/ProfilesPanel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+function createSidebarTreeElement(profiler, dataDisplayDelegate) {
+    if (profiler instanceof HeapProfileHeader) {
+        return new ProfileSidebarTreeElement(dataDisplayDelegate, profiler, 'heap-snapshot-sidebar-tree-item');
+    }
+    if (profiler instanceof WritableProfileHeader) {
+        return new ProfileSidebarTreeElement(dataDisplayDelegate, profiler, 'profile-sidebar-tree-item');
+    }
+    throw new Error('Not implemented.');
+}
+function createView(profiler, dataDisplayDelegate, registry) {
+    if (profiler instanceof HeapProfileHeader) {
+        return new HeapSnapshotView(dataDisplayDelegate, profiler, registry);
+    }
+    if (profiler instanceof SamplingHeapProfileHeader) {
+        return new HeapProfileView(profiler);
+    }
+    if (profiler instanceof DetachedElementsProfileHeader) {
+        return new DetachedElementsProfileView(dataDisplayDelegate, profiler);
+    }
+    throw new Error('Not implemented.');
+}
 export class ProfilesPanel extends UI.Panel.PanelWithSidebar {
-    profileTypes;
     profilesItemTreeElement;
     sidebarTree;
     profileViews;
@@ -89,9 +113,14 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar {
     typeIdToSidebarSection;
     fileSelectorElement;
     selectedProfileType;
-    constructor(name, profileTypes, recordingActionId) {
+    static registry = {
+        heapSnapshotProfileType: new HeapSnapshotProfileType(),
+        samplingHeapProfileType: new SamplingHeapProfileType(),
+        trackingHeapSnapshotProfileType: new TrackingHeapSnapshotProfileType(),
+        detachedElementProfileType: new DetachedElementsProfileType(),
+    };
+    constructor(name, recordingActionId) {
         super(name);
-        this.profileTypes = profileTypes;
         this.registerRequiredCSS(objectValueStyles, profilesPanelStyles, heapProfilerStyles);
         const mainContainer = new UI.Widget.VBox();
         this.splitWidget().setMainWidget(mainContainer);
@@ -146,6 +175,9 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar {
         SDK.TargetManager.TargetManager.instance().addEventListener("SuspendStateChanged" /* SDK.TargetManager.Events.SUSPEND_STATE_CHANGED */, this.onSuspendStateChanged, this);
         UI.Context.Context.instance().addFlavorChangeListener(SDK.CPUProfilerModel.CPUProfilerModel, this.updateProfileTypeSpecificUI, this);
         UI.Context.Context.instance().addFlavorChangeListener(SDK.HeapProfilerModel.HeapProfilerModel, this.updateProfileTypeSpecificUI, this);
+    }
+    get profileTypes() {
+        return Object.values(ProfilesPanel.registry);
     }
     onKeyDown(event) {
         let handled = false;
@@ -359,7 +391,7 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar {
         if (index !== -1) {
             return this.profileToView[index].view;
         }
-        const view = profile.createView(this);
+        const view = createView(profile, this, ProfilesPanel.registry);
         view.element.classList.add('profile-view');
         this.profileToView.push({ profile, view });
         return view;
@@ -405,7 +437,7 @@ export class ProfileTypeSidebarSection extends UI.TreeOutline.TreeElement {
         this.hidden = false;
         const profileType = profile.profileType();
         let sidebarParent = this;
-        const profileTreeElement = profile.createSidebarTreeElement(this.dataDisplayDelegate);
+        const profileTreeElement = createSidebarTreeElement(profile, this.dataDisplayDelegate);
         this.profileTreeElements.push(profileTreeElement);
         if (!profile.fromFile() && profileType.profileBeingRecorded() !== profile) {
             const profileTitle = profile.title;

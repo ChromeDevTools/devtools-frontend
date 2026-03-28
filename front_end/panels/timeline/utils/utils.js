@@ -81,6 +81,7 @@ async function domNodesForBackendIds(frameId, nodeIds) {
 // gen/front_end/panels/timeline/utils/Helpers.js
 var Helpers_exports = {};
 __export(Helpers_exports, {
+  RevealableBottomUpProfile: () => RevealableBottomUpProfile,
   RevealableCoreVitals: () => RevealableCoreVitals,
   RevealableInsight: () => RevealableInsight,
   RevealableTimeRange: () => RevealableTimeRange,
@@ -172,6 +173,12 @@ var RevealableCoreVitals = class {
   }
 };
 var RevealableTimeRange = class {
+  bounds;
+  constructor(bounds) {
+    this.bounds = bounds;
+  }
+};
+var RevealableBottomUpProfile = class {
   bounds;
   constructor(bounds) {
     this.bounds = bounds;

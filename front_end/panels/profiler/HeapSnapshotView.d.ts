@@ -12,8 +12,9 @@ import { type HeapSnapshotGridNode } from './HeapSnapshotGridNodes.js';
 import { type HeapSnapshotProxy, HeapSnapshotWorkerProxy } from './HeapSnapshotProxy.js';
 import { HeapTimelineOverview, type IdsRangeChangedEvent, Samples } from './HeapTimelineOverview.js';
 import { type DataDisplayDelegate, ProfileHeader, ProfileType } from './ProfileHeader.js';
-import { ProfileSidebarTreeElement } from './ProfileSidebarTreeElement.js';
+import type { ProfileTypeRegistry } from './ProfileTypeRegistry.js';
 export declare class HeapSnapshotView extends UI.View.SimpleView implements DataDisplayDelegate, UI.SearchableView.Searchable {
+    #private;
     searchResults: number[];
     profile: HeapProfileHeader;
     readonly linkifier: Components.Linkifier.Linkifier;
@@ -53,7 +54,7 @@ export declare class HeapSnapshotView extends UI.View.SimpleView implements Data
     currentSearch?: HeapSnapshotModel.HeapSnapshotModel.SearchConfig;
     get currentQuery(): string | undefined;
     set currentQuery(value: string);
-    constructor(dataDisplayDelegate: DataDisplayDelegate, profile: HeapProfileHeader);
+    constructor(dataDisplayDelegate: DataDisplayDelegate, profile: HeapProfileHeader, registry: ProfileTypeRegistry);
     createOverview(): void;
     onStopTracking(): void;
     onHeapStatsUpdate({ data: samples }: Common.EventTarget.EventTargetEvent<Samples>): void;
@@ -244,8 +245,6 @@ export declare class HeapProfileHeader extends ProfileHeader {
     constructor(heapProfilerModel: SDK.HeapProfilerModel.HeapProfilerModel | null, type: HeapSnapshotProfileType, title?: string);
     heapProfilerModel(): SDK.HeapProfilerModel.HeapProfilerModel | null;
     getLocation(nodeIndex: number): Promise<HeapSnapshotModel.HeapSnapshotModel.Location | null>;
-    createSidebarTreeElement(dataDisplayDelegate: DataDisplayDelegate): ProfileSidebarTreeElement;
-    createView(dataDisplayDelegate: DataDisplayDelegate): HeapSnapshotView;
     prepareToLoad(): void;
     finishLoad(): void;
     didWriteToTempFile(tempFile: Bindings.TempFile.TempFile): void;

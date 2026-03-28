@@ -14,10 +14,14 @@ export default `/*
     font-family: var(--default-font-family);
     width: 100%;
     display: flex;
-    gap: var(--sys-size-8);
     justify-content: space-between;
     align-items: center;
     margin-block: calc(-1 * var(--sys-size-3));
+
+    &.not-v2 {
+      /* Can be removed when AIv2 ships */
+      gap: var(--sys-size-8);
+    }
 
     .action-buttons {
       display: flex;
@@ -124,6 +128,12 @@ export default `/*
     }
   }
 
+  .user-query-wrapper {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+  }
+
   .chat-message {
     user-select: text;
     cursor: initial;
@@ -136,6 +146,38 @@ export default `/*
     word-break: normal;
     overflow-wrap: anywhere;
     border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
+
+
+    &.query.ai-v2 {
+      width: fit-content;
+      max-width: 80%;
+      text-align: left;
+      padding: var(--sys-size-4) var(--sys-size-6);
+      font: var(--sys-typescale-body4-regular);
+      /* top left - top right - bottom right - bottom left */
+      border-radius: var(--sys-shape-corner-medium) var(--sys-shape-corner-extra-small) var(--sys-shape-corner-medium) var(--sys-shape-corner-medium);
+      background-color: var(--sys-color-surface5);
+      color: var(--sys-color-on-surface);
+
+      &.is-first-message {
+        /* So the first message doesn't bump right against the top
+         * toolbar */
+        margin-top: var(--sys-size-6);
+      }
+    }
+
+    &.ai-v2 {
+      border-bottom: none;
+    }
+
+    &.ai-v2 .answer-body-wrapper {
+      @container(min-width: 700px) {
+        /* Purposefully not using design system variables, this is a
+         * specific size to indent the content in and align it with the
+         * walkthrough CTA. */
+        padding-left: 35px;
+      }
+    }
 
     &.is-last-message {
       border-bottom: 0;

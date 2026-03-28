@@ -26,8 +26,8 @@ export declare class TimelineTreeView extends TimelineTreeView_base implements U
     private lastHoveredProfileNode;
     private textFilterInternal;
     private taskFilter;
-    protected startTime: Trace.Types.Timing.Milli;
-    protected endTime: Trace.Types.Timing.Milli;
+    protected startTimeInternal: Trace.Types.Timing.Milli;
+    protected endTimeInternal: Trace.Types.Timing.Milli;
     splitWidget: UI.SplitWidget.SplitWidget;
     detailsView: UI.Widget.Widget;
     private searchableView;
@@ -46,6 +46,16 @@ export declare class TimelineTreeView extends TimelineTreeView_base implements U
      */
     protected autoSelectFirstChildOnRefresh: boolean;
     constructor(element?: HTMLElement);
+    get selectedEvents(): Trace.Types.Events.Event[];
+    set selectedEvents(selectedEvents: Trace.Types.Events.Event[] | null);
+    set parsedTrace(parsedTrace: Trace.TraceModel.ParsedTrace | null);
+    get parsedTrace(): Trace.TraceModel.ParsedTrace | null;
+    set startTime(startTime: Trace.Types.Timing.Milli);
+    get startTime(): Trace.Types.Timing.Milli;
+    set endTime(endTime: Trace.Types.Timing.Milli);
+    get endTime(): Trace.Types.Timing.Milli;
+    get compactMode(): boolean;
+    set compactMode(v: boolean);
     setSearchableView(searchableView: UI.SearchableView.SearchableView): void;
     set model(model: {
         selectedEvents: Trace.Types.Events.Event[] | null;
@@ -53,11 +63,11 @@ export declare class TimelineTreeView extends TimelineTreeView_base implements U
         entityMapper: Trace.EntityMapper.EntityMapper | null;
     });
     entityMapper(): Trace.EntityMapper.EntityMapper | null;
-    parsedTrace(): Trace.TraceModel.ParsedTrace | null;
     isThirdPartyTreeView(): boolean;
     nodeIsFirstParty(_node: Trace.Extras.TraceTree.Node): boolean;
     nodeIsExtension(_node: Trace.Extras.TraceTree.Node): boolean;
     init(): void;
+    wasShown(): void;
     lastSelectedNode(): Trace.Extras.TraceTree.Node | null | undefined;
     set activeSelection(selection: TimelineSelection);
     setRange(startTime: Trace.Types.Timing.Milli, endTime: Trace.Types.Timing.Milli): void;
@@ -67,7 +77,6 @@ export declare class TimelineTreeView extends TimelineTreeView_base implements U
     textFilter(): TimelineRegExp;
     exposePercentages(): boolean;
     populateToolbar(toolbar: UI.Toolbar.Toolbar): void;
-    selectedEvents(): Trace.Types.Events.Event[];
     appendContextMenuItems(_contextMenu: UI.ContextMenu.ContextMenu, _node: Trace.Extras.TraceTree.Node): void;
     selectProfileNode(treeNode: Trace.Extras.TraceTree.Node, suppressSelectedEvent: boolean): void;
     /**
@@ -89,7 +98,6 @@ export declare class TimelineTreeView extends TimelineTreeView_base implements U
     private onMouseMove;
     onHover(node: Trace.Extras.TraceTree.Node | null): void;
     onClick(node: Trace.Extras.TraceTree.Node | null): void;
-    wasShown(): void;
     childWasDetached(_widget: UI.Widget.Widget): void;
     onGridNodeOpened(): void;
     private onContextMenu;
@@ -153,7 +161,7 @@ export declare class AggregatedTimelineTreeView extends TimelineTreeView {
     #private;
     protected readonly groupBySetting: Common.Settings.Setting<AggregatedTimelineTreeView.GroupBy>;
     readonly stackView: TimelineStackView;
-    constructor();
+    constructor(element?: HTMLElement);
     setGroupBySetting(groupBy: AggregatedTimelineTreeView.GroupBy): void;
     set activeSelection(selection: TimelineSelection);
     private beautifyDomainName;
@@ -189,11 +197,11 @@ export declare namespace AggregatedTimelineTreeView {
     }
 }
 export declare class CallTreeTimelineTreeView extends AggregatedTimelineTreeView {
-    constructor();
+    constructor(element?: HTMLElement);
     buildTree(): Trace.Extras.TraceTree.Node;
 }
 export declare class BottomUpTimelineTreeView extends AggregatedTimelineTreeView {
-    constructor();
+    constructor(element?: HTMLElement);
     buildTree(): Trace.Extras.TraceTree.Node;
 }
 declare const TimelineStackView_base: (new (...args: any[]) => {

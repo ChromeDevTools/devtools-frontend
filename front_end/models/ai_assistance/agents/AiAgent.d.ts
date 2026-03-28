@@ -222,7 +222,14 @@ export interface TimelineRangeSummaryAiWidget {
         track: 'main';
     };
 }
-export type AiWidget = ComputedStyleAiWidget | CoreVitalsAiWidget | StylePropertiesAiWidget | DomTreeAiWidget | PerformanceTraceAiWidget | LcpBreakdownAiWidget | TimelineRangeSummaryAiWidget;
+export interface BottomUpTreeAiWidget {
+    name: 'BOTTOM_UP_TREE';
+    data: {
+        bounds: Trace.Types.Timing.TraceWindowMicro;
+        parsedTrace: Trace.TraceModel.ParsedTrace;
+    };
+}
+export type AiWidget = ComputedStyleAiWidget | CoreVitalsAiWidget | StylePropertiesAiWidget | DomTreeAiWidget | PerformanceTraceAiWidget | LcpBreakdownAiWidget | TimelineRangeSummaryAiWidget | BottomUpTreeAiWidget;
 export type FunctionCallHandlerResult<Result> = {
     requiresApproval: true;
     /**

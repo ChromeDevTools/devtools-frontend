@@ -99,7 +99,6 @@ export declare class SamplingHeapProfileHeader extends WritableProfileHeader {
         nodes: never[];
     };
     constructor(heapProfilerModel: SDK.HeapProfilerModel.HeapProfilerModel | null, type: SamplingHeapProfileTypeBase, title?: string);
-    createView(): HeapProfileView;
     protocolProfile(): Protocol.HeapProfiler.SamplingHeapProfile;
     heapProfilerModel(): SDK.HeapProfilerModel.HeapProfilerModel | null;
     profileType(): SamplingHeapProfileTypeBase;

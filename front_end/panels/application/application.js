@@ -28,7 +28,7 @@ __export(ApplicationPanelSidebar_exports, {
 import * as Common17 from "./../../core/common/common.js";
 import * as Host10 from "./../../core/host/host.js";
 import * as i18n59 from "./../../core/i18n/i18n.js";
-import * as Platform8 from "./../../core/platform/platform.js";
+import * as Platform9 from "./../../core/platform/platform.js";
 import * as Root2 from "./../../core/root/root.js";
 import * as SDK25 from "./../../core/sdk/sdk.js";
 import * as IssuesManager from "./../../models/issues_manager/issues_manager.js";
@@ -6945,14 +6945,14 @@ var PreloadingAttemptView = class extends UI10.Widget.VBox {
     this.contentElement.insertBefore(this.warningsContainer, this.contentElement.firstChild);
     this.warningsView.show(this.warningsContainer);
     const vbox = new UI10.Widget.VBox();
-    const toolbar6 = vbox.contentElement.createChild("devtools-toolbar", "preloading-toolbar");
-    toolbar6.setAttribute("jslog", `${VisualLogging6.toolbar()}`);
+    const toolbar7 = vbox.contentElement.createChild("devtools-toolbar", "preloading-toolbar");
+    toolbar7.setAttribute("jslog", `${VisualLogging6.toolbar()}`);
     this.ruleSetSelector = new PreloadingRuleSetSelector(() => this.render());
-    toolbar6.appendToolbarItem(this.ruleSetSelector.item());
+    toolbar7.appendToolbarItem(this.ruleSetSelector.item());
     this.textFilterUI = new UI10.Toolbar.ToolbarFilter(void 0, 1, 1);
     this.textFilterUI.addEventListener("TextChanged", this.onTextFilterChanged, this);
-    toolbar6.appendToolbarItem(this.textFilterUI);
-    toolbar6.appendToolbarItem(new UI10.Toolbar.ToolbarSeparator());
+    toolbar7.appendToolbarItem(this.textFilterUI);
+    toolbar7.appendToolbarItem(new UI10.Toolbar.ToolbarSeparator());
     this.clearButton = new UI10.Toolbar.ToolbarButton("Clear speculative loads", "clear", void 0, "clear-speculative-loads");
     this.clearButton.addEventListener("Click", () => {
       const model2 = SDK14.TargetManager.TargetManager.instance().scopeTarget()?.model(SDK14.PreloadingModel.PreloadingModel);
@@ -6964,7 +6964,7 @@ var PreloadingAttemptView = class extends UI10.Widget.VBox {
       this.ruleSetSelector.select(null);
       this.render();
     });
-    toolbar6.appendToolbarItem(this.clearButton);
+    toolbar7.appendToolbarItem(this.clearButton);
     this.preloadingGrid.onSelect = this.onPreloadingGridCellFocused.bind(this);
     const preloadingGridContainer = document.createElement("div");
     preloadingGridContainer.className = "preloading-grid-widget-container";
@@ -10361,11 +10361,11 @@ var KeyValueStorageItemsView = class extends UI18.Widget.VBox {
   performUpdate() {
     const that = this;
     const viewOutput = {
-      set toolbar(toolbar6) {
+      set toolbar(toolbar7) {
         that.#toolbar?.removeEventListener("DeleteSelected", that.deleteSelectedItem, that);
         that.#toolbar?.removeEventListener("DeleteAll", that.deleteAllItems, that);
         that.#toolbar?.removeEventListener("Refresh", that.refreshItems, that);
-        that.#toolbar = toolbar6;
+        that.#toolbar = toolbar7;
         that.#toolbar.addEventListener("DeleteSelected", that.deleteSelectedItem, that);
         that.#toolbar.addEventListener("DeleteAll", that.deleteAllItems, that);
         that.#toolbar.addEventListener("Refresh", that.refreshItems, that);
@@ -11556,15 +11556,21 @@ import { createIcon as createIcon13 } from "./../../ui/kit/kit.js";
 var WebMCPView_exports = {};
 __export(WebMCPView_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW6,
-  WebMCPView: () => WebMCPView
+  WebMCPView: () => WebMCPView,
+  filterToolCalls: () => filterToolCalls
 });
 import "./../../ui/components/icon_button/icon_button.js";
 import "./../../ui/components/lists/lists.js";
+import "./../../ui/legacy/components/data_grid/data_grid.js";
 import "./../../ui/legacy/legacy.js";
 import * as i18n57 from "./../../core/i18n/i18n.js";
+import * as Platform8 from "./../../core/platform/platform.js";
 import * as SDK24 from "./../../core/sdk/sdk.js";
+import * as Adorners from "./../../ui/components/adorners/adorners.js";
+import * as Buttons8 from "./../../ui/components/buttons/buttons.js";
 import * as UI22 from "./../../ui/legacy/legacy.js";
-import { html as html9, render as render8 } from "./../../ui/lit/lit.js";
+import { Directives as Directives4, html as html9, render as render8 } from "./../../ui/lit/lit.js";
+import * as VisualLogging16 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/application/webMCPView.css.js
 var webMCPView_css_default = `/*
@@ -11592,6 +11598,14 @@ var webMCPView_css_default = `/*
         flex: auto;
     }
 
+    devtools-data-grid {
+        flex: auto;
+    }
+
+    devtools-data-grid td {
+        vertical-align: middle;
+    }
+
     .section-title {
         background-color: var(--sys-color-surface1);
         padding: 0 5px;
@@ -11600,6 +11614,12 @@ var webMCPView_css_default = `/*
         align-items: center;
         flex: none;
         color: var(--sys-color-on-surface);
+    }
+
+    .status-cell {
+        display: flex;
+        align-items: center;
+        gap: 4px;
     }
 
     devtools-list {
@@ -11630,7 +11650,18 @@ var webMCPView_css_default = `/*
         color: var(--sys-color-on-surface);
     }
 
+    tr.status-error {
+      color: var(--sys-color-error);
+    }
 
+    devtools-toolbar-input {
+        flex-grow: 1;
+        flex-shrink: 1;
+    }
+
+    tr.status-cancelled {
+      color: var(--sys-color-on-surface-light);
+    }
 }
 
 /*# sourceURL=${import.meta.resolve("./webMCPView.css")} */`;
@@ -11656,20 +11687,203 @@ var UIStrings29 = {
   /**
    * @description Text to display when no calls have been made
    */
-  noCallsPlaceholder: "Start interacting with your `WebMCP` agent to see real-time tool calls and executions here."
+  noCallsPlaceholder: "Start interacting with your `WebMCP` agent to see real-time tool calls and executions here.",
+  /**
+   * @description Text for the name of a tool call
+   */
+  name: "Name",
+  /**
+   * @description Text for the status of a tool call
+   */
+  status: "Status",
+  /**
+   * @description Text for the input of a tool call
+   */
+  input: "Input",
+  /**
+   * @description Text for the output of a tool call
+   */
+  output: "Output",
+  /**
+   * @description Text for the status of a tool call that is in progress
+   */
+  inProgress: "In Progress",
+  /**
+   * @description Tooltip for the clear log button
+   */
+  clearLog: "Clear log",
+  /**
+   * @description Placeholder for the filter input
+   */
+  filter: "Filter",
+  /**
+   * @description Tooltip for the tool types dropdown
+   */
+  toolTypes: "Tool types",
+  /**
+   * @description Tooltip for the status types dropdown
+   */
+  statusTypes: "Status types",
+  /**
+   * @description Tooltip for the clear filters button
+   */
+  clearFilters: "Clear filters",
+  /**
+   * @description Filter option for imperative tools
+   */
+  imperative: "Imperative",
+  /**
+   * @description Filter option for declarative tools
+   */
+  declarative: "Declarative",
+  /**
+   * @description Text for the status of a tool call that has failed
+   */
+  error: "Error",
+  /**
+   * @description Text for the status of a tool call that was canceled
+   */
+  canceled: "Canceled",
+  /**
+   * @description Text for the status of a tool call that succeeded
+   */
+  success: "Success",
+  /**
+   * @description Text for the status of a tool call that has failed
+   */
+  pending: "In Progress"
 };
 var str_29 = i18n57.i18n.registerUIStrings("panels/application/WebMCPView.ts", UIStrings29);
 var i18nString29 = i18n57.i18n.getLocalizedString.bind(void 0, str_29);
+function filterToolCalls(toolCalls, filterState) {
+  let filtered = [...toolCalls];
+  const statusTypes = filterState.statusTypes;
+  if (statusTypes) {
+    filtered = filtered.filter((call) => {
+      const { success, error, pending } = statusTypes;
+      if (success && call.result?.status === "Success") {
+        return true;
+      }
+      if (error && call.result?.status === "Error") {
+        return true;
+      }
+      if (pending && call.result === void 0) {
+        return true;
+      }
+      return false;
+    });
+  }
+  const toolTypes = filterState.toolTypes;
+  if (toolTypes) {
+    filtered = filtered.filter((call) => {
+      const { imperative, declarative } = toolTypes;
+      const isDeclarative = call.tool?.backendNodeId !== void 0;
+      if (imperative && !isDeclarative) {
+        return true;
+      }
+      if (declarative && isDeclarative) {
+        return true;
+      }
+      return false;
+    });
+  }
+  if (filterState.text) {
+    const regex = Platform8.StringUtilities.createPlainTextSearchRegex(filterState.text, "i");
+    filtered = filtered.filter((call) => {
+      return regex.test(call.tool.name) || regex.test(call.input) || call.result?.output && regex.test(JSON.stringify(call.result.output)) || call.result?.errorText && regex.test(call.result.errorText);
+    });
+  }
+  return filtered;
+}
 var DEFAULT_VIEW6 = (input, output, target) => {
   const tools = input.tools;
+  const isFilterActive = Boolean(input.filters.text) || Boolean(input.filters.toolTypes) || Boolean(input.filters.statusTypes);
+  const iconName = (call) => {
+    switch (call.result?.status) {
+      case "Error":
+        return "cross-circle-filled";
+      case "Canceled":
+        return "record-stop";
+      case void 0:
+        return "dots-circle";
+      default:
+        return "";
+    }
+  };
+  const statusString = (call) => {
+    switch (call.result?.status) {
+      case "Error":
+        return i18nString29(UIStrings29.error);
+      case "Canceled":
+        return i18nString29(UIStrings29.canceled);
+      case "Success":
+        return i18nString29(UIStrings29.success);
+      default:
+        return i18nString29(UIStrings29.inProgress);
+    }
+  };
   render8(html9`
     <style>${webMCPView_css_default}</style>
+    <style>${UI22.FilterBar.filterStyles}</style>
     <devtools-split-view class="webmcp-view" direction="row" sidebar-position="second" name="webmcp-split-view">
       <div slot="main" class="call-log">
+        <div class="webmcp-toolbar-container" role="toolbar" jslog=${VisualLogging16.toolbar()}>
+          <devtools-toolbar class="webmcp-toolbar" role="presentation" wrappable>
+            <devtools-button title=${i18nString29(UIStrings29.clearLog)}
+                             .iconName=${"clear"}
+                             .variant=${"toolbar"}
+                             @click=${input.onClearLogClick}></devtools-button>
+            <div class="toolbar-divider"></div>
+            <devtools-toolbar-input type="filter"
+                                    placeholder=${i18nString29(UIStrings29.filter)}
+                                    .value=${input.filters.text}
+                                    @change=${(e) => input.onFilterChange({ ...input.filters, text: e.detail })}>
+            </devtools-toolbar-input>
+            <div class="toolbar-divider"></div>
+            ${input.filterButtons.toolTypes.button.element}
+            <div class="toolbar-divider"></div>
+            ${input.filterButtons.statusTypes.button.element}
+            <div class="toolbar-spacer"></div>
+            <devtools-button title=${i18nString29(UIStrings29.clearFilters)}
+                             .iconName=${"filter-clear"}
+                             .variant=${"toolbar"}
+                             @click=${() => input.onFilterChange({ text: "" })}
+                             ?hidden=${!isFilterActive}></devtools-button>
+          </devtools-toolbar>
+        </div>
+        ${input.toolCalls.length > 0 ? html9`
+          <devtools-data-grid striped>
+            <table>
+              <tr>
+                <th id="name" weight="20">
+                  ${i18nString29(UIStrings29.name)}
+                </th>
+                <th id="status" weight="20">${i18nString29(UIStrings29.status)}</th>
+                <th id="input" weight="30">${i18nString29(UIStrings29.input)}</th>
+                <th id="output" weight="30">${i18nString29(UIStrings29.output)}</th>
+              </tr>
+              ${Directives4.repeat(input.toolCalls, (call) => call.invocationId + "-" + (call.result?.status ?? ""), (call) => html9`
+                <tr class=${call.result?.status === "Error" ? "status-error" : call.result?.status === "Canceled" ? "status-cancelled" : ""}>
+                  <style>${webMCPView_css_default}</style>
+                  <td>${call.tool.name}</td>
+                  <td>
+                    <div class="status-cell">
+                      ${iconName(call) ? html9`<devtools-icon class="small" name=${iconName(call)}></devtools-icon>` : ""}
+                      <span>${statusString(call)}</span>
+                    </div>
+                  </td>
+                  <td>${call.input}</td>
+                  <td>${call.result?.output ? JSON.stringify(call.result.output) : call.result?.errorText ?? ""}</td>
+                </tr>
+              `)}
+              </table>
+          </devtools-data-grid>
+        ` : html9`
         ${UI22.Widget.widget(UI22.EmptyWidget.EmptyWidget, {
     header: i18nString29(UIStrings29.noCallsPlaceholderTitle),
     text: i18nString29(UIStrings29.noCallsPlaceholder)
   })}
+        `}
       </div>
       <div slot="sidebar" class="tool-list">
         <div class="section-title">${i18nString29(UIStrings29.toolRegistry)}</div>
@@ -11694,30 +11908,127 @@ var DEFAULT_VIEW6 = (input, output, target) => {
     </devtools-split-view>
   `, target);
 };
-var WebMCPView = class extends UI22.Widget.VBox {
+var WebMCPView = class _WebMCPView extends UI22.Widget.VBox {
   #view;
+  #filterState = {
+    text: ""
+  };
+  #filterButtons;
+  static createFilterButtons(onToolTypesClick, onStatusTypesClick) {
+    const createButton = (label, onContextMenu, jsLogContext) => {
+      const button = new UI22.Toolbar.ToolbarMenuButton(
+        onContextMenu,
+        /* isIconDropdown=*/
+        false,
+        /* useSoftMenu=*/
+        true,
+        jsLogContext,
+        /* iconName=*/
+        void 0,
+        /* keepOpen=*/
+        true
+      );
+      button.setText(label);
+      const adorner = new Adorners.Adorner.Adorner();
+      adorner.name = "countWrapper";
+      const countElement = document.createElement("span");
+      adorner.append(countElement);
+      adorner.classList.add("active-filters-count");
+      adorner.classList.add("hidden");
+      button.setAdorner(adorner);
+      const setCount = (count) => {
+        countElement.textContent = `${count}`;
+        count === 0 ? adorner.hide() : adorner.show();
+      };
+      return { button, setCount };
+    };
+    return {
+      toolTypes: createButton(i18nString29(UIStrings29.toolTypes), onToolTypesClick, "webmcp.tool-types"),
+      statusTypes: createButton(i18nString29(UIStrings29.statusTypes), onStatusTypesClick, "webmcp.status-types")
+    };
+  }
   constructor(target, view = DEFAULT_VIEW6) {
-    super();
+    super(target);
     this.#view = view;
+    this.#filterButtons = _WebMCPView.createFilterButtons(this.#showToolTypesContextMenu.bind(this), this.#showStatusTypesContextMenu.bind(this));
     SDK24.TargetManager.TargetManager.instance().observeModels(SDK24.WebMCPModel.WebMCPModel, {
       modelAdded: (model) => this.#webMCPModelAdded(model),
       modelRemoved: (model) => this.#webMCPModelRemoved(model)
     });
     this.requestUpdate();
   }
+  #showToolTypesContextMenu(contextMenu) {
+    const toggle4 = (key) => {
+      const current = this.#filterState.toolTypes ?? {};
+      const next = { ...current, [key]: !current[key] };
+      let toolTypesToPass = next;
+      if (!next.imperative && !next.declarative) {
+        toolTypesToPass = void 0;
+      }
+      this.#handleFilterChange({ ...this.#filterState, toolTypes: toolTypesToPass });
+    };
+    contextMenu.defaultSection().appendCheckboxItem(i18nString29(UIStrings29.imperative), () => toggle4("imperative"), { checked: this.#filterState.toolTypes?.imperative ?? false, jslogContext: "webmcp.imperative" });
+    contextMenu.defaultSection().appendCheckboxItem(i18nString29(UIStrings29.declarative), () => toggle4("declarative"), { checked: this.#filterState.toolTypes?.declarative ?? false, jslogContext: "webmcp.declarative" });
+  }
+  #showStatusTypesContextMenu(contextMenu) {
+    const toggle4 = (key) => {
+      const current = this.#filterState.statusTypes ?? {};
+      const next = { ...current, [key]: !current[key] };
+      let statusTypesToPass = next;
+      if (!next.success && !next.error && !next.pending) {
+        statusTypesToPass = void 0;
+      }
+      this.#handleFilterChange({ ...this.#filterState, statusTypes: statusTypesToPass });
+    };
+    contextMenu.defaultSection().appendCheckboxItem(i18nString29(UIStrings29.success), () => toggle4("success"), { checked: this.#filterState.statusTypes?.["success"] ?? false, jslogContext: "webmcp.success" });
+    contextMenu.defaultSection().appendCheckboxItem(i18nString29(UIStrings29.error), () => toggle4("error"), { checked: this.#filterState.statusTypes?.["error"] ?? false, jslogContext: "webmcp.error" });
+    contextMenu.defaultSection().appendCheckboxItem(i18nString29(UIStrings29.pending), () => toggle4("pending"), { checked: this.#filterState.statusTypes?.["pending"] ?? false, jslogContext: "webmcp.pending" });
+  }
   #webMCPModelAdded(model) {
     model.addEventListener("ToolsAdded", this.requestUpdate, this);
     model.addEventListener("ToolsRemoved", this.requestUpdate, this);
+    model.addEventListener("ToolInvoked", this.requestUpdate, this);
+    model.addEventListener("ToolResponded", this.requestUpdate, this);
   }
   #webMCPModelRemoved(model) {
     model.removeEventListener("ToolsAdded", this.requestUpdate, this);
     model.removeEventListener("ToolsRemoved", this.requestUpdate, this);
+    model.removeEventListener("ToolInvoked", this.requestUpdate, this);
+    model.removeEventListener("ToolResponded", this.requestUpdate, this);
+  }
+  #handleClearLogClick = () => {
+    const models = SDK24.TargetManager.TargetManager.instance().models(SDK24.WebMCPModel.WebMCPModel);
+    for (const model of models) {
+      model.clearCalls();
+    }
+    this.requestUpdate();
+  };
+  #handleFilterChange = (filters) => {
+    this.#filterState = filters;
+    const toolTypesCount = this.#filterState.toolTypes ? Object.values(this.#filterState.toolTypes).filter(Boolean).length : 0;
+    this.#filterButtons.toolTypes.setCount(toolTypesCount);
+    const statusTypesCount = this.#filterState.statusTypes ? Object.values(this.#filterState.statusTypes).filter(Boolean).length : 0;
+    this.#filterButtons.statusTypes.setCount(statusTypesCount);
+    this.requestUpdate();
+  };
+  #getTools() {
+    const models = SDK24.TargetManager.TargetManager.instance().models(SDK24.WebMCPModel.WebMCPModel);
+    const tools = models.flatMap((model) => model.tools.toArray());
+    return tools.sort((a, b) => a.name.localeCompare(b.name));
   }
   performUpdate() {
-    const tools = SDK24.TargetManager.TargetManager.instance().models(SDK24.WebMCPModel.WebMCPModel).flatMap((m) => m.tools.toArray()).sort((a, b) => a.name.localeCompare(b.name));
-    this.#view({
-      tools
-    }, {}, this.contentElement);
+    const models = SDK24.TargetManager.TargetManager.instance().models(SDK24.WebMCPModel.WebMCPModel);
+    const toolCalls = models.flatMap((model) => model.toolCalls);
+    const filteredCalls = filterToolCalls(toolCalls, this.#filterState);
+    const input = {
+      tools: this.#getTools(),
+      toolCalls: filteredCalls,
+      filters: this.#filterState,
+      filterButtons: this.#filterButtons,
+      onClearLogClick: this.#handleClearLogClick,
+      onFilterChange: this.#handleFilterChange
+    };
+    this.#view(input, {}, this.contentElement);
   }
 };
 
@@ -12551,7 +12862,7 @@ var BackgroundServiceTreeElement = class extends ApplicationPanelTreeElement {
   model;
   #selected;
   constructor(storagePanel, serviceName) {
-    super(storagePanel, BackgroundServiceView.getUIString(serviceName), false, Platform8.StringUtilities.toKebabCase(serviceName));
+    super(storagePanel, BackgroundServiceView.getUIString(serviceName), false, Platform9.StringUtilities.toKebabCase(serviceName));
     this.serviceName = serviceName;
     this.#selected = false;
     this.view = null;
@@ -12779,7 +13090,7 @@ var IndexedDBTreeElement = class extends ExpandableApplicationPanelTreeElement {
   removeIDBDatabaseTreeElement(idbDatabaseTreeElement) {
     idbDatabaseTreeElement.clear();
     this.removeChild(idbDatabaseTreeElement);
-    Platform8.ArrayUtilities.removeElement(this.idbDatabaseTreeElements, idbDatabaseTreeElement);
+    Platform9.ArrayUtilities.removeElement(this.idbDatabaseTreeElements, idbDatabaseTreeElement);
     this.setExpandable(this.childCount() > 0);
   }
   indexedDBLoaded({ data: { database, model, entriesUpdated } }) {
@@ -13740,7 +14051,7 @@ import * as IssuesManager2 from "./../../models/issues_manager/issues_manager.js
 import * as CookieTable from "./../../ui/legacy/components/cookie_table/cookie_table.js";
 import * as UI24 from "./../../ui/legacy/legacy.js";
 import { html as html10, render as render9 } from "./../../ui/lit/lit.js";
-import * as VisualLogging16 from "./../../ui/visual_logging/visual_logging.js";
+import * as VisualLogging17 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/application/cookieItemsView.css.js
 var cookieItemsView_css_default = `/*
@@ -13847,7 +14158,7 @@ var DEFAULT_COOKIE_PREVIEW_WIDGET_VIEW = (input, output, target) => {
           .checked=${input.showDecoded}
           @change=${(e) => input.onShowDecodedChanged(e.target.checked)}
           title=${i18nString31(UIStrings31.showUrlDecoded)}
-          jslog=${VisualLogging16.toggle("show-url-decoded").track({ click: true })}>
+          jslog=${VisualLogging17.toggle("show-url-decoded").track({ click: true })}>
           ${i18nString31(UIStrings31.showUrlDecoded)}
         </devtools-checkbox>
       </div>
@@ -13866,7 +14177,7 @@ var CookiePreviewWidget = class extends UI24.Widget.VBox {
   #cookie;
   showDecodedSetting;
   constructor(element, view = DEFAULT_COOKIE_PREVIEW_WIDGET_VIEW) {
-    super(element, { jslog: `${VisualLogging16.section("cookie-preview")}` });
+    super(element, { jslog: `${VisualLogging17.section("cookie-preview")}` });
     this.view = view;
     this.setMinimumSize(230, 45);
     this.#cookie = null;
@@ -13899,8 +14210,8 @@ var DEFAULT_VIEW7 = (input, output, target) => {
       onRefreshCallback: input.onRefreshItems
     })}
         class=flex-none
-        ${UI24.Widget.widgetRef(StorageItemsToolbar, (toolbar6) => {
-      output.toolbar = toolbar6;
+        ${UI24.Widget.widgetRef(StorageItemsToolbar, (toolbar7) => {
+      output.toolbar = toolbar7;
     })}
       ></devtools-widget>
       <devtools-split-view sidebar-position="second" name="cookie-items-split-view-state">
@@ -13917,7 +14228,7 @@ var DEFAULT_VIEW7 = (input, output, target) => {
           ></devtools-widget>
         </devtools-widget>
         <devtools-widget slot="sidebar" ${widget7(UI24.Widget.VBox, { minimumSize: new Size2(0, 50) })}
-          jslog=${VisualLogging16.pane("preview").track({ resize: true })}>
+          jslog=${VisualLogging17.pane("preview").track({ resize: true })}>
           ${input.selectedCookie ? html10`<devtools-widget ${widget7(CookiePreviewWidget, { cookie: input.selectedCookie })}>
                  </devtools-widget>` : html10`<devtools-widget ${widget7(UI24.EmptyWidget.EmptyWidget, {
       header: i18nString31(UIStrings31.noCookieSelected),
@@ -13941,7 +14252,7 @@ var CookieItemsView = class extends UI24.Widget.VBox {
   selectedCookie;
   #toolbar;
   constructor(model, cookieDomain, view = DEFAULT_VIEW7) {
-    super({ jslog: `${VisualLogging16.pane("cookies-data")}` });
+    super({ jslog: `${VisualLogging17.pane("cookies-data")}` });
     this.view = view;
     this.model = model;
     this.cookieDomain = cookieDomain;
@@ -13964,11 +14275,11 @@ var CookieItemsView = class extends UI24.Widget.VBox {
   performUpdate() {
     const that = this;
     const output = {
-      set toolbar(toolbar6) {
-        if (that.#toolbar === toolbar6) {
+      set toolbar(toolbar7) {
+        if (that.#toolbar === toolbar7) {
           return;
         }
-        that.#toolbar = toolbar6;
+        that.#toolbar = toolbar7;
         that.#toolbar.appendToolbarItem(that.onlyIssuesFilterUI);
         that.updateWithCookies(that.allCookies);
       }
@@ -14083,8 +14394,8 @@ import "./../../ui/legacy/components/data_grid/data_grid.js";
 import * as i18n63 from "./../../core/i18n/i18n.js";
 import * as SourceFrame6 from "./../../ui/legacy/components/source_frame/source_frame.js";
 import * as UI25 from "./../../ui/legacy/legacy.js";
-import { Directives as Directives4, html as html11, nothing as nothing6, render as render10 } from "./../../ui/lit/lit.js";
-import * as VisualLogging17 from "./../../ui/visual_logging/visual_logging.js";
+import { Directives as Directives5, html as html11, nothing as nothing6, render as render10 } from "./../../ui/lit/lit.js";
+import * as VisualLogging18 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/application/deviceBoundSessionsView.css.js
 var deviceBoundSessionsView_css_default = `/*
@@ -14660,7 +14971,7 @@ var DEFAULT_VIEW8 = (input, _output, target) => {
       <style>${UI25.inspectorCommonStyles}</style>
       <style>${deviceBoundSessionsView_css_default}</style>
       ${toolbarHtml}
-      <devtools-widget ${widget8(UI25.EmptyWidget.EmptyWidget, { header: defaultTitle, text: defaultDescription })} jslog=${VisualLogging17.pane("device-bound-sessions-empty")}></devtools-widget>
+      <devtools-widget ${widget8(UI25.EmptyWidget.EmptyWidget, { header: defaultTitle, text: defaultDescription })} jslog=${VisualLogging18.pane("device-bound-sessions-empty")}></devtools-widget>
     `, target);
     return;
   }
@@ -14749,7 +15060,7 @@ var DEFAULT_VIEW8 = (input, _output, target) => {
       <devtools-report-section-header role="heading" aria-level="2">${i18nString32(UIStrings32.events)}</devtools-report-section-header>
           ${events.length > 0 && onEventRowSelected ? html11`
             <div class="device-bound-session-grid-wrapper">
-                <devtools-data-grid class="device-bound-session-events-grid" striped inline name=${i18nString32(UIStrings32.events)} ${Directives4.ref((el) => {
+                <devtools-data-grid class="device-bound-session-events-grid" striped inline name=${i18nString32(UIStrings32.events)} ${Directives5.ref((el) => {
     if (!el || !(el instanceof HTMLElement)) {
       return;
     }
@@ -14876,7 +15187,7 @@ var DeviceBoundSessionsView = class extends UI25.Widget.VBox {
   #defaultDescription;
   #selectedEvent;
   constructor(view = DEFAULT_VIEW8) {
-    super({ jslog: `${VisualLogging17.pane("device-bound-sessions")}` });
+    super({ jslog: `${VisualLogging18.pane("device-bound-sessions")}` });
     this.#view = view;
   }
   showSession(model, site, sessionId) {
@@ -15182,7 +15493,7 @@ import * as i18n65 from "./../../core/i18n/i18n.js";
 import * as TextUtils4 from "./../../models/text_utils/text_utils.js";
 import * as SourceFrame7 from "./../../ui/legacy/components/source_frame/source_frame.js";
 import * as UI26 from "./../../ui/legacy/legacy.js";
-import * as VisualLogging18 from "./../../ui/visual_logging/visual_logging.js";
+import * as VisualLogging19 from "./../../ui/visual_logging/visual_logging.js";
 var UIStrings33 = {
   /**
    * @description Name for the "DOM Storage Items" table that shows the content of the DOM Storage.
@@ -15224,7 +15535,7 @@ var DOMStorageItemsView = class extends KeyValueStorageItemsView {
     Common19.EventTarget.removeEventListeners(this.eventListeners);
     this.domStorage = domStorage;
     const storageKind = domStorage.isLocalStorage ? "local-storage-data" : "session-storage-data";
-    this.element.setAttribute("jslog", `${VisualLogging18.pane().context(storageKind)}`);
+    this.element.setAttribute("jslog", `${VisualLogging19.pane().context(storageKind)}`);
     if (domStorage.storageKey) {
       this.toolbar?.setStorageKey(domStorage.storageKey);
     }
@@ -15303,7 +15614,7 @@ import * as TextUtils5 from "./../../models/text_utils/text_utils.js";
 import * as JSON5 from "./../../third_party/json5/json5.js";
 import * as SourceFrame8 from "./../../ui/legacy/components/source_frame/source_frame.js";
 import * as UI27 from "./../../ui/legacy/legacy.js";
-import * as VisualLogging19 from "./../../ui/visual_logging/visual_logging.js";
+import * as VisualLogging20 from "./../../ui/visual_logging/visual_logging.js";
 var UIStrings34 = {
   /**
    * @description Name for the "Extension Storage Items" table that shows the content of the extension Storage.
@@ -15321,7 +15632,7 @@ var ExtensionStorageItemsView = class extends KeyValueStorageItemsView {
   #extensionStorage;
   extensionStorageItemsDispatcher;
   constructor(extensionStorage, view) {
-    super(i18nString34(UIStrings34.extensionStorageItems), "extension-storage", true, view, void 0, { jslog: `${VisualLogging19.pane().context("extension-storage-data")}`, classes: ["storage-view", "table"] });
+    super(i18nString34(UIStrings34.extensionStorageItems), "extension-storage", true, view, void 0, { jslog: `${VisualLogging20.pane().context("extension-storage-data")}`, classes: ["storage-view", "table"] });
     this.extensionStorageItemsDispatcher = new Common20.ObjectWrapper.ObjectWrapper();
     this.setStorage(extensionStorage);
   }
@@ -15414,11 +15725,11 @@ __export(ResourcesPanel_exports, {
 });
 import "./../../ui/legacy/legacy.js";
 import * as Common21 from "./../../core/common/common.js";
-import * as Platform9 from "./../../core/platform/platform.js";
+import * as Platform10 from "./../../core/platform/platform.js";
 import * as SDK27 from "./../../core/sdk/sdk.js";
 import * as SourceFrame9 from "./../../ui/legacy/components/source_frame/source_frame.js";
 import * as UI28 from "./../../ui/legacy/legacy.js";
-import * as VisualLogging20 from "./../../ui/visual_logging/visual_logging.js";
+import * as VisualLogging21 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/application/resourcesPanel.css.js
 var resourcesPanel_css_default = `/*
@@ -15674,7 +15985,7 @@ var ResourcesPanel = class _ResourcesPanel extends UI28.Panel.PanelWithSidebar {
     if (!this.categoryView) {
       this.categoryView = new StorageCategoryView();
     }
-    this.categoryView.element.setAttribute("jslog", `${VisualLogging20.pane().context(Platform9.StringUtilities.toKebabCase(categoryName))}`);
+    this.categoryView.element.setAttribute("jslog", `${VisualLogging21.pane().context(Platform10.StringUtilities.toKebabCase(categoryName))}`);
     this.categoryView.setHeadline(categoryHeadline);
     this.categoryView.setText(categoryDescription);
     this.categoryView.setLink(categoryLink);

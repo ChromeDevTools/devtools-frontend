@@ -2449,9 +2449,9 @@ var ContextSelectionAgent_exports = {};
 __export(ContextSelectionAgent_exports, {
   ContextSelectionAgent: () => ContextSelectionAgent
 });
-import * as Host8 from "./../../core/host/host.js";
-import * as i18n11 from "./../../core/i18n/i18n.js";
-import * as Root7 from "./../../core/root/root.js";
+import * as Host9 from "./../../core/host/host.js";
+import * as i18n13 from "./../../core/i18n/i18n.js";
+import * as Root8 from "./../../core/root/root.js";
 import * as Logs3 from "./../logs/logs.js";
 import * as NetworkTimeCalculator3 from "./../network_time_calculator/network_time_calculator.js";
 import * as Workspace3 from "./../workspace/workspace.js";
@@ -6270,16 +6270,25 @@ ${result}`,
         Host6.userMetrics.performanceAIMainThreadActivityResponseSize(byteCount);
         const key = `getMainThreadTrackSummary({min: ${bounds.min}, max: ${bounds.max}})`;
         this.#cacheFunctionResult(focus, key, summary);
+        const widgets = [];
+        widgets.push({
+          name: "TIMELINE_RANGE_SUMMARY",
+          data: {
+            parsedTrace,
+            bounds,
+            track: "main"
+          }
+        });
+        widgets.push({
+          name: "BOTTOM_UP_TREE",
+          data: {
+            bounds,
+            parsedTrace
+          }
+        });
         return {
           result: { summary },
-          widgets: [{
-            name: "TIMELINE_RANGE_SUMMARY",
-            data: {
-              parsedTrace,
-              bounds,
-              track: "main"
-            }
-          }]
+          widgets
         };
       }
     });
@@ -6610,11 +6619,10 @@ __export(StylingAgent_exports, {
   NodeContext: () => NodeContext,
   StylingAgent: () => StylingAgent
 });
-import * as Host7 from "./../../core/host/host.js";
-import * as i18n9 from "./../../core/i18n/i18n.js";
-import * as Platform5 from "./../../core/platform/platform.js";
-import * as Root6 from "./../../core/root/root.js";
-import * as SDK8 from "./../../core/sdk/sdk.js";
+import * as Host8 from "./../../core/host/host.js";
+import * as i18n11 from "./../../core/i18n/i18n.js";
+import * as Root7 from "./../../core/root/root.js";
+import * as SDK9 from "./../../core/sdk/sdk.js";
 import * as Greendev2 from "./../greendev/greendev.js";
 import * as Annotations4 from "./../annotations/annotations.js";
 import * as Emulation from "./../emulation/emulation.js";
@@ -6771,17 +6779,15 @@ ${formatStyles(change.styles)}
   }
 };
 
-// gen/front_end/models/ai_assistance/EvaluateAction.js
-var EvaluateAction_exports = {};
-__export(EvaluateAction_exports, {
-  EvaluateAction: () => EvaluateAction,
-  SideEffectError: () => SideEffectError,
-  formatError: () => formatError,
-  getErrorStackOnThePage: () => getErrorStackOnThePage,
-  stringifyObjectOnThePage: () => stringifyObjectOnThePage,
-  stringifyRemoteObject: () => stringifyRemoteObject
+// gen/front_end/models/ai_assistance/ExtensionScope.js
+var ExtensionScope_exports = {};
+__export(ExtensionScope_exports, {
+  ExtensionScope: () => ExtensionScope
 });
+import * as Common4 from "./../../core/common/common.js";
+import * as Platform4 from "./../../core/platform/platform.js";
 import * as SDK6 from "./../../core/sdk/sdk.js";
+import * as Bindings3 from "./../bindings/bindings.js";
 
 // gen/front_end/models/ai_assistance/injected.js
 var injected_exports = {};
@@ -6912,7 +6918,318 @@ var setupSetElementStyles = `function setupSetElementStyles(prefix) {
 }`;
 var injectedFunctions = `(${setupSetElementStyles})('${AI_ASSISTANCE_CSS_CLASS_NAME}')`;
 
+// gen/front_end/models/ai_assistance/ExtensionScope.js
+var _a2;
+var ExtensionScope = class {
+  #listeners = [];
+  #changeManager;
+  #agentId;
+  #turnId;
+  /** Don't use directly use the getter */
+  #frameId;
+  /** Don't use directly use the getter */
+  #target;
+  #bindingMutex = new Common4.Mutex.Mutex();
+  constructor(changes, agentId, selectedNode, turnId) {
+    this.#changeManager = changes;
+    const frameId = selectedNode?.frameId();
+    const target = selectedNode?.domModel().target();
+    this.#agentId = agentId;
+    this.#turnId = turnId;
+    this.#target = target;
+    this.#frameId = frameId;
+  }
+  get target() {
+    if (!this.#target) {
+      throw new Error("Target is not found for executing code");
+    }
+    return this.#target;
+  }
+  get frameId() {
+    if (this.#frameId) {
+      return this.#frameId;
+    }
+    const resourceTreeModel = this.target.model(SDK6.ResourceTreeModel.ResourceTreeModel);
+    if (!resourceTreeModel?.mainFrame) {
+      throw new Error("Main frame is not found for executing code");
+    }
+    return resourceTreeModel.mainFrame.id;
+  }
+  async install() {
+    const runtimeModel = this.target.model(SDK6.RuntimeModel.RuntimeModel);
+    const pageAgent = this.target.pageAgent();
+    const { executionContextId } = await pageAgent.invoke_createIsolatedWorld({ frameId: this.frameId, worldName: FREESTYLER_WORLD_NAME });
+    const isolatedWorldContext = runtimeModel?.executionContext(executionContextId);
+    if (!isolatedWorldContext) {
+      throw new Error("Execution context is not found for executing code");
+    }
+    const handler = this.#bindingCalled.bind(this, isolatedWorldContext);
+    runtimeModel?.addEventListener(SDK6.RuntimeModel.Events.BindingCalled, handler);
+    this.#listeners.push(handler);
+    await this.target.runtimeAgent().invoke_addBinding({
+      name: FREESTYLER_BINDING_NAME,
+      executionContextId
+    });
+    await this.#simpleEval(isolatedWorldContext, freestylerBinding);
+    await this.#simpleEval(isolatedWorldContext, injectedFunctions);
+  }
+  async uninstall() {
+    const runtimeModel = this.target.model(SDK6.RuntimeModel.RuntimeModel);
+    for (const handler of this.#listeners) {
+      runtimeModel?.removeEventListener(SDK6.RuntimeModel.Events.BindingCalled, handler);
+    }
+    this.#listeners = [];
+    await this.target.runtimeAgent().invoke_removeBinding({
+      name: FREESTYLER_BINDING_NAME
+    });
+  }
+  async #simpleEval(context, expression, returnByValue = true) {
+    const response = await context.evaluate(
+      {
+        expression,
+        replMode: true,
+        includeCommandLineAPI: false,
+        returnByValue,
+        silent: false,
+        generatePreview: false,
+        allowUnsafeEvalBlockedByCSP: true,
+        throwOnSideEffect: false
+      },
+      /* userGesture */
+      false,
+      /* awaitPromise */
+      true
+    );
+    if (!response) {
+      throw new Error("Response is not found");
+    }
+    if ("error" in response) {
+      throw new Error(response.error);
+    }
+    if (response.exceptionDetails) {
+      const exceptionDescription = response.exceptionDetails.exception?.description;
+      throw new Error(exceptionDescription || "JS exception");
+    }
+    return response;
+  }
+  static getStyleRuleFromMatchesStyles(matchedStyles) {
+    for (const style of matchedStyles.nodeStyles()) {
+      if (style.type === "Inline") {
+        continue;
+      }
+      const rule = style.parentRule;
+      if (rule?.origin === "user-agent") {
+        break;
+      }
+      if (rule instanceof SDK6.CSSRule.CSSStyleRule) {
+        if (rule.nestingSelectors?.at(0)?.includes(AI_ASSISTANCE_CSS_CLASS_NAME) || rule.selectors.every((selector) => selector.text.includes(AI_ASSISTANCE_CSS_CLASS_NAME))) {
+          continue;
+        }
+        return rule;
+      }
+    }
+    return;
+  }
+  static getSelectorsFromStyleRule(styleRule, matchedStyles) {
+    const selectorIndexes = matchedStyles.getMatchingSelectors(styleRule);
+    const selectors = styleRule.selectors.filter((_, index) => selectorIndexes.includes(index)).filter((value) => !value.text.includes(AI_ASSISTANCE_CSS_CLASS_NAME)).filter(
+      // Disallow star selector ending that targets any arbitrary element
+      (value) => !value.text.endsWith("*") && // Disallow selector that contain star and don't have higher specificity
+      // Example of disallowed: `div > * > p`
+      // Example of allowed: `div > * > .header` OR `div > * > #header`
+      !(value.text.includes("*") && value.specificity?.a === 0 && value.specificity?.b === 0)
+    ).sort((a, b) => {
+      if (!a.specificity) {
+        return -1;
+      }
+      if (!b.specificity) {
+        return 1;
+      }
+      if (b.specificity.a !== a.specificity.a) {
+        return b.specificity.a - a.specificity.a;
+      }
+      if (b.specificity.b !== a.specificity.b) {
+        return b.specificity.b - a.specificity.b;
+      }
+      return b.specificity.b - a.specificity.b;
+    });
+    const selector = selectors.at(0);
+    if (!selector) {
+      return "";
+    }
+    let cssSelector = selector.text.replaceAll(":visited", "");
+    cssSelector = cssSelector.replaceAll("&", "");
+    return cssSelector.trim();
+  }
+  static getSelectorForNode(node) {
+    const simpleSelector = node.simpleSelector().split(".").filter((chunk) => {
+      return !chunk.startsWith(AI_ASSISTANCE_CSS_CLASS_NAME);
+    }).join(".");
+    if (simpleSelector) {
+      return simpleSelector;
+    }
+    return node.localName() || node.nodeName().toLowerCase();
+  }
+  static getSourceLocation(styleRule) {
+    const styleSheetHeader = styleRule.header;
+    if (!styleSheetHeader) {
+      return;
+    }
+    const range = styleRule.selectorRange();
+    if (!range) {
+      return;
+    }
+    const lineNumber = styleSheetHeader.lineNumberInSource(range.startLine);
+    const columnNumber = styleSheetHeader.columnNumberInSource(range.startLine, range.startColumn);
+    const location = new SDK6.CSSModel.CSSLocation(styleSheetHeader, lineNumber, columnNumber);
+    const uiLocation = Bindings3.CSSWorkspaceBinding.CSSWorkspaceBinding.instance().rawLocationToUILocation(location);
+    return uiLocation?.linkText(
+      /* skipTrim= */
+      true,
+      /* showColumnNumber= */
+      true
+    );
+  }
+  async #computeContextFromElement(remoteObject) {
+    if (!remoteObject.objectId) {
+      throw new Error("DOMModel is not found");
+    }
+    const cssModel = this.target.model(SDK6.CSSModel.CSSModel);
+    if (!cssModel) {
+      throw new Error("CSSModel is not found");
+    }
+    const domModel = this.target.model(SDK6.DOMModel.DOMModel);
+    if (!domModel) {
+      throw new Error("DOMModel is not found");
+    }
+    const node = await domModel.pushNodeToFrontend(remoteObject.objectId);
+    if (!node) {
+      throw new Error("Node is not found");
+    }
+    const backendNodeId = node.backendNodeId();
+    try {
+      const matchedStyles = await cssModel.getMatchedStyles(node.id);
+      if (!matchedStyles) {
+        throw new Error("No matching styles");
+      }
+      const styleRule = _a2.getStyleRuleFromMatchesStyles(matchedStyles);
+      if (!styleRule) {
+        throw new Error("No style rule found");
+      }
+      const selector = _a2.getSelectorsFromStyleRule(styleRule, matchedStyles);
+      if (!selector) {
+        throw new Error("No selector found");
+      }
+      return {
+        selector,
+        simpleSelector: _a2.getSelectorForNode(node),
+        sourceLocation: _a2.getSourceLocation(styleRule),
+        backendNodeId
+      };
+    } catch {
+    }
+    return {
+      selector: _a2.getSelectorForNode(node),
+      backendNodeId
+    };
+  }
+  async #bindingCalled(executionContext, event) {
+    const { data } = event;
+    if (data.name !== FREESTYLER_BINDING_NAME) {
+      return;
+    }
+    await this.#bindingMutex.run(async () => {
+      const cssModel = this.target.model(SDK6.CSSModel.CSSModel);
+      if (!cssModel) {
+        throw new Error("CSSModel is not found");
+      }
+      const id = data.payload;
+      const [args, element] = await Promise.all([
+        this.#simpleEval(executionContext, `freestyler.getArgs(${id})`),
+        this.#simpleEval(executionContext, `freestyler.getElement(${id})`, false)
+      ]);
+      const arg = JSON.parse(args.object.value);
+      if (!arg.className.match(new RegExp(`${RegExp.escape(AI_ASSISTANCE_CSS_CLASS_NAME)}-\\d`))) {
+        throw new Error("Non AI class name");
+      }
+      let context = {
+        // TODO: Should this a be a *?
+        selector: "",
+        backendNodeId: void 0
+      };
+      try {
+        context = await this.#computeContextFromElement(element.object);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        element.object.release();
+      }
+      try {
+        const sanitizedStyles = await this.sanitizedStyleChanges(context.selector, arg.styles);
+        const styleChanges = await this.#changeManager.addChange(cssModel, this.frameId, {
+          groupId: this.#agentId,
+          turnId: this.#turnId,
+          sourceLocation: context.sourceLocation,
+          selector: context.selector,
+          simpleSelector: context.simpleSelector,
+          className: arg.className,
+          styles: sanitizedStyles,
+          backendNodeId: context.backendNodeId
+        });
+        await this.#simpleEval(executionContext, `freestyler.respond(${id}, ${JSON.stringify(styleChanges)})`);
+      } catch (error) {
+        await this.#simpleEval(executionContext, `freestyler.respond(${id}, new Error("${error?.message}"))`);
+      }
+    });
+  }
+  async sanitizedStyleChanges(selector, styles) {
+    const cssStyleValue = [];
+    const changedStyles = [];
+    const styleSheet = new CSSStyleSheet({ disabled: true });
+    const kebabStyles = Platform4.StringUtilities.toKebabCaseKeys(styles);
+    for (const [style, value] of Object.entries(kebabStyles)) {
+      cssStyleValue.push(`${style}: ${value};`);
+      changedStyles.push(style);
+    }
+    await styleSheet.replace(`${selector} { ${cssStyleValue.join(" ")} }`);
+    const sanitizedStyles = {};
+    for (const cssRule of styleSheet.cssRules) {
+      if (!(cssRule instanceof CSSStyleRule)) {
+        continue;
+      }
+      for (const style of changedStyles) {
+        const value = cssRule.style.getPropertyValue(style);
+        if (value) {
+          sanitizedStyles[style] = value;
+        }
+      }
+    }
+    if (Object.keys(sanitizedStyles).length === 0) {
+      throw new Error("None of the suggested CSS properties or their values for selector were considered valid by the browser's CSS engine. Please ensure property names are correct and values match the expected format for those properties.");
+    }
+    return sanitizedStyles;
+  }
+};
+_a2 = ExtensionScope;
+
+// gen/front_end/models/ai_assistance/agents/ExecuteJavascript.js
+import * as Host7 from "./../../core/host/host.js";
+import * as i18n9 from "./../../core/i18n/i18n.js";
+import * as Platform5 from "./../../core/platform/platform.js";
+import * as Root6 from "./../../core/root/root.js";
+import * as SDK8 from "./../../core/sdk/sdk.js";
+
 // gen/front_end/models/ai_assistance/EvaluateAction.js
+var EvaluateAction_exports = {};
+__export(EvaluateAction_exports, {
+  EvaluateAction: () => EvaluateAction,
+  SideEffectError: () => SideEffectError,
+  formatError: () => formatError,
+  getErrorStackOnThePage: () => getErrorStackOnThePage,
+  stringifyObjectOnThePage: () => stringifyObjectOnThePage,
+  stringifyRemoteObject: () => stringifyRemoteObject
+});
+import * as SDK7 from "./../../core/sdk/sdk.js";
 function formatError(message) {
   return `Error: ${message}`;
 }
@@ -7000,7 +7317,7 @@ var EvaluateAction = class _EvaluateAction {
       }
       if (response.exceptionDetails) {
         const exceptionDescription = response.exceptionDetails.exception?.description;
-        if (SDK6.RuntimeModel.RuntimeModel.isSideEffectFailure(response)) {
+        if (SDK7.RuntimeModel.RuntimeModel.isSideEffectFailure(response)) {
           throw new SideEffectError(exceptionDescription);
         }
         return formatError(exceptionDescription ?? "JS exception");
@@ -7060,307 +7377,228 @@ ${result.message}`;
   }
 };
 
-// gen/front_end/models/ai_assistance/ExtensionScope.js
-var ExtensionScope_exports = {};
-__export(ExtensionScope_exports, {
-  ExtensionScope: () => ExtensionScope
+// gen/front_end/models/ai_assistance/agents/ExecuteJavascript.js
+var lockedString4 = i18n9.i18n.lockedString;
+function executeJavaScriptFunction(executor) {
+  return {
+    description: "This function allows you to run JavaScript code on the inspected page to access the element styles and page content.\nCall this function to gather additional information or modify the page state. Call this function enough times to investigate the user request.",
+    parameters: {
+      type: 6,
+      description: "",
+      nullable: false,
+      properties: {
+        code: {
+          type: 1,
+          description: `JavaScript code snippet to run on the inspected page. Make sure the code is formatted for readability.
+
+# Instructions
+
+* To return data, define a top-level \`data\` variable and populate it with data you want to get. Only JSON-serializable objects can be assigned to \`data\`.
+* If you modify styles on an element, ALWAYS call the pre-defined global \`async setElementStyles(el: Element, styles: object)\` function. This function is an internal mechanism for you and should never be presented as a command/advice to the user.
+* **CRITICAL** Only get styles that might be relevant to the user request.
+* **CRITICAL** Never assume a selector for the elements unless you verified your knowledge.
+* **CRITICAL** Consider that \`data\` variable from the previous function calls are not available in a new function call.
+
+For example, the code to change element styles:
+
+\`\`\`
+await setElementStyles($0, {
+  color: 'blue',
 });
-import * as Common4 from "./../../core/common/common.js";
-import * as Platform4 from "./../../core/platform/platform.js";
-import * as SDK7 from "./../../core/sdk/sdk.js";
-import * as Bindings3 from "./../bindings/bindings.js";
-var _a2;
-var ExtensionScope = class {
-  #listeners = [];
-  #changeManager;
-  #agentId;
-  #turnId;
-  /** Don't use directly use the getter */
-  #frameId;
-  /** Don't use directly use the getter */
-  #target;
-  #bindingMutex = new Common4.Mutex.Mutex();
-  constructor(changes, agentId, selectedNode, turnId) {
-    this.#changeManager = changes;
-    const frameId = selectedNode?.frameId();
-    const target = selectedNode?.domModel().target();
-    this.#agentId = agentId;
-    this.#turnId = turnId;
-    this.#target = target;
-    this.#frameId = frameId;
-  }
-  get target() {
-    if (!this.#target) {
-      throw new Error("Target is not found for executing code");
-    }
-    return this.#target;
-  }
-  get frameId() {
-    if (this.#frameId) {
-      return this.#frameId;
-    }
-    const resourceTreeModel = this.target.model(SDK7.ResourceTreeModel.ResourceTreeModel);
-    if (!resourceTreeModel?.mainFrame) {
-      throw new Error("Main frame is not found for executing code");
-    }
-    return resourceTreeModel.mainFrame.id;
-  }
-  async install() {
-    const runtimeModel = this.target.model(SDK7.RuntimeModel.RuntimeModel);
-    const pageAgent = this.target.pageAgent();
-    const { executionContextId } = await pageAgent.invoke_createIsolatedWorld({ frameId: this.frameId, worldName: FREESTYLER_WORLD_NAME });
-    const isolatedWorldContext = runtimeModel?.executionContext(executionContextId);
-    if (!isolatedWorldContext) {
-      throw new Error("Execution context is not found for executing code");
-    }
-    const handler = this.#bindingCalled.bind(this, isolatedWorldContext);
-    runtimeModel?.addEventListener(SDK7.RuntimeModel.Events.BindingCalled, handler);
-    this.#listeners.push(handler);
-    await this.target.runtimeAgent().invoke_addBinding({
-      name: FREESTYLER_BINDING_NAME,
-      executionContextId
-    });
-    await this.#simpleEval(isolatedWorldContext, freestylerBinding);
-    await this.#simpleEval(isolatedWorldContext, injectedFunctions);
-  }
-  async uninstall() {
-    const runtimeModel = this.target.model(SDK7.RuntimeModel.RuntimeModel);
-    for (const handler of this.#listeners) {
-      runtimeModel?.removeEventListener(SDK7.RuntimeModel.Events.BindingCalled, handler);
-    }
-    this.#listeners = [];
-    await this.target.runtimeAgent().invoke_removeBinding({
-      name: FREESTYLER_BINDING_NAME
-    });
-  }
-  async #simpleEval(context, expression, returnByValue = true) {
-    const response = await context.evaluate(
-      {
-        expression,
-        replMode: true,
-        includeCommandLineAPI: false,
-        returnByValue,
-        silent: false,
-        generatePreview: false,
-        allowUnsafeEvalBlockedByCSP: true,
-        throwOnSideEffect: false
-      },
-      /* userGesture */
-      false,
-      /* awaitPromise */
-      true
-    );
-    if (!response) {
-      throw new Error("Response is not found");
-    }
-    if ("error" in response) {
-      throw new Error(response.error);
-    }
-    if (response.exceptionDetails) {
-      const exceptionDescription = response.exceptionDetails.exception?.description;
-      throw new Error(exceptionDescription || "JS exception");
-    }
-    return response;
-  }
-  static getStyleRuleFromMatchesStyles(matchedStyles) {
-    for (const style of matchedStyles.nodeStyles()) {
-      if (style.type === "Inline") {
-        continue;
-      }
-      const rule = style.parentRule;
-      if (rule?.origin === "user-agent") {
-        break;
-      }
-      if (rule instanceof SDK7.CSSRule.CSSStyleRule) {
-        if (rule.nestingSelectors?.at(0)?.includes(AI_ASSISTANCE_CSS_CLASS_NAME) || rule.selectors.every((selector) => selector.text.includes(AI_ASSISTANCE_CSS_CLASS_NAME))) {
-          continue;
+\`\`\`
+
+For example, the code to get overlapping elements:
+
+\`\`\`
+const data = {
+  overlappingElements: Array.from(document.querySelectorAll('*'))
+    .filter(el => {
+      const rect = el.getBoundingClientRect();
+      const popupRect = $0.getBoundingClientRect();
+      return (
+        el !== $0 &&
+        rect.left < popupRect.right &&
+        rect.right > popupRect.left &&
+        rect.top < popupRect.bottom &&
+        rect.bottom > popupRect.top
+      );
+    })
+    .map(el => ({
+      tagName: el.tagName,
+      id: el.id,
+      className: el.className,
+      zIndex: window.getComputedStyle(el)['z-index']
+    }))
+};
+\`\`\`
+`
+        },
+        explanation: {
+          type: 1,
+          description: "Explain why you want to run this code"
+        },
+        title: {
+          type: 1,
+          description: 'Provide a summary of what the code does. For example, "Checking related element styles".'
         }
-        return rule;
-      }
+      },
+      required: ["code", "explanation", "title"]
+    },
+    displayInfoFromArgs: (params) => {
+      return {
+        title: params.title,
+        thought: params.explanation,
+        action: params.code
+      };
+    },
+    handler: async (params, options) => {
+      return await executor.executeAction(params.code, options);
     }
-    return;
+  };
+}
+async function executeJsCode(functionDeclaration, { throwOnSideEffect, contextNode }) {
+  if (!contextNode) {
+    throw new Error("Cannot execute JavaScript because of missing context node");
   }
-  static getSelectorsFromStyleRule(styleRule, matchedStyles) {
-    const selectorIndexes = matchedStyles.getMatchingSelectors(styleRule);
-    const selectors = styleRule.selectors.filter((_, index) => selectorIndexes.includes(index)).filter((value) => !value.text.includes(AI_ASSISTANCE_CSS_CLASS_NAME)).filter(
-      // Disallow star selector ending that targets any arbitrary element
-      (value) => !value.text.endsWith("*") && // Disallow selector that contain star and don't have higher specificity
-      // Example of disallowed: `div > * > p`
-      // Example of allowed: `div > * > .header` OR `div > * > #header`
-      !(value.text.includes("*") && value.specificity?.a === 0 && value.specificity?.b === 0)
-    ).sort((a, b) => {
-      if (!a.specificity) {
-        return -1;
-      }
-      if (!b.specificity) {
-        return 1;
-      }
-      if (b.specificity.a !== a.specificity.a) {
-        return b.specificity.a - a.specificity.a;
-      }
-      if (b.specificity.b !== a.specificity.b) {
-        return b.specificity.b - a.specificity.b;
-      }
-      return b.specificity.b - a.specificity.b;
-    });
-    const selector = selectors.at(0);
-    if (!selector) {
-      return "";
-    }
-    let cssSelector = selector.text.replaceAll(":visited", "");
-    cssSelector = cssSelector.replaceAll("&", "");
-    return cssSelector.trim();
+  const target = contextNode.domModel().target();
+  if (!target) {
+    throw new Error("Target is not found for executing code");
   }
-  static getSelectorForNode(node) {
-    const simpleSelector = node.simpleSelector().split(".").filter((chunk) => {
-      return !chunk.startsWith(AI_ASSISTANCE_CSS_CLASS_NAME);
-    }).join(".");
-    if (simpleSelector) {
-      return simpleSelector;
-    }
-    return node.localName() || node.nodeName().toLowerCase();
+  const resourceTreeModel = target.model(SDK8.ResourceTreeModel.ResourceTreeModel);
+  const frameId = contextNode.frameId() ?? resourceTreeModel?.mainFrame?.id;
+  if (!frameId) {
+    throw new Error("Main frame is not found for executing code");
   }
-  static getSourceLocation(styleRule) {
-    const styleSheetHeader = styleRule.header;
-    if (!styleSheetHeader) {
-      return;
-    }
-    const range = styleRule.selectorRange();
-    if (!range) {
-      return;
-    }
-    const lineNumber = styleSheetHeader.lineNumberInSource(range.startLine);
-    const columnNumber = styleSheetHeader.columnNumberInSource(range.startLine, range.startColumn);
-    const location = new SDK7.CSSModel.CSSLocation(styleSheetHeader, lineNumber, columnNumber);
-    const uiLocation = Bindings3.CSSWorkspaceBinding.CSSWorkspaceBinding.instance().rawLocationToUILocation(location);
-    return uiLocation?.linkText(
-      /* skipTrim= */
-      true,
-      /* showColumnNumber= */
-      true
-    );
+  const runtimeModel = target.model(SDK8.RuntimeModel.RuntimeModel);
+  const pageAgent = target.pageAgent();
+  const { executionContextId } = await pageAgent.invoke_createIsolatedWorld({ frameId, worldName: FREESTYLER_WORLD_NAME });
+  const executionContext = runtimeModel?.executionContext(executionContextId);
+  if (!executionContext) {
+    throw new Error("Execution context is not found for executing code");
   }
-  async #computeContextFromElement(remoteObject) {
-    if (!remoteObject.objectId) {
-      throw new Error("DOMModel is not found");
+  if (executionContext.debuggerModel.selectedCallFrame()) {
+    return formatError("Cannot evaluate JavaScript because the execution is paused on a breakpoint.");
+  }
+  const remoteObject = await contextNode.resolveToObject(void 0, executionContextId);
+  if (!remoteObject) {
+    throw new Error("Cannot execute JavaScript because remote object cannot be resolved");
+  }
+  return await EvaluateAction.execute(functionDeclaration, [remoteObject], executionContext, { throwOnSideEffect });
+}
+var MAX_OBSERVATION_BYTE_LENGTH = 25e3;
+var OBSERVATION_TIMEOUT = 5e3;
+var JavascriptExecutor = class {
+  #options;
+  #execJs;
+  constructor(options, execJs = executeJsCode) {
+    this.#options = options;
+    this.#execJs = execJs;
+  }
+  async executeAction(action, options) {
+    debugLog(`Action to execute: ${action}`);
+    if (options?.approved === false) {
+      return {
+        error: "Error: User denied code execution with side effects."
+      };
     }
-    const cssModel = this.target.model(SDK7.CSSModel.CSSModel);
-    if (!cssModel) {
-      throw new Error("CSSModel is not found");
+    if (this.#options.executionMode === Root6.Runtime.HostConfigFreestylerExecutionMode.NO_SCRIPTS) {
+      return {
+        error: "Error: JavaScript execution is currently disabled."
+      };
     }
-    const domModel = this.target.model(SDK7.DOMModel.DOMModel);
-    if (!domModel) {
-      throw new Error("DOMModel is not found");
+    const selectedNode = this.#options.getContextNode();
+    if (!selectedNode) {
+      return { error: "Error: no selected node found." };
     }
-    const node = await domModel.pushNodeToFrontend(remoteObject.objectId);
-    if (!node) {
-      throw new Error("Node is not found");
+    const target = selectedNode.domModel().target();
+    if (target.model(SDK8.DebuggerModel.DebuggerModel)?.selectedCallFrame()) {
+      return {
+        error: "Error: Cannot evaluate JavaScript because the execution is paused on a breakpoint."
+      };
     }
-    const backendNodeId = node.backendNodeId();
+    const scope = this.#options.createExtensionScope(this.#options.changes);
+    await scope.install();
     try {
-      const matchedStyles = await cssModel.getMatchedStyles(node.id);
-      if (!matchedStyles) {
-        throw new Error("No matching styles");
+      let throwOnSideEffect = true;
+      if (options?.approved) {
+        throwOnSideEffect = false;
       }
-      const styleRule = _a2.getStyleRuleFromMatchesStyles(matchedStyles);
-      if (!styleRule) {
-        throw new Error("No style rule found");
+      const result = await this.generateObservation(action, { throwOnSideEffect });
+      debugLog(`Action result: ${JSON.stringify(result)}`);
+      if (result.sideEffect) {
+        if (this.#options.executionMode === Root6.Runtime.HostConfigFreestylerExecutionMode.SIDE_EFFECT_FREE_SCRIPTS_ONLY) {
+          return {
+            error: "Error: JavaScript execution that modifies the page is currently disabled."
+          };
+        }
+        if (options?.signal?.aborted) {
+          return {
+            error: "Error: evaluation has been cancelled"
+          };
+        }
+        return {
+          requiresApproval: true,
+          description: lockedString4("This code may modify page content. Continue?")
+        };
       }
-      const selector = _a2.getSelectorsFromStyleRule(styleRule, matchedStyles);
-      if (!selector) {
-        throw new Error("No selector found");
+      if (result.canceled) {
+        return {
+          error: result.observation
+        };
       }
       return {
-        selector,
-        simpleSelector: _a2.getSelectorForNode(node),
-        sourceLocation: _a2.getSourceLocation(styleRule),
-        backendNodeId
+        result: result.observation
       };
-    } catch {
+    } finally {
+      await scope.uninstall();
     }
-    return {
-      selector: _a2.getSelectorForNode(node),
-      backendNodeId
-    };
   }
-  async #bindingCalled(executionContext, event) {
-    const { data } = event;
-    if (data.name !== FREESTYLER_BINDING_NAME) {
-      return;
-    }
-    await this.#bindingMutex.run(async () => {
-      const cssModel = this.target.model(SDK7.CSSModel.CSSModel);
-      if (!cssModel) {
-        throw new Error("CSSModel is not found");
-      }
-      const id = data.payload;
-      const [args, element] = await Promise.all([
-        this.#simpleEval(executionContext, `freestyler.getArgs(${id})`),
-        this.#simpleEval(executionContext, `freestyler.getElement(${id})`, false)
+  async generateObservation(action, { throwOnSideEffect }) {
+    const functionDeclaration = `async function ($0) {
+  try {
+    ${action}
+    ;
+    return ((typeof data !== "undefined") ? data : undefined);
+  } catch (error) {
+    return error;
+  }
+}`;
+    try {
+      const result = await Promise.race([
+        this.#execJs(functionDeclaration, {
+          throwOnSideEffect,
+          contextNode: this.#options.getContextNode()
+        }),
+        new Promise((_, reject) => {
+          setTimeout(() => reject(new Error("Script execution exceeded the maximum allowed time.")), OBSERVATION_TIMEOUT);
+        })
       ]);
-      const arg = JSON.parse(args.object.value);
-      if (!arg.className.match(new RegExp(`${RegExp.escape(AI_ASSISTANCE_CSS_CLASS_NAME)}-\\d`))) {
-        throw new Error("Non AI class name");
+      const byteCount = Platform5.StringUtilities.countWtf8Bytes(result);
+      Host7.userMetrics.freestylerEvalResponseSize(byteCount);
+      if (byteCount > MAX_OBSERVATION_BYTE_LENGTH) {
+        throw new Error("Output exceeded the maximum allowed length.");
       }
-      let context = {
-        // TODO: Should this a be a *?
-        selector: "",
-        backendNodeId: void 0
+      return {
+        observation: result,
+        sideEffect: false,
+        canceled: false
       };
-      try {
-        context = await this.#computeContextFromElement(element.object);
-      } catch (err) {
-        console.error(err);
-      } finally {
-        element.object.release();
+    } catch (error) {
+      if (error instanceof SideEffectError) {
+        return {
+          observation: error.message,
+          sideEffect: true,
+          canceled: false
+        };
       }
-      try {
-        const sanitizedStyles = await this.sanitizedStyleChanges(context.selector, arg.styles);
-        const styleChanges = await this.#changeManager.addChange(cssModel, this.frameId, {
-          groupId: this.#agentId,
-          turnId: this.#turnId,
-          sourceLocation: context.sourceLocation,
-          selector: context.selector,
-          simpleSelector: context.simpleSelector,
-          className: arg.className,
-          styles: sanitizedStyles,
-          backendNodeId: context.backendNodeId
-        });
-        await this.#simpleEval(executionContext, `freestyler.respond(${id}, ${JSON.stringify(styleChanges)})`);
-      } catch (error) {
-        await this.#simpleEval(executionContext, `freestyler.respond(${id}, new Error("${error?.message}"))`);
-      }
-    });
-  }
-  async sanitizedStyleChanges(selector, styles) {
-    const cssStyleValue = [];
-    const changedStyles = [];
-    const styleSheet = new CSSStyleSheet({ disabled: true });
-    const kebabStyles = Platform4.StringUtilities.toKebabCaseKeys(styles);
-    for (const [style, value] of Object.entries(kebabStyles)) {
-      cssStyleValue.push(`${style}: ${value};`);
-      changedStyles.push(style);
+      return {
+        observation: `Error: ${error.message}`,
+        sideEffect: false,
+        canceled: false
+      };
     }
-    await styleSheet.replace(`${selector} { ${cssStyleValue.join(" ")} }`);
-    const sanitizedStyles = {};
-    for (const cssRule of styleSheet.cssRules) {
-      if (!(cssRule instanceof CSSStyleRule)) {
-        continue;
-      }
-      for (const style of changedStyles) {
-        const value = cssRule.style.getPropertyValue(style);
-        if (value) {
-          sanitizedStyles[style] = value;
-        }
-      }
-    }
-    if (Object.keys(sanitizedStyles).length === 0) {
-      throw new Error("None of the suggested CSS properties or their values for selector were considered valid by the browser's CSS engine. Please ensure property names are correct and values match the expected format for those properties.");
-    }
-    return sanitizedStyles;
   }
 };
-_a2 = ExtensionScope;
 
 // gen/front_end/models/ai_assistance/agents/StylingAgent.js
 var UIStringsNotTranslate2 = {
@@ -7369,7 +7607,7 @@ var UIStringsNotTranslate2 = {
    */
   dataUsed: "Data used"
 };
-var lockedString4 = i18n9.i18n.lockedString;
+var lockedString5 = i18n11.i18n.lockedString;
 function getPreamble() {
   let preamble8 = `You are the most advanced CSS/DOM/HTML debugging assistant integrated into Chrome DevTools.
 You always suggest considering the best web development practices and the newest platform features such as view transitions.
@@ -7459,37 +7697,6 @@ var MULTIMODAL_ENHANCEMENT_PROMPTS = {
     /* MultimodalInputType.UPLOADED_IMAGE */
   ]: promptForUploadedImage + considerationsForMultimodalInputEvaluation
 };
-async function executeJsCode(functionDeclaration, { throwOnSideEffect, contextNode }) {
-  if (!contextNode) {
-    throw new Error("Cannot execute JavaScript because of missing context node");
-  }
-  const target = contextNode.domModel().target();
-  if (!target) {
-    throw new Error("Target is not found for executing code");
-  }
-  const resourceTreeModel = target.model(SDK8.ResourceTreeModel.ResourceTreeModel);
-  const frameId = contextNode.frameId() ?? resourceTreeModel?.mainFrame?.id;
-  if (!frameId) {
-    throw new Error("Main frame is not found for executing code");
-  }
-  const runtimeModel = target.model(SDK8.RuntimeModel.RuntimeModel);
-  const pageAgent = target.pageAgent();
-  const { executionContextId } = await pageAgent.invoke_createIsolatedWorld({ frameId, worldName: FREESTYLER_WORLD_NAME });
-  const executionContext = runtimeModel?.executionContext(executionContextId);
-  if (!executionContext) {
-    throw new Error("Execution context is not found for executing code");
-  }
-  if (executionContext.debuggerModel.selectedCallFrame()) {
-    return formatError("Cannot evaluate JavaScript because the execution is paused on a breakpoint.");
-  }
-  const remoteObject = await contextNode.resolveToObject(void 0, executionContextId);
-  if (!remoteObject) {
-    throw new Error("Cannot execute JavaScript because remote object cannot be resolved");
-  }
-  return await EvaluateAction.execute(functionDeclaration, [remoteObject], executionContext, { throwOnSideEffect });
-}
-var MAX_OBSERVATION_BYTE_LENGTH = 25e3;
-var OBSERVATION_TIMEOUT = 5e3;
 var AI_ASSISTANCE_FILTER_REGEX = `\\.${AI_ASSISTANCE_CSS_CLASS_NAME}-.*&`;
 var NodeContext = class extends ConversationContext {
   #node;
@@ -7555,29 +7762,30 @@ var NodeContext = class extends ConversationContext {
 };
 var StylingAgent = class _StylingAgent extends AiAgent {
   preamble = getPreamble();
-  clientFeature = Host7.AidaClient.ClientFeature.CHROME_STYLING_AGENT;
+  clientFeature = Host8.AidaClient.ClientFeature.CHROME_STYLING_AGENT;
   get userTier() {
     const greenDevEmulationEnabled = Greendev2.Prototypes.instance().isEnabled("emulationCapabilities");
-    return greenDevEmulationEnabled ? "TESTERS" : Root6.Runtime.hostConfig.devToolsFreestyler?.userTier;
+    return greenDevEmulationEnabled ? "TESTERS" : Root7.Runtime.hostConfig.devToolsFreestyler?.userTier;
   }
   get executionMode() {
-    return Root6.Runtime.hostConfig.devToolsFreestyler?.executionMode ?? Root6.Runtime.HostConfigFreestylerExecutionMode.ALL_SCRIPTS;
+    return Root7.Runtime.hostConfig.devToolsFreestyler?.executionMode ?? Root7.Runtime.HostConfigFreestylerExecutionMode.ALL_SCRIPTS;
   }
   get options() {
-    const temperature = Root6.Runtime.hostConfig.devToolsFreestyler?.temperature;
-    const modelId = Root6.Runtime.hostConfig.devToolsFreestyler?.modelId;
+    const temperature = Root7.Runtime.hostConfig.devToolsFreestyler?.temperature;
+    const modelId = Root7.Runtime.hostConfig.devToolsFreestyler?.modelId;
     return {
       temperature,
       modelId
     };
   }
   get multimodalInputEnabled() {
-    return Boolean(Root6.Runtime.hostConfig.devToolsFreestyler?.multimodal);
+    return Boolean(Root7.Runtime.hostConfig.devToolsFreestyler?.multimodal);
   }
   preambleFeatures() {
     return ["function_calling"];
   }
   #execJs;
+  #javascriptExecutor;
   #changes;
   #createExtensionScope;
   #greenDevEmulationScreenshot = null;
@@ -7590,6 +7798,12 @@ var StylingAgent = class _StylingAgent extends AiAgent {
     this.#createExtensionScope = opts.createExtensionScope ?? ((changes) => {
       return new ExtensionScope(changes, this.sessionId, this.context?.getItem() ?? null, this.#currentTurnId);
     });
+    this.#javascriptExecutor = new JavascriptExecutor({
+      executionMode: this.executionMode,
+      getContextNode: () => this.#getSelectedNode(),
+      createExtensionScope: this.#createExtensionScope.bind(this),
+      changes: this.#changes
+    }, this.#execJs);
     this.declareFunction("getStyles", {
       description: `Get computed and source styles for one or multiple elements on the inspected page for multiple elements at once by uid.
 
@@ -7635,82 +7849,7 @@ var StylingAgent = class _StylingAgent extends AiAgent {
         return await this.#getStyles(params.elements, params.styleProperties);
       }
     });
-    this.declareFunction("executeJavaScript", {
-      description: `This function allows you to run JavaScript code on the inspected page to access the element styles and page content.
-Call this function to gather additional information or modify the page state. Call this function enough times to investigate the user request.`,
-      parameters: {
-        type: 6,
-        description: "",
-        nullable: false,
-        properties: {
-          code: {
-            type: 1,
-            description: `JavaScript code snippet to run on the inspected page. Make sure the code is formatted for readability.
-
-# Instructions
-
-* To return data, define a top-level \`data\` variable and populate it with data you want to get. Only JSON-serializable objects can be assigned to \`data\`.
-* If you modify styles on an element, ALWAYS call the pre-defined global \`async setElementStyles(el: Element, styles: object)\` function. This function is an internal mechanism for you and should never be presented as a command/advice to the user.
-* **CRITICAL** Only get styles that might be relevant to the user request.
-* **CRITICAL** Never assume a selector for the elements unless you verified your knowledge.
-* **CRITICAL** Consider that \`data\` variable from the previous function calls are not available in a new function call.
-
-For example, the code to change element styles:
-
-\`\`\`
-await setElementStyles($0, {
-  color: 'blue',
-});
-\`\`\`
-
-For example, the code to get overlapping elements:
-
-\`\`\`
-const data = {
-  overlappingElements: Array.from(document.querySelectorAll('*'))
-    .filter(el => {
-      const rect = el.getBoundingClientRect();
-      const popupRect = $0.getBoundingClientRect();
-      return (
-        el !== $0 &&
-        rect.left < popupRect.right &&
-        rect.right > popupRect.left &&
-        rect.top < popupRect.bottom &&
-        rect.bottom > popupRect.top
-      );
-    })
-    .map(el => ({
-      tagName: el.tagName,
-      id: el.id,
-      className: el.className,
-      zIndex: window.getComputedStyle(el)['z-index']
-    }))
-};
-\`\`\`
-`
-          },
-          explanation: {
-            type: 1,
-            description: "Explain why you want to run this code"
-          },
-          title: {
-            type: 1,
-            description: 'Provide a summary of what the code does. For example, "Checking related element styles".'
-          }
-        },
-        required: ["code", "explanation", "title"]
-      },
-      displayInfoFromArgs: (params) => {
-        return {
-          title: params.title,
-          thought: params.explanation,
-          action: params.code
-        };
-      },
-      handler: async (params, options) => {
-        return await this.executeAction(params.code, options);
-      }
-    });
+    this.declareFunction("executeJavaScript", executeJavaScriptFunction(this.#javascriptExecutor));
     if (Annotations4.AnnotationRepository.annotationsEnabled()) {
       this.declareFunction("addElementAnnotation", {
         description: "Adds a visual annotation in the Elements panel, attached to a node with the specific UID provided. Use it to highlight nodes in the Elements panel and provide contextual suggestions to the user related to their queries.",
@@ -7761,51 +7900,6 @@ const data = {
         return await this.activateDeviceEmulation(params.deviceName, params.visionDeficiency);
       }
     });
-  }
-  async generateObservation(action, { throwOnSideEffect }) {
-    const functionDeclaration = `async function ($0) {
-  try {
-    ${action}
-    ;
-    return ((typeof data !== "undefined") ? data : undefined);
-  } catch (error) {
-    return error;
-  }
-}`;
-    try {
-      const result = await Promise.race([
-        this.#execJs(functionDeclaration, {
-          throwOnSideEffect,
-          contextNode: this.context?.getItem() || null
-        }),
-        new Promise((_, reject) => {
-          setTimeout(() => reject(new Error("Script execution exceeded the maximum allowed time.")), OBSERVATION_TIMEOUT);
-        })
-      ]);
-      const byteCount = Platform5.StringUtilities.countWtf8Bytes(result);
-      Host7.userMetrics.freestylerEvalResponseSize(byteCount);
-      if (byteCount > MAX_OBSERVATION_BYTE_LENGTH) {
-        throw new Error("Output exceeded the maximum allowed length.");
-      }
-      return {
-        observation: result,
-        sideEffect: false,
-        canceled: false
-      };
-    } catch (error) {
-      if (error instanceof SideEffectError) {
-        return {
-          observation: error.message,
-          sideEffect: true,
-          canceled: false
-        };
-      }
-      return {
-        observation: `Error: ${error.message}`,
-        sideEffect: false,
-        canceled: false
-      };
-    }
   }
   static async describeElement(element) {
     let output = `* Element's uid is ${element.backendNodeId()}.
@@ -7904,7 +7998,7 @@ const data = {
       if (!selectedNode) {
         return { error: "Error: Could not find the currently selected element." };
       }
-      const node = new SDK8.DOMModel.DeferredDOMNode(selectedNode.domModel().target(), Number(uid));
+      const node = new SDK9.DOMModel.DeferredDOMNode(selectedNode.domModel().target(), Number(uid));
       const resolved = await node.resolvePromise();
       if (!resolved) {
         return { error: "Error: Could not find the element with uid=" + uid };
@@ -7945,65 +8039,6 @@ const data = {
       result: JSON.stringify(result, null, 2),
       widgets
     };
-  }
-  async executeAction(action, options) {
-    debugLog(`Action to execute: ${action}`);
-    if (options?.approved === false) {
-      return {
-        error: "Error: User denied code execution with side effects."
-      };
-    }
-    if (this.executionMode === Root6.Runtime.HostConfigFreestylerExecutionMode.NO_SCRIPTS) {
-      return {
-        error: "Error: JavaScript execution is currently disabled."
-      };
-    }
-    const selectedNode = this.#getSelectedNode();
-    if (!selectedNode) {
-      return { error: "Error: no selected node found." };
-    }
-    const target = selectedNode.domModel().target();
-    if (target.model(SDK8.DebuggerModel.DebuggerModel)?.selectedCallFrame()) {
-      return {
-        error: "Error: Cannot evaluate JavaScript because the execution is paused on a breakpoint."
-      };
-    }
-    const scope = this.#createExtensionScope(this.#changes);
-    await scope.install();
-    try {
-      let throwOnSideEffect = true;
-      if (options?.approved) {
-        throwOnSideEffect = false;
-      }
-      const result = await this.generateObservation(action, { throwOnSideEffect });
-      debugLog(`Action result: ${JSON.stringify(result)}`);
-      if (result.sideEffect) {
-        if (this.executionMode === Root6.Runtime.HostConfigFreestylerExecutionMode.SIDE_EFFECT_FREE_SCRIPTS_ONLY) {
-          return {
-            error: "Error: JavaScript execution that modifies the page is currently disabled."
-          };
-        }
-        if (options?.signal?.aborted) {
-          return {
-            error: "Error: evaluation has been cancelled"
-          };
-        }
-        return {
-          requiresApproval: true,
-          description: lockedString4("This code may modify page content. Continue?")
-        };
-      }
-      if (result.canceled) {
-        return {
-          error: result.observation
-        };
-      }
-      return {
-        result: result.observation
-      };
-    } finally {
-      await scope.uninstall();
-    }
   }
   async addElementAnnotation(elementId, annotationMessage) {
     if (!Annotations4.AnnotationRepository.annotationsEnabled()) {
@@ -8081,7 +8116,7 @@ const data = {
     try {
       if (selectedNode) {
         const target = selectedNode.domModel().target();
-        const emulationModel = target.model(SDK8.EmulationModel.EmulationModel);
+        const emulationModel = target.model(SDK9.EmulationModel.EmulationModel);
         if (emulationModel) {
           let type = "none";
           if (visionDeficiency && visionDeficiency !== "none") {
@@ -8141,7 +8176,7 @@ const data = {
     }
     try {
       if (selectedNode) {
-        const accessibilityModel = selectedNode.domModel().target().model(SDK8.AccessibilityModel.AccessibilityModel);
+        const accessibilityModel = selectedNode.domModel().target().model(SDK9.AccessibilityModel.AccessibilityModel);
         if (accessibilityModel) {
           await accessibilityModel.resumeModel();
           const axResponse = await accessibilityModel.agent.invoke_getFullAXTree({});
@@ -8192,7 +8227,7 @@ const data = {
     yield {
       type: "context",
       details: [{
-        title: lockedString4(UIStringsNotTranslate2.dataUsed),
+        title: lockedString5(UIStringsNotTranslate2.dataUsed),
         text: await _StylingAgent.describeElement(selectedElement.getItem())
       }]
     };
@@ -8218,7 +8253,7 @@ ${await _StylingAgent.describeElement(selectedElement.getItem())}
 };
 
 // gen/front_end/models/ai_assistance/agents/ContextSelectionAgent.js
-var lockedString5 = i18n11.i18n.lockedString;
+var lockedString6 = i18n13.i18n.lockedString;
 var preamble5 = `
 You are a Web Development Assistant integrated into Chrome DevTools. Your tone is educational, supportive, and technically precise.
 You aim to help developers of all levels, prioritizing teaching web concepts as the primary entry point for any solution.
@@ -8248,13 +8283,13 @@ You aim to help developers of all levels, prioritizing teaching web concepts as 
 `;
 var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
   preamble = preamble5;
-  clientFeature = Host8.AidaClient.ClientFeature.CHROME_CONTEXT_SELECTION_AGENT;
+  clientFeature = Host9.AidaClient.ClientFeature.CHROME_CONTEXT_SELECTION_AGENT;
   get userTier() {
-    return Root7.Runtime.hostConfig.devToolsFreestyler?.userTier;
+    return Root8.Runtime.hostConfig.devToolsFreestyler?.userTier;
   }
   get options() {
-    const temperature = Root7.Runtime.hostConfig.devToolsAiAssistanceFileAgent?.temperature;
-    const modelId = Root7.Runtime.hostConfig.devToolsAiAssistanceFileAgent?.modelId;
+    const temperature = Root8.Runtime.hostConfig.devToolsAiAssistanceFileAgent?.temperature;
+    const modelId = Root8.Runtime.hostConfig.devToolsAiAssistanceFileAgent?.modelId;
     return {
       temperature,
       modelId
@@ -8283,7 +8318,7 @@ var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
       },
       displayInfoFromArgs: () => {
         return {
-          title: lockedString5("Listing network requests\u2026"),
+          title: lockedString6("Listing network requests\u2026"),
           action: "listNetworkRequest()"
         };
       },
@@ -8301,8 +8336,8 @@ var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
             id: request.requestId(),
             url: request.url(),
             statusCode: request.statusCode,
-            duration: i18n11.TimeUtilities.secondsToString(request.duration),
-            transferSize: i18n11.ByteUtilities.formatBytesToKb(request.transferSize)
+            duration: i18n13.TimeUtilities.secondsToString(request.duration),
+            transferSize: i18n13.ByteUtilities.formatBytesToKb(request.transferSize)
           });
         }
         if (requests.length === 0) {
@@ -8332,7 +8367,7 @@ var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
       },
       displayInfoFromArgs: (args) => {
         return {
-          title: lockedString5("Getting network request\u2026"),
+          title: lockedString6("Getting network request\u2026"),
           action: `selectNetworkRequest(${args.id})`
         };
       },
@@ -8368,7 +8403,7 @@ var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
       },
       displayInfoFromArgs: () => {
         return {
-          title: lockedString5("Listing source requests\u2026"),
+          title: lockedString6("Listing source requests\u2026"),
           action: "listSourceFiles()"
         };
       },
@@ -8402,7 +8437,7 @@ var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
       },
       displayInfoFromArgs: (args) => {
         return {
-          title: lockedString5("Getting source file\u2026"),
+          title: lockedString6("Getting source file\u2026"),
           action: `selectSourceFile(${args.id})`
         };
       },
@@ -8490,7 +8525,7 @@ var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
       },
       displayInfoFromArgs: () => {
         return {
-          title: lockedString5("Select an element on the page or in the Elements panel")
+          title: lockedString6("Select an element on the page or in the Elements panel")
         };
       },
       handler: async (_params, options) => {
@@ -8567,33 +8602,34 @@ __export(ConversationSummaryAgent_exports, {
   ConversationSummaryAgent: () => ConversationSummaryAgent,
   ConversationSummaryContext: () => ConversationSummaryContext
 });
-import * as Host9 from "./../../core/host/host.js";
-import * as Root8 from "./../../core/root/root.js";
+import * as Host10 from "./../../core/host/host.js";
+import * as Root9 from "./../../core/root/root.js";
 var preamble6 = `### Role
-You are a Performance Expert. Your task is to extract a diagnostic narrative from raw DevTools logs and present it as a self-contained, actionable Markdown summary. You provide high-density technical analysis without conversational fluff.
+You are a Conversation Summarizer. Your task is to take a transcript of a conversation between a user and a DevTools AI agent and produce a succinct, actionable Markdown summary. This summary will be used to help apply fixes in an IDE, so it must capture all relevant technical details, findings, and proposed code changes without any conversational fluff.
 
 ### Critical Constraints
 - **Persona:** Do not mention that you are an AI or refer to yourself in the third person.
 - **Domain Scope:** Do not provide answers on non-web-development topics (e.g., legal, financial, medical, or personal advice).
-- **Sensitive Topics:** If the conversation history touches on sensitive topics (religion, race, politics, sexuality, gender, etc.), respond only with: "My expertise is limited to website performance analysis. I cannot provide information on that topic."
-- **Data Portability:** The recipient of this summary does NOT have access to the raw logs.
+- **Sensitive Topics:** If the conversation history touches on sensitive topics (religion, race, politics, sexuality, gender, etc.), respond only with: "My expertise is limited to summarizing DevTools AI conversations. I cannot provide information on that topic."
+- **Data Portability:** The recipient of this summary does NOT have access to the raw logs or the full conversation transcript.
     - **No UIDs/Internal IDs:** Never refer to elements by internal IDs (e.g., \`uid=123\`).
     - **Standard Selectors:** Identify elements using HTML tags, classes, or IDs (e.g., \`button.submit-form\`).
     - **No Metadata:** Remove internal constants like \`NAVIGATION_0\` or \`INSIGHT_0\`.
-- **No Process Narration:** Do not describe internal "thinking" or API calls. Skip phrases like "The agent investigated..." or "The user then asked...". Jump straight to the findings.
+- **No Process Narration:** Do not describe internal "thinking" or API calls. Skip phrases like "The agent investigated..." or "The user then asked...". Jump straight to the findings and their technical context.
+- **Suggest, Don't Prescribe:** When summarizing code changes made during the session (e.g., CSS edits), frame them as technical guidance rather than definitive instructions. Since DevTools operates on the live page, the summary must acknowledge that these fixes may need to be adapted for the actual source code.
 
 ### Objectives
 1. **Identify Intent:** Define the core technical goal of the session.
-2. **Value-Only Diagnostics:** List only the technical data points discovered. Omit steps that didn't yield a result.
-3. **Focus on Code Intent:** When code is executed in the logs, summarize the **purpose** and the **result**. Do not include the raw JavaScript unless it is a specific fix for the user to implement.
-4. **Actionable Recommendations:** Provide specific code/strategy fixes based on the findings.
+2. **Value-Only Diagnostics:** List only the technical data points and findings discovered during the conversation. Omit steps that didn't yield a result.
+3. **Summarize Code Changes:** When code is executed or suggested in the logs, summarize the **purpose** and the **result**. Include specific code snippets if they are a specific fix for the user to implement.
+4. **Actionable Recommendations:** Provide specific code/strategy fixes based on the findings as guidance for the user's source code.
 
 ### Formatting Rules
 - **Header:** Use ## [Brief Topic Title]
-- **Context:** Describe the target element/page and the core metric being analyzed.
+- **Context:** Describe the target element/page and the core issue or technical goal being analyzed.
 - **Diagnostics:** A bulleted list of technical findings.
 - **Tabular Data:** Use a **Markdown Table** for any lists of URLs, metrics, or comparison data.
-- **Code Fixes:** Use fenced code blocks for suggested CSS/JS optimizations.
+- **Code Fixes:** Use fenced code blocks for suggested code optimizations. Use language that frames them as illustrative examples or context (e.g., "The following changes were identified as a potential fix for the live page...") rather than strict instructions.
 
 ---
 
@@ -8643,14 +8679,14 @@ var ConversationSummaryContext = class extends ConversationContext {
 var ConversationSummaryAgent = class extends AiAgent {
   preamble = preamble6;
   get clientFeature() {
-    return Host9.AidaClient.ClientFeature.CHROME_CONVERSATION_SUMMARY_AGENT;
+    return Host10.AidaClient.ClientFeature.CHROME_CONVERSATION_SUMMARY_AGENT;
   }
   get userTier() {
-    return Root8.Runtime.hostConfig.devToolsFreestyler?.userTier;
+    return Root9.Runtime.hostConfig.devToolsFreestyler?.userTier;
   }
   get options() {
-    const temperature = Root8.Runtime.hostConfig.devToolsFreestyler?.temperature;
-    const modelId = Root8.Runtime.hostConfig.devToolsFreestyler?.modelId;
+    const temperature = Root9.Runtime.hostConfig.devToolsFreestyler?.temperature;
+    const modelId = Root9.Runtime.hostConfig.devToolsFreestyler?.modelId;
     return {
       temperature,
       modelId
@@ -8693,8 +8729,8 @@ __export(PatchAgent_exports, {
   FileUpdateAgent: () => FileUpdateAgent,
   PatchAgent: () => PatchAgent
 });
-import * as Host10 from "./../../core/host/host.js";
-import * as Root9 from "./../../core/root/root.js";
+import * as Host11 from "./../../core/host/host.js";
+import * as Root10 from "./../../core/root/root.js";
 var preamble7 = `You are a highly skilled software engineer with expertise in web development.
 The user asks you to apply changes to a source code folder.
 
@@ -8732,14 +8768,14 @@ var PatchAgent = class extends AiAgent {
     return;
   }
   preamble = preamble7;
-  clientFeature = Host10.AidaClient.ClientFeature.CHROME_PATCH_AGENT;
+  clientFeature = Host11.AidaClient.ClientFeature.CHROME_PATCH_AGENT;
   get userTier() {
-    return Root9.Runtime.hostConfig.devToolsFreestyler?.userTier;
+    return Root10.Runtime.hostConfig.devToolsFreestyler?.userTier;
   }
   get options() {
     return {
-      temperature: Root9.Runtime.hostConfig.devToolsFreestyler?.temperature,
-      modelId: Root9.Runtime.hostConfig.devToolsFreestyler?.modelId
+      temperature: Root10.Runtime.hostConfig.devToolsFreestyler?.temperature,
+      modelId: Root10.Runtime.hostConfig.devToolsFreestyler?.modelId
     };
   }
   get agentProject() {
@@ -8914,14 +8950,14 @@ var FileUpdateAgent = class extends AiAgent {
     return;
   }
   preamble = preamble7;
-  clientFeature = Host10.AidaClient.ClientFeature.CHROME_PATCH_AGENT;
+  clientFeature = Host11.AidaClient.ClientFeature.CHROME_PATCH_AGENT;
   get userTier() {
-    return Root9.Runtime.hostConfig.devToolsFreestyler?.userTier;
+    return Root10.Runtime.hostConfig.devToolsFreestyler?.userTier;
   }
   get options() {
     return {
-      temperature: Root9.Runtime.hostConfig.devToolsFreestyler?.temperature,
-      modelId: Root9.Runtime.hostConfig.devToolsFreestyler?.modelId
+      temperature: Root10.Runtime.hostConfig.devToolsFreestyler?.temperature,
+      modelId: Root10.Runtime.hostConfig.devToolsFreestyler?.modelId
     };
   }
 };
@@ -8931,8 +8967,8 @@ var PerformanceAnnotationsAgent_exports = {};
 __export(PerformanceAnnotationsAgent_exports, {
   PerformanceAnnotationsAgent: () => PerformanceAnnotationsAgent
 });
-import * as Host11 from "./../../core/host/host.js";
-import * as Root10 from "./../../core/root/root.js";
+import * as Host12 from "./../../core/host/host.js";
+import * as Root11 from "./../../core/root/root.js";
 var callTreePreamble = `You are an expert performance analyst embedded within Chrome DevTools.
 You meticulously examine web application behavior captured by the Chrome DevTools Performance Panel and Chrome tracing.
 You will receive a structured text representation of a call tree, derived from a user-selected call frame within a performance trace's flame chart.
@@ -8997,14 +9033,14 @@ Consider optimizing the position calculation logic or reducing the frequency of 
 var PerformanceAnnotationsAgent = class extends AiAgent {
   preamble = callTreePreamble;
   get clientFeature() {
-    return Host11.AidaClient.ClientFeature.CHROME_PERFORMANCE_ANNOTATIONS_AGENT;
+    return Host12.AidaClient.ClientFeature.CHROME_PERFORMANCE_ANNOTATIONS_AGENT;
   }
   get userTier() {
-    return Root10.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.userTier;
+    return Root11.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.userTier;
   }
   get options() {
-    const temperature = Root10.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.temperature;
-    const modelId = Root10.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.modelId;
+    const temperature = Root11.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.temperature;
+    const modelId = Root11.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.modelId;
     return {
       temperature,
       modelId
@@ -9083,10 +9119,10 @@ __export(AiConversation_exports, {
   generateContextDetailsMarkdown: () => generateContextDetailsMarkdown
 });
 import * as Common6 from "./../../core/common/common.js";
-import * as Host12 from "./../../core/host/host.js";
+import * as Host13 from "./../../core/host/host.js";
 import * as Platform6 from "./../../core/platform/platform.js";
-import * as Root11 from "./../../core/root/root.js";
-import * as SDK9 from "./../../core/sdk/sdk.js";
+import * as Root12 from "./../../core/root/root.js";
+import * as SDK10 from "./../../core/sdk/sdk.js";
 import * as Greendev3 from "./../greendev/greendev.js";
 
 // gen/front_end/models/ai_assistance/AiHistoryStorage.js
@@ -9248,7 +9284,7 @@ var AiConversation = class _AiConversation {
   #onInspectElement;
   #networkTimeCalculator;
   constructor(options) {
-    const { type, data = [], id = crypto.randomUUID(), isReadOnly = true, aidaClient = new Host12.AidaClient.AidaClient(), changeManager, isExternal = false, performanceRecordAndReload, onInspectElement, networkTimeCalculator, lighthouseRecording } = options;
+    const { type, data = [], id = crypto.randomUUID(), isReadOnly = true, aidaClient = new Host13.AidaClient.AidaClient(), changeManager, isExternal = false, performanceRecordAndReload, onInspectElement, networkTimeCalculator, lighthouseRecording } = options;
     this.#changeManager = changeManager;
     this.#aidaClient = aidaClient;
     this.#performanceRecordAndReload = performanceRecordAndReload;
@@ -9583,17 +9619,17 @@ Original user query: ${initialQuery}`;
     if (this.#origin) {
       return this.#origin;
     }
-    const target = SDK9.TargetManager.TargetManager.instance().primaryPageTarget();
+    const target = SDK10.TargetManager.TargetManager.instance().primaryPageTarget();
     const inspectedURL = target?.inspectedURL();
     this.#origin = inspectedURL ? new Common6.ParsedURL.ParsedURL(inspectedURL).securityOrigin() : void 0;
     return this.#origin;
   };
 };
 function isAiAssistanceServerSideLoggingEnabled() {
-  return !Root11.Runtime.hostConfig.aidaAvailability?.disallowLogging;
+  return !Root12.Runtime.hostConfig.aidaAvailability?.disallowLogging;
 }
 function isAiAssistanceContextSelectionAgentEnabled() {
-  return Boolean(Root11.Runtime.hostConfig.devToolsAiAssistanceContextSelectionAgent?.enabled);
+  return Boolean(Root12.Runtime.hostConfig.devToolsAiAssistanceContextSelectionAgent?.enabled);
 }
 
 // gen/front_end/models/ai_assistance/AiUtils.js
@@ -9604,9 +9640,9 @@ __export(AiUtils_exports, {
   isGeminiBranding: () => isGeminiBranding
 });
 import * as Common7 from "./../../core/common/common.js";
-import * as Host13 from "./../../core/host/host.js";
-import * as i18n13 from "./../../core/i18n/i18n.js";
-import * as Root12 from "./../../core/root/root.js";
+import * as Host14 from "./../../core/host/host.js";
+import * as i18n15 from "./../../core/i18n/i18n.js";
+import * as Root13 from "./../../core/root/root.js";
 var UIStrings = {
   /**
    * @description Message shown to the user if the age check is not successful.
@@ -9625,11 +9661,11 @@ var UIStrings = {
    */
   notAvailableInIncognitoMode: "AI assistance is not available in Incognito mode or Guest mode."
 };
-var str_ = i18n13.i18n.registerUIStrings("models/ai_assistance/AiUtils.ts", UIStrings);
-var i18nString = i18n13.i18n.getLocalizedString.bind(void 0, str_);
+var str_ = i18n15.i18n.registerUIStrings("models/ai_assistance/AiUtils.ts", UIStrings);
+var i18nString = i18n15.i18n.getLocalizedString.bind(void 0, str_);
 function getDisabledReasons(aidaAvailability) {
   const reasons = [];
-  if (Root12.Runtime.hostConfig.isOffTheRecord) {
+  if (Root13.Runtime.hostConfig.isOffTheRecord) {
     reasons.push(i18nString(UIStrings.notAvailableInIncognitoMode));
   }
   switch (aidaAvailability) {
@@ -9641,7 +9677,7 @@ function getDisabledReasons(aidaAvailability) {
     case "no-internet":
       reasons.push(i18nString(UIStrings.offline));
     case "available": {
-      if (Root12.Runtime.hostConfig?.aidaAvailability?.blockedByAge === true) {
+      if (Root13.Runtime.hostConfig?.aidaAvailability?.blockedByAge === true) {
         reasons.push(i18nString(UIStrings.ageRestricted));
       }
     }
@@ -9650,7 +9686,7 @@ function getDisabledReasons(aidaAvailability) {
   return reasons;
 }
 function isGeminiBranding() {
-  return !!Root12.Runtime.hostConfig.devToolsGeminiRebranding?.enabled;
+  return !!Root13.Runtime.hostConfig.devToolsGeminiRebranding?.enabled;
 }
 function getIconName() {
   return isGeminiBranding() ? "spark" : "smart-assistant";
@@ -9662,8 +9698,8 @@ __export(BuiltInAi_exports, {
   BuiltInAi: () => BuiltInAi
 });
 import * as Common8 from "./../../core/common/common.js";
-import * as Host14 from "./../../core/host/host.js";
-import * as Root13 from "./../../core/root/root.js";
+import * as Host15 from "./../../core/host/host.js";
+import * as Root14 from "./../../core/root/root.js";
 var builtInAiInstance;
 var BuiltInAi = class _BuiltInAi extends Common8.ObjectWrapper.ObjectWrapper {
   #availability = null;
@@ -9684,7 +9720,7 @@ var BuiltInAi = class _BuiltInAi extends Common8.ObjectWrapper.ObjectWrapper {
     this.initDoneForTesting = this.getLanguageModelAvailability().then(() => this.#sendAvailabilityMetrics()).then(() => this.initialize());
   }
   async getLanguageModelAvailability() {
-    if (!Root13.Runtime.hostConfig.devToolsConsoleInsightsTeasers?.enabled) {
+    if (!Root14.Runtime.hostConfig.devToolsConsoleInsightsTeasers?.enabled) {
       this.#availability = "disabled";
       return this.#availability;
     }
@@ -9708,7 +9744,7 @@ var BuiltInAi = class _BuiltInAi extends Common8.ObjectWrapper.ObjectWrapper {
     return this.#availability === "downloading";
   }
   isEventuallyAvailable() {
-    if (!this.#hasGpu && !Boolean(Root13.Runtime.hostConfig.devToolsConsoleInsightsTeasers?.allowWithoutGpu)) {
+    if (!this.#hasGpu && !Boolean(Root14.Runtime.hostConfig.devToolsConsoleInsightsTeasers?.allowWithoutGpu)) {
       return false;
     }
     return this.#availability === "available" || this.#availability === "downloading" || this.#availability === "downloadable";
@@ -9721,7 +9757,7 @@ var BuiltInAi = class _BuiltInAi extends Common8.ObjectWrapper.ObjectWrapper {
     return this.#downloadProgress;
   }
   startDownloadingModel() {
-    if (!Root13.Runtime.hostConfig.devToolsConsoleInsightsTeasers?.allowWithoutGpu && !this.#hasGpu) {
+    if (!Root14.Runtime.hostConfig.devToolsConsoleInsightsTeasers?.allowWithoutGpu && !this.#hasGpu) {
       return;
     }
     if (this.#availability !== "downloadable") {
@@ -9756,7 +9792,7 @@ var BuiltInAi = class _BuiltInAi extends Common8.ObjectWrapper.ObjectWrapper {
     return Boolean(this.#consoleInsightsSession);
   }
   async initialize() {
-    if (!Root13.Runtime.hostConfig.devToolsConsoleInsightsTeasers?.allowWithoutGpu && !this.#hasGpu) {
+    if (!Root14.Runtime.hostConfig.devToolsConsoleInsightsTeasers?.allowWithoutGpu && !this.#hasGpu) {
       return;
     }
     if (this.#availability !== "available" && this.#availability !== "downloading") {
@@ -9843,31 +9879,31 @@ Your instructions are as follows:
     if (this.#hasGpu) {
       switch (this.#availability) {
         case "unavailable":
-          Host14.userMetrics.builtInAiAvailability(
+          Host15.userMetrics.builtInAiAvailability(
             0
             /* Host.UserMetrics.BuiltInAiAvailability.UNAVAILABLE_HAS_GPU */
           );
           break;
         case "downloadable":
-          Host14.userMetrics.builtInAiAvailability(
+          Host15.userMetrics.builtInAiAvailability(
             1
             /* Host.UserMetrics.BuiltInAiAvailability.DOWNLOADABLE_HAS_GPU */
           );
           break;
         case "downloading":
-          Host14.userMetrics.builtInAiAvailability(
+          Host15.userMetrics.builtInAiAvailability(
             2
             /* Host.UserMetrics.BuiltInAiAvailability.DOWNLOADING_HAS_GPU */
           );
           break;
         case "available":
-          Host14.userMetrics.builtInAiAvailability(
+          Host15.userMetrics.builtInAiAvailability(
             3
             /* Host.UserMetrics.BuiltInAiAvailability.AVAILABLE_HAS_GPU */
           );
           break;
         case "disabled":
-          Host14.userMetrics.builtInAiAvailability(
+          Host15.userMetrics.builtInAiAvailability(
             4
             /* Host.UserMetrics.BuiltInAiAvailability.DISABLED_HAS_GPU */
           );
@@ -9876,31 +9912,31 @@ Your instructions are as follows:
     } else {
       switch (this.#availability) {
         case "unavailable":
-          Host14.userMetrics.builtInAiAvailability(
+          Host15.userMetrics.builtInAiAvailability(
             5
             /* Host.UserMetrics.BuiltInAiAvailability.UNAVAILABLE_NO_GPU */
           );
           break;
         case "downloadable":
-          Host14.userMetrics.builtInAiAvailability(
+          Host15.userMetrics.builtInAiAvailability(
             6
             /* Host.UserMetrics.BuiltInAiAvailability.DOWNLOADABLE_NO_GPU */
           );
           break;
         case "downloading":
-          Host14.userMetrics.builtInAiAvailability(
+          Host15.userMetrics.builtInAiAvailability(
             7
             /* Host.UserMetrics.BuiltInAiAvailability.DOWNLOADING_NO_GPU */
           );
           break;
         case "available":
-          Host14.userMetrics.builtInAiAvailability(
+          Host15.userMetrics.builtInAiAvailability(
             8
             /* Host.UserMetrics.BuiltInAiAvailability.AVAILABLE_NO_GPU */
           );
           break;
         case "disabled":
-          Host14.userMetrics.builtInAiAvailability(
+          Host15.userMetrics.builtInAiAvailability(
             9
             /* Host.UserMetrics.BuiltInAiAvailability.DISABLED_NO_GPU */
           );
@@ -9916,11 +9952,11 @@ __export(ConversationHandler_exports, {
   ConversationHandler: () => ConversationHandler
 });
 import * as Common9 from "./../../core/common/common.js";
-import * as Host15 from "./../../core/host/host.js";
-import * as i18n15 from "./../../core/i18n/i18n.js";
+import * as Host16 from "./../../core/host/host.js";
+import * as i18n17 from "./../../core/i18n/i18n.js";
 import * as Platform7 from "./../../core/platform/platform.js";
-import * as Root14 from "./../../core/root/root.js";
-import * as SDK10 from "./../../core/sdk/sdk.js";
+import * as Root15 from "./../../core/root/root.js";
+import * as SDK11 from "./../../core/sdk/sdk.js";
 import * as NetworkTimeCalculator4 from "./../network_time_calculator/network_time_calculator.js";
 var UIStringsNotTranslate3 = {
   /**
@@ -9928,9 +9964,9 @@ var UIStringsNotTranslate3 = {
    */
   enableInSettings: "For AI features to be available, you need to enable AI assistance in DevTools settings."
 };
-var lockedString6 = i18n15.i18n.lockedString;
+var lockedString7 = i18n17.i18n.lockedString;
 function isAiAssistanceServerSideLoggingEnabled2() {
-  return !Root14.Runtime.hostConfig.aidaAvailability?.disallowLogging;
+  return !Root15.Runtime.hostConfig.aidaAvailability?.disallowLogging;
 }
 async function inspectElementBySelector(selector) {
   const whitespaceTrimmedQuery = selector.trim();
@@ -9938,7 +9974,7 @@ async function inspectElementBySelector(selector) {
     return null;
   }
   const showUAShadowDOM = Common9.Settings.Settings.instance().moduleSetting("show-ua-shadow-dom").get();
-  const domModels = SDK10.TargetManager.TargetManager.instance().models(SDK10.DOMModel.DOMModel, { scoped: true });
+  const domModels = SDK11.TargetManager.TargetManager.instance().models(SDK11.DOMModel.DOMModel, { scoped: true });
   const performSearchPromises = domModels.map((domModel) => domModel.performSearch(whitespaceTrimmedQuery, showUAShadowDOM));
   const resultCounts = await Promise.all(performSearchPromises);
   const index = resultCounts.findIndex((value) => value > 0);
@@ -9948,7 +9984,7 @@ async function inspectElementBySelector(selector) {
   return null;
 }
 async function inspectNetworkRequestByUrl(selector) {
-  const networkManagers = SDK10.TargetManager.TargetManager.instance().models(SDK10.NetworkManager.NetworkManager, { scoped: true });
+  const networkManagers = SDK11.TargetManager.TargetManager.instance().models(SDK11.NetworkManager.NetworkManager, { scoped: true });
   const results = networkManagers.map((networkManager) => {
     let request2 = networkManager.requestForURL(Platform7.DevToolsPath.urlString`${selector}`);
     if (!request2 && selector.at(-1) === "/") {
@@ -9974,7 +10010,7 @@ var ConversationHandler = class _ConversationHandler extends Common9.ObjectWrapp
   }
   static instance(opts) {
     if (opts?.forceNew || conversationHandlerInstance === void 0) {
-      const aidaClient = opts?.aidaClient ?? new Host15.AidaClient.AidaClient();
+      const aidaClient = opts?.aidaClient ?? new Host16.AidaClient.AidaClient();
       conversationHandlerInstance = new _ConversationHandler(aidaClient, opts?.aidaAvailability);
     }
     return conversationHandlerInstance;
@@ -9994,7 +10030,7 @@ var ConversationHandler = class _ConversationHandler extends Common9.ObjectWrapp
   }
   async #getDisabledReasons() {
     if (this.#aidaAvailability === void 0) {
-      this.#aidaAvailability = await Host15.AidaClient.AidaClient.checkAccessPreconditions();
+      this.#aidaAvailability = await Host16.AidaClient.AidaClient.checkAccessPreconditions();
     }
     return getDisabledReasons(this.#aidaAvailability);
   }
@@ -10018,7 +10054,7 @@ var ConversationHandler = class _ConversationHandler extends Common9.ObjectWrapp
       const disabledReasons = await this.#getDisabledReasons();
       const aiAssistanceSetting = this.#aiAssistanceEnabledSetting?.getIfNotDisabled();
       if (!aiAssistanceSetting) {
-        disabledReasons.push(lockedString6(UIStringsNotTranslate3.enableInSettings));
+        disabledReasons.push(lockedString7(UIStringsNotTranslate3.enableInSettings));
       }
       if (disabledReasons.length > 0) {
         return this.#generateErrorResponse(disabledReasons.join(" "));

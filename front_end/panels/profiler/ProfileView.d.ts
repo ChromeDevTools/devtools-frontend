@@ -10,8 +10,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import { BottomUpProfileDataGridTree } from './BottomUpProfileDataGrid.js';
 import { type Formatter, ProfileDataGridTree } from './ProfileDataGrid.js';
 import { ProfileFlameChart, type ProfileFlameChartDataProvider } from './ProfileFlameChartDataProvider.js';
-import { type DataDisplayDelegate, ProfileHeader, type ProfileType } from './ProfileHeader.js';
-import { ProfileSidebarTreeElement } from './ProfileSidebarTreeElement.js';
+import { ProfileHeader, type ProfileType } from './ProfileHeader.js';
 import { TopDownProfileDataGridTree } from './TopDownProfileDataGrid.js';
 export declare class ProfileView extends UI.View.SimpleView implements UI.SearchableView.Searchable {
     profileInternal: CPUProfile.ProfileTreeModel.ProfileTreeModel | null;
@@ -90,7 +89,6 @@ export declare class WritableProfileHeader extends ProfileHeader implements Comm
     write(text: string): Promise<void>;
     close(): Promise<void>;
     dispose(): void;
-    createSidebarTreeElement(panel: DataDisplayDelegate): ProfileSidebarTreeElement;
     canSaveToFile(): boolean;
     saveToFile(): Promise<void>;
     loadFromFile(file: File): Promise<Error | null>;

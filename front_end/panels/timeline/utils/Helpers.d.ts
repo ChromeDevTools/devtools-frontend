@@ -40,3 +40,7 @@ export declare class RevealableTimeRange {
     bounds: Trace.Types.Timing.TraceWindowMicro;
     constructor(bounds: Trace.Types.Timing.TraceWindowMicro);
 }
+export declare class RevealableBottomUpProfile {
+    bounds: Trace.Types.Timing.TraceWindowMicro;
+    constructor(bounds: Trace.Types.Timing.TraceWindowMicro);
+}

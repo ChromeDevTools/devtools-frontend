@@ -123,9 +123,6 @@ export class DetachedElementsProfileHeader extends WritableProfileHeader {
         this.detachedElements = detachedElements;
         this.#heapProfilerModel = heapProfilerModel;
     }
-    createView(dataDisplayDelegate) {
-        return new DetachedElementsProfileView(dataDisplayDelegate, this);
-    }
     heapProfilerModel() {
         return this.#heapProfilerModel;
     }

@@ -2647,6 +2647,7 @@ __export(Widget_exports, {
   WidgetDirective: () => WidgetDirective,
   WidgetElement: () => WidgetElement,
   WidgetFocusRestorer: () => WidgetFocusRestorer,
+  registerWidgetConfig: () => registerWidgetConfig,
   widget: () => widget,
   widgetConfig: () => widgetConfig,
   widgetRef: () => widgetRef
@@ -2869,27 +2870,28 @@ function runNextUpdate() {
   });
 }
 var widgetConfigs = /* @__PURE__ */ new WeakMap();
+function registerWidgetConfig(element, config) {
+  widgetConfigs.set(element, config);
+}
+function instantiateWidget(element, widgetConfig2) {
+  if (!widgetConfig2.widgetClass) {
+    throw new Error("No widgetClass defined");
+  }
+  let newWidget;
+  if (Widget.isPrototypeOf(widgetConfig2.widgetClass)) {
+    const ctor = widgetConfig2.widgetClass;
+    newWidget = new ctor(element);
+  } else {
+    const factory = widgetConfig2.widgetClass;
+    newWidget = factory(element);
+  }
+  if (widgetConfig2.widgetParams) {
+    Object.assign(newWidget, widgetConfig2.widgetParams);
+  }
+  newWidget.requestUpdate();
+  return newWidget;
+}
 var WidgetElement = class extends HTMLElement {
-  createWidget() {
-    const config = widgetConfigs.get(this);
-    const widget2 = this.#instantiateWidget(config.widgetClass);
-    if (config.widgetParams) {
-      Object.assign(widget2, config.widgetParams);
-    }
-    widget2.requestUpdate();
-    return widget2;
-  }
-  #instantiateWidget(widgetClass) {
-    if (!widgetClass) {
-      throw new Error("No widgetClass defined");
-    }
-    if (Widget.isPrototypeOf(widgetClass)) {
-      const ctor = widgetClass;
-      return new ctor(this);
-    }
-    const factory = widgetClass;
-    return factory(this);
-  }
   getWidget() {
     return Widget.get(this);
   }
@@ -2913,15 +2915,27 @@ var WidgetElement = class extends HTMLElement {
     }
   }
   appendChild(child) {
-    if (child instanceof HTMLElement && child.tagName !== "STYLE") {
-      Widget.getOrCreateWidget(child).show(this);
+    const widget2 = child instanceof HTMLElement ? Widget.get(child) : null;
+    if (widget2) {
+      widget2.show(
+        this,
+        void 0,
+        /* suppressOrphanWidgetError= */
+        true
+      );
       return child;
     }
     return super.appendChild(child);
   }
   insertBefore(child, referenceChild) {
-    if (child instanceof HTMLElement && child.tagName !== "STYLE") {
-      Widget.getOrCreateWidget(child).show(this, referenceChild, true);
+    const widget2 = child instanceof HTMLElement ? Widget.get(child) : null;
+    if (widget2) {
+      widget2.show(
+        this,
+        referenceChild,
+        /* suppressOrphanWidgetError= */
+        true
+      );
       return child;
     }
     return super.insertBefore(child, referenceChild);
@@ -3105,10 +3119,14 @@ var Widget = class _Widget {
     if (widget2) {
       return widget2;
     }
-    if (element instanceof WidgetElement) {
-      return element.createWidget();
+    let config = widgetConfigs.get(element);
+    if (!config) {
+      config = widgetConfig((element2) => new _Widget(element2));
+      if (element instanceof WidgetElement) {
+        widgetConfigs.set(element, config);
+      }
     }
-    return new _Widget(element);
+    return instantiateWidget(element, config);
   }
   markAsRoot() {
     assert(!this.element.parentElement, "Attempt to mark as root attached node");
@@ -7156,38 +7174,41 @@ var SplitWidget = class extends Common9.ObjectWrapper.eventMixin(Widget) {
 };
 var SplitWidgetElement = class extends WidgetElement {
   static observedAttributes = ["direction", "sidebar-position", "sidebar-initial-size", "sidebar-visibility"];
-  createWidget() {
-    const vertical = this.getAttribute("direction") === "column";
-    const autoAdjustOrientation = this.getAttribute("direction") === "auto";
-    const secondIsSidebar = this.getAttribute("sidebar-position") === "second";
-    const settingName = this.getAttribute("name") ?? void 0;
-    const sidebarSize = parseInt(this.getAttribute("sidebar-initial-size") || "", 10);
-    const defaultSidebarWidth = !isNaN(sidebarSize) ? sidebarSize : void 0;
-    const defaultSidebarHeight = !isNaN(sidebarSize) ? sidebarSize : void 0;
-    const widget2 = new SplitWidget(
-      vertical,
-      secondIsSidebar,
-      settingName,
-      defaultSidebarWidth,
-      defaultSidebarHeight,
-      /* constraintsInDip=*/
-      false,
-      this
-    );
-    if (this.getAttribute("sidebar-initial-size") === "minimized") {
-      widget2.setSidebarMinimized(true);
-    }
-    if (autoAdjustOrientation) {
-      widget2.setAutoAdjustOrientation(true);
-    }
-    const sidebarHidden = this.getAttribute("sidebar-visibility") === "hidden";
-    if (sidebarHidden) {
-      widget2.hideSidebar();
-    }
-    widget2.addEventListener("ShowModeChanged", () => {
-      this.dispatchEvent(new CustomEvent("change", { detail: widget2.showMode() }));
-    });
-    return widget2;
+  constructor() {
+    super();
+    registerWidgetConfig(this, widgetConfig((element) => {
+      const vertical = element.getAttribute("direction") === "column";
+      const autoAdjustOrientation = element.getAttribute("direction") === "auto";
+      const secondIsSidebar = element.getAttribute("sidebar-position") === "second";
+      const settingName = element.getAttribute("name") ?? void 0;
+      const sidebarSize = parseInt(element.getAttribute("sidebar-initial-size") || "", 10);
+      const defaultSidebarWidth = !isNaN(sidebarSize) ? sidebarSize : void 0;
+      const defaultSidebarHeight = !isNaN(sidebarSize) ? sidebarSize : void 0;
+      const widget2 = new SplitWidget(
+        vertical,
+        secondIsSidebar,
+        settingName,
+        defaultSidebarWidth,
+        defaultSidebarHeight,
+        /* constraintsInDip=*/
+        false,
+        element
+      );
+      if (element.getAttribute("sidebar-initial-size") === "minimized") {
+        widget2.setSidebarMinimized(true);
+      }
+      if (autoAdjustOrientation) {
+        widget2.setAutoAdjustOrientation(true);
+      }
+      const sidebarHidden = element.getAttribute("sidebar-visibility") === "hidden";
+      if (sidebarHidden) {
+        widget2.hideSidebar();
+      }
+      widget2.addEventListener("ShowModeChanged", () => {
+        element.dispatchEvent(new CustomEvent("change", { detail: widget2.showMode() }));
+      });
+      return widget2;
+    }));
   }
   attributeChangedCallback(name, _oldValue, newValue) {
     const widget2 = Widget.get(this);
@@ -16934,7 +16955,8 @@ __export(FilterBar_exports, {
   FilterBar: () => FilterBar,
   NamedBitSetFilterUI: () => NamedBitSetFilterUI,
   NamedBitSetFilterUIElement: () => NamedBitSetFilterUIElement,
-  TextFilterUI: () => TextFilterUI
+  TextFilterUI: () => TextFilterUI,
+  filterStyles: () => filter_css_default
 });
 import * as Common16 from "./../../core/common/common.js";
 import * as Host8 from "./../../core/host/host.js";

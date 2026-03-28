@@ -171,8 +171,8 @@ export class TimelineTreeView extends Common.ObjectWrapper.eventMixin(UI.Widget.
     lastHoveredProfileNode;
     textFilterInternal;
     taskFilter;
-    startTime;
-    endTime;
+    startTimeInternal;
+    endTimeInternal;
     splitWidget;
     detailsView;
     searchableView;
@@ -190,6 +190,9 @@ export class TimelineTreeView extends Common.ObjectWrapper.eventMixin(UI.Widget.
     #entityMapper = null;
     #lastHighlightedEvent = null;
     eventToTreeNode = new WeakMap();
+    // Compact mode is used to render the tree view in a more compact UI,
+    // suitable for AI assistance widgets. It removes sidebars and toolbars.
+    #compactMode = false;
     /**
      * Determines if the first child in the data grid will be selected
      * by default when refreshTree() gets called.
@@ -202,12 +205,66 @@ export class TimelineTreeView extends Common.ObjectWrapper.eventMixin(UI.Widget.
         this.registerRequiredCSS(timelineTreeViewStyles);
         this.searchResults = [];
     }
+    get selectedEvents() {
+        return this.#selectedEvents || [];
+    }
+    set selectedEvents(selectedEvents) {
+        this.#selectedEvents = selectedEvents;
+        this.refreshTree();
+    }
+    set parsedTrace(parsedTrace) {
+        this.#parsedTrace = parsedTrace;
+        this.refreshTree();
+    }
+    get parsedTrace() {
+        return this.#parsedTrace;
+    }
+    set startTime(startTime) {
+        if (this.startTimeInternal === startTime) {
+            return;
+        }
+        this.startTimeInternal = startTime;
+        this.refreshTree();
+    }
+    get startTime() {
+        return this.startTimeInternal;
+    }
+    set endTime(endTime) {
+        if (this.endTimeInternal === endTime) {
+            return;
+        }
+        this.endTimeInternal = endTime;
+        this.refreshTree();
+    }
+    get endTime() {
+        return this.endTimeInternal;
+    }
+    get compactMode() {
+        return this.#compactMode;
+    }
+    set compactMode(v) {
+        if (this.#compactMode === v) {
+            return;
+        }
+        this.#compactMode = v;
+        if (this.dataGrid) {
+            this.#applyCompactMode();
+        }
+    }
+    #applyCompactMode() {
+        if (this.#compactMode && this.dataGrid) {
+            this.splitWidget?.detach();
+            this.dataGrid.asWidget().detach();
+            this.dataGrid.asWidget().show(this.element);
+            this.dataGrid.renderInline();
+        }
+    }
     #eventNameForSorting(event) {
         const name = TimelineUIUtils.eventTitle(event) || event.name;
-        if (!this.#parsedTrace) {
+        if (!this.parsedTrace) {
             return name;
         }
-        return name + ':@' + Trace.Handlers.Helpers.getNonResolvedURL(event, this.#parsedTrace.data);
+        return name + ':@' + Trace.Handlers.Helpers.getNonResolvedURL(event, this.parsedTrace.data);
     }
     setSearchableView(searchableView) {
         this.searchableView = searchableView;
@@ -220,9 +277,6 @@ export class TimelineTreeView extends Common.ObjectWrapper.eventMixin(UI.Widget.
     }
     entityMapper() {
         return this.#entityMapper;
-    }
-    parsedTrace() {
-        return this.#parsedTrace;
     }
     isThirdPartyTreeView() {
         return false;
@@ -243,12 +297,6 @@ export class TimelineTreeView extends Common.ObjectWrapper.eventMixin(UI.Widget.
         this.currentThreadSetting.addChangeListener(() => this.refreshTree());
         const columns = [];
         this.populateColumns(columns);
-        this.splitWidget = new UI.SplitWidget.SplitWidget(true, true, 'timeline-tree-view-details-split-widget');
-        const mainView = new UI.Widget.VBox();
-        const toolbar = mainView.element.createChild('devtools-toolbar');
-        toolbar.setAttribute('jslog', `${VisualLogging.toolbar()}`);
-        toolbar.wrappable = true;
-        this.populateToolbar(toolbar);
         this.dataGrid = new DataGrid.SortableDataGrid.SortableDataGrid({
             displayName: i18nString(UIStrings.performance),
             columns,
@@ -259,8 +307,18 @@ export class TimelineTreeView extends Common.ObjectWrapper.eventMixin(UI.Widget.
         this.dataGrid.addEventListener("OpenedNode" /* DataGrid.DataGrid.Events.OPENED_NODE */, this.onGridNodeOpened, this);
         this.dataGrid.setResizeMethod("last" /* DataGrid.DataGrid.ResizeMethod.LAST */);
         this.dataGrid.setRowContextMenuCallback(this.onContextMenu.bind(this));
-        this.dataGrid.asWidget().show(mainView.element);
         this.dataGrid.addEventListener("SelectedNode" /* DataGrid.DataGrid.Events.SELECTED_NODE */, this.updateDetailsForSelection, this);
+        if (this.#compactMode) {
+            this.#applyCompactMode();
+            return;
+        }
+        this.splitWidget = new UI.SplitWidget.SplitWidget(true, true, 'timeline-tree-view-details-split-widget');
+        const mainView = new UI.Widget.VBox();
+        const toolbar = mainView.element.createChild('devtools-toolbar');
+        toolbar.setAttribute('jslog', `${VisualLogging.toolbar()}`);
+        toolbar.wrappable = true;
+        this.populateToolbar(toolbar);
+        this.dataGrid.asWidget().show(mainView.element);
         this.detailsView = new UI.Widget.VBox();
         this.detailsView.element.classList.add('timeline-details-view', 'timeline-details-view-body');
         this.splitWidget.setMainWidget(mainView);
@@ -268,6 +326,12 @@ export class TimelineTreeView extends Common.ObjectWrapper.eventMixin(UI.Widget.
         this.splitWidget.hideSidebar();
         this.splitWidget.show(this.element);
         this.splitWidget.addEventListener("ShowModeChanged" /* UI.SplitWidget.Events.SHOW_MODE_CHANGED */, this.onShowModeChanged, this);
+    }
+    wasShown() {
+        super.wasShown();
+        this.refreshTree();
+        this.dataGrid.addEventListener("SelectedNode" /* DataGrid.DataGrid.Events.SELECTED_NODE */, this.#onDataGridSelectionChange, this);
+        this.dataGrid.addEventListener("DeselectedNode" /* DataGrid.DataGrid.Events.DESELECTED_NODE */, this.#onDataGridDeselection, this);
     }
     lastSelectedNode() {
         return this.lastSelectedNodeInternal;
@@ -329,10 +393,6 @@ export class TimelineTreeView extends Common.ObjectWrapper.eventMixin(UI.Widget.
         this.textFilterUI = textFilterUI;
         textFilterUI.addEventListener("TextChanged" /* UI.Toolbar.ToolbarInput.Event.TEXT_CHANGED */, this.#filterChanged, this);
         toolbar.appendToolbarItem(textFilterUI);
-    }
-    selectedEvents() {
-        // TODO: can we make this type readonly?
-        return this.#selectedEvents || [];
     }
     appendContextMenuItems(_contextMenu, _node) {
     }
@@ -408,7 +468,7 @@ export class TimelineTreeView extends Common.ObjectWrapper.eventMixin(UI.Widget.
         throw new Error('Not Implemented');
     }
     buildTopDownTree(doNotAggregate, eventGroupIdCallback) {
-        return new Trace.Extras.TraceTree.TopDownRootNode(this.selectedEvents(), {
+        return new Trace.Extras.TraceTree.TopDownRootNode(this.selectedEvents, {
             filters: this.filters(),
             startTime: this.startTime,
             endTime: this.endTime,
@@ -417,8 +477,14 @@ export class TimelineTreeView extends Common.ObjectWrapper.eventMixin(UI.Widget.
         });
     }
     populateColumns(columns) {
-        columns.push({ id: 'self', title: i18nString(UIStrings.selfTime), width: '120px', fixedWidth: true, sortable: true });
-        columns.push({ id: 'total', title: i18nString(UIStrings.totalTime), width: '120px', fixedWidth: true, sortable: true });
+        if (this.compactMode) {
+            columns.push({ id: 'self', title: i18nString(UIStrings.selfTime), width: '15%', sortable: true });
+            columns.push({ id: 'total', title: i18nString(UIStrings.totalTime), width: '15%', sortable: true });
+        }
+        else {
+            columns.push({ id: 'self', title: i18nString(UIStrings.selfTime), width: '120px', fixedWidth: true, sortable: true });
+            columns.push({ id: 'total', title: i18nString(UIStrings.totalTime), width: '120px', fixedWidth: true, sortable: true });
+        }
         columns.push({ id: 'activity', title: i18nString(UIStrings.activity), disclosure: true, sortable: true });
     }
     sortingChanged() {
@@ -491,6 +557,9 @@ export class TimelineTreeView extends Common.ObjectWrapper.eventMixin(UI.Widget.
         this.refreshTree();
     }
     onShowModeChanged() {
+        if (this.#compactMode || !this.splitWidget) {
+            return;
+        }
         if (this.splitWidget.showMode() === "OnlyMain" /* UI.SplitWidget.ShowMode.ONLY_MAIN */) {
             return;
         }
@@ -498,6 +567,9 @@ export class TimelineTreeView extends Common.ObjectWrapper.eventMixin(UI.Widget.
         this.updateDetailsForSelection();
     }
     updateDetailsForSelection() {
+        if (this.#compactMode || !this.splitWidget || !this.detailsView) {
+            return;
+        }
         const selectedNode = this.dataGrid.selectedNode ? this.dataGrid.selectedNode.profileNode : null;
         if (selectedNode === this.lastSelectedNodeInternal) {
             return;
@@ -531,11 +603,6 @@ export class TimelineTreeView extends Common.ObjectWrapper.eventMixin(UI.Widget.
     }
     onClick(node) {
         this.dispatchEventToListeners("TreeRowClicked" /* TimelineTreeView.Events.TREE_ROW_CLICKED */, { node });
-    }
-    wasShown() {
-        super.wasShown();
-        this.dataGrid.addEventListener("SelectedNode" /* DataGrid.DataGrid.Events.SELECTED_NODE */, this.#onDataGridSelectionChange, this);
-        this.dataGrid.addEventListener("DeselectedNode" /* DataGrid.DataGrid.Events.DESELECTED_NODE */, this.#onDataGridDeselection, this);
     }
     childWasDetached(_widget) {
         this.dataGrid.removeEventListener("SelectedNode" /* DataGrid.DataGrid.Events.SELECTED_NODE */, this.#onDataGridSelectionChange);
@@ -689,7 +756,7 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode {
         }
         else if (event) {
             name.textContent = TimelineUIUtils.eventTitle(event);
-            const parsedTrace = this.treeView.parsedTrace();
+            const parsedTrace = this.treeView.parsedTrace;
             const target = parsedTrace ? targetForEvent(parsedTrace, event) : null;
             const linkifier = this.treeView.linkifier;
             const isFreshOrEnhanced = Boolean(parsedTrace && Tracing.FreshRecording.Tracker.instance().recordingIsFreshOrEnhanced(parsedTrace));
@@ -720,7 +787,7 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode {
             case 'start-time':
                 {
                     event = this.profileNode.event;
-                    const parsedTrace = this.treeView.parsedTrace();
+                    const parsedTrace = this.treeView.parsedTrace;
                     if (!parsedTrace) {
                         throw new Error('Unable to load trace data for tree view');
                     }
@@ -827,8 +894,8 @@ const treeNodeToGridNode = new WeakMap();
 export class AggregatedTimelineTreeView extends TimelineTreeView {
     groupBySetting;
     stackView;
-    constructor() {
-        super();
+    constructor(element) {
+        super(element);
         this.groupBySetting = Common.Settings.Settings.instance().createSetting('timeline-tree-group-by', AggregatedTimelineTreeView.GroupBy.None);
         this.groupBySetting.addChangeListener(() => this.refreshTree());
         this.init();
@@ -893,7 +960,7 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
             case AggregatedTimelineTreeView.GroupBy.URL:
                 break;
             case AggregatedTimelineTreeView.GroupBy.Frame: {
-                const frame = id ? this.parsedTrace()?.data.PageFrames.frames.get(id) : undefined;
+                const frame = id ? this.parsedTrace?.data.PageFrames.frames.get(id) : undefined;
                 const frameName = frame ? TimelineUIUtils.displayNameForFrame(frame) : i18nString(UIStrings.page);
                 return { name: frameName, color };
             }
@@ -919,8 +986,10 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
             { label: i18nString(UIStrings.groupByThirdParties), value: groupBy.ThirdParties },
         ];
         toolbar.appendToolbarItem(new UI.Toolbar.ToolbarSettingComboBox(options, this.groupBySetting, i18nString(UIStrings.groupBy)));
-        toolbar.appendSpacer();
-        toolbar.appendToolbarItem(this.splitWidget.createShowHideSidebarButton(i18nString(UIStrings.showHeaviestStack), i18nString(UIStrings.hideHeaviestStack), i18nString(UIStrings.heaviestStackShown), i18nString(UIStrings.heaviestStackHidden)));
+        if (!this.compactMode && this.splitWidget) {
+            toolbar.appendSpacer();
+            toolbar.appendToolbarItem(this.splitWidget.createShowHideSidebarButton(i18nString(UIStrings.showHeaviestStack), i18nString(UIStrings.hideHeaviestStack), i18nString(UIStrings.heaviestStackShown), i18nString(UIStrings.heaviestStackHidden)));
+        }
     }
     buildHeaviestStack(treeNode) {
         console.assert(Boolean(treeNode.parent), 'Attempt to build stack for tree root');
@@ -967,13 +1036,13 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
                 return this.domainByEvent.bind(this, groupBy);
             case GroupBy.URL:
                 return (event) => {
-                    const parsedTrace = this.parsedTrace();
+                    const parsedTrace = this.parsedTrace;
                     return parsedTrace ? Trace.Handlers.Helpers.getNonResolvedURL(event, parsedTrace.data) ?? '' : '';
                 };
             case GroupBy.Frame:
                 return (event) => {
                     const frameId = Trace.Helpers.Trace.frameIDForEvent(event);
-                    return frameId || this.parsedTrace()?.data.Meta.mainFrameId || '';
+                    return frameId || this.parsedTrace?.data.Meta.mainFrameId || '';
                 };
             default:
                 console.assert(false, `Unexpected aggregation setting: ${groupBy}`);
@@ -984,7 +1053,7 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
     // The eventid == the identity of a node that we expect in a bottomUp tree (either without grouping or with the groupBy grouping)
     // A "top node" (in `ungroupedTopNodes`) is aggregated by this. (But so are all the other nodes, except the `GroupNode`s)
     domainByEvent(groupBy, event) {
-        const parsedTrace = this.parsedTrace();
+        const parsedTrace = this.parsedTrace;
         if (!parsedTrace) {
             return '';
         }
@@ -1090,8 +1159,8 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
     })(GroupBy = AggregatedTimelineTreeView.GroupBy || (AggregatedTimelineTreeView.GroupBy = {}));
 })(AggregatedTimelineTreeView || (AggregatedTimelineTreeView = {}));
 export class CallTreeTimelineTreeView extends AggregatedTimelineTreeView {
-    constructor() {
-        super();
+    constructor(element) {
+        super(element);
         this.element.setAttribute('jslog', `${VisualLogging.pane('call-tree').track({ resize: true })}`);
         this.dataGrid.markColumnAsSortedBy('total', DataGrid.DataGrid.Order.Descending);
     }
@@ -1101,13 +1170,13 @@ export class CallTreeTimelineTreeView extends AggregatedTimelineTreeView {
     }
 }
 export class BottomUpTimelineTreeView extends AggregatedTimelineTreeView {
-    constructor() {
-        super();
+    constructor(element) {
+        super(element);
         this.element.setAttribute('jslog', `${VisualLogging.pane('bottom-up').track({ resize: true })}`);
         this.dataGrid.markColumnAsSortedBy('self', DataGrid.DataGrid.Order.Descending);
     }
     buildTree() {
-        return new Trace.Extras.TraceTree.BottomUpRootNode(this.selectedEvents(), {
+        return new Trace.Extras.TraceTree.BottomUpRootNode(this.selectedEvents, {
             textFilter: this.textFilter(),
             filters: this.filtersWithoutTextFilter(),
             startTime: this.startTime,

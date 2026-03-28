@@ -408,4 +408,25 @@ li.hovered:not(.always-parent) + ol.children:not(.shadow-root) {
   padding-left: 16px;
 }
 
+.elements-disclosure.elements-tree-truncated {
+  /* 1.36 is the line-height, 15px is the min-height */
+  max-height: calc(var(--max-rows) * 1.36em + 5px);
+  overflow: hidden;
+}
+
+.elements-tree-show-all {
+  border: none;
+  color: var(--sys-color-primary);
+  cursor: pointer;
+  display: block;
+  font-size: 12px;
+  padding: 4px 12px;
+  text-align: center;
+  width: 100%;
+}
+
+.elements-tree-show-all.hidden {
+  display: none;
+}
+
 /*# sourceURL=${import.meta.resolve('./elementsTreeOutline.css')} */`;

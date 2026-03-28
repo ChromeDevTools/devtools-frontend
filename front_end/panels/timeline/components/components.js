@@ -973,7 +973,7 @@ var CWV_METRICS_VIEW = (input, _output, target) => {
       <span>${clsEl}</span>
       <span class="row-label">Local</span>
     </div>
-    <span class="row-border"></span>
+    ${!field && input.skipBottomBorder ? Lit4.nothing : html4`<span class="row-border"></span>`}
   `;
   let fieldMetricsTemplateResult;
   if (field) {
@@ -992,7 +992,7 @@ var CWV_METRICS_VIEW = (input, _output, target) => {
         <span>${clsEl2}</span>
         <span class="row-label">${i18nString4(UIStrings4.fieldScoreLabel, { PH1: scope })}</span>
       </div>
-      <span class="row-border"></span>
+      ${input.skipBottomBorder ? Lit4.nothing : html4`<span class="row-border"></span>`}
     `;
   }
   let fieldIsDifferentEl;
@@ -1035,12 +1035,23 @@ var CWVMetrics = class extends UI3.Widget.Widget {
     parsedTrace: null
   };
   #didDismissFieldMismatchNotice = false;
+  #skipBottomBorder = false;
   constructor(element, view = CWV_METRICS_VIEW) {
     super(element, { useShadowDom: true });
     this.#view = view;
   }
   set data(data) {
     this.#data = data;
+    this.requestUpdate();
+  }
+  get skipBottomBorder() {
+    return this.#skipBottomBorder;
+  }
+  set skipBottomBorder(x) {
+    if (x === this.#skipBottomBorder) {
+      return;
+    }
+    this.#skipBottomBorder = x;
     this.requestUpdate();
   }
   #onClickMetric(traceEvent) {
@@ -1064,7 +1075,8 @@ var CWVMetrics = class extends UI3.Widget.Widget {
       insightSetKey,
       didDismissFieldMismatchNotice: this.#didDismissFieldMismatchNotice,
       onDismisFieldMismatchNotice: this.#onDismisFieldMismatchNotice.bind(this),
-      onClickMetric: this.#onClickMetric.bind(this)
+      onClickMetric: this.#onClickMetric.bind(this),
+      skipBottomBorder: this.#skipBottomBorder
     };
     this.#view(input, void 0, this.contentElement);
   }
@@ -2098,7 +2110,7 @@ var UIStrings8 = {
 };
 var str_8 = i18n15.i18n.registerUIStrings("panels/timeline/components/FieldSettingsDialog.ts", UIStrings8);
 var i18nString8 = i18n15.i18n.getLocalizedString.bind(void 0, str_8);
-var { html: html7, nothing: nothing5, Directives: { ifDefined } } = Lit7;
+var { html: html7, nothing: nothing6, Directives: { ifDefined } } = Lit7;
 var { widget, widgetRef } = UI6.Widget;
 var ShowDialog = class _ShowDialog extends Event {
   static eventName = "showdialog";
@@ -2349,7 +2361,7 @@ var FieldSettingsDialog = class extends HTMLElement {
                 .value=${this.#urlOverride}
                 placeholder=${ifDefined(this.#urlOverrideEnabled ? i18nString8(UIStrings8.url) : void 0)}
               />
-              ${this.#urlOverrideWarning ? html7`<div class="warning" role="alert" aria-label=${this.#urlOverrideWarning}>${this.#urlOverrideWarning}</div>` : nothing5}
+              ${this.#urlOverrideWarning ? html7`<div class="warning" role="alert" aria-label=${this.#urlOverrideWarning}>${this.#urlOverrideWarning}</div>` : nothing6}
             </div>
           </details>
           <div class="buttons-section">
@@ -3404,7 +3416,7 @@ devtools-select-menu {
 /*# sourceURL=${import.meta.resolve("./networkThrottlingSelector.css")} */`;
 
 // gen/front_end/panels/timeline/components/NetworkThrottlingSelector.js
-var { html: html12, nothing: nothing8 } = Lit12;
+var { html: html12, nothing: nothing9 } = Lit12;
 var UIStrings12 = {
   /**
    * @description Text label for a selection box showing which network throttling option is applied.
@@ -3573,7 +3585,7 @@ var NetworkThrottlingSelector = class extends HTMLElement {
                 >
                   ${i18nString12(UIStrings12.add)}
                 </devtools-menu-item>
-              ` : nothing8}
+              ` : nothing9}
             </devtools-menu-group>
           `;
     })}
@@ -4107,7 +4119,7 @@ var metricValueStyles_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./metricValueStyles.css")} */`;
 
 // gen/front_end/panels/timeline/components/MetricCard.js
-var { html: html13, nothing: nothing10 } = Lit13;
+var { html: html13, nothing: nothing11 } = Lit13;
 var UIStrings14 = {
   /**
    * @description Label for a metric value that was measured in the local environment.
@@ -4555,7 +4567,7 @@ var MetricCard = class extends HTMLElement {
               class="phase-table-value"
               style="grid-column: 3"
               title=${i18nString13(UIStrings14.field75thPercentile)}>${i18nString13(UIStrings14.fieldP75)}</div>
-          ` : nothing10}
+          ` : nothing11}
         </div>
         ${phases.map((phase) => html13`
           <div class="phase-table-row" role="row">
@@ -4563,7 +4575,7 @@ var MetricCard = class extends HTMLElement {
             <div role="cell" class="phase-table-value">${i18n27.TimeUtilities.preciseMillisToString(phase[1])}</div>
             ${phase[2] !== void 0 ? html13`
               <div role="cell" class="phase-table-value">${i18n27.TimeUtilities.preciseMillisToString(phase[2])}</div>
-            ` : nothing10}
+            ` : nothing11}
           </div>
         `)}
       </div>
@@ -4601,14 +4613,14 @@ var MetricCard = class extends HTMLElement {
         >
           <div class="metric-source-block">
             <div class="metric-source-value" id="local-value">${localValueEl}</div>
-            ${fieldEnabled ? html13`<div class="metric-source-label">${i18nString13(UIStrings14.localValue)}</div>` : nothing10}
+            ${fieldEnabled ? html13`<div class="metric-source-label">${i18nString13(UIStrings14.localValue)}</div>` : nothing11}
           </div>
           ${fieldEnabled ? html13`
             <div class="metric-source-block">
               <div class="metric-source-value" id="field-value">${fieldValueEl}</div>
               <div class="metric-source-label">${i18nString13(UIStrings14.field75thPercentile)}</div>
             </div>
-          ` : nothing10}
+          ` : nothing11}
           <div
             id="tooltip"
             class="tooltip"
@@ -4626,13 +4638,13 @@ var MetricCard = class extends HTMLElement {
                   ${this.#renderDetailedCompareString()}
                   <hr class="divider">
                   ${this.#renderFieldHistogram()}
-                  ${localValue && this.#data.phases ? this.#renderPhaseTable(this.#data.phases) : nothing10}
+                  ${localValue && this.#data.phases ? this.#renderPhaseTable(this.#data.phases) : nothing11}
                 </div>
               </div>
             </div>
           </div>
         </div>
-        ${fieldEnabled ? html13`<hr class="divider">` : nothing10}
+        ${fieldEnabled ? html13`<hr class="divider">` : nothing11}
         ${this.#renderCompareString()}
         ${this.#data.warnings?.map((warning) => html13`
           <div class="warning">${warning}</div>
@@ -5064,7 +5076,7 @@ devtools-link {
 /*# sourceURL=${import.meta.resolve("./liveMetricsView.css")} */`;
 
 // gen/front_end/panels/timeline/components/LiveMetricsView.js
-var { html: html14, nothing: nothing12 } = Lit14;
+var { html: html14, nothing: nothing13 } = Lit14;
 var { widget: widget3, widgetRef: widgetRef2 } = UI11.Widget;
 var DEVICE_OPTION_LIST = ["AUTO", ...CrUXManager9.DEVICE_SCOPE_LIST];
 var RTT_MINIMUM = 60;
@@ -5466,7 +5478,7 @@ function renderLcpCard(input) {
              ${widget3(PanelsCommon2.DOMLinkifier.DOMNodeLink, { node: input.lcpValue?.nodeRef })}
             </span>
           </div>
-        ` : nothing12}
+        ` : nothing13}
     </devtools-metric-card>
   `;
 }
@@ -5492,7 +5504,7 @@ function renderClsCard(input) {
             jslog=${VisualLogging7.action("timeline.landing.show-cls-cluster").track({ click: true })}
           >${i18nString14(UIStrings15.numShifts, { shiftCount: clusterIds.size })}</button>
         </div>
-      ` : nothing12}
+      ` : nothing13}
     </devtools-metric-card>
   `;
 }
@@ -5523,7 +5535,7 @@ function renderInpCard(input) {
             jslog=${VisualLogging7.action("timeline.landing.show-inp-interaction").track({ click: true })}
           >${interaction.interactionType}</button>
         </div>
-      ` : nothing12}
+      ` : nothing13}
     </devtools-metric-card>
   `;
 }
@@ -5559,7 +5571,7 @@ function renderRecordingSettings(input) {
         <li>${uiI18n4.getFormatLocalizedStringTemplate(str_15, UIStrings15.device, { PH1: html14`<span class="environment-rec">${deviceRec}</span>` })}</li>
         <li>${uiI18n4.getFormatLocalizedStringTemplate(str_15, UIStrings15.network, { PH1: html14`<span class="environment-rec">${networkRec}</span>` })}</li>
       </ul>
-    ` : nothing12}
+    ` : nothing13}
     <div class="environment-option">
       ${widget3(CPUThrottlingSelector, { recommendedOption: recs.cpuOption })}
     </div>
@@ -5739,7 +5751,7 @@ function renderInteractionsLog(input, output) {
             <details>
               <summary>
                 <span class="interaction-type">
-                  ${interaction.interactionType} ${isInp ? html14`<span class="interaction-inp-chip" title=${i18nString14(UIStrings15.inpInteraction)}>INP</span>` : nothing12}
+                  ${interaction.interactionType} ${isInp ? html14`<span class="interaction-inp-chip" title=${i18nString14(UIStrings15.inpInteraction)}>INP</span>` : nothing13}
                 </span>
                 <span class="interaction-node">
                   ${widget3(PanelsCommon2.DOMLinkifier.DOMNodeLink, { node: interaction.nodeRef })}
@@ -5748,7 +5760,7 @@ function renderInteractionsLog(input, output) {
                   class="interaction-info"
                   name="info"
                   title=${i18nString14(UIStrings15.interactionExcluded)}
-                ></devtools-icon>` : nothing12}
+                ></devtools-icon>` : nothing13}
                 <span class="interaction-duration">${metricValue}</span>
               </summary>
               <div class="phase-table" role="table">
@@ -6434,7 +6446,7 @@ import * as PerfUI from "./../../../ui/legacy/components/perf_ui/perf_ui.js";
 import * as UI12 from "./../../../ui/legacy/legacy.js";
 import * as Lit15 from "./../../../ui/lit/lit.js";
 import * as TimelineUtils from "./../utils/utils.js";
-var { html: html15, nothing: nothing14, Directives: { classMap, ifDefined: ifDefined2 } } = Lit15;
+var { html: html15, nothing: nothing15, Directives: { classMap, ifDefined: ifDefined2 } } = Lit15;
 var { widget: widget4 } = UI12.Widget;
 var MAX_URL_LENGTH2 = 60;
 var UIStrings16 = {
@@ -6502,7 +6514,7 @@ var DEFAULT_VIEW8 = (input, output, target) => {
       ${throttlingTitle ? html15`
         <div class="throttled-row">
           ${i18nString15(UIStrings16.wasThrottled, { PH1: throttlingTitle })}
-        </div>` : nothing14}
+        </div>` : nothing15}
       ${Trace7.Helpers.Network.isSyntheticNetworkRequestEventRenderBlocking(networkRequest) ? html15`<div class="render-blocking"> ${i18nString15(UIStrings16.renderBlocking)} </div>` : Lit15.nothing}
       <div class="divider"></div>
 

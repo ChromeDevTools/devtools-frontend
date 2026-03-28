@@ -4,7 +4,6 @@
 import '../../../ui/components/spinners/spinners.js';
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
-import * as Root from '../../../core/root/root.js';
 import * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as UI from '../../../ui/legacy/legacy.js';
@@ -41,8 +40,6 @@ const DEFAULT_VIEW = (input, output, target) => {
         'chat-input-widget': true,
         sticky: !input.isReadOnly,
     });
-    const hasAiV2Flag = Boolean(Root.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled);
-    const shouldShowExportToAgent = !input.isLoading && input.messages.length > 0 && hasAiV2Flag;
     // clang-format off
     render(html `
       <style>${chatViewStyles}</style>
@@ -57,22 +54,15 @@ const DEFAULT_VIEW = (input, output, target) => {
         canShowFeedbackForm: input.canShowFeedbackForm,
         markdownRenderer: input.markdownRenderer,
         isLastMessage: input.messages.at(-1) === message,
+        isFirstMessage: input.messages.at(0) === message,
         onSuggestionClick: input.handleSuggestionClick,
         onFeedbackSubmit: input.onFeedbackSubmit,
         onCopyResponseClick: input.onCopyResponseClick,
+        onExportClick: input.exportForAgentsClick,
         walkthrough: {
             ...input.walkthrough,
         }
     }))}
-              ${shouldShowExportToAgent ? html `
-                <devtools-button
-                  class="export-for-agents-button"
-                  .jslogContext=${'ai-export-for-agents'}
-                  .variant=${"text" /* Buttons.Button.Variant.TEXT */}
-                  .iconName=${'copy'}
-                  @click=${input.exportForAgentsClick}
-                >Export for agents</devtools-button>
-              ` : nothing}
               ${input.isLoading ? nothing : widget(PatchWidget, {
         changeSummary: input.changeSummary ?? '',
         changeManager: input.changeManager,

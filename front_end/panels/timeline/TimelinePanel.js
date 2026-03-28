@@ -2765,6 +2765,15 @@ export class TimeRangeRevealer {
         panel.getFlameChart().selectDetailsViewTab(Tab.Details, null);
     }
 }
+export class BottomUpProfileRevealer {
+    async reveal(revealable) {
+        await UI.ViewManager.ViewManager.instance().showView('timeline');
+        const panel = TimelinePanel.instance();
+        TraceBounds.TraceBounds.BoundsManager.instance().setTimelineVisibleWindow(revealable.bounds, { ignoreMiniMapBounds: true, shouldAnimate: true });
+        panel.select(null);
+        panel.getFlameChart().selectDetailsViewTab(Tab.BottomUp, null);
+    }
+}
 export class ActionDelegate {
     handleAction(context, actionId) {
         const panel = context.flavor(TimelinePanel);

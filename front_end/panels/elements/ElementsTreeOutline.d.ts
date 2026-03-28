@@ -20,6 +20,7 @@ interface ViewInput {
     expandRoot?: boolean;
     visibleWidth?: number;
     visible?: boolean;
+    maxRowsShown?: number;
     wrap: boolean;
     showSelectionOnKeyboardFocus: boolean;
     preventTabOrder: boolean;
@@ -64,6 +65,8 @@ export declare class DOMTreeWidget extends UI.Widget.Widget {
     onDocumentUpdated: (domModel: SDK.DOMModel.DOMModel) => void;
     onElementExpanded: () => void;
     onElementCollapsed: () => void;
+    set maxRows(maxRows: number | undefined);
+    get maxRows(): number | undefined;
     set visibleWidth(width: number);
     set rootDOMNode(node: SDK.DOMModel.DOMNode | null);
     get rootDOMNode(): SDK.DOMModel.DOMNode | null;
@@ -192,6 +195,7 @@ export declare class ElementsTreeOutline extends ElementsTreeOutline_base {
     get isXMLMimeType(): boolean;
     selectedDOMNode(): SDK.DOMModel.DOMNode | null;
     selectDOMNode(node: SDK.DOMModel.DOMNode | null, focus?: boolean): void;
+    set maxRowsShown(maxRows: number | undefined);
     highlightAdoptedStyleSheet(adoptedStyleSheet: SDK.DOMModel.AdoptedStyleSheet): void;
     editing(): boolean;
     update(): void;
@@ -274,7 +278,8 @@ export declare class ElementsTreeOutline extends ElementsTreeOutline_base {
 export declare namespace ElementsTreeOutline {
     enum Events {
         SelectedNodeChanged = "SelectedNodeChanged",
-        ElementsTreeUpdated = "ElementsTreeUpdated"
+        ElementsTreeUpdated = "ElementsTreeUpdated",
+        ShowAllRows = "ShowAllRows"
     }
     interface EventTypes {
         [Events.SelectedNodeChanged]: {
@@ -282,6 +287,7 @@ export declare namespace ElementsTreeOutline {
             focus: boolean;
         };
         [Events.ElementsTreeUpdated]: SDK.DOMModel.DOMNode[];
+        [Events.ShowAllRows]: void;
     }
 }
 export declare const MappedCharToEntity: Map<string, string>;

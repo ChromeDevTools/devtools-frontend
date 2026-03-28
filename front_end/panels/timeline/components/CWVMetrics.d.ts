@@ -7,6 +7,7 @@ interface MetricsViewInput {
     didDismissFieldMismatchNotice: boolean;
     onDismisFieldMismatchNotice: () => void;
     onClickMetric: (traceEvent: Trace.Types.Events.Event) => void;
+    skipBottomBorder: boolean;
 }
 type MetricsView = (input: MetricsViewInput, output: undefined, target: HTMLElement) => void;
 export interface CWVMetricsData {
@@ -17,6 +18,8 @@ export declare class CWVMetrics extends UI.Widget.Widget {
     #private;
     constructor(element?: HTMLElement, view?: MetricsView);
     set data(data: CWVMetricsData);
+    get skipBottomBorder(): boolean;
+    set skipBottomBorder(x: boolean);
     performUpdate(): void;
 }
 export {};

@@ -132,6 +132,7 @@ style.setProperty('--image-file-document', 'url(\"' + new URL(new URL('document.
 style.setProperty('--image-file-dog-paw', 'url(\"' + new URL(new URL('dog-paw.svg', import.meta.url).href).toString() + '\")');
 style.setProperty('--image-file-dom-detective-badge', 'url(\"' + new URL(new URL('dom-detective-badge.svg', import.meta.url).href).toString() + '\")');
 style.setProperty('--image-file-domain', 'url(\"' + new URL(new URL('domain.svg', import.meta.url).href).toString() + '\")');
+style.setProperty('--image-file-dots-circle', 'url(\"' + new URL(new URL('dots-circle.svg', import.meta.url).href).toString() + '\")');
 style.setProperty('--image-file-dots-horizontal', 'url(\"' + new URL(new URL('dots-horizontal.svg', import.meta.url).href).toString() + '\")');
 style.setProperty('--image-file-dots-vertical', 'url(\"' + new URL(new URL('dots-vertical.svg', import.meta.url).href).toString() + '\")');
 style.setProperty('--image-file-download', 'url(\"' + new URL(new URL('download.svg', import.meta.url).href).toString() + '\")');

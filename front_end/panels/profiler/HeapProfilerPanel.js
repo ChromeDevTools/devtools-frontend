@@ -5,7 +5,6 @@ import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import { ProfilesPanel } from './ProfilesPanel.js';
-import { instance } from './ProfileTypeRegistry.js';
 const UIStrings = {
     /**
      * @description A context menu item in the Heap Profiler Panel of a profiler tool
@@ -17,14 +16,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let heapProfilerPanelInstance;
 export class HeapProfilerPanel extends ProfilesPanel {
     constructor() {
-        const registry = instance;
-        const profileTypes = [
-            registry.heapSnapshotProfileType,
-            registry.trackingHeapSnapshotProfileType,
-            registry.samplingHeapProfileType,
-            registry.detachedElementProfileType,
-        ];
-        super('heap-profiler', profileTypes, 'profiler.heap-toggle-recording');
+        super('heap-profiler', 'profiler.heap-toggle-recording');
     }
     static instance() {
         if (!heapProfilerPanelInstance) {
@@ -40,7 +32,7 @@ export class HeapProfilerPanel extends ProfilesPanel {
             return;
         }
         const objectId = object.objectId;
-        const heapProfiles = instance.heapSnapshotProfileType.getProfiles();
+        const heapProfiles = ProfilesPanel.registry.heapSnapshotProfileType.getProfiles();
         if (!heapProfiles.length) {
             return;
         }
@@ -76,8 +68,7 @@ export class HeapProfilerPanel extends ProfilesPanel {
         super.willHide();
     }
     showObject(snapshotObjectId, perspectiveName) {
-        const registry = instance;
-        const heapProfiles = registry.heapSnapshotProfileType.getProfiles();
+        const heapProfiles = ProfilesPanel.registry.heapSnapshotProfileType.getProfiles();
         for (let i = 0; i < heapProfiles.length; i++) {
             const profile = heapProfiles[i];
             // FIXME: allow to choose snapshot if there are several options.

@@ -59,6 +59,7 @@ export interface RatingViewInput {
 export interface ActionViewInput {
     onReportClick: () => void;
     onCopyResponseClick: () => void;
+    onExportClick?: () => void;
     showActions: boolean;
 }
 export interface SuggestionViewInput {
@@ -86,11 +87,13 @@ export interface MessageInput {
     isLoading: boolean;
     isReadOnly: boolean;
     isLastMessage: boolean;
+    isFirstMessage: boolean;
     canShowFeedbackForm: boolean;
     markdownRenderer: MarkdownLitRenderer;
     onSuggestionClick: (suggestion: string) => void;
     onFeedbackSubmit: (rpcId: Host.AidaClient.RpcGlobalId, rate: Host.AidaClient.Rating, feedback?: string) => void;
     onCopyResponseClick: (message: ModelChatMessage) => void;
+    onExportClick?: () => void;
     walkthrough: {
         onOpen: (message: ModelChatMessage) => void;
         isExpanded: boolean;
@@ -116,10 +119,12 @@ export declare class ChatMessage extends UI.Widget.Widget {
     isReadOnly: boolean;
     canShowFeedbackForm: boolean;
     isLastMessage: boolean;
+    isFirstMessage: boolean;
     markdownRenderer: MarkdownLitRenderer;
     onSuggestionClick: (suggestion: string) => void;
     onFeedbackSubmit: (rpcId: Host.AidaClient.RpcGlobalId, rate: Host.AidaClient.Rating, feedback?: string) => void;
     onCopyResponseClick: (message: ModelChatMessage) => void;
+    onExportClick: () => void;
     walkthrough: MessageInput['walkthrough'];
     constructor(element?: HTMLElement, view?: View);
     wasShown(): void;

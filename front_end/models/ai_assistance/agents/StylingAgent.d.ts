@@ -2,11 +2,8 @@ import * as Host from '../../../core/host/host.js';
 import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import { ChangeManager } from '../ChangeManager.js';
-import { type AgentOptions as BaseAgentOptions, AiAgent, type ContextResponse, ConversationContext, type ConversationSuggestions, type FunctionCallHandlerResult, type FunctionHandlerOptions, type MultimodalInput, MultimodalInputType, type RequestOptions } from './AiAgent.js';
-declare function executeJsCode(functionDeclaration: string, { throwOnSideEffect, contextNode }: {
-    throwOnSideEffect: boolean;
-    contextNode: SDK.DOMModel.DOMNode | null;
-}): Promise<string>;
+import { type AgentOptions as BaseAgentOptions, AiAgent, type ContextResponse, ConversationContext, type ConversationSuggestions, type FunctionCallHandlerResult, type MultimodalInput, MultimodalInputType, type RequestOptions } from './AiAgent.js';
+import { executeJsCode } from './ExecuteJavascript.js';
 export declare const AI_ASSISTANCE_FILTER_REGEX = "\\.ai-style-change-.*&";
 type CreateExtensionScopeFunction = (changes: ChangeManager) => {
     install(): Promise<void>;
@@ -39,15 +36,7 @@ export declare class StylingAgent extends AiAgent<SDK.DOMModel.DOMNode> {
     get multimodalInputEnabled(): boolean;
     preambleFeatures(): string[];
     constructor(opts: AgentOptions);
-    generateObservation(action: string, { throwOnSideEffect, }: {
-        throwOnSideEffect: boolean;
-    }): Promise<{
-        observation: string;
-        sideEffect: boolean;
-        canceled: boolean;
-    }>;
     static describeElement(element: SDK.DOMModel.DOMNode): Promise<string>;
-    executeAction(action: string, options?: FunctionHandlerOptions): Promise<FunctionCallHandlerResult<unknown>>;
     addElementAnnotation(elementId: string, annotationMessage: string): Promise<FunctionCallHandlerResult<unknown>>;
     activateDeviceEmulation(deviceName: string, visionDeficiency?: string): Promise<FunctionCallHandlerResult<unknown>>;
     popPendingMultimodalInput(): MultimodalInput | undefined;

@@ -11,11 +11,6 @@ export declare class ProfileHeader extends Common.ObjectWrapper.ObjectWrapper<Ev
     setTitle(title: string): void;
     profileType(): ProfileType;
     updateStatus(subtitle: string | null, wait?: boolean): void;
-    /**
-     * Must be implemented by subclasses.
-     */
-    createSidebarTreeElement(_dataDisplayDelegate: DataDisplayDelegate): UI.TreeOutline.TreeElement;
-    createView(_dataDisplayDelegate: DataDisplayDelegate): UI.Widget.Widget;
     removeTempFile(): void;
     dispose(): void;
     canSaveToFile(): boolean;

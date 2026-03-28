@@ -1,9 +1,11 @@
 import './Toolbar.js';
 import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
+import filterStyles from './filter.css.js';
 import type { Suggestions } from './SuggestBox.js';
 import { type ToolbarButton } from './Toolbar.js';
 import { HBox } from './Widget.js';
+export { filterStyles };
 declare const FilterBar_base: (new (...args: any[]) => {
     "__#private@#events": Common.ObjectWrapper.ObjectWrapper<FilterBarEventTypes>;
     addEventListener<T extends FilterBarEvents.CHANGED>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<FilterBarEventTypes[T], any>) => void, thisObject?: Object): Common.EventTarget.EventDescriptor<FilterBarEventTypes, T>;
@@ -112,4 +114,3 @@ export interface Item {
     title?: string;
     jslogContext: string;
 }
-export {};

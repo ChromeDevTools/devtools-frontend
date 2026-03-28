@@ -61,7 +61,7 @@ export class ThirdPartyTreeViewWidget extends TimelineTreeView.TimelineTreeView 
         this.element.classList.toggle('empty-table', !hasEvents);
     }
     buildTree() {
-        const parsedTrace = this.parsedTrace();
+        const parsedTrace = this.parsedTrace;
         const entityMapper = this.entityMapper();
         if (!parsedTrace || !entityMapper) {
             return new Trace.Extras.TraceTree.BottomUpRootNode([], {
@@ -77,7 +77,7 @@ export class ThirdPartyTreeViewWidget extends TimelineTreeView.TimelineTreeView 
         // default are not in the set of visible entries (as they are not shown on
         // the main flame chart).
         const filter = new Trace.Extras.TraceFilter.VisibleEventsFilter(Trace.Styles.visibleTypes().concat(["SyntheticNetworkRequest" /* Trace.Types.Events.Name.SYNTHETIC_NETWORK_REQUEST */]));
-        const node = new Trace.Extras.TraceTree.BottomUpRootNode(this.selectedEvents(), {
+        const node = new Trace.Extras.TraceTree.BottomUpRootNode(this.selectedEvents, {
             textFilter: this.textFilter(),
             filters: [filter],
             startTime: this.startTime,

@@ -37522,6 +37522,7 @@ __export(WebMCPModel_exports, {
 });
 var WebMCPModel = class extends SDKModel {
   #tools = /* @__PURE__ */ new Map();
+  #calls = /* @__PURE__ */ new Map();
   agent;
   #enabled = false;
   constructor(target) {
@@ -37536,6 +37537,12 @@ var WebMCPModel = class extends SDKModel {
   }
   get tools() {
     return this.#tools.values().flatMap((toolMap) => toolMap.values());
+  }
+  get toolCalls() {
+    return [...this.#calls.values()];
+  }
+  clearCalls() {
+    this.#calls.clear();
   }
   async enable() {
     if (this.#enabled) {
@@ -37569,6 +37576,32 @@ var WebMCPModel = class extends SDKModel {
     }
     this.dispatchEventToListeners("ToolsAdded", tools);
   }
+  toolInvoked(params) {
+    const tool = this.#tools.get(params.frameId)?.get(params.toolName);
+    if (!tool) {
+      return;
+    }
+    const call = {
+      invocationId: params.invocationId,
+      input: params.input,
+      tool
+    };
+    this.#calls.set(params.invocationId, call);
+    this.dispatchEventToListeners("ToolInvoked", call);
+  }
+  toolResponded(params) {
+    const call = this.#calls.get(params.invocationId);
+    if (!call) {
+      return;
+    }
+    call.result = {
+      status: params.status,
+      output: params.output,
+      errorText: params.errorText,
+      exception: params.exception
+    };
+    this.dispatchEventToListeners("ToolResponded", call);
+  }
 };
 var WebMCPDispatcher = class {
   #model;
@@ -37581,9 +37614,11 @@ var WebMCPDispatcher = class {
   toolsRemoved(params) {
     this.#model.onToolsRemoved(params.tools);
   }
-  toolInvoked() {
+  toolInvoked(params) {
+    this.#model.toolInvoked(params);
   }
-  toolResponded() {
+  toolResponded(params) {
+    this.#model.toolResponded(params);
   }
 };
 SDKModel.register(WebMCPModel, { capabilities: 2097152, autostart: true });

@@ -28,6 +28,14 @@ export default `/*
         flex: auto;
     }
 
+    devtools-data-grid {
+        flex: auto;
+    }
+
+    devtools-data-grid td {
+        vertical-align: middle;
+    }
+
     .section-title {
         background-color: var(--sys-color-surface1);
         padding: 0 5px;
@@ -36,6 +44,12 @@ export default `/*
         align-items: center;
         flex: none;
         color: var(--sys-color-on-surface);
+    }
+
+    .status-cell {
+        display: flex;
+        align-items: center;
+        gap: 4px;
     }
 
     devtools-list {
@@ -66,7 +80,18 @@ export default `/*
         color: var(--sys-color-on-surface);
     }
 
+    tr.status-error {
+      color: var(--sys-color-error);
+    }
 
+    devtools-toolbar-input {
+        flex-grow: 1;
+        flex-shrink: 1;
+    }
+
+    tr.status-cancelled {
+      color: var(--sys-color-on-surface-light);
+    }
 }
 
 /*# sourceURL=${import.meta.resolve('./webMCPView.css')} */`;

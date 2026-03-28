@@ -388,9 +388,6 @@ export class SamplingHeapProfileHeader extends WritableProfileHeader {
             nodes: [],
         };
     }
-    createView() {
-        return new HeapProfileView(this);
-    }
     protocolProfile() {
         return this.protocolProfileInternal;
     }

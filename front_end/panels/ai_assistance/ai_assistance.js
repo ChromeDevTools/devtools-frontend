@@ -10,7 +10,7 @@ import * as Common6 from "./../../core/common/common.js";
 import * as Host7 from "./../../core/host/host.js";
 import * as i18n19 from "./../../core/i18n/i18n.js";
 import * as Platform7 from "./../../core/platform/platform.js";
-import * as Root7 from "./../../core/root/root.js";
+import * as Root6 from "./../../core/root/root.js";
 import * as SDK5 from "./../../core/sdk/sdk.js";
 import * as AiAssistanceModel6 from "./../../models/ai_assistance/ai_assistance.js";
 import * as Annotations from "./../../models/annotations/annotations.js";
@@ -80,7 +80,6 @@ var aiAssistancePanel_css_default = `/*
 import "./../../ui/components/spinners/spinners.js";
 import * as Host5 from "./../../core/host/host.js";
 import * as i18n13 from "./../../core/i18n/i18n.js";
-import * as Root4 from "./../../core/root/root.js";
 import * as AiAssistanceModel4 from "./../../models/ai_assistance/ai_assistance.js";
 import * as Buttons7 from "./../../ui/components/buttons/buttons.js";
 import * as UI7 from "./../../ui/legacy/legacy.js";
@@ -2252,10 +2251,14 @@ var chatMessage_css_default = `/*
     font-family: var(--default-font-family);
     width: 100%;
     display: flex;
-    gap: var(--sys-size-8);
     justify-content: space-between;
     align-items: center;
     margin-block: calc(-1 * var(--sys-size-3));
+
+    &.not-v2 {
+      /* Can be removed when AIv2 ships */
+      gap: var(--sys-size-8);
+    }
 
     .action-buttons {
       display: flex;
@@ -2362,6 +2365,12 @@ var chatMessage_css_default = `/*
     }
   }
 
+  .user-query-wrapper {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+  }
+
   .chat-message {
     user-select: text;
     cursor: initial;
@@ -2374,6 +2383,38 @@ var chatMessage_css_default = `/*
     word-break: normal;
     overflow-wrap: anywhere;
     border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
+
+
+    &.query.ai-v2 {
+      width: fit-content;
+      max-width: 80%;
+      text-align: left;
+      padding: var(--sys-size-4) var(--sys-size-6);
+      font: var(--sys-typescale-body4-regular);
+      /* top left - top right - bottom right - bottom left */
+      border-radius: var(--sys-shape-corner-medium) var(--sys-shape-corner-extra-small) var(--sys-shape-corner-medium) var(--sys-shape-corner-medium);
+      background-color: var(--sys-color-surface5);
+      color: var(--sys-color-on-surface);
+
+      &.is-first-message {
+        /* So the first message doesn't bump right against the top
+         * toolbar */
+        margin-top: var(--sys-size-6);
+      }
+    }
+
+    &.ai-v2 {
+      border-bottom: none;
+    }
+
+    &.ai-v2 .answer-body-wrapper {
+      @container(min-width: 700px) {
+        /* Purposefully not using design system variables, this is a
+         * specific size to indent the content in and align it with the
+         * walkthrough CTA. */
+        padding-left: 35px;
+      }
+    }
 
     &.is-last-message {
       border-bottom: 0;
@@ -3382,44 +3423,68 @@ var UIStringsNotTranslate4 = {
   /**
    * @description Title for the performance summary widget.
    */
-  performanceSummary: "Performance summary"
+  performanceSummary: "Performance summary",
+  /**
+   * @description The title of the button that allows exporting the conversation for agents.
+   */
+  exportForAgents: "Copy for your coding agent",
+  /**
+   * @description Title for the bottom up thread activity widget.
+   */
+  bottomUpTree: "Bottom-up thread activity"
 };
 var DEFAULT_VIEW4 = (input, output, target) => {
+  const hasAiV2 = Boolean(Root3.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled);
   const message = input.message;
   if (message.entity === "user") {
     const imageInput = message.imageInput && "inlineData" in message.imageInput ? renderImageChatMessage(message.imageInput.inlineData) : Lit3.nothing;
+    const messageClasses2 = Lit3.Directives.classMap({
+      "chat-message": true,
+      query: true,
+      "is-last-message": input.isLastMessage,
+      "is-first-message": input.isFirstMessage,
+      "ai-v2": hasAiV2
+    });
+    const userQueryWrapperClasses = Lit3.Directives.classMap({
+      // Don't need to style at all unless we are on the V2 flag.
+      // Once we ship this can be removed entirely.
+      "user-query-wrapper": hasAiV2
+    });
     Lit3.render(html5`
       <style>${Input3.textInputStyles}</style>
       <style>${chatMessage_css_default}</style>
-      <section
-        class="chat-message query ${input.isLastMessage ? "is-last-message" : ""}"
-        jslog=${VisualLogging3.section("question")}
-      >
-        ${imageInput}
-        <div class="message-content">${renderTextAsMarkdown(message.text, input.markdownRenderer)}</div>
-      </section>
+      <div class=${userQueryWrapperClasses}>
+        <section class=${messageClasses2} jslog=${VisualLogging3.section("question")}>
+          ${imageInput}
+          <div class="message-content">${renderTextAsMarkdown(message.text, input.markdownRenderer)}</div>
+        </section>
+      </div>
     `, target);
     return;
   }
   const steps = message.parts.filter((part) => part.type === "step").map((part) => part.step);
   const icon = AiAssistanceModel3.AiUtils.getIconName();
-  const aiAssistanceV2 = Root3.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled;
+  const messageClasses = Lit3.Directives.classMap({
+    "chat-message": true,
+    answer: true,
+    "is-last-message": input.isLastMessage,
+    "is-first-message": input.isFirstMessage,
+    "ai-v2": hasAiV2
+  });
   Lit3.render(html5`
     <style>${Input3.textInputStyles}</style>
     <style>${chatMessage_css_default}</style>
-    <section
-      class="chat-message answer ${input.isLastMessage ? "is-last-message" : ""}"
-      jslog=${VisualLogging3.section("answer")}
-    >
-      ${aiAssistanceV2 ? Lit3.nothing : html5`
+    <section class=${messageClasses} jslog=${VisualLogging3.section("answer")}>
+      ${hasAiV2 ? Lit3.nothing : html5`
         <div class="message-info">
           <devtools-icon name=${icon}></devtools-icon>
           <div class="message-name">
             <h2>${AiAssistanceModel3.AiUtils.isGeminiBranding() ? lockedString5(UIStringsNotTranslate4.gemini) : lockedString5(UIStringsNotTranslate4.ai)}</h2>
           </div>
         </div>`}
-      ${aiAssistanceV2 ? renderWalkthroughUI(input, steps) : Lit3.nothing}
-      ${Lit3.Directives.repeat(message.parts, (_, index) => index, (part, index) => {
+      ${hasAiV2 ? renderWalkthroughUI(input, steps) : Lit3.nothing}
+      <div class="answer-body-wrapper">
+        ${Lit3.Directives.repeat(message.parts, (_, index) => index, (part, index) => {
     const isLastPart = index === message.parts.length - 1;
     if (part.type === "answer") {
       return html5`<p>${renderTextAsMarkdown(part.text, input.markdownRenderer, { animate: !input.isReadOnly && input.isLoading && isLastPart && input.isLastMessage })}</p>`;
@@ -3427,7 +3492,7 @@ var DEFAULT_VIEW4 = (input, output, target) => {
     if (part.type === "widget") {
       return html5`${Lit3.Directives.until(renderWidgets(part.widgets, { wrapperClass: "main-widgets-wrapper" }))}`;
     }
-    if (!aiAssistanceV2 && part.type === "step") {
+    if (!hasAiV2 && part.type === "step") {
       return renderStep({
         step: part.step,
         isLoading: input.isLoading,
@@ -3437,8 +3502,9 @@ var DEFAULT_VIEW4 = (input, output, target) => {
     }
     return Lit3.nothing;
   })}
-      ${renderError(message)}
-      ${input.showActions ? renderActions(input, output) : Lit3.nothing}
+        ${renderError(message)}
+        ${input.showActions ? renderActions(input, output) : Lit3.nothing}
+      </div>
     </section>
   `, target);
 };
@@ -3674,9 +3740,8 @@ async function makeComputedStyleWidget(widgetData) {
     ></devtools-widget>`
   };
 }
-async function makeCoreVitalsWidget(widgetData) {
-  const renderedWidget = html5`<devtools-widget
-      class="core-vitals-widget" ${widget3(TimelineComponents.CWVMetrics.CWVMetrics, { data: widgetData.data })}>
+async function makeCoreWebVitalsWidget(widgetData) {
+  const renderedWidget = html5`<devtools-widget class="core-vitals-widget" ${widget3(TimelineComponents.CWVMetrics.CWVMetrics, { data: widgetData.data, skipBottomBorder: true })}>
   </devtools-widget>`;
   return {
     renderedWidget,
@@ -3721,6 +3786,29 @@ async function makeLcpBreakdownWidget(widgetData) {
     renderedWidget,
     revealable: new TimelineUtils.Helpers.RevealableInsight(insight),
     title: lockedString5(UIStringsNotTranslate4.lcpBreakdown)
+  };
+}
+async function makeBottomUpTimelineTreeWidget(widgetData) {
+  const bottomUpRootNode = AiAssistanceModel3.AIQueries.AIQueries.mainThreadActivityBottomUp(widgetData.data.bounds, widgetData.data.parsedTrace);
+  if (!bottomUpRootNode) {
+    return null;
+  }
+  const events = bottomUpRootNode.events;
+  const startTime = Trace.Helpers.Timing.microToMilli(widgetData.data.bounds.min);
+  const endTime = Trace.Helpers.Timing.microToMilli(widgetData.data.bounds.max);
+  const renderedWidget = html5`<devtools-widget
+      class="bottom-up-timeline-tree-widget"
+      ${widget3(Timeline.TimelineTreeView.BottomUpTimelineTreeView, {
+    selectedEvents: events,
+    parsedTrace: widgetData.data.parsedTrace,
+    startTime,
+    endTime,
+    compactMode: true
+  })}></devtools-widget>`;
+  return {
+    renderedWidget,
+    revealable: new TimelineUtils.Helpers.RevealableBottomUpProfile(widgetData.data.bounds),
+    title: lockedString5(UIStringsNotTranslate4.bottomUpTree)
   };
 }
 function renderWidgetResponse(response) {
@@ -3814,7 +3902,8 @@ async function makeDomTreeWidget(widgetData) {
     expandRoot: true,
     rootDOMNode: root,
     visibleWidth: 400,
-    wrap: true
+    wrap: true,
+    maxRows: 10
   })}></devtools-widget>
   `;
   return {
@@ -3834,7 +3923,7 @@ async function renderWidgets(widgets, options = {}) {
         response = await makeComputedStyleWidget(widgetData);
         break;
       case "CORE_VITALS":
-        response = await makeCoreVitalsWidget(widgetData);
+        response = await makeCoreWebVitalsWidget(widgetData);
         break;
       case "STYLE_PROPERTIES":
         response = await makeStylePropertiesWidget(widgetData);
@@ -3850,6 +3939,9 @@ async function renderWidgets(widgets, options = {}) {
         break;
       case "TIMELINE_RANGE_SUMMARY":
         response = await makeTimelineRangeSummaryWidget(widgetData);
+        break;
+      case "BOTTOM_UP_TREE":
+        response = await makeBottomUpTimelineTreeWidget(widgetData);
         break;
       default:
         Platform4.assertNever(widgetData, "Unknown AiWidget name");
@@ -3925,8 +4017,13 @@ function renderImageChatMessage(inlineData) {
     </devtools-link>`;
 }
 function renderActions(input, output) {
+  const aiAssistanceV2 = Root3.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled;
+  const rowClasses = Lit3.Directives.classMap({
+    "ai-assistance-feedback-row": true,
+    "not-v2": !aiAssistanceV2
+  });
   return html5`
-    <div class="ai-assistance-feedback-row">
+    <div class=${rowClasses}>
       <div class="action-buttons">
         ${input.showRateButtons ? html5`
           <devtools-button
@@ -3973,7 +4070,8 @@ function renderActions(input, output) {
   }}
           @click=${input.onReportClick}
         ></devtools-button>
-        <div class="vertical-separator"></div>
+        ${aiAssistanceV2 ? Lit3.nothing : html5`
+          <div class="vertical-separator"></div>
           <devtools-button
             .data=${{
     variant: "icon",
@@ -3984,6 +4082,18 @@ function renderActions(input, output) {
   }}
             aria-label=${lockedString5(UIStringsNotTranslate4.copyResponse)}
             @click=${input.onCopyResponseClick}></devtools-button>
+        `}
+        ${input.onExportClick && aiAssistanceV2 && input.isLastMessage ? html5`
+        <div class="vertical-separator"></div>
+          <devtools-button
+            class="export-for-agents-button"
+            .jslogContext=${"ai-export-for-agents"}
+            .variant=${"outlined"}
+            .iconName=${"copy"}
+            @click=${input.onExportClick}
+          >${lockedString5(UIStringsNotTranslate4.exportForAgents)}</devtools-button>
+          <div class="vertical-separator"></div>
+        ` : Lit3.nothing}
       </div>
       ${input.suggestions ? html5`<div class="suggestions-container">
         <div class="scroll-button-container left hidden" ${ref3((element) => {
@@ -4079,12 +4189,15 @@ var ChatMessage = class extends UI5.Widget.Widget {
   isReadOnly = false;
   canShowFeedbackForm = false;
   isLastMessage = false;
+  isFirstMessage = false;
   markdownRenderer;
   onSuggestionClick = () => {
   };
   onFeedbackSubmit = () => {
   };
   onCopyResponseClick = () => {
+  };
+  onExportClick = () => {
   };
   walkthrough = {
     onOpen: () => {
@@ -4122,6 +4235,7 @@ var ChatMessage = class extends UI5.Widget.Widget {
       canShowFeedbackForm: this.canShowFeedbackForm,
       markdownRenderer: this.markdownRenderer,
       isLastMessage: this.isLastMessage,
+      isFirstMessage: this.isFirstMessage,
       onSuggestionClick: this.onSuggestionClick,
       onRatingClick: this.#handleRateClick.bind(this),
       onReportClick: () => UIHelpers.openInNewTab(REPORT_URL),
@@ -4130,6 +4244,7 @@ var ChatMessage = class extends UI5.Widget.Widget {
           this.onCopyResponseClick(this.message);
         }
       },
+      onExportClick: this.onExportClick,
       scrollSuggestionsScrollContainer: this.#scrollSuggestionsScrollContainer.bind(this),
       onSuggestionsScrollOrResize: this.#handleSuggestionsScrollOrResize.bind(this),
       onSubmit: this.#handleSubmit.bind(this),
@@ -4262,7 +4377,7 @@ async function makeTimelineRangeSummaryWidget(widgetData) {
       thirdPartyTreeTemplate: html5`${widget3(Timeline.ThirdPartyTreeView.ThirdPartyTreeViewWidget, {
         maxRows: 10,
         model: {
-          selectedEvents: thirdPartyTree.selectedEvents() ?? null,
+          selectedEvents: thirdPartyTree.selectedEvents ?? null,
           parsedTrace,
           entityMapper: thirdPartyTree.entityMapper()
         },
@@ -4693,14 +4808,6 @@ main {
   }
 }
 
-.export-for-agents-button {
-  /* Bottom margin to ensure it's not right up against the chat box when
-   * the conversation requires a scrollbar */
-  margin: 0 auto var(--sys-size-8) auto;
-  display: block;
-
-}
-
 /*# sourceURL=${import.meta.resolve("././components/chatView.css")} */`;
 
 // gen/front_end/panels/ai_assistance/components/ExportForAgentsDialog.js
@@ -4808,7 +4915,7 @@ var UIStrings3 = {
   /**
    * @description Title for the export for agents dialog.
    */
-  exportForAgents: "Export for agents",
+  exportForAgents: "Copy for your coding agent",
   /**
    * @description Button text for copying to clipboard.
    */
@@ -5004,8 +5111,6 @@ var DEFAULT_VIEW6 = (input, output, target) => {
     "chat-input-widget": true,
     sticky: !input.isReadOnly
   });
-  const hasAiV2Flag = Boolean(Root4.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled);
-  const shouldShowExportToAgent = !input.isLoading && input.messages.length > 0 && hasAiV2Flag;
   render7(html7`
       <style>${chatView_css_default}</style>
       <div class=${chatUiClasses}>
@@ -5021,22 +5126,15 @@ var DEFAULT_VIEW6 = (input, output, target) => {
     canShowFeedbackForm: input.canShowFeedbackForm,
     markdownRenderer: input.markdownRenderer,
     isLastMessage: input.messages.at(-1) === message,
+    isFirstMessage: input.messages.at(0) === message,
     onSuggestionClick: input.handleSuggestionClick,
     onFeedbackSubmit: input.onFeedbackSubmit,
     onCopyResponseClick: input.onCopyResponseClick,
+    onExportClick: input.exportForAgentsClick,
     walkthrough: {
       ...input.walkthrough
     }
   }))}
-              ${shouldShowExportToAgent ? html7`
-                <devtools-button
-                  class="export-for-agents-button"
-                  .jslogContext=${"ai-export-for-agents"}
-                  .variant=${"text"}
-                  .iconName=${"copy"}
-                  @click=${input.exportForAgentsClick}
-                >Export for agents</devtools-button>
-              ` : nothing7}
               ${input.isLoading ? nothing7 : widget4(PatchWidget, {
     changeSummary: input.changeSummary ?? "",
     changeManager: input.changeManager
@@ -5252,7 +5350,7 @@ __export(DisabledWidget_exports, {
 });
 import * as Host6 from "./../../core/host/host.js";
 import * as i18n15 from "./../../core/i18n/i18n.js";
-import * as Root5 from "./../../core/root/root.js";
+import * as Root4 from "./../../core/root/root.js";
 import * as uiI18n from "./../../ui/i18n/i18n.js";
 import * as UI8 from "./../../ui/legacy/legacy.js";
 import { html as html8, render as render8 } from "./../../ui/lit/lit.js";
@@ -5410,7 +5508,7 @@ var DisabledWidget = class extends UI8.Widget.Widget {
     void this.requestUpdate();
   }
   performUpdate() {
-    const hostConfig = Root5.Runtime.hostConfig;
+    const hostConfig = Root4.Runtime.hostConfig;
     this.#view({
       aidaAvailability: this.aidaAvailability,
       hostConfig
@@ -5425,7 +5523,7 @@ __export(ExploreWidget_exports, {
   ExploreWidget: () => ExploreWidget
 });
 import * as i18n17 from "./../../core/i18n/i18n.js";
-import * as Root6 from "./../../core/root/root.js";
+import * as Root5 from "./../../core/root/root.js";
 import * as UI9 from "./../../ui/legacy/legacy.js";
 import { html as html9, render as render9 } from "./../../ui/lit/lit.js";
 import * as VisualLogging5 from "./../../ui/visual_logging/visual_logging.js";
@@ -5645,7 +5743,7 @@ var ExploreWidget = class extends UI9.Widget.Widget {
     void this.requestUpdate();
   }
   performUpdate() {
-    const config = Root6.Runtime.hostConfig;
+    const config = Root5.Runtime.hostConfig;
     const featureCards = [];
     if (config.devToolsFreestyler?.enabled && UI9.ViewManager.ViewManager.instance().hasView("elements")) {
       featureCards.push({
@@ -6273,7 +6371,7 @@ function getMarkdownRenderer(conversation) {
   return new MarkdownRendererWithCodeBlock();
 }
 function toolbarView(input) {
-  const hasAiV2 = Boolean(Root7.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled);
+  const hasAiV2 = Boolean(Root6.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled);
   return html13`
     <div class="toolbar-container" role="toolbar" jslog=${VisualLogging6.toolbar()}>
       <devtools-toolbar class="freestyler-left-toolbar" role="presentation">
@@ -6361,7 +6459,7 @@ function defaultView(input, output, target) {
                     </devtools-widget>`;
     }
   }
-  if (Root7.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled || Greendev.Prototypes.instance().isEnabled("breakpointDebuggerAgent")) {
+  if (Root6.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled || Greendev.Prototypes.instance().isEnabled("breakpointDebuggerAgent")) {
     const shouldShowWalkthrough = input.state === "chat-view" && input.props.walkthrough.isExpanded;
     let walkthroughIsForLastMessage = false;
     if (input.state === "chat-view") {
@@ -6503,7 +6601,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI10.Panel.Panel {
     };
   }
   async #getPanelViewInput() {
-    const blockedByAge = Root7.Runtime.hostConfig.aidaAvailability?.blockedByAge === true;
+    const blockedByAge = Root6.Runtime.hostConfig.aidaAvailability?.blockedByAge === true;
     if (this.#aidaAvailability !== "available" || !this.#aiAssistanceEnabledSetting?.getIfNotDisabled() || blockedByAge) {
       return {
         state: "disabled-view",
@@ -6588,7 +6686,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI10.Panel.Panel {
   // Responsive logic for Walkthrough
   onResize() {
     super.onResize();
-    if (Root7.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled) {
+    if (Root6.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled) {
       this.#updateWalkthroughResponsiveness();
     }
   }
@@ -6691,7 +6789,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI10.Panel.Panel {
     });
   }
   #getDefaultConversationType() {
-    const { hostConfig } = Root7.Runtime;
+    const { hostConfig } = Root6.Runtime;
     const viewManager = UI10.ViewManager.ViewManager.instance();
     const isElementsPanelVisible = viewManager.isViewVisible("elements");
     const isNetworkPanelVisible = viewManager.isViewVisible("network");
@@ -6963,7 +7061,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI10.Panel.Panel {
   }
   #shouldShowChatActions() {
     const aiAssistanceSetting = this.#aiAssistanceEnabledSetting?.getIfNotDisabled();
-    const isBlockedByAge = Root7.Runtime.hostConfig.aidaAvailability?.blockedByAge === true;
+    const isBlockedByAge = Root6.Runtime.hostConfig.aidaAvailability?.blockedByAge === true;
     if (!aiAssistanceSetting || isBlockedByAge) {
       return false;
     }
@@ -7008,7 +7106,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI10.Panel.Panel {
     if (!this.#conversation || this.#conversation.isReadOnly) {
       return i18nString5(UIStrings5.inputDisclaimerForEmptyState);
     }
-    const noLogging = Root7.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue === Root7.Runtime.GenAiEnterprisePolicyValue.ALLOW_WITHOUT_LOGGING;
+    const noLogging = Root6.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue === Root6.Runtime.GenAiEnterprisePolicyValue.ALLOW_WITHOUT_LOGGING;
     switch (this.#conversation.type) {
       case "freestyler":
         if (noLogging) {
@@ -7096,8 +7194,8 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI10.Panel.Panel {
     this.requestUpdate();
   }
   #canExecuteQuery() {
-    const isBrandedBuild = Boolean(Root7.Runtime.hostConfig.aidaAvailability?.enabled);
-    const isBlockedByAge = Boolean(Root7.Runtime.hostConfig.aidaAvailability?.blockedByAge);
+    const isBrandedBuild = Boolean(Root6.Runtime.hostConfig.aidaAvailability?.enabled);
+    const isBlockedByAge = Boolean(Root6.Runtime.hostConfig.aidaAvailability?.blockedByAge);
     const isAidaAvailable = Boolean(
       this.#aidaAvailability === "available"
       /* Host.AidaClient.AidaAccessPreconditions.AVAILABLE */
@@ -7470,7 +7568,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI10.Panel.Panel {
               }
               systemMessage.parts.push(newPart);
             }
-            if (data.widgets && Root7.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled) {
+            if (data.widgets && Root6.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled) {
               systemMessage.parts.push({
                 type: "widget",
                 widgets: data.widgets
@@ -7606,16 +7704,16 @@ var ActionDelegate = class {
   }
 };
 function isAiAssistanceMultimodalUploadInputEnabled() {
-  return isAiAssistanceMultimodalInputEnabled() && Boolean(Root7.Runtime.hostConfig.devToolsFreestyler?.multimodalUploadInput);
+  return isAiAssistanceMultimodalInputEnabled() && Boolean(Root6.Runtime.hostConfig.devToolsFreestyler?.multimodalUploadInput);
 }
 function isAiAssistanceMultimodalInputEnabled() {
-  return Boolean(Root7.Runtime.hostConfig.devToolsFreestyler?.multimodal);
+  return Boolean(Root6.Runtime.hostConfig.devToolsFreestyler?.multimodal);
 }
 function isAiAssistanceContextSelectionAgentEnabled() {
-  return Boolean(Root7.Runtime.hostConfig.devToolsAiAssistanceContextSelectionAgent?.enabled);
+  return Boolean(Root6.Runtime.hostConfig.devToolsAiAssistanceContextSelectionAgent?.enabled);
 }
 function isAiAssistanceServerSideLoggingEnabled() {
-  return !Root7.Runtime.hostConfig.aidaAvailability?.disallowLogging;
+  return !Root6.Runtime.hostConfig.aidaAvailability?.disallowLogging;
 }
 export {
   ActionDelegate,

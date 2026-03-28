@@ -138,27 +138,29 @@ function runNextUpdate() {
 }
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const widgetConfigs = new WeakMap();
+export function registerWidgetConfig(element, config) {
+    widgetConfigs.set(element, config);
+}
+function instantiateWidget(element, widgetConfig) {
+    if (!widgetConfig.widgetClass) {
+        throw new Error('No widgetClass defined');
+    }
+    let newWidget;
+    if (Widget.isPrototypeOf(widgetConfig.widgetClass)) {
+        const ctor = widgetConfig.widgetClass;
+        newWidget = new ctor(element);
+    }
+    else {
+        const factory = widgetConfig.widgetClass;
+        newWidget = factory(element);
+    }
+    if (widgetConfig.widgetParams) {
+        Object.assign(newWidget, widgetConfig.widgetParams);
+    }
+    newWidget.requestUpdate();
+    return newWidget;
+}
 export class WidgetElement extends HTMLElement {
-    createWidget() {
-        const config = widgetConfigs.get(this);
-        const widget = this.#instantiateWidget(config.widgetClass);
-        if (config.widgetParams) {
-            Object.assign(widget, config.widgetParams);
-        }
-        widget.requestUpdate();
-        return widget;
-    }
-    #instantiateWidget(widgetClass) {
-        if (!widgetClass) {
-            throw new Error('No widgetClass defined');
-        }
-        if (Widget.isPrototypeOf(widgetClass)) {
-            const ctor = widgetClass;
-            return new ctor(this);
-        }
-        const factory = widgetClass;
-        return factory(this);
-    }
     getWidget() {
         return Widget.get(this);
     }
@@ -177,15 +179,17 @@ export class WidgetElement extends HTMLElement {
         }
     }
     appendChild(child) {
-        if (child instanceof HTMLElement && child.tagName !== 'STYLE') {
-            Widget.getOrCreateWidget(child).show(this);
+        const widget = child instanceof HTMLElement ? Widget.get(child) : null;
+        if (widget) {
+            widget.show(this, undefined, /* suppressOrphanWidgetError= */ true);
             return child;
         }
         return super.appendChild(child);
     }
     insertBefore(child, referenceChild) {
-        if (child instanceof HTMLElement && child.tagName !== 'STYLE') {
-            Widget.getOrCreateWidget(child).show(this, referenceChild, true);
+        const widget = child instanceof HTMLElement ? Widget.get(child) : null;
+        if (widget) {
+            widget.show(this, referenceChild, /* suppressOrphanWidgetError= */ true);
             return child;
         }
         return super.insertBefore(child, referenceChild);
@@ -381,10 +385,14 @@ export class Widget {
         if (widget) {
             return widget;
         }
-        if (element instanceof WidgetElement) {
-            return element.createWidget();
+        let config = widgetConfigs.get(element);
+        if (!config) {
+            config = widgetConfig(element => new Widget(element));
+            if (element instanceof WidgetElement) {
+                widgetConfigs.set(element, config);
+            }
         }
-        return new Widget(element);
+        return instantiateWidget(element, config);
     }
     markAsRoot() {
         assert(!this.element.parentElement, 'Attempt to mark as root attached node');

@@ -94,7 +94,7 @@ export class EventsTimelineTreeView extends TimelineTreeView {
         this.filtersControl.populateToolbar(toolbar);
     }
     showDetailsForNode(node) {
-        const parsedTrace = this.parsedTrace();
+        const parsedTrace = this.parsedTrace;
         if (!parsedTrace) {
             return false;
         }

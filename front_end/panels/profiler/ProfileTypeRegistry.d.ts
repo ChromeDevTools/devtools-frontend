@@ -1,11 +1,9 @@
-import { DetachedElementsProfileType } from './HeapDetachedElementsView.js';
-import { SamplingHeapProfileType } from './HeapProfileView.js';
-import { HeapSnapshotProfileType, TrackingHeapSnapshotProfileType } from './HeapSnapshotView.js';
-export declare class ProfileTypeRegistry {
+import type { DetachedElementsProfileType } from './HeapDetachedElementsView.js';
+import type { SamplingHeapProfileType } from './HeapProfileView.js';
+import type { HeapSnapshotProfileType, TrackingHeapSnapshotProfileType } from './HeapSnapshotView.js';
+export interface ProfileTypeRegistry {
     heapSnapshotProfileType: HeapSnapshotProfileType;
     samplingHeapProfileType: SamplingHeapProfileType;
     trackingHeapSnapshotProfileType: TrackingHeapSnapshotProfileType;
     detachedElementProfileType: DetachedElementsProfileType;
-    constructor();
 }
-export declare const instance: ProfileTypeRegistry;

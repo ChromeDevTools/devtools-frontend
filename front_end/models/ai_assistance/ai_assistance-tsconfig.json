@@ -50,6 +50,7 @@
     "../../../../../../front_end/models/ai_assistance/agents/BreakpointDebuggerAgentOverlay.ts",
     "../../../../../../front_end/models/ai_assistance/agents/ContextSelectionAgent.ts",
     "../../../../../../front_end/models/ai_assistance/agents/ConversationSummaryAgent.ts",
+    "../../../../../../front_end/models/ai_assistance/agents/ExecuteJavascript.ts",
     "../../../../../../front_end/models/ai_assistance/agents/FileAgent.ts",
     "../../../../../../front_end/models/ai_assistance/agents/NetworkAgent.ts",
     "../../../../../../front_end/models/ai_assistance/agents/PatchAgent.ts",

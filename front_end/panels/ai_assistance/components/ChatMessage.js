@@ -180,49 +180,73 @@ const UIStringsNotTranslate = {
     /**
      * @description Title for the performance summary widget.
      */
-    performanceSummary: 'Performance summary'
+    performanceSummary: 'Performance summary',
+    /**
+     * @description The title of the button that allows exporting the conversation for agents.
+     */
+    exportForAgents: 'Copy for your coding agent',
+    /**
+     * @description Title for the bottom up thread activity widget.
+     */
+    bottomUpTree: 'Bottom-up thread activity',
 };
 export const DEFAULT_VIEW = (input, output, target) => {
+    const hasAiV2 = Boolean(Root.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled);
     const message = input.message;
     if (message.entity === "user" /* ChatMessageEntity.USER */) {
         const imageInput = message.imageInput && 'inlineData' in message.imageInput ?
             renderImageChatMessage(message.imageInput.inlineData) :
             Lit.nothing;
+        const messageClasses = Lit.Directives.classMap({
+            'chat-message': true,
+            query: true,
+            'is-last-message': input.isLastMessage,
+            'is-first-message': input.isFirstMessage,
+            'ai-v2': hasAiV2,
+        });
+        const userQueryWrapperClasses = Lit.Directives.classMap({
+            // Don't need to style at all unless we are on the V2 flag.
+            // Once we ship this can be removed entirely.
+            'user-query-wrapper': hasAiV2
+        });
         // clang-format off
         Lit.render(html `
       <style>${Input.textInputStyles}</style>
       <style>${chatMessageStyles}</style>
-      <section
-        class="chat-message query ${input.isLastMessage ? 'is-last-message' : ''}"
-        jslog=${VisualLogging.section('question')}
-      >
-        ${imageInput}
-        <div class="message-content">${renderTextAsMarkdown(message.text, input.markdownRenderer)}</div>
-      </section>
+      <div class=${userQueryWrapperClasses}>
+        <section class=${messageClasses} jslog=${VisualLogging.section('question')}>
+          ${imageInput}
+          <div class="message-content">${renderTextAsMarkdown(message.text, input.markdownRenderer)}</div>
+        </section>
+      </div>
     `, target);
         // clang-format on
         return;
     }
     const steps = message.parts.filter(part => part.type === 'step').map(part => part.step);
     const icon = AiAssistanceModel.AiUtils.getIconName();
-    const aiAssistanceV2 = Root.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled;
+    const messageClasses = Lit.Directives.classMap({
+        'chat-message': true,
+        answer: true,
+        'is-last-message': input.isLastMessage,
+        'is-first-message': input.isFirstMessage,
+        'ai-v2': hasAiV2,
+    });
     // clang-format off
     Lit.render(html `
     <style>${Input.textInputStyles}</style>
     <style>${chatMessageStyles}</style>
-    <section
-      class="chat-message answer ${input.isLastMessage ? 'is-last-message' : ''}"
-      jslog=${VisualLogging.section('answer')}
-    >
-      ${aiAssistanceV2 ? Lit.nothing : html `
+    <section class=${messageClasses} jslog=${VisualLogging.section('answer')}>
+      ${hasAiV2 ? Lit.nothing : html `
         <div class="message-info">
           <devtools-icon name=${icon}></devtools-icon>
           <div class="message-name">
             <h2>${AiAssistanceModel.AiUtils.isGeminiBranding() ? lockedString(UIStringsNotTranslate.gemini) : lockedString(UIStringsNotTranslate.ai)}</h2>
           </div>
         </div>`}
-      ${aiAssistanceV2 ? renderWalkthroughUI(input, steps) : Lit.nothing}
-      ${Lit.Directives.repeat(message.parts, (_, index) => index, (part, index) => {
+      ${hasAiV2 ? renderWalkthroughUI(input, steps) : Lit.nothing}
+      <div class="answer-body-wrapper">
+        ${Lit.Directives.repeat(message.parts, (_, index) => index, (part, index) => {
         const isLastPart = index === message.parts.length - 1;
         if (part.type === 'answer') {
             return html `<p>${renderTextAsMarkdown(part.text, input.markdownRenderer, { animate: !input.isReadOnly && input.isLoading && isLastPart && input.isLastMessage })}</p>`;
@@ -230,7 +254,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
         if (part.type === 'widget') {
             return html `${Lit.Directives.until(renderWidgets(part.widgets, { wrapperClass: 'main-widgets-wrapper' }))}`;
         }
-        if (!aiAssistanceV2 && part.type === 'step') {
+        if (!hasAiV2 && part.type === 'step') {
             return renderStep({
                 step: part.step,
                 isLoading: input.isLoading,
@@ -240,8 +264,9 @@ export const DEFAULT_VIEW = (input, output, target) => {
         }
         return Lit.nothing;
     })}
-      ${renderError(message)}
-      ${input.showActions ? renderActions(input, output) : Lit.nothing}
+        ${renderError(message)}
+        ${input.showActions ? renderActions(input, output) : Lit.nothing}
+      </div>
     </section>
   `, target);
     // clang-format on
@@ -540,10 +565,9 @@ async function makeComputedStyleWidget(widgetData) {
     ></devtools-widget>`,
     };
 }
-async function makeCoreVitalsWidget(widgetData) {
+async function makeCoreWebVitalsWidget(widgetData) {
     // clang-format off
-    const renderedWidget = html `<devtools-widget
-      class="core-vitals-widget" ${widget(TimelineComponents.CWVMetrics.CWVMetrics, { data: widgetData.data })}>
+    const renderedWidget = html `<devtools-widget class="core-vitals-widget" ${widget(TimelineComponents.CWVMetrics.CWVMetrics, { data: widgetData.data, skipBottomBorder: true })}>
   </devtools-widget>`;
     // clang-format on
     return {
@@ -593,6 +617,29 @@ async function makeLcpBreakdownWidget(widgetData) {
         renderedWidget,
         revealable: new TimelineUtils.Helpers.RevealableInsight(insight),
         title: lockedString(UIStringsNotTranslate.lcpBreakdown),
+    };
+}
+async function makeBottomUpTimelineTreeWidget(widgetData) {
+    const bottomUpRootNode = AiAssistanceModel.AIQueries.AIQueries.mainThreadActivityBottomUp(widgetData.data.bounds, widgetData.data.parsedTrace);
+    if (!bottomUpRootNode) {
+        return null;
+    }
+    const events = bottomUpRootNode.events;
+    const startTime = Trace.Helpers.Timing.microToMilli(widgetData.data.bounds.min);
+    const endTime = Trace.Helpers.Timing.microToMilli(widgetData.data.bounds.max);
+    const renderedWidget = html `<devtools-widget
+      class="bottom-up-timeline-tree-widget"
+      ${widget(Timeline.TimelineTreeView.BottomUpTimelineTreeView, {
+        selectedEvents: events,
+        parsedTrace: widgetData.data.parsedTrace,
+        startTime,
+        endTime,
+        compactMode: true,
+    })}></devtools-widget>`;
+    return {
+        renderedWidget,
+        revealable: new TimelineUtils.Helpers.RevealableBottomUpProfile(widgetData.data.bounds),
+        title: lockedString(UIStringsNotTranslate.bottomUpTree)
     };
 }
 function renderWidgetResponse(response) {
@@ -691,6 +738,7 @@ async function makeDomTreeWidget(widgetData) {
         rootDOMNode: root,
         visibleWidth: 400,
         wrap: true,
+        maxRows: 10,
     })}></devtools-widget>
   `;
     // clang-format on
@@ -728,7 +776,7 @@ async function renderWidgets(widgets, options = {}) {
                 response = await makeComputedStyleWidget(widgetData);
                 break;
             case 'CORE_VITALS':
-                response = await makeCoreVitalsWidget(widgetData);
+                response = await makeCoreWebVitalsWidget(widgetData);
                 break;
             case 'STYLE_PROPERTIES':
                 response = await makeStylePropertiesWidget(widgetData);
@@ -744,6 +792,9 @@ async function renderWidgets(widgets, options = {}) {
                 break;
             case 'TIMELINE_RANGE_SUMMARY':
                 response = await makeTimelineRangeSummaryWidget(widgetData);
+                break;
+            case 'BOTTOM_UP_TREE':
+                response = await makeBottomUpTimelineTreeWidget(widgetData);
                 break;
             default:
                 Platform.assertNever(widgetData, 'Unknown AiWidget name');
@@ -825,9 +876,14 @@ function renderImageChatMessage(inlineData) {
     // clang-format on
 }
 function renderActions(input, output) {
+    const aiAssistanceV2 = Root.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled;
+    const rowClasses = Lit.Directives.classMap({
+        'ai-assistance-feedback-row': true,
+        'not-v2': !aiAssistanceV2,
+    });
     // clang-format off
     return html `
-    <div class="ai-assistance-feedback-row">
+    <div class=${rowClasses}>
       <div class="action-buttons">
         ${input.showRateButtons ? html `
           <devtools-button
@@ -868,7 +924,8 @@ function renderActions(input, output) {
     }}
           @click=${input.onReportClick}
         ></devtools-button>
-        <div class="vertical-separator"></div>
+        ${aiAssistanceV2 ? Lit.nothing : html `
+          <div class="vertical-separator"></div>
           <devtools-button
             .data=${{
         variant: "icon" /* Buttons.Button.Variant.ICON */,
@@ -879,6 +936,18 @@ function renderActions(input, output) {
     }}
             aria-label=${lockedString(UIStringsNotTranslate.copyResponse)}
             @click=${input.onCopyResponseClick}></devtools-button>
+        `}
+        ${input.onExportClick && aiAssistanceV2 && input.isLastMessage ? html `
+        <div class="vertical-separator"></div>
+          <devtools-button
+            class="export-for-agents-button"
+            .jslogContext=${'ai-export-for-agents'}
+            .variant=${"outlined" /* Buttons.Button.Variant.OUTLINED */}
+            .iconName=${'copy'}
+            @click=${input.onExportClick}
+          >${lockedString(UIStringsNotTranslate.exportForAgents)}</devtools-button>
+          <div class="vertical-separator"></div>
+        ` : Lit.nothing}
       </div>
       ${input.suggestions ? html `<div class="suggestions-container">
         <div class="scroll-button-container left hidden" ${ref(element => { output.suggestionsLeftScrollButtonContainer = element; })}>
@@ -969,10 +1038,12 @@ export class ChatMessage extends UI.Widget.Widget {
     isReadOnly = false;
     canShowFeedbackForm = false;
     isLastMessage = false;
+    isFirstMessage = false;
     markdownRenderer;
     onSuggestionClick = () => { };
     onFeedbackSubmit = () => { };
     onCopyResponseClick = () => { };
+    onExportClick = () => { };
     walkthrough = {
         onOpen: () => { },
         onToggle: () => { },
@@ -1007,6 +1078,7 @@ export class ChatMessage extends UI.Widget.Widget {
             canShowFeedbackForm: this.canShowFeedbackForm,
             markdownRenderer: this.markdownRenderer,
             isLastMessage: this.isLastMessage,
+            isFirstMessage: this.isFirstMessage,
             onSuggestionClick: this.onSuggestionClick,
             onRatingClick: this.#handleRateClick.bind(this),
             onReportClick: () => UIHelpers.openInNewTab(REPORT_URL),
@@ -1015,6 +1087,7 @@ export class ChatMessage extends UI.Widget.Widget {
                     this.onCopyResponseClick(this.message);
                 }
             },
+            onExportClick: this.onExportClick,
             scrollSuggestionsScrollContainer: this.#scrollSuggestionsScrollContainer.bind(this),
             onSuggestionsScrollOrResize: this.#handleSuggestionsScrollOrResize.bind(this),
             onSubmit: this.#handleSubmit.bind(this),
@@ -1151,7 +1224,7 @@ async function makeTimelineRangeSummaryWidget(widgetData) {
             thirdPartyTreeTemplate: html `${widget(Timeline.ThirdPartyTreeView.ThirdPartyTreeViewWidget, {
                 maxRows: 10,
                 model: {
-                    selectedEvents: thirdPartyTree.selectedEvents() ?? null,
+                    selectedEvents: thirdPartyTree.selectedEvents ?? null,
                     parsedTrace,
                     entityMapper: thirdPartyTree.entityMapper(),
                 },

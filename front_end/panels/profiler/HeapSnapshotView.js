@@ -23,8 +23,6 @@ import { HeapSnapshotWorkerProxy } from './HeapSnapshotProxy.js';
 import { HeapTimelineOverview, Samples } from './HeapTimelineOverview.js';
 import * as ModuleUIStrings from './ModuleUIStrings.js';
 import { ProfileHeader, ProfileType, } from './ProfileHeader.js';
-import { ProfileSidebarTreeElement } from './ProfileSidebarTreeElement.js';
-import { instance } from './ProfileTypeRegistry.js';
 const UIStrings = {
     /**
      * @description Text to find an item
@@ -245,7 +243,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const moduleUIstr_ = i18n.i18n.registerUIStrings('panels/profiler/ModuleUIStrings.ts', ModuleUIStrings.UIStrings);
 const moduleI18nString = i18n.i18n.getLocalizedString.bind(undefined, moduleUIstr_);
 export class HeapSnapshotView extends UI.View.SimpleView {
-    searchResults;
+    searchResults = [];
     profile;
     linkifier;
     parentDataDisplayDelegate;
@@ -282,6 +280,7 @@ export class HeapSnapshotView extends UI.View.SimpleView {
     trackingOverviewGrid;
     currentSearchResultIndex = -1;
     currentSearch;
+    #registry;
     get currentQuery() {
         return this.currentSearch?.query;
     }
@@ -290,12 +289,12 @@ export class HeapSnapshotView extends UI.View.SimpleView {
             this.currentSearch.query = value;
         }
     }
-    constructor(dataDisplayDelegate, profile) {
+    constructor(dataDisplayDelegate, profile, registry) {
         super({
             title: i18nString(UIStrings.heapSnapshot),
             viewId: 'heap-snapshot',
         });
-        this.searchResults = [];
+        this.#registry = registry;
         this.element.classList.add('heap-snapshot-view');
         this.profile = profile;
         this.linkifier = new Components.Linkifier.Linkifier();
@@ -306,7 +305,7 @@ export class HeapSnapshotView extends UI.View.SimpleView {
         if (isHeapTimeline) {
             this.createOverview();
         }
-        const hasAllocationStacks = instance.trackingHeapSnapshotProfileType.recordAllocationStacksSetting().get();
+        const hasAllocationStacks = registry.trackingHeapSnapshotProfileType.recordAllocationStacksSetting().get();
         this.parentDataDisplayDelegate = dataDisplayDelegate;
         this.searchableViewInternal = new UI.SearchableView.SearchableView(this, null);
         this.searchableViewInternal.setPlaceholder(i18nString(UIStrings.find), i18nString(UIStrings.find));
@@ -370,7 +369,7 @@ export class HeapSnapshotView extends UI.View.SimpleView {
         this.perspectives = [];
         this.comparisonPerspective = new ComparisonPerspective();
         this.perspectives.push(new SummaryPerspective());
-        if (profile.profileType() !== instance.trackingHeapSnapshotProfileType) {
+        if (profile.profileType() !== this.#registry.trackingHeapSnapshotProfileType) {
             this.perspectives.push(this.comparisonPerspective);
         }
         this.perspectives.push(new ContainmentPerspective());
@@ -533,7 +532,7 @@ export class HeapSnapshotView extends UI.View.SimpleView {
     }
     async toolbarItems() {
         const result = [this.perspectiveSelect, this.classNameFilter];
-        if (this.profile.profileType() !== instance.trackingHeapSnapshotProfileType) {
+        if (this.profile.profileType() !== this.#registry.trackingHeapSnapshotProfileType) {
             result.push(this.baseSelect, this.filterSelect);
         }
         result.push(this.selectedSizeText);
@@ -1399,12 +1398,6 @@ export class HeapProfileHeader extends ProfileHeader {
             return null;
         }
         return await this.snapshotProxy.getLocation(nodeIndex);
-    }
-    createSidebarTreeElement(dataDisplayDelegate) {
-        return new ProfileSidebarTreeElement(dataDisplayDelegate, this, 'heap-snapshot-sidebar-tree-item');
-    }
-    createView(dataDisplayDelegate) {
-        return new HeapSnapshotView(dataDisplayDelegate, this);
     }
     prepareToLoad() {
         console.assert(!this.receiver, 'Already loading');

@@ -821,16 +821,25 @@ export class PerformanceAgent extends AiAgent {
                 Host.userMetrics.performanceAIMainThreadActivityResponseSize(byteCount);
                 const key = `getMainThreadTrackSummary({min: ${bounds.min}, max: ${bounds.max}})`;
                 this.#cacheFunctionResult(focus, key, summary);
+                const widgets = [];
+                widgets.push({
+                    name: 'TIMELINE_RANGE_SUMMARY',
+                    data: {
+                        parsedTrace,
+                        bounds,
+                        track: 'main',
+                    },
+                });
+                widgets.push({
+                    name: 'BOTTOM_UP_TREE',
+                    data: {
+                        bounds,
+                        parsedTrace,
+                    },
+                });
                 return {
                     result: { summary },
-                    widgets: [{
-                            name: 'TIMELINE_RANGE_SUMMARY',
-                            data: {
-                                parsedTrace,
-                                bounds,
-                                track: 'main',
-                            },
-                        }],
+                    widgets,
                 };
             },
         });

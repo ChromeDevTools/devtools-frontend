@@ -68,6 +68,11 @@ const UIStrings = {
      */
     showAllNodesDMore: 'Show all nodes ({PH1} more)',
     /**
+     * @description Text for a button to show all truncated lines in the tree.
+     * @example {5} PH1
+     */
+    showAllLines: 'Show all ({PH1} lines)',
+    /**
      * @description Text for popover that directs to Issues panel
      */
     viewIssue: 'View Issue:',
@@ -87,6 +92,12 @@ export const DEFAULT_VIEW = (input, output, target) => {
         output.elementsTreeOutline.addEventListener(ElementsTreeOutline.Events.ElementsTreeUpdated, input.onElementsTreeUpdated, this);
         output.elementsTreeOutline.addEventListener(UI.TreeOutline.Events.ElementExpanded, input.onElementExpanded, this);
         output.elementsTreeOutline.addEventListener(UI.TreeOutline.Events.ElementCollapsed, input.onElementCollapsed, this);
+        output.elementsTreeOutline.addEventListener(ElementsTreeOutline.Events.ShowAllRows, () => {
+            if (output.elementsTreeOutline?.maxRowsShown) {
+                // Set max to undefined to show all rows
+                output.elementsTreeOutline.maxRowsShown = undefined;
+            }
+        }, this);
         target.appendChild(output.elementsTreeOutline.element);
     }
     output.elementsTreeOutline.maxTreeDepth = input.maxTreeDepth;
@@ -101,6 +112,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
     if (input.visible !== undefined) {
         output.elementsTreeOutline.setVisible(input.visible);
     }
+    output.elementsTreeOutline.maxRowsShown = input.maxRowsShown;
     output.elementsTreeOutline.setWordWrap(input.wrap);
     output.elementsTreeOutline.setShowSelectionOnKeyboardFocus(input.showSelectionOnKeyboardFocus, input.preventTabOrder);
     if (input.deindentSingleNode) {
@@ -175,6 +187,15 @@ export class DOMTreeWidget extends UI.Widget.Widget {
     #visible = false;
     #visibleWidth;
     #wrap = false;
+    #maxRows;
+    // If maxRows is undefined, all rows are shown. If it is set to a number, only that many rows are shown.
+    set maxRows(maxRows) {
+        this.#maxRows = maxRows;
+        this.requestUpdate();
+    }
+    get maxRows() {
+        return this.#maxRows;
+    }
     set visibleWidth(width) {
         this.#visibleWidth = width;
         this.performUpdate();
@@ -311,6 +332,7 @@ export class DOMTreeWidget extends UI.Widget.Widget {
         return this.#viewOutput.elementsTreeOutline?.findTreeElement(node) || null;
     }
     performUpdate() {
+        const firstRender = !this.#viewOutput.elementsTreeOutline;
         this.#view({
             omitRootDOMNode: this.omitRootDOMNode,
             selectEnabled: this.selectEnabled,
@@ -324,6 +346,7 @@ export class DOMTreeWidget extends UI.Widget.Widget {
             visibleWidth: this.#visibleWidth,
             visible: this.#visible,
             wrap: this.#wrap,
+            maxRowsShown: this.#maxRows,
             showSelectionOnKeyboardFocus: this.showSelectionOnKeyboardFocus,
             preventTabOrder: this.preventTabOrder,
             deindentSingleNode: this.deindentSingleNode,
@@ -343,6 +366,11 @@ export class DOMTreeWidget extends UI.Widget.Widget {
                 this.onElementExpanded();
             },
         }, this.#viewOutput, this.contentElement);
+        if (firstRender && this.#viewOutput.elementsTreeOutline) {
+            this.#viewOutput.elementsTreeOutline.addEventListener(ElementsTreeOutline.Events.ShowAllRows, () => {
+                this.maxRows = undefined;
+            });
+        }
     }
     modelAdded(domModel) {
         this.performUpdate();
@@ -485,6 +513,8 @@ export class ElementsTreeOutline extends Common.ObjectWrapper.eventMixin(UI.Tree
     showAIButton;
     disableEdits;
     expandRoot;
+    #maxRowsShown;
+    #showAllButton;
     constructor(omitRootDOMNode, selectEnabled, hideGutter, maxTreeDepth, enableContextMenu, showComments, showAIButton, disableEdits, expandRoot) {
         super();
         this.#issuesManager = IssuesManager.IssuesManager.IssuesManager.instance();
@@ -844,6 +874,54 @@ export class ElementsTreeOutline extends Common.ObjectWrapper.eventMixin(UI.Tree
         if (this.selectedDOMNodeInternal === node) {
             this.selectedNodeChanged(Boolean(focus));
         }
+    }
+    set maxRowsShown(maxRows) {
+        this.#maxRowsShown = maxRows;
+        this.#updateShowAllButton();
+    }
+    #updateShowAllButton() {
+        const container = this.shadowRoot.querySelector('.elements-disclosure');
+        if (!container) {
+            return;
+        }
+        if (!this.#maxRowsShown) {
+            this.#showAllButton?.classList.add('hidden');
+            container.style.removeProperty('--max-rows');
+            container.classList.remove('elements-tree-truncated');
+            return;
+        }
+        container.style.setProperty('--max-rows', String(this.#maxRowsShown));
+        container.classList.add('elements-tree-truncated');
+        // We use a microtask to wait for rendering so all node lines are rendered.
+        window.requestAnimationFrame(() => {
+            // The container has a max-height (based on --max-rows). If the total content height
+            // (scrollHeight) is greater than the visible height (clientHeight), it means
+            // some rows are hidden due to truncation, and we should show the "Show all" button.
+            const isOverflowing = container.scrollHeight > container.clientHeight;
+            if (!isOverflowing) {
+                return;
+            }
+            if (!this.#showAllButton) {
+                this.#showAllButton = UI.UIUtils.createTextButton('', () => {
+                    this.dispatchEventToListeners(ElementsTreeOutline.Events.ShowAllRows);
+                    this.dispatchEventToListeners(UI.TreeOutline.Events.ElementExpanded, this.rootElement());
+                }, {
+                    jslogContext: 'show-all-nodes',
+                });
+                this.#showAllButton.classList.add('elements-tree-show-all');
+                this.shadowRoot.appendChild(this.#showAllButton);
+            }
+            this.#showAllButton.classList.remove('hidden');
+            const computedStyle = window.getComputedStyle(container);
+            const lineHeight = parseFloat(computedStyle.lineHeight) || 16;
+            const truncatedLines = Math.round((container.scrollHeight - container.clientHeight) / lineHeight);
+            if (truncatedLines > 0) {
+                this.#showAllButton.textContent = i18nString(UIStrings.showAllLines, { PH1: truncatedLines });
+            }
+            else {
+                this.#showAllButton?.classList.add('hidden');
+            }
+        });
     }
     highlightAdoptedStyleSheet(adoptedStyleSheet) {
         const parentDOMNode = !this.includeRootDOMNode && adoptedStyleSheet.parent === this.rootDOMNode && this.rootDOMNode ?
@@ -1853,6 +1931,7 @@ export class ElementsTreeOutline extends Common.ObjectWrapper.eventMixin(UI.Tree
         /* eslint-disable @typescript-eslint/naming-convention -- Used by web_tests. */
         Events["SelectedNodeChanged"] = "SelectedNodeChanged";
         Events["ElementsTreeUpdated"] = "ElementsTreeUpdated";
+        Events["ShowAllRows"] = "ShowAllRows";
         /* eslint-enable @typescript-eslint/naming-convention */
     })(Events = ElementsTreeOutline.Events || (ElementsTreeOutline.Events = {}));
 })(ElementsTreeOutline || (ElementsTreeOutline = {}));

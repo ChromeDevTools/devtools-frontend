@@ -832,7 +832,7 @@ export class HeapSnapshotView extends UI.View.SimpleView implements DataDisplayD
 
   inspectedObjectChanged(
       event: Common.EventTarget.EventTargetEvent<DataGrid.DataGrid.DataGridNode<HeapSnapshotGridNode>>): void {
-    const selectedNode = (event.data as HeapSnapshotGridNode);
+    const selectedNode = event.data;
     const heapProfilerModel = this.profile.heapProfilerModel();
     if (heapProfilerModel && selectedNode instanceof HeapSnapshotGenericObjectNode) {
       void heapProfilerModel.addInspectedHeapObject(
@@ -1809,9 +1809,7 @@ export class HeapProfileHeader extends ProfileHeader {
         return;
       }
       if (this.tempFile) {
-        const error = (await this.tempFile.copyToOutputStream(fileOutputStream, this.onChunkTransferred.bind(this)) as {
-          message: string,
-        } | null);
+        const error = await this.tempFile.copyToOutputStream(fileOutputStream, this.onChunkTransferred.bind(this));
         if (error) {
           Common.Console.Console.instance().error('Failed to read heap snapshot from temp file: ' + error.message);
         }
@@ -1841,15 +1839,11 @@ export class HeapProfileHeader extends ProfileHeader {
     this.setupWorker();
     const reader = new Bindings.FileUtils.ChunkedFileReader(file, 10000000);
     const success = await reader.read((this.receiver as Common.StringOutputStream.OutputStream));
-    if (!success) {
-      const error = (reader.error() as {
-        message: string,
-      } | null);
-      if (error) {
-        this.updateStatus(error.message);
-      }
+    const error = reader.error();
+    if (!success && error) {
+      this.updateStatus(error.message);
     }
-    return success ? null : reader.error();
+    return success ? null : error;
   }
 
   override profileType(): HeapSnapshotProfileType {

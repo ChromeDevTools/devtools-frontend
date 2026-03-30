@@ -23,9 +23,7 @@ export class HeapSnapshotWorkerProxy extends Common.ObjectWrapper.ObjectWrapper<
   readonly eventHandler: (arg0: string, arg1: string) => void;
   nextObjectId = 1;
   nextCallId = 1;
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  callbacks = new Map<number, (arg0: any) => void>();
+  callbacks = new Map<number, (...args: any[]) => void>();
   readonly previousCallbacks = new Set<number>();
   readonly worker: PlatformApi.HostRuntime.Worker;
   interval?: number;
@@ -53,9 +51,7 @@ export class HeapSnapshotWorkerProxy extends Common.ObjectWrapper.ObjectWrapper<
 
   dispose(): void {
     this.worker.terminate();
-    if (this.interval) {
-      clearInterval(this.interval);
-    }
+    clearInterval(this.interval);
   }
 
   disposeObject(objectId: number): void {

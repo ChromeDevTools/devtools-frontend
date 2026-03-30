@@ -156,10 +156,7 @@ export class ProfileType extends Common.ObjectWrapper.ObjectWrapper<ProfileEvent
   }
 
   getProfiles(): ProfileHeader[] {
-    function isFinished(this: ProfileType, profile: ProfileHeader): boolean {
-      return this.#profileBeingRecorded !== profile;
-    }
-    return this.profiles.filter(isFinished.bind(this));
+    return this.profiles.filter(profile => this.#profileBeingRecorded !== profile);
   }
 
   customContent(): Element|null {

@@ -158,13 +158,19 @@ const widgetConfigs = new WeakMap<WidgetElement<any>, WidgetConfig<any>>();
 
 export function registerWidgetConfig<WidgetT extends Widget>(
     element: WidgetElement<WidgetT>, config: WidgetConfig<WidgetT>): void {
+  if (!widgetConfigs.has(element)) {
+    setUpLifecycleTracking(element);
+  }
   widgetConfigs.set(element, config);
 }
 
-function instantiateWidget<WidgetT extends Widget>(element: HTMLElement, widgetConfig: WidgetConfig<WidgetT>): WidgetT {
+function instantiateWidget<WidgetT extends Widget>(
+    element: WidgetElement<WidgetT>, widgetConfig: WidgetConfig<WidgetT>): WidgetT {
   if (!widgetConfig.widgetClass) {
     throw new Error('No widgetClass defined');
   }
+
+  registerWidgetConfig(element, widgetConfig);
 
   let newWidget: WidgetT;
   if (Widget.isPrototypeOf(widgetConfig.widgetClass)) {
@@ -182,24 +188,57 @@ function instantiateWidget<WidgetT extends Widget>(element: HTMLElement, widgetC
   return newWidget;
 }
 
+function setUpLifecycleTracking<WidgetT extends Widget>(element: WidgetElement<WidgetT>): void {
+  element.onDisconnect = () => {
+    const widget = Widget.get(element);
+    if (widget) {
+      widget.setHideOnDetach();
+      widget.detach();
+    }
+  };
+  element.onConnect = () => {
+    let widget = Widget.get(element) as WidgetT;
+    if (!widget) {
+      const config = widgetConfigs.get(element);
+      if (!config) {
+        throw new Error('No widgetConfig defined');
+      }
+      widget = instantiateWidget(element, config);
+    }
+    const parent = element.parentElementOrShadowHost() as HTMLElement | null;
+    if (!parent) {
+      widget.markAsRoot();
+    }
+    widget.show(parent as HTMLElement, undefined, /* suppressOrphanWidgetError= */ true);
+  };
+}
+
 export class WidgetElement<WidgetT extends Widget> extends HTMLElement {
+  onDisconnect?: () => void;
+  onConnect?: () => void;
+  #disconnectTimeout?: ReturnType<typeof setTimeout>;
+
   getWidget(): WidgetT|undefined {
     return Widget.get(this) as WidgetT | undefined;
   }
 
   connectedCallback(): void {
-    const widget = Widget.getOrCreateWidget(this);
-    if (!widget.element.parentElement) {
-      widget.markAsRoot();
+    if (this.#disconnectTimeout) {
+      clearTimeout(this.#disconnectTimeout);
+      this.#disconnectTimeout = undefined;
     }
-    widget.show(this.parentElement as HTMLElement, undefined, /* suppressOrphanWidgetError= */ true);
+    if (this.onConnect) {
+      this.onConnect();
+      return;
+    }
   }
 
   disconnectedCallback(): void {
-    const widget = Widget.get(this);
-    if (widget) {
-      widget.setHideOnDetach();
-      widget.detach();
+    if (this.onDisconnect) {
+      this.#disconnectTimeout = setTimeout(() => {
+        this.onDisconnect?.();
+      }, 0);
+      return;
     }
   }
 
@@ -243,10 +282,9 @@ export class WidgetElement<WidgetT extends Widget> extends HTMLElement {
   override cloneNode(deep: boolean): Node {
     const clone = cloneCustomElement(this, deep) as WidgetElement<WidgetT>;
     const config = widgetConfigs.get(this);
-    if (!config?.widgetClass) {
-      throw new Error('No widgetClass defined');
+    if (config) {
+      registerWidgetConfig(clone, config);
     }
-    widgetConfigs.set(clone, config);
     return clone;
   }
 
@@ -294,7 +332,7 @@ export class WidgetDirective extends Lit.Directive.Directive {
           widget.requestUpdate();
         }
       }
-      widgetConfigs.set(element, config);
+      registerWidgetConfig(element, config);
       return Lit.nothing;
     }
     return this.render(widgetClass, widgetParams);
@@ -498,11 +536,8 @@ export class Widget {
     let config = widgetConfigs.get(element as WidgetElement<Widget>);
     if (!config) {
       config = widgetConfig(element => new Widget(element));
-      if (element instanceof WidgetElement) {
-        widgetConfigs.set(element, config);
-      }
     }
-    return instantiateWidget(element, config);
+    return instantiateWidget(element as WidgetElement<Widget>, config);
   }
 
   markAsRoot(): void {

@@ -13,6 +13,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as Adorners from '../../ui/components/adorners/adorners.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
+import type * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {
   Directives,
@@ -109,6 +110,26 @@ const UIStrings = {
    * @description Text for the status of a tool call that has failed
    */
   pending: 'In Progress',
+  /**
+   * @description Text for the total number of tool calls
+   * @example {2} PH1
+   */
+  totalCalls: '{PH1} Total calls',
+  /**
+   * @description Text for the number of failed tool calls
+   * @example {1} PH1
+   */
+  failed: '{PH1} Failed',
+  /**
+   * @description Text for the number of canceled tool calls
+   * @example {1} PH1
+   */
+  canceledCount: '{PH1} Canceled',
+  /**
+   * @description Text for the number of in progress tool calls
+   * @example {1} PH1
+   */
+  inProgressCount: '{PH1} In Progress',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/application/WebMCPView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -192,8 +213,69 @@ export function filterToolCalls(toolCalls: SDK.WebMCPModel.Call[], filterState: 
 }
 
 export type View = (input: ViewInput, output: object, target: HTMLElement) => void;
+
+function calculateToolStats(calls: SDK.WebMCPModel.Call[]):
+    {total: number, success: number, failed: number, canceled: number, inProgress: number} {
+  let total = 0, success = 0, failed = 0, canceled = 0, inProgress = 0;
+  for (const call of calls) {
+    total++;
+    if (call.result?.status === Protocol.WebMCP.InvocationStatus.Error) {
+      failed++;
+    } else if (call.result?.status === Protocol.WebMCP.InvocationStatus.Canceled) {
+      canceled++;
+    } else if (call.result?.status === Protocol.WebMCP.InvocationStatus.Success) {
+      success++;
+    } else if (call.result === undefined) {
+      inProgress++;
+    }
+  }
+  return {total, success, failed, canceled, inProgress};
+}
+
+function getIconGroupsFromStats(toolStats: ReturnType<typeof calculateToolStats>):
+    IconButton.IconButton.IconWithTextData[] {
+  const groups = [];
+  if (toolStats.success > 0) {
+    groups.push({
+      iconName: 'check-circle',
+      iconColor: 'var(--sys-color-green)',
+      iconWidth: '16px',
+      iconHeight: '16px',
+      text: String(toolStats.success),
+    });
+  }
+  if (toolStats.failed > 0) {
+    groups.push({
+      iconName: 'cross-circle-filled',
+      iconColor: 'var(--sys-color-error)',
+      iconWidth: '16px',
+      iconHeight: '16px',
+      text: String(toolStats.failed),
+    });
+  }
+  if (toolStats.canceled > 0) {
+    groups.push({
+      iconName: 'record-stop',
+      iconColor: 'var(--sys-color-on-surface-light)',
+      iconWidth: '16px',
+      iconHeight: '16px',
+      text: String(toolStats.canceled),
+    });
+  }
+  if (toolStats.inProgress > 0) {
+    groups.push({
+      iconName: 'dots-circle',
+      iconWidth: '16px',
+      iconHeight: '16px',
+      text: String(toolStats.inProgress),
+    });
+  }
+  return groups;
+}
+
 export const DEFAULT_VIEW: View = (input, output, target) => {
   const tools = input.tools;
+  const stats = calculateToolStats(input.toolCalls);
   const isFilterActive =
       Boolean(input.filters.text) || Boolean(input.filters.toolTypes) || Boolean(input.filters.statusTypes);
   const iconName = (call: SDK.WebMCPModel.Call): string => {
@@ -282,6 +364,18 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
               `)}
               </table>
           </devtools-data-grid>
+          <div class="webmcp-toolbar-container" role="toolbar">
+            <devtools-toolbar class="webmcp-toolbar" role="presentation" wrappable>
+              <span class="toolbar-text">${i18nString(UIStrings.totalCalls, {PH1: stats.total})}</span>
+              <div class="toolbar-divider"></div>
+              <span class="toolbar-text status-error-text">${i18nString(UIStrings.failed, {PH1: stats.failed})}</span>
+              <div class="toolbar-divider"></div>
+              <span class="toolbar-text status-cancelled-text">${
+                  i18nString(UIStrings.canceledCount, {PH1: stats.canceled})}</span>
+              <div class="toolbar-divider"></div>
+              <span class="toolbar-text">${i18nString(UIStrings.inProgressCount, {PH1: stats.inProgress})}</span>
+            </devtools-toolbar>
+          </div>
         ` : html`
         ${UI.Widget.widget(UI.EmptyWidget.EmptyWidget, {header: i18nString(UIStrings.noCallsPlaceholderTitle),
                                                           text: i18nString(UIStrings.noCallsPlaceholder)})}
@@ -294,14 +388,20 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
                                                         text: i18nString(UIStrings.noToolsPlaceholder)})}
         ` : html`
           <devtools-list>
-            ${tools.map(tool => html`
+            ${tools.map(tool => {
+              const toolStats = calculateToolStats(input.toolCalls.filter(c => c.tool === tool));
+              const groups = getIconGroupsFromStats(toolStats);
+              return html`
                 <div class="tool-item">
                   <div class="tool-name-container">
                     <div class="tool-name source-code">${tool.name}</div>
+                    ${groups.length > 0 ? html`<icon-button .data=${
+                        {groups, compact: false} as IconButton.IconButton.IconButtonData}></icon-button>` : ''}
                   </div>
                   <div class="tool-description">${tool.description}</div>
                 </div>
-              `)}
+              `;
+            })}
           </devtools-list>
         `}
       </div>

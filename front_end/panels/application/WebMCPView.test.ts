@@ -18,7 +18,7 @@ describeWithEnvironment('WebMCPView (View)', () => {
     const target = document.createElement('div');
     target.style.width = '600px';
     target.style.height = '400px';
-    renderElementIntoDOM(target);
+    renderElementIntoDOM(target, {includeCommonStyles: true});
     const filterButtons = WebMCPView.createFilterButtons(() => {}, () => {});
 
     DEFAULT_VIEW(
@@ -53,25 +53,23 @@ describeWithEnvironment('WebMCPView (View)', () => {
     const target = document.createElement('div');
     target.style.width = '600px';
     target.style.height = '400px';
-    renderElementIntoDOM(target);
+    renderElementIntoDOM(target, {includeCommonStyles: true});
+    const tools = [
+      {name: 'list_files', description: 'List files', frameId: 'frame-1' as Protocol.Page.FrameId},
+      {name: 'read_file', description: 'Read a file', frameId: 'frame-1' as Protocol.Page.FrameId},
+      {name: 'write_file', description: 'Write a file', frameId: 'frame-1' as Protocol.Page.FrameId},
+      {name: 'long_running_task', description: 'A long task', frameId: 'frame-1' as Protocol.Page.FrameId},
+    ];
     const toolCalls: SDK.WebMCPModel.Call[] = [
       {
         invocationId: '1',
         input: '{"dir": "/tmp"}',
-        tool: {
-          name: 'list_files',
-          description: 'desc',
-          frameId: 'frame-1' as Protocol.Page.FrameId,
-        },
+        tool: tools[0],
       },
       {
         invocationId: '2',
         input: '{"path": "/tmp/test.txt"}',
-        tool: {
-          name: 'read_file',
-          description: 'desc',
-          frameId: 'frame-1' as Protocol.Page.FrameId,
-        },
+        tool: tools[1],
         result: {
           status: Protocol.WebMCP.InvocationStatus.Success,
           output: 'File content here',
@@ -80,11 +78,7 @@ describeWithEnvironment('WebMCPView (View)', () => {
       {
         invocationId: '3',
         input: '{"path": "/root/secret.txt"}',
-        tool: {
-          name: 'write_file',
-          description: 'desc',
-          frameId: 'frame-1' as Protocol.Page.FrameId,
-        },
+        tool: tools[2],
         result: {
           status: Protocol.WebMCP.InvocationStatus.Error,
           errorText: 'Permission denied',
@@ -93,11 +87,7 @@ describeWithEnvironment('WebMCPView (View)', () => {
       {
         invocationId: '4',
         input: '{"timeout": 100}',
-        tool: {
-          name: 'long_running_task',
-          description: 'desc',
-          frameId: 'frame-1' as Protocol.Page.FrameId,
-        },
+        tool: tools[3],
         result: {
           status: Protocol.WebMCP.InvocationStatus.Canceled,
         },
@@ -106,7 +96,7 @@ describeWithEnvironment('WebMCPView (View)', () => {
     const filterButtons = WebMCPView.createFilterButtons(() => {}, () => {});
     DEFAULT_VIEW(
         {
-          tools: [],
+          tools,
           toolCalls,
           filters: {text: ''},
           filterButtons,
@@ -123,11 +113,11 @@ describeWithEnvironment('WebMCPView (View)', () => {
     assert.isNotNull(grid);
     await assertScreenshot('application/webmcp-tool-calls.png');
   });
-  it('renders a list of tools correctly (screenshot)', async () => {
+  it('renders a list of tools correctly', async () => {
     const container = document.createElement('div');
     container.style.width = '600px';
     container.style.height = '400px';
-    renderElementIntoDOM(container);
+    renderElementIntoDOM(container, {includeCommonStyles: true});
 
     const tools = [
       {name: 'calculator', description: 'Calculates math expressions', frameId: 'frame1' as Protocol.Page.FrameId},
@@ -151,7 +141,7 @@ describeWithEnvironment('WebMCPView (View)', () => {
 
   it('renders a list of tools', async () => {
     const target = document.createElement('div');
-    renderElementIntoDOM(target);
+    renderElementIntoDOM(target, {includeCommonStyles: true});
     const tools = [
       {name: 'tool1', description: 'desc1', frameId: 'frame1' as Protocol.Page.FrameId},
       {name: 'tool2', description: 'desc2', frameId: 'frame1' as Protocol.Page.FrameId}
@@ -175,11 +165,11 @@ describeWithEnvironment('WebMCPView (View)', () => {
     assert.strictEqual(listElements[0].querySelector('.tool-description')?.textContent, 'desc1');
     assert.isNull(target.querySelector('.tool-list .empty-state'));
   });
-  it('renders filter bar with filters applied (screenshot)', async () => {
+  it('renders filter bar with filters applied', async () => {
     const container = document.createElement('div');
     container.style.width = '600px';
     container.style.height = '400px';
-    renderElementIntoDOM(container);
+    renderElementIntoDOM(container, {includeCommonStyles: true});
 
     const filterButtons = WebMCPView.createFilterButtons(() => {}, () => {});
 
@@ -202,7 +192,7 @@ describeWithEnvironment('WebMCPView (View)', () => {
 
   it('calls onClearLogClick when clear log button is clicked', async () => {
     const target = document.createElement('div');
-    renderElementIntoDOM(target);
+    renderElementIntoDOM(target, {includeCommonStyles: true});
 
     const onClearLogClick = sinon.spy();
     const filterButtons = WebMCPView.createFilterButtons(() => {}, () => {});

@@ -442,6 +442,10 @@
 
     .widget-name {
       font: var(--sys-typescale-body4-regular);
+      max-width: 80%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap; /* stop the titles going onto multiple lines */
     }
 
     .widget-reveal-container {

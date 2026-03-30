@@ -34,7 +34,6 @@ import {
   HeapSnapshotGenericObjectNode,
   type HeapSnapshotGridNode,
 } from './HeapSnapshotGridNodes.js';
-import {type HeapSnapshotProxy, HeapSnapshotWorkerProxy} from './HeapSnapshotProxy.js';
 import {Events, HeapTimelineOverview, type IdsRangeChangedEvent, Samples} from './HeapTimelineOverview.js';
 import * as ModuleUIStrings from './ModuleUIStrings.js';
 import {
@@ -586,7 +585,7 @@ export class HeapSnapshotView extends UI.View.SimpleView implements DataDisplayD
     }
   }
 
-  async retrieveStatistics(heapSnapshotProxy: HeapSnapshotProxy):
+  async retrieveStatistics(heapSnapshotProxy: HeapSnapshotModel.HeapSnapshotProxy.HeapSnapshotProxy):
       Promise<HeapSnapshotModel.HeapSnapshotModel.Statistics> {
     const statistics = await heapSnapshotProxy.getStatistics();
     const {v8heap, native} = statistics;
@@ -1646,11 +1645,12 @@ export interface TrackingHeapSnapshotProfileTypeEventTypes {
 export class HeapProfileHeader extends ProfileHeader {
   readonly heapProfilerModelInternal: SDK.HeapProfilerModel.HeapProfilerModel|null;
   maxJSObjectId = -1;
-  workerProxy: HeapSnapshotWorkerProxy|null = null;
+  workerProxy: HeapSnapshotModel.HeapSnapshotProxy.HeapSnapshotWorkerProxy|null = null;
   receiver: Common.StringOutputStream.OutputStream|null = null;
-  snapshotProxy: HeapSnapshotProxy|null = null;
-  readonly loadPromise: Promise<HeapSnapshotProxy>;
-  fulfillLoad: (value: HeapSnapshotProxy|PromiseLike<HeapSnapshotProxy>) => void;
+  snapshotProxy: HeapSnapshotModel.HeapSnapshotProxy.HeapSnapshotProxy|null = null;
+  readonly loadPromise: Promise<HeapSnapshotModel.HeapSnapshotProxy.HeapSnapshotProxy>;
+  fulfillLoad: (value: HeapSnapshotModel.HeapSnapshotProxy.HeapSnapshotProxy|
+                PromiseLike<HeapSnapshotModel.HeapSnapshotProxy.HeapSnapshotProxy>) => void;
   totalNumberOfChunks = 0;
   bufferedWriter: Bindings.TempFile.TempFile|null = null;
   onTempFileReady: (() => void)|null = null;
@@ -1665,7 +1665,7 @@ export class HeapProfileHeader extends ProfileHeader {
   ) {
     super(type, title || i18nString(UIStrings.snapshotD, {PH1: type.nextProfileUid()}));
     this.heapProfilerModelInternal = heapProfilerModel;
-    const {promise, resolve} = Promise.withResolvers<HeapSnapshotProxy>();
+    const {promise, resolve} = Promise.withResolvers<HeapSnapshotModel.HeapSnapshotProxy.HeapSnapshotProxy>();
     this.loadPromise = promise;
     this.fulfillLoad = resolve;
   }
@@ -1716,10 +1716,12 @@ export class HeapProfileHeader extends ProfileHeader {
 
   setupWorker(): void {
     console.assert(!this.workerProxy, 'HeapSnapshotWorkerProxy already exists');
-    this.workerProxy = new HeapSnapshotWorkerProxy(this.handleWorkerEvent.bind(this));
-    this.workerProxy.addEventListener(HeapSnapshotWorkerProxy.Events.WAIT, event => {
-      this.updateStatus(null, event.data);
-    }, this);
+    this.workerProxy =
+        new HeapSnapshotModel.HeapSnapshotProxy.HeapSnapshotWorkerProxy(this.handleWorkerEvent.bind(this));
+    this.workerProxy.addEventListener(
+        HeapSnapshotModel.HeapSnapshotProxy.HeapSnapshotWorkerProxy.Events.WAIT, event => {
+          this.updateStatus(null, event.data);
+        }, this);
     this.receiver = this.workerProxy.createLoader(this.uid, this.snapshotReceived.bind(this));
   }
 
@@ -1765,7 +1767,7 @@ export class HeapProfileHeader extends ProfileHeader {
     }
   }
 
-  snapshotReceived(snapshotProxy: HeapSnapshotProxy): void {
+  snapshotReceived(snapshotProxy: HeapSnapshotModel.HeapSnapshotProxy.HeapSnapshotProxy): void {
     if (this.wasDisposed) {
       return;
     }
@@ -1945,7 +1947,8 @@ export class HeapAllocationStackView extends UI.Widget.Widget {
     event.consume(true);
   }
 
-  async setAllocatedObject(snapshot: HeapSnapshotProxy, snapshotNodeIndex: number): Promise<void> {
+  async setAllocatedObject(snapshot: HeapSnapshotModel.HeapSnapshotProxy.HeapSnapshotProxy, snapshotNodeIndex: number):
+      Promise<void> {
     this.clear();
     const frames = await snapshot.allocationStack(snapshotNodeIndex);
 

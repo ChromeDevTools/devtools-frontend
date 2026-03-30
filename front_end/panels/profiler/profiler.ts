@@ -3,12 +3,10 @@
 // found in the LICENSE file.
 
 import * as BottomUpProfileDataGrid from './BottomUpProfileDataGrid.js';
-import * as ChildrenProvider from './ChildrenProvider.js';
 import * as HeapProfilerPanel from './HeapProfilerPanel.js';
 import * as HeapProfileView from './HeapProfileView.js';
 import * as HeapSnapshotDataGrids from './HeapSnapshotDataGrids.js';
 import * as HeapSnapshotGridNodes from './HeapSnapshotGridNodes.js';
-import * as HeapSnapshotProxy from './HeapSnapshotProxy.js';
 import * as HeapSnapshotView from './HeapSnapshotView.js';
 import * as HeapTimelineOverview from './HeapTimelineOverview.js';
 import * as IsolateSelector from './IsolateSelector.js';
@@ -25,12 +23,10 @@ import * as TopDownProfileDataGrid from './TopDownProfileDataGrid.js';
 
 export {
   BottomUpProfileDataGrid,
-  ChildrenProvider,
   HeapProfilerPanel,
   HeapProfileView,
   HeapSnapshotDataGrids,
   HeapSnapshotGridNodes,
-  HeapSnapshotProxy,
   HeapSnapshotView,
   HeapTimelineOverview,
   IsolateSelector,

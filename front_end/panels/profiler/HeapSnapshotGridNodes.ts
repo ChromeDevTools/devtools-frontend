@@ -17,7 +17,6 @@ import * as UI from '../../ui/legacy/legacy.js';
 import {Directives, html, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import type {ChildrenProvider} from './ChildrenProvider.js';
 import {
   type AllocationDataGrid,
   type HeapSnapshotConstructorsDataGrid,
@@ -25,7 +24,6 @@ import {
   type HeapSnapshotSortableDataGrid,
   HeapSnapshotSortableDataGridEvents,
 } from './HeapSnapshotDataGrids.js';
-import type {HeapSnapshotProviderProxy, HeapSnapshotProxy} from './HeapSnapshotProxy.js';
 import type {DataDisplayDelegate} from './ProfileHeader.js';
 
 const UIStrings = {
@@ -144,7 +142,7 @@ export class HeapSnapshotGridNode extends
     from: number,
     to: number,
   }>;
-  providerObject: ChildrenProvider|null;
+  providerObject: HeapSnapshotModel.ChildrenProvider.ChildrenProvider|null;
   reachableFromWindow: boolean;
   populated?: boolean;
 
@@ -169,7 +167,7 @@ export class HeapSnapshotGridNode extends
     return undefined;
   }
 
-  createProvider(): ChildrenProvider {
+  createProvider(): HeapSnapshotModel.ChildrenProvider.ChildrenProvider {
     throw new Error('Not implemented.');
   }
 
@@ -186,14 +184,14 @@ export class HeapSnapshotGridNode extends
   }
 
   retainersDataSource(): {
-    snapshot: HeapSnapshotProxy,
+    snapshot: HeapSnapshotModel.HeapSnapshotProxy.HeapSnapshotProxy,
     snapshotNodeIndex: number,
     snapshotNodeId: number|undefined,
   }|null {
     return null;
   }
 
-  provider(): ChildrenProvider {
+  provider(): HeapSnapshotModel.ChildrenProvider.ChildrenProvider {
     if (!this.providerObject) {
       this.providerObject = this.createProvider();
     }
@@ -560,7 +558,7 @@ export abstract class HeapSnapshotGenericObjectNode extends HeapSnapshotGridNode
       this.detachedDOMTreeNode = true;
     }
 
-    const snapshot = (dataGrid.snapshot as HeapSnapshotProxy);
+    const snapshot = (dataGrid.snapshot as HeapSnapshotModel.HeapSnapshotProxy.HeapSnapshotProxy);
     const shallowSizePercent = this.shallowSize / snapshot.totalSize * 100.0;
     const retainedSizePercent = this.retainedSize / snapshot.totalSize * 100.0;
 
@@ -578,12 +576,12 @@ export abstract class HeapSnapshotGenericObjectNode extends HeapSnapshotGridNode
   }
 
   override retainersDataSource(): {
-    snapshot: HeapSnapshotProxy,
+    snapshot: HeapSnapshotModel.HeapSnapshotProxy.HeapSnapshotProxy,
     snapshotNodeIndex: number,
     snapshotNodeId: number|undefined,
   }|null {
     return this.snapshotNodeIndex === undefined ? null : {
-      snapshot: (this.dataGridInternal.snapshot as HeapSnapshotProxy),
+      snapshot: (this.dataGridInternal.snapshot as HeapSnapshotModel.HeapSnapshotProxy.HeapSnapshotProxy),
       snapshotNodeIndex: this.snapshotNodeIndex,
       snapshotNodeId: this.snapshotNodeId,
     };
@@ -799,12 +797,12 @@ export class HeapSnapshotObjectNode extends HeapSnapshotGenericObjectNode {
   override referenceName: string;
   readonly referenceType: string;
   readonly edgeIndex: number;
-  readonly snapshot: HeapSnapshotProxy;
+  readonly snapshot: HeapSnapshotModel.HeapSnapshotProxy.HeapSnapshotProxy;
   parentObjectNode: HeapSnapshotObjectNode|null;
   readonly cycledWithAncestorGridNode: HeapSnapshotObjectNode|null;
 
   constructor(
-      dataGrid: HeapSnapshotSortableDataGrid, snapshot: HeapSnapshotProxy,
+      dataGrid: HeapSnapshotSortableDataGrid, snapshot: HeapSnapshotModel.HeapSnapshotProxy.HeapSnapshotProxy,
       edge: HeapSnapshotModel.HeapSnapshotModel.Edge, parentObjectNode: HeapSnapshotObjectNode|null) {
     super(dataGrid, edge.node);
     this.referenceName = edge.name;
@@ -829,7 +827,7 @@ export class HeapSnapshotObjectNode extends HeapSnapshotGenericObjectNode {
   }
 
   override retainersDataSource(): {
-    snapshot: HeapSnapshotProxy,
+    snapshot: HeapSnapshotModel.HeapSnapshotProxy.HeapSnapshotProxy,
     snapshotNodeIndex: number,
     snapshotNodeId: number|undefined,
   }|null {
@@ -838,7 +836,7 @@ export class HeapSnapshotObjectNode extends HeapSnapshotGenericObjectNode {
         {snapshot: this.snapshot, snapshotNodeIndex: this.snapshotNodeIndex, snapshotNodeId: this.snapshotNodeId};
   }
 
-  override createProvider(): HeapSnapshotProviderProxy {
+  override createProvider(): HeapSnapshotModel.HeapSnapshotProxy.HeapSnapshotProviderProxy {
     if (this.snapshotNodeIndex === undefined) {
       throw new Error('Cannot create a provider on a root node');
     }
@@ -925,7 +923,7 @@ export class HeapSnapshotObjectNode extends HeapSnapshotGenericObjectNode {
 export class HeapSnapshotRetainingObjectNode extends HeapSnapshotObjectNode {
   #ignored: boolean;
   constructor(
-      dataGrid: HeapSnapshotSortableDataGrid, snapshot: HeapSnapshotProxy,
+      dataGrid: HeapSnapshotSortableDataGrid, snapshot: HeapSnapshotModel.HeapSnapshotProxy.HeapSnapshotProxy,
       edge: HeapSnapshotModel.HeapSnapshotModel.Edge, parentRetainingObjectNode: HeapSnapshotRetainingObjectNode|null) {
     super(dataGrid, snapshot, edge, parentRetainingObjectNode);
     this.#ignored = edge.node.ignored;
@@ -934,7 +932,7 @@ export class HeapSnapshotRetainingObjectNode extends HeapSnapshotObjectNode {
     }
   }
 
-  override createProvider(): HeapSnapshotProviderProxy {
+  override createProvider(): HeapSnapshotModel.HeapSnapshotProxy.HeapSnapshotProviderProxy {
     if (this.snapshotNodeIndex === undefined) {
       throw new Error('Cannot create providers on root nodes');
     }
@@ -1021,10 +1019,10 @@ export class HeapSnapshotRetainingObjectNode extends HeapSnapshotObjectNode {
 }
 
 export class HeapSnapshotInstanceNode extends HeapSnapshotGenericObjectNode {
-  readonly baseSnapshotOrSnapshot: HeapSnapshotProxy;
+  readonly baseSnapshotOrSnapshot: HeapSnapshotModel.HeapSnapshotProxy.HeapSnapshotProxy;
   readonly isDeletedNode: boolean;
   constructor(
-      dataGrid: HeapSnapshotSortableDataGrid, snapshot: HeapSnapshotProxy,
+      dataGrid: HeapSnapshotSortableDataGrid, snapshot: HeapSnapshotModel.HeapSnapshotProxy.HeapSnapshotProxy,
       node: HeapSnapshotModel.HeapSnapshotModel.Node, isDeletedNode: boolean) {
     super(dataGrid, node);
     this.baseSnapshotOrSnapshot = snapshot;
@@ -1049,7 +1047,7 @@ export class HeapSnapshotInstanceNode extends HeapSnapshotGenericObjectNode {
   }
 
   override retainersDataSource(): {
-    snapshot: HeapSnapshotProxy,
+    snapshot: HeapSnapshotModel.HeapSnapshotProxy.HeapSnapshotProxy,
     snapshotNodeIndex: number,
     snapshotNodeId: number|undefined,
   }|null {
@@ -1060,7 +1058,7 @@ export class HeapSnapshotInstanceNode extends HeapSnapshotGenericObjectNode {
     };
   }
 
-  override createProvider(): HeapSnapshotProviderProxy {
+  override createProvider(): HeapSnapshotModel.HeapSnapshotProxy.HeapSnapshotProviderProxy {
     if (this.snapshotNodeIndex === undefined) {
       throw new Error('Cannot create providers on root nodes');
     }
@@ -1131,7 +1129,7 @@ export class HeapSnapshotConstructorNode extends HeapSnapshotGridNode {
     this.retainedSize = aggregate.maxRet;
     this.classKey = classKey;
 
-    const snapshot = (dataGrid.snapshot as HeapSnapshotProxy);
+    const snapshot = (dataGrid.snapshot as HeapSnapshotModel.HeapSnapshotProxy.HeapSnapshotProxy);
     const retainedSizePercent = this.retainedSize / snapshot.totalSize * 100.0;
     const shallowSizePercent = this.shallowSize / snapshot.totalSize * 100.0;
     this.data = {
@@ -1149,8 +1147,8 @@ export class HeapSnapshotConstructorNode extends HeapSnapshotGridNode {
     return this.nameInternal;
   }
 
-  override createProvider(): HeapSnapshotProviderProxy {
-    return (this.dataGridInternal.snapshot as HeapSnapshotProxy)
+  override createProvider(): HeapSnapshotModel.HeapSnapshotProxy.HeapSnapshotProviderProxy {
+    return (this.dataGridInternal.snapshot as HeapSnapshotModel.HeapSnapshotProxy.HeapSnapshotProxy)
         .createNodesProviderForClass(this.classKey, this.nodeFilter);
   }
 
@@ -1186,7 +1184,8 @@ export class HeapSnapshotConstructorNode extends HeapSnapshotGridNode {
   override createChildNode(item: HeapSnapshotModel.HeapSnapshotModel.Node|HeapSnapshotModel.HeapSnapshotModel.Edge):
       HeapSnapshotInstanceNode {
     return new HeapSnapshotInstanceNode(
-        this.dataGridInternal, (this.dataGridInternal.snapshot as HeapSnapshotProxy),
+        this.dataGridInternal,
+        (this.dataGridInternal.snapshot as HeapSnapshotModel.HeapSnapshotProxy.HeapSnapshotProxy),
         (item as HeapSnapshotModel.HeapSnapshotModel.Node), false);
   }
 
@@ -1209,14 +1208,15 @@ export class HeapSnapshotConstructorNode extends HeapSnapshotGridNode {
   }
 }
 
-export class HeapSnapshotDiffNodesProvider implements ChildrenProvider {
-  addedNodesProvider: HeapSnapshotProviderProxy;
-  deletedNodesProvider: HeapSnapshotProviderProxy;
+export class HeapSnapshotDiffNodesProvider implements HeapSnapshotModel.ChildrenProvider.ChildrenProvider {
+  addedNodesProvider: HeapSnapshotModel.HeapSnapshotProxy.HeapSnapshotProviderProxy;
+  deletedNodesProvider: HeapSnapshotModel.HeapSnapshotProxy.HeapSnapshotProviderProxy;
   addedCount: number;
   removedCount: number;
   constructor(
-      addedNodesProvider: HeapSnapshotProviderProxy, deletedNodesProvider: HeapSnapshotProviderProxy,
-      addedCount: number, removedCount: number) {
+      addedNodesProvider: HeapSnapshotModel.HeapSnapshotProxy.HeapSnapshotProviderProxy,
+      deletedNodesProvider: HeapSnapshotModel.HeapSnapshotProxy.HeapSnapshotProviderProxy, addedCount: number,
+      removedCount: number) {
     this.addedNodesProvider = addedNodesProvider;
     this.deletedNodesProvider = deletedNodesProvider;
     this.addedCount = addedCount;
@@ -1424,8 +1424,8 @@ export class AllocationGridNode extends HeapSnapshotGridNode {
   async doPopulate(): Promise<void> {
     this.populated = true;
 
-    const callers =
-        await (this.dataGridInternal.snapshot as HeapSnapshotProxy).allocationNodeCallers(this.allocationNode.id);
+    const callers = await (this.dataGridInternal.snapshot as HeapSnapshotModel.HeapSnapshotProxy.HeapSnapshotProxy)
+                        .allocationNodeCallers(this.allocationNode.id);
 
     const callersChain = callers.nodesWithSingleCaller;
     let parentNode: AllocationGridNode = this;

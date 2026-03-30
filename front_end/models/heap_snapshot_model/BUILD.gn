@@ -8,9 +8,17 @@ import("../../../scripts/build/typescript/typescript.gni")
 import("../visibility.gni")
 
 devtools_module("heap_snapshot_model") {
-  sources = [ "HeapSnapshotModel.ts" ]
+  sources = [
+    "ChildrenProvider.ts",
+    "HeapSnapshotModel.ts",
+    "HeapSnapshotProxy.ts",
+  ]
 
-  deps = []
+  deps = [
+    "../../core/common:bundle",
+    "../../core/platform:bundle",
+    "../../core/platform/api:bundle",
+  ]
 }
 
 devtools_entrypoint("bundle") {

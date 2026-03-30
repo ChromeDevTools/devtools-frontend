@@ -3,22 +3,12 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
-import * as i18n from '../../core/i18n/i18n.js';
 import type * as PlatformApi from '../../core/platform/api/api.js';
 import * as Platform from '../../core/platform/platform.js';
-import type * as HeapSnapshotModel from '../../models/heap_snapshot_model/heap_snapshot_model.js';
 
 import type {ChildrenProvider} from './ChildrenProvider.js';
+import type * as HeapSnapshotModel from './HeapSnapshotModel.js';
 
-const UIStrings = {
-  /**
-   * @description Text in Heap Snapshot Proxy of a profiler tool
-   * @example {functionName} PH1
-   */
-  anErrorOccurredWhenACallToMethod: 'An error occurred when a call to method \'\'{PH1}\'\' was requested',
-} as const;
-const str_ = i18n.i18n.registerUIStrings('panels/profiler/HeapSnapshotProxy.ts', UIStrings);
-const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class HeapSnapshotWorkerProxy extends Common.ObjectWrapper.ObjectWrapper<HeapSnapshotWorkerProxy.EventTypes> {
   readonly eventHandler: (arg0: string, arg1: string) => void;
   nextObjectId = 1;
@@ -167,10 +157,8 @@ export class HeapSnapshotWorkerProxy extends Common.ObjectWrapper.ObjectWrapper<
       return;
     }
     if (data.error) {
-      if (data.errorMethodName) {
-        Common.Console.Console.instance().error(
-            i18nString(UIStrings.anErrorOccurredWhenACallToMethod, {PH1: data.errorMethodName}));
-      }
+      Common.Console.Console.instance().error(
+          `An error occurred when a call to method '${data.errorMethodName}' was requested`);
       Common.Console.Console.instance().error(data['errorCallStack']);
       this.callbacks.delete(data.callId);
       return;
@@ -263,7 +251,7 @@ export class HeapSnapshotLoaderProxy extends HeapSnapshotProxyObject implements 
 }
 
 export class HeapSnapshotProxy extends HeapSnapshotProxyObject {
-  staticData: HeapSnapshotModel.HeapSnapshotModel.StaticData|null;
+  staticData: HeapSnapshotModel.StaticData|null;
   profileUid?: string;
 
   constructor(worker: HeapSnapshotWorkerProxy, objectId: number) {
@@ -271,9 +259,7 @@ export class HeapSnapshotProxy extends HeapSnapshotProxyObject {
     this.staticData = null;
   }
 
-  search(
-      searchConfig: HeapSnapshotModel.HeapSnapshotModel.SearchConfig,
-      filter: HeapSnapshotModel.HeapSnapshotModel.NodeFilter): Promise<number[]> {
+  search(searchConfig: HeapSnapshotModel.SearchConfig, filter: HeapSnapshotModel.NodeFilter): Promise<number[]> {
     return this.callMethodPromise('search', searchConfig, filter);
   }
 
@@ -281,20 +267,19 @@ export class HeapSnapshotProxy extends HeapSnapshotProxyObject {
     return this.callMethodPromise('interfaceDefinitions');
   }
 
-  aggregatesWithFilter(filter: HeapSnapshotModel.HeapSnapshotModel.NodeFilter):
-      Promise<Record<string, HeapSnapshotModel.HeapSnapshotModel.AggregatedInfo>> {
+  aggregatesWithFilter(filter: HeapSnapshotModel.NodeFilter):
+      Promise<Record<string, HeapSnapshotModel.AggregatedInfo>> {
     return this.callMethodPromise('aggregatesWithFilter', filter);
   }
 
-  aggregatesForDiff(interfaceDefinitions: string):
-      Promise<Record<string, HeapSnapshotModel.HeapSnapshotModel.AggregateForDiff>> {
+  aggregatesForDiff(interfaceDefinitions: string): Promise<Record<string, HeapSnapshotModel.AggregateForDiff>> {
     return this.callMethodPromise('aggregatesForDiff', interfaceDefinitions);
   }
 
   calculateSnapshotDiff(
       baseSnapshotId: string,
-      baseSnapshotAggregates: Record<string, HeapSnapshotModel.HeapSnapshotModel.AggregateForDiff>,
-      ): Promise<Record<string, HeapSnapshotModel.HeapSnapshotModel.Diff>> {
+      baseSnapshotAggregates: Record<string, HeapSnapshotModel.AggregateForDiff>,
+      ): Promise<Record<string, HeapSnapshotModel.Diff>> {
     return this.callMethodPromise('calculateSnapshotDiff', baseSnapshotId, baseSnapshotAggregates);
   }
 
@@ -322,20 +307,19 @@ export class HeapSnapshotProxy extends HeapSnapshotProxyObject {
     return this.callFactoryMethod('createNodesProvider', HeapSnapshotProviderProxy, filter);
   }
 
-  createNodesProviderForClass(classKey: string, nodeFilter: HeapSnapshotModel.HeapSnapshotModel.NodeFilter):
-      HeapSnapshotProviderProxy {
+  createNodesProviderForClass(classKey: string, nodeFilter: HeapSnapshotModel.NodeFilter): HeapSnapshotProviderProxy {
     return this.callFactoryMethod('createNodesProviderForClass', HeapSnapshotProviderProxy, classKey, nodeFilter);
   }
 
-  allocationTracesTops(): Promise<HeapSnapshotModel.HeapSnapshotModel.SerializedAllocationNode[]> {
+  allocationTracesTops(): Promise<HeapSnapshotModel.SerializedAllocationNode[]> {
     return this.callMethodPromise('allocationTracesTops');
   }
 
-  allocationNodeCallers(nodeId: number): Promise<HeapSnapshotModel.HeapSnapshotModel.AllocationNodeCallers> {
+  allocationNodeCallers(nodeId: number): Promise<HeapSnapshotModel.AllocationNodeCallers> {
     return this.callMethodPromise('allocationNodeCallers', nodeId);
   }
 
-  allocationStack(nodeIndex: number): Promise<HeapSnapshotModel.HeapSnapshotModel.AllocationStackFrame[]|null> {
+  allocationStack(nodeIndex: number): Promise<HeapSnapshotModel.AllocationStackFrame[]|null> {
     return this.callMethodPromise('allocationStack', nodeIndex);
   }
 
@@ -361,15 +345,15 @@ export class HeapSnapshotProxy extends HeapSnapshotProxyObject {
     this.staticData = await this.callMethodPromise('updateStaticData');
   }
 
-  getStatistics(): Promise<HeapSnapshotModel.HeapSnapshotModel.Statistics> {
+  getStatistics(): Promise<HeapSnapshotModel.Statistics> {
     return this.callMethodPromise('getStatistics');
   }
 
-  getLocation(nodeIndex: number): Promise<HeapSnapshotModel.HeapSnapshotModel.Location|null> {
+  getLocation(nodeIndex: number): Promise<HeapSnapshotModel.Location|null> {
     return this.callMethodPromise('getLocation', nodeIndex);
   }
 
-  getSamples(): Promise<HeapSnapshotModel.HeapSnapshotModel.Samples|null> {
+  getSamples(): Promise<HeapSnapshotModel.Samples|null> {
     return this.callMethodPromise('getSamples');
   }
 
@@ -421,12 +405,11 @@ export class HeapSnapshotProviderProxy extends HeapSnapshotProxyObject implement
     return this.callMethodPromise('isEmpty');
   }
 
-  serializeItemsRange(startPosition: number, endPosition: number):
-      Promise<HeapSnapshotModel.HeapSnapshotModel.ItemsRange> {
+  serializeItemsRange(startPosition: number, endPosition: number): Promise<HeapSnapshotModel.ItemsRange> {
     return this.callMethodPromise('serializeItemsRange', startPosition, endPosition);
   }
 
-  async sortAndRewind(comparator: HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig): Promise<void> {
+  async sortAndRewind(comparator: HeapSnapshotModel.ComparatorConfig): Promise<void> {
     await this.callMethodPromise('sortAndRewind', comparator);
   }
 }

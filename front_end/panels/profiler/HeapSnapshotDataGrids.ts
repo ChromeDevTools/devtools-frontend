@@ -19,7 +19,6 @@ import {
   HeapSnapshotObjectNode,
   HeapSnapshotRetainingObjectNode,
 } from './HeapSnapshotGridNodes.js';
-import type {HeapSnapshotProxy} from './HeapSnapshotProxy.js';
 import type {HeapProfileHeader} from './HeapSnapshotView.js';
 import type {DataDisplayDelegate} from './ProfileHeader.js';
 
@@ -132,7 +131,7 @@ class HeapSnapshotSortableDataGridBase extends DataGrid.DataGrid.DataGridImpl<He
 export class HeapSnapshotSortableDataGrid extends Common.ObjectWrapper
                                                       .eventMixin<EventTypes, typeof HeapSnapshotSortableDataGridBase>(
                                                           HeapSnapshotSortableDataGridBase) {
-  snapshot: HeapSnapshotProxy|null = null;
+  snapshot: HeapSnapshotModel.HeapSnapshotProxy.HeapSnapshotProxy|null = null;
   override selectedNode: HeapSnapshotGridNode|null = null;
   readonly heapProfilerModelInternal: SDK.HeapProfilerModel.HeapProfilerModel|null;
   readonly dataDisplayDelegateInternal: DataDisplayDelegate;
@@ -170,7 +169,8 @@ export class HeapSnapshotSortableDataGrid extends Common.ObjectWrapper
     this.setRowContextMenuCallback(this.populateContextMenu.bind(this));
   }
 
-  async setDataSource(_snapshot: HeapSnapshotProxy, _nodeIndex: number): Promise<void> {
+  async setDataSource(_snapshot: HeapSnapshotModel.HeapSnapshotProxy.HeapSnapshotProxy, _nodeIndex: number):
+      Promise<void> {
   }
 
   isFilteredOut(node: HeapSnapshotGridNode): boolean {
@@ -643,7 +643,9 @@ export class HeapSnapshotContainmentDataGrid extends HeapSnapshotSortableDataGri
     super(heapProfilerModel, dataDisplayDelegate, {displayName, columns});
   }
 
-  override async setDataSource(snapshot: HeapSnapshotProxy, nodeIndex: number, nodeId?: number): Promise<void> {
+  override async setDataSource(
+      snapshot: HeapSnapshotModel.HeapSnapshotProxy.HeapSnapshotProxy, nodeIndex: number,
+      nodeId?: number): Promise<void> {
     this.snapshot = snapshot;
     const node = new HeapSnapshotModel.HeapSnapshotModel.Node(
         nodeId ?? -1, 'root', 0, nodeIndex || snapshot.rootNodeIndex, 0, 0, '');
@@ -651,7 +653,9 @@ export class HeapSnapshotContainmentDataGrid extends HeapSnapshotSortableDataGri
     void (this.rootNode() as HeapSnapshotGridNode).sort();
   }
 
-  createRootNode(snapshot: HeapSnapshotProxy, node: HeapSnapshotModel.HeapSnapshotModel.Node): HeapSnapshotObjectNode {
+  createRootNode(
+      snapshot: HeapSnapshotModel.HeapSnapshotProxy.HeapSnapshotProxy,
+      node: HeapSnapshotModel.HeapSnapshotModel.Node): HeapSnapshotObjectNode {
     const fakeEdge = new HeapSnapshotModel.HeapSnapshotModel.Edge('', node, '', -1);
     return new HeapSnapshotObjectNode(this, snapshot, fakeEdge, null);
   }
@@ -684,8 +688,9 @@ export class HeapSnapshotRetainmentDataGrid extends HeapSnapshotContainmentDataG
     super(heapProfilerModel, dataDisplayDelegate, i18nString(UIStrings.heapSnapshotRetainment), columns);
   }
 
-  override createRootNode(snapshot: HeapSnapshotProxy, node: HeapSnapshotModel.HeapSnapshotModel.Node):
-      HeapSnapshotRetainingObjectNode {
+  override createRootNode(
+      snapshot: HeapSnapshotModel.HeapSnapshotProxy.HeapSnapshotProxy,
+      node: HeapSnapshotModel.HeapSnapshotModel.Node): HeapSnapshotRetainingObjectNode {
     const fakeEdge = new HeapSnapshotModel.HeapSnapshotModel.Edge('', node, '', -1);
     return new HeapSnapshotRetainingObjectNode(this, snapshot, fakeEdge, null);
   }
@@ -719,7 +724,9 @@ export class HeapSnapshotRetainmentDataGrid extends HeapSnapshotContainmentDataG
     });
   }
 
-  override async setDataSource(snapshot: HeapSnapshotProxy, nodeIndex: number, nodeId?: number): Promise<void> {
+  override async setDataSource(
+      snapshot: HeapSnapshotModel.HeapSnapshotProxy.HeapSnapshotProxy, nodeIndex: number,
+      nodeId?: number): Promise<void> {
     await super.setDataSource(snapshot, nodeIndex, nodeId);
     this.rootNode().expand();
     this.updateResetButtonVisibility();
@@ -824,7 +831,8 @@ export class HeapSnapshotConstructorsDataGrid extends HeapSnapshotViewportDataGr
     this.removeTopLevelNodes();
   }
 
-  override async setDataSource(snapshot: HeapSnapshotProxy, _nodeIndex: number): Promise<void> {
+  override async setDataSource(snapshot: HeapSnapshotModel.HeapSnapshotProxy.HeapSnapshotProxy, _nodeIndex: number):
+      Promise<void> {
     this.snapshot = snapshot;
     if (this.profileIndex === -1) {
       void this.populateChildren();
@@ -904,7 +912,7 @@ export class HeapSnapshotConstructorsDataGrid extends HeapSnapshotViewportDataGr
 }
 
 export class HeapSnapshotDiffDataGrid extends HeapSnapshotViewportDataGrid {
-  baseSnapshot?: HeapSnapshotProxy;
+  baseSnapshot?: HeapSnapshotModel.HeapSnapshotProxy.HeapSnapshotProxy;
 
   constructor(
       heapProfilerModel: SDK.HeapProfilerModel.HeapProfilerModel|null, dataDisplayDelegate: DataDisplayDelegate) {
@@ -955,11 +963,12 @@ export class HeapSnapshotDiffDataGrid extends HeapSnapshotViewportDataGrid {
     }
   }
 
-  override async setDataSource(snapshot: HeapSnapshotProxy, _nodeIndex: number): Promise<void> {
+  override async setDataSource(snapshot: HeapSnapshotModel.HeapSnapshotProxy.HeapSnapshotProxy, _nodeIndex: number):
+      Promise<void> {
     this.snapshot = snapshot;
   }
 
-  setBaseDataSource(baseSnapshot: HeapSnapshotProxy): void {
+  setBaseDataSource(baseSnapshot: HeapSnapshotModel.HeapSnapshotProxy.HeapSnapshotProxy): void {
     this.baseSnapshot = baseSnapshot;
     this.removeTopLevelNodes();
     this.resetSortingCache();
@@ -1023,7 +1032,8 @@ export class AllocationDataGrid extends HeapSnapshotViewportDataGrid {
     this.linkifierInternal.reset();
   }
 
-  override async setDataSource(snapshot: HeapSnapshotProxy, _nodeIndex: number): Promise<void> {
+  override async setDataSource(snapshot: HeapSnapshotModel.HeapSnapshotProxy.HeapSnapshotProxy, _nodeIndex: number):
+      Promise<void> {
     this.snapshot = snapshot;
     this.topNodes = await this.snapshot.allocationTracesTops();
     this.populateChildren();

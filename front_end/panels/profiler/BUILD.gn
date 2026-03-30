@@ -21,14 +21,12 @@ generate_css("css_files") {
 devtools_ui_module("profiler") {
   sources = [
     "BottomUpProfileDataGrid.ts",
-    "ChildrenProvider.ts",
     "HeapDetachedElementsDataGrid.ts",
     "HeapDetachedElementsView.ts",
     "HeapProfileView.ts",
     "HeapProfilerPanel.ts",
     "HeapSnapshotDataGrids.ts",
     "HeapSnapshotGridNodes.ts",
-    "HeapSnapshotProxy.ts",
     "HeapSnapshotView.ts",
     "HeapTimelineOverview.ts",
     "IsolateSelector.ts",

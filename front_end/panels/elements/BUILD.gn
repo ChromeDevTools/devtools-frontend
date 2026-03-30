@@ -188,6 +188,7 @@ devtools_ui_module("unittests") {
     "ElementsTreeElement.test.ts",
     "ElementsTreeOutline.test.ts",
     "EventListenersWidget.test.ts",
+    "ImagePreviewPopover.test.ts",
     "InspectElementModeController.test.ts",
     "LayoutPane.test.ts",
     "PlatformFontsWidget.test.ts",

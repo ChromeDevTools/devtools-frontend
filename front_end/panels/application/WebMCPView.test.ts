@@ -4,6 +4,7 @@
 
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
+import * as WebMCP from '../../models/web_mcp/web_mcp.js';
 import {findMenuItemWithLabel, getMenuForToolbarButton} from '../../testing/ContextMenuHelpers.js';
 import {assertScreenshot, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, describeWithEnvironment, updateHostConfig} from '../../testing/EnvironmentHelpers.js';
@@ -13,6 +14,12 @@ import * as Application from './application.js';
 
 const {DEFAULT_VIEW, WebMCPView, filterToolCalls} = Application.WebMCPView;
 
+function createTool(
+    name: string, description: string, frameId: Protocol.Page.FrameId, target: SDK.Target.Target,
+    backendNodeId?: Protocol.DOM.BackendNodeId): WebMCP.WebMCPModel.Tool {
+  return new WebMCP.WebMCPModel.Tool(
+      {name, description, inputSchema: {type: 'object'}, frameId, backendNodeId}, target);
+}
 describeWithEnvironment('WebMCPView (View)', () => {
   it('renders empty when no tools are available', async () => {
     const target = document.createElement('div');
@@ -50,17 +57,19 @@ describeWithEnvironment('WebMCPView (View)', () => {
   });
 
   it('renders tool calls with different statuses', async () => {
+    updateHostConfig({devToolsWebMCPSupport: {enabled: true}});
+    const sdkTarget = createTarget();
     const target = document.createElement('div');
     target.style.width = '600px';
     target.style.height = '400px';
     renderElementIntoDOM(target, {includeCommonStyles: true});
     const tools = [
-      {name: 'list_files', description: 'List files', frameId: 'frame-1' as Protocol.Page.FrameId},
-      {name: 'read_file', description: 'Read a file', frameId: 'frame-1' as Protocol.Page.FrameId},
-      {name: 'write_file', description: 'Write a file', frameId: 'frame-1' as Protocol.Page.FrameId},
-      {name: 'long_running_task', description: 'A long task', frameId: 'frame-1' as Protocol.Page.FrameId},
+      createTool('list_files', 'List files', 'frame-1' as Protocol.Page.FrameId, sdkTarget),
+      createTool('read_file', 'Read a file', 'frame-1' as Protocol.Page.FrameId, sdkTarget),
+      createTool('write_file', 'Write a file', 'frame-1' as Protocol.Page.FrameId, sdkTarget),
+      createTool('long_running_task', 'A long task', 'frame-1' as Protocol.Page.FrameId, sdkTarget),
     ];
-    const toolCalls: SDK.WebMCPModel.Call[] = [
+    const toolCalls: WebMCP.WebMCPModel.Call[] = [
       {
         invocationId: '1',
         input: '{"dir": "/tmp"}',
@@ -114,14 +123,16 @@ describeWithEnvironment('WebMCPView (View)', () => {
     await assertScreenshot('application/webmcp-tool-calls.png');
   });
   it('renders a list of tools correctly', async () => {
+    updateHostConfig({devToolsWebMCPSupport: {enabled: true}});
+    const sdkTarget = createTarget();
     const container = document.createElement('div');
     container.style.width = '600px';
     container.style.height = '400px';
     renderElementIntoDOM(container, {includeCommonStyles: true});
 
     const tools = [
-      {name: 'calculator', description: 'Calculates math expressions', frameId: 'frame1' as Protocol.Page.FrameId},
-      {name: 'weather', description: 'Gets the current weather', frameId: 'frame1' as Protocol.Page.FrameId}
+      createTool('calculator', 'Calculates math expressions', 'frame1' as Protocol.Page.FrameId, sdkTarget),
+      createTool('weather', 'Gets the current weather', 'frame1' as Protocol.Page.FrameId, sdkTarget)
     ];
 
     const filterButtons = WebMCPView.createFilterButtons(() => {}, () => {});
@@ -140,11 +151,13 @@ describeWithEnvironment('WebMCPView (View)', () => {
   });
 
   it('renders a list of tools', async () => {
+    updateHostConfig({devToolsWebMCPSupport: {enabled: true}});
+    const sdkTarget = createTarget();
     const target = document.createElement('div');
     renderElementIntoDOM(target, {includeCommonStyles: true});
     const tools = [
-      {name: 'tool1', description: 'desc1', frameId: 'frame1' as Protocol.Page.FrameId},
-      {name: 'tool2', description: 'desc2', frameId: 'frame1' as Protocol.Page.FrameId}
+      createTool('tool1', 'desc1', 'frame1' as Protocol.Page.FrameId, sdkTarget),
+      createTool('tool2', 'desc2', 'frame1' as Protocol.Page.FrameId, sdkTarget)
     ];
     const filterButtons = WebMCPView.createFilterButtons(() => {}, () => {});
 
@@ -221,7 +234,7 @@ describeWithEnvironment('WebMCPView Presenter', () => {
   async function setup() {
     updateHostConfig({devToolsWebMCPSupport: {enabled: true}});
     target = createTarget();
-    const model = target.model(SDK.WebMCPModel.WebMCPModel) as SDK.WebMCPModel.WebMCPModel;
+    const model = target.model(WebMCP.WebMCPModel.WebMCPModel) as WebMCP.WebMCPModel.WebMCPModel;
 
     const viewStub = createViewFunctionStub(WebMCPView);
     new WebMCPView(document.createElement('div'), viewStub);
@@ -236,10 +249,22 @@ describeWithEnvironment('WebMCPView Presenter', () => {
 
   it('passes tools to the view sorted by name', async () => {
     const {model, viewStub} = await setup();
-    model.onToolsAdded([
-      {name: 'b-tool', description: 'desc1', frameId: 'frame1' as Protocol.Page.FrameId},
-      {name: 'a-tool', description: 'desc2', frameId: 'frame1' as Protocol.Page.FrameId}
-    ]);
+    model.toolsAdded({
+      tools: [
+        {
+          name: 'b-tool',
+          description: 'desc1',
+          inputSchema: {type: 'object'},
+          frameId: 'frame1' as Protocol.Page.FrameId
+        },
+        {
+          name: 'a-tool',
+          description: 'desc2',
+          inputSchema: {type: 'object'},
+          frameId: 'frame1' as Protocol.Page.FrameId
+        }
+      ]
+    });
     const input = await viewStub.nextInput;
 
     assert.lengthOf(input.tools, 2);
@@ -249,12 +274,17 @@ describeWithEnvironment('WebMCPView Presenter', () => {
 
   it('updates when tools are removed', async () => {
     const {model, viewStub} = await setup();
-    const tool = {name: 'tool1', description: 'desc1', frameId: 'frame1' as Protocol.Page.FrameId};
-    model.onToolsAdded([tool]);
+    const tool = {
+      name: 'tool1',
+      description: 'desc1',
+      inputSchema: {type: 'object'},
+      frameId: 'frame1' as Protocol.Page.FrameId
+    };
+    model.toolsAdded({tools: [tool]});
     await viewStub.nextInput;
     assert.lengthOf(viewStub.input.tools, 1);
 
-    model.onToolsRemoved([tool]);
+    model.toolsRemoved({tools: [tool]});
     const input = await viewStub.nextInput;
     assert.lengthOf(input.tools, 0);
   });
@@ -293,24 +323,36 @@ describeWithEnvironment('WebMCPView Presenter', () => {
 });
 
 describe('filterToolCalls', () => {
-  const mockCalls: SDK.WebMCPModel.Call[] = [
+  const target = sinon.createStubInstance(SDK.Target.Target);
+  const tools = [
+    createTool('list_files', 'desc', 'frame-1' as Protocol.Page.FrameId, target),
+    createTool('read_file', 'desc', 'frame-1' as Protocol.Page.FrameId, target),
+    createTool('write_file', 'desc', 'frame-1' as Protocol.Page.FrameId, target),
+    createTool(
+        'long_running_task',
+        'desc',
+        'frame-1' as Protocol.Page.FrameId,
+        target,
+        1 as Protocol.DOM.BackendNodeId,
+        ),
+    createTool(
+        'declarative_success',
+        'desc',
+        'frame-1' as Protocol.Page.FrameId,
+        target,
+        2 as Protocol.DOM.BackendNodeId,
+        ),
+  ];
+  const mockCalls: WebMCP.WebMCPModel.Call[] = [
     {
       invocationId: '1',
       input: '{"dir": "/tmp"}',
-      tool: {
-        name: 'list_files',
-        description: 'desc',
-        frameId: 'frame-1' as Protocol.Page.FrameId,
-      },
+      tool: tools[0],
     },
     {
       invocationId: '2',
       input: '{"path": "/tmp/test.txt"}',
-      tool: {
-        name: 'read_file',
-        description: 'desc',
-        frameId: 'frame-1' as Protocol.Page.FrameId,
-      },
+      tool: tools[1],
       result: {
         status: Protocol.WebMCP.InvocationStatus.Success,
         output: 'File content here',
@@ -319,11 +361,7 @@ describe('filterToolCalls', () => {
     {
       invocationId: '3',
       input: '{"path": "/root/secret.txt"}',
-      tool: {
-        name: 'write_file',
-        description: 'desc',
-        frameId: 'frame-1' as Protocol.Page.FrameId,
-      },
+      tool: tools[2],
       result: {
         status: Protocol.WebMCP.InvocationStatus.Error,
         errorText: 'Permission denied',
@@ -332,22 +370,12 @@ describe('filterToolCalls', () => {
     {
       invocationId: '4',
       input: '{"timeout": 100}',
-      tool: {
-        name: 'long_running_task',
-        description: 'desc',
-        frameId: 'frame-1' as Protocol.Page.FrameId,
-        backendNodeId: 1 as Protocol.DOM.BackendNodeId,
-      },
+      tool: tools[3],
     },
     {
       invocationId: '5',
       input: '{}',
-      tool: {
-        name: 'declarative_success',
-        description: 'desc',
-        frameId: 'frame-1' as Protocol.Page.FrameId,
-        backendNodeId: 2 as Protocol.DOM.BackendNodeId,
-      },
+      tool: tools[3],
       result: {
         status: Protocol.WebMCP.InvocationStatus.Success,
         output: 'Declarative success content',

@@ -11,6 +11,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
+import * as WebMCP from '../../models/web_mcp/web_mcp.js';
 import * as Adorners from '../../ui/components/adorners/adorners.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import type * as IconButton from '../../ui/components/icon_button/icon_button.js';
@@ -157,15 +158,16 @@ export interface FilterMenuButtons {
   statusTypes: FilterMenuButton;
 }
 export interface ViewInput {
-  tools: Protocol.WebMCP.Tool[];
+  tools: WebMCP.WebMCPModel.Tool[];
   filters: FilterState;
   filterButtons: FilterMenuButtons;
   onClearLogClick: () => void;
   onFilterChange: (filters: FilterState) => void;
-  toolCalls: SDK.WebMCPModel.Call[];
+  toolCalls: WebMCP.WebMCPModel.Call[];
 }
 
-export function filterToolCalls(toolCalls: SDK.WebMCPModel.Call[], filterState: FilterState): SDK.WebMCPModel.Call[] {
+export function filterToolCalls(
+    toolCalls: WebMCP.WebMCPModel.Call[], filterState: FilterState): WebMCP.WebMCPModel.Call[] {
   let filtered = [...toolCalls];
 
   const statusTypes = filterState.statusTypes;
@@ -189,11 +191,10 @@ export function filterToolCalls(toolCalls: SDK.WebMCPModel.Call[], filterState: 
   if (toolTypes) {
     filtered = filtered.filter(call => {
       const {imperative, declarative} = toolTypes;
-      const isDeclarative = call.tool?.backendNodeId !== undefined;
-      if (imperative && !isDeclarative) {
+      if (imperative && !call.tool.isDeclarative) {
         return true;
       }
-      if (declarative && isDeclarative) {
+      if (declarative && call.tool.isDeclarative) {
         return true;
       }
       return false;
@@ -211,10 +212,8 @@ export function filterToolCalls(toolCalls: SDK.WebMCPModel.Call[], filterState: 
 
   return filtered;
 }
-
 export type View = (input: ViewInput, output: object, target: HTMLElement) => void;
-
-function calculateToolStats(calls: SDK.WebMCPModel.Call[]):
+function calculateToolStats(calls: WebMCP.WebMCPModel.Call[]):
     {total: number, success: number, failed: number, canceled: number, inProgress: number} {
   let total = 0, success = 0, failed = 0, canceled = 0, inProgress = 0;
   for (const call of calls) {
@@ -272,13 +271,12 @@ function getIconGroupsFromStats(toolStats: ReturnType<typeof calculateToolStats>
   }
   return groups;
 }
-
 export const DEFAULT_VIEW: View = (input, output, target) => {
   const tools = input.tools;
   const stats = calculateToolStats(input.toolCalls);
   const isFilterActive =
       Boolean(input.filters.text) || Boolean(input.filters.toolTypes) || Boolean(input.filters.statusTypes);
-  const iconName = (call: SDK.WebMCPModel.Call): string => {
+  const iconName = (call: WebMCP.WebMCPModel.Call): string => {
     switch (call.result?.status) {
       case Protocol.WebMCP.InvocationStatus.Error:
         return 'cross-circle-filled';
@@ -290,7 +288,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
         return '';
     }
   };
-  const statusString = (call: SDK.WebMCPModel.Call): string => {
+  const statusString = (call: WebMCP.WebMCPModel.Call): string => {
     switch (call.result?.status) {
       case Protocol.WebMCP.InvocationStatus.Error:
         return i18nString(UIStrings.error);
@@ -461,9 +459,9 @@ export class WebMCPView extends UI.Widget.VBox {
         this.#showToolTypesContextMenu.bind(this),
         this.#showStatusTypesContextMenu.bind(this),
     );
-    SDK.TargetManager.TargetManager.instance().observeModels(SDK.WebMCPModel.WebMCPModel, {
-      modelAdded: (model: SDK.WebMCPModel.WebMCPModel) => this.#webMCPModelAdded(model),
-      modelRemoved: (model: SDK.WebMCPModel.WebMCPModel) => this.#webMCPModelRemoved(model),
+    SDK.TargetManager.TargetManager.instance().observeModels(WebMCP.WebMCPModel.WebMCPModel, {
+      modelAdded: (model: WebMCP.WebMCPModel.WebMCPModel) => this.#webMCPModelAdded(model),
+      modelRemoved: (model: WebMCP.WebMCPModel.WebMCPModel) => this.#webMCPModelRemoved(model),
     });
     this.requestUpdate();
   }
@@ -508,22 +506,22 @@ export class WebMCPView extends UI.Widget.VBox {
         i18nString(UIStrings.pending), () => toggle('pending'),
         {checked: this.#filterState.statusTypes?.['pending'] ?? false, jslogContext: 'webmcp.pending'});
   }
-  #webMCPModelAdded(model: SDK.WebMCPModel.WebMCPModel): void {
-    model.addEventListener(SDK.WebMCPModel.Events.TOOLS_ADDED, this.requestUpdate, this);
-    model.addEventListener(SDK.WebMCPModel.Events.TOOLS_REMOVED, this.requestUpdate, this);
-    model.addEventListener(SDK.WebMCPModel.Events.TOOL_INVOKED, this.requestUpdate, this);
-    model.addEventListener(SDK.WebMCPModel.Events.TOOL_RESPONDED, this.requestUpdate, this);
+  #webMCPModelAdded(model: WebMCP.WebMCPModel.WebMCPModel): void {
+    model.addEventListener(WebMCP.WebMCPModel.Events.TOOLS_ADDED, this.requestUpdate, this);
+    model.addEventListener(WebMCP.WebMCPModel.Events.TOOLS_REMOVED, this.requestUpdate, this);
+    model.addEventListener(WebMCP.WebMCPModel.Events.TOOL_INVOKED, this.requestUpdate, this);
+    model.addEventListener(WebMCP.WebMCPModel.Events.TOOL_RESPONDED, this.requestUpdate, this);
   }
 
-  #webMCPModelRemoved(model: SDK.WebMCPModel.WebMCPModel): void {
-    model.removeEventListener(SDK.WebMCPModel.Events.TOOLS_ADDED, this.requestUpdate, this);
-    model.removeEventListener(SDK.WebMCPModel.Events.TOOLS_REMOVED, this.requestUpdate, this);
-    model.removeEventListener(SDK.WebMCPModel.Events.TOOL_INVOKED, this.requestUpdate, this);
-    model.removeEventListener(SDK.WebMCPModel.Events.TOOL_RESPONDED, this.requestUpdate, this);
+  #webMCPModelRemoved(model: WebMCP.WebMCPModel.WebMCPModel): void {
+    model.removeEventListener(WebMCP.WebMCPModel.Events.TOOLS_ADDED, this.requestUpdate, this);
+    model.removeEventListener(WebMCP.WebMCPModel.Events.TOOLS_REMOVED, this.requestUpdate, this);
+    model.removeEventListener(WebMCP.WebMCPModel.Events.TOOL_INVOKED, this.requestUpdate, this);
+    model.removeEventListener(WebMCP.WebMCPModel.Events.TOOL_RESPONDED, this.requestUpdate, this);
   }
 
   #handleClearLogClick = (): void => {
-    const models = SDK.TargetManager.TargetManager.instance().models(SDK.WebMCPModel.WebMCPModel);
+    const models = SDK.TargetManager.TargetManager.instance().models(WebMCP.WebMCPModel.WebMCPModel);
     for (const model of models) {
       model.clearCalls();
     }
@@ -544,17 +542,15 @@ export class WebMCPView extends UI.Widget.VBox {
     this.requestUpdate();
   };
 
-  #getTools(): Protocol.WebMCP.Tool[] {
-    const models = SDK.TargetManager.TargetManager.instance().models(SDK.WebMCPModel.WebMCPModel);
+  #getTools(): WebMCP.WebMCPModel.Tool[] {
+    const models = SDK.TargetManager.TargetManager.instance().models(WebMCP.WebMCPModel.WebMCPModel);
     const tools = models.flatMap(model => model.tools.toArray());
     return tools.sort((a, b) => a.name.localeCompare(b.name));
   }
-
   override performUpdate(): void {
-    const models = SDK.TargetManager.TargetManager.instance().models(SDK.WebMCPModel.WebMCPModel);
+    const models = SDK.TargetManager.TargetManager.instance().models(WebMCP.WebMCPModel.WebMCPModel);
     const toolCalls = models.flatMap(model => model.toolCalls);
     const filteredCalls = filterToolCalls(toolCalls, this.#filterState);
-
     const input: ViewInput = {
       tools: this.#getTools(),
       toolCalls: filteredCalls,

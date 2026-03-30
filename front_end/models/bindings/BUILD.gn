@@ -89,6 +89,7 @@ devtools_entrypoint("bundle") {
     "../persistence/*",
     "../source_map_scopes/*",
     "../trace_source_maps_resolver/*",
+    "../web_mcp/*",
     "../workspace/*",
   ]
 

@@ -95,6 +95,7 @@ devtools_ui_module("application") {
     "../../models/issues_manager:bundle",
     "../../models/stack_trace:bundle",
     "../../models/text_utils:bundle",
+    "../../models/web_mcp:bundle",
     "../../models/workspace:bundle",
     "../../panels/mobile_throttling:bundle",
     "../../panels/network:bundle",

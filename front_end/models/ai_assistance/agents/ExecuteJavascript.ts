@@ -12,9 +12,21 @@ import {debugLog} from '../debug.js';
 import {EvaluateAction, formatError, SideEffectError} from '../EvaluateAction.js';
 import {FREESTYLER_WORLD_NAME} from '../injected.js';
 
-import type {FunctionCallHandlerResult, FunctionDeclaration, FunctionHandlerOptions} from './AiAgent.js';
+import type {
+  AgentOptions as BaseAgentOptions, FunctionCallHandlerResult, FunctionDeclaration, FunctionHandlerOptions,} from
+  './AiAgent.js';
 
 const lockedString = i18n.i18n.lockedString;
+
+export type CreateExtensionScopeFunction = (changes: ChangeManager) => {
+  install(): Promise<void>, uninstall(): Promise<void>,
+};
+
+export interface ExecuteJsAgentOptions extends BaseAgentOptions {
+  changeManager?: ChangeManager;
+  createExtensionScope?: CreateExtensionScopeFunction;
+  execJs?: typeof executeJsCode;
+}
 
 export function executeJavaScriptFunction(executor: JavascriptExecutor): FunctionDeclaration<
     {

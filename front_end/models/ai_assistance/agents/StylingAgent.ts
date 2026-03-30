@@ -16,7 +16,6 @@ import {ExtensionScope} from '../ExtensionScope.js';
 import {AI_ASSISTANCE_CSS_CLASS_NAME} from '../injected.js';
 
 import {
-  type AgentOptions as BaseAgentOptions,
   AiAgent,
   type ComputedStyleAiWidget,
   type ContextResponse,
@@ -28,7 +27,13 @@ import {
   type RequestOptions,
   ResponseType
 } from './AiAgent.js';
-import {executeJavaScriptFunction, executeJsCode, JavascriptExecutor} from './ExecuteJavascript.js';
+import {
+  type CreateExtensionScopeFunction,
+  executeJavaScriptFunction,
+  type ExecuteJsAgentOptions,
+  executeJsCode,
+  JavascriptExecutor
+} from './ExecuteJavascript.js';
 
 /*
 * Strings that don't need to be translated at this time.
@@ -160,17 +165,6 @@ const MULTIMODAL_ENHANCEMENT_PROMPTS: Record<MultimodalInputType, string> = {
 
 export const AI_ASSISTANCE_FILTER_REGEX = `\\.${AI_ASSISTANCE_CSS_CLASS_NAME}-.*&`;
 
-type CreateExtensionScopeFunction = (changes: ChangeManager) => {
-  install(): Promise<void>, uninstall(): Promise<void>,
-};
-
-interface AgentOptions extends BaseAgentOptions {
-  changeManager?: ChangeManager;
-
-  createExtensionScope?: CreateExtensionScopeFunction;
-  execJs?: typeof executeJsCode;
-}
-
 export class NodeContext extends ConversationContext<SDK.DOMModel.DOMNode> {
   #node: SDK.DOMModel.DOMNode;
 
@@ -286,7 +280,7 @@ export class StylingAgent extends AiAgent<SDK.DOMModel.DOMNode> {
   #greenDevEmulationAxTree: string|null = null;
   #currentTurnId = 0;
 
-  constructor(opts: AgentOptions) {
+  constructor(opts: ExecuteJsAgentOptions) {
     super(opts);
 
     this.#changes = opts.changeManager || new ChangeManager();

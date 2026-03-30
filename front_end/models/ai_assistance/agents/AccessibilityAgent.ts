@@ -7,11 +7,12 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import type * as LHModel from '../../lighthouse/lighthouse.js';
+import {ChangeManager} from '../ChangeManager.js';
 import {LighthouseFormatter} from '../data_formatters/LighthouseFormatter.js';
 import {debugLog} from '../debug.js';
+import {ExtensionScope} from '../ExtensionScope.js';
 
 import {
-  type AgentOptions,
   AiAgent,
   type AiWidget,
   type ContextDetail,
@@ -20,6 +21,13 @@ import {
   type RequestOptions,
   ResponseType,
 } from './AiAgent.js';
+import {
+  type CreateExtensionScopeFunction,
+  executeJavaScriptFunction,
+  type ExecuteJsAgentOptions,
+  executeJsCode,
+  JavascriptExecutor
+} from './ExecuteJavascript.js';
 
 /**
  * WARNING: preamble defined in code is only used when userTier is
@@ -46,6 +54,7 @@ Your role is to help users understand and fix accessibility issues found in Ligh
 * \`runAccessibilityAudits\`: Trigger new accessibility snapshot audits.
 * \`getStyles\`: Get computed styles for an element by its path.
 * \`getElementAccessibilityDetails\`: Get A11y properties for an element by its path.
+* \`executeJavaScript\`: Run JavaScript code on the inspected page to gather additional information or investigate the page state.
 
 # Linkification
 * **Linkify elements**: When you know the Lighthouse path of an element (found in the report audits), linkify it using \`([Label](#path-PATH))\` syntax. Never show the path to the user directly, only use it in the link href.
@@ -104,13 +113,38 @@ export class AccessibilityAgent extends AiAgent<LHModel.ReporterTypes.ReportJSON
   readonly #lighthouseRecording?:
       (overrides?: LHModel.RunTypes.RunOverrides) => Promise<LHModel.ReporterTypes.ReportJSON|null>;
 
-  constructor(opts: AgentOptions) {
+  #execJs: typeof executeJsCode;
+  #javascriptExecutor: JavascriptExecutor;
+  #changes: ChangeManager;
+  #createExtensionScope: CreateExtensionScopeFunction;
+  #currentTurnId = 0;
+
+  constructor(opts: ExecuteJsAgentOptions) {
     super(opts);
     this.#lighthouseRecording = opts.lighthouseRecording;
+    this.#changes = opts.changeManager || new ChangeManager();
+    this.#execJs = opts.execJs ?? executeJsCode;
+    this.#createExtensionScope =
+        opts.createExtensionScope ?? ((changes: ChangeManager) => {
+          return new ExtensionScope(changes, this.sessionId, this.#getDocumentBodyNode(), this.#currentTurnId);
+        });
+    this.#javascriptExecutor = new JavascriptExecutor(
+        {
+          executionMode: this.executionMode,
+          getContextNode: () => this.#getDocumentBodyNode(),
+          createExtensionScope: this.#createExtensionScope.bind(this),
+          changes: this.#changes,
+        },
+        this.#execJs);
   }
 
   get userTier(): string|undefined {
     return Root.Runtime.hostConfig.devToolsFreestyler?.userTier;
+  }
+
+  get executionMode(): Root.Runtime.HostConfigFreestylerExecutionMode {
+    return Root.Runtime.hostConfig.devToolsFreestyler?.executionMode ??
+        Root.Runtime.HostConfigFreestylerExecutionMode.ALL_SCRIPTS;
   }
 
   get options(): RequestOptions {
@@ -122,6 +156,38 @@ export class AccessibilityAgent extends AiAgent<LHModel.ReporterTypes.ReportJSON
       temperature,
       modelId,
     };
+  }
+
+  override preambleFeatures(): string[] {
+    return ['function_calling'];
+  }
+
+  protected override async preRun(): Promise<void> {
+    this.#currentTurnId++;
+    const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+    const domModel = target?.model(SDK.DOMModel.DOMModel);
+    // We need to ensure the document is requested so that #getDocumentBodyNode()
+    // can return a valid node for the JavaScript execution context.
+    if (domModel && !domModel.existingDocument()) {
+      try {
+        await domModel.requestDocument();
+      } catch (e) {
+        debugLog('Failed to request document', e);
+      }
+    }
+  }
+
+  /**
+   * For the Accessibility Agent, there is no single "selected" node.
+   * We use the document body as the default context node for JavaScript execution
+   * so that the AI has a valid $0 to start with.
+   */
+  #getDocumentBodyNode(): SDK.DOMModel.DOMNode|null {
+    const document = SDK.TargetManager.TargetManager.instance()
+                         .primaryPageTarget()
+                         ?.model(SDK.DOMModel.DOMModel)
+                         ?.existingDocument();
+    return document?.body ?? document ?? null;
   }
 
   async *
@@ -154,6 +220,8 @@ export class AccessibilityAgent extends AiAgent<LHModel.ReporterTypes.ReportJSON
   }
 
   #declareFunctions(): void {
+    this.declareFunction('executeJavaScript', executeJavaScriptFunction(this.#javascriptExecutor));
+
     this.declareFunction<{explanation: string}, {audits: string}>('runAccessibilityAudits', {
       description:
           'Triggers new Lighthouse accessibility audits in snapshot mode. Use this if the user has made changes to the page and you want to re-evaluate the accessibility audits.',

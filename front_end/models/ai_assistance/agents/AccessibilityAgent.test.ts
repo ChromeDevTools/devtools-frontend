@@ -2,7 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as SDK from '../../../core/sdk/sdk.js';
 import {mockAidaClient} from '../../../testing/AiAssistanceHelpers.js';
+import {createTarget} from '../../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../../testing/MockConnection.js';
 import type * as LHModel from '../../lighthouse/lighthouse.js';
 import * as AiAssistance from '../ai_assistance.js';
@@ -147,5 +149,50 @@ describeWithMockConnection('AccessibilityAgent', () => {
       categoryIds: ['accessibility'],
       isAIControlled: true,
     }));
+  });
+
+  function createExtensionScope() {
+    return {
+      async install() {},
+      async uninstall() {},
+    };
+  }
+
+  it('can call the executeJavaScript method', async () => {
+    createTarget();
+    const aidaClient = mockAidaClient([
+      [{
+        explanation: 'thought',
+        functionCalls: [{
+          name: 'executeJavaScript',
+          args: {code: 'document.body.id', explanation: 'explaining', title: 'titling'},
+        }],
+      }],
+      [{
+        explanation: 'answer',
+      }]
+    ]);
+
+    const execJs = sinon.stub().resolves('test data');
+    const agent = new AiAssistance.AccessibilityAgent.AccessibilityAgent({
+      aidaClient,
+      execJs,
+      createExtensionScope,
+    });
+    const context = new AiAssistance.AccessibilityAgent.AccessibilityContext(mockReport);
+
+    const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+    const domModel = target!.model(SDK.DOMModel.DOMModel)!;
+    const documentNode = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+    documentNode.domModel.returns(domModel);
+    const document = sinon.createStubInstance(SDK.DOMModel.DOMDocument);
+    document.body = documentNode;
+    sinon.stub(domModel, 'existingDocument').returns(document);
+
+    const responses = await Array.fromAsync(agent.run('test', {selected: context}));
+    const actionResponse = responses.find(response => response.type === AiAssistance.AiAgent.ResponseType.ACTION);
+    assert.exists(actionResponse);
+    assert.strictEqual(actionResponse.output, 'test data');
+    sinon.assert.calledOnce(execJs);
   });
 });

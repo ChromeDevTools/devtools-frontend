@@ -47,6 +47,9 @@ Your role is to help users understand and fix accessibility issues found in Ligh
 * \`getStyles\`: Get computed styles for an element by its path.
 * \`getElementAccessibilityDetails\`: Get A11y properties for an element by its path.
 
+# Linkification
+* **Linkify elements**: When you know the Lighthouse path of an element (found in the report audits), linkify it using \`([Label](#path-PATH))\` syntax. Never show the path to the user directly, only use it in the link href.
+
 # Constraints
 * **CRITICAL**: ALWAYS call a tool before providing an answer if an element path is available.
 * **CRITICAL**: You are an accessibility agent. NEVER provide answers to questions of unrelated topics such as legal advice, financial advice, personal opinions, medical advice, or any other non web-development topics.
@@ -277,10 +280,12 @@ export class AccessibilityAgent extends AiAgent<LHModel.ReporterTypes.ReportJSON
         if (!styles) {
           return {error: 'Could not get computed styles.'};
         }
-        const result: Record<string, string|undefined> = {};
+        const result: Record<string, string|number|undefined> = {};
         for (const prop of params.styleProperties) {
           result[prop] = styles.get(prop);
         }
+
+        result['backendNodeId'] = node.backendNodeId();
 
         const widgets: AiWidget[] = [];
         const matchedStyles = await node.domModel().cssModel().getMatchedStyles(node.id);
@@ -370,6 +375,7 @@ export class AccessibilityAgent extends AiAgent<LHModel.ReporterTypes.ReportJSON
                                   {} as Record<string, string>),
           isIgnored: axNode.ignored(),
           ignoredReasons: axNode.ignoredReasons(),
+          backendNodeId: node.backendNodeId(),
         };
 
         return {result: JSON.stringify(result, null, 2)};

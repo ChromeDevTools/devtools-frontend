@@ -53,8 +53,8 @@ function assert(condition: unknown, message: string): void {
   }
 }
 
-type WidgetConstructor<WidgetT extends Widget> = new (element: WidgetElement<WidgetT>) => WidgetT;
-type WidgetProducer<WidgetT extends Widget> = (element: WidgetElement<WidgetT>) => WidgetT;
+type WidgetConstructor<WidgetT extends Widget> = new (element: HTMLElement) => WidgetT;
+type WidgetProducer<WidgetT extends Widget> = (element: HTMLElement) => WidgetT;
 type WidgetFactory<WidgetT extends Widget> = WidgetConstructor<WidgetT>|WidgetProducer<WidgetT>;
 type InferWidgetTFromFactory<F> = F extends WidgetFactory<infer WidgetT>? WidgetT : never;
 
@@ -154,31 +154,28 @@ function runNextUpdate(): void {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const widgetConfigs = new WeakMap<WidgetElement<any>, WidgetConfig<any>>();
+const widgetConfigs = new WeakMap<HTMLElement, WidgetConfig<any>>();
 
 export function registerWidgetConfig<WidgetT extends Widget>(
-    element: WidgetElement<WidgetT>, config: WidgetConfig<WidgetT>): void {
+    element: HTMLElement, config: WidgetConfig<WidgetT>): void {
   if (!widgetConfigs.has(element)) {
     setUpLifecycleTracking(element);
   }
   widgetConfigs.set(element, config);
 }
 
-function instantiateWidget<WidgetT extends Widget>(
-    element: WidgetElement<WidgetT>, widgetConfig: WidgetConfig<WidgetT>): WidgetT {
+function instantiateWidget<WidgetT extends Widget>(element: HTMLElement, widgetConfig: WidgetConfig<WidgetT>): WidgetT {
   if (!widgetConfig.widgetClass) {
     throw new Error('No widgetClass defined');
   }
 
-  registerWidgetConfig(element, widgetConfig);
-
   let newWidget: WidgetT;
   if (Widget.isPrototypeOf(widgetConfig.widgetClass)) {
     const ctor = widgetConfig.widgetClass as WidgetConstructor<WidgetT>;
-    newWidget = new ctor(element as WidgetElement<WidgetT>);
+    newWidget = new ctor(element);
   } else {
     const factory = widgetConfig.widgetClass as WidgetProducer<WidgetT>;
-    newWidget = factory(element as WidgetElement<WidgetT>);
+    newWidget = factory(element);
   }
 
   if (widgetConfig.widgetParams) {
@@ -188,15 +185,24 @@ function instantiateWidget<WidgetT extends Widget>(
   return newWidget;
 }
 
-function setUpLifecycleTracking<WidgetT extends Widget>(element: WidgetElement<WidgetT>): void {
-  element.onDisconnect = () => {
+function setUpLifecycleTracking<WidgetT extends Widget>(element: HTMLElement): void {
+  let tracker: WidgetElement<WidgetT>;
+  if (element instanceof WidgetElement) {
+    tracker = element as WidgetElement<WidgetT>;
+  } else {
+    tracker = document.createElement('devtools-widget') as WidgetElement<WidgetT>;
+    tracker.style.display = 'none';
+    element.appendChild(tracker);
+  }
+
+  tracker.onDisconnect = () => {
     const widget = Widget.get(element);
     if (widget) {
       widget.setHideOnDetach();
       widget.detach();
     }
   };
-  element.onConnect = () => {
+  tracker.onConnect = () => {
     let widget = Widget.get(element) as WidgetT;
     if (!widget) {
       const config = widgetConfigs.get(element);
@@ -311,10 +317,8 @@ export class WidgetDirective extends Lit.Directive.Directive {
 
   override update(part: Lit.Directive.Part, [widgetClass, widgetParams]: Parameters<this['render']>): unknown {
     if (this.#partType === Lit.Directive.PartType.ELEMENT) {
-      const element = (part as Lit.Directive.ElementPart).element;
-      if (!(element instanceof WidgetElement)) {
-        throw new Error('Widget directive must be used on a devtools-widget element.');
-      }
+      const element = (part as Lit.Directive.ElementPart).element as HTMLElement;
+
       const config = widgetConfig(widgetClass, widgetParams);
       const oldConfig = widgetConfigs.get(element);
       const widget = Widget.get(element);

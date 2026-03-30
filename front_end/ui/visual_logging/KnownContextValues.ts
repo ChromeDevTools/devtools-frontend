@@ -2651,6 +2651,7 @@ export const knownContextValues = new Set([
   'min-height',
   'min-inline-size',
   'min-width',
+  'minimize-drawer',
   'missing-debug-info',
   'mix-blend-mode',
   'mixed-content',

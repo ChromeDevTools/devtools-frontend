@@ -1,0 +1,20 @@
+<!--
+  Copyright 2026 The Chromium Authors
+  Use of this source code is governed by a BSD-style license that can be
+  found in the LICENSE file.
+-->
+<!DOCTYPE html>
+<div>
+  <div id="inspected">Inspected Node</div>
+</div>
+
+<div id="long-list"></div>
+<script>
+  const list = document.getElementById('long-list');
+  for (let i = 0; i < 200; i++) {
+    const item = document.createElement('div');
+    item.className = 'row';
+    item.textContent = `row-${i}`;
+    list.appendChild(item);
+  }
+</script>

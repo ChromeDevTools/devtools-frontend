@@ -85,7 +85,7 @@ export interface TabInfo {
 
 export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, typeof VBox>(VBox) {
   readonly #headerElement: HTMLElement;
-  private readonly headerContentsElement: HTMLElement;
+  protected readonly headerContentsElement: HTMLElement;
   tabSlider: HTMLDivElement;
   readonly tabsElement: HTMLElement;
   readonly #contentElement: HTMLElement;
@@ -496,7 +496,7 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
     }
   }
 
-  private clearMeasuredWidths(): void {
+  protected clearMeasuredWidths(): void {
     for (let i = 0; i < this.#tabs.length; ++i) {
       delete this.#tabs[i].measuredWidth;
     }

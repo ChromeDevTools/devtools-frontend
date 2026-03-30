@@ -13,6 +13,7 @@ import {debugLog} from '../debug.js';
 import {
   type AgentOptions,
   AiAgent,
+  type AiWidget,
   type ContextDetail,
   type ContextResponse,
   ConversationContext,
@@ -266,7 +267,25 @@ export class AccessibilityAgent extends AiAgent<LHModel.ReporterTypes.ReportJSON
         for (const prop of params.styleProperties) {
           result[prop] = styles.get(prop);
         }
-        return {result: JSON.stringify(result, null, 2)};
+
+        const widgets: AiWidget[] = [];
+        const matchedStyles = await node.domModel().cssModel().getMatchedStyles(node.id);
+        if (matchedStyles) {
+          widgets.push({
+            name: 'COMPUTED_STYLES',
+            data: {
+              computedStyles: styles,
+              backendNodeId: node.backendNodeId(),
+              matchedCascade: matchedStyles,
+              properties: params.styleProperties,
+            }
+          });
+        }
+
+        return {
+          result: JSON.stringify(result, null, 2),
+          widgets: widgets.length > 0 ? widgets : undefined,
+        };
       },
     });
 

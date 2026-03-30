@@ -1075,10 +1075,6 @@ export class StylePropertiesSection {
 
   protected createContainerQueryElement(containerQuery: SDK.CSSContainerQuery.CSSContainerQuery):
       ElementsComponents.CSSQuery.CSSQuery|undefined {
-    if (!containerQuery.text) {
-      return;
-    }
-
     let onQueryTextClick;
     if (containerQuery.styleSheetId) {
       onQueryTextClick = this.handleQueryRuleClick.bind(this, containerQuery);

@@ -1173,7 +1173,7 @@ function renderActions(input: ChatMessageViewInput, output: ViewOutput): Lit.Lit
             } as Buttons.Button.ButtonData}
             @click=${() => input.onRatingClick(Host.AidaClient.Rating.NEGATIVE)}
           ></devtools-button>
-          <div class="vertical-separator"></div>
+          ${aiAssistanceV2 ? Lit.nothing : html`<div class="vertical-separator"></div>`}
         `: Lit.nothing}
         <devtools-button
           .data=${
@@ -1201,7 +1201,6 @@ function renderActions(input: ChatMessageViewInput, output: ViewOutput): Lit.Lit
             @click=${input.onCopyResponseClick}></devtools-button>
         `}
         ${input.onExportClick && aiAssistanceV2 && input.isLastMessage ? html`
-        <div class="vertical-separator"></div>
           <devtools-button
             class="export-for-agents-button"
             .jslogContext=${'ai-export-for-agents'}
@@ -1209,7 +1208,7 @@ function renderActions(input: ChatMessageViewInput, output: ViewOutput): Lit.Lit
             .iconName=${'copy'}
             @click=${input.onExportClick}
           >${lockedString(UIStringsNotTranslate.exportForAgents)}</devtools-button>
-          <div class="vertical-separator"></div>
+          ${input.suggestions ? html`<div class="vertical-separator"></div>` : Lit.nothing}
         ` : Lit.nothing}
       </div>
       ${input.suggestions ? html`<div class="suggestions-container">

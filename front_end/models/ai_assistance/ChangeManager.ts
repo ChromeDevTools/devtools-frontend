@@ -117,11 +117,11 @@ export class ChangeManager {
     return content;
   }
 
-  formatChangesForPatching(groupId: string, includeSourceLocation = false): string {
+  formatChangesForPatching(groupId: string, includeMetadata = false): string {
     return Array.from(this.#stylesheetChanges.values())
         .flatMap(
             changesPerStylesheet => changesPerStylesheet.filter(change => change.groupId === groupId)
-                                        .map(change => this.#formatChange(change, includeSourceLocation)))
+                                        .map(change => this.#formatChange(change, includeMetadata)))
         .filter(change => change !== '')
         .join('\n\n');
   }
@@ -150,13 +150,13 @@ ${formatStyles(change.styles, 4)}
         .join('\n');
   }
 
-  #formatChange(change: Change, includeSourceLocation = false): string {
+  #formatChange(change: Change, includeMetadata = false): string {
     const sourceLocation =
-        includeSourceLocation && change.sourceLocation ? `/* related resource: ${change.sourceLocation} */\n` : '';
-    // TODO: includeSourceLocation indicates whether we are using Patch
+        includeMetadata && change.sourceLocation ? `/* related resource: ${change.sourceLocation} */\n` : '';
+    // TODO: includeMetadata indicates whether we are using Patch
     // agent. If needed we can have an separate knob.
     const simpleSelector =
-        includeSourceLocation && change.simpleSelector ? ` /* the element was ${change.simpleSelector} */` : '';
+        includeMetadata && change.simpleSelector ? ` /* the element was ${change.simpleSelector} */` : '';
     return `${sourceLocation}${change.selector} {${simpleSelector}
 ${formatStyles(change.styles)}
 }`;

@@ -310,6 +310,7 @@ export interface MessageInput {
   onFeedbackSubmit: (rpcId: Host.AidaClient.RpcGlobalId, rate: Host.AidaClient.Rating, feedback?: string) => void;
   onCopyResponseClick: (message: ModelChatMessage) => void;
   onExportClick?: () => void;
+  changeSummary?: string;
   walkthrough: {
     onOpen: (message: ModelChatMessage) => void,
     isExpanded: boolean,
@@ -404,6 +405,14 @@ export const DEFAULT_VIEW = (input: ChatMessageViewInput, output: ViewOutput, ta
           },
         )}
         ${renderError(message)}
+        ${input.isLastMessage && hasAiV2 && !input.isLoading && input.changeSummary ? html`
+          <devtools-code-block
+            .code=${input.changeSummary}
+            .codeLang=${'css'}
+            .displayNotice=${true}
+            class="ai-css-change"
+          ></devtools-code-block>
+        ` : Lit.nothing}
         ${input.showActions ? renderActions(input, output) : Lit.nothing}
       </div>
     </section>
@@ -1312,6 +1321,7 @@ export class ChatMessage extends UI.Widget.Widget {
       (rpcId: Host.AidaClient.RpcGlobalId, rate: Host.AidaClient.Rating, feedback?: string) => void = () => {};
   onCopyResponseClick: (message: ModelChatMessage) => void = () => {};
   onExportClick: () => void = () => {};
+  changeSummary?: string;
   walkthrough: MessageInput['walkthrough'] = {
     onOpen: () => {},
     onToggle: () => {},
@@ -1380,6 +1390,7 @@ export class ChatMessage extends UI.Widget.Widget {
           currentRating: this.#currentRating,
           isShowingFeedbackForm: this.#isShowingFeedbackForm,
           onFeedbackSubmit: this.onFeedbackSubmit,
+          changeSummary: this.changeSummary,
           walkthrough: this.walkthrough,
         },
         this.#viewOutput, this.contentElement);

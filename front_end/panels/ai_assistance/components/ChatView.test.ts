@@ -4,12 +4,25 @@
 
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
-import {initializePersistenceImplForTests, setupAutomaticFileSystem} from '../../../testing/AiAssistanceHelpers.js';
+import {
+  cleanup,
+  initializePersistenceImplForTests,
+  setupAutomaticFileSystem
+} from '../../../testing/AiAssistanceHelpers.js';
 import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import * as AiAssistancePanel from '../ai_assistance.js';
 
 describeWithEnvironment('ChatView', () => {
+  beforeEach(() => {
+    initializePersistenceImplForTests();
+    setupAutomaticFileSystem();
+  });
+
+  afterEach(() => {
+    cleanup();
+  });
+
   function getProp(options: Partial<AiAssistancePanel.Props>): AiAssistancePanel.Props {
     const noop = () => {};
     const messages = options.messages ?? [];
@@ -57,9 +70,6 @@ describeWithEnvironment('ChatView', () => {
 
   describe('SideEffects', () => {
     it('should show SideEffects when the step contains "sideEffect" object', async () => {
-      initializePersistenceImplForTests();
-      setupAutomaticFileSystem();
-
       const props = getProp({
         messages: [
           {
@@ -84,6 +94,9 @@ describeWithEnvironment('ChatView', () => {
       });
       const chat = new AiAssistancePanel.ChatView(props);
       renderElementIntoDOM(chat);
+
+      const sideEffect = chat.shadowRoot!.querySelector('.side-effect-confirmation');
+      assert.exists(sideEffect);
     });
   });
 });

@@ -7,6 +7,7 @@ import '../../../ui/components/spinners/spinners.js';
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import type * as Platform from '../../../core/platform/platform.js';
+import * as Root from '../../../core/root/root.js';
 import * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import type {MarkdownLitRenderer} from '../../../ui/components/markdown_view/MarkdownView.js';
@@ -103,15 +104,20 @@ interface ChatWidgetInput extends Props {
 }
 
 const DEFAULT_VIEW: View = (input, output, target) => {
+  const hasAiV2 = Boolean(Root.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled);
+
   const chatUiClasses = classMap({
     'chat-ui': true,
     gemini: AiAssistanceModel.AiUtils.isGeminiBranding(),
+    'ai-v2': hasAiV2,
   });
 
   const inputWidgetClasses = classMap({
     'chat-input-widget': true,
     sticky: !input.isReadOnly,
   });
+
+  const shouldShowPatchWidget = !hasAiV2 && !input.isLoading;
 
   // clang-format off
     render(html`
@@ -133,15 +139,16 @@ const DEFAULT_VIEW: View = (input, output, target) => {
                   onFeedbackSubmit: input.onFeedbackSubmit,
                   onCopyResponseClick: input.onCopyResponseClick,
                   onExportClick: input.exportForAgentsClick,
+                  changeSummary: input.changeSummary,
                   walkthrough: {
                     ...input.walkthrough,
                   }
                 })
               )}
-              ${input.isLoading ? nothing : widget(PatchWidget, {
-                  changeSummary: input.changeSummary ?? '',
-                  changeManager: input.changeManager,
-                })}
+              ${shouldShowPatchWidget ? widget(PatchWidget, {
+                changeSummary: input.changeSummary ?? '',
+                changeManager: input.changeManager,
+              }) : nothing}
             </div>
           ` : html`
             <div class="empty-state-container">

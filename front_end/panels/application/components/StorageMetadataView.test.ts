@@ -33,7 +33,7 @@ async function makeView(
   return component;
 }
 
-describe('SharedStorageMetadataView', () => {
+describe('StorageMetadataView', () => {
   setupLocaleHooks();
   it('renders with an origin only', async () => {
     const component = await makeView('https://example.com/');
@@ -149,6 +149,72 @@ describe('SharedStorageMetadataView', () => {
       '4.1 kB',
       (new Date(42000)).toLocaleString(),
     ]);
+  });
+
+  it('renders with a top-level site that matches the origin', async () => {
+    const component = await makeView('https://example.com/^0https://example.com');
+
+    const report = getElementWithinComponent(component, 'devtools-report', ReportView.ReportView.Report);
+    const {textContent} = report.shadowRoot!.querySelector('.report-title')!;
+    assert.strictEqual(textContent, 'https://example.com');
+
+    assert.isNotNull(component.shadowRoot);
+
+    const keys = getCleanTextContentFromElements(component.shadowRoot, 'devtools-report-key');
+    assert.deepEqual(keys, ['Top-level site']);
+
+    const values = getCleanTextContentFromElements(component.shadowRoot, 'devtools-report-value');
+    assert.deepEqual(values, ['https://example.com']);
+  });
+
+  it('renders title with bucket name when storageBucketsModel is provided', async () => {
+    const storageBucketsModel = {
+      target: () => ({
+        model: () => ({
+          getBucketByName: () => null,
+        }),
+      }),
+    } as unknown as SDK.StorageBucketsModel.StorageBucketsModel;
+
+    const component = await makeView(
+        {
+          bucket: {storageKey: 'https://example.com/', name: 'My Bucket'},
+          id: 'BUCKET_ID',
+          persistent: true,
+          durability: Protocol.Storage.StorageBucketsDurability.Relaxed,
+          quota: 4096,
+          expiration: 42,
+        },
+        storageBucketsModel);
+
+    const report = getElementWithinComponent(component, 'devtools-report', ReportView.ReportView.Report);
+    const {textContent} = report.shadowRoot!.querySelector('.report-title')!;
+    assert.strictEqual(textContent, 'My Bucket - https://example.com');
+  });
+
+  it('renders default bucket name in title when bucket name is empty', async () => {
+    const storageBucketsModel = {
+      target: () => ({
+        model: () => ({
+          getBucketByName: () => null,
+        }),
+      }),
+    } as unknown as SDK.StorageBucketsModel.StorageBucketsModel;
+
+    const component = await makeView(
+        {
+          bucket: {storageKey: 'https://example.com/', name: ''},
+          id: 'BUCKET_ID',
+          persistent: true,
+          durability: Protocol.Storage.StorageBucketsDurability.Relaxed,
+          quota: 4096,
+          expiration: 42,
+        },
+        storageBucketsModel);
+
+    const report = getElementWithinComponent(component, 'devtools-report', ReportView.ReportView.Report);
+    const {textContent} = report.shadowRoot!.querySelector('.report-title')!;
+    assert.strictEqual(textContent, 'Default bucket - https://example.com');
   });
 
   it('renders with an emtpy string title', async () => {

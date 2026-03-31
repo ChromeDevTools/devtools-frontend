@@ -54,27 +54,54 @@ describe('ExportForAgentsDialog', () => {
     assert.strictEqual(primaryButton?.textContent?.trim(), 'Copy to clipboard');
   });
 
-  it('renders disclaimer text in prompt mode', async () => {
+  it('renders loading state when promptText is a Promise and updates when it is loaded', async () => {
+    let resolvePrompt: (value: string) => void = () => {};
+    const promptTextPromise = new Promise<string>(resolve => {
+      resolvePrompt = resolve;
+    });
+
     const component = new AiAssistance.ExportForAgentsDialog.ExportForAgentsDialog({
       dialog,
-      promptText,
+      promptText: promptTextPromise,
       markdownText,
       onConversationSaveAs: noop,
     });
     renderElementIntoDOM(component);
     await component.updateComplete;
 
-    const disclaimer = component.contentElement.querySelector('.disclaimer');
-    assert.isNotNull(disclaimer);
-    assert.strictEqual(
-        disclaimer?.textContent?.trim(),
-        'This is an experimental AI feature and won’t always get it right. Double check this text before pasting into another tool.');
+    const spinner = component.contentElement.querySelector('devtools-spinner');
+    assert.isNotNull(spinner);
+
+    const loadingText = component.contentElement.querySelector('.prompt-loading');
+    assert.isNotNull(loadingText);
+    assert.include(loadingText?.textContent?.trim(), 'Generating summary…');
+
+    const textarea = querySelectorErrorOnMissing<HTMLTextAreaElement>(component.contentElement, 'textarea');
+    assert.strictEqual(textarea.value, '');
+
+    const primaryButton =
+        querySelectorErrorOnMissing<Buttons.Button.Button>(component.contentElement, 'devtools-button');
+    assert.isTrue(primaryButton.disabled);
+    assert.strictEqual(primaryButton.textContent?.trim(), 'Copy to clipboard');
+
+    // Resolve at the end to satisfy the test runner's pending promise
+    // check.
+    resolvePrompt('Done');
+    await promptTextPromise;
+    await component.updateComplete;
+
+    assert.isNull(component.contentElement.querySelector('devtools-spinner'));
+    assert.strictEqual(textarea.value, 'Done');
   });
 
-  it('does not render disclaimer text in markdown mode', async () => {
+  it('enables the "Save as..." button for Markdown when the summary prompt is generating', async () => {
+    let resolvePrompt: (value: string) => void = () => {};
+    const promptTextPromise = new Promise<string>(resolve => {
+      resolvePrompt = resolve;
+    });
     const component = new AiAssistance.ExportForAgentsDialog.ExportForAgentsDialog({
       dialog,
-      promptText,
+      promptText: promptTextPromise,
       markdownText,
       onConversationSaveAs: noop,
     });
@@ -86,8 +113,15 @@ describe('ExportForAgentsDialog', () => {
     markdownRadioButton.click();
     await component.updateComplete;
 
-    const disclaimer = component.contentElement.querySelector('.disclaimer');
-    assert.isNull(disclaimer);
+    const primaryButton =
+        querySelectorErrorOnMissing<Buttons.Button.Button>(component.contentElement, 'devtools-button');
+    assert.isFalse(primaryButton.disabled);
+    assert.strictEqual(primaryButton.textContent?.trim(), 'Save as…');
+
+    // Resolve at the end to satisfy the test runner's pending promise check.
+    resolvePrompt('Done');
+    await promptTextPromise;
+    await component.updateComplete;
   });
 
   it('switches to markdown state on radio button click', async () => {
@@ -103,7 +137,8 @@ describe('ExportForAgentsDialog', () => {
     const markdownRadioButton =
         querySelectorErrorOnMissing<HTMLInputElement>(component.contentElement, 'input[value="conversation"]');
     const textarea = querySelectorErrorOnMissing<HTMLTextAreaElement>(component.contentElement, 'textarea');
-    const primaryButton = querySelectorErrorOnMissing(component.contentElement, 'devtools-button');
+    const primaryButton =
+        querySelectorErrorOnMissing<Buttons.Button.Button>(component.contentElement, 'devtools-button');
 
     assert.isNotNull(markdownRadioButton);
     markdownRadioButton?.click();
@@ -112,9 +147,11 @@ describe('ExportForAgentsDialog', () => {
     assert.isTrue(markdownRadioButton?.checked);
     assert.strictEqual(textarea?.value, markdownText);
     assert.strictEqual(primaryButton?.textContent?.trim(), 'Save as…');
+    assert.strictEqual(primaryButton.jslogContext, 'ai-export-for-agents.save-as-markdown');
   });
 
   it('copies prompt text to clipboard when in prompt state', async () => {
+    const hideStub = sinon.stub(dialog, 'hide');
     const component = new AiAssistance.ExportForAgentsDialog.ExportForAgentsDialog({
       dialog,
       promptText,
@@ -126,13 +163,16 @@ describe('ExportForAgentsDialog', () => {
 
     const primaryButton = component.contentElement?.querySelector<Buttons.Button.Button>('devtools-button');
     assert.isNotNull(primaryButton);
+    assert.strictEqual(primaryButton?.jslogContext, 'ai-export-for-agents.copy-to-clipboard');
     primaryButton?.click();
     await component.updateComplete;
 
     sinon.assert.calledWith(inspectorFrontendHostStub.copyText, promptText);
+    sinon.assert.calledOnce(hideStub);
   });
 
   it('calls onConversationSaveAs when the save as button is clicked in markdown mode', async () => {
+    const hideStub = sinon.stub(dialog, 'hide');
     const onConversationSaveAs = sinon.stub();
     const component = new AiAssistance.ExportForAgentsDialog.ExportForAgentsDialog({
       dialog,
@@ -150,9 +190,11 @@ describe('ExportForAgentsDialog', () => {
 
     const primaryButton = component.contentElement.querySelector<Buttons.Button.Button>('devtools-button');
     assert.isNotNull(primaryButton);
+    assert.strictEqual(primaryButton?.jslogContext, 'ai-export-for-agents.save-as-markdown');
     primaryButton.click();
     await component.updateComplete;
 
     sinon.assert.calledOnce(onConversationSaveAs);
+    sinon.assert.calledOnce(hideStub);
   });
 });

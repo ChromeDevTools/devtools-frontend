@@ -8,6 +8,7 @@ import * as WebMCP from '../../models/web_mcp/web_mcp.js';
 import {findMenuItemWithLabel, getMenuForToolbarButton} from '../../testing/ContextMenuHelpers.js';
 import {assertScreenshot, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, describeWithEnvironment, updateHostConfig} from '../../testing/EnvironmentHelpers.js';
+import {StubStackTrace} from '../../testing/StackTraceHelpers.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 
 import * as Application from './application.js';
@@ -446,5 +447,78 @@ describe('filterToolCalls', () => {
     });
     assert.lengthOf(result, 1);
     assert.strictEqual(result[0].invocationId, '5');
+  });
+});
+
+describeWithEnvironment('ToolDetailsWidget', () => {
+  it('renders a DOM node origin', async () => {
+    updateHostConfig({devToolsWebMCPSupport: {enabled: true}});
+    const sdkTarget = createTarget();
+    const container = document.createElement('div');
+    container.style.width = '600px';
+    container.style.height = '400px';
+    renderElementIntoDOM(container, {includeCommonStyles: true});
+
+    const domNode = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+    domNode.getAttribute.withArgs('id').returns('my-id');
+    domNode.getAttribute.withArgs('class').returns('class1 class2');
+    domNode.nodeNameInCorrectCase.returns('div');
+
+    const tool = createTool('my-tool', 'my description', 'frame1' as Protocol.Page.FrameId, sdkTarget);
+    sinon.stub(tool, 'node').get(() => ({
+                                   resolvePromise: () => Promise.resolve(domNode),
+                                 }));
+
+    const widget = new Application.WebMCPView.ToolDetailsWidget();
+    widget.markAsRoot();
+    widget.show(container);
+    widget.tool = tool;
+    await widget.updateComplete;
+
+    await assertScreenshot('application/webmcp_tool_details_node.png');
+  });
+
+  it('renders a stack trace origin', async () => {
+    updateHostConfig({devToolsWebMCPSupport: {enabled: true}});
+    const sdkTarget = createTarget();
+    const container = document.createElement('div');
+    container.style.width = '600px';
+    container.style.height = '400px';
+    renderElementIntoDOM(container, {includeCommonStyles: true});
+
+    const tool = createTool('my-tool', 'my description', 'frame1' as Protocol.Page.FrameId, sdkTarget);
+    sinon.stub(tool, 'stackTrace')
+        .get(() => Promise.resolve(StubStackTrace.create(['http://example.com/script.js:myFunction:10:5'])));
+
+    const widget = new Application.WebMCPView.ToolDetailsWidget();
+    widget.markAsRoot();
+    widget.show(container);
+    widget.tool = tool;
+    await widget.updateComplete;
+
+    await assertScreenshot('application/webmcp_tool_details_stacktrace.png');
+  });
+
+  it('renders a frame', async () => {
+    updateHostConfig({devToolsWebMCPSupport: {enabled: true}});
+    const sdkTarget = createTarget();
+    const container = document.createElement('div');
+    container.style.width = '600px';
+    container.style.height = '400px';
+    renderElementIntoDOM(container, {includeCommonStyles: true});
+
+    const frame = sinon.createStubInstance(SDK.ResourceTreeModel.ResourceTreeFrame);
+    frame.displayName.returns('My Frame Name');
+
+    const tool = createTool('my-tool', 'my description', 'frame1' as Protocol.Page.FrameId, sdkTarget);
+    sinon.stub(tool, 'frame').get(() => frame);
+
+    const widget = new Application.WebMCPView.ToolDetailsWidget();
+    widget.markAsRoot();
+    widget.show(container);
+    widget.tool = tool;
+    await widget.updateComplete;
+
+    await assertScreenshot('application/webmcp_tool_details_frame.png');
   });
 });

@@ -4,21 +4,27 @@
 
 import '../../ui/components/icon_button/icon_button.js';
 import '../../ui/components/lists/lists.js';
+import '../../ui/components/node_text/node_text.js';
 import '../../ui/legacy/components/data_grid/data_grid.js';
 import '../../ui/legacy/legacy.js';
 
+import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
+import type * as StackTrace from '../../models/stack_trace/stack_trace.js';
 import * as WebMCP from '../../models/web_mcp/web_mcp.js';
 import * as Adorners from '../../ui/components/adorners/adorners.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import type * as IconButton from '../../ui/components/icon_button/icon_button.js';
+import type * as NodeText from '../../ui/components/node_text/node_text.js';
+import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {
   Directives,
   html,
+  nothing,
   render,
 } from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -47,6 +53,14 @@ const UIStrings = {
    * @description Text to display when no calls have been made
    */
   noCallsPlaceholder: 'Start interacting with your `WebMCP` agent to see real-time tool calls and executions here.',
+  /**
+   * @description Text for the link to reveal the tool's DOM node in the Elements panel
+   */
+  viewInElementsPanel: 'View in Elements panel',
+  /**
+   * @description Text for the frame of a tool
+   */
+  frame: 'Frame',
   /**
    * @description Text for the name of a tool call
    */
@@ -134,6 +148,7 @@ const UIStrings = {
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/application/WebMCPView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+const {widget} = UI.Widget;
 
 export interface FilterState {
   text: string;
@@ -271,6 +286,7 @@ function getIconGroupsFromStats(toolStats: ReturnType<typeof calculateToolStats>
   }
   return groups;
 }
+
 export const DEFAULT_VIEW: View = (input, output, target) => {
   const tools = input.tools;
   const stats = calculateToolStats(input.toolCalls);
@@ -560,5 +576,133 @@ export class WebMCPView extends UI.Widget.VBox {
       onFilterChange: this.#handleFilterChange,
     };
     this.#view(input, {}, this.contentElement);
+  }
+}
+
+export interface ToolDetailsViewInput {
+  tool: WebMCP.WebMCPModel.Tool|null|undefined;
+  origin: SDK.DOMModel.DOMNode|StackTrace.StackTrace.StackTrace|undefined;
+  highlightNode: (node: SDK.DOMModel.DOMNode) => void;
+  clearHighlight: () => void;
+  revealNode: (node: SDK.DOMModel.DOMNode) => void;
+}
+
+// clang-format off
+const TOOL_DETAILS_VIEW = (input: ToolDetailsViewInput, output: undefined, target: HTMLElement): void => {
+  if (!input.tool) {
+    render(nothing, target);
+    return;
+  }
+  const tool = input.tool;
+  const origin = input.origin;
+  render(html`
+    <style>${webMCPViewStyles}</style>
+    <div class="tool-details-grid">
+      <div class="label">Name</div>
+      <div class="value source-code">${tool.name}</div>
+      <div class="label">Description</div>
+      <div class="value">${tool.description}</div>
+      ${tool.frame ? html`
+      <div class="label">${i18nString(UIStrings.frame)}</div>
+      <div class="value">${Components.Linkifier.Linkifier.linkifyRevealable(tool.frame, tool.frame.displayName())}</div>
+      ` : nothing}
+      ${origin instanceof SDK.DOMModel.DOMNode ? html`
+      <div class="label">Origin</div>
+      <div class="value tool-origin-container">
+        <span
+            class="node-text-container source-code tool-origin-node"
+            data-label="true"
+            @mouseenter=${() => input.highlightNode(origin)}
+            @mouseleave=${input.clearHighlight}>
+          <devtools-node-text .data=${{
+              nodeId: origin.getAttribute('id') || undefined,
+              nodeTitle: origin.nodeNameInCorrectCase(),
+              nodeClasses: origin.getAttribute('class')?.split(/\s+/).filter(s => Boolean(s))
+            } as NodeText.NodeText.NodeTextData}>
+          </devtools-node-text>
+        </span>
+        <devtools-button class="show-element"
+           .title=${i18nString(UIStrings.viewInElementsPanel)}
+           aria-label=${i18nString(UIStrings.viewInElementsPanel)}
+           .iconName=${'select-element'}
+           .jslogContext=${'elements.select-element'}
+           .size=${Buttons.Button.Size.SMALL}
+           .variant=${Buttons.Button.Variant.ICON}
+           @click=${() => input.revealNode(origin)}
+           ></devtools-button>
+      </div>` : origin ? html`
+      <div class="label">Origin</div>
+      <div class="value">
+        ${widget(Components.JSPresentationUtils.StackTracePreviewContent,
+                 {stackTrace: origin, options: { expandable: true}})}
+      </div>` : nothing}
+    </div>
+  `, target);
+};
+// clang-format on
+
+export class ToolDetailsWidget extends UI.Widget.Widget {
+  #tool: WebMCP.WebMCPModel.Tool|null|undefined = null;
+  #origin: SDK.DOMModel.DOMNode|StackTrace.StackTrace.StackTrace|undefined;
+
+  #view: typeof TOOL_DETAILS_VIEW;
+
+  constructor(element?: HTMLElement, view: typeof TOOL_DETAILS_VIEW = TOOL_DETAILS_VIEW) {
+    super(element);
+    this.#view = view;
+  }
+
+  set tool(tool: WebMCP.WebMCPModel.Tool|null|undefined) {
+    if (this.#tool === tool) {
+      return;
+    }
+    this.#tool = tool;
+    this.#origin = undefined;
+
+    if (this.#tool) {
+      void this.#setToolOrigin(this.#tool);
+    }
+    this.requestUpdate();
+  }
+
+  async #setToolOrigin(tool: WebMCP.WebMCPModel.Tool): Promise<void> {
+    const origin = await (tool.node ? tool.node.resolvePromise() : tool.stackTrace);
+    if (this.#tool === tool && origin) {
+      this.#origin = origin;
+      this.requestUpdate();
+    }
+  }
+
+  get tool(): WebMCP.WebMCPModel.Tool|null|undefined {
+    return this.#tool;
+  }
+
+  #highlightNode = (node: SDK.DOMModel.DOMNode): void => {
+    node.highlight();
+  };
+
+  #clearHighlight = (): void => {
+    SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
+  };
+
+  #revealNode = (node: SDK.DOMModel.DOMNode): void => {
+    void Common.Revealer.reveal(node);
+    void node.scrollIntoView();
+  };
+
+  override performUpdate(): void {
+    const viewInput = {
+      tool: this.#tool,
+      origin: this.#origin,
+      highlightNode: this.#highlightNode,
+      clearHighlight: this.#clearHighlight,
+      revealNode: this.#revealNode,
+    };
+    this.#view(viewInput, undefined, this.contentElement);
+  }
+
+  override wasShown(): void {
+    super.wasShown();
+    this.requestUpdate();
   }
 }

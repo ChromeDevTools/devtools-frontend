@@ -47,6 +47,57 @@
         gap: 4px;
     }
 
+    .tool-details {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        overflow: auto;
+    }
+
+    .tool-details-grid {
+      display: grid;
+      grid-template-columns: min-content 1fr;
+      gap: 0 var(--sys-size-16);
+      padding: calc(0.5*var(--sys-size-6)) var(--sys-size-8);
+      align-items: flex-start;
+
+      .label {
+        color: var(--sys-color-on-surface-subtle);
+        white-space: nowrap;
+        padding: var(--sys-size-6) 0;
+      }
+
+      .value {
+        &.source-code {
+          color: var(--sys-color-token-attribute);
+        }
+
+        padding: var(--sys-size-6) 0;
+        color: var(--sys-color-on-surface);
+        overflow-wrap: anywhere;
+
+        &:has(> .stack-preview-container) {
+          padding: var(--sys-size-4) 0;
+        }
+
+        &.tool-origin-container {
+          display: flex;
+          align-items: center;
+          gap: var(--sys-size-4);
+        }
+
+        .tool-origin-node {
+          display: flex;
+          align-items: center;
+          cursor: default;
+        }
+      }
+
+      .show-element {
+        height: 1lh;
+      }
+    }
+
     devtools-list {
       flex: 1 1 auto;
       margin: 0;

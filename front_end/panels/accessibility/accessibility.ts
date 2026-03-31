@@ -8,7 +8,6 @@ import * as AccessibilityStrings from './AccessibilityStrings.js';
 import * as AccessibilitySubPane from './AccessibilitySubPane.js';
 import * as ARIAAttributesView from './ARIAAttributesView.js';
 import * as ARIAMetadata from './ARIAMetadata.js';
-import * as AXBreadcrumbsPane from './AXBreadcrumbsPane.js';
 
 export {
   AccessibilityNodeView,
@@ -17,5 +16,4 @@ export {
   AccessibilitySubPane,
   ARIAAttributesView,
   ARIAMetadata,
-  AXBreadcrumbsPane,
 };

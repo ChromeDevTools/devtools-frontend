@@ -5,7 +5,7 @@
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import type * as Protocol from '../../generated/protocol.js';
 
-import {DeferredDOMNode, type DOMNode} from './DOMModel.js';
+import {DeferredDOMNode, DOMModel, type DOMNode, Events as DOMModelEvents} from './DOMModel.js';
 import {SDKModel} from './SDKModel.js';
 import {Capability, type Target} from './Target.js';
 
@@ -213,6 +213,18 @@ export class AccessibilityModel extends SDKModel<EventTypes> implements Protocol
     target.registerAccessibilityDispatcher(this);
     this.agent = target.accessibilityAgent();
     void this.resumeModel();
+
+    const domModel = target.model(DOMModel);
+    if (domModel) {
+      domModel.addEventListener(DOMModelEvents.NodeRemoved, () => {
+        this.clear();
+        this.dispatchEventToListeners(Events.TREE_UPDATED, {});
+      });
+      domModel.addEventListener(DOMModelEvents.NodeInserted, () => {
+        this.clear();
+        this.dispatchEventToListeners(Events.TREE_UPDATED, {});
+      });
+    }
   }
 
   clear(): void {

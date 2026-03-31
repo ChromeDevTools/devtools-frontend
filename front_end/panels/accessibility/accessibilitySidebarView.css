@@ -1,0 +1,10 @@
+/*
+ * Copyright 2026 The Chromium Authors
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+.accessibility-toggle-container {
+  padding: 12px 18px;
+  border-bottom: 1px solid var(--sys-color-divider);
+}

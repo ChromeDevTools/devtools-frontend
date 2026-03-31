@@ -1092,14 +1092,8 @@ export const toggleAccessibilityPane = async (devToolsPage: DevToolsPage) => {
 };
 
 function veImpressionForAccessibilityPane() {
-  return veImpressionsUnder(
+  const result = veImpressionsUnder(
       'Panel: elements', [veImpression('Pane', 'sidebar', [
-        veImpression('SectionHeader', 'accessibility-tree'),
-        veImpression(
-            'Section', 'accessibility-tree',
-            [
-              veImpression('Toggle', 'full-accessibility-tree'),
-            ]),
         veImpression('SectionHeader', 'aria-attributes'),
         veImpression('Section', 'aria-attributes'),
         veImpression('SectionHeader', 'computed-properties'),
@@ -1107,11 +1101,14 @@ function veImpressionForAccessibilityPane() {
         veImpression('SectionHeader', 'source-order-viewer'),
         veImpression('Section', 'source-order-viewer', [veImpression('Toggle')]),
       ])]);
+  result.impressions.push('Panel: elements > Toggle: elements.toggle-a11y-tree');
+  return result;
 }
 
 export const toggleAccessibilityTree = async (devToolsPage: DevToolsPage) => {
-  await devToolsPage.click('aria/Switch to Accessibility Tree view');
-  await expectVeEvents([veClick('Panel: elements > Action: toggle-accessibility-tree')], undefined, devToolsPage);
+  await toggleAccessibilityPane(devToolsPage);
+  await devToolsPage.click('aria/Show accessibility tree');
+  await expectVeEvents([veChange('Panel: elements > Toggle: elements.toggle-a11y-tree')], undefined, devToolsPage);
 };
 
 export const getPropertiesWithHints = async (devToolsPage: DevToolsPage) => {

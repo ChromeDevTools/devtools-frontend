@@ -8,7 +8,7 @@ import type * as puppeteer from 'puppeteer-core';
 import {toggleAccessibilityTree} from '../helpers/elements-helpers.js';
 
 describe('Accessibility Tree in the Elements Tab', function() {
-  setup({enabledDevToolsExperiments: ['full-accessibility-tree', 'protocol-monitor']});
+  setup({enabledDevToolsExperiments: ['protocol-monitor']});
 
   it('displays the fuller accessibility tree', async ({devToolsPage, inspectedPage}) => {
     await inspectedPage.goToResource('elements/accessibility-simple-page.html');
@@ -20,8 +20,6 @@ describe('Accessibility Tree in the Elements Tab', function() {
 });
 
 describe('Accessibility Tree in the Elements Tab', function() {
-  setup({enabledDevToolsExperiments: ['full-accessibility-tree']});
-
   it('allows navigating iframes', async ({devToolsPage, inspectedPage}) => {
     await inspectedPage.goToResource('elements/accessibility-iframe-page.html');
     await toggleAccessibilityTree(devToolsPage);
@@ -93,11 +91,11 @@ describe('Accessibility Tree in the Elements Tab', function() {
         `link\xa0"cats" focusable:\xa0true url:\xa0${inspectedPage.getResourcesPath()}/elements/x`);
     await inspectedPage.bringToFront();
     await link!.evaluate(node => node.remove());
+    await devToolsPage.bringToFront();
     // For some reason a11y tree takes a while to propagate.
     for (let i = 0; i < 30; i++) {
       await inspectedPage.raf();
     }
-    await devToolsPage.bringToFront();
     await devToolsPage.waitForNoElementsWithTextContent(
         `link\xa0"cats" focusable:\xa0true url:\xa0${inspectedPage.getResourcesPath()}/elements/x`);
   });

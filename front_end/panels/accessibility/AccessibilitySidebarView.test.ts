@@ -2,11 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection, setMockConnectionResponseHandler} from '../../testing/MockConnection.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Accessibility from './accessibility.js';
 
@@ -18,6 +20,13 @@ describeWithMockConnection('AccessibilitySidebarView', () => {
 
   beforeEach(() => {
     stubNoopSettings();
+    UI.ActionRegistration.maybeRemoveActionExtension('elements.toggle-a11y-tree');
+    UI.ActionRegistration.registerActionExtension({
+      actionId: 'elements.toggle-a11y-tree',
+      category: UI.ActionRegistration.ActionCategory.ELEMENTS,
+      title: () => 'Toggle Accessibility Tree' as Platform.UIString.LocalizedString,
+      toggleable: true,
+    });
     target = createTarget();
     setMockConnectionResponseHandler(
         'DOM.getDocument', () => ({root: {nodeId: NODE_ID}} as Protocol.DOM.GetDocumentResponse));
@@ -25,6 +34,7 @@ describeWithMockConnection('AccessibilitySidebarView', () => {
   });
 
   afterEach(() => {
+    UI.ActionRegistration.maybeRemoveActionExtension('elements.toggle-a11y-tree');
     view.detach();
   });
 

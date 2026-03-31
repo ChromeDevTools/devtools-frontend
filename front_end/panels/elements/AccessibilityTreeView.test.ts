@@ -15,19 +15,17 @@ const MAIN_FRAME_ID = 'MAIN_FRAME_ID' as Protocol.Page.FrameId;
 
 describeWithMockConnection('AccessibilityTreeView', () => {
   let target: SDK.Target.Target;
-  let toggleButoon: HTMLElement;
   let treeComponent: TreeOutline.TreeOutline.TreeOutline<Elements.AccessibilityTreeUtils.AXTreeNodeData>;
 
   beforeEach(() => {
     stubNoopSettings();
     target = createTarget();
-    toggleButoon = document.createElement('div');
     treeComponent = new TreeOutline.TreeOutline.TreeOutline<Elements.AccessibilityTreeUtils.AXTreeNodeData>();
   });
 
   const updatesUiOnEvent = (inScope: boolean) => async () => {
     SDK.TargetManager.TargetManager.instance().setScopeTarget(inScope ? target : null);
-    const view = new Elements.AccessibilityTreeView.AccessibilityTreeView(toggleButoon, treeComponent);
+    const view = new Elements.AccessibilityTreeView.AccessibilityTreeView(treeComponent);
     renderElementIntoDOM(view);
 
     const model = target.model(SDK.AccessibilityModel.AccessibilityModel);

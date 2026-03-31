@@ -148,7 +148,7 @@ export async function findSearchResult(
     return;
   });
 
-  const match = await devToolsPage.waitFor('#profile-views table.data');
+  const match = await devToolsPage.waitFor('#profile-views');
   await devToolsPage.waitForElementWithTextContent(searchResult, match);
 }
 
@@ -176,7 +176,7 @@ interface RetainerChainEntry {
   retainerClassName: string;
 }
 
-export async function assertRetainerChainSatisfies(
+export async function checkRetainerChainSatisfies(
     p: (retainerChain: RetainerChainEntry[]) => boolean, devToolsPage: DevToolsPage) {
   // Give some time for the expansion to finish.
   const retainerGridElements = await getDataGridRows('.retaining-paths-view table.data', devToolsPage);
@@ -201,7 +201,7 @@ export async function assertRetainerChainSatisfies(
 
 export async function waitUntilRetainerChainSatisfies(
     p: (retainerChain: RetainerChainEntry[]) => boolean, devToolsPage: DevToolsPage) {
-  await devToolsPage.waitForFunction(assertRetainerChainSatisfies.bind(null, p, devToolsPage));
+  await devToolsPage.waitForFunction(checkRetainerChainSatisfies.bind(null, p, devToolsPage));
 }
 
 export function appearsInOrder(targetArray: string[], inputArray: string[]) {
@@ -230,7 +230,7 @@ export function appearsInOrder(targetArray: string[], inputArray: string[]) {
 }
 
 export async function waitForRetainerChain(expectedRetainers: string[], devToolsPage: DevToolsPage) {
-  await devToolsPage.waitForFunction(assertRetainerChainSatisfies.bind(null, retainerChain => {
+  await devToolsPage.waitForFunction(checkRetainerChainSatisfies.bind(null, retainerChain => {
     const actual = retainerChain.map(e => e.retainerClassName);
     return appearsInOrder(actual, expectedRetainers);
   }, devToolsPage));

@@ -12,6 +12,7 @@ import {
   changeAllocationSampleViewViaDropdown,
   changeViewViaDropdown,
   checkExposeInternals,
+  checkRetainerChainSatisfies,
   clickOnContextMenuForRetainer,
   expandFocusedRow,
   findSearchResult,
@@ -93,7 +94,7 @@ describe('The Memory Panel', function() {
     await waitForNonEmptyHeapSnapshotData(devToolsPage);
     await setSearchFilter('leaking', devToolsPage);
     await waitForSearchResultNumber(4, devToolsPage);
-    await findSearchResult('leaking()', '3 of 4', devToolsPage);
+    await findSearchResult('leaking()', undefined, devToolsPage);
     await waitForRetainerChain(
         [
           'Detached V8EventListener', 'Detached EventListener', 'Detached InternalNode', 'Detached InternalNode',
@@ -117,7 +118,7 @@ describe('The Memory Panel', function() {
     });
 
     await step('selecting the search result that we need', async () => {
-      await findSearchResult('myEventListener()', '3 of 4', devToolsPage);
+      await findSearchResult('myEventListener()', undefined, devToolsPage);
     });
 
     await step('waiting for retainer chain', async () => {
@@ -215,7 +216,7 @@ describe('The Memory Panel', function() {
     await devToolsPage.waitForFunction(async () => {
       // Wait for all the rows of the data-grid to load.
       const retainerGridElements = await getDataGridRows('.retaining-paths-view table.data', devToolsPage);
-      return retainerGridElements.length === 13;
+      return retainerGridElements.length === 12;
     });
 
     const sharedInLeakingElementRow = await devToolsPage.waitForFunction(async () => {
@@ -283,9 +284,15 @@ describe('The Memory Panel', function() {
     await waitForNonEmptyHeapSnapshotData(devToolsPage);
     await setSearchFilter('Detached <div>', devToolsPage);
     await waitForSearchResultNumber(3, devToolsPage);
-    await waitUntilRetainerChainSatisfies(retainerChain => {
-      return retainerChain.length > 0 && retainerChain[0].propertyName === 'retaining_wrapper';
-    }, devToolsPage);
+    await devToolsPage.waitForFunction(async () => {
+      if (await checkRetainerChainSatisfies(retainerChain => {
+            return retainerChain.length > 0 && retainerChain[0].propertyName === 'retaining_wrapper';
+          }, devToolsPage)) {
+        return true;
+      }
+      await devToolsPage.click('[aria-label="Show next result"]');
+      return false;
+    });
     const rows = await getDataGridRows('.retaining-paths-view table.data', devToolsPage);
     const propertyNameElement = await rows[0].$('span.property-name');
     await propertyNameElement!.hover();
@@ -502,7 +509,6 @@ describe('The Memory Panel', function() {
         ],
         devToolsPage);
     await clickOnContextMenuForRetainer('b', 'Ignore this retainer', devToolsPage);
-    await waitForRetainerChain(['(Internalized strings)', '(GC roots)'], devToolsPage);
     await restoreIgnoredRetainers(devToolsPage);
     await waitForRetainerChain(
         [

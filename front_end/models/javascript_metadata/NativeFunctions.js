@@ -7402,11 +7402,7 @@ export const NativeFunctions = [
   },
   {
     name: "registerTool",
-    signatures: [["tool"]]
-  },
-  {
-    name: "unregisterTool",
-    signatures: [["name"]]
+    signatures: [["tool","?options"]]
   },
   {
     name: "SnapEvent",

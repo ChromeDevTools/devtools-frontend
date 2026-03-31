@@ -4,6 +4,7 @@
 
 import {doubleRaf, raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {html, render} from '../../ui/lit/lit.js';
 
 import * as UI from './legacy.js';
 
@@ -97,5 +98,242 @@ describeWithEnvironment('TabbedPane', () => {
     // Press 'Enter' to focus the widget in the first tab.
     dispatchKeyEvent('Enter');
     assert.strictEqual(getFocusedElementText(), 'Widget 0', 'Focus should move to Widget 0');
+  });
+});
+
+describeWithEnvironment('TabbedPaneElement', () => {
+  it('creates tabs from slot elements', async () => {
+    const container = document.createElement('div');
+    renderElementIntoDOM(container);
+    render(
+        html`
+      <devtools-tabbed-pane>
+        <div id="tab1" title="Tab 1">Content 1</div>
+        <div id="tab2" title="Tab 2">Content 2</div>
+      </devtools-tabbed-pane>
+    `,
+        container);
+
+    const tabbedPaneElement = container.querySelector('devtools-tabbed-pane') as UI.TabbedPane.TabbedPaneElement;
+    assert.isNotNull(tabbedPaneElement);
+    const widget = UI.Widget.Widget.get(tabbedPaneElement) as UI.TabbedPane.TabbedPane;
+    assert.isNotNull(widget);
+
+    await raf();  // Wait for slotchange and updateTabs
+
+    assert.lengthOf(widget.tabs, 2);
+    assert.strictEqual(widget.tabs[0].id, 'tab1');
+    assert.strictEqual(widget.tabs[0].title, 'Tab 1');
+    assert.strictEqual(widget.tabs[1].id, 'tab2');
+    assert.strictEqual(widget.tabs[1].title, 'Tab 2');
+  });
+
+  it('creates tabs with selected and disabled attributes', async () => {
+    const container = document.createElement('div');
+    renderElementIntoDOM(container);
+    render(
+        html`
+      <devtools-tabbed-pane>
+        <div id="tab1" title="Tab 1" disabled>Content 1</div>
+        <div id="tab2" title="Tab 2" selected>Content 2</div>
+      </devtools-tabbed-pane>
+    `,
+        container);
+
+    const tabbedPaneElement = container.querySelector('devtools-tabbed-pane') as UI.TabbedPane.TabbedPaneElement;
+    assert.isNotNull(tabbedPaneElement);
+    const widget = UI.Widget.Widget.get(tabbedPaneElement) as UI.TabbedPane.TabbedPane;
+    assert.isNotNull(widget);
+
+    await raf();  // Wait for slotchange and updateTabs
+
+    assert.lengthOf(widget.tabs, 2);
+    assert.isFalse(widget.tabIsEnabled('tab1'));
+    assert.isTrue(widget.tabIsEnabled('tab2'));
+    assert.strictEqual(widget.selectedTabId, 'tab2');
+  });
+
+  it('creates tabs with jslogcontext', async () => {
+    const container = document.createElement('div');
+    renderElementIntoDOM(container);
+    render(
+        html`
+      <devtools-tabbed-pane>
+        <div id="tab1" title="Tab 1" jslogcontext="log1">Content 1</div>
+      </devtools-tabbed-pane>
+    `,
+        container);
+
+    const tabbedPaneElement = container.querySelector('devtools-tabbed-pane') as UI.TabbedPane.TabbedPaneElement;
+    assert.isNotNull(tabbedPaneElement);
+    const widget = UI.Widget.Widget.get(tabbedPaneElement) as UI.TabbedPane.TabbedPane;
+    assert.isNotNull(widget);
+
+    await raf();
+
+    assert.strictEqual(widget.tabs[0].jslogContext, 'log1');
+  });
+
+  it('updates tabs when attributes change', async () => {
+    const container = document.createElement('div');
+    renderElementIntoDOM(container);
+    render(
+        html`
+      <devtools-tabbed-pane>
+        <div id="tab1" title="Tab 1">Content 1</div>
+      </devtools-tabbed-pane>
+    `,
+        container);
+
+    const tabbedPaneElement = container.querySelector('devtools-tabbed-pane') as UI.TabbedPane.TabbedPaneElement;
+    const widget = UI.Widget.Widget.get(tabbedPaneElement) as UI.TabbedPane.TabbedPane;
+    await raf();
+
+    const tabElement = container.querySelector('#tab1') as HTMLElement;
+    tabElement.setAttribute('title', 'Updated Tab 1');
+
+    // MutationObserver needs a tick
+    await new Promise(resolve => setTimeout(resolve, 0));
+
+    assert.strictEqual(widget.tabs[0].title, 'Updated Tab 1');
+  });
+
+  it('updates tabs when jslogcontext attribute changes', async () => {
+    const container = document.createElement('div');
+    renderElementIntoDOM(container);
+    render(
+        html`
+      <devtools-tabbed-pane>
+        <div id="tab1" title="Tab 1">Content 1</div>
+      </devtools-tabbed-pane>
+    `,
+        container);
+
+    const tabbedPaneElement = container.querySelector('devtools-tabbed-pane') as UI.TabbedPane.TabbedPaneElement;
+    const widget = UI.Widget.Widget.get(tabbedPaneElement) as UI.TabbedPane.TabbedPane;
+    await raf();
+
+    const tabElement = container.querySelector('#tab1') as HTMLElement;
+    tabElement.setAttribute('jslogcontext', 'updated-log');
+
+    // MutationObserver needs a tick
+    await new Promise(resolve => setTimeout(resolve, 0));
+
+    assert.strictEqual(widget.tabs[0].jslogContext, 'updated-log');
+  });
+
+  it('updates tabs when selected attribute changes', async () => {
+    const container = document.createElement('div');
+    renderElementIntoDOM(container);
+    render(
+        html`
+      <devtools-tabbed-pane>
+        <div id="tab1" title="Tab 1">Content 1</div>
+        <div id="tab2" title="Tab 2">Content 2</div>
+      </devtools-tabbed-pane>
+    `,
+        container);
+
+    const tabbedPaneElement = container.querySelector('devtools-tabbed-pane') as UI.TabbedPane.TabbedPaneElement;
+    const widget = UI.Widget.Widget.get(tabbedPaneElement) as UI.TabbedPane.TabbedPane;
+    await raf();
+
+    assert.strictEqual(widget.selectedTabId, 'tab1');
+
+    const tab2 = container.querySelector('#tab2') as HTMLElement;
+    tab2.setAttribute('selected', '');
+
+    // MutationObserver needs a tick
+    await new Promise(resolve => setTimeout(resolve, 0));
+
+    assert.strictEqual(widget.selectedTabId, 'tab2');
+  });
+
+  it('updates tabs when disabled attribute changes', async () => {
+    const container = document.createElement('div');
+    renderElementIntoDOM(container);
+    render(
+        html`
+      <devtools-tabbed-pane>
+        <div id="tab1" title="Tab 1">Content 1</div>
+        <div id="tab2" title="Tab 2">Content 2</div>
+      </devtools-tabbed-pane>
+    `,
+        container);
+
+    const tabbedPaneElement = container.querySelector('devtools-tabbed-pane') as UI.TabbedPane.TabbedPaneElement;
+    const widget = UI.Widget.Widget.get(tabbedPaneElement) as UI.TabbedPane.TabbedPane;
+    await raf();
+
+    assert.isTrue(widget.tabIsEnabled('tab2'));
+
+    const tab2 = container.querySelector('#tab2') as HTMLElement;
+    tab2.setAttribute('disabled', '');
+
+    // MutationObserver needs a tick
+    await new Promise(resolve => setTimeout(resolve, 0));
+
+    assert.isFalse(widget.tabIsEnabled('tab2'));
+  });
+
+  it('updates tabs when children are added or removed', async () => {
+    const container = document.createElement('div');
+    renderElementIntoDOM(container);
+    render(
+        html`
+      <devtools-tabbed-pane>
+        <div id="tab1" title="Tab 1">Content 1</div>
+      </devtools-tabbed-pane>
+    `,
+        container);
+
+    const tabbedPaneElement = container.querySelector('devtools-tabbed-pane') as UI.TabbedPane.TabbedPaneElement;
+    const widget = UI.Widget.Widget.get(tabbedPaneElement) as UI.TabbedPane.TabbedPane;
+    await raf();
+
+    assert.lengthOf(widget.tabs, 1);
+
+    // Add a new tab
+    const newTab = document.createElement('div');
+    newTab.id = 'tab2';
+    newTab.setAttribute('title', 'Tab 2');
+    tabbedPaneElement.appendChild(newTab);
+
+    await raf();  // wait for slotchange
+
+    assert.lengthOf(widget.tabs, 2);
+    assert.strictEqual(widget.tabs[1].id, 'tab2');
+
+    // Remove the first tab
+    const tab1 = container.querySelector('#tab1') as HTMLElement;
+    tab1.remove();
+
+    await raf();
+
+    assert.lengthOf(widget.tabs, 1);
+    assert.strictEqual(widget.tabs[0].id, 'tab2');
+  });
+
+  it('supports left and right toolbars via slots', async () => {
+    const container = document.createElement('div');
+    renderElementIntoDOM(container);
+    render(
+        html`
+      <devtools-tabbed-pane>
+        <devtools-toolbar slot="left" id="left-toolbar"></devtools-toolbar>
+        <devtools-toolbar slot="right" id="right-toolbar"></devtools-toolbar>
+      </devtools-tabbed-pane>
+    `,
+        container);
+
+    const tabbedPaneElement = container.querySelector('devtools-tabbed-pane') as UI.TabbedPane.TabbedPaneElement;
+    const widget = UI.Widget.Widget.get(tabbedPaneElement) as UI.TabbedPane.TabbedPane;
+    await raf();
+
+    const leftToolbar = container.querySelector('#left-toolbar');
+    const rightToolbar = container.querySelector('#right-toolbar');
+
+    assert.strictEqual(widget.leftToolbar(), leftToolbar);
+    assert.strictEqual(widget.rightToolbar(), rightToolbar);
   });
 });

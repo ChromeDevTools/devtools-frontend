@@ -269,7 +269,7 @@ export class WidgetElement<WidgetT extends Widget> extends HTMLElement {
   override removeChild<T extends Node>(child: T): T {
     const childWidget = Widget.get(child);
     if (childWidget) {
-      childWidget.detach();
+      childWidget.detach(/* overrideHideOnDetach= */ true);
       return child;
     }
     return super.removeChild(child);
@@ -279,7 +279,7 @@ export class WidgetElement<WidgetT extends Widget> extends HTMLElement {
     for (const child of this.children) {
       const childWidget = Widget.get(child);
       if (childWidget) {
-        childWidget.detach();
+        childWidget.detach(/* overrideHideOnDetach= */ true);
       }
     }
     super.removeChildren();

@@ -61,7 +61,7 @@ export function removeChildren(node: Node): void {
     const widget = UI.Widget.Widget.get(firstChild);
     if (widget) {
       // Child is a widget, so we have to use the Widget system to remove it from the DOM.
-      widget.detach();
+      widget.detach(/* overrideHideOnDetach= */ true);
       continue;
     }
     // For regular children, recursively remove their children, since some of them

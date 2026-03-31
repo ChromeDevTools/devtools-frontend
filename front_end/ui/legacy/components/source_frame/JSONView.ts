@@ -300,7 +300,7 @@ export class SearchableJsonView extends UI.SearchableView.SearchableView {
     jsonView.element.tabIndex = 0;
   }
 
-  set jsonObject(obj: Object) {
+  set jsonObject(obj: Object|null|undefined) {
     const jsonView = new JSONView(new ParsedJSON(obj, '', ''));
     this.#jsonView.detach();
     this.#jsonView = jsonView;

@@ -9,8 +9,8 @@ class WebWorkerScope implements Api.HostRuntime.WorkerScope {
     self.postMessage(message);
   }
 
-  set onmessage(listener: (event: Api.HostRuntime.WorkerMessageEvent) => void) {
-    self.onmessage = listener;
+  set onmessage(listener: (event: Api.HostRuntime.WorkerMessageEvent) => Promise<void>| void) {
+    self.addEventListener('message', listener);
   }
 }
 

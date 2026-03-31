@@ -12,8 +12,8 @@ class NodeWorkerScope implements Api.HostRuntime.WorkerScope {
   }
 
   set onmessage(listener: (event: Api.HostRuntime.WorkerMessageEvent) => void) {
-    WorkerThreads.parentPort?.on('message', data => {
-      listener({data});
+    WorkerThreads.parentPort?.addEventListener('message', msg => {
+      listener(msg as unknown as Api.HostRuntime.WorkerMessageEvent);
     });
   }
 }
@@ -36,10 +36,10 @@ class NodeWorker implements Api.HostRuntime.Worker {
     });
   }
 
-  postMessage(message: unknown): void {
+  postMessage(message: unknown, transfer?: Api.HostRuntime.WorkerTransferable[]): void {
     void this.#workerPromise.then(worker => {
       if (!this.#disposed) {
-        worker.postMessage(message);
+        worker.postMessage(message, transfer);
       }
     });
   }
@@ -56,11 +56,11 @@ class NodeWorker implements Api.HostRuntime.Worker {
     this.dispose();
   }
 
-  set onmessage(listener: (event: unknown) => void) {
+  set onmessage(listener: (event: Api.HostRuntime.WorkerMessageEvent) => void) {
     void this.#workerPromise.then(worker => {
-      worker.on('message', data => {
+      worker.on('message', (data: unknown) => {
         if (!this.#disposed) {
-          listener({data});
+          listener({data, ports: []});
         }
       });
     });

@@ -9702,7 +9702,7 @@ var TimelineUIUtils = class _TimelineUIUtils {
     }
     return LegacyComponents.Linkifier.Linkifier.linkifyURL(url, options);
   }
-  static linkifyTopCallFrame(event, target, linkifier, isFreshOrEnhanced = false) {
+  static linkifyTopCallFrame(event, target, linkifier, isFreshOrEnhanced = false, maxLength) {
     let frame = Trace23.Helpers.Trace.getZeroIndexedStackTraceInEventPayload(event)?.[0];
     if (Trace23.Types.Events.isProfileCall(event)) {
       frame = event.callFrame;
@@ -9716,7 +9716,8 @@ var TimelineUIUtils = class _TimelineUIUtils {
       inlineFrameIndex: 0,
       showColumnNumber: true,
       columnNumber: frame.columnNumber,
-      lineNumber: frame.lineNumber
+      lineNumber: frame.lineNumber,
+      maxLength
     };
     if (isFreshOrEnhanced) {
       return linkifier.maybeLinkifyConsoleCallFrame(target, frame, { showColumnNumber: true, inlineFrameIndex: 0 });
@@ -11352,6 +11353,7 @@ var TimelineTreeView = class extends Common11.ObjectWrapper.eventMixin(UI10.Widg
   // Compact mode is used to render the tree view in a more compact UI,
   // suitable for AI assistance widgets. It removes sidebars and toolbars.
   #compactMode = false;
+  #maxLinkLength = void 0;
   /**
    * Determines if the first child in the data grid will be selected
    * by default when refreshTree() gets called.
@@ -11409,6 +11411,12 @@ var TimelineTreeView = class extends Common11.ObjectWrapper.eventMixin(UI10.Widg
     if (this.dataGrid) {
       this.#applyCompactMode();
     }
+  }
+  get maxLinkLength() {
+    return this.#maxLinkLength;
+  }
+  set maxLinkLength(maxLinkLength) {
+    this.#maxLinkLength = maxLinkLength;
   }
   #applyCompactMode() {
     if (this.#compactMode && this.dataGrid) {
@@ -11904,7 +11912,8 @@ var GridNode = class extends DataGrid.SortableDataGrid.SortableDataGridNode {
       const target = parsedTrace ? targetForEvent(parsedTrace, event) : null;
       const linkifier = this.treeView.linkifier;
       const isFreshOrEnhanced = Boolean(parsedTrace && Tracing4.FreshRecording.Tracker.instance().recordingIsFreshOrEnhanced(parsedTrace));
-      this.linkElement = TimelineUIUtils.linkifyTopCallFrame(event, target, linkifier, isFreshOrEnhanced);
+      const maxLength = this.treeView.maxLinkLength;
+      this.linkElement = TimelineUIUtils.linkifyTopCallFrame(event, target, linkifier, isFreshOrEnhanced, maxLength);
       if (this.linkElement) {
         container.createChild("div", "activity-link").appendChild(this.linkElement);
       }

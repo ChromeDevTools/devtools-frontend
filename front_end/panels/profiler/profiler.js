@@ -1079,10 +1079,7 @@ var ProfileType = class extends Common.ObjectWrapper.ObjectWrapper {
     return true;
   }
   getProfiles() {
-    function isFinished(profile) {
-      return this.#profileBeingRecorded !== profile;
-    }
-    return this.profiles.filter(isFinished.bind(this));
+    return this.profiles.filter((profile) => this.#profileBeingRecorded !== profile);
   }
   customContent() {
     return null;
@@ -5488,8 +5485,6 @@ var HeapSnapshotWorkerProxy = class extends Common9.ObjectWrapper.ObjectWrapper 
   eventHandler;
   nextObjectId = 1;
   nextCallId = 1;
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   callbacks = /* @__PURE__ */ new Map();
   previousCallbacks = /* @__PURE__ */ new Set();
   worker;
@@ -5512,9 +5507,7 @@ var HeapSnapshotWorkerProxy = class extends Common9.ObjectWrapper.ObjectWrapper 
   }
   dispose() {
     this.worker.terminate();
-    if (this.interval) {
-      clearInterval(this.interval);
-    }
+    clearInterval(this.interval);
   }
   disposeObject(objectId) {
     this.postMessage({ callId: this.nextCallId++, disposition: "dispose", objectId });
@@ -7374,13 +7367,11 @@ var HeapProfileHeader = class extends ProfileHeader {
     this.setupWorker();
     const reader = new Bindings2.FileUtils.ChunkedFileReader(file, 1e7);
     const success = await reader.read(this.receiver);
-    if (!success) {
-      const error = reader.error();
-      if (error) {
-        this.updateStatus(error.message);
-      }
+    const error = reader.error();
+    if (!success && error) {
+      this.updateStatus(error.message);
     }
-    return success ? null : reader.error();
+    return success ? null : error;
   }
   profileType() {
     return super.profileType();

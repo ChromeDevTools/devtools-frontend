@@ -11566,6 +11566,7 @@ import "./../../ui/legacy/legacy.js";
 import * as i18n57 from "./../../core/i18n/i18n.js";
 import * as Platform8 from "./../../core/platform/platform.js";
 import * as SDK24 from "./../../core/sdk/sdk.js";
+import * as WebMCP from "./../../models/web_mcp/web_mcp.js";
 import * as Adorners from "./../../ui/components/adorners/adorners.js";
 import * as Buttons8 from "./../../ui/components/buttons/buttons.js";
 import * as UI22 from "./../../ui/legacy/legacy.js";
@@ -11624,7 +11625,9 @@ var webMCPView_css_default = `/*
 
     devtools-list {
       flex: 1 1 auto;
-      margin: var(--sys-size-4);
+      margin: 0;
+      padding: var(--sys-size-4);
+      box-sizing: border-box;
     }
 
     .tool-item {
@@ -11633,17 +11636,33 @@ var webMCPView_css_default = `/*
         padding: 8px 0;
         gap: 4px;
         width: 100%;
+        min-width: 0;
         border-bottom: 1px solid var(--sys-color-divider);
     }
 
     .tool-name-container {
         display: flex;
         justify-content: space-between;
-        align-items: center;
+        align-items: flex-start;
+        gap: 8px;
     }
 
     .tool-name.source-code {
         color: var(--sys-color-token-string);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        min-width: 0;
+        flex: 1;
+    }
+
+    /* stylelint-disable-next-line selector-type-no-unknown */
+    .tool-name-container icon-button {
+        flex-shrink: 0;
+        height: 0;
+        overflow: visible;
+        display: flex;
+        align-items: center;
     }
 
     .tool-description {
@@ -11660,6 +11679,14 @@ var webMCPView_css_default = `/*
     }
 
     tr.status-cancelled {
+      color: var(--sys-color-on-surface-light);
+    }
+
+    .toolbar-text.status-error-text {
+      color: var(--sys-color-error);
+    }
+
+    .toolbar-text.status-cancelled-text {
       color: var(--sys-color-on-surface-light);
     }
 }
@@ -11751,7 +11778,27 @@ var UIStrings29 = {
   /**
    * @description Text for the status of a tool call that has failed
    */
-  pending: "In Progress"
+  pending: "In Progress",
+  /**
+   * @description Text for the total number of tool calls
+   * @example {2} PH1
+   */
+  totalCalls: "{PH1} Total calls",
+  /**
+   * @description Text for the number of failed tool calls
+   * @example {1} PH1
+   */
+  failed: "{PH1} Failed",
+  /**
+   * @description Text for the number of canceled tool calls
+   * @example {1} PH1
+   */
+  canceledCount: "{PH1} Canceled",
+  /**
+   * @description Text for the number of in progress tool calls
+   * @example {1} PH1
+   */
+  inProgressCount: "{PH1} In Progress"
 };
 var str_29 = i18n57.i18n.registerUIStrings("panels/application/WebMCPView.ts", UIStrings29);
 var i18nString29 = i18n57.i18n.getLocalizedString.bind(void 0, str_29);
@@ -11777,11 +11824,10 @@ function filterToolCalls(toolCalls, filterState) {
   if (toolTypes) {
     filtered = filtered.filter((call) => {
       const { imperative, declarative } = toolTypes;
-      const isDeclarative = call.tool?.backendNodeId !== void 0;
-      if (imperative && !isDeclarative) {
+      if (imperative && !call.tool.isDeclarative) {
         return true;
       }
-      if (declarative && isDeclarative) {
+      if (declarative && call.tool.isDeclarative) {
         return true;
       }
       return false;
@@ -11795,8 +11841,64 @@ function filterToolCalls(toolCalls, filterState) {
   }
   return filtered;
 }
+function calculateToolStats(calls) {
+  let total = 0, success = 0, failed = 0, canceled = 0, inProgress = 0;
+  for (const call of calls) {
+    total++;
+    if (call.result?.status === "Error") {
+      failed++;
+    } else if (call.result?.status === "Canceled") {
+      canceled++;
+    } else if (call.result?.status === "Success") {
+      success++;
+    } else if (call.result === void 0) {
+      inProgress++;
+    }
+  }
+  return { total, success, failed, canceled, inProgress };
+}
+function getIconGroupsFromStats(toolStats) {
+  const groups = [];
+  if (toolStats.success > 0) {
+    groups.push({
+      iconName: "check-circle",
+      iconColor: "var(--sys-color-green)",
+      iconWidth: "16px",
+      iconHeight: "16px",
+      text: String(toolStats.success)
+    });
+  }
+  if (toolStats.failed > 0) {
+    groups.push({
+      iconName: "cross-circle-filled",
+      iconColor: "var(--sys-color-error)",
+      iconWidth: "16px",
+      iconHeight: "16px",
+      text: String(toolStats.failed)
+    });
+  }
+  if (toolStats.canceled > 0) {
+    groups.push({
+      iconName: "record-stop",
+      iconColor: "var(--sys-color-on-surface-light)",
+      iconWidth: "16px",
+      iconHeight: "16px",
+      text: String(toolStats.canceled)
+    });
+  }
+  if (toolStats.inProgress > 0) {
+    groups.push({
+      iconName: "dots-circle",
+      iconWidth: "16px",
+      iconHeight: "16px",
+      text: String(toolStats.inProgress)
+    });
+  }
+  return groups;
+}
 var DEFAULT_VIEW6 = (input, output, target) => {
   const tools = input.tools;
+  const stats = calculateToolStats(input.toolCalls);
   const isFilterActive = Boolean(input.filters.text) || Boolean(input.filters.toolTypes) || Boolean(input.filters.statusTypes);
   const iconName = (call) => {
     switch (call.result?.status) {
@@ -11878,6 +11980,17 @@ var DEFAULT_VIEW6 = (input, output, target) => {
               `)}
               </table>
           </devtools-data-grid>
+          <div class="webmcp-toolbar-container" role="toolbar">
+            <devtools-toolbar class="webmcp-toolbar" role="presentation" wrappable>
+              <span class="toolbar-text">${i18nString29(UIStrings29.totalCalls, { PH1: stats.total })}</span>
+              <div class="toolbar-divider"></div>
+              <span class="toolbar-text status-error-text">${i18nString29(UIStrings29.failed, { PH1: stats.failed })}</span>
+              <div class="toolbar-divider"></div>
+              <span class="toolbar-text status-cancelled-text">${i18nString29(UIStrings29.canceledCount, { PH1: stats.canceled })}</span>
+              <div class="toolbar-divider"></div>
+              <span class="toolbar-text">${i18nString29(UIStrings29.inProgressCount, { PH1: stats.inProgress })}</span>
+            </devtools-toolbar>
+          </div>
         ` : html9`
         ${UI22.Widget.widget(UI22.EmptyWidget.EmptyWidget, {
     header: i18nString29(UIStrings29.noCallsPlaceholderTitle),
@@ -11894,14 +12007,19 @@ var DEFAULT_VIEW6 = (input, output, target) => {
   })}
         ` : html9`
           <devtools-list>
-            ${tools.map((tool) => html9`
+            ${tools.map((tool) => {
+    const toolStats = calculateToolStats(input.toolCalls.filter((c) => c.tool === tool));
+    const groups = getIconGroupsFromStats(toolStats);
+    return html9`
                 <div class="tool-item">
                   <div class="tool-name-container">
                     <div class="tool-name source-code">${tool.name}</div>
+                    ${groups.length > 0 ? html9`<icon-button .data=${{ groups, compact: false }}></icon-button>` : ""}
                   </div>
                   <div class="tool-description">${tool.description}</div>
                 </div>
-              `)}
+              `;
+  })}
           </devtools-list>
         `}
       </div>
@@ -11951,7 +12069,7 @@ var WebMCPView = class _WebMCPView extends UI22.Widget.VBox {
     super(target);
     this.#view = view;
     this.#filterButtons = _WebMCPView.createFilterButtons(this.#showToolTypesContextMenu.bind(this), this.#showStatusTypesContextMenu.bind(this));
-    SDK24.TargetManager.TargetManager.instance().observeModels(SDK24.WebMCPModel.WebMCPModel, {
+    SDK24.TargetManager.TargetManager.instance().observeModels(WebMCP.WebMCPModel.WebMCPModel, {
       modelAdded: (model) => this.#webMCPModelAdded(model),
       modelRemoved: (model) => this.#webMCPModelRemoved(model)
     });
@@ -11997,7 +12115,7 @@ var WebMCPView = class _WebMCPView extends UI22.Widget.VBox {
     model.removeEventListener("ToolResponded", this.requestUpdate, this);
   }
   #handleClearLogClick = () => {
-    const models = SDK24.TargetManager.TargetManager.instance().models(SDK24.WebMCPModel.WebMCPModel);
+    const models = SDK24.TargetManager.TargetManager.instance().models(WebMCP.WebMCPModel.WebMCPModel);
     for (const model of models) {
       model.clearCalls();
     }
@@ -12012,12 +12130,12 @@ var WebMCPView = class _WebMCPView extends UI22.Widget.VBox {
     this.requestUpdate();
   };
   #getTools() {
-    const models = SDK24.TargetManager.TargetManager.instance().models(SDK24.WebMCPModel.WebMCPModel);
+    const models = SDK24.TargetManager.TargetManager.instance().models(WebMCP.WebMCPModel.WebMCPModel);
     const tools = models.flatMap((model) => model.tools.toArray());
     return tools.sort((a, b) => a.name.localeCompare(b.name));
   }
   performUpdate() {
-    const models = SDK24.TargetManager.TargetManager.instance().models(SDK24.WebMCPModel.WebMCPModel);
+    const models = SDK24.TargetManager.TargetManager.instance().models(WebMCP.WebMCPModel.WebMCPModel);
     const toolCalls = models.flatMap((model) => model.toolCalls);
     const filteredCalls = filterToolCalls(toolCalls, this.#filterState);
     const input = {

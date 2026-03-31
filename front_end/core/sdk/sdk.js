@@ -37514,114 +37514,6 @@ var WebAuthnDispatcher = class {
   }
 };
 SDKModel.register(WebAuthnModel, { capabilities: 65536, autostart: false });
-
-// gen/front_end/core/sdk/WebMCPModel.js
-var WebMCPModel_exports = {};
-__export(WebMCPModel_exports, {
-  WebMCPModel: () => WebMCPModel
-});
-var WebMCPModel = class extends SDKModel {
-  #tools = /* @__PURE__ */ new Map();
-  #calls = /* @__PURE__ */ new Map();
-  agent;
-  #enabled = false;
-  constructor(target) {
-    super(target);
-    this.agent = target.webMCPAgent();
-    target.registerWebMCPDispatcher(new WebMCPDispatcher(this));
-    const runtimeModel = target.model(RuntimeModel);
-    if (runtimeModel) {
-      runtimeModel.addEventListener(Events6.ExecutionContextDestroyed, this.#executionContextDestroyed, this);
-    }
-    void this.enable();
-  }
-  get tools() {
-    return this.#tools.values().flatMap((toolMap) => toolMap.values());
-  }
-  get toolCalls() {
-    return [...this.#calls.values()];
-  }
-  clearCalls() {
-    this.#calls.clear();
-  }
-  async enable() {
-    if (this.#enabled) {
-      return;
-    }
-    await this.agent.invoke_enable();
-    this.#enabled = true;
-  }
-  #executionContextDestroyed(event) {
-    const executionContext = event.data;
-    if (executionContext.isDefault && executionContext.frameId) {
-      const frameTools = this.#tools.get(executionContext.frameId);
-      if (frameTools) {
-        const toolsToRemove = [...frameTools.values()];
-        this.#tools.delete(executionContext.frameId);
-        this.dispatchEventToListeners("ToolsRemoved", toolsToRemove);
-      }
-    }
-  }
-  onToolsRemoved(tools) {
-    const deletedTools = tools.filter((tool) => this.#tools.get(tool.frameId)?.delete(tool.name));
-    this.dispatchEventToListeners("ToolsRemoved", deletedTools);
-  }
-  onToolsAdded(tools) {
-    for (const tool of tools) {
-      const frameTools = this.#tools.get(tool.frameId) ?? /* @__PURE__ */ new Map();
-      if (!this.#tools.has(tool.frameId)) {
-        this.#tools.set(tool.frameId, frameTools);
-      }
-      frameTools.set(tool.name, tool);
-    }
-    this.dispatchEventToListeners("ToolsAdded", tools);
-  }
-  toolInvoked(params) {
-    const tool = this.#tools.get(params.frameId)?.get(params.toolName);
-    if (!tool) {
-      return;
-    }
-    const call = {
-      invocationId: params.invocationId,
-      input: params.input,
-      tool
-    };
-    this.#calls.set(params.invocationId, call);
-    this.dispatchEventToListeners("ToolInvoked", call);
-  }
-  toolResponded(params) {
-    const call = this.#calls.get(params.invocationId);
-    if (!call) {
-      return;
-    }
-    call.result = {
-      status: params.status,
-      output: params.output,
-      errorText: params.errorText,
-      exception: params.exception
-    };
-    this.dispatchEventToListeners("ToolResponded", call);
-  }
-};
-var WebMCPDispatcher = class {
-  #model;
-  constructor(model) {
-    this.#model = model;
-  }
-  toolsAdded(params) {
-    this.#model.onToolsAdded(params.tools);
-  }
-  toolsRemoved(params) {
-    this.#model.onToolsRemoved(params.tools);
-  }
-  toolInvoked(params) {
-    this.#model.toolInvoked(params);
-  }
-  toolResponded(params) {
-    this.#model.toolResponded(params);
-  }
-};
-SDKModel.register(WebMCPModel, { capabilities: 2097152, autostart: true });
 export {
   AccessibilityModel_exports as AccessibilityModel,
   AnimationModel_exports as AnimationModel,
@@ -37703,7 +37595,6 @@ export {
   Target_exports as Target,
   TargetManager_exports as TargetManager,
   TraceObject_exports as TraceObject,
-  WebAuthnModel_exports as WebAuthnModel,
-  WebMCPModel_exports as WebMCPModel
+  WebAuthnModel_exports as WebAuthnModel
 };
 //# sourceMappingURL=sdk.js.map

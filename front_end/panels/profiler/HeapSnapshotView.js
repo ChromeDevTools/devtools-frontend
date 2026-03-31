@@ -1536,13 +1536,11 @@ export class HeapProfileHeader extends ProfileHeader {
         this.setupWorker();
         const reader = new Bindings.FileUtils.ChunkedFileReader(file, 10000000);
         const success = await reader.read(this.receiver);
-        if (!success) {
-            const error = reader.error();
-            if (error) {
-                this.updateStatus(error.message);
-            }
+        const error = reader.error();
+        if (!success && error) {
+            this.updateStatus(error.message);
         }
-        return success ? null : reader.error();
+        return success ? null : error;
     }
     profileType() {
         return super.profileType();

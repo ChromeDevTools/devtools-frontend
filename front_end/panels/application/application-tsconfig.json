@@ -124,6 +124,9 @@
       "path": "../../models/text_utils/bundle-tsconfig.json"
     },
     {
+      "path": "../../models/web_mcp/bundle-tsconfig.json"
+    },
+    {
       "path": "../../models/workspace/bundle-tsconfig.json"
     },
     {

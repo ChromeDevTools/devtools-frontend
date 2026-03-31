@@ -265,6 +265,14 @@ export const DEFAULT_VIEW = (input, output, target) => {
         return Lit.nothing;
     })}
         ${renderError(message)}
+        ${input.isLastMessage && hasAiV2 && !input.isLoading && input.changeSummary ? html `
+          <devtools-code-block
+            .code=${input.changeSummary}
+            .codeLang=${'css'}
+            .displayNotice=${true}
+            class="ai-css-change"
+          ></devtools-code-block>
+        ` : Lit.nothing}
         ${input.showActions ? renderActions(input, output) : Lit.nothing}
       </div>
     </section>
@@ -635,6 +643,7 @@ async function makeBottomUpTimelineTreeWidget(widgetData) {
         startTime,
         endTime,
         compactMode: true,
+        maxLinkLength: 15,
     })}></devtools-widget>`;
     return {
         renderedWidget,
@@ -912,7 +921,7 @@ function renderActions(input, output) {
     }}
             @click=${() => input.onRatingClick("NEGATIVE" /* Host.AidaClient.Rating.NEGATIVE */)}
           ></devtools-button>
-          <div class="vertical-separator"></div>
+          ${aiAssistanceV2 ? Lit.nothing : html `<div class="vertical-separator"></div>`}
         ` : Lit.nothing}
         <devtools-button
           .data=${{
@@ -938,7 +947,6 @@ function renderActions(input, output) {
             @click=${input.onCopyResponseClick}></devtools-button>
         `}
         ${input.onExportClick && aiAssistanceV2 && input.isLastMessage ? html `
-        <div class="vertical-separator"></div>
           <devtools-button
             class="export-for-agents-button"
             .jslogContext=${'ai-export-for-agents'}
@@ -946,7 +954,7 @@ function renderActions(input, output) {
             .iconName=${'copy'}
             @click=${input.onExportClick}
           >${lockedString(UIStringsNotTranslate.exportForAgents)}</devtools-button>
-          <div class="vertical-separator"></div>
+          ${input.suggestions ? html `<div class="vertical-separator"></div>` : Lit.nothing}
         ` : Lit.nothing}
       </div>
       ${input.suggestions ? html `<div class="suggestions-container">
@@ -1044,6 +1052,7 @@ export class ChatMessage extends UI.Widget.Widget {
     onFeedbackSubmit = () => { };
     onCopyResponseClick = () => { };
     onExportClick = () => { };
+    changeSummary;
     walkthrough = {
         onOpen: () => { },
         onToggle: () => { },
@@ -1104,6 +1113,7 @@ export class ChatMessage extends UI.Widget.Widget {
             currentRating: this.#currentRating,
             isShowingFeedbackForm: this.#isShowingFeedbackForm,
             onFeedbackSubmit: this.onFeedbackSubmit,
+            changeSummary: this.changeSummary,
             walkthrough: this.walkthrough,
         }, this.#viewOutput, this.contentElement);
         if (this.#viewOutput.suggestionsScrollContainer && !this.#isObservingSuggestions) {

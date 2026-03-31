@@ -1,5 +1,6 @@
 export * from './AiAssistancePanel.js';
 export * from './components/ChatView.js';
+export * from './components/AccessibilityAgentMarkdownRenderer.js';
 export * as ChatInput from './components/ChatInput.js';
 export * from './components/MarkdownRendererWithCodeBlock.js';
 export * from './SelectWorkspaceDialog.js';

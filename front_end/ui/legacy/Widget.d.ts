@@ -2,8 +2,8 @@ import '../../core/dom_extension/dom_extension.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Geometry from '../../models/geometry/geometry.js';
 import * as Lit from '../../ui/lit/lit.js';
-type WidgetConstructor<WidgetT extends Widget> = new (element: WidgetElement<WidgetT>) => WidgetT;
-type WidgetProducer<WidgetT extends Widget> = (element: WidgetElement<WidgetT>) => WidgetT;
+type WidgetConstructor<WidgetT extends Widget> = new (element: HTMLElement) => WidgetT;
+type WidgetProducer<WidgetT extends Widget> = (element: HTMLElement) => WidgetT;
 type WidgetFactory<WidgetT extends Widget> = WidgetConstructor<WidgetT> | WidgetProducer<WidgetT>;
 type InferWidgetTFromFactory<F> = F extends WidgetFactory<infer WidgetT> ? WidgetT : never;
 export declare class WidgetConfig<WidgetT extends Widget> {
@@ -12,8 +12,11 @@ export declare class WidgetConfig<WidgetT extends Widget> {
     constructor(widgetClass: WidgetFactory<WidgetT>, widgetParams?: Partial<WidgetT> | undefined);
 }
 export declare function widgetConfig<F extends WidgetFactory<Widget>, ParamKeys extends keyof InferWidgetTFromFactory<F>>(widgetClass: F, widgetParams?: Pick<InferWidgetTFromFactory<F>, ParamKeys> & Partial<InferWidgetTFromFactory<F>>): WidgetConfig<any>;
-export declare function registerWidgetConfig<WidgetT extends Widget>(element: WidgetElement<WidgetT>, config: WidgetConfig<WidgetT>): void;
+export declare function registerWidgetConfig<WidgetT extends Widget>(element: HTMLElement, config: WidgetConfig<WidgetT>): void;
 export declare class WidgetElement<WidgetT extends Widget> extends HTMLElement {
+    #private;
+    onDisconnect?: () => void;
+    onConnect?: () => void;
     getWidget(): WidgetT | undefined;
     connectedCallback(): void;
     disconnectedCallback(): void;

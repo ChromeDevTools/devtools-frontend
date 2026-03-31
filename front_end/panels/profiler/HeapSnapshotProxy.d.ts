@@ -6,7 +6,7 @@ export declare class HeapSnapshotWorkerProxy extends Common.ObjectWrapper.Object
     readonly eventHandler: (arg0: string, arg1: string) => void;
     nextObjectId: number;
     nextCallId: number;
-    callbacks: Map<number, (arg0: any) => void>;
+    callbacks: Map<number, (...args: any[]) => void>;
     readonly previousCallbacks: Set<number>;
     readonly worker: PlatformApi.HostRuntime.Worker;
     interval?: number;

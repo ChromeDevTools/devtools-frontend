@@ -10,6 +10,7 @@ import './ElementsTreeElement.js';
 import './AdoptedStyleSheetTreeElement.js';
 import './TopLayerContainer.js';
 import './ElementsTreeOutline.js';
+import './ImagePreviewPopover.js';
 import './EventListenersWidget.js';
 import './MarkerDecorator.js';
 import './MetricsSidebarPane.js';
@@ -45,6 +46,7 @@ import * as ElementsTreeElement from './ElementsTreeElement.js';
 import * as ElementsTreeOutline from './ElementsTreeOutline.js';
 import * as ElementsTreeOutlineRenderer from './ElementsTreeOutlineRenderer.js';
 import * as EventListenersWidget from './EventListenersWidget.js';
+import * as ImagePreviewPopover from './ImagePreviewPopover.js';
 import * as InspectElementModeController from './InspectElementModeController.js';
 import * as LayersWidget from './LayersWidget.js';
 import * as LayoutPane from './LayoutPane.js';
@@ -82,6 +84,7 @@ export {
   ElementsTreeOutline,
   ElementsTreeOutlineRenderer,
   EventListenersWidget,
+  ImagePreviewPopover,
   InspectElementModeController,
   LayersWidget,
   LayoutPane,

@@ -733,7 +733,7 @@ export class TimelineUIUtils {
         }
         return LegacyComponents.Linkifier.Linkifier.linkifyURL(url, options);
     }
-    static linkifyTopCallFrame(event, target, linkifier, isFreshOrEnhanced = false) {
+    static linkifyTopCallFrame(event, target, linkifier, isFreshOrEnhanced = false, maxLength) {
         let frame = Trace.Helpers.Trace.getZeroIndexedStackTraceInEventPayload(event)?.[0];
         if (Trace.Types.Events.isProfileCall(event)) {
             frame = event.callFrame;
@@ -748,6 +748,7 @@ export class TimelineUIUtils {
             showColumnNumber: true,
             columnNumber: frame.columnNumber,
             lineNumber: frame.lineNumber,
+            maxLength,
         };
         if (isFreshOrEnhanced) {
             return linkifier.maybeLinkifyConsoleCallFrame(target, frame, { showColumnNumber: true, inlineFrameIndex: 0 });

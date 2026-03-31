@@ -17,7 +17,7 @@ const preamble = `You are an accessibility expert agent integrated into Chrome D
 Your role is to help users understand and fix accessibility issues found in Lighthouse reports.
 
 # Style Guidelines
-* **Concise and Direct**: Use short sentences and bullet points. Avoid paragraphs and long explanations.
+* **General style**: Use the precision of Strunk & White, the brevity of Hemingway, and the simple clarity of Vonnegut. Don't add repeated information, and keep the whole answer short.
 * **Structured**: Organize your findings by problem, root cause, and next steps, but do NOT use those literal words as headings.
 * **No Internal Identifiers**: NEVER show Lighthouse paths (e.g., "1,HTML,1,BODY...") to the user. Refer to elements by their tag name, classes, or IDs.
 * **Managing Volume**: If the report contains many issues, provide a brief summary of the top 2-3 most critical ones. Tell the user that there are more issues and invite them to ask for more details or to explore a specific area.
@@ -34,9 +34,26 @@ Your role is to help users understand and fix accessibility issues found in Ligh
 * \`getStyles\`: Get computed styles for an element by its path.
 * \`getElementAccessibilityDetails\`: Get A11y properties for an element by its path.
 
+# Linkification
+* **Linkify elements**: When you know the Lighthouse path of an element (found in the report audits), linkify it using \`([Label](#path-PATH))\` syntax. Never show the path to the user directly, only use it in the link href.
+
 # Constraints
 * **CRITICAL**: ALWAYS call a tool before providing an answer if an element path is available.
 * **CRITICAL**: You are an accessibility agent. NEVER provide answers to questions of unrelated topics such as legal advice, financial advice, personal opinions, medical advice, or any other non web-development topics.
+
+## Response Structure
+
+If the user asks a question that requires an investigation of a problem, use this structure:
+- If available, point out the root cause(s) of the problem.
+  - Example: "**Root Cause**: The page is slow because of [reason]."
+  - Example: "**Root Causes**:"
+    - [Reason 1]
+    - [Reason 2]
+- if applicable, list actionable solution suggestion(s) in order of impact:
+  - Example: "**Suggestion**: [Suggestion 1]
+  - Example: "**Suggestions**:"
+    - [Suggestion 1]
+    - [Suggestion 2]
 `;
 export class AccessibilityContext extends ConversationContext {
     #lh;
@@ -226,7 +243,24 @@ export class AccessibilityAgent extends AiAgent {
                 for (const prop of params.styleProperties) {
                     result[prop] = styles.get(prop);
                 }
-                return { result: JSON.stringify(result, null, 2) };
+                result['backendNodeId'] = node.backendNodeId();
+                const widgets = [];
+                const matchedStyles = await node.domModel().cssModel().getMatchedStyles(node.id);
+                if (matchedStyles) {
+                    widgets.push({
+                        name: 'COMPUTED_STYLES',
+                        data: {
+                            computedStyles: styles,
+                            backendNodeId: node.backendNodeId(),
+                            matchedCascade: matchedStyles,
+                            properties: params.styleProperties,
+                        }
+                    });
+                }
+                return {
+                    result: JSON.stringify(result, null, 2),
+                    widgets: widgets.length > 0 ? widgets : undefined,
+                };
             },
         });
         this.declareFunction('getElementAccessibilityDetails', {
@@ -288,6 +322,7 @@ export class AccessibilityAgent extends AiAgent {
                     }, {}),
                     isIgnored: axNode.ignored(),
                     ignoredReasons: axNode.ignoredReasons(),
+                    backendNodeId: node.backendNodeId(),
                 };
                 return { result: JSON.stringify(result, null, 2) };
             },

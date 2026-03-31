@@ -1835,6 +1835,7 @@ var infobar_css_default = `/*
 
 .infobar-info-actions {
   display: flex;
+  flex-wrap: wrap;
   gap: var(--sys-size-5);
 }
 
@@ -2871,6 +2872,9 @@ function runNextUpdate() {
 }
 var widgetConfigs = /* @__PURE__ */ new WeakMap();
 function registerWidgetConfig(element, config) {
+  if (!widgetConfigs.has(element)) {
+    setUpLifecycleTracking(element);
+  }
   widgetConfigs.set(element, config);
 }
 function instantiateWidget(element, widgetConfig2) {
@@ -2891,27 +2895,66 @@ function instantiateWidget(element, widgetConfig2) {
   newWidget.requestUpdate();
   return newWidget;
 }
-var WidgetElement = class extends HTMLElement {
-  getWidget() {
-    return Widget.get(this);
+function setUpLifecycleTracking(element) {
+  let tracker;
+  if (element instanceof WidgetElement) {
+    tracker = element;
+  } else {
+    tracker = document.createElement("devtools-widget");
+    tracker.style.display = "none";
+    element.appendChild(tracker);
   }
-  connectedCallback() {
-    const widget2 = Widget.getOrCreateWidget(this);
-    if (!widget2.element.parentElement) {
+  tracker.onDisconnect = () => {
+    const widget2 = Widget.get(element);
+    if (widget2) {
+      widget2.setHideOnDetach();
+      widget2.detach();
+    }
+  };
+  tracker.onConnect = () => {
+    let widget2 = Widget.get(element);
+    if (!widget2) {
+      const config = widgetConfigs.get(element);
+      if (!config) {
+        throw new Error("No widgetConfig defined");
+      }
+      widget2 = instantiateWidget(element, config);
+    }
+    const parent = element.parentElementOrShadowHost();
+    if (!parent) {
       widget2.markAsRoot();
     }
     widget2.show(
-      this.parentElement,
+      parent,
       void 0,
       /* suppressOrphanWidgetError= */
       true
     );
+  };
+}
+var WidgetElement = class extends HTMLElement {
+  onDisconnect;
+  onConnect;
+  #disconnectTimeout;
+  getWidget() {
+    return Widget.get(this);
+  }
+  connectedCallback() {
+    if (this.#disconnectTimeout) {
+      clearTimeout(this.#disconnectTimeout);
+      this.#disconnectTimeout = void 0;
+    }
+    if (this.onConnect) {
+      this.onConnect();
+      return;
+    }
   }
   disconnectedCallback() {
-    const widget2 = Widget.get(this);
-    if (widget2) {
-      widget2.setHideOnDetach();
-      widget2.detach();
+    if (this.onDisconnect) {
+      this.#disconnectTimeout = setTimeout(() => {
+        this.onDisconnect?.();
+      }, 0);
+      return;
     }
   }
   appendChild(child) {
@@ -2960,10 +3003,9 @@ var WidgetElement = class extends HTMLElement {
   cloneNode(deep) {
     const clone = cloneCustomElement(this, deep);
     const config = widgetConfigs.get(this);
-    if (!config?.widgetClass) {
-      throw new Error("No widgetClass defined");
+    if (config) {
+      registerWidgetConfig(clone, config);
     }
-    widgetConfigs.set(clone, config);
     return clone;
   }
   focus() {
@@ -2986,9 +3028,6 @@ var WidgetDirective = class extends Lit.Directive.Directive {
   update(part, [widgetClass, widgetParams]) {
     if (this.#partType === Lit.Directive.PartType.ELEMENT) {
       const element = part.element;
-      if (!(element instanceof WidgetElement)) {
-        throw new Error("Widget directive must be used on a devtools-widget element.");
-      }
       const config = widgetConfig(widgetClass, widgetParams);
       const oldConfig = widgetConfigs.get(element);
       const widget2 = Widget.get(element);
@@ -3004,7 +3043,7 @@ var WidgetDirective = class extends Lit.Directive.Directive {
           widget2.requestUpdate();
         }
       }
-      widgetConfigs.set(element, config);
+      registerWidgetConfig(element, config);
       return Lit.nothing;
     }
     return this.render(widgetClass, widgetParams);
@@ -3122,9 +3161,6 @@ var Widget = class _Widget {
     let config = widgetConfigs.get(element);
     if (!config) {
       config = widgetConfig((element2) => new _Widget(element2));
-      if (element instanceof WidgetElement) {
-        widgetConfigs.set(element, config);
-      }
     }
     return instantiateWidget(element, config);
   }

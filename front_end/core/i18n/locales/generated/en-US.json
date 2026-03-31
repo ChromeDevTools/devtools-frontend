@@ -6215,6 +6215,9 @@
   "panels/application/WebMCPView.ts | canceled": {
     "message": "Canceled"
   },
+  "panels/application/WebMCPView.ts | canceledCount": {
+    "message": "{PH1} Canceled"
+  },
   "panels/application/WebMCPView.ts | clearFilters": {
     "message": "Clear filters"
   },
@@ -6227,6 +6230,9 @@
   "panels/application/WebMCPView.ts | error": {
     "message": "Error"
   },
+  "panels/application/WebMCPView.ts | failed": {
+    "message": "{PH1} Failed"
+  },
   "panels/application/WebMCPView.ts | filter": {
     "message": "Filter"
   },
@@ -6235,6 +6241,9 @@
   },
   "panels/application/WebMCPView.ts | inProgress": {
     "message": "In Progress"
+  },
+  "panels/application/WebMCPView.ts | inProgressCount": {
+    "message": "{PH1} In Progress"
   },
   "panels/application/WebMCPView.ts | input": {
     "message": "Input"
@@ -6274,6 +6283,9 @@
   },
   "panels/application/WebMCPView.ts | toolTypes": {
     "message": "Tool types"
+  },
+  "panels/application/WebMCPView.ts | totalCalls": {
+    "message": "{PH1} Total calls"
   },
   "panels/autofill/autofill-meta.ts | autofill": {
     "message": "Autofill"

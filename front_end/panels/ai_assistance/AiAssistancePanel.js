@@ -24,6 +24,7 @@ import * as NetworkForward from '../network/forward/forward.js';
 import * as NetworkPanel from '../network/network.js';
 import * as TimelinePanel from '../timeline/timeline.js';
 import aiAssistancePanelStyles from './aiAssistancePanel.css.js';
+import { AccessibilityAgentMarkdownRenderer } from './components/AccessibilityAgentMarkdownRenderer.js';
 import { ChatView, } from './components/ChatView.js';
 import { DisabledWidget } from './components/DisabledWidget.js';
 import { ExploreWidget } from './components/ExploreWidget.js';
@@ -313,6 +314,12 @@ function getMarkdownRenderer(conversation) {
         const resourceTreeModel = domModel?.target().model(SDK.ResourceTreeModel.ResourceTreeModel);
         const mainFrameId = resourceTreeModel?.mainFrame?.id;
         return new StylingAgentMarkdownRenderer(mainFrameId);
+    }
+    else if (conversation?.type === "accessibility" /* AiAssistanceModel.AiHistoryStorage.ConversationType.ACCESSIBILITY */) {
+        const domModel = SDK.TargetManager.TargetManager.instance().primaryPageTarget()?.model(SDK.DOMModel.DOMModel);
+        const resourceTreeModel = domModel?.target().model(SDK.ResourceTreeModel.ResourceTreeModel);
+        const mainFrameId = resourceTreeModel?.mainFrame?.id;
+        return new AccessibilityAgentMarkdownRenderer(mainFrameId);
     }
     return new MarkdownRendererWithCodeBlock();
 }
@@ -1027,7 +1034,8 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         if (!isAiAssistancePatchingEnabled() || !this.#conversation || this.#conversation?.isReadOnly) {
             return;
         }
-        return this.#changeManager.formatChangesForPatching(this.#conversation.id, /* includeSourceLocation= */ true);
+        const hasAiV2 = Boolean(Root.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled);
+        return this.#changeManager.formatChangesForPatching(this.#conversation.id, /* includeMetadata= */ !hasAiV2);
     }
     async performUpdate() {
         const viewInput = {

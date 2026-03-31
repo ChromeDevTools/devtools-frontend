@@ -2,8 +2,7 @@ import '../../ui/components/icon_button/icon_button.js';
 import '../../ui/components/lists/lists.js';
 import '../../ui/legacy/components/data_grid/data_grid.js';
 import '../../ui/legacy/legacy.js';
-import * as SDK from '../../core/sdk/sdk.js';
-import * as Protocol from '../../generated/protocol.js';
+import * as WebMCP from '../../models/web_mcp/web_mcp.js';
 import * as UI from '../../ui/legacy/legacy.js';
 export interface FilterState {
     text: string;
@@ -26,14 +25,14 @@ export interface FilterMenuButtons {
     statusTypes: FilterMenuButton;
 }
 export interface ViewInput {
-    tools: Protocol.WebMCP.Tool[];
+    tools: WebMCP.WebMCPModel.Tool[];
     filters: FilterState;
     filterButtons: FilterMenuButtons;
     onClearLogClick: () => void;
     onFilterChange: (filters: FilterState) => void;
-    toolCalls: SDK.WebMCPModel.Call[];
+    toolCalls: WebMCP.WebMCPModel.Call[];
 }
-export declare function filterToolCalls(toolCalls: SDK.WebMCPModel.Call[], filterState: FilterState): SDK.WebMCPModel.Call[];
+export declare function filterToolCalls(toolCalls: WebMCP.WebMCPModel.Call[], filterState: FilterState): WebMCP.WebMCPModel.Call[];
 export type View = (input: ViewInput, output: object, target: HTMLElement) => void;
 export declare const DEFAULT_VIEW: View;
 export declare class WebMCPView extends UI.Widget.VBox {

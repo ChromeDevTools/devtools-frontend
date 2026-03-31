@@ -67,8 +67,6 @@ export default `/*
   }
 }
 
-
-
 .link {
   color: var(--text-link);
   text-decoration: underline;

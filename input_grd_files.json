@@ -650,6 +650,7 @@
   "front_end/models/issues_manager/descriptions/unencodedDigestUnknownAlgorithm.md",
   "front_end/third_party/marked/marked.js",
   "front_end/models/issues_manager/issues_manager.js",
+  "front_end/models/web_mcp/web_mcp.js",
   "front_end/models/elements/elements.js",
   "front_end/emulated_devices/optimized/google-nest-hub-max-horizontal.avif",
   "front_end/emulated_devices/optimized/google-nest-hub-horizontal.avif",

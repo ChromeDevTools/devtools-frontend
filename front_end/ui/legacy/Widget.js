@@ -139,6 +139,9 @@ function runNextUpdate() {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const widgetConfigs = new WeakMap();
 export function registerWidgetConfig(element, config) {
+    if (!widgetConfigs.has(element)) {
+        setUpLifecycleTracking(element);
+    }
     widgetConfigs.set(element, config);
 }
 function instantiateWidget(element, widgetConfig) {
@@ -160,22 +163,62 @@ function instantiateWidget(element, widgetConfig) {
     newWidget.requestUpdate();
     return newWidget;
 }
+function setUpLifecycleTracking(element) {
+    let tracker;
+    if (element instanceof WidgetElement) {
+        tracker = element;
+    }
+    else {
+        tracker = document.createElement('devtools-widget');
+        tracker.style.display = 'none';
+        element.appendChild(tracker);
+    }
+    tracker.onDisconnect = () => {
+        const widget = Widget.get(element);
+        if (widget) {
+            widget.setHideOnDetach();
+            widget.detach();
+        }
+    };
+    tracker.onConnect = () => {
+        let widget = Widget.get(element);
+        if (!widget) {
+            const config = widgetConfigs.get(element);
+            if (!config) {
+                throw new Error('No widgetConfig defined');
+            }
+            widget = instantiateWidget(element, config);
+        }
+        const parent = element.parentElementOrShadowHost();
+        if (!parent) {
+            widget.markAsRoot();
+        }
+        widget.show(parent, undefined, /* suppressOrphanWidgetError= */ true);
+    };
+}
 export class WidgetElement extends HTMLElement {
+    onDisconnect;
+    onConnect;
+    #disconnectTimeout;
     getWidget() {
         return Widget.get(this);
     }
     connectedCallback() {
-        const widget = Widget.getOrCreateWidget(this);
-        if (!widget.element.parentElement) {
-            widget.markAsRoot();
+        if (this.#disconnectTimeout) {
+            clearTimeout(this.#disconnectTimeout);
+            this.#disconnectTimeout = undefined;
         }
-        widget.show(this.parentElement, undefined, /* suppressOrphanWidgetError= */ true);
+        if (this.onConnect) {
+            this.onConnect();
+            return;
+        }
     }
     disconnectedCallback() {
-        const widget = Widget.get(this);
-        if (widget) {
-            widget.setHideOnDetach();
-            widget.detach();
+        if (this.onDisconnect) {
+            this.#disconnectTimeout = setTimeout(() => {
+                this.onDisconnect?.();
+            }, 0);
+            return;
         }
     }
     appendChild(child) {
@@ -214,10 +257,9 @@ export class WidgetElement extends HTMLElement {
     cloneNode(deep) {
         const clone = cloneCustomElement(this, deep);
         const config = widgetConfigs.get(this);
-        if (!config?.widgetClass) {
-            throw new Error('No widgetClass defined');
+        if (config) {
+            registerWidgetConfig(clone, config);
         }
-        widgetConfigs.set(clone, config);
         return clone;
     }
     focus() {
@@ -240,9 +282,6 @@ export class WidgetDirective extends Lit.Directive.Directive {
     update(part, [widgetClass, widgetParams]) {
         if (this.#partType === Lit.Directive.PartType.ELEMENT) {
             const element = part.element;
-            if (!(element instanceof WidgetElement)) {
-                throw new Error('Widget directive must be used on a devtools-widget element.');
-            }
             const config = widgetConfig(widgetClass, widgetParams);
             const oldConfig = widgetConfigs.get(element);
             const widget = Widget.get(element);
@@ -260,7 +299,7 @@ export class WidgetDirective extends Lit.Directive.Directive {
                     widget.requestUpdate();
                 }
             }
-            widgetConfigs.set(element, config);
+            registerWidgetConfig(element, config);
             return Lit.nothing;
         }
         return this.render(widgetClass, widgetParams);
@@ -388,9 +427,6 @@ export class Widget {
         let config = widgetConfigs.get(element);
         if (!config) {
             config = widgetConfig(element => new Widget(element));
-            if (element instanceof WidgetElement) {
-                widgetConfigs.set(element, config);
-            }
         }
         return instantiateWidget(element, config);
     }

@@ -17,8 +17,6 @@ export class HeapSnapshotWorkerProxy extends Common.ObjectWrapper.ObjectWrapper 
     eventHandler;
     nextObjectId = 1;
     nextCallId = 1;
-    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     callbacks = new Map();
     previousCallbacks = new Set();
     worker;
@@ -42,9 +40,7 @@ export class HeapSnapshotWorkerProxy extends Common.ObjectWrapper.ObjectWrapper 
     }
     dispose() {
         this.worker.terminate();
-        if (this.interval) {
-            clearInterval(this.interval);
-        }
+        clearInterval(this.interval);
     }
     disposeObject(objectId) {
         this.postMessage({ callId: this.nextCallId++, disposition: 'dispose', objectId });

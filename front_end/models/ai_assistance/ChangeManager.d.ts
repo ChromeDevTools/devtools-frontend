@@ -22,6 +22,6 @@ export declare class ChangeManager {
     popStashedChanges(): Promise<void>;
     clear(): Promise<void>;
     addChange(cssModel: SDK.CSSModel.CSSModel, frameId: Protocol.Page.FrameId, change: Change): Promise<string>;
-    formatChangesForPatching(groupId: string, includeSourceLocation?: boolean): string;
+    formatChangesForPatching(groupId: string, includeMetadata?: boolean): string;
     getChangedNodesForGroupId(groupId: string, turnId?: number): Protocol.DOM.BackendNodeId[];
 }

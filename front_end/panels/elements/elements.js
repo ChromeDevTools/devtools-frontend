@@ -890,6 +890,10 @@ var computedStyleWidget_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./computedStyleWidget.css")} */`;
 
 // gen/front_end/panels/elements/ImagePreviewPopover.js
+var ImagePreviewPopover_exports = {};
+__export(ImagePreviewPopover_exports, {
+  ImagePreviewPopover: () => ImagePreviewPopover
+});
 import * as Components from "./../../ui/legacy/components/utils/utils.js";
 import * as UI3 from "./../../ui/legacy/legacy.js";
 var ImagePreviewPopover = class {
@@ -12706,7 +12710,7 @@ function maybeRenderAdAdorner(input) {
   }
   return html8`
     <devtools-adorner
-      aria-describedby=${input.adTooltipId}
+      aria-details=${input.adTooltipId}
       aria-label=${i18nString10(UIStrings11.thisElementWasIdentifiedAsAnAd)}
       .name=${ElementsComponents5.AdornerManager.RegisteredAdorners.AD}
       jslog=${VisualLogging8.adorner(ElementsComponents5.AdornerManager.RegisteredAdorners.AD)}
@@ -21316,6 +21320,7 @@ export {
   ElementsTreeOutline_exports as ElementsTreeOutline,
   ElementsTreeOutlineRenderer_exports as ElementsTreeOutlineRenderer,
   EventListenersWidget_exports as EventListenersWidget,
+  ImagePreviewPopover_exports as ImagePreviewPopover,
   InspectElementModeController_exports as InspectElementModeController,
   LayersWidget_exports as LayersWidget,
   LayoutPane_exports as LayoutPane,

@@ -8,6 +8,7 @@ import '../../ui/legacy/legacy.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import * as WebMCP from '../../models/web_mcp/web_mcp.js';
 import * as Adorners from '../../ui/components/adorners/adorners.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -99,6 +100,26 @@ const UIStrings = {
      * @description Text for the status of a tool call that has failed
      */
     pending: 'In Progress',
+    /**
+     * @description Text for the total number of tool calls
+     * @example {2} PH1
+     */
+    totalCalls: '{PH1} Total calls',
+    /**
+     * @description Text for the number of failed tool calls
+     * @example {1} PH1
+     */
+    failed: '{PH1} Failed',
+    /**
+     * @description Text for the number of canceled tool calls
+     * @example {1} PH1
+     */
+    canceledCount: '{PH1} Canceled',
+    /**
+     * @description Text for the number of in progress tool calls
+     * @example {1} PH1
+     */
+    inProgressCount: '{PH1} In Progress',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/application/WebMCPView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -124,11 +145,10 @@ export function filterToolCalls(toolCalls, filterState) {
     if (toolTypes) {
         filtered = filtered.filter(call => {
             const { imperative, declarative } = toolTypes;
-            const isDeclarative = call.tool?.backendNodeId !== undefined;
-            if (imperative && !isDeclarative) {
+            if (imperative && !call.tool.isDeclarative) {
                 return true;
             }
-            if (declarative && isDeclarative) {
+            if (declarative && call.tool.isDeclarative) {
                 return true;
             }
             return false;
@@ -144,8 +164,67 @@ export function filterToolCalls(toolCalls, filterState) {
     }
     return filtered;
 }
+function calculateToolStats(calls) {
+    let total = 0, success = 0, failed = 0, canceled = 0, inProgress = 0;
+    for (const call of calls) {
+        total++;
+        if (call.result?.status === "Error" /* Protocol.WebMCP.InvocationStatus.Error */) {
+            failed++;
+        }
+        else if (call.result?.status === "Canceled" /* Protocol.WebMCP.InvocationStatus.Canceled */) {
+            canceled++;
+        }
+        else if (call.result?.status === "Success" /* Protocol.WebMCP.InvocationStatus.Success */) {
+            success++;
+        }
+        else if (call.result === undefined) {
+            inProgress++;
+        }
+    }
+    return { total, success, failed, canceled, inProgress };
+}
+function getIconGroupsFromStats(toolStats) {
+    const groups = [];
+    if (toolStats.success > 0) {
+        groups.push({
+            iconName: 'check-circle',
+            iconColor: 'var(--sys-color-green)',
+            iconWidth: '16px',
+            iconHeight: '16px',
+            text: String(toolStats.success),
+        });
+    }
+    if (toolStats.failed > 0) {
+        groups.push({
+            iconName: 'cross-circle-filled',
+            iconColor: 'var(--sys-color-error)',
+            iconWidth: '16px',
+            iconHeight: '16px',
+            text: String(toolStats.failed),
+        });
+    }
+    if (toolStats.canceled > 0) {
+        groups.push({
+            iconName: 'record-stop',
+            iconColor: 'var(--sys-color-on-surface-light)',
+            iconWidth: '16px',
+            iconHeight: '16px',
+            text: String(toolStats.canceled),
+        });
+    }
+    if (toolStats.inProgress > 0) {
+        groups.push({
+            iconName: 'dots-circle',
+            iconWidth: '16px',
+            iconHeight: '16px',
+            text: String(toolStats.inProgress),
+        });
+    }
+    return groups;
+}
 export const DEFAULT_VIEW = (input, output, target) => {
     const tools = input.tools;
+    const stats = calculateToolStats(input.toolCalls);
     const isFilterActive = Boolean(input.filters.text) || Boolean(input.filters.toolTypes) || Boolean(input.filters.statusTypes);
     const iconName = (call) => {
         switch (call.result?.status) {
@@ -230,6 +309,17 @@ export const DEFAULT_VIEW = (input, output, target) => {
               `)}
               </table>
           </devtools-data-grid>
+          <div class="webmcp-toolbar-container" role="toolbar">
+            <devtools-toolbar class="webmcp-toolbar" role="presentation" wrappable>
+              <span class="toolbar-text">${i18nString(UIStrings.totalCalls, { PH1: stats.total })}</span>
+              <div class="toolbar-divider"></div>
+              <span class="toolbar-text status-error-text">${i18nString(UIStrings.failed, { PH1: stats.failed })}</span>
+              <div class="toolbar-divider"></div>
+              <span class="toolbar-text status-cancelled-text">${i18nString(UIStrings.canceledCount, { PH1: stats.canceled })}</span>
+              <div class="toolbar-divider"></div>
+              <span class="toolbar-text">${i18nString(UIStrings.inProgressCount, { PH1: stats.inProgress })}</span>
+            </devtools-toolbar>
+          </div>
         ` : html `
         ${UI.Widget.widget(UI.EmptyWidget.EmptyWidget, { header: i18nString(UIStrings.noCallsPlaceholderTitle),
         text: i18nString(UIStrings.noCallsPlaceholder) })}
@@ -242,14 +332,19 @@ export const DEFAULT_VIEW = (input, output, target) => {
         text: i18nString(UIStrings.noToolsPlaceholder) })}
         ` : html `
           <devtools-list>
-            ${tools.map(tool => html `
+            ${tools.map(tool => {
+        const toolStats = calculateToolStats(input.toolCalls.filter(c => c.tool === tool));
+        const groups = getIconGroupsFromStats(toolStats);
+        return html `
                 <div class="tool-item">
                   <div class="tool-name-container">
                     <div class="tool-name source-code">${tool.name}</div>
+                    ${groups.length > 0 ? html `<icon-button .data=${{ groups, compact: false }}></icon-button>` : ''}
                   </div>
                   <div class="tool-description">${tool.description}</div>
                 </div>
-              `)}
+              `;
+    })}
           </devtools-list>
         `}
       </div>
@@ -293,7 +388,7 @@ export class WebMCPView extends UI.Widget.VBox {
         super(target);
         this.#view = view;
         this.#filterButtons = WebMCPView.createFilterButtons(this.#showToolTypesContextMenu.bind(this), this.#showStatusTypesContextMenu.bind(this));
-        SDK.TargetManager.TargetManager.instance().observeModels(SDK.WebMCPModel.WebMCPModel, {
+        SDK.TargetManager.TargetManager.instance().observeModels(WebMCP.WebMCPModel.WebMCPModel, {
             modelAdded: (model) => this.#webMCPModelAdded(model),
             modelRemoved: (model) => this.#webMCPModelRemoved(model),
         });
@@ -327,19 +422,19 @@ export class WebMCPView extends UI.Widget.VBox {
         contextMenu.defaultSection().appendCheckboxItem(i18nString(UIStrings.pending), () => toggle('pending'), { checked: this.#filterState.statusTypes?.['pending'] ?? false, jslogContext: 'webmcp.pending' });
     }
     #webMCPModelAdded(model) {
-        model.addEventListener("ToolsAdded" /* SDK.WebMCPModel.Events.TOOLS_ADDED */, this.requestUpdate, this);
-        model.addEventListener("ToolsRemoved" /* SDK.WebMCPModel.Events.TOOLS_REMOVED */, this.requestUpdate, this);
-        model.addEventListener("ToolInvoked" /* SDK.WebMCPModel.Events.TOOL_INVOKED */, this.requestUpdate, this);
-        model.addEventListener("ToolResponded" /* SDK.WebMCPModel.Events.TOOL_RESPONDED */, this.requestUpdate, this);
+        model.addEventListener("ToolsAdded" /* WebMCP.WebMCPModel.Events.TOOLS_ADDED */, this.requestUpdate, this);
+        model.addEventListener("ToolsRemoved" /* WebMCP.WebMCPModel.Events.TOOLS_REMOVED */, this.requestUpdate, this);
+        model.addEventListener("ToolInvoked" /* WebMCP.WebMCPModel.Events.TOOL_INVOKED */, this.requestUpdate, this);
+        model.addEventListener("ToolResponded" /* WebMCP.WebMCPModel.Events.TOOL_RESPONDED */, this.requestUpdate, this);
     }
     #webMCPModelRemoved(model) {
-        model.removeEventListener("ToolsAdded" /* SDK.WebMCPModel.Events.TOOLS_ADDED */, this.requestUpdate, this);
-        model.removeEventListener("ToolsRemoved" /* SDK.WebMCPModel.Events.TOOLS_REMOVED */, this.requestUpdate, this);
-        model.removeEventListener("ToolInvoked" /* SDK.WebMCPModel.Events.TOOL_INVOKED */, this.requestUpdate, this);
-        model.removeEventListener("ToolResponded" /* SDK.WebMCPModel.Events.TOOL_RESPONDED */, this.requestUpdate, this);
+        model.removeEventListener("ToolsAdded" /* WebMCP.WebMCPModel.Events.TOOLS_ADDED */, this.requestUpdate, this);
+        model.removeEventListener("ToolsRemoved" /* WebMCP.WebMCPModel.Events.TOOLS_REMOVED */, this.requestUpdate, this);
+        model.removeEventListener("ToolInvoked" /* WebMCP.WebMCPModel.Events.TOOL_INVOKED */, this.requestUpdate, this);
+        model.removeEventListener("ToolResponded" /* WebMCP.WebMCPModel.Events.TOOL_RESPONDED */, this.requestUpdate, this);
     }
     #handleClearLogClick = () => {
-        const models = SDK.TargetManager.TargetManager.instance().models(SDK.WebMCPModel.WebMCPModel);
+        const models = SDK.TargetManager.TargetManager.instance().models(WebMCP.WebMCPModel.WebMCPModel);
         for (const model of models) {
             model.clearCalls();
         }
@@ -354,12 +449,12 @@ export class WebMCPView extends UI.Widget.VBox {
         this.requestUpdate();
     };
     #getTools() {
-        const models = SDK.TargetManager.TargetManager.instance().models(SDK.WebMCPModel.WebMCPModel);
+        const models = SDK.TargetManager.TargetManager.instance().models(WebMCP.WebMCPModel.WebMCPModel);
         const tools = models.flatMap(model => model.tools.toArray());
         return tools.sort((a, b) => a.name.localeCompare(b.name));
     }
     performUpdate() {
-        const models = SDK.TargetManager.TargetManager.instance().models(SDK.WebMCPModel.WebMCPModel);
+        const models = SDK.TargetManager.TargetManager.instance().models(WebMCP.WebMCPModel.WebMCPModel);
         const toolCalls = models.flatMap(model => model.toolCalls);
         const filteredCalls = filterToolCalls(toolCalls, this.#filterState);
         const input = {

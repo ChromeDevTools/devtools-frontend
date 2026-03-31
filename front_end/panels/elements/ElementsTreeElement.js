@@ -701,7 +701,7 @@ function maybeRenderAdAdorner(input) {
     // clang-format off
     return html `
     <devtools-adorner
-      aria-describedby=${input.adTooltipId}
+      aria-details=${input.adTooltipId}
       aria-label=${i18nString(UIStrings.thisElementWasIdentifiedAsAnAd)}
       .name=${ElementsComponents.AdornerManager.RegisteredAdorners.AD}
       jslog=${VisualLogging.adorner(ElementsComponents.AdornerManager.RegisteredAdorners.AD)}

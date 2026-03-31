@@ -54,7 +54,9 @@ export default `/*
 
     devtools-list {
       flex: 1 1 auto;
-      margin: var(--sys-size-4);
+      margin: 0;
+      padding: var(--sys-size-4);
+      box-sizing: border-box;
     }
 
     .tool-item {
@@ -63,17 +65,33 @@ export default `/*
         padding: 8px 0;
         gap: 4px;
         width: 100%;
+        min-width: 0;
         border-bottom: 1px solid var(--sys-color-divider);
     }
 
     .tool-name-container {
         display: flex;
         justify-content: space-between;
-        align-items: center;
+        align-items: flex-start;
+        gap: 8px;
     }
 
     .tool-name.source-code {
         color: var(--sys-color-token-string);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        min-width: 0;
+        flex: 1;
+    }
+
+    /* stylelint-disable-next-line selector-type-no-unknown */
+    .tool-name-container icon-button {
+        flex-shrink: 0;
+        height: 0;
+        overflow: visible;
+        display: flex;
+        align-items: center;
     }
 
     .tool-description {
@@ -90,6 +108,14 @@ export default `/*
     }
 
     tr.status-cancelled {
+      color: var(--sys-color-on-surface-light);
+    }
+
+    .toolbar-text.status-error-text {
+      color: var(--sys-color-error);
+    }
+
+    .toolbar-text.status-cancelled-text {
       color: var(--sys-color-on-surface-light);
     }
 }

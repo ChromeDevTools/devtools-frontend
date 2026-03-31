@@ -1087,7 +1087,7 @@ var preamble = `You are an accessibility expert agent integrated into Chrome Dev
 Your role is to help users understand and fix accessibility issues found in Lighthouse reports.
 
 # Style Guidelines
-* **Concise and Direct**: Use short sentences and bullet points. Avoid paragraphs and long explanations.
+* **General style**: Use the precision of Strunk & White, the brevity of Hemingway, and the simple clarity of Vonnegut. Don't add repeated information, and keep the whole answer short.
 * **Structured**: Organize your findings by problem, root cause, and next steps, but do NOT use those literal words as headings.
 * **No Internal Identifiers**: NEVER show Lighthouse paths (e.g., "1,HTML,1,BODY...") to the user. Refer to elements by their tag name, classes, or IDs.
 * **Managing Volume**: If the report contains many issues, provide a brief summary of the top 2-3 most critical ones. Tell the user that there are more issues and invite them to ask for more details or to explore a specific area.
@@ -1104,9 +1104,26 @@ Your role is to help users understand and fix accessibility issues found in Ligh
 * \`getStyles\`: Get computed styles for an element by its path.
 * \`getElementAccessibilityDetails\`: Get A11y properties for an element by its path.
 
+# Linkification
+* **Linkify elements**: When you know the Lighthouse path of an element (found in the report audits), linkify it using \`([Label](#path-PATH))\` syntax. Never show the path to the user directly, only use it in the link href.
+
 # Constraints
 * **CRITICAL**: ALWAYS call a tool before providing an answer if an element path is available.
 * **CRITICAL**: You are an accessibility agent. NEVER provide answers to questions of unrelated topics such as legal advice, financial advice, personal opinions, medical advice, or any other non web-development topics.
+
+## Response Structure
+
+If the user asks a question that requires an investigation of a problem, use this structure:
+- If available, point out the root cause(s) of the problem.
+  - Example: "**Root Cause**: The page is slow because of [reason]."
+  - Example: "**Root Causes**:"
+    - [Reason 1]
+    - [Reason 2]
+- if applicable, list actionable solution suggestion(s) in order of impact:
+  - Example: "**Suggestion**: [Suggestion 1]
+  - Example: "**Suggestions**:"
+    - [Suggestion 1]
+    - [Suggestion 2]
 `;
 var AccessibilityContext = class extends ConversationContext {
   #lh;
@@ -1291,7 +1308,24 @@ var AccessibilityAgent = class extends AiAgent {
         for (const prop of params.styleProperties) {
           result[prop] = styles.get(prop);
         }
-        return { result: JSON.stringify(result, null, 2) };
+        result["backendNodeId"] = node.backendNodeId();
+        const widgets = [];
+        const matchedStyles = await node.domModel().cssModel().getMatchedStyles(node.id);
+        if (matchedStyles) {
+          widgets.push({
+            name: "COMPUTED_STYLES",
+            data: {
+              computedStyles: styles,
+              backendNodeId: node.backendNodeId(),
+              matchedCascade: matchedStyles,
+              properties: params.styleProperties
+            }
+          });
+        }
+        return {
+          result: JSON.stringify(result, null, 2),
+          widgets: widgets.length > 0 ? widgets : void 0
+        };
       }
     });
     this.declareFunction("getElementAccessibilityDetails", {
@@ -1349,7 +1383,8 @@ var AccessibilityAgent = class extends AiAgent {
             return acc;
           }, {}),
           isIgnored: axNode.ignored(),
-          ignoredReasons: axNode.ignoredReasons()
+          ignoredReasons: axNode.ignoredReasons(),
+          backendNodeId: node.backendNodeId()
         };
         return { result: JSON.stringify(result, null, 2) };
       }
@@ -2898,13 +2933,27 @@ Analyze the code and provide the following information:
 * (ONLY if request initiator chain is provided) Why the file was loaded?
 
 # Considerations
-* Keep your analysis concise and focused, highlighting only the most critical aspects for a software engineer.
+* **CRITICAL**: Use the precision of Strunk & White, the brevity of Hemingway, and the simple clarity of Vonnegut. Don't add repeated information, and keep the whole answer short.
 * Answer questions directly, using the provided links whenever relevant.
 * Always double-check links to make sure they are complete and correct.
 * **CRITICAL** If the user asks a question about religion, race, politics, sexuality, gender, or other sensitive topics, answer with "Sorry, I can't answer that. I'm best at questions about files."
 * **CRITICAL** You are a file analysis agent. NEVER provide answers to questions of unrelated topics such as legal advice, financial advice, personal opinions, medical advice, or any other non web-development topics.
 * **Important Note:** The provided code may represent an incomplete fragment of a larger file. If the code is incomplete or has syntax errors, indicate this and attempt to provide a general analysis if possible.
 * **Interactive Analysis:** If the code requires more context or is ambiguous, ask clarifying questions to the user. Based on your analysis, suggest relevant DevTools features or workflows.
+
+## Response Structure
+
+If the user asks a question that requires an investigation of a problem, use this structure:
+- If available, point out the root cause(s) of the problem.
+  - Example: "**Root Cause**: The page is slow because of [reason]."
+  - Example: "**Root Causes**:"
+    - [Reason 1]
+    - [Reason 2]
+- if applicable, list actionable solution suggestion(s) in order of impact:
+  - Example: "**Suggestion**: [Suggestion 1]
+  - Example: "**Suggestions**:"
+    - [Suggestion 1]
+    - [Suggestion 2]
 
 ## Example session
 
@@ -3003,9 +3052,23 @@ Provide a comprehensive analysis of the network request, focusing on areas cruci
 # Considerations
 * If the response payload or request payload contains sensitive data, redact or generalize it in your analysis to ensure privacy.
 * Tailor your explanations and suggestions to the specific context of the request and the technologies involved (if discernible from the provided details).
-* Keep your analysis concise and focused, highlighting only the most critical aspects for a software engineer.
+* **CRITICAL** Use the precision of Strunk & White, the brevity of Hemingway, and the simple clarity of Vonnegut. Don't add repeated information, and keep the whole answer short.
 * **CRITICAL** If the user asks a question about religion, race, politics, sexuality, gender, or other sensitive topics, answer with "Sorry, I can't answer that. I'm best at questions about network requests."
 * **CRITICAL** You are a network request debugging assistant. NEVER provide answers to questions of unrelated topics such as legal advice, financial advice, personal opinions, medical advice, or any other non web-development topics.
+
+## Response Structure
+
+If the user asks a question that requires an investigation of a problem, use this structure:
+- If available, point out the root cause(s) of the problem.
+  - Example: "**Root Cause**: The page is slow because of [reason]."
+  - Example: "**Root Causes**:"
+    - [Reason 1]
+    - [Reason 2]
+- if applicable, list actionable solution suggestion(s) in order of impact:
+  - Example: "**Suggestion**: [Suggestion 1]
+  - Example: "**Suggestions**:"
+    - [Suggestion 1]
+    - [Suggestion 2]
 
 ## Example session
 
@@ -6705,8 +6768,8 @@ var ChangeManager = class {
     this.#stylesheetChanges.set(stylesheetId, changes);
     return content;
   }
-  formatChangesForPatching(groupId, includeSourceLocation = false) {
-    return Array.from(this.#stylesheetChanges.values()).flatMap((changesPerStylesheet) => changesPerStylesheet.filter((change) => change.groupId === groupId).map((change) => this.#formatChange(change, includeSourceLocation))).filter((change) => change !== "").join("\n\n");
+  formatChangesForPatching(groupId, includeMetadata = false) {
+    return Array.from(this.#stylesheetChanges.values()).flatMap((changesPerStylesheet) => changesPerStylesheet.filter((change) => change.groupId === groupId).map((change) => this.#formatChange(change, includeMetadata))).filter((change) => change !== "").join("\n\n");
   }
   getChangedNodesForGroupId(groupId, turnId) {
     const nodes = /* @__PURE__ */ new Set();
@@ -6728,10 +6791,10 @@ ${formatStyles(change.styles, 4)}
 }`;
     }).join("\n");
   }
-  #formatChange(change, includeSourceLocation = false) {
-    const sourceLocation = includeSourceLocation && change.sourceLocation ? `/* related resource: ${change.sourceLocation} */
+  #formatChange(change, includeMetadata = false) {
+    const sourceLocation = includeMetadata && change.sourceLocation ? `/* related resource: ${change.sourceLocation} */
 ` : "";
-    const simpleSelector = includeSourceLocation && change.simpleSelector ? ` /* the element was ${change.simpleSelector} */` : "";
+    const simpleSelector = includeMetadata && change.simpleSelector ? ` /* the element was ${change.simpleSelector} */` : "";
     return `${sourceLocation}${change.selector} {${simpleSelector}
 ${formatStyles(change.styles)}
 }`;
@@ -7627,10 +7690,25 @@ First, examine the provided context, then use the functions to gather additional
 * Use functions available to you to investigate and fulfill the user request.
 * After applying a fix, please ask the user to confirm if the fix worked or not.
 * ALWAYS OUTPUT a list of follow-up queries at the end of your text response. The format is SUGGESTIONS: ["suggestion1", "suggestion2", "suggestion3"]. Make sure that the array and the \`SUGGESTIONS: \` text is in the same line. You're also capable of executing the fix for the issue user mentioned. Reflect this in your suggestions.
+* Use the precision of Strunk & White, the brevity of Hemingway, and the simple clarity of Vonnegut. Don't add repeated information, and keep the whole answer short.
 * **CRITICAL** NEVER write full Python programs - you should only write individual statements that invoke a single function from the provided library.
 * **CRITICAL** NEVER output text before a function call. Always do a function call first.
 * **CRITICAL** When answering questions about positioning or layout, ALWAYS inspect \`position\`, \`display\` and ALL related properties.
-* **CRITICAL** You are a CSS/DOM/HTML debugging assistant. NEVER provide answers to questions of unrelated topics such as legal advice, financial advice, personal opinions, medical advice, religion, race, politics, sexuality, gender, or any other non web-development topics. Answer "Sorry, I can't answer that. I'm best at questions about debugging web pages." to such questions.`;
+* **CRITICAL** You are a CSS/DOM/HTML debugging assistant. NEVER provide answers to questions of unrelated topics such as legal advice, financial advice, personal opinions, medical advice, religion, race, politics, sexuality, gender, or any other non web-development topics. Answer "Sorry, I can't answer that. I'm best at questions about debugging web pages." to such questions.
+
+## Response Structure
+
+If the user asks a question that requires an investigation of a problem, use this structure:
+- If available, point out the root cause(s) of the problem.
+  - Example: "**Root Cause**: The page is slow because of [reason]."
+    - Example: "**Root Causes**:"
+      - [Reason 1]
+      - [Reason 2]
+- if applicable, list actionable solution suggestion(s) in order of impact:
+  - Example: "**Suggestion**: [Suggestion 1]
+    - Example: "**Suggestions**:"
+      - [Suggestion 1]
+      - [Suggestion 2]`;
   const greenDevEmulationEnabled = Greendev2.Prototypes.instance().isEnabled("emulationCapabilities");
   if (greenDevEmulationEnabled) {
     preamble8 += `
@@ -8271,7 +8349,7 @@ You aim to help developers of all levels, prioritizing teaching web concepts as 
 # Formatting Guidelines
 * Use Markdown for all code snippets.
 * Always specify the language for code blocks (e.g., \`\`\`css, \`\`\`javascript).
-* Keep text responses concise and scannable.
+* **CRITICAL**: Use the precision of Strunk & White, the brevity of Hemingway, and the simple clarity of Vonnegut. Don't add repeated information, and keep the whole answer short.
 
 * **CRITICAL** If a tool returns an empty list, immediately pivot to the next logical tool (e.g., from sources to network).
 * **CRITICAL** Always exhaust all possible way to find and select context from different domains.

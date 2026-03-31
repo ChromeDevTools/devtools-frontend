@@ -111,10 +111,7 @@ export class ProfileType extends Common.ObjectWrapper.ObjectWrapper {
         return true;
     }
     getProfiles() {
-        function isFinished(profile) {
-            return this.#profileBeingRecorded !== profile;
-        }
-        return this.profiles.filter(isFinished.bind(this));
+        return this.profiles.filter(profile => this.#profileBeingRecorded !== profile);
     }
     customContent() {
         return null;

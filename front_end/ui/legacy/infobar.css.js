@@ -130,6 +130,7 @@ export default `/*
 
 .infobar-info-actions {
   display: flex;
+  flex-wrap: wrap;
   gap: var(--sys-size-5);
 }
 

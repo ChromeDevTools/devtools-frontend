@@ -53,7 +53,10 @@ devtools_entrypoint("worker_entrypoint") {
 ts_library("unittests") {
   testonly = true
 
-  sources = [ "heap_snapshot_worker.test.ts" ]
+  sources = [
+    "HeapSnapshot.test.ts",
+    "heap_snapshot_worker.test.ts",
+  ]
 
   deps = [
     ":bundle",

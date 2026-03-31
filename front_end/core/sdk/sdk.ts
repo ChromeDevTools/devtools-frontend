@@ -22,6 +22,7 @@ import * as CookieModel from './CookieModel.js';
 import * as CookieParser from './CookieParser.js';
 import * as CPUProfilerModel from './CPUProfilerModel.js';
 import * as CPUThrottlingManager from './CPUThrottlingManager.js';
+import * as CrashReportContextModel from './CrashReportContextModel.js';
 import * as CSSContainerQuery from './CSSContainerQuery.js';
 import * as CSSFontFace from './CSSFontFace.js';
 import * as CSSLayer from './CSSLayer.js';
@@ -105,6 +106,7 @@ export {
   CookieParser,
   CPUProfilerModel,
   CPUThrottlingManager,
+  CrashReportContextModel,
   CSSContainerQuery,
   CSSFontFace,
   CSSLayer,

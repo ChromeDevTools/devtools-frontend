@@ -992,6 +992,7 @@ grd_files_unbundled_sources = [
   "front_end/core/sdk/Cookie.js",
   "front_end/core/sdk/CookieModel.js",
   "front_end/core/sdk/CookieParser.js",
+  "front_end/core/sdk/CrashReportContextModel.js",
   "front_end/core/sdk/DOMDebuggerModel.js",
   "front_end/core/sdk/DOMModel.js",
   "front_end/core/sdk/DebuggerModel.js",

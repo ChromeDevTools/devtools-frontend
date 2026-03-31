@@ -351,6 +351,10 @@ export class TargetBase {
     return this.getAgent('CacheStorage');
   }
 
+  crashReportContextAgent(): ProtocolProxyApi.CrashReportContextApi {
+    return this.getAgent('CrashReportContext');
+  }
+
   cssAgent(): ProtocolProxyApi.CSSApi {
     return this.getAgent('CSS');
   }

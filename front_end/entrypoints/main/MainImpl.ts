@@ -356,9 +356,6 @@ export class MainImpl {
         Root.ExperimentNames.ExperimentName.PROTOCOL_MONITOR, protocolMonitorExperiment);
     Root.Runtime.experiments.register(
         Root.ExperimentNames.ExperimentName.SAMPLING_HEAP_PROFILER_TIMELINE, 'Sampling heap profiler timeline');
-    Root.Runtime.experiments.register(
-        Root.ExperimentNames.ExperimentName.SHOW_OPTION_TO_EXPOSE_INTERNALS_IN_HEAP_SNAPSHOT,
-        'Show option to expose internals in heap snapshots');
 
     // Timeline
     Root.Runtime.experiments.register(

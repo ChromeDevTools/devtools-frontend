@@ -45,6 +45,7 @@ const {widget} = UI.Widget;
 
 const REPORT_URL = 'https://crbug.com/364805393' as Platform.DevToolsPath.UrlString;
 const SCROLL_ROUNDING_OFFSET = 1;
+const MAX_NUM_LINES_IN_CODEBLOCK = 11;
 
 /*
 * Strings that don't need to be translated at this time.
@@ -409,6 +410,7 @@ export const DEFAULT_VIEW = (input: ChatMessageViewInput, output: ViewOutput, ta
           <devtools-code-block
             .code=${input.changeSummary}
             .codeLang=${'css'}
+            .displayLimit=${MAX_NUM_LINES_IN_CODEBLOCK}
             .displayNotice=${true}
             class="ai-css-change"
           ></devtools-code-block>
@@ -480,6 +482,7 @@ function renderStepCode(step: Step): Lit.LitTemplate {
       <devtools-code-block
         .code=${step.code.trim()}
         .codeLang=${'js'}
+        .displayLimit=${MAX_NUM_LINES_IN_CODEBLOCK}
         .displayNotice=${!Boolean(step.output)}
         .header=${codeHeadingText}
         .showCopyButton=${true}
@@ -490,6 +493,7 @@ function renderStepCode(step: Step): Lit.LitTemplate {
     <devtools-code-block
       .code=${step.output}
       .codeLang=${'js'}
+      .displayLimit=${MAX_NUM_LINES_IN_CODEBLOCK}
       .displayNotice=${true}
       .header=${lockedString(UIStringsNotTranslate.dataReturned)}
       .showCopyButton=${false}
@@ -522,6 +526,7 @@ function renderStepDetails({
       <devtools-code-block
         .code=${contextDetail.text}
         .codeLang=${contextDetail.codeLang || ''}
+        .displayLimit=${MAX_NUM_LINES_IN_CODEBLOCK}
         .displayNotice=${false}
         .header=${contextDetail.title}
         .showCopyButton=${true}

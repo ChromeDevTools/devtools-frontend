@@ -651,6 +651,7 @@ describeWithEnvironment('ChatMessage', () => {
       const codeBlock = target.querySelector('devtools-code-block');
       assert.instanceOf(codeBlock, MarkdownView.CodeBlock.CodeBlock);
       assert.strictEqual(codeBlock.code, 'test summary');
+      assert.strictEqual(codeBlock.displayLimit, 11);
     });
 
     it('should NOT render devtools-code-block when changeSummary is missing', async () => {

@@ -739,8 +739,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
 
   #instantiateNewModel(): Trace.TraceModel.Model {
     const config = Trace.Types.Configuration.defaults();
-    config.showAllEvents =
-        Root.Runtime.experiments.isEnabled(Root.ExperimentNames.ExperimentName.TIMELINE_SHOW_ALL_EVENTS);
+    config.showAllEvents = Common.Settings.Settings.instance().moduleSetting('timeline-show-all-events').get();
     config.debugMode = Root.Runtime.experiments.isEnabled(Root.ExperimentNames.ExperimentName.TIMELINE_DEBUG_MODE);
 
     const traceEngineModel = Trace.TraceModel.Model.createWithAllHandlers(config);
@@ -2072,8 +2071,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
 
   #applyActiveFilters(traceIsGeneric: boolean, exclusiveFilter: Trace.Extras.TraceFilter.TraceFilter|null = null):
       void {
-    if (traceIsGeneric ||
-        Root.Runtime.experiments.isEnabled(Root.ExperimentNames.ExperimentName.TIMELINE_SHOW_ALL_EVENTS)) {
+    if (traceIsGeneric || Common.Settings.Settings.instance().moduleSetting('timeline-show-all-events').get()) {
       return;
     }
 

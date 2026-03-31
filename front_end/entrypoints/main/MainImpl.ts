@@ -199,6 +199,8 @@ export class MainImpl {
     this.#universe = new Foundation.Universe.Universe(creationOptions);
     Root.DevToolsContext.setGlobalInstance(this.#universe.context as Root.DevToolsContext.WritableDevToolsContext);
 
+    Root.Runtime.experiments.cleanUpStaleExperiments();
+
     await this.requestAndRegisterLocaleData();
 
     Host.userMetrics.syncSetting(Common.Settings.Settings.instance().moduleSetting<boolean>('sync-preferences').get());
@@ -361,8 +363,6 @@ export class MainImpl {
     Root.Runtime.experiments.register(
         Root.ExperimentNames.ExperimentName.TIMELINE_INVALIDATION_TRACKING, 'Performance panel: invalidation tracking');
     Root.Runtime.experiments.register(
-        Root.ExperimentNames.ExperimentName.TIMELINE_SHOW_ALL_EVENTS, 'Performance panel: show all events');
-    Root.Runtime.experiments.register(
         Root.ExperimentNames.ExperimentName.TIMELINE_DEBUG_MODE,
         'Performance panel: debug mode (trace event details, etc)');
 
@@ -403,7 +403,6 @@ export class MainImpl {
       Root.ExperimentNames.ExperimentName.USE_SOURCE_MAP_SCOPES,
     ]);
 
-    Root.Runtime.experiments.cleanUpStaleExperiments();
     const enabledExperiments = Root.Runtime.Runtime.queryParam('enabledExperiments');
     if (enabledExperiments) {
       Root.Runtime.experiments.setServerEnabledExperiments(enabledExperiments.split(';'));

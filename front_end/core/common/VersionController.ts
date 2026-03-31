@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Platform from '../platform/platform.js';
+import * as Root from '../root/root.js';
 
 /* eslint @devtools/enforce-version-controller-methods: "error" */
 
@@ -16,7 +17,7 @@ export class VersionController {
   static readonly SYNCED_VERSION_SETTING_NAME = 'syncedInspectorVersion';
   static readonly LOCAL_VERSION_SETTING_NAME = 'localInspectorVersion';
 
-  static readonly CURRENT_VERSION = 42;
+  static readonly CURRENT_VERSION = 43;
 
   readonly #settings: Settings;
   readonly #globalVersionSetting: Setting<number>;
@@ -829,6 +830,22 @@ export class VersionController {
     }
 
     recordingsSetting.set(recordings);
+  }
+
+  updateVersionFrom42To43(): void {
+    const timelineShowAllEventsExperimentEnabled =
+        Root.Runtime.experiments.getValueFromStorage('timeline-show-all-events' as Root.ExperimentNames.ExperimentName);
+    if (timelineShowAllEventsExperimentEnabled !== undefined) {
+      if (this.#settings.syncedStorage.has('timeline-show-all-events')) {
+        return;  // Already migrated
+      }
+      try {
+        const timelineShowAllEventsSetting = this.#settings.moduleSetting('timeline-show-all-events');
+        timelineShowAllEventsSetting.set(timelineShowAllEventsExperimentEnabled);
+      } catch {
+        // If the setting is not registered yet (e.g. in tests), skip.
+      }
+    }
   }
 
   /*

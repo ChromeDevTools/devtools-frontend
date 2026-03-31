@@ -91,7 +91,7 @@ Content:
     },
     {
       "name": "performanceRecordAndReload",
-      "description": "Records a new performance trace, to help debug performance issue.",
+      "description": "Records a new performance trace. Use this to measure and debug performance metrics and Core Web Vitals like Largest Contentful Paint (LCP), Interaction to Next Paint (INP), and Cumulative Layout Shift (CLS).",
       "parameters": {
         "type": 6,
         "description": "",
@@ -102,7 +102,7 @@ Content:
     },
     {
       "name": "runLighthouseAudits",
-      "description": "Records a Lighthouse audit on the current page, to help debug accessibility issues.",
+      "description": "Records a Lighthouse audit on the current page. Use this to debug accessibility, SEO, and best practices. (For performance metrics like LCP, use performanceRecordAndReload instead).",
       "parameters": {
         "type": 6,
         "description": "",

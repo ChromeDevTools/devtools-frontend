@@ -90,6 +90,8 @@ render(html`
 
 In this example, the `.title` style will apply within the parent widget but will not leak into the nested widget. Because this convention relies on developer discipline, it is important to verify its correct application during code reviews.
 
+**Note:** Inside a `<devtools-data-grid>`, any `<style>` tags must be placed as direct children of the `<table>` element.
+
 ## Examples
 
 ```html

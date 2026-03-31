@@ -27,11 +27,36 @@
         flex: auto;
     }
 
-    devtools-data-grid td {
+    .data-grid {
+      th {
+        height: 26px;
+      }
+
+      td {
         vertical-align: middle;
+      }
+
+      tr.status-cancelled {
+        color: var(--sys-color-on-surface-light);
+      }
+
+      tr.status-error {
+        color: var(--sys-color-error);
+      }
+
+      tr.selected {
+        background-color: var(--sys-color-tonal-container);
+      }
+
+      tr.selected.status-error {
+        background-color: var(--sys-color-error-container);
+        color: var(--sys-color-error);
+      }
     }
 
     .section-title {
+        display: flex;
+        gap: var(--sys-size-2);
         background-color: var(--sys-color-surface1);
         padding: 0 5px;
         line-height: 22px;
@@ -111,8 +136,17 @@
         padding: 8px 0;
         gap: 4px;
         width: 100%;
-        min-width: 0;
+        box-sizing: border-box;
         border-bottom: 1px solid var(--sys-color-divider);
+        cursor: pointer;
+    }
+
+    .tool-item:hover {
+        background-color: var(--sys-color-state-hover-on-subtle);
+    }
+
+    .tool-item.selected {
+        background-color: var(--sys-color-tonal-container);
     }
 
     .tool-name-container {
@@ -142,19 +176,14 @@
 
     .tool-description {
         color: var(--sys-color-on-surface);
-    }
-
-    tr.status-error {
-      color: var(--sys-color-error);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     devtools-toolbar-input {
         flex-grow: 1;
         flex-shrink: 1;
-    }
-
-    tr.status-cancelled {
-      color: var(--sys-color-on-surface-light);
     }
 
     .toolbar-text.status-error-text {
@@ -163,5 +192,10 @@
 
     .toolbar-text.status-cancelled-text {
       color: var(--sys-color-on-surface-light);
+    }
+
+    .call-details-tabbed-pane {
+        flex: auto;
+        border-bottom: 1px solid var(--sys-color-divider);
     }
 }

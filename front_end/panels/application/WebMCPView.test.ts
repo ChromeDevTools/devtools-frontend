@@ -22,23 +22,30 @@ function createTool(
       {name, description, inputSchema: {type: 'object'}, frameId, backendNodeId}, target);
 }
 describeWithEnvironment('WebMCPView (View)', () => {
+  const createDefaultViewInput = (): Application.WebMCPView.ViewInput => {
+    const widget = new Application.WebMCPView.ToolDetailsWidget();
+    widget.markAsExternallyManaged();
+    return {
+      filters: {text: ''},
+      tools: [],
+      toolCalls: [],
+      filterButtons: WebMCPView.createFilterButtons(() => {}, () => {}),
+      onClearLogClick: () => {},
+      onFilterChange: () => {},
+      selectedTool: null,
+      onToolSelect: () => {},
+      selectedCall: null,
+      onCallSelect: () => {},
+      callDetailsWidget: widget,
+    };
+  };
+
   it('renders empty when no tools are available', async () => {
     const target = document.createElement('div');
     target.style.width = '600px';
     target.style.height = '400px';
     renderElementIntoDOM(target, {includeCommonStyles: true});
-    const filterButtons = WebMCPView.createFilterButtons(() => {}, () => {});
-
-    DEFAULT_VIEW(
-        {
-          filters: {text: ''},
-          tools: [],
-          toolCalls: [],
-          filterButtons,
-          onClearLogClick: () => {},
-          onFilterChange: () => {},
-        },
-        {}, target);
+    DEFAULT_VIEW(createDefaultViewInput(), {}, target);
 
     const listElements = target.querySelectorAll('.tool-item');
     assert.lengthOf(listElements, 0);
@@ -103,19 +110,11 @@ describeWithEnvironment('WebMCPView (View)', () => {
         },
       },
     ];
-    const filterButtons = WebMCPView.createFilterButtons(() => {}, () => {});
     DEFAULT_VIEW(
         {
+          ...createDefaultViewInput(),
           tools,
           toolCalls,
-          filters: {text: ''},
-          filterButtons,
-          onClearLogClick: function(): void {
-            throw new Error('Function not implemented.');
-          },
-          onFilterChange: function(): void {
-            throw new Error('Function not implemented.');
-          }
         },
         {}, target);
 
@@ -136,15 +135,10 @@ describeWithEnvironment('WebMCPView (View)', () => {
       createTool('weather', 'Gets the current weather', 'frame1' as Protocol.Page.FrameId, sdkTarget)
     ];
 
-    const filterButtons = WebMCPView.createFilterButtons(() => {}, () => {});
     DEFAULT_VIEW(
         {
-          filters: {text: ''},
+          ...createDefaultViewInput(),
           tools,
-          filterButtons,
-          onClearLogClick: () => {},
-          onFilterChange: () => {},
-          toolCalls: [],
         },
         {}, container);
 
@@ -160,16 +154,10 @@ describeWithEnvironment('WebMCPView (View)', () => {
       createTool('tool1', 'desc1', 'frame1' as Protocol.Page.FrameId, sdkTarget),
       createTool('tool2', 'desc2', 'frame1' as Protocol.Page.FrameId, sdkTarget)
     ];
-    const filterButtons = WebMCPView.createFilterButtons(() => {}, () => {});
-
     DEFAULT_VIEW(
         {
-          filters: {text: ''},
+          ...createDefaultViewInput(),
           tools,
-          filterButtons,
-          onClearLogClick: () => {},
-          onFilterChange: () => {},
-          toolCalls: [],
         },
         {}, target);
 
@@ -178,6 +166,28 @@ describeWithEnvironment('WebMCPView (View)', () => {
     assert.strictEqual(listElements[0].querySelector('.tool-name')?.textContent, 'tool1');
     assert.strictEqual(listElements[0].querySelector('.tool-description')?.textContent, 'desc1');
     assert.isNull(target.querySelector('.tool-list .empty-state'));
+  });
+
+  it('highlights the selected tool', () => {
+    updateHostConfig({devToolsWebMCPSupport: {enabled: true}});
+    const sdkTarget = createTarget();
+    const target = document.createElement('div');
+    const tools = [
+      createTool('tool1', 'desc1', 'frame1' as Protocol.Page.FrameId, sdkTarget),
+      createTool('tool2', 'desc2', 'frame1' as Protocol.Page.FrameId, sdkTarget)
+    ];
+    DEFAULT_VIEW(
+        {
+          ...createDefaultViewInput(),
+          tools,
+          selectedTool: tools[1],
+        },
+        {}, target);
+
+    const listElements = target.querySelectorAll('.tool-item');
+    assert.lengthOf(listElements, 2);
+    assert.isFalse(listElements[0].classList.contains('selected'));
+    assert.isTrue(listElements[1].classList.contains('selected'));
   });
   it('renders filter bar with filters applied', async () => {
     const container = document.createElement('div');
@@ -192,12 +202,9 @@ describeWithEnvironment('WebMCPView (View)', () => {
 
     DEFAULT_VIEW(
         {
+          ...createDefaultViewInput(),
           filters: {text: 'test', toolTypes: {imperative: true}},
-          tools: [],
-          toolCalls: [],
           filterButtons,
-          onClearLogClick: () => {},
-          onFilterChange: () => {},
         },
         {}, container);
 
@@ -209,16 +216,11 @@ describeWithEnvironment('WebMCPView (View)', () => {
     renderElementIntoDOM(target, {includeCommonStyles: true});
 
     const onClearLogClick = sinon.spy();
-    const filterButtons = WebMCPView.createFilterButtons(() => {}, () => {});
 
     DEFAULT_VIEW(
         {
-          filters: {text: ''},
-          tools: [],
-          toolCalls: [],
-          filterButtons,
+          ...createDefaultViewInput(),
           onClearLogClick,
-          onFilterChange: () => {},
         },
         {}, target);
 
@@ -231,7 +233,6 @@ describeWithEnvironment('WebMCPView (View)', () => {
 
 describeWithEnvironment('WebMCPView Presenter', () => {
   let target: SDK.Target.Target;
-
   async function setup() {
     updateHostConfig({devToolsWebMCPSupport: {enabled: true}});
     target = createTarget();
@@ -247,7 +248,6 @@ describeWithEnvironment('WebMCPView Presenter', () => {
   afterEach(() => {
     target?.dispose('test');
   });
-
   it('passes tools to the view sorted by name', async () => {
     const {model, viewStub} = await setup();
     model.toolsAdded({
@@ -271,6 +271,23 @@ describeWithEnvironment('WebMCPView Presenter', () => {
     assert.lengthOf(input.tools, 2);
     assert.strictEqual(input.tools[0].name, 'a-tool');
     assert.strictEqual(input.tools[1].name, 'b-tool');
+  });
+
+  it('updates selected tool', async () => {
+    const {model, viewStub} = await setup();
+    const toolProtocol = {
+      name: 'tool1',
+      description: 'desc1',
+      inputSchema: {type: 'object'},
+      frameId: 'frame1' as Protocol.Page.FrameId
+    };
+    model.toolsAdded({tools: [toolProtocol]});
+    const input = await viewStub.nextInput;
+    const tool = input.tools[0];
+
+    viewStub.input.onToolSelect(tool);
+    const nextInput = await viewStub.nextInput;
+    assert.strictEqual(nextInput.selectedTool, tool);
   });
 
   it('updates when tools are removed', async () => {

@@ -58,6 +58,12 @@ export interface LighthouseRun {
   isAIControlled?: boolean;
 }
 
+export class CancelledError extends Error {
+  constructor() {
+    super('Lighthouse run cancelled');
+  }
+}
+
 /**
  * ProtocolService manages a connection between the frontend (Lighthouse panel) and the Lighthouse worker.
  */
@@ -70,6 +76,14 @@ export class ProtocolService implements ProtocolClient.CDPConnection.CDPConnecti
   private removeDialogHandler?: () => void;
   private configForTesting?: object;
   private connection?: ProtocolClient.CDPConnection.CDPConnection;
+
+  /**
+   * Tracks pending requests to the Lighthouse worker.
+   * Key: The message ID sent to the worker.
+   * Value: The rejection function for the corresponding promise.
+   * This is used to gracefully cancel hanging promises if the ProtocolService is detached before the worker replies.
+   */
+  readonly #pendingRequests = new Map<number, (reason: Error) => void>();
 
   async attach(): Promise<void> {
     await SDK.TargetManager.TargetManager.instance().suspendAllTargets();
@@ -174,6 +188,10 @@ export class ProtocolService implements ProtocolClient.CDPConnection.CDPConnecti
   }
 
   async detach(): Promise<void> {
+    for (const reject of this.#pendingRequests.values()) {
+      reject(new CancelledError());
+    }
+    this.#pendingRequests.clear();
     const oldLighthouseWorker = this.lighthouseWorkerPromise;
     const oldRootTarget = this.rootTarget;
 
@@ -245,7 +263,7 @@ export class ProtocolService implements ProtocolClient.CDPConnection.CDPConnecti
     return this.lighthouseWorkerPromise;
   }
 
-  private async ensureWorkerExists(): Promise<Worker> {
+  async ensureWorkerExists(): Promise<Worker> {
     let worker: Worker;
     if (!this.lighthouseWorkerPromise) {
       worker = await this.initWorker();
@@ -293,16 +311,21 @@ export class ProtocolService implements ProtocolClient.CDPConnection.CDPConnecti
       Promise<LighthouseModel.ReporterTypes.RunnerResult> {
     const worker = await this.ensureWorkerExists();
     const messageId = lastId++;
-    const messageResult = new Promise<LighthouseModel.ReporterTypes.RunnerResult>(resolve => {
+    const messageResult = new Promise<LighthouseModel.ReporterTypes.RunnerResult>((resolve, reject) => {
       const workerListener = (event: MessageEvent): void => {
         const lighthouseMessage = event.data;
 
         if (lighthouseMessage.id === messageId) {
           worker.removeEventListener('message', workerListener);
+          this.#pendingRequests.delete(messageId);
           resolve(lighthouseMessage.result);
         }
       };
       worker.addEventListener('message', workerListener);
+      this.#pendingRequests.set(messageId, (err: Error) => {
+        worker.removeEventListener('message', workerListener);
+        reject(err);
+      });
     });
     worker.postMessage({id: messageId, action, args: {...args, id: messageId}});
 

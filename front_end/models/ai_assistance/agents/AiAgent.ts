@@ -172,30 +172,6 @@ export interface ConversationSuggestion {
 /** At least one. */
 export type ConversationSuggestions = [ConversationSuggestion, ...ConversationSuggestion[]];
 
-export const enum ExternalRequestResponseType {
-  ANSWER = 'answer',
-  NOTIFICATION = 'notification',
-  ERROR = 'error',
-}
-
-export interface ExternalRequestAnswer {
-  type: ExternalRequestResponseType.ANSWER;
-  message: string;
-  devToolsLogs: object[];
-}
-
-export interface ExternalRequestNotification {
-  type: ExternalRequestResponseType.NOTIFICATION;
-  message: string;
-}
-
-export interface ExternalRequestError {
-  type: ExternalRequestResponseType.ERROR;
-  message: string;
-}
-
-export type ExternalRequestResponse = ExternalRequestAnswer|ExternalRequestNotification|ExternalRequestError;
-
 export abstract class ConversationContext<T> {
   abstract getOrigin(): string;
   abstract getItem(): T;

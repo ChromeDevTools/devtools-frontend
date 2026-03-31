@@ -54,7 +54,6 @@ import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
 import * as Tracing from '../../services/tracing/tracing.js';
 import * as Adorners from '../../ui/components/adorners/adorners.js';
 import * as Dialogs from '../../ui/components/dialogs/dialogs.js';
-import * as Snackbars from '../../ui/components/snackbars/snackbars.js';
 import {Link} from '../../ui/kit/kit.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as SettingsUI from '../../ui/legacy/components/settings_ui/settings_ui.js';
@@ -311,10 +310,6 @@ const UIStrings = {
    * @description Title of the shortcuts dialog shown to the user that lists keyboard shortcuts.
    */
   shortcutsDialogTitle: 'Keyboard shortcuts for flamechart',
-  /**
-   * @description Notification shown to the user whenever DevTools receives an external request.
-   */
-  externalRequestReceived: '`DevTools` received an external request',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelinePanel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -407,7 +402,6 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
   private traceLoadStart!: Trace.Types.Timing.Milli|null;
 
   #traceEngineModel: Trace.TraceModel.Model;
-  #externalAIConversationData: AiAssistanceModel.ConversationHandler.ExternalPerformanceAIConversationData|null = null;
   #sourceMapsResolver: SourceMapsResolver.SourceMapsResolver|null = null;
   #entityMapper: Trace.EntityMapper.EntityMapper|null = null;
   #onSourceMapsNodeNamesResolvedBound = this.#onSourceMapsNodeNamesResolved.bind(this);
@@ -974,39 +968,6 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
    */
   get model(): Trace.TraceModel.Model {
     return this.#traceEngineModel;
-  }
-
-  getOrCreateExternalAIConversationData(): AiAssistanceModel.ConversationHandler.ExternalPerformanceAIConversationData {
-    if (!this.#externalAIConversationData) {
-      const conversationHandler = AiAssistanceModel.ConversationHandler.ConversationHandler.instance();
-      const focus = AiAssistanceModel.AIContext.getPerformanceAgentFocusFromModel(this.model);
-      if (!focus) {
-        throw new Error('could not create performance agent focus');
-      }
-
-      const conversation = new AiAssistanceModel.AiConversation.AiConversation({
-        type: AiAssistanceModel.AiHistoryStorage.ConversationType.PERFORMANCE,
-        data: [],
-        isReadOnly: true,
-        aidaClient: conversationHandler.aidaClient,
-        isExternal: true,
-      });
-
-      const selected = new AiAssistanceModel.PerformanceAgent.PerformanceTraceContext(focus);
-      selected.external = true;
-
-      this.#externalAIConversationData = {
-        conversationHandler,
-        conversation,
-        selected,
-      };
-    }
-
-    return this.#externalAIConversationData;
-  }
-
-  invalidateExternalAIConversationData(): void {
-    this.#externalAIConversationData = null;
   }
 
   /**
@@ -3102,120 +3063,6 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     return trace;
   }
 
-  static async *
-      handleExternalRecordRequest(): AsyncGenerator<
-          AiAssistanceModel.AiAgent.ExternalRequestResponse, AiAssistanceModel.AiAgent.ExternalRequestResponse> {
-    yield {
-      type: AiAssistanceModel.AiAgent.ExternalRequestResponseType.NOTIFICATION,
-      message: 'Recording performance trace',
-    };
-    TimelinePanel.instance().invalidateExternalAIConversationData();
-    void VisualLogging.logFunctionCall('timeline.record-reload', 'external');
-    Snackbars.Snackbar.Snackbar.show({message: i18nString(UIStrings.externalRequestReceived)});
-
-    const panelInstance = TimelinePanel.instance();
-    // Given how the current UX works, it's nice to show the user the Perf
-    // Panel so they see what's happening
-    await UI.ViewManager.ViewManager.instance().showView('timeline');
-
-    function onRecordingCompleted(eventData: EventTypes[Events.RECORDING_COMPLETED]):
-        AiAssistanceModel.AiAgent.ExternalRequestResponse {
-      if ('errorText' in eventData) {
-        return {
-          type: AiAssistanceModel.AiAgent.ExternalRequestResponseType.ERROR,
-          message: `Error running the trace: ${eventData.errorText}`,
-        };
-      }
-
-      const parsedTrace = panelInstance.model.parsedTrace(eventData.traceIndex);
-      if (!parsedTrace || !parsedTrace.insights || parsedTrace.insights.size === 0) {
-        return {
-          type: AiAssistanceModel.AiAgent.ExternalRequestResponseType.ERROR,
-          message: 'The trace was loaded successfully but no Insights were detected.',
-        };
-      }
-
-      const insightSetId = Array.from(parsedTrace.insights.keys()).find(k => k !== 'NO_NAVIGATION');
-      if (!insightSetId) {
-        return {
-          type: AiAssistanceModel.AiAgent.ExternalRequestResponseType.ERROR,
-          message: 'The trace was loaded successfully but no navigation was detected.',
-        };
-      }
-
-      const insightsForNav = parsedTrace.insights.get(insightSetId);
-      if (!insightsForNav) {
-        return {
-          type: AiAssistanceModel.AiAgent.ExternalRequestResponseType.ERROR,
-          message: 'The trace was loaded successfully but no Insights were detected.',
-        };
-      }
-
-      let responseTextForNonPassedInsights = '';
-      // We still return info on the passed insights, but we put it at the
-      // bottom of the response under a heading.
-      let responseTextForPassedInsights = '';
-
-      // TODO(b/442392194): use PerformanceTraceFormatter summary instead.
-      for (const insight of Object.values(insightsForNav.model)) {
-        const focus = AiAssistanceModel.AIContext.AgentFocus.fromParsedTrace(parsedTrace);
-        const formatter = new AiAssistanceModel.PerformanceInsightFormatter.PerformanceInsightFormatter(focus, insight);
-        if (!formatter.insightIsSupported()) {
-          // Not all Insights are integrated with "Ask AI" yet, let's avoid
-          // filling up the response with those ones because there will be no
-          // useful information.
-          continue;
-        }
-
-        const formatted = formatter.formatInsight({headingLevel: 3});
-
-        if (insight.state === 'pass') {
-          responseTextForPassedInsights += `${formatted}\n\n`;
-          continue;
-        } else {
-          responseTextForNonPassedInsights += `${formatted}\n\n`;
-        }
-      }
-
-      const finalText = `# Trace recording results
-
-## Non-passing insights:
-
-These insights highlight potential problems and opportunities to improve performance.
-${responseTextForNonPassedInsights}
-
-## Passing insights:
-
-These insights are passing, which means they are not considered to highlight considerable performance problems.
-${responseTextForPassedInsights}`;
-
-      return {
-        type: AiAssistanceModel.AiAgent.ExternalRequestResponseType.ANSWER,
-        message: finalText,
-        devToolsLogs: [],
-      };
-    }
-
-    return await new Promise(resolve => {
-      function listener(e: Common.EventTarget.EventTargetEvent<EventTypes[Events.RECORDING_COMPLETED]>): void {
-        resolve(onRecordingCompleted(e.data));
-        panelInstance.removeEventListener(Events.RECORDING_COMPLETED, listener);
-      }
-      panelInstance.addEventListener(Events.RECORDING_COMPLETED, listener);
-
-      panelInstance.recordReload();
-    });
-  }
-
-  static async handleExternalAnalyzeRequest(prompt: string): Promise<AsyncGenerator<
-      AiAssistanceModel.AiAgent.ExternalRequestResponse, AiAssistanceModel.AiAgent.ExternalRequestResponse>> {
-    const data = TimelinePanel.instance().getOrCreateExternalAIConversationData();
-    return await data.conversationHandler.handleExternalRequest({
-      conversationType: AiAssistanceModel.AiHistoryStorage.ConversationType.PERFORMANCE,
-      prompt,
-      data,
-    });
-  }
 }
 
 export const enum State {

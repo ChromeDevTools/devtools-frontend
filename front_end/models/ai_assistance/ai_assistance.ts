@@ -19,7 +19,6 @@ import * as AiHistoryStorage from './AiHistoryStorage.js';
 import * as AiUtils from './AiUtils.js';
 import * as BuiltInAi from './BuiltInAi.js';
 import * as ChangeManager from './ChangeManager.js';
-import * as ConversationHandler from './ConversationHandler.js';
 import * as FileFormatter from './data_formatters/FileFormatter.js';
 import * as LighthouseFormatter from './data_formatters/LighthouseFormatter.js';
 import * as NetworkRequestFormatter from './data_formatters/NetworkRequestFormatter.js';
@@ -48,7 +47,6 @@ export {
   BuiltInAi,
   ChangeManager,
   ContextSelectionAgent,
-  ConversationHandler,
   ConversationSummaryAgent,
   Debug,
   EvaluateAction,

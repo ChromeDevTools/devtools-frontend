@@ -8,10 +8,9 @@ import * as CrUXManager from '../../../models/crux-manager/crux-manager.js';
 import * as EmulationModel from '../../../models/emulation/emulation.js';
 import * as LiveMetrics from '../../../models/live-metrics/live-metrics.js';
 import type * as Trace from '../../../models/trace/trace.js';
-import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
+import {doubleRaf, raf, renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import {createTarget, registerActions} from '../../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../../testing/MockConnection.js';
-import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 
 import * as Components from './components.js';
@@ -61,8 +60,8 @@ function selectVisibleLog(view: Components.LiveMetricsView.LiveMetricsView, logI
 }
 
 function getClearLogButton(view: Components.LiveMetricsView.LiveMetricsView): HTMLElementTagNameMap['devtools-button'] {
-  return view.contentElement.querySelector('.logs-section devtools-widget')!.shadowRoot!.querySelector('.tabbed-pane')!
-      .shadowRoot!.querySelector('devtools-toolbar devtools-button')!;
+  return view.contentElement.querySelector('.logs-section devtools-widget')!.shadowRoot!.querySelector(
+      'devtools-tabbed-pane devtools-toolbar devtools-button')!;
 }
 
 function selectDeviceOption(view: Components.LiveMetricsView.LiveMetricsView, deviceOption: string): void {
@@ -223,7 +222,6 @@ describeWithMockConnection('LiveMetricsView', () => {
       layoutShifts: [],
     });
     await view.updateComplete;
-    await RenderCoordinator.done();
 
     const interactionsEls = getInteractions(view);
     assert.lengthOf(interactionsEls, 2);
@@ -232,8 +230,6 @@ describeWithMockConnection('LiveMetricsView', () => {
     for (const interactionEl of interactionsEls) {
       interactionEl.querySelector('summary')!.click();
     }
-
-    await RenderCoordinator.done();
 
     const typeEl1 = interactionsEls[0].querySelector('.interaction-type') as HTMLDivElement;
     assert.match(typeEl1.textContent!, /pointer/);
@@ -315,7 +311,6 @@ describeWithMockConnection('LiveMetricsView', () => {
       layoutShifts: [],
     });
     await view.updateComplete;
-    await RenderCoordinator.done();
 
     const interactions = getInteractions(view);
     assert.lengthOf(interactions, 2);
@@ -364,7 +359,6 @@ describeWithMockConnection('LiveMetricsView', () => {
       layoutShifts: [],
     });
     await view.updateComplete;
-    await RenderCoordinator.done();
 
     const interactionsEls = getInteractions(view);
     assert.lengthOf(interactionsEls, 2);
@@ -405,12 +399,10 @@ describeWithMockConnection('LiveMetricsView', () => {
       ],
     });
     await view.updateComplete;
-    await RenderCoordinator.done();
 
     selectVisibleLog(view, 'interactions');
 
     await view.updateComplete;
-    await RenderCoordinator.done();
 
     const firstClusterShift = getLayoutShifts(view).find(el => el.id === 'layout-shift-1-2')!;
     assert.isFalse(firstClusterShift.checkVisibility());
@@ -419,7 +411,7 @@ describeWithMockConnection('LiveMetricsView', () => {
     getClsClusterLink(view)!.click();
 
     await view.updateComplete;
-    await RenderCoordinator.done();
+    await raf();
 
     assert.isTrue(firstClusterShift.checkVisibility());
     assert.isTrue(firstClusterShift.hasFocus());
@@ -440,7 +432,6 @@ describeWithMockConnection('LiveMetricsView', () => {
       ],
     });
     await view.updateComplete;
-    await RenderCoordinator.done();
 
     assert.isNull(getClsClusterLink(view));
   });
@@ -460,7 +451,6 @@ describeWithMockConnection('LiveMetricsView', () => {
       ],
     });
     await view.updateComplete;
-    await RenderCoordinator.done();
 
     assert.isNull(getClsClusterLink(view));
   });
@@ -502,12 +492,10 @@ describeWithMockConnection('LiveMetricsView', () => {
       layoutShifts: [],
     });
     await view.updateComplete;
-    await RenderCoordinator.done();
 
     selectVisibleLog(view, 'layout-shifts');
 
     await view.updateComplete;
-    await RenderCoordinator.done();
 
     const inpInteractionEl = getInteractions(view).find(el => el.id === 'interaction-1-1')!;
     assert.isFalse(inpInteractionEl.checkVisibility());
@@ -517,7 +505,7 @@ describeWithMockConnection('LiveMetricsView', () => {
     inpInteractionLink!.click();
 
     await view.updateComplete;
-    await RenderCoordinator.done();
+    await raf();
 
     assert.isTrue(inpInteractionEl.checkVisibility());
     assert.isTrue(inpInteractionEl.hasFocus());
@@ -550,7 +538,6 @@ describeWithMockConnection('LiveMetricsView', () => {
       layoutShifts: [],
     });
     await view.updateComplete;
-    await RenderCoordinator.done();
 
     const inpInteractionLink = getInpInteractionLink(view);
     assert.isNull(inpInteractionLink);
@@ -559,7 +546,6 @@ describeWithMockConnection('LiveMetricsView', () => {
   it('clear interactions log button should work', async () => {
     const view = renderLiveMetrics();
     await view.updateComplete;
-    await RenderCoordinator.done();
 
     assert.lengthOf(getInteractions(view), 0);
     assert.lengthOf(getLayoutShifts(view), 0);
@@ -601,7 +587,6 @@ describeWithMockConnection('LiveMetricsView', () => {
       ],
     });
     await view.updateComplete;
-    await RenderCoordinator.done();
 
     assert.lengthOf(getInteractions(view), 2);
     assert.lengthOf(getLayoutShifts(view), 1);
@@ -610,7 +595,6 @@ describeWithMockConnection('LiveMetricsView', () => {
     clearLogButton.click();
 
     await view.updateComplete;
-    await RenderCoordinator.done();
 
     assert.lengthOf(getInteractions(view), 0);
     assert.lengthOf(getLayoutShifts(view), 1);
@@ -619,7 +603,6 @@ describeWithMockConnection('LiveMetricsView', () => {
   it('clear layout shifts log button should work', async () => {
     const view = renderLiveMetrics();
     await view.updateComplete;
-    await RenderCoordinator.done();
 
     assert.lengthOf(getInteractions(view), 0);
     assert.lengthOf(getLayoutShifts(view), 0);
@@ -661,7 +644,6 @@ describeWithMockConnection('LiveMetricsView', () => {
       ],
     });
     await view.updateComplete;
-    await RenderCoordinator.done();
 
     assert.lengthOf(getInteractions(view), 2);
     assert.lengthOf(getLayoutShifts(view), 1);
@@ -669,13 +651,11 @@ describeWithMockConnection('LiveMetricsView', () => {
     selectVisibleLog(view, 'layout-shifts');
 
     await view.updateComplete;
-    await RenderCoordinator.done();
 
     const clearLogButton = getClearLogButton(view);
     clearLogButton.click();
 
     await view.updateComplete;
-    await RenderCoordinator.done();
 
     assert.lengthOf(getInteractions(view), 2);
     assert.lengthOf(getLayoutShifts(view), 0);
@@ -684,14 +664,12 @@ describeWithMockConnection('LiveMetricsView', () => {
   it('record action button should work', async () => {
     const view = renderLiveMetrics();
     await view.updateComplete;
-    await RenderCoordinator.done();
 
     const recordButton =
         view.contentElement.querySelector('#record devtools-button') as HTMLElementTagNameMap['devtools-button'];
     recordButton.click();
 
     await view.updateComplete;
-    await RenderCoordinator.done();
 
     assert.strictEqual(mockHandleAction.firstCall.args[1], 'timeline.toggle-recording');
   });
@@ -699,14 +677,12 @@ describeWithMockConnection('LiveMetricsView', () => {
   it('record page load button should work', async () => {
     const view = renderLiveMetrics();
     await view.updateComplete;
-    await RenderCoordinator.done();
 
     const recordButton = view.contentElement.querySelector('#record-page-load devtools-button') as
         HTMLElementTagNameMap['devtools-button'];
     recordButton.click();
 
     await view.updateComplete;
-    await RenderCoordinator.done();
 
     assert.strictEqual(mockHandleAction.firstCall.args[1], 'timeline.record-reload');
   });
@@ -715,7 +691,6 @@ describeWithMockConnection('LiveMetricsView', () => {
     const view = renderLiveMetrics();
     view.isNode = true;
     await view.updateComplete;
-    await RenderCoordinator.done();
 
     const title = view.contentElement.querySelector('.section-title');
     assert.strictEqual(title!.textContent!, 'Node performance');
@@ -754,7 +729,6 @@ describeWithMockConnection('LiveMetricsView', () => {
       const view = renderLiveMetrics();
 
       await view.updateComplete;
-      await RenderCoordinator.done();
 
       const envRecs = getEnvironmentRecs(view);
       assert.lengthOf(envRecs, 0);
@@ -770,7 +744,6 @@ describeWithMockConnection('LiveMetricsView', () => {
       const view = renderLiveMetrics();
 
       await view.updateComplete;
-      await RenderCoordinator.done();
 
       mockFieldData['url-ALL'] = createMockFieldData();
 
@@ -781,7 +754,6 @@ describeWithMockConnection('LiveMetricsView', () => {
           } as SDK.ResourceTreeModel.ResourceTreeFrame);
 
       await view.updateComplete;
-      await RenderCoordinator.done();
 
       const envRecs = getEnvironmentRecs(view);
       assert.lengthOf(envRecs, 2);
@@ -803,7 +775,6 @@ describeWithMockConnection('LiveMetricsView', () => {
       const view = renderLiveMetrics();
 
       await view.updateComplete;
-      await RenderCoordinator.done();
 
       target.model(SDK.ResourceTreeModel.ResourceTreeModel)
           ?.dispatchEventToListeners(SDK.ResourceTreeModel.Events.FrameNavigated, {
@@ -812,7 +783,6 @@ describeWithMockConnection('LiveMetricsView', () => {
           } as SDK.ResourceTreeModel.ResourceTreeFrame);
 
       await view.updateComplete;
-      await RenderCoordinator.done();
 
       const envRecs = getEnvironmentRecs(view);
       assert.strictEqual(envRecs[0].textContent, 'Not enough data');
@@ -831,7 +801,6 @@ describeWithMockConnection('LiveMetricsView', () => {
       const view = renderLiveMetrics();
 
       await view.updateComplete;
-      await RenderCoordinator.done();
 
       const fieldMessage = getFieldMessage(view);
       assert.match(fieldMessage!.textContent!, /Warning from crux/);
@@ -841,7 +810,6 @@ describeWithMockConnection('LiveMetricsView', () => {
       const view = renderLiveMetrics();
 
       await view.updateComplete;
-      await RenderCoordinator.done();
 
       mockFieldData['url-ALL'] = createMockFieldData();
       mockFieldData.normalizedUrl = 'https://www.example.com/';
@@ -853,7 +821,6 @@ describeWithMockConnection('LiveMetricsView', () => {
           } as SDK.ResourceTreeModel.ResourceTreeFrame);
 
       await view.updateComplete;
-      await RenderCoordinator.done();
 
       const fieldLink = getFieldDataHistoryLink(view);
       assert.include(fieldLink!.textContent, 'View history');
@@ -872,7 +839,7 @@ describeWithMockConnection('LiveMetricsView', () => {
       const view = renderLiveMetrics();
 
       await view.updateComplete;
-      await RenderCoordinator.done();
+      await raf();
 
       const lcpFieldEl = getFieldMetricValue(view, 'lcp');
       assert.strictEqual(lcpFieldEl!.textContent, '1.00 s');
@@ -884,7 +851,7 @@ describeWithMockConnection('LiveMetricsView', () => {
       const view = renderLiveMetrics();
 
       await view.updateComplete;
-      await RenderCoordinator.done();
+      await raf();
 
       const lcpFieldEl1 = getFieldMetricValue(view, 'lcp');
       assert.strictEqual(lcpFieldEl1!.textContent, '1.00 s');
@@ -892,7 +859,7 @@ describeWithMockConnection('LiveMetricsView', () => {
       CrUXManager.CrUXManager.instance().getConfigSetting().set({enabled: false, override: ''});
 
       await view.updateComplete;
-      await RenderCoordinator.done();
+      await raf();
 
       const lcpFieldEl2 = getFieldMetricValue(view, 'lcp');
       assert.isNull(lcpFieldEl2);
@@ -907,7 +874,7 @@ describeWithMockConnection('LiveMetricsView', () => {
       const view = renderLiveMetrics();
 
       await view.updateComplete;
-      await RenderCoordinator.done();
+      await doubleRaf();
 
       const lcpFieldEl1 = getFieldMetricValue(view, 'lcp');
       assert.strictEqual(lcpFieldEl1!.textContent, '1.00 s');
@@ -915,7 +882,7 @@ describeWithMockConnection('LiveMetricsView', () => {
       selectPageScope(view, 'origin');
 
       await view.updateComplete;
-      await RenderCoordinator.done();
+      await doubleRaf();
 
       const lcpFieldEl2 = getFieldMetricValue(view, 'lcp');
       assert.strictEqual(lcpFieldEl2!.textContent, '2.00 s');
@@ -930,7 +897,7 @@ describeWithMockConnection('LiveMetricsView', () => {
       const view = renderLiveMetrics();
 
       await view.updateComplete;
-      await RenderCoordinator.done();
+      await doubleRaf();
 
       selectDeviceOption(view, 'ALL');
 
@@ -940,7 +907,7 @@ describeWithMockConnection('LiveMetricsView', () => {
       selectDeviceOption(view, 'PHONE');
 
       await view.updateComplete;
-      await RenderCoordinator.done();
+      await doubleRaf();
 
       const lcpFieldEl2 = getFieldMetricValue(view, 'lcp');
       assert.strictEqual(lcpFieldEl2!.textContent, '2.00 s');
@@ -958,7 +925,7 @@ describeWithMockConnection('LiveMetricsView', () => {
         const view = renderLiveMetrics();
 
         await view.updateComplete;
-        await RenderCoordinator.done();
+        await raf();
 
         const envRecs = getEnvironmentRecs(view);
         assert.lengthOf(envRecs, 2);
@@ -977,7 +944,6 @@ describeWithMockConnection('LiveMetricsView', () => {
         const view = renderLiveMetrics();
 
         await view.updateComplete;
-        await RenderCoordinator.done();
 
         const envRecs = getEnvironmentRecs(view);
         assert.strictEqual(envRecs[0].textContent, '30% mobile, 60% desktop');
@@ -998,7 +964,6 @@ describeWithMockConnection('LiveMetricsView', () => {
         const view = renderLiveMetrics();
 
         await view.updateComplete;
-        await RenderCoordinator.done();
 
         const envRecs = getEnvironmentRecs(view);
         assert.strictEqual(envRecs[0].textContent, '30% mobile, 60% desktop');
@@ -1019,8 +984,6 @@ describeWithMockConnection('LiveMetricsView', () => {
         const view = renderLiveMetrics();
 
         await view.updateComplete;
-        await RenderCoordinator.done();
-
         const envRecs = getEnvironmentRecs(view);
         assert.strictEqual(envRecs[0].textContent, '30% mobile, 60% desktop');
         assert.strictEqual(envRecs[1].textContent, 'Not enough data');
@@ -1038,7 +1001,6 @@ describeWithMockConnection('LiveMetricsView', () => {
         const view = renderLiveMetrics();
 
         await view.updateComplete;
-        await RenderCoordinator.done();
 
         const envRecs = getEnvironmentRecs(view);
         assert.strictEqual(envRecs[0].textContent, '30% mobile, 60% desktop');
@@ -1057,7 +1019,6 @@ describeWithMockConnection('LiveMetricsView', () => {
         const view = renderLiveMetrics();
 
         await view.updateComplete;
-        await RenderCoordinator.done();
 
         const envRecs = getEnvironmentRecs(view);
         assert.strictEqual(envRecs[0].textContent, '80% mobile, 10% desktop');
@@ -1076,7 +1037,6 @@ describeWithMockConnection('LiveMetricsView', () => {
         const view = renderLiveMetrics();
 
         await view.updateComplete;
-        await RenderCoordinator.done();
 
         const envRecs = getEnvironmentRecs(view);
         assert.strictEqual(envRecs[0].textContent, '49% mobile, 49% desktop');

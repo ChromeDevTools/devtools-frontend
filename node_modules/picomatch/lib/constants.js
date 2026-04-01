@@ -4,6 +4,8 @@ const path = require('path');
 const WIN_SLASH = '\\\\/';
 const WIN_NO_SLASH = `[^${WIN_SLASH}]`;
 
+const DEFAULT_MAX_EXTGLOB_RECURSION = 0;
+
 /**
  * Posix glob regex
  */
@@ -67,6 +69,7 @@ const WINDOWS_CHARS = {
  */
 
 const POSIX_REGEX_SOURCE = {
+  __proto__: null,
   alnum: 'a-zA-Z0-9',
   alpha: 'a-zA-Z',
   ascii: '\\x00-\\x7F',
@@ -84,6 +87,7 @@ const POSIX_REGEX_SOURCE = {
 };
 
 module.exports = {
+  DEFAULT_MAX_EXTGLOB_RECURSION,
   MAX_LENGTH: 1024 * 64,
   POSIX_REGEX_SOURCE,
 
@@ -97,6 +101,7 @@ module.exports = {
 
   // Replace globs with equivalent patterns to reduce parsing time.
   REPLACEMENTS: {
+    __proto__: null,
     '***': '*',
     '**/**': '**',
     '**/**/**': '**'

@@ -10,6 +10,43 @@ This is the matching library used internally by npm.
 It works by converting glob expressions into JavaScript `RegExp`
 objects.
 
+## Important Security Consideration!
+
+> [!WARNING]  
+> This library uses JavaScript regular expressions. Please read
+> the following warning carefully, and be thoughtful about what
+> you provide to this library in production systems.
+
+_Any_ library in JavaScript that deals with matching string
+patterns using regular expressions will be  subject to
+[ReDoS](https://owasp.org/www-community/attacks/Regular_expression_Denial_of_Service_-_ReDoS)
+if the pattern is generated using untrusted input.
+
+Efforts have been made to mitigate risk as much as is feasible in
+such a library, providing maximum recursion depths and so forth,
+but these measures can only ultimately protect against accidents,
+not malice. A dedicated attacker can _always_ find patterns that
+cannot be defended against by a bash-compatible glob pattern
+matching system that uses JavaScript regular expressions.
+
+To be extremely clear:
+
+> [!WARNING]  
+> **If you create a system where you take user input, and use
+> that input as the source of a Regular Expression pattern, in
+> this or any extant glob matcher in JavaScript, you will be
+> pwned.**
+
+A future version of this library _may_ use a different matching
+algorithm which does not exhibit backtracking problems. If and
+when that happens, it will likely be a sweeping change, and those
+improvements will **not** be backported to legacy versions.
+
+In the near term, it is not reasonable to continue to play
+whack-a-mole with security advisories, and so any future ReDoS
+reports will be considered "working as intended", and resolved
+entirely by this warning.
+
 ## Usage
 
 ```javascript

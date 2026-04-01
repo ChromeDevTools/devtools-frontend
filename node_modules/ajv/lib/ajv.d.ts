@@ -203,6 +203,11 @@ declare namespace ajv {
     logger?: CustomLogger | false;
     nullable?: boolean;
     serialize?: ((schema: object | boolean) => any) | false;
+    regExp?: (pattern: string) => RegExpLike;
+  }
+
+  interface RegExpLike {
+    test: (s: string) => boolean;
   }
 
   type FormatValidator = string | RegExp | ((data: string) => boolean | PromiseLike<any>);

@@ -124,10 +124,12 @@ function renderInlineWalkthrough(input: ViewInput, stepsOutput: Lit.LitTemplate,
       </span>
       <details class="walkthrough-inline" ?open=${input.isExpanded} @toggle=${onToggle}>
         <summary ?data-has-widgets=${!input.isLoading && hasWidgets}>
-          ${input.isExpanded ?
-            walkthroughCloseTitle({hasWidgets, isInlined: true}) :
-            walkthroughTitle({isLoading: input.isLoading, lastStep, hasWidgets})
-          }
+          <span class="walkthrough-inline-title">
+            ${input.isExpanded ?
+              walkthroughCloseTitle({hasWidgets, isInlined: true}) :
+              walkthroughTitle({isLoading: input.isLoading, lastStep, hasWidgets})
+            }
+          </span>
           <devtools-icon name="chevron-right"></devtools-icon>
         </summary>
 

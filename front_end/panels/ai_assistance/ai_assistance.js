@@ -2501,6 +2501,7 @@ var chatMessage_css_default = `/*
   .user-query-wrapper {
     display: flex;
     justify-content: flex-end;
+    padding: 0 var(--sys-size-5);
     align-items: center;
   }
 
@@ -3420,6 +3421,7 @@ var lockedString5 = i18n9.i18n.lockedString;
 var { widget: widget3 } = UI5.Widget;
 var REPORT_URL = "https://crbug.com/364805393";
 var SCROLL_ROUNDING_OFFSET = 1;
+var MAX_NUM_LINES_IN_CODEBLOCK = 11;
 var UIStringsNotTranslate4 = {
   /**
    * @description The title of the button that allows submitting positive
@@ -3648,6 +3650,7 @@ var DEFAULT_VIEW4 = (input, output, target) => {
           <devtools-code-block
             .code=${input.changeSummary}
             .codeLang=${"css"}
+            .displayLimit=${MAX_NUM_LINES_IN_CODEBLOCK}
             .displayNotice=${true}
             class="ai-css-change"
           ></devtools-code-block>
@@ -3688,6 +3691,7 @@ function renderStepCode(step) {
       <devtools-code-block
         .code=${step.code.trim()}
         .codeLang=${"js"}
+        .displayLimit=${MAX_NUM_LINES_IN_CODEBLOCK}
         .displayNotice=${!Boolean(step.output)}
         .header=${codeHeadingText}
         .showCopyButton=${true}
@@ -3697,6 +3701,7 @@ function renderStepCode(step) {
     <devtools-code-block
       .code=${step.output}
       .codeLang=${"js"}
+      .displayLimit=${MAX_NUM_LINES_IN_CODEBLOCK}
       .displayNotice=${true}
       .header=${lockedString5(UIStringsNotTranslate4.dataReturned)}
       .showCopyButton=${false}
@@ -3712,6 +3717,7 @@ function renderStepDetails({ step, markdownRenderer, isLast }) {
       <devtools-code-block
         .code=${contextDetail.text}
         .codeLang=${contextDetail.codeLang || ""}
+        .displayLimit=${MAX_NUM_LINES_IN_CODEBLOCK}
         .displayNotice=${false}
         .header=${contextDetail.title}
         .showCopyButton=${true}
@@ -4965,6 +4971,7 @@ __export(ExportForAgentsDialog_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW5,
   ExportForAgentsDialog: () => ExportForAgentsDialog
 });
+import "./../../ui/components/spinners/spinners.js";
 import * as Host4 from "./../../core/host/host.js";
 import * as i18n11 from "./../../core/i18n/i18n.js";
 import * as Buttons6 from "./../../ui/components/buttons/buttons.js";
@@ -5036,6 +5043,19 @@ var exportForAgentsDialog_css_default = `/*
     color: var(--sys-color-on-surface);
     border-radius: var(--sys-shape-corner-small);
     border: none;
+  }
+
+  main {
+    position: relative;
+  }
+
+  .prompt-loading {
+    position: absolute;
+    padding: var(--sys-size-5);
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: var(--sys-size-5);
   }
 
   .export-for-agents-dialog .disclaimer {
@@ -5137,9 +5157,15 @@ var DEFAULT_VIEW5 = (input, _output, target) => {
         </label>
       </div>
       <main>
-        <textarea readonly .value=${exportText}></textarea>
+        ${input.state.isPromptLoading ? html8`
+          <span class="prompt-loading">
+            <devtools-spinner></devtools-spinner>
+            ${i18nString3(UIStrings3.generatingSummary)}
+          </span>
+          ` : Lit6.nothing}
+        <textarea readonly .value=${input.state.isPromptLoading ? "" : exportText}></textarea>
       </main>
-      ${isPrompt ? html8`<div class="disclaimer">${i18nString3(UIStrings3.disclaimer)}</div>` : Lit6.nothing}
+      <div class="disclaimer">${i18nString3(UIStrings3.disclaimer)}</div>
       <footer>
         <div class="right-buttons">
           <devtools-button
@@ -5171,7 +5197,7 @@ var ExportForAgentsDialog = class _ExportForAgentsDialog extends UI6.Widget.VBox
     };
     this.#onConversationSaveAs = options.onConversationSaveAs;
     this.#view = view;
-    if (options.promptText instanceof Promise) {
+    if (typeof options.promptText !== "string") {
       void options.promptText.then((promptText) => {
         this.#state.promptText = promptText;
         this.#state.isPromptLoading = false;

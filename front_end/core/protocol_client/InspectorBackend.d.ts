@@ -117,6 +117,7 @@ export declare class TargetBase {
     browserAgent(): ProtocolProxyApi.BrowserApi;
     backgroundServiceAgent(): ProtocolProxyApi.BackgroundServiceApi;
     cacheStorageAgent(): ProtocolProxyApi.CacheStorageApi;
+    crashReportContextAgent(): ProtocolProxyApi.CrashReportContextApi;
     cssAgent(): ProtocolProxyApi.CSSApi;
     debuggerAgent(): ProtocolProxyApi.DebuggerApi;
     deviceOrientationAgent(): ProtocolProxyApi.DeviceOrientationApi;

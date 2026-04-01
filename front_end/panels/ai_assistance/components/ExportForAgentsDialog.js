@@ -1,6 +1,7 @@
 // Copyright 2026 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+import '../../../ui/components/spinners/spinners.js';
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
@@ -83,9 +84,15 @@ export const DEFAULT_VIEW = (input, _output, target) => {
         </label>
       </div>
       <main>
-        <textarea readonly .value=${exportText}></textarea>
+        ${input.state.isPromptLoading ? html `
+          <span class="prompt-loading">
+            <devtools-spinner></devtools-spinner>
+            ${i18nString(UIStrings.generatingSummary)}
+          </span>
+          ` : Lit.nothing}
+        <textarea readonly .value=${input.state.isPromptLoading ? '' : exportText}></textarea>
       </main>
-      ${isPrompt ? html `<div class="disclaimer">${i18nString(UIStrings.disclaimer)}</div>` : Lit.nothing}
+      <div class="disclaimer">${i18nString(UIStrings.disclaimer)}</div>
       <footer>
         <div class="right-buttons">
           <devtools-button
@@ -118,7 +125,7 @@ export class ExportForAgentsDialog extends UI.Widget.VBox {
         };
         this.#onConversationSaveAs = options.onConversationSaveAs;
         this.#view = view;
-        if (options.promptText instanceof Promise) {
+        if (typeof options.promptText !== 'string') {
             void options.promptText.then(promptText => {
                 this.#state.promptText = promptText;
                 this.#state.isPromptLoading = false;

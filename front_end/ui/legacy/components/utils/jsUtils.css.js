@@ -18,6 +18,8 @@ export default `/*
   --display-ignored-row: none;
   --display-toggle-link: var(--override-display-stack-preview-toggle-link, none);
 
+  user-select: text;
+
   & > tfoot > tr {
     font-style: italic;
     display: var(--display-toggle-link);

@@ -1107,11 +1107,17 @@ select.lighthouse-report {
 // gen/front_end/panels/lighthouse/LighthouseProtocolService.js
 var LighthouseProtocolService_exports = {};
 __export(LighthouseProtocolService_exports, {
+  CancelledError: () => CancelledError,
   ProtocolService: () => ProtocolService
 });
 import * as i18n3 from "./../../core/i18n/i18n.js";
 import * as SDK2 from "./../../core/sdk/sdk.js";
 var lastId = 1;
+var CancelledError = class extends Error {
+  constructor() {
+    super("Lighthouse run cancelled");
+  }
+};
 var ProtocolService = class {
   mainSessionId;
   rootTargetId;
@@ -1121,6 +1127,13 @@ var ProtocolService = class {
   removeDialogHandler;
   configForTesting;
   connection;
+  /**
+   * Tracks pending requests to the Lighthouse worker.
+   * Key: The message ID sent to the worker.
+   * Value: The rejection function for the corresponding promise.
+   * This is used to gracefully cancel hanging promises if the ProtocolService is detached before the worker replies.
+   */
+  #pendingRequests = /* @__PURE__ */ new Map();
   async attach() {
     await SDK2.TargetManager.TargetManager.instance().suspendAllTargets();
     const mainTarget = SDK2.TargetManager.TargetManager.instance().primaryPageTarget();
@@ -1198,6 +1211,10 @@ var ProtocolService = class {
     });
   }
   async detach() {
+    for (const reject of this.#pendingRequests.values()) {
+      reject(new CancelledError());
+    }
+    this.#pendingRequests.clear();
     const oldLighthouseWorker = this.lighthouseWorkerPromise;
     const oldRootTarget = this.rootTarget;
     this.lighthouseWorkerPromise = void 0;
@@ -1281,15 +1298,20 @@ var ProtocolService = class {
   async sendWithResponse(action, args = {}) {
     const worker = await this.ensureWorkerExists();
     const messageId = lastId++;
-    const messageResult = new Promise((resolve) => {
+    const messageResult = new Promise((resolve, reject) => {
       const workerListener = (event) => {
         const lighthouseMessage = event.data;
         if (lighthouseMessage.id === messageId) {
           worker.removeEventListener("message", workerListener);
+          this.#pendingRequests.delete(messageId);
           resolve(lighthouseMessage.result);
         }
       };
       worker.addEventListener("message", workerListener);
+      this.#pendingRequests.set(messageId, (err) => {
+        worker.removeEventListener("message", workerListener);
+        reject(err);
+      });
     });
     worker.postMessage({ id: messageId, action, args: { ...args, id: messageId } });
     return await messageResult;
@@ -2976,6 +2998,9 @@ var LighthousePanel = class _LighthousePanel extends UI7.Panel.Panel {
     this.renderStartView();
   }
   handleError(err) {
+    if (err instanceof CancelledError) {
+      return;
+    }
     if (err instanceof Error) {
       this.statusView.renderBugReport(err);
     }

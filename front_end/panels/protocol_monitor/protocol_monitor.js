@@ -1719,23 +1719,35 @@ var CommandAutocompleteSuggestionProvider = class {
   }
 };
 var INFO_WIDGET_VIEW = (input, _output, target) => {
-  render2(widget(UI2.TabbedPane.TabbedPane, {
-    tabs: [
-      {
-        id: "request",
-        title: i18nString2(UIStrings2.request),
-        view: input.type === void 0 ? new UI2.EmptyWidget.EmptyWidget(i18nString2(UIStrings2.noMessageSelected), i18nString2(UIStrings2.selectAMessageToView)) : SourceFrame.JSONView.JSONView.createViewSync(input.request || null),
-        enabled: input.type === "sent",
-        selected: input.selectedTab === "request"
-      },
-      {
-        id: "response",
-        title: i18nString2(UIStrings2.response),
-        view: input.type === void 0 ? new UI2.EmptyWidget.EmptyWidget(i18nString2(UIStrings2.noMessageSelected), i18nString2(UIStrings2.selectAMessageToView)) : SourceFrame.JSONView.JSONView.createViewSync(input.response || null),
-        selected: input.selectedTab === "response"
-      }
-    ]
-  }), target);
+  render2(html2`
+    <devtools-tabbed-pane>${input.type === void 0 ? html2`
+      <devtools-widget
+          id="request" title=${i18nString2(UIStrings2.request)}
+          ?selected=${input.selectedTab === "request"} disabled
+          ${widget(UI2.EmptyWidget.EmptyWidget, {
+    header: i18nString2(UIStrings2.noMessageSelected),
+    text: i18nString2(UIStrings2.selectAMessageToView)
+  })}>
+      </devtools-widget>
+      <devtools-widget
+          id="response" title=${i18nString2(UIStrings2.response)}
+          ?selected=${input.selectedTab === "response"}
+          ${widget(UI2.EmptyWidget.EmptyWidget, {
+    header: i18nString2(UIStrings2.noMessageSelected),
+    text: i18nString2(UIStrings2.selectAMessageToView)
+  })}>
+      </devtools-widget>` : html2`
+      <devtools-widget
+          id="request" title=${i18nString2(UIStrings2.request)}
+          ?selected=${input.selectedTab === "request"} ?disabled=${input.type !== "sent"}
+          ${widget(SourceFrame.JSONView.SearchableJsonView, { jsonObject: input.request })}>
+      </devtools-widget>
+      <devtools-widget
+          id="response" title=${i18nString2(UIStrings2.response)}
+          ?selected=${input.selectedTab === "response"}
+          ${widget(SourceFrame.JSONView.SearchableJsonView, { jsonObject: input.response })}>
+      </devtools-widget>`}
+    </devtools-tabbed-pane>`, target);
 };
 var InfoWidget = class extends UI2.Widget.VBox {
   #view;

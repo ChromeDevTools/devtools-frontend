@@ -7,8 +7,8 @@ class NodeWorkerScope {
         WorkerThreads.parentPort?.postMessage(message);
     }
     set onmessage(listener) {
-        WorkerThreads.parentPort?.on('message', data => {
-            listener({ data });
+        WorkerThreads.parentPort?.addEventListener('message', msg => {
+            listener(msg);
         });
     }
 }
@@ -28,10 +28,10 @@ class NodeWorker {
             worker.on('error', reject);
         });
     }
-    postMessage(message) {
+    postMessage(message, transfer) {
         void this.#workerPromise.then(worker => {
             if (!this.#disposed) {
-                worker.postMessage(message);
+                worker.postMessage(message, transfer);
             }
         });
     }
@@ -47,9 +47,9 @@ class NodeWorker {
     }
     set onmessage(listener) {
         void this.#workerPromise.then(worker => {
-            worker.on('message', data => {
+            worker.on('message', (data) => {
                 if (!this.#disposed) {
-                    listener({ data });
+                    listener({ data, ports: [] });
                 }
             });
         });

@@ -1,7 +1,16 @@
 import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import type { ChangeManager } from '../ChangeManager.js';
-import type { FunctionCallHandlerResult, FunctionDeclaration, FunctionHandlerOptions } from './AiAgent.js';
+import type { AgentOptions as BaseAgentOptions, FunctionCallHandlerResult, FunctionDeclaration, FunctionHandlerOptions } from './AiAgent.js';
+export type CreateExtensionScopeFunction = (changes: ChangeManager) => {
+    install(): Promise<void>;
+    uninstall(): Promise<void>;
+};
+export interface ExecuteJsAgentOptions extends BaseAgentOptions {
+    changeManager?: ChangeManager;
+    createExtensionScope?: CreateExtensionScopeFunction;
+    execJs?: typeof executeJsCode;
+}
 export declare function executeJavaScriptFunction(executor: JavascriptExecutor): FunctionDeclaration<{
     title: string;
     explanation: string;

@@ -6,7 +6,7 @@ class WebWorkerScope {
         self.postMessage(message);
     }
     set onmessage(listener) {
-        self.onmessage = listener;
+        self.addEventListener('message', listener);
     }
 }
 class WebWorker {

@@ -119,10 +119,6 @@ const UIStrings = {
      */
     dockSideNavigation: 'Use left and right arrow keys to navigate the options',
     /**
-     * @description Notification shown to the user whenever DevTools receives an external request.
-     */
-    externalRequestReceived: '`DevTools` received an external request',
-    /**
      * @description Notification shown to the user whenever DevTools has finished downloading a local AI model.
      */
     aiModelDownloaded: 'AI model downloaded',
@@ -321,7 +317,6 @@ export class MainImpl {
         });
         this.#migrateValueFromLegacyToHostExperiment(Root.ExperimentNames.ExperimentName.PROTOCOL_MONITOR, protocolMonitorExperiment);
         Root.Runtime.experiments.register(Root.ExperimentNames.ExperimentName.SAMPLING_HEAP_PROFILER_TIMELINE, 'Sampling heap profiler timeline');
-        Root.Runtime.experiments.register(Root.ExperimentNames.ExperimentName.SHOW_OPTION_TO_EXPOSE_INTERNALS_IN_HEAP_SNAPSHOT, 'Show option to expose internals in heap snapshots');
         // Timeline
         Root.Runtime.experiments.register(Root.ExperimentNames.ExperimentName.TIMELINE_INVALIDATION_TRACKING, 'Performance panel: invalidation tracking');
         Root.Runtime.experiments.register(Root.ExperimentNames.ExperimentName.TIMELINE_SHOW_ALL_EVENTS, 'Performance panel: show all events');
@@ -482,9 +477,6 @@ export class MainImpl {
                 void badgeNotification.present(badge, reason);
             });
         }
-        const conversationHandler = AiAssistanceModel.ConversationHandler.ConversationHandler.instance();
-        conversationHandler.addEventListener("ExternalRequestReceived" /* AiAssistanceModel.ConversationHandler.ConversationHandlerEvents.EXTERNAL_REQUEST_RECEIVED */, () => Snackbar.Snackbar.Snackbar.show({ message: i18nString(UIStrings.externalRequestReceived) }));
-        conversationHandler.addEventListener("ExternalConversationStarted" /* AiAssistanceModel.ConversationHandler.ConversationHandlerEvents.EXTERNAL_CONVERSATION_STARTED */, event => void VisualLogging.logFunctionCall(`start-conversation-${event.data}`, 'external'));
         if (Root.Runtime.hostConfig.devToolsGeminiRebranding?.enabled) {
             await PanelCommon.GeminiRebrandPromoDialog.maybeShow();
         }
@@ -922,69 +914,4 @@ export class ReloadActionDelegate {
         return false;
     }
 }
-/**
- * For backwards-compatibility we iterate over the generator and drop the
- * intermediate results. The final response is transformed to its legacy type.
- * Instead of sending responses of type error, errors are throws.
- **/
-export async function handleExternalRequest(input) {
-    const generator = await handleExternalRequestGenerator(input);
-    let result;
-    do {
-        result = await generator.next();
-    } while (!result.done);
-    const response = result.value;
-    if (response.type === "error" /* AiAssistanceModel.AiAgent.ExternalRequestResponseType.ERROR */) {
-        throw new Error(response.message);
-    }
-    if (response.type === "answer" /* AiAssistanceModel.AiAgent.ExternalRequestResponseType.ANSWER */) {
-        return {
-            response: response.message,
-            devToolsLogs: response.devToolsLogs,
-        };
-    }
-    throw new Error('Received no response of type answer or type error');
-}
-// @ts-expect-error
-globalThis.handleExternalRequest = handleExternalRequest;
-export async function handleExternalRequestGenerator(input) {
-    switch (input.kind) {
-        case 'PERFORMANCE_RELOAD_GATHER_INSIGHTS': {
-            const TimelinePanel = await import('../../panels/timeline/timeline.js');
-            return TimelinePanel.TimelinePanel.TimelinePanel.handleExternalRecordRequest();
-        }
-        case 'PERFORMANCE_ANALYZE': {
-            const TimelinePanel = await import('../../panels/timeline/timeline.js');
-            return await TimelinePanel.TimelinePanel.TimelinePanel.handleExternalAnalyzeRequest(input.args.prompt);
-        }
-        case 'NETWORK_DEBUGGER': {
-            const AiAssistanceModel = await import('../../models/ai_assistance/ai_assistance.js');
-            const conversationHandler = AiAssistanceModel.ConversationHandler.ConversationHandler.instance();
-            return await conversationHandler.handleExternalRequest({
-                conversationType: "drjones-network-request" /* AiAssistanceModel.AiHistoryStorage.ConversationType.NETWORK */,
-                prompt: input.args.prompt,
-                requestUrl: input.args.requestUrl,
-            });
-        }
-        case 'LIVE_STYLE_DEBUGGER': {
-            const AiAssistanceModel = await import('../../models/ai_assistance/ai_assistance.js');
-            const conversationHandler = AiAssistanceModel.ConversationHandler.ConversationHandler.instance();
-            return await conversationHandler.handleExternalRequest({
-                conversationType: "freestyler" /* AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING */,
-                prompt: input.args.prompt,
-                selector: input.args.selector,
-            });
-        }
-    }
-    // eslint-disable-next-line require-yield
-    return (async function* () {
-        return {
-            type: "error" /* AiAssistanceModel.AiAgent.ExternalRequestResponseType.ERROR */,
-            // @ts-expect-error
-            message: `Debugging with an agent of type '${input.kind}' is not implemented yet.`,
-        };
-    })();
-}
-// @ts-expect-error
-globalThis.handleExternalRequestGenerator = handleExternalRequestGenerator;
 //# sourceMappingURL=MainImpl.js.map

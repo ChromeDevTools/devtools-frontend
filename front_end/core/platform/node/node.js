@@ -15,8 +15,8 @@ var NodeWorkerScope = class {
     WorkerThreads.parentPort?.postMessage(message);
   }
   set onmessage(listener) {
-    WorkerThreads.parentPort?.on("message", (data) => {
-      listener({ data });
+    WorkerThreads.parentPort?.addEventListener("message", (msg) => {
+      listener(msg);
     });
   }
 };
@@ -36,10 +36,10 @@ var NodeWorker = class {
       worker.on("error", reject);
     });
   }
-  postMessage(message) {
+  postMessage(message, transfer) {
     void this.#workerPromise.then((worker) => {
       if (!this.#disposed) {
-        worker.postMessage(message);
+        worker.postMessage(message, transfer);
       }
     });
   }
@@ -57,7 +57,7 @@ var NodeWorker = class {
     void this.#workerPromise.then((worker) => {
       worker.on("message", (data) => {
         if (!this.#disposed) {
-          listener({ data });
+          listener({ data, ports: [] });
         }
       });
     });

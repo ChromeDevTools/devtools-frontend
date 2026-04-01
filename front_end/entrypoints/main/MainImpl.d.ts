@@ -1,6 +1,5 @@
 import * as Common from '../../core/common/common.js';
 import * as ProtocolClient from '../../core/protocol_client/protocol_client.js';
-import * as AiAssistanceModel from '../../models/ai_assistance/ai_assistance.js';
 import * as UI from '../../ui/legacy/legacy.js';
 export declare class MainImpl {
     #private;
@@ -47,34 +46,3 @@ export declare function sendOverProtocol(method: ProtocolClient.InspectorBackend
 export declare class ReloadActionDelegate implements UI.ActionRegistration.ActionDelegate {
     handleAction(_context: UI.Context.Context, actionId: string): boolean;
 }
-type ExternalRequestInput = {
-    kind: 'LIVE_STYLE_DEBUGGER';
-    args: {
-        prompt: string;
-        selector: string;
-    };
-} | {
-    kind: 'PERFORMANCE_RELOAD_GATHER_INSIGHTS';
-} | {
-    kind: 'PERFORMANCE_ANALYZE';
-    args: {
-        prompt: string;
-    };
-} | {
-    kind: 'NETWORK_DEBUGGER';
-    args: {
-        requestUrl: string;
-        prompt: string;
-    };
-};
-/**
- * For backwards-compatibility we iterate over the generator and drop the
- * intermediate results. The final response is transformed to its legacy type.
- * Instead of sending responses of type error, errors are throws.
- **/
-export declare function handleExternalRequest(input: ExternalRequestInput): Promise<{
-    response: string;
-    devToolsLogs: object[];
-}>;
-export declare function handleExternalRequestGenerator(input: ExternalRequestInput): Promise<AsyncGenerator<AiAssistanceModel.AiAgent.ExternalRequestResponse, AiAssistanceModel.AiAgent.ExternalRequestResponse>>;
-export {};

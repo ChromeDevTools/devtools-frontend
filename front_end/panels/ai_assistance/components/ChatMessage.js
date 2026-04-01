@@ -33,6 +33,7 @@ const lockedString = i18n.i18n.lockedString;
 const { widget } = UI.Widget;
 const REPORT_URL = 'https://crbug.com/364805393';
 const SCROLL_ROUNDING_OFFSET = 1;
+const MAX_NUM_LINES_IN_CODEBLOCK = 11;
 /*
 * Strings that don't need to be translated at this time.
 */
@@ -269,6 +270,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
           <devtools-code-block
             .code=${input.changeSummary}
             .codeLang=${'css'}
+            .displayLimit=${MAX_NUM_LINES_IN_CODEBLOCK}
             .displayNotice=${true}
             class="ai-css-change"
           ></devtools-code-block>
@@ -328,6 +330,7 @@ function renderStepCode(step) {
       <devtools-code-block
         .code=${step.code.trim()}
         .codeLang=${'js'}
+        .displayLimit=${MAX_NUM_LINES_IN_CODEBLOCK}
         .displayNotice=${!Boolean(step.output)}
         .header=${codeHeadingText}
         .showCopyButton=${true}
@@ -338,6 +341,7 @@ function renderStepCode(step) {
     <devtools-code-block
       .code=${step.output}
       .codeLang=${'js'}
+      .displayLimit=${MAX_NUM_LINES_IN_CODEBLOCK}
       .displayNotice=${true}
       .header=${lockedString(UIStringsNotTranslate.dataReturned)}
       .showCopyButton=${false}
@@ -357,6 +361,7 @@ function renderStepDetails({ step, markdownRenderer, isLast, }) {
       <devtools-code-block
         .code=${contextDetail.text}
         .codeLang=${contextDetail.codeLang || ''}
+        .displayLimit=${MAX_NUM_LINES_IN_CODEBLOCK}
         .displayNotice=${false}
         .header=${contextDetail.title}
         .showCopyButton=${true}

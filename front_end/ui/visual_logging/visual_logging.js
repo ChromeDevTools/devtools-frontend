@@ -3627,7 +3627,6 @@ var knownContextValues = /* @__PURE__ */ new Set([
   "show-minimal-safe-area-for-maskable-icons",
   "show-more",
   "show-network-requests",
-  "show-option-to-expose-internals-in-heap-snapshot",
   "show-overrides",
   "show-paint-rects",
   "show-paint-rects-true",

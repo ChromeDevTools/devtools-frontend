@@ -256,10 +256,162 @@ __export(AccessibilityAgent_exports, {
   AccessibilityAgent: () => AccessibilityAgent,
   AccessibilityContext: () => AccessibilityContext
 });
-import * as Host2 from "./../../core/host/host.js";
-import * as i18n from "./../../core/i18n/i18n.js";
-import * as Root2 from "./../../core/root/root.js";
+import * as Host3 from "./../../core/host/host.js";
+import * as i18n3 from "./../../core/i18n/i18n.js";
+import * as Root3 from "./../../core/root/root.js";
+import * as SDK5 from "./../../core/sdk/sdk.js";
+
+// gen/front_end/models/ai_assistance/ChangeManager.js
+var ChangeManager_exports = {};
+__export(ChangeManager_exports, {
+  ChangeManager: () => ChangeManager
+});
+import * as Common from "./../../core/common/common.js";
+import * as Platform from "./../../core/platform/platform.js";
 import * as SDK from "./../../core/sdk/sdk.js";
+function formatStyles(styles, indent = 2) {
+  const lines = Object.entries(styles).map(([key, value]) => `${" ".repeat(indent)}${key}: ${value};`);
+  return lines.join("\n");
+}
+var ChangeManager = class {
+  #stylesheetMutex = new Common.Mutex.Mutex();
+  #cssModelToStylesheetId = /* @__PURE__ */ new Map();
+  #stylesheetChanges = /* @__PURE__ */ new Map();
+  #backupStylesheetChanges = /* @__PURE__ */ new Map();
+  constructor() {
+    SDK.TargetManager.TargetManager.instance().addModelListener(SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.PrimaryPageChanged, this.clear, this);
+  }
+  async stashChanges() {
+    for (const [cssModel, stylesheetMap] of this.#cssModelToStylesheetId.entries()) {
+      const stylesheetIds = Array.from(stylesheetMap.values());
+      await Promise.allSettled(stylesheetIds.map(async (id) => {
+        this.#backupStylesheetChanges.set(id, this.#stylesheetChanges.get(id) ?? []);
+        this.#stylesheetChanges.delete(id);
+        await cssModel.setStyleSheetText(id, "", true);
+      }));
+    }
+  }
+  dropStashedChanges() {
+    this.#backupStylesheetChanges.clear();
+  }
+  async popStashedChanges() {
+    const cssModelAndStyleSheets = Array.from(this.#cssModelToStylesheetId.entries());
+    await Promise.allSettled(cssModelAndStyleSheets.map(async ([cssModel, stylesheetMap]) => {
+      const frameAndStylesheet = Array.from(stylesheetMap.entries());
+      return await Promise.allSettled(frameAndStylesheet.map(async ([frameId, stylesheetId]) => {
+        const changes = this.#backupStylesheetChanges.get(stylesheetId) ?? [];
+        return await Promise.allSettled(changes.map(async (change) => {
+          return await this.addChange(cssModel, frameId, change);
+        }));
+      }));
+    }));
+  }
+  async clear() {
+    const models = Array.from(this.#cssModelToStylesheetId.keys());
+    const results = await Promise.allSettled(models.map(async (model) => {
+      await this.#onCssModelDisposed({ data: model });
+    }));
+    this.#cssModelToStylesheetId.clear();
+    this.#stylesheetChanges.clear();
+    this.#backupStylesheetChanges.clear();
+    const firstFailed = results.find((result) => result.status === "rejected");
+    if (firstFailed) {
+      console.error(firstFailed.reason);
+    }
+  }
+  async addChange(cssModel, frameId, change) {
+    const stylesheetId = await this.#getStylesheet(cssModel, frameId);
+    const changes = this.#stylesheetChanges.get(stylesheetId) || [];
+    const existingChange = changes.find((c) => c.className === change.className);
+    const stylesKebab = Platform.StringUtilities.toKebabCaseKeys(change.styles);
+    if (existingChange) {
+      Object.assign(existingChange.styles, stylesKebab);
+      existingChange.groupId = change.groupId;
+      existingChange.turnId = change.turnId;
+    } else {
+      changes.push({
+        ...change,
+        styles: stylesKebab
+      });
+    }
+    const content = this.#formatChangesForInspectorStylesheet(changes);
+    await cssModel.setStyleSheetText(stylesheetId, content, true);
+    this.#stylesheetChanges.set(stylesheetId, changes);
+    return content;
+  }
+  formatChangesForPatching(groupId, includeMetadata = false) {
+    return Array.from(this.#stylesheetChanges.values()).flatMap((changesPerStylesheet) => changesPerStylesheet.filter((change) => change.groupId === groupId).map((change) => this.#formatChange(change, includeMetadata))).filter((change) => change !== "").join("\n\n");
+  }
+  getChangedNodesForGroupId(groupId, turnId) {
+    const nodes = /* @__PURE__ */ new Set();
+    for (const changes of this.#stylesheetChanges.values()) {
+      for (const change of changes) {
+        if (change.groupId === groupId && change.backendNodeId && (turnId === void 0 || change.turnId === turnId)) {
+          nodes.add(change.backendNodeId);
+        }
+      }
+    }
+    return Array.from(nodes);
+  }
+  #formatChangesForInspectorStylesheet(changes) {
+    return changes.map((change) => {
+      return `.${change.className} {
+  ${change.selector}& {
+${formatStyles(change.styles, 4)}
+  }
+}`;
+    }).join("\n");
+  }
+  #formatChange(change, includeMetadata = false) {
+    const sourceLocation = includeMetadata && change.sourceLocation ? `/* related resource: ${change.sourceLocation} */
+` : "";
+    const simpleSelector = includeMetadata && change.simpleSelector ? ` /* the element was ${change.simpleSelector} */` : "";
+    return `${sourceLocation}${change.selector} {${simpleSelector}
+${formatStyles(change.styles)}
+}`;
+  }
+  async #getStylesheet(cssModel, frameId) {
+    return await this.#stylesheetMutex.run(async () => {
+      let frameToStylesheet = this.#cssModelToStylesheetId.get(cssModel);
+      if (!frameToStylesheet) {
+        frameToStylesheet = /* @__PURE__ */ new Map();
+        this.#cssModelToStylesheetId.set(cssModel, frameToStylesheet);
+        cssModel.addEventListener(SDK.CSSModel.Events.ModelDisposed, this.#onCssModelDisposed, this);
+      }
+      let stylesheetId = frameToStylesheet.get(frameId);
+      if (!stylesheetId) {
+        const styleSheetHeader = await cssModel.createInspectorStylesheet(
+          frameId,
+          /* force */
+          true
+        );
+        if (!styleSheetHeader) {
+          throw new Error("inspector-stylesheet is not found");
+        }
+        stylesheetId = styleSheetHeader.id;
+        frameToStylesheet.set(frameId, stylesheetId);
+      }
+      return stylesheetId;
+    });
+  }
+  async #onCssModelDisposed(event) {
+    return await this.#stylesheetMutex.run(async () => {
+      const cssModel = event.data;
+      cssModel.removeEventListener(SDK.CSSModel.Events.ModelDisposed, this.#onCssModelDisposed, this);
+      const stylesheetIds = Array.from(this.#cssModelToStylesheetId.get(cssModel)?.values() ?? []);
+      const results = await Promise.allSettled(stylesheetIds.map(async (id) => {
+        this.#stylesheetChanges.delete(id);
+        this.#backupStylesheetChanges.delete(id);
+        await cssModel.setStyleSheetText(id, "", true);
+      }));
+      this.#cssModelToStylesheetId.delete(cssModel);
+      const firstFailed = results.find((result) => result.status === "rejected");
+      if (firstFailed) {
+        throw new Error(firstFailed.reason);
+      }
+    });
+  }
+};
 
 // gen/front_end/models/ai_assistance/data_formatters/LighthouseFormatter.js
 var LighthouseFormatter_exports = {};
@@ -593,6 +745,439 @@ var LighthouseFormatter = class {
     }
   }
 };
+
+// gen/front_end/models/ai_assistance/ExtensionScope.js
+var ExtensionScope_exports = {};
+__export(ExtensionScope_exports, {
+  ExtensionScope: () => ExtensionScope
+});
+import * as Common2 from "./../../core/common/common.js";
+import * as Platform2 from "./../../core/platform/platform.js";
+import * as SDK2 from "./../../core/sdk/sdk.js";
+import * as Bindings from "./../bindings/bindings.js";
+
+// gen/front_end/models/ai_assistance/injected.js
+var injected_exports = {};
+__export(injected_exports, {
+  AI_ASSISTANCE_CSS_CLASS_NAME: () => AI_ASSISTANCE_CSS_CLASS_NAME,
+  FREESTYLER_BINDING_NAME: () => FREESTYLER_BINDING_NAME,
+  FREESTYLER_WORLD_NAME: () => FREESTYLER_WORLD_NAME,
+  PAGE_EXPOSED_FUNCTIONS: () => PAGE_EXPOSED_FUNCTIONS,
+  freestylerBinding: () => freestylerBinding,
+  injectedFunctions: () => injectedFunctions
+});
+var AI_ASSISTANCE_CSS_CLASS_NAME = "ai-style-change";
+var FREESTYLER_WORLD_NAME = "DevTools AI Assistance";
+var FREESTYLER_BINDING_NAME = "__freestyler";
+function freestylerBindingFunc(bindingName) {
+  const global = globalThis;
+  if (!global.freestyler) {
+    const freestyler = (args) => {
+      const { resolve, reject, promise } = Promise.withResolvers();
+      freestyler.callbacks.set(freestyler.id, {
+        args: JSON.stringify(args),
+        element: args.element,
+        resolve,
+        reject,
+        error: args.error
+      });
+      globalThis[bindingName](String(freestyler.id));
+      freestyler.id++;
+      return promise;
+    };
+    freestyler.id = 1;
+    freestyler.callbacks = /* @__PURE__ */ new Map();
+    freestyler.getElement = (callbackId) => {
+      return freestyler.callbacks.get(callbackId)?.element;
+    };
+    freestyler.getArgs = (callbackId) => {
+      return freestyler.callbacks.get(callbackId)?.args;
+    };
+    freestyler.respond = (callbackId, styleChangesOrError) => {
+      if (typeof styleChangesOrError === "string") {
+        freestyler.callbacks.get(callbackId)?.resolve(styleChangesOrError);
+      } else {
+        const callback = freestyler.callbacks.get(callbackId);
+        if (callback) {
+          callback.error.message = styleChangesOrError.message;
+          callback.reject(callback?.error);
+        }
+      }
+      freestyler.callbacks.delete(callbackId);
+    };
+    global.freestyler = freestyler;
+  }
+}
+var freestylerBinding = `(${String(freestylerBindingFunc)})('${FREESTYLER_BINDING_NAME}')`;
+var PAGE_EXPOSED_FUNCTIONS = ["setElementStyles"];
+var setupSetElementStyles = `function setupSetElementStyles(prefix) {
+  const global = globalThis;
+  async function setElementStyles(el, styles) {
+    let selector = el.tagName.toLowerCase();
+    if (el.id) {
+      selector = '#' + el.id;
+    } else if (el.classList.length) {
+      const parts = [];
+      for (const cls of el.classList) {
+        if (cls.startsWith(prefix)) {
+          continue;
+        }
+        parts.push('.' + cls);
+      }
+      if (parts.length) {
+        selector = parts.join('');
+      }
+    }
+
+    // __freestylerClassName is not exposed to the page due to this being
+    // run in the isolated world.
+    const className = el.__freestylerClassName ?? \`\${prefix}-\${global.freestyler.id}\`;
+    el.__freestylerClassName = className;
+    el.classList.add(className);
+
+    // Remove inline styles with the same keys so that the edit applies.
+    for (const key of Object.keys(styles)) {
+      // if it's kebab case.
+      el.style.removeProperty(key);
+      // If it's camel case.
+      el.style[key] = '';
+    }
+
+    const bindingError = new Error();
+
+    const result = await global.freestyler({
+      method: 'setElementStyles',
+      selector,
+      className,
+      styles,
+      element: el,
+      error: bindingError,
+    });
+
+    const rootNode = el.getRootNode();
+    if (rootNode instanceof ShadowRoot) {
+      const stylesheets = rootNode.adoptedStyleSheets;
+      let hasAiStyleChange = false;
+      let stylesheet = new CSSStyleSheet();
+      for (let i = 0; i < stylesheets.length; i++) {
+        const sheet = stylesheets[i];
+        for (let j = 0; j < sheet.cssRules.length; j++) {
+          const rule = sheet.cssRules[j];
+          if (!(rule instanceof CSSStyleRule)) {
+            continue;
+          }
+
+          hasAiStyleChange = rule.selectorText.startsWith(\`.\${prefix}\`);
+          if (hasAiStyleChange) {
+            stylesheet = sheet;
+            break;
+          }
+        }
+      }
+      stylesheet.replaceSync(result);
+      if (!hasAiStyleChange) {
+        rootNode.adoptedStyleSheets = [...stylesheets, stylesheet];
+      }
+    }
+  }
+
+  global.setElementStyles = setElementStyles;
+}`;
+var injectedFunctions = `(${setupSetElementStyles})('${AI_ASSISTANCE_CSS_CLASS_NAME}')`;
+
+// gen/front_end/models/ai_assistance/ExtensionScope.js
+var _a;
+var ExtensionScope = class {
+  #listeners = [];
+  #changeManager;
+  #agentId;
+  #turnId;
+  /** Don't use directly use the getter */
+  #frameId;
+  /** Don't use directly use the getter */
+  #target;
+  #bindingMutex = new Common2.Mutex.Mutex();
+  constructor(changes, agentId, selectedNode, turnId) {
+    this.#changeManager = changes;
+    const frameId = selectedNode?.frameId();
+    const target = selectedNode?.domModel().target();
+    this.#agentId = agentId;
+    this.#turnId = turnId;
+    this.#target = target;
+    this.#frameId = frameId;
+  }
+  get target() {
+    if (!this.#target) {
+      throw new Error("Target is not found for executing code");
+    }
+    return this.#target;
+  }
+  get frameId() {
+    if (this.#frameId) {
+      return this.#frameId;
+    }
+    const resourceTreeModel = this.target.model(SDK2.ResourceTreeModel.ResourceTreeModel);
+    if (!resourceTreeModel?.mainFrame) {
+      throw new Error("Main frame is not found for executing code");
+    }
+    return resourceTreeModel.mainFrame.id;
+  }
+  async install() {
+    const runtimeModel = this.target.model(SDK2.RuntimeModel.RuntimeModel);
+    const pageAgent = this.target.pageAgent();
+    const { executionContextId } = await pageAgent.invoke_createIsolatedWorld({ frameId: this.frameId, worldName: FREESTYLER_WORLD_NAME });
+    const isolatedWorldContext = runtimeModel?.executionContext(executionContextId);
+    if (!isolatedWorldContext) {
+      throw new Error("Execution context is not found for executing code");
+    }
+    const handler = this.#bindingCalled.bind(this, isolatedWorldContext);
+    runtimeModel?.addEventListener(SDK2.RuntimeModel.Events.BindingCalled, handler);
+    this.#listeners.push(handler);
+    await this.target.runtimeAgent().invoke_addBinding({
+      name: FREESTYLER_BINDING_NAME,
+      executionContextId
+    });
+    await this.#simpleEval(isolatedWorldContext, freestylerBinding);
+    await this.#simpleEval(isolatedWorldContext, injectedFunctions);
+  }
+  async uninstall() {
+    const runtimeModel = this.target.model(SDK2.RuntimeModel.RuntimeModel);
+    for (const handler of this.#listeners) {
+      runtimeModel?.removeEventListener(SDK2.RuntimeModel.Events.BindingCalled, handler);
+    }
+    this.#listeners = [];
+    await this.target.runtimeAgent().invoke_removeBinding({
+      name: FREESTYLER_BINDING_NAME
+    });
+  }
+  async #simpleEval(context, expression, returnByValue = true) {
+    const response = await context.evaluate(
+      {
+        expression,
+        replMode: true,
+        includeCommandLineAPI: false,
+        returnByValue,
+        silent: false,
+        generatePreview: false,
+        allowUnsafeEvalBlockedByCSP: true,
+        throwOnSideEffect: false
+      },
+      /* userGesture */
+      false,
+      /* awaitPromise */
+      true
+    );
+    if (!response) {
+      throw new Error("Response is not found");
+    }
+    if ("error" in response) {
+      throw new Error(response.error);
+    }
+    if (response.exceptionDetails) {
+      const exceptionDescription = response.exceptionDetails.exception?.description;
+      throw new Error(exceptionDescription || "JS exception");
+    }
+    return response;
+  }
+  static getStyleRuleFromMatchesStyles(matchedStyles) {
+    for (const style of matchedStyles.nodeStyles()) {
+      if (style.type === "Inline") {
+        continue;
+      }
+      const rule = style.parentRule;
+      if (rule?.origin === "user-agent") {
+        break;
+      }
+      if (rule instanceof SDK2.CSSRule.CSSStyleRule) {
+        if (rule.nestingSelectors?.at(0)?.includes(AI_ASSISTANCE_CSS_CLASS_NAME) || rule.selectors.every((selector) => selector.text.includes(AI_ASSISTANCE_CSS_CLASS_NAME))) {
+          continue;
+        }
+        return rule;
+      }
+    }
+    return;
+  }
+  static getSelectorsFromStyleRule(styleRule, matchedStyles) {
+    const selectorIndexes = matchedStyles.getMatchingSelectors(styleRule);
+    const selectors = styleRule.selectors.filter((_, index) => selectorIndexes.includes(index)).filter((value) => !value.text.includes(AI_ASSISTANCE_CSS_CLASS_NAME)).filter(
+      // Disallow star selector ending that targets any arbitrary element
+      (value) => !value.text.endsWith("*") && // Disallow selector that contain star and don't have higher specificity
+      // Example of disallowed: `div > * > p`
+      // Example of allowed: `div > * > .header` OR `div > * > #header`
+      !(value.text.includes("*") && value.specificity?.a === 0 && value.specificity?.b === 0)
+    ).sort((a, b) => {
+      if (!a.specificity) {
+        return -1;
+      }
+      if (!b.specificity) {
+        return 1;
+      }
+      if (b.specificity.a !== a.specificity.a) {
+        return b.specificity.a - a.specificity.a;
+      }
+      if (b.specificity.b !== a.specificity.b) {
+        return b.specificity.b - a.specificity.b;
+      }
+      return b.specificity.b - a.specificity.b;
+    });
+    const selector = selectors.at(0);
+    if (!selector) {
+      return "";
+    }
+    let cssSelector = selector.text.replaceAll(":visited", "");
+    cssSelector = cssSelector.replaceAll("&", "");
+    return cssSelector.trim();
+  }
+  static getSelectorForNode(node) {
+    const simpleSelector = node.simpleSelector().split(".").filter((chunk) => {
+      return !chunk.startsWith(AI_ASSISTANCE_CSS_CLASS_NAME);
+    }).join(".");
+    if (simpleSelector) {
+      return simpleSelector;
+    }
+    return node.localName() || node.nodeName().toLowerCase();
+  }
+  static getSourceLocation(styleRule) {
+    const styleSheetHeader = styleRule.header;
+    if (!styleSheetHeader) {
+      return;
+    }
+    const range = styleRule.selectorRange();
+    if (!range) {
+      return;
+    }
+    const lineNumber = styleSheetHeader.lineNumberInSource(range.startLine);
+    const columnNumber = styleSheetHeader.columnNumberInSource(range.startLine, range.startColumn);
+    const location = new SDK2.CSSModel.CSSLocation(styleSheetHeader, lineNumber, columnNumber);
+    const uiLocation = Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.instance().rawLocationToUILocation(location);
+    return uiLocation?.linkText(
+      /* skipTrim= */
+      true,
+      /* showColumnNumber= */
+      true
+    );
+  }
+  async #computeContextFromElement(remoteObject) {
+    if (!remoteObject.objectId) {
+      throw new Error("DOMModel is not found");
+    }
+    const cssModel = this.target.model(SDK2.CSSModel.CSSModel);
+    if (!cssModel) {
+      throw new Error("CSSModel is not found");
+    }
+    const domModel = this.target.model(SDK2.DOMModel.DOMModel);
+    if (!domModel) {
+      throw new Error("DOMModel is not found");
+    }
+    const node = await domModel.pushNodeToFrontend(remoteObject.objectId);
+    if (!node) {
+      throw new Error("Node is not found");
+    }
+    const backendNodeId = node.backendNodeId();
+    try {
+      const matchedStyles = await cssModel.getMatchedStyles(node.id);
+      if (!matchedStyles) {
+        throw new Error("No matching styles");
+      }
+      const styleRule = _a.getStyleRuleFromMatchesStyles(matchedStyles);
+      if (!styleRule) {
+        throw new Error("No style rule found");
+      }
+      const selector = _a.getSelectorsFromStyleRule(styleRule, matchedStyles);
+      if (!selector) {
+        throw new Error("No selector found");
+      }
+      return {
+        selector,
+        simpleSelector: _a.getSelectorForNode(node),
+        sourceLocation: _a.getSourceLocation(styleRule),
+        backendNodeId
+      };
+    } catch {
+    }
+    return {
+      selector: _a.getSelectorForNode(node),
+      backendNodeId
+    };
+  }
+  async #bindingCalled(executionContext, event) {
+    const { data } = event;
+    if (data.name !== FREESTYLER_BINDING_NAME) {
+      return;
+    }
+    await this.#bindingMutex.run(async () => {
+      const cssModel = this.target.model(SDK2.CSSModel.CSSModel);
+      if (!cssModel) {
+        throw new Error("CSSModel is not found");
+      }
+      const id = data.payload;
+      const [args, element] = await Promise.all([
+        this.#simpleEval(executionContext, `freestyler.getArgs(${id})`),
+        this.#simpleEval(executionContext, `freestyler.getElement(${id})`, false)
+      ]);
+      const arg = JSON.parse(args.object.value);
+      if (!arg.className.match(new RegExp(`${RegExp.escape(AI_ASSISTANCE_CSS_CLASS_NAME)}-\\d`))) {
+        throw new Error("Non AI class name");
+      }
+      let context = {
+        // TODO: Should this a be a *?
+        selector: "",
+        backendNodeId: void 0
+      };
+      try {
+        context = await this.#computeContextFromElement(element.object);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        element.object.release();
+      }
+      try {
+        const sanitizedStyles = await this.sanitizedStyleChanges(context.selector, arg.styles);
+        const styleChanges = await this.#changeManager.addChange(cssModel, this.frameId, {
+          groupId: this.#agentId,
+          turnId: this.#turnId,
+          sourceLocation: context.sourceLocation,
+          selector: context.selector,
+          simpleSelector: context.simpleSelector,
+          className: arg.className,
+          styles: sanitizedStyles,
+          backendNodeId: context.backendNodeId
+        });
+        await this.#simpleEval(executionContext, `freestyler.respond(${id}, ${JSON.stringify(styleChanges)})`);
+      } catch (error) {
+        await this.#simpleEval(executionContext, `freestyler.respond(${id}, new Error("${error?.message}"))`);
+      }
+    });
+  }
+  async sanitizedStyleChanges(selector, styles) {
+    const cssStyleValue = [];
+    const changedStyles = [];
+    const styleSheet = new CSSStyleSheet({ disabled: true });
+    const kebabStyles = Platform2.StringUtilities.toKebabCaseKeys(styles);
+    for (const [style, value] of Object.entries(kebabStyles)) {
+      cssStyleValue.push(`${style}: ${value};`);
+      changedStyles.push(style);
+    }
+    await styleSheet.replace(`${selector} { ${cssStyleValue.join(" ")} }`);
+    const sanitizedStyles = {};
+    for (const cssRule of styleSheet.cssRules) {
+      if (!(cssRule instanceof CSSStyleRule)) {
+        continue;
+      }
+      for (const style of changedStyles) {
+        const value = cssRule.style.getPropertyValue(style);
+        if (value) {
+          sanitizedStyles[style] = value;
+        }
+      }
+    }
+    if (Object.keys(sanitizedStyles).length === 0) {
+      throw new Error("None of the suggested CSS properties or their values for selector were considered valid by the browser's CSS engine. Please ensure property names are correct and values match the expected format for those properties.");
+    }
+    return sanitizedStyles;
+  }
+};
+_a = ExtensionScope;
 
 // gen/front_end/models/ai_assistance/agents/AiAgent.js
 var AiAgent_exports = {};
@@ -1082,6 +1667,394 @@ var AiAgent = class {
   }
 };
 
+// gen/front_end/models/ai_assistance/agents/ExecuteJavascript.js
+import * as Host2 from "./../../core/host/host.js";
+import * as i18n from "./../../core/i18n/i18n.js";
+import * as Platform3 from "./../../core/platform/platform.js";
+import * as Root2 from "./../../core/root/root.js";
+import * as SDK4 from "./../../core/sdk/sdk.js";
+
+// gen/front_end/models/ai_assistance/EvaluateAction.js
+var EvaluateAction_exports = {};
+__export(EvaluateAction_exports, {
+  EvaluateAction: () => EvaluateAction,
+  SideEffectError: () => SideEffectError,
+  formatError: () => formatError,
+  getErrorStackOnThePage: () => getErrorStackOnThePage,
+  stringifyObjectOnThePage: () => stringifyObjectOnThePage,
+  stringifyRemoteObject: () => stringifyRemoteObject
+});
+import * as SDK3 from "./../../core/sdk/sdk.js";
+function formatError(message) {
+  return `Error: ${message}`;
+}
+var SideEffectError = class extends Error {
+};
+function getErrorStackOnThePage() {
+  return { stack: this.stack, message: this.message };
+}
+function stringifyObjectOnThePage() {
+  const seenBefore = /* @__PURE__ */ new WeakMap();
+  return JSON.stringify(this, function replacer(key, value) {
+    if (typeof value === "object" && value !== null) {
+      if (seenBefore.has(value)) {
+        return "(cycle)";
+      }
+      seenBefore.set(value, true);
+    }
+    if (value instanceof HTMLElement) {
+      const idAttribute = value.id ? ` id="${value.id}"` : "";
+      const classAttribute = value.classList.value ? ` class="${value.classList.value}"` : "";
+      return `<${value.nodeName.toLowerCase()}${idAttribute}${classAttribute}>${value.hasChildNodes() ? "..." : ""}</${value.nodeName.toLowerCase()}>`;
+    }
+    if (this instanceof CSSStyleDeclaration) {
+      if (!isNaN(Number(key))) {
+        return void 0;
+      }
+    }
+    return value;
+  });
+}
+async function stringifyRemoteObject(object, functionDeclaration) {
+  switch (object.type) {
+    case "string":
+      return `'${object.value}'`;
+    case "bigint":
+      return `${object.value}n`;
+    case "boolean":
+    case "number":
+      return `${object.value}`;
+    case "undefined":
+      return "undefined";
+    case "symbol":
+    case "function":
+      return `${object.description}`;
+    case "object": {
+      if (object.subtype === "error") {
+        const res2 = await object.callFunctionJSON(getErrorStackOnThePage, []);
+        if (!res2) {
+          throw new Error("Could not stringify the object" + object);
+        }
+        return EvaluateAction.stringifyError(res2, functionDeclaration);
+      }
+      const res = await object.callFunction(stringifyObjectOnThePage);
+      if (!res.object || res.object.type !== "string") {
+        throw new Error("Could not stringify the object" + object);
+      }
+      return res.object.value;
+    }
+    default:
+      throw new Error("Unknown type to stringify " + object.type);
+  }
+}
+var EvaluateAction = class _EvaluateAction {
+  static async execute(functionDeclaration, args, executionContext, { throwOnSideEffect }) {
+    if (executionContext.debuggerModel.selectedCallFrame()) {
+      return formatError("Cannot evaluate JavaScript because the execution is paused on a breakpoint.");
+    }
+    const response = await executionContext.callFunctionOn({
+      functionDeclaration,
+      returnByValue: false,
+      allowUnsafeEvalBlockedByCSP: false,
+      throwOnSideEffect,
+      userGesture: true,
+      awaitPromise: true,
+      arguments: args.map((remoteObject) => {
+        return { objectId: remoteObject.objectId };
+      })
+    });
+    try {
+      if (!response) {
+        throw new Error("Response is not found");
+      }
+      if ("error" in response) {
+        return formatError(response.error);
+      }
+      if (response.exceptionDetails) {
+        const exceptionDescription = response.exceptionDetails.exception?.description;
+        if (SDK3.RuntimeModel.RuntimeModel.isSideEffectFailure(response)) {
+          throw new SideEffectError(exceptionDescription);
+        }
+        return formatError(exceptionDescription ?? "JS exception");
+      }
+      return await stringifyRemoteObject(response.object, functionDeclaration);
+    } finally {
+      executionContext.runtimeModel.releaseEvaluationResult(response);
+    }
+  }
+  static getExecutedLineFromStack(stack, pageExposedFunctions) {
+    const lines = stack.split("\n");
+    const stackLines = lines.map((curr) => curr.trim()).filter((trimmedLine) => {
+      return trimmedLine.startsWith("at");
+    });
+    const selectedStack = stackLines.find((stackLine) => {
+      const splittedStackLine = stackLine.split(" ");
+      if (splittedStackLine.length < 2) {
+        return false;
+      }
+      const signature = splittedStackLine[1] === "async" ? splittedStackLine[2] : (
+        // if the stack line contains async the function name is the next element
+        splittedStackLine[1]
+      );
+      const lastDotIndex = signature.lastIndexOf(".");
+      const functionName = lastDotIndex !== -1 ? signature.substring(lastDotIndex + 1) : signature;
+      return !pageExposedFunctions.includes(functionName);
+    });
+    if (!selectedStack) {
+      return null;
+    }
+    const frameLocationRegex = /:(\d+)(?::\d+)?\)?$/;
+    const match = selectedStack.match(frameLocationRegex);
+    if (!match?.[1]) {
+      return null;
+    }
+    const lineNum = parseInt(match[1], 10);
+    if (isNaN(lineNum)) {
+      return null;
+    }
+    return lineNum - 1;
+  }
+  static stringifyError(result, functionDeclaration) {
+    if (!result.stack) {
+      return `Error: ${result.message}`;
+    }
+    const lineNum = _EvaluateAction.getExecutedLineFromStack(result.stack, PAGE_EXPOSED_FUNCTIONS);
+    if (!lineNum) {
+      return `Error: ${result.message}`;
+    }
+    const functionLines = functionDeclaration.split("\n");
+    const errorLine = functionLines[lineNum];
+    if (!errorLine) {
+      return `Error: ${result.message}`;
+    }
+    return `Error: executing the line "${errorLine.trim()}" failed with the following error:
+${result.message}`;
+  }
+};
+
+// gen/front_end/models/ai_assistance/agents/ExecuteJavascript.js
+var lockedString = i18n.i18n.lockedString;
+function executeJavaScriptFunction(executor) {
+  return {
+    description: "This function allows you to run JavaScript code on the inspected page to access the element styles and page content.\nCall this function to gather additional information or modify the page state. Call this function enough times to investigate the user request.",
+    parameters: {
+      type: 6,
+      description: "",
+      nullable: false,
+      properties: {
+        code: {
+          type: 1,
+          description: `JavaScript code snippet to run on the inspected page. Make sure the code is formatted for readability.
+
+# Instructions
+
+* To return data, define a top-level \`data\` variable and populate it with data you want to get. Only JSON-serializable objects can be assigned to \`data\`.
+* If you modify styles on an element, ALWAYS call the pre-defined global \`async setElementStyles(el: Element, styles: object)\` function. This function is an internal mechanism for you and should never be presented as a command/advice to the user.
+* **CRITICAL** Only get styles that might be relevant to the user request.
+* **CRITICAL** Never assume a selector for the elements unless you verified your knowledge.
+* **CRITICAL** Consider that \`data\` variable from the previous function calls are not available in a new function call.
+
+For example, the code to change element styles:
+
+\`\`\`
+await setElementStyles($0, {
+  color: 'blue',
+});
+\`\`\`
+
+For example, the code to get overlapping elements:
+
+\`\`\`
+const data = {
+  overlappingElements: Array.from(document.querySelectorAll('*'))
+    .filter(el => {
+      const rect = el.getBoundingClientRect();
+      const popupRect = $0.getBoundingClientRect();
+      return (
+        el !== $0 &&
+        rect.left < popupRect.right &&
+        rect.right > popupRect.left &&
+        rect.top < popupRect.bottom &&
+        rect.bottom > popupRect.top
+      );
+    })
+    .map(el => ({
+      tagName: el.tagName,
+      id: el.id,
+      className: el.className,
+      zIndex: window.getComputedStyle(el)['z-index']
+    }))
+};
+\`\`\`
+`
+        },
+        explanation: {
+          type: 1,
+          description: "Explain why you want to run this code"
+        },
+        title: {
+          type: 1,
+          description: 'Provide a summary of what the code does. For example, "Checking related element styles".'
+        }
+      },
+      required: ["code", "explanation", "title"]
+    },
+    displayInfoFromArgs: (params) => {
+      return {
+        title: params.title,
+        thought: params.explanation,
+        action: params.code
+      };
+    },
+    handler: async (params, options) => {
+      return await executor.executeAction(params.code, options);
+    }
+  };
+}
+async function executeJsCode(functionDeclaration, { throwOnSideEffect, contextNode }) {
+  if (!contextNode) {
+    throw new Error("Cannot execute JavaScript because of missing context node");
+  }
+  const target = contextNode.domModel().target();
+  if (!target) {
+    throw new Error("Target is not found for executing code");
+  }
+  const resourceTreeModel = target.model(SDK4.ResourceTreeModel.ResourceTreeModel);
+  const frameId = contextNode.frameId() ?? resourceTreeModel?.mainFrame?.id;
+  if (!frameId) {
+    throw new Error("Main frame is not found for executing code");
+  }
+  const runtimeModel = target.model(SDK4.RuntimeModel.RuntimeModel);
+  const pageAgent = target.pageAgent();
+  const { executionContextId } = await pageAgent.invoke_createIsolatedWorld({ frameId, worldName: FREESTYLER_WORLD_NAME });
+  const executionContext = runtimeModel?.executionContext(executionContextId);
+  if (!executionContext) {
+    throw new Error("Execution context is not found for executing code");
+  }
+  if (executionContext.debuggerModel.selectedCallFrame()) {
+    return formatError("Cannot evaluate JavaScript because the execution is paused on a breakpoint.");
+  }
+  const remoteObject = await contextNode.resolveToObject(void 0, executionContextId);
+  if (!remoteObject) {
+    throw new Error("Cannot execute JavaScript because remote object cannot be resolved");
+  }
+  return await EvaluateAction.execute(functionDeclaration, [remoteObject], executionContext, { throwOnSideEffect });
+}
+var MAX_OBSERVATION_BYTE_LENGTH = 25e3;
+var OBSERVATION_TIMEOUT = 5e3;
+var JavascriptExecutor = class {
+  #options;
+  #execJs;
+  constructor(options, execJs = executeJsCode) {
+    this.#options = options;
+    this.#execJs = execJs;
+  }
+  async executeAction(action, options) {
+    debugLog(`Action to execute: ${action}`);
+    if (options?.approved === false) {
+      return {
+        error: "Error: User denied code execution with side effects."
+      };
+    }
+    if (this.#options.executionMode === Root2.Runtime.HostConfigFreestylerExecutionMode.NO_SCRIPTS) {
+      return {
+        error: "Error: JavaScript execution is currently disabled."
+      };
+    }
+    const selectedNode = this.#options.getContextNode();
+    if (!selectedNode) {
+      return { error: "Error: no selected node found." };
+    }
+    const target = selectedNode.domModel().target();
+    if (target.model(SDK4.DebuggerModel.DebuggerModel)?.selectedCallFrame()) {
+      return {
+        error: "Error: Cannot evaluate JavaScript because the execution is paused on a breakpoint."
+      };
+    }
+    const scope = this.#options.createExtensionScope(this.#options.changes);
+    await scope.install();
+    try {
+      let throwOnSideEffect = true;
+      if (options?.approved) {
+        throwOnSideEffect = false;
+      }
+      const result = await this.generateObservation(action, { throwOnSideEffect });
+      debugLog(`Action result: ${JSON.stringify(result)}`);
+      if (result.sideEffect) {
+        if (this.#options.executionMode === Root2.Runtime.HostConfigFreestylerExecutionMode.SIDE_EFFECT_FREE_SCRIPTS_ONLY) {
+          return {
+            error: "Error: JavaScript execution that modifies the page is currently disabled."
+          };
+        }
+        if (options?.signal?.aborted) {
+          return {
+            error: "Error: evaluation has been cancelled"
+          };
+        }
+        return {
+          requiresApproval: true,
+          description: lockedString("This code may modify page content. Continue?")
+        };
+      }
+      if (result.canceled) {
+        return {
+          error: result.observation
+        };
+      }
+      return {
+        result: result.observation
+      };
+    } finally {
+      await scope.uninstall();
+    }
+  }
+  async generateObservation(action, { throwOnSideEffect }) {
+    const functionDeclaration = `async function ($0) {
+  try {
+    ${action}
+    ;
+    return ((typeof data !== "undefined") ? data : undefined);
+  } catch (error) {
+    return error;
+  }
+}`;
+    try {
+      const result = await Promise.race([
+        this.#execJs(functionDeclaration, {
+          throwOnSideEffect,
+          contextNode: this.#options.getContextNode()
+        }),
+        new Promise((_, reject) => {
+          setTimeout(() => reject(new Error("Script execution exceeded the maximum allowed time.")), OBSERVATION_TIMEOUT);
+        })
+      ]);
+      const byteCount = Platform3.StringUtilities.countWtf8Bytes(result);
+      Host2.userMetrics.freestylerEvalResponseSize(byteCount);
+      if (byteCount > MAX_OBSERVATION_BYTE_LENGTH) {
+        throw new Error("Output exceeded the maximum allowed length.");
+      }
+      return {
+        observation: result,
+        sideEffect: false,
+        canceled: false
+      };
+    } catch (error) {
+      if (error instanceof SideEffectError) {
+        return {
+          observation: error.message,
+          sideEffect: true,
+          canceled: false
+        };
+      }
+      return {
+        observation: `Error: ${error.message}`,
+        sideEffect: false,
+        canceled: false
+      };
+    }
+  }
+};
+
 // gen/front_end/models/ai_assistance/agents/AccessibilityAgent.js
 var preamble = `You are an accessibility expert agent integrated into Chrome DevTools.
 Your role is to help users understand and fix accessibility issues found in Lighthouse reports.
@@ -1103,6 +2076,7 @@ Your role is to help users understand and fix accessibility issues found in Ligh
 * \`runAccessibilityAudits\`: Trigger new accessibility snapshot audits.
 * \`getStyles\`: Get computed styles for an element by its path.
 * \`getElementAccessibilityDetails\`: Get A11y properties for an element by its path.
+* \`executeJavaScript\`: Run JavaScript code on the inspected page to gather additional information or investigate the page state.
 
 # Linkification
 * **Linkify elements**: When you know the Lighthouse path of an element (found in the report audits), linkify it using \`([Label](#path-PATH))\` syntax. Never show the path to the user directly, only use it in the link href.
@@ -1146,22 +2120,65 @@ var AccessibilityContext = class extends ConversationContext {
 };
 var AccessibilityAgent = class extends AiAgent {
   preamble = preamble;
-  clientFeature = Host2.AidaClient.ClientFeature.CHROME_ACCESSIBILITY_AGENT;
+  clientFeature = Host3.AidaClient.ClientFeature.CHROME_ACCESSIBILITY_AGENT;
   #lighthouseRecording;
+  #execJs;
+  #javascriptExecutor;
+  #changes;
+  #createExtensionScope;
+  #currentTurnId = 0;
   constructor(opts) {
     super(opts);
     this.#lighthouseRecording = opts.lighthouseRecording;
+    this.#changes = opts.changeManager || new ChangeManager();
+    this.#execJs = opts.execJs ?? executeJsCode;
+    this.#createExtensionScope = opts.createExtensionScope ?? ((changes) => {
+      return new ExtensionScope(changes, this.sessionId, this.#getDocumentBodyNode(), this.#currentTurnId);
+    });
+    this.#javascriptExecutor = new JavascriptExecutor({
+      executionMode: this.executionMode,
+      getContextNode: () => this.#getDocumentBodyNode(),
+      createExtensionScope: this.#createExtensionScope.bind(this),
+      changes: this.#changes
+    }, this.#execJs);
   }
   get userTier() {
-    return Root2.Runtime.hostConfig.devToolsFreestyler?.userTier;
+    return Root3.Runtime.hostConfig.devToolsFreestyler?.userTier;
+  }
+  get executionMode() {
+    return Root3.Runtime.hostConfig.devToolsFreestyler?.executionMode ?? Root3.Runtime.HostConfigFreestylerExecutionMode.ALL_SCRIPTS;
   }
   get options() {
-    const temperature = Root2.Runtime.hostConfig.devToolsAiAssistanceFileAgent?.temperature;
-    const modelId = Root2.Runtime.hostConfig.devToolsAiAssistanceFileAgent?.modelId;
+    const temperature = Root3.Runtime.hostConfig.devToolsAiAssistanceFileAgent?.temperature;
+    const modelId = Root3.Runtime.hostConfig.devToolsAiAssistanceFileAgent?.modelId;
     return {
       temperature,
       modelId
     };
+  }
+  preambleFeatures() {
+    return ["function_calling"];
+  }
+  async preRun() {
+    this.#currentTurnId++;
+    const target = SDK5.TargetManager.TargetManager.instance().primaryPageTarget();
+    const domModel = target?.model(SDK5.DOMModel.DOMModel);
+    if (domModel && !domModel.existingDocument()) {
+      try {
+        await domModel.requestDocument();
+      } catch (e) {
+        debugLog("Failed to request document", e);
+      }
+    }
+  }
+  /**
+   * For the Accessibility Agent, there is no single "selected" node.
+   * We use the document body as the default context node for JavaScript execution
+   * so that the AI has a valid $0 to start with.
+   */
+  #getDocumentBodyNode() {
+    const document2 = SDK5.TargetManager.TargetManager.instance().primaryPageTarget()?.model(SDK5.DOMModel.DOMModel)?.existingDocument();
+    return document2?.body ?? document2 ?? null;
   }
   async *handleContextDetails(lhr) {
     if (!lhr) {
@@ -1173,11 +2190,11 @@ var AccessibilityAgent = class extends AiAgent {
     };
   }
   async #resolvePathToNode(path) {
-    const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+    const target = SDK5.TargetManager.TargetManager.instance().primaryPageTarget();
     if (!target) {
       return null;
     }
-    const domModel = target.model(SDK.DOMModel.DOMModel);
+    const domModel = target.model(SDK5.DOMModel.DOMModel);
     if (!domModel) {
       return null;
     }
@@ -1188,6 +2205,7 @@ var AccessibilityAgent = class extends AiAgent {
     return domModel.nodeForId(nodeId);
   }
   #declareFunctions() {
+    this.declareFunction("executeJavaScript", executeJavaScriptFunction(this.#javascriptExecutor));
     this.declareFunction("runAccessibilityAudits", {
       description: "Triggers new Lighthouse accessibility audits in snapshot mode. Use this if the user has made changes to the page and you want to re-evaluate the accessibility audits.",
       parameters: {
@@ -1205,7 +2223,7 @@ var AccessibilityAgent = class extends AiAgent {
       },
       displayInfoFromArgs: (params) => {
         return {
-          title: i18n.i18n.lockedString("Running accessibility audits\u2026"),
+          title: i18n3.i18n.lockedString("Running accessibility audits\u2026"),
           thought: params.explanation,
           action: "runAccessibilityAudits()"
         };
@@ -1244,7 +2262,7 @@ var AccessibilityAgent = class extends AiAgent {
       },
       displayInfoFromArgs: (params) => {
         return {
-          title: i18n.i18n.lockedString(`Getting Lighthouse audits for ${params.categoryId}\u2026`),
+          title: i18n3.i18n.lockedString(`Getting Lighthouse audits for ${params.categoryId}\u2026`),
           action: `getLighthouseAudits('${params.categoryId}')`
         };
       },
@@ -1361,7 +2379,7 @@ var AccessibilityAgent = class extends AiAgent {
         if (!node) {
           return { error: `Could not find the element with path: ${params.path}` };
         }
-        const accessibilityModel = node.domModel().target().model(SDK.AccessibilityModel.AccessibilityModel);
+        const accessibilityModel = node.domModel().target().model(SDK5.AccessibilityModel.AccessibilityModel);
         if (!accessibilityModel) {
           return { error: "Accessibility model not found." };
         }
@@ -1428,14 +2446,14 @@ __export(BreakpointDebuggerAgent_exports, {
   BreakpointContext: () => BreakpointContext,
   BreakpointDebuggerAgent: () => BreakpointDebuggerAgent
 });
-import * as Host3 from "./../../core/host/host.js";
-import * as i18n3 from "./../../core/i18n/i18n.js";
-import * as SDK3 from "./../../core/sdk/sdk.js";
-import * as Bindings from "./../bindings/bindings.js";
+import * as Host4 from "./../../core/host/host.js";
+import * as i18n5 from "./../../core/i18n/i18n.js";
+import * as SDK7 from "./../../core/sdk/sdk.js";
+import * as Bindings2 from "./../bindings/bindings.js";
 import * as Breakpoints from "./../breakpoints/breakpoints.js";
 
 // gen/front_end/models/formatter/FormatterWorkerPool.js
-import * as Platform from "./../../core/platform/platform.js";
+import * as Platform4 from "./../../core/platform/platform.js";
 var formatterWorkerPoolInstance;
 var FormatterWorkerPool = class _FormatterWorkerPool {
   taskQueue;
@@ -1470,7 +2488,7 @@ var FormatterWorkerPool = class _FormatterWorkerPool {
     formatterWorkerPoolInstance = void 0;
   }
   createWorker() {
-    const worker = Platform.HostRuntime.HOST_RUNTIME.createWorker(this.entrypointURL);
+    const worker = Platform4.HostRuntime.HOST_RUNTIME.createWorker(this.entrypointURL);
     worker.onmessage = this.onWorkerMessage.bind(this, worker);
     worker.onerror = this.onWorkerError.bind(this, worker);
     return worker;
@@ -1585,16 +2603,16 @@ import * as TextUtils3 from "./../text_utils/text_utils.js";
 import * as Workspace from "./../workspace/workspace.js";
 
 // gen/front_end/models/ai_assistance/agents/BreakpointDebuggerAgentOverlay.js
-import * as SDK2 from "./../../core/sdk/sdk.js";
+import * as SDK6 from "./../../core/sdk/sdk.js";
 async function injectOverlay() {
-  const targetManager = SDK2.TargetManager.TargetManager.instance();
+  const targetManager = SDK6.TargetManager.TargetManager.instance();
   const primaryTarget = targetManager.primaryPageTarget();
   await primaryTarget?.runtimeAgent().invoke_evaluate({
     expression: WAIT_FOR_USER_ACTION_OVERLAY_SCRIPT
   });
 }
 async function removeOverlay() {
-  const targetManager = SDK2.TargetManager.TargetManager.instance();
+  const targetManager = SDK6.TargetManager.TargetManager.instance();
   const primaryTarget = targetManager.primaryPageTarget();
   await primaryTarget?.runtimeAgent().invoke_evaluate({
     expression: REMOVE_OVERLAY_SCRIPT
@@ -1654,7 +2672,7 @@ var REMOVE_OVERLAY_SCRIPT = `
 `;
 
 // gen/front_end/models/ai_assistance/agents/BreakpointDebuggerAgent.js
-var lockedString = i18n3.i18n.lockedString;
+var lockedString2 = i18n5.i18n.lockedString;
 var preamble2 = `You are an expert Root Cause Analysis (RCA) specialist.
 Your sole objective is to find the **root cause** of why an error was thrown or why a bug occurred.
 You must not stop at the surface level. You must dig deep to understand the exact sequence of events and state changes that led to the failure.
@@ -1717,7 +2735,7 @@ var BreakpointDebuggerAgent = class extends AiAgent {
   // Using file agent as a base for now since it is the closest one logic wise.
   // Since the user tier is forced to TESTERS, it should not mess up the stats.
   // If this code is taken to production, we should create a new client feature.
-  clientFeature = Host3.AidaClient.ClientFeature.CHROME_FILE_AGENT;
+  clientFeature = Host4.AidaClient.ClientFeature.CHROME_FILE_AGENT;
   constructor(opts) {
     super(opts);
     this.declareFunction("getFunctionSource", {
@@ -1936,8 +2954,8 @@ var BreakpointDebuggerAgent = class extends AiAgent {
         };
       },
       handler: async () => {
-        const targetManager = SDK3.TargetManager.TargetManager.instance();
-        const debuggerModel = targetManager.models(SDK3.DebuggerModel.DebuggerModel).find((m) => m.isPaused());
+        const targetManager = SDK7.TargetManager.TargetManager.instance();
+        const debuggerModel = targetManager.models(SDK7.DebuggerModel.DebuggerModel).find((m) => m.isPaused());
         if (debuggerModel) {
           debuggerModel.resume();
         }
@@ -2073,11 +3091,11 @@ var BreakpointDebuggerAgent = class extends AiAgent {
         if (!options?.approved) {
           return {
             requiresApproval: true,
-            description: lockedString("This code may modify page content. Continue?")
+            description: lockedString2("This code may modify page content. Continue?")
           };
         }
-        const targetManager = SDK3.TargetManager.TargetManager.instance();
-        const debuggerModel = targetManager.models(SDK3.DebuggerModel.DebuggerModel).find((m) => m.isPaused());
+        const targetManager = SDK7.TargetManager.TargetManager.instance();
+        const debuggerModel = targetManager.models(SDK7.DebuggerModel.DebuggerModel).find((m) => m.isPaused());
         if (!debuggerModel) {
           return { error: "Execution is not paused." };
         }
@@ -2184,8 +3202,8 @@ var BreakpointDebuggerAgent = class extends AiAgent {
     };
   }
   async #getCallStack() {
-    const targetManager = SDK3.TargetManager.TargetManager.instance();
-    const debuggerModel = targetManager.models(SDK3.DebuggerModel.DebuggerModel).find((m) => m.isPaused());
+    const targetManager = SDK7.TargetManager.TargetManager.instance();
+    const debuggerModel = targetManager.models(SDK7.DebuggerModel.DebuggerModel).find((m) => m.isPaused());
     if (!debuggerModel) {
       return {
         error: "Execution is not paused. I cannot access runtime variables or the call stack. I am currently in STATIC MODE. I must set a breakpoint and use waitForUserActionToTriggerBreakpoint to enter RUNTIME MODE."
@@ -2195,7 +3213,7 @@ var BreakpointDebuggerAgent = class extends AiAgent {
     if (!details) {
       return { error: "Internal error: debugger is paused but no details available." };
     }
-    const stackTrace = await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createStackTraceFromDebuggerPaused(details, debuggerModel.target());
+    const stackTrace = await Bindings2.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createStackTraceFromDebuggerPaused(details, debuggerModel.target());
     const callFrames = stackTrace.syncFragment.frames.map((frame) => {
       return {
         functionName: frame.name || frame.sdkFrame.functionName,
@@ -2207,8 +3225,8 @@ var BreakpointDebuggerAgent = class extends AiAgent {
     return { result: { callFrames } };
   }
   async #getScopeVariables() {
-    const targetManager = SDK3.TargetManager.TargetManager.instance();
-    const debuggerModel = targetManager.models(SDK3.DebuggerModel.DebuggerModel).find((m) => m.isPaused());
+    const targetManager = SDK7.TargetManager.TargetManager.instance();
+    const debuggerModel = targetManager.models(SDK7.DebuggerModel.DebuggerModel).find((m) => m.isPaused());
     if (!debuggerModel) {
       return {
         error: "Execution is not paused. I cannot access runtime variables or the call stack. I am currently in STATIC MODE. I must set a breakpoint and use waitForUserActionToTriggerBreakpoint to enter RUNTIME MODE."
@@ -2218,7 +3236,7 @@ var BreakpointDebuggerAgent = class extends AiAgent {
     if (!details) {
       return { error: "Internal error: debugger is paused but no details available." };
     }
-    const stackTrace = await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createStackTraceFromDebuggerPaused(details, debuggerModel.target());
+    const stackTrace = await Bindings2.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createStackTraceFromDebuggerPaused(details, debuggerModel.target());
     const helperFrames = stackTrace.syncFragment.frames;
     const frames = [];
     for (const frame of helperFrames) {
@@ -2305,8 +3323,8 @@ var BreakpointDebuggerAgent = class extends AiAgent {
         actualLineNumber = resolvedState[0].lineNumber + 1;
       }
     }
-    const targetManager = SDK3.TargetManager.TargetManager.instance();
-    const debuggerModel = targetManager.models(SDK3.DebuggerModel.DebuggerModel).find((m) => m.isPaused());
+    const targetManager = SDK7.TargetManager.TargetManager.instance();
+    const debuggerModel = targetManager.models(SDK7.DebuggerModel.DebuggerModel).find((m) => m.isPaused());
     let warning = "";
     if (debuggerModel) {
       const details = debuggerModel.debuggerPausedDetails();
@@ -2345,16 +3363,16 @@ var BreakpointDebuggerAgent = class extends AiAgent {
     return { result: { status: `Breakpoint removed at ${args.url}:${args.lineNumber}.` } };
   }
   async #debuggerAction(action) {
-    const targetManager = SDK3.TargetManager.TargetManager.instance();
-    const debuggerModel = targetManager.models(SDK3.DebuggerModel.DebuggerModel).find((m) => m.isPaused());
+    const targetManager = SDK7.TargetManager.TargetManager.instance();
+    const debuggerModel = targetManager.models(SDK7.DebuggerModel.DebuggerModel).find((m) => m.isPaused());
     if (!debuggerModel) {
       return { error: "Execution is not paused. I cannot step or resume in STATIC MODE." };
     }
     return await this.#waitForNextPause(() => action(debuggerModel), 3e3);
   }
   async #waitForUserActionToTriggerBreakpoint() {
-    const targetManager = SDK3.TargetManager.TargetManager.instance();
-    const debuggerModels = targetManager.models(SDK3.DebuggerModel.DebuggerModel);
+    const targetManager = SDK7.TargetManager.TargetManager.instance();
+    const debuggerModels = targetManager.models(SDK7.DebuggerModel.DebuggerModel);
     if (debuggerModels.length === 0) {
       return { error: "No debugger attached" };
     }
@@ -2379,11 +3397,11 @@ var BreakpointDebuggerAgent = class extends AiAgent {
    */
   async #waitForNextPause(triggerAction = () => {
   }, timeoutMs) {
-    const targetManager = SDK3.TargetManager.TargetManager.instance();
+    const targetManager = SDK7.TargetManager.TargetManager.instance();
     return await new Promise((resolve) => {
       let timeoutId;
       const listener = async (event) => {
-        targetManager.removeModelListener(SDK3.DebuggerModel.DebuggerModel, SDK3.DebuggerModel.Events.DebuggerPaused, listener);
+        targetManager.removeModelListener(SDK7.DebuggerModel.DebuggerModel, SDK7.DebuggerModel.Events.DebuggerPaused, listener);
         if (timeoutId) {
           clearTimeout(timeoutId);
         }
@@ -2393,7 +3411,7 @@ var BreakpointDebuggerAgent = class extends AiAgent {
         let location = "unknown location";
         if (callFrame) {
           const rawLocation = callFrame.location();
-          const uiLocation = await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().rawLocationToUILocation(rawLocation);
+          const uiLocation = await Bindings2.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().rawLocationToUILocation(rawLocation);
           if (uiLocation) {
             location = `${uiLocation.uiSourceCode.url()}:${uiLocation.lineNumber + 1}`;
           } else {
@@ -2402,10 +3420,10 @@ var BreakpointDebuggerAgent = class extends AiAgent {
         }
         resolve({ result: { status: `Paused at ${location}` } });
       };
-      targetManager.addModelListener(SDK3.DebuggerModel.DebuggerModel, SDK3.DebuggerModel.Events.DebuggerPaused, listener);
+      targetManager.addModelListener(SDK7.DebuggerModel.DebuggerModel, SDK7.DebuggerModel.Events.DebuggerPaused, listener);
       if (timeoutMs !== void 0) {
         timeoutId = setTimeout(() => {
-          targetManager.removeModelListener(SDK3.DebuggerModel.DebuggerModel, SDK3.DebuggerModel.Events.DebuggerPaused, listener);
+          targetManager.removeModelListener(SDK7.DebuggerModel.DebuggerModel, SDK7.DebuggerModel.Events.DebuggerPaused, listener);
           resolve({
             result: {
               status: "Execution resumed but did not pause again. There is nothing to step into or the execution finished."
@@ -2417,8 +3435,8 @@ var BreakpointDebuggerAgent = class extends AiAgent {
     });
   }
   async #getExecutionLocation() {
-    const targetManager = SDK3.TargetManager.TargetManager.instance();
-    const debuggerModel = targetManager.models(SDK3.DebuggerModel.DebuggerModel).find((m) => m.isPaused());
+    const targetManager = SDK7.TargetManager.TargetManager.instance();
+    const debuggerModel = targetManager.models(SDK7.DebuggerModel.DebuggerModel).find((m) => m.isPaused());
     if (!debuggerModel) {
       return { error: "Execution is not paused. I cannot determine execution location in STATIC MODE." };
     }
@@ -2426,7 +3444,7 @@ var BreakpointDebuggerAgent = class extends AiAgent {
     if (!details) {
       return { error: "Internal error: debugger is paused but no details available." };
     }
-    const stackTrace = await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createStackTraceFromDebuggerPaused(details, debuggerModel.target());
+    const stackTrace = await Bindings2.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createStackTraceFromDebuggerPaused(details, debuggerModel.target());
     const currentFrame = stackTrace.syncFragment.frames[0];
     if (!currentFrame) {
       return { error: "Internal error: no frames available." };
@@ -2468,8 +3486,8 @@ ${query}`;
       for (const bp of allBreakpoints) {
         await bp.breakpoint.remove(false);
       }
-      const targetManager = SDK3.TargetManager.TargetManager.instance();
-      const debuggerModels = targetManager.models(SDK3.DebuggerModel.DebuggerModel);
+      const targetManager = SDK7.TargetManager.TargetManager.instance();
+      const debuggerModels = targetManager.models(SDK7.DebuggerModel.DebuggerModel);
       for (const model of debuggerModels) {
         if (model.isPaused()) {
           model.resume();
@@ -2497,15 +3515,15 @@ __export(FileAgent_exports, {
   FileAgent: () => FileAgent,
   FileContext: () => FileContext
 });
-import * as Host4 from "./../../core/host/host.js";
-import * as Root3 from "./../../core/root/root.js";
+import * as Host5 from "./../../core/host/host.js";
+import * as Root4 from "./../../core/root/root.js";
 
 // gen/front_end/models/ai_assistance/data_formatters/FileFormatter.js
 var FileFormatter_exports = {};
 __export(FileFormatter_exports, {
   FileFormatter: () => FileFormatter
 });
-import * as Bindings2 from "./../bindings/bindings.js";
+import * as Bindings3 from "./../bindings/bindings.js";
 import * as NetworkTimeCalculator2 from "./../network_time_calculator/network_time_calculator.js";
 
 // gen/front_end/models/ai_assistance/data_formatters/NetworkRequestFormatter.js
@@ -2517,7 +3535,7 @@ import * as Annotations from "./../annotations/annotations.js";
 import * as Logs from "./../logs/logs.js";
 import * as NetworkTimeCalculator from "./../network_time_calculator/network_time_calculator.js";
 import * as TextUtils4 from "./../text_utils/text_utils.js";
-var _a;
+var _a2;
 var MAX_HEADERS_SIZE = 1e3;
 var MAX_BODY_SIZE = 1e4;
 function sanitizeHeaders(headers) {
@@ -2608,13 +3626,13 @@ ${dataAsText}`;
     this.#calculator = calculator;
   }
   formatRequestHeaders() {
-    return _a.formatHeaders("Request headers:", this.#request.requestHeaders());
+    return _a2.formatHeaders("Request headers:", this.#request.requestHeaders());
   }
   formatResponseHeaders() {
-    return _a.formatHeaders("Response headers:", this.#request.responseHeaders);
+    return _a2.formatHeaders("Response headers:", this.#request.responseHeaders);
   }
   async formatResponseBody() {
-    return await _a.formatBody("Response body:", this.#request, MAX_BODY_SIZE);
+    return await _a2.formatBody("Response body:", this.#request, MAX_BODY_SIZE);
   }
   /**
    * Note: nothing here should include information from origins other than
@@ -2643,7 +3661,7 @@ Request initiator chain:
 ${this.formatRequestInitiatorChain()}`;
   }
   formatStatus() {
-    return _a.formatStatus({
+    return _a2.formatStatus({
       statusCode: this.#request.statusCode,
       statusText: this.#request.statusText,
       failed: this.#request.failed,
@@ -2653,7 +3671,7 @@ ${this.formatRequestInitiatorChain()}`;
     });
   }
   formatFailureReasons() {
-    return _a.formatFailureReasons({
+    return _a2.formatFailureReasons({
       blockedReason: this.#request.blockedReason(),
       corsErrorStatus: this.#request.corsErrorStatus(),
       localizedFailDescription: this.#request.localizedFailDescription
@@ -2669,7 +3687,7 @@ ${this.formatRequestInitiatorChain()}`;
     let lineStart = "- URL: ";
     const graph = Logs.NetworkLog.NetworkLog.instance().initiatorGraphForRequest(this.#request);
     for (const initiator of Array.from(graph.initiators).reverse()) {
-      initiatorChain = initiatorChain + lineStart + _a.formatInitiatorUrl(initiator.url(), allowedOrigin) + "\n";
+      initiatorChain = initiatorChain + lineStart + _a2.formatInitiatorUrl(initiator.url(), allowedOrigin) + "\n";
       lineStart = "	" + lineStart;
       if (initiator === this.#request) {
         initiatorChain = this.#formatRequestInitiated(graph.initiated, this.#request, initiatorChain, lineStart, allowedOrigin);
@@ -2729,7 +3747,7 @@ ${this.formatRequestInitiatorChain()}`;
       if (initiatedRequest === parentRequest) {
         if (!visited.has(keyRequest)) {
           visited.add(keyRequest);
-          initiatorChain = initiatorChain + lineStart + _a.formatInitiatorUrl(keyRequest.url(), allowedOrigin) + "\n";
+          initiatorChain = initiatorChain + lineStart + _a2.formatInitiatorUrl(keyRequest.url(), allowedOrigin) + "\n";
           initiatorChain = this.#formatRequestInitiated(initiated, keyRequest, initiatorChain, "	" + lineStart, allowedOrigin);
         }
       }
@@ -2737,7 +3755,7 @@ ${this.formatRequestInitiatorChain()}`;
     return initiatorChain;
   }
 };
-_a = NetworkRequestFormatter;
+_a2 = NetworkRequestFormatter;
 var allowedHeaders = /* @__PURE__ */ new Set([
   ":authority",
   ":method",
@@ -2867,7 +3885,7 @@ var FileFormatter = class _FileFormatter {
           }
         }
       }
-      for (const originURL of Bindings2.SASSSourceMapping.SASSSourceMapping.uiSourceOrigin(selectedFile)) {
+      for (const originURL of Bindings3.SASSSourceMapping.SASSSourceMapping.uiSourceOrigin(selectedFile)) {
         mappedFileUrls.push(originURL);
       }
     } else if (selectedFile.contentType().isScript()) {
@@ -2891,14 +3909,14 @@ var FileFormatter = class _FileFormatter {
     this.#file = file;
   }
   formatFile() {
-    const debuggerWorkspaceBinding = Bindings2.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
+    const debuggerWorkspaceBinding = Bindings3.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
     const sourceMapDetails = _FileFormatter.formatSourceMapDetails(this.#file, debuggerWorkspaceBinding);
     const lines = [
       `File name: ${this.#file.displayName()}`,
       `URL: ${this.#file.url()}`,
       sourceMapDetails
     ];
-    const resource = Bindings2.ResourceUtils.resourceForURL(this.#file.url());
+    const resource = Bindings3.ResourceUtils.resourceForURL(this.#file.url());
     if (resource?.request) {
       const calculator = new NetworkTimeCalculator2.NetworkTransferTimeCalculator();
       calculator.updateBoundaries(resource.request);
@@ -2993,13 +4011,13 @@ var FileContext = class extends ConversationContext {
 };
 var FileAgent = class extends AiAgent {
   preamble = preamble3;
-  clientFeature = Host4.AidaClient.ClientFeature.CHROME_FILE_AGENT;
+  clientFeature = Host5.AidaClient.ClientFeature.CHROME_FILE_AGENT;
   get userTier() {
-    return Root3.Runtime.hostConfig.devToolsAiAssistanceFileAgent?.userTier;
+    return Root4.Runtime.hostConfig.devToolsAiAssistanceFileAgent?.userTier;
   }
   get options() {
-    const temperature = Root3.Runtime.hostConfig.devToolsAiAssistanceFileAgent?.temperature;
-    const modelId = Root3.Runtime.hostConfig.devToolsAiAssistanceFileAgent?.modelId;
+    const temperature = Root4.Runtime.hostConfig.devToolsAiAssistanceFileAgent?.temperature;
+    const modelId = Root4.Runtime.hostConfig.devToolsAiAssistanceFileAgent?.modelId;
     return {
       temperature,
       modelId
@@ -3039,9 +4057,9 @@ __export(NetworkAgent_exports, {
   NetworkAgent: () => NetworkAgent,
   RequestContext: () => RequestContext
 });
-import * as Host5 from "./../../core/host/host.js";
-import * as i18n5 from "./../../core/i18n/i18n.js";
-import * as Root4 from "./../../core/root/root.js";
+import * as Host6 from "./../../core/host/host.js";
+import * as i18n7 from "./../../core/i18n/i18n.js";
+import * as Root5 from "./../../core/root/root.js";
 var preamble4 = `You are the most advanced network request debugging assistant integrated into Chrome DevTools.
 The user selected a network request in the browser's DevTools Network Panel and sends a query to understand the request.
 Provide a comprehensive analysis of the network request, focusing on areas crucial for a software engineer. Your analysis should include:
@@ -3108,7 +4126,7 @@ var UIStringsNotTranslate = {
    */
   requestInitiatorChain: "Request initiator chain"
 };
-var lockedString2 = i18n5.i18n.lockedString;
+var lockedString3 = i18n7.i18n.lockedString;
 var RequestContext = class extends ConversationContext {
   #request;
   #calculator;
@@ -3138,13 +4156,13 @@ var RequestContext = class extends ConversationContext {
 };
 var NetworkAgent = class extends AiAgent {
   preamble = preamble4;
-  clientFeature = Host5.AidaClient.ClientFeature.CHROME_NETWORK_AGENT;
+  clientFeature = Host6.AidaClient.ClientFeature.CHROME_NETWORK_AGENT;
   get userTier() {
-    return Root4.Runtime.hostConfig.devToolsAiAssistanceNetworkAgent?.userTier;
+    return Root5.Runtime.hostConfig.devToolsAiAssistanceNetworkAgent?.userTier;
   }
   get options() {
-    const temperature = Root4.Runtime.hostConfig.devToolsAiAssistanceNetworkAgent?.temperature;
-    const modelId = Root4.Runtime.hostConfig.devToolsAiAssistanceNetworkAgent?.modelId;
+    const temperature = Root5.Runtime.hostConfig.devToolsAiAssistanceNetworkAgent?.temperature;
+    const modelId = Root5.Runtime.hostConfig.devToolsAiAssistanceNetworkAgent?.modelId;
     return {
       temperature,
       modelId
@@ -3173,25 +4191,25 @@ async function createContextDetailsForNetworkAgent(selectedNetworkRequest) {
   const request = selectedNetworkRequest.getItem();
   const formatter = new NetworkRequestFormatter(request, selectedNetworkRequest.calculator);
   const requestContextDetail = {
-    title: lockedString2(UIStringsNotTranslate.request),
-    text: lockedString2(UIStringsNotTranslate.requestUrl) + ": " + request.url() + "\n\n" + formatter.formatRequestHeaders()
+    title: lockedString3(UIStringsNotTranslate.request),
+    text: lockedString3(UIStringsNotTranslate.requestUrl) + ": " + request.url() + "\n\n" + formatter.formatRequestHeaders()
   };
   const responseBody = await formatter.formatResponseBody();
   const responseBodyString = responseBody ? `
 
 ${responseBody}` : "";
   const responseContextDetail = {
-    title: lockedString2(UIStringsNotTranslate.response),
+    title: lockedString3(UIStringsNotTranslate.response),
     text: formatter.formatResponseHeaders() + responseBodyString + `
 
 ${formatter.formatStatus()}${formatter.formatFailureReasons()}`
   };
   const timingContextDetail = {
-    title: lockedString2(UIStringsNotTranslate.timing),
+    title: lockedString3(UIStringsNotTranslate.timing),
     text: formatter.formatNetworkRequestTiming()
   };
   const initiatorChainContextDetail = {
-    title: lockedString2(UIStringsNotTranslate.requestInitiatorChain),
+    title: lockedString3(UIStringsNotTranslate.requestInitiatorChain),
     text: formatter.formatRequestInitiatorChain()
   };
   return [
@@ -3208,12 +4226,12 @@ __export(PerformanceAgent_exports, {
   PerformanceAgent: () => PerformanceAgent,
   PerformanceTraceContext: () => PerformanceTraceContext
 });
-import * as Common2 from "./../../core/common/common.js";
-import * as Host6 from "./../../core/host/host.js";
-import * as i18n7 from "./../../core/i18n/i18n.js";
-import * as Platform2 from "./../../core/platform/platform.js";
-import * as Root5 from "./../../core/root/root.js";
-import * as SDK4 from "./../../core/sdk/sdk.js";
+import * as Common4 from "./../../core/common/common.js";
+import * as Host7 from "./../../core/host/host.js";
+import * as i18n9 from "./../../core/i18n/i18n.js";
+import * as Platform5 from "./../../core/platform/platform.js";
+import * as Root6 from "./../../core/root/root.js";
+import * as SDK8 from "./../../core/sdk/sdk.js";
 import * as Tracing from "./../../services/tracing/tracing.js";
 import * as Annotations3 from "./../annotations/annotations.js";
 import * as Logs2 from "./../logs/logs.js";
@@ -3226,7 +4244,7 @@ var PerformanceInsightFormatter_exports = {};
 __export(PerformanceInsightFormatter_exports, {
   PerformanceInsightFormatter: () => PerformanceInsightFormatter
 });
-import * as Common from "./../../core/common/common.js";
+import * as Common3 from "./../../core/common/common.js";
 import * as Trace4 from "./../trace/trace.js";
 
 // gen/front_end/models/ai_assistance/data_formatters/PerformanceTraceFormatter.js
@@ -4807,7 +5825,7 @@ Duplication grouped by Node modules: ${filesFormatted}`;
     for (const font of insight.fonts) {
       let fontName = font.name;
       if (!fontName) {
-        const url = new Common.ParsedURL.ParsedURL(font.request.args.data.url);
+        const url = new Common3.ParsedURL.ParsedURL(font.request.args.data.url);
         fontName = url.isValid ? url.lastPathComponent : "(not available)";
       }
       output += `
@@ -5582,7 +6600,7 @@ var UIStringsNotTranslated = {
    */
   mainThreadActivity: "Investigating main thread activity\u2026"
 };
-var lockedString3 = i18n7.i18n.lockedString;
+var lockedString4 = i18n9.i18n.lockedString;
 var greenDevAdditionalAnnotationsFunction = `
 - CRITICAL: You also have access to functions called addElementAnnotation and addNeworkRequestAnnotation,
 which should be used to highlight elements and network requests (respectively).`;
@@ -5879,14 +6897,14 @@ var PerformanceAgent = class extends AiAgent {
     return buildPreamble();
   }
   get clientFeature() {
-    return Host6.AidaClient.ClientFeature.CHROME_PERFORMANCE_FULL_AGENT;
+    return Host7.AidaClient.ClientFeature.CHROME_PERFORMANCE_FULL_AGENT;
   }
   get userTier() {
-    return Boolean(Root5.Runtime.hostConfig.devToolsGreenDevUi?.enabled) ? "TESTERS" : Root5.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.userTier;
+    return Boolean(Root6.Runtime.hostConfig.devToolsGreenDevUi?.enabled) ? "TESTERS" : Root6.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.userTier;
   }
   get options() {
-    const temperature = Root5.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.temperature;
-    const modelId = Root5.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.modelId;
+    const temperature = Root6.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.temperature;
+    const modelId = Root6.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.modelId;
     return {
       temperature,
       modelId
@@ -6115,7 +7133,7 @@ ${text}`, metadata: { source: "devtools", score: ScorePriority.REQUIRED } });
     this.addFact(this.#callFrameDataDescriptionFact);
     this.addFact(this.#networkDataDescriptionFact);
     if (!this.#traceFacts.length) {
-      const target = SDK4.TargetManager.TargetManager.instance().primaryPageTarget();
+      const target = SDK8.TargetManager.TargetManager.instance().primaryPageTarget();
       if (!target) {
         throw new Error("missing target");
       }
@@ -6178,7 +7196,7 @@ ${result}`,
       },
       displayInfoFromArgs: (params) => {
         return {
-          title: lockedString3(`Investigating insight ${params.insightName}\u2026`),
+          title: lockedString4(`Investigating insight ${params.insightName}\u2026`),
           action: `getInsightDetails('${params.insightSetId}', '${params.insightName}')`
         };
       },
@@ -6202,8 +7220,8 @@ ${result}`,
           if (lcpEvent && Trace6.Types.Events.isAnyLargestContentfulPaintCandidate(lcpEvent)) {
             const nodeId = lcpEvent.args.data?.nodeId;
             if (nodeId && !processedNodeIds.has(nodeId)) {
-              const target = SDK4.TargetManager.TargetManager.instance().primaryPageTarget();
-              const domModel = target?.model(SDK4.DOMModel.DOMModel);
+              const target = SDK8.TargetManager.TargetManager.instance().primaryPageTarget();
+              const domModel = target?.model(SDK8.DOMModel.DOMModel);
               if (domModel) {
                 const nodeMap = await domModel.pushNodesByBackendIdsToFrontend(/* @__PURE__ */ new Set([nodeId]));
                 const node = nodeMap?.get(nodeId);
@@ -6262,7 +7280,7 @@ ${result}`,
         required: ["eventKey"]
       },
       displayInfoFromArgs: (params) => {
-        return { title: lockedString3("Looking at trace event\u2026"), action: `getEventByKey('${params.eventKey}')` };
+        return { title: lockedString4("Looking at trace event\u2026"), action: `getEventByKey('${params.eventKey}')` };
       },
       handler: async (params) => {
         debugLog("Function call: getEventByKey", params);
@@ -6309,7 +7327,7 @@ ${result}`,
       },
       displayInfoFromArgs: (args) => {
         return {
-          title: lockedString3(UIStringsNotTranslated.mainThreadActivity),
+          title: lockedString4(UIStringsNotTranslated.mainThreadActivity),
           action: `getMainThreadTrackSummary({min: ${args.min}, max: ${args.max}})`
         };
       },
@@ -6329,8 +7347,8 @@ ${result}`,
             error: "getMainThreadTrackSummary response is too large. Try investigating using other functions, or a more narrow bounds"
           };
         }
-        const byteCount = Platform2.StringUtilities.countWtf8Bytes(summary);
-        Host6.userMetrics.performanceAIMainThreadActivityResponseSize(byteCount);
+        const byteCount = Platform5.StringUtilities.countWtf8Bytes(summary);
+        Host7.userMetrics.performanceAIMainThreadActivityResponseSize(byteCount);
         const key = `getMainThreadTrackSummary({min: ${bounds.min}, max: ${bounds.max}})`;
         this.#cacheFunctionResult(focus, key, summary);
         const widgets = [];
@@ -6377,7 +7395,7 @@ ${result}`,
       },
       displayInfoFromArgs: (args) => {
         return {
-          title: lockedString3(UIStringsNotTranslated.networkActivitySummary),
+          title: lockedString4(UIStringsNotTranslated.networkActivitySummary),
           action: `getNetworkTrackSummary({min: ${args.min}, max: ${args.max}})`
         };
       },
@@ -6396,8 +7414,8 @@ ${result}`,
             error: "getNetworkTrackSummary response is too large. Try investigating using other functions, or a more narrow bounds"
           };
         }
-        const byteCount = Platform2.StringUtilities.countWtf8Bytes(summary);
-        Host6.userMetrics.performanceAINetworkSummaryResponseSize(byteCount);
+        const byteCount = Platform5.StringUtilities.countWtf8Bytes(summary);
+        Host7.userMetrics.performanceAINetworkSummaryResponseSize(byteCount);
         const key = `getNetworkTrackSummary({min: ${bounds.min}, max: ${bounds.max}})`;
         this.#cacheFunctionResult(focus, key, summary);
         return {
@@ -6421,7 +7439,7 @@ ${result}`,
         required: ["eventKey"]
       },
       displayInfoFromArgs: (args) => {
-        return { title: lockedString3("Looking at call tree\u2026"), action: `getDetailedCallTree('${args.eventKey}')` };
+        return { title: lockedString4("Looking at call tree\u2026"), action: `getDetailedCallTree('${args.eventKey}')` };
       },
       handler: async (args) => {
         debugLog("Function call: getDetailedCallTree");
@@ -6520,7 +7538,7 @@ ${result}`,
       },
       displayInfoFromArgs: (args) => {
         return {
-          title: lockedString3("Looking up function code\u2026"),
+          title: lockedString4("Looking up function code\u2026"),
           action: `getFunctionCode('${args.scriptUrl}', ${args.line}, ${args.column})`
         };
       },
@@ -6535,7 +7553,7 @@ ${result}`,
         if (!this.#formatter) {
           throw new Error("missing formatter");
         }
-        const target = SDK4.TargetManager.TargetManager.instance().primaryPageTarget();
+        const target = SDK8.TargetManager.TargetManager.instance().primaryPageTarget();
         if (!target) {
           throw new Error("missing target");
         }
@@ -6551,7 +7569,7 @@ ${result}`,
       }
     });
     const isFresh = Tracing.FreshRecording.Tracker.instance().recordingIsFresh(parsedTrace);
-    const isTraceApp = Root5.Runtime.Runtime.isTraceApp();
+    const isTraceApp = Root6.Runtime.Runtime.isTraceApp();
     this.declareFunction("getResourceContent", {
       description: "Returns the content of the resource with the given url. Only use this for text resource types. This function is helpful for getting script contents in order to further analyze main thread activity and suggest code improvements. When analyzing the main thread activity, always call this function to get more detail. Always call this function when asked to provide specifics about what is happening in the code. Never ask permission to call this function, just do it.",
       parameters: {
@@ -6568,7 +7586,7 @@ ${result}`,
         required: ["url"]
       },
       displayInfoFromArgs: (args) => {
-        return { title: lockedString3("Looking at resource content\u2026"), action: `getResourceContent('${args.url}')` };
+        return { title: lockedString4("Looking at resource content\u2026"), action: `getResourceContent('${args.url}')` };
       },
       handler: async (args) => {
         debugLog("Function call: getResourceContent");
@@ -6578,7 +7596,7 @@ ${result}`,
         if (script?.content !== void 0) {
           content = script.content;
         } else if (isFresh || isTraceApp) {
-          const resource = SDK4.ResourceTreeModel.ResourceTreeModel.resourceForURL(url);
+          const resource = SDK8.ResourceTreeModel.ResourceTreeModel.resourceForURL(url);
           if (!resource) {
             return { error: "Resource not found" };
           }
@@ -6612,7 +7630,7 @@ ${result}`,
           required: ["eventKey"]
         },
         displayInfoFromArgs: (params) => {
-          return { title: lockedString3("Selecting event\u2026"), action: `selectEventByKey('${params.eventKey}')` };
+          return { title: lockedString4("Selecting event\u2026"), action: `selectEventByKey('${params.eventKey}')` };
         },
         handler: async (params) => {
           debugLog("Function call: selectEventByKey", params);
@@ -6620,8 +7638,8 @@ ${result}`,
           if (!event) {
             return { error: "Invalid eventKey" };
           }
-          const revealable = new SDK4.TraceObject.RevealableEvent(event);
-          await Common2.Revealer.reveal(revealable);
+          const revealable = new SDK8.TraceObject.RevealableEvent(event);
+          await Common4.Revealer.reveal(revealable);
           return { result: { success: true } };
         }
       });
@@ -6657,8 +7675,8 @@ ${result}`,
     return { result: { success: true } };
   }
   async #getNetworkRequestImageData(lcpRequest) {
-    const target = SDK4.TargetManager.TargetManager.instance().primaryPageTarget();
-    const networkManager = target?.model(SDK4.NetworkManager.NetworkManager);
+    const target = SDK8.TargetManager.TargetManager.instance().primaryPageTarget();
+    const networkManager = target?.model(SDK8.NetworkManager.NetworkManager);
     if (!target || !networkManager) {
       return void 0;
     }
@@ -6689,981 +7707,6 @@ import * as SDK9 from "./../../core/sdk/sdk.js";
 import * as Greendev2 from "./../greendev/greendev.js";
 import * as Annotations4 from "./../annotations/annotations.js";
 import * as Emulation from "./../emulation/emulation.js";
-
-// gen/front_end/models/ai_assistance/ChangeManager.js
-var ChangeManager_exports = {};
-__export(ChangeManager_exports, {
-  ChangeManager: () => ChangeManager
-});
-import * as Common3 from "./../../core/common/common.js";
-import * as Platform3 from "./../../core/platform/platform.js";
-import * as SDK5 from "./../../core/sdk/sdk.js";
-function formatStyles(styles, indent = 2) {
-  const lines = Object.entries(styles).map(([key, value]) => `${" ".repeat(indent)}${key}: ${value};`);
-  return lines.join("\n");
-}
-var ChangeManager = class {
-  #stylesheetMutex = new Common3.Mutex.Mutex();
-  #cssModelToStylesheetId = /* @__PURE__ */ new Map();
-  #stylesheetChanges = /* @__PURE__ */ new Map();
-  #backupStylesheetChanges = /* @__PURE__ */ new Map();
-  constructor() {
-    SDK5.TargetManager.TargetManager.instance().addModelListener(SDK5.ResourceTreeModel.ResourceTreeModel, SDK5.ResourceTreeModel.Events.PrimaryPageChanged, this.clear, this);
-  }
-  async stashChanges() {
-    for (const [cssModel, stylesheetMap] of this.#cssModelToStylesheetId.entries()) {
-      const stylesheetIds = Array.from(stylesheetMap.values());
-      await Promise.allSettled(stylesheetIds.map(async (id) => {
-        this.#backupStylesheetChanges.set(id, this.#stylesheetChanges.get(id) ?? []);
-        this.#stylesheetChanges.delete(id);
-        await cssModel.setStyleSheetText(id, "", true);
-      }));
-    }
-  }
-  dropStashedChanges() {
-    this.#backupStylesheetChanges.clear();
-  }
-  async popStashedChanges() {
-    const cssModelAndStyleSheets = Array.from(this.#cssModelToStylesheetId.entries());
-    await Promise.allSettled(cssModelAndStyleSheets.map(async ([cssModel, stylesheetMap]) => {
-      const frameAndStylesheet = Array.from(stylesheetMap.entries());
-      return await Promise.allSettled(frameAndStylesheet.map(async ([frameId, stylesheetId]) => {
-        const changes = this.#backupStylesheetChanges.get(stylesheetId) ?? [];
-        return await Promise.allSettled(changes.map(async (change) => {
-          return await this.addChange(cssModel, frameId, change);
-        }));
-      }));
-    }));
-  }
-  async clear() {
-    const models = Array.from(this.#cssModelToStylesheetId.keys());
-    const results = await Promise.allSettled(models.map(async (model) => {
-      await this.#onCssModelDisposed({ data: model });
-    }));
-    this.#cssModelToStylesheetId.clear();
-    this.#stylesheetChanges.clear();
-    this.#backupStylesheetChanges.clear();
-    const firstFailed = results.find((result) => result.status === "rejected");
-    if (firstFailed) {
-      console.error(firstFailed.reason);
-    }
-  }
-  async addChange(cssModel, frameId, change) {
-    const stylesheetId = await this.#getStylesheet(cssModel, frameId);
-    const changes = this.#stylesheetChanges.get(stylesheetId) || [];
-    const existingChange = changes.find((c) => c.className === change.className);
-    const stylesKebab = Platform3.StringUtilities.toKebabCaseKeys(change.styles);
-    if (existingChange) {
-      Object.assign(existingChange.styles, stylesKebab);
-      existingChange.groupId = change.groupId;
-      existingChange.turnId = change.turnId;
-    } else {
-      changes.push({
-        ...change,
-        styles: stylesKebab
-      });
-    }
-    const content = this.#formatChangesForInspectorStylesheet(changes);
-    await cssModel.setStyleSheetText(stylesheetId, content, true);
-    this.#stylesheetChanges.set(stylesheetId, changes);
-    return content;
-  }
-  formatChangesForPatching(groupId, includeMetadata = false) {
-    return Array.from(this.#stylesheetChanges.values()).flatMap((changesPerStylesheet) => changesPerStylesheet.filter((change) => change.groupId === groupId).map((change) => this.#formatChange(change, includeMetadata))).filter((change) => change !== "").join("\n\n");
-  }
-  getChangedNodesForGroupId(groupId, turnId) {
-    const nodes = /* @__PURE__ */ new Set();
-    for (const changes of this.#stylesheetChanges.values()) {
-      for (const change of changes) {
-        if (change.groupId === groupId && change.backendNodeId && (turnId === void 0 || change.turnId === turnId)) {
-          nodes.add(change.backendNodeId);
-        }
-      }
-    }
-    return Array.from(nodes);
-  }
-  #formatChangesForInspectorStylesheet(changes) {
-    return changes.map((change) => {
-      return `.${change.className} {
-  ${change.selector}& {
-${formatStyles(change.styles, 4)}
-  }
-}`;
-    }).join("\n");
-  }
-  #formatChange(change, includeMetadata = false) {
-    const sourceLocation = includeMetadata && change.sourceLocation ? `/* related resource: ${change.sourceLocation} */
-` : "";
-    const simpleSelector = includeMetadata && change.simpleSelector ? ` /* the element was ${change.simpleSelector} */` : "";
-    return `${sourceLocation}${change.selector} {${simpleSelector}
-${formatStyles(change.styles)}
-}`;
-  }
-  async #getStylesheet(cssModel, frameId) {
-    return await this.#stylesheetMutex.run(async () => {
-      let frameToStylesheet = this.#cssModelToStylesheetId.get(cssModel);
-      if (!frameToStylesheet) {
-        frameToStylesheet = /* @__PURE__ */ new Map();
-        this.#cssModelToStylesheetId.set(cssModel, frameToStylesheet);
-        cssModel.addEventListener(SDK5.CSSModel.Events.ModelDisposed, this.#onCssModelDisposed, this);
-      }
-      let stylesheetId = frameToStylesheet.get(frameId);
-      if (!stylesheetId) {
-        const styleSheetHeader = await cssModel.createInspectorStylesheet(
-          frameId,
-          /* force */
-          true
-        );
-        if (!styleSheetHeader) {
-          throw new Error("inspector-stylesheet is not found");
-        }
-        stylesheetId = styleSheetHeader.id;
-        frameToStylesheet.set(frameId, stylesheetId);
-      }
-      return stylesheetId;
-    });
-  }
-  async #onCssModelDisposed(event) {
-    return await this.#stylesheetMutex.run(async () => {
-      const cssModel = event.data;
-      cssModel.removeEventListener(SDK5.CSSModel.Events.ModelDisposed, this.#onCssModelDisposed, this);
-      const stylesheetIds = Array.from(this.#cssModelToStylesheetId.get(cssModel)?.values() ?? []);
-      const results = await Promise.allSettled(stylesheetIds.map(async (id) => {
-        this.#stylesheetChanges.delete(id);
-        this.#backupStylesheetChanges.delete(id);
-        await cssModel.setStyleSheetText(id, "", true);
-      }));
-      this.#cssModelToStylesheetId.delete(cssModel);
-      const firstFailed = results.find((result) => result.status === "rejected");
-      if (firstFailed) {
-        throw new Error(firstFailed.reason);
-      }
-    });
-  }
-};
-
-// gen/front_end/models/ai_assistance/ExtensionScope.js
-var ExtensionScope_exports = {};
-__export(ExtensionScope_exports, {
-  ExtensionScope: () => ExtensionScope
-});
-import * as Common4 from "./../../core/common/common.js";
-import * as Platform4 from "./../../core/platform/platform.js";
-import * as SDK6 from "./../../core/sdk/sdk.js";
-import * as Bindings3 from "./../bindings/bindings.js";
-
-// gen/front_end/models/ai_assistance/injected.js
-var injected_exports = {};
-__export(injected_exports, {
-  AI_ASSISTANCE_CSS_CLASS_NAME: () => AI_ASSISTANCE_CSS_CLASS_NAME,
-  FREESTYLER_BINDING_NAME: () => FREESTYLER_BINDING_NAME,
-  FREESTYLER_WORLD_NAME: () => FREESTYLER_WORLD_NAME,
-  PAGE_EXPOSED_FUNCTIONS: () => PAGE_EXPOSED_FUNCTIONS,
-  freestylerBinding: () => freestylerBinding,
-  injectedFunctions: () => injectedFunctions
-});
-var AI_ASSISTANCE_CSS_CLASS_NAME = "ai-style-change";
-var FREESTYLER_WORLD_NAME = "DevTools AI Assistance";
-var FREESTYLER_BINDING_NAME = "__freestyler";
-function freestylerBindingFunc(bindingName) {
-  const global = globalThis;
-  if (!global.freestyler) {
-    const freestyler = (args) => {
-      const { resolve, reject, promise } = Promise.withResolvers();
-      freestyler.callbacks.set(freestyler.id, {
-        args: JSON.stringify(args),
-        element: args.element,
-        resolve,
-        reject,
-        error: args.error
-      });
-      globalThis[bindingName](String(freestyler.id));
-      freestyler.id++;
-      return promise;
-    };
-    freestyler.id = 1;
-    freestyler.callbacks = /* @__PURE__ */ new Map();
-    freestyler.getElement = (callbackId) => {
-      return freestyler.callbacks.get(callbackId)?.element;
-    };
-    freestyler.getArgs = (callbackId) => {
-      return freestyler.callbacks.get(callbackId)?.args;
-    };
-    freestyler.respond = (callbackId, styleChangesOrError) => {
-      if (typeof styleChangesOrError === "string") {
-        freestyler.callbacks.get(callbackId)?.resolve(styleChangesOrError);
-      } else {
-        const callback = freestyler.callbacks.get(callbackId);
-        if (callback) {
-          callback.error.message = styleChangesOrError.message;
-          callback.reject(callback?.error);
-        }
-      }
-      freestyler.callbacks.delete(callbackId);
-    };
-    global.freestyler = freestyler;
-  }
-}
-var freestylerBinding = `(${String(freestylerBindingFunc)})('${FREESTYLER_BINDING_NAME}')`;
-var PAGE_EXPOSED_FUNCTIONS = ["setElementStyles"];
-var setupSetElementStyles = `function setupSetElementStyles(prefix) {
-  const global = globalThis;
-  async function setElementStyles(el, styles) {
-    let selector = el.tagName.toLowerCase();
-    if (el.id) {
-      selector = '#' + el.id;
-    } else if (el.classList.length) {
-      const parts = [];
-      for (const cls of el.classList) {
-        if (cls.startsWith(prefix)) {
-          continue;
-        }
-        parts.push('.' + cls);
-      }
-      if (parts.length) {
-        selector = parts.join('');
-      }
-    }
-
-    // __freestylerClassName is not exposed to the page due to this being
-    // run in the isolated world.
-    const className = el.__freestylerClassName ?? \`\${prefix}-\${global.freestyler.id}\`;
-    el.__freestylerClassName = className;
-    el.classList.add(className);
-
-    // Remove inline styles with the same keys so that the edit applies.
-    for (const key of Object.keys(styles)) {
-      // if it's kebab case.
-      el.style.removeProperty(key);
-      // If it's camel case.
-      el.style[key] = '';
-    }
-
-    const bindingError = new Error();
-
-    const result = await global.freestyler({
-      method: 'setElementStyles',
-      selector,
-      className,
-      styles,
-      element: el,
-      error: bindingError,
-    });
-
-    const rootNode = el.getRootNode();
-    if (rootNode instanceof ShadowRoot) {
-      const stylesheets = rootNode.adoptedStyleSheets;
-      let hasAiStyleChange = false;
-      let stylesheet = new CSSStyleSheet();
-      for (let i = 0; i < stylesheets.length; i++) {
-        const sheet = stylesheets[i];
-        for (let j = 0; j < sheet.cssRules.length; j++) {
-          const rule = sheet.cssRules[j];
-          if (!(rule instanceof CSSStyleRule)) {
-            continue;
-          }
-
-          hasAiStyleChange = rule.selectorText.startsWith(\`.\${prefix}\`);
-          if (hasAiStyleChange) {
-            stylesheet = sheet;
-            break;
-          }
-        }
-      }
-      stylesheet.replaceSync(result);
-      if (!hasAiStyleChange) {
-        rootNode.adoptedStyleSheets = [...stylesheets, stylesheet];
-      }
-    }
-  }
-
-  global.setElementStyles = setElementStyles;
-}`;
-var injectedFunctions = `(${setupSetElementStyles})('${AI_ASSISTANCE_CSS_CLASS_NAME}')`;
-
-// gen/front_end/models/ai_assistance/ExtensionScope.js
-var _a2;
-var ExtensionScope = class {
-  #listeners = [];
-  #changeManager;
-  #agentId;
-  #turnId;
-  /** Don't use directly use the getter */
-  #frameId;
-  /** Don't use directly use the getter */
-  #target;
-  #bindingMutex = new Common4.Mutex.Mutex();
-  constructor(changes, agentId, selectedNode, turnId) {
-    this.#changeManager = changes;
-    const frameId = selectedNode?.frameId();
-    const target = selectedNode?.domModel().target();
-    this.#agentId = agentId;
-    this.#turnId = turnId;
-    this.#target = target;
-    this.#frameId = frameId;
-  }
-  get target() {
-    if (!this.#target) {
-      throw new Error("Target is not found for executing code");
-    }
-    return this.#target;
-  }
-  get frameId() {
-    if (this.#frameId) {
-      return this.#frameId;
-    }
-    const resourceTreeModel = this.target.model(SDK6.ResourceTreeModel.ResourceTreeModel);
-    if (!resourceTreeModel?.mainFrame) {
-      throw new Error("Main frame is not found for executing code");
-    }
-    return resourceTreeModel.mainFrame.id;
-  }
-  async install() {
-    const runtimeModel = this.target.model(SDK6.RuntimeModel.RuntimeModel);
-    const pageAgent = this.target.pageAgent();
-    const { executionContextId } = await pageAgent.invoke_createIsolatedWorld({ frameId: this.frameId, worldName: FREESTYLER_WORLD_NAME });
-    const isolatedWorldContext = runtimeModel?.executionContext(executionContextId);
-    if (!isolatedWorldContext) {
-      throw new Error("Execution context is not found for executing code");
-    }
-    const handler = this.#bindingCalled.bind(this, isolatedWorldContext);
-    runtimeModel?.addEventListener(SDK6.RuntimeModel.Events.BindingCalled, handler);
-    this.#listeners.push(handler);
-    await this.target.runtimeAgent().invoke_addBinding({
-      name: FREESTYLER_BINDING_NAME,
-      executionContextId
-    });
-    await this.#simpleEval(isolatedWorldContext, freestylerBinding);
-    await this.#simpleEval(isolatedWorldContext, injectedFunctions);
-  }
-  async uninstall() {
-    const runtimeModel = this.target.model(SDK6.RuntimeModel.RuntimeModel);
-    for (const handler of this.#listeners) {
-      runtimeModel?.removeEventListener(SDK6.RuntimeModel.Events.BindingCalled, handler);
-    }
-    this.#listeners = [];
-    await this.target.runtimeAgent().invoke_removeBinding({
-      name: FREESTYLER_BINDING_NAME
-    });
-  }
-  async #simpleEval(context, expression, returnByValue = true) {
-    const response = await context.evaluate(
-      {
-        expression,
-        replMode: true,
-        includeCommandLineAPI: false,
-        returnByValue,
-        silent: false,
-        generatePreview: false,
-        allowUnsafeEvalBlockedByCSP: true,
-        throwOnSideEffect: false
-      },
-      /* userGesture */
-      false,
-      /* awaitPromise */
-      true
-    );
-    if (!response) {
-      throw new Error("Response is not found");
-    }
-    if ("error" in response) {
-      throw new Error(response.error);
-    }
-    if (response.exceptionDetails) {
-      const exceptionDescription = response.exceptionDetails.exception?.description;
-      throw new Error(exceptionDescription || "JS exception");
-    }
-    return response;
-  }
-  static getStyleRuleFromMatchesStyles(matchedStyles) {
-    for (const style of matchedStyles.nodeStyles()) {
-      if (style.type === "Inline") {
-        continue;
-      }
-      const rule = style.parentRule;
-      if (rule?.origin === "user-agent") {
-        break;
-      }
-      if (rule instanceof SDK6.CSSRule.CSSStyleRule) {
-        if (rule.nestingSelectors?.at(0)?.includes(AI_ASSISTANCE_CSS_CLASS_NAME) || rule.selectors.every((selector) => selector.text.includes(AI_ASSISTANCE_CSS_CLASS_NAME))) {
-          continue;
-        }
-        return rule;
-      }
-    }
-    return;
-  }
-  static getSelectorsFromStyleRule(styleRule, matchedStyles) {
-    const selectorIndexes = matchedStyles.getMatchingSelectors(styleRule);
-    const selectors = styleRule.selectors.filter((_, index) => selectorIndexes.includes(index)).filter((value) => !value.text.includes(AI_ASSISTANCE_CSS_CLASS_NAME)).filter(
-      // Disallow star selector ending that targets any arbitrary element
-      (value) => !value.text.endsWith("*") && // Disallow selector that contain star and don't have higher specificity
-      // Example of disallowed: `div > * > p`
-      // Example of allowed: `div > * > .header` OR `div > * > #header`
-      !(value.text.includes("*") && value.specificity?.a === 0 && value.specificity?.b === 0)
-    ).sort((a, b) => {
-      if (!a.specificity) {
-        return -1;
-      }
-      if (!b.specificity) {
-        return 1;
-      }
-      if (b.specificity.a !== a.specificity.a) {
-        return b.specificity.a - a.specificity.a;
-      }
-      if (b.specificity.b !== a.specificity.b) {
-        return b.specificity.b - a.specificity.b;
-      }
-      return b.specificity.b - a.specificity.b;
-    });
-    const selector = selectors.at(0);
-    if (!selector) {
-      return "";
-    }
-    let cssSelector = selector.text.replaceAll(":visited", "");
-    cssSelector = cssSelector.replaceAll("&", "");
-    return cssSelector.trim();
-  }
-  static getSelectorForNode(node) {
-    const simpleSelector = node.simpleSelector().split(".").filter((chunk) => {
-      return !chunk.startsWith(AI_ASSISTANCE_CSS_CLASS_NAME);
-    }).join(".");
-    if (simpleSelector) {
-      return simpleSelector;
-    }
-    return node.localName() || node.nodeName().toLowerCase();
-  }
-  static getSourceLocation(styleRule) {
-    const styleSheetHeader = styleRule.header;
-    if (!styleSheetHeader) {
-      return;
-    }
-    const range = styleRule.selectorRange();
-    if (!range) {
-      return;
-    }
-    const lineNumber = styleSheetHeader.lineNumberInSource(range.startLine);
-    const columnNumber = styleSheetHeader.columnNumberInSource(range.startLine, range.startColumn);
-    const location = new SDK6.CSSModel.CSSLocation(styleSheetHeader, lineNumber, columnNumber);
-    const uiLocation = Bindings3.CSSWorkspaceBinding.CSSWorkspaceBinding.instance().rawLocationToUILocation(location);
-    return uiLocation?.linkText(
-      /* skipTrim= */
-      true,
-      /* showColumnNumber= */
-      true
-    );
-  }
-  async #computeContextFromElement(remoteObject) {
-    if (!remoteObject.objectId) {
-      throw new Error("DOMModel is not found");
-    }
-    const cssModel = this.target.model(SDK6.CSSModel.CSSModel);
-    if (!cssModel) {
-      throw new Error("CSSModel is not found");
-    }
-    const domModel = this.target.model(SDK6.DOMModel.DOMModel);
-    if (!domModel) {
-      throw new Error("DOMModel is not found");
-    }
-    const node = await domModel.pushNodeToFrontend(remoteObject.objectId);
-    if (!node) {
-      throw new Error("Node is not found");
-    }
-    const backendNodeId = node.backendNodeId();
-    try {
-      const matchedStyles = await cssModel.getMatchedStyles(node.id);
-      if (!matchedStyles) {
-        throw new Error("No matching styles");
-      }
-      const styleRule = _a2.getStyleRuleFromMatchesStyles(matchedStyles);
-      if (!styleRule) {
-        throw new Error("No style rule found");
-      }
-      const selector = _a2.getSelectorsFromStyleRule(styleRule, matchedStyles);
-      if (!selector) {
-        throw new Error("No selector found");
-      }
-      return {
-        selector,
-        simpleSelector: _a2.getSelectorForNode(node),
-        sourceLocation: _a2.getSourceLocation(styleRule),
-        backendNodeId
-      };
-    } catch {
-    }
-    return {
-      selector: _a2.getSelectorForNode(node),
-      backendNodeId
-    };
-  }
-  async #bindingCalled(executionContext, event) {
-    const { data } = event;
-    if (data.name !== FREESTYLER_BINDING_NAME) {
-      return;
-    }
-    await this.#bindingMutex.run(async () => {
-      const cssModel = this.target.model(SDK6.CSSModel.CSSModel);
-      if (!cssModel) {
-        throw new Error("CSSModel is not found");
-      }
-      const id = data.payload;
-      const [args, element] = await Promise.all([
-        this.#simpleEval(executionContext, `freestyler.getArgs(${id})`),
-        this.#simpleEval(executionContext, `freestyler.getElement(${id})`, false)
-      ]);
-      const arg = JSON.parse(args.object.value);
-      if (!arg.className.match(new RegExp(`${RegExp.escape(AI_ASSISTANCE_CSS_CLASS_NAME)}-\\d`))) {
-        throw new Error("Non AI class name");
-      }
-      let context = {
-        // TODO: Should this a be a *?
-        selector: "",
-        backendNodeId: void 0
-      };
-      try {
-        context = await this.#computeContextFromElement(element.object);
-      } catch (err) {
-        console.error(err);
-      } finally {
-        element.object.release();
-      }
-      try {
-        const sanitizedStyles = await this.sanitizedStyleChanges(context.selector, arg.styles);
-        const styleChanges = await this.#changeManager.addChange(cssModel, this.frameId, {
-          groupId: this.#agentId,
-          turnId: this.#turnId,
-          sourceLocation: context.sourceLocation,
-          selector: context.selector,
-          simpleSelector: context.simpleSelector,
-          className: arg.className,
-          styles: sanitizedStyles,
-          backendNodeId: context.backendNodeId
-        });
-        await this.#simpleEval(executionContext, `freestyler.respond(${id}, ${JSON.stringify(styleChanges)})`);
-      } catch (error) {
-        await this.#simpleEval(executionContext, `freestyler.respond(${id}, new Error("${error?.message}"))`);
-      }
-    });
-  }
-  async sanitizedStyleChanges(selector, styles) {
-    const cssStyleValue = [];
-    const changedStyles = [];
-    const styleSheet = new CSSStyleSheet({ disabled: true });
-    const kebabStyles = Platform4.StringUtilities.toKebabCaseKeys(styles);
-    for (const [style, value] of Object.entries(kebabStyles)) {
-      cssStyleValue.push(`${style}: ${value};`);
-      changedStyles.push(style);
-    }
-    await styleSheet.replace(`${selector} { ${cssStyleValue.join(" ")} }`);
-    const sanitizedStyles = {};
-    for (const cssRule of styleSheet.cssRules) {
-      if (!(cssRule instanceof CSSStyleRule)) {
-        continue;
-      }
-      for (const style of changedStyles) {
-        const value = cssRule.style.getPropertyValue(style);
-        if (value) {
-          sanitizedStyles[style] = value;
-        }
-      }
-    }
-    if (Object.keys(sanitizedStyles).length === 0) {
-      throw new Error("None of the suggested CSS properties or their values for selector were considered valid by the browser's CSS engine. Please ensure property names are correct and values match the expected format for those properties.");
-    }
-    return sanitizedStyles;
-  }
-};
-_a2 = ExtensionScope;
-
-// gen/front_end/models/ai_assistance/agents/ExecuteJavascript.js
-import * as Host7 from "./../../core/host/host.js";
-import * as i18n9 from "./../../core/i18n/i18n.js";
-import * as Platform5 from "./../../core/platform/platform.js";
-import * as Root6 from "./../../core/root/root.js";
-import * as SDK8 from "./../../core/sdk/sdk.js";
-
-// gen/front_end/models/ai_assistance/EvaluateAction.js
-var EvaluateAction_exports = {};
-__export(EvaluateAction_exports, {
-  EvaluateAction: () => EvaluateAction,
-  SideEffectError: () => SideEffectError,
-  formatError: () => formatError,
-  getErrorStackOnThePage: () => getErrorStackOnThePage,
-  stringifyObjectOnThePage: () => stringifyObjectOnThePage,
-  stringifyRemoteObject: () => stringifyRemoteObject
-});
-import * as SDK7 from "./../../core/sdk/sdk.js";
-function formatError(message) {
-  return `Error: ${message}`;
-}
-var SideEffectError = class extends Error {
-};
-function getErrorStackOnThePage() {
-  return { stack: this.stack, message: this.message };
-}
-function stringifyObjectOnThePage() {
-  const seenBefore = /* @__PURE__ */ new WeakMap();
-  return JSON.stringify(this, function replacer(key, value) {
-    if (typeof value === "object" && value !== null) {
-      if (seenBefore.has(value)) {
-        return "(cycle)";
-      }
-      seenBefore.set(value, true);
-    }
-    if (value instanceof HTMLElement) {
-      const idAttribute = value.id ? ` id="${value.id}"` : "";
-      const classAttribute = value.classList.value ? ` class="${value.classList.value}"` : "";
-      return `<${value.nodeName.toLowerCase()}${idAttribute}${classAttribute}>${value.hasChildNodes() ? "..." : ""}</${value.nodeName.toLowerCase()}>`;
-    }
-    if (this instanceof CSSStyleDeclaration) {
-      if (!isNaN(Number(key))) {
-        return void 0;
-      }
-    }
-    return value;
-  });
-}
-async function stringifyRemoteObject(object, functionDeclaration) {
-  switch (object.type) {
-    case "string":
-      return `'${object.value}'`;
-    case "bigint":
-      return `${object.value}n`;
-    case "boolean":
-    case "number":
-      return `${object.value}`;
-    case "undefined":
-      return "undefined";
-    case "symbol":
-    case "function":
-      return `${object.description}`;
-    case "object": {
-      if (object.subtype === "error") {
-        const res2 = await object.callFunctionJSON(getErrorStackOnThePage, []);
-        if (!res2) {
-          throw new Error("Could not stringify the object" + object);
-        }
-        return EvaluateAction.stringifyError(res2, functionDeclaration);
-      }
-      const res = await object.callFunction(stringifyObjectOnThePage);
-      if (!res.object || res.object.type !== "string") {
-        throw new Error("Could not stringify the object" + object);
-      }
-      return res.object.value;
-    }
-    default:
-      throw new Error("Unknown type to stringify " + object.type);
-  }
-}
-var EvaluateAction = class _EvaluateAction {
-  static async execute(functionDeclaration, args, executionContext, { throwOnSideEffect }) {
-    if (executionContext.debuggerModel.selectedCallFrame()) {
-      return formatError("Cannot evaluate JavaScript because the execution is paused on a breakpoint.");
-    }
-    const response = await executionContext.callFunctionOn({
-      functionDeclaration,
-      returnByValue: false,
-      allowUnsafeEvalBlockedByCSP: false,
-      throwOnSideEffect,
-      userGesture: true,
-      awaitPromise: true,
-      arguments: args.map((remoteObject) => {
-        return { objectId: remoteObject.objectId };
-      })
-    });
-    try {
-      if (!response) {
-        throw new Error("Response is not found");
-      }
-      if ("error" in response) {
-        return formatError(response.error);
-      }
-      if (response.exceptionDetails) {
-        const exceptionDescription = response.exceptionDetails.exception?.description;
-        if (SDK7.RuntimeModel.RuntimeModel.isSideEffectFailure(response)) {
-          throw new SideEffectError(exceptionDescription);
-        }
-        return formatError(exceptionDescription ?? "JS exception");
-      }
-      return await stringifyRemoteObject(response.object, functionDeclaration);
-    } finally {
-      executionContext.runtimeModel.releaseEvaluationResult(response);
-    }
-  }
-  static getExecutedLineFromStack(stack, pageExposedFunctions) {
-    const lines = stack.split("\n");
-    const stackLines = lines.map((curr) => curr.trim()).filter((trimmedLine) => {
-      return trimmedLine.startsWith("at");
-    });
-    const selectedStack = stackLines.find((stackLine) => {
-      const splittedStackLine = stackLine.split(" ");
-      if (splittedStackLine.length < 2) {
-        return false;
-      }
-      const signature = splittedStackLine[1] === "async" ? splittedStackLine[2] : (
-        // if the stack line contains async the function name is the next element
-        splittedStackLine[1]
-      );
-      const lastDotIndex = signature.lastIndexOf(".");
-      const functionName = lastDotIndex !== -1 ? signature.substring(lastDotIndex + 1) : signature;
-      return !pageExposedFunctions.includes(functionName);
-    });
-    if (!selectedStack) {
-      return null;
-    }
-    const frameLocationRegex = /:(\d+)(?::\d+)?\)?$/;
-    const match = selectedStack.match(frameLocationRegex);
-    if (!match?.[1]) {
-      return null;
-    }
-    const lineNum = parseInt(match[1], 10);
-    if (isNaN(lineNum)) {
-      return null;
-    }
-    return lineNum - 1;
-  }
-  static stringifyError(result, functionDeclaration) {
-    if (!result.stack) {
-      return `Error: ${result.message}`;
-    }
-    const lineNum = _EvaluateAction.getExecutedLineFromStack(result.stack, PAGE_EXPOSED_FUNCTIONS);
-    if (!lineNum) {
-      return `Error: ${result.message}`;
-    }
-    const functionLines = functionDeclaration.split("\n");
-    const errorLine = functionLines[lineNum];
-    if (!errorLine) {
-      return `Error: ${result.message}`;
-    }
-    return `Error: executing the line "${errorLine.trim()}" failed with the following error:
-${result.message}`;
-  }
-};
-
-// gen/front_end/models/ai_assistance/agents/ExecuteJavascript.js
-var lockedString4 = i18n9.i18n.lockedString;
-function executeJavaScriptFunction(executor) {
-  return {
-    description: "This function allows you to run JavaScript code on the inspected page to access the element styles and page content.\nCall this function to gather additional information or modify the page state. Call this function enough times to investigate the user request.",
-    parameters: {
-      type: 6,
-      description: "",
-      nullable: false,
-      properties: {
-        code: {
-          type: 1,
-          description: `JavaScript code snippet to run on the inspected page. Make sure the code is formatted for readability.
-
-# Instructions
-
-* To return data, define a top-level \`data\` variable and populate it with data you want to get. Only JSON-serializable objects can be assigned to \`data\`.
-* If you modify styles on an element, ALWAYS call the pre-defined global \`async setElementStyles(el: Element, styles: object)\` function. This function is an internal mechanism for you and should never be presented as a command/advice to the user.
-* **CRITICAL** Only get styles that might be relevant to the user request.
-* **CRITICAL** Never assume a selector for the elements unless you verified your knowledge.
-* **CRITICAL** Consider that \`data\` variable from the previous function calls are not available in a new function call.
-
-For example, the code to change element styles:
-
-\`\`\`
-await setElementStyles($0, {
-  color: 'blue',
-});
-\`\`\`
-
-For example, the code to get overlapping elements:
-
-\`\`\`
-const data = {
-  overlappingElements: Array.from(document.querySelectorAll('*'))
-    .filter(el => {
-      const rect = el.getBoundingClientRect();
-      const popupRect = $0.getBoundingClientRect();
-      return (
-        el !== $0 &&
-        rect.left < popupRect.right &&
-        rect.right > popupRect.left &&
-        rect.top < popupRect.bottom &&
-        rect.bottom > popupRect.top
-      );
-    })
-    .map(el => ({
-      tagName: el.tagName,
-      id: el.id,
-      className: el.className,
-      zIndex: window.getComputedStyle(el)['z-index']
-    }))
-};
-\`\`\`
-`
-        },
-        explanation: {
-          type: 1,
-          description: "Explain why you want to run this code"
-        },
-        title: {
-          type: 1,
-          description: 'Provide a summary of what the code does. For example, "Checking related element styles".'
-        }
-      },
-      required: ["code", "explanation", "title"]
-    },
-    displayInfoFromArgs: (params) => {
-      return {
-        title: params.title,
-        thought: params.explanation,
-        action: params.code
-      };
-    },
-    handler: async (params, options) => {
-      return await executor.executeAction(params.code, options);
-    }
-  };
-}
-async function executeJsCode(functionDeclaration, { throwOnSideEffect, contextNode }) {
-  if (!contextNode) {
-    throw new Error("Cannot execute JavaScript because of missing context node");
-  }
-  const target = contextNode.domModel().target();
-  if (!target) {
-    throw new Error("Target is not found for executing code");
-  }
-  const resourceTreeModel = target.model(SDK8.ResourceTreeModel.ResourceTreeModel);
-  const frameId = contextNode.frameId() ?? resourceTreeModel?.mainFrame?.id;
-  if (!frameId) {
-    throw new Error("Main frame is not found for executing code");
-  }
-  const runtimeModel = target.model(SDK8.RuntimeModel.RuntimeModel);
-  const pageAgent = target.pageAgent();
-  const { executionContextId } = await pageAgent.invoke_createIsolatedWorld({ frameId, worldName: FREESTYLER_WORLD_NAME });
-  const executionContext = runtimeModel?.executionContext(executionContextId);
-  if (!executionContext) {
-    throw new Error("Execution context is not found for executing code");
-  }
-  if (executionContext.debuggerModel.selectedCallFrame()) {
-    return formatError("Cannot evaluate JavaScript because the execution is paused on a breakpoint.");
-  }
-  const remoteObject = await contextNode.resolveToObject(void 0, executionContextId);
-  if (!remoteObject) {
-    throw new Error("Cannot execute JavaScript because remote object cannot be resolved");
-  }
-  return await EvaluateAction.execute(functionDeclaration, [remoteObject], executionContext, { throwOnSideEffect });
-}
-var MAX_OBSERVATION_BYTE_LENGTH = 25e3;
-var OBSERVATION_TIMEOUT = 5e3;
-var JavascriptExecutor = class {
-  #options;
-  #execJs;
-  constructor(options, execJs = executeJsCode) {
-    this.#options = options;
-    this.#execJs = execJs;
-  }
-  async executeAction(action, options) {
-    debugLog(`Action to execute: ${action}`);
-    if (options?.approved === false) {
-      return {
-        error: "Error: User denied code execution with side effects."
-      };
-    }
-    if (this.#options.executionMode === Root6.Runtime.HostConfigFreestylerExecutionMode.NO_SCRIPTS) {
-      return {
-        error: "Error: JavaScript execution is currently disabled."
-      };
-    }
-    const selectedNode = this.#options.getContextNode();
-    if (!selectedNode) {
-      return { error: "Error: no selected node found." };
-    }
-    const target = selectedNode.domModel().target();
-    if (target.model(SDK8.DebuggerModel.DebuggerModel)?.selectedCallFrame()) {
-      return {
-        error: "Error: Cannot evaluate JavaScript because the execution is paused on a breakpoint."
-      };
-    }
-    const scope = this.#options.createExtensionScope(this.#options.changes);
-    await scope.install();
-    try {
-      let throwOnSideEffect = true;
-      if (options?.approved) {
-        throwOnSideEffect = false;
-      }
-      const result = await this.generateObservation(action, { throwOnSideEffect });
-      debugLog(`Action result: ${JSON.stringify(result)}`);
-      if (result.sideEffect) {
-        if (this.#options.executionMode === Root6.Runtime.HostConfigFreestylerExecutionMode.SIDE_EFFECT_FREE_SCRIPTS_ONLY) {
-          return {
-            error: "Error: JavaScript execution that modifies the page is currently disabled."
-          };
-        }
-        if (options?.signal?.aborted) {
-          return {
-            error: "Error: evaluation has been cancelled"
-          };
-        }
-        return {
-          requiresApproval: true,
-          description: lockedString4("This code may modify page content. Continue?")
-        };
-      }
-      if (result.canceled) {
-        return {
-          error: result.observation
-        };
-      }
-      return {
-        result: result.observation
-      };
-    } finally {
-      await scope.uninstall();
-    }
-  }
-  async generateObservation(action, { throwOnSideEffect }) {
-    const functionDeclaration = `async function ($0) {
-  try {
-    ${action}
-    ;
-    return ((typeof data !== "undefined") ? data : undefined);
-  } catch (error) {
-    return error;
-  }
-}`;
-    try {
-      const result = await Promise.race([
-        this.#execJs(functionDeclaration, {
-          throwOnSideEffect,
-          contextNode: this.#options.getContextNode()
-        }),
-        new Promise((_, reject) => {
-          setTimeout(() => reject(new Error("Script execution exceeded the maximum allowed time.")), OBSERVATION_TIMEOUT);
-        })
-      ]);
-      const byteCount = Platform5.StringUtilities.countWtf8Bytes(result);
-      Host7.userMetrics.freestylerEvalResponseSize(byteCount);
-      if (byteCount > MAX_OBSERVATION_BYTE_LENGTH) {
-        throw new Error("Output exceeded the maximum allowed length.");
-      }
-      return {
-        observation: result,
-        sideEffect: false,
-        canceled: false
-      };
-    } catch (error) {
-      if (error instanceof SideEffectError) {
-        return {
-          observation: error.message,
-          sideEffect: true,
-          canceled: false
-        };
-      }
-      return {
-        observation: `Error: ${error.message}`,
-        sideEffect: false,
-        canceled: false
-      };
-    }
-  }
-};
-
-// gen/front_end/models/ai_assistance/agents/StylingAgent.js
 var UIStringsNotTranslate2 = {
   /**
    * @description Heading text for context details of Freestyler agent.
@@ -8338,6 +8381,7 @@ You aim to help developers of all levels, prioritizing teaching web concepts as 
 
 # Considerations
 * Determine what is the domain of the question - styling, network, sources, performance or other part of DevTools.
+* For questions about web performance metrics (e.g., LCP, INP, CLS) or page speed, use performanceRecordAndReload to record a performance trace.
 * Proactively try to gather additional data. If a select specific data can be selected, select one.
 * Always try select single specific context before answering the question.
 * Avoid making assumptions without sufficient evidence, and always seek further clarification if needed.
@@ -8533,7 +8577,7 @@ var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
       }
     });
     this.declareFunction("performanceRecordAndReload", {
-      description: "Records a new performance trace, to help debug performance issue.",
+      description: "Records a new performance trace. Use this to measure and debug performance metrics and Core Web Vitals like Largest Contentful Paint (LCP), Interaction to Next Paint (INP), and Cumulative Layout Shift (CLS).",
       parameters: {
         type: 6,
         description: "",
@@ -8562,7 +8606,7 @@ var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
       }
     });
     this.declareFunction("runLighthouseAudits", {
-      description: "Records a Lighthouse audit on the current page, to help debug accessibility issues.",
+      description: "Records a Lighthouse audit on the current page. Use this to debug accessibility, SEO, and best practices. (For performance metrics like LCP, use performanceRecordAndReload instead).",
       parameters: {
         type: 6,
         description: "",
@@ -10023,229 +10067,6 @@ Your instructions are as follows:
     }
   }
 };
-
-// gen/front_end/models/ai_assistance/ConversationHandler.js
-var ConversationHandler_exports = {};
-__export(ConversationHandler_exports, {
-  ConversationHandler: () => ConversationHandler
-});
-import * as Common9 from "./../../core/common/common.js";
-import * as Host16 from "./../../core/host/host.js";
-import * as i18n17 from "./../../core/i18n/i18n.js";
-import * as Platform7 from "./../../core/platform/platform.js";
-import * as Root15 from "./../../core/root/root.js";
-import * as SDK11 from "./../../core/sdk/sdk.js";
-import * as NetworkTimeCalculator4 from "./../network_time_calculator/network_time_calculator.js";
-var UIStringsNotTranslate3 = {
-  /**
-   * @description Error message shown when AI assistance is not enabled in DevTools settings.
-   */
-  enableInSettings: "For AI features to be available, you need to enable AI assistance in DevTools settings."
-};
-var lockedString7 = i18n17.i18n.lockedString;
-function isAiAssistanceServerSideLoggingEnabled2() {
-  return !Root15.Runtime.hostConfig.aidaAvailability?.disallowLogging;
-}
-async function inspectElementBySelector(selector) {
-  const whitespaceTrimmedQuery = selector.trim();
-  if (!whitespaceTrimmedQuery.length) {
-    return null;
-  }
-  const showUAShadowDOM = Common9.Settings.Settings.instance().moduleSetting("show-ua-shadow-dom").get();
-  const domModels = SDK11.TargetManager.TargetManager.instance().models(SDK11.DOMModel.DOMModel, { scoped: true });
-  const performSearchPromises = domModels.map((domModel) => domModel.performSearch(whitespaceTrimmedQuery, showUAShadowDOM));
-  const resultCounts = await Promise.all(performSearchPromises);
-  const index = resultCounts.findIndex((value) => value > 0);
-  if (index >= 0) {
-    return await domModels[index].searchResult(0);
-  }
-  return null;
-}
-async function inspectNetworkRequestByUrl(selector) {
-  const networkManagers = SDK11.TargetManager.TargetManager.instance().models(SDK11.NetworkManager.NetworkManager, { scoped: true });
-  const results = networkManagers.map((networkManager) => {
-    let request2 = networkManager.requestForURL(Platform7.DevToolsPath.urlString`${selector}`);
-    if (!request2 && selector.at(-1) === "/") {
-      request2 = networkManager.requestForURL(Platform7.DevToolsPath.urlString`${selector.slice(0, -1)}`);
-    } else if (!request2 && selector.at(-1) !== "/") {
-      request2 = networkManager.requestForURL(Platform7.DevToolsPath.urlString`${selector}/`);
-    }
-    return request2;
-  }).filter((req) => !!req);
-  const request = results.at(0);
-  return request ?? null;
-}
-var conversationHandlerInstance;
-var ConversationHandler = class _ConversationHandler extends Common9.ObjectWrapper.ObjectWrapper {
-  #aiAssistanceEnabledSetting;
-  #aidaClient;
-  #aidaAvailability;
-  constructor(aidaClient, aidaAvailability) {
-    super();
-    this.#aidaClient = aidaClient;
-    this.#aidaAvailability = aidaAvailability;
-    this.#aiAssistanceEnabledSetting = this.#getAiAssistanceEnabledSetting();
-  }
-  static instance(opts) {
-    if (opts?.forceNew || conversationHandlerInstance === void 0) {
-      const aidaClient = opts?.aidaClient ?? new Host16.AidaClient.AidaClient();
-      conversationHandlerInstance = new _ConversationHandler(aidaClient, opts?.aidaAvailability);
-    }
-    return conversationHandlerInstance;
-  }
-  static removeInstance() {
-    conversationHandlerInstance = void 0;
-  }
-  get aidaClient() {
-    return this.#aidaClient;
-  }
-  #getAiAssistanceEnabledSetting() {
-    try {
-      return Common9.Settings.moduleSetting("ai-assistance-enabled");
-    } catch {
-      return;
-    }
-  }
-  async #getDisabledReasons() {
-    if (this.#aidaAvailability === void 0) {
-      this.#aidaAvailability = await Host16.AidaClient.AidaClient.checkAccessPreconditions();
-    }
-    return getDisabledReasons(this.#aidaAvailability);
-  }
-  // eslint-disable-next-line require-yield
-  async *#generateErrorResponse(message) {
-    return {
-      type: "error",
-      message
-    };
-  }
-  /**
-   * Handles an external request using the given prompt and uses the
-   * conversation type to use the correct agent.
-   */
-  async handleExternalRequest(parameters) {
-    try {
-      this.dispatchEventToListeners(
-        "ExternalRequestReceived"
-        /* ConversationHandlerEvents.EXTERNAL_REQUEST_RECEIVED */
-      );
-      const disabledReasons = await this.#getDisabledReasons();
-      const aiAssistanceSetting = this.#aiAssistanceEnabledSetting?.getIfNotDisabled();
-      if (!aiAssistanceSetting) {
-        disabledReasons.push(lockedString7(UIStringsNotTranslate3.enableInSettings));
-      }
-      if (disabledReasons.length > 0) {
-        return this.#generateErrorResponse(disabledReasons.join(" "));
-      }
-      this.dispatchEventToListeners("ExternalConversationStarted", parameters.conversationType);
-      switch (parameters.conversationType) {
-        case "freestyler": {
-          return await this.#handleExternalStylingConversation(parameters.prompt, parameters.selector);
-        }
-        case "drjones-performance-full":
-          return await this.#handleExternalPerformanceConversation(parameters.prompt, parameters.data);
-        case "drjones-network-request":
-          if (!parameters.requestUrl) {
-            return this.#generateErrorResponse("The url is required for debugging a network request.");
-          }
-          return await this.#handleExternalNetworkConversation(parameters.prompt, parameters.requestUrl);
-      }
-    } catch (error) {
-      return this.#generateErrorResponse(error.message);
-    }
-  }
-  async *#createAndDoExternalConversation(opts) {
-    const { conversationType, aiAgent, prompt, selected } = opts;
-    const conversation = new AiConversation({
-      type: conversationType,
-      data: [],
-      id: aiAgent.sessionId,
-      isReadOnly: true,
-      aidaClient: this.#aidaClient,
-      isExternal: true
-    });
-    return yield* this.#doExternalConversation({ conversation, prompt, selected });
-  }
-  async *#doExternalConversation(opts) {
-    const { conversation, prompt, selected } = opts;
-    conversation.setContext(selected);
-    const generator = conversation.run(prompt);
-    const devToolsLogs = [];
-    for await (const data of generator) {
-      if (data.type !== "answer" || data.complete) {
-        devToolsLogs.push(data);
-      }
-      if (data.type === "title") {
-        yield {
-          type: "notification",
-          message: data.title
-        };
-      }
-      if (data.type === "context") {
-        yield {
-          type: "notification",
-          message: CONTEXT_TITLE
-        };
-      }
-      if (data.type === "side-effect") {
-        data.confirm(true);
-      }
-      if (data.type === "answer" && data.complete) {
-        return {
-          type: "answer",
-          message: data.text,
-          devToolsLogs
-        };
-      }
-    }
-    return {
-      type: "error",
-      message: "Something went wrong. No answer was generated."
-    };
-  }
-  async #handleExternalStylingConversation(prompt, selector = "body") {
-    const stylingAgent = new StylingAgent({
-      aidaClient: this.#aidaClient,
-      serverSideLoggingEnabled: isAiAssistanceServerSideLoggingEnabled2()
-    });
-    const node = await inspectElementBySelector(selector);
-    if (node) {
-      await node.setAsInspectedNode();
-    }
-    const selected = node ? new NodeContext(node) : null;
-    return this.#createAndDoExternalConversation({
-      conversationType: "freestyler",
-      aiAgent: stylingAgent,
-      prompt,
-      selected
-    });
-  }
-  async #handleExternalPerformanceConversation(prompt, data) {
-    return this.#doExternalConversation({
-      conversation: data.conversation,
-      prompt,
-      selected: data.selected
-    });
-  }
-  async #handleExternalNetworkConversation(prompt, requestUrl) {
-    const networkAgent = new NetworkAgent({
-      aidaClient: this.#aidaClient,
-      serverSideLoggingEnabled: isAiAssistanceServerSideLoggingEnabled2()
-    });
-    const request = await inspectNetworkRequestByUrl(requestUrl);
-    if (!request) {
-      return this.#generateErrorResponse(`Can't find request with the given selector ${requestUrl}`);
-    }
-    const calculator = new NetworkTimeCalculator4.NetworkTransferTimeCalculator();
-    calculator.updateBoundaries(request);
-    return this.#createAndDoExternalConversation({
-      conversationType: "drjones-network-request",
-      aiAgent: networkAgent,
-      prompt,
-      selected: new RequestContext(request, calculator)
-    });
-  }
-};
 export {
   AICallTree_exports as AICallTree,
   AIContext_exports as AIContext,
@@ -10260,7 +10081,6 @@ export {
   BuiltInAi_exports as BuiltInAi,
   ChangeManager_exports as ChangeManager,
   ContextSelectionAgent_exports as ContextSelectionAgent,
-  ConversationHandler_exports as ConversationHandler,
   ConversationSummaryAgent_exports as ConversationSummaryAgent,
   debug_exports as Debug,
   EvaluateAction_exports as EvaluateAction,

@@ -37,5 +37,5 @@ export declare class ParsedJSON<T extends unknown = unknown> {
 export declare class SearchableJsonView extends UI.SearchableView.SearchableView {
     #private;
     constructor(element: HTMLElement);
-    set jsonObject(obj: Object);
+    set jsonObject(obj: Object | null | undefined);
 }

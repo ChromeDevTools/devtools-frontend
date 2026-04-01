@@ -1,4 +1,3 @@
-import './Toolbar.js';
 import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Geometry from '../../models/geometry/geometry.js';
@@ -6,7 +5,7 @@ import { type LitTemplate } from '../../ui/lit/lit.js';
 import { Icon } from '../kit/kit.js';
 import { ContextMenu } from './ContextMenu.js';
 import type { Toolbar } from './Toolbar.js';
-import { VBox, type Widget } from './Widget.js';
+import { VBox, Widget, WidgetElement } from './Widget.js';
 export interface TabInfo {
     id: string;
     title: string;
@@ -175,6 +174,7 @@ export declare class TabbedPaneTab {
     get title(): string;
     set title(title: string);
     get jslogContext(): string;
+    set jslogContext(jslogContext: string | undefined);
     get tabAnnotationIcon(): boolean;
     set tabAnnotationIcon(iconVisible: boolean);
     isCloseable(): boolean;
@@ -210,5 +210,10 @@ export declare class TabbedPaneTab {
 export interface TabbedPaneTabDelegate {
     closeTabs(tabbedPane: TabbedPane, ids: string[]): void;
     onContextMenu(tabId: string, contextMenu: ContextMenu): void;
+}
+export declare class TabbedPaneElement extends WidgetElement<TabbedPane> {
+    #private;
+    constructor();
+    disconnectedCallback(): void;
 }
 export {};

@@ -3368,7 +3368,6 @@ import * as Common10 from "./../../core/common/common.js";
 import * as Host2 from "./../../core/host/host.js";
 import * as i18n19 from "./../../core/i18n/i18n.js";
 import * as Platform9 from "./../../core/platform/platform.js";
-import * as Root2 from "./../../core/root/root.js";
 import * as SDK5 from "./../../core/sdk/sdk.js";
 import * as Bindings2 from "./../../models/bindings/bindings.js";
 import * as HeapSnapshotModel5 from "./../../models/heap_snapshot_model/heap_snapshot_model.js";
@@ -6956,10 +6955,9 @@ var HeapSnapshotProfileType = class _HeapSnapshotProfileType extends Common10.Ob
     return i18nString9(UIStrings10.heapSnapshotProfilesShowMemory);
   }
   customContent() {
-    const showOptionToExposeInternalsInHeapSnapshot = Root2.Runtime.experiments.isEnabled(Root2.ExperimentNames.ExperimentName.SHOW_OPTION_TO_EXPOSE_INTERNALS_IN_HEAP_SNAPSHOT);
     const exposeInternalsInHeapSnapshotCheckbox = SettingsUI.SettingsUI.createSettingCheckbox(i18nString9(UIStrings10.exposeInternals), this.exposeInternals);
     this.customContentInternal = exposeInternalsInHeapSnapshotCheckbox;
-    return showOptionToExposeInternalsInHeapSnapshot ? exposeInternalsInHeapSnapshotCheckbox : null;
+    return exposeInternalsInHeapSnapshotCheckbox;
   }
   setCustomContentEnabled(enable) {
     if (this.customContentInternal) {

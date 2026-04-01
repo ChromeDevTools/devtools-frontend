@@ -67,6 +67,7 @@
     "../../../../../../front_end/core/sdk/Cookie.ts",
     "../../../../../../front_end/core/sdk/CookieModel.ts",
     "../../../../../../front_end/core/sdk/CookieParser.ts",
+    "../../../../../../front_end/core/sdk/CrashReportContextModel.ts",
     "../../../../../../front_end/core/sdk/DOMDebuggerModel.ts",
     "../../../../../../front_end/core/sdk/DOMModel.ts",
     "../../../../../../front_end/core/sdk/DebuggerModel.ts",

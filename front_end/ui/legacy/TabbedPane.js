@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-imperative-dom-api, @devtools/no-lit-render-outside-of-view */
-import './Toolbar.js';
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
@@ -17,7 +16,7 @@ import { ContextMenu } from './ContextMenu.js';
 import tabbedPaneStyles from './tabbedPane.css.js';
 import { Tooltip } from './Tooltip.js';
 import { installDragHandle } from './UIUtils.js';
-import { VBox } from './Widget.js';
+import { registerWidgetConfig, VBox, Widget, widgetConfig, WidgetElement } from './Widget.js';
 import { ZoomManager } from './ZoomManager.js';
 const UIStrings = {
     /**
@@ -101,7 +100,23 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin(VBox) {
         this.contentElement.tabIndex = -1;
         this.setDefaultFocusedElement(this.contentElement);
         this.#headerElement = this.contentElement.createChild('div', 'tabbed-pane-header');
+        const leftSlot = document.createElement('slot');
+        leftSlot.name = 'left';
+        leftSlot.classList.add('tabbed-pane-left-toolbar');
+        this.#headerElement.appendChild(leftSlot);
+        leftSlot.addEventListener('slotchange', () => {
+            this.#leftToolbar = leftSlot.assignedElements()[0];
+            this.requestUpdate();
+        });
         this.headerContentsElement = this.#headerElement.createChild('div', 'tabbed-pane-header-contents');
+        const rightSlot = document.createElement('slot');
+        rightSlot.name = 'right';
+        rightSlot.classList.add('tabbed-pane-right-toolbar');
+        this.#headerElement.appendChild(rightSlot);
+        rightSlot.addEventListener('slotchange', () => {
+            this.#rightToolbar = rightSlot.assignedElements()[0];
+            this.requestUpdate();
+        });
         this.tabSlider = document.createElement('div');
         this.tabSlider.classList.add('tabbed-pane-tab-slider');
         this.tabsElement = this.headerContentsElement.createChild('div', 'tabbed-pane-header-tabs');
@@ -461,6 +476,9 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin(VBox) {
             if (existingTab) {
                 this.changeTabView(tab.id, tab.view);
                 this.changeTabTitle(tab.id, tab.title, tab.tabTooltip);
+                if (tab.jslogContext !== undefined) {
+                    existingTab.jslogContext = tab.jslogContext;
+                }
                 if (tab.isCloseable !== undefined) {
                     existingTab.closeable = tab.isCloseable;
                 }
@@ -886,6 +904,10 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin(VBox) {
     }
     leftToolbar() {
         if (!this.#leftToolbar) {
+            const leftSlot = this.#headerElement.querySelector('slot[name="left"]');
+            this.#leftToolbar = leftSlot?.assignedElements()[0];
+        }
+        if (!this.#leftToolbar) {
             this.#leftToolbar = document.createElement('devtools-toolbar');
             this.#leftToolbar.classList.add('tabbed-pane-left-toolbar');
             this.#headerElement.insertBefore(this.#leftToolbar, this.#headerElement.firstChild);
@@ -893,6 +915,10 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin(VBox) {
         return this.#leftToolbar;
     }
     rightToolbar() {
+        if (!this.#rightToolbar) {
+            const rightSlot = this.#headerElement.querySelector('slot[name="right"]');
+            this.#rightToolbar = rightSlot?.assignedElements()[0];
+        }
         if (!this.#rightToolbar) {
             this.#rightToolbar = document.createElement('devtools-toolbar');
             this.#rightToolbar.classList.add('tabbed-pane-right-toolbar');
@@ -1016,6 +1042,9 @@ export class TabbedPaneTab {
     }
     get jslogContext() {
         return this.#jslogContext ?? (this.#id === 'console-view' ? 'console' : this.#id);
+    }
+    set jslogContext(jslogContext) {
+        this.#jslogContext = jslogContext;
     }
     get tabAnnotationIcon() {
         return this.#tabAnnotationIcon;
@@ -1375,4 +1404,83 @@ export class TabbedPaneTab {
 }
 const tabIcons = new WeakMap();
 const tabSuffixElements = new WeakMap();
+export class TabbedPaneElement extends WidgetElement {
+    #tabObserver = new MutationObserver(() => this.#updateTabs());
+    constructor() {
+        super();
+        registerWidgetConfig(this, widgetConfig(element => {
+            const widget = new TabbedPane(element);
+            const slot = widget.contentElement.querySelector('slot:not([name])');
+            if (slot) {
+                slot.addEventListener('slotchange', () => this.#syncTabs());
+            }
+            widget.addEventListener(Events.TabSelected, () => {
+                const slot = widget.contentElement.querySelector('slot:not([name])');
+                const nodes = slot ? slot.assignedElements() : [];
+                for (const child of nodes) {
+                    if (child.id === widget.selectedTabId) {
+                        child.setAttribute('selected', '');
+                    }
+                    else {
+                        child.removeAttribute('selected');
+                    }
+                }
+            });
+            this.#syncTabs(widget);
+            return widget;
+        }));
+    }
+    disconnectedCallback() {
+        super.disconnectedCallback();
+        this.#tabObserver.disconnect();
+    }
+    #syncTabs(widget = this.getWidget()) {
+        if (!widget) {
+            return;
+        }
+        this.#updateObserver(widget);
+        this.#updateTabs(widget);
+    }
+    #updateObserver(widget) {
+        this.#tabObserver.disconnect();
+        const slot = widget.contentElement.querySelector('slot:not([name])');
+        const nodes = slot ? slot.assignedElements() : [];
+        for (const child of nodes) {
+            this.#tabObserver.observe(child, { attributes: true, attributeFilter: ['title', 'jslogcontext', 'selected', 'disabled'] });
+        }
+    }
+    #updateTabs(widget = this.getWidget()) {
+        if (!widget) {
+            return;
+        }
+        const tabs = [];
+        const slot = widget.contentElement.querySelector('slot:not([name])');
+        const nodes = slot ? slot.assignedElements() : [];
+        for (const child of nodes) {
+            const id = child.id;
+            const title = child.getAttribute('title') || '';
+            const jslogContext = child.getAttribute('jslogcontext') || undefined;
+            const selected = child.hasAttribute('selected');
+            const enabled = !child.hasAttribute('disabled');
+            const view = Widget.getOrCreateWidget(child);
+            view.setHideOnDetach();
+            if (widget.selectedTabId !== id) {
+                view.hideWidget();
+            }
+            else {
+                view.showWidget();
+            }
+            tabs.push({
+                id,
+                title,
+                view,
+                jslogContext,
+                selected,
+                enabled,
+            });
+        }
+        widget.tabs = tabs;
+    }
+}
+customElements.define('devtools-tabbed-pane', TabbedPaneElement);
 //# sourceMappingURL=TabbedPane.js.map

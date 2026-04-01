@@ -920,9 +920,6 @@ export class StylePropertiesSection {
         return mediaQueryElement;
     }
     createContainerQueryElement(containerQuery) {
-        if (!containerQuery.text) {
-            return;
-        }
         let onQueryTextClick;
         if (containerQuery.styleSheetId) {
             onQueryTextClick = this.handleQueryRuleClick.bind(this, containerQuery);

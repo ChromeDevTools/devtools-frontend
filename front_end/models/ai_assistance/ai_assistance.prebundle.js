@@ -18,7 +18,6 @@ import * as AiHistoryStorage from './AiHistoryStorage.js';
 import * as AiUtils from './AiUtils.js';
 import * as BuiltInAi from './BuiltInAi.js';
 import * as ChangeManager from './ChangeManager.js';
-import * as ConversationHandler from './ConversationHandler.js';
 import * as FileFormatter from './data_formatters/FileFormatter.js';
 import * as LighthouseFormatter from './data_formatters/LighthouseFormatter.js';
 import * as NetworkRequestFormatter from './data_formatters/NetworkRequestFormatter.js';
@@ -32,5 +31,5 @@ import * as Injected from './injected.js';
 import * as AICallTree from './performance/AICallTree.js';
 import * as AIContext from './performance/AIContext.js';
 import * as AIQueries from './performance/AIQueries.js';
-export { AccessibilityAgent, AgentProject, AiAgent, AICallTree, AIContext, AiConversation, AiHistoryStorage, AIQueries, AiUtils, BreakpointDebuggerAgent, BuiltInAi, ChangeManager, ContextSelectionAgent, ConversationHandler, ConversationSummaryAgent, Debug, EvaluateAction, ExtensionScope, FileAgent, FileFormatter, Injected, LighthouseFormatter, NetworkAgent, NetworkRequestFormatter, PatchAgent, PerformanceAgent, PerformanceAnnotationsAgent, PerformanceInsightFormatter, PerformanceTraceFormatter, StylingAgent, UnitFormatters, };
+export { AccessibilityAgent, AgentProject, AiAgent, AICallTree, AIContext, AiConversation, AiHistoryStorage, AIQueries, AiUtils, BreakpointDebuggerAgent, BuiltInAi, ChangeManager, ContextSelectionAgent, ConversationSummaryAgent, Debug, EvaluateAction, ExtensionScope, FileAgent, FileFormatter, Injected, LighthouseFormatter, NetworkAgent, NetworkRequestFormatter, PatchAgent, PerformanceAgent, PerformanceAnnotationsAgent, PerformanceInsightFormatter, PerformanceTraceFormatter, StylingAgent, UnitFormatters, };
 //# sourceMappingURL=ai_assistance.prebundle.js.map

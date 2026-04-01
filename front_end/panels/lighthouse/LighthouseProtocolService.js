@@ -40,6 +40,11 @@ import * as SDK from '../../core/sdk/sdk.js';
  * - All messages within WorkerConnectionTransport/LegacyPort speak pure CDP.
  */
 let lastId = 1;
+export class CancelledError extends Error {
+    constructor() {
+        super('Lighthouse run cancelled');
+    }
+}
 /**
  * ProtocolService manages a connection between the frontend (Lighthouse panel) and the Lighthouse worker.
  */
@@ -52,6 +57,13 @@ export class ProtocolService {
     removeDialogHandler;
     configForTesting;
     connection;
+    /**
+     * Tracks pending requests to the Lighthouse worker.
+     * Key: The message ID sent to the worker.
+     * Value: The rejection function for the corresponding promise.
+     * This is used to gracefully cancel hanging promises if the ProtocolService is detached before the worker replies.
+     */
+    #pendingRequests = new Map();
     async attach() {
         await SDK.TargetManager.TargetManager.instance().suspendAllTargets();
         const mainTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
@@ -138,6 +150,10 @@ export class ProtocolService {
         });
     }
     async detach() {
+        for (const reject of this.#pendingRequests.values()) {
+            reject(new CancelledError());
+        }
+        this.#pendingRequests.clear();
         const oldLighthouseWorker = this.lighthouseWorkerPromise;
         const oldRootTarget = this.rootTarget;
         // When detaching, make sure that we remove the old promises, before we
@@ -242,15 +258,20 @@ export class ProtocolService {
     async sendWithResponse(action, args = {}) {
         const worker = await this.ensureWorkerExists();
         const messageId = lastId++;
-        const messageResult = new Promise(resolve => {
+        const messageResult = new Promise((resolve, reject) => {
             const workerListener = (event) => {
                 const lighthouseMessage = event.data;
                 if (lighthouseMessage.id === messageId) {
                     worker.removeEventListener('message', workerListener);
+                    this.#pendingRequests.delete(messageId);
                     resolve(lighthouseMessage.result);
                 }
             };
             worker.addEventListener('message', workerListener);
+            this.#pendingRequests.set(messageId, (err) => {
+                worker.removeEventListener('message', workerListener);
+                reject(err);
+            });
         });
         worker.postMessage({ id: messageId, action, args: { ...args, id: messageId } });
         return await messageResult;

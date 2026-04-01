@@ -109,6 +109,7 @@ core/sdk/ConsoleModel.test.js
 core/sdk/Cookie.test.js
 core/sdk/CookieModel.test.js
 core/sdk/CookieParser.test.js
+core/sdk/CrashReportContextModel.test.js
 core/sdk/DOMModel.test.js
 core/sdk/EmulationModel.test.js
 core/sdk/EnhancedTracesParser.test.js
@@ -154,7 +155,6 @@ models/ai_assistance/AiConversation.test.js
 models/ai_assistance/AiHistoryStorage.test.js
 models/ai_assistance/BuiltInAi.test.js
 models/ai_assistance/ChangeManager.test.js
-models/ai_assistance/ConversationHandler.test.js
 models/ai_assistance/EvaluateAction.test.js
 models/ai_assistance/ExtensionScope.test.js
 models/ai_assistance/agents/AccessibilityAgent.test.js

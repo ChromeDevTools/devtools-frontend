@@ -226,6 +226,9 @@ export class TargetBase {
     cacheStorageAgent() {
         return this.getAgent('CacheStorage');
     }
+    crashReportContextAgent() {
+        return this.getAgent('CrashReportContext');
+    }
     cssAgent() {
         return this.getAgent('CSS');
     }

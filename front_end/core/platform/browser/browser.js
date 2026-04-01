@@ -14,7 +14,7 @@ var WebWorkerScope = class {
     self.postMessage(message);
   }
   set onmessage(listener) {
-    self.onmessage = listener;
+    self.addEventListener("message", listener);
   }
 };
 var WebWorker = class {

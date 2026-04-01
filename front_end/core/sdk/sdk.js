@@ -34441,6 +34441,27 @@ function calibrationErrorToString(error) {
   return error;
 }
 
+// gen/front_end/core/sdk/CrashReportContextModel.js
+var CrashReportContextModel_exports = {};
+__export(CrashReportContextModel_exports, {
+  CrashReportContextModel: () => CrashReportContextModel
+});
+var CrashReportContextModel = class extends SDKModel {
+  #agent;
+  constructor(target) {
+    super(target);
+    this.#agent = target.crashReportContextAgent();
+  }
+  async getEntries() {
+    const response = await this.#agent.invoke_getEntries();
+    if (response.getError()) {
+      return null;
+    }
+    return response.entries;
+  }
+};
+SDKModel.register(CrashReportContextModel, { capabilities: 4, autostart: false });
+
 // gen/front_end/core/sdk/DOMDebuggerModel.js
 var DOMDebuggerModel_exports = {};
 __export(DOMDebuggerModel_exports, {
@@ -37546,6 +37567,7 @@ export {
   Cookie_exports as Cookie,
   CookieModel_exports as CookieModel,
   CookieParser_exports as CookieParser,
+  CrashReportContextModel_exports as CrashReportContextModel,
   DOMDebuggerModel_exports as DOMDebuggerModel,
   DOMModel_exports as DOMModel,
   DebuggerModel_exports as DebuggerModel,

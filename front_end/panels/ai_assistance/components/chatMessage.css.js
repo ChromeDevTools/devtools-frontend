@@ -132,6 +132,7 @@ export default `/*
   .user-query-wrapper {
     display: flex;
     justify-content: flex-end;
+    padding: 0 var(--sys-size-5);
     align-items: center;
   }
 

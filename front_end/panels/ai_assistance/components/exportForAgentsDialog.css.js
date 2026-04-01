@@ -68,6 +68,19 @@ export default `/*
     border: none;
   }
 
+  main {
+    position: relative;
+  }
+
+  .prompt-loading {
+    position: absolute;
+    padding: var(--sys-size-5);
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: var(--sys-size-5);
+  }
+
   .export-for-agents-dialog .disclaimer {
     margin-top: var(--sys-size-5);
     font: var(--sys-typescale-body4-regular);

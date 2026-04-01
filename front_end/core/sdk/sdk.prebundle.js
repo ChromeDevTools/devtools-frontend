@@ -20,6 +20,7 @@ import * as CookieModel from './CookieModel.js';
 import * as CookieParser from './CookieParser.js';
 import * as CPUProfilerModel from './CPUProfilerModel.js';
 import * as CPUThrottlingManager from './CPUThrottlingManager.js';
+import * as CrashReportContextModel from './CrashReportContextModel.js';
 import * as CSSContainerQuery from './CSSContainerQuery.js';
 import * as CSSFontFace from './CSSFontFace.js';
 import * as CSSLayer from './CSSLayer.js';
@@ -88,6 +89,6 @@ import * as Target from './Target.js';
 import * as TargetManager from './TargetManager.js';
 import * as TraceObject from './TraceObject.js';
 import * as WebAuthnModel from './WebAuthnModel.js';
-export { AccessibilityModel, AnimationModel, AutofillModel, CategorizedBreakpoint, ChildTargetManager, CompilerSourceMappingContentProvider, Connections, ConsoleModel, Cookie, CookieModel, CookieParser, CPUProfilerModel, CPUThrottlingManager, CSSContainerQuery, CSSFontFace, CSSLayer, CSSMatchedStyles, CSSMedia, CSSMetadata, CSSModel, CSSNavigation, CSSProperty, CSSPropertyParser, CSSPropertyParserMatchers, CSSQuery, CSSRule, CSSScope, CSSStartingStyle, CSSStyleDeclaration, CSSStyleSheetHeader, CSSSupports, DebuggerModel, DOMDebuggerModel, DOMModel, EmulationModel, EnhancedTracesParser, EventBreakpointsModel, FrameAssociated, FrameManager, HeapProfilerModel, IOModel, IsolateManager, IssuesModel, LayerTreeBase, LogModel, NetworkManager, NetworkRequest, OverlayColorGenerator, OverlayModel, OverlayPersistentHighlighter, PageLoad, PageResourceLoader, PaintProfiler, PerformanceMetricsModel, PreloadingModel, RehydratingConnection, // TODO(crbug.com/444191656): Exported for tests.
+export { AccessibilityModel, AnimationModel, AutofillModel, CategorizedBreakpoint, ChildTargetManager, CompilerSourceMappingContentProvider, Connections, ConsoleModel, Cookie, CookieModel, CookieParser, CPUProfilerModel, CPUThrottlingManager, CrashReportContextModel, CSSContainerQuery, CSSFontFace, CSSLayer, CSSMatchedStyles, CSSMedia, CSSMetadata, CSSModel, CSSNavigation, CSSProperty, CSSPropertyParser, CSSPropertyParserMatchers, CSSQuery, CSSRule, CSSScope, CSSStartingStyle, CSSStyleDeclaration, CSSStyleSheetHeader, CSSSupports, DebuggerModel, DOMDebuggerModel, DOMModel, EmulationModel, EnhancedTracesParser, EventBreakpointsModel, FrameAssociated, FrameManager, HeapProfilerModel, IOModel, IsolateManager, IssuesModel, LayerTreeBase, LogModel, NetworkManager, NetworkRequest, OverlayColorGenerator, OverlayModel, OverlayPersistentHighlighter, PageLoad, PageResourceLoader, PaintProfiler, PerformanceMetricsModel, PreloadingModel, RehydratingConnection, // TODO(crbug.com/444191656): Exported for tests.
 RemoteObject, Resource, ResourceTreeModel, RuntimeModel, ScopeTreeCache, ScreenCaptureModel, Script, SDKModel, SecurityOriginManager, ServerSentEventProtocol, ServerTiming, ServiceWorkerCacheModel, ServiceWorkerManager, SourceMap, SourceMapCache, SourceMapFunctionRanges, SourceMapManager, SourceMapScopeChainEntry, SourceMapScopesInfo, StorageBucketsModel, StorageKeyManager, Target, TargetManager, TraceObject, WebAuthnModel, };
 //# sourceMappingURL=sdk.prebundle.js.map

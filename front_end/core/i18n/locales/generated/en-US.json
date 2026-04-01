@@ -1217,9 +1217,6 @@
   "entrypoints/main/MainImpl.ts | dockToRight": {
     "message": "Dock to right"
   },
-  "entrypoints/main/MainImpl.ts | externalRequestReceived": {
-    "message": "DevTools received an external request"
-  },
   "entrypoints/main/MainImpl.ts | focusDebuggee": {
     "message": "Focus page"
   },
@@ -16295,9 +16292,6 @@
   "panels/timeline/TimelinePanel.ts | exportingFailed": {
     "message": "Exporting the trace failed"
   },
-  "panels/timeline/TimelinePanel.ts | externalRequestReceived": {
-    "message": "DevTools received an external request"
-  },
   "panels/timeline/TimelinePanel.ts | fixMe": {
     "message": "Fix me"
   },
@@ -17176,6 +17170,9 @@
   },
   "ui/components/markdown_view/CodeBlock.ts | disclaimer": {
     "message": "Use code snippets with caution"
+  },
+  "ui/components/markdown_view/CodeBlock.ts | showAllLines": {
+    "message": "Show all lines ({PH1} more)"
   },
   "ui/components/panel_feedback/FeedbackButton.ts | feedback": {
     "message": "Feedback"

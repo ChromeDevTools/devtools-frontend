@@ -4,7 +4,6 @@ export declare enum ExperimentName {
     LIVE_HEAP_PROFILE = "live-heap-profile",
     PROTOCOL_MONITOR = "protocol-monitor",
     SAMPLING_HEAP_PROFILER_TIMELINE = "sampling-heap-profiler-timeline",
-    SHOW_OPTION_TO_EXPOSE_INTERNALS_IN_HEAP_SNAPSHOT = "show-option-to-expose-internals-in-heap-snapshot",
     TIMELINE_INVALIDATION_TRACKING = "timeline-invalidation-tracking",
     TIMELINE_SHOW_ALL_EVENTS = "timeline-show-all-events",
     APCA = "apca",

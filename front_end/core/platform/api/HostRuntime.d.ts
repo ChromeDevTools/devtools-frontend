@@ -16,18 +16,21 @@ export interface Worker {
     set onmessage(listener: (event: WorkerMessageEvent) => void);
     set onerror(listener: (event: any) => void);
 }
+type WorkerMessagePort = typeof MessagePort.prototype;
 /**
- * Currently we ony transfer MessagePorts to workers, but it's possible to add
+ * Currently we only transfer MessagePorts to workers, but it's possible to add
  * more things (like ReadableStream) as long as it's present in all runtimes.
  */
-export type WorkerTransferable = typeof MessagePort.prototype;
+export type WorkerTransferable = WorkerMessagePort;
 /**
  * Used by workers to communicate with their parent.
  */
 export interface WorkerScope {
     postMessage(message: unknown): void;
-    set onmessage(listener: (event: WorkerMessageEvent) => void);
+    set onmessage(listener: (event: WorkerMessageEvent) => Promise<void> | void);
 }
-export interface WorkerMessageEvent {
-    readonly data: any;
+export interface WorkerMessageEvent<T = any> {
+    readonly data: T;
+    ports: readonly WorkerMessagePort[];
 }
+export {};

@@ -2073,6 +2073,7 @@ var TabbedPane_exports = {};
 __export(TabbedPane_exports, {
   Events: () => Events,
   TabbedPane: () => TabbedPane,
+  TabbedPaneElement: () => TabbedPaneElement,
   TabbedPaneTab: () => TabbedPaneTab
 });
 import * as Common6 from "./../../core/common/common.js";
@@ -2986,7 +2987,10 @@ var WidgetElement = class extends HTMLElement {
   removeChild(child) {
     const childWidget = Widget.get(child);
     if (childWidget) {
-      childWidget.detach();
+      childWidget.detach(
+        /* overrideHideOnDetach= */
+        true
+      );
       return child;
     }
     return super.removeChild(child);
@@ -2995,7 +2999,10 @@ var WidgetElement = class extends HTMLElement {
     for (const child of this.children) {
       const childWidget = Widget.get(child);
       if (childWidget) {
-        childWidget.detach();
+        childWidget.detach(
+          /* overrideHideOnDetach= */
+          true
+        );
       }
     }
     super.removeChildren();
@@ -3877,7 +3884,23 @@ var TabbedPane = class extends Common6.ObjectWrapper.eventMixin(VBox) {
     this.contentElement.tabIndex = -1;
     this.setDefaultFocusedElement(this.contentElement);
     this.#headerElement = this.contentElement.createChild("div", "tabbed-pane-header");
+    const leftSlot = document.createElement("slot");
+    leftSlot.name = "left";
+    leftSlot.classList.add("tabbed-pane-left-toolbar");
+    this.#headerElement.appendChild(leftSlot);
+    leftSlot.addEventListener("slotchange", () => {
+      this.#leftToolbar = leftSlot.assignedElements()[0];
+      this.requestUpdate();
+    });
     this.headerContentsElement = this.#headerElement.createChild("div", "tabbed-pane-header-contents");
+    const rightSlot = document.createElement("slot");
+    rightSlot.name = "right";
+    rightSlot.classList.add("tabbed-pane-right-toolbar");
+    this.#headerElement.appendChild(rightSlot);
+    rightSlot.addEventListener("slotchange", () => {
+      this.#rightToolbar = rightSlot.assignedElements()[0];
+      this.requestUpdate();
+    });
     this.tabSlider = document.createElement("div");
     this.tabSlider.classList.add("tabbed-pane-tab-slider");
     this.tabsElement = this.headerContentsElement.createChild("div", "tabbed-pane-header-tabs");
@@ -4235,6 +4258,9 @@ var TabbedPane = class extends Common6.ObjectWrapper.eventMixin(VBox) {
       if (existingTab) {
         this.changeTabView(tab.id, tab.view);
         this.changeTabTitle(tab.id, tab.title, tab.tabTooltip);
+        if (tab.jslogContext !== void 0) {
+          existingTab.jslogContext = tab.jslogContext;
+        }
         if (tab.isCloseable !== void 0) {
           existingTab.closeable = tab.isCloseable;
         }
@@ -4658,6 +4684,10 @@ var TabbedPane = class extends Common6.ObjectWrapper.eventMixin(VBox) {
   }
   leftToolbar() {
     if (!this.#leftToolbar) {
+      const leftSlot = this.#headerElement.querySelector('slot[name="left"]');
+      this.#leftToolbar = leftSlot?.assignedElements()[0];
+    }
+    if (!this.#leftToolbar) {
       this.#leftToolbar = document.createElement("devtools-toolbar");
       this.#leftToolbar.classList.add("tabbed-pane-left-toolbar");
       this.#headerElement.insertBefore(this.#leftToolbar, this.#headerElement.firstChild);
@@ -4665,6 +4695,10 @@ var TabbedPane = class extends Common6.ObjectWrapper.eventMixin(VBox) {
     return this.#leftToolbar;
   }
   rightToolbar() {
+    if (!this.#rightToolbar) {
+      const rightSlot = this.#headerElement.querySelector('slot[name="right"]');
+      this.#rightToolbar = rightSlot?.assignedElements()[0];
+    }
     if (!this.#rightToolbar) {
       this.#rightToolbar = document.createElement("devtools-toolbar");
       this.#rightToolbar.classList.add("tabbed-pane-right-toolbar");
@@ -4782,6 +4816,9 @@ var TabbedPaneTab = class {
   }
   get jslogContext() {
     return this.#jslogContext ?? (this.#id === "console-view" ? "console" : this.#id);
+  }
+  set jslogContext(jslogContext) {
+    this.#jslogContext = jslogContext;
   }
   get tabAnnotationIcon() {
     return this.#tabAnnotationIcon;
@@ -5131,6 +5168,83 @@ var TabbedPaneTab = class {
 };
 var tabIcons = /* @__PURE__ */ new WeakMap();
 var tabSuffixElements = /* @__PURE__ */ new WeakMap();
+var TabbedPaneElement = class extends WidgetElement {
+  #tabObserver = new MutationObserver(() => this.#updateTabs());
+  constructor() {
+    super();
+    registerWidgetConfig(this, widgetConfig((element) => {
+      const widget2 = new TabbedPane(element);
+      const slot = widget2.contentElement.querySelector("slot:not([name])");
+      if (slot) {
+        slot.addEventListener("slotchange", () => this.#syncTabs());
+      }
+      widget2.addEventListener(Events.TabSelected, () => {
+        const slot2 = widget2.contentElement.querySelector("slot:not([name])");
+        const nodes = slot2 ? slot2.assignedElements() : [];
+        for (const child of nodes) {
+          if (child.id === widget2.selectedTabId) {
+            child.setAttribute("selected", "");
+          } else {
+            child.removeAttribute("selected");
+          }
+        }
+      });
+      this.#syncTabs(widget2);
+      return widget2;
+    }));
+  }
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    this.#tabObserver.disconnect();
+  }
+  #syncTabs(widget2 = this.getWidget()) {
+    if (!widget2) {
+      return;
+    }
+    this.#updateObserver(widget2);
+    this.#updateTabs(widget2);
+  }
+  #updateObserver(widget2) {
+    this.#tabObserver.disconnect();
+    const slot = widget2.contentElement.querySelector("slot:not([name])");
+    const nodes = slot ? slot.assignedElements() : [];
+    for (const child of nodes) {
+      this.#tabObserver.observe(child, { attributes: true, attributeFilter: ["title", "jslogcontext", "selected", "disabled"] });
+    }
+  }
+  #updateTabs(widget2 = this.getWidget()) {
+    if (!widget2) {
+      return;
+    }
+    const tabs = [];
+    const slot = widget2.contentElement.querySelector("slot:not([name])");
+    const nodes = slot ? slot.assignedElements() : [];
+    for (const child of nodes) {
+      const id2 = child.id;
+      const title = child.getAttribute("title") || "";
+      const jslogContext = child.getAttribute("jslogcontext") || void 0;
+      const selected = child.hasAttribute("selected");
+      const enabled = !child.hasAttribute("disabled");
+      const view = Widget.getOrCreateWidget(child);
+      view.setHideOnDetach();
+      if (widget2.selectedTabId !== id2) {
+        view.hideWidget();
+      } else {
+        view.showWidget();
+      }
+      tabs.push({
+        id: id2,
+        title,
+        view,
+        jslogContext,
+        selected,
+        enabled
+      });
+    }
+    widget2.tabs = tabs;
+  }
+};
+customElements.define("devtools-tabbed-pane", TabbedPaneElement);
 
 // gen/front_end/ui/legacy/ViewManager.js
 var ViewManager_exports = {};

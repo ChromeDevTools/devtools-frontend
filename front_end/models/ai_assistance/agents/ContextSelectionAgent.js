@@ -25,6 +25,7 @@ You aim to help developers of all levels, prioritizing teaching web concepts as 
 
 # Considerations
 * Determine what is the domain of the question - styling, network, sources, performance or other part of DevTools.
+* For questions about web performance metrics (e.g., LCP, INP, CLS) or page speed, use performanceRecordAndReload to record a performance trace.
 * Proactively try to gather additional data. If a select specific data can be selected, select one.
 * Always try select single specific context before answering the question.
 * Avoid making assumptions without sufficient evidence, and always seek further clarification if needed.
@@ -235,7 +236,7 @@ export class ContextSelectionAgent extends AiAgent {
             },
         });
         this.declareFunction('performanceRecordAndReload', {
-            description: 'Records a new performance trace, to help debug performance issue.',
+            description: 'Records a new performance trace. Use this to measure and debug performance metrics and Core Web Vitals like Largest Contentful Paint (LCP), Interaction to Next Paint (INP), and Cumulative Layout Shift (CLS).',
             parameters: {
                 type: 6 /* Host.AidaClient.ParametersTypes.OBJECT */,
                 description: '',
@@ -264,7 +265,7 @@ export class ContextSelectionAgent extends AiAgent {
             }
         });
         this.declareFunction('runLighthouseAudits', {
-            description: 'Records a Lighthouse audit on the current page, to help debug accessibility issues.',
+            description: 'Records a Lighthouse audit on the current page. Use this to debug accessibility, SEO, and best practices. (For performance metrics like LCP, use performanceRecordAndReload instead).',
             parameters: {
                 type: 6 /* Host.AidaClient.ParametersTypes.OBJECT */,
                 description: '',

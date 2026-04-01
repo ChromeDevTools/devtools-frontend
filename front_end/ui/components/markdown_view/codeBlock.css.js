@@ -114,4 +114,12 @@ export default `/*
   }
 }
 
+.show-all-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: var(--sys-size-4) 0;
+  background-color: var(--code-block-background-color); /* stylelint-disable-line plugin/use_theme_colors */
+}
+
 /*# sourceURL=${import.meta.resolve('./codeBlock.css')} */`;

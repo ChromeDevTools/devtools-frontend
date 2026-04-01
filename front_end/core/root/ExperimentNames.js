@@ -8,7 +8,6 @@ export var ExperimentName;
     ExperimentName["LIVE_HEAP_PROFILE"] = "live-heap-profile";
     ExperimentName["PROTOCOL_MONITOR"] = "protocol-monitor";
     ExperimentName["SAMPLING_HEAP_PROFILER_TIMELINE"] = "sampling-heap-profiler-timeline";
-    ExperimentName["SHOW_OPTION_TO_EXPOSE_INTERNALS_IN_HEAP_SNAPSHOT"] = "show-option-to-expose-internals-in-heap-snapshot";
     ExperimentName["TIMELINE_INVALIDATION_TRACKING"] = "timeline-invalidation-tracking";
     ExperimentName["TIMELINE_SHOW_ALL_EVENTS"] = "timeline-show-all-events";
     ExperimentName["APCA"] = "apca";

@@ -1,3 +1,4 @@
+import '../../../ui/components/spinners/spinners.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 export declare const enum StateType {
     PROMPT = "prompt",

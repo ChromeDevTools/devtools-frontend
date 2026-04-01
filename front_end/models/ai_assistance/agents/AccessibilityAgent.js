@@ -5,9 +5,12 @@ import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';
+import { ChangeManager } from '../ChangeManager.js';
 import { LighthouseFormatter } from '../data_formatters/LighthouseFormatter.js';
 import { debugLog } from '../debug.js';
+import { ExtensionScope } from '../ExtensionScope.js';
 import { AiAgent, ConversationContext, } from './AiAgent.js';
+import { executeJavaScriptFunction, executeJsCode, JavascriptExecutor } from './ExecuteJavascript.js';
 /**
  * WARNING: preamble defined in code is only used when userTier is
  * TESTERS. Otherwise, a server-side preamble is used (see
@@ -33,6 +36,7 @@ Your role is to help users understand and fix accessibility issues found in Ligh
 * \`runAccessibilityAudits\`: Trigger new accessibility snapshot audits.
 * \`getStyles\`: Get computed styles for an element by its path.
 * \`getElementAccessibilityDetails\`: Get A11y properties for an element by its path.
+* \`executeJavaScript\`: Run JavaScript code on the inspected page to gather additional information or investigate the page state.
 
 # Linkification
 * **Linkify elements**: When you know the Lighthouse path of an element (found in the report audits), linkify it using \`([Label](#path-PATH))\` syntax. Never show the path to the user directly, only use it in the link href.
@@ -82,12 +86,33 @@ export class AccessibilityAgent extends AiAgent {
     preamble = preamble;
     clientFeature = Host.AidaClient.ClientFeature.CHROME_ACCESSIBILITY_AGENT;
     #lighthouseRecording;
+    #execJs;
+    #javascriptExecutor;
+    #changes;
+    #createExtensionScope;
+    #currentTurnId = 0;
     constructor(opts) {
         super(opts);
         this.#lighthouseRecording = opts.lighthouseRecording;
+        this.#changes = opts.changeManager || new ChangeManager();
+        this.#execJs = opts.execJs ?? executeJsCode;
+        this.#createExtensionScope =
+            opts.createExtensionScope ?? ((changes) => {
+                return new ExtensionScope(changes, this.sessionId, this.#getDocumentBodyNode(), this.#currentTurnId);
+            });
+        this.#javascriptExecutor = new JavascriptExecutor({
+            executionMode: this.executionMode,
+            getContextNode: () => this.#getDocumentBodyNode(),
+            createExtensionScope: this.#createExtensionScope.bind(this),
+            changes: this.#changes,
+        }, this.#execJs);
     }
     get userTier() {
         return Root.Runtime.hostConfig.devToolsFreestyler?.userTier;
+    }
+    get executionMode() {
+        return Root.Runtime.hostConfig.devToolsFreestyler?.executionMode ??
+            Root.Runtime.HostConfigFreestylerExecutionMode.ALL_SCRIPTS;
     }
     get options() {
         // TODO(b/491772868): tidy up userTier & feature flags in the backend.
@@ -97,6 +122,36 @@ export class AccessibilityAgent extends AiAgent {
             temperature,
             modelId,
         };
+    }
+    preambleFeatures() {
+        return ['function_calling'];
+    }
+    async preRun() {
+        this.#currentTurnId++;
+        const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+        const domModel = target?.model(SDK.DOMModel.DOMModel);
+        // We need to ensure the document is requested so that #getDocumentBodyNode()
+        // can return a valid node for the JavaScript execution context.
+        if (domModel && !domModel.existingDocument()) {
+            try {
+                await domModel.requestDocument();
+            }
+            catch (e) {
+                debugLog('Failed to request document', e);
+            }
+        }
+    }
+    /**
+     * For the Accessibility Agent, there is no single "selected" node.
+     * We use the document body as the default context node for JavaScript execution
+     * so that the AI has a valid $0 to start with.
+     */
+    #getDocumentBodyNode() {
+        const document = SDK.TargetManager.TargetManager.instance()
+            .primaryPageTarget()
+            ?.model(SDK.DOMModel.DOMModel)
+            ?.existingDocument();
+        return document?.body ?? document ?? null;
     }
     async *handleContextDetails(lhr) {
         if (!lhr) {
@@ -123,6 +178,7 @@ export class AccessibilityAgent extends AiAgent {
         return domModel.nodeForId(nodeId);
     }
     #declareFunctions() {
+        this.declareFunction('executeJavaScript', executeJavaScriptFunction(this.#javascriptExecutor));
         this.declareFunction('runAccessibilityAudits', {
             description: 'Triggers new Lighthouse accessibility audits in snapshot mode. Use this if the user has made changes to the page and you want to re-evaluate the accessibility audits.',
             parameters: {

@@ -2,7 +2,6 @@ import '../../ui/legacy/legacy.js';
 import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import * as AiAssistanceModel from '../../models/ai_assistance/ai_assistance.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as TimelineComponents from './components/components.js';
@@ -81,8 +80,6 @@ export declare class TimelinePanel extends TimelinePanel_base implements Client,
      * Exposed for handling external requests.
      */
     get model(): Trace.TraceModel.Model;
-    getOrCreateExternalAIConversationData(): AiAssistanceModel.ConversationHandler.ExternalPerformanceAIConversationData;
-    invalidateExternalAIConversationData(): void;
     /**
      * NOTE: this method only exists to enable some layout tests to be migrated to the new engine.
      * DO NOT use this method within DevTools. It is marked as deprecated so
@@ -195,8 +192,6 @@ export declare class TimelinePanel extends TimelinePanel_base implements Client,
     revealInsight(insightModel: Trace.Insights.Types.InsightModel): void;
     revealCoreVitals(revealable: Utils.Helpers.RevealableCoreVitals): void;
     static executeRecordAndReload(): Promise<Trace.TraceModel.ParsedTrace>;
-    static handleExternalRecordRequest(): AsyncGenerator<AiAssistanceModel.AiAgent.ExternalRequestResponse, AiAssistanceModel.AiAgent.ExternalRequestResponse>;
-    static handleExternalAnalyzeRequest(prompt: string): Promise<AsyncGenerator<AiAssistanceModel.AiAgent.ExternalRequestResponse, AiAssistanceModel.AiAgent.ExternalRequestResponse>>;
 }
 export declare const enum State {
     IDLE = "Idle",

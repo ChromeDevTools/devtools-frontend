@@ -50,7 +50,6 @@ import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
 import * as Tracing from '../../services/tracing/tracing.js';
 import * as Adorners from '../../ui/components/adorners/adorners.js';
 import * as Dialogs from '../../ui/components/dialogs/dialogs.js';
-import * as Snackbars from '../../ui/components/snackbars/snackbars.js';
 import { Link } from '../../ui/kit/kit.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as SettingsUI from '../../ui/legacy/components/settings_ui/settings_ui.js';
@@ -296,10 +295,6 @@ const UIStrings = {
      * @description Title of the shortcuts dialog shown to the user that lists keyboard shortcuts.
      */
     shortcutsDialogTitle: 'Keyboard shortcuts for flamechart',
-    /**
-     * @description Notification shown to the user whenever DevTools receives an external request.
-     */
-    externalRequestReceived: '`DevTools` received an external request',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelinePanel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -366,7 +361,6 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin(UI.Panel.Pane
     selection = null;
     traceLoadStart;
     #traceEngineModel;
-    #externalAIConversationData = null;
     #sourceMapsResolver = null;
     #entityMapper = null;
     #onSourceMapsNodeNamesResolvedBound = this.#onSourceMapsNodeNamesResolved.bind(this);
@@ -825,33 +819,6 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin(UI.Panel.Pane
      */
     get model() {
         return this.#traceEngineModel;
-    }
-    getOrCreateExternalAIConversationData() {
-        if (!this.#externalAIConversationData) {
-            const conversationHandler = AiAssistanceModel.ConversationHandler.ConversationHandler.instance();
-            const focus = AiAssistanceModel.AIContext.getPerformanceAgentFocusFromModel(this.model);
-            if (!focus) {
-                throw new Error('could not create performance agent focus');
-            }
-            const conversation = new AiAssistanceModel.AiConversation.AiConversation({
-                type: "drjones-performance-full" /* AiAssistanceModel.AiHistoryStorage.ConversationType.PERFORMANCE */,
-                data: [],
-                isReadOnly: true,
-                aidaClient: conversationHandler.aidaClient,
-                isExternal: true,
-            });
-            const selected = new AiAssistanceModel.PerformanceAgent.PerformanceTraceContext(focus);
-            selected.external = true;
-            this.#externalAIConversationData = {
-                conversationHandler,
-                conversation,
-                selected,
-            };
-        }
-        return this.#externalAIConversationData;
-    }
-    invalidateExternalAIConversationData() {
-        this.#externalAIConversationData = null;
     }
     /**
      * NOTE: this method only exists to enable some layout tests to be migrated to the new engine.
@@ -2618,103 +2585,6 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin(UI.Panel.Pane
             throw new Error('Failed to parse trace');
         }
         return trace;
-    }
-    static async *handleExternalRecordRequest() {
-        yield {
-            type: "notification" /* AiAssistanceModel.AiAgent.ExternalRequestResponseType.NOTIFICATION */,
-            message: 'Recording performance trace',
-        };
-        TimelinePanel.instance().invalidateExternalAIConversationData();
-        void VisualLogging.logFunctionCall('timeline.record-reload', 'external');
-        Snackbars.Snackbar.Snackbar.show({ message: i18nString(UIStrings.externalRequestReceived) });
-        const panelInstance = TimelinePanel.instance();
-        // Given how the current UX works, it's nice to show the user the Perf
-        // Panel so they see what's happening
-        await UI.ViewManager.ViewManager.instance().showView('timeline');
-        function onRecordingCompleted(eventData) {
-            if ('errorText' in eventData) {
-                return {
-                    type: "error" /* AiAssistanceModel.AiAgent.ExternalRequestResponseType.ERROR */,
-                    message: `Error running the trace: ${eventData.errorText}`,
-                };
-            }
-            const parsedTrace = panelInstance.model.parsedTrace(eventData.traceIndex);
-            if (!parsedTrace || !parsedTrace.insights || parsedTrace.insights.size === 0) {
-                return {
-                    type: "error" /* AiAssistanceModel.AiAgent.ExternalRequestResponseType.ERROR */,
-                    message: 'The trace was loaded successfully but no Insights were detected.',
-                };
-            }
-            const insightSetId = Array.from(parsedTrace.insights.keys()).find(k => k !== 'NO_NAVIGATION');
-            if (!insightSetId) {
-                return {
-                    type: "error" /* AiAssistanceModel.AiAgent.ExternalRequestResponseType.ERROR */,
-                    message: 'The trace was loaded successfully but no navigation was detected.',
-                };
-            }
-            const insightsForNav = parsedTrace.insights.get(insightSetId);
-            if (!insightsForNav) {
-                return {
-                    type: "error" /* AiAssistanceModel.AiAgent.ExternalRequestResponseType.ERROR */,
-                    message: 'The trace was loaded successfully but no Insights were detected.',
-                };
-            }
-            let responseTextForNonPassedInsights = '';
-            // We still return info on the passed insights, but we put it at the
-            // bottom of the response under a heading.
-            let responseTextForPassedInsights = '';
-            // TODO(b/442392194): use PerformanceTraceFormatter summary instead.
-            for (const insight of Object.values(insightsForNav.model)) {
-                const focus = AiAssistanceModel.AIContext.AgentFocus.fromParsedTrace(parsedTrace);
-                const formatter = new AiAssistanceModel.PerformanceInsightFormatter.PerformanceInsightFormatter(focus, insight);
-                if (!formatter.insightIsSupported()) {
-                    // Not all Insights are integrated with "Ask AI" yet, let's avoid
-                    // filling up the response with those ones because there will be no
-                    // useful information.
-                    continue;
-                }
-                const formatted = formatter.formatInsight({ headingLevel: 3 });
-                if (insight.state === 'pass') {
-                    responseTextForPassedInsights += `${formatted}\n\n`;
-                    continue;
-                }
-                else {
-                    responseTextForNonPassedInsights += `${formatted}\n\n`;
-                }
-            }
-            const finalText = `# Trace recording results
-
-## Non-passing insights:
-
-These insights highlight potential problems and opportunities to improve performance.
-${responseTextForNonPassedInsights}
-
-## Passing insights:
-
-These insights are passing, which means they are not considered to highlight considerable performance problems.
-${responseTextForPassedInsights}`;
-            return {
-                type: "answer" /* AiAssistanceModel.AiAgent.ExternalRequestResponseType.ANSWER */,
-                message: finalText,
-                devToolsLogs: [],
-            };
-        }
-        return await new Promise(resolve => {
-            function listener(e) {
-                resolve(onRecordingCompleted(e.data));
-                panelInstance.removeEventListener("RecordingCompleted" /* Events.RECORDING_COMPLETED */, listener);
-            }
-            panelInstance.addEventListener("RecordingCompleted" /* Events.RECORDING_COMPLETED */, listener);
-            panelInstance.recordReload();
-        });
-    }
-    static async handleExternalAnalyzeRequest(prompt) {
-        const data = TimelinePanel.instance().getOrCreateExternalAIConversationData();
-        return await data.conversationHandler.handleExternalRequest({
-            conversationType: "drjones-performance-full" /* AiAssistanceModel.AiHistoryStorage.ConversationType.PERFORMANCE */,
-            prompt,
-            data,
-        });
     }
 }
 /** Define row and header height, should be in sync with styles for timeline graphs. **/

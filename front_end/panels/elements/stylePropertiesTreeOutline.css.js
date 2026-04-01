@@ -26,6 +26,7 @@ export default `/*
   padding-left: 22px;
   white-space: normal;
   text-overflow: ellipsis;
+  overflow-wrap: break-word;
   cursor: auto;
   display: block;
 
@@ -79,6 +80,12 @@ export default `/*
     overflow-wrap: break-word !important; /* stylelint-disable-line declaration-no-important */
     white-space: normal !important; /* stylelint-disable-line declaration-no-important */
     padding-left: 0;
+
+    /* Constrain the TextPrompt proxy span (display: inline-block) so that
+       long values wrap instead of overflowing the section. */
+    > span:has(> .text-prompt-root) {
+      max-width: 100%;
+    }
   }
 
   .info {

@@ -517,7 +517,6 @@ export declare enum DevtoolsExperiments {
     'live-heap-profile' = 11,
     'protocol-monitor' = 13,
     'sampling-heap-profiler-timeline' = 17,
-    'show-option-to-expose-internals-in-heap-snapshot' = 18,
     'timeline-invalidation-tracking' = 26,
     'timeline-show-all-events' = 27,
     apca = 39,

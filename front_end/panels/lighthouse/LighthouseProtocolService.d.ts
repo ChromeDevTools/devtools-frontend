@@ -10,10 +10,14 @@ export interface LighthouseRun {
     };
     isAIControlled?: boolean;
 }
+export declare class CancelledError extends Error {
+    constructor();
+}
 /**
  * ProtocolService manages a connection between the frontend (Lighthouse panel) and the Lighthouse worker.
  */
 export declare class ProtocolService implements ProtocolClient.CDPConnection.CDPConnectionObserver {
+    #private;
     private mainSessionId?;
     private rootTargetId?;
     private rootTarget?;
@@ -32,7 +36,7 @@ export declare class ProtocolService implements ProtocolClient.CDPConnection.CDP
     private dispatchProtocolMessage;
     onDisconnect(): void;
     private initWorker;
-    private ensureWorkerExists;
+    ensureWorkerExists(): Promise<Worker>;
     private onWorkerMessage;
     private sendProtocolMessage;
     private send;

@@ -9,7 +9,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import { Events, LighthouseController } from './LighthouseController.js';
 import lighthousePanelStyles from './lighthousePanel.css.js';
-import { ProtocolService } from './LighthouseProtocolService.js';
+import { CancelledError, ProtocolService } from './LighthouseProtocolService.js';
 import { LighthouseReportRenderer } from './LighthouseReportRenderer.js';
 import { Item, ReportSelector } from './LighthouseReportSelector.js';
 import { StartView } from './LighthouseStartView.js';
@@ -144,6 +144,11 @@ export class LighthousePanel extends UI.Panel.Panel {
         this.renderStartView();
     }
     handleError(err) {
+        if (err instanceof CancelledError) {
+            // If the error was an explicit choice to cancel, we don't want to render
+            // the bug report view.
+            return;
+        }
         if (err instanceof Error) {
             this.statusView.renderBugReport(err);
         }

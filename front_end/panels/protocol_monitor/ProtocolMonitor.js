@@ -566,27 +566,35 @@ export class CommandAutocompleteSuggestionProvider {
 }
 const INFO_WIDGET_VIEW = (input, _output, target) => {
     // clang-format off
-    render(widget(UI.TabbedPane.TabbedPane, {
-        tabs: [
-            {
-                id: 'request',
-                title: i18nString(UIStrings.request),
-                view: input.type === undefined ?
-                    new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.noMessageSelected), i18nString(UIStrings.selectAMessageToView)) :
-                    SourceFrame.JSONView.JSONView.createViewSync(input.request || null),
-                enabled: input.type === 'sent',
-                selected: input.selectedTab === 'request',
-            },
-            {
-                id: 'response',
-                title: i18nString(UIStrings.response),
-                view: input.type === undefined ?
-                    new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.noMessageSelected), i18nString(UIStrings.selectAMessageToView)) :
-                    SourceFrame.JSONView.JSONView.createViewSync(input.response || null),
-                selected: input.selectedTab === 'response',
-            }
-        ]
-    }), target);
+    render(html `
+    <devtools-tabbed-pane>${input.type === undefined ? html `
+      <devtools-widget
+          id="request" title=${i18nString(UIStrings.request)}
+          ?selected=${input.selectedTab === 'request'} disabled
+          ${widget(UI.EmptyWidget.EmptyWidget, {
+        header: i18nString(UIStrings.noMessageSelected),
+        text: i18nString(UIStrings.selectAMessageToView)
+    })}>
+      </devtools-widget>
+      <devtools-widget
+          id="response" title=${i18nString(UIStrings.response)}
+          ?selected=${input.selectedTab === 'response'}
+          ${widget(UI.EmptyWidget.EmptyWidget, {
+        header: i18nString(UIStrings.noMessageSelected),
+        text: i18nString(UIStrings.selectAMessageToView)
+    })}>
+      </devtools-widget>` : html `
+      <devtools-widget
+          id="request" title=${i18nString(UIStrings.request)}
+          ?selected=${input.selectedTab === 'request'} ?disabled=${input.type !== 'sent'}
+          ${widget(SourceFrame.JSONView.SearchableJsonView, { jsonObject: input.request })}>
+      </devtools-widget>
+      <devtools-widget
+          id="response" title=${i18nString(UIStrings.response)}
+          ?selected=${input.selectedTab === 'response'}
+          ${widget(SourceFrame.JSONView.SearchableJsonView, { jsonObject: input.response })}>
+      </devtools-widget>`}
+    </devtools-tabbed-pane>`, target);
     // clang-format on
 };
 export class InfoWidget extends UI.Widget.VBox {

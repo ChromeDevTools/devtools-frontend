@@ -29,6 +29,11 @@ const UIStrings = {
      * @description Disclaimer shown in the code blocks.
      */
     disclaimer: 'Use code snippets with caution',
+    /**
+     * @description The title of the button to show all lines of a code block.
+     * @example {5} PH1
+     */
+    showAllLines: 'Show all lines ({PH1} more)',
 };
 const str_ = i18n.i18n.registerUIStrings('ui/components/markdown_view/CodeBlock.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -100,6 +105,7 @@ export class CodeBlock extends HTMLElement {
     #copied = false;
     #editorState;
     #languageConf = new CodeMirror.Compartment();
+    #truncationConf = new CodeMirror.Compartment();
     /**
      * Whether to display a notice "​​Use code snippets with caution" in code
      * blocks.
@@ -108,6 +114,7 @@ export class CodeBlock extends HTMLElement {
     #header;
     #showCopyButton = true;
     #citations = [];
+    #displayLimit = Number.MAX_VALUE;
     connectedCallback() {
         void this.#render();
     }
@@ -120,6 +127,7 @@ export class CodeBlock extends HTMLElement {
                 CodeMirror.EditorState.readOnly.of(true),
                 CodeMirror.EditorView.lineWrapping,
                 this.#languageConf.of(CodeMirror.javascript.javascript()),
+                this.#truncationConf.of([]),
             ],
         });
         void this.#render();
@@ -149,6 +157,13 @@ export class CodeBlock extends HTMLElement {
     }
     set citations(citations) {
         this.#citations = citations;
+    }
+    set displayLimit(value) {
+        this.#displayLimit = value;
+        void this.#render();
+    }
+    get displayLimit() {
+        return this.#displayLimit;
     }
     #onCopy() {
         UI.UIUtils.copyTextToClipboard(this.#code, i18nString(UIStrings.copied));
@@ -208,6 +223,8 @@ export class CodeBlock extends HTMLElement {
         if (!this.#editorState) {
             throw new Error('Unexpected: trying to render the text editor without editorState');
         }
+        const linesCount = this.#editorState.doc.lines;
+        const isTruncated = linesCount > this.#displayLimit;
         // clang-format off
         Lit.render(html `<div class='codeblock' jslog=${VisualLogging.section('code')}>
       <style>${styles}</style>
@@ -222,6 +239,19 @@ export class CodeBlock extends HTMLElement {
         <div class="code">
           <devtools-text-editor .state=${this.#editorState}></devtools-text-editor>
         </div>
+        ${isTruncated ? html `
+          <div class="show-all-container">
+            <devtools-button
+              .variant=${"outlined" /* Buttons.Button.Variant.OUTLINED */}
+              .size=${"SMALL" /* Buttons.Button.Size.SMALL */}
+              .jslogContext=${'show-all'}
+              .title=${i18nString(UIStrings.showAllLines, { PH1: linesCount - this.#displayLimit })}
+              @click=${() => {
+            this.displayLimit = Number.MAX_VALUE;
+        }}
+            >${i18nString(UIStrings.showAllLines, { PH1: linesCount - this.#displayLimit })}</devtools-button>
+          </div>
+        ` : Lit.nothing}
       </div>
       ${this.#displayNotice ? this.#renderNotice() : Lit.nothing}
     </div>`, this.#shadow, {
@@ -233,8 +263,15 @@ export class CodeBlock extends HTMLElement {
             return;
         }
         const language = await languageFromToken(this.#codeLang);
+        let truncationExtension = [];
+        if (isTruncated) {
+            truncationExtension = CodeMirror.EditorView.decorations.of(CodeMirror.Decoration.set(CodeMirror.Decoration.replace({}).range(this.#editorState.doc.line(this.#displayLimit).to, this.#editorState.doc.length)));
+        }
         editor.dispatch({
-            effects: this.#languageConf.reconfigure(language),
+            effects: [
+                this.#languageConf.reconfigure(language),
+                this.#truncationConf.reconfigure(truncationExtension),
+            ],
         });
     }
 }

@@ -185,6 +185,7 @@ devtools_ui_module("unittests") {
     "KeyValueStorageItemsView.test.ts",
     "OriginTrialTreeView.test.ts",
     "PreloadingTreeElement.test.ts",
+    "ReportingApiTreeElement.test.ts",
     "ReportingApiView.test.ts",
     "ServiceWorkerCacheViews.test.ts",
     "ServiceWorkerUpdateCycleView.test.ts",

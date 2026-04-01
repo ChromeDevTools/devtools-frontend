@@ -299,7 +299,7 @@ export class StylePropertiesSection {
       const newRuleButton = new UI.Toolbar.ToolbarButton(
           i18nString(UIStrings.insertStyleRuleBelow), 'plus', undefined, 'elements.new-style-rule');
       newRuleButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, this.onNewRuleClick, this);
-      newRuleButton.setSize(Buttons.Button.Size.SMALL);
+      newRuleButton.setSize(Buttons.Button.Size.MICRO);
       newRuleButton.element.tabIndex = -1;
       if (!this.newStyleRuleToolbar) {
         this.newStyleRuleToolbar =

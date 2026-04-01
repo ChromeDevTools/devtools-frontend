@@ -22,6 +22,7 @@ import {
 
 const options =
     commandLineArgs(yargs(process.argv.slice(2)))
+        .parserConfiguration({'strip-aliased': true})
         .options('skip-ninja', {
           type: 'boolean',
           default: false,
@@ -31,11 +32,6 @@ const options =
           type: 'boolean',
           hidden: true,
           desc: 'Debug the driver part of tests',
-        })
-        .options('verbose', {
-          alias: 'v',
-          type: 'count',
-          desc: 'Increases the log level',
         })
         .options('bail', {
           type: 'boolean',
@@ -59,12 +55,12 @@ const options =
         .strict()
         .parseSync();
 
-const CONSUMED_OPTIONS = ['tests', 'skip-ninja', 'debug-driver', 'verbose', 'v', 'watch'];
+const CONSUMED_OPTIONS = ['tests', 'skip-ninja', 'debug-driver', 'watch', 'verbose'];
 
 let logLevel = 'error';
-if (options['verbose'] === 1) {
+if (Number(options['verbose']) === 1) {
   logLevel = 'info';
-} else if (options['verbose'] === 2) {
+} else if (Number(options['verbose']) >= 2) {
   logLevel = 'debug';
 }
 
@@ -170,6 +166,7 @@ class Tests {
       ...(options['auto-watch'] ? ['--auto-watch', '--no-single-run'] : []),
       '--',
       ...tests.map(t => positionalTestArgs ? t.buildPath : `--tests=${t.buildPath}`),
+      ...(options['verbose'] ? [`--verbose=${options['verbose']}`] : []),
       ...forwardOptions(),
     ];
     if (options['debug-driver']) {

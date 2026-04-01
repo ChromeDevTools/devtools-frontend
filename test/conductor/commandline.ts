@@ -73,6 +73,11 @@ export function commandLineArgs<T = Record<string, unknown>>(yargs: Yargs.Argv<T
         choices: Object.values(DiffBehaviors),
         desc: 'Define how to deal with diffs in snapshots/screenshots',
       })
+      .option('verbose', {
+        alias: 'v',
+        type: 'count',
+        desc: 'Increases the log level',
+      })
       .option('shuffle', {
         type: 'boolean',
         desc: 'Execute tests in random order',

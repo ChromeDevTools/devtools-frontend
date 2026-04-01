@@ -23,6 +23,7 @@ export const enum ServerType {
 
 interface Config {
   tests: string[];
+  verbose: number;
   artifactsDir: string;
   chromeBinary: string;
   serverType: ServerType;
@@ -122,6 +123,7 @@ const getDefaultArtifactDir = () => {
 
 export const TestConfig: Config = {
   tests: getTestsFromOptions(),
+  verbose: Number(options['verbose'] ?? 0),
   artifactsDir: options['artifacts-dir'] || getDefaultArtifactDir(),
   chromeBinary: options['chrome-binary'] ?? defaultChromePath(),
   serverType: ServerType.HOSTED_MODE,

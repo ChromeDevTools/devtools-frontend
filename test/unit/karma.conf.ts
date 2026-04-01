@@ -29,7 +29,7 @@ function* reporters() {
     yield 'resultsdb';
   } else {
     yield 'screenshots';
-    yield 'progress-diff';
+    yield TestConfig.verbose ? 'spec' : 'progress-diff';
   }
   if (TestConfig.coverage) {
     yield 'coverage';

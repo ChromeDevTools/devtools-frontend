@@ -21,6 +21,7 @@ import {allThreadEntriesInTrace} from '../../../testing/TraceHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as Bindings from '../../bindings/bindings.js';
 import * as Trace from '../../trace/trace.js';
+import type {SerializableKey} from '../../trace/types/File.js';
 import * as Workspace from '../../workspace/workspace.js';
 import {
   AiAgent,
@@ -360,6 +361,57 @@ code
         answer: `\`\`\`
 code
 \`\`\``
+      });
+    });
+
+    it('translates eventKey: URLs in link destinations', async function() {
+      const parsedTrace = await TraceLoader.traceEngine(this, 'lcp-images.json.gz');
+      const agent = createAgentForConversation();
+      const context = PerformanceAgent.PerformanceTraceContext.fromParsedTrace(parsedTrace);
+      // Run once to initialize context
+      await agent.run('', {selected: context}).next();
+
+      const response = agent.parseTextResponse(
+          'The LCP image [https://www.diy.com/](urlIndex: 0, eventKey: r-14746) is a background image');
+      assert.deepEqual(response, {answer: 'The LCP image [https://www.diy.com/](#r-14746) is a background image'});
+
+      const response2 = agent.parseTextResponse(
+          'The LCP image [https://www.diy.com/](eventKey: r-14746, urlIndex: 0) is a background image');
+      assert.deepEqual(response2, {answer: 'The LCP image [https://www.diy.com/](#r-14746) is a background image'});
+    });
+
+    it('translates plain eventKeys in link destinations', async function() {
+      const parsedTrace = await TraceLoader.traceEngine(this, 'lcp-images.json.gz');
+      const agent = createAgentForConversation();
+      const context = PerformanceAgent.PerformanceTraceContext.fromParsedTrace(parsedTrace);
+      await agent.run('', {selected: context}).next();
+
+      const focus = context.getItem();
+      assert.exists(focus);
+      sinon.stub(focus, 'lookupEvent').callsFake(key => {
+        if (key === 'valid-event-key' as SerializableKey) {
+          return {} as Trace.Types.Events.Event;
+        }
+        return null;
+      });
+
+      const response =
+          agent.parseTextResponse('The LCP image [https://www.diy.com/](valid-event-key) is a background image');
+      assert.deepEqual(
+          response, {answer: 'The LCP image [https://www.diy.com/](#valid-event-key) is a background image'});
+    });
+
+    it('translates eventKey: URLs with spaces between bracket and parenthesis', async function() {
+      const parsedTrace = await TraceLoader.traceEngine(this, 'lcp-images.json.gz');
+      const agent = createAgentForConversation();
+      const context = PerformanceAgent.PerformanceTraceContext.fromParsedTrace(parsedTrace);
+      await agent.run('', {selected: context}).next();
+
+      const response = agent.parseTextResponse(
+          'The LCP element is an image [IMG class=\'h-auto w-full\'] (eventKey: r-12227) loaded from [https://media.diy.com/is/image] (eventKey: s-2069)');
+      assert.deepEqual(response, {
+        answer:
+            'The LCP element is an image [IMG class=\'h-auto w-full\'](#r-12227) loaded from [https://media.diy.com/is/image](#s-2069)'
       });
     });
   });

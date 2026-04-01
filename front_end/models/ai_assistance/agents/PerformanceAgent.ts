@@ -173,7 +173,7 @@ const extraPreambleWhenNotExternal = `Additional notes:
 When referring to a trace event that has a corresponding \`eventKey\`, annotate your output using markdown link syntax. For example:
 - When referring to an event that is a long task: [Long task](#r-123)
 - When referring to a URL for which you know the eventKey of: [https://www.example.com](#s-1827)
-- Never show the eventKey (like "eventKey: s-1852"); instead, use a markdown link as described above.
+- Never show the eventKey (like "eventKey: s-1852") in your running text. When using markdown links, the URL must be only the hash (e.g., \`#s-1852\`), never \`eventKey: s-1852\`.
 
 When asking the user to make a choice between options, output a list of choices at the end of your text response. The format is \`SUGGESTIONS: ["suggestion1", "suggestion2", "suggestion3"]\`. This MUST start on a newline, and be a single line.
 `;
@@ -491,12 +491,23 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
     //    - Group 3: The link destination, e.g., "url"
     // 2. (https?:\/\/[^\s<>()]+): Captures a standalone URL.
     //    - Group 4: The standalone URL, e.g., "https://google.com"
-    const urlRegex = /(\[(.*?)\]\((.*?)\))|(https?:\/\/[^\s<>()]+)/g;
+    const urlRegex = /(\[(.*?)\][ \t]*\((.*?)\))|(https?:\/\/[^\s<>()]+)/g;
 
     return response.replace(urlRegex, (match, markdownLink, linkText, linkDest, standaloneUrlText) => {
       if (markdownLink) {
         if (linkDest.startsWith('#')) {
           return match;
+        }
+
+        const eventKeyMatch = linkDest.match(/eventKey:\s*([^\s,)]+)/);
+        if (eventKeyMatch) {
+          const eventKey = eventKeyMatch[1];
+          return `[${linkText}](#${eventKey})`;
+        }
+
+        const event = focus.lookupEvent(linkDest as Trace.Types.File.SerializableKey);
+        if (event) {
+          return `[${linkText}](#${linkDest})`;
         }
       }
 

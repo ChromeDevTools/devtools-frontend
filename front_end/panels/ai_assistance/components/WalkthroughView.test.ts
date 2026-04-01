@@ -83,6 +83,79 @@ describeWithEnvironment('WalkthroughView', () => {
     assert.strictEqual(stepTitle.innerText, 'Test step 1');
   });
 
+  it('does not render steps that require approval', async () => {
+    const message: AiAssistance.ChatMessage.ModelChatMessage = {
+      entity: AiAssistance.ChatMessage.ChatMessageEntity.MODEL,
+      parts: [
+        {
+          type: 'step',
+          step: {
+            isLoading: false,
+            title: 'Normal step',
+          }
+        },
+        {
+          type: 'step',
+          step: {
+            isLoading: false,
+            title: 'Approval step',
+            requestApproval: {
+              description: 'Confirm this action',
+              onAnswer: () => {},
+            },
+          }
+        }
+      ],
+    };
+    const view = await makeWalkthrough({
+      isLoading: false,
+      message,
+      isInlined: false,
+      isExpanded: true,
+    });
+
+    const steps = view.contentElement.querySelectorAll('.walkthrough-step');
+    assert.lengthOf(steps, 1);
+    assert.strictEqual(querySelectorErrorOnMissing(steps[0] as HTMLElement, '.title').innerText, 'Normal step');
+    assert.notInclude(view.contentElement.textContent, 'Approval step');
+  });
+
+  it('uses the title of the last step (even if it requires approval) for the walkthrough header', async () => {
+    const message: AiAssistance.ChatMessage.ModelChatMessage = {
+      entity: AiAssistance.ChatMessage.ChatMessageEntity.MODEL,
+      parts: [
+        {
+          type: 'step',
+          step: {
+            isLoading: false,
+            title: 'Analyzing data',
+          }
+        },
+        {
+          type: 'step',
+          step: {
+            isLoading: false,
+            title: 'Running JS',
+            requestApproval: {
+              description: 'Confirm this action',
+              onAnswer: () => {},
+            },
+          }
+        }
+      ],
+    };
+
+    const view = await makeWalkthrough({
+      isLoading: true,
+      message,
+      isInlined: true,
+      isExpanded: false,
+    });
+
+    const summary = querySelectorErrorOnMissing(view.contentElement, 'summary');
+    assert.strictEqual(summary.innerText.trim(), 'Running JS');
+  });
+
   it('renders the details/summary in inline mode', async () => {
     const message: AiAssistance.ChatMessage.ModelChatMessage = {
       entity: AiAssistance.ChatMessage.ChatMessageEntity.MODEL,

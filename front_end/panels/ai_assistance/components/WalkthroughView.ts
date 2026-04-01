@@ -91,8 +91,8 @@ export function walkthroughCloseTitle(input: {
   return lockedString(UIStrings.hideThinking);
 }
 
-function renderInlineWalkthrough(input: ViewInput, stepsOutput: Lit.LitTemplate, steps: Step[]): Lit.LitTemplate {
-  const lastStep = steps.at(-1);
+function renderInlineWalkthrough(input: ViewInput, stepsOutput: Lit.LitTemplate, allSteps: Step[]): Lit.LitTemplate {
+  const lastStep = allSteps.at(-1);
   if (!input.isInlined || !lastStep) {
     return Lit.nothing;
   }
@@ -109,7 +109,7 @@ function renderInlineWalkthrough(input: ViewInput, stepsOutput: Lit.LitTemplate,
     }
   }
 
-  const hasWidgets = steps.some(s => s.widgets?.length);
+  const hasWidgets = allSteps.some(s => s.widgets?.length);
 
   // clang-format off
   return html`
@@ -165,17 +165,21 @@ export const DEFAULT_VIEW = (
     output: ViewOutput,
     target: HTMLElement|DocumentFragment,
     ): void => {
-  const steps = input.message?.parts.filter(t => t.type === 'step')?.map(p => p.step) ?? [];
+  const allSteps = input.message?.parts.filter(t => t.type === 'step')?.map(p => p.step) ?? [];
+  // Ensure that we render steps but not ones that need approval; a
+  // step that needs approval is always rendered into the main chat
+  // view regardless of if the walkthrough is open or not.
+  const renderableSteps = allSteps.filter(s => !s.requestApproval);
 
   // clang-format off
-  const stepsOutput = steps.length > 0 ? html`
+  const stepsOutput = renderableSteps.length > 0 ? html`
     <div class="steps-container" @scroll=${input.handleScroll} ${ref(el => {
       output.scrollContainer = el as HTMLElement;
     })}>
       <div class="steps-scroll-content" ${ref(el => {
         output.stepsContainer = el as HTMLElement;
     })}>
-        ${steps.map((step, index) => html`
+        ${renderableSteps.map((step, index) => html`
           <div class="walkthrough-step">
             <span class="step-number">${index + 1}</span>
             <div class="step-wrapper">
@@ -183,7 +187,7 @@ export const DEFAULT_VIEW = (
                 step,
                 isLoading: input.isLoading,
                 markdownRenderer: input.markdownRenderer,
-                isLast: index === steps.length - 1
+                isLast: index === renderableSteps.length - 1
               })}
             </div>
           </div>
@@ -198,8 +202,8 @@ export const DEFAULT_VIEW = (
       ${chatMessageStyles}
       ${walkthroughViewStyles}
     </style>
-    ${input.isInlined ? renderInlineWalkthrough(input, stepsOutput, steps)
-                     : renderSidebarWalkthrough(input, stepsOutput, steps.length)
+    ${input.isInlined ? renderInlineWalkthrough(input, stepsOutput, allSteps)
+                     : renderSidebarWalkthrough(input, stepsOutput, renderableSteps.length)
     }`, target);
   // clang-format on
 };

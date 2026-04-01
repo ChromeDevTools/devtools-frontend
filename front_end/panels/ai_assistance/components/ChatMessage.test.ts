@@ -433,7 +433,7 @@ describeWithEnvironment('ChatMessage', () => {
       assert.isNull(walkthrough);
     });
 
-    it('renders side effect confirmation when not inline and walkthrough is hidden', () => {
+    it('renders side effect confirmation regardless of walkthrough expansion state', () => {
       const sideEffectDescription = 'Proceed with cation!';
 
       const sideEffectMessage: AiAssistance.ChatMessage.ModelChatMessage = {
@@ -453,7 +453,8 @@ describeWithEnvironment('ChatMessage', () => {
         rpcId: 99,
       };
 
-      const target = renderView({
+      // Test closed state
+      const targetClosed = renderView({
         message: sideEffectMessage,
         walkthrough: {
           ...DEFAULT_WALKTHROUGH,
@@ -461,13 +462,24 @@ describeWithEnvironment('ChatMessage', () => {
           isExpanded: false,
         }
       });
-      const sideEffectContainer = target.querySelector('.side-effect-container');
-      assert.isNotNull(sideEffectContainer);
+      assert.isNotNull(targetClosed.querySelector('.side-effect-container'));
+      assert.include(targetClosed.querySelector('.side-effect-container')?.textContent, sideEffectDescription);
 
-      assert.isTrue(sideEffectContainer.textContent.includes(sideEffectDescription));
+      // Test open state
+      const targetOpen = renderView({
+        message: sideEffectMessage,
+        walkthrough: {
+          ...DEFAULT_WALKTHROUGH,
+          isInlined: false,
+          isExpanded: true,
+          activeSidebarMessage: sideEffectMessage,
+        }
+      });
+      assert.isNotNull(targetOpen.querySelector('.side-effect-container'));
+      assert.include(targetOpen.querySelector('.side-effect-container')?.textContent, sideEffectDescription);
     });
 
-    it('renders side effect confirmation when inline and walkthrough is hidden', () => {
+    it('renders side effect confirmation in inline mode regardless of walkthrough expansion state', () => {
       const sideEffectDescription = 'Proceed with cation!';
 
       const sideEffectMessage: AiAssistance.ChatMessage.ModelChatMessage = {
@@ -487,7 +499,8 @@ describeWithEnvironment('ChatMessage', () => {
         rpcId: 99,
       };
 
-      const target = renderView({
+      // Test closed state
+      const targetClosed = renderView({
         message: sideEffectMessage,
         walkthrough: {
           ...DEFAULT_WALKTHROUGH,
@@ -495,10 +508,21 @@ describeWithEnvironment('ChatMessage', () => {
           isExpanded: false,
         }
       });
-      const sideEffectContainer = target.querySelector('.side-effect-container');
-      assert.isNotNull(sideEffectContainer);
+      assert.isNotNull(targetClosed.querySelector('.side-effect-container'));
+      assert.include(targetClosed.querySelector('.side-effect-container')?.textContent, sideEffectDescription);
 
-      assert.isTrue(sideEffectContainer.textContent.includes(sideEffectDescription));
+      // Test open state
+      const targetOpen = renderView({
+        message: sideEffectMessage,
+        walkthrough: {
+          ...DEFAULT_WALKTHROUGH,
+          isInlined: true,
+          isExpanded: true,
+          inlineExpandedMessages: [sideEffectMessage],
+        }
+      });
+      assert.isNotNull(targetOpen.querySelector('.side-effect-container'));
+      assert.include(targetOpen.querySelector('.side-effect-container')?.textContent, sideEffectDescription);
     });
 
     it('does not force walkthrough expansion when there are side-effect steps', () => {

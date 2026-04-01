@@ -23,8 +23,6 @@ function createTool(
 }
 describeWithEnvironment('WebMCPView (View)', () => {
   const createDefaultViewInput = (): Application.WebMCPView.ViewInput => {
-    const widget = new Application.WebMCPView.ToolDetailsWidget();
-    widget.markAsExternallyManaged();
     return {
       filters: {text: ''},
       tools: [],
@@ -36,7 +34,6 @@ describeWithEnvironment('WebMCPView (View)', () => {
       onToolSelect: () => {},
       selectedCall: null,
       onCallSelect: () => {},
-      callDetailsWidget: widget,
     };
   };
 
@@ -189,6 +186,36 @@ describeWithEnvironment('WebMCPView (View)', () => {
     assert.isFalse(listElements[0].classList.contains('selected'));
     assert.isTrue(listElements[1].classList.contains('selected'));
   });
+  it('renders a selected tool call details in a TabbedPane', async () => {
+    updateHostConfig({devToolsWebMCPSupport: {enabled: true}});
+    const sdkTarget = createTarget();
+    const target = document.createElement('div');
+    target.style.width = '600px';
+    target.style.height = '400px';
+    renderElementIntoDOM(target, {includeCommonStyles: true});
+
+    const tool = createTool('list_files', 'List files', 'frame-1' as Protocol.Page.FrameId, sdkTarget);
+    const selectedCall: WebMCP.WebMCPModel.Call = {
+      invocationId: '1',
+      input: '{"dir": "/tmp"}',
+      tool,
+      result: {
+        status: Protocol.WebMCP.InvocationStatus.Success,
+        output: 'File content here',
+      },
+    };
+
+    DEFAULT_VIEW(
+        {
+          ...createDefaultViewInput(),
+          toolCalls: [selectedCall],
+          selectedCall,
+        },
+        {}, target);
+
+    await assertScreenshot('application/webmcp-tool-call-details.png');
+  });
+
   it('renders filter bar with filters applied', async () => {
     const container = document.createElement('div');
     container.style.width = '600px';

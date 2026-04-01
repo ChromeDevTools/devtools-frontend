@@ -156,7 +156,7 @@ const UIStrings = {
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/application/WebMCPView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-const {widget, widgetRef} = UI.Widget;
+const {widget} = UI.Widget;
 
 export interface FilterState {
   text: string;
@@ -191,7 +191,6 @@ export interface ViewInput {
   onClearLogClick: () => void;
   onFilterChange: (filters: FilterState) => void;
   toolCalls: WebMCP.WebMCPModel.Call[];
-  callDetailsWidget: ToolDetailsWidget;
 }
 
 export function filterToolCalls(
@@ -405,21 +404,21 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
               </devtools-data-grid>
             </div>
             <div slot="sidebar" style="height: 100%; display: flex; flex-direction: column; overflow: hidden;">
-              <devtools-widget class="call-details-tabbed-pane"
-                  ${widget(UI.TabbedPane.TabbedPane, {tabs: [{id: 'details', title: i18nString(UIStrings.toolDetails), view: input.callDetailsWidget}]})}
-                  ${widgetRef(UI.TabbedPane.TabbedPane, (e: UI.TabbedPane.TabbedPane) => {
-                    // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
-                    render(html`
-                      <devtools-button
-                        .iconName=${'cross'}
-                        .size=${Buttons.Button.Size.SMALL}
-                        .variant=${Buttons.Button.Variant.ICON}
-                        title=${i18nString(UIStrings.close)}
-                        @click=${() => input.onCallSelect(null)}
-                      ></devtools-button>
-                    `, e.leftToolbar(), {host: this});
-                  })}>
-              </devtools-widget>
+              <devtools-tabbed-pane class="call-details-tabbed-pane">
+                <devtools-button
+                  slot="left"
+                  .iconName=${'cross'}
+                  .size=${Buttons.Button.Size.SMALL}
+                  .variant=${Buttons.Button.Variant.ICON}
+                  title=${i18nString(UIStrings.close)}
+                  @click=${() => input.onCallSelect(null)}
+                ></devtools-button>
+                <devtools-widget
+                  id="details"
+                  title=${i18nString(UIStrings.toolDetails)}
+                  ${widget(ToolDetailsWidget, {tool: input.selectedCall?.tool})}>
+                </devtools-widget>
+              </devtools-tabbed-pane>
             </div>
           </devtools-split-view>
           <div class="webmcp-toolbar-container" role="toolbar">
@@ -492,7 +491,6 @@ export class WebMCPView extends UI.Widget.VBox {
   readonly #view: View;
   #selectedTool: WebMCP.WebMCPModel.Tool|null = null;
   #selectedCall: WebMCP.WebMCPModel.Call|null = null;
-  #callDetailsWidget = new ToolDetailsWidget();
 
   #filterState: FilterState = {
     text: '',
@@ -634,7 +632,6 @@ export class WebMCPView extends UI.Widget.VBox {
     const models = SDK.TargetManager.TargetManager.instance().models(WebMCP.WebMCPModel.WebMCPModel);
     const toolCalls = models.flatMap(model => model.toolCalls);
     const filteredCalls = filterToolCalls(toolCalls, this.#filterState);
-    this.#callDetailsWidget.tool = this.#selectedCall?.tool;
     const input: ViewInput = {
       tools: this.#getTools(),
       selectedTool: this.#selectedTool,
@@ -652,7 +649,6 @@ export class WebMCPView extends UI.Widget.VBox {
       filterButtons: this.#filterButtons,
       onClearLogClick: this.#handleClearLogClick,
       onFilterChange: this.#handleFilterChange,
-      callDetailsWidget: this.#callDetailsWidget,
     };
     this.#view(input, {}, this.contentElement);
   }

@@ -808,4 +808,179 @@ code
       assert.strictEqual(lcpWidget?.data.lcpData, insightSet.model.LCPBreakdown);
     });
   });
+
+  describe('PerformanceTraceContext.getSuggestions', () => {
+    it('returns the call tree suggestions when focus is a call tree', async () => {
+      const mockAiCallTree = {
+        serialize: () => 'Mock call tree',
+        parsedTrace: FAKE_PARSED_TRACE,
+        rootNode: {event: {ts: 0, dur: 0}},
+      } as unknown as AICallTree.AICallTree;
+      const context = PerformanceAgent.PerformanceTraceContext.fromCallTree(mockAiCallTree);
+      const suggestions = await context.getSuggestions();
+      assert.deepEqual(suggestions, [
+        {title: 'What\'s the purpose of this work?', jslogContext: 'performance-default'},
+        {title: 'Where is time being spent?', jslogContext: 'performance-default'},
+        {title: 'How can I optimize this?', jslogContext: 'performance-default'},
+      ]);
+    });
+
+    it('returns the insight suggestions when focus is an insight', async () => {
+      const context = PerformanceAgent.PerformanceTraceContext.fromInsight(FAKE_PARSED_TRACE, FAKE_LCP_MODEL);
+      const suggestions = await context.getSuggestions();
+      // LCP Breakdown has 3 suggestions (defined in PerformanceInsightFormatter)
+      assert.exists(suggestions);
+      assert.lengthOf(suggestions, 3);
+      assert.strictEqual(suggestions[0].title, 'Help me optimize my LCP score');
+    });
+
+    it('returns default suggestions when no specific focus', async () => {
+      const context = PerformanceAgent.PerformanceTraceContext.fromParsedTrace(FAKE_PARSED_TRACE);
+      const suggestions = await context.getSuggestions();
+      assert.exists(suggestions);
+      assert.strictEqual(suggestions![0].title, 'What performance issues exist with my page?');
+    });
+
+    it('returns CWV suggestions when metrics are poor and caps total investigation suggestions', async () => {
+      const insightSet = {
+        id: '1',
+        url: new URL('https://example.com'),
+        model: {
+          LCPBreakdown: {
+            insightKey: Trace.Insights.Types.InsightKeys.LCP_BREAKDOWN,
+            state: 'fail',
+            lcpMs: 5000 as Trace.Types.Timing.Milli,  // 5 seconds = Poor
+            lcpEvent: {} as unknown as Trace.Types.Events.AnyLargestContentfulPaintCandidate,
+          } as Trace.Insights.Models.LCPBreakdown.LCPBreakdownInsightModel,
+          INPBreakdown: {
+            insightKey: Trace.Insights.Types.InsightKeys.INP_BREAKDOWN,
+            state: 'fail',
+            longestInteractionEvent: {
+              dur: 1000000 as Trace.Types.Timing.Micro,  // 1 second = Poor
+            } as unknown as Trace.Types.Events.SyntheticInteractionPair,
+          } as Trace.Insights.Models.INPBreakdown.INPBreakdownInsightModel,
+          CLSCulprits: {
+            insightKey: Trace.Insights.Types.InsightKeys.CLS_CULPRITS,
+            state: 'fail',
+            clusters: [{clusterCumulativeScore: 0.5}] as unknown as Trace.Types.Events.SyntheticLayoutShiftCluster[],
+            worstCluster: {
+              clusterCumulativeScore: 0.5,
+            } as unknown as Trace.Types.Events.SyntheticLayoutShiftCluster,
+          } as Trace.Insights.Models.CLSCulprits.CLSCulpritsInsightModel,
+          Insight1: {
+            insightKey: Trace.Insights.Types.InsightKeys.DOM_SIZE,
+            state: 'fail',
+            title: 'DOM Size' as Common.UIString.LocalizedString,
+          } as Trace.Insights.Models.DOMSize.DOMSizeInsightModel,
+        },
+        bounds: {min: 0, max: 10, range: 10},
+      } as unknown as Trace.Insights.Types.InsightSet;
+
+      const FAKE_PARSED_TRACE_POOR_METRICS = {
+        data: {
+          Meta: {mainFrameURL: 'https://example.com', traceBounds: {min: 0, max: 10}},
+        },
+        insights: new Map([
+          ['1' as Trace.Types.Events.NavigationId, insightSet],
+        ]),
+      } as unknown as Trace.TraceModel.ParsedTrace;
+
+      const context = PerformanceAgent.PerformanceTraceContext.fromParsedTrace(FAKE_PARSED_TRACE_POOR_METRICS);
+      const suggestions = await context.getSuggestions();
+
+      assert.exists(suggestions);
+      // Base + 3 CWV = 4 suggestions. Insight1 is ignored because we hit the cap of 3 investigation suggestions.
+      assert.deepEqual(suggestions, [
+        {title: 'What performance issues exist with my page?', jslogContext: 'performance-default'},
+        {title: 'How can I improve LCP?', jslogContext: 'performance-default'},
+        {title: 'How can I improve INP?', jslogContext: 'performance-default'},
+        {title: 'How can I improve CLS?', jslogContext: 'performance-default'},
+      ]);
+    });
+
+    it('returns a mix of CWV and insight suggestions up to the cap', async () => {
+      const insightSet = {
+        id: '1',
+        url: new URL('https://example.com'),
+        model: {
+          LCPBreakdown: {
+            insightKey: Trace.Insights.Types.InsightKeys.LCP_BREAKDOWN,
+            state: 'fail',
+            lcpMs: 5000 as Trace.Types.Timing.Milli,  // 5 seconds = Poor
+            lcpEvent: {} as unknown as Trace.Types.Events.AnyLargestContentfulPaintCandidate,
+          } as Trace.Insights.Models.LCPBreakdown.LCPBreakdownInsightModel,
+          Insight1: {
+            insightKey: Trace.Insights.Types.InsightKeys.DOM_SIZE,
+            state: 'fail',
+            title: 'DOM Size' as Common.UIString.LocalizedString,
+          } as Trace.Insights.Models.DOMSize.DOMSizeInsightModel,
+          Insight2: {
+            insightKey: Trace.Insights.Types.InsightKeys.RENDER_BLOCKING,
+            state: 'fail',
+            title: 'Render Blocking' as Common.UIString.LocalizedString,
+          } as Trace.Insights.Models.RenderBlocking.RenderBlockingInsightModel,
+          Insight3: {
+            insightKey: Trace.Insights.Types.InsightKeys.IMAGE_DELIVERY,
+            state: 'fail',
+            title: 'Image Delivery' as Common.UIString.LocalizedString,
+          } as Trace.Insights.Models.ImageDelivery.ImageDeliveryInsightModel,
+        },
+        bounds: {min: 0, max: 10, range: 10},
+      } as unknown as Trace.Insights.Types.InsightSet;
+
+      const FAKE_PARSED_TRACE_MIXED = {
+        data: {
+          Meta: {mainFrameURL: 'https://example.com', traceBounds: {min: 0, max: 10}},
+        },
+        insights: new Map([
+          ['1' as Trace.Types.Events.NavigationId, insightSet],
+        ]),
+      } as unknown as Trace.TraceModel.ParsedTrace;
+
+      const context = PerformanceAgent.PerformanceTraceContext.fromParsedTrace(FAKE_PARSED_TRACE_MIXED);
+      const suggestions = await context.getSuggestions();
+
+      assert.exists(suggestions);
+      // Base + 1 CWV (LCP) + 2 insight (DOMSize + Render Blocking) = 4 suggestions.
+      // LCPBreakdown is filtered out by the poorMetrics logic because we added the LCP CWV suggestion.
+      assert.lengthOf(suggestions, 4);
+      assert.strictEqual(suggestions[0].title, 'What performance issues exist with my page?');
+      assert.strictEqual(suggestions[1].title, 'How can I improve LCP?');
+      assert.strictEqual(suggestions[2].title, 'How can I reduce the size of my DOM?');
+      assert.strictEqual(suggestions[3].title, 'How can I reduce the number of render-blocking requests?');
+    });
+
+    it('limits failing insight suggestions so there is a max of 4 total suggestions', async () => {
+      const insightSet = {
+        id: '1',
+        url: new URL('https://example.com'),
+        model: {
+          Insight1: {insightKey: Trace.Insights.Types.InsightKeys.DOM_SIZE, state: 'fail', title: 'DOM Size'},
+          Insight2:
+              {insightKey: Trace.Insights.Types.InsightKeys.RENDER_BLOCKING, state: 'fail', title: 'Render Blocking'},
+          Insight3:
+              {insightKey: Trace.Insights.Types.InsightKeys.DOCUMENT_LATENCY, state: 'fail', title: 'Document Latency'},
+          Insight4:
+              {insightKey: Trace.Insights.Types.InsightKeys.IMAGE_DELIVERY, state: 'fail', title: 'Image Delivery'},
+        },
+      } as unknown as Trace.Insights.Types.InsightSet;
+      const FAKE_PARSED_TRACE_MANY_FAILURES = {
+        data: {
+          Meta: {mainFrameURL: 'https://example.com', traceBounds: {min: 0, max: 10}},
+        },
+        insights: new Map([['1' as Trace.Types.Events.NavigationId, insightSet]]),
+      } as unknown as Trace.TraceModel.ParsedTrace;
+
+      const context = PerformanceAgent.PerformanceTraceContext.fromParsedTrace(FAKE_PARSED_TRACE_MANY_FAILURES);
+      const suggestions = await context.getSuggestions();
+
+      assert.exists(suggestions);
+      // 1 default + 3 failing insights = 4 total
+      assert.lengthOf(suggestions, 4);
+      assert.strictEqual(suggestions[0].title, 'What performance issues exist with my page?');
+      assert.strictEqual(suggestions[1].title, 'How can I reduce the size of my DOM?');
+      assert.strictEqual(suggestions[2].title, 'How can I reduce the number of render-blocking requests?');
+      assert.strictEqual(suggestions[3].title, 'Did anything slow down the request for this document?');
+    });
+  });
 });

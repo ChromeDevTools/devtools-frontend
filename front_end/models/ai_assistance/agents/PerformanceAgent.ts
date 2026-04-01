@@ -28,6 +28,7 @@ import {
   type AiWidget,
   type ContextResponse,
   ConversationContext,
+  type ConversationSuggestion,
   type ConversationSuggestions,
   type FunctionCallHandlerResult,
   type ParsedResponse,
@@ -299,31 +300,44 @@ export class PerformanceTraceContext extends ConversationContext<AgentFocus> {
 
     const insightSet = focus.primaryInsightSet;
     if (insightSet) {
-      const lcp = insightSet ? Trace.Insights.Common.getLCP(insightSet) : null;
-      const cls = insightSet ? Trace.Insights.Common.getCLS(insightSet) : null;
-      const inp = insightSet ? Trace.Insights.Common.getINP(insightSet) : null;
+      const lcp = Trace.Insights.Common.getLCP(insightSet);
+      const cls = Trace.Insights.Common.getCLS(insightSet);
+      const inp = Trace.Insights.Common.getINP(insightSet);
 
       const ModelHandlers = Trace.Handlers.ModelHandlers;
       const GOOD = Trace.Handlers.ModelHandlers.PageLoadMetrics.ScoreClassification.GOOD;
 
+      const poorMetrics = new Set<Trace.Insights.Types.InsightKeys>();
+
       if (lcp && ModelHandlers.PageLoadMetrics.scoreClassificationForLargestContentfulPaint(lcp.value) !== GOOD) {
         suggestions.push({title: 'How can I improve LCP?', jslogContext: 'performance-default'});
+        poorMetrics.add(Trace.Insights.Types.InsightKeys.LCP_BREAKDOWN);
+        poorMetrics.add(Trace.Insights.Types.InsightKeys.LCP_DISCOVERY);
       }
       if (inp && ModelHandlers.UserInteractions.scoreClassificationForInteractionToNextPaint(inp.value) !== GOOD) {
         suggestions.push({title: 'How can I improve INP?', jslogContext: 'performance-default'});
+        poorMetrics.add(Trace.Insights.Types.InsightKeys.INP_BREAKDOWN);
       }
       if (cls && ModelHandlers.LayoutShifts.scoreClassificationForLayoutShift(cls.value) !== GOOD) {
         suggestions.push({title: 'How can I improve CLS?', jslogContext: 'performance-default'});
+        poorMetrics.add(Trace.Insights.Types.InsightKeys.CLS_CULPRITS);
       }
 
-      // Add up to 3 suggestions from the top failing insights.
-      const top3FailingInsightSuggestions =
-          Object.values(insightSet.model)
-              .filter(model => model.state !== 'pass')
-              .map(model => new PerformanceInsightFormatter(focus, model).getSuggestions().at(-1))
-              .filter(suggestion => !!suggestion)
-              .slice(0, 3);
-      suggestions.push(...top3FailingInsightSuggestions);
+      // Add up to 4 suggestions total (including those already added) from the top failing insights
+      // that aren't already covered by CWV suggestions.
+      const additionalSuggestionsRequired = Math.max(0, 4 - suggestions.length);
+      if (additionalSuggestionsRequired > 0) {
+        const failingInsightSuggestions =
+            Object.values(insightSet.model)
+                .filter(model => {
+                  return model.state !== 'pass' &&
+                      !poorMetrics.has(model.insightKey as Trace.Insights.Types.InsightKeys);
+                })
+                .map(model => new PerformanceInsightFormatter(focus, model).getSuggestions().at(-1))
+                .filter((suggestion): suggestion is ConversationSuggestion => !!suggestion)
+                .slice(0, additionalSuggestionsRequired);
+        suggestions.push(...failingInsightSuggestions);
+      }
     }
 
     return suggestions;

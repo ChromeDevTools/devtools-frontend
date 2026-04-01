@@ -1449,6 +1449,7 @@ grd_files_unbundled_sources = [
   "front_end/panels/application/components/BackForwardCacheStrings.js",
   "front_end/panels/application/components/BackForwardCacheView.js",
   "front_end/panels/application/components/BounceTrackingMitigationsView.js",
+  "front_end/panels/application/components/CrashReportContextGrid.js",
   "front_end/panels/application/components/EndpointsGrid.js",
   "front_end/panels/application/components/InterestGroupAccessGrid.js",
   "front_end/panels/application/components/PermissionsPolicySection.js",

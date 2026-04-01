@@ -30,6 +30,7 @@ devtools_ui_module("components") {
     "BackForwardCacheStrings.ts",
     "BackForwardCacheView.ts",
     "BounceTrackingMitigationsView.ts",
+    "CrashReportContextGrid.ts",
     "EndpointsGrid.ts",
     "InterestGroupAccessGrid.ts",
     "PermissionsPolicySection.ts",
@@ -97,6 +98,7 @@ devtools_ui_module("unittests") {
   sources = [
     "BackForwardCacheView.test.ts",
     "BounceTrackingMitigationsView.test.ts",
+    "CrashReportContextGrid.test.ts",
     "EndpointsGrid.test.ts",
     "InterestGroupAccessGrid.test.ts",
     "ProtocolHandlersView.test.ts",

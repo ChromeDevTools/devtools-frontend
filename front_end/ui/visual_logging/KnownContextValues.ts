@@ -1013,6 +1013,7 @@ export const knownContextValues = new Set([
   'copy-full-xpath',
   'copy-initiator-url',
   'copy-js-path',
+  'copy-key',
   'copy-link-address',
   'copy-object',
   'copy-outer-html',

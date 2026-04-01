@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../../core/i18n/i18n.js';
+import * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as Input from '../../../ui/components/input/input.js';
 import type {MarkdownLitRenderer} from '../../../ui/components/markdown_view/MarkdownView.js';
@@ -110,17 +111,29 @@ function renderInlineWalkthrough(input: ViewInput, stepsOutput: Lit.LitTemplate,
   }
 
   const hasWidgets = allSteps.some(s => s.widgets?.length);
+  const icon = AiAssistanceModel.AiUtils.getIconName();
 
   // clang-format off
   return html`
-    <details class="walkthrough-inline" ?open=${input.isExpanded} @toggle=${onToggle}>
-      <summary ?data-has-widgets=${!input.isLoading && hasWidgets}>
-        ${input.isLoading ? html`<devtools-spinner></devtools-spinner>` : Lit.nothing}
-        ${input.isExpanded ? walkthroughCloseTitle({hasWidgets, isInlined: true}) : walkthroughTitle({isLoading: input.isLoading, lastStep, hasWidgets})}
-        <devtools-icon name="chevron-right"></devtools-icon>
-      </summary>
-      ${stepsOutput}
-    </details>
+    <div class="inline-wrapper" ?data-open=${input.isExpanded}>
+      <span class="inline-icon">
+        ${input.isLoading ?
+            html`<devtools-spinner></devtools-spinner>` :
+            html`<devtools-icon name=${icon}></devtools-icon>`
+        }
+      </span>
+      <details class="walkthrough-inline" ?open=${input.isExpanded} @toggle=${onToggle}>
+        <summary ?data-has-widgets=${!input.isLoading && hasWidgets}>
+          ${input.isExpanded ?
+            walkthroughCloseTitle({hasWidgets, isInlined: true}) :
+            walkthroughTitle({isLoading: input.isLoading, lastStep, hasWidgets})
+          }
+          <devtools-icon name="chevron-right"></devtools-icon>
+        </summary>
+
+        ${stepsOutput}
+      </details>
+    </div>
   `;
   // clang-format on
 }

@@ -37,8 +37,8 @@ export class FilteredUISourceCodeListProvider extends QuickOpen.FilteredListWidg
   private uiSourceCodes: Workspace.UISourceCode.UISourceCode[];
   private readonly uiSourceCodeIds: Set<string>;
   private query!: string;
-  constructor(jslogContext: string) {
-    super(jslogContext);
+  constructor() {
+    super();
 
     this.queryLineNumberAndColumnNumber = '';
     this.defaultScores = null;

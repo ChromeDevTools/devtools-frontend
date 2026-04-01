@@ -590,10 +590,7 @@ export interface EventTypes {
 
 export class Provider {
   private refreshCallback!: () => void;
-  jslogContext: string;
-  constructor(jslogContext: string) {
-    this.jslogContext = jslogContext;
-  }
+  jslogContext = '';
 
   setRefreshCallback(refreshCallback: () => void): void {
     this.refreshCallback = refreshCallback;
@@ -657,7 +654,7 @@ export function getRegisteredProviders(): ProviderRegistration[] {
 export interface ProviderRegistration {
   prefix: string;
   iconName: string;
-  provider: (jslogContext: string) => Promise<Provider>;
+  provider: () => Promise<Provider>;
   helpTitle: (() => string);
   titlePrefix: (() => string);
   titleSuggestion?: (() => string);

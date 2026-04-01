@@ -40,7 +40,7 @@ describeWithEnvironment('FilteredUISourceCodeListProvider', () => {
     const {workspace, project} = setUpEnvironmentWithUISourceCode(url, resourceType);
 
     const filteredUISourceCodeListProvider =
-        new Sources.FilteredUISourceCodeListProvider.FilteredUISourceCodeListProvider('test');
+        new Sources.FilteredUISourceCodeListProvider.FilteredUISourceCodeListProvider();
     filteredUISourceCodeListProvider.attach();
 
     const result = filteredUISourceCodeListProvider.itemCount();
@@ -57,7 +57,7 @@ describeWithEnvironment('FilteredUISourceCodeListProvider', () => {
     const {workspace, project} = setUpEnvironmentWithUISourceCode(url, resourceType);
 
     const filteredUISourceCodeListProvider =
-        new Sources.FilteredUISourceCodeListProvider.FilteredUISourceCodeListProvider('test');
+        new Sources.FilteredUISourceCodeListProvider.FilteredUISourceCodeListProvider();
     filteredUISourceCodeListProvider.attach();
 
     const result = filteredUISourceCodeListProvider.itemCount();
@@ -74,7 +74,7 @@ describeWithEnvironment('FilteredUISourceCodeListProvider', () => {
     const {workspace, project} = setUpEnvironmentWithUISourceCode(url, resourceType);
 
     const filteredUISourceCodeListProvider =
-        new Sources.FilteredUISourceCodeListProvider.FilteredUISourceCodeListProvider('test');
+        new Sources.FilteredUISourceCodeListProvider.FilteredUISourceCodeListProvider();
     filteredUISourceCodeListProvider.attach();
 
     const resultUrl = filteredUISourceCodeListProvider.itemKeyAt(0);
@@ -98,7 +98,7 @@ describeWithEnvironment('FilteredUISourceCodeListProvider', () => {
     Workspace.IgnoreListManager.IgnoreListManager.instance().ignoreListUISourceCode(uiSourceCode);
 
     const filteredUISourceCodeListProvider =
-        new Sources.FilteredUISourceCodeListProvider.FilteredUISourceCodeListProvider('test');
+        new Sources.FilteredUISourceCodeListProvider.FilteredUISourceCodeListProvider();
     filteredUISourceCodeListProvider.attach();
 
     const result = filteredUISourceCodeListProvider.itemCount();
@@ -116,7 +116,7 @@ describeWithEnvironment('FilteredUISourceCodeListProvider', () => {
     const {workspace, project} = setUpEnvironmentWithUISourceCode(url, resourceType);
 
     const filteredUISourceCodeListProvider =
-        new Sources.FilteredUISourceCodeListProvider.FilteredUISourceCodeListProvider('test');
+        new Sources.FilteredUISourceCodeListProvider.FilteredUISourceCodeListProvider();
     filteredUISourceCodeListProvider.attach();
 
     const resultUrl = filteredUISourceCodeListProvider.itemKeyAt(0);
@@ -135,7 +135,7 @@ describeWithEnvironment('FilteredUISourceCodeListProvider', () => {
     const {workspace, project} = setUpEnvironmentWithUISourceCode(url, resourceType);
 
     const filteredUISourceCodeListProvider =
-        new Sources.FilteredUISourceCodeListProvider.FilteredUISourceCodeListProvider('test');
+        new Sources.FilteredUISourceCodeListProvider.FilteredUISourceCodeListProvider();
     filteredUISourceCodeListProvider.attach();
 
     const resultUrl = filteredUISourceCodeListProvider.itemKeyAt(0);
@@ -190,7 +190,7 @@ describeWithEnvironment('FilteredUISourceCodeListProvider', () => {
       createContentProviderUISourceCodes(
           {items: [{url: url1, mimeType: 'text/javascript'}, {url: url2, mimeType: 'text/javascript'}]});
 
-      provider = new Sources.FilteredUISourceCodeListProvider.FilteredUISourceCodeListProvider('test');
+      provider = new Sources.FilteredUISourceCodeListProvider.FilteredUISourceCodeListProvider();
       provider.attach();
 
       assert.strictEqual(provider.itemCount(), 2, 'Provider should have two items');

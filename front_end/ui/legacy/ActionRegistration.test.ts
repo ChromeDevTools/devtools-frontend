@@ -125,7 +125,7 @@ describeWithEnvironment('ActionRegistration', () => {
 
   it('executes a pre registered from the command menu', async () => {
     actionExecuted = false;
-    const commandMenuProvider = new QuickOpen.CommandMenu.CommandMenuProvider('');
+    const commandMenuProvider = new QuickOpen.CommandMenu.CommandMenuProvider();
     commandMenuProvider.attach();
     for (let i = 0; i < commandMenuProvider.itemCount(); ++i) {
       if (commandMenuProvider.itemKeyAt(i).includes(actionTitle)) {

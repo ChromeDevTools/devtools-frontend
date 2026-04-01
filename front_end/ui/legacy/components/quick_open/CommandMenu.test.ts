@@ -27,7 +27,7 @@ function createCommandMenuProvider(
   });
   const command =
       QuickOpen.CommandMenu.CommandMenu.createSettingCommand(setting, i18n.i18n.lockedString('Test Set Value'), true);
-  const provider = new QuickOpen.CommandMenu.CommandMenuProvider('', [command]);
+  const provider = new QuickOpen.CommandMenu.CommandMenuProvider([command]);
   return {setting, provider, command};
 }
 

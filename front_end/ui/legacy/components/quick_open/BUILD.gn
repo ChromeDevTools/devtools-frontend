@@ -76,6 +76,7 @@ devtools_ui_module("unittests") {
   sources = [
     "CommandMenu.test.ts",
     "FilteredListWidget.test.ts",
+    "QuickOpen.test.ts",
   ]
 
   deps = [

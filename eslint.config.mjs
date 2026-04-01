@@ -763,6 +763,8 @@ export default defineConfig([
       '@devtools/prefer-url-string': 'error',
       '@devtools/trace-engine-test-timeouts': 'error',
       '@devtools/no-document-body-mutation': 'error',
+      // Don't update the KnownContext with test data.
+      '@devtools/jslog-context-list': 'off',
       '@devtools/enforce-custom-element-definitions-location': 'off',
       '@devtools/enforce-custom-element-prefix': 'off',
     },

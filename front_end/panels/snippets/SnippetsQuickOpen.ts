@@ -39,10 +39,10 @@ let snippetsQuickOpenInstance: SnippetsQuickOpen;
 export class SnippetsQuickOpen extends QuickOpen.FilteredListWidget.Provider {
   private snippets: Workspace.UISourceCode.UISourceCode[] = [];
 
-  static instance(opts: {forceNew: boolean|null, jslogContext: string}): SnippetsQuickOpen {
-    const {forceNew, jslogContext} = opts;
+  static instance(opts: {forceNew: boolean|null} = {forceNew: null}): SnippetsQuickOpen {
+    const {forceNew} = opts;
     if (!snippetsQuickOpenInstance || forceNew) {
-      snippetsQuickOpenInstance = new SnippetsQuickOpen(jslogContext);
+      snippetsQuickOpenInstance = new SnippetsQuickOpen();
     }
 
     return snippetsQuickOpenInstance;
@@ -98,9 +98,9 @@ export class SnippetsQuickOpen extends QuickOpen.FilteredListWidget.Provider {
 QuickOpen.FilteredListWidget.registerProvider({
   prefix: '!',
   iconName: 'exclamation',
-  provider: jslogContext => Promise.resolve(SnippetsQuickOpen.instance({forceNew: null, jslogContext})),
+  provider: () => Promise.resolve(SnippetsQuickOpen.instance()),
   helpTitle: i18nLazyString(UIStrings.runSnippet),
   titlePrefix: i18nLazyString(UIStrings.run),
   titleSuggestion: i18nLazyString(UIStrings.snippet),
-  jslogContext: 'snippet'
+  jslogContext: 'snippet',
 });

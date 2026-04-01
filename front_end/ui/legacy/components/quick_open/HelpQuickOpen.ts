@@ -17,8 +17,8 @@ export class HelpQuickOpen extends Provider {
     jslogContext: string,
   }>;
 
-  constructor(jslogContext: string) {
-    super(jslogContext);
+  constructor() {
+    super();
     this.providers = [];
     getRegisteredProviders().forEach(this.addProvider.bind(this));
   }
@@ -74,8 +74,8 @@ export class HelpQuickOpen extends Provider {
 registerProvider({
   prefix: '?',
   iconName: 'help',
-  provider: jslogContext => Promise.resolve(new HelpQuickOpen(jslogContext)),
+  provider: () => Promise.resolve(new HelpQuickOpen()),
   helpTitle: () => 'Help',
   titlePrefix: () => 'Help',
-  jslogContext: 'help'
+  jslogContext: 'help',
 });

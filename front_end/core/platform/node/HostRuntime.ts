@@ -39,7 +39,7 @@ class NodeWorker implements Api.HostRuntime.Worker {
   postMessage(message: unknown, transfer?: Api.HostRuntime.WorkerTransferable[]): void {
     void this.#workerPromise.then(worker => {
       if (!this.#disposed) {
-        worker.postMessage(message, transfer);
+        worker.postMessage(message, transfer as unknown as WorkerThreads.Transferable[]);
       }
     });
   }

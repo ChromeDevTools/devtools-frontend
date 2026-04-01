@@ -1090,6 +1090,7 @@ export const knownContextValues = new Set([
   'cpu-throttling',
   'cpu-throttling-selector',
   'cpu-throttling-selector-calibrate',
+  'crash-report-context',
   'create-new-snippet',
   'create-profile',
   'create-recording',

@@ -1409,6 +1409,7 @@ grd_files_unbundled_sources = [
   "front_end/panels/application/BackgroundServiceView.js",
   "front_end/panels/application/BounceTrackingMitigationsTreeElement.js",
   "front_end/panels/application/CookieItemsView.js",
+  "front_end/panels/application/CrashReportContextView.js",
   "front_end/panels/application/DOMStorageItemsView.js",
   "front_end/panels/application/DOMStorageModel.js",
   "front_end/panels/application/DeviceBoundSessionsModel.js",

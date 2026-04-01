@@ -113,10 +113,6 @@ describeWithEnvironment('TimelineTreeView', function() {
       const startTime = Trace.Helpers.Timing.microToMilli(parsedTrace.data.Meta.traceBounds.min);
       const endTime = Trace.Helpers.Timing.microToMilli(parsedTrace.data.Meta.traceBounds.max);
 
-      // Note: order is important here. The BottomUp view skips updating if it
-      // has no parent element (because in the UI it is one of many components
-      // in tabs, so we only update it if its visible), so it must be put into
-      // the DOM before we set the model.
       renderWidgetInVbox(bottomUpTreeView, {flexAuto: true});
       bottomUpTreeView.setRange(startTime, endTime);
       bottomUpTreeView.model = {selectedEvents: consoleTimings, parsedTrace, entityMapper: mapper};
@@ -138,6 +134,25 @@ describeWithEnvironment('TimelineTreeView', function() {
       const childNode = firstNode.children().values().next().value as Trace.Extras.TraceTree.Node;
       assert.strictEqual(childNode.event?.name, 'first console time');
     });
+
+    it('Limits the number of rows when maxRows is set', async function() {
+      const parsedTrace = await TraceLoader.traceEngine(this, 'sync-like-timings.json.gz');
+      const mapper = new Trace.EntityMapper.EntityMapper(parsedTrace);
+      const bottomUpTreeView = new Timeline.TimelineTreeView.BottomUpTimelineTreeView();
+      const consoleTimings = [...parsedTrace.data.UserTimings.consoleTimings];
+      const startTime = Trace.Helpers.Timing.microToMilli(parsedTrace.data.Meta.traceBounds.min);
+      const endTime = Trace.Helpers.Timing.microToMilli(parsedTrace.data.Meta.traceBounds.max);
+
+      renderWidgetInVbox(bottomUpTreeView, {flexAuto: true});
+      bottomUpTreeView.setRange(startTime, endTime);
+      bottomUpTreeView.maxRows = 2;
+      bottomUpTreeView.model = {selectedEvents: consoleTimings, parsedTrace, entityMapper: mapper};
+
+      await RenderCoordinator.done();
+
+      assert.lengthOf(bottomUpTreeView.dataGrid.rootNode().children, 2);
+    });
+
   });
 
   describe('CallTreeTimelineTreeView', function() {

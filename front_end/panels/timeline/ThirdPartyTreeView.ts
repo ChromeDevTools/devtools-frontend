@@ -258,7 +258,12 @@ export class ThirdPartyTreeViewWidget extends TimelineTreeView.TimelineTreeView 
     return Boolean(entity) && entity?.category === 'Chrome Extension';
   }
 
-  set maxRows(maxRows: number) {
+  override get maxRows(): number|undefined {
+    return super.maxRows;
+  }
+
+  override set maxRows(maxRows: number) {
+    super.maxRows = maxRows;
     this.element.style.setProperty('--max-rows', String(maxRows));
     this.element.classList.toggle('has-max-rows', Boolean(maxRows));
   }

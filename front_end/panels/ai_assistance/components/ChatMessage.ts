@@ -866,6 +866,7 @@ async function makeBottomUpTimelineTreeWidget(widgetData: BottomUpTreeAiWidget):
     endTime,
     compactMode: true,
     maxLinkLength: 15,
+    maxRows: 10,
   })}></devtools-widget>`;
 
   return {

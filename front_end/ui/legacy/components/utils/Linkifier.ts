@@ -611,7 +611,8 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
       jslogContext: options.jslogContext || 'url',
       lineNumber,
       columnNumber,
-      userMetric: options?.userMetric
+      userMetric: options?.userMetric,
+      onRef: options.onRef,
     };
     return Linkifier.renderLink(linkText, className, linkOptions);
   }

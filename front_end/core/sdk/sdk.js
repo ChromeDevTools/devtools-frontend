@@ -30615,6 +30615,17 @@ var AccessibilityModel = class extends SDKModel {
     target.registerAccessibilityDispatcher(this);
     this.agent = target.accessibilityAgent();
     void this.resumeModel();
+    const domModel = target.model(DOMModel);
+    if (domModel) {
+      domModel.addEventListener(Events8.NodeRemoved, () => {
+        this.clear();
+        this.dispatchEventToListeners("TreeUpdated", {});
+      });
+      domModel.addEventListener(Events8.NodeInserted, () => {
+        this.clear();
+        this.dispatchEventToListeners("TreeUpdated", {});
+      });
+    }
   }
   clear() {
     this.#root = null;

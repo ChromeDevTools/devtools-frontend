@@ -2,8 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as ChildrenProvider from './ChildrenProvider.js';
 import * as HeapSnapshotModel from './HeapSnapshotModel.js';
+import * as HeapSnapshotProxy from './HeapSnapshotProxy.js';
 
 export {
+  ChildrenProvider,
   HeapSnapshotModel,
+  HeapSnapshotProxy,
 };

@@ -333,6 +333,7 @@ panels/animation/AnimationTimeline.test.js
 panels/application/AppManifestView.test.js
 panels/application/ApplicationPanelSidebar.test.js
 panels/application/BackgroundServiceView.test.js
+panels/application/CrashReportContextView.test.js
 panels/application/DOMStorageModel.test.js
 panels/application/DeviceBoundSessionsModel.test.js
 panels/application/DeviceBoundSessionsTreeElement.test.js
@@ -362,6 +363,7 @@ panels/application/WebMCPView.test.js
 panels/application/preloading/PreloadingView.test.js
 panels/application/components/BackForwardCacheView.test.js
 panels/application/components/BounceTrackingMitigationsView.test.js
+panels/application/components/CrashReportContextGrid.test.js
 panels/application/components/EndpointsGrid.test.js
 panels/application/components/InterestGroupAccessGrid.test.js
 panels/application/components/ProtocolHandlersView.test.js
@@ -760,6 +762,7 @@ ui/legacy/components/perf_ui/TimelineGrid.test.js
 ui/legacy/components/perf_ui/TimelineOverviewCalculator.test.js
 ui/legacy/components/quick_open/CommandMenu.test.js
 ui/legacy/components/quick_open/FilteredListWidget.test.js
+ui/legacy/components/quick_open/QuickOpen.test.js
 ui/legacy/components/source_frame/BinaryResourceViewFactory.test.js
 ui/legacy/components/source_frame/JSONView.test.js
 ui/legacy/components/source_frame/ResourceSourceFrame.test.js

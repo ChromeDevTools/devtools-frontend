@@ -198,8 +198,8 @@ export class CommandMenu {
 }
 export class CommandMenuProvider extends Provider {
     commands;
-    constructor(jslogContext, commandsForTest = []) {
-        super(jslogContext);
+    constructor(commandsForTest = []) {
+        super();
         this.commands = commandsForTest;
     }
     attach() {
@@ -352,7 +352,7 @@ export class ShowActionDelegate {
 registerProvider({
     prefix: '>',
     iconName: 'chevron-right',
-    provider: (jslogContext) => Promise.resolve(new CommandMenuProvider(jslogContext)),
+    provider: () => Promise.resolve(new CommandMenuProvider()),
     helpTitle: () => i18nString(UIStrings.runCommand),
     titlePrefix: () => i18nString(UIStrings.run),
     titleSuggestion: () => i18nString(UIStrings.command),

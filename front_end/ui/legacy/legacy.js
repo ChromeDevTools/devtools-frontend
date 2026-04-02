@@ -4561,7 +4561,7 @@ var TabbedPane = class extends Common6.ObjectWrapper.eventMixin(VBox) {
     }
     for (const [measuringTabElement, tab] of measuringTabElements) {
       const width = measuringTabElement.getBoundingClientRect().width;
-      tab.measuredWidth = Math.ceil(width);
+      tab.measuredWidth = Math.ceil(width) || void 0;
     }
     for (const measuringTabElement of measuringTabElements.keys()) {
       measuringTabElement.remove();

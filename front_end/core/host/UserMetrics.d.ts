@@ -521,7 +521,6 @@ export declare enum DevtoolsExperiments {
     'timeline-show-all-events' = 27,
     apca = 39,
     'font-editor' = 41,
-    'full-accessibility-tree' = 42,
     'instrumentation-breakpoints' = 61,
     'use-source-map-scopes' = 76,
     'timeline-debug-mode' = 93,

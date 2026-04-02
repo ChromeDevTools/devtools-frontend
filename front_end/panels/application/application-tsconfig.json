@@ -43,6 +43,7 @@
     "../../../../../../front_end/panels/application/BackgroundServiceView.ts",
     "../../../../../../front_end/panels/application/BounceTrackingMitigationsTreeElement.ts",
     "../../../../../../front_end/panels/application/CookieItemsView.ts",
+    "../../../../../../front_end/panels/application/CrashReportContextView.ts",
     "../../../../../../front_end/panels/application/DOMStorageItemsView.ts",
     "../../../../../../front_end/panels/application/DOMStorageModel.ts",
     "../../../../../../front_end/panels/application/DeviceBoundSessionsModel.ts",

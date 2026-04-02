@@ -8,6 +8,7 @@ import * as BackgroundServiceModel from './BackgroundServiceModel.js';
 import * as BackgroundServiceView from './BackgroundServiceView.js';
 import * as BounceTrackingMitigationsTreeElement from './BounceTrackingMitigationsTreeElement.js';
 import * as CookieItemsView from './CookieItemsView.js';
+import * as CrashReportContextView from './CrashReportContextView.js';
 import * as DeviceBoundSessionsModel from './DeviceBoundSessionsModel.js';
 import * as DeviceBoundSessionsTreeElement from './DeviceBoundSessionsTreeElement.js';
 import * as DeviceBoundSessionsView from './DeviceBoundSessionsView.js';
@@ -50,6 +51,7 @@ export {
   BackgroundServiceView,
   BounceTrackingMitigationsTreeElement,
   CookieItemsView,
+  CrashReportContextView,
   DeviceBoundSessionsModel,
   DeviceBoundSessionsTreeElement,
   DeviceBoundSessionsView,

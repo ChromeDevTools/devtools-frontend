@@ -7,6 +7,7 @@ import * as BackgroundServiceModel from './BackgroundServiceModel.js';
 import * as BackgroundServiceView from './BackgroundServiceView.js';
 import * as BounceTrackingMitigationsTreeElement from './BounceTrackingMitigationsTreeElement.js';
 import * as CookieItemsView from './CookieItemsView.js';
+import * as CrashReportContextView from './CrashReportContextView.js';
 import * as DeviceBoundSessionsModel from './DeviceBoundSessionsModel.js';
 import * as DeviceBoundSessionsTreeElement from './DeviceBoundSessionsTreeElement.js';
 import * as DeviceBoundSessionsView from './DeviceBoundSessionsView.js';
@@ -41,5 +42,5 @@ import * as StorageView from './StorageView.js';
 import * as TrustTokensTreeElement from './TrustTokensTreeElement.js';
 import * as WebMCPTreeElement from './WebMCPTreeElement.js';
 import * as WebMCPView from './WebMCPView.js';
-export { ApplicationPanelSidebar, AppManifestView, BackgroundServiceModel, BackgroundServiceView, BounceTrackingMitigationsTreeElement, CookieItemsView, DeviceBoundSessionsModel, DeviceBoundSessionsTreeElement, DeviceBoundSessionsView, DOMStorageItemsView, DOMStorageModel, ExtensionStorageItemsView, ExtensionStorageModel, FrameDetailsView, IndexedDBModel, IndexedDBViews, InterestGroupStorageModel, InterestGroupStorageView, InterestGroupTreeElement, KeyValueStorageItemsView, OpenedWindowDetailsView, OriginTrialTreeView, PreloadingTreeElement, PreloadingView, ReportingApiView, ResourcesPanel, ServiceWorkerCacheViews, ServiceWorkersView, ServiceWorkerUpdateCycleView, SharedStorageEventsView, SharedStorageItemsView, SharedStorageListTreeElement, SharedStorageModel, SharedStorageTreeElement, StorageBucketsTreeElement, StorageItemsToolbar, StorageView, TrustTokensTreeElement, WebMCPTreeElement, WebMCPView, };
+export { ApplicationPanelSidebar, AppManifestView, BackgroundServiceModel, BackgroundServiceView, BounceTrackingMitigationsTreeElement, CookieItemsView, CrashReportContextView, DeviceBoundSessionsModel, DeviceBoundSessionsTreeElement, DeviceBoundSessionsView, DOMStorageItemsView, DOMStorageModel, ExtensionStorageItemsView, ExtensionStorageModel, FrameDetailsView, IndexedDBModel, IndexedDBViews, InterestGroupStorageModel, InterestGroupStorageView, InterestGroupTreeElement, KeyValueStorageItemsView, OpenedWindowDetailsView, OriginTrialTreeView, PreloadingTreeElement, PreloadingView, ReportingApiView, ResourcesPanel, ServiceWorkerCacheViews, ServiceWorkersView, ServiceWorkerUpdateCycleView, SharedStorageEventsView, SharedStorageItemsView, SharedStorageListTreeElement, SharedStorageModel, SharedStorageTreeElement, StorageBucketsTreeElement, StorageItemsToolbar, StorageView, TrustTokensTreeElement, WebMCPTreeElement, WebMCPView, };
 //# sourceMappingURL=application.prebundle.js.map

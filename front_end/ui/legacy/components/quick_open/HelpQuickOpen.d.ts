@@ -3,7 +3,7 @@ import { type TemplateResult } from '../../../lit/lit.js';
 import { Provider } from './FilteredListWidget.js';
 export declare class HelpQuickOpen extends Provider {
     private providers;
-    constructor(jslogContext: string);
+    constructor();
     private addProvider;
     itemCount(): number;
     itemKeyAt(itemIndex: number): string;

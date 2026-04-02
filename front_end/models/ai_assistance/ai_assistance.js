@@ -6710,7 +6710,7 @@ var extraPreambleWhenNotExternal = `Additional notes:
 When referring to a trace event that has a corresponding \`eventKey\`, annotate your output using markdown link syntax. For example:
 - When referring to an event that is a long task: [Long task](#r-123)
 - When referring to a URL for which you know the eventKey of: [https://www.example.com](#s-1827)
-- Never show the eventKey (like "eventKey: s-1852"); instead, use a markdown link as described above.
+- Never show the eventKey (like "eventKey: s-1852") in your running text. When using markdown links, the URL must be only the hash (e.g., \`#s-1852\`), never \`eventKey: s-1852\`.
 
 When asking the user to make a choice between options, output a list of choices at the end of your text response. The format is \`SUGGESTIONS: ["suggestion1", "suggestion2", "suggestion3"]\`. This MUST start on a newline, and be a single line.
 `;
@@ -6816,22 +6816,44 @@ var PerformanceTraceContext = class _PerformanceTraceContext extends Conversatio
     const suggestions = [{ title: "What performance issues exist with my page?", jslogContext: "performance-default" }];
     const insightSet = focus.primaryInsightSet;
     if (insightSet) {
-      const lcp = insightSet ? Trace6.Insights.Common.getLCP(insightSet) : null;
-      const cls = insightSet ? Trace6.Insights.Common.getCLS(insightSet) : null;
-      const inp = insightSet ? Trace6.Insights.Common.getINP(insightSet) : null;
+      const lcp = Trace6.Insights.Common.getLCP(insightSet);
+      const cls = Trace6.Insights.Common.getCLS(insightSet);
+      const inp = Trace6.Insights.Common.getINP(insightSet);
       const ModelHandlers = Trace6.Handlers.ModelHandlers;
       const GOOD = "good";
+      const poorMetrics = /* @__PURE__ */ new Set();
       if (lcp && ModelHandlers.PageLoadMetrics.scoreClassificationForLargestContentfulPaint(lcp.value) !== GOOD) {
         suggestions.push({ title: "How can I improve LCP?", jslogContext: "performance-default" });
+        poorMetrics.add(
+          "LCPBreakdown"
+          /* Trace.Insights.Types.InsightKeys.LCP_BREAKDOWN */
+        );
+        poorMetrics.add(
+          "LCPDiscovery"
+          /* Trace.Insights.Types.InsightKeys.LCP_DISCOVERY */
+        );
       }
       if (inp && ModelHandlers.UserInteractions.scoreClassificationForInteractionToNextPaint(inp.value) !== GOOD) {
         suggestions.push({ title: "How can I improve INP?", jslogContext: "performance-default" });
+        poorMetrics.add(
+          "INPBreakdown"
+          /* Trace.Insights.Types.InsightKeys.INP_BREAKDOWN */
+        );
       }
       if (cls && ModelHandlers.LayoutShifts.scoreClassificationForLayoutShift(cls.value) !== GOOD) {
         suggestions.push({ title: "How can I improve CLS?", jslogContext: "performance-default" });
+        poorMetrics.add(
+          "CLSCulprits"
+          /* Trace.Insights.Types.InsightKeys.CLS_CULPRITS */
+        );
       }
-      const top3FailingInsightSuggestions = Object.values(insightSet.model).filter((model) => model.state !== "pass").map((model) => new PerformanceInsightFormatter(focus, model).getSuggestions().at(-1)).filter((suggestion) => !!suggestion).slice(0, 3);
-      suggestions.push(...top3FailingInsightSuggestions);
+      const additionalSuggestionsRequired = Math.max(0, 4 - suggestions.length);
+      if (additionalSuggestionsRequired > 0) {
+        const failingInsightSuggestions = Object.values(insightSet.model).filter((model) => {
+          return model.state !== "pass" && !poorMetrics.has(model.insightKey);
+        }).map((model) => new PerformanceInsightFormatter(focus, model).getSuggestions().at(-1)).filter((suggestion) => !!suggestion).slice(0, additionalSuggestionsRequired);
+        suggestions.push(...failingInsightSuggestions);
+      }
     }
     return suggestions;
   }
@@ -6964,11 +6986,20 @@ var PerformanceAgent = class extends AiAgent {
     if (!focus) {
       return response;
     }
-    const urlRegex = /(\[(.*?)\]\((.*?)\))|(https?:\/\/[^\s<>()]+)/g;
+    const urlRegex = /(\[(.*?)\][ \t]*\((.*?)\))|(https?:\/\/[^\s<>()]+)/g;
     return response.replace(urlRegex, (match, markdownLink, linkText, linkDest, standaloneUrlText) => {
       if (markdownLink) {
         if (linkDest.startsWith("#")) {
           return match;
+        }
+        const eventKeyMatch = linkDest.match(/eventKey:\s*([^\s,)]+)/);
+        if (eventKeyMatch) {
+          const eventKey2 = eventKeyMatch[1];
+          return `[${linkText}](#${eventKey2})`;
+        }
+        const event = focus.lookupEvent(linkDest);
+        if (event) {
+          return `[${linkText}](#${linkDest})`;
         }
       }
       const urlText = linkDest ?? standaloneUrlText;

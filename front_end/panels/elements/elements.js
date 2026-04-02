@@ -37,7 +37,6 @@ import * as SDK18 from "./../../core/sdk/sdk.js";
 import * as Annotations from "./../../models/annotations/annotations.js";
 import * as ComputedStyle3 from "./../../models/computed_style/computed_style.js";
 import * as PanelCommon from "./../common/common.js";
-import * as Buttons3 from "./../../ui/components/buttons/buttons.js";
 import * as TreeOutline13 from "./../../ui/components/tree_outline/tree_outline.js";
 import * as UI21 from "./../../ui/legacy/legacy.js";
 import * as VisualLogging12 from "./../../ui/visual_logging/visual_logging.js";
@@ -188,18 +187,15 @@ var accessibilityTreeView_css_default = `/**
 // gen/front_end/panels/elements/AccessibilityTreeView.js
 var AccessibilityTreeView = class extends UI.Widget.VBox {
   accessibilityTreeComponent;
-  toggleButton;
   inspectedDOMNode = null;
   root = null;
-  constructor(toggleButton, accessibilityTreeComponent) {
+  constructor(accessibilityTreeComponent) {
     super();
     this.registerRequiredCSS(accessibilityTreeView_css_default);
-    this.toggleButton = toggleButton;
     this.accessibilityTreeComponent = accessibilityTreeComponent;
     const container = this.contentElement.createChild("div");
     container.classList.add("accessibility-tree-view-container");
     container.setAttribute("jslog", `${VisualLogging.tree("full-accessibility")}`);
-    container.appendChild(this.toggleButton);
     container.appendChild(this.accessibilityTreeComponent);
     SDK2.TargetManager.TargetManager.instance().observeModels(SDK2.AccessibilityModel.AccessibilityModel, this, { scoped: true });
     this.accessibilityTreeComponent.addEventListener("itemselected", (event) => {
@@ -249,6 +245,12 @@ var AccessibilityTreeView = class extends UI.Widget.VBox {
   }
   async renderTree() {
     if (!this.root) {
+      const frameId = SDK2.FrameManager.FrameManager.instance().getOutermostFrame()?.id;
+      if (frameId) {
+        this.root = await getRootNode(frameId);
+      }
+    }
+    if (!this.root) {
       return;
     }
     const treeData = await sdkNodeToAXTreeNodes(this.root);
@@ -293,10 +295,14 @@ var AccessibilityTreeView = class extends UI.Widget.VBox {
     }
   }
   treeUpdated({ data }) {
+    if (data.root) {
+      this.root = data.root;
+    }
     if (!this.isShowing()) {
       return;
     }
     if (!data.root) {
+      this.root = null;
       void this.renderTree();
       return;
     }
@@ -6095,8 +6101,8 @@ var StylePropertiesSection = class _StylePropertiesSection {
       const newRuleButton = new UI9.Toolbar.ToolbarButton(i18nString5(UIStrings5.insertStyleRuleBelow), "plus", void 0, "elements.new-style-rule");
       newRuleButton.addEventListener("Click", this.onNewRuleClick, this);
       newRuleButton.setSize(
-        "SMALL"
-        /* Buttons.Button.Size.SMALL */
+        "MICRO"
+        /* Buttons.Button.Size.MICRO */
       );
       newRuleButton.element.tabIndex = -1;
       if (!this.newStyleRuleToolbar) {
@@ -11295,7 +11301,10 @@ var maxLinkLength = 30;
 var alwaysShownComputedProperties = /* @__PURE__ */ new Set(["display", "height", "width"]);
 
 // gen/front_end/panels/elements/elementsPanel.css.js
-var elementsPanel_css_default = `/*
+var elementsPanel_css_default = `/* Copyright 2026 The Chromium Authors
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ *
  * Copyright (C) 2006, 2007, 2008 Apple Inc.  All rights reserved.
  * Copyright (C) 2009 Anthony Ricaud <rik@webkit.org>
  *
@@ -11378,19 +11387,6 @@ devtools-adorner-settings-pane {
 
 devtools-tree-outline {
   overflow: auto;
-}
-
-.axtree-button {
-  position: absolute;
-  top: var(--sys-size-8);
-  right: var(--sys-size-9);
-  background-color: var(--sys-color-cdt-base-container);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1;
-  border-radius: var(--sys-shape-corner-full);
-  box-shadow: var(--sys-elevation-level1);
 }
 
 .computed-styles-wrapper {
@@ -18317,16 +18313,6 @@ var UIStrings16 = {
    */
   findByStringSelectorOrXpath: "Find by string, selector, or `XPath`",
   /**
-   * @description Button text for a button that takes the user to the Accessibility Tree View from the
-   * DOM tree view, in the Elements panel.
-   */
-  switchToAccessibilityTreeView: "Switch to Accessibility Tree view",
-  /**
-   * @description Button text for a button that takes the user to the DOM tree view from the
-   * Accessibility Tree View, in the Elements panel.
-   */
-  switchToDomTreeView: "Switch to DOM Tree view",
-  /**
    * @description Tooltip for the the Computed Styles sidebar toggle in the Styles pane. Command to
    * open/show the sidebar.
    */
@@ -18400,23 +18386,6 @@ var UIStrings16 = {
 };
 var str_16 = i18n32.i18n.registerUIStrings("panels/elements/ElementsPanel.ts", UIStrings16);
 var i18nString15 = i18n32.i18n.getLocalizedString.bind(void 0, str_16);
-var createAccessibilityTreeToggleButton = (isActive) => {
-  const button = new Buttons3.Button.Button();
-  const title = isActive ? i18nString15(UIStrings16.switchToDomTreeView) : i18nString15(UIStrings16.switchToAccessibilityTreeView);
-  button.data = {
-    active: isActive,
-    variant: "toolbar",
-    iconName: "person",
-    title,
-    jslogContext: "toggle-accessibility-tree"
-  };
-  button.tabIndex = 0;
-  button.classList.add("axtree-button");
-  if (isActive) {
-    button.classList.add("active");
-  }
-  return button;
-};
 var elementsPanelInstance;
 var DEFAULT_COMPUTED_STYLES_DEBOUNCE_MS = 100;
 var ElementsPanel = class _ElementsPanel extends UI21.Panel.Panel {
@@ -18471,9 +18440,6 @@ var ElementsPanel = class _ElementsPanel extends UI21.Panel.Panel {
     this.mainContainer = document.createElement("div");
     this.domTreeContainer = document.createElement("div");
     const crumbsContainer = document.createElement("div");
-    if (Root6.Runtime.experiments.isEnabled(Root6.ExperimentNames.ExperimentName.FULL_ACCESSIBILITY_TREE)) {
-      this.initializeFullAccessibilityTreeView();
-    }
     this.mainContainer.appendChild(this.domTreeContainer);
     stackElement.appendChild(this.mainContainer);
     stackElement.appendChild(crumbsContainer);
@@ -18489,9 +18455,7 @@ var ElementsPanel = class _ElementsPanel extends UI21.Panel.Panel {
     }
     Common13.Settings.Settings.instance().moduleSetting("dom-word-wrap").addChangeListener(this.domWordWrapSettingChanged.bind(this));
     crumbsContainer.id = "elements-crumbs";
-    if (this.domTreeButton) {
-      this.accessibilityTreeView = new AccessibilityTreeView(this.domTreeButton, new TreeOutline13.TreeOutline.TreeOutline());
-    }
+    this.accessibilityTreeView = new AccessibilityTreeView(new TreeOutline13.TreeOutline.TreeOutline());
     this.breadcrumbs = new ElementsComponents7.ElementsBreadcrumbs.ElementsBreadcrumbs();
     this.breadcrumbs.addEventListener("breadcrumbsnodeselected", (event) => {
       this.crumbNodeSelected(event);
@@ -18563,20 +18527,21 @@ var ElementsPanel = class _ElementsPanel extends UI21.Panel.Panel {
       void PanelCommon.AnnotationManager.instance().resolveAnnotationsOfType(Annotations.AnnotationType.ELEMENT_NODE);
     }
   }
-  initializeFullAccessibilityTreeView() {
-    this.accessibilityTreeButton = createAccessibilityTreeToggleButton(false);
-    this.accessibilityTreeButton.addEventListener("click", this.showAccessibilityTree.bind(this));
-    this.domTreeButton = createAccessibilityTreeToggleButton(true);
-    this.domTreeButton.addEventListener("click", this.showDOMTree.bind(this));
-    this.mainContainer.appendChild(this.accessibilityTreeButton);
-  }
   showAccessibilityTree() {
     if (this.accessibilityTreeView) {
       this.splitWidget.setMainWidget(this.accessibilityTreeView);
+      const toggleAction = UI21.ActionRegistry.ActionRegistry.instance().getAction("elements.toggle-a11y-tree");
+      if (toggleAction) {
+        toggleAction.setToggled(true);
+      }
     }
   }
   showDOMTree() {
     this.splitWidget.setMainWidget(this.#searchableView);
+    const toggleAction = UI21.ActionRegistry.ActionRegistry.instance().getAction("elements.toggle-a11y-tree");
+    if (toggleAction) {
+      toggleAction.setToggled(false);
+    }
     const selectedNode = this.selectedDOMNode();
     if (!selectedNode) {
       return;
@@ -18584,9 +18549,6 @@ var ElementsPanel = class _ElementsPanel extends UI21.Panel.Panel {
     this.#domTreeWidget.selectDOMNodeWithoutReveal(selectedNode);
   }
   toggleAccessibilityTree() {
-    if (!this.domTreeButton) {
-      return;
-    }
     if (this.splitWidget.mainWidget() === this.accessibilityTreeView) {
       this.showDOMTree();
     } else {
@@ -20579,7 +20541,7 @@ __export(ElementStatePaneWidget_exports, {
 });
 import * as i18n42 from "./../../core/i18n/i18n.js";
 import * as SDK24 from "./../../core/sdk/sdk.js";
-import * as Buttons4 from "./../../ui/components/buttons/buttons.js";
+import * as Buttons3 from "./../../ui/components/buttons/buttons.js";
 import * as UIHelpers from "./../../ui/helpers/helpers.js";
 import * as UI27 from "./../../ui/legacy/legacy.js";
 import { html as html17, render as render17 } from "./../../ui/lit/lit.js";

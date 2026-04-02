@@ -3,16 +3,19 @@
 // found in the LICENSE file.
 import '../../ui/components/icon_button/icon_button.js';
 import '../../ui/components/lists/lists.js';
+import '../../ui/components/node_text/node_text.js';
 import '../../ui/legacy/components/data_grid/data_grid.js';
 import '../../ui/legacy/legacy.js';
+import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as WebMCP from '../../models/web_mcp/web_mcp.js';
 import * as Adorners from '../../ui/components/adorners/adorners.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
+import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import { Directives, html, render, } from '../../ui/lit/lit.js';
+import { Directives, html, nothing, render, } from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import webMCPViewStyles from './webMCPView.css.js';
 const UIStrings = {
@@ -37,6 +40,18 @@ const UIStrings = {
      */
     noCallsPlaceholder: 'Start interacting with your `WebMCP` agent to see real-time tool calls and executions here.',
     /**
+     * @description Text for the header of the tool details section
+     */
+    toolDetails: 'Details',
+    /**
+     * @description Text for the link to reveal the tool's DOM node in the Elements panel
+     */
+    viewInElementsPanel: 'View in Elements panel',
+    /**
+     * @description Text for the frame of a tool
+     */
+    frame: 'Frame',
+    /**
      * @description Text for the name of a tool call
      */
     name: 'Name',
@@ -60,6 +75,10 @@ const UIStrings = {
      * @description Tooltip for the clear log button
      */
     clearLog: 'Clear log',
+    /**
+     * @description Text to close something
+     */
+    close: 'Close',
     /**
      * @description Placeholder for the filter input
      */
@@ -123,6 +142,7 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/application/WebMCPView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+const { widget } = UI.Widget;
 export function filterToolCalls(toolCalls, filterState) {
     let filtered = [...toolCalls];
     const statusTypes = filterState.statusTypes;
@@ -281,34 +301,66 @@ export const DEFAULT_VIEW = (input, output, target) => {
           </devtools-toolbar>
         </div>
         ${input.toolCalls.length > 0 ? html `
-          <devtools-data-grid striped>
-            <table>
-              <tr>
-                <th id="name" weight="20">
-                  ${i18nString(UIStrings.name)}
-                </th>
-                <th id="status" weight="20">${i18nString(UIStrings.status)}</th>
-                <th id="input" weight="30">${i18nString(UIStrings.input)}</th>
-                <th id="output" weight="30">${i18nString(UIStrings.output)}</th>
-              </tr>
-              ${Directives.repeat(input.toolCalls, call => call.invocationId + '-' + (call.result?.status ?? ''), call => html `
-                <tr class=${call.result?.status === "Error" /* Protocol.WebMCP.InvocationStatus.Error */ ? 'status-error' :
-        call.result?.status === "Canceled" /* Protocol.WebMCP.InvocationStatus.Canceled */ ? 'status-cancelled' : ''}>
+          <devtools-split-view name="webmcp-call-split-view"
+                               direction="column"
+                               sidebar-position="second"
+                               sidebar-visibility=${input.selectedCall ? 'show' : 'hidden'}>
+            <div slot="main" style="display: flex; flex-direction: column; overflow: hidden; height: 100%;">
+              <devtools-data-grid striped .template=${html `
+                <table>
                   <style>${webMCPViewStyles}</style>
-                  <td>${call.tool.name}</td>
-                  <td>
-                    <div class="status-cell">
-                      ${iconName(call) ? html `<devtools-icon class="small" name=${iconName(call)}></devtools-icon>`
+                  <tr>
+                    <th id="name" weight="20">
+                      ${i18nString(UIStrings.name)}
+                    </th>
+                    <th id="status" weight="20">${i18nString(UIStrings.status)}</th>
+                            ${!input.selectedCall ? html `
+                    <th id="input" weight="30">${i18nString(UIStrings.input)}</th>
+                    <th id="output" weight="30">${i18nString(UIStrings.output)}</th>
+                            ` : nothing}
+                  </tr>
+                      ${Directives.repeat(input.toolCalls, call => call.invocationId + '-' + (call.result?.status ?? ''), call => html `
+                    <tr class=${Directives.classMap({
+        'status-error': call.result?.status === "Error" /* Protocol.WebMCP.InvocationStatus.Error */,
+        'status-cancelled': call.result?.status === "Canceled" /* Protocol.WebMCP.InvocationStatus.Canceled */,
+        selected: call === input.selectedCall,
+    })} @click=${() => input.onCallSelect(call)}>
+                      <td>${call.tool.name}</td>
+                      <td>
+                        <div class="status-cell">
+                          ${iconName(call) ? html `<devtools-icon class="small" name=${iconName(call)}></devtools-icon>`
         : ''}
-                      <span>${statusString(call)}</span>
-                    </div>
-                  </td>
-                  <td>${call.input}</td>
-                  <td>${call.result?.output ? JSON.stringify(call.result.output) : call.result?.errorText ?? ''}</td>
-                </tr>
-              `)}
-              </table>
-          </devtools-data-grid>
+                          <span>${statusString(call)}</span>
+                        </div>
+                      </td>
+                          ${!input.selectedCall ? html `
+                      <td>${call.input}</td>
+                          <td>${call.result?.output ? JSON.stringify(call.result.output)
+        : call.result?.errorText ?? ''}</td>
+                          ` : nothing}
+                    </tr>
+                  `)}
+                  </table>`}>
+              </devtools-data-grid>
+            </div>
+            <div slot="sidebar" style="height: 100%; display: flex; flex-direction: column; overflow: hidden;">
+              <devtools-tabbed-pane class="call-details-tabbed-pane">
+                <devtools-button
+                  slot="left"
+                  .iconName=${'cross'}
+                  .size=${"SMALL" /* Buttons.Button.Size.SMALL */}
+                  .variant=${"icon" /* Buttons.Button.Variant.ICON */}
+                  title=${i18nString(UIStrings.close)}
+                  @click=${() => input.onCallSelect(null)}
+                ></devtools-button>
+                <devtools-widget
+                  id="details"
+                  title=${i18nString(UIStrings.toolDetails)}
+                  ${widget(ToolDetailsWidget, { tool: input.selectedCall?.tool })}>
+                </devtools-widget>
+              </devtools-tabbed-pane>
+            </div>
+          </devtools-split-view>
           <div class="webmcp-toolbar-container" role="toolbar">
             <devtools-toolbar class="webmcp-toolbar" role="presentation" wrappable>
               <span class="toolbar-text">${i18nString(UIStrings.totalCalls, { PH1: stats.total })}</span>
@@ -325,35 +377,57 @@ export const DEFAULT_VIEW = (input, output, target) => {
         text: i18nString(UIStrings.noCallsPlaceholder) })}
         `}
       </div>
-      <div slot="sidebar" class="tool-list">
-        <div class="section-title">${i18nString(UIStrings.toolRegistry)}</div>
-        ${tools.length === 0 ? html `
-        ${UI.Widget.widget(UI.EmptyWidget.EmptyWidget, { header: i18nString(UIStrings.noToolsPlaceholderTitle),
+      <devtools-split-view slot="sidebar"
+                           direction="column"
+                           sidebar-position="second"
+                           name="webmcp-details-split-view"
+                           sidebar-visibility=${input.selectedTool ? 'show' : 'hidden'}>
+        <div slot="main" class="tool-list">
+          <div class="section-title">${i18nString(UIStrings.toolRegistry)}</div>
+          ${tools.length === 0 ? html `
+          ${UI.Widget.widget(UI.EmptyWidget.EmptyWidget, { header: i18nString(UIStrings.noToolsPlaceholderTitle),
         text: i18nString(UIStrings.noToolsPlaceholder) })}
-        ` : html `
-          <devtools-list>
-            ${tools.map(tool => {
+          ` : html `
+            <devtools-list>
+              ${tools.map(tool => {
         const toolStats = calculateToolStats(input.toolCalls.filter(c => c.tool === tool));
         const groups = getIconGroupsFromStats(toolStats);
         return html `
-                <div class="tool-item">
-                  <div class="tool-name-container">
-                    <div class="tool-name source-code">${tool.name}</div>
-                    ${groups.length > 0 ? html `<icon-button .data=${{ groups, compact: false }}></icon-button>` : ''}
+                    <div class=${Directives.classMap({ 'tool-item': true, selected: tool === input.selectedTool })}
+                         @click=${() => input.onToolSelect(tool)}>
+                    <div class="tool-name-container">
+                      <div class="tool-name source-code">${tool.name}</div>
+                      ${groups.length > 0 ? html `<icon-button .data=${{ groups, compact: false }}></icon-button>` : ''}
+                    </div>
+                    <div class="tool-description">${tool.description}</div>
                   </div>
-                  <div class="tool-description">${tool.description}</div>
-                </div>
-              `;
+                `;
     })}
-          </devtools-list>
-        `}
-      </div>
+            </devtools-list>
+          `}
+        </div>
+        <div slot="sidebar" class="tool-details">
+          <div class="section-title">
+            <devtools-button
+              .iconName=${'cross'}
+              .size=${"SMALL" /* Buttons.Button.Size.SMALL */}
+              .variant=${"icon" /* Buttons.Button.Variant.ICON */}
+              title=${i18nString(UIStrings.close)}
+              @click=${() => input.onToolSelect(null)}
+            ></devtools-button>
+            <span>${i18nString(UIStrings.toolDetails)}</span>
+          </div>
+          ${widget(ToolDetailsWidget, { tool: input.selectedTool })}
+        </div>
+      </devtools-split-view>
     </devtools-split-view>
   `, target);
     // clang-format on
 };
 export class WebMCPView extends UI.Widget.VBox {
     #view;
+    #selectedTool = null;
+    #selectedCall = null;
     #filterState = {
         text: '',
     };
@@ -459,6 +533,16 @@ export class WebMCPView extends UI.Widget.VBox {
         const filteredCalls = filterToolCalls(toolCalls, this.#filterState);
         const input = {
             tools: this.#getTools(),
+            selectedTool: this.#selectedTool,
+            onToolSelect: tool => {
+                this.#selectedTool = tool;
+                this.requestUpdate();
+            },
+            selectedCall: this.#selectedCall,
+            onCallSelect: call => {
+                this.#selectedCall = call;
+                this.requestUpdate();
+            },
             toolCalls: filteredCalls,
             filters: this.#filterState,
             filterButtons: this.#filterButtons,
@@ -466,6 +550,112 @@ export class WebMCPView extends UI.Widget.VBox {
             onFilterChange: this.#handleFilterChange,
         };
         this.#view(input, {}, this.contentElement);
+    }
+}
+// clang-format off
+const TOOL_DETAILS_VIEW = (input, output, target) => {
+    if (!input.tool) {
+        render(nothing, target);
+        return;
+    }
+    const tool = input.tool;
+    const origin = input.origin;
+    render(html `
+    <style>${webMCPViewStyles}</style>
+    <div class="tool-details-grid">
+      <div class="label">Name</div>
+      <div class="value source-code">${tool.name}</div>
+      <div class="label">Description</div>
+      <div class="value">${tool.description}</div>
+      ${tool.frame ? html `
+      <div class="label">${i18nString(UIStrings.frame)}</div>
+      <div class="value">${Components.Linkifier.Linkifier.linkifyRevealable(tool.frame, tool.frame.displayName())}</div>
+      ` : nothing}
+      ${origin instanceof SDK.DOMModel.DOMNode ? html `
+      <div class="label">Origin</div>
+      <div class="value tool-origin-container">
+        <span
+            class="node-text-container source-code tool-origin-node"
+            data-label="true"
+            @mouseenter=${() => input.highlightNode(origin)}
+            @mouseleave=${input.clearHighlight}>
+          <devtools-node-text .data=${{
+        nodeId: origin.getAttribute('id') || undefined,
+        nodeTitle: origin.nodeNameInCorrectCase(),
+        nodeClasses: origin.getAttribute('class')?.split(/\s+/).filter(s => Boolean(s))
+    }}>
+          </devtools-node-text>
+        </span>
+        <devtools-button class="show-element"
+           .title=${i18nString(UIStrings.viewInElementsPanel)}
+           aria-label=${i18nString(UIStrings.viewInElementsPanel)}
+           .iconName=${'select-element'}
+           .jslogContext=${'elements.select-element'}
+           .size=${"SMALL" /* Buttons.Button.Size.SMALL */}
+           .variant=${"icon" /* Buttons.Button.Variant.ICON */}
+           @click=${() => input.revealNode(origin)}
+           ></devtools-button>
+      </div>` : origin ? html `
+      <div class="label">Origin</div>
+      <div class="value">
+        ${widget(Components.JSPresentationUtils.StackTracePreviewContent, { stackTrace: origin, options: { expandable: true } })}
+      </div>` : nothing}
+    </div>
+  `, target);
+};
+// clang-format on
+export class ToolDetailsWidget extends UI.Widget.Widget {
+    #tool = null;
+    #origin;
+    #view;
+    constructor(element, view = TOOL_DETAILS_VIEW) {
+        super(element);
+        this.#view = view;
+    }
+    set tool(tool) {
+        if (this.#tool === tool) {
+            return;
+        }
+        this.#tool = tool;
+        this.#origin = undefined;
+        if (this.#tool) {
+            void this.#setToolOrigin(this.#tool);
+        }
+        this.requestUpdate();
+    }
+    async #setToolOrigin(tool) {
+        const origin = await (tool.node ? tool.node.resolvePromise() : tool.stackTrace);
+        if (this.#tool === tool && origin) {
+            this.#origin = origin;
+            this.requestUpdate();
+        }
+    }
+    get tool() {
+        return this.#tool;
+    }
+    #highlightNode = (node) => {
+        node.highlight();
+    };
+    #clearHighlight = () => {
+        SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
+    };
+    #revealNode = (node) => {
+        void Common.Revealer.reveal(node);
+        void node.scrollIntoView();
+    };
+    performUpdate() {
+        const viewInput = {
+            tool: this.#tool,
+            origin: this.#origin,
+            highlightNode: this.#highlightNode,
+            clearHighlight: this.#clearHighlight,
+            revealNode: this.#revealNode,
+        };
+        this.#view(viewInput, undefined, this.contentElement);
+    }
+    wasShown() {
+        super.wasShown();
+        this.requestUpdate();
     }
 }
 //# sourceMappingURL=WebMCPView.js.map

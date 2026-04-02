@@ -1,7 +1,7 @@
 // Copyright 2014 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-import { DeferredDOMNode } from './DOMModel.js';
+import { DeferredDOMNode, DOMModel, Events as DOMModelEvents } from './DOMModel.js';
 import { SDKModel } from './SDKModel.js';
 export class AccessibilityNode {
     #accessibilityModel;
@@ -161,6 +161,17 @@ export class AccessibilityModel extends SDKModel {
         target.registerAccessibilityDispatcher(this);
         this.agent = target.accessibilityAgent();
         void this.resumeModel();
+        const domModel = target.model(DOMModel);
+        if (domModel) {
+            domModel.addEventListener(DOMModelEvents.NodeRemoved, () => {
+                this.clear();
+                this.dispatchEventToListeners("TreeUpdated" /* Events.TREE_UPDATED */, {});
+            });
+            domModel.addEventListener(DOMModelEvents.NodeInserted, () => {
+                this.clear();
+                this.dispatchEventToListeners("TreeUpdated" /* Events.TREE_UPDATED */, {});
+            });
+        }
     }
     clear() {
         this.#root = null;

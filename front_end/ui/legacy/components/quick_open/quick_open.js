@@ -689,10 +689,7 @@ var FilteredListWidget = class extends Common.ObjectWrapper.eventMixin(UI.Widget
 };
 var Provider = class {
   refreshCallback;
-  jslogContext;
-  constructor(jslogContext) {
-    this.jslogContext = jslogContext;
-  }
+  jslogContext = "";
   setRefreshCallback(refreshCallback) {
     this.refreshCallback = refreshCallback;
   }
@@ -780,7 +777,11 @@ var QuickOpenImpl = class {
     }
     this.prefixes.push(prefix);
     this.providers.set(prefix, {
-      provider: () => extension.provider(extension.jslogContext),
+      provider: async () => {
+        const provider = await extension.provider();
+        provider.jslogContext = extension.jslogContext;
+        return provider;
+      },
       titlePrefix: extension.titlePrefix,
       titleSuggestion: extension.titleSuggestion
     });
@@ -1018,8 +1019,8 @@ var CommandMenu = class _CommandMenu {
 };
 var CommandMenuProvider = class extends Provider {
   commands;
-  constructor(jslogContext, commandsForTest = []) {
-    super(jslogContext);
+  constructor(commandsForTest = []) {
+    super();
     this.commands = commandsForTest;
   }
   attach() {
@@ -1166,7 +1167,7 @@ var ShowActionDelegate2 = class {
 registerProvider({
   prefix: ">",
   iconName: "chevron-right",
-  provider: (jslogContext) => Promise.resolve(new CommandMenuProvider(jslogContext)),
+  provider: () => Promise.resolve(new CommandMenuProvider()),
   helpTitle: () => i18nString3(UIStrings3.runCommand),
   titlePrefix: () => i18nString3(UIStrings3.run),
   titleSuggestion: () => i18nString3(UIStrings3.command),
@@ -1182,8 +1183,8 @@ import "./../../../kit/kit.js";
 import { html as html2 } from "./../../../lit/lit.js";
 var HelpQuickOpen = class extends Provider {
   providers;
-  constructor(jslogContext) {
-    super(jslogContext);
+  constructor() {
+    super();
     this.providers = [];
     getRegisteredProviders().forEach(this.addProvider.bind(this));
   }
@@ -1227,7 +1228,7 @@ var HelpQuickOpen = class extends Provider {
 registerProvider({
   prefix: "?",
   iconName: "help",
-  provider: (jslogContext) => Promise.resolve(new HelpQuickOpen(jslogContext)),
+  provider: () => Promise.resolve(new HelpQuickOpen()),
   helpTitle: () => "Help",
   titlePrefix: () => "Help",
   jslogContext: "help"

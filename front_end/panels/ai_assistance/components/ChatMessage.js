@@ -446,12 +446,12 @@ function renderWalkthroughUI(input, steps) {
     const isExpanded = input.walkthrough.isInlined ?
         input.walkthrough.inlineExpandedMessages.includes(input.message) :
         (input.walkthrough.isExpanded && input.walkthrough.activeSidebarMessage === input.message);
-    // When a side-effect step is present, it's shown in the main chat UI if the
-    // walkthrough is closed, allowing the user to approve it without opening
-    // the walkthrough. If the walkthrough is already open, the side-effect
-    // step is displayed within the walkthrough instead.
+    // When a side-effect step is present and needs user approval, it's
+    // shown in the main chat UI, regardless of if the walkthrough is
+    // open or closed.
+    // Once the user has approved/denied it, it goes back into the sidebar.
     // clang-format off
-    const sideEffectStepsUI = !isExpanded && sideEffectSteps.length > 0 ? sideEffectSteps.map(step => html `
+    const sideEffectStepsUI = sideEffectSteps.length > 0 ? sideEffectSteps.map(step => html `
     <div class="side-effect-container">
       ${renderStep({
         step,

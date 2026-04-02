@@ -778,7 +778,7 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin(VBox) {
         // Perform measurement
         for (const [measuringTabElement, tab] of measuringTabElements) {
             const width = measuringTabElement.getBoundingClientRect().width;
-            tab.measuredWidth = Math.ceil(width);
+            tab.measuredWidth = Math.ceil(width) || undefined; // Don't cache 0
         }
         // Nuke elements from the UI
         for (const measuringTabElement of measuringTabElements.keys()) {

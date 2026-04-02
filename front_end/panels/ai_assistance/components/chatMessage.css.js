@@ -176,6 +176,13 @@ export default `/*
       margin: var(--sys-size-6) 0;
     }
 
+    &:not(.ai-v2) .answer-body-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: var(--sys-size-5);
+      width: 100%;
+    }
+
     &.ai-v2 .answer-body-wrapper {
       @container(min-width: 700px) {
         /* Purposefully not using design system variables, this is a

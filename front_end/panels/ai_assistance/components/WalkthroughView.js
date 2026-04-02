@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as i18n from '../../../core/i18n/i18n.js';
+import * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as Input from '../../../ui/components/input/input.js';
 import * as UI from '../../../ui/legacy/legacy.js';
@@ -59,8 +60,8 @@ export function walkthroughCloseTitle(input) {
     }
     return lockedString(UIStrings.hideThinking);
 }
-function renderInlineWalkthrough(input, stepsOutput, steps) {
-    const lastStep = steps.at(-1);
+function renderInlineWalkthrough(input, stepsOutput, allSteps) {
+    const lastStep = allSteps.at(-1);
     if (!input.isInlined || !lastStep) {
         return Lit.nothing;
     }
@@ -76,17 +77,29 @@ function renderInlineWalkthrough(input, stepsOutput, steps) {
             input.onToggle(isOpen, input.message);
         }
     }
-    const hasWidgets = steps.some(s => s.widgets?.length);
+    const hasWidgets = allSteps.some(s => s.widgets?.length);
+    const icon = AiAssistanceModel.AiUtils.getIconName();
     // clang-format off
     return html `
-    <details class="walkthrough-inline" ?open=${input.isExpanded} @toggle=${onToggle}>
-      <summary ?data-has-widgets=${!input.isLoading && hasWidgets}>
-        ${input.isLoading ? html `<devtools-spinner></devtools-spinner>` : Lit.nothing}
-        ${input.isExpanded ? walkthroughCloseTitle({ hasWidgets, isInlined: true }) : walkthroughTitle({ isLoading: input.isLoading, lastStep, hasWidgets })}
-        <devtools-icon name="chevron-right"></devtools-icon>
-      </summary>
-      ${stepsOutput}
-    </details>
+    <div class="inline-wrapper" ?data-open=${input.isExpanded}>
+      <span class="inline-icon">
+        ${input.isLoading ?
+        html `<devtools-spinner></devtools-spinner>` :
+        html `<devtools-icon name=${icon}></devtools-icon>`}
+      </span>
+      <details class="walkthrough-inline" ?open=${input.isExpanded} @toggle=${onToggle}>
+        <summary ?data-has-widgets=${!input.isLoading && hasWidgets}>
+          <span class="walkthrough-inline-title">
+            ${input.isExpanded ?
+        walkthroughCloseTitle({ hasWidgets, isInlined: true }) :
+        walkthroughTitle({ isLoading: input.isLoading, lastStep, hasWidgets })}
+          </span>
+          <devtools-icon name="chevron-right"></devtools-icon>
+        </summary>
+
+        ${stepsOutput}
+      </details>
+    </div>
   `;
     // clang-format on
 }
@@ -124,16 +137,20 @@ function renderSidebarWalkthrough(input, stepsOutput, stepsCount) {
     // clang-format on
 }
 export const DEFAULT_VIEW = (input, output, target) => {
-    const steps = input.message?.parts.filter(t => t.type === 'step')?.map(p => p.step) ?? [];
+    const allSteps = input.message?.parts.filter(t => t.type === 'step')?.map(p => p.step) ?? [];
+    // Ensure that we render steps but not ones that need approval; a
+    // step that needs approval is always rendered into the main chat
+    // view regardless of if the walkthrough is open or not.
+    const renderableSteps = allSteps.filter(s => !s.requestApproval);
     // clang-format off
-    const stepsOutput = steps.length > 0 ? html `
+    const stepsOutput = renderableSteps.length > 0 ? html `
     <div class="steps-container" @scroll=${input.handleScroll} ${ref(el => {
         output.scrollContainer = el;
     })}>
       <div class="steps-scroll-content" ${ref(el => {
         output.stepsContainer = el;
     })}>
-        ${steps.map((step, index) => html `
+        ${renderableSteps.map((step, index) => html `
           <div class="walkthrough-step">
             <span class="step-number">${index + 1}</span>
             <div class="step-wrapper">
@@ -141,7 +158,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
         step,
         isLoading: input.isLoading,
         markdownRenderer: input.markdownRenderer,
-        isLast: index === steps.length - 1
+        isLast: index === renderableSteps.length - 1
     })}
             </div>
           </div>
@@ -155,8 +172,8 @@ export const DEFAULT_VIEW = (input, output, target) => {
       ${chatMessageStyles}
       ${walkthroughViewStyles}
     </style>
-    ${input.isInlined ? renderInlineWalkthrough(input, stepsOutput, steps)
-        : renderSidebarWalkthrough(input, stepsOutput, steps.length)}`, target);
+    ${input.isInlined ? renderInlineWalkthrough(input, stepsOutput, allSteps)
+        : renderSidebarWalkthrough(input, stepsOutput, renderableSteps.length)}`, target);
     // clang-format on
 };
 export class WalkthroughView extends UI.Widget.Widget {

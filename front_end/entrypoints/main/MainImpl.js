@@ -326,8 +326,6 @@ export class MainImpl {
         Root.Runtime.experiments.register(Root.ExperimentNames.ExperimentName.USE_SOURCE_MAP_SCOPES, 'Use scope information from source maps');
         // Advanced Perceptual Contrast Algorithm.
         Root.Runtime.experiments.register(Root.ExperimentNames.ExperimentName.APCA, 'Advanced Perceptual Contrast Algorithm (APCA) replacing previous contrast ratio and AA/AAA guidelines', 'https://developer.chrome.com/blog/new-in-devtools-89/#apca');
-        // Full Accessibility Tree
-        Root.Runtime.experiments.register(Root.ExperimentNames.ExperimentName.FULL_ACCESSIBILITY_TREE, 'Full accessibility tree view in the Elements panel', 'https://developer.chrome.com/blog/new-in-devtools-90/#accessibility-tree', 'https://g.co/devtools/a11y-tree-feedback');
         // Font Editor
         Root.Runtime.experiments.register(Root.ExperimentNames.ExperimentName.FONT_EDITOR, 'New font editor in the Styles tab', 'https://developer.chrome.com/blog/new-in-devtools-89/#font');
         Root.Runtime.experiments.registerHostExperiment({
@@ -345,7 +343,6 @@ export class MainImpl {
             requiresChromeRestart: true,
         });
         Root.Runtime.experiments.enableExperimentsByDefault([
-            Root.ExperimentNames.ExperimentName.FULL_ACCESSIBILITY_TREE,
             Root.ExperimentNames.ExperimentName.USE_SOURCE_MAP_SCOPES,
         ]);
         Root.Runtime.experiments.cleanUpStaleExperiments();

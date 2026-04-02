@@ -1180,7 +1180,8 @@ export class AllocationGridNode extends HeapSnapshotGridNode {
     }
     async doPopulate() {
         this.populated = true;
-        const callers = await this.dataGridInternal.snapshot.allocationNodeCallers(this.allocationNode.id);
+        const callers = await this.dataGridInternal.snapshot
+            .allocationNodeCallers(this.allocationNode.id);
         const callersChain = callers.nodesWithSingleCaller;
         let parentNode = this;
         const dataGrid = this.dataGridInternal;

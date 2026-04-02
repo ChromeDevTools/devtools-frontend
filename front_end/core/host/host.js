@@ -3012,7 +3012,6 @@ var DevtoolsExperiments;
   DevtoolsExperiments2[DevtoolsExperiments2["timeline-show-all-events"] = 27] = "timeline-show-all-events";
   DevtoolsExperiments2[DevtoolsExperiments2["apca"] = 39] = "apca";
   DevtoolsExperiments2[DevtoolsExperiments2["font-editor"] = 41] = "font-editor";
-  DevtoolsExperiments2[DevtoolsExperiments2["full-accessibility-tree"] = 42] = "full-accessibility-tree";
   DevtoolsExperiments2[DevtoolsExperiments2["instrumentation-breakpoints"] = 61] = "instrumentation-breakpoints";
   DevtoolsExperiments2[DevtoolsExperiments2["use-source-map-scopes"] = 76] = "use-source-map-scopes";
   DevtoolsExperiments2[DevtoolsExperiments2["timeline-debug-mode"] = 93] = "timeline-debug-mode";

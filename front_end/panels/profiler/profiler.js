@@ -710,16 +710,13 @@ var BottomUpProfileDataGridTree = class extends ProfileDataGridTree {
   }
 };
 
-// gen/front_end/panels/profiler/ChildrenProvider.js
-var ChildrenProvider_exports = {};
-
 // gen/front_end/panels/profiler/HeapProfilerPanel.js
 var HeapProfilerPanel_exports = {};
 __export(HeapProfilerPanel_exports, {
   HeapProfilerPanel: () => HeapProfilerPanel
 });
 import * as Host3 from "./../../core/host/host.js";
-import * as i18n29 from "./../../core/i18n/i18n.js";
+import * as i18n27 from "./../../core/i18n/i18n.js";
 import * as UI15 from "./../../ui/legacy/legacy.js";
 
 // gen/front_end/panels/profiler/ProfilesPanel.js
@@ -732,8 +729,8 @@ __export(ProfilesPanel_exports, {
   ProfilesSidebarTreeElement: () => ProfilesSidebarTreeElement
 });
 import "./../../ui/legacy/legacy.js";
-import * as Common13 from "./../../core/common/common.js";
-import * as i18n27 from "./../../core/i18n/i18n.js";
+import * as Common12 from "./../../core/common/common.js";
+import * as i18n25 from "./../../core/i18n/i18n.js";
 import * as SDK7 from "./../../core/sdk/sdk.js";
 import { createIcon as createIcon2 } from "./../../ui/kit/kit.js";
 
@@ -3364,10 +3361,10 @@ __export(HeapSnapshotView_exports, {
   SummaryPerspective: () => SummaryPerspective,
   TrackingHeapSnapshotProfileType: () => TrackingHeapSnapshotProfileType
 });
-import * as Common10 from "./../../core/common/common.js";
+import * as Common9 from "./../../core/common/common.js";
 import * as Host2 from "./../../core/host/host.js";
-import * as i18n19 from "./../../core/i18n/i18n.js";
-import * as Platform9 from "./../../core/platform/platform.js";
+import * as i18n17 from "./../../core/i18n/i18n.js";
+import * as Platform8 from "./../../core/platform/platform.js";
 import * as SDK5 from "./../../core/sdk/sdk.js";
 import * as Bindings2 from "./../../models/bindings/bindings.js";
 import * as HeapSnapshotModel5 from "./../../models/heap_snapshot_model/heap_snapshot_model.js";
@@ -5459,333 +5456,8 @@ var AllocationDataGrid = class extends HeapSnapshotViewportDataGrid {
   }
 };
 
-// gen/front_end/panels/profiler/HeapSnapshotProxy.js
-var HeapSnapshotProxy_exports = {};
-__export(HeapSnapshotProxy_exports, {
-  HeapSnapshotLoaderProxy: () => HeapSnapshotLoaderProxy,
-  HeapSnapshotProviderProxy: () => HeapSnapshotProviderProxy,
-  HeapSnapshotProxy: () => HeapSnapshotProxy,
-  HeapSnapshotProxyObject: () => HeapSnapshotProxyObject,
-  HeapSnapshotWorkerProxy: () => HeapSnapshotWorkerProxy
-});
-import * as Common9 from "./../../core/common/common.js";
-import * as i18n17 from "./../../core/i18n/i18n.js";
-import * as Platform8 from "./../../core/platform/platform.js";
-var UIStrings8 = {
-  /**
-   * @description Text in Heap Snapshot Proxy of a profiler tool
-   * @example {functionName} PH1
-   */
-  anErrorOccurredWhenACallToMethod: "An error occurred when a call to method ''{PH1}'' was requested"
-};
-var str_8 = i18n17.i18n.registerUIStrings("panels/profiler/HeapSnapshotProxy.ts", UIStrings8);
-var i18nString8 = i18n17.i18n.getLocalizedString.bind(void 0, str_8);
-var HeapSnapshotWorkerProxy = class extends Common9.ObjectWrapper.ObjectWrapper {
-  eventHandler;
-  nextObjectId = 1;
-  nextCallId = 1;
-  callbacks = /* @__PURE__ */ new Map();
-  previousCallbacks = /* @__PURE__ */ new Set();
-  worker;
-  interval;
-  constructor(eventHandler) {
-    super();
-    this.eventHandler = eventHandler;
-    this.worker = Platform8.HostRuntime.HOST_RUNTIME.createWorker(new URL("../../entrypoints/heap_snapshot_worker/heap_snapshot_worker-entrypoint.js", import.meta.url).toString());
-    this.worker.onmessage = this.messageReceived.bind(this);
-  }
-  createLoader(profileUid, snapshotReceivedCallback) {
-    const objectId = this.nextObjectId++;
-    const proxy = new HeapSnapshotLoaderProxy(this, objectId, profileUid, snapshotReceivedCallback);
-    this.postMessage({
-      callId: this.nextCallId++,
-      disposition: "createLoader",
-      objectId
-    });
-    return proxy;
-  }
-  dispose() {
-    this.worker.terminate();
-    clearInterval(this.interval);
-  }
-  disposeObject(objectId) {
-    this.postMessage({ callId: this.nextCallId++, disposition: "dispose", objectId });
-  }
-  evaluateForTest(script, callback) {
-    const callId = this.nextCallId++;
-    this.callbacks.set(callId, callback);
-    this.postMessage({ callId, disposition: "evaluateForTest", source: script });
-  }
-  callFactoryMethod(callback, objectId, methodName, proxyConstructor, transfer, ...methodArguments) {
-    const callId = this.nextCallId++;
-    const newObjectId = this.nextObjectId++;
-    if (callback) {
-      this.callbacks.set(callId, (remoteResult) => {
-        callback(remoteResult ? new proxyConstructor(this, newObjectId) : null);
-      });
-      this.postMessage({
-        callId,
-        disposition: "factory",
-        objectId,
-        methodName,
-        methodArguments,
-        newObjectId
-      }, transfer);
-      return null;
-    }
-    this.postMessage({
-      callId,
-      disposition: "factory",
-      objectId,
-      methodName,
-      methodArguments,
-      newObjectId
-    }, transfer);
-    return new proxyConstructor(this, newObjectId);
-  }
-  callMethod(callback, objectId, methodName, ...methodArguments) {
-    const callId = this.nextCallId++;
-    if (callback) {
-      this.callbacks.set(callId, callback);
-    }
-    this.postMessage({
-      callId,
-      disposition: "method",
-      objectId,
-      methodName,
-      methodArguments
-    });
-  }
-  startCheckingForLongRunningCalls() {
-    if (this.interval) {
-      return;
-    }
-    this.checkLongRunningCalls();
-    this.interval = window.setInterval(this.checkLongRunningCalls.bind(this), 300);
-  }
-  checkLongRunningCalls() {
-    for (const callId of this.previousCallbacks) {
-      if (!this.callbacks.has(callId)) {
-        this.previousCallbacks.delete(callId);
-      }
-    }
-    const hasLongRunningCalls = Boolean(this.previousCallbacks.size);
-    this.dispatchEventToListeners("Wait", hasLongRunningCalls);
-    for (const callId of this.callbacks.keys()) {
-      this.previousCallbacks.add(callId);
-    }
-  }
-  setupForSecondaryInit(port) {
-    const callId = this.nextCallId++;
-    const done = new Promise((resolve) => {
-      this.callbacks.set(callId, resolve);
-    });
-    this.postMessage({
-      callId,
-      disposition: "setupForSecondaryInit",
-      objectId: this.nextObjectId++
-    }, [port]);
-    return done;
-  }
-  messageReceived(event) {
-    const data = event.data;
-    if (data.eventName) {
-      if (this.eventHandler) {
-        this.eventHandler(data.eventName, data.data);
-      }
-      return;
-    }
-    if (data.error) {
-      if (data.errorMethodName) {
-        Common9.Console.Console.instance().error(i18nString8(UIStrings8.anErrorOccurredWhenACallToMethod, { PH1: data.errorMethodName }));
-      }
-      Common9.Console.Console.instance().error(data["errorCallStack"]);
-      this.callbacks.delete(data.callId);
-      return;
-    }
-    const callback = this.callbacks.get(data.callId);
-    if (!callback) {
-      return;
-    }
-    this.callbacks.delete(data.callId);
-    callback(data.result);
-  }
-  postMessage(message, transfer) {
-    this.worker.postMessage(message, transfer);
-  }
-};
-var HeapSnapshotProxyObject = class {
-  worker;
-  objectId;
-  constructor(worker, objectId) {
-    this.worker = worker;
-    this.objectId = objectId;
-  }
-  dispose() {
-    this.worker.disposeObject(this.objectId);
-  }
-  callFactoryMethod(methodName, proxyConstructor, ...args) {
-    return this.worker.callFactoryMethod(null, String(this.objectId), methodName, proxyConstructor, [], ...args);
-  }
-  callFactoryMethodPromise(methodName, proxyConstructor, transfer, ...args) {
-    return new Promise((resolve) => this.worker.callFactoryMethod(resolve, String(this.objectId), methodName, proxyConstructor, transfer, ...args));
-  }
-  callMethodPromise(methodName, ...args) {
-    return new Promise((resolve) => this.worker.callMethod(resolve, String(this.objectId), methodName, ...args));
-  }
-};
-var HeapSnapshotLoaderProxy = class extends HeapSnapshotProxyObject {
-  profileUid;
-  snapshotReceivedCallback;
-  constructor(worker, objectId, profileUid, snapshotReceivedCallback) {
-    super(worker, objectId);
-    this.profileUid = profileUid;
-    this.snapshotReceivedCallback = snapshotReceivedCallback;
-  }
-  async write(chunk) {
-    await this.callMethodPromise("write", chunk);
-  }
-  async close() {
-    await this.callMethodPromise("close");
-    const secondWorker = new HeapSnapshotWorkerProxy(() => {
-    });
-    const channel = new MessageChannel();
-    await secondWorker.setupForSecondaryInit(channel.port2);
-    const snapshotProxy = await this.callFactoryMethodPromise("buildSnapshot", HeapSnapshotProxy, [channel.port1]);
-    secondWorker.dispose();
-    this.dispose();
-    snapshotProxy.setProfileUid(this.profileUid);
-    await snapshotProxy.updateStaticData();
-    this.snapshotReceivedCallback(snapshotProxy);
-  }
-};
-var HeapSnapshotProxy = class extends HeapSnapshotProxyObject {
-  staticData;
-  profileUid;
-  constructor(worker, objectId) {
-    super(worker, objectId);
-    this.staticData = null;
-  }
-  search(searchConfig, filter) {
-    return this.callMethodPromise("search", searchConfig, filter);
-  }
-  interfaceDefinitions() {
-    return this.callMethodPromise("interfaceDefinitions");
-  }
-  aggregatesWithFilter(filter) {
-    return this.callMethodPromise("aggregatesWithFilter", filter);
-  }
-  aggregatesForDiff(interfaceDefinitions) {
-    return this.callMethodPromise("aggregatesForDiff", interfaceDefinitions);
-  }
-  calculateSnapshotDiff(baseSnapshotId, baseSnapshotAggregates) {
-    return this.callMethodPromise("calculateSnapshotDiff", baseSnapshotId, baseSnapshotAggregates);
-  }
-  nodeClassKey(snapshotObjectId) {
-    return this.callMethodPromise("nodeClassKey", snapshotObjectId);
-  }
-  createEdgesProvider(nodeIndex) {
-    return this.callFactoryMethod("createEdgesProvider", HeapSnapshotProviderProxy, nodeIndex);
-  }
-  createRetainingEdgesProvider(nodeIndex) {
-    return this.callFactoryMethod("createRetainingEdgesProvider", HeapSnapshotProviderProxy, nodeIndex);
-  }
-  createAddedNodesProvider(baseSnapshotId, classKey) {
-    return this.callFactoryMethod("createAddedNodesProvider", HeapSnapshotProviderProxy, baseSnapshotId, classKey);
-  }
-  createDeletedNodesProvider(nodeIndexes) {
-    return this.callFactoryMethod("createDeletedNodesProvider", HeapSnapshotProviderProxy, nodeIndexes);
-  }
-  createNodesProvider(filter) {
-    return this.callFactoryMethod("createNodesProvider", HeapSnapshotProviderProxy, filter);
-  }
-  createNodesProviderForClass(classKey, nodeFilter) {
-    return this.callFactoryMethod("createNodesProviderForClass", HeapSnapshotProviderProxy, classKey, nodeFilter);
-  }
-  allocationTracesTops() {
-    return this.callMethodPromise("allocationTracesTops");
-  }
-  allocationNodeCallers(nodeId) {
-    return this.callMethodPromise("allocationNodeCallers", nodeId);
-  }
-  allocationStack(nodeIndex) {
-    return this.callMethodPromise("allocationStack", nodeIndex);
-  }
-  dispose() {
-    throw new Error("Should never be called");
-  }
-  get nodeCount() {
-    if (!this.staticData) {
-      return 0;
-    }
-    return this.staticData.nodeCount;
-  }
-  get rootNodeIndex() {
-    if (!this.staticData) {
-      return 0;
-    }
-    return this.staticData.rootNodeIndex;
-  }
-  async updateStaticData() {
-    this.staticData = await this.callMethodPromise("updateStaticData");
-  }
-  getStatistics() {
-    return this.callMethodPromise("getStatistics");
-  }
-  getLocation(nodeIndex) {
-    return this.callMethodPromise("getLocation", nodeIndex);
-  }
-  getSamples() {
-    return this.callMethodPromise("getSamples");
-  }
-  ignoreNodeInRetainersView(nodeIndex) {
-    return this.callMethodPromise("ignoreNodeInRetainersView", nodeIndex);
-  }
-  unignoreNodeInRetainersView(nodeIndex) {
-    return this.callMethodPromise("unignoreNodeInRetainersView", nodeIndex);
-  }
-  unignoreAllNodesInRetainersView() {
-    return this.callMethodPromise("unignoreAllNodesInRetainersView");
-  }
-  areNodesIgnoredInRetainersView() {
-    return this.callMethodPromise("areNodesIgnoredInRetainersView");
-  }
-  get totalSize() {
-    if (!this.staticData) {
-      return 0;
-    }
-    return this.staticData.totalSize;
-  }
-  get uid() {
-    return this.profileUid;
-  }
-  setProfileUid(profileUid) {
-    this.profileUid = profileUid;
-  }
-  maxJSObjectId() {
-    if (!this.staticData) {
-      return 0;
-    }
-    return this.staticData.maxJSObjectId;
-  }
-};
-var HeapSnapshotProviderProxy = class extends HeapSnapshotProxyObject {
-  nodePosition(snapshotObjectId) {
-    return this.callMethodPromise("nodePosition", snapshotObjectId);
-  }
-  isEmpty() {
-    return this.callMethodPromise("isEmpty");
-  }
-  serializeItemsRange(startPosition, endPosition) {
-    return this.callMethodPromise("serializeItemsRange", startPosition, endPosition);
-  }
-  async sortAndRewind(comparator) {
-    await this.callMethodPromise("sortAndRewind", comparator);
-  }
-};
-
 // gen/front_end/panels/profiler/ModuleUIStrings.js
-var UIStrings9 = {
+var UIStrings8 = {
   /**
    * @description Text to indicate the status of a heap snapshot in the Performance Pane
    */
@@ -5890,7 +5562,7 @@ var UIStrings9 = {
 };
 
 // gen/front_end/panels/profiler/HeapSnapshotView.js
-var UIStrings10 = {
+var UIStrings9 = {
   /**
    * @description Text to find an item
    */
@@ -6101,10 +5773,10 @@ var UIStrings10 = {
    */
   restoreIgnoredRetainers: "Restore ignored retainers"
 };
-var str_9 = i18n19.i18n.registerUIStrings("panels/profiler/HeapSnapshotView.ts", UIStrings10);
-var i18nString9 = i18n19.i18n.getLocalizedString.bind(void 0, str_9);
-var moduleUIstr_ = i18n19.i18n.registerUIStrings("panels/profiler/ModuleUIStrings.ts", UIStrings9);
-var moduleI18nString = i18n19.i18n.getLocalizedString.bind(void 0, moduleUIstr_);
+var str_8 = i18n17.i18n.registerUIStrings("panels/profiler/HeapSnapshotView.ts", UIStrings9);
+var i18nString8 = i18n17.i18n.getLocalizedString.bind(void 0, str_8);
+var moduleUIstr_ = i18n17.i18n.registerUIStrings("panels/profiler/ModuleUIStrings.ts", UIStrings8);
+var moduleI18nString = i18n17.i18n.getLocalizedString.bind(void 0, moduleUIstr_);
 var HeapSnapshotView = class _HeapSnapshotView extends UI10.View.SimpleView {
   searchResults = [];
   profile;
@@ -6154,7 +5826,7 @@ var HeapSnapshotView = class _HeapSnapshotView extends UI10.View.SimpleView {
   }
   constructor(dataDisplayDelegate, profile, registry) {
     super({
-      title: i18nString9(UIStrings10.heapSnapshot),
+      title: i18nString8(UIStrings9.heapSnapshot),
       viewId: "heap-snapshot"
     });
     this.#registry = registry;
@@ -6171,7 +5843,7 @@ var HeapSnapshotView = class _HeapSnapshotView extends UI10.View.SimpleView {
     const hasAllocationStacks = registry.trackingHeapSnapshotProfileType.recordAllocationStacksSetting().get();
     this.parentDataDisplayDelegate = dataDisplayDelegate;
     this.searchableViewInternal = new UI10.SearchableView.SearchableView(this, null);
-    this.searchableViewInternal.setPlaceholder(i18nString9(UIStrings10.find), i18nString9(UIStrings10.find));
+    this.searchableViewInternal.setPlaceholder(i18nString8(UIStrings9.find), i18nString8(UIStrings9.find));
     this.searchableViewInternal.show(this.element);
     this.splitWidget = new UI10.SplitWidget.SplitWidget(false, true, "heap-snapshot-split-view-state", 200, 200);
     this.splitWidget.show(this.searchableViewInternal.element);
@@ -6180,7 +5852,7 @@ var HeapSnapshotView = class _HeapSnapshotView extends UI10.View.SimpleView {
       heapProfilerModel,
       this,
       /* displayName */
-      i18nString9(UIStrings10.containment)
+      i18nString8(UIStrings9.containment)
     );
     this.containmentDataGrid.addEventListener("SelectedNode", this.selectionChanged, this);
     this.containmentWidget = this.containmentDataGrid.asWidget();
@@ -6213,8 +5885,8 @@ var HeapSnapshotView = class _HeapSnapshotView extends UI10.View.SimpleView {
     let splitWidgetResizer;
     if (this.allocationStackView) {
       this.tabbedPane = new UI10.TabbedPane.TabbedPane();
-      this.tabbedPane.appendTab("retainers", i18nString9(UIStrings10.retainers), this.retainmentWidget);
-      this.tabbedPane.appendTab("allocation-stack", i18nString9(UIStrings10.allocationStack), this.allocationStackView);
+      this.tabbedPane.appendTab("retainers", i18nString8(UIStrings9.retainers), this.retainmentWidget);
+      this.tabbedPane.appendTab("allocation-stack", i18nString8(UIStrings9.allocationStack), this.allocationStackView);
       splitWidgetResizer = this.tabbedPane.headerElement();
       this.objectDetailsView = this.tabbedPane;
     } else {
@@ -6223,7 +5895,7 @@ var HeapSnapshotView = class _HeapSnapshotView extends UI10.View.SimpleView {
       const retainingPathsTitleDiv = retainmentViewHeader.createChild("div", "title");
       retainmentViewHeader.createChild("div", "verticalResizerIcon");
       const retainingPathsTitle = retainingPathsTitleDiv.createChild("span");
-      retainingPathsTitle.textContent = i18nString9(UIStrings10.retainers);
+      retainingPathsTitle.textContent = i18nString8(UIStrings9.retainers);
       splitWidgetResizer = retainmentViewHeader;
       this.objectDetailsView = new UI10.Widget.VBox();
       this.objectDetailsView.element.appendChild(retainmentViewHeader);
@@ -6244,20 +5916,20 @@ var HeapSnapshotView = class _HeapSnapshotView extends UI10.View.SimpleView {
       this.perspectives.push(new AllocationPerspective());
     }
     this.perspectives.push(new StatisticsPerspective());
-    this.perspectiveSelect = new UI10.Toolbar.ToolbarComboBox(this.onSelectedPerspectiveChanged.bind(this), i18nString9(UIStrings10.perspective), void 0, "profiler.heap-snapshot-perspective");
+    this.perspectiveSelect = new UI10.Toolbar.ToolbarComboBox(this.onSelectedPerspectiveChanged.bind(this), i18nString8(UIStrings9.perspective), void 0, "profiler.heap-snapshot-perspective");
     this.updatePerspectiveOptions();
-    this.baseSelect = new UI10.Toolbar.ToolbarComboBox(this.changeBase.bind(this), i18nString9(UIStrings10.baseSnapshot), void 0, "profiler.heap-snapshot-base");
+    this.baseSelect = new UI10.Toolbar.ToolbarComboBox(this.changeBase.bind(this), i18nString8(UIStrings9.baseSnapshot), void 0, "profiler.heap-snapshot-base");
     this.baseSelect.setVisible(false);
     this.updateBaseOptions();
-    this.filterSelect = new UI10.Toolbar.ToolbarComboBox(this.changeFilter.bind(this), i18nString9(UIStrings10.filter), void 0, "profiler.heap-snapshot-filter");
+    this.filterSelect = new UI10.Toolbar.ToolbarComboBox(this.changeFilter.bind(this), i18nString8(UIStrings9.filter), void 0, "profiler.heap-snapshot-filter");
     this.filterSelect.setVisible(false);
     this.updateFilterOptions();
-    this.classNameFilter = new UI10.Toolbar.ToolbarFilter(i18nString9(UIStrings10.filterByClass));
+    this.classNameFilter = new UI10.Toolbar.ToolbarFilter(i18nString8(UIStrings9.filterByClass));
     this.classNameFilter.setVisible(false);
     this.constructorsDataGrid.setNameFilter(this.classNameFilter);
     this.diffDataGrid.setNameFilter(this.classNameFilter);
     this.selectedSizeText = new UI10.Toolbar.ToolbarText();
-    const restoreIgnoredRetainers = i18nString9(UIStrings10.restoreIgnoredRetainers);
+    const restoreIgnoredRetainers = i18nString8(UIStrings9.restoreIgnoredRetainers);
     this.resetRetainersButton = new UI10.Toolbar.ToolbarButton(restoreIgnoredRetainers, "clear-list", restoreIgnoredRetainers);
     this.resetRetainersButton.setVisible(false);
     this.resetRetainersButton.addEventListener("Click", async () => {
@@ -6273,7 +5945,7 @@ var HeapSnapshotView = class _HeapSnapshotView extends UI10.View.SimpleView {
     this.currentPerspective.activate(this);
     this.dataGrid = this.currentPerspective.masterGrid(this);
     void this.populate();
-    this.searchThrottler = new Common10.Throttler.Throttler(0);
+    this.searchThrottler = new Common9.Throttler.Throttler(0);
     for (const existingProfile of this.profiles()) {
       existingProfile.addEventListener("ProfileTitleChanged", this.updateControls, this);
     }
@@ -6365,20 +6037,20 @@ var HeapSnapshotView = class _HeapSnapshotView extends UI10.View.SimpleView {
     const { v8heap, native } = statistics;
     const otherJSObjectsSize = v8heap.total - v8heap.code - v8heap.strings - v8heap.jsArrays - v8heap.system;
     const records = [
-      { value: v8heap.code, color: "var(--app-color-code)", title: i18nString9(UIStrings10.code) },
-      { value: v8heap.strings, color: "var(--app-color-strings)", title: i18nString9(UIStrings10.strings) },
-      { value: v8heap.jsArrays, color: "var(--app-color-js-arrays)", title: i18nString9(UIStrings10.jsArrays) },
-      { value: native.typedArrays, color: "var(--app-color-typed-arrays)", title: i18nString9(UIStrings10.typedArrays) },
-      { value: v8heap.system, color: "var(--app-color-system)", title: i18nString9(UIStrings10.systemObjects) },
+      { value: v8heap.code, color: "var(--app-color-code)", title: i18nString8(UIStrings9.code) },
+      { value: v8heap.strings, color: "var(--app-color-strings)", title: i18nString8(UIStrings9.strings) },
+      { value: v8heap.jsArrays, color: "var(--app-color-js-arrays)", title: i18nString8(UIStrings9.jsArrays) },
+      { value: native.typedArrays, color: "var(--app-color-typed-arrays)", title: i18nString8(UIStrings9.typedArrays) },
+      { value: v8heap.system, color: "var(--app-color-system)", title: i18nString8(UIStrings9.systemObjects) },
       {
         value: otherJSObjectsSize,
         color: "var(--app-color-other-js-objects)",
-        title: i18nString9(UIStrings10.otherJSObjects)
+        title: i18nString8(UIStrings9.otherJSObjects)
       },
       {
         value: native.total - native.typedArrays,
         color: "var(--app-color-other-non-js-objects)",
-        title: i18nString9(UIStrings10.otherNonJSObjects)
+        title: i18nString8(UIStrings9.otherNonJSObjects)
       }
     ];
     this.statisticsView.setTotalAndRecords(statistics.total, records);
@@ -6386,7 +6058,7 @@ var HeapSnapshotView = class _HeapSnapshotView extends UI10.View.SimpleView {
   }
   onIdsRangeChanged(event) {
     const { minId, maxId } = event.data;
-    this.selectedSizeText.setText(i18nString9(UIStrings10.selectedSizeS, { PH1: i18n19.ByteUtilities.bytesToString(event.data.size) }));
+    this.selectedSizeText.setText(i18nString8(UIStrings9.selectedSizeS, { PH1: i18n17.ByteUtilities.bytesToString(event.data.size) }));
     if (this.constructorsDataGrid.snapshot) {
       this.constructorsDataGrid.setSelectionRange(minId, maxId);
     }
@@ -6510,10 +6182,10 @@ var HeapSnapshotView = class _HeapSnapshotView extends UI10.View.SimpleView {
     this.performSearch(this.currentSearch, false);
   }
   static ALWAYS_AVAILABLE_FILTERS = [
-    { uiName: i18nString9(UIStrings10.duplicatedStrings), filterName: "duplicatedStrings" },
-    { uiName: i18nString9(UIStrings10.objectsRetainedByDetachedDomNodes), filterName: "objectsRetainedByDetachedDomNodes" },
-    { uiName: i18nString9(UIStrings10.objectsRetainedByConsole), filterName: "objectsRetainedByConsole" },
-    { uiName: i18nString9(UIStrings10.objectsRetainedByEventHandlers), filterName: "objectsRetainedByEventHandlers" }
+    { uiName: i18nString8(UIStrings9.duplicatedStrings), filterName: "duplicatedStrings" },
+    { uiName: i18nString8(UIStrings9.objectsRetainedByDetachedDomNodes), filterName: "objectsRetainedByDetachedDomNodes" },
+    { uiName: i18nString8(UIStrings9.objectsRetainedByConsole), filterName: "objectsRetainedByConsole" },
+    { uiName: i18nString8(UIStrings9.objectsRetainedByEventHandlers), filterName: "objectsRetainedByEventHandlers" }
   ];
   changeFilter() {
     let selectedIndex = this.filterSelect.selectedIndex();
@@ -6637,7 +6309,7 @@ var HeapSnapshotView = class _HeapSnapshotView extends UI10.View.SimpleView {
     if (node) {
       node.select();
     } else {
-      Common10.Console.Console.instance().error("Cannot find corresponding heap snapshot node");
+      Common9.Console.Console.instance().error("Cannot find corresponding heap snapshot node");
     }
   }
   getPopoverRequest(event) {
@@ -6709,13 +6381,13 @@ var HeapSnapshotView = class _HeapSnapshotView extends UI10.View.SimpleView {
     const selectedIndex = this.filterSelect.selectedIndex();
     const originalSize = this.filterSelect.size();
     this.filterSelect.removeOptions();
-    this.filterSelect.createOption(i18nString9(UIStrings10.allObjects));
+    this.filterSelect.createOption(i18nString8(UIStrings9.allObjects));
     for (let i = 0; i < list.length; ++i) {
       let title;
       if (!i) {
-        title = i18nString9(UIStrings10.objectsAllocatedBeforeS, { PH1: list[i].title });
+        title = i18nString8(UIStrings9.objectsAllocatedBeforeS, { PH1: list[i].title });
       } else {
-        title = i18nString9(UIStrings10.objectsAllocatedBetweenSAndS, { PH1: list[i - 1].title, PH2: list[i].title });
+        title = i18nString8(UIStrings9.objectsAllocatedBetweenSAndS, { PH1: list[i - 1].title, PH2: list[i].title });
       }
       this.filterSelect.createOption(title);
     }
@@ -6809,7 +6481,7 @@ var Perspective = class {
 };
 var SummaryPerspective = class extends Perspective {
   constructor() {
-    super(i18nString9(UIStrings10.summary));
+    super(i18nString8(UIStrings9.summary));
   }
   activate(heapSnapshotView) {
     heapSnapshotView.splitWidget.setMainWidget(heapSnapshotView.constructorsWidget);
@@ -6833,7 +6505,7 @@ var SummaryPerspective = class extends Perspective {
 };
 var ComparisonPerspective = class extends Perspective {
   constructor() {
-    super(i18nString9(UIStrings10.comparison));
+    super(i18nString8(UIStrings9.comparison));
   }
   activate(heapSnapshotView) {
     heapSnapshotView.splitWidget.setMainWidget(heapSnapshotView.diffWidget);
@@ -6851,7 +6523,7 @@ var ComparisonPerspective = class extends Perspective {
 };
 var ContainmentPerspective = class extends Perspective {
   constructor() {
-    super(i18nString9(UIStrings10.containment));
+    super(i18nString8(UIStrings9.containment));
   }
   activate(heapSnapshotView) {
     heapSnapshotView.splitWidget.setMainWidget(heapSnapshotView.containmentWidget);
@@ -6865,7 +6537,7 @@ var ContainmentPerspective = class extends Perspective {
 var AllocationPerspective = class extends Perspective {
   allocationSplitWidget;
   constructor() {
-    super(i18nString9(UIStrings10.allocation));
+    super(i18nString8(UIStrings9.allocation));
     this.allocationSplitWidget = new UI10.SplitWidget.SplitWidget(false, true, "heap-snapshot-allocation-split-view-state", 200, 200);
     this.allocationSplitWidget.setSidebarWidget(new UI10.Widget.VBox());
   }
@@ -6880,7 +6552,7 @@ var AllocationPerspective = class extends Perspective {
     resizer.classList.add("heap-snapshot-view-resizer");
     const title = resizer.createChild("div", "title").createChild("span");
     resizer.createChild("div", "verticalResizerIcon");
-    title.textContent = i18nString9(UIStrings10.liveObjects);
+    title.textContent = i18nString8(UIStrings9.liveObjects);
     this.allocationSplitWidget.hideDefaultResizer();
     this.allocationSplitWidget.installResizer(resizer);
     allocatedObjectsView.element.appendChild(resizer);
@@ -6905,7 +6577,7 @@ var AllocationPerspective = class extends Perspective {
 };
 var StatisticsPerspective = class extends Perspective {
   constructor() {
-    super(i18nString9(UIStrings10.statistics));
+    super(i18nString8(UIStrings9.statistics));
   }
   activate(heapSnapshotView) {
     heapSnapshotView.statisticsView.show(heapSnapshotView.searchableViewInternal.element);
@@ -6914,16 +6586,16 @@ var StatisticsPerspective = class extends Perspective {
     return null;
   }
 };
-var HeapSnapshotProfileType = class _HeapSnapshotProfileType extends Common10.ObjectWrapper.eventMixin(ProfileType) {
+var HeapSnapshotProfileType = class _HeapSnapshotProfileType extends Common9.ObjectWrapper.eventMixin(ProfileType) {
   exposeInternals;
   customContentInternal;
   constructor(id, title) {
-    super(id || _HeapSnapshotProfileType.TypeId, title || i18nString9(UIStrings10.heapSnapshot));
+    super(id || _HeapSnapshotProfileType.TypeId, title || i18nString8(UIStrings9.heapSnapshot));
     SDK5.TargetManager.TargetManager.instance().observeModels(SDK5.HeapProfilerModel.HeapProfilerModel, this);
     SDK5.TargetManager.TargetManager.instance().addModelListener(SDK5.HeapProfilerModel.HeapProfilerModel, "ResetProfiles", this.resetProfiles, this);
     SDK5.TargetManager.TargetManager.instance().addModelListener(SDK5.HeapProfilerModel.HeapProfilerModel, "AddHeapSnapshotChunk", this.addHeapSnapshotChunk, this);
     SDK5.TargetManager.TargetManager.instance().addModelListener(SDK5.HeapProfilerModel.HeapProfilerModel, "ReportHeapSnapshotProgress", this.reportHeapSnapshotProgress, this);
-    this.exposeInternals = Common10.Settings.Settings.instance().createSetting("expose-internals", false);
+    this.exposeInternals = Common9.Settings.Settings.instance().createSetting("expose-internals", false);
     this.customContentInternal = null;
   }
   modelAdded(heapProfilerModel) {
@@ -6938,7 +6610,7 @@ var HeapSnapshotProfileType = class _HeapSnapshotProfileType extends Common10.Ob
     return ".heapsnapshot";
   }
   get buttonTooltip() {
-    return i18nString9(UIStrings10.takeHeapSnapshot);
+    return i18nString8(UIStrings9.takeHeapSnapshot);
   }
   isInstantProfile() {
     return true;
@@ -6949,13 +6621,13 @@ var HeapSnapshotProfileType = class _HeapSnapshotProfileType extends Common10.Ob
     return false;
   }
   get treeItemTitle() {
-    return i18nString9(UIStrings10.heapSnapshots);
+    return i18nString8(UIStrings9.heapSnapshots);
   }
   get description() {
-    return i18nString9(UIStrings10.heapSnapshotProfilesShowMemory);
+    return i18nString8(UIStrings9.heapSnapshotProfilesShowMemory);
   }
   customContent() {
-    const exposeInternalsInHeapSnapshotCheckbox = SettingsUI.SettingsUI.createSettingCheckbox(i18nString9(UIStrings10.exposeInternals), this.exposeInternals);
+    const exposeInternalsInHeapSnapshotCheckbox = SettingsUI.SettingsUI.createSettingCheckbox(i18nString8(UIStrings9.exposeInternals), this.exposeInternals);
     this.customContentInternal = exposeInternalsInHeapSnapshotCheckbox;
     return exposeInternalsInHeapSnapshotCheckbox;
   }
@@ -6978,7 +6650,7 @@ var HeapSnapshotProfileType = class _HeapSnapshotProfileType extends Common10.Ob
     let profile = new HeapProfileHeader(heapProfilerModel, this);
     this.setProfileBeingRecorded(profile);
     this.addProfile(profile);
-    profile.updateStatus(i18nString9(UIStrings10.snapshotting));
+    profile.updateStatus(i18nString8(UIStrings9.snapshotting));
     await heapProfilerModel.takeHeapSnapshot({
       reportProgress: true,
       captureNumericValue: true,
@@ -6988,7 +6660,7 @@ var HeapSnapshotProfileType = class _HeapSnapshotProfileType extends Common10.Ob
     if (!profile) {
       return;
     }
-    profile.title = i18nString9(UIStrings10.snapshotD, { PH1: profile.uid });
+    profile.title = i18nString8(UIStrings9.snapshotD, { PH1: profile.uid });
     profile.finishLoad();
     this.setProfileBeingRecorded(null);
     this.dispatchEventToListeners("profile-complete", profile);
@@ -7006,7 +6678,7 @@ var HeapSnapshotProfileType = class _HeapSnapshotProfileType extends Common10.Ob
       return;
     }
     const { done, total, finished } = event.data;
-    profile.updateStatus(i18nString9(UIStrings10.percentagePlaceholder, { PH1: (done / total * 100).toFixed(0) }), true);
+    profile.updateStatus(i18nString8(UIStrings9.percentagePlaceholder, { PH1: (done / total * 100).toFixed(0) }), true);
     if (finished) {
       profile.prepareToLoad();
     }
@@ -7031,14 +6703,14 @@ var HeapSnapshotProfileType = class _HeapSnapshotProfileType extends Common10.Ob
   // eslint-disable-next-line @typescript-eslint/naming-convention
   static SnapshotReceived = "SnapshotReceived";
 };
-var TrackingHeapSnapshotProfileType = class _TrackingHeapSnapshotProfileType extends Common10.ObjectWrapper.eventMixin(HeapSnapshotProfileType) {
+var TrackingHeapSnapshotProfileType = class _TrackingHeapSnapshotProfileType extends Common9.ObjectWrapper.eventMixin(HeapSnapshotProfileType) {
   recordAllocationStacksSettingInternal;
   customContentInternal;
   recording;
   profileSamples;
   constructor() {
-    super(_TrackingHeapSnapshotProfileType.TypeId, i18nString9(UIStrings10.allocationInstrumentationOn));
-    this.recordAllocationStacksSettingInternal = Common10.Settings.Settings.instance().createSetting("record-allocation-stacks", false);
+    super(_TrackingHeapSnapshotProfileType.TypeId, i18nString8(UIStrings9.allocationInstrumentationOn));
+    this.recordAllocationStacksSettingInternal = Common9.Settings.Settings.instance().createSetting("record-allocation-stacks", false);
     this.customContentInternal = null;
     this.recording = false;
   }
@@ -7095,7 +6767,7 @@ var TrackingHeapSnapshotProfileType = class _TrackingHeapSnapshotProfileType ext
     return true;
   }
   get buttonTooltip() {
-    return this.recording ? i18nString9(UIStrings10.stopRecordingHeapProfile) : i18nString9(UIStrings10.startRecordingHeapProfile);
+    return this.recording ? i18nString8(UIStrings9.stopRecordingHeapProfile) : i18nString8(UIStrings9.startRecordingHeapProfile);
   }
   isInstantProfile() {
     return false;
@@ -7114,7 +6786,7 @@ var TrackingHeapSnapshotProfileType = class _TrackingHeapSnapshotProfileType ext
     void heapProfilerModel.startTrackingHeapObjects(this.recordAllocationStacksSettingInternal.get());
   }
   customContent() {
-    const checkboxSetting = SettingsUI.SettingsUI.createSettingCheckbox(i18nString9(UIStrings10.recordAllocationStacksExtra), this.recordAllocationStacksSettingInternal);
+    const checkboxSetting = SettingsUI.SettingsUI.createSettingCheckbox(i18nString8(UIStrings9.recordAllocationStacksExtra), this.recordAllocationStacksSettingInternal);
     this.customContentInternal = checkboxSetting;
     return checkboxSetting;
   }
@@ -7135,7 +6807,7 @@ var TrackingHeapSnapshotProfileType = class _TrackingHeapSnapshotProfileType ext
     this.profileSamples = new Samples();
     this.recording = true;
     this.addProfile(this.profileBeingRecorded());
-    this.profileBeingRecorded().updateStatus(i18nString9(UIStrings10.recording));
+    this.profileBeingRecorded().updateStatus(i18nString8(UIStrings9.recording));
     this.dispatchEventToListeners(
       "TrackingStarted"
       /* TrackingHeapSnapshotProfileTypeEvents.TRACKING_STARTED */
@@ -7144,7 +6816,7 @@ var TrackingHeapSnapshotProfileType = class _TrackingHeapSnapshotProfileType ext
   }
   async stopRecordingProfile() {
     let profile = this.profileBeingRecorded();
-    profile.updateStatus(i18nString9(UIStrings10.snapshotting));
+    profile.updateStatus(i18nString8(UIStrings9.snapshotting));
     const stopPromise = profile.heapProfilerModel().stopTrackingHeapObjects(true);
     this.recording = false;
     this.dispatchEventToListeners(
@@ -7173,10 +6845,10 @@ var TrackingHeapSnapshotProfileType = class _TrackingHeapSnapshotProfileType ext
     return ".heaptimeline";
   }
   get treeItemTitle() {
-    return i18nString9(UIStrings10.allocationTimelines);
+    return i18nString8(UIStrings9.allocationTimelines);
   }
   get description() {
-    return i18nString9(UIStrings10.AllocationTimelinesShowInstrumented);
+    return i18nString8(UIStrings9.AllocationTimelinesShowInstrumented);
   }
   resetProfiles(event) {
     const wasRecording = this.recording;
@@ -7216,7 +6888,7 @@ var HeapProfileHeader = class extends ProfileHeader {
   wasDisposed;
   fileName;
   constructor(heapProfilerModel, type, title) {
-    super(type, title || i18nString9(UIStrings10.snapshotD, { PH1: type.nextProfileUid() }));
+    super(type, title || i18nString8(UIStrings9.snapshotD, { PH1: type.nextProfileUid() }));
     this.heapProfilerModelInternal = heapProfilerModel;
     const { promise, resolve } = Promise.withResolvers();
     this.loadPromise = promise;
@@ -7234,7 +6906,7 @@ var HeapProfileHeader = class extends ProfileHeader {
   prepareToLoad() {
     console.assert(!this.receiver, "Already loading");
     this.setupWorker();
-    this.updateStatus(i18nString9(UIStrings10.loading), true);
+    this.updateStatus(i18nString8(UIStrings9.loading), true);
   }
   finishLoad() {
     if (!this.wasDisposed && this.receiver) {
@@ -7263,7 +6935,7 @@ var HeapProfileHeader = class extends ProfileHeader {
   }
   setupWorker() {
     console.assert(!this.workerProxy, "HeapSnapshotWorkerProxy already exists");
-    this.workerProxy = new HeapSnapshotWorkerProxy(this.handleWorkerEvent.bind(this));
+    this.workerProxy = new HeapSnapshotModel5.HeapSnapshotProxy.HeapSnapshotWorkerProxy(this.handleWorkerEvent.bind(this));
     this.workerProxy.addEventListener("Wait", (event) => {
       this.updateStatus(null, event.data);
     }, this);
@@ -7271,13 +6943,13 @@ var HeapProfileHeader = class extends ProfileHeader {
   }
   handleWorkerEvent(eventName, data) {
     if (HeapSnapshotModel5.HeapSnapshotModel.HeapSnapshotProgressEvent.BrokenSnapshot === eventName) {
-      Common10.Console.Console.instance().error(data);
+      Common9.Console.Console.instance().error(data);
       return;
     }
     if (HeapSnapshotModel5.HeapSnapshotModel.HeapSnapshotProgressEvent.Update !== eventName) {
       return;
     }
-    const messageObject = i18n19.i18n.deserializeUIString(data);
+    const messageObject = i18n17.i18n.deserializeUIString(data);
     this.updateStatus(moduleI18nString(messageObject.string, messageObject.values));
   }
   dispose() {
@@ -7291,7 +6963,7 @@ var HeapProfileHeader = class extends ProfileHeader {
     if (!this.snapshotProxy) {
       return;
     }
-    this.updateStatus(i18n19.ByteUtilities.bytesToString(this.snapshotProxy.totalSize), false);
+    this.updateStatus(i18n17.ByteUtilities.bytesToString(this.snapshotProxy.totalSize), false);
   }
   transferChunk(chunk) {
     if (!this.bufferedWriter) {
@@ -7328,20 +7000,20 @@ var HeapProfileHeader = class extends ProfileHeader {
   async saveToFile() {
     await this.loadPromise;
     const fileOutputStream = new Bindings2.FileUtils.FileOutputStream();
-    this.fileName = this.fileName || "Heap-" + Platform9.DateUtilities.toISO8601Compact(/* @__PURE__ */ new Date()) + this.profileType().fileExtension();
+    this.fileName = this.fileName || "Heap-" + Platform8.DateUtilities.toISO8601Compact(/* @__PURE__ */ new Date()) + this.profileType().fileExtension();
     const onOpen = async (accepted) => {
       if (!accepted) {
         return;
       }
       if (this.failedToCreateTempFile) {
-        Common10.Console.Console.instance().error("Failed to open temp file with heap snapshot");
+        Common9.Console.Console.instance().error("Failed to open temp file with heap snapshot");
         void fileOutputStream.close();
         return;
       }
       if (this.tempFile) {
         const error = await this.tempFile.copyToOutputStream(fileOutputStream, this.onChunkTransferred.bind(this));
         if (error) {
-          Common10.Console.Console.instance().error("Failed to read heap snapshot from temp file: " + error.message);
+          Common9.Console.Console.instance().error("Failed to read heap snapshot from temp file: " + error.message);
         }
         this.didCompleteSnapshotTransfer();
         return;
@@ -7358,10 +7030,10 @@ var HeapProfileHeader = class extends ProfileHeader {
   }
   updateSaveProgress(value2, total) {
     const percentValue = ((total && value2 / total) * 100).toFixed(0);
-    this.updateStatus(i18nString9(UIStrings10.savingD, { PH1: percentValue }));
+    this.updateStatus(i18nString8(UIStrings9.savingD, { PH1: percentValue }));
   }
   async loadFromFile(file) {
-    this.updateStatus(i18nString9(UIStrings10.loading), true);
+    this.updateStatus(i18nString8(UIStrings9.loading), true);
     this.setupWorker();
     const reader = new Bindings2.FileUtils.ChunkedFileReader(file, 1e7);
     const success = await reader.read(this.receiver);
@@ -7387,7 +7059,7 @@ var HeapSnapshotStatisticsView = class _HeapSnapshotStatisticsView extends UI10.
     this.element.appendChild(this.pieChart);
   }
   static valueFormatter(value2) {
-    const formatter = new Intl.NumberFormat(i18n19.DevToolsLocale.DevToolsLocale.instance().locale, {
+    const formatter = new Intl.NumberFormat(i18n17.DevToolsLocale.DevToolsLocale.instance().locale, {
       style: "unit",
       unit: "kilobyte"
     });
@@ -7395,7 +7067,7 @@ var HeapSnapshotStatisticsView = class _HeapSnapshotStatisticsView extends UI10.
   }
   setTotalAndRecords(total, records) {
     this.pieChart.data = {
-      chartName: i18nString9(UIStrings10.heapMemoryUsage),
+      chartName: i18nString8(UIStrings9.heapMemoryUsage),
       size: 150,
       formatter: _HeapSnapshotStatisticsView.valueFormatter,
       showLegend: true,
@@ -7467,7 +7139,7 @@ var HeapAllocationStackView = class extends UI10.Widget.Widget {
     const frames = await snapshot.allocationStack(snapshotNodeIndex);
     if (!frames) {
       const stackDiv2 = this.element.createChild("div", "no-heap-allocation-stack");
-      UI10.UIUtils.createTextChild(stackDiv2, i18nString9(UIStrings10.stackWasNotRecordedForThisObject));
+      UI10.UIUtils.createTextChild(stackDiv2, i18nString8(UIStrings9.stackWasNotRecordedForThisObject));
       return;
     }
     const stackDiv = this.element.createChild("div", "heap-allocation-stack");
@@ -7503,8 +7175,8 @@ var ProfileLauncherView_exports = {};
 __export(ProfileLauncherView_exports, {
   ProfileLauncherView: () => ProfileLauncherView
 });
-import * as Common12 from "./../../core/common/common.js";
-import * as i18n23 from "./../../core/i18n/i18n.js";
+import * as Common11 from "./../../core/common/common.js";
+import * as i18n21 from "./../../core/i18n/i18n.js";
 import * as Buttons from "./../../ui/components/buttons/buttons.js";
 import * as UI12 from "./../../ui/legacy/legacy.js";
 
@@ -7514,11 +7186,11 @@ __export(IsolateSelector_exports, {
   IsolateSelector: () => IsolateSelector,
   ListItem: () => ListItem
 });
-import * as Common11 from "./../../core/common/common.js";
-import * as i18n21 from "./../../core/i18n/i18n.js";
+import * as Common10 from "./../../core/common/common.js";
+import * as i18n19 from "./../../core/i18n/i18n.js";
 import * as SDK6 from "./../../core/sdk/sdk.js";
 import * as UI11 from "./../../ui/legacy/legacy.js";
-var UIStrings11 = {
+var UIStrings10 = {
   /**
    * @description aria label for javascript VM instances target list in heap profiler
    */
@@ -7565,8 +7237,8 @@ var UIStrings11 = {
    */
   empty: "(empty)"
 };
-var str_10 = i18n21.i18n.registerUIStrings("panels/profiler/IsolateSelector.ts", UIStrings11);
-var i18nString10 = i18n21.i18n.getLocalizedString.bind(void 0, str_10);
+var str_9 = i18n19.i18n.registerUIStrings("panels/profiler/IsolateSelector.ts", UIStrings10);
+var i18nString9 = i18n19.i18n.getLocalizedString.bind(void 0, str_9);
 var IsolateSelector = class _IsolateSelector extends UI11.Widget.VBox {
   items;
   list;
@@ -7579,7 +7251,7 @@ var IsolateSelector = class _IsolateSelector extends UI11.Widget.VBox {
     this.items = new UI11.ListModel.ListModel();
     this.list = new UI11.ListControl.ListControl(this.items, this, UI11.ListControl.ListMode.NonViewport);
     this.list.element.classList.add("javascript-vm-instances-list");
-    UI11.ARIAUtils.setLabel(this.list.element, i18nString10(UIStrings11.javascriptVmInstances));
+    UI11.ARIAUtils.setLabel(this.list.element, i18nString9(UIStrings10.javascriptVmInstances));
     this.contentElement.appendChild(this.list.element);
     this.itemByIsolate = /* @__PURE__ */ new Map();
     this.totalElement = document.createElement("div");
@@ -7587,10 +7259,10 @@ var IsolateSelector = class _IsolateSelector extends UI11.Widget.VBox {
     this.totalElement.classList.add("hbox");
     this.totalValueDiv = this.totalElement.createChild("div", "profile-memory-usage-item-size");
     this.totalTrendDiv = this.totalElement.createChild("div", "profile-memory-usage-item-trend");
-    this.totalElement.createChild("div").textContent = i18nString10(UIStrings11.totalJsHeapSize);
+    this.totalElement.createChild("div").textContent = i18nString9(UIStrings10.totalJsHeapSize);
     const trendIntervalMinutes = Math.round(SDK6.IsolateManager.MemoryTrendWindowMs / 6e4);
-    UI11.Tooltip.Tooltip.install(this.totalTrendDiv, i18nString10(UIStrings11.totalPageJsHeapSizeChangeTrend, { PH1: trendIntervalMinutes }));
-    UI11.Tooltip.Tooltip.install(this.totalValueDiv, i18nString10(UIStrings11.totalPageJsHeapSizeAcrossAllVm));
+    UI11.Tooltip.Tooltip.install(this.totalTrendDiv, i18nString9(UIStrings10.totalPageJsHeapSizeChangeTrend, { PH1: trendIntervalMinutes }));
+    UI11.Tooltip.Tooltip.install(this.totalValueDiv, i18nString9(UIStrings10.totalPageJsHeapSizeAcrossAllVm));
     SDK6.IsolateManager.IsolateManager.instance().observeIsolates(this);
     SDK6.TargetManager.TargetManager.instance().addEventListener("NameChanged", this.targetChanged, this);
     SDK6.TargetManager.TargetManager.instance().addEventListener("InspectedURLChanged", this.targetChanged, this);
@@ -7659,7 +7331,7 @@ var IsolateSelector = class _IsolateSelector extends UI11.Widget.VBox {
       total += isolate.usedHeapSize();
       trend += isolate.usedHeapSizeGrowRate();
     }
-    this.totalValueDiv.textContent = i18n21.ByteUtilities.bytesToString(total);
+    this.totalValueDiv.textContent = i18n19.ByteUtilities.bytesToString(total);
     _IsolateSelector.formatTrendElement(trend, this.totalTrendDiv);
   }
   static formatTrendElement(trendValueMs, element) {
@@ -7668,16 +7340,16 @@ var IsolateSelector = class _IsolateSelector extends UI11.Widget.VBox {
     if (Math.abs(changeRateBytesPerSecond) < changeRateThresholdBytesPerSecond) {
       return;
     }
-    const changeRateText = i18n21.ByteUtilities.bytesToString(Math.abs(changeRateBytesPerSecond));
+    const changeRateText = i18n19.ByteUtilities.bytesToString(Math.abs(changeRateBytesPerSecond));
     let changeText, changeLabel;
     if (changeRateBytesPerSecond > 0) {
-      changeText = "\u2B06" + i18nString10(UIStrings11.changeRate, { PH1: changeRateText });
+      changeText = "\u2B06" + i18nString9(UIStrings10.changeRate, { PH1: changeRateText });
       element.classList.toggle("increasing", true);
-      changeLabel = i18nString10(UIStrings11.increasingBySPerSecond, { PH1: changeRateText });
+      changeLabel = i18nString9(UIStrings10.increasingBySPerSecond, { PH1: changeRateText });
     } else {
-      changeText = "\u2B07" + i18nString10(UIStrings11.changeRate, { PH1: changeRateText });
+      changeText = "\u2B07" + i18nString9(UIStrings10.changeRate, { PH1: changeRateText });
       element.classList.toggle("increasing", false);
-      changeLabel = i18nString10(UIStrings11.decreasingBySPerSecond, { PH1: changeRateText });
+      changeLabel = i18nString9(UIStrings10.decreasingBySPerSecond, { PH1: changeRateText });
     }
     element.textContent = changeText;
     UI11.ARIAUtils.setLabel(element, changeLabel);
@@ -7728,9 +7400,9 @@ var ListItem = class {
     this.element.classList.add("hbox");
     UI11.ARIAUtils.markAsOption(this.element);
     this.heapDiv = this.element.createChild("div", "profile-memory-usage-item-size");
-    UI11.Tooltip.Tooltip.install(this.heapDiv, i18nString10(UIStrings11.heapSizeInUseByLiveJsObjects));
+    UI11.Tooltip.Tooltip.install(this.heapDiv, i18nString9(UIStrings10.heapSizeInUseByLiveJsObjects));
     this.trendDiv = this.element.createChild("div", "profile-memory-usage-item-trend");
-    UI11.Tooltip.Tooltip.install(this.trendDiv, i18nString10(UIStrings11.heapSizeChangeTrendOverTheLastS, { PH1: trendIntervalMinutes }));
+    UI11.Tooltip.Tooltip.install(this.trendDiv, i18nString9(UIStrings10.heapSizeChangeTrendOverTheLastS, { PH1: trendIntervalMinutes }));
     this.nameDiv = this.element.createChild("div", "profile-memory-usage-item-name");
     this.updateTitle();
   }
@@ -7738,7 +7410,7 @@ var ListItem = class {
     return this.isolate.runtimeModel();
   }
   updateStats() {
-    this.heapDiv.textContent = i18n21.ByteUtilities.bytesToString(this.isolate.usedHeapSize());
+    this.heapDiv.textContent = i18n19.ByteUtilities.bytesToString(this.isolate.usedHeapSize());
     IsolateSelector.formatTrendElement(this.isolate.usedHeapSizeGrowRate(), this.trendDiv);
   }
   updateTitle() {
@@ -7748,9 +7420,9 @@ var ListItem = class {
       const target = model.target();
       const isPrimaryPageTarget = targetManager.primaryPageTarget() === target;
       const name = target.name();
-      const parsedURL = new Common11.ParsedURL.ParsedURL(target.inspectedURL());
+      const parsedURL = new Common10.ParsedURL.ParsedURL(target.inspectedURL());
       const domain = parsedURL.isValid ? parsedURL.domain() : "";
-      const title = target.decorateLabel(domain && !isPrimaryPageTarget ? `${domain}: ${name}` : name || domain || i18nString10(UIStrings11.empty));
+      const title = target.decorateLabel(domain && !isPrimaryPageTarget ? `${domain}: ${name}` : name || domain || i18nString9(UIStrings10.empty));
       modelCountByName.set(title, (modelCountByName.get(title) || 0) + 1);
     }
     this.nameDiv.removeChildren();
@@ -7927,7 +7599,7 @@ var profileLauncherView_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./profileLauncherView.css")} */`;
 
 // gen/front_end/panels/profiler/ProfileLauncherView.js
-var UIStrings12 = {
+var UIStrings11 = {
   /**
    * @description Text in Profile Launcher View of a profiler tool
    */
@@ -7953,9 +7625,9 @@ var UIStrings12 = {
    */
   selectProfilingType: "Select profiling type"
 };
-var str_11 = i18n23.i18n.registerUIStrings("panels/profiler/ProfileLauncherView.ts", UIStrings12);
-var i18nString11 = i18n23.i18n.getLocalizedString.bind(void 0, str_11);
-var ProfileLauncherView = class extends Common12.ObjectWrapper.eventMixin(UI12.Widget.VBox) {
+var str_10 = i18n21.i18n.registerUIStrings("panels/profiler/ProfileLauncherView.ts", UIStrings11);
+var i18nString10 = i18n21.i18n.getLocalizedString.bind(void 0, str_10);
+var ProfileLauncherView = class extends Common11.ObjectWrapper.eventMixin(UI12.Widget.VBox) {
   panel;
   #contentElement;
   selectedProfileTypeSetting;
@@ -7975,12 +7647,12 @@ var ProfileLauncherView = class extends Common12.ObjectWrapper.eventMixin(UI12.W
     this.element.classList.add("profile-launcher-view");
     this.#contentElement = this.element.createChild("div", "profile-launcher-view-content vbox");
     const profileTypeSelectorElement = this.#contentElement.createChild("div", "vbox");
-    this.selectedProfileTypeSetting = Common12.Settings.Settings.instance().createSetting("selected-profile-type", "CPU");
+    this.selectedProfileTypeSetting = Common11.Settings.Settings.instance().createSetting("selected-profile-type", "CPU");
     this.profileTypeHeaderElement = profileTypeSelectorElement.createChild("h1");
     this.profileTypeSelectorForm = profileTypeSelectorElement.createChild("form");
     UI12.ARIAUtils.markAsRadioGroup(this.profileTypeSelectorForm);
     const isolateSelectorElement = this.#contentElement.createChild("div", "vbox profile-isolate-selector-block");
-    isolateSelectorElement.createChild("h1").textContent = i18nString11(UIStrings12.selectJavascriptVmInstance);
+    isolateSelectorElement.createChild("h1").textContent = i18nString10(UIStrings11.selectJavascriptVmInstance);
     const isolateSelector = new IsolateSelector();
     const isolateSelectorElementChild = isolateSelectorElement.createChild("div", "vbox profile-launcher-target-list");
     isolateSelectorElementChild.classList.add("profile-launcher-target-list-container");
@@ -7993,7 +7665,7 @@ var ProfileLauncherView = class extends Common12.ObjectWrapper.eventMixin(UI12.W
     });
     this.loadButton = new Buttons.Button.Button();
     this.loadButton.data = { iconName: "import", variant: "outlined", jslogContext: "profiler.load-from-file" };
-    this.loadButton.textContent = i18nString11(UIStrings12.load);
+    this.loadButton.textContent = i18nString10(UIStrings11.load);
     this.loadButton.addEventListener("click", this.loadButtonClicked.bind(this));
     buttonsDiv.appendChild(this.loadButton);
     buttonsDiv.appendChild(this.controlButton);
@@ -8013,13 +7685,13 @@ var ProfileLauncherView = class extends Common12.ObjectWrapper.eventMixin(UI12.W
     UI12.Tooltip.Tooltip.install(this.controlButton, this.recordButtonEnabled ? "" : UI12.UIUtils.anotherProfilerActiveLabel());
     if (this.isInstantProfile) {
       this.controlButton.classList.remove("running");
-      this.controlButton.textContent = i18nString11(UIStrings12.takeSnapshot);
+      this.controlButton.textContent = i18nString10(UIStrings11.takeSnapshot);
     } else if (this.isProfiling) {
       this.controlButton.classList.add("running");
-      this.controlButton.textContent = i18nString11(UIStrings12.stop);
+      this.controlButton.textContent = i18nString10(UIStrings11.stop);
     } else {
       this.controlButton.classList.remove("running");
-      this.controlButton.textContent = i18nString11(UIStrings12.start);
+      this.controlButton.textContent = i18nString10(UIStrings11.start);
     }
     for (const { optionElement } of this.typeIdToOptionElementAndProfileType.values()) {
       optionElement.disabled = Boolean(this.isProfiling);
@@ -8054,7 +7726,7 @@ var ProfileLauncherView = class extends Common12.ObjectWrapper.eventMixin(UI12.W
       this.profileTypeSelectorForm.createChild("p").appendChild(customContent);
       profileType.setCustomContentEnabled(false);
     }
-    const headerText = this.typeIdToOptionElementAndProfileType.size > 1 ? i18nString11(UIStrings12.selectProfilingType) : profileType.name;
+    const headerText = this.typeIdToOptionElementAndProfileType.size > 1 ? i18nString10(UIStrings11.selectProfilingType) : profileType.name;
     this.profileTypeHeaderElement.textContent = headerText;
     UI12.ARIAUtils.setLabel(this.profileTypeSelectorForm, headerText);
   }
@@ -8094,18 +7766,18 @@ var ProfileSidebarTreeElement_exports = {};
 __export(ProfileSidebarTreeElement_exports, {
   ProfileSidebarTreeElement: () => ProfileSidebarTreeElement
 });
-import * as i18n25 from "./../../core/i18n/i18n.js";
+import * as i18n23 from "./../../core/i18n/i18n.js";
 import * as Buttons2 from "./../../ui/components/buttons/buttons.js";
 import * as UI13 from "./../../ui/legacy/legacy.js";
 import * as VisualLogging4 from "./../../ui/visual_logging/visual_logging.js";
-var UIStrings13 = {
+var UIStrings12 = {
   /**
    * @description Tooltip for the 3-dots menu in the Memory panel profiles list.
    */
   profileOptions: "Profile options"
 };
-var str_12 = i18n25.i18n.registerUIStrings("panels/profiler/ProfileSidebarTreeElement.ts", UIStrings13);
-var i18nString12 = i18n25.i18n.getLocalizedString.bind(void 0, str_12);
+var str_11 = i18n23.i18n.registerUIStrings("panels/profiler/ProfileSidebarTreeElement.ts", UIStrings12);
+var i18nString11 = i18n23.i18n.getLocalizedString.bind(void 0, str_11);
 var ProfileSidebarTreeElement = class extends UI13.TreeOutline.TreeElement {
   iconElement;
   titlesElement;
@@ -8133,12 +7805,12 @@ var ProfileSidebarTreeElement = class extends UI13.TreeOutline.TreeElement {
     this.menuElement.data = {
       variant: "icon",
       iconName: "dots-vertical",
-      title: i18nString12(UIStrings13.profileOptions)
+      title: i18nString11(UIStrings12.profileOptions)
     };
     this.menuElement.tabIndex = -1;
     this.menuElement.addEventListener("click", this.handleContextMenuEvent.bind(this));
     this.menuElement.setAttribute("jslog", `${VisualLogging4.dropDown("profile-options").track({ click: true })}`);
-    UI13.Tooltip.Tooltip.install(this.menuElement, i18nString12(UIStrings13.profileOptions));
+    UI13.Tooltip.Tooltip.install(this.menuElement, i18nString11(UIStrings12.profileOptions));
     this.titleElement.textContent = profile.title;
     this.className = className;
     this.small = false;
@@ -8642,7 +8314,7 @@ li.selected:hover devtools-button {
 /*# sourceURL=${import.meta.resolve("./profilesSidebarTree.css")} */`;
 
 // gen/front_end/panels/profiler/ProfilesPanel.js
-var UIStrings14 = {
+var UIStrings13 = {
   /**
    * @description Text in Profiles Panel of a profiler tool
    * @example {'.js', '.json'} PH1
@@ -8671,8 +8343,8 @@ var UIStrings14 = {
    */
   profiles: "Profiles"
 };
-var str_13 = i18n27.i18n.registerUIStrings("panels/profiler/ProfilesPanel.ts", UIStrings14);
-var i18nString13 = i18n27.i18n.getLocalizedString.bind(void 0, str_13);
+var str_12 = i18n25.i18n.registerUIStrings("panels/profiler/ProfilesPanel.ts", UIStrings13);
+var i18nString12 = i18n25.i18n.getLocalizedString.bind(void 0, str_12);
 function createSidebarTreeElement(profiler, dataDisplayDelegate) {
   if (profiler instanceof HeapProfileHeader) {
     return new ProfileSidebarTreeElement(dataDisplayDelegate, profiler, "heap-snapshot-sidebar-tree-item");
@@ -8806,16 +8478,16 @@ var ProfilesPanel = class _ProfilesPanel extends UI14.Panel.PanelWithSidebar {
     const profileType = this.findProfileTypeByExtension(file.name);
     if (!profileType) {
       const extensions = new Set(this.profileTypes.map((type) => type.fileExtension()).filter((ext) => ext));
-      Common13.Console.Console.instance().error(i18nString13(UIStrings14.cantLoadFileSupportedFile, { PH1: Array.from(extensions).join("', '") }));
+      Common12.Console.Console.instance().error(i18nString12(UIStrings13.cantLoadFileSupportedFile, { PH1: Array.from(extensions).join("', '") }));
       return;
     }
     if (Boolean(profileType.profileBeingRecorded())) {
-      Common13.Console.Console.instance().error(i18nString13(UIStrings14.cantLoadProfileWhileAnother));
+      Common12.Console.Console.instance().error(i18nString12(UIStrings13.cantLoadProfileWhileAnother));
       return;
     }
     const error = await profileType.loadFromFile(file);
     if (error && "message" in error) {
-      void UI14.UIUtils.MessageDialog.show(i18nString13(UIStrings14.profileLoadingFailed), i18nString13(UIStrings14.failReason, { PH1: error.message }), void 0, "profile-loading-failed");
+      void UI14.UIUtils.MessageDialog.show(i18nString12(UIStrings13.profileLoadingFailed), i18nString12(UIStrings13.failReason, { PH1: error.message }), void 0, "profile-loading-failed");
     }
   }
   toggleRecord() {
@@ -9050,7 +8722,7 @@ var ProfileTypeSidebarSection = class extends UI14.TreeOutline.TreeElement {
           firstProfileTreeElement.revealAndSelect();
         }
         firstProfileTreeElement.setSmall(true);
-        firstProfileTreeElement.setMainTitle(i18nString13(UIStrings14.runD, { PH1: 1 }));
+        firstProfileTreeElement.setMainTitle(i18nString12(UIStrings13.runD, { PH1: 1 }));
         if (this.treeOutline) {
           this.treeOutline.element.classList.add("some-expandable");
         }
@@ -9058,7 +8730,7 @@ var ProfileTypeSidebarSection = class extends UI14.TreeOutline.TreeElement {
       if (groupSize >= 2) {
         sidebarParent = group.sidebarTreeElement;
         profileTreeElement.setSmall(true);
-        profileTreeElement.setMainTitle(i18nString13(UIStrings14.runD, { PH1: groupSize }));
+        profileTreeElement.setMainTitle(i18nString12(UIStrings13.runD, { PH1: groupSize }));
       }
     }
     if (sidebarParent) {
@@ -9160,7 +8832,7 @@ var ProfilesSidebarTreeElement = class extends UI14.TreeOutline.TreeElement {
   }
   onattach() {
     this.listItemElement.classList.add("profile-launcher-view-tree-item");
-    this.listItemElement.createChild("div", "titles no-subtitle").createChild("span", "title-container").createChild("span", "title").textContent = i18nString13(UIStrings14.profiles);
+    this.listItemElement.createChild("div", "titles no-subtitle").createChild("span", "title-container").createChild("span", "title").textContent = i18nString12(UIStrings13.profiles);
     this.setLeadingIcons([createIcon2("tune")]);
   }
 };
@@ -9205,14 +8877,14 @@ var ActionDelegate = class {
 };
 
 // gen/front_end/panels/profiler/HeapProfilerPanel.js
-var UIStrings15 = {
+var UIStrings14 = {
   /**
    * @description A context menu item in the Heap Profiler Panel of a profiler tool
    */
   revealInSummaryView: "Reveal in Summary view"
 };
-var str_14 = i18n29.i18n.registerUIStrings("panels/profiler/HeapProfilerPanel.ts", UIStrings15);
-var i18nString14 = i18n29.i18n.getLocalizedString.bind(void 0, str_14);
+var str_13 = i18n27.i18n.registerUIStrings("panels/profiler/HeapProfilerPanel.ts", UIStrings14);
+var i18nString13 = i18n27.i18n.getLocalizedString.bind(void 0, str_13);
 var heapProfilerPanelInstance;
 var HeapProfilerPanel = class _HeapProfilerPanel extends ProfilesPanel {
   constructor() {
@@ -9247,7 +8919,7 @@ var HeapProfilerPanel = class _HeapProfilerPanel extends ProfilesPanel {
         }
       });
     }
-    contextMenu.revealSection().appendItem(i18nString14(UIStrings15.revealInSummaryView), revealInView.bind(this, "Summary"), { jslogContext: "reveal-in-summary" });
+    contextMenu.revealSection().appendItem(i18nString13(UIStrings14.revealInSummaryView), revealInView.bind(this, "Summary"), { jslogContext: "reveal-in-summary" });
   }
   handleAction(_context, _actionId) {
     const panel = UI15.Context.Context.instance().flavor(_HeapProfilerPanel);
@@ -9288,9 +8960,9 @@ __export(LiveHeapProfileView_exports, {
   LiveHeapProfileView: () => LiveHeapProfileView
 });
 import "./../../ui/legacy/legacy.js";
-import * as Common14 from "./../../core/common/common.js";
-import * as i18n31 from "./../../core/i18n/i18n.js";
-import * as Platform10 from "./../../core/platform/platform.js";
+import * as Common13 from "./../../core/common/common.js";
+import * as i18n29 from "./../../core/i18n/i18n.js";
+import * as Platform9 from "./../../core/platform/platform.js";
 import * as SDK8 from "./../../core/sdk/sdk.js";
 import * as Workspace from "./../../models/workspace/workspace.js";
 import * as DataGrid12 from "./../../ui/legacy/components/data_grid/data_grid.js";
@@ -9323,7 +8995,7 @@ devtools-toolbar {
 /*# sourceURL=${import.meta.resolve("./liveHeapProfile.css")} */`;
 
 // gen/front_end/panels/profiler/LiveHeapProfileView.js
-var UIStrings16 = {
+var UIStrings15 = {
   /**
    * @description Text for a heap profile type
    */
@@ -9362,8 +9034,8 @@ var UIStrings16 = {
    */
   kb: "kB"
 };
-var str_15 = i18n31.i18n.registerUIStrings("panels/profiler/LiveHeapProfileView.ts", UIStrings16);
-var i18nString15 = i18n31.i18n.getLocalizedString.bind(void 0, str_15);
+var str_14 = i18n29.i18n.registerUIStrings("panels/profiler/LiveHeapProfileView.ts", UIStrings15);
+var i18nString14 = i18n29.i18n.getLocalizedString.bind(void 0, str_14);
 var liveHeapProfileViewInstance;
 var LiveHeapProfileView = class _LiveHeapProfileView extends UI16.Widget.VBox {
   gridNodeByUrl;
@@ -9377,7 +9049,7 @@ var LiveHeapProfileView = class _LiveHeapProfileView extends UI16.Widget.VBox {
     super({ useShadowDom: true });
     this.gridNodeByUrl = /* @__PURE__ */ new Map();
     this.registerRequiredCSS(liveHeapProfile_css_default);
-    this.setting = Common14.Settings.Settings.instance().moduleSetting("memory-live-heap-profile");
+    this.setting = Common13.Settings.Settings.instance().moduleSetting("memory-live-heap-profile");
     const toolbar2 = this.contentElement.createChild("devtools-toolbar", "live-heap-profile-toolbar");
     this.toggleRecordAction = UI16.ActionRegistry.ActionRegistry.instance().getAction("live-heap-profile.toggle-recording");
     this.toggleRecordButton = UI16.Toolbar.Toolbar.createActionButton(this.toggleRecordAction);
@@ -9401,7 +9073,7 @@ var LiveHeapProfileView = class _LiveHeapProfileView extends UI16.Widget.VBox {
   }
   createDataGrid() {
     const defaultColumnConfig = {
-      title: Common14.UIString.LocalizedEmptyString,
+      title: Common13.UIString.LocalizedEmptyString,
       fixedWidth: true,
       sortable: true,
       align: "right",
@@ -9411,34 +9083,34 @@ var LiveHeapProfileView = class _LiveHeapProfileView extends UI16.Widget.VBox {
       {
         ...defaultColumnConfig,
         id: "size",
-        title: i18nString15(UIStrings16.jsHeap),
+        title: i18nString14(UIStrings15.jsHeap),
         width: "72px",
         fixedWidth: true,
         sortable: true,
         align: "right",
         sort: DataGrid12.DataGrid.Order.Descending,
-        tooltip: i18nString15(UIStrings16.allocatedJsHeapSizeCurrentlyIn)
+        tooltip: i18nString14(UIStrings15.allocatedJsHeapSizeCurrentlyIn)
       },
       {
         ...defaultColumnConfig,
         id: "isolates",
-        title: i18nString15(UIStrings16.vms),
+        title: i18nString14(UIStrings15.vms),
         width: "40px",
         fixedWidth: true,
         align: "right",
-        tooltip: i18nString15(UIStrings16.numberOfVmsSharingTheSameScript)
+        tooltip: i18nString14(UIStrings15.numberOfVmsSharingTheSameScript)
       },
       {
         ...defaultColumnConfig,
         id: "url",
-        title: i18nString15(UIStrings16.scriptUrl),
+        title: i18nString14(UIStrings15.scriptUrl),
         fixedWidth: false,
         sortable: true,
-        tooltip: i18nString15(UIStrings16.urlOfTheScriptSource)
+        tooltip: i18nString14(UIStrings15.urlOfTheScriptSource)
       }
     ];
     const dataGrid = new DataGrid12.SortableDataGrid.SortableDataGrid({
-      displayName: i18nString15(UIStrings16.heapProfile),
+      displayName: i18nString14(UIStrings15.heapProfile),
       columns
     });
     dataGrid.setResizeMethod(
@@ -9542,7 +9214,7 @@ var LiveHeapProfileView = class _LiveHeapProfileView extends UI16.Widget.VBox {
       return name.startsWith("(") && name !== "(root)" ? name : "";
     }
     function anonymousScriptName(node) {
-      return Number(node.callFrame.scriptId) ? i18nString15(UIStrings16.anonymousScriptS, { PH1: node.callFrame.scriptId }) : "";
+      return Number(node.callFrame.scriptId) ? i18nString14(UIStrings15.anonymousScriptS, { PH1: node.callFrame.scriptId }) : "";
     }
   }
   onKeyDown(event) {
@@ -9559,7 +9231,7 @@ var LiveHeapProfileView = class _LiveHeapProfileView extends UI16.Widget.VBox {
     }
     const sourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(node.url);
     if (sourceCode) {
-      void Common14.Revealer.reveal(sourceCode);
+      void Common13.Revealer.reveal(sourceCode);
     }
   }
   sortingChanged() {
@@ -9627,8 +9299,8 @@ var GridNode = class extends DataGrid12.SortableDataGrid.SortableDataGridNode {
         cell.textContent = this.url;
         break;
       case "size":
-        cell.textContent = Platform10.NumberUtilities.withThousandsSeparator(Math.round(this.size / 1e3));
-        cell.createChild("span", "size-units").textContent = i18nString15(UIStrings16.kb);
+        cell.textContent = Platform9.NumberUtilities.withThousandsSeparator(Math.round(this.size / 1e3));
+        cell.createChild("span", "size-units").textContent = i18nString14(UIStrings15.kb);
         break;
       case "isolates":
         cell.textContent = `${this.isolateCount}`;
@@ -9668,12 +9340,10 @@ var ActionDelegate2 = class {
 var ProfileTypeRegistry_exports = {};
 export {
   BottomUpProfileDataGrid_exports as BottomUpProfileDataGrid,
-  ChildrenProvider_exports as ChildrenProvider,
   HeapProfileView_exports as HeapProfileView,
   HeapProfilerPanel_exports as HeapProfilerPanel,
   HeapSnapshotDataGrids_exports as HeapSnapshotDataGrids,
   HeapSnapshotGridNodes_exports as HeapSnapshotGridNodes,
-  HeapSnapshotProxy_exports as HeapSnapshotProxy,
   HeapSnapshotView_exports as HeapSnapshotView,
   HeapTimelineOverview_exports as HeapTimelineOverview,
   IsolateSelector_exports as IsolateSelector,

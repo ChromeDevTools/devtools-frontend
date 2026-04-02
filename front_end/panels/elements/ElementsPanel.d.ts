@@ -56,7 +56,6 @@ export declare class ElementsPanel extends UI.Panel.Panel implements UI.Searchab
     private evaluateTrackingComputedStyleUpdatesForNode;
     private handleElementExpanded;
     private handleElementCollapsed;
-    private initializeFullAccessibilityTreeView;
     private showAccessibilityTree;
     private showDOMTree;
     toggleAccessibilityTree(): void;

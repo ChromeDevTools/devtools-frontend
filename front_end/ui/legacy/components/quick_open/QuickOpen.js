@@ -36,7 +36,11 @@ export class QuickOpenImpl {
         }
         this.prefixes.push(prefix);
         this.providers.set(prefix, {
-            provider: () => extension.provider(extension.jslogContext),
+            provider: async () => {
+                const provider = await extension.provider();
+                provider.jslogContext = extension.jslogContext;
+                return provider;
+            },
             titlePrefix: extension.titlePrefix,
             titleSuggestion: extension.titleSuggestion,
         });

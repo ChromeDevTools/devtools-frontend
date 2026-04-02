@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 import * as BackForwardCacheView from './BackForwardCacheView.js';
 import * as BounceTrackingMitigationsView from './BounceTrackingMitigationsView.js';
+import * as CrashReportContextGrid from './CrashReportContextGrid.js';
 import * as EndpointsGrid from './EndpointsGrid.js';
 import * as InterestGroupAccessGrid from './InterestGroupAccessGrid.js';
 import * as PermissionsPolicySection from './PermissionsPolicySection.js';
@@ -13,5 +14,5 @@ import * as SharedStorageAccessGrid from './SharedStorageAccessGrid.js';
 import * as SharedStorageMetadataView from './SharedStorageMetadataView.js';
 import * as StorageMetadataView from './StorageMetadataView.js';
 import * as TrustTokensView from './TrustTokensView.js';
-export { BackForwardCacheView, BounceTrackingMitigationsView, EndpointsGrid, InterestGroupAccessGrid, PermissionsPolicySection, ProtocolHandlersView, ReportsGrid, ServiceWorkerRouterView, SharedStorageAccessGrid, SharedStorageMetadataView, StorageMetadataView, TrustTokensView, };
+export { BackForwardCacheView, BounceTrackingMitigationsView, CrashReportContextGrid, EndpointsGrid, InterestGroupAccessGrid, PermissionsPolicySection, ProtocolHandlersView, ReportsGrid, ServiceWorkerRouterView, SharedStorageAccessGrid, SharedStorageMetadataView, StorageMetadataView, TrustTokensView, };
 //# sourceMappingURL=components.prebundle.js.map

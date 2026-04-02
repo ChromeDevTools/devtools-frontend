@@ -231,10 +231,10 @@ var i18nLazyString = i18n3.i18n.getLazilyComputedLocalizedString.bind(void 0, st
 var snippetsQuickOpenInstance;
 var SnippetsQuickOpen = class _SnippetsQuickOpen extends QuickOpen.FilteredListWidget.Provider {
   snippets = [];
-  static instance(opts) {
-    const { forceNew, jslogContext } = opts;
+  static instance(opts = { forceNew: null }) {
+    const { forceNew } = opts;
     if (!snippetsQuickOpenInstance || forceNew) {
-      snippetsQuickOpenInstance = new _SnippetsQuickOpen(jslogContext);
+      snippetsQuickOpenInstance = new _SnippetsQuickOpen();
     }
     return snippetsQuickOpenInstance;
   }
@@ -277,7 +277,7 @@ var SnippetsQuickOpen = class _SnippetsQuickOpen extends QuickOpen.FilteredListW
 QuickOpen.FilteredListWidget.registerProvider({
   prefix: "!",
   iconName: "exclamation",
-  provider: (jslogContext) => Promise.resolve(SnippetsQuickOpen.instance({ forceNew: null, jslogContext })),
+  provider: () => Promise.resolve(SnippetsQuickOpen.instance()),
   helpTitle: i18nLazyString(UIStrings2.runSnippet),
   titlePrefix: i18nLazyString(UIStrings2.run),
   titleSuggestion: i18nLazyString(UIStrings2.snippet),

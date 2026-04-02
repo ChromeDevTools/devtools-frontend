@@ -1,7 +1,10 @@
 import '../../ui/components/icon_button/icon_button.js';
 import '../../ui/components/lists/lists.js';
+import '../../ui/components/node_text/node_text.js';
 import '../../ui/legacy/components/data_grid/data_grid.js';
 import '../../ui/legacy/legacy.js';
+import * as SDK from '../../core/sdk/sdk.js';
+import type * as StackTrace from '../../models/stack_trace/stack_trace.js';
 import * as WebMCP from '../../models/web_mcp/web_mcp.js';
 import * as UI from '../../ui/legacy/legacy.js';
 export interface FilterState {
@@ -26,6 +29,10 @@ export interface FilterMenuButtons {
 }
 export interface ViewInput {
     tools: WebMCP.WebMCPModel.Tool[];
+    selectedTool: WebMCP.WebMCPModel.Tool | null;
+    onToolSelect: (tool: WebMCP.WebMCPModel.Tool | null) => void;
+    selectedCall: WebMCP.WebMCPModel.Call | null;
+    onCallSelect: (call: WebMCP.WebMCPModel.Call | null) => void;
     filters: FilterState;
     filterButtons: FilterMenuButtons;
     onClearLogClick: () => void;
@@ -41,3 +48,20 @@ export declare class WebMCPView extends UI.Widget.VBox {
     constructor(target?: HTMLElement, view?: View);
     performUpdate(): void;
 }
+export interface ToolDetailsViewInput {
+    tool: WebMCP.WebMCPModel.Tool | null | undefined;
+    origin: SDK.DOMModel.DOMNode | StackTrace.StackTrace.StackTrace | undefined;
+    highlightNode: (node: SDK.DOMModel.DOMNode) => void;
+    clearHighlight: () => void;
+    revealNode: (node: SDK.DOMModel.DOMNode) => void;
+}
+declare const TOOL_DETAILS_VIEW: (input: ToolDetailsViewInput, output: undefined, target: HTMLElement) => void;
+export declare class ToolDetailsWidget extends UI.Widget.Widget {
+    #private;
+    constructor(element?: HTMLElement, view?: typeof TOOL_DETAILS_VIEW);
+    set tool(tool: WebMCP.WebMCPModel.Tool | null | undefined);
+    get tool(): WebMCP.WebMCPModel.Tool | null | undefined;
+    performUpdate(): void;
+    wasShown(): void;
+}
+export {};

@@ -8,7 +8,6 @@ export declare enum ExperimentName {
     TIMELINE_SHOW_ALL_EVENTS = "timeline-show-all-events",
     APCA = "apca",
     FONT_EDITOR = "font-editor",
-    FULL_ACCESSIBILITY_TREE = "full-accessibility-tree",
     INSTRUMENTATION_BREAKPOINTS = "instrumentation-breakpoints",
     USE_SOURCE_MAP_SCOPES = "use-source-map-scopes",
     TIMELINE_DEBUG_MODE = "timeline-debug-mode",

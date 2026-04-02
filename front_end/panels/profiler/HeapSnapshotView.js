@@ -18,7 +18,6 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import { AllocationDataGrid, HeapSnapshotConstructorsDataGrid, HeapSnapshotContainmentDataGrid, HeapSnapshotDiffDataGrid, HeapSnapshotRetainmentDataGrid, HeapSnapshotSortableDataGridEvents, } from './HeapSnapshotDataGrids.js';
 import { HeapSnapshotGenericObjectNode, } from './HeapSnapshotGridNodes.js';
-import { HeapSnapshotWorkerProxy } from './HeapSnapshotProxy.js';
 import { HeapTimelineOverview, Samples } from './HeapTimelineOverview.js';
 import * as ModuleUIStrings from './ModuleUIStrings.js';
 import { ProfileHeader, ProfileType, } from './ProfileHeader.js';
@@ -1429,8 +1428,9 @@ export class HeapProfileHeader extends ProfileHeader {
     }
     setupWorker() {
         console.assert(!this.workerProxy, 'HeapSnapshotWorkerProxy already exists');
-        this.workerProxy = new HeapSnapshotWorkerProxy(this.handleWorkerEvent.bind(this));
-        this.workerProxy.addEventListener("Wait" /* HeapSnapshotWorkerProxy.Events.WAIT */, event => {
+        this.workerProxy =
+            new HeapSnapshotModel.HeapSnapshotProxy.HeapSnapshotWorkerProxy(this.handleWorkerEvent.bind(this));
+        this.workerProxy.addEventListener("Wait" /* HeapSnapshotModel.HeapSnapshotProxy.HeapSnapshotWorkerProxy.Events.WAIT */, event => {
             this.updateStatus(null, event.data);
         }, this);
         this.receiver = this.workerProxy.createLoader(this.uid, this.snapshotReceived.bind(this));

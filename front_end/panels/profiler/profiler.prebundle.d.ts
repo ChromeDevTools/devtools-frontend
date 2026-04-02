@@ -1,10 +1,8 @@
 import * as BottomUpProfileDataGrid from './BottomUpProfileDataGrid.js';
-import * as ChildrenProvider from './ChildrenProvider.js';
 import * as HeapProfilerPanel from './HeapProfilerPanel.js';
 import * as HeapProfileView from './HeapProfileView.js';
 import * as HeapSnapshotDataGrids from './HeapSnapshotDataGrids.js';
 import * as HeapSnapshotGridNodes from './HeapSnapshotGridNodes.js';
-import * as HeapSnapshotProxy from './HeapSnapshotProxy.js';
 import * as HeapSnapshotView from './HeapSnapshotView.js';
 import * as HeapTimelineOverview from './HeapTimelineOverview.js';
 import * as IsolateSelector from './IsolateSelector.js';
@@ -18,4 +16,4 @@ import * as ProfilesPanel from './ProfilesPanel.js';
 import * as ProfileTypeRegistry from './ProfileTypeRegistry.js';
 import * as ProfileView from './ProfileView.js';
 import * as TopDownProfileDataGrid from './TopDownProfileDataGrid.js';
-export { BottomUpProfileDataGrid, ChildrenProvider, HeapProfilerPanel, HeapProfileView, HeapSnapshotDataGrids, HeapSnapshotGridNodes, HeapSnapshotProxy, HeapSnapshotView, HeapTimelineOverview, IsolateSelector, LiveHeapProfileView, ProfileDataGrid, ProfileFlameChart, ProfileHeader, ProfileLauncherView, ProfileSidebarTreeElement, ProfilesPanel, ProfileTypeRegistry, ProfileView, TopDownProfileDataGrid, };
+export { BottomUpProfileDataGrid, HeapProfilerPanel, HeapProfileView, HeapSnapshotDataGrids, HeapSnapshotGridNodes, HeapSnapshotView, HeapTimelineOverview, IsolateSelector, LiveHeapProfileView, ProfileDataGrid, ProfileFlameChart, ProfileHeader, ProfileLauncherView, ProfileSidebarTreeElement, ProfilesPanel, ProfileTypeRegistry, ProfileView, TopDownProfileDataGrid, };

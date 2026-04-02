@@ -505,10 +505,7 @@ export class FilteredListWidget extends Common.ObjectWrapper.eventMixin(UI.Widge
 }
 export class Provider {
     refreshCallback;
-    jslogContext;
-    constructor(jslogContext) {
-        this.jslogContext = jslogContext;
-    }
+    jslogContext = '';
     setRefreshCallback(refreshCallback) {
         this.refreshCallback = refreshCallback;
     }

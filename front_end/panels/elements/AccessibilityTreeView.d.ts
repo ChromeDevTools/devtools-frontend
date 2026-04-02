@@ -5,10 +5,9 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as AccessibilityTreeUtils from './AccessibilityTreeUtils.js';
 export declare class AccessibilityTreeView extends UI.Widget.VBox implements SDK.TargetManager.SDKModelObserver<SDK.AccessibilityModel.AccessibilityModel> {
     private accessibilityTreeComponent;
-    private readonly toggleButton;
     private inspectedDOMNode;
     private root;
-    constructor(toggleButton: HTMLElement, accessibilityTreeComponent: TreeOutline.TreeOutline.TreeOutline<AccessibilityTreeUtils.AXTreeNodeData>);
+    constructor(accessibilityTreeComponent: TreeOutline.TreeOutline.TreeOutline<AccessibilityTreeUtils.AXTreeNodeData>);
     wasShown(): Promise<void>;
     refreshAccessibilityTree(): Promise<void>;
     renderTree(): Promise<void>;

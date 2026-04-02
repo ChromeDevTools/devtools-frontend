@@ -1477,16 +1477,143 @@ var BounceTrackingMitigationsView = class extends UI2.Widget.Widget {
   }
 };
 
-// gen/front_end/panels/application/components/EndpointsGrid.js
-var EndpointsGrid_exports = {};
-__export(EndpointsGrid_exports, {
+// gen/front_end/panels/application/components/CrashReportContextGrid.js
+var CrashReportContextGrid_exports = {};
+__export(CrashReportContextGrid_exports, {
+  CrashReportContextGrid: () => CrashReportContextGrid,
   DEFAULT_VIEW: () => DEFAULT_VIEW3,
-  EndpointsGrid: () => EndpointsGrid,
   i18nString: () => i18nString3
 });
 import "./../../../ui/legacy/components/data_grid/data_grid.js";
+import * as Host from "./../../../core/host/host.js";
 import * as i18n7 from "./../../../core/i18n/i18n.js";
 import * as UI3 from "./../../../ui/legacy/legacy.js";
+import { html as html3, render as render3 } from "./../../../ui/lit/lit.js";
+var UIStrings4 = {
+  /**
+   * @description Text in Crash Report Context Items View of the Application panel
+   */
+  key: "Key",
+  /**
+   * @description Text in Crash Report Context Items View of the Application panel
+   */
+  value: "Value",
+  /**
+   * @description Context menu item to copy the key of a context entry
+   */
+  copyKey: "Copy key",
+  /**
+   * @description Context menu item to copy the value of a context entry
+   */
+  copyValue: "Copy value"
+};
+var str_4 = i18n7.i18n.registerUIStrings("panels/application/components/CrashReportContextGrid.ts", UIStrings4);
+var i18nString3 = i18n7.i18n.getLocalizedString.bind(void 0, str_4);
+var DEFAULT_VIEW3 = (input, output, target) => {
+  render3(html3`
+      <style>
+        :host {
+          display: block;
+        }
+
+        div {
+          overflow: auto;
+        }
+
+        td {
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+      </style>
+      <style>${UI3.inspectorCommonStyles}</style>
+      <div>
+        <devtools-data-grid striped inline>
+          <table>
+            <thead>
+              <tr>
+                <th id="key" weight="50">${i18nString3(UIStrings4.key)}</th>
+                <th id="value" weight="50">${i18nString3(UIStrings4.value)}</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${input.entries.map((entry) => html3`
+                <tr class=${input.selectedKey === entry.key ? "selected" : ""}
+                    @select=${() => input.onSelect(entry.key)}
+                    @contextmenu=${(e) => input.onContextMenu(e, entry.key, entry.value)}>
+                  <td title=${entry.key}>${entry.key}</td>
+                  <td title=${entry.value}>${entry.value}</td>
+                </tr>
+              `)}
+            </tbody>
+          </table>
+        </devtools-data-grid>
+      </div>
+    `, target);
+};
+var CrashReportContextGrid = class extends UI3.Widget.Widget {
+  #entries = [];
+  #filteredEntries = [];
+  #selectedKey;
+  #filters = [];
+  #view;
+  constructor(element, view = DEFAULT_VIEW3) {
+    super(element, { useShadowDom: true });
+    this.#view = view;
+  }
+  set data(data) {
+    this.#entries = data.entries;
+    this.#selectedKey = data.selectedKey;
+    this.#filters = data.filters || [];
+    this.requestUpdate();
+  }
+  #computeFilteredEntries() {
+    if (this.#filters.length === 0) {
+      this.#filteredEntries = this.#entries;
+      return;
+    }
+    this.#filteredEntries = this.#entries.filter((entry) => {
+      return this.#filters.every((filter) => {
+        const regex = filter.regex;
+        if (!regex) {
+          return true;
+        }
+        const matches = regex.test(entry.key) || regex.test(entry.value);
+        return filter.negative ? !matches : matches;
+      });
+    });
+  }
+  #onContextMenu(e, key, value) {
+    const customEvent = e;
+    const contextMenu = customEvent.detail;
+    contextMenu.defaultSection().appendItem(i18nString3(UIStrings4.copyKey), () => {
+      Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(key);
+    }, { jslogContext: "copy-key" });
+    contextMenu.defaultSection().appendItem(i18nString3(UIStrings4.copyValue), () => {
+      Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(value);
+    }, { jslogContext: "copy-value" });
+  }
+  performUpdate() {
+    this.#computeFilteredEntries();
+    this.#view({
+      entries: this.#filteredEntries,
+      selectedKey: this.#selectedKey,
+      onSelect: (key) => this.element.dispatchEvent(new CustomEvent("select", { detail: key })),
+      onContextMenu: (e, key, value) => this.#onContextMenu(e, key, value)
+    }, void 0, this.contentElement);
+  }
+};
+
+// gen/front_end/panels/application/components/EndpointsGrid.js
+var EndpointsGrid_exports = {};
+__export(EndpointsGrid_exports, {
+  DEFAULT_VIEW: () => DEFAULT_VIEW4,
+  EndpointsGrid: () => EndpointsGrid,
+  i18nString: () => i18nString4
+});
+import "./../../../ui/legacy/components/data_grid/data_grid.js";
+import * as i18n9 from "./../../../core/i18n/i18n.js";
+import * as UI4 from "./../../../ui/legacy/legacy.js";
 import * as Lit2 from "./../../../ui/lit/lit.js";
 import * as VisualLogging3 from "./../../../ui/visual_logging/visual_logging.js";
 
@@ -1525,7 +1652,7 @@ var endpointsGrid_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./endpointsGrid.css")} */`;
 
 // gen/front_end/panels/application/components/EndpointsGrid.js
-var UIStrings4 = {
+var UIStrings5 = {
   /**
    * @description Placeholder text when there are no Reporting API endpoints.
    *(https://developers.google.com/web/updates/2018/09/reportingapi#tldr)
@@ -1537,43 +1664,43 @@ var UIStrings4 = {
    */
   endpointsDescription: "Here you will find the list of endpoints that receive the reports"
 };
-var str_4 = i18n7.i18n.registerUIStrings("panels/application/components/EndpointsGrid.ts", UIStrings4);
-var i18nString3 = i18n7.i18n.getLocalizedString.bind(void 0, str_4);
-var { render: render3, html: html3 } = Lit2;
-var DEFAULT_VIEW3 = (input, output, target) => {
-  render3(html3`
+var str_5 = i18n9.i18n.registerUIStrings("panels/application/components/EndpointsGrid.ts", UIStrings5);
+var i18nString4 = i18n9.i18n.getLocalizedString.bind(void 0, str_5);
+var { render: render4, html: html4 } = Lit2;
+var DEFAULT_VIEW4 = (input, output, target) => {
+  render4(html4`
     <style>${endpointsGrid_css_default}</style>
-    <style>${UI3.inspectorCommonStyles}</style>
+    <style>${UI4.inspectorCommonStyles}</style>
     <div class="endpoints-container" jslog=${VisualLogging3.section("endpoints")}>
-      <div class="endpoints-header">${i18n7.i18n.lockedString("Endpoints")}</div>
-      ${input.endpoints.size > 0 ? html3`
+      <div class="endpoints-header">${i18n9.i18n.lockedString("Endpoints")}</div>
+      ${input.endpoints.size > 0 ? html4`
         <devtools-data-grid striped>
          <table>
           <tr>
-            <th id="origin" weight="30">${i18n7.i18n.lockedString("Origin")}</th>
-            <th id="name" weight="20">${i18n7.i18n.lockedString("Name")}</th>
-            <th id="url" weight="30">${i18n7.i18n.lockedString("URL")}</th>
+            <th id="origin" weight="30">${i18n9.i18n.lockedString("Origin")}</th>
+            <th id="name" weight="20">${i18n9.i18n.lockedString("Name")}</th>
+            <th id="url" weight="30">${i18n9.i18n.lockedString("URL")}</th>
           </tr>
-          ${Array.from(input.endpoints).map(([origin, endpointArray]) => endpointArray.map((endpoint) => html3`<tr>
+          ${Array.from(input.endpoints).map(([origin, endpointArray]) => endpointArray.map((endpoint) => html4`<tr>
                 <td>${origin}</td>
                 <td>${endpoint.groupName}</td>
                 <td>${endpoint.url}</td>
               </tr>`)).flat()}
           </table>
         </devtools-data-grid>
-      ` : html3`
+      ` : html4`
         <div class="empty-state">
-          <span class="empty-state-header">${i18nString3(UIStrings4.noEndpointsToDisplay)}</span>
-          <span class="empty-state-description">${i18nString3(UIStrings4.endpointsDescription)}</span>
+          <span class="empty-state-header">${i18nString4(UIStrings5.noEndpointsToDisplay)}</span>
+          <span class="empty-state-description">${i18nString4(UIStrings5.endpointsDescription)}</span>
         </div>
       `}
     </div>
   `, target);
 };
-var EndpointsGrid = class extends UI3.Widget.Widget {
+var EndpointsGrid = class extends UI4.Widget.Widget {
   endpoints = /* @__PURE__ */ new Map();
   #view;
-  constructor(element, view = DEFAULT_VIEW3) {
+  constructor(element, view = DEFAULT_VIEW4) {
     super(element);
     this.#view = view;
     this.requestUpdate();
@@ -1589,11 +1716,11 @@ var EndpointsGrid = class extends UI3.Widget.Widget {
 var InterestGroupAccessGrid_exports = {};
 __export(InterestGroupAccessGrid_exports, {
   InterestGroupAccessGrid: () => InterestGroupAccessGrid,
-  i18nString: () => i18nString4
+  i18nString: () => i18nString5
 });
 import "./../../../ui/legacy/components/data_grid/data_grid.js";
-import * as i18n9 from "./../../../core/i18n/i18n.js";
-import * as UI4 from "./../../../ui/legacy/legacy.js";
+import * as i18n11 from "./../../../core/i18n/i18n.js";
+import * as UI5 from "./../../../ui/legacy/legacy.js";
 import * as Lit3 from "./../../../ui/lit/lit.js";
 
 // gen/front_end/panels/application/components/interestGroupAccessGrid.css.js
@@ -1628,8 +1755,8 @@ devtools-data-grid {
 /*# sourceURL=${import.meta.resolve("./interestGroupAccessGrid.css")} */`;
 
 // gen/front_end/panels/application/components/InterestGroupAccessGrid.js
-var { html: html4 } = Lit3;
-var UIStrings5 = {
+var { html: html5 } = Lit3;
+var UIStrings6 = {
   /**
    * @description Hover text for an info icon in the Interest Group Event panel
    * An interest group is an ad targeting group stored on the browser that can
@@ -1676,8 +1803,8 @@ var UIStrings5 = {
    */
   interestGroupDescription: "On this page you can inspect and analyze interest groups"
 };
-var str_5 = i18n9.i18n.registerUIStrings("panels/application/components/InterestGroupAccessGrid.ts", UIStrings5);
-var i18nString4 = i18n9.i18n.getLocalizedString.bind(void 0, str_5);
+var str_6 = i18n11.i18n.registerUIStrings("panels/application/components/InterestGroupAccessGrid.ts", UIStrings6);
+var i18nString5 = i18n11.i18n.getLocalizedString.bind(void 0, str_6);
 var InterestGroupAccessGrid = class extends HTMLElement {
   #shadow = this.attachShadow({ mode: "open" });
   #datastores = [];
@@ -1690,34 +1817,34 @@ var InterestGroupAccessGrid = class extends HTMLElement {
     this.#render();
   }
   #render() {
-    Lit3.render(html4`
+    Lit3.render(html5`
       <style>${interestGroupAccessGrid_css_default}</style>
-      <style>${UI4.inspectorCommonStyles}</style>
-      ${this.#datastores.length === 0 ? html4`
+      <style>${UI5.inspectorCommonStyles}</style>
+      ${this.#datastores.length === 0 ? html5`
           <div class="empty-state">
-            <span class="empty-state-header">${i18nString4(UIStrings5.noEvents)}</span>
-            <span class="empty-state-description">${i18nString4(UIStrings5.interestGroupDescription)}</span>
-          </div>` : html4`
+            <span class="empty-state-header">${i18nString5(UIStrings6.noEvents)}</span>
+            <span class="empty-state-description">${i18nString5(UIStrings6.interestGroupDescription)}</span>
+          </div>` : html5`
           <div>
             <span class="heading">Interest Groups</span>
             <devtools-icon class="info-icon medium" name="info"
-                          title=${i18nString4(UIStrings5.allInterestGroupStorageEvents)}>
+                          title=${i18nString5(UIStrings6.allInterestGroupStorageEvents)}>
             </devtools-icon>
             ${this.#renderGrid()}
           </div>`}
     `, this.#shadow, { host: this });
   }
   #renderGrid() {
-    return html4`
+    return html5`
       <devtools-data-grid striped inline>
         <table>
           <tr>
-            <th id="event-time" sortable weight="10">${i18nString4(UIStrings5.eventTime)}</td>
-            <th id="event-type" sortable weight="5">${i18nString4(UIStrings5.eventType)}</td>
-            <th id="event-group-owner" sortable weight="10">${i18nString4(UIStrings5.groupOwner)}</td>
-            <th id="event-group-name" sortable weight="10">${i18nString4(UIStrings5.groupName)}</td>
+            <th id="event-time" sortable weight="10">${i18nString5(UIStrings6.eventTime)}</td>
+            <th id="event-type" sortable weight="5">${i18nString5(UIStrings6.eventType)}</td>
+            <th id="event-group-owner" sortable weight="10">${i18nString5(UIStrings6.groupOwner)}</td>
+            <th id="event-group-name" sortable weight="10">${i18nString5(UIStrings6.groupName)}</td>
           </tr>
-          ${this.#datastores.map((event) => html4`
+          ${this.#datastores.map((event) => html5`
           <tr @select=${() => this.dispatchEvent(new CustomEvent("select", { detail: event }))}>
             <td>${new Date(1e3 * event.accessTime).toLocaleString()}</td>
             <td>${event.type}</td>
@@ -1740,12 +1867,12 @@ __export(PermissionsPolicySection_exports, {
 import "./../../../ui/kit/kit.js";
 import "./../../../ui/components/report_view/report_view.js";
 import * as Common2 from "./../../../core/common/common.js";
-import * as i18n11 from "./../../../core/i18n/i18n.js";
+import * as i18n13 from "./../../../core/i18n/i18n.js";
 import * as SDK3 from "./../../../core/sdk/sdk.js";
 import * as NetworkForward from "./../../network/forward/forward.js";
 import * as Buttons3 from "./../../../ui/components/buttons/buttons.js";
-import * as UI5 from "./../../../ui/legacy/legacy.js";
-import { html as html5, nothing as nothing3, render as render5 } from "./../../../ui/lit/lit.js";
+import * as UI6 from "./../../../ui/legacy/legacy.js";
+import { html as html6, nothing as nothing3, render as render6 } from "./../../../ui/lit/lit.js";
 import * as VisualLogging4 from "./../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/application/components/permissionsPolicySection.css.js
@@ -1814,7 +1941,7 @@ var permissionsPolicySection_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./permissionsPolicySection.css")} */`;
 
 // gen/front_end/panels/application/components/PermissionsPolicySection.js
-var UIStrings6 = {
+var UIStrings7 = {
   /**
    * @description Label for a button. When clicked more details (for the content this button refers to) will be shown.
    */
@@ -1855,10 +1982,10 @@ var UIStrings6 = {
    */
   disabledByFencedFrame: "disabled inside a `fencedframe`"
 };
-var str_6 = i18n11.i18n.registerUIStrings("panels/application/components/PermissionsPolicySection.ts", UIStrings6);
-var i18nString5 = i18n11.i18n.getLocalizedString.bind(void 0, str_6);
+var str_7 = i18n13.i18n.registerUIStrings("panels/application/components/PermissionsPolicySection.ts", UIStrings7);
+var i18nString6 = i18n13.i18n.getLocalizedString.bind(void 0, str_7);
 function renderIconLink(iconName, title, clickHandler, jsLogContext) {
-  return html5`
+  return html6`
     <devtools-button
       .iconName=${iconName}
       title=${title}
@@ -1873,8 +2000,8 @@ function renderAllowed(allowed) {
   if (!allowed.length) {
     return nothing3;
   }
-  return html5`
-    <devtools-report-key>${i18nString5(UIStrings6.allowedFeatures)}</devtools-report-key>
+  return html6`
+    <devtools-report-key>${i18nString6(UIStrings7.allowedFeatures)}</devtools-report-key>
     <devtools-report-value>${allowed.map(({ feature }) => feature).join(", ")}</devtools-report-value>`;
 }
 function renderDisallowed(data, showDetails, onToggleShowDetails, onRevealDOMNode, onRevealHeader) {
@@ -1882,8 +2009,8 @@ function renderDisallowed(data, showDetails, onToggleShowDetails, onRevealDOMNod
     return nothing3;
   }
   if (!showDetails) {
-    return html5`
-      <devtools-report-key>${i18nString5(UIStrings6.disabledFeatures)}</devtools-report-key>
+    return html6`
+      <devtools-report-key>${i18nString6(UIStrings7.disabledFeatures)}</devtools-report-key>
       <devtools-report-value>
         ${data.map(({ policy }) => policy.feature).join(", ")}
         <devtools-button
@@ -1891,7 +2018,7 @@ function renderDisallowed(data, showDetails, onToggleShowDetails, onRevealDOMNod
             .variant=${"outlined"}
             @click=${onToggleShowDetails}
             jslog=${VisualLogging4.action("show-disabled-features-details").track({ click: true })}>
-          ${i18nString5(UIStrings6.showDetails)}
+          ${i18nString6(UIStrings7.showDetails)}
         </devtools-button>
       </devtools-report-value>`;
   }
@@ -1899,16 +2026,16 @@ function renderDisallowed(data, showDetails, onToggleShowDetails, onRevealDOMNod
     const blockReasonText = (() => {
       switch (blockReason) {
         case "IframeAttribute":
-          return i18nString5(UIStrings6.disabledByIframe);
+          return i18nString6(UIStrings7.disabledByIframe);
         case "Header":
-          return i18nString5(UIStrings6.disabledByHeader);
+          return i18nString6(UIStrings7.disabledByHeader);
         case "InFencedFrameTree":
-          return i18nString5(UIStrings6.disabledByFencedFrame);
+          return i18nString6(UIStrings7.disabledByFencedFrame);
         default:
           return "";
       }
     })();
-    return html5`
+    return html6`
       <div class="permissions-row">
         <div>
           <devtools-icon class="allowed-icon extra-large" name="cross-circle">
@@ -1917,13 +2044,13 @@ function renderDisallowed(data, showDetails, onToggleShowDetails, onRevealDOMNod
         <div class="feature-name text-ellipsis">${policy.feature}</div>
         <div class="block-reason">${blockReasonText}</div>
         <div>
-          ${linkTargetDOMNode ? renderIconLink("code-circle", i18nString5(UIStrings6.clickToShowIframe), () => onRevealDOMNode(linkTargetDOMNode), "reveal-in-elements") : nothing3}
-          ${linkTargetRequest ? renderIconLink("arrow-up-down-circle", i18nString5(UIStrings6.clickToShowHeader), () => onRevealHeader(linkTargetRequest), "reveal-in-network") : nothing3}
+          ${linkTargetDOMNode ? renderIconLink("code-circle", i18nString6(UIStrings7.clickToShowIframe), () => onRevealDOMNode(linkTargetDOMNode), "reveal-in-elements") : nothing3}
+          ${linkTargetRequest ? renderIconLink("arrow-up-down-circle", i18nString6(UIStrings7.clickToShowHeader), () => onRevealHeader(linkTargetRequest), "reveal-in-network") : nothing3}
         </div>
       </div>`;
   });
-  return html5`
-    <devtools-report-key>${i18nString5(UIStrings6.disabledFeatures)}</devtools-report-key>
+  return html6`
+    <devtools-report-key>${i18nString6(UIStrings7.disabledFeatures)}</devtools-report-key>
     <devtools-report-value class="policies-list">
       ${featureRows}
       <div class="permissions-row">
@@ -1931,27 +2058,27 @@ function renderDisallowed(data, showDetails, onToggleShowDetails, onRevealDOMNod
             .variant=${"outlined"}
             @click=${onToggleShowDetails}
             jslog=${VisualLogging4.action("hide-disabled-features-details").track({ click: true })}>
-          ${i18nString5(UIStrings6.hideDetails)}
+          ${i18nString6(UIStrings7.hideDetails)}
         </devtools-button>
       </div>
     </devtools-report-value>`;
 }
-var DEFAULT_VIEW4 = (input, output, target) => {
-  render5(html5`
+var DEFAULT_VIEW5 = (input, output, target) => {
+  render6(html6`
     <style>${permissionsPolicySection_css_default}</style>
     <devtools-report-section-header>
-      ${i18n11.i18n.lockedString("Permissions Policy")}
+      ${i18n13.i18n.lockedString("Permissions Policy")}
     </devtools-report-section-header>
     ${renderAllowed(input.allowed)}
-    ${input.allowed.length > 0 && input.disallowed.length > 0 ? html5`<devtools-report-divider class="subsection-divider"></devtools-report-divider>` : nothing3}
+    ${input.allowed.length > 0 && input.disallowed.length > 0 ? html6`<devtools-report-divider class="subsection-divider"></devtools-report-divider>` : nothing3}
     ${renderDisallowed(input.disallowed, input.showDetails, input.onToggleShowDetails, input.onRevealDOMNode, input.onRevealHeader)}
     <devtools-report-divider></devtools-report-divider>`, target);
 };
-var PermissionsPolicySection = class extends UI5.Widget.Widget {
+var PermissionsPolicySection = class extends UI6.Widget.Widget {
   #policies = [];
   #showDetails = false;
   #view;
-  constructor(element, view = DEFAULT_VIEW4) {
+  constructor(element, view = DEFAULT_VIEW5) {
     super(element, { useShadowDom: false });
     this.#view = view;
   }
@@ -2013,14 +2140,14 @@ __export(ProtocolHandlersView_exports, {
   ProtocolHandlersView: () => ProtocolHandlersView
 });
 import "./../../../ui/kit/kit.js";
-import * as Host from "./../../../core/host/host.js";
-import * as i18n13 from "./../../../core/i18n/i18n.js";
+import * as Host2 from "./../../../core/host/host.js";
+import * as i18n15 from "./../../../core/i18n/i18n.js";
 import * as Platform from "./../../../core/platform/platform.js";
 import * as Buttons4 from "./../../../ui/components/buttons/buttons.js";
 import * as Input from "./../../../ui/components/input/input.js";
 import * as uiI18n from "./../../../ui/i18n/i18n.js";
-import * as UI6 from "./../../../ui/legacy/legacy.js";
-import { html as html6, i18nTemplate as unboundI18nTemplate, nothing as nothing4, render as render6 } from "./../../../ui/lit/lit.js";
+import * as UI7 from "./../../../ui/legacy/legacy.js";
+import { html as html7, i18nTemplate as unboundI18nTemplate, nothing as nothing4, render as render7 } from "./../../../ui/lit/lit.js";
 import * as VisualLogging5 from "./../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/application/components/protocolHandlersView.css.js
@@ -2086,7 +2213,7 @@ input.devtools-text-input[type="text"]::placeholder {
 
 // gen/front_end/panels/application/components/ProtocolHandlersView.js
 var PROTOCOL_DOCUMENT_URL = "https://web.dev/url-protocol-handler/";
-var UIStrings7 = {
+var UIStrings8 = {
   /**
    * @description Status message for when protocol handlers are detected in the manifest
    * @example {protocolhandler/manifest.json} PH1
@@ -2127,18 +2254,18 @@ var UIStrings7 = {
    */
   textboxPlaceholder: "Enter URL"
 };
-var str_7 = i18n13.i18n.registerUIStrings("panels/application/components/ProtocolHandlersView.ts", UIStrings7);
-var i18nString6 = i18n13.i18n.getLocalizedString.bind(void 0, str_7);
-var i18nTemplate = unboundI18nTemplate.bind(void 0, str_7);
+var str_8 = i18n15.i18n.registerUIStrings("panels/application/components/ProtocolHandlersView.ts", UIStrings8);
+var i18nString7 = i18n15.i18n.getLocalizedString.bind(void 0, str_8);
+var i18nTemplate = unboundI18nTemplate.bind(void 0, str_8);
 function renderStatusMessage(protocolHandlers, manifestLink) {
-  const statusString = protocolHandlers.length > 0 ? UIStrings7.protocolDetected : UIStrings7.protocolNotDetected;
-  return html6`
+  const statusString = protocolHandlers.length > 0 ? UIStrings8.protocolDetected : UIStrings8.protocolNotDetected;
+  return html7`
     <div class="protocol-handlers-row status">
       <devtools-icon class="inline-icon"
                      name=${protocolHandlers.length > 0 ? "check-circle" : "info"}>
       </devtools-icon>
-      ${uiI18n.getFormatLocalizedStringTemplate(str_7, statusString, { PH1: html6`
-        <devtools-link href=${manifestLink} jslogcontext="manifest">${i18nString6(UIStrings7.manifest)}</devtools-link>
+      ${uiI18n.getFormatLocalizedStringTemplate(str_8, statusString, { PH1: html7`
+        <devtools-link href=${manifestLink} jslogcontext="manifest">${i18nString7(UIStrings8.manifest)}</devtools-link>
         ` })}
     </div>`;
 }
@@ -2146,45 +2273,45 @@ function renderProtocolTest(protocolHandlers, queryInputState, protocolSelectHan
   if (protocolHandlers.length === 0) {
     return nothing4;
   }
-  return html6`
+  return html7`
     <div class="protocol-handlers-row">
       <select class="protocol-select" @change=${protocolSelectHandler}
-              aria-label=${i18nString6(UIStrings7.dropdownLabel)}>
-        ${protocolHandlers.filter((p) => p.protocol).map(({ protocol }) => html6`
+              aria-label=${i18nString7(UIStrings8.dropdownLabel)}>
+        ${protocolHandlers.filter((p) => p.protocol).map(({ protocol }) => html7`
           <option value=${protocol} jslog=${VisualLogging5.item(protocol).track({ click: true })}>
             ${protocol}://
           </option>`)}
       </select>
       <input .value=${queryInputState} class="devtools-text-input" type="text"
-             @change=${queryInputChangeHandler} aria-label=${i18nString6(UIStrings7.textboxLabel)}
-             placeholder=${i18nString6(UIStrings7.textboxPlaceholder)} />
+             @change=${queryInputChangeHandler} aria-label=${i18nString7(UIStrings8.textboxLabel)}
+             placeholder=${i18nString7(UIStrings8.textboxPlaceholder)} />
       <devtools-button .variant=${"primary"} @click=${testProtocolClickHandler}>
-        ${i18nString6(UIStrings7.testProtocol)}
+        ${i18nString7(UIStrings8.testProtocol)}
       </devtools-button>
     </div>`;
 }
-var DEFAULT_VIEW5 = (input, _output, target) => {
-  render6(html6`
+var DEFAULT_VIEW6 = (input, _output, target) => {
+  render7(html7`
     <style>${protocolHandlersView_css_default}</style>
-    <style>${UI6.inspectorCommonStyles}</style>
+    <style>${UI7.inspectorCommonStyles}</style>
     <style>${Input.textInputStyles}</style>
     ${renderStatusMessage(input.protocolHandler, input.manifestLink)}
     <div class="protocol-handlers-row">
-      ${i18nTemplate(UIStrings7.needHelpReadOur, { PH1: html6`
+      ${i18nTemplate(UIStrings8.needHelpReadOur, { PH1: html7`
         <devtools-link href=${PROTOCOL_DOCUMENT_URL} class="devtools-link" autofocus jslogcontext="learn-more">
-          ${i18nString6(UIStrings7.protocolHandlerRegistrations)}
+          ${i18nString7(UIStrings8.protocolHandlerRegistrations)}
         </devtools-link>` })}
     </div>
     ${renderProtocolTest(input.protocolHandler, input.queryInputState, input.protocolSelectHandler, input.queryInputChangeHandler, input.testProtocolClickHandler)}
   `, target);
 };
-var ProtocolHandlersView = class extends UI6.Widget.Widget {
+var ProtocolHandlersView = class extends UI7.Widget.Widget {
   #protocolHandlers = [];
   #manifestLink = Platform.DevToolsPath.EmptyUrlString;
   #selectedProtocolState = "";
   #queryInputState = "";
   #view;
-  constructor(element, view = DEFAULT_VIEW5) {
+  constructor(element, view = DEFAULT_VIEW6) {
     super(element, { useShadowDom: false, classes: ["vbox"] });
     this.#view = view;
   }
@@ -2216,8 +2343,8 @@ var ProtocolHandlersView = class extends UI6.Widget.Widget {
   };
   #handleTestProtocolClick = () => {
     const protocolURL = `${this.#selectedProtocolState}://${this.#queryInputState}`;
-    Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(protocolURL);
-    Host.userMetrics.actionTaken(Host.UserMetrics.Action.CaptureTestProtocolClicked);
+    Host2.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(protocolURL);
+    Host2.userMetrics.actionTaken(Host2.UserMetrics.Action.CaptureTestProtocolClicked);
   };
   performUpdate() {
     this.#view({
@@ -2234,15 +2361,15 @@ var ProtocolHandlersView = class extends UI6.Widget.Widget {
 // gen/front_end/panels/application/components/ReportsGrid.js
 var ReportsGrid_exports = {};
 __export(ReportsGrid_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW6,
+  DEFAULT_VIEW: () => DEFAULT_VIEW7,
   ReportsGrid: () => ReportsGrid,
-  i18nString: () => i18nString7
+  i18nString: () => i18nString8
 });
 import "./../../../ui/kit/kit.js";
 import "./../../../ui/legacy/components/data_grid/data_grid.js";
-import * as i18n15 from "./../../../core/i18n/i18n.js";
+import * as i18n17 from "./../../../core/i18n/i18n.js";
 import * as Root from "./../../../core/root/root.js";
-import * as UI7 from "./../../../ui/legacy/legacy.js";
+import * as UI8 from "./../../../ui/legacy/legacy.js";
 import * as Lit4 from "./../../../ui/lit/lit.js";
 import * as VisualLogging6 from "./../../../ui/visual_logging/visual_logging.js";
 
@@ -2285,7 +2412,7 @@ var reportsGrid_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./reportsGrid.css")} */`;
 
 // gen/front_end/panels/application/components/ReportsGrid.js
-var UIStrings8 = {
+var UIStrings9 = {
   /**
    * @description Placeholder text when there are no Reporting API reports.
    *(https://developers.google.com/web/updates/2018/09/reportingapi#sending)
@@ -2316,41 +2443,41 @@ var UIStrings8 = {
    */
   generatedAt: "Generated at"
 };
-var str_8 = i18n15.i18n.registerUIStrings("panels/application/components/ReportsGrid.ts", UIStrings8);
-var i18nString7 = i18n15.i18n.getLocalizedString.bind(void 0, str_8);
-var { render: render7, html: html7 } = Lit4;
+var str_9 = i18n17.i18n.registerUIStrings("panels/application/components/ReportsGrid.ts", UIStrings9);
+var i18nString8 = i18n17.i18n.getLocalizedString.bind(void 0, str_9);
+var { render: render8, html: html8 } = Lit4;
 var REPORTING_API_EXPLANATION_URL = "https://developer.chrome.com/docs/capabilities/web-apis/reporting-api";
-var DEFAULT_VIEW6 = (input, output, target) => {
-  render7(html7`
+var DEFAULT_VIEW7 = (input, output, target) => {
+  render8(html8`
     <style>${reportsGrid_css_default}</style>
-    <style>${UI7.inspectorCommonStyles}</style>
+    <style>${UI8.inspectorCommonStyles}</style>
     <div class="reporting-container" jslog=${VisualLogging6.section("reports")}>
-      <div class="reporting-header">${i18n15.i18n.lockedString("Reports")}</div>
-      ${input.reports.length > 0 ? html7`
+      <div class="reporting-header">${i18n17.i18n.lockedString("Reports")}</div>
+      ${input.reports.length > 0 ? html8`
         <devtools-data-grid striped>
           <table>
             <tr>
-              ${input.protocolMonitorExperimentEnabled ? html7`
-                <th id="id" weight="30">${i18n15.i18n.lockedString("ID")}</th>
+              ${input.protocolMonitorExperimentEnabled ? html8`
+                <th id="id" weight="30">${i18n17.i18n.lockedString("ID")}</th>
               ` : ""}
-              <th id="url" weight="30">${i18n15.i18n.lockedString("URL")}</th>
-              <th id="type" weight="20">${i18n15.i18n.lockedString("Type")}</th>
+              <th id="url" weight="30">${i18n17.i18n.lockedString("URL")}</th>
+              <th id="type" weight="20">${i18n17.i18n.lockedString("Type")}</th>
               <th id="status" weight="20">
                 <style>${reportsGrid_css_default}</style>
-                <span class="status-header">${i18nString7(UIStrings8.status)}</span>
+                <span class="status-header">${i18nString8(UIStrings9.status)}</span>
                 <devtools-link href="https://web.dev/reporting-api/#report-status"
                 jslogcontext="report-status">
                   <devtools-icon class="inline-icon medium" name="help" style="color: var(--icon-link);"
                   ></devtools-icon>
                 </devtools-link>
               </th>
-              <th id="destination" weight="20">${i18nString7(UIStrings8.destination)}</th>
-              <th id="timestamp" weight="20">${i18nString7(UIStrings8.generatedAt)}</th>
-              <th id="body" weight="20">${i18n15.i18n.lockedString("Body")}</th>
+              <th id="destination" weight="20">${i18nString8(UIStrings9.destination)}</th>
+              <th id="timestamp" weight="20">${i18nString8(UIStrings9.generatedAt)}</th>
+              <th id="body" weight="20">${i18n17.i18n.lockedString("Body")}</th>
             </tr>
-            ${input.reports.map((report) => html7`
+            ${input.reports.map((report) => html8`
               <tr @select=${() => input.onSelect(report.id)}>
-                ${input.protocolMonitorExperimentEnabled ? html7`<td>${report.id}</td>` : ""}
+                ${input.protocolMonitorExperimentEnabled ? html8`<td>${report.id}</td>` : ""}
                 <td>${report.initiatorUrl}</td>
                 <td>${report.type}</td>
                 <td>${report.status}</td>
@@ -2361,29 +2488,29 @@ var DEFAULT_VIEW6 = (input, output, target) => {
             `)}
           </table>
         </devtools-data-grid>
-      ` : html7`
+      ` : html8`
         <div class="empty-state">
-          <span class="empty-state-header">${i18nString7(UIStrings8.noReportsToDisplay)}</span>
+          <span class="empty-state-header">${i18nString8(UIStrings9.noReportsToDisplay)}</span>
           <div class="empty-state-description">
-            <span>${i18nString7(UIStrings8.reportingApiDescription)}</span>
+            <span>${i18nString8(UIStrings9.reportingApiDescription)}</span>
             <devtools-link
               class="devtools-link"
               href=${REPORTING_API_EXPLANATION_URL}
               jslogcontext="learn-more"
-            >${i18nString7(UIStrings8.learnMore)}</devtools-link>
+            >${i18nString8(UIStrings9.learnMore)}</devtools-link>
           </div>
         </div>
       `}
     </div>
   `, target);
 };
-var ReportsGrid = class extends UI7.Widget.Widget {
+var ReportsGrid = class extends UI8.Widget.Widget {
   reports = [];
   #protocolMonitorExperimentEnabled = false;
   #view;
   onReportSelected = () => {
   };
-  constructor(element, view = DEFAULT_VIEW6) {
+  constructor(element, view = DEFAULT_VIEW7) {
     super(element);
     this.#view = view;
     this.#protocolMonitorExperimentEnabled = Root.Runtime.experiments.isEnabled(Root.ExperimentNames.ExperimentName.PROTOCOL_MONITOR);
@@ -2404,8 +2531,8 @@ var ServiceWorkerRouterView_exports = {};
 __export(ServiceWorkerRouterView_exports, {
   ServiceWorkerRouterView: () => ServiceWorkerRouterView
 });
-import * as UI8 from "./../../../ui/legacy/legacy.js";
-import { html as html8, render as render8 } from "./../../../ui/lit/lit.js";
+import * as UI9 from "./../../../ui/legacy/legacy.js";
+import { html as html9, render as render9 } from "./../../../ui/lit/lit.js";
 
 // gen/front_end/panels/application/components/serviceWorkerRouterView.css.js
 var serviceWorkerRouterView_css_default = `/*
@@ -2468,7 +2595,7 @@ var serviceWorkerRouterView_css_default = `/*
 
 // gen/front_end/panels/application/components/ServiceWorkerRouterView.js
 function renderRouterRule(rule) {
-  return html8`
+  return html9`
     <li class="router-rule">
       <div class="rule-id">Rule ${rule.id}</div>
       <ul class="item">
@@ -2483,17 +2610,17 @@ function renderRouterRule(rule) {
       </ul>
     </li>`;
 }
-var DEFAULT_VIEW7 = (input, _output, target) => {
-  render8(html8`
+var DEFAULT_VIEW8 = (input, _output, target) => {
+  render9(html9`
     <style>${serviceWorkerRouterView_css_default}</style>
     <ul class="router-rules">
       ${input.rules.map(renderRouterRule)}
     </ul>`, target);
 };
-var ServiceWorkerRouterView = class extends UI8.Widget.Widget {
+var ServiceWorkerRouterView = class extends UI9.Widget.Widget {
   #rules = [];
   #view;
-  constructor(element, view = DEFAULT_VIEW7) {
+  constructor(element, view = DEFAULT_VIEW8) {
     super(element, { useShadowDom: true });
     this.#view = view;
   }
@@ -2514,14 +2641,14 @@ var ServiceWorkerRouterView = class extends UI8.Widget.Widget {
 // gen/front_end/panels/application/components/SharedStorageAccessGrid.js
 var SharedStorageAccessGrid_exports = {};
 __export(SharedStorageAccessGrid_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW8,
+  DEFAULT_VIEW: () => DEFAULT_VIEW9,
   SharedStorageAccessGrid: () => SharedStorageAccessGrid,
-  i18nString: () => i18nString8
+  i18nString: () => i18nString9
 });
 import "./../../../ui/kit/kit.js";
 import "./../../../ui/legacy/components/data_grid/data_grid.js";
-import * as i18n17 from "./../../../core/i18n/i18n.js";
-import * as UI9 from "./../../../ui/legacy/legacy.js";
+import * as i18n19 from "./../../../core/i18n/i18n.js";
+import * as UI10 from "./../../../ui/legacy/legacy.js";
 import * as Lit5 from "./../../../ui/lit/lit.js";
 import * as VisualLogging7 from "./../../../ui/visual_logging/visual_logging.js";
 
@@ -2560,8 +2687,8 @@ var sharedStorageAccessGrid_css_default = `/*
 
 // gen/front_end/panels/application/components/SharedStorageAccessGrid.js
 var SHARED_STORAGE_EXPLANATION_URL = "https://developers.google.com/privacy-sandbox/private-advertising/shared-storage";
-var { render: render9, html: html9 } = Lit5;
-var UIStrings9 = {
+var { render: render10, html: html10 } = Lit5;
+var UIStrings10 = {
   /**
    * @description Text in Shared Storage Events View of the Application panel
    */
@@ -2620,54 +2747,54 @@ var UIStrings9 = {
    */
   learnMore: "Learn more"
 };
-var str_9 = i18n17.i18n.registerUIStrings("panels/application/components/SharedStorageAccessGrid.ts", UIStrings9);
-var i18nString8 = i18n17.i18n.getLocalizedString.bind(void 0, str_9);
-var DEFAULT_VIEW8 = (input, _output, target) => {
-  render9(html9`
+var str_10 = i18n19.i18n.registerUIStrings("panels/application/components/SharedStorageAccessGrid.ts", UIStrings10);
+var i18nString9 = i18n19.i18n.getLocalizedString.bind(void 0, str_10);
+var DEFAULT_VIEW9 = (input, _output, target) => {
+  render10(html10`
     <style>${sharedStorageAccessGrid_css_default}</style>
-    ${input.events.length === 0 ? html9`
+    ${input.events.length === 0 ? html10`
         <div class="empty-state" jslog=${VisualLogging7.section().context("empty-view")}>
-          <div class="empty-state-header">${i18nString8(UIStrings9.noEvents)}</div>
+          <div class="empty-state-header">${i18nString9(UIStrings10.noEvents)}</div>
           <div class="empty-state-description">
-            <span>${i18nString8(UIStrings9.sharedStorageDescription)}</span>
+            <span>${i18nString9(UIStrings10.sharedStorageDescription)}</span>
             <devtools-link
               class="devtools-link"
               href=${SHARED_STORAGE_EXPLANATION_URL}
               .jslogContext=${"learn-more"}
-            >${i18nString8(UIStrings9.learnMore)}</devtools-link>
+            >${i18nString9(UIStrings10.learnMore)}</devtools-link>
           </div>
-        </div>` : html9`
+        </div>` : html10`
         <div jslog=${VisualLogging7.section("events-table")}>
-          <span class="heading">${i18nString8(UIStrings9.sharedStorage)}</span>
+          <span class="heading">${i18nString9(UIStrings10.sharedStorage)}</span>
           <devtools-icon class="info-icon medium" name="info"
-                          title=${i18nString8(UIStrings9.allSharedStorageEvents)}>
+                          title=${i18nString9(UIStrings10.allSharedStorageEvents)}>
           </devtools-icon>
           <devtools-data-grid striped inline>
             <table>
               <thead>
                 <tr>
                   <th id="event-time" weight="10" sortable>
-                    ${i18nString8(UIStrings9.eventTime)}
+                    ${i18nString9(UIStrings10.eventTime)}
                   </th>
                   <th id="event-scope" weight="10" sortable>
-                    ${i18nString8(UIStrings9.eventScope)}
+                    ${i18nString9(UIStrings10.eventScope)}
                   </th>
                   <th id="event-method" weight="10" sortable>
-                    ${i18nString8(UIStrings9.eventMethod)}
+                    ${i18nString9(UIStrings10.eventMethod)}
                   </th>
                   <th id="event-owner-origin" weight="10" sortable>
-                    ${i18nString8(UIStrings9.ownerOrigin)}
+                    ${i18nString9(UIStrings10.ownerOrigin)}
                   </th>
                   <th id="event-owner-site" weight="10" sortable>
-                    ${i18nString8(UIStrings9.ownerSite)}
+                    ${i18nString9(UIStrings10.ownerSite)}
                   </th>
                   <th id="event-params" weight="10" sortable>
-                    ${i18nString8(UIStrings9.eventParams)}
+                    ${i18nString9(UIStrings10.eventParams)}
                   </th>
                 </tr>
               </thead>
               <tbody>
-                ${input.events.map((event) => html9`
+                ${input.events.map((event) => html10`
                   <tr @select=${() => input.onSelect(event)}>
                     <td data-value=${event.accessTime}>
                       ${new Date(1e3 * event.accessTime).toLocaleString()}
@@ -2684,12 +2811,12 @@ var DEFAULT_VIEW8 = (input, _output, target) => {
           </devtools-data-grid>
         </div>`}`, target);
 };
-var SharedStorageAccessGrid = class extends UI9.Widget.Widget {
+var SharedStorageAccessGrid = class extends UI10.Widget.Widget {
   #view;
   #events = [];
   #onSelect = () => {
   };
-  constructor(element, view = DEFAULT_VIEW8) {
+  constructor(element, view = DEFAULT_VIEW9) {
     super(element, { useShadowDom: true });
     this.#view = view;
     this.performUpdate();
@@ -2719,7 +2846,7 @@ __export(SharedStorageMetadataView_exports, {
   SharedStorageMetadataView: () => SharedStorageMetadataView
 });
 import "./../../../ui/kit/kit.js";
-import * as i18n21 from "./../../../core/i18n/i18n.js";
+import * as i18n23 from "./../../../core/i18n/i18n.js";
 import * as Buttons6 from "./../../../ui/components/buttons/buttons.js";
 import * as Lit6 from "./../../../ui/lit/lit.js";
 
@@ -2762,13 +2889,13 @@ __export(StorageMetadataView_exports, {
   StorageMetadataView: () => StorageMetadataView
 });
 import "./../../../ui/components/report_view/report_view.js";
-import * as i18n19 from "./../../../core/i18n/i18n.js";
+import * as i18n21 from "./../../../core/i18n/i18n.js";
 import * as SDK4 from "./../../../core/sdk/sdk.js";
 import * as Buttons5 from "./../../../ui/components/buttons/buttons.js";
 import * as LegacyWrapper from "./../../../ui/components/legacy_wrapper/legacy_wrapper.js";
 import * as RenderCoordinator from "./../../../ui/components/render_coordinator/render_coordinator.js";
-import * as UI10 from "./../../../ui/legacy/legacy.js";
-import { html as html10, nothing as nothing5, render as render10 } from "./../../../ui/lit/lit.js";
+import * as UI11 from "./../../../ui/legacy/legacy.js";
+import { html as html11, nothing as nothing5, render as render11 } from "./../../../ui/lit/lit.js";
 
 // gen/front_end/panels/application/components/storageMetadataView.css.js
 var storageMetadataView_css_default = `/*
@@ -2784,7 +2911,7 @@ var storageMetadataView_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./storageMetadataView.css")} */`;
 
 // gen/front_end/panels/application/components/StorageMetadataView.js
-var UIStrings10 = {
+var UIStrings11 = {
   /**
    * @description The origin of a URL (https://web.dev/same-site-same-origin/#origin).
    *(for a lot of languages this does not need to be translated, please translate only where necessary)
@@ -2877,8 +3004,8 @@ var UIStrings10 = {
    */
   bucketWillBeRemoved: "The selected storage bucket and contained data will be removed."
 };
-var str_10 = i18n19.i18n.registerUIStrings("panels/application/components/StorageMetadataView.ts", UIStrings10);
-var i18nString9 = i18n19.i18n.getLocalizedString.bind(void 0, str_10);
+var str_11 = i18n21.i18n.registerUIStrings("panels/application/components/StorageMetadataView.ts", UIStrings11);
+var i18nString10 = i18n21.i18n.getLocalizedString.bind(void 0, str_11);
 var StorageMetadataView = class extends LegacyWrapper.LegacyWrapper.WrappableComponent {
   #shadow = this.attachShadow({ mode: "open" });
   #storageBucketsModel;
@@ -2904,9 +3031,9 @@ var StorageMetadataView = class extends LegacyWrapper.LegacyWrapper.WrappableCom
   }
   render() {
     return RenderCoordinator.write("StorageMetadataView render", async () => {
-      render10(html10`
+      render11(html11`
         <style>${storageMetadataView_css_default}</style>
-        <devtools-report .data=${{ reportTitle: this.getTitle() ?? i18nString9(UIStrings10.loading) }}>
+        <devtools-report .data=${{ reportTitle: this.getTitle() ?? i18nString10(UIStrings11.loading) }}>
           ${await this.renderReportContent()}
         </devtools-report>`, this.#shadow, { host: this });
     });
@@ -2916,14 +3043,14 @@ var StorageMetadataView = class extends LegacyWrapper.LegacyWrapper.WrappableCom
       return;
     }
     const origin = this.#storageKey.origin;
-    const bucketName = this.#storageBucket?.bucket.name || i18nString9(UIStrings10.defaultBucket);
+    const bucketName = this.#storageBucket?.bucket.name || i18nString10(UIStrings11.defaultBucket);
     return this.#storageBucketsModel ? `${bucketName} - ${origin}` : origin;
   }
   key(content) {
-    return html10`<devtools-report-key>${content}</devtools-report-key>`;
+    return html11`<devtools-report-key>${content}</devtools-report-key>`;
   }
   value(content) {
-    return html10`<devtools-report-value>${content}</devtools-report-value>`;
+    return html11`<devtools-report-value>${content}</devtools-report-value>`;
   }
   async renderReportContent() {
     if (!this.#storageKey) {
@@ -2946,19 +3073,19 @@ var StorageMetadataView = class extends LegacyWrapper.LegacyWrapper.WrappableCom
       "0"
       /* SDK.StorageKeyManager.StorageKeyComponent.TOP_LEVEL_SITE */
     );
-    const thirdPartyReason = ancestorChainHasCrossSite ? i18nString9(UIStrings10.yesBecauseAncestorChainHasCrossSite) : hasNonce ? i18nString9(UIStrings10.yesBecauseKeyIsOpaque) : topLevelSiteIsOpaque ? i18nString9(UIStrings10.yesBecauseTopLevelIsOpaque) : topLevelSite && origin !== topLevelSite ? i18nString9(UIStrings10.yesBecauseOriginNotInTopLevelSite) : null;
+    const thirdPartyReason = ancestorChainHasCrossSite ? i18nString10(UIStrings11.yesBecauseAncestorChainHasCrossSite) : hasNonce ? i18nString10(UIStrings11.yesBecauseKeyIsOpaque) : topLevelSiteIsOpaque ? i18nString10(UIStrings11.yesBecauseTopLevelIsOpaque) : topLevelSite && origin !== topLevelSite ? i18nString10(UIStrings11.yesBecauseOriginNotInTopLevelSite) : null;
     const isIframeOrEmbedded = topLevelSite && origin !== topLevelSite;
-    return html10`
-        ${isIframeOrEmbedded ? html10`${this.key(i18nString9(UIStrings10.origin))}
-            ${this.value(html10`<div class="text-ellipsis" title=${origin}>${origin}</div>`)}` : nothing5}
-        ${topLevelSite || topLevelSiteIsOpaque ? this.key(i18nString9(UIStrings10.topLevelSite)) : nothing5}
+    return html11`
+        ${isIframeOrEmbedded ? html11`${this.key(i18nString10(UIStrings11.origin))}
+            ${this.value(html11`<div class="text-ellipsis" title=${origin}>${origin}</div>`)}` : nothing5}
+        ${topLevelSite || topLevelSiteIsOpaque ? this.key(i18nString10(UIStrings11.topLevelSite)) : nothing5}
         ${topLevelSite ? this.value(topLevelSite) : nothing5}
-        ${topLevelSiteIsOpaque ? this.value(i18nString9(UIStrings10.opaque)) : nothing5}
-        ${thirdPartyReason ? html10`
-          ${this.key(i18nString9(UIStrings10.isThirdParty))}${this.value(thirdPartyReason)}` : nothing5}
-        ${hasNonce || topLevelSiteIsOpaque ? this.key(i18nString9(UIStrings10.isOpaque)) : nothing5}
-        ${hasNonce ? this.value(i18nString9(UIStrings10.yes)) : nothing5}
-        ${topLevelSiteIsOpaque ? this.value(i18nString9(UIStrings10.yesBecauseTopLevelIsOpaque)) : nothing5}
+        ${topLevelSiteIsOpaque ? this.value(i18nString10(UIStrings11.opaque)) : nothing5}
+        ${thirdPartyReason ? html11`
+          ${this.key(i18nString10(UIStrings11.isThirdParty))}${this.value(thirdPartyReason)}` : nothing5}
+        ${hasNonce || topLevelSiteIsOpaque ? this.key(i18nString10(UIStrings11.isOpaque)) : nothing5}
+        ${hasNonce ? this.value(i18nString10(UIStrings11.yes)) : nothing5}
+        ${topLevelSiteIsOpaque ? this.value(i18nString10(UIStrings11.yesBecauseTopLevelIsOpaque)) : nothing5}
         ${this.#storageBucket ? this.#renderStorageBucketInfo() : nothing5}
         ${this.#storageBucketsModel ? this.#renderBucketControls() : nothing5}`;
   }
@@ -2970,24 +3097,24 @@ var StorageMetadataView = class extends LegacyWrapper.LegacyWrapper.WrappableCom
     const isDefault = !name;
     if (!this.#showOnlyBucket) {
       if (isDefault) {
-        return html10`
-          ${this.key(i18nString9(UIStrings10.bucketName))}
-          ${this.value(html10`<span class="default-bucket">default</span>`)}`;
+        return html11`
+          ${this.key(i18nString10(UIStrings11.bucketName))}
+          ${this.value(html11`<span class="default-bucket">default</span>`)}`;
       }
-      return html10`
-        ${this.key(i18nString9(UIStrings10.bucketName))}
+      return html11`
+        ${this.key(i18nString10(UIStrings11.bucketName))}
         ${this.value(name)}`;
     }
-    return html10`
-      ${this.key(i18nString9(UIStrings10.bucketName))}
-      ${this.value(name || html10`<span class="default-bucket">default</span>`)}
-      ${this.key(i18nString9(UIStrings10.persistent))}
-      ${this.value(persistent ? i18nString9(UIStrings10.yes) : i18nString9(UIStrings10.no))}
-      ${this.key(i18nString9(UIStrings10.durability))}
+    return html11`
+      ${this.key(i18nString10(UIStrings11.bucketName))}
+      ${this.value(name || html11`<span class="default-bucket">default</span>`)}
+      ${this.key(i18nString10(UIStrings11.persistent))}
+      ${this.value(persistent ? i18nString10(UIStrings11.yes) : i18nString10(UIStrings11.no))}
+      ${this.key(i18nString10(UIStrings11.durability))}
       ${this.value(durability)}
-      ${this.key(i18nString9(UIStrings10.quota))}
-      ${this.value(i18n19.ByteUtilities.bytesToString(quota))}
-      ${this.key(i18nString9(UIStrings10.expiration))}
+      ${this.key(i18nString10(UIStrings11.quota))}
+      ${this.value(i18n21.ByteUtilities.bytesToString(quota))}
+      ${this.key(i18nString10(UIStrings11.expiration))}
       ${this.value(this.#getExpirationString())}`;
   }
   #getExpirationString() {
@@ -2996,18 +3123,18 @@ var StorageMetadataView = class extends LegacyWrapper.LegacyWrapper.WrappableCom
     }
     const { expiration } = this.#storageBucket;
     if (expiration === 0) {
-      return i18nString9(UIStrings10.none);
+      return i18nString10(UIStrings11.none);
     }
     return new Date(expiration * 1e3).toLocaleString();
   }
   #renderBucketControls() {
-    return html10`
+    return html11`
     <devtools-report-divider></devtools-report-divider>
     <devtools-report-section>
-      <devtools-button aria-label=${i18nString9(UIStrings10.deleteBucket)}
+      <devtools-button aria-label=${i18nString10(UIStrings11.deleteBucket)}
                        .variant=${"outlined"}
                        @click=${this.#deleteBucket}>
-        ${i18nString9(UIStrings10.deleteBucket)}
+        ${i18nString10(UIStrings11.deleteBucket)}
       </devtools-button>
     </devtools-report-section>`;
   }
@@ -3015,7 +3142,7 @@ var StorageMetadataView = class extends LegacyWrapper.LegacyWrapper.WrappableCom
     if (!this.#storageBucketsModel || !this.#storageBucket) {
       throw new Error("Should not call #deleteBucket if #storageBucketsModel or #storageBucket is null.");
     }
-    const ok = await UI10.UIUtils.ConfirmDialog.show(i18nString9(UIStrings10.bucketWillBeRemoved), i18nString9(UIStrings10.confirmBucketDeletion, { PH1: this.#storageBucket.bucket.name || "" }), this, { jslogContext: "delete-bucket-confirmation" });
+    const ok = await UI11.UIUtils.ConfirmDialog.show(i18nString10(UIStrings11.bucketWillBeRemoved), i18nString10(UIStrings11.confirmBucketDeletion, { PH1: this.#storageBucket.bucket.name || "" }), this, { jslogContext: "delete-bucket-confirmation" });
     if (ok) {
       this.#storageBucketsModel.deleteBucket(this.#storageBucket.bucket);
     }
@@ -3024,8 +3151,8 @@ var StorageMetadataView = class extends LegacyWrapper.LegacyWrapper.WrappableCom
 customElements.define("devtools-storage-metadata-view", StorageMetadataView);
 
 // gen/front_end/panels/application/components/SharedStorageMetadataView.js
-var { html: html11 } = Lit6;
-var UIStrings11 = {
+var { html: html12 } = Lit6;
+var UIStrings12 = {
   /**
    * @description Text in SharedStorage Metadata View of the Application panel
    */
@@ -3059,8 +3186,8 @@ var UIStrings11 = {
    */
   numBytesUsed: "Number of Bytes Used"
 };
-var str_11 = i18n21.i18n.registerUIStrings("panels/application/components/SharedStorageMetadataView.ts", UIStrings11);
-var i18nString10 = i18n21.i18n.getLocalizedString.bind(void 0, str_11);
+var str_12 = i18n23.i18n.registerUIStrings("panels/application/components/SharedStorageMetadataView.ts", UIStrings12);
+var i18nString11 = i18n23.i18n.getLocalizedString.bind(void 0, str_12);
 var SharedStorageMetadataView = class extends StorageMetadataView {
   #sharedStorageMetadataGetter;
   #creationTime = null;
@@ -3078,7 +3205,7 @@ var SharedStorageMetadataView = class extends StorageMetadataView {
     await this.render();
   }
   getTitle() {
-    return i18nString10(UIStrings11.sharedStorage);
+    return i18nString11(UIStrings12.sharedStorage);
   }
   async renderReportContent() {
     const metadata = await this.#sharedStorageMetadataGetter.getMetadata();
@@ -3086,31 +3213,31 @@ var SharedStorageMetadataView = class extends StorageMetadataView {
     this.#length = metadata?.length ?? 0;
     this.#bytesUsed = metadata?.bytesUsed ?? 0;
     this.#remainingBudget = metadata?.remainingBudget ?? 0;
-    return html11`
+    return html12`
       <style>${sharedStorageMetadataView_css_default}</style>
       ${await super.renderReportContent()}
-      ${this.key(i18nString10(UIStrings11.creation))}
+      ${this.key(i18nString11(UIStrings12.creation))}
       ${this.value(this.#renderDateForCreationTime())}
-      ${this.key(i18nString10(UIStrings11.numEntries))}
+      ${this.key(i18nString11(UIStrings12.numEntries))}
       ${this.value(String(this.#length))}
-      ${this.key(i18nString10(UIStrings11.numBytesUsed))}
+      ${this.key(i18nString11(UIStrings12.numBytesUsed))}
       ${this.value(String(this.#bytesUsed))}
-      ${this.key(html11`<span class="entropy-budget">${i18nString10(UIStrings11.entropyBudget)}<devtools-icon name="info" title=${i18nString10(UIStrings11.budgetExplanation)}></devtools-icon></span>`)}
-      ${this.value(html11`<span class="entropy-budget">${this.#remainingBudget}${this.#renderResetBudgetButton()}</span>`)}`;
+      ${this.key(html12`<span class="entropy-budget">${i18nString11(UIStrings12.entropyBudget)}<devtools-icon name="info" title=${i18nString11(UIStrings12.budgetExplanation)}></devtools-icon></span>`)}
+      ${this.value(html12`<span class="entropy-budget">${this.#remainingBudget}${this.#renderResetBudgetButton()}</span>`)}`;
   }
   #renderDateForCreationTime() {
     if (!this.#creationTime) {
-      return html11`${i18nString10(UIStrings11.notYetCreated)}`;
+      return html12`${i18nString11(UIStrings12.notYetCreated)}`;
     }
     const date = new Date(1e3 * this.#creationTime);
-    return html11`${date.toLocaleString()}`;
+    return html12`${date.toLocaleString()}`;
   }
   #renderResetBudgetButton() {
-    return html11`
+    return html12`
       <devtools-button .iconName=${"undo"}
                        .jslogContext=${"reset-entropy-budget"}
                        .size=${"SMALL"}
-                       .title=${i18nString10(UIStrings11.resetBudget)}
+                       .title=${i18nString11(UIStrings12.resetBudget)}
                        .variant=${"icon"}
                        @click=${this.#resetBudget.bind(this)}></devtools-button>
     `;
@@ -3122,14 +3249,14 @@ customElements.define("devtools-shared-storage-metadata-view", SharedStorageMeta
 var TrustTokensView_exports = {};
 __export(TrustTokensView_exports, {
   TrustTokensView: () => TrustTokensView,
-  i18nString: () => i18nString11
+  i18nString: () => i18nString12
 });
 import "./../../../ui/kit/kit.js";
 import "./../../../ui/legacy/components/data_grid/data_grid.js";
-import * as i18n23 from "./../../../core/i18n/i18n.js";
+import * as i18n25 from "./../../../core/i18n/i18n.js";
 import * as SDK5 from "./../../../core/sdk/sdk.js";
 import * as Buttons7 from "./../../../ui/components/buttons/buttons.js";
-import * as UI11 from "./../../../ui/legacy/legacy.js";
+import * as UI12 from "./../../../ui/legacy/legacy.js";
 import * as Lit7 from "./../../../ui/lit/lit.js";
 import * as VisualLogging8 from "./../../../ui/visual_logging/visual_logging.js";
 
@@ -3172,8 +3299,8 @@ devtools-icon {
 
 // gen/front_end/panels/application/components/TrustTokensView.js
 var PRIVATE_STATE_TOKENS_EXPLANATION_URL = "https://developers.google.com/privacy-sandbox/protections/private-state-tokens";
-var { html: html12 } = Lit7;
-var UIStrings12 = {
+var { html: html13 } = Lit7;
+var UIStrings13 = {
   /**
    * @description Text for the issuer of an item
    */
@@ -3210,39 +3337,39 @@ var UIStrings12 = {
    */
   learnMore: "Learn more"
 };
-var str_12 = i18n23.i18n.registerUIStrings("panels/application/components/TrustTokensView.ts", UIStrings12);
-var i18nString11 = i18n23.i18n.getLocalizedString.bind(void 0, str_12);
+var str_13 = i18n25.i18n.registerUIStrings("panels/application/components/TrustTokensView.ts", UIStrings13);
+var i18nString12 = i18n25.i18n.getLocalizedString.bind(void 0, str_13);
 var REFRESH_INTERVAL_MS = 1e3;
 function renderGridOrNoDataMessage(input) {
   if (input.tokens.length === 0) {
-    return html12`
+    return html13`
         <div jslog=${VisualLogging8.pane("trust-tokens")}>
           <div class="empty-state" jslog=${VisualLogging8.section().context("empty-view")}>
-            <div class="empty-state-header">${i18nString11(UIStrings12.noTrustTokens)}</div>
+            <div class="empty-state-header">${i18nString12(UIStrings13.noTrustTokens)}</div>
             <div class="empty-state-description">
-              <span>${i18nString11(UIStrings12.trustTokensDescription)}</span>
+              <span>${i18nString12(UIStrings13.trustTokensDescription)}</span>
               <devtools-link
                 class="devtools-link"
                 href=${PRIVATE_STATE_TOKENS_EXPLANATION_URL}
                 .jslogContext=${"learn-more"}
-              >${i18nString11(UIStrings12.learnMore)}</devtools-link>
+              >${i18nString12(UIStrings13.learnMore)}</devtools-link>
             </div>
           </div>
         </div>
       `;
   }
-  return html12`
+  return html13`
       <div jslog=${VisualLogging8.pane("trust-tokens")}>
-        <span class="heading">${i18nString11(UIStrings12.trustTokens)}</span>
-        <devtools-icon name="info" title=${i18nString11(UIStrings12.allStoredTrustTokensAvailableIn)}></devtools-icon>
+        <span class="heading">${i18nString12(UIStrings13.trustTokens)}</span>
+        <devtools-icon name="info" title=${i18nString12(UIStrings13.allStoredTrustTokensAvailableIn)}></devtools-icon>
         <devtools-data-grid striped inline>
           <table>
             <tr>
-              <th id="issuer" weight="10" sortable>${i18nString11(UIStrings12.issuer)}</th>
-              <th id="count" weight="5" sortable>${i18nString11(UIStrings12.storedTokenCount)}</th>
+              <th id="issuer" weight="10" sortable>${i18nString12(UIStrings13.issuer)}</th>
+              <th id="count" weight="5" sortable>${i18nString12(UIStrings13.storedTokenCount)}</th>
               <th id="delete-button" weight="1" sortable></th>
             </tr>
-            ${input.tokens.filter((token) => token.count > 0).map((token) => html12`
+            ${input.tokens.filter((token) => token.count > 0).map((token) => html13`
                 <tr>
                   <td>${removeTrailingSlash(token.issuerOrigin)}</td>
                   <td>${token.count}</td>
@@ -3250,7 +3377,7 @@ function renderGridOrNoDataMessage(input) {
                     <devtools-button .iconName=${"bin"}
                                     .jslogContext=${"delete-all"}
                                     .size=${"SMALL"}
-                                    .title=${i18nString11(UIStrings12.deleteTrustTokens, { PH1: removeTrailingSlash(token.issuerOrigin) })}
+                                    .title=${i18nString12(UIStrings13.deleteTrustTokens, { PH1: removeTrailingSlash(token.issuerOrigin) })}
                                     .variant=${"icon"}
                                     @click=${() => input.deleteClickHandler(removeTrailingSlash(token.issuerOrigin))}></devtools-button>
                   </td>
@@ -3261,18 +3388,18 @@ function renderGridOrNoDataMessage(input) {
       </div>
     `;
 }
-var DEFAULT_VIEW9 = (input, output, target) => {
-  Lit7.render(html12`
+var DEFAULT_VIEW10 = (input, output, target) => {
+  Lit7.render(html13`
     <style>${trustTokensView_css_default}</style>
-    <style>${UI11.inspectorCommonStyles}</style>
+    <style>${UI12.inspectorCommonStyles}</style>
     ${renderGridOrNoDataMessage(input)}
   `, target);
 };
-var TrustTokensView = class extends UI11.Widget.VBox {
+var TrustTokensView = class extends UI12.Widget.VBox {
   #updateInterval = 0;
   #tokens = [];
   #view;
-  constructor(element, view = DEFAULT_VIEW9) {
+  constructor(element, view = DEFAULT_VIEW10) {
     super(element, { useShadowDom: true });
     this.#view = view;
   }
@@ -3307,6 +3434,7 @@ function removeTrailingSlash(s) {
 export {
   BackForwardCacheView_exports as BackForwardCacheView,
   BounceTrackingMitigationsView_exports as BounceTrackingMitigationsView,
+  CrashReportContextGrid_exports as CrashReportContextGrid,
   EndpointsGrid_exports as EndpointsGrid,
   InterestGroupAccessGrid_exports as InterestGroupAccessGrid,
   PermissionsPolicySection_exports as PermissionsPolicySection,

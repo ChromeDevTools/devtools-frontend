@@ -1,2 +1,4 @@
+import * as ChildrenProvider from './ChildrenProvider.js';
 import * as HeapSnapshotModel from './HeapSnapshotModel.js';
-export { HeapSnapshotModel, };
+import * as HeapSnapshotProxy from './HeapSnapshotProxy.js';
+export { ChildrenProvider, HeapSnapshotModel, HeapSnapshotProxy, };

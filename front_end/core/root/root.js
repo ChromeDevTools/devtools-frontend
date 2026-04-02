@@ -62,7 +62,6 @@ var ExperimentName;
   ExperimentName2["TIMELINE_SHOW_ALL_EVENTS"] = "timeline-show-all-events";
   ExperimentName2["APCA"] = "apca";
   ExperimentName2["FONT_EDITOR"] = "font-editor";
-  ExperimentName2["FULL_ACCESSIBILITY_TREE"] = "full-accessibility-tree";
   ExperimentName2["INSTRUMENTATION_BREAKPOINTS"] = "instrumentation-breakpoints";
   ExperimentName2["USE_SOURCE_MAP_SCOPES"] = "use-source-map-scopes";
   ExperimentName2["TIMELINE_DEBUG_MODE"] = "timeline-debug-mode";

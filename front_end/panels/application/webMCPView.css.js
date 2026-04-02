@@ -32,11 +32,36 @@ export default `/*
         flex: auto;
     }
 
-    devtools-data-grid td {
+    .data-grid {
+      th {
+        height: 26px;
+      }
+
+      td {
         vertical-align: middle;
+      }
+
+      tr.status-cancelled {
+        color: var(--sys-color-on-surface-light);
+      }
+
+      tr.status-error {
+        color: var(--sys-color-error);
+      }
+
+      tr.selected {
+        background-color: var(--sys-color-tonal-container);
+      }
+
+      tr.selected.status-error {
+        background-color: var(--sys-color-error-container);
+        color: var(--sys-color-error);
+      }
     }
 
     .section-title {
+        display: flex;
+        gap: var(--sys-size-2);
         background-color: var(--sys-color-surface1);
         padding: 0 5px;
         line-height: 22px;
@@ -52,6 +77,57 @@ export default `/*
         gap: 4px;
     }
 
+    .tool-details {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        overflow: auto;
+    }
+
+    .tool-details-grid {
+      display: grid;
+      grid-template-columns: min-content 1fr;
+      gap: 0 var(--sys-size-16);
+      padding: calc(0.5*var(--sys-size-6)) var(--sys-size-8);
+      align-items: flex-start;
+
+      .label {
+        color: var(--sys-color-on-surface-subtle);
+        white-space: nowrap;
+        padding: var(--sys-size-6) 0;
+      }
+
+      .value {
+        &.source-code {
+          color: var(--sys-color-token-attribute);
+        }
+
+        padding: var(--sys-size-6) 0;
+        color: var(--sys-color-on-surface);
+        overflow-wrap: anywhere;
+
+        &:has(> .stack-preview-container) {
+          padding: var(--sys-size-4) 0;
+        }
+
+        &.tool-origin-container {
+          display: flex;
+          align-items: center;
+          gap: var(--sys-size-4);
+        }
+
+        .tool-origin-node {
+          display: flex;
+          align-items: center;
+          cursor: default;
+        }
+      }
+
+      .show-element {
+        height: 1lh;
+      }
+    }
+
     devtools-list {
       flex: 1 1 auto;
       margin: 0;
@@ -65,8 +141,17 @@ export default `/*
         padding: 8px 0;
         gap: 4px;
         width: 100%;
-        min-width: 0;
+        box-sizing: border-box;
         border-bottom: 1px solid var(--sys-color-divider);
+        cursor: pointer;
+    }
+
+    .tool-item:hover {
+        background-color: var(--sys-color-state-hover-on-subtle);
+    }
+
+    .tool-item.selected {
+        background-color: var(--sys-color-tonal-container);
     }
 
     .tool-name-container {
@@ -96,19 +181,14 @@ export default `/*
 
     .tool-description {
         color: var(--sys-color-on-surface);
-    }
-
-    tr.status-error {
-      color: var(--sys-color-error);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     devtools-toolbar-input {
         flex-grow: 1;
         flex-shrink: 1;
-    }
-
-    tr.status-cancelled {
-      color: var(--sys-color-on-surface-light);
     }
 
     .toolbar-text.status-error-text {
@@ -117,6 +197,11 @@ export default `/*
 
     .toolbar-text.status-cancelled-text {
       color: var(--sys-color-on-surface-light);
+    }
+
+    .call-details-tabbed-pane {
+        flex: auto;
+        border-bottom: 1px solid var(--sys-color-divider);
     }
 }
 

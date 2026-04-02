@@ -11,20 +11,15 @@ import accessibilityTreeViewStyles from './accessibilityTreeView.css.js';
 import { ElementsPanel } from './ElementsPanel.js';
 export class AccessibilityTreeView extends UI.Widget.VBox {
     accessibilityTreeComponent;
-    toggleButton;
     inspectedDOMNode = null;
     root = null;
-    constructor(toggleButton, accessibilityTreeComponent) {
+    constructor(accessibilityTreeComponent) {
         super();
         this.registerRequiredCSS(accessibilityTreeViewStyles);
-        // toggleButton is bound to a click handler on ElementsPanel to switch between the DOM tree
-        // and accessibility tree views.
-        this.toggleButton = toggleButton;
         this.accessibilityTreeComponent = accessibilityTreeComponent;
         const container = this.contentElement.createChild('div');
         container.classList.add('accessibility-tree-view-container');
         container.setAttribute('jslog', `${VisualLogging.tree('full-accessibility')}`);
-        container.appendChild(this.toggleButton);
         container.appendChild(this.accessibilityTreeComponent);
         SDK.TargetManager.TargetManager.instance().observeModels(SDK.AccessibilityModel.AccessibilityModel, this, { scoped: true });
         // The DOM tree and accessibility are kept in sync as much as possible, so
@@ -77,6 +72,12 @@ export class AccessibilityTreeView extends UI.Widget.VBox {
     }
     async renderTree() {
         if (!this.root) {
+            const frameId = SDK.FrameManager.FrameManager.instance().getOutermostFrame()?.id;
+            if (frameId) {
+                this.root = await AccessibilityTreeUtils.getRootNode(frameId);
+            }
+        }
+        if (!this.root) {
             return;
         }
         const treeData = await AccessibilityTreeUtils.sdkNodeToAXTreeNodes(this.root);
@@ -125,10 +126,14 @@ export class AccessibilityTreeView extends UI.Widget.VBox {
         }
     }
     treeUpdated({ data }) {
+        if (data.root) {
+            this.root = data.root;
+        }
         if (!this.isShowing()) {
             return;
         }
         if (!data.root) {
+            this.root = null;
             void this.renderTree();
             return;
         }

@@ -2010,22 +2010,22 @@ UI.ContextMenu.registerItem({
 QuickOpen.FilteredListWidget.registerProvider({
   prefix: '@',
   iconName: 'symbol',
-  async provider(jslogContext: string) {
+  async provider() {
     const Sources = await loadSourcesModule();
-    return new Sources.OutlineQuickOpen.OutlineQuickOpen(jslogContext);
+    return new Sources.OutlineQuickOpen.OutlineQuickOpen();
   },
   helpTitle: i18nLazyString(UIStrings.goToSymbol),
   titlePrefix: i18nLazyString(UIStrings.goTo),
   titleSuggestion: i18nLazyString(UIStrings.symbol),
-  jslogContext: 'source-symbol'
+  jslogContext: 'source-symbol',
 });
 
 QuickOpen.FilteredListWidget.registerProvider({
   prefix: ':',
   iconName: 'colon',
-  async provider(jslogContext: string) {
+  async provider() {
     const Sources = await loadSourcesModule();
-    return new Sources.GoToLineQuickOpen.GoToLineQuickOpen(jslogContext);
+    return new Sources.GoToLineQuickOpen.GoToLineQuickOpen();
   },
   helpTitle: i18nLazyString(UIStrings.goToLine),
   titlePrefix: i18nLazyString(UIStrings.goTo),
@@ -2036,9 +2036,9 @@ QuickOpen.FilteredListWidget.registerProvider({
 QuickOpen.FilteredListWidget.registerProvider({
   prefix: '',
   iconName: 'document',
-  async provider(jslogContext: string) {
+  async provider() {
     const Sources = await loadSourcesModule();
-    return new Sources.OpenFileQuickOpen.OpenFileQuickOpen(jslogContext);
+    return new Sources.OpenFileQuickOpen.OpenFileQuickOpen();
   },
   helpTitle: i18nLazyString(UIStrings.openFile),
   titlePrefix: i18nLazyString(UIStrings.open),

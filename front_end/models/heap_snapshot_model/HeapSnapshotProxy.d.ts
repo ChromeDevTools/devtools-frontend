@@ -1,7 +1,7 @@
 import * as Common from '../../core/common/common.js';
 import type * as PlatformApi from '../../core/platform/api/api.js';
-import type * as HeapSnapshotModel from '../../models/heap_snapshot_model/heap_snapshot_model.js';
 import type { ChildrenProvider } from './ChildrenProvider.js';
+import type * as HeapSnapshotModel from './HeapSnapshotModel.js';
 export declare class HeapSnapshotWorkerProxy extends Common.ObjectWrapper.ObjectWrapper<HeapSnapshotWorkerProxy.EventTypes> {
     readonly eventHandler: (arg0: string, arg1: string) => void;
     nextObjectId: number;
@@ -49,31 +49,31 @@ export declare class HeapSnapshotLoaderProxy extends HeapSnapshotProxyObject imp
     close(): Promise<void>;
 }
 export declare class HeapSnapshotProxy extends HeapSnapshotProxyObject {
-    staticData: HeapSnapshotModel.HeapSnapshotModel.StaticData | null;
+    staticData: HeapSnapshotModel.StaticData | null;
     profileUid?: string;
     constructor(worker: HeapSnapshotWorkerProxy, objectId: number);
-    search(searchConfig: HeapSnapshotModel.HeapSnapshotModel.SearchConfig, filter: HeapSnapshotModel.HeapSnapshotModel.NodeFilter): Promise<number[]>;
+    search(searchConfig: HeapSnapshotModel.SearchConfig, filter: HeapSnapshotModel.NodeFilter): Promise<number[]>;
     interfaceDefinitions(): Promise<string>;
-    aggregatesWithFilter(filter: HeapSnapshotModel.HeapSnapshotModel.NodeFilter): Promise<Record<string, HeapSnapshotModel.HeapSnapshotModel.AggregatedInfo>>;
-    aggregatesForDiff(interfaceDefinitions: string): Promise<Record<string, HeapSnapshotModel.HeapSnapshotModel.AggregateForDiff>>;
-    calculateSnapshotDiff(baseSnapshotId: string, baseSnapshotAggregates: Record<string, HeapSnapshotModel.HeapSnapshotModel.AggregateForDiff>): Promise<Record<string, HeapSnapshotModel.HeapSnapshotModel.Diff>>;
+    aggregatesWithFilter(filter: HeapSnapshotModel.NodeFilter): Promise<Record<string, HeapSnapshotModel.AggregatedInfo>>;
+    aggregatesForDiff(interfaceDefinitions: string): Promise<Record<string, HeapSnapshotModel.AggregateForDiff>>;
+    calculateSnapshotDiff(baseSnapshotId: string, baseSnapshotAggregates: Record<string, HeapSnapshotModel.AggregateForDiff>): Promise<Record<string, HeapSnapshotModel.Diff>>;
     nodeClassKey(snapshotObjectId: number): Promise<string | null>;
     createEdgesProvider(nodeIndex: number): HeapSnapshotProviderProxy;
     createRetainingEdgesProvider(nodeIndex: number): HeapSnapshotProviderProxy;
     createAddedNodesProvider(baseSnapshotId: string, classKey: string): HeapSnapshotProviderProxy;
     createDeletedNodesProvider(nodeIndexes: number[]): HeapSnapshotProviderProxy;
     createNodesProvider(filter: (...args: any[]) => boolean): HeapSnapshotProviderProxy;
-    createNodesProviderForClass(classKey: string, nodeFilter: HeapSnapshotModel.HeapSnapshotModel.NodeFilter): HeapSnapshotProviderProxy;
-    allocationTracesTops(): Promise<HeapSnapshotModel.HeapSnapshotModel.SerializedAllocationNode[]>;
-    allocationNodeCallers(nodeId: number): Promise<HeapSnapshotModel.HeapSnapshotModel.AllocationNodeCallers>;
-    allocationStack(nodeIndex: number): Promise<HeapSnapshotModel.HeapSnapshotModel.AllocationStackFrame[] | null>;
+    createNodesProviderForClass(classKey: string, nodeFilter: HeapSnapshotModel.NodeFilter): HeapSnapshotProviderProxy;
+    allocationTracesTops(): Promise<HeapSnapshotModel.SerializedAllocationNode[]>;
+    allocationNodeCallers(nodeId: number): Promise<HeapSnapshotModel.AllocationNodeCallers>;
+    allocationStack(nodeIndex: number): Promise<HeapSnapshotModel.AllocationStackFrame[] | null>;
     dispose(): void;
     get nodeCount(): number;
     get rootNodeIndex(): number;
     updateStaticData(): Promise<void>;
-    getStatistics(): Promise<HeapSnapshotModel.HeapSnapshotModel.Statistics>;
-    getLocation(nodeIndex: number): Promise<HeapSnapshotModel.HeapSnapshotModel.Location | null>;
-    getSamples(): Promise<HeapSnapshotModel.HeapSnapshotModel.Samples | null>;
+    getStatistics(): Promise<HeapSnapshotModel.Statistics>;
+    getLocation(nodeIndex: number): Promise<HeapSnapshotModel.Location | null>;
+    getSamples(): Promise<HeapSnapshotModel.Samples | null>;
     ignoreNodeInRetainersView(nodeIndex: number): Promise<void>;
     unignoreNodeInRetainersView(nodeIndex: number): Promise<void>;
     unignoreAllNodesInRetainersView(): Promise<void>;
@@ -86,6 +86,6 @@ export declare class HeapSnapshotProxy extends HeapSnapshotProxyObject {
 export declare class HeapSnapshotProviderProxy extends HeapSnapshotProxyObject implements ChildrenProvider {
     nodePosition(snapshotObjectId: number): Promise<number>;
     isEmpty(): Promise<boolean>;
-    serializeItemsRange(startPosition: number, endPosition: number): Promise<HeapSnapshotModel.HeapSnapshotModel.ItemsRange>;
-    sortAndRewind(comparator: HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig): Promise<void>;
+    serializeItemsRange(startPosition: number, endPosition: number): Promise<HeapSnapshotModel.ItemsRange>;
+    sortAndRewind(comparator: HeapSnapshotModel.ComparatorConfig): Promise<void>;
 }

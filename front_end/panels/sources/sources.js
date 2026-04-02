@@ -12376,8 +12376,8 @@ var FilteredUISourceCodeListProvider = class extends QuickOpen3.FilteredListWidg
   uiSourceCodes;
   uiSourceCodeIds;
   query;
-  constructor(jslogContext) {
-    super(jslogContext);
+  constructor() {
+    super();
     this.queryLineNumberAndColumnNumber = "";
     this.defaultScores = null;
     this.scorer = new FilePathScoreFunction("");

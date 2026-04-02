@@ -350,6 +350,7 @@ UI.ActionRegistration.registerActionExtension({
     actionId: 'elements.toggle-a11y-tree',
     category: "ELEMENTS" /* UI.ActionRegistration.ActionCategory.ELEMENTS */,
     title: i18nLazyString(UIStrings.toggleA11yTree),
+    toggleable: true,
     async loadActionDelegate() {
         const Elements = await loadElementsModule();
         return new Elements.ElementsPanel.ElementsActionDelegate();

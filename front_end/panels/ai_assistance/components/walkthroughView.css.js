@@ -102,22 +102,47 @@ export default `/*
     font-size: 11px;
   }
 
+  .inline-wrapper {
+    display: flex;
+    /* Note: no gap here; the gap is dealt with in padding on the text */
+    align-items: flex-start;
+    justify-content: flex-start;
+
+    .inline-icon {
+      display: block;
+      margin-top: var(--sys-size-2);
+    }
+  }
+
   .walkthrough-inline {
     border-radius: var(--sys-size-5);
     overflow: hidden;
-    background-color: var(--sys-color-surface2);
     width: fit-content;
+    max-width: 100%;
 
     &[open] {
       width: auto;
       background-color: var(--sys-color-surface1);
+      margin-left: calc(var(--sys-size-6) / 2);
+      flex-grow: 1;
+
+      > summary {
+        border-radius: var(--sys-shape-corner-medium-small);
+        border-bottom-right-radius: 0;
+        border-bottom-left-radius: 0;
+        background: var(--sys-color-surface5);
+        color: var(--sys-color-on-surface);
+
+        &[data-has-widgets] {
+          margin-left: 0;
+        }
+      }
     }
   }
 
   .walkthrough-inline > summary {
     display: flex;
     align-items: center;
-    padding: 0 var(--sys-size-6);
     cursor: pointer;
     background-color: transparent;
     /* The same height as a DevTools Button */
@@ -129,6 +154,8 @@ export default `/*
     justify-content: flex-start;
     gap: var(--sys-size-4);
     color: var(--sys-color-primary);
+    padding: 0 var(--sys-size-6);
+    overflow: hidden;
 
     devtools-icon {
       color: var(--sys-color-primary);
@@ -139,10 +166,18 @@ export default `/*
       background: var(--sys-color-tonal-container);
       color: var(--sys-color-on-tonal-container);
       border-radius: var(--sys-shape-corner-full);
+      margin-left: var(--sys-size-6);
 
       devtools-icon {
         color: var(--sys-color-on-tonal-container);
       }
+    }
+
+    > .walkthrough-inline-title {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      min-width: 0;
     }
   }
 
@@ -160,25 +195,18 @@ export default `/*
     background-color: transparent;
   }
 
-  .walkthrough-inline > summary > devtools-icon {
+  .walkthrough-inline > summary > devtools-icon[name='chevron-right'] {
     width: var(--sys-size-8);
     height: var(--sys-size-8);
     transition: transform 0.2s;
     margin-left: auto;
   }
 
-  .walkthrough-inline[open] > summary {
-    border-radius: var(--sys-shape-corner-medium-small);
-    border-bottom-right-radius: 0;
-    border-bottom-left-radius: 0;
-    background: var(--sys-color-surface5);
-  }
-
   .walkthrough-inline .step {
     background-color: var(--sys-color-surface5);
   }
 
-  .walkthrough-inline[open] > summary > devtools-icon {
+  .walkthrough-inline[open] > summary > devtools-icon[name='chevron-right'] {
     transform: rotate(270deg);
   }
 }

@@ -49,7 +49,7 @@ export declare const enum PanelOrDrawer {
 }
 export declare class CommandMenuProvider extends Provider {
     private commands;
-    constructor(jslogContext: string, commandsForTest?: Command[]);
+    constructor(commandsForTest?: Command[]);
     attach(): void;
     detach(): void;
     itemCount(): number;

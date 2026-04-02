@@ -9,7 +9,6 @@ import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import { AllocationDataGrid, HeapSnapshotConstructorsDataGrid, HeapSnapshotContainmentDataGrid, HeapSnapshotDiffDataGrid, HeapSnapshotRetainmentDataGrid, type HeapSnapshotSortableDataGrid } from './HeapSnapshotDataGrids.js';
 import { type HeapSnapshotGridNode } from './HeapSnapshotGridNodes.js';
-import { type HeapSnapshotProxy, HeapSnapshotWorkerProxy } from './HeapSnapshotProxy.js';
 import { HeapTimelineOverview, type IdsRangeChangedEvent, Samples } from './HeapTimelineOverview.js';
 import { type DataDisplayDelegate, ProfileHeader, ProfileType } from './ProfileHeader.js';
 import type { ProfileTypeRegistry } from './ProfileTypeRegistry.js';
@@ -63,7 +62,7 @@ export declare class HeapSnapshotView extends UI.View.SimpleView implements Data
     showObject(snapshotObjectId: string, perspectiveName: string): void;
     linkifyObject(nodeIndex: number): Promise<Element | null>;
     populate(): Promise<void>;
-    retrieveStatistics(heapSnapshotProxy: HeapSnapshotProxy): Promise<HeapSnapshotModel.HeapSnapshotModel.Statistics>;
+    retrieveStatistics(heapSnapshotProxy: HeapSnapshotModel.HeapSnapshotProxy.HeapSnapshotProxy): Promise<HeapSnapshotModel.HeapSnapshotModel.Statistics>;
     onIdsRangeChanged(event: Common.EventTarget.EventTargetEvent<IdsRangeChangedEvent>): void;
     toolbarItems(): Promise<UI.Toolbar.ToolbarItem[]>;
     willHide(): void;
@@ -231,11 +230,11 @@ export interface TrackingHeapSnapshotProfileTypeEventTypes {
 export declare class HeapProfileHeader extends ProfileHeader {
     readonly heapProfilerModelInternal: SDK.HeapProfilerModel.HeapProfilerModel | null;
     maxJSObjectId: number;
-    workerProxy: HeapSnapshotWorkerProxy | null;
+    workerProxy: HeapSnapshotModel.HeapSnapshotProxy.HeapSnapshotWorkerProxy | null;
     receiver: Common.StringOutputStream.OutputStream | null;
-    snapshotProxy: HeapSnapshotProxy | null;
-    readonly loadPromise: Promise<HeapSnapshotProxy>;
-    fulfillLoad: (value: HeapSnapshotProxy | PromiseLike<HeapSnapshotProxy>) => void;
+    snapshotProxy: HeapSnapshotModel.HeapSnapshotProxy.HeapSnapshotProxy | null;
+    readonly loadPromise: Promise<HeapSnapshotModel.HeapSnapshotProxy.HeapSnapshotProxy>;
+    fulfillLoad: (value: HeapSnapshotModel.HeapSnapshotProxy.HeapSnapshotProxy | PromiseLike<HeapSnapshotModel.HeapSnapshotProxy.HeapSnapshotProxy>) => void;
     totalNumberOfChunks: number;
     bufferedWriter: Bindings.TempFile.TempFile | null;
     onTempFileReady: (() => void) | null;
@@ -253,7 +252,7 @@ export declare class HeapProfileHeader extends ProfileHeader {
     dispose(): void;
     didCompleteSnapshotTransfer(): void;
     transferChunk(chunk: string): void;
-    snapshotReceived(snapshotProxy: HeapSnapshotProxy): void;
+    snapshotReceived(snapshotProxy: HeapSnapshotModel.HeapSnapshotProxy.HeapSnapshotProxy): void;
     notifySnapshotReceived(): void;
     canSaveToFile(): boolean;
     saveToFile(): Promise<void>;
@@ -275,7 +274,7 @@ export declare class HeapAllocationStackView extends UI.Widget.Widget {
     constructor(heapProfilerModel: SDK.HeapProfilerModel.HeapProfilerModel | null);
     onContextMenu(link: Element, event: Event): void;
     onStackViewKeydown(event: KeyboardEvent): void;
-    setAllocatedObject(snapshot: HeapSnapshotProxy, snapshotNodeIndex: number): Promise<void>;
+    setAllocatedObject(snapshot: HeapSnapshotModel.HeapSnapshotProxy.HeapSnapshotProxy, snapshotNodeIndex: number): Promise<void>;
     clear(): void;
 }
 export {};

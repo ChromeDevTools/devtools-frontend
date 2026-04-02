@@ -761,6 +761,15 @@ async function makeComputedStyleWidget(widgetData: ComputedStyleAiWidget): Promi
   }
   const styles = new ComputedStyle.ComputedStyleModel.ComputedStyle(domNodeForId, widgetData.data.computedStyles);
 
+  let filterText: RegExp|null = null;
+  try {
+    filterText = new RegExp(widgetData.data.properties.join('|'), 'i');
+  } catch {
+    // If the AI provides an invalid regex (e.g. "*"), we don't want to crash.
+    // We can just skip the widget in this case.
+    return null;
+  }
+
   // clang-format off
   const renderedWidget = html`<devtools-widget
       class="computed-styles-widget" ${widget(Elements.ComputedStyleWidget.ComputedStyleWidget, {
@@ -769,7 +778,7 @@ async function makeComputedStyleWidget(widgetData: ComputedStyleAiWidget): Promi
         // This disables showing the nested traces and detailed information in the widget.
         propertyTraces: null,
         allowUserControl: false,
-        filterText: new RegExp(widgetData.data.properties.join('|'), 'i'),
+        filterText,
         enableNarrowViewResizing: false,
       })}></devtools-widget>`;
   // clang-format on
@@ -804,12 +813,21 @@ async function makeStylePropertiesWidget(widgetData: StylePropertiesAiWidget): P
     return null;
   }
 
+  let filter: RegExp|null = null;
+  try {
+    filter = widgetData.data.selector ? new RegExp(widgetData.data.selector) : null;
+  } catch {
+    // If the AI provides an invalid regex (e.g. "*"), we don't want to crash.
+    // We can just skip the widget in this case.
+    return null;
+  }
+
   // clang-format off
   const renderedWidget = html`<devtools-widget
       class="styling-preview-widget"
       ${widget(Elements.StandaloneStylesContainer.StandaloneStylesContainer, {
       domNode: domNodeForId,
-      filter: widgetData.data.selector ? new RegExp(widgetData.data.selector) : null,
+      filter,
     })}>
   </devtools-widget>`;
   // clang-format on

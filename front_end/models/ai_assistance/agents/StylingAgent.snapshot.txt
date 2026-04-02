@@ -57,7 +57,7 @@ Content:
   "function_declarations": [
     {
       "name": "getStyles",
-      "description": "Get computed and source styles for one or multiple elements on the inspected page for multiple elements at once by uid.\n\n**CRITICAL** An element uid is a number, not a selector.\n**CRITICAL** Use selectors to refer to elements in the text output. Do not use uids.\n**CRITICAL** Always provide the explanation argument to explain what and why you query.",
+      "description": "Get computed and source styles for one or multiple elements on the inspected page for multiple elements at once by uid.\n\n**CRITICAL** An element uid is a number, not a selector.\n**CRITICAL** Use selectors to refer to elements in the text output. Do not use uids.\n**CRITICAL** Always provide the explanation argument to explain what and why you query.\n**CRITICAL** You MUST provide a specific list of CSS property names. Do not use generic values like \"all\" or \"*\".",
       "parameters": {
         "type": 6,
         "description": "",
@@ -79,7 +79,7 @@ Content:
           },
           "styleProperties": {
             "type": 5,
-            "description": "One or more CSS style property names to fetch.",
+            "description": "One or more specific CSS style property names to fetch. Generic values like \"all\" or \"*\" are not supported.",
             "nullable": false,
             "items": {
               "type": 1,

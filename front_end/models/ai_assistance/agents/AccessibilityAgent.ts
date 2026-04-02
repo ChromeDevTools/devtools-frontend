@@ -302,7 +302,8 @@ export class AccessibilityAgent extends AiAgent<LHModel.ReporterTypes.ReportJSON
       styleProperties: string[],
       explanation: string,
     }>('getStyles', {
-      description: 'Get computed styles for an element on the inspected page by its Lighthouse path.',
+      description:
+          'Get computed styles for an element on the inspected page by its Lighthouse path. **CRITICAL** You MUST provide a specific list of CSS property names. Do not use generic values like "all" or "*".',
       parameters: {
         type: Host.AidaClient.ParametersTypes.OBJECT,
         description: '',
@@ -321,7 +322,8 @@ export class AccessibilityAgent extends AiAgent<LHModel.ReporterTypes.ReportJSON
           },
           styleProperties: {
             type: Host.AidaClient.ParametersTypes.ARRAY,
-            description: 'One or more CSS style property names to fetch.',
+            description:
+                'One or more specific CSS style property names to fetch. Generic values like "all" or "*" are not supported.',
             nullable: false,
             items: {
               type: Host.AidaClient.ParametersTypes.STRING,

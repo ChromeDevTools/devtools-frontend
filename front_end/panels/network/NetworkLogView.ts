@@ -1944,7 +1944,8 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
     const requests = Logs.NetworkLog.NetworkLog.instance().requests().filter(request => this.applyFilter(request));
     return requests.filter(NetworkLogView.getHTTPRequestsFilter).filter(request => {
       return request.finished ||
-          (request.resourceType() === Common.ResourceType.resourceTypes.WebSocket && request.responseReceivedTime);
+          (request.resourceType() === Common.ResourceType.resourceTypes.WebSocket && request.responseReceivedTime) ||
+          Boolean(request.eventSourceMessages()?.length);
     });
   }
 

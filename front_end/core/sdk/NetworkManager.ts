@@ -33,6 +33,10 @@ const UIStrings = {
    */
   noContentForWebSocket: 'Content for WebSockets is currently not supported',
   /**
+   * @description Explanation why no content is shown for Server-Sent Events (SSE).
+   */
+  noContentForSSE: 'Content for Server-Sent Events (SSE) is currently not supported',
+  /**
    * @description Explanation why no content is shown for redirect response.
    */
   noContentForRedirect: 'No content available because this request was redirected',
@@ -215,6 +219,9 @@ export class NetworkManager extends SDKModel<EventTypes> {
       return {error: i18nString(UIStrings.noContentForWebSocket)};
     }
     if (!request.finished) {
+      if (Boolean(request.eventSourceMessages()?.length)) {
+        return {error: i18nString(UIStrings.noContentForSSE)};
+      }
       await request.once(NetworkRequestEvents.FINISHED_LOADING);
     }
     if (request.isRedirect()) {

@@ -137,7 +137,18 @@ export class Importer {
         async () =>
             new TextUtils.ContentData.ContentData(contentText ?? '', isBase64, mimeType ?? '', charset ?? undefined));
 
-    if (request.mimeType === Platform.MimeType.MimeType.EVENTSTREAM && contentText) {
+    const importedEventSourceMessages = entry.customAsArray('eventSourceMessages');
+
+    if (importedEventSourceMessages) {
+      for (const message of importedEventSourceMessages) {
+        if (message.time === undefined || message.eventName === undefined || message.eventId === undefined) {
+          continue;
+        }
+        // message.data may be undefined, if saved in a sanitized context
+
+        request.addEventSourceMessage(message.time, message.eventName, message.eventId, message.data);
+      }
+    } else if (request.mimeType === Platform.MimeType.MimeType.EVENTSTREAM && contentText) {
       const issueTime = entry.startedDateTime.getTime() / 1000;
       const onEvent = (eventName: string, data: string, eventId: string): void => {
         request.addEventSourceMessage(issueTime, eventName, eventId, data);

@@ -176,6 +176,26 @@ export class Entry {
       delete entry._webSocketMessages;
     }
 
+    const eventSourceMessages = harEntry.request.eventSourceMessages();
+    if (eventSourceMessages?.length) {
+      const messages = [];
+      for (const message of eventSourceMessages) {
+        const messageDTO: EventSourceMessageDTO = {
+          time: message.time,
+          eventName: message.eventName,
+          eventId: message.eventId,
+        };
+        if (!options.sanitize) {
+          // Omit the data when sanitizing, as it could contain sensitive information.
+          messageDTO.data = message.data;
+        }
+        messages.push(messageDTO);
+      }
+      entry._eventSourceMessages = messages;
+    } else {
+      delete entry._eventSourceMessages;
+    }
+
     return entry;
   }
 
@@ -490,6 +510,7 @@ export interface EntryDTO {
   _priority: Protocol.Network.ResourcePriority|null;
   _resourceType: string;
   _webSocketMessages?: Object[];
+  _eventSourceMessages?: EventSourceMessageDTO[];
   cache: Object;
   connection?: string;
   pageref?: string;
@@ -539,4 +560,11 @@ export interface LogDTO {
   creator: Creator;
   pages: Page[];
   entries: EntryDTO[];
+}
+
+export interface EventSourceMessageDTO {
+  time: number;
+  eventName: string;
+  eventId: string;
+  data?: string;
 }

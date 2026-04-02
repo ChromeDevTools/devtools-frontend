@@ -465,4 +465,117 @@ describe('HAR Importer', () => {
     ];
     assert.deepEqual(messages, expected);
   });
+
+  it('Parses multiple EventSource messages from HAR', () => {
+    const sseEntry = {
+      _initiator: {
+        type: 'script',
+        stack: {
+          callframes: [
+            {
+              functionName: 'subscribe',
+              scriptId: '412',
+              url: 'https://example.com/coworker.js',
+              lineNumber: 0,
+              columnNumber: 79005,
+            },
+          ],
+        },
+      },
+      _priority: 'High',
+      _resourceType: 'fetch',
+      cache: {},
+      connection: '443',
+      request: {
+        method: 'POST',
+        url: 'https://example.com/v1/subscribe',
+        httpVersion: 'http/2.0',
+        headers: [
+          {
+            name: 'accept',
+            value: 'text/event-stream',
+          },
+          {
+            name: 'content-type',
+            value: 'application/json',
+          },
+        ],
+        queryString: [],
+        cookies: [],
+        headersSize: -1,
+        bodySize: 242,
+      },
+      response: {
+        status: 200,
+        statusText: 'OK',
+        httpVersion: 'http/2.0',
+        headers: [
+          {
+            name: 'content-type',
+            value: 'text/event-stream; charset=utf-8',
+          },
+        ],
+        cookies: [],
+        content: {
+          size: 220,
+          mimeType: 'text/event-stream',
+        },
+        redirectURL: '',
+        headersSize: -1,
+        bodySize: -1,
+        _transferSize: 389,
+        _error: 'net::ERR_ABORTED',
+      },
+      serverIPAddress: '172.212.241.38',
+      startedDateTime: '2026-03-12T21:53:10.360Z',
+      time: 5968.845000024885,
+      timings: {
+        blocked: 167.93600008004904,
+        dns: -1,
+        ssl: -1,
+        connect: -1,
+        send: 0.23700000000000002,
+        wait: 59.53399990358949,
+        receive: 5741.138000041246,
+        _blocked_queueing: 167.72700008004904,
+      },
+      _connectionId: '3435',
+      _eventSourceMessages: [
+        {
+          time: 1773352390.598671,
+          eventName: 'session',
+          eventId: '',
+          data: '{"sid":"11111111-2222-3333-4444-555555555555","tenant":"66666666-7777-8888-9999-000000000000"}',
+        },
+        {
+          time: 1773352391.102345,
+          eventName: 'message',
+          eventId: '2',
+          data: '{"role":"assistant","content":"hello"}',
+        },
+      ],
+    };
+
+    const exampleLog = new HAR.HARFormat.HARLog({
+      version: '1.2',
+      creator: {
+        name: 'WebInspector',
+        version: '537.36',
+      },
+      pages: [],
+      entries: [sseEntry],
+    });
+
+    const parsedRequests = HAR.Importer.Importer.requestsFromHARLog(exampleLog);
+    assert.lengthOf(parsedRequests, 1);
+
+    const parsedRequest = parsedRequests[0];
+    assert.strictEqual(parsedRequest.mimeType, 'text/event-stream');
+    const messages = parsedRequest.eventSourceMessages();
+    assert.lengthOf(messages, 2);
+    assert.strictEqual(messages[0].eventName, 'session');
+    assert.strictEqual(messages[0].eventId, '');
+    assert.strictEqual(messages[1].eventName, 'message');
+    assert.strictEqual(messages[1].eventId, '2');
+  });
 });

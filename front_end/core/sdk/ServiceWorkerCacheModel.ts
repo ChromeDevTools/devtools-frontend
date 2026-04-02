@@ -265,9 +265,6 @@ export class ServiceWorkerCacheModel extends SDKModel<EventTypes> implements Pro
     }
   }
 
-  attributionReportingTriggerRegistered(_event: Protocol.Storage.AttributionReportingTriggerRegisteredEvent): void {
-  }
-
   indexedDBListUpdated(_event: Protocol.Storage.IndexedDBListUpdatedEvent): void {
   }
 
@@ -299,16 +296,6 @@ export class ServiceWorkerCacheModel extends SDKModel<EventTypes> implements Pro
 
   setThrottlerSchedulesAsSoonAsPossibleForTest(): void {
     this.#scheduleAsSoonAsPossible = true;
-  }
-
-  attributionReportingSourceRegistered(_event: Protocol.Storage.AttributionReportingSourceRegisteredEvent): void {
-  }
-
-  attributionReportingReportSent(_event: Protocol.Storage.AttributionReportingReportSentEvent): void {
-  }
-
-  attributionReportingVerboseDebugReportSent(_event: Protocol.Storage.AttributionReportingVerboseDebugReportSentEvent):
-      void {
   }
 }
 

@@ -142,9 +142,6 @@ export class StorageBucketsModel extends SDKModel<EventTypes> implements Protoco
     }
   }
 
-  attributionReportingTriggerRegistered(_event: Protocol.Storage.AttributionReportingTriggerRegisteredEvent): void {
-  }
-
   interestGroupAccessed(_event: Protocol.Storage.InterestGroupAccessedEvent): void {
   }
 
@@ -172,15 +169,6 @@ export class StorageBucketsModel extends SDKModel<EventTypes> implements Protoco
 
   sharedStorageWorkletOperationExecutionFinished(
       _event: Protocol.Storage.SharedStorageWorkletOperationExecutionFinishedEvent): void {
-  }
-
-  attributionReportingSourceRegistered(_event: Protocol.Storage.AttributionReportingSourceRegisteredEvent): void {
-  }
-  attributionReportingReportSent(_event: Protocol.Storage.AttributionReportingReportSentEvent): void {
-  }
-
-  attributionReportingVerboseDebugReportSent(_event: Protocol.Storage.AttributionReportingVerboseDebugReportSentEvent):
-      void {
   }
 }
 

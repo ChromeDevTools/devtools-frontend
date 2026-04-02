@@ -36,9 +36,6 @@ export class InterestGroupStorageModel extends SDK.SDKModel.SDKModel<EventTypes>
     this.dispatchEventToListeners(Events.INTEREST_GROUP_ACCESS, event);
   }
 
-  attributionReportingTriggerRegistered(_event: Protocol.Storage.AttributionReportingTriggerRegisteredEvent): void {
-  }
-
   indexedDBListUpdated(_event: Protocol.Storage.IndexedDBListUpdatedEvent): void {
   }
 
@@ -69,14 +66,6 @@ export class InterestGroupStorageModel extends SDK.SDKModel.SDKModel<EventTypes>
   }
 
   storageBucketDeleted(_event: Protocol.Storage.StorageBucketDeletedEvent): void {
-  }
-
-  attributionReportingSourceRegistered(_event: Protocol.Storage.AttributionReportingSourceRegisteredEvent): void {
-  }
-  attributionReportingReportSent(_event: Protocol.Storage.AttributionReportingReportSentEvent): void {
-  }
-  attributionReportingVerboseDebugReportSent(_event: Protocol.Storage.AttributionReportingVerboseDebugReportSentEvent):
-      void {
   }
 }
 

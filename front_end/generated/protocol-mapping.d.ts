@@ -810,10 +810,6 @@ export namespace ProtocolMapping {
     'Storage.sharedStorageWorkletOperationExecutionFinished': [Protocol.Storage.SharedStorageWorkletOperationExecutionFinishedEvent];
     'Storage.storageBucketCreatedOrUpdated': [Protocol.Storage.StorageBucketCreatedOrUpdatedEvent];
     'Storage.storageBucketDeleted': [Protocol.Storage.StorageBucketDeletedEvent];
-    'Storage.attributionReportingSourceRegistered': [Protocol.Storage.AttributionReportingSourceRegisteredEvent];
-    'Storage.attributionReportingTriggerRegistered': [Protocol.Storage.AttributionReportingTriggerRegisteredEvent];
-    'Storage.attributionReportingReportSent': [Protocol.Storage.AttributionReportingReportSentEvent];
-    'Storage.attributionReportingVerboseDebugReportSent': [Protocol.Storage.AttributionReportingVerboseDebugReportSentEvent];
     /**
      * Issued when attached to target because of auto-attach or `attachToTarget` command.
      */
@@ -5001,28 +4997,6 @@ export namespace ProtocolMapping {
       returnType: Protocol.Storage.RunBounceTrackingMitigationsResponse;
     };
     /**
-     * https://wicg.github.io/attribution-reporting-api/
-     */
-    'Storage.setAttributionReportingLocalTestingMode': {
-      paramsType: [Protocol.Storage.SetAttributionReportingLocalTestingModeRequest];
-      returnType: void;
-    };
-    /**
-     * Enables/disables issuing of Attribution Reporting events.
-     */
-    'Storage.setAttributionReportingTracking': {
-      paramsType: [Protocol.Storage.SetAttributionReportingTrackingRequest];
-      returnType: void;
-    };
-    /**
-     * Sends all pending Attribution Reports immediately, regardless of their
-     * scheduled report time.
-     */
-    'Storage.sendPendingAttributionReports': {
-      paramsType: [];
-      returnType: Protocol.Storage.SendPendingAttributionReportsResponse;
-    };
-    /**
      * Returns the effective Related Website Sets in use by this profile for the browser
      * session. The effective Related Website Sets will not change during a browser session.
      */
@@ -5400,6 +5374,13 @@ export namespace ProtocolMapping {
      * all currently registered tools.
      */
     'WebMCP.enable': {
+      paramsType: [];
+      returnType: void;
+    };
+    /**
+     * Disables the WebMCP domain.
+     */
+    'WebMCP.disable': {
       paramsType: [];
       returnType: void;
     };

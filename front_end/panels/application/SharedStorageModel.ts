@@ -215,9 +215,6 @@ export class SharedStorageModel extends SDK.SDKModel.SDKModel<EventTypes> implem
       _event: Protocol.Storage.SharedStorageWorkletOperationExecutionFinishedEvent): void {
   }
 
-  attributionReportingTriggerRegistered(_event: Protocol.Storage.AttributionReportingTriggerRegisteredEvent): void {
-  }
-
   indexedDBListUpdated(_event: Protocol.Storage.IndexedDBListUpdatedEvent): void {
   }
 
@@ -244,14 +241,6 @@ export class SharedStorageModel extends SDK.SDKModel.SDKModel<EventTypes> implem
   }
 
   storageBucketDeleted(_event: Protocol.Storage.StorageBucketDeletedEvent): void {
-  }
-
-  attributionReportingSourceRegistered(_event: Protocol.Storage.AttributionReportingSourceRegisteredEvent): void {
-  }
-  attributionReportingReportSent(_event: Protocol.Storage.AttributionReportingReportSentEvent): void {
-  }
-  attributionReportingVerboseDebugReportSent(_event: Protocol.Storage.AttributionReportingVerboseDebugReportSentEvent):
-      void {
   }
 }
 

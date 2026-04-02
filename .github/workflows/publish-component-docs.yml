@@ -17,7 +17,7 @@ jobs:
       - name: Add depot_tools to path
         run: echo $(realpath depot_tools) >> $GITHUB_PATH
       - name: Checkout repository
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        uses: actions/checkout@v6
         with:
           # We need to make sure that the parent directory of the checkout
           # is correctly identified as a standalone checkout (see devtools_paths.py).

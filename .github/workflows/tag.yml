@@ -13,13 +13,13 @@ jobs:
   tag-commits:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - name: Get devtools version
         id: devtools_version
         shell: bash
         run: ./scripts/devtools_version.sh
       - name: Create tag
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         # This can fail if the tag exists but this is expected.
         continue-on-error: true
         env:

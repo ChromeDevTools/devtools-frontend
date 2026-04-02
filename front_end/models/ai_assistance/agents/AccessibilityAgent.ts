@@ -240,7 +240,7 @@ export class AccessibilityAgent extends AiAgent<LHModel.ReporterTypes.ReportJSON
       },
       displayInfoFromArgs: params => {
         return {
-          title: i18n.i18n.lockedString('Running accessibility audits…'),
+          title: i18n.i18n.lockedString('Running accessibility audits'),
           thought: params.explanation,
           action: 'runAccessibilityAudits()'
         };
@@ -282,7 +282,7 @@ export class AccessibilityAgent extends AiAgent<LHModel.ReporterTypes.ReportJSON
       },
       displayInfoFromArgs: params => {
         return {
-          title: i18n.i18n.lockedString(`Getting Lighthouse audits for ${params.categoryId}…`),
+          title: i18n.i18n.lockedString(`Getting Lighthouse audits for ${params.categoryId}`),
           action: `getLighthouseAudits('${params.categoryId}')`
         };
       },

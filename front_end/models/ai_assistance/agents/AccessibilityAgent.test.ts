@@ -86,7 +86,7 @@ describeWithMockConnection('AccessibilityAgent', () => {
     const responses = await Array.fromAsync(agent.run('test', {selected: context}));
     const titleResponse = responses.find(response => response.type === AiAssistance.AiAgent.ResponseType.TITLE);
     assert.exists(titleResponse);
-    assert.strictEqual(titleResponse.title, 'Getting Lighthouse audits for accessibility…');
+    assert.strictEqual(titleResponse.title, 'Getting Lighthouse audits for accessibility');
   });
 
   it('can call the getStyles method', async () => {
@@ -143,7 +143,7 @@ describeWithMockConnection('AccessibilityAgent', () => {
     const responses = await Array.fromAsync(agent.run('test', {selected: context}));
     const titleResponse = responses.find(response => response.type === AiAssistance.AiAgent.ResponseType.TITLE);
     assert.exists(titleResponse);
-    assert.strictEqual(titleResponse.title, 'Running accessibility audits…');
+    assert.strictEqual(titleResponse.title, 'Running accessibility audits');
     assert.isTrue(lighthouseRecording.calledOnceWith({
       mode: 'snapshot',
       categoryIds: ['accessibility'],

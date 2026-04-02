@@ -522,7 +522,7 @@ code
       const expectedOutput = JSON.stringify({summary: expectedRequestsOutput});
       const titleResponse = responses.find(response => response.type === AiAgent.ResponseType.TITLE);
       assert.exists(titleResponse);
-      assert.strictEqual(titleResponse.title, 'Investigating network activity…');
+      assert.strictEqual(titleResponse.title, 'Investigating network activity');
 
       assert.deepEqual(action, {
         type: 'action' as AiAgent.ActionResponse['type'],
@@ -555,7 +555,7 @@ code
       const responses = await Array.fromAsync(agent.run('test', {selected: context}));
       const titleResponse = responses.find(response => response.type === AiAgent.ResponseType.TITLE);
       assert.exists(titleResponse);
-      assert.strictEqual(titleResponse.title, 'Investigating main thread activity…');
+      assert.strictEqual(titleResponse.title, 'Investigating main thread activity');
 
       const action = responses.find(response => response.type === AiAgent.ResponseType.ACTION);
       assert.exists(action);

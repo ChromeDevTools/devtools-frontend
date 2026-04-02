@@ -6,6 +6,6 @@ import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 
 describeWithEnvironment('HeapSnapshotModel', () => {
   it('module can be imported', async () => {
-    await import('./heap_snapshot_model.js');
+    await import('./heap_snapshot.js');
   });
 });

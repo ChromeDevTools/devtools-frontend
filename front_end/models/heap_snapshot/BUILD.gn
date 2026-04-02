@@ -7,7 +7,7 @@ import("../../../scripts/build/ninja/devtools_module.gni")
 import("../../../scripts/build/typescript/typescript.gni")
 import("../visibility.gni")
 
-devtools_module("heap_snapshot_model") {
+devtools_module("heap_snapshot") {
   sources = [
     "ChildrenProvider.ts",
     "HeapSnapshotModel.ts",
@@ -22,9 +22,9 @@ devtools_module("heap_snapshot_model") {
 }
 
 devtools_entrypoint("bundle") {
-  entrypoint = "heap_snapshot_model.ts"
+  entrypoint = "heap_snapshot.ts"
 
-  deps = [ ":heap_snapshot_model" ]
+  deps = [ ":heap_snapshot" ]
 
   visibility = [
     ":*",
@@ -38,7 +38,7 @@ devtools_entrypoint("bundle") {
 ts_library("unittests") {
   testonly = true
 
-  sources = [ "heap_snapshot_model.test.ts" ]
+  sources = [ "heap_snapshot.test.ts" ]
 
   deps = [
     ":bundle",

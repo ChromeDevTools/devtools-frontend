@@ -54,7 +54,7 @@ devtools_ui_module("profiler") {
     "../../generated:protocol",
     "../../models/bindings:bundle",
     "../../models/cpu_profile:bundle",
-    "../../models/heap_snapshot_model:bundle",
+    "../../models/heap_snapshot:bundle",
     "../../models/network_time_calculator:bundle",
     "../../models/workspace:bundle",
     "../../panels/elements:bundle",

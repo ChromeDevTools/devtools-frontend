@@ -139,7 +139,7 @@ group("unittests") {
     "models/extensions:unittests",
     "models/geometry:unittests",
     "models/har:unittests",
-    "models/heap_snapshot_model:unittests",
+    "models/heap_snapshot:unittests",
     "models/issues_manager:unittests",
     "models/javascript_metadata:unittests",
     "models/live-metrics:unittests",

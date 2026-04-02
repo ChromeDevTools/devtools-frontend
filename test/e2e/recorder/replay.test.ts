@@ -9,6 +9,7 @@ import type {AssertedEventType, StepType} from '../../../front_end/panels/record
 import {expectError} from '../../conductor/events.js';
 import {
   clickSelectButtonItem,
+  deleteCurrentRecording,
   onReplayFinished,
   replayShortcut,
   setupRecorderWithScript,
@@ -46,6 +47,7 @@ describe('Recorder', function() {
           inspectedPage.page.url(),
           `${inspectedPage.getResourcesPath()}/recorder/recorder2.html`,
       );
+      await deleteCurrentRecording(devToolsPage);
     });
 
     it('should be able to replay click steps', async ({inspectedPage, devToolsPage}) => {
@@ -79,6 +81,7 @@ describe('Recorder', function() {
           inspectedPage.page.url(),
           `${inspectedPage.getResourcesPath()}/recorder/recorder2.html`,
       );
+      await deleteCurrentRecording(devToolsPage);
     });
 
     it('should be able to replay click steps on checkboxes', async ({inspectedPage, devToolsPage}) => {
@@ -103,6 +106,7 @@ describe('Recorder', function() {
           inspectedPage,
       );
       assert.isTrue(await inspectedPage.evaluate(() => document.querySelector('input')?.checked));
+      await deleteCurrentRecording(devToolsPage);
     });
 
     it('should not be able to navigate to chrome URLs', async ({devToolsPage, inspectedPage}) => {
@@ -121,6 +125,7 @@ describe('Recorder', function() {
           devToolsPage,
           inspectedPage,
       );
+      await deleteCurrentRecording(devToolsPage);
     });
 
     it('should be able to replay keyboard events', async ({inspectedPage, devToolsPage}) => {
@@ -151,6 +156,7 @@ describe('Recorder', function() {
           e => (e as HTMLElement).innerText.trim(),
       );
       assert.strictEqual(value, ['one:1', 'two:2'].join('\n'));
+      await deleteCurrentRecording(devToolsPage);
     });
 
     it('should be able to replay events on select', async ({inspectedPage, devToolsPage}) => {
@@ -180,6 +186,7 @@ describe('Recorder', function() {
           e => (e as HTMLSelectElement).value,
       );
       assert.strictEqual(value, 'O2');
+      await deleteCurrentRecording(devToolsPage);
     });
 
     it('should be able to replay events on non text inputs', async ({inspectedPage, devToolsPage}) => {
@@ -209,6 +216,7 @@ describe('Recorder', function() {
           e => (e as HTMLSelectElement).value,
       );
       assert.strictEqual(value, '#333333');
+      await deleteCurrentRecording(devToolsPage);
     });
 
     it('should be able to replay events with text selectors', async ({inspectedPage, devToolsPage}) => {
@@ -238,6 +246,7 @@ describe('Recorder', function() {
           frame => frame.url() === `${inspectedPage.getResourcesPath()}/recorder/iframe2.html`,
       );
       assert.isOk(frame, 'Frame that the target page navigated to is not found');
+      await deleteCurrentRecording(devToolsPage);
     });
 
     it('should be able to replay events with xpath selectors', async ({inspectedPage, devToolsPage}) => {
@@ -267,6 +276,7 @@ describe('Recorder', function() {
           frame => frame.url() === `${inspectedPage.getResourcesPath()}/recorder/iframe2.html`,
       );
       assert.isOk(frame, 'Frame that the target page navigated to is not found');
+      await deleteCurrentRecording(devToolsPage);
     });
 
     it('should be able to override the value in text inputs that have a value already',
@@ -297,8 +307,8 @@ describe('Recorder', function() {
              e => (e as HTMLSelectElement).value,
          );
          assert.strictEqual(value, 'cba');
+         await deleteCurrentRecording(devToolsPage);
        });
-
     it('should be able to override the value in text inputs that are partially prefilled',
        async ({inspectedPage, devToolsPage}) => {
          await setupRecorderWithScriptAndReplay(
@@ -327,8 +337,8 @@ describe('Recorder', function() {
              e => (e as HTMLSelectElement).value,
          );
          assert.strictEqual(value, 'abcdef');
+         await deleteCurrentRecording(devToolsPage);
        });
-
     it('should be able to replay viewport change', async ({inspectedPage, devToolsPage}) => {
       await setupRecorderWithScriptAndReplay(
           {
@@ -357,6 +367,7 @@ describe('Recorder', function() {
           devToolsPage,
           inspectedPage,
       );
+      await deleteCurrentRecording(devToolsPage);
     });
 
     it('should be able to replay scroll events', async ({inspectedPage, devToolsPage}) => {
@@ -402,6 +413,7 @@ describe('Recorder', function() {
           await inspectedPage.evaluate(() => document.querySelector('#overflow')?.scrollLeft),
           0,
       );
+      await deleteCurrentRecording(devToolsPage);
     });
 
     it('should be able to scroll into view when needed', async ({inspectedPage, devToolsPage}) => {
@@ -430,6 +442,7 @@ describe('Recorder', function() {
           await inspectedPage.evaluate(() => document.querySelector('button')?.innerText),
           'clicked',
       );
+      await deleteCurrentRecording(devToolsPage);
     });
 
     it('should be able to replay ARIA selectors on inputs', async ({inspectedPage, devToolsPage}) => {
@@ -468,6 +481,7 @@ describe('Recorder', function() {
           await inspectedPage.evaluate(() => document.activeElement?.id),
           'name',
       );
+      await deleteCurrentRecording(devToolsPage);
     });
 
     it('should be able to waitForElement', async ({inspectedPage, devToolsPage}) => {
@@ -506,6 +520,7 @@ describe('Recorder', function() {
           await inspectedPage.evaluate(() => document.querySelectorAll('custom-element').length),
           2,
       );
+      await deleteCurrentRecording(devToolsPage);
     });
 
     it('should be able to waitForExpression', async ({inspectedPage, devToolsPage}) => {
@@ -541,6 +556,7 @@ describe('Recorder', function() {
               ),
           2,
       );
+      await deleteCurrentRecording(devToolsPage);
     });
 
     it('should show PerformancePanel if the MeasurePerformance SelectMenu is clicked for replay',
@@ -567,6 +583,7 @@ describe('Recorder', function() {
              `${inspectedPage.getResourcesPath()}/recorder/recorder2.html`,
          );
          await devToolsPage.waitFor('[aria-label="Performance panel"]');
+         await deleteCurrentRecording(devToolsPage);
        });
 
     it('should be able to replay actions with popups', async ({inspectedPage, devToolsPage, browser}) => {
@@ -637,6 +654,7 @@ describe('Recorder', function() {
 
       browser.browser.off('targetcreated', targetCreatedHandler);
       browser.browser.off('targetdestroyed', targetDestroyedHandler);
+      await deleteCurrentRecording(devToolsPage);
     });
 
     it('should record interactions with OOPIFs', async ({inspectedPage, devToolsPage}) => {
@@ -679,6 +697,7 @@ describe('Recorder', function() {
           frame => frame.url() === `${inspectedPage.getOopifResourcesPath()}/recorder/iframe2.html`,
       );
       assert.isOk(frame, 'Frame that the target page navigated to is not found');
+      await deleteCurrentRecording(devToolsPage);
     });
 
     it('should replay when clicked on slow replay', async ({inspectedPage, devToolsPage}) => {
@@ -717,6 +736,7 @@ describe('Recorder', function() {
           inspectedPage.page.url(),
           `${inspectedPage.getResourcesPath()}/recorder/recorder2.html`,
       );
+      await deleteCurrentRecording(devToolsPage);
     });
   });
 
@@ -743,6 +763,7 @@ describe('Recorder', function() {
         inspectedPage.page.url(),
         `${inspectedPage.getResourcesPath()}/recorder/recorder2.html`,
     );
+    await deleteCurrentRecording(devToolsPage);
   });
 
   it('should be able to navigate to a prerendered page', async ({inspectedPage, devToolsPage}) => {
@@ -777,5 +798,6 @@ describe('Recorder', function() {
     });
 
     assert.isTrue(isPrerendered);
+    await deleteCurrentRecording(devToolsPage);
   });
 });

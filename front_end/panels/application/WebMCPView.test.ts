@@ -186,6 +186,7 @@ describeWithEnvironment('WebMCPView (View)', () => {
     assert.isFalse(listElements[0].classList.contains('selected'));
     assert.isTrue(listElements[1].classList.contains('selected'));
   });
+
   it('renders a selected tool call details in a TabbedPane', async () => {
     updateHostConfig({devToolsWebMCPSupport: {enabled: true}});
     const sdkTarget = createTarget();
@@ -564,5 +565,73 @@ describeWithEnvironment('ToolDetailsWidget', () => {
     await widget.updateComplete;
 
     await assertScreenshot('application/webmcp_tool_details_frame.png');
+  });
+});
+
+describeWithEnvironment('PayloadWidget (View)', () => {
+  const {PAYLOAD_DEFAULT_VIEW} = Application.WebMCPView;
+
+  it('renders parsed JSON input', async () => {
+    const target = document.createElement('div');
+    target.style.width = '600px';
+    target.style.height = '400px';
+    renderElementIntoDOM(target, {includeCommonStyles: true});
+
+    PAYLOAD_DEFAULT_VIEW(
+        {
+          valueObject: {key1: 'value1', key2: ['a', 'b']},
+        },
+        {}, target);
+
+    await assertScreenshot('application/webmcp_payload_parsed.png');
+  });
+
+  it('renders unparsable input as raw source', async () => {
+    const target = document.createElement('div');
+    target.style.width = '600px';
+    target.style.height = '400px';
+    renderElementIntoDOM(target, {includeCommonStyles: true});
+
+    PAYLOAD_DEFAULT_VIEW(
+        {
+          valueString: 'invalid json input',
+        },
+        {}, target);
+
+    await assertScreenshot('application/webmcp_payload_unparsable.png');
+  });
+});
+
+describeWithEnvironment('PayloadWidget', () => {
+  const {PayloadWidget} = Application.WebMCPView;
+  async function createWidget() {
+    const view = createViewFunctionStub(PayloadWidget);
+    const widget = new PayloadWidget(undefined, view);
+    widget.markAsRoot();
+    renderElementIntoDOM(widget);
+    await view.nextInput;
+    return {view, widget};
+  }
+
+  it('renders nothing if no call is assigned', async () => {
+    const {view} = await createWidget();
+    assert.isUndefined(view.input.valueObject);
+    assert.isUndefined(view.input.valueString);
+  });
+
+  it('passes valid JSON input to view', async () => {
+    const {view, widget} = await createWidget();
+    widget.valueObject = {key: 'value'};
+
+    const nextInput = await view.nextInput;
+    assert.deepEqual(nextInput.valueObject as {key: string}, {key: 'value'});
+  });
+
+  it('passes string input to view', async () => {
+    const {view, widget} = await createWidget();
+    widget.valueString = 'invalid json';
+
+    const nextInput = await view.nextInput;
+    assert.strictEqual(nextInput.valueString, 'invalid json');
   });
 });

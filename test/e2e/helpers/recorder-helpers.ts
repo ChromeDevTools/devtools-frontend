@@ -326,10 +326,6 @@ export async function replayShortcut(
   await devToolsPage.pressKey('Enter', {control: true});
 }
 
-export async function deleteCurrentRecording(devToolsPage: DevToolsPage) {
-  await devToolsPage.click('aria/Delete recording');
-}
-
 export async function toggleCodeView(
     devToolsPage: DevToolsPage,
 ) {

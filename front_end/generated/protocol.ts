@@ -14452,7 +14452,6 @@ export namespace Page {
     EncryptedMedia = 'encrypted-media',
     ExecutionWhileOutOfViewport = 'execution-while-out-of-viewport',
     ExecutionWhileNotRendered = 'execution-while-not-rendered',
-    FencedUnpartitionedStorageRead = 'fenced-unpartitioned-storage-read',
     FocusWithoutUserActivation = 'focus-without-user-activation',
     Fullscreen = 'fullscreen',
     Frobulate = 'frobulate',
@@ -18568,25 +18567,6 @@ export namespace Storage {
 
   export interface GetRelatedWebsiteSetsResponse extends ProtocolResponseWithError {
     sets: RelatedWebsiteSet[];
-  }
-
-  export interface GetAffectedUrlsForThirdPartyCookieMetadataRequest {
-    /**
-     * The URL of the page currently being visited.
-     */
-    firstPartyUrl: string;
-    /**
-     * The list of embedded resource URLs from the page.
-     */
-    thirdPartyUrls: string[];
-  }
-
-  export interface GetAffectedUrlsForThirdPartyCookieMetadataResponse extends ProtocolResponseWithError {
-    /**
-     * Array of matching URLs. If there is a primary pattern match for the first-
-     * party URL, only the first-party URL is returned in the array.
-     */
-    matchedUrls: string[];
   }
 
   export interface SetProtectedAudienceKAnonymityRequest {

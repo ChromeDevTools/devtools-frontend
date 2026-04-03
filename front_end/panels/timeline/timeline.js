@@ -376,10 +376,9 @@ __export(CompatibilityTracksAppender_exports, {
   TrackNames: () => TrackNames,
   entryIsVisibleInTimeline: () => entryIsVisibleInTimeline
 });
-import * as Common17 from "./../../core/common/common.js";
+import * as Common18 from "./../../core/common/common.js";
 import * as Host3 from "./../../core/host/host.js";
 import * as Platform16 from "./../../core/platform/platform.js";
-import * as Root7 from "./../../core/root/root.js";
 import * as Trace36 from "./../../models/trace/trace.js";
 import * as SourceMapsResolver7 from "./../../models/trace_source_maps_resolver/trace_source_maps_resolver.js";
 import * as ThemeSupport27 from "./../../ui/legacy/theme_support/theme_support.js";
@@ -968,7 +967,6 @@ __export(ThreadAppender_exports, {
 import * as Common3 from "./../../core/common/common.js";
 import * as i18n15 from "./../../core/i18n/i18n.js";
 import * as Platform4 from "./../../core/platform/platform.js";
-import * as Root from "./../../core/root/root.js";
 import * as SDK from "./../../core/sdk/sdk.js";
 import * as Bindings from "./../../models/bindings/bindings.js";
 import * as Trace10 from "./../../models/trace/trace.js";
@@ -1748,7 +1746,7 @@ var ThreadAppender = class {
   #headerAppended = false;
   threadType = "MAIN_THREAD";
   isOnMainFrame;
-  #showAllEventsEnabled = Root.Runtime.experiments.isEnabled(Root.ExperimentNames.ExperimentName.TIMELINE_SHOW_ALL_EVENTS);
+  #showAllEventsEnabled = Common3.Settings.Settings.instance().moduleSetting("timeline-show-all-events").get();
   #url = "";
   #headerNestingLevel = null;
   constructor(compatibilityBuilder, parsedTrace, processId, threadId, threadName, type, entries, tree) {
@@ -2117,9 +2115,9 @@ __export(TimelineFlameChartDataProvider_exports, {
   InstantEventVisibleDurationMs: () => InstantEventVisibleDurationMs,
   TimelineFlameChartDataProvider: () => TimelineFlameChartDataProvider
 });
-import * as Common16 from "./../../core/common/common.js";
+import * as Common17 from "./../../core/common/common.js";
 import * as i18n54 from "./../../core/i18n/i18n.js";
-import * as Root6 from "./../../core/root/root.js";
+import * as Root5 from "./../../core/root/root.js";
 import * as AIAssistance2 from "./../../models/ai_assistance/ai_assistance.js";
 import * as Trace34 from "./../../models/trace/trace.js";
 import * as SourceMapsResolver5 from "./../../models/trace_source_maps_resolver/trace_source_maps_resolver.js";
@@ -2281,7 +2279,7 @@ __export(TimelineFlameChartView_exports, {
   TimelineFlameChartView: () => TimelineFlameChartView,
   groupForLevel: () => groupForLevel
 });
-import * as Common15 from "./../../core/common/common.js";
+import * as Common16 from "./../../core/common/common.js";
 import * as i18n52 from "./../../core/i18n/i18n.js";
 import * as Platform15 from "./../../core/platform/platform.js";
 import * as SDK14 from "./../../core/sdk/sdk.js";
@@ -2845,7 +2843,7 @@ __export(TimelineDetailsView_exports, {
   Tab: () => Tab,
   TimelineDetailsPane: () => TimelineDetailsPane
 });
-import * as Common14 from "./../../core/common/common.js";
+import * as Common15 from "./../../core/common/common.js";
 import * as i18n47 from "./../../core/i18n/i18n.js";
 import * as Platform13 from "./../../core/platform/platform.js";
 import * as SDK12 from "./../../core/sdk/sdk.js";
@@ -2864,7 +2862,7 @@ __export(EventsTimelineTreeView_exports, {
   EventsTimelineTreeView: () => EventsTimelineTreeView,
   Filters: () => Filters
 });
-import * as Common12 from "./../../core/common/common.js";
+import * as Common13 from "./../../core/common/common.js";
 import * as i18n41 from "./../../core/i18n/i18n.js";
 import * as Trace26 from "./../../models/trace/trace.js";
 import * as DataGrid3 from "./../../ui/legacy/components/data_grid/data_grid.js";
@@ -2894,10 +2892,10 @@ __export(TimelineUIUtils_exports, {
   timeStampForEventAdjustedForClosestNavigationIfPossible: () => timeStampForEventAdjustedForClosestNavigationIfPossible
 });
 import "./../../ui/kit/kit.js";
-import * as Common10 from "./../../core/common/common.js";
+import * as Common11 from "./../../core/common/common.js";
 import * as i18n37 from "./../../core/i18n/i18n.js";
 import * as Platform11 from "./../../core/platform/platform.js";
-import * as Root5 from "./../../core/root/root.js";
+import * as Root4 from "./../../core/root/root.js";
 import * as SDK8 from "./../../core/sdk/sdk.js";
 import * as Bindings2 from "./../../models/bindings/bindings.js";
 import * as TextUtils3 from "./../../models/text_utils/text_utils.js";
@@ -3033,7 +3031,7 @@ var imagePreview_css_default = `/*
 
 .image-preview-container img {
   margin: 6px 0;
-  max-width: 100px;
+  width: auto;
   max-height: 100px;
   background-image: var(--image-file-checker);
   user-select: text;
@@ -3122,11 +3120,11 @@ __export(TimelinePanel_exports, {
   rowHeight: () => rowHeight
 });
 import "./../../ui/legacy/legacy.js";
-import * as Common9 from "./../../core/common/common.js";
+import * as Common10 from "./../../core/common/common.js";
 import * as Host2 from "./../../core/host/host.js";
 import * as i18n35 from "./../../core/i18n/i18n.js";
 import * as Platform10 from "./../../core/platform/platform.js";
-import * as Root4 from "./../../core/root/root.js";
+import * as Root3 from "./../../core/root/root.js";
 import * as SDK7 from "./../../core/sdk/sdk.js";
 import * as AiAssistanceModel from "./../../models/ai_assistance/ai_assistance.js";
 import * as Badges from "./../../models/badges/badges.js";
@@ -3654,8 +3652,9 @@ var TimelineController_exports = {};
 __export(TimelineController_exports, {
   TimelineController: () => TimelineController
 });
+import * as Common6 from "./../../core/common/common.js";
 import * as i18n23 from "./../../core/i18n/i18n.js";
-import * as Root2 from "./../../core/root/root.js";
+import * as Root from "./../../core/root/root.js";
 import * as SDK5 from "./../../core/sdk/sdk.js";
 import * as CrUXManager from "./../../models/crux-manager/crux-manager.js";
 import * as LiveMetrics from "./../../models/live-metrics/live-metrics.js";
@@ -3879,7 +3878,7 @@ var TimelineController = class {
       await this.#navigateToAboutBlank();
     }
     const categoriesArray = [
-      Root2.Runtime.experiments.isEnabled(Root2.ExperimentNames.ExperimentName.TIMELINE_SHOW_ALL_EVENTS) ? "*" : "-*",
+      Common6.Settings.Settings.instance().moduleSetting("timeline-show-all-events").get() ? "*" : "-*",
       Trace14.Types.Events.Categories.Console,
       Trace14.Types.Events.Categories.Loading,
       Trace14.Types.Events.Categories.UserTiming,
@@ -3903,7 +3902,7 @@ var TimelineController = class {
     if (options.enableJSSampling) {
       categoriesArray.push(disabledByDefault("v8.cpu_profiler"));
     }
-    if (Root2.Runtime.experiments.isEnabled(Root2.ExperimentNames.ExperimentName.TIMELINE_INVALIDATION_TRACKING)) {
+    if (Root.Runtime.experiments.isEnabled(Root.ExperimentNames.ExperimentName.TIMELINE_INVALIDATION_TRACKING)) {
       categoriesArray.push(disabledByDefault("devtools.timeline.invalidationTracking"));
     }
     if (options.capturePictures) {
@@ -4065,7 +4064,7 @@ __export(TimelineHistoryManager_exports, {
   maxRecordings: () => maxRecordings,
   previewWidth: () => previewWidth
 });
-import * as Common6 from "./../../core/common/common.js";
+import * as Common7 from "./../../core/common/common.js";
 import * as i18n27 from "./../../core/i18n/i18n.js";
 import * as Platform7 from "./../../core/platform/platform.js";
 import * as Trace16 from "./../../models/trace/trace.js";
@@ -4955,7 +4954,7 @@ var TimelineHistoryManager = class _TimelineHistoryManager {
     return data.title;
   }
   #buildAndStorePreviewData(parsedTraceIndex, parsedTrace, filmStrip) {
-    const parsedURL = Common6.ParsedURL.ParsedURL.fromString(parsedTrace.data.Meta.mainFrameURL);
+    const parsedURL = Common7.ParsedURL.ParsedURL.fromString(parsedTrace.data.Meta.mainFrameURL);
     const domain = parsedURL ? parsedURL.host : "";
     const sequenceNumber = this.nextNumberByDomain.get(domain) || 1;
     const titleWithSequenceNumber = i18nString14(UIStrings14.sD, { PH1: domain, PH2: sequenceNumber });
@@ -5209,7 +5208,7 @@ var TimelineLoader_exports = {};
 __export(TimelineLoader_exports, {
   TimelineLoader: () => TimelineLoader
 });
-import * as Common7 from "./../../core/common/common.js";
+import * as Common8 from "./../../core/common/common.js";
 import * as Host from "./../../core/host/host.js";
 import * as i18n29 from "./../../core/i18n/i18n.js";
 import * as SDK6 from "./../../core/sdk/sdk.js";
@@ -5286,9 +5285,9 @@ var TimelineLoader = class _TimelineLoader {
   }
   static async loadFromURL(url, client) {
     const loader = new _TimelineLoader(client);
-    const stream = new Common7.StringOutputStream.StringOutputStream();
+    const stream = new Common8.StringOutputStream.StringOutputStream();
     client.loadingStarted();
-    const allowRemoteFilePaths = Common7.Settings.Settings.instance().moduleSetting("network.enable-remote-file-loading").get();
+    const allowRemoteFilePaths = Common8.Settings.Settings.instance().moduleSetting("network.enable-remote-file-loading").get();
     Host.ResourceLoader.loadAsStream(url, null, stream, finishedCallback, allowRemoteFilePaths);
     async function finishedCallback(success, _headers, errorDescription) {
       if (!success) {
@@ -5359,7 +5358,7 @@ var TimelineLoader = class _TimelineLoader {
   }
   reportErrorAndCancelLoading(message) {
     if (message) {
-      Common7.Console.Console.instance().error(message);
+      Common8.Console.Console.instance().error(message);
     }
     void this.cancel();
   }
@@ -5394,7 +5393,7 @@ var TimelineMiniMap_exports = {};
 __export(TimelineMiniMap_exports, {
   TimelineMiniMap: () => TimelineMiniMap
 });
-import * as Common8 from "./../../core/common/common.js";
+import * as Common9 from "./../../core/common/common.js";
 import * as Trace18 from "./../../models/trace/trace.js";
 import * as TraceBounds7 from "./../../services/trace_bounds/trace_bounds.js";
 import * as PerfUI11 from "./../../ui/legacy/components/perf_ui/perf_ui.js";
@@ -5513,7 +5512,7 @@ var timelineMiniMap_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./timelineMiniMap.css")} */`;
 
 // gen/front_end/panels/timeline/TimelineMiniMap.js
-var TimelineMiniMap = class extends Common8.ObjectWrapper.eventMixin(UI6.Widget.VBox) {
+var TimelineMiniMap = class extends Common9.ObjectWrapper.eventMixin(UI6.Widget.VBox) {
   #overviewComponent = new PerfUI11.TimelineOverviewPane.TimelineOverviewPane("timeline");
   #controls = [];
   breadcrumbs = null;
@@ -6240,7 +6239,7 @@ __export(UIDevtoolsUtils_exports, {
   UIDevtoolsUtils: () => UIDevtoolsUtils
 });
 import * as i18n33 from "./../../core/i18n/i18n.js";
-import * as Root3 from "./../../core/root/root.js";
+import * as Root2 from "./../../core/root/root.js";
 import * as Trace20 from "./../../models/trace/trace.js";
 var UIStrings17 = {
   /**
@@ -6310,7 +6309,7 @@ var eventStylesMap = null;
 var categories = null;
 var UIDevtoolsUtils = class _UIDevtoolsUtils {
   static isUiDevTools() {
-    return Root3.Runtime.Runtime.queryParam("uiDevTools") === "true";
+    return Root2.Runtime.Runtime.queryParam("uiDevTools") === "true";
   }
   static categorizeEvents() {
     if (eventStylesMap) {
@@ -6618,7 +6617,7 @@ var UIStrings18 = {
 var str_18 = i18n35.i18n.registerUIStrings("panels/timeline/TimelinePanel.ts", UIStrings18);
 var i18nString18 = i18n35.i18n.getLocalizedString.bind(void 0, str_18);
 var timelinePanelInstance;
-var TimelinePanel = class _TimelinePanel extends Common9.ObjectWrapper.eventMixin(UI8.Panel.Panel) {
+var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMixin(UI8.Panel.Panel) {
   dropTarget;
   recordingOptionUIControls;
   state;
@@ -6639,7 +6638,7 @@ var TimelinePanel = class _TimelinePanel extends Common9.ObjectWrapper.eventMixi
   #viewMode = { mode: "LANDING_PAGE" };
   #dimThirdPartiesSetting = null;
   #thirdPartyCheckbox = null;
-  #isNode = Root4.Runtime.Runtime.isNode();
+  #isNode = Root3.Runtime.Runtime.isNode();
   #onAnnotationModifiedEventBound = this.#onAnnotationModifiedEvent.bind(this);
   /**
    * We get given any filters for a new trace when it is recorded/imported.
@@ -6704,7 +6703,7 @@ var TimelinePanel = class _TimelinePanel extends Common9.ObjectWrapper.eventMixi
    * very first time the performance panel is open after the shortcuts dialog ships, we can
    * automatically pop it open to aid discovery.
    */
-  #userHadShortcutsDialogOpenedOnce = Common9.Settings.Settings.instance().createSetting("timeline.user-had-shortcuts-dialog-opened-once", false);
+  #userHadShortcutsDialogOpenedOnce = Common10.Settings.Settings.instance().createSetting("timeline.user-had-shortcuts-dialog-opened-once", false);
   /**
    * Rather than auto-pop the sidebar every time the user records a trace,
    * which could get annoying, we instead persist the state of the sidebar
@@ -6753,31 +6752,31 @@ var TimelinePanel = class _TimelinePanel extends Common9.ObjectWrapper.eventMixi
     this.recordReloadAction = UI8.ActionRegistry.ActionRegistry.instance().getAction("timeline.record-reload");
     this.#historyManager = new TimelineHistoryManager(this.#minimapComponent, this.#isNode);
     this.traceLoadStart = null;
-    this.disableCaptureJSProfileSetting = Common9.Settings.Settings.instance().createSetting(
+    this.disableCaptureJSProfileSetting = Common10.Settings.Settings.instance().createSetting(
       "timeline-disable-js-sampling",
       false,
       "Session"
       /* Common.Settings.SettingStorageType.SESSION */
     );
     this.disableCaptureJSProfileSetting.setTitle(i18nString18(UIStrings18.disableJavascriptSamples));
-    this.captureLayersAndPicturesSetting = Common9.Settings.Settings.instance().createSetting(
+    this.captureLayersAndPicturesSetting = Common10.Settings.Settings.instance().createSetting(
       "timeline-capture-layers-and-pictures",
       false,
       "Session"
       /* Common.Settings.SettingStorageType.SESSION */
     );
     this.captureLayersAndPicturesSetting.setTitle(i18nString18(UIStrings18.enableAdvancedPaint));
-    this.captureSelectorStatsSetting = Common9.Settings.Settings.instance().createSetting(
+    this.captureSelectorStatsSetting = Common10.Settings.Settings.instance().createSetting(
       "timeline-capture-selector-stats",
       false,
       "Session"
       /* Common.Settings.SettingStorageType.SESSION */
     );
     this.captureSelectorStatsSetting.setTitle(i18nString18(UIStrings18.enableSelectorStats));
-    this.showScreenshotsSetting = Common9.Settings.Settings.instance().createSetting("timeline-show-screenshots", !this.#isNode);
+    this.showScreenshotsSetting = Common10.Settings.Settings.instance().createSetting("timeline-show-screenshots", !this.#isNode);
     this.showScreenshotsSetting.setTitle(i18nString18(UIStrings18.screenshots));
     this.showScreenshotsSetting.addChangeListener(this.updateMiniMap, this);
-    this.showMemorySetting = Common9.Settings.Settings.instance().createSetting(
+    this.showMemorySetting = Common10.Settings.Settings.instance().createSetting(
       "timeline-show-memory",
       false,
       "Session"
@@ -6785,7 +6784,7 @@ var TimelinePanel = class _TimelinePanel extends Common9.ObjectWrapper.eventMixi
     );
     this.showMemorySetting.setTitle(i18nString18(UIStrings18.memory));
     this.showMemorySetting.addChangeListener(this.onMemoryModeChanged, this);
-    this.#dimThirdPartiesSetting = Common9.Settings.Settings.instance().createSetting(
+    this.#dimThirdPartiesSetting = Common10.Settings.Settings.instance().createSetting(
       "timeline-dim-third-parties",
       false,
       "Session"
@@ -6981,8 +6980,8 @@ var TimelinePanel = class _TimelinePanel extends Common9.ObjectWrapper.eventMixi
   }
   #instantiateNewModel() {
     const config = Trace22.Types.Configuration.defaults();
-    config.showAllEvents = Root4.Runtime.experiments.isEnabled(Root4.ExperimentNames.ExperimentName.TIMELINE_SHOW_ALL_EVENTS);
-    config.debugMode = Root4.Runtime.experiments.isEnabled(Root4.ExperimentNames.ExperimentName.TIMELINE_DEBUG_MODE);
+    config.showAllEvents = Common10.Settings.Settings.instance().moduleSetting("timeline-show-all-events").get();
+    config.debugMode = Root3.Runtime.experiments.isEnabled(Root3.ExperimentNames.ExperimentName.TIMELINE_DEBUG_MODE);
     const traceEngineModel = Trace22.TraceModel.Model.createWithAllHandlers(config);
     traceEngineModel.addEventListener(Trace22.TraceModel.ModelUpdateEvent.eventName, (e) => {
       const updateEvent = e;
@@ -6999,7 +6998,7 @@ var TimelinePanel = class _TimelinePanel extends Common9.ObjectWrapper.eventMixi
     return this.#traceEngineModel;
   }
   static extensionDataVisibilitySetting() {
-    return Common9.Settings.Settings.instance().createSetting("timeline-show-extension-data", true);
+    return Common10.Settings.Settings.instance().createSetting("timeline-show-extension-data", true);
   }
   searchableView() {
     return this.#searchableView;
@@ -7216,7 +7215,7 @@ var TimelinePanel = class _TimelinePanel extends Common9.ObjectWrapper.eventMixi
    * NOT available.
    */
   canRecord() {
-    return !Root4.Runtime.Runtime.isTraceApp();
+    return !Root3.Runtime.Runtime.isTraceApp();
   }
   populateToolbar() {
     const canRecord = this.canRecord();
@@ -7284,7 +7283,7 @@ var TimelinePanel = class _TimelinePanel extends Common9.ObjectWrapper.eventMixi
     }
   }
   #setupNavigationSetting() {
-    const currentNavSetting = Common9.Settings.moduleSetting("flamechart-selected-navigation").get();
+    const currentNavSetting = Common10.Settings.moduleSetting("flamechart-selected-navigation").get();
     const hideTheDialogForTests = localStorage.getItem("hide-shortcuts-dialog-for-test");
     const userHadShortcutsDialogOpenedOnce = this.#userHadShortcutsDialogOpenedOnce.get();
     this.#shortcutsDialog.prependElement(this.#navigationRadioButtons);
@@ -7305,14 +7304,14 @@ var TimelinePanel = class _TimelinePanel extends Common9.ObjectWrapper.eventMixi
         /* isNavClassic */
         false
       ) };
-      Common9.Settings.moduleSetting("flamechart-selected-navigation").set("modern");
+      Common10.Settings.moduleSetting("flamechart-selected-navigation").set("modern");
     });
     this.#classicNavRadioButton.radio.addEventListener("change", () => {
       this.#shortcutsDialog.data = { shortcuts: this.#getShortcutsInfo(
         /* isNavClassic */
         true
       ) };
-      Common9.Settings.moduleSetting("flamechart-selected-navigation").set("classic");
+      Common10.Settings.moduleSetting("flamechart-selected-navigation").set("classic");
     });
     this.#navigationRadioButtons.appendChild(this.#modernNavRadioButton.label);
     this.#navigationRadioButtons.appendChild(this.#classicNavRadioButton.label);
@@ -7320,7 +7319,7 @@ var TimelinePanel = class _TimelinePanel extends Common9.ObjectWrapper.eventMixi
     return this.#navigationRadioButtons;
   }
   #updateNavigationSettingSelection() {
-    const currentNavSetting = Common9.Settings.moduleSetting("flamechart-selected-navigation").get();
+    const currentNavSetting = Common10.Settings.moduleSetting("flamechart-selected-navigation").get();
     if (currentNavSetting === "classic") {
       this.#classicNavRadioButton.radio.checked = true;
       Host2.userMetrics.navigationSettingAtFirstTimelineLoad(
@@ -7404,7 +7403,7 @@ var TimelinePanel = class _TimelinePanel extends Common9.ObjectWrapper.eventMixi
     ];
   }
   createSettingsPane() {
-    this.showSettingsPaneSetting = Common9.Settings.Settings.instance().createSetting("timeline-show-settings-toolbar", false);
+    this.showSettingsPaneSetting = Common10.Settings.Settings.instance().createSetting("timeline-show-settings-toolbar", false);
     this.showSettingsPaneButton = new UI8.Toolbar.ToolbarSettingToggle(this.showSettingsPaneSetting, "gear", i18nString18(UIStrings18.captureSettings), "gear-filled", "timeline-settings-toggle");
     SDK7.NetworkManager.MultitargetNetworkManager.instance().addEventListener("ConditionsChanged", this.updateShowSettingsToolbarButton, this);
     SDK7.CPUThrottlingManager.CPUThrottlingManager.instance().addEventListener("RateChanged", this.updateShowSettingsToolbarButton, this);
@@ -7568,10 +7567,10 @@ var TimelinePanel = class _TimelinePanel extends Common9.ObjectWrapper.eventMixi
       this.statusDialog.updateProgressBar(i18nString18(UIStrings18.compressingTraceForDownload), 0);
       fileName = `${fileName}.gz`;
       const inputSize = blob.size;
-      const monitoredStream = Common9.Gzip.createMonitoredStream(blob.stream(), (bytesRead) => {
+      const monitoredStream = Common10.Gzip.createMonitoredStream(blob.stream(), (bytesRead) => {
         this.statusDialog?.updateProgressBar(i18nString18(UIStrings18.compressingTraceForDownload), bytesRead / inputSize * 100);
       });
-      const gzStream = Common9.Gzip.compressStream(monitoredStream);
+      const gzStream = Common10.Gzip.compressStream(monitoredStream);
       blob = await new Response(gzStream, {
         headers: { "Content-Type": "application/gzip" }
       }).blob();
@@ -7581,7 +7580,7 @@ var TimelinePanel = class _TimelinePanel extends Common9.ObjectWrapper.eventMixi
     try {
       this.statusDialog.updateStatus(i18nString18(UIStrings18.encodingTraceForDownload));
       this.statusDialog.updateProgressBar(i18nString18(UIStrings18.encodingTraceForDownload), 100);
-      bytesAsB64 = await Common9.Base64.encode(blob);
+      bytesAsB64 = await Common10.Base64.encode(blob);
       blob = new Blob();
     } catch (err) {
       if (err instanceof Error && err.message.startsWith("failed to convert to base64")) {
@@ -7709,7 +7708,7 @@ var TimelinePanel = class _TimelinePanel extends Common9.ObjectWrapper.eventMixi
     if (this.state !== "Idle") {
       return;
     }
-    const content = await Common9.Gzip.fileToString(file);
+    const content = await Common10.Gzip.fileToString(file);
     if (content.includes("enhancedTraceVersion")) {
       this.#launchRehydratedSession(content);
     } else {
@@ -8084,7 +8083,7 @@ var TimelinePanel = class _TimelinePanel extends Common9.ObjectWrapper.eventMixi
     return this.#viewMode.mode === "VIEWING_TRACE";
   }
   #applyActiveFilters(traceIsGeneric, exclusiveFilter = null) {
-    if (traceIsGeneric || Root4.Runtime.experiments.isEnabled(Root4.ExperimentNames.ExperimentName.TIMELINE_SHOW_ALL_EVENTS)) {
+    if (traceIsGeneric || Common10.Settings.Settings.instance().moduleSetting("timeline-show-all-events").get()) {
       return;
     }
     const newActiveFilters = exclusiveFilter ? [exclusiveFilter] : [
@@ -8190,7 +8189,7 @@ var TimelinePanel = class _TimelinePanel extends Common9.ObjectWrapper.eventMixi
     }
     if (this.#traceEngineModel.size() === 1) {
       this.#setupNavigationSetting();
-      if (Common9.Settings.moduleSetting("flamechart-selected-navigation").get() === "classic") {
+      if (Common10.Settings.moduleSetting("flamechart-selected-navigation").get() === "classic") {
         Host2.userMetrics.navigationSettingAtFirstTimelineLoad(
           0
           /* Host.UserMetrics.TimelineNavigationSetting.CLASSIC_AT_SESSION_FIRST_TRACE */
@@ -8245,7 +8244,7 @@ var TimelinePanel = class _TimelinePanel extends Common9.ObjectWrapper.eventMixi
    */
   #showSidebarIfRequired() {
     const disabledByLocalStorage = window.localStorage.getItem("disable-auto-show-rpp-sidebar-for-test") === "true";
-    if (Root4.Runtime.Runtime.queryParam("disable-auto-performance-sidebar-reveal") !== null || disabledByLocalStorage) {
+    if (Root3.Runtime.Runtime.queryParam("disable-auto-performance-sidebar-reveal") !== null || disabledByLocalStorage) {
       return;
     }
     const needToRestore = this.#restoreSidebarVisibilityOnTraceLoad;
@@ -8781,7 +8780,7 @@ var TimelinePanel = class _TimelinePanel extends Common9.ObjectWrapper.eventMixi
     Host2.userMetrics.actionTaken(Host2.UserMetrics.Action.PerfPanelTraceImported);
     if (item.kind === "string") {
       const url = dataTransfer.getData("text/uri-list");
-      if (new Common9.ParsedURL.ParsedURL(url).isValid) {
+      if (new Common10.ParsedURL.ParsedURL(url).isValid) {
         void this.loadFromURL(url);
       }
     } else if (item.kind === "file") {
@@ -9354,7 +9353,7 @@ var TimelineUIUtils = class _TimelineUIUtils {
   static debugModeEnabled = void 0;
   static getGetDebugModeEnabled() {
     if (_TimelineUIUtils.debugModeEnabled === void 0) {
-      _TimelineUIUtils.debugModeEnabled = Root5.Runtime.experiments.isEnabled(Root5.ExperimentNames.ExperimentName.TIMELINE_DEBUG_MODE);
+      _TimelineUIUtils.debugModeEnabled = Root4.Runtime.experiments.isEnabled(Root4.ExperimentNames.ExperimentName.TIMELINE_DEBUG_MODE);
     }
     return _TimelineUIUtils.debugModeEnabled;
   }
@@ -9641,11 +9640,11 @@ var TimelineUIUtils = class _TimelineUIUtils {
     }
   }
   static maybeCreateLinkElement(url) {
-    const parsedURL = new Common10.ParsedURL.ParsedURL(url);
+    const parsedURL = new Common11.ParsedURL.ParsedURL(url);
     if (!parsedURL.scheme) {
       return null;
     }
-    const splitResult = Common10.ParsedURL.ParsedURL.splitLineAndColumn(url);
+    const splitResult = Common11.ParsedURL.ParsedURL.splitLineAndColumn(url);
     if (!splitResult) {
       return null;
     }
@@ -9772,7 +9771,7 @@ var TimelineUIUtils = class _TimelineUIUtils {
       const userDetail = structuredClone(event.userDetail);
       if (userDetail && Object.keys(userDetail).length) {
         const hasExclusiveLink = typeof userDetail === "object" && typeof userDetail.url === "string" && typeof userDetail.description === "string";
-        if (hasExclusiveLink && Boolean(Root5.Runtime.hostConfig.devToolsDeepLinksViaExtensibilityApi?.enabled)) {
+        if (hasExclusiveLink && Boolean(Root4.Runtime.hostConfig.devToolsDeepLinksViaExtensibilityApi?.enabled)) {
           const linkElement = this.maybeCreateLinkElement(String(userDetail.url));
           if (linkElement) {
             contentHelper.appendElementRow(String(userDetail.description), linkElement);
@@ -9945,7 +9944,7 @@ var TimelineUIUtils = class _TimelineUIUtils {
       }
       case "UpdateLayoutTree": {
         contentHelper.appendTextRow(i18nString19(UIStrings19.elementsAffected), unsafeEventArgs["elementCount"]);
-        const selectorStatsSetting = Common10.Settings.Settings.instance().createSetting("timeline-capture-selector-stats", false);
+        const selectorStatsSetting = Common11.Settings.Settings.instance().createSetting("timeline-capture-selector-stats", false);
         if (!selectorStatsSetting.get()) {
           const note = document.createElement("span");
           note.textContent = i18nString19(UIStrings19.sSelectorStatsInfo, { PH1: selectorStatsSetting.title() });
@@ -10159,7 +10158,7 @@ var TimelineUIUtils = class _TimelineUIUtils {
     if (Trace23.Types.Events.isUserTiming(event) || Trace23.Types.Extensions.isSyntheticExtensionEntry(event) || Trace23.Types.Events.isProfileCall(event) || initiator || initiatorFor || hasStackTrace || parsedTrace?.data.Invalidations.invalidationsForEvent.get(event)) {
       await _TimelineUIUtils.generateCauses(event, contentHelper, parsedTrace);
     }
-    if (Root5.Runtime.experiments.isEnabled(Root5.ExperimentNames.ExperimentName.TIMELINE_DEBUG_MODE)) {
+    if (Root4.Runtime.experiments.isEnabled(Root4.ExperimentNames.ExperimentName.TIMELINE_DEBUG_MODE)) {
       _TimelineUIUtils.renderEventJson(event, contentHelper);
     }
     const stats = {};
@@ -10182,7 +10181,7 @@ var TimelineUIUtils = class _TimelineUIUtils {
     contentHelper.appendElementRow("", highlightContainer);
   }
   static renderObjectJson(obj) {
-    const indentLength = Common10.Settings.Settings.instance().moduleSetting("text-editor-indent").get().length;
+    const indentLength = Common11.Settings.Settings.instance().moduleSetting("text-editor-indent").get().length;
     const eventStr = JSON.stringify(obj, null, indentLength).slice(0, 1e4).replace(/{\n  /, "{ ");
     const highlightContainer = document.createElement("div");
     const shadowRoot = UI9.UIUtils.createShadowRootWithCoreStyles(highlightContainer, { cssFile: codeHighlighter_css_default });
@@ -10605,7 +10604,7 @@ var TimelineUIUtils = class _TimelineUIUtils {
   }
   static colorForId(id) {
     if (!colorGenerator) {
-      colorGenerator = new Common10.Color.Generator({
+      colorGenerator = new Common11.Color.Generator({
         min: 30,
         max: 330
       }, {
@@ -10619,7 +10618,7 @@ var TimelineUIUtils = class _TimelineUIUtils {
   }
   static displayNameForFrame(frame, trimAt = 80) {
     const url = frame.url;
-    return Common10.ParsedURL.schemeIs(url, "about:") ? `"${Platform11.StringUtilities.trimMiddle(frame.name, trimAt)}"` : frame.url.slice(0, trimAt);
+    return Common11.ParsedURL.schemeIs(url, "about:") ? `"${Platform11.StringUtilities.trimMiddle(frame.name, trimAt)}"` : frame.url.slice(0, trimAt);
   }
   static getOriginWithEntity(entityMapper, parsedTrace, event) {
     const resolvedURL = SourceMapsResolver3.SourceMapsResolver.resolvedURLForEntry(parsedTrace, event);
@@ -10876,7 +10875,7 @@ __export(TimelineTreeView_exports, {
   TreeGridNode: () => TreeGridNode
 });
 import "./../../ui/legacy/legacy.js";
-import * as Common11 from "./../../core/common/common.js";
+import * as Common12 from "./../../core/common/common.js";
 import * as i18n39 from "./../../core/i18n/i18n.js";
 import * as Platform12 from "./../../core/platform/platform.js";
 import * as Trace25 from "./../../models/trace/trace.js";
@@ -11197,7 +11196,7 @@ var UIStrings20 = {
 };
 var str_20 = i18n39.i18n.registerUIStrings("panels/timeline/TimelineTreeView.ts", UIStrings20);
 var i18nString20 = i18n39.i18n.getLocalizedString.bind(void 0, str_20);
-var TimelineTreeView = class extends Common11.ObjectWrapper.eventMixin(UI10.Widget.VBox) {
+var TimelineTreeView = class extends Common12.ObjectWrapper.eventMixin(UI10.Widget.VBox) {
   /** This is sorted by ts. */
   #selectedEvents;
   searchResults;
@@ -11229,6 +11228,7 @@ var TimelineTreeView = class extends Common11.ObjectWrapper.eventMixin(UI10.Widg
   // suitable for AI assistance widgets. It removes sidebars and toolbars.
   #compactMode = false;
   #maxLinkLength = void 0;
+  #maxRows = void 0;
   /**
    * Determines if the first child in the data grid will be selected
    * by default when refreshTree() gets called.
@@ -11293,6 +11293,16 @@ var TimelineTreeView = class extends Common11.ObjectWrapper.eventMixin(UI10.Widg
   set maxLinkLength(maxLinkLength) {
     this.#maxLinkLength = maxLinkLength;
   }
+  get maxRows() {
+    return this.#maxRows;
+  }
+  set maxRows(maxRows) {
+    if (this.#maxRows === maxRows) {
+      return;
+    }
+    this.#maxRows = maxRows;
+    this.refreshTree();
+  }
   #applyCompactMode() {
     if (this.#compactMode && this.dataGrid) {
       this.splitWidget?.detach();
@@ -11335,7 +11345,7 @@ var TimelineTreeView = class extends Common11.ObjectWrapper.eventMixin(UI10.Widg
       "RunTask"
     ]);
     this.textFilterInternal = new TimelineRegExp();
-    this.currentThreadSetting = Common11.Settings.Settings.instance().createSetting("timeline-tree-current-thread", 0);
+    this.currentThreadSetting = Common12.Settings.Settings.instance().createSetting("timeline-tree-current-thread", 0);
     this.currentThreadSetting.addChangeListener(() => this.refreshTree());
     const columns = [];
     this.populateColumns(columns);
@@ -11484,12 +11494,25 @@ var TimelineTreeView = class extends Common11.ObjectWrapper.eventMixin(UI10.Widg
       maxSelfTime = Math.max(maxSelfTime, child.selfTime);
       maxTotalTime = Math.max(maxTotalTime, child.totalTime);
     }
+    const gridNodes = [];
     for (const child of children.values()) {
       const gridNode = new TreeGridNode(child, totalUsedTime, maxSelfTime, maxTotalTime, this);
       for (const e of child.events) {
         this.eventToTreeNode.set(e, child);
       }
-      this.dataGrid.insertChild(gridNode);
+      gridNodes.push(gridNode);
+    }
+    const columnId = this.dataGrid.sortColumnId() || "self";
+    const sortFunction = this.getSortingFunction(columnId);
+    if (sortFunction) {
+      gridNodes.sort((a, b) => {
+        const res = sortFunction(a, b);
+        return this.dataGrid.isSortOrderAscending() ? res : -res;
+      });
+    }
+    const countToInsert = this.#maxRows !== void 0 ? Math.min(this.#maxRows, gridNodes.length) : gridNodes.length;
+    for (let i = 0; i < countToInsert; i++) {
+      this.dataGrid.insertChild(gridNodes[i]);
     }
     this.sortingChanged();
     this.updateDetailsForSelection();
@@ -11914,7 +11937,7 @@ var AggregatedTimelineTreeView = class _AggregatedTimelineTreeView extends Timel
   stackView;
   constructor(element) {
     super(element);
-    this.groupBySetting = Common11.Settings.Settings.instance().createSetting("timeline-tree-group-by", _AggregatedTimelineTreeView.GroupBy.None);
+    this.groupBySetting = Common12.Settings.Settings.instance().createSetting("timeline-tree-group-by", _AggregatedTimelineTreeView.GroupBy.None);
     this.groupBySetting.addChangeListener(() => this.refreshTree());
     this.init();
     this.stackView = new TimelineStackView(this);
@@ -12079,7 +12102,7 @@ var AggregatedTimelineTreeView = class _AggregatedTimelineTreeView extends Timel
           return "";
         }
         const firstDomain = entity.domains[0];
-        const parsedURL2 = Common11.ParsedURL.ParsedURL.fromString(firstDomain);
+        const parsedURL2 = Common12.ParsedURL.ParsedURL.fromString(firstDomain);
         if (parsedURL2?.scheme === "chrome-extension") {
           return `${parsedURL2.scheme}://${parsedURL2.host}`;
         }
@@ -12093,7 +12116,7 @@ var AggregatedTimelineTreeView = class _AggregatedTimelineTreeView extends Timel
     if (_AggregatedTimelineTreeView.isV8NativeURL(url)) {
       return _AggregatedTimelineTreeView.v8NativePrefix;
     }
-    const parsedURL = Common11.ParsedURL.ParsedURL.fromString(url);
+    const parsedURL = Common12.ParsedURL.ParsedURL.fromString(url);
     if (!parsedURL) {
       return "";
     }
@@ -12197,7 +12220,7 @@ var BottomUpTimelineTreeView = class extends AggregatedTimelineTreeView {
     });
   }
 };
-var TimelineStackView = class extends Common11.ObjectWrapper.eventMixin(UI10.Widget.VBox) {
+var TimelineStackView = class extends Common12.ObjectWrapper.eventMixin(UI10.Widget.VBox) {
   treeView;
   dataGrid;
   constructor(treeView) {
@@ -12353,7 +12376,7 @@ var EventsTimelineTreeView = class extends TimelineTreeView {
     this.delegate.highlightEvent(node?.event ?? null);
   }
 };
-var Filters = class _Filters extends Common12.ObjectWrapper.ObjectWrapper {
+var Filters = class _Filters extends Common13.ObjectWrapper.ObjectWrapper {
   categoryFilter;
   durationFilter;
   #filters;
@@ -12501,7 +12524,6 @@ var thirdPartyTreeView_css_default = `/*
     max-width: min(100%, 550px);
     min-width: 350px; /* Lower than this, there's not enough room for the entity name */
     padding: 0 0 0 var(--sys-size-6);
-    border-left: var(--sys-size-1) solid var(--sys-color-divider);
   }
 
   .has-max-rows {
@@ -12742,7 +12764,11 @@ var ThirdPartyTreeViewWidget = class extends TimelineTreeView {
     const entity = mapper.entityForEvent(node.event);
     return Boolean(entity) && entity?.category === "Chrome Extension";
   }
+  get maxRows() {
+    return super.maxRows;
+  }
   set maxRows(maxRows) {
+    super.maxRows = maxRows;
     this.element.style.setProperty("--max-rows", String(maxRows));
     this.element.classList.toggle("has-max-rows", Boolean(maxRows));
   }
@@ -12995,7 +13021,7 @@ var timelinePaintProfiler_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./timelinePaintProfiler.css")} */`;
 
 // gen/front_end/panels/timeline/TracingLayerTree.js
-import * as Common13 from "./../../core/common/common.js";
+import * as Common14 from "./../../core/common/common.js";
 import * as SDK9 from "./../../core/sdk/sdk.js";
 var TracingLayerTree = class extends SDK9.LayerTreeBase.LayerTreeBase {
   tileById = /* @__PURE__ */ new Map();
@@ -13044,12 +13070,12 @@ var TracingLayerTree = class extends SDK9.LayerTreeBase.LayerTreeBase {
   pictureForRasterTile(tileId) {
     const tile = this.tileById.get("cc::Tile/" + tileId);
     if (!tile) {
-      Common13.Console.Console.instance().error(`Tile ${tileId} is missing`);
+      Common14.Console.Console.instance().error(`Tile ${tileId} is missing`);
       return Promise.resolve(null);
     }
     const layer = this.layerById(tile.layer_id);
     if (!layer) {
-      Common13.Console.Console.instance().error(`Layer ${tile.layer_id} for tile ${tileId} is not found`);
+      Common14.Console.Console.instance().error(`Layer ${tile.layer_id} for tile ${tileId} is not found`);
       return Promise.resolve(null);
     }
     return layer.pictureForRect(tile.content_rect);
@@ -14065,7 +14091,7 @@ var UIStrings24 = {
 var str_24 = i18n47.i18n.registerUIStrings("panels/timeline/TimelineDetailsView.ts", UIStrings24);
 var i18nString24 = i18n47.i18n.getLocalizedString.bind(void 0, str_24);
 var { widget } = UI15.Widget;
-var TimelineDetailsPane = class extends Common14.ObjectWrapper.eventMixin(UI15.Widget.VBox) {
+var TimelineDetailsPane = class extends Common15.ObjectWrapper.eventMixin(UI15.Widget.VBox) {
   detailsLinkifier;
   tabbedPane;
   defaultDetailsWidget;
@@ -14444,7 +14470,7 @@ var TimelineDetailsPane = class extends Common14.ObjectWrapper.eventMixin(UI15.W
       selection: this.selection ?? null
     };
     void this.updateSummaryPane();
-    const isSelectorStatsEnabled = Common14.Settings.Settings.instance().createSetting("timeline-capture-selector-stats", false).get();
+    const isSelectorStatsEnabled = Common15.Settings.Settings.instance().createSetting("timeline-capture-selector-stats", false).get();
     if (this.#selectedEvents && isSelectorStatsEnabled) {
       const eventsInRange = Trace30.Helpers.Trace.findRecalcStyleEvents(this.#selectedEvents, Trace30.Helpers.Timing.milliToMicro(startTime), Trace30.Helpers.Timing.milliToMicro(endTime));
       if (eventsInRange.length > 0) {
@@ -15555,7 +15581,7 @@ var SORT_ORDER_PAGE_LOAD_MARKERS = {
   ]: 6
 };
 var TIMESTAMP_THRESHOLD_MS = Trace33.Types.Timing.Micro(10);
-var TimelineFlameChartView = class extends Common15.ObjectWrapper.eventMixin(UI17.Widget.VBox) {
+var TimelineFlameChartView = class extends Common16.ObjectWrapper.eventMixin(UI17.Widget.VBox) {
   delegate;
   /**
    * Tracks the indexes of matched entries when the user searches the panel.
@@ -15661,8 +15687,8 @@ var TimelineFlameChartView = class extends Common15.ObjectWrapper.eventMixin(UI1
     this.#tooltipElement.classList.add("timeline-entry-tooltip-element");
     flameChartsContainer.element.appendChild(this.#tooltipElement);
     this.networkSplitWidget.sidebarElement().style.zIndex = "120";
-    this.#mainPersistedGroupConfigSetting = Common15.Settings.Settings.instance().createSetting("timeline-persisted-main-flamechart-track-config", null);
-    this.#networkPersistedGroupConfigSetting = Common15.Settings.Settings.instance().createSetting("timeline-persisted-network-flamechart-track-config", null);
+    this.#mainPersistedGroupConfigSetting = Common16.Settings.Settings.instance().createSetting("timeline-persisted-main-flamechart-track-config", null);
+    this.#networkPersistedGroupConfigSetting = Common16.Settings.Settings.instance().createSetting("timeline-persisted-network-flamechart-track-config", null);
     this.mainDataProvider = new TimelineFlameChartDataProvider();
     this.mainDataProvider.setPersistedGroupConfigSetting(this.#mainPersistedGroupConfigSetting);
     this.mainDataProvider.addEventListener("DataChanged", () => this.mainFlameChart.scheduleUpdate());
@@ -15831,7 +15857,7 @@ var TimelineFlameChartView = class extends Common15.ObjectWrapper.eventMixin(UI1
     this.element.addEventListener("pointerdown", this.#pointerDownHandler.bind(this));
     this.#boundRefreshAfterIgnoreList = this.#refreshAfterIgnoreList.bind(this);
     this.#selectedEvents = null;
-    this.groupBySetting = Common15.Settings.Settings.instance().createSetting("timeline-tree-group-by", AggregatedTimelineTreeView.GroupBy.None);
+    this.groupBySetting = Common16.Settings.Settings.instance().createSetting("timeline-tree-group-by", AggregatedTimelineTreeView.GroupBy.None);
     this.groupBySetting.addChangeListener(this.refreshMainFlameChart, this);
     this.refreshMainFlameChart();
     TraceBounds15.TraceBounds.onChange(this.#onTraceBoundsChangeBound);
@@ -15844,7 +15870,7 @@ var TimelineFlameChartView = class extends Common15.ObjectWrapper.eventMixin(UI1
     if (!this.#parsedTrace) {
       return;
     }
-    const dim = Common15.Settings.Settings.instance().createSetting("timeline-dim-third-parties", false).get();
+    const dim = Common16.Settings.Settings.instance().createSetting("timeline-dim-third-parties", false).get();
     const thirdPartyEvents = this.#entityMapper?.thirdPartyEvents() ?? [];
     if (dim && thirdPartyEvents.length) {
       this.#updateFlameChartDimmerWithEvents(this.#thirdPartyCheckboxDimmer, thirdPartyEvents);
@@ -16326,7 +16352,7 @@ var TimelineFlameChartView = class extends Common15.ObjectWrapper.eventMixin(UI1
     this.mainFlameChart.setWindowTimes(visibleWindow.min, visibleWindow.max, shouldAnimate);
     this.networkDataProvider.setWindowTimes(visibleWindow.min, visibleWindow.max);
     this.networkFlameChart.setWindowTimes(visibleWindow.min, visibleWindow.max, shouldAnimate);
-    const debouncedUpdate = Common15.Debouncer.debounce(() => {
+    const debouncedUpdate = Common16.Debouncer.debounce(() => {
       this.updateSearchResults(false, false);
     }, 100);
     debouncedUpdate();
@@ -16409,7 +16435,7 @@ var TimelineFlameChartView = class extends Common15.ObjectWrapper.eventMixin(UI1
       return;
     }
     this.#selectedGroupName = null;
-    Common15.EventTarget.removeEventListeners(this.eventListeners);
+    Common16.EventTarget.removeEventListeners(this.eventListeners);
     this.#selectedEvents = null;
     this.#entityMapper = new Trace33.EntityMapper.EntityMapper(this.#parsedTrace);
     this.mainDataProvider.setModel(this.#parsedTrace, this.#entityMapper);
@@ -17065,7 +17091,7 @@ var UIStrings27 = {
 };
 var str_27 = i18n54.i18n.registerUIStrings("panels/timeline/TimelineFlameChartDataProvider.ts", UIStrings27);
 var i18nString27 = i18n54.i18n.getLocalizedString.bind(void 0, str_27);
-var TimelineFlameChartDataProvider = class extends Common16.ObjectWrapper.ObjectWrapper {
+var TimelineFlameChartDataProvider = class extends Common17.ObjectWrapper.ObjectWrapper {
   droppedFramePattern;
   partialFramePattern;
   #timelineData = null;
@@ -17125,11 +17151,11 @@ var TimelineFlameChartDataProvider = class extends Common16.ObjectWrapper.Object
       "DataChanged"
       /* Events.DATA_CHANGED */
     ));
-    Common16.Settings.Settings.instance().moduleSetting("skip-stack-frames-pattern").addChangeListener(this.#onIgnoreListChanged.bind(this));
-    Common16.Settings.Settings.instance().moduleSetting("skip-content-scripts").addChangeListener(this.#onIgnoreListChanged.bind(this));
-    Common16.Settings.Settings.instance().moduleSetting("automatically-ignore-list-known-third-party-scripts").addChangeListener(this.#onIgnoreListChanged.bind(this));
-    Common16.Settings.Settings.instance().moduleSetting("enable-ignore-listing").addChangeListener(this.#onIgnoreListChanged.bind(this));
-    Common16.Settings.Settings.instance().moduleSetting("skip-anonymous-scripts").addChangeListener(this.#onIgnoreListChanged.bind(this));
+    Common17.Settings.Settings.instance().moduleSetting("skip-stack-frames-pattern").addChangeListener(this.#onIgnoreListChanged.bind(this));
+    Common17.Settings.Settings.instance().moduleSetting("skip-content-scripts").addChangeListener(this.#onIgnoreListChanged.bind(this));
+    Common17.Settings.Settings.instance().moduleSetting("automatically-ignore-list-known-third-party-scripts").addChangeListener(this.#onIgnoreListChanged.bind(this));
+    Common17.Settings.Settings.instance().moduleSetting("enable-ignore-listing").addChangeListener(this.#onIgnoreListChanged.bind(this));
+    Common17.Settings.Settings.instance().moduleSetting("skip-anonymous-scripts").addChangeListener(this.#onIgnoreListChanged.bind(this));
   }
   handleTrackConfigurationChange(groups, indexesInVisualOrder) {
     if (!this.#persistedGroupConfigSetting) {
@@ -17613,7 +17639,7 @@ var TimelineFlameChartDataProvider = class extends Common16.ObjectWrapper.Object
       return;
     }
     this.framesGroupStyle.collapsible = hasScreenshots ? 0 : 1;
-    const expanded = Root6.Runtime.Runtime.queryParam("flamechart-force-expand") === "frames";
+    const expanded = Root5.Runtime.Runtime.queryParam("flamechart-force-expand") === "frames";
     this.appendHeader(i18nString27(UIStrings27.frames), this.framesGroupStyle, false, expanded);
     this.entryTypeByLevel[this.currentLevel] = "Frame";
     for (const frame of this.parsedTrace.data.Frames.frames) {
@@ -18402,7 +18428,7 @@ var CompatibilityTracksAppender = class {
     this.#parsedTrace = parsedTrace;
     this.#entityMapper = entityMapper;
     this.#entryData = entryData;
-    this.#colorGenerator = new Common17.Color.Generator(
+    this.#colorGenerator = new Common18.Color.Generator(
       /* hueSpace= */
       { min: 30, max: 55 },
       /* satSpace= */
@@ -18483,7 +18509,7 @@ var CompatibilityTracksAppender = class {
       }
     };
     const threads = Trace36.Handlers.Threads.threadsInTrace(this.#parsedTrace.data);
-    const showAllEvents = Root7.Runtime.experiments.isEnabled(Root7.ExperimentNames.ExperimentName.TIMELINE_SHOW_ALL_EVENTS);
+    const showAllEvents = Common18.Settings.Settings.instance().moduleSetting("timeline-show-all-events").get();
     for (const { pid, tid, name, type, entries, tree } of threads) {
       if (this.#parsedTrace.data.Meta.traceIsGeneric) {
         this.#threadAppenders.push(new ThreadAppender(this, this.#parsedTrace, pid, tid, name, "OTHER", entries, tree));

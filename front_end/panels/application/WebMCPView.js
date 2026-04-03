@@ -13,6 +13,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as WebMCP from '../../models/web_mcp/web_mcp.js';
 import * as Adorners from '../../ui/components/adorners/adorners.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
+import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import { Directives, html, nothing, render, } from '../../ui/lit/lit.js';
@@ -242,6 +243,20 @@ function getIconGroupsFromStats(toolStats) {
     }
     return groups;
 }
+export function parsePayload(payload) {
+    if (payload === undefined) {
+        return { valueObject: undefined, valueString: undefined };
+    }
+    if (typeof payload === 'string') {
+        try {
+            return { valueObject: JSON.parse(payload), valueString: undefined };
+        }
+        catch {
+            return { valueObject: undefined, valueString: payload };
+        }
+    }
+    return { valueObject: payload, valueString: undefined };
+}
 export const DEFAULT_VIEW = (input, output, target) => {
     const tools = input.tools;
     const stats = calculateToolStats(input.toolCalls);
@@ -333,11 +348,11 @@ export const DEFAULT_VIEW = (input, output, target) => {
                           <span>${statusString(call)}</span>
                         </div>
                       </td>
-                          ${!input.selectedCall ? html `
-                      <td>${call.input}</td>
-                          <td>${call.result?.output ? JSON.stringify(call.result.output)
+                      ${!input.selectedCall ? html `
+                        <td>${call.input}</td>
+                        <td>${call.result?.output ? JSON.stringify(call.result.output)
         : call.result?.errorText ?? ''}</td>
-                          ` : nothing}
+                        ` : nothing}
                     </tr>
                   `)}
                   </table>`}>
@@ -357,6 +372,16 @@ export const DEFAULT_VIEW = (input, output, target) => {
                   id="details"
                   title=${i18nString(UIStrings.toolDetails)}
                   ${widget(ToolDetailsWidget, { tool: input.selectedCall?.tool })}>
+                </devtools-widget>
+                <devtools-widget
+                  id="inputs"
+                  title=${i18nString(UIStrings.input)}
+                  ${widget(PayloadWidget, parsePayload(input.selectedCall?.input))}>
+                </devtools-widget>
+                <devtools-widget
+                  id="outputs"
+                  title=${i18nString(UIStrings.output)}
+                  ${widget(PayloadWidget, parsePayload(input.selectedCall?.result?.output))}>
                 </devtools-widget>
               </devtools-tabbed-pane>
             </div>
@@ -548,6 +573,75 @@ export class WebMCPView extends UI.Widget.VBox {
             filterButtons: this.#filterButtons,
             onClearLogClick: this.#handleClearLogClick,
             onFilterChange: this.#handleFilterChange,
+        };
+        this.#view(input, {}, this.contentElement);
+    }
+}
+export const PAYLOAD_DEFAULT_VIEW = (input, output, target) => {
+    if (input.valueObject === undefined && input.valueString === undefined) {
+        render(nothing, target);
+        return;
+    }
+    const isParsable = input.valueObject !== undefined;
+    const createPayload = (parsedInput) => {
+        const object = new SDK.RemoteObject.LocalJSONObject(parsedInput);
+        const section = new ObjectUI.ObjectPropertiesSection.RootElement(new ObjectUI.ObjectPropertiesSection.ObjectTree(object, {
+            readOnly: true,
+            propertiesMode: 1 /* ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED */,
+        }));
+        section.title = document.createTextNode(object.description);
+        section.listItemElement.classList.add('source-code', 'object-properties-section');
+        section.childrenListElement.classList.add('source-code', 'object-properties-section');
+        section.expand();
+        return html `<devtools-tree .template=${html `
+          <style>${ObjectUI.ObjectPropertiesSection.objectValueStyles}</style>
+          <style>${ObjectUI.ObjectPropertiesSection.objectPropertiesSectionStyles}</style>
+          <ul role="tree">
+            <devtools-tree-wrapper .treeElement=${section}></devtools-tree-wrapper>
+          </ul>
+        `}></devtools-tree>`;
+    };
+    const createSourceText = (text) => html `<div class="payload-value source-code">${text}</div>`;
+    render(html `
+    <style>${webMCPViewStyles}</style>
+    <div class="call-payload-view">
+      <div class="call-payload-content">
+            ${isParsable ? createPayload(input.valueObject) :
+        (input.valueString !== undefined ? createSourceText(input.valueString) : nothing)}
+      </div>
+    </div>
+  `, target);
+};
+export class PayloadWidget extends UI.Widget.Widget {
+    #valueObject;
+    #valueString;
+    #view;
+    constructor(element, view = PAYLOAD_DEFAULT_VIEW) {
+        super(element);
+        this.#view = view;
+    }
+    set valueObject(valueObject) {
+        this.#valueObject = valueObject;
+        this.requestUpdate();
+    }
+    get valueObject() {
+        return this.#valueObject;
+    }
+    set valueString(valueString) {
+        this.#valueString = valueString;
+        this.requestUpdate();
+    }
+    get valueString() {
+        return this.#valueString;
+    }
+    wasShown() {
+        super.wasShown();
+        this.requestUpdate();
+    }
+    performUpdate() {
+        const input = {
+            valueObject: this.#valueObject,
+            valueString: this.#valueString,
         };
         this.#view(input, {}, this.contentElement);
     }

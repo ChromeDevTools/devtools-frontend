@@ -352,8 +352,6 @@ export class IndexedDBModel extends SDK.SDKModel.SDKModel {
             this.dispatchEventToListeners(Events.IndexedDBContentUpdated, { databaseId, objectStoreName, model: this });
         }
     }
-    attributionReportingTriggerRegistered(_event) {
-    }
     cacheStorageListUpdated(_event) {
     }
     cacheStorageContentUpdated(_event) {
@@ -371,12 +369,6 @@ export class IndexedDBModel extends SDK.SDKModel.SDKModel {
     storageBucketCreatedOrUpdated(_event) {
     }
     storageBucketDeleted(_event) {
-    }
-    attributionReportingSourceRegistered(_event) {
-    }
-    attributionReportingReportSent(_event) {
-    }
-    attributionReportingVerboseDebugReportSent(_event) {
     }
 }
 SDK.SDKModel.SDKModel.register(IndexedDBModel, { capabilities: 8192 /* SDK.Target.Capability.STORAGE */, autostart: false });

@@ -194,6 +194,7 @@ export class TimelineTreeView extends Common.ObjectWrapper.eventMixin(UI.Widget.
     // suitable for AI assistance widgets. It removes sidebars and toolbars.
     #compactMode = false;
     #maxLinkLength = undefined;
+    #maxRows = undefined;
     /**
      * Determines if the first child in the data grid will be selected
      * by default when refreshTree() gets called.
@@ -257,6 +258,16 @@ export class TimelineTreeView extends Common.ObjectWrapper.eventMixin(UI.Widget.
     }
     set maxLinkLength(maxLinkLength) {
         this.#maxLinkLength = maxLinkLength;
+    }
+    get maxRows() {
+        return this.#maxRows;
+    }
+    set maxRows(maxRows) {
+        if (this.#maxRows === maxRows) {
+            return;
+        }
+        this.#maxRows = maxRows;
+        this.refreshTree();
     }
     #applyCompactMode() {
         if (this.#compactMode && this.dataGrid) {
@@ -453,13 +464,25 @@ export class TimelineTreeView extends Common.ObjectWrapper.eventMixin(UI.Widget.
             maxSelfTime = Math.max(maxSelfTime, child.selfTime);
             maxTotalTime = Math.max(maxTotalTime, child.totalTime);
         }
+        const gridNodes = [];
         for (const child of children.values()) {
-            // Exclude the idle time off the total calculation.
             const gridNode = new TreeGridNode(child, totalUsedTime, maxSelfTime, maxTotalTime, this);
             for (const e of child.events) {
                 this.eventToTreeNode.set(e, child);
             }
-            this.dataGrid.insertChild(gridNode);
+            gridNodes.push(gridNode);
+        }
+        const columnId = this.dataGrid.sortColumnId() || 'self';
+        const sortFunction = this.getSortingFunction(columnId);
+        if (sortFunction) {
+            gridNodes.sort((a, b) => {
+                const res = sortFunction(a, b);
+                return this.dataGrid.isSortOrderAscending() ? res : -res;
+            });
+        }
+        const countToInsert = this.#maxRows !== undefined ? Math.min(this.#maxRows, gridNodes.length) : gridNodes.length;
+        for (let i = 0; i < countToInsert; i++) {
+            this.dataGrid.insertChild(gridNodes[i]);
         }
         this.sortingChanged();
         this.updateDetailsForSelection();

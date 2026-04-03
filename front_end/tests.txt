@@ -139,6 +139,7 @@ core/sdk/SourceMapScopesInfo.test.js
 core/sdk/StorageBucketsModel.test.js
 core/sdk/StorageKeyManager.test.js
 core/sdk/TraceObject.test.js
+entrypoints/heap_snapshot_worker/HeapSnapshot.test.js
 entrypoints/heap_snapshot_worker/heap_snapshot_worker.test.js
 entrypoints/inspector_main/InspectorMain.test.js
 entrypoints/inspector_main/OutermostTargetSelector.test.js
@@ -348,6 +349,7 @@ panels/application/InterestGroupTreeElement.test.js
 panels/application/KeyValueStorageItemsView.test.js
 panels/application/OriginTrialTreeView.test.js
 panels/application/PreloadingTreeElement.test.js
+panels/application/ReportingApiTreeElement.test.js
 panels/application/ReportingApiView.test.js
 panels/application/ServiceWorkerCacheViews.test.js
 panels/application/ServiceWorkerUpdateCycleView.test.js

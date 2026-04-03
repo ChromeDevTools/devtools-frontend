@@ -31,7 +31,7 @@ var imagePreview_css_default = `/*
 
 .image-preview-container img {
   margin: 6px 0;
-  max-width: 100px;
+  width: auto;
   max-height: 100px;
   background-image: var(--image-file-checker);
   user-select: text;
@@ -890,7 +890,8 @@ var Linkifier = class _Linkifier extends Common2.ObjectWrapper.ObjectWrapper {
       jslogContext: options.jslogContext || "url",
       lineNumber,
       columnNumber,
-      userMetric: options?.userMetric
+      userMetric: options?.userMetric,
+      onRef: options.onRef
     };
     return _Linkifier.renderLink(linkText, className, linkOptions);
   }

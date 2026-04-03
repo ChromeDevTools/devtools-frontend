@@ -150,8 +150,6 @@ export class SharedStorageModel extends SDK.SDKModel.SDKModel {
     }
     sharedStorageWorkletOperationExecutionFinished(_event) {
     }
-    attributionReportingTriggerRegistered(_event) {
-    }
     indexedDBListUpdated(_event) {
     }
     indexedDBContentUpdated(_event) {
@@ -169,12 +167,6 @@ export class SharedStorageModel extends SDK.SDKModel.SDKModel {
     storageBucketCreatedOrUpdated(_event) {
     }
     storageBucketDeleted(_event) {
-    }
-    attributionReportingSourceRegistered(_event) {
-    }
-    attributionReportingReportSent(_event) {
-    }
-    attributionReportingVerboseDebugReportSent(_event) {
     }
 }
 SDK.SDKModel.SDKModel.register(SharedStorageModel, { capabilities: 8192 /* SDK.Target.Capability.STORAGE */, autostart: false });

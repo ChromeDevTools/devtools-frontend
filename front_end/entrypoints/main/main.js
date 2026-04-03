@@ -592,6 +592,7 @@ var MainImpl = class {
     };
     this.#universe = new Foundation.Universe.Universe(creationOptions);
     Root2.DevToolsContext.setGlobalInstance(this.#universe.context);
+    Root2.Runtime.experiments.cleanUpStaleExperiments();
     await this.requestAndRegisterLocaleData();
     Host.userMetrics.syncSetting(Common2.Settings.Settings.instance().moduleSetting("sync-preferences").get());
     const veLogging = config.devToolsVeLogging;
@@ -702,7 +703,6 @@ var MainImpl = class {
     this.#migrateValueFromLegacyToHostExperiment(Root2.ExperimentNames.ExperimentName.PROTOCOL_MONITOR, protocolMonitorExperiment);
     Root2.Runtime.experiments.register(Root2.ExperimentNames.ExperimentName.SAMPLING_HEAP_PROFILER_TIMELINE, "Sampling heap profiler timeline");
     Root2.Runtime.experiments.register(Root2.ExperimentNames.ExperimentName.TIMELINE_INVALIDATION_TRACKING, "Performance panel: invalidation tracking");
-    Root2.Runtime.experiments.register(Root2.ExperimentNames.ExperimentName.TIMELINE_SHOW_ALL_EVENTS, "Performance panel: show all events");
     Root2.Runtime.experiments.register(Root2.ExperimentNames.ExperimentName.TIMELINE_DEBUG_MODE, "Performance panel: debug mode (trace event details, etc)");
     Root2.Runtime.experiments.register(Root2.ExperimentNames.ExperimentName.INSTRUMENTATION_BREAKPOINTS, "Instrumentation breakpoints");
     Root2.Runtime.experiments.register(Root2.ExperimentNames.ExperimentName.USE_SOURCE_MAP_SCOPES, "Use scope information from source maps");
@@ -725,7 +725,6 @@ var MainImpl = class {
     Root2.Runtime.experiments.enableExperimentsByDefault([
       Root2.ExperimentNames.ExperimentName.USE_SOURCE_MAP_SCOPES
     ]);
-    Root2.Runtime.experiments.cleanUpStaleExperiments();
     const enabledExperiments = Root2.Runtime.Runtime.queryParam("enabledExperiments");
     if (enabledExperiments) {
       Root2.Runtime.experiments.setServerEnabledExperiments(enabledExperiments.split(";"));

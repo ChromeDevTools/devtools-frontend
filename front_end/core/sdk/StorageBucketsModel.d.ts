@@ -26,7 +26,6 @@ export declare class StorageBucketsModel extends SDKModel<EventTypes> implements
     private bucketInfosAreEqual;
     storageBucketCreatedOrUpdated({ bucketInfo }: Protocol.Storage.StorageBucketCreatedOrUpdatedEvent): void;
     storageBucketDeleted({ bucketId }: Protocol.Storage.StorageBucketDeletedEvent): void;
-    attributionReportingTriggerRegistered(_event: Protocol.Storage.AttributionReportingTriggerRegisteredEvent): void;
     interestGroupAccessed(_event: Protocol.Storage.InterestGroupAccessedEvent): void;
     interestGroupAuctionEventOccurred(_event: Protocol.Storage.InterestGroupAuctionEventOccurredEvent): void;
     interestGroupAuctionNetworkRequestCreated(_event: Protocol.Storage.InterestGroupAuctionNetworkRequestCreatedEvent): void;
@@ -36,9 +35,6 @@ export declare class StorageBucketsModel extends SDKModel<EventTypes> implements
     cacheStorageContentUpdated(_event: Protocol.Storage.CacheStorageContentUpdatedEvent): void;
     sharedStorageAccessed(_event: Protocol.Storage.SharedStorageAccessedEvent): void;
     sharedStorageWorkletOperationExecutionFinished(_event: Protocol.Storage.SharedStorageWorkletOperationExecutionFinishedEvent): void;
-    attributionReportingSourceRegistered(_event: Protocol.Storage.AttributionReportingSourceRegisteredEvent): void;
-    attributionReportingReportSent(_event: Protocol.Storage.AttributionReportingReportSentEvent): void;
-    attributionReportingVerboseDebugReportSent(_event: Protocol.Storage.AttributionReportingVerboseDebugReportSentEvent): void;
 }
 export declare const enum Events {
     BUCKET_ADDED = "BucketAdded",

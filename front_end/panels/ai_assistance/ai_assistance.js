@@ -4004,7 +4004,8 @@ async function makeBottomUpTimelineTreeWidget(widgetData) {
     startTime,
     endTime,
     compactMode: true,
-    maxLinkLength: 15
+    maxLinkLength: 15,
+    maxRows: 10
   })}></devtools-widget>`;
   return {
     renderedWidget,

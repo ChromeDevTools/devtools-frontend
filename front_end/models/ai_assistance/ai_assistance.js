@@ -2223,7 +2223,7 @@ var AccessibilityAgent = class extends AiAgent {
       },
       displayInfoFromArgs: (params) => {
         return {
-          title: i18n3.i18n.lockedString("Running accessibility audits\u2026"),
+          title: i18n3.i18n.lockedString("Running accessibility audits"),
           thought: params.explanation,
           action: "runAccessibilityAudits()"
         };
@@ -2262,7 +2262,7 @@ var AccessibilityAgent = class extends AiAgent {
       },
       displayInfoFromArgs: (params) => {
         return {
-          title: i18n3.i18n.lockedString(`Getting Lighthouse audits for ${params.categoryId}\u2026`),
+          title: i18n3.i18n.lockedString(`Getting Lighthouse audits for ${params.categoryId}`),
           action: `getLighthouseAudits('${params.categoryId}')`
         };
       },
@@ -3029,7 +3029,7 @@ var BreakpointDebuggerAgent = class extends AiAgent {
       },
       displayInfoFromArgs: () => {
         return {
-          title: "Waiting for user action...",
+          title: "Waiting for user action",
           thought: "I am waiting for you to trigger a breakpoint in the application."
         };
       },
@@ -6594,11 +6594,11 @@ var UIStringsNotTranslated = {
   /**
    * @description Shown when the agent is investigating network activity
    */
-  networkActivitySummary: "Investigating network activity\u2026",
+  networkActivitySummary: "Investigating network activity",
   /**
    * @description Shown when the agent is investigating main thread activity
    */
-  mainThreadActivity: "Investigating main thread activity\u2026"
+  mainThreadActivity: "Investigating main thread activity"
 };
 var lockedString4 = i18n9.i18n.lockedString;
 var greenDevAdditionalAnnotationsFunction = `
@@ -7227,7 +7227,7 @@ ${result}`,
       },
       displayInfoFromArgs: (params) => {
         return {
-          title: lockedString4(`Investigating insight ${params.insightName}\u2026`),
+          title: lockedString4(`Investigating insight ${params.insightName}`),
           action: `getInsightDetails('${params.insightSetId}', '${params.insightName}')`
         };
       },
@@ -7311,7 +7311,7 @@ ${result}`,
         required: ["eventKey"]
       },
       displayInfoFromArgs: (params) => {
-        return { title: lockedString4("Looking at trace event\u2026"), action: `getEventByKey('${params.eventKey}')` };
+        return { title: lockedString4("Looking at trace event"), action: `getEventByKey('${params.eventKey}')` };
       },
       handler: async (params) => {
         debugLog("Function call: getEventByKey", params);
@@ -7470,7 +7470,7 @@ ${result}`,
         required: ["eventKey"]
       },
       displayInfoFromArgs: (args) => {
-        return { title: lockedString4("Looking at call tree\u2026"), action: `getDetailedCallTree('${args.eventKey}')` };
+        return { title: lockedString4("Looking at call tree"), action: `getDetailedCallTree('${args.eventKey}')` };
       },
       handler: async (args) => {
         debugLog("Function call: getDetailedCallTree");
@@ -7569,7 +7569,7 @@ ${result}`,
       },
       displayInfoFromArgs: (args) => {
         return {
-          title: lockedString4("Looking up function code\u2026"),
+          title: lockedString4("Looking up function code"),
           action: `getFunctionCode('${args.scriptUrl}', ${args.line}, ${args.column})`
         };
       },
@@ -7617,7 +7617,7 @@ ${result}`,
         required: ["url"]
       },
       displayInfoFromArgs: (args) => {
-        return { title: lockedString4("Looking at resource content\u2026"), action: `getResourceContent('${args.url}')` };
+        return { title: lockedString4("Looking at resource content"), action: `getResourceContent('${args.url}')` };
       },
       handler: async (args) => {
         debugLog("Function call: getResourceContent");
@@ -7661,7 +7661,7 @@ ${result}`,
           required: ["eventKey"]
         },
         displayInfoFromArgs: (params) => {
-          return { title: lockedString4("Selecting event\u2026"), action: `selectEventByKey('${params.eventKey}')` };
+          return { title: lockedString4("Selecting event"), action: `selectEventByKey('${params.eventKey}')` };
         },
         handler: async (params) => {
           debugLog("Function call: selectEventByKey", params);
@@ -8471,7 +8471,7 @@ var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
       },
       displayInfoFromArgs: () => {
         return {
-          title: lockedString6("Listing network requests\u2026"),
+          title: lockedString6("Listing network requests"),
           action: "listNetworkRequest()"
         };
       },
@@ -8520,7 +8520,7 @@ var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
       },
       displayInfoFromArgs: (args) => {
         return {
-          title: lockedString6("Getting network request\u2026"),
+          title: lockedString6("Getting network request"),
           action: `selectNetworkRequest(${args.id})`
         };
       },
@@ -8556,7 +8556,7 @@ var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
       },
       displayInfoFromArgs: () => {
         return {
-          title: lockedString6("Listing source requests\u2026"),
+          title: lockedString6("Listing source requests"),
           action: "listSourceFiles()"
         };
       },
@@ -8590,7 +8590,7 @@ var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
       },
       displayInfoFromArgs: (args) => {
         return {
-          title: lockedString6("Getting source file\u2026"),
+          title: lockedString6("Getting source file"),
           action: `selectSourceFile(${args.id})`
         };
       },
@@ -8618,7 +8618,7 @@ var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
       },
       displayInfoFromArgs: () => {
         return {
-          title: "Recording a performance trace\u2026",
+          title: "Recording a performance trace",
           action: "performanceRecordAndReload()"
         };
       },
@@ -8647,7 +8647,7 @@ var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
       },
       displayInfoFromArgs: () => {
         return {
-          title: "Auditing your page with Lighthouse\u2026",
+          title: "Auditing your page with Lighthouse",
           action: "runLighthouseAudits()"
         };
       },
@@ -8761,6 +8761,7 @@ var preamble6 = `### Role
 You are a Conversation Summarizer. Your task is to take a transcript of a conversation between a user and a DevTools AI agent and produce a succinct, actionable Markdown summary. This summary will be used to help apply fixes in an IDE, so it must capture all relevant technical details, findings, and proposed code changes without any conversational fluff.
 
 ### Critical Constraints
+- **Strict Groundedness:** Only summarize information explicitly present in the provided transcript. Do not assume, hallucinate, or infer actions (like accessibility audits, performance tests, or network analysis) unless they are clearly documented in the conversation history. If a topic was not discussed, do not include it in the summary.
 - **Persona:** Do not mention that you are an AI or refer to yourself in the third person.
 - **Domain Scope:** Do not provide answers on non-web-development topics (e.g., legal, financial, medical, or personal advice).
 - **Sensitive Topics:** If the conversation history touches on sensitive topics (religion, race, politics, sexuality, gender, etc.), respond only with: "My expertise is limited to summarizing DevTools AI conversations. I cannot provide information on that topic."
@@ -8773,7 +8774,7 @@ You are a Conversation Summarizer. Your task is to take a transcript of a conver
 
 ### Objectives
 1. **Identify Intent:** Define the core technical goal of the session.
-2. **Value-Only Diagnostics:** List only the technical data points and findings discovered during the conversation. Omit steps that didn't yield a result.
+2. **Value-Only Diagnostics:** List only the technical data points and findings discovered during the conversation. Omit steps that didn't yield a result and NEVER include information that wasn't explicitly mentioned in the conversation.
 3. **Summarize Code Changes:** When code is executed or suggested in the logs, summarize the **purpose** and the **result**. Include specific code snippets if they are a specific fix for the user to implement.
 4. **Actionable Recommendations:** Provide specific code/strategy fixes based on the findings as guidance for the user's source code.
 

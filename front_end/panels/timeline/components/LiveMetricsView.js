@@ -1,8 +1,6 @@
 // Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
-/* eslint-disable @devtools/no-lit-render-outside-of-view */
 import '../../../ui/components/settings/settings.js';
 import '../../../ui/kit/kit.js';
 import './FieldSettingsDialog.js';
@@ -18,7 +16,6 @@ import * as EmulationModel from '../../../models/emulation/emulation.js';
 import * as LiveMetrics from '../../../models/live-metrics/live-metrics.js';
 import * as Trace from '../../../models/trace/trace.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
-import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import * as uiI18n from '../../../ui/i18n/i18n.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
@@ -29,8 +26,8 @@ import { md } from './insights/Helpers.js';
 import liveMetricsViewStyles from './liveMetricsView.css.js';
 import metricValueStyles from './metricValueStyles.css.js';
 import { CLS_THRESHOLDS, INP_THRESHOLDS, renderMetricValue } from './Utils.js';
-const { html, nothing } = Lit;
-const { widget, widgetRef } = UI.Widget;
+const { html, nothing, Directives: { live } } = Lit;
+const { widget } = UI.Widget;
 const DEVICE_OPTION_LIST = ['AUTO', ...CrUXManager.DEVICE_SCOPE_LIST];
 const RTT_MINIMUM = 60;
 const UIStrings = {
@@ -827,16 +824,11 @@ function renderLogSection(input, output) {
       class="logs-section"
       aria-label=${i18nString(UIStrings.eventLogs)}
     >
-      <devtools-widget ${widget(LiveMetricsLogs)}
-        ${widgetRef(LiveMetricsLogs, widget => {
-        if (input.highlightedInteractionId) {
-            widget.selectTab('interactions');
-        }
-        else if (input.highlightedLayoutShiftClusterIds?.size) {
-            widget.selectTab('layout-shifts');
-        }
-    })}
-      >
+      <devtools-widget ${widget(LiveMetricsLogs, {
+        selectedTab: input.highlightedInteractionId ? 'interactions'
+            : input.highlightedLayoutShiftClusterIds?.size ? 'layout-shifts'
+                : undefined
+    })}>
         ${renderInteractionsLog(input, output)}
         ${renderLayoutShiftsLog(input, output)}
       </devtools-widget>
@@ -859,7 +851,7 @@ function renderNodeView(input) {
 }
 export const DEFAULT_VIEW = (input, output, target) => {
     if (input.isNode) {
-        Lit.render(renderNodeView(input), target, { host: input });
+        Lit.render(renderNodeView(input), target);
         return;
     }
     const fieldEnabled = input.cruxManager.getConfigSetting().get().enabled;
@@ -915,11 +907,12 @@ export const DEFAULT_VIEW = (input, output, target) => {
       </div>
     </div>
   `;
-    Lit.render(outputTemplate, target, { host: input });
+    // clang-format on
+    Lit.render(outputTemplate, target);
     if (input.highlightedInteractionId) {
         const interactionEl = target.querySelector('#' + CSS.escape(input.highlightedInteractionId));
         if (interactionEl) {
-            void RenderCoordinator.write(() => {
+            requestAnimationFrame(() => {
                 interactionEl.scrollIntoView({
                     block: 'center',
                 });
@@ -937,7 +930,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
             }
         }
         if (layoutShiftEls.length) {
-            void RenderCoordinator.write(() => {
+            requestAnimationFrame(() => {
                 layoutShiftEls[0].scrollIntoView({
                     block: 'start',
                 });
@@ -1078,17 +1071,49 @@ export class LiveMetricsView extends UI.Widget.Widget {
         this.#view(viewInput, this.#viewOutput, this.contentElement);
     }
 }
+const LIVE_METRICS_LOGS_VIEW = (input, output, target) => {
+    // clang-format off
+    Lit.render(html `
+    <style>
+      /* Any children of the root element will be matched to the slots defined within the container
+         widget's shadow DOM. */
+      :host,
+      .widget {
+        display: contents;
+      }
+    </style>
+    <devtools-tabbed-pane @select=${(event) => input.onTabSelected(event.detail.tabId)}>
+      <devtools-toolbar slot="right">
+        <devtools-button .iconName=${'clear'} .variant=${"toolbar" /* Buttons.Button.Variant.TOOLBAR */}
+                         title=${i18nString(UIStrings.clearCurrentLog)} @click=${input.onClear}
+                         .jslogContext=${'timeline.landing.clear-log'}>
+        </devtools-button>
+      </devtools-toolbar>
+      <!-- Taking advantage of web component slots allows us to render updates in the lit templates defined in the
+      main component. This should be more performant and doesn't require us to inject live metrics styles twice. -->
+      <slot name="interactions-log-content" id="interactions" ?selected=${live(input.selectedTab === 'interactions')}
+            title=${i18nString(UIStrings.interactions)} jslogcontext="timeline.landing.interactions-log">
+      </slot>
+      <slot name="layout-shifts-log-content" id="layout-shifts" ?selected=${live(input.selectedTab === 'layout-shifts')}
+            title=${i18nString(UIStrings.layoutShifts)} jslogcontext="timeline.landing.layout-shifts-log">
+      </slot>
+    </devtools-tabbed-pane>
+  `, target);
+    // clang-format on
+};
 class LiveMetricsLogs extends UI.Widget.Widget {
-    #tabbedPane;
-    /**
-     * Returns `true` if selecting the tab was successful.
-     */
-    selectTab(tabId) {
-        return this.#tabbedPane.selectTab(tabId);
+    #view;
+    #selectedTab = 'interactions';
+    set selectedTab(tabId) {
+        if (!tabId || this.#selectedTab === tabId) {
+            return;
+        }
+        this.#selectedTab = tabId;
+        this.requestUpdate();
     }
     #clearCurrentLog() {
         const liveMetrics = LiveMetrics.LiveMetrics.instance();
-        switch (this.#tabbedPane.selectedTabId) {
+        switch (this.#selectedTab) {
             case 'interactions':
                 liveMetrics.clearInteractions();
                 break;
@@ -1097,27 +1122,20 @@ class LiveMetricsLogs extends UI.Widget.Widget {
                 break;
         }
     }
-    constructor(element) {
+    constructor(element, view = LIVE_METRICS_LOGS_VIEW) {
         super(element, { useShadowDom: true });
-        this.element.style.display = 'contents';
-        // Any children of the root element `this` will be matched to the slots defined within the container
-        // widget's shadow DOM.
-        this.contentElement.style.display = 'contents';
-        this.#tabbedPane = new UI.TabbedPane.TabbedPane();
-        // Taking advantage of web component slots allows us to render updates in the lit templates defined in the
-        // main component. This should be more performant and doesn't require us to inject live metrics styles twice.
-        const interactionsSlot = document.createElement('slot');
-        interactionsSlot.name = 'interactions-log-content';
-        const interactionsTab = UI.Widget.Widget.getOrCreateWidget(interactionsSlot);
-        this.#tabbedPane.appendTab('interactions', i18nString(UIStrings.interactions), interactionsTab, undefined, undefined, undefined, undefined, undefined, 'timeline.landing.interactions-log');
-        const layoutShiftsSlot = document.createElement('slot');
-        layoutShiftsSlot.name = 'layout-shifts-log-content';
-        const layoutShiftsTab = UI.Widget.Widget.getOrCreateWidget(layoutShiftsSlot);
-        this.#tabbedPane.appendTab('layout-shifts', i18nString(UIStrings.layoutShifts), layoutShiftsTab, undefined, undefined, undefined, undefined, undefined, 'timeline.landing.layout-shifts-log');
-        const clearButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clearCurrentLog), 'clear', undefined, 'timeline.landing.clear-log');
-        clearButton.addEventListener("Click" /* UI.Toolbar.ToolbarButton.Events.CLICK */, this.#clearCurrentLog, this);
-        this.#tabbedPane.rightToolbar().appendToolbarItem(clearButton);
-        this.#tabbedPane.show(this.contentElement);
+        this.#view = view;
+        this.requestUpdate();
+    }
+    performUpdate() {
+        const viewInput = {
+            onClear: this.#clearCurrentLog.bind(this),
+            selectedTab: this.#selectedTab,
+            onTabSelected: (tabId) => {
+                this.selectedTab = tabId;
+            },
+        };
+        this.#view(viewInput, undefined, this.contentElement);
     }
 }
 //# sourceMappingURL=LiveMetricsView.js.map

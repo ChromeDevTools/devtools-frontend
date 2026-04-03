@@ -1,6 +1,7 @@
 ai_assistance/ai_assistance.test.js
 animations/animations.test.js
 application/cookies.test.js
+application/crash-report-context.test.js
 application/frame-tree.test.js
 application/manifest.test.js
 application/reporting-api.test.js

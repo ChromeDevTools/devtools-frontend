@@ -208,8 +208,6 @@ export class ServiceWorkerCacheModel extends SDKModel {
             this.dispatchEventToListeners("CacheStorageContentUpdated" /* Events.CACHE_STORAGE_CONTENT_UPDATED */, { storageBucket, cacheName });
         }
     }
-    attributionReportingTriggerRegistered(_event) {
-    }
     indexedDBListUpdated(_event) {
     }
     indexedDBContentUpdated(_event) {
@@ -230,12 +228,6 @@ export class ServiceWorkerCacheModel extends SDKModel {
     }
     setThrottlerSchedulesAsSoonAsPossibleForTest() {
         this.#scheduleAsSoonAsPossible = true;
-    }
-    attributionReportingSourceRegistered(_event) {
-    }
-    attributionReportingReportSent(_event) {
-    }
-    attributionReportingVerboseDebugReportSent(_event) {
     }
 }
 export class Cache {

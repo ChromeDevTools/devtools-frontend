@@ -87,7 +87,6 @@ export default `/*
     max-width: min(100%, 550px);
     min-width: 350px; /* Lower than this, there's not enough room for the entity name */
     padding: 0 0 0 var(--sys-size-6);
-    border-left: var(--sys-size-1) solid var(--sys-color-divider);
   }
 
   .has-max-rows {

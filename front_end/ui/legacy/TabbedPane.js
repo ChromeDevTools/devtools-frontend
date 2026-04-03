@@ -1425,6 +1425,7 @@ export class TabbedPaneElement extends WidgetElement {
                         child.removeAttribute('selected');
                     }
                 }
+                this.dispatchEvent(new CustomEvent('select', { detail: { tabId: widget.selectedTabId } }));
             });
             this.#syncTabs(widget);
             return widget;
@@ -1466,6 +1467,7 @@ export class TabbedPaneElement extends WidgetElement {
             view.setHideOnDetach();
             if (widget.selectedTabId !== id) {
                 view.hideWidget();
+                child.classList.add('hidden');
             }
             else {
                 view.showWidget();

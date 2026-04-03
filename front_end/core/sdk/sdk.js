@@ -1060,7 +1060,8 @@ var generatedProperties = [
       "border-box",
       "padding-box",
       "content-box",
-      "text"
+      "text",
+      "border-area"
     ],
     "name": "background-clip"
   },
@@ -2895,7 +2896,8 @@ var generatedProperties = [
       "optimizespeed",
       "optimizequality",
       "-webkit-optimize-contrast",
-      "pixelated"
+      "pixelated",
+      "crisp-edges"
     ],
     "name": "image-rendering"
   },
@@ -5311,7 +5313,8 @@ var generatedPropertyValues = {
       "border-box",
       "padding-box",
       "content-box",
-      "text"
+      "text",
+      "border-area"
     ]
   },
   "background-color": {
@@ -6337,7 +6340,8 @@ var generatedPropertyValues = {
       "optimizespeed",
       "optimizequality",
       "-webkit-optimize-contrast",
-      "pixelated"
+      "pixelated",
+      "crisp-edges"
     ]
   },
   "initial-letter": {
@@ -36651,8 +36655,6 @@ var StorageBucketsModel = class extends SDKModel {
       throw new Error(`Received an event that Storage Bucket '${bucketId}' was deleted, but it wasn't in the StorageBucketsModel.`);
     }
   }
-  attributionReportingTriggerRegistered(_event) {
-  }
   interestGroupAccessed(_event) {
   }
   interestGroupAuctionEventOccurred(_event) {
@@ -36670,12 +36672,6 @@ var StorageBucketsModel = class extends SDKModel {
   sharedStorageAccessed(_event) {
   }
   sharedStorageWorkletOperationExecutionFinished(_event) {
-  }
-  attributionReportingSourceRegistered(_event) {
-  }
-  attributionReportingReportSent(_event) {
-  }
-  attributionReportingVerboseDebugReportSent(_event) {
   }
 };
 SDKModel.register(StorageBucketsModel, { capabilities: 8192, autostart: false });
@@ -36886,8 +36882,6 @@ var ServiceWorkerCacheModel = class extends SDKModel {
       this.dispatchEventToListeners("CacheStorageContentUpdated", { storageBucket, cacheName });
     }
   }
-  attributionReportingTriggerRegistered(_event) {
-  }
   indexedDBListUpdated(_event) {
   }
   indexedDBContentUpdated(_event) {
@@ -36908,12 +36902,6 @@ var ServiceWorkerCacheModel = class extends SDKModel {
   }
   setThrottlerSchedulesAsSoonAsPossibleForTest() {
     this.#scheduleAsSoonAsPossible = true;
-  }
-  attributionReportingSourceRegistered(_event) {
-  }
-  attributionReportingReportSent(_event) {
-  }
-  attributionReportingVerboseDebugReportSent(_event) {
   }
 };
 var Cache = class {

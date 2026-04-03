@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as Platform from '../platform/platform.js';
+import * as Root from '../root/root.js';
 /* eslint @devtools/enforce-version-controller-methods: "error" */
 import { Settings } from './Settings.js';
 // The VersionController does a lot of mapping and restructuring which often need
@@ -11,7 +12,7 @@ export class VersionController {
     static GLOBAL_VERSION_SETTING_NAME = 'inspectorVersion';
     static SYNCED_VERSION_SETTING_NAME = 'syncedInspectorVersion';
     static LOCAL_VERSION_SETTING_NAME = 'localInspectorVersion';
-    static CURRENT_VERSION = 42;
+    static CURRENT_VERSION = 43;
     #settings;
     #globalVersionSetting;
     #syncedVersionSetting;
@@ -718,6 +719,21 @@ export class VersionController {
             recording.flow.steps = recording.flow.steps.slice(0, 4096);
         }
         recordingsSetting.set(recordings);
+    }
+    updateVersionFrom42To43() {
+        const timelineShowAllEventsExperimentEnabled = Root.Runtime.experiments.getValueFromStorage('timeline-show-all-events');
+        if (timelineShowAllEventsExperimentEnabled !== undefined) {
+            if (this.#settings.syncedStorage.has('timeline-show-all-events')) {
+                return; // Already migrated
+            }
+            try {
+                const timelineShowAllEventsSetting = this.#settings.moduleSetting('timeline-show-all-events');
+                timelineShowAllEventsSetting.set(timelineShowAllEventsExperimentEnabled);
+            }
+            catch {
+                // If the setting is not registered yet (e.g. in tests), skip.
+            }
+        }
     }
     /*
      * Any new migration should be added before this comment.

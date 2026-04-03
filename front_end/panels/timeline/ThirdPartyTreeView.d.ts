@@ -31,6 +31,7 @@ export declare class ThirdPartyTreeViewWidget extends TimelineTreeView.TimelineT
     };
     nodeIsFirstParty(node: Trace.Extras.TraceTree.Node): boolean;
     nodeIsExtension(node: Trace.Extras.TraceTree.Node): boolean;
+    get maxRows(): number | undefined;
     set maxRows(maxRows: number);
     set onRowHovered(callback: (node: Trace.Extras.TraceTree.Node | null, events?: Trace.Types.Events.Event[]) => void);
     set onBottomUpButtonClicked(callback: (node: Trace.Extras.TraceTree.Node | null) => void);

@@ -997,7 +997,8 @@ export const generatedProperties = [
             "border-box",
             "padding-box",
             "content-box",
-            "text"
+            "text",
+            "border-area"
         ],
         "name": "background-clip"
     },
@@ -2832,7 +2833,8 @@ export const generatedProperties = [
             "optimizespeed",
             "optimizequality",
             "-webkit-optimize-contrast",
-            "pixelated"
+            "pixelated",
+            "crisp-edges"
         ],
         "name": "image-rendering"
     },
@@ -5248,7 +5250,8 @@ export const generatedPropertyValues = {
             "border-box",
             "padding-box",
             "content-box",
-            "text"
+            "text",
+            "border-area"
         ]
     },
     "background-color": {
@@ -6274,7 +6277,8 @@ export const generatedPropertyValues = {
             "optimizespeed",
             "optimizequality",
             "-webkit-optimize-contrast",
-            "pixelated"
+            "pixelated",
+            "crisp-edges"
         ]
     },
     "initial-letter": {

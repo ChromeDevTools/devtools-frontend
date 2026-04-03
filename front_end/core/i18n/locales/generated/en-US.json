@@ -5894,6 +5894,9 @@
   "panels/application/PreloadingTreeElement.ts | speculativeLoads": {
     "message": "Speculative loads"
   },
+  "panels/application/ReportingApiTreeElement.ts | crashReportContext": {
+    "message": "Crash Report Context"
+  },
   "panels/application/ReportingApiTreeElement.ts | reportingApi": {
     "message": "Reporting API"
   },
@@ -16117,6 +16120,9 @@
   },
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "Stop"
+  },
+  "panels/timeline/timeline-meta.ts | timelineShowAllEvents": {
+    "message": "Show all events"
   },
   "panels/timeline/TimelineController.ts | initializingTracing": {
     "message": "Initializing tracing…"

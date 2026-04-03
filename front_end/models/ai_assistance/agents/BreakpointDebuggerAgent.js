@@ -374,7 +374,7 @@ export class BreakpointDebuggerAgent extends AiAgent {
             },
             displayInfoFromArgs: () => {
                 return {
-                    title: 'Waiting for user action...',
+                    title: 'Waiting for user action',
                     thought: 'I am waiting for you to trigger a breakpoint in the application.',
                 };
             },

@@ -4334,22 +4334,6 @@ declare namespace ProtocolProxyApi {
     invoke_runBounceTrackingMitigations(): Promise<Protocol.Storage.RunBounceTrackingMitigationsResponse>;
 
     /**
-     * https://wicg.github.io/attribution-reporting-api/
-     */
-    invoke_setAttributionReportingLocalTestingMode(params: Protocol.Storage.SetAttributionReportingLocalTestingModeRequest): Promise<Protocol.ProtocolResponseWithError>;
-
-    /**
-     * Enables/disables issuing of Attribution Reporting events.
-     */
-    invoke_setAttributionReportingTracking(params: Protocol.Storage.SetAttributionReportingTrackingRequest): Promise<Protocol.ProtocolResponseWithError>;
-
-    /**
-     * Sends all pending Attribution Reports immediately, regardless of their
-     * scheduled report time.
-     */
-    invoke_sendPendingAttributionReports(): Promise<Protocol.Storage.SendPendingAttributionReportsResponse>;
-
-    /**
      * Returns the effective Related Website Sets in use by this profile for the browser
      * session. The effective Related Website Sets will not change during a browser session.
      */
@@ -4421,14 +4405,6 @@ declare namespace ProtocolProxyApi {
     storageBucketCreatedOrUpdated(params: Protocol.Storage.StorageBucketCreatedOrUpdatedEvent): void;
 
     storageBucketDeleted(params: Protocol.Storage.StorageBucketDeletedEvent): void;
-
-    attributionReportingSourceRegistered(params: Protocol.Storage.AttributionReportingSourceRegisteredEvent): void;
-
-    attributionReportingTriggerRegistered(params: Protocol.Storage.AttributionReportingTriggerRegisteredEvent): void;
-
-    attributionReportingReportSent(params: Protocol.Storage.AttributionReportingReportSentEvent): void;
-
-    attributionReportingVerboseDebugReportSent(params: Protocol.Storage.AttributionReportingVerboseDebugReportSentEvent): void;
 
   }
 
@@ -4873,6 +4849,11 @@ declare namespace ProtocolProxyApi {
      * all currently registered tools.
      */
     invoke_enable(): Promise<Protocol.ProtocolResponseWithError>;
+
+    /**
+     * Disables the WebMCP domain.
+     */
+    invoke_disable(): Promise<Protocol.ProtocolResponseWithError>;
 
   }
   export interface WebMCPDispatcher {

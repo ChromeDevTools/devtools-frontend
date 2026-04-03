@@ -5188,6 +5188,7 @@ var TabbedPaneElement = class extends WidgetElement {
             child.removeAttribute("selected");
           }
         }
+        this.dispatchEvent(new CustomEvent("select", { detail: { tabId: widget2.selectedTabId } }));
       });
       this.#syncTabs(widget2);
       return widget2;
@@ -5229,6 +5230,7 @@ var TabbedPaneElement = class extends WidgetElement {
       view.setHideOnDetach();
       if (widget2.selectedTabId !== id2) {
         view.hideWidget();
+        child.classList.add("hidden");
       } else {
         view.showWidget();
       }

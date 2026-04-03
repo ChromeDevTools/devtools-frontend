@@ -4,7 +4,6 @@
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
-import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Trace from '../../models/trace/trace.js';
@@ -127,7 +126,7 @@ export class ThreadAppender {
     #headerAppended = false;
     threadType = "MAIN_THREAD" /* Trace.Handlers.Threads.ThreadType.MAIN_THREAD */;
     isOnMainFrame;
-    #showAllEventsEnabled = Root.Runtime.experiments.isEnabled(Root.ExperimentNames.ExperimentName.TIMELINE_SHOW_ALL_EVENTS);
+    #showAllEventsEnabled = Common.Settings.Settings.instance().moduleSetting('timeline-show-all-events').get();
     #url = '';
     #headerNestingLevel = null;
     constructor(compatibilityBuilder, parsedTrace, processId, threadId, threadName, type, entries, tree) {

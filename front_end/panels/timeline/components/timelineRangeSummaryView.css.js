@@ -21,6 +21,10 @@ export default `/*
   height: 100%;
 }
 
+.timeline-tree-view {
+  border-left: var(--sys-size-1) solid var(--sys-color-divider);
+}
+
 @container (max-width: 450px) {
   .timeline-details-range-summary {
     display: grid;
@@ -31,6 +35,10 @@ export default `/*
 
   .timeline-summary {
     width: 100%;
+  }
+
+  .timeline-tree-view {
+    border-left: none;
   }
 }
 

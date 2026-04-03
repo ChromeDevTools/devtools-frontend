@@ -15707,6 +15707,7 @@ export declare namespace Preload {
         loaderId: Network.LoaderId;
         action: SpeculationAction;
         url: string;
+        formSubmission?: boolean;
         targetHint?: SpeculationTargetHint;
     }
     /**
@@ -15808,7 +15809,8 @@ export declare namespace Preload {
         V8OptimizerDisabled = "V8OptimizerDisabled",
         PrerenderFailedDuringPrefetch = "PrerenderFailedDuringPrefetch",
         BrowsingDataRemoved = "BrowsingDataRemoved",
-        PrerenderHostReused = "PrerenderHostReused"
+        PrerenderHostReused = "PrerenderHostReused",
+        FormSubmitWhenPrerendering = "FormSubmitWhenPrerendering"
     }
     /**
      * Preloading status values, see also PreloadingTriggeringOutcome. This
@@ -16954,226 +16956,6 @@ export declare namespace Storage {
         persistent: boolean;
         durability: StorageBucketsDurability;
     }
-    const enum AttributionReportingSourceType {
-        Navigation = "navigation",
-        Event = "event"
-    }
-    type UnsignedInt64AsBase10 = string;
-    type UnsignedInt128AsBase16 = string;
-    type SignedInt64AsBase10 = string;
-    interface AttributionReportingFilterDataEntry {
-        key: string;
-        values: string[];
-    }
-    interface AttributionReportingFilterConfig {
-        filterValues: AttributionReportingFilterDataEntry[];
-        /**
-         * duration in seconds
-         */
-        lookbackWindow?: integer;
-    }
-    interface AttributionReportingFilterPair {
-        filters: AttributionReportingFilterConfig[];
-        notFilters: AttributionReportingFilterConfig[];
-    }
-    interface AttributionReportingAggregationKeysEntry {
-        key: string;
-        value: UnsignedInt128AsBase16;
-    }
-    interface AttributionReportingEventReportWindows {
-        /**
-         * duration in seconds
-         */
-        start: integer;
-        /**
-         * duration in seconds
-         */
-        ends: integer[];
-    }
-    const enum AttributionReportingTriggerDataMatching {
-        Exact = "exact",
-        Modulus = "modulus"
-    }
-    interface AttributionReportingAggregatableDebugReportingData {
-        keyPiece: UnsignedInt128AsBase16;
-        /**
-         * number instead of integer because not all uint32 can be represented by
-         * int
-         */
-        value: number;
-        types: string[];
-    }
-    interface AttributionReportingAggregatableDebugReportingConfig {
-        /**
-         * number instead of integer because not all uint32 can be represented by
-         * int, only present for source registrations
-         */
-        budget?: number;
-        keyPiece: UnsignedInt128AsBase16;
-        debugData: AttributionReportingAggregatableDebugReportingData[];
-        aggregationCoordinatorOrigin?: string;
-    }
-    interface AttributionScopesData {
-        values: string[];
-        /**
-         * number instead of integer because not all uint32 can be represented by
-         * int
-         */
-        limit: number;
-        maxEventStates: number;
-    }
-    interface AttributionReportingNamedBudgetDef {
-        name: string;
-        budget: integer;
-    }
-    interface AttributionReportingSourceRegistration {
-        time: Network.TimeSinceEpoch;
-        /**
-         * duration in seconds
-         */
-        expiry: integer;
-        /**
-         * number instead of integer because not all uint32 can be represented by
-         * int
-         */
-        triggerData: number[];
-        eventReportWindows: AttributionReportingEventReportWindows;
-        /**
-         * duration in seconds
-         */
-        aggregatableReportWindow: integer;
-        type: AttributionReportingSourceType;
-        sourceOrigin: string;
-        reportingOrigin: string;
-        destinationSites: string[];
-        eventId: UnsignedInt64AsBase10;
-        priority: SignedInt64AsBase10;
-        filterData: AttributionReportingFilterDataEntry[];
-        aggregationKeys: AttributionReportingAggregationKeysEntry[];
-        debugKey?: UnsignedInt64AsBase10;
-        triggerDataMatching: AttributionReportingTriggerDataMatching;
-        destinationLimitPriority: SignedInt64AsBase10;
-        aggregatableDebugReportingConfig: AttributionReportingAggregatableDebugReportingConfig;
-        scopesData?: AttributionScopesData;
-        maxEventLevelReports: integer;
-        namedBudgets: AttributionReportingNamedBudgetDef[];
-        debugReporting: boolean;
-        eventLevelEpsilon: number;
-    }
-    const enum AttributionReportingSourceRegistrationResult {
-        Success = "success",
-        InternalError = "internalError",
-        InsufficientSourceCapacity = "insufficientSourceCapacity",
-        InsufficientUniqueDestinationCapacity = "insufficientUniqueDestinationCapacity",
-        ExcessiveReportingOrigins = "excessiveReportingOrigins",
-        ProhibitedByBrowserPolicy = "prohibitedByBrowserPolicy",
-        SuccessNoised = "successNoised",
-        DestinationReportingLimitReached = "destinationReportingLimitReached",
-        DestinationGlobalLimitReached = "destinationGlobalLimitReached",
-        DestinationBothLimitsReached = "destinationBothLimitsReached",
-        ReportingOriginsPerSiteLimitReached = "reportingOriginsPerSiteLimitReached",
-        ExceedsMaxChannelCapacity = "exceedsMaxChannelCapacity",
-        ExceedsMaxScopesChannelCapacity = "exceedsMaxScopesChannelCapacity",
-        ExceedsMaxTriggerStateCardinality = "exceedsMaxTriggerStateCardinality",
-        ExceedsMaxEventStatesLimit = "exceedsMaxEventStatesLimit",
-        DestinationPerDayReportingLimitReached = "destinationPerDayReportingLimitReached"
-    }
-    const enum AttributionReportingSourceRegistrationTimeConfig {
-        Include = "include",
-        Exclude = "exclude"
-    }
-    interface AttributionReportingAggregatableValueDictEntry {
-        key: string;
-        /**
-         * number instead of integer because not all uint32 can be represented by
-         * int
-         */
-        value: number;
-        filteringId: UnsignedInt64AsBase10;
-    }
-    interface AttributionReportingAggregatableValueEntry {
-        values: AttributionReportingAggregatableValueDictEntry[];
-        filters: AttributionReportingFilterPair;
-    }
-    interface AttributionReportingEventTriggerData {
-        data: UnsignedInt64AsBase10;
-        priority: SignedInt64AsBase10;
-        dedupKey?: UnsignedInt64AsBase10;
-        filters: AttributionReportingFilterPair;
-    }
-    interface AttributionReportingAggregatableTriggerData {
-        keyPiece: UnsignedInt128AsBase16;
-        sourceKeys: string[];
-        filters: AttributionReportingFilterPair;
-    }
-    interface AttributionReportingAggregatableDedupKey {
-        dedupKey?: UnsignedInt64AsBase10;
-        filters: AttributionReportingFilterPair;
-    }
-    interface AttributionReportingNamedBudgetCandidate {
-        name?: string;
-        filters: AttributionReportingFilterPair;
-    }
-    interface AttributionReportingTriggerRegistration {
-        filters: AttributionReportingFilterPair;
-        debugKey?: UnsignedInt64AsBase10;
-        aggregatableDedupKeys: AttributionReportingAggregatableDedupKey[];
-        eventTriggerData: AttributionReportingEventTriggerData[];
-        aggregatableTriggerData: AttributionReportingAggregatableTriggerData[];
-        aggregatableValues: AttributionReportingAggregatableValueEntry[];
-        aggregatableFilteringIdMaxBytes: integer;
-        debugReporting: boolean;
-        aggregationCoordinatorOrigin?: string;
-        sourceRegistrationTimeConfig: AttributionReportingSourceRegistrationTimeConfig;
-        triggerContextId?: string;
-        aggregatableDebugReportingConfig: AttributionReportingAggregatableDebugReportingConfig;
-        scopes: string[];
-        namedBudgets: AttributionReportingNamedBudgetCandidate[];
-    }
-    const enum AttributionReportingEventLevelResult {
-        Success = "success",
-        SuccessDroppedLowerPriority = "successDroppedLowerPriority",
-        InternalError = "internalError",
-        NoCapacityForAttributionDestination = "noCapacityForAttributionDestination",
-        NoMatchingSources = "noMatchingSources",
-        Deduplicated = "deduplicated",
-        ExcessiveAttributions = "excessiveAttributions",
-        PriorityTooLow = "priorityTooLow",
-        NeverAttributedSource = "neverAttributedSource",
-        ExcessiveReportingOrigins = "excessiveReportingOrigins",
-        NoMatchingSourceFilterData = "noMatchingSourceFilterData",
-        ProhibitedByBrowserPolicy = "prohibitedByBrowserPolicy",
-        NoMatchingConfigurations = "noMatchingConfigurations",
-        ExcessiveReports = "excessiveReports",
-        FalselyAttributedSource = "falselyAttributedSource",
-        ReportWindowPassed = "reportWindowPassed",
-        NotRegistered = "notRegistered",
-        ReportWindowNotStarted = "reportWindowNotStarted",
-        NoMatchingTriggerData = "noMatchingTriggerData"
-    }
-    const enum AttributionReportingAggregatableResult {
-        Success = "success",
-        InternalError = "internalError",
-        NoCapacityForAttributionDestination = "noCapacityForAttributionDestination",
-        NoMatchingSources = "noMatchingSources",
-        ExcessiveAttributions = "excessiveAttributions",
-        ExcessiveReportingOrigins = "excessiveReportingOrigins",
-        NoHistograms = "noHistograms",
-        InsufficientBudget = "insufficientBudget",
-        InsufficientNamedBudget = "insufficientNamedBudget",
-        NoMatchingSourceFilterData = "noMatchingSourceFilterData",
-        NotRegistered = "notRegistered",
-        ProhibitedByBrowserPolicy = "prohibitedByBrowserPolicy",
-        Deduplicated = "deduplicated",
-        ReportWindowPassed = "reportWindowPassed",
-        ExcessiveReports = "excessiveReports"
-    }
-    const enum AttributionReportingReportResult {
-        Sent = "sent",
-        Prohibited = "prohibited",
-        FailedToAssemble = "failedToAssemble",
-        Expired = "expired"
-    }
     /**
      * A single Related Website Set object.
      */
@@ -17415,21 +17197,6 @@ export declare namespace Storage {
     interface RunBounceTrackingMitigationsResponse extends ProtocolResponseWithError {
         deletedSites: string[];
     }
-    interface SetAttributionReportingLocalTestingModeRequest {
-        /**
-         * If enabled, noise is suppressed and reports are sent immediately.
-         */
-        enabled: boolean;
-    }
-    interface SetAttributionReportingTrackingRequest {
-        enable: boolean;
-    }
-    interface SendPendingAttributionReportsResponse extends ProtocolResponseWithError {
-        /**
-         * The number of reports that were sent.
-         */
-        numSent: integer;
-    }
     interface GetRelatedWebsiteSetsResponse extends ProtocolResponseWithError {
         sets: RelatedWebsiteSet[];
     }
@@ -17668,33 +17435,6 @@ export declare namespace Storage {
     }
     interface StorageBucketDeletedEvent {
         bucketId: string;
-    }
-    interface AttributionReportingSourceRegisteredEvent {
-        registration: AttributionReportingSourceRegistration;
-        result: AttributionReportingSourceRegistrationResult;
-    }
-    interface AttributionReportingTriggerRegisteredEvent {
-        registration: AttributionReportingTriggerRegistration;
-        eventLevel: AttributionReportingEventLevelResult;
-        aggregatable: AttributionReportingAggregatableResult;
-    }
-    interface AttributionReportingReportSentEvent {
-        url: string;
-        body: any;
-        result: AttributionReportingReportResult;
-        /**
-         * If result is `sent`, populated with net/HTTP status.
-         */
-        netError?: integer;
-        netErrorName?: string;
-        httpStatusCode?: integer;
-    }
-    interface AttributionReportingVerboseDebugReportSentEvent {
-        url: string;
-        body?: any[];
-        netError?: integer;
-        netErrorName?: string;
-        httpStatusCode?: integer;
     }
 }
 /**

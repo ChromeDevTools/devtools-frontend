@@ -203,6 +203,18 @@ export default `/*
         flex: auto;
         border-bottom: 1px solid var(--sys-color-divider);
     }
+
+    .call-payload-view {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+
+    .call-payload-content {
+        padding: var(--sys-size-5);
+        flex: auto;
+        overflow: auto;
+    }
 }
 
 /*# sourceURL=${import.meta.resolve('./webMCPView.css')} */`;

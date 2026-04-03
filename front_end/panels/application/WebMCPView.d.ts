@@ -41,11 +41,30 @@ export interface ViewInput {
 }
 export declare function filterToolCalls(toolCalls: WebMCP.WebMCPModel.Call[], filterState: FilterState): WebMCP.WebMCPModel.Call[];
 export type View = (input: ViewInput, output: object, target: HTMLElement) => void;
+export declare function parsePayload(payload?: unknown): {
+    valueObject: unknown;
+    valueString: string | undefined;
+};
 export declare const DEFAULT_VIEW: View;
 export declare class WebMCPView extends UI.Widget.VBox {
     #private;
     static createFilterButtons(onToolTypesClick: (contextMenu: UI.ContextMenu.ContextMenu) => void, onStatusTypesClick: (contextMenu: UI.ContextMenu.ContextMenu) => void): FilterMenuButtons;
     constructor(target?: HTMLElement, view?: View);
+    performUpdate(): void;
+}
+export interface PayloadViewInput {
+    valueObject?: unknown;
+    valueString?: string;
+}
+export declare const PAYLOAD_DEFAULT_VIEW: (input: PayloadViewInput, output: object, target: HTMLElement) => void;
+export declare class PayloadWidget extends UI.Widget.Widget {
+    #private;
+    constructor(element?: HTMLElement, view?: (input: PayloadViewInput, output: object, target: HTMLElement) => void);
+    set valueObject(valueObject: unknown);
+    get valueObject(): unknown;
+    set valueString(valueString: string | undefined);
+    get valueString(): string | undefined;
+    wasShown(): void;
     performUpdate(): void;
 }
 export interface ToolDetailsViewInput {

@@ -113,8 +113,6 @@ export class StorageBucketsModel extends SDKModel {
             throw new Error(`Received an event that Storage Bucket '${bucketId}' was deleted, but it wasn't in the StorageBucketsModel.`);
         }
     }
-    attributionReportingTriggerRegistered(_event) {
-    }
     interestGroupAccessed(_event) {
     }
     interestGroupAuctionEventOccurred(_event) {
@@ -132,12 +130,6 @@ export class StorageBucketsModel extends SDKModel {
     sharedStorageAccessed(_event) {
     }
     sharedStorageWorkletOperationExecutionFinished(_event) {
-    }
-    attributionReportingSourceRegistered(_event) {
-    }
-    attributionReportingReportSent(_event) {
-    }
-    attributionReportingVerboseDebugReportSent(_event) {
     }
 }
 SDKModel.register(StorageBucketsModel, { capabilities: 8192 /* Capability.STORAGE */, autostart: false });

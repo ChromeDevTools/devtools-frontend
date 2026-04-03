@@ -37,6 +37,14 @@ const UIStringsNotTranslate = {
      */
     tooltipDisclaimerTextForAiCodeCompletionNoLoggingInSources: 'To generate code suggestions, the contents of the currently open file are shared with Google. This data will not be used to improve Google’s AI models. Your organization may change these settings at any time.',
     /**
+     * @description Text for tooltip shown on hovering over "Relevant Data" in the disclaimer text for AI code completion in Styles pane.
+     */
+    tooltipDisclaimerTextForAiCodeCompletionInStyles: 'To generate code suggestions, the CSS properties of the selected element and the relevant CSS files are shared with Google. This data may be seen by human reviewers to improve this feature.',
+    /**
+     * @description Text for tooltip shown on hovering over "Relevant Data" in the disclaimer text for AI code completion in Styles pane.
+     */
+    tooltipDisclaimerTextForAiCodeCompletionNoLoggingInStyles: 'To generate code suggestions, the CSS properties of the selected element and the relevant CSS files are shared with Google. This data will not be used to improve Google’s AI models. Your organization may change these settings at any time.',
+    /**
      * Text for tooltip shown on hovering over spinner.
      */
     tooltipTextForSpinner: 'Shows when data is being sent to Google to generate code suggestions',
@@ -61,8 +69,8 @@ function getTooltipDisclaimerText(noLogging, panel) {
                 lockedString(UIStringsNotTranslate.tooltipDisclaimerTextForAiCodeCompletionNoLoggingInSources) :
                 lockedString(UIStringsNotTranslate.tooltipDisclaimerTextForAiCodeCompletionInSources);
         case "styles" /* AiCodeCompletion.AiCodeCompletion.ContextFlavor.STYLES */:
-            // TODO(476101019): update with string for styles pane
-            return '';
+            return noLogging ? lockedString(UIStringsNotTranslate.tooltipDisclaimerTextForAiCodeCompletionNoLoggingInStyles) :
+                lockedString(UIStringsNotTranslate.tooltipDisclaimerTextForAiCodeCompletionInStyles);
     }
 }
 export const DEFAULT_SUMMARY_TOOLBAR_VIEW = (input, output, target) => {

@@ -32,7 +32,6 @@ export declare class ServiceWorkerCacheModel extends SDKModel<EventTypes> implem
     private requestAllEntries;
     cacheStorageListUpdated({ bucketId }: Protocol.Storage.CacheStorageListUpdatedEvent): void;
     cacheStorageContentUpdated({ bucketId, cacheName }: Protocol.Storage.CacheStorageContentUpdatedEvent): void;
-    attributionReportingTriggerRegistered(_event: Protocol.Storage.AttributionReportingTriggerRegisteredEvent): void;
     indexedDBListUpdated(_event: Protocol.Storage.IndexedDBListUpdatedEvent): void;
     indexedDBContentUpdated(_event: Protocol.Storage.IndexedDBContentUpdatedEvent): void;
     interestGroupAuctionEventOccurred(_event: Protocol.Storage.InterestGroupAuctionEventOccurredEvent): void;
@@ -43,9 +42,6 @@ export declare class ServiceWorkerCacheModel extends SDKModel<EventTypes> implem
     storageBucketCreatedOrUpdated(_event: Protocol.Storage.StorageBucketCreatedOrUpdatedEvent): void;
     storageBucketDeleted(_event: Protocol.Storage.StorageBucketDeletedEvent): void;
     setThrottlerSchedulesAsSoonAsPossibleForTest(): void;
-    attributionReportingSourceRegistered(_event: Protocol.Storage.AttributionReportingSourceRegisteredEvent): void;
-    attributionReportingReportSent(_event: Protocol.Storage.AttributionReportingReportSentEvent): void;
-    attributionReportingVerboseDebugReportSent(_event: Protocol.Storage.AttributionReportingVerboseDebugReportSentEvent): void;
 }
 export declare const enum Events {
     CACHE_ADDED = "CacheAdded",

@@ -39,7 +39,6 @@ export declare class IndexedDBModel extends SDK.SDKModel.SDKModel<EventTypes> im
     private refreshDatabaseListForStorageBucket;
     indexedDBListUpdated({ storageKey, bucketId }: Protocol.Storage.IndexedDBListUpdatedEvent): void;
     indexedDBContentUpdated({ bucketId, databaseName, objectStoreName }: Protocol.Storage.IndexedDBContentUpdatedEvent): void;
-    attributionReportingTriggerRegistered(_event: Protocol.Storage.AttributionReportingTriggerRegisteredEvent): void;
     cacheStorageListUpdated(_event: Protocol.Storage.CacheStorageListUpdatedEvent): void;
     cacheStorageContentUpdated(_event: Protocol.Storage.CacheStorageContentUpdatedEvent): void;
     interestGroupAccessed(_event: Protocol.Storage.InterestGroupAccessedEvent): void;
@@ -49,9 +48,6 @@ export declare class IndexedDBModel extends SDK.SDKModel.SDKModel<EventTypes> im
     sharedStorageWorkletOperationExecutionFinished(_event: Protocol.Storage.SharedStorageWorkletOperationExecutionFinishedEvent): void;
     storageBucketCreatedOrUpdated(_event: Protocol.Storage.StorageBucketCreatedOrUpdatedEvent): void;
     storageBucketDeleted(_event: Protocol.Storage.StorageBucketDeletedEvent): void;
-    attributionReportingSourceRegistered(_event: Protocol.Storage.AttributionReportingSourceRegisteredEvent): void;
-    attributionReportingReportSent(_event: Protocol.Storage.AttributionReportingReportSentEvent): void;
-    attributionReportingVerboseDebugReportSent(_event: Protocol.Storage.AttributionReportingVerboseDebugReportSentEvent): void;
 }
 export declare enum Events {
     DatabaseAdded = "DatabaseAdded",

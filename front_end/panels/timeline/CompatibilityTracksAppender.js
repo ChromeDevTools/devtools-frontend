@@ -5,7 +5,6 @@
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as Platform from '../../core/platform/platform.js';
-import * as Root from '../../core/root/root.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as SourceMapsResolver from '../../models/trace_source_maps_resolver/trace_source_maps_resolver.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
@@ -178,7 +177,7 @@ export class CompatibilityTracksAppender {
             }
         };
         const threads = Trace.Handlers.Threads.threadsInTrace(this.#parsedTrace.data);
-        const showAllEvents = Root.Runtime.experiments.isEnabled(Root.ExperimentNames.ExperimentName.TIMELINE_SHOW_ALL_EVENTS);
+        const showAllEvents = Common.Settings.Settings.instance().moduleSetting('timeline-show-all-events').get();
         for (const { pid, tid, name, type, entries, tree } of threads) {
             if (this.#parsedTrace.data.Meta.traceIsGeneric) {
                 // If the trace is generic, we just push all of the threads with no effort to differentiate them, hence

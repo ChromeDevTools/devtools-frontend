@@ -26,8 +26,6 @@ export class InterestGroupStorageModel extends SDK.SDKModel.SDKModel {
     interestGroupAccessed(event) {
         this.dispatchEventToListeners("InterestGroupAccess" /* Events.INTEREST_GROUP_ACCESS */, event);
     }
-    attributionReportingTriggerRegistered(_event) {
-    }
     indexedDBListUpdated(_event) {
     }
     indexedDBContentUpdated(_event) {
@@ -47,12 +45,6 @@ export class InterestGroupStorageModel extends SDK.SDKModel.SDKModel {
     storageBucketCreatedOrUpdated(_event) {
     }
     storageBucketDeleted(_event) {
-    }
-    attributionReportingSourceRegistered(_event) {
-    }
-    attributionReportingReportSent(_event) {
-    }
-    attributionReportingVerboseDebugReportSent(_event) {
     }
 }
 SDK.SDKModel.SDKModel.register(InterestGroupStorageModel, { capabilities: 8192 /* SDK.Target.Capability.STORAGE */, autostart: false });

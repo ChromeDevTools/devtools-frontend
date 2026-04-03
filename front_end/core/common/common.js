@@ -5407,7 +5407,7 @@ __export(Settings_exports, {
   settingForTest: () => settingForTest
 });
 import * as Platform5 from "./../platform/platform.js";
-import * as Root4 from "./../root/root.js";
+import * as Root5 from "./../root/root.js";
 
 // gen/front_end/core/common/VersionController.js
 var VersionController_exports = {};
@@ -5415,11 +5415,12 @@ __export(VersionController_exports, {
   VersionController: () => VersionController
 });
 import * as Platform4 from "./../platform/platform.js";
+import * as Root4 from "./../root/root.js";
 var VersionController = class _VersionController {
   static GLOBAL_VERSION_SETTING_NAME = "inspectorVersion";
   static SYNCED_VERSION_SETTING_NAME = "syncedInspectorVersion";
   static LOCAL_VERSION_SETTING_NAME = "localInspectorVersion";
-  static CURRENT_VERSION = 42;
+  static CURRENT_VERSION = 43;
   #settings;
   #globalVersionSetting;
   #syncedVersionSetting;
@@ -6076,6 +6077,19 @@ var VersionController = class _VersionController {
     }
     recordingsSetting.set(recordings);
   }
+  updateVersionFrom42To43() {
+    const timelineShowAllEventsExperimentEnabled = Root4.Runtime.experiments.getValueFromStorage("timeline-show-all-events");
+    if (timelineShowAllEventsExperimentEnabled !== void 0) {
+      if (this.#settings.syncedStorage.has("timeline-show-all-events")) {
+        return;
+      }
+      try {
+        const timelineShowAllEventsSetting = this.#settings.moduleSetting("timeline-show-all-events");
+        timelineShowAllEventsSetting.set(timelineShowAllEventsExperimentEnabled);
+      } catch {
+      }
+    }
+  }
   /*
    * Any new migration should be added before this comment.
    *
@@ -6139,11 +6153,11 @@ var Settings = class _Settings {
     for (const registration of this.#settingRegistrations) {
       const { settingName, defaultValue, storageType } = registration;
       const isRegex = registration.settingType === "regex";
-      const evaluatedDefaultValue = typeof defaultValue === "function" ? defaultValue(Root4.Runtime.hostConfig) : defaultValue;
+      const evaluatedDefaultValue = typeof defaultValue === "function" ? defaultValue(Root5.Runtime.hostConfig) : defaultValue;
       const setting = isRegex && typeof evaluatedDefaultValue === "string" ? this.createRegExpSetting(settingName, evaluatedDefaultValue, void 0, storageType) : this.createSetting(settingName, evaluatedDefaultValue, storageType);
       setting.setTitleFunction(registration.title);
       if (registration.userActionCondition) {
-        setting.setRequiresUserAction(Boolean(Root4.Runtime.Runtime.queryParam(registration.userActionCondition)));
+        setting.setRequiresUserAction(Boolean(Root5.Runtime.Runtime.queryParam(registration.userActionCondition)));
       }
       setting.setRegistration(registration);
       this.registerModuleSetting(setting);
@@ -6156,15 +6170,15 @@ var Settings = class _Settings {
     return this.#settingRegistrations;
   }
   static hasInstance() {
-    return Root4.DevToolsContext.globalInstance().has(_Settings);
+    return Root5.DevToolsContext.globalInstance().has(_Settings);
   }
   static instance(opts = { forceNew: null, syncedStorage: null, globalStorage: null, localStorage: null, settingRegistrations: null }) {
     const { forceNew, syncedStorage, globalStorage, localStorage, settingRegistrations, logSettingAccess, runSettingsMigration } = opts;
-    if (!Root4.DevToolsContext.globalInstance().has(_Settings) || forceNew) {
+    if (!Root5.DevToolsContext.globalInstance().has(_Settings) || forceNew) {
       if (!syncedStorage || !globalStorage || !localStorage || !settingRegistrations) {
         throw new Error(`Unable to create settings: global and local storage must be provided: ${new Error().stack}`);
       }
-      Root4.DevToolsContext.globalInstance().set(_Settings, new _Settings({
+      Root5.DevToolsContext.globalInstance().set(_Settings, new _Settings({
         syncedStorage,
         globalStorage,
         localStorage,
@@ -6173,10 +6187,10 @@ var Settings = class _Settings {
         runSettingsMigration
       }));
     }
-    return Root4.DevToolsContext.globalInstance().get(_Settings);
+    return Root5.DevToolsContext.globalInstance().get(_Settings);
   }
   static removeInstance() {
-    Root4.DevToolsContext.globalInstance().delete(_Settings);
+    Root5.DevToolsContext.globalInstance().delete(_Settings);
   }
   registerModuleSetting(setting) {
     const settingName = setting.name;
@@ -6374,7 +6388,7 @@ var Deprecation = class {
     }
     this.disabled = deprecationNotice.disabled;
     this.warning = deprecationNotice.warning();
-    this.experiment = deprecationNotice.experiment ? Root4.Runtime.experiments.allConfigurableExperiments().find((e) => e.name === deprecationNotice.experiment) : void 0;
+    this.experiment = deprecationNotice.experiment ? Root5.Runtime.experiments.allConfigurableExperiments().find((e) => e.name === deprecationNotice.experiment) : void 0;
   }
 };
 var Setting = class {
@@ -6433,7 +6447,7 @@ var Setting = class {
   }
   disabled() {
     if (this.#registration?.disabledCondition) {
-      const { disabled } = this.#registration.disabledCondition(Root4.Runtime.hostConfig);
+      const { disabled } = this.#registration.disabledCondition(Root5.Runtime.hostConfig);
       if (disabled) {
         return true;
       }
@@ -6442,7 +6456,7 @@ var Setting = class {
   }
   disabledReasons() {
     if (this.#registration?.disabledCondition) {
-      const result = this.#registration.disabledCondition(Root4.Runtime.hostConfig);
+      const result = this.#registration.disabledCondition(Root5.Runtime.hostConfig);
       if (result.disabled) {
         return result.reasons;
       }
@@ -6535,7 +6549,7 @@ var Setting = class {
     this.#registration = registration;
     const { deprecationNotice } = registration;
     if (deprecationNotice?.disabled) {
-      const experiment = deprecationNotice.experiment ? Root4.Runtime.experiments.allConfigurableExperiments().find((e) => e.name === deprecationNotice.experiment) : void 0;
+      const experiment = deprecationNotice.experiment ? Root5.Runtime.experiments.allConfigurableExperiments().find((e) => e.name === deprecationNotice.experiment) : void 0;
       if (!experiment || experiment.isEnabled()) {
         this.set(this.defaultValue);
         this.setDisabled(true);

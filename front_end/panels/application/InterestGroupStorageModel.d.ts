@@ -8,7 +8,6 @@ export declare class InterestGroupStorageModel extends SDK.SDKModel.SDKModel<Eve
     enable(): void;
     disable(): void;
     interestGroupAccessed(event: Protocol.Storage.InterestGroupAccessedEvent): void;
-    attributionReportingTriggerRegistered(_event: Protocol.Storage.AttributionReportingTriggerRegisteredEvent): void;
     indexedDBListUpdated(_event: Protocol.Storage.IndexedDBListUpdatedEvent): void;
     indexedDBContentUpdated(_event: Protocol.Storage.IndexedDBContentUpdatedEvent): void;
     interestGroupAuctionEventOccurred(_event: Protocol.Storage.InterestGroupAuctionEventOccurredEvent): void;
@@ -19,9 +18,6 @@ export declare class InterestGroupStorageModel extends SDK.SDKModel.SDKModel<Eve
     sharedStorageWorkletOperationExecutionFinished(_event: Protocol.Storage.SharedStorageWorkletOperationExecutionFinishedEvent): void;
     storageBucketCreatedOrUpdated(_event: Protocol.Storage.StorageBucketCreatedOrUpdatedEvent): void;
     storageBucketDeleted(_event: Protocol.Storage.StorageBucketDeletedEvent): void;
-    attributionReportingSourceRegistered(_event: Protocol.Storage.AttributionReportingSourceRegisteredEvent): void;
-    attributionReportingReportSent(_event: Protocol.Storage.AttributionReportingReportSentEvent): void;
-    attributionReportingVerboseDebugReportSent(_event: Protocol.Storage.AttributionReportingVerboseDebugReportSentEvent): void;
 }
 export declare const enum Events {
     INTEREST_GROUP_ACCESS = "InterestGroupAccess"

@@ -2207,6 +2207,14 @@ var UIStringsNotTranslate4 = {
    */
   tooltipDisclaimerTextForAiCodeCompletionNoLoggingInSources: "To generate code suggestions, the contents of the currently open file are shared with Google. This data will not be used to improve Google\u2019s AI models. Your organization may change these settings at any time.",
   /**
+   * @description Text for tooltip shown on hovering over "Relevant Data" in the disclaimer text for AI code completion in Styles pane.
+   */
+  tooltipDisclaimerTextForAiCodeCompletionInStyles: "To generate code suggestions, the CSS properties of the selected element and the relevant CSS files are shared with Google. This data may be seen by human reviewers to improve this feature.",
+  /**
+   * @description Text for tooltip shown on hovering over "Relevant Data" in the disclaimer text for AI code completion in Styles pane.
+   */
+  tooltipDisclaimerTextForAiCodeCompletionNoLoggingInStyles: "To generate code suggestions, the CSS properties of the selected element and the relevant CSS files are shared with Google. This data will not be used to improve Google\u2019s AI models. Your organization may change these settings at any time.",
+  /**
    * Text for tooltip shown on hovering over spinner.
    */
   tooltipTextForSpinner: "Shows when data is being sent to Google to generate code suggestions",
@@ -2227,7 +2235,7 @@ function getTooltipDisclaimerText2(noLogging, panel2) {
     case "sources":
       return noLogging ? lockedString4(UIStringsNotTranslate4.tooltipDisclaimerTextForAiCodeCompletionNoLoggingInSources) : lockedString4(UIStringsNotTranslate4.tooltipDisclaimerTextForAiCodeCompletionInSources);
     case "styles":
-      return "";
+      return noLogging ? lockedString4(UIStringsNotTranslate4.tooltipDisclaimerTextForAiCodeCompletionNoLoggingInStyles) : lockedString4(UIStringsNotTranslate4.tooltipDisclaimerTextForAiCodeCompletionInStyles);
   }
 }
 var DEFAULT_SUMMARY_TOOLBAR_VIEW = (input, output, target) => {

@@ -4668,7 +4668,6 @@ import * as EmulationModel from "./../../../models/emulation/emulation.js";
 import * as LiveMetrics from "./../../../models/live-metrics/live-metrics.js";
 import * as Trace6 from "./../../../models/trace/trace.js";
 import * as Buttons8 from "./../../../ui/components/buttons/buttons.js";
-import * as RenderCoordinator2 from "./../../../ui/components/render_coordinator/render_coordinator.js";
 import * as uiI18n4 from "./../../../ui/i18n/i18n.js";
 import * as UI11 from "./../../../ui/legacy/legacy.js";
 import * as Lit14 from "./../../../ui/lit/lit.js";
@@ -5076,8 +5075,8 @@ devtools-link {
 /*# sourceURL=${import.meta.resolve("./liveMetricsView.css")} */`;
 
 // gen/front_end/panels/timeline/components/LiveMetricsView.js
-var { html: html14, nothing: nothing13 } = Lit14;
-var { widget: widget3, widgetRef: widgetRef2 } = UI11.Widget;
+var { html: html14, nothing: nothing13, Directives: { live: live2 } } = Lit14;
+var { widget: widget3 } = UI11.Widget;
 var DEVICE_OPTION_LIST = ["AUTO", ...CrUXManager9.DEVICE_SCOPE_LIST];
 var RTT_MINIMUM = 60;
 var UIStrings15 = {
@@ -5846,15 +5845,9 @@ function renderLogSection(input, output) {
       class="logs-section"
       aria-label=${i18nString14(UIStrings15.eventLogs)}
     >
-      <devtools-widget ${widget3(LiveMetricsLogs)}
-        ${widgetRef2(LiveMetricsLogs, (widget8) => {
-    if (input.highlightedInteractionId) {
-      widget8.selectTab("interactions");
-    } else if (input.highlightedLayoutShiftClusterIds?.size) {
-      widget8.selectTab("layout-shifts");
-    }
-  })}
-      >
+      <devtools-widget ${widget3(LiveMetricsLogs, {
+    selectedTab: input.highlightedInteractionId ? "interactions" : input.highlightedLayoutShiftClusterIds?.size ? "layout-shifts" : void 0
+  })}>
         ${renderInteractionsLog(input, output)}
         ${renderLayoutShiftsLog(input, output)}
       </devtools-widget>
@@ -5876,7 +5869,7 @@ function renderNodeView(input) {
 }
 var DEFAULT_VIEW7 = (input, output, target) => {
   if (input.isNode) {
-    Lit14.render(renderNodeView(input), target, { host: input });
+    Lit14.render(renderNodeView(input), target);
     return;
   }
   const fieldEnabled = input.cruxManager.getConfigSetting().get().enabled;
@@ -5931,11 +5924,11 @@ var DEFAULT_VIEW7 = (input, output, target) => {
       </div>
     </div>
   `;
-  Lit14.render(outputTemplate, target, { host: input });
+  Lit14.render(outputTemplate, target);
   if (input.highlightedInteractionId) {
     const interactionEl = target.querySelector("#" + CSS.escape(input.highlightedInteractionId));
     if (interactionEl) {
-      void RenderCoordinator2.write(() => {
+      requestAnimationFrame(() => {
         interactionEl.scrollIntoView({
           block: "center"
         });
@@ -5953,7 +5946,7 @@ var DEFAULT_VIEW7 = (input, output, target) => {
       }
     }
     if (layoutShiftEls.length) {
-      void RenderCoordinator2.write(() => {
+      requestAnimationFrame(() => {
         layoutShiftEls[0].scrollIntoView({
           block: "start"
         });
@@ -6093,17 +6086,47 @@ var LiveMetricsView = class extends UI11.Widget.Widget {
     this.#view(viewInput, this.#viewOutput, this.contentElement);
   }
 };
+var LIVE_METRICS_LOGS_VIEW = (input, output, target) => {
+  Lit14.render(html14`
+    <style>
+      /* Any children of the root element will be matched to the slots defined within the container
+         widget's shadow DOM. */
+      :host,
+      .widget {
+        display: contents;
+      }
+    </style>
+    <devtools-tabbed-pane @select=${(event) => input.onTabSelected(event.detail.tabId)}>
+      <devtools-toolbar slot="right">
+        <devtools-button .iconName=${"clear"} .variant=${"toolbar"}
+                         title=${i18nString14(UIStrings15.clearCurrentLog)} @click=${input.onClear}
+                         .jslogContext=${"timeline.landing.clear-log"}>
+        </devtools-button>
+      </devtools-toolbar>
+      <!-- Taking advantage of web component slots allows us to render updates in the lit templates defined in the
+      main component. This should be more performant and doesn't require us to inject live metrics styles twice. -->
+      <slot name="interactions-log-content" id="interactions" ?selected=${live2(input.selectedTab === "interactions")}
+            title=${i18nString14(UIStrings15.interactions)} jslogcontext="timeline.landing.interactions-log">
+      </slot>
+      <slot name="layout-shifts-log-content" id="layout-shifts" ?selected=${live2(input.selectedTab === "layout-shifts")}
+            title=${i18nString14(UIStrings15.layoutShifts)} jslogcontext="timeline.landing.layout-shifts-log">
+      </slot>
+    </devtools-tabbed-pane>
+  `, target);
+};
 var LiveMetricsLogs = class extends UI11.Widget.Widget {
-  #tabbedPane;
-  /**
-   * Returns `true` if selecting the tab was successful.
-   */
-  selectTab(tabId) {
-    return this.#tabbedPane.selectTab(tabId);
+  #view;
+  #selectedTab = "interactions";
+  set selectedTab(tabId) {
+    if (!tabId || this.#selectedTab === tabId) {
+      return;
+    }
+    this.#selectedTab = tabId;
+    this.requestUpdate();
   }
   #clearCurrentLog() {
     const liveMetrics = LiveMetrics.LiveMetrics.instance();
-    switch (this.#tabbedPane.selectedTabId) {
+    switch (this.#selectedTab) {
       case "interactions":
         liveMetrics.clearInteractions();
         break;
@@ -6112,23 +6135,20 @@ var LiveMetricsLogs = class extends UI11.Widget.Widget {
         break;
     }
   }
-  constructor(element) {
+  constructor(element, view = LIVE_METRICS_LOGS_VIEW) {
     super(element, { useShadowDom: true });
-    this.element.style.display = "contents";
-    this.contentElement.style.display = "contents";
-    this.#tabbedPane = new UI11.TabbedPane.TabbedPane();
-    const interactionsSlot = document.createElement("slot");
-    interactionsSlot.name = "interactions-log-content";
-    const interactionsTab = UI11.Widget.Widget.getOrCreateWidget(interactionsSlot);
-    this.#tabbedPane.appendTab("interactions", i18nString14(UIStrings15.interactions), interactionsTab, void 0, void 0, void 0, void 0, void 0, "timeline.landing.interactions-log");
-    const layoutShiftsSlot = document.createElement("slot");
-    layoutShiftsSlot.name = "layout-shifts-log-content";
-    const layoutShiftsTab = UI11.Widget.Widget.getOrCreateWidget(layoutShiftsSlot);
-    this.#tabbedPane.appendTab("layout-shifts", i18nString14(UIStrings15.layoutShifts), layoutShiftsTab, void 0, void 0, void 0, void 0, void 0, "timeline.landing.layout-shifts-log");
-    const clearButton = new UI11.Toolbar.ToolbarButton(i18nString14(UIStrings15.clearCurrentLog), "clear", void 0, "timeline.landing.clear-log");
-    clearButton.addEventListener("Click", this.#clearCurrentLog, this);
-    this.#tabbedPane.rightToolbar().appendToolbarItem(clearButton);
-    this.#tabbedPane.show(this.contentElement);
+    this.#view = view;
+    this.requestUpdate();
+  }
+  performUpdate() {
+    const viewInput = {
+      onClear: this.#clearCurrentLog.bind(this),
+      selectedTab: this.#selectedTab,
+      onTabSelected: (tabId) => {
+        this.selectedTab = tabId;
+      }
+    };
+    this.#view(viewInput, void 0, this.contentElement);
   }
 };
 
@@ -8380,6 +8400,10 @@ var timelineRangeSummaryView_css_default = `/*
   height: 100%;
 }
 
+.timeline-tree-view {
+  border-left: var(--sys-size-1) solid var(--sys-color-divider);
+}
+
 @container (max-width: 450px) {
   .timeline-details-range-summary {
     display: grid;
@@ -8390,6 +8414,10 @@ var timelineRangeSummaryView_css_default = `/*
 
   .timeline-summary {
     width: 100%;
+  }
+
+  .timeline-tree-view {
+    border-left: none;
   }
 }
 

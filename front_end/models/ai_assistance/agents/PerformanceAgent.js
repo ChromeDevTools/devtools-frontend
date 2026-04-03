@@ -23,11 +23,11 @@ const UIStringsNotTranslated = {
     /**
      * @description Shown when the agent is investigating network activity
      */
-    networkActivitySummary: 'Investigating network activity…',
+    networkActivitySummary: 'Investigating network activity',
     /**
      * @description Shown when the agent is investigating main thread activity
      */
-    mainThreadActivity: 'Investigating main thread activity…',
+    mainThreadActivity: 'Investigating main thread activity',
 };
 const lockedString = i18n.i18n.lockedString;
 /**
@@ -680,7 +680,7 @@ export class PerformanceAgent extends AiAgent {
             },
             displayInfoFromArgs: params => {
                 return {
-                    title: lockedString(`Investigating insight ${params.insightName}…`),
+                    title: lockedString(`Investigating insight ${params.insightName}`),
                     action: `getInsightDetails('${params.insightSetId}', '${params.insightName}')`
                 };
             },
@@ -770,7 +770,7 @@ export class PerformanceAgent extends AiAgent {
                 required: ['eventKey']
             },
             displayInfoFromArgs: params => {
-                return { title: lockedString('Looking at trace event…'), action: `getEventByKey('${params.eventKey}')` };
+                return { title: lockedString('Looking at trace event'), action: `getEventByKey('${params.eventKey}')` };
             },
             handler: async (params) => {
                 debugLog('Function call: getEventByKey', params);
@@ -930,7 +930,7 @@ export class PerformanceAgent extends AiAgent {
                 required: ['eventKey']
             },
             displayInfoFromArgs: args => {
-                return { title: lockedString('Looking at call tree…'), action: `getDetailedCallTree('${args.eventKey}')` };
+                return { title: lockedString('Looking at call tree'), action: `getDetailedCallTree('${args.eventKey}')` };
             },
             handler: async (args) => {
                 debugLog('Function call: getDetailedCallTree');
@@ -1031,7 +1031,7 @@ export class PerformanceAgent extends AiAgent {
             },
             displayInfoFromArgs: args => {
                 return {
-                    title: lockedString('Looking up function code…'),
+                    title: lockedString('Looking up function code'),
                     action: `getFunctionCode('${args.scriptUrl}', ${args.line}, ${args.column})`
                 };
             },
@@ -1079,7 +1079,7 @@ export class PerformanceAgent extends AiAgent {
                 required: ['url']
             },
             displayInfoFromArgs: args => {
-                return { title: lockedString('Looking at resource content…'), action: `getResourceContent('${args.url}')` };
+                return { title: lockedString('Looking at resource content'), action: `getResourceContent('${args.url}')` };
             },
             handler: async (args) => {
                 debugLog('Function call: getResourceContent');
@@ -1129,7 +1129,7 @@ export class PerformanceAgent extends AiAgent {
                     required: ['eventKey']
                 },
                 displayInfoFromArgs: params => {
-                    return { title: lockedString('Selecting event…'), action: `selectEventByKey('${params.eventKey}')` };
+                    return { title: lockedString('Selecting event'), action: `selectEventByKey('${params.eventKey}')` };
                 },
                 handler: async (params) => {
                     debugLog('Function call: selectEventByKey', params);

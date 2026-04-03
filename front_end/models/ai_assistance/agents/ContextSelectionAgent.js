@@ -89,7 +89,7 @@ export class ContextSelectionAgent extends AiAgent {
             },
             displayInfoFromArgs: () => {
                 return {
-                    title: lockedString('Listing network requests…'),
+                    title: lockedString('Listing network requests'),
                     action: 'listNetworkRequest()',
                 };
             },
@@ -148,7 +148,7 @@ export class ContextSelectionAgent extends AiAgent {
             },
             displayInfoFromArgs: args => {
                 return {
-                    title: lockedString('Getting network request…'),
+                    title: lockedString('Getting network request'),
                     action: `selectNetworkRequest(${args.id})`,
                 };
             },
@@ -184,7 +184,7 @@ export class ContextSelectionAgent extends AiAgent {
             },
             displayInfoFromArgs: () => {
                 return {
-                    title: lockedString('Listing source requests…'),
+                    title: lockedString('Listing source requests'),
                     action: 'listSourceFiles()',
                 };
             },
@@ -218,7 +218,7 @@ export class ContextSelectionAgent extends AiAgent {
             },
             displayInfoFromArgs: args => {
                 return {
-                    title: lockedString('Getting source file…'),
+                    title: lockedString('Getting source file'),
                     action: `selectSourceFile(${args.id})`,
                 };
             },
@@ -246,7 +246,7 @@ export class ContextSelectionAgent extends AiAgent {
             },
             displayInfoFromArgs: () => {
                 return {
-                    title: 'Recording a performance trace…',
+                    title: 'Recording a performance trace',
                     action: 'performanceRecordAndReload()',
                 };
             },
@@ -275,7 +275,7 @@ export class ContextSelectionAgent extends AiAgent {
             },
             displayInfoFromArgs: () => {
                 return {
-                    title: 'Auditing your page with Lighthouse…',
+                    title: 'Auditing your page with Lighthouse',
                     action: 'runLighthouseAudits()',
                 };
             },

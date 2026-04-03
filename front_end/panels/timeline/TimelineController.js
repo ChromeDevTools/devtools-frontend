@@ -1,6 +1,7 @@
 // Copyright 2016 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
@@ -196,7 +197,7 @@ export class TimelineController {
         // 'disabled-by-default-v8.cpu_profiler'
         //   └ default: on, option: enableJSSampling
         const categoriesArray = [
-            Root.Runtime.experiments.isEnabled(Root.ExperimentNames.ExperimentName.TIMELINE_SHOW_ALL_EVENTS) ? '*' : '-*',
+            Common.Settings.Settings.instance().moduleSetting('timeline-show-all-events').get() ? '*' : '-*',
             Trace.Types.Events.Categories.Console,
             Trace.Types.Events.Categories.Loading,
             Trace.Types.Events.Categories.UserTiming,

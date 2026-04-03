@@ -9,7 +9,6 @@ export var ExperimentName;
     ExperimentName["PROTOCOL_MONITOR"] = "protocol-monitor";
     ExperimentName["SAMPLING_HEAP_PROFILER_TIMELINE"] = "sampling-heap-profiler-timeline";
     ExperimentName["TIMELINE_INVALIDATION_TRACKING"] = "timeline-invalidation-tracking";
-    ExperimentName["TIMELINE_SHOW_ALL_EVENTS"] = "timeline-show-all-events";
     ExperimentName["APCA"] = "apca";
     ExperimentName["FONT_EDITOR"] = "font-editor";
     ExperimentName["INSTRUMENTATION_BREAKPOINTS"] = "instrumentation-breakpoints";

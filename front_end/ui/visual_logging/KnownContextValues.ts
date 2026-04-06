@@ -2294,6 +2294,7 @@ export const knownContextValues = new Set([
   'lighthouse.audit.aria-treeitem-name',
   'lighthouse.audit.aria-valid-attr',
   'lighthouse.audit.aria-valid-attr-value',
+  'lighthouse.audit.baseline',
   'lighthouse.audit.bf-cache',
   'lighthouse.audit.bootup-time',
   'lighthouse.audit.button-name',

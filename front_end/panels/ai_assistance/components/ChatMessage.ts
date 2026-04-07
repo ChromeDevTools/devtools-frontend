@@ -482,7 +482,6 @@ function renderStepCode(step: Step): Lit.LitTemplate {
       <devtools-code-block
         .code=${step.code.trim()}
         .codeLang=${'js'}
-        .displayLimit=${MAX_NUM_LINES_IN_CODEBLOCK}
         .displayNotice=${!Boolean(step.output)}
         .header=${codeHeadingText}
         .showCopyButton=${true}
@@ -493,7 +492,6 @@ function renderStepCode(step: Step): Lit.LitTemplate {
     <devtools-code-block
       .code=${step.output}
       .codeLang=${'js'}
-      .displayLimit=${MAX_NUM_LINES_IN_CODEBLOCK}
       .displayNotice=${true}
       .header=${lockedString(UIStringsNotTranslate.dataReturned)}
       .showCopyButton=${false}
@@ -526,7 +524,6 @@ function renderStepDetails({
       <devtools-code-block
         .code=${contextDetail.text}
         .codeLang=${contextDetail.codeLang || ''}
-        .displayLimit=${MAX_NUM_LINES_IN_CODEBLOCK}
         .displayNotice=${false}
         .header=${contextDetail.title}
         .showCopyButton=${true}

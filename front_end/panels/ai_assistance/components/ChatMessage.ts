@@ -568,9 +568,14 @@ function renderWalkthroughSidebarButton(
   const variant = hasOneStepWithWidget && !input.isLoading ? Buttons.Button.Variant.TONAL : Buttons.Button.Variant.TEXT;
   const icon = AiAssistanceModel.AiUtils.getIconName();
 
+  const toggleContainerClasses = Lit.Directives.classMap({
+    'walkthrough-toggle-container': true,
+    // We only apply the widget styling when loading is complete
+    'has-widgets': hasOneStepWithWidget && !input.isLoading,
+  });
   // clang-format off
   return html`
-    <div class="walkthrough-toggle-container ${hasOneStepWithWidget ? 'has-widgets' : ''}">
+    <div class=${toggleContainerClasses}>
       ${input.isLoading ?
         html`<devtools-spinner></devtools-spinner>` :
         html`<devtools-icon name=${icon}></devtools-icon>`}
@@ -589,9 +594,7 @@ function renderWalkthroughSidebarButton(
             // the walkthrough open with an alternative message.
             walkthrough.onOpen(message as ModelChatMessage);
           }
-        }}
->
-        ${title}<devtools-icon class="chevron" .name=${isExpanded ? 'cross' : 'chevron-right'}></devtools-icon>
+        }}>${title}<devtools-icon class="chevron" .name=${isExpanded ? 'cross' : 'chevron-right'}></devtools-icon>
       </devtools-button>
     </div>
   `;

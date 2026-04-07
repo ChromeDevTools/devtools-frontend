@@ -133,6 +133,24 @@ describe('AidaGcaTranslation', () => {
       assert.deepEqual(AidaGcaTranslation.aidaDoConversationRequestToGcaRequest(aidaRequest), expectedGcaRequest);
     });
 
+    it('translates a request with facts', () => {
+      const aidaRequest = createAidaDoConversationRequest({
+        facts: [
+          {text: 'Fact 1', metadata: {source: 'src1', score: 1}},
+          {text: 'Fact 2', metadata: {source: 'src2', score: 2}},
+        ],
+      });
+
+      const expectedGcaRequest = createGcaRequest('chat_console_insights', {
+        contents: [
+          {role: 'model', parts: [{text: '[source: src1] Fact 1'}, {text: '[source: src2] Fact 2'}]},
+          {role: 'user', parts: [{text: 'Hello'}]},
+        ],
+      });
+
+      assert.deepEqual(AidaGcaTranslation.aidaDoConversationRequestToGcaRequest(aidaRequest), expectedGcaRequest);
+    });
+
     it('translates a request with historical contexts', () => {
       const aidaRequest = createAidaDoConversationRequest({
         historical_contexts: [

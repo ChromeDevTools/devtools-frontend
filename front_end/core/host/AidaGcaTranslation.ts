@@ -27,6 +27,10 @@ export function aidaDoConversationRequestToGcaRequest(request: AIDA.DoConversati
   try {
     const contents: GCA.Content[] = [];
 
+    if (request.facts) {
+      contents.push(convertAidaFactsToGcaContent(request.facts));
+    }
+
     if (request.historical_contexts) {
       contents.push(...(request.historical_contexts).map(convertAidaContentToGcaContent));
     }
@@ -352,6 +356,15 @@ function gcaCandidateToAidaGenerationSample(candidate: GCA.Candidate): AIDA.Gene
     };
   }
   return generationSample;
+}
+
+function convertAidaFactsToGcaContent(facts: AIDA.RequestFact[]): GCA.Content {
+  return {
+    role: 'model',
+    parts: facts.map(fact => {
+      return {text: `[source: ${fact.metadata.source}] ${fact.text}`};
+    }),
+  };
 }
 
 function convertAidaContentToGcaContent(content: AIDA.Content): GCA.Content {

@@ -76,7 +76,7 @@ export async function startLogging(options?: {
 export async function addDocument(document: Document): Promise<void> {
   documents.push(document);
   if (['interactive', 'complete'].includes(document.readyState)) {
-    await process();
+    await RenderCoordinator.read('processForLogging', process);
   }
   document.addEventListener('visibilitychange', scheduleProcessing);
   document.addEventListener('scroll', scheduleProcessing);
@@ -84,8 +84,8 @@ export async function addDocument(document: Document): Promise<void> {
 }
 
 export async function stopLogging(): Promise<void> {
-  await keyboardLogThrottler.schedule(async () => {}, Common.Throttler.Scheduling.AS_SOON_AS_POSSIBLE);
   logging = false;
+  await keyboardLogThrottler.schedule(async () => {}, Common.Throttler.Scheduling.AS_SOON_AS_POSSIBLE);
   unregisterAllLoggables();
   for (const document of documents) {
     document.removeEventListener('visibilitychange', scheduleProcessing);
@@ -139,7 +139,7 @@ const viewportRectFor = (element: Element): DOMRect => {
 };
 
 export async function process(): Promise<void> {
-  if (document.hidden) {
+  if (!logging || document.hidden) {
     return;
   }
   const startTime = performance.now();

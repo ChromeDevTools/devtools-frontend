@@ -3139,7 +3139,7 @@ export class BottomUpProfileRevealer implements Common.Revealer.Revealer<Utils.H
     TraceBounds.TraceBounds.BoundsManager.instance().setTimelineVisibleWindow(
         revealable.bounds, {ignoreMiniMapBounds: true, shouldAnimate: true});
     panel.select(null);
-    panel.getFlameChart().selectDetailsViewTab(Tab.BottomUp, null);
+    panel.getFlameChart().selectDetailsViewTab(Tab.BottomUp, revealable.node ?? null);
   }
 }
 

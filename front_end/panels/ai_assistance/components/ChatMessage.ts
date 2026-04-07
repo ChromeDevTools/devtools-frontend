@@ -1568,6 +1568,9 @@ async function makeTimelineRangeSummaryWidget(widgetData: TimelineRangeSummaryAi
                 entityMapper: thirdPartyTree.entityMapper(),
               },
               activeSelection: { bounds },
+              onBottomUpButtonClicked: (node: Trace.Extras.TraceTree.Node|null) => {
+                void Common.Revealer.reveal(new TimelineUtils.Helpers.RevealableBottomUpProfile(bounds, node ?? undefined));
+              },
             })}`,
         } as TimelineComponents.TimelineRangeSummaryView.TimelineRangeSummaryViewData,
       })}

@@ -807,6 +807,38 @@ code
       assert.exists(lcpWidget);
       assert.strictEqual(lcpWidget?.data.lcpData, insightSet.model.LCPBreakdown);
     });
+
+    it('yields a BOTTOM_UP_TREE widget when getDetailedCallTree is called', async function() {
+      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-outermost-frames.json.gz');
+      const events = allThreadEntriesInTrace(parsedTrace);
+      const layoutEvt = events.find(event => event.ts === 465457096322);
+      assert.exists(layoutEvt);
+
+      const serializer = new Trace.EventsSerializer.EventsSerializer();
+      const key = serializer.keyForEvent(layoutEvt);
+
+      const agent = createAgentForConversation({
+        aidaClient: mockAidaClient([
+          [{
+            explanation: '',
+            functionCalls: [
+              {name: 'getDetailedCallTree', args: {eventKey: key}},
+            ]
+          }],
+          [{explanation: 'done'}]
+        ])
+      });
+
+      const context = PerformanceAgent.PerformanceTraceContext.fromParsedTrace(parsedTrace);
+
+      const responses = await Array.fromAsync(agent.run('test', {selected: context}));
+      const actions = responses.filter(r => r.type === AiAgent.ResponseType.ACTION);
+      assert.lengthOf(actions, 1);
+
+      assert.exists(actions[0].widgets);
+      const bottomUpWidget = actions[0].widgets?.find(w => w.name === 'BOTTOM_UP_TREE');
+      assert.exists(bottomUpWidget);
+    });
   });
 
   describe('PerformanceTraceContext.getSuggestions', () => {

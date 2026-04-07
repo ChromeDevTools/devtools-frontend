@@ -1117,7 +1117,19 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
 
         const key = `getDetailedCallTree(${args.eventKey})`;
         this.#cacheFunctionResult(focus, key, callTree);
-        return {result: {callTree}};
+
+        const {startTime, endTime} = Trace.Helpers.Timing.eventTimingsMicroSeconds(event);
+        const bounds = Trace.Helpers.Timing.traceWindowFromMicroSeconds(startTime, endTime);
+
+        const widgets: AiWidget[] = [{
+          name: 'BOTTOM_UP_TREE',
+          data: {
+            bounds,
+            parsedTrace,
+          },
+        }];
+
+        return {result: {callTree}, widgets};
       },
 
     });

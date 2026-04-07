@@ -38,6 +38,7 @@ export {AgentFocus} from '../front_end/models/ai_assistance/performance/AIContex
 export {DebuggerWorkspaceBinding} from '../front_end/models/bindings/DebuggerWorkspaceBinding.js';
 export {CrUXManager} from '../front_end/models/crux-manager/CrUXManager.js';
 export * as Formatter from '../front_end/models/formatter/formatter.js';
+export * as HeapSnapshotModel from '../front_end/models/heap_snapshot/heap_snapshot.js';
 export {Issue} from '../front_end/models/issues_manager/Issue.js';
 export {
   AggregatedIssue,
@@ -53,7 +54,6 @@ export {
 export * as MarkdownIssueDescription from '../front_end/models/issues_manager/MarkdownIssueDescription.js';
 export * as StackTrace from '../front_end/models/stack_trace/stack_trace.js';
 export * as TraceEngine from '../front_end/models/trace/trace.js';
-export {IgnoreListManager} from '../front_end/models/workspace/IgnoreListManager.js';
 export * as Marked from '../front_end/third_party/marked/marked.js';
 
 installInspectorFrontendHost(new McpHostBindings());

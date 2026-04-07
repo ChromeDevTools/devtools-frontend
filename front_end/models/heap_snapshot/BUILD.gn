@@ -28,6 +28,7 @@ devtools_entrypoint("bundle") {
 
   visibility = [
     ":*",
+    "../../../mcp/*",
     "../../entrypoints/heap_snapshot_worker/*",
     "../../panels/profiler/*",
   ]
@@ -35,7 +36,7 @@ devtools_entrypoint("bundle") {
   visibility += devtools_models_visibility
 }
 
-ts_library("unittests") {
+devtools_foundation_module("unittests") {
   testonly = true
 
   sources = [ "heap_snapshot.test.ts" ]

@@ -786,11 +786,19 @@ async function makeComputedStyleWidget(widgetData: ComputedStyleAiWidget): Promi
   return {
     renderedWidget,
     revealable: new Elements.ElementsPanel.NodeComputedStyles(domNodeForId),
-    title: html`<devtools-widget
-      ${widget(PanelsCommon.DOMLinkifier.DOMNodeLink, {
-      node: domNodeForId,
-    })}
-    ></devtools-widget>`,
+    // clang-format off
+    title: html`
+      <span class="computed-style-title-wrapper">
+        <span class="computed-style-title-prefix">Computed styles</span>
+        <span class="style-class-wrapper">
+          (<devtools-widget
+            ${widget(PanelsCommon.DOMLinkifier.DOMNodeLink, {
+            node: domNodeForId,
+          })}
+          ></devtools-widget>)
+        </span>
+      </span>`,
+    // clang-format on
   };
 }
 

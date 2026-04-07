@@ -19,7 +19,7 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import consolePinPaneStyles from './consolePinPane.css.js';
 
-const {createRef, ref} = Directives;
+const {createRef, ref, repeat} = Directives;
 const {widget} = UI.Widget;
 
 const UIStrings = {
@@ -72,7 +72,7 @@ export const DEFAULT_PANE_VIEW = (input: PaneViewInput, _output: object, target:
   render(html`
     <style>${consolePinPaneStyles}</style>
     <div class='console-pins monospace' jslog=${VisualLogging.pane('console-pins')} @contextmenu=${input.onContextMenu}>
-    ${input.pins.map(pin => widget(ConsolePinPresenter, {
+    ${repeat(input.pins, pin => pin, pin => widget(ConsolePinPresenter, {
           pin,
           focusOut: input.focusOut,
           onRemove: () => input.onRemove(pin),
@@ -298,6 +298,10 @@ export class ConsolePinPresenter extends UI.Widget.Widget {
   set pin(pin: ConsolePin) {
     this.#pin?.removeEventListener(ConsolePinEvent.EVALUATE_RESULT_READY, this.requestUpdate, this);
     this.#pin = pin;
+    // Clear the existing editor reference so `performUpdate()` creates
+    // a new EditorState with the new pin's text, rather than reusing
+    // the stale one from the previous pin.
+    this.#editor = undefined;
     this.#pin.setEditor(this.#pinEditor);
     this.#pin.addEventListener(ConsolePinEvent.EVALUATE_RESULT_READY, this.requestUpdate, this);
     this.requestUpdate();

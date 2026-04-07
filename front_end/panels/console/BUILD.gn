@@ -119,6 +119,7 @@ devtools_ui_module("unittests") {
     "ConsoleContextSelector.test.ts",
     "ConsoleFormat.test.ts",
     "ConsoleInsightTeaser.test.ts",
+    "ConsolePinPane.test.ts",
     "ConsolePrompt.test.ts",
     "ConsoleSidebar.test.ts",
     "ConsoleView.test.ts",

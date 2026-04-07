@@ -126,7 +126,7 @@ export class StorageMetadataView extends LegacyWrapper.LegacyWrapper.WrappableCo
   #storageBucketsModel?: SDK.StorageBucketsModel.StorageBucketsModel;
   #storageKey: SDK.StorageKeyManager.StorageKey|null = null;
   #storageBucket: Protocol.Storage.StorageBucketInfo|null = null;
-  #showOnlyBucket = true;
+  #showOnlyBucket = false;
 
   setStorageKey(storageKey: string): void {
     this.#storageKey = SDK.StorageKeyManager.parseStorageKey(storageKey);
@@ -232,7 +232,7 @@ export class StorageMetadataView extends LegacyWrapper.LegacyWrapper.WrappableCo
       if (isDefault) {
         return html`<span class="default-bucket">${i18nString(UIStrings.defaultBucket)}</span>`;
       }
-      if (this.#showOnlyBucket) {
+      if (!this.#showOnlyBucket) {
         return html`${name}`;
       }
       const revealBucket = (e: Event): void => {
@@ -249,7 +249,7 @@ export class StorageMetadataView extends LegacyWrapper.LegacyWrapper.WrappableCo
       >${name}</devtools-link>`;
     };
 
-    if (!this.#showOnlyBucket) {
+    if (this.#showOnlyBucket) {
       return html`
         ${this.key(i18nString(UIStrings.bucketName))}
         ${this.value(renderBucketName())}`;

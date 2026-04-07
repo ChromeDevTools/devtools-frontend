@@ -284,7 +284,7 @@ describe('StorageMetadataView', () => {
       durability: Protocol.Storage.StorageBucketsDurability.Relaxed,
     };
     component.setStorageBucket(bucketInfo);
-    component.setShowOnlyBucket(false);
+    component.setShowOnlyBucket(true);
     await RenderCoordinator.done();
 
     const report = component.shadowRoot!.querySelector('devtools-report');

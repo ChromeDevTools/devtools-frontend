@@ -45,6 +45,7 @@ import * as TrustTokensTreeElement from './TrustTokensTreeElement.js';
 import * as WebMCPTreeElement from './WebMCPTreeElement.js';
 import * as WebMCPView from './WebMCPView.js';
 
+export * as Components from './components/components.js';
 export {
   ApplicationPanelSidebar,
   AppManifestView,

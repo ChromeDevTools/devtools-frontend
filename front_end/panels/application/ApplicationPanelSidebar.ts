@@ -1031,6 +1031,14 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
     }
   }
 
+  showStorageBucket(bucketInfo: Protocol.Storage.StorageBucketInfo): void {
+    const bucketsModel = SDK.TargetManager.TargetManager.instance().primaryPageTarget()?.model(
+        SDK.StorageBucketsModel.StorageBucketsModel);
+    if (bucketsModel) {
+      this.storageBucketsTreeElement?.getBucketTreeElement(bucketsModel, bucketInfo)?.revealAndSelect(true);
+    }
+  }
+
   private onmousemove(event: MouseEvent): void {
     const nodeUnderMouse = (event.target as Node);
     if (!nodeUnderMouse) {

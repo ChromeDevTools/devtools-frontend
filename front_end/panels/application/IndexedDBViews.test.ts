@@ -186,7 +186,7 @@ describe.skip('[crbug.com/1473557]: IDBDatabaseView', () => {
       'https://example.com',
       'Yes, because the storage key is opaque',
       'Yes',
-      'default',
+      'Default bucket',
       '1',
       '0',
     ]);

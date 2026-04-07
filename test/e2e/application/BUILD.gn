@@ -16,6 +16,7 @@ ts_e2e_library("application") {
     "service-worker-update.test.ts",
     "session-storage.test.ts",
     "shared-storage.test.ts",
+    "storage-metadata.test.ts",
     "storage.test.ts",
     "window-controls.test.ts",
   ]

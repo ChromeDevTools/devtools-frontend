@@ -24,6 +24,7 @@ copy_to_gen("application") {
     "service-worker.js",
     "session-storage.html",
     "shared-storage.html",
+    "storage-buckets-link.html",
     "storage-quota.html",
     "styles-non-unique-url.css",
     "window-controls-manifest.webmanifest",

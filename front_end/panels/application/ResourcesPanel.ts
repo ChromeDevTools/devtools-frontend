@@ -12,6 +12,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {ApplicationPanelSidebar, StorageCategoryView} from './ApplicationPanelSidebar.js';
+import type {StorageMetadataView} from './components/components.js';
 import {CookieItemsView} from './CookieItemsView.js';
 import type {DeviceBoundSessionsModel} from './DeviceBoundSessionsModel.js';
 import {DeviceBoundSessionsView} from './DeviceBoundSessionsView.js';
@@ -258,5 +259,12 @@ export class AttemptViewWithFilterRevealer implements
   async reveal(filter: PreloadingHelper.PreloadingForward.AttemptViewWithFilter): Promise<void> {
     const sidebar = await ResourcesPanel.showAndGetSidebar();
     sidebar.showPreloadingAttemptViewWithFilter(filter);
+  }
+}
+
+export class StorageBucketRevealer implements Common.Revealer.Revealer<StorageMetadataView.StorageBucketRevealInfo> {
+  async reveal(revealInfo: StorageMetadataView.StorageBucketRevealInfo): Promise<void> {
+    const sidebar = await ResourcesPanel.showAndGetSidebar();
+    sidebar.showStorageBucket(revealInfo.bucketInfo);
   }
 }

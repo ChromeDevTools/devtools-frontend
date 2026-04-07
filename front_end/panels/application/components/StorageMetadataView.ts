@@ -4,7 +4,9 @@
 /* eslint-disable @devtools/no-lit-render-outside-of-view */
 
 import '../../../ui/components/report_view/report_view.js';
+import '../../../ui/kit/kit.js';
 
+import * as Common from '../../../core/common/common.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
@@ -13,6 +15,7 @@ import * as LegacyWrapper from '../../../ui/components/legacy_wrapper/legacy_wra
 import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import {html, type LitTemplate, nothing, render, type TemplateResult} from '../../../ui/lit/lit.js';
+import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import storageMetadataViewStyle from './storageMetadataView.css.js';
 
@@ -112,6 +115,11 @@ const UIStrings = {
 
 const str_ = i18n.i18n.registerUIStrings('panels/application/components/StorageMetadataView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+
+export class StorageBucketRevealInfo {
+  constructor(public bucketInfo: Protocol.Storage.StorageBucketInfo) {
+  }
+}
 
 export class StorageMetadataView extends LegacyWrapper.LegacyWrapper.WrappableComponent {
   readonly #shadow = this.attachShadow({mode: 'open'});
@@ -220,20 +228,36 @@ export class StorageMetadataView extends LegacyWrapper.LegacyWrapper.WrappableCo
     const {bucket: {name}, persistent, durability, quota} = this.#storageBucket;
     const isDefault = !name;
 
-    if (!this.#showOnlyBucket) {
+    const renderBucketName = (): TemplateResult => {
       if (isDefault) {
-        return html`
-          ${this.key(i18nString(UIStrings.bucketName))}
-          ${this.value(html`<span class="default-bucket">default</span>`)}`;
+        return html`<span class="default-bucket">${i18nString(UIStrings.defaultBucket)}</span>`;
       }
+      if (this.#showOnlyBucket) {
+        return html`${name}`;
+      }
+      const revealBucket = (e: Event): void => {
+        e.preventDefault();
+        void Common.Revealer.reveal(
+            new StorageBucketRevealInfo(this.#storageBucket as Protocol.Storage.StorageBucketInfo));
+      };
+      return html`<devtools-link
+        @click=${revealBucket}
+        title=${name}
+        jslog=${VisualLogging.action('storage-bucket').track({
+        click: true
+      })}
+      >${name}</devtools-link>`;
+    };
+
+    if (!this.#showOnlyBucket) {
       return html`
         ${this.key(i18nString(UIStrings.bucketName))}
-        ${this.value(name)}`;
+        ${this.value(renderBucketName())}`;
     }
     // clang-format off
     return html`
       ${this.key(i18nString(UIStrings.bucketName))}
-      ${this.value(name || html`<span class="default-bucket">default</span>`)}
+      ${this.value(renderBucketName())}
       ${this.key(i18nString(UIStrings.persistent))}
       ${this.value(persistent ? i18nString(UIStrings.yes) : i18nString(UIStrings.no))}
       ${this.key(i18nString(UIStrings.durability))}

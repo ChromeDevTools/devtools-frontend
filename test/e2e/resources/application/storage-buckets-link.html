@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Storage Buckets Link Test</title>
+</head>
+<body>
+  <h1>Storage Buckets Link Test</h1>
+  <script>
+    async function createBucketAndIDB() {
+      if (!navigator.storageBuckets) {
+        console.error('Storage Buckets API not supported');
+        return;
+      }
+      try {
+        const bucket = await navigator.storageBuckets.open('test-bucket', {
+          durability: 'relaxed',
+          persisted: true,
+        });
+        const idb = await bucket.indexedDB.open('test-db');
+        idb.onupgradeneeded = () => {
+          idb.result.createObjectStore('test-store');
+        };
+        const cache = await bucket.caches.open('test-cache');
+        await cache.put('https://example.com', new Response('test'));
+        const defaultCache = await window.caches.open('default-cache');
+        await defaultCache.put('https://example.com/default', new Response('default-test'));
+      } catch (e) {
+        console.error('Error creating bucket and IDB:', e);
+      }
+    }
+    createBucketAndIDB();
+  </script>
+</body>
+</html>

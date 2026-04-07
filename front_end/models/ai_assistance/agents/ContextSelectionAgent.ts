@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Root from '../../../core/root/root.js';
@@ -120,7 +121,7 @@ export class ContextSelectionAgent extends AiAgent<never> {
 
         let hasCrossOriginRequest = false;
         for (const request of Logs.NetworkLog.NetworkLog.instance().requests()) {
-          const requestOrigin = new URL(request.documentURL).origin;
+          const documentOrigin = Common.ParsedURL.ParsedURL.extractOrigin(request.documentURL);
           /**
            * NOTE: this origin check does not ensure that all the requests are
            * from the same origin as the target page. Instead, it ensures that
@@ -129,7 +130,7 @@ export class ContextSelectionAgent extends AiAgent<never> {
            * during the loading of the target page, and do not leak URLs from
            * other pages.
            */
-          if (origin && requestOrigin !== origin) {
+          if (origin && documentOrigin !== origin) {
             hasCrossOriginRequest = true;
             continue;
           }
@@ -186,8 +187,8 @@ export class ContextSelectionAgent extends AiAgent<never> {
             return false;
           }
 
-          const requestOrigin = new URL(req.documentURL).origin;
-          return !origin || requestOrigin === origin;
+          const documentOrigin = Common.ParsedURL.ParsedURL.extractOrigin(req.documentURL);
+          return !origin || documentOrigin === origin;
         });
 
         if (request) {

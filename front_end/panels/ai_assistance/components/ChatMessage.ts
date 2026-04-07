@@ -1545,7 +1545,7 @@ async function makeTimelineRangeSummaryWidget(widgetData: TimelineRangeSummaryAi
   eventsArray.sort((a, b) => a.ts - b.ts);
 
   const thirdPartyTree = new Timeline.ThirdPartyTreeView.ThirdPartyTreeViewWidget();
-  const mapper = new Trace.EntityMapper.EntityMapper(parsedTrace);
+  const mapper = Trace.EntityMapper.EntityMapper.getOrCreate(parsedTrace);
   thirdPartyTree.model = {selectedEvents: eventsArray, parsedTrace, entityMapper: mapper};
   thirdPartyTree.activeSelection = Timeline.TimelineSelection.selectionFromRangeMicroSeconds(bounds.min, bounds.max);
   thirdPartyTree.refreshTree(true);

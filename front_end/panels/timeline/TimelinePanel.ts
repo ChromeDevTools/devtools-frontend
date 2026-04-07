@@ -2179,7 +2179,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     PerfUI.LineLevelProfile.Performance.instance().initialize(cpuProfiles, primaryPageTarget);
 
     // Initialize EntityMapper
-    this.#entityMapper = new Trace.EntityMapper.EntityMapper(parsedTrace);
+    this.#entityMapper = Trace.EntityMapper.EntityMapper.getOrCreate(parsedTrace);
 
     // Set up SourceMapsResolver to ensure we resolve any function names in
     // profile calls.
@@ -2188,9 +2188,6 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     this.#sourceMapsResolver.addEventListener(
         SourceMapsResolver.SourceMappingsUpdated.eventName, this.#onSourceMapsNodeNamesResolvedBound);
     void this.#sourceMapsResolver.install();
-
-    // Initialize EntityMapper
-    this.#entityMapper = new Trace.EntityMapper.EntityMapper(parsedTrace);
 
     this.statusDialog?.updateProgressBar(i18nString(UIStrings.processed), 80);
     this.updateMiniMap();
@@ -3060,7 +3057,6 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
 
     return trace;
   }
-
 }
 
 export const enum State {

@@ -10,6 +10,8 @@ import * as Helpers from './helpers/helpers.js';
 import type {ParsedTrace} from './ModelImpl.js';
 import type * as Types from './types/types.js';
 
+const mapperCache = new WeakMap<ParsedTrace, EntityMapper>();
+
 export class EntityMapper {
   #parsedTrace: ParsedTrace;
   #entityMappings: Handlers.Helpers.EntityMappings;
@@ -28,6 +30,16 @@ export class EntityMapper {
     this.#entityMappings = this.#parsedTrace.data.Renderer.entityMappings;
     this.#firstPartyEntity = this.#findFirstPartyEntity();
     this.#thirdPartyEvents = this.#getThirdPartyEvents();
+  }
+
+  static getOrCreate(parsedTrace: ParsedTrace): EntityMapper {
+    const cached = mapperCache.get(parsedTrace);
+    if (cached) {
+      return cached;
+    }
+    const instance = new EntityMapper(parsedTrace);
+    mapperCache.set(parsedTrace, instance);
+    return instance;
   }
 
   #findFirstPartyEntity(): Handlers.Helpers.Entity|null {

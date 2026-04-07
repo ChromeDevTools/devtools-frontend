@@ -52,7 +52,7 @@ export class PerformanceTraceFormatter {
   }
 
   serializeBounds(bounds: Trace.Types.Timing.TraceWindowMicro): string {
-    return `{min: ${bounds.min}, max: ${bounds.max}}`;
+    return `{min: ${bounds.min}µs, max: ${bounds.max}µs}`;
   }
 
   /**

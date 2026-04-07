@@ -2850,6 +2850,10 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   updateDecorations(): void {
+    // Important to keep the entire tree node row as a clickable area for that
+    // node.
+    this.listItemElement.style.setProperty('--indent', this.computeLeftIndent() + 'px');
+
     if (this.isClosingTag()) {
       return;
     }

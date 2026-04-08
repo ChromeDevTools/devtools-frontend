@@ -344,6 +344,72 @@ describeWithEnvironment('ChatMessage', () => {
       assert.strictEqual(button.innerText, 'Investigating XYZ');
     });
 
+    it('accessible label appends "Show thinking" when showing step title', async () => {
+      const loadingMessage: AiAssistance.ChatMessage.ModelChatMessage = {
+        entity: AiAssistance.ChatMessage.ChatMessageEntity.MODEL,
+        parts: [{
+          type: 'step',
+          step: {
+            isLoading: true,
+            title: 'Investigating XYZ',
+            code: 'console.log("test")',
+          },
+        }],
+        rpcId: 99,
+      };
+      const target = renderView({
+        isLoading: true,
+        message: loadingMessage,
+        walkthrough: {
+          ...DEFAULT_WALKTHROUGH,
+          isInlined: false,
+        }
+      });
+      const button = querySelectorErrorOnMissing(target, '[data-show-walkthrough]');
+      assert.strictEqual(button.getAttribute('accessibleLabel'), 'Investigating XYZ Show thinking');
+    });
+
+    it('accessible label appends "Show thinking" when showing paused state', async () => {
+      const pausedMessage: AiAssistance.ChatMessage.ModelChatMessage = {
+        entity: AiAssistance.ChatMessage.ChatMessageEntity.MODEL,
+        parts: [{
+          type: 'step',
+          step: {
+            isLoading: false,
+            title: 'Set background color to red',
+            requestApproval: {
+              description: 'Confirm!',
+              onAnswer: () => {},
+            },
+          },
+        }],
+        rpcId: 99,
+      };
+      const target = renderView({
+        isLoading: false,
+        message: pausedMessage,
+        walkthrough: {
+          ...DEFAULT_WALKTHROUGH,
+          isInlined: false,
+        }
+      });
+      const button = querySelectorErrorOnMissing(target, '[data-show-walkthrough]');
+      assert.strictEqual(button.getAttribute('accessibleLabel'), 'Set background color to red Show thinking');
+    });
+
+    it('accessible label defaults to visible text when generic', async () => {
+      const target = renderView({
+        isLoading: false,
+        message: stepMessage,
+        walkthrough: {
+          ...DEFAULT_WALKTHROUGH,
+          isInlined: false,
+        }
+      });
+      const button = querySelectorErrorOnMissing(target, '[data-show-walkthrough]');
+      assert.strictEqual(button.getAttribute('accessibleLabel'), 'Show thinking');
+    });
+
     it('does not render "Show thinking" button when inline', () => {
       const target = renderView({
         message: stepMessage,

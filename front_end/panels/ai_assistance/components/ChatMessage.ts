@@ -204,6 +204,10 @@ const UIStringsNotTranslate = {
    * @description Title for the bottom up thread activity widget.
    */
   bottomUpTree: 'Bottom-up thread activity',
+  /**
+   * @description Accessilility label for the button that shows the walkthrough when there are no widgets in the walkthrough.
+   */
+  showThinking: 'Show thinking',
 } as const;
 
 export interface Step {
@@ -571,6 +575,14 @@ function renderWalkthroughSidebarButton(
     // We only apply the widget styling when loading is complete
     'has-widgets': hasOneStepWithWidget && !input.isLoading,
   });
+
+  let accessibleLabel = title;
+  if (!isExpanded) {
+    if (input.isLoading || lastStep.requestApproval) {
+      accessibleLabel = `${titleForStep(lastStep)} ${i18n.i18n.lockedString(UIStringsNotTranslate.showThinking)}`;
+    }
+  }
+
   // clang-format off
   return html`
     <div class=${toggleContainerClasses}>
@@ -581,6 +593,7 @@ function renderWalkthroughSidebarButton(
         .variant=${variant}
         .size=${Buttons.Button.Size.SMALL}
         .title=${lastStep.isLoading ? titleForStep(lastStep) : title}
+        .accessibleLabel=${accessibleLabel}
         .jslogContext=${walkthrough.isExpanded ? 'ai-hide-walkthrough-sidebar' : 'ai-show-walkthrough-sidebar'}
         data-show-walkthrough
         @click=${() => {

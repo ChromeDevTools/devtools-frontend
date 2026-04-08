@@ -539,15 +539,13 @@ function defaultView(input: ViewInput, output: PanelViewOutput, target: HTMLElem
           <div slot="main" class="main-view">
             ${renderState()}
           </div>
-          <div slot="sidebar" class="sidebar-view">
-            ${shouldShowWalkthrough ? html`
-              <devtools-widget ${widget(WalkthroughView, {
-                message: input.props.walkthrough.activeSidebarMessage,
-                isLoading: input.props.isLoading && walkthroughIsForLastMessage,
-                markdownRenderer: input.props.markdownRenderer,
-                onToggle: input.props.walkthrough.onToggle,
-              })}></devtools-widget>` : Lit.nothing}
-          </div>
+          ${shouldShowWalkthrough ? html`
+            <devtools-widget slot="sidebar" ${widget(WalkthroughView, {
+              message: input.props.walkthrough.activeSidebarMessage,
+              isLoading: input.props.isLoading && walkthroughIsForLastMessage,
+              markdownRenderer: input.props.markdownRenderer,
+              onToggle: input.props.walkthrough.onToggle,
+            })}></devtools-widget>` : Lit.nothing}
         </devtools-split-view>
       </div>
     `, target);

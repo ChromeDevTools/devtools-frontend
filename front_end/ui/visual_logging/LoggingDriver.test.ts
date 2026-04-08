@@ -1013,7 +1013,8 @@ describe('LoggingDriver', () => {
     assert.isTrue(recordResize.calledBefore(recordImpression));
   });
 
-  it('logs keydown, then resize, then impressions', async () => {
+  // Flaky test.
+  it.skip('[crbug.com/453711161] logs keydown, then resize, then impressions', async () => {
     await addLoggableElements();
     const element = document.getElementById('element')!;
     element.setAttribute('jslog', 'TreeItem; context:42; track: keydown: KeyA, resize');

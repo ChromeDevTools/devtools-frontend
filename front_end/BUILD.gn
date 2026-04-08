@@ -266,6 +266,7 @@ group("unittests") {
     "ui/legacy/components/object_ui:unittests",
     "ui/legacy/components/perf_ui:unittests",
     "ui/legacy/components/quick_open:unittests",
+    "ui/legacy/components/settings_ui:unittests",
     "ui/legacy/components/source_frame:unittests",
     "ui/legacy/components/utils:unittests",
     "ui/legacy/theme_support:unittests",

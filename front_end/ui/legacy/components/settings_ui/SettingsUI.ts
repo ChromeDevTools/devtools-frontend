@@ -7,9 +7,12 @@
 import * as Common from '../../../../core/common/common.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
+import {Directives, html, nothing, render, type TemplateResult} from '../../../../ui/lit/lit.js';
 import * as Settings from '../../../components/settings/settings.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
+
+const {createRef, ref} = Directives;
 
 const UIStrings = {
   /**
@@ -36,72 +39,71 @@ export function createSettingCheckbox(
   return label;
 }
 
-const createSettingSelect = function(
-    name: string, options: Common.Settings.SimpleSettingOption[], requiresReload: boolean|null,
-    setting: Common.Settings.Setting<unknown>, subtitle?: string): HTMLElement {
-  const container = document.createElement('div');
-  const settingSelectElement = container.createChild('p');
-  settingSelectElement.classList.add('settings-select');
-  const label = settingSelectElement.createChild('label');
-  const select = settingSelectElement.createChild('select');
-  label.textContent = name;
-  if (subtitle) {
-    container.classList.add('chrome-select-label');
-    label.createChild('p').textContent = subtitle;
-  }
-  select.setAttribute('jslog', `${VisualLogging.dropDown().track({change: true}).context(setting.name)}`);
-  UI.ARIAUtils.bindLabelToControl(label, select);
-
-  for (const option of options) {
-    if (option.text && typeof option.value === 'string') {
-      select.add(
-          UI.UIUtils.createOption(option.text, option.value, Platform.StringUtilities.toKebabCase(option.value)));
-    }
-  }
-
-  let reloadWarning: HTMLElement|(Element | null) = (null as Element | null);
-  if (requiresReload) {
-    reloadWarning = container.createChild('p', 'reload-warning hidden');
-    reloadWarning.textContent = i18nString(UIStrings.srequiresReload);
-    UI.ARIAUtils.markAsAlert(reloadWarning);
-  }
-
+export function renderSettingSelect(setting: Common.Settings.Setting<unknown>, subtitle?: string): TemplateResult {
+  const name = setting.title();
+  const options = setting.options();
+  const requiresReload = setting.reloadRequired();
   const {deprecation} = setting;
-  if (deprecation) {
-    const warning = new Settings.SettingDeprecationWarning.SettingDeprecationWarning();
-    warning.data = deprecation;
-    label.appendChild(warning);
-  }
+  const controlId = UI.ARIAUtils.nextId('labelledControl');
+  const reloadWarningRef = createRef<HTMLParagraphElement>();
 
-  setting.addChangeListener(settingChanged);
-  settingChanged();
-  select.addEventListener('change', selectChanged, false);
-  return container;
-
-  function settingChanged(): void {
-    const newValue = setting.get();
-    for (let i = 0; i < options.length; i++) {
-      if (options[i].value === newValue) {
-        select.selectedIndex = i;
-      }
-    }
-    select.disabled = setting.disabled();
-  }
-
-  function selectChanged(): void {
-    // Don't use event.target.value to avoid conversion of the value to string.
+  const onSelectChange = (e: Event): void => {
+    const select = e.target as HTMLSelectElement;
     setting.set(options[select.selectedIndex].value);
-    if (reloadWarning) {
-      reloadWarning.classList.remove('hidden');
+    if (requiresReload) {
       UI.InspectorView.InspectorView.instance().displayReloadRequiredWarning(
           i18nString(UIStrings.settingsChangedReloadDevTools));
+      if (reloadWarningRef.value) {
+        reloadWarningRef.value.classList.remove('hidden');
+      }
     }
-  }
-};
+  };
+
+  // clang-format off
+  return html`
+    <div class=${Directives.classMap({'chrome-select-label': Boolean(subtitle)})}>
+      <p class="settings-select">
+        <label for=${controlId}>
+          ${name}
+          ${subtitle ? html`<p>${subtitle}</p>` : nothing}
+          ${deprecation ? html`<devtools-setting-deprecation-warning .data=${
+              deprecation as Common.Settings.Deprecation}></devtools-setting-deprecation-warning>` :
+                          nothing}
+        </label>
+        <select
+          id=${controlId}
+          aria-label=${name}
+          .disabled=${setting.disabled()}
+          @change=${onSelectChange}
+          jslog=${VisualLogging.dropDown().track({change: true}).context(setting.name)}
+        >
+          ${options.map(option => {
+            if (option.text && typeof option.value === 'string') {
+              return html`
+                <option
+                  value=${option.value}
+                  ?selected=${setting.get() === option.value}
+                  jslog=${VisualLogging.item(Platform.StringUtilities.toKebabCase(option.value)).track({click: true})}
+                >
+                  ${option.text}
+                </option>
+              `;
+            }
+            return nothing;
+          })}
+        </select>
+      </p>
+      ${requiresReload ? html`
+        <p ${ref(reloadWarningRef)} class="reload-warning hidden" role="alert" aria-live="polite">
+          ${i18nString(UIStrings.srequiresReload)}
+        </p>` : nothing}
+    </div>
+  `;
+  // clang-format on
+}
 
 export const createControlForSetting = function(
     setting: Common.Settings.Setting<unknown>, subtitle?: string): HTMLElement|null {
-  const uiTitle = setting.title();
   switch (setting.type()) {
     case Common.Settings.SettingType.BOOLEAN: {
       const component = new Settings.SettingCheckbox.SettingCheckbox();
@@ -116,8 +118,12 @@ export const createControlForSetting = function(
       };
       return component;
     }
-    case Common.Settings.SettingType.ENUM:
-      return createSettingSelect(uiTitle, setting.options(), setting.reloadRequired(), setting, subtitle);
+    case Common.Settings.SettingType.ENUM: {
+      const fragment = document.createDocumentFragment();
+      // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
+      render(renderSettingSelect(setting, subtitle), fragment);
+      return fragment.firstElementChild as HTMLElement;
+    }
     default:
       console.error('Invalid setting type: ' + setting.type());
       return null;

@@ -12,7 +12,7 @@ function RuleCreator(urlCreator) {
     // This function will get much easier to call when this is merged https://github.com/Microsoft/TypeScript/pull/26349
     // TODO - when the above PR lands; add type checking for the context.report `data` property
     return function createNamedRule({ meta, name, ...rule }) {
-        return createRule({
+        const ruleWithDocs = createRule({
             meta: {
                 ...meta,
                 docs: {
@@ -20,18 +20,27 @@ function RuleCreator(urlCreator) {
                     url: urlCreator(name),
                 },
             },
+            name,
             ...rule,
         });
+        return ruleWithDocs;
     };
 }
-function createRule({ create, defaultOptions, meta, }) {
+function createRule({ create, 
+// Keep accepting deprecated defaultOptions for backward compatibility.
+// eslint-disable-next-line @typescript-eslint/no-deprecated
+defaultOptions, meta, name, }) {
+    const resolvedDefaultOptions = (meta.defaultOptions ??
+        defaultOptions ??
+        []);
     return {
         create(context) {
-            const optionsWithDefault = (0, applyDefault_1.applyDefault)(defaultOptions, context.options);
+            const optionsWithDefault = (0, applyDefault_1.applyDefault)(resolvedDefaultOptions, context.options);
             return create(context, optionsWithDefault);
         },
         defaultOptions,
         meta,
+        name,
     };
 }
 /**

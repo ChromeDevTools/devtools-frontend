@@ -16,7 +16,7 @@ function getTextValue(node: TSESTree.Node): string|undefined {
     if (node.quasis.length === 0) {
       return;
     }
-    return node.quasis[0].value.cooked;
+    return node.quasis[0].value.cooked ?? undefined;
   }
   return;
 }

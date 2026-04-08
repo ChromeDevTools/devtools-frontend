@@ -552,7 +552,9 @@ export default defineConfig([
         },
       ],
 
-      '@typescript-eslint/prefer-optional-chain': 'error',
+      // Broke in 8.58.0, waiting for a fix
+      // https://github.com/typescript-eslint/typescript-eslint/issues/12204
+      '@typescript-eslint/prefer-optional-chain': 'off',
 
       '@typescript-eslint/no-unsafe-function-type': 'error',
 

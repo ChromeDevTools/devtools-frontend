@@ -143,7 +143,7 @@ describe('AidaGcaTranslation', () => {
 
       const expectedGcaRequest = createGcaRequest('chat_console_insights', {
         contents: [
-          {role: 'model', parts: [{text: '[source: src1] Fact 1'}, {text: '[source: src2] Fact 2'}]},
+          {role: 'user', parts: [{text: '[source: src1] Fact 1'}, {text: '[source: src2] Fact 2'}]},
           {role: 'user', parts: [{text: 'Hello'}]},
         ],
       });

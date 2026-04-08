@@ -360,7 +360,7 @@ function gcaCandidateToAidaGenerationSample(candidate: GCA.Candidate): AIDA.Gene
 
 function convertAidaFactsToGcaContent(facts: AIDA.RequestFact[]): GCA.Content {
   return {
-    role: 'model',
+    role: 'user',
     parts: facts.map(fact => {
       return {text: `[source: ${fact.metadata.source}] ${fact.text}`};
     }),

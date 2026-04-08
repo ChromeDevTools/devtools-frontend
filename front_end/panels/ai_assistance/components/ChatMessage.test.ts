@@ -525,6 +525,55 @@ describeWithEnvironment('ChatMessage', () => {
       assert.include(targetOpen.querySelector('.side-effect-container')?.textContent, sideEffectDescription);
     });
 
+    it('renders side effect confirmation below the text output', () => {
+      const sideEffectDescription = 'Proceed with cation!';
+      const textOutput = 'Here is some text output before the action.';
+
+      const message: AiAssistance.ChatMessage.ModelChatMessage = {
+        entity: AiAssistance.ChatMessage.ChatMessageEntity.MODEL,
+        parts: [
+          {
+            type: 'answer',
+            text: textOutput,
+          },
+          {
+            type: 'step',
+            step: {
+              isLoading: false,
+              title: 'Side Effect Step',
+              code: 'doSomethingDangerous()',
+              requestApproval: {
+                description: sideEffectDescription,
+                onAnswer: () => {},
+              },
+            },
+          },
+        ],
+        rpcId: 99,
+      };
+
+      const target = renderView({
+        message,
+        walkthrough: {
+          ...DEFAULT_WALKTHROUGH,
+          isInlined: true,
+          isExpanded: false,
+        }
+      });
+
+      const answerBody = target.querySelector('.answer-body-wrapper');
+      const sideEffect = target.querySelector('.side-effect-container');
+
+      assert.isNotNull(answerBody);
+      assert.isNotNull(sideEffect);
+
+      // Verify that sideEffect appears after answerBody in the DOM
+      const position = answerBody.compareDocumentPosition(sideEffect);
+      assert.isTrue(
+          Boolean(position & Node.DOCUMENT_POSITION_FOLLOWING),
+          'Side effect confirmation should render after the text output');
+    });
+
     it('does not force walkthrough expansion when there are side-effect steps', () => {
       const sideEffectMessage: AiAssistance.ChatMessage.ModelChatMessage = {
         entity: AiAssistance.ChatMessage.ChatMessageEntity.MODEL,

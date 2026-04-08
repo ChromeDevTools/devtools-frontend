@@ -417,6 +417,7 @@ export const DEFAULT_VIEW = (input: ChatMessageViewInput, output: ViewOutput, ta
         ` : Lit.nothing}
         ${input.showActions ? renderActions(input, output) : Lit.nothing}
       </div>
+      ${hasAiV2 ? renderSideEffectStepsUI(input, steps) : Lit.nothing}
     </section>
   `, target);
   // clang-format on
@@ -609,7 +610,6 @@ function renderWalkthroughUI(input: ChatMessageViewInput, steps: Step[]): Lit.Li
     // No steps = no walkthrough UI in the chat view.
     return Lit.nothing;
   }
-  const sideEffectSteps = steps.filter(s => s.requestApproval);
   // If the walkthrough is in the sidebar, we render a button into the
   // ChatView to open it.
   const openWalkThroughSidebarButton =
@@ -621,22 +621,6 @@ function renderWalkthroughUI(input: ChatMessageViewInput, steps: Step[]): Lit.Li
   const isExpanded = input.walkthrough.isInlined ?
       input.walkthrough.inlineExpandedMessages.includes(input.message as ModelChatMessage) :
       (input.walkthrough.isExpanded && input.walkthrough.activeSidebarMessage === input.message);
-
-  // When a side-effect step is present and needs user approval, it's
-  // shown in the main chat UI, regardless of if the walkthrough is
-  // open or closed.
-  // Once the user has approved/denied it, it goes back into the sidebar.
-  // clang-format off
-  const sideEffectStepsUI = sideEffectSteps.length > 0 ? sideEffectSteps.map(step => html`
-    <div class="side-effect-container">
-      ${renderStep({
-         step,
-         isLoading: input.isLoading,
-         markdownRenderer: input.markdownRenderer,
-         isLast: true
-      })}
-    </div> `) : Lit.nothing;
-  // clang-format on
 
   // clang-format off
   const walkthroughInline = input.walkthrough.isInlined ? html`
@@ -656,7 +640,26 @@ function renderWalkthroughUI(input: ChatMessageViewInput, steps: Step[]): Lit.Li
   return html`
     ${openWalkThroughSidebarButton}
     ${walkthroughInline}
-    ${sideEffectStepsUI}
+  `;
+  // clang-format on
+}
+
+function renderSideEffectStepsUI(input: ChatMessageViewInput, steps: Step[]): Lit.LitTemplate {
+  const sideEffectSteps = steps.filter(s => s.requestApproval);
+  if (sideEffectSteps.length === 0) {
+    return Lit.nothing;
+  }
+  // clang-format off
+  return html`
+    ${sideEffectSteps.map(step => html`
+      <div class="side-effect-container">
+        ${renderStep({
+           step,
+           isLoading: input.isLoading,
+           markdownRenderer: input.markdownRenderer,
+           isLast: true
+        })}
+      </div> `)}
   `;
   // clang-format on
 }

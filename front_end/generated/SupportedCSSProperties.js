@@ -1823,7 +1823,7 @@ export const generatedProperties = [
   "inherited": false,
   "keywords": [
    "all",
-   "auto",
+   "normal",
    "around",
    "between"
   ],
@@ -3904,7 +3904,7 @@ export const generatedProperties = [
   "inherited": false,
   "keywords": [
    "all",
-   "auto",
+   "normal",
    "around",
    "between"
   ],
@@ -5663,7 +5663,7 @@ export const generatedPropertyValues = {
  "column-rule-visibility-items": {
   "values": [
    "all",
-   "auto",
+   "normal",
    "around",
    "between"
   ]
@@ -6824,7 +6824,7 @@ export const generatedPropertyValues = {
  "row-rule-visibility-items": {
   "values": [
    "all",
-   "auto",
+   "normal",
    "around",
    "between"
   ]

@@ -1850,6 +1850,7 @@ export const knownContextValues = new Set([
   'gu',
   'gutter',
   'gzip',
+  'hanging-punctuation',
   'hardware-concurrency',
   'hardware-concurrency-reset',
   'hardware-concurrency-selector',

@@ -119,7 +119,8 @@ Note: if the user asks a specific question about the trace (such as "What is my 
 - Use the provided functions to get detailed performance data. Prioritize functions that provide context relevant to the performance issue being investigated.
 - Before finalizing your advice, look over it and validate using any relevant functions. If something seems off, refine the advice before giving it to the user.
 - Base your analysis and advice solely on the data retrieved through the provided functions. Always use the provided functions to gather sufficient data when needed.
-- Use the track summary functions to get high-level detail about portions of the trace. For the \`bounds\` parameter, default to using the bounds of the trace. Never specifically ask the user for a bounds. You can use more narrow bounds (such as the bounds relevant to a specific insight) when appropriate. Narrow the bounds given functions when possible.
+- Use absolute microsecond timestamps for any function that requires a \`min\` and \`max\` bounds. These timestamps can be found in the trace summary or within the details of an insight.
+- Example: If the trace bounds are {min: 1000, max: 5000} and you want to investigate a specific interaction that happened between 2000 and 3000, you should call \`getMainThreadTrackSummary({min: 2000, max: 3000})\`.
 - Use \`getEventByKey\` to get data on a specific trace event. This is great for root-cause analysis or validating any assumptions.
 - Provide clear, actionable recommendations. Avoid technical jargon unless necessary, and explain any technical terms used.
 - If you see a generic task like "Task", "Evaluate script" or "(anonymous)" in the main thread activity, try to look at its children to see what actual functions are executed and refer to those. When referencing the main thread activity, be as specific as you can. Ensure you identify to the user relevant functions and which script they were defined in. Avoid referencing "Task", "Evaluate script" and "(anonymous)" nodes if possible and instead focus on their children.
@@ -786,11 +787,9 @@ export class PerformanceAgent extends AiAgent {
             },
         });
         const createBounds = (min, max) => {
-            if (min > max) {
-                return null;
-            }
-            const clampedMin = Math.max(min ?? 0, parsedTrace.data.Meta.traceBounds.min);
-            const clampedMax = Math.min(max ?? Number.POSITIVE_INFINITY, parsedTrace.data.Meta.traceBounds.max);
+            const { min: bMin, max: bMax } = parsedTrace.data.Meta.traceBounds;
+            const clampedMin = Math.max(min ?? bMin, bMin);
+            const clampedMax = Math.min(max ?? bMax, bMax);
             if (clampedMin > clampedMax) {
                 return null;
             }
@@ -805,21 +804,23 @@ export class PerformanceAgent extends AiAgent {
                 properties: {
                     min: {
                         type: 3 /* Host.AidaClient.ParametersTypes.INTEGER */,
-                        description: 'The minimum time of the bounds, in microseconds',
-                        nullable: false,
+                        description: `The minimum time of the bounds, in microseconds (the current trace starts at ${parsedTrace.data.Meta.traceBounds.min})`,
+                        nullable: true,
                     },
                     max: {
                         type: 3 /* Host.AidaClient.ParametersTypes.INTEGER */,
-                        description: 'The maximum time of the bounds, in microseconds',
-                        nullable: false,
+                        description: `The maximum time of the bounds, in microseconds (the current trace ends at ${parsedTrace.data.Meta.traceBounds.max})`,
+                        nullable: true,
                     },
                 },
-                required: ['min', 'max']
+                required: []
             },
             displayInfoFromArgs: args => {
+                const min = args.min ?? parsedTrace.data.Meta.traceBounds.min;
+                const max = args.max ?? parsedTrace.data.Meta.traceBounds.max;
                 return {
                     title: lockedString(UIStringsNotTranslated.mainThreadActivity),
-                    action: `getMainThreadTrackSummary({min: ${args.min}, max: ${args.max}})`
+                    action: `getMainThreadTrackSummary({min: ${min}, max: ${max}})`
                 };
             },
             handler: async (args) => {
@@ -873,21 +874,23 @@ export class PerformanceAgent extends AiAgent {
                 properties: {
                     min: {
                         type: 3 /* Host.AidaClient.ParametersTypes.INTEGER */,
-                        description: 'The minimum time of the bounds, in microseconds',
-                        nullable: false,
+                        description: `The minimum time of the bounds, in microseconds (the current trace starts at ${parsedTrace.data.Meta.traceBounds.min})`,
+                        nullable: true,
                     },
                     max: {
                         type: 3 /* Host.AidaClient.ParametersTypes.INTEGER */,
-                        description: 'The maximum time of the bounds, in microseconds',
-                        nullable: false,
+                        description: `The maximum time of the bounds, in microseconds (the current trace ends at ${parsedTrace.data.Meta.traceBounds.max})`,
+                        nullable: true,
                     },
                 },
-                required: ['min', 'max']
+                required: []
             },
             displayInfoFromArgs: args => {
+                const min = args.min ?? parsedTrace.data.Meta.traceBounds.min;
+                const max = args.max ?? parsedTrace.data.Meta.traceBounds.max;
                 return {
                     title: lockedString(UIStringsNotTranslated.networkActivitySummary),
-                    action: `getNetworkTrackSummary({min: ${args.min}, max: ${args.max}})`
+                    action: `getNetworkTrackSummary({min: ${min}, max: ${max}})`
                 };
             },
             handler: async (args) => {
@@ -949,7 +952,16 @@ export class PerformanceAgent extends AiAgent {
                 const callTree = await formatter.formatCallTree(tree);
                 const key = `getDetailedCallTree(${args.eventKey})`;
                 this.#cacheFunctionResult(focus, key, callTree);
-                return { result: { callTree } };
+                const { startTime, endTime } = Trace.Helpers.Timing.eventTimingsMicroSeconds(event);
+                const bounds = Trace.Helpers.Timing.traceWindowFromMicroSeconds(startTime, endTime);
+                const widgets = [{
+                        name: 'BOTTOM_UP_TREE',
+                        data: {
+                            bounds,
+                            parsedTrace,
+                        },
+                    }];
+                return { result: { callTree }, widgets };
             },
         });
         if (Annotations.AnnotationRepository.annotationsEnabled()) {

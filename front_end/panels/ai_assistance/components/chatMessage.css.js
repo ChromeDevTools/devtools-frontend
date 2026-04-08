@@ -461,6 +461,19 @@ export default `/*
       white-space: nowrap; /* stop the titles going onto multiple lines */
     }
 
+    /* This widget's title is some text + then a DOM node link, so it
+     * needs some extra styling */
+    .computed-style-title-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: var(--sys-size-3);
+    }
+
+    .computed-style-title-prefix {
+      flex-shrink: 0;
+    }
+
     .widget-reveal-container {
       padding: 0;
       background: none;

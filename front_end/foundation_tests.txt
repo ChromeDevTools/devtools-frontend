@@ -62,6 +62,7 @@ models/ai_assistance/data_formatters/PerformanceTraceFormatter.test.js
 models/crux-manager/CrUXManager.test.js
 models/formatter/FormatterWorkerPool.test.js
 models/formatter/ScriptFormatter.test.js
+models/heap_snapshot/heap_snapshot.test.js
 models/issues_manager/ConnectionAllowlistIssue.test.js
 models/issues_manager/DeprecationIssue.test.js
 models/issues_manager/ElementAccessibilityIssue.test.js

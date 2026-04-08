@@ -5396,6 +5396,9 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsFailureReason": {
     "message": "Failure reason"
   },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsFormSubmission": {
+    "message": "Form submission"
+  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsRuleSet": {
     "message": "Rule set"
   },
@@ -5405,11 +5408,17 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsTargetHint": {
     "message": "Target hint"
   },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | no": {
+    "message": "No"
+  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | noElementSelected": {
     "message": "No element selected"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "Select an element for more details"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | yes": {
+    "message": "Yes"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByBatterySaver": {
     "message": "Speculative loading is disabled because of the operating system's Battery Saver mode."
@@ -18008,6 +18017,12 @@
   "ui/legacy/InspectorDrawerView.ts | closeDrawer": {
     "message": "Close drawer"
   },
+  "ui/legacy/InspectorDrawerView.ts | expandDrawer": {
+    "message": "Expand drawer"
+  },
+  "ui/legacy/InspectorDrawerView.ts | minimizeDrawer": {
+    "message": "Minimize drawer"
+  },
   "ui/legacy/InspectorDrawerView.ts | moreTools": {
     "message": "More Tools"
   },
@@ -18023,8 +18038,14 @@
   "ui/legacy/InspectorView.ts | drawer": {
     "message": "Tool drawer"
   },
+  "ui/legacy/InspectorView.ts | drawerExpanded": {
+    "message": "Drawer expanded"
+  },
   "ui/legacy/InspectorView.ts | drawerHidden": {
     "message": "Drawer hidden"
+  },
+  "ui/legacy/InspectorView.ts | drawerMinimized": {
+    "message": "Drawer minimized"
   },
   "ui/legacy/InspectorView.ts | drawerShown": {
     "message": "Drawer shown"

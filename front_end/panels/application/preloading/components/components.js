@@ -968,11 +968,23 @@ var UIStrings3 = {
   /**
    * @description Text in details
    */
+  detailsFormSubmission: "Form submission",
+  /**
+   * @description Text in details
+   */
   detailsFailureReason: "Failure reason",
   /**
    * @description Header of rule set
    */
   detailsRuleSet: "Rule set",
+  /**
+   * @description Text indicating that the preloading field is true.
+   */
+  yes: "Yes",
+  /**
+   * @description Text indicating that the preloading field is false.
+   */
+  no: "No",
   /**
    * @description Description: status
    */
@@ -1089,6 +1101,7 @@ var PreloadingDetailsReportView = class extends LegacyWrapper.LegacyWrapper.Wrap
           ${this.#action(isFallbackToPrefetch)}
           ${this.#status(isFallbackToPrefetch)}
           ${this.#targetHint()}
+          ${this.#formSubmission()}
           ${this.#maybePrefetchFailureReason()}
           ${this.#maybePrerenderFailureReason()}
 
@@ -1222,6 +1235,20 @@ var PreloadingDetailsReportView = class extends LegacyWrapper.LegacyWrapper.Wrap
         <devtools-report-key>${i18nString3(UIStrings3.detailsTargetHint)}</devtools-report-key>
         <devtools-report-value>
           ${PreloadingUIUtils2.detailedTargetHint(attempt.key)}
+        </devtools-report-value>
+    `;
+  }
+  #formSubmission() {
+    assertNotNullOrUndefined2(this.#data);
+    const attempt = this.#data.pipeline.getOriginallyTriggered();
+    const hasFormSubmission = attempt.key.formSubmission !== void 0;
+    if (!hasFormSubmission || !this.#isPrerenderLike(attempt.action)) {
+      return Lit2.nothing;
+    }
+    return html2`
+        <devtools-report-key>${i18nString3(UIStrings3.detailsFormSubmission)}</devtools-report-key>
+        <devtools-report-value>
+          ${attempt.key.formSubmission ? i18nString3(UIStrings3.yes) : i18nString3(UIStrings3.no)}
         </devtools-report-value>
     `;
   }

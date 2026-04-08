@@ -43,5 +43,6 @@ import * as StorageView from './StorageView.js';
 import * as TrustTokensTreeElement from './TrustTokensTreeElement.js';
 import * as WebMCPTreeElement from './WebMCPTreeElement.js';
 import * as WebMCPView from './WebMCPView.js';
+export * as Components from './components/components.js';
 export { ApplicationPanelSidebar, AppManifestView, BackgroundServiceModel, BackgroundServiceView, BounceTrackingMitigationsTreeElement, CookieItemsView, CrashReportContextView, DeviceBoundSessionsModel, DeviceBoundSessionsTreeElement, DeviceBoundSessionsView, DOMStorageItemsView, DOMStorageModel, ExtensionStorageItemsView, ExtensionStorageModel, FrameDetailsView, IndexedDBModel, IndexedDBViews, InterestGroupStorageModel, InterestGroupStorageView, InterestGroupTreeElement, KeyValueStorageItemsView, OpenedWindowDetailsView, OriginTrialTreeView, PreloadingTreeElement, PreloadingView, ReportingApiTreeElement, ReportingApiView, ResourcesPanel, ServiceWorkerCacheViews, ServiceWorkersView, ServiceWorkerUpdateCycleView, SharedStorageEventsView, SharedStorageItemsView, SharedStorageListTreeElement, SharedStorageModel, SharedStorageTreeElement, StorageBucketsTreeElement, StorageItemsToolbar, StorageView, TrustTokensTreeElement, WebMCPTreeElement, WebMCPView, };
 //# sourceMappingURL=application.prebundle.js.map

@@ -62,6 +62,7 @@ models/ai_assistance/data_formatters/PerformanceTraceFormatter.test.js
 models/crux-manager/CrUXManager.test.js
 models/formatter/FormatterWorkerPool.test.js
 models/formatter/ScriptFormatter.test.js
+models/heap_snapshot/heap_snapshot.test.js
 models/issues_manager/ConnectionAllowlistIssue.test.js
 models/issues_manager/DeprecationIssue.test.js
 models/issues_manager/ElementAccessibilityIssue.test.js
@@ -199,11 +200,11 @@ models/geometry/Geometry.test.js
 models/har/Importer.test.js
 models/har/Log.test.js
 models/har/Writer.test.js
-models/heap_snapshot_model/heap_snapshot_model.test.js
 models/issues_manager/CheckFormsIssuesTrigger.test.js
 models/issues_manager/IssuesManager.test.js
 models/issues_manager/SelectivePermissionsInterventionIssue.test.js
 models/javascript_metadata/JavaScriptMetadata.test.js
+models/live-metrics/LiveMetrics.test.js
 models/logs/NetworkLog.test.js
 models/logs/RequestResolver.test.js
 models/persistence/AutomaticFileSystemManager.test.js

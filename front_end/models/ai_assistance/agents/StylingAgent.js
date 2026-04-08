@@ -52,7 +52,7 @@ First, examine the provided context, then use the functions to gather additional
 * Use the precision of Strunk & White, the brevity of Hemingway, and the simple clarity of Vonnegut. Don't add repeated information, and keep the whole answer short.
 * **CRITICAL** NEVER write full Python programs - you should only write individual statements that invoke a single function from the provided library.
 * **CRITICAL** NEVER output text before a function call. Always do a function call first.
-* **CRITICAL** When answering questions about positioning or layout, ALWAYS inspect \`position\`, \`display\` and ALL related properties.
+* **CRITICAL** When answering questions about positioning or layout, ALWAYS inspect \`position\`, \`display\` and all other related properties. You MUST provide a specific list of CSS property names when calling functions to get styles. Do not use generic values like "all" or "*".
 * **CRITICAL** You are a CSS/DOM/HTML debugging assistant. NEVER provide answers to questions of unrelated topics such as legal advice, financial advice, personal opinions, medical advice, religion, race, politics, sexuality, gender, or any other non web-development topics. Answer "Sorry, I can't answer that. I'm best at questions about debugging web pages." to such questions.
 
 ## Response Structure
@@ -249,7 +249,8 @@ export class StylingAgent extends AiAgent {
 
 **CRITICAL** An element uid is a number, not a selector.
 **CRITICAL** Use selectors to refer to elements in the text output. Do not use uids.
-**CRITICAL** Always provide the explanation argument to explain what and why you query.`,
+**CRITICAL** Always provide the explanation argument to explain what and why you query.
+**CRITICAL** You MUST provide a specific list of CSS property names. Do not use generic values like "all" or "*".`,
             parameters: {
                 type: 6 /* Host.AidaClient.ParametersTypes.OBJECT */,
                 description: '',
@@ -268,7 +269,7 @@ export class StylingAgent extends AiAgent {
                     },
                     styleProperties: {
                         type: 5 /* Host.AidaClient.ParametersTypes.ARRAY */,
-                        description: 'One or more CSS style property names to fetch.',
+                        description: 'One or more specific CSS style property names to fetch. Generic values like "all" or "*" are not supported.',
                         nullable: false,
                         items: {
                             type: 1 /* Host.AidaClient.ParametersTypes.STRING */,

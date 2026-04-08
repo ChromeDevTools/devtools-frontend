@@ -180,8 +180,10 @@ var RevealableTimeRange = class {
 };
 var RevealableBottomUpProfile = class {
   bounds;
-  constructor(bounds) {
+  node;
+  constructor(bounds, node) {
     this.bounds = bounds;
+    this.node = node;
   }
 };
 

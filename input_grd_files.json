@@ -766,7 +766,7 @@
   "front_end/third_party/lighthouse/lighthouse-dt-bundle.js",
   "front_end/panels/lighthouse/lighthouse.js",
   "front_end/panels/layer_viewer/layer_viewer.js",
-  "front_end/models/heap_snapshot_model/heap_snapshot_model.js",
+  "front_end/models/heap_snapshot/heap_snapshot.js",
   "front_end/panels/settings/components/components.js",
   "front_end/panels/settings/settings.js",
   "front_end/panels/profiler/profiler.js",

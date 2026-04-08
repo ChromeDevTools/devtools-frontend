@@ -2830,6 +2830,19 @@ var chatMessage_css_default = `/*
       white-space: nowrap; /* stop the titles going onto multiple lines */
     }
 
+    /* This widget's title is some text + then a DOM node link, so it
+     * needs some extra styling */
+    .computed-style-title-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: var(--sys-size-3);
+    }
+
+    .computed-style-title-prefix {
+      flex-shrink: 0;
+    }
+
     .widget-reveal-container {
       padding: 0;
       background: none;
@@ -3736,7 +3749,6 @@ function renderStepCode(step) {
       <devtools-code-block
         .code=${step.code.trim()}
         .codeLang=${"js"}
-        .displayLimit=${MAX_NUM_LINES_IN_CODEBLOCK}
         .displayNotice=${!Boolean(step.output)}
         .header=${codeHeadingText}
         .showCopyButton=${true}
@@ -3746,7 +3758,6 @@ function renderStepCode(step) {
     <devtools-code-block
       .code=${step.output}
       .codeLang=${"js"}
-      .displayLimit=${MAX_NUM_LINES_IN_CODEBLOCK}
       .displayNotice=${true}
       .header=${lockedString5(UIStringsNotTranslate4.dataReturned)}
       .showCopyButton=${false}
@@ -3762,7 +3773,6 @@ function renderStepDetails({ step, markdownRenderer, isLast }) {
       <devtools-code-block
         .code=${contextDetail.text}
         .codeLang=${contextDetail.codeLang || ""}
-        .displayLimit=${MAX_NUM_LINES_IN_CODEBLOCK}
         .displayNotice=${false}
         .header=${contextDetail.title}
         .showCopyButton=${true}
@@ -3791,8 +3801,13 @@ function renderWalkthroughSidebarButton(input, steps) {
   });
   const variant = hasOneStepWithWidget && !input.isLoading ? "tonal" : "text";
   const icon = AiAssistanceModel5.AiUtils.getIconName();
+  const toggleContainerClasses = Lit5.Directives.classMap({
+    "walkthrough-toggle-container": true,
+    // We only apply the widget styling when loading is complete
+    "has-widgets": hasOneStepWithWidget && !input.isLoading
+  });
   return html7`
-    <div class="walkthrough-toggle-container ${hasOneStepWithWidget ? "has-widgets" : ""}">
+    <div class=${toggleContainerClasses}>
       ${input.isLoading ? html7`<devtools-spinner></devtools-spinner>` : html7`<devtools-icon name=${icon}></devtools-icon>`}
       <devtools-button
         .variant=${variant}
@@ -3806,9 +3821,7 @@ function renderWalkthroughSidebarButton(input, steps) {
     } else {
       walkthrough.onOpen(message);
     }
-  }}
->
-        ${title}<devtools-icon class="chevron" .name=${isExpanded ? "cross" : "chevron-right"}></devtools-icon>
+  }}>${title}<devtools-icon class="chevron" .name=${isExpanded ? "cross" : "chevron-right"}></devtools-icon>
       </devtools-button>
     </div>
   `;
@@ -3920,6 +3933,12 @@ async function makeComputedStyleWidget(widgetData) {
     return null;
   }
   const styles = new ComputedStyle.ComputedStyleModel.ComputedStyle(domNodeForId, widgetData.data.computedStyles);
+  let filterText = null;
+  try {
+    filterText = new RegExp(widgetData.data.properties.join("|"), "i");
+  } catch {
+    return null;
+  }
   const renderedWidget = html7`<devtools-widget
       class="computed-styles-widget" ${widget3(Elements.ComputedStyleWidget.ComputedStyleWidget, {
     nodeStyle: styles,
@@ -3927,17 +3946,25 @@ async function makeComputedStyleWidget(widgetData) {
     // This disables showing the nested traces and detailed information in the widget.
     propertyTraces: null,
     allowUserControl: false,
-    filterText: new RegExp(widgetData.data.properties.join("|"), "i"),
+    filterText,
     enableNarrowViewResizing: false
   })}></devtools-widget>`;
   return {
     renderedWidget,
     revealable: new Elements.ElementsPanel.NodeComputedStyles(domNodeForId),
-    title: html7`<devtools-widget
-      ${widget3(PanelsCommon3.DOMLinkifier.DOMNodeLink, {
+    // clang-format off
+    title: html7`
+      <span class="computed-style-title-wrapper">
+        <span class="computed-style-title-prefix">Computed styles</span>
+        <span class="style-class-wrapper">
+          (<devtools-widget
+            ${widget3(PanelsCommon3.DOMLinkifier.DOMNodeLink, {
       node: domNodeForId
     })}
-    ></devtools-widget>`
+          ></devtools-widget>)
+        </span>
+      </span>`
+    // clang-format on
   };
 }
 async function makeCoreWebVitalsWidget(widgetData) {
@@ -3954,11 +3981,17 @@ async function makeStylePropertiesWidget(widgetData) {
   if (!domNodeForId) {
     return null;
   }
+  let filter = null;
+  try {
+    filter = widgetData.data.selector ? new RegExp(widgetData.data.selector) : null;
+  } catch {
+    return null;
+  }
   const renderedWidget = html7`<devtools-widget
       class="styling-preview-widget"
       ${widget3(Elements.StandaloneStylesContainer.StandaloneStylesContainer, {
     domNode: domNodeForId,
-    filter: widgetData.data.selector ? new RegExp(widgetData.data.selector) : null
+    filter
   })}>
   </devtools-widget>`;
   return {
@@ -4565,7 +4598,7 @@ async function makeTimelineRangeSummaryWidget(widgetData) {
   const eventsArray = Array.from(events);
   eventsArray.sort((a, b) => a.ts - b.ts);
   const thirdPartyTree = new Timeline.ThirdPartyTreeView.ThirdPartyTreeViewWidget();
-  const mapper = new Trace.EntityMapper.EntityMapper(parsedTrace);
+  const mapper = Trace.EntityMapper.EntityMapper.getOrCreate(parsedTrace);
   thirdPartyTree.model = { selectedEvents: eventsArray, parsedTrace, entityMapper: mapper };
   thirdPartyTree.activeSelection = Timeline.TimelineSelection.selectionFromRangeMicroSeconds(bounds.min, bounds.max);
   thirdPartyTree.refreshTree(true);
@@ -4584,7 +4617,10 @@ async function makeTimelineRangeSummaryWidget(widgetData) {
           parsedTrace,
           entityMapper: thirdPartyTree.entityMapper()
         },
-        activeSelection: { bounds }
+        activeSelection: { bounds },
+        onBottomUpButtonClicked: (node) => {
+          void Common4.Revealer.reveal(new TimelineUtils.Helpers.RevealableBottomUpProfile(bounds, node ?? void 0));
+        }
       })}`
     }
   })}

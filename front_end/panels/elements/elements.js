@@ -14328,6 +14328,7 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
     return 12 * (depth - 2) + (this.isExpandable() && this.isCollapsible() ? 1 : 12);
   }
   updateDecorations() {
+    this.listItemElement.style.setProperty("--indent", this.computeLeftIndent() + "px");
     if (this.isClosingTag()) {
       return;
     }

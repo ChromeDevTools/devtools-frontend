@@ -92,7 +92,7 @@
       "path": "../../models/cpu_profile/bundle-tsconfig.json"
     },
     {
-      "path": "../../models/heap_snapshot_model/bundle-tsconfig.json"
+      "path": "../../models/heap_snapshot/bundle-tsconfig.json"
     },
     {
       "path": "../../models/network_time_calculator/bundle-tsconfig.json"

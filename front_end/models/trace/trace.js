@@ -11,7 +11,8 @@ __export(EntityMapper_exports, {
 });
 import * as Handlers from "./handlers/handlers.js";
 import * as Helpers2 from "./helpers/helpers.js";
-var EntityMapper = class {
+var mapperCache = /* @__PURE__ */ new WeakMap();
+var EntityMapper = class _EntityMapper {
   #parsedTrace;
   #entityMappings;
   #firstPartyEntity;
@@ -28,6 +29,15 @@ var EntityMapper = class {
     this.#entityMappings = this.#parsedTrace.data.Renderer.entityMappings;
     this.#firstPartyEntity = this.#findFirstPartyEntity();
     this.#thirdPartyEvents = this.#getThirdPartyEvents();
+  }
+  static getOrCreate(parsedTrace) {
+    const cached = mapperCache.get(parsedTrace);
+    if (cached) {
+      return cached;
+    }
+    const instance = new _EntityMapper(parsedTrace);
+    mapperCache.set(parsedTrace, instance);
+    return instance;
   }
   #findFirstPartyEntity() {
     const nav = Array.from(this.#parsedTrace.data.Meta.navigationsByNavigationId.values()).sort((a, b) => a.ts - b.ts)[0];

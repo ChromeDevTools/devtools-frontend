@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 import * as Handlers from './handlers/handlers.js';
 import * as Helpers from './helpers/helpers.js';
+const mapperCache = new WeakMap();
 export class EntityMapper {
     #parsedTrace;
     #entityMappings;
@@ -20,6 +21,15 @@ export class EntityMapper {
         this.#entityMappings = this.#parsedTrace.data.Renderer.entityMappings;
         this.#firstPartyEntity = this.#findFirstPartyEntity();
         this.#thirdPartyEvents = this.#getThirdPartyEvents();
+    }
+    static getOrCreate(parsedTrace) {
+        const cached = mapperCache.get(parsedTrace);
+        if (cached) {
+            return cached;
+        }
+        const instance = new EntityMapper(parsedTrace);
+        mapperCache.set(parsedTrace, instance);
+        return instance;
     }
     #findFirstPartyEntity() {
         // As a starting point, we consider the first navigation as the 1P.

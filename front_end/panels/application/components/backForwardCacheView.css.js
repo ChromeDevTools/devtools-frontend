@@ -9,6 +9,10 @@ export default `/*
  * found in the LICENSE file.
  */
 
+:host {
+  overflow: auto;
+}
+
 devtools-report-value {
   overflow: hidden;
 }

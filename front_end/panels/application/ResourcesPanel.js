@@ -211,4 +211,10 @@ export class AttemptViewWithFilterRevealer {
         sidebar.showPreloadingAttemptViewWithFilter(filter);
     }
 }
+export class StorageBucketRevealer {
+    async reveal(revealInfo) {
+        const sidebar = await ResourcesPanel.showAndGetSidebar();
+        sidebar.showStorageBucket(revealInfo.bucketInfo);
+    }
+}
 //# sourceMappingURL=ResourcesPanel.js.map

@@ -4,6 +4,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import { ApplicationPanelSidebar } from './ApplicationPanelSidebar.js';
+import type { StorageMetadataView } from './components/components.js';
 import type { DeviceBoundSessionsModel } from './DeviceBoundSessionsModel.js';
 import type { DOMStorage } from './DOMStorageModel.js';
 import type { ExtensionStorage } from './ExtensionStorageModel.js';
@@ -53,4 +54,7 @@ export declare class RuleSetViewRevealer implements Common.Revealer.Revealer<Pre
 }
 export declare class AttemptViewWithFilterRevealer implements Common.Revealer.Revealer<PreloadingHelper.PreloadingForward.AttemptViewWithFilter> {
     reveal(filter: PreloadingHelper.PreloadingForward.AttemptViewWithFilter): Promise<void>;
+}
+export declare class StorageBucketRevealer implements Common.Revealer.Revealer<StorageMetadataView.StorageBucketRevealInfo> {
+    reveal(revealInfo: StorageMetadataView.StorageBucketRevealInfo): Promise<void>;
 }

@@ -160,4 +160,14 @@ Common.Revealer.registerRevealer({
         return new Resources.ResourcesPanel.AttemptViewWithFilterRevealer();
     },
 });
+Common.Revealer.registerRevealer({
+    contextTypes() {
+        return maybeRetrieveContextTypes(Resources => [Resources.Components.StorageMetadataView.StorageBucketRevealInfo]);
+    },
+    destination: Common.Revealer.RevealerDestination.APPLICATION_PANEL,
+    async loadRevealer() {
+        const Resources = await loadResourcesModule();
+        return new Resources.ResourcesPanel.StorageBucketRevealer();
+    },
+});
 //# sourceMappingURL=application-meta.prebundle.js.map

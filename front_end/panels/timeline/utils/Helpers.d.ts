@@ -42,5 +42,6 @@ export declare class RevealableTimeRange {
 }
 export declare class RevealableBottomUpProfile {
     bounds: Trace.Types.Timing.TraceWindowMicro;
-    constructor(bounds: Trace.Types.Timing.TraceWindowMicro);
+    node?: Trace.Extras.TraceTree.Node | undefined;
+    constructor(bounds: Trace.Types.Timing.TraceWindowMicro, node?: Trace.Extras.TraceTree.Node | undefined);
 }

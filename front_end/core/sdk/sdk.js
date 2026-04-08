@@ -36141,7 +36141,7 @@ function makePreloadingAttemptId(key) {
       targetHint = "Self";
       break;
   }
-  return `${key.loaderId}:${action}:${key.url}:${targetHint}`;
+  return `${key.loaderId}:${action}:${key.url}:${targetHint}:${key.formSubmission ? "formSubmission" : "undefined"}`;
 }
 var PreloadPipeline = class _PreloadPipeline {
   inner;

@@ -4,10 +4,10 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
-// gen/front_end/models/heap_snapshot_model/ChildrenProvider.js
+// gen/front_end/models/heap_snapshot/ChildrenProvider.js
 var ChildrenProvider_exports = {};
 
-// gen/front_end/models/heap_snapshot_model/HeapSnapshotModel.js
+// gen/front_end/models/heap_snapshot/HeapSnapshotModel.js
 var HeapSnapshotModel_exports = {};
 __export(HeapSnapshotModel_exports, {
   AggregateForDiff: () => AggregateForDiff,
@@ -232,7 +232,7 @@ var Location = class {
   }
 };
 
-// gen/front_end/models/heap_snapshot_model/HeapSnapshotProxy.js
+// gen/front_end/models/heap_snapshot/HeapSnapshotProxy.js
 var HeapSnapshotProxy_exports = {};
 __export(HeapSnapshotProxy_exports, {
   HeapSnapshotLoaderProxy: () => HeapSnapshotLoaderProxy,
@@ -549,4 +549,4 @@ export {
   HeapSnapshotModel_exports as HeapSnapshotModel,
   HeapSnapshotProxy_exports as HeapSnapshotProxy
 };
-//# sourceMappingURL=heap_snapshot_model.js.map
+//# sourceMappingURL=heap_snapshot.js.map

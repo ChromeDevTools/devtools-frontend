@@ -2277,7 +2277,7 @@ var AccessibilityAgent = class extends AiAgent {
       }
     });
     this.declareFunction("getStyles", {
-      description: "Get computed styles for an element on the inspected page by its Lighthouse path.",
+      description: 'Get computed styles for an element on the inspected page by its Lighthouse path. **CRITICAL** You MUST provide a specific list of CSS property names. Do not use generic values like "all" or "*".',
       parameters: {
         type: 6,
         description: "",
@@ -2295,7 +2295,7 @@ var AccessibilityAgent = class extends AiAgent {
           },
           styleProperties: {
             type: 5,
-            description: "One or more CSS style property names to fetch.",
+            description: 'One or more specific CSS style property names to fetch. Generic values like "all" or "*" are not supported.',
             nullable: false,
             items: {
               type: 1,
@@ -3502,6 +3502,7 @@ var ContextSelectionAgent_exports = {};
 __export(ContextSelectionAgent_exports, {
   ContextSelectionAgent: () => ContextSelectionAgent
 });
+import * as Common5 from "./../../core/common/common.js";
 import * as Host9 from "./../../core/host/host.js";
 import * as i18n13 from "./../../core/i18n/i18n.js";
 import * as Root8 from "./../../core/root/root.js";
@@ -4766,7 +4767,7 @@ var PerformanceTraceFormatter = class {
     return `(eventKey: ${key}, ts: ${event.ts})`;
   }
   serializeBounds(bounds) {
-    return `{min: ${bounds.min}, max: ${bounds.max}}`;
+    return `{min: ${bounds.min}\xB5s, max: ${bounds.max}\xB5s}`;
   }
   /**
    * Fetching the Crux summary can error outside of DevTools, hence the
@@ -6678,7 +6679,8 @@ Note: if the user asks a specific question about the trace (such as "What is my 
 - Use the provided functions to get detailed performance data. Prioritize functions that provide context relevant to the performance issue being investigated.
 - Before finalizing your advice, look over it and validate using any relevant functions. If something seems off, refine the advice before giving it to the user.
 - Base your analysis and advice solely on the data retrieved through the provided functions. Always use the provided functions to gather sufficient data when needed.
-- Use the track summary functions to get high-level detail about portions of the trace. For the \`bounds\` parameter, default to using the bounds of the trace. Never specifically ask the user for a bounds. You can use more narrow bounds (such as the bounds relevant to a specific insight) when appropriate. Narrow the bounds given functions when possible.
+- Use absolute microsecond timestamps for any function that requires a \`min\` and \`max\` bounds. These timestamps can be found in the trace summary or within the details of an insight.
+- Example: If the trace bounds are {min: 1000, max: 5000} and you want to investigate a specific interaction that happened between 2000 and 3000, you should call \`getMainThreadTrackSummary({min: 2000, max: 3000})\`.
 - Use \`getEventByKey\` to get data on a specific trace event. This is great for root-cause analysis or validating any assumptions.
 - Provide clear, actionable recommendations. Avoid technical jargon unless necessary, and explain any technical terms used.
 - If you see a generic task like "Task", "Evaluate script" or "(anonymous)" in the main thread activity, try to look at its children to see what actual functions are executed and refer to those. When referencing the main thread activity, be as specific as you can. Ensure you identify to the user relevant functions and which script they were defined in. Avoid referencing "Task", "Evaluate script" and "(anonymous)" nodes if possible and instead focus on their children.
@@ -7326,11 +7328,9 @@ ${result}`,
       }
     });
     const createBounds = (min, max) => {
-      if (min > max) {
-        return null;
-      }
-      const clampedMin = Math.max(min ?? 0, parsedTrace.data.Meta.traceBounds.min);
-      const clampedMax = Math.min(max ?? Number.POSITIVE_INFINITY, parsedTrace.data.Meta.traceBounds.max);
+      const { min: bMin, max: bMax } = parsedTrace.data.Meta.traceBounds;
+      const clampedMin = Math.max(min ?? bMin, bMin);
+      const clampedMax = Math.min(max ?? bMax, bMax);
       if (clampedMin > clampedMax) {
         return null;
       }
@@ -7345,21 +7345,23 @@ ${result}`,
         properties: {
           min: {
             type: 3,
-            description: "The minimum time of the bounds, in microseconds",
-            nullable: false
+            description: `The minimum time of the bounds, in microseconds (the current trace starts at ${parsedTrace.data.Meta.traceBounds.min})`,
+            nullable: true
           },
           max: {
             type: 3,
-            description: "The maximum time of the bounds, in microseconds",
-            nullable: false
+            description: `The maximum time of the bounds, in microseconds (the current trace ends at ${parsedTrace.data.Meta.traceBounds.max})`,
+            nullable: true
           }
         },
-        required: ["min", "max"]
+        required: []
       },
       displayInfoFromArgs: (args) => {
+        const min = args.min ?? parsedTrace.data.Meta.traceBounds.min;
+        const max = args.max ?? parsedTrace.data.Meta.traceBounds.max;
         return {
           title: lockedString4(UIStringsNotTranslated.mainThreadActivity),
-          action: `getMainThreadTrackSummary({min: ${args.min}, max: ${args.max}})`
+          action: `getMainThreadTrackSummary({min: ${min}, max: ${max}})`
         };
       },
       handler: async (args) => {
@@ -7413,21 +7415,23 @@ ${result}`,
         properties: {
           min: {
             type: 3,
-            description: "The minimum time of the bounds, in microseconds",
-            nullable: false
+            description: `The minimum time of the bounds, in microseconds (the current trace starts at ${parsedTrace.data.Meta.traceBounds.min})`,
+            nullable: true
           },
           max: {
             type: 3,
-            description: "The maximum time of the bounds, in microseconds",
-            nullable: false
+            description: `The maximum time of the bounds, in microseconds (the current trace ends at ${parsedTrace.data.Meta.traceBounds.max})`,
+            nullable: true
           }
         },
-        required: ["min", "max"]
+        required: []
       },
       displayInfoFromArgs: (args) => {
+        const min = args.min ?? parsedTrace.data.Meta.traceBounds.min;
+        const max = args.max ?? parsedTrace.data.Meta.traceBounds.max;
         return {
           title: lockedString4(UIStringsNotTranslated.networkActivitySummary),
-          action: `getNetworkTrackSummary({min: ${args.min}, max: ${args.max}})`
+          action: `getNetworkTrackSummary({min: ${min}, max: ${max}})`
         };
       },
       handler: async (args) => {
@@ -7489,7 +7493,16 @@ ${result}`,
         const callTree = await formatter.formatCallTree(tree);
         const key = `getDetailedCallTree(${args.eventKey})`;
         this.#cacheFunctionResult(focus, key, callTree);
-        return { result: { callTree } };
+        const { startTime, endTime } = Trace6.Helpers.Timing.eventTimingsMicroSeconds(event);
+        const bounds = Trace6.Helpers.Timing.traceWindowFromMicroSeconds(startTime, endTime);
+        const widgets = [{
+          name: "BOTTOM_UP_TREE",
+          data: {
+            bounds,
+            parsedTrace
+          }
+        }];
+        return { result: { callTree }, widgets };
       }
     });
     if (Annotations3.AnnotationRepository.annotationsEnabled()) {
@@ -7767,7 +7780,7 @@ First, examine the provided context, then use the functions to gather additional
 * Use the precision of Strunk & White, the brevity of Hemingway, and the simple clarity of Vonnegut. Don't add repeated information, and keep the whole answer short.
 * **CRITICAL** NEVER write full Python programs - you should only write individual statements that invoke a single function from the provided library.
 * **CRITICAL** NEVER output text before a function call. Always do a function call first.
-* **CRITICAL** When answering questions about positioning or layout, ALWAYS inspect \`position\`, \`display\` and ALL related properties.
+* **CRITICAL** When answering questions about positioning or layout, ALWAYS inspect \`position\`, \`display\` and all other related properties. You MUST provide a specific list of CSS property names when calling functions to get styles. Do not use generic values like "all" or "*".
 * **CRITICAL** You are a CSS/DOM/HTML debugging assistant. NEVER provide answers to questions of unrelated topics such as legal advice, financial advice, personal opinions, medical advice, religion, race, politics, sexuality, gender, or any other non web-development topics. Answer "Sorry, I can't answer that. I'm best at questions about debugging web pages." to such questions.
 
 ## Response Structure
@@ -7961,7 +7974,8 @@ var StylingAgent = class _StylingAgent extends AiAgent {
 
 **CRITICAL** An element uid is a number, not a selector.
 **CRITICAL** Use selectors to refer to elements in the text output. Do not use uids.
-**CRITICAL** Always provide the explanation argument to explain what and why you query.`,
+**CRITICAL** Always provide the explanation argument to explain what and why you query.
+**CRITICAL** You MUST provide a specific list of CSS property names. Do not use generic values like "all" or "*".`,
       parameters: {
         type: 6,
         description: "",
@@ -7980,7 +7994,7 @@ var StylingAgent = class _StylingAgent extends AiAgent {
           },
           styleProperties: {
             type: 5,
-            description: "One or more CSS style property names to fetch.",
+            description: 'One or more specific CSS style property names to fetch. Generic values like "all" or "*" are not supported.',
             nullable: false,
             items: {
               type: 1,
@@ -8480,8 +8494,8 @@ var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
         const origin = this.#allowedOrigin();
         let hasCrossOriginRequest = false;
         for (const request of Logs3.NetworkLog.NetworkLog.instance().requests()) {
-          const requestOrigin = new URL(request.documentURL).origin;
-          if (origin && requestOrigin !== origin) {
+          const documentOrigin = Common5.ParsedURL.ParsedURL.extractOrigin(request.documentURL);
+          if (origin && documentOrigin !== origin) {
             hasCrossOriginRequest = true;
             continue;
           }
@@ -8530,8 +8544,8 @@ var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
           if (req.requestId() !== id) {
             return false;
           }
-          const requestOrigin = new URL(req.documentURL).origin;
-          return !origin || requestOrigin === origin;
+          const documentOrigin = Common5.ParsedURL.ParsedURL.extractOrigin(req.documentURL);
+          return !origin || documentOrigin === origin;
         });
         if (request) {
           const calculator = this.#networkTimeCalculator ?? new NetworkTimeCalculator3.NetworkTransferTimeCalculator();
@@ -8770,6 +8784,7 @@ You are a Conversation Summarizer. Your task is to take a transcript of a conver
     - **Standard Selectors:** Identify elements using HTML tags, classes, or IDs (e.g., \`button.submit-form\`).
     - **No Metadata:** Remove internal constants like \`NAVIGATION_0\` or \`INSIGHT_0\`.
 - **No Process Narration:** Do not describe internal "thinking" or API calls. Skip phrases like "The agent investigated..." or "The user then asked...". Jump straight to the findings and their technical context.
+- **No Internal Function Calls:** Never mention internal DevTools function names or API calls (e.g., \`setElementStyles\`, \`executeScript\`). Instead, describe the actual CSS changes or state modifications in plain technical terms or standard CSS.
 - **Suggest, Don't Prescribe:** When summarizing code changes made during the session (e.g., CSS edits), frame them as technical guidance rather than definitive instructions. Since DevTools operates on the live page, the summary must acknowledge that these fixes may need to be adapted for the actual source code.
 
 ### Objectives
@@ -8787,7 +8802,7 @@ You are a Conversation Summarizer. Your task is to take a transcript of a conver
 
 ---
 
-### Example (Few-Shot)
+### Example 1 (Performance Diagnostics)
 
 **User Input:** "The agent analyzed the page and found three render-blocking CSS files: app.css (36ms) and fonts.css (80ms). It also checked UID 456 which is a div.hero."
 
@@ -8808,6 +8823,28 @@ The following resources were identified as render-blocking:
 **Actionable Findings**
 * **Hero Element:** The \`div.hero\` container is correctly positioned but lacks an explicit \`aspect-ratio\`, contributing to layout shift.
 * **Optimization:** Inline critical CSS from \`app.css\` to improve First Contentful Paint.
+
+---
+
+### Example 2 (CSS Changes)
+
+**User Input:** "The agent checked the styles of \`div.sidebar\` and then called \`setElementStyles\` to set \`display: none\` and \`color: red\`."
+
+**Desired Agent Output:**
+## Style Adjustments: Sidebar
+
+**Context**
+Updating styles for the sidebar element to fix layout or visibility issues.
+
+**Diagnostics**
+The sidebar was investigated for visibility issues.
+
+**Actionable Findings**
+* **Style Changes:** The following CSS changes were identified as a potential fix for the live page:
+\`\`\`css
+display: none;
+color: red;
+\`\`\`
 
 ---
 
@@ -9272,7 +9309,7 @@ __export(AiConversation_exports, {
   NOT_FOUND_IMAGE_DATA: () => NOT_FOUND_IMAGE_DATA,
   generateContextDetailsMarkdown: () => generateContextDetailsMarkdown
 });
-import * as Common6 from "./../../core/common/common.js";
+import * as Common7 from "./../../core/common/common.js";
 import * as Host13 from "./../../core/host/host.js";
 import * as Platform6 from "./../../core/platform/platform.js";
 import * as Root12 from "./../../core/root/root.js";
@@ -9284,18 +9321,18 @@ var AiHistoryStorage_exports = {};
 __export(AiHistoryStorage_exports, {
   AiHistoryStorage: () => AiHistoryStorage
 });
-import * as Common5 from "./../../core/common/common.js";
+import * as Common6 from "./../../core/common/common.js";
 var instance = null;
 var DEFAULT_MAX_STORAGE_SIZE = 50 * 1024 * 1024;
-var AiHistoryStorage = class _AiHistoryStorage extends Common5.ObjectWrapper.ObjectWrapper {
+var AiHistoryStorage = class _AiHistoryStorage extends Common6.ObjectWrapper.ObjectWrapper {
   #historySetting;
   #imageHistorySettings;
-  #mutex = new Common5.Mutex.Mutex();
+  #mutex = new Common6.Mutex.Mutex();
   #maxStorageSize;
   constructor(maxStorageSize = DEFAULT_MAX_STORAGE_SIZE) {
     super();
-    this.#historySetting = Common5.Settings.Settings.instance().createSetting("ai-assistance-history-entries", []);
-    this.#imageHistorySettings = Common5.Settings.Settings.instance().createSetting("ai-assistance-history-images", []);
+    this.#historySetting = Common6.Settings.Settings.instance().createSetting("ai-assistance-history-entries", []);
+    this.#imageHistorySettings = Common6.Settings.Settings.instance().createSetting("ai-assistance-history-images", []);
     this.#maxStorageSize = maxStorageSize;
   }
   clearForTest() {
@@ -9775,7 +9812,7 @@ Original user query: ${initialQuery}`;
     }
     const target = SDK10.TargetManager.TargetManager.instance().primaryPageTarget();
     const inspectedURL = target?.inspectedURL();
-    this.#origin = inspectedURL ? new Common6.ParsedURL.ParsedURL(inspectedURL).securityOrigin() : void 0;
+    this.#origin = inspectedURL ? new Common7.ParsedURL.ParsedURL(inspectedURL).securityOrigin() : void 0;
     return this.#origin;
   };
 };
@@ -9793,7 +9830,7 @@ __export(AiUtils_exports, {
   getIconName: () => getIconName,
   isGeminiBranding: () => isGeminiBranding
 });
-import * as Common7 from "./../../core/common/common.js";
+import * as Common8 from "./../../core/common/common.js";
 import * as Host14 from "./../../core/host/host.js";
 import * as i18n15 from "./../../core/i18n/i18n.js";
 import * as Root13 from "./../../core/root/root.js";
@@ -9836,7 +9873,7 @@ function getDisabledReasons(aidaAvailability) {
       }
     }
   }
-  reasons.push(...Common7.Settings.Settings.instance().moduleSetting("ai-assistance-enabled").disabledReasons());
+  reasons.push(...Common8.Settings.Settings.instance().moduleSetting("ai-assistance-enabled").disabledReasons());
   return reasons;
 }
 function isGeminiBranding() {
@@ -9851,11 +9888,11 @@ var BuiltInAi_exports = {};
 __export(BuiltInAi_exports, {
   BuiltInAi: () => BuiltInAi
 });
-import * as Common8 from "./../../core/common/common.js";
+import * as Common9 from "./../../core/common/common.js";
 import * as Host15 from "./../../core/host/host.js";
 import * as Root14 from "./../../core/root/root.js";
 var builtInAiInstance;
-var BuiltInAi = class _BuiltInAi extends Common8.ObjectWrapper.ObjectWrapper {
+var BuiltInAi = class _BuiltInAi extends Common9.ObjectWrapper.ObjectWrapper {
   #availability = null;
   #hasGpu;
   #consoleInsightsSession;

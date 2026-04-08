@@ -113,6 +113,7 @@ export declare class ApplicationPanelSidebar extends UI.Widget.VBox implements S
     showFrame(frame: SDK.ResourceTreeModel.ResourceTreeFrame): void;
     showPreloadingRuleSetView(revealInfo: PreloadingHelper.PreloadingForward.RuleSetView): void;
     showPreloadingAttemptViewWithFilter(filter: PreloadingHelper.PreloadingForward.AttemptViewWithFilter): void;
+    showStorageBucket(bucketInfo: Protocol.Storage.StorageBucketInfo): void;
     private onmousemove;
     private onmouseleave;
 }

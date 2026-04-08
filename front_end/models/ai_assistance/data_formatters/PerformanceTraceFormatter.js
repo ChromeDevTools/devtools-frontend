@@ -26,7 +26,7 @@ export class PerformanceTraceFormatter {
         return `(eventKey: ${key}, ts: ${event.ts})`;
     }
     serializeBounds(bounds) {
-        return `{min: ${bounds.min}, max: ${bounds.max}}`;
+        return `{min: ${bounds.min}µs, max: ${bounds.max}µs}`;
     }
     /**
      * Fetching the Crux summary can error outside of DevTools, hence the

@@ -8152,11 +8152,10 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
       return profiles;
     });
     PerfUI12.LineLevelProfile.Performance.instance().initialize(cpuProfiles, primaryPageTarget);
-    this.#entityMapper = new Trace22.EntityMapper.EntityMapper(parsedTrace);
+    this.#entityMapper = Trace22.EntityMapper.EntityMapper.getOrCreate(parsedTrace);
     this.#sourceMapsResolver = new SourceMapsResolver.SourceMapsResolver(parsedTrace, this.#entityMapper);
     this.#sourceMapsResolver.addEventListener(SourceMapsResolver.SourceMappingsUpdated.eventName, this.#onSourceMapsNodeNamesResolvedBound);
     void this.#sourceMapsResolver.install();
-    this.#entityMapper = new Trace22.EntityMapper.EntityMapper(parsedTrace);
     this.statusDialog?.updateProgressBar(i18nString18(UIStrings18.processed), 80);
     this.updateMiniMap();
     this.statusDialog?.updateProgressBar(i18nString18(UIStrings18.processed), 90);
@@ -8891,7 +8890,7 @@ var BottomUpProfileRevealer = class {
     const panel = TimelinePanel.instance();
     TraceBounds9.TraceBounds.BoundsManager.instance().setTimelineVisibleWindow(revealable.bounds, { ignoreMiniMapBounds: true, shouldAnimate: true });
     panel.select(null);
-    panel.getFlameChart().selectDetailsViewTab(Tab.BottomUp, null);
+    panel.getFlameChart().selectDetailsViewTab(Tab.BottomUp, revealable.node ?? null);
   }
 };
 var ActionDelegate = class {

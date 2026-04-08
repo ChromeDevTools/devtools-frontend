@@ -9,4 +9,58 @@ export default `/*
  * found in the LICENSE file.
  */
 
+.drawer-tabbed-pane.drawer-minimized-vertical {
+  min-width: 27px;
+  width: 27px;
+}
+
+.hide-element {
+  display: none;
+}
+
+.collapsed-vertical-drawer-container {
+  height: calc(100% - 27px);
+  display: flex;
+  flex-direction: column;
+}
+
+.collapsed-vertical-drawer-header {
+  flex-direction: column;
+  flex-basis: 100% !important; /* stylelint-disable-line declaration-no-important */
+  border-bottom: none;
+}
+
+.collapsed-vertical-drawer-right-toolbar {
+  margin-left: 0 !important; /* stylelint-disable-line declaration-no-important */
+  flex-direction: column;
+  align-items: center;
+  height: auto;
+  width: 27px;
+}
+
+devtools-toolbar.collapsed-vertical-drawer-toolbar-content {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: auto !important; /* stylelint-disable-line declaration-no-important */
+  width: 27px;
+  padding: 0 !important; /* stylelint-disable-line declaration-no-important */
+  gap: 0;
+}
+
+devtools-toolbar.collapsed-vertical-drawer-toolbar-content .toolbar-button {
+  margin: 0 auto;
+  padding: 0;
+  padding-right: 1px;
+  width: 27px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+devtools-toolbar.collapsed-vertical-drawer-toolbar-content .toolbar-spacer {
+  display: none;
+}
+
 /*# sourceURL=${import.meta.resolve('./inspectorDrawerTabbedPane.css')} */`;

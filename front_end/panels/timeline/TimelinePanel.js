@@ -1833,15 +1833,13 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin(UI.Panel.Pane
         });
         PerfUI.LineLevelProfile.Performance.instance().initialize(cpuProfiles, primaryPageTarget);
         // Initialize EntityMapper
-        this.#entityMapper = new Trace.EntityMapper.EntityMapper(parsedTrace);
+        this.#entityMapper = Trace.EntityMapper.EntityMapper.getOrCreate(parsedTrace);
         // Set up SourceMapsResolver to ensure we resolve any function names in
         // profile calls.
         // Pass in the entity mapper.
         this.#sourceMapsResolver = new SourceMapsResolver.SourceMapsResolver(parsedTrace, this.#entityMapper);
         this.#sourceMapsResolver.addEventListener(SourceMapsResolver.SourceMappingsUpdated.eventName, this.#onSourceMapsNodeNamesResolvedBound);
         void this.#sourceMapsResolver.install();
-        // Initialize EntityMapper
-        this.#entityMapper = new Trace.EntityMapper.EntityMapper(parsedTrace);
         this.statusDialog?.updateProgressBar(i18nString(UIStrings.processed), 80);
         this.updateMiniMap();
         this.statusDialog?.updateProgressBar(i18nString(UIStrings.processed), 90);
@@ -2639,7 +2637,7 @@ export class BottomUpProfileRevealer {
         const panel = TimelinePanel.instance();
         TraceBounds.TraceBounds.BoundsManager.instance().setTimelineVisibleWindow(revealable.bounds, { ignoreMiniMapBounds: true, shouldAnimate: true });
         panel.select(null);
-        panel.getFlameChart().selectDetailsViewTab(Tab.BottomUp, null);
+        panel.getFlameChart().selectDetailsViewTab(Tab.BottomUp, revealable.node ?? null);
     }
 }
 export class ActionDelegate {

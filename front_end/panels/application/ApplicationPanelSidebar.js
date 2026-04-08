@@ -849,6 +849,12 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox {
             this.preloadingSummaryTreeElement.expandAndRevealAttempts(filter);
         }
     }
+    showStorageBucket(bucketInfo) {
+        const bucketsModel = SDK.TargetManager.TargetManager.instance().primaryPageTarget()?.model(SDK.StorageBucketsModel.StorageBucketsModel);
+        if (bucketsModel) {
+            this.storageBucketsTreeElement?.getBucketTreeElement(bucketsModel, bucketInfo)?.revealAndSelect(true);
+        }
+    }
     onmousemove(event) {
         const nodeUnderMouse = event.target;
         if (!nodeUnderMouse) {

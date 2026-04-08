@@ -418,7 +418,7 @@
   "front_end/models/geometry/geometry.js",
   "front_end/models/greendev/greendev.js",
   "front_end/models/har/har.js",
-  "front_end/models/heap_snapshot_model/heap_snapshot_model.js",
+  "front_end/models/heap_snapshot/heap_snapshot.js",
   "front_end/models/issues_manager/descriptions/CoepCoopSandboxedIframeCannotNavigateToCoopPage.md",
   "front_end/models/issues_manager/descriptions/CoepCorpNotSameOrigin.md",
   "front_end/models/issues_manager/descriptions/CoepCorpNotSameOriginAfterDefaultedToSameOriginByCoep.md",

@@ -2684,6 +2684,7 @@ var knownContextValues = /* @__PURE__ */ new Set([
   "min-height",
   "min-inline-size",
   "min-width",
+  "minimize-drawer",
   "missing-debug-info",
   "mix-blend-mode",
   "mixed-content",
@@ -5652,20 +5653,20 @@ async function startLogging(options) {
 async function addDocument(document2) {
   documents.push(document2);
   if (["interactive", "complete"].includes(document2.readyState)) {
-    await process();
+    await RenderCoordinator.read("processForLogging", process);
   }
   document2.addEventListener("visibilitychange", scheduleProcessing);
   document2.addEventListener("scroll", scheduleProcessing);
   observeMutations([document2.body]);
 }
 async function stopLogging() {
+  logging = false;
   await keyboardLogThrottler.schedule(
     async () => {
     },
     "AsSoonAsPossible"
     /* Common.Throttler.Scheduling.AS_SOON_AS_POSSIBLE */
   );
-  logging = false;
   unregisterAllLoggables();
   for (const document2 of documents) {
     document2.removeEventListener("visibilitychange", scheduleProcessing);
@@ -5712,7 +5713,7 @@ var viewportRectFor = (element) => {
   return viewportRect;
 };
 async function process() {
-  if (document.hidden) {
+  if (!logging || document.hidden) {
     return;
   }
   const startTime = performance.now();

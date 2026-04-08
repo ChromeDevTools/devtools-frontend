@@ -5004,15 +5004,6 @@ export namespace ProtocolMapping {
       paramsType: [];
       returnType: Protocol.Storage.GetRelatedWebsiteSetsResponse;
     };
-    /**
-     * Returns the list of URLs from a page and its embedded resources that match
-     * existing grace period URL pattern rules.
-     * https://developers.google.com/privacy-sandbox/cookies/temporary-exceptions/grace-period
-     */
-    'Storage.getAffectedUrlsForThirdPartyCookieMetadata': {
-      paramsType: [Protocol.Storage.GetAffectedUrlsForThirdPartyCookieMetadataRequest];
-      returnType: Protocol.Storage.GetAffectedUrlsForThirdPartyCookieMetadataResponse;
-    };
     'Storage.setProtectedAudienceKAnonymity': {
       paramsType: [Protocol.Storage.SetProtectedAudienceKAnonymityRequest];
       returnType: void;

@@ -5025,7 +5025,7 @@ var IDBDatabaseView = class extends ApplicationComponents5.StorageMetadataView.S
   constructor(model, database) {
     super();
     this.model = model;
-    this.setShowOnlyBucket(false);
+    this.setShowOnlyBucket(true);
     if (database) {
       this.update(database);
     }
@@ -8048,7 +8048,7 @@ var ServiceWorkerCacheView = class extends UI13.View.SimpleView {
     this.preview = null;
     this.cache = cache;
     const bucketInfo = this.model.target().model(SDK17.StorageBucketsModel.StorageBucketsModel)?.getBucketByName(cache.storageBucket.storageKey, cache.storageBucket.name);
-    this.metadataView.setShowOnlyBucket(false);
+    this.metadataView.setShowOnlyBucket(true);
     if (bucketInfo) {
       this.metadataView.setStorageBucket(bucketInfo);
     } else if (cache.storageKey) {
@@ -13534,6 +13534,12 @@ var ApplicationPanelSidebar = class extends UI24.Widget.VBox {
       this.preloadingSummaryTreeElement.expandAndRevealAttempts(filter);
     }
   }
+  showStorageBucket(bucketInfo) {
+    const bucketsModel = SDK26.TargetManager.TargetManager.instance().primaryPageTarget()?.model(SDK26.StorageBucketsModel.StorageBucketsModel);
+    if (bucketsModel) {
+      this.storageBucketsTreeElement?.getBucketTreeElement(bucketsModel, bucketInfo)?.revealAndSelect(true);
+    }
+  }
   onmousemove(event) {
     const nodeUnderMouse = event.target;
     if (!nodeUnderMouse) {
@@ -16428,7 +16434,8 @@ __export(ResourcesPanel_exports, {
   FrameDetailsRevealer: () => FrameDetailsRevealer,
   ResourceRevealer: () => ResourceRevealer,
   ResourcesPanel: () => ResourcesPanel,
-  RuleSetViewRevealer: () => RuleSetViewRevealer
+  RuleSetViewRevealer: () => RuleSetViewRevealer,
+  StorageBucketRevealer: () => StorageBucketRevealer
 });
 import "./../../ui/legacy/legacy.js";
 import * as Common22 from "./../../core/common/common.js";
@@ -16782,12 +16789,22 @@ var AttemptViewWithFilterRevealer = class {
     sidebar.showPreloadingAttemptViewWithFilter(filter);
   }
 };
+var StorageBucketRevealer = class {
+  async reveal(revealInfo) {
+    const sidebar = await ResourcesPanel.showAndGetSidebar();
+    sidebar.showStorageBucket(revealInfo.bucketInfo);
+  }
+};
+
+// gen/front_end/panels/application/application.prebundle.js
+import * as Components5 from "./components/components.js";
 export {
   AppManifestView_exports as AppManifestView,
   ApplicationPanelSidebar_exports as ApplicationPanelSidebar,
   BackgroundServiceModel_exports as BackgroundServiceModel,
   BackgroundServiceView_exports as BackgroundServiceView,
   BounceTrackingMitigationsTreeElement_exports as BounceTrackingMitigationsTreeElement,
+  Components5 as Components,
   CookieItemsView_exports as CookieItemsView,
   CrashReportContextView_exports as CrashReportContextView,
   DOMStorageItemsView_exports as DOMStorageItemsView,

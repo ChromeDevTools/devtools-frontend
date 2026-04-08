@@ -330,7 +330,6 @@ function renderStepCode(step) {
       <devtools-code-block
         .code=${step.code.trim()}
         .codeLang=${'js'}
-        .displayLimit=${MAX_NUM_LINES_IN_CODEBLOCK}
         .displayNotice=${!Boolean(step.output)}
         .header=${codeHeadingText}
         .showCopyButton=${true}
@@ -341,7 +340,6 @@ function renderStepCode(step) {
     <devtools-code-block
       .code=${step.output}
       .codeLang=${'js'}
-      .displayLimit=${MAX_NUM_LINES_IN_CODEBLOCK}
       .displayNotice=${true}
       .header=${lockedString(UIStringsNotTranslate.dataReturned)}
       .showCopyButton=${false}
@@ -361,7 +359,6 @@ function renderStepDetails({ step, markdownRenderer, isLast, }) {
       <devtools-code-block
         .code=${contextDetail.text}
         .codeLang=${contextDetail.codeLang || ''}
-        .displayLimit=${MAX_NUM_LINES_IN_CODEBLOCK}
         .displayNotice=${false}
         .header=${contextDetail.title}
         .showCopyButton=${true}
@@ -394,9 +391,14 @@ function renderWalkthroughSidebarButton(input, steps) {
     // loading.
     const variant = hasOneStepWithWidget && !input.isLoading ? "tonal" /* Buttons.Button.Variant.TONAL */ : "text" /* Buttons.Button.Variant.TEXT */;
     const icon = AiAssistanceModel.AiUtils.getIconName();
+    const toggleContainerClasses = Lit.Directives.classMap({
+        'walkthrough-toggle-container': true,
+        // We only apply the widget styling when loading is complete
+        'has-widgets': hasOneStepWithWidget && !input.isLoading,
+    });
     // clang-format off
     return html `
-    <div class="walkthrough-toggle-container ${hasOneStepWithWidget ? 'has-widgets' : ''}">
+    <div class=${toggleContainerClasses}>
       ${input.isLoading ?
         html `<devtools-spinner></devtools-spinner>` :
         html `<devtools-icon name=${icon}></devtools-icon>`}
@@ -416,9 +418,7 @@ function renderWalkthroughSidebarButton(input, steps) {
             // the walkthrough open with an alternative message.
             walkthrough.onOpen(message);
         }
-    }}
->
-        ${title}<devtools-icon class="chevron" .name=${isExpanded ? 'cross' : 'chevron-right'}></devtools-icon>
+    }}>${title}<devtools-icon class="chevron" .name=${isExpanded ? 'cross' : 'chevron-right'}></devtools-icon>
       </devtools-button>
     </div>
   `;
@@ -556,6 +556,15 @@ async function makeComputedStyleWidget(widgetData) {
         return null;
     }
     const styles = new ComputedStyle.ComputedStyleModel.ComputedStyle(domNodeForId, widgetData.data.computedStyles);
+    let filterText = null;
+    try {
+        filterText = new RegExp(widgetData.data.properties.join('|'), 'i');
+    }
+    catch {
+        // If the AI provides an invalid regex (e.g. "*"), we don't want to crash.
+        // We can just skip the widget in this case.
+        return null;
+    }
     // clang-format off
     const renderedWidget = html `<devtools-widget
       class="computed-styles-widget" ${widget(Elements.ComputedStyleWidget.ComputedStyleWidget, {
@@ -564,18 +573,26 @@ async function makeComputedStyleWidget(widgetData) {
         // This disables showing the nested traces and detailed information in the widget.
         propertyTraces: null,
         allowUserControl: false,
-        filterText: new RegExp(widgetData.data.properties.join('|'), 'i'),
+        filterText,
         enableNarrowViewResizing: false,
     })}></devtools-widget>`;
     // clang-format on
     return {
         renderedWidget,
         revealable: new Elements.ElementsPanel.NodeComputedStyles(domNodeForId),
-        title: html `<devtools-widget
-      ${widget(PanelsCommon.DOMLinkifier.DOMNodeLink, {
+        // clang-format off
+        title: html `
+      <span class="computed-style-title-wrapper">
+        <span class="computed-style-title-prefix">Computed styles</span>
+        <span class="style-class-wrapper">
+          (<devtools-widget
+            ${widget(PanelsCommon.DOMLinkifier.DOMNodeLink, {
             node: domNodeForId,
         })}
-    ></devtools-widget>`,
+          ></devtools-widget>)
+        </span>
+      </span>`,
+        // clang-format on
     };
 }
 async function makeCoreWebVitalsWidget(widgetData) {
@@ -594,12 +611,21 @@ async function makeStylePropertiesWidget(widgetData) {
     if (!domNodeForId) {
         return null;
     }
+    let filter = null;
+    try {
+        filter = widgetData.data.selector ? new RegExp(widgetData.data.selector) : null;
+    }
+    catch {
+        // If the AI provides an invalid regex (e.g. "*"), we don't want to crash.
+        // We can just skip the widget in this case.
+        return null;
+    }
     // clang-format off
     const renderedWidget = html `<devtools-widget
       class="styling-preview-widget"
       ${widget(Elements.StandaloneStylesContainer.StandaloneStylesContainer, {
         domNode: domNodeForId,
-        filter: widgetData.data.selector ? new RegExp(widgetData.data.selector) : null,
+        filter,
     })}>
   </devtools-widget>`;
     // clang-format on
@@ -1224,7 +1250,7 @@ async function makeTimelineRangeSummaryWidget(widgetData) {
     const eventsArray = Array.from(events);
     eventsArray.sort((a, b) => a.ts - b.ts);
     const thirdPartyTree = new Timeline.ThirdPartyTreeView.ThirdPartyTreeViewWidget();
-    const mapper = new Trace.EntityMapper.EntityMapper(parsedTrace);
+    const mapper = Trace.EntityMapper.EntityMapper.getOrCreate(parsedTrace);
     thirdPartyTree.model = { selectedEvents: eventsArray, parsedTrace, entityMapper: mapper };
     thirdPartyTree.activeSelection = Timeline.TimelineSelection.selectionFromRangeMicroSeconds(bounds.min, bounds.max);
     thirdPartyTree.refreshTree(true);
@@ -1245,6 +1271,9 @@ async function makeTimelineRangeSummaryWidget(widgetData) {
                     entityMapper: thirdPartyTree.entityMapper(),
                 },
                 activeSelection: { bounds },
+                onBottomUpButtonClicked: (node) => {
+                    void Common.Revealer.reveal(new TimelineUtils.Helpers.RevealableBottomUpProfile(bounds, node ?? undefined));
+                },
             })}`,
         },
     })}

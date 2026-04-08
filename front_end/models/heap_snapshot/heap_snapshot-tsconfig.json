@@ -24,25 +24,33 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "outDir": ".",
-    "rootDir": ".",
+    "rootDir": "../../../../../../front_end/models/heap_snapshot",
     "skipLibCheck": true,
     "sourceMap": true,
     "strict": true,
     "target": "ES2023",
-    "tsBuildInfoFile": "devtools_entrypoint-bundle-tsconfig-tsconfig.json.tsbuildinfo",
+    "tsBuildInfoFile": "heap_snapshot-tsconfig.json.tsbuildinfo",
     "typeRoots": [],
     "types": [],
     "useUnknownInCatchVariables": false
   },
   "files": [
-    "heap_snapshot_model.prebundle.ts",
+    "../../../../../../front_end/models/heap_snapshot/ChildrenProvider.ts",
+    "../../../../../../front_end/models/heap_snapshot/HeapSnapshotModel.ts",
+    "../../../../../../front_end/models/heap_snapshot/HeapSnapshotProxy.ts",
     "../../../../../../front_end/legacy/legacy-defs.d.ts",
     "../../../../../../front_end/global_typings/global_defs.d.ts",
     "../../../../../../node_modules/@types/filesystem/index.d.ts"
   ],
   "references": [
     {
-      "path": "./heap_snapshot_model-tsconfig.json"
+      "path": "../../core/common/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../core/platform/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../core/platform/api/bundle-tsconfig.json"
     }
   ]
 }

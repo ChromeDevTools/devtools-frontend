@@ -6,6 +6,7 @@ import type * as Types from './types/types.js';
 export declare class EntityMapper {
     #private;
     constructor(parsedTrace: ParsedTrace);
+    static getOrCreate(parsedTrace: ParsedTrace): EntityMapper;
     /**
      * Returns an entity for a given event if any.
      */

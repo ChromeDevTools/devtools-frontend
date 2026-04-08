@@ -542,7 +542,7 @@ var Dialog_exports = {};
 __export(Dialog_exports, {
   Dialog: () => Dialog
 });
-import * as Common15 from "./../../core/common/common.js";
+import * as Common16 from "./../../core/common/common.js";
 import * as VisualLogging16 from "./../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/dialog.css.js
@@ -719,7 +719,7 @@ __export(Toolbar_exports, {
   ToolbarToggle: () => ToolbarToggle,
   registerToolbarItem: () => registerToolbarItem
 });
-import * as Common13 from "./../../core/common/common.js";
+import * as Common14 from "./../../core/common/common.js";
 import * as i18n21 from "./../../core/i18n/i18n.js";
 import * as Platform13 from "./../../core/platform/platform.js";
 import * as Root5 from "./../../core/root/root.js";
@@ -1518,7 +1518,7 @@ __export(InspectorView_exports, {
   InspectorView: () => InspectorView,
   InspectorViewTabDelegate: () => InspectorViewTabDelegate
 });
-import * as Common10 from "./../../core/common/common.js";
+import * as Common11 from "./../../core/common/common.js";
 import * as Host5 from "./../../core/host/host.js";
 import * as i18n15 from "./../../core/i18n/i18n.js";
 import * as Root3 from "./../../core/root/root.js";
@@ -2056,6 +2056,7 @@ var TYPE_TO_ICON = {
 };
 
 // gen/front_end/ui/legacy/InspectorDrawerView.js
+import * as Common8 from "./../../core/common/common.js";
 import * as i18n13 from "./../../core/i18n/i18n.js";
 import * as VisualLogging6 from "./../visual_logging/visual_logging.js";
 
@@ -2065,6 +2066,60 @@ var inspectorDrawerTabbedPane_css_default = `/*
  * Use of this source code is governed by a BSD-style license that can be
  * found in the LICENSE file.
  */
+
+.drawer-tabbed-pane.drawer-minimized-vertical {
+  min-width: 27px;
+  width: 27px;
+}
+
+.hide-element {
+  display: none;
+}
+
+.collapsed-vertical-drawer-container {
+  height: calc(100% - 27px);
+  display: flex;
+  flex-direction: column;
+}
+
+.collapsed-vertical-drawer-header {
+  flex-direction: column;
+  flex-basis: 100% !important; /* stylelint-disable-line declaration-no-important */
+  border-bottom: none;
+}
+
+.collapsed-vertical-drawer-right-toolbar {
+  margin-left: 0 !important; /* stylelint-disable-line declaration-no-important */
+  flex-direction: column;
+  align-items: center;
+  height: auto;
+  width: 27px;
+}
+
+devtools-toolbar.collapsed-vertical-drawer-toolbar-content {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: auto !important; /* stylelint-disable-line declaration-no-important */
+  width: 27px;
+  padding: 0 !important; /* stylelint-disable-line declaration-no-important */
+  gap: 0;
+}
+
+devtools-toolbar.collapsed-vertical-drawer-toolbar-content .toolbar-button {
+  margin: 0 auto;
+  padding: 0;
+  padding-right: 1px;
+  width: 27px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+devtools-toolbar.collapsed-vertical-drawer-toolbar-content .toolbar-spacer {
+  display: none;
+}
 
 /*# sourceURL=${import.meta.resolve("./inspectorDrawerTabbedPane.css")} */`;
 
@@ -6244,10 +6299,25 @@ var StackLocation = class extends Location {
 };
 
 // gen/front_end/ui/legacy/InspectorDrawerView.js
+var VERTICAL_MINIMIZED_DRAWER_SIZE = 27;
 var DrawerTabbedPane = class extends TabbedPane {
   constructor() {
     super();
     this.registerRequiredCSS(inspectorDrawerTabbedPane_css_default);
+  }
+  setVerticalMinimized(isMinimized) {
+    this.element.classList.toggle("drawer-minimized-vertical", isMinimized);
+    this.contentElement.classList.toggle("collapsed-vertical-drawer-container", isMinimized);
+    this.tabbedPaneContentElement().classList.toggle("hide-element", isMinimized);
+    this.headerElement().classList.toggle("collapsed-vertical-drawer-header", isMinimized);
+    this.headerContentsElement.classList.toggle("hide-element", isMinimized);
+    this.leftToolbar().classList.toggle("hide-element", isMinimized);
+    this.rightToolbar().classList.toggle("collapsed-vertical-drawer-right-toolbar", isMinimized);
+    this.rightToolbar().classList.toggle("collapsed-vertical-drawer-toolbar-content", isMinimized);
+  }
+  restoreAfterVerticalMinimized() {
+    this.clearMeasuredWidths();
+    this.headerResized();
   }
 };
 var UIStrings7 = {
@@ -6255,6 +6325,14 @@ var UIStrings7 = {
    * @description Title of more tabs button in the drawer view.
    */
   moreTools: "More Tools",
+  /**
+   * @description Text that appears when hover over the minimize button on the drawer view.
+   */
+  minimizeDrawer: "Minimize drawer",
+  /**
+   * @description Text that appears when hover over the expand button on the drawer view.
+   */
+  expandDrawer: "Expand drawer",
   /**
    * @description Text that appears when hover over the close button on the drawer view.
    */
@@ -6270,27 +6348,41 @@ var InspectorDrawerView = class {
   tabbedLocation;
   tabbedPane;
   #splitWidget;
+  #drawerMinimizedSetting;
   #verticalExpandedMinimumWidth;
   #minimumSizes;
   #setInspectorMinimumSize;
+  #drawerSizeBeforeMinimize = 0;
+  #wasVerticalAndMinimized = false;
   #toggleOrientationButton;
+  #minimizeExpandButton;
   #closeDrawerButton;
   #moreTabsButton;
+  #onExpandFromMinimized;
+  #onMinimizeFromTabInteraction;
   #onTabSelected;
+  #isConsoleOpenInMainAndDrawer;
   constructor(options) {
     this.#splitWidget = options.splitWidget;
     this.#verticalExpandedMinimumWidth = options.verticalExpandedMinimumWidth;
     this.#minimumSizes = options.minimumSizes;
     this.#setInspectorMinimumSize = options.setInspectorMinimumSize;
+    this.#onExpandFromMinimized = options.onExpandFromMinimized;
+    this.#onMinimizeFromTabInteraction = options.onMinimizeFromTabInteraction;
     this.#onTabSelected = options.onTabSelected;
+    this.#isConsoleOpenInMainAndDrawer = options.isConsoleOpenInMainAndDrawer;
+    this.#drawerMinimizedSetting = Common8.Settings.Settings.instance().createLocalSetting("inspector.drawer-minimized", false);
     this.tabbedLocation = ViewManager.instance().createTabbedLocation(options.revealDrawer, "drawer-view", true, true, void 0, options.isVisible, () => new DrawerTabbedPane());
     this.#moreTabsButton = this.tabbedLocation.enableMoreTabsButton();
     this.#moreTabsButton.setTitle(i18nString7(UIStrings7.moreTools));
     this.tabbedPane = this.tabbedLocation.tabbedPane();
     this.tabbedPane.element.classList.add("drawer-tabbed-pane");
     this.tabbedPane.element.setAttribute("jslog", `${VisualLogging6.drawer()}`);
+    this.#minimizeExpandButton = new ToolbarButton(i18nString7(UIStrings7.minimizeDrawer), options.isVertical ? "right-panel-close" : "bottom-panel-close");
+    this.#minimizeExpandButton.element.setAttribute("jslog", `${VisualLogging6.toggle("minimize-drawer").track({ click: true })}`);
+    this.#minimizeExpandButton.addEventListener("Click", options.onToggleMinimized);
     this.#closeDrawerButton = new ToolbarButton(i18nString7(UIStrings7.closeDrawer), "cross");
-    this.#closeDrawerButton.element.setAttribute("jslog", `${VisualLogging6.close().track({ click: true })}`);
+    this.#closeDrawerButton.element.setAttribute("jslog", `${VisualLogging6.close("close-drawer").track({ click: true })}`);
     this.#closeDrawerButton.addEventListener("Click", options.onHide);
     this.#toggleOrientationButton = new ToolbarButton(i18nString7(UIStrings7.toggleDrawerOrientation), options.isVertical ? "dock-bottom" : "dock-right");
     this.#toggleOrientationButton.element.setAttribute("jslog", `${VisualLogging6.toggle("toggle-drawer-orientation").track({ click: true })}`);
@@ -6298,7 +6390,9 @@ var InspectorDrawerView = class {
     if (options.enableOrientationToggle) {
       this.tabbedPane.rightToolbar().appendToolbarItem(this.#toggleOrientationButton);
     }
+    this.tabbedPane.rightToolbar().appendToolbarItem(this.#minimizeExpandButton);
     this.tabbedPane.rightToolbar().appendToolbarItem(this.#closeDrawerButton);
+    this.tabbedPane.addEventListener(Events.TabInvoked, this.#drawerTabInvoked, this);
     this.tabbedPane.addEventListener(Events.TabSelected, this.#drawerTabSelected, this);
     this.tabbedPane.setTabDelegate(options.tabDelegate);
     const selectedDrawerTab = this.tabbedPane.selectedTabId;
@@ -6314,18 +6408,26 @@ var InspectorDrawerView = class {
       drag: true,
       keydown: "ArrowUp|ArrowLeft|ArrowDown|ArrowRight|Enter|Space"
     })}`);
-    this.#updatePresentation();
+    this.#updatePresentation(false);
+  }
+  restoreMinimizedStateFromSettings() {
+    if (!this.#drawerMinimizedSetting.get()) {
+      return;
+    }
+    this.#splitWidget.showBoth();
+    this.setMinimized(true);
   }
   setVertical(shouldBeVertical) {
     if (shouldBeVertical === this.#splitWidget.isVertical()) {
       return;
     }
     const previousShowMode = this.#splitWidget.showMode();
+    const wasDrawerMinimized = this.isMinimized();
     this.#splitWidget.setVertical(shouldBeVertical);
-    this.#updatePresentation();
-    this.applyState(previousShowMode);
+    this.#updatePresentation(wasDrawerMinimized);
+    this.applyState(previousShowMode, wasDrawerMinimized);
   }
-  applyState(showMode) {
+  applyState(showMode, minimized) {
     if (this.#splitWidget.showMode() !== showMode) {
       switch (showMode) {
         case "Both":
@@ -6339,17 +6441,53 @@ var InspectorDrawerView = class {
           break;
       }
     }
-    this.#updatePresentation();
+    const shouldBeMinimized = showMode === "Both" && minimized;
+    if (showMode === "Both") {
+      this.setMinimized(shouldBeMinimized);
+      return;
+    }
+    this.#splitWidget.setSidebarMinimized(false);
+    this.#splitWidget.setResizable(false);
+    this.#updatePresentation(false);
+    this.#drawerMinimizedSetting.set(false);
   }
   show(hasTargetDrawer) {
+    const wasDrawerVisible = this.isVisibleForEvents();
     this.tabbedPane.setAutoSelectFirstItemOnShow(!hasTargetDrawer);
     this.#splitWidget.showBoth();
+    this.#dispatchPaneVisibilityChangedIfNeeded(wasDrawerVisible);
   }
   hide() {
-    this.#splitWidget.hideSidebar(true);
+    const wasDrawerVisible = this.isVisibleForEvents();
+    const wasMinimized = this.isMinimized();
+    this.#splitWidget.hideSidebar(!wasMinimized);
+    if (wasMinimized) {
+      this.#updatePresentation(false);
+      this.#splitWidget.setSidebarMinimized(false);
+      this.#splitWidget.setResizable(true);
+    }
+    this.#drawerMinimizedSetting.set(false);
+    this.#dispatchPaneVisibilityChangedIfNeeded(wasDrawerVisible);
+  }
+  setMinimized(minimized) {
+    const wasDrawerVisible = this.isVisibleForEvents();
+    if (minimized && !this.isMinimized()) {
+      this.#drawerSizeBeforeMinimize = this.#splitWidget.sidebarSize();
+    }
+    this.#updatePresentation(minimized);
+    this.#splitWidget.setSidebarMinimized(minimized);
+    this.#dispatchPaneVisibilityChangedIfNeeded(wasDrawerVisible);
+    this.#splitWidget.setResizable(!minimized);
+    this.#drawerMinimizedSetting.set(minimized);
+    if (!minimized && this.#drawerSizeBeforeMinimize > 0) {
+      this.#splitWidget.setSidebarSize(this.#drawerSizeBeforeMinimize);
+    }
   }
   drawerVisible() {
     return this.tabbedPane.isShowing();
+  }
+  isVisibleForEvents() {
+    return this.#splitWidget.sidebarIsShowing() && !this.isMinimized();
   }
   drawerSize() {
     return this.#splitWidget.sidebarSize();
@@ -6360,25 +6498,78 @@ var InspectorDrawerView = class {
   totalSize() {
     return this.#splitWidget.totalSize();
   }
+  isMinimized() {
+    return this.#splitWidget.isSidebarMinimized();
+  }
   isVertical() {
     return this.#splitWidget.isVertical();
   }
-  updatePresentation(isVertical) {
+  updatePresentation({ isVertical, isMinimized, verticalExpandedMinimumWidth }) {
     this.#toggleOrientationButton.setGlyph(isVertical ? "dock-bottom" : "dock-right");
-    if (isVertical) {
-      this.tabbedPane.setMinimumSize(this.#verticalExpandedMinimumWidth, 27);
+    this.#updateMinimizeExpandButton(isVertical, isMinimized);
+    const isVerticalAndMinimized = isVertical && isMinimized;
+    if (isVerticalAndMinimized) {
+      this.tabbedPane.setMinimumSize(VERTICAL_MINIMIZED_DRAWER_SIZE, VERTICAL_MINIMIZED_DRAWER_SIZE);
+    } else if (isVertical) {
+      this.tabbedPane.setMinimumSize(verticalExpandedMinimumWidth, VERTICAL_MINIMIZED_DRAWER_SIZE);
     } else {
-      this.tabbedPane.setMinimumSize(0, 27);
+      this.tabbedPane.setMinimumSize(0, VERTICAL_MINIMIZED_DRAWER_SIZE);
     }
+    this.tabbedPane.setVerticalMinimized(isVerticalAndMinimized);
+    if (this.#moreTabsButton) {
+      this.#moreTabsButton.setVisible(!isVerticalAndMinimized);
+    }
+    if (!isVerticalAndMinimized && this.#wasVerticalAndMinimized) {
+      this.tabbedPane.restoreAfterVerticalMinimized();
+    }
+    this.#wasVerticalAndMinimized = isVerticalAndMinimized;
   }
-  #updatePresentation() {
+  #updateMinimizeExpandButton(isVertical, isMinimized) {
+    if (isMinimized) {
+      this.#minimizeExpandButton.setGlyph(isVertical ? "right-panel-open" : "bottom-panel-open");
+      this.#minimizeExpandButton.setTitle(i18nString7(UIStrings7.expandDrawer));
+      return;
+    }
+    this.#minimizeExpandButton.setGlyph(isVertical ? "right-panel-close" : "bottom-panel-close");
+    this.#minimizeExpandButton.setTitle(i18nString7(UIStrings7.minimizeDrawer));
+  }
+  #updatePresentation(minimized) {
     const drawerIsVertical = this.#splitWidget.isVertical();
     this.#setInspectorMinimumSize(drawerIsVertical ? this.#minimumSizes.inspectorWidthWhenVertical : this.#minimumSizes.inspectorWidthWhenHorizontal, this.#minimumSizes.inspectorHeight);
-    this.updatePresentation(drawerIsVertical);
+    this.updatePresentation({
+      isVertical: drawerIsVertical,
+      isMinimized: minimized,
+      verticalExpandedMinimumWidth: this.#verticalExpandedMinimumWidth
+    });
+  }
+  #dispatchPaneVisibilityChangedIfNeeded(wasDrawerVisible) {
+    const isDrawerVisible = this.isVisibleForEvents();
+    if (wasDrawerVisible === isDrawerVisible) {
+      return;
+    }
+    this.tabbedPane.dispatchEventToListeners(Events.PaneVisibilityChanged, { isVisible: isDrawerVisible });
   }
   #drawerTabSelected(event) {
-    const { tabId } = event.data;
+    const { tabId, prevTabId, isUserGesture } = event.data;
     this.#onTabSelected(tabId);
+    if (this.#isConsoleOpenInMainAndDrawer(tabId)) {
+      return;
+    }
+    if (isUserGesture && prevTabId && prevTabId !== tabId && this.isMinimized()) {
+      this.#onExpandFromMinimized();
+    }
+  }
+  #drawerTabInvoked(event) {
+    const { tabId, isUserGesture } = event.data;
+    if (isUserGesture && this.#isConsoleOpenInMainAndDrawer(tabId)) {
+      if (!this.isMinimized()) {
+        this.#onMinimizeFromTabInteraction();
+      }
+      return;
+    }
+    if (isUserGesture && this.isMinimized()) {
+      this.#onExpandFromMinimized();
+    }
   }
 };
 
@@ -6388,7 +6579,7 @@ __export(SplitWidget_exports, {
   SplitWidget: () => SplitWidget,
   SplitWidgetElement: () => SplitWidgetElement
 });
-import * as Common9 from "./../../core/common/common.js";
+import * as Common10 from "./../../core/common/common.js";
 import * as Platform8 from "./../../core/platform/platform.js";
 import * as Geometry3 from "./../../models/geometry/geometry.js";
 import * as VisualLogging7 from "./../visual_logging/visual_logging.js";
@@ -6399,8 +6590,8 @@ __export(ResizerWidget_exports, {
   ResizerWidget: () => ResizerWidget,
   SimpleResizerWidget: () => SimpleResizerWidget
 });
-import * as Common8 from "./../../core/common/common.js";
-var ResizerWidget = class extends Common8.ObjectWrapper.ObjectWrapper {
+import * as Common9 from "./../../core/common/common.js";
+var ResizerWidget = class extends Common9.ObjectWrapper.ObjectWrapper {
   #isEnabled = true;
   #elements = /* @__PURE__ */ new Set();
   #installDragOnMouseDownBound;
@@ -6626,7 +6817,7 @@ var splitWidget_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./splitWidget.css")} */`;
 
 // gen/front_end/ui/legacy/SplitWidget.js
-var SplitWidget = class extends Common9.ObjectWrapper.eventMixin(Widget) {
+var SplitWidget = class extends Common10.ObjectWrapper.eventMixin(Widget) {
   #sidebarElement;
   #mainElement;
   #resizerElement;
@@ -6644,10 +6835,10 @@ var SplitWidget = class extends Common9.ObjectWrapper.eventMixin(Widget) {
   #sidebarWidget = null;
   #animationFrameHandle = 0;
   #animationCallback = null;
-  #showSidebarButtonTitle = Common9.UIString.LocalizedEmptyString;
-  #hideSidebarButtonTitle = Common9.UIString.LocalizedEmptyString;
-  #shownSidebarString = Common9.UIString.LocalizedEmptyString;
-  #hiddenSidebarString = Common9.UIString.LocalizedEmptyString;
+  #showSidebarButtonTitle = Common10.UIString.LocalizedEmptyString;
+  #hideSidebarButtonTitle = Common10.UIString.LocalizedEmptyString;
+  #shownSidebarString = Common10.UIString.LocalizedEmptyString;
+  #hiddenSidebarString = Common10.UIString.LocalizedEmptyString;
   #showHideSidebarButton = null;
   #isVertical = false;
   #sidebarMinimized = false;
@@ -6695,7 +6886,7 @@ var SplitWidget = class extends Common9.ObjectWrapper.eventMixin(Widget) {
     this.#defaultSidebarWidth = defaultSidebarWidth || 200;
     this.#defaultSidebarHeight = defaultSidebarHeight || this.#defaultSidebarWidth;
     this.#constraintsInDip = Boolean(constraintsInDip);
-    this.setting = settingName ? Common9.Settings.Settings.instance().createSetting(settingName, {}) : null;
+    this.setting = settingName ? Common10.Settings.Settings.instance().createSetting(settingName, {}) : null;
     this.#savedSidebarSizeDIP = this.#sidebarSizeDIP;
     this.setSecondIsSidebar(secondIsSidebar);
     this.#setVertical(isVertical);
@@ -7389,6 +7580,14 @@ var suppressUnused = function(_value) {
 // gen/front_end/ui/legacy/InspectorView.js
 var UIStrings8 = {
   /**
+   * @description The aria label for the drawer minimized.
+   */
+  drawerMinimized: "Drawer minimized",
+  /**
+   * @description The aria label for the drawer expanded.
+   */
+  drawerExpanded: "Drawer expanded",
+  /**
    * @description The ARIA label for the main tab bar that contains the DevTools panels
    */
   panels: "Panels",
@@ -7466,9 +7665,9 @@ var str_8 = i18n15.i18n.registerUIStrings("ui/legacy/InspectorView.ts", UIString
 var i18nString8 = i18n15.i18n.getLocalizedString.bind(void 0, str_8);
 var inspectorViewInstance = null;
 var MIN_MAIN_PANEL_WIDTH = 240;
-var MIN_VERTICAL_DRAWER_WIDTH = 200;
+var MIN_VERTICAL_DRAWER_WIDTH = 280;
 var MIN_INSPECTOR_WIDTH_HORIZONTAL_DRAWER = 250;
-var MIN_INSPECTOR_WIDTH_VERTICAL_DRAWER = 450;
+var MIN_INSPECTOR_WIDTH_VERTICAL_DRAWER = 530;
 var MIN_INSPECTOR_HEIGHT = 72;
 var DrawerOrientation;
 (function(DrawerOrientation2) {
@@ -7495,17 +7694,20 @@ var InspectorView = class _InspectorView extends VBox {
   keyDownBound;
   currentPanelLocked;
   focusRestorer;
+  #mainPanelAtDrawerFocus = null;
   ownerSplitWidget;
   reloadRequiredInfobar;
   #chromeRestartRequiredInfobar;
   #debuggedTabReloadRequiredInfobar;
   #selectOverrideFolderInfobar;
   #resizeObserver;
+  #drawerShowModeBeforeDockSideChange = null;
+  #drawerMinimizedBeforeDockSideChange = null;
   constructor() {
     super();
     GlassPane.setContainer(this.element);
     this.setMinimumSize(MIN_INSPECTOR_WIDTH_HORIZONTAL_DRAWER, MIN_INSPECTOR_HEIGHT);
-    this.drawerOrientationByDockSetting = Common10.Settings.Settings.instance().createSetting("inspector.drawer-orientation-by-dock-mode", {
+    this.drawerOrientationByDockSetting = Common11.Settings.Settings.instance().createSetting("inspector.drawer-orientation-by-dock-mode", {
       [DockMode.BOTTOM]: DrawerOrientation.UNSET,
       [DockMode.SIDE]: DrawerOrientation.UNSET,
       [DockMode.UNDOCKED]: DrawerOrientation.UNSET
@@ -7523,11 +7725,15 @@ var InspectorView = class _InspectorView extends VBox {
         focus: false,
         hasTargetDrawer: true
       }),
-      isVisible: () => this.drawerSplitWidget.sidebarIsShowing(),
+      isVisible: () => this.drawerSplitWidget.sidebarIsShowing() && !this.drawerSplitWidget.isSidebarMinimized(),
       drawerLabel: i18nString8(UIStrings8.drawer),
+      onToggleMinimized: this.toggleDrawerMinimized.bind(this),
       onHide: this.closeDrawer.bind(this),
       onToggleOrientation: this.toggleDrawerOrientation.bind(this),
+      onExpandFromMinimized: this.#expandDrawerFromInteraction.bind(this),
+      onMinimizeFromTabInteraction: this.minimizeDrawer.bind(this),
       onTabSelected: this.tabSelected.bind(this),
+      isConsoleOpenInMainAndDrawer: (tabId) => tabId === "console-view" && this.tabbedPane.selectedTabId === "console",
       tabDelegate: this.tabDelegate,
       enableOrientationToggle: Boolean(Root3.Runtime.hostConfig.devToolsFlexibleLayout?.verticalDrawerEnabled),
       isVertical,
@@ -7578,7 +7784,10 @@ var InspectorView = class _InspectorView extends VBox {
       this.attachInfobar(infobar);
     }
     this.#resizeObserver = new ResizeObserver(this.#observedResize.bind(this));
+    DockController.instance().addEventListener("BeforeDockSideChanged", this.#rememberDrawerStateBeforeDockSideChange, this);
     DockController.instance().addEventListener("DockSideChanged", this.#applyDrawerOrientationForDockSide, this);
+    DockController.instance().addEventListener("AfterDockSideChanged", this.#restoreDrawerStateAfterDockSideChange, this);
+    this.#drawerView.restoreMinimizedStateFromSettings();
   }
   static instance(opts = { forceNew: null }) {
     const { forceNew } = opts;
@@ -7631,6 +7840,9 @@ var InspectorView = class _InspectorView extends VBox {
     }
     this.#drawerView.setVertical(shouldBeVertical);
   }
+  #applyDrawerState(showMode, minimized) {
+    this.#drawerView.applyState(showMode, minimized);
+  }
   #observedResize() {
     const rect = this.element.getBoundingClientRect();
     this.element.style.setProperty("--devtools-window-left", `${rect.left}px`);
@@ -7651,7 +7863,20 @@ var InspectorView = class _InspectorView extends VBox {
     super.willHide();
     this.#resizeObserver.unobserve(this.element);
     this.element.ownerDocument.removeEventListener("keydown", this.keyDownBound, false);
-    DockController.instance().removeEventListener("DockSideChanged", this.#applyDrawerOrientationForDockSide, this);
+  }
+  #rememberDrawerStateBeforeDockSideChange() {
+    this.#drawerShowModeBeforeDockSideChange = this.drawerSplitWidget.showMode();
+    this.#drawerMinimizedBeforeDockSideChange = this.isDrawerMinimized();
+  }
+  #restoreDrawerStateAfterDockSideChange() {
+    const showMode = this.#drawerShowModeBeforeDockSideChange;
+    const minimized = this.#drawerMinimizedBeforeDockSideChange;
+    this.#drawerShowModeBeforeDockSideChange = null;
+    this.#drawerMinimizedBeforeDockSideChange = null;
+    if (showMode === null || minimized === null) {
+      return;
+    }
+    this.#applyDrawerState(showMode, minimized);
   }
   resolveLocation(locationName) {
     if (locationName === "drawer-view") {
@@ -7717,14 +7942,20 @@ var InspectorView = class _InspectorView extends VBox {
     return ViewManager.instance().materializedWidget(this.tabbedPane.selectedTabId || "");
   }
   showDrawer({ focus, hasTargetDrawer }) {
-    if (this.#drawerView.drawerVisible()) {
+    if (this.#drawerView.drawerVisible() && this.drawerSplitWidget.sidebarIsShowing()) {
+      if (focus && this.isDrawerMinimized()) {
+        this.setDrawerMinimized(false);
+        LiveAnnouncer.alert(i18nString8(UIStrings8.drawerExpanded));
+      }
       return;
     }
     this.#drawerView.show(hasTargetDrawer);
     if (focus) {
       this.focusRestorer = new WidgetFocusRestorer(this.drawerTabbedPane);
+      this.#mainPanelAtDrawerFocus = this.tabbedPane.selectedTabId;
     } else {
       this.focusRestorer = null;
+      this.#mainPanelAtDrawerFocus = null;
     }
     this.#applyDrawerOrientationForDockSide();
     LiveAnnouncer.alert(i18nString8(UIStrings8.drawerShown));
@@ -7732,15 +7963,27 @@ var InspectorView = class _InspectorView extends VBox {
   drawerVisible() {
     return this.#drawerView.drawerVisible();
   }
+  minimizeDrawer() {
+    if (!this.#drawerView.drawerVisible()) {
+      return;
+    }
+    this.focusRestorer = null;
+    this.#mainPanelAtDrawerFocus = null;
+    this.setDrawerMinimized(true);
+    LiveAnnouncer.alert(i18nString8(UIStrings8.drawerMinimized));
+  }
   closeDrawer() {
     if (!this.#drawerView.drawerVisible()) {
       return;
     }
-    if (this.focusRestorer) {
+    const scrollState = this.#captureMainPanelScrollState();
+    if (this.focusRestorer && this.#mainPanelAtDrawerFocus === this.tabbedPane.selectedTabId) {
       this.focusRestorer.restore();
     }
     this.focusRestorer = null;
+    this.#mainPanelAtDrawerFocus = null;
     this.#drawerView.hide();
+    this.#restoreMainPanelScrollState(scrollState);
     LiveAnnouncer.alert(i18nString8(UIStrings8.drawerHidden));
   }
   toggleDrawerOrientation({ force } = {}) {
@@ -7766,8 +8009,53 @@ var InspectorView = class _InspectorView extends VBox {
     return orientationSetting[dockMode] !== DrawerOrientation.UNSET;
   }
   setDrawerMinimized(minimized) {
-    this.drawerSplitWidget.setSidebarMinimized(minimized);
-    this.drawerSplitWidget.setResizable(!minimized);
+    const scrollState = this.#captureMainPanelScrollState();
+    this.#drawerView.setMinimized(minimized);
+    this.#restoreMainPanelScrollState(scrollState);
+  }
+  // Showing, hiding, or minimizing the drawer causes SplitWidget to
+  // manipulate CSS classes and remove inline layout properties, triggering a
+  // flexbox reflow that resets scroll positions in the main panel. We capture
+  // them before the operation and restore them afterwards to preserve the
+  // user's scroll position.
+  #captureMainPanelScrollState() {
+    const selectedTabId = this.tabbedPane.selectedTabId;
+    if (!selectedTabId) {
+      return [];
+    }
+    let panel2 = null;
+    try {
+      panel2 = ViewManager.instance().materializedWidget(selectedTabId);
+    } catch {
+      return [];
+    }
+    if (!panel2) {
+      return [];
+    }
+    const rootElement = panel2.element;
+    const scrollableElements = [
+      rootElement,
+      ...rootElement.querySelectorAll("*")
+    ];
+    return scrollableElements.filter((element) => element.scrollTop !== 0 || element.scrollLeft !== 0).map((element) => ({
+      element,
+      scrollTop: element.scrollTop,
+      scrollLeft: element.scrollLeft
+    }));
+  }
+  #restoreMainPanelScrollState(scrollState) {
+    if (!scrollState.length) {
+      return;
+    }
+    this.element.window().requestAnimationFrame(() => {
+      for (const { element, scrollTop, scrollLeft } of scrollState) {
+        if (!element.isConnected) {
+          continue;
+        }
+        element.scrollTop = scrollTop;
+        element.scrollLeft = scrollLeft;
+      }
+    });
   }
   drawerSize() {
     return this.#drawerView.drawerSize();
@@ -7779,16 +8067,36 @@ var InspectorView = class _InspectorView extends VBox {
     return this.#drawerView.totalSize();
   }
   isDrawerMinimized() {
-    return this.drawerSplitWidget.isSidebarMinimized();
+    return this.#drawerView.isMinimized();
+  }
+  toggleDrawerMinimized() {
+    if (!this.#drawerView.drawerVisible()) {
+      this.showDrawer({ focus: true, hasTargetDrawer: false });
+      return;
+    }
+    const minimized = this.isDrawerMinimized();
+    if (minimized && this.drawerTabbedPane.selectedTabId === "console-view" && this.tabbedPane.selectedTabId === "console") {
+      return;
+    }
+    this.setDrawerMinimized(!minimized);
+    if (!minimized) {
+      LiveAnnouncer.alert(i18nString8(UIStrings8.drawerMinimized));
+    } else {
+      LiveAnnouncer.alert(i18nString8(UIStrings8.drawerExpanded));
+    }
   }
   isDrawerOrientationVertical() {
     return this.#drawerView.isVertical();
+  }
+  #expandDrawerFromInteraction() {
+    this.setDrawerMinimized(false);
+    LiveAnnouncer.alert(i18nString8(UIStrings8.drawerExpanded));
   }
   keyDown(event) {
     if (!KeyboardShortcut.eventHasCtrlEquivalentKey(event) || event.altKey || event.shiftKey) {
       return;
     }
-    const panelShortcutEnabled = Common10.Settings.moduleSetting("shortcut-panel-switch").get();
+    const panelShortcutEnabled = Common11.Settings.moduleSetting("shortcut-panel-switch").get();
     if (panelShortcutEnabled) {
       let panelIndex = -1;
       if (event.keyCode > 48 && event.keyCode < 58) {
@@ -7942,13 +8250,13 @@ var InspectorView = class _InspectorView extends VBox {
   }
 };
 function getDisableLocaleInfoBarSetting() {
-  return Common10.Settings.Settings.instance().createSetting("disable-locale-info-bar", false);
+  return Common11.Settings.Settings.instance().createSetting("disable-locale-info-bar", false);
 }
 function shouldShowLocaleInfobar() {
   if (getDisableLocaleInfoBarSetting().get()) {
     return false;
   }
-  const languageSettingValue = Common10.Settings.Settings.instance().moduleSetting("language").get();
+  const languageSettingValue = Common11.Settings.Settings.instance().moduleSetting("language").get();
   if (languageSettingValue !== "en-US") {
     return false;
   }
@@ -7959,7 +8267,7 @@ function createLocaleInfobar() {
   const closestSupportedLocale = devtoolsLocale.lookupClosestDevToolsLocale(navigator.language);
   const locale = new Intl.Locale(closestSupportedLocale);
   const closestSupportedLanguageInCurrentLocale = new Intl.DisplayNames([devtoolsLocale.locale], { type: "language" }).of(locale.language || "en") || "English";
-  const languageSetting = Common10.Settings.Settings.instance().moduleSetting("language");
+  const languageSetting = Common11.Settings.Settings.instance().moduleSetting("language");
   return new Infobar("info", i18nString8(UIStrings8.devToolsLanguageMissmatch, { PH1: closestSupportedLanguageInCurrentLocale }), [
     {
       text: i18nString8(UIStrings8.setToBrowserLanguage),
@@ -9630,7 +9938,7 @@ __export(TextPrompt_exports, {
   TextPrompt: () => TextPrompt,
   TextPromptElement: () => TextPromptElement
 });
-import * as Common12 from "./../../core/common/common.js";
+import * as Common13 from "./../../core/common/common.js";
 import * as Platform12 from "./../../core/platform/platform.js";
 import * as TextUtils from "./../../models/text_utils/text_utils.js";
 import * as VisualLogging13 from "./../visual_logging/visual_logging.js";
@@ -10215,9 +10523,9 @@ var ListModel_exports = {};
 __export(ListModel_exports, {
   ListModel: () => ListModel
 });
-import * as Common11 from "./../../core/common/common.js";
+import * as Common12 from "./../../core/common/common.js";
 import * as Platform10 from "./../../core/platform/platform.js";
-var ListModel = class extends Common11.ObjectWrapper.ObjectWrapper {
+var ListModel = class extends Common12.ObjectWrapper.ObjectWrapper {
   items;
   constructor(items) {
     super();
@@ -10890,7 +11198,7 @@ var TextPromptElement = class _TextPromptElement extends HTMLElement {
   TextPromptElement2.BeforeAutoCompleteEvent = BeforeAutoCompleteEvent;
 })(TextPromptElement || (TextPromptElement = {}));
 customElements.define("devtools-prompt", TextPromptElement);
-var TextPrompt = class extends Common12.ObjectWrapper.ObjectWrapper {
+var TextPrompt = class extends Common13.ObjectWrapper.ObjectWrapper {
   proxyElement;
   proxyElementDisplay;
   autocompletionTimeout;
@@ -11974,7 +12282,7 @@ var Toolbar = class _Toolbar extends HTMLElement {
   }
 };
 customElements.define("devtools-toolbar", Toolbar);
-var ToolbarItem = class extends Common13.ObjectWrapper.ObjectWrapper {
+var ToolbarItem = class extends Common14.ObjectWrapper.ObjectWrapper {
   element;
   #visible;
   enabled;
@@ -12750,7 +13058,7 @@ function getRegisteredToolbarItems() {
 }
 
 // gen/front_end/ui/legacy/UIUtils.js
-import * as Common14 from "./../../core/common/common.js";
+import * as Common15 from "./../../core/common/common.js";
 import * as Host7 from "./../../core/host/host.js";
 import * as i18n23 from "./../../core/i18n/i18n.js";
 import * as Platform15 from "./../../core/platform/platform.js";
@@ -16005,7 +16313,7 @@ var bindCheckboxImpl = function(input, apply, metric) {
   };
 };
 var bindToSetting = (settingOrName, optionsOrValidator) => {
-  const setting = typeof settingOrName === "string" ? Common14.Settings.Settings.instance().moduleSetting(settingOrName) : settingOrName;
+  const setting = typeof settingOrName === "string" ? Common15.Settings.Settings.instance().moduleSetting(settingOrName) : settingOrName;
   let stringValidator;
   let jslog = true;
   if (typeof optionsOrValidator === "function") {
@@ -16035,7 +16343,7 @@ var bindToSetting = (settingOrName, optionsOrValidator) => {
       setValue(setting.get());
     });
   }
-  if (setting.type() === "regex" || setting instanceof Common14.Settings.RegExpSetting) {
+  if (setting.type() === "regex" || setting instanceof Common15.Settings.RegExpSetting) {
     return Directives2.ref((e) => {
       if (e === void 0) {
         setting.removeChangeListener(settingChanged);
@@ -16365,7 +16673,7 @@ var panes = /* @__PURE__ */ new Set();
 var GlassPanePanes = panes;
 
 // gen/front_end/ui/legacy/Dialog.js
-var Dialog = class _Dialog extends Common15.ObjectWrapper.eventMixin(GlassPane) {
+var Dialog = class _Dialog extends Common16.ObjectWrapper.eventMixin(GlassPane) {
   tabIndexBehavior = "DisableAllTabIndex";
   tabIndexMap = /* @__PURE__ */ new Map();
   focusRestorer = null;
@@ -17110,7 +17418,7 @@ __export(FilterBar_exports, {
   TextFilterUI: () => TextFilterUI,
   filterStyles: () => filter_css_default
 });
-import * as Common16 from "./../../core/common/common.js";
+import * as Common17 from "./../../core/common/common.js";
 import * as Host8 from "./../../core/host/host.js";
 import * as i18n27 from "./../../core/i18n/i18n.js";
 import * as Platform18 from "./../../core/platform/platform.js";
@@ -17322,7 +17630,7 @@ var UIStrings14 = {
 };
 var str_14 = i18n27.i18n.registerUIStrings("ui/legacy/FilterBar.ts", UIStrings14);
 var i18nString14 = i18n27.i18n.getLocalizedString.bind(void 0, str_14);
-var FilterBar = class extends Common16.ObjectWrapper.eventMixin(HBox) {
+var FilterBar = class extends Common17.ObjectWrapper.eventMixin(HBox) {
   enabled;
   stateSetting;
   #filterButton;
@@ -17335,7 +17643,7 @@ var FilterBar = class extends Common16.ObjectWrapper.eventMixin(HBox) {
     this.enabled = true;
     this.element.classList.add("filter-bar");
     this.element.setAttribute("jslog", `${VisualLogging18.toolbar("filter-bar")}`);
-    this.stateSetting = Common16.Settings.Settings.instance().createSetting("filter-bar-" + name + "-toggled", Boolean(visibleByDefault));
+    this.stateSetting = Common17.Settings.Settings.instance().createSetting("filter-bar-" + name + "-toggled", Boolean(visibleByDefault));
     this.#filterButton = new ToolbarSettingToggle(this.stateSetting, "filter", i18nString14(UIStrings14.filter), "filter-filled", "filter");
     this.#filterButton.element.style.setProperty("--dot-toggle-top", "13px");
     this.#filterButton.element.style.setProperty("--dot-toggle-left", "14px");
@@ -17418,7 +17726,7 @@ var FilterBar = class extends Common16.ObjectWrapper.eventMixin(HBox) {
     return this.alwaysShowFilters || this.stateSetting.get() && this.enabled;
   }
 };
-var TextFilterUI = class extends Common16.ObjectWrapper.ObjectWrapper {
+var TextFilterUI = class extends Common17.ObjectWrapper.ObjectWrapper {
   filterElement;
   #filter;
   suggestionProvider;
@@ -17501,7 +17809,7 @@ var NamedBitSetFilterUIElement = class extends HTMLElement {
   }
 };
 customElements.define("devtools-named-bit-set-filter", NamedBitSetFilterUIElement);
-var NamedBitSetFilterUI = class _NamedBitSetFilterUI extends Common16.ObjectWrapper.ObjectWrapper {
+var NamedBitSetFilterUI = class _NamedBitSetFilterUI extends Common17.ObjectWrapper.ObjectWrapper {
   filtersElement;
   typeFilterElementTypeNames = /* @__PURE__ */ new WeakMap();
   allowedTypes = /* @__PURE__ */ new Set();
@@ -17675,7 +17983,7 @@ var NamedBitSetFilterUI = class _NamedBitSetFilterUI extends Common16.ObjectWrap
   }
   static ALL_TYPES = "all";
 };
-var CheckboxFilterUI = class extends Common16.ObjectWrapper.ObjectWrapper {
+var CheckboxFilterUI = class extends Common17.ObjectWrapper.ObjectWrapper {
   filterElement;
   activeWhenChecked;
   checkbox;
@@ -19549,7 +19857,7 @@ __export(SearchableView_exports, {
   SearchConfig: () => SearchConfig,
   SearchableView: () => SearchableView
 });
-import * as Common17 from "./../../core/common/common.js";
+import * as Common18 from "./../../core/common/common.js";
 import * as i18n33 from "./../../core/i18n/i18n.js";
 import * as Platform22 from "./../../core/platform/platform.js";
 import * as VisualLogging23 from "./../visual_logging/visual_logging.js";
@@ -19841,7 +20149,7 @@ var SearchableView = class extends VBox {
     searchableViewsByElement.set(this.element, this);
     this.searchProvider = searchable;
     this.replaceProvider = replaceable;
-    this.setting = settingName ? Common17.Settings.Settings.instance().createSetting(settingName, {}) : null;
+    this.setting = settingName ? Common18.Settings.Settings.instance().createSetting(settingName, {}) : null;
     this.replaceable = false;
     this.contentElement.createChild("slot");
     this.footerElementContainer = this.contentElement.createChild("div", "search-bar hidden");
@@ -20252,7 +20560,7 @@ var SearchableView = class extends VBox {
     this.replaceProvider.replaceAllWith(searchConfig, this.replaceInputElement.value);
   }
   onInput() {
-    if (!Common17.Settings.Settings.instance().moduleSetting("search-as-you-type").get()) {
+    if (!Common18.Settings.Settings.instance().moduleSetting("search-as-you-type").get()) {
       this.clearSearch();
       return;
     }
@@ -20769,7 +21077,7 @@ __export(Treeoutline_exports, {
   ifExpanded: () => ifExpanded,
   treeElementBylistItemNode: () => treeElementBylistItemNode
 });
-import * as Common18 from "./../../core/common/common.js";
+import * as Common19 from "./../../core/common/common.js";
 import * as Platform23 from "./../../core/platform/platform.js";
 import * as SDK2 from "./../../core/sdk/sdk.js";
 import * as Highlighting from "./../components/highlighting/highlighting.js";
@@ -21110,7 +21418,7 @@ var Events2;
   Events3["ElementCollapsed"] = "ElementCollapsed";
   Events3["ElementSelected"] = "ElementSelected";
 })(Events2 || (Events2 = {}));
-var TreeOutline = class extends Common18.ObjectWrapper.ObjectWrapper {
+var TreeOutline = class extends Common19.ObjectWrapper.ObjectWrapper {
   rootElementInternal;
   renderSelection;
   selectedTreeElement;

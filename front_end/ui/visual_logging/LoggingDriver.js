@@ -57,15 +57,15 @@ export async function startLogging(options) {
 export async function addDocument(document) {
     documents.push(document);
     if (['interactive', 'complete'].includes(document.readyState)) {
-        await process();
+        await RenderCoordinator.read('processForLogging', process);
     }
     document.addEventListener('visibilitychange', scheduleProcessing);
     document.addEventListener('scroll', scheduleProcessing);
     observeMutations([document.body]);
 }
 export async function stopLogging() {
-    await keyboardLogThrottler.schedule(async () => { }, "AsSoonAsPossible" /* Common.Throttler.Scheduling.AS_SOON_AS_POSSIBLE */);
     logging = false;
+    await keyboardLogThrottler.schedule(async () => { }, "AsSoonAsPossible" /* Common.Throttler.Scheduling.AS_SOON_AS_POSSIBLE */);
     unregisterAllLoggables();
     for (const document of documents) {
         document.removeEventListener('visibilitychange', scheduleProcessing);
@@ -113,7 +113,7 @@ const viewportRectFor = (element) => {
     return viewportRect;
 };
 export async function process() {
-    if (document.hidden) {
+    if (!logging || document.hidden) {
         return;
     }
     const startTime = performance.now();

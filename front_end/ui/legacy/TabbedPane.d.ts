@@ -28,7 +28,7 @@ declare const TabbedPane_base: (new (...args: any[]) => {
 }) & typeof VBox;
 export declare class TabbedPane extends TabbedPane_base {
     #private;
-    private readonly headerContentsElement;
+    protected readonly headerContentsElement: HTMLElement;
     tabSlider: HTMLDivElement;
     readonly tabsElement: HTMLElement;
     private readonly tabsHistory;
@@ -91,7 +91,7 @@ export declare class TabbedPane extends TabbedPane_base {
     tabIsDisabled(id: string): boolean;
     tabIsEnabled(id: string): boolean;
     private zoomChanged;
-    private clearMeasuredWidths;
+    protected clearMeasuredWidths(): void;
     changeTabTitle(id: string, tabTitle: string, tabTooltip?: string): void;
     changeTabView(id: string, view: Widget): void;
     get tabs(): TabInfo[];

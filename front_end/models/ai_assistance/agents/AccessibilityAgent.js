@@ -250,7 +250,7 @@ export class AccessibilityAgent extends AiAgent {
             }
         });
         this.declareFunction('getStyles', {
-            description: 'Get computed styles for an element on the inspected page by its Lighthouse path.',
+            description: 'Get computed styles for an element on the inspected page by its Lighthouse path. **CRITICAL** You MUST provide a specific list of CSS property names. Do not use generic values like "all" or "*".',
             parameters: {
                 type: 6 /* Host.AidaClient.ParametersTypes.OBJECT */,
                 description: '',
@@ -268,7 +268,7 @@ export class AccessibilityAgent extends AiAgent {
                     },
                     styleProperties: {
                         type: 5 /* Host.AidaClient.ParametersTypes.ARRAY */,
-                        description: 'One or more CSS style property names to fetch.',
+                        description: 'One or more specific CSS style property names to fetch. Generic values like "all" or "*" are not supported.',
                         nullable: false,
                         items: {
                             type: 1 /* Host.AidaClient.ParametersTypes.STRING */,

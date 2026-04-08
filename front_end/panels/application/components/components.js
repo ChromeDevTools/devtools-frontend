@@ -677,6 +677,10 @@ var backForwardCacheView_css_default = `/*
  * found in the LICENSE file.
  */
 
+:host {
+  overflow: auto;
+}
+
 devtools-report-value {
   overflow: hidden;
 }
@@ -2886,9 +2890,12 @@ devtools-button {
 // gen/front_end/panels/application/components/StorageMetadataView.js
 var StorageMetadataView_exports = {};
 __export(StorageMetadataView_exports, {
+  StorageBucketRevealInfo: () => StorageBucketRevealInfo,
   StorageMetadataView: () => StorageMetadataView
 });
 import "./../../../ui/components/report_view/report_view.js";
+import "./../../../ui/kit/kit.js";
+import * as Common3 from "./../../../core/common/common.js";
 import * as i18n21 from "./../../../core/i18n/i18n.js";
 import * as SDK4 from "./../../../core/sdk/sdk.js";
 import * as Buttons5 from "./../../../ui/components/buttons/buttons.js";
@@ -2896,6 +2903,7 @@ import * as LegacyWrapper from "./../../../ui/components/legacy_wrapper/legacy_w
 import * as RenderCoordinator from "./../../../ui/components/render_coordinator/render_coordinator.js";
 import * as UI11 from "./../../../ui/legacy/legacy.js";
 import { html as html11, nothing as nothing5, render as render11 } from "./../../../ui/lit/lit.js";
+import * as VisualLogging8 from "./../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/application/components/storageMetadataView.css.js
 var storageMetadataView_css_default = `/*
@@ -3006,12 +3014,18 @@ var UIStrings11 = {
 };
 var str_11 = i18n21.i18n.registerUIStrings("panels/application/components/StorageMetadataView.ts", UIStrings11);
 var i18nString10 = i18n21.i18n.getLocalizedString.bind(void 0, str_11);
+var StorageBucketRevealInfo = class {
+  bucketInfo;
+  constructor(bucketInfo) {
+    this.bucketInfo = bucketInfo;
+  }
+};
 var StorageMetadataView = class extends LegacyWrapper.LegacyWrapper.WrappableComponent {
   #shadow = this.attachShadow({ mode: "open" });
   #storageBucketsModel;
   #storageKey = null;
   #storageBucket = null;
-  #showOnlyBucket = true;
+  #showOnlyBucket = false;
   setStorageKey(storageKey) {
     this.#storageKey = SDK4.StorageKeyManager.parseStorageKey(storageKey);
     void this.render();
@@ -3095,19 +3109,33 @@ var StorageMetadataView = class extends LegacyWrapper.LegacyWrapper.WrappableCom
     }
     const { bucket: { name }, persistent, durability, quota } = this.#storageBucket;
     const isDefault = !name;
-    if (!this.#showOnlyBucket) {
+    const renderBucketName = () => {
       if (isDefault) {
-        return html11`
-          ${this.key(i18nString10(UIStrings11.bucketName))}
-          ${this.value(html11`<span class="default-bucket">default</span>`)}`;
+        return html11`<span class="default-bucket">${i18nString10(UIStrings11.defaultBucket)}</span>`;
       }
+      if (!this.#showOnlyBucket) {
+        return html11`${name}`;
+      }
+      const revealBucket = (e) => {
+        e.preventDefault();
+        void Common3.Revealer.reveal(new StorageBucketRevealInfo(this.#storageBucket));
+      };
+      return html11`<devtools-link
+        @click=${revealBucket}
+        title=${name}
+        jslog=${VisualLogging8.action("storage-bucket").track({
+        click: true
+      })}
+      >${name}</devtools-link>`;
+    };
+    if (this.#showOnlyBucket) {
       return html11`
         ${this.key(i18nString10(UIStrings11.bucketName))}
-        ${this.value(name)}`;
+        ${this.value(renderBucketName())}`;
     }
     return html11`
       ${this.key(i18nString10(UIStrings11.bucketName))}
-      ${this.value(name || html11`<span class="default-bucket">default</span>`)}
+      ${this.value(renderBucketName())}
       ${this.key(i18nString10(UIStrings11.persistent))}
       ${this.value(persistent ? i18nString10(UIStrings11.yes) : i18nString10(UIStrings11.no))}
       ${this.key(i18nString10(UIStrings11.durability))}
@@ -3258,7 +3286,7 @@ import * as SDK5 from "./../../../core/sdk/sdk.js";
 import * as Buttons7 from "./../../../ui/components/buttons/buttons.js";
 import * as UI12 from "./../../../ui/legacy/legacy.js";
 import * as Lit7 from "./../../../ui/lit/lit.js";
-import * as VisualLogging8 from "./../../../ui/visual_logging/visual_logging.js";
+import * as VisualLogging9 from "./../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/application/components/trustTokensView.css.js
 var trustTokensView_css_default = `/*
@@ -3343,8 +3371,8 @@ var REFRESH_INTERVAL_MS = 1e3;
 function renderGridOrNoDataMessage(input) {
   if (input.tokens.length === 0) {
     return html13`
-        <div jslog=${VisualLogging8.pane("trust-tokens")}>
-          <div class="empty-state" jslog=${VisualLogging8.section().context("empty-view")}>
+        <div jslog=${VisualLogging9.pane("trust-tokens")}>
+          <div class="empty-state" jslog=${VisualLogging9.section().context("empty-view")}>
             <div class="empty-state-header">${i18nString12(UIStrings13.noTrustTokens)}</div>
             <div class="empty-state-description">
               <span>${i18nString12(UIStrings13.trustTokensDescription)}</span>
@@ -3359,7 +3387,7 @@ function renderGridOrNoDataMessage(input) {
       `;
   }
   return html13`
-      <div jslog=${VisualLogging8.pane("trust-tokens")}>
+      <div jslog=${VisualLogging9.pane("trust-tokens")}>
         <span class="heading">${i18nString12(UIStrings13.trustTokens)}</span>
         <devtools-icon name="info" title=${i18nString12(UIStrings13.allStoredTrustTokensAvailableIn)}></devtools-icon>
         <devtools-data-grid striped inline>

@@ -127,8 +127,10 @@ export class RevealableTimeRange {
 }
 export class RevealableBottomUpProfile {
     bounds;
-    constructor(bounds) {
+    node;
+    constructor(bounds, node) {
         this.bounds = bounds;
+        this.node = node;
     }
 }
 //# sourceMappingURL=Helpers.js.map

@@ -285,6 +285,9 @@ function createBaseGcaRequest(request, contents, experience) {
 function aidaDoConversationRequestToGcaRequest(request) {
   try {
     const contents = [];
+    if (request.facts) {
+      contents.push(convertAidaFactsToGcaContent(request.facts));
+    }
     if (request.historical_contexts) {
       contents.push(...request.historical_contexts.map(convertAidaContentToGcaContent));
     }
@@ -567,6 +570,14 @@ function gcaCandidateToAidaGenerationSample(candidate) {
     };
   }
   return generationSample;
+}
+function convertAidaFactsToGcaContent(facts) {
+  return {
+    role: "model",
+    parts: facts.map((fact) => {
+      return { text: `[source: ${fact.metadata.source}] ${fact.text}` };
+    })
+  };
 }
 function convertAidaContentToGcaContent(content) {
   let role = "user";

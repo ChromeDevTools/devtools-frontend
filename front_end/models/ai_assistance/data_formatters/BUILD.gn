@@ -10,7 +10,6 @@ ts_library("unittests") {
 
   sources = [
     "FileFormatter.test.ts",
-    "NetworkRequestFormatter.test.ts",
     "UnitFormatters.test.ts",
   ]
 
@@ -33,6 +32,7 @@ devtools_foundation_module("foundation_unittests") {
 
   sources = [
     "LighthouseFormatter.test.ts",
+    "NetworkRequestFormatter.test.ts",
     "PerformanceInsightFormatter.test.ts",
     "PerformanceTraceFormatter.test.ts",
   ]

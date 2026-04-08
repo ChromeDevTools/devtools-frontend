@@ -2779,16 +2779,6 @@ export abstract class HeapSnapshot {
     return null;
   }
 
-  idsOfObjectsWithName(name: string): number[] {
-    const ids = [];
-    for (let it = this.allNodes(); it.hasNext(); it.next()) {
-      if (it.item().name() === name) {
-        ids.push(it.item().id());
-      }
-    }
-    return ids;
-  }
-
   createEdgesProvider(nodeIndex: number): HeapSnapshotEdgesProvider {
     const node = this.createNode(nodeIndex);
     const filter = this.containmentEdgesFilter();

@@ -637,4 +637,24 @@ describe('The Memory Panel', () => {
     // going from Chrome 142.0.7421.0 to 142.0.7427.0.
     assert.isTrue(sizes.sizesForBackingStorage.retainedSize >= sizes.sizesForBackingStorage.shallowSize);
   });
+
+  it('Does not crash when resolving heap snapshot object to a JS object on DOM wrapper boilerplate',
+     async ({devToolsPage, inspectedPage}) => {
+       await inspectedPage.goToResource('memory/default.html');
+       await navigateToMemoryTab(devToolsPage);
+       await inspectedPage.evaluate(`document.body.fieldOnDomWrapper = 2012;`);
+       await takeHeapSnapshot(undefined, devToolsPage);
+       await waitForNonEmptyHeapSnapshotData(devToolsPage);
+       await setClassFilter('HTMLBodyElement', devToolsPage);
+
+       const row = await getCategoryRow('HTMLBodyElement', undefined, devToolsPage);
+       assert.isOk(row, 'HTMLBodyElement row not found in UI');
+
+       const count = await getCountFromCategoryRow(row, devToolsPage);
+       assert.isAbove(count, 0, 'Should have found at least one HTMLBodyElement');
+
+       // Expand the row to make sure we can see instances without crashing
+       await focusTableRow(row, devToolsPage);
+       await expandFocusedRow(devToolsPage);
+     });
 });

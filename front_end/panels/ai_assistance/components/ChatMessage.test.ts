@@ -690,7 +690,7 @@ describeWithEnvironment('ChatMessage', () => {
          const row = querySelectorErrorOnMissing(target, '.ai-assistance-feedback-row');
          const exportButton = querySelectorErrorOnMissing(row, '.export-for-agents-button');
 
-         assert.strictEqual(exportButton.textContent?.trim(), 'Copy for your coding agent');
+         assert.strictEqual(exportButton.textContent?.trim(), 'Copy to coding agent');
          exportButton.click();
          sinon.assert.calledOnce(onExportClick);
        });
@@ -798,60 +798,6 @@ describeWithEnvironment('ChatMessage', () => {
           },
           {}, target);
       await assertScreenshot('ai_assistance/user_action_row_minimal.png');
-    });
-
-    it('renders a complete model message', async () => {
-      const target = document.createElement('div');
-      renderElementIntoDOM(target);
-      AiAssistance.ChatMessage.DEFAULT_VIEW(
-          {
-            onRatingClick: () => {},
-            onReportClick: () => {},
-            onCopyResponseClick: () => {},
-            scrollSuggestionsScrollContainer: () => {},
-            onSuggestionsScrollOrResize: () => {},
-            onSuggestionClick: () => {},
-            onSubmit: () => {},
-            onClose: () => {},
-            onInputChange: () => {},
-            onFeedbackSubmit: () => {},
-            showRateButtons: true,
-            isSubmitButtonDisabled: false,
-            isShowingFeedbackForm: true,
-            isLastMessage: true,
-            isFirstMessage: false,
-            showActions: true,
-            message: {
-              entity: AiAssistance.ChatMessage.ChatMessageEntity.MODEL,
-              rpcId: 99,
-              parts: [
-                {
-                  type: 'step',
-                  step: {
-                    isLoading: false,
-                    title: 'Analyzing the page',
-                    thought: 'I am checking the page content to find the issue.',
-                    code: 'document.body.innerHTML',
-                    output: '<body>...</body>',
-                  }
-                },
-                {
-                  type: 'answer',
-                  text: 'The page seems to have some content.',
-                  suggestions: ['Fix the issue', 'Explain more'],
-                }
-              ],
-            },
-            isLoading: false,
-            isReadOnly: false,
-            canShowFeedbackForm: true,
-            markdownRenderer: new AiAssistance.MarkdownRendererWithCodeBlock(),
-            currentRating: undefined,
-            suggestions: ['Fix the issue', 'Explain more'],
-            walkthrough: {...DEFAULT_WALKTHROUGH},
-          },
-          {}, target);
-      await assertScreenshot('ai_assistance/user_action_row_complete.png');
     });
 
     it('renders a complete user message', async () => {

@@ -47,7 +47,7 @@ describe('ExportForAgentsDialog', () => {
     const textarea = querySelectorErrorOnMissing<HTMLTextAreaElement>(component.contentElement, 'textarea');
     const primaryButton = querySelectorErrorOnMissing(component.contentElement, 'devtools-button');
 
-    assert.strictEqual(h2?.textContent?.trim(), 'Copy for your coding agent');
+    assert.strictEqual(h2?.textContent?.trim(), 'Copy to coding agent');
     assert.isTrue(promptRadioButton?.checked);
     assert.isFalse(markdownRadioButton?.checked);
     assert.strictEqual(textarea?.value, promptText);

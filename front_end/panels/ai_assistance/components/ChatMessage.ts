@@ -199,7 +199,7 @@ const UIStringsNotTranslate = {
   /**
    * @description The title of the button that allows exporting the conversation for agents.
    */
-  exportForAgents: 'Copy for your coding agent',
+  exportForAgents: 'Copy to coding agent',
   /**
    * @description Title for the bottom up thread activity widget.
    */

@@ -2,16 +2,22 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
+import * as Bindings from '../../models/bindings/bindings.js';
 import * as WebMCP from '../../models/web_mcp/web_mcp.js';
+import * as Workspace from '../../models/workspace/workspace.js';
 import {findMenuItemWithLabel, getMenuForToolbarButton} from '../../testing/ContextMenuHelpers.js';
 import {assertScreenshot, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, describeWithEnvironment, updateHostConfig} from '../../testing/EnvironmentHelpers.js';
 import {StubStackTrace} from '../../testing/StackTraceHelpers.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Application from './application.js';
+
+const {urlString} = Platform.DevToolsPath;
 
 const {DEFAULT_VIEW, WebMCPView, filterToolCalls} = Application.WebMCPView;
 
@@ -84,27 +90,22 @@ describeWithEnvironment('WebMCPView (View)', () => {
         invocationId: '2',
         input: '{"path": "/tmp/test.txt"}',
         tool: tools[1],
-        result: {
-          status: Protocol.WebMCP.InvocationStatus.Success,
-          output: 'File content here',
-        },
+        result: new WebMCP.WebMCPModel.Result(
+            Protocol.WebMCP.InvocationStatus.Success, 'File content here', undefined, undefined)
       },
       {
         invocationId: '3',
         input: '{"path": "/root/secret.txt"}',
         tool: tools[2],
-        result: {
-          status: Protocol.WebMCP.InvocationStatus.Error,
-          errorText: 'Permission denied',
-        },
+        result: new WebMCP.WebMCPModel.Result(
+            Protocol.WebMCP.InvocationStatus.Error, undefined, 'Permission denied', undefined)
       },
       {
         invocationId: '4',
         input: '{"timeout": 100}',
         tool: tools[3],
-        result: {
-          status: Protocol.WebMCP.InvocationStatus.Canceled,
-        },
+        result:
+            new WebMCP.WebMCPModel.Result(Protocol.WebMCP.InvocationStatus.Canceled, undefined, undefined, undefined)
       },
     ];
     DEFAULT_VIEW(
@@ -119,6 +120,7 @@ describeWithEnvironment('WebMCPView (View)', () => {
     assert.isNotNull(grid);
     await assertScreenshot('application/webmcp-tool-calls.png');
   });
+
   it('renders a list of tools correctly', async () => {
     updateHostConfig({devToolsWebMCPSupport: {enabled: true}});
     const sdkTarget = createTarget();
@@ -200,10 +202,8 @@ describeWithEnvironment('WebMCPView (View)', () => {
       invocationId: '1',
       input: '{"dir": "/tmp"}',
       tool,
-      result: {
-        status: Protocol.WebMCP.InvocationStatus.Success,
-        output: 'File content here',
-      },
+      result: new WebMCP.WebMCPModel.Result(
+          Protocol.WebMCP.InvocationStatus.Success, 'File content here', undefined, undefined)
     };
 
     DEFAULT_VIEW(
@@ -215,6 +215,80 @@ describeWithEnvironment('WebMCPView (View)', () => {
         {}, target);
 
     await assertScreenshot('application/webmcp-tool-call-details.png');
+  });
+
+  it('renders a tool call with JS exception in a TabbedPane', async () => {
+    updateHostConfig({devToolsWebMCPSupport: {enabled: true}});
+    const sdkTarget = createTarget();
+    const target = document.createElement('div');
+    target.style.width = '600px';
+    target.style.height = '400px';
+    renderElementIntoDOM(target, {includeCommonStyles: true});
+
+    const workspace = Workspace.Workspace.WorkspaceImpl.instance();
+    const targetManager = sdkTarget.targetManager();
+    const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
+    const ignoreListManager = Workspace.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
+    Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
+      forceNew: true,
+      resourceMapping,
+      targetManager,
+      ignoreListManager,
+      workspace,
+    });
+    Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.instance({forceNew: true, resourceMapping, targetManager});
+
+    const tool = createTool('list_files', 'List files', 'frame-1' as Protocol.Page.FrameId, sdkTarget);
+    const selectedCall: WebMCP.WebMCPModel.Call = {
+      invocationId: '1',
+      input: '{"dir": "/tmp"}',
+      tool,
+      result: new WebMCP.WebMCPModel.Result(Protocol.WebMCP.InvocationStatus.Error, undefined, undefined, undefined)
+    };
+
+    const errorObject = sinon.createStubInstance(SDK.RemoteObject.RemoteObject);
+    const runtimeModel = sinon.createStubInstance(SDK.RuntimeModel.RuntimeModel);
+    runtimeModel.target.returns(sdkTarget);
+    errorObject.runtimeModel.returns(runtimeModel);
+
+    const mockExceptionDetails: WebMCP.WebMCPModel.ExceptionDetails = {
+      error: errorObject,
+      description: 'TypeError: Cannot read properties of undefined (reading \'foo\')',
+      frames: [
+        {line: 'TypeError: Cannot read properties of undefined (reading \'foo\')'}, {
+          line: '    at doSomething (app.js:10:5)',
+          isCallFrame: true,
+          link: {
+            url: urlString`http://localhost/app.js`,
+            lineNumber: 9,
+            columnNumber: 4,
+            prefix: '    at doSomething (',
+            suffix: ')',
+            enclosedInBraces: false,
+            scriptId: '123' as Protocol.Runtime.ScriptId,
+          }
+        }
+      ],
+    };
+
+    sinon.stub(selectedCall.result!, 'exceptionDetails').get(() => Promise.resolve(mockExceptionDetails));
+
+    DEFAULT_VIEW(
+        {
+          ...createDefaultViewInput(),
+          toolCalls: [selectedCall],
+          selectedCall,
+        },
+        {}, target);
+
+    await UI.Widget.Widget.allUpdatesComplete;
+
+    const tabbedPane = target.querySelector('devtools-tabbed-pane');
+    const tabElement = tabbedPane?.shadowRoot?.getElementById('tab-webmcp.call-outputs');
+    tabElement?.dispatchEvent(new MouseEvent('mousedown', {bubbles: true}));
+
+    await UI.Widget.Widget.allUpdatesComplete;
+    await assertScreenshot('application/webmcp-tool-call-error-js-exception.png');
   });
 
   it('renders filter bar with filters applied', async () => {
@@ -392,41 +466,35 @@ describe('filterToolCalls', () => {
   const mockCalls: WebMCP.WebMCPModel.Call[] = [
     {
       invocationId: '1',
-      input: '{"dir": "/tmp"}',
       tool: tools[0],
+      input: '{"dir": "/tmp"}',
     },
     {
       invocationId: '2',
-      input: '{"path": "/tmp/test.txt"}',
       tool: tools[1],
-      result: {
-        status: Protocol.WebMCP.InvocationStatus.Success,
-        output: 'File content here',
-      },
+      input: '{"path": "/tmp/test.txt"}',
+      result: new WebMCP.WebMCPModel.Result(
+          Protocol.WebMCP.InvocationStatus.Success, 'File content here', undefined, undefined)
     },
     {
       invocationId: '3',
-      input: '{"path": "/root/secret.txt"}',
       tool: tools[2],
-      result: {
-        status: Protocol.WebMCP.InvocationStatus.Error,
-        errorText: 'Permission denied',
-      },
+      input: '{"path": "/root/secret.txt"}',
+      result: new WebMCP.WebMCPModel.Result(
+          Protocol.WebMCP.InvocationStatus.Error, undefined, 'Permission denied', undefined)
     },
     {
       invocationId: '4',
-      input: '{"timeout": 100}',
       tool: tools[3],
+      input: '{"timeout": 100}',
     },
     {
       invocationId: '5',
-      input: '{}',
       tool: tools[3],
-      result: {
-        status: Protocol.WebMCP.InvocationStatus.Success,
-        output: 'Declarative success content',
-      },
-    },
+      input: '{}',
+      result: new WebMCP.WebMCPModel.Result(
+          Protocol.WebMCP.InvocationStatus.Success, 'Declarative success content', undefined, undefined)
+    }
   ];
 
   it('filters by name/text', () => {

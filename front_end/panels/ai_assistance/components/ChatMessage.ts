@@ -212,6 +212,10 @@ const UIStringsNotTranslate = {
    * @description Accessilility label for the button that shows the walkthrough when there are no widgets in the walkthrough.
    */
   showThinking: 'Show thinking',
+  /**
+   * @description Accessilility label for the button that hides the walkthrough when there are no widgets in the walkthrough.
+   */
+  hideThinking: 'Hide thinking',
 } as const;
 
 export interface Step {
@@ -581,10 +585,10 @@ function renderWalkthroughSidebarButton(
   });
 
   let accessibleLabel = title;
-  if (!isExpanded) {
-    if (input.isLoading || lastStep.requestApproval) {
-      accessibleLabel = `${titleForStep(lastStep)} ${i18n.i18n.lockedString(UIStringsNotTranslate.showThinking)}`;
-    }
+  // If the agent is still thinking we want the accessibility label to include the current step title followed by Show/Hide thinking.
+  if (input.isLoading) {
+    const suffix = isExpanded ? UIStringsNotTranslate.hideThinking : UIStringsNotTranslate.showThinking;
+    accessibleLabel = `${titleForStep(lastStep)} ${i18n.i18n.lockedString(suffix)}`;
   }
 
   // clang-format off

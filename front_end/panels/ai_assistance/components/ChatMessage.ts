@@ -161,6 +161,10 @@ const UIStringsNotTranslate = {
    */
   canceled: 'Canceled',
   /**
+   * @description Aria label for the spinner to be read by screen reader when a step is in progress.
+   */
+  inProgress: 'In progress',
+  /**
    * @description Alt text for the image input (displayed in the chat messages) that has been sent to the model.
    */
   imageInputSentToTheModel: 'Image input sent to the model',
@@ -683,7 +687,7 @@ function renderStepBadge({step, isLoading, isLast}: {
   isLast: boolean,
 }): Lit.LitTemplate {
   if (isLoading && isLast && !step.requestApproval) {
-    return html`<devtools-spinner></devtools-spinner>`;
+    return html`<devtools-spinner aria-label=${lockedString(UIStringsNotTranslate.inProgress)}></devtools-spinner>`;
   }
 
   let iconName = 'checkmark';

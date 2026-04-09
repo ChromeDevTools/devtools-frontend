@@ -182,6 +182,33 @@ describeWithEnvironment('WalkthroughView', () => {
     assert.isFalse(inlineWalkthrough.hasAttribute('open'));
   });
 
+  it('renders spinner with aria-label when loading', async () => {
+    const message: AiAssistance.ChatMessage.ModelChatMessage = {
+      entity: AiAssistance.ChatMessage.ChatMessageEntity.MODEL,
+      parts: [{
+        type: 'step',
+        step: {
+          isLoading: true,
+          title: 'Test step 1',
+        }
+      }],
+    };
+    const view = await makeWalkthrough({
+      isLoading: true,
+      message,
+      isInlined: true,
+      isExpanded: true,
+    });
+
+    const headerSpinner = view.contentElement.querySelector('.inline-icon devtools-spinner');
+    assert.isNotNull(headerSpinner);
+    assert.strictEqual(headerSpinner?.getAttribute('aria-label'), 'In progress');
+
+    const stepSpinner = view.contentElement.querySelector('.summary devtools-spinner');
+    assert.isNotNull(stepSpinner);
+    assert.strictEqual(stepSpinner?.getAttribute('aria-label'), 'In progress');
+  });
+
   it('renders the titlebar in sidebar mode', async () => {
     const message: AiAssistance.ChatMessage.ModelChatMessage = {
       entity: AiAssistance.ChatMessage.ChatMessageEntity.MODEL,

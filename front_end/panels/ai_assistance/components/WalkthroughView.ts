@@ -45,6 +45,10 @@ const UIStrings = {
    * @description Title for the button that hides the walkthrough when there are widgets in the walkthrough.
    */
   hideAgentWalkthrough: 'Hide agent walkthrough',
+  /**
+   * @description Aria label for the spinner to be read by screen reader when a step is in progress.
+   */
+  inProgress: 'In progress',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/ai_assistance/components/WalkthroughView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -118,7 +122,7 @@ function renderInlineWalkthrough(input: ViewInput, stepsOutput: Lit.LitTemplate,
     <div class="inline-wrapper" ?data-open=${input.isExpanded}>
       <span class="inline-icon">
         ${input.isLoading ?
-            html`<devtools-spinner></devtools-spinner>` :
+            html`<devtools-spinner aria-label=${lockedString(UIStrings.inProgress)}></devtools-spinner>` :
             html`<devtools-icon name=${icon}></devtools-icon>`
         }
       </span>

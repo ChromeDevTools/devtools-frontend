@@ -78,9 +78,7 @@ type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 export const DEFAULT_VIEW: View = (input, _output, target): void => {
   const isPrompt = input.state.activeType === StateType.PROMPT;
   const buttonText = isPrompt ? i18nString(UIStrings.copyToClipboard) : i18nString(UIStrings.saveAsMarkdown);
-  const exportText = isPrompt && input.state.isPromptLoading ?
-      i18nString(UIStrings.generatingSummary) :
-      (isPrompt ? input.state.promptText : input.state.conversationText);
+  const exportText = isPrompt ? input.state.promptText : input.state.conversationText;
   // clang-format off
 
   render(html`
@@ -116,13 +114,13 @@ export const DEFAULT_VIEW: View = (input, _output, target): void => {
         </label>
       </div>
       <main>
-        ${input.state.isPromptLoading ? html`
+        ${isPrompt && input.state.isPromptLoading ? html`
           <span class="prompt-loading">
             <devtools-spinner></devtools-spinner>
             ${i18nString(UIStrings.generatingSummary)}
           </span>
           ` : Lit.nothing}
-        <textarea readonly .value=${input.state.isPromptLoading ? '' : exportText}></textarea>
+        <textarea readonly .value=${isPrompt && input.state.isPromptLoading ? '' : exportText}></textarea>
       </main>
       <div class="disclaimer">${i18nString(UIStrings.disclaimer)}</div>
       <footer>

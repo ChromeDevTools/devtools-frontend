@@ -102,6 +102,47 @@ describe('ExportForAgentsDialog', () => {
     assert.strictEqual(textarea.value, 'Done');
   });
 
+  it('hides the loading spinner and shows markdown text when switching to markdown view while prompt is loading',
+     async () => {
+       let resolvePrompt: (value: string) => void = () => {};
+       const promptTextPromise = new Promise<string>(resolve => {
+         resolvePrompt = resolve;
+       });
+
+       const component = new AiAssistance.ExportForAgentsDialog.ExportForAgentsDialog({
+         dialog,
+         promptText: promptTextPromise,
+         markdownText,
+         onConversationSaveAs: noop,
+       });
+       renderElementIntoDOM(component);
+       await component.updateComplete;
+
+       // Verify initial state: spinner is present, textarea is empty.
+       assert.isNotNull(
+           component.contentElement.querySelector('devtools-spinner'),
+           'Spinner should be present in prompt view while loading');
+       const textarea = querySelectorErrorOnMissing<HTMLTextAreaElement>(component.contentElement, 'textarea');
+       assert.strictEqual(textarea.value, '', 'Textarea should be empty in prompt view while loading');
+
+       // Switch to markdown view.
+       const markdownRadioButton =
+           querySelectorErrorOnMissing<HTMLInputElement>(component.contentElement, 'input[value="conversation"]');
+       markdownRadioButton.click();
+       await component.updateComplete;
+
+       // spinner should be hidden, textarea should show markdown text.
+       assert.isNull(
+           component.contentElement.querySelector('devtools-spinner'), 'Spinner should be hidden in markdown view');
+       assert.strictEqual(
+           textarea.value, markdownText,
+           'Textarea should show markdown text in markdown view even if prompt is still loading');
+
+       // Clean up.
+       resolvePrompt('Done');
+       await promptTextPromise;
+     });
+
   it('enables the "Save as..." button for Markdown when the summary prompt is generating', async () => {
     let resolvePrompt: (value: string) => void = () => {};
     const promptTextPromise = new Promise<string>(resolve => {

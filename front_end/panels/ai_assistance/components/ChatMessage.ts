@@ -475,7 +475,7 @@ function renderTitle(step: Step): Lit.LitTemplate {
       html`<span class="paused">${lockedString(UIStringsNotTranslate.paused)}: </span>` :
       Lit.nothing;
 
-  return html`<span class="title">${paused}${titleForStep(step)}</span>`;
+  return html`<span class="title" aria-label=${titleForStep(step)}>${paused}${titleForStep(step)}</span>`;
 }
 
 function renderStepCode(step: Step): Lit.LitTemplate {

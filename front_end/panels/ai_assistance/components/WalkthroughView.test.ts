@@ -83,6 +83,7 @@ describeWithEnvironment('WalkthroughView', () => {
     assert.lengthOf(stepsWrapper.children, 1);
     const stepTitle = querySelectorErrorOnMissing(stepsWrapper, '.title');
     assert.strictEqual(stepTitle.innerText, 'Test step 1');
+    assert.strictEqual(stepTitle.getAttribute('aria-label'), 'Test step 1');
   });
 
   it('does not render steps that require approval', async () => {

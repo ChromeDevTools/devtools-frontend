@@ -208,6 +208,12 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
     this.requestUpdate();
   }
 
+  override focus(): void {
+    void this.updateComplete.then(() => {
+      this.#editor?.focus();
+    });
+  }
+
   override performUpdate(): void {
     const input: ViewInput = {
       state: this.#getEditorState(),

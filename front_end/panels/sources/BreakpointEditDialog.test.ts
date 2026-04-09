@@ -141,7 +141,19 @@ describeWithEnvironment('BreakpointEditDialog', function() {
     await dialog.updateComplete;
 
     assert.isTrue(editor.hasFocus);
+  });
 
-    dialog.contentElement.remove();  // Cleanup.
+  it('focuses the editor when focus() is called, even if it is not yet rendered', async () => {
+    const {dialog, editor} = await getDialogAndEditor(0, '', false, () => {});
+    renderElementIntoDOM(dialog.contentElement);
+    assert.isFalse(editor.hasFocus);
+
+    // Trigger an update to test the focus() method waiting for it.
+    dialog.editorLineNumber = 1;
+    dialog.focus();
+
+    await dialog.updateComplete;
+
+    assert.isTrue(editor.hasFocus);
   });
 });

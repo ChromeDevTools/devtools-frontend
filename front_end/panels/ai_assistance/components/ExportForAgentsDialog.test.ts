@@ -39,7 +39,8 @@ describe('ExportForAgentsDialog', () => {
     renderElementIntoDOM(component);
     await component.updateComplete;
 
-    const h2 = component.contentElement.querySelector('h2');
+    const h1 = querySelectorErrorOnMissing(component.contentElement, 'h1');
+    const stateSelection = querySelectorErrorOnMissing(component.contentElement, '.state-selection');
     const promptRadioButton =
         querySelectorErrorOnMissing<HTMLInputElement>(component.contentElement, 'input[value="prompt"]');
     const markdownRadioButton =
@@ -47,11 +48,17 @@ describe('ExportForAgentsDialog', () => {
     const textarea = querySelectorErrorOnMissing<HTMLTextAreaElement>(component.contentElement, 'textarea');
     const primaryButton = querySelectorErrorOnMissing(component.contentElement, 'devtools-button');
 
-    assert.strictEqual(h2?.textContent?.trim(), 'Copy to coding agent');
-    assert.isTrue(promptRadioButton?.checked);
-    assert.isFalse(markdownRadioButton?.checked);
-    assert.strictEqual(textarea?.value, promptText);
-    assert.strictEqual(primaryButton?.textContent?.trim(), 'Copy to clipboard');
+    assert.strictEqual(h1.textContent?.trim(), 'Copy to coding agent');
+    assert.strictEqual(h1.getAttribute('id'), 'export-for-agents-dialog-title');
+    assert.strictEqual(stateSelection.getAttribute('role'), 'radiogroup');
+    assert.strictEqual(stateSelection.getAttribute('aria-labelledby'), 'export-for-agents-dialog-title');
+    assert.isTrue(promptRadioButton.checked);
+    assert.isFalse(markdownRadioButton.checked);
+    assert.strictEqual(promptRadioButton.getAttribute('aria-label'), 'As prompt');
+    assert.strictEqual(markdownRadioButton.getAttribute('aria-label'), 'As markdown');
+    assert.strictEqual(textarea.value, promptText);
+    assert.strictEqual(primaryButton.textContent?.trim(), 'Copy to clipboard');
+    assert.strictEqual(primaryButton?.getAttribute('accessibleLabel'), 'Copy to clipboard');
   });
 
   it('renders loading state when promptText is a Promise and updates when it is loaded', async () => {
@@ -117,6 +124,7 @@ describe('ExportForAgentsDialog', () => {
         querySelectorErrorOnMissing<Buttons.Button.Button>(component.contentElement, 'devtools-button');
     assert.isFalse(primaryButton.disabled);
     assert.strictEqual(primaryButton.textContent?.trim(), 'Save as…');
+    assert.strictEqual(primaryButton.getAttribute('accessibleLabel'), 'Save as…');
 
     // Resolve at the end to satisfy the test runner's pending promise check.
     resolvePrompt('Done');
@@ -147,6 +155,7 @@ describe('ExportForAgentsDialog', () => {
     assert.isTrue(markdownRadioButton?.checked);
     assert.strictEqual(textarea?.value, markdownText);
     assert.strictEqual(primaryButton?.textContent?.trim(), 'Save as…');
+    assert.strictEqual(primaryButton.getAttribute('accessibleLabel'), 'Save as…');
     assert.strictEqual(primaryButton.jslogContext, 'ai-export-for-agents.save-as-markdown');
   });
 

@@ -87,17 +87,18 @@ export const DEFAULT_VIEW: View = (input, _output, target): void => {
     <style>${styles}</style>
     <div class="export-for-agents-dialog">
       <header>
-        <h2 tabindex="-1">
+        <h1 id="export-for-agents-dialog-title" tabindex="-1">
           ${i18nString(UIStrings.exportForAgents)}
-        </h2>
+        </h1>
       </header>
-      <div class="state-selection">
+      <div class="state-selection" role="radiogroup" aria-labelledby="export-for-agents-dialog-title">
         <label>
           <input
             type="radio"
             value="prompt"
             name="export-state"
             .checked=${isPrompt}
+            aria-label=${i18nString(UIStrings.asPrompt)}
             @change=${() => input.onStateChange(StateType.PROMPT)}
           >
           ${i18nString(UIStrings.asPrompt)}
@@ -108,6 +109,7 @@ export const DEFAULT_VIEW: View = (input, _output, target): void => {
             value="conversation"
             name="export-state"
             .checked=${!isPrompt}
+            aria-label=${i18nString(UIStrings.asMarkdown)}
             @change=${() => input.onStateChange(StateType.CONVERSATION)}
           >
           ${i18nString(UIStrings.asMarkdown)}
@@ -130,6 +132,7 @@ export const DEFAULT_VIEW: View = (input, _output, target): void => {
             .jslogContext=${input.jslogContext}
             .variant=${Buttons.Button.Variant.PRIMARY}
             .disabled=${isPrompt && input.state.isPromptLoading}
+            .accessibleLabel=${buttonText}
           >
             ${buttonText}
           </devtools-button>

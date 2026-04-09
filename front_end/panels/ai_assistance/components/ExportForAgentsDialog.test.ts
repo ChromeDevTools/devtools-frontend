@@ -6,6 +6,7 @@ import * as Host from '../../../core/host/host.js';
 import {querySelectorErrorOnMissing, renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import {deinitializeGlobalVars, initializeGlobalVars} from '../../../testing/EnvironmentHelpers.js';
 import type * as Buttons from '../../../ui/components/buttons/buttons.js';
+import * as Snackbars from '../../../ui/components/snackbars/snackbars.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as AiAssistance from '../ai_assistance.js';
 
@@ -161,6 +162,11 @@ describe('ExportForAgentsDialog', () => {
 
   it('copies prompt text to clipboard when in prompt state', async () => {
     const hideStub = sinon.stub(dialog, 'hide');
+    const snackbarStub = sinon.stub(Snackbars.Snackbar.Snackbar, 'show');
+    const mockSnackbar = document.createElement('div');
+    const setAttributeSpy = sinon.spy(mockSnackbar, 'setAttribute');
+    snackbarStub.returns(mockSnackbar as unknown as Snackbars.Snackbar.Snackbar);
+
     const component = new AiAssistance.ExportForAgentsDialog.ExportForAgentsDialog({
       dialog,
       promptText,
@@ -178,6 +184,8 @@ describe('ExportForAgentsDialog', () => {
 
     sinon.assert.calledWith(inspectorFrontendHostStub.copyText, promptText);
     sinon.assert.calledOnce(hideStub);
+    sinon.assert.calledOnce(snackbarStub);
+    sinon.assert.calledWith(setAttributeSpy, 'aria-label', 'Copied to clipboard');
   });
 
   it('calls onConversationSaveAs when the save as button is clicked in markdown mode', async () => {

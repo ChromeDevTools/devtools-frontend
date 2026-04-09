@@ -194,9 +194,10 @@ export class ExportForAgentsDialog extends UI.Widget.VBox {
         onButtonClick = (event: Event): void => {
           event.preventDefault();
           Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(this.#state.promptText);
-          Snackbars.Snackbar.Snackbar.show({
+          const snackbar = Snackbars.Snackbar.Snackbar.show({
             message: i18nString(UIStrings.copiedToClipboard),
           });
+          snackbar.setAttribute('aria-label', i18nString(UIStrings.copiedToClipboard));
           this.#dialog.hide();
         };
         break;

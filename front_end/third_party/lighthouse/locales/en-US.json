@@ -596,6 +596,18 @@
   "core/audits/autocomplete.js | warningOrder": {
     "message": "Review order of tokens: \"{tokens}\" in {snippet}"
   },
+  "core/audits/baseline.js | columnFeature": {
+    "message": "Web-features"
+  },
+  "core/audits/baseline.js | columnStatus": {
+    "message": "Baseline Status"
+  },
+  "core/audits/baseline.js | description": {
+    "message": "Lists web features used on the page and their Baseline status as of {date}. [Learn more about Baseline](https://webstatus.dev/)."
+  },
+  "core/audits/baseline.js | title": {
+    "message": "Baseline Features"
+  },
   "core/audits/bf-cache.js | actionableFailureType": {
     "message": "Actionable"
   },
@@ -2370,13 +2382,13 @@
     "message": "Duration"
   },
   "node_modules/@paulirish/trace_engine/models/trace/insights/RenderBlocking.js | noRenderBlocking": {
-    "message": "No render-blocking requests for this navigation"
+    "message": "No render blocking requests for this navigation"
   },
   "node_modules/@paulirish/trace_engine/models/trace/insights/RenderBlocking.js | renderBlockingRequest": {
     "message": "Request"
   },
   "node_modules/@paulirish/trace_engine/models/trace/insights/RenderBlocking.js | title": {
-    "message": "Render-blocking requests"
+    "message": "Render blocking requests"
   },
   "node_modules/@paulirish/trace_engine/models/trace/insights/SlowCSSSelector.js | description": {
     "message": "If Recalculate Style costs remain high, selector optimization can reduce them. [Optimize the selectors](https://developer.chrome.com/docs/performance/insights/slow-css-selector) with both high elapsed time and high slow-path %. Simpler selectors, fewer selectors, a smaller DOM, and a shallower DOM will all reduce matching costs."

@@ -2387,6 +2387,8 @@ var chatMessage_css_default = `/*
     align-items: center;
     margin-block: calc(-1 * var(--sys-size-3));
     margin-top: var(--sys-size-5);
+    overflow: hidden;
+    mask-image: linear-gradient(to right, var(--ref-palette-neutral0) calc(100% - var(--sys-size-15)), transparent 100%);
 
     &.not-v2 {
       /* Can be removed when AIv2 ships */
@@ -3079,23 +3081,24 @@ var walkthroughView_css_default = `/*
 
   .inline-wrapper {
     display: flex;
-    /* Note: no gap here; the gap is dealt with in padding on the text */
-    align-items: flex-start;
+    align-items: center;
+    gap: var(--sys-size-2);
     justify-content: flex-start;
 
     .inline-icon {
       display: block;
-      margin-top: var(--sys-size-2);
+    margin-top: var(--sys-size-2);
     }
   }
 
   .walkthrough-inline {
-    border-radius: var(--sys-size-5);
+    border-radius: var(--sys-shape-corner-full);
     overflow: hidden;
     width: fit-content;
     max-width: 100%;
 
     &[open] {
+      border-radius: var(--sys-size-5);
       width: auto;
       background-color: var(--sys-color-surface1);
       margin-left: calc(var(--sys-size-6) / 2);
@@ -3359,6 +3362,7 @@ var WalkthroughView = class extends UI4.Widget.Widget {
   constructor(element, view = DEFAULT_VIEW3) {
     super(element);
     this.#view = view;
+    this.setMinimumSize(330, 0);
   }
   wasShown() {
     super.wasShown();
@@ -3628,11 +3632,15 @@ var UIStringsNotTranslate4 = {
   /**
    * @description The title of the button that allows exporting the conversation for agents.
    */
-  exportForAgents: "Copy for your coding agent",
+  exportForAgents: "Copy to coding agent",
   /**
    * @description Title for the bottom up thread activity widget.
    */
-  bottomUpTree: "Bottom-up thread activity"
+  bottomUpTree: "Bottom-up thread activity",
+  /**
+   * @description Accessilility label for the button that shows the walkthrough when there are no widgets in the walkthrough.
+   */
+  showThinking: "Show thinking"
 };
 var DEFAULT_VIEW4 = (input, output, target) => {
   const hasAiV2 = Boolean(Root3.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled);
@@ -3715,6 +3723,7 @@ var DEFAULT_VIEW4 = (input, output, target) => {
         ` : Lit5.nothing}
         ${input.showActions ? renderActions(input, output) : Lit5.nothing}
       </div>
+      ${hasAiV2 ? renderSideEffectStepsUI(input, steps) : Lit5.nothing}
     </section>
   `, target);
 };
@@ -3806,6 +3815,12 @@ function renderWalkthroughSidebarButton(input, steps) {
     // We only apply the widget styling when loading is complete
     "has-widgets": hasOneStepWithWidget && !input.isLoading
   });
+  let accessibleLabel = title;
+  if (!isExpanded) {
+    if (input.isLoading || lastStep.requestApproval) {
+      accessibleLabel = `${titleForStep(lastStep)} ${i18n9.i18n.lockedString(UIStringsNotTranslate4.showThinking)}`;
+    }
+  }
   return html7`
     <div class=${toggleContainerClasses}>
       ${input.isLoading ? html7`<devtools-spinner></devtools-spinner>` : html7`<devtools-icon name=${icon}></devtools-icon>`}
@@ -3813,6 +3828,7 @@ function renderWalkthroughSidebarButton(input, steps) {
         .variant=${variant}
         .size=${"SMALL"}
         .title=${lastStep.isLoading ? titleForStep(lastStep) : title}
+        .accessibleLabel=${accessibleLabel}
         .jslogContext=${walkthrough.isExpanded ? "ai-hide-walkthrough-sidebar" : "ai-show-walkthrough-sidebar"}
         data-show-walkthrough
         @click=${() => {
@@ -3831,18 +3847,8 @@ function renderWalkthroughUI(input, steps) {
   if (!lastStep) {
     return Lit5.nothing;
   }
-  const sideEffectSteps = steps.filter((s) => s.requestApproval);
   const openWalkThroughSidebarButton = !input.walkthrough.isInlined ? renderWalkthroughSidebarButton(input, steps) : Lit5.nothing;
   const isExpanded = input.walkthrough.isInlined ? input.walkthrough.inlineExpandedMessages.includes(input.message) : input.walkthrough.isExpanded && input.walkthrough.activeSidebarMessage === input.message;
-  const sideEffectStepsUI = sideEffectSteps.length > 0 ? sideEffectSteps.map((step) => html7`
-    <div class="side-effect-container">
-      ${renderStep({
-    step,
-    isLoading: input.isLoading,
-    markdownRenderer: input.markdownRenderer,
-    isLast: true
-  })}
-    </div> `) : Lit5.nothing;
   const walkthroughInline = input.walkthrough.isInlined ? html7`
     <div class="walkthrough-container">
       ${widget3(WalkthroughView, {
@@ -3859,7 +3865,23 @@ function renderWalkthroughUI(input, steps) {
   return html7`
     ${openWalkThroughSidebarButton}
     ${walkthroughInline}
-    ${sideEffectStepsUI}
+  `;
+}
+function renderSideEffectStepsUI(input, steps) {
+  const sideEffectSteps = steps.filter((s) => s.requestApproval);
+  if (sideEffectSteps.length === 0) {
+    return Lit5.nothing;
+  }
+  return html7`
+    ${sideEffectSteps.map((step) => html7`
+      <div class="side-effect-container">
+        ${renderStep({
+    step,
+    isLoading: input.isLoading,
+    markdownRenderer: input.markdownRenderer,
+    isLast: true
+  })}
+      </div> `)}
   `;
 }
 function renderStepBadge({ step, isLoading, isLast }) {
@@ -5166,7 +5188,7 @@ var UIStrings3 = {
   /**
    * @description Title for the export for agents dialog.
    */
-  exportForAgents: "Copy for your coding agent",
+  exportForAgents: "Copy to coding agent",
   /**
    * @description Button text for copying to clipboard.
    */
@@ -6687,15 +6709,13 @@ function defaultView(input, output, target) {
           <div slot="main" class="main-view">
             ${renderState()}
           </div>
-          <div slot="sidebar" class="sidebar-view">
-            ${shouldShowWalkthrough ? html14`
-              <devtools-widget ${widget5(WalkthroughView, {
+          ${shouldShowWalkthrough ? html14`
+            <devtools-widget slot="sidebar" ${widget5(WalkthroughView, {
       message: input.props.walkthrough.activeSidebarMessage,
       isLoading: input.props.isLoading && walkthroughIsForLastMessage,
       markdownRenderer: input.props.markdownRenderer,
       onToggle: input.props.walkthrough.onToggle
     })}></devtools-widget>` : Lit9.nothing}
-          </div>
         </devtools-split-view>
       </div>
     `, target);

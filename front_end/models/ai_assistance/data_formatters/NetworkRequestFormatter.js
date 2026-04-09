@@ -12,7 +12,7 @@ const MAX_BODY_SIZE = 10000;
 /**
  * Sanitizes the set of headers, removing values that are not on the allow-list and replacing them with '<redacted>'.
  */
-function sanitizeHeaders(headers) {
+export function sanitizeHeaders(headers) {
     return headers.map(header => {
         if (NetworkRequestFormatter.allowHeader(header.name)) {
             return header;
@@ -50,11 +50,17 @@ export class NetworkRequestFormatter {
         return `${title}\n<binary data>`;
     }
     static formatInitiatorUrl(initiatorUrl, allowedOrigin) {
-        const initiatorOrigin = new URL(initiatorUrl).origin;
-        if (initiatorOrigin === allowedOrigin) {
-            return initiatorUrl;
+        try {
+            // Some scheme or URLs might cause errors depending on the runtime environment.
+            const initiatorOrigin = new URL(initiatorUrl).origin;
+            if (initiatorOrigin === allowedOrigin) {
+                return initiatorUrl;
+            }
+            return '<redacted cross-origin initiator URL>';
         }
-        return '<redacted cross-origin initiator URL>';
+        catch {
+            return '<redacted cross-origin initiator URL>';
+        }
     }
     static formatStatus(status) {
         let responseStatus = '';

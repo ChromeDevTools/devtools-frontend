@@ -574,6 +574,7 @@ var generatedProperties = [
       "grid-template-areas",
       "grid-template-columns",
       "grid-template-rows",
+      "hanging-punctuation",
       "hash",
       "height",
       "hostname",
@@ -1885,7 +1886,7 @@ var generatedProperties = [
     "inherited": false,
     "keywords": [
       "all",
-      "auto",
+      "normal",
       "around",
       "between"
     ],
@@ -2839,6 +2840,16 @@ var generatedProperties = [
       "none"
     ],
     "name": "grid-template-rows"
+  },
+  {
+    "inherited": true,
+    "keywords": [
+      "none",
+      "first",
+      "last",
+      "allow-end"
+    ],
+    "name": "hanging-punctuation"
   },
   {
     "name": "hash"
@@ -3966,7 +3977,7 @@ var generatedProperties = [
     "inherited": false,
     "keywords": [
       "all",
-      "auto",
+      "normal",
       "around",
       "between"
     ],
@@ -5725,7 +5736,7 @@ var generatedPropertyValues = {
   "column-rule-visibility-items": {
     "values": [
       "all",
-      "auto",
+      "normal",
       "around",
       "between"
     ]
@@ -6304,6 +6315,14 @@ var generatedPropertyValues = {
   "grid-template-rows": {
     "values": [
       "none"
+    ]
+  },
+  "hanging-punctuation": {
+    "values": [
+      "none",
+      "first",
+      "last",
+      "allow-end"
     ]
   },
   "height": {
@@ -6886,7 +6905,7 @@ var generatedPropertyValues = {
   "row-rule-visibility-items": {
     "values": [
       "all",
-      "auto",
+      "normal",
       "around",
       "between"
     ]

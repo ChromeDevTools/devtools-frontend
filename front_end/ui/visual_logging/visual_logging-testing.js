@@ -1883,6 +1883,7 @@ var knownContextValues = /* @__PURE__ */ new Set([
   "gu",
   "gutter",
   "gzip",
+  "hanging-punctuation",
   "hardware-concurrency",
   "hardware-concurrency-reset",
   "hardware-concurrency-selector",
@@ -2326,6 +2327,7 @@ var knownContextValues = /* @__PURE__ */ new Set([
   "lighthouse.audit.aria-treeitem-name",
   "lighthouse.audit.aria-valid-attr",
   "lighthouse.audit.aria-valid-attr-value",
+  "lighthouse.audit.baseline",
   "lighthouse.audit.bf-cache",
   "lighthouse.audit.bootup-time",
   "lighthouse.audit.button-name",
@@ -5653,20 +5655,20 @@ async function startLogging(options) {
 async function addDocument(document2) {
   documents.push(document2);
   if (["interactive", "complete"].includes(document2.readyState)) {
-    await RenderCoordinator.read("processForLogging", process);
+    await process();
   }
   document2.addEventListener("visibilitychange", scheduleProcessing);
   document2.addEventListener("scroll", scheduleProcessing);
   observeMutations([document2.body]);
 }
 async function stopLogging() {
-  logging = false;
   await keyboardLogThrottler.schedule(
     async () => {
     },
     "AsSoonAsPossible"
     /* Common.Throttler.Scheduling.AS_SOON_AS_POSSIBLE */
   );
+  logging = false;
   unregisterAllLoggables();
   for (const document2 of documents) {
     document2.removeEventListener("visibilitychange", scheduleProcessing);
@@ -5713,7 +5715,7 @@ var viewportRectFor = (element) => {
   return viewportRect;
 };
 async function process() {
-  if (!logging || document.hidden) {
+  if (document.hidden) {
     return;
   }
   const startTime = performance.now();

@@ -511,6 +511,7 @@ export const generatedProperties = [
             "grid-template-areas",
             "grid-template-columns",
             "grid-template-rows",
+            "hanging-punctuation",
             "hash",
             "height",
             "hostname",
@@ -1822,7 +1823,7 @@ export const generatedProperties = [
         "inherited": false,
         "keywords": [
             "all",
-            "auto",
+            "normal",
             "around",
             "between"
         ],
@@ -2776,6 +2777,16 @@ export const generatedProperties = [
             "none"
         ],
         "name": "grid-template-rows"
+    },
+    {
+        "inherited": true,
+        "keywords": [
+            "none",
+            "first",
+            "last",
+            "allow-end"
+        ],
+        "name": "hanging-punctuation"
     },
     {
         "name": "hash"
@@ -3903,7 +3914,7 @@ export const generatedProperties = [
         "inherited": false,
         "keywords": [
             "all",
-            "auto",
+            "normal",
             "around",
             "between"
         ],
@@ -5662,7 +5673,7 @@ export const generatedPropertyValues = {
     "column-rule-visibility-items": {
         "values": [
             "all",
-            "auto",
+            "normal",
             "around",
             "between"
         ]
@@ -6241,6 +6252,14 @@ export const generatedPropertyValues = {
     "grid-template-rows": {
         "values": [
             "none"
+        ]
+    },
+    "hanging-punctuation": {
+        "values": [
+            "none",
+            "first",
+            "last",
+            "allow-end"
         ]
     },
     "height": {
@@ -6823,7 +6842,7 @@ export const generatedPropertyValues = {
     "row-rule-visibility-items": {
         "values": [
             "all",
-            "auto",
+            "normal",
             "around",
             "between"
         ]

@@ -7099,6 +7099,10 @@ export const NativeFunctions = [
         signatures: [["element", "draw_transform"]]
     },
     {
+        name: "captureElementImage",
+        signatures: [["element"]]
+    },
+    {
         name: "configureHighDynamicRange",
         signatures: [["options"]]
     },
@@ -7734,16 +7738,12 @@ export const NativeFunctions = [
         signatures: [["vertex_buffer", "uv_buffer", "index_buffer", "image"]]
     },
     {
-        name: "CanvasFilter",
-        signatures: [["init"]]
-    },
-    {
-        name: "drawElement",
-        signatures: [["element", "dx", "dy", "?dwidth", "?dheight"]]
-    },
-    {
         name: "drawElementImage",
         signatures: [["element", "dx", "dy", "?dwidth", "?dheight"], ["element", "sx", "sy", "swidth", "sheight", "dx", "dy", "?dwidth", "?dheight"]]
+    },
+    {
+        name: "CanvasFilter",
+        signatures: [["init"]]
     },
     {
         name: "Path2D",
@@ -9069,10 +9069,6 @@ export const NativeFunctions = [
     },
     {
         name: "texElementImage2D",
-        signatures: [["target", "level", "internalformat", "format", "type", "element"], ["target", "level", "internalformat", "width", "height", "format", "type", "element"], ["target", "level", "internalformat", "sx", "sy", "swidth", "sheight", "format", "type", "element"], ["target", "level", "internalformat", "sx", "sy", "swidth", "sheight", "width", "height", "format", "type", "element"]]
-    },
-    {
-        name: "texElement2D",
         signatures: [["target", "level", "internalformat", "format", "type", "element"], ["target", "level", "internalformat", "width", "height", "format", "type", "element"], ["target", "level", "internalformat", "sx", "sy", "swidth", "sheight", "format", "type", "element"], ["target", "level", "internalformat", "sx", "sy", "swidth", "sheight", "width", "height", "format", "type", "element"]]
     },
     {

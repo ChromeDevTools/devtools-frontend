@@ -3207,7 +3207,7 @@
     "message": "This is an experimental AI feature and won’t always get it right. Double check this text before pasting into another tool."
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | exportForAgents": {
-    "message": "Copy for your coding agent"
+    "message": "Copy to coding agent"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | generatingSummary": {
     "message": "Generating summary…"

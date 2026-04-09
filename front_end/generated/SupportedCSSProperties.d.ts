@@ -512,6 +512,9 @@ export const generatedPropertyValues: {
     "grid-template-rows": {
         values: string[];
     };
+    "hanging-punctuation": {
+        values: string[];
+    };
     height: {
         values: string[];
     };

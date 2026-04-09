@@ -104,23 +104,24 @@ export default `/*
 
   .inline-wrapper {
     display: flex;
-    /* Note: no gap here; the gap is dealt with in padding on the text */
-    align-items: flex-start;
+    align-items: center;
+    gap: var(--sys-size-2);
     justify-content: flex-start;
 
     .inline-icon {
       display: block;
-      margin-top: var(--sys-size-2);
+    margin-top: var(--sys-size-2);
     }
   }
 
   .walkthrough-inline {
-    border-radius: var(--sys-size-5);
+    border-radius: var(--sys-shape-corner-full);
     overflow: hidden;
     width: fit-content;
     max-width: 100%;
 
     &[open] {
+      border-radius: var(--sys-size-5);
       width: auto;
       background-color: var(--sys-color-surface1);
       margin-left: calc(var(--sys-size-6) / 2);

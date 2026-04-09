@@ -185,11 +185,15 @@ const UIStringsNotTranslate = {
     /**
      * @description The title of the button that allows exporting the conversation for agents.
      */
-    exportForAgents: 'Copy for your coding agent',
+    exportForAgents: 'Copy to coding agent',
     /**
      * @description Title for the bottom up thread activity widget.
      */
     bottomUpTree: 'Bottom-up thread activity',
+    /**
+     * @description Accessilility label for the button that shows the walkthrough when there are no widgets in the walkthrough.
+     */
+    showThinking: 'Show thinking',
 };
 export const DEFAULT_VIEW = (input, output, target) => {
     const hasAiV2 = Boolean(Root.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled);
@@ -277,6 +281,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
         ` : Lit.nothing}
         ${input.showActions ? renderActions(input, output) : Lit.nothing}
       </div>
+      ${hasAiV2 ? renderSideEffectStepsUI(input, steps) : Lit.nothing}
     </section>
   `, target);
     // clang-format on
@@ -396,6 +401,12 @@ function renderWalkthroughSidebarButton(input, steps) {
         // We only apply the widget styling when loading is complete
         'has-widgets': hasOneStepWithWidget && !input.isLoading,
     });
+    let accessibleLabel = title;
+    if (!isExpanded) {
+        if (input.isLoading || lastStep.requestApproval) {
+            accessibleLabel = `${titleForStep(lastStep)} ${i18n.i18n.lockedString(UIStringsNotTranslate.showThinking)}`;
+        }
+    }
     // clang-format off
     return html `
     <div class=${toggleContainerClasses}>
@@ -406,6 +417,7 @@ function renderWalkthroughSidebarButton(input, steps) {
         .variant=${variant}
         .size=${"SMALL" /* Buttons.Button.Size.SMALL */}
         .title=${lastStep.isLoading ? titleForStep(lastStep) : title}
+        .accessibleLabel=${accessibleLabel}
         .jslogContext=${walkthrough.isExpanded ? 'ai-hide-walkthrough-sidebar' : 'ai-show-walkthrough-sidebar'}
         data-show-walkthrough
         @click=${() => {
@@ -436,7 +448,6 @@ function renderWalkthroughUI(input, steps) {
         // No steps = no walkthrough UI in the chat view.
         return Lit.nothing;
     }
-    const sideEffectSteps = steps.filter(s => s.requestApproval);
     // If the walkthrough is in the sidebar, we render a button into the
     // ChatView to open it.
     const openWalkThroughSidebarButton = !input.walkthrough.isInlined ? renderWalkthroughSidebarButton(input, steps) : Lit.nothing;
@@ -446,21 +457,6 @@ function renderWalkthroughUI(input, steps) {
     const isExpanded = input.walkthrough.isInlined ?
         input.walkthrough.inlineExpandedMessages.includes(input.message) :
         (input.walkthrough.isExpanded && input.walkthrough.activeSidebarMessage === input.message);
-    // When a side-effect step is present and needs user approval, it's
-    // shown in the main chat UI, regardless of if the walkthrough is
-    // open or closed.
-    // Once the user has approved/denied it, it goes back into the sidebar.
-    // clang-format off
-    const sideEffectStepsUI = sideEffectSteps.length > 0 ? sideEffectSteps.map(step => html `
-    <div class="side-effect-container">
-      ${renderStep({
-        step,
-        isLoading: input.isLoading,
-        markdownRenderer: input.markdownRenderer,
-        isLast: true
-    })}
-    </div> `) : Lit.nothing;
-    // clang-format on
     // clang-format off
     const walkthroughInline = input.walkthrough.isInlined ? html `
     <div class="walkthrough-container">
@@ -478,7 +474,25 @@ function renderWalkthroughUI(input, steps) {
     return html `
     ${openWalkThroughSidebarButton}
     ${walkthroughInline}
-    ${sideEffectStepsUI}
+  `;
+    // clang-format on
+}
+function renderSideEffectStepsUI(input, steps) {
+    const sideEffectSteps = steps.filter(s => s.requestApproval);
+    if (sideEffectSteps.length === 0) {
+        return Lit.nothing;
+    }
+    // clang-format off
+    return html `
+    ${sideEffectSteps.map(step => html `
+      <div class="side-effect-container">
+        ${renderStep({
+        step,
+        isLoading: input.isLoading,
+        markdownRenderer: input.markdownRenderer,
+        isLast: true
+    })}
+      </div> `)}
   `;
     // clang-format on
 }

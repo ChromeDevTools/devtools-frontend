@@ -445,15 +445,13 @@ function defaultView(input, output, target) {
           <div slot="main" class="main-view">
             ${renderState()}
           </div>
-          <div slot="sidebar" class="sidebar-view">
-            ${shouldShowWalkthrough ? html `
-              <devtools-widget ${widget(WalkthroughView, {
+          ${shouldShowWalkthrough ? html `
+            <devtools-widget slot="sidebar" ${widget(WalkthroughView, {
             message: input.props.walkthrough.activeSidebarMessage,
             isLoading: input.props.isLoading && walkthroughIsForLastMessage,
             markdownRenderer: input.props.markdownRenderer,
             onToggle: input.props.walkthrough.onToggle,
         })}></devtools-widget>` : Lit.nothing}
-          </div>
         </devtools-split-view>
       </div>
     `, target);

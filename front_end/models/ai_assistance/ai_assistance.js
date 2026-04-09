@@ -2084,6 +2084,7 @@ Your role is to help users understand and fix accessibility issues found in Ligh
 # Constraints
 * **CRITICAL**: ALWAYS call a tool before providing an answer if an element path is available.
 * **CRITICAL**: You are an accessibility agent. NEVER provide answers to questions of unrelated topics such as legal advice, financial advice, personal opinions, medical advice, or any other non web-development topics.
+* **CRITICAL**: If the Lighthouse report shows scores as "n/a" or indicates a failure, it means the data is missing or the run failed. Do NOT assume that the page passed or has no issues.
 
 ## Response Structure
 
@@ -2417,10 +2418,15 @@ var AccessibilityAgent = class extends AiAgent {
   #getInitialPayload(context) {
     const report = context.getItem();
     const formatter = new LighthouseFormatter();
+    const summary = formatter.summary(report);
+    const audits = formatter.audits(report, "accessibility");
+    const allFailed = Object.values(report.categories).every((category) => category.score === null);
+    if (allFailed) {
+      return "**CRITICAL**: The Lighthouse report failed to record or all category scores are error/unavailable (n/a). This indicates a failed run or missing data.";
+    }
     return `# Lighthouse Report:
-${formatter.summary(report)}
-${formatter.audits(report, "accessibility")}
-`;
+${summary}
+${audits}`;
   }
   async enhanceQuery(query, lhr) {
     this.clearDeclaredFunctions();
@@ -3530,7 +3536,8 @@ import * as NetworkTimeCalculator2 from "./../network_time_calculator/network_ti
 // gen/front_end/models/ai_assistance/data_formatters/NetworkRequestFormatter.js
 var NetworkRequestFormatter_exports = {};
 __export(NetworkRequestFormatter_exports, {
-  NetworkRequestFormatter: () => NetworkRequestFormatter
+  NetworkRequestFormatter: () => NetworkRequestFormatter,
+  sanitizeHeaders: () => sanitizeHeaders
 });
 import * as Annotations from "./../annotations/annotations.js";
 import * as Logs from "./../logs/logs.js";
@@ -3581,11 +3588,15 @@ ${dataAsText}`;
 <binary data>`;
   }
   static formatInitiatorUrl(initiatorUrl, allowedOrigin) {
-    const initiatorOrigin = new URL(initiatorUrl).origin;
-    if (initiatorOrigin === allowedOrigin) {
-      return initiatorUrl;
+    try {
+      const initiatorOrigin = new URL(initiatorUrl).origin;
+      if (initiatorOrigin === allowedOrigin) {
+        return initiatorUrl;
+      }
+      return "<redacted cross-origin initiator URL>";
+    } catch {
+      return "<redacted cross-origin initiator URL>";
     }
-    return "<redacted cross-origin initiator URL>";
   }
   static formatStatus(status) {
     let responseStatus = "";

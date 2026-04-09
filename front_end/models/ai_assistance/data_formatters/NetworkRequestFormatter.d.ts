@@ -1,6 +1,16 @@
 import type * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import * as NetworkTimeCalculator from '../../network_time_calculator/network_time_calculator.js';
+/**
+ * Sanitizes the set of headers, removing values that are not on the allow-list and replacing them with '<redacted>'.
+ */
+export declare function sanitizeHeaders(headers: Array<{
+    name: string;
+    value: string;
+}>): Array<{
+    name: string;
+    value: string;
+}>;
 export declare class NetworkRequestFormatter {
     #private;
     static allowHeader(headerName: string): boolean;

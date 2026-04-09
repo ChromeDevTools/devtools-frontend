@@ -573,7 +573,7 @@ function gcaCandidateToAidaGenerationSample(candidate) {
 }
 function convertAidaFactsToGcaContent(facts) {
   return {
-    role: "model",
+    role: "user",
     parts: facts.map((fact) => {
       return { text: `[source: ${fact.metadata.source}] ${fact.text}` };
     })

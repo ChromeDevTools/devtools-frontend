@@ -193,6 +193,7 @@ export class WalkthroughView extends UI.Widget.Widget {
     constructor(element, view = DEFAULT_VIEW) {
         super(element);
         this.#view = view;
+        this.setMinimumSize(330, 0);
     }
     wasShown() {
         super.wasShown();

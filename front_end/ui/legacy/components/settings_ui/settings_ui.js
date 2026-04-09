@@ -8,14 +8,17 @@ var __export = (target, all) => {
 var SettingsUI_exports = {};
 __export(SettingsUI_exports, {
   createControlForSetting: () => createControlForSetting,
-  createSettingCheckbox: () => createSettingCheckbox
+  createSettingCheckbox: () => createSettingCheckbox,
+  renderSettingSelect: () => renderSettingSelect
 });
 import * as Common from "./../../../../core/common/common.js";
 import * as i18n from "./../../../../core/i18n/i18n.js";
 import * as Platform from "./../../../../core/platform/platform.js";
+import { Directives, html, nothing, render } from "./../../../lit/lit.js";
 import * as Settings from "./../../../components/settings/settings.js";
 import * as VisualLogging from "./../../../visual_logging/visual_logging.js";
 import * as UI from "./../../legacy.js";
+var { createRef, ref } = Directives;
 var UIStrings = {
   /**
    * @description Note when a setting change will require the user to reload DevTools
@@ -37,59 +40,62 @@ function createSettingCheckbox(name, setting, tooltip) {
   }
   return label;
 }
-var createSettingSelect = function(name, options, requiresReload, setting, subtitle) {
-  const container = document.createElement("div");
-  const settingSelectElement = container.createChild("p");
-  settingSelectElement.classList.add("settings-select");
-  const label = settingSelectElement.createChild("label");
-  const select = settingSelectElement.createChild("select");
-  label.textContent = name;
-  if (subtitle) {
-    container.classList.add("chrome-select-label");
-    label.createChild("p").textContent = subtitle;
-  }
-  select.setAttribute("jslog", `${VisualLogging.dropDown().track({ change: true }).context(setting.name)}`);
-  UI.ARIAUtils.bindLabelToControl(label, select);
-  for (const option of options) {
-    if (option.text && typeof option.value === "string") {
-      select.add(UI.UIUtils.createOption(option.text, option.value, Platform.StringUtilities.toKebabCase(option.value)));
-    }
-  }
-  let reloadWarning = null;
-  if (requiresReload) {
-    reloadWarning = container.createChild("p", "reload-warning hidden");
-    reloadWarning.textContent = i18nString(UIStrings.srequiresReload);
-    UI.ARIAUtils.markAsAlert(reloadWarning);
-  }
+function renderSettingSelect(setting, subtitle) {
+  const name = setting.title();
+  const options = setting.options();
+  const requiresReload = setting.reloadRequired();
   const { deprecation } = setting;
-  if (deprecation) {
-    const warning = new Settings.SettingDeprecationWarning.SettingDeprecationWarning();
-    warning.data = deprecation;
-    label.appendChild(warning);
-  }
-  setting.addChangeListener(settingChanged);
-  settingChanged();
-  select.addEventListener("change", selectChanged, false);
-  return container;
-  function settingChanged() {
-    const newValue = setting.get();
-    for (let i = 0; i < options.length; i++) {
-      if (options[i].value === newValue) {
-        select.selectedIndex = i;
+  const controlId = UI.ARIAUtils.nextId("labelledControl");
+  const reloadWarningRef = createRef();
+  const onSelectChange = (e) => {
+    const select = e.target;
+    setting.set(options[select.selectedIndex].value);
+    if (requiresReload) {
+      UI.InspectorView.InspectorView.instance().displayReloadRequiredWarning(i18nString(UIStrings.settingsChangedReloadDevTools));
+      if (reloadWarningRef.value) {
+        reloadWarningRef.value.classList.remove("hidden");
       }
     }
-    select.disabled = setting.disabled();
-  }
-  function selectChanged() {
-    setting.set(options[select.selectedIndex].value);
-    if (reloadWarning) {
-      reloadWarning.classList.remove("hidden");
-      UI.InspectorView.InspectorView.instance().displayReloadRequiredWarning(i18nString(UIStrings.settingsChangedReloadDevTools));
+  };
+  return html`
+    <div class=${Directives.classMap({ "chrome-select-label": Boolean(subtitle) })}>
+      <p class="settings-select">
+        <label for=${controlId}>
+          ${name}
+          ${subtitle ? html`<p>${subtitle}</p>` : nothing}
+          ${deprecation ? html`<devtools-setting-deprecation-warning .data=${deprecation}></devtools-setting-deprecation-warning>` : nothing}
+        </label>
+        <select
+          id=${controlId}
+          aria-label=${name}
+          .disabled=${setting.disabled()}
+          @change=${onSelectChange}
+          jslog=${VisualLogging.dropDown().track({ change: true }).context(setting.name)}
+        >
+          ${options.map((option) => {
+    if (option.text && typeof option.value === "string") {
+      return html`
+                <option
+                  value=${option.value}
+                  ?selected=${setting.get() === option.value}
+                  jslog=${VisualLogging.item(Platform.StringUtilities.toKebabCase(option.value)).track({ click: true })}
+                >
+                  ${option.text}
+                </option>
+              `;
     }
-  }
-};
+    return nothing;
+  })}
+        </select>
+      </p>
+      ${requiresReload ? html`
+        <p ${ref(reloadWarningRef)} class="reload-warning hidden" role="alert" aria-live="polite">
+          ${i18nString(UIStrings.srequiresReload)}
+        </p>` : nothing}
+    </div>
+  `;
+}
 var createControlForSetting = function(setting, subtitle) {
-  const uiTitle = setting.title();
   switch (setting.type()) {
     case "boolean": {
       const component = new Settings.SettingCheckbox.SettingCheckbox();
@@ -103,8 +109,11 @@ var createControlForSetting = function(setting, subtitle) {
       };
       return component;
     }
-    case "enum":
-      return createSettingSelect(uiTitle, setting.options(), setting.reloadRequired(), setting, subtitle);
+    case "enum": {
+      const fragment = document.createDocumentFragment();
+      render(renderSettingSelect(setting, subtitle), fragment);
+      return fragment.firstElementChild;
+    }
     default:
       console.error("Invalid setting type: " + setting.type());
       return null;

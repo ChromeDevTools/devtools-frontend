@@ -14,7 +14,7 @@ const UIStrings = {
     /**
      * @description Title for the export for agents dialog.
      */
-    exportForAgents: 'Copy for your coding agent',
+    exportForAgents: 'Copy to coding agent',
     /**
      * @description Button text for copying to clipboard.
      */

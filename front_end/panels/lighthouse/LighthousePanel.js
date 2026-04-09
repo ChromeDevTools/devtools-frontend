@@ -128,7 +128,6 @@ export class LighthousePanel extends UI.Panel.Panel {
             this.renderStatusView();
             const { lhr, artifacts } = await this.controller.collectLighthouseResults();
             this.buildReportUI(lhr, artifacts);
-            UI.Context.Context.instance().setFlavor(ActiveLighthouseReport, new ActiveLighthouseReport(lhr));
             return { report: lhr };
         }
         catch (err) {
@@ -222,6 +221,7 @@ export class LighthousePanel extends UI.Panel.Panel {
         this.auditResultsElement.removeChildren();
         this.statusView.hide();
         this.reportSelector.selectNewReport();
+        UI.Context.Context.instance().setFlavor(ActiveLighthouseReport, null);
         this.contentElement.classList.toggle('in-progress', false);
         this.startView.show(this.contentElement);
         this.toggleSettingsDisplay(true);
@@ -259,6 +259,7 @@ export class LighthousePanel extends UI.Panel.Panel {
         this.auditResultsElement.removeChildren();
         this.newButton.setEnabled(true);
         this.refreshToolbarUI();
+        UI.Context.Context.instance().setFlavor(ActiveLighthouseReport, new ActiveLighthouseReport(lighthouseResult));
         const cachedRenderedReport = this.cachedRenderedReports.get(lighthouseResult);
         if (cachedRenderedReport) {
             this.auditResultsElement.appendChild(cachedRenderedReport);

@@ -18,6 +18,8 @@ export default `/*
     align-items: center;
     margin-block: calc(-1 * var(--sys-size-3));
     margin-top: var(--sys-size-5);
+    overflow: hidden;
+    mask-image: linear-gradient(to right, var(--ref-palette-neutral0) calc(100% - var(--sys-size-15)), transparent 100%);
 
     &.not-v2 {
       /* Can be removed when AIv2 ships */

@@ -250,7 +250,7 @@ function Ke(r5) {
   let c = r5.createElement("div", "lh-element-screenshot__element-marker");
   return o.append(" ", i, " ", c, " "), n.append(" ", o, " "), t.append(" ", n, " "), e.append(t), e;
 }
-function Je(r5) {
+function Ze(r5) {
   let e = r5.createFragment(), t = r5.createElement("div", "lh-exp-gauge-component"), n = r5.createElement("div", "lh-exp-gauge__wrapper");
   n.setAttribute("target", "_blank");
   let o = r5.createElement("div", "lh-exp-gauge__svg-wrapper"), i = r5.createElementNS("http://www.w3.org/2000/svg", "svg", "lh-exp-gauge"), a = r5.createElementNS("http://www.w3.org/2000/svg", "g", "lh-exp-gauge__inner"), l = r5.createElementNS("http://www.w3.org/2000/svg", "circle", "lh-exp-gauge__bg"), s = r5.createElementNS("http://www.w3.org/2000/svg", "circle", "lh-exp-gauge__base lh-exp-gauge--faded"), c = r5.createElementNS("http://www.w3.org/2000/svg", "circle", "lh-exp-gauge__arc"), d = r5.createElementNS("http://www.w3.org/2000/svg", "text", "lh-exp-gauge__percentage");
@@ -260,7 +260,7 @@ function Je(r5) {
   let g = r5.createElementNS("http://www.w3.org/2000/svg", "text", "lh-exp-gauge__label");
   return g.setAttribute("text-anchor", "middle"), g.setAttribute("x", "0"), g.setAttribute("y", "60"), i.append(" ", a, " ", h, " ", g, " "), o.append(" ", i, " "), n.append(" ", o, " "), t.append(" ", n, " "), e.append(t), e;
 }
-function Ze(r5) {
+function Je(r5) {
   let e = r5.createFragment(), t = r5.createElement("style");
   t.append(`
     .lh-footer {
@@ -737,6 +737,9 @@ function lt(r5) {
   --error-icon-url: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3 15"><title>error</title><path d="M0 15H 3V 12H 0V" fill="%23FF4E42"/><path d="M0 9H 3V 0H 0V" fill="%23FF4E42"/></svg>');
 
   --swap-locale-icon-url: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="%23000000"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M12.87 15.07l-2.54-2.51.03-.03c1.74-1.94 2.98-4.17 3.71-6.53H17V4h-7V2H8v2H1v1.99h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z"/></svg>');
+  --baseline-high-icon-url: url("data:image/svg+xml;utf8,<svg width='18' height='10' viewBox='0 0 540 300' fill='none' xmlns='http://www.w3.org/2000/svg'> <path d='M420 30L390 60L480 150L390 240L330 180L300 210L390 300L540 150L420 30Z' fill='%23C4EED0'/> <path d='M150 0L30 120L60 150L150 60L210 120L240 90L150 0Z' fill='%23C4EED0'/> <path d='M390 0L420 30L150 300L0 150L30 120L150 240L390 0Z' fill='%231EA446'/> </svg>");
+  --baseline-low-icon-url: url("data:image/svg+xml;utf8,<svg width='18' height='10' viewBox='0 0 540 300' fill='none' xmlns='http://www.w3.org/2000/svg'> <path d='M150 0L180 30L150 60L120 30L150 0Z' fill='%23A8C7FA'/> <path d='M210 60L240 90L210 120L180 90L210 60Z' fill='%23A8C7FA'/> <path d='M450 60L480 90L450 120L420 90L450 60Z' fill='%23A8C7FA'/> <path d='M510 120L540 150L510 180L480 150L510 120Z' fill='%23A8C7FA'/> <path d='M450 180L480 210L450 240L420 210L450 180Z' fill='%23A8C7FA'/> <path d='M390 240L420 270L390 300L360 270L390 240Z' fill='%23A8C7FA'/> <path d='M330 180L360 210L330 240L300 210L330 180Z' fill='%23A8C7FA'/> <path d='M90 60L120 90L90 120L60 90L90 60Z' fill='%23A8C7FA'/> <path d='M390 0L420 30L150 300L0 150L30 120L150 240L390 0Z' fill='%231B6EF3'/> </svg>");
+  --baseline-limited-icon-url: url("data:image/svg+xml;utf8,<svg width='18' height='10' viewBox='0 0 540 300' fill='none' xmlns='http://www.w3.org/2000/svg'> <path d='M150 0L240 90L210 120L120 30L150 0Z' fill='%23F09409'/> <path d='M420 30L540 150L420 270L390 240L480 150L390 60L420 30Z' fill='%23C6C6C6'/> <path d='M330 180L300 210L390 300L420 270L330 180Z' fill='%23F09409'/> <path d='M120 30L150 60L60 150L150 240L120 270L0 150L120 30Z' fill='%23C6C6C6'/> <path d='M390 0L420 30L150 300L120 270L390 0Z' fill='%23F09409'/> </svg>");
 }
 
 @media not print {
@@ -1155,6 +1158,30 @@ function lt(r5) {
 
 .lh-checklist-item {
   margin: 10px 0 10px 0;
+}
+
+/* Baseline Status */
+.lh-baseline-status {
+  display: flex;
+  align-items: center;
+}
+.lh-baseline-status::before {
+  content: "";
+  display: inline-block;
+  width: 18px;
+  height: 10px;
+  margin-right: 6px;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+.lh-baseline-status--high::before {
+  background-image: var(--baseline-high-icon-url);
+}
+.lh-baseline-status--low::before {
+  background-image: var(--baseline-low-icon-url);
+}
+.lh-baseline-status--limited::before {
+  background-image: var(--baseline-limited-icon-url);
 }
 
 /* Score */
@@ -3067,10 +3094,10 @@ function st(r5) {
   _.setAttribute("d", "M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"), u.append(" ", v, " ", _, " "), f.append(" ", u, " ");
   let x = r5.createElement("div", "lh-tools__dropdown");
   x.setAttribute("id", "lh-tools-dropdown"), x.setAttribute("role", "menu"), x.setAttribute("aria-labelledby", "lh-tools-button");
+  let L = r5.createElement("a", "lh-report-icon lh-report-icon--print");
+  L.setAttribute("role", "menuitem"), L.setAttribute("tabindex", "-1"), L.setAttribute("href", "#"), L.setAttribute("data-i18n", "dropdownPrintSummary"), L.setAttribute("data-action", "print-summary");
   let S = r5.createElement("a", "lh-report-icon lh-report-icon--print");
-  S.setAttribute("role", "menuitem"), S.setAttribute("tabindex", "-1"), S.setAttribute("href", "#"), S.setAttribute("data-i18n", "dropdownPrintSummary"), S.setAttribute("data-action", "print-summary");
-  let A = r5.createElement("a", "lh-report-icon lh-report-icon--print");
-  A.setAttribute("role", "menuitem"), A.setAttribute("tabindex", "-1"), A.setAttribute("href", "#"), A.setAttribute("data-i18n", "dropdownPrintExpanded"), A.setAttribute("data-action", "print-expanded");
+  S.setAttribute("role", "menuitem"), S.setAttribute("tabindex", "-1"), S.setAttribute("href", "#"), S.setAttribute("data-i18n", "dropdownPrintExpanded"), S.setAttribute("data-action", "print-expanded");
   let z = r5.createElement("a", "lh-report-icon lh-report-icon--copy");
   z.setAttribute("role", "menuitem"), z.setAttribute("tabindex", "-1"), z.setAttribute("href", "#"), z.setAttribute("data-i18n", "dropdownCopyJSON"), z.setAttribute("data-action", "copy");
   let M = r5.createElement("a", "lh-report-icon lh-report-icon--download lh-hidden");
@@ -3084,7 +3111,7 @@ function st(r5) {
   let D = r5.createElement("a", "lh-report-icon lh-report-icon--open lh-hidden");
   D.setAttribute("role", "menuitem"), D.setAttribute("tabindex", "-1"), D.setAttribute("href", "#"), D.setAttribute("data-i18n", "dropdownViewUnthrottledTrace"), D.setAttribute("data-action", "view-unthrottled-trace");
   let I = r5.createElement("a", "lh-report-icon lh-report-icon--dark");
-  return I.setAttribute("role", "menuitem"), I.setAttribute("tabindex", "-1"), I.setAttribute("href", "#"), I.setAttribute("data-i18n", "dropdownDarkTheme"), I.setAttribute("data-action", "toggle-dark"), x.append(" ", S, " ", A, " ", z, " ", " ", M, " ", $, " ", R, " ", N, " ", " ", D, " ", I, " "), c.append(" ", d, " ", f, " ", x, " "), n.append(" ", " ", o, " ", s, " ", c, " "), e.append(n), e;
+  return I.setAttribute("role", "menuitem"), I.setAttribute("tabindex", "-1"), I.setAttribute("href", "#"), I.setAttribute("data-i18n", "dropdownDarkTheme"), I.setAttribute("data-action", "toggle-dark"), x.append(" ", L, " ", S, " ", z, " ", " ", M, " ", $, " ", R, " ", N, " ", " ", D, " ", I, " "), c.append(" ", d, " ", f, " ", x, " "), n.append(" ", " ", o, " ", s, " ", c, " "), e.append(n), e;
 }
 function ct(r5) {
   let e = r5.createFragment(), t = r5.createElement("div", "lh-warnings lh-warnings--toplevel"), n = r5.createElement("p", "lh-warnings__msg"), o = r5.createElement("ul");
@@ -3109,9 +3136,9 @@ function ve(r5, e) {
     case "elementScreenshot":
       return Ke(r5);
     case "explodeyGauge":
-      return Je(r5);
-    case "footer":
       return Ze(r5);
+    case "footer":
+      return Je(r5);
     case "fraction":
       return Qe(r5);
     case "gauge":
@@ -3808,6 +3835,10 @@ var ee = class {
     let t = this._dom.createElement("div", "lh-text");
     return t.textContent = e, t;
   }
+  _renderBaselineStatus(e) {
+    let t = this._dom.createElement("div", "lh-baseline-status"), n = e.status;
+    return t.classList.add(`lh-baseline-status--${n}`), t.textContent = String(e.displayString), t;
+  }
   _renderNumeric(e) {
     let t = m.i18n.formatNumber(e.value, e.granularity || 0.1), n = this._dom.createElement("div", "lh-numeric");
     return n.textContent = t, n;
@@ -3838,6 +3869,8 @@ var ee = class {
         return this.renderSourceLocation(e);
       case "url":
         return this.renderTextURL(e.value);
+      case "baseline-status":
+        return this._renderBaselineStatus(e);
       default:
         return this._renderUnknown(e.type, e);
     }
@@ -4122,40 +4155,40 @@ function gt(r5, e, t) {
 function mt(r5, e, t) {
   let i = Number(t.score), { radiusInner: a, radiusOuter: l, circumferenceInner: s, circumferenceOuter: c, getArcLength: d, getMetricArcLength: h, endDiffInner: p, endDiffOuter: g, strokeWidth: b, strokeGap: w } = gt(128, i), f = r5.find("svg.lh-exp-gauge", e);
   r5.find(".lh-exp-gauge__label", f).textContent = t.title, f.setAttribute("viewBox", [-64, -64 / 2, 128, 128 / 2].join(" ")), f.style.setProperty("--stroke-width", `${b}px`), f.style.setProperty("--circle-meas", (2 * Math.PI).toFixed(4));
-  let u = r5.find("g.lh-exp-gauge__outer", e), v = r5.find("g.lh-exp-gauge__inner", e), _ = r5.find("circle.lh-cover", u), x = r5.find("circle.lh-exp-gauge__arc", v), S = r5.find("text.lh-exp-gauge__percentage", v);
-  u.style.setProperty("--scale-initial", String(a / l)), u.style.setProperty("--radius", `${l}px`), _.style.setProperty("--radius", `${0.5 * (a + l)}px`), _.setAttribute("stroke-width", String(w)), f.style.setProperty("--radius", `${a}px`), x.setAttribute("stroke-dasharray", `${d()} ${(s - d()).toFixed(4)}`), x.setAttribute("stroke-dashoffset", String(0.25 * s - p)), S.textContent = Math.round(i * 100).toString();
-  let A = l + b, z = l - b, M = t.auditRefs.filter((y) => y.group === "metrics" && y.weight), $ = M.reduce((y, C) => y += C.weight, 0), R = 0.25 * c - g - 0.5 * w, N = -0.5 * Math.PI;
+  let u = r5.find("g.lh-exp-gauge__outer", e), v = r5.find("g.lh-exp-gauge__inner", e), _ = r5.find("circle.lh-cover", u), x = r5.find("circle.lh-exp-gauge__arc", v), L = r5.find("text.lh-exp-gauge__percentage", v);
+  u.style.setProperty("--scale-initial", String(a / l)), u.style.setProperty("--radius", `${l}px`), _.style.setProperty("--radius", `${0.5 * (a + l)}px`), _.setAttribute("stroke-width", String(w)), f.style.setProperty("--radius", `${a}px`), x.setAttribute("stroke-dasharray", `${d()} ${(s - d()).toFixed(4)}`), x.setAttribute("stroke-dashoffset", String(0.25 * s - p)), L.textContent = Math.round(i * 100).toString();
+  let S = l + b, z = l - b, M = t.auditRefs.filter((y) => y.group === "metrics" && y.weight), $ = M.reduce((y, C) => y += C.weight, 0), R = 0.25 * c - g - 0.5 * w, N = -0.5 * Math.PI;
   u.querySelectorAll(".metric").forEach((y) => {
     M.map((F) => `metric--${F.id}`).find((F) => y.classList.contains(F)) || y.remove();
   }), M.forEach((y, C) => {
-    let L = y.acronym ?? y.id, F = !u.querySelector(`.metric--${L}`), T = r5.maybeFind(`g.metric--${L}`, u) || r5.createSVGElement("g"), B = r5.maybeFind(`.metric--${L} circle.lh-exp-gauge--faded`, u) || r5.createSVGElement("circle"), K = r5.maybeFind(`.metric--${L} circle.lh-exp-gauge--miniarc`, u) || r5.createSVGElement("circle"), q = r5.maybeFind(`.metric--${L} circle.lh-exp-gauge-hovertarget`, u) || r5.createSVGElement("circle"), P = r5.maybeFind(`.metric--${L} text.metric__label`, u) || r5.createSVGElement("text"), H = r5.maybeFind(`.metric--${L} text.metric__value`, u) || r5.createSVGElement("text");
-    T.classList.add("metric", `metric--${L}`), B.classList.add("lh-exp-gauge__arc", "lh-exp-gauge__arc--metric", "lh-exp-gauge--faded"), K.classList.add("lh-exp-gauge__arc", "lh-exp-gauge__arc--metric", "lh-exp-gauge--miniarc"), q.classList.add("lh-exp-gauge__arc", "lh-exp-gauge__arc--metric", "lh-exp-gauge-hovertarget");
+    let A = y.acronym ?? y.id, F = !u.querySelector(`.metric--${A}`), T = r5.maybeFind(`g.metric--${A}`, u) || r5.createSVGElement("g"), B = r5.maybeFind(`.metric--${A} circle.lh-exp-gauge--faded`, u) || r5.createSVGElement("circle"), K = r5.maybeFind(`.metric--${A} circle.lh-exp-gauge--miniarc`, u) || r5.createSVGElement("circle"), q = r5.maybeFind(`.metric--${A} circle.lh-exp-gauge-hovertarget`, u) || r5.createSVGElement("circle"), P = r5.maybeFind(`.metric--${A} text.metric__label`, u) || r5.createSVGElement("text"), H = r5.maybeFind(`.metric--${A} text.metric__value`, u) || r5.createSVGElement("text");
+    T.classList.add("metric", `metric--${A}`), B.classList.add("lh-exp-gauge__arc", "lh-exp-gauge__arc--metric", "lh-exp-gauge--faded"), K.classList.add("lh-exp-gauge__arc", "lh-exp-gauge__arc--metric", "lh-exp-gauge--miniarc"), q.classList.add("lh-exp-gauge__arc", "lh-exp-gauge__arc--metric", "lh-exp-gauge-hovertarget");
     let j = y.weight / $, ce = h(j), de = y.result.score ? y.result.score * j : 0, he = h(de), Fe = j * c, pe = h(j, true), ue = k.calculateRating(y.result.score, y.result.scoreDisplayMode);
-    T.style.setProperty("--metric-rating", ue), T.style.setProperty("--metric-color", `var(--color-${ue})`), T.style.setProperty("--metric-offset", `${R}`), T.style.setProperty("--i", C.toString()), B.setAttribute("stroke-dasharray", `${ce} ${c - ce}`), K.style.setProperty("--metric-array", `${he} ${c - he}`), q.setAttribute("stroke-dasharray", `${pe} ${c - pe - g}`), P.classList.add("metric__label"), H.classList.add("metric__value"), P.textContent = L, H.textContent = `+${Math.round(de * 100)}`;
-    let ge = N + j * Math.PI, J = Math.cos(ge), Z = Math.sin(ge);
+    T.style.setProperty("--metric-rating", ue), T.style.setProperty("--metric-color", `var(--color-${ue})`), T.style.setProperty("--metric-offset", `${R}`), T.style.setProperty("--i", C.toString()), B.setAttribute("stroke-dasharray", `${ce} ${c - ce}`), K.style.setProperty("--metric-array", `${he} ${c - he}`), q.setAttribute("stroke-dasharray", `${pe} ${c - pe - g}`), P.classList.add("metric__label"), H.classList.add("metric__value"), P.textContent = A, H.textContent = `+${Math.round(de * 100)}`;
+    let ge = N + j * Math.PI, Z = Math.cos(ge), J = Math.sin(ge);
     switch (true) {
-      case J > 0:
+      case Z > 0:
         H.setAttribute("text-anchor", "end");
         break;
-      case J < 0:
+      case Z < 0:
         P.setAttribute("text-anchor", "end");
         break;
-      case J === 0:
+      case Z === 0:
         P.setAttribute("text-anchor", "middle"), H.setAttribute("text-anchor", "middle");
         break;
     }
     switch (true) {
-      case Z > 0:
+      case J > 0:
         P.setAttribute("dominant-baseline", "hanging");
         break;
-      case Z < 0:
+      case J < 0:
         H.setAttribute("dominant-baseline", "hanging");
         break;
-      case Z === 0:
+      case J === 0:
         P.setAttribute("dominant-baseline", "middle"), H.setAttribute("dominant-baseline", "middle");
         break;
     }
-    P.setAttribute("x", (A * J).toFixed(2)), P.setAttribute("y", (A * Z).toFixed(2)), H.setAttribute("x", (z * J).toFixed(2)), H.setAttribute("y", (z * Z).toFixed(2)), F && (T.appendChild(B), T.appendChild(K), T.appendChild(q), T.appendChild(P), T.appendChild(H), u.appendChild(T)), R -= Fe, N += j * 2 * Math.PI;
+    P.setAttribute("x", (S * Z).toFixed(2)), P.setAttribute("y", (S * J).toFixed(2)), H.setAttribute("x", (z * Z).toFixed(2)), H.setAttribute("y", (z * J).toFixed(2)), F && (T.appendChild(B), T.appendChild(K), T.appendChild(q), T.appendChild(P), T.appendChild(H), u.appendChild(T)), R -= Fe, N += j * 2 * Math.PI;
   });
   let D = u.querySelector(".lh-exp-gauge-underhovertarget") || r5.createSVGElement("circle");
   D.classList.add("lh-exp-gauge__arc", "lh-exp-gauge__arc--metric", "lh-exp-gauge-hovertarget", "lh-exp-gauge-underhovertarget");
@@ -4174,8 +4207,8 @@ function mt(r5, e, t) {
         return;
       }
       if (C && C.classList && C.classList.contains("metric")) {
-        let L = C.style.getPropertyValue("--metric-rating");
-        if (e.style.setProperty("--color-highlight", `var(--color-${L}-secondary)`), !f.classList.contains("state--highlight")) f.classList.add("state--highlight"), C.classList.add("metric--highlight");
+        let A = C.style.getPropertyValue("--metric-rating");
+        if (e.style.setProperty("--color-highlight", `var(--color-${A}-secondary)`), !f.classList.contains("state--highlight")) f.classList.add("state--highlight"), C.classList.add("metric--highlight");
         else {
           let F = r5.find(".metric--highlight", f);
           C !== F && (F.classList.remove("metric--highlight"), C.classList.add("metric--highlight"));
@@ -4187,10 +4220,10 @@ function mt(r5, e, t) {
   });
   async function Te(y) {
     if (await new Promise((P) => setTimeout(P, 1e3)), y.classList.contains("state--expanded")) return;
-    let C = r5.find(".lh-exp-gauge__inner", y), L = `uniq-${Math.random()}`;
-    C.setAttribute("id", L);
+    let C = r5.find(".lh-exp-gauge__inner", y), A = `uniq-${Math.random()}`;
+    C.setAttribute("id", A);
     let F = r5.createSVGElement("use");
-    F.setAttribute("href", `#${L}`), y.appendChild(F);
+    F.setAttribute("href", `#${A}`), y.appendChild(F);
     let T = 2.5;
     y.style.setProperty("--peek-dur", `${T}s`), y.classList.add("state--peek", "state--expanded");
     let B = () => {
@@ -4263,12 +4296,12 @@ var oe = class extends G {
       let v = this.dom.createChildOf(u, "span", "lh-metrics-toggle__labeltext--show"), _ = this.dom.createChildOf(u, "span", "lh-metrics-toggle__labeltext--hide");
       v.textContent = m.strings.expandView, _.textContent = m.strings.collapseView;
       let x = this.dom.createElement("div", "lh-metrics-container");
-      if (p.insertBefore(x, g), a.forEach((S) => {
-        x.append(this._renderMetric(S));
+      if (p.insertBefore(x, g), a.forEach((L) => {
+        x.append(this._renderMetric(L));
       }), i.querySelector(".lh-gauge__wrapper")) {
-        let S = this.dom.find(".lh-category-header__description", i), A = this.dom.createChildOf(S, "div", "lh-metrics__disclaimer"), z = this.dom.convertMarkdownLinkSnippets(o.varianceDisclaimer);
-        A.append(z);
-        let M = this.dom.createChildOf(A, "a", "lh-calclink");
+        let L = this.dom.find(".lh-category-header__description", i), S = this.dom.createChildOf(L, "div", "lh-metrics__disclaimer"), z = this.dom.convertMarkdownLinkSnippets(o.varianceDisclaimer);
+        S.append(z);
+        let M = this.dom.createChildOf(S, "a", "lh-calclink");
         M.target = "_blank", M.textContent = o.calculatorLink, this.dom.safelySetHref(M, this._getScoringCalculatorHref(e.auditRefs));
       }
       p.classList.add("lh-audit-group--metrics"), i.append(p);
@@ -4289,8 +4322,8 @@ var oe = class extends G {
   renderFilterableSection(e, t, n, o) {
     if (n.some((u) => !t[u])) return null;
     let i = this.dom.createElement("div"), a = (u) => u.group ?? "", s = e.auditRefs.filter((u) => n.includes(a(u))).map((u) => {
-      let { overallImpact: v, overallLinearImpact: _ } = this.overallImpact(u, o), x = u.result.guidanceLevel || 1, S = this.renderAudit(u);
-      return { auditRef: u, auditEl: S, overallImpact: v, overallLinearImpact: _, guidanceLevel: x };
+      let { overallImpact: v, overallLinearImpact: _ } = this.overallImpact(u, o), x = u.result.guidanceLevel || 1, L = this.renderAudit(u);
+      return { auditRef: u, auditEl: L, overallImpact: v, overallLinearImpact: _, guidanceLevel: x };
     }), c = s.filter((u) => !k.showAsPassed(u.auditRef.result)), d = s.filter((u) => k.showAsPassed(u.auditRef.result)), h = {};
     for (let u of n) {
       let v = this.renderAuditGroup(t[u]);
@@ -4303,11 +4336,11 @@ var oe = class extends G {
         v.auditEl.hidden = _;
       }
       c.sort((v, _) => {
-        let x = v.auditRef.result.score || 0, S = _.auditRef.result.score || 0;
-        if (x !== S) return x - S;
+        let x = v.auditRef.result.score || 0, L = _.auditRef.result.score || 0;
+        if (x !== L) return x - L;
         if (u !== "All") {
-          let A = v.auditRef.result.metricSavings?.[u] ?? -1, z = _.auditRef.result.metricSavings?.[u] ?? -1;
-          if (A !== z) return z - A;
+          let S = v.auditRef.result.metricSavings?.[u] ?? -1, z = _.auditRef.result.metricSavings?.[u] ?? -1;
+          if (S !== z) return z - S;
         }
         return v.overallImpact !== _.overallImpact ? _.overallImpact * _.guidanceLevel - v.overallImpact * v.guidanceLevel : v.overallImpact === 0 && _.overallImpact === 0 && v.overallLinearImpact !== _.overallLinearImpact ? _.overallLinearImpact * _.guidanceLevel - v.overallLinearImpact * v.guidanceLevel : _.guidanceLevel - v.guidanceLevel;
       });
@@ -4315,8 +4348,8 @@ var oe = class extends G {
         if (!v.auditRef.group) continue;
         let _ = h[a(v.auditRef)];
         if (!_) continue;
-        let [x, S] = _;
-        x.insertBefore(v.auditEl, S);
+        let [x, L] = _;
+        x.insertBefore(v.auditEl, L);
       }
     }
     let g = /* @__PURE__ */ new Set();
@@ -4473,7 +4506,7 @@ function _t(r5, e) {
   let t = vt(r5), n = Uint8Array.from(t, (o) => o.charCodeAt(0));
   return e.gzip ? window.pako.ungzip(n, { to: "string" }) : new TextDecoder().decode(n);
 }
-var Se = { toBase64: bt, fromBase64: _t };
+var Le = { toBase64: bt, fromBase64: _t };
 function le() {
   let r5 = window.location.host.endsWith(".vercel.app"), e = new URLSearchParams(window.location.search).has("dev");
   return r5 ? `https://${window.location.host}/gh-pages` : e ? "http://localhost:7333" : "https://googlechrome.github.io/lighthouse";
@@ -4491,13 +4524,13 @@ function wt(r5, e, t) {
 }
 async function Ce(r5, e, t) {
   let n = new URL(e), o = !!window.CompressionStream;
-  n.hash = await Se.toBase64(JSON.stringify(r5), { gzip: o }), o && n.searchParams.set("gzip", "1"), window.open(n.toString(), t);
+  n.hash = await Le.toBase64(JSON.stringify(r5), { gzip: o }), o && n.searchParams.set("gzip", "1"), window.open(n.toString(), t);
 }
-async function Ae(r5) {
+async function Se(r5) {
   let e = "viewer-" + se(r5), t = le() + "/viewer/";
   await Ce({ lhr: r5 }, t, e);
 }
-async function Le(r5) {
+async function Ae(r5) {
   let e = "viewer-" + se(r5), t = le() + "/viewer/";
   wt({ lhr: r5 }, t, e);
 }
@@ -4611,7 +4644,7 @@ var ae = class {
           break;
         }
         case "open-viewer": {
-          this._dom.isDevTools() ? Ae(this.lhr) : Le(this.lhr);
+          this._dom.isDevTools() ? Se(this.lhr) : Ae(this.lhr);
           break;
         }
         case "save-gist": {
@@ -4811,17 +4844,17 @@ function kt(r5, e = {}) {
 function Et(r5, e) {
   return { lhr: r5, missingIcuMessageIds: [] };
 }
-function St(r5, e) {
+function Lt(r5, e) {
 }
 function Ct(r5) {
   return false;
 }
-var At = { registerLocaleData: St, hasLocale: Ct };
+var St = { registerLocaleData: Lt, hasLocale: Ct };
 export {
   Q as DOM,
   te as ReportRenderer,
   ne as ReportUIFeatures,
-  At as format,
+  St as format,
   kt as renderReport,
   Et as swapLocale
 };

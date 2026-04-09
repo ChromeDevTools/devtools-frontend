@@ -4,11 +4,13 @@
 
 /* eslint-disable @devtools/no-imperative-dom-api */
 
+import '../../../components/settings/settings.js';
+
 import * as Common from '../../../../core/common/common.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import {Directives, html, nothing, render, type TemplateResult} from '../../../../ui/lit/lit.js';
-import * as Settings from '../../../components/settings/settings.js';
+import type * as Settings from '../../../components/settings/settings.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 
@@ -102,30 +104,37 @@ export function renderSettingSelect(setting: Common.Settings.Setting<unknown>, s
   // clang-format on
 }
 
-export const createControlForSetting = function(
-    setting: Common.Settings.Setting<unknown>, subtitle?: string): HTMLElement|null {
+export const renderControlForSetting = function(
+    setting: Common.Settings.Setting<unknown>, subtitle?: string): TemplateResult|null {
   switch (setting.type()) {
     case Common.Settings.SettingType.BOOLEAN: {
-      const component = new Settings.SettingCheckbox.SettingCheckbox();
-      component.data = {
-        setting: setting as Common.Settings.Setting<boolean>,
-      };
-      component.onchange = () => {
+      const onchange = (): void => {
         if (setting.reloadRequired()) {
           UI.InspectorView.InspectorView.instance().displayReloadRequiredWarning(
               i18nString(UIStrings.settingsChangedReloadDevTools));
         }
       };
-      return component;
+      return html`<setting-checkbox .data=${{
+        setting: setting as Common.Settings.Setting<boolean>
+      } as Settings.SettingCheckbox.SettingCheckboxData} @change=${onchange}></setting-checkbox>`;
     }
     case Common.Settings.SettingType.ENUM: {
-      const fragment = document.createDocumentFragment();
-      // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
-      render(renderSettingSelect(setting, subtitle), fragment);
-      return fragment.firstElementChild as HTMLElement;
+      return renderSettingSelect(setting, subtitle);
     }
     default:
       console.error('Invalid setting type: ' + setting.type());
       return null;
   }
+};
+
+export const createControlForSetting = function(
+    setting: Common.Settings.Setting<unknown>, subtitle?: string): HTMLElement|null {
+  const template = renderControlForSetting(setting, subtitle);
+  if (template === null) {
+    return null;
+  }
+  const fragment = document.createDocumentFragment();
+  // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
+  render(template, fragment);
+  return fragment.firstElementChild as HTMLElement;
 };

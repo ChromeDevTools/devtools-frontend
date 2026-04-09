@@ -125,4 +125,56 @@ describeWithEnvironment('SettingsUI', () => {
     assert.isNotNull(icon);
     assert.strictEqual(icon.getAttribute('title'), 'Test Deprecation Warning');
   });
+
+  describe('renderControlForSetting', () => {
+    it('renders a checkbox for a boolean setting', () => {
+      const setting = createSettingsForTest([{
+                        settingName: 'test-boolean-setting',
+                        settingType: Common.Settings.SettingType.BOOLEAN,
+                        defaultValue: false,
+                      }]).moduleSetting('test-boolean-setting');
+
+      const template = SettingsUI.SettingsUI.renderControlForSetting(setting);
+      assert.isNotNull(template);
+
+      const container = document.createElement('div');
+      Lit.render(template, container);
+      renderElementIntoDOM(container);
+
+      const checkbox = container.querySelector('setting-checkbox');
+      assert.isNotNull(checkbox);
+    });
+
+    it('renders a select for an enum setting', () => {
+      const setting = createSettingsForTest([{
+                        settingName: 'test-enum-setting',
+                        settingType: Common.Settings.SettingType.ENUM,
+                        defaultValue: 'a',
+                        options: [
+                          {value: 'a', text: 'A', title: () => i18n.i18n.lockedString('A'), raw: true},
+                        ],
+                      }]).moduleSetting('test-enum-setting');
+
+      const template = SettingsUI.SettingsUI.renderControlForSetting(setting);
+      assert.isNotNull(template);
+
+      const container = document.createElement('div');
+      Lit.render(template, container);
+      renderElementIntoDOM(container);
+
+      const select = container.querySelector('select');
+      assert.isNotNull(select);
+    });
+
+    it('returns null for an unsupported setting type', () => {
+      const setting = createSettingsForTest([{
+                        settingName: 'test-array-setting',
+                        settingType: Common.Settings.SettingType.ARRAY,
+                        defaultValue: [],
+                      }]).moduleSetting('test-array-setting');
+
+      const template = SettingsUI.SettingsUI.renderControlForSetting(setting);
+      assert.isNull(template);
+    });
+  });
 });

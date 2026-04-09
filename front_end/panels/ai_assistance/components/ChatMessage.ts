@@ -1264,6 +1264,7 @@ function renderActions(input: ChatMessageViewInput, output: ViewOutput): Lit.Lit
             .jslogContext=${'ai-export-for-agents'}
             .variant=${Buttons.Button.Variant.OUTLINED}
             .iconName=${'copy'}
+            aria-label=${lockedString(UIStringsNotTranslate.exportForAgents)}
             @click=${input.onExportClick}
           >${lockedString(UIStringsNotTranslate.exportForAgents)}</devtools-button>
           ${input.suggestions ? html`<div class="vertical-separator"></div>` : Lit.nothing}

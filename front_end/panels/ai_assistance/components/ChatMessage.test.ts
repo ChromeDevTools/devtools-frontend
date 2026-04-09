@@ -774,6 +774,7 @@ describeWithEnvironment('ChatMessage', () => {
          const exportButton = querySelectorErrorOnMissing(row, '.export-for-agents-button');
 
          assert.strictEqual(exportButton.textContent?.trim(), 'Copy to coding agent');
+         assert.strictEqual(exportButton.getAttribute('aria-label'), 'Copy to coding agent');
          exportButton.click();
          sinon.assert.calledOnce(onExportClick);
        });

@@ -580,7 +580,7 @@ function makePreloadingAttemptId(key: Protocol.Preload.PreloadingAttemptKey): Pr
       break;
   }
 
-  return `${key.loaderId}:${action}:${key.url}:${targetHint}`;
+  return `${key.loaderId}:${action}:${key.url}:${targetHint}:${key.formSubmission ? 'formSubmission' : 'undefined'}`;
 }
 
 export class PreloadPipeline {

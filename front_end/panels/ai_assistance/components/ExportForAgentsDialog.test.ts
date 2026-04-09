@@ -20,6 +20,7 @@ describe('ExportForAgentsDialog', () => {
 
   beforeEach(async () => {
     await initializeGlobalVars();
+    AiAssistance.ExportForAgentsDialog.ExportForAgentsDialog.clearPersistedViewState();
     dialog = new UI.Dialog.Dialog();
     inspectorFrontendHostStub = sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance);
     promptText = 'This is prompt text.';
@@ -254,5 +255,41 @@ describe('ExportForAgentsDialog', () => {
 
     sinon.assert.calledOnce(onConversationSaveAs);
     sinon.assert.calledOnce(hideStub);
+  });
+
+  it('persists the selected state across dialog loads', async () => {
+    const component1 = new AiAssistance.ExportForAgentsDialog.ExportForAgentsDialog({
+      dialog,
+      promptText,
+      markdownText,
+      onConversationSaveAs: noop,
+    });
+    renderElementIntoDOM(component1);
+    await component1.updateComplete;
+
+    const markdownRadioButton =
+        querySelectorErrorOnMissing<HTMLInputElement>(component1.contentElement, 'input[value="conversation"]');
+    markdownRadioButton.click();
+    await component1.updateComplete;
+
+    assert.isTrue(markdownRadioButton.checked);
+    component1.detach();
+
+    const component2 = new AiAssistance.ExportForAgentsDialog.ExportForAgentsDialog({
+      dialog,
+      promptText,
+      markdownText,
+      onConversationSaveAs: noop,
+    });
+    renderElementIntoDOM(component2);
+    await component2.updateComplete;
+
+    const markdownRadioButton2 =
+        querySelectorErrorOnMissing<HTMLInputElement>(component2.contentElement, 'input[value="conversation"]');
+    const promptRadioButton2 =
+        querySelectorErrorOnMissing<HTMLInputElement>(component2.contentElement, 'input[value="prompt"]');
+
+    assert.isTrue(markdownRadioButton2.checked);
+    assert.isFalse(promptRadioButton2.checked);
   });
 });

@@ -59,6 +59,8 @@ export const enum StateType {
   CONVERSATION = 'conversation',
 }
 
+const DEFAULT_STATE_TYPE = StateType.PROMPT;
+
 export interface State {
   activeType: StateType;
   promptText: string;
@@ -142,6 +144,7 @@ export const DEFAULT_VIEW: View = (input, _output, target): void => {
 };
 
 export class ExportForAgentsDialog extends UI.Widget.VBox {
+  static #lastSelectedType: StateType = DEFAULT_STATE_TYPE;
   readonly #view: View;
   readonly #dialog: UI.Dialog.Dialog;
   #state: State;
@@ -158,7 +161,7 @@ export class ExportForAgentsDialog extends UI.Widget.VBox {
     super();
     this.#dialog = options.dialog;
     this.#state = {
-      activeType: StateType.PROMPT,
+      activeType: ExportForAgentsDialog.#lastSelectedType,
       promptText: typeof options.promptText === 'string' ? options.promptText : '',
       conversationText: options.markdownText,
       isPromptLoading: typeof options.promptText !== 'string',
@@ -177,8 +180,13 @@ export class ExportForAgentsDialog extends UI.Widget.VBox {
     this.requestUpdate();
   }
 
+  static clearPersistedViewState(): void {
+    ExportForAgentsDialog.#lastSelectedType = DEFAULT_STATE_TYPE;
+  }
+
   #onStateChange = (newState: StateType): void => {
     this.#state.activeType = newState;
+    ExportForAgentsDialog.#lastSelectedType = newState;
     this.requestUpdate();
   };
 

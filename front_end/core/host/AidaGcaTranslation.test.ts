@@ -564,4 +564,36 @@ describe('AidaGcaTranslation', () => {
       });
     });
   });
+
+  describe('GCA GenerateContentResponse to AIDA ChunkResponse', () => {
+    it('translates a basic chunk response and includes modelVersion', () => {
+      const gcaResponse = createGcaResponse({
+        modelVersion: 'gen-model',
+        responseId: 'response-789',
+        candidates: [{
+          index: 0,
+          content: {role: 'model', parts: [{text: 'const add = (a, b) => a + b;'}]},
+          finishReason: GcaTypes.FinishReason.STOP,
+          safetyRatings: [],
+          citationMetadata: {citations: []},
+          groundingMetadata: {},
+          aicodeOutput: {contents: []},
+        }],
+      });
+
+      assert.deepEqual(AidaGcaTranslation.gcaChunkResponseToAidaChunkResponse(gcaResponse), [{
+                         textChunk: {
+                           text: 'const add = (a, b) => a + b;',
+                         },
+                         metadata: {
+                           rpcGlobalId: 'response-789',
+                           attributionMetadata: {
+                             attributionAction: AidaClient.RecitationAction.CITE,
+                             citations: [],
+                           },
+                           inferenceOptionMetadata: {modelId: 'gen-model'},
+                         },
+                       }]);
+    });
+  });
 });

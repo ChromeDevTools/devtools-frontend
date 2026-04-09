@@ -454,6 +454,7 @@ export function gcaChunkResponseToAidaChunkResponse(response: GCA.GenerateConten
     const parts = candidate?.content?.parts || [];
     const metadata: AIDA.ResponseMetadata = {
       rpcGlobalId: response.responseId,
+      inferenceOptionMetadata: {modelId: response.modelVersion}
     };
 
     if (candidate?.citationMetadata?.citations) {

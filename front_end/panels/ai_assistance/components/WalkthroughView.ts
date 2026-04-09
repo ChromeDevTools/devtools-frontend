@@ -153,7 +153,7 @@ function renderSidebarWalkthrough(input: ViewInput, stepsOutput: Lit.LitTemplate
   return html`
     <div class="walkthrough-view">
       <div class="walkthrough-header">
-         <div class="walkthrough-title">${i18nString(UIStrings.title)}</div>
+         <h2 class="walkthrough-title">${i18nString(UIStrings.title)}</h2>
          <devtools-button
           .data=${{
             variant: Buttons.Button.Variant.TOOLBAR,

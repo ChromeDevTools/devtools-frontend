@@ -959,7 +959,7 @@ function renderWidgetResponse(response: WidgetMakerResponse|null): Lit.LitTempla
     <div class=${classes}>
       ${response.title ? html`
         <div class="widget-header">
-          <div class="widget-name">${response.title}</div>
+          <h3 class="widget-name">${response.title}</h3>
           <div class="widget-reveal-container">
             ${revealButton}
           </div>

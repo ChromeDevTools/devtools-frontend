@@ -946,6 +946,7 @@ function renderWidgetResponse(response: WidgetMakerResponse|null): Lit.LitTempla
   const revealButton = html`
     <devtools-button class="widget-reveal-button"
       .variant=${Buttons.Button.Variant.TEXT}
+      .accessibleLabel=${lockedString(UIStringsNotTranslate.reveal)}
       @click=${onReveal}
     >
       ${response.customRevealTitle ?? lockedString(UIStringsNotTranslate.reveal)}

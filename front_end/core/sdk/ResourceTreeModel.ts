@@ -858,7 +858,8 @@ export class ResourceTreeFrame {
    * https://chromium.googlesource.com/chromium/src/+/HEAD/docs/frame_trees.md
    */
   isPrimaryFrame(): boolean {
-    return !this.#sameTargetParentFrame && this.#model.target() === TargetManager.instance().primaryPageTarget();
+    return !this.#sameTargetParentFrame &&
+        this.#model.target() === this.#model.target().targetManager().primaryPageTarget();
   }
 
   removeChildFrame(frame: ResourceTreeFrame, isSwap: boolean): void {

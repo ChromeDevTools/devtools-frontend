@@ -131,6 +131,18 @@ describeWithMockConnection('ResourceTreeModel', () => {
     assert.isFalse(getResourceTreeModel(subframeTarget).mainFrame!.isOutermostFrame());
   });
 
+  it('identifies primary frame', async () => {
+    const tabTarget = createTarget({type: SDK.Target.Type.TAB});
+    const mainFrameTarget = createTarget({parentTarget: tabTarget});
+    const subframeTarget = createTarget({parentTarget: mainFrameTarget});
+
+    navigate(getMainFrame(mainFrameTarget));
+    navigate(getMainFrame(subframeTarget), {parentId: MAIN_FRAME_ID, id: 'child' as Protocol.Page.FrameId});
+
+    assert.isTrue(getResourceTreeModel(mainFrameTarget).mainFrame!.isPrimaryFrame());
+    assert.isFalse(getResourceTreeModel(subframeTarget).mainFrame!.isPrimaryFrame());
+  });
+
   it('emits PrimaryPageChanged event upon prerender activation', async () => {
     SDK.ChildTargetManager.ChildTargetManager.install();
     const tabTarget = createTarget({type: SDK.Target.Type.TAB});

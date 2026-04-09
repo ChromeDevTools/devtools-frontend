@@ -28,7 +28,7 @@ export {Target} from '../front_end/core/sdk/Target.js';
 export {TargetManager} from '../front_end/core/sdk/TargetManager.js';
 export * as Foundation from '../front_end/foundation/foundation.js';
 export * as Protocol from '../front_end/generated/protocol.js';
-export {NetworkRequestFormatter} from '../front_end/models/ai_assistance/data_formatters/NetworkRequestFormatter.js';
+export * as NetworkRequestFormatter from '../front_end/models/ai_assistance/data_formatters/NetworkRequestFormatter.js';
 export {
   PerformanceInsightFormatter
 } from '../front_end/models/ai_assistance/data_formatters/PerformanceInsightFormatter.js';

@@ -5,6 +5,8 @@
 import type * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
 import {querySelectorErrorOnMissing, renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
+import type {Icon} from '../../../ui/kit/kit.js';
+import * as Lit from '../../../ui/lit/lit.js';
 import * as AiAssistance from '../ai_assistance.js';
 
 describeWithEnvironment('WalkthroughView', () => {
@@ -361,6 +363,53 @@ describeWithEnvironment('WalkthroughView', () => {
             isInlined: true,
           }),
           'Agent walkthrough');
+    });
+  });
+
+  describe('renderStep status icons', () => {
+    function testStepBadge(step: AiAssistance.ChatMessage.Step, expectedLabel: string, expectedIcon: string) {
+      const container = document.createElement('div');
+      renderElementIntoDOM(container);
+
+      Lit.render(
+          AiAssistance.ChatMessage.renderStep({
+            step,
+            isLoading: false,
+            markdownRenderer: new AiAssistance.MarkdownRendererWithCodeBlock(),
+            isLast: true,
+          }),
+          container);
+
+      const indicator = container.querySelector('.indicator');
+      assert.isNotNull(indicator);
+      assert.strictEqual(indicator?.getAttribute('aria-label'), expectedLabel);
+      assert.strictEqual((indicator as Icon).name, expectedIcon);
+    }
+
+    it('renders pause icon with Paused label', () => {
+      testStepBadge(
+          {
+            isLoading: false,
+            requestApproval: {description: 'Confirm', onAnswer: () => {}},
+          },
+          'Paused', 'pause-circle');
+    });
+
+    it('renders cross icon with Aborted label when canceled', () => {
+      testStepBadge(
+          {
+            isLoading: false,
+            canceled: true,
+          },
+          'Aborted', 'cross');
+    });
+
+    it('renders checkmark icon with Completed label', () => {
+      testStepBadge(
+          {
+            isLoading: false,
+          },
+          'Completed', 'checkmark');
     });
   });
 });

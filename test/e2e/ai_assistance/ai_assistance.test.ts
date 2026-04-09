@@ -638,7 +638,7 @@ describe('AI Assistance', function() {
     await openConversationFromHistory(
         devToolsPage, 'aria/Change the background color for this element to green, unchecked');
 
-    await devToolsPage.waitForAria('Canceled');
+    await devToolsPage.waitForAria('Aborted');
   });
 
   it('modifies styles to a selector with high specificity', async ({devToolsPage, inspectedPage}) => {

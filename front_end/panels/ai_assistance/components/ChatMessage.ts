@@ -157,13 +157,13 @@ const UIStringsNotTranslate = {
    */
   completed: 'Completed',
   /**
-   * @description Aria label for the cancel icon to be read by screen reader
-   */
-  canceled: 'Canceled',
-  /**
    * @description Aria label for the spinner to be read by screen reader when a step is in progress.
    */
   inProgress: 'In progress',
+  /**
+   * @description Aria label for the aborted icon to be read by screen reader
+   */
+  aborted: 'Aborted',
   /**
    * @description Alt text for the image input (displayed in the chat messages) that has been sent to the model.
    */
@@ -699,10 +699,10 @@ function renderStepBadge({step, isLoading, isLast}: {
   let role: 'button'|undefined = 'button';
   if (isLast && step.requestApproval) {
     role = undefined;
-    ariaLabel = undefined;
+    ariaLabel = lockedString(UIStringsNotTranslate.paused);
     iconName = 'pause-circle';
   } else if (step.canceled) {
-    ariaLabel = lockedString(UIStringsNotTranslate.canceled);
+    ariaLabel = lockedString(UIStringsNotTranslate.aborted);
     iconName = 'cross';
   }
 

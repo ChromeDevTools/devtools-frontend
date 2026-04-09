@@ -1,0 +1,177 @@
+// Copyright 2026 The Chromium Authors
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
+import * as i18n from '../../../core/i18n/i18n.js';
+import * as Root from '../../../core/root/root.js';
+import * as Buttons from '../../../ui/components/buttons/buttons.js';
+import * as UI from '../../../ui/legacy/legacy.js';
+import * as Lit from '../../../ui/lit/lit.js';
+import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
+
+import styles from './optInChangeDialog.css.js';
+
+const {html, render} = Lit;
+
+const UIStrings = {
+  /**
+   * @description Title for the opt-in change dialog.
+   */
+  title: 'AI assistance just got better',
+  /**
+   * @description First point in the opt-in change dialog, describing the new integration.
+   */
+  integrationPoint:
+      'AI assistance is now integrated with Application and Lighthouse panels, and pulls context from data sources simultaneously',
+  /**
+   * @description Second point in the opt-in change dialog, describing the new widgets.
+   */
+  widgetPoint: 'Use widgets to verify results or jump to source data for select debugging cases',
+  /**
+   * @description Third point in the opt-in change dialog (disclaimer) for regular users.
+   */
+  privacyDisclaimer:
+      'Chat messages, data accessible for this site via DevTools panels and Web APIs, and items you select such as network requests, files, and performance traces are sent to Google and may be seen by human reviewers to improve this feature. This is an experimental AI feature and won’t always get it right.',
+  /**
+   * @description Third point in the opt-in change dialog (disclaimer) for enterprise users with logging disabled.
+   */
+  privacyDisclaimerEnterpriseNoLogging:
+      'Chat messages, data accessible for this site via DevTools panels and Web APIs, and items you select such as network requests, files, and performance traces are sent to Google. This data will not be used to improve Google’s AI models. This is an experimental AI feature and won’t always get it right.',
+  /**
+   * @description Button text for managing settings.
+   */
+  manageSettings: 'Manage in settings',
+  /**
+   * @description Button text for acknowledging the changes.
+   */
+  gotIt: 'Got it',
+} as const;
+
+const str_ = i18n.i18n.registerUIStrings('panels/ai_assistance/components/OptInChangeDialog.ts', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+
+interface ViewInput {
+  onGotIt: () => void;
+  onManageSettings: () => void;
+  loggingEnabled: boolean;
+}
+
+type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
+
+export const DEFAULT_VIEW: View = (input, _output, target): void => {
+  const disclaimer = input.loggingEnabled ? i18nString(UIStrings.privacyDisclaimer) :
+                                            i18nString(UIStrings.privacyDisclaimerEnterpriseNoLogging);
+  // clang-format off
+  render(html`
+    <style>${styles}</style>
+    <div class="opt-in-change-dialog" jslog=${VisualLogging.dialog('ai-v2-opt-in-change-dialog')}>
+      <header>
+        <div class="header-icon-container">
+          <devtools-icon name="smart-assistant"></devtools-icon>
+        </div>
+        <h2 tabindex="-1">
+          ${i18nString(UIStrings.title)}
+        </h2>
+      </header>
+      <main>
+        <div class="item">
+          <devtools-icon name="lightbulb-spark"></devtools-icon>
+          <div class="text">${i18nString(UIStrings.integrationPoint)}</div>
+        </div>
+        <div class="item">
+          <devtools-icon name="flowsheet"></devtools-icon>
+          <div class="text">${i18nString(UIStrings.widgetPoint)}</div>
+        </div>
+        <div class="item">
+          <devtools-icon name="google"></devtools-icon>
+          <div class="text">${disclaimer}</div>
+        </div>
+      </main>
+      <footer>
+        <div class="right-buttons">
+          <devtools-button
+            @click=${input.onManageSettings}
+            .jslogContext=${'ai-assistance-v2-opt-in.manage-settings'}
+            .variant=${Buttons.Button.Variant.OUTLINED}
+          >
+            ${i18nString(UIStrings.manageSettings)}
+          </devtools-button>
+          <devtools-button
+            @click=${input.onGotIt}
+            .jslogContext=${'ai-assistance-v2-opt-in.got-it'}
+            .variant=${Buttons.Button.Variant.PRIMARY}
+          >
+            ${i18nString(UIStrings.gotIt)}
+          </devtools-button>
+        </div>
+      </footer>
+    </div>
+  `, target);
+  // clang-format on
+};
+
+export class OptInChangeDialog extends UI.Widget.VBox {
+  readonly #view: View;
+  readonly #onGotIt: () => void;
+  readonly #onManageSettings: () => void;
+
+  constructor(
+      options: {
+        onGotIt: () => void,
+        onManageSettings: () => void,
+      },
+      view: View = DEFAULT_VIEW) {
+    super();
+    this.#onGotIt = options.onGotIt;
+    this.#onManageSettings = options.onManageSettings;
+    this.#view = view;
+
+    this.requestUpdate();
+  }
+
+  override performUpdate(): void {
+    const noLogging = Root.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue ===
+        Root.Runtime.GenAiEnterprisePolicyValue.ALLOW_WITHOUT_LOGGING;
+
+    const viewInput = {
+      onGotIt: this.#onGotIt,
+      onManageSettings: this.#onManageSettings,
+      loggingEnabled: !noLogging,
+    };
+
+    this.#view(viewInput, undefined, this.contentElement);
+  }
+
+  focusTitle(): void {
+    this.contentElement.querySelector('h2')?.focus();
+  }
+
+  static show(options: {
+    onGotIt: () => void,
+    onManageSettings: () => void,
+  }): void {
+    const dialog = new UI.Dialog.Dialog();
+    dialog.setAriaLabel(i18nString(UIStrings.title));
+    dialog.setOutsideClickCallback(event => event.consume(true));
+    dialog.setCloseOnEscape(false);
+    dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.MEASURE_CONTENT);
+    dialog.setDimmed(true);
+
+    const optInChangeDialog = new OptInChangeDialog({
+      onGotIt: () => {
+        dialog.hide();
+        options.onGotIt();
+      },
+      onManageSettings: () => {
+        dialog.hide();
+        options.onManageSettings();
+      },
+    });
+    optInChangeDialog.show(dialog.contentElement);
+
+    void optInChangeDialog.updateComplete.then(() => {
+      dialog.show();
+      optInChangeDialog.focusTitle();
+    });
+  }
+}

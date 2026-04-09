@@ -282,6 +282,10 @@ export class ChatView extends HTMLElement {
     textArea.focus();
   }
 
+  setInputValue(text: string): void {
+    this.#output.input?.getWidget()?.setInputValue(text);
+  }
+
   restoreScrollPosition(): void {
     if (this.#scrollTop === undefined) {
       return;

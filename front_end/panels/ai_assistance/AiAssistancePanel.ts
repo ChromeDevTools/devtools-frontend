@@ -44,6 +44,7 @@ import {
 import {DisabledWidget} from './components/DisabledWidget.js';
 import {ExploreWidget} from './components/ExploreWidget.js';
 import {MarkdownRendererWithCodeBlock} from './components/MarkdownRendererWithCodeBlock.js';
+import {OptInChangeDialog} from './components/OptInChangeDialog.js';
 import {PerformanceAgentMarkdownRenderer} from './components/PerformanceAgentMarkdownRenderer.js';
 import {StylingAgentMarkdownRenderer} from './components/StylingAgentMarkdownRenderer.js';
 import {
@@ -789,11 +790,32 @@ export class AiAssistancePanel extends UI.Panel.Panel {
             return await this.#conversationSummaryAgent.summarizeConversation(markdown);
           },
           onTextSubmit: async (
-
               text: string, imageInput?: Host.AidaClient.Part,
               multimodalInputType?: AiAssistanceModel.AiAgent.MultimodalInputType) => {
-            Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceQuerySubmitted);
-            await this.#startConversation(text, imageInput, multimodalInputType);
+            const submit = (): void => {
+              Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceQuerySubmitted);
+              void this.#startConversation(text, imageInput, multimodalInputType);
+            };
+
+            const isAIV2Enabled = Root.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled;
+            const seenSetting =
+                Common.Settings.Settings.instance().moduleSetting('ai-assistance-v2-opt-in-change-dialog-seen');
+            if (isAIV2Enabled && !seenSetting.get()) {
+              OptInChangeDialog.show({
+                onGotIt: () => {
+                  seenSetting.set(true);
+                  submit();
+                },
+                onManageSettings: () => {
+                  seenSetting.set(true);
+                  this.#viewOutput.chatView?.setInputValue(text);
+                  void UI.ViewManager.ViewManager.instance().showView('chrome-ai');
+                },
+              });
+              return;
+            }
+
+            submit();
           },
           onInspectElementClick: this.#handleSelectElementClick.bind(this),
           onFeedbackSubmit: this.#handleFeedbackSubmit.bind(this),

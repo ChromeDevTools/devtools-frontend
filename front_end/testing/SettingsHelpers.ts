@@ -230,6 +230,9 @@ export const DEFAULT_SETTING_REGISTRATIONS_FOR_TEST = [
       Common.Settings.SettingCategory.AI, 'ai-code-completion-teaser-dismissed', false,
       Common.Settings.SettingType.BOOLEAN),
   createSettingValue(
+      Common.Settings.SettingCategory.AI, 'ai-assistance-v2-opt-in-change-dialog-seen', false,
+      Common.Settings.SettingType.BOOLEAN),
+  createSettingValue(
       Common.Settings.SettingCategory.MOBILE, 'emulation.show-device-outline', false,
       Common.Settings.SettingType.BOOLEAN),
   createSettingValue(

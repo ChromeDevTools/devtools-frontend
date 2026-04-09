@@ -17,6 +17,7 @@ generate_css("css_files") {
     "./components/disabledWidget.css",
     "./components/exploreWidget.css",
     "./components/exportForAgentsDialog.css",
+    "./components/optInChangeDialog.css",
     "./components/walkthroughView.css",
     "./selectWorkspaceDialog.css",
   ]
@@ -36,6 +37,7 @@ devtools_ui_module("ai_assistance") {
     "components/ExploreWidget.ts",
     "components/ExportForAgentsDialog.ts",
     "components/MarkdownRendererWithCodeBlock.ts",
+    "components/OptInChangeDialog.ts",
     "components/PerformanceAgentMarkdownRenderer.ts",
     "components/StylingAgentMarkdownRenderer.ts",
     "components/WalkthroughView.ts",
@@ -130,6 +132,7 @@ devtools_ui_module("unittests") {
     "components/ExploreWidget.test.ts",
     "components/ExportForAgentsDialog.test.ts",
     "components/MarkdownRendererWithCodeBlock.test.ts",
+    "components/OptInChangeDialog.test.ts",
     "components/WalkthroughView.test.ts",
   ]
 

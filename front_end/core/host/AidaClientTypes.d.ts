@@ -283,10 +283,14 @@ export interface FactualityFact {
 export interface FactualityMetadata {
     facts: FactualityFact[];
 }
+export interface InferenceOptionMetadata {
+    modelId: string;
+}
 export interface ResponseMetadata {
     rpcGlobalId?: RpcGlobalId;
     attributionMetadata?: AttributionMetadata;
     factualityMetadata?: FactualityMetadata;
+    inferenceOptionMetadata?: InferenceOptionMetadata;
 }
 export interface DoConversationResponse {
     explanation: string;

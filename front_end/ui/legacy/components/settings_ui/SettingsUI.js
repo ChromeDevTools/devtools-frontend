@@ -2,11 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-imperative-dom-api */
+import '../../../components/settings/settings.js';
 import * as Common from '../../../../core/common/common.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import { Directives, html, nothing, render } from '../../../../ui/lit/lit.js';
-import * as Settings from '../../../components/settings/settings.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 const { createRef, ref } = Directives;
@@ -89,29 +89,34 @@ export function renderSettingSelect(setting, subtitle) {
   `;
     // clang-format on
 }
-export const createControlForSetting = function (setting, subtitle) {
+export const renderControlForSetting = function (setting, subtitle) {
     switch (setting.type()) {
         case "boolean" /* Common.Settings.SettingType.BOOLEAN */: {
-            const component = new Settings.SettingCheckbox.SettingCheckbox();
-            component.data = {
-                setting: setting,
-            };
-            component.onchange = () => {
+            const onchange = () => {
                 if (setting.reloadRequired()) {
                     UI.InspectorView.InspectorView.instance().displayReloadRequiredWarning(i18nString(UIStrings.settingsChangedReloadDevTools));
                 }
             };
-            return component;
+            return html `<setting-checkbox .data=${{
+                setting: setting
+            }} @change=${onchange}></setting-checkbox>`;
         }
         case "enum" /* Common.Settings.SettingType.ENUM */: {
-            const fragment = document.createDocumentFragment();
-            // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
-            render(renderSettingSelect(setting, subtitle), fragment);
-            return fragment.firstElementChild;
+            return renderSettingSelect(setting, subtitle);
         }
         default:
             console.error('Invalid setting type: ' + setting.type());
             return null;
     }
+};
+export const createControlForSetting = function (setting, subtitle) {
+    const template = renderControlForSetting(setting, subtitle);
+    if (template === null) {
+        return null;
+    }
+    const fragment = document.createDocumentFragment();
+    // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
+    render(template, fragment);
+    return fragment.firstElementChild;
 };
 //# sourceMappingURL=SettingsUI.js.map

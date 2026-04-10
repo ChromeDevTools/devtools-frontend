@@ -57,17 +57,18 @@ export const DEFAULT_VIEW = (input, _output, target) => {
     <style>${styles}</style>
     <div class="export-for-agents-dialog">
       <header>
-        <h2 tabindex="-1">
+        <h1 id="export-for-agents-dialog-title" tabindex="-1">
           ${i18nString(UIStrings.exportForAgents)}
-        </h2>
+        </h1>
       </header>
-      <div class="state-selection">
+      <div class="state-selection" role="radiogroup" aria-labelledby="export-for-agents-dialog-title">
         <label>
           <input
             type="radio"
             value="prompt"
             name="export-state"
             .checked=${isPrompt}
+            aria-label=${i18nString(UIStrings.asPrompt)}
             @change=${() => input.onStateChange("prompt" /* StateType.PROMPT */)}
           >
           ${i18nString(UIStrings.asPrompt)}
@@ -78,6 +79,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
             value="conversation"
             name="export-state"
             .checked=${!isPrompt}
+            aria-label=${i18nString(UIStrings.asMarkdown)}
             @change=${() => input.onStateChange("conversation" /* StateType.CONVERSATION */)}
           >
           ${i18nString(UIStrings.asMarkdown)}
@@ -100,6 +102,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
             .jslogContext=${input.jslogContext}
             .variant=${"primary" /* Buttons.Button.Variant.PRIMARY */}
             .disabled=${isPrompt && input.state.isPromptLoading}
+            .accessibleLabel=${buttonText}
           >
             ${buttonText}
           </devtools-button>
@@ -147,9 +150,10 @@ export class ExportForAgentsDialog extends UI.Widget.VBox {
                 onButtonClick = (event) => {
                     event.preventDefault();
                     Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(this.#state.promptText);
-                    Snackbars.Snackbar.Snackbar.show({
+                    const snackbar = Snackbars.Snackbar.Snackbar.show({
                         message: i18nString(UIStrings.copiedToClipboard),
                     });
+                    snackbar.setAttribute('aria-label', i18nString(UIStrings.copiedToClipboard));
                     this.#dialog.hide();
                 };
                 break;

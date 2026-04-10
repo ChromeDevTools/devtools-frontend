@@ -369,19 +369,23 @@ export const DEFAULT_VIEW = (input, output, target) => {
                   @click=${() => input.onCallSelect(null)}
                 ></devtools-button>
                 <devtools-widget
-                  id="details"
+                  id="webmcp.tool-details"
                   title=${i18nString(UIStrings.toolDetails)}
                   ${widget(ToolDetailsWidget, { tool: input.selectedCall?.tool })}>
                 </devtools-widget>
                 <devtools-widget
-                  id="inputs"
+                  id="webmcp.call-inputs"
                   title=${i18nString(UIStrings.input)}
                   ${widget(PayloadWidget, parsePayload(input.selectedCall?.input))}>
                 </devtools-widget>
                 <devtools-widget
-                  id="outputs"
+                  id="webmcp.call-outputs"
                   title=${i18nString(UIStrings.output)}
-                  ${widget(PayloadWidget, parsePayload(input.selectedCall?.result?.output))}>
+                  ${widget(PayloadWidget, {
+        valueObject: input.selectedCall?.result?.output,
+        errorText: input.selectedCall?.result?.errorText,
+        exceptionDetails: input.selectedCall?.result?.exceptionDetails,
+    })}>
                 </devtools-widget>
               </devtools-tabbed-pane>
             </div>
@@ -578,7 +582,7 @@ export class WebMCPView extends UI.Widget.VBox {
     }
 }
 export const PAYLOAD_DEFAULT_VIEW = (input, output, target) => {
-    if (input.valueObject === undefined && input.valueString === undefined) {
+    if (!input.valueObject && !input.valueString && !input.errorText && !input.exceptionDetails) {
         render(nothing, target);
         return;
     }
@@ -602,12 +606,40 @@ export const PAYLOAD_DEFAULT_VIEW = (input, output, target) => {
         `}></devtools-tree>`;
     };
     const createSourceText = (text) => html `<div class="payload-value source-code">${text}</div>`;
+    const createErrorText = (text) => html `<div class="payload-value source-code error-text">${text}</div>`;
+    const createException = (details, linkifier = new Components.Linkifier.Linkifier()) => {
+        const renderFrame = (frame, index, array) => {
+            const newline = index < array.length - 1 ? '\n' : '';
+            const { line, link, isCallFrame } = frame;
+            if (!isCallFrame) {
+                return html `<span>${line}${newline}</span>`;
+            }
+            if (!link) {
+                return html `<span class="formatted-builtin-stack-frame">${line}${newline}</span>`;
+            }
+            const scriptLocationLink = linkifier.linkifyScriptLocation(details.error.runtimeModel().target(), link.scriptId || null, link.url, link.lineNumber, {
+                columnNumber: link.columnNumber,
+                inlineFrameIndex: 0,
+                showColumnNumber: true,
+            });
+            scriptLocationLink.tabIndex = -1;
+            return html `<span class="formatted-stack-frame">${link.prefix}${scriptLocationLink}${link.suffix}${newline}</span>`;
+        };
+        return html `
+      <div class="payload-value source-code error-text">
+        ${details.frames.length === 0 && details.description ? html `<span>${details.description}\n</span>` : nothing}
+        <div>${details.frames.map(renderFrame)}</div>
+        ${details.cause ? html `\nCaused by:\n${createException(details.cause, linkifier)}` : nothing}</div>`;
+    };
     render(html `
     <style>${webMCPViewStyles}</style>
     <div class="call-payload-view">
       <div class="call-payload-content">
             ${isParsable ? createPayload(input.valueObject) :
-        (input.valueString !== undefined ? createSourceText(input.valueString) : nothing)}
+        (input.valueString !== undefined ?
+            createSourceText(input.valueString) :
+            (input.exceptionDetails ? createException(input.exceptionDetails) :
+                (input.errorText ? createErrorText(input.errorText) : nothing)))}
       </div>
     </div>
   `, target);
@@ -615,6 +647,9 @@ export const PAYLOAD_DEFAULT_VIEW = (input, output, target) => {
 export class PayloadWidget extends UI.Widget.Widget {
     #valueObject;
     #valueString;
+    #errorText;
+    #exceptionDetailsPromise;
+    #exceptionDetails;
     #view;
     constructor(element, view = PAYLOAD_DEFAULT_VIEW) {
         super(element);
@@ -634,6 +669,32 @@ export class PayloadWidget extends UI.Widget.Widget {
     get valueString() {
         return this.#valueString;
     }
+    set errorText(errorText) {
+        this.#errorText = errorText;
+        this.requestUpdate();
+    }
+    get errorText() {
+        return this.#errorText;
+    }
+    async #updateExceptionDetails(exceptionDetailsPromise) {
+        if (this.#exceptionDetailsPromise === exceptionDetailsPromise) {
+            return;
+        }
+        this.#exceptionDetailsPromise = exceptionDetailsPromise;
+        this.#exceptionDetails = undefined;
+        this.requestUpdate();
+        const exceptionDetails = await exceptionDetailsPromise;
+        if (this.#exceptionDetailsPromise === exceptionDetailsPromise) {
+            this.#exceptionDetails = exceptionDetails;
+            this.requestUpdate();
+        }
+    }
+    set exceptionDetails(exceptionDetailsPromise) {
+        void this.#updateExceptionDetails(exceptionDetailsPromise);
+    }
+    get exceptionDetails() {
+        return this.#exceptionDetailsPromise;
+    }
     wasShown() {
         super.wasShown();
         this.requestUpdate();
@@ -642,6 +703,8 @@ export class PayloadWidget extends UI.Widget.Widget {
         const input = {
             valueObject: this.#valueObject,
             valueString: this.#valueString,
+            errorText: this.#errorText,
+            exceptionDetails: this.#exceptionDetails,
         };
         this.#view(input, {}, this.contentElement);
     }

@@ -405,6 +405,7 @@ export function gcaChunkResponseToAidaChunkResponse(response) {
         const parts = candidate?.content?.parts || [];
         const metadata = {
             rpcGlobalId: response.responseId,
+            inferenceOptionMetadata: { modelId: response.modelVersion }
         };
         if (candidate?.citationMetadata?.citations) {
             metadata.attributionMetadata = {

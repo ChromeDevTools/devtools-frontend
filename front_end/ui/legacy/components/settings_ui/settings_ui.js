@@ -9,13 +9,14 @@ var SettingsUI_exports = {};
 __export(SettingsUI_exports, {
   createControlForSetting: () => createControlForSetting,
   createSettingCheckbox: () => createSettingCheckbox,
+  renderControlForSetting: () => renderControlForSetting,
   renderSettingSelect: () => renderSettingSelect
 });
+import "./../../../components/settings/settings.js";
 import * as Common from "./../../../../core/common/common.js";
 import * as i18n from "./../../../../core/i18n/i18n.js";
 import * as Platform from "./../../../../core/platform/platform.js";
 import { Directives, html, nothing, render } from "./../../../lit/lit.js";
-import * as Settings from "./../../../components/settings/settings.js";
 import * as VisualLogging from "./../../../visual_logging/visual_logging.js";
 import * as UI from "./../../legacy.js";
 var { createRef, ref } = Directives;
@@ -95,29 +96,34 @@ function renderSettingSelect(setting, subtitle) {
     </div>
   `;
 }
-var createControlForSetting = function(setting, subtitle) {
+var renderControlForSetting = function(setting, subtitle) {
   switch (setting.type()) {
     case "boolean": {
-      const component = new Settings.SettingCheckbox.SettingCheckbox();
-      component.data = {
-        setting
-      };
-      component.onchange = () => {
+      const onchange = () => {
         if (setting.reloadRequired()) {
           UI.InspectorView.InspectorView.instance().displayReloadRequiredWarning(i18nString(UIStrings.settingsChangedReloadDevTools));
         }
       };
-      return component;
+      return html`<setting-checkbox .data=${{
+        setting
+      }} @change=${onchange}></setting-checkbox>`;
     }
     case "enum": {
-      const fragment = document.createDocumentFragment();
-      render(renderSettingSelect(setting, subtitle), fragment);
-      return fragment.firstElementChild;
+      return renderSettingSelect(setting, subtitle);
     }
     default:
       console.error("Invalid setting type: " + setting.type());
       return null;
   }
+};
+var createControlForSetting = function(setting, subtitle) {
+  const template = renderControlForSetting(setting, subtitle);
+  if (template === null) {
+    return null;
+  }
+  const fragment = document.createDocumentFragment();
+  render(template, fragment);
+  return fragment.firstElementChild;
 };
 export {
   SettingsUI_exports as SettingsUI

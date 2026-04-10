@@ -123,21 +123,9 @@ export default `/*
     &[open] {
       border-radius: var(--sys-size-5);
       width: auto;
-      background-color: var(--sys-color-surface1);
+      background-color: var(--sys-color-surface2);
       margin-left: calc(var(--sys-size-6) / 2);
       flex-grow: 1;
-
-      > summary {
-        border-radius: var(--sys-shape-corner-medium-small);
-        border-bottom-right-radius: 0;
-        border-bottom-left-radius: 0;
-        background: var(--sys-color-surface5);
-        color: var(--sys-color-on-surface);
-
-        &[data-has-widgets] {
-          margin-left: 0;
-        }
-      }
     }
   }
 
@@ -182,6 +170,23 @@ export default `/*
     }
   }
 
+  .walkthrough-inline[open] > summary {
+    border-radius: var(--sys-shape-corner-medium-small);
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+    background: var(--sys-color-surface5);
+    color: var(--sys-color-on-surface);
+
+    &[data-has-widgets] {
+      margin-left: 0;
+    }
+
+    > devtools-icon[name='chevron-right'] {
+      transform: rotate(270deg);
+    }
+
+  }
+
   .walkthrough-inline > summary::-webkit-details-marker {
     display: none;
   }
@@ -205,10 +210,6 @@ export default `/*
 
   .walkthrough-inline .step {
     background-color: var(--sys-color-surface5);
-  }
-
-  .walkthrough-inline[open] > summary > devtools-icon[name='chevron-right'] {
-    transform: rotate(270deg);
   }
 }
 

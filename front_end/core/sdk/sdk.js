@@ -3555,6 +3555,7 @@ var generatedProperties = [
   {
     "keywords": [
       "auto",
+      "chain",
       "contain",
       "none"
     ],
@@ -3563,6 +3564,7 @@ var generatedProperties = [
   {
     "keywords": [
       "auto",
+      "chain",
       "contain",
       "none"
     ],
@@ -6697,6 +6699,7 @@ var generatedPropertyValues = {
   "overscroll-behavior-x": {
     "values": [
       "auto",
+      "chain",
       "contain",
       "none"
     ]
@@ -6704,6 +6707,7 @@ var generatedPropertyValues = {
   "overscroll-behavior-y": {
     "values": [
       "auto",
+      "chain",
       "contain",
       "none"
     ]
@@ -9909,7 +9913,7 @@ var Target = class extends ProtocolClient.InspectorBackend.TargetBase {
       case Type.ServiceWorker:
         this.#capabilitiesMask = 4 | 8 | 16 | 32 | 2048 | 131072 | 524288;
         if (parentTarget?.type() !== Type.FRAME) {
-          this.#capabilitiesMask |= 1;
+          this.#capabilitiesMask |= 1 | 8192;
         }
         break;
       case Type.SHARED_WORKER:
@@ -27888,7 +27892,7 @@ var ResourceTreeFrame = class {
    * https://chromium.googlesource.com/chromium/src/+/HEAD/docs/frame_trees.md
    */
   isPrimaryFrame() {
-    return !this.#sameTargetParentFrame && this.#model.target() === TargetManager.instance().primaryPageTarget();
+    return !this.#sameTargetParentFrame && this.#model.target() === this.#model.target().targetManager().primaryPageTarget();
   }
   removeChildFrame(frame, isSwap) {
     this.#childFrames.delete(frame);

@@ -654,7 +654,8 @@ function gcaChunkResponseToAidaChunkResponse(response) {
     const candidate = response.candidates?.[0];
     const parts = candidate?.content?.parts || [];
     const metadata = {
-      rpcGlobalId: response.responseId
+      rpcGlobalId: response.responseId,
+      inferenceOptionMetadata: { modelId: response.modelVersion }
     };
     if (candidate?.citationMetadata?.citations) {
       metadata.attributionMetadata = {

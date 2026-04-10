@@ -7,11 +7,61 @@ var __export = (target, all) => {
 // gen/front_end/models/web_mcp/WebMCPModel.js
 var WebMCPModel_exports = {};
 __export(WebMCPModel_exports, {
+  Result: () => Result,
   Tool: () => Tool,
   WebMCPModel: () => WebMCPModel
 });
 import * as SDK from "./../../core/sdk/sdk.js";
 import * as Bindings from "./../bindings/bindings.js";
+import * as StackTrace from "./../stack_trace/stack_trace.js";
+var Result = class {
+  status;
+  output;
+  errorText;
+  // TODO(crbug.com/494516094) Clean this up if the target disappears?
+  #exception;
+  #exceptionDetails;
+  constructor(status, output, errorText, exception) {
+    this.status = status;
+    this.errorText = errorText;
+    this.#exception = exception;
+    this.output = output;
+  }
+  get exceptionDetails() {
+    if (!this.#exceptionDetails) {
+      this.#exceptionDetails = this.#resolveExceptionDetails(this.#exception);
+    }
+    return this.#exceptionDetails;
+  }
+  async #resolveExceptionDetails(errorObj) {
+    if (!errorObj) {
+      return void 0;
+    }
+    const error = SDK.RemoteObject.RemoteError.objectAsError(errorObj);
+    const [details, cause] = await Promise.all([error.exceptionDetails(), error.cause()]);
+    const description = error.errorStack;
+    const frames = StackTrace.ErrorStackParser.parseSourcePositionsFromErrorStack(errorObj.runtimeModel(), error.errorStack) || [];
+    if (details?.stackTrace) {
+      StackTrace.ErrorStackParser.augmentErrorStackWithScriptIds(frames, details.stackTrace);
+    }
+    if (cause?.subtype === "error") {
+      return { error: errorObj, description, frames, cause: await this.#resolveExceptionDetails(cause) };
+    }
+    if (cause?.type === "string") {
+      return {
+        error: errorObj,
+        description,
+        frames,
+        cause: {
+          error: cause,
+          description: cause.value,
+          frames: []
+        }
+      };
+    }
+    return { error: errorObj, description, frames };
+  }
+};
 var Tool = class {
   #protocolTool;
   #stackTrace;
@@ -112,11 +162,7 @@ var WebMCPModel = class extends SDK.SDKModel.SDKModel {
     if (!tool) {
       return;
     }
-    const call = {
-      invocationId: params.invocationId,
-      input: params.input,
-      tool
-    };
+    const call = { tool, input: params.input, invocationId: params.invocationId };
     this.#calls.set(params.invocationId, call);
     this.dispatchEventToListeners("ToolInvoked", call);
   }
@@ -125,12 +171,8 @@ var WebMCPModel = class extends SDK.SDKModel.SDKModel {
     if (!call) {
       return;
     }
-    call.result = {
-      status: params.status,
-      output: params.output,
-      errorText: params.errorText,
-      exception: params.exception
-    };
+    const exception = params.exception && this.target().model(SDK.RuntimeModel.RuntimeModel)?.createRemoteObject(params.exception);
+    call.result = new Result(params.status, params.output, params.errorText, exception);
     this.dispatchEventToListeners("ToolResponded", call);
   }
 };

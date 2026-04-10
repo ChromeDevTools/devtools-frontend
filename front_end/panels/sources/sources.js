@@ -688,6 +688,11 @@ var BreakpointEditDialog = class extends UI4.Widget.Widget {
     this.#onFinish = onFinish;
     this.requestUpdate();
   }
+  focus() {
+    void this.updateComplete.then(() => {
+      this.#editor?.focus();
+    });
+  }
   performUpdate() {
     const input = {
       state: this.#getEditorState(),

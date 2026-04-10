@@ -53,7 +53,8 @@ export default `/*
         background-color: var(--sys-color-tonal-container);
       }
 
-      tr.selected.status-error {
+      tbody tr.selected.status-error,
+      tbody tr.selected.status-error.revealed {
         background-color: var(--sys-color-error-container);
         color: var(--sys-color-error);
       }
@@ -214,6 +215,11 @@ export default `/*
         padding: var(--sys-size-5);
         flex: auto;
         overflow: auto;
+    }
+
+    .payload-value.error-text {
+      color: var(--sys-color-error);
+      white-space: pre-wrap;
     }
 }
 

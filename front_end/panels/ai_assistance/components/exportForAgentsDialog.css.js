@@ -26,7 +26,7 @@ export default `/*
   .export-for-agents-dialog header {
     margin-bottom: var(--sys-size-6);
 
-    h2 {
+    h1 {
       font: var(--sys-typescale-headline5);
       margin: 0;
       color: var(--sys-color-on-surface);

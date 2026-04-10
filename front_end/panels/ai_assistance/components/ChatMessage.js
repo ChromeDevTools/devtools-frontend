@@ -143,9 +143,13 @@ const UIStringsNotTranslate = {
      */
     completed: 'Completed',
     /**
-     * @description Aria label for the cancel icon to be read by screen reader
+     * @description Aria label for the spinner to be read by screen reader when a step is in progress.
      */
-    canceled: 'Canceled',
+    inProgress: 'In progress',
+    /**
+     * @description Aria label for the aborted icon to be read by screen reader
+     */
+    aborted: 'Aborted',
     /**
      * @description Alt text for the image input (displayed in the chat messages) that has been sent to the model.
      */
@@ -194,6 +198,10 @@ const UIStringsNotTranslate = {
      * @description Accessilility label for the button that shows the walkthrough when there are no widgets in the walkthrough.
      */
     showThinking: 'Show thinking',
+    /**
+     * @description Accessilility label for the button that hides the walkthrough when there are no widgets in the walkthrough.
+     */
+    hideThinking: 'Hide thinking',
 };
 export const DEFAULT_VIEW = (input, output, target) => {
     const hasAiV2 = Boolean(Root.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled);
@@ -318,7 +326,7 @@ function renderTitle(step) {
     const paused = step.requestApproval ?
         html `<span class="paused">${lockedString(UIStringsNotTranslate.paused)}: </span>` :
         Lit.nothing;
-    return html `<span class="title">${paused}${titleForStep(step)}</span>`;
+    return html `<span class="title" aria-label=${titleForStep(step)}>${paused}${titleForStep(step)}</span>`;
 }
 function renderStepCode(step) {
     if (!step.code && !step.output) {
@@ -402,10 +410,10 @@ function renderWalkthroughSidebarButton(input, steps) {
         'has-widgets': hasOneStepWithWidget && !input.isLoading,
     });
     let accessibleLabel = title;
-    if (!isExpanded) {
-        if (input.isLoading || lastStep.requestApproval) {
-            accessibleLabel = `${titleForStep(lastStep)} ${i18n.i18n.lockedString(UIStringsNotTranslate.showThinking)}`;
-        }
+    // If the agent is still thinking we want the accessibility label to include the current step title followed by Show/Hide thinking.
+    if (input.isLoading) {
+        const suffix = isExpanded ? UIStringsNotTranslate.hideThinking : UIStringsNotTranslate.showThinking;
+        accessibleLabel = `${titleForStep(lastStep)} ${i18n.i18n.lockedString(suffix)}`;
     }
     // clang-format off
     return html `
@@ -498,18 +506,18 @@ function renderSideEffectStepsUI(input, steps) {
 }
 function renderStepBadge({ step, isLoading, isLast }) {
     if (isLoading && isLast && !step.requestApproval) {
-        return html `<devtools-spinner></devtools-spinner>`;
+        return html `<devtools-spinner aria-label=${lockedString(UIStringsNotTranslate.inProgress)}></devtools-spinner>`;
     }
     let iconName = 'checkmark';
     let ariaLabel = lockedString(UIStringsNotTranslate.completed);
     let role = 'button';
     if (isLast && step.requestApproval) {
         role = undefined;
-        ariaLabel = undefined;
+        ariaLabel = lockedString(UIStringsNotTranslate.paused);
         iconName = 'pause-circle';
     }
     else if (step.canceled) {
-        ariaLabel = lockedString(UIStringsNotTranslate.canceled);
+        ariaLabel = lockedString(UIStringsNotTranslate.aborted);
         iconName = 'cross';
     }
     return html `<devtools-icon
@@ -714,6 +722,7 @@ function renderWidgetResponse(response) {
     const revealButton = html `
     <devtools-button class="widget-reveal-button"
       .variant=${"text" /* Buttons.Button.Variant.TEXT */}
+      .accessibleLabel=${lockedString(UIStringsNotTranslate.reveal)}
       @click=${onReveal}
     >
       ${response.customRevealTitle ?? lockedString(UIStringsNotTranslate.reveal)}
@@ -725,7 +734,7 @@ function renderWidgetResponse(response) {
     <div class=${classes}>
       ${response.title ? html `
         <div class="widget-header">
-          <div class="widget-name">${response.title}</div>
+          <h3 class="widget-name">${response.title}</h3>
           <div class="widget-reveal-container">
             ${revealButton}
           </div>
@@ -998,6 +1007,7 @@ function renderActions(input, output) {
             .jslogContext=${'ai-export-for-agents'}
             .variant=${"outlined" /* Buttons.Button.Variant.OUTLINED */}
             .iconName=${'copy'}
+            aria-label=${lockedString(UIStringsNotTranslate.exportForAgents)}
             @click=${input.onExportClick}
           >${lockedString(UIStringsNotTranslate.exportForAgents)}</devtools-button>
           ${input.suggestions ? html `<div class="vertical-separator"></div>` : Lit.nothing}

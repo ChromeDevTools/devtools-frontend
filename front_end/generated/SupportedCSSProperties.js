@@ -3492,6 +3492,7 @@ export const generatedProperties = [
     {
         "keywords": [
             "auto",
+            "chain",
             "contain",
             "none"
         ],
@@ -3500,6 +3501,7 @@ export const generatedProperties = [
     {
         "keywords": [
             "auto",
+            "chain",
             "contain",
             "none"
         ],
@@ -6634,6 +6636,7 @@ export const generatedPropertyValues = {
     "overscroll-behavior-x": {
         "values": [
             "auto",
+            "chain",
             "contain",
             "none"
         ]
@@ -6641,6 +6644,7 @@ export const generatedPropertyValues = {
     "overscroll-behavior-y": {
         "values": [
             "auto",
+            "chain",
             "contain",
             "none"
         ]

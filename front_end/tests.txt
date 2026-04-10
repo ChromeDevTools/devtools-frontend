@@ -403,6 +403,7 @@ panels/common/ThrottlingUtils.test.js
 panels/console/ConsoleContextSelector.test.js
 panels/console/ConsoleFormat.test.js
 panels/console/ConsoleInsightTeaser.test.js
+panels/console/ConsolePinPane.test.js
 panels/console/ConsolePrompt.test.js
 panels/console/ConsoleSidebar.test.js
 panels/console/ConsoleView.test.js

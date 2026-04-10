@@ -22,6 +22,11 @@ const UIStrings = {
      */
     copy: 'Copy code',
     /**
+     * @description Accessible label for the button to copy the code block, referencing the specific content.
+     * @example {Data used} PH1
+     */
+    copyCodeSnippet: 'Copy {PH1} code snippet',
+    /**
      * @description The title of the button after it was pressed and the text was copied to clipboard.
      */
     copied: 'Copied to clipboard',
@@ -196,6 +201,7 @@ export class CodeBlock extends HTMLElement {
             iconName: 'copy',
             title: i18nString(UIStrings.copy),
         }}
+          .accessibleLabel=${this.#header ? i18nString(UIStrings.copyCodeSnippet, { PH1: this.#header }) : i18nString(UIStrings.copy)}
           @click=${this.#onCopy}
         ></devtools-button>
         ${this.#copied ? html `<span>${i18nString(UIStrings.copied)}</span>` : Lit.nothing}

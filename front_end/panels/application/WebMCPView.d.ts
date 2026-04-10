@@ -55,6 +55,8 @@ export declare class WebMCPView extends UI.Widget.VBox {
 export interface PayloadViewInput {
     valueObject?: unknown;
     valueString?: string;
+    errorText?: string;
+    exceptionDetails?: WebMCP.WebMCPModel.ExceptionDetails;
 }
 export declare const PAYLOAD_DEFAULT_VIEW: (input: PayloadViewInput, output: object, target: HTMLElement) => void;
 export declare class PayloadWidget extends UI.Widget.Widget {
@@ -64,6 +66,10 @@ export declare class PayloadWidget extends UI.Widget.Widget {
     get valueObject(): unknown;
     set valueString(valueString: string | undefined);
     get valueString(): string | undefined;
+    set errorText(errorText: string | undefined);
+    get errorText(): string | undefined;
+    set exceptionDetails(exceptionDetailsPromise: Promise<WebMCP.WebMCPModel.ExceptionDetails | undefined> | undefined);
+    get exceptionDetails(): Promise<WebMCP.WebMCPModel.ExceptionDetails | undefined> | undefined;
     wasShown(): void;
     performUpdate(): void;
 }

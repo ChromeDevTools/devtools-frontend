@@ -3224,6 +3224,9 @@
   "panels/ai_assistance/components/WalkthroughView.ts | hideThinking": {
     "message": "Hide thinking"
   },
+  "panels/ai_assistance/components/WalkthroughView.ts | inProgress": {
+    "message": "In progress"
+  },
   "panels/ai_assistance/components/WalkthroughView.ts | showAgentWalkthrough": {
     "message": "Show agent walkthrough"
   },
@@ -17194,6 +17197,9 @@
   },
   "ui/components/markdown_view/CodeBlock.ts | copy": {
     "message": "Copy code"
+  },
+  "ui/components/markdown_view/CodeBlock.ts | copyCodeSnippet": {
+    "message": "Copy {PH1} code snippet"
   },
   "ui/components/markdown_view/CodeBlock.ts | disclaimer": {
     "message": "Use code snippets with caution"

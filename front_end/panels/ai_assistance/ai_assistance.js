@@ -3100,21 +3100,9 @@ var walkthroughView_css_default = `/*
     &[open] {
       border-radius: var(--sys-size-5);
       width: auto;
-      background-color: var(--sys-color-surface1);
+      background-color: var(--sys-color-surface2);
       margin-left: calc(var(--sys-size-6) / 2);
       flex-grow: 1;
-
-      > summary {
-        border-radius: var(--sys-shape-corner-medium-small);
-        border-bottom-right-radius: 0;
-        border-bottom-left-radius: 0;
-        background: var(--sys-color-surface5);
-        color: var(--sys-color-on-surface);
-
-        &[data-has-widgets] {
-          margin-left: 0;
-        }
-      }
     }
   }
 
@@ -3159,6 +3147,23 @@ var walkthroughView_css_default = `/*
     }
   }
 
+  .walkthrough-inline[open] > summary {
+    border-radius: var(--sys-shape-corner-medium-small);
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+    background: var(--sys-color-surface5);
+    color: var(--sys-color-on-surface);
+
+    &[data-has-widgets] {
+      margin-left: 0;
+    }
+
+    > devtools-icon[name='chevron-right'] {
+      transform: rotate(270deg);
+    }
+
+  }
+
   .walkthrough-inline > summary::-webkit-details-marker {
     display: none;
   }
@@ -3182,10 +3187,6 @@ var walkthroughView_css_default = `/*
 
   .walkthrough-inline .step {
     background-color: var(--sys-color-surface5);
-  }
-
-  .walkthrough-inline[open] > summary > devtools-icon[name='chevron-right'] {
-    transform: rotate(270deg);
   }
 }
 
@@ -3220,7 +3221,11 @@ var UIStrings2 = {
   /**
    * @description Title for the button that hides the walkthrough when there are widgets in the walkthrough.
    */
-  hideAgentWalkthrough: "Hide agent walkthrough"
+  hideAgentWalkthrough: "Hide agent walkthrough",
+  /**
+   * @description Aria label for the spinner to be read by screen reader when a step is in progress.
+   */
+  inProgress: "In progress"
 };
 var str_2 = i18n7.i18n.registerUIStrings("panels/ai_assistance/components/WalkthroughView.ts", UIStrings2);
 var i18nString2 = i18n7.i18n.getLocalizedString.bind(void 0, str_2);
@@ -3263,7 +3268,7 @@ function renderInlineWalkthrough(input, stepsOutput, allSteps) {
   return html6`
     <div class="inline-wrapper" ?data-open=${input.isExpanded}>
       <span class="inline-icon">
-        ${input.isLoading ? html6`<devtools-spinner></devtools-spinner>` : html6`<devtools-icon name=${icon}></devtools-icon>`}
+        ${input.isLoading ? html6`<devtools-spinner aria-label=${lockedString4(UIStrings2.inProgress)}></devtools-spinner>` : html6`<devtools-icon name=${icon}></devtools-icon>`}
       </span>
       <details class="walkthrough-inline" ?open=${input.isExpanded} @toggle=${onToggle}>
         <summary ?data-has-widgets=${!input.isLoading && hasWidgets}>
@@ -3285,7 +3290,7 @@ function renderSidebarWalkthrough(input, stepsOutput, stepsCount) {
   return html6`
     <div class="walkthrough-view">
       <div class="walkthrough-header">
-         <div class="walkthrough-title">${i18nString2(UIStrings2.title)}</div>
+         <h2 class="walkthrough-title">${i18nString2(UIStrings2.title)}</h2>
          <devtools-button
           .data=${{
     variant: "toolbar",
@@ -3590,9 +3595,13 @@ var UIStringsNotTranslate4 = {
    */
   completed: "Completed",
   /**
-   * @description Aria label for the cancel icon to be read by screen reader
+   * @description Aria label for the spinner to be read by screen reader when a step is in progress.
    */
-  canceled: "Canceled",
+  inProgress: "In progress",
+  /**
+   * @description Aria label for the aborted icon to be read by screen reader
+   */
+  aborted: "Aborted",
   /**
    * @description Alt text for the image input (displayed in the chat messages) that has been sent to the model.
    */
@@ -3640,7 +3649,11 @@ var UIStringsNotTranslate4 = {
   /**
    * @description Accessilility label for the button that shows the walkthrough when there are no widgets in the walkthrough.
    */
-  showThinking: "Show thinking"
+  showThinking: "Show thinking",
+  /**
+   * @description Accessilility label for the button that hides the walkthrough when there are no widgets in the walkthrough.
+   */
+  hideThinking: "Hide thinking"
 };
 var DEFAULT_VIEW4 = (input, output, target) => {
   const hasAiV2 = Boolean(Root3.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled);
@@ -3747,7 +3760,7 @@ function titleForStep(step) {
 }
 function renderTitle(step) {
   const paused = step.requestApproval ? html7`<span class="paused">${lockedString5(UIStringsNotTranslate4.paused)}: </span>` : Lit5.nothing;
-  return html7`<span class="title">${paused}${titleForStep(step)}</span>`;
+  return html7`<span class="title" aria-label=${titleForStep(step)}>${paused}${titleForStep(step)}</span>`;
 }
 function renderStepCode(step) {
   if (!step.code && !step.output) {
@@ -3816,10 +3829,9 @@ function renderWalkthroughSidebarButton(input, steps) {
     "has-widgets": hasOneStepWithWidget && !input.isLoading
   });
   let accessibleLabel = title;
-  if (!isExpanded) {
-    if (input.isLoading || lastStep.requestApproval) {
-      accessibleLabel = `${titleForStep(lastStep)} ${i18n9.i18n.lockedString(UIStringsNotTranslate4.showThinking)}`;
-    }
+  if (input.isLoading) {
+    const suffix = isExpanded ? UIStringsNotTranslate4.hideThinking : UIStringsNotTranslate4.showThinking;
+    accessibleLabel = `${titleForStep(lastStep)} ${i18n9.i18n.lockedString(suffix)}`;
   }
   return html7`
     <div class=${toggleContainerClasses}>
@@ -3886,17 +3898,17 @@ function renderSideEffectStepsUI(input, steps) {
 }
 function renderStepBadge({ step, isLoading, isLast }) {
   if (isLoading && isLast && !step.requestApproval) {
-    return html7`<devtools-spinner></devtools-spinner>`;
+    return html7`<devtools-spinner aria-label=${lockedString5(UIStringsNotTranslate4.inProgress)}></devtools-spinner>`;
   }
   let iconName = "checkmark";
   let ariaLabel = lockedString5(UIStringsNotTranslate4.completed);
   let role = "button";
   if (isLast && step.requestApproval) {
     role = void 0;
-    ariaLabel = void 0;
+    ariaLabel = lockedString5(UIStringsNotTranslate4.paused);
     iconName = "pause-circle";
   } else if (step.canceled) {
-    ariaLabel = lockedString5(UIStringsNotTranslate4.canceled);
+    ariaLabel = lockedString5(UIStringsNotTranslate4.aborted);
     iconName = "cross";
   }
   return html7`<devtools-icon
@@ -4085,6 +4097,7 @@ function renderWidgetResponse(response) {
   const revealButton = html7`
     <devtools-button class="widget-reveal-button"
       .variant=${"text"}
+      .accessibleLabel=${lockedString5(UIStringsNotTranslate4.reveal)}
       @click=${onReveal}
     >
       ${response.customRevealTitle ?? lockedString5(UIStringsNotTranslate4.reveal)}
@@ -4095,7 +4108,7 @@ function renderWidgetResponse(response) {
     <div class=${classes}>
       ${response.title ? html7`
         <div class="widget-header">
-          <div class="widget-name">${response.title}</div>
+          <h3 class="widget-name">${response.title}</h3>
           <div class="widget-reveal-container">
             ${revealButton}
           </div>
@@ -4346,6 +4359,7 @@ function renderActions(input, output) {
             .jslogContext=${"ai-export-for-agents"}
             .variant=${"outlined"}
             .iconName=${"copy"}
+            aria-label=${lockedString5(UIStringsNotTranslate4.exportForAgents)}
             @click=${input.onExportClick}
           >${lockedString5(UIStringsNotTranslate4.exportForAgents)}</devtools-button>
           ${input.suggestions ? html7`<div class="vertical-separator"></div>` : Lit5.nothing}
@@ -5107,7 +5121,7 @@ var exportForAgentsDialog_css_default = `/*
   .export-for-agents-dialog header {
     margin-bottom: var(--sys-size-6);
 
-    h2 {
+    h1 {
       font: var(--sys-typescale-headline5);
       margin: 0;
       color: var(--sys-color-on-surface);
@@ -5228,17 +5242,18 @@ var DEFAULT_VIEW5 = (input, _output, target) => {
     <style>${exportForAgentsDialog_css_default}</style>
     <div class="export-for-agents-dialog">
       <header>
-        <h2 tabindex="-1">
+        <h1 id="export-for-agents-dialog-title" tabindex="-1">
           ${i18nString3(UIStrings3.exportForAgents)}
-        </h2>
+        </h1>
       </header>
-      <div class="state-selection">
+      <div class="state-selection" role="radiogroup" aria-labelledby="export-for-agents-dialog-title">
         <label>
           <input
             type="radio"
             value="prompt"
             name="export-state"
             .checked=${isPrompt}
+            aria-label=${i18nString3(UIStrings3.asPrompt)}
             @change=${() => input.onStateChange(
     "prompt"
     /* StateType.PROMPT */
@@ -5252,6 +5267,7 @@ var DEFAULT_VIEW5 = (input, _output, target) => {
             value="conversation"
             name="export-state"
             .checked=${!isPrompt}
+            aria-label=${i18nString3(UIStrings3.asMarkdown)}
             @change=${() => input.onStateChange(
     "conversation"
     /* StateType.CONVERSATION */
@@ -5277,6 +5293,7 @@ var DEFAULT_VIEW5 = (input, _output, target) => {
             .jslogContext=${input.jslogContext}
             .variant=${"primary"}
             .disabled=${isPrompt && input.state.isPromptLoading}
+            .accessibleLabel=${buttonText}
           >
             ${buttonText}
           </devtools-button>
@@ -5323,9 +5340,10 @@ var ExportForAgentsDialog = class _ExportForAgentsDialog extends UI6.Widget.VBox
         onButtonClick = (event) => {
           event.preventDefault();
           Host4.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(this.#state.promptText);
-          Snackbars2.Snackbar.Snackbar.show({
+          const snackbar = Snackbars2.Snackbar.Snackbar.show({
             message: i18nString3(UIStrings3.copiedToClipboard)
           });
+          snackbar.setAttribute("aria-label", i18nString3(UIStrings3.copiedToClipboard));
           this.#dialog.hide();
         };
         break;
@@ -6500,7 +6518,15 @@ var UIStringsNotTranslate7 = {
   /**
    * @description Disclaimer text right after the chat input.
    */
-  inputDisclaimerForAccessibilityEnterpriseNoLogging: "Chat messages and the selected Lighthouse report are sent to Google. The content you submit and that is generated by this feature will not be used to improve Google\u2019s AI models. This is an experimental AI feature and won\u2019t always get it right."
+  inputDisclaimerForAccessibilityEnterpriseNoLogging: "Chat messages and the selected Lighthouse report are sent to Google. The content you submit and that is generated by this feature will not be used to improve Google\u2019s AI models. This is an experimental AI feature and won\u2019t always get it right.",
+  /**
+   * @description Disclaimer text right after the chat input when V2 is enabled.
+   */
+  inputDisclaimerV2: "Chat messages, data accessible for this site via DevTools panels and Web APIs, and items you select such as network requests, files, and performance traces are sent to Google and may be seen by human reviewers to improve this feature. This is an experimental AI feature and won\u2019t always get it right.",
+  /**
+   * @description Disclaimer text right after the chat input when V2 is enabled and enterprise logging is off.
+   */
+  inputDisclaimerEnterpriseNoLoggingV2: "Chat messages, data accessible for this site via DevTools panels and Web APIs, and items you select such as network requests, files, and performance traces are sent to Google. The content submitted to and generated by this feature will not be used to improve Google\u2019s AI models. This is an experimental AI feature and won\u2019t always get it right."
 };
 var str_5 = i18n19.i18n.registerUIStrings("panels/ai_assistance/AiAssistancePanel.ts", UIStrings5);
 var i18nString5 = i18n19.i18n.getLocalizedString.bind(void 0, str_5);
@@ -6543,9 +6569,8 @@ async function getEmptyStateSuggestions(conversation) {
       ];
     case "accessibility":
       return [
-        { title: "What are the accessibility issues on this page?", jslogContext: "accessibility-default" },
-        { title: "How can I fix these accessibility issues?", jslogContext: "accessibility-default" },
-        { title: "What does this Lighthouse report say about accessibility?", jslogContext: "accessibility-default" }
+        { title: "How can I fix accessibility issues on my page?", jslogContext: "accessibility-default" },
+        { title: "What accessibility issues exist on my page?", jslogContext: "accessibility-default" }
       ];
     case "drjones-network-request":
       return [
@@ -7334,6 +7359,12 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI10.Panel.Panel {
       return i18nString5(UIStrings5.inputDisclaimerForEmptyState);
     }
     const noLogging = Root7.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue === Root7.Runtime.GenAiEnterprisePolicyValue.ALLOW_WITHOUT_LOGGING;
+    if (Root7.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled) {
+      if (noLogging) {
+        return lockedString8(UIStringsNotTranslate7.inputDisclaimerEnterpriseNoLoggingV2);
+      }
+      return lockedString8(UIStringsNotTranslate7.inputDisclaimerV2);
+    }
     switch (this.#conversation.type) {
       case "freestyler":
         if (noLogging) {

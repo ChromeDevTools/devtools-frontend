@@ -24,8 +24,8 @@ describe('OptInChangeDialog', () => {
     renderElementIntoDOM(component);
     await component.updateComplete;
 
-    const h2 = querySelectorErrorOnMissing<HTMLElement>(component.element, 'h2');
-    assert.strictEqual(h2.textContent?.trim(), 'AI assistance just got better');
+    const h1 = querySelectorErrorOnMissing<HTMLElement>(component.element, 'h1');
+    assert.strictEqual(h1.textContent?.trim(), 'AI assistance just got better');
 
     const items = component.element.querySelectorAll('main .item');
     assert.lengthOf(items, 3);

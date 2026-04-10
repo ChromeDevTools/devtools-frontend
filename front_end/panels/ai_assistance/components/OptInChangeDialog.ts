@@ -67,23 +67,23 @@ export const DEFAULT_VIEW: View = (input, _output, target): void => {
     <div class="opt-in-change-dialog" jslog=${VisualLogging.dialog('ai-v2-opt-in-change-dialog')}>
       <header>
         <div class="header-icon-container">
-          <devtools-icon name="smart-assistant"></devtools-icon>
+          <devtools-icon name="smart-assistant" role="presentation"></devtools-icon>
         </div>
-        <h2 tabindex="-1">
+        <h1 tabindex="-1">
           ${i18nString(UIStrings.title)}
-        </h2>
+        </h1>
       </header>
       <main>
         <div class="item">
-          <devtools-icon name="lightbulb-spark"></devtools-icon>
+          <devtools-icon name="lightbulb-spark" role="presentation"></devtools-icon>
           <div class="text">${i18nString(UIStrings.integrationPoint)}</div>
         </div>
         <div class="item">
-          <devtools-icon name="flowsheet"></devtools-icon>
+          <devtools-icon name="flowsheet" role="presentation"></devtools-icon>
           <div class="text">${i18nString(UIStrings.widgetPoint)}</div>
         </div>
         <div class="item">
-          <devtools-icon name="google"></devtools-icon>
+          <devtools-icon name="google" role="presentation"></devtools-icon>
           <div class="text">${disclaimer}</div>
         </div>
       </main>
@@ -93,6 +93,7 @@ export const DEFAULT_VIEW: View = (input, _output, target): void => {
             @click=${input.onManageSettings}
             .jslogContext=${'ai-assistance-v2-opt-in.manage-settings'}
             .variant=${Buttons.Button.Variant.OUTLINED}
+            .accessibleLabel=${i18nString(UIStrings.manageSettings)}
           >
             ${i18nString(UIStrings.manageSettings)}
           </devtools-button>
@@ -100,6 +101,7 @@ export const DEFAULT_VIEW: View = (input, _output, target): void => {
             @click=${input.onGotIt}
             .jslogContext=${'ai-assistance-v2-opt-in.got-it'}
             .variant=${Buttons.Button.Variant.PRIMARY}
+            .accessibleLabel=${i18nString(UIStrings.gotIt)}
           >
             ${i18nString(UIStrings.gotIt)}
           </devtools-button>
@@ -143,7 +145,7 @@ export class OptInChangeDialog extends UI.Widget.VBox {
   }
 
   focusTitle(): void {
-    this.contentElement.querySelector('h2')?.focus();
+    this.contentElement.querySelector('h1')?.focus();
   }
 
   static show(options: {

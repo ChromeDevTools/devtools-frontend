@@ -146,6 +146,61 @@ async function prepareNonConsoleDrawerTab(devToolsPage: DevToolsPage) {
 describe('Drawer', () => {
   setup({enabledFeatures: ['DevToolsVerticalDrawer']});
 
+  it('main toolbar right-corner buttons do not shift across drawer state changes', async ({devToolsPage}) => {
+    // Shrink the viewport to a narrower width so the toolbar is crowded
+    // enough to trigger the button size change (the default 1280px is too
+    // wide to reproduce the issue).
+    await devToolsPage.page.setViewport({width: 800, height: 600});
+
+    // Zoom in 2 levels so the 1px shift becomes more visible / detectable.
+    await devToolsPage.pressKey('Equal', {control: true});
+    await devToolsPage.pressKey('Equal', {control: true});
+
+    // Measure the main panel's .tabbed-pane-header (inside the TabbedPane
+    // shadow DOM). Its width changes by ~1px due to the sidebar border
+    // box-sizing issue when the drawer state changes.
+    async function getHeaderMetrics() {
+      // pierce/ crosses shadow DOM boundaries. Use aria-label to
+      // uniquely target the main panel's header (not the drawer's).
+      const header = await devToolsPage.$('.tabbed-pane-header[aria-label="Main toolbar"]');
+      if (!header) {
+        return null;
+      }
+      const box = await header.boundingBox();
+      if (!box) {
+        return null;
+      }
+      return {
+        width: box.width,
+        right: box.x + box.width,
+      };
+    }
+
+    // 1) Show the drawer and measure initial metrics
+    await devToolsPage.pressKey('Escape');
+    await devToolsPage.waitFor(DRAWER_SELECTOR);
+    const opened = await getHeaderMetrics();
+    assert.exists(opened);
+
+    // 2) Close the drawer and verify metrics
+    await devToolsPage.click(CLOSE_BUTTON_SELECTOR);
+    await devToolsPage.waitForNone(DRAWER_SELECTOR);
+    const closed = await getHeaderMetrics();
+    assert.exists(closed);
+
+    assert.strictEqual(closed.width, opened.width, 'Header width should not change after closing drawer');
+    assert.strictEqual(closed.right, opened.right, 'Header should not shift after closing drawer');
+
+    // 3) Re-open the drawer and verify metrics
+    await devToolsPage.pressKey('Escape');
+    await devToolsPage.waitFor(DRAWER_SELECTOR);
+    const reopened = await getHeaderMetrics();
+    assert.exists(reopened);
+
+    assert.strictEqual(reopened.width, opened.width, 'Header width should not change after re-opening drawer');
+    assert.strictEqual(reopened.right, opened.right, 'Header should not shift after re-opening drawer');
+  });
+
   it('orientation can be toggled between horizontal and vertical', async ({devToolsPage}) => {
     // To show the drawer
     await devToolsPage.pressKey('Escape');

@@ -1428,54 +1428,54 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       return i18nString(UIStrings.inputDisclaimerForEmptyState);
     }
 
-    const noLogging = Root.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue ===
+    const loggingEnabled = Root.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue !==
         Root.Runtime.GenAiEnterprisePolicyValue.ALLOW_WITHOUT_LOGGING;
 
     if (Root.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled) {
-      if (noLogging) {
-        return lockedString(UIStringsNotTranslate.inputDisclaimerEnterpriseNoLoggingV2);
+      if (loggingEnabled) {
+        return lockedString(UIStringsNotTranslate.inputDisclaimerV2);
       }
-      return lockedString(UIStringsNotTranslate.inputDisclaimerV2);
+      return lockedString(UIStringsNotTranslate.inputDisclaimerEnterpriseNoLoggingV2);
     }
 
     switch (this.#conversation.type) {
       case AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING:
-        if (noLogging) {
-          return lockedString(UIStringsNotTranslate.inputDisclaimerForStylingEnterpriseNoLogging);
+        if (loggingEnabled) {
+          return lockedString(UIStringsNotTranslate.inputDisclaimerForStyling);
         }
-        return lockedString(UIStringsNotTranslate.inputDisclaimerForStyling);
+        return lockedString(UIStringsNotTranslate.inputDisclaimerForStylingEnterpriseNoLogging);
       case AiAssistanceModel.AiHistoryStorage.ConversationType.FILE:
-        if (noLogging) {
-          return lockedString(UIStringsNotTranslate.inputDisclaimerForFileEnterpriseNoLogging);
+        if (loggingEnabled) {
+          return lockedString(UIStringsNotTranslate.inputDisclaimerForFile);
         }
-        return lockedString(UIStringsNotTranslate.inputDisclaimerForFile);
+        return lockedString(UIStringsNotTranslate.inputDisclaimerForFileEnterpriseNoLogging);
       case AiAssistanceModel.AiHistoryStorage.ConversationType.NETWORK:
-        if (noLogging) {
-          return lockedString(UIStringsNotTranslate.inputDisclaimerForNetworkEnterpriseNoLogging);
+        if (loggingEnabled) {
+          return lockedString(UIStringsNotTranslate.inputDisclaimerForNetwork);
         }
-        return lockedString(UIStringsNotTranslate.inputDisclaimerForNetwork);
+        return lockedString(UIStringsNotTranslate.inputDisclaimerForNetworkEnterpriseNoLogging);
 
       // It is deliberate that both Performance agents use the same disclaimer
       // text and this has been approved by Privacy.
       case AiAssistanceModel.AiHistoryStorage.ConversationType.PERFORMANCE:
-        if (noLogging) {
-          return lockedString(UIStringsNotTranslate.inputDisclaimerForPerformanceEnterpriseNoLogging);
+        if (loggingEnabled) {
+          return lockedString(UIStringsNotTranslate.inputDisclaimerForPerformance);
         }
-        return lockedString(UIStringsNotTranslate.inputDisclaimerForPerformance);
+        return lockedString(UIStringsNotTranslate.inputDisclaimerForPerformanceEnterpriseNoLogging);
 
       case AiAssistanceModel.AiHistoryStorage.ConversationType.ACCESSIBILITY:
-        if (noLogging) {
-          return lockedString(UIStringsNotTranslate.inputDisclaimerForAccessibilityEnterpriseNoLogging);
+        if (loggingEnabled) {
+          return lockedString(UIStringsNotTranslate.inputDisclaimerForAccessibility);
         }
-        return lockedString(UIStringsNotTranslate.inputDisclaimerForAccessibility);
+        return lockedString(UIStringsNotTranslate.inputDisclaimerForAccessibilityEnterpriseNoLogging);
 
       case AiAssistanceModel.AiHistoryStorage.ConversationType.BREAKPOINT:
 
       case AiAssistanceModel.AiHistoryStorage.ConversationType.NONE:
-        if (noLogging) {
-          return lockedString(UIStringsNotTranslate.inputDisclaimerForNoContextEnterpriseNoLogging);
+        if (loggingEnabled) {
+          return lockedString(UIStringsNotTranslate.inputDisclaimerForNoContext);
         }
-        return lockedString(UIStringsNotTranslate.inputDisclaimerForNoContext);
+        return lockedString(UIStringsNotTranslate.inputDisclaimerForNoContextEnterpriseNoLogging);
     }
   }
 

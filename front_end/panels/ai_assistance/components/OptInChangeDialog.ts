@@ -130,13 +130,13 @@ export class OptInChangeDialog extends UI.Widget.VBox {
   }
 
   override performUpdate(): void {
-    const noLogging = Root.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue ===
+    const loggingEnabled = Root.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue !==
         Root.Runtime.GenAiEnterprisePolicyValue.ALLOW_WITHOUT_LOGGING;
 
     const viewInput = {
       onGotIt: this.#onGotIt,
       onManageSettings: this.#onManageSettings,
-      loggingEnabled: !noLogging,
+      loggingEnabled,
     };
 
     this.#view(viewInput, undefined, this.contentElement);

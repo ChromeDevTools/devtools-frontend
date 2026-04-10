@@ -435,7 +435,7 @@ export class PatchWidget extends UI.Widget.Widget {
   #project?: Workspace.Workspace.Project;
   #patchSources?: string;
   #savedToDisk?: boolean;
-  #noLogging: boolean;  // Whether the enterprise setting is `ALLOW_WITHOUT_LOGGING` or not.
+  #loggingEnabled: boolean;  // Whether the enterprise setting is `ALLOW_WITHOUT_LOGGING` or not.
   #patchSuggestionState = PatchSuggestionState.INITIAL;
   #workspaceDiff = WorkspaceDiff.WorkspaceDiff.workspaceDiff();
   #workspace = Workspace.Workspace.WorkspaceImpl.instance();
@@ -450,7 +450,7 @@ export class PatchWidget extends UI.Widget.Widget {
   }) {
     super(element);
     this.#aidaClient = opts?.aidaClient ?? new Host.AidaClient.AidaClient();
-    this.#noLogging = Root.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue ===
+    this.#loggingEnabled = Root.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue !==
         Root.Runtime.GenAiEnterprisePolicyValue.ALLOW_WITHOUT_LOGGING;
     this.#view = view;
 
@@ -514,9 +514,9 @@ export class PatchWidget extends UI.Widget.Widget {
           projectPath,
           projectType: this.#getSelectedProjectType(projectPath),
           savedToDisk: this.#savedToDisk,
-          applyToWorkspaceTooltipText: this.#noLogging ?
-              lockedString(UIStringsNotTranslate.applyToWorkspaceTooltipNoLogging) :
-              lockedString(UIStringsNotTranslate.applyToWorkspaceTooltip),
+          applyToWorkspaceTooltipText: this.#loggingEnabled ?
+              lockedString(UIStringsNotTranslate.applyToWorkspaceTooltip) :
+              lockedString(UIStringsNotTranslate.applyToWorkspaceTooltipNoLogging),
           onLearnMoreTooltipClick: this.#onLearnMoreTooltipClick.bind(this),
           onApplyToWorkspace: this.#onApplyToWorkspace.bind(this),
           onCancel: () => {
@@ -566,8 +566,8 @@ export class PatchWidget extends UI.Widget.Widget {
         },
         {
           iconName: 'google',
-          content: this.#noLogging ? lockedString(UIStringsNotTranslate.freDisclaimerTextPrivacyNoLogging) :
-                                     lockedString(UIStringsNotTranslate.freDisclaimerTextPrivacy),
+          content: this.#loggingEnabled ? lockedString(UIStringsNotTranslate.freDisclaimerTextPrivacy) :
+                                          lockedString(UIStringsNotTranslate.freDisclaimerTextPrivacyNoLogging),
         },
         {
           iconName: 'warning',

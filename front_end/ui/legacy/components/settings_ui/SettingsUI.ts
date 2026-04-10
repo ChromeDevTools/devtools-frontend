@@ -105,7 +105,7 @@ export function renderSettingSelect(setting: Common.Settings.Setting<unknown>, s
 }
 
 export const renderControlForSetting = function(
-    setting: Common.Settings.Setting<unknown>, subtitle?: string): TemplateResult|null {
+    setting: Common.Settings.Setting<unknown>, subtitle?: string): TemplateResult|typeof nothing {
   switch (setting.type()) {
     case Common.Settings.SettingType.BOOLEAN: {
       const onchange = (): void => {
@@ -123,14 +123,14 @@ export const renderControlForSetting = function(
     }
     default:
       console.error('Invalid setting type: ' + setting.type());
-      return null;
+      return nothing;
   }
 };
 
 export const createControlForSetting = function(
     setting: Common.Settings.Setting<unknown>, subtitle?: string): HTMLElement|null {
   const template = renderControlForSetting(setting, subtitle);
-  if (template === null) {
+  if (template === nothing) {
     return null;
   }
   const fragment = document.createDocumentFragment();

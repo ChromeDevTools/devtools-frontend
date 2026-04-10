@@ -135,7 +135,7 @@ describeWithEnvironment('SettingsUI', () => {
                       }]).moduleSetting('test-boolean-setting');
 
       const template = SettingsUI.SettingsUI.renderControlForSetting(setting);
-      assert.isNotNull(template);
+      assert.notStrictEqual(template, Lit.nothing);
 
       const container = document.createElement('div');
       Lit.render(template, container);
@@ -156,7 +156,7 @@ describeWithEnvironment('SettingsUI', () => {
                       }]).moduleSetting('test-enum-setting');
 
       const template = SettingsUI.SettingsUI.renderControlForSetting(setting);
-      assert.isNotNull(template);
+      assert.notStrictEqual(template, Lit.nothing);
 
       const container = document.createElement('div');
       Lit.render(template, container);
@@ -166,7 +166,7 @@ describeWithEnvironment('SettingsUI', () => {
       assert.isNotNull(select);
     });
 
-    it('returns null for an unsupported setting type', () => {
+    it('returns nothing for an unsupported setting type', () => {
       const setting = createSettingsForTest([{
                         settingName: 'test-array-setting',
                         settingType: Common.Settings.SettingType.ARRAY,
@@ -174,7 +174,7 @@ describeWithEnvironment('SettingsUI', () => {
                       }]).moduleSetting('test-array-setting');
 
       const template = SettingsUI.SettingsUI.renderControlForSetting(setting);
-      assert.isNull(template);
+      assert.strictEqual(template, Lit.nothing);
     });
   });
 });

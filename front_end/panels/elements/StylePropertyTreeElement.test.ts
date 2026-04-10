@@ -562,6 +562,10 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
   });
 
   describe('Animation override hint', () => {
+    beforeEach(() => {
+      sinon.stub(LegacyUI.ViewManager.ViewManager.instance(), 'isViewVisible').returns(false);
+    });
+
     it('should create a hint when property is overridden by animation and verify tooltip content', () => {
       const stylePropertyTreeElement = getTreeElement('opacity', '0.5');
       sinon.stub(matchedStyles, 'isPropertyOverriddenByAnimation').returns(true);
@@ -586,6 +590,29 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       const hintWrapper = stylePropertyTreeElement.listItemElement.querySelector('.animation-override-hint-wrapper');
       assert.isNull(hintWrapper, 'Hint wrapper should not exist');
     });
+
+    it('should not create a hint when property is overridden by animation but the animations panel is open', () => {
+      (LegacyUI.ViewManager.ViewManager.instance().isViewVisible as sinon.SinonStub).returns(true);
+      const stylePropertyTreeElement = getTreeElement('opacity', '0.5');
+      sinon.stub(matchedStyles, 'isPropertyOverriddenByAnimation').returns(true);
+
+      stylePropertyTreeElement.updateAnimationOverrideHint();
+
+      const hintWrapper = stylePropertyTreeElement.listItemElement.querySelector('.animation-override-hint-wrapper');
+      assert.isNull(hintWrapper, 'Hint wrapper should not exist');
+    });
+
+    it('should not create a hint when property is overridden by animation but the css-animations-only-when-animations-tab-open setting is disabled',
+       () => {
+         Common.Settings.Settings.instance().moduleSetting('css-animations-only-when-animations-tab-open').set(false);
+         const stylePropertyTreeElement = getTreeElement('opacity', '0.5');
+         sinon.stub(matchedStyles, 'isPropertyOverriddenByAnimation').returns(true);
+
+         stylePropertyTreeElement.updateAnimationOverrideHint();
+
+         const hintWrapper = stylePropertyTreeElement.listItemElement.querySelector('.animation-override-hint-wrapper');
+         assert.isNull(hintWrapper, 'Hint wrapper should not exist');
+       });
   });
 
   describe('custom-properties', () => {

@@ -826,6 +826,41 @@ describe('StylesSidebarPane', () => {
         assert.lengthOf(sectionBlocks[0].sections, 0);
       });
 
+      it('should render transition & animation styles when the animations panel is not visible but the css-animations-only-when-animations-tab-open setting is disabled',
+         async () => {
+           Common.Settings.Settings.instance().moduleSetting('css-animations-only-when-animations-tab-open').set(false);
+           const stylesSidebarPane = new Elements.StylesSidebarPane.StylesSidebarPane(
+               new ComputedStyle.ComputedStyleModel.ComputedStyleModel());
+           const matchedStyles = await getMatchedStyles({
+             cssModel: stylesSidebarPane.cssModel() as SDK.CSSModel.CSSModel,
+             node: sinon.createStubInstance(SDK.DOMModel.DOMNode),
+             animationStylesPayload: [
+               {
+                 name: '--animation-name',
+                 style: {
+                   cssProperties: [{
+                     name: 'background-color',
+                     value: 'blue',
+                   }],
+                   shorthandEntries: [],
+                 },
+               },
+             ],
+             transitionsStylePayload: {
+               cssProperties: [{
+                 name: 'color',
+                 value: 'red',
+               }],
+               shorthandEntries: [],
+             },
+             inheritedAnimatedPayload: [],
+           });
+
+           const sectionBlocks = await stylesSidebarPane.rebuildSectionsForMatchedStyleRulesForTest(
+               matchedStyles, new Map(), new Map(), null);
+           assert.lengthOf(sectionBlocks[0].sections, 2);
+         });
+
       it('should render transition & animation styles in the styles tab when the animations panel is visible',
          async () => {
            (UI.ViewManager.ViewManager.instance().isViewVisible as sinon.SinonStub).returns(true);

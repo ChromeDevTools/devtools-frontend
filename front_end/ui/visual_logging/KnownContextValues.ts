@@ -1108,6 +1108,7 @@ export const knownContextValues = new Set([
   'css',
   'css-angle',
   'css-animation-name',
+  'css-animations-only-when-animations-tab-open',
   'css-font-palette',
   'css-function',
   'css-layers',

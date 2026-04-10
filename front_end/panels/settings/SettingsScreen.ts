@@ -636,7 +636,7 @@ const GREENDEV_VIEW: View = (input, _output, target) => {
               <span>${i18nString(UIStrings.greenDevUnstable)}</span>
              </div>
              <div class="settings-experiments-block">
-               ${renderPrototypeCheckboxes(input.settings, ['aiAnnotations', 'beyondStyling', 'breakpointDebuggerAgent', 'copyToGemini', 'emulationCapabilities'])}
+               ${renderPrototypeCheckboxes(input.settings, ['aiAnnotations', 'beyondStyling', 'breakpointDebuggerAgent', 'emulationCapabilities'])}
              </div>
            </devtools-card>
          </div>
@@ -648,7 +648,6 @@ const GREENDEV_PROTOTYPE_NAMES: Record<keyof GreenDev.GreenDevSettings, string> 
   aiAnnotations: 'AI auto-annotations',
   beyondStyling: 'Beyond Styling',
   breakpointDebuggerAgent: 'Breakpoint Debugger Agent',
-  copyToGemini: 'Copy changes to AI Prompt',
   emulationCapabilities: 'Emulation Capabilities',
 };
 

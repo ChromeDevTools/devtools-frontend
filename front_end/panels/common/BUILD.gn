@@ -35,7 +35,6 @@ devtools_ui_module("common") {
     "Annotation.ts",
     "AnnotationManager.ts",
     "BadgeNotification.ts",
-    "CopyChangesToPrompt.ts",
     "DOMLinkifier.ts",
     "ExtensionPanel.ts",
     "ExtensionServer.ts",

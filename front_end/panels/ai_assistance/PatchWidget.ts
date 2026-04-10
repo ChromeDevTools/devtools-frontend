@@ -13,7 +13,6 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as AiAssistanceModel from '../../models/ai_assistance/ai_assistance.js';
-import * as GreenDev from '../../models/greendev/greendev.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as WorkspaceDiff from '../../models/workspace_diff/workspace_diff.js';
@@ -273,20 +272,6 @@ const DEFAULT_VIEW: View = (input, output, target) => {
             nothing}`;
   }
 
-  function renderCopyPrompt(changedCode?: string): LitTemplate {
-    if (!GreenDev.Prototypes.instance().isEnabled('copyToGemini') || !changedCode) {
-      return nothing;
-    }
-
-    // clang-format off
-    return html`<devtools-widget class="copy-to-prompt"
-      ${widget(PanelCommon.CopyChangesToPrompt, {
-        workspaceDiff: input.workspaceDiff,
-        patchAgentCSSChange: changedCode,
-      })}></devtools-widget>`;
-    // clang-format on
-  }
-
   function renderFooter(): LitTemplate {
     if (input.savedToDisk) {
       return nothing;
@@ -357,7 +342,6 @@ const DEFAULT_VIEW: View = (input, output, target) => {
               </div>
             ` :
             html`
-               ${renderCopyPrompt(input.changeSummary)}
                 <devtools-button
                 @click=${input.onApplyToWorkspace}
                 .jslogContext=${'patch-widget.apply-to-workspace'}

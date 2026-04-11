@@ -151,6 +151,7 @@ export class HAREntry extends HARBase {
         this.custom.set('initiator', this.importInitiator(data['_initiator']));
         this.custom.set('priority', HARBase.optionalString(data['_priority']));
         this.custom.set('resourceType', HARBase.optionalString(data['_resourceType']));
+        this.custom.set('eventSourceMessages', this.#importEventSourceMessages(data['_eventSourceMessages']));
         this.custom.set('webSocketMessages', this.importWebSocketMessages(data['_webSocketMessages']));
     }
     importInitiator(initiator) {
@@ -169,6 +170,19 @@ export class HAREntry extends HARBase {
                 return;
             }
             outputMessages.push(new HARWebSocketMessage(message));
+        }
+        return outputMessages;
+    }
+    #importEventSourceMessages(inputMessages) {
+        if (!Array.isArray(inputMessages)) {
+            return;
+        }
+        const outputMessages = [];
+        for (const message of inputMessages) {
+            if (typeof message !== 'object') {
+                return;
+            }
+            outputMessages.push(new HAREventSourceMessage(message));
         }
         return outputMessages;
     }
@@ -426,6 +440,19 @@ class HARWebSocketMessage extends HARBase {
         this.opcode = HARBase.optionalNumber(data['opcode']);
         this.data = HARBase.optionalString(data['data']);
         this.type = HARBase.optionalString(data['type']);
+    }
+}
+class HAREventSourceMessage extends HARBase {
+    time;
+    eventName;
+    eventId;
+    data;
+    constructor(data) {
+        super(data);
+        this.time = HARBase.optionalNumber(data['time']);
+        this.eventName = HARBase.optionalString(data['eventName']);
+        this.eventId = HARBase.optionalString(data['eventId']);
+        this.data = HARBase.optionalString(data['data']);
     }
 }
 //# sourceMappingURL=HARFormat.js.map

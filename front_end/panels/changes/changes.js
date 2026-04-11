@@ -12,12 +12,10 @@ __export(ChangesView_exports, {
 });
 import "./../../ui/legacy/legacy.js";
 import * as i18n5 from "./../../core/i18n/i18n.js";
-import * as GreenDev from "./../../models/greendev/greendev.js";
 import * as WorkspaceDiff3 from "./../../models/workspace_diff/workspace_diff.js";
 import * as UI3 from "./../../ui/legacy/legacy.js";
 import * as Lit3 from "./../../ui/lit/lit.js";
 import * as VisualLogging3 from "./../../ui/visual_logging/visual_logging.js";
-import * as PanelsCommon from "./../common/common.js";
 
 // gen/front_end/panels/changes/ChangesSidebar.js
 var ChangesSidebar_exports = {};
@@ -588,7 +586,6 @@ var DEFAULT_VIEW3 = (input, _output, target) => {
   const onSidebar = (sidebar) => {
     sidebar.addEventListener("SelectedUISourceCodeChanged", () => input.onSelect(sidebar.selectedUISourceCode()));
   };
-  const hasCopyToPrompt = GreenDev.Prototypes.instance().isEnabled("copyToGemini");
   render3(
     // clang-format off
     html3`
@@ -609,14 +606,6 @@ var DEFAULT_VIEW3 = (input, _output, target) => {
       workspaceDiff: input.workspaceDiff
     })}
           </div>
-          ${hasCopyToPrompt ? html3`
-            <devtools-widget class="copy-to-prompt"
-              ${widget(PanelsCommon.CopyChangesToPrompt, {
-      workspaceDiff: input.workspaceDiff,
-      patchAgentCSSChange: null
-    })}
-            ></devtools-widget>
-          ` : Lit3.nothing}
         </div>
         <devtools-widget slot="sidebar" ${widget(ChangesSidebar, { workspaceDiff: input.workspaceDiff })}
           ${UI3.Widget.widgetRef(ChangesSidebar, onSidebar)}>

@@ -29,6 +29,7 @@ import { ChatView, } from './components/ChatView.js';
 import { DisabledWidget } from './components/DisabledWidget.js';
 import { ExploreWidget } from './components/ExploreWidget.js';
 import { MarkdownRendererWithCodeBlock } from './components/MarkdownRendererWithCodeBlock.js';
+import { OptInChangeDialog } from './components/OptInChangeDialog.js';
 import { PerformanceAgentMarkdownRenderer } from './components/PerformanceAgentMarkdownRenderer.js';
 import { StylingAgentMarkdownRenderer } from './components/StylingAgentMarkdownRenderer.js';
 import { WalkthroughView, } from './components/WalkthroughView.js';
@@ -633,8 +634,27 @@ export class AiAssistancePanel extends UI.Panel.Panel {
                         return await this.#conversationSummaryAgent.summarizeConversation(markdown);
                     },
                     onTextSubmit: async (text, imageInput, multimodalInputType) => {
-                        Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceQuerySubmitted);
-                        await this.#startConversation(text, imageInput, multimodalInputType);
+                        const submit = () => {
+                            Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceQuerySubmitted);
+                            void this.#startConversation(text, imageInput, multimodalInputType);
+                        };
+                        const isAIV2Enabled = Root.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled;
+                        const seenSetting = Common.Settings.Settings.instance().moduleSetting('ai-assistance-v2-opt-in-change-dialog-seen');
+                        if (isAIV2Enabled && !seenSetting.get()) {
+                            OptInChangeDialog.show({
+                                onGotIt: () => {
+                                    seenSetting.set(true);
+                                    submit();
+                                },
+                                onManageSettings: () => {
+                                    seenSetting.set(true);
+                                    this.#viewOutput.chatView?.setInputValue(text);
+                                    void UI.ViewManager.ViewManager.instance().showView('chrome-ai');
+                                },
+                            });
+                            return;
+                        }
+                        submit();
                     },
                     onInspectElementClick: this.#handleSelectElementClick.bind(this),
                     onFeedbackSubmit: this.#handleFeedbackSubmit.bind(this),
@@ -1134,48 +1154,48 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         if (!this.#conversation || this.#conversation.isReadOnly) {
             return i18nString(UIStrings.inputDisclaimerForEmptyState);
         }
-        const noLogging = Root.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue ===
+        const loggingEnabled = Root.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue !==
             Root.Runtime.GenAiEnterprisePolicyValue.ALLOW_WITHOUT_LOGGING;
         if (Root.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled) {
-            if (noLogging) {
-                return lockedString(UIStringsNotTranslate.inputDisclaimerEnterpriseNoLoggingV2);
+            if (loggingEnabled) {
+                return lockedString(UIStringsNotTranslate.inputDisclaimerV2);
             }
-            return lockedString(UIStringsNotTranslate.inputDisclaimerV2);
+            return lockedString(UIStringsNotTranslate.inputDisclaimerEnterpriseNoLoggingV2);
         }
         switch (this.#conversation.type) {
             case "freestyler" /* AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING */:
-                if (noLogging) {
-                    return lockedString(UIStringsNotTranslate.inputDisclaimerForStylingEnterpriseNoLogging);
+                if (loggingEnabled) {
+                    return lockedString(UIStringsNotTranslate.inputDisclaimerForStyling);
                 }
-                return lockedString(UIStringsNotTranslate.inputDisclaimerForStyling);
+                return lockedString(UIStringsNotTranslate.inputDisclaimerForStylingEnterpriseNoLogging);
             case "drjones-file" /* AiAssistanceModel.AiHistoryStorage.ConversationType.FILE */:
-                if (noLogging) {
-                    return lockedString(UIStringsNotTranslate.inputDisclaimerForFileEnterpriseNoLogging);
+                if (loggingEnabled) {
+                    return lockedString(UIStringsNotTranslate.inputDisclaimerForFile);
                 }
-                return lockedString(UIStringsNotTranslate.inputDisclaimerForFile);
+                return lockedString(UIStringsNotTranslate.inputDisclaimerForFileEnterpriseNoLogging);
             case "drjones-network-request" /* AiAssistanceModel.AiHistoryStorage.ConversationType.NETWORK */:
-                if (noLogging) {
-                    return lockedString(UIStringsNotTranslate.inputDisclaimerForNetworkEnterpriseNoLogging);
+                if (loggingEnabled) {
+                    return lockedString(UIStringsNotTranslate.inputDisclaimerForNetwork);
                 }
-                return lockedString(UIStringsNotTranslate.inputDisclaimerForNetwork);
+                return lockedString(UIStringsNotTranslate.inputDisclaimerForNetworkEnterpriseNoLogging);
             // It is deliberate that both Performance agents use the same disclaimer
             // text and this has been approved by Privacy.
             case "drjones-performance-full" /* AiAssistanceModel.AiHistoryStorage.ConversationType.PERFORMANCE */:
-                if (noLogging) {
-                    return lockedString(UIStringsNotTranslate.inputDisclaimerForPerformanceEnterpriseNoLogging);
+                if (loggingEnabled) {
+                    return lockedString(UIStringsNotTranslate.inputDisclaimerForPerformance);
                 }
-                return lockedString(UIStringsNotTranslate.inputDisclaimerForPerformance);
+                return lockedString(UIStringsNotTranslate.inputDisclaimerForPerformanceEnterpriseNoLogging);
             case "accessibility" /* AiAssistanceModel.AiHistoryStorage.ConversationType.ACCESSIBILITY */:
-                if (noLogging) {
-                    return lockedString(UIStringsNotTranslate.inputDisclaimerForAccessibilityEnterpriseNoLogging);
+                if (loggingEnabled) {
+                    return lockedString(UIStringsNotTranslate.inputDisclaimerForAccessibility);
                 }
-                return lockedString(UIStringsNotTranslate.inputDisclaimerForAccessibility);
+                return lockedString(UIStringsNotTranslate.inputDisclaimerForAccessibilityEnterpriseNoLogging);
             case "breakpoint" /* AiAssistanceModel.AiHistoryStorage.ConversationType.BREAKPOINT */:
             case "none" /* AiAssistanceModel.AiHistoryStorage.ConversationType.NONE */:
-                if (noLogging) {
-                    return lockedString(UIStringsNotTranslate.inputDisclaimerForNoContextEnterpriseNoLogging);
+                if (loggingEnabled) {
+                    return lockedString(UIStringsNotTranslate.inputDisclaimerForNoContext);
                 }
-                return lockedString(UIStringsNotTranslate.inputDisclaimerForNoContext);
+                return lockedString(UIStringsNotTranslate.inputDisclaimerForNoContextEnterpriseNoLogging);
         }
     }
     #handleFeedbackSubmit(rpcId, rating, feedback) {

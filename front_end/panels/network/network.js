@@ -12092,7 +12092,7 @@ var NetworkLogView = class _NetworkLogView extends Common17.ObjectWrapper.eventM
   harRequests() {
     const requests = Logs5.NetworkLog.NetworkLog.instance().requests().filter((request) => this.applyFilter(request));
     return requests.filter(_NetworkLogView.getHTTPRequestsFilter).filter((request) => {
-      return request.finished || request.resourceType() === Common17.ResourceType.resourceTypes.WebSocket && request.responseReceivedTime;
+      return request.finished || request.resourceType() === Common17.ResourceType.resourceTypes.WebSocket && request.responseReceivedTime || Boolean(request.eventSourceMessages()?.length);
     });
   }
   async copyAllAsHAR(options) {

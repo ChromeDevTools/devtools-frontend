@@ -46,12 +46,11 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/ai_assistance/components/ExportForAgentsDialog.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+const DEFAULT_STATE_TYPE = "prompt" /* StateType.PROMPT */;
 export const DEFAULT_VIEW = (input, _output, target) => {
     const isPrompt = input.state.activeType === "prompt" /* StateType.PROMPT */;
     const buttonText = isPrompt ? i18nString(UIStrings.copyToClipboard) : i18nString(UIStrings.saveAsMarkdown);
-    const exportText = isPrompt && input.state.isPromptLoading ?
-        i18nString(UIStrings.generatingSummary) :
-        (isPrompt ? input.state.promptText : input.state.conversationText);
+    const exportText = isPrompt ? input.state.promptText : input.state.conversationText;
     // clang-format off
     render(html `
     <style>${styles}</style>
@@ -86,13 +85,13 @@ export const DEFAULT_VIEW = (input, _output, target) => {
         </label>
       </div>
       <main>
-        ${input.state.isPromptLoading ? html `
+        ${isPrompt && input.state.isPromptLoading ? html `
           <span class="prompt-loading">
             <devtools-spinner></devtools-spinner>
             ${i18nString(UIStrings.generatingSummary)}
           </span>
           ` : Lit.nothing}
-        <textarea readonly .value=${input.state.isPromptLoading ? '' : exportText}></textarea>
+        <textarea readonly .value=${isPrompt && input.state.isPromptLoading ? '' : exportText}></textarea>
       </main>
       <div class="disclaimer">${i18nString(UIStrings.disclaimer)}</div>
       <footer>
@@ -113,6 +112,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
     // clang-format on
 };
 export class ExportForAgentsDialog extends UI.Widget.VBox {
+    static #lastSelectedType = DEFAULT_STATE_TYPE;
     #view;
     #dialog;
     #state;
@@ -121,7 +121,7 @@ export class ExportForAgentsDialog extends UI.Widget.VBox {
         super();
         this.#dialog = options.dialog;
         this.#state = {
-            activeType: "prompt" /* StateType.PROMPT */,
+            activeType: ExportForAgentsDialog.#lastSelectedType,
             promptText: typeof options.promptText === 'string' ? options.promptText : '',
             conversationText: options.markdownText,
             isPromptLoading: typeof options.promptText !== 'string',
@@ -137,8 +137,12 @@ export class ExportForAgentsDialog extends UI.Widget.VBox {
         }
         this.requestUpdate();
     }
+    static clearPersistedViewState() {
+        ExportForAgentsDialog.#lastSelectedType = DEFAULT_STATE_TYPE;
+    }
     #onStateChange = (newState) => {
         this.#state.activeType = newState;
+        ExportForAgentsDialog.#lastSelectedType = newState;
         this.requestUpdate();
     };
     performUpdate() {

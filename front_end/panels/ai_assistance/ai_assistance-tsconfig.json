@@ -47,6 +47,7 @@
     "../../../../../../front_end/panels/ai_assistance/components/ExploreWidget.ts",
     "../../../../../../front_end/panels/ai_assistance/components/ExportForAgentsDialog.ts",
     "../../../../../../front_end/panels/ai_assistance/components/MarkdownRendererWithCodeBlock.ts",
+    "../../../../../../front_end/panels/ai_assistance/components/OptInChangeDialog.ts",
     "../../../../../../front_end/panels/ai_assistance/components/PerformanceAgentMarkdownRenderer.ts",
     "../../../../../../front_end/panels/ai_assistance/components/StylingAgentMarkdownRenderer.ts",
     "../../../../../../front_end/panels/ai_assistance/components/WalkthroughView.ts",

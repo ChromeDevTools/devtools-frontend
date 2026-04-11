@@ -352,9 +352,9 @@ export class SplitWidget extends Common.ObjectWrapper.eventMixin(Widget) {
      */
     #totalSizeDIP() {
         if (!this.#totalSizeCSS) {
-            this.#totalSizeCSS = this.#isVertical ? this.contentElement.offsetWidth : this.contentElement.offsetHeight;
-            this.#totalSizeOtherDimensionCSS =
-                this.#isVertical ? this.contentElement.offsetHeight : this.contentElement.offsetWidth;
+            const { width, height } = this.contentElement.getBoundingClientRect();
+            this.#totalSizeCSS = this.#isVertical ? width : height;
+            this.#totalSizeOtherDimensionCSS = this.#isVertical ? height : width;
         }
         return ZoomManager.instance().cssToDIP(this.#totalSizeCSS);
     }
@@ -380,9 +380,12 @@ export class SplitWidget extends Common.ObjectWrapper.eventMixin(Widget) {
         // Invalidate layout below.
         this.#removeAllLayoutProperties();
         // this.#totalSizeDIP is available below since we successfully applied constraints.
-        const roundSizeCSS = Math.round(ZoomManager.instance().dipToCSS(sizeDIP));
-        const sidebarSizeValue = roundSizeCSS + 'px';
-        const mainSizeValue = (this.#totalSizeCSS - roundSizeCSS) + 'px';
+        const sizeCSS = ZoomManager.instance().dipToCSS(sizeDIP);
+        const sidebarSizeValue = sizeCSS + 'px';
+        const mainSizeValue = (this.#totalSizeCSS - sizeCSS) + 'px';
+        // With `box-sizing: border-box` on the sidebar (set in splitWidget.css),
+        // flex-basis, width, and height all include the border, so the sidebar's
+        // border does not steal space from the main pane.
         this.#sidebarElement.style.flexBasis = sidebarSizeValue;
         // Make both sides relayout boundaries.
         if (this.#isVertical) {

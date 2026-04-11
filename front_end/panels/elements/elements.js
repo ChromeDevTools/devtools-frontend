@@ -5007,7 +5007,7 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI7.TreeO
     if (existingElement) {
       existingElement?.remove();
     }
-    if (!this.overriddenByAnimation() || UI7.ViewManager.ViewManager.instance().isViewVisible("animations")) {
+    if (!this.overriddenByAnimation() || UI7.ViewManager.ViewManager.instance().isViewVisible("animations") || !Common2.Settings.Settings.instance().moduleSetting("css-animations-only-when-animations-tab-open").get()) {
       return;
     }
     const wrapper = document.createElement("span");
@@ -9118,9 +9118,10 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common5.ObjectWrapper.e
     };
     ButtonProvider.instance().item().setVisible(false);
     const animationsPanelVisible = UI10.ViewManager.ViewManager.instance().isViewVisible("animations");
+    const cssAnimationsOnlyWhenAnimationsTabOpen = Common5.Settings.Settings.instance().moduleSetting("css-animations-only-when-animations-tab-open").get();
     for (const style of matchedStyles.nodeStyles()) {
       const isTransitionOrAnimationStyle = style.type === SDK8.CSSStyleDeclaration.Type.Transition || style.type === SDK8.CSSStyleDeclaration.Type.Animation;
-      if (isTransitionOrAnimationStyle && !animationsPanelVisible) {
+      if (isTransitionOrAnimationStyle && cssAnimationsOnlyWhenAnimationsTabOpen && !animationsPanelVisible) {
         continue;
       }
       const parentNode = matchedStyles.isInherited(style) ? matchedStyles.nodeForStyle(style) : null;

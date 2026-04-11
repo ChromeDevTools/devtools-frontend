@@ -186,13 +186,13 @@ export class SelectWorkspaceDialog extends UI.Widget.VBox {
         }
     }
     performUpdate() {
-        const noLogging = Root.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue ===
+        const loggingEnabled = Root.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue !==
             Root.Runtime.GenAiEnterprisePolicyValue.ALLOW_WITHOUT_LOGGING;
         const viewInput = {
             folders: this.#folders,
             selectedIndex: this.#selectedIndex,
-            selectProjectRootText: noLogging ? lockedString(UIStringsNotTranslate.selectProjectRootNoLogging) :
-                lockedString(UIStringsNotTranslate.selectProjectRoot),
+            selectProjectRootText: loggingEnabled ? lockedString(UIStringsNotTranslate.selectProjectRoot) :
+                lockedString(UIStringsNotTranslate.selectProjectRootNoLogging),
             showAutomaticWorkspaceNudge: this.#automaticFileSystemManager.automaticFileSystem === null &&
                 this.#automaticFileSystemManager.availability === 'available',
             onProjectSelected: (index) => {

@@ -27,8 +27,8 @@ var Prototypes = class _Prototypes {
       "Local"
       /* Common.Settings.SettingStorageType.LOCAL */
     );
-    const copyToGemini = settings.createSetting(
-      "greendev-copy-to-gemini-enabled",
+    const beyondStyling = settings.createSetting(
+      "greendev-beyond-styling-enabled",
       false,
       "Local"
       /* Common.Settings.SettingStorageType.LOCAL */
@@ -45,7 +45,7 @@ var Prototypes = class _Prototypes {
       "Local"
       /* Common.Settings.SettingStorageType.LOCAL */
     );
-    return { aiAnnotations, copyToGemini, breakpointDebuggerAgent, emulationCapabilities };
+    return { aiAnnotations, beyondStyling, breakpointDebuggerAgent, emulationCapabilities };
   }
 };
 export {

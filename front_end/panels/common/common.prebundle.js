@@ -84,5 +84,4 @@ export * as PersistenceUtils from './PersistenceUtils.js';
 export * as DOMLinkifier from './DOMLinkifier.js';
 export * as ThrottlingUtils from './ThrottlingUtils.js';
 export * as ExtensionIframe from './ExtensionView.js';
-export { CopyChangesToPrompt } from './CopyChangesToPrompt.js';
 //# sourceMappingURL=common.prebundle.js.map

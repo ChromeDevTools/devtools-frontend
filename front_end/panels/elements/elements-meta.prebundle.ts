@@ -163,6 +163,10 @@ const UIStrings = {
    * @description Command for toggling the eye dropper when the color picker is open
    */
   toggleEyeDropper: 'Toggle eye dropper',
+  /**
+   * @description Title of a setting under the Elements category.
+   */
+  cssAnimationsOnlyWhenAnimationsTabOpen: 'Show animation styles only when the Animations tab is open',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/elements/elements-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
@@ -565,6 +569,16 @@ Common.Settings.registerSettingExtension({
   order: 5,
   title: i18nLazyString(UIStrings.detailedInspectTooltip),
   settingName: 'show-detailed-inspect-tooltip',
+  settingType: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: true,
+});
+
+Common.Settings.registerSettingExtension({
+  category: Common.Settings.SettingCategory.ELEMENTS,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
+  order: 6,
+  title: i18nLazyString(UIStrings.cssAnimationsOnlyWhenAnimationsTabOpen),
+  settingName: 'css-animations-only-when-animations-tab-open',
   settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: true,
 });

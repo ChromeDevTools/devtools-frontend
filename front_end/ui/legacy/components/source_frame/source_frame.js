@@ -124,19 +124,19 @@ var UIStrings = {
    */
   doYouTrustThisCode: "Do you trust this code?",
   /**
-   * @description Warning shown to users when pasting text/code into DevTools.
+   * @description Warning shown to users when pasting text/code into DevTools. IMPORTANT: keep double quotes around PH1 and do not use single quotes.
    * @example {allow pasting} PH1
    */
-  doNotPaste: "Don't paste code you do not understand or have not reviewed yourself into DevTools. This could allow attackers to steal your identity or take control of your computer. Please type ''{PH1}'' below to allow pasting.",
+  doNotPaste: "Don't paste code you do not understand or have not reviewed yourself into DevTools. This could allow attackers to steal your identity or take control of your computer. Please type \u201C{PH1}\u201D below to allow pasting.",
   /**
    * @description Text a user needs to type in order to confirm that they are aware of the danger of pasting code into the DevTools console.
    */
   allowPasting: "allow pasting",
   /**
-   * @description Input box placeholder which instructs the user to type 'allow pasting' into the input box.
+   * @description Input box placeholder which instructs the user to type 'allow pasting' into the input box. IMPORTANT: keep double quotes around PH1 and do not use single quotes.
    * @example {allow pasting} PH1
    */
-  typeAllowPasting: "Type ''{PH1}''",
+  typeAllowPasting: "Type \u201C{PH1}\u201D",
   /**
    * @description Error message shown when the user tries to open a file that contains non-readable data. "Editor" refers to
    * a text editor.
@@ -1278,11 +1278,13 @@ var BinaryResourceViewFactory = class _BinaryResourceViewFactory {
 // gen/front_end/ui/legacy/components/source_frame/FontView.js
 var FontView_exports = {};
 __export(FontView_exports, {
+  DEFAULT_VIEW: () => DEFAULT_VIEW,
   FontView: () => FontView
 });
 import * as i18n5 from "./../../../../core/i18n/i18n.js";
 import * as Platform2 from "./../../../../core/platform/platform.js";
 import * as TextUtils6 from "./../../../../models/text_utils/text_utils.js";
+import { Directives, html, render } from "./../../../lit/lit.js";
 import * as VisualLogging2 from "./../../../visual_logging/visual_logging.js";
 import * as UI4 from "./../../legacy.js";
 
@@ -1317,120 +1319,114 @@ var UIStrings3 = {
 };
 var str_3 = i18n5.i18n.registerUIStrings("ui/legacy/components/source_frame/FontView.ts", UIStrings3);
 var i18nString3 = i18n5.i18n.getLocalizedString.bind(void 0, str_3);
+var FONT_PREVIEW_LINES = ["ABCDEFGHIJKLM", "NOPQRSTUVWXYZ", "abcdefghijklm", "nopqrstuvwxyz", "1234567890"];
+var MEASURE_FONT_SIZE = 50;
+var DEFAULT_VIEW = (input, output, target) => {
+  let dummyEl;
+  render(html`
+    <style>${fontView_css_default}</style>
+    <style>${input.fontFaceRule}</style>
+    <div class="font-view"
+      aria-label=${i18nString3(UIStrings3.previewOfFontFromS, { PH1: input.url })}
+      style="font-family: ${input.fontFamily}; font-size: ${input.previewFontSize}"
+      aria-hidden="true"
+      ?hidden=${!input.previewVisible}
+    >${FONT_PREVIEW_LINES.map((line, i) => html`${i > 0 ? html`<br>` : ""}${line}`)}</div>
+    <div ${Directives.ref((el) => {
+    dummyEl = el;
+  })}
+      style="visibility: hidden; z-index: -1; display: inline; position: absolute; font-family: ${input.fontFamily}; font-size: ${MEASURE_FONT_SIZE}px"
+    >${FONT_PREVIEW_LINES.map((line, i) => html`${i > 0 ? html`<br>` : ""}${line}`)}</div>
+  `, target);
+  output.measureDimensions = () => {
+    if (!dummyEl) {
+      return { width: 0, height: 0 };
+    }
+    return { width: dummyEl.offsetWidth, height: dummyEl.offsetHeight };
+  };
+};
 var FontView = class extends UI4.View.SimpleView {
   url;
   contentProvider;
   mimeTypeLabel;
-  fontPreviewElement;
-  dummyElement;
-  fontStyleElement;
-  inResize;
-  constructor(mimeType, contentProvider) {
+  #view;
+  #fontFaceRule = "";
+  #fontFamily = "";
+  #previewFontSize = "";
+  #previewVisible = false;
+  #contentLoaded = false;
+  constructor(mimeType, contentProvider, view = DEFAULT_VIEW) {
     super({
       title: i18nString3(UIStrings3.font),
       viewId: "font",
       jslog: `${VisualLogging2.pane("font-view")}`
     });
-    this.registerRequiredCSS(fontView_css_default);
-    this.element.classList.add("font-view");
+    this.#view = view;
     this.url = contentProvider.contentURL();
-    UI4.ARIAUtils.setLabel(this.element, i18nString3(UIStrings3.previewOfFontFromS, { PH1: this.url }));
     this.contentProvider = contentProvider;
     this.mimeTypeLabel = new UI4.Toolbar.ToolbarText(mimeType);
   }
   async toolbarItems() {
     return [this.mimeTypeLabel];
   }
-  onFontContentLoaded(uniqueFontName, contentData) {
-    const url = TextUtils6.ContentData.ContentData.isError(contentData) ? this.url : contentData.asDataUrl();
-    if (!this.fontStyleElement) {
+  #loadContentIfNeeded() {
+    if (this.#contentLoaded) {
       return;
     }
-    this.fontStyleElement.textContent = Platform2.StringUtilities.sprintf('@font-face { font-family: "%s"; src: url(%s); }', uniqueFontName, url);
-    this.updateFontPreviewSize();
-  }
-  createContentIfNeeded() {
-    if (this.fontPreviewElement) {
-      return;
-    }
-    const uniqueFontName = `WebInspectorFontPreview${++fontId}`;
-    this.fontStyleElement = document.createElement("style");
+    this.#contentLoaded = true;
+    this.#fontFamily = `WebInspectorFontPreview${++fontId}`;
     void this.contentProvider.requestContentData().then((contentData) => {
-      this.onFontContentLoaded(uniqueFontName, contentData);
+      const url = TextUtils6.ContentData.ContentData.isError(contentData) ? this.url : contentData.asDataUrl();
+      this.#fontFaceRule = Platform2.StringUtilities.sprintf('@font-face { font-family: "%s"; src: url(%s); }', this.#fontFamily, url);
+      this.#previewVisible = true;
+      this.requestUpdate();
     });
-    this.element.appendChild(this.fontStyleElement);
-    const fontPreview = document.createElement("div");
-    for (let i = 0; i < FONT_PREVIEW_LINES.length; ++i) {
-      if (i > 0) {
-        fontPreview.createChild("br");
-      }
-      UI4.UIUtils.createTextChild(fontPreview, FONT_PREVIEW_LINES[i]);
-    }
-    this.fontPreviewElement = fontPreview.cloneNode(true);
-    if (!this.fontPreviewElement) {
-      return;
-    }
-    UI4.ARIAUtils.setHidden(this.fontPreviewElement, true);
-    this.fontPreviewElement.style.overflow = "hidden";
-    this.fontPreviewElement.style.setProperty("font-family", uniqueFontName);
-    this.fontPreviewElement.style.setProperty("visibility", "hidden");
-    this.dummyElement = fontPreview;
-    this.dummyElement.style.visibility = "hidden";
-    this.dummyElement.style.zIndex = "-1";
-    this.dummyElement.style.display = "inline";
-    this.dummyElement.style.position = "absolute";
-    this.dummyElement.style.setProperty("font-family", uniqueFontName);
-    this.dummyElement.style.setProperty("font-size", MEASUURE_FONT_SIZE + "px");
-    this.element.appendChild(this.fontPreviewElement);
   }
   wasShown() {
     super.wasShown();
-    this.createContentIfNeeded();
-    this.updateFontPreviewSize();
+    this.#loadContentIfNeeded();
+    this.requestUpdate();
   }
   onResize() {
-    if (this.inResize) {
-      return;
-    }
-    this.inResize = true;
-    try {
-      this.updateFontPreviewSize();
-    } finally {
-      this.inResize = null;
-    }
+    this.requestUpdate();
   }
-  measureElement() {
-    if (!this.dummyElement) {
-      throw new Error("No font preview loaded");
+  #calculateFontPreviewSize(dimension) {
+    if (!this.#previewVisible || !this.isShowing()) {
+      return "";
     }
-    this.element.appendChild(this.dummyElement);
-    const result = { width: this.dummyElement.offsetWidth, height: this.dummyElement.offsetHeight };
-    this.element.removeChild(this.dummyElement);
-    return result;
-  }
-  updateFontPreviewSize() {
-    if (!this.fontPreviewElement || !this.isShowing()) {
-      return;
-    }
-    this.fontPreviewElement.style.removeProperty("visibility");
-    const dimension = this.measureElement();
     const height = dimension.height;
     const width = dimension.width;
     const containerWidth = this.element.offsetWidth - 50;
     const containerHeight = this.element.offsetHeight - 30;
     if (!height || !width || !containerWidth || !containerHeight) {
-      this.fontPreviewElement.style.removeProperty("font-size");
-      return;
+      return "";
     }
     const widthRatio = containerWidth / width;
     const heightRatio = containerHeight / height;
-    const finalFontSize = Math.floor(MEASUURE_FONT_SIZE * Math.min(widthRatio, heightRatio)) - 2;
-    this.fontPreviewElement.style.setProperty("font-size", finalFontSize + "px", void 0);
+    const finalFontSize = Math.floor(MEASURE_FONT_SIZE * Math.min(widthRatio, heightRatio)) - 2;
+    return `${finalFontSize}px`;
+  }
+  performUpdate() {
+    const output = {};
+    this.#view({
+      url: this.url,
+      fontFaceRule: this.#fontFaceRule,
+      fontFamily: this.#fontFamily,
+      previewFontSize: this.#previewFontSize,
+      previewVisible: this.#previewVisible
+    }, output, this.contentElement);
+    if (!output.measureDimensions) {
+      return;
+    }
+    const requestedFontSize = this.#calculateFontPreviewSize(output.measureDimensions());
+    if (requestedFontSize === this.#previewFontSize) {
+      return;
+    }
+    this.#previewFontSize = requestedFontSize;
+    this.requestUpdate();
   }
 };
 var fontId = 0;
-var FONT_PREVIEW_LINES = ["ABCDEFGHIJKLM", "NOPQRSTUVWXYZ", "abcdefghijklm", "nopqrstuvwxyz", "1234567890"];
-var MEASUURE_FONT_SIZE = 50;
 
 // gen/front_end/ui/legacy/components/source_frame/ImageView.js
 var ImageView_exports = {};
@@ -1993,7 +1989,7 @@ import * as UI8 from "./../../legacy.js";
 // gen/front_end/ui/legacy/components/source_frame/XMLView.js
 var XMLView_exports = {};
 __export(XMLView_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW,
+  DEFAULT_VIEW: () => DEFAULT_VIEW2,
   XMLTreeViewModel: () => XMLTreeViewModel,
   XMLTreeViewNode: () => XMLTreeViewNode,
   XMLView: () => XMLView
@@ -2088,7 +2084,7 @@ var UIStrings6 = {
 };
 var str_6 = i18n11.i18n.registerUIStrings("ui/legacy/components/source_frame/XMLView.ts", UIStrings6);
 var i18nString6 = i18n11.i18n.getLocalizedString.bind(void 0, str_6);
-var { render, html } = Lit;
+var { render: render2, html: html2 } = Lit;
 var { ifExpanded } = UI7.TreeOutline;
 function* attributes(element) {
   for (let i = 0; i < element.attributes.length; ++i) {
@@ -2127,33 +2123,33 @@ function htmlView(treeNode) {
     case Node.ELEMENT_NODE:
       if (node instanceof Element) {
         const tag = node.tagName;
-        return html`<span part='shadow-xml-view-tag'>${"<" + tag}</span>${attributes(node).map((attributeNode) => html`<span part='shadow-xml-view-tag'>${"\xA0"}</span>
+        return html2`<span part='shadow-xml-view-tag'>${"<" + tag}</span>${attributes(node).map((attributeNode) => html2`<span part='shadow-xml-view-tag'>${"\xA0"}</span>
                 <span part='shadow-xml-view-attribute-name'>${attributeNode.name}</span>
                 <span part='shadow-xml-view-tag'>${'="'}</span>
                 <span part='shadow-xml-view-attribute-value'>${attributeNode.value}</span>
                 <span part='shadow-xml-view-tag'>${'"'}</span>`)}
-                <span ?hidden=${treeNode.expanded}>${hasNonTextChildren(node) ? html`<span part='shadow-xml-view-tag'>${">"}</span>
+                <span ?hidden=${treeNode.expanded}>${hasNonTextChildren(node) ? html2`<span part='shadow-xml-view-tag'>${">"}</span>
                   <span part='shadow-xml-view-comment'>${"\u2026"}</span>
-                  <span part='shadow-xml-view-tag'>${"</" + tag}</span>` : node.textContent ? html`<span part='shadow-xml-view-tag'>${">"}</span>
+                  <span part='shadow-xml-view-tag'>${"</" + tag}</span>` : node.textContent ? html2`<span part='shadow-xml-view-tag'>${">"}</span>
                   <span part='shadow-xml-view-text'>${node.textContent}</span>
-                  <span part='shadow-xml-view-tag'>${"</" + tag}</span>` : html`<span part='shadow-xml-view-tag'>${" /"}</span>`}</span>
+                  <span part='shadow-xml-view-tag'>${"</" + tag}</span>` : html2`<span part='shadow-xml-view-tag'>${" /"}</span>`}</span>
                 <span part='shadow-xml-view-tag'>${">"}</span>`;
       }
       return Lit.nothing;
     case Node.TEXT_NODE:
-      return node.nodeValue ? html`<span part='shadow-xml-view-text'>${node.nodeValue}</span>` : Lit.nothing;
+      return node.nodeValue ? html2`<span part='shadow-xml-view-text'>${node.nodeValue}</span>` : Lit.nothing;
     case Node.CDATA_SECTION_NODE:
-      return node.nodeValue ? html`<span part='shadow-xml-view-cdata'>${"<![CDATA["}</span>
+      return node.nodeValue ? html2`<span part='shadow-xml-view-cdata'>${"<![CDATA["}</span>
           <span part='shadow-xml-view-text'>${node.nodeValue}</span>
           <span part='shadow-xml-view-cdata'>${"]]>"}</span>` : Lit.nothing;
     case Node.PROCESSING_INSTRUCTION_NODE:
-      return node.nodeValue ? html`<span part='shadow-xml-view-processing-instruction'>${"<?" + node.nodeName + " " + node.nodeValue + "?>"}</span>` : Lit.nothing;
+      return node.nodeValue ? html2`<span part='shadow-xml-view-processing-instruction'>${"<?" + node.nodeName + " " + node.nodeValue + "?>"}</span>` : Lit.nothing;
     case Node.COMMENT_NODE:
-      return html`<span part='shadow-xml-view-comment'>${"<!--" + node.nodeValue + "-->"}</span>`;
+      return html2`<span part='shadow-xml-view-comment'>${"<!--" + node.nodeValue + "-->"}</span>`;
   }
   return Lit.nothing;
 }
-var DEFAULT_VIEW = (input, output, target) => {
+var DEFAULT_VIEW2 = (input, output, target) => {
   function highlight(node, closeTag) {
     let highlights = "";
     let selected = "";
@@ -2191,7 +2187,7 @@ var DEFAULT_VIEW = (input, output, target) => {
       }
       return false;
     };
-    return html`
+    return html2`
       <li role="treeitem"
           ?selected=${input.jumpToNextSearchResult?.node === node}
           @expand=${onExpand}
@@ -2199,7 +2195,7 @@ var DEFAULT_VIEW = (input, output, target) => {
         <devtools-highlight ranges=${highlights} current-range=${selected}>
           ${htmlView(node)}
         </devtools-highlight>
-        ${node.children().length ? html`
+        ${node.children().length ? html2`
           <ul role="group">
             ${ifExpanded(subtree(node))}
           </ul>` : Lit.nothing}
@@ -2215,22 +2211,22 @@ var DEFAULT_VIEW = (input, output, target) => {
       /* closeTag=*/
       true
     );
-    return html`
+    return html2`
       ${children2.map((child) => layOutNode(child))}
-      ${treeNode.node instanceof Element ? html`
+      ${treeNode.node instanceof Element ? html2`
         <li role="treeitem">
           <devtools-highlight ranges=${highlights} current-range=${selected}>
             <span part='shadow-xml-view-close-tag'>${"</" + treeNode.node.tagName + ">"}</span>
           </devtools-highlight>
         </li>` : Lit.nothing}`;
   }
-  render(
-    html`
+  render2(
+    html2`
     <style>${xmlView_css_default}</style>
     <style>${xmlTree_css_default}</style>
     <devtools-tree
       class="shadow-xml-view source-code"
-      .template=${html`
+      .template=${html2`
         <ul role="tree">
           ${input.xml.children().map((node) => layOutNode(node))}
         </ul>`}
@@ -2289,7 +2285,7 @@ var XMLView = class _XMLView extends UI7.Widget.Widget {
   #treeViewModel;
   #view;
   #nextJump;
-  constructor(target, view = DEFAULT_VIEW) {
+  constructor(target, view = DEFAULT_VIEW2) {
     super(target, { jslog: `${VisualLogging5.pane("xml-view")}`, classes: ["shadow-xml-view", "source-code"] });
     this.#view = view;
   }

@@ -77,6 +77,7 @@ export declare class ChatView extends HTMLElement {
     connectedCallback(): void;
     disconnectedCallback(): void;
     focusTextInput(): void;
+    setInputValue(text: string): void;
     restoreScrollPosition(): void;
     scrollToBottom(): void;
 }

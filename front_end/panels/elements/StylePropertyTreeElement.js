@@ -2324,7 +2324,8 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
         if (existingElement) {
             existingElement?.remove();
         }
-        if (!this.overriddenByAnimation() || UI.ViewManager.ViewManager.instance().isViewVisible('animations')) {
+        if (!this.overriddenByAnimation() || UI.ViewManager.ViewManager.instance().isViewVisible('animations') ||
+            !Common.Settings.Settings.instance().moduleSetting('css-animations-only-when-animations-tab-open').get()) {
             return;
         }
         const wrapper = document.createElement('span');

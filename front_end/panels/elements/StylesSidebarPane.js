@@ -886,10 +886,11 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsS
         // the matched styles we reenable the button.
         LayersWidget.ButtonProvider.instance().item().setVisible(false);
         const animationsPanelVisible = UI.ViewManager.ViewManager.instance().isViewVisible('animations');
+        const cssAnimationsOnlyWhenAnimationsTabOpen = Common.Settings.Settings.instance().moduleSetting('css-animations-only-when-animations-tab-open').get();
         for (const style of matchedStyles.nodeStyles()) {
             const isTransitionOrAnimationStyle = style.type === SDK.CSSStyleDeclaration.Type.Transition ||
                 style.type === SDK.CSSStyleDeclaration.Type.Animation;
-            if (isTransitionOrAnimationStyle && !animationsPanelVisible) {
+            if (isTransitionOrAnimationStyle && cssAnimationsOnlyWhenAnimationsTabOpen && !animationsPanelVisible) {
                 continue;
             }
             const parentNode = matchedStyles.isInherited(style) ? matchedStyles.nodeForStyle(style) : null;

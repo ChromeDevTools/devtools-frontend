@@ -161,6 +161,13 @@ Common.Settings.registerSettingExtension({
   },
 });
 
+Common.Settings.registerSettingExtension({
+  category: Common.Settings.SettingCategory.AI,
+  settingName: 'ai-assistance-v2-opt-in-change-dialog-seen',
+  settingType: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+});
+
 UI.ActionRegistration.registerActionExtension({
   actionId: 'freestyler.main-menu',
   contextTypes(): [] {

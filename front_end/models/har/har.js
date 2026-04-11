@@ -166,6 +166,7 @@ var HAREntry = class extends HARBase {
     this.custom.set("initiator", this.importInitiator(data["_initiator"]));
     this.custom.set("priority", HARBase.optionalString(data["_priority"]));
     this.custom.set("resourceType", HARBase.optionalString(data["_resourceType"]));
+    this.custom.set("eventSourceMessages", this.#importEventSourceMessages(data["_eventSourceMessages"]));
     this.custom.set("webSocketMessages", this.importWebSocketMessages(data["_webSocketMessages"]));
   }
   importInitiator(initiator) {
@@ -184,6 +185,19 @@ var HAREntry = class extends HARBase {
         return;
       }
       outputMessages.push(new HARWebSocketMessage(message));
+    }
+    return outputMessages;
+  }
+  #importEventSourceMessages(inputMessages) {
+    if (!Array.isArray(inputMessages)) {
+      return;
+    }
+    const outputMessages = [];
+    for (const message of inputMessages) {
+      if (typeof message !== "object") {
+        return;
+      }
+      outputMessages.push(new HAREventSourceMessage(message));
     }
     return outputMessages;
   }
@@ -438,6 +452,19 @@ var HARWebSocketMessage = class extends HARBase {
     this.type = HARBase.optionalString(data["type"]);
   }
 };
+var HAREventSourceMessage = class extends HARBase {
+  time;
+  eventName;
+  eventId;
+  data;
+  constructor(data) {
+    super(data);
+    this.time = HARBase.optionalNumber(data["time"]);
+    this.eventName = HARBase.optionalString(data["eventName"]);
+    this.eventId = HARBase.optionalString(data["eventId"]);
+    this.data = HARBase.optionalString(data["data"]);
+  }
+};
 
 // gen/front_end/models/har/Importer.js
 var Importer_exports = {};
@@ -559,7 +586,15 @@ var Importer = class _Importer {
     const isBase64 = entry.response.content.encoding === "base64";
     const { mimeType, charset } = Platform.MimeType.parseContentType(entry.response.content.mimeType);
     request.setContentDataProvider(async () => new TextUtils.ContentData.ContentData(contentText ?? "", isBase64, mimeType ?? "", charset ?? void 0));
-    if (request.mimeType === "text/event-stream" && contentText) {
+    const importedEventSourceMessages = entry.customAsArray("eventSourceMessages");
+    if (importedEventSourceMessages) {
+      for (const message of importedEventSourceMessages) {
+        if (message.time === void 0 || message.eventName === void 0 || message.eventId === void 0) {
+          continue;
+        }
+        request.addEventSourceMessage(message.time, message.eventName, message.eventId, message.data);
+      }
+    } else if (request.mimeType === "text/event-stream" && contentText) {
       const issueTime2 = entry.startedDateTime.getTime() / 1e3;
       const onEvent = (eventName, data, eventId) => {
         request.addEventSourceMessage(issueTime2, eventName, eventId, data);
@@ -848,6 +883,24 @@ var Entry = class _Entry {
       entry._webSocketMessages = messages;
     } else {
       delete entry._webSocketMessages;
+    }
+    const eventSourceMessages = harEntry.request.eventSourceMessages();
+    if (eventSourceMessages?.length) {
+      const messages = [];
+      for (const message of eventSourceMessages) {
+        const messageDTO = {
+          time: message.time,
+          eventName: message.eventName,
+          eventId: message.eventId
+        };
+        if (!options.sanitize) {
+          messageDTO.data = message.data;
+        }
+        messages.push(messageDTO);
+      }
+      entry._eventSourceMessages = messages;
+    } else {
+      delete entry._eventSourceMessages;
     }
     return entry;
   }

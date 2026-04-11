@@ -7151,8 +7151,9 @@ var SplitWidget = class extends Common10.ObjectWrapper.eventMixin(Widget) {
    */
   #totalSizeDIP() {
     if (!this.#totalSizeCSS) {
-      this.#totalSizeCSS = this.#isVertical ? this.contentElement.offsetWidth : this.contentElement.offsetHeight;
-      this.#totalSizeOtherDimensionCSS = this.#isVertical ? this.contentElement.offsetHeight : this.contentElement.offsetWidth;
+      const { width, height } = this.contentElement.getBoundingClientRect();
+      this.#totalSizeCSS = this.#isVertical ? width : height;
+      this.#totalSizeOtherDimensionCSS = this.#isVertical ? height : width;
     }
     return ZoomManager.instance().cssToDIP(this.#totalSizeCSS);
   }
@@ -7175,9 +7176,9 @@ var SplitWidget = class extends Common10.ObjectWrapper.eventMixin(Widget) {
       this.#resizerElementSize = this.#isVertical ? this.#resizerElement.offsetWidth : this.#resizerElement.offsetHeight;
     }
     this.#removeAllLayoutProperties();
-    const roundSizeCSS = Math.round(ZoomManager.instance().dipToCSS(sizeDIP));
-    const sidebarSizeValue = roundSizeCSS + "px";
-    const mainSizeValue = this.#totalSizeCSS - roundSizeCSS + "px";
+    const sizeCSS = ZoomManager.instance().dipToCSS(sizeDIP);
+    const sidebarSizeValue = sizeCSS + "px";
+    const mainSizeValue = this.#totalSizeCSS - sizeCSS + "px";
     this.#sidebarElement.style.flexBasis = sidebarSizeValue;
     if (this.#isVertical) {
       this.#sidebarElement.style.width = sidebarSizeValue;

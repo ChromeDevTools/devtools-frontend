@@ -312,9 +312,10 @@ export class CookieItemsView extends UI.Widget.VBox {
         void this.model.deleteCookies(this.shownCookies);
     }
     deleteSelectedItem() {
-        if (this.selectedCookie) {
+        const cookie = this.selectedCookie;
+        if (cookie) {
             this.showPreview(null);
-            void this.model.deleteCookie(this.selectedCookie);
+            void this.model.deleteCookie(cookie);
         }
     }
     onCookieListUpdate() {

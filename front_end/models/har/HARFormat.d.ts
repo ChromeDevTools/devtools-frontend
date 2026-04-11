@@ -46,6 +46,7 @@ declare class HARPageTimings extends HARBase {
     constructor(data: any);
 }
 export declare class HAREntry extends HARBase {
+    #private;
     pageref: string | undefined;
     startedDateTime: Date;
     time: number;

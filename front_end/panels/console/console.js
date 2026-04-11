@@ -7809,10 +7809,10 @@ var UIStrings6 = {
    */
   consolePrompt: "Console prompt",
   /**
-   * @description Warning shown to users when pasting text into the DevTools console.
+   * @description Warning shown to users when pasting text into the DevTools console. IMPORTANT: keep double quotes around PH1 and do not use single quotes.
    * @example {allow pasting} PH1
    */
-  selfXssWarning: "Warning: Don\u2019t paste code into the DevTools Console that you don\u2019t understand or haven\u2019t reviewed yourself. This could allow attackers to steal your identity or take control of your computer. Please type \u2018{PH1}\u2019 below and press Enter to allow pasting.",
+  selfXssWarning: "Warning: Don\u2019t paste code into the DevTools Console that you don\u2019t understand or haven\u2019t reviewed yourself. This could allow attackers to steal your identity or take control of your computer. Please type \u201C{PH1}\u201D below and press Enter to allow pasting.",
   /**
    * @description Text a user needs to type in order to confirm that they are aware of the danger of pasting code into the DevTools console.
    */

@@ -26,6 +26,7 @@ export declare class ExportForAgentsDialog extends UI.Widget.VBox {
         markdownText: string;
         onConversationSaveAs: () => void;
     }, view?: View);
+    static clearPersistedViewState(): void;
     performUpdate(): void;
     static show({ promptText, markdownText, onConversationSaveAs, }: {
         promptText: string | Promise<string>;

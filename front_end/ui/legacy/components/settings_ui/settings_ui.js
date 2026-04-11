@@ -113,12 +113,12 @@ var renderControlForSetting = function(setting, subtitle) {
     }
     default:
       console.error("Invalid setting type: " + setting.type());
-      return null;
+      return nothing;
   }
 };
 var createControlForSetting = function(setting, subtitle) {
   const template = renderControlForSetting(setting, subtitle);
-  if (template === null) {
+  if (template === nothing) {
     return null;
   }
   const fragment = document.createDocumentFragment();

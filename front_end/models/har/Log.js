@@ -151,6 +151,26 @@ export class Entry {
         else {
             delete entry._webSocketMessages;
         }
+        const eventSourceMessages = harEntry.request.eventSourceMessages();
+        if (eventSourceMessages?.length) {
+            const messages = [];
+            for (const message of eventSourceMessages) {
+                const messageDTO = {
+                    time: message.time,
+                    eventName: message.eventName,
+                    eventId: message.eventId,
+                };
+                if (!options.sanitize) {
+                    // Omit the data when sanitizing, as it could contain sensitive information.
+                    messageDTO.data = message.data;
+                }
+                messages.push(messageDTO);
+            }
+            entry._eventSourceMessages = messages;
+        }
+        else {
+            delete entry._eventSourceMessages;
+        }
         return entry;
     }
     async buildRequest() {

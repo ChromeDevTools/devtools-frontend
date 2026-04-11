@@ -164,6 +164,7 @@ style.setProperty('--image-file-flex-direction', 'url(\"' + new URL(new URL('fle
 style.setProperty('--image-file-flex-no-wrap', 'url(\"' + new URL(new URL('flex-no-wrap.svg', import.meta.url).href).toString() + '\")');
 style.setProperty('--image-file-flex-wrap', 'url(\"' + new URL(new URL('flex-wrap.svg', import.meta.url).href).toString() + '\")');
 style.setProperty('--image-file-flow', 'url(\"' + new URL(new URL('flow.svg', import.meta.url).href).toString() + '\")');
+style.setProperty('--image-file-flowsheet', 'url(\"' + new URL(new URL('flowsheet.svg', import.meta.url).href).toString() + '\")');
 style.setProperty('--image-file-fold-more', 'url(\"' + new URL(new URL('fold-more.svg', import.meta.url).href).toString() + '\")');
 style.setProperty('--image-file-folder-asterisk', 'url(\"' + new URL(new URL('folder-asterisk.svg', import.meta.url).href).toString() + '\")');
 style.setProperty('--image-file-folder-off', 'url(\"' + new URL(new URL('folder-off.svg', import.meta.url).href).toString() + '\")');

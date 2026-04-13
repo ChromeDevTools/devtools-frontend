@@ -203,6 +203,17 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
     return await stackTracePromise;
   }
 
+  async createStackTraceFromErrorStackLikeString(
+      target: SDK.Target.Target, stack: string,
+      exceptionDetails?: Protocol.Runtime.ExceptionDetails): Promise<StackTrace.StackTrace.ParsedErrorStackTrace> {
+    const model =
+        target.model(StackTraceImpl.StackTraceModel.StackTraceModel) as StackTraceImpl.StackTraceModel.StackTraceModel;
+    const stackTracePromise =
+        model.createFromErrorStackLikeString(stack, this.#translateRawFrames.bind(this), exceptionDetails);
+    this.recordLiveLocationChange(stackTracePromise);
+    return await stackTracePromise;
+  }
+
   async createLiveLocation(
       rawLocation: SDK.DebuggerModel.Location, updateDelegate: (arg0: LiveLocation) => Promise<void>,
       locationPool: LiveLocationPool): Promise<Location|null> {

@@ -25,9 +25,13 @@ description: MANDATORY: Activate this skill ANY TIME you need to build the proje
 - `npm run lint` will execute ESLint and StyleLint. It will report any violations and automatically fix them where possible.
 - To run the linter on a specific file or directory, you can run `npm run lint -- <PATH>` where `PATH` is a path to a file or directory. This will also automatically fix violations where possible.
 
+## Presubmit
+
+- `git cl presubmit -u` will check if the current change is ready for upload. It will also format and lint the change.
+
 ## Best practices
 
 - Run tests often to verify your changes.
 - Prefer using a fast build, if it exists, to keep the feedback loop shorter.
 - Periodically compile with TypeScript to check for type errors.
-- Run linting at the end of your code changes.
+- Run `git cl presubmit -u` at the end of your code changes.

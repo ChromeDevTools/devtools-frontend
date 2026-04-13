@@ -1880,10 +1880,30 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
       const throttlingMenu =
           contextMenu.debugSection().appendSubMenuItem(i18nString(UIStrings.throttleRequests), /* disabled=*/ true);
 
-      const urlWithoutScheme = request.parsedURL.urlWithoutScheme();
-      const urlPattern = urlWithoutScheme &&
+      const parsed = request.parsedURL;
+      let urlPatternString = '';
+      if (parsed.isValid) {
+        // We cannot escape parsed.urlWithoutScheme() directly. If we escaped the first '?'
+        // URLPattern would treat the entire string as the pathname and fail to match the query string.
+        // Thus, we must escape the components individually and reconstruct the pattern string.
+        urlPatternString = '*://' + Platform.StringUtilities.escapeForURLPattern(parsed.host);
+        if (parsed.port) {
+          urlPatternString += ':' + Platform.StringUtilities.escapeForURLPattern(parsed.port);
+        }
+        urlPatternString += Platform.StringUtilities.escapeForURLPattern(parsed.path);
+        if (parsed.queryParams) {
+          urlPatternString += '?' + Platform.StringUtilities.escapeForURLPattern(parsed.queryParams);
+        }
+        if (parsed.fragment) {
+          urlPatternString += '#' + Platform.StringUtilities.escapeForURLPattern(parsed.fragment);
+        }
+      } else if (parsed.urlWithoutScheme()) {
+        urlPatternString = '*://' + Platform.StringUtilities.escapeForURLPattern(parsed.urlWithoutScheme());
+      }
+
+      const urlPattern = urlPatternString &&
           SDK.NetworkManager.RequestURLPattern.create(
-              `*://${urlWithoutScheme}` as SDK.NetworkManager.URLPatternConstructorString);
+              urlPatternString as SDK.NetworkManager.URLPatternConstructorString);
       if (urlPattern) {
         throttlingMenu.setEnabled(true);
         blockingMenu.setEnabled(true);
@@ -1906,30 +1926,39 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
             {jslogContext: 'throttle-request-url'});
       }
 
-        const domain = request.parsedURL.domain();
-        const domainPattern = domain &&
-            SDK.NetworkManager.RequestURLPattern.create(
-                `*://${domain}` as SDK.NetworkManager.URLPatternConstructorString);
-        if (domainPattern) {
-          throttlingMenu.setEnabled(true);
-          blockingMenu.setEnabled(true);
-          const existingConditions = manager.requestConditions.findCondition(domainPattern.constructorString);
-          const isBlocking = existingConditions?.conditions === SDK.NetworkManager.BlockingConditions;
-          const isThrottling = existingConditions &&
-              existingConditions.conditions !== SDK.NetworkManager.BlockingConditions &&
-              existingConditions.conditions !== SDK.NetworkManager.NoThrottlingConditions;
-          const croppedURL = Platform.StringUtilities.trimMiddle(domainPattern.constructorString, maxBlockedURLLength);
-          blockingMenu.debugSection().appendItem(
-              isBlocking ? i18nString(UIStrings.unblockS, {PH1: croppedURL}) : i18nString(UIStrings.blockRequestDomain),
-              () => isBlocking ? removeRequestCondition(domainPattern) :
-                                 addRequestCondition(domainPattern, SDK.NetworkManager.BlockingConditions),
-              {jslogContext: 'block-request-domain'});
-          throttlingMenu.debugSection().appendItem(
-              isThrottling ? i18nString(UIStrings.unthrottleS, {PH1: croppedURL}) :
-                             i18nString(UIStrings.throttleRequestDomain),
-              () => isThrottling ? removeRequestCondition(domainPattern) :
-                                   addRequestCondition(domainPattern, SDK.NetworkManager.Slow3GConditions),
-              {jslogContext: 'throttle-request-domain'});
+      let domainPatternString = '';
+      if (parsed.isValid) {
+        domainPatternString = '*://' + Platform.StringUtilities.escapeForURLPattern(parsed.host);
+        if (parsed.port) {
+          domainPatternString += ':' + Platform.StringUtilities.escapeForURLPattern(parsed.port);
+        }
+      } else if (parsed.domain()) {
+        domainPatternString = '*://' + Platform.StringUtilities.escapeForURLPattern(parsed.domain());
+      }
+
+      const domainPattern = domainPatternString &&
+          SDK.NetworkManager.RequestURLPattern.create(
+              domainPatternString as SDK.NetworkManager.URLPatternConstructorString);
+      if (domainPattern) {
+        throttlingMenu.setEnabled(true);
+        blockingMenu.setEnabled(true);
+        const existingConditions = manager.requestConditions.findCondition(domainPattern.constructorString);
+        const isBlocking = existingConditions?.conditions === SDK.NetworkManager.BlockingConditions;
+        const isThrottling = existingConditions &&
+            existingConditions.conditions !== SDK.NetworkManager.BlockingConditions &&
+            existingConditions.conditions !== SDK.NetworkManager.NoThrottlingConditions;
+        const croppedURL = Platform.StringUtilities.trimMiddle(domainPattern.constructorString, maxBlockedURLLength);
+        blockingMenu.debugSection().appendItem(
+            isBlocking ? i18nString(UIStrings.unblockS, {PH1: croppedURL}) : i18nString(UIStrings.blockRequestDomain),
+            () => isBlocking ? removeRequestCondition(domainPattern) :
+                               addRequestCondition(domainPattern, SDK.NetworkManager.BlockingConditions),
+            {jslogContext: 'block-request-domain'});
+        throttlingMenu.debugSection().appendItem(
+            isThrottling ? i18nString(UIStrings.unthrottleS, {PH1: croppedURL}) :
+                           i18nString(UIStrings.throttleRequestDomain),
+            () => isThrottling ? removeRequestCondition(domainPattern) :
+                                 addRequestCondition(domainPattern, SDK.NetworkManager.Slow3GConditions),
+            {jslogContext: 'throttle-request-domain'});
       }
 
       if (SDK.NetworkManager.NetworkManager.canReplayRequest(request)) {

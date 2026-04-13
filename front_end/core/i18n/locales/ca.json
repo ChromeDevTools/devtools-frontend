@@ -1061,9 +1061,6 @@
   "entrypoints/main/MainImpl.ts | dockToRight": {
     "message": "Acobla a la dreta"
   },
-  "entrypoints/main/MainImpl.ts | externalRequestReceived": {
-    "message": "DevTools ha rebut una sol·licitud externa"
-  },
   "entrypoints/main/MainImpl.ts | focusDebuggee": {
     "message": "Posa el focus a la pàgina"
   },
@@ -1327,6 +1324,12 @@
   },
   "generated/Deprecation.ts | DataUrlInSvgUse": {
     "message": "La compatibilitat amb les URL data: a SVGUseElement està obsoleta i se suprimirà en el futur."
+  },
+  "generated/Deprecation.ts | DocumentCreateEventKeyboardEvents": {
+    "message": "document.createEvent('KeyboardEvents') is deprecated and will be removed. Use new KeyboardEvent() instead."
+  },
+  "generated/Deprecation.ts | DocumentCreateEventTransitionEvent": {
+    "message": "document.createEvent('TransitionEvent') is deprecated and will be removed. Use new TransitionEvent() instead."
   },
   "generated/Deprecation.ts | ExampleBrowserProcessDeprecation": {
     "message": "Això és un exemple per mostrar el codi necessari per a una discontinuació informada del procés del navegador."
@@ -2246,6 +2249,30 @@
   "models/trace/insights/Cache.ts | title": {
     "message": "Utilitza temps de vida eficients de la memòria cau"
   },
+  "models/trace/insights/CharacterSet.ts | description": {
+    "message": "A character encoding declaration is required. It can be done with a meta charset tag in the first 1024 bytes of the HTML or in the Content-Type HTTP response header. [Learn more about declaring the character encoding](https://developer.chrome.com/docs/insights/charset/)."
+  },
+  "models/trace/insights/CharacterSet.ts | failedHttpHeader": {
+    "message": "Does not declare charset in HTTP header"
+  },
+  "models/trace/insights/CharacterSet.ts | failedMetaCharsetLate": {
+    "message": "Declares charset using a meta tag after the first 1024 bytes"
+  },
+  "models/trace/insights/CharacterSet.ts | failedMetaCharsetMissing": {
+    "message": "Does not declare charset using a meta tag"
+  },
+  "models/trace/insights/CharacterSet.ts | failedMetaCharsetUnknown": {
+    "message": "Could not determine meta charset declaration from trace"
+  },
+  "models/trace/insights/CharacterSet.ts | passingHttpHeader": {
+    "message": "Declares charset in HTTP header"
+  },
+  "models/trace/insights/CharacterSet.ts | passingMetaCharsetEarly": {
+    "message": "Declares charset using a meta tag in the first 1024 bytes"
+  },
+  "models/trace/insights/CharacterSet.ts | title": {
+    "message": "Declare a character encoding"
+  },
   "models/trace/insights/DOMSize.ts | description": {
     "message": "Un DOM gran pot augmentar la durada dels càlculs d'estil i de les recomposicions del disseny, i això repercuteix en la capacitat de resposta de la pàgina. Un DOM gran també augmenta l'ús de memòria. [Obtén informació sobre com pots evitar una mida del DOM massa gran](https://developer.chrome.com/docs/performance/insights/dom-size)."
   },
@@ -2453,8 +2480,11 @@
   "models/trace/insights/LCPDiscovery.ts | fetchPriorityShouldBeApplied": {
     "message": "S'ha d'aplicar fetchpriority=high"
   },
+  "models/trace/insights/LCPDiscovery.ts | fetchPriorityShouldBeAppliedToImagePreload": {
+    "message": "fetchpriority=high should be applied to the image preload request"
+  },
   "models/trace/insights/LCPDiscovery.ts | lazyLoadNotApplied": {
-    "message": "no s'ha aplicat la càrrega lenta"
+    "message": "LCP resources should not use loading=lazy"
   },
   "models/trace/insights/LCPDiscovery.ts | lcpLoadDelay": {
     "message": "La imatge LCP s'ha carregat {PH1} després del primer punt d'inici."
@@ -2657,24 +2687,6 @@
   "panels/accessibility/ARIAAttributesView.ts | noAriaAttributes": {
     "message": "No hi ha cap atribut ARIA"
   },
-  "panels/accessibility/AXBreadcrumbsPane.ts | accessibilityTree": {
-    "message": "Arbre d'accessibilitat"
-  },
-  "panels/accessibility/AXBreadcrumbsPane.ts | fullTreeExperimentDescription": {
-    "message": "L'arbre d'accessibilitat s'ha mogut a l'extrem superior dret de l'arbre DOM."
-  },
-  "panels/accessibility/AXBreadcrumbsPane.ts | fullTreeExperimentName": {
-    "message": "Activa l'arbre d'accessibilitat de pàgina completa"
-  },
-  "panels/accessibility/AXBreadcrumbsPane.ts | ignored": {
-    "message": "Ignorat"
-  },
-  "panels/accessibility/AXBreadcrumbsPane.ts | reloadRequired": {
-    "message": "S'ha de tornar a carregar perquè el canvi tingui efecte"
-  },
-  "panels/accessibility/AXBreadcrumbsPane.ts | scrollIntoView": {
-    "message": "Desplaça fins que sigui visible"
-  },
   "panels/accessibility/AccessibilityNodeView.ts | accessibilityNodeNotExposed": {
     "message": "Node d'accessibilitat no exposat"
   },
@@ -2743,6 +2755,9 @@
   },
   "panels/accessibility/AccessibilityNodeView.ts | placeholderIsPlaceholderOnAncestor": {
     "message": "{PH1} és {PH2} a l'antecedent: "
+  },
+  "panels/accessibility/AccessibilitySidebarView.ts | showAccessibilityTree": {
+    "message": "Mostra l'arbre d'accessibilitat"
   },
   "panels/accessibility/AccessibilityStrings.ts | aHumanreadableVersionOfTheValue": {
     "message": "Una versió del valor d'un widget d'intervals llegible per humans (quan sigui necessari)."
@@ -3176,8 +3191,38 @@
   "panels/ai_assistance/components/DisabledWidget.ts | turnOnForStylesRequestsPerformanceAndFiles": {
     "message": "Activa {PH1} per obtenir ajuda amb els estils, les sol·licituds de xarxa, el rendiment i els fitxers"
   },
+  "panels/ai_assistance/components/ExportForAgentsDialog.ts | asMarkdown": {
+    "message": "As markdown"
+  },
+  "panels/ai_assistance/components/ExportForAgentsDialog.ts | asPrompt": {
+    "message": "As prompt"
+  },
+  "panels/ai_assistance/components/ExportForAgentsDialog.ts | copiedToClipboard": {
+    "message": "Copied to clipboard"
+  },
+  "panels/ai_assistance/components/ExportForAgentsDialog.ts | copyToClipboard": {
+    "message": "Copy to clipboard"
+  },
+  "panels/ai_assistance/components/ExportForAgentsDialog.ts | disclaimer": {
+    "message": "This is an experimental AI feature and won’t always get it right. Double check this text before pasting into another tool."
+  },
+  "panels/ai_assistance/components/ExportForAgentsDialog.ts | exportForAgents": {
+    "message": "Copy for your coding agent"
+  },
+  "panels/ai_assistance/components/ExportForAgentsDialog.ts | generatingSummary": {
+    "message": "Generating summary…"
+  },
+  "panels/ai_assistance/components/ExportForAgentsDialog.ts | saveAsMarkdown": {
+    "message": "Save as…"
+  },
   "panels/ai_assistance/components/WalkthroughView.ts | close": {
     "message": "Tanca"
+  },
+  "panels/ai_assistance/components/WalkthroughView.ts | hideAgentWalkthrough": {
+    "message": "Hide agent walkthrough"
+  },
+  "panels/ai_assistance/components/WalkthroughView.ts | hideThinking": {
+    "message": "Hide thinking"
   },
   "panels/ai_assistance/components/WalkthroughView.ts | showAgentWalkthrough": {
     "message": "Mostra la guia de l'agent"
@@ -3186,7 +3231,7 @@
     "message": "Mostra el raonament"
   },
   "panels/ai_assistance/components/WalkthroughView.ts | title": {
-    "message": "Passos de la investigació"
+    "message": "Agent walkthrough"
   },
   "panels/animation/AnimationTimeline.ts | animationDescription": {
     "message": "En aquesta pàgina pots inspeccionar i modificar les animacions."
@@ -3763,6 +3808,18 @@
   },
   "panels/application/CookieItemsView.ts | showUrlDecoded": {
     "message": "Mostra l'URL descodificat"
+  },
+  "panels/application/CrashReportContextView.ts | filterByText": {
+    "message": "Filtra per clau o valor"
+  },
+  "panels/application/CrashReportContextView.ts | noContext": {
+    "message": "No s'ha detectat cap entrada de context en cap marc."
+  },
+  "panels/application/CrashReportContextView.ts | refresh": {
+    "message": "Actualitza"
+  },
+  "panels/application/CrashReportContextView.ts | unknownFrame": {
+    "message": "Marc desconegut"
   },
   "panels/application/DOMStorageItemsView.ts | domStorageItemDeleted": {
     "message": "L'element d'emmagatzematge s'ha suprimit."
@@ -4538,6 +4595,9 @@
   "panels/application/PreloadingTreeElement.ts | speculativeLoads": {
     "message": "Càrregues especulatives"
   },
+  "panels/application/ReportingApiTreeElement.ts | crashReportContext": {
+    "message": "Context de l'informe d'error"
+  },
   "panels/application/ReportingApiTreeElement.ts | reportingApi": {
     "message": "API d'informes"
   },
@@ -4861,6 +4921,93 @@
   },
   "panels/application/TrustTokensTreeElement.ts | trustTokens": {
     "message": "Testimonis d'estat privats"
+  },
+  "panels/application/WebMCPView.ts | canceled": {
+    "message": "Canceled"
+  },
+  "panels/application/WebMCPView.ts | canceledCount": {
+    "message": "S'han cancel·lat: {PH1}"
+  },
+  "panels/application/WebMCPView.ts | clearFilters": {
+    "message": "Clear filters"
+  },
+  "panels/application/WebMCPView.ts | clearLog": {
+    "message": "Clear log"
+  },
+  "panels/application/WebMCPView.ts | close": {
+    "message": "Tanca"
+  },
+  "panels/application/WebMCPView.ts | declarative": {
+    "message": "Declarative"
+  },
+  "panels/application/WebMCPView.ts | error": {
+    "message": "Error"
+  },
+  "panels/application/WebMCPView.ts | failed": {
+    "message": "Han fallat: {PH1}"
+  },
+  "panels/application/WebMCPView.ts | filter": {
+    "message": "Filter"
+  },
+  "panels/application/WebMCPView.ts | frame": {
+    "message": "Marc"
+  },
+  "panels/application/WebMCPView.ts | imperative": {
+    "message": "Imperative"
+  },
+  "panels/application/WebMCPView.ts | inProgress": {
+    "message": "In Progress"
+  },
+  "panels/application/WebMCPView.ts | inProgressCount": {
+    "message": "En curs: {PH1}"
+  },
+  "panels/application/WebMCPView.ts | input": {
+    "message": "Input"
+  },
+  "panels/application/WebMCPView.ts | name": {
+    "message": "Name"
+  },
+  "panels/application/WebMCPView.ts | noCallsPlaceholder": {
+    "message": "Start interacting with your WebMCP agent to see real-time tool calls and executions here."
+  },
+  "panels/application/WebMCPView.ts | noCallsPlaceholderTitle": {
+    "message": "Tool Activity"
+  },
+  "panels/application/WebMCPView.ts | noToolsPlaceholder": {
+    "message": "Registered WebMCP tools for this page will appear here. No tools have been registered or detected yet."
+  },
+  "panels/application/WebMCPView.ts | noToolsPlaceholderTitle": {
+    "message": "Available WebMCP Tools"
+  },
+  "panels/application/WebMCPView.ts | output": {
+    "message": "Output"
+  },
+  "panels/application/WebMCPView.ts | pending": {
+    "message": "In Progress"
+  },
+  "panels/application/WebMCPView.ts | status": {
+    "message": "Status"
+  },
+  "panels/application/WebMCPView.ts | statusTypes": {
+    "message": "Status types"
+  },
+  "panels/application/WebMCPView.ts | success": {
+    "message": "Success"
+  },
+  "panels/application/WebMCPView.ts | toolDetails": {
+    "message": "Detalls"
+  },
+  "panels/application/WebMCPView.ts | toolRegistry": {
+    "message": "Available Tools"
+  },
+  "panels/application/WebMCPView.ts | toolTypes": {
+    "message": "Tool types"
+  },
+  "panels/application/WebMCPView.ts | totalCalls": {
+    "message": "Total de trucades: {PH1}"
+  },
+  "panels/application/WebMCPView.ts | viewInElementsPanel": {
+    "message": "Mostra al tauler Elements"
   },
   "panels/application/application-meta.ts | application": {
     "message": "Aplicació"
@@ -5344,6 +5491,18 @@
   },
   "panels/application/components/BounceTrackingMitigationsView.ts | stateDeletedFor": {
     "message": "S'ha suprimit l'estat dels llocs web següents:"
+  },
+  "panels/application/components/CrashReportContextGrid.ts | copyKey": {
+    "message": "Copia la clau"
+  },
+  "panels/application/components/CrashReportContextGrid.ts | copyValue": {
+    "message": "Copia el valor"
+  },
+  "panels/application/components/CrashReportContextGrid.ts | key": {
+    "message": "Clau"
+  },
+  "panels/application/components/CrashReportContextGrid.ts | value": {
+    "message": "Valor"
   },
   "panels/application/components/EndpointsGrid.ts | endpointsDescription": {
     "message": "Aquí trobaràs la llista de punts finals que reben els informes"
@@ -5966,6 +6125,9 @@
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusNavigationBadHttpStatus": {
     "message": "La navegació per la renderització prèvia ha fallat a causa d'un codi d'estat de resposta HTTP que no era 2xx."
   },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusNavigationBadHttpStatusWithStatusCode": {
+    "message": "The prerendering navigation failed because of a non-2xx HTTP response status code ({PH1})."
+  },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusNavigationRequestBlockedByCsp": {
     "message": "La política de seguretat del contingut ha bloquejat el procés de navegació per la renderització prèvia."
   },
@@ -6466,9 +6628,6 @@
   },
   "panels/common/BadgeNotification.ts | viewProfile": {
     "message": "Mostra el perfil"
-  },
-  "panels/common/CopyChangesToPrompt.ts | responseCopiedToClipboard": {
-    "message": "Resposta copiada al porta-retalls"
   },
   "panels/common/DOMLinkifier.ts | node": {
     "message": "<node>"
@@ -7529,12 +7688,6 @@
   "panels/elements/ElementsPanel.ts | styles": {
     "message": "Estils"
   },
-  "panels/elements/ElementsPanel.ts | switchToAccessibilityTreeView": {
-    "message": "Canvia a la vista d'arbre d'accessibilitat"
-  },
-  "panels/elements/ElementsPanel.ts | switchToDomTreeView": {
-    "message": "Canvia a la vista d'arbre DOM"
-  },
   "panels/elements/ElementsPanel.ts | theDeferredDomNodeCouldNotBe": {
     "message": "El node DOM diferit no s'ha pogut resoldre en un node vàlid."
   },
@@ -7591,6 +7744,9 @@
   },
   "panels/elements/ElementsTreeElement.ts | copyXpath": {
     "message": "Copia XPath"
+  },
+  "panels/elements/ElementsTreeElement.ts | creatorAdScriptAncestry": {
+    "message": "Creator ad script ancestry"
   },
   "panels/elements/ElementsTreeElement.ts | cut": {
     "message": "Retalla"
@@ -7679,6 +7835,9 @@
   "panels/elements/ElementsTreeElement.ts | explainSubgrids": {
     "message": "Explica les subquadrícules"
   },
+  "panels/elements/ElementsTreeElement.ts | filterListRule": {
+    "message": "Filter list rule"
+  },
   "panels/elements/ElementsTreeElement.ts | findGridDefinition": {
     "message": "Cerca la definició de la quadrícula"
   },
@@ -7694,6 +7853,9 @@
   "panels/elements/ElementsTreeElement.ts | hideElement": {
     "message": "Amaga l'element"
   },
+  "panels/elements/ElementsTreeElement.ts | noProvenanceAvailable": {
+    "message": "No provenance data is available"
+  },
   "panels/elements/ElementsTreeElement.ts | openMediaPanel": {
     "message": "Ves al tauler multimèdia"
   },
@@ -7705,6 +7867,9 @@
   },
   "panels/elements/ElementsTreeElement.ts | reveal": {
     "message": "mostra"
+  },
+  "panels/elements/ElementsTreeElement.ts | rootScriptFilterListRule": {
+    "message": "Root script filter list rule"
   },
   "panels/elements/ElementsTreeElement.ts | scrollIntoView": {
     "message": "Desplaça fins que sigui visible"
@@ -7730,8 +7895,8 @@
   "panels/elements/ElementsTreeElement.ts | styleScrollbars": {
     "message": "Dona estil a les barres de desplaçament"
   },
-  "panels/elements/ElementsTreeElement.ts | thisFrameWasIdentifiedAsAnAd": {
-    "message": "Aquest marc s'ha identificat com un marc publicitari"
+  "panels/elements/ElementsTreeElement.ts | thisElementWasIdentifiedAsAnAd": {
+    "message": "This element was identified as an ad"
   },
   "panels/elements/ElementsTreeElement.ts | useSInTheConsoleToReferToThis": {
     "message": "Utilitza {PH1} a la consola per fer referència a aquest element."
@@ -7747,6 +7912,9 @@
   },
   "panels/elements/ElementsTreeOutline.ts | pageDom": {
     "message": "DOM de pàgina"
+  },
+  "panels/elements/ElementsTreeOutline.ts | showAllLines": {
+    "message": "Show all ({PH1} lines)"
   },
   "panels/elements/ElementsTreeOutline.ts | showAllNodesDMore": {
     "message": "Mostra tots els nodes ({PH1} més)"
@@ -7865,6 +8033,9 @@
   "panels/elements/ShortcutTreeElement.ts | reveal": {
     "message": "mostra"
   },
+  "panels/elements/StylePropertiesSection.ts | collapseExpandedRule": {
+    "message": "Collapse expanded rule"
+  },
   "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
     "message": "full d'estil construït"
   },
@@ -7879,6 +8050,9 @@
   },
   "panels/elements/StylePropertiesSection.ts | cssSelector": {
     "message": "Selector de: CSS"
+  },
+  "panels/elements/StylePropertiesSection.ts | expandCollapsedRule": {
+    "message": "Expand collapsed rule"
   },
   "panels/elements/StylePropertiesSection.ts | injectedStylesheet": {
     "message": "full d'estil injectat"
@@ -9239,6 +9413,12 @@
   "panels/lighthouse/LighthouseStatusView.ts | ahSorryWeRanIntoAnError": {
     "message": "Ho sentim. S'ha produït un error."
   },
+  "panels/lighthouse/LighthouseStatusView.ts | aiAuditingS": {
+    "message": "AI assistance is auditing {PH1}"
+  },
+  "panels/lighthouse/LighthouseStatusView.ts | aiAuditingYourWebPage": {
+    "message": "AI assistance is auditing your web page"
+  },
   "panels/lighthouse/LighthouseStatusView.ts | almostThereLighthouseIsNow": {
     "message": "Ja falta poc! Lighthouse està generant el teu informe."
   },
@@ -10526,6 +10706,9 @@
   "panels/network/NetworkLogViewColumns.ts | requestHeaders": {
     "message": "Capçaleres de sol·licitud"
   },
+  "panels/network/NetworkLogViewColumns.ts | requestNumber": {
+    "message": "Request #"
+  },
   "panels/network/NetworkLogViewColumns.ts | responseHeaders": {
     "message": "Capçaleres de resposta"
   },
@@ -11714,9 +11897,6 @@
   "panels/profiler/HeapSnapshotGridNodes.ts | userObjectReachableFromWindow": {
     "message": "Es pot accedir a l'objecte de l'usuari des de la finestra"
   },
-  "panels/profiler/HeapSnapshotProxy.ts | anErrorOccurredWhenACallToMethod": {
-    "message": "S'ha produït un error quan s'ha sol·licitat una crida al mètode \"{PH1}\""
-  },
   "panels/profiler/HeapSnapshotView.ts | AllocationTimelinesShowInstrumented": {
     "message": "Registra les assignacions de memòria al llarg del temps i aïlla les fuites de memòria seleccionant intervals amb assignacions que encara estan actives"
   },
@@ -12543,7 +12723,7 @@
     "message": "Element"
   },
   "panels/recorder/components/StepView.ts | elementRoleInput": {
-    "message": "Entrada"
+    "message": "Input"
   },
   "panels/recorder/components/StepView.ts | emulateNetworkConditionsStepTitle": {
     "message": "Emula les condicions de la xarxa"
@@ -13660,6 +13840,9 @@
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | userAgentString": {
     "message": "Cadena d'agent d'usuari"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | userAgentStringCannotBeEmpty": {
+    "message": "User agent string cannot be empty."
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | userAgentType": {
     "message": "Tipus d'agent d'usuari"
@@ -15299,9 +15482,6 @@
   "panels/timeline/TimelinePanel.ts | exportingFailed": {
     "message": "No s'ha pogut exportar la traça"
   },
-  "panels/timeline/TimelinePanel.ts | externalRequestReceived": {
-    "message": "DevTools ha rebut una sol·licitud externa"
-  },
   "panels/timeline/TimelinePanel.ts | fixMe": {
     "message": "Arregla"
   },
@@ -15934,6 +16114,30 @@
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | recommendedThrottlingReason": {
     "message": "Et recomanem que canviïs la configuració per simular entorns d'usuaris reals"
+  },
+  "panels/timeline/components/CWVMetrics.ts | dismissTitle": {
+    "message": "Ignora"
+  },
+  "panels/timeline/components/CWVMetrics.ts | fieldMismatchNotice": {
+    "message": "Hi ha molts motius pels quals [és possible que no coincideixin](https://web.dev/articles/lab-and-field-data-differences) les mètriques locals i de camp. Ajusta la [configuració de la limitació i l'emulació de dispositius](https://developer.chrome.com/docs/devtools/device-mode) per analitzar traces més semblants a l'entorn de l'usuari mitjà."
+  },
+  "panels/timeline/components/CWVMetrics.ts | fieldMismatchTitle": {
+    "message": "Les mètriques locals i de camp no coincideixen"
+  },
+  "panels/timeline/components/CWVMetrics.ts | fieldScoreLabel": {
+    "message": "Camp ({PH1})"
+  },
+  "panels/timeline/components/CWVMetrics.ts | metricScore": {
+    "message": "{PH1}: puntuació {PH3} ({PH2})"
+  },
+  "panels/timeline/components/CWVMetrics.ts | metricScoreUnavailable": {
+    "message": "{PH1}: no disponible"
+  },
+  "panels/timeline/components/CWVMetrics.ts | originOption": {
+    "message": "Origen"
+  },
+  "panels/timeline/components/CWVMetrics.ts | urlOption": {
+    "message": "URL"
   },
   "panels/timeline/components/DetailsView.ts | forcedReflow": {
     "message": "Recomposició forçada"
@@ -16718,6 +16922,9 @@
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "Atura"
   },
+  "panels/timeline/timeline-meta.ts | timelineShowAllEvents": {
+    "message": "Mostra tots els esdeveniments"
+  },
   "panels/timeline/utils/IgnoreList.ts | skip3rdPartyScripts": {
     "message": "Marcat amb ignoreList al mapa d'origen"
   },
@@ -16859,6 +17066,12 @@
   "panels/webauthn/WebauthnPane.ts | signCount": {
     "message": "Recompte de signatures"
   },
+  "panels/webauthn/WebauthnPane.ts | supportsHmacSecret": {
+    "message": "Supports hmac-secret"
+  },
+  "panels/webauthn/WebauthnPane.ts | supportsHmacSecretMc": {
+    "message": "Supports hmac-secret-mc"
+  },
   "panels/webauthn/WebauthnPane.ts | supportsLargeBlob": {
     "message": "Admet BLOB grans"
   },
@@ -16955,10 +17168,10 @@
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "El problema no està disponible en aquest moment"
   },
-  "ui/components/list/List.ts | edit": {
+  "ui/components/lists/List.ts | edit": {
     "message": "Edita"
   },
-  "ui/components/list/List.ts | remove": {
+  "ui/components/lists/List.ts | remove": {
     "message": "Suprimeix"
   },
   "ui/components/markdown_view/CodeBlock.ts | code": {
@@ -16972,6 +17185,9 @@
   },
   "ui/components/markdown_view/CodeBlock.ts | disclaimer": {
     "message": "Utilitza els fragments de codi amb compte"
+  },
+  "ui/components/markdown_view/CodeBlock.ts | showAllLines": {
+    "message": "Mostra totes les línies ({PH1} més)"
   },
   "ui/components/panel_feedback/FeedbackButton.ts | feedback": {
     "message": "Suggeriments"
@@ -17120,11 +17336,17 @@
   "ui/legacy/Infobar.ts | dontShowAgain": {
     "message": "No ho tornis a mostrar"
   },
+  "ui/legacy/InspectorDrawerView.ts | closeDrawer": {
+    "message": "Tanca el tauler"
+  },
+  "ui/legacy/InspectorDrawerView.ts | moreTools": {
+    "message": "Més eines"
+  },
+  "ui/legacy/InspectorDrawerView.ts | toggleDrawerOrientation": {
+    "message": "Toggle drawer orientation"
+  },
   "ui/legacy/InspectorView.ts | areYouSureYouWantToRestartChrome": {
     "message": "Confirmes que vols reiniciar Chrome?"
-  },
-  "ui/legacy/InspectorView.ts | closeDrawer": {
-    "message": "Tanca el tauler"
   },
   "ui/legacy/InspectorView.ts | devToolsLanguageMissmatch": {
     "message": "DevTools ja està disponible en {PH1}"
@@ -17140,9 +17362,6 @@
   },
   "ui/legacy/InspectorView.ts | mainToolbar": {
     "message": "Barra d'eines principal"
-  },
-  "ui/legacy/InspectorView.ts | moreTools": {
-    "message": "Més eines"
   },
   "ui/legacy/InspectorView.ts | moveToDrawer": {
     "message": "Mou al tauler"
@@ -17173,9 +17392,6 @@
   },
   "ui/legacy/InspectorView.ts | setToSpecificLanguage": {
     "message": "Canvia DevTools a {PH1}"
-  },
-  "ui/legacy/InspectorView.ts | toggleDrawerOrientation": {
-    "message": "Commuta l'orientació del tauler"
   },
   "ui/legacy/ListWidget.ts | addString": {
     "message": "Afegeix"
@@ -17791,6 +18007,9 @@
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | sSelected": {
     "message": "S'ha seleccionat {PH1}"
+  },
+  "ui/legacy/components/perf_ui/GCActionDelegate.ts | garbageCollectionCompleted": {
+    "message": "Garbage collection completed"
   },
   "ui/legacy/components/perf_ui/NetworkPriorities.ts | high": {
     "message": "Alta"

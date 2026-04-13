@@ -1061,9 +1061,6 @@
   "entrypoints/main/MainImpl.ts | dockToRight": {
     "message": "Fastgør til højre"
   },
-  "entrypoints/main/MainImpl.ts | externalRequestReceived": {
-    "message": "DevTools har modtaget en ekstern anmodning"
-  },
   "entrypoints/main/MainImpl.ts | focusDebuggee": {
     "message": "Fokusside"
   },
@@ -1327,6 +1324,12 @@
   },
   "generated/Deprecation.ts | DataUrlInSvgUse": {
     "message": "Understøttelse af data: Webadresser i SVGUseElement er udfaset, og de fjernes på et senere tidspunkt."
+  },
+  "generated/Deprecation.ts | DocumentCreateEventKeyboardEvents": {
+    "message": "document.createEvent('KeyboardEvents') er udfaset og fjernes. Brug new KeyboardEvent() i stedet."
+  },
+  "generated/Deprecation.ts | DocumentCreateEventTransitionEvent": {
+    "message": "document.createEvent('TransitionEvent') er udfaset og fjernes. Brug new TransitionEvent() i stedet."
   },
   "generated/Deprecation.ts | ExampleBrowserProcessDeprecation": {
     "message": "Dette er et eksempel på visningen af den kode, som kræves for en browserproces, der er rapporteret som udfaset."
@@ -2246,6 +2249,30 @@
   "models/trace/insights/Cache.ts | title": {
     "message": "Brug effektive cachelevetider"
   },
+  "models/trace/insights/CharacterSet.ts | description": {
+    "message": "Der skal angives en erklæring om tegnkodning. Det kan gøres med et meta charset-tag i de første 1024 bytes i HTML-koden eller i HTTP-svarheaderen for Content-Type. [Få flere oplysninger om erklæring af tegnkodning](https://developer.chrome.com/docs/insights/charset/)."
+  },
+  "models/trace/insights/CharacterSet.ts | failedHttpHeader": {
+    "message": "Deklarerer ikke charset i HTTP-headeren"
+  },
+  "models/trace/insights/CharacterSet.ts | failedMetaCharsetLate": {
+    "message": "Deklarerer charset ved hjælp af et metatag efter de første 1.024 bytes"
+  },
+  "models/trace/insights/CharacterSet.ts | failedMetaCharsetMissing": {
+    "message": "Deklarerer ikke charset ved hjælp af et metatag"
+  },
+  "models/trace/insights/CharacterSet.ts | failedMetaCharsetUnknown": {
+    "message": "Deklareringen af meta charset kunne ikke fastslås ud fra sporingen"
+  },
+  "models/trace/insights/CharacterSet.ts | passingHttpHeader": {
+    "message": "Deklarerer charset i HTTP-header"
+  },
+  "models/trace/insights/CharacterSet.ts | passingMetaCharsetEarly": {
+    "message": "Deklarerer charset ved hjælp af et metatag i de første 1.024 bytes"
+  },
+  "models/trace/insights/CharacterSet.ts | title": {
+    "message": "Deklarer en tegnkodning"
+  },
   "models/trace/insights/DOMSize.ts | description": {
     "message": "En stor DOM kan øge varigheden af beregninger af stil og dynamiske tilpasninger af layout, hvilket påvirker sidens svartid. En stor DOM øger også hukommelsesforbruget. [Få oplysninger om, hvordan du undgår en for stor DOM-størrelse](https://developer.chrome.com/docs/performance/insights/dom-size)."
   },
@@ -2453,8 +2480,11 @@
   "models/trace/insights/LCPDiscovery.ts | fetchPriorityShouldBeApplied": {
     "message": "fetchpriority=high bør anvendes"
   },
+  "models/trace/insights/LCPDiscovery.ts | fetchPriorityShouldBeAppliedToImagePreload": {
+    "message": "fetchpriority=high bør anvendes på anmodningen om forudindlæsning af billedet"
+  },
   "models/trace/insights/LCPDiscovery.ts | lazyLoadNotApplied": {
-    "message": "Lazy loading er ikke anvendt"
+    "message": "LCP-ressourcer bør ikke bruge loading=lazy"
   },
   "models/trace/insights/LCPDiscovery.ts | lcpLoadDelay": {
     "message": "LCP-billedet blev indlæst {PH1} efter det tidligste startpunkt."
@@ -2657,24 +2687,6 @@
   "panels/accessibility/ARIAAttributesView.ts | noAriaAttributes": {
     "message": "Ingen ARIA-attributter"
   },
-  "panels/accessibility/AXBreadcrumbsPane.ts | accessibilityTree": {
-    "message": "Tilgængelighedstræ"
-  },
-  "panels/accessibility/AXBreadcrumbsPane.ts | fullTreeExperimentDescription": {
-    "message": "Tilgængelighedstræet blev flyttet til øverste højre hjørne af DOM-træet."
-  },
-  "panels/accessibility/AXBreadcrumbsPane.ts | fullTreeExperimentName": {
-    "message": "Aktivér tilgængelighedstræet i fuldsidevisning"
-  },
-  "panels/accessibility/AXBreadcrumbsPane.ts | ignored": {
-    "message": "Ignoreret"
-  },
-  "panels/accessibility/AXBreadcrumbsPane.ts | reloadRequired": {
-    "message": "Du skal genindlæse Udviklerværktøjer, før ændringen træder i kraft"
-  },
-  "panels/accessibility/AXBreadcrumbsPane.ts | scrollIntoView": {
-    "message": "Rul indtil visning"
-  },
   "panels/accessibility/AccessibilityNodeView.ts | accessibilityNodeNotExposed": {
     "message": "Tilgængelighedsnoden er ikke synlig"
   },
@@ -2743,6 +2755,9 @@
   },
   "panels/accessibility/AccessibilityNodeView.ts | placeholderIsPlaceholderOnAncestor": {
     "message": "{PH1} er {PH2} på overordnet element: "
+  },
+  "panels/accessibility/AccessibilitySidebarView.ts | showAccessibilityTree": {
+    "message": "Vis træ for hjælpefunktioner"
   },
   "panels/accessibility/AccessibilityStrings.ts | aHumanreadableVersionOfTheValue": {
     "message": "En version, der kan læses af mennesker, af værdien af en område-widget (hvor det er relevant)."
@@ -3176,8 +3191,38 @@
   "panels/ai_assistance/components/DisabledWidget.ts | turnOnForStylesRequestsPerformanceAndFiles": {
     "message": "Aktivér {PH1} for at få hjælp til stile, netværksanmodninger, ydeevne og filer"
   },
+  "panels/ai_assistance/components/ExportForAgentsDialog.ts | asMarkdown": {
+    "message": "Som markdown"
+  },
+  "panels/ai_assistance/components/ExportForAgentsDialog.ts | asPrompt": {
+    "message": "Som prompt"
+  },
+  "panels/ai_assistance/components/ExportForAgentsDialog.ts | copiedToClipboard": {
+    "message": "Kopieret til udklipsholderen"
+  },
+  "panels/ai_assistance/components/ExportForAgentsDialog.ts | copyToClipboard": {
+    "message": "Kopiér til udklipsholder"
+  },
+  "panels/ai_assistance/components/ExportForAgentsDialog.ts | disclaimer": {
+    "message": "Dette er en eksperimentel AI-funktion, som ikke altid rammer plet. Dobbelttjek denne tekst, før du indsætter den i et andet værktøj."
+  },
+  "panels/ai_assistance/components/ExportForAgentsDialog.ts | exportForAgents": {
+    "message": "Kopiér til din kodningsagent"
+  },
+  "panels/ai_assistance/components/ExportForAgentsDialog.ts | generatingSummary": {
+    "message": "Oversigten genereres…"
+  },
+  "panels/ai_assistance/components/ExportForAgentsDialog.ts | saveAsMarkdown": {
+    "message": "Gem som…"
+  },
   "panels/ai_assistance/components/WalkthroughView.ts | close": {
     "message": "Luk"
+  },
+  "panels/ai_assistance/components/WalkthroughView.ts | hideAgentWalkthrough": {
+    "message": "Skjul trinvis agentvejledning"
+  },
+  "panels/ai_assistance/components/WalkthroughView.ts | hideThinking": {
+    "message": "Skjul ræsonnement"
   },
   "panels/ai_assistance/components/WalkthroughView.ts | showAgentWalkthrough": {
     "message": "Vis trinvis vejledning til agent"
@@ -3186,7 +3231,7 @@
     "message": "Vis ræsonnement"
   },
   "panels/ai_assistance/components/WalkthroughView.ts | title": {
-    "message": "Undersøgelsestrin"
+    "message": "Trinvis agentvejledning"
   },
   "panels/animation/AnimationTimeline.ts | animationDescription": {
     "message": "På denne side kan du undersøge og ændre animationer."
@@ -3763,6 +3808,18 @@
   },
   "panels/application/CookieItemsView.ts | showUrlDecoded": {
     "message": "Vis afkodet webadresse"
+  },
+  "panels/application/CrashReportContextView.ts | filterByText": {
+    "message": "Filtrér efter nøgle eller værdi"
+  },
+  "panels/application/CrashReportContextView.ts | noContext": {
+    "message": "Der blev ikke registreret nogen kontekstposter i rammerne."
+  },
+  "panels/application/CrashReportContextView.ts | refresh": {
+    "message": "Opdater"
+  },
+  "panels/application/CrashReportContextView.ts | unknownFrame": {
+    "message": "Ukendt ramme"
   },
   "panels/application/DOMStorageItemsView.ts | domStorageItemDeleted": {
     "message": "Lagerelementet blev slettet."
@@ -4538,6 +4595,9 @@
   "panels/application/PreloadingTreeElement.ts | speculativeLoads": {
     "message": "Spekulative indlæsninger"
   },
+  "panels/application/ReportingApiTreeElement.ts | crashReportContext": {
+    "message": "Kontekst for nedbrudsrapport"
+  },
   "panels/application/ReportingApiTreeElement.ts | reportingApi": {
     "message": "Reporting API"
   },
@@ -4861,6 +4921,93 @@
   },
   "panels/application/TrustTokensTreeElement.ts | trustTokens": {
     "message": "Private state tokens"
+  },
+  "panels/application/WebMCPView.ts | canceled": {
+    "message": "Annulleret"
+  },
+  "panels/application/WebMCPView.ts | canceledCount": {
+    "message": "{PH1} er annulleret"
+  },
+  "panels/application/WebMCPView.ts | clearFilters": {
+    "message": "Ryd filtre"
+  },
+  "panels/application/WebMCPView.ts | clearLog": {
+    "message": "Ryd log"
+  },
+  "panels/application/WebMCPView.ts | close": {
+    "message": "Luk"
+  },
+  "panels/application/WebMCPView.ts | declarative": {
+    "message": "Deklarativ"
+  },
+  "panels/application/WebMCPView.ts | error": {
+    "message": "Fejl"
+  },
+  "panels/application/WebMCPView.ts | failed": {
+    "message": "{PH1} mislykkedes"
+  },
+  "panels/application/WebMCPView.ts | filter": {
+    "message": "Filtrér"
+  },
+  "panels/application/WebMCPView.ts | frame": {
+    "message": "Ramme"
+  },
+  "panels/application/WebMCPView.ts | imperative": {
+    "message": "Imperativ"
+  },
+  "panels/application/WebMCPView.ts | inProgress": {
+    "message": "I gang"
+  },
+  "panels/application/WebMCPView.ts | inProgressCount": {
+    "message": "{PH1} er i gang"
+  },
+  "panels/application/WebMCPView.ts | input": {
+    "message": "Input"
+  },
+  "panels/application/WebMCPView.ts | name": {
+    "message": "Navn"
+  },
+  "panels/application/WebMCPView.ts | noCallsPlaceholder": {
+    "message": "Begynd at interagere med din WebMCP-agent for at se værktøjskald og udførelser i realtid her."
+  },
+  "panels/application/WebMCPView.ts | noCallsPlaceholderTitle": {
+    "message": "Værktøjsaktivitet"
+  },
+  "panels/application/WebMCPView.ts | noToolsPlaceholder": {
+    "message": "Registrerede WebMCP-værktøjer for denne side vises her. Der er endnu ikke registreret nogen værktøjer."
+  },
+  "panels/application/WebMCPView.ts | noToolsPlaceholderTitle": {
+    "message": "Tilgængelige WebMCP-værktøjer"
+  },
+  "panels/application/WebMCPView.ts | output": {
+    "message": "Output"
+  },
+  "panels/application/WebMCPView.ts | pending": {
+    "message": "I gang"
+  },
+  "panels/application/WebMCPView.ts | status": {
+    "message": "Status"
+  },
+  "panels/application/WebMCPView.ts | statusTypes": {
+    "message": "Statustyper"
+  },
+  "panels/application/WebMCPView.ts | success": {
+    "message": "Gennemført"
+  },
+  "panels/application/WebMCPView.ts | toolDetails": {
+    "message": "Oplysninger"
+  },
+  "panels/application/WebMCPView.ts | toolRegistry": {
+    "message": "Tilgængelige værktøjer"
+  },
+  "panels/application/WebMCPView.ts | toolTypes": {
+    "message": "Værktøjstyper"
+  },
+  "panels/application/WebMCPView.ts | totalCalls": {
+    "message": "{PH1} opkald i alt"
+  },
+  "panels/application/WebMCPView.ts | viewInElementsPanel": {
+    "message": "Se i panelet Elementer"
   },
   "panels/application/application-meta.ts | application": {
     "message": "App"
@@ -5344,6 +5491,18 @@
   },
   "panels/application/components/BounceTrackingMitigationsView.ts | stateDeletedFor": {
     "message": "Statussen blev slettet for følgende websites:"
+  },
+  "panels/application/components/CrashReportContextGrid.ts | copyKey": {
+    "message": "Kopiér nøgle"
+  },
+  "panels/application/components/CrashReportContextGrid.ts | copyValue": {
+    "message": "Kopiér værdi"
+  },
+  "panels/application/components/CrashReportContextGrid.ts | key": {
+    "message": "Nøgle"
+  },
+  "panels/application/components/CrashReportContextGrid.ts | value": {
+    "message": "Værdi"
   },
   "panels/application/components/EndpointsGrid.ts | endpointsDescription": {
     "message": "Her finder du listen over de slutpunkter, der modtager rapporterne"
@@ -5966,6 +6125,9 @@
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusNavigationBadHttpStatus": {
     "message": "Navigationen for forhåndsgengivelse mislykkedes på grund af en HTTP-svarstatuskode, der ikke var 2xx."
   },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusNavigationBadHttpStatusWithStatusCode": {
+    "message": "Navigationen for forhåndsgengivelse mislykkedes på grund af en HTTP-svarstatuskode, der ikke var 2xx ({PH1})."
+  },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusNavigationRequestBlockedByCsp": {
     "message": "Navigationen for forhåndsgengivelse blev blokeret af en sikkerhedspolitik for indhold."
   },
@@ -6466,9 +6628,6 @@
   },
   "panels/common/BadgeNotification.ts | viewProfile": {
     "message": "Se profil"
-  },
-  "panels/common/CopyChangesToPrompt.ts | responseCopiedToClipboard": {
-    "message": "Svaret er kopieret til udklipsholderen"
   },
   "panels/common/DOMLinkifier.ts | node": {
     "message": "<node>"
@@ -7529,12 +7688,6 @@
   "panels/elements/ElementsPanel.ts | styles": {
     "message": "Stile"
   },
-  "panels/elements/ElementsPanel.ts | switchToAccessibilityTreeView": {
-    "message": "Skift til visning af træ for hjælpefunktioner"
-  },
-  "panels/elements/ElementsPanel.ts | switchToDomTreeView": {
-    "message": "Skift til DOM-trævisning"
-  },
   "panels/elements/ElementsPanel.ts | theDeferredDomNodeCouldNotBe": {
     "message": "Den udskudte DOM-node kunne ikke matches med en gyldig node."
   },
@@ -7591,6 +7744,9 @@
   },
   "panels/elements/ElementsTreeElement.ts | copyXpath": {
     "message": "Kopiér XPath"
+  },
+  "panels/elements/ElementsTreeElement.ts | creatorAdScriptAncestry": {
+    "message": "Oprindelsen af skaberens annoncescript"
   },
   "panels/elements/ElementsTreeElement.ts | cut": {
     "message": "Klip"
@@ -7679,6 +7835,9 @@
   "panels/elements/ElementsTreeElement.ts | explainSubgrids": {
     "message": "Forklar underordnede gitre"
   },
+  "panels/elements/ElementsTreeElement.ts | filterListRule": {
+    "message": "Regel for filterliste"
+  },
   "panels/elements/ElementsTreeElement.ts | findGridDefinition": {
     "message": "Find gitterdefinition"
   },
@@ -7694,6 +7853,9 @@
   "panels/elements/ElementsTreeElement.ts | hideElement": {
     "message": "Skjul element"
   },
+  "panels/elements/ElementsTreeElement.ts | noProvenanceAvailable": {
+    "message": "Der er ingen tilgængelige oprindelsesdata"
+  },
   "panels/elements/ElementsTreeElement.ts | openMediaPanel": {
     "message": "Gå til mediepanelet"
   },
@@ -7705,6 +7867,9 @@
   },
   "panels/elements/ElementsTreeElement.ts | reveal": {
     "message": "vis"
+  },
+  "panels/elements/ElementsTreeElement.ts | rootScriptFilterListRule": {
+    "message": "Regel for filterliste for rodscript"
   },
   "panels/elements/ElementsTreeElement.ts | scrollIntoView": {
     "message": "Rul indtil visning"
@@ -7730,8 +7895,8 @@
   "panels/elements/ElementsTreeElement.ts | styleScrollbars": {
     "message": "Tilpas rullefelter"
   },
-  "panels/elements/ElementsTreeElement.ts | thisFrameWasIdentifiedAsAnAd": {
-    "message": "Denne ramme blev identificeret som en annonceramme"
+  "panels/elements/ElementsTreeElement.ts | thisElementWasIdentifiedAsAnAd": {
+    "message": "Dette element blev identificeret som en annonce"
   },
   "panels/elements/ElementsTreeElement.ts | useSInTheConsoleToReferToThis": {
     "message": "Brug {PH1} i konsollen for at henvise til dette element."
@@ -7747,6 +7912,9 @@
   },
   "panels/elements/ElementsTreeOutline.ts | pageDom": {
     "message": "Side-DOM"
+  },
+  "panels/elements/ElementsTreeOutline.ts | showAllLines": {
+    "message": "Vis alle ({PH1} linjer)"
   },
   "panels/elements/ElementsTreeOutline.ts | showAllNodesDMore": {
     "message": "Vis alle noder ({PH1} mere)"
@@ -7865,6 +8033,9 @@
   "panels/elements/ShortcutTreeElement.ts | reveal": {
     "message": "vis"
   },
+  "panels/elements/StylePropertiesSection.ts | collapseExpandedRule": {
+    "message": "Skjul udvidet regel"
+  },
   "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
     "message": "konstrueret typografiark"
   },
@@ -7879,6 +8050,9 @@
   },
   "panels/elements/StylePropertiesSection.ts | cssSelector": {
     "message": "CSS-vælger"
+  },
+  "panels/elements/StylePropertiesSection.ts | expandCollapsedRule": {
+    "message": "Udvid skjult regel"
   },
   "panels/elements/StylePropertiesSection.ts | injectedStylesheet": {
     "message": "indsat typografiark"
@@ -9239,6 +9413,12 @@
   "panels/lighthouse/LighthouseStatusView.ts | ahSorryWeRanIntoAnError": {
     "message": "Beklager. Der opstod en fejl."
   },
+  "panels/lighthouse/LighthouseStatusView.ts | aiAuditingS": {
+    "message": "AI-hjælp gennemgår {PH1}"
+  },
+  "panels/lighthouse/LighthouseStatusView.ts | aiAuditingYourWebPage": {
+    "message": "AI-hjælp gennemgår din webside"
+  },
   "panels/lighthouse/LighthouseStatusView.ts | almostThereLighthouseIsNow": {
     "message": "Vent et øjeblik længere. Lighthouse genererer nu din rapport."
   },
@@ -9396,7 +9576,7 @@
     "message": "Unsigned værdi"
   },
   "panels/linear_memory_inspector/components/ValueInterpreterDisplayUtils.ts | notApplicable": {
-    "message": "Ikke tilgængelig"
+    "message": "Ikke relevant"
   },
   "panels/linear_memory_inspector/components/ValueInterpreterSettings.ts | otherGroup": {
     "message": "Andet"
@@ -10526,6 +10706,9 @@
   "panels/network/NetworkLogViewColumns.ts | requestHeaders": {
     "message": "Anmodningsheadere"
   },
+  "panels/network/NetworkLogViewColumns.ts | requestNumber": {
+    "message": "Anmodning #"
+  },
   "panels/network/NetworkLogViewColumns.ts | responseHeaders": {
     "message": "Svarheaders"
   },
@@ -11106,7 +11289,7 @@
     "message": "Filtrér ved hjælp af regex (eksempel: (web)?socket)"
   },
   "panels/network/ResourceWebSocketFrameView.ts | na": {
-    "message": "Ikke tilgængelig"
+    "message": "Ikke relevant"
   },
   "panels/network/ResourceWebSocketFrameView.ts | pingMessage": {
     "message": "Ping-meddelelse"
@@ -11713,9 +11896,6 @@
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | userObjectReachableFromWindow": {
     "message": "Brugerobjekt kan nås fra vindue"
-  },
-  "panels/profiler/HeapSnapshotProxy.ts | anErrorOccurredWhenACallToMethod": {
-    "message": "Der opstod en fejl, da der blev anmodet om et opkald til metoden \"{PH1}\"."
   },
   "panels/profiler/HeapSnapshotView.ts | AllocationTimelinesShowInstrumented": {
     "message": "Registrer hukommelsestildelinger over tid, og isoler hukommelsesfejl ved at vælge intervaller med tildelinger, der stadig er aktive"
@@ -12807,7 +12987,7 @@
     "message": "blandet indhold"
   },
   "panels/security/SecurityPanel.ts | na": {
-    "message": "(ikke tilgængelig)"
+    "message": "(Ikke relevant)"
   },
   "panels/security/SecurityPanel.ts | noSecurityDetailsAreAvailableFor": {
     "message": "Ingen sikkerhedsoplysninger er tilgængelige for denne oprindelse."
@@ -13660,6 +13840,9 @@
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | userAgentString": {
     "message": "Brugeragentstreng"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | userAgentStringCannotBeEmpty": {
+    "message": "Brugeragentstrengen må ikke være tom."
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | userAgentType": {
     "message": "Brugeragenttype"
@@ -15299,9 +15482,6 @@
   "panels/timeline/TimelinePanel.ts | exportingFailed": {
     "message": "Sporingen kunne ikke eksporteres"
   },
-  "panels/timeline/TimelinePanel.ts | externalRequestReceived": {
-    "message": "DevTools har modtaget en ekstern anmodning"
-  },
   "panels/timeline/TimelinePanel.ts | fixMe": {
     "message": "Løs problem"
   },
@@ -15934,6 +16114,30 @@
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | recommendedThrottlingReason": {
     "message": "Overvej at ændre indstillingen for at simulere virkelige brugermiljøer"
+  },
+  "panels/timeline/components/CWVMetrics.ts | dismissTitle": {
+    "message": "Luk"
+  },
+  "panels/timeline/components/CWVMetrics.ts | fieldMismatchNotice": {
+    "message": "Der kan være mange årsager til, at lokale metrics og metrics for feltet [ikke stemmer overens](https://web.dev/articles/lab-and-field-data-differences). Juster [indstillingerne for begrænsning og enhedsemuleringen](https://developer.chrome.com/docs/devtools/device-mode) for at analysere spor, der ligner den gennemsnitlige brugers miljø."
+  },
+  "panels/timeline/components/CWVMetrics.ts | fieldMismatchTitle": {
+    "message": "Uoverensstemmelse mellem lokale metrics og metrics for feltet"
+  },
+  "panels/timeline/components/CWVMetrics.ts | fieldScoreLabel": {
+    "message": "Felt ({PH1})"
+  },
+  "panels/timeline/components/CWVMetrics.ts | metricScore": {
+    "message": "{PH1}: {PH2} {PH3} (resultat)"
+  },
+  "panels/timeline/components/CWVMetrics.ts | metricScoreUnavailable": {
+    "message": "{PH1}: Ikke tilgængelig"
+  },
+  "panels/timeline/components/CWVMetrics.ts | originOption": {
+    "message": "Oprindelse"
+  },
+  "panels/timeline/components/CWVMetrics.ts | urlOption": {
+    "message": "Webadresse"
   },
   "panels/timeline/components/DetailsView.ts | forcedReflow": {
     "message": "Tvungen reflow"
@@ -16718,6 +16922,9 @@
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "Stop"
   },
+  "panels/timeline/timeline-meta.ts | timelineShowAllEvents": {
+    "message": "Vis alle hændelser"
+  },
   "panels/timeline/utils/IgnoreList.ts | skip3rdPartyScripts": {
     "message": "Markeret med ignoreList i kildekortet"
   },
@@ -16859,6 +17066,12 @@
   "panels/webauthn/WebauthnPane.ts | signCount": {
     "message": "Antal signaturer"
   },
+  "panels/webauthn/WebauthnPane.ts | supportsHmacSecret": {
+    "message": "Understøtter hmac-secret"
+  },
+  "panels/webauthn/WebauthnPane.ts | supportsHmacSecretMc": {
+    "message": "Understøtter hmac-secret-mc"
+  },
   "panels/webauthn/WebauthnPane.ts | supportsLargeBlob": {
     "message": "Understøtter store BLOB-filer"
   },
@@ -16955,10 +17168,10 @@
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "Problemet er ikke tilgængeligt på nuværende tidspunkt"
   },
-  "ui/components/list/List.ts | edit": {
+  "ui/components/lists/List.ts | edit": {
     "message": "Rediger"
   },
-  "ui/components/list/List.ts | remove": {
+  "ui/components/lists/List.ts | remove": {
     "message": "Fjern"
   },
   "ui/components/markdown_view/CodeBlock.ts | code": {
@@ -16972,6 +17185,9 @@
   },
   "ui/components/markdown_view/CodeBlock.ts | disclaimer": {
     "message": "Brug kodestykker med omhu"
+  },
+  "ui/components/markdown_view/CodeBlock.ts | showAllLines": {
+    "message": "Vis alle linjer ({PH1} mere)"
   },
   "ui/components/panel_feedback/FeedbackButton.ts | feedback": {
     "message": "Feedback"
@@ -17120,11 +17336,17 @@
   "ui/legacy/Infobar.ts | dontShowAgain": {
     "message": "Vis ikke igen"
   },
+  "ui/legacy/InspectorDrawerView.ts | closeDrawer": {
+    "message": "Luk skuffe"
+  },
+  "ui/legacy/InspectorDrawerView.ts | moreTools": {
+    "message": "Flere værktøjer"
+  },
+  "ui/legacy/InspectorDrawerView.ts | toggleDrawerOrientation": {
+    "message": "Skift skufferetning"
+  },
   "ui/legacy/InspectorView.ts | areYouSureYouWantToRestartChrome": {
     "message": "Er du sikker på, at du vil genstarte Chrome?"
-  },
-  "ui/legacy/InspectorView.ts | closeDrawer": {
-    "message": "Luk skuffe"
   },
   "ui/legacy/InspectorView.ts | devToolsLanguageMissmatch": {
     "message": "Udviklerværktøjer er nu tilgængelige på {PH1}"
@@ -17140,9 +17362,6 @@
   },
   "ui/legacy/InspectorView.ts | mainToolbar": {
     "message": "Primær værktøjslinje"
-  },
-  "ui/legacy/InspectorView.ts | moreTools": {
-    "message": "Flere værktøjer"
   },
   "ui/legacy/InspectorView.ts | moveToDrawer": {
     "message": "Flyt til skuffe"
@@ -17173,9 +17392,6 @@
   },
   "ui/legacy/InspectorView.ts | setToSpecificLanguage": {
     "message": "Skift til {PH1} i Udviklerværktøjer"
-  },
-  "ui/legacy/InspectorView.ts | toggleDrawerOrientation": {
-    "message": "Skift skufferetning"
   },
   "ui/legacy/ListWidget.ts | addString": {
     "message": "Tilføj"
@@ -17490,7 +17706,7 @@
     "message": "Redigerbare cookies"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | na": {
-    "message": "Ikke tilgængelig"
+    "message": "Ikke relevant"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | name": {
     "message": "Navn"
@@ -17791,6 +18007,9 @@
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | sSelected": {
     "message": "{PH1} er valgt"
+  },
+  "ui/legacy/components/perf_ui/GCActionDelegate.ts | garbageCollectionCompleted": {
+    "message": "Affaldsindsamlingen er fuldført"
   },
   "ui/legacy/components/perf_ui/NetworkPriorities.ts | high": {
     "message": "Høj"

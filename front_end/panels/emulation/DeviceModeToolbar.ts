@@ -217,6 +217,7 @@ export class DeviceModeToolbar {
   private widthInput: EmulationComponents.DeviceSizeInputElement.SizeInputElement;
   private heightInput: EmulationComponents.DeviceSizeInputElement.SizeInputElement;
   private deviceScaleItem!: UI.Toolbar.ToolbarComboBox;
+  private deviceScaleItems: UI.Toolbar.ToolbarItem[] = [];
   private deviceSelectItem!: UI.Toolbar.ToolbarComboBox;
   private scaleItem!: UI.Toolbar.ToolbarComboBox;
   private uaItem!: UI.Toolbar.ToolbarComboBox;
@@ -341,10 +342,14 @@ export class DeviceModeToolbar {
     this.deviceScaleItem = new UI.Toolbar.ToolbarComboBox(
         this.onDeviceScaleChange.bind(this), i18nString(UIStrings.devicePixelRatio), 'dark-text', 'device-pixel-ratio');
     this.deviceScaleItem.turnShrinkable();
-    this.deviceScaleItem.setVisible(this.showDeviceScaleFactorSetting.get());
     const deviceScaleSpan = uiI18n.getFormatLocalizedString(str_, UIStrings.dpr, {PH1: this.deviceScaleItem.element});
-    mainToolbar.append(...deviceScaleSpan.childNodes);
-    mainToolbar.appendToolbarItem(this.deviceScaleItem);
+    for (const node of Array.from(deviceScaleSpan.childNodes)) {
+      const item = node === this.deviceScaleItem.element ? this.deviceScaleItem :
+                                                           new UI.Toolbar.ToolbarText(node.textContent || '');
+      item.setVisible(this.showDeviceScaleFactorSetting.get());
+      this.deviceScaleItems.push(item);
+      mainToolbar.appendToolbarItem(item);
+    }
     mainToolbar.appendToolbarItem(new UI.Toolbar.ToolbarItem(this.createEmptyToolbarElement()));
     this.uaItem = new UI.Toolbar.ToolbarComboBox(
         this.onUAChange.bind(this), i18nString(UIStrings.deviceType), 'dark-text', 'device-type');
@@ -758,7 +763,11 @@ export class DeviceModeToolbar {
 
   private updateDeviceScaleFactorVisibility(): void {
     if (this.deviceScaleItem) {
-      this.deviceScaleItem.setVisible(this.showDeviceScaleFactorSetting.get());
+      const visible = this.showDeviceScaleFactorSetting.get();
+      this.deviceScaleItem.setVisible(visible);
+      for (const item of this.deviceScaleItems) {
+        item.setVisible(visible);
+      }
     }
   }
 

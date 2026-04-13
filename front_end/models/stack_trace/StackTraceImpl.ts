@@ -7,11 +7,12 @@ import type * as SDK from '../../core/sdk/sdk.js';
 import type * as Workspace from '../workspace/workspace.js';
 
 import type * as StackTrace from './stack_trace.js';
-import type {FrameNode} from './Trie.js';
+import type {FrameNode, ParsedFrameInfo} from './Trie.js';
 
-export type AnyStackTraceImpl = StackTraceImpl<FragmentImpl|DebuggableFragmentImpl>;
+export type AnyStackTraceImpl = StackTraceImpl<FragmentImpl|DebuggableFragmentImpl|ParsedErrorStackFragmentImpl>;
 
-export class StackTraceImpl<SyncFragmentT extends FragmentImpl|DebuggableFragmentImpl = FragmentImpl> extends
+export class StackTraceImpl<SyncFragmentT extends FragmentImpl|DebuggableFragmentImpl|ParsedErrorStackFragmentImpl =
+                                                      FragmentImpl> extends
     Common.ObjectWrapper.ObjectWrapper<StackTrace.StackTrace.EventTypes> implements
         StackTrace.StackTrace.BaseStackTrace<SyncFragmentT> {
   readonly syncFragment: SyncFragmentT;
@@ -23,7 +24,9 @@ export class StackTraceImpl<SyncFragmentT extends FragmentImpl|DebuggableFragmen
     this.asyncFragments = asyncFragments;
 
     const fragment =
-        syncFragment instanceof DebuggableFragmentImpl ? syncFragment.fragment : syncFragment as FragmentImpl;
+        (syncFragment instanceof DebuggableFragmentImpl || syncFragment instanceof ParsedErrorStackFragmentImpl) ?
+        syncFragment.fragment :
+        syncFragment as FragmentImpl;
     fragment.stackTraces.add(this);
 
     this.asyncFragments.forEach(asyncFragment => asyncFragment.fragment.stackTraces.add(this));
@@ -96,6 +99,95 @@ export class FrameImpl implements StackTrace.StackTrace.Frame {
     this.column = column;
     this.missingDebugInfo = missingDebugInfo;
     this.rawName = rawName;
+  }
+}
+
+export class ParsedErrorStackFragmentImpl implements StackTrace.StackTrace.ParsedErrorStackFragment {
+  constructor(readonly fragment: FragmentImpl) {
+  }
+
+  get frames(): ParsedErrorStackFrameImpl[] {
+    if (!this.fragment.node) {
+      return [];
+    }
+
+    const frames: ParsedErrorStackFrameImpl[] = [];
+
+    for (const node of this.fragment.node.getCallStack()) {
+      for (const frame of node.frames) {
+        frames.push(new ParsedErrorStackFrameImpl(frame, node.parsedFrameInfo, node.evalOriginFrames));
+      }
+    }
+
+    return frames;
+  }
+}
+
+export class ParsedErrorStackFrameImpl implements StackTrace.StackTrace.ParsedErrorStackFrame {
+  readonly #frame: FrameImpl;
+  readonly #parsedFrameInfo?: ParsedFrameInfo;
+  readonly #evalOriginFrames?: FrameImpl[];
+
+  constructor(frame: FrameImpl, parsedFrameInfo?: ParsedFrameInfo, evalOriginFrames?: FrameImpl[]) {
+    this.#frame = frame;
+    this.#parsedFrameInfo = parsedFrameInfo;
+    this.#evalOriginFrames = evalOriginFrames;
+  }
+
+  get url(): string|undefined {
+    return this.#frame.url;
+  }
+  get uiSourceCode(): Workspace.UISourceCode.UISourceCode|undefined {
+    return this.#frame.uiSourceCode;
+  }
+  get name(): string|undefined {
+    return this.#frame.name;
+  }
+  get line(): number {
+    return this.#frame.line;
+  }
+  get column(): number {
+    return this.#frame.column;
+  }
+  get missingDebugInfo(): StackTrace.StackTrace.MissingDebugInfo|undefined {
+    return this.#frame.missingDebugInfo;
+  }
+  get rawName(): string|undefined {
+    return this.#frame.rawName;
+  }
+
+  get isAsync(): boolean|undefined {
+    return this.#parsedFrameInfo?.isAsync;
+  }
+  get isConstructor(): boolean|undefined {
+    return this.#parsedFrameInfo?.isConstructor;
+  }
+  get isEval(): boolean|undefined {
+    return this.#parsedFrameInfo?.isEval;
+  }
+  get evalOrigin(): ParsedErrorStackFrameImpl|undefined {
+    if (!this.#evalOriginFrames || this.#evalOriginFrames.length === 0) {
+      return undefined;
+    }
+    return new ParsedErrorStackFrameImpl(this.#evalOriginFrames[0], this.#parsedFrameInfo?.evalOrigin?.parsedFrameInfo);
+  }
+  get isWasm(): boolean|undefined {
+    return this.#parsedFrameInfo?.isWasm;
+  }
+  get wasmModuleName(): string|undefined {
+    return this.#parsedFrameInfo?.wasmModuleName;
+  }
+  get wasmFunctionIndex(): number|undefined {
+    return this.#parsedFrameInfo?.wasmFunctionIndex;
+  }
+  get typeName(): string|undefined {
+    return this.#parsedFrameInfo?.typeName;
+  }
+  get methodName(): string|undefined {
+    return this.#parsedFrameInfo?.methodName;
+  }
+  get promiseIndex(): number|undefined {
+    return this.#parsedFrameInfo?.promiseIndex;
   }
 }
 

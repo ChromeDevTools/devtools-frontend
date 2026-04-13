@@ -6,6 +6,19 @@ import type * as Protocol from '../../generated/protocol.js';
 
 import type {FragmentImpl, FrameImpl} from './StackTraceImpl.js';
 
+export interface ParsedFrameInfo {
+  readonly isAsync?: boolean;
+  readonly isConstructor?: boolean;
+  readonly isEval?: boolean;
+  readonly evalOrigin?: RawFrame;
+  readonly isWasm?: boolean;
+  readonly wasmModuleName?: string;
+  readonly wasmFunctionIndex?: number;
+  readonly typeName?: string;
+  readonly methodName?: string;
+  readonly promiseIndex?: number;
+}
+
 /**
  * Intentionally very close to a {@link Protocol.Runtime.CallFrame} but with optional `scriptId`.
  */
@@ -15,6 +28,8 @@ export interface RawFrame {
   readonly functionName?: string;
   readonly lineNumber: number;
   readonly columnNumber: number;
+
+  readonly parsedFrameInfo?: ParsedFrameInfo;
 }
 
 /**
@@ -42,10 +57,13 @@ export class FrameNode implements FrameNodeBase<FrameNode, AnyFrameNode> {
   frames: FrameImpl[] = [];
 
   fragment?: FragmentImpl;
+  parsedFrameInfo?: ParsedFrameInfo;
+  evalOriginFrames?: FrameImpl[];
 
   constructor(rawFrame: RawFrame, parent: AnyFrameNode) {
     this.rawFrame = rawFrame;
     this.parent = parent;
+    this.parsedFrameInfo = rawFrame.parsedFrameInfo;
   }
 
   /**
@@ -98,6 +116,9 @@ export class Trie {
 
       const compareResult = compareRawFrames(child.rawFrame, rawFrame);
       if (compareResult === 0) {
+        if (rawFrame.parsedFrameInfo && !child.parsedFrameInfo) {
+          child.parsedFrameInfo = rawFrame.parsedFrameInfo;
+        }
         return child;
       }
       if (compareResult > 0) {

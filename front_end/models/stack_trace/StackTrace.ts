@@ -8,6 +8,7 @@ import type * as Workspace from '../workspace/workspace.js';
 
 export type StackTrace = BaseStackTrace<Fragment>;
 export type DebuggableStackTrace = BaseStackTrace<DebuggableFragment>;
+export type ParsedErrorStackTrace = BaseStackTrace<ParsedErrorStackFragment>;
 
 export interface BaseStackTrace<SyncFragmentT extends Fragment> extends Common.EventTarget.EventTarget<EventTypes> {
   readonly syncFragment: SyncFragmentT;
@@ -26,6 +27,10 @@ export interface DebuggableFragment {
   readonly frames: readonly DebuggableFrame[];
 }
 
+export interface ParsedErrorStackFragment {
+  readonly frames: readonly ParsedErrorStackFrame[];
+}
+
 export interface Frame {
   readonly url?: string;
   readonly uiSourceCode?: Workspace.UISourceCode.UISourceCode;
@@ -39,6 +44,19 @@ export interface Frame {
    * of the containing function.
    */
   readonly rawName?: string;
+}
+
+export interface ParsedErrorStackFrame extends Frame {
+  readonly isAsync?: boolean;
+  readonly isConstructor?: boolean;
+  readonly isEval?: boolean;
+  readonly evalOrigin?: ParsedErrorStackFrame;
+  readonly isWasm?: boolean;
+  readonly wasmModuleName?: string;
+  readonly wasmFunctionIndex?: number;
+  readonly typeName?: string;
+  readonly methodName?: string;
+  readonly promiseIndex?: number;
 }
 
 export interface DebuggableFrame extends Frame {

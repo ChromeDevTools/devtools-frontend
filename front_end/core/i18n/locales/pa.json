@@ -1061,9 +1061,6 @@
   "entrypoints/main/MainImpl.ts | dockToRight": {
     "message": "ਸੱਜੇ ਪਾਸੇ ਡੌਕ ਕਰੋ"
   },
-  "entrypoints/main/MainImpl.ts | externalRequestReceived": {
-    "message": "DevTools ਨੂੰ ਇੱਕ ਬਾਹਰੀ ਬੇਨਤੀ ਪ੍ਰਾਪਤ ਹੋਈ"
-  },
   "entrypoints/main/MainImpl.ts | focusDebuggee": {
     "message": "ਫੋਕਸ ਪੰਨਾ"
   },
@@ -1327,6 +1324,12 @@
   },
   "generated/Deprecation.ts | DataUrlInSvgUse": {
     "message": "ਡਾਟੇ ਦੇ ਲਈ ਸਹਾਇਤਾ: SVGUseElement ਵਿੱਚ ਮੌਜੂਦ URL ਨੂੰ ਨਾਪਸੰਦ ਕੀਤਾ ਗਿਆ ਹੈ ਅਤੇ ਇਸ ਨੂੰ ਭਵਿੱਖ ਵਿੱਚ ਹਟਾ ਦਿੱਤਾ ਜਾਵੇਗਾ।"
+  },
+  "generated/Deprecation.ts | DocumentCreateEventKeyboardEvents": {
+    "message": "document.createEvent('KeyboardEvents') ਨੂੰ ਰੋਕ ਦਿੱਤਾ ਗਿਆ ਹੈ ਅਤੇ ਇਸਨੂੰ ਹਟਾ ਦਿੱਤਾ ਜਾਵੇਗਾ। ਇਸਦੀ ਬਜਾਏ new KeyboardEvent() ਵਰਤੋ।"
+  },
+  "generated/Deprecation.ts | DocumentCreateEventTransitionEvent": {
+    "message": "document.createEvent('TransitionEvent') ਨੂੰ ਰੋਕ ਦਿੱਤਾ ਗਿਆ ਹੈ ਅਤੇ ਇਸਨੂੰ ਹਟਾ ਦਿੱਤਾ ਜਾਵੇਗਾ। ਇਸਦੀ ਬਜਾਏ new TransitionEvent() ਵਰਤੋ।"
   },
   "generated/Deprecation.ts | ExampleBrowserProcessDeprecation": {
     "message": "This is an example for showing the code required for a browser process reported deprecation."
@@ -2246,6 +2249,30 @@
   "models/trace/insights/Cache.ts | title": {
     "message": "ਕੁਸ਼ਲ ਕੈਸ਼ੇ ਲਾਈਫਟਾਈਮ ਦੀ ਵਰਤੋਂ ਕਰੋ"
   },
+  "models/trace/insights/CharacterSet.ts | description": {
+    "message": "ਅੱਖਰ-ਚਿੰਨ੍ਹ ਇਨਕੋਡਿੰਗ ਸੈੱਟ ਕਰਨੀ ਲੋੜੀਂਦੀ ਹੈ। ਇਹ ਚੀਜ਼ ਮੈਟਾ ਚਾਰਸੈੱਟ ਟੈਗ ਦੀ ਮਦਦ ਨਾਲ HTML ਦੇ ਸ਼ੁਰੂਆਤੀ 1024 ਬਾਈਟ ਜਵਾਬ ਜਾਂ Content-Type HTTP ਦੇ ਜਵਾਬੀ ਸਿਰਲੇਖ ਵਿੱਚ ਕੀਤੀ ਜਾ ਸਕਦੀ ਹੈ। [ਅੱਖਰ-ਚਿੰਨ੍ਹ ਇਨਕੋਡਿੰਗ ਸੈੱਟ ਕਰਨ ਬਾਰੇ ਹੋਰ ਜਾਣੋ](https://developer.chrome.com/docs/insights/charset/)।"
+  },
+  "models/trace/insights/CharacterSet.ts | failedHttpHeader": {
+    "message": "HTTP ਸਿਰਲੇਖ ਵਿੱਚ ਚਾਰਸੈੱਟ ਸੈੱਟ ਨਹੀਂ ਕਰਦਾ"
+  },
+  "models/trace/insights/CharacterSet.ts | failedMetaCharsetLate": {
+    "message": "ਪਹਿਲੀਆਂ 1024 ਬਾਈਟਾਂ ਤੋਂ ਬਾਅਦ ਮੈਟਾ ਟੈਗ ਦੀ ਵਰਤੋਂ ਕਰ ਕੇ ਚਾਰਸੈੱਟ ਸੈੱਟ ਕਰਦਾ ਹੈ"
+  },
+  "models/trace/insights/CharacterSet.ts | failedMetaCharsetMissing": {
+    "message": "ਮੈਟਾ-ਟੈਗ ਦੀ ਵਰਤੋਂ ਕਰ ਕੇ ਚਾਰਸੈੱਟ ਸੈੱਟ ਨਹੀਂ ਕਰਦਾ"
+  },
+  "models/trace/insights/CharacterSet.ts | failedMetaCharsetUnknown": {
+    "message": "ਟ੍ਰੇਸ ਤੋਂ, ਮੈਟਾ ਚਾਰਸੈੱਟ ਦੀ ਜਾਣਕਾਰੀ ਦਾ ਪਤਾ ਨਹੀਂ ਲਗਾਇਆ ਜਾ ਸਕਿਆ"
+  },
+  "models/trace/insights/CharacterSet.ts | passingHttpHeader": {
+    "message": "HTTP ਸਿਰਲੇਖ ਵਿੱਚ ਚਾਰਸੈੱਟ ਨੂੰ ਸੈੱਟ ਕਰਦਾ ਹੈ"
+  },
+  "models/trace/insights/CharacterSet.ts | passingMetaCharsetEarly": {
+    "message": "ਪਹਿਲੇ 1024 ਬਾਈਟਾਂ ਵਿੱਚ ਮੈਟਾ ਟੈਗ ਦੀ ਵਰਤੋਂ ਕਰ ਕੇ ਚਾਰਸੈੱਟ ਸੈੱਟ ਕਰਦਾ ਹੈ"
+  },
+  "models/trace/insights/CharacterSet.ts | title": {
+    "message": "ਅੱਖਰ-ਚਿੰਨ੍ਹ ਇਨਕੋਡਿੰਗ ਸੈੱਟ ਕਰੋ"
+  },
   "models/trace/insights/DOMSize.ts | description": {
     "message": "DOM ਦੇ ਵੱਡੇ ਆਕਾਰ ਕਰਕੇ, ਸਟਾਈਲ ਗਣਨਾ ਅਤੇ ਖਾਕੇ ਰੀਫ਼ਲੋ ਦੀ ਪ੍ਰਕਿਰਿਆ ਲੰਬੀ ਹੋ ਸਕਦੀ ਹੈ, ਜਿਸ ਕਰਕੇ ਪੰਨੇ ਦੀ ਪ੍ਰਤਿਕਿਰਿਆ ਦੇਣ ਦਾ ਸਮਾਂ ਪ੍ਰਭਾਵਿਤ ਹੋ ਸਕਦਾ ਹੈ। DOM ਦੇ ਵੱਡੇ ਆਕਾਰ ਕਰਕੇ ਮੈਮੋਰੀ ਦੀ ਵਰਤੋਂ ਵੀ ਵੱਧ ਜਾਵੇਗੀ। [ਬਹੁਤ ਜ਼ਿਆਦਾ ਵੱਡੇ DOM ਆਕਾਰ ਤੋਂ ਬਚਣ ਦਾ ਤਰੀਕਾ ਜਾਣੋ](https://developer.chrome.com/docs/performance/insights/dom-size)।"
   },
@@ -2453,8 +2480,11 @@
   "models/trace/insights/LCPDiscovery.ts | fetchPriorityShouldBeApplied": {
     "message": "fetchpriority=high ਨੂੰ ਲਾਗੂ ਕੀਤਾ ਜਾਣਾ ਚਾਹੀਦਾ ਹੈ"
   },
+  "models/trace/insights/LCPDiscovery.ts | fetchPriorityShouldBeAppliedToImagePreload": {
+    "message": "fetchpriority=high ਨੂੰ ਚਿੱਤਰ ਪ੍ਰੀਲੋਡ ਬੇਨਤੀ 'ਤੇ ਲਾਗੂ ਕੀਤਾ ਜਾਣਾ ਚਾਹੀਦਾ ਹੈ"
+  },
   "models/trace/insights/LCPDiscovery.ts | lazyLoadNotApplied": {
-    "message": "ਲੇਜ਼ੀ ਲੋਡ ਲਾਗੂ ਨਹੀਂ ਕੀਤਾ ਗਿਆ"
+    "message": "LCP ਸਰੋਤਾਂ ਨੂੰ loading=lazy ਦੀ ਵਰਤੋਂ ਨਹੀਂ ਕਰਨੀ ਚਾਹੀਦੀ"
   },
   "models/trace/insights/LCPDiscovery.ts | lcpLoadDelay": {
     "message": "LCP ਚਿੱਤਰ ਸਭ ਤੋਂ ਪਹਿਲਾਂ ਸ਼ੁਰੂਆਤੀ ਬਿੰਦੂ ਤੋਂ {PH1} ਬਾਅਦ ਲੋਡ ਕੀਤਾ ਗਿਆ।"
@@ -2657,24 +2687,6 @@
   "panels/accessibility/ARIAAttributesView.ts | noAriaAttributes": {
     "message": "ਕੋਈ ARIA ਵਿਸ਼ੇਸ਼ਤਾਵਾਂ ਨਹੀਂ ਹਨ"
   },
-  "panels/accessibility/AXBreadcrumbsPane.ts | accessibilityTree": {
-    "message": "ਪਹੁੰਚਯੋਗਤਾ ਟ੍ਰੀ"
-  },
-  "panels/accessibility/AXBreadcrumbsPane.ts | fullTreeExperimentDescription": {
-    "message": "ਪਹੁੰਚਯੋਗਤਾ ਟ੍ਰੀ ਨੂੰ DOM ਟ੍ਰੀ ਦੇ ਸਿਖਰਲੇ ਸੱਜੇ ਕੋਨੇ ਵਿੱਚ ਲਿਜਾਇਆ ਗਿਆ।"
-  },
-  "panels/accessibility/AXBreadcrumbsPane.ts | fullTreeExperimentName": {
-    "message": "ਪੂਰੇ-ਪੰਨੇ ਦੀ ਪਹੁੰਚਯੋਗਤਾ ਟ੍ਰੀ ਨੂੰ ਚਾਲੂ ਕਰੋ"
-  },
-  "panels/accessibility/AXBreadcrumbsPane.ts | ignored": {
-    "message": "ਅਣਡਿੱਠ ਕੀਤਾ ਗਿਆ"
-  },
-  "panels/accessibility/AXBreadcrumbsPane.ts | reloadRequired": {
-    "message": "ਤਬਦੀਲੀ ਲਾਗੂ ਹੋਣ ਤੋਂ ਪਹਿਲਾਂ ਰੀਲੋਡ ਕਰਨ ਦੀ ਲੋੜ ਹੈ"
-  },
-  "panels/accessibility/AXBreadcrumbsPane.ts | scrollIntoView": {
-    "message": "ਦਿਖਣਯੋਗ ਹੋਣ ਤੱਕ ਸਕ੍ਰੋਲ ਕਰੋ"
-  },
   "panels/accessibility/AccessibilityNodeView.ts | accessibilityNodeNotExposed": {
     "message": "ਪਹੁੰਚਯੋਗਤਾ ਨੋਡ ਪ੍ਰਗਟ ਨਹੀਂ ਕੀਤਾ ਗਿਆ"
   },
@@ -2743,6 +2755,9 @@
   },
   "panels/accessibility/AccessibilityNodeView.ts | placeholderIsPlaceholderOnAncestor": {
     "message": "ਅਨਸੈਸਟਰ 'ਤੇ {PH1} {PH2} ਹੈ: "
+  },
+  "panels/accessibility/AccessibilitySidebarView.ts | showAccessibilityTree": {
+    "message": "ਪਹੁੰਚਯੋਗਤਾ ਟ੍ਰੀ ਦਿਖਾਓ"
   },
   "panels/accessibility/AccessibilityStrings.ts | aHumanreadableVersionOfTheValue": {
     "message": "ਰੇਂਜ ਵਿਜੇਟ ਦੇ ਮੁੱਲ ਦਾ ਮਨੁੱਖੀ-ਪੜ੍ਹਨਯੋਗ ਵਰਜਨ (ਜਿੱਥੇ ਜ਼ਰੂਰੀ ਹੋਵੇ)।"
@@ -3176,8 +3191,38 @@
   "panels/ai_assistance/components/DisabledWidget.ts | turnOnForStylesRequestsPerformanceAndFiles": {
     "message": "ਸਟਾਈਲਾਂ, ਨੈੱਟਵਰਕ ਬੇਨਤੀਆਂ, ਕਾਰਗੁਜ਼ਾਰੀ, ਅਤੇ ਫ਼ਾਈਲਾਂ ਸੰਬੰਧੀ ਮਦਦ ਪ੍ਰਾਪਤ ਕਰਨ ਲਈ {PH1} ਨੂੰ ਚਾਲੂ ਕਰੋ"
   },
+  "panels/ai_assistance/components/ExportForAgentsDialog.ts | asMarkdown": {
+    "message": "ਮਾਰਕਡਾਊਨ ਵਜੋਂ"
+  },
+  "panels/ai_assistance/components/ExportForAgentsDialog.ts | asPrompt": {
+    "message": "ਪ੍ਰੋਂਪਟ ਵਜੋਂ"
+  },
+  "panels/ai_assistance/components/ExportForAgentsDialog.ts | copiedToClipboard": {
+    "message": "ਕਲਿੱਪਬੋਰਡ 'ਤੇ ਕਾਪੀ ਕੀਤਾ ਗਿਆ"
+  },
+  "panels/ai_assistance/components/ExportForAgentsDialog.ts | copyToClipboard": {
+    "message": "ਕਲਿੱਪਬੋਰਡ 'ਤੇ ਕਾਪੀ ਕਰੋ"
+  },
+  "panels/ai_assistance/components/ExportForAgentsDialog.ts | disclaimer": {
+    "message": "ਇਹ ਪ੍ਰਯੋਗਮਈ AI ਵਿਸ਼ੇਸ਼ਤਾ ਹੈ ਅਤੇ ਜ਼ਰੂਰੀ ਨਹੀਂ ਕਿ ਇਹ ਹਮੇਸ਼ਾਂ ਸਹੀ ਹੋਵੇ। ਕਿਸੇ ਹੋਰ ਟੂਲ ਵਿੱਚ ਪੇਸਟ ਕਰਨ ਤੋਂ ਪਹਿਲਾਂ ਇਸ ਲਿਖਤ ਦੀ ਦੋਹਰੀ-ਜਾਂਚ ਕਰੋ।"
+  },
+  "panels/ai_assistance/components/ExportForAgentsDialog.ts | exportForAgents": {
+    "message": "ਆਪਣੇ ਕੋਡਿੰਗ ਏਜੰਟ ਲਈ ਕਾਪੀ ਕਰੋ"
+  },
+  "panels/ai_assistance/components/ExportForAgentsDialog.ts | generatingSummary": {
+    "message": "ਸਾਰਾਂਸ਼ ਸਿਰਜਿਆ ਜਾ ਰਿਹਾ ਹੈ…"
+  },
+  "panels/ai_assistance/components/ExportForAgentsDialog.ts | saveAsMarkdown": {
+    "message": "ਇਸ ਵਜੋਂ ਰੱਖਿਅਤ ਕਰੋ…"
+  },
   "panels/ai_assistance/components/WalkthroughView.ts | close": {
     "message": "ਬੰਦ ਕਰੋ"
+  },
+  "panels/ai_assistance/components/WalkthroughView.ts | hideAgentWalkthrough": {
+    "message": "ਏਜੰਟ ਵਾਕਥਰੂ ਲੁਕਾਓ"
+  },
+  "panels/ai_assistance/components/WalkthroughView.ts | hideThinking": {
+    "message": "ਸੋਚਣ ਦੀ ਪ੍ਰਕਿਰਿਆ ਨੂੰ ਲੁਕਾਓ"
   },
   "panels/ai_assistance/components/WalkthroughView.ts | showAgentWalkthrough": {
     "message": "ਏਜੰਟ ਵਾਕਥਰੂ ਦਿਖਾਓ"
@@ -3186,7 +3231,7 @@
     "message": "ਪ੍ਰਕਿਰਿਆ ਦਿਖਾਓ"
   },
   "panels/ai_assistance/components/WalkthroughView.ts | title": {
-    "message": "ਜਾਂਚ ਦੇ ਪੜਾਅ"
+    "message": "ਏਜੰਟ ਵਾਕਥਰੂ"
   },
   "panels/animation/AnimationTimeline.ts | animationDescription": {
     "message": "ਇਸ ਪੰਨੇ 'ਤੇ ਤੁਸੀਂ ਐਨੀਮੇਸ਼ਨਾਂ ਦੀ ਜਾਂਚ ਅਤੇ ਸੋਧ ਕਰ ਸਕਦੇ ਹੋ।"
@@ -3763,6 +3808,18 @@
   },
   "panels/application/CookieItemsView.ts | showUrlDecoded": {
     "message": "ਡੀਕੋਡ ਕੀਤਾ ਗਿਆ URL ਦਿਖਾਓ"
+  },
+  "panels/application/CrashReportContextView.ts | filterByText": {
+    "message": "ਕੁੰਜੀ ਜਾਂ ਮੁੱਲ ਮੁਤਾਬਕ ਫਿਲਟਰ ਕਰੋ"
+  },
+  "panels/application/CrashReportContextView.ts | noContext": {
+    "message": "ਫ੍ਰੇਮਾਂ ਵਿੱਚ ਕੋਈ ਸੰਦਰਭ ਇੰਦਰਾਜ ਨਹੀਂ ਮਿਲਿਆ।"
+  },
+  "panels/application/CrashReportContextView.ts | refresh": {
+    "message": "ਰਿਫ੍ਰੈਸ਼ ਕਰੋ"
+  },
+  "panels/application/CrashReportContextView.ts | unknownFrame": {
+    "message": "ਅਗਿਆਤ ਫ੍ਰੇਮ"
   },
   "panels/application/DOMStorageItemsView.ts | domStorageItemDeleted": {
     "message": "ਸਟੋਰੇਜ ਆਈਟਮ ਨੂੰ ਮਿਟਾਇਆ ਗਿਆ।"
@@ -4538,6 +4595,9 @@
   "panels/application/PreloadingTreeElement.ts | speculativeLoads": {
     "message": "ਅਨੁਮਾਨਿਤ ਲੋਡ"
   },
+  "panels/application/ReportingApiTreeElement.ts | crashReportContext": {
+    "message": "ਕ੍ਰੈਸ਼ ਰਿਪੋਰਟ ਸੰਦਰਭ"
+  },
   "panels/application/ReportingApiTreeElement.ts | reportingApi": {
     "message": "Reporting API"
   },
@@ -4861,6 +4921,93 @@
   },
   "panels/application/TrustTokensTreeElement.ts | trustTokens": {
     "message": "ਨਿੱਜੀ ਸਥਿਤੀ ਦੇ ਟੋਕਨ"
+  },
+  "panels/application/WebMCPView.ts | canceled": {
+    "message": "ਰੱਦ ਕੀਤਾ ਗਿਆ"
+  },
+  "panels/application/WebMCPView.ts | canceledCount": {
+    "message": "{PH1} ਰੱਦ ਕੀਤਾ ਗਿਆ"
+  },
+  "panels/application/WebMCPView.ts | clearFilters": {
+    "message": "ਫਿਲਟਰ ਕਲੀਅਰ ਕਰੋ"
+  },
+  "panels/application/WebMCPView.ts | clearLog": {
+    "message": "ਲੌਗ ਕਲੀਅਰ ਕਰੋ"
+  },
+  "panels/application/WebMCPView.ts | close": {
+    "message": "ਬੰਦ ਕਰੋ"
+  },
+  "panels/application/WebMCPView.ts | declarative": {
+    "message": "ਡਿਕਲਰੇਟਿਵ"
+  },
+  "panels/application/WebMCPView.ts | error": {
+    "message": "ਗੜਬੜ"
+  },
+  "panels/application/WebMCPView.ts | failed": {
+    "message": "{PH1} ਅਸਫਲ ਰਿਹਾ"
+  },
+  "panels/application/WebMCPView.ts | filter": {
+    "message": "ਫਿਲਟਰ ਕਰੋ"
+  },
+  "panels/application/WebMCPView.ts | frame": {
+    "message": "ਫ੍ਰੇਮ"
+  },
+  "panels/application/WebMCPView.ts | imperative": {
+    "message": "ਇਪੈਰੇਟਿਵ"
+  },
+  "panels/application/WebMCPView.ts | inProgress": {
+    "message": "ਜਾਰੀ ਹੈ"
+  },
+  "panels/application/WebMCPView.ts | inProgressCount": {
+    "message": "{PH1} ਜਾਰੀ ਹੈ"
+  },
+  "panels/application/WebMCPView.ts | input": {
+    "message": "ਇਨਪੁੱਟ"
+  },
+  "panels/application/WebMCPView.ts | name": {
+    "message": "ਨਾਮ"
+  },
+  "panels/application/WebMCPView.ts | noCallsPlaceholder": {
+    "message": "ਅਸਲ-ਸਮੇਂ ਦੀਆਂ ਟੂਲ ਕਾਲਾਂ ਅਤੇ ਚੱਲਣਯੋਗ ਕਾਰਵਾਈਆਂ ਨੂੰ ਇੱਥੇ ਦੇਖਣ ਲਈ ਆਪਣੇ WebMCP ਏਜੰਟ ਨਾਲ ਅੰਤਰਕਿਰਿਆ ਕਰਨਾ ਸ਼ੁਰੂ ਕਰੋ।"
+  },
+  "panels/application/WebMCPView.ts | noCallsPlaceholderTitle": {
+    "message": "ਟੂਲ ਸਰਗਰਮੀ"
+  },
+  "panels/application/WebMCPView.ts | noToolsPlaceholder": {
+    "message": "ਇਸ ਪੰਨੇ ਲਈ ਰਜਿਸਟਰ ਕੀਤੇ WebMCP ਟੂਲ ਇੱਥੇ ਦਿਖਾਈ ਦੇਣਗੇ। ਕੋਈ ਟੂਲ ਰਜਿਸਟਰ ਨਹੀਂ ਕੀਤਾ ਗਿਆ ਜਾਂ ਹਾਲੇ ਤੱਕ ਪਤਾ ਨਹੀਂ ਲਗਾਇਆ ਗਿਆ।"
+  },
+  "panels/application/WebMCPView.ts | noToolsPlaceholderTitle": {
+    "message": "ਉਪਲਬਧ WebMCP ਟੂਲ"
+  },
+  "panels/application/WebMCPView.ts | output": {
+    "message": "ਆਊਟਪੁੱਟ"
+  },
+  "panels/application/WebMCPView.ts | pending": {
+    "message": "ਜਾਰੀ ਹੈ"
+  },
+  "panels/application/WebMCPView.ts | status": {
+    "message": "ਸਥਿਤੀ"
+  },
+  "panels/application/WebMCPView.ts | statusTypes": {
+    "message": "ਸਥਿਤੀ ਦੀਆਂ ਕਿਸਮਾਂ"
+  },
+  "panels/application/WebMCPView.ts | success": {
+    "message": "ਸਫਲਤਾ"
+  },
+  "panels/application/WebMCPView.ts | toolDetails": {
+    "message": "ਵੇਰਵੇ"
+  },
+  "panels/application/WebMCPView.ts | toolRegistry": {
+    "message": "ਉਪਲਬਧ ਟੂਲ"
+  },
+  "panels/application/WebMCPView.ts | toolTypes": {
+    "message": "ਟੂਲ ਦੀਆਂ ਕਿਸਮਾਂ"
+  },
+  "panels/application/WebMCPView.ts | totalCalls": {
+    "message": "ਕੁੱਲ {PH1} ਕਾਲਾਂ"
+  },
+  "panels/application/WebMCPView.ts | viewInElementsPanel": {
+    "message": "ਤੱਤ ਪੈਨਲ ਵਿੱਚ ਦੇਖੋ"
   },
   "panels/application/application-meta.ts | application": {
     "message": "ਐਪਲੀਕੇਸ਼ਨ"
@@ -5344,6 +5491,18 @@
   },
   "panels/application/components/BounceTrackingMitigationsView.ts | stateDeletedFor": {
     "message": "ਹੇਠਾਂ ਦਿੱਤੀਆਂ ਸਾਈਟਾਂ ਲਈ ਸਟੇਟ ਨੂੰ ਮਿਟਾ ਦਿੱਤਾ ਗਿਆ ਸੀ:"
+  },
+  "panels/application/components/CrashReportContextGrid.ts | copyKey": {
+    "message": "ਕੁੰਜੀ ਨੂੰ ਕਾਪੀ ਕਰੋ"
+  },
+  "panels/application/components/CrashReportContextGrid.ts | copyValue": {
+    "message": "ਮੁੱਲ ਕਾਪੀ ਕਰੋ"
+  },
+  "panels/application/components/CrashReportContextGrid.ts | key": {
+    "message": "ਕੁੰਜੀ"
+  },
+  "panels/application/components/CrashReportContextGrid.ts | value": {
+    "message": "ਮੁੱਲ"
   },
   "panels/application/components/EndpointsGrid.ts | endpointsDescription": {
     "message": "ਇੱਥੇ ਤੁਸੀਂ ਰਿਪੋਰਟਾਂ ਪ੍ਰਾਪਤ ਕਰਨ ਵਾਲੇ ਸਮਾਪਤੀ-ਬਿੰਦੂ ਦੀ ਸੂਚੀ ਲੱਭ ਸਕੋਗੇ"
@@ -5966,6 +6125,9 @@
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusNavigationBadHttpStatus": {
     "message": "ਇੱਕ ਗੈਰ-2xx HTTP ਜਵਾਬ ਸਥਿਤੀ ਕੋਡ ਦੇ ਕਰਕੇ ਪ੍ਰੀਰੈਂਡਰਿੰਗ ਨੈਵੀਗੇਸ਼ਨ ਅਸਫਲ ਰਹੀ।"
   },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusNavigationBadHttpStatusWithStatusCode": {
+    "message": "ਇੱਕ ਗੈਰ-2xx HTTP ਜਵਾਬ ਸਥਿਤੀ ਕੋਡ ਦੇ ਕਰਕੇ ਪ੍ਰੀਰੈਂਡਰਿੰਗ ਨੈਵੀਗੇਸ਼ਨ ਅਸਫਲ ਰਹੀ ({PH1})।"
+  },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusNavigationRequestBlockedByCsp": {
     "message": "ਪ੍ਰੀਰੈਂਡਰਿੰਗ ਨੈਵੀਗੇਸ਼ਨ ਨੂੰ ਸਮੱਗਰੀ ਸੁਰੱਖਿਆ ਨੀਤੀ ਕਰਕੇ ਬਲਾਕ ਕਰ ਦਿੱਤਾ ਗਿਆ ਸੀ।"
   },
@@ -6466,9 +6628,6 @@
   },
   "panels/common/BadgeNotification.ts | viewProfile": {
     "message": "ਪ੍ਰੋਫਾਈਲ ਦੇਖੋ"
-  },
-  "panels/common/CopyChangesToPrompt.ts | responseCopiedToClipboard": {
-    "message": "ਜਵਾਬ ਕਲਿੱਪਬੋਰਡ 'ਤੇ ਕਾਪੀ ਕੀਤਾ ਗਿਆ"
   },
   "panels/common/DOMLinkifier.ts | node": {
     "message": "<ਨੋਡ>"
@@ -7529,12 +7688,6 @@
   "panels/elements/ElementsPanel.ts | styles": {
     "message": "ਸਟਾਈਲ"
   },
-  "panels/elements/ElementsPanel.ts | switchToAccessibilityTreeView": {
-    "message": "ਪਹੁੰਚਯੋਗਤਾ ਟ੍ਰੀ ਦ੍ਰਿਸ਼ 'ਤੇ ਸਵਿੱਚ ਕਰੋ"
-  },
-  "panels/elements/ElementsPanel.ts | switchToDomTreeView": {
-    "message": "DOM ਟ੍ਰੀ ਦ੍ਰਿਸ਼ 'ਤੇ ਸਵਿੱਚ ਕਰੋ"
-  },
   "panels/elements/ElementsPanel.ts | theDeferredDomNodeCouldNotBe": {
     "message": "ਮੁਲਤਵੀ DOM ਨੋਡ ਨੂੰ ਵੈਧ ਨੋਡ ਵਜੋਂ ਨਿਰਧਾਰਿਤ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਿਆ।"
   },
@@ -7591,6 +7744,9 @@
   },
   "panels/elements/ElementsTreeElement.ts | copyXpath": {
     "message": "XPath ਕਾਪੀ ਕਰੋ"
+  },
+  "panels/elements/ElementsTreeElement.ts | creatorAdScriptAncestry": {
+    "message": "ਰਚਨਾਕਾਰ ਵਿਗਿਆਪਨ ਸਕ੍ਰਿਪਟ ਦਾ ਪੂਰਾ ਇਤਿਹਾਸ"
   },
   "panels/elements/ElementsTreeElement.ts | cut": {
     "message": "ਕੱਟੋ"
@@ -7679,6 +7835,9 @@
   "panels/elements/ElementsTreeElement.ts | explainSubgrids": {
     "message": "ਉਪ-ਗਰਿੱਡਾਂ ਦੀ ਵਿਆਖਿਆ ਕਰੋ"
   },
+  "panels/elements/ElementsTreeElement.ts | filterListRule": {
+    "message": "ਫਿਲਟਰ ਸੂਚੀ ਦਾ ਨਿਯਮ"
+  },
   "panels/elements/ElementsTreeElement.ts | findGridDefinition": {
     "message": "ਗਰਿੱਡ ਦੀ ਪਰਿਭਾਸ਼ਾ ਲੱਭੋ"
   },
@@ -7694,6 +7853,9 @@
   "panels/elements/ElementsTreeElement.ts | hideElement": {
     "message": "ਤੱਤ ਲੁਕਾਓ"
   },
+  "panels/elements/ElementsTreeElement.ts | noProvenanceAvailable": {
+    "message": "ਕੋਈ ਮੂਲ ਡਾਟਾ ਉਪਲਬਧ ਨਹੀਂ ਹੈ"
+  },
   "panels/elements/ElementsTreeElement.ts | openMediaPanel": {
     "message": "ਮੀਡੀਆ ਪੈਨਲ 'ਤੇ ਜਾਓ"
   },
@@ -7705,6 +7867,9 @@
   },
   "panels/elements/ElementsTreeElement.ts | reveal": {
     "message": "ਦਿਖਾਓ"
+  },
+  "panels/elements/ElementsTreeElement.ts | rootScriptFilterListRule": {
+    "message": "ਰੂਟ ਸਕ੍ਰਿਪਟ ਦੇ ਫਿਲਟਰ ਦੀ ਸੂਚੀ ਦਾ ਨਿਯਮ"
   },
   "panels/elements/ElementsTreeElement.ts | scrollIntoView": {
     "message": "ਦਿਖਣਯੋਗ ਹੋਣ ਤੱਕ ਸਕ੍ਰੋਲ ਕਰੋ"
@@ -7730,8 +7895,8 @@
   "panels/elements/ElementsTreeElement.ts | styleScrollbars": {
     "message": "ਸਕ੍ਰੋਲਬਾਰਾਂ ਦਾ ਸਟਾਈਲ ਬਦਲੋ"
   },
-  "panels/elements/ElementsTreeElement.ts | thisFrameWasIdentifiedAsAnAd": {
-    "message": "ਇਸ ਫ੍ਰੇਮ ਦੀ ਵਿਗਿਆਪਨ ਫ੍ਰੇਮ ਵਜੋਂ ਪਛਾਣ ਕੀਤੀ ਗਈ ਸੀ"
+  "panels/elements/ElementsTreeElement.ts | thisElementWasIdentifiedAsAnAd": {
+    "message": "ਇਸ ਤੱਤ ਦੀ ਵਿਗਿਆਪਨ ਵਜੋਂ ਪਛਾਣ ਕੀਤੀ ਗਈ ਸੀ"
   },
   "panels/elements/ElementsTreeElement.ts | useSInTheConsoleToReferToThis": {
     "message": "ਇਸ ਤੱਤ ਦਾ ਹਵਾਲਾ ਦੇਣ ਲਈ, ਕੰਸੋਲ ਵਿੱਚ {PH1} ਦੀ ਵਰਤੋਂ ਕਰੋ।"
@@ -7747,6 +7912,9 @@
   },
   "panels/elements/ElementsTreeOutline.ts | pageDom": {
     "message": "ਪੰਨਾ DOM"
+  },
+  "panels/elements/ElementsTreeOutline.ts | showAllLines": {
+    "message": "ਸਭ ਦਿਖਾਓ ({PH1} ਲਾਈਨਾਂ)"
   },
   "panels/elements/ElementsTreeOutline.ts | showAllNodesDMore": {
     "message": "ਸਾਰੇ ਨੋਡਾਂ ਨੂੰ ਦਿਖਾਓ ({PH1} ਹੋਰ)"
@@ -7865,6 +8033,9 @@
   "panels/elements/ShortcutTreeElement.ts | reveal": {
     "message": "ਦਿਖਾਓ"
   },
+  "panels/elements/StylePropertiesSection.ts | collapseExpandedRule": {
+    "message": "ਵਿਸਤ੍ਰਿਤ ਨਿਯਮ ਨੂੰ ਸਮੇਟੋ"
+  },
   "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
     "message": "ਸਟਾਈਲਸ਼ੀਟ ਤਿਆਰ ਕੀਤੀ ਗਈ"
   },
@@ -7879,6 +8050,9 @@
   },
   "panels/elements/StylePropertiesSection.ts | cssSelector": {
     "message": "CSS ਚੋਣਕਾਰ"
+  },
+  "panels/elements/StylePropertiesSection.ts | expandCollapsedRule": {
+    "message": "ਸਮੇਟੇ ਗਏ ਨਿਯਮ ਦਾ ਵਿਸਤਾਰ ਕਰੋ"
   },
   "panels/elements/StylePropertiesSection.ts | injectedStylesheet": {
     "message": "ਇੰਜੈਕਟ ਸਟਾਈਲਸ਼ੀਟ"
@@ -9239,6 +9413,12 @@
   "panels/lighthouse/LighthouseStatusView.ts | ahSorryWeRanIntoAnError": {
     "message": "ਉਫ਼, ਮਾਫ਼ ਕਰਨਾ! ਕੋਈ ਗੜਬੜ ਹੋ ਗਈ।"
   },
+  "panels/lighthouse/LighthouseStatusView.ts | aiAuditingS": {
+    "message": "AI ਸਹਾਇਤਾ {PH1} ਦਾ ਆਡਿਟ ਕਰ ਰਹੀ ਹੈ"
+  },
+  "panels/lighthouse/LighthouseStatusView.ts | aiAuditingYourWebPage": {
+    "message": "AI ਸਹਾਇਤਾ ਤੁਹਾਡੇ ਵੈੱਬ ਪੰਨੇ ਦਾ ਆਡਿਟ ਕਰ ਰਹੀ ਹੈ"
+  },
   "panels/lighthouse/LighthouseStatusView.ts | almostThereLighthouseIsNow": {
     "message": "ਲਗਭਗ ਹੋ ਗਿਆ! Lighthouse ਵੱਲੋਂ ਹੁਣ ਤੁਹਾਡੀ ਰਿਪੋਰਟ ਸਿਰਜੀ ਜਾ ਰਹੀ ਹੈ।"
   },
@@ -10526,6 +10706,9 @@
   "panels/network/NetworkLogViewColumns.ts | requestHeaders": {
     "message": "ਸਿਰਲੇਖਾਂ ਦੀ ਬੇਨਤੀ ਕਰੋ"
   },
+  "panels/network/NetworkLogViewColumns.ts | requestNumber": {
+    "message": "ਬੇਨਤੀ #"
+  },
   "panels/network/NetworkLogViewColumns.ts | responseHeaders": {
     "message": "ਜਵਾਬੀ ਸਿਰਲੇਖ"
   },
@@ -11713,9 +11896,6 @@
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | userObjectReachableFromWindow": {
     "message": "ਵਰਤੋਂਕਾਰ ਵਸਤੂ ਵਿੰਡੋ ਤੋਂ ਪਹੁੰਚਯੋਗ ਹੈ"
-  },
-  "panels/profiler/HeapSnapshotProxy.ts | anErrorOccurredWhenACallToMethod": {
-    "message": "ਵਿਧੀ ''{PH1}'' ਨੂੰ ਕਾਲ ਕਰਨ ਦੀ ਬੇਨਤੀ ਕਰਨ ਦੌਰਾਨ ਕੋਈ ਗੜਬੜ ਹੋ ਗਈ"
   },
   "panels/profiler/HeapSnapshotView.ts | AllocationTimelinesShowInstrumented": {
     "message": "ਮੈਮੋਰੀ ਦੀ ਵੰਡ ਨੂੰ ਸਮੇਂ-ਸਮੇਂ 'ਤੇ ਰਿਕਾਰਡ ਕਰੋ ਅਤੇ ਉਨ੍ਹਾਂ ਅੰਤਰਾਲਾਂ ਨੂੰ ਚੁਣੋ ਜਿੱਥੇ ਮੈਮੋਰੀ ਲੀਕ ਨੂੰ ਵੱਖ ਕਰਨ ਵਾਲੀ ਵੰਡ ਹਾਲੇ ਕਿਰਿਆਸ਼ੀਲ ਹੈ"
@@ -13661,6 +13841,9 @@
   "panels/settings/emulation/DevicesSettingsTab.ts | userAgentString": {
     "message": "ਵਰਤੋਂਕਾਰ ਏਜੰਟ ਸਤਰ"
   },
+  "panels/settings/emulation/DevicesSettingsTab.ts | userAgentStringCannotBeEmpty": {
+    "message": "ਵਰਤੋਂਕਾਰ ਏਜੰਟ ਸਤਰ ਖਾਲੀ ਨਹੀਂ ਹੋ ਸਕਦੀ।"
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | userAgentType": {
     "message": "ਵਰਤੋਂਕਾਰ ਏਜੰਟ ਦੀ ਕਿਸਮ"
   },
@@ -15299,9 +15482,6 @@
   "panels/timeline/TimelinePanel.ts | exportingFailed": {
     "message": "ਟ੍ਰੇਸ ਨੂੰ ਨਿਰਯਾਤ ਕਰਨਾ ਅਸਫਲ ਰਿਹਾ"
   },
-  "panels/timeline/TimelinePanel.ts | externalRequestReceived": {
-    "message": "DevTools ਨੂੰ ਇੱਕ ਬਾਹਰੀ ਬੇਨਤੀ ਪ੍ਰਾਪਤ ਹੋਈ"
-  },
   "panels/timeline/TimelinePanel.ts | fixMe": {
     "message": "ਮੈਨੂੰ ਠੀਕ ਕਰੋ"
   },
@@ -15934,6 +16114,30 @@
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | recommendedThrottlingReason": {
     "message": "ਅਸਲ ਵਰਤੋਂਕਾਰ ਵਾਤਾਵਰਨ ਦੀ ਨਕਲ ਕਰਨ ਲਈ ਸੈਟਿੰਗ ਬਦਲਣ 'ਤੇ ਵਿਚਾਰ ਕਰੋ"
+  },
+  "panels/timeline/components/CWVMetrics.ts | dismissTitle": {
+    "message": "ਖਾਰਜ ਕਰੋ"
+  },
+  "panels/timeline/components/CWVMetrics.ts | fieldMismatchNotice": {
+    "message": "ਸਥਾਨਕ ਅਤੇ ਫ਼ੀਲਡ ਮਾਪਕਾਂ ਦੇ [ਮੇਲ ਨਾ ਖਾਣ](https://web.dev/articles/lab-and-field-data-differences) ਦੇ ਕਈ ਕਾਰਨ ਹੋ ਸਕਦੇ ਹਨ। ਵਰਤੋਂਕਾਰ ਦੇ ਔਸਤ ਵਾਤਾਵਰਣ ਮੁਤਾਬਕ ਟ੍ਰੇਸਾਂ ਦਾ ਵਿਸ਼ਲੇਸ਼ਣ ਕਰਨ ਲਈ [ਥ੍ਰੋਟਲਿੰਗ ਸੈਟਿੰਗਾਂ ਅਤੇ ਡੀਵਾਈਸ ਬਰਾਬਰੀ](https://developer.chrome.com/docs/devtools/device-mode) ਨੂੰ ਵਿਵਸਥਿਤ ਕਰੋ।"
+  },
+  "panels/timeline/components/CWVMetrics.ts | fieldMismatchTitle": {
+    "message": "ਫ਼ੀਲਡ ਅਤੇ ਸਥਾਨਕ ਮਾਪਕ ਮੇਲ ਨਹੀਂ ਖਾਂਦੇ"
+  },
+  "panels/timeline/components/CWVMetrics.ts | fieldScoreLabel": {
+    "message": "ਫ਼ੀਲਡ ({PH1})"
+  },
+  "panels/timeline/components/CWVMetrics.ts | metricScore": {
+    "message": "{PH1}: {PH2} {PH3} ਸਕੋਰ"
+  },
+  "panels/timeline/components/CWVMetrics.ts | metricScoreUnavailable": {
+    "message": "{PH1}: ਉਪਲਬਧ ਨਹੀਂ ਹੈ"
+  },
+  "panels/timeline/components/CWVMetrics.ts | originOption": {
+    "message": "ਮੂਲ"
+  },
+  "panels/timeline/components/CWVMetrics.ts | urlOption": {
+    "message": "URL"
   },
   "panels/timeline/components/DetailsView.ts | forcedReflow": {
     "message": "ਜ਼ੋਰ ਪਾਇਆ ਗਿਆ ਰੀਫ਼ਲੋ"
@@ -16718,6 +16922,9 @@
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "ਬੰਦ ਕਰੋ"
   },
+  "panels/timeline/timeline-meta.ts | timelineShowAllEvents": {
+    "message": "ਸਾਰੇ ਇਵੈਂਟ ਦਿਖਾਓ"
+  },
   "panels/timeline/utils/IgnoreList.ts | skip3rdPartyScripts": {
     "message": "ਸਰੋਤ ਨਕਸ਼ੇ ਵਿੱਚ ignoreList ਨਾਲ ਨਿਸ਼ਾਨਦੇਹੀ ਕੀਤੀ ਗਈ"
   },
@@ -16859,6 +17066,12 @@
   "panels/webauthn/WebauthnPane.ts | signCount": {
     "message": "ਹਸਤਾਖਰ ਸੰਬੰਧੀ ਗਿਣਤੀ"
   },
+  "panels/webauthn/WebauthnPane.ts | supportsHmacSecret": {
+    "message": "hmac-secret ਦਾ ਸਮਰਥਨ ਕਰਦਾ ਹੈ"
+  },
+  "panels/webauthn/WebauthnPane.ts | supportsHmacSecretMc": {
+    "message": "hmac-secret-mc ਦਾ ਸਮਰਥਨ ਕਰਦਾ ਹੈ"
+  },
   "panels/webauthn/WebauthnPane.ts | supportsLargeBlob": {
     "message": "ਵੱਡੇ blob ਦਾ ਸਮਰਥਨ ਕਰਦਾ ਹੈ"
   },
@@ -16955,10 +17168,10 @@
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "ਇਸ ਸਮੇਂ ਸਮੱਸਿਆ ਉਪਲਬਧ ਨਹੀਂ ਹੈ"
   },
-  "ui/components/list/List.ts | edit": {
+  "ui/components/lists/List.ts | edit": {
     "message": "ਸੰਪਾਦਨ ਕਰੋ"
   },
-  "ui/components/list/List.ts | remove": {
+  "ui/components/lists/List.ts | remove": {
     "message": "ਹਟਾਓ"
   },
   "ui/components/markdown_view/CodeBlock.ts | code": {
@@ -16972,6 +17185,9 @@
   },
   "ui/components/markdown_view/CodeBlock.ts | disclaimer": {
     "message": "ਸਾਵਧਾਨੀ ਨਾਲ ਕੋਡ ਸਨਿੱਪਟਾਂ ਦੀ ਵਰਤੋਂ ਕਰੋ"
+  },
+  "ui/components/markdown_view/CodeBlock.ts | showAllLines": {
+    "message": "ਸਾਰੀਆਂ ਲਾਈਨਾਂ ਦਿਖਾਓ ({PH1} ਹੋਰ)"
   },
   "ui/components/panel_feedback/FeedbackButton.ts | feedback": {
     "message": "ਵਿਚਾਰ"
@@ -17120,11 +17336,17 @@
   "ui/legacy/Infobar.ts | dontShowAgain": {
     "message": "ਦੁਬਾਰਾ ਨਾ ਦਿਖਾਓ"
   },
+  "ui/legacy/InspectorDrawerView.ts | closeDrawer": {
+    "message": "ਦਰਾਜ਼ ਬੰਦ ਕਰੋ"
+  },
+  "ui/legacy/InspectorDrawerView.ts | moreTools": {
+    "message": "ਹੋਰ ਟੂਲ"
+  },
+  "ui/legacy/InspectorDrawerView.ts | toggleDrawerOrientation": {
+    "message": "ਦਰਾਜ਼ ਦਿਸ਼ਾਮਾਨ ਨੂੰ ਟੌਗਲ ਕਰੋ"
+  },
   "ui/legacy/InspectorView.ts | areYouSureYouWantToRestartChrome": {
     "message": "ਕੀ ਤੁਸੀਂ ਪੱਕਾ Chrome ਨੂੰ ਮੁੜ-ਸ਼ੁਰੂ ਕਰਨਾ ਚਾਹੁੰਦੇ ਹੋ?"
-  },
-  "ui/legacy/InspectorView.ts | closeDrawer": {
-    "message": "ਦਰਾਜ਼ ਬੰਦ ਕਰੋ"
   },
   "ui/legacy/InspectorView.ts | devToolsLanguageMissmatch": {
     "message": "DevTools ਹੁਣ {PH1} ਵਿੱਚ ਉਪਲਬਧ ਹੈ"
@@ -17140,9 +17362,6 @@
   },
   "ui/legacy/InspectorView.ts | mainToolbar": {
     "message": "ਮੁੱਖ ਟੂਲਬਾਰ"
-  },
-  "ui/legacy/InspectorView.ts | moreTools": {
-    "message": "ਹੋਰ ਟੂਲ"
   },
   "ui/legacy/InspectorView.ts | moveToDrawer": {
     "message": "ਦਰਾਜ਼ ਵਿੱਚ ਲਿਜਾਓ"
@@ -17173,9 +17392,6 @@
   },
   "ui/legacy/InspectorView.ts | setToSpecificLanguage": {
     "message": "DevTools ਨੂੰ {PH1} 'ਤੇ ਸਵਿੱਚ ਕਰੋ"
-  },
-  "ui/legacy/InspectorView.ts | toggleDrawerOrientation": {
-    "message": "ਦਰਾਜ਼ ਦਿਸ਼ਾਮਾਨ ਨੂੰ ਟੌਗਲ ਕਰੋ"
   },
   "ui/legacy/ListWidget.ts | addString": {
     "message": "ਸ਼ਾਮਲ ਕਰੋ"
@@ -17791,6 +18007,9 @@
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | sSelected": {
     "message": "{PH1} ਨੂੰ ਚੁਣਿਆ ਗਿਆ"
+  },
+  "ui/legacy/components/perf_ui/GCActionDelegate.ts | garbageCollectionCompleted": {
+    "message": "ਗਾਰਬੇਜ ਇਕੱਤਰ ਕਰਨ ਦੀ ਪ੍ਰਕਿਰਿਆ ਪੂਰੀ ਹੋਈ"
   },
   "ui/legacy/components/perf_ui/NetworkPriorities.ts | high": {
     "message": "ਉੱਚ"

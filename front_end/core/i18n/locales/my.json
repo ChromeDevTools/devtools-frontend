@@ -1061,9 +1061,6 @@
   "entrypoints/main/MainImpl.ts | dockToRight": {
     "message": "ညာဘက်တွင် နေရာချရန်"
   },
-  "entrypoints/main/MainImpl.ts | externalRequestReceived": {
-    "message": "DevTools သည် ပြင်ပရှိတောင်းဆိုမှုကို ရရှိထားသည်"
-  },
   "entrypoints/main/MainImpl.ts | focusDebuggee": {
     "message": "အထူးပြသည့် စာမျက်နှာ"
   },
@@ -1327,6 +1324,12 @@
   },
   "generated/Deprecation.ts | DataUrlInSvgUse": {
     "message": "ဒေတာအတွက် ပံ့ပိုးမှု- SVGUse အစိတ်အပိုင်းရှိ URL များကို ရပ်ဆိုင်းလိုက်သဖြင့် နောင်တွင် ၎င်းကိုဖယ်ရှားလိုက်ပါမည်။"
+  },
+  "generated/Deprecation.ts | DocumentCreateEventKeyboardEvents": {
+    "message": "document.createEvent('KeyboardEvents') ကို ဆက်မသုံးတော့သဖြင့် ဖယ်ရှားပါမည်။ ၎င်းအစား new KeyboardEvent() ကို သုံးပါ။"
+  },
+  "generated/Deprecation.ts | DocumentCreateEventTransitionEvent": {
+    "message": "document.createEvent('TransitionEvent') ကို ဆက်မသုံးတော့သဖြင့် ဖယ်ရှားပါမည်။ ၎င်းအစား new TransitionEvent() ကို သုံးပါ။"
   },
   "generated/Deprecation.ts | ExampleBrowserProcessDeprecation": {
     "message": "This is an example for showing the code required for a browser process reported deprecation."
@@ -2246,6 +2249,30 @@
   "models/trace/insights/Cache.ts | title": {
     "message": "လုံလောက်သော ကက်ရှ်သက်တမ်းကို သုံးပါ"
   },
+  "models/trace/insights/CharacterSet.ts | description": {
+    "message": "အက္ခရာကုဒ်စနစ် ကြေညာချက် လိုအပ်သည်။ ၎င်းကို HTML ၏ ပထမဆုံး ၁၀၂၄ ဘိုက်အတွင်း meta charset သုံး၍ဖြစ်စေ၊ Content-Type HTTP တုံ့ပြန်မှုခေါင်းစီးတွင်ဖြစ်စေ လုပ်ဆောင်နိုင်သည်။ [အက္ခရာကုဒ်စနစ် ကြေညာခြင်းအကြောင်း ပိုလေ့လာရန်](https://developer.chrome.com/docs/insights/charset/)။"
+  },
+  "models/trace/insights/CharacterSet.ts | failedHttpHeader": {
+    "message": "HTTP ခေါင်းစီးတွင် charset ကို ကြေညာမထားပါ"
+  },
+  "models/trace/insights/CharacterSet.ts | failedMetaCharsetLate": {
+    "message": "ပထမဆုံး ၁၀၂၄ ဘိုက်ကျော်လွန်အပြီး မက်တာတဂ်သုံး၍ charset ကို ကြေညာထားသည်"
+  },
+  "models/trace/insights/CharacterSet.ts | failedMetaCharsetMissing": {
+    "message": "မက်တာတဂ်သုံး၍ charset ကို ကြေညာမထားပါ"
+  },
+  "models/trace/insights/CharacterSet.ts | failedMetaCharsetUnknown": {
+    "message": "လုပ်ဆောင်ချက်မှတ်တမ်းမှ meta charset ကြေညာချက်ကို ဖော်ထုတ်၍မရလိုက်ပါ"
+  },
+  "models/trace/insights/CharacterSet.ts | passingHttpHeader": {
+    "message": "HTTP ခေါင်းစီးတွင် charset ကို ကြေညာထားသည်"
+  },
+  "models/trace/insights/CharacterSet.ts | passingMetaCharsetEarly": {
+    "message": "ပထမဆုံး ၁၀၂၄ ဘိုက်အတွင်း မက်တာတဂ်သုံး၍ charset ကို ကြေညာထားသည်"
+  },
+  "models/trace/insights/CharacterSet.ts | title": {
+    "message": "အက္ခရာကုဒ်စနစ် ကြေညာပါ"
+  },
   "models/trace/insights/DOMSize.ts | description": {
     "message": "ကြီးမားသည့် DOM သည် ပုံစံတွက်ချက်မှု၊ အပြင်အဆင် ပြန်လည်တွက်ချက်မှုများ၏ ကြာချိန်၊ စာမျက်နှာ အလိုက်သင့်တုံ့ပြန်မှု၏ သက်ရောက်မှုတို့ကို တိုးစေနိုင်သည်။ ကြီးမားသည့် DOM သည် မှတ်ဉာဏ်အသုံးပြုမှုကိုလည်း တိုးစေနိုင်သည်။ [DOM အရွယ်အစား လွန်ကဲမှု မရှိစေသည့်နည်းလမ်းကို လေ့လာရန်](https://developer.chrome.com/docs/performance/insights/dom-size)။"
   },
@@ -2453,8 +2480,11 @@
   "models/trace/insights/LCPDiscovery.ts | fetchPriorityShouldBeApplied": {
     "message": "‘ဦးစားပေးရယူမှု=မြင့်’ ကို သုံးသင့်သည်"
   },
+  "models/trace/insights/LCPDiscovery.ts | fetchPriorityShouldBeAppliedToImagePreload": {
+    "message": "fetchpriority=high ကို ပုံကြိုဖွင့်ရန် တောင်းဆိုချက်တွင် သုံးသင့်သည်"
+  },
   "models/trace/insights/LCPDiscovery.ts | lazyLoadNotApplied": {
-    "message": "နေရာကွက်၍ ဖွင့်ခြင်းကို သုံးမထားပါ"
+    "message": "LCP ရင်းမြစ်များသည် loading=lazy ကို မသုံးသင့်ပါ"
   },
   "models/trace/insights/LCPDiscovery.ts | lcpLoadDelay": {
     "message": "အစောဆုံး စတင်သည့်အချိန်မှ {PH1} ကြာပြီးနောက် LCP ပုံ ပွင့်သည်။"
@@ -2657,24 +2687,6 @@
   "panels/accessibility/ARIAAttributesView.ts | noAriaAttributes": {
     "message": "ARIA ရည်ညွှန်းချက်များ မရှိပါ"
   },
-  "panels/accessibility/AXBreadcrumbsPane.ts | accessibilityTree": {
-    "message": "အများသုံးနိုင်မှု ဖွဲ့စည်းပုံ"
-  },
-  "panels/accessibility/AXBreadcrumbsPane.ts | fullTreeExperimentDescription": {
-    "message": "အများသုံးနိုင်မှု ဖွဲ့စည်းပုံကို DOM ဖွဲ့စည်းပုံ၏ ညာဘက်ထိပ်ထောင့်သို့ ရွှေ့လိုက်သည်။"
-  },
-  "panels/accessibility/AXBreadcrumbsPane.ts | fullTreeExperimentName": {
-    "message": "စာမျက်နှာပြည့် အများသုံးနိုင်မှု ဖွဲ့စည်းပုံ ဖွင့်ရန်"
-  },
-  "panels/accessibility/AXBreadcrumbsPane.ts | ignored": {
-    "message": "လျစ်လျူရှုထားသည်"
-  },
-  "panels/accessibility/AXBreadcrumbsPane.ts | reloadRequired": {
-    "message": "အပြောင်းအလဲ မသက်ရောက်မီ ပြန်လည်စတင်ရန် လိုသည်"
-  },
-  "panels/accessibility/AXBreadcrumbsPane.ts | scrollIntoView": {
-    "message": "မြင်ကွင်းသို့ လှိမ့်ဝင်ရန်"
-  },
   "panels/accessibility/AccessibilityNodeView.ts | accessibilityNodeNotExposed": {
     "message": "အများသုံးစွဲနိုင်မှုနုတ်ကို ဖော်ထုတ်မထားပါ"
   },
@@ -2743,6 +2755,9 @@
   },
   "panels/accessibility/AccessibilityNodeView.ts | placeholderIsPlaceholderOnAncestor": {
     "message": "{PH1} သည် ရှေ့ပြေးတွင် {PH2} ဖြစ်သည်- "
+  },
+  "panels/accessibility/AccessibilitySidebarView.ts | showAccessibilityTree": {
+    "message": "အများသုံးနိုင်မှု ဖွဲ့စည်းပုံကို ပြပါ"
   },
   "panels/accessibility/AccessibilityStrings.ts | aHumanreadableVersionOfTheValue": {
     "message": "အပိုင်းအခြား ဝိဂျက်တန်ဖိုး၏ လူပုဂ္ဂိုလ်ဖတ်နိုင်သည့် ဗားရှင်း (လိုအပ်သည့်အခါ)။"
@@ -3176,8 +3191,38 @@
   "panels/ai_assistance/components/DisabledWidget.ts | turnOnForStylesRequestsPerformanceAndFiles": {
     "message": "ပုံစံ၊ ကွန်ရက် တောင်းဆိုချက်၊ စွမ်းဆောင်ရည်၊ ဖိုင်များနှင့် ပတ်သက်၍ အကူအညီရယူရန် {PH1} ကို ဖွင့်ပါ"
   },
+  "panels/ai_assistance/components/ExportForAgentsDialog.ts | asMarkdown": {
+    "message": "Markdown အဖြစ်"
+  },
+  "panels/ai_assistance/components/ExportForAgentsDialog.ts | asPrompt": {
+    "message": "ညွှန်ကြားချက်အဖြစ်"
+  },
+  "panels/ai_assistance/components/ExportForAgentsDialog.ts | copiedToClipboard": {
+    "message": "ကလစ်ဘုတ်သို့ မိတ္တူကူးပြီးပြီ"
+  },
+  "panels/ai_assistance/components/ExportForAgentsDialog.ts | copyToClipboard": {
+    "message": "ကလစ်ဘုတ်သို့ မိတ္တူကူးရန်"
+  },
+  "panels/ai_assistance/components/ExportForAgentsDialog.ts | disclaimer": {
+    "message": "၎င်းသည် စမ်းသပ်ဆဲ AI တူးလ်ဖြစ်ပြီး အမြဲတမ်း မှန်မည်မဟုတ်ပါ။ အခြားတူးလ်သို့ ကူးမထည့်မီ ဤစာသားကို သေချာစွာ စိစစ်ပါ။"
+  },
+  "panels/ai_assistance/components/ExportForAgentsDialog.ts | exportForAgents": {
+    "message": "သင်၏ ကုဒ်ရေးသည့် အေးဂျင့်အတွက် မိတ္တူကူးခြင်း"
+  },
+  "panels/ai_assistance/components/ExportForAgentsDialog.ts | generatingSummary": {
+    "message": "အနှစ်ချုပ် ထုတ်လုပ်နေသည်…"
+  },
+  "panels/ai_assistance/components/ExportForAgentsDialog.ts | saveAsMarkdown": {
+    "message": "အောက်ပါအဖြစ် သိမ်းရန်…"
+  },
   "panels/ai_assistance/components/WalkthroughView.ts | close": {
     "message": "ပိတ်ရန်"
+  },
+  "panels/ai_assistance/components/WalkthroughView.ts | hideAgentWalkthrough": {
+    "message": "အေးဂျင့်လမ်းညွှန် ဖျောက်ရန်"
+  },
+  "panels/ai_assistance/components/WalkthroughView.ts | hideThinking": {
+    "message": "တွေးဆနေသည်ကို ဖျောက်ရန်"
   },
   "panels/ai_assistance/components/WalkthroughView.ts | showAgentWalkthrough": {
     "message": "အေးဂျင့် လမ်းညွှန်ချက်ကို ပြပါ"
@@ -3186,7 +3231,7 @@
     "message": "တွေးဆခြင်း ပြပါ"
   },
   "panels/ai_assistance/components/WalkthroughView.ts | title": {
-    "message": "စုံစမ်းစစ်ဆေးမှု အဆင့်များ"
+    "message": "အေးဂျင့်လမ်းညွှန်"
   },
   "panels/animation/AnimationTimeline.ts | animationDescription": {
     "message": "ဤစာမျက်နှာတွင် လှုပ်ရှားသက်ဝင်ပုံများကို စစ်ဆေးပြီး မွမ်းမံနိုင်သည်။"
@@ -3763,6 +3808,18 @@
   },
   "panels/application/CookieItemsView.ts | showUrlDecoded": {
     "message": "ဒေတာအသွင်ပြန်ဖော်ထားသည့် URL ကို ပြပါ"
+  },
+  "panels/application/CrashReportContextView.ts | filterByText": {
+    "message": "ကီး (သို့) တန်ဖိုးဖြင့် စစ်ထုတ်ရန်"
+  },
+  "panels/application/CrashReportContextView.ts | noContext": {
+    "message": "ဖရိမ်များတွင် ဆက်စပ်အကြောင်းအရာ ထည့်သွင်းမှုများ မတွေ့ပါ။"
+  },
+  "panels/application/CrashReportContextView.ts | refresh": {
+    "message": "ပြန်လည် စတင်ရန်"
+  },
+  "panels/application/CrashReportContextView.ts | unknownFrame": {
+    "message": "အမျိုးအမည်မသိ ဖရိမ်"
   },
   "panels/application/DOMStorageItemsView.ts | domStorageItemDeleted": {
     "message": "သိုလှောင်ခန်း အကြောင်းအရာကို ဖျက်ထားသည်။"
@@ -4538,6 +4595,9 @@
   "panels/application/PreloadingTreeElement.ts | speculativeLoads": {
     "message": "ကြိုဖွင့်မှုများ"
   },
+  "panels/application/ReportingApiTreeElement.ts | crashReportContext": {
+    "message": "ပျက်စီးမှု အစီရင်ခံစာဆိုင်ရာ ဆက်စပ်အကြောင်းအရာ"
+  },
   "panels/application/ReportingApiTreeElement.ts | reportingApi": {
     "message": "API အစီရင်ခံခြင်း"
   },
@@ -4861,6 +4921,93 @@
   },
   "panels/application/TrustTokensTreeElement.ts | trustTokens": {
     "message": "သီးသန့်အခြေအနေ တိုကင်"
+  },
+  "panels/application/WebMCPView.ts | canceled": {
+    "message": "ရပ်ဆိုင်းထားသည်"
+  },
+  "panels/application/WebMCPView.ts | canceledCount": {
+    "message": "{PH1} ခု ပယ်ဖျက်ထားသည်"
+  },
+  "panels/application/WebMCPView.ts | clearFilters": {
+    "message": "စစ်ထုတ်မှုများ ရှင်းရန်"
+  },
+  "panels/application/WebMCPView.ts | clearLog": {
+    "message": "မှတ်တမ်းရှင်းရန်"
+  },
+  "panels/application/WebMCPView.ts | close": {
+    "message": "ပိတ်ရန်"
+  },
+  "panels/application/WebMCPView.ts | declarative": {
+    "message": "ကြေညာမှု"
+  },
+  "panels/application/WebMCPView.ts | error": {
+    "message": "အမှားအယွင်း"
+  },
+  "panels/application/WebMCPView.ts | failed": {
+    "message": "{PH1} ခု မအောင်မြင်ပါ"
+  },
+  "panels/application/WebMCPView.ts | filter": {
+    "message": "စစ်ထုတ်ရန်"
+  },
+  "panels/application/WebMCPView.ts | frame": {
+    "message": "ဖရိမ်"
+  },
+  "panels/application/WebMCPView.ts | imperative": {
+    "message": "ညွှန်ကြားမှု"
+  },
+  "panels/application/WebMCPView.ts | inProgress": {
+    "message": "ဆောင်ရွက်နေဆဲ"
+  },
+  "panels/application/WebMCPView.ts | inProgressCount": {
+    "message": "{PH1} ခု ဆောင်ရွက်နေဆဲ"
+  },
+  "panels/application/WebMCPView.ts | input": {
+    "message": "ထည့်သွင်းချက်"
+  },
+  "panels/application/WebMCPView.ts | name": {
+    "message": "အမည်"
+  },
+  "panels/application/WebMCPView.ts | noCallsPlaceholder": {
+    "message": "ဤနေရာတွင် တူးလ်ခေါ်ဆိုမှုနှင့် လုပ်ဆောင်ချက်များကို အချိန်နှင့်တစ်ပြေးညီ ကြည့်ရန် သင်၏ WebMCP အေးဂျင့်နှင့် ပြန်လှန်တုံ့ပြန်မှုစတင်ပါ။"
+  },
+  "panels/application/WebMCPView.ts | noCallsPlaceholderTitle": {
+    "message": "တူးလ် လုပ်ဆောင်ချက်"
+  },
+  "panels/application/WebMCPView.ts | noToolsPlaceholder": {
+    "message": "ဤစာမျက်နှာအတွက် မှတ်ပုံတင်ထားသော WebMCP တူးလ်များကို ဤနေရာတွင် မြင်ရမည်။ တူးလ်များ မှတ်ပုံမတင်ရသေးပါ (သို့) ရှာမတွေ့သေးပါ။"
+  },
+  "panels/application/WebMCPView.ts | noToolsPlaceholderTitle": {
+    "message": "ရနိုင်သော WebMCP တူးလ်များ"
+  },
+  "panels/application/WebMCPView.ts | output": {
+    "message": "ထုတ်လုပ်ချက်"
+  },
+  "panels/application/WebMCPView.ts | pending": {
+    "message": "ဆောင်ရွက်နေဆဲ"
+  },
+  "panels/application/WebMCPView.ts | status": {
+    "message": "အခြေအနေ"
+  },
+  "panels/application/WebMCPView.ts | statusTypes": {
+    "message": "အခြေအနေ အမျိုးအစားများ"
+  },
+  "panels/application/WebMCPView.ts | success": {
+    "message": "အောင်မြင်သည်"
+  },
+  "panels/application/WebMCPView.ts | toolDetails": {
+    "message": "အသေးစိတ်"
+  },
+  "panels/application/WebMCPView.ts | toolRegistry": {
+    "message": "ရနိုင်သောတူးလ်များ"
+  },
+  "panels/application/WebMCPView.ts | toolTypes": {
+    "message": "တူးလ်အမျိုးအစားများ"
+  },
+  "panels/application/WebMCPView.ts | totalCalls": {
+    "message": "စုစုပေါင်း ဖုန်းခေါ်ဆိုမှု {PH1} ကြိမ်"
+  },
+  "panels/application/WebMCPView.ts | viewInElementsPanel": {
+    "message": "‘အစိတ်အပိုင်းများ’ အကန့်တွင် ကြည့်ရန်"
   },
   "panels/application/application-meta.ts | application": {
     "message": "အပလီကေးရှင်း"
@@ -5344,6 +5491,18 @@
   },
   "panels/application/components/BounceTrackingMitigationsView.ts | stateDeletedFor": {
     "message": "အောက်ပါဝဘ်ဆိုက်များအတွက် အခြေအနေကို ဖျက်ထားသည်-"
+  },
+  "panels/application/components/CrashReportContextGrid.ts | copyKey": {
+    "message": "ကီး မိတ္တူကူးရန်"
+  },
+  "panels/application/components/CrashReportContextGrid.ts | copyValue": {
+    "message": "တန်ဖိုး မိတ္တူကူးရန်"
+  },
+  "panels/application/components/CrashReportContextGrid.ts | key": {
+    "message": "ကီး"
+  },
+  "panels/application/components/CrashReportContextGrid.ts | value": {
+    "message": "တန်ဖိုး"
   },
   "panels/application/components/EndpointsGrid.ts | endpointsDescription": {
     "message": "ဤနေရာတွင် အစီရင်ခံချက်များ လက်ခံရရှိသော အဆုံးမှတ်စာရင်းကို တွေ့ရမည်"
@@ -5966,6 +6125,9 @@
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusNavigationBadHttpStatus": {
     "message": "2xx မဟုတ်သော HTTP တုံ့ပြန်မှု အခြေအနေပြကုဒ်ကြောင့် ကြိုတင်ပုံဖော်ခြင်းဆိုင်ရာ လမ်းညွှန်မှုကို လုပ်၍မရပါ။"
   },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusNavigationBadHttpStatusWithStatusCode": {
+    "message": "2xx မဟုတ်သော HTTP တုံ့ပြန်မှု အခြေအနေပြကုဒ် ({PH1}) ကြောင့် ကြိုတင်ပုံဖော်မှု လမ်းညွှန်ခြင်း မအောင်မြင်လိုက်ပါ။"
+  },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusNavigationRequestBlockedByCsp": {
     "message": "ကြိုတင်ပုံဖော်ခြင်းဆိုင်ရာ လမ်းညွှန်မှုကို ‘အကြောင်းအရာ လုံခြုံရေးမူဝါဒ’ တစ်ခုက ပိတ်ထားသည်။"
   },
@@ -6466,9 +6628,6 @@
   },
   "panels/common/BadgeNotification.ts | viewProfile": {
     "message": "ပရိုဖိုင်ကြည့်ရန်"
-  },
-  "panels/common/CopyChangesToPrompt.ts | responseCopiedToClipboard": {
-    "message": "တုံ့ပြန်ချက်ကို ကလစ်ဘုတ်သို့ မိတ္တူကူးလိုက်သည်"
   },
   "panels/common/DOMLinkifier.ts | node": {
     "message": "<နုတ်>"
@@ -7529,12 +7688,6 @@
   "panels/elements/ElementsPanel.ts | styles": {
     "message": "ပုံစံများ"
   },
-  "panels/elements/ElementsPanel.ts | switchToAccessibilityTreeView": {
-    "message": "‘အများသုံးနိုင်မှု ဖွဲ့စည်းပုံ’ မြင်ကွင်းသို့ ပြောင်းရန်"
-  },
-  "panels/elements/ElementsPanel.ts | switchToDomTreeView": {
-    "message": "DOM ဖွဲ့စည်းပုံမြင်ကွင်းသို့ ပြောင်းရန်"
-  },
   "panels/elements/ElementsPanel.ts | theDeferredDomNodeCouldNotBe": {
     "message": "ရွှေ့ဆိုင်းထားသော DOM နုတ်ကို မှန်ကန်သောနုတ်တွင် အတည်ပြု၍မရပါ။"
   },
@@ -7591,6 +7744,9 @@
   },
   "panels/elements/ElementsTreeElement.ts | copyXpath": {
     "message": "XPath ကို မိတ္တူကူးရန်"
+  },
+  "panels/elements/ElementsTreeElement.ts | creatorAdScriptAncestry": {
+    "message": "ထုတ်လုပ်သူ ကြော်ငြာ Script ဇာစ်မြစ်"
   },
   "panels/elements/ElementsTreeElement.ts | cut": {
     "message": "ဖြတ်ယူရန်"
@@ -7679,6 +7835,9 @@
   "panels/elements/ElementsTreeElement.ts | explainSubgrids": {
     "message": "ဂရစ်အခွဲများကို ရှင်းပြရန်"
   },
+  "panels/elements/ElementsTreeElement.ts | filterListRule": {
+    "message": "စစ်ထုတ်စာရင်း စည်းမျဉ်း"
+  },
   "panels/elements/ElementsTreeElement.ts | findGridDefinition": {
     "message": "ဇယားကွက် အဓိပ္ပာယ်ဖွင့်ဆိုချက် ရှာရန်"
   },
@@ -7694,6 +7853,9 @@
   "panels/elements/ElementsTreeElement.ts | hideElement": {
     "message": "အစိတ်အပိုင်းကို ဖျောက်ထားရန်"
   },
+  "panels/elements/ElementsTreeElement.ts | noProvenanceAvailable": {
+    "message": "ဇာစ်မြစ်ဒေတာ မရနိုင်ပါ"
+  },
   "panels/elements/ElementsTreeElement.ts | openMediaPanel": {
     "message": "မီဒီယာအကန့်သို့ တိုက်ရိုက်သွားရန်"
   },
@@ -7705,6 +7867,9 @@
   },
   "panels/elements/ElementsTreeElement.ts | reveal": {
     "message": "ပြသရန်"
+  },
+  "panels/elements/ElementsTreeElement.ts | rootScriptFilterListRule": {
+    "message": "Root Script စစ်ထုတ်စာရင်း စည်းမျဉ်း"
   },
   "panels/elements/ElementsTreeElement.ts | scrollIntoView": {
     "message": "မြင်ကွင်းသို့ လှိမ့်ဝင်ရန်"
@@ -7730,8 +7895,8 @@
   "panels/elements/ElementsTreeElement.ts | styleScrollbars": {
     "message": "ရွှေ့ဘားများကို ပုံစံဖော်ရန်"
   },
-  "panels/elements/ElementsTreeElement.ts | thisFrameWasIdentifiedAsAnAd": {
-    "message": "ဤဖရိမ်ကို ကြော်ငြာဖရိမ်အဖြစ် သတ်မှတ်ထားသည်"
+  "panels/elements/ElementsTreeElement.ts | thisElementWasIdentifiedAsAnAd": {
+    "message": "ဤအပိုင်းကို ကြော်ငြာအဖြစ် သတ်မှတ်ထားသည်"
   },
   "panels/elements/ElementsTreeElement.ts | useSInTheConsoleToReferToThis": {
     "message": "ဤအစိတ်အပိုင်းကို ရည်ညွှန်းရန် ကွန်ဆိုးလ်တွင် {PH1} သုံးပါ။"
@@ -7747,6 +7912,9 @@
   },
   "panels/elements/ElementsTreeOutline.ts | pageDom": {
     "message": "စာမျက်နှာ DOM"
+  },
+  "panels/elements/ElementsTreeOutline.ts | showAllLines": {
+    "message": "အားလုံးပြပါ ({PH1} လိုင်း)"
   },
   "panels/elements/ElementsTreeOutline.ts | showAllNodesDMore": {
     "message": "နုတ်အားလုံးပြပါ (နောက်ထပ် {PH1} ခု)"
@@ -7865,6 +8033,9 @@
   "panels/elements/ShortcutTreeElement.ts | reveal": {
     "message": "ပြသရန်"
   },
+  "panels/elements/StylePropertiesSection.ts | collapseExpandedRule": {
+    "message": "ချဲ့ထားသော စည်းမျဉ်းကို ချုံ့ရန်"
+  },
   "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
     "message": "ပြုလုပ်ထားသော ပုံစံစာမျက်နှာ"
   },
@@ -7879,6 +8050,9 @@
   },
   "panels/elements/StylePropertiesSection.ts | cssSelector": {
     "message": "CSS ရွေးချယ်စနစ်"
+  },
+  "panels/elements/StylePropertiesSection.ts | expandCollapsedRule": {
+    "message": "ချုံ့ထားသော စည်းမျဉ်းကို ချဲ့ရန်"
   },
   "panels/elements/StylePropertiesSection.ts | injectedStylesheet": {
     "message": "ထည့်သွင်းထားသော ပုံစံစာမျက်နှာ"
@@ -9239,6 +9413,12 @@
   "panels/lighthouse/LighthouseStatusView.ts | ahSorryWeRanIntoAnError": {
     "message": "ဝမ်းနည်းပါသည်။ အမှားတစ်ခု ဖြစ်သွားသည်။"
   },
+  "panels/lighthouse/LighthouseStatusView.ts | aiAuditingS": {
+    "message": "AI အကူအညီသည် {PH1} ကို စစ်ဆေးနေသည်"
+  },
+  "panels/lighthouse/LighthouseStatusView.ts | aiAuditingYourWebPage": {
+    "message": "AI အကူအညီသည် သင့်အင်တာနက်စာမျက်နှာကို စစ်ဆေးနေသည်"
+  },
   "panels/lighthouse/LighthouseStatusView.ts | almostThereLighthouseIsNow": {
     "message": "ပြီးခါနီးပါပြီ။ Lighthouse သည် သင့်အစီရင်ခံစာကို ယခုထုတ်ပေးနေသည်။"
   },
@@ -10526,6 +10706,9 @@
   "panels/network/NetworkLogViewColumns.ts | requestHeaders": {
     "message": "တောင်းဆိုချက် ခေါင်းစီးများ"
   },
+  "panels/network/NetworkLogViewColumns.ts | requestNumber": {
+    "message": "တောင်းဆိုချက် #"
+  },
   "panels/network/NetworkLogViewColumns.ts | responseHeaders": {
     "message": "တုံ့ပြန်ချက် ခေါင်းစီးများ"
   },
@@ -11714,9 +11897,6 @@
   "panels/profiler/HeapSnapshotGridNodes.ts | userObjectReachableFromWindow": {
     "message": "ဝင်းဒိုးမှ ရောက်ရှိနိုင်သော အသုံးပြုသူအကြောင်းအရာ"
   },
-  "panels/profiler/HeapSnapshotProxy.ts | anErrorOccurredWhenACallToMethod": {
-    "message": "''{PH1}'' နည်းလမ်းသို့ ခေါ်ဆိုရန် တောင်းဆိုရာတွင် အမှားဖြစ်သွားသည်"
-  },
   "panels/profiler/HeapSnapshotView.ts | AllocationTimelinesShowInstrumented": {
     "message": "ရှိနေသေးသော နေရာချထားမှုများသုံး၍ ကြားကာလများကို ရွေးချယ်ခြင်းဖြင့် မှတ်ဉာဏ်နေရာချထားမှုများကို အချိန်နှင့်အမျှ မှတ်တမ်းတင်ပြီး မှတ်ဉာဏ်ယိုစိမ့်မှုများကို သီးခြားခွဲသည်"
   },
@@ -12543,7 +12723,7 @@
     "message": "အစိတ်အပိုင်း"
   },
   "panels/recorder/components/StepView.ts | elementRoleInput": {
-    "message": "အဝင်"
+    "message": "ထည့်သွင်းချက်"
   },
   "panels/recorder/components/StepView.ts | emulateNetworkConditionsStepTitle": {
     "message": "ကွန်ရက်အခြေအနေများ ပုံတူထုတ်လုပ်ခြင်း"
@@ -13326,7 +13506,7 @@
     "message": "Console insights ဖွင့်ရန်"
   },
   "panels/settings/AISettingsTab.ts | experimentalFeatures": {
-    "message": "ဤတူးလ်များက ထုတ်လုပ်မှု AI ကို အသုံးပြုပြီး Google ၏ အမြင်ကို ကိုယ်စားမပြုသည့် တိကျမှန်ကန်မှုမရှိသော (သို့) စိတ်အနှောင့်အယှက်ဖြစ်စေသော အချက်အလက်များကို ပေးနိုင်သည်"
+    "message": "ဤတူးလ်များက တီထွင်ဖန်တီးမှုဆိုင်ရာ AI ကို အသုံးပြုပြီး Google ၏ အမြင်ကို ကိုယ်စားမပြုသည့် တိကျမှန်ကန်မှုမရှိသော (သို့) စိတ်အနှောင့်အယှက်ဖြစ်စေသော အချက်အလက်များကို ပေးနိုင်သည်"
   },
   "panels/settings/AISettingsTab.ts | explainConsole": {
     "message": "ကွန်ဆိုးလ် သတိပေးချက်နှင့် အမှားများအတွက် ရှင်းပြချက်များ ရယူနိုင်သည်"
@@ -13660,6 +13840,9 @@
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | userAgentString": {
     "message": "ဝဘ်ဆိုက်ကိုချိတ်ဆက်ပေးသည့် ပရိုဂရမ်ဆိုင်ရာ လိုင်း"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | userAgentStringCannotBeEmpty": {
+    "message": "အသုံးပြုသူ အေးဂျင့် အက္ခရာတွဲသည် အလွတ်မဖြစ်ရပါ။"
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | userAgentType": {
     "message": "ဝဘ်ဆိုက်ကိုချိတ်ဆက်ပေးသည့် ပရိုဂရမ် အမျိုးအစား"
@@ -15299,9 +15482,6 @@
   "panels/timeline/TimelinePanel.ts | exportingFailed": {
     "message": "လုပ်ဆောင်ချက်မှတ်တမ်းကို ထုတ်ယူ၍မရလိုက်ပါ"
   },
-  "panels/timeline/TimelinePanel.ts | externalRequestReceived": {
-    "message": "DevTools သည် ပြင်ပရှိတောင်းဆိုမှုကို ရရှိထားသည်"
-  },
   "panels/timeline/TimelinePanel.ts | fixMe": {
     "message": "ပြုပြင်ရန်"
   },
@@ -15934,6 +16114,30 @@
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | recommendedThrottlingReason": {
     "message": "အမှန်တကယ်အသုံးပြုသူ ပတ်ဝန်းကျင်များကို အသွင်တူဖန်တီးရန်အတွက် ဆက်တင်ပြောင်းရန် စဉ်းစားပါ"
+  },
+  "panels/timeline/components/CWVMetrics.ts | dismissTitle": {
+    "message": "ပယ်ရန်"
+  },
+  "panels/timeline/components/CWVMetrics.ts | fieldMismatchNotice": {
+    "message": "စက်တွင်းနှင့် ရည်ညွှန်းချက် မက်ထရစ်များ [တူညီမှု မရှိနိုင်](https://web.dev/articles/lab-and-field-data-differences) သည့် အကြောင်းရင်း များစွာရှိသည်။ သာမန်အသုံးပြုသူ၏ ပတ်ဝန်းကျင်နှင့် ပိုမိုဆင်တူသော လုပ်ဆောင်ချက်မှတ်တမ်းများကို စိတ်ဖြာလေ့လာရန်အတွက် [မြန်နှုန်းထိန်းချုပ်မှု ဆက်တင်များနှင့် စက် ပုံတူထုတ်လုပ်ခြင်း](https://developer.chrome.com/docs/devtools/device-mode) ကို ချိန်ညှိပါ။"
+  },
+  "panels/timeline/components/CWVMetrics.ts | fieldMismatchTitle": {
+    "message": "ရည်ညွှန်းချက်နှင့် စက်တွင်း မက်ထရစ်များ မတူညီခြင်း"
+  },
+  "panels/timeline/components/CWVMetrics.ts | fieldScoreLabel": {
+    "message": "ရည်ညွှန်းချက် ({PH1})"
+  },
+  "panels/timeline/components/CWVMetrics.ts | metricScore": {
+    "message": "{PH1}- {PH2} {PH3} မှတ်"
+  },
+  "panels/timeline/components/CWVMetrics.ts | metricScoreUnavailable": {
+    "message": "{PH1}- မရနိုင်ပါ"
+  },
+  "panels/timeline/components/CWVMetrics.ts | originOption": {
+    "message": "မူရင်း"
+  },
+  "panels/timeline/components/CWVMetrics.ts | urlOption": {
+    "message": "URL"
   },
   "panels/timeline/components/DetailsView.ts | forcedReflow": {
     "message": "မဖြစ်မနေ ပြန်လည်တွက်ချက်စေသည်"
@@ -16718,6 +16922,9 @@
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "ရပ်ရန်"
   },
+  "panels/timeline/timeline-meta.ts | timelineShowAllEvents": {
+    "message": "ဖြစ်ရပ်အားလုံး ပြပါ"
+  },
   "panels/timeline/utils/IgnoreList.ts | skip3rdPartyScripts": {
     "message": "ရင်းမြစ်မြေပုံတွင် ‘လျစ်လျူရှုရန်စာရင်း’ ဖြင့် မှတ်သားထားသည်"
   },
@@ -16859,6 +17066,12 @@
   "panels/webauthn/WebauthnPane.ts | signCount": {
     "message": "လက်မှတ်အရေအတွက်"
   },
+  "panels/webauthn/WebauthnPane.ts | supportsHmacSecret": {
+    "message": "hmac-secret ကို ပံ့ပိုးသည်"
+  },
+  "panels/webauthn/WebauthnPane.ts | supportsHmacSecretMc": {
+    "message": "hmac-secret-mc ကို ပံ့ပိုးသည်"
+  },
   "panels/webauthn/WebauthnPane.ts | supportsLargeBlob": {
     "message": "Blob အကြီးကို ပံ့ပိုးရန်"
   },
@@ -16955,10 +17168,10 @@
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "လောလောဆယ်တွင် ပြဿနာကို မရနိုင်ပါ"
   },
-  "ui/components/list/List.ts | edit": {
+  "ui/components/lists/List.ts | edit": {
     "message": "တည်းဖြတ်ရန်"
   },
-  "ui/components/list/List.ts | remove": {
+  "ui/components/lists/List.ts | remove": {
     "message": "ဖယ်ရှားရန်"
   },
   "ui/components/markdown_view/CodeBlock.ts | code": {
@@ -16972,6 +17185,9 @@
   },
   "ui/components/markdown_view/CodeBlock.ts | disclaimer": {
     "message": "ကုဒ်အတိုအထွာများကို သတိထား၍ သုံးပါ"
+  },
+  "ui/components/markdown_view/CodeBlock.ts | showAllLines": {
+    "message": "စာကြောင်းအားလုံး ပြပါ (နောက်ထပ် {PH1} ကြောင်း)"
   },
   "ui/components/panel_feedback/FeedbackButton.ts | feedback": {
     "message": "အကြံပြုချက်"
@@ -17120,11 +17336,17 @@
   "ui/legacy/Infobar.ts | dontShowAgain": {
     "message": "ထပ်မပြပါနှင့်"
   },
+  "ui/legacy/InspectorDrawerView.ts | closeDrawer": {
+    "message": "အံဆွဲ ပိတ်ရန်"
+  },
+  "ui/legacy/InspectorDrawerView.ts | moreTools": {
+    "message": "နောက်ထပ် တူးလ်များ"
+  },
+  "ui/legacy/InspectorDrawerView.ts | toggleDrawerOrientation": {
+    "message": "အံဆွဲအနေအထား ပြောင်းရန်"
+  },
   "ui/legacy/InspectorView.ts | areYouSureYouWantToRestartChrome": {
     "message": "Chrome ကို ပြန်စလိုသည်မှာ သေချာပါသလား"
-  },
-  "ui/legacy/InspectorView.ts | closeDrawer": {
-    "message": "အံဆွဲ ပိတ်ရန်"
   },
   "ui/legacy/InspectorView.ts | devToolsLanguageMissmatch": {
     "message": "‘ဆောဖ့်ဝဲတူးလ်များ’ ကို {PH1} ဖြင့် ရနိုင်ပါပြီ"
@@ -17140,9 +17362,6 @@
   },
   "ui/legacy/InspectorView.ts | mainToolbar": {
     "message": "ပင်မ ကိရိယာဘား"
-  },
-  "ui/legacy/InspectorView.ts | moreTools": {
-    "message": "နောက်ထပ် တူးလ်များ"
   },
   "ui/legacy/InspectorView.ts | moveToDrawer": {
     "message": "အံဆွဲသို့ ရွှေ့ရန်"
@@ -17173,9 +17392,6 @@
   },
   "ui/legacy/InspectorView.ts | setToSpecificLanguage": {
     "message": "DevTools ကို {PH1} သို့ ပြောင်းရန်"
-  },
-  "ui/legacy/InspectorView.ts | toggleDrawerOrientation": {
-    "message": "အံဆွဲအနေအထား ပြောင်းရန်"
   },
   "ui/legacy/ListWidget.ts | addString": {
     "message": "ထည့်ရန်"
@@ -17791,6 +18007,9 @@
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | sSelected": {
     "message": "{PH1} ကို ရွေးထားသည်"
+  },
+  "ui/legacy/components/perf_ui/GCActionDelegate.ts | garbageCollectionCompleted": {
+    "message": "အမှိုက်ရှင်းလင်းမှု ပြီးပါပြီ"
   },
   "ui/legacy/components/perf_ui/NetworkPriorities.ts | high": {
     "message": "မြင့်"

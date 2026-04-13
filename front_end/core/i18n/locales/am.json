@@ -1061,9 +1061,6 @@
   "entrypoints/main/MainImpl.ts | dockToRight": {
     "message": "ወደ ቀኝ ይትከሉ"
   },
-  "entrypoints/main/MainImpl.ts | externalRequestReceived": {
-    "message": "DevTools ውጫዊ ጥያቄ ተቀብለዋል"
-  },
   "entrypoints/main/MainImpl.ts | focusDebuggee": {
     "message": "የትኩረት ገፅ"
   },
@@ -1327,6 +1324,12 @@
   },
   "generated/Deprecation.ts | DataUrlInSvgUse": {
     "message": "ለወሂብ ድጋፍ፦ በSVGUseElement ውስጥ ያሉ ዩአርኤሎች ተቋርጧል እና ወደፊትም ይወገዳል።"
+  },
+  "generated/Deprecation.ts | DocumentCreateEventKeyboardEvents": {
+    "message": "document.createEvent('KeyboardEvents') ተቋርጧል እና ይወገዳል። በምትኩ new KeyboardEvent() ይጠቀሙ።"
+  },
+  "generated/Deprecation.ts | DocumentCreateEventTransitionEvent": {
+    "message": "document.createEvent('TransitionEvent') ተቋርጧል እና ይወገዳል። በምትኩ new TransitionEvent() ይጠቀሙ።"
   },
   "generated/Deprecation.ts | ExampleBrowserProcessDeprecation": {
     "message": "ይህ በአሳሽ ሂደት ሪፖርት ለተደረገ መቋረጥ የሚያስፈልገውን ኮድ የማሳየት ምሳሌ ነው።"
@@ -2246,6 +2249,30 @@
   "models/trace/insights/Cache.ts | title": {
     "message": "ብቁ የሆነ የዕድሜ ዘመን መሸጎጫ ይጠቀሙ"
   },
+  "models/trace/insights/CharacterSet.ts | description": {
+    "message": "የቁምፊ በኮድ መክተት መግለጫ ያስፈልጋል። በመጀመሪያዎቹ የኤችቲኤምኤል 1024 ባይቶች ውስጥ በሜታ ቁምፊ ስብስብ መለያ ወይም በይዘት ዓይነት ኤችቲቲፒኤስ ምላሽ ራስጌ ውስጥ በመለያ ሊከናወን ይችላል። [ስለ የቁምፊ በኮድ መክተትን ማወጅ የበለጠ ይወቁ](https://developer.chrome.com/docs/insights/charset/)።"
+  },
+  "models/trace/insights/CharacterSet.ts | failedHttpHeader": {
+    "message": "በኤችቲቲፒ ራስጌ ውስጥ የቁምፊ ስብስብን አይገልጽም"
+  },
+  "models/trace/insights/CharacterSet.ts | failedMetaCharsetLate": {
+    "message": "ከመጀመሪያዎቹ 1024 ባይቶች በኋላ ዲበ መለያ በመጠቀም የቁምፊ ስብስብን ያውጃል"
+  },
+  "models/trace/insights/CharacterSet.ts | failedMetaCharsetMissing": {
+    "message": "የሜታ መለያን በመጠቀም የቁምፊ ስብስብን አያውጅም"
+  },
+  "models/trace/insights/CharacterSet.ts | failedMetaCharsetUnknown": {
+    "message": "ከመከታተያ የሜታ ቁምፊ ስብስብ መግለጫን መወሰን አልተቻለም"
+  },
+  "models/trace/insights/CharacterSet.ts | passingHttpHeader": {
+    "message": "ቁምፊ ስብስብን በኤችቲቲፒ ራስጌ ውስጥ ያውጃል"
+  },
+  "models/trace/insights/CharacterSet.ts | passingMetaCharsetEarly": {
+    "message": "በመጀመሪያዎቹ 1024 ባይቶች ውስጥ ዲበ መለያ በመጠቀም የቁምፊ ስብስብን ያውጃል"
+  },
+  "models/trace/insights/CharacterSet.ts | title": {
+    "message": "የቁምፊ ምሥጠራን ያውጁ"
+  },
   "models/trace/insights/DOMSize.ts | description": {
     "message": "ትልቅ DOM የቅጥ ስሌቶችን እና የአቀማመጥ ዳግም ፍሰቶች የጊዜ ቆይታ ሊጨምር ይችላል ይህም የገፅ ምላሽ ሰጪነት ላይ ተጽዕኖ ያሳድራል። ትልቅ DOM የማህደረ ትውስታ አጠቃቀምን ይጨምራል። [ከልክ ያለፈ የDOM መጠንን ማስቀረት እንዴት እንደሚቻል ይወቁ](https://developer.chrome.com/docs/performance/insights/dom-size)።"
   },
@@ -2453,8 +2480,11 @@
   "models/trace/insights/LCPDiscovery.ts | fetchPriorityShouldBeApplied": {
     "message": "fetchpriority=high ሊተገበር ይገባል"
   },
+  "models/trace/insights/LCPDiscovery.ts | fetchPriorityShouldBeAppliedToImagePreload": {
+    "message": "fetchpriority=high በምስል ቅድሚያ መጫን ጥያቄ ላይ መተግበር አለበት"
+  },
   "models/trace/insights/LCPDiscovery.ts | lazyLoadNotApplied": {
-    "message": "ሰነፍ ጭነት አልተተገበረም"
+    "message": "LCP ንብረቶች loading=lazyን መጠቀም የለባቸውም"
   },
   "models/trace/insights/LCPDiscovery.ts | lcpLoadDelay": {
     "message": "ከቅርብ ጊዜው መነሻ ነጥብ በኋላ LCP ምስል {PH1} ጭኗል።"
@@ -2657,24 +2687,6 @@
   "panels/accessibility/ARIAAttributesView.ts | noAriaAttributes": {
     "message": "ምንም የARIA መገለጫ ባሕሪያት የሉም"
   },
-  "panels/accessibility/AXBreadcrumbsPane.ts | accessibilityTree": {
-    "message": "የተደራሽነት ዛፍ"
-  },
-  "panels/accessibility/AXBreadcrumbsPane.ts | fullTreeExperimentDescription": {
-    "message": "የተደራሽነት ዛፉ ወደ DOM ዛፉ የላይኛው ቀኝ ጥግ ተወስዷል።"
-  },
-  "panels/accessibility/AXBreadcrumbsPane.ts | fullTreeExperimentName": {
-    "message": "ባለ ሙሉ ገፅ የተደራሽነት ዛፍን አንቃ"
-  },
-  "panels/accessibility/AXBreadcrumbsPane.ts | ignored": {
-    "message": "የተተወ"
-  },
-  "panels/accessibility/AXBreadcrumbsPane.ts | reloadRequired": {
-    "message": "ለውጡ ተግባራዊ ከመሆኑ በፊት እንደገና መጫን ያስፈልጋል"
-  },
-  "panels/accessibility/AXBreadcrumbsPane.ts | scrollIntoView": {
-    "message": "ወደ ዕይታ ሸብልል"
-  },
   "panels/accessibility/AccessibilityNodeView.ts | accessibilityNodeNotExposed": {
     "message": "የተደራሽነት አንጓ አልተጋለጠም"
   },
@@ -2743,6 +2755,9 @@
   },
   "panels/accessibility/AccessibilityNodeView.ts | placeholderIsPlaceholderOnAncestor": {
     "message": "{PH1} በዘር ማንዘሩ ላይ {PH2} ነው፦ "
+  },
+  "panels/accessibility/AccessibilitySidebarView.ts | showAccessibilityTree": {
+    "message": "የተደራሽነት ዛፍን አሳይ"
   },
   "panels/accessibility/AccessibilityStrings.ts | aHumanreadableVersionOfTheValue": {
     "message": "ሊነበብ የሚችል የአንድ ክልል ምግብር ስሪት (አስፈላጊ ሆኖ ሲገኝ)።"
@@ -3176,8 +3191,38 @@
   "panels/ai_assistance/components/DisabledWidget.ts | turnOnForStylesRequestsPerformanceAndFiles": {
     "message": "በቅጦች፣ የአውታረ መረብ ጥያቄዎች፣ አፈጻጸም እና ፋይሎች ላይ እገዛ ለማግኘት {PH1} ያብሩ"
   },
+  "panels/ai_assistance/components/ExportForAgentsDialog.ts | asMarkdown": {
+    "message": "እንደ Markdown"
+  },
+  "panels/ai_assistance/components/ExportForAgentsDialog.ts | asPrompt": {
+    "message": "እንደ ጥያቄ"
+  },
+  "panels/ai_assistance/components/ExportForAgentsDialog.ts | copiedToClipboard": {
+    "message": "ወደ ቅንጥብ ሰሌዳ ተቀድቷል"
+  },
+  "panels/ai_assistance/components/ExportForAgentsDialog.ts | copyToClipboard": {
+    "message": "ወደ ቅንጥብ ሰሌዳ ቅዳ"
+  },
+  "panels/ai_assistance/components/ExportForAgentsDialog.ts | disclaimer": {
+    "message": "ይህ የሙከራ ሰው ሠራሽ አስተውሎት ባህሪ ነው እና ሁልጊዜ ትክክል አይሆንም። ወደ ሌላ መሣሪያ ከመለጠፍዎ በፊት ይህን ጽሁፍ በድጋሚ ያረጋግጡ።"
+  },
+  "panels/ai_assistance/components/ExportForAgentsDialog.ts | exportForAgents": {
+    "message": "ለኮድ ወኪልዎ ይቅዱ"
+  },
+  "panels/ai_assistance/components/ExportForAgentsDialog.ts | generatingSummary": {
+    "message": "ማጠቃለያን በማመንጨት ላይ…"
+  },
+  "panels/ai_assistance/components/ExportForAgentsDialog.ts | saveAsMarkdown": {
+    "message": "አስቀምጥ እንደ…"
+  },
   "panels/ai_assistance/components/WalkthroughView.ts | close": {
     "message": "ዝጋ"
+  },
+  "panels/ai_assistance/components/WalkthroughView.ts | hideAgentWalkthrough": {
+    "message": "የወኪል መማሪያን ደብቅ"
+  },
+  "panels/ai_assistance/components/WalkthroughView.ts | hideThinking": {
+    "message": "ማሰብን ደብቅ"
   },
   "panels/ai_assistance/components/WalkthroughView.ts | showAgentWalkthrough": {
     "message": "የወኪል መማሪያን አሳይ"
@@ -3186,7 +3231,7 @@
     "message": "ሐሳብን አሳይ"
   },
   "panels/ai_assistance/components/WalkthroughView.ts | title": {
-    "message": "የምርመራ እርምጃዎች"
+    "message": "የወኪል መማሪያ"
   },
   "panels/animation/AnimationTimeline.ts | animationDescription": {
     "message": "በዚህ ገፅ ላይ እነማዎችን መመርመር እና ማስተካከል ይችላሉ።"
@@ -3763,6 +3808,18 @@
   },
   "panels/application/CookieItemsView.ts | showUrlDecoded": {
     "message": "ኮዱ የተፈታ ዩርኤል አሳይ"
+  },
+  "panels/application/CrashReportContextView.ts | filterByText": {
+    "message": "በቁልፍ ወይም እሴት ያጣሩ"
+  },
+  "panels/application/CrashReportContextView.ts | noContext": {
+    "message": "በክፈፎች ላይ ምንም የዓውድ ግቤቶች አልተገኙም።"
+  },
+  "panels/application/CrashReportContextView.ts | refresh": {
+    "message": "አድስ"
+  },
+  "panels/application/CrashReportContextView.ts | unknownFrame": {
+    "message": "ያልታወቀ ክፈፍ"
   },
   "panels/application/DOMStorageItemsView.ts | domStorageItemDeleted": {
     "message": "የማከማቻው ንጥል ተሰርዟል።"
@@ -4538,6 +4595,9 @@
   "panels/application/PreloadingTreeElement.ts | speculativeLoads": {
     "message": "ግምታዊ መጫኖች"
   },
+  "panels/application/ReportingApiTreeElement.ts | crashReportContext": {
+    "message": "የብልሽት ሪፖርት ዓውድ"
+  },
   "panels/application/ReportingApiTreeElement.ts | reportingApi": {
     "message": "ኤፒአይ ሪፖርት ማድረግ"
   },
@@ -4861,6 +4921,93 @@
   },
   "panels/application/TrustTokensTreeElement.ts | trustTokens": {
     "message": "የግል ሁኔታ ማስመሰያዎች"
+  },
+  "panels/application/WebMCPView.ts | canceled": {
+    "message": "ተሰርዟል"
+  },
+  "panels/application/WebMCPView.ts | canceledCount": {
+    "message": "{PH1} ተሰርዟል"
+  },
+  "panels/application/WebMCPView.ts | clearFilters": {
+    "message": "ማጣሪያዎችን አጽዳ"
+  },
+  "panels/application/WebMCPView.ts | clearLog": {
+    "message": "ምዝግብ ማስታወሻን አጽዳ"
+  },
+  "panels/application/WebMCPView.ts | close": {
+    "message": "ዝጋ"
+  },
+  "panels/application/WebMCPView.ts | declarative": {
+    "message": "መግለጫ"
+  },
+  "panels/application/WebMCPView.ts | error": {
+    "message": "ስሕተት"
+  },
+  "panels/application/WebMCPView.ts | failed": {
+    "message": "{PH1} አልተሳካም"
+  },
+  "panels/application/WebMCPView.ts | filter": {
+    "message": "ማጣሪያ"
+  },
+  "panels/application/WebMCPView.ts | frame": {
+    "message": "ክፈፍ"
+  },
+  "panels/application/WebMCPView.ts | imperative": {
+    "message": "ትዕዛዝ አንቀጽ"
+  },
+  "panels/application/WebMCPView.ts | inProgress": {
+    "message": "በሂደት ላይ"
+  },
+  "panels/application/WebMCPView.ts | inProgressCount": {
+    "message": "{PH1} በሂደት ላይ"
+  },
+  "panels/application/WebMCPView.ts | input": {
+    "message": "ግብዓት"
+  },
+  "panels/application/WebMCPView.ts | name": {
+    "message": "ስም"
+  },
+  "panels/application/WebMCPView.ts | noCallsPlaceholder": {
+    "message": "የእውነተኛ ጊዜ መሣሪያ ጥሪዎችን እና አፈጻጸሞችን እዚህ ለማየት ከእርስዎ WebMCP ወኪል ጋር መስተጋብር መፍጠር ይጀምሩ።"
+  },
+  "panels/application/WebMCPView.ts | noCallsPlaceholderTitle": {
+    "message": "የመሣሪያ እንቅስቃሴ"
+  },
+  "panels/application/WebMCPView.ts | noToolsPlaceholder": {
+    "message": "ለዚህ ገጽ የተመዘገቡ WebMCP መሣሪያዎች እዚህ ይታያሉ። እስካሁን ምንም መሣሪያዎች አልተመዘገቡም ወይም አልተገኙም።"
+  },
+  "panels/application/WebMCPView.ts | noToolsPlaceholderTitle": {
+    "message": "የሚገኙ WebMCP መሣሪያዎች"
+  },
+  "panels/application/WebMCPView.ts | output": {
+    "message": "ውጤት"
+  },
+  "panels/application/WebMCPView.ts | pending": {
+    "message": "በሂደት ላይ"
+  },
+  "panels/application/WebMCPView.ts | status": {
+    "message": "ሁኔታ"
+  },
+  "panels/application/WebMCPView.ts | statusTypes": {
+    "message": "የሁኔታ ዓይነቶች"
+  },
+  "panels/application/WebMCPView.ts | success": {
+    "message": "ተሳክቷል"
+  },
+  "panels/application/WebMCPView.ts | toolDetails": {
+    "message": "ዝርዝሮች"
+  },
+  "panels/application/WebMCPView.ts | toolRegistry": {
+    "message": "የሚገኙ መሣሪያዎች"
+  },
+  "panels/application/WebMCPView.ts | toolTypes": {
+    "message": "የመሣሪያ ዓይነቶች"
+  },
+  "panels/application/WebMCPView.ts | totalCalls": {
+    "message": "{PH1} ጠቅላላ ጥሪዎች"
+  },
+  "panels/application/WebMCPView.ts | viewInElementsPanel": {
+    "message": "በአካላይ ፓነል ውስጥ ይመልከቱ"
   },
   "panels/application/application-meta.ts | application": {
     "message": "መተግበሪያ"
@@ -5344,6 +5491,18 @@
   },
   "panels/application/components/BounceTrackingMitigationsView.ts | stateDeletedFor": {
     "message": "ለሚከተሉት ጣቢያዎች ሁኔታ ተሰርዟል፦"
+  },
+  "panels/application/components/CrashReportContextGrid.ts | copyKey": {
+    "message": "ቁልፍን ቅዳ"
+  },
+  "panels/application/components/CrashReportContextGrid.ts | copyValue": {
+    "message": "እሴትን ቅዳ"
+  },
+  "panels/application/components/CrashReportContextGrid.ts | key": {
+    "message": "ቁልፍ"
+  },
+  "panels/application/components/CrashReportContextGrid.ts | value": {
+    "message": "እሴት"
   },
   "panels/application/components/EndpointsGrid.ts | endpointsDescription": {
     "message": "እዚህ ሪፖርቶቹ የሚደርሷቸው የመጨረሻ ነጥቦች ዝርዝርን ያገኛሉ"
@@ -5966,6 +6125,9 @@
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusNavigationBadHttpStatus": {
     "message": "የቅድመ-ምስል ሥራ አሰሳ 2xx የኤችቲቲፒ ምላሽ የሁኔታ ኮድ ባልሆነ ምክንያት አልተሳካም።"
   },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusNavigationBadHttpStatusWithStatusCode": {
+    "message": "የቅድመ-ምስል ሥራ አሰሳ 2xx የኤችቲቲፒ ምላሽ የሁኔታ ኮድ ባልሆነ ምክንያት አልተሳካም ({PH1})።"
+  },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusNavigationRequestBlockedByCsp": {
     "message": "የቅድመ-ምስል ሥራ አሰሳ በይዘት ደህንነት መመሪያ ታግዷል።"
   },
@@ -6466,9 +6628,6 @@
   },
   "panels/common/BadgeNotification.ts | viewProfile": {
     "message": "መገለጫን ይመልከቱ"
-  },
-  "panels/common/CopyChangesToPrompt.ts | responseCopiedToClipboard": {
-    "message": "ምላሽ ወደ ቅንጥብ ሰሌዳ ተቀድቷል"
   },
   "panels/common/DOMLinkifier.ts | node": {
     "message": "<node>"
@@ -7529,12 +7688,6 @@
   "panels/elements/ElementsPanel.ts | styles": {
     "message": "ቅጦች"
   },
-  "panels/elements/ElementsPanel.ts | switchToAccessibilityTreeView": {
-    "message": "ወደ የተደራሽነት ዛፍ ዕይታ ይቀይሩ"
-  },
-  "panels/elements/ElementsPanel.ts | switchToDomTreeView": {
-    "message": "ወደ የDOM ዛፍ ዕይታ ይቀይሩ"
-  },
   "panels/elements/ElementsPanel.ts | theDeferredDomNodeCouldNotBe": {
     "message": "የተላለፈው የDOM አንጓ ወደ ትክክለኛ አንጓ ሊፈታ አልቻለም።"
   },
@@ -7591,6 +7744,9 @@
   },
   "panels/elements/ElementsTreeElement.ts | copyXpath": {
     "message": "XPathን ቅዳ"
+  },
+  "panels/elements/ElementsTreeElement.ts | creatorAdScriptAncestry": {
+    "message": "የፈጣሪ ማስታወቂያ ስክሪፕት የዘር ሐረግ"
   },
   "panels/elements/ElementsTreeElement.ts | cut": {
     "message": "ቁረጥ"
@@ -7679,6 +7835,9 @@
   "panels/elements/ElementsTreeElement.ts | explainSubgrids": {
     "message": "ንዑስ ፍርግርጎችን አብራራ"
   },
+  "panels/elements/ElementsTreeElement.ts | filterListRule": {
+    "message": "የማጣሪያ ዝርዝር ደንብ"
+  },
   "panels/elements/ElementsTreeElement.ts | findGridDefinition": {
     "message": "የፍርግርግ ትርጉምን አግኝ"
   },
@@ -7694,6 +7853,9 @@
   "panels/elements/ElementsTreeElement.ts | hideElement": {
     "message": "አባለ ነገርን ደብቅ"
   },
+  "panels/elements/ElementsTreeElement.ts | noProvenanceAvailable": {
+    "message": "ምንም የመነሻ ውሂብ አይገኝም"
+  },
   "panels/elements/ElementsTreeElement.ts | openMediaPanel": {
     "message": "ወደ ሚዲያ ፓነል ይዝለሉ"
   },
@@ -7705,6 +7867,9 @@
   },
   "panels/elements/ElementsTreeElement.ts | reveal": {
     "message": "አሳይ"
+  },
+  "panels/elements/ElementsTreeElement.ts | rootScriptFilterListRule": {
+    "message": "የስር ስክሪፕት ማጣሪያ ዝርዝር ደንብ"
   },
   "panels/elements/ElementsTreeElement.ts | scrollIntoView": {
     "message": "ወደ ዕይታ ሸብልል"
@@ -7730,8 +7895,8 @@
   "panels/elements/ElementsTreeElement.ts | styleScrollbars": {
     "message": "የቅጥ ማሸብለያ አሞሌዎች"
   },
-  "panels/elements/ElementsTreeElement.ts | thisFrameWasIdentifiedAsAnAd": {
-    "message": "ይህ ክፈፍ እንደ የማስታወቂያ ክፈፍ ተለይቷል"
+  "panels/elements/ElementsTreeElement.ts | thisElementWasIdentifiedAsAnAd": {
+    "message": "ይህ አካል እንደ ማስታወቂያ ተለይቷል"
   },
   "panels/elements/ElementsTreeElement.ts | useSInTheConsoleToReferToThis": {
     "message": "ይህን አባለ ነገር ለማመልከት {PH1}ን በመሥሪያ ውስጥ ይጠቀሙ።"
@@ -7747,6 +7912,9 @@
   },
   "panels/elements/ElementsTreeOutline.ts | pageDom": {
     "message": "ገፅ DOM"
+  },
+  "panels/elements/ElementsTreeOutline.ts | showAllLines": {
+    "message": "ሁሉንም አሳይ ({PH1} መስመሮች)"
   },
   "panels/elements/ElementsTreeOutline.ts | showAllNodesDMore": {
     "message": "ሁሉንም አንጓዎች አሳይ ({PH1} ተጨማሪ)"
@@ -7865,6 +8033,9 @@
   "panels/elements/ShortcutTreeElement.ts | reveal": {
     "message": "አሳይ"
   },
+  "panels/elements/StylePropertiesSection.ts | collapseExpandedRule": {
+    "message": "የተዘረጋውን ደንብ ሰብስብ"
+  },
   "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
     "message": "የተገነባ የቅጥ ሉህ"
   },
@@ -7879,6 +8050,9 @@
   },
   "panels/elements/StylePropertiesSection.ts | cssSelector": {
     "message": "የCSS መራጭ"
+  },
+  "panels/elements/StylePropertiesSection.ts | expandCollapsedRule": {
+    "message": "የተሰበሰበ ደንብን ዘርጋ"
   },
   "panels/elements/StylePropertiesSection.ts | injectedStylesheet": {
     "message": "የተከተተ የቅጥ ሉህ"
@@ -9239,6 +9413,12 @@
   "panels/lighthouse/LighthouseStatusView.ts | ahSorryWeRanIntoAnError": {
     "message": "አህ፣ ይቅርታ! አንድ ስህተት አጋጠመን።"
   },
+  "panels/lighthouse/LighthouseStatusView.ts | aiAuditingS": {
+    "message": "የሰው ሠራሽ አስተውሎት እርዳታ {PH1}ን እየመረመረ ነው"
+  },
+  "panels/lighthouse/LighthouseStatusView.ts | aiAuditingYourWebPage": {
+    "message": "የሰው ሠራሽ አስተውሎት እርዳታ የድር ገጽዎን ኦዲት እያደረገ ነው"
+  },
   "panels/lighthouse/LighthouseStatusView.ts | almostThereLighthouseIsNow": {
     "message": "በቃ ሊጨርሱ ነው! Lighthouse አሁን ሪፖርትዎን እያመነጨ ነው።"
   },
@@ -10526,6 +10706,9 @@
   "panels/network/NetworkLogViewColumns.ts | requestHeaders": {
     "message": "የጥያቄ ራስጌዎች"
   },
+  "panels/network/NetworkLogViewColumns.ts | requestNumber": {
+    "message": "ጥያቄ #"
+  },
   "panels/network/NetworkLogViewColumns.ts | responseHeaders": {
     "message": "የምላሽ ራስጌዎች"
   },
@@ -11714,9 +11897,6 @@
   "panels/profiler/HeapSnapshotGridNodes.ts | userObjectReachableFromWindow": {
     "message": "የተጠቃሚ ነገር ከመስኮት ሊደረስበት የሚችል ነው"
   },
-  "panels/profiler/HeapSnapshotProxy.ts | anErrorOccurredWhenACallToMethod": {
-    "message": "የስልት «{PH1}» ጥሪ ሲጠየቅ አንድ ስህተት ተከስቷል"
-  },
   "panels/profiler/HeapSnapshotView.ts | AllocationTimelinesShowInstrumented": {
     "message": "የማህደረ ትውስታ ምደባዎችን በጊዜ ሂደት ይመዝግቡ እና አሁንም በሥራ ላይ ካሉ ምደባዎች ጋር ክፍተቶችን በመምረጥ የማህደረ ትውስታ መሹለኮችን ይለዩ።"
   },
@@ -12543,7 +12723,7 @@
     "message": "ክፍለ አካል"
   },
   "panels/recorder/components/StepView.ts | elementRoleInput": {
-    "message": "ግቤት"
+    "message": "ግብዓት"
   },
   "panels/recorder/components/StepView.ts | emulateNetworkConditionsStepTitle": {
     "message": "የአውታረ መረብ ሁኔታዎችን ያመሳስሉ"
@@ -13660,6 +13840,9 @@
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | userAgentString": {
     "message": "የተጠቃሚ መረጃ መፈለጊያ ሕብረቁምፊ"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | userAgentStringCannotBeEmpty": {
+    "message": "የተጠቃሚ ወኪል ሕብረቁምፊ ባዶ መሆን አይችልም።"
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | userAgentType": {
     "message": "የተጠቃሚ ወኪል ዓይነት"
@@ -15299,9 +15482,6 @@
   "panels/timeline/TimelinePanel.ts | exportingFailed": {
     "message": "መከታተያውን ወደ ውጭ መላክ አልተሳካም"
   },
-  "panels/timeline/TimelinePanel.ts | externalRequestReceived": {
-    "message": "DevTools ውጫዊ ጥያቄ ተቀብለዋል"
-  },
   "panels/timeline/TimelinePanel.ts | fixMe": {
     "message": "ያስተካክሉኝ"
   },
@@ -15934,6 +16114,30 @@
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | recommendedThrottlingReason": {
     "message": "የእውነተኛተጠቃሚ አካባቢዎችን ለማስመሰል ቅንብርን መለወጥን ያስቡበት"
+  },
+  "panels/timeline/components/CWVMetrics.ts | dismissTitle": {
+    "message": "አሰናብት"
+  },
+  "panels/timeline/components/CWVMetrics.ts | fieldMismatchNotice": {
+    "message": "የአካባቢ እና የመስክ መለኪያዎች [ላይመሳሰሉ የሚችሉባቸው](https://web.dev/articles/lab-and-field-data-differences) ብዙ ምክንያቶች አሉ። ከአማካይ ተጠቃሚ አካባቢ ጋር ይበልጥ ተመሳሳይ የሆኑ መከታተያዎችን ለመተንተን [የማፈን ቅንብሮች እና የመሣሪያ ማስመሰልን](https://developer.chrome.com/docs/devtools/device-mode) ያስተካክሉ።"
+  },
+  "panels/timeline/components/CWVMetrics.ts | fieldMismatchTitle": {
+    "message": "የመስክ እና የአካባቢ መለኪያዎች አለመመሳሰል"
+  },
+  "panels/timeline/components/CWVMetrics.ts | fieldScoreLabel": {
+    "message": "መስክ ({PH1})"
+  },
+  "panels/timeline/components/CWVMetrics.ts | metricScore": {
+    "message": "{PH1}:- {PH2} {PH3} ውጤት"
+  },
+  "panels/timeline/components/CWVMetrics.ts | metricScoreUnavailable": {
+    "message": "{PH1}፦ አይገኝም"
+  },
+  "panels/timeline/components/CWVMetrics.ts | originOption": {
+    "message": "መነሻ"
+  },
+  "panels/timeline/components/CWVMetrics.ts | urlOption": {
+    "message": "ዩአርኤል"
   },
   "panels/timeline/components/DetailsView.ts | forcedReflow": {
     "message": "የተገደደ ዳግም ማደራጀት"
@@ -16718,6 +16922,9 @@
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "አቁም"
   },
+  "panels/timeline/timeline-meta.ts | timelineShowAllEvents": {
+    "message": "ሁሉንም ክስተቶች አሳይ"
+  },
   "panels/timeline/utils/IgnoreList.ts | skip3rdPartyScripts": {
     "message": "በምንጭ ካርታ ውስጥ በችላ በል ዝርዝር ምልክት ተደርጎበታል"
   },
@@ -16859,6 +17066,12 @@
   "panels/webauthn/WebauthnPane.ts | signCount": {
     "message": "የፊርማ ብዛት"
   },
+  "panels/webauthn/WebauthnPane.ts | supportsHmacSecret": {
+    "message": "hmac-secretን ይደግፋል"
+  },
+  "panels/webauthn/WebauthnPane.ts | supportsHmacSecretMc": {
+    "message": "hmac-secret-mcን ይደግፋል"
+  },
   "panels/webauthn/WebauthnPane.ts | supportsLargeBlob": {
     "message": "ድር ጣቢያዎች የሚያስቀምጡትን ግልፅ ያልሆነ ውሂብ ይደግፋል"
   },
@@ -16955,10 +17168,10 @@
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "በዚህ ጊዜ የማይገኝ ችግር"
   },
-  "ui/components/list/List.ts | edit": {
+  "ui/components/lists/List.ts | edit": {
     "message": "አርትዕ"
   },
-  "ui/components/list/List.ts | remove": {
+  "ui/components/lists/List.ts | remove": {
     "message": "አስወግድ"
   },
   "ui/components/markdown_view/CodeBlock.ts | code": {
@@ -16972,6 +17185,9 @@
   },
   "ui/components/markdown_view/CodeBlock.ts | disclaimer": {
     "message": "የኮድ ቅንጣቢዎችን በጥንቃቄ ይጠቀሙ"
+  },
+  "ui/components/markdown_view/CodeBlock.ts | showAllLines": {
+    "message": "ሁሉንም መስመሮች አሳይ ({PH1} ተጨማሪ)"
   },
   "ui/components/panel_feedback/FeedbackButton.ts | feedback": {
     "message": "ግብረመልስ"
@@ -17120,11 +17336,17 @@
   "ui/legacy/Infobar.ts | dontShowAgain": {
     "message": "ዳግም አታሳይ"
   },
+  "ui/legacy/InspectorDrawerView.ts | closeDrawer": {
+    "message": "መሳቢያን ዝጋ"
+  },
+  "ui/legacy/InspectorDrawerView.ts | moreTools": {
+    "message": "ተጨማሪ መሣሪያዎች"
+  },
+  "ui/legacy/InspectorDrawerView.ts | toggleDrawerOrientation": {
+    "message": "የመሳቢያውን አቅጣጫ ቀያይር"
+  },
   "ui/legacy/InspectorView.ts | areYouSureYouWantToRestartChrome": {
     "message": "Chromeን እንደገና ማስጀመር እንደሚፈልጉ እርግጠኛ ነዎት?"
-  },
-  "ui/legacy/InspectorView.ts | closeDrawer": {
-    "message": "መሳቢያን ዝጋ"
   },
   "ui/legacy/InspectorView.ts | devToolsLanguageMissmatch": {
     "message": "DevTools አሁን በ{PH1} ይገኛል"
@@ -17140,9 +17362,6 @@
   },
   "ui/legacy/InspectorView.ts | mainToolbar": {
     "message": "ዋናው የመሣሪያ አሞሌ"
-  },
-  "ui/legacy/InspectorView.ts | moreTools": {
-    "message": "ተጨማሪ መሣሪያዎች"
   },
   "ui/legacy/InspectorView.ts | moveToDrawer": {
     "message": "ወደ መሳቢያ አንቀሳቅስ"
@@ -17173,9 +17392,6 @@
   },
   "ui/legacy/InspectorView.ts | setToSpecificLanguage": {
     "message": "DevToolsን ወደ {PH1} ይቀይሩ"
-  },
-  "ui/legacy/InspectorView.ts | toggleDrawerOrientation": {
-    "message": "የመሳቢያውን አቅጣጫ ቀያይር"
   },
   "ui/legacy/ListWidget.ts | addString": {
     "message": "አክል"
@@ -17791,6 +18007,9 @@
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | sSelected": {
     "message": "{PH1} ተመርጧል"
+  },
+  "ui/legacy/components/perf_ui/GCActionDelegate.ts | garbageCollectionCompleted": {
+    "message": "የቆሻሻ መሰብሰብ ተጠናቅቋል"
   },
   "ui/legacy/components/perf_ui/NetworkPriorities.ts | high": {
     "message": "ከፍተኛ"

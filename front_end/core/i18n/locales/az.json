@@ -1061,9 +1061,6 @@
   "entrypoints/main/MainImpl.ts | dockToRight": {
     "message": "Sağa bərkidin"
   },
-  "entrypoints/main/MainImpl.ts | externalRequestReceived": {
-    "message": "DevTools xarici sorğu əldə etdi"
-  },
   "entrypoints/main/MainImpl.ts | focusDebuggee": {
     "message": "Səhifəni fokuslayın"
   },
@@ -1327,6 +1324,12 @@
   },
   "generated/Deprecation.ts | DataUrlInSvgUse": {
     "message": "Data dəstəyi: SVGUseElement-dəki URL-lər köhnəlib və silinəcək."
+  },
+  "generated/Deprecation.ts | DocumentCreateEventKeyboardEvents": {
+    "message": "document.createEvent('KeyboardEvents') istifadədən çıxarılıb və silinəcək. Əvəzində new KeyboardEvent() istifadə edin."
+  },
+  "generated/Deprecation.ts | DocumentCreateEventTransitionEvent": {
+    "message": "document.createEvent('TransitionEvent') istifadədən çıxarılıb və silinəcək. Əvəzində new TransitionEvent() istifadə edin."
   },
   "generated/Deprecation.ts | ExampleBrowserProcessDeprecation": {
     "message": "Bu, axtarış prosesində bildirilən köhnəlmə üçün tələb olunan kodu göstərmək nümunəsidir."
@@ -2246,6 +2249,30 @@
   "models/trace/insights/Cache.ts | title": {
     "message": "Effektiv keş istifadə müddətindən istifadə edin"
   },
+  "models/trace/insights/CharacterSet.ts | description": {
+    "message": "Simvol kodlaşdırma bəyannaməsi tələb olunur. Bunu HTML-in ilk 1024 baytında və ya Content-Type HTTP cavab başlığında meta simvollar toplusu üzrə teq ilə etmək olar. [Simvol kodlaşdırmasını elan etmək haqqında ətraflı məlumat əldə edin](https://developer.chrome.com/docs/insights/charset/)."
+  },
+  "models/trace/insights/CharacterSet.ts | failedHttpHeader": {
+    "message": "HTTP başlıqlarında simvollar toplusunu elan etmir"
+  },
+  "models/trace/insights/CharacterSet.ts | failedMetaCharsetLate": {
+    "message": "İlk 1024 baytdan sonra meta teqindən istifadə edərək simvollar toplusunu elan edir"
+  },
+  "models/trace/insights/CharacterSet.ts | failedMetaCharsetMissing": {
+    "message": "Meta teqindən istifadə edərək simvollar toplusunu elan etmir"
+  },
+  "models/trace/insights/CharacterSet.ts | failedMetaCharsetUnknown": {
+    "message": "İz vasitəsilə meta simvollar toplusu üzrə bəyannaməni müəyyən etmək mümkün olmadı"
+  },
+  "models/trace/insights/CharacterSet.ts | passingHttpHeader": {
+    "message": "HTTP başlığında simvollar toplusunu elan edir"
+  },
+  "models/trace/insights/CharacterSet.ts | passingMetaCharsetEarly": {
+    "message": "İlk 1024 baytda meta teqindən istifadə edərək simvollar toplusunu elan edir"
+  },
+  "models/trace/insights/CharacterSet.ts | title": {
+    "message": "Simvol kodlaşdırmasını elan edin"
+  },
   "models/trace/insights/DOMSize.ts | description": {
     "message": "Böyük DOM üslub hesablamalarının və düzənin təkrar dövriyyəsinin müddətini artıra bilər, bu da səhifənin responsivliyinə təsir göstərir. Böyük DOM yaddaş istifadəsini də artıracaq. [Həddindən artıq DOM ölçüsündən yayınmağı öyrənin](https://developer.chrome.com/docs/performance/insights/dom-size)."
   },
@@ -2453,8 +2480,11 @@
   "models/trace/insights/LCPDiscovery.ts | fetchPriorityShouldBeApplied": {
     "message": "fetchpriority=high tətbiq edilməlidir"
   },
+  "models/trace/insights/LCPDiscovery.ts | fetchPriorityShouldBeAppliedToImagePreload": {
+    "message": "fetchpriority=high şəklin əvvəlcədən yüklənməsi üzrə sorğuya tətbiq edilməlidir"
+  },
   "models/trace/insights/LCPDiscovery.ts | lazyLoadNotApplied": {
-    "message": "gec yüklənmə tətbiq edilmədi"
+    "message": "LCP resursları loading=lazy istifadə etməməlidir"
   },
   "models/trace/insights/LCPDiscovery.ts | lcpLoadDelay": {
     "message": "LCP şəkli ən erkən başlanğıc nöqtəsindən {PH1} sonra yükləndi."
@@ -2657,24 +2687,6 @@
   "panels/accessibility/ARIAAttributesView.ts | noAriaAttributes": {
     "message": "ARIA atributu yoxdur"
   },
-  "panels/accessibility/AXBreadcrumbsPane.ts | accessibilityTree": {
-    "message": "Əlçatımlıq Qrafiki"
-  },
-  "panels/accessibility/AXBreadcrumbsPane.ts | fullTreeExperimentDescription": {
-    "message": "Əlçatımlılıq sxemi DOM sxeminin yuxarı sağ küncünə köçürülüb."
-  },
-  "panels/accessibility/AXBreadcrumbsPane.ts | fullTreeExperimentName": {
-    "message": "Tam səhifə əlçatımlılıq sxemini aktivləşdirin"
-  },
-  "panels/accessibility/AXBreadcrumbsPane.ts | ignored": {
-    "message": "Nəzərə alınmadı"
-  },
-  "panels/accessibility/AXBreadcrumbsPane.ts | reloadRequired": {
-    "message": "Dəyişiklik qüvvəyə minməzdən əvvəl yenidən yükləmə tələb olunur"
-  },
-  "panels/accessibility/AXBreadcrumbsPane.ts | scrollIntoView": {
-    "message": "Görünüşə sürüşdürün"
-  },
   "panels/accessibility/AccessibilityNodeView.ts | accessibilityNodeNotExposed": {
     "message": "Əlçatımlıq qovşağı paylaşılmadı"
   },
@@ -2743,6 +2755,9 @@
   },
   "panels/accessibility/AccessibilityNodeView.ts | placeholderIsPlaceholderOnAncestor": {
     "message": "{PH1} əvvəlki elementdə {PH2}: "
+  },
+  "panels/accessibility/AccessibilitySidebarView.ts | showAccessibilityTree": {
+    "message": "Əlçatanlıq sxemi göstərilsin"
   },
   "panels/accessibility/AccessibilityStrings.ts | aHumanreadableVersionOfTheValue": {
     "message": "Diapazon vidceti dəyərinin insan tərəfindən oxuna bilən versiyası (zəruri olduqda)."
@@ -3176,8 +3191,38 @@
   "panels/ai_assistance/components/DisabledWidget.ts | turnOnForStylesRequestsPerformanceAndFiles": {
     "message": "Üslublar, şəbəkə sorğuları, performans və fayllarla bağlı yardım almaq üçün {PH1} funksiyasını aktivləşdirin"
   },
+  "panels/ai_assistance/components/ExportForAgentsDialog.ts | asMarkdown": {
+    "message": "İşarələmə kimi"
+  },
+  "panels/ai_assistance/components/ExportForAgentsDialog.ts | asPrompt": {
+    "message": "Göstəriş kimi"
+  },
+  "panels/ai_assistance/components/ExportForAgentsDialog.ts | copiedToClipboard": {
+    "message": "Mübadilə buferinə kopiyalandı"
+  },
+  "panels/ai_assistance/components/ExportForAgentsDialog.ts | copyToClipboard": {
+    "message": "Mübadilə buferinə kopiyalayın"
+  },
+  "panels/ai_assistance/components/ExportForAgentsDialog.ts | disclaimer": {
+    "message": "Bu, təcrübi Sİ funksiyasıdır və həmişə doğru nəticə verməyə bilər. Bu mətni başqa alətə əlavə etməzdən əvvəl təkrar yoxlayın."
+  },
+  "panels/ai_assistance/components/ExportForAgentsDialog.ts | exportForAgents": {
+    "message": "Kodlaşdırma agentiniz üçün kopiyalayın"
+  },
+  "panels/ai_assistance/components/ExportForAgentsDialog.ts | generatingSummary": {
+    "message": "Xülasə yaradılır…"
+  },
+  "panels/ai_assistance/components/ExportForAgentsDialog.ts | saveAsMarkdown": {
+    "message": "Yadda saxlama formatı:"
+  },
   "panels/ai_assistance/components/WalkthroughView.ts | close": {
     "message": "Bağlayın"
+  },
+  "panels/ai_assistance/components/WalkthroughView.ts | hideAgentWalkthrough": {
+    "message": "Agent barədə təlimatı gizlədin"
+  },
+  "panels/ai_assistance/components/WalkthroughView.ts | hideThinking": {
+    "message": "Düşünmə prosesini gizlədin"
   },
   "panels/ai_assistance/components/WalkthroughView.ts | showAgentWalkthrough": {
     "message": "Agentin təlimatını göstərin"
@@ -3186,7 +3231,7 @@
     "message": "Düşünmə prosesini göstərin"
   },
   "panels/ai_assistance/components/WalkthroughView.ts | title": {
-    "message": "Araşdırmanın mərhələləri"
+    "message": "Agent barədə təlimat"
   },
   "panels/animation/AnimationTimeline.ts | animationDescription": {
     "message": "Bu səhifədə animasiyaları yoxlaya və dəyişdirə bilərsiniz."
@@ -3763,6 +3808,18 @@
   },
   "panels/application/CookieItemsView.ts | showUrlDecoded": {
     "message": "URL deşifrəsini göstərin"
+  },
+  "panels/application/CrashReportContextView.ts | filterByText": {
+    "message": "Açar və ya dəyərə görə filtrləyin"
+  },
+  "panels/application/CrashReportContextView.ts | noContext": {
+    "message": "Kadrlar arasında heç bir kontekst daxiletməsi aşkar edilmədi."
+  },
+  "panels/application/CrashReportContextView.ts | refresh": {
+    "message": "Təzələyin"
+  },
+  "panels/application/CrashReportContextView.ts | unknownFrame": {
+    "message": "Naməlum kadr"
   },
   "panels/application/DOMStorageItemsView.ts | domStorageItemDeleted": {
     "message": "Yaddaş elementi silindi."
@@ -4538,6 +4595,9 @@
   "panels/application/PreloadingTreeElement.ts | speculativeLoads": {
     "message": "Spekulyativ yükləmələr"
   },
+  "panels/application/ReportingApiTreeElement.ts | crashReportContext": {
+    "message": "Xəta hesabatının konteksti"
+  },
   "panels/application/ReportingApiTreeElement.ts | reportingApi": {
     "message": "Hesabat API"
   },
@@ -4861,6 +4921,93 @@
   },
   "panels/application/TrustTokensTreeElement.ts | trustTokens": {
     "message": "Özəl açarlar"
+  },
+  "panels/application/WebMCPView.ts | canceled": {
+    "message": "Ləğv edildi"
+  },
+  "panels/application/WebMCPView.ts | canceledCount": {
+    "message": "{PH1} ləğv edildi"
+  },
+  "panels/application/WebMCPView.ts | clearFilters": {
+    "message": "Filtrləri silin"
+  },
+  "panels/application/WebMCPView.ts | clearLog": {
+    "message": "Loqu silin"
+  },
+  "panels/application/WebMCPView.ts | close": {
+    "message": "Bağlayın"
+  },
+  "panels/application/WebMCPView.ts | declarative": {
+    "message": "Bəyan"
+  },
+  "panels/application/WebMCPView.ts | error": {
+    "message": "Xəta"
+  },
+  "panels/application/WebMCPView.ts | failed": {
+    "message": "{PH1} alınmadı"
+  },
+  "panels/application/WebMCPView.ts | filter": {
+    "message": "Filtr"
+  },
+  "panels/application/WebMCPView.ts | frame": {
+    "message": "Kadr"
+  },
+  "panels/application/WebMCPView.ts | imperative": {
+    "message": "Əmr"
+  },
+  "panels/application/WebMCPView.ts | inProgress": {
+    "message": "Davam edir"
+  },
+  "panels/application/WebMCPView.ts | inProgressCount": {
+    "message": "{PH1} davam edir"
+  },
+  "panels/application/WebMCPView.ts | input": {
+    "message": "Daxiletmə"
+  },
+  "panels/application/WebMCPView.ts | name": {
+    "message": "Ad"
+  },
+  "panels/application/WebMCPView.ts | noCallsPlaceholder": {
+    "message": "Burada real zamanlı alət zənglərinə və icralarına baxmaq üçün WebMCP agentinizlə interaksiyaya başlayın."
+  },
+  "panels/application/WebMCPView.ts | noCallsPlaceholderTitle": {
+    "message": "Alətin fəaliyyəti"
+  },
+  "panels/application/WebMCPView.ts | noToolsPlaceholder": {
+    "message": "Bu səhifə üçün qeydiyyatdan keçmiş WebMCP alətləri burada görünəcək. Hələ heç bir alət qeydiyyatdan keçirilməyib və ya aşkar edilməyib."
+  },
+  "panels/application/WebMCPView.ts | noToolsPlaceholderTitle": {
+    "message": "Əlçatan WebMCP aləti"
+  },
+  "panels/application/WebMCPView.ts | output": {
+    "message": "Nəticə"
+  },
+  "panels/application/WebMCPView.ts | pending": {
+    "message": "Davam edir"
+  },
+  "panels/application/WebMCPView.ts | status": {
+    "message": "Status"
+  },
+  "panels/application/WebMCPView.ts | statusTypes": {
+    "message": "Statusun növləri"
+  },
+  "panels/application/WebMCPView.ts | success": {
+    "message": "Uğurlu oldu"
+  },
+  "panels/application/WebMCPView.ts | toolDetails": {
+    "message": "Təfərrüatlar"
+  },
+  "panels/application/WebMCPView.ts | toolRegistry": {
+    "message": "Əlçatan alətlər"
+  },
+  "panels/application/WebMCPView.ts | toolTypes": {
+    "message": "Alətin növləri"
+  },
+  "panels/application/WebMCPView.ts | totalCalls": {
+    "message": "{PH1} ümumi zəng sayı"
+  },
+  "panels/application/WebMCPView.ts | viewInElementsPanel": {
+    "message": "Elementlər panelində baxın"
   },
   "panels/application/application-meta.ts | application": {
     "message": "Tətbiq"
@@ -5344,6 +5491,18 @@
   },
   "panels/application/components/BounceTrackingMitigationsView.ts | stateDeletedFor": {
     "message": "Aşağıdakı saytlar üçün vəziyyət silindi:"
+  },
+  "panels/application/components/CrashReportContextGrid.ts | copyKey": {
+    "message": "Açarı kopiyalayın"
+  },
+  "panels/application/components/CrashReportContextGrid.ts | copyValue": {
+    "message": "Dəyəri kopiyalayın"
+  },
+  "panels/application/components/CrashReportContextGrid.ts | key": {
+    "message": "Açar"
+  },
+  "panels/application/components/CrashReportContextGrid.ts | value": {
+    "message": "Dəyər"
   },
   "panels/application/components/EndpointsGrid.ts | endpointsDescription": {
     "message": "Burada hesabatları qəbul edən son nöqtələrin siyahısını görəcəksiniz"
@@ -5966,6 +6125,9 @@
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusNavigationBadHttpStatus": {
     "message": "2xx olmayan HTTP cavab statusu koduna görə ön yükləmə naviqasiyası alınmadı."
   },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusNavigationBadHttpStatusWithStatusCode": {
+    "message": "2xx olmayan HTTP cavab statusu koduna görə ön yükləmə naviqasiyası alınmadı ({PH1})."
+  },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusNavigationRequestBlockedByCsp": {
     "message": "Kontent Təhlükəsizliyi Siyasəti ön yükləmə naviqasiyasını blokladı."
   },
@@ -6466,9 +6628,6 @@
   },
   "panels/common/BadgeNotification.ts | viewProfile": {
     "message": "Profilə baxın"
-  },
-  "panels/common/CopyChangesToPrompt.ts | responseCopiedToClipboard": {
-    "message": "Cavab mübadilə buferinə kopiyalandı"
   },
   "panels/common/DOMLinkifier.ts | node": {
     "message": "<qovşaq>"
@@ -7529,12 +7688,6 @@
   "panels/elements/ElementsPanel.ts | styles": {
     "message": "Üslublar"
   },
-  "panels/elements/ElementsPanel.ts | switchToAccessibilityTreeView": {
-    "message": "Əlçatanlıq Qrafiki görünüşünə dəyişin"
-  },
-  "panels/elements/ElementsPanel.ts | switchToDomTreeView": {
-    "message": "DOM Tree görünüşünə dəyişin"
-  },
   "panels/elements/ElementsPanel.ts | theDeferredDomNodeCouldNotBe": {
     "message": "Təxirə salınmış DOM Qovşağını etibarlı qovşağa təyin etmək mümkün olmadı."
   },
@@ -7591,6 +7744,9 @@
   },
   "panels/elements/ElementsTreeElement.ts | copyXpath": {
     "message": "XPath'i kopyalayın"
+  },
+  "panels/elements/ElementsTreeElement.ts | creatorAdScriptAncestry": {
+    "message": "Yaradıcı reklam skriptlərinin mənbəyi"
   },
   "panels/elements/ElementsTreeElement.ts | cut": {
     "message": "Kəsin"
@@ -7679,6 +7835,9 @@
   "panels/elements/ElementsTreeElement.ts | explainSubgrids": {
     "message": "Alttorları izah edin"
   },
+  "panels/elements/ElementsTreeElement.ts | filterListRule": {
+    "message": "Filtr siyahısı üzrə qayda"
+  },
   "panels/elements/ElementsTreeElement.ts | findGridDefinition": {
     "message": "Tor təyinetməsini tapın"
   },
@@ -7694,6 +7853,9 @@
   "panels/elements/ElementsTreeElement.ts | hideElement": {
     "message": "Elementi gizlədin"
   },
+  "panels/elements/ElementsTreeElement.ts | noProvenanceAvailable": {
+    "message": "Mənbə datası əlçatan deyil"
+  },
   "panels/elements/ElementsTreeElement.ts | openMediaPanel": {
     "message": "Media panelinə keçin"
   },
@@ -7705,6 +7867,9 @@
   },
   "panels/elements/ElementsTreeElement.ts | reveal": {
     "message": "aşkarlayın"
+  },
+  "panels/elements/ElementsTreeElement.ts | rootScriptFilterListRule": {
+    "message": "Kök skript üçün filtr siyahısı qaydası"
   },
   "panels/elements/ElementsTreeElement.ts | scrollIntoView": {
     "message": "Görünüşə sürüşdürün"
@@ -7730,8 +7895,8 @@
   "panels/elements/ElementsTreeElement.ts | styleScrollbars": {
     "message": "Üslub üzrə sürüşdürmə zolaqları"
   },
-  "panels/elements/ElementsTreeElement.ts | thisFrameWasIdentifiedAsAnAd": {
-    "message": "Bu çərçivə reklam çərçivəsi kimi müəyyənləşdirildi"
+  "panels/elements/ElementsTreeElement.ts | thisElementWasIdentifiedAsAnAd": {
+    "message": "Bu element reklam kimi müəyyən edilib"
   },
   "panels/elements/ElementsTreeElement.ts | useSInTheConsoleToReferToThis": {
     "message": "Bu elementə istinad etmək üçün konsolda {PH1} istifadə edin."
@@ -7747,6 +7912,9 @@
   },
   "panels/elements/ElementsTreeOutline.ts | pageDom": {
     "message": "Səhifə DOM'u"
+  },
+  "panels/elements/ElementsTreeOutline.ts | showAllLines": {
+    "message": "Hamısını göstərin ({PH1} sətir)"
   },
   "panels/elements/ElementsTreeOutline.ts | showAllNodesDMore": {
     "message": "Bütün düyünləri göstərin (daha {PH1})"
@@ -7865,6 +8033,9 @@
   "panels/elements/ShortcutTreeElement.ts | reveal": {
     "message": "aşkarlayın"
   },
+  "panels/elements/StylePropertiesSection.ts | collapseExpandedRule": {
+    "message": "Genişləndirilmiş qaydanı yığcamlaşdırın"
+  },
   "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
     "message": "hazırlanmış üslub vərəqi"
   },
@@ -7879,6 +8050,9 @@
   },
   "panels/elements/StylePropertiesSection.ts | cssSelector": {
     "message": "CSS seçicisi"
+  },
+  "panels/elements/StylePropertiesSection.ts | expandCollapsedRule": {
+    "message": "Yığcamlaşdırılmış qaydanı genişləndirin"
   },
   "panels/elements/StylePropertiesSection.ts | injectedStylesheet": {
     "message": "daxil edilmiş üslub vərəqi"
@@ -9239,6 +9413,12 @@
   "panels/lighthouse/LighthouseStatusView.ts | ahSorryWeRanIntoAnError": {
     "message": "Üzr istəyirik! Xəta oldu."
   },
+  "panels/lighthouse/LighthouseStatusView.ts | aiAuditingS": {
+    "message": "Sİ dəstəyi bu elementi yoxlayır: {PH1}"
+  },
+  "panels/lighthouse/LighthouseStatusView.ts | aiAuditingYourWebPage": {
+    "message": "Sİ assistenti veb-səhifənizi yoxlayır"
+  },
   "panels/lighthouse/LighthouseStatusView.ts | almostThereLighthouseIsNow": {
     "message": "Demək olar ki, hazırdır! Lighthouse artıq hesabatınızı yaradır."
   },
@@ -10526,6 +10706,9 @@
   "panels/network/NetworkLogViewColumns.ts | requestHeaders": {
     "message": "Sorğu başlıqları"
   },
+  "panels/network/NetworkLogViewColumns.ts | requestNumber": {
+    "message": "Sorğu #"
+  },
   "panels/network/NetworkLogViewColumns.ts | responseHeaders": {
     "message": "Cavab başlıqları"
   },
@@ -11713,9 +11896,6 @@
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | userObjectReachableFromWindow": {
     "message": "İstifadəçi obyektinə pəncərədən daxil olmaq mümkündür"
-  },
-  "panels/profiler/HeapSnapshotProxy.ts | anErrorOccurredWhenACallToMethod": {
-    "message": "\"{PH1}\" adlı metoda çağırış sorğusu göndərildikdə xəta baş verdi"
   },
   "panels/profiler/HeapSnapshotView.ts | AllocationTimelinesShowInstrumented": {
     "message": "Zamanla yaddaş ayırmalarını qeydə alın və hələ də canlı olan ayırmalarla intervalları seçərək yaddaş sızmalarını təcrid edin"
@@ -13661,6 +13841,9 @@
   "panels/settings/emulation/DevicesSettingsTab.ts | userAgentString": {
     "message": "İstifadəçi agenti sətri"
   },
+  "panels/settings/emulation/DevicesSettingsTab.ts | userAgentStringCannotBeEmpty": {
+    "message": "İstifadəçi agenti ilə bağlı sətir boş ola bilməz."
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | userAgentType": {
     "message": "İstifadəçi agenti növü"
   },
@@ -15299,9 +15482,6 @@
   "panels/timeline/TimelinePanel.ts | exportingFailed": {
     "message": "Fəaliyyət izi eksport edilmədi"
   },
-  "panels/timeline/TimelinePanel.ts | externalRequestReceived": {
-    "message": "DevTools xarici sorğu əldə etdi"
-  },
   "panels/timeline/TimelinePanel.ts | fixMe": {
     "message": "Düzəldin"
   },
@@ -15934,6 +16114,30 @@
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | recommendedThrottlingReason": {
     "message": "Real istifadəçi mühitlərini simulyasiya etmək üçün ayarları dəyişə bilərsiniz"
+  },
+  "panels/timeline/components/CWVMetrics.ts | dismissTitle": {
+    "message": "Bağlayın"
+  },
+  "panels/timeline/components/CWVMetrics.ts | fieldMismatchNotice": {
+    "message": "Lokal və sahə göstəricilərinin [uyğun gəlməməsinin](https://web.dev/articles/lab-and-field-data-differences) bir çox səbəbi var. Ortalama istifadəçi mühitinə daha çox bənzər fəaliyyət izlərini təhlil etmək üçün [tənzimləmə ayarlarını və cihaz emulyasiyasını](https://developer.chrome.com/docs/devtools/device-mode) tənzimləyin."
+  },
+  "panels/timeline/components/CWVMetrics.ts | fieldMismatchTitle": {
+    "message": "Sahə və lokal ölçü uyğunsuzluğu"
+  },
+  "panels/timeline/components/CWVMetrics.ts | fieldScoreLabel": {
+    "message": "Sahə ({PH1})"
+  },
+  "panels/timeline/components/CWVMetrics.ts | metricScore": {
+    "message": "{PH1}: {PH2} {PH3} xalı"
+  },
+  "panels/timeline/components/CWVMetrics.ts | metricScoreUnavailable": {
+    "message": "{PH1}: əlçatan deyil"
+  },
+  "panels/timeline/components/CWVMetrics.ts | originOption": {
+    "message": "Mənşə"
+  },
+  "panels/timeline/components/CWVMetrics.ts | urlOption": {
+    "message": "URL"
   },
   "panels/timeline/components/DetailsView.ts | forcedReflow": {
     "message": "Təkrar dövriyyəyə məcbur edildi"
@@ -16718,6 +16922,9 @@
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "Dayandırın"
   },
+  "panels/timeline/timeline-meta.ts | timelineShowAllEvents": {
+    "message": "Bütün tədbirlər göstərilsin"
+  },
   "panels/timeline/utils/IgnoreList.ts | skip3rdPartyScripts": {
     "message": "Mənbə xəritəsində ignoreList ilə işarələnib"
   },
@@ -16859,6 +17066,12 @@
   "panels/webauthn/WebauthnPane.ts | signCount": {
     "message": "İmza Sayı"
   },
+  "panels/webauthn/WebauthnPane.ts | supportsHmacSecret": {
+    "message": "hmac-secret dəstəklənir"
+  },
+  "panels/webauthn/WebauthnPane.ts | supportsHmacSecretMc": {
+    "message": "hmac-secret-mc dəstəklənir"
+  },
   "panels/webauthn/WebauthnPane.ts | supportsLargeBlob": {
     "message": "Böyük blobu dəstəkləyir"
   },
@@ -16955,10 +17168,10 @@
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "Hazırda problem əlçatan deyil"
   },
-  "ui/components/list/List.ts | edit": {
+  "ui/components/lists/List.ts | edit": {
     "message": "Redaktə edin"
   },
-  "ui/components/list/List.ts | remove": {
+  "ui/components/lists/List.ts | remove": {
     "message": "Silin"
   },
   "ui/components/markdown_view/CodeBlock.ts | code": {
@@ -16972,6 +17185,9 @@
   },
   "ui/components/markdown_view/CodeBlock.ts | disclaimer": {
     "message": "Kod fraqmentlərini ehtiyatla istifadə edin"
+  },
+  "ui/components/markdown_view/CodeBlock.ts | showAllLines": {
+    "message": "Bütün sətirlər göstərilsin (daha {PH1})"
   },
   "ui/components/panel_feedback/FeedbackButton.ts | feedback": {
     "message": "Rəy"
@@ -17120,11 +17336,17 @@
   "ui/legacy/Infobar.ts | dontShowAgain": {
     "message": "Göstərilməsin"
   },
+  "ui/legacy/InspectorDrawerView.ts | closeDrawer": {
+    "message": "Çəkməcəni bağlayın"
+  },
+  "ui/legacy/InspectorDrawerView.ts | moreTools": {
+    "message": "Daha çox alət"
+  },
+  "ui/legacy/InspectorDrawerView.ts | toggleDrawerOrientation": {
+    "message": "Keçirici oriyentasiyasını aktiv/deaktiv edin"
+  },
   "ui/legacy/InspectorView.ts | areYouSureYouWantToRestartChrome": {
     "message": "Chrome-u yenidən başlatmaq istədiyinizə əminsiniz?"
-  },
-  "ui/legacy/InspectorView.ts | closeDrawer": {
-    "message": "Çəkməcəni bağlayın"
   },
   "ui/legacy/InspectorView.ts | devToolsLanguageMissmatch": {
     "message": "DevTools indi burada əlçatandır: {PH1}"
@@ -17140,9 +17362,6 @@
   },
   "ui/legacy/InspectorView.ts | mainToolbar": {
     "message": "Əsas alətlər paneli"
-  },
-  "ui/legacy/InspectorView.ts | moreTools": {
-    "message": "Daha çox alət"
   },
   "ui/legacy/InspectorView.ts | moveToDrawer": {
     "message": "Panelə keçin"
@@ -17173,9 +17392,6 @@
   },
   "ui/legacy/InspectorView.ts | setToSpecificLanguage": {
     "message": "DevTools'u buna keçirin: {PH1}"
-  },
-  "ui/legacy/InspectorView.ts | toggleDrawerOrientation": {
-    "message": "Keçirici orientasiyasını aktiv/deaktiv edin"
   },
   "ui/legacy/ListWidget.ts | addString": {
     "message": "Əlavə edin"
@@ -17791,6 +18007,9 @@
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | sSelected": {
     "message": "{PH1} seçilib"
+  },
+  "ui/legacy/components/perf_ui/GCActionDelegate.ts | garbageCollectionCompleted": {
+    "message": "Lazımsız elementlərin toplanılması tamamlandı"
   },
   "ui/legacy/components/perf_ui/NetworkPriorities.ts | high": {
     "message": "Yüksək"

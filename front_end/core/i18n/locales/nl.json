@@ -1061,9 +1061,6 @@
   "entrypoints/main/MainImpl.ts | dockToRight": {
     "message": "Rechts vastzetten"
   },
-  "entrypoints/main/MainImpl.ts | externalRequestReceived": {
-    "message": "DevTools heeft een extern verzoek ontvangen"
-  },
   "entrypoints/main/MainImpl.ts | focusDebuggee": {
     "message": "Focus op pagina"
   },
@@ -1327,6 +1324,12 @@
   },
   "generated/Deprecation.ts | DataUrlInSvgUse": {
     "message": "Ondersteuning voor gegevens: URL's in GIFUseElement zijn beëindigd en worden in de toekomst verwijderd."
+  },
+  "generated/Deprecation.ts | DocumentCreateEventKeyboardEvents": {
+    "message": "document.createEvent('KeyboardEvents') is beëindigd en wordt verwijderd. Gebruik in plaats daarvan new KeyboardEvent()."
+  },
+  "generated/Deprecation.ts | DocumentCreateEventTransitionEvent": {
+    "message": "document.createEvent('TransitionEvent') is beëindigd en wordt verwijderd. Gebruik in plaats daarvan new TransitionEvent()."
   },
   "generated/Deprecation.ts | ExampleBrowserProcessDeprecation": {
     "message": "Dit is een voorbeeld van de code die nodig is voor een beëindiging die is gemeld door een browserproces."
@@ -2246,6 +2249,30 @@
   "models/trace/insights/Cache.ts | title": {
     "message": "Efficiënte levensduur voor het cachegeheugen gebruiken"
   },
+  "models/trace/insights/CharacterSet.ts | description": {
+    "message": "Een verklaring tekencodering is vereist. Dit kan worden gedaan met een meta charset-tag in de eerste 1024 bytes van de html of in de HTTP-reactiekop voor het contenttype. [Meer informatie over het definiëren van de tekencodering](https://developer.chrome.com/docs/insights/charset/)."
+  },
+  "models/trace/insights/CharacterSet.ts | failedHttpHeader": {
+    "message": "Declareert geen tekenset in HTTP-header"
+  },
+  "models/trace/insights/CharacterSet.ts | failedMetaCharsetLate": {
+    "message": "Definieert de tekenset met een metatag na de eerste 1024 bytes"
+  },
+  "models/trace/insights/CharacterSet.ts | failedMetaCharsetMissing": {
+    "message": "Declareert geen tekenset met een metatag"
+  },
+  "models/trace/insights/CharacterSet.ts | failedMetaCharsetUnknown": {
+    "message": "Kan de declaratie van meta charset niet bepalen op basis van de trace"
+  },
+  "models/trace/insights/CharacterSet.ts | passingHttpHeader": {
+    "message": "Declareert tekenset in HTTP-header"
+  },
+  "models/trace/insights/CharacterSet.ts | passingMetaCharsetEarly": {
+    "message": "Definieert de tekenset met een metatag in de eerste 1024 bytes"
+  },
+  "models/trace/insights/CharacterSet.ts | title": {
+    "message": "Een tekencodering definiëren"
+  },
   "models/trace/insights/DOMSize.ts | description": {
     "message": "Een grote DOM kan de duur van stijlberekeningen en dynamische aanpassingen van de indeling verlengen, wat de responsiviteit van de pagina beïnvloedt. Een grote DOM vergroot ook het geheugengebruik. [Meer informatie over hoe je een overmatige DOM-grootte voorkomt](https://developer.chrome.com/docs/performance/insights/dom-size)."
   },
@@ -2453,8 +2480,11 @@
   "models/trace/insights/LCPDiscovery.ts | fetchPriorityShouldBeApplied": {
     "message": "fetchpriority=high moet worden toegepast"
   },
+  "models/trace/insights/LCPDiscovery.ts | fetchPriorityShouldBeAppliedToImagePreload": {
+    "message": "fetchpriority=high moet worden toegepast op het verzoek om de afbeelding vooraf te laden"
+  },
   "models/trace/insights/LCPDiscovery.ts | lazyLoadNotApplied": {
-    "message": "Lazy loading niet toegepast"
+    "message": "LCP-bronnen mogen niet loading=lazy gebruiken"
   },
   "models/trace/insights/LCPDiscovery.ts | lcpLoadDelay": {
     "message": "LCP-afbeelding is {PH1} na het vroegste beginpunt geladen."
@@ -2657,24 +2687,6 @@
   "panels/accessibility/ARIAAttributesView.ts | noAriaAttributes": {
     "message": "Geen ARIA-kenmerken"
   },
-  "panels/accessibility/AXBreadcrumbsPane.ts | accessibilityTree": {
-    "message": "Toegankelijkheidsstructuur"
-  },
-  "panels/accessibility/AXBreadcrumbsPane.ts | fullTreeExperimentDescription": {
-    "message": "De toegankelijkheidsstructuur is verplaatst naar rechtsboven in de DOM-boomstructuur."
-  },
-  "panels/accessibility/AXBreadcrumbsPane.ts | fullTreeExperimentName": {
-    "message": "Toegankelijkheidsstructuur op volledige pagina laten zien"
-  },
-  "panels/accessibility/AXBreadcrumbsPane.ts | ignored": {
-    "message": "Genegeerd"
-  },
-  "panels/accessibility/AXBreadcrumbsPane.ts | reloadRequired": {
-    "message": "Opnieuw laden is vereist voordat de wijziging wordt doorgevoerd"
-  },
-  "panels/accessibility/AXBreadcrumbsPane.ts | scrollIntoView": {
-    "message": "In beeld scrollen"
-  },
   "panels/accessibility/AccessibilityNodeView.ts | accessibilityNodeNotExposed": {
     "message": "Toegankelijkheidsnode niet getoond"
   },
@@ -2743,6 +2755,9 @@
   },
   "panels/accessibility/AccessibilityNodeView.ts | placeholderIsPlaceholderOnAncestor": {
     "message": "{PH1} is {PH2} op bovenliggende entiteit:"
+  },
+  "panels/accessibility/AccessibilitySidebarView.ts | showAccessibilityTree": {
+    "message": "Toegankelijkheidsstructuur tonen"
   },
   "panels/accessibility/AccessibilityStrings.ts | aHumanreadableVersionOfTheValue": {
     "message": "Een voor mensen leesbare versie van de waarde van een bereikwidget (waar nodig)."
@@ -3176,8 +3191,38 @@
   "panels/ai_assistance/components/DisabledWidget.ts | turnOnForStylesRequestsPerformanceAndFiles": {
     "message": "Zet {PH1} aan voor hulp bij stijlen, netwerkverzoeken, prestaties en bestanden"
   },
+  "panels/ai_assistance/components/ExportForAgentsDialog.ts | asMarkdown": {
+    "message": "Als markdown"
+  },
+  "panels/ai_assistance/components/ExportForAgentsDialog.ts | asPrompt": {
+    "message": "Als prompt"
+  },
+  "panels/ai_assistance/components/ExportForAgentsDialog.ts | copiedToClipboard": {
+    "message": "Gekopieerd naar klembord"
+  },
+  "panels/ai_assistance/components/ExportForAgentsDialog.ts | copyToClipboard": {
+    "message": "Kopiëren naar klembord"
+  },
+  "panels/ai_assistance/components/ExportForAgentsDialog.ts | disclaimer": {
+    "message": "Dit is een experimentele AI-functie die het niet altijd juist heeft. Dubbelcheck deze tekst voordat je deze in een andere tool plakt."
+  },
+  "panels/ai_assistance/components/ExportForAgentsDialog.ts | exportForAgents": {
+    "message": "Kopiëren voor je programmeeragent"
+  },
+  "panels/ai_assistance/components/ExportForAgentsDialog.ts | generatingSummary": {
+    "message": "Samenvatting genereren…"
+  },
+  "panels/ai_assistance/components/ExportForAgentsDialog.ts | saveAsMarkdown": {
+    "message": "Opslaan als…"
+  },
   "panels/ai_assistance/components/WalkthroughView.ts | close": {
     "message": "Sluiten"
+  },
+  "panels/ai_assistance/components/WalkthroughView.ts | hideAgentWalkthrough": {
+    "message": "Handleiding voor agent verbergen"
+  },
+  "panels/ai_assistance/components/WalkthroughView.ts | hideThinking": {
+    "message": "Denkproces verbergen"
   },
   "panels/ai_assistance/components/WalkthroughView.ts | showAgentWalkthrough": {
     "message": "Handleiding voor agent tonen"
@@ -3186,7 +3231,7 @@
     "message": "Denkproces tonen"
   },
   "panels/ai_assistance/components/WalkthroughView.ts | title": {
-    "message": "Onderzoeksstappen"
+    "message": "Handleiding voor agent"
   },
   "panels/animation/AnimationTimeline.ts | animationDescription": {
     "message": "Op deze pagina kun je animaties inspecteren en aanpassen."
@@ -3763,6 +3808,18 @@
   },
   "panels/application/CookieItemsView.ts | showUrlDecoded": {
     "message": "URL gedecodeerd tonen"
+  },
+  "panels/application/CrashReportContextView.ts | filterByText": {
+    "message": "Filteren op sleutel of waarde"
+  },
+  "panels/application/CrashReportContextView.ts | noContext": {
+    "message": "Geen contextitems gevonden in frames."
+  },
+  "panels/application/CrashReportContextView.ts | refresh": {
+    "message": "Vernieuwen"
+  },
+  "panels/application/CrashReportContextView.ts | unknownFrame": {
+    "message": "Onbekend frame"
   },
   "panels/application/DOMStorageItemsView.ts | domStorageItemDeleted": {
     "message": "Het opslagitem is verwijderd."
@@ -4538,6 +4595,9 @@
   "panels/application/PreloadingTreeElement.ts | speculativeLoads": {
     "message": "Speculatief geladen items"
   },
+  "panels/application/ReportingApiTreeElement.ts | crashReportContext": {
+    "message": "Context van crashrapport"
+  },
   "panels/application/ReportingApiTreeElement.ts | reportingApi": {
     "message": "Reporting-API"
   },
@@ -4861,6 +4921,93 @@
   },
   "panels/application/TrustTokensTreeElement.ts | trustTokens": {
     "message": "Privéstatustokens"
+  },
+  "panels/application/WebMCPView.ts | canceled": {
+    "message": "Geannuleerd"
+  },
+  "panels/application/WebMCPView.ts | canceledCount": {
+    "message": "{PH1} geannuleerd"
+  },
+  "panels/application/WebMCPView.ts | clearFilters": {
+    "message": "Filters wissen"
+  },
+  "panels/application/WebMCPView.ts | clearLog": {
+    "message": "Logboek wissen"
+  },
+  "panels/application/WebMCPView.ts | close": {
+    "message": "Sluiten"
+  },
+  "panels/application/WebMCPView.ts | declarative": {
+    "message": "Declaratief"
+  },
+  "panels/application/WebMCPView.ts | error": {
+    "message": "Fout"
+  },
+  "panels/application/WebMCPView.ts | failed": {
+    "message": "{PH1} mislukt"
+  },
+  "panels/application/WebMCPView.ts | filter": {
+    "message": "Filter"
+  },
+  "panels/application/WebMCPView.ts | frame": {
+    "message": "Frame"
+  },
+  "panels/application/WebMCPView.ts | imperative": {
+    "message": "Vereist"
+  },
+  "panels/application/WebMCPView.ts | inProgress": {
+    "message": "Bezig"
+  },
+  "panels/application/WebMCPView.ts | inProgressCount": {
+    "message": "{PH1} bezig"
+  },
+  "panels/application/WebMCPView.ts | input": {
+    "message": "Invoer"
+  },
+  "panels/application/WebMCPView.ts | name": {
+    "message": "Naam"
+  },
+  "panels/application/WebMCPView.ts | noCallsPlaceholder": {
+    "message": "Begin met je WebMCP-agent te communiceren om hier toolgesprekken en -uitvoeringen in realtime te bekijken."
+  },
+  "panels/application/WebMCPView.ts | noCallsPlaceholderTitle": {
+    "message": "Toolactiviteit"
+  },
+  "panels/application/WebMCPView.ts | noToolsPlaceholder": {
+    "message": "Hier worden geregistreerde WebMCP-tools voor deze pagina getoond. Er zijn nog geen tools geregistreerd of gedetecteerd."
+  },
+  "panels/application/WebMCPView.ts | noToolsPlaceholderTitle": {
+    "message": "Beschikbare WebMCP-tools"
+  },
+  "panels/application/WebMCPView.ts | output": {
+    "message": "Uitvoer"
+  },
+  "panels/application/WebMCPView.ts | pending": {
+    "message": "Bezig"
+  },
+  "panels/application/WebMCPView.ts | status": {
+    "message": "Status"
+  },
+  "panels/application/WebMCPView.ts | statusTypes": {
+    "message": "Statustypes"
+  },
+  "panels/application/WebMCPView.ts | success": {
+    "message": "Geslaagd"
+  },
+  "panels/application/WebMCPView.ts | toolDetails": {
+    "message": "Details"
+  },
+  "panels/application/WebMCPView.ts | toolRegistry": {
+    "message": "Beschikbare tools"
+  },
+  "panels/application/WebMCPView.ts | toolTypes": {
+    "message": "Tooltypen"
+  },
+  "panels/application/WebMCPView.ts | totalCalls": {
+    "message": "Totaal aantal aanroepen: {PH1}"
+  },
+  "panels/application/WebMCPView.ts | viewInElementsPanel": {
+    "message": "Bekijken in het deelvenster Elementen"
   },
   "panels/application/application-meta.ts | application": {
     "message": "App"
@@ -5344,6 +5491,18 @@
   },
   "panels/application/components/BounceTrackingMitigationsView.ts | stateDeletedFor": {
     "message": "De status is verwijderd voor de volgende sites:"
+  },
+  "panels/application/components/CrashReportContextGrid.ts | copyKey": {
+    "message": "Sleutel kopiëren"
+  },
+  "panels/application/components/CrashReportContextGrid.ts | copyValue": {
+    "message": "Waarde kopiëren"
+  },
+  "panels/application/components/CrashReportContextGrid.ts | key": {
+    "message": "Sleutel"
+  },
+  "panels/application/components/CrashReportContextGrid.ts | value": {
+    "message": "Waarde"
   },
   "panels/application/components/EndpointsGrid.ts | endpointsDescription": {
     "message": "Hier vind je de lijst met eindpunten die de rapporten krijgen"
@@ -5966,6 +6125,9 @@
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusNavigationBadHttpStatus": {
     "message": "De pre-rendering navigatie is mislukt vanwege een niet-2xx HTTP-reactiestatuscode."
   },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusNavigationBadHttpStatusWithStatusCode": {
+    "message": "De pre-rendering navigatie is mislukt vanwege een niet-2xx HTTP-reactiestatuscode ({PH1})."
+  },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusNavigationRequestBlockedByCsp": {
     "message": "De pre-rendering navigatie is geblokkeerd door een Content Security Policy."
   },
@@ -6466,9 +6628,6 @@
   },
   "panels/common/BadgeNotification.ts | viewProfile": {
     "message": "Profiel bekijken"
-  },
-  "panels/common/CopyChangesToPrompt.ts | responseCopiedToClipboard": {
-    "message": "Reactie naar klembord gekopieerd"
   },
   "panels/common/DOMLinkifier.ts | node": {
     "message": "<node>"
@@ -7529,12 +7688,6 @@
   "panels/elements/ElementsPanel.ts | styles": {
     "message": "Stijlen"
   },
-  "panels/elements/ElementsPanel.ts | switchToAccessibilityTreeView": {
-    "message": "Overschakelen naar structuurweergave voor toegankelijkheid"
-  },
-  "panels/elements/ElementsPanel.ts | switchToDomTreeView": {
-    "message": "Overschakelen naar DOM-boomstructuur"
-  },
   "panels/elements/ElementsPanel.ts | theDeferredDomNodeCouldNotBe": {
     "message": "De uitgestelde DOM-node kan niet worden omgezet in een geldige node."
   },
@@ -7591,6 +7744,9 @@
   },
   "panels/elements/ElementsTreeElement.ts | copyXpath": {
     "message": "XPath kopiëren"
+  },
+  "panels/elements/ElementsTreeElement.ts | creatorAdScriptAncestry": {
+    "message": "Afstamming van advertentiescript voor creators"
   },
   "panels/elements/ElementsTreeElement.ts | cut": {
     "message": "Knippen"
@@ -7679,6 +7835,9 @@
   "panels/elements/ElementsTreeElement.ts | explainSubgrids": {
     "message": "Subrasters uitleggen"
   },
+  "panels/elements/ElementsTreeElement.ts | filterListRule": {
+    "message": "Regel voor filterlijst"
+  },
   "panels/elements/ElementsTreeElement.ts | findGridDefinition": {
     "message": "Rasterdefinitie zoeken"
   },
@@ -7694,6 +7853,9 @@
   "panels/elements/ElementsTreeElement.ts | hideElement": {
     "message": "Element verbergen"
   },
+  "panels/elements/ElementsTreeElement.ts | noProvenanceAvailable": {
+    "message": "Er zijn geen herkomstgegevens beschikbaar"
+  },
   "panels/elements/ElementsTreeElement.ts | openMediaPanel": {
     "message": "Naar deelvenster Media gaan"
   },
@@ -7705,6 +7867,9 @@
   },
   "panels/elements/ElementsTreeElement.ts | reveal": {
     "message": "bekijken"
+  },
+  "panels/elements/ElementsTreeElement.ts | rootScriptFilterListRule": {
+    "message": "Regel voor filterlijst voor rootscript"
   },
   "panels/elements/ElementsTreeElement.ts | scrollIntoView": {
     "message": "In beeld scrollen"
@@ -7730,8 +7895,8 @@
   "panels/elements/ElementsTreeElement.ts | styleScrollbars": {
     "message": "Stijl van scrollbalken aanpassen"
   },
-  "panels/elements/ElementsTreeElement.ts | thisFrameWasIdentifiedAsAnAd": {
-    "message": "Dit frame is herkend als advertentieframe"
+  "panels/elements/ElementsTreeElement.ts | thisElementWasIdentifiedAsAnAd": {
+    "message": "Dit element is geïdentificeerd als advertentie"
   },
   "panels/elements/ElementsTreeElement.ts | useSInTheConsoleToReferToThis": {
     "message": "{PH1} gebruiken in de console om naar dit element te verwijzen."
@@ -7747,6 +7912,9 @@
   },
   "panels/elements/ElementsTreeOutline.ts | pageDom": {
     "message": "Pagina-DOM"
+  },
+  "panels/elements/ElementsTreeOutline.ts | showAllLines": {
+    "message": "Alles tonen ({PH1} regels)"
   },
   "panels/elements/ElementsTreeOutline.ts | showAllNodesDMore": {
     "message": "Alle nodes tonen (nog {PH1})"
@@ -7865,6 +8033,9 @@
   "panels/elements/ShortcutTreeElement.ts | reveal": {
     "message": "bekijken"
   },
+  "panels/elements/StylePropertiesSection.ts | collapseExpandedRule": {
+    "message": "Uitgevouwen regel samenvouwen"
+  },
   "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
     "message": "samengestelde stylesheet"
   },
@@ -7879,6 +8050,9 @@
   },
   "panels/elements/StylePropertiesSection.ts | cssSelector": {
     "message": "Kiezer voor CSS"
+  },
+  "panels/elements/StylePropertiesSection.ts | expandCollapsedRule": {
+    "message": "Samengevouwen regel uitvouwen"
   },
   "panels/elements/StylePropertiesSection.ts | injectedStylesheet": {
     "message": "geïnjecteerde stylesheet"
@@ -9239,6 +9413,12 @@
   "panels/lighthouse/LighthouseStatusView.ts | ahSorryWeRanIntoAnError": {
     "message": "Er is een fout opgetreden."
   },
+  "panels/lighthouse/LighthouseStatusView.ts | aiAuditingS": {
+    "message": "AI-ondersteuning controleert {PH1}"
+  },
+  "panels/lighthouse/LighthouseStatusView.ts | aiAuditingYourWebPage": {
+    "message": "AI-ondersteuning controleert je webpagina"
+  },
   "panels/lighthouse/LighthouseStatusView.ts | almostThereLighthouseIsNow": {
     "message": "Je bent er bijna: Lighthouse genereert nu je rapport."
   },
@@ -10526,6 +10706,9 @@
   "panels/network/NetworkLogViewColumns.ts | requestHeaders": {
     "message": "Verzoekheaders"
   },
+  "panels/network/NetworkLogViewColumns.ts | requestNumber": {
+    "message": "Verzoeknummer"
+  },
   "panels/network/NetworkLogViewColumns.ts | responseHeaders": {
     "message": "Reactieheaders"
   },
@@ -11713,9 +11896,6 @@
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | userObjectReachableFromWindow": {
     "message": "Gebruikersobject bereikbaar vanuit venster"
-  },
-  "panels/profiler/HeapSnapshotProxy.ts | anErrorOccurredWhenACallToMethod": {
-    "message": "Er is een fout opgetreden bij het aanroepen van de methode {PH1}"
   },
   "panels/profiler/HeapSnapshotView.ts | AllocationTimelinesShowInstrumented": {
     "message": "Leg geheugentoewijzing vast in de loop van de tijd en isoleer geheugenlekken door intervallen te selecteren met toewijzingen die nog actief zijn"
@@ -13661,6 +13841,9 @@
   "panels/settings/emulation/DevicesSettingsTab.ts | userAgentString": {
     "message": "User-agenttekenreeks"
   },
+  "panels/settings/emulation/DevicesSettingsTab.ts | userAgentStringCannotBeEmpty": {
+    "message": "De tekenreeks voor de user-agent mag niet leeg zijn."
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | userAgentType": {
     "message": "Type user-agent"
   },
@@ -15299,9 +15482,6 @@
   "panels/timeline/TimelinePanel.ts | exportingFailed": {
     "message": "Exporteren van de tracering is mislukt"
   },
-  "panels/timeline/TimelinePanel.ts | externalRequestReceived": {
-    "message": "DevTools heeft een extern verzoek ontvangen"
-  },
   "panels/timeline/TimelinePanel.ts | fixMe": {
     "message": "Oplossen"
   },
@@ -15934,6 +16114,30 @@
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | recommendedThrottlingReason": {
     "message": "Overweeg de instelling te wijzigen om realistische gebruikersomgevingen te simuleren"
+  },
+  "panels/timeline/components/CWVMetrics.ts | dismissTitle": {
+    "message": "Sluiten"
+  },
+  "panels/timeline/components/CWVMetrics.ts | fieldMismatchNotice": {
+    "message": "Er zijn veel redenen waarom lokale en veldstatistieken [misschien niet overeenkomen](https://web.dev/articles/lab-and-field-data-differences). Pas [instellingen voor throttling en apparaatemulatie](https://developer.chrome.com/docs/devtools/device-mode) aan om tracering te analyseren die meer lijkt op de omgeving van de gemiddelde gebruiker."
+  },
+  "panels/timeline/components/CWVMetrics.ts | fieldMismatchTitle": {
+    "message": "Lokale en veldstatistieken komen niet overeen"
+  },
+  "panels/timeline/components/CWVMetrics.ts | fieldScoreLabel": {
+    "message": "Veld ({PH1})"
+  },
+  "panels/timeline/components/CWVMetrics.ts | metricScore": {
+    "message": "{PH1}: {PH2} {PH3} score"
+  },
+  "panels/timeline/components/CWVMetrics.ts | metricScoreUnavailable": {
+    "message": "{PH1}: niet beschikbaar"
+  },
+  "panels/timeline/components/CWVMetrics.ts | originOption": {
+    "message": "Oorsprong"
+  },
+  "panels/timeline/components/CWVMetrics.ts | urlOption": {
+    "message": "URL"
   },
   "panels/timeline/components/DetailsView.ts | forcedReflow": {
     "message": "Gedwongen dynamische aanpassing"
@@ -16718,6 +16922,9 @@
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "Stoppen"
   },
+  "panels/timeline/timeline-meta.ts | timelineShowAllEvents": {
+    "message": "Alle evenementen weergeven"
+  },
   "panels/timeline/utils/IgnoreList.ts | skip3rdPartyScripts": {
     "message": "Gemarkeerd met ignoreList in bronkaart"
   },
@@ -16859,6 +17066,12 @@
   "panels/webauthn/WebauthnPane.ts | signCount": {
     "message": "Aantal handtekeningen"
   },
+  "panels/webauthn/WebauthnPane.ts | supportsHmacSecret": {
+    "message": "Ondersteunt hmac-secret"
+  },
+  "panels/webauthn/WebauthnPane.ts | supportsHmacSecretMc": {
+    "message": "Ondersteunt hmac-secret-mc"
+  },
   "panels/webauthn/WebauthnPane.ts | supportsLargeBlob": {
     "message": "Ondersteunt grote blob"
   },
@@ -16955,10 +17168,10 @@
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "Het probleem is op dit moment niet beschikbaar"
   },
-  "ui/components/list/List.ts | edit": {
+  "ui/components/lists/List.ts | edit": {
     "message": "Bewerken"
   },
-  "ui/components/list/List.ts | remove": {
+  "ui/components/lists/List.ts | remove": {
     "message": "Verwijderen"
   },
   "ui/components/markdown_view/CodeBlock.ts | code": {
@@ -16972,6 +17185,9 @@
   },
   "ui/components/markdown_view/CodeBlock.ts | disclaimer": {
     "message": "Wees voorzichtig met het gebruik van codefragmenten"
+  },
+  "ui/components/markdown_view/CodeBlock.ts | showAllLines": {
+    "message": "Alle regels tonen (nog {PH1})"
   },
   "ui/components/panel_feedback/FeedbackButton.ts | feedback": {
     "message": "Feedback"
@@ -17120,11 +17336,17 @@
   "ui/legacy/Infobar.ts | dontShowAgain": {
     "message": "Niet meer tonen"
   },
+  "ui/legacy/InspectorDrawerView.ts | closeDrawer": {
+    "message": "Lade sluiten"
+  },
+  "ui/legacy/InspectorDrawerView.ts | moreTools": {
+    "message": "Meer tools"
+  },
+  "ui/legacy/InspectorDrawerView.ts | toggleDrawerOrientation": {
+    "message": "Ladestand wisselen"
+  },
   "ui/legacy/InspectorView.ts | areYouSureYouWantToRestartChrome": {
     "message": "Weet je zeker dat je Chrome opnieuw wilt opstarten?"
-  },
-  "ui/legacy/InspectorView.ts | closeDrawer": {
-    "message": "Lade sluiten"
   },
   "ui/legacy/InspectorView.ts | devToolsLanguageMissmatch": {
     "message": "DevTools is nu beschikbaar in het {PH1}"
@@ -17140,9 +17362,6 @@
   },
   "ui/legacy/InspectorView.ts | mainToolbar": {
     "message": "Hoofdwerkbalk"
-  },
-  "ui/legacy/InspectorView.ts | moreTools": {
-    "message": "Meer tools"
   },
   "ui/legacy/InspectorView.ts | moveToDrawer": {
     "message": "Naar lade verplaatsen"
@@ -17173,9 +17392,6 @@
   },
   "ui/legacy/InspectorView.ts | setToSpecificLanguage": {
     "message": "DevTools overzetten naar het {PH1}"
-  },
-  "ui/legacy/InspectorView.ts | toggleDrawerOrientation": {
-    "message": "Ladestand wisselen"
   },
   "ui/legacy/ListWidget.ts | addString": {
     "message": "Toevoegen"
@@ -17791,6 +18007,9 @@
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | sSelected": {
     "message": "{PH1} geselecteerd"
+  },
+  "ui/legacy/components/perf_ui/GCActionDelegate.ts | garbageCollectionCompleted": {
+    "message": "Garbage collection afgerond"
   },
   "ui/legacy/components/perf_ui/NetworkPriorities.ts | high": {
     "message": "Hoog"

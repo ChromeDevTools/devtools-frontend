@@ -1061,9 +1061,6 @@
   "entrypoints/main/MainImpl.ts | dockToRight": {
     "message": "Dokkolás jobbra"
   },
-  "entrypoints/main/MainImpl.ts | externalRequestReceived": {
-    "message": "A DevTools külső kérelmet kapott"
-  },
   "entrypoints/main/MainImpl.ts | focusDebuggee": {
     "message": "Fókuszálás az oldalra"
   },
@@ -1327,6 +1324,12 @@
   },
   "generated/Deprecation.ts | DataUrlInSvgUse": {
     "message": "Adatok támogatása: az SVGUseElement elemben lévő URL-ek elavultak, és a jövőben el fogjuk távolítani őket."
+  },
+  "generated/Deprecation.ts | DocumentCreateEventKeyboardEvents": {
+    "message": "A document.createEvent('KeyboardEvents') elavult, és el fogjuk távolítani. Inkább ezt használja: new KeyboardEvent()."
+  },
+  "generated/Deprecation.ts | DocumentCreateEventTransitionEvent": {
+    "message": "A document.createEvent('TransitionEvent') elavult, és el fogjuk távolítani. Inkább ezt használja: new TransitionEvent()."
   },
   "generated/Deprecation.ts | ExampleBrowserProcessDeprecation": {
     "message": "Ez egy példa a böngészőfolyamat által jelentett megszüntetéshez szükséges kód megjelenítésére."
@@ -2246,6 +2249,30 @@
   "models/trace/insights/Cache.ts | title": {
     "message": "Hatékony gyorsítótár-élettartam használata"
   },
+  "models/trace/insights/CharacterSet.ts | description": {
+    "message": "Kötelező deklarálnia a karakterkódolást. Ezt megteheti egy meta charset címkében, ha az a HTML első 1024 bájtjába kerül, vagy a HTTP-válasz Content-Type fejlécében. [További információ a karakterkódolás deklarálásáról](https://developer.chrome.com/docs/insights/charset/)."
+  },
+  "models/trace/insights/CharacterSet.ts | failedHttpHeader": {
+    "message": "Nem deklarálja a charset rendszert a HTTP-fejlécben"
+  },
+  "models/trace/insights/CharacterSet.ts | failedMetaCharsetLate": {
+    "message": "A charset rendszert deklarálja metacímke használatával az első 1024 bájt után"
+  },
+  "models/trace/insights/CharacterSet.ts | failedMetaCharsetMissing": {
+    "message": "Nem deklarálja a karakterkészletet metacímke használatával"
+  },
+  "models/trace/insights/CharacterSet.ts | failedMetaCharsetUnknown": {
+    "message": "Nem sikerült meghatározni a meta charset-deklarációt a nyomból"
+  },
+  "models/trace/insights/CharacterSet.ts | passingHttpHeader": {
+    "message": "A charset rendszert a HTTP-fejlécben deklarálja"
+  },
+  "models/trace/insights/CharacterSet.ts | passingMetaCharsetEarly": {
+    "message": "A karakterkészletet deklarálja metacímke használatával az első 1024 bájtban"
+  },
+  "models/trace/insights/CharacterSet.ts | title": {
+    "message": "Karakterkódolás deklarálása"
+  },
   "models/trace/insights/DOMSize.ts | description": {
     "message": "A nagy méretű DOM megnövelheti a stílusszámítások és az elrendezés-újraszámítások időtartamát, ami befolyásolja az oldal reagálóképességét. A nagy méretű DOM megnöveli a memóriahasználatot is. [További információ a túl nagy méretű DOM elkerüléséről](https://developer.chrome.com/docs/performance/insights/dom-size)."
   },
@@ -2453,8 +2480,11 @@
   "models/trace/insights/LCPDiscovery.ts | fetchPriorityShouldBeApplied": {
     "message": "A fetchpriority=high attribútumot kell alkalmazni"
   },
+  "models/trace/insights/LCPDiscovery.ts | fetchPriorityShouldBeAppliedToImagePreload": {
+    "message": "A fetchpriority=high attribútumot kell alkalmazni a képelőtöltési kérésre"
+  },
   "models/trace/insights/LCPDiscovery.ts | lazyLoadNotApplied": {
-    "message": "késleltetett betöltés nincs alkalmazva"
+    "message": "Az LCP-erőforrások nem használhatják a loading=lazy attribútumot"
   },
   "models/trace/insights/LCPDiscovery.ts | lcpLoadDelay": {
     "message": "Az LCP-kép a legkorábbi kezdőpont után {PH1} elteltével töltődött be."
@@ -2657,24 +2687,6 @@
   "panels/accessibility/ARIAAttributesView.ts | noAriaAttributes": {
     "message": "Nincsenek ARIA-attribútumok"
   },
-  "panels/accessibility/AXBreadcrumbsPane.ts | accessibilityTree": {
-    "message": "Kisegítő lehetőségek fája"
-  },
-  "panels/accessibility/AXBreadcrumbsPane.ts | fullTreeExperimentDescription": {
-    "message": "A kisegítő lehetőségek fája a DOM-fa jobb felső sarkába került."
-  },
-  "panels/accessibility/AXBreadcrumbsPane.ts | fullTreeExperimentName": {
-    "message": "A kisegítő lehetőségek fája teljes oldalas nézetének engedélyezése"
-  },
-  "panels/accessibility/AXBreadcrumbsPane.ts | ignored": {
-    "message": "Figyelmen kívül hagyva"
-  },
-  "panels/accessibility/AXBreadcrumbsPane.ts | reloadRequired": {
-    "message": "A módosítások életbe lépéséhez újratöltésre van szükség"
-  },
-  "panels/accessibility/AXBreadcrumbsPane.ts | scrollIntoView": {
-    "message": "Görgetés a megjelenítési területre"
-  },
   "panels/accessibility/AccessibilityNodeView.ts | accessibilityNodeNotExposed": {
     "message": "Nem nyilvánosságra hozott kisegítőlehetőség-csomópont"
   },
@@ -2743,6 +2755,9 @@
   },
   "panels/accessibility/AccessibilityNodeView.ts | placeholderIsPlaceholderOnAncestor": {
     "message": "A(z) {PH1} {PH2} a következő előd esetében: "
+  },
+  "panels/accessibility/AccessibilitySidebarView.ts | showAccessibilityTree": {
+    "message": "Kisegítő lehetőségek fájának megjelenítése"
   },
   "panels/accessibility/AccessibilityStrings.ts | aHumanreadableVersionOfTheValue": {
     "message": "A tartománymodulhoz tartozó érték ember által olvasható verziója (ahol szükséges)."
@@ -3176,8 +3191,38 @@
   "panels/ai_assistance/components/DisabledWidget.ts | turnOnForStylesRequestsPerformanceAndFiles": {
     "message": "Ha szeretne segítséget kapni a stílusokkal, a hálózati kérelmekkel, a teljesítménnyel és a fájlokkal kapcsolatban, kapcsolja be a következőt: {PH1}"
   },
+  "panels/ai_assistance/components/ExportForAgentsDialog.ts | asMarkdown": {
+    "message": "Markdownként"
+  },
+  "panels/ai_assistance/components/ExportForAgentsDialog.ts | asPrompt": {
+    "message": "Utasításként"
+  },
+  "panels/ai_assistance/components/ExportForAgentsDialog.ts | copiedToClipboard": {
+    "message": "Vágólapra másolva"
+  },
+  "panels/ai_assistance/components/ExportForAgentsDialog.ts | copyToClipboard": {
+    "message": "Másolás vágólapra"
+  },
+  "panels/ai_assistance/components/ExportForAgentsDialog.ts | disclaimer": {
+    "message": "Ez egy kísérleti AI-funkció, amely nem mindig működik megfelelően. Mielőtt a szöveget más eszközbe illesztené be, ellenőrizze."
+  },
+  "panels/ai_assistance/components/ExportForAgentsDialog.ts | exportForAgents": {
+    "message": "Másolás a kódoló ügynök számára"
+  },
+  "panels/ai_assistance/components/ExportForAgentsDialog.ts | generatingSummary": {
+    "message": "Összegzés létrehozása…"
+  },
+  "panels/ai_assistance/components/ExportForAgentsDialog.ts | saveAsMarkdown": {
+    "message": "Mentés másként…"
+  },
   "panels/ai_assistance/components/WalkthroughView.ts | close": {
     "message": "Bezárás"
+  },
+  "panels/ai_assistance/components/WalkthroughView.ts | hideAgentWalkthrough": {
+    "message": "Ügynöki bemutató elrejtése"
+  },
+  "panels/ai_assistance/components/WalkthroughView.ts | hideThinking": {
+    "message": "Gondolatmenet elrejtése"
   },
   "panels/ai_assistance/components/WalkthroughView.ts | showAgentWalkthrough": {
     "message": "Ügynöki bemutató megjelenítése"
@@ -3186,7 +3231,7 @@
     "message": "Gondolatmenet megjelenítése"
   },
   "panels/ai_assistance/components/WalkthroughView.ts | title": {
-    "message": "Vizsgálati lépések"
+    "message": "Ügynökbemutató"
   },
   "panels/animation/AnimationTimeline.ts | animationDescription": {
     "message": "Ezen az oldalon megtekintheti és módosíthatja az animációkat."
@@ -3763,6 +3808,18 @@
   },
   "panels/application/CookieItemsView.ts | showUrlDecoded": {
     "message": "URL megjelenítése dekódolva"
+  },
+  "panels/application/CrashReportContextView.ts | filterByText": {
+    "message": "Szűrés kulcs vagy érték szerint"
+  },
+  "panels/application/CrashReportContextView.ts | noContext": {
+    "message": "A keretekben nem észlelhetők kontextusbejegyzések."
+  },
+  "panels/application/CrashReportContextView.ts | refresh": {
+    "message": "Frissítés"
+  },
+  "panels/application/CrashReportContextView.ts | unknownFrame": {
+    "message": "Ismeretlen keret"
   },
   "panels/application/DOMStorageItemsView.ts | domStorageItemDeleted": {
     "message": "Tárhelyelem törölve."
@@ -4538,6 +4595,9 @@
   "panels/application/PreloadingTreeElement.ts | speculativeLoads": {
     "message": "Spekulatív betöltések"
   },
+  "panels/application/ReportingApiTreeElement.ts | crashReportContext": {
+    "message": "Hibajelentés kontextusa"
+  },
   "panels/application/ReportingApiTreeElement.ts | reportingApi": {
     "message": "Reporting API"
   },
@@ -4861,6 +4921,93 @@
   },
   "panels/application/TrustTokensTreeElement.ts | trustTokens": {
     "message": "Privát állapottokenek"
+  },
+  "panels/application/WebMCPView.ts | canceled": {
+    "message": "Megszakítva"
+  },
+  "panels/application/WebMCPView.ts | canceledCount": {
+    "message": "{PH1} megszakított eszközhívás"
+  },
+  "panels/application/WebMCPView.ts | clearFilters": {
+    "message": "Szűrők törlése"
+  },
+  "panels/application/WebMCPView.ts | clearLog": {
+    "message": "Napló törlése"
+  },
+  "panels/application/WebMCPView.ts | close": {
+    "message": "Bezárás"
+  },
+  "panels/application/WebMCPView.ts | declarative": {
+    "message": "Deklaratív"
+  },
+  "panels/application/WebMCPView.ts | error": {
+    "message": "Hiba"
+  },
+  "panels/application/WebMCPView.ts | failed": {
+    "message": "{PH1} sikertelen eszközhívás"
+  },
+  "panels/application/WebMCPView.ts | filter": {
+    "message": "Szűrő"
+  },
+  "panels/application/WebMCPView.ts | frame": {
+    "message": "Keret"
+  },
+  "panels/application/WebMCPView.ts | imperative": {
+    "message": "Felszólító mód"
+  },
+  "panels/application/WebMCPView.ts | inProgress": {
+    "message": "Folyamatban"
+  },
+  "panels/application/WebMCPView.ts | inProgressCount": {
+    "message": "{PH1} folyamatban lévő eszközhívás"
+  },
+  "panels/application/WebMCPView.ts | input": {
+    "message": "Bemenet"
+  },
+  "panels/application/WebMCPView.ts | name": {
+    "message": "Név"
+  },
+  "panels/application/WebMCPView.ts | noCallsPlaceholder": {
+    "message": "Kezdjen el kommunikálni a(z) WebMCP ügynökkel, hogy itt láthassa az eszközhívásokat és a végrehajtásokat valós időben"
+  },
+  "panels/application/WebMCPView.ts | noCallsPlaceholderTitle": {
+    "message": "Eszköztevékenység"
+  },
+  "panels/application/WebMCPView.ts | noToolsPlaceholder": {
+    "message": "Az oldalhoz regisztrált WebMCP-eszközök itt jelennek meg. Még nincs regisztrált vagy észlelt eszköz."
+  },
+  "panels/application/WebMCPView.ts | noToolsPlaceholderTitle": {
+    "message": "Rendelkezésre álló WebMCP-eszközök"
+  },
+  "panels/application/WebMCPView.ts | output": {
+    "message": "Kimenet"
+  },
+  "panels/application/WebMCPView.ts | pending": {
+    "message": "Folyamatban"
+  },
+  "panels/application/WebMCPView.ts | status": {
+    "message": "Állapot"
+  },
+  "panels/application/WebMCPView.ts | statusTypes": {
+    "message": "Állapottípusok"
+  },
+  "panels/application/WebMCPView.ts | success": {
+    "message": "Sikerült"
+  },
+  "panels/application/WebMCPView.ts | toolDetails": {
+    "message": "Részletek"
+  },
+  "panels/application/WebMCPView.ts | toolRegistry": {
+    "message": "Rendelkezésre álló eszközök"
+  },
+  "panels/application/WebMCPView.ts | toolTypes": {
+    "message": "Eszköztípusok"
+  },
+  "panels/application/WebMCPView.ts | totalCalls": {
+    "message": "Összes hívás: {PH1}"
+  },
+  "panels/application/WebMCPView.ts | viewInElementsPanel": {
+    "message": "Megtekintés az Elemek panelen"
   },
   "panels/application/application-meta.ts | application": {
     "message": "Alkalmazás"
@@ -5344,6 +5491,18 @@
   },
   "panels/application/components/BounceTrackingMitigationsView.ts | stateDeletedFor": {
     "message": "Az állapotot a rendszer a következő webhelyek esetében törölte:"
+  },
+  "panels/application/components/CrashReportContextGrid.ts | copyKey": {
+    "message": "Kulcs másolása"
+  },
+  "panels/application/components/CrashReportContextGrid.ts | copyValue": {
+    "message": "Érték másolása"
+  },
+  "panels/application/components/CrashReportContextGrid.ts | key": {
+    "message": "Kulcs"
+  },
+  "panels/application/components/CrashReportContextGrid.ts | value": {
+    "message": "Érték"
   },
   "panels/application/components/EndpointsGrid.ts | endpointsDescription": {
     "message": "Itt találja a jelentéseket fogadó végpontok listáját"
@@ -5966,6 +6125,9 @@
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusNavigationBadHttpStatus": {
     "message": "Az előmegjelenítési navigáció a nem 2xx HTTP-válasz állapotkódja miatt sikertelen volt."
   },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusNavigationBadHttpStatusWithStatusCode": {
+    "message": "Az előmegjelenítési navigáció a nem 2xx HTTP-válasz állapotkódja miatt sikertelen volt ({PH1})."
+  },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusNavigationRequestBlockedByCsp": {
     "message": "Az előmegjelenítési navigációt letiltotta egy tartalombiztonsági irányelv."
   },
@@ -6466,9 +6628,6 @@
   },
   "panels/common/BadgeNotification.ts | viewProfile": {
     "message": "Profil megtekintése"
-  },
-  "panels/common/CopyChangesToPrompt.ts | responseCopiedToClipboard": {
-    "message": "A válasz a vágólapra másolva"
   },
   "panels/common/DOMLinkifier.ts | node": {
     "message": "<csomópont>"
@@ -7529,12 +7688,6 @@
   "panels/elements/ElementsPanel.ts | styles": {
     "message": "Stílusok"
   },
-  "panels/elements/ElementsPanel.ts | switchToAccessibilityTreeView": {
-    "message": "Váltás a Kisegítő lehetőségek fanézetére"
-  },
-  "panels/elements/ElementsPanel.ts | switchToDomTreeView": {
-    "message": "Váltás DOM-fanézetre"
-  },
   "panels/elements/ElementsPanel.ts | theDeferredDomNodeCouldNotBe": {
     "message": "A késleltetett DOM-csomópontot nem lehetett érvényes csomópontként feloldani."
   },
@@ -7591,6 +7744,9 @@
   },
   "panels/elements/ElementsTreeElement.ts | copyXpath": {
     "message": "XPath másolása"
+  },
+  "panels/elements/ElementsTreeElement.ts | creatorAdScriptAncestry": {
+    "message": "Létrehozó hirdetésszkriptősök"
   },
   "panels/elements/ElementsTreeElement.ts | cut": {
     "message": "Kivágás"
@@ -7679,6 +7835,9 @@
   "panels/elements/ElementsTreeElement.ts | explainSubgrids": {
     "message": "Alrácsok magyarázata"
   },
+  "panels/elements/ElementsTreeElement.ts | filterListRule": {
+    "message": "Szűrőlistaszabály"
+  },
   "panels/elements/ElementsTreeElement.ts | findGridDefinition": {
     "message": "Rácsdefiníció keresése"
   },
@@ -7694,6 +7853,9 @@
   "panels/elements/ElementsTreeElement.ts | hideElement": {
     "message": "Elem elrejtése"
   },
+  "panels/elements/ElementsTreeElement.ts | noProvenanceAvailable": {
+    "message": "Nem áll rendelkezésre eredetiségadat"
+  },
   "panels/elements/ElementsTreeElement.ts | openMediaPanel": {
     "message": "Ugrás a Média panelre"
   },
@@ -7705,6 +7867,9 @@
   },
   "panels/elements/ElementsTreeElement.ts | reveal": {
     "message": "felfedés"
+  },
+  "panels/elements/ElementsTreeElement.ts | rootScriptFilterListRule": {
+    "message": "Gyökérszkript szűrőlistaszabálya"
   },
   "panels/elements/ElementsTreeElement.ts | scrollIntoView": {
     "message": "Görgetés a megjelenítési területre"
@@ -7730,8 +7895,8 @@
   "panels/elements/ElementsTreeElement.ts | styleScrollbars": {
     "message": "Görgetősávok stílusának beállítása"
   },
-  "panels/elements/ElementsTreeElement.ts | thisFrameWasIdentifiedAsAnAd": {
-    "message": "Ez a keret hirdetéskeretként lett azonosítva"
+  "panels/elements/ElementsTreeElement.ts | thisElementWasIdentifiedAsAnAd": {
+    "message": "Ez az elem hirdetésként lett azonosítva"
   },
   "panels/elements/ElementsTreeElement.ts | useSInTheConsoleToReferToThis": {
     "message": "Erre az elemre a következő használatával hivatkozhat a konzolban: {PH1}."
@@ -7747,6 +7912,9 @@
   },
   "panels/elements/ElementsTreeOutline.ts | pageDom": {
     "message": "Oldal-DOM"
+  },
+  "panels/elements/ElementsTreeOutline.ts | showAllLines": {
+    "message": "Összes megjelenítése ({PH1} sor)"
   },
   "panels/elements/ElementsTreeOutline.ts | showAllNodesDMore": {
     "message": "Az összes csomópont megjelenítése ({PH1} további)"
@@ -7865,6 +8033,9 @@
   "panels/elements/ShortcutTreeElement.ts | reveal": {
     "message": "felfedés"
   },
+  "panels/elements/StylePropertiesSection.ts | collapseExpandedRule": {
+    "message": "Kibontott szabály összecsukása"
+  },
   "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
     "message": "szerkesztett stíluslap"
   },
@@ -7879,6 +8050,9 @@
   },
   "panels/elements/StylePropertiesSection.ts | cssSelector": {
     "message": "CSS választója"
+  },
+  "panels/elements/StylePropertiesSection.ts | expandCollapsedRule": {
+    "message": "Összecsukott szabály kibontása"
   },
   "panels/elements/StylePropertiesSection.ts | injectedStylesheet": {
     "message": "beszúrt stíluslap"
@@ -9239,6 +9413,12 @@
   "panels/lighthouse/LighthouseStatusView.ts | ahSorryWeRanIntoAnError": {
     "message": "Sajnáljuk, hibát találtunk."
   },
+  "panels/lighthouse/LighthouseStatusView.ts | aiAuditingS": {
+    "message": "Az AI-támogatás ellenőrzi a következőt: {PH1}"
+  },
+  "panels/lighthouse/LighthouseStatusView.ts | aiAuditingYourWebPage": {
+    "message": "Az AI-támogatás ellenőrzi a weboldalát"
+  },
   "panels/lighthouse/LighthouseStatusView.ts | almostThereLighthouseIsNow": {
     "message": "Már majdnem kész! A(z) Lighthouse most létrehozza a jelentést."
   },
@@ -10526,6 +10706,9 @@
   "panels/network/NetworkLogViewColumns.ts | requestHeaders": {
     "message": "Kérelemfejlécek"
   },
+  "panels/network/NetworkLogViewColumns.ts | requestNumber": {
+    "message": "Kérelem száma"
+  },
   "panels/network/NetworkLogViewColumns.ts | responseHeaders": {
     "message": "Válaszfejlécek"
   },
@@ -11714,9 +11897,6 @@
   "panels/profiler/HeapSnapshotGridNodes.ts | userObjectReachableFromWindow": {
     "message": "Ablakból elérhető felhasználói objektum"
   },
-  "panels/profiler/HeapSnapshotProxy.ts | anErrorOccurredWhenACallToMethod": {
-    "message": "Hiba történt a(z) „{PH1}” metódus hívásának kérelmezésekor"
-  },
   "panels/profiler/HeapSnapshotView.ts | AllocationTimelinesShowInstrumented": {
     "message": "Rögzítheti az idők folyamán történő memóriakiosztásokat, és elkülönítheti a memóriaszivárgásokat a még élő kiosztásokat tartalmazó intervallumok kiválasztásával"
   },
@@ -12543,7 +12723,7 @@
     "message": "Elem"
   },
   "panels/recorder/components/StepView.ts | elementRoleInput": {
-    "message": "Bevitel"
+    "message": "Bemenet"
   },
   "panels/recorder/components/StepView.ts | emulateNetworkConditionsStepTitle": {
     "message": "Hálózati feltételek emulálása"
@@ -13660,6 +13840,9 @@
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | userAgentString": {
     "message": "Felhasználói ügynök karakterlánca"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | userAgentStringCannotBeEmpty": {
+    "message": "A felhasználói ügynök karakterlánca nem lehet üres."
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | userAgentType": {
     "message": "Felhasználói ügynök típusa"
@@ -15299,9 +15482,6 @@
   "panels/timeline/TimelinePanel.ts | exportingFailed": {
     "message": "Nem sikerült exportálni a nyomot"
   },
-  "panels/timeline/TimelinePanel.ts | externalRequestReceived": {
-    "message": "A DevTools külső kérelmet kapott"
-  },
   "panels/timeline/TimelinePanel.ts | fixMe": {
     "message": "Javítás"
   },
@@ -15934,6 +16114,30 @@
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | recommendedThrottlingReason": {
     "message": "Vegye fontolóra a beállítás módosítását a valós felhasználói környezetek szimulálásához"
+  },
+  "panels/timeline/components/CWVMetrics.ts | dismissTitle": {
+    "message": "Elvetés"
+  },
+  "panels/timeline/components/CWVMetrics.ts | fieldMismatchNotice": {
+    "message": "Számos oka lehet annak, hogy a helyi és a mezőmutatók [nem egyeznek](https://web.dev/articles/lab-and-field-data-differences). A [korlátozási beállítások és az eszközemuláció](https://developer.chrome.com/docs/devtools/device-mode) módosításával az átlagos felhasználói környezetre jobban hasonlító nyomokat elemezhet."
+  },
+  "panels/timeline/components/CWVMetrics.ts | fieldMismatchTitle": {
+    "message": "A mező- és a helyi mutatók nem egyeznek"
+  },
+  "panels/timeline/components/CWVMetrics.ts | fieldScoreLabel": {
+    "message": "Mező ({PH1})"
+  },
+  "panels/timeline/components/CWVMetrics.ts | metricScore": {
+    "message": "{PH1}: {PH2} {PH3} eredmény"
+  },
+  "panels/timeline/components/CWVMetrics.ts | metricScoreUnavailable": {
+    "message": "{PH1}: nem áll rendelkezésre"
+  },
+  "panels/timeline/components/CWVMetrics.ts | originOption": {
+    "message": "Eredet"
+  },
+  "panels/timeline/components/CWVMetrics.ts | urlOption": {
+    "message": "URL"
   },
   "panels/timeline/components/DetailsView.ts | forcedReflow": {
     "message": "Kényszerített újraszámítás"
@@ -16718,6 +16922,9 @@
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "Leállítás"
   },
+  "panels/timeline/timeline-meta.ts | timelineShowAllEvents": {
+    "message": "Az összes esemény megjelenítése"
+  },
   "panels/timeline/utils/IgnoreList.ts | skip3rdPartyScripts": {
     "message": "A forrás-hozzárendelésben a mellőzési listával megjelölve"
   },
@@ -16859,6 +17066,12 @@
   "panels/webauthn/WebauthnPane.ts | signCount": {
     "message": "Aláírásszámláló"
   },
+  "panels/webauthn/WebauthnPane.ts | supportsHmacSecret": {
+    "message": "Támogatja az hmac-secret bővítményt"
+  },
+  "panels/webauthn/WebauthnPane.ts | supportsHmacSecretMc": {
+    "message": "Támogatja az hmac-secret-mc bővítményt"
+  },
   "panels/webauthn/WebauthnPane.ts | supportsLargeBlob": {
     "message": "Támogatja a nagy blobokat"
   },
@@ -16955,10 +17168,10 @@
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "Jelenleg nem hozzáférhető a probléma"
   },
-  "ui/components/list/List.ts | edit": {
+  "ui/components/lists/List.ts | edit": {
     "message": "Szerkesztés"
   },
-  "ui/components/list/List.ts | remove": {
+  "ui/components/lists/List.ts | remove": {
     "message": "Eltávolítás"
   },
   "ui/components/markdown_view/CodeBlock.ts | code": {
@@ -16972,6 +17185,9 @@
   },
   "ui/components/markdown_view/CodeBlock.ts | disclaimer": {
     "message": "Körültekintően használja a kódrészleteket"
+  },
+  "ui/components/markdown_view/CodeBlock.ts | showAllLines": {
+    "message": "Összes sor megjelenítése ({PH1} további)"
   },
   "ui/components/panel_feedback/FeedbackButton.ts | feedback": {
     "message": "Visszajelzés"
@@ -17120,11 +17336,17 @@
   "ui/legacy/Infobar.ts | dontShowAgain": {
     "message": "Ne jelenjen meg többé"
   },
+  "ui/legacy/InspectorDrawerView.ts | closeDrawer": {
+    "message": "Fiók bezárása"
+  },
+  "ui/legacy/InspectorDrawerView.ts | moreTools": {
+    "message": "További eszközök"
+  },
+  "ui/legacy/InspectorDrawerView.ts | toggleDrawerOrientation": {
+    "message": "Fióktájolás váltása"
+  },
   "ui/legacy/InspectorView.ts | areYouSureYouWantToRestartChrome": {
     "message": "Biztosan újraindítja a Chrome-ot?"
-  },
-  "ui/legacy/InspectorView.ts | closeDrawer": {
-    "message": "Fiók bezárása"
   },
   "ui/legacy/InspectorView.ts | devToolsLanguageMissmatch": {
     "message": "A DevTools mostantól rendelkezésre áll {PH1} nyelven"
@@ -17140,9 +17362,6 @@
   },
   "ui/legacy/InspectorView.ts | mainToolbar": {
     "message": "Fő eszköztár"
-  },
-  "ui/legacy/InspectorView.ts | moreTools": {
-    "message": "További eszközök"
   },
   "ui/legacy/InspectorView.ts | moveToDrawer": {
     "message": "Áthelyezés a fiókba"
@@ -17173,9 +17392,6 @@
   },
   "ui/legacy/InspectorView.ts | setToSpecificLanguage": {
     "message": "DevTools váltása erre: {PH1}"
-  },
-  "ui/legacy/InspectorView.ts | toggleDrawerOrientation": {
-    "message": "Fióktájolás váltása"
   },
   "ui/legacy/ListWidget.ts | addString": {
     "message": "Hozzáadás"
@@ -17791,6 +18007,9 @@
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | sSelected": {
     "message": "{PH1} kijelölve"
+  },
+  "ui/legacy/components/perf_ui/GCActionDelegate.ts | garbageCollectionCompleted": {
+    "message": "A hulladékbegyűjtés befejeződött"
   },
   "ui/legacy/components/perf_ui/NetworkPriorities.ts | high": {
     "message": "Magas"

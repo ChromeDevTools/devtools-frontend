@@ -1061,9 +1061,6 @@
   "entrypoints/main/MainImpl.ts | dockToRight": {
     "message": "Festa til hægri"
   },
-  "entrypoints/main/MainImpl.ts | externalRequestReceived": {
-    "message": "DevTools barst utanaðkomandi beiðni"
-  },
   "entrypoints/main/MainImpl.ts | focusDebuggee": {
     "message": "Fókusa á síðu"
   },
@@ -1327,6 +1324,12 @@
   },
   "generated/Deprecation.ts | DataUrlInSvgUse": {
     "message": "Stuðningur fyrir gögn: Vefslóðir í SVGUseElement er úrelt og verður fjarlægð í framtíðinni."
+  },
+  "generated/Deprecation.ts | DocumentCreateEventKeyboardEvents": {
+    "message": "document.createEvent('KeyboardEvents') er úrelt og verður fjarlægt. Notaðu „new KeyboardEvent()“ þess í stað."
+  },
+  "generated/Deprecation.ts | DocumentCreateEventTransitionEvent": {
+    "message": "document.createEvent('TransitionEvent') er úrelt og verður fjarlægt. Notaðu „new TransitionEvent()“ þess í stað."
   },
   "generated/Deprecation.ts | ExampleBrowserProcessDeprecation": {
     "message": "Þetta er dæmi um kóðann sem krafist er fyrir úreldingu sem tilkynnt er um í vafraferli."
@@ -2246,6 +2249,30 @@
   "models/trace/insights/Cache.ts | title": {
     "message": "Nota skilvirkan skyndiminnislíftíma"
   },
+  "models/trace/insights/CharacterSet.ts | description": {
+    "message": "Yfirlýsingar um stafakóðun er krafist. Hana má setja fram með meta-stafasettsmerki í fyrstu 1024 bætum HTML-skráar eða í Content-Type HTTP-svarhaus. [Nánar um að yfirlýsingu um stafakóðun](https://developer.chrome.com/docs/insights/charset/)."
+  },
+  "models/trace/insights/CharacterSet.ts | failedHttpHeader": {
+    "message": "Tilgreinir ekki stafasett í HTTP-haus"
+  },
+  "models/trace/insights/CharacterSet.ts | failedMetaCharsetLate": {
+    "message": "Tilgreinir stafasett með lýsimerki eftir fyrstu 1024 bætin"
+  },
+  "models/trace/insights/CharacterSet.ts | failedMetaCharsetMissing": {
+    "message": "Tilgreinir ekki stafasett með lýsimerki"
+  },
+  "models/trace/insights/CharacterSet.ts | failedMetaCharsetUnknown": {
+    "message": "Ekki tókst að ákvarða meta-stafasettsyfirlýsingu með rakningu"
+  },
+  "models/trace/insights/CharacterSet.ts | passingHttpHeader": {
+    "message": "Tilgreinir stafasett í HTTP-haus"
+  },
+  "models/trace/insights/CharacterSet.ts | passingMetaCharsetEarly": {
+    "message": "Tilgreinir stafasett með lýsimerki í fyrstu 1024 bætunum"
+  },
+  "models/trace/insights/CharacterSet.ts | title": {
+    "message": "Tilgreina stafakóðun"
+  },
   "models/trace/insights/DOMSize.ts | description": {
     "message": "Stórt DOM-tré getur lengt útreikninga á endurröðun stíla og uppsetninga og þar af leiðandi haft áhrif á aðlögunarhæfni síðu. Stórt DOM-tré mun einnig auka minnisnotkun. [Kynntu þér hvernig þú kemur í veg fyrir að vera með of stórt DOM-tré](https://developer.chrome.com/docs/performance/insights/dom-size)."
   },
@@ -2453,8 +2480,11 @@
   "models/trace/insights/LCPDiscovery.ts | fetchPriorityShouldBeApplied": {
     "message": "Nota ætti „fetchpriority=high“"
   },
+  "models/trace/insights/LCPDiscovery.ts | fetchPriorityShouldBeAppliedToImagePreload": {
+    "message": "Nota ætti „fetchpriority=high“ fyrir beiðni um forhleðslu myndar"
+  },
   "models/trace/insights/LCPDiscovery.ts | lazyLoadNotApplied": {
-    "message": "tafinni hleðslu var ekki beitt"
+    "message": "LCP-gögn ættu ekki að nota loading=lazy"
   },
   "models/trace/insights/LCPDiscovery.ts | lcpLoadDelay": {
     "message": "LCP-mynd hlaðið {PH1} eftir fyrsta upphafsstað."
@@ -2657,24 +2687,6 @@
   "panels/accessibility/ARIAAttributesView.ts | noAriaAttributes": {
     "message": "Engar ARIA-eigindir"
   },
-  "panels/accessibility/AXBreadcrumbsPane.ts | accessibilityTree": {
-    "message": "Aðgengistré"
-  },
-  "panels/accessibility/AXBreadcrumbsPane.ts | fullTreeExperimentDescription": {
-    "message": "Aðgengistréð var fært efst í hægra horn DOM-trésins."
-  },
-  "panels/accessibility/AXBreadcrumbsPane.ts | fullTreeExperimentName": {
-    "message": "Virkja aðgengistré á öllum skjánum"
-  },
-  "panels/accessibility/AXBreadcrumbsPane.ts | ignored": {
-    "message": "Hunsað"
-  },
-  "panels/accessibility/AXBreadcrumbsPane.ts | reloadRequired": {
-    "message": "Endurhlaða verður til að breytingin taki gildi"
-  },
-  "panels/accessibility/AXBreadcrumbsPane.ts | scrollIntoView": {
-    "message": "Fletta að"
-  },
   "panels/accessibility/AccessibilityNodeView.ts | accessibilityNodeNotExposed": {
     "message": "Aðgengisnóða er ekki birt"
   },
@@ -2743,6 +2755,9 @@
   },
   "panels/accessibility/AccessibilityNodeView.ts | placeholderIsPlaceholderOnAncestor": {
     "message": "{PH1} er {PH2} á forvera: "
+  },
+  "panels/accessibility/AccessibilitySidebarView.ts | showAccessibilityTree": {
+    "message": "Sýna aðgengistré"
   },
   "panels/accessibility/AccessibilityStrings.ts | aHumanreadableVersionOfTheValue": {
     "message": "Læsileg útgáfa af gildinu í stýringu fyrir talnasvið (þar sem þess er krafist)."
@@ -3176,8 +3191,38 @@
   "panels/ai_assistance/components/DisabledWidget.ts | turnOnForStylesRequestsPerformanceAndFiles": {
     "message": "Kveiktu á {PH1} til að fá hjálp með stíla, netbeiðnir, afköst og skrár"
   },
+  "panels/ai_assistance/components/ExportForAgentsDialog.ts | asMarkdown": {
+    "message": "Sem lækkun"
+  },
+  "panels/ai_assistance/components/ExportForAgentsDialog.ts | asPrompt": {
+    "message": "Sem skipun"
+  },
+  "panels/ai_assistance/components/ExportForAgentsDialog.ts | copiedToClipboard": {
+    "message": "Afritað á klippiborð"
+  },
+  "panels/ai_assistance/components/ExportForAgentsDialog.ts | copyToClipboard": {
+    "message": "Afrita á klippiborð"
+  },
+  "panels/ai_assistance/components/ExportForAgentsDialog.ts | disclaimer": {
+    "message": "Þetta er gervigreindareiginleiki á tilraunastigi sem getur gert villur. Farðu vandlega yfir þennan texta áður en þú límir hann inn í annað verkfæri."
+  },
+  "panels/ai_assistance/components/ExportForAgentsDialog.ts | exportForAgents": {
+    "message": "Afrita fyrir kóðunarfulltrúa"
+  },
+  "panels/ai_assistance/components/ExportForAgentsDialog.ts | generatingSummary": {
+    "message": "Býr til samantekt…"
+  },
+  "panels/ai_assistance/components/ExportForAgentsDialog.ts | saveAsMarkdown": {
+    "message": "Vista sem…"
+  },
   "panels/ai_assistance/components/WalkthroughView.ts | close": {
     "message": "Loka"
+  },
+  "panels/ai_assistance/components/WalkthroughView.ts | hideAgentWalkthrough": {
+    "message": "Fela kynningu fulltrúa"
+  },
+  "panels/ai_assistance/components/WalkthroughView.ts | hideThinking": {
+    "message": "Fela hugsun"
   },
   "panels/ai_assistance/components/WalkthroughView.ts | showAgentWalkthrough": {
     "message": "Sýna kynningu fulltrúa"
@@ -3186,7 +3231,7 @@
     "message": "Sýna hugsun"
   },
   "panels/ai_assistance/components/WalkthroughView.ts | title": {
-    "message": "Rannsóknarskref"
+    "message": "Kynning fulltrúa"
   },
   "panels/animation/AnimationTimeline.ts | animationDescription": {
     "message": "Á þessari síðu geturðu skoðað og breytt hreyfimyndum."
@@ -3763,6 +3808,18 @@
   },
   "panels/application/CookieItemsView.ts | showUrlDecoded": {
     "message": "Sýna afkóðaða vefslóð"
+  },
+  "panels/application/CrashReportContextView.ts | filterByText": {
+    "message": "Sía eftir lykli eða gildi"
+  },
+  "panels/application/CrashReportContextView.ts | noContext": {
+    "message": "Engar samhengisfærslur greindust í römmum."
+  },
+  "panels/application/CrashReportContextView.ts | refresh": {
+    "message": "Endurnýja"
+  },
+  "panels/application/CrashReportContextView.ts | unknownFrame": {
+    "message": "Óþekktur rammi"
   },
   "panels/application/DOMStorageItemsView.ts | domStorageItemDeleted": {
     "message": "Geymsluatriðinu var eytt."
@@ -4538,6 +4595,9 @@
   "panels/application/PreloadingTreeElement.ts | speculativeLoads": {
     "message": "Getgátuhleðslur"
   },
+  "panels/application/ReportingApiTreeElement.ts | crashReportContext": {
+    "message": "Samhengi hrunskýrslu"
+  },
   "panels/application/ReportingApiTreeElement.ts | reportingApi": {
     "message": "Skýrsluforritaskil"
   },
@@ -4861,6 +4921,93 @@
   },
   "panels/application/TrustTokensTreeElement.ts | trustTokens": {
     "message": "Traustslyklar"
+  },
+  "panels/application/WebMCPView.ts | canceled": {
+    "message": "Hætt við"
+  },
+  "panels/application/WebMCPView.ts | canceledCount": {
+    "message": "Hætt við {PH1}"
+  },
+  "panels/application/WebMCPView.ts | clearFilters": {
+    "message": "Hreinsa síur"
+  },
+  "panels/application/WebMCPView.ts | clearLog": {
+    "message": "Hreinsa annál"
+  },
+  "panels/application/WebMCPView.ts | close": {
+    "message": "Loka"
+  },
+  "panels/application/WebMCPView.ts | declarative": {
+    "message": "Yfirlýsing"
+  },
+  "panels/application/WebMCPView.ts | error": {
+    "message": "Villa"
+  },
+  "panels/application/WebMCPView.ts | failed": {
+    "message": "{PH1} mistókst"
+  },
+  "panels/application/WebMCPView.ts | filter": {
+    "message": "Sía"
+  },
+  "panels/application/WebMCPView.ts | frame": {
+    "message": "Rammi"
+  },
+  "panels/application/WebMCPView.ts | imperative": {
+    "message": "Nauðsynleg"
+  },
+  "panels/application/WebMCPView.ts | inProgress": {
+    "message": "Í vinnslu"
+  },
+  "panels/application/WebMCPView.ts | inProgressCount": {
+    "message": "{PH1} í vinnslu"
+  },
+  "panels/application/WebMCPView.ts | input": {
+    "message": "Innsláttur"
+  },
+  "panels/application/WebMCPView.ts | name": {
+    "message": "Heiti"
+  },
+  "panels/application/WebMCPView.ts | noCallsPlaceholder": {
+    "message": "Byrjaðu að eiga samskipti við WebMCP-fulltrúann þinn til að sjá opnun og keyrslur verkfæra í rauntíma hér."
+  },
+  "panels/application/WebMCPView.ts | noCallsPlaceholderTitle": {
+    "message": "Virkni verkfæris"
+  },
+  "panels/application/WebMCPView.ts | noToolsPlaceholder": {
+    "message": "Skráð WebMCP-verkfæri fyrir þessa síðu birtast hér. Enn er ekki búið að skrá eða greina verkfæri."
+  },
+  "panels/application/WebMCPView.ts | noToolsPlaceholderTitle": {
+    "message": "Tiltæk WebMCP-verkfæri"
+  },
+  "panels/application/WebMCPView.ts | output": {
+    "message": "Úttak"
+  },
+  "panels/application/WebMCPView.ts | pending": {
+    "message": "Í vinnslu"
+  },
+  "panels/application/WebMCPView.ts | status": {
+    "message": "Staða"
+  },
+  "panels/application/WebMCPView.ts | statusTypes": {
+    "message": "Stöðugerðir"
+  },
+  "panels/application/WebMCPView.ts | success": {
+    "message": "Lokið"
+  },
+  "panels/application/WebMCPView.ts | toolDetails": {
+    "message": "Nánar"
+  },
+  "panels/application/WebMCPView.ts | toolRegistry": {
+    "message": "Tiltæk verkfæri"
+  },
+  "panels/application/WebMCPView.ts | toolTypes": {
+    "message": "Verkfæragerðir"
+  },
+  "panels/application/WebMCPView.ts | totalCalls": {
+    "message": "{PH1} símtöl samtals"
+  },
+  "panels/application/WebMCPView.ts | viewInElementsPanel": {
+    "message": "Skoða í einingaglugga"
   },
   "panels/application/application-meta.ts | application": {
     "message": "Forrit"
@@ -5344,6 +5491,18 @@
   },
   "panels/application/components/BounceTrackingMitigationsView.ts | stateDeletedFor": {
     "message": "Stöðu var eytt fyrir eftirfarandi vefsvæði:"
+  },
+  "panels/application/components/CrashReportContextGrid.ts | copyKey": {
+    "message": "Afrita lykil"
+  },
+  "panels/application/components/CrashReportContextGrid.ts | copyValue": {
+    "message": "Afrita gildi"
+  },
+  "panels/application/components/CrashReportContextGrid.ts | key": {
+    "message": "Lykill"
+  },
+  "panels/application/components/CrashReportContextGrid.ts | value": {
+    "message": "Gildi"
   },
   "panels/application/components/EndpointsGrid.ts | endpointsDescription": {
     "message": "Hér finnurðu lista yfir endapunkta sem fá skýrslurnar"
@@ -5966,6 +6125,9 @@
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusNavigationBadHttpStatus": {
     "message": "Forhleðslufletting mistókst vegna stöðukóða utan 2xx HTTP-svars."
   },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusNavigationBadHttpStatusWithStatusCode": {
+    "message": "Forhleðslufletting mistókst vegna stöðukóða utan 2xx HTTP-svars. ({PH1})."
+  },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusNavigationRequestBlockedByCsp": {
     "message": "Efnisöryggisstefna lokaði á forhleðsluflettingu."
   },
@@ -6466,9 +6628,6 @@
   },
   "panels/common/BadgeNotification.ts | viewProfile": {
     "message": "Skoða prófíl"
-  },
-  "panels/common/CopyChangesToPrompt.ts | responseCopiedToClipboard": {
-    "message": "Svar afritað á klippiborð"
   },
   "panels/common/DOMLinkifier.ts | node": {
     "message": "<nóða>"
@@ -7529,12 +7688,6 @@
   "panels/elements/ElementsPanel.ts | styles": {
     "message": "Stílar"
   },
-  "panels/elements/ElementsPanel.ts | switchToAccessibilityTreeView": {
-    "message": "Skipta yfir í aðgengistré"
-  },
-  "panels/elements/ElementsPanel.ts | switchToDomTreeView": {
-    "message": "Skipta yfir í DOM-yfirlitstré"
-  },
   "panels/elements/ElementsPanel.ts | theDeferredDomNodeCouldNotBe": {
     "message": "Ekki var hægt að breyta frestuðu DOM nóðunni í gilda nóðu."
   },
@@ -7591,6 +7744,9 @@
   },
   "panels/elements/ElementsTreeElement.ts | copyXpath": {
     "message": "Afrita XPath"
+  },
+  "panels/elements/ElementsTreeElement.ts | creatorAdScriptAncestry": {
+    "message": "Uppruni auglýsingaskriftu höfundar"
   },
   "panels/elements/ElementsTreeElement.ts | cut": {
     "message": "Klippa"
@@ -7679,6 +7835,9 @@
   "panels/elements/ElementsTreeElement.ts | explainSubgrids": {
     "message": "Útskýra undirtöflur"
   },
+  "panels/elements/ElementsTreeElement.ts | filterListRule": {
+    "message": "Síunarlistaregla"
+  },
   "panels/elements/ElementsTreeElement.ts | findGridDefinition": {
     "message": "Finna skilgreiningu á töflu"
   },
@@ -7694,6 +7853,9 @@
   "panels/elements/ElementsTreeElement.ts | hideElement": {
     "message": "Fela einingu"
   },
+  "panels/elements/ElementsTreeElement.ts | noProvenanceAvailable": {
+    "message": "Engin upprunagögn eru til staðar"
+  },
   "panels/elements/ElementsTreeElement.ts | openMediaPanel": {
     "message": "Hoppa yfir í Media-svæði"
   },
@@ -7705,6 +7867,9 @@
   },
   "panels/elements/ElementsTreeElement.ts | reveal": {
     "message": "sýna"
+  },
+  "panels/elements/ElementsTreeElement.ts | rootScriptFilterListRule": {
+    "message": "Síunarlistaregla fyrir rótarskriftu"
   },
   "panels/elements/ElementsTreeElement.ts | scrollIntoView": {
     "message": "Fletta að"
@@ -7730,8 +7895,8 @@
   "panels/elements/ElementsTreeElement.ts | styleScrollbars": {
     "message": "Flettistikur stíls"
   },
-  "panels/elements/ElementsTreeElement.ts | thisFrameWasIdentifiedAsAnAd": {
-    "message": "Þessi rammi var auðkenndur sem auglýsingarammi"
+  "panels/elements/ElementsTreeElement.ts | thisElementWasIdentifiedAsAnAd": {
+    "message": "Þessi eining var auðkennd sem auglýsing"
   },
   "panels/elements/ElementsTreeElement.ts | useSInTheConsoleToReferToThis": {
     "message": "Notaðu {PH1} á stjórnborðinu til að vísa í þessa einingu."
@@ -7747,6 +7912,9 @@
   },
   "panels/elements/ElementsTreeOutline.ts | pageDom": {
     "message": "DOM síðu"
+  },
+  "panels/elements/ElementsTreeOutline.ts | showAllLines": {
+    "message": "Sýna allt ({PH1} línur)"
   },
   "panels/elements/ElementsTreeOutline.ts | showAllNodesDMore": {
     "message": "Sýna allar nóður ({PH1} til viðbótar)"
@@ -7865,6 +8033,9 @@
   "panels/elements/ShortcutTreeElement.ts | reveal": {
     "message": "sýna"
   },
+  "panels/elements/StylePropertiesSection.ts | collapseExpandedRule": {
+    "message": "Draga saman stækkaða reglu"
+  },
   "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
     "message": "tilbúin stílsnið"
   },
@@ -7879,6 +8050,9 @@
   },
   "panels/elements/StylePropertiesSection.ts | cssSelector": {
     "message": "Val fyrir: CSS"
+  },
+  "panels/elements/StylePropertiesSection.ts | expandCollapsedRule": {
+    "message": "Stækka samandregna reglu"
   },
   "panels/elements/StylePropertiesSection.ts | injectedStylesheet": {
     "message": "setti inn stílsnið"
@@ -9239,6 +9413,12 @@
   "panels/lighthouse/LighthouseStatusView.ts | ahSorryWeRanIntoAnError": {
     "message": "Þar fór í verra! Villa kom upp."
   },
+  "panels/lighthouse/LighthouseStatusView.ts | aiAuditingS": {
+    "message": "Gervigreindarhjálp er að fara yfir {PH1}"
+  },
+  "panels/lighthouse/LighthouseStatusView.ts | aiAuditingYourWebPage": {
+    "message": "Gervigreindarhjálp er að fara yfir vefsíðuna þína"
+  },
   "panels/lighthouse/LighthouseStatusView.ts | almostThereLighthouseIsNow": {
     "message": "Næstum komið! Lighthouse er að útbúa skýrsluna."
   },
@@ -10526,6 +10706,9 @@
   "panels/network/NetworkLogViewColumns.ts | requestHeaders": {
     "message": "Hausar beiðna"
   },
+  "panels/network/NetworkLogViewColumns.ts | requestNumber": {
+    "message": "Beiðni #"
+  },
   "panels/network/NetworkLogViewColumns.ts | responseHeaders": {
     "message": "Hausar svars"
   },
@@ -11713,9 +11896,6 @@
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | userObjectReachableFromWindow": {
     "message": "Notandahlutur aðgengilegur úr glugga"
-  },
-  "panels/profiler/HeapSnapshotProxy.ts | anErrorOccurredWhenACallToMethod": {
-    "message": "Villa kom upp við að kalla á aðgerðina „{PH1}“"
   },
   "panels/profiler/HeapSnapshotView.ts | AllocationTimelinesShowInstrumented": {
     "message": "Taktu upp minnisúthlutanir yfir ákveðið tímabil og einangraðu minnisleka með því að velja tímabil úthlutana sem eru enn virkar"
@@ -13661,6 +13841,9 @@
   "panels/settings/emulation/DevicesSettingsTab.ts | userAgentString": {
     "message": "Strengur aðgangsbúnaðar"
   },
+  "panels/settings/emulation/DevicesSettingsTab.ts | userAgentStringCannotBeEmpty": {
+    "message": "Aðgangsbúnaðarstrengur má ekki vera auður."
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | userAgentType": {
     "message": "Gerð aðgangsbúnaðar"
   },
@@ -15299,9 +15482,6 @@
   "panels/timeline/TimelinePanel.ts | exportingFailed": {
     "message": "Ekki tókst að flytja út spor"
   },
-  "panels/timeline/TimelinePanel.ts | externalRequestReceived": {
-    "message": "DevTools barst utanaðkomandi beiðni"
-  },
   "panels/timeline/TimelinePanel.ts | fixMe": {
     "message": "Laga mig"
   },
@@ -15934,6 +16114,30 @@
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | recommendedThrottlingReason": {
     "message": "Íhugaðu að breyta stillingunni til að líkja eftir raunverulegu notendaumhverfi"
+  },
+  "panels/timeline/components/CWVMetrics.ts | dismissTitle": {
+    "message": "Hunsa"
+  },
+  "panels/timeline/components/CWVMetrics.ts | fieldMismatchNotice": {
+    "message": "Það eru margar ástæður fyrir því að staðbundin mæligildi og mæligildi fyrir reit [passa hugsanlega ekki saman](https://web.dev/articles/lab-and-field-data-differences). Stilltu [stillingar bandvíddartakmörkunar og hermun tækis](https://developer.chrome.com/docs/devtools/device-mode) til að greina spor með meiri samsvörun við umhverfi venjulegs notanda."
+  },
+  "panels/timeline/components/CWVMetrics.ts | fieldMismatchTitle": {
+    "message": "Misræmi á milli staðbundinna mæligilda og mæligilda fyrir reit"
+  },
+  "panels/timeline/components/CWVMetrics.ts | fieldScoreLabel": {
+    "message": "Reitur ({PH1})"
+  },
+  "panels/timeline/components/CWVMetrics.ts | metricScore": {
+    "message": "{PH1}: {PH2} {PH3} stig"
+  },
+  "panels/timeline/components/CWVMetrics.ts | metricScoreUnavailable": {
+    "message": "{PH1}: ekki í boði"
+  },
+  "panels/timeline/components/CWVMetrics.ts | originOption": {
+    "message": "Uppruni"
+  },
+  "panels/timeline/components/CWVMetrics.ts | urlOption": {
+    "message": "Vefslóð"
   },
   "panels/timeline/components/DetailsView.ts | forcedReflow": {
     "message": "Flæði þvingað fram"
@@ -16718,6 +16922,9 @@
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "Stöðva"
   },
+  "panels/timeline/timeline-meta.ts | timelineShowAllEvents": {
+    "message": "Sýna alla viðburði"
+  },
   "panels/timeline/utils/IgnoreList.ts | skip3rdPartyScripts": {
     "message": "Merkt með ignoreList í kóðavörpun"
   },
@@ -16859,6 +17066,12 @@
   "panels/webauthn/WebauthnPane.ts | signCount": {
     "message": "Fjöldi undirritana"
   },
+  "panels/webauthn/WebauthnPane.ts | supportsHmacSecret": {
+    "message": "Styður hmac-secret"
+  },
+  "panels/webauthn/WebauthnPane.ts | supportsHmacSecretMc": {
+    "message": "Styður hmac-secret-mc"
+  },
   "panels/webauthn/WebauthnPane.ts | supportsLargeBlob": {
     "message": "Styður stór blob"
   },
@@ -16955,10 +17168,10 @@
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "Vandamál er ekki tiltækt eins og stendur"
   },
-  "ui/components/list/List.ts | edit": {
+  "ui/components/lists/List.ts | edit": {
     "message": "Breyta"
   },
-  "ui/components/list/List.ts | remove": {
+  "ui/components/lists/List.ts | remove": {
     "message": "Fjarlægja"
   },
   "ui/components/markdown_view/CodeBlock.ts | code": {
@@ -16972,6 +17185,9 @@
   },
   "ui/components/markdown_view/CodeBlock.ts | disclaimer": {
     "message": "Sýndu aðgát við notkun kóðabúta"
+  },
+  "ui/components/markdown_view/CodeBlock.ts | showAllLines": {
+    "message": "Sýna allar línur ({PH1} til viðbótar)"
   },
   "ui/components/panel_feedback/FeedbackButton.ts | feedback": {
     "message": "Ábending"
@@ -17120,11 +17336,17 @@
   "ui/legacy/Infobar.ts | dontShowAgain": {
     "message": "Ekki sýna þetta aftur"
   },
+  "ui/legacy/InspectorDrawerView.ts | closeDrawer": {
+    "message": "Loka skúffu"
+  },
+  "ui/legacy/InspectorDrawerView.ts | moreTools": {
+    "message": "Fleiri verkfæri"
+  },
+  "ui/legacy/InspectorDrawerView.ts | toggleDrawerOrientation": {
+    "message": "Velja/hætta við að velja skúffustefnu"
+  },
   "ui/legacy/InspectorView.ts | areYouSureYouWantToRestartChrome": {
     "message": "Ertu viss um að þú viljir endurræsa Chrome?"
-  },
-  "ui/legacy/InspectorView.ts | closeDrawer": {
-    "message": "Loka skúffu"
   },
   "ui/legacy/InspectorView.ts | devToolsLanguageMissmatch": {
     "message": "{PH1} er nú í boði fyrir DevTools"
@@ -17140,9 +17362,6 @@
   },
   "ui/legacy/InspectorView.ts | mainToolbar": {
     "message": "Aðaltækjastika"
-  },
-  "ui/legacy/InspectorView.ts | moreTools": {
-    "message": "Fleiri verkfæri"
   },
   "ui/legacy/InspectorView.ts | moveToDrawer": {
     "message": "Flytja í skúffu"
@@ -17173,9 +17392,6 @@
   },
   "ui/legacy/InspectorView.ts | setToSpecificLanguage": {
     "message": "Skipta yfir í {PH1} útgáfu forritunartóla"
-  },
-  "ui/legacy/InspectorView.ts | toggleDrawerOrientation": {
-    "message": "Velja/afvelja skúffustefnu"
   },
   "ui/legacy/ListWidget.ts | addString": {
     "message": "Bæta við"
@@ -17791,6 +18007,9 @@
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | sSelected": {
     "message": "Valið: {PH1}"
+  },
+  "ui/legacy/components/perf_ui/GCActionDelegate.ts | garbageCollectionCompleted": {
+    "message": "Söfnun rusls lokið"
   },
   "ui/legacy/components/perf_ui/NetworkPriorities.ts | high": {
     "message": "Mikill"

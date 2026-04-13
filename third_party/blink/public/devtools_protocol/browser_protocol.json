@@ -17096,6 +17096,12 @@
                             "description": "WebRTC packetReordering feature.",
                             "optional": true,
                             "type": "boolean"
+                        },
+                        {
+                            "name": "offline",
+                            "description": "True to emulate internet disconnection.",
+                            "optional": true,
+                            "type": "boolean"
                         }
                     ]
                 },
@@ -18268,7 +18274,15 @@
                     "parameters": [
                         {
                             "name": "offline",
-                            "description": "True to emulate internet disconnection.",
+                            "description": "True to emulate internet disconnection. Deprecated, use the offline property in matchedNetworkConditions\nor emulateOfflineServiceWorker instead.",
+                            "deprecated": true,
+                            "optional": true,
+                            "type": "boolean"
+                        },
+                        {
+                            "name": "emulateOfflineServiceWorker",
+                            "description": "True to emulate offline service worker.",
+                            "optional": true,
                             "type": "boolean"
                         },
                         {

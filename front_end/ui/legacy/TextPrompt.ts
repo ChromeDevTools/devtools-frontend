@@ -251,7 +251,7 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper<EventTypes> i
   private proxyElementDisplay: string;
   private autocompletionTimeout: number;
   #title: string;
-  private queryRange: TextUtils.TextRange.TextRange|null;
+  protected queryRange: TextUtils.TextRange.TextRange|null;
   private previousText: string;
   private currentSuggestion: Suggestion|null;
   private completionRequestId: number;

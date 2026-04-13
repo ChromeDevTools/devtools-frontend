@@ -179,12 +179,14 @@ describe('Drawer', () => {
     // 1) Show the drawer and measure initial metrics
     await devToolsPage.pressKey('Escape');
     await devToolsPage.waitFor(DRAWER_SELECTOR);
+    await devToolsPage.renderCoordinatorQueueEmpty();
     const opened = await getHeaderMetrics();
     assert.exists(opened);
 
     // 2) Close the drawer and verify metrics
     await devToolsPage.click(CLOSE_BUTTON_SELECTOR);
     await devToolsPage.waitForNone(DRAWER_SELECTOR);
+    await devToolsPage.renderCoordinatorQueueEmpty();
     const closed = await getHeaderMetrics();
     assert.exists(closed);
 
@@ -194,6 +196,7 @@ describe('Drawer', () => {
     // 3) Re-open the drawer and verify metrics
     await devToolsPage.pressKey('Escape');
     await devToolsPage.waitFor(DRAWER_SELECTOR);
+    await devToolsPage.renderCoordinatorQueueEmpty();
     const reopened = await getHeaderMetrics();
     assert.exists(reopened);
 

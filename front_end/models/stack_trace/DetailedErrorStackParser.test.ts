@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as Protocol from '../../generated/protocol.js';
+
 // eslint-disable-next-line @devtools/es-modules-import
 import * as StackTraceImpl from './stack_trace_impl.js';
 
@@ -189,6 +191,42 @@ describe('DetailedErrorStackParser', () => {
       assert.strictEqual(frames[0].parsedFrameInfo?.promiseIndex, 2);
       assert.strictEqual(frames[0].url, '');
       assert.strictEqual(frames[0].functionName, 'Promise.all');
+    });
+  });
+
+  describe('augmentRawFramesWithScriptIds', () => {
+    it('augments raw frames with script IDs from Protocol.Runtime.StackTrace', () => {
+      const frames: StackTraceImpl.Trie.RawFrame[] = [
+        {
+          url: 'http://www.example.org/script.js',
+          functionName: 'foo',
+          lineNumber: 9,
+          columnNumber: 4,
+        },
+        {
+          url: 'http://www.example.org/other.js',
+          functionName: 'bar',
+          lineNumber: 19,
+          columnNumber: 0,
+        },
+      ];
+
+      const protocolStackTrace: Protocol.Runtime.StackTrace = {
+        callFrames: [
+          {
+            functionName: 'foo',
+            scriptId: '123' as Protocol.Runtime.ScriptId,
+            url: 'http://www.example.org/script.js',
+            lineNumber: 9,
+            columnNumber: 4,
+          },
+        ],
+      };
+
+      StackTraceImpl.DetailedErrorStackParser.augmentRawFramesWithScriptIds(frames, protocolStackTrace);
+
+      assert.strictEqual(frames[0].scriptId, '123');
+      assert.isUndefined(frames[1].scriptId);
     });
   });
 });

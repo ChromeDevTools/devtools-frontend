@@ -4,6 +4,7 @@
 
 import * as Common from '../../core/common/common.js';
 import type * as Platform from '../../core/platform/platform.js';
+import type * as Protocol from '../../generated/protocol.js';
 
 import type {RawFrame} from './Trie.js';
 
@@ -139,4 +140,22 @@ export function parseRawFramesFromErrorStack(stack: string): RawFrame[] {
     });
   }
   return rawFrames;
+}
+
+/**
+ * Error#stack output only contains script URLs. In some cases we are able to
+ * retrieve additional exception details from V8 that we can use to augment
+ * the parsed Error#stack with script IDs.
+ */
+export function augmentRawFramesWithScriptIds(
+    rawFrames: RawFrame[], protocolStackTrace: Protocol.Runtime.StackTrace): void {
+  for (const rawFrame of rawFrames) {
+    const protocolFrame = protocolStackTrace.callFrames.find(
+        frame => rawFrame.url === frame.url && rawFrame.lineNumber === frame.lineNumber &&
+            rawFrame.columnNumber === frame.columnNumber);
+    if (protocolFrame) {
+      // @ts-expect-error scriptId is a readonly property.
+      rawFrame.scriptId = protocolFrame.scriptId;
+    }
+  }
 }

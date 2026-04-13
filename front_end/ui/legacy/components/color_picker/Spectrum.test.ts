@@ -73,6 +73,30 @@ describeWithEnvironment('ColorPicker aka Spectrum', () => {
     textInputs.forEach(decrement);
     assert.strictEqual(spectrum.color.asString(), 'rgb(127 253 0 / 29%)');
   });
+
+  it('updates hue correctly for near-grayscale colors', () => {
+    const spectrum = new ColorPicker.Spectrum.Spectrum();
+    const colorElement = spectrum.contentElement.querySelector('.spectrum-color') as HTMLElement;
+    assert.exists(colorElement);
+
+    // Scenario 1: Input #3c3d3d only
+    spectrum.setColor(Common.Color.parse('#3c3d3d') as Common.Color.Color);
+    // Hue should be 0.5 (Cyan). getColorFromHsva returns rgb(0, 255, 255) for h=0.5, s=1, v=1.
+    assert.strictEqual(colorElement.style.backgroundColor, 'rgb(0, 255, 255)');
+
+    // Scenario 2: Input #3d3d3d only
+    spectrum.setColor(Common.Color.parse('#3d3d3d') as Common.Color.Color);
+    // #3d3d3d should not be powerless, so it updates to its own calculated hue (0).
+    // Hue 0 corresponds to Red.
+    assert.strictEqual(colorElement.style.backgroundColor, 'rgb(255, 0, 0)');
+
+    // Scenario 3: First #3c3d3d and then #3d3d3d
+    spectrum.setColor(Common.Color.parse('#3c3d3d') as Common.Color.Color);
+    assert.strictEqual(colorElement.style.backgroundColor, 'rgb(0, 255, 255)');
+    spectrum.setColor(Common.Color.parse('#3d3d3d') as Common.Color.Color);
+    // Since it is not powerless, it should update and be Red.
+    assert.strictEqual(colorElement.style.backgroundColor, 'rgb(255, 0, 0)');
+  });
 });
 
 describeWithMockConnection('PaletteGenerator', () => {

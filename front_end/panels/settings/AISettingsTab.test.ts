@@ -320,4 +320,50 @@ describeWithEnvironment('AISettingsTab', () => {
     assert.exists(aiAssistanceParams);
     assert.strictEqual(aiAssistanceParams.settingDescription, 'Get help with understanding CSS styles');
   });
+
+  it('marks the V2 opt-in dialog as seen when turning on AI assistance in V2', async () => {
+    updateHostConfig({
+      devToolsAiAssistanceV2: {
+        enabled: true,
+      },
+    });
+    const aiAssistanceEnabledSetting = Common.Settings.moduleSetting('ai-assistance-enabled');
+    aiAssistanceEnabledSetting.set(false);
+    const v2OptInSeenSetting = Common.Settings.moduleSetting('ai-assistance-v2-opt-in-change-dialog-seen');
+    v2OptInSeenSetting.set(false);
+
+    const {view} = await setupWidget();
+
+    const settingToParams = Array.from(view.input.settingToParams.entries());
+    const aiAssistanceEntry = settingToParams.find(entry => entry[1].settingName === 'AI assistance');
+    assert.exists(aiAssistanceEntry);
+
+    view.input.toggleSetting(aiAssistanceEntry[0], new Switch.Switch.SwitchChangeEvent(true));
+
+    assert.isTrue(aiAssistanceEnabledSetting.get());
+    assert.isTrue(v2OptInSeenSetting.get());
+  });
+
+  it('does not mark the V2 opt-in dialog as seen when turning on AI assistance in V1', async () => {
+    updateHostConfig({
+      devToolsAiAssistanceV2: {
+        enabled: false,
+      },
+    });
+    const aiAssistanceEnabledSetting = Common.Settings.moduleSetting('ai-assistance-enabled');
+    aiAssistanceEnabledSetting.set(false);
+    const v2OptInSeenSetting = Common.Settings.moduleSetting('ai-assistance-v2-opt-in-change-dialog-seen');
+    v2OptInSeenSetting.set(false);
+
+    const {view} = await setupWidget();
+
+    const settingToParams = Array.from(view.input.settingToParams.entries());
+    const aiAssistanceEntry = settingToParams.find(entry => entry[1].settingName === 'AI assistance');
+    assert.exists(aiAssistanceEntry);
+
+    view.input.toggleSetting(aiAssistanceEntry[0], new Switch.Switch.SwitchChangeEvent(true));
+
+    assert.isTrue(aiAssistanceEnabledSetting.get());
+    assert.isFalse(v2OptInSeenSetting.get());
+  });
 });

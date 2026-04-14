@@ -1041,6 +1041,35 @@ describeWithEnvironment('JSONEditor', () => {
 
          assert.deepEqual(response.parameters, expectedParameters);
        });
+
+    it('should format unknown parameters as parsed JSON if they contain JSON, or verbatim otherwise', async () => {
+      const jsonEditor = renderJSONEditor();
+      jsonEditor.command = 'Test.test';
+      jsonEditor.parameters = [
+        {
+          name: 'anyOfProp1',
+          type: ProtocolMonitor.JSONEditor.ParameterType.UNKNOWN,
+          description: 'test',
+          optional: false,
+          value: '{"a": 1}',
+        },
+        {
+          name: 'anyOfProp2',
+          type: ProtocolMonitor.JSONEditor.ParameterType.UNKNOWN,
+          description: 'test',
+          optional: false,
+          value: 'raw string',
+        },
+      ];
+      await jsonEditor.updateComplete;
+
+      const expectedParameters = {
+        anyOfProp1: {a: 1},
+        anyOfProp2: 'raw string',
+      };
+
+      assert.deepEqual(jsonEditor.getParameters(), expectedParameters);
+    });
   });
 
   describe('Verify the type of the entered value', () => {
@@ -1309,6 +1338,38 @@ describeWithEnvironment('JSONEditor', () => {
     const numberOfInputs = jsonEditor.contentElement.querySelectorAll('devtools-suggestion-input').length - 1;
 
     assert.deepEqual(numberOfInputs, 4);
+  });
+
+  describe('UI Visibility Properties', () => {
+    it('hides the target selector when displayTargetSelector is false', async () => {
+      const jsonEditor = renderJSONEditor();
+      jsonEditor.displayTargetSelector = false;
+      jsonEditor.performUpdate();
+      await jsonEditor.updateComplete;
+
+      const targetSelector = jsonEditor.contentElement.querySelector('.target-selector');
+      assert.isNull(targetSelector);
+    });
+
+    it('hides the command input when displayCommandInput is false', async () => {
+      const jsonEditor = renderJSONEditor();
+      jsonEditor.displayCommandInput = false;
+      jsonEditor.performUpdate();
+      await jsonEditor.updateComplete;
+
+      const commandInput = jsonEditor.contentElement.querySelector('.command');
+      assert.isNull(commandInput);
+    });
+
+    it('sets the command via commandToDisplay', async () => {
+      const jsonEditor = renderJSONEditor();
+      jsonEditor.commandToDisplay = 'Test.testCommand';
+      await jsonEditor.updateComplete;
+
+      assert.strictEqual(jsonEditor.command, 'Test.testCommand');
+      const input = jsonEditor.contentElement.querySelector('devtools-suggestion-input');
+      assert.strictEqual((input as SuggestionInput.SuggestionInput.SuggestionInput).value, 'Test.testCommand');
+    });
   });
 
   describe('Command suggestion filter', () => {

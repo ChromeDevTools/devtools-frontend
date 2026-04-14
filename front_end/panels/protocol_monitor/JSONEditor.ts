@@ -64,6 +64,7 @@ export const enum ParameterType {
   BOOLEAN = 'boolean',
   ARRAY = 'array',
   OBJECT = 'object',
+  UNKNOWN = 'unknown',
 }
 
 interface BaseParameter {
@@ -100,7 +101,13 @@ interface ObjectParameter extends BaseParameter {
   value?: Parameter[];
 }
 
-export type Parameter = ArrayParameter|NumberParameter|StringParameter|BooleanParameter|ObjectParameter;
+interface UnknownParameter extends BaseParameter {
+  type: ParameterType.UNKNOWN;
+  value?: string;
+}
+
+export type Parameter =
+    ArrayParameter|NumberParameter|StringParameter|BooleanParameter|ObjectParameter|UnknownParameter;
 
 export interface Command {
   command: string;
@@ -128,6 +135,8 @@ interface ViewInput {
   onParameterKeydown: (event: KeyboardEvent) => void;
   onParameterKeyBlur: (event: Event) => void;
   onParameterValueBlur: (event: Event) => void;
+  displayTargetSelector?: boolean;
+  displayCommandInput?: boolean;
 }
 
 export type View = (input: ViewInput, output: object, target: HTMLElement) => void;
@@ -149,6 +158,7 @@ const defaultValueByType = new Map<string, string|number|boolean>([
   ['string', ''],
   ['number', 0],
   ['boolean', false],
+  ['unknown', ''],
 ]);
 
 const DUMMY_DATA = 'dummy';
@@ -176,6 +186,8 @@ export class JSONEditor extends Common.ObjectWrapper.eventMixin<EventTypes, type
   #targetId?: string;
   #hintPopoverHelper?: UI.PopoverHelper.PopoverHelper;
   #view: View;
+  displayTargetSelector = true;
+  displayCommandInput = true;
 
   constructor(element: HTMLElement, view = DEFAULT_VIEW) {
     super(element, {useShadowDom: true});
@@ -238,6 +250,10 @@ export class JSONEditor extends Common.ObjectWrapper.eventMixin<EventTypes, type
       this.#command = command;
       this.requestUpdate();
     }
+  }
+
+  set commandToDisplay(command: string) {
+    this.displayCommand(command, {});
   }
 
   get targetId(): string|undefined {
@@ -311,6 +327,13 @@ export class JSONEditor extends Common.ObjectWrapper.eventMixin<EventTypes, type
             nestedArrayParameters.push(formatParameterValue(subParameter));
           }
           return nestedArrayParameters.length === 0 ? [] : nestedArrayParameters;
+        }
+        case ParameterType.UNKNOWN: {
+          try {
+            return JSON.parse(parameter.value as string);
+          } catch {
+            return parameter.value;
+          }
         }
         default: {
           return parameter.value;
@@ -967,6 +990,8 @@ export class JSONEditor extends Common.ObjectWrapper.eventMixin<EventTypes, type
       computeDropdownValues: (parameter: Parameter) => {
         return this.#computeDropdownValues(parameter);
       },
+      displayTargetSelector: this.displayTargetSelector,
+      displayCommandInput: this.displayCommandInput,
     };
     const viewOutput = {};
     this.#view(viewInput, viewOutput, this.contentElement);
@@ -1229,7 +1254,8 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
   render(html`
     <div class="wrapper" @keydown=${input.onKeydown} jslog=${VisualLogging.pane('command-editor').track({resize: true})}>
       <div class="editor-wrapper">
-        ${renderTargetSelectorRow(input)}
+        ${input.displayTargetSelector !== false ? renderTargetSelectorRow(input) : nothing}
+        ${input.displayCommandInput !== false ? html`
         <div class="row attribute padded">
           <div class="command">command<span class="separator">:</span></div>
           <devtools-suggestion-input
@@ -1241,7 +1267,7 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
             @blur=${input.onCommandInputBlur}
             class=${classMap({'json-input': true})}
           ></devtools-suggestion-input>
-        </div>
+        </div>` : nothing}
         ${input.parameters.length ? html`
         <div class="row attribute padded">
           <div>parameters<span class="separator">:</span></div>

@@ -553,6 +553,7 @@ code
       const context = PerformanceAgent.PerformanceTraceContext.fromInsight(parsedTrace, lcpBreakdown);
 
       const responses = await Array.fromAsync(agent.run('test', {selected: context}));
+      deleteAllWidgetData(responses);
       const titleResponse = responses.find(response => response.type === AiAgent.ResponseType.TITLE);
       assert.exists(titleResponse);
       assert.strictEqual(titleResponse.title, 'Investigating main thread activity');
@@ -574,17 +575,59 @@ code
       assert.lengthOf(action.widgets, 2);
       assert.strictEqual(action.widgets[0].name, 'TIMELINE_RANGE_SUMMARY');
       assert.strictEqual(action.widgets[1].name, 'BOTTOM_UP_TREE');
-      // @ts-expect-error
-      assert.deepEqual(action.widgets[0].data.bounds, bounds);
+      assert.strictEqual(action.code, 'getMainThreadTrackSummary({min: 197695826524, max: 197698633660})');
+      assert.strictEqual(action.output, expectedOutput);
+      assert.isFalse(action.canceled);
+    });
 
-      delete action.widgets;
+    it('can call getMainThreadTrackSummaryByLabel', async function() {
+      const metricsSpy = sinon.spy(Host.userMetrics, 'performanceAIMainThreadActivityResponseSize');
 
-      assert.deepEqual(action, {
-        type: 'action' as AiAgent.ActionResponse['type'],
-        output: expectedOutput,
-        code: 'getMainThreadTrackSummary({min: 197695826524, max: 197698633660})',
-        canceled: false,
+      const parsedTrace = await TraceLoader.traceEngine(this, 'lcp-discovery-delay.json.gz');
+      assert.isOk(parsedTrace.insights);
+      const [firstNav] = parsedTrace.data.Meta.mainFrameNavigations;
+      const lcpBreakdown = getInsightOrError('LCPBreakdown', parsedTrace.insights, firstNav);
+
+      const agent = createAgentForConversation({
+        aidaClient: mockAidaClient([
+          [{
+            explanation: '',
+            functionCalls: [{name: 'getMainThreadTrackSummaryByLabel', args: {label: 'LCPBreakdown'}}]
+          }],
+          [{explanation: 'done'}]
+        ])
       });
+      const context = PerformanceAgent.PerformanceTraceContext.fromInsight(parsedTrace, lcpBreakdown);
+
+      const responses = await Array.fromAsync(agent.run('test', {selected: context}));
+      deleteAllWidgetData(responses);
+
+      const titleResponse = responses.find(response => response.type === AiAgent.ResponseType.TITLE);
+      assert.exists(titleResponse);
+      assert.strictEqual(titleResponse.title, 'Investigating main thread activity');
+
+      const action = responses.find(response => response.type === AiAgent.ResponseType.ACTION);
+      assert.exists(action);
+
+      const formatter = new PerformanceTraceFormatter.PerformanceTraceFormatter(context.getItem());
+      const bounds = Trace.Insights.Common.insightBounds(lcpBreakdown, context.getItem().primaryInsightSet!.bounds);
+      const summary = await formatter.formatMainThreadTrackSummary(bounds);
+      assert.isOk(summary);
+
+      const expectedBytesSize = Platform.StringUtilities.countWtf8Bytes(summary);
+      sinon.assert.calledWith(metricsSpy, expectedBytesSize);
+
+      const expectedOutput = JSON.stringify({summary});
+
+      assert.exists(action);
+      assert.exists(action.widgets);
+      assert.lengthOf(action.widgets, 2);
+      assert.strictEqual(action.widgets[0].name, 'TIMELINE_RANGE_SUMMARY');
+      assert.strictEqual(action.widgets[1].name, 'BOTTOM_UP_TREE');
+      assert.strictEqual(action.code, 'getMainThreadTrackSummaryByLabel(\'LCPBreakdown\')');
+      assert.strictEqual(action.output, expectedOutput);
+      assert.isFalse(action.canceled);
+      assert.strictEqual(action.type, 'action');
     });
 
     it('will not send facts from a previous insight if the context changes', async function() {

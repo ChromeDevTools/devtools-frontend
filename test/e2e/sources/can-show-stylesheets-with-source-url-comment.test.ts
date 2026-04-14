@@ -21,7 +21,7 @@ describe('The Sources Tab', () => {
 
     await waitForSourceFiles(
         SourceFileEvents.ADDED_TO_SOURCE_TREE, files => files.some(f => f.endsWith('addedInlineStylesheet.css')),
-        async () => inspectedPage.evaluate('addInlineStyleSheet()'), devToolsPage);
+        async () => await inspectedPage.evaluate('addInlineStyleSheet()'), devToolsPage);
 
     await openFileWithQuickOpen('addedInlineStylesheet.css', 0, devToolsPage);
 
@@ -37,7 +37,7 @@ describe('The Sources Tab', () => {
     await waitForSourceFiles(
         SourceFileEvents.ADDED_TO_SOURCE_TREE,
         files => files.some(f => f.endsWith('addedInlineStylesheetDeprecated.css')),
-        async () => inspectedPage.evaluate('addInlineStyleSheetDeprecated()'), devToolsPage);
+        async () => await inspectedPage.evaluate('addInlineStyleSheetDeprecated()'), devToolsPage);
 
     await openFileWithQuickOpen('addedInlineStylesheetDeprecated.css', 0, devToolsPage);
 
@@ -52,7 +52,7 @@ describe('The Sources Tab', () => {
 
     await waitForSourceFiles(
         SourceFileEvents.ADDED_TO_SOURCE_TREE, files => files.some(f => f.endsWith('nonRelativeInlineStylesheet.css')),
-        async () => inspectedPage.evaluate('addInlineStyleSheetNonRelative()'), devToolsPage);
+        async () => await inspectedPage.evaluate('addInlineStyleSheetNonRelative()'), devToolsPage);
 
     await openFileWithQuickOpen('nonRelativeInlineStylesheet.css', 0, devToolsPage);
 
@@ -68,7 +68,7 @@ describe('The Sources Tab', () => {
     await waitForSourceFiles(
         SourceFileEvents.ADDED_TO_SOURCE_TREE,
         files => files.some(f => f.endsWith('addedInlineStylesheetMultiple.css')),
-        async () => inspectedPage.evaluate('addInlineStyleSheetMultiple()'), devToolsPage);
+        async () => await inspectedPage.evaluate('addInlineStyleSheetMultiple()'), devToolsPage);
 
     await openFileWithQuickOpen('addedInlineStylesheetMultiple.css', 0, devToolsPage);
 

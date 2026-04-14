@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-imperative-dom-api */
 
+// @ts-expect-error tsc 6 can't find type declarations for this file.
 import '../../../Images/Images.js';
 
 import iconStyles from './icon.css.js';

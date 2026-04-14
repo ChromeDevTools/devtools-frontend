@@ -10,6 +10,8 @@ import type {CreditsItem, CreditsItemData} from '../src/CreditsItem.js';
 
 import {nonNull} from './TestUtils.js';
 
+const {expect} = chai;
+
 async function createItem(text: TemplateResult): Promise<CreditsItem> {
   const container = document.createElement('div');
   render(text, container);

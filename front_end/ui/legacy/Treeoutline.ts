@@ -1932,7 +1932,7 @@ export namespace TreeViewElement {
   }
 }
 
-export const ifExpanded = Lit.Directive.directive(class extends Lit.Directive.Directive {
+class IfExpandedDirective extends Lit.Directive.Directive {
   #partInfo: {type: Lit.Directive.PartType, startNode: Node};
   constructor(partInfo: Lit.Directive.PartInfo) {
     if (partInfo.type !== Lit.Directive.PartType.CHILD) {
@@ -1969,7 +1969,8 @@ export const ifExpanded = Lit.Directive.directive(class extends Lit.Directive.Di
     }
     return node.expanded;
   }
-});
+}
+export const ifExpanded = Lit.Directive.directive(IfExpandedDirective);
 
 export class TreeElementWrapper extends HTMLElement {
   #treeElement?: TreeElement;

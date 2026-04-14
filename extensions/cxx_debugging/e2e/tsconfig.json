@@ -7,6 +7,8 @@
     "allowUnreachableCode": false,
     "baseUrl": ".",
     "skipLibCheck": true,
+    "ignoreDeprecations": "6.0",
+    "rootDir": "../../..",
     "paths": {
       "test/*": ["../../../test/*"],
       "puppeteer": ["../../../node_modules/puppeteer/lib/types.d.ts"],

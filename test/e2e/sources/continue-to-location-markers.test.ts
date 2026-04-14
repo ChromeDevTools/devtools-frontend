@@ -94,7 +94,7 @@ async function foo3() {
 }
 </script>`);
 
-       inspectedPage.evaluate('foo3()');
+       void inspectedPage.evaluate('foo3()');
        await Promise.all([
          devToolsPage.waitFor(PAUSE_INDICATOR_SELECTOR),
          executionLineHighlighted(devToolsPage),
@@ -159,7 +159,7 @@ function testFunction() {
 }
 </script>`);
 
-       inspectedPage.evaluate('testFunction()');
+       void inspectedPage.evaluate('testFunction()');
        await Promise.all([
          devToolsPage.waitFor(PAUSE_INDICATOR_SELECTOR),
          executionLineHighlighted(devToolsPage),

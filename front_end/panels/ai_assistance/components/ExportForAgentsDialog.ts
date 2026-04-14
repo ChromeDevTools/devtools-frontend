@@ -10,6 +10,7 @@ import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as Snackbars from '../../../ui/components/snackbars/snackbars.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
+import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import styles from './exportForAgentsDialog.css.js';
 
@@ -85,7 +86,7 @@ export const DEFAULT_VIEW: View = (input, _output, target): void => {
 
   render(html`
     <style>${styles}</style>
-    <div class="export-for-agents-dialog">
+    <div class="export-for-agents-dialog" jslog=${VisualLogging.dialog('ai-export-for-agents')}>
       <header>
         <h1 id="export-for-agents-dialog-title" tabindex="-1">
           ${i18nString(UIStrings.exportForAgents)}

@@ -9,6 +9,7 @@ import * as Input from '../../../ui/components/input/input.js';
 import type {MarkdownLitRenderer} from '../../../ui/components/markdown_view/MarkdownView.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
+import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import chatMessageStyles from './chatMessage.css.js';
 import {type ModelChatMessage, renderStep, type Step, titleForStep} from './ChatMessage.js';
@@ -119,14 +120,14 @@ function renderInlineWalkthrough(input: ViewInput, stepsOutput: Lit.LitTemplate,
 
   // clang-format off
   return html`
-    <div class="inline-wrapper" ?data-open=${input.isExpanded}>
+    <div class="inline-wrapper" ?data-open=${input.isExpanded} jslog=${VisualLogging.section('walkthrough-container')}>
       <span class="inline-icon">
         ${input.isLoading ?
             html`<devtools-spinner aria-label=${lockedString(UIStrings.inProgress)}></devtools-spinner>` :
             html`<devtools-icon name=${icon}></devtools-icon>`
         }
       </span>
-      <details class="walkthrough-inline" ?open=${input.isExpanded} @toggle=${onToggle}>
+      <details class="walkthrough-inline" ?open=${input.isExpanded} @toggle=${onToggle} jslog=${VisualLogging.expand('walkthrough').track({click: true})}>
         <summary ?data-has-widgets=${!input.isLoading && hasWidgets}>
           <span class="walkthrough-inline-title">
             ${input.isExpanded ?
@@ -151,7 +152,7 @@ function renderSidebarWalkthrough(input: ViewInput, stepsOutput: Lit.LitTemplate
 
   // clang-format off
   return html`
-    <div class="walkthrough-view">
+    <div class="walkthrough-view" jslog=${VisualLogging.section('walkthrough-container')}>
       <div class="walkthrough-header">
          <h2 class="walkthrough-title">${i18nString(UIStrings.title)}</h2>
          <devtools-button

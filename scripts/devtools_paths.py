@@ -7,6 +7,7 @@ Helper to find the path to the correct third_party directory
 
 from os import path
 import sys
+import platform
 
 
 # Find the root path of the checkout.
@@ -74,3 +75,34 @@ def rollup_path():
 
 def package_json_path():
     return path.join(devtools_root_path(), 'package.json')
+
+
+def downloaded_chrome_binary_path():
+    machine = platform.machine().lower()
+    arch = 'arm64' if machine in ('arm64', 'aarch64') else 'x64'
+
+    paths = {
+        'linux':
+        path.join('chrome-linux', 'chrome-linux64', 'chrome'),
+        'darwin':
+        path.join(
+            f'chrome-mac-{arch}',
+            f'chrome-mac-{arch}',
+            'Google Chrome for Testing.app',
+            'Contents',
+            'MacOS',
+            'Google Chrome for Testing',
+        ),
+        'win32':
+        path.join('chrome-win', 'chrome-win64', 'chrome.exe'),
+    }
+
+    current_os = sys.platform
+    if current_os.startswith('linux'):
+        current_os = 'linux'
+
+    if current_os not in paths:
+        raise NotImplementedError(f"OS {current_os} is not supported.")
+
+    return path.join(devtools_root_path(), 'third_party', 'chrome',
+                     paths[current_os])

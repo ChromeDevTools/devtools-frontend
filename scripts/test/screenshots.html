@@ -83,8 +83,22 @@
     }
   }
   customElements.define('screenshot-view', ScreenshotView);
+
+  function getScreenShots() {
+    const params = new URLSearchParams(window.location.search);
+    const expected = params.get('old');
+    const actual = params.get('new');
+    if (expected && actual) {
+      return [{
+        screenshotPath: params.get('path'),
+        expected_image: {filePath: expected},
+        actual_image: {filePath: actual},
+      }];
+    }
+    return window.SCREENSHOT_ERRORS;
+  }
   
-  for (const {screenshotPath, expected_image, actual_image, image_diff} of window.SCREENSHOT_ERRORS) {
+  for (const {screenshotPath, expected_image, actual_image, image_diff} of getScreenShots()) {
     const details = document.createElement('screenshot-view');
     const append = (tag, slot) => {
       const node = document.createElement(tag);
@@ -97,7 +111,9 @@
     append('span', 'summary').textContent = screenshotPath;
     append('img', 'golden').src = expected_image.filePath;
     append('img', 'generated').src = actual_image.filePath;
-    append('img', 'diff').src = image_diff.filePath;
+    if (image_diff) {
+      append('img', 'diff').src = image_diff.filePath;
+    }
   }
   document.body.querySelector('screenshot-view')?.expand();
 </script>

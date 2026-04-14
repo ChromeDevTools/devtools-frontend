@@ -300,7 +300,7 @@ export class HeapSnapshotSortableDataGrid extends Common.ObjectWrapper
       let field1 = nodeA[sortFields.fieldName1];
       // @ts-expect-error
       let field2 = nodeB[sortFields.fieldName1];
-      let result: number|(0 | 1 | -1) = field1 < field2 ? -1 : (field1 > field2 ? 1 : 0);
+      let result: number = field1 < field2 ? -1 : (field1 > field2 ? 1 : 0);
       if (!sortFields.ascending1) {
         result = -result;
       }

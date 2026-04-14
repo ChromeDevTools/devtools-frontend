@@ -10,6 +10,7 @@ import("./visibility.gni")
 devtools_ui_module("lit") {
   sources = [
     "i18n-template.ts",
+    "render.ts",
     "strip-whitespace.ts",
   ]
 
@@ -48,8 +49,12 @@ devtools_ui_module("unittests") {
 
   sources = [
     "i18n-template.test.ts",
+    "render.test.ts",
     "strip-whitespace.test.ts",
   ]
 
-  deps = [ ":bundle" ]
+  deps = [
+    ":bundle",
+    "../../testing",
+  ]
 }

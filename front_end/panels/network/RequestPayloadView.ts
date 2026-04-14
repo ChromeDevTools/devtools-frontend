@@ -289,8 +289,13 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
         </ul>
       </li>
      </ul>
-     `}></devtools-tree>
-   `, target);
+     `}></devtools-tree>`, target, {
+      container: {
+        classes: ['request-payload-view'],
+        attributes: {
+          jslog: `${VisualLogging.pane('payload').track({resize: true})}`,
+        },
+      }});
   // clang-format on
 };
 
@@ -305,7 +310,7 @@ export class RequestPayloadView extends UI.Widget.VBox {
   #viewQueryParamSource = false;
 
   constructor(target?: HTMLElement, view = DEFAULT_VIEW) {
-    super({jslog: `${VisualLogging.pane('payload').track({resize: true})}`, classes: ['request-payload-view']});
+    super();
     this.#view = view;
   }
 

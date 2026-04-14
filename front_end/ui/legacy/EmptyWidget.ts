@@ -49,7 +49,7 @@ const DEFAULT_VIEW: View = (input, output, target) => {
         ${input.link ? html`<devtools-link href=${input.link} jslogContext=${'learn-more'}>${i18nString(UIStrings.learnMore)}</devtools-link>` : ''}
       </div>
       ${input.extraElements}
-    </div>`, target);
+    </div>`, target, {container: {classes: ['empty-view-scroller']}});
   // clang-format on
 };
 
@@ -66,7 +66,7 @@ export class EmptyWidget extends VBox {
     if (!element && headerOrElement instanceof HTMLElement) {
       element = headerOrElement;
     }
-    super(element, {classes: ['empty-view-scroller']});
+    super(element);
     this.#header = header;
     this.#text = text;
     this.#link = undefined;

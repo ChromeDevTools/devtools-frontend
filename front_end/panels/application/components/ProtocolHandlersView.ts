@@ -150,7 +150,7 @@ const DEFAULT_VIEW: View = (input, _output, target) => {
     </div>
     ${renderProtocolTest(input.protocolHandler, input.queryInputState, input.protocolSelectHandler,
                          input.queryInputChangeHandler, input.testProtocolClickHandler)}
-  `, target);
+  `, target, {container: {classes: ['vbox']}});
   // clang-format on
 };
 
@@ -172,7 +172,7 @@ export class ProtocolHandlersView extends UI.Widget.Widget {
   #view: View;
 
   constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
-    super(element, {useShadowDom: false, classes: ['vbox']});
+    super(element, {useShadowDom: false});
     this.#view = view;
   }
 

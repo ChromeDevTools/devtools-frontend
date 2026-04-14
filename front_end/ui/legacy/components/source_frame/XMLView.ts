@@ -191,19 +191,24 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
   }
 
   // clang-format off
-  render(
-      html`
+  render(html`
     <style>${xmlViewStyles}</style>
     <style>${xmlTreeStyles}</style>
     <devtools-tree
       class="shadow-xml-view source-code"
       .template=${html`
         <ul role="tree">
-          ${input.xml.children().map(node => layOutNode(node))}
+            ${input.xml.children().map(node => layOutNode(node))}
         </ul>`}
-      ></devtools-tree>`,
-      // clang-format on
-      target);
+      ></devtools-tree>`, target, {
+        container: {
+          classes: ['shadow-xml-view', 'source-code'],
+          attributes: {
+            jslog: `${VisualLogging.pane('xml-view')}`,
+          },
+        },
+      });
+  // clang-format on
 };
 
 function* children(xmlNode: Node|ParentNode|undefined): Generator<Node> {
@@ -272,7 +277,7 @@ export class XMLView extends UI.Widget.Widget implements UI.SearchableView.Searc
   #nextJump: SearchResult|undefined;
 
   constructor(target?: HTMLElement, view: View = DEFAULT_VIEW) {
-    super(target, {jslog: `${VisualLogging.pane('xml-view')}`, classes: ['shadow-xml-view', 'source-code']});
+    super(target);
     this.#view = view;
   }
 

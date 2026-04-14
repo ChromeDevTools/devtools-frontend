@@ -291,7 +291,9 @@ interface AffectedCountViewInput {
 }
 type AffectedCountView = (input: AffectedCountViewInput, output: object, target: HTMLElement) => void;
 export const AFFECTED_COUNT_DEFAULT_VIEW: AffectedCountView = (input, output, target) => {
-  render(html`${i18nString(UIStrings.dAffected, {PH1: input.count})}`, target);
+  render(
+      html`${i18nString(UIStrings.dAffected, {PH1: input.count})}`, target,
+      {container: {classes: ['blocked-url-count']}});
 };
 
 function matchesUrl(conditions: SDK.NetworkManager.RequestCondition, url: string): boolean {
@@ -304,7 +306,7 @@ export class AffectedCountWidget extends UI.Widget.Widget {
   #lookUpRequestCount?: (condition: SDK.NetworkManager.RequestCondition) => number;
 
   constructor(target?: HTMLElement, view = AFFECTED_COUNT_DEFAULT_VIEW) {
-    super(target, {classes: ['blocked-url-count']});
+    super(target);
     this.#view = view;
   }
 

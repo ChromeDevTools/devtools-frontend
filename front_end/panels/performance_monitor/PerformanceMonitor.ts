@@ -626,8 +626,9 @@ interface ControlPaneInput {
 type ControlPaneView = (input: ControlPaneInput, output: object, target: HTMLElement) => void;
 
 const CONTROL_PANE_DEFAULT_VIEW: ControlPaneView = (input, _output, target) => {
-  render(
-      input.chartsInfo.map(chartInfo => {
+  // clang-format off
+  render(html`
+    ${input.chartsInfo.map(chartInfo => {
         const chartName = chartInfo.metrics[0].name;
         const active = input.enabledCharts.has(chartName);
         const value = input.metricValues.get(chartName) || 0;
@@ -637,8 +638,9 @@ const CONTROL_PANE_DEFAULT_VIEW: ControlPaneView = (input, _output, target) => {
             value,
             (e: Event) => input.onCheckboxChange(chartName, e),
         );
-      }),
-      target);
+      })}
+    `, target, {container: {classes: ['perfmon-control-pane']}});
+  // clang-format on
 };
 
 export class ControlPane extends UI.Widget.VBox {
@@ -651,7 +653,7 @@ export class ControlPane extends UI.Widget.VBox {
   readonly #view: ControlPaneView;
 
   constructor(element: HTMLElement, view = CONTROL_PANE_DEFAULT_VIEW) {
-    super(element, {useShadowDom: false, classes: ['perfmon-control-pane']});
+    super(element, {useShadowDom: false});
     this.#view = view;
 
     this.#enabledChartsSetting = Common.Settings.Settings.instance().createSetting(

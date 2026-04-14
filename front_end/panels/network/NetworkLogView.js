@@ -1566,9 +1566,29 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin(UI.Widget.VB
             }
             const blockingMenu = contextMenu.debugSection().appendSubMenuItem(i18nString(UIStrings.blockRequests), /* disabled=*/ true);
             const throttlingMenu = contextMenu.debugSection().appendSubMenuItem(i18nString(UIStrings.throttleRequests), /* disabled=*/ true);
-            const urlWithoutScheme = request.parsedURL.urlWithoutScheme();
-            const urlPattern = urlWithoutScheme &&
-                SDK.NetworkManager.RequestURLPattern.create(`*://${urlWithoutScheme}`);
+            const parsed = request.parsedURL;
+            let urlPatternString = '';
+            if (parsed.isValid) {
+                // We cannot escape parsed.urlWithoutScheme() directly. If we escaped the first '?'
+                // URLPattern would treat the entire string as the pathname and fail to match the query string.
+                // Thus, we must escape the components individually and reconstruct the pattern string.
+                urlPatternString = '*://' + Platform.StringUtilities.escapeForURLPattern(parsed.host);
+                if (parsed.port) {
+                    urlPatternString += ':' + Platform.StringUtilities.escapeForURLPattern(parsed.port);
+                }
+                urlPatternString += Platform.StringUtilities.escapeForURLPattern(parsed.path);
+                if (parsed.queryParams) {
+                    urlPatternString += '?' + Platform.StringUtilities.escapeForURLPattern(parsed.queryParams);
+                }
+                if (parsed.fragment) {
+                    urlPatternString += '#' + Platform.StringUtilities.escapeForURLPattern(parsed.fragment);
+                }
+            }
+            else if (parsed.urlWithoutScheme()) {
+                urlPatternString = '*://' + Platform.StringUtilities.escapeForURLPattern(parsed.urlWithoutScheme());
+            }
+            const urlPattern = urlPatternString &&
+                SDK.NetworkManager.RequestURLPattern.create(urlPatternString);
             if (urlPattern) {
                 throttlingMenu.setEnabled(true);
                 blockingMenu.setEnabled(true);
@@ -1584,9 +1604,18 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin(UI.Widget.VB
                     i18nString(UIStrings.throttleRequestUrl), () => isThrottling ? removeRequestCondition(urlPattern) :
                     addRequestCondition(urlPattern, SDK.NetworkManager.Slow3GConditions), { jslogContext: 'throttle-request-url' });
             }
-            const domain = request.parsedURL.domain();
-            const domainPattern = domain &&
-                SDK.NetworkManager.RequestURLPattern.create(`*://${domain}`);
+            let domainPatternString = '';
+            if (parsed.isValid) {
+                domainPatternString = '*://' + Platform.StringUtilities.escapeForURLPattern(parsed.host);
+                if (parsed.port) {
+                    domainPatternString += ':' + Platform.StringUtilities.escapeForURLPattern(parsed.port);
+                }
+            }
+            else if (parsed.domain()) {
+                domainPatternString = '*://' + Platform.StringUtilities.escapeForURLPattern(parsed.domain());
+            }
+            const domainPattern = domainPatternString &&
+                SDK.NetworkManager.RequestURLPattern.create(domainPatternString);
             if (domainPattern) {
                 throttlingMenu.setEnabled(true);
                 blockingMenu.setEnabled(true);

@@ -555,6 +555,7 @@ __export(StringUtilities_exports, {
   createSearchRegex: () => createSearchRegex,
   escapeCharacters: () => escapeCharacters,
   escapeForRegExp: () => escapeForRegExp,
+  escapeForURLPattern: () => escapeForURLPattern,
   filterRegex: () => filterRegex,
   findIndexesOfSubString: () => findIndexesOfSubString,
   findLineEndingIndexes: () => findLineEndingIndexes,
@@ -794,6 +795,7 @@ var removeURLFragment = (inputStr) => {
   return url.toString();
 };
 var SPECIAL_REGEX_CHARACTERS = "^[]{}()\\.^$*+?|-,";
+var SPECIAL_URL_PATTERN_CHARACTERS = "?+*(){}\\:";
 var regexSpecialCharacters = function() {
   return SPECIAL_REGEX_CHARACTERS;
 };
@@ -918,6 +920,9 @@ var trimEndWithMaxLength = (str, maxLength) => {
 };
 var escapeForRegExp = (str) => {
   return escapeCharacters(str, SPECIAL_REGEX_CHARACTERS);
+};
+var escapeForURLPattern = (text) => {
+  return escapeCharacters(text, SPECIAL_URL_PATTERN_CHARACTERS);
 };
 var naturalOrderComparator = (a, b) => {
   const chunk = /^\d+|^\D+/;

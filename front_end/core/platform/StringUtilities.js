@@ -255,6 +255,7 @@ export const removeURLFragment = (inputStr) => {
     return url.toString();
 };
 const SPECIAL_REGEX_CHARACTERS = '^[]{}()\\.^$*+?|-,';
+const SPECIAL_URL_PATTERN_CHARACTERS = '?+*(){}\\:';
 export const regexSpecialCharacters = function () {
     return SPECIAL_REGEX_CHARACTERS;
 };
@@ -399,6 +400,9 @@ export const trimEndWithMaxLength = (str, maxLength) => {
 };
 export const escapeForRegExp = (str) => {
     return escapeCharacters(str, SPECIAL_REGEX_CHARACTERS);
+};
+export const escapeForURLPattern = (text) => {
+    return escapeCharacters(text, SPECIAL_URL_PATTERN_CHARACTERS);
 };
 export const naturalOrderComparator = (a, b) => {
     const chunk = /^\d+|^\D+/;

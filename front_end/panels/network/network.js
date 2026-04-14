@@ -12060,8 +12060,24 @@ var NetworkLogView = class _NetworkLogView extends Common17.ObjectWrapper.eventM
         /* disabled=*/
         true
       );
-      const urlWithoutScheme = request.parsedURL.urlWithoutScheme();
-      const urlPattern = urlWithoutScheme && SDK16.NetworkManager.RequestURLPattern.create(`*://${urlWithoutScheme}`);
+      const parsed = request.parsedURL;
+      let urlPatternString = "";
+      if (parsed.isValid) {
+        urlPatternString = "*://" + Platform11.StringUtilities.escapeForURLPattern(parsed.host);
+        if (parsed.port) {
+          urlPatternString += ":" + Platform11.StringUtilities.escapeForURLPattern(parsed.port);
+        }
+        urlPatternString += Platform11.StringUtilities.escapeForURLPattern(parsed.path);
+        if (parsed.queryParams) {
+          urlPatternString += "?" + Platform11.StringUtilities.escapeForURLPattern(parsed.queryParams);
+        }
+        if (parsed.fragment) {
+          urlPatternString += "#" + Platform11.StringUtilities.escapeForURLPattern(parsed.fragment);
+        }
+      } else if (parsed.urlWithoutScheme()) {
+        urlPatternString = "*://" + Platform11.StringUtilities.escapeForURLPattern(parsed.urlWithoutScheme());
+      }
+      const urlPattern = urlPatternString && SDK16.NetworkManager.RequestURLPattern.create(urlPatternString);
       if (urlPattern) {
         throttlingMenu.setEnabled(true);
         blockingMenu.setEnabled(true);
@@ -12072,8 +12088,16 @@ var NetworkLogView = class _NetworkLogView extends Common17.ObjectWrapper.eventM
         blockingMenu.debugSection().appendItem(isBlocking ? i18nString22(UIStrings22.unblockS, { PH1: croppedURL }) : i18nString22(UIStrings22.blockRequestUrl), () => isBlocking ? removeRequestCondition(urlPattern) : addRequestCondition(urlPattern, SDK16.NetworkManager.BlockingConditions), { jslogContext: "block-request-url" });
         throttlingMenu.debugSection().appendItem(isThrottling ? i18nString22(UIStrings22.unthrottleS, { PH1: croppedURL }) : i18nString22(UIStrings22.throttleRequestUrl), () => isThrottling ? removeRequestCondition(urlPattern) : addRequestCondition(urlPattern, SDK16.NetworkManager.Slow3GConditions), { jslogContext: "throttle-request-url" });
       }
-      const domain = request.parsedURL.domain();
-      const domainPattern = domain && SDK16.NetworkManager.RequestURLPattern.create(`*://${domain}`);
+      let domainPatternString = "";
+      if (parsed.isValid) {
+        domainPatternString = "*://" + Platform11.StringUtilities.escapeForURLPattern(parsed.host);
+        if (parsed.port) {
+          domainPatternString += ":" + Platform11.StringUtilities.escapeForURLPattern(parsed.port);
+        }
+      } else if (parsed.domain()) {
+        domainPatternString = "*://" + Platform11.StringUtilities.escapeForURLPattern(parsed.domain());
+      }
+      const domainPattern = domainPatternString && SDK16.NetworkManager.RequestURLPattern.create(domainPatternString);
       if (domainPattern) {
         throttlingMenu.setEnabled(true);
         blockingMenu.setEnabled(true);

@@ -10542,6 +10542,10 @@ export declare namespace Network {
          * WebRTC packetReordering feature.
          */
         packetReordering?: boolean;
+        /**
+         * True to emulate internet disconnection.
+         */
+        offline?: boolean;
     }
     interface BlockPattern {
         /**
@@ -11269,9 +11273,15 @@ export declare namespace Network {
     }
     interface EmulateNetworkConditionsByRuleRequest {
         /**
-         * True to emulate internet disconnection.
+         * True to emulate internet disconnection. Deprecated, use the offline property in matchedNetworkConditions
+         * or emulateOfflineServiceWorker instead.
+         * @deprecated
          */
-        offline: boolean;
+        offline?: boolean;
+        /**
+         * True to emulate offline service worker.
+         */
+        emulateOfflineServiceWorker?: boolean;
         /**
          * Configure conditions for matching requests. If multiple entries match a request, the first entry wins.  Global
          * conditions can be configured by leaving the urlPattern for the conditions empty. These global conditions are

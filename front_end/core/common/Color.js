@@ -509,6 +509,7 @@ export function findFgColorForContrastAPCA(fgColor, bgColor, requiredContrast) {
 }
 const EPSILON = 0.01;
 const WIDE_RANGE_EPSILON = 1; // For comparisons on channels with a wider range than [0,1]
+const STRICT_EPSILON = 1e-4;
 function equals(a, b, accuracy = EPSILON) {
     if (Array.isArray(a) && Array.isArray(b)) {
         if (a.length !== b.length) {
@@ -749,7 +750,7 @@ export class LCH {
     // See "powerless" component definitions in
     // https://www.w3.org/TR/css-color-4/#specifying-lab-lch
     isHuePowerless() {
-        return equals(this.c, 0);
+        return equals(this.c, 0, STRICT_EPSILON);
     }
     static fromSpec(spec, text) {
         const L = parsePercentage(spec[0], [0, 100]) ?? parseNumber(spec[0]);
@@ -1247,7 +1248,7 @@ export class HSL {
         this.l = clamp(l, { min: 0, max: 1 });
         s = equals(this.l, 0) || equals(this.l, 1) ? 0 : s;
         this.s = clamp(s, { min: 0, max: 1 });
-        h = equals(this.s, 0) ? 0 : h;
+        h = equals(this.s, 0, STRICT_EPSILON) ? 0 : h;
         this.h = normalizeHue(h * 360) / 360;
         this.alpha = clamp(alpha ?? null, { min: 0, max: 1 });
         this.#authoredText = authoredText;

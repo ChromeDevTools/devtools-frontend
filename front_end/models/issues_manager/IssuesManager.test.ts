@@ -357,4 +357,15 @@ describeWithMockConnection('IssuesManager', () => {
     navigate(frame, {loaderId: 'loaderId2' as Protocol.Network.LoaderId});
     assert.strictEqual(issuesManager.numberOfIssues(), 0);
   });
+
+  describe('isIssueCodeSupported', () => {
+    it('returns true for supported issue codes', () => {
+      assert.isTrue(IssuesManager.IssuesManager.isIssueCodeSupported(Protocol.Audits.InspectorIssueCode.CookieIssue));
+    });
+
+    it('returns false for unsupported issue codes', () => {
+      assert.isFalse(IssuesManager.IssuesManager.isIssueCodeSupported(
+          'NonExistentIssueCode' as Protocol.Audits.InspectorIssueCode));
+    });
+  });
 });

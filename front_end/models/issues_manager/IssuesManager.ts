@@ -155,6 +155,10 @@ const issueCodeHandlers = new Map<
   ],
 ]);
 
+export function isIssueCodeSupported(code: Protocol.Audits.InspectorIssueCode): boolean {
+  return issueCodeHandlers.has(code);
+}
+
 /**
  * Each issue reported by the backend can result in multiple `Issue` instances.
  * Handlers are simple functions hard-coded into a map.

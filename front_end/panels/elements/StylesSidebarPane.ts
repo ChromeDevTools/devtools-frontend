@@ -2290,7 +2290,7 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
             do {
               if (cursor.name === ':') {
                 name = suggestionText.slice(node.from, cursor.from);
-                value = suggestionText.slice(cursor.to + 1, node.to);
+                value = suggestionText.slice(cursor.to, node.to);
               }
             } while (cursor.nextSibling());
           }

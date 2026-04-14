@@ -17,13 +17,15 @@ export class HeapSnapshotWorkerProxy extends Common.ObjectWrapper.ObjectWrapper<
   readonly previousCallbacks = new Set<number>();
   readonly worker: PlatformApi.HostRuntime.Worker;
   interval?: number;
+  readonly workerUrl?: string;
 
-  constructor(eventHandler: (arg0: string, arg1: string) => void) {
+  constructor(eventHandler: (arg0: string, arg1: string) => void, workerUrl?: string) {
     super();
     this.eventHandler = eventHandler;
+    this.workerUrl = workerUrl;
     this.worker = Platform.HostRuntime.HOST_RUNTIME.createWorker(
-        new URL('../../entrypoints/heap_snapshot_worker/heap_snapshot_worker-entrypoint.js', import.meta.url)
-            .toString());
+        workerUrl ?? import.meta.resolve('../../entrypoints/heap_snapshot_worker/heap_snapshot_worker-entrypoint.js'),
+    );
     this.worker.onmessage = this.messageReceived.bind(this);
   }
 
@@ -236,7 +238,7 @@ export class HeapSnapshotLoaderProxy extends HeapSnapshotProxyObject implements 
 
   async close(): Promise<void> {
     await this.callMethodPromise('close');
-    const secondWorker = new HeapSnapshotWorkerProxy(() => {});
+    const secondWorker = new HeapSnapshotWorkerProxy(() => {}, this.worker.workerUrl);
     const channel = new MessageChannel();
     await secondWorker.setupForSecondaryInit(channel.port2);
     const snapshotProxy = await this.callFactoryMethodPromise('buildSnapshot', HeapSnapshotProxy, [channel.port1]);

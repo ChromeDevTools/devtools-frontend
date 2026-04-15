@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import * as Common from '../../../../core/common/common.js';
-import * as Root from '../../../../core/root/root.js';
 import * as UI from '../../legacy.js';
 
 import {type ContrastInfo, Events} from './ContrastInfo.js';
@@ -25,7 +24,7 @@ export class ContrastOverlay {
 
     this.contrastRatioSVG = UI.UIUtils.createSVGChild(colorElement, 'svg', 'spectrum-contrast-container fill');
     this.contrastRatioLines = new Map();
-    if (Root.Runtime.experiments.isEnabled(Root.ExperimentNames.ExperimentName.APCA)) {
+    if (Common.Settings.Settings.instance().moduleSetting('apca').get()) {
       this.contrastRatioLines.set(
           'APCA', UI.UIUtils.createSVGChild(this.contrastRatioSVG, 'path', 'spectrum-contrast-line'));
     } else {
@@ -50,7 +49,7 @@ export class ContrastOverlay {
     if (!this.visible || this.contrastInfo.isNull()) {
       return;
     }
-    if (Root.Runtime.experiments.isEnabled(Root.ExperimentNames.ExperimentName.APCA) &&
+    if (Common.Settings.Settings.instance().moduleSetting('apca').get() &&
         this.contrastInfo.contrastRatioAPCA() === null) {
       return;
     }
@@ -91,7 +90,7 @@ export class ContrastRatioLineBuilder {
   }
 
   drawContrastRatioLine(width: number, height: number, level: string): string|null {
-    const isAPCA = Root.Runtime.experiments.isEnabled(Root.ExperimentNames.ExperimentName.APCA);
+    const isAPCA = Common.Settings.Settings.instance().moduleSetting('apca').get();
     const requiredContrast =
         isAPCA ? this.contrastInfo.contrastRatioAPCAThreshold() : this.contrastInfo.contrastRatioThreshold(level);
     if (!width || !height || requiredContrast === null) {
@@ -140,7 +139,7 @@ export class ContrastRatioLineBuilder {
               Common.ColorUtils.blendColors(Common.Color.Legacy.fromHSVA(candidateHSVA).rgba(), bgRGBA));
         };
 
-    if (Root.Runtime.experiments.isEnabled(Root.ExperimentNames.ExperimentName.APCA)) {
+    if (Common.Settings.Settings.instance().moduleSetting('apca').get()) {
       candidateLuminance = (candidateHSVA: Common.ColorUtils.Color4D) => {
         return Common.ColorUtils.luminanceAPCA(
             Common.ColorUtils.blendColors(Common.Color.Legacy.fromHSVA(candidateHSVA).rgba(), bgRGBA));

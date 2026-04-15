@@ -7,7 +7,6 @@ import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
-import * as Root from '../root/root.js';
 
 import type {CSSModel} from './CSSModel.js';
 import {DebuggerModel, Events as DebuggerModelEvents} from './DebuggerModel.js';
@@ -534,9 +533,8 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
       gridHighlightConfig: {},
       flexContainerHighlightConfig: {},
       flexItemHighlightConfig: {},
-      contrastAlgorithm: Root.Runtime.experiments.isEnabled(Root.ExperimentNames.ExperimentName.APCA) ?
-          Protocol.Overlay.ContrastAlgorithm.Apca :
-          Protocol.Overlay.ContrastAlgorithm.Aa,
+      contrastAlgorithm: settings.moduleSetting('apca').get() ? Protocol.Overlay.ContrastAlgorithm.Apca :
+                                                                Protocol.Overlay.ContrastAlgorithm.Aa,
     };
 
     if (mode === 'all' || mode === 'content') {

@@ -816,7 +816,6 @@ export enum DevtoolsExperiments {
   'protocol-monitor' = 13,
   'sampling-heap-profiler-timeline' = 17,
   'timeline-invalidation-tracking' = 26,
-  apca = 39,
   'font-editor' = 41,
   'instrumentation-breakpoints' = 61,
   'use-source-map-scopes' = 76,

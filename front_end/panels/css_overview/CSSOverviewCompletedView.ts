@@ -8,7 +8,6 @@ import '../../ui/kit/kit.js';
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
-import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as Geometry from '../../models/geometry/geometry.js';
@@ -483,7 +482,7 @@ function renderContrastIssue(key: string, issues: ContrastIssue[]): TemplateResu
   const color = (minContrastIssue.textColor.asString(Common.Color.Format.HEXA));
   const backgroundColor = (minContrastIssue.backgroundColor.asString(Common.Color.Format.HEXA));
 
-  const showAPCA = Root.Runtime.experiments.isEnabled(Root.ExperimentNames.ExperimentName.APCA);
+  const showAPCA = Common.Settings.Settings.instance().moduleSetting('apca').get();
 
   const title = i18nString(UIStrings.textColorSOverSBackgroundResults, {
     PH1: color,
@@ -1041,7 +1040,7 @@ function renderContrastRatio(data: PopulateNodesEventNodeTypes): TemplateResult 
   if (!('contrastRatio' in data)) {
     throw new Error('Contrast ratio entry is missing a contrast ratio.');
   }
-  const showAPCA = Root.Runtime.experiments.isEnabled(Root.ExperimentNames.ExperimentName.APCA);
+  const showAPCA = Common.Settings.Settings.instance().moduleSetting('apca').get();
   const contrastRatio = Platform.NumberUtilities.floor(data.contrastRatio, 2);
   const contrastRatioString = showAPCA ? contrastRatio + '%' : contrastRatio;
   const border = getBorderString(data.backgroundColor);

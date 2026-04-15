@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
-import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as ComputedStyle from '../../models/computed_style/computed_style.js';
@@ -26,7 +25,6 @@ describeWithMockConnection('ElementsPanel', () => {
   beforeEach(() => {
     stubNoopSettings();
     target = createTarget();
-    Root.Runtime.experiments.register(Root.ExperimentNames.ExperimentName.APCA, '');
     setMockConnectionResponseHandler('DOM.requestChildNodes', () => ({}));
     setMockConnectionResponseHandler('DOM.getDocument', () => ({
                                                           root: {

@@ -368,7 +368,6 @@ async function init(): Promise<void> {
     safeRegisterExperiment(Root.ExperimentNames.ExperimentName.PROTOCOL_MONITOR, 'Protocol Monitor');
     safeRegisterExperiment(
         Root.ExperimentNames.ExperimentName.SAMPLING_HEAP_PROFILER_TIMELINE, 'Sampling heap profiler timeline');
-    safeRegisterExperiment(Root.ExperimentNames.ExperimentName.APCA, 'APCA');
 
     const hostUnsyncedStorage: Common.Settings.SettingsBackingStore = {
       register: (name: string) =>

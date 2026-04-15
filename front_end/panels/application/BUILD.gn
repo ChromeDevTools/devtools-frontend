@@ -101,6 +101,7 @@ devtools_ui_module("application") {
     "../../panels/mobile_throttling:bundle",
     "../../panels/network:bundle",
     "../../panels/network/forward:bundle",
+    "../../panels/protocol_monitor:bundle",
     "../../third_party/csp_evaluator:bundle",
     "../../third_party/json5:bundle",
     "../../ui/components/adorners:bundle",

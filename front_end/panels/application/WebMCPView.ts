@@ -8,6 +8,8 @@ import '../../ui/components/node_text/node_text.js';
 import '../../ui/legacy/components/data_grid/data_grid.js';
 import '../../ui/legacy/legacy.js';
 
+import type {JSONSchema7, JSONSchema7Definition} from 'json-schema';
+
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
@@ -30,6 +32,7 @@ import {
   type TemplateResult,
 } from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
+import * as ProtocolMonitor from '../protocol_monitor/protocol_monitor.js';
 
 import webMCPViewStyles from './webMCPView.css.js';
 
@@ -989,4 +992,233 @@ export class ToolDetailsWidget extends UI.Widget.Widget {
     super.wasShown();
     this.requestUpdate();
   }
+}
+
+export interface ParsedToolSchema {
+  parameters: ProtocolMonitor.JSONEditor.Parameter[];
+  typesByName: Map<string, ProtocolMonitor.JSONEditor.Parameter[]>;
+  enumsByName: Map<string, Record<string, string>>;
+}
+
+const parsedSchemaCache = new WeakMap<object, ParsedToolSchema>();
+
+export function parseToolSchema(schema: JSONSchema7): ParsedToolSchema {
+  if (typeof schema === 'object' && schema !== null) {
+    const cached = parsedSchemaCache.get(schema);
+    if (cached) {
+      return cached;
+    }
+  }
+
+  const typesByName = new Map<string, ProtocolMonitor.JSONEditor.Parameter[]>();
+  const enumsByName = new Map<string, Record<string, string>>();
+  const simpleTypesByName = new Map<string, ProtocolMonitor.JSONEditor.ParameterType>();
+  let typeCount = 0;
+
+  function createEnumRecord(values: unknown[]): Record<string, string> {
+    const enumRecord: Record<string, string> = {};
+    for (const val of values) {
+      enumRecord[String(val)] = String(val);
+    }
+    return enumRecord;
+  }
+
+  function preScanDefinition(name: string, def: JSONSchema7Definition): void {
+    if (typeof def === 'boolean') {
+      return;
+    }
+    if (def.type === 'string' && def.enum) {
+      enumsByName.set(name, createEnumRecord(def.enum));
+    } else if (def.type && typeof def.type === 'string' && def.type !== 'object' && def.type !== 'array') {
+      let paramType = ProtocolMonitor.JSONEditor.ParameterType.STRING;
+      switch (def.type) {
+        case 'number':
+        case 'integer':
+          paramType = ProtocolMonitor.JSONEditor.ParameterType.NUMBER;
+          break;
+        case 'boolean':
+          paramType = ProtocolMonitor.JSONEditor.ParameterType.BOOLEAN;
+          break;
+      }
+      simpleTypesByName.set(name, paramType);
+    }
+  }
+
+  function parseDefinition(name: string, def: JSONSchema7Definition): void {
+    if (typeof def === 'boolean') {
+      return;
+    }
+    if (def.type === 'object' && def.properties) {
+      const nestedParams: ProtocolMonitor.JSONEditor.Parameter[] = [];
+      for (const [key, value] of Object.entries(def.properties)) {
+        const isOpt = !(def.required || []).includes(key);
+        nestedParams.push(parseProperty(key, value, isOpt));
+      }
+      typesByName.set(name, nestedParams);
+    }
+  }
+
+  // First pass: populate enums and simple types
+  if (schema.definitions) {
+    for (const [name, def] of Object.entries(schema.definitions)) {
+      preScanDefinition(name, def);
+    }
+  }
+  if (schema.$defs) {
+    for (const [name, def] of Object.entries(schema.$defs)) {
+      preScanDefinition(name, def);
+    }
+  }
+
+  // Second pass: parse objects
+  if (schema.definitions) {
+    for (const [name, def] of Object.entries(schema.definitions)) {
+      parseDefinition(name, def);
+    }
+  }
+  if (schema.$defs) {
+    for (const [name, def] of Object.entries(schema.$defs)) {
+      parseDefinition(name, def);
+    }
+  }
+
+  function parseProperty(
+      name: string, propDef: JSONSchema7Definition, optional: boolean): ProtocolMonitor.JSONEditor.Parameter {
+    if (typeof propDef === 'boolean') {
+      return {
+        name,
+        optional,
+        description: '',
+        type: ProtocolMonitor.JSONEditor.ParameterType.STRING,
+        isCorrectType: true,
+      };
+    }
+    const prop = propDef;
+    if (prop.$ref) {
+      const typeRef = prop.$ref.split('/').pop() || '';
+      let paramType = ProtocolMonitor.JSONEditor.ParameterType.OBJECT;
+      if (enumsByName.has(typeRef)) {
+        paramType = ProtocolMonitor.JSONEditor.ParameterType.STRING;
+      } else {
+        const simpleType = simpleTypesByName.get(typeRef);
+        if (simpleType !== undefined) {
+          paramType = simpleType;
+        }
+      }
+      return {
+        name,
+        optional,
+        description: prop.description || '',
+        type: paramType,
+        typeRef,
+        isCorrectType: true,
+      };
+    }
+
+    const typeStr = Array.isArray(prop.type) ? prop.type[0] : prop.type;
+    let type: string|undefined = typeStr === 'integer' ? 'number' : typeStr;
+    if (!typeStr) {
+      if (prop.properties) {
+        type = 'object';
+      } else if (prop.items) {
+        type = 'array';
+      } else {
+        type = 'unknown';
+      }
+    }
+    const description = prop.description || '';
+
+    let paramType = ProtocolMonitor.JSONEditor.ParameterType.UNKNOWN;
+    switch (type) {
+      case 'string':
+        paramType = ProtocolMonitor.JSONEditor.ParameterType.STRING;
+        break;
+      case 'number':
+        paramType = ProtocolMonitor.JSONEditor.ParameterType.NUMBER;
+        break;
+      case 'boolean':
+        paramType = ProtocolMonitor.JSONEditor.ParameterType.BOOLEAN;
+        break;
+      case 'object':
+        paramType = ProtocolMonitor.JSONEditor.ParameterType.OBJECT;
+        break;
+      case 'array':
+        paramType = ProtocolMonitor.JSONEditor.ParameterType.ARRAY;
+        break;
+    }
+
+    const base: ProtocolMonitor.JSONEditor.Parameter = {
+      name,
+      optional,
+      description,
+      type: paramType,
+      isCorrectType: true,
+    };
+
+    if (type === 'object') {
+      if (prop.properties) {
+        const typeRef = `Object_${++typeCount}`;
+        const nestedParams: ProtocolMonitor.JSONEditor.Parameter[] = [];
+        for (const [key, value] of Object.entries(prop.properties)) {
+          const isOpt = !(prop.required || []).includes(key);
+          nestedParams.push(parseProperty(key, value, isOpt));
+        }
+        typesByName.set(typeRef, nestedParams);
+        base.typeRef = typeRef;
+      } else {
+        base.isKeyEditable = true;
+      }
+    } else if (type === 'array') {
+      const items =
+          prop.items && !Array.isArray(prop.items) && typeof prop.items !== 'boolean' ? prop.items : undefined;
+      if (items) {
+        const itemTypeStr = Array.isArray(items.type) ? items.type[0] : items.type;
+        if (items.$ref) {
+          base.typeRef = items.$ref.split('/').pop() || '';
+        } else if (itemTypeStr === 'object' && items.properties) {
+          const typeRef = `Object_${++typeCount}`;
+          const nestedParams: ProtocolMonitor.JSONEditor.Parameter[] = [];
+          for (const [key, value] of Object.entries(items.properties)) {
+            const isOpt = !(items.required || []).includes(key);
+            nestedParams.push(parseProperty(key, value, isOpt));
+          }
+          typesByName.set(typeRef, nestedParams);
+          base.typeRef = typeRef;
+        } else if (itemTypeStr) {
+          const itemType = itemTypeStr === 'integer' ? 'number' : itemTypeStr;
+          if (itemType === 'string' && items.enum) {
+            const typeRef = `Enum_${++typeCount}`;
+            enumsByName.set(typeRef, createEnumRecord(items.enum));
+            base.typeRef = typeRef;
+          } else {
+            base.typeRef = itemType as string;
+          }
+        } else {
+          base.typeRef = 'string';
+        }
+      } else {
+        base.typeRef = 'string';
+      }
+    } else if (type === 'string' && prop.enum) {
+      const typeRef = `Enum_${++typeCount}`;
+      enumsByName.set(typeRef, createEnumRecord(prop.enum));
+      base.typeRef = typeRef;
+    }
+
+    return base;
+  }
+
+  const parameters: ProtocolMonitor.JSONEditor.Parameter[] = [];
+  if ((schema.type === 'object' || !schema.type) && schema.properties) {
+    for (const [key, value] of Object.entries(schema.properties)) {
+      const isOpt = !(schema.required || []).includes(key);
+      parameters.push(parseProperty(key, value, isOpt));
+    }
+  }
+
+  const result = {parameters, typesByName, enumsByName};
+  if (typeof schema === 'object' && schema !== null) {
+    parsedSchemaCache.set(schema, result);
+  }
+  return result;
 }

@@ -2353,6 +2353,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
          const applySuggestionSpy =
              sinon.spy(Elements.StylesSidebarPane.CSSPropertyPrompt.prototype, 'applySuggestion');
          const stylePropertyTreeElement = getTreeElement('', '');
+         stylePropertyTreeElement.treeOutline = new LegacyUI.TreeOutline.TreeOutline();
          stylePropertyTreeElement.updateTitle();
          stylePropertyTreeElement.startEditingName();
 
@@ -2363,7 +2364,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
 
          sinon.assert.calledOnce(applySuggestionSpy);
          assert.deepEqual(applySuggestionSpy.firstCall.args, [{text: 'color'}, true]);
-         const valueGhostElement = stylePropertyTreeElement.valueElement?.querySelector('.ghost-value-prediction');
+         const valueGhostElement = stylePropertyTreeElement.listItemElement.querySelector('.ghost-value-prediction');
          assert.exists(valueGhostElement);
          assert.strictEqual(valueGhostElement.textContent, 'red');
        });
@@ -2385,18 +2386,19 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
 
     it('clearActiveAiSuggestion removes ghost text', async () => {
       const stylePropertyTreeElement = getTreeElement('', '');
+      stylePropertyTreeElement.treeOutline = new LegacyUI.TreeOutline.TreeOutline();
       stylePropertyTreeElement.updateTitle();
       stylePropertyTreeElement.startEditingName();
 
       stylePropertyTreeElement.renderActiveAiSuggestion({name: 'color', value: 'red'});
 
-      const valueGhostElement = stylePropertyTreeElement.valueElement?.querySelector('.ghost-value-prediction');
+      const valueGhostElement = stylePropertyTreeElement.listItemElement.querySelector('.ghost-value-prediction');
       assert.exists(valueGhostElement);
       assert.strictEqual(valueGhostElement.textContent, 'red');
 
       stylePropertyTreeElement.clearActiveAiSuggestion();
 
-      assert.isNull(stylePropertyTreeElement.valueElement?.querySelector('.ghost-value-prediction'));
+      assert.isNull(stylePropertyTreeElement.listItemElement.querySelector('.ghost-value-prediction'));
     });
 
     it('commitAiSuggestion calls applyStyleText and ends editing', async () => {

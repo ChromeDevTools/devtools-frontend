@@ -2261,6 +2261,9 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
       return;
     }
 
+    if (!this.queryRange) {
+      this.queryRange = new TextUtils.TextRange.TextRange(0, 0, 0, this.text().length);
+    }
     this.treeElement.section().activeAiSuggestion = {
       text: args.text,
       properties: this.#getAiSuggestedProperties(args.text),

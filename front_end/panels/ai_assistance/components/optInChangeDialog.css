@@ -47,7 +47,6 @@
       devtools-icon {
         width: var(--sys-size-9);
         height: var(--sys-size-9);
-        color: var(--sys-color-on-primary);
       }
     }
   }

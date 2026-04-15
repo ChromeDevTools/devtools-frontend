@@ -59,6 +59,7 @@ describe('ExportForAgentsDialog', () => {
     assert.strictEqual(promptRadioButton.getAttribute('aria-label'), 'As prompt');
     assert.strictEqual(markdownRadioButton.getAttribute('aria-label'), 'As markdown');
     assert.strictEqual(textarea.value, promptText);
+    assert.isTrue(textarea.classList.contains('prompt'));
     assert.strictEqual(primaryButton.textContent?.trim(), 'Copy to clipboard');
     assert.strictEqual(primaryButton?.getAttribute('accessibleLabel'), 'Copy to clipboard');
   });
@@ -135,8 +136,11 @@ describe('ExportForAgentsDialog', () => {
        // spinner should be hidden, textarea should show markdown text.
        assert.isNull(
            component.contentElement.querySelector('devtools-spinner'), 'Spinner should be hidden in markdown view');
+
+       const textareaAfterSwitch =
+           querySelectorErrorOnMissing<HTMLTextAreaElement>(component.contentElement, 'textarea');
        assert.strictEqual(
-           textarea.value, markdownText,
+           textareaAfterSwitch.value, markdownText,
            'Textarea should show markdown text in markdown view even if prompt is still loading');
 
        // Clean up.
@@ -187,7 +191,6 @@ describe('ExportForAgentsDialog', () => {
 
     const markdownRadioButton =
         querySelectorErrorOnMissing<HTMLInputElement>(component.contentElement, 'input[value="conversation"]');
-    const textarea = querySelectorErrorOnMissing<HTMLTextAreaElement>(component.contentElement, 'textarea');
     const primaryButton =
         querySelectorErrorOnMissing<Buttons.Button.Button>(component.contentElement, 'devtools-button');
 
@@ -196,7 +199,9 @@ describe('ExportForAgentsDialog', () => {
     await component.updateComplete;
 
     assert.isTrue(markdownRadioButton?.checked);
-    assert.strictEqual(textarea?.value, markdownText);
+    const textareaAfterSwitch = querySelectorErrorOnMissing<HTMLTextAreaElement>(component.contentElement, 'textarea');
+    assert.strictEqual(textareaAfterSwitch.value, markdownText);
+    assert.isTrue(textareaAfterSwitch.classList.contains('conversation'));
     assert.strictEqual(primaryButton?.textContent?.trim(), 'Save as…');
     assert.strictEqual(primaryButton.getAttribute('accessibleLabel'), 'Save as…');
     assert.strictEqual(primaryButton.jslogContext, 'ai-export-for-agents.save-as-markdown');
@@ -291,5 +296,39 @@ describe('ExportForAgentsDialog', () => {
 
     assert.isTrue(markdownRadioButton2.checked);
     assert.isFalse(promptRadioButton2.checked);
+  });
+
+  it('resets scroll position of textarea when switching tabs', async () => {
+    const component = new AiAssistance.ExportForAgentsDialog.ExportForAgentsDialog({
+      dialog,
+      promptText,
+      markdownText,
+      onConversationSaveAs: noop,
+    });
+    renderElementIntoDOM(component);
+    await component.updateComplete;
+
+    const markdownRadioButton =
+        querySelectorErrorOnMissing<HTMLInputElement>(component.contentElement, 'input[value="conversation"]');
+    const promptRadioButton =
+        querySelectorErrorOnMissing<HTMLInputElement>(component.contentElement, 'input[value="prompt"]');
+
+    const textarea1 = querySelectorErrorOnMissing<HTMLTextAreaElement>(component.contentElement, 'textarea');
+    textarea1.scrollTop = 100;
+
+    markdownRadioButton.click();
+    await component.updateComplete;
+
+    const textarea2 = querySelectorErrorOnMissing<HTMLTextAreaElement>(component.contentElement, 'textarea');
+    assert.notStrictEqual(textarea1, textarea2, 'Textarea should be recreated on tab switch');
+    assert.strictEqual(textarea2.scrollTop, 0, 'Scroll position should be reset');
+
+    textarea2.scrollTop = 50;
+    promptRadioButton.click();
+    await component.updateComplete;
+
+    const textarea3 = querySelectorErrorOnMissing<HTMLTextAreaElement>(component.contentElement, 'textarea');
+    assert.notStrictEqual(textarea2, textarea3, 'Textarea should be recreated on tab switch back');
+    assert.strictEqual(textarea3.scrollTop, 0, 'Scroll position should be reset');
   });
 });

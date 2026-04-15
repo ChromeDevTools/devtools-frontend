@@ -37,7 +37,7 @@ const DUMMY_COLUMN_ID = 'dummy'; // SortableDataGrid.create requires at least on
  * @attribute striped If true, the data grid will have striped rows.
  * @attribute displayName
  */
-class DataGridElement extends UI.UIUtils.HTMLElementWithLightDOMTemplate {
+export class DataGridElement extends UI.UIUtils.HTMLElementWithLightDOMTemplate {
     static observedAttributes = ['striped', 'name', 'inline', 'resize'];
     #dataGrid = SortableDataGrid.create([DUMMY_COLUMN_ID], [], '');
     #resizeObserver = new ResizeObserver(() => {
@@ -523,7 +523,7 @@ function hasBooleanAttribute(element, name) {
 const INTERNAL_TOKEN = {
     token: 'DataGridInternalToken'
 };
-export const ifExpanded = Lit.Directive.directive(class extends Lit.Directive.Directive {
+class IfExpandedDirective extends Lit.Directive.Directive {
     #partInfo;
     constructor(partInfo) {
         if (partInfo.type !== Lit.Directive.PartType.CHILD) {
@@ -551,5 +551,6 @@ export const ifExpanded = Lit.Directive.directive(class extends Lit.Directive.Di
         }
         return node.expanded;
     }
-});
+}
+export const ifExpanded = Lit.Directive.directive(IfExpandedDirective);
 //# sourceMappingURL=DataGridElement.js.map

@@ -9,7 +9,7 @@ import type { DataDisplayDelegate } from './ProfileHeader.js';
 declare class HeapSnapshotGridNodeBase extends DataGrid.DataGrid.DataGridNode<HeapSnapshotGridNode> {
 }
 declare const HeapSnapshotGridNode_base: (new (...args: any[]) => {
-    "__#private@#events": Common.ObjectWrapper.ObjectWrapper<HeapSnapshotGridNode.EventTypes>;
+    __events: Common.ObjectWrapper.ObjectWrapper<HeapSnapshotGridNode.EventTypes>;
     addEventListener<T extends HeapSnapshotGridNode.Events.PopulateComplete>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<HeapSnapshotGridNode.EventTypes[T], any>) => void, thisObject?: Object): Common.EventTarget.EventDescriptor<HeapSnapshotGridNode.EventTypes, T>;
     once<T extends HeapSnapshotGridNode.Events.PopulateComplete>(eventType: T): Promise<HeapSnapshotGridNode.EventTypes[T]>;
     removeEventListener<T extends HeapSnapshotGridNode.Events.PopulateComplete>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<HeapSnapshotGridNode.EventTypes[T], any>) => void, thisObject?: Object): void;
@@ -20,6 +20,10 @@ export declare class HeapSnapshotGridNode extends HeapSnapshotGridNode_base {
     dataGridInternal: HeapSnapshotSortableDataGrid;
     instanceCount: number;
     readonly savedChildren: Map<number, HeapSnapshotGridNode>;
+    /**
+     * List of position ranges for all visible nodes: [startPos1, endPos1),...,[startPosN, endPosN)
+     * Position is an item position in the provider.
+     */
     retrievedChildrenRanges: Array<{
         from: number;
         to: number;

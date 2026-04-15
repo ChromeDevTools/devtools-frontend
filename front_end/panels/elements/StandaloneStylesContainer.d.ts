@@ -22,7 +22,7 @@ export interface EventTypes {
     [Events.STYLES_UPDATE_COMPLETED]: void;
 }
 declare const StandaloneStylesContainer_base: (new (...args: any[]) => {
-    "__#private@#events": Common.ObjectWrapper.ObjectWrapper<EventTypes>;
+    __events: Common.ObjectWrapper.ObjectWrapper<EventTypes>;
     addEventListener<T extends Events.STYLES_UPDATE_COMPLETED>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<EventTypes[T], any>) => void, thisObject?: Object): Common.EventTarget.EventDescriptor<EventTypes, T>;
     once<T extends Events.STYLES_UPDATE_COMPLETED>(eventType: T): Promise<EventTypes[T]>;
     removeEventListener<T extends Events.STYLES_UPDATE_COMPLETED>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<EventTypes[T], any>) => void, thisObject?: Object): void;

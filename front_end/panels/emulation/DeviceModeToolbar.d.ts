@@ -19,6 +19,7 @@ export declare class DeviceModeToolbar {
     private widthInput;
     private heightInput;
     private deviceScaleItem;
+    private deviceScaleItems;
     private deviceSelectItem;
     private scaleItem;
     private uaItem;

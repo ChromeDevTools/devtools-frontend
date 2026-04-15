@@ -1548,8 +1548,13 @@ var AISettingsTab = class extends UI2.Widget.VBox {
           /* Common.Settings.SettingStorageType.SESSION */
         ).set(true);
       }
-    } else if (setting.name === "ai-assistance-enabled" && !setting.get()) {
-      void AiAssistanceModel.AiHistoryStorage.AiHistoryStorage.instance().deleteAll();
+    } else if (setting.name === "ai-assistance-enabled") {
+      if (!setting.get()) {
+        void AiAssistanceModel.AiHistoryStorage.AiHistoryStorage.instance().deleteAll();
+      }
+      if (Root2.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled && setting.get()) {
+        Common2.Settings.Settings.instance().moduleSetting("ai-assistance-v2-opt-in-change-dialog-seen").set(true);
+      }
     }
     this.requestUpdate();
   }

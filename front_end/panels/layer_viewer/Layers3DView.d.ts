@@ -18,7 +18,7 @@ export interface ViewOutput {
 }
 export declare const DEFAULT_VIEW: (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
 declare const Layers3DView_base: (new (...args: any[]) => {
-    "__#private@#events": Common.ObjectWrapper.ObjectWrapper<EventTypes>;
+    __events: Common.ObjectWrapper.ObjectWrapper<EventTypes>;
     addEventListener<T extends keyof EventTypes>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<EventTypes[T], any>) => void, thisObject?: Object): Common.EventTarget.EventDescriptor<EventTypes, T>;
     once<T extends keyof EventTypes>(eventType: T): Promise<EventTypes[T]>;
     removeEventListener<T extends keyof EventTypes>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<EventTypes[T], any>) => void, thisObject?: Object): void;

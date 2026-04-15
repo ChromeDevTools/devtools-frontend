@@ -251,10 +251,12 @@ var HeapSnapshotWorkerProxy = class extends Common.ObjectWrapper.ObjectWrapper {
   previousCallbacks = /* @__PURE__ */ new Set();
   worker;
   interval;
-  constructor(eventHandler) {
+  workerUrl;
+  constructor(eventHandler, workerUrl) {
     super();
     this.eventHandler = eventHandler;
-    this.worker = Platform.HostRuntime.HOST_RUNTIME.createWorker(new URL("../../entrypoints/heap_snapshot_worker/heap_snapshot_worker-entrypoint.js", import.meta.url).toString());
+    this.workerUrl = workerUrl;
+    this.worker = Platform.HostRuntime.HOST_RUNTIME.createWorker(workerUrl ?? import.meta.resolve("../../entrypoints/heap_snapshot_worker/heap_snapshot_worker-entrypoint.js"));
     this.worker.onmessage = this.messageReceived.bind(this);
   }
   createLoader(profileUid, snapshotReceivedCallback) {
@@ -409,7 +411,7 @@ var HeapSnapshotLoaderProxy = class extends HeapSnapshotProxyObject {
   async close() {
     await this.callMethodPromise("close");
     const secondWorker = new HeapSnapshotWorkerProxy(() => {
-    });
+    }, this.worker.workerUrl);
     const channel = new MessageChannel();
     await secondWorker.setupForSecondaryInit(channel.port2);
     const snapshotProxy = await this.callFactoryMethodPromise("buildSnapshot", HeapSnapshotProxy, [channel.port1]);

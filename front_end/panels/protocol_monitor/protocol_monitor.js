@@ -179,7 +179,8 @@ var splitDescription = (description) => {
 var defaultValueByType = /* @__PURE__ */ new Map([
   ["string", ""],
   ["number", 0],
-  ["boolean", false]
+  ["boolean", false],
+  ["unknown", ""]
 ]);
 var DUMMY_DATA = "dummy";
 var EMPTY_STRING = "<empty_string>";
@@ -196,6 +197,8 @@ var JSONEditor = class extends Common.ObjectWrapper.eventMixin(UI.Widget.VBox) {
   #targetId;
   #hintPopoverHelper;
   #view;
+  displayTargetSelector = true;
+  displayCommandInput = true;
   constructor(element, view = DEFAULT_VIEW) {
     super(element, { useShadowDom: true });
     this.#view = view;
@@ -244,6 +247,9 @@ var JSONEditor = class extends Common.ObjectWrapper.eventMixin(UI.Widget.VBox) {
       this.#command = command;
       this.requestUpdate();
     }
+  }
+  set commandToDisplay(command) {
+    this.displayCommand(command, {});
   }
   get targetId() {
     return this.#targetId;
@@ -308,6 +314,13 @@ var JSONEditor = class extends Common.ObjectWrapper.eventMixin(UI.Widget.VBox) {
             nestedArrayParameters.push(formatParameterValue(subParameter));
           }
           return nestedArrayParameters.length === 0 ? [] : nestedArrayParameters;
+        }
+        case "unknown": {
+          try {
+            return JSON.parse(parameter.value);
+          } catch {
+            return parameter.value;
+          }
         }
         default: {
           return parameter.value;
@@ -879,7 +892,9 @@ var JSONEditor = class extends Common.ObjectWrapper.eventMixin(UI.Widget.VBox) {
       },
       computeDropdownValues: (parameter) => {
         return this.#computeDropdownValues(parameter);
-      }
+      },
+      displayTargetSelector: this.displayTargetSelector,
+      displayCommandInput: this.displayCommandInput
     };
     const viewOutput = {};
     this.#view(viewInput, viewOutput, this.contentElement);
@@ -1109,7 +1124,8 @@ var DEFAULT_VIEW = (input, _output, target) => {
   render(html`
     <div class="wrapper" @keydown=${input.onKeydown} jslog=${VisualLogging.pane("command-editor").track({ resize: true })}>
       <div class="editor-wrapper">
-        ${renderTargetSelectorRow(input)}
+        ${input.displayTargetSelector !== false ? renderTargetSelectorRow(input) : nothing}
+        ${input.displayCommandInput !== false ? html`
         <div class="row attribute padded">
           <div class="command">command<span class="separator">:</span></div>
           <devtools-suggestion-input
@@ -1121,7 +1137,7 @@ var DEFAULT_VIEW = (input, _output, target) => {
             @blur=${input.onCommandInputBlur}
             class=${classMap({ "json-input": true })}
           ></devtools-suggestion-input>
-        </div>
+        </div>` : nothing}
         ${input.parameters.length ? html`
         <div class="row attribute padded">
           <div>parameters<span class="separator">:</span></div>

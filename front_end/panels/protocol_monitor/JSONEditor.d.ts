@@ -8,7 +8,8 @@ export declare const enum ParameterType {
     NUMBER = "number",
     BOOLEAN = "boolean",
     ARRAY = "array",
-    OBJECT = "object"
+    OBJECT = "object",
+    UNKNOWN = "unknown"
 }
 interface BaseParameter {
     optional: boolean;
@@ -38,7 +39,11 @@ interface ObjectParameter extends BaseParameter {
     type: ParameterType.OBJECT;
     value?: Parameter[];
 }
-export type Parameter = ArrayParameter | NumberParameter | StringParameter | BooleanParameter | ObjectParameter;
+interface UnknownParameter extends BaseParameter {
+    type: ParameterType.UNKNOWN;
+    value?: string;
+}
+export type Parameter = ArrayParameter | NumberParameter | StringParameter | BooleanParameter | ObjectParameter | UnknownParameter;
 export interface Command {
     command: string;
     parameters: Record<string, unknown>;
@@ -68,6 +73,8 @@ interface ViewInput {
     onParameterKeydown: (event: KeyboardEvent) => void;
     onParameterKeyBlur: (event: Event) => void;
     onParameterValueBlur: (event: Event) => void;
+    displayTargetSelector?: boolean;
+    displayCommandInput?: boolean;
 }
 export type View = (input: ViewInput, output: object, target: HTMLElement) => void;
 export declare function suggestionFilter(option: string, query: string): boolean;
@@ -78,7 +85,7 @@ export interface EventTypes {
     [Events.SUBMIT_EDITOR]: Command;
 }
 declare const JSONEditor_base: (new (...args: any[]) => {
-    "__#private@#events": Common.ObjectWrapper.ObjectWrapper<EventTypes>;
+    __events: Common.ObjectWrapper.ObjectWrapper<EventTypes>;
     addEventListener<T extends Events.SUBMIT_EDITOR>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<EventTypes[T], any>) => void, thisObject?: Object): Common.EventTarget.EventDescriptor<EventTypes, T>;
     once<T extends Events.SUBMIT_EDITOR>(eventType: T): Promise<EventTypes[T]>;
     removeEventListener<T extends Events.SUBMIT_EDITOR>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<EventTypes[T], any>) => void, thisObject?: Object): void;
@@ -87,6 +94,8 @@ declare const JSONEditor_base: (new (...args: any[]) => {
 }) & typeof UI.Widget.VBox;
 export declare class JSONEditor extends JSONEditor_base {
     #private;
+    displayTargetSelector: boolean;
+    displayCommandInput: boolean;
     constructor(element: HTMLElement, view?: View);
     get metadataByCommand(): Map<string, {
         parameters: Parameter[];
@@ -108,6 +117,7 @@ export declare class JSONEditor extends JSONEditor_base {
     set targets(targets: SDK.Target.Target[]);
     get command(): string;
     set command(command: string);
+    set commandToDisplay(command: string);
     get targetId(): string | undefined;
     set targetId(targetId: string | undefined);
     wasShown(): void;

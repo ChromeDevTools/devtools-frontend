@@ -7,6 +7,7 @@ import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as Input from '../../../ui/components/input/input.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
+import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import chatMessageStyles from './chatMessage.css.js';
 import { renderStep, titleForStep } from './ChatMessage.js';
 import walkthroughViewStyles from './walkthroughView.css.js';
@@ -85,13 +86,13 @@ function renderInlineWalkthrough(input, stepsOutput, allSteps) {
     const icon = AiAssistanceModel.AiUtils.getIconName();
     // clang-format off
     return html `
-    <div class="inline-wrapper" ?data-open=${input.isExpanded}>
+    <div class="inline-wrapper" ?data-open=${input.isExpanded} jslog=${VisualLogging.section('walkthrough-container')}>
       <span class="inline-icon">
         ${input.isLoading ?
         html `<devtools-spinner aria-label=${lockedString(UIStrings.inProgress)}></devtools-spinner>` :
         html `<devtools-icon name=${icon}></devtools-icon>`}
       </span>
-      <details class="walkthrough-inline" ?open=${input.isExpanded} @toggle=${onToggle}>
+      <details class="walkthrough-inline" ?open=${input.isExpanded} @toggle=${onToggle} jslog=${VisualLogging.expand('walkthrough').track({ click: true })}>
         <summary ?data-has-widgets=${!input.isLoading && hasWidgets}>
           <span class="walkthrough-inline-title">
             ${input.isExpanded ?
@@ -113,7 +114,7 @@ function renderSidebarWalkthrough(input, stepsOutput, stepsCount) {
     }
     // clang-format off
     return html `
-    <div class="walkthrough-view">
+    <div class="walkthrough-view" jslog=${VisualLogging.section('walkthrough-container')}>
       <div class="walkthrough-header">
          <h2 class="walkthrough-title">${i18nString(UIStrings.title)}</h2>
          <devtools-button

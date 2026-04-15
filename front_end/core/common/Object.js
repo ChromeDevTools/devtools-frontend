@@ -71,21 +71,24 @@ export class ObjectWrapper {
 export function eventMixin(base) {
     console.assert(base !== HTMLElement);
     return class EventHandling extends base {
-        #events = new ObjectWrapper();
+        // Note that the weird name is due to TSC disallowing private/protected fields in
+        // anonmous exported classes. We use a `__` prefix to prevent clashes with `base`.
+        // eslint-disable-next-line @devtools/no-underscored-properties, @typescript-eslint/naming-convention
+        __events = new ObjectWrapper();
         addEventListener(eventType, listener, thisObject) {
-            return this.#events.addEventListener(eventType, listener, thisObject);
+            return this.__events.addEventListener(eventType, listener, thisObject);
         }
         once(eventType) {
-            return this.#events.once(eventType);
+            return this.__events.once(eventType);
         }
         removeEventListener(eventType, listener, thisObject) {
-            this.#events.removeEventListener(eventType, listener, thisObject);
+            this.__events.removeEventListener(eventType, listener, thisObject);
         }
         hasEventListeners(eventType) {
-            return this.#events.hasEventListeners(eventType);
+            return this.__events.hasEventListeners(eventType);
         }
         dispatchEventToListeners(eventType, ...eventData) {
-            this.#events.dispatchEventToListeners(eventType, ...eventData);
+            this.__events.dispatchEventToListeners(eventType, ...eventData);
         }
     };
 }

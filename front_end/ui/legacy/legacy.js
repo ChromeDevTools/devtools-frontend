@@ -22915,7 +22915,7 @@ var TreeViewElement = class _TreeViewElement extends HTMLElementWithLightDOMTemp
   }
   TreeViewElement2.ExpandEvent = ExpandEvent;
 })(TreeViewElement || (TreeViewElement = {}));
-var ifExpanded = Lit3.Directive.directive(class extends Lit3.Directive.Directive {
+var IfExpandedDirective = class extends Lit3.Directive.Directive {
   #partInfo;
   constructor(partInfo) {
     if (partInfo.type !== Lit3.Directive.PartType.CHILD) {
@@ -22950,7 +22950,8 @@ var ifExpanded = Lit3.Directive.directive(class extends Lit3.Directive.Directive
     }
     return node.expanded;
   }
-});
+};
+var ifExpanded = Lit3.Directive.directive(IfExpandedDirective);
 var TreeElementWrapper = class extends HTMLElement {
   #treeElement;
   set treeElement(treeElement) {

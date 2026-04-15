@@ -537,7 +537,7 @@ export function renderStep({ step, isLoading, markdownRenderer, isLast }) {
     // clang-format off
     return html `
     <details class=${stepClasses}
-      jslog=${VisualLogging.section('step')}
+      jslog=${VisualLogging.expand('step').track({ click: true })}
       .open=${Boolean(step.requestApproval)}>
       <summary>
         <div class="summary">
@@ -615,6 +615,7 @@ async function makeComputedStyleWidget(widgetData) {
         </span>
       </span>`,
         // clang-format on
+        jslogContext: 'computed-styles',
     };
 }
 async function makeCoreWebVitalsWidget(widgetData) {
@@ -626,6 +627,7 @@ async function makeCoreWebVitalsWidget(widgetData) {
         renderedWidget,
         revealable: new TimelineUtils.Helpers.RevealableCoreVitals(widgetData.data.insightSetKey),
         title: lockedString(UIStringsNotTranslate.coreVitals),
+        jslogContext: 'core-web-vitals',
     };
 }
 async function makeStylePropertiesWidget(widgetData) {
@@ -659,6 +661,7 @@ async function makeStylePropertiesWidget(widgetData) {
             node: domNodeForId,
         })}
     ></devtools-widget>`,
+        jslogContext: 'standalone-styles',
     };
 }
 async function makeLcpBreakdownWidget(widgetData) {
@@ -678,6 +681,7 @@ async function makeLcpBreakdownWidget(widgetData) {
         renderedWidget,
         revealable: new TimelineUtils.Helpers.RevealableInsight(insight),
         title: lockedString(UIStringsNotTranslate.lcpBreakdown),
+        jslogContext: 'lcp-breakdown',
     };
 }
 async function makeBottomUpTimelineTreeWidget(widgetData) {
@@ -702,7 +706,8 @@ async function makeBottomUpTimelineTreeWidget(widgetData) {
     return {
         renderedWidget,
         revealable: new TimelineUtils.Helpers.RevealableBottomUpProfile(widgetData.data.bounds),
-        title: lockedString(UIStringsNotTranslate.bottomUpTree)
+        title: lockedString(UIStringsNotTranslate.bottomUpTree),
+        jslogContext: 'bottom-up',
     };
 }
 function renderWidgetResponse(response) {
@@ -723,6 +728,7 @@ function renderWidgetResponse(response) {
     <devtools-button class="widget-reveal-button"
       .variant=${"text" /* Buttons.Button.Variant.TEXT */}
       .accessibleLabel=${lockedString(UIStringsNotTranslate.reveal)}
+      .jslogContext=${'reveal'}
       @click=${onReveal}
     >
       ${response.customRevealTitle ?? lockedString(UIStringsNotTranslate.reveal)}
@@ -731,7 +737,7 @@ function renderWidgetResponse(response) {
   `;
     // clang-format off
     return html `
-    <div class=${classes}>
+    <div class=${classes} jslog=${ifDefined(response.jslogContext ? VisualLogging.section(response.jslogContext) : undefined)}>
       ${response.title ? html `
         <div class="widget-header">
           <h3 class="widget-name">${response.title}</h3>
@@ -759,6 +765,7 @@ async function makePerformanceTraceWidget(widgetData) {
         title: null,
         revealable: new Timeline.TimelinePanel.ParsedTraceRevealable(widgetData.data.parsedTrace),
         customRevealTitle: lockedString(UIStringsNotTranslate.revealTrace),
+        jslogContext: 'performance-trace',
     };
 }
 function renderNetworkRequestPreview(networkRequest) {
@@ -810,6 +817,7 @@ async function makeDomTreeWidget(widgetData) {
         renderedWidget,
         revealable: new SDK.DOMModel.DeferredDOMNode(root.domModel().target(), root.backendNodeId()),
         title: lockedString(UIStringsNotTranslate.lcpElement),
+        jslogContext: 'dom-snapshot',
     };
 }
 /**
@@ -1307,6 +1315,7 @@ async function makeTimelineRangeSummaryWidget(widgetData) {
         renderedWidget: template,
         revealable: new TimelineUtils.Helpers.RevealableTimeRange(bounds),
         title: lockedString(UIStringsNotTranslate.performanceSummary),
+        jslogContext: 'timeline-range-summary',
     };
 }
 //# sourceMappingURL=ChatMessage.js.map

@@ -10112,7 +10112,7 @@ var CSSPropertyPrompt = class extends UI10.TextPrompt.TextPrompt {
             do {
               if (cursor.name === ":") {
                 name = suggestionText.slice(node.from, cursor.from);
-                value5 = suggestionText.slice(cursor.to + 1, node.to);
+                value5 = suggestionText.slice(cursor.to, node.to);
               }
             } while (cursor.nextSibling());
           }
@@ -10162,6 +10162,7 @@ var CSSPropertyPrompt = class extends UI10.TextPrompt.TextPrompt {
         return false;
       }
       if (suggestionForCurrentPrompt !== textAfterAccept) {
+        this.queryRange = new TextUtils5.TextRange.TextRange(0, 0, 0, textAfterAccept.length);
         this.applySuggestion({ text: suggestionForCurrentPrompt }, true);
       }
       return true;

@@ -3673,7 +3673,7 @@ function hasBooleanAttribute(element, name) {
 var INTERNAL_TOKEN = {
   token: "DataGridInternalToken"
 };
-var ifExpanded = Lit.Directive.directive(class extends Lit.Directive.Directive {
+var IfExpandedDirective = class extends Lit.Directive.Directive {
   #partInfo;
   constructor(partInfo) {
     if (partInfo.type !== Lit.Directive.PartType.CHILD) {
@@ -3701,7 +3701,8 @@ var ifExpanded = Lit.Directive.directive(class extends Lit.Directive.Directive {
     }
     return node.expanded;
   }
-});
+};
+var ifExpanded = Lit.Directive.directive(IfExpandedDirective);
 export {
   DataGrid_exports as DataGrid,
   ShowMoreDataGridNode_exports as ShowMoreDataGridNode,

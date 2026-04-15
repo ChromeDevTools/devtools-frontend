@@ -596,9 +596,19 @@ export class AISettingsTab extends UI.Widget.VBox {
                     .set(true);
             }
         }
-        else if (setting.name === 'ai-assistance-enabled' && !setting.get()) {
-            // If the "AI Assistance" is toggled off, we remove all the history entries related to the feature.
-            void AiAssistanceModel.AiHistoryStorage.AiHistoryStorage.instance().deleteAll();
+        else if (setting.name === 'ai-assistance-enabled') {
+            if (!setting.get()) {
+                // If the "AI Assistance" is toggled off, we remove all the history entries related to the feature.
+                void AiAssistanceModel.AiHistoryStorage.AiHistoryStorage.instance().deleteAll();
+            }
+            if (Root.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled && setting.get()) {
+                // If the user turns on ai-assistance whilst on the V2 experiment, they
+                // do not need to see the opt-in change management dialog. This dialog
+                // exists to inform users who opted-in to "V1" that in "V2" there are
+                // some data access changes. But if a user opts-in when on "V2", they
+                // do not need to see that dialog.
+                Common.Settings.Settings.instance().moduleSetting('ai-assistance-v2-opt-in-change-dialog-seen').set(true);
+            }
         }
         this.requestUpdate();
     }

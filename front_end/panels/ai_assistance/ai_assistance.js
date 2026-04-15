@@ -22,7 +22,7 @@ import * as Snackbars3 from "./../../ui/components/snackbars/snackbars.js";
 import * as UIHelpers2 from "./../../ui/helpers/helpers.js";
 import * as UI11 from "./../../ui/legacy/legacy.js";
 import * as Lit10 from "./../../ui/lit/lit.js";
-import * as VisualLogging7 from "./../../ui/visual_logging/visual_logging.js";
+import * as VisualLogging9 from "./../../ui/visual_logging/visual_logging.js";
 import * as LighthousePanel from "./../lighthouse/lighthouse.js";
 import * as NetworkForward from "./../network/forward/forward.js";
 import * as NetworkPanel from "./../network/network.js";
@@ -608,16 +608,16 @@ var SelectWorkspaceDialog = class _SelectWorkspaceDialog extends UI.Widget.VBox 
     this.requestUpdate();
   }
   static show(onProjectSelected, currentProject) {
-    const dialog2 = new UI.Dialog.Dialog("select-workspace");
-    dialog2.setAriaLabel(UIStringsNotTranslate.selectFolderAccessibleLabel);
-    dialog2.setMaxContentSize(new Geometry.Size(384, 340));
-    dialog2.setSizeBehavior(
+    const dialog3 = new UI.Dialog.Dialog("select-workspace");
+    dialog3.setAriaLabel(UIStringsNotTranslate.selectFolderAccessibleLabel);
+    dialog3.setMaxContentSize(new Geometry.Size(384, 340));
+    dialog3.setSizeBehavior(
       "SetExactWidthMaxHeight"
       /* UI.GlassPane.SizeBehavior.SET_EXACT_WIDTH_MAX_HEIGHT */
     );
-    dialog2.setDimmed(true);
-    new _SelectWorkspaceDialog({ dialog: dialog2, onProjectSelected, currentProject }).show(dialog2.contentElement);
-    dialog2.show();
+    dialog3.setDimmed(true);
+    new _SelectWorkspaceDialog({ dialog: dialog3, onProjectSelected, currentProject }).show(dialog3.contentElement);
+    dialog3.show();
   }
 };
 
@@ -2351,7 +2351,7 @@ import * as Input3 from "./../../ui/components/input/input.js";
 import * as UIHelpers from "./../../ui/helpers/helpers.js";
 import * as UI5 from "./../../ui/legacy/legacy.js";
 import * as Lit5 from "./../../ui/lit/lit.js";
-import * as VisualLogging3 from "./../../ui/visual_logging/visual_logging.js";
+import * as VisualLogging4 from "./../../ui/visual_logging/visual_logging.js";
 import * as Elements from "./../elements/elements.js";
 import * as TimelineComponents from "./../timeline/components/components.js";
 import * as TimelineInsights from "./../timeline/components/insights/insights.js";
@@ -2966,6 +2966,7 @@ import * as Buttons4 from "./../../ui/components/buttons/buttons.js";
 import * as Input2 from "./../../ui/components/input/input.js";
 import * as UI4 from "./../../ui/legacy/legacy.js";
 import * as Lit4 from "./../../ui/lit/lit.js";
+import * as VisualLogging3 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/ai_assistance/components/walkthroughView.css.js
 var walkthroughView_css_default = `/*
@@ -3254,11 +3255,11 @@ function renderInlineWalkthrough(input, stepsOutput, allSteps) {
   const hasWidgets = allSteps.some((s) => s.widgets?.length);
   const icon = AiAssistanceModel4.AiUtils.getIconName();
   return html6`
-    <div class="inline-wrapper" ?data-open=${input.isExpanded}>
+    <div class="inline-wrapper" ?data-open=${input.isExpanded} jslog=${VisualLogging3.section("walkthrough-container")}>
       <span class="inline-icon">
         ${input.isLoading ? html6`<devtools-spinner aria-label=${lockedString4(UIStrings2.inProgress)}></devtools-spinner>` : html6`<devtools-icon name=${icon}></devtools-icon>`}
       </span>
-      <details class="walkthrough-inline" ?open=${input.isExpanded} @toggle=${onToggle}>
+      <details class="walkthrough-inline" ?open=${input.isExpanded} @toggle=${onToggle} jslog=${VisualLogging3.expand("walkthrough").track({ click: true })}>
         <summary ?data-has-widgets=${!input.isLoading && hasWidgets}>
           <span class="walkthrough-inline-title">
             ${input.isExpanded ? walkthroughCloseTitle({ hasWidgets, isInlined: true }) : walkthroughTitle({ isLoading: input.isLoading, lastStep, hasWidgets })}
@@ -3276,7 +3277,7 @@ function renderSidebarWalkthrough(input, stepsOutput, stepsCount) {
     return Lit4.nothing;
   }
   return html6`
-    <div class="walkthrough-view">
+    <div class="walkthrough-view" jslog=${VisualLogging3.section("walkthrough-container")}>
       <div class="walkthrough-header">
          <h2 class="walkthrough-title">${i18nString2(UIStrings2.title)}</h2>
          <devtools-button
@@ -3664,7 +3665,7 @@ var DEFAULT_VIEW4 = (input, output, target) => {
       <style>${Input3.textInputStyles}</style>
       <style>${chatMessage_css_default}</style>
       <div class=${userQueryWrapperClasses}>
-        <section class=${messageClasses2} jslog=${VisualLogging3.section("question")}>
+        <section class=${messageClasses2} jslog=${VisualLogging4.section("question")}>
           ${imageInput}
           <div class="message-content">${renderTextAsMarkdown(message.text, input.markdownRenderer)}</div>
         </section>
@@ -3684,7 +3685,7 @@ var DEFAULT_VIEW4 = (input, output, target) => {
   Lit5.render(html7`
     <style>${Input3.textInputStyles}</style>
     <style>${chatMessage_css_default}</style>
-    <section class=${messageClasses} jslog=${VisualLogging3.section("answer")}>
+    <section class=${messageClasses} jslog=${VisualLogging4.section("answer")}>
       ${hasAiV2 ? Lit5.nothing : html7`
         <div class="message-info">
           <devtools-icon name=${icon}></devtools-icon>
@@ -3915,7 +3916,7 @@ function renderStep({ step, isLoading, markdownRenderer, isLast }) {
   });
   return html7`
     <details class=${stepClasses}
-      jslog=${VisualLogging3.section("step")}
+      jslog=${VisualLogging4.expand("step").track({ click: true })}
       .open=${Boolean(step.requestApproval)}>
       <summary>
         <div class="summary">
@@ -3985,8 +3986,9 @@ async function makeComputedStyleWidget(widgetData) {
     })}
           ></devtools-widget>)
         </span>
-      </span>`
+      </span>`,
     // clang-format on
+    jslogContext: "computed-styles"
   };
 }
 async function makeCoreWebVitalsWidget(widgetData) {
@@ -3995,7 +3997,8 @@ async function makeCoreWebVitalsWidget(widgetData) {
   return {
     renderedWidget,
     revealable: new TimelineUtils.Helpers.RevealableCoreVitals(widgetData.data.insightSetKey),
-    title: lockedString5(UIStringsNotTranslate4.coreVitals)
+    title: lockedString5(UIStringsNotTranslate4.coreVitals),
+    jslogContext: "core-web-vitals"
   };
 }
 async function makeStylePropertiesWidget(widgetData) {
@@ -4023,7 +4026,8 @@ async function makeStylePropertiesWidget(widgetData) {
       ${widget3(PanelsCommon3.DOMLinkifier.DOMNodeLink, {
       node: domNodeForId
     })}
-    ></devtools-widget>`
+    ></devtools-widget>`,
+    jslogContext: "standalone-styles"
   };
 }
 async function makeLcpBreakdownWidget(widgetData) {
@@ -4040,7 +4044,8 @@ async function makeLcpBreakdownWidget(widgetData) {
   return {
     renderedWidget,
     revealable: new TimelineUtils.Helpers.RevealableInsight(insight),
-    title: lockedString5(UIStringsNotTranslate4.lcpBreakdown)
+    title: lockedString5(UIStringsNotTranslate4.lcpBreakdown),
+    jslogContext: "lcp-breakdown"
   };
 }
 async function makeBottomUpTimelineTreeWidget(widgetData) {
@@ -4065,7 +4070,8 @@ async function makeBottomUpTimelineTreeWidget(widgetData) {
   return {
     renderedWidget,
     revealable: new TimelineUtils.Helpers.RevealableBottomUpProfile(widgetData.data.bounds),
-    title: lockedString5(UIStringsNotTranslate4.bottomUpTree)
+    title: lockedString5(UIStringsNotTranslate4.bottomUpTree),
+    jslogContext: "bottom-up"
   };
 }
 function renderWidgetResponse(response) {
@@ -4086,6 +4092,7 @@ function renderWidgetResponse(response) {
     <devtools-button class="widget-reveal-button"
       .variant=${"text"}
       .accessibleLabel=${lockedString5(UIStringsNotTranslate4.reveal)}
+      .jslogContext=${"reveal"}
       @click=${onReveal}
     >
       ${response.customRevealTitle ?? lockedString5(UIStringsNotTranslate4.reveal)}
@@ -4093,7 +4100,7 @@ function renderWidgetResponse(response) {
     </devtools-button>
   `;
   return html7`
-    <div class=${classes}>
+    <div class=${classes} jslog=${ifDefined(response.jslogContext ? VisualLogging4.section(response.jslogContext) : void 0)}>
       ${response.title ? html7`
         <div class="widget-header">
           <h3 class="widget-name">${response.title}</h3>
@@ -4119,7 +4126,8 @@ async function makePerformanceTraceWidget(widgetData) {
     renderedWidget: null,
     title: null,
     revealable: new Timeline.TimelinePanel.ParsedTraceRevealable(widgetData.data.parsedTrace),
-    customRevealTitle: lockedString5(UIStringsNotTranslate4.revealTrace)
+    customRevealTitle: lockedString5(UIStringsNotTranslate4.revealTrace),
+    jslogContext: "performance-trace"
   };
 }
 function renderNetworkRequestPreview(networkRequest) {
@@ -4167,7 +4175,8 @@ async function makeDomTreeWidget(widgetData) {
   return {
     renderedWidget,
     revealable: new SDK3.DOMModel.DeferredDOMNode(root.domModel().target(), root.backendNodeId()),
-    title: lockedString5(UIStringsNotTranslate4.lcpElement)
+    title: lockedString5(UIStringsNotTranslate4.lcpElement),
+    jslogContext: "dom-snapshot"
   };
 }
 async function renderWidgets(widgets, options = {}) {
@@ -4217,7 +4226,7 @@ function renderSideEffectConfirmationUi(step) {
   }
   return html7`<div
     class="side-effect-confirmation"
-    jslog=${VisualLogging3.section("side-effect-confirmation")}
+    jslog=${VisualLogging4.section("side-effect-confirmation")}
   >
     ${step.requestApproval.description ? html7`<p>${step.requestApproval.description}</p>` : Lit5.nothing}
     <div class="side-effect-buttons-container">
@@ -4254,9 +4263,9 @@ function renderError(message) {
         errorMessage = UIStringsNotTranslate4.crossOriginError;
         break;
       case "abort":
-        return html7`<p class="aborted" jslog=${VisualLogging3.section("aborted")}>${lockedString5(UIStringsNotTranslate4.stoppedResponse)}</p>`;
+        return html7`<p class="aborted" jslog=${VisualLogging4.section("aborted")}>${lockedString5(UIStringsNotTranslate4.stoppedResponse)}</p>`;
     }
-    return html7`<p class="error" jslog=${VisualLogging3.section("error")}>${lockedString5(errorMessage)}</p>`;
+    return html7`<p class="error" jslog=${VisualLogging4.section("error")}>${lockedString5(errorMessage)}</p>`;
   }
   return Lit5.nothing;
 }
@@ -4420,7 +4429,7 @@ function renderActions(input, output) {
           class="devtools-text-input feedback-input"
           @input=${(event) => input.onInputChange(event.target.value)}
           placeholder=${lockedString5(UIStringsNotTranslate4.provideFeedbackPlaceholder)}
-          jslog=${VisualLogging3.textField("feedback").track({ keydown: "Enter" })}
+          jslog=${VisualLogging4.textField("feedback").track({ keydown: "Enter" })}
         >
         <span class="feedback-disclaimer">${lockedString5(UIStringsNotTranslate4.disclaimer)}</span>
         <div>
@@ -4652,7 +4661,8 @@ async function makeTimelineRangeSummaryWidget(widgetData) {
   return {
     renderedWidget: template,
     revealable: new TimelineUtils.Helpers.RevealableTimeRange(bounds),
-    title: lockedString5(UIStringsNotTranslate4.performanceSummary)
+    title: lockedString5(UIStringsNotTranslate4.performanceSummary),
+    jslogContext: "timeline-range-summary"
   };
 }
 
@@ -5084,6 +5094,7 @@ import * as Buttons6 from "./../../ui/components/buttons/buttons.js";
 import * as Snackbars2 from "./../../ui/components/snackbars/snackbars.js";
 import * as UI6 from "./../../ui/legacy/legacy.js";
 import * as Lit6 from "./../../ui/lit/lit.js";
+import * as VisualLogging5 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/ai_assistance/components/exportForAgentsDialog.css.js
 var exportForAgentsDialog_css_default = `/*
@@ -5229,7 +5240,7 @@ var DEFAULT_VIEW5 = (input, _output, target) => {
   const exportText = isPrompt ? input.state.promptText : input.state.conversationText;
   render6(html8`
     <style>${exportForAgentsDialog_css_default}</style>
-    <div class="export-for-agents-dialog">
+    <div class="export-for-agents-dialog" jslog=${VisualLogging5.dialog("ai-export-for-agents")}>
       <header>
         <h1 id="export-for-agents-dialog-title" tabindex="-1">
           ${i18nString3(UIStrings3.exportForAgents)}
@@ -5358,22 +5369,22 @@ var ExportForAgentsDialog = class _ExportForAgentsDialog extends UI6.Widget.VBox
     this.#view(viewInput, void 0, this.contentElement);
   }
   static show({ promptText, markdownText, onConversationSaveAs }) {
-    const dialog2 = new UI6.Dialog.Dialog();
-    dialog2.setAriaLabel(i18nString3(UIStrings3.exportForAgents));
-    dialog2.setOutsideClickCallback((ev) => {
+    const dialog3 = new UI6.Dialog.Dialog();
+    dialog3.setAriaLabel(i18nString3(UIStrings3.exportForAgents));
+    dialog3.setOutsideClickCallback((ev) => {
       ev.consume(true);
-      dialog2.hide();
+      dialog3.hide();
     });
-    dialog2.addCloseButton();
-    dialog2.setSizeBehavior(
+    dialog3.addCloseButton();
+    dialog3.setSizeBehavior(
       "MeasureContent"
       /* UI.GlassPane.SizeBehavior.MEASURE_CONTENT */
     );
-    dialog2.setDimmed(true);
-    const exportDialog = new _ExportForAgentsDialog({ dialog: dialog2, promptText, markdownText, onConversationSaveAs });
-    exportDialog.show(dialog2.contentElement);
+    dialog3.setDimmed(true);
+    const exportDialog = new _ExportForAgentsDialog({ dialog: dialog3, promptText, markdownText, onConversationSaveAs });
+    exportDialog.show(dialog3.contentElement);
     void exportDialog.updateComplete.then(() => {
-      dialog2.show();
+      dialog3.show();
     });
   }
 };
@@ -5652,7 +5663,7 @@ import * as Root5 from "./../../core/root/root.js";
 import * as uiI18n from "./../../ui/i18n/i18n.js";
 import * as UI8 from "./../../ui/legacy/legacy.js";
 import { html as html10, render as render8 } from "./../../ui/lit/lit.js";
-import * as VisualLogging4 from "./../../ui/visual_logging/visual_logging.js";
+import * as VisualLogging6 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/ai_assistance/components/disabledWidget.css.js
 var disabledWidget_css_default = `/*
@@ -5766,7 +5777,7 @@ function renderConsentViewContents(hostConfig) {
   settingsLink.addEventListener("click", () => {
     void UI8.ViewManager.ViewManager.instance().showView("chrome-ai");
   });
-  settingsLink.setAttribute("jslog", `${VisualLogging4.action("open-ai-settings").track({ click: true })}`);
+  settingsLink.setAttribute("jslog", `${VisualLogging6.action("open-ai-settings").track({ click: true })}`);
   let consentViewContents;
   if (hostConfig.devToolsAiAssistancePerformanceAgent?.enabled) {
     consentViewContents = uiI18n.getFormatLocalizedString(str_4, UIStrings4.turnOnForStylesRequestsPerformanceAndFiles, { PH1: settingsLink });
@@ -5824,7 +5835,7 @@ import * as i18n17 from "./../../core/i18n/i18n.js";
 import * as Root6 from "./../../core/root/root.js";
 import * as UI9 from "./../../ui/legacy/legacy.js";
 import { html as html11, render as render9 } from "./../../ui/lit/lit.js";
-import * as VisualLogging5 from "./../../ui/visual_logging/visual_logging.js";
+import * as VisualLogging7 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/ai_assistance/components/exploreWidget.css.js
 var exploreWidget_css_default = `/*
@@ -5983,7 +5994,7 @@ var DEFAULT_VIEW8 = (input, _output, target) => {
      <button
        class="link"
        role="link"
-       jslog=${VisualLogging5.link(featureCard.jslogContext).track({
+       jslog=${VisualLogging7.link(featureCard.jslogContext).track({
       click: true
     })}
        @click=${featureCard.onClick}
@@ -6006,7 +6017,7 @@ var DEFAULT_VIEW8 = (input, _output, target) => {
             <button
               class="link"
               role="link"
-              jslog=${VisualLogging5.link("open-ai-settings").track({ click: true })}
+              jslog=${VisualLogging7.link("open-ai-settings").track({ click: true })}
               @click=${() => {
     void UI9.ViewManager.ViewManager.instance().showView("chrome-ai");
   }}
@@ -6108,7 +6119,7 @@ import * as Root7 from "./../../core/root/root.js";
 import * as Buttons8 from "./../../ui/components/buttons/buttons.js";
 import * as UI10 from "./../../ui/legacy/legacy.js";
 import * as Lit7 from "./../../ui/lit/lit.js";
-import * as VisualLogging6 from "./../../ui/visual_logging/visual_logging.js";
+import * as VisualLogging8 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/ai_assistance/components/optInChangeDialog.css.js
 var optInChangeDialog_css_default = `/*
@@ -6247,7 +6258,7 @@ var DEFAULT_VIEW9 = (input, _output, target) => {
   const disclaimer = input.loggingEnabled ? i18nString5(UIStrings5.privacyDisclaimer) : i18nString5(UIStrings5.privacyDisclaimerEnterpriseNoLogging);
   render10(html12`
     <style>${optInChangeDialog_css_default}</style>
-    <div class="opt-in-change-dialog" jslog=${VisualLogging6.dialog("ai-v2-opt-in-change-dialog")}>
+    <div class="opt-in-change-dialog" jslog=${VisualLogging8.dialog("ai-v2-opt-in-change-dialog")}>
       <header>
         <div class="header-icon-container">
           <devtools-icon name="smart-assistant" role="presentation"></devtools-icon>
@@ -6317,28 +6328,28 @@ var OptInChangeDialog = class _OptInChangeDialog extends UI10.Widget.VBox {
     this.contentElement.querySelector("h1")?.focus();
   }
   static show(options) {
-    const dialog2 = new UI10.Dialog.Dialog();
-    dialog2.setAriaLabel(i18nString5(UIStrings5.title));
-    dialog2.setOutsideClickCallback((event) => event.consume(true));
-    dialog2.setCloseOnEscape(false);
-    dialog2.setSizeBehavior(
+    const dialog3 = new UI10.Dialog.Dialog();
+    dialog3.setAriaLabel(i18nString5(UIStrings5.title));
+    dialog3.setOutsideClickCallback((event) => event.consume(true));
+    dialog3.setCloseOnEscape(false);
+    dialog3.setSizeBehavior(
       "MeasureContent"
       /* UI.GlassPane.SizeBehavior.MEASURE_CONTENT */
     );
-    dialog2.setDimmed(true);
+    dialog3.setDimmed(true);
     const optInChangeDialog = new _OptInChangeDialog({
       onGotIt: () => {
-        dialog2.hide();
+        dialog3.hide();
         options.onGotIt();
       },
       onManageSettings: () => {
-        dialog2.hide();
+        dialog3.hide();
         options.onManageSettings();
       }
     });
-    optInChangeDialog.show(dialog2.contentElement);
+    optInChangeDialog.show(dialog3.contentElement);
     void optInChangeDialog.updateComplete.then(() => {
-      dialog2.show();
+      dialog3.show();
       optInChangeDialog.focusTitle();
     });
   }
@@ -6870,7 +6881,7 @@ function getMarkdownRenderer(conversation) {
 function toolbarView(input) {
   const hasAiV2 = Boolean(Root8.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled);
   return html15`
-    <div class="toolbar-container" role="toolbar" jslog=${VisualLogging7.toolbar()}>
+    <div class="toolbar-container" role="toolbar" jslog=${VisualLogging9.toolbar()}>
       <devtools-toolbar class="freestyler-left-toolbar" role="presentation">
       ${input.showChatActions ? html15`<devtools-button
           title=${i18nString6(UIStrings6.newChat)}
@@ -7898,7 +7909,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI11.Panel.Panel {
     } else if (data instanceof AiAssistanceModel7.AccessibilityAgent.AccessibilityContext) {
       this.#selectedAccessibility = data;
     }
-    void VisualLogging7.logFunctionCall(`context-change-${this.#conversation?.type}`);
+    void VisualLogging9.logFunctionCall(`context-change-${this.#conversation?.type}`);
     this.requestUpdate();
   };
   async #handleInspectElement() {
@@ -7962,7 +7973,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI11.Panel.Panel {
         type: multimodalInputType
       };
     }
-    void VisualLogging7.logFunctionCall(`start-conversation-${this.#conversation.type}`, "ui");
+    void VisualLogging9.logFunctionCall(`start-conversation-${this.#conversation.type}`, "ui");
     await this.#doConversation(this.#conversation.run(text, {
       signal,
       multimodalInput

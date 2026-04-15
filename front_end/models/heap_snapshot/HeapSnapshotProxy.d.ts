@@ -10,7 +10,8 @@ export declare class HeapSnapshotWorkerProxy extends Common.ObjectWrapper.Object
     readonly previousCallbacks: Set<number>;
     readonly worker: PlatformApi.HostRuntime.Worker;
     interval?: number;
-    constructor(eventHandler: (arg0: string, arg1: string) => void);
+    readonly workerUrl?: string;
+    constructor(eventHandler: (arg0: string, arg1: string) => void, workerUrl?: string);
     createLoader(profileUid: number, snapshotReceivedCallback: (arg0: HeapSnapshotProxy) => void): HeapSnapshotLoaderProxy;
     dispose(): void;
     disposeObject(objectId: number): void;

@@ -119,24 +119,19 @@ class HeapSnapshotGridNodeBase extends DataGrid.DataGrid.DataGridNode {
 }
 export class HeapSnapshotGridNode extends Common.ObjectWrapper.eventMixin(HeapSnapshotGridNodeBase) {
     dataGridInternal;
-    instanceCount;
-    savedChildren;
-    retrievedChildrenRanges;
-    providerObject;
-    reachableFromWindow;
+    instanceCount = 0;
+    savedChildren = new Map();
+    /**
+     * List of position ranges for all visible nodes: [startPos1, endPos1),...,[startPosN, endPosN)
+     * Position is an item position in the provider.
+     */
+    retrievedChildrenRanges = [];
+    providerObject = null;
+    reachableFromWindow = false;
     populated;
     constructor(tree, hasChildren) {
         super(null, hasChildren);
         this.dataGridInternal = tree;
-        this.instanceCount = 0;
-        this.savedChildren = new Map();
-        /**
-         * List of position ranges for all visible nodes: [startPos1, endPos1),...,[startPosN, endPosN)
-         * Position is an item position in the provider.
-         */
-        this.retrievedChildrenRanges = [];
-        this.providerObject = null;
-        this.reachableFromWindow = false;
     }
     get name() {
         return undefined;

@@ -1,4 +1,5 @@
 import * as Common from '../../core/common/common.js';
+import * as TextUtils from '../../models/text_utils/text_utils.js';
 import { SuggestBox, type SuggestBoxDelegate, type Suggestion } from './SuggestBox.js';
 /**
  * A custom element wrapper around TextPrompt that allows text-editing contents in-place.
@@ -60,7 +61,7 @@ export declare class TextPrompt extends Common.ObjectWrapper.ObjectWrapper<Event
     private proxyElement;
     private proxyElementDisplay;
     private autocompletionTimeout;
-    private queryRange;
+    protected queryRange: TextUtils.TextRange.TextRange | null;
     private previousText;
     private currentSuggestion;
     private completionRequestId;

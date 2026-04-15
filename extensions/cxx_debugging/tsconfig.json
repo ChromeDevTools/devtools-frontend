@@ -10,9 +10,7 @@
     "paths": {
       "lit-html": ["./third_party/lit-html"],
       "lit-html/*": ["./third_party/lit-html/*"]
-    },
-    "types": ["chai", "emscripten", "mocha", "sinon"],
-    "ignoreDeprecations": "6.0"
+    }
   },
   "include": ["src/*.ts", "tests/*.ts"]
 }

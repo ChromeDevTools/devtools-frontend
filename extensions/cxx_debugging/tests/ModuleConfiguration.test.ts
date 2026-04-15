@@ -4,8 +4,6 @@
 
 import {findModuleConfiguration, resolveSourcePathToURL} from '../src/ModuleConfiguration.js';
 
-const {expect} = chai;
-
 describe('findModuleConfiguration', () => {
   const CONFIGA = {name: 'projectA.wasm', pathSubstitutions: []};
   const CONFIGB = {name: 'projectB.wasm', pathSubstitutions: []};

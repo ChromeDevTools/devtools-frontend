@@ -133,7 +133,7 @@ export class RecordingPlayer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       throw new Error('could not find main page!');
     }
 
-    browser.on('targetdiscovered', (targetInfo: ReturnType<puppeteer.Target['_getTargetInfo']>) => {
+    browser.on('targetdiscovered', (targetInfo: Protocol.Target.TargetInfo) => {
       // Pop-ups opened by the main target won't be auto-attached. Therefore,
       // we need to create a session for them explicitly. We user openedId
       // and type to classify a target as requiring a session.

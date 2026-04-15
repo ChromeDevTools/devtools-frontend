@@ -183,7 +183,6 @@ export class DWARFLanguageExtensionPlugin implements Chrome.DevTools.LanguageExt
       });
 
       // Set up lazy dwo files if we are running on a worker
-      // @ts-expect-error can't find global
       if (typeof global === 'undefined' && typeof importScripts === 'function' &&
           typeof XMLHttpRequest !== 'undefined') {
         mapVector(manage(addRawModuleResponse.dwos), dwoFile => {

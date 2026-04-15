@@ -5,8 +5,6 @@
 import {Debugger} from './RealBackend.js';
 import {createWorkerPlugin, makeURL, nonNull} from './TestUtils.js';
 
-const {expect} = chai;
-
 const wasmUrl = makeURL('/build/tests/inputs/externref.s.wasm');
 
 describe('Externref', () => {
@@ -43,7 +41,7 @@ describe('Externref', () => {
 
     {
       const value = nonNull(await plugin.evaluate('x', rawLocation, debug.stopIdForCallFrame(callFrame)));
-      chai.assert(value.type === 'reftype');
+      assert(value.type === 'reftype');
       const {subtype, description, preview} = await debug.getRemoteObject(callFrame, value);
       expect(subtype).to.eql('wasmvalue');
       expect(description).to.eql('externref');
@@ -52,7 +50,7 @@ describe('Externref', () => {
 
     {
       const value = nonNull(await plugin.evaluate('y', rawLocation, debug.stopIdForCallFrame(callFrame)));
-      chai.assert(value.type === 'reftype');
+      assert(value.type === 'reftype');
       const {subtype, description, preview} = await debug.getRemoteObject(callFrame, value);
       expect(subtype).to.eql('wasmvalue');
       expect(description).to.eql('externref');

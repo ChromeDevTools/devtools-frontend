@@ -2272,7 +2272,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
 
   it('reopens open tooltips on updates', async () => {
     const openTooltipStub = sinon.stub(Tooltips.Tooltip.Tooltip.prototype, 'showPopover');
-    const openTooltipPromise1 = new Promise<unknown>(r => openTooltipStub.callsFake(r));
+    const openTooltipPromise1 = new Promise<void>(r => openTooltipStub.callsFake(r));
     const stylePropertyTreeElement = getTreeElement('color', 'color-mix(in srgb, red, blue)');
     stylePropertyTreeElement.updateTitle();
     const tooltip = stylePropertyTreeElement.valueElement?.querySelector(
@@ -2284,7 +2284,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
     await openTooltipPromise1;
     tooltip.remove();
 
-    const openTooltipPromise2 = new Promise<unknown>(r => openTooltipStub.callsFake(r));
+    const openTooltipPromise2 = new Promise<void>(r => openTooltipStub.callsFake(r));
     stylePropertyTreeElement.updateTitle();
     const tooltip2 =
         stylePropertyTreeElement.valueElement?.querySelector(

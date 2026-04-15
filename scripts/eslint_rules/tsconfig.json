@@ -4,7 +4,6 @@
     "module": "nodenext",
     "moduleResolution": "nodenext",
     "lib": ["esnext", "dom"],
-    "types": ["node", "mocha"],
     "outDir": "ignored",
     "rootDir": ".",
     "checkJs": true,

@@ -8,7 +8,7 @@ import {getCallFrameNames, PAUSE_INDICATOR_SELECTOR} from '../helpers/sources-he
 
 describe('Sources', () => {
   it('shows a "Shows more" link when call stack gets too large', async ({devToolsPage, inspectedPage}) => {
-    void inspectedPage.evaluate(function() {
+    inspectedPage.evaluate(function() {
       function callWithAsyncStack(f: () => void, depth: number) {
         if (depth === 0) {
           f();
@@ -34,7 +34,7 @@ describe('Sources', () => {
   });
 
   it('shows async stack traces across worker and the page', async ({devToolsPage, inspectedPage}) => {
-    void inspectedPage.evaluate(function() {
+    inspectedPage.evaluate(function() {
       const response = `
         postMessage('ready');
         self.onmessage=function(e){

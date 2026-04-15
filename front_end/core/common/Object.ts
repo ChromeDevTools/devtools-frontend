@@ -119,34 +119,31 @@ export class ObjectWrapper<Events> implements EventTarget<Events> {
 export function eventMixin<Events, Base extends Platform.Constructor.Constructor<object>>(base: Base) {
   console.assert(base !== HTMLElement);
   return class EventHandling extends base implements EventTarget<Events> {
-    // Note that the weird name is due to TSC disallowing private/protected fields in
-    // anonmous exported classes. We use a `__` prefix to prevent clashes with `base`.
-    // eslint-disable-next-line @devtools/no-underscored-properties, @typescript-eslint/naming-convention
-    __events = new ObjectWrapper<Events>();
+    #events = new ObjectWrapper<Events>();
 
     addEventListener<T extends keyof Events>(
         eventType: T, listener: (arg0: EventTargetEvent<Events[T]>) => void,
         thisObject?: Object): EventDescriptor<Events, T> {
-      return this.__events.addEventListener(eventType, listener, thisObject);
+      return this.#events.addEventListener(eventType, listener, thisObject);
     }
 
     once<T extends keyof Events>(eventType: T): Promise<Events[T]> {
-      return this.__events.once(eventType);
+      return this.#events.once(eventType);
     }
 
     removeEventListener<T extends keyof Events>(
         eventType: T, listener: (arg0: EventTargetEvent<Events[T]>) => void, thisObject?: Object): void {
-      this.__events.removeEventListener(eventType, listener, thisObject);
+      this.#events.removeEventListener(eventType, listener, thisObject);
     }
 
     hasEventListeners(eventType: keyof Events): boolean {
-      return this.__events.hasEventListeners(eventType);
+      return this.#events.hasEventListeners(eventType);
     }
 
     dispatchEventToListeners<T extends keyof Events>(
         eventType: Platform.TypeScriptUtilities.NoUnion<T>,
         ...eventData: EventPayloadToRestParameters<Events, T>): void {
-      this.__events.dispatchEventToListeners(eventType, ...eventData);
+      this.#events.dispatchEventToListeners(eventType, ...eventData);
     }
   };
 }

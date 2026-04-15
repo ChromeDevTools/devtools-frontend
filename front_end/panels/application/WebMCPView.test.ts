@@ -91,7 +91,7 @@ describeWithEnvironment('WebMCPView (View)', () => {
         input: '{"path": "/tmp/test.txt"}',
         tool: tools[1],
         result: new WebMCP.WebMCPModel.Result(
-            Protocol.WebMCP.InvocationStatus.Success, 'File content here', undefined, undefined)
+            Protocol.WebMCP.InvocationStatus.Completed, 'File content here', undefined, undefined)
       },
       {
         invocationId: '3',
@@ -203,7 +203,7 @@ describeWithEnvironment('WebMCPView (View)', () => {
       input: '{"dir": "/tmp"}',
       tool,
       result: new WebMCP.WebMCPModel.Result(
-          Protocol.WebMCP.InvocationStatus.Success, 'File content here', undefined, undefined)
+          Protocol.WebMCP.InvocationStatus.Completed, 'File content here', undefined, undefined)
     };
 
     DEFAULT_VIEW(
@@ -474,7 +474,7 @@ describe('filterToolCalls', () => {
       tool: tools[1],
       input: '{"path": "/tmp/test.txt"}',
       result: new WebMCP.WebMCPModel.Result(
-          Protocol.WebMCP.InvocationStatus.Success, 'File content here', undefined, undefined)
+          Protocol.WebMCP.InvocationStatus.Completed, 'File content here', undefined, undefined)
     },
     {
       invocationId: '3',
@@ -493,7 +493,7 @@ describe('filterToolCalls', () => {
       tool: tools[3],
       input: '{}',
       result: new WebMCP.WebMCPModel.Result(
-          Protocol.WebMCP.InvocationStatus.Success, 'Declarative success content', undefined, undefined)
+          Protocol.WebMCP.InvocationStatus.Completed, 'Declarative success content', undefined, undefined)
     }
   ];
 

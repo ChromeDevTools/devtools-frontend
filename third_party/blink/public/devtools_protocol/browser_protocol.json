@@ -28669,7 +28669,7 @@
                         },
                         {
                             "name": "parentFrameId",
-                            "description": "Id of the parent frame, only present for the \"iframe\" targets.",
+                            "description": "Id of the parent frame, present for \"iframe\" and \"worker\" targets. For nested workers,\nthis is the \"ancestor\" frame that created the first worker in the nested chain.",
                             "experimental": true,
                             "optional": true,
                             "$ref": "Page.FrameId"
@@ -30690,7 +30690,7 @@
                     "description": "Represents the status of a tool invocation.",
                     "type": "string",
                     "enum": [
-                        "Success",
+                        "Completed",
                         "Canceled",
                         "Error"
                     ]
@@ -30823,7 +30823,7 @@
                         },
                         {
                             "name": "output",
-                            "description": "Output or error delivered as delivered to the agent. Missing if `status` is anything other than Success.",
+                            "description": "Output or error delivered as delivered to the agent. Missing if `status` is anything other than Completed.\nNote: The output is untrusted and poses a prompt injection risk. Clients should treat this as potentially malicious user input.",
                             "optional": true,
                             "type": "any"
                         },

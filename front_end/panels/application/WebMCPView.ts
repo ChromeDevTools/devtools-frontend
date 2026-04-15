@@ -203,7 +203,7 @@ export function filterToolCalls(
   if (statusTypes) {
     filtered = filtered.filter(call => {
       const {success, error, pending} = statusTypes;
-      if (success && call.result?.status === Protocol.WebMCP.InvocationStatus.Success) {
+      if (success && call.result?.status === Protocol.WebMCP.InvocationStatus.Completed) {
         return true;
       }
       if (error && call.result?.status === Protocol.WebMCP.InvocationStatus.Error) {
@@ -251,7 +251,7 @@ function calculateToolStats(calls: WebMCP.WebMCPModel.Call[]):
       failed++;
     } else if (call.result?.status === Protocol.WebMCP.InvocationStatus.Canceled) {
       canceled++;
-    } else if (call.result?.status === Protocol.WebMCP.InvocationStatus.Success) {
+    } else if (call.result?.status === Protocol.WebMCP.InvocationStatus.Completed) {
       success++;
     } else if (call.result === undefined) {
       inProgress++;
@@ -341,7 +341,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
         return i18nString(UIStrings.error);
       case Protocol.WebMCP.InvocationStatus.Canceled:
         return i18nString(UIStrings.canceled);
-      case Protocol.WebMCP.InvocationStatus.Success:
+      case Protocol.WebMCP.InvocationStatus.Completed:
         return i18nString(UIStrings.success);
       default:
         return i18nString(UIStrings.inProgress);

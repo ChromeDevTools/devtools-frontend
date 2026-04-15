@@ -1247,13 +1247,23 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
         const {startTime, endTime} = Trace.Helpers.Timing.eventTimingsMicroSeconds(event);
         const bounds = Trace.Helpers.Timing.traceWindowFromMicroSeconds(startTime, endTime);
 
-        const widgets: AiWidget[] = [{
-          name: 'BOTTOM_UP_TREE',
-          data: {
-            bounds,
-            parsedTrace,
+        const widgets: AiWidget[] = [
+          {
+            name: 'BOTTOM_UP_TREE',
+            data: {
+              bounds,
+              parsedTrace,
+            },
           },
-        }];
+          {
+            name: 'TIMELINE_RANGE_SUMMARY',
+            data: {
+              bounds,
+              parsedTrace,
+              track: 'main',
+            },
+          },
+        ];
 
         return {result: {callTree}, widgets};
       },

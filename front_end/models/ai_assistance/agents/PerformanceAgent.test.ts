@@ -909,6 +909,9 @@ code
       assert.exists(actions[0].widgets);
       const bottomUpWidget = actions[0].widgets?.find(w => w.name === 'BOTTOM_UP_TREE');
       assert.exists(bottomUpWidget);
+
+      const rangeSummaryWidget = actions[0].widgets?.find(w => w.name === 'TIMELINE_RANGE_SUMMARY');
+      assert.exists(rangeSummaryWidget);
     });
   });
 

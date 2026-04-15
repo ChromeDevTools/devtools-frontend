@@ -27,7 +27,8 @@
           "no-unclosed-tag": "error"
         }
       }
-    ]
+    ],
+    "types": ["chai", "mocha", "sinon", "karma-chai-sinon"]
   },
   "exclude": ["devtools_compatibility.js"],
   "references": [{ "path": "./tsconfig.compatibility.json" }]

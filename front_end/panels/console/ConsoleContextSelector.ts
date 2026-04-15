@@ -303,7 +303,7 @@ interface ViewInput {
 type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 
 const DEFAULT_VIEW: View = (input, _output, target): void => {
-  if (!input.title || !input.subtitle) {
+  if (!input.title) {
     render(nothing, target);
     return;
   }

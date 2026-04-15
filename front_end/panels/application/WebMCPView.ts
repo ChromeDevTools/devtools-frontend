@@ -133,7 +133,7 @@ const UIStrings = {
   /**
    * @description Text for the status of a tool call that succeeded
    */
-  success: 'Success',
+  completed: 'Completed',
   /**
    * @description Text for the status of a tool call that has failed
    */
@@ -170,7 +170,7 @@ export interface FilterState {
     declarative?: boolean,
   };
   statusTypes?: {
-    success?: boolean,
+    completed?: boolean,
     error?: boolean,
     pending?: boolean,
   };
@@ -205,8 +205,8 @@ export function filterToolCalls(
   const statusTypes = filterState.statusTypes;
   if (statusTypes) {
     filtered = filtered.filter(call => {
-      const {success, error, pending} = statusTypes;
-      if (success && call.result?.status === Protocol.WebMCP.InvocationStatus.Completed) {
+      const {completed, error, pending} = statusTypes;
+      if (completed && call.result?.status === Protocol.WebMCP.InvocationStatus.Completed) {
         return true;
       }
       if (error && call.result?.status === Protocol.WebMCP.InvocationStatus.Error) {
@@ -246,8 +246,8 @@ export function filterToolCalls(
 }
 export type View = (input: ViewInput, output: object, target: HTMLElement) => void;
 function calculateToolStats(calls: WebMCP.WebMCPModel.Call[]):
-    {total: number, success: number, failed: number, canceled: number, inProgress: number} {
-  let total = 0, success = 0, failed = 0, canceled = 0, inProgress = 0;
+    {total: number, completed: number, failed: number, canceled: number, inProgress: number} {
+  let total = 0, completed = 0, failed = 0, canceled = 0, inProgress = 0;
   for (const call of calls) {
     total++;
     if (call.result?.status === Protocol.WebMCP.InvocationStatus.Error) {
@@ -255,24 +255,24 @@ function calculateToolStats(calls: WebMCP.WebMCPModel.Call[]):
     } else if (call.result?.status === Protocol.WebMCP.InvocationStatus.Canceled) {
       canceled++;
     } else if (call.result?.status === Protocol.WebMCP.InvocationStatus.Completed) {
-      success++;
+      completed++;
     } else if (call.result === undefined) {
       inProgress++;
     }
   }
-  return {total, success, failed, canceled, inProgress};
+  return {total, completed, failed, canceled, inProgress};
 }
 
 function getIconGroupsFromStats(toolStats: ReturnType<typeof calculateToolStats>):
     IconButton.IconButton.IconWithTextData[] {
   const groups = [];
-  if (toolStats.success > 0) {
+  if (toolStats.completed > 0) {
     groups.push({
       iconName: 'check-circle',
       iconColor: 'var(--sys-color-green)',
       iconWidth: '16px',
       iconHeight: '16px',
-      text: String(toolStats.success),
+      text: String(toolStats.completed),
     });
   }
   if (toolStats.failed > 0) {
@@ -345,7 +345,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
       case Protocol.WebMCP.InvocationStatus.Canceled:
         return i18nString(UIStrings.canceled);
       case Protocol.WebMCP.InvocationStatus.Completed:
-        return i18nString(UIStrings.success);
+        return i18nString(UIStrings.completed);
       default:
         return i18nString(UIStrings.inProgress);
     }
@@ -603,19 +603,19 @@ export class WebMCPView extends UI.Widget.VBox {
   }
 
   #showStatusTypesContextMenu(contextMenu: UI.ContextMenu.ContextMenu): void {
-    const toggle = (key: 'success'|'error'|'pending'): void => {
+    const toggle = (key: 'completed'|'error'|'pending'): void => {
       const current = this.#filterState.statusTypes ?? {};
       const next = {...current, [key]: !current[key]};
       let statusTypesToPass: FilterState['statusTypes'] = next;
-      if (!next.success && !next.error && !next.pending) {
+      if (!next.completed && !next.error && !next.pending) {
         statusTypesToPass = undefined;
       }
       this.#handleFilterChange({...this.#filterState, statusTypes: statusTypesToPass});
     };
 
     contextMenu.defaultSection().appendCheckboxItem(
-        i18nString(UIStrings.success), () => toggle('success'),
-        {checked: this.#filterState.statusTypes?.['success'] ?? false, jslogContext: 'webmcp.success'});
+        i18nString(UIStrings.completed), () => toggle('completed'),
+        {checked: this.#filterState.statusTypes?.['completed'] ?? false, jslogContext: 'webmcp.completed'});
     contextMenu.defaultSection().appendCheckboxItem(
         i18nString(UIStrings.error), () => toggle('error'),
         {checked: this.#filterState.statusTypes?.['error'] ?? false, jslogContext: 'webmcp.error'});

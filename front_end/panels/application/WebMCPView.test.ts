@@ -511,7 +511,7 @@ describe('filterToolCalls', () => {
     const result = filterToolCalls(mockCalls, {
       text: '',
       statusTypes: {
-        success: true,
+        completed: true,
       },
     });
     assert.lengthOf(result, 2);
@@ -556,7 +556,7 @@ describe('filterToolCalls', () => {
     const result = filterToolCalls(mockCalls, {
       text: 'success',
       statusTypes: {
-        success: true,
+        completed: true,
       },
       toolTypes: {
         declarative: true,

@@ -99,4 +99,39 @@ describeWithEnvironment('ChatView', () => {
       assert.exists(sideEffect);
     });
   });
+
+  describe('Caching', () => {
+    it('should cache the summary and not regenerate it if only the timestamp changes', async () => {
+      const generateSummaryStub = sinon.stub().resolves('Summary');
+      let capturedExportClick: (() => void)|undefined;
+      const customView = (input: AiAssistancePanel.ChatWidgetInput) => {
+        capturedExportClick = input.exportForAgentsClick;
+      };
+
+      const props = getProp({
+        generateConversationSummary: generateSummaryStub,
+        conversationMarkdown: '# Conversation\n\n**Export Timestamp (UTC):** 2026-04-15T10:00:00.000Z\n\n---\nContent',
+      });
+
+      const chat = new AiAssistancePanel.ChatView(props, customView);
+      renderElementIntoDOM(chat);
+
+      assert.exists(capturedExportClick);
+
+      // Trigger export first time
+      await capturedExportClick!();
+      sinon.assert.callCount(generateSummaryStub, 1);
+
+      // Update props with a new timestamp but same content
+      chat.props = getProp({
+        generateConversationSummary: generateSummaryStub,
+        conversationMarkdown: '# Conversation\n\n**Export Timestamp (UTC):** 2026-04-15T11:00:00.000Z\n\n---\nContent',
+      });
+
+      // Trigger export second time
+      await capturedExportClick!();
+      // Should still be 1 because of cache
+      sinon.assert.callCount(generateSummaryStub, 1);
+    });
+  });
 });

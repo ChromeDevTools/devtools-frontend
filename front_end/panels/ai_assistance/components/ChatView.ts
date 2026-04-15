@@ -96,7 +96,7 @@ export interface Props {
   };
 }
 
-interface ChatWidgetInput extends Props {
+export interface ChatWidgetInput extends Props {
   handleScroll: (ev: Event) => void;
   handleSuggestionClick: (title: string) => void;
   handleMessageContainerRef: (el: Element|undefined) => void;
@@ -367,12 +367,13 @@ export class ChatView extends HTMLElement {
   };
 
   async #getSummary(): Promise<string> {
-    if (this.#cachedSummary?.markdown === this.#props.conversationMarkdown) {
+    const cacheKey = this.#props.conversationMarkdown.replace(/\*\*Export Timestamp \(UTC\):\*\* .*\n\n/, '');
+    if (this.#cachedSummary?.markdown === cacheKey) {
       return this.#cachedSummary.summary;
     }
     try {
       const summary = await this.#props.generateConversationSummary(this.#props.conversationMarkdown);
-      this.#cachedSummary = {markdown: this.#props.conversationMarkdown, summary};
+      this.#cachedSummary = {markdown: cacheKey, summary};
       return summary;
     } catch (err) {
       console.error(err);

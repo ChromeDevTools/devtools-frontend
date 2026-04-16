@@ -11,7 +11,10 @@ Content:
     ],
     "widgets": [
       {
-        "name": "CORE_VITALS"
+        "name": "TIMELINE_RANGE_SUMMARY"
+      },
+      {
+        "name": "BOTTOM_UP_TREE"
       }
     ]
   },

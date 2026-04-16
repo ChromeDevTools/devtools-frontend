@@ -195,6 +195,33 @@ describeWithMockConnection('PerformanceAgent', function() {
           },
         ]);
       });
+
+      it('yields TIMELINE_RANGE_SUMMARY and BOTTOM_UP_TREE widgets for call tree focus on initialization',
+         async function() {
+           const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-outermost-frames.json.gz');
+           const events = allThreadEntriesInTrace(parsedTrace);
+           const layoutEvt = events.find(event => event.ts === 465457096322);
+           assert.exists(layoutEvt);
+
+           const aiCallTree = AICallTree.AICallTree.fromEvent(layoutEvt, parsedTrace);
+           assert.exists(aiCallTree);
+
+           const agent = new PerformanceAgent.PerformanceAgent({
+             aidaClient: mockAidaClient([[{explanation: 'done'}]]),
+           });
+
+           const context = PerformanceAgent.PerformanceTraceContext.fromCallTree(aiCallTree);
+           const responses = await Array.fromAsync(agent.run('test', {selected: context}));
+
+           deleteAllWidgetData(responses);
+
+           const contextResponse = responses.find(r => r.type === AiAgent.ResponseType.CONTEXT);
+           assert.exists(contextResponse);
+           assert.exists(contextResponse.widgets);
+           assert.lengthOf(contextResponse.widgets, 2);
+           assert.strictEqual(contextResponse.widgets[0].name, 'TIMELINE_RANGE_SUMMARY');
+           assert.strictEqual(contextResponse.widgets[1].name, 'BOTTOM_UP_TREE');
+         });
     });
 
     describe('enhanceQuery', () => {

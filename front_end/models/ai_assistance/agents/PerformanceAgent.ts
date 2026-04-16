@@ -432,6 +432,7 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
    * we only show it once.
    */
   #hasShownWidgetForInsightSet = new WeakSet<Trace.Insights.Types.InsightSet>();
+  #hasShownWidgetForCallTree = new WeakSet<AICallTree>();
 
   get preamble(): string {
     return buildPreamble();
@@ -472,16 +473,44 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
     contextDisclosure.push(...this.#additionalSelectionsForQuery);
 
     const widgets: AiWidget[] = [];
-    const primaryInsightSet = context.getItem().primaryInsightSet;
-    if (primaryInsightSet && !this.#hasShownWidgetForInsightSet.has(primaryInsightSet)) {
-      widgets.push({
-        name: 'CORE_VITALS',
-        data: {
-          parsedTrace: context.getItem().parsedTrace,
-          insightSetKey: primaryInsightSet.id,
-        },
-      });
-      this.#hasShownWidgetForInsightSet.add(primaryInsightSet);
+    const focus = context.getItem();
+
+    // If the user has selected a specific task (call tree) as context, show the summary and bottom-up tree for it.
+    // Otherwise, show the high-level Core Web Vitals widget for the trace or insight.
+    if (focus.callTree && !this.#hasShownWidgetForCallTree.has(focus.callTree)) {
+      const event = focus.callTree.selectedNode?.event;
+      if (event) {
+        const {startTime, endTime} = Trace.Helpers.Timing.eventTimingsMicroSeconds(event);
+        const bounds = Trace.Helpers.Timing.traceWindowFromMicroSeconds(startTime, endTime);
+        widgets.push({
+          name: 'TIMELINE_RANGE_SUMMARY',
+          data: {
+            bounds,
+            parsedTrace: focus.parsedTrace,
+            track: 'main',
+          },
+        });
+        widgets.push({
+          name: 'BOTTOM_UP_TREE',
+          data: {
+            bounds,
+            parsedTrace: focus.parsedTrace,
+          },
+        });
+        this.#hasShownWidgetForCallTree.add(focus.callTree);
+      }
+    } else {
+      const primaryInsightSet = focus.primaryInsightSet;
+      if (primaryInsightSet && !this.#hasShownWidgetForInsightSet.has(primaryInsightSet)) {
+        widgets.push({
+          name: 'CORE_VITALS',
+          data: {
+            parsedTrace: focus.parsedTrace,
+            insightSetKey: primaryInsightSet.id,
+          },
+        });
+        this.#hasShownWidgetForInsightSet.add(primaryInsightSet);
+      }
     }
 
     yield {

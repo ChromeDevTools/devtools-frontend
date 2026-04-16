@@ -30,6 +30,7 @@ devtools_entrypoint("bundle") {
 
 devtools_foundation_module("stack_trace_impl") {
   sources = [
+    "DetailedErrorStackParser.ts",
     "StackTraceImpl.ts",
     "StackTraceModel.ts",
     "Trie.ts",
@@ -62,6 +63,7 @@ devtools_foundation_module("unittests") {
   testonly = true
 
   sources = [
+    "DetailedErrorStackParser.test.ts",
     "ErrorStackParser.test.ts",
     "StackTrace.test.ts",
     "StackTraceImpl.test.ts",

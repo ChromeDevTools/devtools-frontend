@@ -1234,6 +1234,7 @@ grd_files_unbundled_sources = [
   "front_end/models/source_map_scopes/FunctionCodeResolver.js",
   "front_end/models/source_map_scopes/NamesResolver.js",
   "front_end/models/source_map_scopes/ScopeChainModel.js",
+  "front_end/models/stack_trace/DetailedErrorStackParser.js",
   "front_end/models/stack_trace/ErrorStackParser.js",
   "front_end/models/stack_trace/StackTrace.js",
   "front_end/models/stack_trace/StackTraceImpl.js",

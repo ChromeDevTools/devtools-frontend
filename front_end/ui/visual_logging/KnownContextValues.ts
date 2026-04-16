@@ -4350,6 +4350,8 @@ export const knownContextValues = new Set([
   'webmcp.call-inputs',
   'webmcp.call-outputs',
   'webmcp.completed',
+  'webmcp.copy-tool-description',
+  'webmcp.copy-tool-name',
   'webmcp.declarative',
   'webmcp.error',
   'webmcp.imperative',

@@ -4,13 +4,18 @@
 
 import type {JSONSchema7} from 'json-schema';
 
+import * as Host from '../../core/host/host.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as WebMCP from '../../models/web_mcp/web_mcp.js';
 import * as Workspace from '../../models/workspace/workspace.js';
-import {findMenuItemWithLabel, getMenuForToolbarButton} from '../../testing/ContextMenuHelpers.js';
+import {
+  findMenuItemWithLabel,
+  getContextMenuForElement,
+  getMenuForToolbarButton
+} from '../../testing/ContextMenuHelpers.js';
 import {assertScreenshot, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, describeWithEnvironment, updateHostConfig} from '../../testing/EnvironmentHelpers.js';
 import {StubStackTrace} from '../../testing/StackTraceHelpers.js';
@@ -146,6 +151,40 @@ describeWithEnvironment('WebMCPView (View)', () => {
         {}, container);
 
     await assertScreenshot('application/webmcp_view.png');
+  });
+
+  it('shows a context menu when right-clicking a tool', async () => {
+    const copyTextStub = sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'copyText');
+    const sdkTarget = createTarget();
+    const container = document.createElement('div');
+    renderElementIntoDOM(container);
+
+    const tools = [
+      createTool('test_tool', 'A test tool description', 'frame1' as Protocol.Page.FrameId, sdkTarget),
+    ];
+
+    DEFAULT_VIEW(
+        {
+          ...createDefaultViewInput(),
+          tools,
+        },
+        {}, container);
+
+    const toolItem = container.querySelector('.tool-item');
+    assert.isNotNull(toolItem);
+
+    const contextMenu = getContextMenuForElement(toolItem);
+    const copyNameItem = findMenuItemWithLabel(contextMenu.defaultSection(), 'Copy name');
+    const copyDescItem = findMenuItemWithLabel(contextMenu.defaultSection(), 'Copy description');
+
+    assert.isDefined(copyNameItem);
+    assert.isDefined(copyDescItem);
+
+    contextMenu.invokeHandler(copyNameItem.id());
+    sinon.assert.calledWith(copyTextStub, 'test_tool');
+
+    contextMenu.invokeHandler(copyDescItem.id());
+    sinon.assert.calledWith(copyTextStub, 'A test tool description');
   });
 
   it('renders a list of tools', async () => {

@@ -118,5 +118,64 @@ describeWithEnvironment('AccessibilityAgentMarkdownRenderer', () => {
       sinon.assert.calledOnce(linkifyStub);
       assert.include(el.textContent, 'LINKIFIED_PATH');
     });
+
+    it('linkifies paths using #1,HTML (without #path- prefix)', async () => {
+      const targetManager = SDK.TargetManager.TargetManager.instance();
+      const mockDomModel = sinon.createStubInstance(SDK.DOMModel.DOMModel);
+
+      const mockTarget = {
+        model: (modelClass: unknown) => {
+          if (modelClass === SDK.DOMModel.DOMModel) {
+            return mockDomModel;
+          }
+          return null;
+        },
+      } as unknown as SDK.Target.Target;
+
+      sinon.stub(targetManager, 'primaryPageTarget').returns(mockTarget);
+
+      const mockNode = {
+        frameId: () => '',
+      } as SDK.DOMModel.DOMNode;
+
+      mockDomModel.pushNodeByPathToFrontend.resolves(42 as Protocol.DOM.NodeId);
+      mockDomModel.nodeForId.returns(mockNode);
+
+      const linkifyStub = sinon.stub(PanelsCommon.DOMLinkifier.Linkifier.instance(), 'linkify')
+                              .returns(html`<span>LINKIFIED_PATH</span>`);
+
+      const el = renderToElem('[text](#1,HTML,1,BODY)');
+
+      await new Promise(resolve => setTimeout(resolve, 0));
+
+      sinon.assert.calledOnce(mockDomModel.pushNodeByPathToFrontend);
+      sinon.assert.calledWith(mockDomModel.pushNodeByPathToFrontend, '1,HTML,1,BODY');
+      sinon.assert.calledOnce(linkifyStub);
+      assert.include(el.textContent, 'LINKIFIED_PATH');
+    });
+
+    it('does not linkify non-integer node IDs', async () => {
+      const targetManager = SDK.TargetManager.TargetManager.instance();
+      const mockDomModel = sinon.createStubInstance(SDK.DOMModel.DOMModel);
+
+      const mockTarget = {
+        model: (modelClass: unknown) => {
+          if (modelClass === SDK.DOMModel.DOMModel) {
+            return mockDomModel;
+          }
+          return null;
+        },
+      } as unknown as SDK.Target.Target;
+
+      sinon.stub(targetManager, 'primaryPageTarget').returns(mockTarget);
+
+      const el = renderToElem('[text](#node-1.5)');
+
+      await new Promise(resolve => setTimeout(resolve, 0));
+
+      sinon.assert.notCalled(mockDomModel.pushNodesByBackendIdsToFrontend);
+      assert.include(el.textContent, 'text');
+      assert.notInclude(el.textContent, 'LINKIFIED');
+    });
   });
 });

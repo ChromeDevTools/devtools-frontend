@@ -1592,7 +1592,10 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     const label = document.createElement('div');
     label.classList.add('button-label');
     const text = document.createElement('div');
-    text.innerText = this.getExplainLabel();
+    // We use a data attribute and a CSS pseudo-element for the button label
+    // to prevent the text from being picked up by the console's custom
+    // copy-to-clipboard traversal, which only collects actual text nodes.
+    text.setAttribute('data-text', this.getExplainLabel());
     label.append(text);
     button.append(label);
     button.classList.add('hover-button');
@@ -1615,7 +1618,10 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     const label = document.createElement('div');
     label.classList.add('button-label');
     const text = document.createElement('div');
-    text.innerText = 'Debug with breakpoint AI';
+    // We use a data attribute and a CSS pseudo-element for the button label
+    // to prevent the text from being picked up by the console's custom
+    // copy-to-clipboard traversal, which only collects actual text nodes.
+    text.setAttribute('data-text', 'Debug with breakpoint AI');
     label.append(text);
     button.append(label);
     button.classList.add('hover-button');

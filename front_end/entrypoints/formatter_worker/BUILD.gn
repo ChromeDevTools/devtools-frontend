@@ -39,7 +39,11 @@ devtools_foundation_module("formatter_worker") {
 devtools_entrypoint("bundle") {
   entrypoint = "formatter_worker.ts"
 
-  deps = [ ":formatter_worker" ]
+  deps = [
+    ":formatter_worker",
+    "../../third_party/codemirror",
+    "../../third_party/codemirror:codemirror-legacy-types",
+  ]
 
   visibility = [
     ":*",

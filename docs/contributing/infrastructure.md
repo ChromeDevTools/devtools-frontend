@@ -112,7 +112,6 @@ for the current logic.
 Some of the filters currently in use are:
 
 - `cpp_debug_extension` builders only trigger on changes related to the extension
-- `dtf_check_no_bundle` builder only trigger on GN changes
 - all other builders will not trigger if only documentation files are updated
 
 ## Branch cutting process

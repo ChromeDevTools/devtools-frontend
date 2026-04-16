@@ -3720,6 +3720,13 @@ export namespace ProtocolMapping {
       returnType: void;
     };
     /**
+     * Deletes a device bound session.
+     */
+    'Network.deleteDeviceBoundSession': {
+      paramsType: [Protocol.Network.DeleteDeviceBoundSessionRequest];
+      returnType: void;
+    };
+    /**
      * Fetches the schemeful site for a specific origin.
      */
     'Network.fetchSchemefulSite': {
@@ -5374,6 +5381,13 @@ export namespace ProtocolMapping {
     'WebMCP.disable': {
       paramsType: [];
       returnType: void;
+    };
+    /**
+     * Invokes a registered tool.
+     */
+    'WebMCP.invokeTool': {
+      paramsType: [Protocol.WebMCP.InvokeToolRequest];
+      returnType: Protocol.WebMCP.InvokeToolResponse;
     };
     /**
      * Continues execution until specific location is reached.

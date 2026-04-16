@@ -2732,6 +2732,11 @@ declare namespace ProtocolProxyApi {
     invoke_enableDeviceBoundSessions(params: Protocol.Network.EnableDeviceBoundSessionsRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
+     * Deletes a device bound session.
+     */
+    invoke_deleteDeviceBoundSession(params: Protocol.Network.DeleteDeviceBoundSessionRequest): Promise<Protocol.ProtocolResponseWithError>;
+
+    /**
      * Fetches the schemeful site for a specific origin.
      */
     invoke_fetchSchemefulSite(params: Protocol.Network.FetchSchemefulSiteRequest): Promise<Protocol.Network.FetchSchemefulSiteResponse>;
@@ -4847,6 +4852,11 @@ declare namespace ProtocolProxyApi {
      * Disables the WebMCP domain.
      */
     invoke_disable(): Promise<Protocol.ProtocolResponseWithError>;
+
+    /**
+     * Invokes a registered tool.
+     */
+    invoke_invokeTool(params: Protocol.WebMCP.InvokeToolRequest): Promise<Protocol.WebMCP.InvokeToolResponse>;
 
   }
   export interface WebMCPDispatcher {

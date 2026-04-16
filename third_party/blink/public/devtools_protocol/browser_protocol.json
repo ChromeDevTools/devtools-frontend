@@ -17917,6 +17917,7 @@
                             "type": "string",
                             "enum": [
                                 "Refreshed",
+                                "RefreshedAsWaiter",
                                 "InitializedService",
                                 "Unreachable",
                                 "ServerError",
@@ -17968,7 +17969,8 @@
                                 "ClearBrowsingData",
                                 "ServerRequested",
                                 "InvalidSessionParams",
-                                "RefreshFatalError"
+                                "RefreshFatalError",
+                                "DevTools"
                             ]
                         }
                     ]
@@ -18881,6 +18883,17 @@
                             "name": "enable",
                             "description": "Whether to enable or disable events.",
                             "type": "boolean"
+                        }
+                    ]
+                },
+                {
+                    "name": "deleteDeviceBoundSession",
+                    "description": "Deletes a device bound session.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "key",
+                            "$ref": "DeviceBoundSessionKey"
                         }
                     ]
                 },
@@ -30750,6 +30763,34 @@
                 {
                     "name": "disable",
                     "description": "Disables the WebMCP domain."
+                },
+                {
+                    "name": "invokeTool",
+                    "description": "Invokes a registered tool.",
+                    "parameters": [
+                        {
+                            "name": "frameId",
+                            "description": "Frame in which to invoke the tool.",
+                            "$ref": "Page.FrameId"
+                        },
+                        {
+                            "name": "toolName",
+                            "description": "Name of the tool to invoke.",
+                            "type": "string"
+                        },
+                        {
+                            "name": "input",
+                            "description": "Input parameters for the tool, matching the tool's inputSchema.",
+                            "type": "object"
+                        }
+                    ],
+                    "returns": [
+                        {
+                            "name": "invocationId",
+                            "description": "Unique identifier for this invocation. Response is sent before tool events.",
+                            "type": "string"
+                        }
+                    ]
                 }
             ],
             "events": [

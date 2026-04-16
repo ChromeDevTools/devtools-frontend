@@ -11922,6 +11922,7 @@ export namespace Network {
 
   export const enum RefreshEventDetailsRefreshResult {
     Refreshed = 'Refreshed',
+    RefreshedAsWaiter = 'RefreshedAsWaiter',
     InitializedService = 'InitializedService',
     Unreachable = 'Unreachable',
     ServerError = 'ServerError',
@@ -11967,6 +11968,7 @@ export namespace Network {
     ServerRequested = 'ServerRequested',
     InvalidSessionParams = 'InvalidSessionParams',
     RefreshFatalError = 'RefreshFatalError',
+    DevTools = 'DevTools',
   }
 
   /**
@@ -12553,6 +12555,10 @@ export namespace Network {
      * Whether to enable or disable events.
      */
     enable: boolean;
+  }
+
+  export interface DeleteDeviceBoundSessionRequest {
+    key: DeviceBoundSessionKey;
   }
 
   export interface FetchSchemefulSiteRequest {
@@ -20354,6 +20360,28 @@ export namespace WebMCP {
      * The stack trace at the time of the registration.
      */
     stackTrace?: Runtime.StackTrace;
+  }
+
+  export interface InvokeToolRequest {
+    /**
+     * Frame in which to invoke the tool.
+     */
+    frameId: Page.FrameId;
+    /**
+     * Name of the tool to invoke.
+     */
+    toolName: string;
+    /**
+     * Input parameters for the tool, matching the tool's inputSchema.
+     */
+    input: any;
+  }
+
+  export interface InvokeToolResponse extends ProtocolResponseWithError {
+    /**
+     * Unique identifier for this invocation. Response is sent before tool events.
+     */
+    invocationId: string;
   }
 
   /**

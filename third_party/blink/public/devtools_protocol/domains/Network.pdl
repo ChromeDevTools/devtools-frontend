@@ -2260,6 +2260,7 @@ domain Network
       # The result of a refresh.
       enum refreshResult
         Refreshed
+        RefreshedAsWaiter
         InitializedService
         Unreachable
         ServerError
@@ -2290,6 +2291,7 @@ domain Network
         ServerRequested
         InvalidSessionParams
         RefreshFatalError
+        DevTools
 
   # Session event details specific to challenges.
   experimental type ChallengeEventDetails extends object
@@ -2333,6 +2335,11 @@ domain Network
     parameters
       # Whether to enable or disable events.
       boolean enable
+
+  # Deletes a device bound session.
+  experimental command deleteDeviceBoundSession
+    parameters
+      DeviceBoundSessionKey key
 
   # Fetches the schemeful site for a specific origin.
   experimental command fetchSchemefulSite

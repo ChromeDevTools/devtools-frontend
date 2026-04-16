@@ -13,7 +13,7 @@ import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import type {
-  AiWidget, BottomUpTreeAiWidget, ComputedStyleAiWidget, CoreVitalsAiWidget, DomTreeAiWidget, LcpBreakdownAiWidget,
+  AiWidget, BottomUpTreeAiWidget, ComputedStyleAiWidget, CoreVitalsAiWidget, DomTreeAiWidget, PerfInsightAiWidget,
   PerformanceTraceAiWidget, StylePropertiesAiWidget,
   TimelineRangeSummaryAiWidget} from '../../../models/ai_assistance/agents/AiAgent.js';
 import * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
@@ -879,27 +879,32 @@ async function makeStylePropertiesWidget(widgetData: StylePropertiesAiWidget): P
   };
 }
 
-async function makeLcpBreakdownWidget(widgetData: LcpBreakdownAiWidget): Promise<WidgetMakerResponse|null> {
-  const insight = widgetData.data.lcpData;
-  if (!insight) {
-    return null;
+async function makePerfInsightWidget(widgetData: PerfInsightAiWidget): Promise<WidgetMakerResponse|null> {
+  switch (widgetData.data.insight) {
+    case 'lcp': {
+      const insight = widgetData.data.insightData;
+      if (!insight || !Trace.Insights.Models.LCPBreakdown.isLCPBreakdownInsight(insight)) {
+        return null;
+      }
+      // clang-format off
+      const renderedWidget = html`<devtools-widget
+        class="lcp-breakdown-widget"
+        ${widget(TimelineInsights.LCPBreakdown.LCPBreakdown, {
+          model: insight,
+          minimal: true,
+        })}></devtools-widget>`;
+      // clang-format on
+
+      return {
+        renderedWidget,
+        revealable: new TimelineUtils.Helpers.RevealableInsight(insight),
+        title: lockedString(UIStringsNotTranslate.lcpBreakdown),
+        jslogContext: 'lcp-breakdown',
+      };
+    }
+    default:
+      return null;
   }
-
-  // clang-format off
-  const renderedWidget = html`<devtools-widget
-    class="lcp-breakdown-widget"
-    ${widget(TimelineInsights.LCPBreakdown.LCPBreakdown, {
-      model: insight,
-      minimal: true,
-    })}></devtools-widget>`;
-  // clang-format on
-
-  return {
-    renderedWidget,
-    revealable: new TimelineUtils.Helpers.RevealableInsight(insight),
-    title: lockedString(UIStringsNotTranslate.lcpBreakdown),
-    jslogContext: 'lcp-breakdown',
-  };
 }
 
 async function makeBottomUpTimelineTreeWidget(widgetData: BottomUpTreeAiWidget): Promise<WidgetMakerResponse|null> {
@@ -1097,8 +1102,8 @@ async function renderWidgets(
       case 'PERFORMANCE_TRACE':
         response = await makePerformanceTraceWidget(widgetData);
         break;
-      case 'LCP_BREAKDOWN':
-        response = await makeLcpBreakdownWidget(widgetData);
+      case 'PERF_INSIGHT':
+        response = await makePerfInsightWidget(widgetData);
         break;
       case 'TIMELINE_RANGE_SUMMARY':
         response = await makeTimelineRangeSummaryWidget(widgetData);

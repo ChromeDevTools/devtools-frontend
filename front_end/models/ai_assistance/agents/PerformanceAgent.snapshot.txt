@@ -43,7 +43,7 @@ Content:
     ],
     "widgets": [
       {
-        "name": "LCP_BREAKDOWN"
+        "name": "PERF_INSIGHT"
       },
       {
         "name": "CORE_VITALS"

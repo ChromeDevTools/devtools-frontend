@@ -410,7 +410,7 @@ export class JSONEditor extends Common.ObjectWrapper.eventMixin<EventTypes, type
       typeRef: schema?.typeRef,
       value,
       description,
-    } as Parameter;
+    } as unknown as Parameter;
   }
 
   #convertPrimitiveParameter(key: string, value: unknown, schema?: Parameter): Parameter {

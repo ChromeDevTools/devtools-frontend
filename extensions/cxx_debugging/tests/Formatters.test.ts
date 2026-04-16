@@ -7,6 +7,8 @@ import * as Formatters from '../src/Formatters.js';
 
 import {TestValue, TestWasmInterface} from './TestUtils.js';
 
+const {assert} = chai;
+
 describe('Formatters', () => {
   it('formatChar', () => {
     const wasm = new TestWasmInterface();

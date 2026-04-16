@@ -12,6 +12,8 @@ import {type AsyncHostInterface, WorkerRPC} from '../src/WorkerRPC.js';
 import type {TestWorkerInterface} from './DevToolsPluginTestWorker.js';
 import {makeURL, TestHostInterface} from './TestUtils.js';
 
+const {expect} = chai;
+
 describe('DevToolsPlugin', () => {
   describe('addRawModule', () => {
     const expectedSources = [makeURL('/build/tests/inputs/hello.c'), makeURL('/build/tests/inputs/printf.h')];
@@ -45,7 +47,7 @@ describe('DevToolsPlugin', () => {
         await plugin.addRawModule('0', '', {url});
       } catch {
       }
-      assert.isTrue(spy.calledOnceWithExactly(
+      chai.assert.isTrue(spy.calledOnceWithExactly(
           url,
           {success: false, errorMessage: `NotFoundError: Unable to load debug symbols from \'${url}\' (Not Found)`}));
     });
@@ -59,9 +61,9 @@ describe('DevToolsPlugin', () => {
       await plugin.addRawModule('0', '', {url});
 
       const dwpUrl = makeURL('/build/tests/inputs/hello.s.wasm.dwp');
-      assert.isTrue(spy.calledTwice);
-      assert.isTrue(spy.calledWith(url, {success: true, size: 401}));
-      assert.isTrue(spy.calledWith(dwpUrl, {success: false, errorMessage: 'Failed to fetch dwp file: Not Found'}));
+      chai.assert.isTrue(spy.calledTwice);
+      chai.assert.isTrue(spy.calledWith(url, {success: true, size: 401}));
+      chai.assert.isTrue(spy.calledWith(dwpUrl, {success: false, errorMessage: 'Failed to fetch dwp file: Not Found'}));
     });
 
     it('reports loaded dwos', async () => {
@@ -89,9 +91,9 @@ describe('DevToolsPlugin', () => {
       const helperDwoURL = makeURL('/build/tests/inputs/helper.dwo');
 
       // Loaded .wasm, missing .dwp, 2x missing .dwo.
-      assert.lengthOf(spy.args, 4);
-      assert.isTrue(spy.calledWith(helloDwoURL, {success: true, size: 217}));
-      assert.isTrue(spy.calledWith(helperDwoURL, {success: true, size: 207}));
+      chai.assert.lengthOf(spy.args, 4);
+      chai.assert.isTrue(spy.calledWith(helloDwoURL, {success: true, size: 217}));
+      chai.assert.isTrue(spy.calledWith(helperDwoURL, {success: true, size: 207}));
     });
 
     it('reports missing dwos', async () => {
@@ -117,8 +119,8 @@ describe('DevToolsPlugin', () => {
 
       // Loaded .wasm, missing .dwp, missing .dwo is reported twice, since we try to load
       // the .dwo twice.
-      assert.lengthOf(spy.args, 4);
-      assert.isTrue(
+      chai.assert.lengthOf(spy.args, 4);
+      chai.assert.isTrue(
           spy.calledWith(helloDwoURL, {success: false, errorMessage: `Couldn't load ${helloDwoURL}. Status: 404`}));
     });
   });
@@ -340,6 +342,6 @@ describe('DevToolsPlugin', () => {
     const status = {success: true};
     const spy = sinon.spy(hostInterface, 'reportResourceLoad');
     await rpc.sendMessage('reportResourceLoadForTest', resourceUrl, status);
-    assert.isTrue(spy.calledOnceWithExactly(resourceUrl, status));
+    chai.assert.isTrue(spy.calledOnceWithExactly(resourceUrl, status));
   });
 });

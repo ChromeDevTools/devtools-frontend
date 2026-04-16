@@ -5,12 +5,12 @@
     "module": "commonjs",
     "composite": false,
     "allowUnreachableCode": false,
-    "baseUrl": ".",
     "skipLibCheck": true,
+    "rootDir": "../../..",
     "paths": {
       "test/*": ["../../../test/*"],
       "puppeteer": ["../../../node_modules/puppeteer/lib/types.d.ts"],
-      "*": ["*", "../../../node_modules/@types/*/index.d.ts"]
+      "*": ["../../../node_modules/@types/*/index.d.ts"]
     }
   },
   "files": [

@@ -10,6 +10,8 @@ import loadModule from './LLDBEvalTests.js';
 import {Debugger} from './RealBackend.js';
 import {createWorkerPlugin, makeURL, remoteObject} from './TestUtils.js';
 
+const {assert, expect} = chai;
+
 const WASM_URL = makeURL('/build/tests/inputs/lldb_eval_inputs.wasm');
 class LLDBEvalDebugger implements LLDBEvalTests.Debugger {
   #debugger: Debugger;

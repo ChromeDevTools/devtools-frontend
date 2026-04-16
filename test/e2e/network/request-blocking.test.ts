@@ -156,7 +156,7 @@ for (const useURLPatterns of [true]) {
 
       await navigateToNetworkTab('csp.html', devToolsPage, inspectedPage);
       await setTextFilter(url.substring(url.lastIndexOf('/') + 1), devToolsPage);
-      inspectedPage.evaluate(url => {
+      void inspectedPage.evaluate(url => {
         // @ts-expect-error
         addBlockedScript(url);
       }, url);

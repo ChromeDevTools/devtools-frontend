@@ -89,7 +89,7 @@
     "svgo": "3.3.2",
     "terser": "5.44.1",
     "ts-lit-plugin": "2.0.2",
-    "typescript": "5.9.3",
+    "typescript": "6.0.2",
     "typescript-eslint": "8.58.0",
     "uuid": "13.0.0",
     "webidl2": "24.5.0",

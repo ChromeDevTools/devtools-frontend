@@ -91,7 +91,7 @@ export class PuppeteerConnectionHelper {
         undefined /* process */,
         undefined /* closeCallback */,
         undefined /* targetFilterCallback */,
-        target => isPageTargetCallback((target as puppeteer.Target)._getTargetInfo()),
+        target => isPageTargetCallback((target as puppeteer.Target)._getTargetInfo() as Protocol.Target.TargetInfo),
         false /* waitForInitiallyDiscoveredTargets */,
     );
 

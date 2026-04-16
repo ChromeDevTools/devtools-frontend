@@ -4,6 +4,8 @@
 
 import {MemorySlice, PageStore} from '../src/CustomFormatters.js';
 
+const {expect} = chai;
+
 function asArray(slice: MemorySlice): number[] {
   return Array.from(new Uint8Array(slice.buffer));
 }

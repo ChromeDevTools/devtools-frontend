@@ -6,6 +6,10 @@ import '../main/main-meta.js';
 import '../inspector_main/inspector_main-meta.js';
 import '../../core/sdk/sdk-meta.js';
 import '../../models/workspace/workspace-meta.js';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore: tsc 6.0 does not support side-effect imports without a type definition.
+// We cannot use `@ts-expect-error` here because the import is correctly resolved
+// when bundling the application (which doesn't error) and only errors in unbundled builds.
 import '../../Images/Images.js';
 import '../../models/logs/logs-meta.js';
 import '../../models/persistence/persistence-meta.js';

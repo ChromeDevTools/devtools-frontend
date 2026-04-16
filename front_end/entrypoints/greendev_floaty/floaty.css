@@ -99,6 +99,8 @@ html, body {
   overflow-wrap: break-word;
   line-height: 1.4;
   white-space: pre-wrap; /* Preserve newlines */
+  flex-shrink: 0;
+  min-height: min-content;
 }
 
 .user-message {
@@ -182,6 +184,7 @@ html, body {
   flex-direction: column;
   gap: 8px;
   border: 1px solid #d3e3fd;
+  flex-shrink: 0;
 }
 
 .green-dev-floaty-dialog-node-description {

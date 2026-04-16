@@ -435,12 +435,11 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
     // In case a user wants to hide a specific issue, the issue code is added to "code" section
     // of our setting and its value is set to IssueStatus.Hidden. Then issue then gets hidden.
     if (values?.[code]) {
-      if (values[code] === IssueStatus.HIDDEN) {
-        issue.setHidden(true);
-        return;
+      const isHidden = values[code] === IssueStatus.HIDDEN;
+      if (issue.isHidden() !== isHidden) {
+        issue.setHidden(isHidden);
+        this.dispatchEventToListeners(Events.ISSUE_HIDDEN_STATUS_UPDATED, {issue});
       }
-      issue.setHidden(false);
-      return;
     }
   }
 
@@ -471,7 +470,10 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
 
   unhideAllIssues(): void {
     for (const issue of this.#allIssues.values()) {
-      issue.setHidden(false);
+      if (issue.isHidden()) {
+        issue.setHidden(false);
+        this.dispatchEventToListeners(Events.ISSUE_HIDDEN_STATUS_UPDATED, {issue});
+      }
     }
     this.hideIssueSetting?.set(defaultHideIssueByCodeSetting());
   }
@@ -486,10 +488,15 @@ export interface IssueAddedEvent {
   issue: Issue;
 }
 
+export interface IssueHiddenStatusUpdatedEvent {
+  issue: Issue;
+}
+
 export interface EventTypes {
   [Events.ISSUES_COUNT_UPDATED]: void;
   [Events.FULL_UPDATE_REQUIRED]: void;
   [Events.ISSUE_ADDED]: IssueAddedEvent;
+  [Events.ISSUE_HIDDEN_STATUS_UPDATED]: IssueHiddenStatusUpdatedEvent;
 }
 
 // @ts-expect-error

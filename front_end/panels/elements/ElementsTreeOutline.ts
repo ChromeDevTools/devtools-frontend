@@ -639,6 +639,8 @@ export class ElementsTreeOutline extends
 
     this.#issuesManager = IssuesManager.IssuesManager.IssuesManager.instance();
     this.#issuesManager.addEventListener(IssuesManager.IssuesManager.Events.ISSUE_ADDED, this.#onIssueAdded, this);
+    this.#issuesManager.addEventListener(
+        IssuesManager.IssuesManager.Events.ISSUE_HIDDEN_STATUS_UPDATED, this.#onIssueHiddenStatusUpdated, this);
 
     this.treeElementByNode = new WeakMap();
     const shadowContainer = document.createElement('div');
@@ -774,6 +776,20 @@ export class ElementsTreeOutline extends
     void this.#addTreeElementIssue(event.data.issue);
   }
 
+  #onIssueHiddenStatusUpdated(
+      event: Common.EventTarget.EventTargetEvent<IssuesManager.IssuesManager.IssueHiddenStatusUpdatedEvent>): void {
+    const issue = event.data.issue;
+    if (!issue) {
+      return;
+    }
+
+    if (issue.isHidden()) {
+      void this.#removeTreeElementIssue(issue);
+      return;
+    }
+    void this.#addTreeElementIssue(issue);
+  }
+
   #addAllElementIssues(): void {
     if (!this.#issuesManager) {
       return;
@@ -784,6 +800,10 @@ export class ElementsTreeOutline extends
   }
 
   async #addTreeElementIssue(issue: IssuesManager.Issue.Issue): Promise<void> {
+    if (issue.isHidden()) {
+      return;
+    }
+
     const elementIssueDetails = getElementIssueDetails(issue);
     if (!elementIssueDetails) {
       return;
@@ -810,6 +830,28 @@ export class ElementsTreeOutline extends
     }
   }
 
+  async #removeTreeElementIssue(issue: IssuesManager.Issue.Issue): Promise<void> {
+    const elementIssueDetails = getElementIssueDetails(issue);
+    if (!elementIssueDetails) {
+      return;
+    }
+    const {nodeId} = elementIssueDetails;
+    if (!this.rootDOMNode || !nodeId) {
+      return;
+    }
+    const deferredDOMNode = new SDK.DOMModel.DeferredDOMNode(this.rootDOMNode.domModel().target(), nodeId);
+    const node = await deferredDOMNode.resolvePromise();
+
+    if (!node) {
+      return;
+    }
+
+    const treeElement = this.findTreeElement(node);
+    if (treeElement) {
+      treeElement.removeIssue(issue);
+    }
+  }
+
   deindentSingleNode(): void {
     const firstChild = this.firstChild();
     if (!firstChild || (firstChild && !firstChild.isExpandable())) {
@@ -818,6 +860,10 @@ export class ElementsTreeOutline extends
   }
 
   updateNodeElementToIssue(element: Element, issues: IssuesManager.Issue.Issue[]): void {
+    if (!issues || issues.length === 0) {
+      this.#nodeElementToIssues.delete(element);
+      return;
+    }
     this.#nodeElementToIssues.set(element, issues);
   }
 

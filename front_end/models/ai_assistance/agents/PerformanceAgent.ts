@@ -993,9 +993,10 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
           }
           if (params.insightName === 'LCPBreakdown') {
             widgets.push({
-              name: 'LCP_BREAKDOWN',
+              name: 'PERF_INSIGHT',
               data: {
-                lcpData: insight as Trace.Insights.Models.LCPBreakdown.LCPBreakdownInsightModel,
+                insight: 'lcp',
+                insightData: insight as Trace.Insights.Types.InsightModel,
               },
             });
           }

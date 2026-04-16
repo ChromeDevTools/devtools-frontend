@@ -501,4 +501,100 @@ describe('StackTraceModel', () => {
       assert.strictEqual(stackTrace.syncFragment.frames[2].rawName, 'foo');
     });
   });
+
+  describe('createFromErrorStackLikeString', () => {
+    it('correctly handles a stack trace with sync and async fragments', async () => {
+      const {model} = setup();
+
+      const stackTrace = await model.createFromErrorStackLikeString(
+          `Error: foo
+              at foo (foo.js:1:10)
+              at bar (foo.js:2:20)`,
+          identityTranslateFn, {
+            exceptionId: 1,
+            text: 'Uncaught Error: foo',
+            lineNumber: 0,
+            columnNumber: 0,
+            stackTrace: {
+              callFrames: [
+                {
+                  functionName: 'foo',
+                  url: 'foo.js',
+                  scriptId: 'id1' as Protocol.Runtime.ScriptId,
+                  lineNumber: 0,
+                  columnNumber: 9,
+                },
+                {
+                  functionName: 'bar',
+                  url: 'foo.js',
+                  scriptId: 'id1' as Protocol.Runtime.ScriptId,
+                  lineNumber: 1,
+                  columnNumber: 19,
+                },
+              ],
+              parent: {
+                description: 'setTimeout',
+                callFrames: [
+                  {
+                    functionName: 'barFnX',
+                    url: 'bar.js',
+                    scriptId: 'id2' as Protocol.Runtime.ScriptId,
+                    lineNumber: 0,
+                    columnNumber: 9,
+                  },
+                ],
+              },
+            },
+          });
+
+      assert.strictEqual(stringifyStackTrace(stackTrace), [
+        'at foo (foo.js:0:9)',
+        'at bar (foo.js:1:19)',
+        '--- setTimeout -------------------------',
+        'at barFnX (bar.js:0:9)',
+      ].join('\n'));
+    });
+
+    it('correctly translates evalOrigin frames', async () => {
+      const {model} = setup();
+
+      const translateFn: StackTraceImpl.StackTraceModel.TranslateRawFrames = (frames, _target) => {
+        // Expand the evalOrigin into 2 frames to simulate inlining.
+        return Promise.resolve(frames.map(f => {
+          if (f.functionName === 'outerEval') {  // the evalOrigin frame
+            return [
+              {url: 'inlined.js', name: 'inlinedFn', line: 5, column: 5},
+              {url: f.url, name: f.functionName, line: f.lineNumber, column: f.columnNumber},
+            ];
+          }
+          return [{
+            url: f.url,
+            name: f.functionName,
+            line: f.lineNumber,
+            column: f.columnNumber,
+          }];
+        }));
+      };
+
+      const stackTrace = await model.createFromErrorStackLikeString(
+          `Error: foo
+              at eval (eval at outerEval (foo.js:10:5), <anonymous>:1:1)`,
+          translateFn);
+
+      const frames = stackTrace.syncFragment.frames as StackTrace.StackTrace.ParsedErrorStackFrame[];
+      assert.lengthOf(frames, 1);
+      assert.strictEqual(frames[0].url, '<anonymous>');
+      assert.strictEqual(frames[0].line, 0);
+
+      assert.exists(frames[0].evalOrigin);
+      // The evalOrigin is represented as a single ParsedErrorStackFrame that points to the top-most inlined frame
+      assert.strictEqual(frames[0].evalOrigin?.url, 'inlined.js');
+      assert.strictEqual(frames[0].evalOrigin?.name, 'inlinedFn');
+      assert.strictEqual(frames[0].evalOrigin?.line, 5);
+
+      // NOTE: Because evalOrigin only surfaces a single ParsedErrorStackFrame,
+      // the remaining inlined frames ('outerEval' at 'foo.js:10:5') are technically dropped in the public API!
+      // This is a known limitation of having evalOrigin as a single frame rather than an array.
+    });
+  });
 });

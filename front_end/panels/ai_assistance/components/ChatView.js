@@ -262,12 +262,13 @@ export class ChatView extends HTMLElement {
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceDynamicSuggestionClicked);
     };
     async #getSummary() {
-        if (this.#cachedSummary?.markdown === this.#props.conversationMarkdown) {
+        const cacheKey = this.#props.conversationMarkdown.replace(/\*\*Export Timestamp \(UTC\):\*\* .*\n\n/, '');
+        if (this.#cachedSummary?.markdown === cacheKey) {
             return this.#cachedSummary.summary;
         }
         try {
             const summary = await this.#props.generateConversationSummary(this.#props.conversationMarkdown);
-            this.#cachedSummary = { markdown: this.#props.conversationMarkdown, summary };
+            this.#cachedSummary = { markdown: cacheKey, summary };
             return summary;
         }
         catch (err) {

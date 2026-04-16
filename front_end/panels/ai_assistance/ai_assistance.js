@@ -5283,7 +5283,7 @@ var DEFAULT_VIEW5 = (input, _output, target) => {
             ${i18nString3(UIStrings3.generatingSummary)}
           </span>
           ` : Lit6.nothing}
-        <textarea readonly .value=${isPrompt && input.state.isPromptLoading ? "" : exportText}></textarea>
+        ${isPrompt ? html8`<textarea class="prompt" readonly .value=${input.state.isPromptLoading ? "" : exportText}></textarea>` : html8`<textarea class="conversation" readonly .value=${exportText}></textarea>`}
       </main>
       <div class="disclaimer">${i18nString3(UIStrings3.disclaimer)}</div>
       <footer>
@@ -5618,12 +5618,13 @@ var ChatView = class extends HTMLElement {
     Host5.userMetrics.actionTaken(Host5.UserMetrics.Action.AiAssistanceDynamicSuggestionClicked);
   };
   async #getSummary() {
-    if (this.#cachedSummary?.markdown === this.#props.conversationMarkdown) {
+    const cacheKey = this.#props.conversationMarkdown.replace(/\*\*Export Timestamp \(UTC\):\*\* .*\n\n/, "");
+    if (this.#cachedSummary?.markdown === cacheKey) {
       return this.#cachedSummary.summary;
     }
     try {
       const summary = await this.#props.generateConversationSummary(this.#props.conversationMarkdown);
-      this.#cachedSummary = { markdown: this.#props.conversationMarkdown, summary };
+      this.#cachedSummary = { markdown: cacheKey, summary };
       return summary;
     } catch (err) {
       console.error(err);
@@ -6149,7 +6150,7 @@ var optInChangeDialog_css_default = `/*
     gap: var(--sys-size-8);
     margin-bottom: var(--sys-size-8);
 
-    h2 {
+    h1 {
       margin: 0;
       color: var(--sys-color-on-surface);
       font: var(--sys-typescale-headline5);
@@ -6171,7 +6172,6 @@ var optInChangeDialog_css_default = `/*
       devtools-icon {
         width: var(--sys-size-9);
         height: var(--sys-size-9);
-        color: var(--sys-color-on-primary);
       }
     }
   }

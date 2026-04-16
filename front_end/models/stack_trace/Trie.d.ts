@@ -1,5 +1,17 @@
 import type * as Protocol from '../../generated/protocol.js';
 import type { FragmentImpl, FrameImpl } from './StackTraceImpl.js';
+export interface ParsedFrameInfo {
+    readonly isAsync?: boolean;
+    readonly isConstructor?: boolean;
+    readonly isEval?: boolean;
+    readonly evalOrigin?: RawFrame;
+    readonly isWasm?: boolean;
+    readonly wasmModuleName?: string;
+    readonly wasmFunctionIndex?: number;
+    readonly typeName?: string;
+    readonly methodName?: string;
+    readonly promiseIndex?: number;
+}
 /**
  * Intentionally very close to a {@link Protocol.Runtime.CallFrame} but with optional `scriptId`.
  */
@@ -9,6 +21,7 @@ export interface RawFrame {
     readonly functionName?: string;
     readonly lineNumber: number;
     readonly columnNumber: number;
+    readonly parsedFrameInfo?: ParsedFrameInfo;
 }
 /**
  * @returns whether the frame is a V8 builtin frame e.g. Array.map. Builtin frames
@@ -27,6 +40,8 @@ export declare class FrameNode implements FrameNodeBase<FrameNode, AnyFrameNode>
     readonly rawFrame: RawFrame;
     frames: FrameImpl[];
     fragment?: FragmentImpl;
+    parsedFrameInfo?: ParsedFrameInfo;
+    evalOriginFrames?: FrameImpl[];
     constructor(rawFrame: RawFrame, parent: AnyFrameNode);
     /**
      * Produces the ancestor chain. Including `this` but excluding the `RootFrameNode`.

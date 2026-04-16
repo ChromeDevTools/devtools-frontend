@@ -15,9 +15,12 @@ export class FrameNode {
     rawFrame;
     frames = [];
     fragment;
+    parsedFrameInfo;
+    evalOriginFrames;
     constructor(rawFrame, parent) {
         this.rawFrame = rawFrame;
         this.parent = parent;
+        this.parsedFrameInfo = rawFrame.parsedFrameInfo;
     }
     /**
      * Produces the ancestor chain. Including `this` but excluding the `RootFrameNode`.
@@ -64,6 +67,9 @@ export class Trie {
             }
             const compareResult = compareRawFrames(child.rawFrame, rawFrame);
             if (compareResult === 0) {
+                if (rawFrame.parsedFrameInfo && !child.parsedFrameInfo) {
+                    child.parsedFrameInfo = rawFrame.parsedFrameInfo;
+                }
                 return child;
             }
             if (compareResult > 0) {

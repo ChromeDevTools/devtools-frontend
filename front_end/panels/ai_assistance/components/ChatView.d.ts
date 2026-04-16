@@ -52,7 +52,7 @@ export interface Props {
         inlineExpandedMessages: ModelChatMessage[];
     };
 }
-interface ChatWidgetInput extends Props {
+export interface ChatWidgetInput extends Props {
     handleScroll: (ev: Event) => void;
     handleSuggestionClick: (title: string) => void;
     handleMessageContainerRef: (el: Element | undefined) => void;

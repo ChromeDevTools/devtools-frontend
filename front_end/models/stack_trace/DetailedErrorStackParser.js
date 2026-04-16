@@ -1,0 +1,132 @@
+// Copyright 2026 The Chromium Authors
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+import * as Common from '../../core/common/common.js';
+/**
+ * Takes a V8 Error#stack string and extracts structured information.
+ */
+export function parseRawFramesFromErrorStack(stack) {
+    const lines = stack.split('\n');
+    const rawFrames = [];
+    for (const line of lines) {
+        const match = /^\s*at\s+(.*)/.exec(line);
+        if (!match) {
+            continue;
+        }
+        let lineContent = match[1];
+        let isAsync = false;
+        if (lineContent.startsWith('async ')) {
+            isAsync = true;
+            lineContent = lineContent.substring(6);
+        }
+        let isConstructor = false;
+        if (lineContent.startsWith('new ')) {
+            isConstructor = true;
+            lineContent = lineContent.substring(4);
+        }
+        let functionName = '';
+        let url = '';
+        let lineNumber = -1;
+        let columnNumber = -1;
+        let typeName;
+        let methodName;
+        let isEval = false;
+        let isWasm = false;
+        let wasmModuleName;
+        let wasmFunctionIndex;
+        let promiseIndex;
+        let evalOrigin;
+        const openParenIndex = lineContent.indexOf(' (');
+        if (lineContent.endsWith(')') && openParenIndex !== -1) {
+            functionName = lineContent.substring(0, openParenIndex).trim();
+            let location = lineContent.substring(openParenIndex + 2, lineContent.length - 1);
+            if (location.startsWith('eval at ')) {
+                isEval = true;
+                const commaIndex = location.lastIndexOf(', ');
+                let evalOriginStr = location;
+                if (commaIndex !== -1) {
+                    evalOriginStr = location.substring(0, commaIndex);
+                    location = location.substring(commaIndex + 2);
+                }
+                else {
+                    location = '';
+                }
+                if (evalOriginStr.startsWith('eval at ')) {
+                    evalOriginStr = evalOriginStr.substring(8);
+                }
+                const innerOpenParen = evalOriginStr.indexOf(' (');
+                let evalFunctionName = evalOriginStr;
+                let evalLocation = '';
+                if (innerOpenParen !== -1) {
+                    evalFunctionName = evalOriginStr.substring(0, innerOpenParen).trim();
+                    evalLocation = evalOriginStr.substring(innerOpenParen + 2, evalOriginStr.length - 1);
+                    evalOrigin = parseRawFramesFromErrorStack(`    at ${evalFunctionName} (${evalLocation})`)[0];
+                }
+                else {
+                    evalOrigin = parseRawFramesFromErrorStack(`    at ${evalFunctionName}`)[0];
+                }
+            }
+            if (location.startsWith('index ')) {
+                promiseIndex = parseInt(location.substring(6), 10);
+                url = '';
+            }
+            else if (location.includes(':wasm-function[')) {
+                isWasm = true;
+                const wasmMatch = /^(.*):wasm-function\[(\d+)\]:(0x[0-9a-fA-F]+)$/.exec(location);
+                if (wasmMatch) {
+                    url = wasmMatch[1];
+                    wasmFunctionIndex = parseInt(wasmMatch[2], 10);
+                    columnNumber = parseInt(wasmMatch[3], 16);
+                }
+            }
+            else {
+                const splitResult = Common.ParsedURL.ParsedURL.splitLineAndColumn(location);
+                url = splitResult.url;
+                lineNumber = splitResult.lineNumber ?? -1;
+                columnNumber = splitResult.columnNumber ?? -1;
+            }
+        }
+        else {
+            const splitResult = Common.ParsedURL.ParsedURL.splitLineAndColumn(lineContent);
+            url = splitResult.url;
+            lineNumber = splitResult.lineNumber ?? -1;
+            columnNumber = splitResult.columnNumber ?? -1;
+        }
+        // Handle "typeName.methodName [as alias]"
+        if (functionName) {
+            const aliasMatch = /(.*)\s+\[as\s+(.*)\]/.exec(functionName);
+            if (aliasMatch) {
+                methodName = aliasMatch[2];
+                functionName = aliasMatch[1];
+            }
+            const dotIndex = functionName.indexOf('.');
+            if (dotIndex !== -1) {
+                typeName = functionName.substring(0, dotIndex);
+                methodName = methodName ?? functionName.substring(dotIndex + 1);
+            }
+            if (isWasm && typeName) {
+                wasmModuleName = typeName;
+            }
+        }
+        rawFrames.push({
+            url: url,
+            functionName,
+            lineNumber,
+            columnNumber,
+            parsedFrameInfo: {
+                isAsync,
+                isConstructor,
+                isEval,
+                evalOrigin,
+                isWasm,
+                wasmModuleName,
+                wasmFunctionIndex,
+                typeName,
+                methodName,
+                promiseIndex,
+            },
+        });
+    }
+    return rawFrames;
+}
+//# sourceMappingURL=DetailedErrorStackParser.js.map

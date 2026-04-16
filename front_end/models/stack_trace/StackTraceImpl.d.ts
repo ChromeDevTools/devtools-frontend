@@ -2,9 +2,9 @@ import * as Common from '../../core/common/common.js';
 import type * as SDK from '../../core/sdk/sdk.js';
 import type * as Workspace from '../workspace/workspace.js';
 import type * as StackTrace from './stack_trace.js';
-import type { FrameNode } from './Trie.js';
-export type AnyStackTraceImpl = StackTraceImpl<FragmentImpl | DebuggableFragmentImpl>;
-export declare class StackTraceImpl<SyncFragmentT extends FragmentImpl | DebuggableFragmentImpl = FragmentImpl> extends Common.ObjectWrapper.ObjectWrapper<StackTrace.StackTrace.EventTypes> implements StackTrace.StackTrace.BaseStackTrace<SyncFragmentT> {
+import type { FrameNode, ParsedFrameInfo } from './Trie.js';
+export type AnyStackTraceImpl = StackTraceImpl<FragmentImpl | DebuggableFragmentImpl | ParsedErrorStackFragmentImpl>;
+export declare class StackTraceImpl<SyncFragmentT extends FragmentImpl | DebuggableFragmentImpl | ParsedErrorStackFragmentImpl = FragmentImpl> extends Common.ObjectWrapper.ObjectWrapper<StackTrace.StackTrace.EventTypes> implements StackTrace.StackTrace.BaseStackTrace<SyncFragmentT> {
     readonly syncFragment: SyncFragmentT;
     readonly asyncFragments: readonly AsyncFragmentImpl[];
     constructor(syncFragment: SyncFragmentT, asyncFragments: AsyncFragmentImpl[]);
@@ -37,6 +37,32 @@ export declare class FrameImpl implements StackTrace.StackTrace.Frame {
     readonly missingDebugInfo?: StackTrace.StackTrace.MissingDebugInfo;
     readonly rawName?: string;
     constructor(url: string | undefined, uiSourceCode: Workspace.UISourceCode.UISourceCode | undefined, name: string | undefined, line: number, column: number, missingDebugInfo?: StackTrace.StackTrace.MissingDebugInfo, rawName?: string);
+}
+export declare class ParsedErrorStackFragmentImpl implements StackTrace.StackTrace.ParsedErrorStackFragment {
+    readonly fragment: FragmentImpl;
+    constructor(fragment: FragmentImpl);
+    get frames(): ParsedErrorStackFrameImpl[];
+}
+export declare class ParsedErrorStackFrameImpl implements StackTrace.StackTrace.ParsedErrorStackFrame {
+    #private;
+    constructor(frame: FrameImpl, parsedFrameInfo?: ParsedFrameInfo, evalOriginFrames?: FrameImpl[]);
+    get url(): string | undefined;
+    get uiSourceCode(): Workspace.UISourceCode.UISourceCode | undefined;
+    get name(): string | undefined;
+    get line(): number;
+    get column(): number;
+    get missingDebugInfo(): StackTrace.StackTrace.MissingDebugInfo | undefined;
+    get rawName(): string | undefined;
+    get isAsync(): boolean | undefined;
+    get isConstructor(): boolean | undefined;
+    get isEval(): boolean | undefined;
+    get evalOrigin(): ParsedErrorStackFrameImpl | undefined;
+    get isWasm(): boolean | undefined;
+    get wasmModuleName(): string | undefined;
+    get wasmFunctionIndex(): number | undefined;
+    get typeName(): string | undefined;
+    get methodName(): string | undefined;
+    get promiseIndex(): number | undefined;
 }
 /**
  * A DebuggableFragmentImpl wraps an existing FragmentImpl. This is important: We can pause at the

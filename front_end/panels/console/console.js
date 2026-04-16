@@ -295,7 +295,7 @@ var ConsoleContextSelector = class {
   }
 };
 var DEFAULT_VIEW = (input, _output, target) => {
-  if (!input.title || !input.subtitle) {
+  if (!input.title) {
     render(nothing, target);
     return;
   }

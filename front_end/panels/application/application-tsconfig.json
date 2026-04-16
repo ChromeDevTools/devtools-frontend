@@ -140,6 +140,9 @@
       "path": "../network/forward/bundle-tsconfig.json"
     },
     {
+      "path": "../protocol_monitor/bundle-tsconfig.json"
+    },
+    {
       "path": "../../third_party/csp_evaluator/bundle-tsconfig.json"
     },
     {

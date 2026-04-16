@@ -324,8 +324,6 @@ export class MainImpl {
         // Debugging
         Root.Runtime.experiments.register(Root.ExperimentNames.ExperimentName.INSTRUMENTATION_BREAKPOINTS, 'Instrumentation breakpoints');
         Root.Runtime.experiments.register(Root.ExperimentNames.ExperimentName.USE_SOURCE_MAP_SCOPES, 'Use scope information from source maps');
-        // Advanced Perceptual Contrast Algorithm.
-        Root.Runtime.experiments.register(Root.ExperimentNames.ExperimentName.APCA, 'Advanced Perceptual Contrast Algorithm (APCA) replacing previous contrast ratio and AA/AAA guidelines', 'https://developer.chrome.com/blog/new-in-devtools-89/#apca');
         // Font Editor
         Root.Runtime.experiments.register(Root.ExperimentNames.ExperimentName.FONT_EDITOR, 'New font editor in the Styles tab', 'https://developer.chrome.com/blog/new-in-devtools-89/#font');
         Root.Runtime.experiments.registerHostExperiment({

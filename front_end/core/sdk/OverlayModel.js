@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
-import * as Root from '../root/root.js';
 import { DebuggerModel, Events as DebuggerModelEvents } from './DebuggerModel.js';
 import { DeferredDOMNode, DOMModel, DOMNodeEvents, Events as DOMModelEvents } from './DOMModel.js';
 import { OverlayPersistentHighlighter } from './OverlayPersistentHighlighter.js';
@@ -407,8 +406,7 @@ export class OverlayModel extends SDKModel {
             gridHighlightConfig: {},
             flexContainerHighlightConfig: {},
             flexItemHighlightConfig: {},
-            contrastAlgorithm: Root.Runtime.experiments.isEnabled(Root.ExperimentNames.ExperimentName.APCA) ?
-                "apca" /* Protocol.Overlay.ContrastAlgorithm.Apca */ :
+            contrastAlgorithm: settings.moduleSetting('apca').get() ? "apca" /* Protocol.Overlay.ContrastAlgorithm.Apca */ :
                 "aa" /* Protocol.Overlay.ContrastAlgorithm.Aa */,
         };
         if (mode === 'all' || mode === 'content') {

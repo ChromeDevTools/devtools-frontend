@@ -36,6 +36,7 @@
   },
   "files": [
     "../../../../../../front_end/ui/lit/i18n-template.ts",
+    "../../../../../../front_end/ui/lit/render.ts",
     "../../../../../../front_end/ui/lit/strip-whitespace.ts",
     "../../../../../../front_end/legacy/legacy-defs.d.ts",
     "../../../../../../front_end/global_typings/global_defs.d.ts",

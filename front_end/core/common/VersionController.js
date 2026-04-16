@@ -12,7 +12,7 @@ export class VersionController {
     static GLOBAL_VERSION_SETTING_NAME = 'inspectorVersion';
     static SYNCED_VERSION_SETTING_NAME = 'syncedInspectorVersion';
     static LOCAL_VERSION_SETTING_NAME = 'localInspectorVersion';
-    static CURRENT_VERSION = 43;
+    static CURRENT_VERSION = 44;
     #settings;
     #globalVersionSetting;
     #syncedVersionSetting;
@@ -729,6 +729,21 @@ export class VersionController {
             try {
                 const timelineShowAllEventsSetting = this.#settings.moduleSetting('timeline-show-all-events');
                 timelineShowAllEventsSetting.set(timelineShowAllEventsExperimentEnabled);
+            }
+            catch {
+                // If the setting is not registered yet (e.g. in tests), skip.
+            }
+        }
+    }
+    updateVersionFrom43To44() {
+        const apcaExperimentEnabled = Root.Runtime.experiments.getValueFromStorage('apca');
+        if (apcaExperimentEnabled !== undefined) {
+            if (this.#settings.syncedStorage.has('apca')) {
+                return; // Already migrated
+            }
+            try {
+                const apcaSetting = this.#settings.moduleSetting('apca');
+                apcaSetting.set(apcaExperimentEnabled);
             }
             catch {
                 // If the setting is not registered yet (e.g. in tests), skip.

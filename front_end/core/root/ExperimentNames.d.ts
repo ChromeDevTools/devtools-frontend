@@ -5,7 +5,6 @@ export declare enum ExperimentName {
     PROTOCOL_MONITOR = "protocol-monitor",
     SAMPLING_HEAP_PROFILER_TIMELINE = "sampling-heap-profiler-timeline",
     TIMELINE_INVALIDATION_TRACKING = "timeline-invalidation-tracking",
-    APCA = "apca",
     FONT_EDITOR = "font-editor",
     INSTRUMENTATION_BREAKPOINTS = "instrumentation-breakpoints",
     USE_SOURCE_MAP_SCOPES = "use-source-map-scopes",

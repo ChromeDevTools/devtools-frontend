@@ -11769,7 +11769,8 @@ __export(WebMCPView_exports, {
   ToolDetailsWidget: () => ToolDetailsWidget,
   WebMCPView: () => WebMCPView,
   filterToolCalls: () => filterToolCalls,
-  parsePayload: () => parsePayload
+  parsePayload: () => parsePayload,
+  parseToolSchema: () => parseToolSchema
 });
 import "./../../ui/components/icon_button/icon_button.js";
 import "./../../ui/components/lists/lists.js";
@@ -11788,6 +11789,7 @@ import * as Components4 from "./../../ui/legacy/components/utils/utils.js";
 import * as UI23 from "./../../ui/legacy/legacy.js";
 import { Directives as Directives4, html as html10, nothing as nothing6, render as render9 } from "./../../ui/lit/lit.js";
 import * as VisualLogging17 from "./../../ui/visual_logging/visual_logging.js";
+import * as ProtocolMonitor from "./../protocol_monitor/protocol_monitor.js";
 
 // gen/front_end/panels/application/webMCPView.css.js
 var webMCPView_css_default = `/*
@@ -12109,7 +12111,7 @@ var UIStrings30 = {
   /**
    * @description Text for the status of a tool call that succeeded
    */
-  success: "Success",
+  completed: "Completed",
   /**
    * @description Text for the status of a tool call that has failed
    */
@@ -12143,8 +12145,8 @@ function filterToolCalls(toolCalls, filterState) {
   const statusTypes = filterState.statusTypes;
   if (statusTypes) {
     filtered = filtered.filter((call) => {
-      const { success, error, pending } = statusTypes;
-      if (success && call.result?.status === "Success") {
+      const { completed, error, pending } = statusTypes;
+      if (completed && call.result?.status === "Completed") {
         return true;
       }
       if (error && call.result?.status === "Error") {
@@ -12178,30 +12180,30 @@ function filterToolCalls(toolCalls, filterState) {
   return filtered;
 }
 function calculateToolStats(calls) {
-  let total = 0, success = 0, failed = 0, canceled = 0, inProgress = 0;
+  let total = 0, completed = 0, failed = 0, canceled = 0, inProgress = 0;
   for (const call of calls) {
     total++;
     if (call.result?.status === "Error") {
       failed++;
     } else if (call.result?.status === "Canceled") {
       canceled++;
-    } else if (call.result?.status === "Success") {
-      success++;
+    } else if (call.result?.status === "Completed") {
+      completed++;
     } else if (call.result === void 0) {
       inProgress++;
     }
   }
-  return { total, success, failed, canceled, inProgress };
+  return { total, completed, failed, canceled, inProgress };
 }
 function getIconGroupsFromStats(toolStats) {
   const groups = [];
-  if (toolStats.success > 0) {
+  if (toolStats.completed > 0) {
     groups.push({
       iconName: "check-circle",
       iconColor: "var(--sys-color-green)",
       iconWidth: "16px",
       iconHeight: "16px",
-      text: String(toolStats.success)
+      text: String(toolStats.completed)
     });
   }
   if (toolStats.failed > 0) {
@@ -12267,8 +12269,8 @@ var DEFAULT_VIEW7 = (input, output, target) => {
         return i18nString30(UIStrings30.error);
       case "Canceled":
         return i18nString30(UIStrings30.canceled);
-      case "Success":
-        return i18nString30(UIStrings30.success);
+      case "Completed":
+        return i18nString30(UIStrings30.completed);
       default:
         return i18nString30(UIStrings30.inProgress);
     }
@@ -12510,12 +12512,12 @@ var WebMCPView = class _WebMCPView extends UI23.Widget.VBox {
       const current = this.#filterState.statusTypes ?? {};
       const next = { ...current, [key]: !current[key] };
       let statusTypesToPass = next;
-      if (!next.success && !next.error && !next.pending) {
+      if (!next.completed && !next.error && !next.pending) {
         statusTypesToPass = void 0;
       }
       this.#handleFilterChange({ ...this.#filterState, statusTypes: statusTypesToPass });
     };
-    contextMenu.defaultSection().appendCheckboxItem(i18nString30(UIStrings30.success), () => toggle4("success"), { checked: this.#filterState.statusTypes?.["success"] ?? false, jslogContext: "webmcp.success" });
+    contextMenu.defaultSection().appendCheckboxItem(i18nString30(UIStrings30.completed), () => toggle4("completed"), { checked: this.#filterState.statusTypes?.["completed"] ?? false, jslogContext: "webmcp.completed" });
     contextMenu.defaultSection().appendCheckboxItem(i18nString30(UIStrings30.error), () => toggle4("error"), { checked: this.#filterState.statusTypes?.["error"] ?? false, jslogContext: "webmcp.error" });
     contextMenu.defaultSection().appendCheckboxItem(i18nString30(UIStrings30.pending), () => toggle4("pending"), { checked: this.#filterState.statusTypes?.["pending"] ?? false, jslogContext: "webmcp.pending" });
   }
@@ -12804,6 +12806,209 @@ var ToolDetailsWidget = class extends UI23.Widget.Widget {
     this.requestUpdate();
   }
 };
+var parsedSchemaCache = /* @__PURE__ */ new WeakMap();
+function parseToolSchema(schema) {
+  if (typeof schema === "object" && schema !== null) {
+    const cached = parsedSchemaCache.get(schema);
+    if (cached) {
+      return cached;
+    }
+  }
+  const typesByName = /* @__PURE__ */ new Map();
+  const enumsByName = /* @__PURE__ */ new Map();
+  const simpleTypesByName = /* @__PURE__ */ new Map();
+  let typeCount = 0;
+  function createEnumRecord(values) {
+    const enumRecord = {};
+    for (const val of values) {
+      enumRecord[String(val)] = String(val);
+    }
+    return enumRecord;
+  }
+  function preScanDefinition(name, def) {
+    if (typeof def === "boolean") {
+      return;
+    }
+    if (def.type === "string" && def.enum) {
+      enumsByName.set(name, createEnumRecord(def.enum));
+    } else if (def.type && typeof def.type === "string" && def.type !== "object" && def.type !== "array") {
+      let paramType = "string";
+      switch (def.type) {
+        case "number":
+        case "integer":
+          paramType = "number";
+          break;
+        case "boolean":
+          paramType = "boolean";
+          break;
+      }
+      simpleTypesByName.set(name, paramType);
+    }
+  }
+  function parseDefinition(name, def) {
+    if (typeof def === "boolean") {
+      return;
+    }
+    if (def.type === "object" && def.properties) {
+      const nestedParams = [];
+      for (const [key, value] of Object.entries(def.properties)) {
+        const isOpt = !(def.required || []).includes(key);
+        nestedParams.push(parseProperty(key, value, isOpt));
+      }
+      typesByName.set(name, nestedParams);
+    }
+  }
+  if (schema.definitions) {
+    for (const [name, def] of Object.entries(schema.definitions)) {
+      preScanDefinition(name, def);
+    }
+  }
+  if (schema.$defs) {
+    for (const [name, def] of Object.entries(schema.$defs)) {
+      preScanDefinition(name, def);
+    }
+  }
+  if (schema.definitions) {
+    for (const [name, def] of Object.entries(schema.definitions)) {
+      parseDefinition(name, def);
+    }
+  }
+  if (schema.$defs) {
+    for (const [name, def] of Object.entries(schema.$defs)) {
+      parseDefinition(name, def);
+    }
+  }
+  function parseProperty(name, propDef, optional) {
+    if (typeof propDef === "boolean") {
+      return {
+        name,
+        optional,
+        description: "",
+        type: "string",
+        isCorrectType: true
+      };
+    }
+    const prop = propDef;
+    if (prop.$ref) {
+      const typeRef = prop.$ref.split("/").pop() || "";
+      let paramType2 = "object";
+      if (enumsByName.has(typeRef)) {
+        paramType2 = "string";
+      } else {
+        const simpleType = simpleTypesByName.get(typeRef);
+        if (simpleType !== void 0) {
+          paramType2 = simpleType;
+        }
+      }
+      return {
+        name,
+        optional,
+        description: prop.description || "",
+        type: paramType2,
+        typeRef,
+        isCorrectType: true
+      };
+    }
+    const typeStr = Array.isArray(prop.type) ? prop.type[0] : prop.type;
+    let type = typeStr === "integer" ? "number" : typeStr;
+    if (!typeStr) {
+      if (prop.properties) {
+        type = "object";
+      } else if (prop.items) {
+        type = "array";
+      } else {
+        type = "unknown";
+      }
+    }
+    const description = prop.description || "";
+    let paramType = "unknown";
+    switch (type) {
+      case "string":
+        paramType = "string";
+        break;
+      case "number":
+        paramType = "number";
+        break;
+      case "boolean":
+        paramType = "boolean";
+        break;
+      case "object":
+        paramType = "object";
+        break;
+      case "array":
+        paramType = "array";
+        break;
+    }
+    const base = {
+      name,
+      optional,
+      description,
+      type: paramType,
+      isCorrectType: true
+    };
+    if (type === "object") {
+      if (prop.properties) {
+        const typeRef = `Object_${++typeCount}`;
+        const nestedParams = [];
+        for (const [key, value] of Object.entries(prop.properties)) {
+          const isOpt = !(prop.required || []).includes(key);
+          nestedParams.push(parseProperty(key, value, isOpt));
+        }
+        typesByName.set(typeRef, nestedParams);
+        base.typeRef = typeRef;
+      } else {
+        base.isKeyEditable = true;
+      }
+    } else if (type === "array") {
+      const items = prop.items && !Array.isArray(prop.items) && typeof prop.items !== "boolean" ? prop.items : void 0;
+      if (items) {
+        const itemTypeStr = Array.isArray(items.type) ? items.type[0] : items.type;
+        if (items.$ref) {
+          base.typeRef = items.$ref.split("/").pop() || "";
+        } else if (itemTypeStr === "object" && items.properties) {
+          const typeRef = `Object_${++typeCount}`;
+          const nestedParams = [];
+          for (const [key, value] of Object.entries(items.properties)) {
+            const isOpt = !(items.required || []).includes(key);
+            nestedParams.push(parseProperty(key, value, isOpt));
+          }
+          typesByName.set(typeRef, nestedParams);
+          base.typeRef = typeRef;
+        } else if (itemTypeStr) {
+          const itemType = itemTypeStr === "integer" ? "number" : itemTypeStr;
+          if (itemType === "string" && items.enum) {
+            const typeRef = `Enum_${++typeCount}`;
+            enumsByName.set(typeRef, createEnumRecord(items.enum));
+            base.typeRef = typeRef;
+          } else {
+            base.typeRef = itemType;
+          }
+        } else {
+          base.typeRef = "string";
+        }
+      } else {
+        base.typeRef = "string";
+      }
+    } else if (type === "string" && prop.enum) {
+      const typeRef = `Enum_${++typeCount}`;
+      enumsByName.set(typeRef, createEnumRecord(prop.enum));
+      base.typeRef = typeRef;
+    }
+    return base;
+  }
+  const parameters = [];
+  if ((schema.type === "object" || !schema.type) && schema.properties) {
+    for (const [key, value] of Object.entries(schema.properties)) {
+      const isOpt = !(schema.required || []).includes(key);
+      parameters.push(parseProperty(key, value, isOpt));
+    }
+  }
+  const result = { parameters, typesByName, enumsByName };
+  if (typeof schema === "object" && schema !== null) {
+    parsedSchemaCache.set(schema, result);
+  }
+  return result;
+}
 
 // gen/front_end/panels/application/WebMCPTreeElement.js
 var WebMCPTreeElement = class extends ApplicationPanelTreeElement {

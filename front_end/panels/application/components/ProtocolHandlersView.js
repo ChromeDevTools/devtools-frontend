@@ -109,7 +109,7 @@ const DEFAULT_VIEW = (input, _output, target) => {
         </devtools-link>` })}
     </div>
     ${renderProtocolTest(input.protocolHandler, input.queryInputState, input.protocolSelectHandler, input.queryInputChangeHandler, input.testProtocolClickHandler)}
-  `, target);
+  `, target, { container: { classes: ['vbox'] } });
     // clang-format on
 };
 export class ProtocolHandlersView extends UI.Widget.Widget {
@@ -119,7 +119,7 @@ export class ProtocolHandlersView extends UI.Widget.Widget {
     #queryInputState = '';
     #view;
     constructor(element, view = DEFAULT_VIEW) {
-        super(element, { useShadowDom: false, classes: ['vbox'] });
+        super(element, { useShadowDom: false });
         this.#view = view;
     }
     set protocolHandlers(protocolHandlers) {

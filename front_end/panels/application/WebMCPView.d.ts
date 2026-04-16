@@ -3,10 +3,12 @@ import '../../ui/components/lists/lists.js';
 import '../../ui/components/node_text/node_text.js';
 import '../../ui/legacy/components/data_grid/data_grid.js';
 import '../../ui/legacy/legacy.js';
+import type { JSONSchema7 } from 'json-schema';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as StackTrace from '../../models/stack_trace/stack_trace.js';
 import * as WebMCP from '../../models/web_mcp/web_mcp.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as ProtocolMonitor from '../protocol_monitor/protocol_monitor.js';
 export interface FilterState {
     text: string;
     toolTypes?: {
@@ -14,7 +16,7 @@ export interface FilterState {
         declarative?: boolean;
     };
     statusTypes?: {
-        success?: boolean;
+        completed?: boolean;
         error?: boolean;
         pending?: boolean;
     };
@@ -89,4 +91,10 @@ export declare class ToolDetailsWidget extends UI.Widget.Widget {
     performUpdate(): void;
     wasShown(): void;
 }
+export interface ParsedToolSchema {
+    parameters: ProtocolMonitor.JSONEditor.Parameter[];
+    typesByName: Map<string, ProtocolMonitor.JSONEditor.Parameter[]>;
+    enumsByName: Map<string, Record<string, string>>;
+}
+export declare function parseToolSchema(schema: JSONSchema7): ParsedToolSchema;
 export {};

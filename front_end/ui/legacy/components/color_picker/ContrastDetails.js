@@ -7,7 +7,6 @@ import * as Common from '../../../../core/common/common.js';
 import * as Host from '../../../../core/host/host.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
-import * as Root from '../../../../core/root/root.js';
 import { createIcon, Icon } from '../../../../ui/kit/kit.js';
 import * as UIHelpers from '../../../helpers/helpers.js';
 import * as UI from '../../legacy.js';
@@ -196,7 +195,7 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper {
         }
         this.setVisible(true);
         this.hideNoContrastInfoAvailableMessage();
-        const isAPCAEnabled = Root.Runtime.experiments.isEnabled(Root.ExperimentNames.ExperimentName.APCA);
+        const isAPCAEnabled = Common.Settings.Settings.instance().moduleSetting('apca').get();
         const fgColor = this.contrastInfo.color();
         const bgColor = this.contrastInfo.bgColor();
         if (isAPCAEnabled) {

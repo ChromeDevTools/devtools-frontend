@@ -288,7 +288,6 @@ import * as Common2 from "./../../../../core/common/common.js";
 import * as Host from "./../../../../core/host/host.js";
 import * as i18n from "./../../../../core/i18n/i18n.js";
 import * as Platform2 from "./../../../../core/platform/platform.js";
-import * as Root from "./../../../../core/root/root.js";
 import { createIcon, Icon } from "./../../../kit/kit.js";
 import * as UIHelpers from "./../../../helpers/helpers.js";
 import * as UI from "./../../legacy.js";
@@ -472,7 +471,7 @@ var ContrastDetails = class _ContrastDetails extends Common2.ObjectWrapper.Objec
     }
     this.setVisible(true);
     this.hideNoContrastInfoAvailableMessage();
-    const isAPCAEnabled = Root.Runtime.experiments.isEnabled(Root.ExperimentNames.ExperimentName.APCA);
+    const isAPCAEnabled = Common2.Settings.Settings.instance().moduleSetting("apca").get();
     const fgColor = this.contrastInfo.color();
     const bgColor = this.contrastInfo.bgColor();
     if (isAPCAEnabled) {
@@ -816,7 +815,6 @@ __export(ContrastOverlay_exports, {
   ContrastRatioLineBuilder: () => ContrastRatioLineBuilder
 });
 import * as Common4 from "./../../../../core/common/common.js";
-import * as Root2 from "./../../../../core/root/root.js";
 import * as UI2 from "./../../legacy.js";
 var ContrastOverlay = class {
   contrastInfo;
@@ -833,7 +831,7 @@ var ContrastOverlay = class {
     this.visible = false;
     this.contrastRatioSVG = UI2.UIUtils.createSVGChild(colorElement, "svg", "spectrum-contrast-container fill");
     this.contrastRatioLines = /* @__PURE__ */ new Map();
-    if (Root2.Runtime.experiments.isEnabled(Root2.ExperimentNames.ExperimentName.APCA)) {
+    if (Common4.Settings.Settings.instance().moduleSetting("apca").get()) {
       this.contrastRatioLines.set("APCA", UI2.UIUtils.createSVGChild(this.contrastRatioSVG, "path", "spectrum-contrast-line"));
     } else {
       this.contrastRatioLines.set("aa", UI2.UIUtils.createSVGChild(this.contrastRatioSVG, "path", "spectrum-contrast-line"));
@@ -850,7 +848,7 @@ var ContrastOverlay = class {
     if (!this.visible || this.contrastInfo.isNull()) {
       return;
     }
-    if (Root2.Runtime.experiments.isEnabled(Root2.ExperimentNames.ExperimentName.APCA) && this.contrastInfo.contrastRatioAPCA() === null) {
+    if (Common4.Settings.Settings.instance().moduleSetting("apca").get() && this.contrastInfo.contrastRatioAPCA() === null) {
       return;
     }
     if (!this.contrastInfo.contrastRatio()) {
@@ -885,7 +883,7 @@ var ContrastRatioLineBuilder = class {
     this.contrastInfo = contrastInfo;
   }
   drawContrastRatioLine(width, height, level) {
-    const isAPCA = Root2.Runtime.experiments.isEnabled(Root2.ExperimentNames.ExperimentName.APCA);
+    const isAPCA = Common4.Settings.Settings.instance().moduleSetting("apca").get();
     const requiredContrast = isAPCA ? this.contrastInfo.contrastRatioAPCAThreshold() : this.contrastInfo.contrastRatioThreshold(level);
     if (!width || !height || requiredContrast === null) {
       return null;
@@ -923,7 +921,7 @@ var ContrastRatioLineBuilder = class {
     let candidateLuminance = (candidateHSVA2) => {
       return Common4.ColorUtils.luminance(Common4.ColorUtils.blendColors(Common4.Color.Legacy.fromHSVA(candidateHSVA2).rgba(), bgRGBA));
     };
-    if (Root2.Runtime.experiments.isEnabled(Root2.ExperimentNames.ExperimentName.APCA)) {
+    if (Common4.Settings.Settings.instance().moduleSetting("apca").get()) {
       candidateLuminance = (candidateHSVA2) => {
         return Common4.ColorUtils.luminanceAPCA(Common4.ColorUtils.blendColors(Common4.Color.Legacy.fromHSVA(candidateHSVA2).rgba(), bgRGBA));
       };

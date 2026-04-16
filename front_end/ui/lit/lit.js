@@ -1,5 +1,5 @@
 // gen/front_end/ui/lit/lit.prebundle.js
-import { AsyncDirective, Decorators, Directive, Directives, LitElement, noChange, nothing as nothing2, render, StaticHtml as StaticHtml2, svg } from "./../../third_party/lit/lit.js";
+import { AsyncDirective, Decorators, Directive, Directives, LitElement, noChange, nothing as nothing2, StaticHtml as StaticHtml2, svg } from "./../../third_party/lit/lit.js";
 
 // gen/front_end/ui/lit/i18n-template.js
 import * as i18n from "./../../core/i18n/i18n.js";
@@ -22,8 +22,73 @@ function i18nTemplate(registeredStrings, stringId, placeholders) {
   return result;
 }
 
-// gen/front_end/ui/lit/strip-whitespace.js
+// gen/front_end/ui/lit/render.js
 import * as Lit2 from "./../../third_party/lit/lit.js";
+var renderOptions = /* @__PURE__ */ new WeakMap();
+function render2(template, container, options) {
+  if (container instanceof HTMLElement) {
+    const oldAttributes = renderOptions.get(container)?.container?.attributes;
+    const newAttributes = options?.container?.attributes;
+    if (newAttributes) {
+      for (const [name, value] of Object.entries(newAttributes)) {
+        if (oldAttributes?.[name] === value) {
+          continue;
+        }
+        if (value === null || value === void 0) {
+          container.removeAttribute(name);
+        } else if (typeof value === "boolean") {
+          container.toggleAttribute(name, value);
+        } else {
+          container.setAttribute(name, value.toString());
+        }
+      }
+    }
+    if (oldAttributes) {
+      for (const name of Object.keys(oldAttributes)) {
+        if (!newAttributes || !(name in newAttributes)) {
+          container.removeAttribute(name);
+        }
+      }
+    }
+    const oldClasses = renderOptions.get(container)?.container?.classes;
+    const newClasses = options?.container?.classes;
+    if (oldClasses) {
+      for (const cls of oldClasses) {
+        if (!newClasses?.includes(cls)) {
+          container.classList.remove(cls);
+        }
+      }
+    }
+    if (newClasses) {
+      for (const cls of newClasses) {
+        if (!oldClasses?.includes(cls)) {
+          container.classList.add(cls);
+        }
+      }
+    }
+  }
+  const oldListeners = renderOptions.get(container)?.container?.listeners;
+  const newListeners = options?.container?.listeners;
+  if (oldListeners) {
+    for (const [name, listener] of Object.entries(oldListeners)) {
+      if (newListeners?.[name] !== listener) {
+        container.removeEventListener(name, listener);
+      }
+    }
+  }
+  if (newListeners) {
+    for (const [name, listener] of Object.entries(newListeners)) {
+      if (oldListeners?.[name] !== listener) {
+        container.addEventListener(name, listener);
+      }
+    }
+  }
+  renderOptions.set(container, options);
+  return Lit2.render(template, container, options);
+}
+
+// gen/front_end/ui/lit/strip-whitespace.js
+import * as Lit3 from "./../../third_party/lit/lit.js";
 var templates = /* @__PURE__ */ new WeakMap();
 function html3(strings, ...values) {
   let stripped = templates.get(strings);
@@ -35,7 +100,7 @@ function html3(strings, ...values) {
     }
   }
   templates.set(strings, stripped);
-  return Lit2.html(stripped, ...values);
+  return Lit3.html(stripped, ...values);
 }
 function strip(strings) {
   let inTag = false;
@@ -63,7 +128,7 @@ export {
   i18nTemplate,
   noChange,
   nothing2 as nothing,
-  render,
+  render2 as render,
   svg
 };
 //# sourceMappingURL=lit.js.map

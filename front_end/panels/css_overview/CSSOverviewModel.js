@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as Common from '../../core/common/common.js';
-import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as ColorPicker from '../../ui/legacy/components/color_picker/color_picker.js';
 import { CSSOverviewUnusedDeclarations } from './CSSOverviewUnusedDeclarations.js';
@@ -197,7 +196,7 @@ export class CSSOverviewModel extends SDK.SDKModel.SDKModel {
                     const formattedTextColor = formatColor(blendedTextColor);
                     const formattedBackgroundColor = formatColor(blendedBackgroundColor.asLegacyColor());
                     const key = `${formattedTextColor}_${formattedBackgroundColor}`;
-                    if (Root.Runtime.experiments.isEnabled(Root.ExperimentNames.ExperimentName.APCA)) {
+                    if (Common.Settings.Settings.instance().moduleSetting('apca').get()) {
                         const contrastRatio = contrastInfo.contrastRatioAPCA();
                         const threshold = contrastInfo.contrastRatioAPCAThreshold();
                         const passes = contrastRatio && threshold ? Math.abs(contrastRatio) >= threshold : false;

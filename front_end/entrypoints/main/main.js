@@ -706,7 +706,6 @@ var MainImpl = class {
     Root2.Runtime.experiments.register(Root2.ExperimentNames.ExperimentName.TIMELINE_DEBUG_MODE, "Performance panel: debug mode (trace event details, etc)");
     Root2.Runtime.experiments.register(Root2.ExperimentNames.ExperimentName.INSTRUMENTATION_BREAKPOINTS, "Instrumentation breakpoints");
     Root2.Runtime.experiments.register(Root2.ExperimentNames.ExperimentName.USE_SOURCE_MAP_SCOPES, "Use scope information from source maps");
-    Root2.Runtime.experiments.register(Root2.ExperimentNames.ExperimentName.APCA, "Advanced Perceptual Contrast Algorithm (APCA) replacing previous contrast ratio and AA/AAA guidelines", "https://developer.chrome.com/blog/new-in-devtools-89/#apca");
     Root2.Runtime.experiments.register(Root2.ExperimentNames.ExperimentName.FONT_EDITOR, "New font editor in the Styles tab", "https://developer.chrome.com/blog/new-in-devtools-89/#font");
     Root2.Runtime.experiments.registerHostExperiment({
       name: Root2.ExperimentNames.ExperimentName.DURABLE_MESSAGES,

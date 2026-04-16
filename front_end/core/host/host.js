@@ -3021,7 +3021,6 @@ var DevtoolsExperiments;
   DevtoolsExperiments2[DevtoolsExperiments2["protocol-monitor"] = 13] = "protocol-monitor";
   DevtoolsExperiments2[DevtoolsExperiments2["sampling-heap-profiler-timeline"] = 17] = "sampling-heap-profiler-timeline";
   DevtoolsExperiments2[DevtoolsExperiments2["timeline-invalidation-tracking"] = 26] = "timeline-invalidation-tracking";
-  DevtoolsExperiments2[DevtoolsExperiments2["apca"] = 39] = "apca";
   DevtoolsExperiments2[DevtoolsExperiments2["font-editor"] = 41] = "font-editor";
   DevtoolsExperiments2[DevtoolsExperiments2["instrumentation-breakpoints"] = 61] = "instrumentation-breakpoints";
   DevtoolsExperiments2[DevtoolsExperiments2["use-source-map-scopes"] = 76] = "use-source-map-scopes";

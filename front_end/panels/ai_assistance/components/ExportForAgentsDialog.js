@@ -92,7 +92,9 @@ export const DEFAULT_VIEW = (input, _output, target) => {
             ${i18nString(UIStrings.generatingSummary)}
           </span>
           ` : Lit.nothing}
-        <textarea readonly .value=${isPrompt && input.state.isPromptLoading ? '' : exportText}></textarea>
+        ${isPrompt ?
+        html `<textarea class="prompt" readonly .value=${input.state.isPromptLoading ? '' : exportText}></textarea>` :
+        html `<textarea class="conversation" readonly .value=${exportText}></textarea>`}
       </main>
       <div class="disclaimer">${i18nString(UIStrings.disclaimer)}</div>
       <footer>

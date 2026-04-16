@@ -6651,7 +6651,8 @@ You can also use this key with \`selectEventByKey\` to show the user a specific 
 
 ## Step-by-step instructions for debugging performance issues
 
-Note: if the user asks a specific question about the trace (such as "What is my LCP?", or "How many requests were render-blocking?", directly answer their question and skip starting a performance investigation. Otherwise, your task is to collaborate with the user to discover and resolve real performance issues.
+Note: if the user asks a specific question about the trace (such as "What is my LCP?", or "How many requests were render-blocking?"), directly answer their question using available data. However, if the user asks a general question like "What performance issues exist?" or requests an investigation, you MUST NOT give a generic answer. You must treat it as a full performance investigation (Step 1) and call main thread functions to find specific issues. Generic advice like "reduce long tasks" without specific details is UNACCEPTABLE.
+
 
 ### Step 1: Determine a performance problem to investigate
 
@@ -6687,11 +6688,22 @@ Note: if the user asks a specific question about the trace (such as "What is my 
 
 ## Guidelines
 
+- You must call \`getMainThreadTrackSummary\` (by specifying a time range) or \`getMainThreadTrackSummaryByLabel\` (with the relevant label) to investigate the main thread activity before giving the user a reply or suggesting solutions for any performance problem or insight. Call \`getMainThreadTrackSummary\` with specific bounds when you identify a specific time range of interest from the initial data. This applies even if you already have some information about that period from \`getInsightDetails\` or the initial trace summary.
+- Dig Deeper: Before replying, you should really dig into the main thread activity to uncover what the performance issues actually are. Use the initially provided main thread data as a reference to identify interesting tasks or time ranges, and then use those time bounds to call functions like \`getMainThreadTrackSummary\` to get more detailed data. Do not solely rely on the information from the initial data; ensure you identify the root cause before suggesting solutions.
+- No Shortcutting: Even if the initial facts contain specific line numbers or function names, you are not allowed to reply using only that information. You MUST call \`getMainThreadTrackSummary\` with the time bounds of the task to inspect its full context and children before describing it to the user.
+- Look for Aggregated Cost: Performance issues are not always caused by a single "Long Task". Many small, frequent events (like unthrottled \`mousemove\` or \`scroll\` handlers) can add up to significant main thread blockage. Use the Bottom-Up summary in \`getMainThreadTrackSummary\` to identify functions with high total time, even if they are not associated with a Long Task.
 - Use the provided functions to get detailed performance data. Prioritize functions that provide context relevant to the performance issue being investigated.
 - Before finalizing your advice, look over it and validate using any relevant functions. If something seems off, refine the advice before giving it to the user.
 - Base your analysis and advice solely on the data retrieved through the provided functions. Always use the provided functions to gather sufficient data when needed.
 - Use absolute microsecond timestamps for any function that requires a \`min\` and \`max\` bounds. These timestamps can be found in the trace summary or within the details of an insight.
 - Example: If the trace bounds are {min: 1000, max: 5000} and you want to investigate a specific interaction that happened between 2000 and 3000, you should call \`getMainThreadTrackSummary({min: 2000, max: 3000})\`.
+- Available labels for \`getMainThreadTrackSummaryByLabel\` include:
+  - \`trace-bounds\` (entire trace)
+  - \`nav-to-lcp\` (navigation to LCP)
+  - \`lcp-ttfb\` (LCP TTFB phase)
+  - \`lcp-render-delay\` (LCP render delay phase)
+  - Insight names: \`LCPBreakdown\`, \`CLSCulprits\`, \`RenderBlocking\`, \`NetworkDependencyTree\`, \`ImageDelivery\`, \`FontDisplay\`, \`ThirdParties\`, \`ForcedReflow\`, \`Cache\`, \`DOMSize\`
+  - Navigation IDs: \`NAVIGATION_0\`, \`NAVIGATION_1\`, etc.
 - Use \`getEventByKey\` to get data on a specific trace event. This is great for root-cause analysis or validating any assumptions.
 - Provide clear, actionable recommendations. Avoid technical jargon unless necessary, and explain any technical terms used.
 - If you see a generic task like "Task", "Evaluate script" or "(anonymous)" in the main thread activity, try to look at its children to see what actual functions are executed and refer to those. When referencing the main thread activity, be as specific as you can. Ensure you identify to the user relevant functions and which script they were defined in. Avoid referencing "Task", "Evaluate script" and "(anonymous)" nodes if possible and instead focus on their children.
@@ -7214,6 +7226,41 @@ ${result}`,
     cache[key] = fact;
     this.#functionCallCacheForFocus.set(focus, cache);
   }
+  async #handleMainThreadTrackSummary(bounds, focus, functionName, cacheKey) {
+    const formatter = this.#formatter;
+    if (!formatter) {
+      throw new Error("missing formatter");
+    }
+    const summary = await formatter.formatMainThreadTrackSummary(bounds);
+    if (this.#isFunctionResponseTooLarge(summary)) {
+      return {
+        error: `${functionName} response is too large. Try investigating using other functions, or a more narrow bounds`
+      };
+    }
+    const byteCount = Platform5.StringUtilities.countWtf8Bytes(summary);
+    Host7.userMetrics.performanceAIMainThreadActivityResponseSize(byteCount);
+    this.#cacheFunctionResult(focus, cacheKey, summary);
+    const widgets = [];
+    widgets.push({
+      name: "TIMELINE_RANGE_SUMMARY",
+      data: {
+        parsedTrace: focus.parsedTrace,
+        bounds,
+        track: "main"
+      }
+    });
+    widgets.push({
+      name: "BOTTOM_UP_TREE",
+      data: {
+        bounds,
+        parsedTrace: focus.parsedTrace
+      }
+    });
+    return {
+      result: { summary },
+      widgets
+    };
+  }
   #declareFunctions(context) {
     const focus = context.getItem();
     const { parsedTrace } = focus;
@@ -7377,44 +7424,43 @@ ${result}`,
       },
       handler: async (args) => {
         debugLog("Function call: getMainThreadTrackSummary");
-        if (!this.#formatter) {
-          throw new Error("missing formatter");
-        }
         const bounds = createBounds(args.min, args.max);
         if (!bounds) {
           return { error: "invalid bounds" };
         }
-        const formatter = this.#formatter;
-        const summary = await formatter.formatMainThreadTrackSummary(bounds);
-        if (this.#isFunctionResponseTooLarge(summary)) {
-          return {
-            error: "getMainThreadTrackSummary response is too large. Try investigating using other functions, or a more narrow bounds"
-          };
-        }
-        const byteCount = Platform5.StringUtilities.countWtf8Bytes(summary);
-        Host7.userMetrics.performanceAIMainThreadActivityResponseSize(byteCount);
         const key = `getMainThreadTrackSummary({min: ${bounds.min}, max: ${bounds.max}})`;
-        this.#cacheFunctionResult(focus, key, summary);
-        const widgets = [];
-        widgets.push({
-          name: "TIMELINE_RANGE_SUMMARY",
-          data: {
-            parsedTrace,
-            bounds,
-            track: "main"
+        return await this.#handleMainThreadTrackSummary(bounds, focus, "getMainThreadTrackSummary", key);
+      }
+    });
+    this.declareFunction("getMainThreadTrackSummaryByLabel", {
+      description: "Returns a focused, detailed summary of the main thread for a predefined labeled period. Use this to get more relevant detail than the initial trace summary before diagnosing issues.",
+      parameters: {
+        type: 6,
+        description: "",
+        nullable: false,
+        properties: {
+          label: {
+            type: 1,
+            description: "The label of the period to investigate (e.g., 'LCPBreakdown', 'CLSCulprits', 'nav-to-lcp').",
+            nullable: false
           }
-        });
-        widgets.push({
-          name: "BOTTOM_UP_TREE",
-          data: {
-            bounds,
-            parsedTrace
-          }
-        });
+        },
+        required: ["label"]
+      },
+      displayInfoFromArgs: (args) => {
         return {
-          result: { summary },
-          widgets
+          title: lockedString4(UIStringsNotTranslated.mainThreadActivity),
+          action: `getMainThreadTrackSummaryByLabel('${args.label}')`
         };
+      },
+      handler: async (args) => {
+        debugLog("Function call: getMainThreadTrackSummaryByLabel");
+        const bounds = this.#getBoundsForLabel(args.label, focus);
+        if (!bounds) {
+          return { error: `Invalid label: ${args.label}` };
+        }
+        const key = `getMainThreadTrackSummaryByLabel('${args.label}')`;
+        return await this.#handleMainThreadTrackSummary(bounds, focus, "getMainThreadTrackSummaryByLabel", key);
       }
     });
     this.declareFunction("getNetworkTrackSummary", {
@@ -7699,6 +7745,58 @@ ${result}`,
         }
       });
     }
+  }
+  #getBoundsForLabel(label, focus) {
+    const { parsedTrace } = focus;
+    const insightSet = focus.primaryInsightSet;
+    if (label === "nav-to-lcp") {
+      if (insightSet) {
+        const lcp = Trace6.Insights.Common.getLCP(insightSet);
+        if (lcp) {
+          return Trace6.Helpers.Timing.traceWindowFromMicroSeconds(insightSet.bounds.min, lcp.event.ts);
+        }
+      }
+      return null;
+    }
+    if (label === "lcp-ttfb") {
+      if (insightSet) {
+        const subparts = insightSet.model.LCPBreakdown?.subparts;
+        if (subparts?.ttfb) {
+          return subparts.ttfb;
+        }
+      }
+      return null;
+    }
+    if (label === "lcp-render-delay") {
+      if (insightSet) {
+        const subparts = insightSet.model.LCPBreakdown?.subparts;
+        if (subparts?.renderDelay) {
+          return subparts.renderDelay;
+        }
+      }
+      return null;
+    }
+    if (label === "trace-bounds") {
+      return parsedTrace.data.Meta.traceBounds;
+    }
+    for (const is of parsedTrace.insights?.values() ?? []) {
+      if (is.id === label) {
+        return is.bounds;
+      }
+    }
+    if (insightSet) {
+      const model = insightSet.model[label];
+      if (model) {
+        return Trace6.Insights.Common.insightBounds(model, insightSet.bounds);
+      }
+    }
+    for (const is of parsedTrace.insights?.values() ?? []) {
+      const model = is.model[label];
+      if (model) {
+        return Trace6.Insights.Common.insightBounds(model, is.bounds);
+      }
+    }
+    return null;
   }
   async addElementAnnotation(elementId, annotationMessage) {
     if (!Annotations3.AnnotationRepository.annotationsEnabled()) {
@@ -8661,28 +8759,40 @@ var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
         };
       }
     });
+    const parseLighthouseMode = (mode) => {
+      return mode === "snapshot" ? "snapshot" : "navigation";
+    };
     this.declareFunction("runLighthouseAudits", {
       description: "Records a Lighthouse audit on the current page. Use this to debug accessibility, SEO, and best practices. (For performance metrics like LCP, use performanceRecordAndReload instead).",
       parameters: {
         type: 6,
         description: "",
         nullable: true,
-        required: [],
-        properties: {}
+        required: ["mode"],
+        properties: {
+          mode: {
+            type: 1,
+            description: `The mode to run Lighthouse in. Your ONLY options are "navigation" or "snapshot". You should determine this based on the user's question. If the user is asking specifically about accessibility, you can run in "snapshot" mode which avoids reloading the page. If the user asks for a full Lighthouse report, you should run in "navigation" mode which is the default. These are the only options you can pass.`,
+            nullable: false
+          }
+        }
       },
-      displayInfoFromArgs: () => {
+      displayInfoFromArgs: (args) => {
+        const mode = parseLighthouseMode(args.mode);
         return {
           title: "Auditing your page with Lighthouse",
-          action: "runLighthouseAudits()"
+          action: `runLighthouseAudits(${mode})`
         };
       },
-      handler: async () => {
+      handler: async (params) => {
         if (!this.#lighthouseRecording) {
           return {
             error: "Lighthouse report is not available."
           };
         }
-        const result = await this.#lighthouseRecording();
+        const mode = parseLighthouseMode(params.mode);
+        debugLog(`Recording with Lighthouse; runMode=${mode}`);
+        const result = await this.#lighthouseRecording({ mode });
         if (!result) {
           return { error: "Failed to generate Lighthouse report." };
         }

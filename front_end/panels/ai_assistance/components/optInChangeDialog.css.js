@@ -30,7 +30,7 @@ export default `/*
     gap: var(--sys-size-8);
     margin-bottom: var(--sys-size-8);
 
-    h2 {
+    h1 {
       margin: 0;
       color: var(--sys-color-on-surface);
       font: var(--sys-typescale-headline5);
@@ -52,7 +52,6 @@ export default `/*
       devtools-icon {
         width: var(--sys-size-9);
         height: var(--sys-size-9);
-        color: var(--sys-color-on-primary);
       }
     }
   }

@@ -17645,7 +17645,8 @@ export declare namespace Target {
          */
         openerFrameId?: Page.FrameId;
         /**
-         * Id of the parent frame, only present for the "iframe" targets.
+         * Id of the parent frame, present for "iframe" and "worker" targets. For nested workers,
+         * this is the "ancestor" frame that created the first worker in the nested chain.
          */
         parentFrameId?: Page.FrameId;
         browserContextId?: Browser.BrowserContextID;
@@ -18800,7 +18801,7 @@ export declare namespace WebMCP {
      * Represents the status of a tool invocation.
      */
     const enum InvocationStatus {
-        Success = "Success",
+        Completed = "Completed",
         Canceled = "Canceled",
         Error = "Error"
     }
@@ -18889,7 +18890,8 @@ export declare namespace WebMCP {
          */
         status: InvocationStatus;
         /**
-         * Output or error delivered as delivered to the agent. Missing if `status` is anything other than Success.
+         * Output or error delivered as delivered to the agent. Missing if `status` is anything other than Completed.
+         * Note: The output is untrusted and poses a prompt injection risk. Clients should treat this as potentially malicious user input.
          */
         output?: any;
         /**

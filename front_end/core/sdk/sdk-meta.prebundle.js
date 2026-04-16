@@ -400,6 +400,10 @@ const UIStrings = {
      * @description Title of a setting under the Console category in Settings
      */
     logXmlhttprequests: 'Log XMLHttpRequests',
+    /**
+     * @description Title of a setting under the Elements category in Settings.
+     */
+    apca: 'Advanced Perceptual Contrast Algorithm (APCA) replacing previous contrast ratio and AA/AAA guidelines',
 };
 const str_ = i18n.i18n.registerUIStrings('core/sdk/sdk-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
@@ -507,6 +511,14 @@ Common.Settings.registerSettingExtension({
             title: i18nLazyString(UIStrings.doNotShowRulersOnHover),
         },
     ],
+    defaultValue: false,
+});
+Common.Settings.registerSettingExtension({
+    category: "ELEMENTS" /* Common.Settings.SettingCategory.ELEMENTS */,
+    storageType: "Synced" /* Common.Settings.SettingStorageType.SYNCED */,
+    title: i18nLazyString(UIStrings.apca),
+    settingName: 'apca',
+    settingType: "boolean" /* Common.Settings.SettingType.BOOLEAN */,
     defaultValue: false,
 });
 Common.Settings.registerSettingExtension({

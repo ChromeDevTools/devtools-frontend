@@ -370,9 +370,9 @@ export const DEFAULT_VIEW = (input, output, target) => {
             tail.ranges.push(range);
         }
     }
-    render(
     // clang-format off
-    html `<style>${networkingTimingTableStyles}</style>
+    render(html `
+    <style>${networkingTimingTableStyles}</style>
     <table
       class=${classes}
       jslog=${VisualLogging.pane('timing').track({
@@ -494,9 +494,8 @@ export const DEFAULT_VIEW = (input, output, target) => {
 ${uiI18n.getFormatLocalizedStringTemplate(str_, UIStrings.duringDevelopmentYouCanUseSToAdd, { PH1: html `<devtools-link href="https://web.dev/custom-metrics/#server-timing-api" .jslogContext=${'server-timing-api'}>${i18nString(UIStrings.theServerTimingApi)}</devtools-link>` })}
            </td>
          </tr>` : nothing}
-   </table>`, 
+      </table>`, target, { container: { classes: ['resource-timing-view'] } });
     // clang-format on
-    target);
 };
 export class RequestTimingView extends UI.Widget.VBox {
     #request;
@@ -504,7 +503,7 @@ export class RequestTimingView extends UI.Widget.VBox {
     #lastMinimumBoundary = -1;
     #view;
     constructor(target, view = DEFAULT_VIEW) {
-        super(target, { classes: ['resource-timing-view'] });
+        super(target);
         this.#view = view;
     }
     static create(request, calculator) {

@@ -120,7 +120,6 @@ __export(CSSOverviewModel_exports, {
   CSSOverviewModel: () => CSSOverviewModel
 });
 import * as Common from "./../../core/common/common.js";
-import * as Root from "./../../core/root/root.js";
 import * as SDK from "./../../core/sdk/sdk.js";
 import * as ColorPicker from "./../../ui/legacy/components/color_picker/color_picker.js";
 var CSSOverviewModel = class extends SDK.SDKModel.SDKModel {
@@ -306,7 +305,7 @@ var CSSOverviewModel = class extends SDK.SDKModel.SDKModel {
           const formattedTextColor = formatColor(blendedTextColor);
           const formattedBackgroundColor = formatColor(blendedBackgroundColor.asLegacyColor());
           const key = `${formattedTextColor}_${formattedBackgroundColor}`;
-          if (Root.Runtime.experiments.isEnabled(Root.ExperimentNames.ExperimentName.APCA)) {
+          if (Common.Settings.Settings.instance().moduleSetting("apca").get()) {
             const contrastRatio = contrastInfo.contrastRatioAPCA();
             const threshold = contrastInfo.contrastRatioAPCAThreshold();
             const passes = contrastRatio && threshold ? Math.abs(contrastRatio) >= threshold : false;
@@ -584,7 +583,6 @@ import "./../../ui/kit/kit.js";
 import * as Common2 from "./../../core/common/common.js";
 import * as i18n7 from "./../../core/i18n/i18n.js";
 import * as Platform from "./../../core/platform/platform.js";
-import * as Root2 from "./../../core/root/root.js";
 import * as SDK2 from "./../../core/sdk/sdk.js";
 import * as Geometry from "./../../models/geometry/geometry.js";
 import * as TextUtils from "./../../models/text_utils/text_utils.js";
@@ -1547,7 +1545,7 @@ function renderContrastIssue(key, issues) {
     "hexa"
     /* Common.Color.Format.HEXA */
   );
-  const showAPCA = Root2.Runtime.experiments.isEnabled(Root2.ExperimentNames.ExperimentName.APCA);
+  const showAPCA = Common2.Settings.Settings.instance().moduleSetting("apca").get();
   const title = i18nString4(UIStrings4.textColorSOverSBackgroundResults, {
     PH1: color,
     PH2: backgroundColor,
@@ -1995,7 +1993,7 @@ function renderContrastRatio(data) {
   if (!("contrastRatio" in data)) {
     throw new Error("Contrast ratio entry is missing a contrast ratio.");
   }
-  const showAPCA = Root2.Runtime.experiments.isEnabled(Root2.ExperimentNames.ExperimentName.APCA);
+  const showAPCA = Common2.Settings.Settings.instance().moduleSetting("apca").get();
   const contrastRatio = Platform.NumberUtilities.floor(data.contrastRatio, 2);
   const contrastRatioString = showAPCA ? contrastRatio + "%" : contrastRatio;
   const border = getBorderString(data.backgroundColor);

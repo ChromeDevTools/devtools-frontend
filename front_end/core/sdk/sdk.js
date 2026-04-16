@@ -9546,7 +9546,7 @@ __export(CookieModel_exports, {
 });
 import * as Common25 from "./../common/common.js";
 import * as Platform16 from "./../platform/platform.js";
-import * as Root12 from "./../root/root.js";
+import * as Root11 from "./../root/root.js";
 
 // gen/front_end/core/sdk/Cookie.js
 var Cookie_exports = {};
@@ -12650,7 +12650,7 @@ __export(DOMModel_exports, {
 });
 import * as Common21 from "./../common/common.js";
 import * as Platform13 from "./../platform/platform.js";
-import * as Root11 from "./../root/root.js";
+import * as Root10 from "./../root/root.js";
 
 // gen/front_end/core/sdk/CSSModel.js
 var CSSModel_exports = {};
@@ -21554,7 +21554,6 @@ __export(OverlayModel_exports, {
 });
 import * as Common20 from "./../common/common.js";
 import * as i18n13 from "./../i18n/i18n.js";
-import * as Root10 from "./../root/root.js";
 
 // gen/front_end/core/sdk/DebuggerModel.js
 var DebuggerModel_exports = {};
@@ -24631,7 +24630,7 @@ var OverlayModel = class _OverlayModel extends SDKModel {
       gridHighlightConfig: {},
       flexContainerHighlightConfig: {},
       flexItemHighlightConfig: {},
-      contrastAlgorithm: Root10.Runtime.experiments.isEnabled(Root10.ExperimentNames.ExperimentName.APCA) ? "apca" : "aa"
+      contrastAlgorithm: settings.moduleSetting("apca").get() ? "apca" : "aa"
     };
     if (mode === "all" || mode === "content") {
       highlightConfig.contentColor = Common20.Color.PageHighlight.Content.toProtocolRGBA();
@@ -26229,7 +26228,7 @@ var DOMModel = class _DOMModel extends SDKModel {
     if (!target.suspended()) {
       void this.agent.invoke_enable({});
     }
-    if (Root11.Runtime.experiments.isEnabled(Root11.ExperimentNames.ExperimentName.CAPTURE_NODE_CREATION_STACKS)) {
+    if (Root10.Runtime.experiments.isEnabled(Root10.ExperimentNames.ExperimentName.CAPTURE_NODE_CREATION_STACKS)) {
       void this.agent.invoke_setNodeStackTracesEnabled({ enable: true });
     }
   }
@@ -28202,8 +28201,8 @@ var CookieModel = class extends SDKModel {
     if (cookie.expires()) {
       expires = Math.floor(Date.parse(`${cookie.expires()}`) / 1e3);
     }
-    const schemeBindingEnabled = Boolean(Root12.Runtime.hostConfig.devToolsEnableOriginBoundCookies?.schemeBindingEnabled);
-    const portBindingEnabled = Boolean(Root12.Runtime.hostConfig.devToolsEnableOriginBoundCookies?.portBindingEnabled);
+    const schemeBindingEnabled = Boolean(Root11.Runtime.hostConfig.devToolsEnableOriginBoundCookies?.schemeBindingEnabled);
+    const portBindingEnabled = Boolean(Root11.Runtime.hostConfig.devToolsEnableOriginBoundCookies?.portBindingEnabled);
     const preserveUnset = (scheme) => scheme === "Unset" ? scheme : void 0;
     const protocolCookie = {
       name: cookie.name(),
@@ -32028,7 +32027,7 @@ import * as i18n29 from "./../i18n/i18n.js";
 import * as Common33 from "./../common/common.js";
 import * as Host7 from "./../host/host.js";
 import * as ProtocolClient3 from "./../protocol_client/protocol_client.js";
-import * as Root14 from "./../root/root.js";
+import * as Root13 from "./../root/root.js";
 
 // gen/front_end/core/sdk/RehydratingConnection.js
 var RehydratingConnection_exports = {};
@@ -32039,7 +32038,7 @@ __export(RehydratingConnection_exports, {
 import * as Common32 from "./../common/common.js";
 import * as i18n27 from "./../i18n/i18n.js";
 import * as ProtocolClient2 from "./../protocol_client/protocol_client.js";
-import * as Root13 from "./../root/root.js";
+import * as Root12 from "./../root/root.js";
 
 // gen/front_end/core/sdk/EnhancedTracesParser.js
 var EnhancedTracesParser_exports = {};
@@ -32439,9 +32438,9 @@ var RehydratingConnectionTransport = class {
   }
   /** Returns true if found a trace URL. */
   #maybeHandleLoadingFromUrl() {
-    let traceUrl = Root13.Runtime.Runtime.queryParam("traceURL");
+    let traceUrl = Root12.Runtime.Runtime.queryParam("traceURL");
     if (!traceUrl) {
-      const timelineUrl = Root13.Runtime.Runtime.queryParam("loadTimelineFromURL");
+      const timelineUrl = Root12.Runtime.Runtime.queryParam("loadTimelineFromURL");
       if (timelineUrl) {
         traceUrl = decodeURIComponent(timelineUrl);
       }
@@ -32974,11 +32973,11 @@ async function initMainConnection(createRootTarget, onConnectionLost) {
   Host7.InspectorFrontendHost.InspectorFrontendHostInstance.connectionReady();
 }
 function createMainTransport(onConnectionLost) {
-  if (Root14.Runtime.Runtime.isTraceApp()) {
+  if (Root13.Runtime.Runtime.isTraceApp()) {
     return new RehydratingConnectionTransport(onConnectionLost);
   }
-  const wsParam = Root14.Runtime.Runtime.queryParam("ws");
-  const wssParam = Root14.Runtime.Runtime.queryParam("wss");
+  const wsParam = Root13.Runtime.Runtime.queryParam("ws");
+  const wssParam = Root13.Runtime.Runtime.queryParam("wss");
   if (wsParam || wssParam) {
     const ws = wsParam ? `ws://${wsParam}` : `wss://${wssParam}`;
     return new WebSocketTransport(ws, onConnectionLost);

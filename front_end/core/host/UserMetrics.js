@@ -709,7 +709,6 @@ export var DevtoolsExperiments;
     DevtoolsExperiments[DevtoolsExperiments["protocol-monitor"] = 13] = "protocol-monitor";
     DevtoolsExperiments[DevtoolsExperiments["sampling-heap-profiler-timeline"] = 17] = "sampling-heap-profiler-timeline";
     DevtoolsExperiments[DevtoolsExperiments["timeline-invalidation-tracking"] = 26] = "timeline-invalidation-tracking";
-    DevtoolsExperiments[DevtoolsExperiments["apca"] = 39] = "apca";
     DevtoolsExperiments[DevtoolsExperiments["font-editor"] = 41] = "font-editor";
     DevtoolsExperiments[DevtoolsExperiments["instrumentation-breakpoints"] = 61] = "instrumentation-breakpoints";
     DevtoolsExperiments[DevtoolsExperiments["use-source-map-scopes"] = 76] = "use-source-map-scopes";

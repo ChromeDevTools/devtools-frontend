@@ -8,6 +8,7 @@ import * as Root from '../../../core/root/root.js';
 import * as Logs from '../../logs/logs.js';
 import * as NetworkTimeCalculator from '../../network_time_calculator/network_time_calculator.js';
 import * as Workspace from '../../workspace/workspace.js';
+import { debugLog } from '../debug.js';
 import { AccessibilityContext } from './AccessibilityAgent.js';
 import { AiAgent, } from './AiAgent.js';
 import { FileContext } from './FileAgent.js';
@@ -265,28 +266,40 @@ export class ContextSelectionAgent extends AiAgent {
                 };
             }
         });
+        const parseLighthouseMode = (mode) => {
+            return mode === 'snapshot' ? 'snapshot' : 'navigation';
+        };
         this.declareFunction('runLighthouseAudits', {
             description: 'Records a Lighthouse audit on the current page. Use this to debug accessibility, SEO, and best practices. (For performance metrics like LCP, use performanceRecordAndReload instead).',
             parameters: {
                 type: 6 /* Host.AidaClient.ParametersTypes.OBJECT */,
                 description: '',
                 nullable: true,
-                required: [],
-                properties: {},
+                required: ['mode'],
+                properties: {
+                    mode: {
+                        type: 1 /* Host.AidaClient.ParametersTypes.STRING */,
+                        description: 'The mode to run Lighthouse in. Your ONLY options are "navigation" or "snapshot". You should determine this based on the user\'s question. If the user is asking specifically about accessibility, you can run in "snapshot" mode which avoids reloading the page. If the user asks for a full Lighthouse report, you should run in "navigation" mode which is the default. These are the only options you can pass.',
+                        nullable: false,
+                    }
+                },
             },
-            displayInfoFromArgs: () => {
+            displayInfoFromArgs: args => {
+                const mode = parseLighthouseMode(args.mode);
                 return {
                     title: 'Auditing your page with Lighthouse',
-                    action: 'runLighthouseAudits()',
+                    action: `runLighthouseAudits(${mode})`,
                 };
             },
-            handler: async () => {
+            handler: async (params) => {
                 if (!this.#lighthouseRecording) {
                     return {
                         error: 'Lighthouse report is not available.',
                     };
                 }
-                const result = await this.#lighthouseRecording();
+                const mode = parseLighthouseMode(params.mode);
+                debugLog(`Recording with Lighthouse; runMode=${mode}`);
+                const result = await this.#lighthouseRecording({ mode });
                 if (!result) {
                     return { error: 'Failed to generate Lighthouse report.' };
                 }

@@ -17358,7 +17358,7 @@ var DEFAULT_VIEW = (input, output, target) => {
         ${input.link ? html3`<devtools-link href=${input.link} jslogContext=${"learn-more"}>${i18nString13(UIStrings13.learnMore)}</devtools-link>` : ""}
       </div>
       ${input.extraElements}
-    </div>`, target);
+    </div>`, target, { container: { classes: ["empty-view-scroller"] } });
 };
 var EmptyWidget = class extends VBox {
   #header;
@@ -17372,7 +17372,7 @@ var EmptyWidget = class extends VBox {
     if (!element && headerOrElement instanceof HTMLElement) {
       element = headerOrElement;
     }
-    super(element, { classes: ["empty-view-scroller"] });
+    super(element);
     this.#header = header;
     this.#text = text;
     this.#link = void 0;

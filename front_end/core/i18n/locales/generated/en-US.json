@@ -494,6 +494,9 @@
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "Achromatopsia (no color)"
   },
+  "core/sdk/sdk-meta.ts | apca": {
+    "message": "Advanced Perceptual Contrast Algorithm (APCA) replacing previous contrast ratio and AA/AAA guidelines"
+  },
   "core/sdk/sdk-meta.ts | blurredVision": {
     "message": "Blurred vision"
   },
@@ -6272,6 +6275,9 @@
   "panels/application/WebMCPView.ts | close": {
     "message": "Close"
   },
+  "panels/application/WebMCPView.ts | completed": {
+    "message": "Completed"
+  },
   "panels/application/WebMCPView.ts | declarative": {
     "message": "Declarative"
   },
@@ -6325,9 +6331,6 @@
   },
   "panels/application/WebMCPView.ts | statusTypes": {
     "message": "Status types"
-  },
-  "panels/application/WebMCPView.ts | success": {
-    "message": "Success"
   },
   "panels/application/WebMCPView.ts | toolDetails": {
     "message": "Details"

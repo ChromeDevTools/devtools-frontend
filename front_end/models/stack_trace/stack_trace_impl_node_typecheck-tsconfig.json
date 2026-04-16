@@ -40,6 +40,7 @@
     "useUnknownInCatchVariables": false
   },
   "files": [
+    "../../../../../../front_end/models/stack_trace/DetailedErrorStackParser.ts",
     "../../../../../../front_end/models/stack_trace/StackTraceImpl.ts",
     "../../../../../../front_end/models/stack_trace/StackTraceModel.ts",
     "../../../../../../front_end/models/stack_trace/Trie.ts",

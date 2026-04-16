@@ -397,7 +397,11 @@ var UIStrings = {
   /**
    * @description Title of a setting under the Console category in Settings
    */
-  logXmlhttprequests: "Log XMLHttpRequests"
+  logXmlhttprequests: "Log XMLHttpRequests",
+  /**
+   * @description Title of a setting under the Elements category in Settings.
+   */
+  apca: "Advanced Perceptual Contrast Algorithm (APCA) replacing previous contrast ratio and AA/AAA guidelines"
 };
 var str_ = i18n.i18n.registerUIStrings("core/sdk/sdk-meta.ts", UIStrings);
 var i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(void 0, str_);
@@ -505,6 +509,14 @@ Common.Settings.registerSettingExtension({
       title: i18nLazyString(UIStrings.doNotShowRulersOnHover)
     }
   ],
+  defaultValue: false
+});
+Common.Settings.registerSettingExtension({
+  category: "ELEMENTS",
+  storageType: "Synced",
+  title: i18nLazyString(UIStrings.apca),
+  settingName: "apca",
+  settingType: "boolean",
   defaultValue: false
 });
 Common.Settings.registerSettingExtension({

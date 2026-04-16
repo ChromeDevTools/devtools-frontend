@@ -2220,20 +2220,23 @@ var DEFAULT_VIEW2 = (input, output, target) => {
           </devtools-highlight>
         </li>` : Lit.nothing}`;
   }
-  render2(
-    html2`
+  render2(html2`
     <style>${xmlView_css_default}</style>
     <style>${xmlTree_css_default}</style>
     <devtools-tree
       class="shadow-xml-view source-code"
       .template=${html2`
         <ul role="tree">
-          ${input.xml.children().map((node) => layOutNode(node))}
+            ${input.xml.children().map((node) => layOutNode(node))}
         </ul>`}
-      ></devtools-tree>`,
-    // clang-format on
-    target
-  );
+      ></devtools-tree>`, target, {
+    container: {
+      classes: ["shadow-xml-view", "source-code"],
+      attributes: {
+        jslog: `${VisualLogging5.pane("xml-view")}`
+      }
+    }
+  });
 };
 function* children(xmlNode) {
   if (!xmlNode || !hasNonTextChildren(xmlNode)) {
@@ -2286,7 +2289,7 @@ var XMLView = class _XMLView extends UI7.Widget.Widget {
   #view;
   #nextJump;
   constructor(target, view = DEFAULT_VIEW2) {
-    super(target, { jslog: `${VisualLogging5.pane("xml-view")}`, classes: ["shadow-xml-view", "source-code"] });
+    super(target);
     this.#view = view;
   }
   set parsedXML(parsedXML) {

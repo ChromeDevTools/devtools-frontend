@@ -254,7 +254,7 @@ function renderItem(condition, editable, index, onToggle, onConditionsChanged, o
     // clang-format on
 }
 export const AFFECTED_COUNT_DEFAULT_VIEW = (input, output, target) => {
-    render(html `${i18nString(UIStrings.dAffected, { PH1: input.count })}`, target);
+    render(html `${i18nString(UIStrings.dAffected, { PH1: input.count })}`, target, { container: { classes: ['blocked-url-count'] } });
 };
 function matchesUrl(conditions, url) {
     return Boolean(conditions.originalOrUpgradedURLPattern?.test(url));
@@ -264,7 +264,7 @@ export class AffectedCountWidget extends UI.Widget.Widget {
     #condition;
     #lookUpRequestCount;
     constructor(target, view = AFFECTED_COUNT_DEFAULT_VIEW) {
-        super(target, { classes: ['blocked-url-count'] });
+        super(target);
         this.#view = view;
     }
     get lookUpRequestCount() {

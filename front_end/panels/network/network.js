@@ -571,7 +571,7 @@ function renderItem(condition, editable, index, onToggle, onConditionsChanged, o
       ${widget(AffectedCountWidget, { condition, lookUpRequestCount })}></devtools-widget>`;
 }
 var AFFECTED_COUNT_DEFAULT_VIEW = (input, output, target) => {
-  render(html`${i18nString2(UIStrings2.dAffected, { PH1: input.count })}`, target);
+  render(html`${i18nString2(UIStrings2.dAffected, { PH1: input.count })}`, target, { container: { classes: ["blocked-url-count"] } });
 };
 function matchesUrl(conditions, url) {
   return Boolean(conditions.originalOrUpgradedURLPattern?.test(url));
@@ -581,7 +581,7 @@ var AffectedCountWidget = class extends UI2.Widget.Widget {
   #condition;
   #lookUpRequestCount;
   constructor(target, view = AFFECTED_COUNT_DEFAULT_VIEW) {
-    super(target, { classes: ["blocked-url-count"] });
+    super(target);
     this.#view = view;
   }
   get lookUpRequestCount() {
@@ -5124,8 +5124,14 @@ var DEFAULT_VIEW7 = (input, output, target) => {
         </ul>
       </li>
      </ul>
-     `}></devtools-tree>
-   `, target);
+     `}></devtools-tree>`, target, {
+    container: {
+      classes: ["request-payload-view"],
+      attributes: {
+        jslog: `${VisualLogging8.pane("payload").track({ resize: true })}`
+      }
+    }
+  });
 };
 var RequestPayloadView = class extends UI11.Widget.VBox {
   #request;
@@ -5137,7 +5143,7 @@ var RequestPayloadView = class extends UI11.Widget.VBox {
   #viewFormParamSource = false;
   #viewQueryParamSource = false;
   constructor(target, view = DEFAULT_VIEW7) {
-    super({ jslog: `${VisualLogging8.pane("payload").track({ resize: true })}`, classes: ["request-payload-view"] });
+    super();
     this.#view = view;
   }
   set request(request) {
@@ -6511,14 +6517,13 @@ var DEFAULT_VIEW10 = (input, output, target) => {
       tail.ranges.push(range);
     }
   }
-  render11(
-    // clang-format off
-    html10`<style>${networkTimingTable_css_default}</style>
+  render11(html10`
+    <style>${networkTimingTable_css_default}</style>
     <table
       class=${classes}
       jslog=${VisualLogging10.pane("timing").track({
-      resize: true
-    })}>
+    resize: true
+  })}>
         <colgroup>
           <col class=labels>
           <col class=bars>
@@ -6632,10 +6637,7 @@ var DEFAULT_VIEW10 = (input, output, target) => {
 ${uiI18n3.getFormatLocalizedStringTemplate(str_15, UIStrings15.duringDevelopmentYouCanUseSToAdd, { PH1: html10`<devtools-link href="https://web.dev/custom-metrics/#server-timing-api" .jslogContext=${"server-timing-api"}>${i18nString15(UIStrings15.theServerTimingApi)}</devtools-link>` })}
            </td>
          </tr>` : nothing8}
-   </table>`,
-    // clang-format on
-    target
-  );
+      </table>`, target, { container: { classes: ["resource-timing-view"] } });
 };
 var RequestTimingView = class _RequestTimingView extends UI16.Widget.VBox {
   #request;
@@ -6643,7 +6645,7 @@ var RequestTimingView = class _RequestTimingView extends UI16.Widget.VBox {
   #lastMinimumBoundary = -1;
   #view;
   constructor(target, view = DEFAULT_VIEW10) {
-    super(target, { classes: ["resource-timing-view"] });
+    super(target);
     this.#view = view;
   }
   static create(request, calculator) {

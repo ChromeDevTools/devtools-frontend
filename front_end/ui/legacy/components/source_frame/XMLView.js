@@ -169,11 +169,17 @@ export const DEFAULT_VIEW = (input, output, target) => {
       class="shadow-xml-view source-code"
       .template=${html `
         <ul role="tree">
-          ${input.xml.children().map(node => layOutNode(node))}
+            ${input.xml.children().map(node => layOutNode(node))}
         </ul>`}
-      ></devtools-tree>`, 
+      ></devtools-tree>`, target, {
+        container: {
+            classes: ['shadow-xml-view', 'source-code'],
+            attributes: {
+                jslog: `${VisualLogging.pane('xml-view')}`,
+            },
+        },
+    });
     // clang-format on
-    target);
 };
 function* children(xmlNode) {
     if (!xmlNode || !hasNonTextChildren(xmlNode)) {
@@ -229,7 +235,7 @@ export class XMLView extends UI.Widget.Widget {
     #view;
     #nextJump;
     constructor(target, view = DEFAULT_VIEW) {
-        super(target, { jslog: `${VisualLogging.pane('xml-view')}`, classes: ['shadow-xml-view', 'source-code'] });
+        super(target);
         this.#view = view;
     }
     set parsedXML(parsedXML) {

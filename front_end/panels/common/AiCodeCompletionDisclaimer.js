@@ -134,8 +134,15 @@ export const DEFAULT_SUMMARY_TOOLBAR_VIEW = (input, output, target) => {
                     role="link"
                     jslog=${VisualLogging.link('open-ai-settings').track({
         click: true,
+        keydown: 'Enter',
     })}
                     @click=${input.onManageInSettingsTooltipClick}
+                    @keydown=${(e) => {
+        if (e.key === 'Enter') {
+            e.consume(true);
+            input.onManageInSettingsTooltipClick();
+        }
+    }}
                 >${lockedString(UIStringsNotTranslate.manageInSettings)}</span></div></devtools-tooltip>
           </div>
         `, target);

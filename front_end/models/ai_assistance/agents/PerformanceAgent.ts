@@ -433,6 +433,7 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
    */
   #hasShownWidgetForInsightSet = new WeakSet<Trace.Insights.Types.InsightSet>();
   #hasShownWidgetForCallTree = new WeakSet<AICallTree>();
+  #hasShownWidgetForInsight = new WeakSet<Trace.Insights.Types.InsightModel>();
 
   get preamble(): string {
     return buildPreamble();
@@ -472,46 +473,8 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
     }
     contextDisclosure.push(...this.#additionalSelectionsForQuery);
 
-    const widgets: AiWidget[] = [];
     const focus = context.getItem();
-
-    // If the user has selected a specific task (call tree) as context, show the summary and bottom-up tree for it.
-    // Otherwise, show the high-level Core Web Vitals widget for the trace or insight.
-    if (focus.callTree && !this.#hasShownWidgetForCallTree.has(focus.callTree)) {
-      const event = focus.callTree.selectedNode?.event;
-      if (event) {
-        const {startTime, endTime} = Trace.Helpers.Timing.eventTimingsMicroSeconds(event);
-        const bounds = Trace.Helpers.Timing.traceWindowFromMicroSeconds(startTime, endTime);
-        widgets.push({
-          name: 'TIMELINE_RANGE_SUMMARY',
-          data: {
-            bounds,
-            parsedTrace: focus.parsedTrace,
-            track: 'main',
-          },
-        });
-        widgets.push({
-          name: 'BOTTOM_UP_TREE',
-          data: {
-            bounds,
-            parsedTrace: focus.parsedTrace,
-          },
-        });
-        this.#hasShownWidgetForCallTree.add(focus.callTree);
-      }
-    } else {
-      const primaryInsightSet = focus.primaryInsightSet;
-      if (primaryInsightSet && !this.#hasShownWidgetForInsightSet.has(primaryInsightSet)) {
-        widgets.push({
-          name: 'CORE_VITALS',
-          data: {
-            parsedTrace: focus.parsedTrace,
-            insightSetKey: primaryInsightSet.id,
-          },
-        });
-        this.#hasShownWidgetForInsightSet.add(primaryInsightSet);
-      }
-    }
+    const widgets = this.#getWidgetsForFocus(focus);
 
     yield {
       type: ResponseType.CONTEXT,
@@ -523,6 +486,69 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
       ],
       widgets,
     };
+  }
+
+  // Show different widgets with the first reply depending on the initial context:
+  // Specific task (call tree) -> timeline summary & bottom up tree widgets
+  // LCP Insight -> LCP breakdown & CWV widgets
+  // Whole Trace or insight other than LCP -> CWV widget
+  #getWidgetsForFocus(focus: AgentFocus): AiWidget[] {
+    const widgets: AiWidget[] = [];
+
+    // Case 1: Specific task (call tree) -> timeline summary & bottom up tree widgets
+    if (focus.callTree) {
+      if (!this.#hasShownWidgetForCallTree.has(focus.callTree)) {
+        const event = focus.callTree.selectedNode?.event;
+        if (event) {
+          const {startTime, endTime} = Trace.Helpers.Timing.eventTimingsMicroSeconds(event);
+          const bounds = Trace.Helpers.Timing.traceWindowFromMicroSeconds(startTime, endTime);
+          widgets.push({
+            name: 'TIMELINE_RANGE_SUMMARY',
+            data: {
+              bounds,
+              parsedTrace: focus.parsedTrace,
+              track: 'main',
+            },
+          });
+          widgets.push({
+            name: 'BOTTOM_UP_TREE',
+            data: {
+              bounds,
+              parsedTrace: focus.parsedTrace,
+            },
+          });
+          this.#hasShownWidgetForCallTree.add(focus.callTree);
+        }
+      }
+      return widgets;
+    }
+
+    // Case 2: LCP Insight -> LCP breakdown & CWV widgets
+    if (focus.insight && Trace.Insights.Models.LCPBreakdown.isLCPBreakdownInsight(focus.insight) &&
+        !this.#hasShownWidgetForInsight.has(focus.insight)) {
+      widgets.push({
+        name: 'LCP_BREAKDOWN',
+        data: {
+          lcpData: focus.insight,
+        },
+      });
+      this.#hasShownWidgetForInsight.add(focus.insight);
+    }
+
+    // Case 3: Whole Trace or insight other than LCP -> CWV widget
+    const primaryInsightSet = focus.primaryInsightSet;
+    if (primaryInsightSet && !this.#hasShownWidgetForInsightSet.has(primaryInsightSet)) {
+      widgets.push({
+        name: 'CORE_VITALS',
+        data: {
+          parsedTrace: focus.parsedTrace,
+          insightSetKey: primaryInsightSet.id,
+        },
+      });
+      this.#hasShownWidgetForInsightSet.add(primaryInsightSet);
+    }
+
+    return widgets;
   }
 
   #callTreeContextSet = new WeakSet();

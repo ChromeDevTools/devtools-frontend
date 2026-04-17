@@ -4858,6 +4858,11 @@ declare namespace ProtocolProxyApi {
      */
     invoke_invokeTool(params: Protocol.WebMCP.InvokeToolRequest): Promise<Protocol.WebMCP.InvokeToolResponse>;
 
+    /**
+     * Cancels a pending tool invocation.
+     */
+    invoke_cancelInvocation(params: Protocol.WebMCP.CancelInvocationRequest): Promise<Protocol.ProtocolResponseWithError>;
+
   }
   export interface WebMCPDispatcher {
     /**

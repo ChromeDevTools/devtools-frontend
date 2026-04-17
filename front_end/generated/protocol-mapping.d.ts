@@ -5390,6 +5390,13 @@ export namespace ProtocolMapping {
       returnType: Protocol.WebMCP.InvokeToolResponse;
     };
     /**
+     * Cancels a pending tool invocation.
+     */
+    'WebMCP.cancelInvocation': {
+      paramsType: [Protocol.WebMCP.CancelInvocationRequest];
+      returnType: void;
+    };
+    /**
      * Continues execution until specific location is reached.
      */
     'Debugger.continueToLocation': {

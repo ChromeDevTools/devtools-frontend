@@ -429,6 +429,10 @@ experimental domain Audits
       AutofillPolicyControlledFeatureInfo
       ManualTextPolicyControlledFeatureInfo
       FormModelContextParameterMissingTitleAndDescription
+      FormModelContextMissingToolName
+      FormModelContextMissingToolDescription
+      FormModelContextRequiredParameterMissingName
+      FormModelContextParameterMissingName
 
   # Depending on the concrete errorType, different properties are set.
   type GenericIssueDetails extends object

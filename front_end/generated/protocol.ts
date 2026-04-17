@@ -1212,6 +1212,10 @@ export namespace Audits {
     AutofillPolicyControlledFeatureInfo = 'AutofillPolicyControlledFeatureInfo',
     ManualTextPolicyControlledFeatureInfo = 'ManualTextPolicyControlledFeatureInfo',
     FormModelContextParameterMissingTitleAndDescription = 'FormModelContextParameterMissingTitleAndDescription',
+    FormModelContextMissingToolName = 'FormModelContextMissingToolName',
+    FormModelContextMissingToolDescription = 'FormModelContextMissingToolDescription',
+    FormModelContextRequiredParameterMissingName = 'FormModelContextRequiredParameterMissingName',
+    FormModelContextParameterMissingName = 'FormModelContextParameterMissingName',
   }
 
   /**
@@ -20380,6 +20384,13 @@ export namespace WebMCP {
   export interface InvokeToolResponse extends ProtocolResponseWithError {
     /**
      * Unique identifier for this invocation. Response is sent before tool events.
+     */
+    invocationId: string;
+  }
+
+  export interface CancelInvocationRequest {
+    /**
+     * Invocation identifier to cancel.
      */
     invocationId: string;
   }

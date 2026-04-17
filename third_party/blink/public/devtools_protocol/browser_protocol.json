@@ -1773,7 +1773,11 @@
                         "AutofillAndManualTextPolicyControlledFeaturesInfo",
                         "AutofillPolicyControlledFeatureInfo",
                         "ManualTextPolicyControlledFeatureInfo",
-                        "FormModelContextParameterMissingTitleAndDescription"
+                        "FormModelContextParameterMissingTitleAndDescription",
+                        "FormModelContextMissingToolName",
+                        "FormModelContextMissingToolDescription",
+                        "FormModelContextRequiredParameterMissingName",
+                        "FormModelContextParameterMissingName"
                     ]
                 },
                 {
@@ -30788,6 +30792,17 @@
                         {
                             "name": "invocationId",
                             "description": "Unique identifier for this invocation. Response is sent before tool events.",
+                            "type": "string"
+                        }
+                    ]
+                },
+                {
+                    "name": "cancelInvocation",
+                    "description": "Cancels a pending tool invocation.",
+                    "parameters": [
+                        {
+                            "name": "invocationId",
+                            "description": "Invocation identifier to cancel.",
                             "type": "string"
                         }
                     ]

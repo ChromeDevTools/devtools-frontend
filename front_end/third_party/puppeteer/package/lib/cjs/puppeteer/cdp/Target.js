@@ -32,6 +32,9 @@ class CdpTarget extends Target_js_1.Target {
     _initializedDeferred = Deferred_js_1.Deferred.create();
     _isClosedDeferred = Deferred_js_1.Deferred.create();
     _targetId;
+    _asPagePromise;
+    /** @internal */
+    pagePromise;
     /**
      * To initialize the target for use, call initialize.
      *
@@ -50,13 +53,21 @@ class CdpTarget extends Target_js_1.Target {
         }
     }
     async asPage() {
-        const session = this._session();
-        if (!session) {
-            return await this.createCDPSession().then(client => {
+        if (this.pagePromise) {
+            const page = await this.pagePromise;
+            if (page) {
+                return page;
+            }
+        }
+        if (!this._asPagePromise) {
+            const session = this._session();
+            this._asPagePromise = (session
+                ? Promise.resolve(session)
+                : this._sessionFactory()(/* isAutoAttachEmulated=*/ false)).then(client => {
                 return Page_js_1.CdpPage._create(client, this, null);
             });
         }
-        return await Page_js_1.CdpPage._create(session, this, null);
+        return (await this._asPagePromise) ?? null;
     }
     _subtype() {
         return this.#targetInfo.subtype;
@@ -166,7 +177,6 @@ exports.CdpTarget = CdpTarget;
  */
 class PageTarget extends CdpTarget {
     #defaultViewport;
-    pagePromise;
     constructor(targetInfo, session, browserContext, targetManager, sessionFactory, defaultViewport) {
         super(targetInfo, session, browserContext, targetManager, sessionFactory);
         this.#defaultViewport = defaultViewport ?? undefined;
@@ -231,11 +241,10 @@ class WorkerTarget extends CdpTarget {
     async worker() {
         if (!this.#workerPromise) {
             const session = this._session();
-            // TODO(einbinder): Make workers send their console logs.
             this.#workerPromise = (session
                 ? Promise.resolve(session)
                 : this._sessionFactory()(/* isAutoAttachEmulated=*/ false)).then(client => {
-                return new WebWorker_js_1.CdpWebWorker(client, this._getTargetInfo().url, this._targetId, this.type(), () => { } /* consoleAPICalled */, () => { } /* exceptionThrown */, undefined /* networkManager */);
+                return new WebWorker_js_1.CdpWebWorker(client, this._getTargetInfo().url, this._targetId, this.type(), () => { } /* exceptionThrown */, undefined /* networkManager */);
             });
         }
         return await this.#workerPromise;

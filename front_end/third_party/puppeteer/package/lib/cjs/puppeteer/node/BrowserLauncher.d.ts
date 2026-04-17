@@ -77,6 +77,7 @@ export declare abstract class BrowserLauncher {
         defaultViewport: Viewport | null;
         acceptInsecureCerts?: boolean;
         networkEnabled: boolean;
+        issuesEnabled: boolean;
     }): Promise<Browser>;
     /**
      * @internal
@@ -89,6 +90,7 @@ export declare abstract class BrowserLauncher {
         defaultViewport: Viewport | null;
         acceptInsecureCerts?: boolean;
         networkEnabled?: boolean;
+        issuesEnabled?: boolean;
     }): Promise<Browser>;
     /**
      * @internal

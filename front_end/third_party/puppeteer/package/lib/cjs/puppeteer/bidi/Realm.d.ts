@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import * as Bidi from 'webdriver-bidi-protocol';
+import type { Extension } from '../api/Extension.js';
 import type { JSHandle } from '../api/JSHandle.js';
 import { Realm } from '../api/Realm.js';
 import type { TimeoutSettings } from '../common/TimeoutSettings.js';
@@ -33,6 +34,8 @@ export declare abstract class BidiRealm extends Realm {
     destroyHandles(handles: Array<BidiJSHandle<unknown>>): Promise<void>;
     adoptHandle<T extends JSHandle<Node>>(handle: T): Promise<T>;
     transferHandle<T extends JSHandle<Node>>(handle: T): Promise<T>;
+    extension(): Promise<Extension | null>;
+    get origin(): string;
 }
 /**
  * @internal
@@ -55,6 +58,7 @@ export declare class BidiWorkerRealm extends BidiRealm {
     static from(realm: DedicatedWorkerRealm | SharedWorkerRealm, worker: BidiWebWorker): BidiWorkerRealm;
     readonly realm: DedicatedWorkerRealm | SharedWorkerRealm;
     private constructor();
+    initialize(): void;
     get environment(): BidiWebWorker;
     adoptBackendNode(): Promise<JSHandle<Node>>;
 }

@@ -54,6 +54,7 @@ __exportStar(require("./Target.js"), exports);
 __exportStar(require("./TargetManager.js"), exports);
 __exportStar(require("./TargetManageEvents.js"), exports);
 __exportStar(require("./Tracing.js"), exports);
+__exportStar(require("./WebMCP.js"), exports);
 __exportStar(require("./utils.js"), exports);
 __exportStar(require("./WebWorker.js"), exports);
 //# sourceMappingURL=cdp.js.map

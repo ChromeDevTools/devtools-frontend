@@ -25,6 +25,7 @@ __exportStar(require("./CDPSession.js"), exports);
 __exportStar(require("./DeviceRequestPrompt.js"), exports);
 __exportStar(require("./Dialog.js"), exports);
 __exportStar(require("./ElementHandle.js"), exports);
+__exportStar(require("./Extension.js"), exports);
 __exportStar(require("./Frame.js"), exports);
 __exportStar(require("./HTTPRequest.js"), exports);
 __exportStar(require("./HTTPResponse.js"), exports);

@@ -8,6 +8,20 @@ import { EventEmitter } from '../common/EventEmitter.js';
 import { TimeoutSettings } from '../common/TimeoutSettings.js';
 import { withSourcePuppeteerURLIfNone } from '../common/util.js';
 /**
+ * @public
+ */
+export var WebWorkerEvent;
+(function (WebWorkerEvent) {
+    /**
+     * Emitted when the worker calls a console API.
+     */
+    WebWorkerEvent["Console"] = "console";
+    /**
+     * Emitted when the worker throws an exception.
+     */
+    WebWorkerEvent["Error"] = "error";
+})(WebWorkerEvent || (WebWorkerEvent = {}));
+/**
  * This class represents a
  * {@link https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API | WebWorker}.
  *

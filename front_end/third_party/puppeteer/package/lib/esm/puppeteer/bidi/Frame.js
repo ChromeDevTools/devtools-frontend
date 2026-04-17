@@ -44,34 +44,17 @@ var __setFunctionName = (this && this.__setFunctionName) || function (f, name, p
 import { combineLatest, defer, delayWhen, filter, first, firstValueFrom, map, of, race, raceWith, switchMap, } from '../../third_party/rxjs/rxjs.js';
 import { Frame, throwIfDetached, } from '../api/Frame.js';
 import { Accessibility } from '../cdp/Accessibility.js';
-import { ConsoleMessage, } from '../common/ConsoleMessage.js';
 import { TargetCloseError, UnsupportedOperation } from '../common/Errors.js';
 import { debugError, fromAbortSignal, fromEmitterEvent, timeout, } from '../common/util.js';
 import { isErrorLike } from '../util/ErrorLike.js';
 import { BidiCdpSession } from './CDPSession.js';
-import { BidiDeserializer } from './Deserializer.js';
 import { BidiDialog } from './Dialog.js';
 import { BidiElementHandle } from './ElementHandle.js';
 import { ExposableFunction } from './ExposedFunction.js';
 import { BidiHTTPRequest, requests } from './HTTPRequest.js';
-import { BidiJSHandle } from './JSHandle.js';
 import { BidiFrameRealm } from './Realm.js';
-import { rewriteNavigationError } from './util.js';
+import { getConsoleMessage, isConsoleLogEntry, isJavaScriptLogEntry, rewriteNavigationError, } from './util.js';
 import { BidiWebWorker } from './WebWorker.js';
-// TODO: Remove this and map CDP the correct method.
-// Requires breaking change.
-function convertConsoleMessageLevel(method) {
-    switch (method) {
-        case 'group':
-            return 'startGroup';
-        case 'groupCollapsed':
-            return 'startGroupCollapsed';
-        case 'groupEnd':
-            return 'endGroup';
-        default:
-            return method;
-    }
-}
 let BidiFrame = (() => {
     var _a;
     let _classSuper = Frame;
@@ -230,18 +213,13 @@ let BidiFrame = (() => {
                     return;
                 }
                 if (isConsoleLogEntry(entry)) {
+                    if (!this.page().listenerCount("console" /* PageEvent.Console */)) {
+                        return;
+                    }
                     const args = entry.args.map(arg => {
                         return this.mainRealm().createHandle(arg);
                     });
-                    const text = args
-                        .reduce((value, arg) => {
-                        const parsedValue = arg instanceof BidiJSHandle && arg.isPrimitiveValue
-                            ? BidiDeserializer.deserialize(arg.remoteValue())
-                            : arg.toString();
-                        return `${value} ${parsedValue}`;
-                    }, '')
-                        .slice(1);
-                    this.page().trustedEmitter.emit("console" /* PageEvent.Console */, new ConsoleMessage(convertConsoleMessageLevel(entry.method), text, args, getStackTraceLocations(entry.stackTrace), this, undefined));
+                    this.page().trustedEmitter.emit("console" /* PageEvent.Console */, getConsoleMessage(entry, args, this));
                 }
                 else if (isJavaScriptLogEntry(entry)) {
                     const error = new Error(entry.text ?? '');
@@ -482,26 +460,10 @@ let BidiFrame = (() => {
             // SAFETY: ElementHandles are always remote references.
             [element.remoteValue()]);
         }
+        extensionRealms() {
+            throw new UnsupportedOperation();
+        }
     };
 })();
 export { BidiFrame };
-function isConsoleLogEntry(event) {
-    return event.type === 'console';
-}
-function isJavaScriptLogEntry(event) {
-    return event.type === 'javascript';
-}
-function getStackTraceLocations(stackTrace) {
-    const stackTraceLocations = [];
-    if (stackTrace) {
-        for (const callFrame of stackTrace.callFrames) {
-            stackTraceLocations.push({
-                url: callFrame.url,
-                lineNumber: callFrame.lineNumber,
-                columnNumber: callFrame.columnNumber,
-            });
-        }
-    }
-    return stackTraceLocations;
-}
 //# sourceMappingURL=Frame.js.map

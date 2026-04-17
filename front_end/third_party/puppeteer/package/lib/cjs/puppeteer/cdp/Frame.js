@@ -88,6 +88,7 @@ let CdpFrame = (() => {
         _parentId;
         accessibility;
         worlds;
+        extensionWorlds = {};
         constructor(frameManager, frameId, parentFrameId, client) {
             super();
             this._frameManager = frameManager;
@@ -98,8 +99,8 @@ let CdpFrame = (() => {
             this.#client = client;
             this._loaderId = '';
             this.worlds = {
-                [IsolatedWorlds_js_1.MAIN_WORLD]: new IsolatedWorld_js_1.IsolatedWorld(this, this._frameManager.timeoutSettings),
-                [IsolatedWorlds_js_1.PUPPETEER_WORLD]: new IsolatedWorld_js_1.IsolatedWorld(this, this._frameManager.timeoutSettings),
+                [IsolatedWorlds_js_1.MAIN_WORLD]: new IsolatedWorld_js_1.IsolatedWorld(this, this._frameManager.timeoutSettings, IsolatedWorlds_js_1.MAIN_WORLD),
+                [IsolatedWorlds_js_1.PUPPETEER_WORLD]: new IsolatedWorld_js_1.IsolatedWorld(this, this._frameManager.timeoutSettings, IsolatedWorlds_js_1.PUPPETEER_WORLD),
             };
             this.accessibility = new Accessibility_js_1.Accessibility(this.worlds[IsolatedWorlds_js_1.MAIN_WORLD], frameId);
             this.on(Frame_js_1.FrameEvent.FrameSwappedByActivation, () => {
@@ -107,20 +108,21 @@ let CdpFrame = (() => {
                 this._onLoadingStarted();
                 this._onLoadingStopped();
             });
-            this.worlds[IsolatedWorlds_js_1.MAIN_WORLD].emitter.on('consoleapicalled', this.#onMainWorldConsoleApiCalled.bind(this));
-            this.worlds[IsolatedWorlds_js_1.MAIN_WORLD].emitter.on('bindingcalled', this.#onMainWorldBindingCalled.bind(this));
+            this.registerWorldListeners(this.worlds[IsolatedWorlds_js_1.MAIN_WORLD]);
         }
-        #onMainWorldConsoleApiCalled(event) {
-            this._frameManager.emit(FrameManagerEvents_js_1.FrameManagerEvent.ConsoleApiCalled, [
-                this.worlds[IsolatedWorlds_js_1.MAIN_WORLD],
-                event,
-            ]);
-        }
-        #onMainWorldBindingCalled(event) {
-            this._frameManager.emit(FrameManagerEvents_js_1.FrameManagerEvent.BindingCalled, [
-                this.worlds[IsolatedWorlds_js_1.MAIN_WORLD],
-                event,
-            ]);
+        /**
+         * @internal
+         */
+        registerWorldListeners(world) {
+            world.emitter.on('consoleapicalled', event => {
+                this._frameManager.emit(FrameManagerEvents_js_1.FrameManagerEvent.ConsoleApiCalled, [
+                    world,
+                    event,
+                ]);
+            });
+            world.emitter.on('bindingcalled', event => {
+                this._frameManager.emit(FrameManagerEvents_js_1.FrameManagerEvent.BindingCalled, [world, event]);
+            });
         }
         /**
          * This is used internally in DevTools.
@@ -329,6 +331,9 @@ let CdpFrame = (() => {
             this.#detached = true;
             this.worlds[IsolatedWorlds_js_1.MAIN_WORLD][disposable_js_1.disposeSymbol]();
             this.worlds[IsolatedWorlds_js_1.PUPPETEER_WORLD][disposable_js_1.disposeSymbol]();
+            for (const extensionWorld of Object.values(this.extensionWorlds)) {
+                extensionWorld[disposable_js_1.disposeSymbol]();
+            }
         }
         exposeFunction() {
             throw new Errors_js_1.UnsupportedOperation();
@@ -344,6 +349,12 @@ let CdpFrame = (() => {
             return (await parent
                 .mainRealm()
                 .adoptBackendNode(backendNodeId));
+        }
+        /**
+         * @public
+         */
+        extensionRealms() {
+            return Object.values(this.extensionWorlds);
         }
     };
 })();

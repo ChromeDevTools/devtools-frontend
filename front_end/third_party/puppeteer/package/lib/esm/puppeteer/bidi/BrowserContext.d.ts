@@ -14,6 +14,7 @@ import type { Viewport } from '../common/Viewport.js';
 import type { BidiBrowser } from './Browser.js';
 import { UserContext } from './core/UserContext.js';
 import { BidiPage } from './Page.js';
+import { BidiPageTarget } from './Target.js';
 /**
  * @internal
  */
@@ -30,6 +31,10 @@ export declare class BidiBrowserContext extends BrowserContext {
     readonly userContext: UserContext;
     private constructor();
     targets(): Target[];
+    /**
+     * @internal
+     */
+    getTargetForPage(page: BidiPage): BidiPageTarget | undefined;
     newPage(options?: CreatePageOptions): Promise<Page>;
     close(): Promise<void>;
     browser(): BidiBrowser;

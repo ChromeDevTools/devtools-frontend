@@ -14,6 +14,7 @@ const assert_js_1 = require("../util/assert.js");
 const Deferred_js_1 = require("../util/Deferred.js");
 const disposable_js_1 = require("../util/disposable.js");
 const ErrorLike_js_1 = require("../util/ErrorLike.js");
+const CdpIssue_js_1 = require("./CdpIssue.js");
 const CdpPreloadScript_js_1 = require("./CdpPreloadScript.js");
 const Connection_js_1 = require("./Connection.js");
 const DeviceRequestPrompt_js_1 = require("./DeviceRequestPrompt.js");
@@ -21,9 +22,11 @@ const ExecutionContext_js_1 = require("./ExecutionContext.js");
 const Frame_js_2 = require("./Frame.js");
 const FrameManagerEvents_js_1 = require("./FrameManagerEvents.js");
 const FrameTree_js_1 = require("./FrameTree.js");
+const IsolatedWorld_js_1 = require("./IsolatedWorld.js");
 const IsolatedWorlds_js_1 = require("./IsolatedWorlds.js");
 const NetworkManager_js_1 = require("./NetworkManager.js");
 const TIME_FOR_WAITING_FOR_SWAP = 100; // ms.
+const CHROME_EXTENSION_PREFIX = 'chrome-extension://';
 /**
  * A frame manager manages the frames for a given {@link Page | page}.
  *
@@ -161,6 +164,9 @@ class FrameManager extends EventEmitter_js_1.EventEmitter {
             await this.#frameTreeHandled?.valueOrThrow();
             this.#onLifecycleEvent(event);
         });
+        session.on('Audits.issueAdded', event => {
+            this.#page.emit("issue" /* PageEvent.Issue */, new CdpIssue_js_1.CdpIssue(event.issue));
+        });
     }
     async initialize(client, frame) {
         try {
@@ -189,6 +195,7 @@ class FrameManager extends EventEmitter_js_1.EventEmitter {
                 ...(frame ? Array.from(this.#bindings.values()) : []).map(binding => {
                     return frame?.addExposedFunctionBinding(binding);
                 }),
+                this.#page.browser().isIssuesEnabled() && client.send('Audits.enable'),
             ]);
         }
         catch (error) {
@@ -418,8 +425,22 @@ class FrameManager extends EventEmitter_js_1.EventEmitter {
                 break;
         }
     }
+    #isExtensionOrigin(origin) {
+        return origin.startsWith(CHROME_EXTENSION_PREFIX);
+    }
+    #extractExtensionId(origin) {
+        if (!origin || !this.#isExtensionOrigin(origin)) {
+            return null;
+        }
+        const pathPart = origin.substring(CHROME_EXTENSION_PREFIX.length);
+        const slashIndex = pathPart.indexOf('/');
+        // if there's no / it means that pathPart is now the extensionId, otherwise
+        // we take everything until the first /
+        return slashIndex === -1 ? pathPart : pathPart.substring(0, slashIndex);
+    }
     #onExecutionContextCreated(contextPayload, session) {
         const auxData = contextPayload.auxData;
+        const origin = contextPayload.origin;
         const frameId = auxData && auxData.frameId;
         const frame = typeof frameId === 'string' ? this.frame(frameId) : undefined;
         let world;
@@ -436,6 +457,23 @@ class FrameManager extends EventEmitter_js_1.EventEmitter {
                 // connections so we might end up creating multiple isolated worlds.
                 // We can use either.
                 world = frame.worlds[IsolatedWorlds_js_1.PUPPETEER_WORLD];
+            }
+            else if (this.#isExtensionOrigin(origin)) {
+                const extId = this.#extractExtensionId(origin);
+                if (!extId) {
+                    (0, util_js_1.debugError)('Error while parsing extension id');
+                    return;
+                }
+                if (frame.extensionWorlds[extId]) {
+                    world = frame.extensionWorlds[extId];
+                }
+                else {
+                    world = new IsolatedWorld_js_1.IsolatedWorld(frame, this.timeoutSettings, extId);
+                    frame.extensionWorlds[extId] = world;
+                    frame.registerWorldListeners(world);
+                    world.origin = origin;
+                    world.setWorldId(extId);
+                }
             }
         }
         // If there is no world, the context is not meant to be handled by us.

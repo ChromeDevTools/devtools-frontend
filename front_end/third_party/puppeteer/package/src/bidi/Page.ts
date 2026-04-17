@@ -13,6 +13,7 @@ import type {WindowId} from '../api/Browser.js';
 import type {CDPSession} from '../api/CDPSession.js';
 import type {DeviceRequestPrompt} from '../api/DeviceRequestPrompt.js';
 import type {BoundingBox} from '../api/ElementHandle.js';
+import type {Extension} from '../api/Extension.js';
 import type {WaitForOptions} from '../api/Frame.js';
 import type {HTTPResponse} from '../api/HTTPResponse.js';
 import type {
@@ -30,6 +31,7 @@ import {
   type NewDocumentScriptEvaluation,
   type ScreenshotOptions,
 } from '../api/Page.js';
+import type {Target} from '../api/Target.js';
 import {Coverage} from '../cdp/Coverage.js';
 import {EmulationManager} from '../cdp/EmulationManager.js';
 import type {
@@ -37,6 +39,7 @@ import type {
   NetworkConditions,
 } from '../cdp/NetworkManager.js';
 import {Tracing} from '../cdp/Tracing.js';
+import type {WebMCP} from '../cdp/WebMCP.js';
 import type {
   CookiePartitionKey,
   Cookie,
@@ -51,6 +54,7 @@ import type {PDFOptions} from '../common/PDFOptions.js';
 import type {Awaitable} from '../common/types.js';
 import {evaluationString, parsePDFOptions, timeout} from '../common/util.js';
 import type {Viewport} from '../common/Viewport.js';
+import type {Realm} from '../puppeteer-core.js';
 import {assert} from '../util/assert.js';
 import {bubble} from '../util/decorators.js';
 import {Deferred} from '../util/Deferred.js';
@@ -95,6 +99,9 @@ export class BidiPage extends Page {
   readonly mouse: BidiMouse;
   readonly touchscreen: BidiTouchscreen;
   readonly tracing: Tracing;
+  override get webmcp(): WebMCP {
+    throw new UnsupportedOperation();
+  }
   readonly coverage: Coverage;
   readonly #cdpEmulationManager: EmulationManager;
 
@@ -215,6 +222,10 @@ export class BidiPage extends Page {
 
   override mainFrame(): BidiFrame {
     return this.#frame;
+  }
+
+  override async triggerExtensionAction(_extension: Extension): Promise<void> {
+    throw new UnsupportedOperation();
   }
 
   override async emulateFocusedPage(enabled: boolean): Promise<void> {
@@ -661,8 +672,12 @@ export class BidiPage extends Page {
     throw new UnsupportedOperation();
   }
 
-  override target(): never {
-    throw new UnsupportedOperation();
+  override target(): Target {
+    const target = this.browserContext().getTargetForPage(this);
+    if (!target) {
+      throw new Error('Target not found for page');
+    }
+    return target;
   }
 
   override async waitForFileChooser(
@@ -1004,6 +1019,10 @@ export class BidiPage extends Page {
 
   override get bluetooth(): BluetoothEmulation {
     return this.mainFrame().browsingContext.bluetooth;
+  }
+
+  override extensionRealms(): Realm[] {
+    throw new UnsupportedOperation();
   }
 }
 

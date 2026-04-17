@@ -9,6 +9,7 @@ import type { Browser, WindowId } from '../api/Browser.js';
 import type { BrowserContext } from '../api/BrowserContext.js';
 import { type CDPSession } from '../api/CDPSession.js';
 import type { DeviceRequestPrompt } from '../api/DeviceRequestPrompt.js';
+import type { Extension } from '../api/Extension.js';
 import type { Frame, WaitForOptions } from '../api/Frame.js';
 import type { HTTPResponse } from '../api/HTTPResponse.js';
 import type { JSHandle } from '../api/JSHandle.js';
@@ -18,6 +19,7 @@ import type { Cookie, DeleteCookiesRequest, CookieParam, CookiePartitionKey, Coo
 import { FileChooser } from '../common/FileChooser.js';
 import type { PDFOptions } from '../common/PDFOptions.js';
 import type { Viewport } from '../common/Viewport.js';
+import type { Realm } from '../index-browser.js';
 import { CdpCDPSession } from './CdpSession.js';
 import { Coverage } from './Coverage.js';
 import type { CdpFrame } from './Frame.js';
@@ -25,6 +27,7 @@ import { CdpKeyboard, CdpMouse, CdpTouchscreen } from './Input.js';
 import type { NetworkConditions } from './NetworkManager.js';
 import type { CdpTarget } from './Target.js';
 import { Tracing } from './Tracing.js';
+import { WebMCP } from './WebMCP.js';
 import { CdpWebWorker } from './WebWorker.js';
 /**
  * @internal
@@ -58,6 +61,7 @@ export declare class CdpPage extends Page {
     get touchscreen(): CdpTouchscreen;
     get coverage(): Coverage;
     get tracing(): Tracing;
+    get webmcp(): WebMCP;
     frames(): Frame[];
     workers(): CdpWebWorker[];
     setRequestInterception(value: boolean): Promise<void>;
@@ -94,6 +98,7 @@ export declare class CdpPage extends Page {
     bringToFront(): Promise<void>;
     setJavaScriptEnabled(enabled: boolean): Promise<void>;
     setBypassCSP(enabled: boolean): Promise<void>;
+    triggerExtensionAction(extension: Extension): Promise<void>;
     emulateMediaType(type?: string): Promise<void>;
     emulateCPUThrottling(factor: number | null): Promise<void>;
     emulateMediaFeatures(features?: MediaFeature[]): Promise<void>;
@@ -141,6 +146,7 @@ export declare class CdpPage extends Page {
      */
     waitForDevicePrompt(options?: WaitTimeoutOptions): Promise<DeviceRequestPrompt>;
     get bluetooth(): BluetoothEmulation;
+    extensionRealms(): Realm[];
 }
 /**
  * @internal

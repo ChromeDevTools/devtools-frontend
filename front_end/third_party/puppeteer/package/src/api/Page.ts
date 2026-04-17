@@ -34,6 +34,7 @@ import type {Accessibility} from '../cdp/Accessibility.js';
 import type {Coverage} from '../cdp/Coverage.js';
 import type {NetworkConditions} from '../cdp/NetworkManager.js';
 import type {Tracing} from '../cdp/Tracing.js';
+import type {WebMCP} from '../cdp/WebMCP.js';
 import type {ConsoleMessage} from '../common/ConsoleMessage.js';
 import type {
   Cookie,
@@ -92,6 +93,7 @@ import type {
   ClickOptions,
   ElementHandle,
 } from './ElementHandle.js';
+import type {Extension} from './Extension.js';
 import type {
   Frame,
   FrameAddScriptTagOptions,
@@ -106,6 +108,7 @@ import type {
   Mouse,
   Touchscreen,
 } from './Input.js';
+import type {Issue} from './Issue.js';
 import type {JSHandle} from './JSHandle.js';
 import {
   FunctionLocator,
@@ -113,6 +116,7 @@ import {
   NodeLocator,
   type AwaitedLocator,
 } from './locators/locators.js';
+import type {Realm} from './Realm.js';
 import type {Target} from './Target.js';
 import type {WebWorker} from './WebWorker.js';
 
@@ -476,6 +480,11 @@ export const enum PageEvent {
    */
   DOMContentLoaded = 'domcontentloaded',
   /**
+   * Emitted when a DevTools issue is reported.
+   * @experimental
+   */
+  Issue = 'issue',
+  /**
    * Emitted when the page crashes. Will contain an `Error`.
    */
   Error = 'error',
@@ -597,6 +606,7 @@ export interface PageEvents extends Record<EventType, unknown> {
   [PageEvent.Console]: ConsoleMessage;
   [PageEvent.Dialog]: Dialog;
   [PageEvent.DOMContentLoaded]: undefined;
+  [PageEvent.Issue]: Issue;
   [PageEvent.Error]: Error;
   [PageEvent.FrameAttached]: Frame;
   [PageEvent.FrameDetached]: Frame;
@@ -942,6 +952,15 @@ export abstract class Page extends EventEmitter<PageEvents> {
    * {@inheritDoc Tracing}
    */
   abstract get tracing(): Tracing;
+
+  /**
+   * Experimental API for {@link https://github.com/webmachinelearning/webmcp
+   * | WebMCP}. Requires Chrome 149+ with the
+   * `--enable-features=WebMCPTesting,DevToolsWebMCPSupport` flags enabled.
+   *
+   * @experimental
+   */
+  abstract get webmcp(): WebMCP;
 
   /**
    * {@inheritDoc Accessibility}
@@ -3231,6 +3250,25 @@ export abstract class Page extends EventEmitter<PageEvents> {
    * {@inheritDoc BluetoothEmulation}
    */
   abstract get bluetooth(): BluetoothEmulation;
+
+  /**
+   * Triggers the default action of the specified extension for this page.
+   * This simulates clicking the extension's icon in the browser's toolbar.
+   *
+   * @param extension - The {@link Extension} whose action to trigger.
+   * @public
+   */
+  abstract triggerExtensionAction(extension: Extension): Promise<void>;
+
+  /**
+   * Retrieves the list of extension execution realms in the main frame of the page.
+   * These realms correspond to extension content scripts running on the page.
+   *
+   * Shortcut for {@link Frame.extensionRealms | mainFrame().extensionRealms()}.
+   *
+   * @public
+   */
+  abstract extensionRealms(): Realm[];
 }
 
 /**

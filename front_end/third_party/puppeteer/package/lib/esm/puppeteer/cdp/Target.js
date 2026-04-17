@@ -29,6 +29,9 @@ export class CdpTarget extends Target {
     _initializedDeferred = Deferred.create();
     _isClosedDeferred = Deferred.create();
     _targetId;
+    _asPagePromise;
+    /** @internal */
+    pagePromise;
     /**
      * To initialize the target for use, call initialize.
      *
@@ -47,13 +50,21 @@ export class CdpTarget extends Target {
         }
     }
     async asPage() {
-        const session = this._session();
-        if (!session) {
-            return await this.createCDPSession().then(client => {
+        if (this.pagePromise) {
+            const page = await this.pagePromise;
+            if (page) {
+                return page;
+            }
+        }
+        if (!this._asPagePromise) {
+            const session = this._session();
+            this._asPagePromise = (session
+                ? Promise.resolve(session)
+                : this._sessionFactory()(/* isAutoAttachEmulated=*/ false)).then(client => {
                 return CdpPage._create(client, this, null);
             });
         }
-        return await CdpPage._create(session, this, null);
+        return (await this._asPagePromise) ?? null;
     }
     _subtype() {
         return this.#targetInfo.subtype;
@@ -162,7 +173,6 @@ export class CdpTarget extends Target {
  */
 export class PageTarget extends CdpTarget {
     #defaultViewport;
-    pagePromise;
     constructor(targetInfo, session, browserContext, targetManager, sessionFactory, defaultViewport) {
         super(targetInfo, session, browserContext, targetManager, sessionFactory);
         this.#defaultViewport = defaultViewport ?? undefined;
@@ -225,11 +235,10 @@ export class WorkerTarget extends CdpTarget {
     async worker() {
         if (!this.#workerPromise) {
             const session = this._session();
-            // TODO(einbinder): Make workers send their console logs.
             this.#workerPromise = (session
                 ? Promise.resolve(session)
                 : this._sessionFactory()(/* isAutoAttachEmulated=*/ false)).then(client => {
-                return new CdpWebWorker(client, this._getTargetInfo().url, this._targetId, this.type(), () => { } /* consoleAPICalled */, () => { } /* exceptionThrown */, undefined /* networkManager */);
+                return new CdpWebWorker(client, this._getTargetInfo().url, this._targetId, this.type(), () => { } /* exceptionThrown */, undefined /* networkManager */);
             });
         }
         return await this.#workerPromise;

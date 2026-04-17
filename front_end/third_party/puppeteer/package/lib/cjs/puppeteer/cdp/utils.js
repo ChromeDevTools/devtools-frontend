@@ -6,6 +6,7 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CDP_BINDING_PREFIX = void 0;
+exports.createConsoleMessage = createConsoleMessage;
 exports.createEvaluationError = createEvaluationError;
 exports.createClientError = createClientError;
 exports.valueFromJSHandle = valueFromJSHandle;
@@ -13,8 +14,32 @@ exports.valueFromRemoteObjectReference = valueFromRemoteObjectReference;
 exports.valueFromPrimitiveRemoteObject = valueFromPrimitiveRemoteObject;
 exports.addPageBinding = addPageBinding;
 exports.pageBindingInitString = pageBindingInitString;
+exports.convertConsoleMessageLevel = convertConsoleMessageLevel;
+const ConsoleMessage_js_1 = require("../common/ConsoleMessage.js");
 const util_js_1 = require("../common/util.js");
 const assert_js_1 = require("../util/assert.js");
+/**
+ * @internal
+ */
+function createConsoleMessage(event, values, targetId) {
+    const textTokens = [];
+    // eslint-disable-next-line max-len -- The comment is long.
+    // eslint-disable-next-line @puppeteer/use-using -- These are not owned by this function.
+    for (const arg of values) {
+        textTokens.push(valueFromJSHandle(arg));
+    }
+    const stackTraceLocations = [];
+    if (event.stackTrace) {
+        for (const callFrame of event.stackTrace.callFrames) {
+            stackTraceLocations.push({
+                url: callFrame.url,
+                lineNumber: callFrame.lineNumber,
+                columnNumber: callFrame.columnNumber,
+            });
+        }
+    }
+    return new ConsoleMessage_js_1.ConsoleMessage(convertConsoleMessageLevel(event.type), textTokens.join(' '), values, stackTraceLocations, undefined, event.stackTrace, targetId);
+}
 /**
  * @internal
  */
@@ -222,5 +247,16 @@ exports.CDP_BINDING_PREFIX = 'puppeteer_';
  */
 function pageBindingInitString(type, name) {
     return (0, util_js_1.evaluationString)(addPageBinding, type, name, exports.CDP_BINDING_PREFIX);
+}
+/**
+ * @internal
+ */
+function convertConsoleMessageLevel(method) {
+    switch (method) {
+        case 'warning':
+            return 'warn';
+        default:
+            return method;
+    }
 }
 //# sourceMappingURL=utils.js.map

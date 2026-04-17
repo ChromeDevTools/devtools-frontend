@@ -5,12 +5,79 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.convertConsoleMessageLevel = convertConsoleMessageLevel;
+exports.getStackTraceLocations = getStackTraceLocations;
+exports.getConsoleMessage = getConsoleMessage;
+exports.isConsoleLogEntry = isConsoleLogEntry;
+exports.isJavaScriptLogEntry = isJavaScriptLogEntry;
 exports.createEvaluationError = createEvaluationError;
 exports.rewriteNavigationError = rewriteNavigationError;
 exports.rewriteEvaluationError = rewriteEvaluationError;
+const ConsoleMessage_js_1 = require("../common/ConsoleMessage.js");
 const Errors_js_1 = require("../common/Errors.js");
 const util_js_1 = require("../common/util.js");
 const Deserializer_js_1 = require("./Deserializer.js");
+const JSHandle_js_1 = require("./JSHandle.js");
+/**
+ * @internal
+ *
+ * TODO: Remove this and map CDP the correct method.
+ * Requires breaking change.
+ */
+function convertConsoleMessageLevel(method) {
+    switch (method) {
+        case 'group':
+            return 'startGroup';
+        case 'groupCollapsed':
+            return 'startGroupCollapsed';
+        case 'groupEnd':
+            return 'endGroup';
+        default:
+            return method;
+    }
+}
+/**
+ * @internal
+ */
+function getStackTraceLocations(stackTrace) {
+    const stackTraceLocations = [];
+    if (stackTrace) {
+        for (const callFrame of stackTrace.callFrames) {
+            stackTraceLocations.push({
+                url: callFrame.url,
+                lineNumber: callFrame.lineNumber,
+                columnNumber: callFrame.columnNumber,
+            });
+        }
+    }
+    return stackTraceLocations;
+}
+/**
+ * @internal
+ */
+function getConsoleMessage(entry, args, frame, targetId) {
+    const text = args
+        .reduce((value, arg) => {
+        const parsedValue = arg instanceof JSHandle_js_1.BidiJSHandle && arg.isPrimitiveValue
+            ? Deserializer_js_1.BidiDeserializer.deserialize(arg.remoteValue())
+            : arg.toString();
+        return `${value} ${parsedValue}`;
+    }, '')
+        .slice(1);
+    return new ConsoleMessage_js_1.ConsoleMessage(convertConsoleMessageLevel(entry.method), text, args, getStackTraceLocations(entry.stackTrace), frame, undefined, targetId);
+}
+/**
+ * @internal
+ */
+function isConsoleLogEntry(event) {
+    return event.type === 'console';
+}
+/**
+ * @internal
+ */
+function isJavaScriptLogEntry(event) {
+    return event.type === 'javascript';
+}
 /**
  * @internal
  */

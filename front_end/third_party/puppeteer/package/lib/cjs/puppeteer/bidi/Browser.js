@@ -153,6 +153,7 @@ let BidiBrowser = (() => {
         #target = new Target_js_1.BidiBrowserTarget(this);
         #cdpConnection;
         #networkEnabled;
+        #issuesEnabled;
         constructor(browserCore, opts) {
             super();
             this.#process = opts.process;
@@ -161,6 +162,7 @@ let BidiBrowser = (() => {
             this.#defaultViewport = opts.defaultViewport;
             this.#cdpConnection = opts.cdpConnection;
             this.#networkEnabled = opts.networkEnabled;
+            this.#issuesEnabled = opts.issuesEnabled;
         }
         #initialize() {
             // Initializing existing contexts.
@@ -330,6 +332,12 @@ let BidiBrowser = (() => {
         }
         isNetworkEnabled() {
             return this.#networkEnabled;
+        }
+        extensions() {
+            throw new Errors_js_1.UnsupportedOperation();
+        }
+        isIssuesEnabled() {
+            return this.#issuesEnabled;
         }
     };
 })();

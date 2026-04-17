@@ -73,7 +73,7 @@ class BrowserLauncher {
         return this.#browser;
     }
     async launch(options = {}) {
-        const { dumpio = false, enableExtensions = false, env = process.env, handleSIGINT = true, handleSIGTERM = true, handleSIGHUP = true, acceptInsecureCerts = false, networkEnabled = true, defaultViewport = util_js_1.DEFAULT_VIEWPORT, downloadBehavior, slowMo = 0, timeout = 30000, waitForInitialPage = true, protocolTimeout, handleDevToolsAsPage, idGenerator = (0, incremental_id_generator_js_1.createIncrementalIdGenerator)(), } = options;
+        const { dumpio = false, enableExtensions = false, env = process.env, handleSIGINT = true, handleSIGTERM = true, handleSIGHUP = true, acceptInsecureCerts = false, networkEnabled = true, issuesEnabled = true, defaultViewport = util_js_1.DEFAULT_VIEWPORT, downloadBehavior, slowMo = 0, timeout = 30000, waitForInitialPage = true, protocolTimeout, handleDevToolsAsPage, idGenerator = (0, incremental_id_generator_js_1.createIncrementalIdGenerator)(), } = options;
         let { protocol } = options;
         // Default to 'webDriverBiDi' for Firefox.
         if (this.#browser === 'firefox' && protocol === undefined) {
@@ -156,10 +156,11 @@ class BrowserLauncher {
                         defaultViewport,
                         acceptInsecureCerts,
                         networkEnabled,
+                        issuesEnabled,
                     });
                 }
                 else {
-                    browser = await Browser_js_1.CdpBrowser._create(cdpConnection, [], acceptInsecureCerts, defaultViewport, downloadBehavior, browserProcess.nodeProcess, browserCloseCallback, options.targetFilter, undefined, undefined, networkEnabled, handleDevToolsAsPage);
+                    browser = await Browser_js_1.CdpBrowser._create(cdpConnection, [], acceptInsecureCerts, defaultViewport, downloadBehavior, browserProcess.nodeProcess, browserCloseCallback, options.targetFilter, undefined, undefined, networkEnabled, issuesEnabled, handleDevToolsAsPage);
                 }
             }
         }
@@ -270,6 +271,7 @@ class BrowserLauncher {
             defaultViewport: opts.defaultViewport,
             acceptInsecureCerts: opts.acceptInsecureCerts,
             networkEnabled: opts.networkEnabled,
+            issuesEnabled: opts.issuesEnabled,
         });
     }
     /**
@@ -287,6 +289,7 @@ class BrowserLauncher {
             defaultViewport: opts.defaultViewport,
             acceptInsecureCerts: opts.acceptInsecureCerts,
             networkEnabled: opts.networkEnabled ?? true,
+            issuesEnabled: opts.issuesEnabled ?? true,
         });
     }
     /**

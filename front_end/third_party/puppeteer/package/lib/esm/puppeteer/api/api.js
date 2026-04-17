@@ -9,6 +9,7 @@ export * from './CDPSession.js';
 export * from './DeviceRequestPrompt.js';
 export * from './Dialog.js';
 export * from './ElementHandle.js';
+export * from './Extension.js';
 export * from './Frame.js';
 export * from './HTTPRequest.js';
 export * from './HTTPResponse.js';

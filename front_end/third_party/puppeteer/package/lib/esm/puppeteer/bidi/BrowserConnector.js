@@ -16,7 +16,7 @@ import { createIncrementalIdGenerator } from '../util/incremental-id-generator.j
  * @internal
  */
 export async function _connectToBiDiBrowser(connectionTransport, url, options) {
-    const { acceptInsecureCerts = false, networkEnabled = true, defaultViewport = DEFAULT_VIEWPORT, } = options;
+    const { acceptInsecureCerts = false, networkEnabled = true, issuesEnabled = true, defaultViewport = DEFAULT_VIEWPORT, } = options;
     const { bidiConnection, cdpConnection, closeCallback } = await getBiDiConnection(connectionTransport, url, options);
     const BiDi = await import(/* webpackIgnore: true */ './bidi.js');
     const bidiBrowser = await BiDi.BidiBrowser.create({
@@ -27,6 +27,7 @@ export async function _connectToBiDiBrowser(connectionTransport, url, options) {
         defaultViewport: defaultViewport,
         acceptInsecureCerts: acceptInsecureCerts,
         networkEnabled,
+        issuesEnabled,
         capabilities: options.capabilities,
     });
     return bidiBrowser;

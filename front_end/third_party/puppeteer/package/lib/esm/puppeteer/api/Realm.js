@@ -6,14 +6,41 @@
 import { TaskManager, WaitTask } from '../common/WaitTask.js';
 import { disposeSymbol } from '../util/disposable.js';
 /**
- * @internal
+ * @public
  */
 export class Realm {
+    /** @internal */
     timeoutSettings;
+    /** @internal */
     taskManager = new TaskManager();
+    /** @internal */
     constructor(timeoutSettings) {
         this.timeoutSettings = timeoutSettings;
     }
+    /**
+     * Waits for a function to return a truthy value when evaluated in
+     * the realm's context.
+     *
+     * Arguments can be passed from Node.js to `pageFunction`.
+     *
+     * @example
+     *
+     * ```ts
+     * const selector = '.foo';
+     * await realm.waitForFunction(
+     *   selector => !!document.querySelector(selector),
+     *   {},
+     *   selector,
+     * );
+     * ```
+     *
+     * @param pageFunction - A function to evaluate in the realm.
+     * @param options - Options for polling and timeouts.
+     * @param args - Arguments to pass to the function.
+     * @returns A promise that resolves when the function returns a truthy
+     * value.
+     * @public
+     */
     async waitForFunction(pageFunction, options = {}, ...args) {
         const { polling = 'raf', timeout = this.timeoutSettings.timeout(), root, signal, } = options;
         if (typeof polling === 'number' && polling < 0) {
@@ -27,6 +54,7 @@ export class Realm {
         }, pageFunction, ...args);
         return await waitTask.result;
     }
+    /** @internal */
     get disposed() {
         return this.#disposed;
     }

@@ -185,6 +185,12 @@ export class WindowRealm extends Realm {
             });
             this.emit('worker', realm);
         });
+        sessionEmitter.on('log.entryAdded', entry => {
+            if (entry.source.realm !== this.id) {
+                return;
+            }
+            this.emit('log', entry);
+        });
     }
     get session() {
         return this.browsingContext.userContext.browser.session;
@@ -231,6 +237,12 @@ export class DedicatedWorkerRealm extends Realm {
             });
             this.emit('worker', realm);
         });
+        sessionEmitter.on('log.entryAdded', entry => {
+            if (entry.source.realm !== this.id) {
+                return;
+            }
+            this.emit('log', entry);
+        });
     }
     get session() {
         // SAFETY: At least one owner will exist.
@@ -275,6 +287,12 @@ export class SharedWorkerRealm extends Realm {
                 this.#workers.delete(realm.id);
             });
             this.emit('worker', realm);
+        });
+        sessionEmitter.on('log.entryAdded', entry => {
+            if (entry.source.realm !== this.id) {
+                return;
+            }
+            this.emit('log', entry);
         });
     }
     get session() {

@@ -63,6 +63,7 @@ exports.convertCookiesPartitionKeyFromPuppeteerToCdp = convertCookiesPartitionKe
 const rxjs_js_1 = require("../../third_party/rxjs/rxjs.js");
 const CDPSession_js_1 = require("../api/CDPSession.js");
 const Page_js_1 = require("../api/Page.js");
+const WebWorker_js_1 = require("../api/WebWorker.js");
 const ConsoleMessage_js_1 = require("../common/ConsoleMessage.js");
 const Errors_js_1 = require("../common/Errors.js");
 const EventEmitter_js_1 = require("../common/EventEmitter.js");
@@ -88,15 +89,8 @@ const IsolatedWorlds_js_1 = require("./IsolatedWorlds.js");
 const JSHandle_js_1 = require("./JSHandle.js");
 const Tracing_js_1 = require("./Tracing.js");
 const utils_js_1 = require("./utils.js");
-const WebWorker_js_1 = require("./WebWorker.js");
-function convertConsoleMessageLevel(method) {
-    switch (method) {
-        case 'warning':
-            return 'warn';
-        default:
-            return method;
-    }
-}
+const WebMCP_js_1 = require("./WebMCP.js");
+const WebWorker_js_2 = require("./WebWorker.js");
 /**
  * @internal
  */
@@ -145,6 +139,7 @@ class CdpPage extends Page_js_1.Page {
     #frameManager;
     #emulationManager;
     #tracing;
+    #webmcp;
     #bindings = new Map();
     #exposedFunctions = new Map();
     #coverage;
@@ -170,6 +165,7 @@ class CdpPage extends Page_js_1.Page {
         this.#frameManager = new FrameManager_js_1.FrameManager(client, this, this._timeoutSettings);
         this.#emulationManager = new EmulationManager_js_1.EmulationManager(client);
         this.#tracing = new Tracing_js_1.Tracing(client);
+        this.#webmcp = new WebMCP_js_1.WebMCP(client, this.#frameManager);
         this.#coverage = new Coverage_js_1.Coverage(client);
         this.#viewport = null;
         // Use browser context's connection, as current Bluetooth emulation in Chromium is
@@ -250,6 +246,7 @@ class CdpPage extends Page_js_1.Page {
         this.#touchscreen.updateClient(newSession);
         this.#emulationManager.updateClient(newSession);
         this.#tracing.updateClient(newSession);
+        this.#webmcp.updateClient(newSession);
         this.#coverage.updateClient(newSession);
         await this.#frameManager.swapFrameTree(newSession);
         this.#setupPrimaryTargetListeners();
@@ -300,8 +297,23 @@ class CdpPage extends Page_js_1.Page {
         (0, assert_js_1.assert)(session instanceof CdpSession_js_1.CdpCDPSession);
         this.#frameManager.onAttachedToTarget(session.target());
         if (session.target()._getTargetInfo().type === 'worker') {
-            const worker = new WebWorker_js_1.CdpWebWorker(session, session.target().url(), session.target()._targetId, session.target().type(), this.#onConsoleAPI.bind(this), this.#handleException.bind(this), this.#frameManager.networkManager);
+            const worker = new WebWorker_js_2.CdpWebWorker(session, session.target().url(), session.target()._targetId, session.target().type(), this.#handleException.bind(this), this.#frameManager.networkManager);
             this.#workers.set(session.id(), worker);
+            worker.internalEmitter.on(WebWorker_js_1.WebWorkerEvent.Console, message => {
+                const noListenersForConsoleOnPage = this.listenerCount("console" /* PageEvent.Console */) === 0;
+                const noListenersForConsoleOnWorker = worker.listenerCount(WebWorker_js_1.WebWorkerEvent.Console) === 0;
+                if (noListenersForConsoleOnPage && noListenersForConsoleOnWorker) {
+                    // eslint-disable-next-line max-len -- The comment is long.
+                    // eslint-disable-next-line @puppeteer/use-using -- These are not owned by this function.
+                    for (const arg of message.args()) {
+                        void arg.dispose().catch(util_js_1.debugError);
+                    }
+                    return;
+                }
+                if (!noListenersForConsoleOnPage) {
+                    this.emit("console" /* PageEvent.Console */, message);
+                }
+            });
             this.emit("workercreated" /* PageEvent.WorkerCreated */, worker);
         }
         session.on(CDPSession_js_1.CDPSessionEvent.Ready, this.#onAttachedToTarget);
@@ -312,6 +324,7 @@ class CdpPage extends Page_js_1.Page {
                 this.#frameManager.initialize(this.#primaryTargetClient),
                 this.#primaryTargetClient.send('Performance.enable'),
                 this.#primaryTargetClient.send('Log.enable'),
+                this.#webmcp.initialize(),
             ]);
         }
         catch (err) {
@@ -436,7 +449,7 @@ class CdpPage extends Page_js_1.Page {
             });
         }
         if (source !== 'worker') {
-            this.emit("console" /* PageEvent.Console */, new ConsoleMessage_js_1.ConsoleMessage(convertConsoleMessageLevel(level), text, [], [{ url, lineNumber }], undefined, stackTrace, this.#primaryTarget._targetId));
+            this.emit("console" /* PageEvent.Console */, new ConsoleMessage_js_1.ConsoleMessage((0, utils_js_1.convertConsoleMessageLevel)(level), text, [], [{ url, lineNumber }], undefined, stackTrace, this.#primaryTarget._targetId));
         }
     }
     mainFrame() {
@@ -453,6 +466,9 @@ class CdpPage extends Page_js_1.Page {
     }
     get tracing() {
         return this.#tracing;
+    }
+    get webmcp() {
+        return this.#webmcp;
     }
     frames() {
         return this.#frameManager.frames();
@@ -677,38 +693,30 @@ class CdpPage extends Page_js_1.Page {
     #handleException(exception) {
         this.emit("pageerror" /* PageEvent.PageError */, (0, utils_js_1.createClientError)(exception.exceptionDetails));
     }
-    #onConsoleAPI(world, event) {
-        const values = event.args.map(arg => {
-            return world.createCdpHandle(arg);
-        });
-        if (!this.listenerCount("console" /* PageEvent.Console */)) {
-            values.forEach(arg => {
-                return arg.dispose();
+    #onConsoleAPI(world, event, values) {
+        if (!values) {
+            values = event.args.map(arg => {
+                return world.createCdpHandle(arg);
             });
-            return;
         }
-        const textTokens = [];
-        // eslint-disable-next-line max-len -- The comment is long.
-        // eslint-disable-next-line @puppeteer/use-using -- These are not owned by this function.
-        for (const arg of values) {
-            textTokens.push((0, utils_js_1.valueFromJSHandle)(arg));
-        }
-        const stackTraceLocations = [];
-        if (event.stackTrace) {
-            for (const callFrame of event.stackTrace.callFrames) {
-                stackTraceLocations.push({
-                    url: callFrame.url,
-                    lineNumber: callFrame.lineNumber,
-                    columnNumber: callFrame.columnNumber,
-                });
+        const hasPageConsoleListeners = this.listenerCount("console" /* PageEvent.Console */) > 0;
+        const hasWorkerConsoleListeners = world.environment instanceof WebWorker_js_1.WebWorker &&
+            world.environment.listenerCount(WebWorker_js_1.WebWorkerEvent.Console) > 0;
+        if (!hasPageConsoleListeners) {
+            if (!hasWorkerConsoleListeners) {
+                // eslint-disable-next-line max-len -- The comment is long.
+                // eslint-disable-next-line @puppeteer/use-using -- These are not owned by this function.
+                for (const value of values) {
+                    void value.dispose().catch(util_js_1.debugError);
+                }
             }
+            return;
         }
         let targetId;
         if (world.environment.client instanceof CdpSession_js_1.CdpCDPSession) {
             targetId = world.environment.client.target()._targetId;
         }
-        const message = new ConsoleMessage_js_1.ConsoleMessage(convertConsoleMessageLevel(event.type), textTokens.join(' '), values, stackTraceLocations, undefined, event.stackTrace, targetId);
-        this.emit("console" /* PageEvent.Console */, message);
+        this.emit("console" /* PageEvent.Console */, (0, utils_js_1.createConsoleMessage)(event, values, targetId));
     }
     async #onBindingCalled(world, event) {
         let payload;
@@ -779,6 +787,9 @@ class CdpPage extends Page_js_1.Page {
     }
     async setBypassCSP(enabled) {
         await this.#primaryTargetClient.send('Page.setBypassCSP', { enabled });
+    }
+    async triggerExtensionAction(extension) {
+        return await extension.triggerAction(this);
     }
     async emulateMediaType(type) {
         return await this.#emulationManager.emulateMediaType(type);
@@ -966,6 +977,9 @@ class CdpPage extends Page_js_1.Page {
     }
     get bluetooth() {
         return this.#cdpBluetoothEmulation;
+    }
+    extensionRealms() {
+        return this.mainFrame().extensionRealms();
     }
 }
 exports.CdpPage = CdpPage;

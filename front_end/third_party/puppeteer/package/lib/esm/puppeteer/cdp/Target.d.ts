@@ -28,6 +28,9 @@ export declare class CdpTarget extends Target {
     _initializedDeferred: Deferred<InitializationStatus, Error>;
     _isClosedDeferred: Deferred<void, Error>;
     _targetId: string;
+    _asPagePromise?: Promise<Page>;
+    /** @internal */
+    pagePromise?: Promise<Page>;
     /**
      * To initialize the target for use, call initialize.
      *
@@ -59,7 +62,6 @@ export declare class CdpTarget extends Target {
  */
 export declare class PageTarget extends CdpTarget {
     #private;
-    protected pagePromise?: Promise<Page>;
     constructor(targetInfo: Protocol.Target.TargetInfo, session: CdpCDPSession | undefined, browserContext: BrowserContext, targetManager: TargetManager, sessionFactory: (isAutoAttachEmulated: boolean) => Promise<CdpCDPSession>, defaultViewport: Viewport | null);
     _initialize(): void;
     page(): Promise<Page | null>;

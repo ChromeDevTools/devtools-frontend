@@ -6,6 +6,7 @@
 import type { ChildProcess } from 'node:child_process';
 import type { CreatePageOptions } from '../api/Browser.js';
 import { Browser, type BrowserCloseCallback, type BrowserContextOptions, type ScreenInfo, type AddScreenParams, type WindowBounds, type WindowId, type DebugInfo } from '../api/Browser.js';
+import type { Extension } from '../api/Extension.js';
 import type { Page } from '../api/Page.js';
 import type { Target } from '../api/Target.js';
 import type { Connection as CdpConnection } from '../cdp/Connection.js';
@@ -26,6 +27,7 @@ export interface BidiBrowserOptions {
     acceptInsecureCerts?: boolean;
     capabilities?: SupportedWebDriverCapabilities;
     networkEnabled: boolean;
+    issuesEnabled: boolean;
 }
 /**
  * @internal
@@ -62,5 +64,7 @@ export declare class BidiBrowser extends Browser {
     disconnect(): Promise<void>;
     get debugInfo(): DebugInfo;
     isNetworkEnabled(): boolean;
+    extensions(): Promise<Map<string, Extension>>;
+    isIssuesEnabled(): boolean;
 }
 //# sourceMappingURL=Browser.d.ts.map

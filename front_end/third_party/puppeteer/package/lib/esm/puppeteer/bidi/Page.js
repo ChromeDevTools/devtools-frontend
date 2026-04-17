@@ -139,6 +139,9 @@ let BidiPage = (() => {
         mouse;
         touchscreen;
         tracing;
+        get webmcp() {
+            throw new UnsupportedOperation();
+        }
         coverage;
         #cdpEmulationManager;
         #emulatedNetworkConditions;
@@ -225,6 +228,9 @@ let BidiPage = (() => {
         }
         mainFrame() {
             return this.#frame;
+        }
+        async triggerExtensionAction(_extension) {
+            throw new UnsupportedOperation();
         }
         async emulateFocusedPage(enabled) {
             return await this.#cdpEmulationManager.emulateFocus(enabled);
@@ -562,7 +568,11 @@ let BidiPage = (() => {
             throw new UnsupportedOperation();
         }
         target() {
-            throw new UnsupportedOperation();
+            const target = this.browserContext().getTargetForPage(this);
+            if (!target) {
+                throw new Error('Target not found for page');
+            }
+            return target;
         }
         async waitForFileChooser(options = {}) {
             const { timeout = this._timeoutSettings.timeout() } = options;
@@ -797,6 +807,9 @@ let BidiPage = (() => {
         }
         get bluetooth() {
             return this.mainFrame().browsingContext.bluetooth;
+        }
+        extensionRealms() {
+            throw new UnsupportedOperation();
         }
     };
 })();

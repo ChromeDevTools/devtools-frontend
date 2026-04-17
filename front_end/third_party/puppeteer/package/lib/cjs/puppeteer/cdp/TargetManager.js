@@ -106,6 +106,9 @@ class TargetManager extends EventEmitter_js_1.EventEmitter {
         this.#finishInitializationIfReady();
         await this.#initializeDeferred.valueOrThrow();
     }
+    addToIgnoreTarget(targetId) {
+        this.#ignoredTargets.add(targetId);
+    }
     getChildTargets(target) {
         return target._childTargets();
     }
@@ -118,6 +121,9 @@ class TargetManager extends EventEmitter_js_1.EventEmitter {
     }
     getAvailableTargets() {
         return this.#attachedTargetsByTargetId;
+    }
+    getDiscoveredTargetInfos() {
+        return this.#discoveredTargetsByTargetId;
     }
     #setupAttachmentListeners(session) {
         const listener = (event) => {
@@ -236,7 +242,9 @@ class TargetManager extends EventEmitter_js_1.EventEmitter {
         // CDP.
         if (targetInfo.type === 'service_worker') {
             await this.#silentDetach(session, parentSession);
-            if (this.#attachedTargetsByTargetId.has(targetInfo.targetId)) {
+            if (this.#attachedTargetsByTargetId.has(targetInfo.targetId) ||
+                this.#ignoredTargets.has(targetInfo.targetId) ||
+                !this.#discoveredTargetsByTargetId.has(targetInfo.targetId)) {
                 return;
             }
             const target = this.#targetFactory(targetInfo);

@@ -5,8 +5,10 @@
  */
 import * as Bidi from 'webdriver-bidi-protocol';
 
+import type {Extension} from '../api/Extension.js';
 import type {JSHandle} from '../api/JSHandle.js';
 import {Realm} from '../api/Realm.js';
+import {WebWorkerEvent} from '../api/WebWorker.js';
 import {ARIAQueryHandler} from '../common/AriaQueryHandler.js';
 import {LazyArg} from '../common/LazyArg.js';
 import {scriptInjector} from '../common/ScriptInjector.js';
@@ -20,6 +22,7 @@ import {
   PuppeteerURL,
   SOURCE_URL_REGEX,
 } from '../common/util.js';
+import {UnsupportedOperation} from '../index-browser.js';
 import type {PuppeteerInjectedUtil} from '../injected/injected.js';
 import {AsyncIterableUtil} from '../util/AsyncIterableUtil.js';
 import {stringifyFunction} from '../util/Function.js';
@@ -36,7 +39,12 @@ import {ExposableFunction} from './ExposedFunction.js';
 import type {BidiFrame} from './Frame.js';
 import {BidiJSHandle} from './JSHandle.js';
 import {BidiSerializer} from './Serializer.js';
-import {createEvaluationError, rewriteEvaluationError} from './util.js';
+import {
+  createEvaluationError,
+  getConsoleMessage,
+  isConsoleLogEntry,
+  rewriteEvaluationError,
+} from './util.js';
 import type {BidiWebWorker} from './WebWorker.js';
 
 /**
@@ -281,6 +289,14 @@ export abstract class BidiRealm extends Realm {
     await handle.dispose();
     return await transferredHandle;
   }
+
+  extension(): Promise<Extension | null> {
+    throw new UnsupportedOperation();
+  }
+
+  override get origin(): string {
+    throw new UnsupportedOperation();
+  }
 }
 
 /**
@@ -398,6 +414,28 @@ export class BidiWorkerRealm extends BidiRealm {
   ) {
     super(realm, frame.timeoutSettings);
     this.#worker = frame;
+  }
+
+  override initialize(): void {
+    super.initialize();
+    this.realm.on('log', entry => {
+      if (
+        isConsoleLogEntry(entry) &&
+        this.#worker.listenerCount(WebWorkerEvent.Console)
+      ) {
+        const args = entry.args.map(arg => {
+          return this.createHandle(arg);
+        });
+
+        const message = getConsoleMessage(
+          entry,
+          args,
+          undefined,
+          this.realm.id,
+        );
+        this.#worker.emit(WebWorkerEvent.Console, message);
+      }
+    });
   }
 
   override get environment(): BidiWebWorker {

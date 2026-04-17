@@ -51,10 +51,12 @@ var __disposeResources = (this && this.__disposeResources) || (function (Suppres
     return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
 });
 import { Realm } from '../api/Realm.js';
+import { WebWorkerEvent } from '../api/WebWorker.js';
 import { ARIAQueryHandler } from '../common/AriaQueryHandler.js';
 import { LazyArg } from '../common/LazyArg.js';
 import { scriptInjector } from '../common/ScriptInjector.js';
 import { debugError, getSourcePuppeteerURLIfAvailable, getSourceUrlComment, isString, PuppeteerURL, SOURCE_URL_REGEX, } from '../common/util.js';
+import { UnsupportedOperation } from '../index-browser.js';
 import { AsyncIterableUtil } from '../util/AsyncIterableUtil.js';
 import { stringifyFunction } from '../util/Function.js';
 import { BidiDeserializer } from './Deserializer.js';
@@ -62,7 +64,7 @@ import { BidiElementHandle } from './ElementHandle.js';
 import { ExposableFunction } from './ExposedFunction.js';
 import { BidiJSHandle } from './JSHandle.js';
 import { BidiSerializer } from './Serializer.js';
-import { createEvaluationError, rewriteEvaluationError } from './util.js';
+import { createEvaluationError, getConsoleMessage, isConsoleLogEntry, rewriteEvaluationError, } from './util.js';
 /**
  * @internal
  */
@@ -222,6 +224,12 @@ export class BidiRealm extends Realm {
         await handle.dispose();
         return await transferredHandle;
     }
+    extension() {
+        throw new UnsupportedOperation();
+    }
+    get origin() {
+        throw new UnsupportedOperation();
+    }
 }
 /**
  * @internal
@@ -308,6 +316,19 @@ export class BidiWorkerRealm extends BidiRealm {
     constructor(realm, frame) {
         super(realm, frame.timeoutSettings);
         this.#worker = frame;
+    }
+    initialize() {
+        super.initialize();
+        this.realm.on('log', entry => {
+            if (isConsoleLogEntry(entry) &&
+                this.#worker.listenerCount(WebWorkerEvent.Console)) {
+                const args = entry.args.map(arg => {
+                    return this.createHandle(arg);
+                });
+                const message = getConsoleMessage(entry, args, undefined, this.realm.id);
+                this.#worker.emit(WebWorkerEvent.Console, message);
+            }
+        });
     }
     get environment() {
         return this.#worker;

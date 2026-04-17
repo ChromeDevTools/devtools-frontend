@@ -152,6 +152,10 @@ export class TargetManager
     await this.#initializeDeferred.valueOrThrow();
   }
 
+  addToIgnoreTarget(targetId: string): void {
+    this.#ignoredTargets.add(targetId);
+  }
+
   getChildTargets(target: CdpTarget): ReadonlySet<CdpTarget> {
     return target._childTargets();
   }
@@ -170,6 +174,10 @@ export class TargetManager
 
   getAvailableTargets(): ReadonlyMap<string, CdpTarget> {
     return this.#attachedTargetsByTargetId;
+  }
+
+  getDiscoveredTargetInfos(): ReadonlyMap<string, Protocol.Target.TargetInfo> {
+    return this.#discoveredTargetsByTargetId;
   }
 
   #setupAttachmentListeners(session: CDPSession | Connection): void {
@@ -256,6 +264,7 @@ export class TargetManager
     const targetInfo = this.#discoveredTargetsByTargetId.get(event.targetId);
     this.#discoveredTargetsByTargetId.delete(event.targetId);
     this.#finishInitializationIfReady(event.targetId);
+
     if (targetInfo?.type === 'service_worker') {
       // Special case for service workers: report TargetGone event when
       // the worker is destroyed.
@@ -333,7 +342,11 @@ export class TargetManager
     // CDP.
     if (targetInfo.type === 'service_worker') {
       await this.#silentDetach(session, parentSession);
-      if (this.#attachedTargetsByTargetId.has(targetInfo.targetId)) {
+      if (
+        this.#attachedTargetsByTargetId.has(targetInfo.targetId) ||
+        this.#ignoredTargets.has(targetInfo.targetId) ||
+        !this.#discoveredTargetsByTargetId.has(targetInfo.targetId)
+      ) {
         return;
       }
       const target = this.#targetFactory(targetInfo);

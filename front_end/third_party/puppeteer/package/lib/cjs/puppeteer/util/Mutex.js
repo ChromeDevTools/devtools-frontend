@@ -30,7 +30,7 @@ class Mutex {
     async acquire(onRelease) {
         if (!this.#locked) {
             this.#locked = true;
-            return new Mutex.Guard(this);
+            return new Mutex.Guard(this, onRelease);
         }
         const deferred = Deferred_js_1.Deferred.create();
         this.#acquirers.push(deferred.resolve.bind(deferred));

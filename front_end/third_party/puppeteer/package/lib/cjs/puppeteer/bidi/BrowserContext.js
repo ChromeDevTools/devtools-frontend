@@ -226,6 +226,12 @@ let BidiBrowserContext = (() => {
                 return [target, ...frames.values()];
             });
         }
+        /**
+         * @internal
+         */
+        getTargetForPage(page) {
+            return this.#targets.get(page)?.[0];
+        }
         async newPage(options) {
             const env_1 = { stack: [], error: void 0, hasError: false };
             try {

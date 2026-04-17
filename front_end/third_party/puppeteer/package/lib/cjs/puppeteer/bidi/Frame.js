@@ -47,34 +47,17 @@ exports.BidiFrame = void 0;
 const rxjs_js_1 = require("../../third_party/rxjs/rxjs.js");
 const Frame_js_1 = require("../api/Frame.js");
 const Accessibility_js_1 = require("../cdp/Accessibility.js");
-const ConsoleMessage_js_1 = require("../common/ConsoleMessage.js");
 const Errors_js_1 = require("../common/Errors.js");
 const util_js_1 = require("../common/util.js");
 const ErrorLike_js_1 = require("../util/ErrorLike.js");
 const CDPSession_js_1 = require("./CDPSession.js");
-const Deserializer_js_1 = require("./Deserializer.js");
 const Dialog_js_1 = require("./Dialog.js");
 const ElementHandle_js_1 = require("./ElementHandle.js");
 const ExposedFunction_js_1 = require("./ExposedFunction.js");
 const HTTPRequest_js_1 = require("./HTTPRequest.js");
-const JSHandle_js_1 = require("./JSHandle.js");
 const Realm_js_1 = require("./Realm.js");
 const util_js_2 = require("./util.js");
 const WebWorker_js_1 = require("./WebWorker.js");
-// TODO: Remove this and map CDP the correct method.
-// Requires breaking change.
-function convertConsoleMessageLevel(method) {
-    switch (method) {
-        case 'group':
-            return 'startGroup';
-        case 'groupCollapsed':
-            return 'startGroupCollapsed';
-        case 'groupEnd':
-            return 'endGroup';
-        default:
-            return method;
-    }
-}
 let BidiFrame = (() => {
     var _a;
     let _classSuper = Frame_js_1.Frame;
@@ -232,21 +215,16 @@ let BidiFrame = (() => {
                 if (this._id !== entry.source.context) {
                     return;
                 }
-                if (isConsoleLogEntry(entry)) {
+                if ((0, util_js_2.isConsoleLogEntry)(entry)) {
+                    if (!this.page().listenerCount("console" /* PageEvent.Console */)) {
+                        return;
+                    }
                     const args = entry.args.map(arg => {
                         return this.mainRealm().createHandle(arg);
                     });
-                    const text = args
-                        .reduce((value, arg) => {
-                        const parsedValue = arg instanceof JSHandle_js_1.BidiJSHandle && arg.isPrimitiveValue
-                            ? Deserializer_js_1.BidiDeserializer.deserialize(arg.remoteValue())
-                            : arg.toString();
-                        return `${value} ${parsedValue}`;
-                    }, '')
-                        .slice(1);
-                    this.page().trustedEmitter.emit("console" /* PageEvent.Console */, new ConsoleMessage_js_1.ConsoleMessage(convertConsoleMessageLevel(entry.method), text, args, getStackTraceLocations(entry.stackTrace), this, undefined));
+                    this.page().trustedEmitter.emit("console" /* PageEvent.Console */, (0, util_js_2.getConsoleMessage)(entry, args, this));
                 }
-                else if (isJavaScriptLogEntry(entry)) {
+                else if ((0, util_js_2.isJavaScriptLogEntry)(entry)) {
                     const error = new Error(entry.text ?? '');
                     const messageHeight = error.message.split('\n').length;
                     const messageLines = error.stack.split('\n').splice(0, messageHeight);
@@ -485,26 +463,10 @@ let BidiFrame = (() => {
             // SAFETY: ElementHandles are always remote references.
             [element.remoteValue()]);
         }
+        extensionRealms() {
+            throw new Errors_js_1.UnsupportedOperation();
+        }
     };
 })();
 exports.BidiFrame = BidiFrame;
-function isConsoleLogEntry(event) {
-    return event.type === 'console';
-}
-function isJavaScriptLogEntry(event) {
-    return event.type === 'javascript';
-}
-function getStackTraceLocations(stackTrace) {
-    const stackTraceLocations = [];
-    if (stackTrace) {
-        for (const callFrame of stackTrace.callFrames) {
-            stackTraceLocations.push({
-                url: callFrame.url,
-                lineNumber: callFrame.lineNumber,
-                columnNumber: callFrame.columnNumber,
-            });
-        }
-    }
-    return stackTraceLocations;
-}
 //# sourceMappingURL=Frame.js.map

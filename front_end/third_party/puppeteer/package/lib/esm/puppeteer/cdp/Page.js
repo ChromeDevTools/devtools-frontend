@@ -58,7 +58,8 @@ var __disposeResources = (this && this.__disposeResources) || (function (Suppres
 import { firstValueFrom, from, raceWith } from '../../third_party/rxjs/rxjs.js';
 import { CDPSessionEvent } from '../api/CDPSession.js';
 import { Page, } from '../api/Page.js';
-import { ConsoleMessage, } from '../common/ConsoleMessage.js';
+import { WebWorker, WebWorkerEvent } from '../api/WebWorker.js';
+import { ConsoleMessage } from '../common/ConsoleMessage.js';
 import { TargetCloseError } from '../common/Errors.js';
 import { EventEmitter } from '../common/EventEmitter.js';
 import { FileChooser } from '../common/FileChooser.js';
@@ -82,16 +83,9 @@ import { CdpKeyboard, CdpMouse, CdpTouchscreen } from './Input.js';
 import { MAIN_WORLD } from './IsolatedWorlds.js';
 import { releaseObject } from './JSHandle.js';
 import { Tracing } from './Tracing.js';
-import { createClientError, pageBindingInitString, valueFromJSHandle, } from './utils.js';
+import { convertConsoleMessageLevel, createClientError, createConsoleMessage, pageBindingInitString, } from './utils.js';
+import { WebMCP } from './WebMCP.js';
 import { CdpWebWorker } from './WebWorker.js';
-function convertConsoleMessageLevel(method) {
-    switch (method) {
-        case 'warning':
-            return 'warn';
-        default:
-            return method;
-    }
-}
 /**
  * @internal
  */
@@ -140,6 +134,7 @@ export class CdpPage extends Page {
     #frameManager;
     #emulationManager;
     #tracing;
+    #webmcp;
     #bindings = new Map();
     #exposedFunctions = new Map();
     #coverage;
@@ -165,6 +160,7 @@ export class CdpPage extends Page {
         this.#frameManager = new FrameManager(client, this, this._timeoutSettings);
         this.#emulationManager = new EmulationManager(client);
         this.#tracing = new Tracing(client);
+        this.#webmcp = new WebMCP(client, this.#frameManager);
         this.#coverage = new Coverage(client);
         this.#viewport = null;
         // Use browser context's connection, as current Bluetooth emulation in Chromium is
@@ -245,6 +241,7 @@ export class CdpPage extends Page {
         this.#touchscreen.updateClient(newSession);
         this.#emulationManager.updateClient(newSession);
         this.#tracing.updateClient(newSession);
+        this.#webmcp.updateClient(newSession);
         this.#coverage.updateClient(newSession);
         await this.#frameManager.swapFrameTree(newSession);
         this.#setupPrimaryTargetListeners();
@@ -295,8 +292,23 @@ export class CdpPage extends Page {
         assert(session instanceof CdpCDPSession);
         this.#frameManager.onAttachedToTarget(session.target());
         if (session.target()._getTargetInfo().type === 'worker') {
-            const worker = new CdpWebWorker(session, session.target().url(), session.target()._targetId, session.target().type(), this.#onConsoleAPI.bind(this), this.#handleException.bind(this), this.#frameManager.networkManager);
+            const worker = new CdpWebWorker(session, session.target().url(), session.target()._targetId, session.target().type(), this.#handleException.bind(this), this.#frameManager.networkManager);
             this.#workers.set(session.id(), worker);
+            worker.internalEmitter.on(WebWorkerEvent.Console, message => {
+                const noListenersForConsoleOnPage = this.listenerCount("console" /* PageEvent.Console */) === 0;
+                const noListenersForConsoleOnWorker = worker.listenerCount(WebWorkerEvent.Console) === 0;
+                if (noListenersForConsoleOnPage && noListenersForConsoleOnWorker) {
+                    // eslint-disable-next-line max-len -- The comment is long.
+                    // eslint-disable-next-line @puppeteer/use-using -- These are not owned by this function.
+                    for (const arg of message.args()) {
+                        void arg.dispose().catch(debugError);
+                    }
+                    return;
+                }
+                if (!noListenersForConsoleOnPage) {
+                    this.emit("console" /* PageEvent.Console */, message);
+                }
+            });
             this.emit("workercreated" /* PageEvent.WorkerCreated */, worker);
         }
         session.on(CDPSessionEvent.Ready, this.#onAttachedToTarget);
@@ -307,6 +319,7 @@ export class CdpPage extends Page {
                 this.#frameManager.initialize(this.#primaryTargetClient),
                 this.#primaryTargetClient.send('Performance.enable'),
                 this.#primaryTargetClient.send('Log.enable'),
+                this.#webmcp.initialize(),
             ]);
         }
         catch (err) {
@@ -448,6 +461,9 @@ export class CdpPage extends Page {
     }
     get tracing() {
         return this.#tracing;
+    }
+    get webmcp() {
+        return this.#webmcp;
     }
     frames() {
         return this.#frameManager.frames();
@@ -672,38 +688,30 @@ export class CdpPage extends Page {
     #handleException(exception) {
         this.emit("pageerror" /* PageEvent.PageError */, createClientError(exception.exceptionDetails));
     }
-    #onConsoleAPI(world, event) {
-        const values = event.args.map(arg => {
-            return world.createCdpHandle(arg);
-        });
-        if (!this.listenerCount("console" /* PageEvent.Console */)) {
-            values.forEach(arg => {
-                return arg.dispose();
+    #onConsoleAPI(world, event, values) {
+        if (!values) {
+            values = event.args.map(arg => {
+                return world.createCdpHandle(arg);
             });
-            return;
         }
-        const textTokens = [];
-        // eslint-disable-next-line max-len -- The comment is long.
-        // eslint-disable-next-line @puppeteer/use-using -- These are not owned by this function.
-        for (const arg of values) {
-            textTokens.push(valueFromJSHandle(arg));
-        }
-        const stackTraceLocations = [];
-        if (event.stackTrace) {
-            for (const callFrame of event.stackTrace.callFrames) {
-                stackTraceLocations.push({
-                    url: callFrame.url,
-                    lineNumber: callFrame.lineNumber,
-                    columnNumber: callFrame.columnNumber,
-                });
+        const hasPageConsoleListeners = this.listenerCount("console" /* PageEvent.Console */) > 0;
+        const hasWorkerConsoleListeners = world.environment instanceof WebWorker &&
+            world.environment.listenerCount(WebWorkerEvent.Console) > 0;
+        if (!hasPageConsoleListeners) {
+            if (!hasWorkerConsoleListeners) {
+                // eslint-disable-next-line max-len -- The comment is long.
+                // eslint-disable-next-line @puppeteer/use-using -- These are not owned by this function.
+                for (const value of values) {
+                    void value.dispose().catch(debugError);
+                }
             }
+            return;
         }
         let targetId;
         if (world.environment.client instanceof CdpCDPSession) {
             targetId = world.environment.client.target()._targetId;
         }
-        const message = new ConsoleMessage(convertConsoleMessageLevel(event.type), textTokens.join(' '), values, stackTraceLocations, undefined, event.stackTrace, targetId);
-        this.emit("console" /* PageEvent.Console */, message);
+        this.emit("console" /* PageEvent.Console */, createConsoleMessage(event, values, targetId));
     }
     async #onBindingCalled(world, event) {
         let payload;
@@ -774,6 +782,9 @@ export class CdpPage extends Page {
     }
     async setBypassCSP(enabled) {
         await this.#primaryTargetClient.send('Page.setBypassCSP', { enabled });
+    }
+    async triggerExtensionAction(extension) {
+        return await extension.triggerAction(this);
     }
     async emulateMediaType(type) {
         return await this.#emulationManager.emulateMediaType(type);
@@ -961,6 +972,9 @@ export class CdpPage extends Page {
     }
     get bluetooth() {
         return this.#cdpBluetoothEmulation;
+    }
+    extensionRealms() {
+        return this.mainFrame().extensionRealms();
     }
 }
 const supportedMetrics = new Set([

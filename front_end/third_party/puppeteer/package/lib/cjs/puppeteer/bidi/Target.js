@@ -54,7 +54,7 @@ class BidiPageTarget extends Target_js_1.Target {
         return this.#page;
     }
     async asPage() {
-        return Page_js_1.BidiPage.from(this.browserContext(), this.#page.mainFrame().browsingContext);
+        return await this.page();
     }
     url() {
         return this.#page.url();
@@ -93,7 +93,7 @@ class BidiFrameTarget extends Target_js_1.Target {
         return this.#page;
     }
     async asPage() {
-        return Page_js_1.BidiPage.from(this.browserContext(), this.#frame.browsingContext);
+        return await this.page();
     }
     url() {
         return this.#frame.url();

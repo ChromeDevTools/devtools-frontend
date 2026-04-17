@@ -9,6 +9,7 @@ exports.CdpBrowser = void 0;
 const Browser_js_1 = require("../api/Browser.js");
 const CDPSession_js_1 = require("../api/CDPSession.js");
 const BrowserContext_js_1 = require("./BrowserContext.js");
+const Extension_js_1 = require("./Extension.js");
 const Target_js_1 = require("./Target.js");
 const TargetManager_js_1 = require("./TargetManager.js");
 /**
@@ -22,8 +23,8 @@ function isDevToolsPageTarget(url) {
  */
 class CdpBrowser extends Browser_js_1.Browser {
     protocol = 'cdp';
-    static async _create(connection, contextIds, acceptInsecureCerts, defaultViewport, downloadBehavior, process, closeCallback, targetFilterCallback, isPageTargetCallback, waitForInitiallyDiscoveredTargets = true, networkEnabled = true, handleDevToolsAsPage = false) {
-        const browser = new CdpBrowser(connection, contextIds, defaultViewport, process, closeCallback, targetFilterCallback, isPageTargetCallback, waitForInitiallyDiscoveredTargets, networkEnabled, handleDevToolsAsPage);
+    static async _create(connection, contextIds, acceptInsecureCerts, defaultViewport, downloadBehavior, process, closeCallback, targetFilterCallback, isPageTargetCallback, waitForInitiallyDiscoveredTargets = true, networkEnabled = true, issuesEnabled = true, handleDevToolsAsPage = false) {
+        const browser = new CdpBrowser(connection, contextIds, defaultViewport, process, closeCallback, targetFilterCallback, isPageTargetCallback, waitForInitiallyDiscoveredTargets, networkEnabled, issuesEnabled, handleDevToolsAsPage);
         if (acceptInsecureCerts) {
             await connection.send('Security.setIgnoreCertificateErrors', {
                 ignore: true,
@@ -41,11 +42,14 @@ class CdpBrowser extends Browser_js_1.Browser {
     #defaultContext;
     #contexts = new Map();
     #networkEnabled = true;
+    #issuesEnabled = true;
     #targetManager;
     #handleDevToolsAsPage = false;
-    constructor(connection, contextIds, defaultViewport, process, closeCallback, targetFilterCallback, isPageTargetCallback, waitForInitiallyDiscoveredTargets = true, networkEnabled = true, handleDevToolsAsPage = false) {
+    #extensions = new Map();
+    constructor(connection, contextIds, defaultViewport, process, closeCallback, targetFilterCallback, isPageTargetCallback, waitForInitiallyDiscoveredTargets = true, networkEnabled = true, issuesEnabled = true, handleDevToolsAsPage = false) {
         super();
         this.#networkEnabled = networkEnabled;
+        this.#issuesEnabled = issuesEnabled;
         this.#defaultViewport = defaultViewport;
         this.#process = process;
         this.#connection = connection;
@@ -251,10 +255,33 @@ class CdpBrowser extends Browser_js_1.Browser {
     }
     async installExtension(path) {
         const { id } = await this.#connection.send('Extensions.loadUnpacked', { path });
+        this.#extensions.delete(id);
         return id;
     }
-    uninstallExtension(id) {
-        return this.#connection.send('Extensions.uninstall', { id });
+    async uninstallExtension(id) {
+        await this.#connection.send('Extensions.uninstall', { id });
+        // Currently sending the Extensions.uninstall command does not trigger
+        // the Target.targetDestroyed event for service workers. This causes
+        // flakiness in the extension tests.
+        // TODO(nroscino): Remove this once the event is correctly emitted.
+        const targetDestroyedPromises = [];
+        for (const [targetId, targetInfo] of this._targetManager()
+            .getDiscoveredTargetInfos()
+            .entries()) {
+            if (targetInfo.url.includes(id) && targetInfo.type === 'service_worker') {
+                this._targetManager().addToIgnoreTarget(targetId);
+                targetDestroyedPromises.push(new Promise(resolve => {
+                    return setTimeout(() => {
+                        this.#connection.emit('Target.targetDestroyed', {
+                            targetId: targetId,
+                        });
+                        resolve(null);
+                    }, 0);
+                }));
+            }
+        }
+        await Promise.all(targetDestroyedPromises);
+        this.#extensions.delete(id);
     }
     async screens() {
         const { screenInfos } = await this.#connection.send('Emulation.getScreenInfos');
@@ -312,6 +339,12 @@ class CdpBrowser extends Browser_js_1.Browser {
         this._detach();
         return Promise.resolve();
     }
+    /**
+     * @internal
+     */
+    get _connection() {
+        return this.#connection;
+    }
     get connected() {
         return !this.#connection._closed;
     }
@@ -325,6 +358,24 @@ class CdpBrowser extends Browser_js_1.Browser {
     }
     isNetworkEnabled() {
         return this.#networkEnabled;
+    }
+    async extensions() {
+        const response = await this.#connection.send('Extensions.getExtensions');
+        const extensionsMap = new Map();
+        for (const currExtension of response.extensions) {
+            if (this.#extensions.has(currExtension.id)) {
+                extensionsMap.set(currExtension.id, this.#extensions.get(currExtension.id));
+            }
+            else {
+                const newExtension = new Extension_js_1.CdpExtension(currExtension.id, currExtension.version, currExtension.name, this);
+                extensionsMap.set(currExtension.id, newExtension);
+            }
+        }
+        this.#extensions = extensionsMap;
+        return this.#extensions;
+    }
+    isIssuesEnabled() {
+        return this.#issuesEnabled;
     }
 }
 exports.CdpBrowser = CdpBrowser;

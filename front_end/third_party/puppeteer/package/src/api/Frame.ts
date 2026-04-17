@@ -1200,4 +1200,13 @@ export abstract class Frame extends EventEmitter<FrameEvents> {
   abstract waitForDevicePrompt(
     options?: WaitTimeoutOptions,
   ): Promise<DeviceRequestPrompt>;
+
+  /**
+   * Retrieves the list of extension execution realms associated with this frame.
+   * Extension execution realms are created by extension content scripts injected
+   * into the frame.
+   *
+   * @public
+   */
+  abstract extensionRealms(): Realm[];
 }

@@ -438,7 +438,7 @@ export declare abstract class Touchscreen {
     /**
      * @internal
      */
-    idGenerator: import("../index.js").GetIdFn;
+    idGenerator: import("../index-browser.js").GetIdFn;
     /**
      * @internal
      */

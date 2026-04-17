@@ -12,17 +12,22 @@ const EventEmitter_js_1 = require("../common/EventEmitter.js");
 const util_js_1 = require("../common/util.js");
 const disposable_js_1 = require("../util/disposable.js");
 const ElementHandle_js_1 = require("./ElementHandle.js");
+const IsolatedWorlds_js_1 = require("./IsolatedWorlds.js");
 const JSHandle_js_1 = require("./JSHandle.js");
+const WebWorker_js_1 = require("./WebWorker.js");
 /**
  * @internal
  */
 class IsolatedWorld extends Realm_js_1.Realm {
     #context;
     #emitter = new EventEmitter_js_1.EventEmitter();
+    #worldId;
+    #origin;
     #frameOrWorker;
-    constructor(frameOrWorker, timeoutSettings) {
+    constructor(frameOrWorker, timeoutSettings, worldId) {
         super(timeoutSettings);
         this.#frameOrWorker = frameOrWorker;
+        this.#worldId = worldId;
     }
     get environment() {
         return this.#frameOrWorker;
@@ -155,6 +160,31 @@ class IsolatedWorld extends Realm_js_1.Realm {
         this.#emitter.emit('disposed', undefined);
         super[disposable_js_1.disposeSymbol]();
         this.#emitter.removeAllListeners();
+    }
+    get origin() {
+        return this.#origin;
+    }
+    set origin(origin) {
+        this.#origin = origin;
+    }
+    setWorldId(worldId) {
+        this.#worldId = worldId;
+    }
+    async extension() {
+        if (this.#frameOrWorker instanceof WebWorker_js_1.CdpWebWorker) {
+            throw new Error('Unable to get extension from Realm');
+        }
+        if (this.#worldId === IsolatedWorlds_js_1.MAIN_WORLD) {
+            return null;
+        }
+        if (typeof this.#worldId === 'string') {
+            const extensions = await this.#frameOrWorker._frameManager
+                .page()
+                .browser()
+                .extensions();
+            return extensions.get(this.#worldId) ?? null;
+        }
+        return null;
     }
 }
 exports.IsolatedWorld = IsolatedWorld;

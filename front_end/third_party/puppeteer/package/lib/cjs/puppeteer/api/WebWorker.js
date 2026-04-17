@@ -5,11 +5,25 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.WebWorker = void 0;
+exports.WebWorker = exports.WebWorkerEvent = void 0;
 const Errors_js_1 = require("../common/Errors.js");
 const EventEmitter_js_1 = require("../common/EventEmitter.js");
 const TimeoutSettings_js_1 = require("../common/TimeoutSettings.js");
 const util_js_1 = require("../common/util.js");
+/**
+ * @public
+ */
+var WebWorkerEvent;
+(function (WebWorkerEvent) {
+    /**
+     * Emitted when the worker calls a console API.
+     */
+    WebWorkerEvent["Console"] = "console";
+    /**
+     * Emitted when the worker throws an exception.
+     */
+    WebWorkerEvent["Error"] = "error";
+})(WebWorkerEvent || (exports.WebWorkerEvent = WebWorkerEvent = {}));
 /**
  * This class represents a
  * {@link https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API | WebWorker}.

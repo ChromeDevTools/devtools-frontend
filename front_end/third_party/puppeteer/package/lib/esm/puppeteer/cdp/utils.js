@@ -3,8 +3,31 @@
  * Copyright 2017 Google Inc.
  * SPDX-License-Identifier: Apache-2.0
  */
+import { ConsoleMessage, } from '../common/ConsoleMessage.js';
 import { PuppeteerURL, evaluationString } from '../common/util.js';
 import { assert } from '../util/assert.js';
+/**
+ * @internal
+ */
+export function createConsoleMessage(event, values, targetId) {
+    const textTokens = [];
+    // eslint-disable-next-line max-len -- The comment is long.
+    // eslint-disable-next-line @puppeteer/use-using -- These are not owned by this function.
+    for (const arg of values) {
+        textTokens.push(valueFromJSHandle(arg));
+    }
+    const stackTraceLocations = [];
+    if (event.stackTrace) {
+        for (const callFrame of event.stackTrace.callFrames) {
+            stackTraceLocations.push({
+                url: callFrame.url,
+                lineNumber: callFrame.lineNumber,
+                columnNumber: callFrame.columnNumber,
+            });
+        }
+    }
+    return new ConsoleMessage(convertConsoleMessageLevel(event.type), textTokens.join(' '), values, stackTraceLocations, undefined, event.stackTrace, targetId);
+}
 /**
  * @internal
  */
@@ -212,5 +235,16 @@ export const CDP_BINDING_PREFIX = 'puppeteer_';
  */
 export function pageBindingInitString(type, name) {
     return evaluationString(addPageBinding, type, name, CDP_BINDING_PREFIX);
+}
+/**
+ * @internal
+ */
+export function convertConsoleMessageLevel(method) {
+    switch (method) {
+        case 'warning':
+            return 'warn';
+        default:
+            return method;
+    }
 }
 //# sourceMappingURL=utils.js.map

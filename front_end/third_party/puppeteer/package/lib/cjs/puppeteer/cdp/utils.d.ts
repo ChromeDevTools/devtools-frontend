@@ -5,6 +5,11 @@
  */
 import type { Protocol } from 'devtools-protocol';
 import type { JSHandle } from '../api/JSHandle.js';
+import { ConsoleMessage, type ConsoleMessageType } from '../common/ConsoleMessage.js';
+/**
+ * @internal
+ */
+export declare function createConsoleMessage(event: Protocol.Runtime.ConsoleAPICalledEvent, values: JSHandle[], targetId?: string): ConsoleMessage;
 /**
  * @internal
  */
@@ -37,4 +42,8 @@ export declare const CDP_BINDING_PREFIX = "puppeteer_";
  * @internal
  */
 export declare function pageBindingInitString(type: string, name: string): string;
+/**
+ * @internal
+ */
+export declare function convertConsoleMessageLevel(method: string): ConsoleMessageType;
 //# sourceMappingURL=utils.d.ts.map

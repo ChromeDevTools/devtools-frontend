@@ -8,6 +8,7 @@ import type { CDPSession } from '../api/CDPSession.js';
 import type { DeviceRequestPrompt } from '../api/DeviceRequestPrompt.js';
 import { Frame, type GoToOptions, type WaitForOptions } from '../api/Frame.js';
 import { type WaitTimeoutOptions } from '../api/Page.js';
+import type { Realm } from '../api/Realm.js';
 import { Accessibility } from '../cdp/Accessibility.js';
 import type { TimeoutSettings } from '../common/TimeoutSettings.js';
 import type { Awaitable, HandleFor } from '../common/types.js';
@@ -49,5 +50,6 @@ export declare class BidiFrame extends Frame {
     setFiles(element: BidiElementHandle, files: string[]): Promise<void>;
     frameElement(): Promise<HandleFor<HTMLIFrameElement> | null>;
     locateNodes(element: BidiElementHandle, locator: Bidi.BrowsingContext.Locator): Promise<Bidi.Script.NodeRemoteValue[]>;
+    extensionRealms(): Realm[];
 }
 //# sourceMappingURL=Frame.d.ts.map

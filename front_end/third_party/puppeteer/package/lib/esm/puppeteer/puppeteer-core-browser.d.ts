@@ -13,6 +13,6 @@ export declare const
 /**
  * @public
  */
-connect: (options: import("./index.js").ConnectOptions) => Promise<import("./index.js").Browser>;
+connect: (options: import("./index-browser.js").ConnectOptions) => Promise<import("./index-browser.js").Browser>;
 export default puppeteer;
 //# sourceMappingURL=puppeteer-core-browser.d.ts.map

@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import { type CDPSession } from '../api/CDPSession.js';
-import type { NewDocumentScriptEvaluation } from '../api/Page.js';
+import { type NewDocumentScriptEvaluation } from '../api/Page.js';
 import { EventEmitter } from '../common/EventEmitter.js';
 import type { TimeoutSettings } from '../common/TimeoutSettings.js';
 import type { Binding } from './Binding.js';

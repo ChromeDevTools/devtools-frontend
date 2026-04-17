@@ -3,9 +3,71 @@
  * Copyright 2023 Google Inc.
  * SPDX-License-Identifier: Apache-2.0
  */
+import { ConsoleMessage } from '../common/ConsoleMessage.js';
 import { ProtocolError, TimeoutError } from '../common/Errors.js';
 import { PuppeteerURL } from '../common/util.js';
 import { BidiDeserializer } from './Deserializer.js';
+import { BidiJSHandle } from './JSHandle.js';
+/**
+ * @internal
+ *
+ * TODO: Remove this and map CDP the correct method.
+ * Requires breaking change.
+ */
+export function convertConsoleMessageLevel(method) {
+    switch (method) {
+        case 'group':
+            return 'startGroup';
+        case 'groupCollapsed':
+            return 'startGroupCollapsed';
+        case 'groupEnd':
+            return 'endGroup';
+        default:
+            return method;
+    }
+}
+/**
+ * @internal
+ */
+export function getStackTraceLocations(stackTrace) {
+    const stackTraceLocations = [];
+    if (stackTrace) {
+        for (const callFrame of stackTrace.callFrames) {
+            stackTraceLocations.push({
+                url: callFrame.url,
+                lineNumber: callFrame.lineNumber,
+                columnNumber: callFrame.columnNumber,
+            });
+        }
+    }
+    return stackTraceLocations;
+}
+/**
+ * @internal
+ */
+export function getConsoleMessage(entry, args, frame, targetId) {
+    const text = args
+        .reduce((value, arg) => {
+        const parsedValue = arg instanceof BidiJSHandle && arg.isPrimitiveValue
+            ? BidiDeserializer.deserialize(arg.remoteValue())
+            : arg.toString();
+        return `${value} ${parsedValue}`;
+    }, '')
+        .slice(1);
+    return new ConsoleMessage(convertConsoleMessageLevel(entry.method), text, args, getStackTraceLocations(entry.stackTrace), frame, undefined, targetId);
+}
+/**
+ * @internal
+ */
+export function isConsoleLogEntry(event) {
+    return event.type === 'console';
+}
+/**
+ * @internal
+ */
+export function isJavaScriptLogEntry(event) {
+    return event.type === 'javascript';
+}
 /**
  * @internal
  */

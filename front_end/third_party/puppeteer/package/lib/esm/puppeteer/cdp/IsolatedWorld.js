@@ -9,17 +9,22 @@ import { EventEmitter } from '../common/EventEmitter.js';
 import { fromEmitterEvent, timeout, withSourcePuppeteerURLIfNone, } from '../common/util.js';
 import { disposeSymbol } from '../util/disposable.js';
 import { CdpElementHandle } from './ElementHandle.js';
+import { MAIN_WORLD } from './IsolatedWorlds.js';
 import { CdpJSHandle } from './JSHandle.js';
+import { CdpWebWorker } from './WebWorker.js';
 /**
  * @internal
  */
 export class IsolatedWorld extends Realm {
     #context;
     #emitter = new EventEmitter();
+    #worldId;
+    #origin;
     #frameOrWorker;
-    constructor(frameOrWorker, timeoutSettings) {
+    constructor(frameOrWorker, timeoutSettings, worldId) {
         super(timeoutSettings);
         this.#frameOrWorker = frameOrWorker;
+        this.#worldId = worldId;
     }
     get environment() {
         return this.#frameOrWorker;
@@ -152,6 +157,31 @@ export class IsolatedWorld extends Realm {
         this.#emitter.emit('disposed', undefined);
         super[disposeSymbol]();
         this.#emitter.removeAllListeners();
+    }
+    get origin() {
+        return this.#origin;
+    }
+    set origin(origin) {
+        this.#origin = origin;
+    }
+    setWorldId(worldId) {
+        this.#worldId = worldId;
+    }
+    async extension() {
+        if (this.#frameOrWorker instanceof CdpWebWorker) {
+            throw new Error('Unable to get extension from Realm');
+        }
+        if (this.#worldId === MAIN_WORLD) {
+            return null;
+        }
+        if (typeof this.#worldId === 'string') {
+            const extensions = await this.#frameOrWorker._frameManager
+                .page()
+                .browser()
+                .extensions();
+            return extensions.get(this.#worldId) ?? null;
+        }
+        return null;
     }
 }
 //# sourceMappingURL=IsolatedWorld.js.map

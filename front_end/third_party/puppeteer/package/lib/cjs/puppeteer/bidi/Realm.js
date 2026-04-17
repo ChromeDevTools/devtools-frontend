@@ -54,10 +54,12 @@ var __disposeResources = (this && this.__disposeResources) || (function (Suppres
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BidiWorkerRealm = exports.BidiFrameRealm = exports.BidiRealm = void 0;
 const Realm_js_1 = require("../api/Realm.js");
+const WebWorker_js_1 = require("../api/WebWorker.js");
 const AriaQueryHandler_js_1 = require("../common/AriaQueryHandler.js");
 const LazyArg_js_1 = require("../common/LazyArg.js");
 const ScriptInjector_js_1 = require("../common/ScriptInjector.js");
 const util_js_1 = require("../common/util.js");
+const index_browser_js_1 = require("../index-browser.js");
 const AsyncIterableUtil_js_1 = require("../util/AsyncIterableUtil.js");
 const Function_js_1 = require("../util/Function.js");
 const Deserializer_js_1 = require("./Deserializer.js");
@@ -225,6 +227,12 @@ class BidiRealm extends Realm_js_1.Realm {
         await handle.dispose();
         return await transferredHandle;
     }
+    extension() {
+        throw new index_browser_js_1.UnsupportedOperation();
+    }
+    get origin() {
+        throw new index_browser_js_1.UnsupportedOperation();
+    }
 }
 exports.BidiRealm = BidiRealm;
 /**
@@ -313,6 +321,19 @@ class BidiWorkerRealm extends BidiRealm {
     constructor(realm, frame) {
         super(realm, frame.timeoutSettings);
         this.#worker = frame;
+    }
+    initialize() {
+        super.initialize();
+        this.realm.on('log', entry => {
+            if ((0, util_js_2.isConsoleLogEntry)(entry) &&
+                this.#worker.listenerCount(WebWorker_js_1.WebWorkerEvent.Console)) {
+                const args = entry.args.map(arg => {
+                    return this.createHandle(arg);
+                });
+                const message = (0, util_js_2.getConsoleMessage)(entry, args, undefined, this.realm.id);
+                this.#worker.emit(WebWorker_js_1.WebWorkerEvent.Console, message);
+            }
+        });
     }
     get environment() {
         return this.#worker;

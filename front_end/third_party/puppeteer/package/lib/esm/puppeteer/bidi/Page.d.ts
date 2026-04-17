@@ -9,19 +9,23 @@ import type { BluetoothEmulation } from '../api/BluetoothEmulation.js';
 import type { WindowId } from '../api/Browser.js';
 import type { CDPSession } from '../api/CDPSession.js';
 import type { DeviceRequestPrompt } from '../api/DeviceRequestPrompt.js';
+import type { Extension } from '../api/Extension.js';
 import type { WaitForOptions } from '../api/Frame.js';
 import type { HTTPResponse } from '../api/HTTPResponse.js';
 import type { Credentials, GeolocationOptions, HeapSnapshotOptions, MediaFeature, PageEvents, ReloadOptions, WaitTimeoutOptions } from '../api/Page.js';
 import { Page, type NewDocumentScriptEvaluation, type ScreenshotOptions } from '../api/Page.js';
+import type { Target } from '../api/Target.js';
 import { Coverage } from '../cdp/Coverage.js';
 import type { NetworkConditions } from '../cdp/NetworkManager.js';
 import { Tracing } from '../cdp/Tracing.js';
+import type { WebMCP } from '../cdp/WebMCP.js';
 import type { CookiePartitionKey, Cookie, CookieParam, CookieSameSite, DeleteCookiesRequest } from '../common/Cookie.js';
 import { EventEmitter } from '../common/EventEmitter.js';
 import { FileChooser } from '../common/FileChooser.js';
 import type { PDFOptions } from '../common/PDFOptions.js';
 import type { Awaitable } from '../common/types.js';
 import type { Viewport } from '../common/Viewport.js';
+import type { Realm } from '../puppeteer-core.js';
 import type { BidiBrowser } from './Browser.js';
 import type { BidiBrowserContext } from './BrowserContext.js';
 import type { BidiCdpSession } from './CDPSession.js';
@@ -44,6 +48,7 @@ export declare class BidiPage extends Page {
     readonly mouse: BidiMouse;
     readonly touchscreen: BidiTouchscreen;
     readonly tracing: Tracing;
+    get webmcp(): WebMCP;
     readonly coverage: Coverage;
     _client(): BidiCdpSession;
     private constructor();
@@ -60,6 +65,7 @@ export declare class BidiPage extends Page {
     browser(): BidiBrowser;
     browserContext(): BidiBrowserContext;
     mainFrame(): BidiFrame;
+    triggerExtensionAction(_extension: Extension): Promise<void>;
     emulateFocusedPage(enabled: boolean): Promise<void>;
     resize(_params: {
         contentWidth: number;
@@ -107,7 +113,7 @@ export declare class BidiPage extends Page {
     setCacheEnabled(enabled?: boolean): Promise<void>;
     cookies(...urls: string[]): Promise<Cookie[]>;
     isServiceWorkerBypassed(): never;
-    target(): never;
+    target(): Target;
     waitForFileChooser(options?: WaitTimeoutOptions): Promise<FileChooser>;
     workers(): BidiWebWorker[];
     get isNetworkInterceptionEnabled(): boolean;
@@ -134,6 +140,7 @@ export declare class BidiPage extends Page {
     goForward(options?: WaitForOptions): Promise<HTTPResponse | null>;
     waitForDevicePrompt(options?: WaitTimeoutOptions): Promise<DeviceRequestPrompt>;
     get bluetooth(): BluetoothEmulation;
+    extensionRealms(): Realm[];
 }
 export declare function bidiToPuppeteerCookie(bidiCookie: Bidi.Network.Cookie, returnCompositePartitionKey?: boolean): Cookie;
 /**

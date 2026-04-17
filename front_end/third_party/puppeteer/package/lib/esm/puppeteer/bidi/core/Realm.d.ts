@@ -31,9 +31,11 @@ export declare abstract class Realm extends EventEmitter<{
     worker: DedicatedWorkerRealm;
     /** Emitted when a shared worker is created in the realm. */
     sharedworker: SharedWorkerRealm;
+    /** Emitted whenever a log entry is added to the realm. */
+    log: Bidi.Log.Entry;
 }> {
     #private;
-    protected readonly disposables: import("../../index.js").DisposableStackPolyfill;
+    protected readonly disposables: import("../../index-browser.js").DisposableStackPolyfill;
     readonly id: string;
     readonly origin: string;
     protected executionContextId?: number;

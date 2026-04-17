@@ -30,8 +30,10 @@ export declare class TargetManager extends EventEmitter<TargetManagerEvents> imp
     #private;
     constructor(connection: Connection, targetFactory: TargetFactory, targetFilterCallback?: TargetFilterCallback, waitForInitiallyDiscoveredTargets?: boolean);
     initialize(): Promise<void>;
+    addToIgnoreTarget(targetId: string): void;
     getChildTargets(target: CdpTarget): ReadonlySet<CdpTarget>;
     dispose(): void;
     getAvailableTargets(): ReadonlyMap<string, CdpTarget>;
+    getDiscoveredTargetInfos(): ReadonlyMap<string, Protocol.Target.TargetInfo>;
 }
 //# sourceMappingURL=TargetManager.d.ts.map

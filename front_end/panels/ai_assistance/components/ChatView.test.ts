@@ -134,4 +134,76 @@ describeWithEnvironment('ChatView', () => {
       sinon.assert.callCount(generateSummaryStub, 1);
     });
   });
+
+  describe('getCSSChangeSummaryMessage', () => {
+    it('returns undefined if there are no messages', () => {
+      const result = AiAssistancePanel.getCSSChangeSummaryMessage([], false);
+      assert.isUndefined(result);
+    });
+
+    it('returns undefined if there are no model messages', () => {
+      const messages: AiAssistancePanel.ChatMessage.Message[] = [
+        {entity: AiAssistancePanel.ChatMessage.ChatMessageEntity.USER, text: 'Hello'},
+      ];
+      const result = AiAssistancePanel.getCSSChangeSummaryMessage(messages, false);
+      assert.isUndefined(result);
+    });
+
+    it('returns the last model message if not loading', () => {
+      const modelMessage: AiAssistancePanel.ChatMessage.Message = {
+        entity: AiAssistancePanel.ChatMessage.ChatMessageEntity.MODEL,
+        parts: [{type: 'answer', text: 'Response'}],
+      };
+      const messages: AiAssistancePanel.ChatMessage.Message[] = [
+        {entity: AiAssistancePanel.ChatMessage.ChatMessageEntity.USER, text: 'Hello'},
+        modelMessage,
+      ];
+      const result = AiAssistancePanel.getCSSChangeSummaryMessage(messages, false);
+      assert.strictEqual(result, modelMessage);
+    });
+
+    it('returns the last model message if loading but the last message is a user message', () => {
+      const modelMessage: AiAssistancePanel.ChatMessage.Message = {
+        entity: AiAssistancePanel.ChatMessage.ChatMessageEntity.MODEL,
+        parts: [{type: 'answer', text: 'Response'}],
+      };
+      const messages: AiAssistancePanel.ChatMessage.Message[] = [
+        modelMessage,
+        {entity: AiAssistancePanel.ChatMessage.ChatMessageEntity.USER, text: 'Follow up'},
+      ];
+      const result = AiAssistancePanel.getCSSChangeSummaryMessage(messages, true);
+      assert.strictEqual(result, modelMessage);
+    });
+
+    it('returns the penultimate model message if loading and the last message is a model message', () => {
+      const modelMessage1: AiAssistancePanel.ChatMessage.Message = {
+        entity: AiAssistancePanel.ChatMessage.ChatMessageEntity.MODEL,
+        parts: [{type: 'answer', text: 'Response 1'}],
+      };
+      const modelMessage2: AiAssistancePanel.ChatMessage.Message = {
+        entity: AiAssistancePanel.ChatMessage.ChatMessageEntity.MODEL,
+        parts: [{type: 'answer', text: 'Response 2'}],
+      };
+      const messages: AiAssistancePanel.ChatMessage.Message[] = [
+        modelMessage1,
+        {entity: AiAssistancePanel.ChatMessage.ChatMessageEntity.USER, text: 'Follow up'},
+        modelMessage2,
+      ];
+      const result = AiAssistancePanel.getCSSChangeSummaryMessage(messages, true);
+      assert.strictEqual(result, modelMessage1);
+    });
+
+    it('returns undefined if loading and there is only one model message and it is the last message', () => {
+      const modelMessage: AiAssistancePanel.ChatMessage.Message = {
+        entity: AiAssistancePanel.ChatMessage.ChatMessageEntity.MODEL,
+        parts: [{type: 'answer', text: 'Response'}],
+      };
+      const messages: AiAssistancePanel.ChatMessage.Message[] = [
+        {entity: AiAssistancePanel.ChatMessage.ChatMessageEntity.USER, text: 'Hello'},
+        modelMessage,
+      ];
+      const result = AiAssistancePanel.getCSSChangeSummaryMessage(messages, true);
+      assert.isUndefined(result);
+    });
+  });
 });

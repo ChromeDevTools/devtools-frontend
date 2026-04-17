@@ -31,6 +31,7 @@ describeWithEnvironment('ChatMessage', () => {
       isReadOnly: false,
       isLastMessage: true,
       isFirstMessage: false,
+      shouldShowCSSChangeSummary: false,
       markdownRenderer: new AiAssistance.MarkdownRendererWithCodeBlock(),
       canShowFeedbackForm: true,
       onSuggestionClick: sinon.stub(),
@@ -70,6 +71,7 @@ describeWithEnvironment('ChatMessage', () => {
           isShowingFeedbackForm: false,
           isLastMessage: true,
           isFirstMessage: false,
+          shouldShowCSSChangeSummary: false,
           showActions: true,
           message: {
             entity: AiAssistance.ChatMessage.ChatMessageEntity.MODEL,
@@ -728,6 +730,7 @@ describeWithEnvironment('ChatMessage', () => {
             isShowingFeedbackForm: false,
             isLastMessage: true,
             isFirstMessage: false,
+            shouldShowCSSChangeSummary: false,
             showActions: true,
             message: messageWithNamedWidget,
             isLoading: false,
@@ -798,23 +801,22 @@ describeWithEnvironment('ChatMessage', () => {
       updateHostConfig({devToolsAiAssistanceV2: {enabled: true}});
     });
 
-    it('should render devtools-code-block when hasAiV2 is true and changeSummary is present', async () => {
-      const target = renderView({
-        isLastMessage: true,
-        isLoading: false,
-        changeSummary: 'test summary',
-      });
+    it('should render devtools-code-block when hasAiV2 is true, changeSummary is present and shouldShowCSSChangeSummary is true',
+       async () => {
+         const target = renderView({
+           shouldShowCSSChangeSummary: true,
+           changeSummary: 'test summary',
+         });
 
-      const codeBlock = target.querySelector('devtools-code-block');
-      assert.instanceOf(codeBlock, MarkdownView.CodeBlock.CodeBlock);
-      assert.strictEqual(codeBlock.code, 'test summary');
-      assert.strictEqual(codeBlock.displayLimit, 11);
-    });
+         const codeBlock = target.querySelector('devtools-code-block');
+         assert.instanceOf(codeBlock, MarkdownView.CodeBlock.CodeBlock);
+         assert.strictEqual(codeBlock.code, 'test summary');
+         assert.strictEqual(codeBlock.displayLimit, 11);
+       });
 
     it('should NOT render devtools-code-block when changeSummary is missing', async () => {
       const target = renderView({
-        isLastMessage: true,
-        isLoading: false,
+        shouldShowCSSChangeSummary: true,
         changeSummary: undefined,
       });
 
@@ -822,10 +824,9 @@ describeWithEnvironment('ChatMessage', () => {
       assert.isNull(codeBlock);
     });
 
-    it('should NOT render devtools-code-block when it is not the last message', async () => {
+    it('should NOT render devtools-code-block when shouldShowCSSChangeSummary is false', async () => {
       const target = renderView({
-        isLastMessage: false,
-        isLoading: false,
+        shouldShowCSSChangeSummary: false,
         changeSummary: 'test summary',
       });
 
@@ -836,8 +837,7 @@ describeWithEnvironment('ChatMessage', () => {
     it('should NOT render devtools-code-block when hasAiV2 is false', async () => {
       updateHostConfig({devToolsAiAssistanceV2: {enabled: false}});
       const target = renderView({
-        isLastMessage: true,
-        isLoading: false,
+        shouldShowCSSChangeSummary: true,
         changeSummary: 'test summary',
       });
 
@@ -867,6 +867,7 @@ describeWithEnvironment('ChatMessage', () => {
             isShowingFeedbackForm: true,
             isLastMessage: true,
             isFirstMessage: false,
+            shouldShowCSSChangeSummary: false,
             showActions: true,
             message: {
               entity: AiAssistance.ChatMessage.ChatMessageEntity.MODEL,
@@ -904,6 +905,7 @@ describeWithEnvironment('ChatMessage', () => {
             isShowingFeedbackForm: false,
             isLastMessage: true,
             isFirstMessage: false,
+            shouldShowCSSChangeSummary: false,
             showActions: false,
             message: {
               entity: AiAssistance.ChatMessage.ChatMessageEntity.USER,
@@ -939,6 +941,7 @@ describeWithEnvironment('ChatMessage', () => {
             isShowingFeedbackForm: false,
             isLastMessage: false,
             isFirstMessage: true,
+            shouldShowCSSChangeSummary: false,
             showActions: false,
             message: {
               entity: AiAssistance.ChatMessage.ChatMessageEntity.USER,
@@ -973,6 +976,7 @@ describeWithEnvironment('ChatMessage', () => {
             isShowingFeedbackForm: false,
             isLastMessage: false,
             isFirstMessage: true,
+            shouldShowCSSChangeSummary: false,
             showActions: false,
             message: {
               entity: AiAssistance.ChatMessage.ChatMessageEntity.MODEL,

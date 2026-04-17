@@ -317,6 +317,7 @@ export interface MessageInput {
   isReadOnly: boolean;
   isLastMessage: boolean;
   isFirstMessage: boolean;
+  shouldShowCSSChangeSummary: boolean;
   canShowFeedbackForm: boolean;
   markdownRenderer: MarkdownLitRenderer;
   onSuggestionClick: (suggestion: string) => void;
@@ -418,7 +419,7 @@ export const DEFAULT_VIEW = (input: ChatMessageViewInput, output: ViewOutput, ta
           },
         )}
         ${renderError(message)}
-        ${input.isLastMessage && hasAiV2 && !input.isLoading && input.changeSummary ? html`
+        ${input.shouldShowCSSChangeSummary && hasAiV2 && input.changeSummary ? html`
           <devtools-code-block
             .code=${input.changeSummary}
             .codeLang=${'css'}
@@ -1387,6 +1388,7 @@ export class ChatMessage extends UI.Widget.Widget {
   canShowFeedbackForm = false;
   isLastMessage = false;
   isFirstMessage = false;
+  shouldShowCSSChangeSummary = false;
   markdownRenderer!: MarkdownLitRenderer;
   onSuggestionClick: (suggestion: string) => void = () => {};
   onFeedbackSubmit:
@@ -1437,6 +1439,7 @@ export class ChatMessage extends UI.Widget.Widget {
           markdownRenderer: this.markdownRenderer,
           isLastMessage: this.isLastMessage,
           isFirstMessage: this.isFirstMessage,
+          shouldShowCSSChangeSummary: this.shouldShowCSSChangeSummary,
           onSuggestionClick: this.onSuggestionClick,
           onRatingClick: this.#handleRateClick.bind(this),
           onReportClick: () => UIHelpers.openInNewTab(REPORT_URL),

@@ -7,6 +7,7 @@ var __export = (target, all) => {
 // gen/front_end/models/stack_trace/DetailedErrorStackParser.js
 var DetailedErrorStackParser_exports = {};
 __export(DetailedErrorStackParser_exports, {
+  augmentRawFramesWithScriptIds: () => augmentRawFramesWithScriptIds,
   parseRawFramesFromErrorStack: () => parseRawFramesFromErrorStack
 });
 import * as Common from "./../../core/common/common.js";
@@ -127,6 +128,14 @@ function parseRawFramesFromErrorStack(stack) {
     });
   }
   return rawFrames;
+}
+function augmentRawFramesWithScriptIds(rawFrames, protocolStackTrace) {
+  for (const rawFrame of rawFrames) {
+    const protocolFrame = protocolStackTrace.callFrames.find((frame) => rawFrame.url === frame.url && rawFrame.lineNumber === frame.lineNumber && rawFrame.columnNumber === frame.columnNumber);
+    if (protocolFrame) {
+      rawFrame.scriptId = protocolFrame.scriptId;
+    }
+  }
 }
 
 // gen/front_end/models/stack_trace/StackTraceImpl.js
@@ -498,6 +507,17 @@ var StackTraceModel = class extends SDK.SDKModel.SDKModel {
     ]);
     return new StackTraceImpl(syncFragment, asyncFragments);
   }
+  async createFromErrorStackLikeString(stack, rawFramesToUIFrames, exceptionDetails) {
+    const rawFrames = parseRawFramesFromErrorStack(stack);
+    if (exceptionDetails?.stackTrace) {
+      augmentRawFramesWithScriptIds(rawFrames, exceptionDetails.stackTrace);
+    }
+    const [syncFragment, asyncFragments] = await Promise.all([
+      this.#createFragment(rawFrames, rawFramesToUIFrames),
+      exceptionDetails?.stackTrace ? this.#createAsyncFragments(exceptionDetails.stackTrace, rawFramesToUIFrames) : Promise.resolve([])
+    ]);
+    return new StackTraceImpl(new ParsedErrorStackFragmentImpl(syncFragment), asyncFragments);
+  }
   async createFromDebuggerPaused(pausedDetails, rawFramesToUIFrames) {
     const [syncFragment, asyncFragments] = await Promise.all([
       this.#createDebuggableFragment(pausedDetails, rawFramesToUIFrames),
@@ -577,9 +597,21 @@ var StackTraceModel = class extends SDK.SDKModel.SDKModel {
     const rawFrames = fragment.node.getCallStack().map((node) => node.rawFrame).toArray();
     const uiFrames = await rawFramesToUIFrames(rawFrames, this.target());
     console.assert(rawFrames.length === uiFrames.length, "Broken rawFramesToUIFrames implementation");
+    const evalOriginPromises = [];
+    for (const node of fragment.node.getCallStack()) {
+      if (node.parsedFrameInfo?.evalOrigin) {
+        evalOriginPromises.push(rawFramesToUIFrames([node.parsedFrameInfo.evalOrigin], this.target()));
+      }
+    }
+    const evalUiFrames = await Promise.all(evalOriginPromises);
     let i = 0;
+    let evalI = 0;
     for (const node of fragment.node.getCallStack()) {
       node.frames = uiFrames[i++].map((frame) => new FrameImpl(frame.url, frame.uiSourceCode, frame.name, frame.line, frame.column, frame.missingDebugInfo, node.rawFrame.functionName));
+      if (node.parsedFrameInfo?.evalOrigin) {
+        const evalOriginRawFrame = node.parsedFrameInfo.evalOrigin;
+        node.evalOriginFrames = evalUiFrames[evalI++][0].map((frame) => new FrameImpl(frame.url, frame.uiSourceCode, frame.name, frame.line, frame.column, frame.missingDebugInfo, evalOriginRawFrame.functionName));
+      }
     }
   }
   #affectedFragments(script) {

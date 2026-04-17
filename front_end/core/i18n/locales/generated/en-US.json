@@ -6278,6 +6278,12 @@
   "panels/application/WebMCPView.ts | completed": {
     "message": "Completed"
   },
+  "panels/application/WebMCPView.ts | copyDescription": {
+    "message": "Copy description"
+  },
+  "panels/application/WebMCPView.ts | copyName": {
+    "message": "Copy name"
+  },
   "panels/application/WebMCPView.ts | declarative": {
     "message": "Declarative"
   },

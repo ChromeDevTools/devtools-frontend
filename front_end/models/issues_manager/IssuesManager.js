@@ -140,6 +140,9 @@ const issueCodeHandlers = new Map([
         SelectivePermissionsInterventionIssue.fromInspectorIssue,
     ],
 ]);
+export function isIssueCodeSupported(code) {
+    return issueCodeHandlers.has(code);
+}
 /**
  * Each issue reported by the backend can result in multiple `Issue` instances.
  * Handlers are simple functions hard-coded into a map.

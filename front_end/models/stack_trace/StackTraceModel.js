@@ -4,9 +4,10 @@
 var _a;
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import { augmentRawFramesWithScriptIds, parseRawFramesFromErrorStack } from './DetailedErrorStackParser.js';
 // eslint-disable-next-line @devtools/es-modules-import
 import * as StackTrace from './stack_trace.js';
-import { AsyncFragmentImpl, DebuggableFragmentImpl, FragmentImpl, FrameImpl, StackTraceImpl } from './StackTraceImpl.js';
+import { AsyncFragmentImpl, DebuggableFragmentImpl, FragmentImpl, FrameImpl, ParsedErrorStackFragmentImpl, StackTraceImpl } from './StackTraceImpl.js';
 import { Trie } from './Trie.js';
 /**
  * The {@link StackTraceModel} is a thin wrapper around a fragment trie.
@@ -30,6 +31,18 @@ export class StackTraceModel extends SDK.SDKModel.SDKModel {
             this.#createAsyncFragments(stackTrace, rawFramesToUIFrames),
         ]);
         return new StackTraceImpl(syncFragment, asyncFragments);
+    }
+    async createFromErrorStackLikeString(stack, rawFramesToUIFrames, exceptionDetails) {
+        const rawFrames = parseRawFramesFromErrorStack(stack);
+        if (exceptionDetails?.stackTrace) {
+            augmentRawFramesWithScriptIds(rawFrames, exceptionDetails.stackTrace);
+        }
+        const [syncFragment, asyncFragments] = await Promise.all([
+            this.#createFragment(rawFrames, rawFramesToUIFrames),
+            exceptionDetails?.stackTrace ? this.#createAsyncFragments(exceptionDetails.stackTrace, rawFramesToUIFrames) :
+                Promise.resolve([]),
+        ]);
+        return new StackTraceImpl(new ParsedErrorStackFragmentImpl(syncFragment), asyncFragments);
     }
     async createFromDebuggerPaused(pausedDetails, rawFramesToUIFrames) {
         const [syncFragment, asyncFragments] = await Promise.all([
@@ -115,9 +128,23 @@ export class StackTraceModel extends SDK.SDKModel.SDKModel {
         const rawFrames = fragment.node.getCallStack().map(node => node.rawFrame).toArray();
         const uiFrames = await rawFramesToUIFrames(rawFrames, this.target());
         console.assert(rawFrames.length === uiFrames.length, 'Broken rawFramesToUIFrames implementation');
+        const evalOriginPromises = [];
+        for (const node of fragment.node.getCallStack()) {
+            if (node.parsedFrameInfo?.evalOrigin) {
+                // Evaluate each eval origin individually, as they are not a contiguous stack trace.
+                evalOriginPromises.push(rawFramesToUIFrames([node.parsedFrameInfo.evalOrigin], this.target()));
+            }
+        }
+        const evalUiFrames = await Promise.all(evalOriginPromises);
         let i = 0;
+        let evalI = 0;
         for (const node of fragment.node.getCallStack()) {
             node.frames = uiFrames[i++].map(frame => new FrameImpl(frame.url, frame.uiSourceCode, frame.name, frame.line, frame.column, frame.missingDebugInfo, node.rawFrame.functionName));
+            if (node.parsedFrameInfo?.evalOrigin) {
+                const evalOriginRawFrame = node.parsedFrameInfo.evalOrigin;
+                // evalUiFrames[evalI] is Array<Array<Frame>>, and since we passed a 1-element array, we take [0]
+                node.evalOriginFrames = evalUiFrames[evalI++][0].map(frame => new FrameImpl(frame.url, frame.uiSourceCode, frame.name, frame.line, frame.column, frame.missingDebugInfo, evalOriginRawFrame.functionName));
+            }
         }
     }
     #affectedFragments(script) {

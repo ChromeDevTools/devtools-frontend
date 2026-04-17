@@ -129,4 +129,19 @@ export function parseRawFramesFromErrorStack(stack) {
     }
     return rawFrames;
 }
+/**
+ * Error#stack output only contains script URLs. In some cases we are able to
+ * retrieve additional exception details from V8 that we can use to augment
+ * the parsed Error#stack with script IDs.
+ */
+export function augmentRawFramesWithScriptIds(rawFrames, protocolStackTrace) {
+    for (const rawFrame of rawFrames) {
+        const protocolFrame = protocolStackTrace.callFrames.find(frame => rawFrame.url === frame.url && rawFrame.lineNumber === frame.lineNumber &&
+            rawFrame.columnNumber === frame.columnNumber);
+        if (protocolFrame) {
+            // @ts-expect-error scriptId is a readonly property.
+            rawFrame.scriptId = protocolFrame.scriptId;
+        }
+    }
+}
 //# sourceMappingURL=DetailedErrorStackParser.js.map

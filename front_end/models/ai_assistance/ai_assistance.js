@@ -6940,6 +6940,7 @@ var PerformanceAgent = class extends AiAgent {
    * we only show it once.
    */
   #hasShownWidgetForInsightSet = /* @__PURE__ */ new WeakSet();
+  #hasShownWidgetForCallTree = /* @__PURE__ */ new WeakSet();
   get preamble() {
     return buildPreamble();
   }
@@ -6970,16 +6971,41 @@ var PerformanceAgent = class extends AiAgent {
     }
     contextDisclosure.push(...this.#additionalSelectionsForQuery);
     const widgets = [];
-    const primaryInsightSet = context.getItem().primaryInsightSet;
-    if (primaryInsightSet && !this.#hasShownWidgetForInsightSet.has(primaryInsightSet)) {
-      widgets.push({
-        name: "CORE_VITALS",
-        data: {
-          parsedTrace: context.getItem().parsedTrace,
-          insightSetKey: primaryInsightSet.id
-        }
-      });
-      this.#hasShownWidgetForInsightSet.add(primaryInsightSet);
+    const focus = context.getItem();
+    if (focus.callTree && !this.#hasShownWidgetForCallTree.has(focus.callTree)) {
+      const event = focus.callTree.selectedNode?.event;
+      if (event) {
+        const { startTime, endTime } = Trace6.Helpers.Timing.eventTimingsMicroSeconds(event);
+        const bounds = Trace6.Helpers.Timing.traceWindowFromMicroSeconds(startTime, endTime);
+        widgets.push({
+          name: "TIMELINE_RANGE_SUMMARY",
+          data: {
+            bounds,
+            parsedTrace: focus.parsedTrace,
+            track: "main"
+          }
+        });
+        widgets.push({
+          name: "BOTTOM_UP_TREE",
+          data: {
+            bounds,
+            parsedTrace: focus.parsedTrace
+          }
+        });
+        this.#hasShownWidgetForCallTree.add(focus.callTree);
+      }
+    } else {
+      const primaryInsightSet = focus.primaryInsightSet;
+      if (primaryInsightSet && !this.#hasShownWidgetForInsightSet.has(primaryInsightSet)) {
+        widgets.push({
+          name: "CORE_VITALS",
+          data: {
+            parsedTrace: focus.parsedTrace,
+            insightSetKey: primaryInsightSet.id
+          }
+        });
+        this.#hasShownWidgetForInsightSet.add(primaryInsightSet);
+      }
     }
     yield {
       type: "context",

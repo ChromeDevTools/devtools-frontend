@@ -1602,6 +1602,10 @@ var consoleView_css_default = `/* Copyright 2021 The Chromium Authors
   & div {
     display: inline-block;
     vertical-align: -1px;
+
+    &::after {
+      content: attr(data-text);
+    }
   }
 }
 
@@ -2998,7 +3002,7 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
     const label = document.createElement("div");
     label.classList.add("button-label");
     const text = document.createElement("div");
-    text.innerText = this.getExplainLabel();
+    text.setAttribute("data-text", this.getExplainLabel());
     label.append(text);
     button.append(label);
     button.classList.add("hover-button");
@@ -3018,7 +3022,7 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
     const label = document.createElement("div");
     label.classList.add("button-label");
     const text = document.createElement("div");
-    text.innerText = "Debug with breakpoint AI";
+    text.setAttribute("data-text", "Debug with breakpoint AI");
     label.append(text);
     button.append(label);
     button.classList.add("hover-button");

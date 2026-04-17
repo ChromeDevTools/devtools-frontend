@@ -82,7 +82,7 @@ export default `/*
         height: 100%;
         display: flex;
         flex-direction: column;
-        overflow: auto;
+        overflow: hidden;
     }
 
     .tool-details-grid {
@@ -91,6 +91,7 @@ export default `/*
       gap: 0 var(--sys-size-16);
       padding: calc(0.5*var(--sys-size-6)) var(--sys-size-8);
       align-items: flex-start;
+      overflow-y: auto;
 
       .label {
         color: var(--sys-color-on-surface-subtle);
@@ -99,6 +100,8 @@ export default `/*
       }
 
       .value {
+        user-select: text;
+
         &.source-code {
           color: var(--sys-color-token-attribute);
         }

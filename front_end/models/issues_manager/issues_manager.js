@@ -3492,7 +3492,8 @@ __export(IssuesManager_exports, {
   IssuesManager: () => IssuesManager,
   createIssuesFromProtocolIssue: () => createIssuesFromProtocolIssue,
   defaultHideIssueByCodeSetting: () => defaultHideIssueByCodeSetting,
-  getHideIssueByCodeSetting: () => getHideIssueByCodeSetting
+  getHideIssueByCodeSetting: () => getHideIssueByCodeSetting,
+  isIssueCodeSupported: () => isIssueCodeSupported
 });
 import * as Common5 from "./../../core/common/common.js";
 import * as SDK3 from "./../../core/sdk/sdk.js";
@@ -4498,6 +4499,9 @@ var issueCodeHandlers = /* @__PURE__ */ new Map([
     SelectivePermissionsInterventionIssue.fromInspectorIssue
   ]
 ]);
+function isIssueCodeSupported(code) {
+  return issueCodeHandlers.has(code);
+}
 function createIssuesFromProtocolIssue(issuesModel, inspectorIssue) {
   const handler = issueCodeHandlers.get(inspectorIssue.code);
   if (handler) {

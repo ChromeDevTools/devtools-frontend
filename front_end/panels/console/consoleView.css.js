@@ -620,6 +620,10 @@ export default `/* Copyright 2021 The Chromium Authors
   & div {
     display: inline-block;
     vertical-align: -1px;
+
+    &::after {
+      content: attr(data-text);
+    }
   }
 }
 

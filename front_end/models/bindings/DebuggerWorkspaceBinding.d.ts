@@ -36,6 +36,7 @@ export declare class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKMo
     updateLocations(script: SDK.Script.Script): Promise<void>;
     createStackTraceFromProtocolRuntime(stackTrace: Protocol.Runtime.StackTrace, target: SDK.Target.Target): Promise<StackTrace.StackTrace.StackTrace>;
     createStackTraceFromDebuggerPaused(pausedDetails: SDK.DebuggerModel.DebuggerPausedDetails, target: SDK.Target.Target): Promise<StackTrace.StackTrace.DebuggableStackTrace>;
+    createStackTraceFromErrorStackLikeString(target: SDK.Target.Target, stack: string, exceptionDetails?: Protocol.Runtime.ExceptionDetails): Promise<StackTrace.StackTrace.ParsedErrorStackTrace>;
     createLiveLocation(rawLocation: SDK.DebuggerModel.Location, updateDelegate: (arg0: LiveLocation) => Promise<void>, locationPool: LiveLocationPool): Promise<Location | null>;
     createStackTraceTopFrameLiveLocation(rawLocations: SDK.DebuggerModel.Location[], updateDelegate: (arg0: LiveLocation) => Promise<void>, locationPool: LiveLocationPool): Promise<LiveLocation>;
     rawLocationToUILocation(rawLocation: SDK.DebuggerModel.Location): Promise<Workspace.UISourceCode.UILocation | null>;

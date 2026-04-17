@@ -26,6 +26,7 @@ var __export2 = (target, all) => {
 };
 var DetailedErrorStackParser_exports = {};
 __export2(DetailedErrorStackParser_exports, {
+  augmentRawFramesWithScriptIds: () => augmentRawFramesWithScriptIds,
   parseRawFramesFromErrorStack: () => parseRawFramesFromErrorStack
 });
 function parseRawFramesFromErrorStack(stack) {
@@ -145,6 +146,14 @@ function parseRawFramesFromErrorStack(stack) {
     });
   }
   return rawFrames;
+}
+function augmentRawFramesWithScriptIds(rawFrames, protocolStackTrace) {
+  for (const rawFrame of rawFrames) {
+    const protocolFrame = protocolStackTrace.callFrames.find((frame) => rawFrame.url === frame.url && rawFrame.lineNumber === frame.lineNumber && rawFrame.columnNumber === frame.columnNumber);
+    if (protocolFrame) {
+      rawFrame.scriptId = protocolFrame.scriptId;
+    }
+  }
 }
 var StackTraceImpl_exports = {};
 __export2(StackTraceImpl_exports, {
@@ -504,6 +513,17 @@ var StackTraceModel = class extends SDK.SDKModel.SDKModel {
     ]);
     return new StackTraceImpl(syncFragment, asyncFragments);
   }
+  async createFromErrorStackLikeString(stack, rawFramesToUIFrames, exceptionDetails) {
+    const rawFrames = parseRawFramesFromErrorStack(stack);
+    if (exceptionDetails?.stackTrace) {
+      augmentRawFramesWithScriptIds(rawFrames, exceptionDetails.stackTrace);
+    }
+    const [syncFragment, asyncFragments] = await Promise.all([
+      this.#createFragment(rawFrames, rawFramesToUIFrames),
+      exceptionDetails?.stackTrace ? this.#createAsyncFragments(exceptionDetails.stackTrace, rawFramesToUIFrames) : Promise.resolve([])
+    ]);
+    return new StackTraceImpl(new ParsedErrorStackFragmentImpl(syncFragment), asyncFragments);
+  }
   async createFromDebuggerPaused(pausedDetails, rawFramesToUIFrames) {
     const [syncFragment, asyncFragments] = await Promise.all([
       this.#createDebuggableFragment(pausedDetails, rawFramesToUIFrames),
@@ -583,9 +603,21 @@ var StackTraceModel = class extends SDK.SDKModel.SDKModel {
     const rawFrames = fragment.node.getCallStack().map((node) => node.rawFrame).toArray();
     const uiFrames = await rawFramesToUIFrames(rawFrames, this.target());
     console.assert(rawFrames.length === uiFrames.length, "Broken rawFramesToUIFrames implementation");
+    const evalOriginPromises = [];
+    for (const node of fragment.node.getCallStack()) {
+      if (node.parsedFrameInfo?.evalOrigin) {
+        evalOriginPromises.push(rawFramesToUIFrames([node.parsedFrameInfo.evalOrigin], this.target()));
+      }
+    }
+    const evalUiFrames = await Promise.all(evalOriginPromises);
     let i = 0;
+    let evalI = 0;
     for (const node of fragment.node.getCallStack()) {
       node.frames = uiFrames[i++].map((frame) => new FrameImpl(frame.url, frame.uiSourceCode, frame.name, frame.line, frame.column, frame.missingDebugInfo, node.rawFrame.functionName));
+      if (node.parsedFrameInfo?.evalOrigin) {
+        const evalOriginRawFrame = node.parsedFrameInfo.evalOrigin;
+        node.evalOriginFrames = evalUiFrames[evalI++][0].map((frame) => new FrameImpl(frame.url, frame.uiSourceCode, frame.name, frame.line, frame.column, frame.missingDebugInfo, evalOriginRawFrame.functionName));
+      }
     }
   }
   #affectedFragments(script) {
@@ -3781,6 +3813,12 @@ var DebuggerWorkspaceBinding = class _DebuggerWorkspaceBinding {
   async createStackTraceFromDebuggerPaused(pausedDetails, target) {
     const model = target.model(StackTraceModel_exports.StackTraceModel);
     const stackTracePromise = model.createFromDebuggerPaused(pausedDetails, this.#translateRawFrames.bind(this));
+    this.recordLiveLocationChange(stackTracePromise);
+    return await stackTracePromise;
+  }
+  async createStackTraceFromErrorStackLikeString(target, stack, exceptionDetails) {
+    const model = target.model(StackTraceModel_exports.StackTraceModel);
+    const stackTracePromise = model.createFromErrorStackLikeString(stack, this.#translateRawFrames.bind(this), exceptionDetails);
     this.recordLiveLocationChange(stackTracePromise);
     return await stackTracePromise;
   }

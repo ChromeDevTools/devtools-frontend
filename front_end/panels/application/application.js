@@ -26,7 +26,7 @@ __export(ApplicationPanelSidebar_exports, {
   StorageCategoryView: () => StorageCategoryView
 });
 import * as Common18 from "./../../core/common/common.js";
-import * as Host10 from "./../../core/host/host.js";
+import * as Host11 from "./../../core/host/host.js";
 import * as i18n61 from "./../../core/i18n/i18n.js";
 import * as Platform10 from "./../../core/platform/platform.js";
 import * as Root2 from "./../../core/root/root.js";
@@ -11757,7 +11757,7 @@ var WebMCPTreeElement_exports = {};
 __export(WebMCPTreeElement_exports, {
   WebMCPTreeElement: () => WebMCPTreeElement
 });
-import * as Host9 from "./../../core/host/host.js";
+import * as Host10 from "./../../core/host/host.js";
 import { createIcon as createIcon13 } from "./../../ui/kit/kit.js";
 
 // gen/front_end/panels/application/WebMCPView.js
@@ -11778,6 +11778,7 @@ import "./../../ui/components/node_text/node_text.js";
 import "./../../ui/legacy/components/data_grid/data_grid.js";
 import "./../../ui/legacy/legacy.js";
 import * as Common17 from "./../../core/common/common.js";
+import * as Host9 from "./../../core/host/host.js";
 import * as i18n59 from "./../../core/i18n/i18n.js";
 import * as Platform9 from "./../../core/platform/platform.js";
 import * as SDK25 from "./../../core/sdk/sdk.js";
@@ -11871,7 +11872,7 @@ var webMCPView_css_default = `/*
         height: 100%;
         display: flex;
         flex-direction: column;
-        overflow: auto;
+        overflow: hidden;
     }
 
     .tool-details-grid {
@@ -11880,6 +11881,7 @@ var webMCPView_css_default = `/*
       gap: 0 var(--sys-size-16);
       padding: calc(0.5*var(--sys-size-6)) var(--sys-size-8);
       align-items: flex-start;
+      overflow-y: auto;
 
       .label {
         color: var(--sys-color-on-surface-subtle);
@@ -11888,6 +11890,8 @@ var webMCPView_css_default = `/*
       }
 
       .value {
+        user-select: text;
+
         &.source-code {
           color: var(--sys-color-token-attribute);
         }
@@ -12135,7 +12139,15 @@ var UIStrings30 = {
    * @description Text for the number of in progress tool calls
    * @example {1} PH1
    */
-  inProgressCount: "{PH1} In Progress"
+  inProgressCount: "{PH1} In Progress",
+  /**
+   * @description Context menu action to copy the name of a tool
+   */
+  copyName: "Copy name",
+  /**
+   * @description Context menu action to copy the description of a tool
+   */
+  copyDescription: "Copy description"
 };
 var str_30 = i18n59.i18n.registerUIStrings("panels/application/WebMCPView.ts", UIStrings30);
 var i18nString30 = i18n59.i18n.getLocalizedString.bind(void 0, str_30);
@@ -12274,6 +12286,16 @@ var DEFAULT_VIEW7 = (input, output, target) => {
       default:
         return i18nString30(UIStrings30.inProgress);
     }
+  };
+  const onToolContextMenu = (event, tool) => {
+    const contextMenu = new UI23.ContextMenu.ContextMenu(event);
+    contextMenu.defaultSection().appendItem(i18nString30(UIStrings30.copyName), () => {
+      Host9.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(tool.name);
+    }, { jslogContext: "webmcp.copy-tool-name" });
+    contextMenu.defaultSection().appendItem(i18nString30(UIStrings30.copyDescription), () => {
+      Host9.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(tool.description);
+    }, { jslogContext: "webmcp.copy-tool-description" });
+    void contextMenu.show();
   };
   render9(html10`
     <style>${webMCPView_css_default}</style>
@@ -12414,7 +12436,8 @@ var DEFAULT_VIEW7 = (input, output, target) => {
     const groups = getIconGroupsFromStats(toolStats);
     return html10`
                     <div class=${Directives4.classMap({ "tool-item": true, selected: tool === input.selectedTool })}
-                         @click=${() => input.onToolSelect(tool)}>
+                         @click=${() => input.onToolSelect(tool)}
+                         @contextmenu=${(e) => onToolContextMenu(e, tool)}>
                     <div class="tool-name-container">
                       <div class="tool-name source-code">${tool.name}</div>
                       ${groups.length > 0 ? html10`<icon-button .data=${{ groups, compact: false }}></icon-button>` : ""}
@@ -13027,7 +13050,7 @@ var WebMCPTreeElement = class extends ApplicationPanelTreeElement {
       this.#view = new WebMCPView();
     }
     this.showView(this.#view);
-    Host9.userMetrics.panelShown("web-mcp");
+    Host10.userMetrics.panelShown("web-mcp");
     return false;
   }
 };
@@ -13899,7 +13922,7 @@ var BackgroundServiceTreeElement = class extends ApplicationPanelTreeElement {
     }
     this.showView(this.view);
     UI24.Context.Context.instance().setFlavor(BackgroundServiceView, this.view);
-    Host10.userMetrics.panelShown("background_service_" + this.serviceName);
+    Host11.userMetrics.panelShown("background_service_" + this.serviceName);
     return false;
   }
 };
@@ -13919,7 +13942,7 @@ var ServiceWorkersTreeElement = class extends ApplicationPanelTreeElement {
       this.view = new ServiceWorkersView();
     }
     this.showView(this.view);
-    Host10.userMetrics.panelShown("service-workers");
+    Host11.userMetrics.panelShown("service-workers");
     return false;
   }
 };
@@ -13943,7 +13966,7 @@ var AppManifestTreeElement = class extends ApplicationPanelTreeElement {
   onselect(selectedByUser) {
     super.onselect(selectedByUser);
     this.showView(this.view);
-    Host10.userMetrics.panelShown("app-manifest");
+    Host11.userMetrics.panelShown("app-manifest");
     return false;
   }
   generateChildren() {
@@ -13993,7 +14016,7 @@ var ClearStorageTreeElement = class extends ApplicationPanelTreeElement {
       this.view = new StorageView();
     }
     this.showView(this.view);
-    Host10.userMetrics.panelShown(Host10.UserMetrics.PanelCodes[Host10.UserMetrics.PanelCodes.storage]);
+    Host11.userMetrics.panelShown(Host11.UserMetrics.PanelCodes[Host11.UserMetrics.PanelCodes.storage]);
     return false;
   }
 };
@@ -14184,7 +14207,7 @@ var IDBDatabaseTreeElement = class extends ApplicationPanelTreeElement {
       this.view = LegacyWrapper3.LegacyWrapper.legacyWrapper(UI24.Widget.VBox, new IDBDatabaseView(this.model, this.database), "indexeddb-data");
     }
     this.showView(this.view);
-    Host10.userMetrics.panelShown("indexed-db");
+    Host11.userMetrics.panelShown("indexed-db");
     return false;
   }
   objectStoreRemoved(objectStoreName) {
@@ -14296,7 +14319,7 @@ var IDBObjectStoreTreeElement = class extends ApplicationPanelTreeElement {
       this.view = new IDBDataView(this.model, this.databaseId, this.objectStore, null, this.refreshObjectStore.bind(this));
     }
     this.showView(this.view);
-    Host10.userMetrics.panelShown("indexed-db");
+    Host11.userMetrics.panelShown("indexed-db");
     return false;
   }
   indexRemoved(indexName) {
@@ -14370,7 +14393,7 @@ var IDBIndexTreeElement = class extends ApplicationPanelTreeElement {
       this.view = new IDBDataView(this.model, this.databaseId, this.objectStore, this.index, this.refreshObjectStore);
     }
     this.showView(this.view);
-    Host10.userMetrics.panelShown("indexed-db");
+    Host11.userMetrics.panelShown("indexed-db");
     return false;
   }
   clear() {
@@ -14392,7 +14415,7 @@ var DOMStorageTreeElement = class extends ApplicationPanelTreeElement {
   }
   onselect(selectedByUser) {
     super.onselect(selectedByUser);
-    Host10.userMetrics.panelShown("dom-storage");
+    Host11.userMetrics.panelShown("dom-storage");
     this.resourcesPanel.showDOMStorage(this.domStorage);
     return false;
   }
@@ -14423,7 +14446,7 @@ var ExtensionStorageTreeElement = class extends ApplicationPanelTreeElement {
   onselect(selectedByUser) {
     super.onselect(selectedByUser);
     this.resourcesPanel.showExtensionStorage(this.extensionStorage);
-    Host10.userMetrics.panelShown("extension-storage");
+    Host11.userMetrics.panelShown("extension-storage");
     return false;
   }
   onattach() {
@@ -14481,7 +14504,7 @@ var CookieTreeElement = class extends ApplicationPanelTreeElement {
   onselect(selectedByUser) {
     super.onselect(selectedByUser);
     this.resourcesPanel.showCookies(this.target, this.#cookieDomain);
-    Host10.userMetrics.panelShown(Host10.UserMetrics.PanelCodes[Host10.UserMetrics.PanelCodes.cookies]);
+    Host11.userMetrics.panelShown(Host11.UserMetrics.PanelCodes[Host11.UserMetrics.PanelCodes.cookies]);
     return false;
   }
 };
@@ -14769,7 +14792,7 @@ var FrameTreeElement = class _FrameTreeElement extends ApplicationPanelTreeEleme
       this.view = new FrameDetailsReportView();
       this.view.frame = this.frame;
     }
-    Host10.userMetrics.panelShown("frame-details");
+    Host11.userMetrics.panelShown("frame-details");
     this.showView(this.view);
     this.listItemElement.classList.remove("hovered");
     SDK26.OverlayModel.OverlayModel.hideDOMNodeHighlight();
@@ -14910,11 +14933,11 @@ var FrameResourceTreeElement = class extends ApplicationPanelTreeElement {
     } else {
       void this.panel.scheduleShowView(this.preparePreview());
     }
-    Host10.userMetrics.panelShown("frame-resource");
+    Host11.userMetrics.panelShown("frame-resource");
     return false;
   }
   ondblclick(_event) {
-    Host10.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(this.resource.url);
+    Host11.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(this.resource.url);
     return false;
   }
   onattach() {
@@ -14987,7 +15010,7 @@ var FrameWindowTreeElement = class extends ApplicationPanelTreeElement {
       this.view.requestUpdate();
     }
     this.showView(this.view);
-    Host10.userMetrics.panelShown("frame-window");
+    Host11.userMetrics.panelShown("frame-window");
     return false;
   }
   get itemURL() {
@@ -15012,7 +15035,7 @@ var WorkerTreeElement = class extends ApplicationPanelTreeElement {
       this.view.requestUpdate();
     }
     this.showView(this.view);
-    Host10.userMetrics.panelShown("frame-worker");
+    Host11.userMetrics.panelShown("frame-worker");
     return false;
   }
   get itemURL() {

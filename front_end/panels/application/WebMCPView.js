@@ -7,6 +7,7 @@ import '../../ui/components/node_text/node_text.js';
 import '../../ui/legacy/components/data_grid/data_grid.js';
 import '../../ui/legacy/legacy.js';
 import * as Common from '../../core/common/common.js';
+import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
@@ -141,6 +142,14 @@ const UIStrings = {
      * @example {1} PH1
      */
     inProgressCount: '{PH1} In Progress',
+    /**
+     * @description Context menu action to copy the name of a tool
+     */
+    copyName: 'Copy name',
+    /**
+     * @description Context menu action to copy the description of a tool
+     */
+    copyDescription: 'Copy description',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/application/WebMCPView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -286,6 +295,16 @@ export const DEFAULT_VIEW = (input, output, target) => {
                 return i18nString(UIStrings.inProgress);
         }
     };
+    const onToolContextMenu = (event, tool) => {
+        const contextMenu = new UI.ContextMenu.ContextMenu(event);
+        contextMenu.defaultSection().appendItem(i18nString(UIStrings.copyName), () => {
+            Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(tool.name);
+        }, { jslogContext: 'webmcp.copy-tool-name' });
+        contextMenu.defaultSection().appendItem(i18nString(UIStrings.copyDescription), () => {
+            Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(tool.description);
+        }, { jslogContext: 'webmcp.copy-tool-description' });
+        void contextMenu.show();
+    };
     // clang-format off
     render(html `
     <style>${webMCPViewStyles}</style>
@@ -424,7 +443,8 @@ export const DEFAULT_VIEW = (input, output, target) => {
         const groups = getIconGroupsFromStats(toolStats);
         return html `
                     <div class=${Directives.classMap({ 'tool-item': true, selected: tool === input.selectedTool })}
-                         @click=${() => input.onToolSelect(tool)}>
+                         @click=${() => input.onToolSelect(tool)}
+                         @contextmenu=${(e) => onToolContextMenu(e, tool)}>
                     <div class="tool-name-container">
                       <div class="tool-name source-code">${tool.name}</div>
                       ${groups.length > 0 ? html `<icon-button .data=${{ groups, compact: false }}></icon-button>` : ''}

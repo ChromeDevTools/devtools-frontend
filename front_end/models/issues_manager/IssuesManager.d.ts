@@ -4,6 +4,7 @@ import * as Protocol from '../../generated/protocol.js';
 import type { Issue, IssueKind } from './Issue.js';
 import { Events } from './IssuesManagerEvents.js';
 export { Events } from './IssuesManagerEvents.js';
+export declare function isIssueCodeSupported(code: Protocol.Audits.InspectorIssueCode): boolean;
 /**
  * Each issue reported by the backend can result in multiple `Issue` instances.
  * Handlers are simple functions hard-coded into a map.

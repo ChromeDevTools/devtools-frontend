@@ -151,6 +151,12 @@ export class DebuggerWorkspaceBinding {
         this.recordLiveLocationChange(stackTracePromise);
         return await stackTracePromise;
     }
+    async createStackTraceFromErrorStackLikeString(target, stack, exceptionDetails) {
+        const model = target.model(StackTraceImpl.StackTraceModel.StackTraceModel);
+        const stackTracePromise = model.createFromErrorStackLikeString(stack, this.#translateRawFrames.bind(this), exceptionDetails);
+        this.recordLiveLocationChange(stackTracePromise);
+        return await stackTracePromise;
+    }
     async createLiveLocation(rawLocation, updateDelegate, locationPool) {
         const modelData = this.#debuggerModelToData.get(rawLocation.debuggerModel);
         if (!modelData) {

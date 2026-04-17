@@ -269,6 +269,7 @@ export class AiConversation {
     this.history.push(item);
     await AiHistoryStorage.instance().upsertHistoryEntry(this.serialize());
     if (item.type === ResponseType.USER_QUERY) {
+      void AiHistoryStorage.instance().addRecentPrompt(item.query);
       if (item.imageId && item.imageInput && 'inlineData' in item.imageInput) {
         const inlineData = item.imageInput.inlineData;
         await AiHistoryStorage.instance().upsertImage({

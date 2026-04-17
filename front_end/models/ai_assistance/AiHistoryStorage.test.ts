@@ -336,6 +336,7 @@ describe('AiHistoryStorage', () => {
     await storage.upsertImage(serializedImage1);
     await storage.upsertImage(serializedImage2);
     await storage.upsertHistoryEntry(agent4);
+    await storage.addRecentPrompt('prompt');
     const historyDeletedPromise =
         storage.once('AiHistoryDeleted' as AiAssistance.AiHistoryStorage.Events.HISTORY_DELETED);
     await storage.deleteAll();
@@ -347,7 +348,59 @@ describe('AiHistoryStorage', () => {
         storage.getImageHistory(),
         [],
     );
+    assert.deepEqual(
+        storage.getRecentPrompts(),
+        [],
+    );
     await historyDeletedPromise;
+  });
+
+  it('should store and retrieve recent prompts', async () => {
+    const storage = getStorage();
+    await storage.addRecentPrompt('prompt 1');
+    await storage.addRecentPrompt('prompt 2');
+    assert.deepEqual(storage.getRecentPrompts(), ['prompt 2', 'prompt 1']);
+  });
+
+  it('should move existing prompts to the top and deduplicate', async () => {
+    const storage = getStorage();
+    await storage.addRecentPrompt('prompt 1');
+    await storage.addRecentPrompt('prompt 2');
+    await storage.addRecentPrompt('prompt 1');
+    assert.deepEqual(storage.getRecentPrompts(), ['prompt 1', 'prompt 2']);
+  });
+
+  it('should prune recent prompts by count', async () => {
+    const storage = getStorage();
+    for (let i = 0; i < AiAssistance.AiHistoryStorage.MAX_RECENT_PROMPTS_COUNT + 5; i++) {
+      await storage.addRecentPrompt(`prompt ${i}`);
+    }
+    const recentPrompts = storage.getRecentPrompts();
+    assert.lengthOf(recentPrompts, AiAssistance.AiHistoryStorage.MAX_RECENT_PROMPTS_COUNT);
+    assert.strictEqual(recentPrompts[0], `prompt ${AiAssistance.AiHistoryStorage.MAX_RECENT_PROMPTS_COUNT + 4}`);
+  });
+
+  it('should prune recent prompts by total character length', async () => {
+    const storage = getStorage();
+    const largePrompt = 'a'.repeat(AiAssistance.AiHistoryStorage.RECENT_PROMPTS_SIZE_LIMIT);
+    await storage.addRecentPrompt('small prompt');
+    await storage.addRecentPrompt(largePrompt);
+
+    const recentPrompts = storage.getRecentPrompts();
+    assert.lengthOf(recentPrompts, 1);
+    assert.strictEqual(recentPrompts[0], largePrompt);
+
+    await storage.addRecentPrompt('another small');
+    const recentPrompts2 = storage.getRecentPrompts();
+    assert.lengthOf(recentPrompts2, 1);
+    assert.strictEqual(recentPrompts2[0], 'another small');
+  });
+
+  it('should not store empty or whitespace-only prompts', async () => {
+    const storage = getStorage();
+    await storage.addRecentPrompt('');
+    await storage.addRecentPrompt('   ');
+    assert.lengthOf(storage.getRecentPrompts(), 0);
   });
 
   it('should limit the amount of stored images', async () => {

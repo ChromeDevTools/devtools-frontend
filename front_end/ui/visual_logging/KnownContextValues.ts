@@ -345,6 +345,7 @@ export const knownContextValues = new Set([
   'ai-assistance-history-images',
   'ai-assistance-patching-fre-completed',
   'ai-assistance-patching-selected-project-id',
+  'ai-assistance-recent-prompts',
   'ai-assistance-v2-opt-in-change-dialog-seen',
   'ai-assistance-v2-opt-in.got-it',
   'ai-assistance-v2-opt-in.manage-settings',

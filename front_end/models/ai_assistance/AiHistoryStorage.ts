@@ -37,6 +37,8 @@ export interface SerializedImage {
 let instance: AiHistoryStorage|null = null;
 
 const DEFAULT_MAX_STORAGE_SIZE = 50 * 1024 * 1024;
+export const MAX_RECENT_PROMPTS_COUNT = 20;
+export const RECENT_PROMPTS_SIZE_LIMIT = 100 * 1024;
 
 export const enum Events {
   HISTORY_DELETED = 'AiHistoryDeleted',
@@ -49,6 +51,7 @@ export interface EventTypes {
 export class AiHistoryStorage extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   #historySetting: Common.Settings.Setting<SerializedConversation[]>;
   #imageHistorySettings: Common.Settings.Setting<SerializedImage[]>;
+  #recentPromptsSetting: Common.Settings.Setting<string[]>;
   #mutex = new Common.Mutex.Mutex();
   #maxStorageSize: number;
 
@@ -59,12 +62,47 @@ export class AiHistoryStorage extends Common.ObjectWrapper.ObjectWrapper<EventTy
         'ai-assistance-history-images',
         [],
     );
+    this.#recentPromptsSetting = Common.Settings.Settings.instance().createSetting('ai-assistance-recent-prompts', []);
     this.#maxStorageSize = maxStorageSize;
   }
 
   clearForTest(): void {
     this.#historySetting.set([]);
     this.#imageHistorySettings.set([]);
+    this.#recentPromptsSetting.set([]);
+  }
+
+  async addRecentPrompt(prompt: string): Promise<void> {
+    if (!prompt.trim()) {
+      return;
+    }
+    const release = await this.#mutex.acquire();
+    try {
+      const recentPrompts = await this.#recentPromptsSetting.forceGet();
+      const updatedPrompts = [prompt, ...recentPrompts.filter(p => p !== prompt)];
+
+      const promptsToBeStored: string[] = [];
+      let currentStorageSize = 0;
+
+      for (const p of updatedPrompts) {
+        if (promptsToBeStored.length >= MAX_RECENT_PROMPTS_COUNT) {
+          break;
+        }
+        if (currentStorageSize + p.length > RECENT_PROMPTS_SIZE_LIMIT) {
+          break;
+        }
+        currentStorageSize += p.length;
+        promptsToBeStored.push(p);
+      }
+
+      this.#recentPromptsSetting.set(promptsToBeStored);
+    } finally {
+      release();
+    }
+  }
+
+  getRecentPrompts(): string[] {
+    return structuredClone(this.#recentPromptsSetting.get());
   }
 
   async upsertHistoryEntry(agentEntry: SerializedConversation): Promise<void> {
@@ -145,6 +183,7 @@ export class AiHistoryStorage extends Common.ObjectWrapper.ObjectWrapper<EventTy
     try {
       this.#historySetting.set([]);
       this.#imageHistorySettings.set([]);
+      this.#recentPromptsSetting.set([]);
     } finally {
       release();
       this.dispatchEventToListeners(Events.HISTORY_DELETED);

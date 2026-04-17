@@ -243,6 +243,92 @@ describeWithEnvironment('ChatInput', () => {
     });
   });
 
+  describe('history navigation', () => {
+    it('should navigate through prompts using ArrowUp and ArrowDown', async () => {
+      const storage = AiAssistanceModel.AiHistoryStorage.AiHistoryStorage.instance();
+      sinon.stub(storage, 'getRecentPrompts').returns(['prompt 2', 'prompt 1']);
+      const [view] = createComponent();
+
+      const mockTextArea = document.createElement('textarea');
+      (view.input.textAreaRef as {value: HTMLTextAreaElement}).value = mockTextArea;
+
+      // Type something uncommitted
+      mockTextArea.value = 'uncommitted';
+      mockTextArea.setSelectionRange(mockTextArea.value.length, mockTextArea.value.length);
+
+      // Press ArrowUp
+      const upEvent = new KeyboardEvent('keydown', {key: 'ArrowUp'});
+      Object.defineProperty(upEvent, 'target', {value: mockTextArea});
+      view.input.onTextAreaKeyDown(upEvent);
+      assert.strictEqual(mockTextArea.value, 'prompt 2');
+
+      // Press ArrowUp again (cursor is at the end of 'prompt 2', but it's a single line)
+      view.input.onTextAreaKeyDown(upEvent);
+      assert.strictEqual(mockTextArea.value, 'prompt 1');
+
+      // Press ArrowDown
+      const downEvent = new KeyboardEvent('keydown', {key: 'ArrowDown'});
+      Object.defineProperty(downEvent, 'target', {value: mockTextArea});
+      mockTextArea.setSelectionRange(mockTextArea.value.length, mockTextArea.value.length);
+      view.input.onTextAreaKeyDown(downEvent);
+      assert.strictEqual(mockTextArea.value, 'prompt 2');
+
+      // Press ArrowDown again
+      mockTextArea.setSelectionRange(mockTextArea.value.length, mockTextArea.value.length);
+      view.input.onTextAreaKeyDown(downEvent);
+      assert.strictEqual(mockTextArea.value, 'uncommitted');
+    });
+
+    it('should not navigate history if text is selected', async () => {
+      const storage = AiAssistanceModel.AiHistoryStorage.AiHistoryStorage.instance();
+      sinon.stub(storage, 'getRecentPrompts').returns(['prompt 2', 'prompt 1']);
+      const [view] = createComponent();
+
+      const mockTextArea = document.createElement('textarea');
+      (view.input.textAreaRef as {value: HTMLTextAreaElement}).value = mockTextArea;
+
+      mockTextArea.value = 'some text';
+      mockTextArea.setSelectionRange(0, 4);  // 'some' is selected
+
+      // Press ArrowUp
+      const upEvent = new KeyboardEvent('keydown', {key: 'ArrowUp'});
+      Object.defineProperty(upEvent, 'target', {value: mockTextArea});
+      view.input.onTextAreaKeyDown(upEvent);
+      assert.strictEqual(mockTextArea.value, 'some text');  // Should NOT have navigated
+    });
+
+    it('should not navigate history if cursor is not on the first/last line', async () => {
+      const storage = AiAssistanceModel.AiHistoryStorage.AiHistoryStorage.instance();
+      sinon.stub(storage, 'getRecentPrompts').returns(['prompt 2', 'prompt 1']);
+      const [view] = createComponent();
+
+      const mockTextArea = document.createElement('textarea');
+      (view.input.textAreaRef as {value: HTMLTextAreaElement}).value = mockTextArea;
+
+      mockTextArea.value = 'line 1\nline 2';
+      mockTextArea.setSelectionRange(10, 10);  // Cursor at the end of line 2
+
+      // Press ArrowUp
+      const upEvent = new KeyboardEvent('keydown', {key: 'ArrowUp'});
+      Object.defineProperty(upEvent, 'target', {value: mockTextArea});
+      view.input.onTextAreaKeyDown(upEvent);
+      assert.strictEqual(mockTextArea.value, 'line 1\nline 2');  // Should not have changed, just moves cursor up
+
+      // Move cursor to line 1
+      mockTextArea.setSelectionRange(2, 2);
+      view.input.onTextAreaKeyDown(upEvent);
+      assert.strictEqual(mockTextArea.value, 'prompt 2');
+
+      // Now it's a single line 'prompt 2'. Cursor is at the end.
+      // Press ArrowDown when cursor is at the end of line 1 (only line)
+      const downEvent = new KeyboardEvent('keydown', {key: 'ArrowDown'});
+      Object.defineProperty(downEvent, 'target', {value: mockTextArea});
+      mockTextArea.setSelectionRange(mockTextArea.value.length, mockTextArea.value.length);
+      view.input.onTextAreaKeyDown(downEvent);
+      assert.strictEqual(mockTextArea.value, 'line 1\nline 2');  // Restored uncommitted
+    });
+  });
+
   describe('view', () => {
     class MockContext extends AiAssistanceModel.AiAgent.ConversationContext<string> {
       getIcon() {

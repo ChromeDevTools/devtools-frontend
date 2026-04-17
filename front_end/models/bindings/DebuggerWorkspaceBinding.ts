@@ -20,6 +20,7 @@ import {type LiveLocation, type LiveLocationPool, LiveLocationWithPool} from './
 import {NetworkProject} from './NetworkProject.js';
 import type {ResourceMapping} from './ResourceMapping.js';
 import {type ResourceScriptFile, ResourceScriptMapping} from './ResourceScriptMapping.js';
+import {SymbolizedError} from './SymbolizedError.js';
 
 export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObserver<SDK.DebuggerModel.DebuggerModel> {
   readonly resourceMapping: ResourceMapping;
@@ -212,6 +213,26 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
         model.createFromErrorStackLikeString(stack, this.#translateRawFrames.bind(this), exceptionDetails);
     this.recordLiveLocationChange(stackTracePromise);
     return await stackTracePromise;
+  }
+
+  async createSymbolizedError(remoteObject: SDK.RemoteObject.RemoteObject): Promise<SymbolizedError|null> {
+    if (remoteObject.subtype !== 'error') {
+      return null;
+    }
+
+    const remoteError = SDK.RemoteObject.RemoteError.objectAsError(remoteObject);
+    const [exceptionDetails, causeRemoteObject] = await Promise.all([
+      remoteError.exceptionDetails(),
+      remoteError.cause(),
+    ]);
+
+    const [stackTrace, cause] = await Promise.all([
+      this.createStackTraceFromErrorStackLikeString(
+          remoteObject.runtimeModel().target(), remoteError.errorStack, exceptionDetails),
+      causeRemoteObject ? this.createSymbolizedError(causeRemoteObject) : Promise.resolve(null),
+    ]);
+
+    return new SymbolizedError(remoteError, stackTrace, cause);
   }
 
   async createLiveLocation(

@@ -1147,6 +1147,7 @@ grd_files_unbundled_sources = [
   "front_end/models/bindings/ResourceUtils.js",
   "front_end/models/bindings/SASSSourceMapping.js",
   "front_end/models/bindings/StylesSourceMapping.js",
+  "front_end/models/bindings/SymbolizedError.js",
   "front_end/models/bindings/TempFile.js",
   "front_end/models/breakpoints/BreakpointManager.js",
   "front_end/models/computed_style/ComputedStyleModel.js",

@@ -24,6 +24,7 @@ devtools_module("bindings") {
     "ResourceUtils.ts",
     "SASSSourceMapping.ts",
     "StylesSourceMapping.ts",
+    "SymbolizedError.ts",
     "TempFile.ts",
   ]
 
@@ -111,6 +112,7 @@ ts_library("unittests") {
     "ResourceMapping.test.ts",
     "ResourceScriptMapping.test.ts",
     "ResourceUtils.test.ts",
+    "SymbolizedError.test.ts",
   ]
 
   deps = [

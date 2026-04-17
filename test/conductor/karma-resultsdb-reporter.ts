@@ -156,6 +156,13 @@ export const ResultsDBReporter = function(
   this.specFailure = specComplete;
 
   this.onRunComplete = (browsers: any, results: any) => {
+    browsers.forEach((browser: any) => {
+      const {total, success, failed, skipped} = browser.lastResult;
+      if (total !== success + failed + skipped) {
+        throw new Error(`Karma exited early: executed ${success + failed + skipped} out of ${total} tests`);
+      }
+    });
+
     if (browsers.length >= 1 && !results.disconnected && !results.error) {
       if (!results.failed) {
         this.write('SUCCESS: %d passed (%d skipped)\n', results.success, results.skipped);

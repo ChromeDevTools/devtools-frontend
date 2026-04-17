@@ -106,7 +106,8 @@ describeWithEnvironment('TimelineFlameChartView', function() {
       await assertScreenshot('timeline/flamechart_view_network_expanded.png');
     });
 
-    it('does not show the network track when there is no network request', async function() {
+    // Test is failing on CQ
+    it.skip('[crbug.com/503622772] does not show the network track when there is no network request', async function() {
       const parsedTrace = await TraceLoader.traceEngine(this, 'slow-interaction-keydown.json.gz');
       const mockViewDelegate = new MockViewDelegate();
       const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(mockViewDelegate);

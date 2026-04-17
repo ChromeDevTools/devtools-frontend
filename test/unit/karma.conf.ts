@@ -179,6 +179,20 @@ const ProgressWithDiffReporter = function(
       baseSpecSuccess.apply(this, arguments);
     }
   };
+
+  const baseOnRunComplete = this.onRunComplete;
+  this.onRunComplete = function(this: any, browsers: any, _results: any) {
+    if (baseOnRunComplete) {
+      baseOnRunComplete.apply(this, arguments);
+    }
+
+    browsers.forEach((browser: any) => {
+      const {total, success, failed, skipped} = browser.lastResult;
+      if (total !== success + failed + skipped) {
+        throw new Error(`Karma exited early: executed ${success + failed + skipped} out of ${total} tests`);
+      }
+    });
+  };
 };
 ProgressWithDiffReporter.$inject =
     ['formatError', 'config.reportSlowerThan', 'config.colors', 'config.browserConsoleLogOptions'];

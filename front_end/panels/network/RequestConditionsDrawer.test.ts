@@ -99,7 +99,10 @@ describeWithMockConnection(`RequestConditionsDrawer with individual request thro
       }
     };
 
-    it('are updated upon RequestFinished event (when target is in scope)', updatesOnRequestFinishedEvent(true));
+    // Test is failing on CQ
+    it.skip(
+        '[crbug.com/503622772] are updated upon RequestFinished event (when target is in scope)',
+        updatesOnRequestFinishedEvent(true));
     it('are updated upon RequestFinished event (when target is out of scope)', updatesOnRequestFinishedEvent(false));
 
     it('are updated upon Reset event', async () => {

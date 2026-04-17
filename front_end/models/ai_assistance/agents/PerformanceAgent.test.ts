@@ -835,7 +835,7 @@ code
       assert.lengthOf(secondActions[0].widgets!, 1);
     });
 
-    it('yields an lcp-type PERF_INSIGHT widget when getInsightDetails is called for LCPBreakdown', async function() {
+    it('yields an LCP_BREAKDOWN widget when getInsightDetails is called for LCPBreakdown', async function() {
       const parsedTrace = await TraceLoader.traceEngine(this, 'lcp-images.json.gz');
       assert.isOk(parsedTrace.insights);
       const [nav] = parsedTrace.data.Meta.mainFrameNavigations;
@@ -873,10 +873,9 @@ code
       assert.lengthOf(actions, 1);
 
       assert.exists(actions[0].widgets);
-      const lcpWidget = actions[0].widgets?.find(w => w.name === 'PERF_INSIGHT');
+      const lcpWidget = actions[0].widgets?.find(w => w.name === 'LCP_BREAKDOWN');
       assert.exists(lcpWidget);
-      assert.strictEqual(lcpWidget?.data.insight, 'lcp');
-      assert.strictEqual(lcpWidget?.data.insightData, insightSet.model.LCPBreakdown);
+      assert.strictEqual(lcpWidget?.data.lcpData, insightSet.model.LCPBreakdown);
     });
 
     it('yields a BOTTOM_UP_TREE widget when getDetailedCallTree is called', async function() {

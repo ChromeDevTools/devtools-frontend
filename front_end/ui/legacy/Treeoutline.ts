@@ -1763,11 +1763,15 @@ export class TreeViewElement extends HTMLElementWithLightDOMTemplate {
       }
     });
     this.#treeOutline.addEventListener(Events.ElementExpanded, event => {
+      // TODO(crbug.com/1166669): This is a stopgap. We can remove the global event once devtools-tree-wrapper is no longer needed.
+      this.dispatchEvent(new TreeViewElement.TreeElementExpandEvent(event.data, true));
       if (event.data instanceof TreeViewTreeElement) {
         event.data.listItemElement.dispatchEvent(new TreeViewElement.ExpandEvent({expanded: true}));
       }
     });
     this.#treeOutline.addEventListener(Events.ElementCollapsed, event => {
+      // TODO(crbug.com/1166669): This is a stopgap. We can remove the global event once devtools-tree-wrapper is no longer needed.
+      this.dispatchEvent(new TreeViewElement.TreeElementExpandEvent(event.data, false));
       if (event.data instanceof TreeViewTreeElement) {
         event.data.listItemElement.dispatchEvent(new TreeViewElement.ExpandEvent({expanded: false}));
       }
@@ -1928,6 +1932,15 @@ export namespace TreeViewElement {
   export class ExpandEvent extends CustomEvent<{expanded: boolean}> {
     constructor(detail: {expanded: boolean}) {
       super('expand', {detail});
+    }
+  }
+
+  /**
+   * @deprecated
+   */
+  export class TreeElementExpandEvent extends CustomEvent<{treeElement: TreeElement, expanded: boolean}> {
+    constructor(treeElement: TreeElement, expanded: boolean) {
+      super('treeelementexpand', {detail: {treeElement, expanded}});
     }
   }
 }

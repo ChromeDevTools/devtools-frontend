@@ -103,7 +103,7 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
       ${input.objectTree && input.allChildrenFiltered ? html`
         <div class="gray-info-message">${i18nString(UIStrings.noMatchingProperty)}</div>
       ` : nothing}
-      <devtools-tree .template=${html`
+      <devtools-tree @treeelementexpand=${onExpand} .template=${html`
         <ul role=tree class="source-code object-properties-section">
           <style>${ObjectUI.ObjectPropertiesSection.objectValueStyles}</style>;
           <style>${ObjectUI.ObjectPropertiesSection.objectPropertiesSectionStyles}</style>;
@@ -121,10 +121,16 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
 const getShowAllPropertiesSetting = (): Common.Settings.Setting<boolean> =>
     Common.Settings.Settings.instance().createSetting('show-all-properties', /* defaultValue */ false);
 
+function onExpand(event: Event): void {
+  const expanded = (event as CustomEvent<{expanded: boolean}>).detail.expanded;
+  if (expanded) {
+    Host.userMetrics.actionTaken(Host.UserMetrics.Action.DOMPropertiesExpanded);
+  }
+}
+
 export class PropertiesWidget extends UI.Widget.VBox {
   private readonly showAllPropertiesSetting: Common.Settings.Setting<boolean>;
   private filterRegex: RegExp|null = null;
-  private readonly treeOutline: ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionsTreeOutline;
   #lastRequestedNode: SDK.DOMModel.DOMNode|null = null;
   readonly #view: View;
   #pendingNodeUpdate = true;
@@ -150,12 +156,6 @@ export class PropertiesWidget extends UI.Widget.VBox {
     UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, this.setNode, this);
 
     this.#view = view;
-    this.treeOutline = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionsTreeOutline();
-    this.treeOutline.setShowSelectionOnKeyboardFocus(/* show */ true, /* preventTabOrder */ false);
-
-    this.treeOutline.addEventListener(UI.TreeOutline.Events.ElementExpanded, () => {
-      Host.userMetrics.actionTaken(Host.UserMetrics.Action.DOMPropertiesExpanded);
-    });
 
     this.requestUpdate();
   }

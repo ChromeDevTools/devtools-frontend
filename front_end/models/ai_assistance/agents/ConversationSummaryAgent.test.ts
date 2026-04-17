@@ -17,7 +17,9 @@ describeWithEnvironment('ConversationSummaryAgent', () => {
     });
 
     const summary = await agent.summarizeConversation('User: Hello\nAssistant: Hi');
-    assert.strictEqual(summary, 'Summary of the conversation');
+    assert.isTrue(summary.startsWith('Summary of the conversation'));
+    assert.isTrue(
+        summary.includes('Note: The code fixes and findings above were identified on a live page in DevTools'));
   });
 
   it('summarizes a conversation using a context', async () => {

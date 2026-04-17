@@ -27,6 +27,7 @@ const tests = [
 function* reporters() {
   if (ResultsDb.available()) {
     yield 'resultsdb';
+    yield 'spec';
   } else {
     yield 'screenshots';
     yield TestConfig.verbose ? 'spec' : 'progress-diff';

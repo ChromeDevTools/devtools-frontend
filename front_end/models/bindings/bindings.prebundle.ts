@@ -17,6 +17,7 @@ import * as ResourceScriptMapping from './ResourceScriptMapping.js';
 import * as ResourceUtils from './ResourceUtils.js';
 import * as SASSSourceMapping from './SASSSourceMapping.js';
 import * as StylesSourceMapping from './StylesSourceMapping.js';
+import * as SymbolizedError from './SymbolizedError.js';
 import * as TempFile from './TempFile.js';
 
 export {
@@ -35,5 +36,6 @@ export {
   ResourceUtils,
   SASSSourceMapping,
   StylesSourceMapping,
+  SymbolizedError,
   TempFile,
 };

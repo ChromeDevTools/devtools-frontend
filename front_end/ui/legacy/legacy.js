@@ -22761,11 +22761,13 @@ var TreeViewElement = class _TreeViewElement extends HTMLElementWithLightDOMTemp
       }
     });
     this.#treeOutline.addEventListener(Events2.ElementExpanded, (event) => {
+      this.dispatchEvent(new _TreeViewElement.TreeElementExpandEvent(event.data, true));
       if (event.data instanceof TreeViewTreeElement) {
         event.data.listItemElement.dispatchEvent(new _TreeViewElement.ExpandEvent({ expanded: true }));
       }
     });
     this.#treeOutline.addEventListener(Events2.ElementCollapsed, (event) => {
+      this.dispatchEvent(new _TreeViewElement.TreeElementExpandEvent(event.data, false));
       if (event.data instanceof TreeViewTreeElement) {
         event.data.listItemElement.dispatchEvent(new _TreeViewElement.ExpandEvent({ expanded: false }));
       }
@@ -22914,6 +22916,12 @@ var TreeViewElement = class _TreeViewElement extends HTMLElementWithLightDOMTemp
     }
   }
   TreeViewElement2.ExpandEvent = ExpandEvent;
+  class TreeElementExpandEvent extends CustomEvent {
+    constructor(treeElement, expanded) {
+      super("treeelementexpand", { detail: { treeElement, expanded } });
+    }
+  }
+  TreeViewElement2.TreeElementExpandEvent = TreeElementExpandEvent;
 })(TreeViewElement || (TreeViewElement = {}));
 var IfExpandedDirective = class extends Lit3.Directive.Directive {
   #partInfo;

@@ -2398,7 +2398,7 @@ var chatMessage_css_default = `/*
     font-family: var(--default-font-family);
     width: 100%;
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: center;
     margin-block: calc(-1 * var(--sys-size-3));
     margin-top: var(--sys-size-5);
@@ -4057,23 +4057,29 @@ async function makeStylePropertiesWidget(widgetData) {
     jslogContext: "standalone-styles"
   };
 }
-async function makeLcpBreakdownWidget(widgetData) {
-  const insight = widgetData.data.lcpData;
-  if (!insight) {
-    return null;
+async function makePerfInsightWidget(widgetData) {
+  switch (widgetData.data.insight) {
+    case "lcp": {
+      const insight = widgetData.data.insightData;
+      if (!insight || !Trace.Insights.Models.LCPBreakdown.isLCPBreakdownInsight(insight)) {
+        return null;
+      }
+      const renderedWidget = html7`<devtools-widget
+        class="lcp-breakdown-widget"
+        ${widget3(TimelineInsights.LCPBreakdown.LCPBreakdown, {
+        model: insight,
+        minimal: true
+      })}></devtools-widget>`;
+      return {
+        renderedWidget,
+        revealable: new TimelineUtils.Helpers.RevealableInsight(insight),
+        title: lockedString5(UIStringsNotTranslate4.lcpBreakdown),
+        jslogContext: "lcp-breakdown"
+      };
+    }
+    default:
+      return null;
   }
-  const renderedWidget = html7`<devtools-widget
-    class="lcp-breakdown-widget"
-    ${widget3(TimelineInsights.LCPBreakdown.LCPBreakdown, {
-    model: insight,
-    minimal: true
-  })}></devtools-widget>`;
-  return {
-    renderedWidget,
-    revealable: new TimelineUtils.Helpers.RevealableInsight(insight),
-    title: lockedString5(UIStringsNotTranslate4.lcpBreakdown),
-    jslogContext: "lcp-breakdown"
-  };
 }
 async function makeBottomUpTimelineTreeWidget(widgetData) {
   const bottomUpRootNode = AiAssistanceModel5.AIQueries.AIQueries.mainThreadActivityBottomUp(widgetData.data.bounds, widgetData.data.parsedTrace);
@@ -4228,8 +4234,8 @@ async function renderWidgets(widgets, options = {}) {
       case "PERFORMANCE_TRACE":
         response = await makePerformanceTraceWidget(widgetData);
         break;
-      case "LCP_BREAKDOWN":
-        response = await makeLcpBreakdownWidget(widgetData);
+      case "PERF_INSIGHT":
+        response = await makePerfInsightWidget(widgetData);
         break;
       case "TIMELINE_RANGE_SUMMARY":
         response = await makeTimelineRangeSummaryWidget(widgetData);

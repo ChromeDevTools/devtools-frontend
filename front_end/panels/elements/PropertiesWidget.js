@@ -85,7 +85,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
       ${input.objectTree && input.allChildrenFiltered ? html `
         <div class="gray-info-message">${i18nString(UIStrings.noMatchingProperty)}</div>
       ` : nothing}
-      <devtools-tree .template=${html `
+      <devtools-tree @treeelementexpand=${onExpand} .template=${html `
         <ul role=tree class="source-code object-properties-section">
           <style>${ObjectUI.ObjectPropertiesSection.objectValueStyles}</style>;
           <style>${ObjectUI.ObjectPropertiesSection.objectPropertiesSectionStyles}</style>;
@@ -96,10 +96,15 @@ export const DEFAULT_VIEW = (input, _output, target) => {
     // clang-format on
 };
 const getShowAllPropertiesSetting = () => Common.Settings.Settings.instance().createSetting('show-all-properties', /* defaultValue */ false);
+function onExpand(event) {
+    const expanded = event.detail.expanded;
+    if (expanded) {
+        Host.userMetrics.actionTaken(Host.UserMetrics.Action.DOMPropertiesExpanded);
+    }
+}
 export class PropertiesWidget extends UI.Widget.VBox {
     showAllPropertiesSetting;
     filterRegex = null;
-    treeOutline;
     #lastRequestedNode = null;
     #view;
     #pendingNodeUpdate = true;
@@ -117,11 +122,6 @@ export class PropertiesWidget extends UI.Widget.VBox {
         SDK.TargetManager.TargetManager.instance().addModelListener(SDK.DOMModel.DOMModel, SDK.DOMModel.Events.ChildNodeCountUpdated, this.onNodeChange, this, { scoped: true });
         UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, this.setNode, this);
         this.#view = view;
-        this.treeOutline = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionsTreeOutline();
-        this.treeOutline.setShowSelectionOnKeyboardFocus(/* show */ true, /* preventTabOrder */ false);
-        this.treeOutline.addEventListener(UI.TreeOutline.Events.ElementExpanded, () => {
-            Host.userMetrics.actionTaken(Host.UserMetrics.Action.DOMPropertiesExpanded);
-        });
         this.requestUpdate();
     }
     #buildFilterRegex(text) {

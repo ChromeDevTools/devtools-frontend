@@ -8,6 +8,7 @@ import { DebuggerLanguagePluginManager } from './DebuggerLanguagePlugins.js';
 import { type LiveLocation, type LiveLocationPool, LiveLocationWithPool } from './LiveLocation.js';
 import type { ResourceMapping } from './ResourceMapping.js';
 import { type ResourceScriptFile } from './ResourceScriptMapping.js';
+import { SymbolizedError } from './SymbolizedError.js';
 export declare class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObserver<SDK.DebuggerModel.DebuggerModel> {
     #private;
     readonly resourceMapping: ResourceMapping;
@@ -37,6 +38,7 @@ export declare class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKMo
     createStackTraceFromProtocolRuntime(stackTrace: Protocol.Runtime.StackTrace, target: SDK.Target.Target): Promise<StackTrace.StackTrace.StackTrace>;
     createStackTraceFromDebuggerPaused(pausedDetails: SDK.DebuggerModel.DebuggerPausedDetails, target: SDK.Target.Target): Promise<StackTrace.StackTrace.DebuggableStackTrace>;
     createStackTraceFromErrorStackLikeString(target: SDK.Target.Target, stack: string, exceptionDetails?: Protocol.Runtime.ExceptionDetails): Promise<StackTrace.StackTrace.ParsedErrorStackTrace>;
+    createSymbolizedError(remoteObject: SDK.RemoteObject.RemoteObject): Promise<SymbolizedError | null>;
     createLiveLocation(rawLocation: SDK.DebuggerModel.Location, updateDelegate: (arg0: LiveLocation) => Promise<void>, locationPool: LiveLocationPool): Promise<Location | null>;
     createStackTraceTopFrameLiveLocation(rawLocations: SDK.DebuggerModel.Location[], updateDelegate: (arg0: LiveLocation) => Promise<void>, locationPool: LiveLocationPool): Promise<LiveLocation>;
     rawLocationToUILocation(rawLocation: SDK.DebuggerModel.Location): Promise<Workspace.UISourceCode.UILocation | null>;

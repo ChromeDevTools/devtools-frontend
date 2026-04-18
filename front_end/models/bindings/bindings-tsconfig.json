@@ -50,6 +50,7 @@
     "../../../../../../front_end/models/bindings/ResourceUtils.ts",
     "../../../../../../front_end/models/bindings/SASSSourceMapping.ts",
     "../../../../../../front_end/models/bindings/StylesSourceMapping.ts",
+    "../../../../../../front_end/models/bindings/SymbolizedError.ts",
     "../../../../../../front_end/models/bindings/TempFile.ts",
     "../../../../../../front_end/legacy/legacy-defs.d.ts",
     "../../../../../../front_end/global_typings/global_defs.d.ts",

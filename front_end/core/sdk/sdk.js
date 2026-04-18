@@ -531,6 +531,7 @@ var generatedProperties = [
       "flex-basis",
       "flex-direction",
       "flex-grow",
+      "flex-line-count",
       "flex-shrink",
       "flex-wrap",
       "float",
@@ -2368,6 +2369,9 @@ var generatedProperties = [
   },
   {
     "name": "flex-grow"
+  },
+  {
+    "name": "flex-line-count"
   },
   {
     "name": "flex-shrink"

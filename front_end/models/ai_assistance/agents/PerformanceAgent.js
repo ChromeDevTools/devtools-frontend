@@ -371,6 +371,7 @@ export class PerformanceAgent extends AiAgent {
      */
     #hasShownWidgetForInsightSet = new WeakSet();
     #hasShownWidgetForCallTree = new WeakSet();
+    #hasShownWidgetForInsight = new WeakSet();
     get preamble() {
         return buildPreamble();
     }
@@ -402,46 +403,8 @@ export class PerformanceAgent extends AiAgent {
             contextDisclosure.push(fact.text);
         }
         contextDisclosure.push(...this.#additionalSelectionsForQuery);
-        const widgets = [];
         const focus = context.getItem();
-        // If the user has selected a specific task (call tree) as context, show the summary and bottom-up tree for it.
-        // Otherwise, show the high-level Core Web Vitals widget for the trace or insight.
-        if (focus.callTree && !this.#hasShownWidgetForCallTree.has(focus.callTree)) {
-            const event = focus.callTree.selectedNode?.event;
-            if (event) {
-                const { startTime, endTime } = Trace.Helpers.Timing.eventTimingsMicroSeconds(event);
-                const bounds = Trace.Helpers.Timing.traceWindowFromMicroSeconds(startTime, endTime);
-                widgets.push({
-                    name: 'TIMELINE_RANGE_SUMMARY',
-                    data: {
-                        bounds,
-                        parsedTrace: focus.parsedTrace,
-                        track: 'main',
-                    },
-                });
-                widgets.push({
-                    name: 'BOTTOM_UP_TREE',
-                    data: {
-                        bounds,
-                        parsedTrace: focus.parsedTrace,
-                    },
-                });
-                this.#hasShownWidgetForCallTree.add(focus.callTree);
-            }
-        }
-        else {
-            const primaryInsightSet = focus.primaryInsightSet;
-            if (primaryInsightSet && !this.#hasShownWidgetForInsightSet.has(primaryInsightSet)) {
-                widgets.push({
-                    name: 'CORE_VITALS',
-                    data: {
-                        parsedTrace: focus.parsedTrace,
-                        insightSetKey: primaryInsightSet.id,
-                    },
-                });
-                this.#hasShownWidgetForInsightSet.add(primaryInsightSet);
-            }
-        }
+        const widgets = this.#getWidgetsForFocus(focus);
         yield {
             type: "context" /* ResponseType.CONTEXT */,
             details: [
@@ -452,6 +415,65 @@ export class PerformanceAgent extends AiAgent {
             ],
             widgets,
         };
+    }
+    // Show different widgets with the first reply depending on the initial context:
+    // Specific task (call tree) -> timeline summary & bottom up tree widgets
+    // LCP Insight -> LCP breakdown & CWV widgets
+    // Whole Trace or insight other than LCP -> CWV widget
+    #getWidgetsForFocus(focus) {
+        const widgets = [];
+        // Case 1: Specific task (call tree) -> timeline summary & bottom up tree widgets
+        if (focus.callTree) {
+            if (!this.#hasShownWidgetForCallTree.has(focus.callTree)) {
+                const event = focus.callTree.selectedNode?.event;
+                if (event) {
+                    const { startTime, endTime } = Trace.Helpers.Timing.eventTimingsMicroSeconds(event);
+                    const bounds = Trace.Helpers.Timing.traceWindowFromMicroSeconds(startTime, endTime);
+                    widgets.push({
+                        name: 'TIMELINE_RANGE_SUMMARY',
+                        data: {
+                            bounds,
+                            parsedTrace: focus.parsedTrace,
+                            track: 'main',
+                        },
+                    });
+                    widgets.push({
+                        name: 'BOTTOM_UP_TREE',
+                        data: {
+                            bounds,
+                            parsedTrace: focus.parsedTrace,
+                        },
+                    });
+                    this.#hasShownWidgetForCallTree.add(focus.callTree);
+                }
+            }
+            return widgets;
+        }
+        // Case 2: LCP Insight -> LCP breakdown & CWV widgets
+        if (focus.insight && Trace.Insights.Models.LCPBreakdown.isLCPBreakdownInsight(focus.insight) &&
+            !this.#hasShownWidgetForInsight.has(focus.insight)) {
+            widgets.push({
+                name: 'PERF_INSIGHT',
+                data: {
+                    insight: 'lcp',
+                    insightData: focus.insight,
+                },
+            });
+            this.#hasShownWidgetForInsight.add(focus.insight);
+        }
+        // Case 3: Whole Trace or insight other than LCP -> CWV widget
+        const primaryInsightSet = focus.primaryInsightSet;
+        if (primaryInsightSet && !this.#hasShownWidgetForInsightSet.has(primaryInsightSet)) {
+            widgets.push({
+                name: 'CORE_VITALS',
+                data: {
+                    parsedTrace: focus.parsedTrace,
+                    insightSetKey: primaryInsightSet.id,
+                },
+            });
+            this.#hasShownWidgetForInsightSet.add(primaryInsightSet);
+        }
+        return widgets;
     }
     #callTreeContextSet = new WeakSet();
     #isFunctionResponseTooLarge(response) {
@@ -819,9 +841,10 @@ export class PerformanceAgent extends AiAgent {
                     }
                     if (params.insightName === 'LCPBreakdown') {
                         widgets.push({
-                            name: 'LCP_BREAKDOWN',
+                            name: 'PERF_INSIGHT',
                             data: {
-                                lcpData: insight,
+                                insight: 'lcp',
+                                insightData: insight,
                             },
                         });
                     }
@@ -1029,13 +1052,23 @@ export class PerformanceAgent extends AiAgent {
                 this.#cacheFunctionResult(focus, key, callTree);
                 const { startTime, endTime } = Trace.Helpers.Timing.eventTimingsMicroSeconds(event);
                 const bounds = Trace.Helpers.Timing.traceWindowFromMicroSeconds(startTime, endTime);
-                const widgets = [{
+                const widgets = [
+                    {
                         name: 'BOTTOM_UP_TREE',
                         data: {
                             bounds,
                             parsedTrace,
                         },
-                    }];
+                    },
+                    {
+                        name: 'TIMELINE_RANGE_SUMMARY',
+                        data: {
+                            bounds,
+                            parsedTrace,
+                            track: 'main',
+                        },
+                    },
+                ];
                 return { result: { callTree }, widgets };
             },
         });

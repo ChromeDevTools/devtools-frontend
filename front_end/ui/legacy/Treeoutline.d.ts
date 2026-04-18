@@ -304,6 +304,15 @@ export declare namespace TreeViewElement {
             expanded: boolean;
         });
     }
+    /**
+     * @deprecated
+     */
+    class TreeElementExpandEvent extends CustomEvent<{
+        treeElement: TreeElement;
+        expanded: boolean;
+    }> {
+        constructor(treeElement: TreeElement, expanded: boolean);
+    }
 }
 declare class IfExpandedDirective extends Lit.Directive.Directive {
     #private;

@@ -1124,7 +1124,11 @@ export declare namespace Audits {
         AutofillAndManualTextPolicyControlledFeaturesInfo = "AutofillAndManualTextPolicyControlledFeaturesInfo",
         AutofillPolicyControlledFeatureInfo = "AutofillPolicyControlledFeatureInfo",
         ManualTextPolicyControlledFeatureInfo = "ManualTextPolicyControlledFeatureInfo",
-        FormModelContextParameterMissingTitleAndDescription = "FormModelContextParameterMissingTitleAndDescription"
+        FormModelContextParameterMissingTitleAndDescription = "FormModelContextParameterMissingTitleAndDescription",
+        FormModelContextMissingToolName = "FormModelContextMissingToolName",
+        FormModelContextMissingToolDescription = "FormModelContextMissingToolDescription",
+        FormModelContextRequiredParameterMissingName = "FormModelContextRequiredParameterMissingName",
+        FormModelContextParameterMissingName = "FormModelContextParameterMissingName"
     }
     /**
      * Depending on the concrete errorType, different properties are set.
@@ -18860,6 +18864,12 @@ export declare namespace WebMCP {
     interface InvokeToolResponse extends ProtocolResponseWithError {
         /**
          * Unique identifier for this invocation. Response is sent before tool events.
+         */
+        invocationId: string;
+    }
+    interface CancelInvocationRequest {
+        /**
+         * Invocation identifier to cancel.
          */
         invocationId: string;
     }

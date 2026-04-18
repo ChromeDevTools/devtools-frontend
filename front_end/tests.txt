@@ -189,6 +189,7 @@ models/bindings/PresentationConsoleMessageHelper.test.js
 models/bindings/ResourceMapping.test.js
 models/bindings/ResourceScriptMapping.test.js
 models/bindings/ResourceUtils.test.js
+models/bindings/SymbolizedError.test.js
 models/breakpoints/BreakpointManager.test.js
 models/computed_style/ComputedStyleModel.test.js
 models/cpu_profile/CPUProfileDataModel.test.js

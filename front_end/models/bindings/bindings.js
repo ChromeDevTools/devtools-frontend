@@ -3684,6 +3684,22 @@ var ResourceScriptFile = class extends Common12.ObjectWrapper.ObjectWrapper {
   }
 };
 
+// gen/front_end/models/bindings/SymbolizedError.js
+var SymbolizedError_exports = {};
+__export(SymbolizedError_exports, {
+  SymbolizedError: () => SymbolizedError
+});
+var SymbolizedError = class {
+  remoteError;
+  stackTrace;
+  cause;
+  constructor(remoteError, stackTrace, cause) {
+    this.remoteError = remoteError;
+    this.stackTrace = stackTrace;
+    this.cause = cause;
+  }
+};
+
 // gen/front_end/models/bindings/DebuggerWorkspaceBinding.js
 var DebuggerWorkspaceBinding = class _DebuggerWorkspaceBinding {
   resourceMapping;
@@ -3821,6 +3837,21 @@ var DebuggerWorkspaceBinding = class _DebuggerWorkspaceBinding {
     const stackTracePromise = model.createFromErrorStackLikeString(stack, this.#translateRawFrames.bind(this), exceptionDetails);
     this.recordLiveLocationChange(stackTracePromise);
     return await stackTracePromise;
+  }
+  async createSymbolizedError(remoteObject) {
+    if (remoteObject.subtype !== "error") {
+      return null;
+    }
+    const remoteError = SDK11.RemoteObject.RemoteError.objectAsError(remoteObject);
+    const [exceptionDetails, causeRemoteObject] = await Promise.all([
+      remoteError.exceptionDetails(),
+      remoteError.cause()
+    ]);
+    const [stackTrace, cause] = await Promise.all([
+      this.createStackTraceFromErrorStackLikeString(remoteObject.runtimeModel().target(), remoteError.errorStack, exceptionDetails),
+      causeRemoteObject ? this.createSymbolizedError(causeRemoteObject) : Promise.resolve(null)
+    ]);
+    return new SymbolizedError(remoteError, stackTrace, cause);
   }
   async createLiveLocation(rawLocation, updateDelegate, locationPool) {
     const modelData = this.#debuggerModelToData.get(rawLocation.debuggerModel);
@@ -5261,6 +5292,7 @@ export {
   ResourceUtils_exports as ResourceUtils,
   SASSSourceMapping_exports as SASSSourceMapping,
   StylesSourceMapping_exports as StylesSourceMapping,
+  SymbolizedError_exports as SymbolizedError,
   TempFile_exports as TempFile
 };
 //# sourceMappingURL=bindings.js.map

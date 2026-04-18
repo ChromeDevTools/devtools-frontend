@@ -1663,6 +1663,7 @@ export const knownContextValues = new Set([
     'flex-distribute',
     'flex-flow',
     'flex-grow',
+    'flex-line-count',
     'flex-shrink',
     'flex-what',
     'flex-wrap',

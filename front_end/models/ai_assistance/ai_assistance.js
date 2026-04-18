@@ -6941,6 +6941,7 @@ var PerformanceAgent = class extends AiAgent {
    */
   #hasShownWidgetForInsightSet = /* @__PURE__ */ new WeakSet();
   #hasShownWidgetForCallTree = /* @__PURE__ */ new WeakSet();
+  #hasShownWidgetForInsight = /* @__PURE__ */ new WeakSet();
   get preamble() {
     return buildPreamble();
   }
@@ -6970,43 +6971,8 @@ var PerformanceAgent = class extends AiAgent {
       contextDisclosure.push(fact.text);
     }
     contextDisclosure.push(...this.#additionalSelectionsForQuery);
-    const widgets = [];
     const focus = context.getItem();
-    if (focus.callTree && !this.#hasShownWidgetForCallTree.has(focus.callTree)) {
-      const event = focus.callTree.selectedNode?.event;
-      if (event) {
-        const { startTime, endTime } = Trace6.Helpers.Timing.eventTimingsMicroSeconds(event);
-        const bounds = Trace6.Helpers.Timing.traceWindowFromMicroSeconds(startTime, endTime);
-        widgets.push({
-          name: "TIMELINE_RANGE_SUMMARY",
-          data: {
-            bounds,
-            parsedTrace: focus.parsedTrace,
-            track: "main"
-          }
-        });
-        widgets.push({
-          name: "BOTTOM_UP_TREE",
-          data: {
-            bounds,
-            parsedTrace: focus.parsedTrace
-          }
-        });
-        this.#hasShownWidgetForCallTree.add(focus.callTree);
-      }
-    } else {
-      const primaryInsightSet = focus.primaryInsightSet;
-      if (primaryInsightSet && !this.#hasShownWidgetForInsightSet.has(primaryInsightSet)) {
-        widgets.push({
-          name: "CORE_VITALS",
-          data: {
-            parsedTrace: focus.parsedTrace,
-            insightSetKey: primaryInsightSet.id
-          }
-        });
-        this.#hasShownWidgetForInsightSet.add(primaryInsightSet);
-      }
-    }
+    const widgets = this.#getWidgetsForFocus(focus);
     yield {
       type: "context",
       details: [
@@ -7017,6 +6983,61 @@ var PerformanceAgent = class extends AiAgent {
       ],
       widgets
     };
+  }
+  // Show different widgets with the first reply depending on the initial context:
+  // Specific task (call tree) -> timeline summary & bottom up tree widgets
+  // LCP Insight -> LCP breakdown & CWV widgets
+  // Whole Trace or insight other than LCP -> CWV widget
+  #getWidgetsForFocus(focus) {
+    const widgets = [];
+    if (focus.callTree) {
+      if (!this.#hasShownWidgetForCallTree.has(focus.callTree)) {
+        const event = focus.callTree.selectedNode?.event;
+        if (event) {
+          const { startTime, endTime } = Trace6.Helpers.Timing.eventTimingsMicroSeconds(event);
+          const bounds = Trace6.Helpers.Timing.traceWindowFromMicroSeconds(startTime, endTime);
+          widgets.push({
+            name: "TIMELINE_RANGE_SUMMARY",
+            data: {
+              bounds,
+              parsedTrace: focus.parsedTrace,
+              track: "main"
+            }
+          });
+          widgets.push({
+            name: "BOTTOM_UP_TREE",
+            data: {
+              bounds,
+              parsedTrace: focus.parsedTrace
+            }
+          });
+          this.#hasShownWidgetForCallTree.add(focus.callTree);
+        }
+      }
+      return widgets;
+    }
+    if (focus.insight && Trace6.Insights.Models.LCPBreakdown.isLCPBreakdownInsight(focus.insight) && !this.#hasShownWidgetForInsight.has(focus.insight)) {
+      widgets.push({
+        name: "PERF_INSIGHT",
+        data: {
+          insight: "lcp",
+          insightData: focus.insight
+        }
+      });
+      this.#hasShownWidgetForInsight.add(focus.insight);
+    }
+    const primaryInsightSet = focus.primaryInsightSet;
+    if (primaryInsightSet && !this.#hasShownWidgetForInsightSet.has(primaryInsightSet)) {
+      widgets.push({
+        name: "CORE_VITALS",
+        data: {
+          parsedTrace: focus.parsedTrace,
+          insightSetKey: primaryInsightSet.id
+        }
+      });
+      this.#hasShownWidgetForInsightSet.add(primaryInsightSet);
+    }
+    return widgets;
   }
   #callTreeContextSet = /* @__PURE__ */ new WeakSet();
   #isFunctionResponseTooLarge(response) {
@@ -7369,9 +7390,10 @@ ${result}`,
           }
           if (params.insightName === "LCPBreakdown") {
             widgets.push({
-              name: "LCP_BREAKDOWN",
+              name: "PERF_INSIGHT",
               data: {
-                lcpData: insight
+                insight: "lcp",
+                insightData: insight
               }
             });
           }
@@ -7578,13 +7600,23 @@ ${result}`,
         this.#cacheFunctionResult(focus, key, callTree);
         const { startTime, endTime } = Trace6.Helpers.Timing.eventTimingsMicroSeconds(event);
         const bounds = Trace6.Helpers.Timing.traceWindowFromMicroSeconds(startTime, endTime);
-        const widgets = [{
-          name: "BOTTOM_UP_TREE",
-          data: {
-            bounds,
-            parsedTrace
+        const widgets = [
+          {
+            name: "BOTTOM_UP_TREE",
+            data: {
+              bounds,
+              parsedTrace
+            }
+          },
+          {
+            name: "TIMELINE_RANGE_SUMMARY",
+            data: {
+              bounds,
+              parsedTrace,
+              track: "main"
+            }
           }
-        }];
+        ];
         return { result: { callTree }, widgets };
       }
     });

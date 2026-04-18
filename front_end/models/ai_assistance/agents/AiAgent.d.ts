@@ -189,10 +189,11 @@ export interface PerformanceTraceAiWidget {
         parsedTrace: Trace.TraceModel.ParsedTrace;
     };
 }
-export interface LcpBreakdownAiWidget {
-    name: 'LCP_BREAKDOWN';
+export interface PerfInsightAiWidget {
+    name: 'PERF_INSIGHT';
     data: {
-        lcpData: Trace.Insights.Models.LCPBreakdown.LCPBreakdownInsightModel;
+        insight: 'lcp';
+        insightData: Trace.Insights.Types.InsightModel;
     };
 }
 export interface TimelineRangeSummaryAiWidget {
@@ -210,7 +211,7 @@ export interface BottomUpTreeAiWidget {
         parsedTrace: Trace.TraceModel.ParsedTrace;
     };
 }
-export type AiWidget = ComputedStyleAiWidget | CoreVitalsAiWidget | StylePropertiesAiWidget | DomTreeAiWidget | PerformanceTraceAiWidget | LcpBreakdownAiWidget | TimelineRangeSummaryAiWidget | BottomUpTreeAiWidget;
+export type AiWidget = ComputedStyleAiWidget | CoreVitalsAiWidget | StylePropertiesAiWidget | DomTreeAiWidget | PerformanceTraceAiWidget | PerfInsightAiWidget | TimelineRangeSummaryAiWidget | BottomUpTreeAiWidget;
 export type FunctionCallHandlerResult<Result> = {
     requiresApproval: true;
     /**

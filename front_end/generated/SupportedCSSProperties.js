@@ -468,6 +468,7 @@ export const generatedProperties = [
             "flex-basis",
             "flex-direction",
             "flex-grow",
+            "flex-line-count",
             "flex-shrink",
             "flex-wrap",
             "float",
@@ -2305,6 +2306,9 @@ export const generatedProperties = [
     },
     {
         "name": "flex-grow"
+    },
+    {
+        "name": "flex-line-count"
     },
     {
         "name": "flex-shrink"

@@ -14,6 +14,7 @@ import { DefaultScriptMapping } from './DefaultScriptMapping.js';
 import { LiveLocationWithPool } from './LiveLocation.js';
 import { NetworkProject } from './NetworkProject.js';
 import { ResourceScriptMapping } from './ResourceScriptMapping.js';
+import { SymbolizedError } from './SymbolizedError.js';
 export class DebuggerWorkspaceBinding {
     resourceMapping;
     #debuggerModelToData;
@@ -156,6 +157,21 @@ export class DebuggerWorkspaceBinding {
         const stackTracePromise = model.createFromErrorStackLikeString(stack, this.#translateRawFrames.bind(this), exceptionDetails);
         this.recordLiveLocationChange(stackTracePromise);
         return await stackTracePromise;
+    }
+    async createSymbolizedError(remoteObject) {
+        if (remoteObject.subtype !== 'error') {
+            return null;
+        }
+        const remoteError = SDK.RemoteObject.RemoteError.objectAsError(remoteObject);
+        const [exceptionDetails, causeRemoteObject] = await Promise.all([
+            remoteError.exceptionDetails(),
+            remoteError.cause(),
+        ]);
+        const [stackTrace, cause] = await Promise.all([
+            this.createStackTraceFromErrorStackLikeString(remoteObject.runtimeModel().target(), remoteError.errorStack, exceptionDetails),
+            causeRemoteObject ? this.createSymbolizedError(causeRemoteObject) : Promise.resolve(null),
+        ]);
+        return new SymbolizedError(remoteError, stackTrace, cause);
     }
     async createLiveLocation(rawLocation, updateDelegate, locationPool) {
         const modelData = this.#debuggerModelToData.get(rawLocation.debuggerModel);

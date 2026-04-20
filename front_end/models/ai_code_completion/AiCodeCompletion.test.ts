@@ -160,4 +160,49 @@ describeWithEnvironment('AiCodeCompletion', () => {
 
     sinon.assert.calledTwice(mockAidaClient.completeCode);
   });
+
+  it('does not call AIDA if combined length is less than 5', async () => {
+    const mockAidaClient = sinon.createStubInstance(Host.AidaClient.AidaClient);
+    const aiCodeCompletion = new AiCodeCompletion.AiCodeCompletion.AiCodeCompletion(
+        {aidaClient: mockAidaClient, serverSideLoggingEnabled: false},
+        AiCodeCompletion.AiCodeCompletion.ContextFlavor.CONSOLE,
+        createCallbacks(sinon.createStubInstance(TextEditor.TextEditor.TextEditor)),
+    );
+
+    const response = await aiCodeCompletion.completeCode('ab', 'cd', DEFAULT_CURSOR_POSITION);
+
+    sinon.assert.notCalled(mockAidaClient.completeCode);
+    assert.deepEqual(response, {response: null, fromCache: false});
+  });
+
+  it('delays subsequent requests after an empty response if change is small', async () => {
+    const mockAidaClient = sinon.createStubInstance(Host.AidaClient.AidaClient);
+    mockAidaClient.completeCode.onFirstCall().resolves({generatedSamples: [], metadata: {}});
+    const nonEmptyResponse = {
+      generatedSamples: [{
+        generationString: 'suggestion',
+        sampleId: 1,
+        score: 1,
+      }],
+      metadata: {}
+    };
+    mockAidaClient.completeCode.onSecondCall().resolves(nonEmptyResponse);
+
+    const aiCodeCompletion = new AiCodeCompletion.AiCodeCompletion.AiCodeCompletion(
+        {aidaClient: mockAidaClient, serverSideLoggingEnabled: false},
+        AiCodeCompletion.AiCodeCompletion.ContextFlavor.CONSOLE,
+        createCallbacks(sinon.createStubInstance(TextEditor.TextEditor.TextEditor)),
+    );
+
+    await aiCodeCompletion.completeCode('prefix', 'suffix', DEFAULT_CURSOR_POSITION);
+    sinon.assert.calledOnce(mockAidaClient.completeCode);
+
+    let response = await aiCodeCompletion.completeCode('prefix1', 'suffix', DEFAULT_CURSOR_POSITION);
+    sinon.assert.calledOnce(mockAidaClient.completeCode);
+    assert.deepEqual(response, {response: null, fromCache: false});
+
+    response = await aiCodeCompletion.completeCode('prefix123', 'suffix', DEFAULT_CURSOR_POSITION);
+    sinon.assert.calledTwice(mockAidaClient.completeCode);
+    assert.deepEqual(response, {response: nonEmptyResponse, fromCache: false});
+  });
 });

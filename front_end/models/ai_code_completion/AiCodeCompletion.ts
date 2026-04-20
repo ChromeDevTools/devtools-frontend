@@ -134,6 +134,9 @@ const console = {
 };`;
 /* clang-format on */
 
+const MIN_CHARACTER_THRESHOLD = 5;
+const EMPTY_RESPONSE_DIFF_THRESHOLD = 3;
+
 /**
  * The AiCodeCompletion class is responsible for fetching code completion suggestions
  * from the AIDA backend.
@@ -142,6 +145,7 @@ export class AiCodeCompletion {
   #stopSequences: string[];
   #renderingTimeout?: number;
   #aidaRequestCache?: CachedRequest;
+  #lastEmptyResponseText?: string;
   // TODO(b/445394511): Remove panel from the class
   #panel: ContextFlavor;
   #callbacks?: Callbacks;
@@ -316,13 +320,27 @@ export class AiCodeCompletion {
     response: Host.AidaClient.CompletionResponse | null,
     fromCache: boolean,
   }> {
+    const combinedText = prefix + suffix;
+    if (combinedText.length < MIN_CHARACTER_THRESHOLD) {
+      return {response: null, fromCache: false};
+    }
+    if (this.#lastEmptyResponseText) {
+      if (Math.abs(combinedText.length - this.#lastEmptyResponseText.length) < EMPTY_RESPONSE_DIFF_THRESHOLD) {
+        return {response: null, fromCache: false};
+      }
+    }
+
     const request = this.#buildRequest(prefix, suffix, inferenceLanguage, additionalFiles);
     const {response, fromCache} = await this.#completeCodeCached(request);
 
     debugLog('At cursor position', cursorPositionAtRequest, {request, response, fromCache});
-    if (!response) {
+    if (!response || response.generatedSamples.length === 0) {
+      this.#lastEmptyResponseText = combinedText;
       return {response: null, fromCache: false};
     }
+
+    // Clear on successful response
+    this.#lastEmptyResponseText = undefined;
 
     return {response, fromCache};
   }

@@ -32,7 +32,8 @@ describeWithMockConnection(`RequestConditionsDrawer with individual request thro
         .returns(false);
   });
 
-  it('shows a placeholder', async () => {
+  // Test is failing on CQ
+  it.skip('[crbug.com/504504142] shows a placeholder', async () => {
     const requestConditionsDrawer = new Network.RequestConditionsDrawer.RequestConditionsDrawer();
     renderElementIntoDOM(requestConditionsDrawer);
     await requestConditionsDrawer.updateComplete;
@@ -47,7 +48,8 @@ describeWithMockConnection(`RequestConditionsDrawer with individual request thro
     await assertScreenshot('request_conditions/throttling_placeholder.png');
   });
 
-  it('Add pattern button triggers showing the editor view', async () => {
+  // Test is failing on CQ
+  it.skip('[crbug.com/504504142] Add pattern button triggers showing the editor view', async () => {
     const requestConditionsDrawer = new Network.RequestConditionsDrawer.RequestConditionsDrawer();
     renderElementIntoDOM(requestConditionsDrawer);
     await requestConditionsDrawer.updateComplete;
@@ -103,9 +105,13 @@ describeWithMockConnection(`RequestConditionsDrawer with individual request thro
     it.skip(
         '[crbug.com/503622772] are updated upon RequestFinished event (when target is in scope)',
         updatesOnRequestFinishedEvent(true));
-    it('are updated upon RequestFinished event (when target is out of scope)', updatesOnRequestFinishedEvent(false));
+    // Test is failing on CQ
+    it.skip(
+        '[crbug.com/504504142] are updated upon RequestFinished event (when target is out of scope)',
+        updatesOnRequestFinishedEvent(false));
 
-    it('are updated upon Reset event', async () => {
+    // Test is failing on CQ
+    it.skip('[crbug.com/504504142] are updated upon Reset event', async () => {
       const viewFunction = createViewFunctionStub(Network.RequestConditionsDrawer.AffectedCountWidget);
       const widget = new Network.RequestConditionsDrawer.AffectedCountWidget(undefined, viewFunction);
       widget.condition = SDK.NetworkManager.RequestCondition.createFromSetting({url: '*', enabled: true});

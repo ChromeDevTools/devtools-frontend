@@ -576,8 +576,8 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
                 displayCommandInput: false,
                 ...getJSONEditorParameters(input.selectedTool),
                 commandToDisplay: input.selectedTool.name,
-                onSubmit: input.onRunTool,
               })}
+              @submiteditor=${(e: CustomEvent<ProtocolMonitor.JSONEditor.Command>) => input.onRunTool({data: e.detail})}
             ></devtools-widget>
           ` : nothing}
         </div>

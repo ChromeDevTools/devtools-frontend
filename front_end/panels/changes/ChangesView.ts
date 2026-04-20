@@ -12,7 +12,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import {ChangesSidebar, Events} from './ChangesSidebar.js';
+import {ChangesSidebar} from './ChangesSidebar.js';
 import changesViewStyles from './changesView.css.js';
 import * as CombinedDiffView from './CombinedDiffView.js';
 
@@ -41,11 +41,6 @@ interface ViewInput {
 }
 type View = (input: ViewInput, output: object, target: HTMLElement) => void;
 export const DEFAULT_VIEW: View = (input, _output, target) => {
-  const onSidebar = (sidebar: ChangesSidebar): void => {
-    sidebar.addEventListener(
-        Events.SELECTED_UI_SOURCE_CODE_CHANGED, () => input.onSelect(sidebar.selectedUISourceCode()));
-  };
-
   render(
       // clang-format off
       html`
@@ -68,7 +63,10 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
           </div>
         </div>
         <devtools-widget slot="sidebar" ${widget(ChangesSidebar, {workspaceDiff: input.workspaceDiff})}
-          ${UI.Widget.widgetRef(ChangesSidebar, onSidebar)}>
+          @SelectedUISourceCodeChanged=${(e: Event) => {
+            const sidebar = UI.Widget.Widget.get(e.target as HTMLElement) as ChangesSidebar;
+            input.onSelect(sidebar.selectedUISourceCode());
+          }}>
         </devtools-widget>
       </devtools-split-view>`,
       // clang-format on

@@ -18,7 +18,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import {Directives, html, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import {Events as JSONEditorEvents, JSONEditor, type Parameter} from './JSONEditor.js';
+import {JSONEditor, type Parameter} from './JSONEditor.js';
 import protocolMonitorStyles from './protocolMonitor.css.js';
 
 const {styleMap} = Directives;
@@ -183,6 +183,7 @@ export interface ViewInput {
   onCommandSubmitted: (input: string) => void;
   onTargetChange: (targetId: string) => void;
   onToggleSidebar: () => void;
+  onEditorSubmit: (command: string, parameters: Record<string, unknown>, targetId?: string) => void;
   targets: SDK.Target.Target[];
   selectedTargetId: string;
 }
@@ -350,6 +351,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
           </div>
           <devtools-widget slot="sidebar"
               ${widget(JSONEditor, { metadataByCommand, typesByName, enumsByName})}
+              @submiteditor=${(e: CustomEvent) => input.onEditorSubmit(e.detail.command, e.detail.parameters, e.detail.targetId)}
               ${widgetRef(JSONEditor, e => {output.editorWidget = e;})}>
           </devtools-widget>
         </devtools-split-view>`,
@@ -385,9 +387,6 @@ export class ProtocolMonitorImpl extends UI.Panel.Panel implements SDK.TargetMan
 
     this.#selectedTargetId = 'main';
     this.performUpdate();
-    this.#editorWidget.addEventListener(JSONEditorEvents.SUBMIT_EDITOR, event => {
-      this.onCommandSend(event.data.command, event.data.parameters, event.data.targetId);
-    });
     SDK.TargetManager.TargetManager.instance().addEventListener(
         SDK.TargetManager.Events.AVAILABLE_TARGETS_CHANGED, () => {
           this.requestUpdate();
@@ -470,6 +469,9 @@ export class ProtocolMonitorImpl extends UI.Panel.Panel implements SDK.TargetMan
       onToggleSidebar: () => {
         this.#sidebarVisible = !this.#sidebarVisible;
         this.requestUpdate();
+      },
+      onEditorSubmit: (command: string, parameters: Record<string, unknown>, targetId?: string) => {
+        this.onCommandSend(command, parameters, targetId);
       },
       targets: SDK.TargetManager.TargetManager.instance().targets(),
       selectedTargetId: this.#selectedTargetId,

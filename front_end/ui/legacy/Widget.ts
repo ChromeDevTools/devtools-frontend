@@ -570,6 +570,10 @@ export class Widget<ContentTypeT extends HTMLElement|DocumentFragment = HTMLElem
     this.#contentElement = contentElement;
   }
 
+  dispatchDOMEvent(event: Event): void {
+    this.element.dispatchEvent(event);
+  }
+
   markAsRoot(): void {
     assert(!this.element.parentElement, 'Attempt to mark as root attached node');
     this.#isRoot = true;

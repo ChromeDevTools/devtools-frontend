@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../core/common/common.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import * as Lit from '../../ui/lit/lit.js';
@@ -945,6 +946,33 @@ describeWithEnvironment('Widget', () => {
       // By resetting the container's innerHTML manually here, we prevent the removeChildren() check from failing in teardown.
       container.innerHTML = '';
       container.remove();
+    });
+
+    it('dispatches DOM events through eventMixin', async () => {
+      interface EventTypes {
+        'test-event': string;
+      }
+
+      class EventWidget extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.Widget>(UI.Widget.Widget) {
+        trigger() {
+          this.dispatchEventToListeners('test-event', 'payload');
+        }
+      }
+
+      const container = document.createElement('div');
+      renderElementIntoDOM(container);
+
+      const stub = sinon.stub();
+
+      Lit.render(
+          html`<devtools-widget ${UI.Widget.widget(EventWidget)} @test-event=${stub}></devtools-widget>`, container);
+
+      const widget = (container.firstElementChild as unknown as UI.Widget.WidgetElement<EventWidget>)?.getWidget();
+      assert.isOk(widget);
+
+      widget.trigger();
+      sinon.assert.calledOnce(stub);
+      assert.strictEqual(stub.firstCall.firstArg.detail, 'payload');
     });
   });
 });

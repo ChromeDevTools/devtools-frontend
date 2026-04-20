@@ -106,26 +106,11 @@ export class StorageItemsToolbar extends
   #deleteAllButtonIconName = 'clear';
   #deleteAllButtonTitle: string = i18nString(UIStrings.clearAll);
   #mainToolbarItems: UI.Toolbar.ToolbarItem[] = [];
-  #onRefreshCallback?: () => void;
-  #onDeleteAllCallback?: () => void;
-  #onDeleteSelectedCallback?: () => void;
 
   constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
     super(element);
     this.#view = view;
     this.filterRegex = null;
-  }
-
-  set onRefreshCallback(callback: () => void) {
-    this.#onRefreshCallback = callback;
-  }
-
-  set onDeleteAllCallback(callback: () => void) {
-    this.#onDeleteAllCallback = callback;
-  }
-
-  set onDeleteSelectedCallback(callback: () => void) {
-    this.#onDeleteSelectedCallback = callback;
   }
 
   set metadataView(view: ApplicationComponents.StorageMetadataView.StorageMetadataView) {
@@ -150,16 +135,13 @@ export class StorageItemsToolbar extends
       metadataView: this.metadataView,
       onFilterChanged: this.filterChanged.bind(this),
       onRefresh: () => {
-        this.#onRefreshCallback?.();
         this.dispatchEventToListeners(StorageItemsToolbar.Events.REFRESH);
         UI.ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.refreshedStatus));
       },
       onDeleteAll: () => {
-        this.#onDeleteAllCallback?.();
         this.dispatchEventToListeners(StorageItemsToolbar.Events.DELETE_ALL);
       },
       onDeleteSelected: () => {
-        this.#onDeleteSelectedCallback?.();
         this.dispatchEventToListeners(StorageItemsToolbar.Events.DELETE_SELECTED);
       },
     };
@@ -187,7 +169,6 @@ export class StorageItemsToolbar extends
 
   filterChanged({detail: text}: CustomEvent<string|null>): void {
     this.filterRegex = text ? new RegExp(Platform.StringUtilities.escapeForRegExp(text), 'i') : null;
-    this.#onRefreshCallback?.();
     this.dispatchEventToListeners(StorageItemsToolbar.Events.REFRESH);
   }
 

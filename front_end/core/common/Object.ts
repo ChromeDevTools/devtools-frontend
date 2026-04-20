@@ -115,9 +115,14 @@ export class ObjectWrapper<Events> implements EventTarget<Events> {
   }
 }
 
+export type EventMixinBase = {
+  dispatchDOMEvent ? (event: Event) : void,
+}&object;
+
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function eventMixin<Events, Base extends Platform.Constructor.Constructor<object>>(base: Base) {
-  console.assert(base !== HTMLElement);
+export function eventMixin<Events, Base extends Platform.Constructor.Constructor<EventMixinBase>>(base: Base) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  console.assert(base as any !== HTMLElement);
   return class EventHandling extends base implements EventTarget<Events> {
     // Note that the weird name is due to TSC disallowing private/protected fields in
     // anonmous exported classes. We use a `__` prefix to prevent clashes with `base`.
@@ -147,6 +152,10 @@ export function eventMixin<Events, Base extends Platform.Constructor.Constructor
         eventType: Platform.TypeScriptUtilities.NoUnion<T>,
         ...eventData: EventPayloadToRestParameters<Events, T>): void {
       this.__events.dispatchEventToListeners(eventType, ...eventData);
+
+      if (typeof this.dispatchDOMEvent === 'function') {
+        this.dispatchDOMEvent(new CustomEvent(eventType as string, {detail: eventData[0]}));
+      }
     }
   };
 }

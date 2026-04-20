@@ -260,6 +260,11 @@ describeWithMockConnection('SharedStorageItemsView', function() {
     const toolbar = new Resources.StorageItemsToolbar.StorageItemsToolbar();
     const viewFunction = createViewFunctionStub(View.SharedStorageItemsView, {toolbar});
     const view = await View.SharedStorageItemsView.createView(sharedStorage, viewFunction);
+
+    toolbar.element.addEventListener('Refresh', () => viewFunction.input.onRefresh());
+    toolbar.element.addEventListener('DeleteAll', () => viewFunction.input.onDeleteAll());
+    toolbar.element.addEventListener('DeleteSelected', () => viewFunction.input.onDeleteSelected());
+
     const itemsListener = new SharedStorageItemsListener(view.sharedStorageItemsDispatcher);
     await RenderCoordinator.done({waitForWork: true});
     return {view, itemsListener, viewFunction, toolbar};

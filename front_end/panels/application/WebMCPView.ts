@@ -167,6 +167,10 @@ const UIStrings = {
    * @description Context menu action to copy the description of a tool
    */
   copyDescription: 'Copy description',
+  /**
+   * @description Text for the header of the tool run section
+   */
+  runTool: 'Run Tool',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/application/WebMCPView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -205,6 +209,7 @@ export interface ViewInput {
   onClearLogClick: () => void;
   onFilterChange: (filters: FilterState) => void;
   toolCalls: WebMCP.WebMCPModel.Call[];
+  onRunTool: (event: Common.EventTarget.EventTargetEvent<ProtocolMonitor.JSONEditor.Command>) => void;
 }
 
 export function filterToolCalls(
@@ -330,6 +335,28 @@ export function parsePayload(payload?: unknown): {
   return {valueObject: payload, valueString: undefined};
 }
 
+export function getJSONEditorParameters(tool: WebMCP.WebMCPModel.Tool): {
+  metadataByCommand: Map<string, {
+    parameters: ProtocolMonitor.JSONEditor.Parameter[],
+    description: string,
+    replyArgs: string[],
+  }>,
+  typesByName: Map<string, ProtocolMonitor.JSONEditor.Parameter[]>,
+  enumsByName: Map<string, Record<string, string>>,
+} {
+  const parsedSchema = parseToolSchema(tool.inputSchema);
+  const metadataByCommand = new Map();
+  metadataByCommand.set(tool.name, {
+    parameters: parsedSchema.parameters,
+    description: tool.description,
+    replyArgs: [],
+  });
+  return {
+    metadataByCommand,
+    typesByName: parsedSchema.typesByName,
+    enumsByName: parsedSchema.enumsByName,
+  };
+}
 export const DEFAULT_VIEW: View = (input, output, target) => {
   const tools = input.tools;
   const stats = calculateToolStats(input.toolCalls);
@@ -535,7 +562,24 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
             ></devtools-button>
             <span>${i18nString(UIStrings.toolDetails)}</span>
           </div>
+          ${input.selectedTool ? html`
+            <div class="sidebar-tool-details">
           ${widget(ToolDetailsWidget, {tool: input.selectedTool})}
+        </div>
+            <div class="section-title">
+              <span>${i18nString(UIStrings.runTool)}</span>
+            </div>
+            <devtools-widget
+              class="json-editor-widget"
+              ${widget(ProtocolMonitor.JSONEditor.JSONEditor, {
+                displayTargetSelector: false,
+                displayCommandInput: false,
+                ...getJSONEditorParameters(input.selectedTool),
+                commandToDisplay: input.selectedTool.name,
+                onSubmit: input.onRunTool,
+              })}
+            ></devtools-widget>
+          ` : nothing}
         </div>
       </devtools-split-view>
     </devtools-split-view>
@@ -705,6 +749,11 @@ export class WebMCPView extends UI.Widget.VBox {
       filterButtons: this.#filterButtons,
       onClearLogClick: this.#handleClearLogClick,
       onFilterChange: this.#handleFilterChange,
+      onRunTool: event => {
+        if (this.#selectedTool) {
+          void this.#selectedTool.invoke(event.data.parameters || {});
+        }
+      },
     };
     this.#view(input, {}, this.contentElement);
   }

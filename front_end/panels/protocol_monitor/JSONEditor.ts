@@ -186,6 +186,7 @@ export class JSONEditor extends Common.ObjectWrapper.eventMixin<EventTypes, type
   #targetId?: string;
   #hintPopoverHelper?: UI.PopoverHelper.PopoverHelper;
   #view: View;
+  #onSubmit?: (e: Common.EventTarget.EventTargetEvent<Command>) => unknown;
   displayTargetSelector = true;
   displayCommandInput = true;
 
@@ -193,6 +194,21 @@ export class JSONEditor extends Common.ObjectWrapper.eventMixin<EventTypes, type
     super(element, {useShadowDom: true});
     this.#view = view;
     this.registerRequiredCSS(editorWidgetStyles);
+  }
+
+  get onSubmit(): ((e: Common.EventTarget.EventTargetEvent<Command>) => unknown)|undefined {
+    return this.#onSubmit;
+  }
+
+  set onSubmit(val: ((e: Common.EventTarget.EventTargetEvent<Command>) => unknown)|undefined) {
+    if (this.#onSubmit) {
+      this.removeEventListener(Events.SUBMIT_EDITOR, this.#onSubmit);
+    }
+    this.#onSubmit = val;
+    if (this.#onSubmit) {
+      this.addEventListener(Events.SUBMIT_EDITOR, this.#onSubmit);
+    }
+    this.requestUpdate();
   }
 
   get metadataByCommand(): Map<string, {parameters: Parameter[], description: string, replyArgs: string[]}> {

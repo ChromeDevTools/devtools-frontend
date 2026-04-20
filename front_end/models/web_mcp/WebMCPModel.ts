@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type {JSONSchema7} from 'json-schema';
+
 import type * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
@@ -115,6 +117,18 @@ export class Tool {
     return this.#protocolTool.description;
   }
 
+  get inputSchema(): JSONSchema7 {
+    let rawSchema = this.#protocolTool.inputSchema;
+    if (typeof rawSchema === 'string') {
+      try {
+        rawSchema = JSON.parse(rawSchema);
+      } catch {
+        rawSchema = {};
+      }
+    }
+    return (typeof rawSchema === 'object' && rawSchema !== null) ? rawSchema as JSONSchema7 : {};
+  }
+
   get frame(): SDK.ResourceTreeModel.ResourceTreeFrame|undefined {
     return this.#target.deref()
                ?.model(SDK.ResourceTreeModel.ResourceTreeModel)
@@ -130,6 +144,14 @@ export class Tool {
     const target = this.#target.deref();
     return this.#protocolTool.backendNodeId && target &&
         new SDK.DOMModel.DeferredDOMNode(target, this.#protocolTool.backendNodeId);
+  }
+
+  async invoke(input: unknown): Promise<Protocol.WebMCP.InvokeToolResponse|undefined> {
+    return await this.#target.deref()?.webMCPAgent().invoke_invokeTool({
+      toolName: this.name,
+      frameId: this.#protocolTool.frameId,
+      input,
+    });
   }
 }
 export interface EventTypes {

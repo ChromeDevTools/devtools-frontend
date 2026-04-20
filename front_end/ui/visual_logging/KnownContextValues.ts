@@ -4359,6 +4359,7 @@ export const knownContextValues = new Set([
   'webmcp.pending',
   'webmcp.status-types',
   'webmcp.tool-details',
+  'webmcp.tool-types',
   'webp-format-disabled',
   'webp-format-disabled-true',
   'websocket',

@@ -49,6 +49,7 @@ describeWithEnvironment('WebMCPView (View)', () => {
       onToolSelect: () => {},
       selectedCall: null,
       onCallSelect: () => {},
+      onRunTool: () => {},
     };
   };
 
@@ -186,7 +187,6 @@ describeWithEnvironment('WebMCPView (View)', () => {
     contextMenu.invokeHandler(copyDescItem.id());
     sinon.assert.calledWith(copyTextStub, 'A test tool description');
   });
-
   it('renders a list of tools', async () => {
     updateHostConfig({devToolsWebMCPSupport: {enabled: true}});
     const sdkTarget = createTarget();
@@ -433,6 +433,42 @@ describeWithEnvironment('WebMCPView Presenter', () => {
     viewStub.input.onToolSelect(tool);
     const nextInput = await viewStub.nextInput;
     assert.strictEqual(nextInput.selectedTool, tool);
+  });
+
+  it('invokes tool via onRunTool', async () => {
+    const {model, viewStub} = await setup();
+    const toolProtocol = {
+      name: 'tool1',
+      description: 'desc1',
+      inputSchema: {type: 'object'},
+      frameId: 'frame1' as Protocol.Page.FrameId
+    };
+    model.toolsAdded({tools: [toolProtocol]});
+    const input = await viewStub.nextInput;
+    const tool = input.tools[0];
+
+    viewStub.input.onToolSelect(tool);
+    const nextInput = await viewStub.nextInput;
+
+    const invokeStub = sinon.stub(target.webMCPAgent(), 'invoke_invokeTool');
+
+    // Test with parameters
+    nextInput.onRunTool({
+      data: {
+        command: 'tool1',
+        parameters: {arg1: 'value'},
+      } as ProtocolMonitor.JSONEditor.Command
+    });
+    sinon.assert.calledWith(
+        invokeStub, {toolName: 'tool1', frameId: 'frame1' as Protocol.Page.FrameId, input: {arg1: 'value'}});
+
+    // Test with missing parameters
+    nextInput.onRunTool({
+      data: {
+        command: 'tool1',
+      } as ProtocolMonitor.JSONEditor.Command
+    });
+    sinon.assert.calledWith(invokeStub, {toolName: 'tool1', frameId: 'frame1' as Protocol.Page.FrameId, input: {}});
   });
 
   it('updates when tools are removed', async () => {
@@ -953,5 +989,59 @@ describe('parseToolSchema', () => {
     assert.strictEqual(parsed.parameters[0].name, 'anyOfProp');
     assert.strictEqual(parsed.parameters[0].type, ParameterType.UNKNOWN);
     assert.isUndefined(parsed.parameters[0].typeRef);
+  });
+});
+
+describeWithEnvironment('WebMCPView JSON Editor', () => {
+  const createDefaultViewInput = (): Application.WebMCPView.ViewInput => {
+    return {
+      filters: {text: ''},
+      tools: [],
+      toolCalls: [],
+      filterButtons: Application.WebMCPView.WebMCPView.createFilterButtons(() => {}, () => {}),
+      onClearLogClick: () => {},
+      onFilterChange: () => {},
+      selectedTool: null,
+      onToolSelect: () => {},
+      selectedCall: null,
+      onCallSelect: () => {},
+      onRunTool: () => {},
+    };
+  };
+
+  it('renders parameters based on tool schema', async () => {
+    const target = createTarget();
+    const tool = createTool('testTool', 'Test tool', 'frameId' as Protocol.Page.FrameId, target, undefined, {
+      type: 'object',
+      properties: {
+        strProp: {type: 'string', description: 'A string'},
+      },
+      required: ['strProp'],
+    });
+
+    const targetEl = document.createElement('div');
+    targetEl.style.width = '600px';
+    targetEl.style.height = '400px';
+    renderElementIntoDOM(targetEl, {includeCommonStyles: true});
+
+    Application.WebMCPView.DEFAULT_VIEW(
+        {
+          ...createDefaultViewInput(),
+          selectedTool: tool,
+        },
+        {}, targetEl);
+
+    // Wait for nested Lit renders
+    await new Promise(resolve => setTimeout(resolve, 50));
+
+    const devtoolsWidget = targetEl.querySelector('devtools-widget.json-editor-widget');
+    assert.isNotNull(devtoolsWidget);
+
+    const inputs = devtoolsWidget!.shadowRoot?.querySelectorAll('devtools-suggestion-input');
+
+    assert.isDefined(inputs);
+    assert.isTrue(inputs!.length > 0, 'Should render suggestion inputs for parameters');
+
+    await assertScreenshot('application/webmcp-json-editor.png');
   });
 });

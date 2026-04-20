@@ -380,19 +380,32 @@ describe('AidaGcaTranslation', () => {
 
     it('translates a basic completion request', () => {
       assert.deepEqual(
-          AidaGcaTranslation.aidaCompletionRequestToGcaRequest(createAidaCompletionRequest()),
+          AidaGcaTranslation.aidaCompletionRequestToGcaRequest(createAidaCompletionRequest({
+            additional_files: [{
+              path: 'fake-path.js',
+              content: 'description/instructions',
+              included_reason: AidaClient.Reason.RELATED_FILE,
+            }]
+          })),
           createGcaRequest('complete_code', {
             contents: [],
             aicode: {
               experience: 'complete_code',
-              files: [{
-                fileUri: 'devtools-code-completion',
-                inclusionReason: [GcaTypes.InclusionReason.ACTIVE],
-                segments: [
-                  {content: 'function foo() {', isSelected: false}, {content: '', isSelected: true},
-                  {content: '}', isSelected: false}
-                ],
-              }]
+              files: [
+                {
+                  fileUri: 'devtools-code-completion',
+                  inclusionReason: [GcaTypes.InclusionReason.ACTIVE],
+                  segments: [
+                    {content: 'function foo() {', isSelected: false}, {content: '', isSelected: true},
+                    {content: '}', isSelected: false}
+                  ],
+                },
+                {
+                  fileUri: 'fake-path.js',
+                  inclusionReason: [GcaTypes.InclusionReason.RELATED],
+                  segments: [{content: 'description/instructions', isSelected: false}]
+                }
+              ]
             }
           }));
     });
@@ -433,7 +446,11 @@ describe('AidaGcaTranslation', () => {
               inclusionReason: [1],
               segments: [{content: 'console.log(', isSelected: false}, {content: '', isSelected: true}]
             },
-            {fileUri: 'utils.js', inclusionReason: [GcaTypes.InclusionReason.OPEN]}
+            {
+              fileUri: 'utils.js',
+              inclusionReason: [GcaTypes.InclusionReason.OPEN],
+              segments: [{content: 'export const log = () => {}', isSelected: false}]
+            }
           ],
         },
       });

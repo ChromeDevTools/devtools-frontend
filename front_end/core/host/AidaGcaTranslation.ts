@@ -180,6 +180,7 @@ export function aidaCompletionRequestToGcaRequest(request: AIDA.CompletionReques
         (request.additional_files ?? []).map(f => ({
                                                fileUri: f.path,
                                                inclusionReason: [AidaReasonToGcaInclusionReason[f.included_reason]],
+                                               segments: [{content: f.content, isSelected: false}],
                                              }));
 
     const inEditorFile: GCA.SourceFile = inFileEditRequestToSourceFile(request);

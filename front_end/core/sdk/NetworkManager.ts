@@ -398,12 +398,17 @@ export class NetworkManager extends SDKModel<EventTypes> {
     return result.status;
   }
 
-  async enableReportingApi(enable = true): Promise<Promise<Protocol.ProtocolResponseWithError>> {
+  async enableReportingApi(enable = true): Promise<Protocol.ProtocolResponseWithError> {
     return await this.#networkAgent.invoke_enableReportingApi({enable});
   }
 
-  async enableDeviceBoundSessions(enable = true): Promise<Promise<Protocol.ProtocolResponseWithError>> {
+  async enableDeviceBoundSessions(enable = true): Promise<Protocol.ProtocolResponseWithError> {
     return await this.#networkAgent.invoke_enableDeviceBoundSessions({enable});
+  }
+
+  async deleteDeviceBoundSession(key: Protocol.Network.DeviceBoundSessionKey):
+      Promise<Protocol.ProtocolResponseWithError> {
+    return await this.#networkAgent.invoke_deleteDeviceBoundSession({key});
   }
 
   async loadNetworkResource(

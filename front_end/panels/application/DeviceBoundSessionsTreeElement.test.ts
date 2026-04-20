@@ -4,8 +4,10 @@
 
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
+import {findMenuItemWithLabel} from '../../testing/ContextMenuHelpers.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import * as UI from '../../ui/legacy/legacy.js';
 import type {TreeElement} from '../../ui/legacy/Treeoutline.js';
 
 import * as Application from './application.js';
@@ -395,5 +397,62 @@ describeWithMockConnection('DeviceBoundSessionsTreeElement', () => {
     checkIcon(sessionNode, 'database');
     assert.strictEqual(sessionNode.listItemElement.getAttribute('aria-label'), 'session_1');
     checkIcon(sessionNode2, 'database');
+  });
+
+  ['Delete', 'Backspace'].forEach(key => {
+    it(`deletes a session when ${key} key is pressed`, () => {
+      const deleteSessionSpy = sinon.spy();
+      model.deleteSession = deleteSessionSpy;
+      const root = new Application.DeviceBoundSessionsTreeElement.RootTreeElement(mockPanel, model);
+      root.onbind();
+
+      model.addVisibleSite('example.com');
+      const session = makeSession('example.com', 'session-123');
+      model.dispatchEventToListeners(
+          Application.DeviceBoundSessionsModel.DeviceBoundSessionModelEvents.INITIALIZE_SESSIONS,
+          {sessions: [session]});
+
+      const siteNode = root.children()[0];
+      const sessionNode = siteNode.children()[0];
+
+      // Simulate Delete key press.
+      const event = new KeyboardEvent('keydown', {key});
+      sessionNode.listItemElement.dispatchEvent(event);
+
+      sinon.assert.calledOnce(deleteSessionSpy);
+      sinon.assert.calledWith(deleteSessionSpy, 'example.com', 'session-123');
+    });
+  });
+
+  it('deletes a session when Clear is selected from context menu', () => {
+    const deleteSessionSpy = sinon.spy();
+    model.deleteSession = deleteSessionSpy;
+    const root = new Application.DeviceBoundSessionsTreeElement.RootTreeElement(mockPanel, model);
+    root.onbind();
+
+    model.addVisibleSite('example.com');
+    const session = makeSession('example.com', 'session-123');
+    model.dispatchEventToListeners(
+        Application.DeviceBoundSessionsModel.DeviceBoundSessionModelEvents.INITIALIZE_SESSIONS, {sessions: [session]});
+
+    const siteNode = root.children()[0];
+    const sessionNode = siteNode.children()[0];
+
+    const contextMenuShow = sinon.stub(UI.ContextMenu.ContextMenu.prototype, 'show').resolves();
+
+    // Simulate contextmenu event.
+    const event = new MouseEvent('contextmenu');
+    sessionNode.listItemElement.dispatchEvent(event);
+
+    sinon.assert.calledOnce(contextMenuShow);
+    const contextMenu = contextMenuShow.thisValues[0];
+
+    const clearItem = findMenuItemWithLabel(contextMenu.defaultSection(), 'Clear');
+    assert.exists(clearItem);
+
+    contextMenu.invokeHandler(clearItem.id());
+
+    sinon.assert.calledOnce(deleteSessionSpy);
+    sinon.assert.calledWith(deleteSessionSpy, 'example.com', 'session-123');
   });
 });

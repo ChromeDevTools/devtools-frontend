@@ -57,6 +57,10 @@ const UIStrings = {
    *@example {session_1} sessionName
    */
   sessionWithErrors: '{sessionName}, Session has errors',
+  /**
+   *@description Context menu item for clearing a session.
+   */
+  clear: 'Clear',
 } as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/application/DeviceBoundSessionsTreeElement.ts', UIStrings);
@@ -216,6 +220,23 @@ export class RootTreeElement extends ApplicationPanelTreeElement {
         this.resourcesPanel.showDeviceBoundSession(this.#model, site, sessionId);
         return false;
       };
+
+      sessionElement.listItemElement.addEventListener('keydown', (event: Event) => {
+        const keyboardEvent = event as KeyboardEvent;
+        if ((keyboardEvent.key === 'Delete' || keyboardEvent.key === 'Backspace') && sessionId !== undefined) {
+          this.#model.deleteSession(site, sessionId);
+          event.consume(true);
+        }
+      });
+
+      sessionElement.listItemElement.addEventListener('contextmenu', (event: MouseEvent) => {
+        if (sessionId !== undefined) {
+          const contextMenu = new UI.ContextMenu.ContextMenu(event);
+          contextMenu.defaultSection().appendItem(
+              i18nString(UIStrings.clear), () => this.#model.deleteSession(site, sessionId), {jslogContext: 'clear'});
+          void contextMenu.show();
+        }
+      });
 
       if (sessionId === undefined) {
         // The "No session" session is always listed at the top.

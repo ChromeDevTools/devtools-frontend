@@ -488,6 +488,27 @@ describeWithEnvironment('WebMCPView Presenter', () => {
     assert.lengthOf(input.tools, 0);
   });
 
+  it('clears selected tool when it is removed', async () => {
+    const {model, viewStub} = await setup();
+    const toolProtocol = {
+      name: 'tool1',
+      description: 'desc1',
+      inputSchema: {type: 'object'},
+      frameId: 'frame1' as Protocol.Page.FrameId
+    };
+    model.toolsAdded({tools: [toolProtocol]});
+    const input = await viewStub.nextInput;
+    const tool = input.tools[0];
+
+    viewStub.input.onToolSelect(tool);
+    const nextInput = await viewStub.nextInput;
+    assert.strictEqual(nextInput.selectedTool, tool);
+
+    model.toolsRemoved({tools: [toolProtocol]});
+    const finalInput = await viewStub.nextInput;
+    assert.isNull(finalInput.selectedTool);
+  });
+
   it('updates filter state when text filter is set', async () => {
     const {viewStub} = await setup();
     viewStub.input.onFilterChange({text: 'test filter'});

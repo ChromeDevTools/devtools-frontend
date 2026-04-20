@@ -689,16 +689,23 @@ export class WebMCPView extends UI.Widget.VBox {
   }
   #webMCPModelAdded(model: WebMCP.WebMCPModel.WebMCPModel): void {
     model.addEventListener(WebMCP.WebMCPModel.Events.TOOLS_ADDED, this.requestUpdate, this);
-    model.addEventListener(WebMCP.WebMCPModel.Events.TOOLS_REMOVED, this.requestUpdate, this);
+    model.addEventListener(WebMCP.WebMCPModel.Events.TOOLS_REMOVED, this.#toolsRemoved, this);
     model.addEventListener(WebMCP.WebMCPModel.Events.TOOL_INVOKED, this.requestUpdate, this);
     model.addEventListener(WebMCP.WebMCPModel.Events.TOOL_RESPONDED, this.requestUpdate, this);
   }
 
   #webMCPModelRemoved(model: WebMCP.WebMCPModel.WebMCPModel): void {
     model.removeEventListener(WebMCP.WebMCPModel.Events.TOOLS_ADDED, this.requestUpdate, this);
-    model.removeEventListener(WebMCP.WebMCPModel.Events.TOOLS_REMOVED, this.requestUpdate, this);
+    model.removeEventListener(WebMCP.WebMCPModel.Events.TOOLS_REMOVED, this.#toolsRemoved, this);
     model.removeEventListener(WebMCP.WebMCPModel.Events.TOOL_INVOKED, this.requestUpdate, this);
     model.removeEventListener(WebMCP.WebMCPModel.Events.TOOL_RESPONDED, this.requestUpdate, this);
+  }
+
+  #toolsRemoved(event: Common.EventTarget.EventTargetEvent<readonly WebMCP.WebMCPModel.Tool[]>): void {
+    if (this.#selectedTool && event.data.includes(this.#selectedTool)) {
+      this.#selectedTool = null;
+    }
+    this.requestUpdate();
   }
 
   #handleClearLogClick = (): void => {
@@ -732,8 +739,9 @@ export class WebMCPView extends UI.Widget.VBox {
     const models = SDK.TargetManager.TargetManager.instance().models(WebMCP.WebMCPModel.WebMCPModel);
     const toolCalls = models.flatMap(model => model.toolCalls);
     const filteredCalls = filterToolCalls(toolCalls, this.#filterState);
+    const tools = this.#getTools();
     const input: ViewInput = {
-      tools: this.#getTools(),
+      tools,
       selectedTool: this.#selectedTool,
       onToolSelect: tool => {
         this.#selectedTool = tool;

@@ -734,4 +734,19 @@ describeWithEnvironment('AidaClient', () => {
       }
     });
   });
+
+  describe('getClientFeatureName', () => {
+    it('returns the name for a valid ClientFeature', () => {
+      assert.strictEqual(
+          Host.AidaClient.getClientFeatureName(Host.AidaClient.ClientFeature.CHROME_CONSOLE_INSIGHTS),
+          'CHROME_CONSOLE_INSIGHTS');
+      assert.strictEqual(
+          Host.AidaClient.getClientFeatureName(Host.AidaClient.ClientFeature.CLIENT_FEATURE_UNSPECIFIED),
+          'CLIENT_FEATURE_UNSPECIFIED');
+    });
+
+    it('throws for an invalid ClientFeature', () => {
+      assert.throws(() => Host.AidaClient.getClientFeatureName(1234 as Host.AidaClient.ClientFeature));
+    });
+  });
 });

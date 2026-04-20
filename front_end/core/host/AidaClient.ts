@@ -426,6 +426,14 @@ export function convertToUserTierEnum(userTier: string|undefined): UserTier {
   return UserTier.PUBLIC;
 }
 
+export function getClientFeatureName(feature: ClientFeature): string {
+  const name = ClientFeature[feature];
+  if (typeof name !== 'string') {
+    throw new Error(`Invalid ClientFeature: ${feature}`);
+  }
+  return name;
+}
+
 let hostConfigTrackerInstance: HostConfigTracker|undefined;
 
 export class HostConfigTracker extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {

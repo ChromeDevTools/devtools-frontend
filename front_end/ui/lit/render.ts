@@ -17,7 +17,9 @@ const renderOptions = new WeakMap<HTMLElement|DocumentFragment, RenderOptions|un
 
 export function render(template: unknown, container: HTMLElement|DocumentFragment, options?: RenderOptions):
     ReturnType<typeof Lit.render> {
-  if (container instanceof HTMLElement) {
+  const host = container instanceof ShadowRoot ? container.host : container;
+
+  if (host instanceof Element) {
     const oldAttributes = renderOptions.get(container)?.container?.attributes;
     const newAttributes = options?.container?.attributes;
     if (newAttributes) {
@@ -26,18 +28,18 @@ export function render(template: unknown, container: HTMLElement|DocumentFragmen
           continue;
         }
         if (value === null || value === undefined) {
-          container.removeAttribute(name);
+          host.removeAttribute(name);
         } else if (typeof value === 'boolean') {
-          container.toggleAttribute(name, value);
+          host.toggleAttribute(name, value);
         } else {
-          container.setAttribute(name, value.toString());
+          host.setAttribute(name, value.toString());
         }
       }
     }
     if (oldAttributes) {
       for (const name of Object.keys(oldAttributes)) {
         if (!newAttributes || !(name in newAttributes)) {
-          container.removeAttribute(name);
+          host.removeAttribute(name);
         }
       }
     }
@@ -47,14 +49,14 @@ export function render(template: unknown, container: HTMLElement|DocumentFragmen
     if (oldClasses) {
       for (const cls of oldClasses) {
         if (!newClasses?.includes(cls)) {
-          container.classList.remove(cls);
+          host.classList.remove(cls);
         }
       }
     }
     if (newClasses) {
       for (const cls of newClasses) {
         if (!oldClasses?.includes(cls)) {
-          container.classList.add(cls);
+          host.classList.add(cls);
         }
       }
     }
@@ -65,14 +67,14 @@ export function render(template: unknown, container: HTMLElement|DocumentFragmen
   if (oldListeners) {
     for (const [name, listener] of Object.entries(oldListeners)) {
       if (newListeners?.[name] !== listener) {
-        container.removeEventListener(name, listener);
+        host.removeEventListener(name, listener);
       }
     }
   }
   if (newListeners) {
     for (const [name, listener] of Object.entries(newListeners)) {
       if (oldListeners?.[name] !== listener) {
-        container.addEventListener(name, listener);
+        host.addEventListener(name, listener);
       }
     }
   }

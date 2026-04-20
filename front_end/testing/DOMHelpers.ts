@@ -26,7 +26,7 @@ interface RenderOptions {
 /**
  * Renders a given element into the DOM. By default it will error if it finds an element already rendered but this can be controlled via the options.
  **/
-export function renderElementIntoDOM<E extends Node|UI.Widget.Widget>(
+export function renderElementIntoDOM<E extends Node|UI.Widget.AnyWidget>(
     element: E, renderOptions: RenderOptions = {}): E {
   const container = document.getElementById(TEST_CONTAINER_ID);
 

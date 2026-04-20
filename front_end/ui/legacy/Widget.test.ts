@@ -94,9 +94,9 @@ describeWithEnvironment('Widget', () => {
     it('correctly sets the `jslog` attribute of the `contentElement` in the presence of Shadow DOM', () => {
       const widget = new Widget({jslog: 'Section; context: bar', useShadowDom: true});
 
-      assert.isNull(widget.element.getAttribute('jslog'));
+      assert.isNull(widget.contentElement.getAttribute('jslog'));
       assert.strictEqual(
-          widget.contentElement.getAttribute('jslog'),
+          widget.element.getAttribute('jslog'),
           'Section; context: bar',
       );
     });

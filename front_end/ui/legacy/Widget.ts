@@ -53,17 +53,19 @@ function assert(condition: unknown, message: string): void {
   }
 }
 
-type WidgetConstructor<WidgetT extends Widget> = new (element: HTMLElement) => WidgetT;
-type WidgetProducer<WidgetT extends Widget> = (element: HTMLElement) => WidgetT;
-type WidgetFactory<WidgetT extends Widget> = WidgetConstructor<WidgetT>|WidgetProducer<WidgetT>;
+export type AnyWidget = Widget<HTMLElement|DocumentFragment>;
+
+type WidgetConstructor<WidgetT extends AnyWidget> = new (element: HTMLElement) => WidgetT;
+type WidgetProducer<WidgetT extends AnyWidget> = (element: HTMLElement) => WidgetT;
+type WidgetFactory<WidgetT extends AnyWidget> = WidgetConstructor<WidgetT>|WidgetProducer<WidgetT>;
 type InferWidgetTFromFactory<F> = F extends WidgetFactory<infer WidgetT>? WidgetT : never;
 
-export class WidgetConfig<WidgetT extends Widget> {
+export class WidgetConfig<WidgetT extends AnyWidget> {
   constructor(readonly widgetClass: WidgetFactory<WidgetT>, readonly widgetParams?: Partial<WidgetT>) {
   }
 }
 
-export function widgetConfig<F extends WidgetFactory<Widget>, ParamKeys extends keyof InferWidgetTFromFactory<F>>(
+export function widgetConfig<F extends WidgetFactory<AnyWidget>, ParamKeys extends keyof InferWidgetTFromFactory<F>>(
     widgetClass: F, widgetParams?: Pick<InferWidgetTFromFactory<F>, ParamKeys>&Partial<InferWidgetTFromFactory<F>>):
     // This is a workaround for https://github.com/runem/lit-analyzer/issues/163
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -71,13 +73,13 @@ export function widgetConfig<F extends WidgetFactory<Widget>, ParamKeys extends 
   return new WidgetConfig(widgetClass, widgetParams);
 }
 
-let currentUpdateQueue: Map<Widget, PromiseWithResolvers<void>>|null = null;
-const currentlyProcessed = new Set<Widget>();
-let nextUpdateQueue = new Map<Widget, PromiseWithResolvers<void>>();
+let currentUpdateQueue: Map<AnyWidget, PromiseWithResolvers<void>>|null = null;
+const currentlyProcessed = new Set<AnyWidget>();
+let nextUpdateQueue = new Map<AnyWidget, PromiseWithResolvers<void>>();
 let pendingAnimationFrame: number|null = null;
 let overallUpdatePromise: PromiseWithResolvers<void>|null = null;
 
-function enqueueIntoNextUpdateQueue(widget: Widget): Promise<void> {
+function enqueueIntoNextUpdateQueue(widget: AnyWidget): Promise<void> {
   const scheduledUpdate = nextUpdateQueue.get(widget) ?? Promise.withResolvers<void>();
   nextUpdateQueue.delete(widget);
   nextUpdateQueue.set(widget, scheduledUpdate);
@@ -87,7 +89,7 @@ function enqueueIntoNextUpdateQueue(widget: Widget): Promise<void> {
   return scheduledUpdate.promise;
 }
 
-function enqueueWidgetUpdate(widget: Widget): Promise<void> {
+function enqueueWidgetUpdate(widget: AnyWidget): Promise<void> {
   if (currentUpdateQueue) {
     if (currentlyProcessed.has(widget)) {
       return enqueueIntoNextUpdateQueue(widget);
@@ -100,7 +102,7 @@ function enqueueWidgetUpdate(widget: Widget): Promise<void> {
   return enqueueIntoNextUpdateQueue(widget);
 }
 
-function cancelUpdate(widget: Widget): void {
+function cancelUpdate(widget: AnyWidget): void {
   widget.cancelUpdateController();
   if (currentUpdateQueue) {
     const scheduledUpdate = currentUpdateQueue.get(widget);
@@ -156,7 +158,7 @@ function runNextUpdate(): void {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const widgetConfigs = new WeakMap<HTMLElement, WidgetConfig<any>>();
 
-export function registerWidgetConfig<WidgetT extends Widget>(
+export function registerWidgetConfig<WidgetT extends AnyWidget>(
     element: HTMLElement, config: WidgetConfig<WidgetT>): void {
   if (!widgetConfigs.has(element)) {
     setUpLifecycleTracking(element);
@@ -164,7 +166,8 @@ export function registerWidgetConfig<WidgetT extends Widget>(
   widgetConfigs.set(element, config);
 }
 
-function instantiateWidget<WidgetT extends Widget>(element: HTMLElement, widgetConfig: WidgetConfig<WidgetT>): WidgetT {
+function instantiateWidget<WidgetT extends AnyWidget>(
+    element: HTMLElement, widgetConfig: WidgetConfig<WidgetT>): WidgetT {
   if (!widgetConfig.widgetClass) {
     throw new Error('No widgetClass defined');
   }
@@ -185,7 +188,7 @@ function instantiateWidget<WidgetT extends Widget>(element: HTMLElement, widgetC
   return newWidget;
 }
 
-function setUpLifecycleTracking<WidgetT extends Widget>(element: HTMLElement): void {
+function setUpLifecycleTracking<WidgetT extends AnyWidget>(element: HTMLElement): void {
   let tracker: WidgetElement<WidgetT>;
   if (element instanceof WidgetElement) {
     tracker = element as WidgetElement<WidgetT>;
@@ -209,7 +212,7 @@ function setUpLifecycleTracking<WidgetT extends Widget>(element: HTMLElement): v
       if (!config) {
         throw new Error('No widgetConfig defined');
       }
-      widget = instantiateWidget(element, config);
+      widget = instantiateWidget(element, config) as WidgetT;
     }
     const parent = element.parentElementOrShadowHost() as HTMLElement | null;
     if (!parent) {
@@ -219,7 +222,7 @@ function setUpLifecycleTracking<WidgetT extends Widget>(element: HTMLElement): v
   };
 }
 
-export class WidgetElement<WidgetT extends Widget> extends HTMLElement {
+export class WidgetElement<WidgetT extends AnyWidget> extends HTMLElement {
   onDisconnect?: () => void;
   onConnect?: () => void;
   #disconnectTimeout?: ReturnType<typeof setTimeout>;
@@ -342,7 +345,7 @@ export class WidgetDirective extends Lit.Directive.Directive {
     return this.render(widgetClass, widgetParams);
   }
 
-  render<F extends WidgetFactory<Widget>, ParamKeys extends keyof InferWidgetTFromFactory<F>>(
+  render<F extends WidgetFactory<AnyWidget>, ParamKeys extends keyof InferWidgetTFromFactory<F>>(
       widgetClass: F,
       widgetParams?: Pick<InferWidgetTFromFactory<F>, ParamKeys>&Partial<InferWidgetTFromFactory<F>>): unknown {
     if (this.#partType === Lit.Directive.PartType.ELEMENT) {
@@ -360,12 +363,12 @@ export class WidgetDirective extends Lit.Directive.Directive {
 }
 
 export const widget = Lit.Directive.directive(WidgetDirective) as
-    <F extends WidgetFactory<Widget>, ParamKeys extends keyof InferWidgetTFromFactory<F>>(
+    <F extends WidgetFactory<AnyWidget>, ParamKeys extends keyof InferWidgetTFromFactory<F>>(
                           widgetClass: F,
                           widgetParams?: Pick<InferWidgetTFromFactory<F>, ParamKeys>&
                           Partial<InferWidgetTFromFactory<F>>) => Lit.Directive.DirectiveResult<typeof WidgetDirective>;
 
-export function widgetRef<T extends Widget, Args extends unknown[]>(
+export function widgetRef<T extends AnyWidget, Args extends unknown[]>(
     type: Platform.Constructor.Constructor<T, Args>, callback: (_: T) => void): ReturnType<typeof Lit.Directives.ref> {
   return Lit.Directives.ref((e?: Element) => {
     if (!(e instanceof HTMLElement)) {
@@ -380,18 +383,20 @@ export function widgetRef<T extends Widget, Args extends unknown[]>(
 }
 
 const widgetCounterMap = new WeakMap<Node, number>();
-const widgetMap = new WeakMap<Node, Widget>();
+const widgetMap = new WeakMap<Node, AnyWidget>();
 
-function incrementWidgetCounter(parentElement: Element, childElement: Element): void {
-  const count = (widgetCounterMap.get(childElement) || 0) + (widgetMap.get(childElement) ? 1 : 0);
-  for (let el: Element|null = parentElement; el; el = el.parentElementOrShadowHost()) {
+function incrementWidgetCounter(parentElement: Element|DocumentFragment, childElement: Element): void {
+  const count = (widgetCounterMap.get(childElement) || 0) + (Widget.get(childElement) ? 1 : 0);
+  for (let el: (Element|DocumentFragment|null) = parentElement; el;
+       el = el.parentElementOrShadowHost() as (Element | DocumentFragment | null)) {
     widgetCounterMap.set(el, (widgetCounterMap.get(el) || 0) + count);
   }
 }
 
-function decrementWidgetCounter(parentElement: Element, childElement: Element): void {
-  const count = (widgetCounterMap.get(childElement) || 0) + (widgetMap.get(childElement) ? 1 : 0);
-  for (let el: Element|null = parentElement; el; el = el.parentElementOrShadowHost()) {
+function decrementWidgetCounter(parentElement: Element|DocumentFragment, childElement: Element): void {
+  const count = (widgetCounterMap.get(childElement) || 0) + (Widget.get(childElement) ? 1 : 0);
+  for (let el: (Element|DocumentFragment|null) = parentElement; el;
+       el = el.parentElementOrShadowHost() as (Element | DocumentFragment | null)) {
     const elCounter = widgetCounterMap.get(el);
     if (elCounter) {
       widgetCounterMap.set(el, elCounter - count);
@@ -408,18 +413,7 @@ const UPDATE_COMPLETE = Promise.resolve();
  * Additional options passed to the `Widget` constructor to configure the
  * behavior of the resulting instance.
  */
-export interface WidgetOptions {
-  /**
-   * If you pass `true` here, the `contentElement` of the resulting `Widget`
-   * will be placed into the shadow DOM of its `element`. If the `element`
-   * doesn't already have a `shadowRoot`, a new one will be created.
-   *
-   * Otherwise, the `contentElement` will be a regular child of the `element`.
-   *
-   * Its default value is `false`.
-   */
-  useShadowDom?: boolean;
-
+export type WidgetOptions<ContentTypeT extends HTMLElement|DocumentFragment = HTMLElement> = {
   /**
    * A boolean that, when set to `true`, specifies behavior that mitigates
    * custom element issues around focusability. When a non-focusable part of
@@ -430,30 +424,51 @@ export interface WidgetOptions {
    *
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/attachShadow
    */
-  delegatesFocus?: boolean;
+  delegatesFocus?: boolean,
+}&(ContentTypeT extends HTMLElement ? {
+  /**
+   * If you pass `true` here, the `contentElement` of the resulting `Widget`
+   * will be placed into the shadow DOM of its `element`. If the `element`
+   * doesn't already have a `shadowRoot`, a new one will be created.
+   *
+   * Otherwise, the `contentElement` will be a regular child of the `element`.
+   *
+   * Its default value is `false`.
+   */
+  useShadowDom?: boolean,
 
   /**
    * The Visual Logging configuration to put onto the `element` of the resulting
    * `Widget`.
    */
-  jslog?: string;
+  jslog?: string,
+
   /**
    * The additional classes to put onto the `element` of the resulting `Widget`.
    */
-  classes?: string[];
-}
-export class Widget {
+  classes?: string[],
+} :
+                                      {
+                                        /**
+                                         * If you pass `'pure'`, the `contentElement` will be the shadow root itself.
+                                         */
+                                        useShadowDom: 'pure',
+                                        jslog?: never,
+                                        classes?: never,
+                                      });
+
+export class Widget<ContentTypeT extends HTMLElement|DocumentFragment = HTMLElement> {
   readonly element: HTMLElement;
-  contentElement: HTMLElement;
+  #contentElement: ContentTypeT;
   #shadowRoot: typeof Element.prototype.shadowRoot;
   #visible = false;
   #isRoot = false;
   #isShowing = false;
-  readonly #children: Widget[] = [];
+  readonly #children: AnyWidget[] = [];
   #hideOnDetach = false;
   #notificationDepth = 0;
   #invalidationsSuspended = 0;
-  #parentWidget: Widget|null = null;
+  #parentWidget: AnyWidget|null = null;
   #cachedConstraints?: Geometry.Constraints;
   #constraints?: Geometry.Constraints;
   #invalidationsRequested?: boolean;
@@ -463,30 +478,25 @@ export class Widget {
 
   /**
    * Constructs a new `Widget` with the given `options`.
-   *
-   * @param options optional settings to configure the behavior.
    */
-  constructor(options?: WidgetOptions);
+  constructor(...args: ContentTypeT extends DocumentFragment?
+              [options: WidgetOptions<ContentTypeT>]: [options?: WidgetOptions<ContentTypeT>]);
 
   /**
    * Constructs a new `Widget` with the given `options` and attached to the
    * given `element`.
-   *
-   * If `element` is `undefined`, a new `<div>` element will be created instead
-   * and the widget will be attached to that.
-   *
-   * @param element an (optional) `HTMLElement` to attach the `Widget` to.
-   * @param options optional settings to configure the behavior.
    */
-  constructor(element?: HTMLElement, options?: WidgetOptions);
+  constructor(...args: ContentTypeT extends DocumentFragment?
+              [element: HTMLElement|undefined, options: WidgetOptions<ContentTypeT>]:
+                  [element?: HTMLElement, options?: WidgetOptions<ContentTypeT>]);
 
-  constructor(elementOrOptions?: HTMLElement|WidgetOptions, options?: WidgetOptions) {
+  constructor(elementOrOptions?: HTMLElement|WidgetOptions<ContentTypeT>, options?: WidgetOptions<ContentTypeT>) {
     if (elementOrOptions instanceof HTMLElement) {
       this.element = elementOrOptions;
     } else {
       this.element = document.createElement('div');
       if (elementOrOptions !== undefined) {
-        options = elementOrOptions;
+        options = elementOrOptions as WidgetOptions<ContentTypeT>;
       }
     }
     this.#shadowRoot = this.element.shadowRoot;
@@ -496,18 +506,26 @@ export class Widget {
       this.#shadowRoot = createShadowRootWithCoreStyles(this.element, {
         delegatesFocus: options?.delegatesFocus,
       });
-      this.contentElement = document.createElement('div');
-      this.#shadowRoot.appendChild(this.contentElement);
+      if (options.useShadowDom === 'pure') {
+        this.#contentElement = (this.#shadowRoot as unknown as ContentTypeT);
+      } else {
+        const div = document.createElement('div');
+        this.#shadowRoot.appendChild(div);
+        this.#contentElement = (div as unknown as ContentTypeT);
+      }
     } else {
-      this.contentElement = this.element;
+      this.#contentElement = (this.element as unknown as ContentTypeT);
     }
-    if (options?.classes) {
-      this.element.classList.add(...options.classes);
+    const legacyOptions = options as WidgetOptions<HTMLElement>| undefined;
+    if (legacyOptions?.classes) {
+      this.element.classList.add(...legacyOptions.classes);
     }
-    if (options?.jslog) {
-      this.contentElement.setAttribute('jslog', options.jslog);
+    if (legacyOptions?.jslog) {
+      this.element.setAttribute('jslog', legacyOptions.jslog);
     }
-    this.contentElement.classList.add('widget');
+    if (this.contentElement instanceof HTMLElement) {
+      this.contentElement.classList.add('widget');
+    }
     widgetMap.set(this.element, this);
   }
 
@@ -519,7 +537,7 @@ export class Widget {
    * @returns the {@link Widget} that is attached to the `node` or `undefined`.
    */
   static get(node: Node): Widget|undefined {
-    return widgetMap.get(node);
+    return widgetMap.get(node) as Widget | undefined;
   }
 
   static get allUpdatesComplete(): Promise<void> {
@@ -537,11 +555,19 @@ export class Widget {
     if (widget) {
       return widget;
     }
-    let config = widgetConfigs.get(element as WidgetElement<Widget>);
+    let config = widgetConfigs.get(element);
     if (!config) {
       config = widgetConfig(element => new Widget(element));
     }
-    return instantiateWidget(element as WidgetElement<Widget>, config);
+    return instantiateWidget(element, config) as Widget;
+  }
+
+  get contentElement(): ContentTypeT {
+    return this.#contentElement;
+  }
+
+  protected set contentElement(contentElement: ContentTypeT) {
+    this.#contentElement = contentElement;
   }
 
   markAsRoot(): void {
@@ -550,14 +576,14 @@ export class Widget {
   }
 
   parentWidget(): Widget|null {
-    return this.#parentWidget;
+    return this.#parentWidget as Widget | null;
   }
 
   children(): Widget[] {
-    return this.#children;
+    return this.#children as Widget[];
   }
 
-  childWasDetached(_widget: Widget): void {
+  childWasDetached(_widget: AnyWidget): void {
   }
 
   isShowing(): boolean {
@@ -594,7 +620,7 @@ export class Widget {
     return this.#parentWidget?.isShowing() ?? false;
   }
 
-  protected callOnVisibleChildren(method: (this: Widget) => void): void {
+  protected callOnVisibleChildren(method: (this: AnyWidget) => void): void {
     const copy = this.#children.slice();
     for (let i = 0; i < copy.length; ++i) {
       if (copy[i].#parentWidget === this && copy[i].#visible) {
@@ -644,7 +670,7 @@ export class Widget {
     this.callOnVisibleChildren(this.processOnResize);
   }
 
-  private notify(notification: (this: Widget) => void): void {
+  private notify(notification: (this: AnyWidget) => void): void {
     ++this.#notificationDepth;
     try {
       notification.call(this);
@@ -674,12 +700,12 @@ export class Widget {
   async ownerViewDisposed(): Promise<void> {
   }
 
-  show(parentElement: Element, insertBefore?: Node|null, suppressOrphanWidgetError = false): void {
+  show(parentElement: Element|DocumentFragment, insertBefore?: Node|null, suppressOrphanWidgetError = false): void {
     assert(parentElement, 'Attempt to attach widget with no parent element');
 
     if (!this.#isRoot) {
       // Update widget hierarchy.
-      let currentParent: Element|null = parentElement;
+      let currentParent: (Element|DocumentFragment|null) = parentElement;
       let currentWidget = undefined;
       while (!currentWidget) {
         if (!currentParent) {
@@ -698,7 +724,7 @@ export class Widget {
     this.#showWidget(parentElement, insertBefore);
   }
 
-  private attach(parentWidget: Widget): void {
+  private attach(parentWidget: AnyWidget): void {
     if (parentWidget === this.#parentWidget) {
       return;
     }
@@ -720,10 +746,10 @@ export class Widget {
     this.#showWidget(this.element.parentElement, this.element.nextSibling);
   }
 
-  #showWidget(parentElement: Element, insertBefore?: Node|null): void {
-    let currentParent: Element|null = parentElement;
-    while (currentParent && !widgetMap.get(currentParent)) {
-      currentParent = currentParent.parentElementOrShadowHost();
+  #showWidget(parentElement: Element|DocumentFragment, insertBefore?: Node|null): void {
+    let currentParent: (Element|DocumentFragment|null) = parentElement;
+    while (currentParent && !Widget.get(currentParent)) {
+      currentParent = currentParent.parentElementOrShadowHost() as (Element | DocumentFragment | null);
     }
 
     if (this.#isRoot) {
@@ -938,9 +964,10 @@ export class Widget {
 
   getDefaultFocusedElements(): HTMLElement[] {
     const autofocusElements = [...this.contentElement.querySelectorAll<HTMLElement>('[autofocus]')];
-    if (this.contentElement !== this.element) {
-      if (this.contentElement.hasAttribute('autofocus')) {
-        autofocusElements.push(this.contentElement);
+    const contentElement = (this.contentElement as HTMLElement | DocumentFragment);
+    if (contentElement !== this.element) {
+      if (contentElement instanceof HTMLElement && contentElement.hasAttribute('autofocus')) {
+        autofocusElements.push(contentElement);
       }
       if (autofocusElements.length === 0) {
         autofocusElements.push(...this.element.querySelectorAll<HTMLElement>('[autofocus]'));
@@ -1180,13 +1207,15 @@ export class VBox extends Widget {
 
   constructor() {
     super(...arguments);
-    this.contentElement.classList.add('vbox');
+    if (this.contentElement instanceof HTMLElement) {
+      this.contentElement.classList.add('vbox');
+    }
   }
 
   override calculateConstraints(): Geometry.Constraints {
     let constraints: Geometry.Constraints = new Geometry.Constraints();
 
-    function updateForChild(this: Widget): void {
+    function updateForChild(this: AnyWidget): void {
       const child = this.constraints();
       constraints = constraints.widthToMax(child);
       constraints = constraints.addHeight(child);
@@ -1197,7 +1226,7 @@ export class VBox extends Widget {
   }
 }
 
-export class HBox extends Widget {
+export class HBox extends Widget<HTMLElement> {
   /**
    * Constructs a new `HBox` with the given `options`.
    *
@@ -1225,7 +1254,7 @@ export class HBox extends Widget {
   override calculateConstraints(): Geometry.Constraints {
     let constraints: Geometry.Constraints = new Geometry.Constraints();
 
-    function updateForChild(this: Widget): void {
+    function updateForChild(this: AnyWidget): void {
       const child = this.constraints();
       constraints = constraints.addWidth(child);
       constraints = constraints.heightToMax(child);
@@ -1249,9 +1278,9 @@ export class VBoxWithResizeCallback extends VBox {
 }
 
 export class WidgetFocusRestorer {
-  private widget: Widget|null;
+  private widget: AnyWidget|null;
   private previous: HTMLElement|null;
-  constructor(widget: Widget) {
+  constructor(widget: AnyWidget) {
     this.widget = widget;
     this.previous = (deepActiveElement(widget.element.ownerDocument) as HTMLElement | null);
     widget.focus();

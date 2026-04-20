@@ -98,6 +98,44 @@ describe('render', () => {
     assert.strictEqual(clicked2, 1);
   });
 
+  it('applies options to the host when rendering into a ShadowRoot', () => {
+    const shadowRoot = container.attachShadow({mode: 'open'});
+
+    let clicked = 0;
+    const listener = () => {
+      clicked++;
+    };
+
+    render(html`<span>Content</span>`, shadowRoot, {
+      container: {
+        attributes: {'data-test': 'value1'},
+        classes: ['class1'],
+        listeners: {click: listener},
+      }
+    });
+
+    assert.strictEqual(container.getAttribute('data-test'), 'value1');
+    assert.isTrue(container.classList.contains('class1'));
+    container.click();
+    assert.strictEqual(clicked, 1);
+
+    // Update
+    render(html`<span>Content</span>`, shadowRoot, {
+      container: {
+        attributes: {'data-test2': 'value2'},
+        classes: ['class2'],
+        listeners: {},
+      }
+    });
+
+    assert.isFalse(container.hasAttribute('data-test'));
+    assert.strictEqual(container.getAttribute('data-test2'), 'value2');
+    assert.isFalse(container.classList.contains('class1'));
+    assert.isTrue(container.classList.contains('class2'));
+    container.click();
+    assert.strictEqual(clicked, 1);
+  });
+
   it('diffs options correctly when called multiple times', () => {
     render(html`1`, container, {container: {attributes: {a: '1'}, classes: ['c1']}});
     assert.strictEqual(container.getAttribute('a'), '1');

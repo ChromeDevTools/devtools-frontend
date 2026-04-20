@@ -261,25 +261,28 @@ Node.prototype.childTextNodes = function(): Node[] {
   }
   return result;
 };
-
 function innerTextDescendants(node: Node): Node[] {
-  if (![Node.ELEMENT_NODE, Node.TEXT_NODE].includes(node.nodeType) || ['SCRIPT', 'STYLE'].includes(node.nodeName)) {
+  if (![Node.ELEMENT_NODE, Node.TEXT_NODE, Node.DOCUMENT_FRAGMENT_NODE].includes(node.nodeType) ||
+      ['SCRIPT', 'STYLE'].includes(node.nodeName)) {
     return [];
-  }
-  if (!(node instanceof HTMLElement)) {
-    return [node];
   }
   if (node instanceof HTMLSlotElement) {
     return [...node.assignedNodes()].flatMap(innerTextDescendants);
   }
-  if (node.shadowRoot) {
+  if (node instanceof Element && node.shadowRoot) {
     return [...node.shadowRoot.childNodes].flatMap(innerTextDescendants);
+  }
+  if (node instanceof DocumentFragment) {
+    return [...node.childNodes].flatMap(innerTextDescendants);
+  }
+  if (!(node instanceof HTMLElement)) {
+    return [node];
   }
   const result: Node[] = [];
   let expanded = false;
   for (const child of node.childNodes) {
     const childResult = innerTextDescendants(child);
-    if (childResult.length > 1 || childResult.length === 1 && childResult[0] !== child) {
+    if (childResult.length > 1 || (childResult.length === 1 && childResult[0] !== child)) {
       expanded = true;
     }
     result.push(...childResult);

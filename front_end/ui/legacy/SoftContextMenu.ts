@@ -52,11 +52,11 @@ export class SoftContextMenu {
   private parentMenu: SoftContextMenu|undefined;
   private highlightedMenuItemElement: HTMLElement|null;
   detailsForElementMap: WeakMap<HTMLElement, ElementMenuDetails>;
-  private document?: Document;
+  private document!: Document;
   private glassPane?: GlassPane;
-  private contextMenuElement?: HTMLElement;
+  private contextMenuElement!: HTMLElement;
   private focusRestorer?: ElementFocusRestorer;
-  private hideOnUserMouseDownUnlessInMenu?: ((event: Event) => void);
+  private hideOnUserMouseDownUnlessInMenu?: (event: Event) => void;
   private activeSubMenuElement?: HTMLElement;
   private subMenu?: SoftContextMenu;
   private onMenuClosed?: () => void;

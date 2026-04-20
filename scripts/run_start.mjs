@@ -44,7 +44,6 @@ DEFAULT_FEATURE_SET.enable('DevToolsAiPromptApi');
 DEFAULT_FEATURE_SET.enable('DevToolsAiAssistanceContextSelectionAgent');
 DEFAULT_FEATURE_SET.enable('DevToolsAiAssistanceAccessibilityAgent');
 DEFAULT_FEATURE_SET.enable('DevToolsAiAssistanceV2');
-DEFAULT_FEATURE_SET.enable('DevToolsUseGcaApi');
 
 // The unstable feature set (can be enabled via `--enable-unstable-features`).
 const UNSTABLE_FEATURE_SET = new FeatureSet();

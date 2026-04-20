@@ -7,6 +7,7 @@ import {assert} from 'chai';
 import {
   CONSOLE_TAB_SELECTOR,
   focusConsolePrompt,
+  getStructuredConsoleMessages,
   STACK_PREVIEW_CONTAINER,
 } from '../helpers/console-helpers.js';
 import {openSettingsTab} from '../helpers/settings-helpers.js';
@@ -125,5 +126,32 @@ describe('The Console Tab', () => {
     await devToolsPage.click(SHOW_LESS_LINK);
     showHidden = stack ? await stack.evaluate(x => x.classList.contains('show-hidden-rows')) : null;
     assert.isFalse(showHidden);
+  });
+
+  it('shows stack traces for stack overflow exceptions', async ({devToolsPage, inspectedPage}) => {
+    await devToolsPage.click(CONSOLE_TAB_SELECTOR);
+    await focusConsolePrompt(devToolsPage);
+
+    await inspectedPage.evaluate(`
+      // Both the call and the function entry may trigger stack overflow.
+      // Intentionally keep both on the same line to avoid flaky test failures.
+      window.overflow = function() { window.overflow(); }
+      window.doOverflow = function() { setTimeout(window.overflow, 0); }
+    `);
+
+    await inspectedPage.evaluate(`window.doOverflow()`);
+
+    // Wait for the console message to appear and have a stack trace.
+    await devToolsPage.waitForFunction(async () => {
+      const messages = await getStructuredConsoleMessages(devToolsPage);
+      return messages.length > 0 && messages.some(m => m.message?.includes('Maximum call stack size exceeded'));
+    });
+
+    const messages = await getStructuredConsoleMessages(devToolsPage);
+    const overflowMessage = messages.find(m => m.message?.includes('Maximum call stack size exceeded'));
+
+    assert.exists(overflowMessage);
+    assert.exists(overflowMessage.stackPreview);
+    assert.include(overflowMessage.stackPreview, 'overflow');
   });
 });

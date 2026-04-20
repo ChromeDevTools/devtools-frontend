@@ -83,6 +83,8 @@ export const DEFAULT_SETTING_REGISTRATIONS_FOR_TEST = [
   createSettingValue(Common.Settings.SettingCategory.ELEMENTS, 'show-html-comments', true),
   createSettingValue(Common.Settings.SettingCategory.ELEMENTS, 'show-ua-shadow-dom', false),
   createSettingValue(Common.Settings.SettingCategory.ELEMENTS, 'css-animations-only-when-animations-tab-open', true),
+  createSettingValue(Common.Settings.SettingCategory.ELEMENTS, 'show-metrics-rulers', false),
+  createSettingValue(Common.Settings.SettingCategory.ELEMENTS, 'apca', false),
   createSettingValue(Common.Settings.SettingCategory.PERFORMANCE, 'annotations-hidden', false),
   createSettingValue(Common.Settings.SettingCategory.PERFORMANCE, 'timeline-show-all-events', false),
   createSettingValue(Common.Settings.SettingCategory.NETWORK, 'cache-disabled', false),

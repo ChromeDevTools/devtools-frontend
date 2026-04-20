@@ -21,8 +21,8 @@ describe('StackTraceModel', () => {
 
   const identityTranslateFn: StackTraceImpl.StackTraceModel.TranslateRawFrames = (frames, _target) =>
       Promise.resolve(frames.map(f => [{
-                                   url: f.url,
-                                   name: f.functionName,
+                                   url: f.url || undefined,
+                                   name: f.functionName || undefined,
                                    line: f.lineNumber,
                                    column: f.columnNumber,
                                  }]));
@@ -503,6 +503,23 @@ describe('StackTraceModel', () => {
   });
 
   describe('createFromErrorStackLikeString', () => {
+    it('correctly translates builtin frames resulting in no url and -1 for line/column', async () => {
+      const {model} = setup();
+
+      const stackTrace = await model.createFromErrorStackLikeString(
+          `Error: foo
+              at Array.map (<anonymous>)`,
+          identityTranslateFn);
+
+      assert.lengthOf(stackTrace.syncFragment.frames, 1);
+      const frame = stackTrace.syncFragment.frames[0];
+      assert.isUndefined(frame.url);
+      assert.isUndefined(frame.uiSourceCode);
+      assert.strictEqual(frame.line, -1);
+      assert.strictEqual(frame.column, -1);
+      assert.strictEqual(frame.name, 'Array.map');
+    });
+
     it('correctly handles a stack trace with sync and async fragments', async () => {
       const {model} = setup();
 

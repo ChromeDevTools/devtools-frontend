@@ -192,6 +192,19 @@ describe('DetailedErrorStackParser', () => {
       assert.strictEqual(frames[0].url, '');
       assert.strictEqual(frames[0].functionName, 'Promise.all');
     });
+
+    it('parses builtin frames', () => {
+      const stack = `Error: foo
+          at Array.map (<anonymous>)`;
+      const frames = StackTraceImpl.DetailedErrorStackParser.parseRawFramesFromErrorStack(stack);
+
+      assert.lengthOf(frames, 1);
+      assert.strictEqual(frames[0].url, '');
+      assert.strictEqual(frames[0].functionName, 'Array.map');
+      assert.strictEqual(frames[0].lineNumber, -1);
+      assert.strictEqual(frames[0].columnNumber, -1);
+      assert.isTrue(StackTraceImpl.Trie.isBuiltinFrame(frames[0]));
+    });
   });
 
   describe('augmentRawFramesWithScriptIds', () => {

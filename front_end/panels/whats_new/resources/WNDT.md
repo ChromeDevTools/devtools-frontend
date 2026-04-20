@@ -1,11 +1,14 @@
-### [Start AI assistance chats without prior context](ai-assistance)
+### [Agentic extensions debugging](extension-debugging)
 
-AI assistance chats can now be started from anywhere in DevTools and AI assistance will find required context based on the initial prompt.
+You can now debug extensions through a coding agent using new tools in DevTools for agents,
+available through the MCP server.
 
-### [MCP server & CLI](mcp-server)
+### [Sort network requests](sort-network-requests)
 
-Optionally expose DevTools and automation capabilities through CLI, enabling coding agents to batch tool calls and improve token efficiency.
+The Network panel introduces a new Request # column, allowing you to sort requests by their
+absolute chronological order of occurrence, independent of priority or duration.
 
-### [Code generation in the Console & Sources panels](code-generation)
+### [Accessibility tree](accessibility-tree)
 
-Generate entire code blocks directly in the Console and Sources panels by typing natural language comments.
+To streamline the Elements panel, the Accessibility tree toggle has moved from the DOM tree
+to the Accessibility tab within the panel.

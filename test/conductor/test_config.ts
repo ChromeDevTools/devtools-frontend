@@ -42,6 +42,7 @@ interface Config {
   shardNumber: number;
   shardBias: number;
   isAiAgent: boolean;
+  allowDuplicateTestIds: boolean;
 }
 
 function sliceArrayFromElement(array: string[], element: string) {
@@ -146,6 +147,7 @@ export const TestConfig: Config = {
   shardBias: options['shard-bias'],
   isAiAgent:
       ['GEMINI_CLI', 'CLAUDECODE', 'CODEX_SANDBOX', 'CURSOR_AGENT', 'AI_AGENT'].some(agent => agent in process.env),
+  allowDuplicateTestIds: false,
 };
 
 export function loadTests(testDirectory: string, filename = 'tests.txt') {

@@ -6,6 +6,7 @@ import * as fs from 'node:fs';
 import * as http from 'node:http';
 
 import type {ArtifactGroup} from './screenshot-error.js';
+import {TestConfig} from './test_config.js';
 
 /**
  * This type mirrors test_result.proto but it might fall behind.
@@ -116,11 +117,16 @@ function takeAndSendResults() {
     },
   };
 
+  const duplicateTestIds = [];
   for (const t of testResults) {
     if (seenTestIds.has(t.testId)) {
-      console.warn('WARN: duplicate test id', t.testId);
+      duplicateTestIds.push(t.testId);
     }
     seenTestIds.add(t.testId);
+  }
+
+  if (!TestConfig.allowDuplicateTestIds && duplicateTestIds.length > 0) {
+    throw new Error(`duplicate test id(s): ${duplicateTestIds.join(', ')}`);
   }
 
   // As per ResultSink documentation, this will always be a localhost connection

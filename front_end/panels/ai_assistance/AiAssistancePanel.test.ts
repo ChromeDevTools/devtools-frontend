@@ -300,6 +300,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
     const tests = [
       {
         flavor: SDK.DOMModel.DOMNode,
+        name: 'DOMNode',
         createContext: () => {
           const node = sinon.createStubInstance(SDK.DOMModel.DOMNode, {
             nodeType: Node.ELEMENT_NODE,
@@ -310,6 +311,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
       },
       {
         flavor: SDK.NetworkRequest.NetworkRequest,
+        name: 'NetworkRequest',
         createContext: () => {
           return new AiAssistanceModel.NetworkAgent.RequestContext(
               sinon.createStubInstance(SDK.NetworkRequest.NetworkRequest),
@@ -319,6 +321,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
       },
       {
         flavor: AiAssistanceModel.AIContext.AgentFocus,
+        name: 'AgentFocus',
         createContext: () => {
           const parsedTrace = {insights: new Map(), data: {Meta: {mainFrameId: ''}}} as Trace.TraceModel.ParsedTrace;
           return AiAssistanceModel.PerformanceAgent.PerformanceTraceContext.fromParsedTrace(parsedTrace);
@@ -327,6 +330,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
       },
       {
         flavor: Workspace.UISourceCode.UISourceCode,
+        name: 'UISourceCode',
         createContext: () => {
           return new AiAssistanceModel.FileAgent.FileContext(
               sinon.createStubInstance(Workspace.UISourceCode.UISourceCode));
@@ -336,7 +340,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
     ];
 
     for (const test of tests) {
-      it(`should use the selected ${test.flavor.name} context after the widget is shown`, async () => {
+      it(`should use the selected ${test.name} context after the widget is shown`, async () => {
         const {panel, view} = await createAiAssistancePanel();
         const context = test.createContext();
         const contextItem = context.getItem();
@@ -352,7 +356,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
         expect(nextInput.props.context?.getItem()).equals(contextItem);
       });
 
-      it(`should update the selected ${test.flavor.name} context whenever flavor changes`, async () => {
+      it(`should update the selected ${test.name} context whenever flavor changes`, async () => {
         const {panel, view} = await createAiAssistancePanel();
         void panel.handleAction(test.action);
         let nextInput = await view.nextInput;
@@ -371,7 +375,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
         expect(nextInput.props.context?.getItem()).equals(contextItem);
       });
 
-      it(`should ignore ${test.flavor.name} flavor change after the panel was hidden`, async () => {
+      it(`should ignore ${test.name} flavor change after the panel was hidden`, async () => {
         const {view, panel} = await createAiAssistancePanel();
         assert(view.input.state === AiAssistancePanel.ViewState.CHAT_VIEW);
         assert.isFalse(view.input.props.isContextSelected);

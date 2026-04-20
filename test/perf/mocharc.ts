@@ -6,6 +6,8 @@ import * as path from 'node:path';
 
 import {loadTests, TestConfig} from '../conductor/test_config.js';
 
+TestConfig.allowDuplicateTestIds = true;
+
 const spec = loadTests(__dirname);
 spec.unshift(path.join(__dirname, 'setup', 'test_setup.js'));
 

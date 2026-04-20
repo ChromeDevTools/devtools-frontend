@@ -788,7 +788,7 @@ describeWithEnvironment('Widget', () => {
     });
   });
 
-  describe('WidgetDirective', () => {
+  describe('WidgetDirective (non-devtools-widget elements)', () => {
     let attachedCount = 0;
     let detachedCount = 0;
     let fooSetterCount = 0;

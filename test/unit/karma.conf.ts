@@ -165,8 +165,21 @@ const BaseProgressReporter =
 const ProgressWithDiffReporter = function(
     this: any, formatError: unknown, reportSlow: unknown, useColors: unknown, browserConsoleLogOptions: unknown) {
   BaseProgressReporter.call(this, formatError, reportSlow, useColors, browserConsoleLogOptions);
+
+  const seenTestIds = new Set<string>();
+  const duplicateTestIds: string[] = [];
+
+  const onSpecComplete = (result: any) => {
+    const testId = ResultsDb.sanitizedTestId([...result.suite, result.description].join('/'));
+    if (seenTestIds.has(testId)) {
+      duplicateTestIds.push(testId);
+    }
+    seenTestIds.add(testId);
+  };
+
   const baseSpecFailure = this.specFailure;
   this.specFailure = function(this: any, _browser: unknown, result: any) {
+    onSpecComplete(result);
     baseSpecFailure.apply(this, arguments);
     const patch = formatAsPatch(resultAssertionsDiff(result));
     if (patch) {
@@ -175,9 +188,18 @@ const ProgressWithDiffReporter = function(
   };
 
   const baseSpecSuccess = this.specSuccess;
-  this.specSuccess = function(this: any, _browser: unknown, _result: unknown) {
+  this.specSuccess = function(this: any, _browser: unknown, result: any) {
+    onSpecComplete(result);
     if (!TestConfig.isAiAgent) {
       baseSpecSuccess.apply(this, arguments);
+    }
+  };
+
+  const baseSpecSkipped = this.specSkipped;
+  this.specSkipped = function(this: any, _browser: unknown, result: any) {
+    onSpecComplete(result);
+    if (baseSpecSkipped) {
+      baseSpecSkipped.apply(this, arguments);
     }
   };
 
@@ -185,6 +207,10 @@ const ProgressWithDiffReporter = function(
   this.onRunComplete = function(this: any, browsers: any, _results: any) {
     if (baseOnRunComplete) {
       baseOnRunComplete.apply(this, arguments);
+    }
+
+    if (duplicateTestIds.length > 0) {
+      throw new Error(`duplicate test id(s): ${duplicateTestIds.join(', ')}`);
     }
 
     browsers.forEach((browser: any) => {

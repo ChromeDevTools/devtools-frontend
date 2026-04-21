@@ -185,6 +185,34 @@ const UIStringsNotTranslate = {
    */
   revealTrace: 'Reveal trace',
   /**
+   * @description Accessible label for the reveal button in the computed styles widget.
+   */
+  revealComputedStyles: 'Reveal computed styles',
+  /**
+   * @description Accessible label for the reveal button in the core web vitals widget.
+   */
+  revealCoreWebVitals: 'Reveal Core Web Vitals',
+  /**
+   * @description Accessible label for the reveal button in the style properties widget.
+   */
+  revealStyleProperties: 'Reveal style properties',
+  /**
+   * @description Accessible label for the reveal button in the LCP breakdown widget.
+   */
+  revealLcpBreakdown: 'Reveal LCP breakdown',
+  /**
+   * @description Accessible label for the reveal button in the LCP element widget.
+   */
+  revealLcpElement: 'Reveal LCP element',
+  /**
+   * @description Accessible label for the reveal button in the performance summary widget.
+   */
+  revealPerformanceSummary: 'Reveal performance summary',
+  /**
+   * @description Accessible label for the reveal button in the bottom up thread activity widget.
+   */
+  revealBottomUpTree: 'Reveal bottom-up thread activity',
+  /**
    * @description Title for the core web vitals widget.
    */
   coreVitals: 'Core Web Vitals',
@@ -757,6 +785,7 @@ interface WidgetMakerResponse {
   // Can be null if the widget is only used to add the Reveal CTA.
   title: Lit.LitTemplate|Platform.UIString.LocalizedString|null;
   jslogContext?: string;
+  accessibleRevealLabel: string;
 }
 
 const nodeCache = new Map<Protocol.DOM.BackendNodeId, SDK.DOMModel.DOMNode>();
@@ -812,6 +841,7 @@ async function makeComputedStyleWidget(widgetData: ComputedStyleAiWidget): Promi
   return {
     renderedWidget,
     revealable: new Elements.ElementsPanel.NodeComputedStyles(domNodeForId),
+    accessibleRevealLabel: lockedString(UIStringsNotTranslate.revealComputedStyles),
     // clang-format off
     title: html`
       <span class="computed-style-title-wrapper">
@@ -838,6 +868,7 @@ async function makeCoreWebVitalsWidget(widgetData: CoreVitalsAiWidget): Promise<
   return {
     renderedWidget,
     revealable: new TimelineUtils.Helpers.RevealableCoreVitals(widgetData.data.insightSetKey),
+    accessibleRevealLabel: lockedString(UIStringsNotTranslate.revealCoreWebVitals),
     title: lockedString(UIStringsNotTranslate.coreVitals),
     jslogContext: 'core-web-vitals',
   };
@@ -871,6 +902,7 @@ async function makeStylePropertiesWidget(widgetData: StylePropertiesAiWidget): P
   return {
     renderedWidget,
     revealable: domNodeForId,
+    accessibleRevealLabel: lockedString(UIStringsNotTranslate.revealStyleProperties),
     title: html`<devtools-widget
       ${widget(PanelsCommon.DOMLinkifier.DOMNodeLink, {
       node: domNodeForId,
@@ -899,6 +931,7 @@ async function makePerfInsightWidget(widgetData: PerfInsightAiWidget): Promise<W
       return {
         renderedWidget,
         revealable: new TimelineUtils.Helpers.RevealableInsight(insight),
+        accessibleRevealLabel: lockedString(UIStringsNotTranslate.revealLcpBreakdown),
         title: lockedString(UIStringsNotTranslate.lcpBreakdown),
         jslogContext: 'lcp-breakdown',
       };
@@ -933,6 +966,7 @@ async function makeBottomUpTimelineTreeWidget(widgetData: BottomUpTreeAiWidget):
   return {
     renderedWidget,
     revealable: new TimelineUtils.Helpers.RevealableBottomUpProfile(widgetData.data.bounds),
+    accessibleRevealLabel: lockedString(UIStringsNotTranslate.revealBottomUpTree),
     title: lockedString(UIStringsNotTranslate.bottomUpTree),
     jslogContext: 'bottom-up',
   };
@@ -958,7 +992,7 @@ function renderWidgetResponse(response: WidgetMakerResponse|null): Lit.LitTempla
   const revealButton = html`
     <devtools-button class="widget-reveal-button"
       .variant=${Buttons.Button.Variant.TEXT}
-      .accessibleLabel=${lockedString(UIStringsNotTranslate.reveal)}
+      .accessibleLabel=${response.accessibleRevealLabel}
       .jslogContext=${'reveal'}
       @click=${onReveal}
     >
@@ -994,11 +1028,13 @@ function renderWidgetResponse(response: WidgetMakerResponse|null): Lit.LitTempla
 }
 
 async function makePerformanceTraceWidget(widgetData: PerformanceTraceAiWidget): Promise<WidgetMakerResponse|null> {
+  const customRevealTitle = lockedString(UIStringsNotTranslate.revealTrace);
   return {
     renderedWidget: null,
     title: null,
     revealable: new Timeline.TimelinePanel.ParsedTraceRevealable(widgetData.data.parsedTrace),
-    customRevealTitle: lockedString(UIStringsNotTranslate.revealTrace),
+    customRevealTitle,
+    accessibleRevealLabel: customRevealTitle,
     jslogContext: 'performance-trace',
   };
 }
@@ -1058,6 +1094,7 @@ async function makeDomTreeWidget(widgetData: DomTreeAiWidget): Promise<WidgetMak
   return {
     renderedWidget,
     revealable: new SDK.DOMModel.DeferredDOMNode(root.domModel().target(), root.backendNodeId()),
+    accessibleRevealLabel: lockedString(UIStringsNotTranslate.revealLcpElement),
     title: lockedString(UIStringsNotTranslate.lcpElement),
     jslogContext: 'dom-snapshot',
   };
@@ -1623,6 +1660,7 @@ async function makeTimelineRangeSummaryWidget(widgetData: TimelineRangeSummaryAi
   return {
     renderedWidget: template,
     revealable: new TimelineUtils.Helpers.RevealableTimeRange(bounds),
+    accessibleRevealLabel: lockedString(UIStringsNotTranslate.revealPerformanceSummary),
     title: lockedString(UIStringsNotTranslate.performanceSummary),
     jslogContext: 'timeline-range-summary',
   };

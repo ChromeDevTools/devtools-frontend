@@ -748,7 +748,7 @@ describeWithEnvironment('ChatMessage', () => {
       assert.strictEqual(widgetHeader.querySelector('.widget-name')?.textContent, 'LCP element');
       const revealButton = widgetHeader.querySelector('.widget-reveal-button');
       assert.isNotNull(revealButton);
-      assert.strictEqual(revealButton.getAttribute('accessibleLabel'), 'Reveal');
+      assert.strictEqual(revealButton.getAttribute('accessibleLabel'), 'Reveal LCP element');
     });
 
     it('renders the "Export for agents" button after action buttons and before suggestions when onExportClick is provided, it is the last message, and V2 is enabled',

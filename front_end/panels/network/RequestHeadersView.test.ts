@@ -16,7 +16,7 @@ import {
   renderElementIntoDOM,
 } from '../../testing/DOMHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
-import {createWorkspaceProject} from '../../testing/OverridesHelpers.js';
+import {createWorkspaceProject, setUpEnvironment} from '../../testing/OverridesHelpers.js';
 import {createFileSystemUISourceCode} from '../../testing/UISourceCodeHelpers.js';
 import {
   recordedMetricsContain,
@@ -110,6 +110,7 @@ describeWithMockConnection('RequestHeadersView', () => {
   let component: Network.RequestHeadersView.RequestHeadersView|null|undefined = null;
 
   beforeEach(() => {
+    setUpEnvironment();
     resetRecordedMetrics();
   });
 

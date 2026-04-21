@@ -102,7 +102,7 @@ export class ImageView extends UI.View.SimpleView {
     super({
       title: i18nString(UIStrings.image),
       viewId: 'image',
-      jslog: `${VisualLogging.pane('image-view')}}`,
+      jslog: `${VisualLogging.pane('image-view')}`,
     });
     this.registerRequiredCSS(imageViewStyles);
     this.element.tabIndex = -1;
@@ -163,7 +163,10 @@ export class ImageView extends UI.View.SimpleView {
     }
 
     this.cachedContent = content;
-    const imageSrc = content.asDataUrl() ?? this.url;
+    const imageSrc = content.asImagePreviewUrl();
+    if (imageSrc === null) {
+      return;
+    }
     const loadPromise = new Promise(x => {
       this.imagePreviewElement.onload = x;
     });
@@ -212,8 +215,7 @@ export class ImageView extends UI.View.SimpleView {
   }
 
   private async saveImage(): Promise<void> {
-    const imageDataURL = this.cachedContent?.asDataUrl();
-    if (!imageDataURL) {
+    if (!this.cachedContent) {
       return;
     }
 
@@ -228,7 +230,10 @@ export class ImageView extends UI.View.SimpleView {
       suggestedName = decodeURIComponent(this.parsedURL.displayName);
     }
 
-    const blob = await fetch(imageDataURL).then(r => r.blob());
+    const blob = this.cachedContent.asBlob();
+    if (!blob) {
+      return;
+    }
     try {
       const handle = await window.showSaveFilePicker({suggestedName});
       const writable = await handle.createWritable();

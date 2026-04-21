@@ -66,6 +66,64 @@ describe('ContentData', () => {
     assert.strictEqual(textWithCharsetContent.asDataUrl(), 'data:text/html;charset=utf-8,a%20simple%20text');
   });
 
+  it('converts to a Blob', async () => {
+    const textContent = new ContentData('a simple text', false, MimeType.HTML);
+    const textBlob1 = textContent.asBlob();
+    assert.strictEqual(textBlob1?.type, 'text/html');
+    assert.strictEqual(await textBlob1?.text(), 'a simple text');
+
+    const binaryData = new ContentData('AQIDBA==', true, 'application/wasm');
+    const binaryBlob1 = binaryData.asBlob();
+    assert.strictEqual(binaryBlob1?.type, 'application/wasm');
+    const buffer = await binaryBlob1?.arrayBuffer();
+    assert.deepEqual(new Uint8Array(buffer as ArrayBuffer), new Uint8Array([1, 2, 3, 4]));
+  });
+
+  it('returns null if the content is too large to be converted to a Blob', () => {
+    // 10MB limit is 10 * 1024 * 1024 = 10,485,760 bytes.
+    // For base64, we check length * 0.75.
+    // 14,000,000 * 0.75 = 10,500,000 (> 10MB)
+    const largeBase64 = new ContentData('a'.repeat(14_000_000), true, 'image/png');
+    assert.isNull(largeBase64.asBlob());
+
+    // For text, we check length.
+    const largeText = new ContentData('a'.repeat(11_000_000), false, 'text/plain');
+    assert.isNull(largeText.asBlob());
+  });
+
+  it('converts to an image preview URL and caches the result', async () => {
+    const createSpy = sinon.spy(URL, 'createObjectURL');
+    // Small content should use a Data URL
+    const textContent = new ContentData('a simple text', false, MimeType.HTML);
+    const dataUrl = textContent.asImagePreviewUrl();
+    assert.isNotNull(dataUrl);
+    assert.isTrue(dataUrl?.startsWith('data:'));
+    sinon.assert.callCount(createSpy, 0);
+
+    // Verify caching of data URL
+    const dataUrl2 = textContent.asImagePreviewUrl();
+    assert.strictEqual(dataUrl, dataUrl2);
+
+    // We simulate a large content by making asDataUrl return null.
+    const textContent2 = new ContentData('large content', false, MimeType.HTML);
+    sinon.stub(textContent2, 'asDataUrl').returns(null);
+    const blobUrl = textContent2.asImagePreviewUrl();
+    assert.isNotNull(blobUrl);
+    assert.isTrue(blobUrl?.startsWith('blob:'));
+    sinon.assert.callCount(createSpy, 1);
+
+    // Second call should return the cached URL
+    const blobUrl2 = textContent2.asImagePreviewUrl();
+    assert.strictEqual(blobUrl, blobUrl2);
+    sinon.assert.callCount(createSpy, 1);
+
+    // Test large content returns null
+    const textContent3 = new ContentData('very large content', false, MimeType.HTML);
+    sinon.stub(textContent3, 'asDataUrl').returns(null);
+    sinon.stub(textContent3, 'asBlob').returns(null);
+    assert.isNull(textContent3.asImagePreviewUrl());
+  });
+
   it('converts to DeferredContent', () => {
     const textContent = new ContentData('a simple text', false, MimeType.HTML);
     const deferredTextContent = textContent.asDeferedContent();

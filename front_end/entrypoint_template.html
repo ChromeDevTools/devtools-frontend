@@ -17,8 +17,7 @@
 <meta
   http-equiv="Content-Security-Policy"
   content="default-src 'self' devtools: data:; style-src 'self' 'unsafe-inline' devtools:; object-src 'none'; script-src
-  'self' https://chrome-devtools-frontend.appspot.com; img-src 'self' data:; frame-src * data:; connect-src data:
-  https://chromeuxreport.googleapis.com 'self' devtools: ws://127.0.0.1:*;">
+  'self' https://chrome-devtools-frontend.appspot.com; img-src 'self' data: blob:; frame-src * data:; connect-src data: https://chromeuxreport.googleapis.com 'self' devtools: ws://127.0.0.1:*;">
 <meta name="referrer" content="no-referrer">
 <script type="module" src="./entrypoints/%ENTRYPOINT_NAME%/%ENTRYPOINT_NAME%.js"></script>
 <link href="./application_tokens.css" rel="stylesheet">

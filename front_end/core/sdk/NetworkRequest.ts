@@ -1508,16 +1508,8 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
     if (TextUtils.ContentData.ContentData.isError(contentData)) {
       return;
     }
-    let imageSrc = contentData.asDataUrl();
-    if (imageSrc === null && !this.#failed) {
-      const cacheControl = this.responseHeaderValue('cache-control') || '';
-      if (!cacheControl.includes('no-cache')) {
-        imageSrc = this.#url;
-      }
-    }
-    if (imageSrc !== null) {
-      image.src = imageSrc;
-    }
+    const imageSrc = contentData.asImagePreviewUrl();
+    image.src = imageSrc ?? '';  // Empty the image if we cannot generate a preview URL
   }
 
   initiator(): Protocol.Network.Initiator|null {

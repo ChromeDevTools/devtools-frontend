@@ -1776,6 +1776,40 @@ describeWithMockConnection('AI Assistance Panel', () => {
           });
     }
 
+    it('should update the AI Assistance visibility status when the drawer visibility changes', async () => {
+      updateHostConfig({
+        devToolsFreestyler: {
+          enabled: true,
+        },
+      });
+
+      viewManagerIsViewVisibleStub.callsFake(viewName => viewName === 'elements');
+      const {view} = await createAiAssistancePanel();
+
+      assert(view.input.state === AiAssistancePanel.ViewState.CHAT_VIEW);
+      assert.strictEqual(
+          view.input.props.conversationType, AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING);
+
+      viewManagerIsViewVisibleStub.returns(false);
+      UI.ViewManager.ViewManager.instance().dispatchEventToListeners(UI.ViewManager.Events.VIEW_VISIBILITY_CHANGED, {
+        location: 'drawer',
+        revealedViewId: undefined,
+        hiddenViewId: 'elements',
+      });
+      let nextInput = await view.nextInput;
+      assert(nextInput.state === AiAssistancePanel.ViewState.EXPLORE_VIEW);
+
+      viewManagerIsViewVisibleStub.callsFake(viewName => viewName === 'elements');
+      UI.ViewManager.ViewManager.instance().dispatchEventToListeners(UI.ViewManager.Events.VIEW_VISIBILITY_CHANGED, {
+        location: 'drawer',
+        revealedViewId: 'elements',
+        hiddenViewId: undefined,
+      });
+      nextInput = await view.nextInput;
+      assert(nextInput.state === AiAssistancePanel.ViewState.CHAT_VIEW);
+      assert.strictEqual(nextInput.props.conversationType, AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING);
+    });
+
     it('should refresh its state when moved', async () => {
       updateHostConfig({
         devToolsFreestyler: {

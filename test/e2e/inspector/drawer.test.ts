@@ -4,6 +4,7 @@
 
 import {assert} from 'chai';
 
+import {runCommandWithQuickOpen} from '../helpers/quick_open-helpers.js';
 import type {DevToolsPage} from '../shared/frontend-helper.js';
 
 const MINIMIZE_BUTTON_SELECTOR = '[aria-label="Minimize drawer"]';
@@ -429,6 +430,42 @@ describe('Drawer', () => {
     await devToolsPage.waitFor(DRAWER_SELECTOR);
     const expandButton = await devToolsPage.waitFor(EXPAND_BUTTON_SELECTOR);
     assert.exists(expandButton, 'Drawer should remain minimized after toggling orientation back and forth');
+  });
+
+  it('drawer stays minimized when switching main panel tabs', async ({devToolsPage}) => {
+    // Show the drawer
+    await devToolsPage.pressKey('Escape');
+    await devToolsPage.waitFor(DRAWER_SELECTOR);
+
+    // Minimize the drawer
+    await devToolsPage.click(MINIMIZE_BUTTON_SELECTOR);
+    await devToolsPage.waitFor(EXPAND_BUTTON_SELECTOR);
+
+    // Click Console tab in the main tab bar
+    await devToolsPage.click('#tab-console');
+    // Switch to Elements tab
+    await devToolsPage.click('#tab-elements');
+
+    // The drawer should still be minimized (expand button visible, not minimize button)
+    const expandButton = await devToolsPage.waitFor(EXPAND_BUTTON_SELECTOR);
+    assert.exists(expandButton, 'Drawer should remain minimized after switching main panel tabs');
+  });
+
+  it('toggle console command opens, minimizes, and restores the drawer', async ({devToolsPage}) => {
+    await devToolsPage.click('#tab-elements');
+    await devToolsPage.waitForNone(DRAWER_SELECTOR);
+
+    await runCommandWithQuickOpen('Toggle console', devToolsPage);
+    await devToolsPage.waitFor(DRAWER_SELECTOR);
+    await devToolsPage.waitFor(MINIMIZE_BUTTON_SELECTOR);
+
+    await runCommandWithQuickOpen('Toggle console', devToolsPage);
+    await devToolsPage.waitFor(DRAWER_SELECTOR);
+    await devToolsPage.waitFor(EXPAND_BUTTON_SELECTOR);
+
+    await runCommandWithQuickOpen('Toggle console', devToolsPage);
+    await devToolsPage.waitFor(DRAWER_SELECTOR);
+    await devToolsPage.waitFor(MINIMIZE_BUTTON_SELECTOR);
   });
 
   it('clicking drawer console tab minimizes expanded drawer when main console is active', async ({devToolsPage}) => {

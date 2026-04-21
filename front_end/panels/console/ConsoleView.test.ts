@@ -38,6 +38,100 @@ describeWithMockConnection('ConsoleView', () => {
     consoleView.detach();
   });
 
+  it('expands a minimized drawer when toggling console', () => {
+    const inspectorView = UI.InspectorView.InspectorView.instance({forceNew: true});
+    const drawerVisibleStub = sinon.stub(inspectorView, 'drawerVisible').returns(true);
+    const isDrawerMinimizedStub = sinon.stub(inspectorView, 'isDrawerMinimized').returns(true);
+    const setDrawerMinimizedStub = sinon.stub(inspectorView, 'setDrawerMinimized');
+    const hasFocusStub = sinon.stub(consoleView, 'hasFocus').returns(false);
+    const bringToFrontStub = sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'bringToFront');
+    const showStub = sinon.stub(Common.Console.Console.instance(), 'show');
+    const focusPromptStub = sinon.stub(consoleView, 'focusPrompt');
+
+    const delegate = new Console.ConsoleView.ActionDelegate();
+    assert.isTrue(delegate.handleAction({} as UI.Context.Context, 'console.toggle'));
+
+    sinon.assert.calledOnceWithExactly(setDrawerMinimizedStub, false);
+    sinon.assert.calledOnce(showStub);
+    sinon.assert.calledOnce(focusPromptStub);
+    sinon.assert.calledOnce(bringToFrontStub);
+
+    drawerVisibleStub.restore();
+    isDrawerMinimizedStub.restore();
+    setDrawerMinimizedStub.restore();
+    hasFocusStub.restore();
+    bringToFrontStub.restore();
+    showStub.restore();
+    focusPromptStub.restore();
+    UI.InspectorView.InspectorView.removeInstance();
+  });
+
+  it('minimizes drawer when console is already shown and focused in expanded drawer', () => {
+    const inspectorView = UI.InspectorView.InspectorView.instance({forceNew: true});
+    const drawerVisibleStub = sinon.stub(inspectorView, 'drawerVisible').returns(true);
+    const isDrawerMinimizedStub = sinon.stub(inspectorView, 'isDrawerMinimized').returns(false);
+    const setDrawerMinimizedStub = sinon.stub(inspectorView, 'setDrawerMinimized');
+    const minimizeDrawerStub = sinon.stub(inspectorView, 'minimizeDrawer');
+    const isShowingStub = sinon.stub(consoleView, 'isShowing').returns(true);
+    const hasFocusStub = sinon.stub(consoleView, 'hasFocus').returns(true);
+    const bringToFrontStub = sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'bringToFront');
+    const showStub = sinon.stub(Common.Console.Console.instance(), 'show');
+    const focusPromptStub = sinon.stub(consoleView, 'focusPrompt');
+
+    const delegate = new Console.ConsoleView.ActionDelegate();
+    assert.isTrue(delegate.handleAction({} as UI.Context.Context, 'console.toggle'));
+
+    sinon.assert.notCalled(setDrawerMinimizedStub);
+    sinon.assert.calledOnce(minimizeDrawerStub);
+    sinon.assert.notCalled(showStub);
+    sinon.assert.notCalled(focusPromptStub);
+    sinon.assert.notCalled(bringToFrontStub);
+
+    drawerVisibleStub.restore();
+    isDrawerMinimizedStub.restore();
+    setDrawerMinimizedStub.restore();
+    minimizeDrawerStub.restore();
+    isShowingStub.restore();
+    hasFocusStub.restore();
+    bringToFrontStub.restore();
+    showStub.restore();
+    focusPromptStub.restore();
+    UI.InspectorView.InspectorView.removeInstance();
+  });
+
+  it('focuses console prompt when drawer is expanded but console is not focused', () => {
+    const inspectorView = UI.InspectorView.InspectorView.instance({forceNew: true});
+    const drawerVisibleStub = sinon.stub(inspectorView, 'drawerVisible').returns(true);
+    const isDrawerMinimizedStub = sinon.stub(inspectorView, 'isDrawerMinimized').returns(false);
+    const setDrawerMinimizedStub = sinon.stub(inspectorView, 'setDrawerMinimized');
+    const minimizeDrawerStub = sinon.stub(inspectorView, 'minimizeDrawer');
+    const isShowingStub = sinon.stub(consoleView, 'isShowing').returns(true);
+    const hasFocusStub = sinon.stub(consoleView, 'hasFocus').returns(false);
+    const bringToFrontStub = sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'bringToFront');
+    const showStub = sinon.stub(Common.Console.Console.instance(), 'show');
+    const focusPromptStub = sinon.stub(consoleView, 'focusPrompt');
+
+    const delegate = new Console.ConsoleView.ActionDelegate();
+    assert.isTrue(delegate.handleAction({} as UI.Context.Context, 'console.toggle'));
+
+    sinon.assert.notCalled(minimizeDrawerStub);
+    sinon.assert.notCalled(setDrawerMinimizedStub);
+    sinon.assert.calledOnce(bringToFrontStub);
+    sinon.assert.calledOnce(showStub);
+    sinon.assert.calledOnce(focusPromptStub);
+
+    drawerVisibleStub.restore();
+    isDrawerMinimizedStub.restore();
+    setDrawerMinimizedStub.restore();
+    minimizeDrawerStub.restore();
+    isShowingStub.restore();
+    hasFocusStub.restore();
+    bringToFrontStub.restore();
+    showStub.restore();
+    focusPromptStub.restore();
+    UI.InspectorView.InspectorView.removeInstance();
+  });
+
   it('adds a title to every checkbox label in the settings view', async () => {
     const consoleSettingsCheckboxes =
         consoleView.element.querySelector('devtools-toolbar')!.querySelectorAll('devtools-checkbox');

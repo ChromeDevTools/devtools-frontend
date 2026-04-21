@@ -1959,15 +1959,22 @@ export class ConsoleViewFilter {
 export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
   handleAction(_context: UI.Context.Context, actionId: string): boolean {
     switch (actionId) {
-      case 'console.toggle':
-        if (ConsoleView.instance().hasFocus() && UI.InspectorView.InspectorView.instance().drawerVisible()) {
-          UI.InspectorView.InspectorView.instance().closeDrawer();
+      case 'console.toggle': {
+        const inspectorView = UI.InspectorView.InspectorView.instance();
+        const consoleView = ConsoleView.instance();
+        if (inspectorView.drawerVisible() && !inspectorView.isDrawerMinimized() && consoleView.isShowing() &&
+            consoleView.hasFocus()) {
+          inspectorView.minimizeDrawer();
           return true;
+        }
+        if (inspectorView.drawerVisible() && inspectorView.isDrawerMinimized()) {
+          inspectorView.setDrawerMinimized(false);
         }
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.bringToFront();
         Common.Console.Console.instance().show();
-        ConsoleView.instance().focusPrompt();
+        consoleView.focusPrompt();
         return true;
+      }
       case 'console.clear':
         ConsoleView.instance().clearConsole();
         return true;

@@ -218,4 +218,73 @@ describeWithMockConnection('DeviceModeModel', () => {
       deviceModeModel.emulate(EmulationModel.DeviceModeModel.Type.None, null, null);
     }
   });
+
+  it('uses modern default mobile user agent and metadata', () => {
+    const deviceModeModel = EmulationModel.DeviceModeModel.DeviceModeModel.instance({forceNew: true});
+    const setUserAgentOverride =
+        sinon.stub(SDK.NetworkManager.MultitargetNetworkManager.instance(), 'setUserAgentOverride');
+
+    try {
+      const em = target.model(SDK.EmulationModel.EmulationModel);
+      assert.exists(em);
+      deviceModeModel.modelAdded(em);
+
+      // stub isMobile to bypass settings issues in this test environment
+      sinon.stub(deviceModeModel, 'isMobile').returns(true);
+
+      deviceModeModel.emulate('Responsive' as EmulationModel.DeviceModeModel.Type, null, null);
+
+      const now = new Date();
+      const year = now.getFullYear();
+      const isLateInYear = now.getMonth() >= 9;
+      const expectedAndroidVersion = isLateInYear ? (year - 2010) : (year - 2011);
+      const expectedPixelModel = isLateInYear ? (year - 2016) : (year - 2017);
+
+      const modernCall =
+          setUserAgentOverride.getCalls().find(call => call.args[0].includes(`Pixel ${expectedPixelModel}`));
+      assert.exists(modernCall, 'Modern User Agent was not applied');
+
+      const userAgent = modernCall?.args[0];
+      const metadata = modernCall?.args[1];
+
+      assert.include(userAgent, `Android ${expectedAndroidVersion}; Pixel ${expectedPixelModel}`);
+      assert.isNotNull(metadata);
+      assert.strictEqual(metadata?.platform, 'Android');
+      assert.strictEqual(metadata?.platformVersion, expectedAndroidVersion.toString());
+      assert.strictEqual(metadata?.model, `Pixel ${expectedPixelModel}`);
+    } finally {
+      deviceModeModel.emulate(EmulationModel.DeviceModeModel.Type.None, null, null);
+      setUserAgentOverride.restore();
+    }
+  });
+
+  it('updates the default mobile UA based on the calendar year and month (Oct bump)', () => {
+    const clock = sinon.useFakeTimers();
+    try {
+      // Early 2026: Should be Android 15 (N-1)
+      clock.tick(new Date(2026, 0, 1).getTime());
+      const earlyUA = EmulationModel.DeviceModeModel.DeviceModeModel.getDynamicMobileUA();
+      assert.strictEqual(earlyUA.metadata.platformVersion, '15');
+      assert.strictEqual(earlyUA.metadata.model, 'Pixel 9');
+
+      // September 2026: Still Android 15
+      clock.tick(new Date(2026, 8, 1).getTime() - new Date(2026, 0, 1).getTime());
+      const septUA = EmulationModel.DeviceModeModel.DeviceModeModel.getDynamicMobileUA();
+      assert.strictEqual(septUA.metadata.platformVersion, '15');
+
+      // October 2026: Bump to Android 16
+      clock.tick(new Date(2026, 9, 1).getTime() - new Date(2026, 8, 1).getTime());
+      const octUA = EmulationModel.DeviceModeModel.DeviceModeModel.getDynamicMobileUA();
+      assert.strictEqual(octUA.metadata.platformVersion, '16');
+      assert.strictEqual(octUA.metadata.model, 'Pixel 10');
+
+      // January 2030: Future proof check
+      clock.tick(new Date(2030, 0, 1).getTime() - new Date(2026, 9, 1).getTime());
+      const futureUA = EmulationModel.DeviceModeModel.DeviceModeModel.getDynamicMobileUA();
+      assert.strictEqual(futureUA.metadata.platformVersion, '19');
+      assert.strictEqual(futureUA.metadata.model, 'Pixel 13');
+    } finally {
+      clock.restore();
+    }
+  });
 });

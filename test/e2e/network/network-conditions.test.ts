@@ -189,9 +189,8 @@ describe('The Network Tab', () => {
     await navigateToNetworkTab('empty.html', devToolsPage, inspectedPage);
     const fullVersion = (await browser.browser.version()).split('/')[1];
     const majorVersion = fullVersion.split('.', 1)[0];
-    const customUAValue =
-        `Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/${
-            majorVersion}.0.0.0 Mobile Safari/537.36`;
+    const customUAValue = `Mozilla/5.0 (Linux; Android 16; Pixel 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/${
+        majorVersion}.0.0.0 Mobile Safari/537.36`;
     const section = await openNetworkConditions(devToolsPage, '.network-config-ua');
     const autoCheckbox = await (await devToolsPage.waitForAria('Use browser default', section)).toElement('input');
     const uaDropdown = await devToolsPage.waitForAria('User agent', section);

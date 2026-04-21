@@ -64,6 +64,22 @@ describe('ExportForAgentsDialog', () => {
     assert.strictEqual(primaryButton?.getAttribute('accessibleLabel'), 'Copy to clipboard');
   });
 
+  it('focuses the first radio button when focus() is called', async () => {
+    const component = new AiAssistance.ExportForAgentsDialog.ExportForAgentsDialog({
+      dialog,
+      promptText,
+      markdownText,
+      onConversationSaveAs: noop,
+    });
+    renderElementIntoDOM(component);
+    await component.updateComplete;
+
+    component.focus();
+    const promptRadioButton =
+        querySelectorErrorOnMissing<HTMLInputElement>(component.contentElement, 'input[value="prompt"]');
+    assert.strictEqual((component.contentElement.getRootNode() as Document).activeElement, promptRadioButton);
+  });
+
   it('renders loading state when promptText is a Promise and updates when it is loaded', async () => {
     let resolvePrompt: (value: string) => void = () => {};
     const promptTextPromise = new Promise<string>(resolve => {

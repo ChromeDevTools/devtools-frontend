@@ -99,6 +99,7 @@ export const DEFAULT_VIEW: View = (input, _output, target): void => {
             value="prompt"
             name="export-state"
             .checked=${isPrompt}
+            autofocus
             aria-label=${i18nString(UIStrings.asPrompt)}
             @change=${() => input.onStateChange(StateType.PROMPT)}
           >

@@ -131,14 +131,14 @@ function runNextUpdate(): void {
         const controller = new AbortController();
         widget.addUpdateController(controller);
         await widget.performUpdate(controller.signal);
-      } catch (e) {
-        if (e.name !== 'AbortError') {
-          throw e;
-        }
       } finally {
         resolve();
       }
-    })();
+    })().catch(e => {
+      if (e.name !== 'AbortError') {
+        console.error(`${widget.constructor.name}.performUpdate failed: `, e);
+      }
+    });
   }
   currentUpdateQueue.clear();
   queueMicrotask(() => {

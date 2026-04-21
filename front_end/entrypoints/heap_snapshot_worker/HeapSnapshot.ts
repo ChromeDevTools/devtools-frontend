@@ -5,6 +5,7 @@
 /* eslint-disable @devtools/prefer-private-class-members */
 
 import * as i18n from '../../core/i18n/i18n.js';
+import type * as PlatformApi from '../../core/platform/api/api.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as HeapSnapshotModel from '../../models/heap_snapshot/heap_snapshot.js';
 
@@ -662,7 +663,8 @@ function formatProblemReport(snapshot: HeapSnapshot, report: HeapSnapshotProblem
       })
       .join('\n  ');
 }
-function reportProblemToPrimaryWorker(problemReport: HeapSnapshotProblemReport, port: MessagePort): void {
+function reportProblemToPrimaryWorker(
+    problemReport: HeapSnapshotProblemReport, port: PlatformApi.HostRuntime.WorkerMessagePort): void {
   port.postMessage({problemReport});
 }
 
@@ -713,12 +715,12 @@ type ArgumentsToBuildRetainers = SecondaryInitArgumentsStep1;
 interface Retainers {
   // For each node ordinal, this array contains the index of the first retaining edge
   // in the retainingEdges and retainingNodes arrays.
-  firstRetainerIndex: Uint32Array;
+  firstRetainerIndex: Uint32Array<ArrayBuffer>;
   // For each retaining edge, this array contains the "from" node's index.
-  retainingNodes: Uint32Array;
+  retainingNodes: Uint32Array<ArrayBuffer>;
   // For each retaining edge, this array contains the index in containmentEdges
   // where you can find other info about the edge, such as its type and name.
-  retainingEdges: Uint32Array;
+  retainingEdges: Uint32Array<ArrayBuffer>;
 }
 
 interface ArgumentsToComputeDominatorsAndRetainedSizes extends SecondaryInitArgumentsStep1, Retainers,
@@ -727,16 +729,16 @@ interface ArgumentsToComputeDominatorsAndRetainedSizes extends SecondaryInitArgu
   // should be used when computing dominators.
   essentialEdges: Platform.TypedArrayUtilities.BitVector;
   // A message port for reporting problems to the primary worker.
-  port: MessagePort;
+  port: PlatformApi.HostRuntime.WorkerMessagePort;
   // For each node ordinal, this array will contain the node's shallow size.
   nodeSelfSizesPromise: Promise<Uint32Array>;
 }
 
 interface DominatorsAndRetainedSizes {
   // For each node ordinal, this array contains the ordinal of its immediate dominating node.
-  dominatorsTree: Uint32Array;
+  dominatorsTree: Uint32Array<ArrayBuffer>;
   // For each node ordinal, this array contains the size of the subgraph it dominates, including its own size.
-  retainedSizes: Float64Array;
+  retainedSizes: Float64Array<ArrayBuffer>;
 }
 
 interface ArgumentsToBuildDominatedNodes extends ArgumentsToComputeDominatorsAndRetainedSizes,
@@ -746,9 +748,9 @@ interface DominatedNodes {
   // For each node ordinal, the index of its first child node in dominatedNodes.
   // Together with dominatedNodes, this allows traversing down the dominators tree,
   // whereas dominatorsTree allows upward traversal.
-  firstDominatedNodeIndex: Uint32Array;
+  firstDominatedNodeIndex: Uint32Array<ArrayBuffer>;
   // Node indexes of child nodes in the dominator tree.
-  dominatedNodes: Uint32Array;
+  dominatedNodes: Uint32Array<ArrayBuffer>;
 }
 
 /** The data transferred from the secondary worker to the primary. **/
@@ -762,15 +764,15 @@ export class SecondaryInitManager {
   argsStep1: Promise<SecondaryInitArgumentsStep1>;
   argsStep2: Promise<SecondaryInitArgumentsStep2>;
   argsStep3: Promise<SecondaryInitArgumentsStep3>;
-  constructor(port: MessagePort) {
+  constructor(port: PlatformApi.HostRuntime.WorkerMessagePort) {
     const {promise: argsStep1, resolve: resolveArgsStep1} = Promise.withResolvers<SecondaryInitArgumentsStep1>();
     this.argsStep1 = argsStep1;
     const {promise: argsStep2, resolve: resolveArgsStep2} = Promise.withResolvers<SecondaryInitArgumentsStep2>();
     this.argsStep2 = argsStep2;
     const {promise: argsStep3, resolve: resolveArgsStep3} = Promise.withResolvers<SecondaryInitArgumentsStep3>();
     this.argsStep3 = argsStep3;
-    port.onmessage = e => {
-      const data = e.data;
+    const listener = (e: unknown): void => {
+      const data = (e as PlatformApi.HostRuntime.WorkerMessageEvent).data;
       switch (data.step) {
         case 1:
           resolveArgsStep1(data.args);
@@ -780,9 +782,12 @@ export class SecondaryInitManager {
           break;
         case 3:
           resolveArgsStep3(data.args);
+          port.removeEventListener('message', listener);
           break;
       }
     };
+    port.addEventListener('message', listener);
+    port.start();
     void this.initialize(port);
   }
 
@@ -790,7 +795,7 @@ export class SecondaryInitManager {
     return (await this.argsStep3).nodeSelfSizes;
   }
 
-  private async initialize(port: MessagePort): Promise<void> {
+  private async initialize(port: PlatformApi.HostRuntime.WorkerMessagePort): Promise<void> {
     try {
       const argsStep1 = await this.argsStep1;
       const retainers = HeapSnapshot.buildRetainers(argsStep1);
@@ -805,22 +810,23 @@ export class SecondaryInitManager {
       };
       const dominatorsAndRetainedSizes = await HeapSnapshot.calculateDominatorsAndRetainedSizes(args);
       const dominatedNodesOutputs = HeapSnapshot.buildDominatedNodes({...args, ...dominatorsAndRetainedSizes});
-      const results: ResultsFromSecondWorker = {
+      const resultsFromSecondWorker: ResultsFromSecondWorker = {
         ...retainers,
         ...dominatorsAndRetainedSizes,
         ...dominatedNodesOutputs,
       };
-      port.postMessage({resultsFromSecondWorker: results}, {
-        transfer: [
-          results.dominatorsTree.buffer,
-          results.firstRetainerIndex.buffer,
-          results.retainedSizes.buffer,
-          results.retainingEdges.buffer,
-          results.retainingNodes.buffer,
-          results.dominatedNodes.buffer,
-          results.firstDominatedNodeIndex.buffer,
-        ]
-      });
+      port.postMessage({resultsFromSecondWorker}, [
+        // DominatorsAndRetainedSizes
+        resultsFromSecondWorker.dominatorsTree.buffer,
+        resultsFromSecondWorker.retainedSizes.buffer,
+        // Retainers
+        resultsFromSecondWorker.firstRetainerIndex.buffer,
+        resultsFromSecondWorker.retainingNodes.buffer,
+        resultsFromSecondWorker.retainingEdges.buffer,
+        // DominatedNodes
+        resultsFromSecondWorker.firstDominatedNodeIndex.buffer,
+        resultsFromSecondWorker.dominatedNodes.buffer,
+      ]);
     } catch (e) {
       port.postMessage({error: e + '\n' + e?.stack});
     }
@@ -953,7 +959,7 @@ export abstract class HeapSnapshot {
     this.#edgeNamesThatAreNotWeakMaps = Platform.TypedArrayUtilities.createBitVector(this.strings.length);
   }
 
-  async initialize(secondWorker: MessagePort): Promise<void> {
+  async initialize(secondWorker: PlatformApi.HostRuntime.WorkerMessagePort): Promise<void> {
     const meta = this.#metaNode;
 
     this.nodeTypeOffset = meta.node_fields.indexOf('type');
@@ -1062,20 +1068,24 @@ export abstract class HeapSnapshot {
     this.#progress.updateStatus('Finished processing.');
   }
 
-  private startInitStep1InSecondThread(secondWorker: MessagePort): Promise<ResultsFromSecondWorker> {
+  private startInitStep1InSecondThread(secondWorker: PlatformApi.HostRuntime.WorkerMessagePort):
+      Promise<ResultsFromSecondWorker> {
     const resultsFromSecondWorker = new Promise<ResultsFromSecondWorker>((resolve, reject) => {
-      secondWorker.onmessage = (event: MessageEvent) => {
-        const data = event.data;
+      const listener = (e: unknown): void => {
+        const data = (e as PlatformApi.HostRuntime.WorkerMessageEvent).data;
         if (data?.problemReport) {
           const problemReport: HeapSnapshotProblemReport = data.problemReport;
           console.warn(formatProblemReport(this, problemReport));
         } else if (data?.resultsFromSecondWorker) {
-          const resultsFromSecondWorker: ResultsFromSecondWorker = data.resultsFromSecondWorker;
-          resolve(resultsFromSecondWorker);
+          secondWorker.removeEventListener('message', listener);
+          resolve(data.resultsFromSecondWorker);
         } else if (data?.error) {
+          secondWorker.removeEventListener('message', listener);
           reject(data.error);
         }
       };
+      secondWorker.addEventListener('message', listener);
+      secondWorker.start();
     });
     const edgeCount = this.#edgeCount;
     const {containmentEdges, edgeToNodeOffset, edgeFieldsCount, nodeFieldCount} = this;
@@ -1099,14 +1109,14 @@ export abstract class HeapSnapshot {
     return resultsFromSecondWorker;
   }
 
-  private startInitStep2InSecondThread(secondWorker: MessagePort): void {
+  private startInitStep2InSecondThread(secondWorker: PlatformApi.HostRuntime.WorkerMessagePort): void {
     const rootNodeOrdinal = this.rootNodeIndexInternal / this.nodeFieldCount;
     const essentialEdges = this.initEssentialEdges();
     const args: SecondaryInitArgumentsStep2 = {rootNodeOrdinal, essentialEdgesBuffer: essentialEdges.buffer};
     secondWorker.postMessage({step: 2, args}, [essentialEdges.buffer]);
   }
 
-  private startInitStep3InSecondThread(secondWorker: MessagePort): void {
+  private startInitStep3InSecondThread(secondWorker: PlatformApi.HostRuntime.WorkerMessagePort): void {
     const {nodes, nodeFieldCount, nodeSelfSizeOffset, nodeCount} = this;
     const nodeSelfSizes = new Uint32Array(nodeCount);
     for (let nodeOrdinal = 0; nodeOrdinal < nodeCount; ++nodeOrdinal) {

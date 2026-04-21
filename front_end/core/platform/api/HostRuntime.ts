@@ -25,7 +25,7 @@ export interface Worker {
   set onerror(listener: (event: any) => void);
 }
 
-type WorkerMessagePort = typeof MessagePort.prototype;
+export type WorkerMessagePort = typeof MessagePort.prototype;
 
 /**
  * Currently we only transfer MessagePorts to workers, but it's possible to add
@@ -37,7 +37,7 @@ export type WorkerTransferable = WorkerMessagePort;
  * Used by workers to communicate with their parent.
  */
 export interface WorkerScope {
-  postMessage(message: unknown): void;
+  postMessage(message: unknown, transfer?: WorkerTransferable[]): void;
   set onmessage(listener: (event: WorkerMessageEvent) => Promise<void>| void);
 }
 

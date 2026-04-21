@@ -3,11 +3,10 @@
 // found in the LICENSE file.
 
 import type * as HeapSnapshotModel from '../../models/heap_snapshot/heap_snapshot.js';
-import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 
 import * as HeapSnapshotWorker from './heap_snapshot_worker.js';
 
-describeWithEnvironment('HeapSnapshot', () => {
+describe('HeapSnapshot', () => {
   class MockArray extends Uint32Array {
     getValue(i: number): number {
       return this[i];
@@ -690,6 +689,8 @@ describeWithEnvironment('HeapSnapshot', () => {
     const channel = new MessageChannel();
     new HeapSnapshotWorker.HeapSnapshot.SecondaryInitManager(channel.port2);
     const result = await loader.buildSnapshot(channel.port1);
+    channel.port1.close();
+    channel.port2.close();
     const reference = await HeapSnapshotWorker.HeapSnapshot.createJSHeapSnapshotForTesting(createHeapSnapshotMock());
 
     const resultToCompare = {

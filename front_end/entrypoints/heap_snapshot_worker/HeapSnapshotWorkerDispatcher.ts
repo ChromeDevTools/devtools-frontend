@@ -23,10 +23,9 @@ interface DispatcherResponse {
 export class HeapSnapshotWorkerDispatcher {
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  #objects: any[];
-  readonly #postMessage: typeof Window.prototype.postMessage;
-  constructor(postMessage: typeof Window.prototype.postMessage) {
-    this.#objects = [];
+  #objects: any[] = [];
+  readonly #postMessage: PlatformApi.HostRuntime.Worker['postMessage'];
+  constructor(postMessage: PlatformApi.HostRuntime.Worker['postMessage']) {
     this.#postMessage = postMessage;
   }
 
@@ -34,8 +33,10 @@ export class HeapSnapshotWorkerDispatcher {
     this.#postMessage({eventName: name, data});
   }
 
-  async dispatchMessage({data, ports}: PlatformApi.HostRuntime
-                            .WorkerMessageEvent<HeapSnapshotModel.HeapSnapshotModel.WorkerCommand>): Promise<void> {
+  async dispatchMessage({
+    data,
+    ports,
+  }: PlatformApi.HostRuntime.WorkerMessageEvent<HeapSnapshotModel.HeapSnapshotModel.WorkerCommand>): Promise<void> {
     const response: DispatcherResponse = {
       callId: data.callId,
       result: null,
@@ -82,6 +83,8 @@ export class HeapSnapshotWorkerDispatcher {
             };
             // @ts-expect-error
             globalThis.HeapSnapshotModel = HeapSnapshotModel;
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore only used for running test in Web Workers
             response.result = await self.eval(data.source);
           } catch (error) {
             response.result = error.toString();

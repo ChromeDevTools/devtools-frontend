@@ -5,8 +5,10 @@
 import type * as Api from '../api/api.js';
 
 class WebWorkerScope implements Api.HostRuntime.WorkerScope {
-  postMessage(message: unknown): void {
-    self.postMessage(message);
+  postMessage(message: unknown, transfer?: Api.HostRuntime.WorkerTransferable[]): void {
+    // Type for frame.postMessage is conflicting here.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    self.postMessage(message, transfer as any);
   }
 
   set onmessage(listener: (event: Api.HostRuntime.WorkerMessageEvent) => Promise<void>| void) {

@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as PlatformApi from '../../core/platform/api/api.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 
@@ -45,7 +46,7 @@ export class HeapSnapshotLoader {
     }
   }
 
-  async buildSnapshot(secondWorker: MessagePort): Promise<JSHeapSnapshot> {
+  async buildSnapshot(secondWorker: PlatformApi.HostRuntime.WorkerMessagePort): Promise<JSHeapSnapshot> {
     await this.parsingComplete;
 
     this.#snapshot = this.#snapshot || {};

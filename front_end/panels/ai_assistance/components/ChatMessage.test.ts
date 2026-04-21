@@ -31,6 +31,7 @@ describeWithEnvironment('ChatMessage', () => {
       isReadOnly: false,
       isLastMessage: true,
       isFirstMessage: false,
+      prompt: '',
       shouldShowCSSChangeSummary: false,
       markdownRenderer: new AiAssistance.MarkdownRendererWithCodeBlock(),
       canShowFeedbackForm: true,
@@ -71,6 +72,7 @@ describeWithEnvironment('ChatMessage', () => {
           isShowingFeedbackForm: false,
           isLastMessage: true,
           isFirstMessage: false,
+          prompt: '',
           shouldShowCSSChangeSummary: false,
           showActions: true,
           message: {
@@ -346,7 +348,7 @@ describeWithEnvironment('ChatMessage', () => {
       assert.strictEqual(button.innerText, 'Investigating XYZ');
     });
 
-    it('accessible label appends "Show thinking" when showing step title', async () => {
+    it('accessible label shows the step title when loading', async () => {
       const loadingMessage: AiAssistance.ChatMessage.ModelChatMessage = {
         entity: AiAssistance.ChatMessage.ChatMessageEntity.MODEL,
         parts: [{
@@ -368,7 +370,7 @@ describeWithEnvironment('ChatMessage', () => {
         }
       });
       const button = querySelectorErrorOnMissing(target, '[data-show-walkthrough]');
-      assert.strictEqual(button.getAttribute('accessibleLabel'), 'Investigating XYZ Show thinking');
+      assert.strictEqual(button.getAttribute('accessibleLabel'), 'Loading: Investigating XYZ');
     });
 
     it('accessible label defaults to visible text when generic', async () => {
@@ -381,7 +383,7 @@ describeWithEnvironment('ChatMessage', () => {
         }
       });
       const button = querySelectorErrorOnMissing(target, '[data-show-walkthrough]');
-      assert.strictEqual(button.getAttribute('accessibleLabel'), 'Show thinking');
+      assert.strictEqual(button.getAttribute('accessibleLabel'), 'Show thinking for prompt \'\'');
     });
 
     it('accessible label defaults to visible text when expanded and not loading', async () => {
@@ -396,10 +398,10 @@ describeWithEnvironment('ChatMessage', () => {
         }
       });
       const button = querySelectorErrorOnMissing(target, '[data-show-walkthrough]');
-      assert.strictEqual(button.getAttribute('accessibleLabel'), 'Hide thinking');
+      assert.strictEqual(button.getAttribute('accessibleLabel'), 'Hide thinking for prompt \'\'');
     });
 
-    it('accessible label appends "Hide thinking" when expanded and loading', async () => {
+    it('accessible label appends "Loading: " when expanded and loading', async () => {
       const loadingMessage: AiAssistance.ChatMessage.ModelChatMessage = {
         entity: AiAssistance.ChatMessage.ChatMessageEntity.MODEL,
         parts: [{
@@ -423,7 +425,7 @@ describeWithEnvironment('ChatMessage', () => {
         }
       });
       const button = querySelectorErrorOnMissing(target, '[data-show-walkthrough]');
-      assert.strictEqual(button.getAttribute('accessibleLabel'), 'Investigating XYZ Hide thinking');
+      assert.strictEqual(button.getAttribute('accessibleLabel'), 'Loading: Hide thinking');
     });
 
     it('does not render "Show thinking" button when inline', () => {
@@ -730,6 +732,7 @@ describeWithEnvironment('ChatMessage', () => {
             isShowingFeedbackForm: false,
             isLastMessage: true,
             isFirstMessage: false,
+            prompt: '',
             shouldShowCSSChangeSummary: false,
             showActions: true,
             message: messageWithNamedWidget,
@@ -867,6 +870,7 @@ describeWithEnvironment('ChatMessage', () => {
             isShowingFeedbackForm: true,
             isLastMessage: true,
             isFirstMessage: false,
+            prompt: '',
             shouldShowCSSChangeSummary: false,
             showActions: true,
             message: {
@@ -905,6 +909,7 @@ describeWithEnvironment('ChatMessage', () => {
             isShowingFeedbackForm: false,
             isLastMessage: true,
             isFirstMessage: false,
+            prompt: '',
             shouldShowCSSChangeSummary: false,
             showActions: false,
             message: {
@@ -941,6 +946,7 @@ describeWithEnvironment('ChatMessage', () => {
             isShowingFeedbackForm: false,
             isLastMessage: false,
             isFirstMessage: true,
+            prompt: '',
             shouldShowCSSChangeSummary: false,
             showActions: false,
             message: {
@@ -976,6 +982,7 @@ describeWithEnvironment('ChatMessage', () => {
             isShowingFeedbackForm: false,
             isLastMessage: false,
             isFirstMessage: true,
+            prompt: '',
             shouldShowCSSChangeSummary: false,
             showActions: false,
             message: {

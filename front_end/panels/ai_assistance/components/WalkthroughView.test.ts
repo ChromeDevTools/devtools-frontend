@@ -17,12 +17,14 @@ describeWithEnvironment('WalkthroughView', () => {
     message: AiAssistance.ChatMessage.ModelChatMessage|null,
     isInlined: boolean,
     isExpanded: boolean,
+    prompt?: string,
   }): Promise<AiAssistance.WalkthroughView.WalkthroughView> {
     const view = new WalkthroughView();
     view.isLoading = state.isLoading;
     view.message = state.message;
     view.isInlined = state.isInlined;
     view.isExpanded = state.isExpanded;
+    view.prompt = state.prompt ?? '';
     view.markdownRenderer = new AiAssistance.MarkdownRendererWithCodeBlock();
 
     renderElementIntoDOM(view);

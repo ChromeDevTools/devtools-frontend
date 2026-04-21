@@ -40,6 +40,7 @@ devtools_ui_module("ai_assistance") {
     "components/OptInChangeDialog.ts",
     "components/PerformanceAgentMarkdownRenderer.ts",
     "components/StylingAgentMarkdownRenderer.ts",
+    "components/WalkthroughUtils.ts",
     "components/WalkthroughView.ts",
   ]
 
@@ -133,6 +134,7 @@ devtools_ui_module("unittests") {
     "components/ExportForAgentsDialog.test.ts",
     "components/MarkdownRendererWithCodeBlock.test.ts",
     "components/OptInChangeDialog.test.ts",
+    "components/WalkthroughUtils.test.ts",
     "components/WalkthroughView.test.ts",
   ]
 

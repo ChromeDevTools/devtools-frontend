@@ -13,6 +13,7 @@ import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import chatMessageStyles from './chatMessage.css.js';
 import {type ModelChatMessage, renderStep, type Step, titleForStep} from './ChatMessage.js';
+import {getButtonLabel} from './WalkthroughUtils.js';
 import walkthroughViewStyles from './walkthroughView.css.js';
 
 const lockedString = i18n.i18n.lockedString;
@@ -60,6 +61,7 @@ export interface ViewInput {
   markdownRenderer: MarkdownLitRenderer;
   isInlined: boolean;
   isExpanded: boolean;
+  prompt: string;
   onToggle: (isOpen: boolean, message: ModelChatMessage) => void;
   onOpen: (message: ModelChatMessage) => void;
   handleScroll: (ev: Event) => void;
@@ -128,7 +130,16 @@ function renderInlineWalkthrough(input: ViewInput, stepsOutput: Lit.LitTemplate,
         }
       </span>
       <details class="walkthrough-inline" ?open=${input.isExpanded} @toggle=${onToggle} jslog=${VisualLogging.expand('walkthrough').track({click: true})}>
-        <summary ?data-has-widgets=${!input.isLoading && hasWidgets}>
+        <summary
+          ?data-has-widgets=${!input.isLoading && hasWidgets}
+          aria-label=${getButtonLabel({
+            isExpanded: input.isExpanded,
+            isLoading: input.isLoading,
+            hasWidgets,
+            prompt: input.prompt,
+            stepTitle: titleForStep(lastStep),
+          })}
+        >
           <span class="walkthrough-inline-title">
             ${input.isExpanded ?
               walkthroughCloseTitle({hasWidgets, isInlined: true}) :
@@ -240,6 +251,7 @@ export class WalkthroughView extends UI.Widget.Widget {
   #onOpen: (message: ModelChatMessage) => void = () => {};
   #isInlined = false;
   #isExpanded = false;
+  #prompt = '';
 
   #pinScrollToBottom = true;
   #isProgrammaticScroll = false;
@@ -386,6 +398,15 @@ export class WalkthroughView extends UI.Widget.Widget {
     this.requestUpdate();
   }
 
+  get prompt(): string {
+    return this.#prompt;
+  }
+
+  set prompt(prompt: string) {
+    this.#prompt = prompt;
+    this.requestUpdate();
+  }
+
   override performUpdate(): void {
     if (!this.#markdownRenderer) {
       return;
@@ -398,6 +419,7 @@ export class WalkthroughView extends UI.Widget.Widget {
           onOpen: this.#onOpen,
           isInlined: this.#isInlined,
           isExpanded: this.#isExpanded,
+          prompt: this.#prompt,
           message: this.#message,
           handleScroll: this.#handleScroll,
         },

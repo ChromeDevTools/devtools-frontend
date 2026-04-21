@@ -1392,6 +1392,7 @@ grd_files_unbundled_sources = [
   "front_end/panels/ai_assistance/components/OptInChangeDialog.js",
   "front_end/panels/ai_assistance/components/PerformanceAgentMarkdownRenderer.js",
   "front_end/panels/ai_assistance/components/StylingAgentMarkdownRenderer.js",
+  "front_end/panels/ai_assistance/components/WalkthroughUtils.js",
   "front_end/panels/ai_assistance/components/WalkthroughView.js",
   "front_end/panels/ai_assistance/components/chatInput.css.js",
   "front_end/panels/ai_assistance/components/chatMessage.css.js",

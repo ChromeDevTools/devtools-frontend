@@ -37,6 +37,7 @@ import * as TimelineUtils from '../../timeline/utils/utils.js';
 import {PanelUtils} from '../../utils/utils.js';
 
 import chatMessageStyles from './chatMessage.css.js';
+import {getButtonLabel} from './WalkthroughUtils.js';
 import {walkthroughCloseTitle, walkthroughTitle, WalkthroughView} from './WalkthroughView.js';
 
 const {html, Directives: {ref, ifDefined}} = Lit;
@@ -236,14 +237,6 @@ const UIStringsNotTranslate = {
    * @description Title for the bottom up thread activity widget.
    */
   bottomUpTree: 'Bottom-up thread activity',
-  /**
-   * @description Accessilility label for the button that shows the walkthrough when there are no widgets in the walkthrough.
-   */
-  showThinking: 'Show thinking',
-  /**
-   * @description Accessilility label for the button that hides the walkthrough when there are no widgets in the walkthrough.
-   */
-  hideThinking: 'Hide thinking',
 } as const;
 
 export interface Step {
@@ -345,6 +338,7 @@ export interface MessageInput {
   isReadOnly: boolean;
   isLastMessage: boolean;
   isFirstMessage: boolean;
+  prompt: string;
   shouldShowCSSChangeSummary: boolean;
   canShowFeedbackForm: boolean;
   markdownRenderer: MarkdownLitRenderer;
@@ -613,12 +607,13 @@ function renderWalkthroughSidebarButton(
     'has-widgets': hasOneStepWithWidget && !input.isLoading,
   });
 
-  let accessibleLabel = title;
-  // If the agent is still thinking we want the accessibility label to include the current step title followed by Show/Hide thinking.
-  if (input.isLoading) {
-    const suffix = isExpanded ? UIStringsNotTranslate.hideThinking : UIStringsNotTranslate.showThinking;
-    accessibleLabel = `${titleForStep(lastStep)} ${i18n.i18n.lockedString(suffix)}`;
-  }
+  const accessibleLabel = getButtonLabel({
+    isExpanded,
+    isLoading: input.isLoading,
+    hasWidgets: hasOneStepWithWidget,
+    prompt: input.prompt,
+    stepTitle: titleForStep(lastStep),
+  });
 
   // clang-format off
   return html`
@@ -681,6 +676,7 @@ function renderWalkthroughUI(input: ChatMessageViewInput, steps: Step[]): Lit.Li
         markdownRenderer: input.markdownRenderer,
         isInlined: true,
         isExpanded,
+        prompt: input.prompt,
         onToggle: input.walkthrough.onToggle,
         onOpen: input.walkthrough.onOpen,
       })}
@@ -1422,6 +1418,7 @@ export class ChatMessage extends UI.Widget.Widget {
   message: Message = {entity: ChatMessageEntity.USER, text: ''};
   isLoading = false;
   isReadOnly = false;
+  prompt = '';
   canShowFeedbackForm = false;
   isLastMessage = false;
   isFirstMessage = false;
@@ -1476,6 +1473,7 @@ export class ChatMessage extends UI.Widget.Widget {
           markdownRenderer: this.markdownRenderer,
           isLastMessage: this.isLastMessage,
           isFirstMessage: this.isFirstMessage,
+          prompt: this.prompt,
           shouldShowCSSChangeSummary: this.shouldShowCSSChangeSummary,
           onSuggestionClick: this.onSuggestionClick,
           onRatingClick: this.#handleRateClick.bind(this),

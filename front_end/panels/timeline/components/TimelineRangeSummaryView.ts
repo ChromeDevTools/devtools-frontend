@@ -17,6 +17,7 @@ const categoryBreakdownCacheSymbol = Symbol('categoryBreakdownCache');
 
 export interface TimelineRangeSummaryViewData {
   events: Trace.Types.Events.Event[];
+  isInAIWidget?: boolean;
   startTime: Trace.Types.Timing.Milli;
   endTime: Trace.Types.Timing.Milli;
   parsedTrace: Trace.TraceModel.ParsedTrace|null;
@@ -68,6 +69,7 @@ export const TIMELINE_RANGE_SUMMARY_VIEW_DEFAULT_VIEW: View = (input, _output, t
             rangeEnd: endOffset,
             categories,
             total,
+            isInAIWidget: input.isInAIWidget,
           }
         })}
       ></devtools-widget>

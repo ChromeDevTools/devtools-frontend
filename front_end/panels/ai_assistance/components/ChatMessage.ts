@@ -1637,11 +1637,13 @@ async function makeTimelineRangeSummaryWidget(widgetData: TimelineRangeSummaryAi
         data: {
           parsedTrace,
           events,
+          isInAIWidget: true,
           startTime: Trace.Helpers.Timing.microToMilli(bounds.min),
           endTime: Trace.Helpers.Timing.microToMilli(bounds.max),
           thirdPartyTreeTemplate: html`${
             widget(Timeline.ThirdPartyTreeView.ThirdPartyTreeViewWidget, {
               maxRows: 10,
+              isInAIWidget: true,
               model: {
                 selectedEvents: thirdPartyTree.selectedEvents ?? null,
                 parsedTrace,

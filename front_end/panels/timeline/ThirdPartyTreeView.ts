@@ -41,6 +41,7 @@ export class ThirdPartyTreeViewWidget extends TimelineTreeView.TimelineTreeView 
   #onRowHovered?: (node: Trace.Extras.TraceTree.Node|null, events?: Trace.Types.Events.Event[]) => void;
   #onBottomUpButtonClicked?: (node: Trace.Extras.TraceTree.Node|null) => void;
   #onRowClicked?: (node: Trace.Extras.TraceTree.Node|null, events?: Trace.Types.Events.Event[]) => void;
+  #isInAIWidget = false;
 
   constructor(element?: HTMLElement) {
     super(element);
@@ -260,6 +261,15 @@ export class ThirdPartyTreeViewWidget extends TimelineTreeView.TimelineTreeView 
 
   override get maxRows(): number|undefined {
     return super.maxRows;
+  }
+
+  get isInAIWidget(): boolean {
+    return this.#isInAIWidget;
+  }
+
+  set isInAIWidget(x: boolean) {
+    this.#isInAIWidget = x;
+    this.element.classList.toggle('is-in-ai-widget', x);
   }
 
   override set maxRows(maxRows: number) {

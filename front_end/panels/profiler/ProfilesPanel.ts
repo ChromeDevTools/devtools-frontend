@@ -145,8 +145,8 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar implements DataDisp
   selectedProfileType?: ProfileType;
   static registry: ProfileTypeRegistry = {
     heapSnapshotProfileType: new HeapSnapshotProfileType(),
-    samplingHeapProfileType: new SamplingHeapProfileType(),
     trackingHeapSnapshotProfileType: new TrackingHeapSnapshotProfileType(),
+    samplingHeapProfileType: new SamplingHeapProfileType(),
     detachedElementProfileType: new DetachedElementsProfileType(),
   };
 

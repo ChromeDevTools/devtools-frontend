@@ -342,6 +342,24 @@ describe('The Memory Panel', function() {
     await devToolsPage.waitForNoElementsWithTextContent('Allocation', dropdown);
   });
 
+  it('enables the sampling timeline checkbox only when allocation sampling is selected',
+     async ({devToolsPage, inspectedPage}) => {
+       await inspectedPage.goToResource('memory/allocations.html');
+       await navigateToMemoryTab(devToolsPage);
+
+       const input = await devToolsPage.waitFor('input[title="Sampling heap profiler timeline"]');
+       assert.isNotNull(input, 'Input not found');
+
+       let isDisabled = await input.evaluate(el => (el as HTMLInputElement).disabled);
+       assert.isTrue(isDisabled, 'Checkbox should be disabled by default');
+
+       const optionLabel = await devToolsPage.waitForElementWithTextContent('Allocation sampling');
+       await devToolsPage.clickElement(optionLabel);
+
+       isDisabled = await input.evaluate(el => (el as HTMLInputElement).disabled);
+       assert.isFalse(isDisabled, 'Checkbox should be enabled when allocation sampling is selected');
+     });
+
   it('shows object source links in snapshot', async ({devToolsPage, inspectedPage}) => {
     await inspectedPage.evaluate(`
         class MyTestClass {

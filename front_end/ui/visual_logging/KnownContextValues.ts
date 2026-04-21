@@ -3153,6 +3153,7 @@ export const knownContextValues = new Set([
   'recommendation',
   'reconnect',
   'record-allocation-stacks',
+  'record-sampling-heap-profiler-timeline',
   'recorder-panel-replay-extension',
   'recorder-panel-replay-speed',
   'recorder-preferred-copy-format',

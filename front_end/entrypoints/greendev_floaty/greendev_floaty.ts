@@ -252,8 +252,6 @@ async function init(): Promise<void> {
         Root.ExperimentNames.ExperimentName.USE_SOURCE_MAP_SCOPES, 'Use scope information from source maps');
     Root.Runtime.experiments.register(Root.ExperimentNames.ExperimentName.LIVE_HEAP_PROFILE, 'Live heap profile');
     Root.Runtime.experiments.register(Root.ExperimentNames.ExperimentName.PROTOCOL_MONITOR, 'Protocol Monitor');
-    Root.Runtime.experiments.register(
-        Root.ExperimentNames.ExperimentName.SAMPLING_HEAP_PROFILER_TIMELINE, 'Sampling heap profiler timeline');
 
     const WINDOW_LOCAL_STORAGE: Common.Settings.SettingsBackingStore = {
       register(_setting: string): void{},

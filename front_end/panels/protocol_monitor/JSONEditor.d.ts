@@ -97,6 +97,8 @@ export declare class JSONEditor extends JSONEditor_base {
     displayTargetSelector: boolean;
     displayCommandInput: boolean;
     constructor(element: HTMLElement, view?: View);
+    get onSubmit(): ((e: Common.EventTarget.EventTargetEvent<Command>) => unknown) | undefined;
+    set onSubmit(val: ((e: Common.EventTarget.EventTargetEvent<Command>) => unknown) | undefined);
     get metadataByCommand(): Map<string, {
         parameters: Parameter[];
         description: string;

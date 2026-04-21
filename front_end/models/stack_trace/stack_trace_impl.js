@@ -73,6 +73,8 @@ function parseRawFramesFromErrorStack(stack) {
       if (location.startsWith("index ")) {
         promiseIndex = parseInt(location.substring(6), 10);
         url = "";
+      } else if (location === "<anonymous>" || location === "native") {
+        url = "";
       } else if (location.includes(":wasm-function[")) {
         isWasm = true;
         const wasmMatch = /^(.*):wasm-function\[(\d+)\]:(0x[0-9a-fA-F]+)$/.exec(location);

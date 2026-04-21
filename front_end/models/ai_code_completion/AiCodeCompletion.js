@@ -96,6 +96,8 @@ const console = {
   timeEnd: (label) => {} // Stops a timer and logs the elapsed time.
 };`;
 /* clang-format on */
+const MIN_CHARACTER_THRESHOLD = 5;
+const EMPTY_RESPONSE_DIFF_THRESHOLD = 3;
 /**
  * The AiCodeCompletion class is responsible for fetching code completion suggestions
  * from the AIDA backend.
@@ -104,6 +106,7 @@ export class AiCodeCompletion {
     #stopSequences;
     #renderingTimeout;
     #aidaRequestCache;
+    #lastEmptyResponseText;
     // TODO(b/445394511): Remove panel from the class
     #panel;
     #callbacks;
@@ -249,12 +252,24 @@ export class AiCodeCompletion {
         this.#aidaRequestCache = undefined;
     }
     async completeCode(prefix, suffix, cursorPositionAtRequest, inferenceLanguage, additionalFiles) {
+        const combinedText = prefix + suffix;
+        if (combinedText.length < MIN_CHARACTER_THRESHOLD) {
+            return { response: null, fromCache: false };
+        }
+        if (this.#lastEmptyResponseText) {
+            if (Math.abs(combinedText.length - this.#lastEmptyResponseText.length) < EMPTY_RESPONSE_DIFF_THRESHOLD) {
+                return { response: null, fromCache: false };
+            }
+        }
         const request = this.#buildRequest(prefix, suffix, inferenceLanguage, additionalFiles);
         const { response, fromCache } = await this.#completeCodeCached(request);
         debugLog('At cursor position', cursorPositionAtRequest, { request, response, fromCache });
-        if (!response) {
+        if (!response || response.generatedSamples.length === 0) {
+            this.#lastEmptyResponseText = combinedText;
             return { response: null, fromCache: false };
         }
+        // Clear on successful response
+        this.#lastEmptyResponseText = undefined;
         return { response, fromCache };
     }
     remove() {

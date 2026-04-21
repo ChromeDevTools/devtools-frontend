@@ -3133,13 +3133,13 @@ function widgetRef(type, callback) {
 var widgetCounterMap = /* @__PURE__ */ new WeakMap();
 var widgetMap = /* @__PURE__ */ new WeakMap();
 function incrementWidgetCounter(parentElement, childElement) {
-  const count = (widgetCounterMap.get(childElement) || 0) + (widgetMap.get(childElement) ? 1 : 0);
+  const count = (widgetCounterMap.get(childElement) || 0) + (Widget.get(childElement) ? 1 : 0);
   for (let el = parentElement; el; el = el.parentElementOrShadowHost()) {
     widgetCounterMap.set(el, (widgetCounterMap.get(el) || 0) + count);
   }
 }
 function decrementWidgetCounter(parentElement, childElement) {
-  const count = (widgetCounterMap.get(childElement) || 0) + (widgetMap.get(childElement) ? 1 : 0);
+  const count = (widgetCounterMap.get(childElement) || 0) + (Widget.get(childElement) ? 1 : 0);
   for (let el = parentElement; el; el = el.parentElementOrShadowHost()) {
     const elCounter = widgetCounterMap.get(el);
     if (elCounter) {
@@ -3150,7 +3150,7 @@ function decrementWidgetCounter(parentElement, childElement) {
 var UPDATE_COMPLETE = Promise.resolve();
 var Widget = class _Widget {
   element;
-  contentElement;
+  #contentElement;
   #shadowRoot;
   #visible = false;
   #isRoot = false;
@@ -3182,18 +3182,26 @@ var Widget = class _Widget {
       this.#shadowRoot = createShadowRootWithCoreStyles(this.element, {
         delegatesFocus: options?.delegatesFocus
       });
-      this.contentElement = document.createElement("div");
-      this.#shadowRoot.appendChild(this.contentElement);
+      if (options.useShadowDom === "pure") {
+        this.#contentElement = this.#shadowRoot;
+      } else {
+        const div = document.createElement("div");
+        this.#shadowRoot.appendChild(div);
+        this.#contentElement = div;
+      }
     } else {
-      this.contentElement = this.element;
+      this.#contentElement = this.element;
     }
-    if (options?.classes) {
-      this.element.classList.add(...options.classes);
+    const legacyOptions = options;
+    if (legacyOptions?.classes) {
+      this.element.classList.add(...legacyOptions.classes);
     }
-    if (options?.jslog) {
-      this.contentElement.setAttribute("jslog", options.jslog);
+    if (legacyOptions?.jslog) {
+      this.element.setAttribute("jslog", legacyOptions.jslog);
     }
-    this.contentElement.classList.add("widget");
+    if (this.contentElement instanceof HTMLElement) {
+      this.contentElement.classList.add("widget");
+    }
     widgetMap.set(this.element, this);
   }
   /**
@@ -3225,6 +3233,12 @@ var Widget = class _Widget {
       config = widgetConfig((element2) => new _Widget(element2));
     }
     return instantiateWidget(element, config);
+  }
+  get contentElement() {
+    return this.#contentElement;
+  }
+  set contentElement(contentElement) {
+    this.#contentElement = contentElement;
   }
   markAsRoot() {
     assert(!this.element.parentElement, "Attempt to mark as root attached node");
@@ -3375,7 +3389,7 @@ var Widget = class _Widget {
   }
   #showWidget(parentElement, insertBefore) {
     let currentParent = parentElement;
-    while (currentParent && !widgetMap.get(currentParent)) {
+    while (currentParent && !_Widget.get(currentParent)) {
       currentParent = currentParent.parentElementOrShadowHost();
     }
     if (this.#isRoot) {
@@ -3547,9 +3561,10 @@ var Widget = class _Widget {
   }
   getDefaultFocusedElements() {
     const autofocusElements = [...this.contentElement.querySelectorAll("[autofocus]")];
-    if (this.contentElement !== this.element) {
-      if (this.contentElement.hasAttribute("autofocus")) {
-        autofocusElements.push(this.contentElement);
+    const contentElement = this.contentElement;
+    if (contentElement !== this.element) {
+      if (contentElement instanceof HTMLElement && contentElement.hasAttribute("autofocus")) {
+        autofocusElements.push(contentElement);
       }
       if (autofocusElements.length === 0) {
         autofocusElements.push(...this.element.querySelectorAll("[autofocus]"));
@@ -3723,7 +3738,9 @@ var storedScrollPositions = /* @__PURE__ */ new WeakMap();
 var VBox = class extends Widget {
   constructor() {
     super(...arguments);
-    this.contentElement.classList.add("vbox");
+    if (this.contentElement instanceof HTMLElement) {
+      this.contentElement.classList.add("vbox");
+    }
   }
   calculateConstraints() {
     let constraints = new Geometry.Constraints();

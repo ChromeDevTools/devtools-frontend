@@ -18,6 +18,7 @@ export default `/*
   --display-ignored-row: none;
   --display-toggle-link: var(--override-display-stack-preview-toggle-link, none);
 
+  align-self: flex-start;
   user-select: text;
 
   & > tfoot > tr {

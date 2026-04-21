@@ -91,6 +91,8 @@ function parseRawFramesFromErrorStack(stack) {
       if (location.startsWith("index ")) {
         promiseIndex = parseInt(location.substring(6), 10);
         url = "";
+      } else if (location === "<anonymous>" || location === "native") {
+        url = "";
       } else if (location.includes(":wasm-function[")) {
         isWasm = true;
         const wasmMatch = /^(.*):wasm-function\[(\d+)\]:(0x[0-9a-fA-F]+)$/.exec(location);
@@ -3128,7 +3130,7 @@ __export(DebuggerWorkspaceBinding_exports, {
   DebuggerWorkspaceBinding: () => DebuggerWorkspaceBinding,
   Location: () => Location
 });
-import * as Common13 from "./../../core/common/common.js";
+import * as Common14 from "./../../core/common/common.js";
 import * as Platform6 from "./../../core/platform/platform.js";
 import * as Root3 from "./../../core/root/root.js";
 import * as SDK11 from "./../../core/sdk/sdk.js";
@@ -3689,14 +3691,30 @@ var SymbolizedError_exports = {};
 __export(SymbolizedError_exports, {
   SymbolizedError: () => SymbolizedError
 });
-var SymbolizedError = class {
+import * as Common13 from "./../../core/common/common.js";
+import * as StackTrace3 from "./../stack_trace/stack_trace.js";
+var SymbolizedError = class extends Common13.ObjectWrapper.ObjectWrapper {
   remoteError;
   stackTrace;
   cause;
   constructor(remoteError, stackTrace, cause) {
+    super();
     this.remoteError = remoteError;
     this.stackTrace = stackTrace;
     this.cause = cause;
+    this.stackTrace.addEventListener("UPDATED", this.#fireUpdated, this);
+    this.cause?.addEventListener("UPDATED", this.#fireUpdated, this);
+  }
+  dispose() {
+    this.stackTrace.removeEventListener("UPDATED", this.#fireUpdated, this);
+    this.cause?.removeEventListener("UPDATED", this.#fireUpdated, this);
+    this.cause?.dispose();
+  }
+  #fireUpdated() {
+    this.dispatchEventToListeners(
+      "UPDATED"
+      /* Events.UPDATED */
+    );
   }
 };
 
@@ -4027,7 +4045,7 @@ var DebuggerWorkspaceBinding = class _DebuggerWorkspaceBinding {
       return false;
     }
     const functionLocation = frame.functionLocation();
-    if (!autoSteppingContext || debuggerPausedDetails.reason !== "step" || !functionLocation || !frame.script.isWasm() || !Common13.Settings.moduleSetting("wasm-auto-stepping").get() || !this.pluginManager.hasPluginForScript(frame.script)) {
+    if (!autoSteppingContext || debuggerPausedDetails.reason !== "step" || !functionLocation || !frame.script.isWasm() || !Common14.Settings.moduleSetting("wasm-auto-stepping").get() || !this.pluginManager.hasPluginForScript(frame.script)) {
       return true;
     }
     const uiLocation = await this.pluginManager.rawLocationToUILocation(frame.location());
@@ -4248,7 +4266,7 @@ __export(FileUtils_exports, {
   ChunkedFileReader: () => ChunkedFileReader,
   FileOutputStream: () => FileOutputStream
 });
-import * as Common14 from "./../../core/common/common.js";
+import * as Common15 from "./../../core/common/common.js";
 import * as TextUtils7 from "./../text_utils/text_utils.js";
 import * as Workspace19 from "./../workspace/workspace.js";
 var ChunkedFileReader = class {
@@ -4281,7 +4299,7 @@ var ChunkedFileReader = class {
     }
     if (this.#file?.type.endsWith("gzip")) {
       const fileStream = this.#file.stream();
-      const stream = Common14.Gzip.decompressStream(fileStream);
+      const stream = Common15.Gzip.decompressStream(fileStream);
       this.#streamReader = stream.getReader();
     } else {
       this.#reader = new FileReader();
@@ -4679,7 +4697,7 @@ var ResourceMapping_exports = {};
 __export(ResourceMapping_exports, {
   ResourceMapping: () => ResourceMapping
 });
-import * as Common15 from "./../../core/common/common.js";
+import * as Common16 from "./../../core/common/common.js";
 import * as SDK13 from "./../../core/sdk/sdk.js";
 import * as Formatter2 from "./../formatter/formatter.js";
 import * as TextUtils9 from "./../text_utils/text_utils.js";
@@ -5022,16 +5040,16 @@ var ModelInfo2 = class {
   }
   acceptsResource(resource) {
     const resourceType = resource.resourceType();
-    if (resourceType !== Common15.ResourceType.resourceTypes.Image && resourceType !== Common15.ResourceType.resourceTypes.Font && resourceType !== Common15.ResourceType.resourceTypes.Document && resourceType !== Common15.ResourceType.resourceTypes.Manifest && resourceType !== Common15.ResourceType.resourceTypes.Fetch && resourceType !== Common15.ResourceType.resourceTypes.XHR) {
+    if (resourceType !== Common16.ResourceType.resourceTypes.Image && resourceType !== Common16.ResourceType.resourceTypes.Font && resourceType !== Common16.ResourceType.resourceTypes.Document && resourceType !== Common16.ResourceType.resourceTypes.Manifest && resourceType !== Common16.ResourceType.resourceTypes.Fetch && resourceType !== Common16.ResourceType.resourceTypes.XHR) {
       return false;
     }
-    if (resourceType === Common15.ResourceType.resourceTypes.Image && resource.mimeType && !resource.mimeType.startsWith("image")) {
+    if (resourceType === Common16.ResourceType.resourceTypes.Image && resource.mimeType && !resource.mimeType.startsWith("image")) {
       return false;
     }
-    if (resourceType === Common15.ResourceType.resourceTypes.Font && resource.mimeType && !resource.mimeType.includes("font")) {
+    if (resourceType === Common16.ResourceType.resourceTypes.Font && resource.mimeType && !resource.mimeType.includes("font")) {
       return false;
     }
-    if ((resourceType === Common15.ResourceType.resourceTypes.Image || resourceType === Common15.ResourceType.resourceTypes.Font) && Common15.ParsedURL.schemeIs(resource.contentURL(), "data:")) {
+    if ((resourceType === Common16.ResourceType.resourceTypes.Image || resourceType === Common16.ResourceType.resourceTypes.Font) && Common16.ParsedURL.schemeIs(resource.contentURL(), "data:")) {
       return false;
     }
     return true;
@@ -5081,7 +5099,7 @@ var ModelInfo2 = class {
     this.#bindings.clear();
   }
   dispose() {
-    Common15.EventTarget.removeEventListeners(this.#eventListeners);
+    Common16.EventTarget.removeEventListeners(this.#eventListeners);
     for (const binding of this.#bindings.values()) {
       binding.dispose();
     }
@@ -5231,7 +5249,7 @@ var TempFile_exports = {};
 __export(TempFile_exports, {
   TempFile: () => TempFile
 });
-import * as Common16 from "./../../core/common/common.js";
+import * as Common17 from "./../../core/common/common.js";
 var TempFile = class {
   #lastBlob = null;
   write(pieces) {
@@ -5248,7 +5266,7 @@ var TempFile = class {
   }
   async readRange(startOffset, endOffset) {
     if (!this.#lastBlob) {
-      Common16.Console.Console.instance().error("Attempt to read a temp file that was never written");
+      Common17.Console.Console.instance().error("Attempt to read a temp file that was never written");
       return "";
     }
     const blob = typeof startOffset === "number" || typeof endOffset === "number" ? this.#lastBlob.slice(startOffset, endOffset) : this.#lastBlob;
@@ -5260,7 +5278,7 @@ var TempFile = class {
         reader.readAsText(blob);
       });
     } catch (error) {
-      Common16.Console.Console.instance().error("Failed to read from temp file: " + error.message);
+      Common17.Console.Console.instance().error("Failed to read from temp file: " + error.message);
     }
     return reader.result;
   }

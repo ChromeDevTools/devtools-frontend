@@ -92,14 +92,21 @@ ul {
   display: flex;
   flex-direction: column;
   height: 100%;
+  min-height: 0;
 }
 
 .editor-wrapper {
   padding-left: 1em;
   overflow-x: hidden;
   flex-grow: 1;
-  padding-bottom: 50px;
   padding-top: 0.5em;
+  min-height: 1lh;
+}
+
+.editor-wrapper::after {
+  content: "";
+  display: block;
+  height: 50px;
 }
 
 .clear-button,
@@ -197,12 +204,26 @@ var JSONEditor = class extends Common.ObjectWrapper.eventMixin(UI.Widget.VBox) {
   #targetId;
   #hintPopoverHelper;
   #view;
+  #onSubmit;
   displayTargetSelector = true;
   displayCommandInput = true;
   constructor(element, view = DEFAULT_VIEW) {
     super(element, { useShadowDom: true });
     this.#view = view;
     this.registerRequiredCSS(JSONEditor_css_default);
+  }
+  get onSubmit() {
+    return this.#onSubmit;
+  }
+  set onSubmit(val) {
+    if (this.#onSubmit) {
+      this.removeEventListener("submiteditor", this.#onSubmit);
+    }
+    this.#onSubmit = val;
+    if (this.#onSubmit) {
+      this.addEventListener("submiteditor", this.#onSubmit);
+    }
+    this.requestUpdate();
   }
   get metadataByCommand() {
     return this.#metadataByCommand;

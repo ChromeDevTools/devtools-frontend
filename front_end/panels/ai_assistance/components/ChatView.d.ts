@@ -7,6 +7,14 @@ import * as UI from '../../../ui/legacy/legacy.js';
 import { ChatInput } from './ChatInput.js';
 import { type Message, type ModelChatMessage } from './ChatMessage.js';
 export { ChatInput, type ImageInputData } from './ChatInput.js';
+/**
+ * Determines which message should display the CSS change summary.
+ *
+ * If the AI is actively loading a new response, the summary is anchored to the
+ * last completed model response. Otherwise, it's anchored to the latest model
+ * message.
+ */
+export declare function getCSSChangeSummaryMessage(messages: Message[], isLoading: boolean): Message | undefined;
 interface ViewOutput {
     mainElement?: HTMLElement;
     input?: UI.Widget.WidgetElement<ChatInput>;

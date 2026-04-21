@@ -43,8 +43,9 @@ export declare class NetworkManager extends SDKModel<EventTypes> {
     dispose(): void;
     private bypassServiceWorkerChanged;
     getSecurityIsolationStatus(frameId: Protocol.Page.FrameId | null): Promise<Protocol.Network.SecurityIsolationStatus | null>;
-    enableReportingApi(enable?: boolean): Promise<Promise<Protocol.ProtocolResponseWithError>>;
-    enableDeviceBoundSessions(enable?: boolean): Promise<Promise<Protocol.ProtocolResponseWithError>>;
+    enableReportingApi(enable?: boolean): Promise<Protocol.ProtocolResponseWithError>;
+    enableDeviceBoundSessions(enable?: boolean): Promise<Protocol.ProtocolResponseWithError>;
+    deleteDeviceBoundSession(key: Protocol.Network.DeviceBoundSessionKey): Promise<Protocol.ProtocolResponseWithError>;
     loadNetworkResource(frameId: Protocol.Page.FrameId | null, url: Platform.DevToolsPath.UrlString, options: Protocol.Network.LoadNetworkResourceOptions): Promise<Protocol.Network.LoadNetworkResourcePageResult>;
     clearRequests(): void;
 }

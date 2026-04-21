@@ -1,3 +1,4 @@
+import type { JSONSchema7 } from 'json-schema';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import type * as Protocol from '../../generated/protocol.js';
@@ -34,9 +35,11 @@ export declare class Tool {
     get stackTrace(): Promise<StackTrace.StackTrace.StackTrace> | undefined;
     get name(): string;
     get description(): string;
+    get inputSchema(): JSONSchema7;
     get frame(): SDK.ResourceTreeModel.ResourceTreeFrame | undefined;
     get isDeclarative(): boolean;
     get node(): SDK.DOMModel.DeferredDOMNode | undefined;
+    invoke(input: unknown): Promise<Protocol.WebMCP.InvokeToolResponse | undefined>;
 }
 export interface EventTypes {
     [Events.TOOLS_ADDED]: readonly Tool[];

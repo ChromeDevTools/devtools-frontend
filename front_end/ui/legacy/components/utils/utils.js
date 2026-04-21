@@ -275,6 +275,7 @@ var jsUtils_css_default = `/*
   --display-ignored-row: none;
   --display-toggle-link: var(--override-display-stack-preview-toggle-link, none);
 
+  align-self: flex-start;
   user-select: text;
 
   & > tfoot > tr {
@@ -1426,7 +1427,7 @@ var DEFAULT_VIEW = (input, output, target) => {
         </tfoot>
       ` : nothing}
     </table>
-  `, target);
+  `, target, { container: { classes: ["monospace", "stack-preview-container"] } });
 };
 var StackTracePreviewContent = class extends UI2.Widget.Widget {
   #view;
@@ -1435,7 +1436,7 @@ var StackTracePreviewContent = class extends UI2.Widget.Widget {
   #expanded = false;
   #showIgnoreListed = false;
   constructor(element, view = DEFAULT_VIEW) {
-    super(element, { useShadowDom: true, classes: ["monospace", "stack-preview-container"] });
+    super(element, { useShadowDom: "pure" });
     this.#view = view;
   }
   hasContent() {
@@ -1505,7 +1506,7 @@ var StackTracePreviewContent = class extends UI2.Widget.Widget {
   #onShowMoreLess(more) {
     this.#showIgnoreListed = more;
     this.requestUpdate();
-    void this.updateComplete.then(() => UI2.GlassPane.GlassPane.containerMoved(this.contentElement));
+    void this.updateComplete.then(() => UI2.GlassPane.GlassPane.containerMoved(this.element));
   }
   #onExpand() {
     this.#expanded = !this.#expanded;

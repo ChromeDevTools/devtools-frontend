@@ -14393,9 +14393,9 @@ var str_26 = i18n53.i18n.registerUIStrings("panels/sources/WatchExpressionsSideb
 var i18nString25 = i18n53.i18n.getLocalizedString.bind(void 0, str_26);
 var watchExpressionsSidebarPaneInstance;
 var WatchExpressionsSidebarPane = class _WatchExpressionsSidebarPane extends UI26.Widget.VBox {
-  watchExpressions;
+  #watchExpressions;
   emptyElement;
-  watchExpressionsSetting;
+  #watchExpressionsSetting;
   addButton;
   refreshButton;
   treeOutline;
@@ -14404,8 +14404,8 @@ var WatchExpressionsSidebarPane = class _WatchExpressionsSidebarPane extends UI2
   constructor() {
     super({ useShadowDom: true });
     this.registerRequiredCSS(watchExpressionsSidebarPane_css_default, objectValue_css_default);
-    this.watchExpressions = [];
-    this.watchExpressionsSetting = Common19.Settings.Settings.instance().createLocalSetting("watch-expressions", []);
+    this.#watchExpressions = [];
+    this.#watchExpressionsSetting = Common19.Settings.Settings.instance().createLocalSetting("watch-expressions", []);
     this.addButton = new UI26.Toolbar.ToolbarButton(i18nString25(UIStrings26.addWatchExpression), "plus", void 0, "add-watch-expression");
     this.addButton.setSize(
       "SMALL"
@@ -14442,6 +14442,9 @@ var WatchExpressionsSidebarPane = class _WatchExpressionsSidebarPane extends UI2
     }
     return watchExpressionsSidebarPaneInstance;
   }
+  get watchExpressions() {
+    return this.#watchExpressions;
+  }
   toolbarItems() {
     return [this.addButton, this.refreshButton];
   }
@@ -14449,19 +14452,19 @@ var WatchExpressionsSidebarPane = class _WatchExpressionsSidebarPane extends UI2
     if (this.hasFocus()) {
       return;
     }
-    if (this.watchExpressions.length > 0) {
+    if (this.#watchExpressions.length > 0) {
       this.treeOutline.forceSelect();
     }
   }
   saveExpressions() {
     const toSave = [];
-    for (let i = 0; i < this.watchExpressions.length; i++) {
-      const expression = this.watchExpressions[i].expression();
+    for (let i = 0; i < this.#watchExpressions.length; i++) {
+      const expression = this.#watchExpressions[i].expression();
       if (expression) {
         toSave.push(expression);
       }
     }
-    this.watchExpressionsSetting.set(toSave);
+    this.#watchExpressionsSetting.set(toSave);
   }
   async addButtonClicked() {
     await UI26.ViewManager.ViewManager.instance().showView("sources.watch");
@@ -14472,11 +14475,11 @@ var WatchExpressionsSidebarPane = class _WatchExpressionsSidebarPane extends UI2
     this.linkifier.reset();
     this.contentElement.removeChildren();
     this.treeOutline.removeChildren();
-    this.watchExpressions = [];
+    this.#watchExpressions = [];
     this.emptyElement = this.contentElement.createChild("div", "gray-info-message");
     this.emptyElement.textContent = i18nString25(UIStrings26.noWatchExpressions);
     this.emptyElement.tabIndex = -1;
-    const watchExpressionStrings = this.watchExpressionsSetting.get();
+    const watchExpressionStrings = this.#watchExpressionsSetting.get();
     if (watchExpressionStrings.length) {
       this.emptyElement.classList.add("hidden");
     }
@@ -14494,15 +14497,15 @@ var WatchExpressionsSidebarPane = class _WatchExpressionsSidebarPane extends UI2
     UI26.ARIAUtils.setLabel(this.contentElement, i18nString25(UIStrings26.addWatchExpression));
     watchExpression.addEventListener("ExpressionUpdated", this.watchExpressionUpdated, this);
     this.treeOutline.appendChild(watchExpression.treeElement());
-    this.watchExpressions.push(watchExpression);
+    this.#watchExpressions.push(watchExpression);
     return watchExpression;
   }
   watchExpressionUpdated({ data: watchExpression }) {
     if (!watchExpression.expression()) {
-      Platform16.ArrayUtilities.removeElement(this.watchExpressions, watchExpression);
+      Platform16.ArrayUtilities.removeElement(this.#watchExpressions, watchExpression);
       this.treeOutline.removeChild(watchExpression.treeElement());
-      this.emptyElement.classList.toggle("hidden", Boolean(this.watchExpressions.length));
-      if (this.watchExpressions.length === 0) {
+      this.emptyElement.classList.toggle("hidden", Boolean(this.#watchExpressions.length));
+      if (this.#watchExpressions.length === 0) {
         this.treeOutline.element.remove();
       }
     }
@@ -14515,26 +14518,26 @@ var WatchExpressionsSidebarPane = class _WatchExpressionsSidebarPane extends UI2
   }
   populateContextMenu(contextMenu, event) {
     let isEditing = false;
-    for (const watchExpression of this.watchExpressions) {
+    for (const watchExpression of this.#watchExpressions) {
       isEditing = isEditing || watchExpression.isEditing();
     }
     if (!isEditing) {
       contextMenu.debugSection().appendItem(i18nString25(UIStrings26.addWatchExpression), this.addButtonClicked.bind(this), { jslogContext: "add-watch-expression" });
     }
-    if (this.watchExpressions.length > 1) {
+    if (this.#watchExpressions.length > 1) {
       contextMenu.debugSection().appendItem(i18nString25(UIStrings26.deleteAllWatchExpressions), this.deleteAllButtonClicked.bind(this), { jslogContext: "delete-all-watch-expressions" });
     }
     const treeElement = this.treeOutline.treeElementFromEvent(event);
     if (!treeElement) {
       return;
     }
-    const currentWatchExpression = this.watchExpressions.find((watchExpression) => treeElement.hasAncestorOrSelf(watchExpression.treeElement()));
+    const currentWatchExpression = this.#watchExpressions.find((watchExpression) => treeElement.hasAncestorOrSelf(watchExpression.treeElement()));
     if (currentWatchExpression) {
       currentWatchExpression.populateContextMenu(contextMenu, event);
     }
   }
   deleteAllButtonClicked() {
-    this.watchExpressions = [];
+    this.#watchExpressions = [];
     this.saveExpressions();
     this.requestUpdate();
   }

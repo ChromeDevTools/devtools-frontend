@@ -1,5 +1,5 @@
 import * as Common from '../common/common.js';
-import { AidaAccessPreconditions, type AidaRegisterClientEvent, type CompletionRequest, type CompletionResponse, type DoConversationRequest, type DoConversationResponse, type GenerateCodeRequest, type GenerateCodeResponse, UserTier } from './AidaClientTypes.js';
+import { AidaAccessPreconditions, type AidaRegisterClientEvent, ClientFeature, type CompletionRequest, type CompletionResponse, type DoConversationRequest, type DoConversationResponse, type GenerateCodeRequest, type GenerateCodeResponse, UserTier } from './AidaClientTypes.js';
 import type { AidaClientResult } from './InspectorFrontendHostAPI.js';
 export * from './AidaClientTypes.js';
 export declare const CLIENT_NAME = "CHROME_DEVTOOLS";
@@ -22,6 +22,7 @@ export declare class AidaClient {
     }): Promise<GenerateCodeResponse | null>;
 }
 export declare function convertToUserTierEnum(userTier: string | undefined): UserTier;
+export declare function getClientFeatureName(feature: ClientFeature): string;
 export declare class HostConfigTracker extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
     #private;
     private constructor();

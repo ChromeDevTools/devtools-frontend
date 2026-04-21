@@ -1,12 +1,13 @@
 import * as Common from '../../core/common/common.js';
+import * as SDK from '../../core/sdk/sdk.js';
+import type * as Protocol from '../../generated/protocol.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import { UISourceCodeFrame } from './UISourceCodeFrame.js';
 export declare class WatchExpressionsSidebarPane extends UI.Widget.VBox implements UI.ActionRegistration.ActionDelegate, UI.Toolbar.ItemsProvider, UI.ContextMenu.Provider<ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement | UISourceCodeFrame> {
-    private watchExpressions;
+    #private;
     private emptyElement;
-    private readonly watchExpressionsSetting;
     private readonly addButton;
     private readonly refreshButton;
     private readonly treeOutline;
@@ -14,6 +15,7 @@ export declare class WatchExpressionsSidebarPane extends UI.Widget.VBox implemen
     private readonly linkifier;
     private constructor();
     static instance(): WatchExpressionsSidebarPane;
+    get watchExpressions(): WatchExpression[];
     toolbarItems(): UI.Toolbar.ToolbarItem[];
     focus(): void;
     private saveExpressions;
@@ -49,7 +51,7 @@ export declare class WatchExpression extends Common.ObjectWrapper.ObjectWrapper<
     private dblClickOnWatchExpression;
     private updateExpression;
     private deleteWatchExpression;
-    private createWatchExpression;
+    createWatchExpression(result?: SDK.RemoteObject.RemoteObject, exceptionDetails?: Protocol.Runtime.ExceptionDetails): void;
     private createWatchExpressionHeader;
     private createWatchExpressionTreeElement;
     private onSectionClick;

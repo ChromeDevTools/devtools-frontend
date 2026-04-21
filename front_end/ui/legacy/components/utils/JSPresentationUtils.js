@@ -164,7 +164,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
         </tfoot>
       ` : nothing}
     </table>
-  `, target);
+  `, target, { container: { classes: ['monospace', 'stack-preview-container'] } });
     // clang-format on
 };
 export class StackTracePreviewContent extends UI.Widget.Widget {
@@ -174,7 +174,7 @@ export class StackTracePreviewContent extends UI.Widget.Widget {
     #expanded = false;
     #showIgnoreListed = false;
     constructor(element, view = DEFAULT_VIEW) {
-        super(element, { useShadowDom: true, classes: ['monospace', 'stack-preview-container'] });
+        super(element, { useShadowDom: 'pure' });
         this.#view = view;
     }
     hasContent() {
@@ -245,7 +245,7 @@ export class StackTracePreviewContent extends UI.Widget.Widget {
         this.#showIgnoreListed = more;
         this.requestUpdate();
         // If we are in a popup, this will trigger a re-layout
-        void this.updateComplete.then(() => UI.GlassPane.GlassPane.containerMoved(this.contentElement));
+        void this.updateComplete.then(() => UI.GlassPane.GlassPane.containerMoved(this.element));
     }
     #onExpand() {
         this.#expanded = !this.#expanded;

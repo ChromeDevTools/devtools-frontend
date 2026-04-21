@@ -2,18 +2,19 @@ import '../../core/dom_extension/dom_extension.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Geometry from '../../models/geometry/geometry.js';
 import * as Lit from '../../ui/lit/lit.js';
-type WidgetConstructor<WidgetT extends Widget> = new (element: HTMLElement) => WidgetT;
-type WidgetProducer<WidgetT extends Widget> = (element: HTMLElement) => WidgetT;
-type WidgetFactory<WidgetT extends Widget> = WidgetConstructor<WidgetT> | WidgetProducer<WidgetT>;
+export type AnyWidget = Widget<HTMLElement | DocumentFragment>;
+type WidgetConstructor<WidgetT extends AnyWidget> = new (element: HTMLElement) => WidgetT;
+type WidgetProducer<WidgetT extends AnyWidget> = (element: HTMLElement) => WidgetT;
+type WidgetFactory<WidgetT extends AnyWidget> = WidgetConstructor<WidgetT> | WidgetProducer<WidgetT>;
 type InferWidgetTFromFactory<F> = F extends WidgetFactory<infer WidgetT> ? WidgetT : never;
-export declare class WidgetConfig<WidgetT extends Widget> {
+export declare class WidgetConfig<WidgetT extends AnyWidget> {
     readonly widgetClass: WidgetFactory<WidgetT>;
     readonly widgetParams?: Partial<WidgetT> | undefined;
     constructor(widgetClass: WidgetFactory<WidgetT>, widgetParams?: Partial<WidgetT> | undefined);
 }
-export declare function widgetConfig<F extends WidgetFactory<Widget>, ParamKeys extends keyof InferWidgetTFromFactory<F>>(widgetClass: F, widgetParams?: Pick<InferWidgetTFromFactory<F>, ParamKeys> & Partial<InferWidgetTFromFactory<F>>): WidgetConfig<any>;
-export declare function registerWidgetConfig<WidgetT extends Widget>(element: HTMLElement, config: WidgetConfig<WidgetT>): void;
-export declare class WidgetElement<WidgetT extends Widget> extends HTMLElement {
+export declare function widgetConfig<F extends WidgetFactory<AnyWidget>, ParamKeys extends keyof InferWidgetTFromFactory<F>>(widgetClass: F, widgetParams?: Pick<InferWidgetTFromFactory<F>, ParamKeys> & Partial<InferWidgetTFromFactory<F>>): WidgetConfig<any>;
+export declare function registerWidgetConfig<WidgetT extends AnyWidget>(element: HTMLElement, config: WidgetConfig<WidgetT>): void;
+export declare class WidgetElement<WidgetT extends AnyWidget> extends HTMLElement {
     #private;
     onDisconnect?: () => void;
     onConnect?: () => void;
@@ -31,25 +32,15 @@ export declare class WidgetDirective extends Lit.Directive.Directive {
     #private;
     constructor(partInfo: Lit.Directive.PartInfo);
     update(part: Lit.Directive.Part, [widgetClass, widgetParams]: Parameters<this['render']>): unknown;
-    render<F extends WidgetFactory<Widget>, ParamKeys extends keyof InferWidgetTFromFactory<F>>(widgetClass: F, widgetParams?: Pick<InferWidgetTFromFactory<F>, ParamKeys> & Partial<InferWidgetTFromFactory<F>>): unknown;
+    render<F extends WidgetFactory<AnyWidget>, ParamKeys extends keyof InferWidgetTFromFactory<F>>(widgetClass: F, widgetParams?: Pick<InferWidgetTFromFactory<F>, ParamKeys> & Partial<InferWidgetTFromFactory<F>>): unknown;
 }
-export declare const widget: <F extends WidgetFactory<Widget>, ParamKeys extends keyof InferWidgetTFromFactory<F>>(widgetClass: F, widgetParams?: Pick<InferWidgetTFromFactory<F>, ParamKeys> & Partial<InferWidgetTFromFactory<F>>) => Lit.Directive.DirectiveResult<typeof WidgetDirective>;
-export declare function widgetRef<T extends Widget, Args extends unknown[]>(type: Platform.Constructor.Constructor<T, Args>, callback: (_: T) => void): ReturnType<typeof Lit.Directives.ref>;
+export declare const widget: <F extends WidgetFactory<AnyWidget>, ParamKeys extends keyof InferWidgetTFromFactory<F>>(widgetClass: F, widgetParams?: Pick<InferWidgetTFromFactory<F>, ParamKeys> & Partial<InferWidgetTFromFactory<F>>) => Lit.Directive.DirectiveResult<typeof WidgetDirective>;
+export declare function widgetRef<T extends AnyWidget, Args extends unknown[]>(type: Platform.Constructor.Constructor<T, Args>, callback: (_: T) => void): ReturnType<typeof Lit.Directives.ref>;
 /**
  * Additional options passed to the `Widget` constructor to configure the
  * behavior of the resulting instance.
  */
-export interface WidgetOptions {
-    /**
-     * If you pass `true` here, the `contentElement` of the resulting `Widget`
-     * will be placed into the shadow DOM of its `element`. If the `element`
-     * doesn't already have a `shadowRoot`, a new one will be created.
-     *
-     * Otherwise, the `contentElement` will be a regular child of the `element`.
-     *
-     * Its default value is `false`.
-     */
-    useShadowDom?: boolean;
+export type WidgetOptions<ContentTypeT extends HTMLElement | DocumentFragment = HTMLElement> = {
     /**
      * A boolean that, when set to `true`, specifies behavior that mitigates
      * custom element issues around focusability. When a non-focusable part of
@@ -61,6 +52,17 @@ export interface WidgetOptions {
      * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/attachShadow
      */
     delegatesFocus?: boolean;
+} & (ContentTypeT extends HTMLElement ? {
+    /**
+     * If you pass `true` here, the `contentElement` of the resulting `Widget`
+     * will be placed into the shadow DOM of its `element`. If the `element`
+     * doesn't already have a `shadowRoot`, a new one will be created.
+     *
+     * Otherwise, the `contentElement` will be a regular child of the `element`.
+     *
+     * Its default value is `false`.
+     */
+    useShadowDom?: boolean;
     /**
      * The Visual Logging configuration to put onto the `element` of the resulting
      * `Widget`.
@@ -70,28 +72,34 @@ export interface WidgetOptions {
      * The additional classes to put onto the `element` of the resulting `Widget`.
      */
     classes?: string[];
-}
-export declare class Widget {
+} : {
+    /**
+     * If you pass `'pure'`, the `contentElement` will be the shadow root itself.
+     */
+    useShadowDom: 'pure';
+    jslog?: never;
+    classes?: never;
+});
+export declare class Widget<ContentTypeT extends HTMLElement | DocumentFragment = HTMLElement> {
     #private;
     readonly element: HTMLElement;
-    contentElement: HTMLElement;
     /**
      * Constructs a new `Widget` with the given `options`.
-     *
-     * @param options optional settings to configure the behavior.
      */
-    constructor(options?: WidgetOptions);
+    constructor(...args: ContentTypeT extends DocumentFragment ? [
+        options: WidgetOptions<ContentTypeT>
+    ] : [options?: WidgetOptions<ContentTypeT>]);
     /**
      * Constructs a new `Widget` with the given `options` and attached to the
      * given `element`.
-     *
-     * If `element` is `undefined`, a new `<div>` element will be created instead
-     * and the widget will be attached to that.
-     *
-     * @param element an (optional) `HTMLElement` to attach the `Widget` to.
-     * @param options optional settings to configure the behavior.
      */
-    constructor(element?: HTMLElement, options?: WidgetOptions);
+    constructor(...args: ContentTypeT extends DocumentFragment ? [
+        element: HTMLElement | undefined,
+        options: WidgetOptions<ContentTypeT>
+    ] : [
+        element?: HTMLElement,
+        options?: WidgetOptions<ContentTypeT>
+    ]);
     /**
      * Returns the {@link Widget} whose element is the given `node`, or `undefined`
      * if the `node` is not an element for a widget.
@@ -102,16 +110,18 @@ export declare class Widget {
     static get(node: Node): Widget | undefined;
     static get allUpdatesComplete(): Promise<void>;
     static getOrCreateWidget(element: HTMLElement): Widget;
+    get contentElement(): ContentTypeT;
+    protected set contentElement(contentElement: ContentTypeT);
     markAsRoot(): void;
     parentWidget(): Widget | null;
     children(): Widget[];
-    childWasDetached(_widget: Widget): void;
+    childWasDetached(_widget: AnyWidget): void;
     isShowing(): boolean;
     shouldHideOnDetach(): boolean;
     setHideOnDetach(): void;
     private inNotification;
     private parentIsShowing;
-    protected callOnVisibleChildren(method: (this: Widget) => void): void;
+    protected callOnVisibleChildren(method: (this: AnyWidget) => void): void;
     private processWillShow;
     private processWasShown;
     private processWillHide;
@@ -125,7 +135,7 @@ export declare class Widget {
     onLayout(): void;
     onDetach(): void;
     ownerViewDisposed(): Promise<void>;
-    show(parentElement: Element, insertBefore?: Node | null, suppressOrphanWidgetError?: boolean): void;
+    show(parentElement: Element | DocumentFragment, insertBefore?: Node | null, suppressOrphanWidgetError?: boolean): void;
     private attach;
     showWidget(): void;
     hideWidget(): void;
@@ -224,7 +234,7 @@ export declare class VBox extends Widget {
     constructor(element?: HTMLElement, options?: WidgetOptions);
     calculateConstraints(): Geometry.Constraints;
 }
-export declare class HBox extends Widget {
+export declare class HBox extends Widget<HTMLElement> {
     /**
      * Constructs a new `HBox` with the given `options`.
      *
@@ -252,7 +262,7 @@ export declare class VBoxWithResizeCallback extends VBox {
 export declare class WidgetFocusRestorer {
     private widget;
     private previous;
-    constructor(widget: Widget);
+    constructor(widget: AnyWidget);
     restore(): void;
 }
 export {};

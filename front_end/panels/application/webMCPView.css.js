@@ -70,6 +70,7 @@ export default `/*
         align-items: center;
         flex: none;
         color: var(--sys-color-on-surface);
+        border-bottom: 1px solid var(--sys-color-divider);
     }
 
     .status-cell {
@@ -223,6 +224,18 @@ export default `/*
     .payload-value.error-text {
       color: var(--sys-color-error);
       white-space: pre-wrap;
+    }
+
+    .sidebar-tool-details {
+        flex: none;
+        border-bottom: 1px solid var(--sys-color-divider);
+    }
+
+    .json-editor-widget {
+        flex: auto;
+        /* extend the JSON editor padding to match the details grid */
+        padding-left: calc(var(--sys-size-8) - 1em);
+        min-height: 0;
     }
 }
 

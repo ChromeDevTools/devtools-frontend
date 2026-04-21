@@ -15,7 +15,7 @@ interface RenderOptions {
 /**
  * Renders a given element into the DOM. By default it will error if it finds an element already rendered but this can be controlled via the options.
  **/
-export declare function renderElementIntoDOM<E extends Node | UI.Widget.Widget>(element: E, renderOptions?: RenderOptions): E;
+export declare function renderElementIntoDOM<E extends Node | UI.Widget.AnyWidget>(element: E, renderOptions?: RenderOptions): E;
 export declare function removeChildren(node: Node): void;
 /**
  * Asserts that all elements of `nodeList` are at least of type `T`.

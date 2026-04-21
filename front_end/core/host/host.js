@@ -23,7 +23,8 @@ __export(AidaClient_exports, {
   UseCase: () => UseCase,
   UserTier: () => UserTier,
   convertToUserTierEnum: () => convertToUserTierEnum,
-  debugLog: () => debugLog
+  debugLog: () => debugLog,
+  getClientFeatureName: () => getClientFeatureName
 });
 import * as Common4 from "./../common/common.js";
 import * as Root3 from "./../root/root.js";
@@ -413,7 +414,8 @@ function aidaCompletionRequestToGcaRequest(request) {
   try {
     let additionalFiles = (request.additional_files ?? []).map((f) => ({
       fileUri: f.path,
-      inclusionReason: [AidaReasonToGcaInclusionReason[f.included_reason]]
+      inclusionReason: [AidaReasonToGcaInclusionReason[f.included_reason]],
+      segments: [{ content: f.content, isSelected: false }]
     }));
     const inEditorFile = inFileEditRequestToSourceFile(request);
     if (inEditorFile) {
@@ -1970,6 +1972,13 @@ function convertToUserTierEnum(userTier) {
     }
   }
   return UserTier.PUBLIC;
+}
+function getClientFeatureName(feature) {
+  const name = ClientFeature[feature];
+  if (typeof name !== "string") {
+    throw new Error(`Invalid ClientFeature: ${feature}`);
+  }
+  return name;
 }
 var hostConfigTrackerInstance;
 var HostConfigTracker = class _HostConfigTracker extends Common4.ObjectWrapper.ObjectWrapper {

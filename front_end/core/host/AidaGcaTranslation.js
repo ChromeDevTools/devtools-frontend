@@ -154,6 +154,7 @@ export function aidaCompletionRequestToGcaRequest(request) {
         let additionalFiles = (request.additional_files ?? []).map(f => ({
             fileUri: f.path,
             inclusionReason: [AidaReasonToGcaInclusionReason[f.included_reason]],
+            segments: [{ content: f.content, isSelected: false }],
         }));
         const inEditorFile = inFileEditRequestToSourceFile(request);
         if (inEditorFile) {

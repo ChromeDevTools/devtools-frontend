@@ -12,7 +12,7 @@ export interface ViewInput {
     onShowMore: () => void;
     onShowLess: () => void;
 }
-export type View = (input: ViewInput, output: object, target: HTMLElement) => void;
+export type View = (input: ViewInput, output: object, target: HTMLElement | DocumentFragment) => void;
 export declare const DEFAULT_VIEW: View;
 export interface Options {
     tabStops?: boolean;
@@ -20,7 +20,7 @@ export interface Options {
     showColumnNumber?: boolean;
     expandable?: boolean;
 }
-export declare class StackTracePreviewContent extends UI.Widget.Widget {
+export declare class StackTracePreviewContent extends UI.Widget.Widget<ShadowRoot> {
     #private;
     constructor(element?: HTMLElement, view?: View);
     hasContent(): boolean;

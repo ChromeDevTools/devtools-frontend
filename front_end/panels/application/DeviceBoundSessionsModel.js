@@ -72,6 +72,11 @@ export class DeviceBoundSessionsModel extends Common.ObjectWrapper.ObjectWrapper
         }
         this.dispatchEventToListeners("CLEAR_EVENTS" /* DeviceBoundSessionModelEvents.CLEAR_EVENTS */, { emptySessions, emptySites, noLongerFailedSessions });
     }
+    deleteSession(site, id) {
+        for (const networkManager of SDK.TargetManager.TargetManager.instance().models(SDK.NetworkManager.NetworkManager, { scoped: true })) {
+            void networkManager.deleteDeviceBoundSession({ site, id });
+        }
+    }
     isSiteVisible(site) {
         return this.#visibleSites.has(site);
     }

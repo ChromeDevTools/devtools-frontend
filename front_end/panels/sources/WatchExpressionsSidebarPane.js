@@ -91,9 +91,9 @@ const str_ = i18n.i18n.registerUIStrings('panels/sources/WatchExpressionsSidebar
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let watchExpressionsSidebarPaneInstance;
 export class WatchExpressionsSidebarPane extends UI.Widget.VBox {
-    watchExpressions;
+    #watchExpressions;
     emptyElement;
-    watchExpressionsSetting;
+    #watchExpressionsSetting;
     addButton;
     refreshButton;
     treeOutline;
@@ -105,8 +105,8 @@ export class WatchExpressionsSidebarPane extends UI.Widget.VBox {
         // TODO(szuend): Replace with a Set once the web test
         // panels/sources/debugger-ui/watch-expressions-preserve-expansion.js is either converted
         // to an e2e test or no longer accesses this variable directly.
-        this.watchExpressions = [];
-        this.watchExpressionsSetting =
+        this.#watchExpressions = [];
+        this.#watchExpressionsSetting =
             Common.Settings.Settings.instance().createLocalSetting('watch-expressions', []);
         this.addButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.addWatchExpression), 'plus', undefined, 'add-watch-expression');
         this.addButton.setSize("SMALL" /* Buttons.Button.Size.SMALL */);
@@ -136,6 +136,9 @@ export class WatchExpressionsSidebarPane extends UI.Widget.VBox {
         }
         return watchExpressionsSidebarPaneInstance;
     }
+    get watchExpressions() {
+        return this.#watchExpressions;
+    }
     toolbarItems() {
         return [this.addButton, this.refreshButton];
     }
@@ -143,19 +146,19 @@ export class WatchExpressionsSidebarPane extends UI.Widget.VBox {
         if (this.hasFocus()) {
             return;
         }
-        if (this.watchExpressions.length > 0) {
+        if (this.#watchExpressions.length > 0) {
             this.treeOutline.forceSelect();
         }
     }
     saveExpressions() {
         const toSave = [];
-        for (let i = 0; i < this.watchExpressions.length; i++) {
-            const expression = this.watchExpressions[i].expression();
+        for (let i = 0; i < this.#watchExpressions.length; i++) {
+            const expression = this.#watchExpressions[i].expression();
             if (expression) {
                 toSave.push(expression);
             }
         }
-        this.watchExpressionsSetting.set(toSave);
+        this.#watchExpressionsSetting.set(toSave);
     }
     async addButtonClicked() {
         await UI.ViewManager.ViewManager.instance().showView('sources.watch');
@@ -166,11 +169,11 @@ export class WatchExpressionsSidebarPane extends UI.Widget.VBox {
         this.linkifier.reset();
         this.contentElement.removeChildren();
         this.treeOutline.removeChildren();
-        this.watchExpressions = [];
+        this.#watchExpressions = [];
         this.emptyElement = this.contentElement.createChild('div', 'gray-info-message');
         this.emptyElement.textContent = i18nString(UIStrings.noWatchExpressions);
         this.emptyElement.tabIndex = -1;
-        const watchExpressionStrings = this.watchExpressionsSetting.get();
+        const watchExpressionStrings = this.#watchExpressionsSetting.get();
         if (watchExpressionStrings.length) {
             this.emptyElement.classList.add('hidden');
         }
@@ -188,15 +191,15 @@ export class WatchExpressionsSidebarPane extends UI.Widget.VBox {
         UI.ARIAUtils.setLabel(this.contentElement, i18nString(UIStrings.addWatchExpression));
         watchExpression.addEventListener("ExpressionUpdated" /* Events.EXPRESSION_UPDATED */, this.watchExpressionUpdated, this);
         this.treeOutline.appendChild(watchExpression.treeElement());
-        this.watchExpressions.push(watchExpression);
+        this.#watchExpressions.push(watchExpression);
         return watchExpression;
     }
     watchExpressionUpdated({ data: watchExpression }) {
         if (!watchExpression.expression()) {
-            Platform.ArrayUtilities.removeElement(this.watchExpressions, watchExpression);
+            Platform.ArrayUtilities.removeElement(this.#watchExpressions, watchExpression);
             this.treeOutline.removeChild(watchExpression.treeElement());
-            this.emptyElement.classList.toggle('hidden', Boolean(this.watchExpressions.length));
-            if (this.watchExpressions.length === 0) {
+            this.emptyElement.classList.toggle('hidden', Boolean(this.#watchExpressions.length));
+            if (this.#watchExpressions.length === 0) {
                 this.treeOutline.element.remove();
             }
         }
@@ -209,26 +212,26 @@ export class WatchExpressionsSidebarPane extends UI.Widget.VBox {
     }
     populateContextMenu(contextMenu, event) {
         let isEditing = false;
-        for (const watchExpression of this.watchExpressions) {
+        for (const watchExpression of this.#watchExpressions) {
             isEditing = isEditing || watchExpression.isEditing();
         }
         if (!isEditing) {
             contextMenu.debugSection().appendItem(i18nString(UIStrings.addWatchExpression), this.addButtonClicked.bind(this), { jslogContext: 'add-watch-expression' });
         }
-        if (this.watchExpressions.length > 1) {
+        if (this.#watchExpressions.length > 1) {
             contextMenu.debugSection().appendItem(i18nString(UIStrings.deleteAllWatchExpressions), this.deleteAllButtonClicked.bind(this), { jslogContext: 'delete-all-watch-expressions' });
         }
         const treeElement = this.treeOutline.treeElementFromEvent(event);
         if (!treeElement) {
             return;
         }
-        const currentWatchExpression = this.watchExpressions.find(watchExpression => treeElement.hasAncestorOrSelf(watchExpression.treeElement()));
+        const currentWatchExpression = this.#watchExpressions.find(watchExpression => treeElement.hasAncestorOrSelf(watchExpression.treeElement()));
         if (currentWatchExpression) {
             currentWatchExpression.populateContextMenu(contextMenu, event);
         }
     }
     deleteAllButtonClicked() {
-        this.watchExpressions = [];
+        this.#watchExpressions = [];
         this.saveExpressions();
         this.requestUpdate();
     }

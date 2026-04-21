@@ -71,6 +71,18 @@ export class Tool {
     get description() {
         return this.#protocolTool.description;
     }
+    get inputSchema() {
+        let rawSchema = this.#protocolTool.inputSchema;
+        if (typeof rawSchema === 'string') {
+            try {
+                rawSchema = JSON.parse(rawSchema);
+            }
+            catch {
+                rawSchema = {};
+            }
+        }
+        return (typeof rawSchema === 'object' && rawSchema !== null) ? rawSchema : {};
+    }
     get frame() {
         return this.#target.deref()
             ?.model(SDK.ResourceTreeModel.ResourceTreeModel)
@@ -84,6 +96,13 @@ export class Tool {
         const target = this.#target.deref();
         return this.#protocolTool.backendNodeId && target &&
             new SDK.DOMModel.DeferredDOMNode(target, this.#protocolTool.backendNodeId);
+    }
+    async invoke(input) {
+        return await this.#target.deref()?.webMCPAgent().invoke_invokeTool({
+            toolName: this.name,
+            frameId: this.#protocolTool.frameId,
+            input,
+        });
     }
 }
 export class WebMCPModel extends SDK.SDKModel.SDKModel {

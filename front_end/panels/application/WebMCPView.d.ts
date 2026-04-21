@@ -4,6 +4,7 @@ import '../../ui/components/node_text/node_text.js';
 import '../../ui/legacy/components/data_grid/data_grid.js';
 import '../../ui/legacy/legacy.js';
 import type { JSONSchema7 } from 'json-schema';
+import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as StackTrace from '../../models/stack_trace/stack_trace.js';
 import * as WebMCP from '../../models/web_mcp/web_mcp.js';
@@ -40,12 +41,22 @@ export interface ViewInput {
     onClearLogClick: () => void;
     onFilterChange: (filters: FilterState) => void;
     toolCalls: WebMCP.WebMCPModel.Call[];
+    onRunTool: (event: Common.EventTarget.EventTargetEvent<ProtocolMonitor.JSONEditor.Command>) => void;
 }
 export declare function filterToolCalls(toolCalls: WebMCP.WebMCPModel.Call[], filterState: FilterState): WebMCP.WebMCPModel.Call[];
 export type View = (input: ViewInput, output: object, target: HTMLElement) => void;
 export declare function parsePayload(payload?: unknown): {
     valueObject: unknown;
     valueString: string | undefined;
+};
+export declare function getJSONEditorParameters(tool: WebMCP.WebMCPModel.Tool): {
+    metadataByCommand: Map<string, {
+        parameters: ProtocolMonitor.JSONEditor.Parameter[];
+        description: string;
+        replyArgs: string[];
+    }>;
+    typesByName: Map<string, ProtocolMonitor.JSONEditor.Parameter[]>;
+    enumsByName: Map<string, Record<string, string>>;
 };
 export declare const DEFAULT_VIEW: View;
 export declare class WebMCPView extends UI.Widget.VBox {

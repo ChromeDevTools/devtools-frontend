@@ -119,6 +119,8 @@ export class AiAgent {
         }
         const enableAidaFunctionCalling = declarations.length;
         const userTier = Host.AidaClient.convertToUserTierEnum(this.userTier);
+        const clientFeatureName = Host.AidaClient.getClientFeatureName(this.clientFeature);
+        debugLog(`Client ${clientFeatureName} running with userTier ${this.userTier}`);
         const preamble = userTier === Host.AidaClient.UserTier.TESTERS ? this.preamble : undefined;
         const facts = Array.from(this.#facts);
         const request = {

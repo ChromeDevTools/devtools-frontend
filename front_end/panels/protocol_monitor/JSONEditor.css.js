@@ -70,14 +70,21 @@ ul {
   display: flex;
   flex-direction: column;
   height: 100%;
+  min-height: 0;
 }
 
 .editor-wrapper {
   padding-left: 1em;
   overflow-x: hidden;
   flex-grow: 1;
-  padding-bottom: 50px;
   padding-top: 0.5em;
+  min-height: 1lh;
+}
+
+.editor-wrapper::after {
+  content: "";
+  display: block;
+  height: 50px;
 }
 
 .clear-button,

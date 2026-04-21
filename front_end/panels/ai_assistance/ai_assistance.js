@@ -3741,7 +3741,7 @@ var DEFAULT_VIEW4 = (input, output, target) => {
     return Lit5.nothing;
   })}
         ${renderError(message)}
-        ${input.isLastMessage && hasAiV2 && !input.isLoading && input.changeSummary ? html7`
+        ${input.shouldShowCSSChangeSummary && hasAiV2 && input.changeSummary ? html7`
           <devtools-code-block
             .code=${input.changeSummary}
             .codeLang=${"css"}
@@ -4490,6 +4490,7 @@ var ChatMessage = class extends UI5.Widget.Widget {
   canShowFeedbackForm = false;
   isLastMessage = false;
   isFirstMessage = false;
+  shouldShowCSSChangeSummary = false;
   markdownRenderer;
   onSuggestionClick = () => {
   };
@@ -4537,6 +4538,7 @@ var ChatMessage = class extends UI5.Widget.Widget {
       markdownRenderer: this.markdownRenderer,
       isLastMessage: this.isLastMessage,
       isFirstMessage: this.isFirstMessage,
+      shouldShowCSSChangeSummary: this.shouldShowCSSChangeSummary,
       onSuggestionClick: this.onSuggestionClick,
       onRatingClick: this.#handleRateClick.bind(this),
       onReportClick: () => UIHelpers.openInNewTab(REPORT_URL),
@@ -5437,6 +5439,20 @@ var UIStringsNotTranslate5 = {
 };
 var lockedString6 = i18n13.i18n.lockedString;
 var SCROLL_ROUNDING_OFFSET2 = 1;
+function getCSSChangeSummaryMessage(messages, isLoading) {
+  const modelMessages = messages.filter(
+    (m) => m.entity === "model"
+    /* ChatMessageEntity.MODEL */
+  );
+  const lastModelMessage = modelMessages.at(-1);
+  if (!lastModelMessage) {
+    return void 0;
+  }
+  if (isLoading && messages.at(-1) === lastModelMessage) {
+    return modelMessages.at(-2);
+  }
+  return lastModelMessage;
+}
 var DEFAULT_VIEW6 = (input, output, target) => {
   const hasAiV2 = Boolean(Root4.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled);
   const chatUiClasses = classMap({
@@ -5449,6 +5465,7 @@ var DEFAULT_VIEW6 = (input, output, target) => {
     sticky: !input.isReadOnly
   });
   const shouldShowPatchWidget = !hasAiV2 && !input.isLoading;
+  const cssChangeSummaryMessage = getCSSChangeSummaryMessage(input.messages, input.isLoading);
   render7(html9`
       <style>${chatView_css_default}</style>
       <div class=${chatUiClasses}>
@@ -5465,6 +5482,7 @@ var DEFAULT_VIEW6 = (input, output, target) => {
     markdownRenderer: input.markdownRenderer,
     isLastMessage: input.messages.at(-1) === message,
     isFirstMessage: input.messages.at(0) === message,
+    shouldShowCSSChangeSummary: message === cssChangeSummaryMessage,
     onSuggestionClick: input.handleSuggestionClick,
     onFeedbackSubmit: input.onFeedbackSubmit,
     onCopyResponseClick: input.onCopyResponseClick,
@@ -8297,6 +8315,7 @@ export {
   SELECT_WORKSPACE_DIALOG_DEFAULT_VIEW,
   SelectWorkspaceDialog,
   WalkthroughView_exports as WalkthroughView,
+  getCSSChangeSummaryMessage,
   getResponseMarkdown
 };
 //# sourceMappingURL=ai_assistance.js.map

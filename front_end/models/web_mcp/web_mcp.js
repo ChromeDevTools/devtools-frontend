@@ -80,6 +80,17 @@ var Tool = class {
   get description() {
     return this.#protocolTool.description;
   }
+  get inputSchema() {
+    let rawSchema = this.#protocolTool.inputSchema;
+    if (typeof rawSchema === "string") {
+      try {
+        rawSchema = JSON.parse(rawSchema);
+      } catch {
+        rawSchema = {};
+      }
+    }
+    return typeof rawSchema === "object" && rawSchema !== null ? rawSchema : {};
+  }
   get frame() {
     return this.#target.deref()?.model(SDK.ResourceTreeModel.ResourceTreeModel)?.frameForId(this.#protocolTool.frameId) ?? void 0;
   }
@@ -89,6 +100,13 @@ var Tool = class {
   get node() {
     const target = this.#target.deref();
     return this.#protocolTool.backendNodeId && target && new SDK.DOMModel.DeferredDOMNode(target, this.#protocolTool.backendNodeId);
+  }
+  async invoke(input) {
+    return await this.#target.deref()?.webMCPAgent().invoke_invokeTool({
+      toolName: this.name,
+      frameId: this.#protocolTool.frameId,
+      input
+    });
   }
 };
 var WebMCPModel = class extends SDK.SDKModel.SDKModel {

@@ -4592,6 +4592,9 @@
   "panels/application/CrashReportContextView.ts | unknownFrame": {
     "message": "Unknown Frame"
   },
+  "panels/application/DeviceBoundSessionsTreeElement.ts | clear": {
+    "message": "Clear"
+  },
   "panels/application/DeviceBoundSessionsTreeElement.ts | deviceBoundSessions": {
     "message": "Device bound sessions"
   },
@@ -6331,6 +6334,9 @@
   },
   "panels/application/WebMCPView.ts | pending": {
     "message": "In Progress"
+  },
+  "panels/application/WebMCPView.ts | runTool": {
+    "message": "Run Tool"
   },
   "panels/application/WebMCPView.ts | status": {
     "message": "Status"

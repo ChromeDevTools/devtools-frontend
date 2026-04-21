@@ -2376,6 +2376,11 @@ var DeviceBoundSessionsModel = class extends Common3.ObjectWrapper.ObjectWrapper
     }
     this.dispatchEventToListeners("CLEAR_EVENTS", { emptySessions, emptySites, noLongerFailedSessions });
   }
+  deleteSession(site, id) {
+    for (const networkManager of SDK4.TargetManager.TargetManager.instance().models(SDK4.NetworkManager.NetworkManager, { scoped: true })) {
+      void networkManager.deleteDeviceBoundSession({ site, id });
+    }
+  }
   isSiteVisible(site) {
     return this.#visibleSites.has(site);
   }
@@ -2499,7 +2504,11 @@ var UIStrings5 = {
    *@description Tooltip text for a session with errors.
    *@example {session_1} sessionName
    */
-  sessionWithErrors: "{sessionName}, Session has errors"
+  sessionWithErrors: "{sessionName}, Session has errors",
+  /**
+   *@description Context menu item for clearing a session.
+   */
+  clear: "Clear"
 };
 var str_5 = i18n9.i18n.registerUIStrings("panels/application/DeviceBoundSessionsTreeElement.ts", UIStrings5);
 var i18nString5 = i18n9.i18n.getLocalizedString.bind(void 0, str_5);
@@ -2645,6 +2654,20 @@ var RootTreeElement = class extends ApplicationPanelTreeElement {
         this.resourcesPanel.showDeviceBoundSession(this.#model, site, sessionId);
         return false;
       };
+      sessionElement.listItemElement.addEventListener("keydown", (event) => {
+        const keyboardEvent = event;
+        if ((keyboardEvent.key === "Delete" || keyboardEvent.key === "Backspace") && sessionId !== void 0) {
+          this.#model.deleteSession(site, sessionId);
+          event.consume(true);
+        }
+      });
+      sessionElement.listItemElement.addEventListener("contextmenu", (event) => {
+        if (sessionId !== void 0) {
+          const contextMenu = new UI4.ContextMenu.ContextMenu(event);
+          contextMenu.defaultSection().appendItem(i18nString5(UIStrings5.clear), () => this.#model.deleteSession(site, sessionId), { jslogContext: "clear" });
+          void contextMenu.show();
+        }
+      });
       if (sessionId === void 0) {
         siteMapEntry.siteTreeElement.insertChild(sessionElement, 0);
       } else {
@@ -11769,6 +11792,7 @@ __export(WebMCPView_exports, {
   ToolDetailsWidget: () => ToolDetailsWidget,
   WebMCPView: () => WebMCPView,
   filterToolCalls: () => filterToolCalls,
+  getJSONEditorParameters: () => getJSONEditorParameters,
   parsePayload: () => parsePayload,
   parseToolSchema: () => parseToolSchema
 });
@@ -11860,6 +11884,7 @@ var webMCPView_css_default = `/*
         align-items: center;
         flex: none;
         color: var(--sys-color-on-surface);
+        border-bottom: 1px solid var(--sys-color-divider);
     }
 
     .status-cell {
@@ -12014,6 +12039,18 @@ var webMCPView_css_default = `/*
       color: var(--sys-color-error);
       white-space: pre-wrap;
     }
+
+    .sidebar-tool-details {
+        flex: none;
+        border-bottom: 1px solid var(--sys-color-divider);
+    }
+
+    .json-editor-widget {
+        flex: auto;
+        /* extend the JSON editor padding to match the details grid */
+        padding-left: calc(var(--sys-size-8) - 1em);
+        min-height: 0;
+    }
 }
 
 /*# sourceURL=${import.meta.resolve("./webMCPView.css")} */`;
@@ -12147,7 +12184,11 @@ var UIStrings30 = {
   /**
    * @description Context menu action to copy the description of a tool
    */
-  copyDescription: "Copy description"
+  copyDescription: "Copy description",
+  /**
+   * @description Text for the header of the tool run section
+   */
+  runTool: "Run Tool"
 };
 var str_30 = i18n59.i18n.registerUIStrings("panels/application/WebMCPView.ts", UIStrings30);
 var i18nString30 = i18n59.i18n.getLocalizedString.bind(void 0, str_30);
@@ -12258,6 +12299,20 @@ function parsePayload(payload) {
     }
   }
   return { valueObject: payload, valueString: void 0 };
+}
+function getJSONEditorParameters(tool) {
+  const parsedSchema = parseToolSchema(tool.inputSchema);
+  const metadataByCommand = /* @__PURE__ */ new Map();
+  metadataByCommand.set(tool.name, {
+    parameters: parsedSchema.parameters,
+    description: tool.description,
+    replyArgs: []
+  });
+  return {
+    metadataByCommand,
+    typesByName: parsedSchema.typesByName,
+    enumsByName: parsedSchema.enumsByName
+  };
 }
 var DEFAULT_VIEW7 = (input, output, target) => {
   const tools = input.tools;
@@ -12460,7 +12515,24 @@ var DEFAULT_VIEW7 = (input, output, target) => {
             ></devtools-button>
             <span>${i18nString30(UIStrings30.toolDetails)}</span>
           </div>
+          ${input.selectedTool ? html10`
+            <div class="sidebar-tool-details">
           ${widget7(ToolDetailsWidget, { tool: input.selectedTool })}
+        </div>
+            <div class="section-title">
+              <span>${i18nString30(UIStrings30.runTool)}</span>
+            </div>
+            <devtools-widget
+              class="json-editor-widget"
+              ${widget7(ProtocolMonitor.JSONEditor.JSONEditor, {
+    displayTargetSelector: false,
+    displayCommandInput: false,
+    ...getJSONEditorParameters(input.selectedTool),
+    commandToDisplay: input.selectedTool.name,
+    onSubmit: input.onRunTool
+  })}
+            ></devtools-widget>
+          ` : nothing6}
         </div>
       </devtools-split-view>
     </devtools-split-view>
@@ -12546,15 +12618,21 @@ var WebMCPView = class _WebMCPView extends UI23.Widget.VBox {
   }
   #webMCPModelAdded(model) {
     model.addEventListener("ToolsAdded", this.requestUpdate, this);
-    model.addEventListener("ToolsRemoved", this.requestUpdate, this);
+    model.addEventListener("ToolsRemoved", this.#toolsRemoved, this);
     model.addEventListener("ToolInvoked", this.requestUpdate, this);
     model.addEventListener("ToolResponded", this.requestUpdate, this);
   }
   #webMCPModelRemoved(model) {
     model.removeEventListener("ToolsAdded", this.requestUpdate, this);
-    model.removeEventListener("ToolsRemoved", this.requestUpdate, this);
+    model.removeEventListener("ToolsRemoved", this.#toolsRemoved, this);
     model.removeEventListener("ToolInvoked", this.requestUpdate, this);
     model.removeEventListener("ToolResponded", this.requestUpdate, this);
+  }
+  #toolsRemoved(event) {
+    if (this.#selectedTool && event.data.includes(this.#selectedTool)) {
+      this.#selectedTool = null;
+    }
+    this.requestUpdate();
   }
   #handleClearLogClick = () => {
     const models = SDK25.TargetManager.TargetManager.instance().models(WebMCP.WebMCPModel.WebMCPModel);
@@ -12580,8 +12658,9 @@ var WebMCPView = class _WebMCPView extends UI23.Widget.VBox {
     const models = SDK25.TargetManager.TargetManager.instance().models(WebMCP.WebMCPModel.WebMCPModel);
     const toolCalls = models.flatMap((model) => model.toolCalls);
     const filteredCalls = filterToolCalls(toolCalls, this.#filterState);
+    const tools = this.#getTools();
     const input = {
-      tools: this.#getTools(),
+      tools,
       selectedTool: this.#selectedTool,
       onToolSelect: (tool) => {
         this.#selectedTool = tool;
@@ -12596,7 +12675,12 @@ var WebMCPView = class _WebMCPView extends UI23.Widget.VBox {
       filters: this.#filterState,
       filterButtons: this.#filterButtons,
       onClearLogClick: this.#handleClearLogClick,
-      onFilterChange: this.#handleFilterChange
+      onFilterChange: this.#handleFilterChange,
+      onRunTool: (event) => {
+        if (this.#selectedTool) {
+          void this.#selectedTool.invoke(event.data.parameters || {});
+        }
+      }
     };
     this.#view(input, {}, this.contentElement);
   }

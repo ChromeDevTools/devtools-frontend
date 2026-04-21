@@ -347,6 +347,9 @@ export class NetworkManager extends SDKModel {
     async enableDeviceBoundSessions(enable = true) {
         return await this.#networkAgent.invoke_enableDeviceBoundSessions({ enable });
     }
+    async deleteDeviceBoundSession(key) {
+        return await this.#networkAgent.invoke_deleteDeviceBoundSession({ key });
+    }
     async loadNetworkResource(frameId, url, options) {
         const result = await this.#networkAgent.invoke_loadNetworkResource({ frameId: frameId ?? undefined, url, options });
         if (result.getError()) {

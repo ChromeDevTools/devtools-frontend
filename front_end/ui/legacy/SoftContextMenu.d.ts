@@ -5,9 +5,9 @@ export declare class SoftContextMenu {
     private parentMenu;
     private highlightedMenuItemElement;
     detailsForElementMap: WeakMap<HTMLElement, ElementMenuDetails>;
-    private document?;
+    private document;
     private glassPane?;
-    private contextMenuElement?;
+    private contextMenuElement;
     private focusRestorer?;
     private hideOnUserMouseDownUnlessInMenu?;
     private activeSubMenuElement?;

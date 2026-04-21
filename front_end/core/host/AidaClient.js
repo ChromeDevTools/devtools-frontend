@@ -354,6 +354,13 @@ export function convertToUserTierEnum(userTier) {
     }
     return UserTier.PUBLIC;
 }
+export function getClientFeatureName(feature) {
+    const name = ClientFeature[feature];
+    if (typeof name !== 'string') {
+        throw new Error(`Invalid ClientFeature: ${feature}`);
+    }
+    return name;
+}
 let hostConfigTrackerInstance;
 export class HostConfigTracker extends Common.ObjectWrapper.ObjectWrapper {
     #pollTimer;

@@ -19,6 +19,7 @@ export declare class DeviceBoundSessionsModel extends Common.ObjectWrapper.Objec
     addVisibleSite(site: string): void;
     clearVisibleSites(): void;
     clearEvents(): void;
+    deleteSession(site: string, id: string): void;
     isSiteVisible(site: string): boolean;
     isSessionTerminated(site: string, sessionId?: string): boolean;
     sessionHasErrors(site: string, sessionId?: string): boolean;

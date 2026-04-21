@@ -85,12 +85,26 @@ export class JSONEditor extends Common.ObjectWrapper.eventMixin(UI.Widget.VBox) 
     #targetId;
     #hintPopoverHelper;
     #view;
+    #onSubmit;
     displayTargetSelector = true;
     displayCommandInput = true;
     constructor(element, view = DEFAULT_VIEW) {
         super(element, { useShadowDom: true });
         this.#view = view;
         this.registerRequiredCSS(editorWidgetStyles);
+    }
+    get onSubmit() {
+        return this.#onSubmit;
+    }
+    set onSubmit(val) {
+        if (this.#onSubmit) {
+            this.removeEventListener("submiteditor" /* Events.SUBMIT_EDITOR */, this.#onSubmit);
+        }
+        this.#onSubmit = val;
+        if (this.#onSubmit) {
+            this.addEventListener("submiteditor" /* Events.SUBMIT_EDITOR */, this.#onSubmit);
+        }
+        this.requestUpdate();
     }
     get metadataByCommand() {
         return this.#metadataByCommand;

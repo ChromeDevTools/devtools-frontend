@@ -14,6 +14,13 @@ export interface TraceFile {
   metadata: MetaData;
 }
 
+// When a file is imported, it could have come from another tool which does not
+// define metadata.
+interface TraceFileWithUnknownMetadata {
+  traceEvents: readonly Event[];
+  metadata?: MetaData;
+}
+
 export interface Breadcrumb {
   window: TraceWindowMicro;
   child: Breadcrumb|null;
@@ -239,7 +246,7 @@ export interface MetadataResource {
   mimeType: string;
 }
 
-export type Contents = TraceFile|Event[];
+export type Contents = TraceFileWithUnknownMetadata|Event[];
 
 export function traceEventKeyToValues(key: SerializableKey): SerializableKeyValues {
   const parts = key.split('-');

@@ -11,6 +11,10 @@ import type {RehydratingResource} from './RehydratingObject.js';
 import {ResourceTreeModel} from './ResourceTreeModel.js';
 import type {SourceMapV3} from './SourceMap.js';
 
+interface TraceObjectWithNoMetadata {
+  readonly traceEvents: TraceObject['traceEvents'];
+  metadata?: TraceObject['metadata'];
+}
 /** A thin wrapper class, mostly to enable instanceof-based revealing of traces to open in Timeline. **/
 export class TraceObject {
   readonly traceEvents: Protocol.Tracing.DataCollectedEvent['value'];
@@ -18,13 +22,14 @@ export class TraceObject {
     sourceMaps?: Array<{sourceMapUrl: string, sourceMap: SourceMapV3, url: string}>,
     resources?: RehydratingResource[],
   };
-  constructor(payload: Protocol.Tracing.DataCollectedEvent['value']|TraceObject, meta?: Object) {
+  constructor(
+      payload: Protocol.Tracing.DataCollectedEvent['value']|TraceObject|TraceObjectWithNoMetadata, meta?: Object) {
     if (Array.isArray(payload)) {
       this.traceEvents = payload;
       this.metadata = meta ?? {};
     } else {
       this.traceEvents = payload.traceEvents;
-      this.metadata = payload.metadata;
+      this.metadata = payload.metadata ?? {};
     }
   }
 }

@@ -147,9 +147,8 @@ export class TimelineLoader {
       return;
     }
 
-    if ('metadata' in trace) {
-      this.#metadata = trace.metadata;
-
+    if (!Array.isArray(trace) && 'traceEvents' in trace) {
+      this.#metadata = trace.metadata ?? {};
       // Older traces set these fields even when throttling is not active, while newer traces do not.
       // Clear them out on load to simplify usage.
       if (this.#metadata.cpuThrottling === 1) {
@@ -241,4 +240,4 @@ export class TimelineLoader {
 /**
  * Used when we parse the input, but do not yet know if it is a raw CPU Profile or a Trace
  **/
-type ParsedJSONFile = Trace.Types.File.Contents|Protocol.Profiler.Profile;
+export type ParsedJSONFile = Trace.Types.File.Contents|Protocol.Profiler.Profile;

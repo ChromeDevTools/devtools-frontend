@@ -1323,6 +1323,7 @@ export const knownContextValues = new Set([
   'devices',
   'devtools',
   'devtools-override',
+  'dialog-close',
   'direct-socket-chunks',
   'direct-socket-messages',
   'direction',

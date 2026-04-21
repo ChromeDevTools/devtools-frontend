@@ -8,6 +8,7 @@ import * as SDK from '../../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../../generated/protocol.js';
 import * as Bindings from '../../../../models/bindings/bindings.js';
 import * as Breakpoints from '../../../../models/breakpoints/breakpoints.js';
+import type * as StackTrace from '../../../../models/stack_trace/stack_trace.js';
 import * as Workspace from '../../../../models/workspace/workspace.js';
 import {findMenuItemWithLabel} from '../../../../testing/ContextMenuHelpers.js';
 import {
@@ -20,6 +21,7 @@ import {
 } from '../../../../testing/MockConnection.js';
 import {MockProtocolBackend} from '../../../../testing/MockScopeChain.js';
 import {setMockResourceTree} from '../../../../testing/ResourceTreeHelpers.js';
+import {TestUniverse} from '../../../../testing/TestUniverse.js';
 import * as UI from '../../legacy.js';
 
 import * as Components from './utils.js';
@@ -291,6 +293,27 @@ describeWithMockConnection('Linkifier', () => {
 
     assert.exists(anchor);
     assert.strictEqual(anchor.textContent, `w.com/a.js:${lineNumber + 1}`);
+  });
+
+  describe('linkifyStackTraceFrame', () => {
+    it('applies ignore-list-link class to fallback anchor if URL is ignore-listed and manager is provided', () => {
+      const universe = new TestUniverse();
+      const ignoreListManager = universe.ignoreListManager;
+      const url = Platform.DevToolsPath.urlString`http://example.com/script.js`;
+      ignoreListManager.ignoreListURL(url);
+
+      const frame = {
+        url,
+        line: 1,
+        column: 1,
+        uiSourceCode: null,
+      } as unknown as StackTrace.StackTrace.Frame;
+
+      const anchor = Components.Linkifier.Linkifier.linkifyStackTraceFrame(frame, {ignoreListManager});
+
+      assert.exists(anchor);
+      assert.isTrue(anchor.classList.contains('ignore-list-link'));
+    });
   });
 
   describe('maybeLinkifyScriptLocation', () => {

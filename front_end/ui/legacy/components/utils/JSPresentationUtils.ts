@@ -100,6 +100,7 @@ export interface ViewInput {
   expandable?: boolean;
   expanded?: boolean;
   showIgnoreListed?: boolean;
+  ignoreListManager?: Workspace.IgnoreListManager.IgnoreListManager;
   onExpand: () => void;
   onShowMore: () => void;
   onShowLess: () => void;
@@ -158,6 +159,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
                 inlineFrameIndex: 0,
                 revealBreakpoint: previousStackFrameWasBreakpointCondition,
                 maxLength: UI.UIUtils.MaxLengthForDisplayedURLsInConsole,
+                ignoreListManager: input.ignoreListManager,
               });
               link.setAttribute('jslog', `${VisualLogging.link('stack-trace').track({click: true})}`);
               link.addEventListener('contextmenu', populateContextMenu.bind(null, link));
@@ -205,6 +207,7 @@ export interface Options {
   widthConstrained?: boolean;
   showColumnNumber?: boolean;
   expandable?: boolean;
+  ignoreListManager?: Workspace.IgnoreListManager.IgnoreListManager;
 }
 
 export class StackTracePreviewContent extends UI.Widget.Widget<ShadowRoot> {
@@ -254,7 +257,7 @@ export class StackTracePreviewContent extends UI.Widget.Widget<ShadowRoot> {
     const hasNonIgnoredLinks = this.linkElements.some(link => {
       const uiLocation = Linkifier.uiLocation(link);
       if (uiLocation) {
-        return !uiLocation.isIgnoreListed();
+        return !uiLocation.isIgnoreListed(this.#options.ignoreListManager);
       }
       return !link.classList.contains('ignore-list-link');
     });

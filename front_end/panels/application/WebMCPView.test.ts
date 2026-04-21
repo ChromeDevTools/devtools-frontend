@@ -664,6 +664,10 @@ describe('filterToolCalls', () => {
 });
 
 describeWithEnvironment('ToolDetailsWidget', () => {
+  beforeEach(() => {
+    Workspace.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
+  });
+
   it('renders a DOM node origin', async () => {
     updateHostConfig({devToolsWebMCPSupport: {enabled: true}});
     const sdkTarget = createTarget();

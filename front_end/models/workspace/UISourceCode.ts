@@ -508,8 +508,8 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
     return this.#disableEdit;
   }
 
-  isIgnoreListed(): boolean {
-    return IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(this);
+  isIgnoreListed(ignoreListManager: IgnoreListManager = IgnoreListManager.instance()): boolean {
+    return ignoreListManager.isUserOrSourceMapIgnoreListedUISourceCode(this);
   }
 }
 
@@ -613,8 +613,8 @@ export class UILocation {
     return this.columnNumber - other.columnNumber;
   }
 
-  isIgnoreListed(): boolean {
-    return this.uiSourceCode.isIgnoreListed();
+  isIgnoreListed(ignoreListManager: IgnoreListManager = IgnoreListManager.instance()): boolean {
+    return this.uiSourceCode.isIgnoreListed(ignoreListManager);
   }
 }
 

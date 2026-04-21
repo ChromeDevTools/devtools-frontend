@@ -363,6 +363,9 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
     const {className = ''} = linkifyURLOptions;
     const fallbackAnchor = Linkifier.linkifyURL(frame.url as Platform.DevToolsPath.UrlString, linkifyURLOptions);
     if (!frame.uiSourceCode) {
+      const isIgnoreListed = (options?.ignoreListManager ?? Workspace.IgnoreListManager.IgnoreListManager.instance())
+                                 .isUserIgnoreListedURL(frame.url as Platform.DevToolsPath.UrlString);
+      fallbackAnchor.classList.toggle('ignore-list-link', isIgnoreListed);
       return fallbackAnchor;
     }
 
@@ -382,7 +385,7 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
     };
 
     const uiLocation = frame.uiSourceCode.uiLocation(frame.line, frame.column) ?? null;
-    Linkifier.updateAnchorFromUILocation(link, linkDisplayOptions, uiLocation);
+    Linkifier.updateAnchorFromUILocation(link, linkDisplayOptions, uiLocation, options?.ignoreListManager);
 
     return link;
   }
@@ -512,7 +515,8 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
   }
 
   private static updateAnchorFromUILocation(
-      anchor: HTMLElement, options: LinkDisplayOptions, uiLocation: Workspace.UISourceCode.UILocation|null): void {
+      anchor: HTMLElement, options: LinkDisplayOptions, uiLocation: Workspace.UISourceCode.UILocation|null,
+      ignoreListManager?: Workspace.IgnoreListManager.IgnoreListManager): void {
     if (!uiLocation) {
       anchor.classList.add('invalid-link');
       anchor.removeAttribute('role');
@@ -541,7 +545,7 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
       }
     }
     UI.Tooltip.Tooltip.install(anchor, titleText);
-    const isIgnoreListed = Boolean(uiLocation?.isIgnoreListed());
+    const isIgnoreListed = Boolean(uiLocation?.isIgnoreListed(ignoreListManager));
     anchor.classList.toggle('ignore-list-link', isIgnoreListed);
     Linkifier.updateLinkDecorations(anchor);
   }
@@ -1174,6 +1178,7 @@ export interface LinkifyOptions {
    */
   revealBreakpoint?: boolean;
   maxLength?: number;
+  ignoreListManager?: Workspace.IgnoreListManager.IgnoreListManager;
 }
 
 interface CreateLinkOptions {

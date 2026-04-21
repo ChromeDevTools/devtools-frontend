@@ -359,6 +359,7 @@ export function getJSONEditorParameters(tool: WebMCP.WebMCPModel.Tool): {
 }
 export const DEFAULT_VIEW: View = (input, output, target) => {
   const tools = input.tools;
+  let editorWidget: ProtocolMonitor.JSONEditor.JSONEditor|null = null;
   const stats = calculateToolStats(input.toolCalls);
   const isFilterActive =
       Boolean(input.filters.text) || Boolean(input.filters.toolTypes) || Boolean(input.filters.statusTypes);
@@ -564,8 +565,8 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
           </div>
           ${input.selectedTool ? html`
             <div class="sidebar-tool-details">
-          ${widget(ToolDetailsWidget, {tool: input.selectedTool})}
-        </div>
+              ${widget(ToolDetailsWidget, {tool: input.selectedTool})}
+            </div>
             <div class="section-title">
               <span>${i18nString(UIStrings.runTool)}</span>
             </div>
@@ -574,11 +575,29 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
               ${widget(ProtocolMonitor.JSONEditor.JSONEditor, {
                 displayTargetSelector: false,
                 displayCommandInput: false,
+                displayToolbar: false,
                 ...getJSONEditorParameters(input.selectedTool),
                 commandToDisplay: input.selectedTool.name,
               })}
+              ${UI.Widget.widgetRef(ProtocolMonitor.JSONEditor.JSONEditor, e => { editorWidget = e; })}
               @submiteditor=${(e: CustomEvent<ProtocolMonitor.JSONEditor.Command>) => input.onRunTool({data: e.detail})}
             ></devtools-widget>
+            <devtools-button
+              class="webmcp-run-tool-button"
+              .variant=${Buttons.Button.Variant.OUTLINED}
+              .size=${Buttons.Button.Size.SMALL}
+              jslogContext="webmcp.run-tool"
+              @click=${() => {
+                if (editorWidget && input.selectedTool) {
+                  const params = editorWidget.getParameters();
+                  input.onRunTool({
+                    data: {
+                      command: input.selectedTool.name,
+                      parameters: params,
+                    } as ProtocolMonitor.JSONEditor.Command
+                  });
+                }
+              }}>Run tool</devtools-button>
           ` : nothing}
         </div>
       </devtools-split-view>

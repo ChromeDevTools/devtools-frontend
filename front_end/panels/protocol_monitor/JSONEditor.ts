@@ -137,6 +137,7 @@ interface ViewInput {
   onParameterValueBlur: (event: Event) => void;
   displayTargetSelector?: boolean;
   displayCommandInput?: boolean;
+  displayToolbar?: boolean;
 }
 
 export type View = (input: ViewInput, output: object, target: HTMLElement) => void;
@@ -188,6 +189,7 @@ export class JSONEditor extends Common.ObjectWrapper.eventMixin<EventTypes, type
   #view: View;
   displayTargetSelector = true;
   displayCommandInput = true;
+  displayToolbar = true;
 
   constructor(element: HTMLElement, view = DEFAULT_VIEW) {
     super(element, {useShadowDom: true});
@@ -992,6 +994,7 @@ export class JSONEditor extends Common.ObjectWrapper.eventMixin<EventTypes, type
       },
       displayTargetSelector: this.displayTargetSelector,
       displayCommandInput: this.displayCommandInput,
+      displayToolbar: this.displayToolbar,
     };
     const viewOutput = {};
     this.#view(viewInput, viewOutput, this.contentElement);
@@ -1275,6 +1278,7 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
           ${renderParameters(input, input.parameters)}
         ` : nothing}
       </div>
+      ${input.displayToolbar !== false ? html`
       <devtools-toolbar class="protocol-monitor-sidebar-toolbar">
         <devtools-button title=${i18nString(UIStrings.copyCommand)}
                         .iconName=${'copy'}
@@ -1288,6 +1292,7 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
                         .variant=${Buttons.Button.Variant.PRIMARY_TOOLBAR}
                         @click=${input.onCommandSend}></devtools-button>
       </devtools-toolbar>
+      ` : nothing}
     </div>`, target);
   // clang-format on
 };

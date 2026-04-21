@@ -2477,7 +2477,6 @@ grd_files_unbundled_sources = [
   "front_end/third_party/web-vitals/package/dist/modules/types/fcp.js",
   "front_end/third_party/web-vitals/package/dist/modules/types/inp.js",
   "front_end/third_party/web-vitals/package/dist/modules/types/lcp.js",
-  "front_end/third_party/web-vitals/package/dist/modules/types/polyfills.js",
   "front_end/third_party/web-vitals/package/dist/modules/types/ttfb.js",
   "front_end/ui/components/adorners/Adorner.js",
   "front_end/ui/components/adorners/adorner.css.js",

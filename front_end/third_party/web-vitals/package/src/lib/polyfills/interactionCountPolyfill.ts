@@ -18,7 +18,7 @@ import {observe} from '../observe.js';
 
 declare global {
   interface Performance {
-    interactionCount: number;
+    readonly interactionCount: number;
   }
 }
 
@@ -52,7 +52,7 @@ let po: PerformanceObserver | undefined;
  * or the polyfill estimate in this module.
  */
 export const getInteractionCount = () => {
-  return po ? interactionCountEstimate : performance.interactionCount ?? 0;
+  return po ? interactionCountEstimate : (performance.interactionCount ?? 0);
 };
 
 /**
@@ -62,8 +62,6 @@ export const initInteractionCountPolyfill = () => {
   if ('interactionCount' in performance || po) return;
 
   po = observe('event', updateEstimate, {
-    type: 'event',
-    buffered: true,
     durationThreshold: 0,
   } as PerformanceObserverInit);
 };

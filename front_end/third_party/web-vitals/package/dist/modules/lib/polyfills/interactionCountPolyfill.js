@@ -34,7 +34,7 @@ let po;
  * or the polyfill estimate in this module.
  */
 export const getInteractionCount = () => {
-    return po ? interactionCountEstimate : performance.interactionCount ?? 0;
+    return po ? interactionCountEstimate : (performance.interactionCount ?? 0);
 };
 /**
  * Feature detects native support or initializes the polyfill if needed.
@@ -43,8 +43,6 @@ export const initInteractionCountPolyfill = () => {
     if ('interactionCount' in performance || po)
         return;
     po = observe('event', updateEstimate, {
-        type: 'event',
-        buffered: true,
         durationThreshold: 0,
     });
 };

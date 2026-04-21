@@ -16,5 +16,5 @@ export declare const initMetric: <MetricName extends MetricType["name"]>(name: M
         name: MetricName;
     }>)["entries"];
     id: string;
-    navigationType: "reload" | "navigate" | "prerender" | "back-forward" | "back-forward-cache" | "restore";
+    navigationType: "reload" | "navigate" | "back-forward" | "back-forward-cache" | "prerender" | "restore";
 };

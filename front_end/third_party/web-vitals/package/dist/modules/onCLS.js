@@ -79,7 +79,7 @@ export const onCLS = (onReport, opts = {}) => {
                 layoutShiftManager._sessionValue = 0;
                 metric = initMetric('CLS', 0);
                 report = bindReporter(onReport, metric, CLSThresholds, opts.reportAllChanges);
-                doubleRAF(() => report());
+                doubleRAF(report);
             });
             // Queue a task to report (if nothing else triggers a report first).
             // This allows CLS to be reported as soon as FCP fires when

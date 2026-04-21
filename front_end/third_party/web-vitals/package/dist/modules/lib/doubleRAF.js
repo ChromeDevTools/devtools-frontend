@@ -14,5 +14,5 @@
  * limitations under the License.
  */
 export const doubleRAF = (cb) => {
-    requestAnimationFrame(() => requestAnimationFrame(() => cb()));
+    requestAnimationFrame(() => requestAnimationFrame(cb));
 };

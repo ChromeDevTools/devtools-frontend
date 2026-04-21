@@ -14,6 +14,10 @@ import { INPAttributionReportOpts, INPMetricWithAttribution } from '../types.js'
  * less than 40 (well below the recommended
  * [good](https://web.dev/articles/inp#what_is_a_good_inp_score) threshold).
  *
+ * A custom `includeProcessedEventEntries` configuration option can optionally
+ * be passed to control whether the `processedEventEntries` array in the
+ * attribution object is populated. The default value is `true`.
+ *
  * If the `reportAllChanges` configuration option is set to `true`, the
  * `callback` function will be called as soon as the value is initially
  * determined as well as any time the value changes throughout the page

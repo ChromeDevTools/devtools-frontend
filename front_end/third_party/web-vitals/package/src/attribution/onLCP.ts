@@ -57,6 +57,10 @@ export const onLCP = (
     if (node) {
       const customTarget = opts.generateTarget?.(node) ?? getSelector(node);
       lcpTargetMap.set(entry, customTarget);
+    } else if (entry.id) {
+      // Use the LargestContentfulPaint.id property when the element has been
+      // removed from the DOM (and so node is null), but still has an ID.
+      lcpTargetMap.set(entry, `#${entry.id}`);
     }
   };
 
@@ -70,16 +74,29 @@ export const onLCP = (
     };
 
     if (metric.entries.length) {
+      // The `metric.entries.length` check ensures there will be an entry.
+      const lcpEntry = metric.entries.at(-1)!;
+      const lcpResourceEntry =
+        lcpEntry.url &&
+        performance
+          .getEntriesByType('resource')
+          .find((e) => e.name === lcpEntry.url);
+
+      attribution.target = lcpTargetMap.get(lcpEntry);
+      attribution.lcpEntry = lcpEntry;
+      // Only attribute the URL and resource entry if they exist.
+      if (lcpEntry.url) {
+        attribution.url = lcpEntry.url;
+      }
+      if (lcpResourceEntry) {
+        attribution.lcpResourceEntry = lcpResourceEntry;
+      }
+
+      // Get subparts from navigation entry. Do this last as occasionally
+      // Safari seems to fail to find a navigation entry.
       const navigationEntry = getNavigationEntry();
       if (navigationEntry) {
         const activationStart = navigationEntry.activationStart || 0;
-        // The `metric.entries.length` check ensures there will be an entry.
-        const lcpEntry = metric.entries.at(-1)!;
-        const lcpResourceEntry =
-          lcpEntry.url &&
-          performance
-            .getEntriesByType('resource')
-            .filter((e) => e.name === lcpEntry.url)[0];
 
         const ttfb = Math.max(
           0,
@@ -106,35 +123,21 @@ export const onLCP = (
         );
 
         attribution = {
-          target: lcpTargetMap.get(lcpEntry),
+          ...attribution,
           timeToFirstByte: ttfb,
           resourceLoadDelay: lcpRequestStart - ttfb,
           resourceLoadDuration: lcpResponseEnd - lcpRequestStart,
           elementRenderDelay: metric.value - lcpResponseEnd,
           navigationEntry,
-          lcpEntry,
         };
-
-        // Only attribute the URL and resource entry if they exist.
-        if (lcpEntry.url) {
-          attribution.url = lcpEntry.url;
-        }
-        if (lcpResourceEntry) {
-          attribution.lcpResourceEntry = lcpResourceEntry;
-        }
       }
     }
 
     // Use `Object.assign()` to ensure the original metric object is returned.
-    const metricWithAttribution: LCPMetricWithAttribution = Object.assign(
-      metric,
-      {attribution},
-    );
-    return metricWithAttribution;
+    return Object.assign(metric, {attribution});
   };
 
   unattributedOnLCP((metric: LCPMetric) => {
-    const metricWithAttribution = attributeLCP(metric);
-    onReport(metricWithAttribution);
+    onReport(attributeLCP(metric));
   }, opts);
 };

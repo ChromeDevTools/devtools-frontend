@@ -83,11 +83,9 @@ export const onCLS = (onReport, opts = {}) => {
             }
         }
         // Use `Object.assign()` to ensure the original metric object is returned.
-        const metricWithAttribution = Object.assign(metric, { attribution });
-        return metricWithAttribution;
+        return Object.assign(metric, { attribution });
     };
     unattributedOnCLS((metric) => {
-        const metricWithAttribution = attributeCLS(metric);
-        onReport(metricWithAttribution);
+        onReport(attributeCLS(metric));
     }, opts);
 };

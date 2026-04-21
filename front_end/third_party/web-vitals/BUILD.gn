@@ -88,8 +88,6 @@ SOURCES = [
   "package/dist/modules/types/inp.js",
   "package/dist/modules/types/lcp.d.ts",
   "package/dist/modules/types/lcp.js",
-  "package/dist/modules/types/polyfills.d.ts",
-  "package/dist/modules/types/polyfills.js",
   "package/dist/modules/types/ttfb.d.ts",
   "package/dist/modules/types/ttfb.js",
   "web-vitals-tsconfig.json",

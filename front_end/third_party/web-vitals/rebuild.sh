@@ -4,8 +4,8 @@ set -euo pipefail
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
-VERSION=5.1.0
-GIT_SHA=1b872cf5f2159e8ace0e98d55d8eb54fb09adfbe # web-vitals does not tag releases.
+VERSION=5.2.0
+GIT_SHA=331486c02721e1d37835177ffc89589a580ba57e # web-vitals does not tag releases.
 
 # Note: this is just to handle updating README.chromium.
 # For the actual sources, below we checkout the repo, apply local patches, then build with tsc.
@@ -33,6 +33,6 @@ cd -
 
 # Copy the source files to our repo, and build it.
 cp -r tmp-repo/src package/src
-../../../node_modules/.bin/tsc -d -t esnext -m esnext --moduleResolution node --strict --outDir package/dist/modules/ package/src/**/*.ts package/src/index.ts
+../../../node_modules/.bin/tsc --ignoreConfig -d -t esnext -m esnext --moduleResolution bundler --strict --outDir package/dist/modules/ package/src/**/*.ts package/src/index.ts
 
 echo "Rebuild complete."

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 export * from './types/base.js';
-export * from './types/polyfills.js';
 export * from './types/cls.js';
 export * from './types/fcp.js';
 export * from './types/inp.js';

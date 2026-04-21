@@ -251,6 +251,7 @@ function initialize(): void {
   }, {
     reportAllChanges: true,
     durationThreshold: 0,
+    includeProcessedEventEntries: false,
     onEachInteraction,
     generateTarget(el) {
       if (el) {

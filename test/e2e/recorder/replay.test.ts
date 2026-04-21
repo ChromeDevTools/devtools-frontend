@@ -745,7 +745,11 @@ describe('Recorder', function() {
     );
   });
 
-  it('should be able to navigate to a prerendered page', async ({inspectedPage, devToolsPage}) => {
+  // Test is failing on CQ and flaky locally
+  it.skip('[crbug.com/504874017] should be able to navigate to a prerendered page', async ({
+                                                                                      inspectedPage,
+                                                                                      devToolsPage
+                                                                                    }) => {
     await setupRecorderWithScriptAndReplay(
         {
           title: 'Test Recording',

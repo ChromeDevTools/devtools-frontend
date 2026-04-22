@@ -214,7 +214,8 @@ function setUpLifecycleTracking<WidgetT extends AnyWidget>(element: HTMLElement)
       }
       widget = instantiateWidget(element, config) as WidgetT;
     }
-    const parent = element.parentElementOrShadowHost() as HTMLElement | null;
+    const parent =
+        (element.parentNode instanceof DocumentFragment) ? element.parentNode : element.parentElementOrShadowHost();
     if (!parent) {
       widget.markAsRoot();
     }
@@ -765,7 +766,7 @@ export class Widget<ContentTypeT extends HTMLElement|DocumentFragment = HTMLElem
     }
 
     const wasVisible = this.#visible;
-    if (wasVisible && this.element.parentElement === parentElement) {
+    if (wasVisible && this.element.parentNode === parentElement) {
       return;
     }
 
@@ -778,7 +779,7 @@ export class Widget<ContentTypeT extends HTMLElement|DocumentFragment = HTMLElem
     this.element.classList.remove('hidden');
 
     // Reparent
-    if (this.element.parentElement !== parentElement) {
+    if (this.element.parentNode !== parentElement) {
       if (!this.#externallyManaged) {
         incrementWidgetCounter(parentElement, this.element);
       }
@@ -1307,14 +1308,14 @@ function domOperationError(funcName: 'appendChild'|'insertBefore'|'removeChild'|
 }
 
 Element.prototype.appendChild = function<T extends Node>(node: T): T {
-  if (widgetMap.get(node) && node.parentElement !== this) {
+  if (widgetMap.get(node) && node.parentNode !== this) {
     throw domOperationError('appendChild');
   }
   return originalAppendChild.call(this, node) as T;
 };
 
 Element.prototype.insertBefore = function<T extends Node>(node: T, child: Node|null): T {
-  if (widgetMap.get(node) && node.parentElement !== this) {
+  if (widgetMap.get(node) && node.parentNode !== this) {
     throw domOperationError('insertBefore');
   }
   return originalInsertBefore.call(this, node, child) as T;

@@ -975,4 +975,64 @@ describeWithEnvironment('Widget', () => {
       assert.strictEqual(stub.firstCall.firstArg.detail, 'payload');
     });
   });
+
+  describe('Shadow DOM', () => {
+    it('keeps child widget in the Shadow Root when using pure shadow DOM', () => {
+      const container = document.createElement('div');
+      renderElementIntoDOM(container);
+
+      const parentWidget = new Widget<ShadowRoot>({useShadowDom: 'pure'});
+      parentWidget.markAsRoot();
+      parentWidget.show(container);
+
+      const childWidget = new Widget();
+      const shadowRoot = parentWidget.contentElement;
+      assert.instanceOf(shadowRoot, ShadowRoot);
+
+      childWidget.show(shadowRoot);
+
+      assert.strictEqual(
+          childWidget.element.parentNode, shadowRoot, 'Child widget should be a child of the Shadow Root');
+      assert.isNull(
+          childWidget.element.parentElement,
+          'Child widget should have no parentElement (since it is in a Shadow Root)');
+    });
+
+    it('keeps child widget in the Shadow Root when attached via WidgetDirective', async () => {
+      const container = document.createElement('div');
+      renderElementIntoDOM(container);
+
+      class ParentWidget extends Widget<ShadowRoot> {
+        constructor() {
+          super({useShadowDom: 'pure'});
+        }
+      }
+
+      class ChildWidget extends Widget {
+        constructor(element?: HTMLElement) {
+          super(element);
+          this.element.classList.add('child-widget');
+        }
+
+        override performUpdate(): void {
+        }
+      }
+
+      const parentWidget = new ParentWidget();
+      parentWidget.markAsRoot();
+      parentWidget.show(container);
+
+      const shadowRoot = parentWidget.contentElement;
+
+      Lit.render(html`<devtools-widget ${UI.Widget.widget(ChildWidget)}></devtools-widget>`, shadowRoot);
+
+      // Give some time for connectedCallback and potential microtasks
+      await new Promise(resolve => setTimeout(resolve, 0));
+
+      const childElement = shadowRoot.querySelector('devtools-widget');
+      assert.exists(childElement, 'Child widget element should exist in the Shadow Root');
+      assert.strictEqual(childElement?.parentNode, shadowRoot, 'Widget element should remain in the Shadow Root');
+      assert.isNull(childElement?.parentElement, 'Widget element should not be moved to the host (Light DOM)');
+    });
+  });
 });

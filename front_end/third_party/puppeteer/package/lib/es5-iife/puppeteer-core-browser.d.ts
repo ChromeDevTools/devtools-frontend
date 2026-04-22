@@ -125,20 +125,62 @@ export declare interface AddScreenParams {
 }
 
 /**
+ * Supported autofill address field names.
+ *
  * @public
  */
-export declare interface AutofillData {
-  /**
-   * See {@link https://chromedevtools.github.io/devtools-protocol/tot/Autofill/#type-CreditCard | Autofill.CreditCard}.
-   */
-  creditCard: {
-    number: string;
-    name: string;
-    expiryMonth: string;
-    expiryYear: string;
-    cvc: string;
-  };
+export declare const enum AutofillAddressField {
+  NameFirst = 'NAME_FIRST',
+  NameMiddle = 'NAME_MIDDLE',
+  NameLast = 'NAME_LAST',
+  NameFull = 'NAME_FULL',
+  EmailAddress = 'EMAIL_ADDRESS',
+  PhoneHomeNumber = 'PHONE_HOME_NUMBER',
+  PhoneHomeCityAndNumber = 'PHONE_HOME_CITY_AND_NUMBER',
+  PhoneHomeWholeNumber = 'PHONE_HOME_WHOLE_NUMBER',
+  AddressHomeLine1 = 'ADDRESS_HOME_LINE1',
+  AddressHomeLine2 = 'ADDRESS_HOME_LINE2',
+  AddressHomeStreetAddress = 'ADDRESS_HOME_STREET_ADDRESS',
+  AddressHomeCity = 'ADDRESS_HOME_CITY',
+  AddressHomeState = 'ADDRESS_HOME_STATE',
+  AddressHomeZip = 'ADDRESS_HOME_ZIP',
+  AddressHomeCountry = 'ADDRESS_HOME_COUNTRY',
 }
+
+/**
+ * @public
+ */
+export declare type AutofillData =
+  | {
+      /**
+       * See {@link https://chromedevtools.github.io/devtools-protocol/tot/Autofill/#type-CreditCard | Autofill.CreditCard}.
+       */
+      creditCard: {
+        number: string;
+        name: string;
+        expiryMonth: string;
+        expiryYear: string;
+        cvc: string;
+      };
+      address?: never;
+    }
+  | {
+      /**
+       * See {@link https://chromedevtools.github.io/devtools-protocol/tot/Autofill/#type-Address | Autofill.Address}.
+       */
+      address: {
+        fields: Array<{
+          /**
+           * The field type.
+           * See {@link https://source.chromium.org/chromium/chromium/src/+/main:components/autofill/core/browser/field_types.cc}
+           * for the full list of supported fields.
+           */
+          name: AutofillAddressField | (string & Record<never, never>);
+          value: string;
+        }>;
+      };
+      creditCard?: never;
+    };
 
 /**
  * @public
@@ -1343,6 +1385,31 @@ export declare interface ConnectOptions {
    * Only works for `protocol="webDriverBiDi"` and {@link Puppeteer.connect}.
    */
   capabilities?: SupportedWebDriverCapabilities;
+  /**
+   * A list of URL patterns to block.
+   *
+   * This option allows you to restrict the browser from accessing specific
+   * URLs or origins. It uses the standard [URLPattern](https://urlpattern.spec.whatwg.org/) API to match URLs.
+   *
+   * When connecting to an existing browser, Puppeteer will silently detach from any
+   * already open targets that violate the patterns.
+   *
+   * For any network requests made by the browser (including navigations and
+   * subresources like images or scripts), the request will fail with an error
+   * if the URL matches a blocked pattern.
+   *
+   * @example Pattern to block a specific domain:
+   * `*://example.com/*`
+   *
+   * @example Pattern to block all subdomains:
+   * `*://*.evil.com/*`
+   *
+   * @remarks
+   * Currently only supported for CDP connections.
+   *
+   * @experimental
+   */
+  blockList?: string[];
 }
 
 /**
@@ -2775,6 +2842,18 @@ export declare type ExperimentsConfiguration = Record<string, never>;
 export declare abstract class Extension {
   
 
+  /**
+   * Whether the extension is enabled.
+   *
+   * @public
+   */
+  get enabled(): boolean;
+  /**
+   * The path in the file system where the extension is located.
+   *
+   * @public
+   */
+  get path(): string;
   /**
    * The version of the extension as specified in its manifest.
    *
@@ -8256,6 +8335,7 @@ declare namespace Puppeteer_2 {
     DeviceRequestPrompt,
     Dialog,
     ElementHandle,
+    AutofillAddressField,
     Extension,
     Frame,
     DEFAULT_INTERCEPT_RESOLUTION_PRIORITY,

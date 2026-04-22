@@ -3,6 +3,7 @@
  * Copyright 2022 Google Inc.
  * SPDX-License-Identifier: Apache-2.0
  */
+import { URLPattern } from '../../third_party/urlpattern-polyfill/urlpattern-polyfill.js';
 import { CDPSessionEvent } from '../api/CDPSession.js';
 import { EventEmitter } from '../common/EventEmitter.js';
 import { debugError } from '../common/util.js';
@@ -70,12 +71,14 @@ export class TargetManager extends EventEmitter {
     // done. It indicates whethere we are running the initial auto-attach step or
     // if we are handling targets after that.
     #initialAttachDone = false;
-    constructor(connection, targetFactory, targetFilterCallback, waitForInitiallyDiscoveredTargets = true) {
+    #blockList;
+    constructor(connection, targetFactory, targetFilterCallback, waitForInitiallyDiscoveredTargets = true, networkConditions) {
         super();
         this.#connection = connection;
         this.#targetFilterCallback = targetFilterCallback;
         this.#targetFactory = targetFactory;
         this.#waitForInitiallyDiscoveredTargets = waitForInitiallyDiscoveredTargets;
+        this.#blockList = networkConditions;
         this.#connection.on('Target.targetCreated', this.#onTargetCreated);
         this.#connection.on('Target.targetDestroyed', this.#onTargetDestroyed);
         this.#connection.on('Target.targetInfoChanged', this.#onTargetInfoChanged);
@@ -230,6 +233,12 @@ export class TargetManager extends EventEmitter {
         if (!this.#connection.isAutoAttached(targetInfo.targetId)) {
             return;
         }
+        // If we connect to a browser that is already open,
+        // immediately detach from any tab that is on the blocklist.
+        if (!this.#initialAttachDone && !this.#isUrlAllowed(targetInfo.url)) {
+            await this.#silentDetach(session, parentSession);
+            return;
+        }
         // Special case for service workers: being attached to service workers will
         // prevent them from ever being destroyed. Therefore, we silently detach
         // from service workers unless the connection was manually created via
@@ -296,6 +305,7 @@ export class TargetManager extends EventEmitter {
                 autoAttach: true,
                 filter: this.#discoveryFilter,
             }),
+            this.#maybeSetupNetworkConditions(session),
             session.send('Runtime.runIfWaitingForDebugger'),
         ]).catch(debugError);
     };
@@ -323,6 +333,47 @@ export class TargetManager extends EventEmitter {
         }
         this.#attachedTargetsByTargetId.delete(target._targetId);
         this.emit("targetGone" /* TargetManagerEvent.TargetGone */, target);
+    };
+    /**
+     * Helper to validate URL against blocklist patterns
+     */
+    #isUrlAllowed = (url) => {
+        if (!this.#blockList) {
+            return true;
+        }
+        // Always allow internal or setup pages
+        if (!url || url === 'about:blank') {
+            return true;
+        }
+        for (const rule of this.#blockList) {
+            try {
+                const pattern = new URLPattern(rule);
+                if (pattern.test(url)) {
+                    return false; // return false as url matches pattern from blockList
+                }
+            }
+            catch {
+                debugError(`Invalid URL pattern: ${rule}`);
+            }
+        }
+        return true;
+    };
+    #maybeSetupNetworkConditions = async (session) => {
+        if (!this.#blockList?.length) {
+            return;
+        }
+        const matchedNetworkConditions = this.#blockList.map(pattern => {
+            return {
+                urlPattern: pattern,
+                latency: 0,
+                downloadThroughput: -1,
+                uploadThroughput: -1,
+            };
+        });
+        await session.send('Network.emulateNetworkConditionsByRule', {
+            matchedNetworkConditions,
+            offline: true,
+        });
     };
 }
 //# sourceMappingURL=TargetManager.js.map

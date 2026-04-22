@@ -20,8 +20,8 @@ function isDevToolsPageTarget(url) {
  */
 export class CdpBrowser extends BrowserBase {
     protocol = 'cdp';
-    static async _create(connection, contextIds, acceptInsecureCerts, defaultViewport, downloadBehavior, process, closeCallback, targetFilterCallback, isPageTargetCallback, waitForInitiallyDiscoveredTargets = true, networkEnabled = true, issuesEnabled = true, handleDevToolsAsPage = false) {
-        const browser = new CdpBrowser(connection, contextIds, defaultViewport, process, closeCallback, targetFilterCallback, isPageTargetCallback, waitForInitiallyDiscoveredTargets, networkEnabled, issuesEnabled, handleDevToolsAsPage);
+    static async _create(connection, contextIds, acceptInsecureCerts, defaultViewport, downloadBehavior, process, closeCallback, targetFilterCallback, isPageTargetCallback, waitForInitiallyDiscoveredTargets = true, networkEnabled = true, issuesEnabled = true, handleDevToolsAsPage = false, blockList) {
+        const browser = new CdpBrowser(connection, contextIds, defaultViewport, process, closeCallback, targetFilterCallback, isPageTargetCallback, waitForInitiallyDiscoveredTargets, networkEnabled, issuesEnabled, handleDevToolsAsPage, blockList);
         if (acceptInsecureCerts) {
             await connection.send('Security.setIgnoreCertificateErrors', {
                 ignore: true,
@@ -43,7 +43,7 @@ export class CdpBrowser extends BrowserBase {
     #targetManager;
     #handleDevToolsAsPage = false;
     #extensions = new Map();
-    constructor(connection, contextIds, defaultViewport, process, closeCallback, targetFilterCallback, isPageTargetCallback, waitForInitiallyDiscoveredTargets = true, networkEnabled = true, issuesEnabled = true, handleDevToolsAsPage = false) {
+    constructor(connection, contextIds, defaultViewport, process, closeCallback, targetFilterCallback, isPageTargetCallback, waitForInitiallyDiscoveredTargets = true, networkEnabled = true, issuesEnabled = true, handleDevToolsAsPage = false, networkConditions) {
         super();
         this.#networkEnabled = networkEnabled;
         this.#issuesEnabled = issuesEnabled;
@@ -58,7 +58,7 @@ export class CdpBrowser extends BrowserBase {
                 });
         this.#handleDevToolsAsPage = handleDevToolsAsPage;
         this.#setIsPageTargetCallback(isPageTargetCallback);
-        this.#targetManager = new TargetManager(connection, this.#createTarget, this.#targetFilterCallback, waitForInitiallyDiscoveredTargets);
+        this.#targetManager = new TargetManager(connection, this.#createTarget, this.#targetFilterCallback, waitForInitiallyDiscoveredTargets, networkConditions);
         this.#defaultContext = new CdpBrowserContext(this.#connection, this);
         for (const contextId of contextIds) {
             this.#contexts.set(contextId, new CdpBrowserContext(this.#connection, this, contextId));
@@ -364,7 +364,7 @@ export class CdpBrowser extends BrowserBase {
                 extensionsMap.set(currExtension.id, this.#extensions.get(currExtension.id));
             }
             else {
-                const newExtension = new CdpExtension(currExtension.id, currExtension.version, currExtension.name, this);
+                const newExtension = new CdpExtension(currExtension.id, currExtension.version, currExtension.name, currExtension.path, currExtension.enabled, this);
                 extensionsMap.set(currExtension.id, newExtension);
             }
         }

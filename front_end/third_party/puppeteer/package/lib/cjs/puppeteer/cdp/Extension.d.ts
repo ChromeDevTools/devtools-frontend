@@ -8,7 +8,7 @@ import { Extension } from '../api/api.js';
 import type { CdpBrowser } from './Browser.js';
 export declare class CdpExtension extends Extension {
     #private;
-    constructor(id: string, version: string, name: string, browser: CdpBrowser);
+    constructor(id: string, version: string, name: string, path: string, enabled: boolean, browser: CdpBrowser);
     workers(): Promise<WebWorker[]>;
     pages(): Promise<Page[]>;
     triggerAction(page: Page): Promise<void>;

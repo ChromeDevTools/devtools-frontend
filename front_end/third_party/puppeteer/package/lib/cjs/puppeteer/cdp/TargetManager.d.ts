@@ -28,7 +28,7 @@ export type TargetFactory = (targetInfo: Protocol.Target.TargetInfo, session?: C
  */
 export declare class TargetManager extends EventEmitter<TargetManagerEvents> implements TargetManager {
     #private;
-    constructor(connection: Connection, targetFactory: TargetFactory, targetFilterCallback?: TargetFilterCallback, waitForInitiallyDiscoveredTargets?: boolean);
+    constructor(connection: Connection, targetFactory: TargetFactory, targetFilterCallback?: TargetFilterCallback, waitForInitiallyDiscoveredTargets?: boolean, networkConditions?: string[]);
     initialize(): Promise<void>;
     addToIgnoreTarget(targetId: string): void;
     getChildTargets(target: CdpTarget): ReadonlySet<CdpTarget>;

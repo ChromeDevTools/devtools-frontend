@@ -2428,6 +2428,7 @@ grd_files_unbundled_sources = [
   "front_end/third_party/puppeteer/package/lib/esm/third_party/mitt/mitt.js",
   "front_end/third_party/puppeteer/package/lib/esm/third_party/parsel-js/parsel-js.js",
   "front_end/third_party/puppeteer/package/lib/esm/third_party/rxjs/rxjs.js",
+  "front_end/third_party/puppeteer/package/lib/esm/third_party/urlpattern-polyfill/urlpattern-polyfill.js",
   "front_end/third_party/source-map-scopes-codec/package/src/builder/builder.js",
   "front_end/third_party/source-map-scopes-codec/package/src/builder/safe_builder.js",
   "front_end/third_party/source-map-scopes-codec/package/src/codec.js",

@@ -14,13 +14,13 @@ import { Connection } from './Connection.js';
  * @internal
  */
 export async function _connectToCdpBrowser(connectionTransport, url, options) {
-    const { acceptInsecureCerts = false, networkEnabled = true, issuesEnabled = true, defaultViewport = DEFAULT_VIEWPORT, downloadBehavior, targetFilter, _isPageTarget: isPageTarget, slowMo = 0, protocolTimeout, handleDevToolsAsPage, idGenerator = createIncrementalIdGenerator(), } = options;
+    const { acceptInsecureCerts = false, networkEnabled = true, issuesEnabled = true, defaultViewport = DEFAULT_VIEWPORT, downloadBehavior, targetFilter, _isPageTarget: isPageTarget, slowMo = 0, protocolTimeout, handleDevToolsAsPage, idGenerator = createIncrementalIdGenerator(), blockList, } = options;
     const connection = new Connection(url, connectionTransport, slowMo, protocolTimeout, 
     /* rawErrors */ false, idGenerator);
     const { browserContextIds } = await connection.send('Target.getBrowserContexts');
     const browser = await CdpBrowser._create(connection, browserContextIds, acceptInsecureCerts, defaultViewport, downloadBehavior, undefined, () => {
         return connection.send('Browser.close').catch(debugError);
-    }, targetFilter, isPageTarget, undefined, networkEnabled, issuesEnabled, handleDevToolsAsPage);
+    }, targetFilter, isPageTarget, undefined, networkEnabled, issuesEnabled, handleDevToolsAsPage, blockList);
     return browser;
 }
 //# sourceMappingURL=BrowserConnector.js.map

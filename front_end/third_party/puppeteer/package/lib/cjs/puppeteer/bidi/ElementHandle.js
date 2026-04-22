@@ -143,6 +143,7 @@ let BidiElementHandle = (() => {
                 fieldId,
                 frameId,
                 card: data.creditCard,
+                address: data.address,
             });
         }
         async contentFrame() {

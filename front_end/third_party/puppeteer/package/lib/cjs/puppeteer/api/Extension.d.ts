@@ -28,7 +28,19 @@ export declare abstract class Extension {
     /**
      * @internal
      */
-    constructor(id: string, version: string, name: string);
+    constructor(id: string, version: string, name: string, path: string, enabled: boolean);
+    /**
+     * Whether the extension is enabled.
+     *
+     * @public
+     */
+    get enabled(): boolean;
+    /**
+     * The path in the file system where the extension is located.
+     *
+     * @public
+     */
+    get path(): string;
     /**
      * The version of the extension as specified in its manifest.
      *

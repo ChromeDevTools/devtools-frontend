@@ -8,8 +8,8 @@ export class CdpExtension extends Extension {
     /*
      * @internal
      */
-    constructor(id, version, name, browser) {
-        super(id, version, name);
+    constructor(id, version, name, path, enabled, browser) {
+        super(id, version, name, path, enabled);
         this.#browser = browser;
     }
     async workers() {

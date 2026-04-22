@@ -161,4 +161,30 @@ export interface ConnectOptions {
    * Only works for `protocol="webDriverBiDi"` and {@link Puppeteer.connect}.
    */
   capabilities?: SupportedWebDriverCapabilities;
+
+  /**
+   * A list of URL patterns to block.
+   *
+   * This option allows you to restrict the browser from accessing specific
+   * URLs or origins. It uses the standard [URLPattern](https://urlpattern.spec.whatwg.org/) API to match URLs.
+   *
+   * When connecting to an existing browser, Puppeteer will silently detach from any
+   * already open targets that violate the patterns.
+   *
+   * For any network requests made by the browser (including navigations and
+   * subresources like images or scripts), the request will fail with an error
+   * if the URL matches a blocked pattern.
+   *
+   * @example Pattern to block a specific domain:
+   * `*://example.com/*`
+   *
+   * @example Pattern to block all subdomains:
+   * `*://*.evil.com/*`
+   *
+   * @remarks
+   * Currently only supported for CDP connections.
+   *
+   * @experimental
+   */
+  blockList?: string[];
 }

@@ -379,6 +379,8 @@ SOURCES = [
   "package/lib/esm/third_party/parsel-js/parsel-js.js",
   "package/lib/esm/third_party/rxjs/rxjs.d.ts",
   "package/lib/esm/third_party/rxjs/rxjs.js",
+  "package/lib/esm/third_party/urlpattern-polyfill/urlpattern-polyfill.d.ts",
+  "package/lib/esm/third_party/urlpattern-polyfill/urlpattern-polyfill.js",
   "puppeteer-tsconfig.json",
 ]
 

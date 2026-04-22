@@ -128,7 +128,6 @@ class ChromeLauncher extends BrowserLauncher_js_1.BrowserLauncher {
             'AcceptCHFrame',
             'MediaRouter',
             'OptimizationHints',
-            'PartitionAllocSchedulerLoopQuarantineTaskControlledPurge', // https://crbug.com/489314676
             ...(turnOnExperimentalFeaturesForTesting
                 ? []
                 : [

@@ -166,6 +166,7 @@ let CdpElementHandle = (() => {
                 fieldId,
                 frameId,
                 card: data.creditCard,
+                address: data.address,
             });
         }
         async *queryAXTree(name, role) {

@@ -182,6 +182,7 @@
     "package/lib/esm/puppeteer/util/version.js",
     "package/lib/esm/third_party/mitt/mitt.js",
     "package/lib/esm/third_party/parsel-js/parsel-js.js",
-    "package/lib/esm/third_party/rxjs/rxjs.js"
+    "package/lib/esm/third_party/rxjs/rxjs.js",
+    "package/lib/esm/third_party/urlpattern-polyfill/urlpattern-polyfill.js"
   ]
 }

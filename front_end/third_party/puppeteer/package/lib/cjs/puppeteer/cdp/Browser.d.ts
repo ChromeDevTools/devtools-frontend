@@ -20,8 +20,8 @@ import { TargetManager } from './TargetManager.js';
 export declare class CdpBrowser extends BrowserBase {
     #private;
     readonly protocol = "cdp";
-    static _create(connection: Connection, contextIds: string[], acceptInsecureCerts: boolean, defaultViewport?: Viewport | null, downloadBehavior?: DownloadBehavior, process?: ChildProcess, closeCallback?: BrowserCloseCallback, targetFilterCallback?: TargetFilterCallback, isPageTargetCallback?: IsPageTargetCallback, waitForInitiallyDiscoveredTargets?: boolean, networkEnabled?: boolean, issuesEnabled?: boolean, handleDevToolsAsPage?: boolean): Promise<CdpBrowser>;
-    constructor(connection: Connection, contextIds: string[], defaultViewport?: Viewport | null, process?: ChildProcess, closeCallback?: BrowserCloseCallback, targetFilterCallback?: TargetFilterCallback, isPageTargetCallback?: IsPageTargetCallback, waitForInitiallyDiscoveredTargets?: boolean, networkEnabled?: boolean, issuesEnabled?: boolean, handleDevToolsAsPage?: boolean);
+    static _create(connection: Connection, contextIds: string[], acceptInsecureCerts: boolean, defaultViewport?: Viewport | null, downloadBehavior?: DownloadBehavior, process?: ChildProcess, closeCallback?: BrowserCloseCallback, targetFilterCallback?: TargetFilterCallback, isPageTargetCallback?: IsPageTargetCallback, waitForInitiallyDiscoveredTargets?: boolean, networkEnabled?: boolean, issuesEnabled?: boolean, handleDevToolsAsPage?: boolean, blockList?: string[]): Promise<CdpBrowser>;
+    constructor(connection: Connection, contextIds: string[], defaultViewport?: Viewport | null, process?: ChildProcess, closeCallback?: BrowserCloseCallback, targetFilterCallback?: TargetFilterCallback, isPageTargetCallback?: IsPageTargetCallback, waitForInitiallyDiscoveredTargets?: boolean, networkEnabled?: boolean, issuesEnabled?: boolean, handleDevToolsAsPage?: boolean, networkConditions?: string[]);
     _attach(downloadBehavior: DownloadBehavior | undefined): Promise<void>;
     _detach(): void;
     process(): ChildProcess | null;

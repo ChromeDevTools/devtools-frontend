@@ -1629,20 +1629,62 @@ export abstract class ElementHandle<
 }
 
 /**
+ * Supported autofill address field names.
+ *
  * @public
  */
-export interface AutofillData {
-  /**
-   * See {@link https://chromedevtools.github.io/devtools-protocol/tot/Autofill/#type-CreditCard | Autofill.CreditCard}.
-   */
-  creditCard: {
-    number: string;
-    name: string;
-    expiryMonth: string;
-    expiryYear: string;
-    cvc: string;
-  };
+export const enum AutofillAddressField {
+  NameFirst = 'NAME_FIRST',
+  NameMiddle = 'NAME_MIDDLE',
+  NameLast = 'NAME_LAST',
+  NameFull = 'NAME_FULL',
+  EmailAddress = 'EMAIL_ADDRESS',
+  PhoneHomeNumber = 'PHONE_HOME_NUMBER',
+  PhoneHomeCityAndNumber = 'PHONE_HOME_CITY_AND_NUMBER',
+  PhoneHomeWholeNumber = 'PHONE_HOME_WHOLE_NUMBER',
+  AddressHomeLine1 = 'ADDRESS_HOME_LINE1',
+  AddressHomeLine2 = 'ADDRESS_HOME_LINE2',
+  AddressHomeStreetAddress = 'ADDRESS_HOME_STREET_ADDRESS',
+  AddressHomeCity = 'ADDRESS_HOME_CITY',
+  AddressHomeState = 'ADDRESS_HOME_STATE',
+  AddressHomeZip = 'ADDRESS_HOME_ZIP',
+  AddressHomeCountry = 'ADDRESS_HOME_COUNTRY',
 }
+
+/**
+ * @public
+ */
+export type AutofillData =
+  | {
+      /**
+       * See {@link https://chromedevtools.github.io/devtools-protocol/tot/Autofill/#type-CreditCard | Autofill.CreditCard}.
+       */
+      creditCard: {
+        number: string;
+        name: string;
+        expiryMonth: string;
+        expiryYear: string;
+        cvc: string;
+      };
+      address?: never;
+    }
+  | {
+      /**
+       * See {@link https://chromedevtools.github.io/devtools-protocol/tot/Autofill/#type-Address | Autofill.Address}.
+       */
+      address: {
+        fields: Array<{
+          /**
+           * The field type.
+           * See {@link https://source.chromium.org/chromium/chromium/src/+/main:components/autofill/core/browser/field_types.cc}
+           * for the full list of supported fields.
+           */
+          name: AutofillAddressField | (string & Record<never, never>);
+          value: string;
+        }>;
+      };
+      creditCard?: never;
+    };
 
 function intersectBoundingBox(
   box: BoundingBox,

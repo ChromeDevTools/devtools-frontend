@@ -25,16 +25,36 @@ export class Extension {
     #id;
     #version;
     #name;
+    #path;
+    #enabled;
     /**
      * @internal
      */
-    constructor(id, version, name) {
+    constructor(id, version, name, path, enabled) {
         if (!id || !version) {
             throw new Error('Extension ID and version are required');
         }
         this.#id = id;
         this.#version = version;
         this.#name = name;
+        this.#path = path;
+        this.#enabled = enabled;
+    }
+    /**
+     * Whether the extension is enabled.
+     *
+     * @public
+     */
+    get enabled() {
+        return this.#enabled;
+    }
+    /**
+     * The path in the file system where the extension is located.
+     *
+     * @public
+     */
+    get path() {
+        return this.#path;
     }
     /**
      * The version of the extension as specified in its manifest.

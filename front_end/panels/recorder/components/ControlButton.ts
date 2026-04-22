@@ -16,7 +16,7 @@ export interface ViewInput {
   onClick: (event: Event) => void;
 }
 
-export const DEFAULT_VIEW = (input: ViewInput, _output: unknown, target: HTMLElement): void => {
+export const DEFAULT_VIEW = (input: ViewInput, _output: unknown, target: HTMLElement|DocumentFragment): void => {
   const {label, shape, disabled, onClick} = input;
   const handleClickEvent = (event: Event): void => {
     if (disabled) {
@@ -36,11 +36,11 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: unknown, target: HTMLEle
       <div class="icon ${shape}"></div>
       <div class="label">${label}</div>
     </button>
-  `, target);
+  `, target, {container: {attributes: {classes: 'flex-none'}}});
   // clang-format on
 };
 
-export class ControlButton extends UI.Widget.Widget {
+export class ControlButton extends UI.Widget.Widget<ShadowRoot> {
   #label = '';
   #shape = 'square';
   #disabled = false;
@@ -49,7 +49,7 @@ export class ControlButton extends UI.Widget.Widget {
   #view: typeof DEFAULT_VIEW;
 
   constructor(element?: HTMLElement, view?: typeof DEFAULT_VIEW) {
-    super(element, {useShadowDom: true, classes: ['flex-none']});
+    super(element, {useShadowDom: 'pure'});
     this.#view = view || DEFAULT_VIEW;
   }
 

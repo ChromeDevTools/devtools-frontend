@@ -492,12 +492,12 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: ViewOutput, target: HTML
       </devtools-widget>
     </div>
   `,
-    target,
+    target, {container: {classes: ['step-view-widget']}}
   );
   // clang-format on
 };
 
-export class StepView extends UI.Widget.Widget {
+export class StepView extends UI.Widget.Widget<ShadowRoot> {
   #observer: IntersectionObserver = new IntersectionObserver(result => {
     this.#viewInput.isVisible = result[0].isIntersecting;
   });
@@ -532,7 +532,7 @@ export class StepView extends UI.Widget.Widget {
   #view: typeof DEFAULT_VIEW;
 
   constructor(element?: HTMLElement, view?: typeof DEFAULT_VIEW) {
-    super(element, {useShadowDom: true, classes: ['step-view-widget']});
+    super(element, {useShadowDom: 'pure'});
     this.#view = view || DEFAULT_VIEW;
   }
 
@@ -551,7 +551,7 @@ export class StepView extends UI.Widget.Widget {
     this.#viewInput.state = state;
     this.performUpdate();
     if (this.#viewInput.state !== prevState && this.#viewInput.state === 'current' && !this.#viewInput.isVisible) {
-      this.contentElement.scrollIntoView();
+      this.element.scrollIntoView();
     }
   }
 
@@ -650,13 +650,13 @@ export class StepView extends UI.Widget.Widget {
 
   override wasShown(): void {
     super.wasShown();
-    this.#observer.observe(this.contentElement);
+    this.#observer.observe(this.element);
     this.requestUpdate();
   }
 
   override willHide(): void {
     super.willHide();
-    this.#observer.unobserve(this.contentElement);
+    this.#observer.unobserve(this.element);
   }
 
   #toggleShowDetails(): void {

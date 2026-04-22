@@ -233,8 +233,7 @@ describe('The Console Tab', () => {
         'stack-overflow', false, () => waitForConsoleMessagesToBeNonEmpty(1, devToolsPage), devToolsPage,
         inspectedPage);
 
-    assert.deepEqual(messages, [
-      `Uncaught RangeError: Maximum call stack size exceeded
+    const expectedOld = `Uncaught RangeError: Maximum call stack size exceeded
     at boo (foo2.js:2:2)
     at boo (foo2.js:2:2)
     at boo (foo2.js:2:2)
@@ -244,8 +243,25 @@ describe('The Console Tab', () => {
     at boo (foo2.js:2:2)
     at boo (foo2.js:2:2)
     at boo (foo2.js:2:2)
-    at boo (foo2.js:2:2)`,
-    ]);
+    at boo (foo2.js:2:2)`;
+
+    const expectedNew = `Uncaught RangeError: Maximum call stack size exceeded
+    at boo (foo2.js:1:13)
+    at boo (foo2.js:2:2)
+    at boo (foo2.js:2:2)
+    at boo (foo2.js:2:2)
+    at boo (foo2.js:2:2)
+    at boo (foo2.js:2:2)
+    at boo (foo2.js:2:2)
+    at boo (foo2.js:2:2)
+    at boo (foo2.js:2:2)
+    at boo (foo2.js:2:2)`;
+
+    // V8 behavior changed: the top frame of a stack overflow exception may point to the function entry (line 1)
+    // instead of the call site (line 2). We accept both to avoid flakiness across V8 versions.
+    assert.isTrue(
+        messages[0] === expectedOld || messages[0] === expectedNew,
+        `Expected stack trace to match either old or new format. Actual:\n${messages[0]}`);
   });
 
   it('can show document.write messages', async ({devToolsPage, inspectedPage}) => {

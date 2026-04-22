@@ -3895,6 +3895,7 @@ export const knownContextValues = new Set([
   'text-decoration-color',
   'text-decoration-line',
   'text-decoration-skip-ink',
+  'text-decoration-skip-spaces',
   'text-decoration-style',
   'text-decoration-thickness',
   'text-editor-auto-detect-indent',

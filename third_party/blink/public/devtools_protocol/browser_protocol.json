@@ -28666,6 +28666,12 @@
                             "type": "boolean"
                         },
                         {
+                            "name": "parentId",
+                            "description": "Id of the parent target, if any. For example, \"iframe\" target may have a \"page\" parent.",
+                            "optional": true,
+                            "$ref": "TargetID"
+                        },
+                        {
                             "name": "openerId",
                             "description": "Opener target Id",
                             "optional": true,
@@ -30757,6 +30763,23 @@
                             "$ref": "Runtime.StackTrace"
                         }
                     ]
+                },
+                {
+                    "id": "RemovedTool",
+                    "description": "Definition of a tool that was removed.",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "name",
+                            "description": "Tool name.",
+                            "type": "string"
+                        },
+                        {
+                            "name": "frameId",
+                            "description": "Frame identifier associated with the tool registration.",
+                            "$ref": "Page.FrameId"
+                        }
+                    ]
                 }
             ],
             "commands": [
@@ -30832,7 +30855,7 @@
                             "description": "Array of tools that were removed.",
                             "type": "array",
                             "items": {
-                                "$ref": "Tool"
+                                "$ref": "RemovedTool"
                             }
                         }
                     ]

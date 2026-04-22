@@ -11,11 +11,12 @@ import * as UI from '../../ui/legacy/legacy.js';
 import accessibilityNodeStyles from './accessibilityNode.css.js';
 import accessibilityPropertiesStyles from './accessibilityProperties.css.js';
 
-export class AccessibilitySubPane extends UI.View.SimpleView {
+export class AccessibilitySubPane<ContentTypeT extends HTMLElement|DocumentFragment = HTMLElement> extends
+    UI.View.SimpleView<ContentTypeT> {
   axNode: SDK.AccessibilityModel.AccessibilityNode|null;
   protected nodeInternal?: SDK.DOMModel.DOMNode|null;
 
-  constructor(options: UI.View.SimpleViewOptions) {
+  constructor(options: UI.View.SimpleViewOptions<ContentTypeT>) {
     super(options);
     this.registerRequiredCSS(accessibilityPropertiesStyles);
 

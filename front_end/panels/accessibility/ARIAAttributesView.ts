@@ -37,7 +37,7 @@ interface ViewInput {
   attributes: SDK.DOMModel.Attribute[];
 }
 
-type View = (input: ViewInput, output: object, target: HTMLElement) => void;
+type View = (input: ViewInput, output: object, target: HTMLElement|DocumentFragment) => void;
 export const DEFAULT_VIEW: View = (input, output, target) => {
   const MAX_CONTENT_LENGTH = 10000;
 
@@ -92,10 +92,10 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
              </ul>
            `}></devtools-tree>`,
       // clang-format on
-      target);
+      target, {container: {attributes: {jslog: `${VisualLogging.section('aria-attributes')}`}}});
 };
 
-export class ARIAAttributesPane extends AccessibilitySubPane {
+export class ARIAAttributesPane extends AccessibilitySubPane<ShadowRoot> {
   readonly #view: View;
   #attributeBeingEdited: SDK.DOMModel.Attribute|null = null;
 
@@ -103,7 +103,7 @@ export class ARIAAttributesPane extends AccessibilitySubPane {
     super({
       title: i18nString(UIStrings.ariaAttributes),
       viewId: 'aria-attributes',
-      jslog: `${VisualLogging.section('aria-attributes')}`,
+      useShadowDom: 'pure',
     });
 
     this.#view = view;

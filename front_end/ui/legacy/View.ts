@@ -7,7 +7,7 @@ import * as Platform from '../../core/platform/platform.js';
 import type {TabbedPane} from './TabbedPane.js';
 import type {ToolbarItem, ToolbarMenuButton} from './Toolbar.js';
 import {ViewManager} from './ViewManager.js';
-import {VBox, type Widget, type WidgetOptions} from './Widget.js';
+import {type AnyWidget, VBox, type WidgetOptions} from './Widget.js';
 
 export interface View {
   viewId(): string;
@@ -24,7 +24,7 @@ export interface View {
 
   toolbarItems(): Promise<ToolbarItem[]>;
 
-  widget(): Promise<Widget>;
+  widget(): Promise<AnyWidget>;
 
   disposeView(): void|Promise<void>;
 }
@@ -32,23 +32,25 @@ export interface View {
 /**
  * Settings to control the behavior of `SimpleView` subclasses.
  */
-export interface SimpleViewOptions extends WidgetOptions {
-  /**
-   * User visible title for the view.
-   */
-  title: Platform.UIString.LocalizedString;
+export type SimpleViewOptions<ContentTypeT extends HTMLElement|DocumentFragment = HTMLElement> =
+    WidgetOptions<ContentTypeT>&{
+      /**
+       * User visible title for the view.
+       */
+      title: Platform.UIString.LocalizedString,
 
-  /**
-   * Internal ID used to refer to the view.
-   *
-   * Note that this is also used to construct VE contexts in some places.
-   *
-   * Must be in extended kebab case.
-   */
-  viewId: Lowercase<string>;
-}
+      /**
+       * Internal ID used to refer to the view.
+       *
+       * Note that this is also used to construct VE contexts in some places.
+       *
+       * Must be in extended kebab case.
+       */
+      viewId: Lowercase<string>,
+    };
 
-export class SimpleView extends VBox implements View {
+export class SimpleView<ContentTypeT extends HTMLElement|DocumentFragment = HTMLElement> extends VBox<ContentTypeT>
+    implements View {
   readonly #title: Platform.UIString.LocalizedString;
   readonly #viewId: Lowercase<string>;
 
@@ -58,7 +60,7 @@ export class SimpleView extends VBox implements View {
    * @param options the settings for the resulting view.
    * @throws TypeError - if `options.viewId` is not in extended kebab case.
    */
-  constructor(options: SimpleViewOptions) {
+  constructor(options: SimpleViewOptions<ContentTypeT>) {
     super(options);
     this.#title = options.title;
     this.#viewId = options.viewId;
@@ -87,7 +89,7 @@ export class SimpleView extends VBox implements View {
     return Promise.resolve([]);
   }
 
-  widget(): Promise<Widget> {
+  widget(): Promise<AnyWidget> {
     return Promise.resolve(this);
   }
 
@@ -113,7 +115,7 @@ export interface ViewLocation {
   showView(view: View, insertBefore?: View|null, userGesture?: boolean): Promise<void>;
   removeView(view: View): void;
   isViewVisible(view: View): boolean;
-  widget(): Widget;
+  widget(): AnyWidget;
 }
 
 export interface TabbedViewLocation extends ViewLocation {

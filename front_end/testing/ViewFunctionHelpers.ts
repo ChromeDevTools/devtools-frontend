@@ -5,9 +5,11 @@
 import type * as Platform from '../core/platform/platform.js';
 import type * as UI from '../ui/legacy/legacy.js';
 
-type WidgetConstructor = Platform.Constructor.AbstractConstructor<UI.Widget.Widget|HTMLElement>;
+type WidgetConstructor = Platform.Constructor.AbstractConstructor<UI.Widget.AnyWidget|HTMLElement>;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-type ViewFunctionLike = (input: any, output: any, target: HTMLElement) => void;
+type ViewFunctionLike = ((input: any, output: any, target: HTMLElement) => void)|
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ((input: any, output: any, target: DocumentFragment) => void);
 
 type FindViewFunction<ParametersT extends readonly unknown[]> = ParametersT extends [infer Head, ...infer Tail] ?
     Head extends ViewFunctionLike ? Head : FindViewFunction<Tail>:
@@ -23,8 +25,8 @@ type ViewInput<WidgetConstructorT extends WidgetConstructor> = ViewFunctionParam
 
 type ViewOutput<WidgetConstructorT extends WidgetConstructor> = ViewFunctionParameters<WidgetConstructorT>[1];
 
-interface ViewStubExtensions<WidgetConstructorT extends WidgetConstructor> extends
-    sinon.SinonSpy<[ViewInput<WidgetConstructorT>, ViewOutput<WidgetConstructorT>, HTMLElement], void> {
+interface ViewStubExtensions<WidgetConstructorT extends WidgetConstructor> extends sinon.SinonSpy<
+    [ViewInput<WidgetConstructorT>, ViewOutput<WidgetConstructorT>, HTMLElement | DocumentFragment], void> {
   input: ViewInput<WidgetConstructorT>;
   nextInput: Promise<ViewInput<WidgetConstructorT>>;
   callCount: number;
@@ -44,7 +46,8 @@ export function createViewFunctionStub<WidgetConstructorT extends WidgetConstruc
     ): ViewFunctionStub<WidgetConstructorT> {
   const result: InternalViewStubExtensions<WidgetConstructorT> =
       sinon.fake(
-          (input: ViewInput<WidgetConstructorT>, output: ViewOutput<WidgetConstructorT>, _target: HTMLElement) => {
+          (input: ViewInput<WidgetConstructorT>, output: ViewOutput<WidgetConstructorT>,
+           _target: HTMLElement|DocumentFragment) => {
             result.input = input;
             if (output && outputValues) {
               Object.assign(output, outputValues);

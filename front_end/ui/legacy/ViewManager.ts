@@ -34,7 +34,7 @@ import {
   ViewPersistence,
   type ViewRegistration,
 } from './ViewRegistration.js';
-import {VBox, type Widget} from './Widget.js';
+import {type AnyWidget, VBox, type Widget} from './Widget.js';
 
 const UIStrings = {
   /**
@@ -56,7 +56,7 @@ type TabbedPaneFactory = () => TabbedPane;
 export class PreRegisteredView implements View {
   private readonly viewRegistration: ViewRegistration;
   private readonly universe?: Foundation.Universe.Universe;
-  private widgetPromise: Promise<Widget>|null;
+  private widgetPromise: Promise<AnyWidget>|null;
 
   constructor(viewRegistration: ViewRegistration, universe?: Foundation.Universe.Universe) {
     this.viewRegistration = viewRegistration;
@@ -127,7 +127,7 @@ export class PreRegisteredView implements View {
     return provider.toolbarItems();
   }
 
-  widget(): Promise<Widget> {
+  widget(): Promise<AnyWidget> {
     if (this.widgetPromise === null) {
       if (!this.universe) {
         throw new Error('Creating views via ViewManager requires a Foundation.Universe');
@@ -332,12 +332,12 @@ export class ViewManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
     return view;
   }
 
-  materializedWidget(viewId: string): Widget|null {
-    const view = this.view(viewId);
+  materializedWidget<T extends HTMLElement|DocumentFragment = HTMLElement>(viewId: string): Widget<T>|null {
+    const view = this.views.get(viewId);
     if (!view) {
       return null;
     }
-    return widgetForView.get(view) || null;
+    return (widgetForView.get(view) as Widget<T>| undefined) || null;
   }
 
   hasView(viewId: string): boolean {
@@ -417,7 +417,7 @@ export class ViewManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
   }
 }
 
-const widgetForView = new WeakMap<View, Widget>();
+const widgetForView = new WeakMap<View, AnyWidget>();
 
 export class ContainerWidget extends VBox {
   private readonly view: View;
@@ -479,7 +479,7 @@ class ExpandableContainerWidget extends VBox {
   private titleElement: HTMLDivElement;
   private readonly titleExpandIcon: Icon;
   private readonly view: View;
-  private widget?: Widget;
+  private widget?: AnyWidget;
   private materializePromise?: Promise<void>;
 
   constructor(view: View) {
@@ -603,15 +603,15 @@ const expandableContainerForView = new WeakMap<View, ExpandableContainerWidget>(
 class Location {
   protected readonly manager: ViewManager;
   private readonly revealCallback: (() => void)|undefined;
-  readonly #widget: Widget;
+  readonly #widget: AnyWidget;
 
-  constructor(manager: ViewManager, widget: Widget, revealCallback?: (() => void)) {
+  constructor(manager: ViewManager, widget: AnyWidget, revealCallback?: (() => void)) {
     this.manager = manager;
     this.revealCallback = revealCallback;
     this.#widget = widget;
   }
 
-  widget(): Widget {
+  widget(): AnyWidget {
     return this.#widget;
   }
 
@@ -699,7 +699,7 @@ class TabbedLocation extends Location implements TabbedViewLocation {
     this.closeableTabSetting.set(newClosable);
   }
 
-  override widget(): Widget {
+  override widget(): AnyWidget {
     return this.#tabbedPane;
   }
 

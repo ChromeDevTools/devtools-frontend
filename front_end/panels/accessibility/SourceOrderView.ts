@@ -43,7 +43,7 @@ interface ViewInput {
   onShowSourceOrderChanged: (showSourceOrder: boolean) => void;
 }
 
-type View = (input: ViewInput, output: unknown, target: HTMLElement) => void;
+type View = (input: ViewInput, output: unknown, target: HTMLElement|DocumentFragment) => void;
 
 const DEFAULT_VIEW: View = (input, _output, target) => {
   function onShowSourceOrderChanged(event: Event): void {
@@ -78,11 +78,11 @@ const DEFAULT_VIEW: View = (input, _output, target) => {
       </devtools-checkbox>
       `
     }
-  `, target);
+  `, target, {container: {attributes: {jslog: `${VisualLogging.section('source-order-viewer')}`}}});
   // clang-format on
 };
 
-export class SourceOrderPane extends AccessibilitySubPane {
+export class SourceOrderPane extends AccessibilitySubPane<ShadowRoot> {
   #childCount = 0;
   #showSourceOrder: boolean|undefined = undefined;
   readonly #view: View;
@@ -91,7 +91,7 @@ export class SourceOrderPane extends AccessibilitySubPane {
     super({
       title: i18nString(UIStrings.sourceOrderViewer),
       viewId: 'source-order-viewer',
-      jslog: `${VisualLogging.section('source-order-viewer')}`,
+      useShadowDom: 'pure',
     });
     this.#view = view;
   }

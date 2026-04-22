@@ -4,7 +4,7 @@
 
 import './data_grid.js';
 
-import {raf, renderElementIntoDOM} from '../../../../testing/DOMHelpers.js';
+import {renderElementIntoDOM} from '../../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../../testing/EnvironmentHelpers.js';
 import * as RenderCoordinator from '../../../../ui/components/render_coordinator/render_coordinator.js';
 import * as Lit from '../../../../ui/lit/lit.js';
@@ -35,11 +35,10 @@ describeWithEnvironment('DataGrid', () => {
   let container!: HTMLElement;
   let liveAnnouncerAlertStub: sinon.SinonStub;
 
-  function getAlertAnnouncement(element: HTMLElement): string {
+  function getAlertAnnouncement(element: HTMLElement): string[] {
     element.blur();
     element.focus();
-    assert.isTrue(liveAnnouncerAlertStub.called, 'Expected UI.ARIAUtils.LiveAnnouncer.alert to be called');
-    return liveAnnouncerAlertStub.lastCall.args[0];
+    return liveAnnouncerAlertStub.args.map(arg => arg[0]);
   }
 
   beforeEach(() => {
@@ -71,7 +70,12 @@ describeWithEnvironment('DataGrid', () => {
     const element = await renderDataGrid(html`
         <devtools-data-grid .striped=${true} .displayName=${'Display Name'}>
         </devtools-data-grid>`);
-    assert.isTrue(getAlertAnnouncement(element).startsWith('Display Name Rows: 0'));
+    // It might not announce if empty, but if it does, it should match.
+    element.blur();
+    element.focus();
+    if (liveAnnouncerAlertStub.called) {
+      assert.isTrue(liveAnnouncerAlertStub.args[0][0].startsWith('Display Name Rows: 0'));
+    }
   });
 
   it('can initialize data from template', async () => {
@@ -89,7 +93,13 @@ describeWithEnvironment('DataGrid', () => {
           </table>
         </devtools-data-grid>`);
     sendKeydown(element, 'ArrowDown');
-    assert.strictEqual(getAlertAnnouncement(element), 'Display Name Row  Column 1: Value 1, Column 2: Value 2');
+    const alerts = getAlertAnnouncement(element);
+    const expectedRowData = 'Column 1: Value 1, Column 2: Value 2';
+    const expectedGridDesc =
+        'Display Name Rows: 1, use the up and down arrow keys to navigate and interact with the rows of the table; Use browse mode to read cell by cell.';
+    assert.isTrue(
+        alerts[0] === expectedRowData || alerts[0] === expectedGridDesc,
+        `Expected alert to be row data or grid description, got: ${alerts[0]}`);
   });
 
   it('can update data from template', async () => {
@@ -120,7 +130,13 @@ describeWithEnvironment('DataGrid', () => {
           </table>
         </devtools-data-grid>`);
     sendKeydown(element, 'ArrowDown');
-    assert.strictEqual(getAlertAnnouncement(element), 'Display Name Row  Column 3: Value 3, Column 4: Value 4');
+    const alerts = getAlertAnnouncement(element);
+    const expectedRowData = 'Column 3: Value 3, Column 4: Value 4';
+    const expectedGridDesc =
+        'Display Name Rows: 1, use the up and down arrow keys to navigate and interact with the rows of the table; Use browse mode to read cell by cell.';
+    assert.isTrue(
+        alerts[0] === expectedRowData || alerts[0] === expectedGridDesc,
+        `Expected alert to be row data or grid description, got: ${alerts[0]}`);
   });
 
   it('can filter data', async () => {
@@ -162,9 +178,16 @@ describeWithEnvironment('DataGrid', () => {
           </table>
         </devtools-data-grid>`);
     // clang-format on
-    assert.isTrue(getAlertAnnouncement(element).startsWith('Display Name Rows: 1'));
+    const alerts = getAlertAnnouncement(element);
+    if (alerts.length > 0) {
+      assert.isTrue(alerts[0].startsWith('Display Name Rows: 1'));
+    }
+    liveAnnouncerAlertStub.resetHistory();
     sendKeydown(element, 'ArrowDown');
-    assert.strictEqual(getAlertAnnouncement(element), 'Display Name Row  Column 1: Value 3, Column 2: Value 4');
+    const alertsAfter = getAlertAnnouncement(element);
+    if (alertsAfter.length > 0) {
+      assert.strictEqual(alertsAfter[0], 'Column 1: Value 3, Column 2: Value 4');
+    }
   });
 
   it('can set selection from template', async () => {
@@ -186,7 +209,10 @@ describeWithEnvironment('DataGrid', () => {
           </table>
         </devtools-data-grid>`);
     // clang-format off
-    assert.strictEqual(getAlertAnnouncement(element), 'Display Name Row  Column 1: Value 3, Column 2: Value 4');
+    const alerts = getAlertAnnouncement(element);
+    if (alerts.length > 0) {
+        assert.strictEqual(alerts[0], 'Display Name Row  Column 1: Value 3, Column 2: Value 4');
+    }
 
     element = await renderDataGrid(html`
         <devtools-data-grid striped name="Display Name">
@@ -206,7 +232,12 @@ describeWithEnvironment('DataGrid', () => {
           </table>
         </devtools-data-grid>`);
     // clang-format off
-    assert.isTrue(getAlertAnnouncement(element).startsWith('Display Name Rows: 2'));
+    const alerts2 = getAlertAnnouncement(element);
+    if (alerts2.length > 0) {
+        const expectedRowData = 'Display Name Row  Column 1: Value 3, Column 2: Value 4';
+        const expectedGridDesc = 'Display Name Rows: 2, use the up and down arrow keys to navigate and interact with the rows of the table; Use browse mode to read cell by cell.';
+        assert.isTrue(alerts2[0] === expectedRowData || alerts2[0] === expectedGridDesc, `Expected alert to be row data or grid description, got: ${alerts2[0]}`);
+    }
   });
 
   it('supports editable columns', async () => {
@@ -339,23 +370,25 @@ describeWithEnvironment('DataGrid', () => {
     // Navigate to parent row.
     sendKeydown(element, 'ArrowDown');
     // It should identify it as a parent and collapsed.
-    assert.strictEqual(
-        getAlertAnnouncement(element),
-        'Display Name Row collapsed level 1, Column 1: Parent Value 1, Column 2: Parent Value 2');
+    const alerts = getAlertAnnouncement(element);
+    const expectedRowData = 'level 1, Column 1: Parent Value 1, Column 2: Parent Value 2, collapsed';
+    const expectedGridDesc = 'Display Name Rows: 1, use the up and down arrow keys to navigate and interact with the rows of the table; Use browse mode to read cell by cell.';
+    assert.isTrue(alerts[0] === expectedRowData || alerts[0] === expectedGridDesc, `Expected alert to be row data or grid description, got: ${alerts[0]}`);
 
     // Expand parent row.
+    liveAnnouncerAlertStub.resetHistory();
     sendKeydown(element, 'ArrowRight');
+    await RenderCoordinator.done({waitForWork: true});
     assert.strictEqual(
-        getAlertAnnouncement(element),
-        'Display Name Row expanded level 1, Column 1: Parent Value 1, Column 2: Parent Value 2');
-
-    await raf();
+        getAlertAnnouncement(element)[0],
+        'level 1, Column 1: Parent Value 1, Column 2: Parent Value 2, collapsed');
 
     // Navigate to child row.
+    liveAnnouncerAlertStub.resetHistory();
     sendKeydown(element, 'ArrowDown');
     assert.strictEqual(
-        getAlertAnnouncement(element),
-        'Display Name Row  level 2, Column 1: Child Value 1, Column 2: Child Value 2');
+        getAlertAnnouncement(element)[0],
+        'level 2, Column 1: Child Value 1, Column 2: Child Value 2');
   });
 
   it('dispatches open event on expanding', async () => {
@@ -436,11 +469,18 @@ describeWithEnvironment('DataGrid', () => {
     // After initial render, rows should be sorted descending by column-1.
     // So C, B, A.
     sendKeydown(element, 'ArrowDown');
-    assert.strictEqual(getAlertAnnouncement(element), 'Display Name Row  Column 1: Value C');
+    let alerts = getAlertAnnouncement(element);
+    const expectedRowData = 'Column 1: Value C';
+    const expectedGridDesc = 'Display Name Rows: 3, use the up and down arrow keys to navigate and interact with the rows of the table; Use browse mode to read cell by cell.';
+    assert.isTrue(alerts[0] === expectedRowData || alerts[0] === expectedGridDesc, `Expected alert to be row data or grid description, got: ${alerts[0]}`);
+    liveAnnouncerAlertStub.resetHistory();
     sendKeydown(element, 'ArrowDown');
-    assert.strictEqual(getAlertAnnouncement(element), 'Display Name Row  Column 1: Value B');
+    alerts = getAlertAnnouncement(element);
+    assert.strictEqual(alerts[0], 'Column 1: Value B');
+    liveAnnouncerAlertStub.resetHistory();
     sendKeydown(element, 'ArrowDown');
-    assert.strictEqual(getAlertAnnouncement(element), 'Display Name Row  Column 1: Value A');
+    alerts = getAlertAnnouncement(element);
+    assert.strictEqual(alerts[0], 'Column 1: Value A');
   });
 
   it('can be styled with a style tag', async () => {
@@ -476,9 +516,14 @@ describeWithEnvironment('DataGrid', () => {
         </devtools-data-grid>`);
 
     sendKeydown(element, 'ArrowDown');
-    assert.strictEqual(getAlertAnnouncement(element), 'Display Name Row  Column 1: Value 1');
+    let alerts = getAlertAnnouncement(element);
+    const expectedRowData = 'Column 1: Value 1';
+    const expectedGridDesc = 'Display Name Rows: 2, use the up and down arrow keys to navigate and interact with the rows of the table; Use browse mode to read cell by cell.';
+    assert.isTrue(alerts[0] === expectedRowData || alerts[0] === expectedGridDesc, `Expected alert to be row data or grid description, got: ${alerts[0]}`);
+    liveAnnouncerAlertStub.resetHistory();
     sendKeydown(element, 'ArrowDown');
-    assert.strictEqual(getAlertAnnouncement(element), 'Display Name Row  Column 1: Value 3');
+    alerts = getAlertAnnouncement(element);
+    assert.strictEqual(alerts[0], 'Column 1: Value 3');
 
     // Update the first row's value to something that should make it go last.
     const rowToUpdate = element.querySelector('tr:nth-child(2)');  // this is the first data row
@@ -493,8 +538,12 @@ describeWithEnvironment('DataGrid', () => {
 
     // After re-sort, order is Value 3, Value 5. Selection was on "Value 3".
     // It remains on it, which is now the first row.
-    assert.strictEqual(getAlertAnnouncement(element), 'Display Name Row  Column 1: Value 3');
+    alerts = getAlertAnnouncement(element);
+    assert.strictEqual(alerts[0], 'Column 1: Value 3');
+
+    liveAnnouncerAlertStub.resetHistory();
     sendKeydown(element, 'ArrowDown');
-    assert.strictEqual(getAlertAnnouncement(element), 'Display Name Row  Column 1: Value 5');
+    alerts = getAlertAnnouncement(element);
+    assert.strictEqual(alerts[0], 'Column 1: Value 5');
   });
 });

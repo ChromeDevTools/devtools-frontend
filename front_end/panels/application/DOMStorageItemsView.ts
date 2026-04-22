@@ -62,14 +62,14 @@ export class DOMStorageItemsView extends KeyValueStorageItemsView {
   private eventListeners: Common.EventTarget.EventDescriptor[];
 
   constructor(domStorage: DOMStorage) {
-    super(i18nString(UIStrings.domStorageItems), 'dom-storage', true);
+    super(
+        i18nString(UIStrings.domStorageItems), 'dom-storage', true, /* view=*/ undefined, /* metadataView=*/ undefined,
+        /* jslog=*/ undefined, ['storage-view', 'table']);
 
     this.domStorage = domStorage;
     if (domStorage.storageKey) {
       this.toolbar?.setStorageKey(domStorage.storageKey);
     }
-
-    this.element.classList.add('storage-view', 'table');
 
     this.showPreview(null, null);
 

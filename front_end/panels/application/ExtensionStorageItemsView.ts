@@ -75,7 +75,7 @@ export class ExtensionStorageItemsView extends KeyValueStorageItemsView {
   constructor(extensionStorage: ExtensionStorage, view?: KeyValueStorageItemsViewFunction) {
     super(
         i18nString(UIStrings.extensionStorageItems), 'extension-storage', true, view, undefined,
-        {jslog: `${VisualLogging.pane().context('extension-storage-data')}`, classes: ['storage-view', 'table']});
+        `${VisualLogging.pane().context('extension-storage-data')}`, ['storage-view', 'table']);
 
     this.extensionStorageItemsDispatcher =
         new Common.ObjectWrapper.ObjectWrapper<ExtensionStorageItemsDispatcher.EventTypes>();

@@ -128,7 +128,7 @@ export const DEFAULT_COOKIE_PREVIEW_WIDGET_VIEW: CookiePreviewWidgetView = (inpu
     </div>
   `,
       // clang-format on
-      target);
+      target, {container: {attributes: {jslog: `${VisualLogging.pane('cookie-preview')}`}}});
 };
 
 class CookiePreviewWidget extends UI.Widget.VBox {
@@ -137,7 +137,7 @@ class CookiePreviewWidget extends UI.Widget.VBox {
   private showDecodedSetting: Common.Settings.Setting<boolean>;
 
   constructor(element?: HTMLElement, view: CookiePreviewWidgetView = DEFAULT_COOKIE_PREVIEW_WIDGET_VIEW) {
-    super(element, {jslog: `${VisualLogging.section('cookie-preview')}`});
+    super(element);
     this.view = view;
     this.setMinimumSize(230, 45);
     this.#cookie = null;

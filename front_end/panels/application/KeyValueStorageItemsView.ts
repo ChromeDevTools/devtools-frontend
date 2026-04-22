@@ -31,7 +31,6 @@
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Geometry from '../../models/geometry/geometry.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import type {WidgetOptions} from '../../ui/legacy/Widget.js';
 import {Directives as LitDirectives, html, nothing, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
@@ -86,6 +85,8 @@ export interface ViewInput {
   onDelete: (key: string) => void;
   onDeleteSelected: () => void;
   onDeleteAll: () => void;
+  jslog?: string;
+  classes?: string[];
 }
 
 interface ViewOutput {
@@ -110,10 +111,18 @@ export abstract class KeyValueStorageItemsView extends UI.Widget.VBox {
   #editable: boolean;
   #toolbar: StorageItemsToolbar|undefined;
   readonly metadataView: ApplicationComponents.StorageMetadataView.StorageMetadataView;
+  #jslog?: string;
+  #classes?: string[];
 
   constructor(
-      title: string, id: string, editable: boolean, view?: View,
-      metadataView?: ApplicationComponents.StorageMetadataView.StorageMetadataView, opts?: WidgetOptions) {
+      title: string,
+      id: string,
+      editable: boolean,
+      view?: View,
+      metadataView?: ApplicationComponents.StorageMetadataView.StorageMetadataView,
+      jslog?: string,
+      classes?: string[],
+  ) {
     metadataView ??= new ApplicationComponents.StorageMetadataView.StorageMetadataView();
     if (!view) {
       view = (input: ViewInput, output: ViewOutput, target: HTMLElement) => {
@@ -171,12 +180,14 @@ export abstract class KeyValueStorageItemsView extends UI.Widget.VBox {
               </devtools-widget>
             </devtools-split-view>`,
             // clang-format on
-            target);
+            target, {container: {attributes: {jslog: input.jslog}, classes: input.classes}});
       };
     }
-    super(opts);
+    super();
     this.metadataView = metadataView;
     this.#editable = editable;
+    this.#jslog = jslog;
+    this.#classes = classes;
     this.#view = view;
     this.performUpdate();
 
@@ -204,6 +215,8 @@ export abstract class KeyValueStorageItemsView extends UI.Widget.VBox {
       selectedKey: this.#selectedKey,
       editable: this.#editable,
       preview: this.#preview,
+      jslog: this.#jslog,
+      classes: this.#classes,
       onSelect: (item: {key: string, value: string}|null) => {
         this.#toolbar?.setCanDeleteSelected(Boolean(item));
         if (!item) {

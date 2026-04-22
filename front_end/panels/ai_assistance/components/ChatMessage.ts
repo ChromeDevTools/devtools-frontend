@@ -498,7 +498,7 @@ function renderTitle(step: Step): Lit.LitTemplate {
       html`<span class="paused">${lockedString(UIStringsNotTranslate.paused)}: </span>` :
       Lit.nothing;
 
-  return html`<span class="title" aria-label=${titleForStep(step)}>${paused}${titleForStep(step)}</span>`;
+  return html`<h3 class="title" aria-label=${titleForStep(step)}>${paused}${titleForStep(step)}</h3>`;
 }
 
 function renderStepCode(step: Step): Lit.LitTemplate {
@@ -1002,7 +1002,7 @@ function renderWidgetResponse(response: WidgetMakerResponse|null): Lit.LitTempla
     <div class=${classes} jslog=${ifDefined(response.jslogContext ? VisualLogging.section(response.jslogContext) : undefined)}>
       ${response.title ? html`
         <div class="widget-header">
-          <h3 class="widget-name">${response.title}</h3>
+          <h4 class="widget-name">${response.title}</h4>
           <div class="widget-reveal-container">
             ${revealButton}
           </div>

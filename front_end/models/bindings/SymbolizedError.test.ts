@@ -98,6 +98,70 @@ describe('SymbolizedError', () => {
     assert.isNull(result);
   });
 
+  it('can create a SymbolizedError from a string RemoteObject', async () => {
+    const target = universe.createTarget({});
+    const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
+    assert.exists(runtimeModel);
+
+    const stringRemoteObject = {
+      type: 'string',
+      description: 'Error: string error\n    at http://example.com/script.js:1:1',
+      runtimeModel: () => runtimeModel,
+    } as unknown as SDK.RemoteObject.RemoteObject;
+
+    const symbolizedError = await universe.debuggerWorkspaceBinding.createSymbolizedError(stringRemoteObject);
+
+    assert.exists(symbolizedError);
+    assert.strictEqual(symbolizedError.message, 'Error: string error');
+    assert.strictEqual(symbolizedError.stackTrace.syncFragment.frames[0].url, 'http://example.com/script.js');
+    assert.isNull(symbolizedError.cause);
+  });
+
+  it('returns null for a string RemoteObject if the stack trace cannot be parsed', async () => {
+    const target = universe.createTarget({});
+    const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
+    assert.exists(runtimeModel);
+
+    const stringRemoteObject = {
+      type: 'string',
+      description: 'Error: string error\n    at http://example.com/script.js:1:1\ninvalid line',
+      runtimeModel: () => runtimeModel,
+    } as unknown as SDK.RemoteObject.RemoteObject;
+
+    const result = await universe.debuggerWorkspaceBinding.createSymbolizedError(stringRemoteObject);
+    assert.isNull(result);
+  });
+
+  it('uses the provided exceptionDetails preferentially', async () => {
+    const target = universe.createTarget({});
+    const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
+    assert.exists(runtimeModel);
+
+    const errorRemoteObject = {
+      subtype: 'error',
+      description: 'Error: error\n    at http://example.com/script.js:1:1',
+      runtimeModel: () => runtimeModel,
+      objectId: '1' as Protocol.Runtime.RemoteObjectId,
+      getAllProperties: async () => ({properties: [], internalProperties: []}),
+    } as unknown as SDK.RemoteObject.RemoteObject;
+
+    const exceptionDetails = {
+      exceptionId: 1,
+      text: 'Uncaught',
+      lineNumber: 0,
+      columnNumber: 0,
+    } as Protocol.Runtime.ExceptionDetails;
+
+    const invokeGetExceptionDetailsSpy = sinon.spy(target.runtimeAgent(), 'invoke_getExceptionDetails');
+
+    const symbolizedError =
+        await universe.debuggerWorkspaceBinding.createSymbolizedError(errorRemoteObject, exceptionDetails);
+
+    assert.exists(symbolizedError);
+    assert.strictEqual(symbolizedError.message, 'Error: error');
+    sinon.assert.notCalled(invokeGetExceptionDetailsSpy);
+  });
+
   it('emits UPDATED when stackTrace or cause updates', async () => {
     const symbolizedError = await createSymbolizedErrorWithCause();
     assert.exists(symbolizedError);

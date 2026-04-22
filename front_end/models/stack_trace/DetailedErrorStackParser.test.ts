@@ -207,6 +207,30 @@ describe('DetailedErrorStackParser', () => {
     });
   });
 
+  describe('parseMessage', () => {
+    it('extracts the message when stack frames are present', () => {
+      const stack = `Error: foo
+          at functionName (http://www.example.org/script.js:10:5)`;
+      const message = StackTraceImpl.DetailedErrorStackParser.parseMessage(stack);
+      assert.strictEqual(message, 'Error: foo');
+    });
+
+    it('returns the full string if no stack frames are present', () => {
+      const stack = `Error: foo
+          some other text`;
+      const message = StackTraceImpl.DetailedErrorStackParser.parseMessage(stack);
+      assert.strictEqual(message, stack);
+    });
+
+    it('extracts multi-line messages', () => {
+      const stack = `Error: foo
+more details
+          at functionName (http://www.example.org/script.js:10:5)`;
+      const message = StackTraceImpl.DetailedErrorStackParser.parseMessage(stack);
+      assert.strictEqual(message, 'Error: foo\nmore details');
+    });
+  });
+
   describe('augmentRawFramesWithScriptIds', () => {
     it('augments raw frames with script IDs from Protocol.Runtime.StackTrace', () => {
       const frames: StackTraceImpl.Trie.RawFrame[] = [

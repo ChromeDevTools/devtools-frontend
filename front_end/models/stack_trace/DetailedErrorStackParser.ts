@@ -8,19 +8,28 @@ import type * as Protocol from '../../generated/protocol.js';
 
 import type {RawFrame} from './Trie.js';
 
+const CALL_FRAME_REGEX = /^\s*at\s+/;
+
 /**
  * Takes a V8 Error#stack string and extracts structured information.
  */
 export function parseRawFramesFromErrorStack(stack: string): RawFrame[] {
   const lines = stack.split('\n');
+  const firstAtLineIndex = findFramesStartLine(lines);
   const rawFrames: RawFrame[] = [];
-  for (const line of lines) {
-    const match = /^\s*at\s+(.*)/.exec(line);
+
+  if (firstAtLineIndex === -1) {
+    return rawFrames;
+  }
+
+  for (let i = firstAtLineIndex; i < lines.length; ++i) {
+    const line = lines[i];
+    const match = CALL_FRAME_REGEX.exec(line);
     if (!match) {
       continue;
     }
 
-    let lineContent = match[1];
+    let lineContent = line.substring(match[0].length);
     let isAsync = false;
     if (lineContent.startsWith('async ')) {
       isAsync = true;
@@ -142,6 +151,20 @@ export function parseRawFramesFromErrorStack(stack: string): RawFrame[] {
     });
   }
   return rawFrames;
+}
+
+function findFramesStartLine(lines: string[]): number {
+  return lines.findIndex(line => CALL_FRAME_REGEX.test(line));
+}
+
+export function parseMessage(stack: string): string {
+  const lines = stack.split('\n');
+  const firstAtLineIndex = findFramesStartLine(lines);
+
+  if (firstAtLineIndex !== -1) {
+    return lines.slice(0, firstAtLineIndex).join('\n');
+  }
+  return stack;
 }
 
 /**

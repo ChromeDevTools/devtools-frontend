@@ -206,7 +206,7 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
 
   async createStackTraceFromErrorStackLikeString(
       target: SDK.Target.Target, stack: string,
-      exceptionDetails?: Protocol.Runtime.ExceptionDetails): Promise<StackTrace.StackTrace.ParsedErrorStackTrace> {
+      exceptionDetails?: Protocol.Runtime.ExceptionDetails): Promise<StackTrace.StackTrace.ParsedErrorStackTrace|null> {
     const model =
         target.model(StackTraceImpl.StackTraceModel.StackTraceModel) as StackTraceImpl.StackTraceModel.StackTraceModel;
     const stackTracePromise =
@@ -231,6 +231,10 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
           remoteObject.runtimeModel().target(), remoteError.errorStack, exceptionDetails),
       causeRemoteObject ? this.createSymbolizedError(causeRemoteObject) : Promise.resolve(null),
     ]);
+
+    if (!stackTrace) {
+      return null;
+    }
 
     return new SymbolizedError(remoteError, stackTrace, cause);
   }

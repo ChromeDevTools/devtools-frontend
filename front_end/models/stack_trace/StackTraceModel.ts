@@ -58,8 +58,12 @@ export class StackTraceModel extends SDK.SDKModel.SDKModel<unknown> {
 
   async createFromErrorStackLikeString(
       stack: string, rawFramesToUIFrames: TranslateRawFrames,
-      exceptionDetails?: Protocol.Runtime.ExceptionDetails): Promise<StackTrace.StackTrace.ParsedErrorStackTrace> {
+      exceptionDetails?: Protocol.Runtime.ExceptionDetails): Promise<StackTrace.StackTrace.ParsedErrorStackTrace|null> {
     const rawFrames = parseRawFramesFromErrorStack(stack);
+    if (!rawFrames) {
+      return null;
+    }
+
     if (exceptionDetails?.stackTrace) {
       augmentRawFramesWithScriptIds(rawFrames, exceptionDetails.stackTrace);
     }

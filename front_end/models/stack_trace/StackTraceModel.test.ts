@@ -511,6 +511,7 @@ describe('StackTraceModel', () => {
               at Array.map (<anonymous>)`,
           identityTranslateFn);
 
+      assert.exists(stackTrace);
       assert.lengthOf(stackTrace.syncFragment.frames, 1);
       const frame = stackTrace.syncFragment.frames[0];
       assert.isUndefined(frame.url);
@@ -564,6 +565,7 @@ describe('StackTraceModel', () => {
             },
           });
 
+      assert.exists(stackTrace);
       assert.strictEqual(stringifyStackTrace(stackTrace), [
         'at foo (foo.js:0:9)',
         'at bar (foo.js:1:19)',
@@ -598,6 +600,7 @@ describe('StackTraceModel', () => {
               at eval (eval at outerEval (foo.js:10:5), <anonymous>:1:1)`,
           translateFn);
 
+      assert.exists(stackTrace);
       const frames = stackTrace.syncFragment.frames as StackTrace.StackTrace.ParsedErrorStackFrame[];
       assert.lengthOf(frames, 1);
       assert.strictEqual(frames[0].url, '<anonymous>');

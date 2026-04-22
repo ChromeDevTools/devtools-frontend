@@ -12,8 +12,11 @@ const CALL_FRAME_REGEX = /^\s*at\s+/;
 
 /**
  * Takes a V8 Error#stack string and extracts structured information.
+ *
+ * @returns Null if the provided string has an unexpected format. A
+ *          populated `RawFrame[]` otherwise.
  */
-export function parseRawFramesFromErrorStack(stack: string): RawFrame[] {
+export function parseRawFramesFromErrorStack(stack: string): RawFrame[]|null {
   const lines = stack.split('\n');
   const firstAtLineIndex = findFramesStartLine(lines);
   const rawFrames: RawFrame[] = [];
@@ -26,7 +29,10 @@ export function parseRawFramesFromErrorStack(stack: string): RawFrame[] {
     const line = lines[i];
     const match = CALL_FRAME_REGEX.exec(line);
     if (!match) {
-      continue;
+      if (line.trim() === '') {
+        continue;
+      }
+      return null;
     }
 
     let lineContent = line.substring(match[0].length);
@@ -80,9 +86,9 @@ export function parseRawFramesFromErrorStack(stack: string): RawFrame[] {
         if (innerOpenParen !== -1) {
           evalFunctionName = evalOriginStr.substring(0, innerOpenParen).trim();
           evalLocation = evalOriginStr.substring(innerOpenParen + 2, evalOriginStr.length - 1);
-          evalOrigin = parseRawFramesFromErrorStack(`    at ${evalFunctionName} (${evalLocation})`)[0];
+          evalOrigin = parseRawFramesFromErrorStack(`    at ${evalFunctionName} (${evalLocation})`)?.[0];
         } else {
-          evalOrigin = parseRawFramesFromErrorStack(`    at ${evalFunctionName}`)[0];
+          evalOrigin = parseRawFramesFromErrorStack(`    at ${evalFunctionName}`)?.[0];
         }
       }
 

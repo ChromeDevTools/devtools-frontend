@@ -53,8 +53,8 @@ const lockedString = i18n.i18n.lockedString;
  * Labels used to identify specific periods or categories in the trace for getting main thread summary.
  * Supports hardcoded phases, dynamic navigation IDs (`NAVIGATION_X`), and insight models.
  */
-type MainThreadSectionLabel = 'nav-to-lcp'|'lcp-ttfb'|'lcp-render-delay'|'trace-bounds'|'NO_NAVIGATION'|
-                              `NAVIGATION_${string}`|keyof Trace.Insights.Types.InsightModels;
+export type MainThreadSectionLabel = 'nav-to-lcp'|'lcp-ttfb'|'lcp-render-delay'|'trace-bounds'|'NO_NAVIGATION'|
+                                     `NAVIGATION_${string}`|keyof Trace.Insights.Types.InsightModels;
 
 /**
  * WARNING: preamble defined in code is only used when userTier is
@@ -365,6 +365,41 @@ export class PerformanceTraceContext extends ConversationContext<AgentFocus> {
 
 // 16k Tokens * ~4 char per token.
 const MAX_FUNCTION_RESULT_BYTE_LENGTH = 16384 * 4;
+
+const STATIC_LABEL_NAMES: Record<string, string> = {
+  'nav-to-lcp': 'navigation to LCP',
+  'lcp-ttfb': 'LCP to TTFB',
+  'lcp-render-delay': 'LCP render delay',
+  'trace-bounds': 'the entire trace',
+  NO_NAVIGATION: 'the period before the first navigation',
+};
+
+/**
+ * Converts the label name we use in the code to a human readable one that is
+ * shown to the user.
+ */
+export function getLabelName(label: MainThreadSectionLabel, focus: AgentFocus): string {
+  if (STATIC_LABEL_NAMES[label]) {
+    return STATIC_LABEL_NAMES[label];
+  }
+
+  const {parsedTrace} = focus;
+  const insightSetById = parsedTrace.insights?.get(label as Trace.Types.Events.NavigationId);
+  if (insightSetById) {
+    return `navigation to ${insightSetById.url.href}`;
+  }
+
+  // Go through all the insights we have to find the first one that matches to find the title.
+  // TODO(b/505291090): make it easier to look up Insight titles from a key.
+  for (const insightSet of parsedTrace.insights?.values() ?? []) {
+    const model = insightSet.model[label as keyof Trace.Insights.Types.InsightModels];
+    if (model) {
+      return `${model.title} insight`;
+    }
+  }
+
+  return label;
+}
 
 /**
  * One agent instance handles one conversation. Create a new agent
@@ -1075,8 +1110,9 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
         required: ['label']
       },
       displayInfoFromArgs: args => {
+        const labelName = getLabelName(args.label, focus);
         return {
-          title: lockedString(UIStringsNotTranslated.mainThreadActivity),
+          title: lockedString(`${UIStringsNotTranslated.mainThreadActivity}: ${labelName}`),
           action: `getMainThreadTrackSummaryByLabel('${args.label}')`
         };
       },
@@ -1483,10 +1519,9 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
       return parsedTrace.data.Meta.traceBounds;
     }
 
-    for (const is of parsedTrace.insights?.values() ?? []) {
-      if (is.id === label) {
-        return is.bounds;
-      }
+    const insightSetById = parsedTrace.insights?.get(label as Trace.Types.Events.NavigationId);
+    if (insightSetById) {
+      return insightSetById.bounds;
     }
 
     if (insightSet) {

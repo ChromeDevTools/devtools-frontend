@@ -62,7 +62,7 @@ export interface ViewInput {
 
 export type ViewOutput = Record<string, never>;
 
-export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
+export type View = (input: ViewInput, output: ViewOutput, target: DocumentFragment) => void;
 
 // clang-format off
 export const DEFAULT_VIEW: View = (input, output, target) => {
@@ -118,14 +118,14 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
         ` : nothing}
       </div>
     </div>
-  `, target);
+  `, target, {container: {attributes: {jslog: `${VisualLogging.dialog('timeline-status').track({resize: true})}`}}});
+  // clang-format on
 };
-// clang-format on
 
 /**
  * This is the dialog shown whilst a trace is being recorded/imported.
  */
-export class StatusDialog extends UI.Widget.VBox {
+export class StatusDialog extends UI.Widget.VBox<ShadowRoot> {
   readonly #view: View;
   #statusText = '';
   readonly #showTimer: boolean;
@@ -153,10 +153,7 @@ export class StatusDialog extends UI.Widget.VBox {
         buttonText?: string,
       },
       onButtonClickCallback: () => (Promise<void>| void), view: View = DEFAULT_VIEW) {
-    super({
-      jslog: `${VisualLogging.dialog('timeline-status').track({resize: true})}`,
-      useShadowDom: true,
-    });
+    super({useShadowDom: 'pure'});
 
     this.#view = view;
     this.#showTimer = Boolean(options.showTimer);

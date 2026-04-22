@@ -220,7 +220,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
     </devtools-widget>
   `,
       // clang-format on
-      target);
+      target, {container: {attributes: {jslog: `${VisualLogging.pane('cookies-data')}`}}});
 };
 
 export class CookieItemsView extends UI.Widget.VBox {
@@ -234,7 +234,7 @@ export class CookieItemsView extends UI.Widget.VBox {
   #toolbar?: StorageItemsToolbar;
 
   constructor(model: SDK.CookieModel.CookieModel, cookieDomain: string, view: View = DEFAULT_VIEW) {
-    super({jslog: `${VisualLogging.pane('cookies-data')}`});
+    super();
 
     this.view = view;
 

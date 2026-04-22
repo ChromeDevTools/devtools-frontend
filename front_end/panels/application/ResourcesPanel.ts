@@ -28,8 +28,8 @@ let resourcesPanelInstance: ResourcesPanel;
 
 export class ResourcesPanel extends UI.Panel.PanelWithSidebar {
   private readonly resourcesLastSelectedItemSetting: Common.Settings.Setting<Platform.DevToolsPath.UrlString[]>;
-  visibleView: UI.Widget.Widget|null;
-  private pendingViewPromise: Promise<UI.Widget.Widget>|null;
+  visibleView: UI.Widget.AnyWidget|null;
+  private pendingViewPromise: Promise<UI.Widget.AnyWidget>|null;
   private categoryView: StorageCategoryView|null;
   storageViews: HTMLElement;
   private readonly storageViewToolbar: UI.Toolbar.Toolbar;
@@ -84,7 +84,7 @@ export class ResourcesPanel extends UI.Panel.PanelWithSidebar {
     return resourcesPanelInstance;
   }
 
-  private static shouldCloseOnReset(view: UI.Widget.Widget): boolean {
+  private static shouldCloseOnReset(view: UI.Widget.AnyWidget): boolean {
     const viewClassesToClose = [
       SourceFrame.ResourceSourceFrame.ResourceSourceFrame,
       SourceFrame.ImageView.ImageView,
@@ -117,7 +117,7 @@ export class ResourcesPanel extends UI.Panel.PanelWithSidebar {
     }
   }
 
-  showView(view: UI.Widget.Widget|null): void {
+  showView(view: UI.Widget.AnyWidget|null): void {
     this.pendingViewPromise = null;
     if (this.visibleView === view) {
       return;
@@ -142,7 +142,7 @@ export class ResourcesPanel extends UI.Panel.PanelWithSidebar {
     }
   }
 
-  async scheduleShowView(viewPromise: Promise<UI.Widget.Widget>): Promise<UI.Widget.Widget|null> {
+  async scheduleShowView(viewPromise: Promise<UI.Widget.AnyWidget>): Promise<UI.Widget.AnyWidget|null> {
     this.pendingViewPromise = viewPromise;
     const view = await viewPromise;
     if (this.pendingViewPromise !== viewPromise) {

@@ -586,7 +586,7 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: ViewOutput, target: HTML
       <devtools-widget ${widget(UI.EmptyWidget.EmptyWidget, {header: defaultTitle, text: defaultDescription})} jslog=${
             VisualLogging.pane('device-bound-sessions-empty')}></devtools-widget>
     `,
-        target);
+        target, {container: {attributes: {jslog: `${VisualLogging.pane('device-bound-sessions')}`}}});
     return;
   }
 
@@ -848,7 +848,7 @@ export class DeviceBoundSessionsView extends UI.Widget.VBox {
   #selectedEvent?: Protocol.Network.DeviceBoundSessionEventOccurredEvent;
 
   constructor(view: typeof DEFAULT_VIEW = DEFAULT_VIEW) {
-    super({jslog: `${VisualLogging.pane('device-bound-sessions')}`});
+    super();
     this.#view = view;
   }
 

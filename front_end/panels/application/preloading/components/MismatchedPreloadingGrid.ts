@@ -91,7 +91,7 @@ export interface ViewInput {
   pageURL: string;
 }
 
-export const DEFAULT_VIEW = (input: ViewInput, _output: Record<string, never>, target: HTMLElement): void => {
+export const DEFAULT_VIEW = (input: ViewInput, _output: Record<string, never>, target: DocumentFragment): void => {
   // clang-format off
   render(html`
     <devtools-data-grid striped inline>
@@ -146,7 +146,7 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: Record<string, never>, t
               </tr>
             `)}
       </table>
-    </devtools-data-grid>`, target);
+    </devtools-data-grid>`, target, {container: {classes: ['devtools-resources-mismatched-preloading-grid']}});
   // clang-format on
 };
 
@@ -164,12 +164,12 @@ export interface MismatchedPreloadingGridData {
 type ViewFunction = typeof DEFAULT_VIEW;
 
 /** Grid component to show prerendering attempts. **/
-export class MismatchedPreloadingGrid extends UI.Widget.Widget {
+export class MismatchedPreloadingGrid extends UI.Widget.Widget<ShadowRoot> {
   #data: MismatchedPreloadingGridData|null = null;
   #view: ViewFunction;
 
   constructor(element?: HTMLElement, view: typeof DEFAULT_VIEW = DEFAULT_VIEW) {
-    super(element, {classes: ['devtools-resources-mismatched-preloading-grid'], useShadowDom: true});
+    super(element, {useShadowDom: 'pure'});
     this.#view = view;
   }
 

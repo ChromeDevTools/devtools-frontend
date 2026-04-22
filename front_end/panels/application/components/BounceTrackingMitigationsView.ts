@@ -167,7 +167,7 @@ const renderMainFrameInformation = (input: ViewInput): Lit.LitTemplate => {
   // clang-format on
 };
 
-export const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLElement): void => {
+export const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLElement|DocumentFragment): void => {
   // clang-format off
   Lit.render(html`
     <style>${bounceTrackingMitigationsViewStyles}</style>
@@ -176,20 +176,20 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLE
                       jslog=${VisualLogging.pane('bounce-tracking-mitigations')}>
       ${renderMainFrameInformation(input)}
     </devtools-report>
-  `, target);
+  `, target, {container: {classes: ['overflow-auto']}});
   // clang-format on
 };
 
 type ViewFunction = typeof DEFAULT_VIEW;
 
-export class BounceTrackingMitigationsView extends UI.Widget.Widget {
+export class BounceTrackingMitigationsView extends UI.Widget.Widget<ShadowRoot> {
   #trackingSites: string[] = [];
   #screenStatus = ScreenStatusType.INITIALIZING;
   #seenButtonClick = false;
   #view: ViewFunction;
 
   constructor(element?: HTMLElement, view: ViewFunction = DEFAULT_VIEW) {
-    super(element, {useShadowDom: true, classes: ['overflow-auto']});
+    super(element, {useShadowDom: 'pure'});
 
     this.#view = view;
 

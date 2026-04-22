@@ -53,7 +53,7 @@ export class ApplicationPanelTreeElement extends UI.TreeOutline.TreeElement {
     return false;
   }
 
-  showView(view: UI.Widget.Widget|null): void {
+  showView(view: UI.Widget.AnyWidget|null): void {
     this.resourcesPanel.showView(view);
   }
 }

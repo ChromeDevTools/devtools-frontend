@@ -707,7 +707,6 @@ export var DevtoolsExperiments;
     DevtoolsExperiments[DevtoolsExperiments["capture-node-creation-stacks"] = 1] = "capture-node-creation-stacks";
     DevtoolsExperiments[DevtoolsExperiments["live-heap-profile"] = 11] = "live-heap-profile";
     DevtoolsExperiments[DevtoolsExperiments["protocol-monitor"] = 13] = "protocol-monitor";
-    DevtoolsExperiments[DevtoolsExperiments["sampling-heap-profiler-timeline"] = 17] = "sampling-heap-profiler-timeline";
     DevtoolsExperiments[DevtoolsExperiments["timeline-invalidation-tracking"] = 26] = "timeline-invalidation-tracking";
     DevtoolsExperiments[DevtoolsExperiments["font-editor"] = 41] = "font-editor";
     DevtoolsExperiments[DevtoolsExperiments["instrumentation-breakpoints"] = 61] = "instrumentation-breakpoints";

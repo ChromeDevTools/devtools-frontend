@@ -680,7 +680,7 @@ var emulatedDevices = [
     },
     "capabilities": ["touch", "mobile"],
     "user-agent": "Mozilla/5.0 (Linux; Android 13; Pixel 7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
-    "user-agent-metadata": { "platform": "Android", "platformVersion": "13", "architecture": "", "model": "Pixel 5", "mobile": true },
+    "user-agent-metadata": { "platform": "Android", "platformVersion": "13", "architecture": "", "model": "Pixel 7", "mobile": true },
     "type": "phone"
   },
   {
@@ -2272,7 +2272,7 @@ var DeviceModeModel = class _DeviceModeModel extends Common2.ObjectWrapper.Objec
       this.#fitScale = this.calculateFitScale(this.#widthSetting.get(), this.#heightSetting.get());
       this.#appliedUserAgentType = this.#uaSetting.get();
       this.applyDeviceMetrics(new Geometry.Size(screenWidth, screenHeight), new Insets(0, 0, 0, 0), new Insets(0, 0, 0, 0), this.#scaleSetting.get(), this.#deviceScaleFactorSetting.get() || defaultDeviceScaleFactor, mobile, screenHeight >= screenWidth ? "portraitPrimary" : "landscapePrimary", resetPageScaleFactor);
-      this.applyUserAgent(mobile ? defaultMobileUserAgent : "", mobile ? defaultMobileUserAgentMetadata : null);
+      this.applyUserAgent(mobile ? _DeviceModeModel.defaultMobileUserAgent() : "", mobile ? _DeviceModeModel.defaultMobileUserAgentMetadata() : null);
       this.applyTouch(
         this.#uaSetting.get() === "Desktop (touch)" || this.#uaSetting.get() === "Mobile",
         this.#uaSetting.get() === "Mobile"
@@ -2472,6 +2472,37 @@ var DeviceModeModel = class _DeviceModeModel extends Common2.ObjectWrapper.Objec
       maskLength: this.#mode.orientation === VerticalSpanned ? hinge.width : hinge.height
     };
   }
+  /**
+   * Heuristic to keep the default mobile User Agent fresh and aligned with the adoption bell curve.
+   * Android: We target N-1 versions (where N is the latest) to represent the plurality of global users.
+   * iOS: We follow the calendar year (starting from the 2025 shift to year-based versioning).
+   * Data sources:
+   * - StatCounter Global Stats: https://gs.statcounter.com/os-version-market-share/android
+   * - Android adoption typically lags by ~12-18 months for plurality.
+   * - iOS adoption typically reaches majority within ~3-6 months.
+   */
+  static getDynamicMobileUA() {
+    const now = /* @__PURE__ */ new Date();
+    const year = now.getFullYear();
+    const isLateInYear = now.getMonth() >= 9;
+    const androidVersion = isLateInYear ? year - 2010 : year - 2011;
+    const pixelModel = isLateInYear ? year - 2016 : year - 2017;
+    const ua = `Mozilla/5.0 (Linux; Android ${androidVersion}; Pixel ${pixelModel}) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36`;
+    const metadata = {
+      platform: "Android",
+      platformVersion: androidVersion.toString(),
+      architecture: "",
+      model: `Pixel ${pixelModel}`,
+      mobile: true
+    };
+    return { userAgent: ua, metadata };
+  }
+  static defaultMobileUserAgent() {
+    return SDK2.NetworkManager.MultitargetNetworkManager.patchUserAgentWithChromeVersion(_DeviceModeModel.getDynamicMobileUA().userAgent);
+  }
+  static defaultMobileUserAgentMetadata() {
+    return _DeviceModeModel.getDynamicMobileUA().metadata;
+  }
 };
 var Insets = class {
   left;
@@ -2523,15 +2554,6 @@ var MaxDeviceSize = 9999;
 var MinDeviceScaleFactor = 0;
 var MaxDeviceScaleFactor = 10;
 var MaxDeviceNameLength = 50;
-var mobileUserAgent = "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36";
-var defaultMobileUserAgent = SDK2.NetworkManager.MultitargetNetworkManager.patchUserAgentWithChromeVersion(mobileUserAgent);
-var defaultMobileUserAgentMetadata = {
-  platform: "Android",
-  platformVersion: "6.0",
-  architecture: "",
-  model: "Nexus 5",
-  mobile: true
-};
 var defaultMobileScaleFactor = 2;
 export {
   DeviceModeModel_exports as DeviceModeModel,

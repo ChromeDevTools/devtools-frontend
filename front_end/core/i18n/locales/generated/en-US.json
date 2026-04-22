@@ -11777,6 +11777,9 @@
   "panels/profiler/HeapProfileView.ts | recordMemoryAllocations": {
     "message": "Approximate memory allocations by sampling long operations with minimal overhead and get a breakdown by JavaScript execution stack"
   },
+  "panels/profiler/HeapProfileView.ts | samplingHeapProfilerTimeline": {
+    "message": "Sampling heap profiler timeline"
+  },
   "panels/profiler/HeapProfileView.ts | samplingProfiles": {
     "message": "Sampling profiles"
   },
@@ -18043,6 +18046,9 @@
   },
   "ui/legacy/components/utils/Linkifier.ts | unknown": {
     "message": "(unknown)"
+  },
+  "ui/legacy/Dialog.ts | close": {
+    "message": "Close"
   },
   "ui/legacy/DockController.ts | close": {
     "message": "Close"

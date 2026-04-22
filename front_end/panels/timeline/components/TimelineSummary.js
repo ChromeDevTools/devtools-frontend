@@ -22,12 +22,16 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/TimelineSummary.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export const CATEGORY_SUMMARY_DEFAULT_VIEW = (input, _output, target) => {
+    const summaryClasses = Lit.Directives.classMap({
+        'timeline-summary': true,
+        'is-in-ai-widget': Boolean(input.isInAIWidget),
+    });
     // clang-format off
     render(html `
         <style>${timelineSummaryStyles}</style>
         <style>@scope to (devtools-widget > *) { ${UI.inspectorCommonStyles} }</style>
         <style>@scope to (devtools-widget > *) { ${Buttons.textButtonStyles} }</style>
-        <div class="timeline-summary">
+        <div class=${summaryClasses}>
             <div class="summary-range">${i18nString(UIStrings.rangeSS, { PH1: i18n.TimeUtilities.millisToString(input.rangeStart), PH2: i18n.TimeUtilities.millisToString(input.rangeEnd) })}</div>
             <div class="category-summary">
                 ${input.categories.map(category => {
@@ -66,6 +70,7 @@ export class CategorySummary extends UI.Widget.Widget {
     #rangeEnd = 0;
     #total = 0;
     #categories = [];
+    #isInAIWidget = false;
     constructor(element, view) {
         super(element);
         this.#view = view ?? CATEGORY_SUMMARY_DEFAULT_VIEW;
@@ -76,6 +81,7 @@ export class CategorySummary extends UI.Widget.Widget {
         this.#rangeEnd = data.rangeEnd;
         this.#total = data.total;
         this.#categories = data.categories;
+        this.#isInAIWidget = Boolean(data.isInAIWidget);
         this.requestUpdate();
     }
     performUpdate() {
@@ -84,6 +90,7 @@ export class CategorySummary extends UI.Widget.Widget {
             rangeEnd: this.#rangeEnd,
             total: this.#total,
             categories: this.#categories,
+            isInAIWidget: this.#isInAIWidget,
         };
         this.#view(viewInput, undefined, this.contentElement);
     }

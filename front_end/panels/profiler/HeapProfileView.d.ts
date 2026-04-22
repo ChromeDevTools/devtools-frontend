@@ -37,6 +37,7 @@ declare const SamplingHeapProfileTypeBase_base: (new (...args: any[]) => {
     removeEventListener<T extends keyof SamplingHeapProfileType.EventTypes>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<SamplingHeapProfileType.EventTypes[T], any>) => void, thisObject?: Object): void;
     hasEventListeners(eventType: keyof SamplingHeapProfileType.EventTypes): boolean;
     dispatchEventToListeners<T extends keyof SamplingHeapProfileType.EventTypes>(eventType: Platform.TypeScriptUtilities.NoUnion<T>, ...eventData: Common.EventTarget.EventPayloadToRestParameters<SamplingHeapProfileType.EventTypes, T>): void;
+    dispatchDOMEvent?(event: Event): void;
 }) & typeof ProfileType;
 export declare class SamplingHeapProfileTypeBase extends SamplingHeapProfileTypeBase_base {
     recording: boolean;
@@ -55,13 +56,18 @@ export declare class SamplingHeapProfileTypeBase extends SamplingHeapProfileType
     stopSampling(): Promise<Protocol.HeapProfiler.SamplingHeapProfile>;
 }
 export declare class SamplingHeapProfileType extends SamplingHeapProfileTypeBase {
+    #private;
     updateTimer: number;
     updateIntervalMs: number;
+    customContentInternal: UI.UIUtils.CheckboxLabel | null;
     constructor();
+    get recordTimelineSetting(): Common.Settings.Setting<boolean>;
     static get instance(): SamplingHeapProfileType;
     get treeItemTitle(): Common.UIString.LocalizedString;
     get description(): string;
     hasTemporaryView(): boolean;
+    customContent(): Element | null;
+    setCustomContentEnabled(enable: boolean): void;
     startSampling(): void;
     obtainRecordingProfile(): SDK.HeapProfilerModel.HeapProfilerModel | null;
     stopSampling(): Promise<Protocol.HeapProfiler.SamplingHeapProfile>;

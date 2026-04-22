@@ -7,6 +7,7 @@ export interface ViewInput {
     markdownRenderer: MarkdownLitRenderer;
     isInlined: boolean;
     isExpanded: boolean;
+    prompt: string;
     onToggle: (isOpen: boolean, message: ModelChatMessage) => void;
     onOpen: (message: ModelChatMessage) => void;
     handleScroll: (ev: Event) => void;
@@ -43,5 +44,7 @@ export declare class WalkthroughView extends UI.Widget.Widget {
     set onToggle(onToggle: (isOpen: boolean, message: ModelChatMessage) => void);
     set isInlined(isInlined: boolean);
     set isExpanded(isExpanded: boolean);
+    get prompt(): string;
+    set prompt(prompt: string);
     performUpdate(): void;
 }

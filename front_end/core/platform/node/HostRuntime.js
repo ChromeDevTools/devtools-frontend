@@ -3,8 +3,8 @@
 // found in the LICENSE file.
 import * as WorkerThreads from 'node:worker_threads';
 class NodeWorkerScope {
-    postMessage(message) {
-        WorkerThreads.parentPort?.postMessage(message);
+    postMessage(message, transfer) {
+        WorkerThreads.parentPort?.postMessage(message, transfer);
     }
     set onmessage(listener) {
         WorkerThreads.parentPort?.addEventListener('message', msg => {

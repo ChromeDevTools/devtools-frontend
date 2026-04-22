@@ -14,7 +14,7 @@ export class TraceObject {
         }
         else {
             this.traceEvents = payload.traceEvents;
-            this.metadata = payload.metadata;
+            this.metadata = payload.metadata ?? {};
         }
     }
 }

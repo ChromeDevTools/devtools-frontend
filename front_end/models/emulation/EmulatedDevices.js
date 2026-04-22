@@ -649,7 +649,7 @@ const emulatedDevices = [
         },
         'capabilities': ['touch', 'mobile'],
         'user-agent': 'Mozilla/5.0 (Linux; Android 13; Pixel 7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36',
-        'user-agent-metadata': { 'platform': 'Android', 'platformVersion': '13', 'architecture': '', 'model': 'Pixel 5', 'mobile': true },
+        'user-agent-metadata': { 'platform': 'Android', 'platformVersion': '13', 'architecture': '', 'model': 'Pixel 7', 'mobile': true },
         'type': 'phone',
     },
     {

@@ -8,18 +8,28 @@ var __export = (target, all) => {
 var DetailedErrorStackParser_exports = {};
 __export(DetailedErrorStackParser_exports, {
   augmentRawFramesWithScriptIds: () => augmentRawFramesWithScriptIds,
+  parseMessage: () => parseMessage,
   parseRawFramesFromErrorStack: () => parseRawFramesFromErrorStack
 });
 import * as Common from "./../../core/common/common.js";
+var CALL_FRAME_REGEX = /^\s*at\s+/;
 function parseRawFramesFromErrorStack(stack) {
   const lines = stack.split("\n");
+  const firstAtLineIndex = findFramesStartLine(lines);
   const rawFrames = [];
-  for (const line of lines) {
-    const match = /^\s*at\s+(.*)/.exec(line);
+  if (firstAtLineIndex === -1) {
+    return rawFrames;
+  }
+  for (let i = firstAtLineIndex; i < lines.length; ++i) {
+    const line = lines[i];
+    const match = CALL_FRAME_REGEX.exec(line);
     if (!match) {
-      continue;
+      if (line.trim() === "") {
+        continue;
+      }
+      return null;
     }
-    let lineContent = match[1];
+    let lineContent = line.substring(match[0].length);
     let isAsync = false;
     if (lineContent.startsWith("async ")) {
       isAsync = true;
@@ -65,9 +75,9 @@ function parseRawFramesFromErrorStack(stack) {
         if (innerOpenParen !== -1) {
           evalFunctionName = evalOriginStr.substring(0, innerOpenParen).trim();
           evalLocation = evalOriginStr.substring(innerOpenParen + 2, evalOriginStr.length - 1);
-          evalOrigin = parseRawFramesFromErrorStack(`    at ${evalFunctionName} (${evalLocation})`)[0];
+          evalOrigin = parseRawFramesFromErrorStack(`    at ${evalFunctionName} (${evalLocation})`)?.[0];
         } else {
-          evalOrigin = parseRawFramesFromErrorStack(`    at ${evalFunctionName}`)[0];
+          evalOrigin = parseRawFramesFromErrorStack(`    at ${evalFunctionName}`)?.[0];
         }
       }
       if (location.startsWith("index ")) {
@@ -130,6 +140,17 @@ function parseRawFramesFromErrorStack(stack) {
     });
   }
   return rawFrames;
+}
+function findFramesStartLine(lines) {
+  return lines.findIndex((line) => CALL_FRAME_REGEX.test(line));
+}
+function parseMessage(stack) {
+  const lines = stack.split("\n");
+  const firstAtLineIndex = findFramesStartLine(lines);
+  if (firstAtLineIndex !== -1) {
+    return lines.slice(0, firstAtLineIndex).join("\n");
+  }
+  return stack;
 }
 function augmentRawFramesWithScriptIds(rawFrames, protocolStackTrace) {
   for (const rawFrame of rawFrames) {
@@ -511,6 +532,9 @@ var StackTraceModel = class extends SDK.SDKModel.SDKModel {
   }
   async createFromErrorStackLikeString(stack, rawFramesToUIFrames, exceptionDetails) {
     const rawFrames = parseRawFramesFromErrorStack(stack);
+    if (!rawFrames) {
+      return null;
+    }
     if (exceptionDetails?.stackTrace) {
       augmentRawFramesWithScriptIds(rawFrames, exceptionDetails.stackTrace);
     }

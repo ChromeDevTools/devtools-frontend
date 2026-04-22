@@ -7,7 +7,6 @@ export var ExperimentName;
     ExperimentName["CAPTURE_NODE_CREATION_STACKS"] = "capture-node-creation-stacks";
     ExperimentName["LIVE_HEAP_PROFILE"] = "live-heap-profile";
     ExperimentName["PROTOCOL_MONITOR"] = "protocol-monitor";
-    ExperimentName["SAMPLING_HEAP_PROFILER_TIMELINE"] = "sampling-heap-profiler-timeline";
     ExperimentName["TIMELINE_INVALIDATION_TRACKING"] = "timeline-invalidation-tracking";
     ExperimentName["FONT_EDITOR"] = "font-editor";
     ExperimentName["INSTRUMENTATION_BREAKPOINTS"] = "instrumentation-breakpoints";

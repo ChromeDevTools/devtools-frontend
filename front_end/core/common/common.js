@@ -3549,6 +3549,9 @@ function eventMixin(base) {
     }
     dispatchEventToListeners(eventType, ...eventData) {
       this.__events.dispatchEventToListeners(eventType, ...eventData);
+      if (typeof this.dispatchDOMEvent === "function") {
+        this.dispatchDOMEvent(new CustomEvent(eventType, { detail: eventData[0] }));
+      }
     }
   };
 }

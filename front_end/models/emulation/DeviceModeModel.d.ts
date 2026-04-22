@@ -90,6 +90,21 @@ export declare class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<
     private showHingeIfApplicable;
     private getDisplayFeatureOrientation;
     private getDisplayFeature;
+    /**
+     * Heuristic to keep the default mobile User Agent fresh and aligned with the adoption bell curve.
+     * Android: We target N-1 versions (where N is the latest) to represent the plurality of global users.
+     * iOS: We follow the calendar year (starting from the 2025 shift to year-based versioning).
+     * Data sources:
+     * - StatCounter Global Stats: https://gs.statcounter.com/os-version-market-share/android
+     * - Android adoption typically lags by ~12-18 months for plurality.
+     * - iOS adoption typically reaches majority within ~3-6 months.
+     */
+    static getDynamicMobileUA(): {
+        userAgent: string;
+        metadata: Protocol.Emulation.UserAgentMetadata;
+    };
+    static defaultMobileUserAgent(): string;
+    static defaultMobileUserAgentMetadata(): Protocol.Emulation.UserAgentMetadata;
 }
 export declare class Insets {
     left: number;

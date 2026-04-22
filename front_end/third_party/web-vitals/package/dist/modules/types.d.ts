@@ -1,5 +1,4 @@
 export * from './types/base.js';
-export * from './types/polyfills.js';
 export * from './types/cls.js';
 export * from './types/fcp.js';
 export * from './types/inp.js';
@@ -26,7 +25,7 @@ declare global {
     }
     interface PerformanceEventTiming extends PerformanceEntry {
         duration: DOMHighResTimeStamp;
-        interactionId: number;
+        readonly interactionId: number;
     }
     interface LayoutShiftAttribution {
         node: Node | null;

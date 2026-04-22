@@ -20,6 +20,8 @@ export interface SerializedImage {
     mimeType: string;
     data: string;
 }
+export declare const MAX_RECENT_PROMPTS_COUNT = 20;
+export declare const RECENT_PROMPTS_SIZE_LIMIT: number;
 export declare const enum Events {
     HISTORY_DELETED = "AiHistoryDeleted"
 }
@@ -30,6 +32,8 @@ export declare class AiHistoryStorage extends Common.ObjectWrapper.ObjectWrapper
     #private;
     constructor(maxStorageSize?: number);
     clearForTest(): void;
+    addRecentPrompt(prompt: string): Promise<void>;
+    getRecentPrompts(): string[];
     upsertHistoryEntry(agentEntry: SerializedConversation): Promise<void>;
     upsertImage(image: SerializedImage): Promise<void>;
     deleteHistoryEntry(id: string): Promise<void>;

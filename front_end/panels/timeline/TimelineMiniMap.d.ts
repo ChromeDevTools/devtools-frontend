@@ -19,6 +19,7 @@ declare const TimelineMiniMap_base: (new (...args: any[]) => {
     removeEventListener<T extends keyof PerfUI.TimelineOverviewPane.EventTypes>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<PerfUI.TimelineOverviewPane.EventTypes[T], any>) => void, thisObject?: Object): void;
     hasEventListeners(eventType: keyof PerfUI.TimelineOverviewPane.EventTypes): boolean;
     dispatchEventToListeners<T extends keyof PerfUI.TimelineOverviewPane.EventTypes>(eventType: import("../../core/platform/TypescriptUtilities.js").NoUnion<T>, ...eventData: Common.EventTarget.EventPayloadToRestParameters<PerfUI.TimelineOverviewPane.EventTypes, T>): void;
+    dispatchDOMEvent?(event: Event): void;
 }) & typeof UI.Widget.VBox;
 /**
  * This component wraps the generic PerfUI Overview component and configures it

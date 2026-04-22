@@ -24,6 +24,7 @@ declare const DetachedElementsProfileType_base: (new (...args: any[]) => {
     removeEventListener<T extends keyof DetachedElementsProfileType.EventTypes>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<DetachedElementsProfileType.EventTypes[T], any>) => void, thisObject?: Object): void;
     hasEventListeners(eventType: keyof DetachedElementsProfileType.EventTypes): boolean;
     dispatchEventToListeners<T extends keyof DetachedElementsProfileType.EventTypes>(eventType: import("../../core/platform/TypescriptUtilities.js").NoUnion<T>, ...eventData: Common.EventTarget.EventPayloadToRestParameters<DetachedElementsProfileType.EventTypes, T>): void;
+    dispatchDOMEvent?(event: Event): void;
 }) & typeof ProfileType;
 export declare class DetachedElementsProfileType extends DetachedElementsProfileType_base {
     constructor(typeId?: string, description?: string);

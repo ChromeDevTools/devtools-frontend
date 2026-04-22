@@ -543,6 +543,8 @@ __export(Dialog_exports, {
   Dialog: () => Dialog
 });
 import * as Common16 from "./../../core/common/common.js";
+import * as i18n25 from "./../../core/i18n/i18n.js";
+import * as Buttons7 from "./../components/buttons/buttons.js";
 import * as VisualLogging16 from "./../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/dialog.css.js
@@ -2903,14 +2905,14 @@ function runNextUpdate() {
         const controller = new AbortController();
         widget2.addUpdateController(controller);
         await widget2.performUpdate(controller.signal);
-      } catch (e) {
-        if (e.name !== "AbortError") {
-          throw e;
-        }
       } finally {
         resolve();
       }
-    })();
+    })().catch((e) => {
+      if (e.name !== "AbortError") {
+        console.error(`${widget2.constructor.name}.performUpdate failed: `, e);
+      }
+    });
   }
   currentUpdateQueue.clear();
   queueMicrotask(() => {
@@ -3239,6 +3241,9 @@ var Widget = class _Widget {
   }
   set contentElement(contentElement) {
     this.#contentElement = contentElement;
+  }
+  dispatchDOMEvent(event) {
+    this.element.dispatchEvent(event);
   }
   markAsRoot() {
     assert(!this.element.parentElement, "Attempt to mark as root attached node");
@@ -13399,12 +13404,6 @@ select {
   font-size: inherit;
 }
 
-select option,
-select optgroup,
-input {
-  background-color: var(--sys-color-cdt-base-container);
-}
-
 input {
   color: inherit;
 
@@ -16691,6 +16690,14 @@ var panes = /* @__PURE__ */ new Set();
 var GlassPanePanes = panes;
 
 // gen/front_end/ui/legacy/Dialog.js
+var UIStrings13 = {
+  /**
+   * @description Text to close the dialog
+   */
+  close: "Close"
+};
+var str_13 = i18n25.i18n.registerUIStrings("ui/legacy/Dialog.ts", UIStrings13);
+var i18nString13 = i18n25.i18n.getLocalizedString.bind(void 0, str_13);
 var Dialog = class _Dialog extends Common16.ObjectWrapper.eventMixin(GlassPane) {
   tabIndexBehavior = "DisableAllTabIndex";
   tabIndexMap = /* @__PURE__ */ new Map();
@@ -16780,8 +16787,16 @@ var Dialog = class _Dialog extends Common16.ObjectWrapper.eventMixin(GlassPane) 
     this.escapeKeyCallback = callback;
   }
   addCloseButton() {
-    const closeButton = this.contentElement.createChild("dt-close-button", "dialog-close-button");
-    closeButton.addEventListener("click", this.hide.bind(this), false);
+    const button = new Buttons7.Button.Button();
+    button.data = {
+      variant: "icon",
+      iconName: "cross",
+      accessibleLabel: i18nString13(UIStrings13.close),
+      jslogContext: "dialog-close"
+    };
+    button.classList.add("dialog-close-button");
+    button.addEventListener("click", this.hide.bind(this));
+    this.contentElement.appendChild(button);
   }
   setOutsideTabIndexBehavior(tabIndexBehavior) {
     this.tabIndexBehavior = tabIndexBehavior;
@@ -17334,7 +17349,7 @@ __export(EmptyWidget_exports, {
   EmptyWidget: () => EmptyWidget
 });
 import "./../kit/kit.js";
-import * as i18n25 from "./../../core/i18n/i18n.js";
+import * as i18n27 from "./../../core/i18n/i18n.js";
 import { Directives as Directives3, html as html3, render as render4 } from "./../lit/lit.js";
 import * as VisualLogging17 from "./../visual_logging/visual_logging.js";
 
@@ -17352,14 +17367,14 @@ var emptyWidget_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./emptyWidget.css")} */`;
 
 // gen/front_end/ui/legacy/EmptyWidget.js
-var UIStrings13 = {
+var UIStrings14 = {
   /**
    * @description Text that is usually a hyperlink to more documentation
    */
   learnMore: "Learn more"
 };
-var str_13 = i18n25.i18n.registerUIStrings("ui/legacy/EmptyWidget.ts", UIStrings13);
-var i18nString13 = i18n25.i18n.getLocalizedString.bind(void 0, str_13);
+var str_14 = i18n27.i18n.registerUIStrings("ui/legacy/EmptyWidget.ts", UIStrings14);
+var i18nString14 = i18n27.i18n.getLocalizedString.bind(void 0, str_14);
 var { ref } = Directives3;
 var DEFAULT_VIEW = (input, output, target) => {
   render4(html3`
@@ -17372,7 +17387,7 @@ var DEFAULT_VIEW = (input, output, target) => {
       <div class="empty-state-header">${input.header}</div>
       <div class="empty-state-description">
         <span>${input.text}</span>
-        ${input.link ? html3`<devtools-link href=${input.link} jslogContext=${"learn-more"}>${i18nString13(UIStrings13.learnMore)}</devtools-link>` : ""}
+        ${input.link ? html3`<devtools-link href=${input.link} jslogContext=${"learn-more"}>${i18nString14(UIStrings14.learnMore)}</devtools-link>` : ""}
       </div>
       ${input.extraElements}
     </div>`, target, { container: { classes: ["empty-view-scroller"] } });
@@ -17438,7 +17453,7 @@ __export(FilterBar_exports, {
 });
 import * as Common17 from "./../../core/common/common.js";
 import * as Host8 from "./../../core/host/host.js";
-import * as i18n27 from "./../../core/i18n/i18n.js";
+import * as i18n29 from "./../../core/i18n/i18n.js";
 import * as Platform18 from "./../../core/platform/platform.js";
 import * as VisualLogging18 from "./../visual_logging/visual_logging.js";
 
@@ -17627,7 +17642,7 @@ var filter_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./filter.css")} */`;
 
 // gen/front_end/ui/legacy/FilterBar.js
-var UIStrings14 = {
+var UIStrings15 = {
   /**
    * @description Text to filter result items
    */
@@ -17646,8 +17661,8 @@ var UIStrings14 = {
    */
   allStrings: "All"
 };
-var str_14 = i18n27.i18n.registerUIStrings("ui/legacy/FilterBar.ts", UIStrings14);
-var i18nString14 = i18n27.i18n.getLocalizedString.bind(void 0, str_14);
+var str_15 = i18n29.i18n.registerUIStrings("ui/legacy/FilterBar.ts", UIStrings15);
+var i18nString15 = i18n29.i18n.getLocalizedString.bind(void 0, str_15);
 var FilterBar = class extends Common17.ObjectWrapper.eventMixin(HBox) {
   enabled;
   stateSetting;
@@ -17662,7 +17677,7 @@ var FilterBar = class extends Common17.ObjectWrapper.eventMixin(HBox) {
     this.element.classList.add("filter-bar");
     this.element.setAttribute("jslog", `${VisualLogging18.toolbar("filter-bar")}`);
     this.stateSetting = Common17.Settings.Settings.instance().createSetting("filter-bar-" + name + "-toggled", Boolean(visibleByDefault));
-    this.#filterButton = new ToolbarSettingToggle(this.stateSetting, "filter", i18nString14(UIStrings14.filter), "filter-filled", "filter");
+    this.#filterButton = new ToolbarSettingToggle(this.stateSetting, "filter", i18nString15(UIStrings15.filter), "filter-filled", "filter");
     this.#filterButton.element.style.setProperty("--dot-toggle-top", "13px");
     this.#filterButton.element.style.setProperty("--dot-toggle-left", "14px");
     this.filters = [];
@@ -17754,7 +17769,7 @@ var TextFilterUI = class extends Common17.ObjectWrapper.ObjectWrapper {
     this.filterElement.classList.add("text-filter");
     const filterToolbar = this.filterElement.createChild("devtools-toolbar");
     filterToolbar.style.borderBottom = "none";
-    this.#filter = new ToolbarFilter(void 0, 1, 1, i18nString14(UIStrings14.egSmalldUrlacomb), this.completions.bind(this));
+    this.#filter = new ToolbarFilter(void 0, 1, 1, i18nString15(UIStrings15.egSmalldUrlacomb), this.completions.bind(this));
     filterToolbar.appendToolbarItem(this.#filter);
     this.#filter.addEventListener("TextChanged", () => this.valueChanged());
     this.suggestionProvider = null;
@@ -17840,10 +17855,10 @@ var NamedBitSetFilterUI = class _NamedBitSetFilterUI extends Common17.ObjectWrap
     this.filtersElement.setAttribute("jslog", `${VisualLogging18.section("filter-bitset")}`);
     markAsListBox(this.filtersElement);
     markAsMultiSelectable(this.filtersElement);
-    Tooltip.install(this.filtersElement, i18nString14(UIStrings14.sclickToSelectMultipleTypes, {
+    Tooltip.install(this.filtersElement, i18nString15(UIStrings15.sclickToSelectMultipleTypes, {
       PH1: KeyboardShortcut.shortcutToString("", Modifiers.CtrlOrMeta.value)
     }));
-    this.addBit(_NamedBitSetFilterUI.ALL_TYPES, i18nString14(UIStrings14.allStrings), _NamedBitSetFilterUI.ALL_TYPES);
+    this.addBit(_NamedBitSetFilterUI.ALL_TYPES, i18nString15(UIStrings15.allStrings), _NamedBitSetFilterUI.ALL_TYPES);
     this.typeFilterElements[0].tabIndex = 0;
     this.filtersElement.createChild("div", "filter-bitset-filter-divider");
     for (let i = 0; i < items.length; ++i) {
@@ -18339,9 +18354,9 @@ __export(ListWidget_exports, {
   Editor: () => Editor,
   ListWidget: () => ListWidget
 });
-import * as i18n29 from "./../../core/i18n/i18n.js";
+import * as i18n31 from "./../../core/i18n/i18n.js";
 import * as Platform21 from "./../../core/platform/platform.js";
-import * as Buttons7 from "./../components/buttons/buttons.js";
+import * as Buttons8 from "./../components/buttons/buttons.js";
 import { html as html4, render as render5 } from "./../lit/lit.js";
 import * as VisualLogging19 from "./../visual_logging/visual_logging.js";
 
@@ -18514,7 +18529,7 @@ var listWidget_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./listWidget.css")} */`;
 
 // gen/front_end/ui/legacy/ListWidget.js
-var UIStrings15 = {
+var UIStrings16 = {
   /**
    * @description Text on a button to start editing text
    */
@@ -18544,8 +18559,8 @@ var UIStrings15 = {
    */
   removedItem: "Item has been removed"
 };
-var str_15 = i18n29.i18n.registerUIStrings("ui/legacy/ListWidget.ts", UIStrings15);
-var i18nString15 = i18n29.i18n.getLocalizedString.bind(void 0, str_15);
+var str_16 = i18n31.i18n.registerUIStrings("ui/legacy/ListWidget.ts", UIStrings16);
+var i18nString16 = i18n31.i18n.getLocalizedString.bind(void 0, str_16);
 var ListWidget = class extends VBox {
   delegate;
   list;
@@ -18685,13 +18700,13 @@ var ListWidget = class extends VBox {
           <devtools-button class=toolbar-button
                            .iconName=${"edit"}
                            .jslogContext=${"edit-item"}
-                           .title=${controlLabels?.edit ?? i18nString15(UIStrings15.editString)}
+                           .title=${controlLabels?.edit ?? i18nString16(UIStrings16.editString)}
                            .variant=${"icon"}
                            @click=${onEditClicked}></devtools-button>
           <devtools-button class=toolbar-button
                            .iconName=${"bin"}
                            .jslogContext=${"remove-item"}
-                           .title=${controlLabels?.delete ?? i18nString15(UIStrings15.removeString)}
+                           .title=${controlLabels?.delete ?? i18nString16(UIStrings16.removeString)}
                            .variant=${"icon"}
                            @click=${onRemoveClicked}></devtools-button>
         </devtools-toolbar>
@@ -18706,7 +18721,7 @@ var ListWidget = class extends VBox {
       const index = this.elements.indexOf(element);
       this.element.focus();
       this.delegate.removeItemRequested(this.#items[index], index);
-      LiveAnnouncer.alert(i18nString15(UIStrings15.removedItem));
+      LiveAnnouncer.alert(i18nString16(UIStrings16.removedItem));
       if (this.elements.length >= 1) {
         this.elements[Math.min(index, this.elements.length - 1)].focus();
       }
@@ -18743,7 +18758,7 @@ var ListWidget = class extends VBox {
     this.editor = this.delegate.beginEdit(item8);
     this.updatePlaceholder();
     this.list.insertBefore(this.editor.element, insertionPoint);
-    this.editor.beginEdit(item8, index, element ? i18nString15(UIStrings15.saveString) : i18nString15(UIStrings15.addString), this.commitEditing.bind(this), this.stopEditing.bind(this));
+    this.editor.beginEdit(item8, index, element ? i18nString16(UIStrings16.saveString) : i18nString16(UIStrings16.addString), this.commitEditing.bind(this), this.stopEditing.bind(this));
   }
   commitEditing() {
     const editItem = this.editItem;
@@ -18753,7 +18768,7 @@ var ListWidget = class extends VBox {
     this.stopEditing();
     if (editItem !== null) {
       this.delegate.commitEdit(editItem, editor, isNew);
-      LiveAnnouncer.alert(i18nString15(UIStrings15.changesSaved));
+      LiveAnnouncer.alert(i18nString16(UIStrings16.changesSaved));
       if (this.elements[focusElementIndex]) {
         this.elements[focusElementIndex].focus();
       }
@@ -18806,7 +18821,7 @@ var Editor = class {
       return true;
     }, this.commitClicked.bind(this)), false);
     const buttonsRow = this.element.createChild("div", "editor-buttons");
-    this.cancelButton = createTextButton(i18nString15(UIStrings15.cancelString), this.cancelClicked.bind(this), {
+    this.cancelButton = createTextButton(i18nString16(UIStrings16.cancelString), this.cancelClicked.bind(this), {
       jslogContext: "cancel",
       variant: "outlined"
     });
@@ -19377,8 +19392,8 @@ __export(RemoteDebuggingTerminatedScreen_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW2,
   RemoteDebuggingTerminatedScreen: () => RemoteDebuggingTerminatedScreen
 });
-import * as i18n31 from "./../../core/i18n/i18n.js";
-import * as Buttons8 from "./../components/buttons/buttons.js";
+import * as i18n33 from "./../../core/i18n/i18n.js";
+import * as Buttons9 from "./../components/buttons/buttons.js";
 import { html as html5, render as render6 } from "./../lit/lit.js";
 
 // gen/front_end/ui/legacy/remoteDebuggingTerminatedScreen.css.js
@@ -19414,7 +19429,7 @@ var remoteDebuggingTerminatedScreen_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./remoteDebuggingTerminatedScreen.css")} */`;
 
 // gen/front_end/ui/legacy/RemoteDebuggingTerminatedScreen.js
-var UIStrings16 = {
+var UIStrings17 = {
   /**
    * @description Text in a dialog box in DevTools stating that remote debugging has been terminated.
    * "Remote debugging" here means that DevTools on a PC is inspecting a website running on an actual mobile device
@@ -19441,20 +19456,20 @@ var UIStrings16 = {
    */
   reconnectDevtools: "Reconnect `DevTools`"
 };
-var str_16 = i18n31.i18n.registerUIStrings("ui/legacy/RemoteDebuggingTerminatedScreen.ts", UIStrings16);
-var i18nString16 = i18n31.i18n.getLocalizedString.bind(void 0, str_16);
+var str_17 = i18n33.i18n.registerUIStrings("ui/legacy/RemoteDebuggingTerminatedScreen.ts", UIStrings17);
+var i18nString17 = i18n33.i18n.getLocalizedString.bind(void 0, str_17);
 var DEFAULT_VIEW2 = (input, _output, target) => {
   render6(html5`
     <style>${remoteDebuggingTerminatedScreen_css_default}</style>
-    <div class="header">${i18nString16(UIStrings16.debuggingConnectionWasClosed)}</div>
+    <div class="header">${i18nString17(UIStrings17.debuggingConnectionWasClosed)}</div>
     <div class="content">
-      <div class="reason">${i18nString16(UIStrings16.connectionClosedReason, { PH1: input.reason })}</div>
-      <div class="message">${i18nString16(UIStrings16.reconnectWhenReadyByReopening)}</div>
+      <div class="reason">${i18nString17(UIStrings17.connectionClosedReason, { PH1: input.reason })}</div>
+      <div class="message">${i18nString17(UIStrings17.reconnectWhenReadyByReopening)}</div>
     </div>
     <div class="button-container">
       <div class="button">
         <devtools-button @click=${input.onReconnect} .jslogContext=${"reconnect"}
-            .variant=${"outlined"}>${i18nString16(UIStrings16.reconnectDevtools)}</devtools-button>
+            .variant=${"outlined"}>${i18nString17(UIStrings17.reconnectDevtools)}</devtools-button>
       </div>
     </div>`, target);
 };
@@ -19876,10 +19891,10 @@ __export(SearchableView_exports, {
   SearchableView: () => SearchableView
 });
 import * as Common18 from "./../../core/common/common.js";
-import * as i18n33 from "./../../core/i18n/i18n.js";
+import * as i18n35 from "./../../core/i18n/i18n.js";
 import * as Platform22 from "./../../core/platform/platform.js";
 import * as VisualLogging23 from "./../visual_logging/visual_logging.js";
-import * as Buttons9 from "./../components/buttons/buttons.js";
+import * as Buttons10 from "./../components/buttons/buttons.js";
 import { createIcon as createIcon7 } from "./../kit/kit.js";
 
 // gen/front_end/ui/legacy/searchableView.css.js
@@ -20049,7 +20064,7 @@ var searchableView_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./searchableView.css")} */`;
 
 // gen/front_end/ui/legacy/SearchableView.js
-var UIStrings17 = {
+var UIStrings18 = {
   /**
    * @description Text on a button to replace one instance with input text for the ctrl+F search bar
    */
@@ -20120,18 +20135,18 @@ var UIStrings17 = {
    */
   clearInput: "Clear"
 };
-var str_17 = i18n33.i18n.registerUIStrings("ui/legacy/SearchableView.ts", UIStrings17);
-var i18nString17 = i18n33.i18n.getLocalizedString.bind(void 0, str_17);
+var str_18 = i18n35.i18n.registerUIStrings("ui/legacy/SearchableView.ts", UIStrings18);
+var i18nString18 = i18n35.i18n.getLocalizedString.bind(void 0, str_18);
 function createClearButton(jslogContext) {
-  const button = new Buttons9.Button.Button();
+  const button = new Buttons10.Button.Button();
   button.data = {
     variant: "icon",
     size: "SMALL",
     jslogContext,
-    title: i18nString17(UIStrings17.clearInput),
+    title: i18nString18(UIStrings18.clearInput),
     iconName: "cross-circle-filled"
   };
-  button.ariaLabel = i18nString17(UIStrings17.clearInput);
+  button.ariaLabel = i18nString18(UIStrings18.clearInput);
   button.classList.add("clear-button");
   button.tabIndex = -1;
   return button;
@@ -20175,8 +20190,8 @@ var SearchableView = class extends VBox {
     this.footerElement = this.footerElementContainer.createChild("div", "toolbar-search");
     this.footerElement.setAttribute("jslog", `${VisualLogging23.toolbar("search").track({ resize: true })}`);
     const replaceToggleToolbar = this.footerElement.createChild("devtools-toolbar", "replace-toggle-toolbar");
-    this.replaceToggleButton = new ToolbarToggle(i18nString17(UIStrings17.enableFindAndReplace), "replace", void 0, "replace");
-    setLabel(this.replaceToggleButton.element, i18nString17(UIStrings17.enableFindAndReplace));
+    this.replaceToggleButton = new ToolbarToggle(i18nString18(UIStrings18.enableFindAndReplace), "replace", void 0, "replace");
+    setLabel(this.replaceToggleButton.element, i18nString18(UIStrings18.enableFindAndReplace));
     this.replaceToggleButton.addEventListener("Click", this.toggleReplace, this);
     replaceToggleToolbar.appendToolbarItem(this.replaceToggleButton);
     const searchInputElements = this.footerElement.createChild("div", "search-inputs");
@@ -20186,7 +20201,7 @@ var SearchableView = class extends VBox {
     this.searchInputElement = createHistoryInput("search", "search-replace search");
     this.searchInputElement.id = "search-input-field";
     this.searchInputElement.autocomplete = "off";
-    this.searchInputElement.placeholder = i18nString17(UIStrings17.findString);
+    this.searchInputElement.placeholder = i18nString18(UIStrings18.findString);
     this.searchInputElement.setAttribute("jslog", `${VisualLogging23.textField("search").track({ change: true, keydown: "ArrowUp|ArrowDown|Enter|Escape" })}`);
     this.searchInputElement.addEventListener("keydown", this.onSearchKeyDown.bind(this), true);
     this.searchInputElement.addEventListener("input", this.onInput.bind(this), false);
@@ -20194,7 +20209,7 @@ var SearchableView = class extends VBox {
     const replaceInputElements = searchInputElements.createChild("div", "replace-element input-line");
     this.replaceInputElement = replaceInputElements.createChild("input", "search-replace");
     this.replaceInputElement.addEventListener("keydown", this.onReplaceKeyDown.bind(this), true);
-    this.replaceInputElement.placeholder = i18nString17(UIStrings17.replace);
+    this.replaceInputElement.placeholder = i18nString18(UIStrings18.replace);
     this.replaceInputElement.setAttribute("jslog", `${VisualLogging23.textField("replace").track({ change: true, keydown: "Enter" })}`);
     const replaceInputClearButton = createClearButton("clear-replace-input");
     replaceInputClearButton.addEventListener("click", () => {
@@ -20216,7 +20231,7 @@ var SearchableView = class extends VBox {
     };
     if (this.searchProvider.supportsCaseSensitiveSearch()) {
       const iconName = "match-case";
-      this.caseSensitiveButton = new Buttons9.Button.Button();
+      this.caseSensitiveButton = new Buttons10.Button.Button();
       this.caseSensitiveButton.data = {
         variant: "icon_toggle",
         size: "SMALL",
@@ -20224,16 +20239,16 @@ var SearchableView = class extends VBox {
         toggledIconName: iconName,
         toggled: false,
         toggleType: "primary-toggle",
-        title: i18nString17(UIStrings17.matchCase),
+        title: i18nString18(UIStrings18.matchCase),
         jslogContext: iconName
       };
-      setLabel(this.caseSensitiveButton, i18nString17(UIStrings17.matchCase));
+      setLabel(this.caseSensitiveButton, i18nString18(UIStrings18.matchCase));
       this.caseSensitiveButton.addEventListener("click", saveSettingAndPerformSearch);
       searchConfigButtons.appendChild(this.caseSensitiveButton);
     }
     if (this.searchProvider.supportsWholeWordSearch()) {
       const iconName = "match-whole-word";
-      this.wholeWordButton = new Buttons9.Button.Button();
+      this.wholeWordButton = new Buttons10.Button.Button();
       this.wholeWordButton.data = {
         variant: "icon_toggle",
         size: "SMALL",
@@ -20241,16 +20256,16 @@ var SearchableView = class extends VBox {
         toggledIconName: iconName,
         toggled: false,
         toggleType: "primary-toggle",
-        title: i18nString17(UIStrings17.matchWholeWord),
+        title: i18nString18(UIStrings18.matchWholeWord),
         jslogContext: iconName
       };
-      setLabel(this.wholeWordButton, i18nString17(UIStrings17.matchWholeWord));
+      setLabel(this.wholeWordButton, i18nString18(UIStrings18.matchWholeWord));
       this.wholeWordButton.addEventListener("click", saveSettingAndPerformSearch);
       searchConfigButtons.appendChild(this.wholeWordButton);
     }
     if (this.searchProvider.supportsRegexSearch()) {
       const iconName = "regular-expression";
-      this.regexButton = new Buttons9.Button.Button();
+      this.regexButton = new Buttons10.Button.Button();
       this.regexButton.data = {
         variant: "icon_toggle",
         size: "SMALL",
@@ -20259,9 +20274,9 @@ var SearchableView = class extends VBox {
         toggleType: "primary-toggle",
         toggled: false,
         jslogContext: iconName,
-        title: i18nString17(UIStrings17.useRegularExpression)
+        title: i18nString18(UIStrings18.useRegularExpression)
       };
-      setLabel(this.regexButton, i18nString17(UIStrings17.useRegularExpression));
+      setLabel(this.regexButton, i18nString18(UIStrings18.useRegularExpression));
       this.regexButton.addEventListener("click", saveSettingAndPerformSearch);
       searchConfigButtons.appendChild(this.regexButton);
     }
@@ -20269,13 +20284,13 @@ var SearchableView = class extends VBox {
     const buttonsContainer = this.footerElement.createChild("div", "toolbar-search-buttons");
     const firstRowButtons = buttonsContainer.createChild("div", "first-row-buttons");
     const toolbar5 = firstRowButtons.createChild("devtools-toolbar", "toolbar-search-options");
-    this.searchNavigationPrevElement = new ToolbarButton(i18nString17(UIStrings17.searchPrevious), "chevron-up", void 0, "select-previous");
+    this.searchNavigationPrevElement = new ToolbarButton(i18nString18(UIStrings18.searchPrevious), "chevron-up", void 0, "select-previous");
     this.searchNavigationPrevElement.addEventListener("Click", () => this.onPrevButtonSearch());
     toolbar5.appendToolbarItem(this.searchNavigationPrevElement);
-    setLabel(this.searchNavigationPrevElement.element, i18nString17(UIStrings17.searchPrevious));
-    this.searchNavigationNextElement = new ToolbarButton(i18nString17(UIStrings17.searchNext), "chevron-down", void 0, "select-next");
+    setLabel(this.searchNavigationPrevElement.element, i18nString18(UIStrings18.searchPrevious));
+    this.searchNavigationNextElement = new ToolbarButton(i18nString18(UIStrings18.searchNext), "chevron-down", void 0, "select-next");
     this.searchNavigationNextElement.addEventListener("Click", () => this.onNextButtonSearch());
-    setLabel(this.searchNavigationNextElement.element, i18nString17(UIStrings17.searchNext));
+    setLabel(this.searchNavigationNextElement.element, i18nString18(UIStrings18.searchNext));
     toolbar5.appendToolbarItem(this.searchNavigationNextElement);
     const matchesText = new ToolbarText();
     this.matchesElement = matchesText.element;
@@ -20287,25 +20302,25 @@ var SearchableView = class extends VBox {
     this.matchesElementValue = this.matchesElement.createChild("span");
     setHidden(this.matchesElementValue, true);
     toolbar5.appendToolbarItem(matchesText);
-    const cancelButtonElement = new Buttons9.Button.Button();
+    const cancelButtonElement = new Buttons10.Button.Button();
     cancelButtonElement.data = {
       variant: "toolbar",
       size: "REGULAR",
       iconName: "cross",
-      title: i18nString17(UIStrings17.closeSearchBar),
+      title: i18nString18(UIStrings18.closeSearchBar),
       jslogContext: "close-search"
     };
     cancelButtonElement.classList.add("close-search-button");
     cancelButtonElement.addEventListener("click", () => this.closeSearch());
     firstRowButtons.appendChild(cancelButtonElement);
     const secondRowButtons = buttonsContainer.createChild("div", "second-row-buttons replace-element");
-    this.replaceButtonElement = createTextButton(i18nString17(UIStrings17.replace), this.replace.bind(this), {
+    this.replaceButtonElement = createTextButton(i18nString18(UIStrings18.replace), this.replace.bind(this), {
       className: "search-action-button",
       jslogContext: "replace"
     });
     this.replaceButtonElement.disabled = true;
     secondRowButtons.appendChild(this.replaceButtonElement);
-    this.replaceAllButtonElement = createTextButton(i18nString17(UIStrings17.replaceAll), this.replaceAll.bind(this), {
+    this.replaceAllButtonElement = createTextButton(i18nString18(UIStrings18.replaceAll), this.replaceAll.bind(this), {
       className: "search-action-button",
       jslogContext: "replace-all"
     });
@@ -20324,7 +20339,7 @@ var SearchableView = class extends VBox {
   }
   toggleReplace() {
     const replaceEnabled = this.replaceToggleButton.isToggled();
-    const label = replaceEnabled ? i18nString17(UIStrings17.disableFindAndReplace) : i18nString17(UIStrings17.enableFindAndReplace);
+    const label = replaceEnabled ? i18nString18(UIStrings18.disableFindAndReplace) : i18nString18(UIStrings18.enableFindAndReplace);
     setLabel(this.replaceToggleButton.element, label);
     this.replaceToggleButton.element.title = label;
     this.updateSecondRowVisibility();
@@ -20450,14 +20465,14 @@ var SearchableView = class extends VBox {
     if (!this.currentQuery) {
       this.matchesElementValue.textContent = "";
     } else if (matches === 0 || currentMatchIndex >= 0) {
-      this.matchesElementValue.textContent = i18nString17(UIStrings17.dOfD, { PH1: currentMatchIndex + 1, PH2: matches });
-      setLabel(this.matchesElement, i18nString17(UIStrings17.accessibledOfD, { PH1: currentMatchIndex + 1, PH2: matches }));
+      this.matchesElementValue.textContent = i18nString18(UIStrings18.dOfD, { PH1: currentMatchIndex + 1, PH2: matches });
+      setLabel(this.matchesElement, i18nString18(UIStrings18.accessibledOfD, { PH1: currentMatchIndex + 1, PH2: matches }));
     } else if (matches === 1) {
-      this.matchesElementValue.textContent = i18nString17(UIStrings17.matchString);
-      setLabel(this.matchesElement, i18nString17(UIStrings17.matchString));
+      this.matchesElementValue.textContent = i18nString18(UIStrings18.matchString);
+      setLabel(this.matchesElement, i18nString18(UIStrings18.matchString));
     } else {
-      this.matchesElementValue.textContent = i18nString17(UIStrings17.dMatches, { PH1: matches });
-      setLabel(this.matchesElement, i18nString17(UIStrings17.dMatches, { PH1: matches }));
+      this.matchesElementValue.textContent = i18nString18(UIStrings18.dMatches, { PH1: matches });
+      setLabel(this.matchesElement, i18nString18(UIStrings18.dMatches, { PH1: matches }));
     }
     this.updateSearchNavigationButtonState(matches > 0);
   }
@@ -20647,7 +20662,7 @@ var SoftDropDown_exports = {};
 __export(SoftDropDown_exports, {
   SoftDropDown: () => SoftDropDown
 });
-import * as i18n35 from "./../../core/i18n/i18n.js";
+import * as i18n37 from "./../../core/i18n/i18n.js";
 import * as Geometry6 from "./../../models/geometry/geometry.js";
 import { createIcon as createIcon8 } from "./../kit/kit.js";
 import * as VisualLogging24 from "./../visual_logging/visual_logging.js";
@@ -20753,14 +20768,14 @@ button.soft-dropdown:hover:not(:active) > .title {
 /*# sourceURL=${import.meta.resolve("./softDropDownButton.css")} */`;
 
 // gen/front_end/ui/legacy/SoftDropDown.js
-var UIStrings18 = {
+var UIStrings19 = {
   /**
    * @description Placeholder text in Soft Drop Down
    */
   noItemSelected: "(no item selected)"
 };
-var str_18 = i18n35.i18n.registerUIStrings("ui/legacy/SoftDropDown.ts", UIStrings18);
-var i18nString18 = i18n35.i18n.getLocalizedString.bind(void 0, str_18);
+var str_19 = i18n37.i18n.registerUIStrings("ui/legacy/SoftDropDown.ts", UIStrings19);
+var i18nString19 = i18n37.i18n.getLocalizedString.bind(void 0, str_19);
 var SoftDropDown = class {
   delegate;
   selectedItem;
@@ -20776,7 +20791,7 @@ var SoftDropDown = class {
     this.delegate = delegate;
     this.selectedItem = null;
     this.model = model;
-    this.placeholderText = i18nString18(UIStrings18.noItemSelected);
+    this.placeholderText = i18nString19(UIStrings19.noItemSelected);
     this.element = document.createElement("button");
     if (jslogContext) {
       this.element.setAttribute("jslog", `${VisualLogging24.dropDown().track({ click: true, keydown: "ArrowUp|ArrowDown|Enter" }).context(jslogContext)}`);
@@ -21027,7 +21042,7 @@ __export(TargetCrashedScreen_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW3,
   TargetCrashedScreen: () => TargetCrashedScreen
 });
-import * as i18n37 from "./../../core/i18n/i18n.js";
+import * as i18n39 from "./../../core/i18n/i18n.js";
 import { html as html6, render as render7 } from "./../lit/lit.js";
 
 // gen/front_end/ui/legacy/targetCrashedScreen.css.js
@@ -21051,7 +21066,7 @@ var targetCrashedScreen_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./targetCrashedScreen.css")} */`;
 
 // gen/front_end/ui/legacy/TargetCrashedScreen.js
-var UIStrings19 = {
+var UIStrings20 = {
   /**
    * @description Text in dialog box when the target page crashed
    */
@@ -21061,13 +21076,13 @@ var UIStrings19 = {
    */
   oncePageIsReloadedDevtoolsWill: "Once page is reloaded, DevTools will automatically reconnect."
 };
-var str_19 = i18n37.i18n.registerUIStrings("ui/legacy/TargetCrashedScreen.ts", UIStrings19);
-var i18nString19 = i18n37.i18n.getLocalizedString.bind(void 0, str_19);
+var str_20 = i18n39.i18n.registerUIStrings("ui/legacy/TargetCrashedScreen.ts", UIStrings20);
+var i18nString20 = i18n39.i18n.getLocalizedString.bind(void 0, str_20);
 var DEFAULT_VIEW3 = (input, _output, target) => {
   render7(html6`
     <style>${targetCrashedScreen_css_default}</style>
-    <div class="message">${i18nString19(UIStrings19.devtoolsWasDisconnectedFromThe)}</div>
-    <div class="message">${i18nString19(UIStrings19.oncePageIsReloadedDevtoolsWill)}</div>`, target);
+    <div class="message">${i18nString20(UIStrings20.devtoolsWasDisconnectedFromThe)}</div>
+    <div class="message">${i18nString20(UIStrings20.oncePageIsReloadedDevtoolsWill)}</div>`, target);
 };
 var TargetCrashedScreen = class extends VBox {
   hideCallback;

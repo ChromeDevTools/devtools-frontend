@@ -1,6 +1,6 @@
 declare global {
     interface Performance {
-        interactionCount: number;
+        readonly interactionCount: number;
     }
 }
 /**

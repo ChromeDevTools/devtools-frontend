@@ -27106,7 +27106,8 @@ var Resource = class {
     if (TextUtils21.ContentData.ContentData.isError(contentData)) {
       return;
     }
-    image.src = contentData.asDataUrl() ?? this.#url;
+    const imageSrc = contentData.asImagePreviewUrl();
+    image.src = imageSrc ?? "";
   }
   async innerRequestContent() {
     if (this.request) {
@@ -30020,16 +30021,8 @@ var NetworkRequest = class _NetworkRequest extends Common27.ObjectWrapper.Object
     if (TextUtils24.ContentData.ContentData.isError(contentData)) {
       return;
     }
-    let imageSrc = contentData.asDataUrl();
-    if (imageSrc === null && !this.#failed) {
-      const cacheControl = this.responseHeaderValue("cache-control") || "";
-      if (!cacheControl.includes("no-cache")) {
-        imageSrc = this.#url;
-      }
-    }
-    if (imageSrc !== null) {
-      image.src = imageSrc;
-    }
+    const imageSrc = contentData.asImagePreviewUrl();
+    image.src = imageSrc ?? "";
   }
   initiator() {
     return this.#initiator || null;
@@ -32383,7 +32376,7 @@ var TraceObject = class {
       this.metadata = meta ?? {};
     } else {
       this.traceEvents = payload.traceEvents;
-      this.metadata = payload.metadata;
+      this.metadata = payload.metadata ?? {};
     }
   }
 };

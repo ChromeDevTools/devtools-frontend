@@ -115,8 +115,8 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar {
     selectedProfileType;
     static registry = {
         heapSnapshotProfileType: new HeapSnapshotProfileType(),
-        samplingHeapProfileType: new SamplingHeapProfileType(),
         trackingHeapSnapshotProfileType: new TrackingHeapSnapshotProfileType(),
+        samplingHeapProfileType: new SamplingHeapProfileType(),
         detachedElementProfileType: new DetachedElementsProfileType(),
     };
     constructor(name, recordingActionId) {

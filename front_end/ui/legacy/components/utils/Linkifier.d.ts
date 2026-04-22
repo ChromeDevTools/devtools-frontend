@@ -149,6 +149,7 @@ export interface LinkifyOptions {
      */
     revealBreakpoint?: boolean;
     maxLength?: number;
+    ignoreListManager?: Workspace.IgnoreListManager.IgnoreListManager;
 }
 /**
  * The filter function for the openResourceHandlers. Returns true if the `url`

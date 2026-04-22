@@ -357,6 +357,10 @@ export default `/*
     &[open] {
       width: auto;
 
+      summary {
+        margin-bottom: var(--sys-size-2);
+      }
+
       .summary .title {
         white-space: normal;
         overflow: unset;
@@ -373,6 +377,11 @@ export default `/*
 
     summary {
       border-radius: 16px;
+
+      &:focus-visible {
+        outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
+        outline-offset: var(--sys-size-2);
+      }
     }
 
     .step-details {

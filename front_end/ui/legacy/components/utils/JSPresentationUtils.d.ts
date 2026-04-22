@@ -1,4 +1,5 @@
 import * as StackTrace from '../../../../models/stack_trace/stack_trace.js';
+import * as Workspace from '../../../../models/workspace/workspace.js';
 import * as UI from '../../legacy.js';
 export interface ViewInput {
     stackTrace?: StackTrace.StackTrace.StackTrace;
@@ -8,6 +9,7 @@ export interface ViewInput {
     expandable?: boolean;
     expanded?: boolean;
     showIgnoreListed?: boolean;
+    ignoreListManager?: Workspace.IgnoreListManager.IgnoreListManager;
     onExpand: () => void;
     onShowMore: () => void;
     onShowLess: () => void;
@@ -19,6 +21,7 @@ export interface Options {
     widthConstrained?: boolean;
     showColumnNumber?: boolean;
     expandable?: boolean;
+    ignoreListManager?: Workspace.IgnoreListManager.IgnoreListManager;
 }
 export declare class StackTracePreviewContent extends UI.Widget.Widget<ShadowRoot> {
     #private;

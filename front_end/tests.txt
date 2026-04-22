@@ -55,6 +55,8 @@ entrypoints/formatter_worker/JSONFormatter.test.js
 entrypoints/formatter_worker/JavaScriptFormatter.test.js
 entrypoints/formatter_worker/ScopeParser.test.js
 entrypoints/formatter_worker/Substitute.test.js
+entrypoints/heap_snapshot_worker/HeapSnapshot.test.js
+entrypoints/heap_snapshot_worker/heap_snapshot_worker.test.js
 foundation/Universe.test.js
 models/ai_assistance/data_formatters/LighthouseFormatter.test.js
 models/ai_assistance/data_formatters/NetworkRequestFormatter.test.js
@@ -142,8 +144,6 @@ core/sdk/SourceMapScopesInfo.test.js
 core/sdk/StorageBucketsModel.test.js
 core/sdk/StorageKeyManager.test.js
 core/sdk/TraceObject.test.js
-entrypoints/heap_snapshot_worker/HeapSnapshot.test.js
-entrypoints/heap_snapshot_worker/heap_snapshot_worker.test.js
 entrypoints/inspector_main/InspectorMain.test.js
 entrypoints/inspector_main/OutermostTargetSelector.test.js
 entrypoints/main/ExecutionContextSelector.test.js
@@ -333,6 +333,7 @@ panels/ai_assistance/components/ExploreWidget.test.js
 panels/ai_assistance/components/ExportForAgentsDialog.test.js
 panels/ai_assistance/components/MarkdownRendererWithCodeBlock.test.js
 panels/ai_assistance/components/OptInChangeDialog.test.js
+panels/ai_assistance/components/WalkthroughUtils.test.js
 panels/ai_assistance/components/WalkthroughView.test.js
 panels/animation/AnimationTimeline.test.js
 panels/application/AppManifestView.test.js

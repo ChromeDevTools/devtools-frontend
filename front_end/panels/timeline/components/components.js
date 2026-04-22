@@ -8455,6 +8455,10 @@ var timelineSummary_css_default = `/*
     /* The category summary can't be more narrow than this, so we'll force a horizontal scrollbar
     */
     min-width: 192px;
+
+    &.is-in-ai-widget {
+      padding: 0;
+    }
   }
 
   .summary-range {
@@ -8531,11 +8535,15 @@ var UIStrings21 = {
 var str_21 = i18n41.i18n.registerUIStrings("panels/timeline/components/TimelineSummary.ts", UIStrings21);
 var i18nString20 = i18n41.i18n.getLocalizedString.bind(void 0, str_21);
 var CATEGORY_SUMMARY_DEFAULT_VIEW = (input, _output, target) => {
+  const summaryClasses = Lit21.Directives.classMap({
+    "timeline-summary": true,
+    "is-in-ai-widget": Boolean(input.isInAIWidget)
+  });
   render20(html21`
         <style>${timelineSummary_css_default}</style>
         <style>@scope to (devtools-widget > *) { ${UI19.inspectorCommonStyles} }</style>
         <style>@scope to (devtools-widget > *) { ${Buttons10.textButtonStyles} }</style>
-        <div class="timeline-summary">
+        <div class=${summaryClasses}>
             <div class="summary-range">${i18nString20(UIStrings21.rangeSS, { PH1: i18n41.TimeUtilities.millisToString(input.rangeStart), PH2: i18n41.TimeUtilities.millisToString(input.rangeEnd) })}</div>
             <div class="category-summary">
                 ${input.categories.map((category) => {
@@ -8573,6 +8581,7 @@ var CategorySummary = class extends UI19.Widget.Widget {
   #rangeEnd = 0;
   #total = 0;
   #categories = [];
+  #isInAIWidget = false;
   constructor(element, view) {
     super(element);
     this.#view = view ?? CATEGORY_SUMMARY_DEFAULT_VIEW;
@@ -8583,6 +8592,7 @@ var CategorySummary = class extends UI19.Widget.Widget {
     this.#rangeEnd = data.rangeEnd;
     this.#total = data.total;
     this.#categories = data.categories;
+    this.#isInAIWidget = Boolean(data.isInAIWidget);
     this.requestUpdate();
   }
   performUpdate() {
@@ -8590,7 +8600,8 @@ var CategorySummary = class extends UI19.Widget.Widget {
       rangeStart: this.#rangeStart,
       rangeEnd: this.#rangeEnd,
       total: this.#total,
-      categories: this.#categories
+      categories: this.#categories,
+      isInAIWidget: this.#isInAIWidget
     };
     this.#view(viewInput, void 0, this.contentElement);
   }
@@ -8636,7 +8647,8 @@ var TIMELINE_RANGE_SUMMARY_VIEW_DEFAULT_VIEW = (input, _output, target) => {
       rangeStart: startOffset,
       rangeEnd: endOffset,
       categories,
-      total
+      total,
+      isInAIWidget: input.isInAIWidget
     }
   })}
       ></devtools-widget>

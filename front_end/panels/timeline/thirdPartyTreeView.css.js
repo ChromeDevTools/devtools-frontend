@@ -87,12 +87,19 @@ export default `/*
     max-width: min(100%, 550px);
     min-width: 350px; /* Lower than this, there's not enough room for the entity name */
     padding: 0 0 0 var(--sys-size-6);
+
+    &.is-in-ai-widget {
+      /* Displayed below the summary in AI Assistance, so no left
+       * padding required */
+      padding-left: 0;
+      padding-top: var(--sys-size-4);
+    }
   }
 
   .has-max-rows {
     /* 21px for header + max-rows * 22px rows */
     max-height: calc(21px + (var(--max-rows) * 22px));
-    padding: var(--sys-size-3);
+    padding: var(--sys-size-3) 0;
   }
 
   /* While timeline treeview name-container uses flexbox to layout, it's overkill for this table's purposes.

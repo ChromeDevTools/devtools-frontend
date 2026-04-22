@@ -7,6 +7,7 @@ declare const InspectedPagePlaceholder_base: (new (...args: any[]) => {
     removeEventListener<T extends Events.UPDATE>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<EventTypes[T], any>) => void, thisObject?: Object): void;
     hasEventListeners(eventType: Events.UPDATE): boolean;
     dispatchEventToListeners<T extends Events.UPDATE>(eventType: import("../../core/platform/TypescriptUtilities.js").NoUnion<T>, ...eventData: Common.EventTarget.EventPayloadToRestParameters<EventTypes, T>): void;
+    dispatchDOMEvent?(event: Event): void;
 }) & typeof UI.Widget.Widget;
 export declare class InspectedPagePlaceholder extends InspectedPagePlaceholder_base {
     private updateId?;

@@ -40,7 +40,6 @@
     "package/dist/modules/types/fcp.js",
     "package/dist/modules/types/inp.js",
     "package/dist/modules/types/lcp.js",
-    "package/dist/modules/types/polyfills.js",
     "package/dist/modules/types/ttfb.js"
   ]
 }

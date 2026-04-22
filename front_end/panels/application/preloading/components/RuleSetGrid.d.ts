@@ -30,6 +30,7 @@ declare const RuleSetGrid_base: (new (...args: any[]) => {
     removeEventListener<T extends Events.SELECT>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<EventTypes[T], any>) => void, thisObject?: Object): void;
     hasEventListeners(eventType: Events.SELECT): boolean;
     dispatchEventToListeners<T extends Events.SELECT>(eventType: Platform.TypeScriptUtilities.NoUnion<T>, ...eventData: Common.EventTarget.EventPayloadToRestParameters<EventTypes, T>): void;
+    dispatchDOMEvent?(event: Event): void;
 }) & typeof UI.Widget.VBox;
 /** Grid component to show SpeculationRules rule sets. **/
 export declare class RuleSetGrid extends RuleSetGrid_base {

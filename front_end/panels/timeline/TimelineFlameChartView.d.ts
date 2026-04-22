@@ -25,6 +25,7 @@ declare const TimelineFlameChartView_base: (new (...args: any[]) => {
     removeEventListener<T extends Events.ENTRY_LABEL_ANNOTATION_CLICKED>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<EventTypes[T], any>) => void, thisObject?: Object): void;
     hasEventListeners(eventType: Events.ENTRY_LABEL_ANNOTATION_CLICKED): boolean;
     dispatchEventToListeners<T extends Events.ENTRY_LABEL_ANNOTATION_CLICKED>(eventType: Platform.TypeScriptUtilities.NoUnion<T>, ...eventData: Common.EventTarget.EventPayloadToRestParameters<EventTypes, T>): void;
+    dispatchDOMEvent?(event: Event): void;
 }) & typeof UI.Widget.VBox;
 export declare class TimelineFlameChartView extends TimelineFlameChartView_base implements PerfUI.FlameChart.FlameChartDelegate, UI.SearchableView.Searchable {
     #private;

@@ -9,6 +9,7 @@ declare const ViewportDataGrid_base: (new (...args: any[]) => {
     removeEventListener<T_1 extends Events.VIEWPORT_CALCULATED>(eventType: T_1, listener: (arg0: Common.EventTarget.EventTargetEvent<EventTypes[T_1], any>) => void, thisObject?: Object): void;
     hasEventListeners(eventType: Events.VIEWPORT_CALCULATED): boolean;
     dispatchEventToListeners<T_1 extends Events.VIEWPORT_CALCULATED>(eventType: Platform.TypeScriptUtilities.NoUnion<T_1>, ...eventData: Common.EventTarget.EventPayloadToRestParameters<EventTypes, T_1>): void;
+    dispatchDOMEvent?(event: Event): void;
 }) & typeof DataGridImpl;
 export declare class ViewportDataGrid<T> extends ViewportDataGrid_base<ViewportDataGridNode<T>> {
     private readonly onScrollBound;

@@ -10,6 +10,7 @@ declare const ProfileLauncherView_base: (new (...args: any[]) => {
     removeEventListener<T extends Events.PROFILE_TYPE_SELECTED>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<EventTypes[T], any>) => void, thisObject?: Object): void;
     hasEventListeners(eventType: Events.PROFILE_TYPE_SELECTED): boolean;
     dispatchEventToListeners<T extends Events.PROFILE_TYPE_SELECTED>(eventType: import("../../core/platform/TypescriptUtilities.js").NoUnion<T>, ...eventData: Common.EventTarget.EventPayloadToRestParameters<EventTypes, T>): void;
+    dispatchDOMEvent?(event: Event): void;
 }) & typeof UI.Widget.VBox;
 export declare class ProfileLauncherView extends ProfileLauncherView_base {
     #private;

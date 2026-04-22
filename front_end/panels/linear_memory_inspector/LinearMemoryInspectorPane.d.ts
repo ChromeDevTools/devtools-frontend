@@ -10,6 +10,7 @@ declare const LinearMemoryInspectorPane_base: (new (...args: any[]) => {
     removeEventListener<T extends Events.VIEW_CLOSED>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<EventTypes[T], any>) => void, thisObject?: Object): void;
     hasEventListeners(eventType: Events.VIEW_CLOSED): boolean;
     dispatchEventToListeners<T extends Events.VIEW_CLOSED>(eventType: Platform.TypeScriptUtilities.NoUnion<T>, ...eventData: Common.EventTarget.EventPayloadToRestParameters<EventTypes, T>): void;
+    dispatchDOMEvent?(event: Event): void;
 }) & typeof UI.Widget.VBox;
 export declare class LinearMemoryInspectorPane extends LinearMemoryInspectorPane_base {
     #private;

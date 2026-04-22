@@ -146,12 +146,11 @@ export const DEFAULT_VIEW = (input, output, target) => {
     // clang-format off
     render(html `<style>${cookieItemsViewStyles}</style>
     <devtools-widget class="storage-view" ${widget(UI.Widget.VBox, { minimumSize: new Size(0, 50) })}>
-      <devtools-widget ${widget(StorageItemsToolbar, {
-        onDeleteSelectedCallback: input.onDeleteSelectedItems,
-        onDeleteAllCallback: input.onDeleteAllItems,
-        onRefreshCallback: input.onRefreshItems,
-    })}
+      <devtools-widget ${widget(StorageItemsToolbar, { filterRegex: null })}
         class=flex-none
+        @Refresh=${input.onRefreshItems}
+        @DeleteAll=${input.onDeleteAllItems}
+        @DeleteSelected=${input.onDeleteSelectedItems}
         ${UI.Widget.widgetRef(StorageItemsToolbar, toolbar => { output.toolbar = toolbar; })}
       ></devtools-widget>
       <devtools-split-view sidebar-position="second" name="cookie-items-split-view-state">

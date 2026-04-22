@@ -2,18 +2,30 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as Common from '../../core/common/common.js';
+const CALL_FRAME_REGEX = /^\s*at\s+/;
 /**
  * Takes a V8 Error#stack string and extracts structured information.
+ *
+ * @returns Null if the provided string has an unexpected format. A
+ *          populated `RawFrame[]` otherwise.
  */
 export function parseRawFramesFromErrorStack(stack) {
     const lines = stack.split('\n');
+    const firstAtLineIndex = findFramesStartLine(lines);
     const rawFrames = [];
-    for (const line of lines) {
-        const match = /^\s*at\s+(.*)/.exec(line);
+    if (firstAtLineIndex === -1) {
+        return rawFrames;
+    }
+    for (let i = firstAtLineIndex; i < lines.length; ++i) {
+        const line = lines[i];
+        const match = CALL_FRAME_REGEX.exec(line);
         if (!match) {
-            continue;
+            if (line.trim() === '') {
+                continue;
+            }
+            return null;
         }
-        let lineContent = match[1];
+        let lineContent = line.substring(match[0].length);
         let isAsync = false;
         if (lineContent.startsWith('async ')) {
             isAsync = true;
@@ -60,10 +72,10 @@ export function parseRawFramesFromErrorStack(stack) {
                 if (innerOpenParen !== -1) {
                     evalFunctionName = evalOriginStr.substring(0, innerOpenParen).trim();
                     evalLocation = evalOriginStr.substring(innerOpenParen + 2, evalOriginStr.length - 1);
-                    evalOrigin = parseRawFramesFromErrorStack(`    at ${evalFunctionName} (${evalLocation})`)[0];
+                    evalOrigin = parseRawFramesFromErrorStack(`    at ${evalFunctionName} (${evalLocation})`)?.[0];
                 }
                 else {
-                    evalOrigin = parseRawFramesFromErrorStack(`    at ${evalFunctionName}`)[0];
+                    evalOrigin = parseRawFramesFromErrorStack(`    at ${evalFunctionName}`)?.[0];
                 }
             }
             if (location.startsWith('index ')) {
@@ -131,6 +143,17 @@ export function parseRawFramesFromErrorStack(stack) {
         });
     }
     return rawFrames;
+}
+function findFramesStartLine(lines) {
+    return lines.findIndex(line => CALL_FRAME_REGEX.test(line));
+}
+export function parseMessage(stack) {
+    const lines = stack.split('\n');
+    const firstAtLineIndex = findFramesStartLine(lines);
+    if (firstAtLineIndex !== -1) {
+        return lines.slice(0, firstAtLineIndex).join('\n');
+    }
+    return stack;
 }
 /**
  * Error#stack output only contains script URLs. In some cases we are able to

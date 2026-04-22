@@ -70,7 +70,6 @@ const attributeTTFB = (metric) => {
  */
 export const onTTFB = (onReport, opts = {}) => {
     unattributedOnTTFB((metric) => {
-        const metricWithAttribution = attributeTTFB(metric);
-        onReport(metricWithAttribution);
+        onReport(attributeTTFB(metric));
     }, opts);
 };

@@ -1,9 +1,19 @@
 // Copyright 2023 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import { contentAsDataURL } from './ContentProvider.js';
 import { Text } from './Text.js';
+const objectUrlRegistry = new FinalizationRegistry(url => {
+    URL.revokeObjectURL(url);
+});
+/**
+ * The maximum size in bytes that we are willing to convert to a Blob.
+ * 10MB is chosen as a safe upper limit to prevent freezing the DevTools UI
+ * when synchronously decoding large Base64 strings.
+ */
+const MAX_BLOB_SIZE_BYTES = 10 * 1024 * 1024;
 /**
  * This class is a small wrapper around either raw binary or text data.
  * As the binary data can actually contain textual data, we also store the
@@ -26,6 +36,7 @@ export class ContentData {
     #contentAsBase64;
     #contentAsText;
     #contentAsTextObj;
+    #imagePreviewUrl;
     constructor(data, isBase64, mimeType, charset) {
         this.charset = charset || 'utf-8';
         if (isBase64) {
@@ -65,12 +76,7 @@ export class ContentData {
         if (!this.isTextContent) {
             throw new Error('Cannot interpret binary data as text');
         }
-        const binaryString = window.atob(this.#contentAsBase64);
-        const len = binaryString.length;
-        const bytes = new Uint8Array(len);
-        for (let i = 0; i < len; i++) {
-            bytes[i] = binaryString.charCodeAt(i);
-        }
+        const bytes = Common.Base64.decode(this.#contentAsBase64);
         this.#contentAsText = new TextDecoder(this.charset).decode(bytes);
         return this.#contentAsText;
     }
@@ -125,6 +131,59 @@ export class ContentData {
             return contentAsDataURL(this.#contentAsBase64, this.mimeType ?? '', true, charset);
         }
         return contentAsDataURL(this.text, this.mimeType ?? '', false, 'utf-8');
+    }
+    /**
+     * Returns the content as a Blob.
+     *
+     * We prefer Base64 as the source for the Blob because it represents the raw binary
+     * bytes. Converting binary data (like an image) to a UTF-16 string (contentAsText)
+     * is destructive and will corrupt the image data.
+     *
+     * @returns The Blob representation, or `null` if the content exceeds the 10MB safety limit.
+     */
+    asBlob() {
+        // We prefer Base64 as the source for the Blob because it represents the raw binary
+        // bytes. Converting binary data (like an image) to a UTF-16 string (contentAsText)
+        // is destructive and will corrupt the image data.
+        if (this.#contentAsBase64 !== undefined) {
+            // Base64 encoding uses 4 characters to represent 3 bytes of data.
+            // Therefore, the byte size is approximately 75% of the string length.
+            if (this.#contentAsBase64.length * 0.75 > MAX_BLOB_SIZE_BYTES) {
+                return null;
+            }
+            const bytes = Common.Base64.decode(this.#contentAsBase64);
+            return new Blob([bytes], { type: this.mimeType });
+        }
+        const text = this.#contentAsText ?? '';
+        if (text.length > MAX_BLOB_SIZE_BYTES) {
+            return null;
+        }
+        return new Blob([text], { type: this.mimeType });
+    }
+    /**
+     * Gets the image as either a data: or blob: URL.
+     *
+     * We prefer data: for simplicity, but these are limited in size to 1MB. If
+     * the resource is >1MB, we fall back to a blob: URL.
+     *
+     * @returns An object URL, or `null` if the content exceeds the 10MB safety limit.
+     */
+    asImagePreviewUrl() {
+        if (this.#imagePreviewUrl) {
+            return this.#imagePreviewUrl;
+        }
+        const url = this.asDataUrl();
+        if (url !== null) {
+            this.#imagePreviewUrl = url;
+            return this.#imagePreviewUrl;
+        }
+        const blob = this.asBlob();
+        if (blob === null) {
+            return null;
+        }
+        this.#imagePreviewUrl = URL.createObjectURL(blob);
+        objectUrlRegistry.register(this, this.#imagePreviewUrl);
+        return this.#imagePreviewUrl;
     }
     /**
      * @deprecated Used during migration from `DeferredContent` to `ContentData`.

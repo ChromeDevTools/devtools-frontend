@@ -13,6 +13,7 @@ declare const TimelineDetailsPane_base: (new (...args: any[]) => {
     removeEventListener<T extends keyof TimelineTreeView.EventTypes>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<TimelineTreeView.EventTypes[T], any>) => void, thisObject?: Object): void;
     hasEventListeners(eventType: keyof TimelineTreeView.EventTypes): boolean;
     dispatchEventToListeners<T extends keyof TimelineTreeView.EventTypes>(eventType: Platform.TypeScriptUtilities.NoUnion<T>, ...eventData: Common.EventTarget.EventPayloadToRestParameters<TimelineTreeView.EventTypes, T>): void;
+    dispatchDOMEvent?(event: Event): void;
 }) & typeof UI.Widget.VBox;
 export declare class TimelineDetailsPane extends TimelineDetailsPane_base {
     #private;

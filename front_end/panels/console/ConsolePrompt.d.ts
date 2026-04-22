@@ -8,6 +8,7 @@ declare const ConsolePrompt_base: (new (...args: any[]) => {
     removeEventListener<T extends Events.TEXT_CHANGED>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<EventTypes[T], any>) => void, thisObject?: Object): void;
     hasEventListeners(eventType: Events.TEXT_CHANGED): boolean;
     dispatchEventToListeners<T extends Events.TEXT_CHANGED>(eventType: import("../../core/platform/TypescriptUtilities.js").NoUnion<T>, ...eventData: Common.EventTarget.EventPayloadToRestParameters<EventTypes, T>): void;
+    dispatchDOMEvent?(event: Event): void;
 }) & typeof UI.Widget.Widget;
 export declare class ConsolePrompt extends ConsolePrompt_base {
     #private;

@@ -368,12 +368,11 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper {
         // In case a user wants to hide a specific issue, the issue code is added to "code" section
         // of our setting and its value is set to IssueStatus.Hidden. Then issue then gets hidden.
         if (values?.[code]) {
-            if (values[code] === "Hidden" /* IssueStatus.HIDDEN */) {
-                issue.setHidden(true);
-                return;
+            const isHidden = values[code] === "Hidden" /* IssueStatus.HIDDEN */;
+            if (issue.isHidden() !== isHidden) {
+                issue.setHidden(isHidden);
+                this.dispatchEventToListeners("IssueHiddenStatusUpdated" /* Events.ISSUE_HIDDEN_STATUS_UPDATED */, { issue });
             }
-            issue.setHidden(false);
-            return;
         }
     }
     #updateFilteredIssues() {
@@ -402,7 +401,10 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper {
     }
     unhideAllIssues() {
         for (const issue of this.#allIssues.values()) {
-            issue.setHidden(false);
+            if (issue.isHidden()) {
+                issue.setHidden(false);
+                this.dispatchEventToListeners("IssueHiddenStatusUpdated" /* Events.ISSUE_HIDDEN_STATUS_UPDATED */, { issue });
+            }
         }
         this.hideIssueSetting?.set(defaultHideIssueByCodeSetting());
     }

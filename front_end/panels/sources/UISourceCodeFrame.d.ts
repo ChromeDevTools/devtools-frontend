@@ -11,6 +11,7 @@ declare const UISourceCodeFrame_base: (new (...args: any[]) => {
     removeEventListener<T extends Events.TOOLBAR_ITEMS_CHANGED>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<EventTypes[T], any>) => void, thisObject?: Object): void;
     hasEventListeners(eventType: Events.TOOLBAR_ITEMS_CHANGED): boolean;
     dispatchEventToListeners<T extends Events.TOOLBAR_ITEMS_CHANGED>(eventType: import("../../core/platform/TypescriptUtilities.js").NoUnion<T>, ...eventData: Common.EventTarget.EventPayloadToRestParameters<EventTypes, T>): void;
+    dispatchDOMEvent?(event: Event): void;
 }) & typeof SourceFrame.SourceFrame.SourceFrameImpl;
 export declare class UISourceCodeFrame extends UISourceCodeFrame_base {
     #private;

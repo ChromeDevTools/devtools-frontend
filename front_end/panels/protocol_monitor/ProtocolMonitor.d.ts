@@ -55,6 +55,7 @@ export interface ViewInput {
     onCommandSubmitted: (input: string) => void;
     onTargetChange: (targetId: string) => void;
     onToggleSidebar: () => void;
+    onEditorSubmit: (command: string, parameters: Record<string, unknown>, targetId?: string) => void;
     targets: SDK.Target.Target[];
     selectedTargetId: string;
 }

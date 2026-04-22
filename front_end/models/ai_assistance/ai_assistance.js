@@ -9513,25 +9513,60 @@ import * as Greendev3 from "./../greendev/greendev.js";
 // gen/front_end/models/ai_assistance/AiHistoryStorage.js
 var AiHistoryStorage_exports = {};
 __export(AiHistoryStorage_exports, {
-  AiHistoryStorage: () => AiHistoryStorage
+  AiHistoryStorage: () => AiHistoryStorage,
+  MAX_RECENT_PROMPTS_COUNT: () => MAX_RECENT_PROMPTS_COUNT,
+  RECENT_PROMPTS_SIZE_LIMIT: () => RECENT_PROMPTS_SIZE_LIMIT
 });
 import * as Common6 from "./../../core/common/common.js";
 var instance = null;
 var DEFAULT_MAX_STORAGE_SIZE = 50 * 1024 * 1024;
+var MAX_RECENT_PROMPTS_COUNT = 20;
+var RECENT_PROMPTS_SIZE_LIMIT = 100 * 1024;
 var AiHistoryStorage = class _AiHistoryStorage extends Common6.ObjectWrapper.ObjectWrapper {
   #historySetting;
   #imageHistorySettings;
+  #recentPromptsSetting;
   #mutex = new Common6.Mutex.Mutex();
   #maxStorageSize;
   constructor(maxStorageSize = DEFAULT_MAX_STORAGE_SIZE) {
     super();
     this.#historySetting = Common6.Settings.Settings.instance().createSetting("ai-assistance-history-entries", []);
     this.#imageHistorySettings = Common6.Settings.Settings.instance().createSetting("ai-assistance-history-images", []);
+    this.#recentPromptsSetting = Common6.Settings.Settings.instance().createSetting("ai-assistance-recent-prompts", []);
     this.#maxStorageSize = maxStorageSize;
   }
   clearForTest() {
     this.#historySetting.set([]);
     this.#imageHistorySettings.set([]);
+    this.#recentPromptsSetting.set([]);
+  }
+  async addRecentPrompt(prompt) {
+    if (!prompt.trim()) {
+      return;
+    }
+    const release = await this.#mutex.acquire();
+    try {
+      const recentPrompts = await this.#recentPromptsSetting.forceGet();
+      const updatedPrompts = [prompt, ...recentPrompts.filter((p) => p !== prompt)];
+      const promptsToBeStored = [];
+      let currentStorageSize = 0;
+      for (const p of updatedPrompts) {
+        if (promptsToBeStored.length >= MAX_RECENT_PROMPTS_COUNT) {
+          break;
+        }
+        if (currentStorageSize + p.length > RECENT_PROMPTS_SIZE_LIMIT) {
+          break;
+        }
+        currentStorageSize += p.length;
+        promptsToBeStored.push(p);
+      }
+      this.#recentPromptsSetting.set(promptsToBeStored);
+    } finally {
+      release();
+    }
+  }
+  getRecentPrompts() {
+    return structuredClone(this.#recentPromptsSetting.get());
   }
   async upsertHistoryEntry(agentEntry) {
     const release = await this.#mutex.acquire();
@@ -9597,6 +9632,7 @@ var AiHistoryStorage = class _AiHistoryStorage extends Common6.ObjectWrapper.Obj
     try {
       this.#historySetting.set([]);
       this.#imageHistorySettings.set([]);
+      this.#recentPromptsSetting.set([]);
     } finally {
       release();
       this.dispatchEventToListeners(
@@ -9840,6 +9876,7 @@ ${item.text.trim()}`);
     this.history.push(item);
     await AiHistoryStorage.instance().upsertHistoryEntry(this.serialize());
     if (item.type === "user-query") {
+      void AiHistoryStorage.instance().addRecentPrompt(item.query);
       if (item.imageId && item.imageInput && "inlineData" in item.imageInput) {
         const inlineData = item.imageInput.inlineData;
         await AiHistoryStorage.instance().upsertImage({

@@ -10,6 +10,7 @@ declare const PaintProfilerView_base: (new (...args: any[]) => {
     removeEventListener<T extends Events.WINDOW_CHANGED>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<EventTypes[T], any>) => void, thisObject?: Object): void;
     hasEventListeners(eventType: Events.WINDOW_CHANGED): boolean;
     dispatchEventToListeners<T extends Events.WINDOW_CHANGED>(eventType: Platform.TypeScriptUtilities.NoUnion<T>, ...eventData: Common.EventTarget.EventPayloadToRestParameters<EventTypes, T>): void;
+    dispatchDOMEvent?(event: Event): void;
 }) & typeof UI.Widget.HBox;
 export declare class PaintProfilerView extends PaintProfilerView_base {
     #private;

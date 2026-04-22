@@ -3,6 +3,8 @@
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-imperative-dom-api */
 import * as Common from '../../core/common/common.js';
+import * as i18n from '../../core/i18n/i18n.js';
+import * as Buttons from '../components/buttons/buttons.js';
 import * as VisualLogging from '../visual_logging/visual_logging.js';
 import * as ARIAUtils from './ARIAUtils.js';
 import dialogStyles from './dialog.css.js';
@@ -10,6 +12,14 @@ import { GlassPane } from './GlassPane.js';
 import { InspectorView } from './InspectorView.js';
 import { KeyboardShortcut, Keys } from './KeyboardShortcut.js';
 import { WidgetFocusRestorer } from './Widget.js';
+const UIStrings = {
+    /**
+     * @description Text to close the dialog
+     */
+    close: 'Close',
+};
+const str_ = i18n.i18n.registerUIStrings('ui/legacy/Dialog.ts', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class Dialog extends Common.ObjectWrapper.eventMixin(GlassPane) {
     tabIndexBehavior = "DisableAllTabIndex" /* OutsideTabIndexBehavior.DISABLE_ALL_OUTSIDE_TAB_INDEX */;
     tabIndexMap = new Map();
@@ -95,8 +105,16 @@ export class Dialog extends Common.ObjectWrapper.eventMixin(GlassPane) {
         this.escapeKeyCallback = callback;
     }
     addCloseButton() {
-        const closeButton = this.contentElement.createChild('dt-close-button', 'dialog-close-button');
-        closeButton.addEventListener('click', this.hide.bind(this), false);
+        const button = new Buttons.Button.Button();
+        button.data = {
+            variant: "icon" /* Buttons.Button.Variant.ICON */,
+            iconName: 'cross',
+            accessibleLabel: i18nString(UIStrings.close),
+            jslogContext: 'dialog-close',
+        };
+        button.classList.add('dialog-close-button');
+        button.addEventListener('click', this.hide.bind(this));
+        this.contentElement.appendChild(button);
     }
     setOutsideTabIndexBehavior(tabIndexBehavior) {
         this.tabIndexBehavior = tabIndexBehavior;

@@ -437,9 +437,22 @@ export class ChatInput extends UI.Widget.Widget {
     isReadOnly = false;
     #textAreaRef = createRef();
     #imageInput;
+    /**
+     * Tracks the user's position when navigating through prompt history.
+     * -1 means the user is at the newest "uncommitted" position (the current input).
+     * 0 to N-1 are indices into the recent prompts array (newest to oldest).
+     */
+    #historyOffset = -1;
+    /**
+     * Stores the text the user had typed before they started navigating through history,
+     * so it can be restored if they navigate back to the newest position.
+     */
+    #uncommittedText = '';
     setInputValue(text) {
         if (this.#textAreaRef.value) {
             this.#textAreaRef.value.value = text;
+            // Place the cursor at the end of the new value.
+            this.#textAreaRef.value.setSelectionRange(text.length, text.length);
         }
         this.performUpdate();
     }
@@ -453,6 +466,35 @@ export class ChatInput extends UI.Widget.Widget {
     onNewConversation = () => { };
     onContextRemoved = null;
     onContextAdd = null;
+    /**
+     * Navigates the prompt history.
+     * @param dir direction to navigate. -1 for older, 1 for newer.
+     */
+    #navigatePromptHistory(dir) {
+        const prompts = AiAssistanceModel.AiHistoryStorage.AiHistoryStorage.instance().getRecentPrompts();
+        if (!prompts.length) {
+            return;
+        }
+        if (dir === -1) {
+            // ArrowUp
+            if (this.#historyOffset === -1) {
+                this.#uncommittedText = this.#textAreaRef.value?.value || '';
+            }
+            if (this.#historyOffset < prompts.length - 1) {
+                this.#historyOffset++;
+                this.setInputValue(prompts[this.#historyOffset]);
+            }
+        }
+        else if (this.#historyOffset > 0) {
+            // ArrowDown
+            this.#historyOffset--;
+            this.setInputValue(prompts[this.#historyOffset]);
+        }
+        else if (this.#historyOffset === 0) {
+            this.#historyOffset = -1;
+            this.setInputValue(this.#uncommittedText);
+        }
+    }
     async #handleTakeScreenshot() {
         const mainTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
         if (!mainTarget) {
@@ -627,10 +669,30 @@ export class ChatInput extends UI.Widget.Widget {
             undefined;
         this.onTextSubmit(this.#textAreaRef.value?.value ?? '', imageInput, this.#imageInput?.inputType);
         this.#imageInput = undefined;
+        this.#historyOffset = -1;
+        this.#uncommittedText = '';
         this.setInputValue('');
     };
     onTextAreaKeyDown = (event) => {
         if (!event.target || !(event.target instanceof HTMLTextAreaElement)) {
+            return;
+        }
+        if (event.key === 'ArrowUp') {
+            const { value, selectionStart, selectionEnd } = event.target;
+            // Only navigate history if the cursor is on the first line and no text is selected.
+            if (selectionStart === selectionEnd && value.lastIndexOf('\n', selectionStart - 1) === -1) {
+                event.preventDefault();
+                this.#navigatePromptHistory(-1);
+            }
+            return;
+        }
+        if (event.key === 'ArrowDown') {
+            const { selectionEnd, selectionStart, value } = event.target;
+            // Only navigate history if the cursor is on the last line and no text is selected.
+            if (selectionStart === selectionEnd && value.indexOf('\n', selectionEnd) === -1) {
+                event.preventDefault();
+                this.#navigatePromptHistory(1);
+            }
             return;
         }
         // Go to a new line on Shift+Enter. On Enter, submit unless the
@@ -645,6 +707,8 @@ export class ChatInput extends UI.Widget.Widget {
                 undefined;
             this.onTextSubmit(event.target.value, imageInput, this.#imageInput?.inputType);
             this.#imageInput = undefined;
+            this.#historyOffset = -1;
+            this.#uncommittedText = '';
             this.setInputValue('');
         }
     };

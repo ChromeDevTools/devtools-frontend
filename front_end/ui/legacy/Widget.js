@@ -111,15 +111,14 @@ function runNextUpdate() {
                 widget.addUpdateController(controller);
                 await widget.performUpdate(controller.signal);
             }
-            catch (e) {
-                if (e.name !== 'AbortError') {
-                    throw e;
-                }
-            }
             finally {
                 resolve();
             }
-        })();
+        })().catch(e => {
+            if (e.name !== 'AbortError') {
+                console.error(`${widget.constructor.name}.performUpdate failed: `, e);
+            }
+        });
     }
     currentUpdateQueue.clear();
     queueMicrotask(() => {
@@ -444,6 +443,9 @@ export class Widget {
     }
     set contentElement(contentElement) {
         this.#contentElement = contentElement;
+    }
+    dispatchDOMEvent(event) {
+        this.element.dispatchEvent(event);
     }
     markAsRoot() {
         assert(!this.element.parentElement, 'Attempt to mark as root attached node');

@@ -34,6 +34,9 @@ export class StackTraceModel extends SDK.SDKModel.SDKModel {
     }
     async createFromErrorStackLikeString(stack, rawFramesToUIFrames, exceptionDetails) {
         const rawFrames = parseRawFramesFromErrorStack(stack);
+        if (!rawFrames) {
+            return null;
+        }
         if (exceptionDetails?.stackTrace) {
             augmentRawFramesWithScriptIds(rawFrames, exceptionDetails.stackTrace);
         }

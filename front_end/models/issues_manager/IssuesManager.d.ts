@@ -57,8 +57,12 @@ export interface IssueAddedEvent {
     issuesModel: SDK.IssuesModel.IssuesModel;
     issue: Issue;
 }
+export interface IssueHiddenStatusUpdatedEvent {
+    issue: Issue;
+}
 export interface EventTypes {
     [Events.ISSUES_COUNT_UPDATED]: void;
     [Events.FULL_UPDATE_REQUIRED]: void;
     [Events.ISSUE_ADDED]: IssueAddedEvent;
+    [Events.ISSUE_HIDDEN_STATUS_UPDATED]: IssueHiddenStatusUpdatedEvent;
 }

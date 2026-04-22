@@ -1346,6 +1346,60 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
         issues.push(issue);
         this.treeOutline?.updateNodeElementToIssue(nodeElement, issues);
     }
+    removeIssue(issue) {
+        if (!this.#elementIssues.has(issue.primaryKey())) {
+            return;
+        }
+        this.#removeIssueStyleAndTooltip(issue);
+        this.#elementIssues.delete(issue.primaryKey());
+    }
+    #removeIssueStyleAndTooltip(issue) {
+        const elementIssueDetails = getElementIssueDetails(issue);
+        if (!elementIssueDetails) {
+            return;
+        }
+        if (elementIssueDetails.attribute) {
+            this.#undoHighlightViolatingAttr(elementIssueDetails.attribute, issue);
+        }
+        else {
+            this.#undoHighlightTagAsViolating(issue);
+        }
+    }
+    #undoHighlightViolatingAttr(name, issue) {
+        const violatingAttributes = this.listItemElement.querySelectorAll('.webkit-html-attribute-name.violating-element');
+        for (const attributeElement of violatingAttributes) {
+            if (attributeElement.textContent === name) {
+                this.#removeFromNodeElementToIssue(attributeElement, issue);
+                if (!this.#nodeElementToIssue.has(attributeElement)) {
+                    attributeElement.classList.remove('violating-element');
+                }
+            }
+        }
+    }
+    #undoHighlightTagAsViolating(issue) {
+        const tagElement = this.listItemElement.getElementsByClassName('webkit-html-tag-name')[0];
+        if (!tagElement) {
+            return;
+        }
+        this.#removeFromNodeElementToIssue(tagElement, issue);
+        if (!this.#nodeElementToIssue.has(tagElement)) {
+            tagElement.classList.remove('violating-element');
+        }
+    }
+    #removeFromNodeElementToIssue(nodeElement, issue) {
+        let issues = this.#nodeElementToIssue.get(nodeElement);
+        if (!issues) {
+            return;
+        }
+        issues = issues.filter(i => i !== issue);
+        if (issues.length === 0) {
+            this.#nodeElementToIssue.delete(nodeElement);
+        }
+        else {
+            this.#nodeElementToIssue.set(nodeElement, issues);
+        }
+        this.treeOutline?.updateNodeElementToIssue(nodeElement, issues);
+    }
     expandedChildrenLimit() {
         return this.#expandedChildrenLimit;
     }

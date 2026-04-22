@@ -540,7 +540,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
             this.#appliedUserAgentType = this.#uaSetting.get();
             this.applyDeviceMetrics(new Geometry.Size(screenWidth, screenHeight), new Insets(0, 0, 0, 0), new Insets(0, 0, 0, 0), this.#scaleSetting.get(), this.#deviceScaleFactorSetting.get() || defaultDeviceScaleFactor, mobile, screenHeight >= screenWidth ? "portraitPrimary" /* Protocol.Emulation.ScreenOrientationType.PortraitPrimary */ :
                 "landscapePrimary" /* Protocol.Emulation.ScreenOrientationType.LandscapePrimary */, resetPageScaleFactor);
-            this.applyUserAgent(mobile ? defaultMobileUserAgent : '', mobile ? defaultMobileUserAgentMetadata : null);
+            this.applyUserAgent(mobile ? DeviceModeModel.defaultMobileUserAgent() : '', mobile ? DeviceModeModel.defaultMobileUserAgentMetadata() : null);
             this.applyTouch(this.#uaSetting.get() === "Desktop (touch)" /* UA.DESKTOP_TOUCH */ || this.#uaSetting.get() === "Mobile" /* UA.MOBILE */, this.#uaSetting.get() === "Mobile" /* UA.MOBILE */);
         }
         if (overlayModel) {
@@ -741,6 +741,38 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
             maskLength: (this.#mode.orientation === VerticalSpanned) ? hinge.width : hinge.height,
         };
     }
+    /**
+     * Heuristic to keep the default mobile User Agent fresh and aligned with the adoption bell curve.
+     * Android: We target N-1 versions (where N is the latest) to represent the plurality of global users.
+     * iOS: We follow the calendar year (starting from the 2025 shift to year-based versioning).
+     * Data sources:
+     * - StatCounter Global Stats: https://gs.statcounter.com/os-version-market-share/android
+     * - Android adoption typically lags by ~12-18 months for plurality.
+     * - iOS adoption typically reaches majority within ~3-6 months.
+     */
+    static getDynamicMobileUA() {
+        const now = new Date();
+        const year = now.getFullYear();
+        const isLateInYear = now.getMonth() >= 9; // Oct, Nov, Dec
+        // Android: Released in late summer/fall. plurality is usually Year - 2011 (e.g. Android 15 in early 2026).
+        const androidVersion = isLateInYear ? (year - 2010) : (year - 2011);
+        const pixelModel = isLateInYear ? (year - 2016) : (year - 2017);
+        const ua = `Mozilla/5.0 (Linux; Android ${androidVersion}; Pixel ${pixelModel}) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36`;
+        const metadata = {
+            platform: 'Android',
+            platformVersion: androidVersion.toString(),
+            architecture: '',
+            model: `Pixel ${pixelModel}`,
+            mobile: true,
+        };
+        return { userAgent: ua, metadata };
+    }
+    static defaultMobileUserAgent() {
+        return SDK.NetworkManager.MultitargetNetworkManager.patchUserAgentWithChromeVersion(DeviceModeModel.getDynamicMobileUA().userAgent);
+    }
+    static defaultMobileUserAgentMetadata() {
+        return DeviceModeModel.getDynamicMobileUA().metadata;
+    }
 }
 export class Insets {
     left;
@@ -796,14 +828,5 @@ export const MaxDeviceSize = 9999;
 export const MinDeviceScaleFactor = 0;
 export const MaxDeviceScaleFactor = 10;
 export const MaxDeviceNameLength = 50;
-const mobileUserAgent = 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36';
-const defaultMobileUserAgent = SDK.NetworkManager.MultitargetNetworkManager.patchUserAgentWithChromeVersion(mobileUserAgent);
-const defaultMobileUserAgentMetadata = {
-    platform: 'Android',
-    platformVersion: '6.0',
-    architecture: '',
-    model: 'Nexus 5',
-    mobile: true,
-};
 export const defaultMobileScaleFactor = 2;
 //# sourceMappingURL=DeviceModeModel.js.map

@@ -25,14 +25,12 @@ declare const StorageItemsToolbar_base: (new (...args: any[]) => {
     removeEventListener<T extends keyof StorageItemsToolbar.EventTypes>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<StorageItemsToolbar.EventTypes[T], any>) => void, thisObject?: Object): void;
     hasEventListeners(eventType: keyof StorageItemsToolbar.EventTypes): boolean;
     dispatchEventToListeners<T extends keyof StorageItemsToolbar.EventTypes>(eventType: Platform.TypeScriptUtilities.NoUnion<T>, ...eventData: Common.EventTarget.EventPayloadToRestParameters<StorageItemsToolbar.EventTypes, T>): void;
+    dispatchDOMEvent?(event: Event): void;
 }) & typeof UI.Widget.VBox;
 export declare class StorageItemsToolbar extends StorageItemsToolbar_base {
     #private;
     filterRegex: RegExp | null;
     constructor(element?: HTMLElement, view?: View);
-    set onRefreshCallback(callback: () => void);
-    set onDeleteAllCallback(callback: () => void);
-    set onDeleteSelectedCallback(callback: () => void);
     set metadataView(view: ApplicationComponents.StorageMetadataView.StorageMetadataView);
     get metadataView(): ApplicationComponents.StorageMetadataView.StorageMetadataView;
     performUpdate(): void;

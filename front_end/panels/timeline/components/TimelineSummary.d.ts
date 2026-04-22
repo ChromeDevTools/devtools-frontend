@@ -9,6 +9,7 @@ interface ViewInput {
     rangeEnd: number;
     total: number;
     categories: CategoryData[];
+    isInAIWidget?: boolean;
 }
 type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 export declare const CATEGORY_SUMMARY_DEFAULT_VIEW: View;

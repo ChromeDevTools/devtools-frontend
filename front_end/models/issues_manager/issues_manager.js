@@ -4693,12 +4693,11 @@ var IssuesManager = class _IssuesManager extends Common5.ObjectWrapper.ObjectWra
   #updateIssueHiddenStatus(issue, values) {
     const code = issue.code();
     if (values?.[code]) {
-      if (values[code] === "Hidden") {
-        issue.setHidden(true);
-        return;
+      const isHidden = values[code] === "Hidden";
+      if (issue.isHidden() !== isHidden) {
+        issue.setHidden(isHidden);
+        this.dispatchEventToListeners("IssueHiddenStatusUpdated", { issue });
       }
-      issue.setHidden(false);
-      return;
     }
   }
   #updateFilteredIssues() {
@@ -4733,7 +4732,10 @@ var IssuesManager = class _IssuesManager extends Common5.ObjectWrapper.ObjectWra
   }
   unhideAllIssues() {
     for (const issue of this.#allIssues.values()) {
-      issue.setHidden(false);
+      if (issue.isHidden()) {
+        issue.setHidden(false);
+        this.dispatchEventToListeners("IssueHiddenStatusUpdated", { issue });
+      }
     }
     this.hideIssueSetting?.set(defaultHideIssueByCodeSetting());
   }

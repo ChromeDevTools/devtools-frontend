@@ -15,6 +15,7 @@ declare const HeapSnapshotGridNode_base: (new (...args: any[]) => {
     removeEventListener<T extends HeapSnapshotGridNode.Events.PopulateComplete>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<HeapSnapshotGridNode.EventTypes[T], any>) => void, thisObject?: Object): void;
     hasEventListeners(eventType: HeapSnapshotGridNode.Events.PopulateComplete): boolean;
     dispatchEventToListeners<T extends HeapSnapshotGridNode.Events.PopulateComplete>(eventType: Platform.TypeScriptUtilities.NoUnion<T>, ...eventData: Common.EventTarget.EventPayloadToRestParameters<HeapSnapshotGridNode.EventTypes, T>): void;
+    dispatchDOMEvent?(event: Event): void;
 }) & typeof HeapSnapshotGridNodeBase;
 export declare class HeapSnapshotGridNode extends HeapSnapshotGridNode_base {
     dataGridInternal: HeapSnapshotSortableDataGrid;

@@ -53,6 +53,25 @@ export declare class ContentData {
     contentEqualTo(other: ContentData): boolean;
     asDataUrl(): string | null;
     /**
+     * Returns the content as a Blob.
+     *
+     * We prefer Base64 as the source for the Blob because it represents the raw binary
+     * bytes. Converting binary data (like an image) to a UTF-16 string (contentAsText)
+     * is destructive and will corrupt the image data.
+     *
+     * @returns The Blob representation, or `null` if the content exceeds the 10MB safety limit.
+     */
+    asBlob(): Blob | null;
+    /**
+     * Gets the image as either a data: or blob: URL.
+     *
+     * We prefer data: for simplicity, but these are limited in size to 1MB. If
+     * the resource is >1MB, we fall back to a blob: URL.
+     *
+     * @returns An object URL, or `null` if the content exceeds the 10MB safety limit.
+     */
+    asImagePreviewUrl(): string | null;
+    /**
      * @deprecated Used during migration from `DeferredContent` to `ContentData`.
      */
     asDeferedContent(): DeferredContent;

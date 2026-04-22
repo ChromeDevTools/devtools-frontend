@@ -844,7 +844,7 @@ var objectValue_css_default = `/*
 
 // gen/front_end/panels/profiler/ProfilesPanel.js
 import * as UI14 from "./../../ui/legacy/legacy.js";
-import * as VisualLogging5 from "./../../ui/visual_logging/visual_logging.js";
+import * as VisualLogging6 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/profiler/HeapDetachedElementsView.js
 import * as Common4 from "./../../core/common/common.js";
@@ -2488,12 +2488,13 @@ __export(HeapProfileView_exports, {
 import * as Common6 from "./../../core/common/common.js";
 import * as i18n11 from "./../../core/i18n/i18n.js";
 import * as Platform6 from "./../../core/platform/platform.js";
-import * as Root from "./../../core/root/root.js";
 import * as SDK3 from "./../../core/sdk/sdk.js";
 import * as CPUProfile from "./../../models/cpu_profile/cpu_profile.js";
 import * as PerfUI4 from "./../../ui/legacy/components/perf_ui/perf_ui.js";
+import * as SettingsUI from "./../../ui/legacy/components/settings_ui/settings_ui.js";
 import * as Components2 from "./../../ui/legacy/components/utils/utils.js";
 import * as UI7 from "./../../ui/legacy/legacy.js";
+import * as VisualLogging2 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/profiler/HeapTimelineOverview.js
 var HeapTimelineOverview_exports = {};
@@ -2874,7 +2875,11 @@ var UIStrings5 = {
   /**
    * @description Text for web URLs
    */
-  url: "URL"
+  url: "URL",
+  /**
+   * @description Label for a checkbox in the memory panel to enable sampling heap profiler timeline.
+   */
+  samplingHeapProfilerTimeline: "Sampling heap profiler timeline"
 };
 var str_5 = i18n11.i18n.registerUIStrings("panels/profiler/HeapProfileView.ts", UIStrings5);
 var i18nString5 = i18n11.i18n.getLocalizedString.bind(void 0, str_5);
@@ -2909,7 +2914,7 @@ var HeapProfileView = class extends ProfileView {
     this.totalTime = 0;
     this.lastOrdinal = 0;
     this.timelineOverview = new HeapTimelineOverview();
-    if (Root.Runtime.experiments.isEnabled(Root.ExperimentNames.ExperimentName.SAMPLING_HEAP_PROFILER_TIMELINE)) {
+    if (this.profileType.recordTimelineSetting.get()) {
       this.timelineOverview.addEventListener("IdsRangeChanged", this.onIdsRangeChanged.bind(this));
       this.timelineOverview.show(this.element, this.element.firstChild);
       this.timelineOverview.start();
@@ -3066,6 +3071,8 @@ var samplingHeapProfileTypeInstance;
 var SamplingHeapProfileType = class _SamplingHeapProfileType extends SamplingHeapProfileTypeBase {
   updateTimer;
   updateIntervalMs;
+  #recordTimelineSetting;
+  customContentInternal = null;
   constructor() {
     super(_SamplingHeapProfileType.TypeId, i18nString5(UIStrings5.allocationSampling));
     if (!samplingHeapProfileTypeInstance) {
@@ -3073,6 +3080,10 @@ var SamplingHeapProfileType = class _SamplingHeapProfileType extends SamplingHea
     }
     this.updateTimer = 0;
     this.updateIntervalMs = 200;
+    this.#recordTimelineSetting = Common6.Settings.Settings.instance().createSetting("record-sampling-heap-profiler-timeline", false);
+  }
+  get recordTimelineSetting() {
+    return this.#recordTimelineSetting;
   }
   static get instance() {
     return samplingHeapProfileTypeInstance;
@@ -3085,7 +3096,18 @@ var SamplingHeapProfileType = class _SamplingHeapProfileType extends SamplingHea
     return formattedDescription.join("\n");
   }
   hasTemporaryView() {
-    return Root.Runtime.experiments.isEnabled(Root.ExperimentNames.ExperimentName.SAMPLING_HEAP_PROFILER_TIMELINE);
+    return this.#recordTimelineSetting.get();
+  }
+  customContent() {
+    const checkboxSetting = SettingsUI.SettingsUI.createSettingCheckbox(i18nString5(UIStrings5.samplingHeapProfilerTimeline), this.#recordTimelineSetting);
+    this.customContentInternal = checkboxSetting;
+    checkboxSetting.setAttribute("jslog", `${VisualLogging2.toggle("record-sampling-heap-profiler-timeline").track({ click: true })}`);
+    return checkboxSetting;
+  }
+  setCustomContentEnabled(enable) {
+    if (this.customContentInternal) {
+      this.customContentInternal.disabled = !enable;
+    }
   }
   startSampling() {
     const heapProfilerModel = this.obtainRecordingProfile();
@@ -3093,7 +3115,7 @@ var SamplingHeapProfileType = class _SamplingHeapProfileType extends SamplingHea
       return;
     }
     void heapProfilerModel.startSampling();
-    if (Root.Runtime.experiments.isEnabled(Root.ExperimentNames.ExperimentName.SAMPLING_HEAP_PROFILER_TIMELINE)) {
+    if (this.#recordTimelineSetting.get()) {
       this.updateTimer = window.setTimeout(() => {
         void this.updateStats();
       }, this.updateIntervalMs);
@@ -3371,10 +3393,10 @@ import * as HeapSnapshotModel5 from "./../../models/heap_snapshot/heap_snapshot.
 import * as DataGrid11 from "./../../ui/legacy/components/data_grid/data_grid.js";
 import * as ObjectUI from "./../../ui/legacy/components/object_ui/object_ui.js";
 import * as PerfUI5 from "./../../ui/legacy/components/perf_ui/perf_ui.js";
-import * as SettingsUI from "./../../ui/legacy/components/settings_ui/settings_ui.js";
+import * as SettingsUI3 from "./../../ui/legacy/components/settings_ui/settings_ui.js";
 import * as Components4 from "./../../ui/legacy/components/utils/utils.js";
 import * as UI10 from "./../../ui/legacy/legacy.js";
-import * as VisualLogging3 from "./../../ui/visual_logging/visual_logging.js";
+import * as VisualLogging4 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/profiler/HeapSnapshotDataGrids.js
 var HeapSnapshotDataGrids_exports = {};
@@ -3418,7 +3440,7 @@ import { createIcon } from "./../../ui/kit/kit.js";
 import * as DataGrid7 from "./../../ui/legacy/components/data_grid/data_grid.js";
 import * as UI8 from "./../../ui/legacy/legacy.js";
 import { Directives, html, render } from "./../../ui/lit/lit.js";
-import * as VisualLogging2 from "./../../ui/visual_logging/visual_logging.js";
+import * as VisualLogging3 from "./../../ui/visual_logging/visual_logging.js";
 var UIStrings6 = {
   /**
    * @description Generic text with two placeholders separated by a comma
@@ -3615,7 +3637,7 @@ var HeapSnapshotGridNode = class _HeapSnapshotGridNode extends Common7.ObjectWra
     return null;
   }
   createValueCell(columnId) {
-    const jslog = VisualLogging2.tableCell("numeric-column").track({ click: true });
+    const jslog = VisualLogging3.tableCell("numeric-column").track({ click: true });
     const cell = document.createElement("td");
     cell.className = "numeric-column";
     cell.setAttribute("jslog", jslog.toString());
@@ -3901,7 +3923,7 @@ var HeapSnapshotGenericObjectNode = class extends HeapSnapshotGridNode {
     return this.createObjectCellWithValue(valueStyle, value2 || "");
   }
   createObjectCellWithValue(valueStyle, value2) {
-    const jslog = VisualLogging2.tableCell("object-column").track({ click: true });
+    const jslog = VisualLogging3.tableCell("object-column").track({ click: true });
     const cell = document.createElement("td");
     cell.className = "object-column disclosure";
     cell.setAttribute("jslog", jslog.toString());
@@ -5861,7 +5883,7 @@ var HeapSnapshotView = class _HeapSnapshotView extends UI10.View.SimpleView {
     this.constructorsDataGrid.addEventListener("SelectedNode", this.selectionChanged, this);
     this.constructorsWidget = this.constructorsDataGrid.asWidget();
     this.constructorsWidget.setMinimumSize(50, 25);
-    this.constructorsWidget.element.setAttribute("jslog", `${VisualLogging3.pane("heap-snapshot.constructors-view").track({ resize: true })}`);
+    this.constructorsWidget.element.setAttribute("jslog", `${VisualLogging4.pane("heap-snapshot.constructors-view").track({ resize: true })}`);
     this.diffDataGrid = new HeapSnapshotDiffDataGrid(heapProfilerModel, this);
     this.diffDataGrid.addEventListener("SelectedNode", this.selectionChanged, this);
     this.diffWidget = this.diffDataGrid.asWidget();
@@ -5880,7 +5902,7 @@ var HeapSnapshotView = class _HeapSnapshotView extends UI10.View.SimpleView {
     this.retainmentWidget = this.retainmentDataGrid.asWidget();
     this.retainmentWidget.setMinimumSize(50, 21);
     this.retainmentWidget.element.classList.add("retaining-paths-view");
-    this.retainmentWidget.element.setAttribute("jslog", `${VisualLogging3.pane("heap-snapshot.retaining-paths-view").track({ resize: true })}`);
+    this.retainmentWidget.element.setAttribute("jslog", `${VisualLogging4.pane("heap-snapshot.retaining-paths-view").track({ resize: true })}`);
     let splitWidgetResizer;
     if (this.allocationStackView) {
       this.tabbedPane = new UI10.TabbedPane.TabbedPane();
@@ -6626,7 +6648,7 @@ var HeapSnapshotProfileType = class _HeapSnapshotProfileType extends Common9.Obj
     return i18nString8(UIStrings9.heapSnapshotProfilesShowMemory);
   }
   customContent() {
-    const exposeInternalsInHeapSnapshotCheckbox = SettingsUI.SettingsUI.createSettingCheckbox(i18nString8(UIStrings9.exposeInternals), this.exposeInternals);
+    const exposeInternalsInHeapSnapshotCheckbox = SettingsUI3.SettingsUI.createSettingCheckbox(i18nString8(UIStrings9.exposeInternals), this.exposeInternals);
     this.customContentInternal = exposeInternalsInHeapSnapshotCheckbox;
     return exposeInternalsInHeapSnapshotCheckbox;
   }
@@ -6785,7 +6807,7 @@ var TrackingHeapSnapshotProfileType = class _TrackingHeapSnapshotProfileType ext
     void heapProfilerModel.startTrackingHeapObjects(this.recordAllocationStacksSettingInternal.get());
   }
   customContent() {
-    const checkboxSetting = SettingsUI.SettingsUI.createSettingCheckbox(i18nString8(UIStrings9.recordAllocationStacksExtra), this.recordAllocationStacksSettingInternal);
+    const checkboxSetting = SettingsUI3.SettingsUI.createSettingCheckbox(i18nString8(UIStrings9.recordAllocationStacksExtra), this.recordAllocationStacksSettingInternal);
     this.customContentInternal = checkboxSetting;
     return checkboxSetting;
   }
@@ -7051,7 +7073,7 @@ var HeapSnapshotStatisticsView = class _HeapSnapshotStatisticsView extends UI10.
   constructor() {
     super();
     this.element.classList.add("heap-snapshot-statistics-view");
-    this.element.setAttribute("jslog", `${VisualLogging3.pane("profiler.heap-snapshot-statistics-view").track({ resize: true })}`);
+    this.element.setAttribute("jslog", `${VisualLogging4.pane("profiler.heap-snapshot-statistics-view").track({ resize: true })}`);
     this.pieChart = new PerfUI5.PieChart.PieChart();
     this.setTotalAndRecords(0, []);
     this.pieChart.classList.add("heap-snapshot-stats-pie-chart");
@@ -7768,7 +7790,7 @@ __export(ProfileSidebarTreeElement_exports, {
 import * as i18n23 from "./../../core/i18n/i18n.js";
 import * as Buttons2 from "./../../ui/components/buttons/buttons.js";
 import * as UI13 from "./../../ui/legacy/legacy.js";
-import * as VisualLogging4 from "./../../ui/visual_logging/visual_logging.js";
+import * as VisualLogging5 from "./../../ui/visual_logging/visual_logging.js";
 var UIStrings12 = {
   /**
    * @description Tooltip for the 3-dots menu in the Memory panel profiles list.
@@ -7796,7 +7818,7 @@ var ProfileSidebarTreeElement = class extends UI13.TreeOutline.TreeElement {
     this.titlesElement = document.createElement("div");
     this.titlesElement.classList.add("titles");
     this.titlesElement.classList.add("no-subtitle");
-    this.titlesElement.setAttribute("jslog", `${VisualLogging4.value("title").track({ dblclick: true, change: true })}`);
+    this.titlesElement.setAttribute("jslog", `${VisualLogging5.value("title").track({ dblclick: true, change: true })}`);
     this.titleContainer = this.titlesElement.createChild("span", "title-container");
     this.titleElement = this.titleContainer.createChild("span", "title");
     this.subtitleElement = this.titlesElement.createChild("span", "subtitle");
@@ -7808,7 +7830,7 @@ var ProfileSidebarTreeElement = class extends UI13.TreeOutline.TreeElement {
     };
     this.menuElement.tabIndex = -1;
     this.menuElement.addEventListener("click", this.handleContextMenuEvent.bind(this));
-    this.menuElement.setAttribute("jslog", `${VisualLogging4.dropDown("profile-options").track({ click: true })}`);
+    this.menuElement.setAttribute("jslog", `${VisualLogging5.dropDown("profile-options").track({ click: true })}`);
     UI13.Tooltip.Tooltip.install(this.menuElement, i18nString11(UIStrings12.profileOptions));
     this.titleElement.textContent = profile.title;
     this.className = className;
@@ -8383,8 +8405,8 @@ var ProfilesPanel = class _ProfilesPanel extends UI14.Panel.PanelWithSidebar {
   selectedProfileType;
   static registry = {
     heapSnapshotProfileType: new HeapSnapshotProfileType(),
-    samplingHeapProfileType: new SamplingHeapProfileType(),
     trackingHeapSnapshotProfileType: new TrackingHeapSnapshotProfileType(),
+    samplingHeapProfileType: new SamplingHeapProfileType(),
     detachedElementProfileType: new DetachedElementsProfileType()
   };
   constructor(name, recordingActionId) {
@@ -8409,7 +8431,7 @@ var ProfilesPanel = class _ProfilesPanel extends UI14.Panel.PanelWithSidebar {
     this.panelSidebarElement().classList.add("profiles-tree-sidebar");
     const toolbarContainerLeft = document.createElement("div");
     toolbarContainerLeft.classList.add("profiles-toolbar");
-    toolbarContainerLeft.setAttribute("jslog", `${VisualLogging5.toolbar("profiles-sidebar")}`);
+    toolbarContainerLeft.setAttribute("jslog", `${VisualLogging6.toolbar("profiles-sidebar")}`);
     this.panelSidebarElement().insertBefore(toolbarContainerLeft, this.panelSidebarElement().firstChild);
     const toolbar2 = toolbarContainerLeft.createChild("devtools-toolbar");
     toolbar2.wrappable = true;
@@ -8426,7 +8448,7 @@ var ProfilesPanel = class _ProfilesPanel extends UI14.Panel.PanelWithSidebar {
     toolbar2.appendToolbarItem(UI14.Toolbar.Toolbar.createActionButton("components.collect-garbage"));
     this.profileViewToolbar = this.toolbarElement.createChild("devtools-toolbar");
     this.profileViewToolbar.wrappable = true;
-    this.profileViewToolbar.setAttribute("jslog", `${VisualLogging5.toolbar("profile-view")}`);
+    this.profileViewToolbar.setAttribute("jslog", `${VisualLogging6.toolbar("profile-view")}`);
     this.profileGroups = {};
     this.launcherView = new ProfileLauncherView(this);
     this.launcherView.addEventListener("ProfileTypeSelected", this.onProfileTypeSelected, this);

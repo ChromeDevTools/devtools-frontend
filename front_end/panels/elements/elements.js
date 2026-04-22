@@ -13345,6 +13345,58 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
     issues.push(issue);
     this.treeOutline?.updateNodeElementToIssue(nodeElement, issues);
   }
+  removeIssue(issue) {
+    if (!this.#elementIssues.has(issue.primaryKey())) {
+      return;
+    }
+    this.#removeIssueStyleAndTooltip(issue);
+    this.#elementIssues.delete(issue.primaryKey());
+  }
+  #removeIssueStyleAndTooltip(issue) {
+    const elementIssueDetails = getElementIssueDetails(issue);
+    if (!elementIssueDetails) {
+      return;
+    }
+    if (elementIssueDetails.attribute) {
+      this.#undoHighlightViolatingAttr(elementIssueDetails.attribute, issue);
+    } else {
+      this.#undoHighlightTagAsViolating(issue);
+    }
+  }
+  #undoHighlightViolatingAttr(name, issue) {
+    const violatingAttributes = this.listItemElement.querySelectorAll(".webkit-html-attribute-name.violating-element");
+    for (const attributeElement of violatingAttributes) {
+      if (attributeElement.textContent === name) {
+        this.#removeFromNodeElementToIssue(attributeElement, issue);
+        if (!this.#nodeElementToIssue.has(attributeElement)) {
+          attributeElement.classList.remove("violating-element");
+        }
+      }
+    }
+  }
+  #undoHighlightTagAsViolating(issue) {
+    const tagElement = this.listItemElement.getElementsByClassName("webkit-html-tag-name")[0];
+    if (!tagElement) {
+      return;
+    }
+    this.#removeFromNodeElementToIssue(tagElement, issue);
+    if (!this.#nodeElementToIssue.has(tagElement)) {
+      tagElement.classList.remove("violating-element");
+    }
+  }
+  #removeFromNodeElementToIssue(nodeElement, issue) {
+    let issues = this.#nodeElementToIssue.get(nodeElement);
+    if (!issues) {
+      return;
+    }
+    issues = issues.filter((i) => i !== issue);
+    if (issues.length === 0) {
+      this.#nodeElementToIssue.delete(nodeElement);
+    } else {
+      this.#nodeElementToIssue.set(nodeElement, issues);
+    }
+    this.treeOutline?.updateNodeElementToIssue(nodeElement, issues);
+  }
   expandedChildrenLimit() {
     return this.#expandedChildrenLimit;
   }
@@ -15630,6 +15682,7 @@ var ElementsTreeOutline = class _ElementsTreeOutline extends Common10.ObjectWrap
     super();
     this.#issuesManager = IssuesManager2.IssuesManager.IssuesManager.instance();
     this.#issuesManager.addEventListener("IssueAdded", this.#onIssueAdded, this);
+    this.#issuesManager.addEventListener("IssueHiddenStatusUpdated", this.#onIssueHiddenStatusUpdated, this);
     this.treeElementByNode = /* @__PURE__ */ new WeakMap();
     const shadowContainer = document.createElement("div");
     this.shadowRoot = UI17.UIUtils.createShadowRootWithCoreStyles(shadowContainer, { cssFile: [elementsTreeOutline_css_default, CodeHighlighter5.codeHighlighterStyles] });
@@ -15743,6 +15796,17 @@ var ElementsTreeOutline = class _ElementsTreeOutline extends Common10.ObjectWrap
   #onIssueAdded(event) {
     void this.#addTreeElementIssue(event.data.issue);
   }
+  #onIssueHiddenStatusUpdated(event) {
+    const issue = event.data.issue;
+    if (!issue) {
+      return;
+    }
+    if (issue.isHidden()) {
+      void this.#removeTreeElementIssue(issue);
+      return;
+    }
+    void this.#addTreeElementIssue(issue);
+  }
   #addAllElementIssues() {
     if (!this.#issuesManager) {
       return;
@@ -15752,6 +15816,9 @@ var ElementsTreeOutline = class _ElementsTreeOutline extends Common10.ObjectWrap
     }
   }
   async #addTreeElementIssue(issue) {
+    if (issue.isHidden()) {
+      return;
+    }
     const elementIssueDetails = getElementIssueDetails(issue);
     if (!elementIssueDetails) {
       return;
@@ -15774,6 +15841,25 @@ var ElementsTreeOutline = class _ElementsTreeOutline extends Common10.ObjectWrap
       }
     }
   }
+  async #removeTreeElementIssue(issue) {
+    const elementIssueDetails = getElementIssueDetails(issue);
+    if (!elementIssueDetails) {
+      return;
+    }
+    const { nodeId } = elementIssueDetails;
+    if (!this.rootDOMNode || !nodeId) {
+      return;
+    }
+    const deferredDOMNode = new SDK15.DOMModel.DeferredDOMNode(this.rootDOMNode.domModel().target(), nodeId);
+    const node = await deferredDOMNode.resolvePromise();
+    if (!node) {
+      return;
+    }
+    const treeElement = this.findTreeElement(node);
+    if (treeElement) {
+      treeElement.removeIssue(issue);
+    }
+  }
   deindentSingleNode() {
     const firstChild = this.firstChild();
     if (!firstChild || firstChild && !firstChild.isExpandable()) {
@@ -15781,6 +15867,10 @@ var ElementsTreeOutline = class _ElementsTreeOutline extends Common10.ObjectWrap
     }
   }
   updateNodeElementToIssue(element, issues) {
+    if (!issues || issues.length === 0) {
+      this.#nodeElementToIssues.delete(element);
+      return;
+    }
     this.#nodeElementToIssues.set(element, issues);
   }
   onShowHTMLCommentsChange() {

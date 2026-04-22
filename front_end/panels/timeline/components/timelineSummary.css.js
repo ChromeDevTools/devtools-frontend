@@ -19,6 +19,10 @@ export default `/*
     /* The category summary can't be more narrow than this, so we'll force a horizontal scrollbar
     */
     min-width: 192px;
+
+    &.is-in-ai-widget {
+      padding: 0;
+    }
   }
 
   .summary-range {

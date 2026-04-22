@@ -14,6 +14,7 @@ declare const TimelineTreeView_base: (new (...args: any[]) => {
     removeEventListener<T extends keyof TimelineTreeView.EventTypes>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<TimelineTreeView.EventTypes[T], any>) => void, thisObject?: Object): void;
     hasEventListeners(eventType: keyof TimelineTreeView.EventTypes): boolean;
     dispatchEventToListeners<T extends keyof TimelineTreeView.EventTypes>(eventType: Platform.TypeScriptUtilities.NoUnion<T>, ...eventData: Common.EventTarget.EventPayloadToRestParameters<TimelineTreeView.EventTypes, T>): void;
+    dispatchDOMEvent?(event: Event): void;
 }) & typeof UI.Widget.VBox;
 /**
  * For an overview, read: https://chromium.googlesource.com/devtools/devtools-frontend/+/refs/heads/main/front_end/panels/timeline/README.md#timeline-tree-views
@@ -215,6 +216,7 @@ declare const TimelineStackView_base: (new (...args: any[]) => {
     removeEventListener<T extends keyof TimelineStackView.EventTypes>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<TimelineStackView.EventTypes[T], any>) => void, thisObject?: Object): void;
     hasEventListeners(eventType: keyof TimelineStackView.EventTypes): boolean;
     dispatchEventToListeners<T extends keyof TimelineStackView.EventTypes>(eventType: Platform.TypeScriptUtilities.NoUnion<T>, ...eventData: Common.EventTarget.EventPayloadToRestParameters<TimelineStackView.EventTypes, T>): void;
+    dispatchDOMEvent?(event: Event): void;
 }) & typeof UI.Widget.VBox;
 export declare class TimelineStackView extends TimelineStackView_base {
     private readonly treeView;

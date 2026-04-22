@@ -285,6 +285,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
           </div>
           <devtools-widget slot="sidebar"
               ${widget(JSONEditor, { metadataByCommand, typesByName, enumsByName })}
+              @submiteditor=${(e) => input.onEditorSubmit(e.detail.command, e.detail.parameters, e.detail.targetId)}
               ${widgetRef(JSONEditor, e => { output.editorWidget = e; })}>
           </devtools-widget>
         </devtools-split-view>`, target);
@@ -315,9 +316,6 @@ export class ProtocolMonitorImpl extends UI.Panel.Panel {
         this.filterParser = new TextUtils.TextUtils.FilterParser(this.#filterKeys);
         this.#selectedTargetId = 'main';
         this.performUpdate();
-        this.#editorWidget.addEventListener("submiteditor" /* JSONEditorEvents.SUBMIT_EDITOR */, event => {
-            this.onCommandSend(event.data.command, event.data.parameters, event.data.targetId);
-        });
         SDK.TargetManager.TargetManager.instance().addEventListener("AvailableTargetsChanged" /* SDK.TargetManager.Events.AVAILABLE_TARGETS_CHANGED */, () => {
             this.requestUpdate();
         });
@@ -396,6 +394,9 @@ export class ProtocolMonitorImpl extends UI.Panel.Panel {
             onToggleSidebar: () => {
                 this.#sidebarVisible = !this.#sidebarVisible;
                 this.requestUpdate();
+            },
+            onEditorSubmit: (command, parameters, targetId) => {
+                this.onCommandSend(command, parameters, targetId);
             },
             targets: SDK.TargetManager.TargetManager.instance().targets(),
             selectedTargetId: this.#selectedTargetId,

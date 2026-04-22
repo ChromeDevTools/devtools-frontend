@@ -10,6 +10,7 @@ declare const HeapTimelineOverview_base: (new (...args: any[]) => {
     removeEventListener<T extends Events.IDS_RANGE_CHANGED>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<EventTypes[T], any>) => void, thisObject?: Object): void;
     hasEventListeners(eventType: Events.IDS_RANGE_CHANGED): boolean;
     dispatchEventToListeners<T extends Events.IDS_RANGE_CHANGED>(eventType: Platform.TypeScriptUtilities.NoUnion<T>, ...eventData: Common.EventTarget.EventPayloadToRestParameters<EventTypes, T>): void;
+    dispatchDOMEvent?(event: Event): void;
 }) & typeof UI.Widget.VBox;
 export declare class HeapTimelineOverview extends HeapTimelineOverview_base {
     readonly overviewCalculator: OverviewCalculator;

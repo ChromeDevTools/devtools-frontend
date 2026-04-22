@@ -3,7 +3,6 @@ export declare enum ExperimentName {
     CAPTURE_NODE_CREATION_STACKS = "capture-node-creation-stacks",
     LIVE_HEAP_PROFILE = "live-heap-profile",
     PROTOCOL_MONITOR = "protocol-monitor",
-    SAMPLING_HEAP_PROFILER_TIMELINE = "sampling-heap-profiler-timeline",
     TIMELINE_INVALIDATION_TRACKING = "timeline-invalidation-tracking",
     FONT_EDITOR = "font-editor",
     INSTRUMENTATION_BREAKPOINTS = "instrumentation-breakpoints",

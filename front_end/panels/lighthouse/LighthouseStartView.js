@@ -53,9 +53,9 @@ const renderStartView = (_input, output, target) => {
       <form class="lighthouse-start-view">
         <header class="hbox">
           <div class="lighthouse-logo"></div>
-          <div class="lighthouse-title">
+          <h1 class="lighthouse-title">
             ${i18nString(UIStrings.generateLighthouseReport)}
-          </div>
+          </h1>
           <div class="lighthouse-start-button-container"></div>
         </header>
         <div

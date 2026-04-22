@@ -75,24 +75,31 @@ const DEFAULT_VIEW = (input, output, target) => {
         <main @scroll=${input.handleScroll} ${ref(element => { output.mainElement = element; })}>
           ${input.messages.length > 0 ? html `
             <div class="messages-container" ${ref(input.handleMessageContainerRef)}>
-              ${repeat(input.messages, message => widget(ChatMessage, {
-        message,
-        isLoading: input.isLoading && input.messages.at(-1) === message,
-        isReadOnly: input.isReadOnly,
-        canShowFeedbackForm: input.canShowFeedbackForm,
-        markdownRenderer: input.markdownRenderer,
-        isLastMessage: input.messages.at(-1) === message,
-        isFirstMessage: input.messages.at(0) === message,
-        shouldShowCSSChangeSummary: message === cssChangeSummaryMessage,
-        onSuggestionClick: input.handleSuggestionClick,
-        onFeedbackSubmit: input.onFeedbackSubmit,
-        onCopyResponseClick: input.onCopyResponseClick,
-        onExportClick: input.exportForAgentsClick,
-        changeSummary: input.changeSummary,
-        walkthrough: {
-            ...input.walkthrough,
-        }
-    }))}
+              ${repeat(input.messages, (message, index) => {
+        const prevMessage = index > 0 ? input.messages[index - 1] : null;
+        const prompt = (message.entity === "model" /* ChatMessageEntity.MODEL */ && prevMessage?.entity === "user" /* ChatMessageEntity.USER */) ?
+            prevMessage.text :
+            '';
+        return widget(ChatMessage, {
+            message,
+            isLoading: input.isLoading && index === input.messages.length - 1,
+            isReadOnly: input.isReadOnly,
+            canShowFeedbackForm: input.canShowFeedbackForm,
+            markdownRenderer: input.markdownRenderer,
+            isLastMessage: index === input.messages.length - 1,
+            isFirstMessage: index === 0,
+            prompt,
+            shouldShowCSSChangeSummary: message === cssChangeSummaryMessage,
+            onSuggestionClick: input.handleSuggestionClick,
+            onFeedbackSubmit: input.onFeedbackSubmit,
+            onCopyResponseClick: input.onCopyResponseClick,
+            onExportClick: input.exportForAgentsClick,
+            changeSummary: input.changeSummary,
+            walkthrough: {
+                ...input.walkthrough,
+            }
+        });
+    })}
               ${shouldShowPatchWidget ? widget(PatchWidget, {
         changeSummary: input.changeSummary ?? '',
         changeManager: input.changeManager,

@@ -237,6 +237,11 @@ export default `/*
         padding-left: calc(var(--sys-size-8) - 1em);
         min-height: 0;
     }
+
+    .webmcp-run-tool-button {
+        align-self: flex-end;
+        margin: var(--sys-size-6) var(--sys-size-8);
+    }
 }
 
 /*# sourceURL=${import.meta.resolve('./webMCPView.css')} */`;

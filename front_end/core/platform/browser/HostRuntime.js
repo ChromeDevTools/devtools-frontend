@@ -2,8 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 class WebWorkerScope {
-    postMessage(message) {
-        self.postMessage(message);
+    postMessage(message, transfer) {
+        // Type for frame.postMessage is conflicting here.
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        self.postMessage(message, transfer);
     }
     set onmessage(listener) {
         self.addEventListener('message', listener);

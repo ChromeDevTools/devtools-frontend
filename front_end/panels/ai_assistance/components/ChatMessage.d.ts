@@ -88,6 +88,7 @@ export interface MessageInput {
     isReadOnly: boolean;
     isLastMessage: boolean;
     isFirstMessage: boolean;
+    prompt: string;
     shouldShowCSSChangeSummary: boolean;
     canShowFeedbackForm: boolean;
     markdownRenderer: MarkdownLitRenderer;
@@ -119,6 +120,7 @@ export declare class ChatMessage extends UI.Widget.Widget {
     message: Message;
     isLoading: boolean;
     isReadOnly: boolean;
+    prompt: string;
     canShowFeedbackForm: boolean;
     isLastMessage: boolean;
     isFirstMessage: boolean;

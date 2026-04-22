@@ -123,8 +123,8 @@ export class TimelineLoader {
             this.reportErrorAndCancelLoading(i18nString(UIStrings.malformedTimelineDataS));
             return;
         }
-        if ('metadata' in trace) {
-            this.#metadata = trace.metadata;
+        if (!Array.isArray(trace) && 'traceEvents' in trace) {
+            this.#metadata = trace.metadata ?? {};
             // Older traces set these fields even when throttling is not active, while newer traces do not.
             // Clear them out on load to simplify usage.
             if (this.#metadata.cpuThrottling === 1) {

@@ -28,6 +28,7 @@ declare const StandaloneStylesContainer_base: (new (...args: any[]) => {
     removeEventListener<T extends Events.STYLES_UPDATE_COMPLETED>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<EventTypes[T], any>) => void, thisObject?: Object): void;
     hasEventListeners(eventType: Events.STYLES_UPDATE_COMPLETED): boolean;
     dispatchEventToListeners<T extends Events.STYLES_UPDATE_COMPLETED>(eventType: import("../../core/platform/TypescriptUtilities.js").NoUnion<T>, ...eventData: Common.EventTarget.EventPayloadToRestParameters<EventTypes, T>): void;
+    dispatchDOMEvent?(event: Event): void;
 }) & typeof UI.Widget.VBox;
 export declare class StandaloneStylesContainer extends StandaloneStylesContainer_base implements StylesContainer {
     #private;

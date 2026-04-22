@@ -49,7 +49,7 @@
 
   // gen/front_end/third_party/web-vitals/package/dist/modules/lib/doubleRAF.js
   var doubleRAF = (cb) => {
-    requestAnimationFrame(() => requestAnimationFrame(() => cb()));
+    requestAnimationFrame(() => requestAnimationFrame(cb));
   };
 
   // gen/front_end/third_party/web-vitals/package/dist/modules/lib/generateUniqueID.js
@@ -67,8 +67,7 @@
 
   // gen/front_end/third_party/web-vitals/package/dist/modules/lib/getActivationStart.js
   var getActivationStart = () => {
-    const navEntry = getNavigationEntry();
-    return navEntry?.activationStart ?? 0;
+    return getNavigationEntry()?.activationStart ?? 0;
   };
 
   // gen/front_end/third_party/web-vitals/package/dist/modules/lib/initMetric.js
@@ -134,7 +133,7 @@
     try {
       if (PerformanceObserver.supportedEntryTypes.includes(type)) {
         const po2 = new PerformanceObserver((list) => {
-          Promise.resolve().then(() => {
+          queueMicrotask(() => {
             callback(list.getEntries());
           });
         });
@@ -179,7 +178,7 @@
   var getVisibilityWatcher = () => {
     if (firstHiddenTime < 0) {
       const activationStart = getActivationStart();
-      const firstVisibilityStateHiddenTime = !document.prerendering ? globalThis.performance.getEntriesByType("visibility-state").filter((e) => e.name === "hidden" && e.startTime > activationStart)[0]?.startTime : void 0;
+      const firstVisibilityStateHiddenTime = !document.prerendering ? globalThis.performance.getEntriesByType("visibility-state").find((e) => e.name === "hidden" && e.startTime >= activationStart)?.startTime : void 0;
       firstHiddenTime = firstVisibilityStateHiddenTime ?? initHiddenTime();
       addEventListener("visibilitychange", onVisibilityUpdate, true);
       addEventListener("prerenderingchange", onVisibilityUpdate, true);
@@ -202,7 +201,7 @@
   // gen/front_end/third_party/web-vitals/package/dist/modules/lib/whenActivated.js
   var whenActivated = (callback) => {
     if (document.prerendering) {
-      addEventListener("prerenderingchange", () => callback(), true);
+      addEventListener("prerenderingchange", callback, true);
     } else {
       callback();
     }
@@ -271,7 +270,7 @@
           layoutShiftManager._sessionValue = 0;
           metric = initMetric("CLS", 0);
           report = bindReporter(onReport, metric, CLSThresholds, opts.reportAllChanges);
-          doubleRAF(() => report());
+          doubleRAF(report);
         });
         setTimeout(report);
       }
@@ -299,8 +298,6 @@
     if ("interactionCount" in performance || po)
       return;
     po = observe("event", updateEstimate, {
-      type: "event",
-      buffered: true,
       durationThreshold: 0
     });
   };
@@ -383,14 +380,20 @@
   // gen/front_end/third_party/web-vitals/package/dist/modules/lib/whenIdleOrHidden.js
   var whenIdleOrHidden = (cb) => {
     const rIC = globalThis.requestIdleCallback || setTimeout;
+    const cIC = globalThis.cancelIdleCallback || clearTimeout;
     if (document.visibilityState === "hidden") {
       cb();
     } else {
-      cb = runOnce(cb);
-      addEventListener("visibilitychange", cb, { once: true, capture: true });
-      rIC(() => {
-        cb();
-        removeEventListener("visibilitychange", cb, { capture: true });
+      const wrappedCb = runOnce(cb);
+      let idleHandle = -1;
+      const onHidden = () => {
+        cIC(idleHandle);
+        wrappedCb();
+      };
+      addEventListener("visibilitychange", onHidden, { once: true, capture: true });
+      idleHandle = rIC(() => {
+        removeEventListener("visibilitychange", onHidden, { capture: true });
+        wrappedCb();
       });
     }
   };
@@ -556,16 +559,17 @@
   var getLoadState = (timestamp) => {
     if (document.readyState === "loading") {
       return "loading";
-    } else {
-      const navigationEntry = getNavigationEntry();
-      if (navigationEntry) {
-        if (timestamp < navigationEntry.domInteractive) {
-          return "loading";
-        } else if (navigationEntry.domContentLoadedEventStart === 0 || timestamp < navigationEntry.domContentLoadedEventStart) {
-          return "dom-interactive";
-        } else if (navigationEntry.domComplete === 0 || timestamp < navigationEntry.domComplete) {
-          return "dom-content-loaded";
-        }
+    }
+    const navigationEntry = getNavigationEntry();
+    if (navigationEntry) {
+      if (timestamp < navigationEntry.domInteractive) {
+        return "loading";
+      }
+      if (navigationEntry.domContentLoadedEventStart === 0 || timestamp < navigationEntry.domContentLoadedEventStart) {
+        return "dom-interactive";
+      }
+      if (navigationEntry.domComplete === 0 || timestamp < navigationEntry.domComplete) {
+        return "dom-content-loaded";
       }
     }
     return "complete";
@@ -636,12 +640,10 @@
           }
         }
       }
-      const metricWithAttribution = Object.assign(metric, { attribution });
-      return metricWithAttribution;
+      return Object.assign(metric, { attribution });
     };
     onCLS$1((metric) => {
-      const metricWithAttribution = attributeCLS(metric);
-      onReport(metricWithAttribution);
+      onReport(attributeCLS(metric));
     }, opts);
   };
 
@@ -672,13 +674,12 @@
   };
   var onFCP2 = (onReport, opts = {}) => {
     onFCP((metric) => {
-      const metricWithAttribution = attributeFCP(metric);
-      onReport(metricWithAttribution);
+      onReport(attributeFCP(metric));
     }, opts);
   };
 
   // gen/front_end/third_party/web-vitals/package/dist/modules/attribution/onINP.js
-  var MAX_PREVIOUS_FRAMES = 50;
+  var MAX_PENDING_FRAMES = 10;
   var onINP2 = (onReport, opts = {}) => {
     opts = Object.assign({}, opts);
     const interactionManager = initUnique(opts, InteractionManager);
@@ -712,6 +713,9 @@
           group.startTime = Math.min(entry.startTime, group.startTime);
           group.processingStart = Math.min(entry.processingStart, group.processingStart);
           group.processingEnd = Math.max(entry.processingEnd, group.processingEnd);
+          if (opts.includeProcessedEventEntries !== false) {
+            group.entries.push(entry);
+          }
           break;
         }
       }
@@ -721,12 +725,9 @@
           processingStart: entry.processingStart,
           processingEnd: entry.processingEnd,
           renderTime,
-          // Entries are not needed in DevTools since we're only displaying the
-          // summary information, and also emiting events as they come in. Stop
-          // holding a reference to avoid memory issues.
-          // See https://crbug.com/484342204
-          // entries: [entry],
-          entries: []
+          // processedEventEntries can be quite large, so only include them if
+          // the user explicitly requests them (default is to include).
+          entries: opts.includeProcessedEventEntries !== false ? [entry] : []
         };
         pendingEntriesGroups.push(group);
       }
@@ -742,28 +743,25 @@
       }
     };
     const cleanupEntries = () => {
-      const longestInteractionGroups = interactionManager._longestInteractionList.map((i) => {
+      const longestInteractionGroups = new Set(interactionManager._longestInteractionList.map((i) => {
         return entryToEntriesGroupMap.get(i.entries[0]);
+      }));
+      const minIndexToKeep = pendingEntriesGroups.length - MAX_PENDING_FRAMES;
+      pendingEntriesGroups = pendingEntriesGroups.filter((group, i) => {
+        return i >= minIndexToKeep || longestInteractionGroups.has(group);
       });
-      const minIndex = pendingEntriesGroups.length - MAX_PREVIOUS_FRAMES;
-      pendingEntriesGroups = pendingEntriesGroups.filter((group, index) => {
-        if (index >= minIndex)
-          return true;
-        return longestInteractionGroups.includes(group);
-      });
-      const loafsToKeep = /* @__PURE__ */ new Set();
+      const intersectingLoAFs = /* @__PURE__ */ new Set();
       for (const group of pendingEntriesGroups) {
         const loafs = getIntersectingLoAFs(group.startTime, group.processingEnd);
         for (const loaf of loafs) {
-          loafsToKeep.add(loaf);
+          intersectingLoAFs.add(loaf);
         }
       }
-      const prevFrameIndexCutoff = pendingLoAFs.length - 1 - MAX_PREVIOUS_FRAMES;
-      pendingLoAFs = pendingLoAFs.filter((loaf, index) => {
-        if (loaf.startTime > latestProcessingEnd && index > prevFrameIndexCutoff) {
-          return true;
-        }
-        return loafsToKeep.has(loaf);
+      pendingLoAFs = pendingLoAFs.filter((loaf) => {
+        return (
+          // Compare times first because it's faster.
+          loaf.startTime > latestProcessingEnd || intersectingLoAFs.has(loaf)
+        );
       });
       cleanupPending = false;
     };
@@ -884,13 +882,11 @@
         totalUnattributedDuration: void 0
       };
       attributeLoAFDetails(attribution);
-      const metricWithAttribution = Object.assign(metric, { attribution });
-      return metricWithAttribution;
+      return Object.assign(metric, { attribution });
     };
     observe("long-animation-frame", handleLoAFEntries);
     onINP$1((metric) => {
-      const metricWithAttribution = attributeINP(metric);
-      onReport(metricWithAttribution);
+      onReport(attributeINP(metric));
     }, opts);
   };
 
@@ -904,6 +900,8 @@
       if (node) {
         const customTarget = opts.generateTarget?.(node) ?? getSelector(node);
         lcpTargetMap.set(entry, customTarget);
+      } else if (entry.id) {
+        lcpTargetMap.set(entry, `#${entry.id}`);
       }
     };
     const attributeLCP = (metric) => {
@@ -914,11 +912,19 @@
         elementRenderDelay: metric.value
       };
       if (metric.entries.length) {
+        const lcpEntry = metric.entries.at(-1);
+        const lcpResourceEntry = lcpEntry.url && performance.getEntriesByType("resource").find((e) => e.name === lcpEntry.url);
+        attribution.target = lcpTargetMap.get(lcpEntry);
+        attribution.lcpEntry = lcpEntry;
+        if (lcpEntry.url) {
+          attribution.url = lcpEntry.url;
+        }
+        if (lcpResourceEntry) {
+          attribution.lcpResourceEntry = lcpResourceEntry;
+        }
         const navigationEntry = getNavigationEntry();
         if (navigationEntry) {
           const activationStart = navigationEntry.activationStart || 0;
-          const lcpEntry = metric.entries.at(-1);
-          const lcpResourceEntry = lcpEntry.url && performance.getEntriesByType("resource").filter((e) => e.name === lcpEntry.url)[0];
           const ttfb = Math.max(0, navigationEntry.responseStart - activationStart);
           const lcpRequestStart = Math.max(
             ttfb,
@@ -931,28 +937,19 @@
             Math.max(lcpRequestStart, lcpResourceEntry ? lcpResourceEntry.responseEnd - activationStart : 0)
           );
           attribution = {
-            target: lcpTargetMap.get(lcpEntry),
+            ...attribution,
             timeToFirstByte: ttfb,
             resourceLoadDelay: lcpRequestStart - ttfb,
             resourceLoadDuration: lcpResponseEnd - lcpRequestStart,
             elementRenderDelay: metric.value - lcpResponseEnd,
-            navigationEntry,
-            lcpEntry
+            navigationEntry
           };
-          if (lcpEntry.url) {
-            attribution.url = lcpEntry.url;
-          }
-          if (lcpResourceEntry) {
-            attribution.lcpResourceEntry = lcpResourceEntry;
-          }
         }
       }
-      const metricWithAttribution = Object.assign(metric, { attribution });
-      return metricWithAttribution;
+      return Object.assign(metric, { attribution });
     };
     onLCP$1((metric) => {
-      const metricWithAttribution = attributeLCP(metric);
-      onReport(metricWithAttribution);
+      onReport(attributeLCP(metric));
     }, opts);
   };
 
@@ -992,8 +989,7 @@
   };
   var onTTFB2 = (onReport, opts = {}) => {
     onTTFB((metric) => {
-      const metricWithAttribution = attributeTTFB(metric);
-      onReport(metricWithAttribution);
+      onReport(attributeTTFB(metric));
     }, opts);
   };
 
@@ -1242,6 +1238,7 @@
       }, {
           reportAllChanges: true,
           durationThreshold: 0,
+          includeProcessedEventEntries: false,
           onEachInteraction,
           generateTarget(el) {
               if (el) {

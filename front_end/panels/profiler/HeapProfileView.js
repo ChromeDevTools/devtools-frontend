@@ -5,12 +5,13 @@
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
-import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as CPUProfile from '../../models/cpu_profile/cpu_profile.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
+import * as SettingsUI from '../../ui/legacy/components/settings_ui/settings_ui.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import { HeapTimelineOverview } from './HeapTimelineOverview.js';
 import { ProfileFlameChartDataProvider } from './ProfileFlameChartDataProvider.js';
 import { ProfileType } from './ProfileHeader.js';
@@ -97,6 +98,10 @@ const UIStrings = {
      * @description Text for web URLs
      */
     url: 'URL',
+    /**
+     * @description Label for a checkbox in the memory panel to enable sampling heap profiler timeline.
+     */
+    samplingHeapProfilerTimeline: 'Sampling heap profiler timeline',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/profiler/HeapProfileView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -131,7 +136,7 @@ export class HeapProfileView extends ProfileView {
         this.totalTime = 0;
         this.lastOrdinal = 0;
         this.timelineOverview = new HeapTimelineOverview();
-        if (Root.Runtime.experiments.isEnabled(Root.ExperimentNames.ExperimentName.SAMPLING_HEAP_PROFILER_TIMELINE)) {
+        if (this.profileType.recordTimelineSetting.get()) {
             this.timelineOverview.addEventListener("IdsRangeChanged" /* Events.IDS_RANGE_CHANGED */, this.onIdsRangeChanged.bind(this));
             this.timelineOverview.show(this.element, this.element.firstChild);
             this.timelineOverview.start();
@@ -290,6 +295,8 @@ let samplingHeapProfileTypeInstance;
 export class SamplingHeapProfileType extends SamplingHeapProfileTypeBase {
     updateTimer;
     updateIntervalMs;
+    #recordTimelineSetting;
+    customContentInternal = null;
     constructor() {
         super(SamplingHeapProfileType.TypeId, i18nString(UIStrings.allocationSampling));
         if (!samplingHeapProfileTypeInstance) {
@@ -297,6 +304,11 @@ export class SamplingHeapProfileType extends SamplingHeapProfileTypeBase {
         }
         this.updateTimer = 0;
         this.updateIntervalMs = 200;
+        this.#recordTimelineSetting =
+            Common.Settings.Settings.instance().createSetting('record-sampling-heap-profiler-timeline', false);
+    }
+    get recordTimelineSetting() {
+        return this.#recordTimelineSetting;
     }
     static get instance() {
         return samplingHeapProfileTypeInstance;
@@ -310,7 +322,18 @@ export class SamplingHeapProfileType extends SamplingHeapProfileTypeBase {
         return formattedDescription.join('\n');
     }
     hasTemporaryView() {
-        return Root.Runtime.experiments.isEnabled(Root.ExperimentNames.ExperimentName.SAMPLING_HEAP_PROFILER_TIMELINE);
+        return this.#recordTimelineSetting.get();
+    }
+    customContent() {
+        const checkboxSetting = SettingsUI.SettingsUI.createSettingCheckbox(i18nString(UIStrings.samplingHeapProfilerTimeline), this.#recordTimelineSetting);
+        this.customContentInternal = checkboxSetting;
+        checkboxSetting.setAttribute('jslog', `${VisualLogging.toggle('record-sampling-heap-profiler-timeline').track({ click: true })}`);
+        return checkboxSetting;
+    }
+    setCustomContentEnabled(enable) {
+        if (this.customContentInternal) {
+            this.customContentInternal.disabled = !enable;
+        }
     }
     startSampling() {
         const heapProfilerModel = this.obtainRecordingProfile();
@@ -318,7 +341,7 @@ export class SamplingHeapProfileType extends SamplingHeapProfileTypeBase {
             return;
         }
         void heapProfilerModel.startSampling();
-        if (Root.Runtime.experiments.isEnabled(Root.ExperimentNames.ExperimentName.SAMPLING_HEAP_PROFILER_TIMELINE)) {
+        if (this.#recordTimelineSetting.get()) {
             this.updateTimer = window.setTimeout(() => {
                 void this.updateStats();
             }, this.updateIntervalMs);

@@ -55,6 +55,8 @@ entrypoints/formatter_worker/JSONFormatter.test.js
 entrypoints/formatter_worker/JavaScriptFormatter.test.js
 entrypoints/formatter_worker/ScopeParser.test.js
 entrypoints/formatter_worker/Substitute.test.js
+entrypoints/heap_snapshot_worker/HeapSnapshot.test.js
+entrypoints/heap_snapshot_worker/heap_snapshot_worker.test.js
 foundation/Universe.test.js
 models/ai_assistance/data_formatters/LighthouseFormatter.test.js
 models/ai_assistance/data_formatters/NetworkRequestFormatter.test.js

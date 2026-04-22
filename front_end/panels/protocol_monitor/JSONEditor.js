@@ -85,26 +85,13 @@ export class JSONEditor extends Common.ObjectWrapper.eventMixin(UI.Widget.VBox) 
     #targetId;
     #hintPopoverHelper;
     #view;
-    #onSubmit;
     displayTargetSelector = true;
     displayCommandInput = true;
+    displayToolbar = true;
     constructor(element, view = DEFAULT_VIEW) {
         super(element, { useShadowDom: true });
         this.#view = view;
         this.registerRequiredCSS(editorWidgetStyles);
-    }
-    get onSubmit() {
-        return this.#onSubmit;
-    }
-    set onSubmit(val) {
-        if (this.#onSubmit) {
-            this.removeEventListener("submiteditor" /* Events.SUBMIT_EDITOR */, this.#onSubmit);
-        }
-        this.#onSubmit = val;
-        if (this.#onSubmit) {
-            this.addEventListener("submiteditor" /* Events.SUBMIT_EDITOR */, this.#onSubmit);
-        }
-        this.requestUpdate();
     }
     get metadataByCommand() {
         return this.#metadataByCommand;
@@ -822,6 +809,7 @@ export class JSONEditor extends Common.ObjectWrapper.eventMixin(UI.Widget.VBox) 
             },
             displayTargetSelector: this.displayTargetSelector,
             displayCommandInput: this.displayCommandInput,
+            displayToolbar: this.displayToolbar,
         };
         const viewOutput = {};
         this.#view(viewInput, viewOutput, this.contentElement);
@@ -1089,6 +1077,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
           ${renderParameters(input, input.parameters)}
         ` : nothing}
       </div>
+      ${input.displayToolbar !== false ? html `
       <devtools-toolbar class="protocol-monitor-sidebar-toolbar">
         <devtools-button title=${i18nString(UIStrings.copyCommand)}
                         .iconName=${'copy'}
@@ -1102,6 +1091,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
                         .variant=${"primary_toolbar" /* Buttons.Button.Variant.PRIMARY_TOOLBAR */}
                         @click=${input.onCommandSend}></devtools-button>
       </devtools-toolbar>
+      ` : nothing}
     </div>`, target);
     // clang-format on
 };

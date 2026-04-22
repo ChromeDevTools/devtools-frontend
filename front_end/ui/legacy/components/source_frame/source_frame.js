@@ -1529,7 +1529,7 @@ var ImageView = class extends UI5.View.SimpleView {
     super({
       title: i18nString4(UIStrings4.image),
       viewId: "image",
-      jslog: `${VisualLogging3.pane("image-view")}}`
+      jslog: `${VisualLogging3.pane("image-view")}`
     });
     this.registerRequiredCSS(imageView_css_default);
     this.element.tabIndex = -1;
@@ -1580,7 +1580,10 @@ var ImageView = class extends UI5.View.SimpleView {
       return;
     }
     this.cachedContent = content;
-    const imageSrc = content.asDataUrl() ?? this.url;
+    const imageSrc = content.asImagePreviewUrl();
+    if (imageSrc === null) {
+      return;
+    }
     const loadPromise = new Promise((x) => {
       this.imagePreviewElement.onload = x;
     });
@@ -1620,8 +1623,7 @@ var ImageView = class extends UI5.View.SimpleView {
     Host2.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(this.url);
   }
   async saveImage() {
-    const imageDataURL = this.cachedContent?.asDataUrl();
-    if (!imageDataURL) {
+    if (!this.cachedContent) {
       return;
     }
     let suggestedName = "";
@@ -1634,7 +1636,10 @@ var ImageView = class extends UI5.View.SimpleView {
     } else {
       suggestedName = decodeURIComponent(this.parsedURL.displayName);
     }
-    const blob = await fetch(imageDataURL).then((r) => r.blob());
+    const blob = this.cachedContent.asBlob();
+    if (!blob) {
+      return;
+    }
     try {
       const handle = await window.showSaveFilePicker({ suggestedName });
       const writable = await handle.createWritable();

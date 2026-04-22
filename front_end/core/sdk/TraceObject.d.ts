@@ -2,6 +2,10 @@ import type * as Protocol from '../../generated/protocol.js';
 import type { NetworkRequest } from './NetworkRequest.js';
 import type { RehydratingResource } from './RehydratingObject.js';
 import type { SourceMapV3 } from './SourceMap.js';
+interface TraceObjectWithNoMetadata {
+    readonly traceEvents: TraceObject['traceEvents'];
+    metadata?: TraceObject['metadata'];
+}
 /** A thin wrapper class, mostly to enable instanceof-based revealing of traces to open in Timeline. **/
 export declare class TraceObject {
     readonly traceEvents: Protocol.Tracing.DataCollectedEvent['value'];
@@ -13,7 +17,7 @@ export declare class TraceObject {
         }>;
         resources?: RehydratingResource[];
     };
-    constructor(payload: Protocol.Tracing.DataCollectedEvent['value'] | TraceObject, meta?: Object);
+    constructor(payload: Protocol.Tracing.DataCollectedEvent['value'] | TraceObject | TraceObjectWithNoMetadata, meta?: Object);
 }
 /** Another thin wrapper class to enable revealing individual trace events (aka entries) in Timeline panel. **/
 export declare class RevealableEvent {
@@ -35,3 +39,4 @@ export declare class RevealableNetworkRequest {
     constructor(networkRequest: NetworkRequest);
     static create(event: unknown): RevealableNetworkRequest | null;
 }
+export {};

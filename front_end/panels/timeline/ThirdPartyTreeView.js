@@ -36,6 +36,7 @@ export class ThirdPartyTreeViewWidget extends TimelineTreeView.TimelineTreeView 
     #onRowHovered;
     #onBottomUpButtonClicked;
     #onRowClicked;
+    #isInAIWidget = false;
     constructor(element) {
         super(element);
         this.element.setAttribute('jslog', `${VisualLogging.pane('third-party-tree').track({ hover: true })}`);
@@ -209,6 +210,13 @@ export class ThirdPartyTreeViewWidget extends TimelineTreeView.TimelineTreeView 
     }
     get maxRows() {
         return super.maxRows;
+    }
+    get isInAIWidget() {
+        return this.#isInAIWidget;
+    }
+    set isInAIWidget(x) {
+        this.#isInAIWidget = x;
+        this.element.classList.toggle('is-in-ai-widget', x);
     }
     set maxRows(maxRows) {
         super.maxRows = maxRows;

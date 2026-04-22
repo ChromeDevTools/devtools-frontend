@@ -7,6 +7,10 @@ export interface TraceFile {
     traceEvents: readonly Event[];
     metadata: MetaData;
 }
+interface TraceFileWithUnknownMetadata {
+    traceEvents: readonly Event[];
+    metadata?: MetaData;
+}
 export interface Breadcrumb {
     window: TraceWindowMicro;
     child: Breadcrumb | null;
@@ -193,5 +197,6 @@ export interface MetadataResource {
     content: string;
     mimeType: string;
 }
-export type Contents = TraceFile | Event[];
+export type Contents = TraceFileWithUnknownMetadata | Event[];
 export declare function traceEventKeyToValues(key: SerializableKey): SerializableKeyValues;
+export {};

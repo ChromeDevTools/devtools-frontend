@@ -112,6 +112,7 @@ export declare class Widget<ContentTypeT extends HTMLElement | DocumentFragment 
     static getOrCreateWidget(element: HTMLElement): Widget;
     get contentElement(): ContentTypeT;
     protected set contentElement(contentElement: ContentTypeT);
+    dispatchDOMEvent(event: Event): void;
     markAsRoot(): void;
     parentWidget(): Widget | null;
     children(): Widget[];

@@ -140,7 +140,8 @@ export class Resource {
         if (TextUtils.ContentData.ContentData.isError(contentData)) {
             return;
         }
-        image.src = contentData.asDataUrl() ?? this.#url;
+        const imageSrc = contentData.asImagePreviewUrl();
+        image.src = imageSrc ?? ''; // Empty the image if we cannot generate a preview URL
     }
     async innerRequestContent() {
         if (this.request) {

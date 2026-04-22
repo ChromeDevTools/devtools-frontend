@@ -26,9 +26,6 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const { render, html } = Lit;
 const { widget } = UI.Widget;
 export const DEFAULT_VIEW = (input, _output, target) => {
-    const onSidebar = (sidebar) => {
-        sidebar.addEventListener("SelectedUISourceCodeChanged" /* Events.SELECTED_UI_SOURCE_CODE_CHANGED */, () => input.onSelect(sidebar.selectedUISourceCode()));
-    };
     render(
     // clang-format off
     html `
@@ -51,7 +48,10 @@ export const DEFAULT_VIEW = (input, _output, target) => {
           </div>
         </div>
         <devtools-widget slot="sidebar" ${widget(ChangesSidebar, { workspaceDiff: input.workspaceDiff })}
-          ${UI.Widget.widgetRef(ChangesSidebar, onSidebar)}>
+          @SelectedUISourceCodeChanged=${(e) => {
+        const sidebar = UI.Widget.Widget.get(e.target);
+        input.onSelect(sidebar.selectedUISourceCode());
+    }}>
         </devtools-widget>
       </devtools-split-view>`, 
     // clang-format on

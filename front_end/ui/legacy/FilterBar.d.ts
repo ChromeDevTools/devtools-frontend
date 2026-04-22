@@ -13,6 +13,7 @@ declare const FilterBar_base: (new (...args: any[]) => {
     removeEventListener<T extends FilterBarEvents.CHANGED>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<FilterBarEventTypes[T], any>) => void, thisObject?: Object): void;
     hasEventListeners(eventType: FilterBarEvents.CHANGED): boolean;
     dispatchEventToListeners<T extends FilterBarEvents.CHANGED>(eventType: Platform.TypeScriptUtilities.NoUnion<T>, ...eventData: Common.EventTarget.EventPayloadToRestParameters<FilterBarEventTypes, T>): void;
+    dispatchDOMEvent?(event: Event): void;
 }) & typeof HBox;
 export declare class FilterBar extends FilterBar_base {
     #private;

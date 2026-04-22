@@ -167,12 +167,6 @@ select {
   font-size: inherit;
 }
 
-select option,
-select optgroup,
-input {
-  background-color: var(--sys-color-cdt-base-container);
-}
-
 input {
   color: inherit;
 

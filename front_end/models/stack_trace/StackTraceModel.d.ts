@@ -16,7 +16,7 @@ export type TranslateRawFrames = (frames: readonly RawFrame[], target: SDK.Targe
 export declare class StackTraceModel extends SDK.SDKModel.SDKModel<unknown> {
     #private;
     createFromProtocolRuntime(stackTrace: Protocol.Runtime.StackTrace, rawFramesToUIFrames: TranslateRawFrames): Promise<StackTrace.StackTrace.StackTrace>;
-    createFromErrorStackLikeString(stack: string, rawFramesToUIFrames: TranslateRawFrames, exceptionDetails?: Protocol.Runtime.ExceptionDetails): Promise<StackTrace.StackTrace.ParsedErrorStackTrace>;
+    createFromErrorStackLikeString(stack: string, rawFramesToUIFrames: TranslateRawFrames, exceptionDetails?: Protocol.Runtime.ExceptionDetails): Promise<StackTrace.StackTrace.ParsedErrorStackTrace | null>;
     createFromDebuggerPaused(pausedDetails: SDK.DebuggerModel.DebuggerPausedDetails, rawFramesToUIFrames: TranslateRawFrames): Promise<StackTrace.StackTrace.DebuggableStackTrace>;
     /** Trigger re-translation of all fragments with the provide script in their call stack */
     scriptInfoChanged(script: SDK.Script.Script, translateRawFrames: TranslateRawFrames): Promise<void>;

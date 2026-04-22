@@ -27,5 +27,4 @@ export declare class TimelineLoader {
 /**
  * Used when we parse the input, but do not yet know if it is a raw CPU Profile or a Trace
  **/
-type ParsedJSONFile = Trace.Types.File.Contents | Protocol.Profiler.Profile;
-export {};
+export type ParsedJSONFile = Trace.Types.File.Contents | Protocol.Profiler.Profile;

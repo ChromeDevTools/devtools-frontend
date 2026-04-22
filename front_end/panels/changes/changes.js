@@ -583,9 +583,6 @@ var i18nString3 = i18n5.i18n.getLocalizedString.bind(void 0, str_3);
 var { render: render3, html: html3 } = Lit3;
 var { widget } = UI3.Widget;
 var DEFAULT_VIEW3 = (input, _output, target) => {
-  const onSidebar = (sidebar) => {
-    sidebar.addEventListener("SelectedUISourceCodeChanged", () => input.onSelect(sidebar.selectedUISourceCode()));
-  };
   render3(
     // clang-format off
     html3`
@@ -608,7 +605,10 @@ var DEFAULT_VIEW3 = (input, _output, target) => {
           </div>
         </div>
         <devtools-widget slot="sidebar" ${widget(ChangesSidebar, { workspaceDiff: input.workspaceDiff })}
-          ${UI3.Widget.widgetRef(ChangesSidebar, onSidebar)}>
+          @SelectedUISourceCodeChanged=${(e) => {
+      const sidebar = UI3.Widget.Widget.get(e.target);
+      input.onSelect(sidebar.selectedUISourceCode());
+    }}>
         </devtools-widget>
       </devtools-split-view>`,
     // clang-format on

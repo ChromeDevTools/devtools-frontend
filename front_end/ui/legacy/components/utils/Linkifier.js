@@ -304,6 +304,9 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper {
         const { className = '' } = linkifyURLOptions;
         const fallbackAnchor = Linkifier.linkifyURL(frame.url, linkifyURLOptions);
         if (!frame.uiSourceCode) {
+            const isIgnoreListed = (options?.ignoreListManager ?? Workspace.IgnoreListManager.IgnoreListManager.instance())
+                .isUserIgnoreListedURL(frame.url);
+            fallbackAnchor.classList.toggle('ignore-list-link', isIgnoreListed);
             return fallbackAnchor;
         }
         const createLinkOptions = {
@@ -319,7 +322,7 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper {
             revealBreakpoint: options?.revealBreakpoint,
         };
         const uiLocation = frame.uiSourceCode.uiLocation(frame.line, frame.column) ?? null;
-        Linkifier.updateAnchorFromUILocation(link, linkDisplayOptions, uiLocation);
+        Linkifier.updateAnchorFromUILocation(link, linkDisplayOptions, uiLocation, options?.ignoreListManager);
         return link;
     }
     linkifyStackTraceTopFrame(target, stackTrace) {
@@ -423,7 +426,7 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper {
         });
         Linkifier.updateAnchorFromUILocation(anchor, options, uiLocation);
     }
-    static updateAnchorFromUILocation(anchor, options, uiLocation) {
+    static updateAnchorFromUILocation(anchor, options, uiLocation, ignoreListManager) {
         if (!uiLocation) {
             anchor.classList.add('invalid-link');
             anchor.removeAttribute('role');
@@ -450,7 +453,7 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper {
             }
         }
         UI.Tooltip.Tooltip.install(anchor, titleText);
-        const isIgnoreListed = Boolean(uiLocation?.isIgnoreListed());
+        const isIgnoreListed = Boolean(uiLocation?.isIgnoreListed(ignoreListManager));
         anchor.classList.toggle('ignore-list-link', isIgnoreListed);
         Linkifier.updateLinkDecorations(anchor);
     }

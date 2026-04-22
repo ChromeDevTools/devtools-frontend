@@ -10,8 +10,8 @@ __export(HostRuntime_exports, {
   HOST_RUNTIME: () => HOST_RUNTIME
 });
 var WebWorkerScope = class {
-  postMessage(message) {
-    self.postMessage(message);
+  postMessage(message, transfer) {
+    self.postMessage(message, transfer);
   }
   set onmessage(listener) {
     self.addEventListener("message", listener);

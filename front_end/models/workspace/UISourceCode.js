@@ -415,8 +415,8 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper {
     editDisabled() {
         return this.#disableEdit;
     }
-    isIgnoreListed() {
-        return IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(this);
+    isIgnoreListed(ignoreListManager = IgnoreListManager.instance()) {
+        return ignoreListManager.isUserOrSourceMapIgnoreListedUISourceCode(this);
     }
 }
 export var Events;
@@ -498,8 +498,8 @@ export class UILocation {
         }
         return this.columnNumber - other.columnNumber;
     }
-    isIgnoreListed() {
-        return this.uiSourceCode.isIgnoreListed();
+    isIgnoreListed(ignoreListManager = IgnoreListManager.instance()) {
+        return this.uiSourceCode.isIgnoreListed(ignoreListManager);
     }
 }
 /**

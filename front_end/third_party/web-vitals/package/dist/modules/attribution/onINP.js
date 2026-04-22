@@ -26,8 +26,8 @@ import { onINP as unattributedOnINP } from '../onINP.js';
 // frame data is needed to determine various bits of INP attribution once all
 // the frame-related data has come in.
 // In most cases this out-of-order data is only off by a frame or two, so
-// keeping the most recent 50 should be more than sufficient.
-const MAX_PREVIOUS_FRAMES = 50;
+// keeping the most recent 10 should be more than sufficient.
+const MAX_PENDING_FRAMES = 10;
 /**
  * Calculates the [INP](https://web.dev/articles/inp) value for the current
  * page and calls the `callback` function once the value is ready, along with
@@ -42,6 +42,10 @@ const MAX_PREVIOUS_FRAMES = 50;
  * will not affect your 75th percentile INP value unless that value is also
  * less than 40 (well below the recommended
  * [good](https://web.dev/articles/inp#what_is_a_good_inp_score) threshold).
+ *
+ * A custom `includeProcessedEventEntries` configuration option can optionally
+ * be passed to control whether the `processedEventEntries` array in the
+ * attribution object is populated. The default value is `true`.
  *
  * If the `reportAllChanges` configuration option is set to `true`, the
  * `callback` function will be called as soon as the value is initially
@@ -109,6 +113,8 @@ export const onINP = (onReport, opts = {}) => {
     const groupEntriesByRenderTime = (entry) => {
         const renderTime = entry.startTime + entry.duration;
         let group;
+        // Update `latestProcessingEnd` to correspond to the `processingEnd`
+        // value of the most recently dispatched `event` entry.
         latestProcessingEnd = Math.max(latestProcessingEnd, entry.processingEnd);
         // Iterate over all previous render times in reverse order to find a match.
         // Go in reverse since the most likely match will be at the end.
@@ -121,11 +127,11 @@ export const onINP = (onReport, opts = {}) => {
                 group.startTime = Math.min(entry.startTime, group.startTime);
                 group.processingStart = Math.min(entry.processingStart, group.processingStart);
                 group.processingEnd = Math.max(entry.processingEnd, group.processingEnd);
-                // Entries are not needed in DevTools since we're only displaying the
-                // summary information, and also emitting events as they come in. Stop
-                // holding a reference to avoid memory issues.
-                // See https://crbug.com/484342204
-                // group.entries.push(entry);
+                // processedEventEntries can be quite large, so only include them if
+                // the user explicitly requests them (default is to include).
+                if (opts.includeProcessedEventEntries !== false) {
+                    group.entries.push(entry);
+                }
                 break;
             }
         }
@@ -136,12 +142,9 @@ export const onINP = (onReport, opts = {}) => {
                 processingStart: entry.processingStart,
                 processingEnd: entry.processingEnd,
                 renderTime,
-                // Entries are not needed in DevTools since we're only displaying the
-                // summary information, and also emiting events as they come in. Stop
-                // holding a reference to avoid memory issues.
-                // See https://crbug.com/484342204
-                // entries: [entry],
-                entries: [],
+                // processedEventEntries can be quite large, so only include them if
+                // the user explicitly requests them (default is to include).
+                entries: opts.includeProcessedEventEntries !== false ? [entry] : [],
             };
             pendingEntriesGroups.push(group);
         }
@@ -159,35 +162,39 @@ export const onINP = (onReport, opts = {}) => {
         }
     };
     const cleanupEntries = () => {
-        // Keep all render times that are part of a pending INP candidate or
-        // that occurred within the 50 most recently-dispatched groups of events.
-        const longestInteractionGroups = interactionManager._longestInteractionList.map((i) => {
+        // Create a set of entries groups that are part of the longest
+        // interactions (for faster lookup below).
+        const longestInteractionGroups = new Set(interactionManager._longestInteractionList.map((i) => {
             return entryToEntriesGroupMap.get(i.entries[0]);
+        }));
+        // Clean up the `pendingEntriesGroups` list so it doesn't grow endlessly.
+        // Keep any groups that:
+        // 1) Correspond to one of the current longest interactions, OR
+        // 2) Are part of one of the most recent set of frames (which is
+        //    determined by checking if the index in the group is within
+        //    `MAX_PENDING_FRAMES` of the group's length).
+        const minIndexToKeep = pendingEntriesGroups.length - MAX_PENDING_FRAMES;
+        pendingEntriesGroups = pendingEntriesGroups.filter((group, i) => {
+            // Check index first because it's faster.
+            return i >= minIndexToKeep || longestInteractionGroups.has(group);
         });
-        const minIndex = pendingEntriesGroups.length - MAX_PREVIOUS_FRAMES;
-        pendingEntriesGroups = pendingEntriesGroups.filter((group, index) => {
-            if (index >= minIndex)
-                return true;
-            return longestInteractionGroups.includes(group);
-        });
-        // Keep all pending LoAF entries that either:
-        // 1) intersect with entries in the newly cleaned up `pendingEntriesGroups`
-        // 2) occur after the most recently-processed event entry (for up to MAX_PREVIOUS_FRAMES)
-        const loafsToKeep = new Set();
+        // Create a set of LoAF entries that intersect with entries in the newly
+        // cleaned up `pendingEntriesGroups` (for faster lookup below).
+        const intersectingLoAFs = new Set();
         for (const group of pendingEntriesGroups) {
             const loafs = getIntersectingLoAFs(group.startTime, group.processingEnd);
             for (const loaf of loafs) {
-                loafsToKeep.add(loaf);
+                intersectingLoAFs.add(loaf);
             }
         }
-        const prevFrameIndexCutoff = pendingLoAFs.length - 1 - MAX_PREVIOUS_FRAMES;
-        // Filter `pendingLoAFs` to preserve LoAF order.
-        pendingLoAFs = pendingLoAFs.filter((loaf, index) => {
-            if (loaf.startTime > latestProcessingEnd &&
-                index > prevFrameIndexCutoff) {
-                return true;
-            }
-            return loafsToKeep.has(loaf);
+        // Clean up the `pendingLoAFs` list so it doesn't grow endlessly.
+        // Keep all LoAFs that either:
+        // 1) Intersect with one of the above pending entries groups, OR
+        // 2) Occurred more recently than the most recently process event entry.
+        pendingLoAFs = pendingLoAFs.filter((loaf) => {
+            return (
+            // Compare times first because it's faster.
+            loaf.startTime > latestProcessingEnd || intersectingLoAFs.has(loaf));
         });
         cleanupPending = false;
     };
@@ -358,13 +365,11 @@ export const onINP = (onReport, opts = {}) => {
         };
         attributeLoAFDetails(attribution);
         // Use `Object.assign()` to ensure the original metric object is returned.
-        const metricWithAttribution = Object.assign(metric, { attribution });
-        return metricWithAttribution;
+        return Object.assign(metric, { attribution });
     };
     // Start observing LoAF entries for attribution.
     observe('long-animation-frame', handleLoAFEntries);
     unattributedOnINP((metric) => {
-        const metricWithAttribution = attributeINP(metric);
-        onReport(metricWithAttribution);
+        onReport(attributeINP(metric));
     }, opts);
 };

@@ -11,8 +11,8 @@ __export(HostRuntime_exports, {
 });
 import * as WorkerThreads from "node:worker_threads";
 var NodeWorkerScope = class {
-  postMessage(message) {
-    WorkerThreads.parentPort?.postMessage(message);
+  postMessage(message, transfer) {
+    WorkerThreads.parentPort?.postMessage(message, transfer);
   }
   set onmessage(listener) {
     WorkerThreads.parentPort?.addEventListener("message", (msg) => {

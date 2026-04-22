@@ -48,6 +48,7 @@ export const TIMELINE_RANGE_SUMMARY_VIEW_DEFAULT_VIEW = (input, _output, target)
             rangeEnd: endOffset,
             categories,
             total,
+            isInAIWidget: input.isInAIWidget,
         }
     })}
       ></devtools-widget>

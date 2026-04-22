@@ -82,22 +82,10 @@ export class StorageItemsToolbar extends Common.ObjectWrapper.eventMixin(UI.Widg
     #deleteAllButtonIconName = 'clear';
     #deleteAllButtonTitle = i18nString(UIStrings.clearAll);
     #mainToolbarItems = [];
-    #onRefreshCallback;
-    #onDeleteAllCallback;
-    #onDeleteSelectedCallback;
     constructor(element, view = DEFAULT_VIEW) {
         super(element);
         this.#view = view;
         this.filterRegex = null;
-    }
-    set onRefreshCallback(callback) {
-        this.#onRefreshCallback = callback;
-    }
-    set onDeleteAllCallback(callback) {
-        this.#onDeleteAllCallback = callback;
-    }
-    set onDeleteSelectedCallback(callback) {
-        this.#onDeleteSelectedCallback = callback;
     }
     set metadataView(view) {
         this.#metadataView = view;
@@ -119,16 +107,13 @@ export class StorageItemsToolbar extends Common.ObjectWrapper.eventMixin(UI.Widg
             metadataView: this.metadataView,
             onFilterChanged: this.filterChanged.bind(this),
             onRefresh: () => {
-                this.#onRefreshCallback?.();
                 this.dispatchEventToListeners("Refresh" /* StorageItemsToolbar.Events.REFRESH */);
                 UI.ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.refreshedStatus));
             },
             onDeleteAll: () => {
-                this.#onDeleteAllCallback?.();
                 this.dispatchEventToListeners("DeleteAll" /* StorageItemsToolbar.Events.DELETE_ALL */);
             },
             onDeleteSelected: () => {
-                this.#onDeleteSelectedCallback?.();
                 this.dispatchEventToListeners("DeleteSelected" /* StorageItemsToolbar.Events.DELETE_SELECTED */);
             },
         };
@@ -151,7 +136,6 @@ export class StorageItemsToolbar extends Common.ObjectWrapper.eventMixin(UI.Widg
     }
     filterChanged({ detail: text }) {
         this.filterRegex = text ? new RegExp(Platform.StringUtilities.escapeForRegExp(text), 'i') : null;
-        this.#onRefreshCallback?.();
         this.dispatchEventToListeners("Refresh" /* StorageItemsToolbar.Events.REFRESH */);
     }
     hasFilter() {

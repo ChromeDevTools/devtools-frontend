@@ -75,6 +75,7 @@ interface ViewInput {
     onParameterValueBlur: (event: Event) => void;
     displayTargetSelector?: boolean;
     displayCommandInput?: boolean;
+    displayToolbar?: boolean;
 }
 export type View = (input: ViewInput, output: object, target: HTMLElement) => void;
 export declare function suggestionFilter(option: string, query: string): boolean;
@@ -91,14 +92,14 @@ declare const JSONEditor_base: (new (...args: any[]) => {
     removeEventListener<T extends Events.SUBMIT_EDITOR>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<EventTypes[T], any>) => void, thisObject?: Object): void;
     hasEventListeners(eventType: Events.SUBMIT_EDITOR): boolean;
     dispatchEventToListeners<T extends Events.SUBMIT_EDITOR>(eventType: import("../../core/platform/TypescriptUtilities.js").NoUnion<T>, ...eventData: Common.EventTarget.EventPayloadToRestParameters<EventTypes, T>): void;
+    dispatchDOMEvent?(event: Event): void;
 }) & typeof UI.Widget.VBox;
 export declare class JSONEditor extends JSONEditor_base {
     #private;
     displayTargetSelector: boolean;
     displayCommandInput: boolean;
+    displayToolbar: boolean;
     constructor(element: HTMLElement, view?: View);
-    get onSubmit(): ((e: Common.EventTarget.EventTargetEvent<Command>) => unknown) | undefined;
-    set onSubmit(val: ((e: Common.EventTarget.EventTargetEvent<Command>) => unknown) | undefined);
     get metadataByCommand(): Map<string, {
         parameters: Parameter[];
         description: string;

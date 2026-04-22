@@ -115,6 +115,7 @@ export declare class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     set hovered(isHovered: boolean);
     addIssue(newIssue: IssuesManager.Issue.Issue): void;
     get issuesByNodeElement(): Map<Element, IssuesManager.Issue.Issue[]>;
+    removeIssue(issue: IssuesManager.Issue.Issue): void;
     expandedChildrenLimit(): number;
     setExpandedChildrenLimit(expandedChildrenLimit: number): void;
     onTopLayerIndexChanged(): void;

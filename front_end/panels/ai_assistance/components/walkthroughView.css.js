@@ -168,6 +168,11 @@ export default `/*
       white-space: nowrap;
       min-width: 0;
     }
+
+    &:focus-visible {
+      outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
+      outline-offset: calc(-1 * var(--sys-size-2));
+    }
   }
 
   .walkthrough-inline[open] > summary {

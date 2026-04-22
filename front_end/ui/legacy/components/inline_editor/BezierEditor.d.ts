@@ -8,6 +8,7 @@ declare const BezierEditor_base: (new (...args: any[]) => {
     removeEventListener<T extends Events.BEZIER_CHANGED>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<EventTypes[T], any>) => void, thisObject?: Object): void;
     hasEventListeners(eventType: Events.BEZIER_CHANGED): boolean;
     dispatchEventToListeners<T extends Events.BEZIER_CHANGED>(eventType: import("../../../../core/platform/TypescriptUtilities.js").NoUnion<T>, ...eventData: Common.EventTarget.EventPayloadToRestParameters<EventTypes, T>): void;
+    dispatchDOMEvent?(event: Event): void;
 }) & typeof UI.Widget.VBox;
 export declare class BezierEditor extends BezierEditor_base {
     private model;

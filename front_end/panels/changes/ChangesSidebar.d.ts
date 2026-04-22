@@ -17,6 +17,7 @@ declare const ChangesSidebar_base: (new (...args: any[]) => {
     removeEventListener<T extends Events.SELECTED_UI_SOURCE_CODE_CHANGED>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<EventTypes[T], any>) => void, thisObject?: Object): void;
     hasEventListeners(eventType: Events.SELECTED_UI_SOURCE_CODE_CHANGED): boolean;
     dispatchEventToListeners<T extends Events.SELECTED_UI_SOURCE_CODE_CHANGED>(eventType: import("../../core/platform/TypescriptUtilities.js").NoUnion<T>, ...eventData: Common.EventTarget.EventPayloadToRestParameters<EventTypes, T>): void;
+    dispatchDOMEvent?(event: Event): void;
 }) & typeof UI.Widget.Widget;
 export declare class ChangesSidebar extends ChangesSidebar_base {
     #private;

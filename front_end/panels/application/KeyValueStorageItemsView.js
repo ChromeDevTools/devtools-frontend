@@ -88,6 +88,9 @@ export class KeyValueStorageItemsView extends UI.Widget.VBox {
             <devtools-widget
               ${widget(StorageItemsToolbar, { metadataView })}
               class=flex-none
+              @Refresh=${input.onRefresh}
+              @DeleteAll=${input.onDeleteAll}
+              @DeleteSelected=${input.onDeleteSelected}
               ${UI.Widget.widgetRef(StorageItemsToolbar, view => { output.toolbar = view; })}
             ></devtools-widget>
             <devtools-split-view sidebar-position="second" name="${id}-split-view-state">
@@ -99,7 +102,7 @@ export class KeyValueStorageItemsView extends UI.Widget.VBox {
                   striped
                   style="flex: auto"
                   @sort=${(e) => input.onSort(e.detail.ascending)}
-                  @refresh=${input.onReferesh}
+                  @refresh=${input.onRefresh}
                   @create=${(e) => input.onCreate(e.detail.key, e.detail.value)}
                   @deselect=${() => input.onSelect(null)}
                 >
@@ -154,13 +157,7 @@ export class KeyValueStorageItemsView extends UI.Widget.VBox {
         const that = this;
         const viewOutput = {
             set toolbar(toolbar) {
-                that.#toolbar?.removeEventListener("DeleteSelected" /* StorageItemsToolbar.Events.DELETE_SELECTED */, that.deleteSelectedItem, that);
-                that.#toolbar?.removeEventListener("DeleteAll" /* StorageItemsToolbar.Events.DELETE_ALL */, that.deleteAllItems, that);
-                that.#toolbar?.removeEventListener("Refresh" /* StorageItemsToolbar.Events.REFRESH */, that.refreshItems, that);
                 that.#toolbar = toolbar;
-                that.#toolbar.addEventListener("DeleteSelected" /* StorageItemsToolbar.Events.DELETE_SELECTED */, that.deleteSelectedItem, that);
-                that.#toolbar.addEventListener("DeleteAll" /* StorageItemsToolbar.Events.DELETE_ALL */, that.deleteAllItems, that);
-                that.#toolbar.addEventListener("Refresh" /* StorageItemsToolbar.Events.REFRESH */, that.refreshItems, that);
             }
         };
         const viewInput = {
@@ -189,7 +186,13 @@ export class KeyValueStorageItemsView extends UI.Widget.VBox {
             onDelete: (key) => {
                 this.#deleteCallback(key);
             },
-            onReferesh: () => {
+            onDeleteSelected: () => {
+                this.deleteSelectedItem();
+            },
+            onDeleteAll: () => {
+                this.deleteAllItems();
+            },
+            onRefresh: () => {
                 this.refreshItems();
             },
         };

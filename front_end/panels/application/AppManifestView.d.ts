@@ -168,6 +168,7 @@ declare const AppManifestView_base: (new (...args: any[]) => {
     removeEventListener<T extends Events.MANIFEST_DETECTED>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<EventTypes[T], any>) => void, thisObject?: Object): void;
     hasEventListeners(eventType: Events.MANIFEST_DETECTED): boolean;
     dispatchEventToListeners<T extends Events.MANIFEST_DETECTED>(eventType: Platform.TypeScriptUtilities.NoUnion<T>, ...eventData: Common.EventTarget.EventPayloadToRestParameters<EventTypes, T>): void;
+    dispatchDOMEvent?(event: Event): void;
 }) & typeof UI.Widget.VBox;
 export declare class AppManifestView extends AppManifestView_base implements SDK.TargetManager.Observer {
     private registeredListeners;

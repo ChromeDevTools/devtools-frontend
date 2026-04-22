@@ -17,9 +17,11 @@ export interface ViewInput {
     } | null) => void;
     onSort: (ascending: boolean) => void;
     onCreate: (key: string, value: string) => void;
-    onReferesh: () => void;
+    onRefresh: () => void;
     onEdit: (key: string, value: string, columnId: string, valueBeforeEditing: string, newText: string) => void;
     onDelete: (key: string) => void;
+    onDeleteSelected: () => void;
+    onDeleteAll: () => void;
 }
 interface ViewOutput {
     toolbar: StorageItemsToolbar;

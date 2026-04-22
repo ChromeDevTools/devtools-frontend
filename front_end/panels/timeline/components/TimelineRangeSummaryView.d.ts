@@ -3,6 +3,7 @@ import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 export interface TimelineRangeSummaryViewData {
     events: Trace.Types.Events.Event[];
+    isInAIWidget?: boolean;
     startTime: Trace.Types.Timing.Milli;
     endTime: Trace.Types.Timing.Milli;
     parsedTrace: Trace.TraceModel.ParsedTrace | null;

@@ -128,6 +128,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
             inlineFrameIndex: 0,
             revealBreakpoint: previousStackFrameWasBreakpointCondition,
             maxLength: UI.UIUtils.MaxLengthForDisplayedURLsInConsole,
+            ignoreListManager: input.ignoreListManager,
         });
         link.setAttribute('jslog', `${VisualLogging.link('stack-trace').track({ click: true })}`);
         link.addEventListener('contextmenu', populateContextMenu.bind(null, link));
@@ -208,7 +209,7 @@ export class StackTracePreviewContent extends UI.Widget.Widget {
         const hasNonIgnoredLinks = this.linkElements.some(link => {
             const uiLocation = Linkifier.uiLocation(link);
             if (uiLocation) {
-                return !uiLocation.isIgnoreListed();
+                return !uiLocation.isIgnoreListed(this.#options.ignoreListManager);
             }
             return !link.classList.contains('ignore-list-link');
         });

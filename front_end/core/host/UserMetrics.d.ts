@@ -516,7 +516,6 @@ export declare enum DevtoolsExperiments {
     'capture-node-creation-stacks' = 1,
     'live-heap-profile' = 11,
     'protocol-monitor' = 13,
-    'sampling-heap-profiler-timeline' = 17,
     'timeline-invalidation-tracking' = 26,
     'font-editor' = 41,
     'instrumentation-breakpoints' = 61,

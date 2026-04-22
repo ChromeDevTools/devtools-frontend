@@ -10373,22 +10373,10 @@ var StorageItemsToolbar = class extends Common14.ObjectWrapper.eventMixin(UI18.W
   #deleteAllButtonIconName = "clear";
   #deleteAllButtonTitle = i18nString24(UIStrings24.clearAll);
   #mainToolbarItems = [];
-  #onRefreshCallback;
-  #onDeleteAllCallback;
-  #onDeleteSelectedCallback;
   constructor(element, view = DEFAULT_VIEW6) {
     super(element);
     this.#view = view;
     this.filterRegex = null;
-  }
-  set onRefreshCallback(callback) {
-    this.#onRefreshCallback = callback;
-  }
-  set onDeleteAllCallback(callback) {
-    this.#onDeleteAllCallback = callback;
-  }
-  set onDeleteSelectedCallback(callback) {
-    this.#onDeleteSelectedCallback = callback;
   }
   set metadataView(view) {
     this.#metadataView = view;
@@ -10410,7 +10398,6 @@ var StorageItemsToolbar = class extends Common14.ObjectWrapper.eventMixin(UI18.W
       metadataView: this.metadataView,
       onFilterChanged: this.filterChanged.bind(this),
       onRefresh: () => {
-        this.#onRefreshCallback?.();
         this.dispatchEventToListeners(
           "Refresh"
           /* StorageItemsToolbar.Events.REFRESH */
@@ -10418,14 +10405,12 @@ var StorageItemsToolbar = class extends Common14.ObjectWrapper.eventMixin(UI18.W
         UI18.ARIAUtils.LiveAnnouncer.alert(i18nString24(UIStrings24.refreshedStatus));
       },
       onDeleteAll: () => {
-        this.#onDeleteAllCallback?.();
         this.dispatchEventToListeners(
           "DeleteAll"
           /* StorageItemsToolbar.Events.DELETE_ALL */
         );
       },
       onDeleteSelected: () => {
-        this.#onDeleteSelectedCallback?.();
         this.dispatchEventToListeners(
           "DeleteSelected"
           /* StorageItemsToolbar.Events.DELETE_SELECTED */
@@ -10451,7 +10436,6 @@ var StorageItemsToolbar = class extends Common14.ObjectWrapper.eventMixin(UI18.W
   }
   filterChanged({ detail: text }) {
     this.filterRegex = text ? new RegExp(Platform7.StringUtilities.escapeForRegExp(text), "i") : null;
-    this.#onRefreshCallback?.();
     this.dispatchEventToListeners(
       "Refresh"
       /* StorageItemsToolbar.Events.REFRESH */
@@ -10525,6 +10509,9 @@ var KeyValueStorageItemsView = class extends UI19.Widget.VBox {
             <devtools-widget
               ${widget6(StorageItemsToolbar, { metadataView })}
               class=flex-none
+              @Refresh=${input.onRefresh}
+              @DeleteAll=${input.onDeleteAll}
+              @DeleteSelected=${input.onDeleteSelected}
               ${UI19.Widget.widgetRef(StorageItemsToolbar, (view2) => {
             output.toolbar = view2;
           })}
@@ -10538,7 +10525,7 @@ var KeyValueStorageItemsView = class extends UI19.Widget.VBox {
                   striped
                   style="flex: auto"
                   @sort=${(e) => input.onSort(e.detail.ascending)}
-                  @refresh=${input.onReferesh}
+                  @refresh=${input.onRefresh}
                   @create=${(e) => input.onCreate(e.detail.key, e.detail.value)}
                   @deselect=${() => input.onSelect(null)}
                 >
@@ -10593,13 +10580,7 @@ var KeyValueStorageItemsView = class extends UI19.Widget.VBox {
     const that = this;
     const viewOutput = {
       set toolbar(toolbar8) {
-        that.#toolbar?.removeEventListener("DeleteSelected", that.deleteSelectedItem, that);
-        that.#toolbar?.removeEventListener("DeleteAll", that.deleteAllItems, that);
-        that.#toolbar?.removeEventListener("Refresh", that.refreshItems, that);
         that.#toolbar = toolbar8;
-        that.#toolbar.addEventListener("DeleteSelected", that.deleteSelectedItem, that);
-        that.#toolbar.addEventListener("DeleteAll", that.deleteAllItems, that);
-        that.#toolbar.addEventListener("Refresh", that.refreshItems, that);
       }
     };
     const viewInput = {
@@ -10627,7 +10608,13 @@ var KeyValueStorageItemsView = class extends UI19.Widget.VBox {
       onDelete: (key) => {
         this.#deleteCallback(key);
       },
-      onReferesh: () => {
+      onDeleteSelected: () => {
+        this.deleteSelectedItem();
+      },
+      onDeleteAll: () => {
+        this.deleteAllItems();
+      },
+      onRefresh: () => {
         this.refreshItems();
       }
     };
@@ -12051,6 +12038,11 @@ var webMCPView_css_default = `/*
         padding-left: calc(var(--sys-size-8) - 1em);
         min-height: 0;
     }
+
+    .webmcp-run-tool-button {
+        align-self: flex-end;
+        margin: var(--sys-size-6) var(--sys-size-8);
+    }
 }
 
 /*# sourceURL=${import.meta.resolve("./webMCPView.css")} */`;
@@ -12316,6 +12308,7 @@ function getJSONEditorParameters(tool) {
 }
 var DEFAULT_VIEW7 = (input, output, target) => {
   const tools = input.tools;
+  let editorWidget = null;
   const stats = calculateToolStats(input.toolCalls);
   const isFilterActive = Boolean(input.filters.text) || Boolean(input.filters.toolTypes) || Boolean(input.filters.statusTypes);
   const iconName = (call) => {
@@ -12517,8 +12510,8 @@ var DEFAULT_VIEW7 = (input, output, target) => {
           </div>
           ${input.selectedTool ? html10`
             <div class="sidebar-tool-details">
-          ${widget7(ToolDetailsWidget, { tool: input.selectedTool })}
-        </div>
+              ${widget7(ToolDetailsWidget, { tool: input.selectedTool })}
+            </div>
             <div class="section-title">
               <span>${i18nString30(UIStrings30.runTool)}</span>
             </div>
@@ -12527,11 +12520,31 @@ var DEFAULT_VIEW7 = (input, output, target) => {
               ${widget7(ProtocolMonitor.JSONEditor.JSONEditor, {
     displayTargetSelector: false,
     displayCommandInput: false,
+    displayToolbar: false,
     ...getJSONEditorParameters(input.selectedTool),
-    commandToDisplay: input.selectedTool.name,
-    onSubmit: input.onRunTool
+    commandToDisplay: input.selectedTool.name
   })}
+              ${UI23.Widget.widgetRef(ProtocolMonitor.JSONEditor.JSONEditor, (e) => {
+    editorWidget = e;
+  })}
+              @submiteditor=${(e) => input.onRunTool({ data: e.detail })}
             ></devtools-widget>
+            <devtools-button
+              class="webmcp-run-tool-button"
+              .variant=${"outlined"}
+              .size=${"SMALL"}
+              jslogContext="webmcp.run-tool"
+              @click=${() => {
+    if (editorWidget && input.selectedTool) {
+      const params = editorWidget.getParameters();
+      input.onRunTool({
+        data: {
+          command: input.selectedTool.name,
+          parameters: params
+        }
+      });
+    }
+  }}>Run tool</devtools-button>
           ` : nothing6}
         </div>
       </devtools-split-view>
@@ -15295,12 +15308,11 @@ var DEFAULT_VIEW8 = (input, output, target) => {
   render10(
     html11`<style>${cookieItemsView_css_default}</style>
     <devtools-widget class="storage-view" ${widget8(UI25.Widget.VBox, { minimumSize: new Size2(0, 50) })}>
-      <devtools-widget ${widget8(StorageItemsToolbar, {
-      onDeleteSelectedCallback: input.onDeleteSelectedItems,
-      onDeleteAllCallback: input.onDeleteAllItems,
-      onRefreshCallback: input.onRefreshItems
-    })}
+      <devtools-widget ${widget8(StorageItemsToolbar, { filterRegex: null })}
         class=flex-none
+        @Refresh=${input.onRefreshItems}
+        @DeleteAll=${input.onDeleteAllItems}
+        @DeleteSelected=${input.onDeleteSelectedItems}
         ${UI25.Widget.widgetRef(StorageItemsToolbar, (toolbar8) => {
       output.toolbar = toolbar8;
     })}

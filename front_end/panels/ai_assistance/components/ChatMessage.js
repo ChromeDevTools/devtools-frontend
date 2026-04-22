@@ -27,6 +27,7 @@ import * as Timeline from '../../timeline/timeline.js';
 import * as TimelineUtils from '../../timeline/utils/utils.js';
 import { PanelUtils } from '../../utils/utils.js';
 import chatMessageStyles from './chatMessage.css.js';
+import { getButtonLabel } from './WalkthroughUtils.js';
 import { walkthroughCloseTitle, walkthroughTitle, WalkthroughView } from './WalkthroughView.js';
 const { html, Directives: { ref, ifDefined } } = Lit;
 const lockedString = i18n.i18n.lockedString;
@@ -171,6 +172,34 @@ const UIStringsNotTranslate = {
      */
     revealTrace: 'Reveal trace',
     /**
+     * @description Accessible label for the reveal button in the computed styles widget.
+     */
+    revealComputedStyles: 'Reveal computed styles',
+    /**
+     * @description Accessible label for the reveal button in the core web vitals widget.
+     */
+    revealCoreWebVitals: 'Reveal Core Web Vitals',
+    /**
+     * @description Accessible label for the reveal button in the style properties widget.
+     */
+    revealStyleProperties: 'Reveal style properties',
+    /**
+     * @description Accessible label for the reveal button in the LCP breakdown widget.
+     */
+    revealLcpBreakdown: 'Reveal LCP breakdown',
+    /**
+     * @description Accessible label for the reveal button in the LCP element widget.
+     */
+    revealLcpElement: 'Reveal LCP element',
+    /**
+     * @description Accessible label for the reveal button in the performance summary widget.
+     */
+    revealPerformanceSummary: 'Reveal performance summary',
+    /**
+     * @description Accessible label for the reveal button in the bottom up thread activity widget.
+     */
+    revealBottomUpTree: 'Reveal bottom-up thread activity',
+    /**
      * @description Title for the core web vitals widget.
      */
     coreVitals: 'Core Web Vitals',
@@ -194,14 +223,6 @@ const UIStringsNotTranslate = {
      * @description Title for the bottom up thread activity widget.
      */
     bottomUpTree: 'Bottom-up thread activity',
-    /**
-     * @description Accessilility label for the button that shows the walkthrough when there are no widgets in the walkthrough.
-     */
-    showThinking: 'Show thinking',
-    /**
-     * @description Accessilility label for the button that hides the walkthrough when there are no widgets in the walkthrough.
-     */
-    hideThinking: 'Hide thinking',
 };
 export const DEFAULT_VIEW = (input, output, target) => {
     const hasAiV2 = Boolean(Root.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled);
@@ -409,12 +430,13 @@ function renderWalkthroughSidebarButton(input, steps) {
         // We only apply the widget styling when loading is complete
         'has-widgets': hasOneStepWithWidget && !input.isLoading,
     });
-    let accessibleLabel = title;
-    // If the agent is still thinking we want the accessibility label to include the current step title followed by Show/Hide thinking.
-    if (input.isLoading) {
-        const suffix = isExpanded ? UIStringsNotTranslate.hideThinking : UIStringsNotTranslate.showThinking;
-        accessibleLabel = `${titleForStep(lastStep)} ${i18n.i18n.lockedString(suffix)}`;
-    }
+    const accessibleLabel = getButtonLabel({
+        isExpanded,
+        isLoading: input.isLoading,
+        hasWidgets: hasOneStepWithWidget,
+        prompt: input.prompt,
+        stepTitle: titleForStep(lastStep),
+    });
     // clang-format off
     return html `
     <div class=${toggleContainerClasses}>
@@ -474,6 +496,7 @@ function renderWalkthroughUI(input, steps) {
         markdownRenderer: input.markdownRenderer,
         isInlined: true,
         isExpanded,
+        prompt: input.prompt,
         onToggle: input.walkthrough.onToggle,
         onOpen: input.walkthrough.onOpen,
     })}
@@ -602,6 +625,7 @@ async function makeComputedStyleWidget(widgetData) {
     return {
         renderedWidget,
         revealable: new Elements.ElementsPanel.NodeComputedStyles(domNodeForId),
+        accessibleRevealLabel: lockedString(UIStringsNotTranslate.revealComputedStyles),
         // clang-format off
         title: html `
       <span class="computed-style-title-wrapper">
@@ -626,6 +650,7 @@ async function makeCoreWebVitalsWidget(widgetData) {
     return {
         renderedWidget,
         revealable: new TimelineUtils.Helpers.RevealableCoreVitals(widgetData.data.insightSetKey),
+        accessibleRevealLabel: lockedString(UIStringsNotTranslate.revealCoreWebVitals),
         title: lockedString(UIStringsNotTranslate.coreVitals),
         jslogContext: 'core-web-vitals',
     };
@@ -656,6 +681,7 @@ async function makeStylePropertiesWidget(widgetData) {
     return {
         renderedWidget,
         revealable: domNodeForId,
+        accessibleRevealLabel: lockedString(UIStringsNotTranslate.revealStyleProperties),
         title: html `<devtools-widget
       ${widget(PanelsCommon.DOMLinkifier.DOMNodeLink, {
             node: domNodeForId,
@@ -682,6 +708,7 @@ async function makePerfInsightWidget(widgetData) {
             return {
                 renderedWidget,
                 revealable: new TimelineUtils.Helpers.RevealableInsight(insight),
+                accessibleRevealLabel: lockedString(UIStringsNotTranslate.revealLcpBreakdown),
                 title: lockedString(UIStringsNotTranslate.lcpBreakdown),
                 jslogContext: 'lcp-breakdown',
             };
@@ -712,6 +739,7 @@ async function makeBottomUpTimelineTreeWidget(widgetData) {
     return {
         renderedWidget,
         revealable: new TimelineUtils.Helpers.RevealableBottomUpProfile(widgetData.data.bounds),
+        accessibleRevealLabel: lockedString(UIStringsNotTranslate.revealBottomUpTree),
         title: lockedString(UIStringsNotTranslate.bottomUpTree),
         jslogContext: 'bottom-up',
     };
@@ -733,7 +761,7 @@ function renderWidgetResponse(response) {
     const revealButton = html `
     <devtools-button class="widget-reveal-button"
       .variant=${"text" /* Buttons.Button.Variant.TEXT */}
-      .accessibleLabel=${lockedString(UIStringsNotTranslate.reveal)}
+      .accessibleLabel=${response.accessibleRevealLabel}
       .jslogContext=${'reveal'}
       @click=${onReveal}
     >
@@ -766,11 +794,13 @@ function renderWidgetResponse(response) {
     // clang-format on
 }
 async function makePerformanceTraceWidget(widgetData) {
+    const customRevealTitle = lockedString(UIStringsNotTranslate.revealTrace);
     return {
         renderedWidget: null,
         title: null,
         revealable: new Timeline.TimelinePanel.ParsedTraceRevealable(widgetData.data.parsedTrace),
-        customRevealTitle: lockedString(UIStringsNotTranslate.revealTrace),
+        customRevealTitle,
+        accessibleRevealLabel: customRevealTitle,
         jslogContext: 'performance-trace',
     };
 }
@@ -822,6 +852,7 @@ async function makeDomTreeWidget(widgetData) {
     return {
         renderedWidget,
         revealable: new SDK.DOMModel.DeferredDOMNode(root.domModel().target(), root.backendNodeId()),
+        accessibleRevealLabel: lockedString(UIStringsNotTranslate.revealLcpElement),
         title: lockedString(UIStringsNotTranslate.lcpElement),
         jslogContext: 'dom-snapshot',
     };
@@ -1114,6 +1145,7 @@ export class ChatMessage extends UI.Widget.Widget {
     message = { entity: "user" /* ChatMessageEntity.USER */, text: '' };
     isLoading = false;
     isReadOnly = false;
+    prompt = '';
     canShowFeedbackForm = false;
     isLastMessage = false;
     isFirstMessage = false;
@@ -1159,6 +1191,7 @@ export class ChatMessage extends UI.Widget.Widget {
             markdownRenderer: this.markdownRenderer,
             isLastMessage: this.isLastMessage,
             isFirstMessage: this.isFirstMessage,
+            prompt: this.prompt,
             shouldShowCSSChangeSummary: this.shouldShowCSSChangeSummary,
             onSuggestionClick: this.onSuggestionClick,
             onRatingClick: this.#handleRateClick.bind(this),
@@ -1301,10 +1334,12 @@ async function makeTimelineRangeSummaryWidget(widgetData) {
         data: {
             parsedTrace,
             events,
+            isInAIWidget: true,
             startTime: Trace.Helpers.Timing.microToMilli(bounds.min),
             endTime: Trace.Helpers.Timing.microToMilli(bounds.max),
             thirdPartyTreeTemplate: html `${widget(Timeline.ThirdPartyTreeView.ThirdPartyTreeViewWidget, {
                 maxRows: 10,
+                isInAIWidget: true,
                 model: {
                     selectedEvents: thirdPartyTree.selectedEvents ?? null,
                     parsedTrace,
@@ -1322,6 +1357,7 @@ async function makeTimelineRangeSummaryWidget(widgetData) {
     return {
         renderedWidget: template,
         revealable: new TimelineUtils.Helpers.RevealableTimeRange(bounds),
+        accessibleRevealLabel: lockedString(UIStringsNotTranslate.revealPerformanceSummary),
         title: lockedString(UIStringsNotTranslate.performanceSummary),
         jslogContext: 'timeline-range-summary',
     };

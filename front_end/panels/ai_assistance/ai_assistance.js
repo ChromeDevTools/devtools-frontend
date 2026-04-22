@@ -2124,9 +2124,21 @@ var ChatInput = class extends UI3.Widget.Widget {
   isReadOnly = false;
   #textAreaRef = createRef();
   #imageInput;
+  /**
+   * Tracks the user's position when navigating through prompt history.
+   * -1 means the user is at the newest "uncommitted" position (the current input).
+   * 0 to N-1 are indices into the recent prompts array (newest to oldest).
+   */
+  #historyOffset = -1;
+  /**
+   * Stores the text the user had typed before they started navigating through history,
+   * so it can be restored if they navigate back to the newest position.
+   */
+  #uncommittedText = "";
   setInputValue(text) {
     if (this.#textAreaRef.value) {
       this.#textAreaRef.value.value = text;
+      this.#textAreaRef.value.setSelectionRange(text.length, text.length);
     }
     this.performUpdate();
   }
@@ -2145,6 +2157,31 @@ var ChatInput = class extends UI3.Widget.Widget {
   };
   onContextRemoved = null;
   onContextAdd = null;
+  /**
+   * Navigates the prompt history.
+   * @param dir direction to navigate. -1 for older, 1 for newer.
+   */
+  #navigatePromptHistory(dir) {
+    const prompts = AiAssistanceModel3.AiHistoryStorage.AiHistoryStorage.instance().getRecentPrompts();
+    if (!prompts.length) {
+      return;
+    }
+    if (dir === -1) {
+      if (this.#historyOffset === -1) {
+        this.#uncommittedText = this.#textAreaRef.value?.value || "";
+      }
+      if (this.#historyOffset < prompts.length - 1) {
+        this.#historyOffset++;
+        this.setInputValue(prompts[this.#historyOffset]);
+      }
+    } else if (this.#historyOffset > 0) {
+      this.#historyOffset--;
+      this.setInputValue(prompts[this.#historyOffset]);
+    } else if (this.#historyOffset === 0) {
+      this.#historyOffset = -1;
+      this.setInputValue(this.#uncommittedText);
+    }
+  }
   async #handleTakeScreenshot() {
     const mainTarget = SDK2.TargetManager.TargetManager.instance().primaryPageTarget();
     if (!mainTarget) {
@@ -2321,10 +2358,28 @@ var ChatInput = class extends UI3.Widget.Widget {
     const imageInput = !this.#imageInput?.isLoading && this.#imageInput?.data ? { inlineData: { data: this.#imageInput.data, mimeType: this.#imageInput.mimeType } } : void 0;
     this.onTextSubmit(this.#textAreaRef.value?.value ?? "", imageInput, this.#imageInput?.inputType);
     this.#imageInput = void 0;
+    this.#historyOffset = -1;
+    this.#uncommittedText = "";
     this.setInputValue("");
   };
   onTextAreaKeyDown = (event) => {
     if (!event.target || !(event.target instanceof HTMLTextAreaElement)) {
+      return;
+    }
+    if (event.key === "ArrowUp") {
+      const { value, selectionStart, selectionEnd } = event.target;
+      if (selectionStart === selectionEnd && value.lastIndexOf("\n", selectionStart - 1) === -1) {
+        event.preventDefault();
+        this.#navigatePromptHistory(-1);
+      }
+      return;
+    }
+    if (event.key === "ArrowDown") {
+      const { selectionEnd, selectionStart, value } = event.target;
+      if (selectionStart === selectionEnd && value.indexOf("\n", selectionEnd) === -1) {
+        event.preventDefault();
+        this.#navigatePromptHistory(1);
+      }
       return;
     }
     if (event.key === "Enter" && !event.shiftKey && !event.isComposing) {
@@ -2335,6 +2390,8 @@ var ChatInput = class extends UI3.Widget.Widget {
       const imageInput = !this.#imageInput?.isLoading && this.#imageInput?.data ? { inlineData: { data: this.#imageInput.data, mimeType: this.#imageInput.mimeType } } : void 0;
       this.onTextSubmit(event.target.value, imageInput, this.#imageInput?.inputType);
       this.#imageInput = void 0;
+      this.#historyOffset = -1;
+      this.#uncommittedText = "";
       this.setInputValue("");
     }
   };
@@ -2741,6 +2798,10 @@ var chatMessage_css_default = `/*
     &[open] {
       width: auto;
 
+      summary {
+        margin-bottom: var(--sys-size-2);
+      }
+
       .summary .title {
         white-space: normal;
         overflow: unset;
@@ -2757,6 +2818,11 @@ var chatMessage_css_default = `/*
 
     summary {
       border-radius: 16px;
+
+      &:focus-visible {
+        outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
+        outline-offset: var(--sys-size-2);
+      }
     }
 
     .step-details {
@@ -2979,6 +3045,55 @@ var chatMessage_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("././components/chatMessage.css")} */`;
 
+// gen/front_end/panels/ai_assistance/components/WalkthroughUtils.js
+var WalkthroughUtils_exports = {};
+__export(WalkthroughUtils_exports, {
+  getButtonLabel: () => getButtonLabel
+});
+function smartTruncate(text, targetLength) {
+  if (text.length <= targetLength) {
+    return { truncatedText: text, moreCharacters: 0 };
+  }
+  const lastSpaceBefore = text.lastIndexOf(" ", targetLength);
+  const firstSpaceAfter = text.indexOf(" ", targetLength);
+  let cutIndex = targetLength;
+  if (lastSpaceBefore === -1 && firstSpaceAfter === -1) {
+    cutIndex = targetLength;
+  } else if (lastSpaceBefore === -1) {
+    cutIndex = firstSpaceAfter;
+  } else if (firstSpaceAfter === -1) {
+    cutIndex = lastSpaceBefore;
+  } else {
+    const distanceToSpaceBefore = targetLength - lastSpaceBefore;
+    const distanceToSpaceAfter = firstSpaceAfter - targetLength;
+    cutIndex = distanceToSpaceBefore <= distanceToSpaceAfter ? lastSpaceBefore : firstSpaceAfter;
+  }
+  let truncatedText = text;
+  let moreCharacters = 0;
+  if (cutIndex < text.length) {
+    truncatedText = text.slice(0, cutIndex);
+    moreCharacters = text.length - cutIndex;
+  }
+  return { truncatedText, moreCharacters };
+}
+function getButtonLabel(input) {
+  let labelBase = "";
+  if (input.isLoading && !input.isExpanded && input.stepTitle) {
+    labelBase = input.stepTitle;
+  } else {
+    const action2 = input.isExpanded ? "Hide" : "Show";
+    const type = input.hasWidgets ? "AI walkthrough" : "thinking";
+    labelBase = `${action2} ${type}`;
+  }
+  if (input.isLoading) {
+    return `Loading: ${labelBase}`;
+  }
+  const TARGET_LENGTH = 50;
+  const { truncatedText, moreCharacters } = smartTruncate(input.prompt, TARGET_LENGTH);
+  const promptSuffix = moreCharacters > 0 ? ` (and ${moreCharacters} more characters)` : "";
+  return `${labelBase} for prompt '${truncatedText}'${promptSuffix}`;
+}
+
 // gen/front_end/panels/ai_assistance/components/WalkthroughView.js
 var WalkthroughView_exports = {};
 __export(WalkthroughView_exports, {
@@ -3161,6 +3276,11 @@ var walkthroughView_css_default = `/*
       white-space: nowrap;
       min-width: 0;
     }
+
+    &:focus-visible {
+      outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
+      outline-offset: calc(-1 * var(--sys-size-2));
+    }
   }
 
   .walkthrough-inline[open] > summary {
@@ -3287,7 +3407,16 @@ function renderInlineWalkthrough(input, stepsOutput, allSteps) {
         ${input.isLoading ? html6`<devtools-spinner aria-label=${lockedString4(UIStrings2.inProgress)}></devtools-spinner>` : html6`<devtools-icon name=${icon}></devtools-icon>`}
       </span>
       <details class="walkthrough-inline" ?open=${input.isExpanded} @toggle=${onToggle} jslog=${VisualLogging3.expand("walkthrough").track({ click: true })}>
-        <summary ?data-has-widgets=${!input.isLoading && hasWidgets}>
+        <summary
+          ?data-has-widgets=${!input.isLoading && hasWidgets}
+          aria-label=${getButtonLabel({
+    isExpanded: input.isExpanded,
+    isLoading: input.isLoading,
+    hasWidgets,
+    prompt: input.prompt,
+    stepTitle: titleForStep(lastStep)
+  })}
+        >
           <span class="walkthrough-inline-title">
             ${input.isExpanded ? walkthroughCloseTitle({ hasWidgets, isInlined: true }) : walkthroughTitle({ isLoading: input.isLoading, lastStep, hasWidgets })}
           </span>
@@ -3375,6 +3504,7 @@ var WalkthroughView = class extends UI4.Widget.Widget {
   };
   #isInlined = false;
   #isExpanded = false;
+  #prompt = "";
   #pinScrollToBottom = true;
   #isProgrammaticScroll = false;
   #output = {};
@@ -3477,6 +3607,13 @@ var WalkthroughView = class extends UI4.Widget.Widget {
     this.#isExpanded = isExpanded;
     this.requestUpdate();
   }
+  get prompt() {
+    return this.#prompt;
+  }
+  set prompt(prompt) {
+    this.#prompt = prompt;
+    this.requestUpdate();
+  }
   performUpdate() {
     if (!this.#markdownRenderer) {
       return;
@@ -3488,6 +3625,7 @@ var WalkthroughView = class extends UI4.Widget.Widget {
       onOpen: this.#onOpen,
       isInlined: this.#isInlined,
       isExpanded: this.#isExpanded,
+      prompt: this.#prompt,
       message: this.#message,
       handleScroll: this.#handleScroll
     }, this.#output, this.contentElement);
@@ -3639,6 +3777,34 @@ var UIStringsNotTranslate4 = {
    */
   revealTrace: "Reveal trace",
   /**
+   * @description Accessible label for the reveal button in the computed styles widget.
+   */
+  revealComputedStyles: "Reveal computed styles",
+  /**
+   * @description Accessible label for the reveal button in the core web vitals widget.
+   */
+  revealCoreWebVitals: "Reveal Core Web Vitals",
+  /**
+   * @description Accessible label for the reveal button in the style properties widget.
+   */
+  revealStyleProperties: "Reveal style properties",
+  /**
+   * @description Accessible label for the reveal button in the LCP breakdown widget.
+   */
+  revealLcpBreakdown: "Reveal LCP breakdown",
+  /**
+   * @description Accessible label for the reveal button in the LCP element widget.
+   */
+  revealLcpElement: "Reveal LCP element",
+  /**
+   * @description Accessible label for the reveal button in the performance summary widget.
+   */
+  revealPerformanceSummary: "Reveal performance summary",
+  /**
+   * @description Accessible label for the reveal button in the bottom up thread activity widget.
+   */
+  revealBottomUpTree: "Reveal bottom-up thread activity",
+  /**
    * @description Title for the core web vitals widget.
    */
   coreVitals: "Core Web Vitals",
@@ -3661,15 +3827,7 @@ var UIStringsNotTranslate4 = {
   /**
    * @description Title for the bottom up thread activity widget.
    */
-  bottomUpTree: "Bottom-up thread activity",
-  /**
-   * @description Accessilility label for the button that shows the walkthrough when there are no widgets in the walkthrough.
-   */
-  showThinking: "Show thinking",
-  /**
-   * @description Accessilility label for the button that hides the walkthrough when there are no widgets in the walkthrough.
-   */
-  hideThinking: "Hide thinking"
+  bottomUpTree: "Bottom-up thread activity"
 };
 var DEFAULT_VIEW4 = (input, output, target) => {
   const hasAiV2 = Boolean(Root3.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled);
@@ -3844,11 +4002,13 @@ function renderWalkthroughSidebarButton(input, steps) {
     // We only apply the widget styling when loading is complete
     "has-widgets": hasOneStepWithWidget && !input.isLoading
   });
-  let accessibleLabel = title;
-  if (input.isLoading) {
-    const suffix = isExpanded ? UIStringsNotTranslate4.hideThinking : UIStringsNotTranslate4.showThinking;
-    accessibleLabel = `${titleForStep(lastStep)} ${i18n9.i18n.lockedString(suffix)}`;
-  }
+  const accessibleLabel = getButtonLabel({
+    isExpanded,
+    isLoading: input.isLoading,
+    hasWidgets: hasOneStepWithWidget,
+    prompt: input.prompt,
+    stepTitle: titleForStep(lastStep)
+  });
   return html7`
     <div class=${toggleContainerClasses}>
       ${input.isLoading ? html7`<devtools-spinner></devtools-spinner>` : html7`<devtools-icon name=${icon}></devtools-icon>`}
@@ -3885,6 +4045,7 @@ function renderWalkthroughUI(input, steps) {
     markdownRenderer: input.markdownRenderer,
     isInlined: true,
     isExpanded,
+    prompt: input.prompt,
     onToggle: input.walkthrough.onToggle,
     onOpen: input.walkthrough.onOpen
   })}
@@ -4002,6 +4163,7 @@ async function makeComputedStyleWidget(widgetData) {
   return {
     renderedWidget,
     revealable: new Elements.ElementsPanel.NodeComputedStyles(domNodeForId),
+    accessibleRevealLabel: lockedString5(UIStringsNotTranslate4.revealComputedStyles),
     // clang-format off
     title: html7`
       <span class="computed-style-title-wrapper">
@@ -4024,6 +4186,7 @@ async function makeCoreWebVitalsWidget(widgetData) {
   return {
     renderedWidget,
     revealable: new TimelineUtils.Helpers.RevealableCoreVitals(widgetData.data.insightSetKey),
+    accessibleRevealLabel: lockedString5(UIStringsNotTranslate4.revealCoreWebVitals),
     title: lockedString5(UIStringsNotTranslate4.coreVitals),
     jslogContext: "core-web-vitals"
   };
@@ -4049,6 +4212,7 @@ async function makeStylePropertiesWidget(widgetData) {
   return {
     renderedWidget,
     revealable: domNodeForId,
+    accessibleRevealLabel: lockedString5(UIStringsNotTranslate4.revealStyleProperties),
     title: html7`<devtools-widget
       ${widget3(PanelsCommon3.DOMLinkifier.DOMNodeLink, {
       node: domNodeForId
@@ -4073,6 +4237,7 @@ async function makePerfInsightWidget(widgetData) {
       return {
         renderedWidget,
         revealable: new TimelineUtils.Helpers.RevealableInsight(insight),
+        accessibleRevealLabel: lockedString5(UIStringsNotTranslate4.revealLcpBreakdown),
         title: lockedString5(UIStringsNotTranslate4.lcpBreakdown),
         jslogContext: "lcp-breakdown"
       };
@@ -4103,6 +4268,7 @@ async function makeBottomUpTimelineTreeWidget(widgetData) {
   return {
     renderedWidget,
     revealable: new TimelineUtils.Helpers.RevealableBottomUpProfile(widgetData.data.bounds),
+    accessibleRevealLabel: lockedString5(UIStringsNotTranslate4.revealBottomUpTree),
     title: lockedString5(UIStringsNotTranslate4.bottomUpTree),
     jslogContext: "bottom-up"
   };
@@ -4124,7 +4290,7 @@ function renderWidgetResponse(response) {
   const revealButton = html7`
     <devtools-button class="widget-reveal-button"
       .variant=${"text"}
-      .accessibleLabel=${lockedString5(UIStringsNotTranslate4.reveal)}
+      .accessibleLabel=${response.accessibleRevealLabel}
       .jslogContext=${"reveal"}
       @click=${onReveal}
     >
@@ -4155,11 +4321,13 @@ function renderWidgetResponse(response) {
     `;
 }
 async function makePerformanceTraceWidget(widgetData) {
+  const customRevealTitle = lockedString5(UIStringsNotTranslate4.revealTrace);
   return {
     renderedWidget: null,
     title: null,
     revealable: new Timeline.TimelinePanel.ParsedTraceRevealable(widgetData.data.parsedTrace),
-    customRevealTitle: lockedString5(UIStringsNotTranslate4.revealTrace),
+    customRevealTitle,
+    accessibleRevealLabel: customRevealTitle,
     jslogContext: "performance-trace"
   };
 }
@@ -4208,6 +4376,7 @@ async function makeDomTreeWidget(widgetData) {
   return {
     renderedWidget,
     revealable: new SDK3.DOMModel.DeferredDOMNode(root.domModel().target(), root.backendNodeId()),
+    accessibleRevealLabel: lockedString5(UIStringsNotTranslate4.revealLcpElement),
     title: lockedString5(UIStringsNotTranslate4.lcpElement),
     jslogContext: "dom-snapshot"
   };
@@ -4487,6 +4656,7 @@ var ChatMessage = class extends UI5.Widget.Widget {
   message = { entity: "user", text: "" };
   isLoading = false;
   isReadOnly = false;
+  prompt = "";
   canShowFeedbackForm = false;
   isLastMessage = false;
   isFirstMessage = false;
@@ -4538,6 +4708,7 @@ var ChatMessage = class extends UI5.Widget.Widget {
       markdownRenderer: this.markdownRenderer,
       isLastMessage: this.isLastMessage,
       isFirstMessage: this.isFirstMessage,
+      prompt: this.prompt,
       shouldShowCSSChangeSummary: this.shouldShowCSSChangeSummary,
       onSuggestionClick: this.onSuggestionClick,
       onRatingClick: this.#handleRateClick.bind(this),
@@ -4676,10 +4847,12 @@ async function makeTimelineRangeSummaryWidget(widgetData) {
     data: {
       parsedTrace,
       events,
+      isInAIWidget: true,
       startTime: Trace.Helpers.Timing.microToMilli(bounds.min),
       endTime: Trace.Helpers.Timing.microToMilli(bounds.max),
       thirdPartyTreeTemplate: html7`${widget3(Timeline.ThirdPartyTreeView.ThirdPartyTreeViewWidget, {
         maxRows: 10,
+        isInAIWidget: true,
         model: {
           selectedEvents: thirdPartyTree.selectedEvents ?? null,
           parsedTrace,
@@ -4696,6 +4869,7 @@ async function makeTimelineRangeSummaryWidget(widgetData) {
   return {
     renderedWidget: template,
     revealable: new TimelineUtils.Helpers.RevealableTimeRange(bounds),
+    accessibleRevealLabel: lockedString5(UIStringsNotTranslate4.revealPerformanceSummary),
     title: lockedString5(UIStringsNotTranslate4.performanceSummary),
     jslogContext: "timeline-range-summary"
   };
@@ -5288,6 +5462,7 @@ var DEFAULT_VIEW5 = (input, _output, target) => {
             value="prompt"
             name="export-state"
             .checked=${isPrompt}
+            autofocus
             aria-label=${i18nString3(UIStrings3.asPrompt)}
             @change=${() => input.onStateChange(
     "prompt"
@@ -5474,24 +5649,29 @@ var DEFAULT_VIEW6 = (input, output, target) => {
   })}>
           ${input.messages.length > 0 ? html9`
             <div class="messages-container" ${ref4(input.handleMessageContainerRef)}>
-              ${repeat(input.messages, (message) => widget4(ChatMessage, {
-    message,
-    isLoading: input.isLoading && input.messages.at(-1) === message,
-    isReadOnly: input.isReadOnly,
-    canShowFeedbackForm: input.canShowFeedbackForm,
-    markdownRenderer: input.markdownRenderer,
-    isLastMessage: input.messages.at(-1) === message,
-    isFirstMessage: input.messages.at(0) === message,
-    shouldShowCSSChangeSummary: message === cssChangeSummaryMessage,
-    onSuggestionClick: input.handleSuggestionClick,
-    onFeedbackSubmit: input.onFeedbackSubmit,
-    onCopyResponseClick: input.onCopyResponseClick,
-    onExportClick: input.exportForAgentsClick,
-    changeSummary: input.changeSummary,
-    walkthrough: {
-      ...input.walkthrough
-    }
-  }))}
+              ${repeat(input.messages, (message, index) => {
+    const prevMessage = index > 0 ? input.messages[index - 1] : null;
+    const prompt = message.entity === "model" && prevMessage?.entity === "user" ? prevMessage.text : "";
+    return widget4(ChatMessage, {
+      message,
+      isLoading: input.isLoading && index === input.messages.length - 1,
+      isReadOnly: input.isReadOnly,
+      canShowFeedbackForm: input.canShowFeedbackForm,
+      markdownRenderer: input.markdownRenderer,
+      isLastMessage: index === input.messages.length - 1,
+      isFirstMessage: index === 0,
+      prompt,
+      shouldShowCSSChangeSummary: message === cssChangeSummaryMessage,
+      onSuggestionClick: input.handleSuggestionClick,
+      onFeedbackSubmit: input.onFeedbackSubmit,
+      onCopyResponseClick: input.onCopyResponseClick,
+      onExportClick: input.exportForAgentsClick,
+      changeSummary: input.changeSummary,
+      walkthrough: {
+        ...input.walkthrough
+      }
+    });
+  })}
               ${shouldShowPatchWidget ? widget4(PatchWidget, {
     changeSummary: input.changeSummary ?? "",
     changeManager: input.changeManager
@@ -8314,6 +8494,7 @@ export {
   PatchWidget_exports as PatchWidget,
   SELECT_WORKSPACE_DIALOG_DEFAULT_VIEW,
   SelectWorkspaceDialog,
+  WalkthroughUtils_exports as WalkthroughUtils,
   WalkthroughView_exports as WalkthroughView,
   getCSSChangeSummaryMessage,
   getResponseMarkdown

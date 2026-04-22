@@ -18,6 +18,7 @@ declare const LayerDetailsView_base: (new (...args: any[]) => {
     removeEventListener<T extends Events.PAINT_PROFILER_REQUESTED>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<EventTypes[T], any>) => void, thisObject?: Object): void;
     hasEventListeners(eventType: Events.PAINT_PROFILER_REQUESTED): boolean;
     dispatchEventToListeners<T extends Events.PAINT_PROFILER_REQUESTED>(eventType: import("../../core/platform/TypescriptUtilities.js").NoUnion<T>, ...eventData: Common.EventTarget.EventPayloadToRestParameters<EventTypes, T>): void;
+    dispatchDOMEvent?(event: Event): void;
 }) & typeof UI.Widget.Widget;
 export declare class LayerDetailsView extends LayerDetailsView_base implements LayerView {
     private readonly layerViewHost;

@@ -699,6 +699,8 @@ var Linkifier = class _Linkifier extends Common2.ObjectWrapper.ObjectWrapper {
     const { className = "" } = linkifyURLOptions;
     const fallbackAnchor = _Linkifier.linkifyURL(frame.url, linkifyURLOptions);
     if (!frame.uiSourceCode) {
+      const isIgnoreListed = (options?.ignoreListManager ?? Workspace.IgnoreListManager.IgnoreListManager.instance()).isUserIgnoreListedURL(frame.url);
+      fallbackAnchor.classList.toggle("ignore-list-link", isIgnoreListed);
       return fallbackAnchor;
     }
     const createLinkOptions = {
@@ -714,7 +716,7 @@ var Linkifier = class _Linkifier extends Common2.ObjectWrapper.ObjectWrapper {
       revealBreakpoint: options?.revealBreakpoint
     };
     const uiLocation = frame.uiSourceCode.uiLocation(frame.line, frame.column) ?? null;
-    _Linkifier.updateAnchorFromUILocation(link3, linkDisplayOptions, uiLocation);
+    _Linkifier.updateAnchorFromUILocation(link3, linkDisplayOptions, uiLocation, options?.ignoreListManager);
     return link3;
   }
   linkifyStackTraceTopFrame(target, stackTrace) {
@@ -807,7 +809,7 @@ var Linkifier = class _Linkifier extends Common2.ObjectWrapper.ObjectWrapper {
     });
     _Linkifier.updateAnchorFromUILocation(anchor, options, uiLocation);
   }
-  static updateAnchorFromUILocation(anchor, options, uiLocation) {
+  static updateAnchorFromUILocation(anchor, options, uiLocation, ignoreListManager) {
     if (!uiLocation) {
       anchor.classList.add("invalid-link");
       anchor.removeAttribute("role");
@@ -831,7 +833,7 @@ var Linkifier = class _Linkifier extends Common2.ObjectWrapper.ObjectWrapper {
       }
     }
     UI.Tooltip.Tooltip.install(anchor, titleText);
-    const isIgnoreListed = Boolean(uiLocation?.isIgnoreListed());
+    const isIgnoreListed = Boolean(uiLocation?.isIgnoreListed(ignoreListManager));
     anchor.classList.toggle("ignore-list-link", isIgnoreListed);
     _Linkifier.updateLinkDecorations(anchor);
   }
@@ -1390,7 +1392,8 @@ var DEFAULT_VIEW = (input, output, target) => {
       tabStop: Boolean(input.tabStops),
       inlineFrameIndex: 0,
       revealBreakpoint: previousStackFrameWasBreakpointCondition,
-      maxLength: UI2.UIUtils.MaxLengthForDisplayedURLsInConsole
+      maxLength: UI2.UIUtils.MaxLengthForDisplayedURLsInConsole,
+      ignoreListManager: input.ignoreListManager
     });
     link3.setAttribute("jslog", `${VisualLogging2.link("stack-trace").track({ click: true })}`);
     link3.addEventListener("contextmenu", populateContextMenu.bind(null, link3));
@@ -1470,7 +1473,7 @@ var StackTracePreviewContent = class extends UI2.Widget.Widget {
     const hasNonIgnoredLinks = this.linkElements.some((link3) => {
       const uiLocation = Linkifier.uiLocation(link3);
       if (uiLocation) {
-        return !uiLocation.isIgnoreListed();
+        return !uiLocation.isIgnoreListed(this.#options.ignoreListManager);
       }
       return !link3.classList.contains("ignore-list-link");
     });

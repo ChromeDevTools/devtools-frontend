@@ -10,6 +10,7 @@ import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import chatMessageStyles from './chatMessage.css.js';
 import { renderStep, titleForStep } from './ChatMessage.js';
+import { getButtonLabel } from './WalkthroughUtils.js';
 import walkthroughViewStyles from './walkthroughView.css.js';
 const lockedString = i18n.i18n.lockedString;
 const { html, render, Directives } = Lit;
@@ -93,7 +94,16 @@ function renderInlineWalkthrough(input, stepsOutput, allSteps) {
         html `<devtools-icon name=${icon}></devtools-icon>`}
       </span>
       <details class="walkthrough-inline" ?open=${input.isExpanded} @toggle=${onToggle} jslog=${VisualLogging.expand('walkthrough').track({ click: true })}>
-        <summary ?data-has-widgets=${!input.isLoading && hasWidgets}>
+        <summary
+          ?data-has-widgets=${!input.isLoading && hasWidgets}
+          aria-label=${getButtonLabel({
+        isExpanded: input.isExpanded,
+        isLoading: input.isLoading,
+        hasWidgets,
+        prompt: input.prompt,
+        stepTitle: titleForStep(lastStep),
+    })}
+        >
           <span class="walkthrough-inline-title">
             ${input.isExpanded ?
         walkthroughCloseTitle({ hasWidgets, isInlined: true }) :
@@ -190,6 +200,7 @@ export class WalkthroughView extends UI.Widget.Widget {
     #onOpen = () => { };
     #isInlined = false;
     #isExpanded = false;
+    #prompt = '';
     #pinScrollToBottom = true;
     #isProgrammaticScroll = false;
     #output = {};
@@ -310,6 +321,13 @@ export class WalkthroughView extends UI.Widget.Widget {
         this.#isExpanded = isExpanded;
         this.requestUpdate();
     }
+    get prompt() {
+        return this.#prompt;
+    }
+    set prompt(prompt) {
+        this.#prompt = prompt;
+        this.requestUpdate();
+    }
     performUpdate() {
         if (!this.#markdownRenderer) {
             return;
@@ -321,6 +339,7 @@ export class WalkthroughView extends UI.Widget.Widget {
             onOpen: this.#onOpen,
             isInlined: this.#isInlined,
             isExpanded: this.#isExpanded,
+            prompt: this.#prompt,
             message: this.#message,
             handleScroll: this.#handleScroll,
         }, this.#output, this.contentElement);

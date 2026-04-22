@@ -61,7 +61,6 @@ interface Element {
   createChild<K extends keyof HTMLElementTagNameMap>(tagName: K, className?: string): HTMLElementTagNameMap[K];
   hasFocus(): boolean;
   positionAt(x: (number|undefined), y: (number|undefined), relativeTo?: Element): void;
-  removeChildren(): void;
   scrollIntoViewIfNeeded(center?: boolean): void;
 }
 
@@ -86,6 +85,7 @@ interface Node {
   isSelfOrDescendant(node: Node|null): boolean;
   parentElementOrShadowHost(): Element|null;
   parentNodeOrShadowHost(): Node|null;
+  removeChildren(): void;
   setTextContentTruncatedIfNeeded(text: unknown, placeholder?: string): boolean;
   traverseNextNode(stayWithin?: Node): Node|null;
   traversePreviousNode(stayWithin?: Node): Node|null;

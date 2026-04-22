@@ -42,10 +42,10 @@ const {html} = Lit;
 
 // Remember the original DOM mutation methods here, since we
 // will override them below to sanity check the Widget system.
-const originalAppendChild = Element.prototype.appendChild;
-const originalInsertBefore = Element.prototype.insertBefore;
-const originalRemoveChild = Element.prototype.removeChild;
-const originalRemoveChildren = Element.prototype.removeChildren;
+const originalAppendChild = Node.prototype.appendChild;
+const originalInsertBefore = Node.prototype.insertBefore;
+const originalRemoveChild = Node.prototype.removeChild;
+const originalRemoveChildren = Node.prototype.removeChildren;
 
 function assert(condition: unknown, message: string): void {
   if (!condition) {
@@ -218,8 +218,9 @@ function setUpLifecycleTracking<WidgetT extends AnyWidget>(element: HTMLElement)
         (element.parentNode instanceof DocumentFragment) ? element.parentNode : element.parentElementOrShadowHost();
     if (!parent) {
       widget.markAsRoot();
+    } else {
+      widget.show(parent as HTMLElement, undefined, /* suppressOrphanWidgetError= */ true);
     }
-    widget.show(parent as HTMLElement, undefined, /* suppressOrphanWidgetError= */ true);
   };
 }
 
@@ -1311,28 +1312,28 @@ function domOperationError(funcName: 'appendChild'|'insertBefore'|'removeChild'|
   return new Error(`Attempt to modify widget with native DOM method \`${funcName}\``);
 }
 
-Element.prototype.appendChild = function<T extends Node>(node: T): T {
+Node.prototype.appendChild = function<T extends Node>(node: T): T {
   if (widgetMap.get(node) && node.parentNode !== this) {
     throw domOperationError('appendChild');
   }
   return originalAppendChild.call(this, node) as T;
 };
 
-Element.prototype.insertBefore = function<T extends Node>(node: T, child: Node|null): T {
+Node.prototype.insertBefore = function<T extends Node>(node: T, child: Node|null): T {
   if (widgetMap.get(node) && node.parentNode !== this) {
     throw domOperationError('insertBefore');
   }
   return originalInsertBefore.call(this, node, child) as T;
 };
 
-Element.prototype.removeChild = function<T extends Node>(child: T): T {
+Node.prototype.removeChild = function<T extends Node>(child: T): T {
   if (widgetCounterMap.get(child) || widgetMap.get(child)) {
     throw domOperationError('removeChild');
   }
   return originalRemoveChild.call(this, child) as T;
 };
 
-Element.prototype.removeChildren = function(): void {
+Node.prototype.removeChildren = function(): void {
   if (widgetCounterMap.get(this)) {
     throw domOperationError('removeChildren');
   }

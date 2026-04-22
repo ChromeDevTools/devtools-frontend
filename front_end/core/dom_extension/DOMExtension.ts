@@ -159,7 +159,7 @@ Node.prototype.window = function(): Window {
   return this.ownerDocument.defaultView as Window;
 };
 
-Element.prototype.removeChildren = function(): void {
+Node.prototype.removeChildren = function(): void {
   if (this.firstChild) {
     this.textContent = '';
   }

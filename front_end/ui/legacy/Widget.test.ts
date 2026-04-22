@@ -977,6 +977,14 @@ describeWithEnvironment('Widget', () => {
   });
 
   describe('Shadow DOM', () => {
+    it('throws error when using DocumentFragment.appendChild with a widget', () => {
+      const fragment = document.createDocumentFragment();
+      const widget = new Widget();
+      widget.markAsRoot();
+      assert.throws(
+          () => fragment.appendChild(widget.element), /Attempt to modify widget with native DOM method `appendChild`/);
+    });
+
     it('keeps child widget in the Shadow Root when using pure shadow DOM', () => {
       const container = document.createElement('div');
       renderElementIntoDOM(container);

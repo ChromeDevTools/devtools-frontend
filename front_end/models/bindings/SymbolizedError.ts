@@ -3,19 +3,16 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
-import type * as SDK from '../../core/sdk/sdk.js';
 import * as StackTrace from '../stack_trace/stack_trace.js';
 
 export class SymbolizedError extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
-  readonly remoteError: SDK.RemoteObject.RemoteError;
+  readonly message: string;
   readonly stackTrace: StackTrace.StackTrace.ParsedErrorStackTrace;
   readonly cause: SymbolizedError|null;
 
-  constructor(
-      remoteError: SDK.RemoteObject.RemoteError, stackTrace: StackTrace.StackTrace.ParsedErrorStackTrace,
-      cause: SymbolizedError|null) {
+  constructor(message: string, stackTrace: StackTrace.StackTrace.ParsedErrorStackTrace, cause: SymbolizedError|null) {
     super();
-    this.remoteError = remoteError;
+    this.message = message;
     this.stackTrace = stackTrace;
     this.cause = cause;
 

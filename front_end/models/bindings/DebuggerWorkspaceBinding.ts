@@ -236,7 +236,8 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
       return null;
     }
 
-    return new SymbolizedError(remoteError, stackTrace, cause);
+    const message = StackTraceImpl.DetailedErrorStackParser.parseMessage(remoteError.errorStack);
+    return new SymbolizedError(message, stackTrace, cause);
   }
 
   async createLiveLocation(

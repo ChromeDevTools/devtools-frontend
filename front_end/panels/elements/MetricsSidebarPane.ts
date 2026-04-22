@@ -53,7 +53,7 @@ interface ViewInput {
   onStartEditing: (target: Element, box: string, styleProperty: string, computedStyle: Map<string, string>) => void;
 }
 
-type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
+type View = (input: ViewInput, output: undefined, target: HTMLElement|DocumentFragment) => void;
 
 const DEFAULT_VIEW: View = (input, output, target) => {
   const {style, highlightedMode, node, contentWidth, contentHeight, onHighlightNode, onStartEditing} = input;
@@ -177,11 +177,12 @@ const DEFAULT_VIEW: View = (input, output, target) => {
     <div class="metrics ${!node ? 'collapsed' : ''}" @mouseover=${(e: Event) => { e.consume(); onHighlightNode(true, 'all'); }}
         @mouseleave=${(e: Event) => { e.consume(); onHighlightNode(false, 'all'); }}>
       ${previousBox}
-    </div>`, target);
+    </div>`,
+      target, {container: {classes: ['flex-none'], attributes: {jslog: `${VisualLogging.section('styles-metrics')}`}}});
   // clang-format on
 };
 
-export class MetricsSidebarPane extends ElementsSidebarPane {
+export class MetricsSidebarPane extends ElementsSidebarPane<ShadowRoot> {
   originalPropertyData: SDK.CSSProperty.CSSProperty|null;
   previousPropertyDataCandidate: SDK.CSSProperty.CSSProperty|null;
   private inlineStyle: SDK.CSSStyleDeclaration.CSSStyleDeclaration|null;
@@ -191,7 +192,7 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
   private view: View;
 
   constructor(computedStyleModel: ComputedStyle.ComputedStyleModel.ComputedStyleModel, view = DEFAULT_VIEW) {
-    super(computedStyleModel, {jslog: `${VisualLogging.pane('styles-metrics')}`});
+    super(computedStyleModel, {useShadowDom: 'pure'});
     this.registerRequiredCSS(metricsSidebarPaneStyles);
 
     this.originalPropertyData = null;

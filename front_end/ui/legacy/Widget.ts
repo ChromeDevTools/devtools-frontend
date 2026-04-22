@@ -1190,13 +1190,13 @@ const storedScrollPositions = new WeakMap<Element, {
   scrollTop: number,
 }>();
 
-export class VBox extends Widget {
+export class VBox<ContentTypeT extends HTMLElement|DocumentFragment = HTMLElement> extends Widget<ContentTypeT> {
   /**
    * Constructs a new `VBox` with the given `options`.
    *
    * @param options optional settings to configure the behavior.
    */
-  constructor(options?: WidgetOptions);
+  constructor(options?: WidgetOptions<ContentTypeT>);
 
   /**
    * Constructs a new `VBox` with the given `options` and attached to the
@@ -1208,10 +1208,11 @@ export class VBox extends Widget {
    * @param element an (optional) `HTMLElement` to attach the `VBox` to.
    * @param options optional settings to configure the behavior.
    */
-  constructor(element?: HTMLElement, options?: WidgetOptions);
+  constructor(element?: HTMLElement, options?: WidgetOptions<ContentTypeT>);
 
-  constructor() {
-    super(...arguments);
+  constructor(elementOrOptions?: HTMLElement|WidgetOptions<ContentTypeT>, options?: WidgetOptions<ContentTypeT>) {
+    // @ts-expect-error
+    super(elementOrOptions, options);
     if (this.contentElement instanceof HTMLElement) {
       this.contentElement.classList.add('vbox');
     }
@@ -1231,7 +1232,7 @@ export class VBox extends Widget {
   }
 }
 
-export class HBox extends Widget<HTMLElement> {
+export class HBox<ContentTypeT extends HTMLElement|DocumentFragment = HTMLElement> extends Widget<ContentTypeT> {
   /**
    * Constructs a new `HBox` with the given `options`.
    *
@@ -1251,9 +1252,12 @@ export class HBox extends Widget<HTMLElement> {
    */
   constructor(element?: HTMLElement, options?: WidgetOptions);
 
-  constructor() {
-    super(...arguments);
-    this.contentElement.classList.add('hbox');
+  constructor(elementOrOptions?: HTMLElement|WidgetOptions<ContentTypeT>, options?: WidgetOptions<ContentTypeT>) {
+    // @ts-expect-error
+    super(elementOrOptions, options);
+    if (this.contentElement instanceof HTMLElement) {
+      this.contentElement.classList.add('hbox');
+    }
   }
 
   override calculateConstraints(): Geometry.Constraints {

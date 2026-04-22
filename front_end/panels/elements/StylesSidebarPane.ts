@@ -224,7 +224,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
   #aiCodeCompletionSummaryToolbar?: PanelsCommon.AiCodeCompletionSummaryToolbar;
 
   constructor(computedStyleModel: ComputedStyle.ComputedStyleModel.ComputedStyleModel) {
-    super(computedStyleModel, {delegatesFocus: true});
+    super(computedStyleModel, {delegatesFocus: true, useShadowDom: true, classes: ['flex-none']});
     this.setMinimumSize(96, 26);
     this.registerRequiredCSS(stylesSidebarPaneStyles);
     Common.Settings.Settings.instance().moduleSetting('text-editor-indent').addChangeListener(this.requestUpdate, this);

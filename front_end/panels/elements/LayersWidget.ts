@@ -73,7 +73,7 @@ const DEFAULT_VIEW: View = (input: ViewInput, output: ViewOutput, target: HTMLEl
                            .data=${data}></devtools-tree-outline>
   </div>
   `;
-  render(template, target);
+  render(template, target, {container: {attributes: {jslog: `${VisualLogging.pane('css-layers')}`}}});
 };
 
 let layersWidgetInstance: LayersWidget;
@@ -84,7 +84,7 @@ export class LayersWidget extends UI.Widget.Widget {
   #layerToReveal: string|null = null;
 
   constructor(view: View = DEFAULT_VIEW) {
-    super({jslog: `${VisualLogging.pane('css-layers')}`});
+    super();
     this.#view = view;
   }
 

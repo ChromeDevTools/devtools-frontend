@@ -560,53 +560,6 @@ code
       });
     });
 
-    it('can call getMainThreadTrackSummary', async function() {
-      const metricsSpy = sinon.spy(Host.userMetrics, 'performanceAIMainThreadActivityResponseSize');
-
-      const parsedTrace = await TraceLoader.traceEngine(this, 'lcp-discovery-delay.json.gz');
-      assert.isOk(parsedTrace.insights);
-      const [firstNav] = parsedTrace.data.Meta.mainFrameNavigations;
-      const lcpBreakdown = getInsightOrError('LCPBreakdown', parsedTrace.insights, firstNav);
-      const bounds = parsedTrace.data.Meta.traceBounds;
-      const agent = createAgentForConversation({
-        aidaClient: mockAidaClient([
-          [{
-            explanation: '',
-            functionCalls: [{name: 'getMainThreadTrackSummary', args: {min: bounds.min, max: bounds.max}}]
-          }],
-          [{explanation: 'done'}]
-        ])
-      });
-      const context = PerformanceAgent.PerformanceTraceContext.fromInsight(parsedTrace, lcpBreakdown);
-
-      const responses = await Array.fromAsync(agent.run('test', {selected: context}));
-      deleteAllWidgetData(responses);
-      const titleResponse = responses.find(response => response.type === AiAgent.ResponseType.TITLE);
-      assert.exists(titleResponse);
-      assert.strictEqual(titleResponse.title, 'Investigating main thread activity');
-
-      const action = responses.find(response => response.type === AiAgent.ResponseType.ACTION);
-      assert.exists(action);
-
-      const formatter = new PerformanceTraceFormatter.PerformanceTraceFormatter(context.getItem());
-      const summary = await formatter.formatMainThreadTrackSummary(bounds);
-      assert.isOk(summary);
-
-      const expectedBytesSize = Platform.StringUtilities.countWtf8Bytes(summary);
-      sinon.assert.calledWith(metricsSpy, expectedBytesSize);
-
-      const expectedOutput = JSON.stringify({summary});
-
-      assert.exists(action);
-      assert.exists(action.widgets);
-      assert.lengthOf(action.widgets, 2);
-      assert.strictEqual(action.widgets[0].name, 'TIMELINE_RANGE_SUMMARY');
-      assert.strictEqual(action.widgets[1].name, 'BOTTOM_UP_TREE');
-      assert.strictEqual(action.code, 'getMainThreadTrackSummary({min: 197695826524, max: 197698633660})');
-      assert.strictEqual(action.output, expectedOutput);
-      assert.isFalse(action.canceled);
-    });
-
     it('can call getMainThreadTrackSummaryByLabel', async function() {
       const metricsSpy = sinon.spy(Host.userMetrics, 'performanceAIMainThreadActivityResponseSize');
 
@@ -665,7 +618,7 @@ code
       const renderBlocking = getInsightOrError('RenderBlocking', parsedTrace.insights, firstNav);
       const agent = createAgentForConversation({
         aidaClient: mockAidaClient([
-          [{explanation: '', functionCalls: [{name: 'getMainThreadTrackSummary', args: {}}]}],
+          [{explanation: '', functionCalls: [{name: 'getNetworkTrackSummary', args: {}}]}],
         ])
       });
       const lcpContext = PerformanceAgent.PerformanceTraceContext.fromInsight(parsedTrace, lcpBreakdown);
@@ -688,7 +641,6 @@ code
       const lcpBreakdown = getInsightOrError('LCPBreakdown', parsedTrace.insights, firstNav);
       const agent = createAgentForConversation({
         aidaClient: mockAidaClient([
-          [{explanation: '', functionCalls: [{name: 'getMainThreadTrackSummary', args: {}}]}],
           [{explanation: '', functionCalls: [{name: 'getNetworkTrackSummary', args: {}}]}], [{explanation: 'done'}]
         ])
       });
@@ -705,7 +657,6 @@ code
           [
             // https://www.youtube.com/watch?v=Vhh_GeBPOhs
             'devtools', 'devtools', 'devtools', 'devtools', 'devtools', 'devtools', 'devtools', 'devtools',
-            'getMainThreadTrackSummary({min: 197695826524, max: 197698633660})',
             'getNetworkTrackSummary({min: 197695826524, max: 197698633660})'
           ]);
     });

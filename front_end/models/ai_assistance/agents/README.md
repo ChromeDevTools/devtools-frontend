@@ -43,11 +43,6 @@ The agent can request additional data by calling functions. Here is the data the
 - **Arguments**: `eventKey` (string)
 - **Data Returned to Agent**: The full JSON representation of the specific trace event.
 
-#### `getMainThreadTrackSummary`
-- **Arguments**: `min` (integer, optional), `max` (integer, optional)
-- **Data Returned to Agent**: A comprehensive text summary of main thread activity *within the specified bounds*.
-  - **Note**: This differs from the initial "Main Thread Activity Data" fact as it is scoped to the provided time range and includes significantly more data: a **top-down tree**, a **bottom-up tree**, a **third-parties summary**, and a list of **related insights** for events in that range.
-
 #### `getNetworkTrackSummary`
 - **Arguments**: `min` (integer, optional), `max` (integer, optional)
 - **Data Returned to Agent**: A text summary of network requests and activity within the bounds.

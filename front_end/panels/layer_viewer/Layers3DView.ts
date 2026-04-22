@@ -144,7 +144,7 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
         }
         output.canvasElement = el as HTMLCanvasElement;
       })}></canvas>`,
-      target);
+      target, {container: {attributes: {jslog: `${VisualLogging.pane('layers-3d-view')}`}}});
   // clang-format onn
 };
 
@@ -182,7 +182,7 @@ export class Layers3DView extends Common.ObjectWrapper.eventMixin<EventTypes, ty
   #canvasElement!: HTMLCanvasElement;
 
   constructor(layerViewHost: LayerViewHost, view = DEFAULT_VIEW) {
-    super({jslog: `${VisualLogging.pane('layers-3d-view')}`, useShadowDom: true, classes: ['layers-3d-view']});
+    super();
     this.#view = view;
 
     this.layerViewHost = layerViewHost;

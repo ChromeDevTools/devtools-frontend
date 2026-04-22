@@ -76,7 +76,7 @@ interface ViewInput {
   onSelectionChanged: (selectedFilter: ConsoleFilter) => void;
 }
 
-export type View = (input: ViewInput, output: object, target: HTMLElement) => void;
+export type View = (input: ViewInput, output: object, target: HTMLElement|DocumentFragment) => void;
 export const DEFAULT_VIEW: View = (input, output, target) => {
   render(
       html`<devtools-tree
@@ -115,7 +115,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
               </li>`)}
         </ul>`}
         ></devtools-tree>`,
-      target);
+      target, {container: {attributes: {jslog: `${VisualLogging.pane('sidebar').track({resize: true})}`}}});
 };
 
 export class ConsoleFilterGroup {
@@ -173,7 +173,8 @@ const CONSOLE_API_PARSED_FILTERS = [{
   regex: undefined,
 }];
 
-export class ConsoleSidebar extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.VBox>(UI.Widget.VBox) {
+export class ConsoleSidebar extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.VBox<ShadowRoot>>(
+    UI.Widget.VBox) {
   #view: View;
   readonly #groups = [
     new ConsoleFilterGroup(GroupName.ALL, [], ConsoleFilter.allLevelsFilterValue()),
@@ -189,8 +190,7 @@ export class ConsoleSidebar extends Common.ObjectWrapper.eventMixin<EventTypes, 
 
   constructor(element?: HTMLElement, view = DEFAULT_VIEW) {
     super(element, {
-      jslog: `${VisualLogging.pane('sidebar').track({resize: true})}`,
-      useShadowDom: true,
+      useShadowDom: 'pure',
     });
     this.#view = view;
     this.setMinimumSize(125, 0);

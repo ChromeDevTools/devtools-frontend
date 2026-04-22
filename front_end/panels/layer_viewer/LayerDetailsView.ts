@@ -152,7 +152,7 @@ export interface ViewInput {
 
 export type ViewOutput = undefined;
 
-export const DEFAULT_VIEW = (input: ViewInput, _output: ViewOutput, target: HTMLElement): void => {
+export const DEFAULT_VIEW = (input: ViewInput, _output: ViewOutput, target: DocumentFragment): void => {
   const {layer, snapshotSelection, compositingReasons, onScrollRectClick, onPaintProfilerRequested} = input;
 
   if (!layer) {
@@ -272,11 +272,11 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: ViewOutput, target: HTML
         ${i18nString(UIStrings.paintProfiler)}
       </button>` : nothing}
     </div>`,
-      target);
+      target, {container: {attributes: {jslog: `${VisualLogging.pane('layers-details')}`}}});
   // clang-format on
 };
 
-export class LayerDetailsView extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.Widget>(
+export class LayerDetailsView extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.Widget<ShadowRoot>>(
     UI.Widget.Widget) implements LayerView {
   private readonly layerViewHost: LayerViewHost;
   private layerSnapshotMap: Map<SDK.LayerTreeBase.Layer, SnapshotSelection>;
@@ -285,10 +285,7 @@ export class LayerDetailsView extends Common.ObjectWrapper.eventMixin<EventTypes
   private readonly view: typeof DEFAULT_VIEW;
 
   constructor(layerViewHost: LayerViewHost, view: typeof DEFAULT_VIEW = DEFAULT_VIEW) {
-    super({
-      jslog: `${VisualLogging.pane('layers-details')}`,
-      useShadowDom: true,
-    });
+    super({useShadowDom: 'pure'});
     this.view = view;
     this.registerRequiredCSS(layerDetailsViewStyles);
     this.layerViewHost = layerViewHost;

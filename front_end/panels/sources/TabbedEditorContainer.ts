@@ -166,11 +166,11 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper<Ev
   }
 
   get visibleView(): UI.Widget.Widget|null {
-    return this.tabbedPane.visibleView;
+    return this.tabbedPane.visibleView as UI.Widget.Widget | null;
   }
 
   fileViews(): UI.Widget.Widget[] {
-    return this.tabbedPane.tabViews();
+    return this.tabbedPane.tabViews() as UI.Widget.Widget[];
   }
 
   leftToolbar(): UI.Toolbar.Toolbar {

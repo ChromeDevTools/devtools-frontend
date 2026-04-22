@@ -114,7 +114,7 @@ export interface ViewInput {
   onCopyRow: () => void;
 }
 
-export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
+export type View = (input: ViewInput, output: undefined, target: HTMLElement|DocumentFragment) => void;
 
 export const DEFAULT_VIEW: View = (input, _output, target) => {
   function isCategoryOpen(name: string): boolean {
@@ -218,18 +218,17 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
     ${renderCategory(CATEGORY_NAME_GENERAL, i18nString(UIStrings.general), generalContent)}
     ${renderCategory(CATEGORY_NAME_OPTIONS, i18nString(UIStrings.options), optionsContent)}
     ${socketInfo.openInfo ? renderCategory(CATEGORY_NAME_OPEN_INFO, i18nString(UIStrings.openInfo), openInfoContent) : Lit.nothing}
-  `, target);
+  `, target, {container: {attributes: {jslog: `${VisualLogging.pane('connection-info').track({resize: true})}`}}});
   // clang-format on
 };
 
-export class DirectSocketConnectionView extends UI.Widget.Widget {
+export class DirectSocketConnectionView extends UI.Widget.Widget<ShadowRoot> {
   #request: Readonly<SDK.NetworkRequest.NetworkRequest>;
   #view: View;
 
   constructor(request: SDK.NetworkRequest.NetworkRequest, view: View = DEFAULT_VIEW) {
     super({
-      jslog: `${VisualLogging.pane('connection-info').track({resize: true})}`,
-      useShadowDom: true,
+      useShadowDom: 'pure',
     });
     this.#request = request;
     this.#view = view;

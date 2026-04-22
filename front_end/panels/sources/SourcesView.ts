@@ -246,7 +246,7 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
   }
 
   visibleView(): UI.Widget.Widget|null {
-    return this.editorContainer.visibleView;
+    return this.editorContainer.visibleView as UI.Widget.Widget | null;
   }
 
   currentSourceFrame(): UISourceCodeFrame|null {

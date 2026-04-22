@@ -150,7 +150,7 @@ export const DEFAULT_VIEW: ViewFunction = (input, _output, target) => {
       </div>
     </div>
   `,
-  target);
+  target, {container: {attributes: {jslog: `${VisualLogging.pane('cookies').track({resize: true})}`}}});
   // clang-format on
 };
 
@@ -168,7 +168,7 @@ export class RequestCookiesView extends UI.Widget.Widget {
   private readonly view: ViewFunction;
 
   constructor(request: SDK.NetworkRequest.NetworkRequest, view: ViewFunction = DEFAULT_VIEW) {
-    super({jslog: `${VisualLogging.pane('cookies').track({resize: true})}`});
+    super();
     this.request = request;
     this.showFilteredOutCookiesSetting = Common.Settings.Settings.instance().createSetting(
         'show-filtered-out-request-cookies', /* defaultValue */ false);

@@ -108,7 +108,7 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: ViewOutput, target: HTML
                                                 nothing}
       </div>
     `,
-      target);
+      target, {container: {attributes: {jslog: `${VisualLogging.pane('device-bound-sessions-request')}`}}});
 };
 
 export class RequestDeviceBoundSessionsView extends UI.Widget.VBox {
@@ -116,7 +116,7 @@ export class RequestDeviceBoundSessionsView extends UI.Widget.VBox {
   #view: typeof DEFAULT_VIEW;
 
   constructor(request: SDK.NetworkRequest.NetworkRequest, view: typeof DEFAULT_VIEW = DEFAULT_VIEW) {
-    super({jslog: `${VisualLogging.pane('device-bound-sessions-request')}`});
+    super();
     this.#request = request;
     this.#view = view;
   }

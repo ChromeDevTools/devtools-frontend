@@ -20,7 +20,7 @@ import tabbedPaneStyles from './tabbedPane.css.js';
 import type {Toolbar} from './Toolbar.js';
 import {Tooltip} from './Tooltip.js';
 import {installDragHandle} from './UIUtils.js';
-import {registerWidgetConfig, VBox, Widget, widgetConfig, WidgetElement} from './Widget.js';
+import {type AnyWidget, registerWidgetConfig, VBox, Widget, widgetConfig, WidgetElement} from './Widget.js';
 import {Events as ZoomManagerEvents, ZoomManager} from './ZoomManager.js';
 
 const UIStrings = {
@@ -73,7 +73,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export interface TabInfo {
   id: string;
   title: string;
-  view: Widget;
+  view: AnyWidget;
   tabTooltip?: string;
   isCloseable?: boolean;
   previewFeature?: boolean;
@@ -183,7 +183,7 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.autoSelectFirstItemOnShow = autoSelect;
   }
 
-  get visibleView(): Widget|null {
+  get visibleView(): AnyWidget|null {
     return this.currentTab ? this.currentTab.view : null;
   }
 
@@ -195,11 +195,11 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
     return this.#tabs.findIndex(tab => tab.id === tabId);
   }
 
-  tabViews(): Widget[] {
+  tabViews(): AnyWidget[] {
     return this.#tabs.map(tab => tab.view);
   }
 
-  tabView(tabId: string): Widget|null {
+  tabView(tabId: string): AnyWidget|null {
     const tab = this.tabsById.get(tabId);
     return tab ? tab.view : null;
   }
@@ -255,7 +255,7 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
   }
 
   appendTab(
-      id: string, tabTitle: string, view: Widget, tabTooltip?: string, userGesture?: boolean, isCloseable?: boolean,
+      id: string, tabTitle: string, view: AnyWidget, tabTooltip?: string, userGesture?: boolean, isCloseable?: boolean,
       isPreviewFeature?: boolean, index?: number, jslogContext?: string): void {
     const closeable = typeof isCloseable === 'boolean' ? isCloseable : Boolean(this.closeableTabs);
     const tab =
@@ -514,7 +514,7 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
     }
   }
 
-  changeTabView(id: string, view: Widget): void {
+  changeTabView(id: string, view: AnyWidget): void {
     const tab = this.tabsById.get(id);
     if (!tab || tab.view === view) {
       return;
@@ -1137,7 +1137,7 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
 export interface EventData {
   prevTabId?: string;
   tabId: string;
-  view?: Widget;
+  view?: AnyWidget;
   isUserGesture?: boolean;
 }
 
@@ -1167,7 +1167,7 @@ export class TabbedPaneTab {
   #id: string;
   #title: string;
   #tooltip: string|undefined;
-  #view: Widget;
+  #view: AnyWidget;
   shown: boolean;
   measuredWidth!: number|undefined;
   #tabElement!: HTMLElement|undefined;
@@ -1180,7 +1180,7 @@ export class TabbedPaneTab {
   private dragStartX?: number;
   #jslogContext?: string;
   constructor(
-      tabbedPane: TabbedPane, id: string, title: string, closeable: boolean, previewFeature: boolean, view: Widget,
+      tabbedPane: TabbedPane, id: string, title: string, closeable: boolean, previewFeature: boolean, view: AnyWidget,
       tooltip?: string, jslogContext?: string) {
     this.closeable = closeable;
     this.previewFeature = previewFeature;
@@ -1290,11 +1290,11 @@ export class TabbedPaneTab {
     return true;
   }
 
-  get view(): Widget {
+  get view(): AnyWidget {
     return this.#view;
   }
 
-  set view(view: Widget) {
+  set view(view: AnyWidget) {
     this.#view = view;
   }
 

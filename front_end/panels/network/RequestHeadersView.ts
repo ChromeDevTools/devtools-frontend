@@ -218,7 +218,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
         })}
       `,
       // clang-format on
-      target);
+      target, {container: {attributes: {jslog: `${VisualLogging.pane('headers').track({resize: true})}`}}});
 };
 
 export class RequestHeadersView extends UI.Widget.Widget {
@@ -239,7 +239,7 @@ export class RequestHeadersView extends UI.Widget.Widget {
   }
 
   constructor(target?: HTMLElement, view = DEFAULT_VIEW) {
-    super({jslog: `${VisualLogging.pane('headers').track({resize: true})}`});
+    super();
     this.#view = view;
   }
 

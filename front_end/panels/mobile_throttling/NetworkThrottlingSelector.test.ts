@@ -4,6 +4,7 @@
 
 import * as SDK from '../../core/sdk/sdk.js';
 import * as CrUXManager from '../../models/crux-manager/crux-manager.js';
+import {doubleRaf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 
 import * as MobileThrottling from './mobile_throttling.js';
@@ -17,13 +18,13 @@ const optGroupsToObject = (groups: NodeListOf<HTMLOptGroupElement>) => {
 
 describeWithEnvironment('NetworkThrottlingSelector', () => {
   it('renders the global throttling variant', async () => {
-    const widget = new MobileThrottling.NetworkThrottlingSelector.NetworkThrottlingSelectorWidget();
+    const selectElement = document.createElement('select');
+    const widget = new MobileThrottling.NetworkThrottlingSelector.NetworkThrottlingSelect(selectElement);
     widget.variant = MobileThrottling.NetworkThrottlingSelector.NetworkThrottlingSelect.Variant.GLOBAL_CONDITIONS;
 
-    const select = widget.contentElement.querySelector('select');
-    assert.isNotNull(select);
+    await doubleRaf();
 
-    const optgroups = select.querySelectorAll('optgroup');
+    const optgroups = selectElement.querySelectorAll('optgroup');
     assert.deepEqual(optGroupsToObject(optgroups), [
       {
         Disabled: [
@@ -47,14 +48,14 @@ describeWithEnvironment('NetworkThrottlingSelector', () => {
   });
 
   it('renders the individual request variant', async () => {
-    const widget = new MobileThrottling.NetworkThrottlingSelector.NetworkThrottlingSelectorWidget();
+    const selectElement = document.createElement('select');
+    const widget = new MobileThrottling.NetworkThrottlingSelector.NetworkThrottlingSelect(selectElement);
     widget.variant =
         MobileThrottling.NetworkThrottlingSelector.NetworkThrottlingSelect.Variant.INDIVIDUAL_REQUEST_CONDITIONS;
 
-    const select = widget.contentElement.querySelector('select');
-    assert.isNotNull(select);
+    await doubleRaf();
 
-    const optgroups = select.querySelectorAll('optgroup');
+    const optgroups = selectElement.querySelectorAll('optgroup');
     assert.deepEqual(optGroupsToObject(optgroups), [
       {
         Blocking: [
@@ -77,35 +78,37 @@ describeWithEnvironment('NetworkThrottlingSelector', () => {
   });
 
   it('sets the current conditions', async () => {
-    const widget = new MobileThrottling.NetworkThrottlingSelector.NetworkThrottlingSelectorWidget();
+    const selectElement = document.createElement('select');
+    const widget = new MobileThrottling.NetworkThrottlingSelector.NetworkThrottlingSelect(selectElement);
     widget.variant = MobileThrottling.NetworkThrottlingSelector.NetworkThrottlingSelect.Variant.GLOBAL_CONDITIONS;
     widget.currentConditions = SDK.NetworkManager.Slow3GConditions;
 
-    const select = widget.contentElement.querySelector('select');
-    assert.isNotNull(select);
+    await doubleRaf();
 
-    assert.strictEqual(select.value, '3G');
+    assert.strictEqual(selectElement.value, '3G');
   });
 
   it('observes change events', async () => {
-    const widget = new MobileThrottling.NetworkThrottlingSelector.NetworkThrottlingSelectorWidget();
+    const selectElement = document.createElement('select');
+    const widget = new MobileThrottling.NetworkThrottlingSelector.NetworkThrottlingSelect(selectElement);
     widget.variant = MobileThrottling.NetworkThrottlingSelector.NetworkThrottlingSelect.Variant.GLOBAL_CONDITIONS;
 
-    const select = widget.contentElement.querySelector('select');
-    assert.isNotNull(select);
+    await doubleRaf();
 
-    const onConditionsChanged = sinon.stub<[SDK.NetworkManager.ThrottlingConditions]>();
-    widget.onConditionsChanged = onConditionsChanged;
+    const onConditionsChanged = sinon.stub();
+    selectElement.addEventListener('ConditionsChanged', onConditionsChanged);
 
-    select.selectedIndex = 2;
-    select.dispatchEvent(new Event('change'));
+    selectElement.selectedIndex = 2;
+    selectElement.dispatchEvent(new Event('change'));
 
-    sinon.assert.calledOnceWithExactly(onConditionsChanged, SDK.NetworkManager.Slow4GConditions);
+    sinon.assert.calledOnce(onConditionsChanged);
+    const event = onConditionsChanged.firstCall.args[0] as CustomEvent;
+    assert.strictEqual(event.detail, SDK.NetworkManager.Slow4GConditions);
   });
 });
 
 describeWithEnvironment('createForGlobalConditions CrUX integration', () => {
-  it('shows recommended label when CrUX data provides RTT', () => {
+  it('shows recommended label when CrUX data provides RTT', async () => {
     const cruxManager = CrUXManager.CrUXManager.instance({forceNew: true});
     sinon.stub(cruxManager, 'getSelectedFieldMetricData').returns({
       percentiles: {p75: '150'},
@@ -113,13 +116,16 @@ describeWithEnvironment('createForGlobalConditions CrUX integration', () => {
     });
 
     const container = document.createElement('div');
+    renderElementIntoDOM(container);
     const select = MobileThrottling.NetworkThrottlingSelector.NetworkThrottlingSelect.createForGlobalConditions(
         container, 'Network throttling');
     assert.isNotNull(select.recommendedConditions);
     assert.strictEqual(select.recommendedConditions, SDK.NetworkManager.Slow4GConditions);
 
+    await doubleRaf();
+
     // Verify the recommended label appears in the rendered DOM.
-    const options = container.querySelectorAll('option');
+    const options = select.contentElement.querySelectorAll('option');
     const slow4gOption = Array.from(options).find(opt => opt.textContent?.includes('Slow 4G'));
     assert.isDefined(slow4gOption);
     assert.include(slow4gOption.textContent, 'recommended');
@@ -130,6 +136,7 @@ describeWithEnvironment('createForGlobalConditions CrUX integration', () => {
     const stub = sinon.stub(cruxManager, 'getSelectedFieldMetricData').returns(undefined);
 
     const container = document.createElement('div');
+    renderElementIntoDOM(container);
     const select = MobileThrottling.NetworkThrottlingSelector.NetworkThrottlingSelect.createForGlobalConditions(
         container, 'Network throttling');
     assert.isNull(select.recommendedConditions);
@@ -153,6 +160,7 @@ describeWithEnvironment('createForGlobalConditions CrUX integration', () => {
     });
 
     const container = document.createElement('div');
+    renderElementIntoDOM(container);
     const select = MobileThrottling.NetworkThrottlingSelector.NetworkThrottlingSelect.createForGlobalConditions(
         container, 'Network throttling');
     assert.isNotNull(select.recommendedConditions);

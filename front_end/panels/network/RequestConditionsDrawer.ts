@@ -268,18 +268,20 @@ function renderItem(
       aria-details=url-pattern-${index}>
         ${constructorStringOrWildcardURL}
     </div>
-    <devtools-widget
+    <select
        class=conditions-selector
        title=${i18nString(UIStrings.requestConditionsLabel)}
+       @ConditionsChanged=${(e: CustomEvent<SDK.NetworkManager.ThrottlingConditions>) => {
+         onConditionsChanged(condition, e.detail);
+       }}
        ${widget(
-         MobileThrottling.NetworkThrottlingSelector.NetworkThrottlingSelectorWidget, {
+         MobileThrottling.NetworkThrottlingSelector.NetworkThrottlingSelect, {
            variant:
              MobileThrottling.NetworkThrottlingSelector.NetworkThrottlingSelect.Variant.INDIVIDUAL_REQUEST_CONDITIONS,
            jslogContext: 'request-conditions',
            disabled: !editable,
-           onConditionsChanged: conditions => onConditionsChanged(condition, conditions),
            currentConditions: condition.conditions,
-         })}></devtools-widget>
+         })}></select>
     <devtools-widget
       ?disabled=${!editable || !originalOrUpgradedURLPattern}
       ${widget(AffectedCountWidget, {condition, lookUpRequestCount})}></devtools-widget>`;

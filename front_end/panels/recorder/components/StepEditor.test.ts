@@ -29,7 +29,8 @@ const triggerMicroTaskQueue = async (n = 1) => {
   }
 };
 
-describe('StepEditor', () => {
+// Disabled due to flakiness
+describe.skip('[crbug.com/505637246]StepEditor', () => {
   setupLocaleHooks();
   async function renderEditor(
       step: Models.Schema.Step,

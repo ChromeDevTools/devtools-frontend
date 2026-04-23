@@ -20,7 +20,7 @@ import {type LiveLocation, type LiveLocationPool, LiveLocationWithPool} from './
 import {NetworkProject} from './NetworkProject.js';
 import type {ResourceMapping} from './ResourceMapping.js';
 import {type ResourceScriptFile, ResourceScriptMapping} from './ResourceScriptMapping.js';
-import {SymbolizedError} from './SymbolizedError.js';
+import {type SymbolizedError, SymbolizedErrorObject} from './SymbolizedError.js';
 
 export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObserver<SDK.DebuggerModel.DebuggerModel> {
   readonly resourceMapping: ResourceMapping;
@@ -255,7 +255,7 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
     }
 
     const message = StackTraceImpl.DetailedErrorStackParser.parseMessage(errorStack);
-    return new SymbolizedError(message, stackTrace, cause);
+    return new SymbolizedErrorObject(message, stackTrace, cause);
   }
 
   async createLiveLocation(

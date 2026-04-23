@@ -5,7 +5,10 @@
 import * as Common from '../../core/common/common.js';
 import * as StackTrace from '../stack_trace/stack_trace.js';
 
-export class SymbolizedError extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
+// TODO: also add SymbolizedSyntaxError and UnparsableError
+export type SymbolizedError = SymbolizedErrorObject;
+
+export class SymbolizedErrorObject extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   readonly message: string;
   readonly stackTrace: StackTrace.StackTrace.ParsedErrorStackTrace;
   readonly cause: SymbolizedError|null;

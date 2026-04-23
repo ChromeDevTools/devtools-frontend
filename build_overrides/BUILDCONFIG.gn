@@ -98,6 +98,12 @@ is_win = current_os == "win" || current_os == "winuwp"
 is_apple = is_ios || is_mac
 is_posix = !is_win && !is_fuchsia
 
+declare_args() {
+  # Whether to enable strict deps checks. This ensures that dependencies
+  # are correctly declared (no missing deps and no accessing transitive deps).
+  enable_strict_deps = false
+}
+
 # =============================================================================
 # Variables
 # =============================================================================

@@ -61,7 +61,7 @@ const DEFAULT_MS_BETWEEN_RETRIES = 150;
 
 // Percentage difference when comparing golden vs new screenshot that is
 // acceptable and will not fail the test.
-const DEFAULT_SCREENSHOT_THRESHOLD_PERCENT = 0.1;
+const DEFAULT_SCREENSHOT_THRESHOLD_PERCENT = 0;
 
 export const assertElementScreenshotUnchanged = async (
     element: puppeteer.ElementHandle|null,

@@ -162,6 +162,38 @@ describe('SymbolizedError', () => {
     sinon.assert.notCalled(invokeGetExceptionDetailsSpy);
   });
 
+  it('includes issueSummary in the message if provided in exceptionDetails', async () => {
+    const target = universe.createTarget({});
+    const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
+    assert.exists(runtimeModel);
+
+    const errorRemoteObject = {
+      subtype: 'error',
+      description: 'Error: error\n    at http://example.com/script.js:1:1',
+      runtimeModel: () => runtimeModel,
+      objectId: '1' as Protocol.Runtime.RemoteObjectId,
+      getAllProperties: async () => ({properties: [], internalProperties: []}),
+    } as unknown as SDK.RemoteObject.RemoteObject;
+
+    const exceptionDetails = {
+      exceptionId: 1,
+      text: 'Uncaught',
+      lineNumber: 0,
+      columnNumber: 0,
+      exceptionMetaData: {
+        issueSummary: 'This is an issue summary',
+      },
+    } as Protocol.Runtime.ExceptionDetails;
+
+    const symbolizedError =
+        await universe.debuggerWorkspaceBinding.createSymbolizedError(errorRemoteObject, exceptionDetails);
+
+    assert.exists(symbolizedError);
+    assert.strictEqual(symbolizedError.message, 'Error: error. This is an issue summary');
+    assert.strictEqual(symbolizedError.stackTrace.syncFragment.frames[0].url, 'http://example.com/script.js');
+    assert.strictEqual(symbolizedError.stackTrace.syncFragment.frames[0].line, 0);
+  });
+
   it('emits UPDATED when stackTrace or cause updates', async () => {
     const symbolizedError = await createSymbolizedErrorWithCause();
     assert.exists(symbolizedError);

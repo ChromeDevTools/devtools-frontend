@@ -7,7 +7,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
-import type * as StackTrace from '../stack_trace/stack_trace.js';
+import * as StackTrace from '../stack_trace/stack_trace.js';
 // eslint-disable-next-line @devtools/es-modules-import
 import * as StackTraceImpl from '../stack_trace/stack_trace_impl.js';
 import type * as TextUtils from '../text_utils/text_utils.js';
@@ -247,6 +247,11 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
 
     if (!stackTrace) {
       return null;
+    }
+
+    const issueSummary = fetchedExceptionDetails?.exceptionMetaData?.issueSummary;
+    if (typeof issueSummary === 'string') {
+      errorStack = StackTrace.ErrorStackParser.concatErrorDescriptionAndIssueSummary(errorStack, issueSummary);
     }
 
     const message = StackTraceImpl.DetailedErrorStackParser.parseMessage(errorStack);

@@ -27,30 +27,6 @@ import consoleViewStyles from './consoleView.css.js';
 
 const {urlString} = Platform.DevToolsPath;
 
-describe('ConsoleViewMessage', () => {
-  describe('concatErrorDescriptionAndIssueSummary', () => {
-    const {concatErrorDescriptionAndIssueSummary} = Console.ConsoleViewMessage;
-
-    it('correctly appends the issue summary in case of single line error descriptions', () => {
-      assert.strictEqual(
-          concatErrorDescriptionAndIssueSummary(
-              'TypeError: Failed to fetch',
-              'Access blocked by CORS policy: Cross origin requests are not allowed by request mode.'),
-          'TypeError: Failed to fetch. Access blocked by CORS policy: Cross origin requests are not allowed by request mode.',
-      );
-    });
-
-    it('correctly inserts the issue summary in case of multi-line error descriptions', () => {
-      assert.strictEqual(
-          concatErrorDescriptionAndIssueSummary(
-              'TypeError: Failed to fetch\n  at (index):25:5',
-              'Access blocked by CORS policy: Cross origin requests are not allowed by request mode.'),
-          'TypeError: Failed to fetch. Access blocked by CORS policy: Cross origin requests are not allowed by request mode.\n  at (index):25:5',
-      );
-    });
-  });
-});
-
 describeWithMockConnection('ConsoleViewMessage', () => {
   describe('anchor rendering', () => {
     it('links to the top frame for normal console message', () => {

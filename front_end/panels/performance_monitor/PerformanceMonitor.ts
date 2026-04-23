@@ -75,8 +75,8 @@ interface PerformanceMonitorOutput {
   width: number;
 }
 
-type PerformanceMonitorView = (input: PerformanceMonitorInput, output: PerformanceMonitorOutput, target: HTMLElement) =>
-    void;
+type PerformanceMonitorView =
+    (input: PerformanceMonitorInput, output: PerformanceMonitorOutput, target: DocumentFragment) => void;
 
 const DEFAULT_VIEW: PerformanceMonitorView = (input, output, target) => {
   // clang-format off
@@ -102,11 +102,11 @@ const DEFAULT_VIEW: PerformanceMonitorView = (input, output, target) => {
       <div class="perfmon-chart-suspend-overlay fill">
         <div>${i18nString(UIStrings.paused)}</div>
       </div>` : ''}`,
-    target);
+    target, {container: {attributes: {jslog: `${VisualLogging.pane('performance.monitor').track({resize: true})}`}}});
   // clang-format on
 };
 
-export class PerformanceMonitorImpl extends UI.Widget.HBox implements
+export class PerformanceMonitorImpl extends UI.Widget.HBox<ShadowRoot> implements
     SDK.TargetManager.SDKModelObserver<SDK.PerformanceMetricsModel.PerformanceMetricsModel> {
   private view: PerformanceMonitorView;
   private chartInfos: ChartInfo[] = [];
@@ -127,10 +127,7 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox implements
   private graphRenderingContext: CanvasRenderingContext2D|null = null;
 
   constructor(pollIntervalMs = 500, view = DEFAULT_VIEW) {
-    super({
-      jslog: `${VisualLogging.panel('performance.monitor').track({resize: true})}`,
-      useShadowDom: true,
-    });
+    super({useShadowDom: 'pure'});
     this.view = view;
     this.registerRequiredCSS(performanceMonitorStyles);
 
@@ -504,7 +501,7 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox implements
 
   private createChartInfos(): ChartInfo[] {
     const themeSupport = ThemeSupport.ThemeSupport.instance();
-    const elementForStyles = this.contentElement;
+    const elementForStyles = this.contentElement.firstElementChild;
 
     const defaults: Partial<ChartInfo> = {};
 

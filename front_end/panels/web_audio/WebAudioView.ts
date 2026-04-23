@@ -80,7 +80,7 @@ interface ViewInput {
   contextRealtimeData: Protocol.WebAudio.ContextRealtimeData|null;
 }
 
-type View = (input: ViewInput, output: object, target: HTMLElement) => void;
+type View = (input: ViewInput, output: object, target: HTMLElement|DocumentFragment) => void;
 
 export const DEFAULT_VIEW: View = (input, _output, target) => {
   const {
@@ -169,11 +169,12 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
                 (contextRealtimeData.renderCapacity * 100).toFixed(3)} %</span>
           </div>` : ''}
       </div>
-    </div>`, target);
+    </div>`, target, {container: {attributes: {jslog: `${VisualLogging.panel('web-audio').track({resize: true})}`}}});
   // clang-format on
 };
 
-export class WebAudioView extends UI.Widget.VBox implements SDK.TargetManager.SDKModelObserver<WebAudioModel> {
+export class WebAudioView extends UI.Widget.VBox<ShadowRoot> implements
+    SDK.TargetManager.SDKModelObserver<WebAudioModel> {
   private readonly knownContexts = new Set<string>();
   private readonly contextSelectorItems: UI.ListModel.ListModel<Protocol.WebAudio.BaseAudioContext>;
   private contextRealtimeData: Protocol.WebAudio.ContextRealtimeData|null = null;
@@ -182,7 +183,7 @@ export class WebAudioView extends UI.Widget.VBox implements SDK.TargetManager.SD
   private readonly pollRealtimeDataThrottler: Common.Throttler.Throttler;
 
   constructor(element?: HTMLElement, view = DEFAULT_VIEW) {
-    super({jslog: `${VisualLogging.panel('web-audio').track({resize: true})}`, useShadowDom: true});
+    super({useShadowDom: 'pure'});
     this.view = view;
 
     this.contextSelectorItems = new UI.ListModel.ListModel();

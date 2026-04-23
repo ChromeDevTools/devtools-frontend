@@ -527,6 +527,8 @@ export class Widget<ContentTypeT extends HTMLElement|DocumentFragment = HTMLElem
     }
     if (this.contentElement instanceof HTMLElement) {
       this.contentElement.classList.add('widget');
+    } else if (options?.useShadowDom === 'pure') {
+      this.element.classList.add('widget');
     }
     widgetMap.set(this.element, this);
   }
@@ -1216,6 +1218,8 @@ export class VBox<ContentTypeT extends HTMLElement|DocumentFragment = HTMLElemen
     super(elementOrOptions, options);
     if (this.contentElement instanceof HTMLElement) {
       this.contentElement.classList.add('vbox');
+    } else {
+      this.element.classList.add('vbox');
     }
   }
 
@@ -1239,7 +1243,7 @@ export class HBox<ContentTypeT extends HTMLElement|DocumentFragment = HTMLElemen
    *
    * @param options optional settings to configure the behavior.
    */
-  constructor(options?: WidgetOptions);
+  constructor(options?: WidgetOptions<ContentTypeT>);
 
   /**
    * Constructs a new `HBox` with the given `options` and attached to the
@@ -1251,13 +1255,16 @@ export class HBox<ContentTypeT extends HTMLElement|DocumentFragment = HTMLElemen
    * @param element an (optional) `HTMLElement` to attach the `HBox` to.
    * @param options optional settings to configure the behavior.
    */
-  constructor(element?: HTMLElement, options?: WidgetOptions);
+  constructor(element?: HTMLElement, options?: WidgetOptions<ContentTypeT>);
 
   constructor(elementOrOptions?: HTMLElement|WidgetOptions<ContentTypeT>, options?: WidgetOptions<ContentTypeT>) {
     // @ts-expect-error
     super(elementOrOptions, options);
     if (this.contentElement instanceof HTMLElement) {
       this.contentElement.classList.add('hbox');
+    } else {
+      this.element.classList.remove('vbox');
+      this.element.classList.add('hbox');
     }
   }
 

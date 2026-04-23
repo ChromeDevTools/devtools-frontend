@@ -134,7 +134,7 @@ export interface SearchViewOutput {
   collapseAllResults: () => void;
 }
 
-export type View = (input: SearchViewInput, output: SearchViewOutput, target: HTMLElement) => void;
+export type View = (input: SearchViewInput, output: SearchViewOutput, target: HTMLElement|DocumentFragment) => void;
 
 export const DEFAULT_VIEW: View = (input, output, target) => {
   const {
@@ -262,11 +262,11 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
             </devtools-progress>` : ''}
         </div>
         <div class="search-message">${searchResultsMessage}</div>
-      </div>`, target);
+      </div>`, target, {container: {attributes: {jslog: `${VisualLogging.panel('search').track({resize: true})}`}}});
   // clang-format on
 };
 
-export class SearchView extends UI.Widget.VBox {
+export class SearchView extends UI.Widget.VBox<ShadowRoot> {
   readonly #view: View;
   #focusSearchInput = (): void => {};
   #showAllMatches = (): void => {};
@@ -295,10 +295,7 @@ export class SearchView extends UI.Widget.VBox {
   #searchResults: SearchResult[] = [];
 
   constructor(settingKey: string, view = DEFAULT_VIEW) {
-    super({
-      jslog: `${VisualLogging.panel('search').track({resize: true})}`,
-      useShadowDom: true,
-    });
+    super({useShadowDom: 'pure'});
     this.#view = view;
     this.setMinimumSize(0, 40);
 

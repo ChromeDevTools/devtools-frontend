@@ -141,10 +141,11 @@ interface ViewInput {
   highlightedItem: SDK.CategorizedBreakpoint.CategorizedBreakpoint|null;
   categories: Map<SDK.CategorizedBreakpoint.Category, SDK.CategorizedBreakpoint.CategorizedBreakpoint[]>;
   sortedCategoryNames: SDK.CategorizedBreakpoint.Category[];
+  jslog?: string;
 }
 
-export type View = typeof DEFAULT_VIEW;
-export const DEFAULT_VIEW = (input: ViewInput, output: undefined, target: HTMLElement): void => {
+export type View = (input: ViewInput, output: undefined, target: HTMLElement|DocumentFragment) => void;
+export const DEFAULT_VIEW: View = (input, output, target) => {
   const shouldExpandCategory = (breakpoints: SDK.CategorizedBreakpoint.CategorizedBreakpoint[]): boolean =>
       Boolean(input.filterText) || (input.highlightedItem && breakpoints.includes(input.highlightedItem)) ||
       breakpoints.some(breakpoint => breakpoint.enabled());
@@ -250,12 +251,13 @@ export const DEFAULT_VIEW = (input: ViewInput, output: undefined, target: HTMLEl
             </ul>
           </li>`)}
       </ul>`}>
-    </devtools-tree>`, target);
+    </devtools-tree>`, target, {container: {attributes: {jslog: input.jslog}}});
   // clang-format on
 };
 
-export abstract class CategorizedBreakpointsSidebarPane extends UI.Widget.VBox {
+export abstract class CategorizedBreakpointsSidebarPane extends UI.Widget.VBox<ShadowRoot> {
   readonly #viewId: string;
+  readonly #jslog: string;
   // A layout test reaches into this
   private readonly categories =
       new Map<SDK.CategorizedBreakpoint.Category, SDK.CategorizedBreakpoint.CategorizedBreakpoint[]>();
@@ -267,8 +269,9 @@ export abstract class CategorizedBreakpointsSidebarPane extends UI.Widget.VBox {
   constructor(
       breakpoints: SDK.CategorizedBreakpoint.CategorizedBreakpoint[], jslog: string, viewId: string,
       view = DEFAULT_VIEW) {
-    super({useShadowDom: true, jslog});
+    super({useShadowDom: 'pure'});
     this.#view = view;
+    this.#jslog = jslog;
     this.#viewId = viewId;
 
     for (const breakpoint of breakpoints) {
@@ -348,6 +351,7 @@ export abstract class CategorizedBreakpointsSidebarPane extends UI.Widget.VBox {
   override performUpdate(): void {
     const input: ViewInput = {
       filterText: this.#filterText,
+      jslog: this.#jslog,
       onFilterChanged: this.#onFilterChanged.bind(this),
       onBreakpointChange: this.onBreakpointChanged.bind(this),
       onItemSelected: this.#onItemSelected.bind(this),

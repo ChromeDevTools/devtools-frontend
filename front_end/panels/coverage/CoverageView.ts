@@ -153,7 +153,7 @@ export interface CoverageViewOutput {
   focusResults: () => void;
 }
 
-export type View = (input: CoverageViewInput, output: CoverageViewOutput, target: HTMLElement) => void;
+export type View = (input: CoverageViewInput, output: CoverageViewOutput, target: DocumentFragment) => void;
 
 export const DEFAULT_VIEW: View = (input, output, target) => {
   // clang-format off
@@ -234,7 +234,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
         <div class="coverage-message">
             ${input.statusMessage}
         </div>
-    </div>`, target);
+    </div>`, target, {container: {attributes: {jslog: `${VisualLogging.panel('coverage').track({resize: true})}`}}});
   // clang-format on
 };
 
@@ -282,7 +282,7 @@ function renderReloadPromptPage(message: Common.UIString.LocalizedString, classN
   // clang-format on
 }
 
-export class CoverageView extends UI.Widget.VBox {
+export class CoverageView extends UI.Widget.VBox<ShadowRoot> {
   #model: CoverageModel|null;
   #decorationManager: CoverageDecorationManager|null;
   readonly #coverageTypeComboBoxSetting: Common.Settings.Setting<number>;
@@ -303,8 +303,7 @@ export class CoverageView extends UI.Widget.VBox {
 
   constructor(view: View = DEFAULT_VIEW) {
     super({
-      jslog: `${VisualLogging.panel('coverage').track({resize: true})}`,
-      useShadowDom: true,
+      useShadowDom: 'pure',
       delegatesFocus: true,
     });
     this.registerRequiredCSS(coverageViewStyles);

@@ -117,15 +117,14 @@ Note: if the user asks a specific question about the trace (such as "What is my 
 
 ## Guidelines
 
-- You must call \`getMainThreadTrackSummary\` (by specifying a time range) or \`getMainThreadTrackSummaryByLabel\` (with the relevant label) to investigate the main thread activity before giving the user a reply or suggesting solutions for any performance problem or insight. Call \`getMainThreadTrackSummary\` with specific bounds when you identify a specific time range of interest from the initial data. This applies even if you already have some information about that period from \`getInsightDetails\` or the initial trace summary.
-- Dig Deeper: Before replying, you should really dig into the main thread activity to uncover what the performance issues actually are. Use the initially provided main thread data as a reference to identify interesting tasks or time ranges, and then use those time bounds to call functions like \`getMainThreadTrackSummary\` to get more detailed data. Do not solely rely on the information from the initial data; ensure you identify the root cause before suggesting solutions.
-- No Shortcutting: Even if the initial facts contain specific line numbers or function names, you are not allowed to reply using only that information. You MUST call \`getMainThreadTrackSummary\` with the time bounds of the task to inspect its full context and children before describing it to the user.
-- Look for Aggregated Cost: Performance issues are not always caused by a single "Long Task". Many small, frequent events (like unthrottled \`mousemove\` or \`scroll\` handlers) can add up to significant main thread blockage. Use the Bottom-Up summary in \`getMainThreadTrackSummary\` to identify functions with high total time, even if they are not associated with a Long Task.
+- You must call \`getMainThreadTrackSummaryByLabel\` (with the relevant label) to investigate the main thread activity before giving the user a reply or suggesting solutions for any performance problem or insight. This applies even if you already have some information about that period from \`getInsightDetails\` or the initial trace summary.
+- Dig Deeper: Before replying, you should really dig into the main thread activity to uncover what the performance issues actually are. Do not solely rely on the information from the initial data; ensure you identify the root cause before suggesting solutions.
+- No Shortcutting: Even if the initial facts contain specific line numbers or function names, you are not allowed to reply using only that information. You MUST call \`getMainThreadTrackSummaryByLabel\` to inspect its context before describing it to the user.
+- Look for Aggregated Cost: Performance issues are not always caused by a single "Long Task". Many small, frequent events (like unthrottled \`mousemove\` or \`scroll\` handlers) can add up to significant main thread blockage. Use the Bottom-Up summary in \`getMainThreadTrackSummaryByLabel\` to identify functions with high total time, even if they are not associated with a Long Task.
 - Use the provided functions to get detailed performance data. Prioritize functions that provide context relevant to the performance issue being investigated.
 - Before finalizing your advice, look over it and validate using any relevant functions. If something seems off, refine the advice before giving it to the user.
 - Base your analysis and advice solely on the data retrieved through the provided functions. Always use the provided functions to gather sufficient data when needed.
 - Use absolute microsecond timestamps for any function that requires a \`min\` and \`max\` bounds. These timestamps can be found in the trace summary or within the details of an insight.
-- Example: If the trace bounds are {min: 1000, max: 5000} and you want to investigate a specific interaction that happened between 2000 and 3000, you should call \`getMainThreadTrackSummary({min: 2000, max: 3000})\`.
 - Available labels for \`getMainThreadTrackSummaryByLabel\` include:
   - \`trace-bounds\` (entire trace)
   - \`nav-to-lcp\` (navigation to LCP)
@@ -152,7 +151,7 @@ Adhere to the following critical requirements:
 - Ensure comprehensive data retrieval through function calls to provide accurate and complete recommendations.
 - If the user asks a specific question about web performance that doesn't have anything to do with the trace, don't call any functions and be succinct in your answer.
 - Before suggesting changing the format of an image, consider what format it is already in. For example, if the mime type is image/webp, do not suggest to the user that the image is converted to WebP, as the image is already in that format.
-- Do not mention the functions you call to gather information about the trace (e.g., \`getEventByKey\`, \`getMainThreadTrackSummary\`) in your output. These are internal implementation details that should be hidden from the user.
+- Do not mention the functions you call to gather information about the trace (e.g., \`getEventByKey\`, \`getMainThreadTrackSummaryByLabel\`) in your output. These are internal implementation details that should be hidden from the user.
 - Do not mention that you are an AI, or refer to yourself in the third person. You are simulating a performance expert.
 - If asked about sensitive topics (religion, race, politics, sexuality, gender, etc.), respond with: "My expertise is limited to website performance analysis. I cannot provide information on that topic.".
 - Do not provide answers on non-web-development topics, such as legal, financial, medical, or personal advice.
@@ -310,6 +309,36 @@ export class PerformanceTraceContext extends ConversationContext {
 }
 // 16k Tokens * ~4 char per token.
 const MAX_FUNCTION_RESULT_BYTE_LENGTH = 16384 * 4;
+const STATIC_LABEL_NAMES = {
+    'nav-to-lcp': 'navigation to LCP',
+    'lcp-ttfb': 'LCP to TTFB',
+    'lcp-render-delay': 'LCP render delay',
+    'trace-bounds': 'the entire trace',
+    NO_NAVIGATION: 'the period before the first navigation',
+};
+/**
+ * Converts the label name we use in the code to a human readable one that is
+ * shown to the user.
+ */
+export function getLabelName(label, focus) {
+    if (STATIC_LABEL_NAMES[label]) {
+        return STATIC_LABEL_NAMES[label];
+    }
+    const { parsedTrace } = focus;
+    const insightSetById = parsedTrace.insights?.get(label);
+    if (insightSetById) {
+        return `navigation to ${insightSetById.url.href}`;
+    }
+    // Go through all the insights we have to find the first one that matches to find the title.
+    // TODO(b/505291090): make it easier to look up Insight titles from a key.
+    for (const insightSet of parsedTrace.insights?.values() ?? []) {
+        const model = insightSet.model[label];
+        if (model) {
+            return `${model.title} insight`;
+        }
+    }
+    return label;
+}
 /**
  * One agent instance handles one conversation. Create a new agent
  * instance for a new conversation.
@@ -894,44 +923,6 @@ export class PerformanceAgent extends AiAgent {
             }
             return Trace.Helpers.Timing.traceWindowFromMicroSeconds(clampedMin, clampedMax);
         };
-        this.declareFunction('getMainThreadTrackSummary', {
-            description: 'Returns a summary of the main thread for the given bounds. The result includes a top-down summary, bottom-up summary, third-parties summary, and a list of related insights for the events within the given bounds.',
-            parameters: {
-                type: 6 /* Host.AidaClient.ParametersTypes.OBJECT */,
-                description: '',
-                nullable: false,
-                properties: {
-                    min: {
-                        type: 3 /* Host.AidaClient.ParametersTypes.INTEGER */,
-                        description: `The minimum time of the bounds, in microseconds (the current trace starts at ${parsedTrace.data.Meta.traceBounds.min})`,
-                        nullable: true,
-                    },
-                    max: {
-                        type: 3 /* Host.AidaClient.ParametersTypes.INTEGER */,
-                        description: `The maximum time of the bounds, in microseconds (the current trace ends at ${parsedTrace.data.Meta.traceBounds.max})`,
-                        nullable: true,
-                    },
-                },
-                required: []
-            },
-            displayInfoFromArgs: args => {
-                const min = args.min ?? parsedTrace.data.Meta.traceBounds.min;
-                const max = args.max ?? parsedTrace.data.Meta.traceBounds.max;
-                return {
-                    title: lockedString(UIStringsNotTranslated.mainThreadActivity),
-                    action: `getMainThreadTrackSummary({min: ${min}, max: ${max}})`
-                };
-            },
-            handler: async (args) => {
-                debugLog('Function call: getMainThreadTrackSummary');
-                const bounds = createBounds(args.min, args.max);
-                if (!bounds) {
-                    return { error: 'invalid bounds' };
-                }
-                const key = `getMainThreadTrackSummary({min: ${bounds.min}, max: ${bounds.max}})`;
-                return await this.#handleMainThreadTrackSummary(bounds, focus, 'getMainThreadTrackSummary', key);
-            },
-        });
         this.declareFunction('getMainThreadTrackSummaryByLabel', {
             description: 'Returns a focused, detailed summary of the main thread for a predefined labeled period. Use this to get more relevant detail than the initial trace summary before diagnosing issues.',
             parameters: {
@@ -948,8 +939,9 @@ export class PerformanceAgent extends AiAgent {
                 required: ['label']
             },
             displayInfoFromArgs: args => {
+                const labelName = getLabelName(args.label, focus);
                 return {
-                    title: lockedString(UIStringsNotTranslated.mainThreadActivity),
+                    title: lockedString(`${UIStringsNotTranslated.mainThreadActivity}: ${labelName}`),
                     action: `getMainThreadTrackSummaryByLabel('${args.label}')`
                 };
             },
@@ -1297,10 +1289,9 @@ export class PerformanceAgent extends AiAgent {
         if (label === 'trace-bounds') {
             return parsedTrace.data.Meta.traceBounds;
         }
-        for (const is of parsedTrace.insights?.values() ?? []) {
-            if (is.id === label) {
-                return is.bounds;
-            }
+        const insightSetById = parsedTrace.insights?.get(label);
+        if (insightSetById) {
+            return insightSetById.bounds;
         }
         if (insightSet) {
             const model = insightSet.model[label];

@@ -34,7 +34,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
           ${input.sections?.map((curr, index) => {
         return renderSection(curr, input.positions[index]);
     })}
-        </div>`, target);
+        </div>`, target, { container: { classes: ['devtools-timespan-breakdown-overlay'] } });
     // clang-format off
 };
 export class TimespanBreakdownOverlay extends UI.Widget.Widget {
@@ -47,7 +47,7 @@ export class TimespanBreakdownOverlay extends UI.Widget.Widget {
     #top = null;
     #view;
     constructor(element, view = DEFAULT_VIEW) {
-        super(element, { classes: ['devtools-timespan-breakdown-overlay'] });
+        super(element);
         this.#view = view;
         this.requestUpdate();
     }

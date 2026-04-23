@@ -128,7 +128,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
         `)}
       </div>
     </div>
-  `, target);
+  `, target, { container: { attributes: { jslog: `${VisualLogging.pane('cookies').track({ resize: true })}` } } });
     // clang-format on
 };
 function getMalformedCookieTooltip(malformedCookie) {
@@ -142,7 +142,7 @@ export class RequestCookiesView extends UI.Widget.Widget {
     showFilteredOutCookiesSetting;
     view;
     constructor(request, view = DEFAULT_VIEW) {
-        super({ jslog: `${VisualLogging.pane('cookies').track({ resize: true })}` });
+        super();
         this.request = request;
         this.showFilteredOutCookiesSetting = Common.Settings.Settings.instance().createSetting('show-filtered-out-request-cookies', /* defaultValue */ false);
         this.view = view;

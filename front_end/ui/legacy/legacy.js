@@ -2831,10 +2831,10 @@ function appendStyle(node, ...styles) {
 
 // gen/front_end/ui/legacy/Widget.js
 var { html } = Lit;
-var originalAppendChild = Element.prototype.appendChild;
-var originalInsertBefore = Element.prototype.insertBefore;
-var originalRemoveChild = Element.prototype.removeChild;
-var originalRemoveChildren = Element.prototype.removeChildren;
+var originalAppendChild = Node.prototype.appendChild;
+var originalInsertBefore = Node.prototype.insertBefore;
+var originalRemoveChild = Node.prototype.removeChild;
+var originalRemoveChildren = Node.prototype.removeChildren;
 function assert(condition, message) {
   if (!condition) {
     throw new Error(message);
@@ -2978,16 +2978,17 @@ function setUpLifecycleTracking(element) {
       }
       widget2 = instantiateWidget(element, config);
     }
-    const parent = element.parentElementOrShadowHost();
+    const parent = element.parentNode instanceof DocumentFragment ? element.parentNode : element.parentElementOrShadowHost();
     if (!parent) {
       widget2.markAsRoot();
+    } else {
+      widget2.show(
+        parent,
+        void 0,
+        /* suppressOrphanWidgetError= */
+        true
+      );
     }
-    widget2.show(
-      parent,
-      void 0,
-      /* suppressOrphanWidgetError= */
-      true
-    );
   };
 }
 var WidgetElement = class extends HTMLElement {
@@ -3403,7 +3404,7 @@ var Widget = class _Widget {
       assert(currentParent && widgetMap.get(currentParent) === this.#parentWidget, "Attempt to show under node belonging to alien widget");
     }
     const wasVisible = this.#visible;
-    if (wasVisible && this.element.parentElement === parentElement) {
+    if (wasVisible && this.element.parentNode === parentElement) {
       return;
     }
     this.#visible = true;
@@ -3411,7 +3412,7 @@ var Widget = class _Widget {
       this.processWillShow();
     }
     this.element.classList.remove("hidden");
-    if (this.element.parentElement !== parentElement) {
+    if (this.element.parentNode !== parentElement) {
       if (!this.#externallyManaged) {
         incrementWidgetCounter(parentElement, this.element);
       }
@@ -3741,8 +3742,8 @@ var Widget = class _Widget {
 };
 var storedScrollPositions = /* @__PURE__ */ new WeakMap();
 var VBox = class extends Widget {
-  constructor() {
-    super(...arguments);
+  constructor(elementOrOptions, options) {
+    super(elementOrOptions, options);
     if (this.contentElement instanceof HTMLElement) {
       this.contentElement.classList.add("vbox");
     }
@@ -3759,9 +3760,11 @@ var VBox = class extends Widget {
   }
 };
 var HBox = class extends Widget {
-  constructor() {
-    super(...arguments);
-    this.contentElement.classList.add("hbox");
+  constructor(elementOrOptions, options) {
+    super(elementOrOptions, options);
+    if (this.contentElement instanceof HTMLElement) {
+      this.contentElement.classList.add("hbox");
+    }
   }
   calculateConstraints() {
     let constraints = new Geometry.Constraints();
@@ -3806,25 +3809,25 @@ var WidgetFocusRestorer = class {
 function domOperationError(funcName) {
   return new Error(`Attempt to modify widget with native DOM method \`${funcName}\``);
 }
-Element.prototype.appendChild = function(node) {
-  if (widgetMap.get(node) && node.parentElement !== this) {
+Node.prototype.appendChild = function(node) {
+  if (widgetMap.get(node) && node.parentNode !== this) {
     throw domOperationError("appendChild");
   }
   return originalAppendChild.call(this, node);
 };
-Element.prototype.insertBefore = function(node, child) {
-  if (widgetMap.get(node) && node.parentElement !== this) {
+Node.prototype.insertBefore = function(node, child) {
+  if (widgetMap.get(node) && node.parentNode !== this) {
     throw domOperationError("insertBefore");
   }
   return originalInsertBefore.call(this, node, child);
 };
-Element.prototype.removeChild = function(child) {
+Node.prototype.removeChild = function(child) {
   if (widgetCounterMap.get(child) || widgetMap.get(child)) {
     throw domOperationError("removeChild");
   }
   return originalRemoveChild.call(this, child);
 };
-Element.prototype.removeChildren = function() {
+Node.prototype.removeChildren = function() {
   if (widgetCounterMap.get(this)) {
     throw domOperationError("removeChildren");
   }
@@ -5758,7 +5761,7 @@ var ViewManager = class _ViewManager extends Common7.ObjectWrapper.ObjectWrapper
     return view;
   }
   materializedWidget(viewId) {
-    const view = this.view(viewId);
+    const view = this.views.get(viewId);
     if (!view) {
       return null;
     }

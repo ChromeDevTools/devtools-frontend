@@ -979,13 +979,13 @@ var DEFAULT_VIEW2 = (input, _output, target) => {
             </div>
           ` : nothing2}
       </div>
-    `, target);
+    `, target, { container: { attributes: { jslog: `${VisualLogging2.pane("device-bound-sessions-request")}` } } });
 };
 var RequestDeviceBoundSessionsView = class extends UI3.Widget.VBox {
   #request;
   #view;
   constructor(request, view = DEFAULT_VIEW2) {
-    super({ jslog: `${VisualLogging2.pane("device-bound-sessions-request")}` });
+    super();
     this.#request = request;
     this.#view = view;
   }
@@ -3690,7 +3690,7 @@ var DEFAULT_VIEW3 = (input, _output, target) => {
         `)}
       </div>
     </div>
-  `, target);
+  `, target, { container: { attributes: { jslog: `${VisualLogging5.pane("cookies").track({ resize: true })}` } } });
 };
 function getMalformedCookieTooltip(malformedCookie) {
   if (malformedCookie.blockedReasons.includes(
@@ -3712,7 +3712,7 @@ var RequestCookiesView = class extends UI7.Widget.Widget {
   showFilteredOutCookiesSetting;
   view;
   constructor(request, view = DEFAULT_VIEW3) {
-    super({ jslog: `${VisualLogging5.pane("cookies").track({ resize: true })}` });
+    super();
     this.request = request;
     this.showFilteredOutCookiesSetting = Common5.Settings.Settings.instance().createSetting(
       "show-filtered-out-request-cookies",
@@ -4096,7 +4096,8 @@ var DEFAULT_VIEW5 = (input, output, target) => {
     })}
       `,
     // clang-format on
-    target
+    target,
+    { container: { attributes: { jslog: `${VisualLogging6.pane("headers").track({ resize: true })}` } } }
   );
 };
 var RequestHeadersView = class extends UI9.Widget.Widget {
@@ -4115,7 +4116,7 @@ var RequestHeadersView = class extends UI9.Widget.Widget {
     this.#addEventListeners();
   }
   constructor(target, view = DEFAULT_VIEW5) {
-    super({ jslog: `${VisualLogging6.pane("headers").track({ resize: true })}` });
+    super();
     this.#view = view;
   }
   #addEventListeners() {

@@ -784,10 +784,10 @@ function renderImage(imageSrc, imageUrl, naturalWidth) {
           width=${naturalWidth}>
     </div>`;
 }
-function setFocusOnSection(section9, output) {
+function setFocusOnSection(section8, output) {
   return (e) => {
     if (e instanceof HTMLElement) {
-      output.focusOnSection.set(section9, () => e.focus());
+      output.focusOnSection.set(section8, () => e.focus());
     }
   };
 }
@@ -9505,15 +9505,15 @@ var ServiceWorkersView = class extends UI16.Widget.VBox {
   updateSectionVisibility() {
     let hasThis = false;
     const movedSections = [];
-    for (const section9 of this.sections.values()) {
-      const expectedView = this.getReportViewForOrigin(section9.registration.securityOrigin);
+    for (const section8 of this.sections.values()) {
+      const expectedView = this.getReportViewForOrigin(section8.registration.securityOrigin);
       hasThis = hasThis || expectedView === this.currentWorkersView;
-      if (section9.section.parentWidget() !== expectedView) {
-        movedSections.push(section9);
+      if (section8.section.parentWidget() !== expectedView) {
+        movedSections.push(section8);
       }
     }
-    for (const section9 of movedSections) {
-      const registration = section9.registration;
+    for (const section8 of movedSections) {
+      const registration = section8.registration;
       this.removeRegistrationFromList(registration);
       this.updateRegistration(registration, true);
     }
@@ -9524,11 +9524,11 @@ var ServiceWorkersView = class extends UI16.Widget.VBox {
       const bTimestamp = bRegistration ? this.getTimeStamp(bRegistration) : 0;
       return bTimestamp - aTimestamp;
     });
-    for (const section9 of this.sections.values()) {
-      if (section9.section.parentWidget() === this.currentWorkersView || this.isRegistrationVisible(section9.registration)) {
-        section9.section.showWidget();
+    for (const section8 of this.sections.values()) {
+      if (section8.section.parentWidget() === this.currentWorkersView || this.isRegistrationVisible(section8.registration)) {
+        section8.section.showWidget();
       } else {
-        section9.section.hideWidget();
+        section8.section.hideWidget();
       }
     }
     this.contentElement.classList.toggle("service-worker-has-current", Boolean(hasThis));
@@ -9570,8 +9570,8 @@ var ServiceWorkersView = class extends UI16.Widget.VBox {
     return null;
   }
   updateRegistration(registration, skipUpdate) {
-    let section9 = this.sections.get(registration);
-    if (!section9) {
+    let section8 = this.sections.get(registration);
+    if (!section8) {
       const title = registration.scopeURL;
       const reportView = this.getReportViewForOrigin(registration.securityOrigin);
       if (!reportView) {
@@ -9580,22 +9580,22 @@ var ServiceWorkersView = class extends UI16.Widget.VBox {
       const uiSection = reportView.appendSection(title);
       uiSection.setUiGroupTitle(i18nString21(UIStrings21.serviceWorkerForS, { PH1: title }));
       this.sectionToRegistration.set(uiSection, registration);
-      section9 = new Section(this.manager, uiSection, registration);
-      this.sections.set(registration, section9);
+      section8 = new Section(this.manager, uiSection, registration);
+      this.sections.set(registration, section8);
     }
     if (skipUpdate) {
       return;
     }
     this.updateSectionVisibility();
-    section9.scheduleUpdate();
+    section8.scheduleUpdate();
   }
   registrationDeleted(event) {
     this.removeRegistrationFromList(event.data);
   }
   removeRegistrationFromList(registration) {
-    const section9 = this.sections.get(registration);
-    if (section9) {
-      section9.section.detach();
+    const section8 = this.sections.get(registration);
+    if (section8) {
+      section8.section.detach();
     }
     this.sections.delete(registration);
     this.updateSectionVisibility();
@@ -9630,9 +9630,9 @@ var Section = class {
   throttler;
   updateCycleField;
   routerField;
-  constructor(manager, section9, registration) {
+  constructor(manager, section8, registration) {
     this.manager = manager;
-    this.section = section9;
+    this.section = section8;
     this.registration = registration;
     this.fingerprint = null;
     this.pushNotificationDataSetting = Common11.Settings.Settings.instance().createLocalSetting("push-data", i18nString21(UIStrings21.testPushMessageFromDevtools));
@@ -10500,7 +10500,9 @@ var KeyValueStorageItemsView = class extends UI19.Widget.VBox {
   #editable;
   #toolbar;
   metadataView;
-  constructor(title, id, editable, view, metadataView, opts) {
+  #jslog;
+  #classes;
+  constructor(title, id, editable, view, metadataView, jslog, classes) {
     metadataView ??= new ApplicationComponents13.StorageMetadataView.StorageMetadataView();
     if (!view) {
       view = (input, output, target) => {
@@ -10559,13 +10561,16 @@ var KeyValueStorageItemsView = class extends UI19.Widget.VBox {
               </devtools-widget>
             </devtools-split-view>`,
           // clang-format on
-          target
+          target,
+          { container: { attributes: { jslog: input.jslog }, classes: input.classes } }
         );
       };
     }
-    super(opts);
+    super();
     this.metadataView = metadataView;
     this.#editable = editable;
+    this.#jslog = jslog;
+    this.#classes = classes;
     this.#view = view;
     this.performUpdate();
     this.#preview = new EmptyWidget9(i18nString25(UIStrings25.noPreviewSelected), i18nString25(UIStrings25.selectAValueToPreview));
@@ -10588,6 +10593,8 @@ var KeyValueStorageItemsView = class extends UI19.Widget.VBox {
       selectedKey: this.#selectedKey,
       editable: this.#editable,
       preview: this.#preview,
+      jslog: this.#jslog,
+      classes: this.#classes,
       onSelect: (item2) => {
         this.#toolbar?.setCanDeleteSelected(Boolean(item2));
         if (!item2) {
@@ -11419,8 +11426,8 @@ var StorageView = class _StorageView extends UI22.Widget.VBox {
     storage.markFieldListAsGroup();
     SDK24.TargetManager.TargetManager.instance().observeTargets(this);
   }
-  appendItem(section9, title, settingName) {
-    const row = section9.appendRow();
+  appendItem(section8, title, settingName) {
+    const row = section8.appendRow();
     const setting = this.settings.get(settingName);
     if (setting) {
       row.appendChild(SettingsUI.SettingsUI.createSettingCheckbox(title, setting));
@@ -12706,19 +12713,19 @@ var PAYLOAD_DEFAULT_VIEW = (input, output, target) => {
   const isParsable = input.valueObject !== void 0;
   const createPayload = (parsedInput) => {
     const object = new SDK25.RemoteObject.LocalJSONObject(parsedInput);
-    const section9 = new ObjectUI2.ObjectPropertiesSection.RootElement(new ObjectUI2.ObjectPropertiesSection.ObjectTree(object, {
+    const section8 = new ObjectUI2.ObjectPropertiesSection.RootElement(new ObjectUI2.ObjectPropertiesSection.ObjectTree(object, {
       readOnly: true,
       propertiesMode: 1
     }));
-    section9.title = document.createTextNode(object.description);
-    section9.listItemElement.classList.add("source-code", "object-properties-section");
-    section9.childrenListElement.classList.add("source-code", "object-properties-section");
-    section9.expand();
+    section8.title = document.createTextNode(object.description);
+    section8.listItemElement.classList.add("source-code", "object-properties-section");
+    section8.childrenListElement.classList.add("source-code", "object-properties-section");
+    section8.expand();
     return html10`<devtools-tree .template=${html10`
           <style>${ObjectUI2.ObjectPropertiesSection.objectValueStyles}</style>
           <style>${ObjectUI2.ObjectPropertiesSection.objectPropertiesSectionStyles}</style>
           <ul role="tree">
-            <devtools-tree-wrapper .treeElement=${section9}></devtools-tree-wrapper>
+            <devtools-tree-wrapper .treeElement=${section8}></devtools-tree-wrapper>
           </ul>
         `}></devtools-tree>`;
   };
@@ -14068,9 +14075,9 @@ var AppManifestTreeElement = class extends ApplicationPanelTreeElement {
   }
   generateChildren() {
     const staticSections = this.view.getStaticSections();
-    for (const section9 of staticSections) {
-      const childTitle = section9.title;
-      const child = new ApplicationPanelTreeElement(this.resourcesPanel, childTitle, false, section9.jslogContext || "");
+    for (const section8 of staticSections) {
+      const childTitle = section8.title;
+      const child = new ApplicationPanelTreeElement(this.resourcesPanel, childTitle, false, section8.jslogContext || "");
       child.onselect = (selectedByUser) => {
         if (selectedByUser) {
           this.showView(this.view);
@@ -14821,9 +14828,9 @@ var FrameTreeElement = class _FrameTreeElement extends ApplicationPanelTreeEleme
   treeElementForWindow;
   treeElementForWorker;
   view;
-  constructor(section9, frame) {
-    super(section9.panel, "", false, "frame");
-    this.section = section9;
+  constructor(section8, frame) {
+    super(section8.panel, "", false, "frame");
+    this.section = section8;
     this.frame = frame;
     this.categoryElements = /* @__PURE__ */ new Map();
     this.treeElementForResource = /* @__PURE__ */ new Map();
@@ -15273,7 +15280,8 @@ var DEFAULT_COOKIE_PREVIEW_WIDGET_VIEW = (input, output, target) => {
     </div>
   `,
     // clang-format on
-    target
+    target,
+    { container: { attributes: { jslog: `${VisualLogging18.pane("cookie-preview")}` } } }
   );
 };
 var CookiePreviewWidget = class extends UI25.Widget.VBox {
@@ -15281,7 +15289,7 @@ var CookiePreviewWidget = class extends UI25.Widget.VBox {
   #cookie;
   showDecodedSetting;
   constructor(element, view = DEFAULT_COOKIE_PREVIEW_WIDGET_VIEW) {
-    super(element, { jslog: `${VisualLogging18.section("cookie-preview")}` });
+    super(element);
     this.view = view;
     this.setMinimumSize(230, 45);
     this.#cookie = null;
@@ -15342,7 +15350,8 @@ var DEFAULT_VIEW8 = (input, output, target) => {
     </devtools-widget>
   `,
     // clang-format on
-    target
+    target,
+    { container: { attributes: { jslog: `${VisualLogging18.pane("cookies-data")}` } } }
   );
 };
 var CookieItemsView = class extends UI25.Widget.VBox {
@@ -15355,7 +15364,7 @@ var CookieItemsView = class extends UI25.Widget.VBox {
   selectedCookie;
   #toolbar;
   constructor(model, cookieDomain, view = DEFAULT_VIEW8) {
-    super({ jslog: `${VisualLogging18.pane("cookies-data")}` });
+    super();
     this.view = view;
     this.model = model;
     this.cookieDomain = cookieDomain;
@@ -16076,7 +16085,7 @@ var DEFAULT_VIEW9 = (input, _output, target) => {
       <style>${deviceBoundSessionsView_css_default}</style>
       ${toolbarHtml}
       <devtools-widget ${widget9(UI26.EmptyWidget.EmptyWidget, { header: defaultTitle, text: defaultDescription })} jslog=${VisualLogging19.pane("device-bound-sessions-empty")}></devtools-widget>
-    `, target);
+    `, target, { container: { attributes: { jslog: `${VisualLogging19.pane("device-bound-sessions")}` } } });
     return;
   }
   let sessionDetailsHtml;
@@ -16291,7 +16300,7 @@ var DeviceBoundSessionsView = class extends UI26.Widget.VBox {
   #defaultDescription;
   #selectedEvent;
   constructor(view = DEFAULT_VIEW9) {
-    super({ jslog: `${VisualLogging19.pane("device-bound-sessions")}` });
+    super();
     this.#view = view;
   }
   showSession(model, site, sessionId) {
@@ -16619,12 +16628,22 @@ var DOMStorageItemsView = class extends KeyValueStorageItemsView {
   domStorage;
   eventListeners;
   constructor(domStorage) {
-    super(i18nString34(UIStrings34.domStorageItems), "dom-storage", true);
+    super(
+      i18nString34(UIStrings34.domStorageItems),
+      "dom-storage",
+      true,
+      /* view=*/
+      void 0,
+      /* metadataView=*/
+      void 0,
+      /* jslog=*/
+      void 0,
+      ["storage-view", "table"]
+    );
     this.domStorage = domStorage;
     if (domStorage.storageKey) {
       this.toolbar?.setStorageKey(domStorage.storageKey);
     }
-    this.element.classList.add("storage-view", "table");
     this.showPreview(null, null);
     this.eventListeners = [];
     this.setStorage(domStorage);
@@ -16736,7 +16755,7 @@ var ExtensionStorageItemsView = class extends KeyValueStorageItemsView {
   #extensionStorage;
   extensionStorageItemsDispatcher;
   constructor(extensionStorage, view) {
-    super(i18nString35(UIStrings35.extensionStorageItems), "extension-storage", true, view, void 0, { jslog: `${VisualLogging21.pane().context("extension-storage-data")}`, classes: ["storage-view", "table"] });
+    super(i18nString35(UIStrings35.extensionStorageItems), "extension-storage", true, view, void 0, `${VisualLogging21.pane().context("extension-storage-data")}`, ["storage-view", "table"]);
     this.extensionStorageItemsDispatcher = new Common21.ObjectWrapper.ObjectWrapper();
     this.setStorage(extensionStorage);
   }

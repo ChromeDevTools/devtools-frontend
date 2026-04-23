@@ -3087,14 +3087,19 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
             return;
         }
         this.#clearGhostTextInValue();
-        this.valueElement.createChild('span', 'ghost-value-prediction').textContent = text;
+        if (this.value) {
+            // If there is an existing value, and user is editing the name field
+            // which leads to a new value suggestion, then the previous value should no
+            // longer be valid.
+            this.listItemElement.classList.add('not-parsed-ok', 'invalid-property-value');
+        }
+        const ghostTextElement = document.createElement('span');
+        ghostTextElement.classList.add('ghost-value-prediction');
+        ghostTextElement.textContent = text;
+        this.valueElement.insertAdjacentElement('afterend', ghostTextElement);
     }
     #clearGhostTextInValue() {
-        if (!this.valueElement) {
-            return;
-        }
-        const ghostElement = this.valueElement.querySelector('.ghost-value-prediction');
-        ghostElement?.remove();
+        this.listItemElement.querySelector('.ghost-value-prediction')?.remove();
     }
 }
 export class GhostStylePropertyTreeElement extends StylePropertyTreeElement {

@@ -18,9 +18,9 @@ export interface ViewInput {
     seenButtonClick: boolean;
     runMitigations: () => Promise<void>;
 }
-export declare const DEFAULT_VIEW: (input: ViewInput, _output: undefined, target: HTMLElement) => void;
+export declare const DEFAULT_VIEW: (input: ViewInput, _output: undefined, target: HTMLElement | DocumentFragment) => void;
 type ViewFunction = typeof DEFAULT_VIEW;
-export declare class BounceTrackingMitigationsView extends UI.Widget.Widget {
+export declare class BounceTrackingMitigationsView extends UI.Widget.Widget<ShadowRoot> {
     #private;
     constructor(element?: HTMLElement, view?: ViewFunction);
     wasShown(): void;

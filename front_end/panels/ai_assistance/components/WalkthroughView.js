@@ -104,11 +104,11 @@ function renderInlineWalkthrough(input, stepsOutput, allSteps) {
         stepTitle: titleForStep(lastStep),
     })}
         >
-          <span class="walkthrough-inline-title">
+          <h2 class="walkthrough-inline-title">
             ${input.isExpanded ?
         walkthroughCloseTitle({ hasWidgets, isInlined: true }) :
         walkthroughTitle({ isLoading: input.isLoading, lastStep, hasWidgets })}
-          </span>
+          </h2>
           <devtools-icon name="chevron-right"></devtools-icon>
         </summary>
 

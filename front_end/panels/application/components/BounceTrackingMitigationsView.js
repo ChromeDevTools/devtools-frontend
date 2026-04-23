@@ -142,7 +142,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
                       jslog=${VisualLogging.pane('bounce-tracking-mitigations')}>
       ${renderMainFrameInformation(input)}
     </devtools-report>
-  `, target);
+  `, target, { container: { classes: ['overflow-auto'] } });
     // clang-format on
 };
 export class BounceTrackingMitigationsView extends UI.Widget.Widget {
@@ -151,7 +151,7 @@ export class BounceTrackingMitigationsView extends UI.Widget.Widget {
     #seenButtonClick = false;
     #view;
     constructor(element, view = DEFAULT_VIEW) {
-        super(element, { useShadowDom: true, classes: ['overflow-auto'] });
+        super(element, { useShadowDom: 'pure' });
         this.#view = view;
         const mainTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
         if (!mainTarget) {

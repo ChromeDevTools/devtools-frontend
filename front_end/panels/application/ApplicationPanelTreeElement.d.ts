@@ -10,7 +10,7 @@ export declare class ApplicationPanelTreeElement extends UI.TreeOutline.TreeElem
     get itemURL(): Platform.DevToolsPath.UrlString;
     set itemURL(value: Platform.DevToolsPath.UrlString);
     onselect(selectedByUser: boolean | undefined): boolean;
-    showView(view: UI.Widget.Widget | null): void;
+    showView(view: UI.Widget.AnyWidget | null): void;
 }
 export declare class ExpandableApplicationPanelTreeElement extends ApplicationPanelTreeElement {
     protected readonly expandedSetting: Common.Settings.Setting<boolean>;

@@ -90,13 +90,13 @@ export const DEFAULT_VIEW = (input, _output, target) => {
           ` :
         nothing}
       </div>
-    `, target);
+    `, target, { container: { attributes: { jslog: `${VisualLogging.pane('device-bound-sessions-request')}` } } });
 };
 export class RequestDeviceBoundSessionsView extends UI.Widget.VBox {
     #request;
     #view;
     constructor(request, view = DEFAULT_VIEW) {
-        super({ jslog: `${VisualLogging.pane('device-bound-sessions-request')}` });
+        super();
         this.#request = request;
         this.#view = view;
     }

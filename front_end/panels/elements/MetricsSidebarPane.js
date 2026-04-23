@@ -151,7 +151,7 @@ const DEFAULT_VIEW = (input, output, target) => {
     <div class="metrics ${!node ? 'collapsed' : ''}" @mouseover=${(e) => { e.consume(); onHighlightNode(true, 'all'); }}
         @mouseleave=${(e) => { e.consume(); onHighlightNode(false, 'all'); }}>
       ${previousBox}
-    </div>`, target);
+    </div>`, target, { container: { classes: ['flex-none'], attributes: { jslog: `${VisualLogging.section('styles-metrics')}` } } });
     // clang-format on
 };
 export class MetricsSidebarPane extends ElementsSidebarPane {
@@ -163,7 +163,7 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
     isEditingMetrics;
     view;
     constructor(computedStyleModel, view = DEFAULT_VIEW) {
-        super(computedStyleModel, { jslog: `${VisualLogging.pane('styles-metrics')}` });
+        super(computedStyleModel, { useShadowDom: 'pure' });
         this.registerRequiredCSS(metricsSidebarPaneStyles);
         this.originalPropertyData = null;
         this.previousPropertyDataCandidate = null;

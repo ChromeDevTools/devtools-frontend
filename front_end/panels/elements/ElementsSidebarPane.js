@@ -5,10 +5,7 @@ import * as ComputedStyle from '../../models/computed_style/computed_style.js';
 import * as UI from '../../ui/legacy/legacy.js';
 export class ElementsSidebarPane extends UI.Widget.VBox {
     computedStyleModelInternal;
-    constructor(computedStyleModel, options = {}) {
-        options.useShadowDom = options.useShadowDom ?? true;
-        options.classes = options.classes ?? [];
-        options.classes.push('flex-none');
+    constructor(computedStyleModel, options) {
         super(options);
         this.computedStyleModelInternal = computedStyleModel;
         this.computedStyleModelInternal.addEventListener("CSSModelChanged" /* ComputedStyle.ComputedStyleModel.Events.CSS_MODEL_CHANGED */, this.onCSSModelChanged, this);

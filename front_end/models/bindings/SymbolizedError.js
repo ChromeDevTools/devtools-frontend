@@ -4,12 +4,12 @@
 import * as Common from '../../core/common/common.js';
 import * as StackTrace from '../stack_trace/stack_trace.js';
 export class SymbolizedError extends Common.ObjectWrapper.ObjectWrapper {
-    remoteError;
+    message;
     stackTrace;
     cause;
-    constructor(remoteError, stackTrace, cause) {
+    constructor(message, stackTrace, cause) {
         super();
-        this.remoteError = remoteError;
+        this.message = message;
         this.stackTrace = stackTrace;
         this.cause = cause;
         this.stackTrace.addEventListener("UPDATED" /* StackTrace.StackTrace.Events.UPDATED */, this.#fireUpdated, this);

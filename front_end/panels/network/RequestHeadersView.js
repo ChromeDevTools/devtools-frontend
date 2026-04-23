@@ -199,7 +199,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
     })}
       `, 
     // clang-format on
-    target);
+    target, { container: { attributes: { jslog: `${VisualLogging.pane('headers').track({ resize: true })}` } } });
 };
 export class RequestHeadersView extends UI.Widget.Widget {
     #request;
@@ -217,7 +217,7 @@ export class RequestHeadersView extends UI.Widget.Widget {
         this.#addEventListeners();
     }
     constructor(target, view = DEFAULT_VIEW) {
-        super({ jslog: `${VisualLogging.pane('headers').track({ resize: true })}` });
+        super();
         this.#view = view;
     }
     #addEventListeners() {

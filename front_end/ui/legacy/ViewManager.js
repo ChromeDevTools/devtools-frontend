@@ -246,7 +246,7 @@ export class ViewManager extends Common.ObjectWrapper.ObjectWrapper {
         return view;
     }
     materializedWidget(viewId) {
-        const view = this.view(viewId);
+        const view = this.views.get(viewId);
         if (!view) {
             return null;
         }

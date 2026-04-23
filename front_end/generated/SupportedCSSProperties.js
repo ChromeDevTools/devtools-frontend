@@ -730,6 +730,7 @@ export const generatedProperties = [
             "text-decoration-color",
             "text-decoration-line",
             "text-decoration-skip-ink",
+            "text-decoration-skip-spaces",
             "text-decoration-style",
             "text-decoration-thickness",
             "text-emphasis-color",
@@ -4528,6 +4529,16 @@ export const generatedProperties = [
         "name": "text-decoration-skip-ink"
     },
     {
+        "inherited": true,
+        "keywords": [
+            "none",
+            "start",
+            "end",
+            "all"
+        ],
+        "name": "text-decoration-skip-spaces"
+    },
+    {
         "keywords": [
             "solid",
             "double",
@@ -7132,6 +7143,14 @@ export const generatedPropertyValues = {
         "values": [
             "none",
             "auto",
+            "all"
+        ]
+    },
+    "text-decoration-skip-spaces": {
+        "values": [
+            "none",
+            "start",
+            "end",
             "all"
         ]
     },

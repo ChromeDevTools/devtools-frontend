@@ -5332,7 +5332,7 @@ var DEFAULT_VIEW4 = (input, output, target) => {
                   </ul>`}
               </li>`)}
         </ul>`}
-        ></devtools-tree>`, target);
+        ></devtools-tree>`, target, { container: { attributes: { jslog: `${VisualLogging4.pane("sidebar").track({ resize: true })}` } } });
 };
 var ConsoleFilterGroup = class {
   urlGroups = /* @__PURE__ */ new Map();
@@ -5407,8 +5407,7 @@ var ConsoleSidebar = class extends Common6.ObjectWrapper.eventMixin(UI6.Widget.V
   #selectedFilter = this.#groups.find((group) => group.name === this.#selectedFilterSetting.get())?.filter;
   constructor(element, view = DEFAULT_VIEW4) {
     super(element, {
-      jslog: `${VisualLogging4.pane("sidebar").track({ resize: true })}`,
-      useShadowDom: true
+      useShadowDom: "pure"
     });
     this.#view = view;
     this.setMinimumSize(125, 0);
@@ -7636,15 +7635,21 @@ var ConsoleViewFilter = class _ConsoleViewFilter {
 var ActionDelegate = class {
   handleAction(_context, actionId) {
     switch (actionId) {
-      case "console.toggle":
-        if (ConsoleView.instance().hasFocus() && UI8.InspectorView.InspectorView.instance().drawerVisible()) {
-          UI8.InspectorView.InspectorView.instance().closeDrawer();
+      case "console.toggle": {
+        const inspectorView = UI8.InspectorView.InspectorView.instance();
+        const consoleView = ConsoleView.instance();
+        if (inspectorView.drawerVisible() && !inspectorView.isDrawerMinimized() && consoleView.isShowing() && consoleView.hasFocus()) {
+          inspectorView.minimizeDrawer();
           return true;
+        }
+        if (inspectorView.drawerVisible() && inspectorView.isDrawerMinimized()) {
+          inspectorView.setDrawerMinimized(false);
         }
         Host3.InspectorFrontendHost.InspectorFrontendHostInstance.bringToFront();
         Common7.Console.Console.instance().show();
-        ConsoleView.instance().focusPrompt();
+        consoleView.focusPrompt();
         return true;
+      }
       case "console.clear":
         ConsoleView.instance().clearConsole();
         return true;
@@ -7669,6 +7674,7 @@ var consoleMessageToViewMessage = /* @__PURE__ */ new WeakMap();
 var consolePanelInstance;
 var ConsolePanel = class _ConsolePanel extends UI9.Panel.Panel {
   view;
+  #drawerWasMinimized = false;
   constructor() {
     super("console");
     this.view = ConsoleView.instance();
@@ -7686,18 +7692,24 @@ var ConsolePanel = class _ConsolePanel extends UI9.Panel.Panel {
   }
   wasShown() {
     super.wasShown();
+    const inspectorView = UI9.InspectorView.InspectorView.instance();
+    this.#drawerWasMinimized = inspectorView.isDrawerMinimized();
     const wrapper = wrapperViewInstance;
     if (wrapper?.isShowing()) {
-      UI9.InspectorView.InspectorView.instance().setDrawerMinimized(true);
+      inspectorView.setDrawerMinimized(true);
     }
     this.view.show(this.element);
     _ConsolePanel.updateContextFlavor();
   }
   willHide() {
     super.willHide();
-    UI9.InspectorView.InspectorView.instance().setDrawerMinimized(false);
+    const inspectorView = UI9.InspectorView.InspectorView.instance();
+    inspectorView.setDrawerMinimized(false);
     if (wrapperViewInstance) {
       wrapperViewInstance.showViewInWrapper();
+    }
+    if (this.#drawerWasMinimized) {
+      inspectorView.setDrawerMinimized(true);
     }
     _ConsolePanel.updateContextFlavor();
   }
@@ -7729,7 +7741,6 @@ var WrapperView = class _WrapperView extends UI9.Widget.VBox {
   }
   willHide() {
     super.willHide();
-    UI9.InspectorView.InspectorView.instance().setDrawerMinimized(false);
     ConsolePanel.updateContextFlavor();
   }
   showViewInWrapper() {

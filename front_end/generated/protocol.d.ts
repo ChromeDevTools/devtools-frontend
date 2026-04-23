@@ -17642,6 +17642,10 @@ export declare namespace Target {
          */
         attached: boolean;
         /**
+         * Id of the parent target, if any. For example, "iframe" target may have a "page" parent.
+         */
+        parentId?: TargetID;
+        /**
          * Opener target Id
          */
         openerId?: TargetID;
@@ -18847,6 +18851,19 @@ export declare namespace WebMCP {
          */
         stackTrace?: Runtime.StackTrace;
     }
+    /**
+     * Definition of a tool that was removed.
+     */
+    interface RemovedTool {
+        /**
+         * Tool name.
+         */
+        name: string;
+        /**
+         * Frame identifier associated with the tool registration.
+         */
+        frameId: Page.FrameId;
+    }
     interface InvokeToolRequest {
         /**
          * Frame in which to invoke the tool.
@@ -18889,7 +18906,7 @@ export declare namespace WebMCP {
         /**
          * Array of tools that were removed.
          */
-        tools: Tool[];
+        tools: RemovedTool[];
     }
     /**
      * Event fired when a tool invocation starts.

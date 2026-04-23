@@ -793,6 +793,7 @@ var generatedProperties = [
       "text-decoration-color",
       "text-decoration-line",
       "text-decoration-skip-ink",
+      "text-decoration-skip-spaces",
       "text-decoration-style",
       "text-decoration-thickness",
       "text-emphasis-color",
@@ -4591,6 +4592,16 @@ var generatedProperties = [
     "name": "text-decoration-skip-ink"
   },
   {
+    "inherited": true,
+    "keywords": [
+      "none",
+      "start",
+      "end",
+      "all"
+    ],
+    "name": "text-decoration-skip-spaces"
+  },
+  {
     "keywords": [
       "solid",
       "double",
@@ -7195,6 +7206,14 @@ var generatedPropertyValues = {
     "values": [
       "none",
       "auto",
+      "all"
+    ]
+  },
+  "text-decoration-skip-spaces": {
+    "values": [
+      "none",
+      "start",
+      "end",
       "all"
     ]
   },

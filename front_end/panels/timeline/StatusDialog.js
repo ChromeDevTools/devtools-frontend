@@ -90,9 +90,9 @@ export const DEFAULT_VIEW = (input, output, target) => {
         ` : nothing}
       </div>
     </div>
-  `, target);
+  `, target, { container: { attributes: { jslog: `${VisualLogging.dialog('timeline-status').track({ resize: true })}` } } });
+    // clang-format on
 };
-// clang-format on
 /**
  * This is the dialog shown whilst a trace is being recorded/imported.
  */
@@ -115,10 +115,7 @@ export class StatusDialog extends UI.Widget.VBox {
     #timeUpdateTimer;
     #rawEvents;
     constructor(options, onButtonClickCallback, view = DEFAULT_VIEW) {
-        super({
-            jslog: `${VisualLogging.dialog('timeline-status').track({ resize: true })}`,
-            useShadowDom: true,
-        });
+        super({ useShadowDom: 'pure' });
         this.#view = view;
         this.#showTimer = Boolean(options.showTimer);
         this.#showProgress = Boolean(options.showProgress);

@@ -268,6 +268,7 @@ export default `/*
     align-items: center;
 
     .title {
+      margin: 0;
       text-overflow: ellipsis;
       white-space: nowrap;
       overflow: hidden;
@@ -466,6 +467,7 @@ export default `/*
 
     .widget-name {
       font: var(--sys-typescale-body4-regular);
+      margin: 0;
       max-width: 80%;
       overflow: hidden;
       text-overflow: ellipsis;

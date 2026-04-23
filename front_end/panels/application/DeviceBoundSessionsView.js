@@ -554,7 +554,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
       <style>${deviceBoundSessionsViewStyles}</style>
       ${toolbarHtml}
       <devtools-widget ${widget(UI.EmptyWidget.EmptyWidget, { header: defaultTitle, text: defaultDescription })} jslog=${VisualLogging.pane('device-bound-sessions-empty')}></devtools-widget>
-    `, target);
+    `, target, { container: { attributes: { jslog: `${VisualLogging.pane('device-bound-sessions')}` } } });
         return;
     }
     let sessionDetailsHtml;
@@ -782,7 +782,7 @@ export class DeviceBoundSessionsView extends UI.Widget.VBox {
     #defaultDescription;
     #selectedEvent;
     constructor(view = DEFAULT_VIEW) {
-        super({ jslog: `${VisualLogging.pane('device-bound-sessions')}` });
+        super();
         this.#view = view;
     }
     showSession(model, site, sessionId) {

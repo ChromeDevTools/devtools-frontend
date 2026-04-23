@@ -3507,7 +3507,7 @@ var DEFAULT_VIEW = (input, output, target) => {
         ` : nothing}
       </div>
     </div>
-  `, target);
+  `, target, { container: { attributes: { jslog: `${VisualLogging.dialog("timeline-status").track({ resize: true })}` } } });
 };
 var StatusDialog = class extends UI3.Widget.VBox {
   #view;
@@ -3528,10 +3528,7 @@ var StatusDialog = class extends UI3.Widget.VBox {
   #timeUpdateTimer;
   #rawEvents;
   constructor(options, onButtonClickCallback, view = DEFAULT_VIEW) {
-    super({
-      jslog: `${VisualLogging.dialog("timeline-status").track({ resize: true })}`,
-      useShadowDom: true
-    });
+    super({ useShadowDom: "pure" });
     this.#view = view;
     this.#showTimer = Boolean(options.showTimer);
     this.#showProgress = Boolean(options.showProgress);
@@ -13803,7 +13800,7 @@ var DEFAULT_VIEW3 = (input, _output, target) => {
           </tr>`;
   })}
         </table>
-      </devtools-data-grid>`, target);
+      </devtools-data-grid>`, target, { container: { attributes: { jslog: `${VisualLogging8.pane("selector-stats").track({ resize: true })}` } } });
 };
 var TimelineSelectorStatsView = class extends UI14.Widget.VBox {
   #selectorLocations;
@@ -13820,7 +13817,7 @@ var TimelineSelectorStatsView = class extends UI14.Widget.VBox {
   #view;
   #timings = [];
   constructor(parsedTrace, view = DEFAULT_VIEW3) {
-    super({ jslog: `${VisualLogging8.pane("selector-stats").track({ resize: true })}` });
+    super();
     this.registerRequiredCSS(timelineSelectorStatsView_css_default);
     this.#view = view;
     this.#selectorLocations = /* @__PURE__ */ new Map();

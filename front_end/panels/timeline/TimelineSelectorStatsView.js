@@ -167,7 +167,7 @@ const DEFAULT_VIEW = (input, _output, target) => {
           </tr>`;
     })}
         </table>
-      </devtools-data-grid>`, target);
+      </devtools-data-grid>`, target, { container: { attributes: { jslog: `${VisualLogging.pane('selector-stats').track({ resize: true })}` } } });
 };
 export class TimelineSelectorStatsView extends UI.Widget.VBox {
     #selectorLocations;
@@ -184,7 +184,7 @@ export class TimelineSelectorStatsView extends UI.Widget.VBox {
     #view;
     #timings = [];
     constructor(parsedTrace, view = DEFAULT_VIEW) {
-        super({ jslog: `${VisualLogging.pane('selector-stats').track({ resize: true })}` });
+        super();
         this.registerRequiredCSS(timelineSelectorStatsViewStyles);
         this.#view = view;
         this.#selectorLocations = new Map();

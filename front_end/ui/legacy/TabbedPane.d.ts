@@ -5,11 +5,11 @@ import { type LitTemplate } from '../../ui/lit/lit.js';
 import { Icon } from '../kit/kit.js';
 import { ContextMenu } from './ContextMenu.js';
 import type { Toolbar } from './Toolbar.js';
-import { VBox, Widget, WidgetElement } from './Widget.js';
+import { type AnyWidget, VBox, WidgetElement } from './Widget.js';
 export interface TabInfo {
     id: string;
     title: string;
-    view: Widget;
+    view: AnyWidget;
     tabTooltip?: string;
     isCloseable?: boolean;
     previewFeature?: boolean;
@@ -56,11 +56,11 @@ export declare class TabbedPane extends TabbedPane_base {
     setAccessibleName(name: string): void;
     setCurrentTabLocked(locked: boolean): void;
     setAutoSelectFirstItemOnShow(autoSelect: boolean): void;
-    get visibleView(): Widget | null;
+    get visibleView(): AnyWidget | null;
     tabIds(): string[];
     tabIndex(tabId: string): number;
-    tabViews(): Widget[];
-    tabView(tabId: string): Widget | null;
+    tabViews(): AnyWidget[];
+    tabView(tabId: string): AnyWidget | null;
     get selectedTabId(): string | null;
     setShrinkableTabs(shrinkableTabs: boolean): void;
     makeVerticalTabLayout(): void;
@@ -70,7 +70,7 @@ export declare class TabbedPane extends TabbedPane_base {
     headerElement(): Element;
     tabbedPaneContentElement(): Element;
     setTabDelegate(delegate: TabbedPaneTabDelegate): void;
-    appendTab(id: string, tabTitle: string, view: Widget, tabTooltip?: string, userGesture?: boolean, isCloseable?: boolean, isPreviewFeature?: boolean, index?: number, jslogContext?: string): void;
+    appendTab(id: string, tabTitle: string, view: AnyWidget, tabTooltip?: string, userGesture?: boolean, isCloseable?: boolean, isPreviewFeature?: boolean, index?: number, jslogContext?: string): void;
     closeTab(id: string, userGesture?: boolean): void;
     closeTabs(ids: string[], userGesture?: boolean): void;
     hasTab(tabId: string): boolean;
@@ -94,7 +94,7 @@ export declare class TabbedPane extends TabbedPane_base {
     private zoomChanged;
     protected clearMeasuredWidths(): void;
     changeTabTitle(id: string, tabTitle: string, tabTooltip?: string): void;
-    changeTabView(id: string, view: Widget): void;
+    changeTabView(id: string, view: AnyWidget): void;
     get tabs(): TabInfo[];
     set tabs(tabs: TabInfo[]);
     onResize(): void;
@@ -139,7 +139,7 @@ export declare class TabbedPane extends TabbedPane_base {
 export interface EventData {
     prevTabId?: string;
     tabId: string;
-    view?: Widget;
+    view?: AnyWidget;
     isUserGesture?: boolean;
 }
 export declare enum Events {
@@ -170,7 +170,7 @@ export declare class TabbedPaneTab {
     private delegate?;
     private titleElement?;
     private dragStartX?;
-    constructor(tabbedPane: TabbedPane, id: string, title: string, closeable: boolean, previewFeature: boolean, view: Widget, tooltip?: string, jslogContext?: string);
+    constructor(tabbedPane: TabbedPane, id: string, title: string, closeable: boolean, previewFeature: boolean, view: AnyWidget, tooltip?: string, jslogContext?: string);
     get id(): string;
     get title(): string;
     set title(title: string);
@@ -182,8 +182,8 @@ export declare class TabbedPaneTab {
     setIcon(icon: Icon | null): void;
     setSuffixElement(suffixElement: HTMLElement | LitTemplate | null): void;
     toggleClass(className: string, force?: boolean): boolean;
-    get view(): Widget;
-    set view(view: Widget);
+    get view(): AnyWidget;
+    set view(view: AnyWidget);
     get tooltip(): string | undefined;
     set tooltip(tooltip: string | undefined);
     get tabElement(): HTMLElement;

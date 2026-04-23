@@ -1,6 +1,16 @@
 // Copyright 2025 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+/**
+ * @file This file contains a list of all known context values for visual
+ * logging. These values are used to generate stable hashes for logs.
+ *
+ * DO NOT REMOVE any values from this list, as it will break log analysis
+ * for historical data. New values should be added to the end of the list
+ * (the list is automatically sorted and maintained by the ESLint rule).
+ *
+ * See crbug.com/504758084 for details.
+ */
 export const knownContextValues = new Set([
     '%',
     '*',
@@ -1779,6 +1789,9 @@ export const knownContextValues = new Set([
     'freestyler.settings',
     'freestyler.style-tab-context',
     'full-accessibility',
+    'full-accessibility-tree',
+    'full-accessibility-tree-documentation',
+    'full-accessibility-tree-feedback',
     'full-version',
     'function',
     'galaxy-z-fold-5',
@@ -3891,6 +3904,7 @@ export const knownContextValues = new Set([
     'text-decoration-color',
     'text-decoration-line',
     'text-decoration-skip-ink',
+    'text-decoration-skip-spaces',
     'text-decoration-style',
     'text-decoration-thickness',
     'text-editor-auto-detect-indent',

@@ -102,7 +102,7 @@ Node.prototype.hasSelection = function() {
 Node.prototype.window = function() {
   return this.ownerDocument.defaultView;
 };
-Element.prototype.removeChildren = function() {
+Node.prototype.removeChildren = function() {
   if (this.firstChild) {
     this.textContent = "";
   }

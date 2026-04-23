@@ -232,7 +232,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
               jslog=${VisualLogging.action('layers.paint-profiler').track({ click: true, keydown: 'Enter' })}>
         ${i18nString(UIStrings.paintProfiler)}
       </button>` : nothing}
-    </div>`, target);
+    </div>`, target, { container: { attributes: { jslog: `${VisualLogging.pane('layers-details')}` } } });
     // clang-format on
 };
 export class LayerDetailsView extends Common.ObjectWrapper.eventMixin(UI.Widget.Widget) {
@@ -242,10 +242,7 @@ export class LayerDetailsView extends Common.ObjectWrapper.eventMixin(UI.Widget.
     compositingReasons = [];
     view;
     constructor(layerViewHost, view = DEFAULT_VIEW) {
-        super({
-            jslog: `${VisualLogging.pane('layers-details')}`,
-            useShadowDom: true,
-        });
+        super({ useShadowDom: 'pure' });
         this.view = view;
         this.registerRequiredCSS(layerDetailsViewStyles);
         this.layerViewHost = layerViewHost;

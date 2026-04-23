@@ -136,7 +136,7 @@ export class HeapProfileView extends ProfileView {
         this.totalTime = 0;
         this.lastOrdinal = 0;
         this.timelineOverview = new HeapTimelineOverview();
-        if (this.profileType.recordTimelineSetting.get()) {
+        if (this.profileType.hasTemporaryView()) {
             this.timelineOverview.addEventListener("IdsRangeChanged" /* Events.IDS_RANGE_CHANGED */, this.onIdsRangeChanged.bind(this));
             this.timelineOverview.show(this.element, this.element.firstChild);
             this.timelineOverview.start();
@@ -306,9 +306,6 @@ export class SamplingHeapProfileType extends SamplingHeapProfileTypeBase {
         this.updateIntervalMs = 200;
         this.#recordTimelineSetting =
             Common.Settings.Settings.instance().createSetting('record-sampling-heap-profiler-timeline', false);
-    }
-    get recordTimelineSetting() {
-        return this.#recordTimelineSetting;
     }
     static get instance() {
         return samplingHeapProfileTypeInstance;

@@ -2914,7 +2914,7 @@ var HeapProfileView = class extends ProfileView {
     this.totalTime = 0;
     this.lastOrdinal = 0;
     this.timelineOverview = new HeapTimelineOverview();
-    if (this.profileType.recordTimelineSetting.get()) {
+    if (this.profileType.hasTemporaryView()) {
       this.timelineOverview.addEventListener("IdsRangeChanged", this.onIdsRangeChanged.bind(this));
       this.timelineOverview.show(this.element, this.element.firstChild);
       this.timelineOverview.start();
@@ -3081,9 +3081,6 @@ var SamplingHeapProfileType = class _SamplingHeapProfileType extends SamplingHea
     this.updateTimer = 0;
     this.updateIntervalMs = 200;
     this.#recordTimelineSetting = Common6.Settings.Settings.instance().createSetting("record-sampling-heap-profiler-timeline", false);
-  }
-  get recordTimelineSetting() {
-    return this.#recordTimelineSetting;
   }
   static get instance() {
     return samplingHeapProfileTypeInstance;

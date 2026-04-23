@@ -2709,6 +2709,7 @@ var chatMessage_css_default = `/*
     align-items: center;
 
     .title {
+      margin: 0;
       text-overflow: ellipsis;
       white-space: nowrap;
       overflow: hidden;
@@ -2907,6 +2908,7 @@ var chatMessage_css_default = `/*
 
     .widget-name {
       font: var(--sys-typescale-body4-regular);
+      margin: 0;
       max-width: 80%;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -3271,6 +3273,8 @@ var walkthroughView_css_default = `/*
     }
 
     > .walkthrough-inline-title {
+      font: var(--sys-typescale-body4-regular);
+      font-weight: var(--ref-typeface-weight-medium);
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -3417,9 +3421,9 @@ function renderInlineWalkthrough(input, stepsOutput, allSteps) {
     stepTitle: titleForStep(lastStep)
   })}
         >
-          <span class="walkthrough-inline-title">
+          <h2 class="walkthrough-inline-title">
             ${input.isExpanded ? walkthroughCloseTitle({ hasWidgets, isInlined: true }) : walkthroughTitle({ isLoading: input.isLoading, lastStep, hasWidgets })}
-          </span>
+          </h2>
           <devtools-icon name="chevron-right"></devtools-icon>
         </summary>
 
@@ -3934,7 +3938,7 @@ function titleForStep(step) {
 }
 function renderTitle(step) {
   const paused = step.requestApproval ? html7`<span class="paused">${lockedString5(UIStringsNotTranslate4.paused)}: </span>` : Lit5.nothing;
-  return html7`<span class="title" aria-label=${titleForStep(step)}>${paused}${titleForStep(step)}</span>`;
+  return html7`<h3 class="title" aria-label=${titleForStep(step)}>${paused}${titleForStep(step)}</h3>`;
 }
 function renderStepCode(step) {
   if (!step.code && !step.output) {
@@ -4302,7 +4306,7 @@ function renderWidgetResponse(response) {
     <div class=${classes} jslog=${ifDefined(response.jslogContext ? VisualLogging4.section(response.jslogContext) : void 0)}>
       ${response.title ? html7`
         <div class="widget-header">
-          <h3 class="widget-name">${response.title}</h3>
+          <h4 class="widget-name">${response.title}</h4>
           <div class="widget-reveal-container">
             ${revealButton}
           </div>

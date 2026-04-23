@@ -8,7 +8,7 @@ export interface ViewInput {
     rows: MismatchedPreloadingGridRow[];
     pageURL: string;
 }
-export declare const DEFAULT_VIEW: (input: ViewInput, _output: Record<string, never>, target: HTMLElement) => void;
+export declare const DEFAULT_VIEW: (input: ViewInput, _output: Record<string, never>, target: DocumentFragment) => void;
 export interface MismatchedPreloadingGridRow {
     action: Protocol.Preload.SpeculationAction;
     url: string;
@@ -19,7 +19,7 @@ export interface MismatchedPreloadingGridData {
     rows: MismatchedPreloadingGridRow[];
 }
 /** Grid component to show prerendering attempts. **/
-export declare class MismatchedPreloadingGrid extends UI.Widget.Widget {
+export declare class MismatchedPreloadingGrid extends UI.Widget.Widget<ShadowRoot> {
     #private;
     constructor(element?: HTMLElement, view?: typeof DEFAULT_VIEW);
     wasShown(): void;

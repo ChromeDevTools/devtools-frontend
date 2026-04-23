@@ -11,7 +11,7 @@ import type { ExtensionStorage } from './ExtensionStorageModel.js';
 import type * as PreloadingHelper from './preloading/helper/helper.js';
 export declare class ResourcesPanel extends UI.Panel.PanelWithSidebar {
     private readonly resourcesLastSelectedItemSetting;
-    visibleView: UI.Widget.Widget | null;
+    visibleView: UI.Widget.AnyWidget | null;
     private pendingViewPromise;
     private categoryView;
     storageViews: HTMLElement;
@@ -33,8 +33,8 @@ export declare class ResourcesPanel extends UI.Panel.PanelWithSidebar {
     lastSelectedItemPath(): Platform.DevToolsPath.UrlString[];
     setLastSelectedItemPath(path: Platform.DevToolsPath.UrlString[]): void;
     resetView(): void;
-    showView(view: UI.Widget.Widget | null): void;
-    scheduleShowView(viewPromise: Promise<UI.Widget.Widget>): Promise<UI.Widget.Widget | null>;
+    showView(view: UI.Widget.AnyWidget | null): void;
+    scheduleShowView(viewPromise: Promise<UI.Widget.AnyWidget>): Promise<UI.Widget.AnyWidget | null>;
     showCategoryView(categoryName: string, categoryHeadline: string, categoryDescription: string, categoryLink: Platform.DevToolsPath.UrlString | null): void;
     showDOMStorage(domStorage: DOMStorage): void;
     showExtensionStorage(extensionStorage: ExtensionStorage): void;

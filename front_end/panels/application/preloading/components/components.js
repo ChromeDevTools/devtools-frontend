@@ -853,13 +853,13 @@ var DEFAULT_VIEW = (input, _output, target) => {
               </tr>
             `)}
       </table>
-    </devtools-data-grid>`, target);
+    </devtools-data-grid>`, target, { container: { classes: ["devtools-resources-mismatched-preloading-grid"] } });
 };
 var MismatchedPreloadingGrid = class extends UI.Widget.Widget {
   #data = null;
   #view;
   constructor(element, view = DEFAULT_VIEW) {
-    super(element, { classes: ["devtools-resources-mismatched-preloading-grid"], useShadowDom: true });
+    super(element, { useShadowDom: "pure" });
     this.#view = view;
   }
   wasShown() {

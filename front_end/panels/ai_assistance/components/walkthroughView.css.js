@@ -163,6 +163,8 @@ export default `/*
     }
 
     > .walkthrough-inline-title {
+      font: var(--sys-typescale-body4-regular);
+      font-weight: var(--ref-typeface-weight-medium);
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;

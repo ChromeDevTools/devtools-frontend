@@ -1,6 +1,7 @@
 import type * as Common from '../../core/common/common.js';
 import * as UI from '../../ui/legacy/legacy.js';
 export declare class ConsolePanel extends UI.Panel.Panel {
+    #private;
     private readonly view;
     constructor();
     static instance(opts?: {

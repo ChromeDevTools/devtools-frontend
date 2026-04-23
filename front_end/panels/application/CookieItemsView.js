@@ -112,14 +112,14 @@ export const DEFAULT_COOKIE_PREVIEW_WIDGET_VIEW = (input, output, target) => {
     </div>
   `, 
     // clang-format on
-    target);
+    target, { container: { attributes: { jslog: `${VisualLogging.pane('cookie-preview')}` } } });
 };
 class CookiePreviewWidget extends UI.Widget.VBox {
     view;
     #cookie;
     showDecodedSetting;
     constructor(element, view = DEFAULT_COOKIE_PREVIEW_WIDGET_VIEW) {
-        super(element, { jslog: `${VisualLogging.section('cookie-preview')}` });
+        super(element);
         this.view = view;
         this.setMinimumSize(230, 45);
         this.#cookie = null;
@@ -180,7 +180,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
     </devtools-widget>
   `, 
     // clang-format on
-    target);
+    target, { container: { attributes: { jslog: `${VisualLogging.pane('cookies-data')}` } } });
 };
 export class CookieItemsView extends UI.Widget.VBox {
     view;
@@ -192,7 +192,7 @@ export class CookieItemsView extends UI.Widget.VBox {
     selectedCookie;
     #toolbar;
     constructor(model, cookieDomain, view = DEFAULT_VIEW) {
-        super({ jslog: `${VisualLogging.pane('cookies-data')}` });
+        super();
         this.view = view;
         this.model = model;
         this.cookieDomain = cookieDomain;

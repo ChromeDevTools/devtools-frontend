@@ -893,6 +893,9 @@ export const generatedPropertyValues: {
     "text-decoration-skip-ink": {
         values: string[];
     };
+    "text-decoration-skip-spaces": {
+        values: string[];
+    };
     "text-decoration-style": {
         values: string[];
     };

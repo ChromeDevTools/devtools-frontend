@@ -158,23 +158,35 @@ export class DebuggerWorkspaceBinding {
         this.recordLiveLocationChange(stackTracePromise);
         return await stackTracePromise;
     }
-    async createSymbolizedError(remoteObject) {
-        if (remoteObject.subtype !== 'error') {
+    async createSymbolizedError(remoteObject, exceptionDetails) {
+        let errorStack = '';
+        let causeRemoteObject;
+        let fetchedExceptionDetails = exceptionDetails;
+        if (remoteObject.subtype === 'error') {
+            const remoteError = SDK.RemoteObject.RemoteError.objectAsError(remoteObject);
+            errorStack = remoteError.errorStack;
+            const [details, causeRemote] = await Promise.all([
+                exceptionDetails ? Promise.resolve(exceptionDetails) : remoteError.exceptionDetails(),
+                remoteError.cause(),
+            ]);
+            fetchedExceptionDetails = details;
+            causeRemoteObject = causeRemote;
+        }
+        else if (remoteObject.type === 'string') {
+            errorStack = remoteObject.description || '';
+        }
+        else {
             return null;
         }
-        const remoteError = SDK.RemoteObject.RemoteError.objectAsError(remoteObject);
-        const [exceptionDetails, causeRemoteObject] = await Promise.all([
-            remoteError.exceptionDetails(),
-            remoteError.cause(),
-        ]);
         const [stackTrace, cause] = await Promise.all([
-            this.createStackTraceFromErrorStackLikeString(remoteObject.runtimeModel().target(), remoteError.errorStack, exceptionDetails),
+            this.createStackTraceFromErrorStackLikeString(remoteObject.runtimeModel().target(), errorStack, fetchedExceptionDetails),
             causeRemoteObject ? this.createSymbolizedError(causeRemoteObject) : Promise.resolve(null),
         ]);
         if (!stackTrace) {
             return null;
         }
-        return new SymbolizedError(remoteError, stackTrace, cause);
+        const message = StackTraceImpl.DetailedErrorStackParser.parseMessage(errorStack);
+        return new SymbolizedError(message, stackTrace, cause);
     }
     async createLiveLocation(rawLocation, updateDelegate, locationPool) {
         const modelData = this.#debuggerModelToData.get(rawLocation.debuggerModel);

@@ -10,8 +10,8 @@ interface ViewInput {
     onHighlightNode: (showHighlight: boolean, mode: string) => void;
     onStartEditing: (target: Element, box: string, styleProperty: string, computedStyle: Map<string, string>) => void;
 }
-type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
-export declare class MetricsSidebarPane extends ElementsSidebarPane {
+type View = (input: ViewInput, output: undefined, target: HTMLElement | DocumentFragment) => void;
+export declare class MetricsSidebarPane extends ElementsSidebarPane<ShadowRoot> {
     originalPropertyData: SDK.CSSProperty.CSSProperty | null;
     previousPropertyDataCandidate: SDK.CSSProperty.CSSProperty | null;
     private inlineStyle;

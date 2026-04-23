@@ -179,7 +179,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
     ${renderCategory(CATEGORY_NAME_GENERAL, i18nString(UIStrings.general), generalContent)}
     ${renderCategory(CATEGORY_NAME_OPTIONS, i18nString(UIStrings.options), optionsContent)}
     ${socketInfo.openInfo ? renderCategory(CATEGORY_NAME_OPEN_INFO, i18nString(UIStrings.openInfo), openInfoContent) : Lit.nothing}
-  `, target);
+  `, target, { container: { attributes: { jslog: `${VisualLogging.pane('connection-info').track({ resize: true })}` } } });
     // clang-format on
 };
 export class DirectSocketConnectionView extends UI.Widget.Widget {
@@ -187,8 +187,7 @@ export class DirectSocketConnectionView extends UI.Widget.Widget {
     #view;
     constructor(request, view = DEFAULT_VIEW) {
         super({
-            jslog: `${VisualLogging.pane('connection-info').track({ resize: true })}`,
-            useShadowDom: true,
+            useShadowDom: 'pure',
         });
         this.#request = request;
         this.#view = view;

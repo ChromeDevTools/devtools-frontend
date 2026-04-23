@@ -190,7 +190,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsS
     #aiCodeCompletionSummaryToolbarContainer;
     #aiCodeCompletionSummaryToolbar;
     constructor(computedStyleModel) {
-        super(computedStyleModel, { delegatesFocus: true });
+        super(computedStyleModel, { delegatesFocus: true, useShadowDom: true, classes: ['flex-none'] });
         this.setMinimumSize(96, 26);
         this.registerRequiredCSS(stylesSidebarPaneStyles);
         Common.Settings.Settings.instance().moduleSetting('text-editor-indent').addChangeListener(this.requestUpdate, this);
@@ -1872,6 +1872,9 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
             this.treeElement.section().activeAiSuggestion = undefined;
             this.activeAiSuggestionInfo = undefined;
             return;
+        }
+        if (!this.queryRange) {
+            this.queryRange = new TextUtils.TextRange.TextRange(0, 0, 0, this.text().length);
         }
         this.treeElement.section().activeAiSuggestion = {
             text: args.text,

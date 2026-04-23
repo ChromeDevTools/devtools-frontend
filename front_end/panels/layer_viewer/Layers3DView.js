@@ -105,7 +105,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
             return;
         }
         output.canvasElement = el;
-    })}></canvas>`, target);
+    })}></canvas>`, target, { container: { attributes: { jslog: `${VisualLogging.pane('layers-3d-view')}` } } });
     // clang-format onn
 };
 export class Layers3DView extends Common.ObjectWrapper.eventMixin(UI.Widget.VBox) {
@@ -139,7 +139,7 @@ export class Layers3DView extends Common.ObjectWrapper.eventMixin(UI.Widget.VBox
     #error;
     #canvasElement;
     constructor(layerViewHost, view = DEFAULT_VIEW) {
-        super({ jslog: `${VisualLogging.pane('layers-3d-view')}`, useShadowDom: true, classes: ['layers-3d-view'] });
+        super();
         this.#view = view;
         this.layerViewHost = layerViewHost;
         this.layerViewHost.registerView(this);

@@ -442,7 +442,7 @@ var DEFAULT_VIEW = (input, _output, target) => {
               jslog=${VisualLogging.action("layers.paint-profiler").track({ click: true, keydown: "Enter" })}>
         ${i18nString2(UIStrings2.paintProfiler)}
       </button>` : nothing}
-    </div>`, target);
+    </div>`, target, { container: { attributes: { jslog: `${VisualLogging.pane("layers-details")}` } } });
 };
 var LayerDetailsView = class extends Common2.ObjectWrapper.eventMixin(UI.Widget.Widget) {
   layerViewHost;
@@ -451,10 +451,7 @@ var LayerDetailsView = class extends Common2.ObjectWrapper.eventMixin(UI.Widget.
   compositingReasons = [];
   view;
   constructor(layerViewHost, view = DEFAULT_VIEW) {
-    super({
-      jslog: `${VisualLogging.pane("layers-details")}`,
-      useShadowDom: true
-    });
+    super({ useShadowDom: "pure" });
     this.view = view;
     this.registerRequiredCSS(layerDetailsView_css_default);
     this.layerViewHost = layerViewHost;
@@ -1224,7 +1221,7 @@ var DEFAULT_VIEW2 = (input, output, target) => {
       return;
     }
     output.canvasElement = el;
-  })}></canvas>`, target);
+  })}></canvas>`, target, { container: { attributes: { jslog: `${VisualLogging3.pane("layers-3d-view")}` } } });
 };
 var Layers3DView = class extends Common5.ObjectWrapper.eventMixin(UI4.Widget.VBox) {
   layerViewHost;
@@ -1257,7 +1254,7 @@ var Layers3DView = class extends Common5.ObjectWrapper.eventMixin(UI4.Widget.VBo
   #error;
   #canvasElement;
   constructor(layerViewHost, view = DEFAULT_VIEW2) {
-    super({ jslog: `${VisualLogging3.pane("layers-3d-view")}`, useShadowDom: true, classes: ["layers-3d-view"] });
+    super();
     this.#view = view;
     this.layerViewHost = layerViewHost;
     this.layerViewHost.registerView(this);

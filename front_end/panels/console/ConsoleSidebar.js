@@ -85,7 +85,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
                   </ul>`}
               </li>`)}
         </ul>`}
-        ></devtools-tree>`, target);
+        ></devtools-tree>`, target, { container: { attributes: { jslog: `${VisualLogging.pane('sidebar').track({ resize: true })}` } } });
 };
 export class ConsoleFilterGroup {
     urlGroups = new Map();
@@ -150,8 +150,7 @@ export class ConsoleSidebar extends Common.ObjectWrapper.eventMixin(UI.Widget.VB
     #selectedFilter = this.#groups.find(group => group.name === this.#selectedFilterSetting.get())?.filter;
     constructor(element, view = DEFAULT_VIEW) {
         super(element, {
-            jslog: `${VisualLogging.pane('sidebar').track({ resize: true })}`,
-            useShadowDom: true,
+            useShadowDom: 'pure',
         });
         this.#view = view;
         this.setMinimumSize(125, 0);

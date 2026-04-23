@@ -61,7 +61,6 @@ export declare class SamplingHeapProfileType extends SamplingHeapProfileTypeBase
     updateIntervalMs: number;
     customContentInternal: UI.UIUtils.CheckboxLabel | null;
     constructor();
-    get recordTimelineSetting(): Common.Settings.Setting<boolean>;
     static get instance(): SamplingHeapProfileType;
     get treeItemTitle(): Common.UIString.LocalizedString;
     get description(): string;

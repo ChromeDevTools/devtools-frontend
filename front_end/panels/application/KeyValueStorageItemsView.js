@@ -79,7 +79,9 @@ export class KeyValueStorageItemsView extends UI.Widget.VBox {
     #editable;
     #toolbar;
     metadataView;
-    constructor(title, id, editable, view, metadataView, opts) {
+    #jslog;
+    #classes;
+    constructor(title, id, editable, view, metadataView, jslog, classes) {
         metadataView ??= new ApplicationComponents.StorageMetadataView.StorageMetadataView();
         if (!view) {
             view = (input, output, target) => {
@@ -136,12 +138,14 @@ export class KeyValueStorageItemsView extends UI.Widget.VBox {
               </devtools-widget>
             </devtools-split-view>`, 
                 // clang-format on
-                target);
+                target, { container: { attributes: { jslog: input.jslog }, classes: input.classes } });
             };
         }
-        super(opts);
+        super();
         this.metadataView = metadataView;
         this.#editable = editable;
+        this.#jslog = jslog;
+        this.#classes = classes;
         this.#view = view;
         this.performUpdate();
         this.#preview =
@@ -165,6 +169,8 @@ export class KeyValueStorageItemsView extends UI.Widget.VBox {
             selectedKey: this.#selectedKey,
             editable: this.#editable,
             preview: this.#preview,
+            jslog: this.#jslog,
+            classes: this.#classes,
             onSelect: (item) => {
                 this.#toolbar?.setCanDeleteSelected(Boolean(item));
                 if (!item) {

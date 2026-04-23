@@ -6,7 +6,7 @@ import { TabbedPane } from './TabbedPane.js';
 import { type ToolbarItem } from './Toolbar.js';
 import type { TabbedViewLocation, View, ViewLocation } from './View.js';
 import { getLocalizedViewLocationCategory, getRegisteredLocationResolvers, maybeRemoveViewExtension, registerLocationResolver, registerViewExtension, resetViewRegistration, ViewLocationCategory, ViewLocationValues, ViewPersistence, type ViewRegistration } from './ViewRegistration.js';
-import { VBox, type Widget } from './Widget.js';
+import { type AnyWidget, VBox, type Widget } from './Widget.js';
 export declare const defaultOptionsForTabs: {
     security: boolean;
     freestyler: boolean;
@@ -31,7 +31,7 @@ export declare class PreRegisteredView implements View {
     tags(): string | undefined;
     persistence(): ViewPersistence | undefined;
     toolbarItems(): Promise<ToolbarItem[]>;
-    widget(): Promise<Widget>;
+    widget(): Promise<AnyWidget>;
     disposeView(): Promise<void>;
     experiment(): string | undefined;
     condition(): Root.Runtime.Condition | undefined;
@@ -74,7 +74,7 @@ export declare class ViewManager extends Common.ObjectWrapper.ObjectWrapper<Even
      */
     showViewInLocation(viewId: string, locationName: string, shouldSelectTab?: boolean | undefined): void;
     view(viewId: string): View;
-    materializedWidget(viewId: string): Widget | null;
+    materializedWidget<T extends HTMLElement | DocumentFragment = HTMLElement>(viewId: string): Widget<T> | null;
     hasView(viewId: string): boolean;
     showView(viewId: string, userGesture?: boolean, omitFocus?: boolean): Promise<void>;
     isViewVisible(viewId: string): boolean;
@@ -96,8 +96,8 @@ declare class Location {
     #private;
     protected readonly manager: ViewManager;
     private readonly revealCallback;
-    constructor(manager: ViewManager, widget: Widget, revealCallback?: (() => void));
-    widget(): Widget;
+    constructor(manager: ViewManager, widget: AnyWidget, revealCallback?: (() => void));
+    widget(): AnyWidget;
     reveal(): void;
     showView(_view: View, _insertBefore?: View | null, _userGesture?: boolean, _omitFocus?: boolean, _shouldSelectTab?: boolean): Promise<void>;
     removeView(_view: View): void;

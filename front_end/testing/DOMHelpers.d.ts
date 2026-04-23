@@ -65,7 +65,7 @@ export declare function dispatchPasteEvent<T extends Element>(element: T, option
  * Listens to an event of an element and returns a Promise that resolves to the
  * specified event type.
  */
-export declare function getEventPromise<T extends Event>(element: HTMLElement, eventName: string): Promise<T>;
+export declare function getEventPromise<T extends Event>(element: EventTarget, eventName: string): Promise<T>;
 export declare function doubleRaf(): Promise<unknown>;
 export declare function raf(): Promise<unknown>;
 /**

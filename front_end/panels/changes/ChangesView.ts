@@ -39,7 +39,7 @@ interface ViewInput {
   onSelect(sourceCode: Workspace.UISourceCode.UISourceCode|null): void;
   workspaceDiff: WorkspaceDiff.WorkspaceDiff.WorkspaceDiffImpl;
 }
-type View = (input: ViewInput, output: object, target: HTMLElement) => void;
+type View = (input: ViewInput, output: object, target: DocumentFragment) => void;
 export const DEFAULT_VIEW: View = (input, _output, target) => {
   render(
       // clang-format off
@@ -70,19 +70,16 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
         </devtools-widget>
       </devtools-split-view>`,
       // clang-format on
-      target);
+      target, {container: {attributes: {jslog: `${VisualLogging.panel('changes').track({resize: true})}`}}});
 };
 
-export class ChangesView extends UI.Widget.VBox {
+export class ChangesView extends UI.Widget.VBox<ShadowRoot> {
   readonly #workspaceDiff: WorkspaceDiff.WorkspaceDiff.WorkspaceDiffImpl;
   #selectedUISourceCode: Workspace.UISourceCode.UISourceCode|null = null;
   readonly #view: View;
 
   constructor(target?: HTMLElement, view = DEFAULT_VIEW) {
-    super(target, {
-      jslog: `${VisualLogging.panel('changes').track({resize: true})}`,
-      useShadowDom: true,
-    });
+    super(target, {useShadowDom: 'pure'});
 
     this.#workspaceDiff = WorkspaceDiff.WorkspaceDiff.workspaceDiff();
     this.#view = view;

@@ -60,7 +60,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
                    </li>`)}
                </ul>`}></devtools-tree>`,
       // clang-format on
-      target);
+      target, {container: {attributes: {jslog: `${VisualLogging.pane('sidebar').track({resize: true})}`}}});
 };
 
 export class ChangesSidebar extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.Widget>(
@@ -70,7 +70,7 @@ export class ChangesSidebar extends Common.ObjectWrapper.eventMixin<EventTypes, 
   readonly #sourceCodes = new Set<Workspace.UISourceCode.UISourceCode>();
   #selectedUISourceCode: Workspace.UISourceCode.UISourceCode|null = null;
   constructor(target?: HTMLElement, view = DEFAULT_VIEW) {
-    super(target, {jslog: `${VisualLogging.pane('sidebar').track({resize: true})}`});
+    super(target);
     this.#view = view;
   }
 

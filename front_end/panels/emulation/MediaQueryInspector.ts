@@ -39,7 +39,7 @@ export interface MediaQueryMarker {
   locations: SDK.CSSModel.CSSLocation[];
 }
 
-export const DEFAULT_VIEW = (input: ViewInput, _output: object, target: HTMLElement): void => {
+export const DEFAULT_VIEW = (input: ViewInput, _output: object, target: DocumentFragment): void => {
   const createBarClassMap = (marker: MediaQueryMarker): Record<string, boolean> => ({
     'media-inspector-bar': true,
     'media-inspector-marker-inactive': !marker.active,
@@ -65,7 +65,7 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: object, target: HTMLElem
         `)}
       </div>
     `).toArray()}
-    </div>`, target);
+    </div>`, target, {container: {attributes: {jslog: `${VisualLogging.mediaInspectorView().track({click: true})}`}}});
   // clang-format on
 };
 
@@ -155,7 +155,7 @@ function renderLabel(
   // clang-format on
 }
 
-export class MediaQueryInspector extends UI.Widget.Widget implements
+export class MediaQueryInspector extends UI.Widget.Widget<ShadowRoot> implements
     SDK.TargetManager.SDKModelObserver<SDK.CSSModel.CSSModel> {
   private readonly view: typeof DEFAULT_VIEW;
   private readonly mediaThrottler: Common.Throttler.Throttler;
@@ -168,10 +168,7 @@ export class MediaQueryInspector extends UI.Widget.Widget implements
   constructor(
       getWidthCallback: () => number, setWidthCallback: (arg0: number) => void,
       mediaThrottler: Common.Throttler.Throttler, view = DEFAULT_VIEW) {
-    super({
-      jslog: `${VisualLogging.mediaInspectorView().track({click: true})}`,
-      useShadowDom: true,
-    });
+    super({useShadowDom: 'pure'});
     this.view = view;
     this.mediaThrottler = mediaThrottler;
 

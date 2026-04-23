@@ -52,7 +52,7 @@ const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLElement)
       </button>
     `)}
     </div>
-  `, target);
+  `, target, {container: {attributes: {jslog: `${VisualLogging.section('sources.threads')}`}}});
 };
 // clang-format on
 
@@ -65,9 +65,7 @@ export class ThreadsSidebarPane extends UI.Widget.VBox implements
   #view: View;
 
   constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
-    super(element, {
-      jslog: `${VisualLogging.section('sources.threads')}`,
-    });
+    super(element);
     this.#view = view;
 
     const currentTarget = UI.Context.Context.instance().flavor(SDK.Target.Target);

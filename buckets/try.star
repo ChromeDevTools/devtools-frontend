@@ -285,7 +285,7 @@ luci.cq_group(
         refs = ["refs/heads/main"],
     ),
     acls = cq_acls,
-    tree_status_name = "devtools",
+    tree_status_host = "devtools-status.appspot.com",
     retry_config = cq_retry_config,
     verifiers = branch_verifiers(),
 )

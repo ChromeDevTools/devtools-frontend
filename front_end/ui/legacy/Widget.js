@@ -408,6 +408,9 @@ export class Widget {
         if (this.contentElement instanceof HTMLElement) {
             this.contentElement.classList.add('widget');
         }
+        else if (options?.useShadowDom === 'pure') {
+            this.element.classList.add('widget');
+        }
         widgetMap.set(this.element, this);
     }
     /**
@@ -979,6 +982,9 @@ export class VBox extends Widget {
         if (this.contentElement instanceof HTMLElement) {
             this.contentElement.classList.add('vbox');
         }
+        else {
+            this.element.classList.add('vbox');
+        }
     }
     calculateConstraints() {
         let constraints = new Geometry.Constraints();
@@ -997,6 +1003,10 @@ export class HBox extends Widget {
         super(elementOrOptions, options);
         if (this.contentElement instanceof HTMLElement) {
             this.contentElement.classList.add('hbox');
+        }
+        else {
+            this.element.classList.remove('vbox');
+            this.element.classList.add('hbox');
         }
     }
     calculateConstraints() {

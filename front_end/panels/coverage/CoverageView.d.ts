@@ -22,9 +22,9 @@ export interface CoverageViewInput {
 export interface CoverageViewOutput {
     focusResults: () => void;
 }
-export type View = (input: CoverageViewInput, output: CoverageViewOutput, target: HTMLElement) => void;
+export type View = (input: CoverageViewInput, output: CoverageViewOutput, target: DocumentFragment) => void;
 export declare const DEFAULT_VIEW: View;
-export declare class CoverageView extends UI.Widget.VBox {
+export declare class CoverageView extends UI.Widget.VBox<ShadowRoot> {
     #private;
     constructor(view?: View);
     performUpdate(): void;

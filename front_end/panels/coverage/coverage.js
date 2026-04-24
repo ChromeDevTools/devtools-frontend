@@ -1680,7 +1680,7 @@ var DEFAULT_VIEW2 = (input, output, target) => {
         <div class="coverage-message">
             ${input.statusMessage}
         </div>
-    </div>`, target);
+    </div>`, target, { container: { attributes: { jslog: `${VisualLogging.panel("coverage").track({ resize: true })}` } } });
 };
 function renderLandingPage(supportsRecordOnReload) {
   if (supportsRecordOnReload) {
@@ -1738,8 +1738,7 @@ var CoverageView = class _CoverageView extends UI2.Widget.VBox {
   #selectedUrl = null;
   constructor(view = DEFAULT_VIEW2) {
     super({
-      jslog: `${VisualLogging.panel("coverage").track({ resize: true })}`,
-      useShadowDom: true,
+      useShadowDom: "pure",
       delegatesFocus: true
     });
     this.registerRequiredCSS(coverageView_css_default);

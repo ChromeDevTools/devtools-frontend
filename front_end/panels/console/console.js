@@ -841,7 +841,6 @@ __export(ConsoleViewMessage_exports, {
   ConsoleGroupViewMessage: () => ConsoleGroupViewMessage,
   ConsoleTableMessageView: () => ConsoleTableMessageView,
   ConsoleViewMessage: () => ConsoleViewMessage,
-  concatErrorDescriptionAndIssueSummary: () => concatErrorDescriptionAndIssueSummary,
   getLongStringVisibleLength: () => getLongStringVisibleLength,
   getMaxTokenizableStringLength: () => getMaxTokenizableStringLength,
   getMessageForElement: () => getMessageForElement,
@@ -1839,13 +1838,6 @@ var i18nString2 = i18n3.i18n.getLocalizedString.bind(void 0, str_2);
 var elementToMessage = /* @__PURE__ */ new WeakMap();
 var getMessageForElement = (element) => {
   return elementToMessage.get(element);
-};
-var concatErrorDescriptionAndIssueSummary = (description, issueSummary) => {
-  const pos = description.indexOf("\n");
-  const prefix = pos === -1 ? description : description.substring(0, pos);
-  const suffix = pos === -1 ? "" : description.substring(pos);
-  description = `${prefix}. ${issueSummary}${suffix}`;
-  return description;
 };
 var defaultConsoleRowHeight = 18;
 var parameterToRemoteObject = (runtimeModel) => (parameter) => {
@@ -3290,7 +3282,7 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
     }
     const issueSummary = exceptionDetails?.exceptionMetaData?.issueSummary;
     if (typeof issueSummary === "string") {
-      string = concatErrorDescriptionAndIssueSummary(string, issueSummary);
+      string = StackTrace3.ErrorStackParser.concatErrorDescriptionAndIssueSummary(string, issueSummary);
     }
     const linkInfos = StackTrace3.ErrorStackParser.parseSourcePositionsFromErrorStack(runtimeModel, string);
     if (!linkInfos?.length) {

@@ -3158,6 +3158,7 @@ import * as Common14 from "./../../core/common/common.js";
 import * as Platform6 from "./../../core/platform/platform.js";
 import * as Root3 from "./../../core/root/root.js";
 import * as SDK11 from "./../../core/sdk/sdk.js";
+import * as StackTrace4 from "./../stack_trace/stack_trace.js";
 import * as Workspace17 from "./../workspace/workspace.js";
 
 // gen/front_end/models/bindings/DefaultScriptMapping.js
@@ -3713,11 +3714,11 @@ var ResourceScriptFile = class extends Common12.ObjectWrapper.ObjectWrapper {
 // gen/front_end/models/bindings/SymbolizedError.js
 var SymbolizedError_exports = {};
 __export(SymbolizedError_exports, {
-  SymbolizedError: () => SymbolizedError
+  SymbolizedErrorObject: () => SymbolizedErrorObject
 });
 import * as Common13 from "./../../core/common/common.js";
 import * as StackTrace3 from "./../stack_trace/stack_trace.js";
-var SymbolizedError = class extends Common13.ObjectWrapper.ObjectWrapper {
+var SymbolizedErrorObject = class extends Common13.ObjectWrapper.ObjectWrapper {
   message;
   stackTrace;
   cause;
@@ -3905,8 +3906,12 @@ var DebuggerWorkspaceBinding = class _DebuggerWorkspaceBinding {
     if (!stackTrace) {
       return null;
     }
+    const issueSummary = fetchedExceptionDetails?.exceptionMetaData?.issueSummary;
+    if (typeof issueSummary === "string") {
+      errorStack = StackTrace4.ErrorStackParser.concatErrorDescriptionAndIssueSummary(errorStack, issueSummary);
+    }
     const message = DetailedErrorStackParser_exports.parseMessage(errorStack);
-    return new SymbolizedError(message, stackTrace, cause);
+    return new SymbolizedErrorObject(message, stackTrace, cause);
   }
   async createLiveLocation(rawLocation, updateDelegate, locationPool) {
     const modelData = this.#debuggerModelToData.get(rawLocation.debuggerModel);

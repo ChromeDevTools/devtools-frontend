@@ -9,16 +9,6 @@ import * as UI from '../../ui/legacy/legacy.js';
 import { type LitTemplate } from '../../ui/lit/lit.js';
 import type { ConsoleViewportElement } from './ConsoleViewport.js';
 export declare const getMessageForElement: (element: Element) => ConsoleViewMessage | undefined;
-/**
- * Combines the error description (essentially the `Error#stack` property value)
- * with the `issueSummary`.
- *
- * @param description the `description` property of the `Error` remote object.
- * @param issueSummary the optional `issueSummary` of the `exceptionMetaData`.
- * @returns the enriched description.
- * @see https://goo.gle/devtools-reduce-network-noise-design
- */
-export declare const concatErrorDescriptionAndIssueSummary: (description: string, issueSummary: string) => string;
 export declare class ConsoleViewMessage implements ConsoleViewportElement {
     #private;
     protected message: SDK.ConsoleModel.ConsoleMessage;

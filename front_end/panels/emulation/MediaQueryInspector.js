@@ -46,7 +46,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
         `)}
       </div>
     `).toArray()}
-    </div>`, target);
+    </div>`, target, { container: { attributes: { jslog: `${VisualLogging.mediaInspectorView().track({ click: true })}` } } });
     // clang-format on
 };
 function renderMaxSection(zoomFactor, model) {
@@ -137,10 +137,7 @@ export class MediaQueryInspector extends UI.Widget.Widget {
     cssModel;
     cachedQueryModels;
     constructor(getWidthCallback, setWidthCallback, mediaThrottler, view = DEFAULT_VIEW) {
-        super({
-            jslog: `${VisualLogging.mediaInspectorView().track({ click: true })}`,
-            useShadowDom: true,
-        });
+        super({ useShadowDom: 'pure' });
         this.view = view;
         this.mediaThrottler = mediaThrottler;
         this.getWidthCallback = getWidthCallback;

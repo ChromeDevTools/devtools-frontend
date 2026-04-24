@@ -1,6 +1,7 @@
 import * as Common from '../../core/common/common.js';
 import * as StackTrace from '../stack_trace/stack_trace.js';
-export declare class SymbolizedError extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
+export type SymbolizedError = SymbolizedErrorObject;
+export declare class SymbolizedErrorObject extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
     #private;
     readonly message: string;
     readonly stackTrace: StackTrace.StackTrace.ParsedErrorStackTrace;

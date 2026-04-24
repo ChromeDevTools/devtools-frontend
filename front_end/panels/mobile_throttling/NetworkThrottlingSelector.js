@@ -11,7 +11,7 @@ import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as PanelsCommon from '../common/common.js';
 import { ThrottlingManager } from './ThrottlingManager.js';
-const { render, html, Directives, nothing } = Lit;
+const { render, html, Directives } = Lit;
 const UIStrings = {
     /**
      * @description Text to indicate something is not enabled
@@ -87,12 +87,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
     }
     render(
     // clang-format off
-    html `<select
-      ?disabled=${input.disabled}
-      aria-label=${input.title ?? nothing}
-      jslog=${VisualLogging.dropDown().track({ change: true }).context(input.jslogContext)}
-      @change=${onSelect}>
-          ${input.throttlingGroups.map(group => html `<optgroup
+    html `${input.throttlingGroups.map(group => html `<optgroup
             label=${group.title}>
             ${group.items.map(condition => html `<option
               ${Directives.ref(option => option && optionsMap.set(option, condition))}
@@ -124,13 +119,20 @@ export const DEFAULT_VIEW = (input, output, target) => {
             jslog=${VisualLogging.action('add').track({ click: true })}>
               ${i18nString(UIStrings.add)}
           </option>
-        </optgroup>
-      </select>`, // clang-format on
-    target);
+        </optgroup>`, // clang-format on
+    target, {
+        container: {
+            listeners: { change: onSelect },
+            attributes: {
+                disabled: input.disabled,
+                'aria-label': input.title,
+                jslog: `${VisualLogging.dropDown(input.jslogContext).track({ change: true })}`
+            }
+        }
+    });
 };
-export class NetworkThrottlingSelect extends Common.ObjectWrapper.ObjectWrapper {
+export class NetworkThrottlingSelect extends Common.ObjectWrapper.eventMixin(UI.Widget.Widget) {
     #recommendedConditions = null;
-    #element;
     #jslogContext;
     #currentConditions;
     #title;
@@ -139,13 +141,19 @@ export class NetworkThrottlingSelect extends Common.ObjectWrapper.ObjectWrapper 
     #disabled = false;
     static createForGlobalConditions(element, title) {
         ThrottlingManager.instance(); // Instantiate the throttling manager to connect network manager with the setting
-        const select = new NetworkThrottlingSelect(element, {
+        const selectElement = element.createChild('select');
+        const select = new NetworkThrottlingSelect(selectElement, {
             title,
             jslogContext: SDK.NetworkManager.activeNetworkThrottlingKeySetting().name,
             currentConditions: SDK.NetworkManager.MultitargetNetworkManager.instance().networkConditions()
         });
-        select.addEventListener("conditionsChanged" /* Events.CONDITIONS_CHANGED */, ev => !('block' in ev.data) &&
-            SDK.NetworkManager.MultitargetNetworkManager.instance().setNetworkConditions(ev.data));
+        select.show(element, undefined, /* suppressOrphanWidgetError= */ true);
+        select.addEventListener("ConditionsChanged" /* Events.CONDITIONS_CHANGED */, event => {
+            const conditions = event.data;
+            if (!('block' in conditions)) {
+                SDK.NetworkManager.MultitargetNetworkManager.instance().setNetworkConditions(conditions);
+            }
+        });
         SDK.NetworkManager.MultitargetNetworkManager.instance().addEventListener("ConditionsChanged" /* SDK.NetworkManager.MultitargetNetworkManager.Events.CONDITIONS_CHANGED */, () => {
             select.currentConditions = SDK.NetworkManager.MultitargetNetworkManager.instance().networkConditions();
         });
@@ -162,59 +170,64 @@ export class NetworkThrottlingSelect extends Common.ObjectWrapper.ObjectWrapper 
         return select;
     }
     constructor(element, options = {}, view = DEFAULT_VIEW) {
-        super();
-        SDK.NetworkManager.customUserNetworkConditionsSetting().addChangeListener(this.#performUpdate, this);
-        this.#element = element;
+        super(element);
+        SDK.NetworkManager.customUserNetworkConditionsSetting().addChangeListener(this.requestUpdate, this);
         this.#jslogContext = options.jslogContext;
         this.#currentConditions = options.currentConditions;
         this.#title = options.title;
         this.#view = view;
-        this.#performUpdate();
+        this.performUpdate();
     }
     get disabled() {
         return this.#disabled;
     }
     set disabled(disabled) {
         this.#disabled = disabled;
-        this.#performUpdate();
+        this.requestUpdate();
     }
     get recommendedConditions() {
         return this.#recommendedConditions;
     }
     set recommendedConditions(recommendedConditions) {
         this.#recommendedConditions = recommendedConditions;
-        this.#performUpdate();
+        this.requestUpdate();
     }
     get currentConditions() {
         return this.#currentConditions;
     }
     set currentConditions(currentConditions) {
         this.#currentConditions = currentConditions;
-        this.#performUpdate();
+        this.requestUpdate();
     }
     get jslogContext() {
         return this.#jslogContext;
     }
     set jslogContext(jslogContext) {
         this.#jslogContext = jslogContext;
-        this.#performUpdate();
+        this.requestUpdate();
     }
     get variant() {
         return this.#variant;
     }
     set variant(variant) {
         this.#variant = variant;
-        this.#performUpdate();
+        this.requestUpdate();
     }
-    // FIXME Should use requestUpdate once we merge this with the widget
-    #performUpdate() {
+    get title() {
+        return this.#title;
+    }
+    set title(title) {
+        this.#title = title;
+        this.requestUpdate();
+    }
+    performUpdate() {
         const customNetworkConditionsSetting = SDK.NetworkManager.customUserNetworkConditionsSetting();
         const customNetworkConditions = customNetworkConditionsSetting.get();
         const onAddCustomConditions = () => {
             void Common.Revealer.reveal(SDK.NetworkManager.customUserNetworkConditionsSetting());
         };
         const onSelect = (conditions) => {
-            this.dispatchEventToListeners("conditionsChanged" /* Events.CONDITIONS_CHANGED */, conditions);
+            this.dispatchEventToListeners("ConditionsChanged" /* Events.CONDITIONS_CHANGED */, conditions);
         };
         const throttlingGroups = [];
         switch (this.#variant) {
@@ -252,34 +265,7 @@ export class NetworkThrottlingSelect extends Common.ObjectWrapper.ObjectWrapper 
             throttlingGroups,
             customConditionsGroup,
         };
-        this.#view(viewInput, {}, this.#element);
-    }
-}
-export class NetworkThrottlingSelectorWidget extends UI.Widget.VBox {
-    #select;
-    #conditionsChangedHandler;
-    constructor(element, view = DEFAULT_VIEW) {
-        super(element, { useShadowDom: true });
-        this.#select = new NetworkThrottlingSelect(this.contentElement, {}, view);
-        this.#select.addEventListener("conditionsChanged" /* Events.CONDITIONS_CHANGED */, ({ data }) => this.#conditionsChangedHandler?.(data));
-    }
-    get disabled() {
-        return this.#select.disabled;
-    }
-    set disabled(disabled) {
-        this.#select.disabled = disabled;
-    }
-    set variant(variant) {
-        this.#select.variant = variant;
-    }
-    set jslogContext(context) {
-        this.#select.jslogContext = context;
-    }
-    set currentConditions(currentConditions) {
-        this.#select.currentConditions = currentConditions;
-    }
-    set onConditionsChanged(handler) {
-        this.#conditionsChangedHandler = handler;
+        this.#view(viewInput, {}, this.contentElement);
     }
 }
 //# sourceMappingURL=NetworkThrottlingSelector.js.map

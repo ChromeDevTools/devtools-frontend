@@ -3204,6 +3204,8 @@ var Widget = class _Widget {
     }
     if (this.contentElement instanceof HTMLElement) {
       this.contentElement.classList.add("widget");
+    } else if (options?.useShadowDom === "pure") {
+      this.element.classList.add("widget");
     }
     widgetMap.set(this.element, this);
   }
@@ -3746,6 +3748,8 @@ var VBox = class extends Widget {
     super(elementOrOptions, options);
     if (this.contentElement instanceof HTMLElement) {
       this.contentElement.classList.add("vbox");
+    } else {
+      this.element.classList.add("vbox");
     }
   }
   calculateConstraints() {
@@ -3764,6 +3768,9 @@ var HBox = class extends Widget {
     super(elementOrOptions, options);
     if (this.contentElement instanceof HTMLElement) {
       this.contentElement.classList.add("hbox");
+    } else {
+      this.element.classList.remove("vbox");
+      this.element.classList.add("hbox");
     }
   }
   calculateConstraints() {

@@ -2796,21 +2796,24 @@ var DEFAULT_VIEW4 = (input, _output, target) => {
             ${input.mainText}
           </div>
           ${input.subText || input.domBreakpointData ? html4`
-            <div class="status-sub monospace" title=${ifDefined2(input.title ?? input.subText)}>${input.domBreakpointData ? domBreakpointSubtext(input.domBreakpointData) : input.subText}</div>
-          ` : nothing3}
+            <div class="status-sub monospace" title=${ifDefined2(input.title ?? input.subText)}>
+              ${input.domBreakpointData ? domBreakpointSubtext(input.domBreakpointData) : input.subText}
+            </div>` : nothing3}
         </span>
       </div>` : nothing3}
-    </div>
-  `, target);
+    </div>`, target, {
+    container: {
+      attributes: { jslog: `${VisualLogging4.dialog("debugger-paused")}` },
+      classes: ["paused-message", "flex-none"]
+    }
+  });
 };
 var DebuggerPausedMessage = class _DebuggerPausedMessage extends UI6.Widget.Widget {
   view;
   #viewInput = null;
   constructor(element, view = DEFAULT_VIEW4) {
     super(element, {
-      jslog: `${VisualLogging4.dialog("debugger-paused")}`,
-      classes: ["paused-message", "flex-none"],
-      useShadowDom: true
+      useShadowDom: "pure"
     });
     this.view = view;
   }
@@ -10505,16 +10508,14 @@ var DEFAULT_VIEW5 = (input, _output, target) => {
       </button>
     `)}
     </div>
-  `, target);
+  `, target, { container: { attributes: { jslog: `${VisualLogging10.section("sources.threads")}` } } });
 };
 var ThreadsSidebarPane = class extends UI17.Widget.VBox {
   #debuggerModels = /* @__PURE__ */ new Set();
   #selectedModel;
   #view;
   constructor(element, view = DEFAULT_VIEW5) {
-    super(element, {
-      jslog: `${VisualLogging10.section("sources.threads")}`
-    });
+    super(element);
     this.#view = view;
     const currentTarget = UI17.Context.Context.instance().flavor(SDK10.Target.Target);
     this.#selectedModel = currentTarget?.model(SDK10.DebuggerModel.DebuggerModel) ?? null;

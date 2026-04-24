@@ -673,8 +673,7 @@ var NetworkPanelIndicator = class {
 var NetworkThrottlingSelector_exports = {};
 __export(NetworkThrottlingSelector_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW,
-  NetworkThrottlingSelect: () => NetworkThrottlingSelect,
-  NetworkThrottlingSelectorWidget: () => NetworkThrottlingSelectorWidget
+  NetworkThrottlingSelect: () => NetworkThrottlingSelect
 });
 import * as Common3 from "./../../core/common/common.js";
 import * as i18n9 from "./../../core/i18n/i18n.js";
@@ -685,7 +684,7 @@ import * as UI3 from "./../../ui/legacy/legacy.js";
 import * as Lit from "./../../ui/lit/lit.js";
 import * as VisualLogging2 from "./../../ui/visual_logging/visual_logging.js";
 import * as PanelsCommon from "./../common/common.js";
-var { render, html, Directives, nothing } = Lit;
+var { render, html, Directives } = Lit;
 var UIStrings5 = {
   /**
    * @description Text to indicate something is not enabled
@@ -757,12 +756,7 @@ var DEFAULT_VIEW = (input, output, target) => {
   }
   render(
     // clang-format off
-    html`<select
-      ?disabled=${input.disabled}
-      aria-label=${input.title ?? nothing}
-      jslog=${VisualLogging2.dropDown().track({ change: true }).context(input.jslogContext)}
-      @change=${onSelect}>
-          ${input.throttlingGroups.map((group) => html`<optgroup
+    html`${input.throttlingGroups.map((group) => html`<optgroup
             label=${group.title}>
             ${group.items.map((condition) => html`<option
               ${Directives.ref((option) => option && optionsMap.set(option, condition))}
@@ -788,15 +782,23 @@ var DEFAULT_VIEW = (input, output, target) => {
             jslog=${VisualLogging2.action("add").track({ click: true })}>
               ${i18nString5(UIStrings5.add)}
           </option>
-        </optgroup>
-      </select>`,
+        </optgroup>`,
     // clang-format on
-    target
+    target,
+    {
+      container: {
+        listeners: { change: onSelect },
+        attributes: {
+          disabled: input.disabled,
+          "aria-label": input.title,
+          jslog: `${VisualLogging2.dropDown(input.jslogContext).track({ change: true })}`
+        }
+      }
+    }
   );
 };
-var NetworkThrottlingSelect = class _NetworkThrottlingSelect extends Common3.ObjectWrapper.ObjectWrapper {
+var NetworkThrottlingSelect = class _NetworkThrottlingSelect extends Common3.ObjectWrapper.eventMixin(UI3.Widget.Widget) {
   #recommendedConditions = null;
-  #element;
   #jslogContext;
   #currentConditions;
   #title;
@@ -805,12 +807,24 @@ var NetworkThrottlingSelect = class _NetworkThrottlingSelect extends Common3.Obj
   #disabled = false;
   static createForGlobalConditions(element, title) {
     ThrottlingManager.instance();
-    const select = new _NetworkThrottlingSelect(element, {
+    const selectElement = element.createChild("select");
+    const select = new _NetworkThrottlingSelect(selectElement, {
       title,
       jslogContext: SDK5.NetworkManager.activeNetworkThrottlingKeySetting().name,
       currentConditions: SDK5.NetworkManager.MultitargetNetworkManager.instance().networkConditions()
     });
-    select.addEventListener("conditionsChanged", (ev) => !("block" in ev.data) && SDK5.NetworkManager.MultitargetNetworkManager.instance().setNetworkConditions(ev.data));
+    select.show(
+      element,
+      void 0,
+      /* suppressOrphanWidgetError= */
+      true
+    );
+    select.addEventListener("ConditionsChanged", (event) => {
+      const conditions = event.data;
+      if (!("block" in conditions)) {
+        SDK5.NetworkManager.MultitargetNetworkManager.instance().setNetworkConditions(conditions);
+      }
+    });
     SDK5.NetworkManager.MultitargetNetworkManager.instance().addEventListener("ConditionsChanged", () => {
       select.currentConditions = SDK5.NetworkManager.MultitargetNetworkManager.instance().networkConditions();
     });
@@ -824,59 +838,64 @@ var NetworkThrottlingSelect = class _NetworkThrottlingSelect extends Common3.Obj
     return select;
   }
   constructor(element, options = {}, view = DEFAULT_VIEW) {
-    super();
-    SDK5.NetworkManager.customUserNetworkConditionsSetting().addChangeListener(this.#performUpdate, this);
-    this.#element = element;
+    super(element);
+    SDK5.NetworkManager.customUserNetworkConditionsSetting().addChangeListener(this.requestUpdate, this);
     this.#jslogContext = options.jslogContext;
     this.#currentConditions = options.currentConditions;
     this.#title = options.title;
     this.#view = view;
-    this.#performUpdate();
+    this.performUpdate();
   }
   get disabled() {
     return this.#disabled;
   }
   set disabled(disabled) {
     this.#disabled = disabled;
-    this.#performUpdate();
+    this.requestUpdate();
   }
   get recommendedConditions() {
     return this.#recommendedConditions;
   }
   set recommendedConditions(recommendedConditions) {
     this.#recommendedConditions = recommendedConditions;
-    this.#performUpdate();
+    this.requestUpdate();
   }
   get currentConditions() {
     return this.#currentConditions;
   }
   set currentConditions(currentConditions) {
     this.#currentConditions = currentConditions;
-    this.#performUpdate();
+    this.requestUpdate();
   }
   get jslogContext() {
     return this.#jslogContext;
   }
   set jslogContext(jslogContext) {
     this.#jslogContext = jslogContext;
-    this.#performUpdate();
+    this.requestUpdate();
   }
   get variant() {
     return this.#variant;
   }
   set variant(variant) {
     this.#variant = variant;
-    this.#performUpdate();
+    this.requestUpdate();
   }
-  // FIXME Should use requestUpdate once we merge this with the widget
-  #performUpdate() {
+  get title() {
+    return this.#title;
+  }
+  set title(title) {
+    this.#title = title;
+    this.requestUpdate();
+  }
+  performUpdate() {
     const customNetworkConditionsSetting = SDK5.NetworkManager.customUserNetworkConditionsSetting();
     const customNetworkConditions = customNetworkConditionsSetting.get();
     const onAddCustomConditions = () => {
       void Common3.Revealer.reveal(SDK5.NetworkManager.customUserNetworkConditionsSetting());
     };
     const onSelect = (conditions) => {
-      this.dispatchEventToListeners("conditionsChanged", conditions);
+      this.dispatchEventToListeners("ConditionsChanged", conditions);
     };
     const throttlingGroups = [];
     switch (this.#variant) {
@@ -914,34 +933,7 @@ var NetworkThrottlingSelect = class _NetworkThrottlingSelect extends Common3.Obj
       throttlingGroups,
       customConditionsGroup
     };
-    this.#view(viewInput, {}, this.#element);
-  }
-};
-var NetworkThrottlingSelectorWidget = class extends UI3.Widget.VBox {
-  #select;
-  #conditionsChangedHandler;
-  constructor(element, view = DEFAULT_VIEW) {
-    super(element, { useShadowDom: true });
-    this.#select = new NetworkThrottlingSelect(this.contentElement, {}, view);
-    this.#select.addEventListener("conditionsChanged", ({ data }) => this.#conditionsChangedHandler?.(data));
-  }
-  get disabled() {
-    return this.#select.disabled;
-  }
-  set disabled(disabled) {
-    this.#select.disabled = disabled;
-  }
-  set variant(variant) {
-    this.#select.variant = variant;
-  }
-  set jslogContext(context) {
-    this.#select.jslogContext = context;
-  }
-  set currentConditions(currentConditions) {
-    this.#select.currentConditions = currentConditions;
-  }
-  set onConditionsChanged(handler) {
-    this.#conditionsChangedHandler = handler;
+    this.#view(viewInput, {}, this.contentElement);
   }
 };
 

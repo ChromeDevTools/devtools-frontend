@@ -2,7 +2,7 @@ import type * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import type * as Foundation from '../../foundation/foundation.js';
 import type { ViewLocationResolver } from './View.js';
-import type { Widget } from './Widget.js';
+import type { AnyWidget } from './Widget.js';
 export declare const enum ViewPersistence {
     CLOSEABLE = "closeable",
     PERMANENT = "permanent",
@@ -95,7 +95,7 @@ export interface ViewRegistration {
      * });
      * ```
      */
-    loadView: (universe: Foundation.Universe.Universe) => Promise<Widget>;
+    loadView: (universe: Foundation.Universe.Universe) => Promise<AnyWidget>;
     /**
      * Used to sort the views that appear in a shared location.
      */

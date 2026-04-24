@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 import * as Common from '../../core/common/common.js';
 import * as StackTrace from '../stack_trace/stack_trace.js';
-export class SymbolizedError extends Common.ObjectWrapper.ObjectWrapper {
+export class SymbolizedErrorObject extends Common.ObjectWrapper.ObjectWrapper {
     message;
     stackTrace;
     cause;

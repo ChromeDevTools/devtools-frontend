@@ -17,9 +17,9 @@ interface ViewInput {
     title?: string;
     domBreakpointData?: DOMBreakpointData;
 }
-declare const DEFAULT_VIEW: (input: ViewInput | null, _output: undefined, target: HTMLElement) => void;
+declare const DEFAULT_VIEW: (input: ViewInput | null, _output: undefined, target: DocumentFragment) => void;
 type View = typeof DEFAULT_VIEW;
-export declare class DebuggerPausedMessage extends UI.Widget.Widget {
+export declare class DebuggerPausedMessage extends UI.Widget.Widget<ShadowRoot> {
     #private;
     private readonly view;
     constructor(element?: HTMLElement, view?: View);

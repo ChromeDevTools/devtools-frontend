@@ -8,9 +8,17 @@ var __export = (target, all) => {
 var ErrorStackParser_exports = {};
 __export(ErrorStackParser_exports, {
   augmentErrorStackWithScriptIds: () => augmentErrorStackWithScriptIds,
+  concatErrorDescriptionAndIssueSummary: () => concatErrorDescriptionAndIssueSummary,
   parseSourcePositionsFromErrorStack: () => parseSourcePositionsFromErrorStack
 });
 import * as Common from "./../../core/common/common.js";
+function concatErrorDescriptionAndIssueSummary(description, issueSummary) {
+  const pos = description.indexOf("\n");
+  const prefix = pos === -1 ? description : description.substring(0, pos);
+  const suffix = pos === -1 ? "" : description.substring(pos);
+  description = `${prefix}. ${issueSummary}${suffix}`;
+  return description;
+}
 function parseSourcePositionsFromErrorStack(runtimeModel, stack) {
   if (!(/\n\s*at\s/.test(stack) || stack.startsWith("SyntaxError:"))) {
     return null;

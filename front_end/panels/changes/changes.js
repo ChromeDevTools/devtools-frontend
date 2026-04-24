@@ -129,7 +129,8 @@ var DEFAULT_VIEW = (input, output, target) => {
                    </li>`)}
                </ul>`}></devtools-tree>`,
     // clang-format on
-    target
+    target,
+    { container: { attributes: { jslog: `${VisualLogging.pane("sidebar").track({ resize: true })}` } } }
   );
 };
 var ChangesSidebar = class extends Common.ObjectWrapper.eventMixin(UI.Widget.Widget) {
@@ -138,7 +139,7 @@ var ChangesSidebar = class extends Common.ObjectWrapper.eventMixin(UI.Widget.Wid
   #sourceCodes = /* @__PURE__ */ new Set();
   #selectedUISourceCode = null;
   constructor(target, view = DEFAULT_VIEW) {
-    super(target, { jslog: `${VisualLogging.pane("sidebar").track({ resize: true })}` });
+    super(target);
     this.#view = view;
   }
   set workspaceDiff(workspaceDiff) {
@@ -612,7 +613,8 @@ var DEFAULT_VIEW3 = (input, _output, target) => {
         </devtools-widget>
       </devtools-split-view>`,
     // clang-format on
-    target
+    target,
+    { container: { attributes: { jslog: `${VisualLogging3.panel("changes").track({ resize: true })}` } } }
   );
 };
 var ChangesView = class _ChangesView extends UI3.Widget.VBox {
@@ -620,10 +622,7 @@ var ChangesView = class _ChangesView extends UI3.Widget.VBox {
   #selectedUISourceCode = null;
   #view;
   constructor(target, view = DEFAULT_VIEW3) {
-    super(target, {
-      jslog: `${VisualLogging3.panel("changes").track({ resize: true })}`,
-      useShadowDom: true
-    });
+    super(target, { useShadowDom: "pure" });
     this.#workspaceDiff = WorkspaceDiff3.WorkspaceDiff.workspaceDiff();
     this.#view = view;
     this.requestUpdate();

@@ -35,16 +35,14 @@ const DEFAULT_VIEW = (input, _output, target) => {
       </button>
     `)}
     </div>
-  `, target);
+  `, target, { container: { attributes: { jslog: `${VisualLogging.section('sources.threads')}` } } });
 };
 export class ThreadsSidebarPane extends UI.Widget.VBox {
     #debuggerModels = new Set();
     #selectedModel;
     #view;
     constructor(element, view = DEFAULT_VIEW) {
-        super(element, {
-            jslog: `${VisualLogging.section('sources.threads')}`,
-        });
+        super(element);
         this.#view = view;
         const currentTarget = UI.Context.Context.instance().flavor(SDK.Target.Target);
         this.#selectedModel = currentTarget?.model(SDK.DebuggerModel.DebuggerModel) ?? null;

@@ -48,7 +48,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
                    </li>`)}
                </ul>`}></devtools-tree>`, 
     // clang-format on
-    target);
+    target, { container: { attributes: { jslog: `${VisualLogging.pane('sidebar').track({ resize: true })}` } } });
 };
 export class ChangesSidebar extends Common.ObjectWrapper.eventMixin(UI.Widget.Widget) {
     #workspaceDiff = null;
@@ -56,7 +56,7 @@ export class ChangesSidebar extends Common.ObjectWrapper.eventMixin(UI.Widget.Wi
     #sourceCodes = new Set();
     #selectedUISourceCode = null;
     constructor(target, view = DEFAULT_VIEW) {
-        super(target, { jslog: `${VisualLogging.pane('sidebar').track({ resize: true })}` });
+        super(target);
         this.#view = view;
     }
     set workspaceDiff(workspaceDiff) {

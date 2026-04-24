@@ -1457,7 +1457,7 @@ var DEFAULT_VIEW = (input, _output, target) => {
         `)}
       </div>
     `).toArray()}
-    </div>`, target);
+    </div>`, target, { container: { attributes: { jslog: `${VisualLogging2.mediaInspectorView().track({ click: true })}` } } });
 };
 function renderMaxSection(zoomFactor, model) {
   return html`
@@ -1539,10 +1539,7 @@ var MediaQueryInspector = class extends UI2.Widget.Widget {
   cssModel;
   cachedQueryModels;
   constructor(getWidthCallback, setWidthCallback, mediaThrottler, view = DEFAULT_VIEW) {
-    super({
-      jslog: `${VisualLogging2.mediaInspectorView().track({ click: true })}`,
-      useShadowDom: true
-    });
+    super({ useShadowDom: "pure" });
     this.view = view;
     this.mediaThrottler = mediaThrottler;
     this.getWidthCallback = getWidthCallback;

@@ -241,7 +241,7 @@ export declare class HBox<ContentTypeT extends HTMLElement | DocumentFragment = 
      *
      * @param options optional settings to configure the behavior.
      */
-    constructor(options?: WidgetOptions);
+    constructor(options?: WidgetOptions<ContentTypeT>);
     /**
      * Constructs a new `HBox` with the given `options` and attached to the
      * given `element`.
@@ -252,7 +252,7 @@ export declare class HBox<ContentTypeT extends HTMLElement | DocumentFragment = 
      * @param element an (optional) `HTMLElement` to attach the `HBox` to.
      * @param options optional settings to configure the behavior.
      */
-    constructor(element?: HTMLElement, options?: WidgetOptions);
+    constructor(element?: HTMLElement, options?: WidgetOptions<ContentTypeT>);
     calculateConstraints(): Geometry.Constraints;
 }
 export declare class VBoxWithResizeCallback extends VBox {

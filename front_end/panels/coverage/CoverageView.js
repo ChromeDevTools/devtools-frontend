@@ -194,7 +194,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
         <div class="coverage-message">
             ${input.statusMessage}
         </div>
-    </div>`, target);
+    </div>`, target, { container: { attributes: { jslog: `${VisualLogging.panel('coverage').track({ resize: true })}` } } });
     // clang-format on
 };
 function renderLandingPage(supportsRecordOnReload) {
@@ -258,8 +258,7 @@ export class CoverageView extends UI.Widget.VBox {
     #selectedUrl = null;
     constructor(view = DEFAULT_VIEW) {
         super({
-            jslog: `${VisualLogging.panel('coverage').track({ resize: true })}`,
-            useShadowDom: true,
+            useShadowDom: 'pure',
             delegatesFocus: true,
         });
         this.registerRequiredCSS(coverageViewStyles);

@@ -15,6 +15,16 @@ export interface ParsedErrorFrame {
     };
 }
 /**
+ * Combines the error description (essentially the `Error#stack` property value)
+ * with the `issueSummary`.
+ *
+ * @param description the `description` property of the `Error` remote object.
+ * @param issueSummary the optional `issueSummary` of the `exceptionMetaData`.
+ * @returns the enriched description.
+ * @see https://goo.gle/devtools-reduce-network-noise-design
+ */
+export declare function concatErrorDescriptionAndIssueSummary(description: string, issueSummary: string): string;
+/**
  * Takes a V8 Error#stack string and extracts source position information.
  *
  * The result includes the url, line and column number, as well as where

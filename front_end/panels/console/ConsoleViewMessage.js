@@ -199,23 +199,6 @@ const elementToMessage = new WeakMap();
 export const getMessageForElement = (element) => {
     return elementToMessage.get(element);
 };
-/**
- * Combines the error description (essentially the `Error#stack` property value)
- * with the `issueSummary`.
- *
- * @param description the `description` property of the `Error` remote object.
- * @param issueSummary the optional `issueSummary` of the `exceptionMetaData`.
- * @returns the enriched description.
- * @see https://goo.gle/devtools-reduce-network-noise-design
- */
-export const concatErrorDescriptionAndIssueSummary = (description, issueSummary) => {
-    // Insert the issue summary right after the error message.
-    const pos = description.indexOf('\n');
-    const prefix = pos === -1 ? description : description.substring(0, pos);
-    const suffix = pos === -1 ? '' : description.substring(pos);
-    description = `${prefix}. ${issueSummary}${suffix}`;
-    return description;
-};
 // This value reflects the 18px min-height of .console-message.
 // Keep in sync with consoleView.css.
 const defaultConsoleRowHeight = 18;
@@ -1704,7 +1687,7 @@ export class ConsoleViewMessage {
         }
         const issueSummary = exceptionDetails?.exceptionMetaData?.issueSummary;
         if (typeof issueSummary === 'string') {
-            string = concatErrorDescriptionAndIssueSummary(string, issueSummary);
+            string = StackTrace.ErrorStackParser.concatErrorDescriptionAndIssueSummary(string, issueSummary);
         }
         const linkInfos = StackTrace.ErrorStackParser.parseSourcePositionsFromErrorStack(runtimeModel, string);
         if (!linkInfos?.length) {

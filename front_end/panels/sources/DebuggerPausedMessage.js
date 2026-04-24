@@ -131,35 +131,36 @@ function domBreakpointSubtext(data) {
   `;
 }
 const DEFAULT_VIEW = (input, _output, target) => {
+    // clang-format off
     render(html `
     <style>${debuggerPausedMessageStyles}</style>
-    <div aria-live="polite" ?hidden=${!input}>${input ?
-        html `
+    <div aria-live="polite" ?hidden=${!input}>${input ? html `
       <div class="paused-status ${input.errorLike ? 'error-reason' : ''}">
         <span>
           <div class="status-main">
             <devtools-icon name=${input.errorLike ? 'cross-circle-filled' : 'info'} class="medium"></devtools-icon>
             ${input.mainText}
           </div>
-          ${input.subText || input.domBreakpointData ?
-            html `
-            <div class="status-sub monospace" title=${ifDefined(input.title ?? input.subText)}>${input.domBreakpointData ? domBreakpointSubtext(input.domBreakpointData) : input.subText}</div>
-          ` :
-            nothing}
+          ${input.subText || input.domBreakpointData ? html `
+            <div class="status-sub monospace" title=${ifDefined(input.title ?? input.subText)}>
+              ${input.domBreakpointData ? domBreakpointSubtext(input.domBreakpointData) : input.subText}
+            </div>` : nothing}
         </span>
-      </div>` :
-        nothing}
-    </div>
-  `, target);
+      </div>` : nothing}
+    </div>`, target, {
+        container: {
+            attributes: { jslog: `${VisualLogging.dialog('debugger-paused')}` },
+            classes: ['paused-message', 'flex-none']
+        }
+    });
+    // clang-format on
 };
 export class DebuggerPausedMessage extends UI.Widget.Widget {
     view;
     #viewInput = null;
     constructor(element, view = DEFAULT_VIEW) {
         super(element, {
-            jslog: `${VisualLogging.dialog('debugger-paused')}`,
-            classes: ['paused-message', 'flex-none'],
-            useShadowDom: true,
+            useShadowDom: 'pure',
         });
         this.view = view;
     }

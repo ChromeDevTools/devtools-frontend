@@ -746,7 +746,7 @@ var DEFAULT_VIEW2 = (input, output, target) => {
             </devtools-progress>` : ""}
         </div>
         <div class="search-message">${searchResultsMessage}</div>
-      </div>`, target);
+      </div>`, target, { container: { attributes: { jslog: `${VisualLogging.panel("search").track({ resize: true })}` } } });
 };
 var SearchView = class extends UI2.Widget.VBox {
   #view;
@@ -774,10 +774,7 @@ var SearchView = class extends UI2.Widget.VBox {
   #searchScope;
   #searchResults = [];
   constructor(settingKey, view = DEFAULT_VIEW2) {
-    super({
-      jslog: `${VisualLogging.panel("search").track({ resize: true })}`,
-      useShadowDom: true
-    });
+    super({ useShadowDom: "pure" });
     this.#view = view;
     this.setMinimumSize(0, 40);
     this.#isIndexing = false;

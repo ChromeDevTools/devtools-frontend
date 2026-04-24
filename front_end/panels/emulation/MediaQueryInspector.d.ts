@@ -12,8 +12,8 @@ export interface MediaQueryMarker {
     model: MediaQueryUIModel;
     locations: SDK.CSSModel.CSSLocation[];
 }
-export declare const DEFAULT_VIEW: (input: ViewInput, _output: object, target: HTMLElement) => void;
-export declare class MediaQueryInspector extends UI.Widget.Widget implements SDK.TargetManager.SDKModelObserver<SDK.CSSModel.CSSModel> {
+export declare const DEFAULT_VIEW: (input: ViewInput, _output: object, target: DocumentFragment) => void;
+export declare class MediaQueryInspector extends UI.Widget.Widget<ShadowRoot> implements SDK.TargetManager.SDKModelObserver<SDK.CSSModel.CSSModel> {
     private readonly view;
     private readonly mediaThrottler;
     private readonly getWidthCallback;
@@ -21,7 +21,7 @@ export declare class MediaQueryInspector extends UI.Widget.Widget implements SDK
     private scale;
     private cssModel?;
     private cachedQueryModels?;
-    constructor(getWidthCallback: () => number, setWidthCallback: (arg0: number) => void, mediaThrottler: Common.Throttler.Throttler, view?: (input: ViewInput, _output: object, target: HTMLElement) => void);
+    constructor(getWidthCallback: () => number, setWidthCallback: (arg0: number) => void, mediaThrottler: Common.Throttler.Throttler, view?: (input: ViewInput, _output: object, target: DocumentFragment) => void);
     modelAdded(cssModel: SDK.CSSModel.CSSModel): void;
     modelRemoved(cssModel: SDK.CSSModel.CSSModel): void;
     setAxisTransform(scale: number): void;

@@ -27,9 +27,9 @@ export interface SearchViewOutput {
     showAllMatches: () => void;
     collapseAllResults: () => void;
 }
-export type View = (input: SearchViewInput, output: SearchViewOutput, target: HTMLElement) => void;
+export type View = (input: SearchViewInput, output: SearchViewOutput, target: HTMLElement | DocumentFragment) => void;
 export declare const DEFAULT_VIEW: View;
-export declare class SearchView extends UI.Widget.VBox {
+export declare class SearchView extends UI.Widget.VBox<ShadowRoot> {
     #private;
     constructor(settingKey: string, view?: View);
     performUpdate(): void;

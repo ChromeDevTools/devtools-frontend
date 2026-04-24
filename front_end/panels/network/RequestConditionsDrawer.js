@@ -238,16 +238,18 @@ function renderItem(condition, editable, index, onToggle, onConditionsChanged, o
       aria-details=url-pattern-${index}>
         ${constructorStringOrWildcardURL}
     </div>
-    <devtools-widget
+    <select
        class=conditions-selector
        title=${i18nString(UIStrings.requestConditionsLabel)}
-       ${widget(MobileThrottling.NetworkThrottlingSelector.NetworkThrottlingSelectorWidget, {
+       @ConditionsChanged=${(e) => {
+        onConditionsChanged(condition, e.detail);
+    }}
+       ${widget(MobileThrottling.NetworkThrottlingSelector.NetworkThrottlingSelect, {
         variant: "individual-request-conditions" /* MobileThrottling.NetworkThrottlingSelector.NetworkThrottlingSelect.Variant.INDIVIDUAL_REQUEST_CONDITIONS */,
         jslogContext: 'request-conditions',
         disabled: !editable,
-        onConditionsChanged: conditions => onConditionsChanged(condition, conditions),
         currentConditions: condition.conditions,
-    })}></devtools-widget>
+    })}></select>
     <devtools-widget
       ?disabled=${!editable || !originalOrUpgradedURLPattern}
       ${widget(AffectedCountWidget, { condition, lookUpRequestCount })}></devtools-widget>`;

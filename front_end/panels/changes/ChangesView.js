@@ -55,17 +55,14 @@ export const DEFAULT_VIEW = (input, _output, target) => {
         </devtools-widget>
       </devtools-split-view>`, 
     // clang-format on
-    target);
+    target, { container: { attributes: { jslog: `${VisualLogging.panel('changes').track({ resize: true })}` } } });
 };
 export class ChangesView extends UI.Widget.VBox {
     #workspaceDiff;
     #selectedUISourceCode = null;
     #view;
     constructor(target, view = DEFAULT_VIEW) {
-        super(target, {
-            jslog: `${VisualLogging.panel('changes').track({ resize: true })}`,
-            useShadowDom: true,
-        });
+        super(target, { useShadowDom: 'pure' });
         this.#workspaceDiff = WorkspaceDiff.WorkspaceDiff.workspaceDiff();
         this.#view = view;
         this.requestUpdate();

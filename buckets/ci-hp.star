@@ -39,23 +39,6 @@ bucket(
     led_service_accounts = [AUTOROLLER_ACCOUNT],
 )
 
-luci.realm(
-    name = "pools/trusted-robots",
-    bindings = [
-        luci.binding(
-            roles = "role/swarming.poolUser",
-            groups = [
-                "project-devtools-admins",
-                "mdb/v8-infra",
-            ],
-        ),
-        luci.binding(
-            roles = "role/swarming.taskServiceAccount",
-            users = [AUTOROLLER_ACCOUNT],
-        ),
-    ],
-)
-
 # Roll all dependencies (except of excluded ones) into devtools-frontend
 highly_privileged_builder(
     name = ROLL_BUILDER_NAME,

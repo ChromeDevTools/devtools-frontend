@@ -110,10 +110,9 @@ def builder(
 
 def highly_privileged_builder(**kwargs):
     dimensions = dict(kwargs.pop("dimensions", {}))
-    dimensions["pool"] = "luci.devtools-frontend.trusted-robots"
+    dimensions["pool"] = "luci.v8.highly-privileged"
     kwargs["dimensions"] = dimensions
     kwargs["bucket"] = "ci-hp"
-    kwargs["swarming_host"] = "chrome-swarming.appspot.com"
 
     return builder(**kwargs)
 

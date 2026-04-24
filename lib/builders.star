@@ -293,7 +293,7 @@ def generate_ci_configs(configurations, builders):
             refs = [c.branch],
             favicon = defaults.favicon,
             header = {
-                "tree_status_host": "devtools-status.appspot.com",
+                "tree_name": "devtools",
             },
             entries = [
                 luci.console_view_entry(builder = name, category = category)

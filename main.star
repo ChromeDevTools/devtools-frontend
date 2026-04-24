@@ -218,7 +218,7 @@ luci.notifier(
 
 luci.tree_closer(
     name = "devtools tree closer",
-    tree_status_host = "devtools-status.appspot.com",
+    tree_name = "devtools",
     failed_step_regexp_exclude = EXCLUDED_STEPS,
 )
 

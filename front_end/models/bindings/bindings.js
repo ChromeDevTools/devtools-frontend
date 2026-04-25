@@ -3157,7 +3157,7 @@ __export(DebuggerWorkspaceBinding_exports, {
 import * as Common14 from "./../../core/common/common.js";
 import * as Platform6 from "./../../core/platform/platform.js";
 import * as Root3 from "./../../core/root/root.js";
-import * as SDK11 from "./../../core/sdk/sdk.js";
+import * as SDK12 from "./../../core/sdk/sdk.js";
 import * as StackTrace4 from "./../stack_trace/stack_trace.js";
 import * as Workspace17 from "./../workspace/workspace.js";
 
@@ -3714,9 +3714,11 @@ var ResourceScriptFile = class extends Common12.ObjectWrapper.ObjectWrapper {
 // gen/front_end/models/bindings/SymbolizedError.js
 var SymbolizedError_exports = {};
 __export(SymbolizedError_exports, {
-  SymbolizedErrorObject: () => SymbolizedErrorObject
+  SymbolizedErrorObject: () => SymbolizedErrorObject,
+  SymbolizedSyntaxError: () => SymbolizedSyntaxError
 });
 import * as Common13 from "./../../core/common/common.js";
+import * as SDK11 from "./../../core/sdk/sdk.js";
 import * as StackTrace3 from "./../stack_trace/stack_trace.js";
 var SymbolizedErrorObject = class extends Common13.ObjectWrapper.ObjectWrapper {
   message;
@@ -3742,6 +3744,41 @@ var SymbolizedErrorObject = class extends Common13.ObjectWrapper.ObjectWrapper {
     );
   }
 };
+var SymbolizedSyntaxError = class _SymbolizedSyntaxError extends Common13.ObjectWrapper.ObjectWrapper {
+  message;
+  #uiLocation = null;
+  constructor(message) {
+    super();
+    this.message = message;
+  }
+  get uiLocation() {
+    return this.#uiLocation;
+  }
+  static async fromExceptionDetails(target, debuggerWorkspaceBinding, exceptionDetails) {
+    const { exception, scriptId, lineNumber, columnNumber } = exceptionDetails;
+    if (!exception || exception.subtype !== "error" || exception.className !== "SyntaxError") {
+      throw new Error("SymbolizedSyntaxError.fromExceptionDetails expects a SyntaxError");
+    }
+    if (!scriptId) {
+      return null;
+    }
+    const debuggerModel = target.model(SDK11.DebuggerModel.DebuggerModel);
+    if (!debuggerModel) {
+      return null;
+    }
+    const rawLocation = debuggerModel.createRawLocationByScriptId(scriptId, lineNumber, columnNumber);
+    const symbolizedSyntaxError = new _SymbolizedSyntaxError(exception.description || "");
+    await debuggerWorkspaceBinding.createLiveLocation(rawLocation, symbolizedSyntaxError.#update.bind(symbolizedSyntaxError), new LiveLocationPool());
+    return symbolizedSyntaxError;
+  }
+  async #update(liveLocation) {
+    this.#uiLocation = await liveLocation.uiLocation();
+    this.dispatchEventToListeners(
+      "UPDATED"
+      /* Events.UPDATED */
+    );
+  }
+};
 
 // gen/front_end/models/bindings/DebuggerWorkspaceBinding.js
 var DebuggerWorkspaceBinding = class _DebuggerWorkspaceBinding {
@@ -3757,7 +3794,7 @@ var DebuggerWorkspaceBinding = class _DebuggerWorkspaceBinding {
     this.ignoreListManager = ignoreListManager;
     this.workspace = workspace;
     this.#debuggerModelToData = /* @__PURE__ */ new Map();
-    targetManager.observeModels(SDK11.DebuggerModel.DebuggerModel, this);
+    targetManager.observeModels(SDK12.DebuggerModel.DebuggerModel, this);
     this.ignoreListManager.addEventListener("IGNORED_SCRIPT_RANGES_UPDATED", (event) => this.updateLocations(event.data));
     this.#liveLocationPromises = /* @__PURE__ */ new Set();
     this.pluginManager = new DebuggerLanguagePluginManager(targetManager, resourceMapping.workspace, this);
@@ -3886,7 +3923,7 @@ var DebuggerWorkspaceBinding = class _DebuggerWorkspaceBinding {
     let causeRemoteObject;
     let fetchedExceptionDetails = exceptionDetails;
     if (remoteObject.subtype === "error") {
-      const remoteError = SDK11.RemoteObject.RemoteError.objectAsError(remoteObject);
+      const remoteError = SDK12.RemoteObject.RemoteError.objectAsError(remoteObject);
       errorStack = remoteError.errorStack;
       const [details, causeRemote] = await Promise.all([
         exceptionDetails ? Promise.resolve(exceptionDetails) : remoteError.exceptionDetails(),
@@ -4069,7 +4106,7 @@ var DebuggerWorkspaceBinding = class _DebuggerWorkspaceBinding {
     return scripts.every((script) => script.isJavaScript());
   }
   resetForTest(target) {
-    const debuggerModel = target.model(SDK11.DebuggerModel.DebuggerModel);
+    const debuggerModel = target.model(SDK12.DebuggerModel.DebuggerModel);
     const modelData = this.#debuggerModelToData.get(debuggerModel);
     if (modelData) {
       modelData.getResourceScriptMapping().resetForTest();
@@ -4108,7 +4145,7 @@ var DebuggerWorkspaceBinding = class _DebuggerWorkspaceBinding {
     if (await this.pluginManager.translateRawFramesStep(rawFrames, translatedFrames, target)) {
       return;
     }
-    const modelData = this.#debuggerModelToData.get(target.model(SDK11.DebuggerModel.DebuggerModel));
+    const modelData = this.#debuggerModelToData.get(target.model(SDK12.DebuggerModel.DebuggerModel));
     if (modelData) {
       await modelData.translateRawFramesStep(rawFrames, translatedFrames);
       return;
@@ -4503,19 +4540,19 @@ __export(PresentationConsoleMessageHelper_exports, {
   PresentationSourceFrameMessageHelper: () => PresentationSourceFrameMessageHelper,
   PresentationSourceFrameMessageManager: () => PresentationSourceFrameMessageManager
 });
-import * as SDK12 from "./../../core/sdk/sdk.js";
+import * as SDK13 from "./../../core/sdk/sdk.js";
 import * as TextUtils8 from "./../text_utils/text_utils.js";
 import * as Workspace20 from "./../workspace/workspace.js";
 var PresentationSourceFrameMessageManager = class {
   #targetToMessageHelperMap = /* @__PURE__ */ new WeakMap();
   constructor() {
-    SDK12.TargetManager.TargetManager.instance().observeModels(SDK12.DebuggerModel.DebuggerModel, this);
-    SDK12.TargetManager.TargetManager.instance().observeModels(SDK12.CSSModel.CSSModel, this);
+    SDK13.TargetManager.TargetManager.instance().observeModels(SDK13.DebuggerModel.DebuggerModel, this);
+    SDK13.TargetManager.TargetManager.instance().observeModels(SDK13.CSSModel.CSSModel, this);
   }
   modelAdded(model) {
     const target = model.target();
     const helper = this.#targetToMessageHelperMap.get(target) ?? new PresentationSourceFrameMessageHelper();
-    if (model instanceof SDK12.DebuggerModel.DebuggerModel) {
+    if (model instanceof SDK13.DebuggerModel.DebuggerModel) {
       helper.setDebuggerModel(model);
     } else {
       helper.setCSSModel(model);
@@ -4532,7 +4569,7 @@ var PresentationSourceFrameMessageManager = class {
     void helper?.addMessage(message, source);
   }
   clear() {
-    for (const target of SDK12.TargetManager.TargetManager.instance().targets()) {
+    for (const target of SDK13.TargetManager.TargetManager.instance().targets()) {
       const helper = this.#targetToMessageHelperMap.get(target);
       helper?.clear();
     }
@@ -4541,9 +4578,9 @@ var PresentationSourceFrameMessageManager = class {
 var PresentationConsoleMessageManager = class {
   #sourceFrameMessageManager = new PresentationSourceFrameMessageManager();
   constructor() {
-    SDK12.TargetManager.TargetManager.instance().addModelListener(SDK12.ConsoleModel.ConsoleModel, SDK12.ConsoleModel.Events.MessageAdded, (event) => this.consoleMessageAdded(event.data));
-    SDK12.ConsoleModel.ConsoleModel.allMessagesUnordered().forEach(this.consoleMessageAdded, this);
-    SDK12.TargetManager.TargetManager.instance().addModelListener(SDK12.ConsoleModel.ConsoleModel, SDK12.ConsoleModel.Events.ConsoleCleared, () => this.#sourceFrameMessageManager.clear());
+    SDK13.TargetManager.TargetManager.instance().addModelListener(SDK13.ConsoleModel.ConsoleModel, SDK13.ConsoleModel.Events.MessageAdded, (event) => this.consoleMessageAdded(event.data));
+    SDK13.ConsoleModel.ConsoleModel.allMessagesUnordered().forEach(this.consoleMessageAdded, this);
+    SDK13.TargetManager.TargetManager.instance().addModelListener(SDK13.ConsoleModel.ConsoleModel, SDK13.ConsoleModel.Events.ConsoleCleared, () => this.#sourceFrameMessageManager.clear());
   }
   consoleMessageAdded(consoleMessage) {
     const runtimeModel = consoleMessage.runtimeModel();
@@ -4568,19 +4605,19 @@ var PresentationSourceFrameMessageHelper = class {
       throw new Error("Cannot set DebuggerModel twice");
     }
     this.#debuggerModel = debuggerModel;
-    debuggerModel.addEventListener(SDK12.DebuggerModel.Events.ParsedScriptSource, (event) => {
+    debuggerModel.addEventListener(SDK13.DebuggerModel.Events.ParsedScriptSource, (event) => {
       queueMicrotask(() => {
         this.#parsedScriptSource(event);
       });
     });
-    debuggerModel.addEventListener(SDK12.DebuggerModel.Events.GlobalObjectCleared, this.#debuggerReset, this);
+    debuggerModel.addEventListener(SDK13.DebuggerModel.Events.GlobalObjectCleared, this.#debuggerReset, this);
   }
   setCSSModel(cssModel) {
     if (this.#cssModel) {
       throw new Error("Cannot set CSSModel twice");
     }
     this.#cssModel = cssModel;
-    cssModel.addEventListener(SDK12.CSSModel.Events.StyleSheetAdded, (event) => queueMicrotask(() => this.#styleSheetAdded(event)));
+    cssModel.addEventListener(SDK13.CSSModel.Events.StyleSheetAdded, (event) => queueMicrotask(() => this.#styleSheetAdded(event)));
   }
   async addMessage(message, source) {
     const presentation = new PresentationSourceFrameMessage(message, this.#locationPool);
@@ -4661,7 +4698,7 @@ var PresentationSourceFrameMessageHelper = class {
     const promises = [];
     for (const { source, presentation } of messages ?? []) {
       if (header.containsLocation(source.line, source.column)) {
-        promises.push(presentation.updateLocationSource(new SDK12.CSSModel.CSSLocation(header, source.line, source.column)));
+        promises.push(presentation.updateLocationSource(new SDK13.CSSModel.CSSLocation(header, source.line, source.column)));
       }
     }
     void Promise.all(promises).then(this.styleSheetAddedForTest.bind(this));
@@ -4700,9 +4737,9 @@ var PresentationSourceFrameMessage = class {
     this.#locationPool = locationPool;
   }
   async updateLocationSource(source) {
-    if (source instanceof SDK12.DebuggerModel.Location) {
+    if (source instanceof SDK13.DebuggerModel.Location) {
       await DebuggerWorkspaceBinding.instance().createLiveLocation(source, this.#updateLocation.bind(this), this.#locationPool);
-    } else if (source instanceof SDK12.CSSModel.CSSLocation) {
+    } else if (source instanceof SDK13.CSSModel.CSSLocation) {
       await CSSWorkspaceBinding.instance().createLiveLocation(source, this.#updateLocation.bind(this), this.#locationPool);
     } else if (source instanceof Workspace20.UISourceCode.UILocation) {
       if (!this.#liveLocation) {
@@ -4740,7 +4777,7 @@ __export(ResourceMapping_exports, {
   ResourceMapping: () => ResourceMapping
 });
 import * as Common16 from "./../../core/common/common.js";
-import * as SDK13 from "./../../core/sdk/sdk.js";
+import * as SDK14 from "./../../core/sdk/sdk.js";
 import * as Formatter2 from "./../formatter/formatter.js";
 import * as TextUtils9 from "./../text_utils/text_utils.js";
 import * as Workspace22 from "./../workspace/workspace.js";
@@ -4760,7 +4797,7 @@ var ResourceMapping = class {
   #cssWorkspaceBinding = null;
   constructor(targetManager, workspace) {
     this.workspace = workspace;
-    targetManager.observeModels(SDK13.ResourceTreeModel.ResourceTreeModel, this);
+    targetManager.observeModels(SDK14.ResourceTreeModel.ResourceTreeModel, this);
   }
   get debuggerWorkspaceBinding() {
     return this.#debuggerWorkspaceBinding;
@@ -4794,7 +4831,7 @@ var ResourceMapping = class {
     }
   }
   infoForTarget(target) {
-    const resourceTreeModel = target.model(SDK13.ResourceTreeModel.ResourceTreeModel);
+    const resourceTreeModel = target.model(SDK14.ResourceTreeModel.ResourceTreeModel);
     return resourceTreeModel ? this.#modelToInfo.get(resourceTreeModel) || null : null;
   }
   uiSourceCodeForScript(script) {
@@ -4866,7 +4903,7 @@ var ResourceMapping = class {
     if (!target) {
       return [];
     }
-    const debuggerModel = target.model(SDK13.DebuggerModel.DebuggerModel);
+    const debuggerModel = target.model(SDK14.DebuggerModel.DebuggerModel);
     if (!debuggerModel) {
       return [];
     }
@@ -4899,7 +4936,7 @@ var ResourceMapping = class {
     if (!target) {
       return null;
     }
-    const debuggerModel = target.model(SDK13.DebuggerModel.DebuggerModel);
+    const debuggerModel = target.model(SDK14.DebuggerModel.DebuggerModel);
     if (!debuggerModel) {
       return null;
     }
@@ -4938,7 +4975,7 @@ var ResourceMapping = class {
     if (!target) {
       return null;
     }
-    const debuggerModel = target.model(SDK13.DebuggerModel.DebuggerModel);
+    const debuggerModel = target.model(SDK14.DebuggerModel.DebuggerModel);
     if (!debuggerModel) {
       return null;
     }
@@ -4962,7 +4999,7 @@ var ResourceMapping = class {
     if (!target) {
       return [];
     }
-    const cssModel = target.model(SDK13.CSSModel.CSSModel);
+    const cssModel = target.model(SDK14.CSSModel.CSSModel);
     if (!cssModel) {
       return [];
     }
@@ -4990,7 +5027,7 @@ var ResourceMapping = class {
     if (lineNumber === 0) {
       columnNumber -= script.columnOffset;
     }
-    const scopeTreeAndText = script ? await SDK13.ScopeTreeCache.scopeTreeForScript(script) : null;
+    const scopeTreeAndText = script ? await SDK14.ScopeTreeCache.scopeTreeForScript(script) : null;
     if (!scopeTreeAndText) {
       return null;
     }
@@ -5027,7 +5064,7 @@ var ResourceMapping = class {
     return new Workspace22.UISourceCode.UIFunctionBounds(uiSourceCode, range, name);
   }
   resetForTest(target) {
-    const resourceTreeModel = target.model(SDK13.ResourceTreeModel.ResourceTreeModel);
+    const resourceTreeModel = target.model(SDK14.ResourceTreeModel.ResourceTreeModel);
     const info = resourceTreeModel ? this.#modelToInfo.get(resourceTreeModel) : null;
     if (info) {
       info.resetForTest();
@@ -5052,7 +5089,7 @@ var ModelInfo2 = class {
       /* isServiceProject */
     );
     NetworkProject.setTargetForProject(this.project, target);
-    const cssModel = target.model(SDK13.CSSModel.CSSModel);
+    const cssModel = target.model(SDK14.CSSModel.CSSModel);
     console.assert(Boolean(cssModel));
     this.#cssModel = cssModel;
     for (const frame of resourceTreeModel.frames()) {
@@ -5061,10 +5098,10 @@ var ModelInfo2 = class {
       }
     }
     this.#eventListeners = [
-      resourceTreeModel.addEventListener(SDK13.ResourceTreeModel.Events.ResourceAdded, this.resourceAdded, this),
-      resourceTreeModel.addEventListener(SDK13.ResourceTreeModel.Events.FrameWillNavigate, this.frameWillNavigate, this),
-      resourceTreeModel.addEventListener(SDK13.ResourceTreeModel.Events.FrameDetached, this.frameDetached, this),
-      this.#cssModel.addEventListener(SDK13.CSSModel.Events.StyleSheetChanged, (event) => {
+      resourceTreeModel.addEventListener(SDK14.ResourceTreeModel.Events.ResourceAdded, this.resourceAdded, this),
+      resourceTreeModel.addEventListener(SDK14.ResourceTreeModel.Events.FrameWillNavigate, this.frameWillNavigate, this),
+      resourceTreeModel.addEventListener(SDK14.ResourceTreeModel.Events.FrameDetached, this.frameDetached, this),
+      this.#cssModel.addEventListener(SDK14.CSSModel.Events.StyleSheetChanged, (event) => {
         void this.styleSheetChanged(event);
       }, this)
     ];
@@ -5181,7 +5218,7 @@ var Binding2 = class {
     if (!target) {
       return stylesheets;
     }
-    const cssModel = target.model(SDK13.CSSModel.CSSModel);
+    const cssModel = target.model(SDK14.CSSModel.CSSModel);
     if (cssModel) {
       for (const headerId of cssModel.getStyleSheetIdsForURL(this.#uiSourceCode.url())) {
         const header = cssModel.styleSheetHeaderForId(headerId);
@@ -5197,7 +5234,7 @@ var Binding2 = class {
     if (!target) {
       return [];
     }
-    const debuggerModel = target.model(SDK13.DebuggerModel.DebuggerModel);
+    const debuggerModel = target.model(SDK14.DebuggerModel.DebuggerModel);
     if (!debuggerModel) {
       return [];
     }

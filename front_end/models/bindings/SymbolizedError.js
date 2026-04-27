@@ -20,7 +20,9 @@ export class SymbolizedErrorObject extends Common.ObjectWrapper.ObjectWrapper {
     dispose() {
         this.stackTrace.removeEventListener("UPDATED" /* StackTrace.StackTrace.Events.UPDATED */, this.#fireUpdated, this);
         this.cause?.removeEventListener("UPDATED" /* Events.UPDATED */, this.#fireUpdated, this);
-        this.cause?.dispose();
+        if (this.cause instanceof SymbolizedErrorObject) {
+            this.cause.dispose();
+        }
     }
     #fireUpdated() {
         this.dispatchEventToListeners("UPDATED" /* Events.UPDATED */);

@@ -3720,7 +3720,7 @@ __export(SymbolizedError_exports, {
 import * as Common13 from "./../../core/common/common.js";
 import * as SDK11 from "./../../core/sdk/sdk.js";
 import * as StackTrace3 from "./../stack_trace/stack_trace.js";
-var SymbolizedErrorObject = class extends Common13.ObjectWrapper.ObjectWrapper {
+var SymbolizedErrorObject = class _SymbolizedErrorObject extends Common13.ObjectWrapper.ObjectWrapper {
   message;
   stackTrace;
   cause;
@@ -3735,7 +3735,9 @@ var SymbolizedErrorObject = class extends Common13.ObjectWrapper.ObjectWrapper {
   dispose() {
     this.stackTrace.removeEventListener("UPDATED", this.#fireUpdated, this);
     this.cause?.removeEventListener("UPDATED", this.#fireUpdated, this);
-    this.cause?.dispose();
+    if (this.cause instanceof _SymbolizedErrorObject) {
+      this.cause.dispose();
+    }
   }
   #fireUpdated() {
     this.dispatchEventToListeners(
@@ -3931,6 +3933,12 @@ var DebuggerWorkspaceBinding = class _DebuggerWorkspaceBinding {
       ]);
       fetchedExceptionDetails = details;
       causeRemoteObject = causeRemote;
+      if (remoteObject.className === "SyntaxError" && fetchedExceptionDetails) {
+        const syntaxError = await SymbolizedSyntaxError.fromExceptionDetails(remoteObject.runtimeModel().target(), this, fetchedExceptionDetails);
+        if (syntaxError) {
+          return syntaxError;
+        }
+      }
     } else if (remoteObject.type === "string") {
       errorStack = remoteObject.description || "";
     } else {

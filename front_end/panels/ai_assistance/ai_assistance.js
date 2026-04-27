@@ -3093,7 +3093,7 @@ function getButtonLabel(input) {
   const TARGET_LENGTH = 50;
   const { truncatedText, moreCharacters } = smartTruncate(input.prompt, TARGET_LENGTH);
   const promptSuffix = moreCharacters > 0 ? ` (and ${moreCharacters} more characters)` : "";
-  return `${labelBase} for prompt '${truncatedText}'${promptSuffix}`;
+  return `${labelBase} for prompt ${truncatedText}${promptSuffix}`;
 }
 
 // gen/front_end/panels/ai_assistance/components/WalkthroughView.js

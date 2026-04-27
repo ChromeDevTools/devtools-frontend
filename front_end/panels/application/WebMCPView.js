@@ -249,7 +249,7 @@ function getIconGroupsFromStats(toolStats) {
     }
     if (toolStats.inProgress > 0) {
         groups.push({
-            iconName: 'dots-circle',
+            iconName: 'watch',
             iconWidth: '16px',
             iconHeight: '16px',
             text: String(toolStats.inProgress),
@@ -297,7 +297,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
             case "Canceled" /* Protocol.WebMCP.InvocationStatus.Canceled */:
                 return 'record-stop';
             case undefined:
-                return 'dots-circle';
+                return 'watch';
             default:
                 return '';
         }

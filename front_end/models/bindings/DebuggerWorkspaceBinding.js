@@ -15,7 +15,7 @@ import { DefaultScriptMapping } from './DefaultScriptMapping.js';
 import { LiveLocationWithPool } from './LiveLocation.js';
 import { NetworkProject } from './NetworkProject.js';
 import { ResourceScriptMapping } from './ResourceScriptMapping.js';
-import { SymbolizedErrorObject } from './SymbolizedError.js';
+import { SymbolizedErrorObject, SymbolizedSyntaxError } from './SymbolizedError.js';
 export class DebuggerWorkspaceBinding {
     resourceMapping;
     #debuggerModelToData;
@@ -172,6 +172,12 @@ export class DebuggerWorkspaceBinding {
             ]);
             fetchedExceptionDetails = details;
             causeRemoteObject = causeRemote;
+            if (remoteObject.className === 'SyntaxError' && fetchedExceptionDetails) {
+                const syntaxError = await SymbolizedSyntaxError.fromExceptionDetails(remoteObject.runtimeModel().target(), this, fetchedExceptionDetails);
+                if (syntaxError) {
+                    return syntaxError;
+                }
+            }
         }
         else if (remoteObject.type === 'string') {
             errorStack = remoteObject.description || '';

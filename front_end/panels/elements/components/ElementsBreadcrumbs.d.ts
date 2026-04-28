@@ -1,15 +1,14 @@
 import '../../../ui/kit/kit.js';
 import '../../../ui/components/node_text/node_text.js';
-import type * as SDK from '../../../core/sdk/sdk.js';
-import type { DOMNode } from './Helper.js';
+import * as SDK from '../../../core/sdk/sdk.js';
 export declare class NodeSelectedEvent extends Event {
     static readonly eventName = "breadcrumbsnodeselected";
-    legacyDomNode: SDK.DOMModel.DOMNode;
-    constructor(node: DOMNode);
+    node: SDK.DOMModel.DOMNode;
+    constructor(node: SDK.DOMModel.DOMNode);
 }
 export interface ElementsBreadcrumbsData {
-    selectedNode: DOMNode | null;
-    crumbs: DOMNode[];
+    selectedNode: SDK.DOMModel.DOMNode | null;
+    crumbs: SDK.DOMModel.DOMNode[];
 }
 export declare class ElementsBreadcrumbs extends HTMLElement {
     #private;

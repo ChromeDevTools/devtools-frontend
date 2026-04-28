@@ -256,8 +256,8 @@ var JSONEditor = class extends Common.ObjectWrapper.eventMixin(UI.Widget.VBox) {
       this.requestUpdate();
     }
   }
-  set commandToDisplay(command) {
-    this.displayCommand(command, {});
+  set commandToDisplay(data) {
+    this.displayCommand(data.command, data.parameters ?? {});
   }
   get targetId() {
     return this.#targetId;

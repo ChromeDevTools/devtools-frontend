@@ -51,6 +51,7 @@
     "../../../../../../front_end/models/ai_assistance/agents/ConversationSummaryAgent.ts",
     "../../../../../../front_end/models/ai_assistance/agents/ExecuteJavascript.ts",
     "../../../../../../front_end/models/ai_assistance/agents/FileAgent.ts",
+    "../../../../../../front_end/models/ai_assistance/agents/GreenDevAgent.ts",
     "../../../../../../front_end/models/ai_assistance/agents/NetworkAgent.ts",
     "../../../../../../front_end/models/ai_assistance/agents/PatchAgent.ts",
     "../../../../../../front_end/models/ai_assistance/agents/PerformanceAgent.ts",

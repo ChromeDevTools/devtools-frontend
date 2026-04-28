@@ -2846,8 +2846,6 @@ export namespace ProtocolMapping {
     };
     /**
      * Runs an extension default action.
-     * Available if the client is connected using the --remote-debugging-pipe
-     * flag and the --enable-unsafe-extension-debugging flag is set.
      */
     'Extensions.triggerAction': {
       paramsType: [Protocol.Extensions.TriggerActionRequest];
@@ -2856,9 +2854,7 @@ export namespace ProtocolMapping {
     /**
      * Installs an unpacked extension from the filesystem similar to
      * --load-extension CLI flags. Returns extension ID once the extension
-     * has been installed. Available if the client is connected using the
-     * --remote-debugging-pipe flag and the --enable-unsafe-extension-debugging
-     * flag is set.
+     * has been installed.
      */
     'Extensions.loadUnpacked': {
       paramsType: [Protocol.Extensions.LoadUnpackedRequest];
@@ -2866,8 +2862,6 @@ export namespace ProtocolMapping {
     };
     /**
      * Gets a list of all unpacked extensions.
-     * Available if the client is connected using the --remote-debugging-pipe flag
-     * and the --enable-unsafe-extension-debugging flag is set.
      */
     'Extensions.getExtensions': {
       paramsType: [];
@@ -2875,8 +2869,6 @@ export namespace ProtocolMapping {
     };
     /**
      * Uninstalls an unpacked extension (others not supported) from the profile.
-     * Available if the client is connected using the --remote-debugging-pipe flag
-     * and the --enable-unsafe-extension-debugging.
      */
     'Extensions.uninstall': {
       paramsType: [Protocol.Extensions.UninstallRequest];

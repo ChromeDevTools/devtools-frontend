@@ -20,6 +20,7 @@ export interface FilterState {
         completed?: boolean;
         error?: boolean;
         pending?: boolean;
+        canceled?: boolean;
     };
 }
 export interface FilterMenuButton {
@@ -30,10 +31,15 @@ export interface FilterMenuButtons {
     toolTypes: FilterMenuButton;
     statusTypes: FilterMenuButton;
 }
+export interface SelectedTool {
+    tool: WebMCP.WebMCPModel.Tool;
+    parameters?: Record<string, unknown>;
+}
 export interface ViewInput {
     tools: WebMCP.WebMCPModel.Tool[];
-    selectedTool: WebMCP.WebMCPModel.Tool | null;
+    selectedTool: SelectedTool | null;
     onToolSelect: (tool: WebMCP.WebMCPModel.Tool | null) => void;
+    onRevealTool: (tool: WebMCP.WebMCPModel.Tool, parameters?: Record<string, unknown>) => void;
     selectedCall: WebMCP.WebMCPModel.Call | null;
     onCallSelect: (call: WebMCP.WebMCPModel.Call | null) => void;
     filters: FilterState;
@@ -42,6 +48,7 @@ export interface ViewInput {
     onFilterChange: (filters: FilterState) => void;
     toolCalls: WebMCP.WebMCPModel.Call[];
     onRunTool: (event: Common.EventTarget.EventTargetEvent<ProtocolMonitor.JSONEditor.Command>) => void;
+    onPaste: () => void;
 }
 export declare function filterToolCalls(toolCalls: WebMCP.WebMCPModel.Call[], filterState: FilterState): WebMCP.WebMCPModel.Call[];
 export type View = (input: ViewInput, output: object, target: HTMLElement) => void;
@@ -88,6 +95,7 @@ export declare class PayloadWidget extends UI.Widget.Widget {
 }
 export interface ToolDetailsViewInput {
     tool: WebMCP.WebMCPModel.Tool | null | undefined;
+    isUnregistered?: boolean;
     origin: SDK.DOMModel.DOMNode | StackTrace.StackTrace.StackTrace | undefined;
     highlightNode: (node: SDK.DOMModel.DOMNode) => void;
     clearHighlight: () => void;
@@ -97,6 +105,8 @@ declare const TOOL_DETAILS_VIEW: (input: ToolDetailsViewInput, output: undefined
 export declare class ToolDetailsWidget extends UI.Widget.Widget {
     #private;
     constructor(element?: HTMLElement, view?: typeof TOOL_DETAILS_VIEW);
+    set isUnregistered(isUnregistered: boolean);
+    get isUnregistered(): boolean;
     set tool(tool: WebMCP.WebMCPModel.Tool | null | undefined);
     get tool(): WebMCP.WebMCPModel.Tool | null | undefined;
     performUpdate(): void;

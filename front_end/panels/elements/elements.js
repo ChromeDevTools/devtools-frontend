@@ -6820,7 +6820,7 @@ var StylePropertiesSection = class _StylePropertiesSection {
     }
     const containerElement = new ElementsComponents2.QueryContainer.QueryContainer();
     containerElement.data = {
-      container: ElementsComponents2.Helper.legacyNodeToElementsComponentsNode(container.containerNode),
+      container: container.containerNode,
       queryName: containerQuery.name,
       onContainerLinkClick: (event) => {
         event.preventDefault();
@@ -18764,14 +18764,13 @@ ${node.simpleSelector()} {}`, false);
       this.#domTreeWidget.selectDOMNode(null);
     }
     if (selectedNode) {
-      const activeNode = ElementsComponents7.Helper.legacyNodeToElementsComponentsNode(selectedNode);
-      const crumbs = [activeNode];
+      const crumbs = [selectedNode];
       for (let current = selectedNode.parentNode; current; current = current.parentNode) {
-        crumbs.push(ElementsComponents7.Helper.legacyNodeToElementsComponentsNode(current));
+        crumbs.push(current);
       }
       this.breadcrumbs.data = {
         crumbs,
-        selectedNode: ElementsComponents7.Helper.legacyNodeToElementsComponentsNode(selectedNode)
+        selectedNode
       };
       if (this.accessibilityTreeView) {
         void this.accessibilityTreeView.selectedNodeChanged(selectedNode);
@@ -19061,25 +19060,23 @@ ${node.simpleSelector()} {}`, false);
       };
       return;
     }
-    const activeNode = ElementsComponents7.Helper.legacyNodeToElementsComponentsNode(selectedNode);
-    const existingCrumbs = [activeNode];
+    const existingCrumbs = [selectedNode];
     for (let current = selectedNode.parentNode; current; current = current.parentNode) {
-      existingCrumbs.push(ElementsComponents7.Helper.legacyNodeToElementsComponentsNode(current));
+      existingCrumbs.push(current);
     }
-    const newNodes = nodes.map(ElementsComponents7.Helper.legacyNodeToElementsComponentsNode);
     const nodesThatHaveChangedMap = /* @__PURE__ */ new Map();
-    newNodes.forEach((crumb) => nodesThatHaveChangedMap.set(crumb.id, crumb));
+    nodes.forEach((crumb) => nodesThatHaveChangedMap.set(crumb.id, crumb));
     const newSetOfCrumbs = existingCrumbs.map((crumb) => {
       const replacement = nodesThatHaveChangedMap.get(crumb.id);
       return replacement || crumb;
     });
     this.breadcrumbs.data = {
       crumbs: newSetOfCrumbs,
-      selectedNode: activeNode
+      selectedNode
     };
   }
   crumbNodeSelected(event) {
-    this.selectDOMNode(event.legacyDomNode, true);
+    this.selectDOMNode(event.node, true);
   }
   leaveUserAgentShadowDOM(node) {
     let userAgentShadowRoot;

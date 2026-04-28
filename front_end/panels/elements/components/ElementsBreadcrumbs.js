@@ -5,6 +5,7 @@
 import '../../../ui/kit/kit.js';
 import '../../../ui/components/node_text/node_text.js';
 import * as i18n from '../../../core/i18n/i18n.js';
+import * as SDK from '../../../core/sdk/sdk.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import * as Lit from '../../../ui/lit/lit.js';
@@ -30,10 +31,10 @@ const str_ = i18n.i18n.registerUIStrings('panels/elements/components/ElementsBre
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class NodeSelectedEvent extends Event {
     static eventName = 'breadcrumbsnodeselected';
-    legacyDomNode;
+    node;
     constructor(node) {
         super(NodeSelectedEvent.eventName, {});
-        this.legacyDomNode = node.legacyDomNode;
+        this.node = node;
     }
 }
 export class ElementsBreadcrumbs extends HTMLElement {
@@ -97,16 +98,16 @@ export class ElementsBreadcrumbs extends HTMLElement {
         void this.#updateScrollState(crumbWindow);
     }
     #onCrumbMouseMove(node) {
-        return () => node.highlightNode();
+        return () => node.highlight();
     }
-    #onCrumbMouseLeave(node) {
-        return () => node.clearHighlight();
+    #onCrumbMouseLeave() {
+        SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
     }
     #onCrumbFocus(node) {
-        return () => node.highlightNode();
+        return () => node.highlight();
     }
-    #onCrumbBlur(node) {
-        return () => node.clearHighlight();
+    #onCrumbBlur() {
+        SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
     }
     #engageResizeObserver() {
         if (!this.#resizeObserver || this.#isObservingResize === true) {
@@ -256,9 +257,9 @@ export class ElementsBreadcrumbs extends HTMLElement {
                     jslog=${VisualLogging.item().track({ click: true, resize: true })}
                     @click=${this.#onCrumbClick(crumb.node)}
                     @mousemove=${this.#onCrumbMouseMove(crumb.node)}
-                    @mouseleave=${this.#onCrumbMouseLeave(crumb.node)}
+                    @mouseleave=${this.#onCrumbMouseLeave}
                     @focus=${this.#onCrumbFocus(crumb.node)}
-                    @blur=${this.#onCrumbBlur(crumb.node)}
+                    @blur=${this.#onCrumbBlur}
                   >
                     <devtools-node-text data-node-title=${crumb.title.main} .data=${{
                 nodeTitle: crumb.title.main,

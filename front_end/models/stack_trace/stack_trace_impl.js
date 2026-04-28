@@ -154,7 +154,13 @@ function parseMessage(stack) {
 }
 function augmentRawFramesWithScriptIds(rawFrames, protocolStackTrace) {
   for (const rawFrame of rawFrames) {
-    const protocolFrame = protocolStackTrace.callFrames.find((frame) => rawFrame.url === frame.url && rawFrame.lineNumber === frame.lineNumber && rawFrame.columnNumber === frame.columnNumber);
+    const isWasm = rawFrame.parsedFrameInfo?.isWasm;
+    const protocolFrame = protocolStackTrace.callFrames.find((frame) => {
+      if (isWasm) {
+        return rawFrame.url === frame.url && rawFrame.columnNumber === frame.columnNumber;
+      }
+      return rawFrame.url === frame.url && rawFrame.lineNumber === frame.lineNumber && rawFrame.columnNumber === frame.columnNumber;
+    });
     if (protocolFrame) {
       rawFrame.scriptId = protocolFrame.scriptId;
     }

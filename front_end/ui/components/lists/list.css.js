@@ -18,6 +18,10 @@ export default `/*
   --override-background-list-item-color: var(--sys-color-cdt-base-container);
 }
 
+:host(.square-corners) li {
+  border-radius: 0;
+}
+
 :host([hidden]) {
   display: none;
 }

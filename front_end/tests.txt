@@ -45,6 +45,7 @@ core/root/Runtime.test.js
 core/sdk/DebuggerModel.test.js
 core/sdk/PageResourceLoader.test.js
 core/sdk/RuntimeModel.test.js
+core/sdk/ServerSentEventsProtocol.test.js
 core/sdk/Target.test.js
 core/sdk/TargetManager.test.js
 entrypoints/formatter_worker/CSSFormatter.test.js
@@ -131,7 +132,6 @@ core/sdk/ResourceTreeModel.test.js
 core/sdk/ScopeTreeCache.test.js
 core/sdk/ScreenCaptureModel.test.js
 core/sdk/Script.test.js
-core/sdk/ServerSentEventsProtocol.test.js
 core/sdk/ServerTiming.test.js
 core/sdk/ServiceWorkerCacheModel.test.js
 core/sdk/ServiceWorkerManager.test.js
@@ -165,6 +165,7 @@ models/ai_assistance/agents/AiAgent.test.js
 models/ai_assistance/agents/ContextSelectionAgent.test.js
 models/ai_assistance/agents/ConversationSummaryAgent.test.js
 models/ai_assistance/agents/FileAgent.test.js
+models/ai_assistance/agents/GreenDevAgent.test.js
 models/ai_assistance/agents/NetworkAgent.test.js
 models/ai_assistance/agents/PatchAgent.test.js
 models/ai_assistance/agents/PerformanceAgent.test.js

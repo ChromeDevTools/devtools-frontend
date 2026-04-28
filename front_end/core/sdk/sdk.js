@@ -482,10 +482,10 @@ var generatedProperties = [
       "column-height",
       "column-rule-break",
       "column-rule-color",
-      "column-rule-edge-inset-end",
-      "column-rule-edge-inset-start",
-      "column-rule-interior-inset-end",
-      "column-rule-interior-inset-start",
+      "column-rule-inset-cap-end",
+      "column-rule-inset-cap-start",
+      "column-rule-inset-junction-end",
+      "column-rule-inset-junction-start",
       "column-rule-style",
       "column-rule-visibility-items",
       "column-rule-width",
@@ -715,10 +715,10 @@ var generatedProperties = [
       "row-gap",
       "row-rule-break",
       "row-rule-color",
-      "row-rule-edge-inset-end",
-      "row-rule-edge-inset-start",
-      "row-rule-interior-inset-end",
-      "row-rule-interior-inset-start",
+      "row-rule-inset-cap-end",
+      "row-rule-inset-cap-start",
+      "row-rule-inset-junction-end",
+      "row-rule-inset-junction-start",
       "row-rule-style",
       "row-rule-visibility-items",
       "row-rule-width",
@@ -1806,68 +1806,68 @@ var generatedProperties = [
   },
   {
     "longhands": [
-      "column-rule-edge-inset-start",
-      "column-rule-edge-inset-end"
-    ],
-    "name": "column-rule-edge-inset"
-  },
-  {
-    "inherited": false,
-    "keywords": [
-      "overlap-join"
-    ],
-    "name": "column-rule-edge-inset-end"
-  },
-  {
-    "inherited": false,
-    "keywords": [
-      "overlap-join"
-    ],
-    "name": "column-rule-edge-inset-start"
-  },
-  {
-    "longhands": [
-      "column-rule-edge-inset-start",
-      "column-rule-edge-inset-end",
-      "column-rule-interior-inset-start",
-      "column-rule-interior-inset-end"
+      "column-rule-inset-cap-start",
+      "column-rule-inset-cap-end",
+      "column-rule-inset-junction-start",
+      "column-rule-inset-junction-end"
     ],
     "name": "column-rule-inset"
   },
   {
     "longhands": [
-      "column-rule-edge-inset-end",
-      "column-rule-interior-inset-end"
+      "column-rule-inset-cap-start",
+      "column-rule-inset-cap-end"
+    ],
+    "name": "column-rule-inset-cap"
+  },
+  {
+    "inherited": false,
+    "keywords": [
+      "overlap-join"
+    ],
+    "name": "column-rule-inset-cap-end"
+  },
+  {
+    "inherited": false,
+    "keywords": [
+      "overlap-join"
+    ],
+    "name": "column-rule-inset-cap-start"
+  },
+  {
+    "longhands": [
+      "column-rule-inset-cap-end",
+      "column-rule-inset-junction-end"
     ],
     "name": "column-rule-inset-end"
   },
   {
     "longhands": [
-      "column-rule-edge-inset-start",
-      "column-rule-interior-inset-start"
+      "column-rule-inset-junction-start",
+      "column-rule-inset-junction-end"
     ],
-    "name": "column-rule-inset-start"
+    "name": "column-rule-inset-junction"
+  },
+  {
+    "inherited": false,
+    "keywords": [
+      "overlap-join"
+    ],
+    "name": "column-rule-inset-junction-end"
+  },
+  {
+    "inherited": false,
+    "keywords": [
+      "overlap-join"
+    ],
+    "name": "column-rule-inset-junction-start"
   },
   {
     "longhands": [
-      "column-rule-interior-inset-start",
-      "column-rule-interior-inset-end"
+      "column-rule-inset-cap-start",
+      "column-rule-inset-junction-start"
     ],
-    "name": "column-rule-interior-inset"
-  },
-  {
-    "inherited": false,
-    "keywords": [
-      "overlap-join"
-    ],
-    "name": "column-rule-interior-inset-end"
-  },
-  {
-    "inherited": false,
-    "keywords": [
-      "overlap-join"
-    ],
-    "name": "column-rule-interior-inset-start"
+    "name": "column-rule-inset-start"
   },
   {
     "keywords": [
@@ -3902,68 +3902,68 @@ var generatedProperties = [
   },
   {
     "longhands": [
-      "row-rule-edge-inset-start",
-      "row-rule-edge-inset-end"
-    ],
-    "name": "row-rule-edge-inset"
-  },
-  {
-    "inherited": false,
-    "keywords": [
-      "overlap-join"
-    ],
-    "name": "row-rule-edge-inset-end"
-  },
-  {
-    "inherited": false,
-    "keywords": [
-      "overlap-join"
-    ],
-    "name": "row-rule-edge-inset-start"
-  },
-  {
-    "longhands": [
-      "row-rule-edge-inset-start",
-      "row-rule-edge-inset-end",
-      "row-rule-interior-inset-start",
-      "row-rule-interior-inset-end"
+      "row-rule-inset-cap-start",
+      "row-rule-inset-cap-end",
+      "row-rule-inset-junction-start",
+      "row-rule-inset-junction-end"
     ],
     "name": "row-rule-inset"
   },
   {
     "longhands": [
-      "row-rule-edge-inset-end",
-      "row-rule-interior-inset-end"
+      "row-rule-inset-cap-start",
+      "row-rule-inset-cap-end"
+    ],
+    "name": "row-rule-inset-cap"
+  },
+  {
+    "inherited": false,
+    "keywords": [
+      "overlap-join"
+    ],
+    "name": "row-rule-inset-cap-end"
+  },
+  {
+    "inherited": false,
+    "keywords": [
+      "overlap-join"
+    ],
+    "name": "row-rule-inset-cap-start"
+  },
+  {
+    "longhands": [
+      "row-rule-inset-cap-end",
+      "row-rule-inset-junction-end"
     ],
     "name": "row-rule-inset-end"
   },
   {
     "longhands": [
-      "row-rule-edge-inset-start",
-      "row-rule-interior-inset-start"
+      "row-rule-inset-junction-start",
+      "row-rule-inset-junction-end"
     ],
-    "name": "row-rule-inset-start"
+    "name": "row-rule-inset-junction"
+  },
+  {
+    "inherited": false,
+    "keywords": [
+      "overlap-join"
+    ],
+    "name": "row-rule-inset-junction-end"
+  },
+  {
+    "inherited": false,
+    "keywords": [
+      "overlap-join"
+    ],
+    "name": "row-rule-inset-junction-start"
   },
   {
     "longhands": [
-      "row-rule-interior-inset-start",
-      "row-rule-interior-inset-end"
+      "row-rule-inset-cap-start",
+      "row-rule-inset-junction-start"
     ],
-    "name": "row-rule-interior-inset"
-  },
-  {
-    "inherited": false,
-    "keywords": [
-      "overlap-join"
-    ],
-    "name": "row-rule-interior-inset-end"
-  },
-  {
-    "inherited": false,
-    "keywords": [
-      "overlap-join"
-    ],
-    "name": "row-rule-interior-inset-start"
+    "name": "row-rule-inset-start"
   },
   {
     "keywords": [
@@ -4051,52 +4051,52 @@ var generatedProperties = [
   },
   {
     "longhands": [
-      "row-rule-edge-inset-start",
-      "row-rule-edge-inset-end",
-      "column-rule-edge-inset-start",
-      "column-rule-edge-inset-end"
-    ],
-    "name": "rule-edge-inset"
-  },
-  {
-    "longhands": [
-      "row-rule-edge-inset-start",
-      "row-rule-edge-inset-end",
-      "row-rule-interior-inset-start",
-      "row-rule-interior-inset-end",
-      "column-rule-edge-inset-start",
-      "column-rule-edge-inset-end",
-      "column-rule-interior-inset-start",
-      "column-rule-interior-inset-end"
+      "row-rule-inset-cap-start",
+      "row-rule-inset-cap-end",
+      "row-rule-inset-junction-start",
+      "row-rule-inset-junction-end",
+      "column-rule-inset-cap-start",
+      "column-rule-inset-cap-end",
+      "column-rule-inset-junction-start",
+      "column-rule-inset-junction-end"
     ],
     "name": "rule-inset"
   },
   {
     "longhands": [
-      "column-rule-edge-inset-end",
-      "column-rule-interior-inset-end",
-      "row-rule-edge-inset-end",
-      "row-rule-interior-inset-end"
+      "row-rule-inset-cap-start",
+      "row-rule-inset-cap-end",
+      "column-rule-inset-cap-start",
+      "column-rule-inset-cap-end"
+    ],
+    "name": "rule-inset-cap"
+  },
+  {
+    "longhands": [
+      "column-rule-inset-cap-end",
+      "column-rule-inset-junction-end",
+      "row-rule-inset-cap-end",
+      "row-rule-inset-junction-end"
     ],
     "name": "rule-inset-end"
   },
   {
     "longhands": [
-      "column-rule-edge-inset-start",
-      "column-rule-interior-inset-start",
-      "row-rule-edge-inset-start",
-      "row-rule-interior-inset-start"
+      "row-rule-inset-junction-start",
+      "row-rule-inset-junction-end",
+      "column-rule-inset-junction-start",
+      "column-rule-inset-junction-end"
     ],
-    "name": "rule-inset-start"
+    "name": "rule-inset-junction"
   },
   {
     "longhands": [
-      "row-rule-interior-inset-start",
-      "row-rule-interior-inset-end",
-      "column-rule-interior-inset-start",
-      "column-rule-interior-inset-end"
+      "column-rule-inset-cap-start",
+      "column-rule-inset-junction-start",
+      "row-rule-inset-cap-start",
+      "row-rule-inset-junction-start"
     ],
-    "name": "rule-interior-inset"
+    "name": "rule-inset-start"
   },
   {
     "inherited": false,
@@ -5716,22 +5716,22 @@ var generatedPropertyValues = {
       "currentcolor"
     ]
   },
-  "column-rule-edge-inset-end": {
+  "column-rule-inset-cap-end": {
     "values": [
       "overlap-join"
     ]
   },
-  "column-rule-edge-inset-start": {
+  "column-rule-inset-cap-start": {
     "values": [
       "overlap-join"
     ]
   },
-  "column-rule-interior-inset-end": {
+  "column-rule-inset-junction-end": {
     "values": [
       "overlap-join"
     ]
   },
-  "column-rule-interior-inset-start": {
+  "column-rule-inset-junction-start": {
     "values": [
       "overlap-join"
     ]
@@ -6887,22 +6887,22 @@ var generatedPropertyValues = {
       "currentcolor"
     ]
   },
-  "row-rule-edge-inset-end": {
+  "row-rule-inset-cap-end": {
     "values": [
       "overlap-join"
     ]
   },
-  "row-rule-edge-inset-start": {
+  "row-rule-inset-cap-start": {
     "values": [
       "overlap-join"
     ]
   },
-  "row-rule-interior-inset-end": {
+  "row-rule-inset-junction-end": {
     "values": [
       "overlap-join"
     ]
   },
-  "row-rule-interior-inset-start": {
+  "row-rule-inset-junction-start": {
     "values": [
       "overlap-join"
     ]
@@ -10675,10 +10675,14 @@ var NetworkManager = class _NetworkManager extends SDKModel {
     }
     void this.#networkAgent.invoke_enable({
       maxPostDataSize: MAX_EAGER_POST_REQUEST_BODY_LENGTH,
-      enableDurableMessages: Root3.Runtime.hostConfig.devToolsEnableDurableMessages?.enabled,
       maxTotalBufferSize: MAX_RESPONSE_BODY_TOTAL_BUFFER_LENGTH,
       reportDirectSocketTraffic: true
     });
+    if (Root3.Runtime.hostConfig.devToolsEnableDurableMessages?.enabled) {
+      const preserveLogSetting = settings.moduleSetting("network-log.preserve-log");
+      this.#updateDurableMessages(preserveLogSetting.get());
+      preserveLogSetting.addChangeListener(this.preserveLogChanged, this);
+    }
     void this.#networkAgent.invoke_setAttachDebugStack({ enabled: true });
     this.#bypassServiceWorkerSetting = settings.createSetting("bypass-service-worker", false);
     if (this.#bypassServiceWorkerSetting.get()) {
@@ -10785,7 +10789,7 @@ var NetworkManager = class _NetworkManager extends SDKModel {
     try {
       const { postData, base64Encoded } = await manager.#networkAgent.invoke_getRequestPostData({ requestId });
       if (base64Encoded && postData) {
-        const binaryString = window.atob(postData);
+        const binaryString = globalThis.atob(postData);
         const bytes = new Uint8Array(binaryString.length);
         for (let i = 0; i < binaryString.length; i++) {
           bytes[i] = binaryString.charCodeAt(i);
@@ -10858,9 +10862,22 @@ var NetworkManager = class _NetworkManager extends SDKModel {
   cacheDisabledSettingChanged({ data: enabled }) {
     void this.#networkAgent.invoke_setCacheDisabled({ cacheDisabled: enabled });
   }
+  preserveLogChanged({ data: enabled }) {
+    this.#updateDurableMessages(enabled);
+  }
+  #updateDurableMessages(enabled) {
+    if (enabled) {
+      void this.#networkAgent.invoke_configureDurableMessages({
+        maxTotalBufferSize: MAX_RESPONSE_BODY_TOTAL_BUFFER_LENGTH
+      });
+    } else {
+      void this.#networkAgent.invoke_configureDurableMessages({});
+    }
+  }
   dispose() {
     const settings = this.target().targetManager().settings;
     settings.moduleSetting("cache-disabled").removeChangeListener(this.cacheDisabledSettingChanged, this);
+    settings.moduleSetting("network-log.preserve-log").removeChangeListener(this.preserveLogChanged, this);
   }
   bypassServiceWorkerChanged() {
     void this.#networkAgent.invoke_setBypassServiceWorker({ bypass: this.#bypassServiceWorkerSetting.get() });
@@ -28650,7 +28667,7 @@ var Base64TextDecoder = class {
     void this.#decoder.readable.pipeTo(new WritableStream({ write: onTextChunk }));
   }
   async addBase64Chunk(chunk) {
-    const binString = window.atob(chunk);
+    const binString = globalThis.atob(chunk);
     const bytes = Uint8Array.from(binString, (m) => m.codePointAt(0));
     await this.#writer.ready;
     await this.#writer.write(bytes);

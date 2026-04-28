@@ -288,6 +288,39 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper {
         };
         return this.maybeLinkifyScriptLocation(target, String(callFrame.scriptId), callFrame.url, callFrame.lineNumber, linkifyOptions);
     }
+    static linkifyUILocation(uiLocation, options) {
+        const linkifyURLOptions = {
+            ...options,
+            lineNumber: uiLocation.lineNumber,
+            columnNumber: uiLocation.columnNumber,
+            showColumnNumber: Boolean(options?.showColumnNumber),
+            className: options?.className,
+            tabStop: options?.tabStop,
+            inlineFrameIndex: options?.inlineFrameIndex ?? 0,
+            userMetric: options?.userMetric,
+            jslogContext: options?.jslogContext || 'script-location',
+            omitOrigin: options?.omitOrigin,
+        };
+        const { className = '' } = linkifyURLOptions;
+        const fallbackAnchor = Linkifier.linkifyURL(uiLocation.uiSourceCode.url(), linkifyURLOptions);
+        const isIgnoreListed = (options?.ignoreListManager ?? Workspace.IgnoreListManager.IgnoreListManager.instance())
+            .isUserIgnoreListedURL(uiLocation.uiSourceCode.url());
+        fallbackAnchor.classList.toggle('ignore-list-link', isIgnoreListed);
+        const createLinkOptions = {
+            tabStop: options?.tabStop,
+            jslogContext: 'script-location',
+        };
+        const { link, linkInfo } = Linkifier.createLink(fallbackAnchor?.textContent ? fallbackAnchor.textContent : '', className, createLinkOptions);
+        linkInfo.fallback = fallbackAnchor;
+        linkInfo.userMetric = options?.userMetric;
+        const linkDisplayOptions = {
+            showColumnNumber: linkifyURLOptions.showColumnNumber ?? false,
+            maxLength: linkifyURLOptions.maxLength ?? UI.UIUtils.MaxLengthForDisplayedURLs,
+            revealBreakpoint: options?.revealBreakpoint,
+        };
+        Linkifier.updateAnchorFromUILocation(link, linkDisplayOptions, uiLocation, options?.ignoreListManager);
+        return link;
+    }
     static linkifyStackTraceFrame(frame, options) {
         const linkifyURLOptions = {
             ...options,
@@ -301,7 +334,6 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper {
             jslogContext: options?.jslogContext || 'script-location',
             omitOrigin: options?.omitOrigin,
         };
-        const { className = '' } = linkifyURLOptions;
         const fallbackAnchor = Linkifier.linkifyURL(frame.url, linkifyURLOptions);
         if (!frame.uiSourceCode) {
             const isIgnoreListed = (options?.ignoreListManager ?? Workspace.IgnoreListManager.IgnoreListManager.instance())
@@ -309,21 +341,8 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper {
             fallbackAnchor.classList.toggle('ignore-list-link', isIgnoreListed);
             return fallbackAnchor;
         }
-        const createLinkOptions = {
-            tabStop: options?.tabStop,
-            jslogContext: 'script-location',
-        };
-        const { link, linkInfo } = Linkifier.createLink(fallbackAnchor?.textContent ? fallbackAnchor.textContent : '', className, createLinkOptions);
-        linkInfo.fallback = fallbackAnchor;
-        linkInfo.userMetric = options?.userMetric;
-        const linkDisplayOptions = {
-            showColumnNumber: linkifyURLOptions.showColumnNumber ?? false,
-            maxLength: linkifyURLOptions.maxLength ?? UI.UIUtils.MaxLengthForDisplayedURLs,
-            revealBreakpoint: options?.revealBreakpoint,
-        };
-        const uiLocation = frame.uiSourceCode.uiLocation(frame.line, frame.column) ?? null;
-        Linkifier.updateAnchorFromUILocation(link, linkDisplayOptions, uiLocation, options?.ignoreListManager);
-        return link;
+        const uiLocation = frame.uiSourceCode.uiLocation(frame.line, frame.column);
+        return Linkifier.linkifyUILocation(uiLocation, options);
     }
     linkifyStackTraceTopFrame(target, stackTrace) {
         console.assert(stackTrace.callFrames.length > 0);

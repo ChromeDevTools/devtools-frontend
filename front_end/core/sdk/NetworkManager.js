@@ -140,10 +140,14 @@ export class NetworkManager extends SDKModel {
         }
         void this.#networkAgent.invoke_enable({
             maxPostDataSize: MAX_EAGER_POST_REQUEST_BODY_LENGTH,
-            enableDurableMessages: Root.Runtime.hostConfig.devToolsEnableDurableMessages?.enabled,
             maxTotalBufferSize: MAX_RESPONSE_BODY_TOTAL_BUFFER_LENGTH,
             reportDirectSocketTraffic: true,
         });
+        if (Root.Runtime.hostConfig.devToolsEnableDurableMessages?.enabled) {
+            const preserveLogSetting = settings.moduleSetting('network-log.preserve-log');
+            this.#updateDurableMessages(preserveLogSetting.get());
+            preserveLogSetting.addChangeListener(this.preserveLogChanged, this);
+        }
         void this.#networkAgent.invoke_setAttachDebugStack({ enabled: true });
         this.#bypassServiceWorkerSetting = settings.createSetting('bypass-service-worker', false);
         if (this.#bypassServiceWorkerSetting.get()) {
@@ -247,7 +251,7 @@ export class NetworkManager extends SDKModel {
             const { postData, base64Encoded } = await manager.#networkAgent.invoke_getRequestPostData({ requestId });
             if (base64Encoded && postData) {
                 // Decode base64 to get raw bytes as an ArrayBuffer.
-                const binaryString = window.atob(postData);
+                const binaryString = globalThis.atob(postData);
                 const bytes = new Uint8Array(binaryString.length);
                 for (let i = 0; i < binaryString.length; i++) {
                     bytes[i] = binaryString.charCodeAt(i);
@@ -327,9 +331,23 @@ export class NetworkManager extends SDKModel {
     cacheDisabledSettingChanged({ data: enabled }) {
         void this.#networkAgent.invoke_setCacheDisabled({ cacheDisabled: enabled });
     }
+    preserveLogChanged({ data: enabled }) {
+        this.#updateDurableMessages(enabled);
+    }
+    #updateDurableMessages(enabled) {
+        if (enabled) {
+            void this.#networkAgent.invoke_configureDurableMessages({
+                maxTotalBufferSize: MAX_RESPONSE_BODY_TOTAL_BUFFER_LENGTH,
+            });
+        }
+        else {
+            void this.#networkAgent.invoke_configureDurableMessages({});
+        }
+    }
     dispose() {
         const settings = this.target().targetManager().settings;
         settings.moduleSetting('cache-disabled').removeChangeListener(this.cacheDisabledSettingChanged, this);
+        settings.moduleSetting('network-log.preserve-log').removeChangeListener(this.preserveLogChanged, this);
     }
     bypassServiceWorkerChanged() {
         void this.#networkAgent.invoke_setBypassServiceWorker({ bypass: this.#bypassServiceWorkerSetting.get() });

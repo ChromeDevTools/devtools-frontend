@@ -9,6 +9,7 @@ import * as BreakpointDebuggerAgent from './agents/BreakpointDebuggerAgent.js';
 import * as ContextSelectionAgent from './agents/ContextSelectionAgent.js';
 import * as ConversationSummaryAgent from './agents/ConversationSummaryAgent.js';
 import * as FileAgent from './agents/FileAgent.js';
+import * as GreenDevAgent from './agents/GreenDevAgent.js';
 import * as NetworkAgent from './agents/NetworkAgent.js';
 import * as PatchAgent from './agents/PatchAgent.js';
 import * as PerformanceAgent from './agents/PerformanceAgent.js';
@@ -53,6 +54,7 @@ export {
   ExtensionScope,
   FileAgent,
   FileFormatter,
+  GreenDevAgent,
   Injected,
   LighthouseFormatter,
   NetworkAgent,

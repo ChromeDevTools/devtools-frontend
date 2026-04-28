@@ -162,8 +162,16 @@ export function parseMessage(stack) {
  */
 export function augmentRawFramesWithScriptIds(rawFrames, protocolStackTrace) {
     for (const rawFrame of rawFrames) {
-        const protocolFrame = protocolStackTrace.callFrames.find(frame => rawFrame.url === frame.url && rawFrame.lineNumber === frame.lineNumber &&
-            rawFrame.columnNumber === frame.columnNumber);
+        const isWasm = rawFrame.parsedFrameInfo?.isWasm;
+        const protocolFrame = protocolStackTrace.callFrames.find(frame => {
+            if (isWasm) {
+                // The parser parses Wasm offsets into the `columnNumber` field. The `lineNumber` is always -1.
+                // In the protocol trace, the `lineNumber` is 0 (for Wasm) and `columnNumber` is the bytecode offset.
+                return rawFrame.url === frame.url && rawFrame.columnNumber === frame.columnNumber;
+            }
+            return rawFrame.url === frame.url && rawFrame.lineNumber === frame.lineNumber &&
+                rawFrame.columnNumber === frame.columnNumber;
+        });
         if (protocolFrame) {
             // @ts-expect-error scriptId is a readonly property.
             rawFrame.scriptId = protocolFrame.scriptId;

@@ -14283,6 +14283,7 @@ export declare namespace Page {
         EmbedderExtensionMessaging = "EmbedderExtensionMessaging",
         EmbedderExtensionMessagingForOpenPort = "EmbedderExtensionMessagingForOpenPort",
         EmbedderExtensionSentMessageToCachedFrame = "EmbedderExtensionSentMessageToCachedFrame",
+        EmbedderExtensionFrame = "EmbedderExtensionFrame",
         RequestedByWebViewClient = "RequestedByWebViewClient",
         PostMessageByWebViewClient = "PostMessageByWebViewClient",
         CacheControlNoStoreDeviceBoundSessionTerminated = "CacheControlNoStoreDeviceBoundSessionTerminated",
@@ -18805,6 +18806,10 @@ export declare namespace WebMCP {
          * A hint indicating that the tool does not modify any state.
          */
         readOnly?: boolean;
+        /**
+         * A hint indicating that the tool output may contain untrusted content, ex: UGC, 3rd party data.
+         */
+        untrustedContent?: boolean;
         /**
          * If the declarative tool was declared with the autosubmit attribute.
          */

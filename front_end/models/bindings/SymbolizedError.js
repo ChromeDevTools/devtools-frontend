@@ -5,6 +5,15 @@ import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as StackTrace from '../stack_trace/stack_trace.js';
 import { LiveLocationPool } from './LiveLocation.js';
+export class UnparsableError extends Common.ObjectWrapper.ObjectWrapper {
+    errorStack;
+    cause;
+    constructor(errorStack, cause) {
+        super();
+        this.errorStack = errorStack;
+        this.cause = cause;
+    }
+}
 export class SymbolizedErrorObject extends Common.ObjectWrapper.ObjectWrapper {
     message;
     stackTrace;

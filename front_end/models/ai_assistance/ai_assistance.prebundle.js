@@ -8,6 +8,7 @@ import * as BreakpointDebuggerAgent from './agents/BreakpointDebuggerAgent.js';
 import * as ContextSelectionAgent from './agents/ContextSelectionAgent.js';
 import * as ConversationSummaryAgent from './agents/ConversationSummaryAgent.js';
 import * as FileAgent from './agents/FileAgent.js';
+import * as GreenDevAgent from './agents/GreenDevAgent.js';
 import * as NetworkAgent from './agents/NetworkAgent.js';
 import * as PatchAgent from './agents/PatchAgent.js';
 import * as PerformanceAgent from './agents/PerformanceAgent.js';
@@ -31,5 +32,5 @@ import * as Injected from './injected.js';
 import * as AICallTree from './performance/AICallTree.js';
 import * as AIContext from './performance/AIContext.js';
 import * as AIQueries from './performance/AIQueries.js';
-export { AccessibilityAgent, AgentProject, AiAgent, AICallTree, AIContext, AiConversation, AiHistoryStorage, AIQueries, AiUtils, BreakpointDebuggerAgent, BuiltInAi, ChangeManager, ContextSelectionAgent, ConversationSummaryAgent, Debug, EvaluateAction, ExtensionScope, FileAgent, FileFormatter, Injected, LighthouseFormatter, NetworkAgent, NetworkRequestFormatter, PatchAgent, PerformanceAgent, PerformanceAnnotationsAgent, PerformanceInsightFormatter, PerformanceTraceFormatter, StylingAgent, UnitFormatters, };
+export { AccessibilityAgent, AgentProject, AiAgent, AICallTree, AIContext, AiConversation, AiHistoryStorage, AIQueries, AiUtils, BreakpointDebuggerAgent, BuiltInAi, ChangeManager, ContextSelectionAgent, ConversationSummaryAgent, Debug, EvaluateAction, ExtensionScope, FileAgent, FileFormatter, GreenDevAgent, Injected, LighthouseFormatter, NetworkAgent, NetworkRequestFormatter, PatchAgent, PerformanceAgent, PerformanceAnnotationsAgent, PerformanceInsightFormatter, PerformanceTraceFormatter, StylingAgent, UnitFormatters, };
 //# sourceMappingURL=ai_assistance.prebundle.js.map

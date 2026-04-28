@@ -9,7 +9,7 @@ import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import chatMessageStyles from './chatMessage.css.js';
-import { renderStep, titleForStep } from './ChatMessage.js';
+import { getDeduplicatedWidgetsMessage, renderStep, titleForStep } from './ChatMessage.js';
 import { getButtonLabel } from './WalkthroughUtils.js';
 import walkthroughViewStyles from './walkthroughView.css.js';
 const lockedString = i18n.i18n.lockedString;
@@ -332,6 +332,7 @@ export class WalkthroughView extends UI.Widget.Widget {
         if (!this.#markdownRenderer) {
             return;
         }
+        const message = this.#message ? getDeduplicatedWidgetsMessage(this.#message) : null;
         this.#view({
             isLoading: this.#isLoading,
             markdownRenderer: this.#markdownRenderer,
@@ -340,7 +341,7 @@ export class WalkthroughView extends UI.Widget.Widget {
             isInlined: this.#isInlined,
             isExpanded: this.#isExpanded,
             prompt: this.#prompt,
-            message: this.#message,
+            message,
             handleScroll: this.#handleScroll,
         }, this.#output, this.contentElement);
         this.#registerResizeObservers();

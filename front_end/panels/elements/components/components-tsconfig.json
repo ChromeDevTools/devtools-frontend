@@ -47,7 +47,6 @@
     "../../../../../../../front_end/panels/elements/components/ElementsBreadcrumbs.ts",
     "../../../../../../../front_end/panels/elements/components/ElementsBreadcrumbsUtils.ts",
     "../../../../../../../front_end/panels/elements/components/ElementsTreeExpandButton.ts",
-    "../../../../../../../front_end/panels/elements/components/Helper.ts",
     "../../../../../../../front_end/panels/elements/components/QueryContainer.ts",
     "../../../../../../../front_end/panels/elements/components/StylePropertyEditor.ts",
     "../../../../../../../front_end/legacy/legacy-defs.d.ts",

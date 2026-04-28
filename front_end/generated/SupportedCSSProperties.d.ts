@@ -284,16 +284,16 @@ export const generatedPropertyValues: {
     "column-rule-color": {
         values: string[];
     };
-    "column-rule-edge-inset-end": {
+    "column-rule-inset-cap-end": {
         values: string[];
     };
-    "column-rule-edge-inset-start": {
+    "column-rule-inset-cap-start": {
         values: string[];
     };
-    "column-rule-interior-inset-end": {
+    "column-rule-inset-junction-end": {
         values: string[];
     };
-    "column-rule-interior-inset-start": {
+    "column-rule-inset-junction-start": {
         values: string[];
     };
     "column-rule-style": {
@@ -749,16 +749,16 @@ export const generatedPropertyValues: {
     "row-rule-color": {
         values: string[];
     };
-    "row-rule-edge-inset-end": {
+    "row-rule-inset-cap-end": {
         values: string[];
     };
-    "row-rule-edge-inset-start": {
+    "row-rule-inset-cap-start": {
         values: string[];
     };
-    "row-rule-interior-inset-end": {
+    "row-rule-inset-junction-end": {
         values: string[];
     };
-    "row-rule-interior-inset-start": {
+    "row-rule-inset-junction-start": {
         values: string[];
     };
     "row-rule-style": {

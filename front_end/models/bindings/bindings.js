@@ -172,7 +172,13 @@ function parseMessage(stack) {
 }
 function augmentRawFramesWithScriptIds(rawFrames, protocolStackTrace) {
   for (const rawFrame of rawFrames) {
-    const protocolFrame = protocolStackTrace.callFrames.find((frame) => rawFrame.url === frame.url && rawFrame.lineNumber === frame.lineNumber && rawFrame.columnNumber === frame.columnNumber);
+    const isWasm = rawFrame.parsedFrameInfo?.isWasm;
+    const protocolFrame = protocolStackTrace.callFrames.find((frame) => {
+      if (isWasm) {
+        return rawFrame.url === frame.url && rawFrame.columnNumber === frame.columnNumber;
+      }
+      return rawFrame.url === frame.url && rawFrame.lineNumber === frame.lineNumber && rawFrame.columnNumber === frame.columnNumber;
+    });
     if (protocolFrame) {
       rawFrame.scriptId = protocolFrame.scriptId;
     }
@@ -3715,11 +3721,21 @@ var ResourceScriptFile = class extends Common12.ObjectWrapper.ObjectWrapper {
 var SymbolizedError_exports = {};
 __export(SymbolizedError_exports, {
   SymbolizedErrorObject: () => SymbolizedErrorObject,
-  SymbolizedSyntaxError: () => SymbolizedSyntaxError
+  SymbolizedSyntaxError: () => SymbolizedSyntaxError,
+  UnparsableError: () => UnparsableError
 });
 import * as Common13 from "./../../core/common/common.js";
 import * as SDK11 from "./../../core/sdk/sdk.js";
 import * as StackTrace3 from "./../stack_trace/stack_trace.js";
+var UnparsableError = class extends Common13.ObjectWrapper.ObjectWrapper {
+  errorStack;
+  cause;
+  constructor(errorStack, cause) {
+    super();
+    this.errorStack = errorStack;
+    this.cause = cause;
+  }
+};
 var SymbolizedErrorObject = class _SymbolizedErrorObject extends Common13.ObjectWrapper.ObjectWrapper {
   message;
   stackTrace;
@@ -3948,12 +3964,12 @@ var DebuggerWorkspaceBinding = class _DebuggerWorkspaceBinding {
       this.createStackTraceFromErrorStackLikeString(remoteObject.runtimeModel().target(), errorStack, fetchedExceptionDetails),
       causeRemoteObject ? this.createSymbolizedError(causeRemoteObject) : Promise.resolve(null)
     ]);
-    if (!stackTrace) {
-      return null;
-    }
     const issueSummary = fetchedExceptionDetails?.exceptionMetaData?.issueSummary;
     if (typeof issueSummary === "string") {
       errorStack = StackTrace4.ErrorStackParser.concatErrorDescriptionAndIssueSummary(errorStack, issueSummary);
+    }
+    if (!stackTrace) {
+      return new UnparsableError(errorStack, cause);
     }
     const message = DetailedErrorStackParser_exports.parseMessage(errorStack);
     return new SymbolizedErrorObject(message, stackTrace, cause);

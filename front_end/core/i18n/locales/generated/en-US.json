@@ -6290,6 +6290,9 @@
   "panels/application/WebMCPView.ts | declarative": {
     "message": "Declarative"
   },
+  "panels/application/WebMCPView.ts | editAndRun": {
+    "message": "Edit and run"
+  },
   "panels/application/WebMCPView.ts | error": {
     "message": "Error"
   },
@@ -6332,8 +6335,14 @@
   "panels/application/WebMCPView.ts | output": {
     "message": "Output"
   },
+  "panels/application/WebMCPView.ts | paste": {
+    "message": "Paste"
+  },
   "panels/application/WebMCPView.ts | pending": {
     "message": "In Progress"
+  },
+  "panels/application/WebMCPView.ts | revealTool": {
+    "message": "Reveal tool"
   },
   "panels/application/WebMCPView.ts | runTool": {
     "message": "Run Tool"
@@ -6352,6 +6361,9 @@
   },
   "panels/application/WebMCPView.ts | toolTypes": {
     "message": "Tool types"
+  },
+  "panels/application/WebMCPView.ts | toolUnregisteredNotice": {
+    "message": "This tool has been unregistered"
   },
   "panels/application/WebMCPView.ts | totalCalls": {
     "message": "{PH1} Total calls"

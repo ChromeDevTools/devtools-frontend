@@ -120,7 +120,10 @@ export declare class JSONEditor extends JSONEditor_base {
     set targets(targets: SDK.Target.Target[]);
     get command(): string;
     set command(command: string);
-    set commandToDisplay(command: string);
+    set commandToDisplay(data: {
+        command: string;
+        parameters?: Record<string, unknown>;
+    });
     get targetId(): string | undefined;
     set targetId(targetId: string | undefined);
     wasShown(): void;

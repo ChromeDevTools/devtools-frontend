@@ -2414,6 +2414,8 @@ var ChatMessage_exports = {};
 __export(ChatMessage_exports, {
   ChatMessage: () => ChatMessage,
   DEFAULT_VIEW: () => DEFAULT_VIEW4,
+  getDeduplicatedWidgetsMessage: () => getDeduplicatedWidgetsMessage,
+  getWidgetSignature: () => getWidgetSignature,
   renderStep: () => renderStep,
   titleForStep: () => titleForStep
 });
@@ -3622,6 +3624,7 @@ var WalkthroughView = class extends UI4.Widget.Widget {
     if (!this.#markdownRenderer) {
       return;
     }
+    const message = this.#message ? getDeduplicatedWidgetsMessage(this.#message) : null;
     this.#view({
       isLoading: this.#isLoading,
       markdownRenderer: this.#markdownRenderer,
@@ -3630,7 +3633,7 @@ var WalkthroughView = class extends UI4.Widget.Widget {
       isInlined: this.#isInlined,
       isExpanded: this.#isExpanded,
       prompt: this.#prompt,
-      message: this.#message,
+      message,
       handleScroll: this.#handleScroll
     }, this.#output, this.contentElement);
     this.#registerResizeObservers();
@@ -4385,6 +4388,63 @@ async function makeDomTreeWidget(widgetData) {
     jslogContext: "dom-snapshot"
   };
 }
+function getWidgetSignature(widget6) {
+  switch (widget6.name) {
+    case "COMPUTED_STYLES":
+      return `${widget6.name}:${widget6.data.backendNodeId}`;
+    case "CORE_VITALS":
+      return `${widget6.name}:${widget6.data.insightSetKey}`;
+    case "STYLE_PROPERTIES":
+      return `${widget6.name}:${widget6.data.backendNodeId}:${widget6.data.selector ?? ""}`;
+    case "DOM_TREE":
+      return `${widget6.name}:${widget6.data.root.backendNodeId()}`;
+    case "PERFORMANCE_TRACE":
+      return `${widget6.name}`;
+    case "PERF_INSIGHT":
+      return `${widget6.name}:${widget6.data.insight}:${widget6.data.insightData.insightKey}:${widget6.data.insightData.navigation?.args?.data?.navigationId ?? "no-nav-id"}`;
+    case "TIMELINE_RANGE_SUMMARY":
+      return `${widget6.name}:${widget6.data.track}:${widget6.data.bounds.min}-${widget6.data.bounds.max}`;
+    case "BOTTOM_UP_TREE":
+      return `${widget6.name}:${widget6.data.bounds.min}-${widget6.data.bounds.max}`;
+    default:
+      Platform5.assertNever(widget6, "Unknown AiWidget name");
+  }
+}
+function getDeduplicatedWidgetsMessage(message) {
+  const seenWidgets = /* @__PURE__ */ new Set();
+  const filterWidgets = (widgets) => {
+    return widgets.filter((widget6) => {
+      const signature = getWidgetSignature(widget6);
+      if (seenWidgets.has(signature)) {
+        return false;
+      }
+      seenWidgets.add(signature);
+      return true;
+    });
+  };
+  const deduplicatedParts = message.parts.map((part) => {
+    if (part.type === "widget") {
+      return {
+        ...part,
+        widgets: filterWidgets(part.widgets)
+      };
+    }
+    if (part.type === "step" && part.step.widgets) {
+      return {
+        ...part,
+        step: {
+          ...part.step,
+          widgets: filterWidgets(part.step.widgets)
+        }
+      };
+    }
+    return part;
+  });
+  return {
+    ...message,
+    parts: deduplicatedParts
+  };
+}
 async function renderWidgets(widgets, options = {}) {
   if (!Root3.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled || !widgets || widgets.length === 0) {
     return Lit5.nothing;
@@ -4704,8 +4764,9 @@ var ChatMessage = class extends UI5.Widget.Widget {
     this.#evaluateSuggestionsLayout();
   }
   performUpdate() {
+    const message = this.message.entity === "model" ? getDeduplicatedWidgetsMessage(this.message) : this.message;
     this.#view({
-      message: this.message,
+      message,
       isLoading: this.isLoading,
       isReadOnly: this.isReadOnly,
       canShowFeedbackForm: this.canShowFeedbackForm,

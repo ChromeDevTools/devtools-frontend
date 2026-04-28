@@ -24,14 +24,7 @@ const UIStringsNotTranslate = {
     dataUsed: 'Data used',
 };
 const lockedString = i18n.i18n.lockedString;
-function getPreamble() {
-    /**
-     * WARNING: preamble defined in code is only used when userTier is
-     * TESTERS. Otherwise, a server-side preamble is used (see
-     * chrome_preambles.gcl). Sync local changes with the server-side.
-     */
-    /* clang-format off */
-    let preamble = `You are the most advanced CSS/DOM/HTML debugging assistant integrated into Chrome DevTools.
+const preamble = `You are the most advanced CSS/DOM/HTML debugging assistant integrated into Chrome DevTools.
 You always suggest considering the best web development practices and the newest platform features such as view transitions.
 The user selected a DOM element in the browser's DevTools and sends a query about the page or the selected DOM element.
 First, examine the provided context, then use the functions to gather additional context and resolve the user request.
@@ -68,9 +61,7 @@ If the user asks a question that requires an investigation of a problem, use thi
     - Example: "**Suggestions**:"
       - [Suggestion 1]
       - [Suggestion 2]`;
-    const greenDevEmulationEnabled = Greendev.Prototypes.instance().isEnabled('emulationCapabilities');
-    if (greenDevEmulationEnabled) {
-        preamble += `
+const emulationInstructions = `
 # Emulation and Screenshots
 
 * If asked to verify whether the page is visually broken or if there are display problems with specific devices, use the \`activateDeviceEmulation\` tool. This tool will activate emulation for a specified device and capture a screenshot.
@@ -103,9 +94,6 @@ When referring to an element for which you know the nodeId, annotate your output
 - Always prefix the nodeId with the 'node-' prefix when using the markdown syntax.
 - This link will reveal the element in the Elements panel
 - Never mention node or nodeId when referring to the element, and especially not in the link text.`;
-    }
-    return preamble;
-}
 /* clang-format on */
 const promptForScreenshot = `The user has provided you a screenshot of the page (as visible in the viewport) in base64-encoded format. You SHOULD use it while answering user's queries.
 
@@ -199,7 +187,7 @@ export class NodeContext extends ConversationContext {
  * instance for a new conversation.
  */
 export class StylingAgent extends AiAgent {
-    preamble = getPreamble();
+    preamble = preamble;
     clientFeature = Host.AidaClient.ClientFeature.CHROME_STYLING_AGENT;
     get userTier() {
         const greenDevEmulationEnabled = Greendev.Prototypes.instance().isEnabled('emulationCapabilities');
@@ -229,6 +217,7 @@ export class StylingAgent extends AiAgent {
     #createExtensionScope;
     #greenDevEmulationScreenshot = null;
     #greenDevEmulationAxTree = null;
+    #hasAddedEmulationInstructions = false;
     #currentTurnId = 0;
     constructor(opts) {
         super(opts);
@@ -697,6 +686,10 @@ export class StylingAgent extends AiAgent {
         if (this.#greenDevEmulationAxTree) {
             multimodalInputEnhancementQuery += '\n# Accessibility Tree\n\n' + this.#greenDevEmulationAxTree;
             this.#greenDevEmulationAxTree = null;
+        }
+        if (Greendev.Prototypes.instance().isEnabled('emulationCapabilities') && !this.#hasAddedEmulationInstructions) {
+            multimodalInputEnhancementQuery = emulationInstructions + '\n' + multimodalInputEnhancementQuery;
+            this.#hasAddedEmulationInstructions = true;
         }
         const elementEnchancementQuery = selectedElement ?
             `# Inspected element\n\n${await StylingAgent.describeElement(selectedElement.getItem())}\n\n# User request\n\n` :

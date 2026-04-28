@@ -1528,6 +1528,7 @@ __export(ElementsBreadcrumbs_exports, {
 import "./../../../ui/kit/kit.js";
 import "./../../../ui/components/node_text/node_text.js";
 import * as i18n11 from "./../../../core/i18n/i18n.js";
+import * as SDK from "./../../../core/sdk/sdk.js";
 import * as ComponentHelpers from "./../../../ui/components/helpers/helpers.js";
 import * as RenderCoordinator2 from "./../../../ui/components/render_coordinator/render_coordinator.js";
 import * as Lit3 from "./../../../ui/lit/lit.js";
@@ -1651,13 +1652,12 @@ var crumbsToRender = (crumbs, selectedNode) => {
     return [];
   }
   return crumbs.filter((crumb) => {
-    return crumb.nodeType !== Node.DOCUMENT_NODE;
+    return crumb.nodeType() !== Node.DOCUMENT_NODE;
   }).map((crumb) => {
     return {
       title: determineElementTitle(crumb),
       selected: crumb.id === selectedNode.id,
-      node: crumb,
-      originalNode: crumb.legacyDomNode
+      node: crumb
     };
   }).reverse();
 };
@@ -1668,12 +1668,14 @@ var makeCrumbTitle = (main, extras = {}) => {
   };
 };
 var determineElementTitle = (domNode) => {
-  switch (domNode.nodeType) {
+  const nodeType = domNode.nodeType();
+  switch (nodeType) {
     case Node.ELEMENT_NODE: {
-      if (domNode.pseudoType) {
-        return makeCrumbTitle("::" + domNode.pseudoType);
+      const pseudoType = domNode.pseudoType();
+      if (pseudoType) {
+        return makeCrumbTitle("::" + pseudoType);
       }
-      const crumbTitle = makeCrumbTitle(domNode.nodeNameNicelyCased);
+      const crumbTitle = makeCrumbTitle(domNode.nodeNameInCorrectCase());
       const id = domNode.getAttribute("id");
       if (id) {
         crumbTitle.extras.id = id;
@@ -1692,9 +1694,9 @@ var determineElementTitle = (domNode) => {
     case Node.DOCUMENT_TYPE_NODE:
       return makeCrumbTitle("<!doctype>");
     case Node.DOCUMENT_FRAGMENT_NODE:
-      return makeCrumbTitle(domNode.shadowRootType ? "#shadow-root" : domNode.nodeNameNicelyCased);
+      return makeCrumbTitle(domNode.shadowRootType() ? "#shadow-root" : domNode.nodeNameInCorrectCase());
     default:
-      return makeCrumbTitle(domNode.nodeNameNicelyCased);
+      return makeCrumbTitle(domNode.nodeNameInCorrectCase());
   }
 };
 
@@ -1718,10 +1720,10 @@ var str_6 = i18n11.i18n.registerUIStrings("panels/elements/components/ElementsBr
 var i18nString6 = i18n11.i18n.getLocalizedString.bind(void 0, str_6);
 var NodeSelectedEvent = class _NodeSelectedEvent extends Event {
   static eventName = "breadcrumbsnodeselected";
-  legacyDomNode;
+  node;
   constructor(node) {
     super(_NodeSelectedEvent.eventName, {});
-    this.legacyDomNode = node.legacyDomNode;
+    this.node = node;
   }
 };
 var ElementsBreadcrumbs = class extends HTMLElement {
@@ -1779,16 +1781,16 @@ var ElementsBreadcrumbs = class extends HTMLElement {
     void this.#updateScrollState(crumbWindow);
   }
   #onCrumbMouseMove(node) {
-    return () => node.highlightNode();
+    return () => node.highlight();
   }
-  #onCrumbMouseLeave(node) {
-    return () => node.clearHighlight();
+  #onCrumbMouseLeave() {
+    SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
   }
   #onCrumbFocus(node) {
-    return () => node.highlightNode();
+    return () => node.highlight();
   }
-  #onCrumbBlur(node) {
-    return () => node.clearHighlight();
+  #onCrumbBlur() {
+    SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
   }
   #engageResizeObserver() {
     if (!this.#resizeObserver || this.#isObservingResize === true) {
@@ -1908,9 +1910,9 @@ var ElementsBreadcrumbs = class extends HTMLElement {
                     jslog=${VisualLogging4.item().track({ click: true, resize: true })}
                     @click=${this.#onCrumbClick(crumb.node)}
                     @mousemove=${this.#onCrumbMouseMove(crumb.node)}
-                    @mouseleave=${this.#onCrumbMouseLeave(crumb.node)}
+                    @mouseleave=${this.#onCrumbMouseLeave}
                     @focus=${this.#onCrumbFocus(crumb.node)}
-                    @blur=${this.#onCrumbBlur(crumb.node)}
+                    @blur=${this.#onCrumbBlur}
                   >
                     <devtools-node-text data-node-title=${crumb.title.main} .data=${{
         nodeTitle: crumb.title.main,
@@ -2054,28 +2056,6 @@ var ElementsTreeExpandButton = class extends HTMLElement {
 };
 customElements.define("devtools-elements-tree-expand-button", ElementsTreeExpandButton);
 
-// gen/front_end/panels/elements/components/Helper.js
-var Helper_exports = {};
-__export(Helper_exports, {
-  legacyNodeToElementsComponentsNode: () => legacyNodeToElementsComponentsNode
-});
-import * as SDK from "./../../../core/sdk/sdk.js";
-var legacyNodeToElementsComponentsNode = (node) => {
-  return {
-    parentNode: node.parentNode ? legacyNodeToElementsComponentsNode(node.parentNode) : null,
-    id: node.id,
-    nodeType: node.nodeType(),
-    pseudoType: node.pseudoType(),
-    shadowRootType: node.shadowRootType(),
-    nodeName: node.nodeName(),
-    nodeNameNicelyCased: node.nodeNameInCorrectCase(),
-    legacyDomNode: node,
-    highlightNode: (mode) => node.highlight(mode),
-    clearHighlight: () => SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight(),
-    getAttribute: node.getAttribute.bind(node)
-  };
-};
-
 // gen/front_end/panels/elements/components/QueryContainer.js
 var QueryContainer_exports = {};
 __export(QueryContainer_exports, {
@@ -2152,12 +2132,12 @@ var QueryContainer = class extends HTMLElement {
     this.#render();
   }
   async #onContainerLinkMouseEnter() {
-    this.#container?.highlightNode("container-outline");
+    this.#container?.highlight("container-outline");
     this.#isContainerLinkHovered = true;
     this.dispatchEvent(new QueriedSizeRequestedEvent());
   }
   #onContainerLinkMouseLeave() {
-    this.#container?.clearHighlight();
+    SDK2.OverlayModel.OverlayModel.hideDOMNodeHighlight();
     this.#isContainerLinkHovered = false;
     this.#render();
   }
@@ -2170,7 +2150,7 @@ var QueryContainer = class extends HTMLElement {
       idToDisplay = this.#container.getAttribute("id");
       classesToDisplay = this.#container.getAttribute("class")?.split(/\s+/).filter(Boolean);
     }
-    const nodeTitle = this.#queryName || this.#container.nodeNameNicelyCased;
+    const nodeTitle = this.#queryName || this.#container.nodeNameInCorrectCase();
     render10(html10`
       <style>${queryContainer_css_default}</style>
       →
@@ -2677,7 +2657,6 @@ export {
   ElementsBreadcrumbs_exports as ElementsBreadcrumbs,
   ElementsBreadcrumbsUtils_exports as ElementsBreadcrumbsUtils,
   ElementsTreeExpandButton_exports as ElementsTreeExpandButton,
-  Helper_exports as Helper,
   QueryContainer_exports as QueryContainer,
   StylePropertyEditor_exports as StylePropertyEditor
 };

@@ -45,6 +45,7 @@ core/root/Runtime.test.js
 core/sdk/DebuggerModel.test.js
 core/sdk/PageResourceLoader.test.js
 core/sdk/RuntimeModel.test.js
+core/sdk/ServerSentEventsProtocol.test.js
 core/sdk/Target.test.js
 core/sdk/TargetManager.test.js
 entrypoints/formatter_worker/CSSFormatter.test.js

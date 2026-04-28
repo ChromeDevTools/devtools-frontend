@@ -17,14 +17,13 @@ export const crumbsToRender = (crumbs, selectedNode) => {
     }
     return crumbs
         .filter(crumb => {
-        return crumb.nodeType !== Node.DOCUMENT_NODE;
+        return crumb.nodeType() !== Node.DOCUMENT_NODE;
     })
         .map(crumb => {
         return {
             title: determineElementTitle(crumb),
             selected: crumb.id === selectedNode.id,
             node: crumb,
-            originalNode: crumb.legacyDomNode,
         };
     })
         .reverse();
@@ -36,12 +35,14 @@ const makeCrumbTitle = (main, extras = {}) => {
     };
 };
 export const determineElementTitle = (domNode) => {
-    switch (domNode.nodeType) {
+    const nodeType = domNode.nodeType();
+    switch (nodeType) {
         case Node.ELEMENT_NODE: {
-            if (domNode.pseudoType) {
-                return makeCrumbTitle('::' + domNode.pseudoType);
+            const pseudoType = domNode.pseudoType();
+            if (pseudoType) {
+                return makeCrumbTitle('::' + pseudoType);
             }
-            const crumbTitle = makeCrumbTitle(domNode.nodeNameNicelyCased);
+            const crumbTitle = makeCrumbTitle(domNode.nodeNameInCorrectCase());
             const id = domNode.getAttribute('id');
             if (id) {
                 crumbTitle.extras.id = id;
@@ -60,9 +61,9 @@ export const determineElementTitle = (domNode) => {
         case Node.DOCUMENT_TYPE_NODE:
             return makeCrumbTitle('<!doctype>');
         case Node.DOCUMENT_FRAGMENT_NODE:
-            return makeCrumbTitle(domNode.shadowRootType ? '#shadow-root' : domNode.nodeNameNicelyCased);
+            return makeCrumbTitle(domNode.shadowRootType() ? '#shadow-root' : domNode.nodeNameInCorrectCase());
         default:
-            return makeCrumbTitle(domNode.nodeNameNicelyCased);
+            return makeCrumbTitle(domNode.nodeNameInCorrectCase());
     }
 };
 //# sourceMappingURL=ElementsBreadcrumbsUtils.js.map

@@ -4,7 +4,12 @@ import type * as Protocol from '../../generated/protocol.js';
 import * as StackTrace from '../stack_trace/stack_trace.js';
 import type * as Workspace from '../workspace/workspace.js';
 import type { DebuggerWorkspaceBinding } from './DebuggerWorkspaceBinding.js';
-export type SymbolizedError = SymbolizedErrorObject | SymbolizedSyntaxError;
+export type SymbolizedError = SymbolizedErrorObject | SymbolizedSyntaxError | UnparsableError;
+export declare class UnparsableError extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
+    readonly errorStack: string;
+    readonly cause: SymbolizedError | null;
+    constructor(errorStack: string, cause: SymbolizedError | null);
+}
 export declare class SymbolizedErrorObject extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
     #private;
     readonly message: string;

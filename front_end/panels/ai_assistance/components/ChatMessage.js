@@ -872,8 +872,74 @@ async function makeDomTreeWidget(widgetData) {
  *
  * This allows for a flexible and extensible system where new widget types
  * can be added to the AI responses and rendered in DevTools by adding
- * corresponding \`make...Widget\` functions and handling them here.
+ * corresponding `make...Widget` functions and handling them here.
  */
+/**
+ * Generates a deterministic unique identifier for a given AiWidget based on
+ * its name and identifying data. This signature is used for widget deduplication.
+ */
+export function getWidgetSignature(widget) {
+    switch (widget.name) {
+        case 'COMPUTED_STYLES':
+            return `${widget.name}:${widget.data.backendNodeId}`;
+        case 'CORE_VITALS':
+            return `${widget.name}:${widget.data.insightSetKey}`;
+        case 'STYLE_PROPERTIES':
+            return `${widget.name}:${widget.data.backendNodeId}:${widget.data.selector ?? ''}`;
+        case 'DOM_TREE':
+            return `${widget.name}:${widget.data.root.backendNodeId()}`;
+        case 'PERFORMANCE_TRACE':
+            return `${widget.name}`;
+        case 'PERF_INSIGHT':
+            return `${widget.name}:${widget.data.insight}:${widget.data.insightData.insightKey}:${widget.data.insightData.navigation?.args?.data?.navigationId ?? 'no-nav-id'}`;
+        case 'TIMELINE_RANGE_SUMMARY':
+            return `${widget.name}:${widget.data.track}:${widget.data.bounds.min}-${widget.data.bounds.max}`;
+        case 'BOTTOM_UP_TREE':
+            return `${widget.name}:${widget.data.bounds.min}-${widget.data.bounds.max}`;
+        default:
+            Platform.assertNever(widget, 'Unknown AiWidget name');
+    }
+}
+/**
+ * Returns a new ModelChatMessage where widgets have been deduplicated
+ * across all parts and steps of the message. The first occurrence of each
+ * unique widget (determined by its signature) is preserved.
+ */
+export function getDeduplicatedWidgetsMessage(message) {
+    const seenWidgets = new Set();
+    const filterWidgets = (widgets) => {
+        return widgets.filter(widget => {
+            const signature = getWidgetSignature(widget);
+            if (seenWidgets.has(signature)) {
+                return false;
+            }
+            seenWidgets.add(signature);
+            return true;
+        });
+    };
+    const deduplicatedParts = message.parts.map(part => {
+        if (part.type === 'widget') {
+            return {
+                ...part,
+                widgets: filterWidgets(part.widgets),
+            };
+        }
+        if (part.type === 'step' && part.step.widgets) {
+            return {
+                ...part,
+                step: {
+                    ...part.step,
+                    widgets: filterWidgets(part.step.widgets),
+                },
+            };
+        }
+        return part;
+    });
+    return {
+        ...message,
+        parts: deduplicatedParts,
+    };
+}
 async function renderWidgets(widgets, options = {}) {
     if (!Root.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled || !widgets || widgets.length === 0) {
         return Lit.nothing;
@@ -1183,8 +1249,9 @@ export class ChatMessage extends UI.Widget.Widget {
         this.#evaluateSuggestionsLayout();
     }
     performUpdate() {
+        const message = this.message.entity === "model" /* ChatMessageEntity.MODEL */ ? getDeduplicatedWidgetsMessage(this.message) : this.message;
         this.#view({
-            message: this.message,
+            message,
             isLoading: this.isLoading,
             isReadOnly: this.isReadOnly,
             canShowFeedbackForm: this.canShowFeedbackForm,

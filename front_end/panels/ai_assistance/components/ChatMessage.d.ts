@@ -34,6 +34,12 @@ export interface StepPart {
     type: 'step';
     step: Step;
 }
+/**
+ * Represents a part of the message that consists of one or more widgets.
+ * The agent can yield widgets directly as part of its response, separate
+ * from those returned by a specific tool call (which are encapsulated
+ * within a StepPart).
+ */
 export interface WidgetPart {
     type: 'widget';
     widgets: AiWidget[];
@@ -115,6 +121,34 @@ export declare function renderStep({ step, isLoading, markdownRenderer, isLast }
     markdownRenderer: MarkdownLitRenderer;
     isLast: boolean;
 }): Lit.LitTemplate;
+/**
+ * Renders AI-defined UI widgets.
+ * When a ModelChatMessage contains a WidgetPart, or a Step has widgets,
+ * the ChatMessage component iterates through the \`widgets\` array.
+ * For each widget, it determines the appropriate rendering logic based on
+ * the \`widgetData.name\`.
+ *
+ * Currently, 'COMPUTED_STYLES', 'CORE_VITALS' and 'STYLE_PROPERTIES' widgets are supported.
+ * For these, the corresponding \`make...Widget\` functions are called to construct the necessary
+ * data and configuration for the UI components. The widget is then rendered using the
+ * \`<devtools-widget>\` custom element, which dynamically instantiates and displays the
+ * specified UI.Widget subclass with the provided configuration.
+ *
+ * This allows for a flexible and extensible system where new widget types
+ * can be added to the AI responses and rendered in DevTools by adding
+ * corresponding `make...Widget` functions and handling them here.
+ */
+/**
+ * Generates a deterministic unique identifier for a given AiWidget based on
+ * its name and identifying data. This signature is used for widget deduplication.
+ */
+export declare function getWidgetSignature(widget: AiWidget): string;
+/**
+ * Returns a new ModelChatMessage where widgets have been deduplicated
+ * across all parts and steps of the message. The first occurrence of each
+ * unique widget (determined by its signature) is preserved.
+ */
+export declare function getDeduplicatedWidgetsMessage(message: ModelChatMessage): ModelChatMessage;
 export declare class ChatMessage extends UI.Widget.Widget {
     #private;
     message: Message;

@@ -35,16 +35,33 @@ const lockedString = i18n.i18n.lockedString;
  * TESTERS. Otherwise, a server-side preamble is used (see
  * chrome_preambles.gcl). Sync local changes with the server-side.
  */
-const greenDevAdditionalAnnotationsFunction = `
+const GREEN_DEV_ANNOTATIONS_INSTRUCTIONS = `
 - CRITICAL: You also have access to functions called addElementAnnotation and addNeworkRequestAnnotation,
-which should be used to highlight elements and network requests (respectively).`;
-const greenDevAdditionalAnnotationsGuidelines = `
+which should be used to highlight elements and network requests (respectively).
+
 - CRITICAL: Each time an element or a network request is mentioned, you MUST ALSO call the functions
   addElementAnnotation (for an element) or addNeworkRequestAnnotation (for a network request).
 - CRITICAL: Don't add more than one annotation per element or network request.
 - These functions should be called as soon as you identify the entity that needs to be highlighted.
 - In addition to this, the addElementAnnotation function should always be called for the LCP element, if known.
 - The annotationMessage should be descriptive and relevant to why the element or network request is being highlighted.
+`;
+const GREEN_DEV_FRESH_TRACE_ANNOTATIONS_INSTRUCTIONS = `
+When referring to an element for which you know the nodeId, always call the function addElementAnnotation, specifying
+the id and an annotation reason.
+When referring to a network request for which you know the eventKey for, always call the function
+addNetworkRequestAnnotation, specifying the id and an annotation reason.
+- CRITICAL: Each time you add an annotating link you MUST ALSO call the function addElementAnnotation.
+- CRITICAL: Each time you describe an element or network request as being problematic you MUST call the function
+addElementAnnotation and specify an annotation reason.
+- CRITICAL: Each time you describe a network request as being problematic you MUST call the function
+addNetworkRequestAnnotation and specify an annotation reason.
+- CRITICAL: If you spot ANY of the following problems:
+  - Render-blocking elements/network requests.
+  - Significant long task (especially on main thread).
+  - Layout shifts (e.g. due to unsized images).
+  ... then you MUST call addNetworkRequestAnnotation for ALL network requests and addaddElementAnnotation for all
+  elements described in your conclusion.
 `;
 /**
  * Preamble clocks in at ~1341 tokens.
@@ -53,9 +70,7 @@ const greenDevAdditionalAnnotationsGuidelines = `
  *
  * Check token length in https://aistudio.google.com/
  */
-const buildPreamble = () => {
-    const annotationsEnabled = Annotations.AnnotationRepository.annotationsEnabled();
-    return `You are an assistant, expert in web performance and highly skilled with Chrome DevTools.
+const preamble = `You are an assistant, expert in web performance and highly skilled with Chrome DevTools.
 
 Your primary goal is to provide actionable advice to web developers about their web page by using the Chrome Performance Panel and analyzing a trace. You may need to diagnose problems yourself, or you may be given direction for what to focus on by the user.
 
@@ -64,8 +79,6 @@ You will be provided a summary of a trace: some performance metrics; the most cr
 Always call getInsightDetails to gather more data on an insight or the actual LCP element BEFORE mentioning any specific details about them.
 
 You have functions available to learn more about the trace. Use these to confirm hypotheses, or to further explore the trace when diagnosing performance issues.
-
-${annotationsEnabled ? greenDevAdditionalAnnotationsFunction : ''}
 
 You will be given bounds representing a time range within the trace. Bounds include a min and a max time in microseconds. max is always bigger than min in a bounds.
 
@@ -138,8 +151,6 @@ Note: if the user asks a specific question about the trace (such as "What is my 
 - Structure your response using markdown headings and bullet points for improved readability.
 - Be direct and to the point. Avoid unnecessary introductory phrases or filler content. Focus on delivering actionable advice efficiently.
 
-${annotationsEnabled ? greenDevAdditionalAnnotationsGuidelines : ''}
-
 ## Strict Constraints
 
 Adhere to the following critical requirements:
@@ -157,7 +168,6 @@ Adhere to the following critical requirements:
 - Do not provide answers on non-web-development topics, such as legal, financial, medical, or personal advice.
 - Use the precision of Strunk & White, the brevity of Hemingway, and the simple clarity of Vonnegut. Don't add repeated information, and keep the whole answer short.
 `;
-};
 const extraPreambleWhenNotExternal = `Additional notes:
 
 When referring to a trace event that has a corresponding \`eventKey\`, annotate your output using markdown link syntax. For example:
@@ -167,36 +177,14 @@ When referring to a trace event that has a corresponding \`eventKey\`, annotate 
 
 When asking the user to make a choice between options, output a list of choices at the end of your text response. The format is \`SUGGESTIONS: ["suggestion1", "suggestion2", "suggestion3"]\`. This MUST start on a newline, and be a single line.
 `;
-const buildExtraPreambleWhenFreshTrace = () => {
-    const annotationsEnabled = Annotations.AnnotationRepository.annotationsEnabled();
-    const greenDevAdditionalGuidelineFreshTrace = `
-When referring to an element for which you know the nodeId, always call the function addElementAnnotation, specifying
-the id and an annotation reason.
-When referring to a network request for which you know the eventKey for, always call the function
-addNetworkRequestAnnotation, specifying the id and an annotation reason.
-- CRITICAL: Each time you add an annotating link you MUST ALSO call the function addElementAnnotation.
-- CRITICAL: Each time you describe an element or network request as being problematic you MUST call the function
-addElementAnnotation and specify an annotation reason.
-- CRITICAL: Each time you describe a network request as being problematic you MUST call the function
-addNetworkRequestAnnotation and specify an annotation reason.
-- CRITICAL: If you spot ANY of the following problems:
-  - Render-blocking elements/network requests.
-  - Significant long task (especially on main thread).
-  - Layout shifts (e.g. due to unsized images).
-  ... then you MUST call addNetworkRequestAnnotation for ALL network requests and addaddElementAnnotation for all
-  elements described in your conclusion.
-`;
-    const extraPreambleWhenFreshTrace = `Additional notes:
+const freshTracePreamble = `Additional notes:
 
 When referring to an element for which you know the nodeId, annotate your output using markdown link syntax:
 - For example, if nodeId is 23: [LCP element](#node-23)
 - This link will reveal the element in the Elements panel
 - Never mention node or nodeId when referring to the element, and especially not in the link text.
 - When referring to the LCP, it's useful to also mention what the LCP element is via its nodeId. Use the markdown link syntax to do so.
-
-${annotationsEnabled ? greenDevAdditionalGuidelineFreshTrace : ''}`;
-    return extraPreambleWhenFreshTrace;
-};
+`;
 var ScorePriority;
 (function (ScorePriority) {
     ScorePriority[ScorePriority["REQUIRED"] = 3] = "REQUIRED";
@@ -344,6 +332,7 @@ export function getLabelName(label, focus) {
  * instance for a new conversation.
  */
 export class PerformanceAgent extends AiAgent {
+    preamble = preamble;
     #formatter = null;
     #lastEventForEnhancedQuery;
     #lastInsightForEnhancedQuery;
@@ -364,7 +353,15 @@ export class PerformanceAgent extends AiAgent {
         metadata: { source: 'devtools', score: ScorePriority.CRITICAL }
     };
     #freshTraceExtraPreambleFact = {
-        text: buildExtraPreambleWhenFreshTrace(),
+        text: freshTracePreamble,
+        metadata: { source: 'devtools', score: ScorePriority.CRITICAL }
+    };
+    #greenDevAnnotationsFact = {
+        text: GREEN_DEV_ANNOTATIONS_INSTRUCTIONS,
+        metadata: { source: 'devtools', score: ScorePriority.CRITICAL }
+    };
+    #greenDevFreshTraceAnnotationsFact = {
+        text: GREEN_DEV_FRESH_TRACE_ANNOTATIONS_INSTRUCTIONS,
         metadata: { source: 'devtools', score: ScorePriority.CRITICAL }
     };
     #networkDataDescriptionFact = {
@@ -385,6 +382,8 @@ export class PerformanceAgent extends AiAgent {
         this.#networkDataDescriptionFact,
         this.#freshTraceExtraPreambleFact,
         this.#notExternalExtraPreambleFact,
+        this.#greenDevAnnotationsFact,
+        this.#greenDevFreshTraceAnnotationsFact,
     ]);
     /**
      * When we enhance the query with additional information, we need to know it
@@ -392,18 +391,6 @@ export class PerformanceAgent extends AiAgent {
      * on each prompt.
      */
     #additionalSelectionsForQuery = [];
-    /**
-     * The CWV widget is shown when we analyze the trace summary, but we don't
-     * want to show it on every single "Analyzing data..." pill, as we show one
-     * after every prompt. So we make sure for a given Insight Set (which is based on navigation)
-     * we only show it once.
-     */
-    #hasShownWidgetForInsightSet = new WeakSet();
-    #hasShownWidgetForCallTree = new WeakSet();
-    #hasShownWidgetForInsight = new WeakSet();
-    get preamble() {
-        return buildPreamble();
-    }
     get clientFeature() {
         return Host.AidaClient.ClientFeature.CHROME_PERFORMANCE_FULL_AGENT;
     }
@@ -453,34 +440,30 @@ export class PerformanceAgent extends AiAgent {
         const widgets = [];
         // Case 1: Specific task (call tree) -> timeline summary & bottom up tree widgets
         if (focus.callTree) {
-            if (!this.#hasShownWidgetForCallTree.has(focus.callTree)) {
-                const event = focus.callTree.selectedNode?.event;
-                if (event) {
-                    const { startTime, endTime } = Trace.Helpers.Timing.eventTimingsMicroSeconds(event);
-                    const bounds = Trace.Helpers.Timing.traceWindowFromMicroSeconds(startTime, endTime);
-                    widgets.push({
-                        name: 'TIMELINE_RANGE_SUMMARY',
-                        data: {
-                            bounds,
-                            parsedTrace: focus.parsedTrace,
-                            track: 'main',
-                        },
-                    });
-                    widgets.push({
-                        name: 'BOTTOM_UP_TREE',
-                        data: {
-                            bounds,
-                            parsedTrace: focus.parsedTrace,
-                        },
-                    });
-                    this.#hasShownWidgetForCallTree.add(focus.callTree);
-                }
+            const event = focus.callTree.selectedNode?.event;
+            if (event) {
+                const { startTime, endTime } = Trace.Helpers.Timing.eventTimingsMicroSeconds(event);
+                const bounds = Trace.Helpers.Timing.traceWindowFromMicroSeconds(startTime, endTime);
+                widgets.push({
+                    name: 'TIMELINE_RANGE_SUMMARY',
+                    data: {
+                        bounds,
+                        parsedTrace: focus.parsedTrace,
+                        track: 'main',
+                    },
+                });
+                widgets.push({
+                    name: 'BOTTOM_UP_TREE',
+                    data: {
+                        bounds,
+                        parsedTrace: focus.parsedTrace,
+                    },
+                });
             }
             return widgets;
         }
         // Case 2: LCP Insight -> LCP breakdown & CWV widgets
-        if (focus.insight && Trace.Insights.Models.LCPBreakdown.isLCPBreakdownInsight(focus.insight) &&
-            !this.#hasShownWidgetForInsight.has(focus.insight)) {
+        if (focus.insight && Trace.Insights.Models.LCPBreakdown.isLCPBreakdownInsight(focus.insight)) {
             widgets.push({
                 name: 'PERF_INSIGHT',
                 data: {
@@ -488,11 +471,10 @@ export class PerformanceAgent extends AiAgent {
                     insightData: focus.insight,
                 },
             });
-            this.#hasShownWidgetForInsight.add(focus.insight);
         }
         // Case 3: Whole Trace or insight other than LCP -> CWV widget
         const primaryInsightSet = focus.primaryInsightSet;
-        if (primaryInsightSet && !this.#hasShownWidgetForInsightSet.has(primaryInsightSet)) {
+        if (primaryInsightSet) {
             widgets.push({
                 name: 'CORE_VITALS',
                 data: {
@@ -500,7 +482,6 @@ export class PerformanceAgent extends AiAgent {
                     insightSetKey: primaryInsightSet.id,
                 },
             });
-            this.#hasShownWidgetForInsightSet.add(primaryInsightSet);
         }
         return widgets;
     }
@@ -703,9 +684,16 @@ export class PerformanceAgent extends AiAgent {
         if (!context.external) {
             this.addFact(this.#notExternalExtraPreambleFact);
         }
+        const annotationsEnabled = Annotations.AnnotationRepository.annotationsEnabled();
+        if (annotationsEnabled) {
+            this.addFact(this.#greenDevAnnotationsFact);
+        }
         const isFresh = Tracing.FreshRecording.Tracker.instance().recordingIsFresh(focus.parsedTrace);
         if (isFresh) {
             this.addFact(this.#freshTraceExtraPreambleFact);
+            if (annotationsEnabled) {
+                this.addFact(this.#greenDevFreshTraceAnnotationsFact);
+            }
         }
         this.addFact(this.#callFrameDataDescriptionFact);
         this.addFact(this.#networkDataDescriptionFact);
@@ -785,7 +773,6 @@ export class PerformanceAgent extends AiAgent {
     #declareFunctions(context) {
         const focus = context.getItem();
         const { parsedTrace } = focus;
-        const processedNodeIds = new Set();
         this.declareFunction('getInsightDetails', {
             description: 'Returns detailed information about a specific insight of an insight set. Use this before commenting on any specific issue to get more information.',
             parameters: {
@@ -834,9 +821,7 @@ export class PerformanceAgent extends AiAgent {
                     const lcpEvent = lcpMetric?.event;
                     if (lcpEvent && Trace.Types.Events.isAnyLargestContentfulPaintCandidate(lcpEvent)) {
                         const nodeId = lcpEvent.args.data?.nodeId;
-                        // We want to show only one DOM tree widget per walkthrough per node.
-                        // We do want to show the widget for the same node again, if it's within a new walkthrough.
-                        if (nodeId && !processedNodeIds.has(nodeId)) {
+                        if (nodeId) {
                             const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
                             const domModel = target?.model(SDK.DOMModel.DOMModel);
                             if (domModel) {
@@ -863,7 +848,6 @@ export class PerformanceAgent extends AiAgent {
                                             networkRequest,
                                         },
                                     });
-                                    processedNodeIds.add(nodeId);
                                 }
                             }
                         }

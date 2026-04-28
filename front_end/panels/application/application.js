@@ -11818,238 +11818,299 @@ var webMCPView_css_default = `/*
  */
 
 @scope to (devtools-widget > *) {
-    .webmcp-view {
-        height: 100%;
-        width: 100%;
+  .webmcp-view {
+    height: 100%;
+    width: 100%;
+  }
+
+  .call-log,
+  .tool-list {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+    padding: 0;
+  }
+
+  .empty-view-scroller {
+    flex: auto;
+  }
+
+  devtools-data-grid {
+    flex: auto;
+  }
+
+  .data-grid {
+    th {
+      height: 26px;
     }
 
-    .call-log,
-    .tool-list {
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        overflow: auto;
-        padding: 0;
+    td {
+      vertical-align: middle;
     }
 
-    .empty-view-scroller {
-        flex: auto;
-    }
-
-    devtools-data-grid {
-        flex: auto;
-    }
-
-    .data-grid {
-      th {
-        height: 26px;
-      }
-
-      td {
-        vertical-align: middle;
-      }
-
-      tr.status-cancelled {
-        color: var(--sys-color-on-surface-light);
-      }
-
-      tr.status-error {
-        color: var(--sys-color-error);
-      }
-
-      tr.selected {
-        background-color: var(--sys-color-tonal-container);
-      }
-
-      tbody tr.selected.status-error,
-      tbody tr.selected.status-error.revealed {
-        background-color: var(--sys-color-error-container);
-        color: var(--sys-color-error);
-      }
-    }
-
-    .section-title {
-        display: flex;
-        gap: var(--sys-size-2);
-        background-color: var(--sys-color-surface1);
-        padding: 0 5px;
-        line-height: 22px;
-        overflow: hidden;
-        align-items: center;
-        flex: none;
-        color: var(--sys-color-on-surface);
-        border-bottom: 1px solid var(--sys-color-divider);
-    }
-
-    .status-cell {
-        display: flex;
-        align-items: center;
-        gap: 4px;
-    }
-
-    .tool-details {
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        overflow: hidden;
-    }
-
-    .tool-details-grid {
-      display: grid;
-      grid-template-columns: min-content 1fr;
-      gap: 0 var(--sys-size-16);
-      padding: calc(0.5*var(--sys-size-6)) var(--sys-size-8);
-      align-items: flex-start;
-      overflow-y: auto;
-
-      .label {
-        color: var(--sys-color-on-surface-subtle);
-        white-space: nowrap;
-        padding: var(--sys-size-6) 0;
-      }
-
-      .value {
-        user-select: text;
-
-        &.source-code {
-          color: var(--sys-color-token-attribute);
-        }
-
-        padding: var(--sys-size-6) 0;
-        color: var(--sys-color-on-surface);
-        overflow-wrap: anywhere;
-
-        &:has(> .stack-preview-container) {
-          padding: var(--sys-size-4) 0;
-        }
-
-        &.tool-origin-container {
-          display: flex;
-          align-items: center;
-          gap: var(--sys-size-4);
-        }
-
-        .tool-origin-node {
-          display: flex;
-          align-items: center;
-          cursor: default;
-        }
-      }
-
-      .show-element {
-        height: 1lh;
-      }
-    }
-
-    devtools-list {
-      flex: 1 1 auto;
-      margin: 0;
-      padding: var(--sys-size-4);
-      box-sizing: border-box;
-    }
-
-    .tool-item {
-        display: flex;
-        flex-direction: column;
-        padding: 8px 0;
-        gap: 4px;
-        width: 100%;
-        box-sizing: border-box;
-        border-bottom: 1px solid var(--sys-color-divider);
-        cursor: pointer;
-    }
-
-    .tool-item:hover {
-        background-color: var(--sys-color-state-hover-on-subtle);
-    }
-
-    .tool-item.selected {
-        background-color: var(--sys-color-tonal-container);
-    }
-
-    .tool-name-container {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        gap: 8px;
-    }
-
-    .tool-name.source-code {
-        color: var(--sys-color-token-string);
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        min-width: 0;
-        flex: 1;
-    }
-
-    /* stylelint-disable-next-line selector-type-no-unknown */
-    .tool-name-container icon-button {
-        flex-shrink: 0;
-        height: 0;
-        overflow: visible;
-        display: flex;
-        align-items: center;
-    }
-
-    .tool-description {
-        color: var(--sys-color-on-surface);
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-
-    devtools-toolbar-input {
-        flex-grow: 1;
-        flex-shrink: 1;
-    }
-
-    .toolbar-text.status-error-text {
-      color: var(--sys-color-error);
-    }
-
-    .toolbar-text.status-cancelled-text {
+    tr.status-cancelled {
       color: var(--sys-color-on-surface-light);
     }
 
-    .call-details-tabbed-pane {
-        flex: auto;
-        border-bottom: 1px solid var(--sys-color-divider);
-    }
-
-    .call-payload-view {
-        display: flex;
-        flex-direction: column;
-        height: 100%;
-    }
-
-    .call-payload-content {
-        padding: var(--sys-size-5);
-        flex: auto;
-        overflow: auto;
-    }
-
-    .payload-value.error-text {
+    tr.status-error {
       color: var(--sys-color-error);
-      white-space: pre-wrap;
     }
 
-    .sidebar-tool-details {
-        flex: none;
-        border-bottom: 1px solid var(--sys-color-divider);
+    tr.selected {
+      background-color: var(--sys-color-tonal-container);
     }
 
-    .json-editor-widget {
-        flex: auto;
-        /* extend the JSON editor padding to match the details grid */
-        padding-left: calc(var(--sys-size-8) - 1em);
-        min-height: 0;
+    tbody tr.selected.status-error,
+    tbody tr.selected.status-error.revealed {
+      background-color: var(--sys-color-error-container);
+      color: var(--sys-color-error);
     }
 
-    .webmcp-run-tool-button {
-        align-self: flex-end;
-        margin: var(--sys-size-6) var(--sys-size-8);
+    tbody tr:hover .run-tool-action-button,
+    tbody tr:focus-within .run-tool-action-button,
+    &:focus-within tbody tr.selected .run-tool-action-button {
+      display: flex;
     }
+  }
+
+  .section-title {
+    display: flex;
+    gap: var(--sys-size-2);
+    background-color: var(--sys-color-surface1);
+    padding: 0 var(--sys-size-3);
+    line-height: var(--sys-size-10);
+    overflow: hidden;
+    align-items: center;
+    flex: none;
+    color: var(--sys-color-on-surface);
+    border-bottom: 1px solid var(--sys-color-divider);
+
+    devtools-button {
+      margin: calc(-1 * var(--sys-size-1)) 0;
+    }
+  }
+
+  .status-cell {
+    display: flex;
+    align-items: center;
+    gap: var(--sys-size-3);
+  }
+
+  .name-cell {
+    display: flex;
+    gap: var(--sys-size-5);
+    align-items: center;
+  }
+
+  .run-tool-action-button {
+    display: none;
+    width: var(--sys-size-8);
+    height: var(--sys-size-8);
+    padding: 0;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    devtools-icon {
+      width: var(--sys-size-7);
+      height: var(--sys-size-7);
+      color: var(--sys-color-primary);
+    }
+  }
+
+  .tool-details {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .tool-details-grid {
+    display: grid;
+    grid-template-columns: min-content 1fr;
+    gap: var(--sys-size-6);
+    padding: calc(0.5*var(--sys-size-6)) var(--sys-size-8);
+    align-items: flex-start;
+    overflow-y: auto;
+
+    .label {
+      color: var(--sys-color-on-surface-subtle);
+      white-space: nowrap;
+      padding: var(--sys-size-3) 0;
+    }
+
+    .value {
+      user-select: text;
+
+      &.source-code {
+        color: var(--sys-color-token-property-special);
+      }
+
+      padding: var(--sys-size-3) 0;
+      color: var(--sys-color-on-surface);
+      overflow-wrap: anywhere;
+
+      &:has(> .stack-preview-container) {
+        padding: var(--sys-size-4) 0;
+      }
+
+      &.tool-origin-container {
+        display: flex;
+        align-items: center;
+        gap: var(--sys-size-4);
+      }
+
+      .tool-origin-node {
+        display: flex;
+        align-items: center;
+        cursor: default;
+      }
+    }
+
+    .show-element {
+      height: 1lh;
+    }
+  }
+
+  devtools-list {
+    flex: 1 1 auto;
+    margin: 0;
+    padding: var(--sys-size-4) 0;
+    box-sizing: border-box;
+  }
+
+  .tool-item {
+    display: flex;
+    flex-direction: column;
+    padding: var(--sys-size-5) var(--sys-size-4);
+    gap: var(--sys-size-3);
+    width: 100%;
+    box-sizing: border-box;
+    border-bottom: 1px solid var(--sys-color-divider);
+
+    &:hover {
+      background-color: var(--sys-color-state-hover-on-subtle);
+    }
+
+    &.selected {
+      background-color: var(--sys-color-tonal-container);
+    }
+  }
+
+  .tool-name-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--sys-size-5);
+
+    .tool-icons {
+      display: flex;
+      gap: var(--sys-size-2);
+      align-items: center;
+    }
+    /* stylelint-disable-next-line selector-type-no-unknown */
+    icon-button {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+    }
+  }
+
+  .tool-name.source-code {
+    color: var(--sys-color-token-property-special);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+    flex: 1;
+  }
+
+  .tool-description {
+    color: var(--sys-color-on-surface);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  devtools-toolbar-input {
+    flex-grow: 1;
+    flex-shrink: 1;
+  }
+
+  .toolbar-text.status-error-text {
+    color: var(--sys-color-error);
+  }
+
+  .toolbar-text.status-cancelled-text {
+    color: var(--sys-color-on-surface-light);
+  }
+
+  .call-details-tabbed-pane {
+    flex: auto;
+    border-bottom: 1px solid var(--sys-color-divider);
+  }
+
+  .call-payload-view {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .call-payload-content {
+    padding: var(--sys-size-5);
+    flex: auto;
+    overflow: auto;
+  }
+
+  .payload-value.error-text {
+    color: var(--sys-color-error);
+    white-space: pre-wrap;
+  }
+
+  .sidebar-tool-details {
+    flex: none;
+    border-bottom: 1px solid var(--sys-color-divider);
+  }
+
+  .call-to-action {
+    background-color: var(--sys-color-neutral-container);
+    padding: 8px;
+    border-radius: 5px;
+    margin: 4px;
+  }
+
+  .call-to-action-body {
+    padding: 6px 0;
+    margin-left: 9.5px;
+    border-left: 2px solid var(--issue-color-yellow);
+    padding-left: 18px;
+    line-height: 20px;
+  }
+
+  .call-to-action .explanation {
+    font-weight: bold;
+  }
+
+  .inline-icon {
+    vertical-align: middle;
+  }
+
+  .json-editor-widget {
+    flex: auto;
+    /* extend the JSON editor padding to match the details grid */
+    padding-left: calc(var(--sys-size-8) - 1em);
+    min-height: 0;
+  }
+
+  .webmcp-run-tool-button {
+    align-self: flex-end;
+    margin: var(--sys-size-6) var(--sys-size-8);
+  }
 }
 
 /*# sourceURL=${import.meta.resolve("./webMCPView.css")} */`;
@@ -12187,7 +12248,23 @@ var UIStrings30 = {
   /**
    * @description Text for the header of the tool run section
    */
-  runTool: "Run Tool"
+  runTool: "Run Tool",
+  /**
+   * @description Context menu action to reveal the tool in the tool list
+   */
+  revealTool: "Reveal tool",
+  /**
+   * @description Context menu action to edit and run the tool
+   */
+  editAndRun: "Edit and run",
+  /**
+   * @description Tooltip for the paste button
+   */
+  paste: "Paste",
+  /**
+   * @description Notice to display when a tool has been unregistered
+   */
+  toolUnregisteredNotice: "This tool has been unregistered"
 };
 var str_30 = i18n59.i18n.registerUIStrings("panels/application/WebMCPView.ts", UIStrings30);
 var i18nString30 = i18n59.i18n.getLocalizedString.bind(void 0, str_30);
@@ -12197,11 +12274,14 @@ function filterToolCalls(toolCalls, filterState) {
   const statusTypes = filterState.statusTypes;
   if (statusTypes) {
     filtered = filtered.filter((call) => {
-      const { completed, error, pending } = statusTypes;
+      const { completed, error, pending, canceled } = statusTypes;
       if (completed && call.result?.status === "Completed") {
         return true;
       }
       if (error && call.result?.status === "Error") {
+        return true;
+      }
+      if (canceled && call.result?.status === "Canceled") {
         return true;
       }
       if (pending && call.result === void 0) {
@@ -12232,59 +12312,45 @@ function filterToolCalls(toolCalls, filterState) {
   return filtered;
 }
 function calculateToolStats(calls) {
-  let total = 0, completed = 0, failed = 0, canceled = 0, inProgress = 0;
+  const stats = /* @__PURE__ */ new Map();
+  const totals = /* @__PURE__ */ new Map();
   for (const call of calls) {
-    total++;
-    if (call.result?.status === "Error") {
-      failed++;
-    } else if (call.result?.status === "Canceled") {
-      canceled++;
-    } else if (call.result?.status === "Completed") {
-      completed++;
-    } else if (call.result === void 0) {
-      inProgress++;
+    let toolStats = stats.get(call.tool);
+    if (!toolStats) {
+      toolStats = /* @__PURE__ */ new Map();
+      stats.set(call.tool, toolStats);
     }
+    toolStats.set(call.result?.status, (toolStats.get(call.result?.status) ?? 0) + 1);
+    totals.set(call.result?.status, (totals.get(call.result?.status) ?? 0) + 1);
   }
-  return { total, completed, failed, canceled, inProgress };
+  return { totals, stats };
+}
+function toolStatsIcon(status) {
+  switch (status) {
+    case "Completed":
+      return { iconName: "check-circle", iconColor: "var(--sys-color-green)" };
+    case "Error":
+      return { iconName: "cross-circle-filled", iconColor: "var(--sys-color-error)" };
+    case "Canceled":
+      return { iconName: "record-stop", iconColor: "var(--sys-color-on-surface-light)" };
+    case void 0:
+      return { iconName: "watch" };
+  }
 }
 function getIconGroupsFromStats(toolStats) {
-  const groups = [];
-  if (toolStats.completed > 0) {
-    groups.push({
-      iconName: "check-circle",
-      iconColor: "var(--sys-color-green)",
-      iconWidth: "16px",
-      iconHeight: "16px",
-      text: String(toolStats.completed)
-    });
-  }
-  if (toolStats.failed > 0) {
-    groups.push({
-      iconName: "cross-circle-filled",
-      iconColor: "var(--sys-color-error)",
-      iconWidth: "16px",
-      iconHeight: "16px",
-      text: String(toolStats.failed)
-    });
-  }
-  if (toolStats.canceled > 0) {
-    groups.push({
-      iconName: "record-stop",
-      iconColor: "var(--sys-color-on-surface-light)",
-      iconWidth: "16px",
-      iconHeight: "16px",
-      text: String(toolStats.canceled)
-    });
-  }
-  if (toolStats.inProgress > 0) {
-    groups.push({
-      iconName: "watch",
-      iconWidth: "16px",
-      iconHeight: "16px",
-      text: String(toolStats.inProgress)
-    });
-  }
-  return groups;
+  const status = [
+    "Completed",
+    "Error",
+    "Canceled",
+    void 0
+  ];
+  return status.map((status2) => ({
+    ...toolStatsIcon(status2),
+    iconWidth: "var(--sys-size-8)",
+    iconHeight: "var(--sys-size-8)",
+    text: String(toolStats?.get(status2) ?? 0),
+    status: status2
+  })).filter(({ text }) => text !== "0");
 }
 function parsePayload(payload) {
   if (payload === void 0) {
@@ -12316,7 +12382,7 @@ function getJSONEditorParameters(tool) {
 var DEFAULT_VIEW7 = (input, output, target) => {
   const tools = input.tools;
   let editorWidget = null;
-  const stats = calculateToolStats(input.toolCalls);
+  const toolStats = calculateToolStats(input.toolCalls);
   const isFilterActive = Boolean(input.filters.text) || Boolean(input.filters.toolTypes) || Boolean(input.filters.statusTypes);
   const iconName = (call) => {
     switch (call.result?.status) {
@@ -12342,6 +12408,23 @@ var DEFAULT_VIEW7 = (input, output, target) => {
         return i18nString30(UIStrings30.inProgress);
     }
   };
+  const onIconClick = (toolName, status) => {
+    let statusTypes = void 0;
+    if (status === "Completed") {
+      statusTypes = { completed: true };
+    } else if (status === "Error") {
+      statusTypes = { error: true };
+    } else if (status === "Canceled") {
+      statusTypes = { canceled: true };
+    } else if (status === void 0) {
+      statusTypes = { pending: true };
+    }
+    input.onFilterChange({
+      ...input.filters,
+      text: toolName,
+      statusTypes
+    });
+  };
   const onToolContextMenu = (event, tool) => {
     const contextMenu = new UI23.ContextMenu.ContextMenu(event);
     contextMenu.defaultSection().appendItem(i18nString30(UIStrings30.copyName), () => {
@@ -12366,8 +12449,8 @@ var DEFAULT_VIEW7 = (input, output, target) => {
             <div class="toolbar-divider"></div>
             <devtools-toolbar-input type="filter"
                                     placeholder=${i18nString30(UIStrings30.filter)}
-                                    .value=${input.filters.text}
-                                    @change=${(e) => input.onFilterChange({ ...input.filters, text: e.detail })}>
+                                    @change=${(e) => input.onFilterChange({ ...input.filters, text: e.detail })}
+                                    .value=${input.filters.text}>
             </devtools-toolbar-input>
             <div class="toolbar-divider"></div>
             ${input.filterButtons.toolTypes.button.element}
@@ -12405,8 +12488,33 @@ var DEFAULT_VIEW7 = (input, output, target) => {
     "status-error": call.result?.status === "Error",
     "status-cancelled": call.result?.status === "Canceled",
     selected: call === input.selectedCall
-  })} @click=${() => input.onCallSelect(call)}>
-                      <td>${call.tool.name}</td>
+  })} @click=${() => input.onCallSelect(call)}
+                        @contextmenu=${(e) => {
+    const contextMenu = e.detail;
+    const isUnregistered = !input.tools.includes(call.tool);
+    contextMenu.defaultSection().appendItem(i18nString30(UIStrings30.revealTool), () => {
+      input.onRevealTool(call.tool);
+    }, { jslogContext: "webmcp.reveal-tool", disabled: isUnregistered });
+    contextMenu.defaultSection().appendItem(i18nString30(UIStrings30.editAndRun), () => {
+      const payload = parsePayload(call.input);
+      input.onRevealTool(call.tool, payload.valueObject);
+    }, { jslogContext: "webmcp.edit-and-run", disabled: isUnregistered });
+  }}>
+                      <td>
+                        <div class="name-cell">
+                          <span>${call.tool.name}</span>
+                          <button class="run-tool-action-button"
+                                  title=${i18nString30(UIStrings30.editAndRun)}
+                                  aria-label=${i18nString30(UIStrings30.editAndRun)}
+                                  @click=${(e) => {
+    e.stopPropagation();
+    const payload = parsePayload(call.input);
+    input.onRevealTool(call.tool, payload.valueObject);
+  }}>
+                            <devtools-icon name="goto-filled"></devtools-icon>
+                          </button>
+                        </div>
+                      </td>
                       <td>
                         <div class="status-cell">
                           ${iconName(call) ? html10`<devtools-icon class="small" name=${iconName(call)}></devtools-icon>` : ""}
@@ -12435,7 +12543,7 @@ var DEFAULT_VIEW7 = (input, output, target) => {
                 <devtools-widget
                   id="webmcp.tool-details"
                   title=${i18nString30(UIStrings30.toolDetails)}
-                  ${widget7(ToolDetailsWidget, { tool: input.selectedCall?.tool })}>
+                  ${widget7(ToolDetailsWidget, { tool: input.selectedCall?.tool, isUnregistered: input.selectedCall ? !input.tools.includes(input.selectedCall.tool) : false })}>
                 </devtools-widget>
                 <devtools-widget
                   id="webmcp.call-inputs"
@@ -12456,13 +12564,19 @@ var DEFAULT_VIEW7 = (input, output, target) => {
           </devtools-split-view>
           <div class="webmcp-toolbar-container" role="toolbar">
             <devtools-toolbar class="webmcp-toolbar" role="presentation" wrappable>
-              <span class="toolbar-text">${i18nString30(UIStrings30.totalCalls, { PH1: stats.total })}</span>
+              <span class="toolbar-text">${i18nString30(UIStrings30.totalCalls, { PH1: input.toolCalls.length })}</span>
               <div class="toolbar-divider"></div>
-              <span class="toolbar-text status-error-text">${i18nString30(UIStrings30.failed, { PH1: stats.failed })}</span>
+              <span class="toolbar-text status-error-text">${i18nString30(UIStrings30.failed, { PH1: toolStats.totals.get(
+    "Error"
+    /* Protocol.WebMCP.InvocationStatus.Error */
+  ) ?? 0 })}</span>
               <div class="toolbar-divider"></div>
-              <span class="toolbar-text status-cancelled-text">${i18nString30(UIStrings30.canceledCount, { PH1: stats.canceled })}</span>
+              <span class="toolbar-text status-cancelled-text">${i18nString30(UIStrings30.canceledCount, { PH1: toolStats.totals.get(
+    "Canceled"
+    /* Protocol.WebMCP.InvocationStatus.Canceled */
+  ) ?? 0 })}</span>
               <div class="toolbar-divider"></div>
-              <span class="toolbar-text">${i18nString30(UIStrings30.inProgressCount, { PH1: stats.inProgress })}</span>
+              <span class="toolbar-text">${i18nString30(UIStrings30.inProgressCount, { PH1: toolStats.totals.get(void 0) ?? 0 })}</span>
             </devtools-toolbar>
           </div>
         ` : html10`
@@ -12485,22 +12599,26 @@ var DEFAULT_VIEW7 = (input, output, target) => {
     text: i18nString30(UIStrings30.noToolsPlaceholder)
   })}
           ` : html10`
-            <devtools-list>
-              ${tools.map((tool) => {
-    const toolStats = calculateToolStats(input.toolCalls.filter((c) => c.tool === tool));
-    const groups = getIconGroupsFromStats(toolStats);
-    return html10`
-                    <div class=${Directives4.classMap({ "tool-item": true, selected: tool === input.selectedTool })}
-                         @click=${() => input.onToolSelect(tool)}
-                         @contextmenu=${(e) => onToolContextMenu(e, tool)}>
-                    <div class="tool-name-container">
-                      <div class="tool-name source-code">${tool.name}</div>
-                      ${groups.length > 0 ? html10`<icon-button .data=${{ groups, compact: false }}></icon-button>` : ""}
+            <devtools-list class="square-corners">
+              ${tools.map((tool) => html10`
+                <div class=${Directives4.classMap({ "tool-item": true, selected: tool === input.selectedTool?.tool })}
+                     @click=${() => input.onToolSelect(tool)}
+                     @contextmenu=${(e) => onToolContextMenu(e, tool)}>
+                  <div class="tool-name-container">
+                    <div class="tool-name source-code">${tool.name}</div>
+                    <div class="tool-icons">
+                      ${getIconGroupsFromStats(toolStats.stats.get(tool)).map((group) => html10`
+                        <icon-button
+                          .data=${{
+    groups: [group],
+    compact: false,
+    clickHandler: () => onIconClick(tool.name, group.status)
+  }}
+                          @click=${(e) => e.stopPropagation()}></icon-button>`)}
                     </div>
-                    <div class="tool-description">${tool.description}</div>
                   </div>
-                `;
-  })}
+                  <div class="tool-description">${tool.description}</div>
+                </div>`)}
             </devtools-list>
           `}
         </div>
@@ -12517,10 +12635,18 @@ var DEFAULT_VIEW7 = (input, output, target) => {
           </div>
           ${input.selectedTool ? html10`
             <div class="sidebar-tool-details">
-              ${widget7(ToolDetailsWidget, { tool: input.selectedTool })}
+              ${widget7(ToolDetailsWidget, { tool: input.selectedTool.tool })}
             </div>
             <div class="section-title">
               <span>${i18nString30(UIStrings30.runTool)}</span>
+              <div style="flex: auto;"></div>
+              <devtools-button
+                .iconName=${"import"}
+                .size=${"SMALL"}
+                .variant=${"text"}
+                title=${i18nString30(UIStrings30.paste)}
+                @click=${input.onPaste}
+              >${i18nString30(UIStrings30.paste)}</devtools-button>
             </div>
             <devtools-widget
               class="json-editor-widget"
@@ -12528,8 +12654,11 @@ var DEFAULT_VIEW7 = (input, output, target) => {
     displayTargetSelector: false,
     displayCommandInput: false,
     displayToolbar: false,
-    ...getJSONEditorParameters(input.selectedTool),
-    commandToDisplay: input.selectedTool.name
+    ...getJSONEditorParameters(input.selectedTool.tool),
+    commandToDisplay: {
+      command: input.selectedTool.tool.name,
+      parameters: input.selectedTool.parameters || {}
+    }
   })}
               ${UI23.Widget.widgetRef(ProtocolMonitor.JSONEditor.JSONEditor, (e) => {
     editorWidget = e;
@@ -12546,7 +12675,7 @@ var DEFAULT_VIEW7 = (input, output, target) => {
       const params = editorWidget.getParameters();
       input.onRunTool({
         data: {
-          command: input.selectedTool.name,
+          command: input.selectedTool.tool.name,
           parameters: params
         }
       });
@@ -12627,13 +12756,14 @@ var WebMCPView = class _WebMCPView extends UI23.Widget.VBox {
       const current = this.#filterState.statusTypes ?? {};
       const next = { ...current, [key]: !current[key] };
       let statusTypesToPass = next;
-      if (!next.completed && !next.error && !next.pending) {
+      if (!next.completed && !next.error && !next.pending && !next.canceled) {
         statusTypesToPass = void 0;
       }
       this.#handleFilterChange({ ...this.#filterState, statusTypes: statusTypesToPass });
     };
     contextMenu.defaultSection().appendCheckboxItem(i18nString30(UIStrings30.completed), () => toggle4("completed"), { checked: this.#filterState.statusTypes?.["completed"] ?? false, jslogContext: "webmcp.completed" });
     contextMenu.defaultSection().appendCheckboxItem(i18nString30(UIStrings30.error), () => toggle4("error"), { checked: this.#filterState.statusTypes?.["error"] ?? false, jslogContext: "webmcp.error" });
+    contextMenu.defaultSection().appendCheckboxItem(i18nString30(UIStrings30.canceled), () => toggle4("canceled"), { checked: this.#filterState.statusTypes?.["canceled"] ?? false, jslogContext: "webmcp.canceled" });
     contextMenu.defaultSection().appendCheckboxItem(i18nString30(UIStrings30.pending), () => toggle4("pending"), { checked: this.#filterState.statusTypes?.["pending"] ?? false, jslogContext: "webmcp.pending" });
   }
   #webMCPModelAdded(model) {
@@ -12649,7 +12779,7 @@ var WebMCPView = class _WebMCPView extends UI23.Widget.VBox {
     model.removeEventListener("ToolResponded", this.requestUpdate, this);
   }
   #toolsRemoved(event) {
-    if (this.#selectedTool && event.data.includes(this.#selectedTool)) {
+    if (this.#selectedTool && event.data.includes(this.#selectedTool.tool)) {
       this.#selectedTool = null;
     }
     this.requestUpdate();
@@ -12683,7 +12813,11 @@ var WebMCPView = class _WebMCPView extends UI23.Widget.VBox {
       tools,
       selectedTool: this.#selectedTool,
       onToolSelect: (tool) => {
-        this.#selectedTool = tool;
+        this.#selectedTool = tool ? { tool } : null;
+        this.requestUpdate();
+      },
+      onRevealTool: (tool, parameters) => {
+        this.#selectedTool = { tool, parameters };
         this.requestUpdate();
       },
       selectedCall: this.#selectedCall,
@@ -12698,7 +12832,21 @@ var WebMCPView = class _WebMCPView extends UI23.Widget.VBox {
       onFilterChange: this.#handleFilterChange,
       onRunTool: (event) => {
         if (this.#selectedTool) {
-          void this.#selectedTool.invoke(event.data.parameters || {});
+          void this.#selectedTool.tool.invoke(event.data.parameters || {});
+        }
+      },
+      onPaste: async () => {
+        try {
+          const text = await navigator.clipboard.readText();
+          const json = JSON.parse(text);
+          if (typeof json !== "object" || json === null || Array.isArray(json)) {
+            throw new Error("Pasted JSON must be an object");
+          }
+          if (this.#selectedTool) {
+            this.#selectedTool.parameters = json;
+            this.requestUpdate();
+          }
+        } catch {
         }
       }
     };
@@ -12877,15 +13025,36 @@ var TOOL_DETAILS_VIEW = (input, output, target) => {
         ${widget7(Components4.JSPresentationUtils.StackTracePreviewContent, { stackTrace: origin, options: { expandable: true } })}
       </div>` : nothing6}
     </div>
+    ${input.isUnregistered ? html10`
+      <div class="call-to-action">
+        <div class="call-to-action-body">
+          <div class="explanation">
+            <devtools-icon class="inline-icon medium" name="warning-filled"></devtools-icon>
+            ${i18nString30(UIStrings30.toolUnregisteredNotice)}
+          </div>
+        </div>
+      </div>
+    ` : nothing6}
   `, target);
 };
 var ToolDetailsWidget = class extends UI23.Widget.Widget {
   #tool = null;
   #origin;
+  #isUnregistered = false;
   #view;
   constructor(element, view = TOOL_DETAILS_VIEW) {
     super(element);
     this.#view = view;
+  }
+  set isUnregistered(isUnregistered) {
+    if (this.#isUnregistered === isUnregistered) {
+      return;
+    }
+    this.#isUnregistered = isUnregistered;
+    this.requestUpdate();
+  }
+  get isUnregistered() {
+    return this.#isUnregistered;
   }
   set tool(tool) {
     if (this.#tool === tool) {
@@ -12921,6 +13090,7 @@ var ToolDetailsWidget = class extends UI23.Widget.Widget {
   performUpdate() {
     const viewInput = {
       tool: this.#tool,
+      isUnregistered: this.#isUnregistered,
       origin: this.#origin,
       highlightNode: this.#highlightNode,
       clearHighlight: this.#clearHighlight,

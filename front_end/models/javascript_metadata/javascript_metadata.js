@@ -8343,7 +8343,7 @@ var NativeFunctions = [
   },
   {
     name: "setConstraints",
-    signatures: [["constraints"]]
+    signatures: [["?constraints"]]
   },
   {
     name: "createContext",
@@ -9357,7 +9357,7 @@ var NativeFunctions = [
   },
   {
     name: "copyElementImageToTexture",
-    signatures: [["source", "destination"], ["source", "width", "height", "destination"], ["source", "sx", "sy", "swidth", "sheight", "destination"]]
+    signatures: [["source", "destination"], ["source", "width", "height", "destination"], ["source", "sx", "sy", "swidth", "sheight", "destination"], ["source", "sx", "sy", "swidth", "sheight", "width", "height", "destination"]]
   },
   {
     name: "multiDrawIndirect",

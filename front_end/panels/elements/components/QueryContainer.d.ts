@@ -1,13 +1,12 @@
 import '../../../ui/kit/kit.js';
 import '../../../ui/components/node_text/node_text.js';
 import * as SDK from '../../../core/sdk/sdk.js';
-import type { DOMNode } from './Helper.js';
 export declare class QueriedSizeRequestedEvent extends Event {
     static readonly eventName = "queriedsizerequested";
     constructor();
 }
 export interface QueryContainerData {
-    container: DOMNode;
+    container: SDK.DOMModel.DOMNode;
     queryName?: string;
     onContainerLinkClick: (event: Event) => void;
 }

@@ -194,6 +194,12 @@ export declare function setupIgnoreListManagerEnvironment(): {
 };
 export declare function microsecondsTraceWindow(min: number, max: number): Trace.Types.Timing.TraceWindowMicro;
 export declare function microseconds(x: number): Trace.Types.Timing.Micro;
+/**
+ * Creates a mock `ParsedTrace` object for use in tests. This is a simple
+ * cast of an empty object to the `ParsedTrace` type to reduce noise in tests
+ * that only need a typed trace object without specific data.
+ */
+export declare function makeFakeParsedTrace(): Trace.TraceModel.ParsedTrace;
 export declare function milliseconds(x: number): Trace.Types.Timing.Milli;
 export declare function getAllNetworkRequestsByHost(networkRequests: Trace.Types.Events.SyntheticNetworkRequest[], host: string): Trace.Types.Events.SyntheticNetworkRequest[];
 /**

@@ -15,7 +15,7 @@ import { DefaultScriptMapping } from './DefaultScriptMapping.js';
 import { LiveLocationWithPool } from './LiveLocation.js';
 import { NetworkProject } from './NetworkProject.js';
 import { ResourceScriptMapping } from './ResourceScriptMapping.js';
-import { SymbolizedErrorObject, SymbolizedSyntaxError } from './SymbolizedError.js';
+import { SymbolizedErrorObject, SymbolizedSyntaxError, UnparsableError } from './SymbolizedError.js';
 export class DebuggerWorkspaceBinding {
     resourceMapping;
     #debuggerModelToData;
@@ -189,12 +189,12 @@ export class DebuggerWorkspaceBinding {
             this.createStackTraceFromErrorStackLikeString(remoteObject.runtimeModel().target(), errorStack, fetchedExceptionDetails),
             causeRemoteObject ? this.createSymbolizedError(causeRemoteObject) : Promise.resolve(null),
         ]);
-        if (!stackTrace) {
-            return null;
-        }
         const issueSummary = fetchedExceptionDetails?.exceptionMetaData?.issueSummary;
         if (typeof issueSummary === 'string') {
             errorStack = StackTrace.ErrorStackParser.concatErrorDescriptionAndIssueSummary(errorStack, issueSummary);
+        }
+        if (!stackTrace) {
+            return new UnparsableError(errorStack, cause);
         }
         const message = StackTraceImpl.DetailedErrorStackParser.parseMessage(errorStack);
         return new SymbolizedErrorObject(message, stackTrace, cause);

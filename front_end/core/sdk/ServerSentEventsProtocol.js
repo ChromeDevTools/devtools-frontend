@@ -105,7 +105,7 @@ class Base64TextDecoder {
         void this.#decoder.readable.pipeTo(new WritableStream({ write: onTextChunk }));
     }
     async addBase64Chunk(chunk) {
-        const binString = window.atob(chunk);
+        const binString = globalThis.atob(chunk);
         const bytes = Uint8Array.from(binString, m => m.codePointAt(0));
         await this.#writer.ready;
         await this.#writer.write(bytes);

@@ -734,6 +734,14 @@ export function microsecondsTraceWindow(min, max) {
 export function microseconds(x) {
     return Trace.Types.Timing.Micro(x);
 }
+/**
+ * Creates a mock `ParsedTrace` object for use in tests. This is a simple
+ * cast of an empty object to the `ParsedTrace` type to reduce noise in tests
+ * that only need a typed trace object without specific data.
+ */
+export function makeFakeParsedTrace() {
+    return {};
+}
 export function milliseconds(x) {
     return Trace.Types.Timing.Milli(x);
 }

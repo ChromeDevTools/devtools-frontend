@@ -143,6 +143,7 @@ var iconButton_css_default = `/*
   font-size: inherit;
   font-family: inherit;
   background-color: inherit;
+  cursor: inherit;
 }
 
 .icon-button.with-click-handler {

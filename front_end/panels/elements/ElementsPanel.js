@@ -433,14 +433,13 @@ export class ElementsPanel extends UI.Panel.Panel {
             this.#domTreeWidget.selectDOMNode(null);
         }
         if (selectedNode) {
-            const activeNode = ElementsComponents.Helper.legacyNodeToElementsComponentsNode(selectedNode);
-            const crumbs = [activeNode];
+            const crumbs = [selectedNode];
             for (let current = selectedNode.parentNode; current; current = current.parentNode) {
-                crumbs.push(ElementsComponents.Helper.legacyNodeToElementsComponentsNode(current));
+                crumbs.push(current);
             }
             this.breadcrumbs.data = {
                 crumbs,
-                selectedNode: ElementsComponents.Helper.legacyNodeToElementsComponentsNode(selectedNode),
+                selectedNode,
             };
             if (this.accessibilityTreeView) {
                 void this.accessibilityTreeView.selectedNodeChanged(selectedNode);
@@ -764,15 +763,13 @@ export class ElementsPanel extends UI.Panel.Panel {
          * that we had before with the new nodes, and pass them into the breadcrumbs component.
          */
         // Get the current set of active crumbs
-        const activeNode = ElementsComponents.Helper.legacyNodeToElementsComponentsNode(selectedNode);
-        const existingCrumbs = [activeNode];
+        const existingCrumbs = [selectedNode];
         for (let current = selectedNode.parentNode; current; current = current.parentNode) {
-            existingCrumbs.push(ElementsComponents.Helper.legacyNodeToElementsComponentsNode(current));
+            existingCrumbs.push(current);
         }
         /* Get the change nodes from the event & convert them to breadcrumb nodes */
-        const newNodes = nodes.map(ElementsComponents.Helper.legacyNodeToElementsComponentsNode);
         const nodesThatHaveChangedMap = new Map();
-        newNodes.forEach(crumb => nodesThatHaveChangedMap.set(crumb.id, crumb));
+        nodes.forEach(crumb => nodesThatHaveChangedMap.set(crumb.id, crumb));
         /* Loop over our existing crumbs, and if any have an ID that matches an ID from the new nodes
          * that we have, use the new node, rather than the one we had, because it's changed.
          */
@@ -782,11 +779,11 @@ export class ElementsPanel extends UI.Panel.Panel {
         });
         this.breadcrumbs.data = {
             crumbs: newSetOfCrumbs,
-            selectedNode: activeNode,
+            selectedNode,
         };
     }
     crumbNodeSelected(event) {
-        this.selectDOMNode(event.legacyDomNode, true);
+        this.selectDOMNode(event.node, true);
     }
     leaveUserAgentShadowDOM(node) {
         let userAgentShadowRoot;

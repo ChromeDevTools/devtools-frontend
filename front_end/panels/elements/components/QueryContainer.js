@@ -34,12 +34,12 @@ export class QueryContainer extends HTMLElement {
         this.#render();
     }
     async #onContainerLinkMouseEnter() {
-        this.#container?.highlightNode('container-outline');
+        this.#container?.highlight('container-outline');
         this.#isContainerLinkHovered = true;
         this.dispatchEvent(new QueriedSizeRequestedEvent());
     }
     #onContainerLinkMouseLeave() {
-        this.#container?.clearHighlight();
+        SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
         this.#isContainerLinkHovered = false;
         this.#render();
     }
@@ -52,7 +52,7 @@ export class QueryContainer extends HTMLElement {
             idToDisplay = this.#container.getAttribute('id');
             classesToDisplay = this.#container.getAttribute('class')?.split(/\s+/).filter(Boolean);
         }
-        const nodeTitle = this.#queryName || this.#container.nodeNameNicelyCased;
+        const nodeTitle = this.#queryName || this.#container.nodeNameInCorrectCase();
         // Disabled until https://crbug.com/1079231 is fixed.
         // clang-format off
         // eslint-disable-next-line @devtools/no-a-tags-in-lit

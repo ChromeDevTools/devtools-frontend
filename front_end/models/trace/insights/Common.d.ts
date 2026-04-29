@@ -2,8 +2,9 @@ import * as Protocol from '../../../generated/protocol.js';
 import type * as CrUXManager from '../../crux-manager/crux-manager.js';
 import type * as Handlers from '../handlers/handlers.js';
 import * as Types from '../types/types.js';
-import { type InsightModel, type InsightModels, type InsightSet, type InsightSetContext, type MetricSavings } from './types.js';
+import { InsightKeys, type InsightModel, type InsightModels, type InsightSet, type InsightSetContext, type MetricSavings } from './types.js';
 export declare function getInsight<InsightName extends keyof InsightModels>(insightName: InsightName, insightSet: InsightSet): InsightModels[InsightName];
+export declare function isInsightKey(key: string): key is InsightKeys;
 export declare function getLCP(insightSet: InsightSet): {
     value: Types.Timing.Micro;
     event: Types.Events.AnyLargestContentfulPaintCandidate;

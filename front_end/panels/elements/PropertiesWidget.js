@@ -85,7 +85,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
       ${input.objectTree && input.allChildrenFiltered ? html `
         <div class="gray-info-message">${i18nString(UIStrings.noMatchingProperty)}</div>
       ` : nothing}
-      <devtools-tree @treeelementexpand=${onExpand} .template=${html `
+      <devtools-tree show-selection-on-keyboard-focus @treeelementexpand=${onExpand} .template=${html `
         <ul role=tree class="source-code object-properties-section">
           <style>${ObjectUI.ObjectPropertiesSection.objectValueStyles}</style>;
           <style>${ObjectUI.ObjectPropertiesSection.objectPropertiesSectionStyles}</style>;

@@ -4,7 +4,7 @@
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Handlers from '../handlers/handlers.js';
 import * as Helpers from '../helpers/helpers.js';
-import { InsightCategory, InsightWarning, } from './types.js';
+import { InsightCategory, InsightKeys, InsightWarning, } from './types.js';
 export const UIStrings = {
     /**
      * @description Title of an insight that provides the user with the list of network requests that blocked and therefore slowed down the page rendering and becoming visible to the user.
@@ -113,7 +113,7 @@ function computeSavings(data, context, renderBlockingRequests) {
 }
 function finalize(partialModel) {
     return {
-        insightKey: "RenderBlocking" /* InsightKeys.RENDER_BLOCKING */,
+        insightKey: InsightKeys.RENDER_BLOCKING,
         strings: UIStrings,
         title: i18nString(UIStrings.title),
         description: i18nString(UIStrings.description),

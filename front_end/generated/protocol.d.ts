@@ -4250,7 +4250,7 @@ export declare namespace DOM {
         After = "after",
         ExpandIcon = "expand-icon",
         PickerIcon = "picker-icon",
-        InterestHint = "interest-hint",
+        InterestButton = "interest-button",
         Marker = "marker",
         Backdrop = "backdrop",
         Column = "column",

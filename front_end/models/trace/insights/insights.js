@@ -37,6 +37,7 @@ __export(Common_exports, {
   getInsight: () => getInsight,
   getLCP: () => getLCP,
   insightBounds: () => insightBounds,
+  isInsightKey: () => isInsightKey,
   isRequestCompressed: () => isRequestCompressed,
   isRequestServedFromBrowserCache: () => isRequestServedFromBrowserCache,
   metricSavingsForWastedBytes: () => metricSavingsForWastedBytes
@@ -102,13 +103,60 @@ function linearInterpolation(x0, y0, x1, y1, x) {
   return y0 + (x - x0) * slope;
 }
 
+// gen/front_end/models/trace/insights/types.js
+var types_exports = {};
+__export(types_exports, {
+  InsightCategory: () => InsightCategory,
+  InsightKeys: () => InsightKeys,
+  InsightWarning: () => InsightWarning
+});
+var InsightWarning;
+(function(InsightWarning2) {
+  InsightWarning2["NO_FP"] = "NO_FP";
+  InsightWarning2["NO_LCP"] = "NO_LCP";
+  InsightWarning2["NO_DOCUMENT_REQUEST"] = "NO_DOCUMENT_REQUEST";
+  InsightWarning2["NO_LAYOUT"] = "NO_LAYOUT";
+})(InsightWarning || (InsightWarning = {}));
+var InsightCategory;
+(function(InsightCategory2) {
+  InsightCategory2["ALL"] = "All";
+  InsightCategory2["INP"] = "INP";
+  InsightCategory2["LCP"] = "LCP";
+  InsightCategory2["CLS"] = "CLS";
+})(InsightCategory || (InsightCategory = {}));
+var InsightKeys;
+(function(InsightKeys2) {
+  InsightKeys2["LCP_BREAKDOWN"] = "LCPBreakdown";
+  InsightKeys2["INP_BREAKDOWN"] = "INPBreakdown";
+  InsightKeys2["CLS_CULPRITS"] = "CLSCulprits";
+  InsightKeys2["THIRD_PARTIES"] = "ThirdParties";
+  InsightKeys2["DOCUMENT_LATENCY"] = "DocumentLatency";
+  InsightKeys2["DOM_SIZE"] = "DOMSize";
+  InsightKeys2["DUPLICATE_JAVASCRIPT"] = "DuplicatedJavaScript";
+  InsightKeys2["FONT_DISPLAY"] = "FontDisplay";
+  InsightKeys2["FORCED_REFLOW"] = "ForcedReflow";
+  InsightKeys2["IMAGE_DELIVERY"] = "ImageDelivery";
+  InsightKeys2["LCP_DISCOVERY"] = "LCPDiscovery";
+  InsightKeys2["LEGACY_JAVASCRIPT"] = "LegacyJavaScript";
+  InsightKeys2["NETWORK_DEPENDENCY_TREE"] = "NetworkDependencyTree";
+  InsightKeys2["RENDER_BLOCKING"] = "RenderBlocking";
+  InsightKeys2["SLOW_CSS_SELECTOR"] = "SlowCSSSelector";
+  InsightKeys2["VIEWPORT"] = "Viewport";
+  InsightKeys2["MODERN_HTTP"] = "ModernHTTP";
+  InsightKeys2["CACHE"] = "Cache";
+  InsightKeys2["CHARACTER_SET"] = "CharacterSet";
+})(InsightKeys || (InsightKeys = {}));
+
 // gen/front_end/models/trace/insights/Common.js
 var GRAPH_SAVINGS_PRECISION = 50;
 function getInsight(insightName, insightSet) {
   return insightSet.model[insightName];
 }
+function isInsightKey(key) {
+  return Object.values(InsightKeys).includes(key);
+}
 function getLCP(insightSet) {
-  const insight = getInsight("LCPBreakdown", insightSet);
+  const insight = getInsight(InsightKeys.LCP_BREAKDOWN, insightSet);
   if (!insight || !insight.lcpMs || !insight.lcpEvent) {
     return null;
   }
@@ -116,7 +164,7 @@ function getLCP(insightSet) {
   return { value, event: insight.lcpEvent };
 }
 function getINP(insightSet) {
-  const insight = getInsight("INPBreakdown", insightSet);
+  const insight = getInsight(InsightKeys.INP_BREAKDOWN, insightSet);
   if (!insight?.longestInteractionEvent?.dur) {
     return null;
   }
@@ -124,7 +172,7 @@ function getINP(insightSet) {
   return { value, event: insight.longestInteractionEvent };
 }
 function getCLS(insightSet) {
-  const insight = getInsight("CLSCulprits", insightSet);
+  const insight = getInsight(InsightKeys.CLS_CULPRITS, insightSet);
   if (!insight) {
     return { value: 0, worstClusterEvent: null };
   }
@@ -373,27 +421,6 @@ function insightBounds(insight, insightSetBounds) {
   return insightSetBounds;
 }
 
-// gen/front_end/models/trace/insights/types.js
-var types_exports = {};
-__export(types_exports, {
-  InsightCategory: () => InsightCategory,
-  InsightWarning: () => InsightWarning
-});
-var InsightWarning;
-(function(InsightWarning2) {
-  InsightWarning2["NO_FP"] = "NO_FP";
-  InsightWarning2["NO_LCP"] = "NO_LCP";
-  InsightWarning2["NO_DOCUMENT_REQUEST"] = "NO_DOCUMENT_REQUEST";
-  InsightWarning2["NO_LAYOUT"] = "NO_LAYOUT";
-})(InsightWarning || (InsightWarning = {}));
-var InsightCategory;
-(function(InsightCategory2) {
-  InsightCategory2["ALL"] = "All";
-  InsightCategory2["INP"] = "INP";
-  InsightCategory2["LCP"] = "LCP";
-  InsightCategory2["CLS"] = "CLS";
-})(InsightCategory || (InsightCategory = {}));
-
 // gen/front_end/models/trace/insights/Cache.js
 var UIStrings = {
   /**
@@ -427,7 +454,7 @@ var i18nString = i18n.i18n.getLocalizedString.bind(void 0, str_);
 var IGNORE_THRESHOLD_IN_PERCENT = 0.925;
 function finalize(partialModel) {
   return {
-    insightKey: "Cache",
+    insightKey: InsightKeys.CACHE,
     strings: UIStrings,
     title: i18nString(UIStrings.title),
     description: i18nString(UIStrings.description),
@@ -500,7 +527,7 @@ function cachingDisabled(headers, parsedCacheControl) {
   return false;
 }
 function isCacheInsight(model) {
-  return model.insightKey === "Cache";
+  return model.insightKey === InsightKeys.CACHE;
 }
 function generateInsight(data, context) {
   const isWithinContext = (event) => Helpers2.Timing.eventIsInBounds(event, context.bounds);
@@ -630,7 +657,7 @@ var str_2 = i18n3.i18n.registerUIStrings("models/trace/insights/CharacterSet.ts"
 var i18nString2 = i18n3.i18n.getLocalizedString.bind(void 0, str_2);
 var CHARSET_HTTP_REGEX = /charset\s*=\s*[a-zA-Z0-9\-_:.()]{2,}/i;
 function isCharacterSetInsight(model) {
-  return model.insightKey === "CharacterSet";
+  return model.insightKey === InsightKeys.CHARACTER_SET;
 }
 function finalize2(partialModel) {
   let hasFailure = false;
@@ -638,7 +665,7 @@ function finalize2(partialModel) {
     hasFailure = !partialModel.data.checklist.httpCharset.value && !partialModel.data.checklist.metaCharset.value;
   }
   return {
-    insightKey: "CharacterSet",
+    insightKey: InsightKeys.CHARACTER_SET,
     strings: UIStrings2,
     title: i18nString2(UIStrings2.title),
     description: i18nString2(UIStrings2.description),
@@ -998,7 +1025,7 @@ function getUnsizedImageRootCauses(unsizedImageEvents, paintImageEvents, shiftsB
   return rootCausesByShift;
 }
 function isCLSCulpritsInsight(insight) {
-  return insight.insightKey === "CLSCulprits";
+  return insight.insightKey === InsightKeys.CLS_CULPRITS;
 }
 function getFontRootCauses(networkRequests, prePaintEvents, shiftsByPrePaint, rootCausesByShift) {
   const fontRequests = networkRequests.filter((req) => req.args.data.resourceType === "Font" && req.args.data.mimeType.startsWith("font"));
@@ -1072,7 +1099,7 @@ function finalize3(partialModel) {
     }
   }
   return {
-    insightKey: "CLSCulprits",
+    insightKey: InsightKeys.CLS_CULPRITS,
     strings: UIStrings3,
     title: i18nString3(UIStrings3.title),
     description: i18nString3(UIStrings3.description),
@@ -1276,7 +1303,7 @@ function finalize4(partialModel) {
     hasFailure = !partialModel.data.checklist.usesCompression.value || !partialModel.data.checklist.serverResponseIsFast.value || !partialModel.data.checklist.noRedirects.value;
   }
   return {
-    insightKey: "DocumentLatency",
+    insightKey: InsightKeys.DOCUMENT_LATENCY,
     strings: UIStrings4,
     title: i18nString4(UIStrings4.title),
     description: i18nString4(UIStrings4.description),
@@ -1458,7 +1485,7 @@ var STYLE_RECALC_ELEMENTS_THRESHOLD = 300;
 function finalize5(partialModel) {
   const relatedEvents = [...partialModel.largeLayoutUpdates, ...partialModel.largeStyleRecalcs];
   return {
-    insightKey: "DOMSize",
+    insightKey: InsightKeys.DOM_SIZE,
     strings: UIStrings5,
     title: i18nString5(UIStrings5.title),
     description: i18nString5(UIStrings5.description),
@@ -1470,7 +1497,7 @@ function finalize5(partialModel) {
   };
 }
 function isDomSizeInsight(model) {
-  return model.insightKey === "DOMSize";
+  return model.insightKey === InsightKeys.DOM_SIZE;
 }
 function generateInsight5(data, context) {
   const isWithinContext = (event) => Helpers5.Timing.eventIsInBounds(event, context.bounds);
@@ -1594,7 +1621,7 @@ var i18nString6 = i18n11.i18n.getLocalizedString.bind(void 0, str_6);
 function finalize6(partialModel) {
   const requests = partialModel.scriptsWithDuplication.map((script) => script.request).filter((e) => !!e);
   return {
-    insightKey: "DuplicatedJavaScript",
+    insightKey: InsightKeys.DUPLICATE_JAVASCRIPT,
     strings: UIStrings6,
     title: i18nString6(UIStrings6.title),
     description: i18nString6(UIStrings6.description),
@@ -1606,7 +1633,7 @@ function finalize6(partialModel) {
   };
 }
 function isDuplicatedJavaScriptInsight(model) {
-  return model.insightKey === "DuplicatedJavaScript";
+  return model.insightKey === InsightKeys.DUPLICATE_JAVASCRIPT;
 }
 function generateInsight6(data, context) {
   const scripts = data.Scripts.scripts.filter((script) => {
@@ -1687,7 +1714,7 @@ var str_7 = i18n13.i18n.registerUIStrings("models/trace/insights/FontDisplay.ts"
 var i18nString7 = i18n13.i18n.getLocalizedString.bind(void 0, str_7);
 function finalize7(partialModel) {
   return {
-    insightKey: "FontDisplay",
+    insightKey: InsightKeys.FONT_DISPLAY,
     strings: UIStrings7,
     title: i18nString7(UIStrings7.title),
     description: i18nString7(UIStrings7.description),
@@ -1698,7 +1725,7 @@ function finalize7(partialModel) {
   };
 }
 function isFontDisplayInsight(model) {
-  return model.insightKey === "FontDisplay";
+  return model.insightKey === InsightKeys.FONT_DISPLAY;
 }
 function generateInsight7(data, context) {
   const fonts = [];
@@ -1844,7 +1871,7 @@ function getLargestTopLevelFunctionData(forcedReflowEvents, traceParsedData) {
 }
 function finalize8(partialModel) {
   return {
-    insightKey: "ForcedReflow",
+    insightKey: InsightKeys.FORCED_REFLOW,
     strings: UIStrings8,
     title: i18nString8(UIStrings8.title),
     description: i18nString8(UIStrings8.description),
@@ -1860,7 +1887,7 @@ function getBottomCallFrameForEvent(event, traceParsedData) {
   return profileStackTrace?.callFrames[0] ?? eventTopCallFrame ?? null;
 }
 function isForcedReflowInsight(model) {
-  return model.insightKey === "ForcedReflow";
+  return model.insightKey === InsightKeys.FORCED_REFLOW;
 }
 function generateInsight8(traceParsedData, context) {
   const isWithinContext = (event) => {
@@ -2008,7 +2035,7 @@ function getOptimizationMessageWithBytes(optimization) {
 }
 function finalize9(partialModel) {
   return {
-    insightKey: "ImageDelivery",
+    insightKey: InsightKeys.IMAGE_DELIVERY,
     strings: UIStrings9,
     title: i18nString9(UIStrings9.title),
     description: i18nString9(UIStrings9.description),
@@ -2186,7 +2213,7 @@ var UIStrings10 = {
 var str_10 = i18n19.i18n.registerUIStrings("models/trace/insights/INPBreakdown.ts", UIStrings10);
 var i18nString10 = i18n19.i18n.getLocalizedString.bind(void 0, str_10);
 function isINPBreakdownInsight(insight) {
-  return insight.insightKey === "INPBreakdown";
+  return insight.insightKey === InsightKeys.INP_BREAKDOWN;
 }
 function finalize10(partialModel) {
   let state = "pass";
@@ -2199,7 +2226,7 @@ function finalize10(partialModel) {
     }
   }
   return {
-    insightKey: "INPBreakdown",
+    insightKey: InsightKeys.INP_BREAKDOWN,
     strings: UIStrings10,
     title: i18nString10(UIStrings10.title),
     description: i18nString10(UIStrings10.description),
@@ -2377,7 +2404,7 @@ function finalize11(partialModel) {
     }
   }
   return {
-    insightKey: "LCPBreakdown",
+    insightKey: InsightKeys.LCP_BREAKDOWN,
     strings: UIStrings11,
     title: i18nString11(UIStrings11.title),
     description: i18nString11(UIStrings11.description),
@@ -2508,7 +2535,7 @@ function finalize12(partialModel) {
     [partialModel.lcpEvent, partialModel.lcpRequest]
   ) : [];
   return {
-    insightKey: "LCPDiscovery",
+    insightKey: InsightKeys.LCP_DISCOVERY,
     strings: UIStrings12,
     title: i18nString12(UIStrings12.title),
     description: i18nString12(UIStrings12.description),
@@ -2657,7 +2684,7 @@ var BYTE_THRESHOLD = 5e3;
 function finalize13(partialModel) {
   const requests = [...partialModel.legacyJavaScriptResults.keys()].map((script) => script.request).filter((e) => !!e);
   return {
-    insightKey: "LegacyJavaScript",
+    insightKey: InsightKeys.LEGACY_JAVASCRIPT,
     strings: UIStrings13,
     title: i18nString13(UIStrings13.title),
     description: i18nString13(UIStrings13.description),
@@ -2669,7 +2696,7 @@ function finalize13(partialModel) {
   };
 }
 function isLegacyJavaScript(model) {
-  return model.insightKey === "LegacyJavaScript";
+  return model.insightKey === InsightKeys.LEGACY_JAVASCRIPT;
 }
 function generateInsight13(data, context) {
   const scripts = data.Scripts.scripts.filter((script) => {
@@ -2757,7 +2784,7 @@ var UIStrings14 = {
 var str_14 = i18n27.i18n.registerUIStrings("models/trace/insights/ModernHTTP.ts", UIStrings14);
 var i18nString14 = i18n27.i18n.getLocalizedString.bind(void 0, str_14);
 function isModernHTTPInsight(model) {
-  return model.insightKey === "ModernHTTP";
+  return model.insightKey === InsightKeys.MODERN_HTTP;
 }
 function isMultiplexableStaticAsset(request, entityMappings, firstPartyEntity) {
   if (!Helpers15.Network.STATIC_RESOURCE_TYPES.has(request.args.data.resourceType)) {
@@ -2853,7 +2880,7 @@ function computeMetricSavings(http1Requests, context) {
 }
 function finalize14(partialModel) {
   return {
-    insightKey: "ModernHTTP",
+    insightKey: InsightKeys.MODERN_HTTP,
     strings: UIStrings14,
     title: i18nString14(UIStrings14.title),
     description: i18nString14(UIStrings14.description),
@@ -2994,7 +3021,7 @@ var IGNORE_THRESHOLD_IN_MILLISECONDS = Types9.Timing.Milli(50);
 var TOO_MANY_PRECONNECTS_THRESHOLD = 4;
 function finalize15(partialModel) {
   return {
-    insightKey: "NetworkDependencyTree",
+    insightKey: InsightKeys.NETWORK_DEPENDENCY_TREE,
     strings: UIStrings15,
     title: i18nString15(UIStrings15.title),
     description: i18nString15(UIStrings15.description),
@@ -3341,7 +3368,7 @@ function generatePreconnectCandidates(data, context, contextRequests) {
   return preconnectCandidates.slice(0, TOO_MANY_PRECONNECTS_THRESHOLD);
 }
 function isNetworkDependencyTreeInsight(model) {
-  return model.insightKey === "NetworkDependencyTree";
+  return model.insightKey === InsightKeys.NETWORK_DEPENDENCY_TREE;
 }
 function generateInsight15(data, context) {
   if (!context.navigation) {
@@ -3489,7 +3516,7 @@ function computeSavings(data, context, renderBlockingRequests) {
 }
 function finalize16(partialModel) {
   return {
-    insightKey: "RenderBlocking",
+    insightKey: InsightKeys.RENDER_BLOCKING,
     strings: UIStrings16,
     title: i18nString16(UIStrings16.title),
     description: i18nString16(UIStrings16.description),
@@ -3695,7 +3722,7 @@ function aggregateSelectorStats(data, context) {
 }
 function finalize17(partialModel) {
   return {
-    insightKey: "SlowCSSSelector",
+    insightKey: InsightKeys.SLOW_CSS_SELECTOR,
     strings: UIStrings17,
     title: i18nString17(UIStrings17.title),
     description: i18nString17(UIStrings17.description),
@@ -3706,7 +3733,7 @@ function finalize17(partialModel) {
   };
 }
 function isSlowCSSSelectorInsight(model) {
-  return model.insightKey === "SlowCSSSelector";
+  return model.insightKey === InsightKeys.SLOW_CSS_SELECTOR;
 }
 function generateInsight17(data, context) {
   const selectorStatsData = data.SelectorStats;
@@ -3795,7 +3822,7 @@ function getRelatedEvents(summaries, firstPartyEntity) {
 }
 function finalize18(partialModel) {
   return {
-    insightKey: "ThirdParties",
+    insightKey: InsightKeys.THIRD_PARTIES,
     strings: UIStrings18,
     title: i18nString18(UIStrings18.title),
     description: i18nString18(UIStrings18.description),
@@ -3806,7 +3833,7 @@ function finalize18(partialModel) {
   };
 }
 function isThirdPartyInsight(model) {
-  return model.insightKey === "ThirdParties";
+  return model.insightKey === InsightKeys.THIRD_PARTIES;
 }
 function generateInsight18(data, context) {
   const entitySummaries = Extras4.ThirdParties.summarizeByThirdParty(data, context.bounds);
@@ -3876,7 +3903,7 @@ var str_19 = i18n37.i18n.registerUIStrings("models/trace/insights/Viewport.ts", 
 var i18nString19 = i18n37.i18n.getLocalizedString.bind(void 0, str_19);
 function finalize19(partialModel) {
   return {
-    insightKey: "Viewport",
+    insightKey: InsightKeys.VIEWPORT,
     strings: UIStrings19,
     title: i18nString19(UIStrings19.title),
     description: i18nString19(UIStrings19.description),
@@ -3887,7 +3914,7 @@ function finalize19(partialModel) {
   };
 }
 function isViewportInsight(model) {
-  return model.insightKey === "Viewport";
+  return model.insightKey === InsightKeys.VIEWPORT;
 }
 function generateInsight19(data, context) {
   const viewportEvent = data.UserInteractions.parseMetaViewportEvents.find((event) => {

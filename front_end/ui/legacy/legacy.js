@@ -22793,7 +22793,7 @@ function removeNode(node, preserveParentExpandable = false) {
   }
 }
 var TreeViewElement = class _TreeViewElement extends HTMLElementWithLightDOMTemplate {
-  static observedAttributes = ["navigation-variant", "hide-overflow", "dense"];
+  static observedAttributes = ["navigation-variant", "hide-overflow", "dense", "show-selection-on-keyboard-focus"];
   #treeOutline = new TreeOutlineInShadow(void 0, this);
   constructor() {
     super();
@@ -22941,6 +22941,9 @@ var TreeViewElement = class _TreeViewElement extends HTMLElementWithLightDOMTemp
         break;
       case "dense":
         this.#treeOutline.setDense(booleanValueIsTrue);
+        break;
+      case "show-selection-on-keyboard-focus":
+        this.#treeOutline.setShowSelectionOnKeyboardFocus(booleanValueIsTrue);
         break;
     }
   }

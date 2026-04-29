@@ -5,7 +5,7 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
-import { InsightCategory, } from './types.js';
+import { InsightCategory, InsightKeys, } from './types.js';
 export const UIStrings = {
     /** Title of an insight that provides details about the fonts used on the page, and the value of their `font-display` properties. */
     title: 'Font display',
@@ -22,7 +22,7 @@ const str_ = i18n.i18n.registerUIStrings('models/trace/insights/FontDisplay.ts',
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 function finalize(partialModel) {
     return {
-        insightKey: "FontDisplay" /* InsightKeys.FONT_DISPLAY */,
+        insightKey: InsightKeys.FONT_DISPLAY,
         strings: UIStrings,
         title: i18nString(UIStrings.title),
         description: i18nString(UIStrings.description),
@@ -33,7 +33,7 @@ function finalize(partialModel) {
     };
 }
 export function isFontDisplayInsight(model) {
-    return model.insightKey === "FontDisplay" /* InsightKeys.FONT_DISPLAY */;
+    return model.insightKey === InsightKeys.FONT_DISPLAY;
 }
 export function generateInsight(data, context) {
     const fonts = [];

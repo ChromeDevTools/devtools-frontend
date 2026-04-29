@@ -3800,6 +3800,10 @@ var UIStringsNotTranslate4 = {
    */
   revealLcpBreakdown: "Reveal LCP breakdown",
   /**
+   * @description Accessible label for the reveal button in the render-blocking requests widget.
+   */
+  revealRenderBlockingBreakdown: "Reveal render-blocking requests",
+  /**
    * @description Accessible label for the reveal button in the LCP element widget.
    */
   revealLcpElement: "Reveal LCP element",
@@ -3819,6 +3823,10 @@ var UIStringsNotTranslate4 = {
    * @description Title for the LCP breakdown widget.
    */
   lcpBreakdown: "LCP breakdown",
+  /**
+   * @description Title for the render-blocking requests widget.
+   */
+  renderBlockingBreakdown: "Render-blocking requests",
   /**
    * @description Title for the LCP element widget.
    */
@@ -4230,7 +4238,7 @@ async function makeStylePropertiesWidget(widgetData) {
 }
 async function makePerfInsightWidget(widgetData) {
   switch (widgetData.data.insight) {
-    case "lcp": {
+    case Trace.Insights.Types.InsightKeys.LCP_BREAKDOWN: {
       const insight = widgetData.data.insightData;
       if (!insight || !Trace.Insights.Models.LCPBreakdown.isLCPBreakdownInsight(insight)) {
         return null;
@@ -4247,6 +4255,25 @@ async function makePerfInsightWidget(widgetData) {
         accessibleRevealLabel: lockedString5(UIStringsNotTranslate4.revealLcpBreakdown),
         title: lockedString5(UIStringsNotTranslate4.lcpBreakdown),
         jslogContext: "lcp-breakdown"
+      };
+    }
+    case Trace.Insights.Types.InsightKeys.RENDER_BLOCKING: {
+      const insight = widgetData.data.insightData;
+      if (!insight || !Trace.Insights.Models.RenderBlocking.isRenderBlockingInsight(insight)) {
+        return null;
+      }
+      const renderedWidget = html7`<devtools-widget
+        class="render-blocking-widget"
+        ${widget3(TimelineInsights.RenderBlocking.RenderBlocking, {
+        model: insight,
+        minimal: true
+      })}></devtools-widget>`;
+      return {
+        renderedWidget,
+        revealable: new TimelineUtils.Helpers.RevealableInsight(insight),
+        accessibleRevealLabel: lockedString5(UIStringsNotTranslate4.revealRenderBlockingBreakdown),
+        title: lockedString5(UIStringsNotTranslate4.renderBlockingBreakdown),
+        jslogContext: "render-blocking-widget"
       };
     }
     default:

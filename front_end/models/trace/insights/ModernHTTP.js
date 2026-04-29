@@ -5,7 +5,7 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as Handlers from '../handlers/handlers.js';
 import * as Helpers from '../helpers/helpers.js';
-import { InsightCategory, } from './types.js';
+import { InsightCategory, InsightKeys, } from './types.js';
 export const UIStrings = {
     /**
      * @description Title of an insight that recommends using HTTP/2 over HTTP/1.1 because of the performance benefits. "HTTP" should not be translated.
@@ -31,7 +31,7 @@ export const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('models/trace/insights/ModernHTTP.ts', UIStrings);
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export function isModernHTTPInsight(model) {
-    return model.insightKey === "ModernHTTP" /* InsightKeys.MODERN_HTTP */;
+    return model.insightKey === InsightKeys.MODERN_HTTP;
 }
 /**
  * Determines whether a network request is a "static resource" that would benefit from H2 multiplexing.
@@ -165,7 +165,7 @@ function computeMetricSavings(http1Requests, context) {
 }
 function finalize(partialModel) {
     return {
-        insightKey: "ModernHTTP" /* InsightKeys.MODERN_HTTP */,
+        insightKey: InsightKeys.MODERN_HTTP,
         strings: UIStrings,
         title: i18nString(UIStrings.title),
         description: i18nString(UIStrings.description),

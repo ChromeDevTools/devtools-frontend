@@ -7,7 +7,7 @@ import * as Platform from '../../../core/platform/platform.js';
 import * as Extras from '../extras/extras.js';
 import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
-import { InsightCategory, } from './types.js';
+import { InsightCategory, InsightKeys, } from './types.js';
 export const UIStrings = {
     /**
      * @description Title of an insight that recommends avoiding chaining critical requests.
@@ -102,7 +102,7 @@ const IGNORE_THRESHOLD_IN_MILLISECONDS = Types.Timing.Milli(50);
 export const TOO_MANY_PRECONNECTS_THRESHOLD = 4;
 function finalize(partialModel) {
     return {
-        insightKey: "NetworkDependencyTree" /* InsightKeys.NETWORK_DEPENDENCY_TREE */,
+        insightKey: InsightKeys.NETWORK_DEPENDENCY_TREE,
         strings: UIStrings,
         title: i18nString(UIStrings.title),
         description: i18nString(UIStrings.description),
@@ -503,7 +503,7 @@ export function generatePreconnectCandidates(data, context, contextRequests) {
     return preconnectCandidates.slice(0, TOO_MANY_PRECONNECTS_THRESHOLD);
 }
 export function isNetworkDependencyTreeInsight(model) {
-    return model.insightKey === "NetworkDependencyTree" /* InsightKeys.NETWORK_DEPENDENCY_TREE */;
+    return model.insightKey === InsightKeys.NETWORK_DEPENDENCY_TREE;
 }
 export function generateInsight(data, context) {
     if (!context.navigation) {

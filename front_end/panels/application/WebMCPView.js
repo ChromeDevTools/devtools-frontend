@@ -151,6 +151,10 @@ const UIStrings = {
      */
     copyDescription: 'Copy description',
     /**
+     * @description Context menu action to cancel an in-progress tool call
+     */
+    cancelCall: 'Cancel',
+    /**
      * @description Text for the header of the tool run section
      */
     runTool: 'Run Tool',
@@ -411,6 +415,11 @@ export const DEFAULT_VIEW = (input, output, target) => {
             const payload = parsePayload(call.input);
             input.onRevealTool(call.tool, payload.valueObject);
         }, { jslogContext: 'webmcp.edit-and-run', disabled: isUnregistered });
+        if (call.result === undefined) {
+            contextMenu.defaultSection().appendItem(i18nString(UIStrings.cancelCall), () => {
+                call.cancel();
+            }, { jslogContext: 'webmcp.cancel-call' });
+        }
     }}>
                       <td>
                         <div class="name-cell">
@@ -505,11 +514,11 @@ export const DEFAULT_VIEW = (input, output, target) => {
           ` : html `
             <devtools-list class="square-corners">
               ${tools.map(tool => html `
-                <div class=${Directives.classMap({ 'tool-item': true, selected: tool === input.selectedTool?.tool })}
-                     @click=${() => input.onToolSelect(tool)}
-                     @contextmenu=${(e) => onToolContextMenu(e, tool)}>
-                  <div class="tool-name-container">
-                    <div class="tool-name source-code">${tool.name}</div>
+                    <div class=${Directives.classMap({ 'tool-item': true, selected: tool === input.selectedTool?.tool })}
+                         @click=${() => input.onToolSelect(tool)}
+                         @contextmenu=${(e) => onToolContextMenu(e, tool)}>
+                    <div class="tool-name-container">
+                      <div class="tool-name source-code">${tool.name}</div>
                     <div class="tool-icons">
                       ${getIconGroupsFromStats(toolStats.stats.get(tool)).map(group => html `
                         <icon-button
@@ -520,8 +529,8 @@ export const DEFAULT_VIEW = (input, output, target) => {
     }}
                           @click=${(e) => e.stopPropagation()}></icon-button>`)}
                     </div>
-                  </div>
-                  <div class="tool-description">${tool.description}</div>
+                    </div>
+                    <div class="tool-description">${tool.description}</div>
                 </div>`)}
             </devtools-list>
           `}

@@ -28,6 +28,7 @@ export interface Call {
     tool: Tool;
     input: string;
     result?: Result;
+    cancel: () => void;
 }
 export declare class Tool {
     #private;

@@ -4,7 +4,7 @@
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Helpers from '../helpers/helpers.js';
 import { metricSavingsForWastedBytes } from './Common.js';
-import { InsightCategory, } from './types.js';
+import { InsightCategory, InsightKeys, } from './types.js';
 export const UIStrings = {
     /**
      * @description Title of an insight that recommends ways to reduce the size of images downloaded and used on the page.
@@ -110,7 +110,7 @@ export function getOptimizationMessageWithBytes(optimization) {
 }
 function finalize(partialModel) {
     return {
-        insightKey: "ImageDelivery" /* InsightKeys.IMAGE_DELIVERY */,
+        insightKey: InsightKeys.IMAGE_DELIVERY,
         strings: UIStrings,
         title: i18nString(UIStrings.title),
         description: i18nString(UIStrings.description),

@@ -5,7 +5,7 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import * as Helpers from '../helpers/helpers.js';
 import { SelectorTimingsKey } from '../types/TraceEvents.js';
 import * as Types from '../types/types.js';
-import { InsightCategory, } from './types.js';
+import { InsightCategory, InsightKeys, } from './types.js';
 export const UIStrings = {
     /**
      * @description Title of an insight that provides details about slow CSS selectors.
@@ -78,7 +78,7 @@ function aggregateSelectorStats(data, context) {
 }
 function finalize(partialModel) {
     return {
-        insightKey: "SlowCSSSelector" /* InsightKeys.SLOW_CSS_SELECTOR */,
+        insightKey: InsightKeys.SLOW_CSS_SELECTOR,
         strings: UIStrings,
         title: i18nString(UIStrings.title),
         description: i18nString(UIStrings.description),
@@ -89,7 +89,7 @@ function finalize(partialModel) {
     };
 }
 export function isSlowCSSSelectorInsight(model) {
-    return model.insightKey === "SlowCSSSelector" /* InsightKeys.SLOW_CSS_SELECTOR */;
+    return model.insightKey === InsightKeys.SLOW_CSS_SELECTOR;
 }
 export function generateInsight(data, context) {
     const selectorStatsData = data.SelectorStats;

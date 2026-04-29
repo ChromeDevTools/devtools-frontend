@@ -6,7 +6,7 @@ import * as Platform from '../../../core/platform/platform.js';
 import * as Handlers from '../handlers/handlers.js';
 import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
-import { InsightCategory, InsightWarning, } from './types.js';
+import { InsightCategory, InsightKeys, InsightWarning, } from './types.js';
 export const UIStrings = {
     /** Title of an insight that provides details about if the page's viewport is optimized for mobile viewing. */
     title: 'Optimize viewport for mobile',
@@ -23,7 +23,7 @@ const str_ = i18n.i18n.registerUIStrings('models/trace/insights/Viewport.ts', UI
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 function finalize(partialModel) {
     return {
-        insightKey: "Viewport" /* InsightKeys.VIEWPORT */,
+        insightKey: InsightKeys.VIEWPORT,
         strings: UIStrings,
         title: i18nString(UIStrings.title),
         description: i18nString(UIStrings.description),
@@ -34,7 +34,7 @@ function finalize(partialModel) {
     };
 }
 export function isViewportInsight(model) {
-    return model.insightKey === "Viewport" /* InsightKeys.VIEWPORT */;
+    return model.insightKey === InsightKeys.VIEWPORT;
 }
 export function generateInsight(data, context) {
     const viewportEvent = data.UserInteractions.parseMetaViewportEvents.find(event => {

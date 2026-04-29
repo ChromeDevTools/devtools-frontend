@@ -191,6 +191,11 @@ var ScorePriority;
     ScorePriority[ScorePriority["CRITICAL"] = 2] = "CRITICAL";
     ScorePriority[ScorePriority["DEFAULT"] = 1] = "DEFAULT";
 })(ScorePriority || (ScorePriority = {}));
+// TODO(crbug.com/503296282): Remove this when we add support for all insights
+const SUPPORTED_INSIGHT_WIDGETS = new Set([
+    Trace.Insights.Types.InsightKeys.LCP_BREAKDOWN,
+    Trace.Insights.Types.InsightKeys.RENDER_BLOCKING,
+]);
 export class PerformanceTraceContext extends ConversationContext {
     static fromParsedTrace(parsedTrace) {
         return new PerformanceTraceContext(AgentFocus.fromParsedTrace(parsedTrace));
@@ -266,16 +271,16 @@ export class PerformanceTraceContext extends ConversationContext {
             const poorMetrics = new Set();
             if (lcp && ModelHandlers.PageLoadMetrics.scoreClassificationForLargestContentfulPaint(lcp.value) !== GOOD) {
                 suggestions.push({ title: 'How can I improve LCP?', jslogContext: 'performance-default' });
-                poorMetrics.add("LCPBreakdown" /* Trace.Insights.Types.InsightKeys.LCP_BREAKDOWN */);
-                poorMetrics.add("LCPDiscovery" /* Trace.Insights.Types.InsightKeys.LCP_DISCOVERY */);
+                poorMetrics.add(Trace.Insights.Types.InsightKeys.LCP_BREAKDOWN);
+                poorMetrics.add(Trace.Insights.Types.InsightKeys.LCP_DISCOVERY);
             }
             if (inp && ModelHandlers.UserInteractions.scoreClassificationForInteractionToNextPaint(inp.value) !== GOOD) {
                 suggestions.push({ title: 'How can I improve INP?', jslogContext: 'performance-default' });
-                poorMetrics.add("INPBreakdown" /* Trace.Insights.Types.InsightKeys.INP_BREAKDOWN */);
+                poorMetrics.add(Trace.Insights.Types.InsightKeys.INP_BREAKDOWN);
             }
             if (cls && ModelHandlers.LayoutShifts.scoreClassificationForLayoutShift(cls.value) !== GOOD) {
                 suggestions.push({ title: 'How can I improve CLS?', jslogContext: 'performance-default' });
-                poorMetrics.add("CLSCulprits" /* Trace.Insights.Types.InsightKeys.CLS_CULPRITS */);
+                poorMetrics.add(Trace.Insights.Types.InsightKeys.CLS_CULPRITS);
             }
             // Add up to 4 suggestions total (including those already added) from the top failing insights
             // that aren't already covered by CWV suggestions.
@@ -283,7 +288,7 @@ export class PerformanceTraceContext extends ConversationContext {
             if (additionalSuggestionsRequired > 0) {
                 const failingInsightSuggestions = Object.values(insightSet.model)
                     .filter(model => {
-                    return model.state !== 'pass' &&
+                    return model.state !== 'pass' && Trace.Insights.Common.isInsightKey(model.insightKey) &&
                         !poorMetrics.has(model.insightKey);
                 })
                     .map(model => new PerformanceInsightFormatter(focus, model).getSuggestions().at(-1))
@@ -462,15 +467,18 @@ export class PerformanceAgent extends AiAgent {
             }
             return widgets;
         }
-        // Case 2: LCP Insight -> LCP breakdown & CWV widgets
-        if (focus.insight && Trace.Insights.Models.LCPBreakdown.isLCPBreakdownInsight(focus.insight)) {
-            widgets.push({
-                name: 'PERF_INSIGHT',
-                data: {
-                    insight: 'lcp',
-                    insightData: focus.insight,
-                },
-            });
+        // Case 2: Insight -> PERF_INSIGHT widget
+        if (focus.insight) {
+            const insightKey = focus.insight.insightKey;
+            if (Trace.Insights.Common.isInsightKey(insightKey) && SUPPORTED_INSIGHT_WIDGETS.has(insightKey)) {
+                widgets.push({
+                    name: 'PERF_INSIGHT',
+                    data: {
+                        insight: insightKey,
+                        insightData: focus.insight,
+                    },
+                });
+            }
         }
         // Case 3: Whole Trace or insight other than LCP -> CWV widget
         const primaryInsightSet = focus.primaryInsightSet;
@@ -852,15 +860,16 @@ export class PerformanceAgent extends AiAgent {
                             }
                         }
                     }
-                    if (params.insightName === 'LCPBreakdown') {
-                        widgets.push({
-                            name: 'PERF_INSIGHT',
-                            data: {
-                                insight: 'lcp',
-                                insightData: insight,
-                            },
-                        });
-                    }
+                }
+                const insightKey = params.insightName;
+                if (Trace.Insights.Common.isInsightKey(insightKey) && SUPPORTED_INSIGHT_WIDGETS.has(insightKey)) {
+                    widgets.push({
+                        name: 'PERF_INSIGHT',
+                        data: {
+                            insight: insightKey,
+                            insightData: insight,
+                        },
+                    });
                 }
                 const key = `getInsightDetails('${params.insightSetId}', '${params.insightName}')`;
                 this.#cacheFunctionResult(focus, key, details);

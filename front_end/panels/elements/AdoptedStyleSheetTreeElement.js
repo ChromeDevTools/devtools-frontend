@@ -129,7 +129,6 @@ export class AdoptedStyleSheetContentsTreeElement extends UI.TreeOutline.TreeEle
         this.editing = {
             commit: editorHandles.commit,
             cancel: editorHandles.cancel,
-            editor: undefined,
             resize: () => { },
         };
         const componentSelection = this.listItemElement.getComponentSelection();

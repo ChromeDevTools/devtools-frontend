@@ -188,6 +188,10 @@ const UIStringsNotTranslate = {
      */
     revealLcpBreakdown: 'Reveal LCP breakdown',
     /**
+     * @description Accessible label for the reveal button in the render-blocking requests widget.
+     */
+    revealRenderBlockingBreakdown: 'Reveal render-blocking requests',
+    /**
      * @description Accessible label for the reveal button in the LCP element widget.
      */
     revealLcpElement: 'Reveal LCP element',
@@ -207,6 +211,10 @@ const UIStringsNotTranslate = {
      * @description Title for the LCP breakdown widget.
      */
     lcpBreakdown: 'LCP breakdown',
+    /**
+     * @description Title for the render-blocking requests widget.
+     */
+    renderBlockingBreakdown: 'Render-blocking requests',
     /**
      * @description Title for the LCP element widget.
      */
@@ -692,7 +700,7 @@ async function makeStylePropertiesWidget(widgetData) {
 }
 async function makePerfInsightWidget(widgetData) {
     switch (widgetData.data.insight) {
-        case 'lcp': {
+        case Trace.Insights.Types.InsightKeys.LCP_BREAKDOWN: {
             const insight = widgetData.data.insightData;
             if (!insight || !Trace.Insights.Models.LCPBreakdown.isLCPBreakdownInsight(insight)) {
                 return null;
@@ -711,6 +719,27 @@ async function makePerfInsightWidget(widgetData) {
                 accessibleRevealLabel: lockedString(UIStringsNotTranslate.revealLcpBreakdown),
                 title: lockedString(UIStringsNotTranslate.lcpBreakdown),
                 jslogContext: 'lcp-breakdown',
+            };
+        }
+        case Trace.Insights.Types.InsightKeys.RENDER_BLOCKING: {
+            const insight = widgetData.data.insightData;
+            if (!insight || !Trace.Insights.Models.RenderBlocking.isRenderBlockingInsight(insight)) {
+                return null;
+            }
+            // clang-format off
+            const renderedWidget = html `<devtools-widget
+        class="render-blocking-widget"
+        ${widget(TimelineInsights.RenderBlocking.RenderBlocking, {
+                model: insight,
+                minimal: true,
+            })}></devtools-widget>`;
+            // clang-format on
+            return {
+                renderedWidget,
+                revealable: new TimelineUtils.Helpers.RevealableInsight(insight),
+                accessibleRevealLabel: lockedString(UIStringsNotTranslate.revealRenderBlockingBreakdown),
+                title: lockedString(UIStringsNotTranslate.renderBlockingBreakdown),
+                jslogContext: 'render-blocking-widget',
             };
         }
         default:

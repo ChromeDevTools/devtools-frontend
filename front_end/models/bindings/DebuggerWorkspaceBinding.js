@@ -15,7 +15,7 @@ import { DefaultScriptMapping } from './DefaultScriptMapping.js';
 import { LiveLocationWithPool } from './LiveLocation.js';
 import { NetworkProject } from './NetworkProject.js';
 import { ResourceScriptMapping } from './ResourceScriptMapping.js';
-import { SymbolizedErrorObject, SymbolizedSyntaxError, UnparsableError } from './SymbolizedError.js';
+import { isErrorLike, SymbolizedErrorObject, SymbolizedSyntaxError, UnparsableError, } from './SymbolizedError.js';
 export class DebuggerWorkspaceBinding {
     resourceMapping;
     #debuggerModelToData;
@@ -181,6 +181,9 @@ export class DebuggerWorkspaceBinding {
         }
         else if (remoteObject.type === 'string') {
             errorStack = remoteObject.description || '';
+            if (!isErrorLike(errorStack)) {
+                return null;
+            }
         }
         else {
             return null;

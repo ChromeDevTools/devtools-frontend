@@ -5,7 +5,7 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import * as Helpers from '../helpers/helpers.js';
 import { metricSavingsForWastedBytes } from './Common.js';
 import { linearInterpolation } from './Statistics.js';
-import { InsightCategory, } from './types.js';
+import { InsightCategory, InsightKeys, } from './types.js';
 export const UIStrings = {
     /**
      * @description Title of an insight that provides information and suggestions of resources that could improve their caching.
@@ -39,7 +39,7 @@ export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const IGNORE_THRESHOLD_IN_PERCENT = 0.925;
 function finalize(partialModel) {
     return {
-        insightKey: "Cache" /* InsightKeys.CACHE */,
+        insightKey: InsightKeys.CACHE,
         strings: UIStrings,
         title: i18nString(UIStrings.title),
         description: i18nString(UIStrings.description),
@@ -145,7 +145,7 @@ export function cachingDisabled(headers, parsedCacheControl) {
     return false;
 }
 export function isCacheInsight(model) {
-    return model.insightKey === "Cache" /* InsightKeys.CACHE */;
+    return model.insightKey === InsightKeys.CACHE;
 }
 export function generateInsight(data, context) {
     const isWithinContext = (event) => Helpers.Timing.eventIsInBounds(event, context.bounds);

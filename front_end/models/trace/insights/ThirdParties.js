@@ -5,7 +5,7 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import * as ThirdPartyWeb from '../../../third_party/third-party-web/third-party-web.js';
 import * as Extras from '../extras/extras.js';
 import * as Handlers from '../handlers/handlers.js';
-import { InsightCategory, } from './types.js';
+import { InsightCategory, InsightKeys, } from './types.js';
 export const UIStrings = {
     /** Title of an insight that provides details about the code on a web page that the user doesn't control (referred to as "third-party code"). */
     title: '3rd parties',
@@ -39,7 +39,7 @@ function getRelatedEvents(summaries, firstPartyEntity) {
 }
 function finalize(partialModel) {
     return {
-        insightKey: "ThirdParties" /* InsightKeys.THIRD_PARTIES */,
+        insightKey: InsightKeys.THIRD_PARTIES,
         strings: UIStrings,
         title: i18nString(UIStrings.title),
         description: i18nString(UIStrings.description),
@@ -52,7 +52,7 @@ function finalize(partialModel) {
     };
 }
 export function isThirdPartyInsight(model) {
-    return model.insightKey === "ThirdParties" /* InsightKeys.THIRD_PARTIES */;
+    return model.insightKey === InsightKeys.THIRD_PARTIES;
 }
 export function generateInsight(data, context) {
     const entitySummaries = Extras.ThirdParties.summarizeByThirdParty(data, context.bounds);

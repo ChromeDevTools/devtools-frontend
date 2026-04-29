@@ -6765,6 +6765,10 @@ var ScorePriority;
   ScorePriority2[ScorePriority2["CRITICAL"] = 2] = "CRITICAL";
   ScorePriority2[ScorePriority2["DEFAULT"] = 1] = "DEFAULT";
 })(ScorePriority || (ScorePriority = {}));
+var SUPPORTED_INSIGHT_WIDGETS = /* @__PURE__ */ new Set([
+  Trace6.Insights.Types.InsightKeys.LCP_BREAKDOWN,
+  Trace6.Insights.Types.InsightKeys.RENDER_BLOCKING
+]);
 var PerformanceTraceContext = class _PerformanceTraceContext extends ConversationContext {
   static fromParsedTrace(parsedTrace) {
     return new _PerformanceTraceContext(AgentFocus.fromParsedTrace(parsedTrace));
@@ -6839,33 +6843,21 @@ var PerformanceTraceContext = class _PerformanceTraceContext extends Conversatio
       const poorMetrics = /* @__PURE__ */ new Set();
       if (lcp && ModelHandlers.PageLoadMetrics.scoreClassificationForLargestContentfulPaint(lcp.value) !== GOOD) {
         suggestions.push({ title: "How can I improve LCP?", jslogContext: "performance-default" });
-        poorMetrics.add(
-          "LCPBreakdown"
-          /* Trace.Insights.Types.InsightKeys.LCP_BREAKDOWN */
-        );
-        poorMetrics.add(
-          "LCPDiscovery"
-          /* Trace.Insights.Types.InsightKeys.LCP_DISCOVERY */
-        );
+        poorMetrics.add(Trace6.Insights.Types.InsightKeys.LCP_BREAKDOWN);
+        poorMetrics.add(Trace6.Insights.Types.InsightKeys.LCP_DISCOVERY);
       }
       if (inp && ModelHandlers.UserInteractions.scoreClassificationForInteractionToNextPaint(inp.value) !== GOOD) {
         suggestions.push({ title: "How can I improve INP?", jslogContext: "performance-default" });
-        poorMetrics.add(
-          "INPBreakdown"
-          /* Trace.Insights.Types.InsightKeys.INP_BREAKDOWN */
-        );
+        poorMetrics.add(Trace6.Insights.Types.InsightKeys.INP_BREAKDOWN);
       }
       if (cls && ModelHandlers.LayoutShifts.scoreClassificationForLayoutShift(cls.value) !== GOOD) {
         suggestions.push({ title: "How can I improve CLS?", jslogContext: "performance-default" });
-        poorMetrics.add(
-          "CLSCulprits"
-          /* Trace.Insights.Types.InsightKeys.CLS_CULPRITS */
-        );
+        poorMetrics.add(Trace6.Insights.Types.InsightKeys.CLS_CULPRITS);
       }
       const additionalSuggestionsRequired = Math.max(0, 4 - suggestions.length);
       if (additionalSuggestionsRequired > 0) {
         const failingInsightSuggestions = Object.values(insightSet.model).filter((model) => {
-          return model.state !== "pass" && !poorMetrics.has(model.insightKey);
+          return model.state !== "pass" && Trace6.Insights.Common.isInsightKey(model.insightKey) && !poorMetrics.has(model.insightKey);
         }).map((model) => new PerformanceInsightFormatter(focus, model).getSuggestions().at(-1)).filter((suggestion) => !!suggestion).slice(0, additionalSuggestionsRequired);
         suggestions.push(...failingInsightSuggestions);
       }
@@ -7026,14 +7018,17 @@ var PerformanceAgent = class extends AiAgent {
       }
       return widgets;
     }
-    if (focus.insight && Trace6.Insights.Models.LCPBreakdown.isLCPBreakdownInsight(focus.insight)) {
-      widgets.push({
-        name: "PERF_INSIGHT",
-        data: {
-          insight: "lcp",
-          insightData: focus.insight
-        }
-      });
+    if (focus.insight) {
+      const insightKey = focus.insight.insightKey;
+      if (Trace6.Insights.Common.isInsightKey(insightKey) && SUPPORTED_INSIGHT_WIDGETS.has(insightKey)) {
+        widgets.push({
+          name: "PERF_INSIGHT",
+          data: {
+            insight: insightKey,
+            insightData: focus.insight
+          }
+        });
+      }
     }
     const primaryInsightSet = focus.primaryInsightSet;
     if (primaryInsightSet) {
@@ -7401,15 +7396,16 @@ ${result}`,
               }
             }
           }
-          if (params.insightName === "LCPBreakdown") {
-            widgets.push({
-              name: "PERF_INSIGHT",
-              data: {
-                insight: "lcp",
-                insightData: insight
-              }
-            });
-          }
+        }
+        const insightKey = params.insightName;
+        if (Trace6.Insights.Common.isInsightKey(insightKey) && SUPPORTED_INSIGHT_WIDGETS.has(insightKey)) {
+          widgets.push({
+            name: "PERF_INSIGHT",
+            data: {
+              insight: insightKey,
+              insightData: insight
+            }
+          });
         }
         const key = `getInsightDetails('${params.insightSetId}', '${params.insightName}')`;
         this.#cacheFunctionResult(focus, key, details);

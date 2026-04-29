@@ -6,7 +6,7 @@ import * as Handlers from '../handlers/handlers.js';
 import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
 import { calculateDocFirstByteTs } from './Common.js';
-import { InsightCategory, InsightWarning, } from './types.js';
+import { InsightCategory, InsightKeys, InsightWarning, } from './types.js';
 export const UIStrings = {
     /**
      * @description Title of an insight that provides details about the LCP metric, and the network requests necessary to load it. Details how the LCP request was discoverable - in other words, the path necessary to load it (ex: network requests, JavaScript)
@@ -61,7 +61,7 @@ function finalize(partialModel) {
         [partialModel.lcpEvent, partialModel.lcpRequest] :
         [];
     return {
-        insightKey: "LCPDiscovery" /* InsightKeys.LCP_DISCOVERY */,
+        insightKey: InsightKeys.LCP_DISCOVERY,
         strings: UIStrings,
         title: i18nString(UIStrings.title),
         description: i18nString(UIStrings.description),

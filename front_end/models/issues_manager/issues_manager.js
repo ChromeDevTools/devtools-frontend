@@ -2361,6 +2361,11 @@ __export(GenericIssue_exports, {
   genericFormLabelForMatchesNonExistingIdError: () => genericFormLabelForMatchesNonExistingIdError,
   genericFormLabelForNameError: () => genericFormLabelForNameError,
   genericFormLabelHasNeitherForNorNestedInputError: () => genericFormLabelHasNeitherForNorNestedInputError,
+  genericFormModelContextMissingToolDescription: () => genericFormModelContextMissingToolDescription,
+  genericFormModelContextMissingToolName: () => genericFormModelContextMissingToolName,
+  genericFormModelContextParameterMissingName: () => genericFormModelContextParameterMissingName,
+  genericFormModelContextParameterMissingTitleAndDescription: () => genericFormModelContextParameterMissingTitleAndDescription,
+  genericFormModelContextRequiredParameterMissingName: () => genericFormModelContextRequiredParameterMissingName,
   genericNavigationEntryMarkedSkippable: () => genericNavigationEntryMarkedSkippable,
   genericResponseWasBlockedbyORB: () => genericResponseWasBlockedbyORB
 });
@@ -2515,6 +2520,26 @@ var genericNavigationEntryMarkedSkippable = {
     linkTitle: i18nLazyString8(UIStrings12.historyManipulationInterventionPageTitle)
   }]
 };
+var genericFormModelContextMissingToolName = {
+  file: "genericFormModelContextMissingToolName.md",
+  links: []
+};
+var genericFormModelContextMissingToolDescription = {
+  file: "genericFormModelContextMissingToolDescription.md",
+  links: []
+};
+var genericFormModelContextParameterMissingTitleAndDescription = {
+  file: "genericFormModelContextParameterMissingTitleAndDescription.md",
+  links: []
+};
+var genericFormModelContextRequiredParameterMissingName = {
+  file: "genericFormModelContextRequiredParameterMissingName.md",
+  links: []
+};
+var genericFormModelContextParameterMissingName = {
+  file: "genericFormModelContextParameterMissingName.md",
+  links: []
+};
 var issueDescriptions7 = /* @__PURE__ */ new Map([
   ["FormLabelForNameError", genericFormLabelForNameError],
   ["FormInputWithNoLabelError", genericFormInputWithNoLabelError],
@@ -2554,6 +2579,26 @@ var issueDescriptions7 = /* @__PURE__ */ new Map([
   [
     "NavigationEntryMarkedSkippable",
     genericNavigationEntryMarkedSkippable
+  ],
+  [
+    "FormModelContextMissingToolName",
+    genericFormModelContextMissingToolName
+  ],
+  [
+    "FormModelContextMissingToolDescription",
+    genericFormModelContextMissingToolDescription
+  ],
+  [
+    "FormModelContextParameterMissingTitleAndDescription",
+    genericFormModelContextParameterMissingTitleAndDescription
+  ],
+  [
+    "FormModelContextRequiredParameterMissingName",
+    genericFormModelContextRequiredParameterMissingName
+  ],
+  [
+    "FormModelContextParameterMissingName",
+    genericFormModelContextParameterMissingName
   ]
 ]);
 var issueTypes = /* @__PURE__ */ new Map([
@@ -2605,6 +2650,31 @@ var issueTypes = /* @__PURE__ */ new Map([
     "FormInputHasWrongButWellIntendedAutocompleteValueError",
     "Improvement"
     /* IssueKind.IMPROVEMENT */
+  ],
+  [
+    "FormModelContextMissingToolName",
+    "PageError"
+    /* IssueKind.PAGE_ERROR */
+  ],
+  [
+    "FormModelContextMissingToolDescription",
+    "PageError"
+    /* IssueKind.PAGE_ERROR */
+  ],
+  [
+    "FormModelContextParameterMissingTitleAndDescription",
+    "PageError"
+    /* IssueKind.PAGE_ERROR */
+  ],
+  [
+    "FormModelContextRequiredParameterMissingName",
+    "PageError"
+    /* IssueKind.PAGE_ERROR */
+  ],
+  [
+    "FormModelContextParameterMissingName",
+    "PageError"
+    /* IssueKind.PAGE_ERROR */
   ]
 ]);
 

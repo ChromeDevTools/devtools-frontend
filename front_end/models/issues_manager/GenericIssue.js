@@ -154,6 +154,26 @@ export const genericNavigationEntryMarkedSkippable = {
             linkTitle: i18nLazyString(UIStrings.historyManipulationInterventionPageTitle),
         }],
 };
+export const genericFormModelContextMissingToolName = {
+    file: 'genericFormModelContextMissingToolName.md',
+    links: [],
+};
+export const genericFormModelContextMissingToolDescription = {
+    file: 'genericFormModelContextMissingToolDescription.md',
+    links: [],
+};
+export const genericFormModelContextParameterMissingTitleAndDescription = {
+    file: 'genericFormModelContextParameterMissingTitleAndDescription.md',
+    links: [],
+};
+export const genericFormModelContextRequiredParameterMissingName = {
+    file: 'genericFormModelContextRequiredParameterMissingName.md',
+    links: [],
+};
+export const genericFormModelContextParameterMissingName = {
+    file: 'genericFormModelContextParameterMissingName.md',
+    links: [],
+};
 const issueDescriptions = new Map([
     ["FormLabelForNameError" /* Protocol.Audits.GenericIssueErrorType.FormLabelForNameError */, genericFormLabelForNameError],
     ["FormInputWithNoLabelError" /* Protocol.Audits.GenericIssueErrorType.FormInputWithNoLabelError */, genericFormInputWithNoLabelError],
@@ -194,6 +214,26 @@ const issueDescriptions = new Map([
         "NavigationEntryMarkedSkippable" /* Protocol.Audits.GenericIssueErrorType.NavigationEntryMarkedSkippable */,
         genericNavigationEntryMarkedSkippable,
     ],
+    [
+        "FormModelContextMissingToolName" /* Protocol.Audits.GenericIssueErrorType.FormModelContextMissingToolName */,
+        genericFormModelContextMissingToolName,
+    ],
+    [
+        "FormModelContextMissingToolDescription" /* Protocol.Audits.GenericIssueErrorType.FormModelContextMissingToolDescription */,
+        genericFormModelContextMissingToolDescription,
+    ],
+    [
+        "FormModelContextParameterMissingTitleAndDescription" /* Protocol.Audits.GenericIssueErrorType.FormModelContextParameterMissingTitleAndDescription */,
+        genericFormModelContextParameterMissingTitleAndDescription,
+    ],
+    [
+        "FormModelContextRequiredParameterMissingName" /* Protocol.Audits.GenericIssueErrorType.FormModelContextRequiredParameterMissingName */,
+        genericFormModelContextRequiredParameterMissingName,
+    ],
+    [
+        "FormModelContextParameterMissingName" /* Protocol.Audits.GenericIssueErrorType.FormModelContextParameterMissingName */,
+        genericFormModelContextParameterMissingName,
+    ],
 ]);
 const issueTypes = new Map([
     ["FormLabelForNameError" /* Protocol.Audits.GenericIssueErrorType.FormLabelForNameError */, "PageError" /* IssueKind.PAGE_ERROR */],
@@ -209,5 +249,10 @@ const issueTypes = new Map([
     ["FormLabelForMatchesNonExistingIdError" /* Protocol.Audits.GenericIssueErrorType.FormLabelForMatchesNonExistingIdError */, "PageError" /* IssueKind.PAGE_ERROR */],
     ["FormLabelHasNeitherForNorNestedInputError" /* Protocol.Audits.GenericIssueErrorType.FormLabelHasNeitherForNorNestedInputError */, "Improvement" /* IssueKind.IMPROVEMENT */],
     ["FormInputHasWrongButWellIntendedAutocompleteValueError" /* Protocol.Audits.GenericIssueErrorType.FormInputHasWrongButWellIntendedAutocompleteValueError */, "Improvement" /* IssueKind.IMPROVEMENT */],
+    ["FormModelContextMissingToolName" /* Protocol.Audits.GenericIssueErrorType.FormModelContextMissingToolName */, "PageError" /* IssueKind.PAGE_ERROR */],
+    ["FormModelContextMissingToolDescription" /* Protocol.Audits.GenericIssueErrorType.FormModelContextMissingToolDescription */, "PageError" /* IssueKind.PAGE_ERROR */],
+    ["FormModelContextParameterMissingTitleAndDescription" /* Protocol.Audits.GenericIssueErrorType.FormModelContextParameterMissingTitleAndDescription */, "PageError" /* IssueKind.PAGE_ERROR */],
+    ["FormModelContextRequiredParameterMissingName" /* Protocol.Audits.GenericIssueErrorType.FormModelContextRequiredParameterMissingName */, "PageError" /* IssueKind.PAGE_ERROR */],
+    ["FormModelContextParameterMissingName" /* Protocol.Audits.GenericIssueErrorType.FormModelContextParameterMissingName */, "PageError" /* IssueKind.PAGE_ERROR */],
 ]);
 //# sourceMappingURL=GenericIssue.js.map

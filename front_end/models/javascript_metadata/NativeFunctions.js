@@ -7638,6 +7638,14 @@ export const NativeFunctions = [
         signatures: [["?configuration"]]
     },
     {
+        name: "allowProcessingInstruction",
+        signatures: [["pi"]]
+    },
+    {
+        name: "removeProcessingInstruction",
+        signatures: [["pi"]]
+    },
+    {
         name: "TaskController",
         signatures: [["?init"]]
     },

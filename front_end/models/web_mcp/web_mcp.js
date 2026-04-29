@@ -180,7 +180,16 @@ var WebMCPModel = class extends SDK.SDKModel.SDKModel {
     if (!tool) {
       return;
     }
-    const call = { tool, input: params.input, invocationId: params.invocationId };
+    const call = {
+      tool,
+      input: params.input,
+      invocationId: params.invocationId,
+      cancel: () => {
+        if (call.result === void 0) {
+          void this.agent.invoke_cancelInvocation({ invocationId: params.invocationId });
+        }
+      }
+    };
     this.#calls.set(params.invocationId, call);
     this.dispatchEventToListeners("ToolInvoked", call);
   }

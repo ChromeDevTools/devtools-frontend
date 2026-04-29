@@ -4,7 +4,7 @@
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Handlers from '../handlers/handlers.js';
 import * as Helpers from '../helpers/helpers.js';
-import { InsightCategory, } from './types.js';
+import { InsightCategory, InsightKeys, } from './types.js';
 export const UIStrings = {
     /**
      * @description Text to tell the user about the longest user interaction.
@@ -43,7 +43,7 @@ export const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('models/trace/insights/INPBreakdown.ts', UIStrings);
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export function isINPBreakdownInsight(insight) {
-    return insight.insightKey === "INPBreakdown" /* InsightKeys.INP_BREAKDOWN */;
+    return insight.insightKey === InsightKeys.INP_BREAKDOWN;
 }
 function finalize(partialModel) {
     let state = 'pass';
@@ -57,7 +57,7 @@ function finalize(partialModel) {
         }
     }
     return {
-        insightKey: "INPBreakdown" /* InsightKeys.INP_BREAKDOWN */,
+        insightKey: InsightKeys.INP_BREAKDOWN,
         strings: UIStrings,
         title: i18nString(UIStrings.title),
         description: i18nString(UIStrings.description),

@@ -5,6 +5,9 @@ import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as StackTrace from '../stack_trace/stack_trace.js';
 import { LiveLocationPool } from './LiveLocation.js';
+export function isErrorLike(stack) {
+    return /\n\s*at\s/.test(stack) || stack.startsWith('SyntaxError:');
+}
 export class UnparsableError extends Common.ObjectWrapper.ObjectWrapper {
     errorStack;
     cause;
@@ -12,6 +15,16 @@ export class UnparsableError extends Common.ObjectWrapper.ObjectWrapper {
         super();
         this.errorStack = errorStack;
         this.cause = cause;
+        this.cause?.addEventListener("UPDATED" /* Events.UPDATED */, this.#fireUpdated, this);
+    }
+    dispose() {
+        this.cause?.removeEventListener("UPDATED" /* Events.UPDATED */, this.#fireUpdated, this);
+        if (this.cause instanceof SymbolizedErrorObject || this.cause instanceof UnparsableError) {
+            this.cause.dispose();
+        }
+    }
+    #fireUpdated() {
+        this.dispatchEventToListeners("UPDATED" /* Events.UPDATED */);
     }
 }
 export class SymbolizedErrorObject extends Common.ObjectWrapper.ObjectWrapper {
@@ -29,7 +42,7 @@ export class SymbolizedErrorObject extends Common.ObjectWrapper.ObjectWrapper {
     dispose() {
         this.stackTrace.removeEventListener("UPDATED" /* StackTrace.StackTrace.Events.UPDATED */, this.#fireUpdated, this);
         this.cause?.removeEventListener("UPDATED" /* Events.UPDATED */, this.#fireUpdated, this);
-        if (this.cause instanceof SymbolizedErrorObject) {
+        if (this.cause instanceof SymbolizedErrorObject || this.cause instanceof UnparsableError) {
             this.cause.dispose();
         }
     }

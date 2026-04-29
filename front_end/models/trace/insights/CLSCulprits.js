@@ -6,7 +6,7 @@ import * as Platform from '../../../core/platform/platform.js';
 import * as Handlers from '../handlers/handlers.js';
 import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
-import { InsightCategory, } from './types.js';
+import { InsightCategory, InsightKeys, } from './types.js';
 export const UIStrings = {
     /** Title of an insight that provides details about why elements shift/move on the page. The causes for these shifts are referred to as culprits ("reasons"). */
     title: 'Layout shift culprits',
@@ -326,7 +326,7 @@ function getUnsizedImageRootCauses(unsizedImageEvents, paintImageEvents, shiftsB
     return rootCausesByShift;
 }
 export function isCLSCulpritsInsight(insight) {
-    return insight.insightKey === "CLSCulprits" /* InsightKeys.CLS_CULPRITS */;
+    return insight.insightKey === InsightKeys.CLS_CULPRITS;
 }
 /**
  * A font request is considered a root cause if the request occurs before a prePaint event
@@ -413,7 +413,7 @@ function finalize(partialModel) {
         }
     }
     return {
-        insightKey: "CLSCulprits" /* InsightKeys.CLS_CULPRITS */,
+        insightKey: InsightKeys.CLS_CULPRITS,
         strings: UIStrings,
         title: i18nString(UIStrings.title),
         description: i18nString(UIStrings.description),

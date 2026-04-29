@@ -3722,18 +3722,35 @@ var SymbolizedError_exports = {};
 __export(SymbolizedError_exports, {
   SymbolizedErrorObject: () => SymbolizedErrorObject,
   SymbolizedSyntaxError: () => SymbolizedSyntaxError,
-  UnparsableError: () => UnparsableError
+  UnparsableError: () => UnparsableError,
+  isErrorLike: () => isErrorLike
 });
 import * as Common13 from "./../../core/common/common.js";
 import * as SDK11 from "./../../core/sdk/sdk.js";
 import * as StackTrace3 from "./../stack_trace/stack_trace.js";
-var UnparsableError = class extends Common13.ObjectWrapper.ObjectWrapper {
+function isErrorLike(stack) {
+  return /\n\s*at\s/.test(stack) || stack.startsWith("SyntaxError:");
+}
+var UnparsableError = class _UnparsableError extends Common13.ObjectWrapper.ObjectWrapper {
   errorStack;
   cause;
   constructor(errorStack, cause) {
     super();
     this.errorStack = errorStack;
     this.cause = cause;
+    this.cause?.addEventListener("UPDATED", this.#fireUpdated, this);
+  }
+  dispose() {
+    this.cause?.removeEventListener("UPDATED", this.#fireUpdated, this);
+    if (this.cause instanceof SymbolizedErrorObject || this.cause instanceof _UnparsableError) {
+      this.cause.dispose();
+    }
+  }
+  #fireUpdated() {
+    this.dispatchEventToListeners(
+      "UPDATED"
+      /* Events.UPDATED */
+    );
   }
 };
 var SymbolizedErrorObject = class _SymbolizedErrorObject extends Common13.ObjectWrapper.ObjectWrapper {
@@ -3751,7 +3768,7 @@ var SymbolizedErrorObject = class _SymbolizedErrorObject extends Common13.Object
   dispose() {
     this.stackTrace.removeEventListener("UPDATED", this.#fireUpdated, this);
     this.cause?.removeEventListener("UPDATED", this.#fireUpdated, this);
-    if (this.cause instanceof _SymbolizedErrorObject) {
+    if (this.cause instanceof _SymbolizedErrorObject || this.cause instanceof UnparsableError) {
       this.cause.dispose();
     }
   }
@@ -3957,6 +3974,9 @@ var DebuggerWorkspaceBinding = class _DebuggerWorkspaceBinding {
       }
     } else if (remoteObject.type === "string") {
       errorStack = remoteObject.description || "";
+      if (!isErrorLike(errorStack)) {
+        return null;
+      }
     } else {
       return null;
     }

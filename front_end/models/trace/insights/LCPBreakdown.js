@@ -6,7 +6,7 @@ import * as Handlers from '../handlers/handlers.js';
 import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
 import { calculateDocFirstByteTs } from './Common.js';
-import { InsightCategory, InsightWarning, } from './types.js';
+import { InsightCategory, InsightKeys, InsightWarning, } from './types.js';
 export const UIStrings = {
     /**
      * @description Title of an insight that provides details about the LCP metric, broken down by parts.
@@ -135,7 +135,7 @@ function finalize(partialModel) {
         }
     }
     return {
-        insightKey: "LCPBreakdown" /* InsightKeys.LCP_BREAKDOWN */,
+        insightKey: InsightKeys.LCP_BREAKDOWN,
         strings: UIStrings,
         title: i18nString(UIStrings.title),
         description: i18nString(UIStrings.description),

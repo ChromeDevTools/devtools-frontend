@@ -5,7 +5,7 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import * as Handlers from '../handlers/handlers.js';
 import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
-import { InsightCategory, } from './types.js';
+import { InsightCategory, InsightKeys, } from './types.js';
 export const UIStrings = {
     /**
      * @description Title of an insight that recommends reducing the size of the DOM tree as a means to improve page responsiveness. "DOM" is an acronym and should not be translated.
@@ -69,7 +69,7 @@ const STYLE_RECALC_ELEMENTS_THRESHOLD = 300;
 function finalize(partialModel) {
     const relatedEvents = [...partialModel.largeLayoutUpdates, ...partialModel.largeStyleRecalcs];
     return {
-        insightKey: "DOMSize" /* InsightKeys.DOM_SIZE */,
+        insightKey: InsightKeys.DOM_SIZE,
         strings: UIStrings,
         title: i18nString(UIStrings.title),
         description: i18nString(UIStrings.description),
@@ -81,7 +81,7 @@ function finalize(partialModel) {
     };
 }
 export function isDomSizeInsight(model) {
-    return model.insightKey === "DOMSize" /* InsightKeys.DOM_SIZE */;
+    return model.insightKey === InsightKeys.DOM_SIZE;
 }
 export function generateInsight(data, context) {
     const isWithinContext = (event) => Helpers.Timing.eventIsInBounds(event, context.bounds);

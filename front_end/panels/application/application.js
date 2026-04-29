@@ -12246,6 +12246,10 @@ var UIStrings30 = {
    */
   copyDescription: "Copy description",
   /**
+   * @description Context menu action to cancel an in-progress tool call
+   */
+  cancelCall: "Cancel",
+  /**
    * @description Text for the header of the tool run section
    */
   runTool: "Run Tool",
@@ -12499,6 +12503,11 @@ var DEFAULT_VIEW7 = (input, output, target) => {
       const payload = parsePayload(call.input);
       input.onRevealTool(call.tool, payload.valueObject);
     }, { jslogContext: "webmcp.edit-and-run", disabled: isUnregistered });
+    if (call.result === void 0) {
+      contextMenu.defaultSection().appendItem(i18nString30(UIStrings30.cancelCall), () => {
+        call.cancel();
+      }, { jslogContext: "webmcp.cancel-call" });
+    }
   }}>
                       <td>
                         <div class="name-cell">
@@ -12601,11 +12610,11 @@ var DEFAULT_VIEW7 = (input, output, target) => {
           ` : html10`
             <devtools-list class="square-corners">
               ${tools.map((tool) => html10`
-                <div class=${Directives4.classMap({ "tool-item": true, selected: tool === input.selectedTool?.tool })}
-                     @click=${() => input.onToolSelect(tool)}
-                     @contextmenu=${(e) => onToolContextMenu(e, tool)}>
-                  <div class="tool-name-container">
-                    <div class="tool-name source-code">${tool.name}</div>
+                    <div class=${Directives4.classMap({ "tool-item": true, selected: tool === input.selectedTool?.tool })}
+                         @click=${() => input.onToolSelect(tool)}
+                         @contextmenu=${(e) => onToolContextMenu(e, tool)}>
+                    <div class="tool-name-container">
+                      <div class="tool-name source-code">${tool.name}</div>
                     <div class="tool-icons">
                       ${getIconGroupsFromStats(toolStats.stats.get(tool)).map((group) => html10`
                         <icon-button
@@ -12616,8 +12625,8 @@ var DEFAULT_VIEW7 = (input, output, target) => {
   }}
                           @click=${(e) => e.stopPropagation()}></icon-button>`)}
                     </div>
-                  </div>
-                  <div class="tool-description">${tool.description}</div>
+                    </div>
+                    <div class="tool-description">${tool.description}</div>
                 </div>`)}
             </devtools-list>
           `}

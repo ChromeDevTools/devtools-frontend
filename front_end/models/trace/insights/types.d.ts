@@ -120,7 +120,7 @@ export type InsightModelErrors = {
  * navigation to map it to. In this case `Types.Events.NO_NAVIGATION` is used for the key.
  */
 export type TraceInsightSets = Map<Types.Events.NavigationId, InsightSet>;
-export declare const enum InsightKeys {
+export declare enum InsightKeys {
     LCP_BREAKDOWN = "LCPBreakdown",
     INP_BREAKDOWN = "INPBreakdown",
     CLS_CULPRITS = "CLSCulprits",

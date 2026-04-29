@@ -5,6 +5,7 @@ import * as Protocol from '../../generated/protocol.js';
 import type * as Elements from '../../models/elements/elements.js';
 import type * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
+import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
 import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
@@ -77,9 +78,12 @@ export interface ViewInput {
     descendantDecorations: Decoration[];
     decorationsTooltip: string;
     indent: number;
+    editorState: CodeMirror.EditorState | null;
+    editorWidth: number | null;
 }
 export interface ViewOutput {
     contentElement?: HTMLElement;
+    editorRef?: TextEditor.TextEditor.TextEditor;
 }
 export declare function adornerRef(): DirectiveResult<typeof Lit.Directives.RefDirective>;
 export interface Decoration {
@@ -95,7 +99,6 @@ export declare class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     private readonly decorationsThrottler;
     private inClipboard;
     private editing;
-    private htmlEditElement?;
     expandAllButtonElement: UI.TreeOutline.TreeElement | null;
     readonly tagTypeContext: TagTypeContext;
     constructor(node: SDK.DOMModel.DOMNode, isClosingTag?: boolean);
@@ -120,6 +123,7 @@ export declare class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     setExpandedChildrenLimit(expandedChildrenLimit: number): void;
     onTopLayerIndexChanged(): void;
     onbind(): void;
+    clearView(): void;
     onunbind(): void;
     onattach(): void;
     onpopulate(): Promise<void>;
@@ -187,7 +191,6 @@ export declare function convertUnicodeCharsToHTMLEntities(text: string): {
 export interface EditorHandles {
     commit: () => void;
     cancel: () => void;
-    editor?: TextEditor.TextEditor.TextEditor;
     resize: () => void;
 }
 export {};

@@ -505,7 +505,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin(UI.Panel.Pane
             const { model, insightSetKey } = event;
             this.#setActiveInsight({ model, insightSetKey });
             // Open the summary panel for the 3p insight.
-            if (model.insightKey === "ThirdParties" /* Trace.Insights.Types.InsightKeys.THIRD_PARTIES */) {
+            if (model.insightKey === Trace.Insights.Types.InsightKeys.THIRD_PARTIES) {
                 void window.scheduler.postTask(() => {
                     this.#openSummaryTab();
                 }, { priority: 'background' });

@@ -114,9 +114,7 @@ export class TextEditor extends HTMLElement {
         }
     }
     focus() {
-        if (this.#activeEditor) {
-            this.#activeEditor.focus();
-        }
+        this.editor.focus();
     }
     #ensureSettingListeners() {
         const dynamicSettings = this.#activeEditor ?

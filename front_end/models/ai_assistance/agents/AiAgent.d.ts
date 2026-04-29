@@ -192,7 +192,7 @@ export interface PerformanceTraceAiWidget {
 export interface PerfInsightAiWidget {
     name: 'PERF_INSIGHT';
     data: {
-        insight: 'lcp';
+        insight: Trace.Insights.Types.InsightKeys;
         insightData: Trace.Insights.Types.InsightModel;
     };
 }

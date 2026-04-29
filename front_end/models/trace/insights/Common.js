@@ -4,12 +4,16 @@
 import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
 import { getLogNormalScore } from './Statistics.js';
+import { InsightKeys, } from './types.js';
 const GRAPH_SAVINGS_PRECISION = 50;
 export function getInsight(insightName, insightSet) {
     return insightSet.model[insightName];
 }
+export function isInsightKey(key) {
+    return Object.values(InsightKeys).includes(key);
+}
 export function getLCP(insightSet) {
-    const insight = getInsight("LCPBreakdown" /* InsightKeys.LCP_BREAKDOWN */, insightSet);
+    const insight = getInsight(InsightKeys.LCP_BREAKDOWN, insightSet);
     if (!insight || !insight.lcpMs || !insight.lcpEvent) {
         return null;
     }
@@ -17,7 +21,7 @@ export function getLCP(insightSet) {
     return { value, event: insight.lcpEvent };
 }
 export function getINP(insightSet) {
-    const insight = getInsight("INPBreakdown" /* InsightKeys.INP_BREAKDOWN */, insightSet);
+    const insight = getInsight(InsightKeys.INP_BREAKDOWN, insightSet);
     if (!insight?.longestInteractionEvent?.dur) {
         return null;
     }
@@ -25,7 +29,7 @@ export function getINP(insightSet) {
     return { value, event: insight.longestInteractionEvent };
 }
 export function getCLS(insightSet) {
-    const insight = getInsight("CLSCulprits" /* InsightKeys.CLS_CULPRITS */, insightSet);
+    const insight = getInsight(InsightKeys.CLS_CULPRITS, insightSet);
     if (!insight) {
         // Unlike the other metrics, there is always a value for CLS even with no data.
         return { value: 0, worstClusterEvent: null };

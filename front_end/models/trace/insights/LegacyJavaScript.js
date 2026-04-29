@@ -5,7 +5,7 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import * as LegacyJavaScriptLib from '../../../third_party/legacy-javascript/legacy-javascript.js';
 import * as Helpers from '../helpers/helpers.js';
 import { estimateCompressionRatioForScript, metricSavingsForWastedBytes } from './Common.js';
-import { InsightCategory, } from './types.js';
+import { InsightCategory, InsightKeys, } from './types.js';
 const { detectLegacyJavaScript } = LegacyJavaScriptLib.LegacyJavaScript;
 export const UIStrings = {
     /**
@@ -27,7 +27,7 @@ const BYTE_THRESHOLD = 5000;
 function finalize(partialModel) {
     const requests = [...partialModel.legacyJavaScriptResults.keys()].map(script => script.request).filter(e => !!e);
     return {
-        insightKey: "LegacyJavaScript" /* InsightKeys.LEGACY_JAVASCRIPT */,
+        insightKey: InsightKeys.LEGACY_JAVASCRIPT,
         strings: UIStrings,
         title: i18nString(UIStrings.title),
         description: i18nString(UIStrings.description),
@@ -39,7 +39,7 @@ function finalize(partialModel) {
     };
 }
 export function isLegacyJavaScript(model) {
-    return model.insightKey === "LegacyJavaScript" /* InsightKeys.LEGACY_JAVASCRIPT */;
+    return model.insightKey === InsightKeys.LEGACY_JAVASCRIPT;
 }
 export function generateInsight(data, context) {
     const scripts = data.Scripts.scripts.filter(script => {

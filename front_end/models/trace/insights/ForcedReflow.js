@@ -6,7 +6,7 @@ import * as Platform from '../../../core/platform/platform.js';
 import * as Extras from '../extras/extras.js';
 import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
-import { InsightCategory, } from './types.js';
+import { InsightCategory, InsightKeys, } from './types.js';
 export const UIStrings = {
     /**
      * @description Title of an insight that provides details about Forced reflow.
@@ -96,7 +96,7 @@ function getLargestTopLevelFunctionData(forcedReflowEvents, traceParsedData) {
 }
 function finalize(partialModel) {
     return {
-        insightKey: "ForcedReflow" /* InsightKeys.FORCED_REFLOW */,
+        insightKey: InsightKeys.FORCED_REFLOW,
         strings: UIStrings,
         title: i18nString(UIStrings.title),
         description: i18nString(UIStrings.description),
@@ -112,7 +112,7 @@ function getBottomCallFrameForEvent(event, traceParsedData) {
     return profileStackTrace?.callFrames[0] ?? eventTopCallFrame ?? null;
 }
 export function isForcedReflowInsight(model) {
-    return model.insightKey === "ForcedReflow" /* InsightKeys.FORCED_REFLOW */;
+    return model.insightKey === InsightKeys.FORCED_REFLOW;
 }
 export function generateInsight(traceParsedData, context) {
     const isWithinContext = (event) => {

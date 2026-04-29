@@ -1504,7 +1504,7 @@ function removeNode(node, preserveParentExpandable = false) {
  * @attribute hide-overflow
  */
 export class TreeViewElement extends HTMLElementWithLightDOMTemplate {
-    static observedAttributes = ['navigation-variant', 'hide-overflow', 'dense'];
+    static observedAttributes = ['navigation-variant', 'hide-overflow', 'dense', 'show-selection-on-keyboard-focus'];
     #treeOutline = new TreeOutlineInShadow(undefined, this);
     constructor() {
         super();
@@ -1654,6 +1654,9 @@ export class TreeViewElement extends HTMLElementWithLightDOMTemplate {
                 break;
             case 'dense':
                 this.#treeOutline.setDense(booleanValueIsTrue);
+                break;
+            case 'show-selection-on-keyboard-focus':
+                this.#treeOutline.setShowSelectionOnKeyboardFocus(booleanValueIsTrue);
                 break;
         }
     }

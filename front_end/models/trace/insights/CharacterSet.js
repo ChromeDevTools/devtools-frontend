@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as i18n from '../../../core/i18n/i18n.js';
-import { InsightCategory, InsightWarning, } from './types.js';
+import { InsightCategory, InsightKeys, InsightWarning, } from './types.js';
 export const UIStrings = {
     /**
      * @description Title of an insight that checks whether the page declares a character encoding early enough.
@@ -41,7 +41,7 @@ const str_ = i18n.i18n.registerUIStrings('models/trace/insights/CharacterSet.ts'
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const CHARSET_HTTP_REGEX = /charset\s*=\s*[a-zA-Z0-9\-_:.()]{2,}/i;
 export function isCharacterSetInsight(model) {
-    return model.insightKey === "CharacterSet" /* InsightKeys.CHARACTER_SET */;
+    return model.insightKey === InsightKeys.CHARACTER_SET;
 }
 function finalize(partialModel) {
     let hasFailure = false;
@@ -49,7 +49,7 @@ function finalize(partialModel) {
         hasFailure = !partialModel.data.checklist.httpCharset.value && !partialModel.data.checklist.metaCharset.value;
     }
     return {
-        insightKey: "CharacterSet" /* InsightKeys.CHARACTER_SET */,
+        insightKey: InsightKeys.CHARACTER_SET,
         strings: UIStrings,
         title: i18nString(UIStrings.title),
         description: i18nString(UIStrings.description),

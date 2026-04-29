@@ -6857,7 +6857,7 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
     this.#sideBar.element.addEventListener(TimelineInsights.SidebarInsight.InsightActivated.eventName, (event) => {
       const { model, insightSetKey } = event;
       this.#setActiveInsight({ model, insightSetKey });
-      if (model.insightKey === "ThirdParties") {
+      if (model.insightKey === Trace22.Insights.Types.InsightKeys.THIRD_PARTIES) {
         void window.scheduler.postTask(() => {
           this.#openSummaryTab();
         }, { priority: "background" });

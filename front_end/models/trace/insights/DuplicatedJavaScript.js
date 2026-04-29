@@ -5,7 +5,7 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import * as Extras from '../extras/extras.js';
 import * as Helpers from '../helpers/helpers.js';
 import { estimateCompressionRatioForScript, metricSavingsForWastedBytes } from './Common.js';
-import { InsightCategory, } from './types.js';
+import { InsightCategory, InsightKeys, } from './types.js';
 export const UIStrings = {
     /**
      * @description Title of an insight that identifies multiple copies of the same JavaScript sources, and recommends removing the duplication.
@@ -25,7 +25,7 @@ export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 function finalize(partialModel) {
     const requests = partialModel.scriptsWithDuplication.map(script => script.request).filter(e => !!e);
     return {
-        insightKey: "DuplicatedJavaScript" /* InsightKeys.DUPLICATE_JAVASCRIPT */,
+        insightKey: InsightKeys.DUPLICATE_JAVASCRIPT,
         strings: UIStrings,
         title: i18nString(UIStrings.title),
         description: i18nString(UIStrings.description),
@@ -37,7 +37,7 @@ function finalize(partialModel) {
     };
 }
 export function isDuplicatedJavaScriptInsight(model) {
-    return model.insightKey === "DuplicatedJavaScript" /* InsightKeys.DUPLICATE_JAVASCRIPT */;
+    return model.insightKey === InsightKeys.DUPLICATE_JAVASCRIPT;
 }
 export function generateInsight(data, context) {
     const scripts = data.Scripts.scripts.filter(script => {

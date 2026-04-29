@@ -2889,9 +2889,7 @@ var TextEditor = class extends HTMLElement {
     }
   }
   focus() {
-    if (this.#activeEditor) {
-      this.#activeEditor.focus();
-    }
+    this.editor.focus();
   }
   #ensureSettingListeners() {
     const dynamicSettings = this.#activeEditor ? this.#activeEditor.state.facet(dynamicSetting) : DynamicSetting.none;

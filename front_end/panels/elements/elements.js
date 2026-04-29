@@ -11556,7 +11556,6 @@ var AdoptedStyleSheetContentsTreeElement = class extends UI13.TreeOutline.TreeEl
     this.editing = {
       commit: editorHandles.commit,
       cancel: editorHandles.cancel,
-      editor: void 0,
       resize: () => {
       }
     };
@@ -12766,15 +12765,16 @@ var DEFAULT_VIEW3 = (input, output, target) => {
   const hasAdorners = !!input.adProvenance || input.showContainerAdorner || input.showFlexAdorner || input.showGridAdorner || input.showGridLanesAdorner || input.showMediaAdorner || input.showPopoverAdorner || input.showTopLayerAdorner || input.showViewSourceAdorner || input.showScrollAdorner || input.showScrollSnapAdorner || input.showSlotAdorner || input.showStartingStyleAdorner;
   const gutterContainerClasses = {
     "has-decorations": input.decorations.length || input.descendantDecorations.length,
-    "gutter-container": true
+    "gutter-container": true,
+    hidden: Boolean(input.editorState)
   };
   render8(html8`
     <div ${ref2((el) => {
     output.contentElement = el;
   })}>
-      ${input.node ? html8`<span class="highlight">${renderTitle(input.node, input.isClosingTag, input.expanded, input.isExpandable, input.isXMLMimeType, input.updateRecord, input.onHighlightSearchResults, input.onExpand)}</span>` : nothing4}
+      ${input.node ? html8`<span class="highlight ${input.editorState ? "hidden" : ""}">${renderTitle(input.node, input.isClosingTag, input.expanded, input.isExpandable, input.isXMLMimeType, input.updateRecord, input.onHighlightSearchResults, input.onExpand)}</span>` : nothing4}
       ${input.isHovered || input.isSelected ? html8`
-        <div class="selection fill" style=${`margin-left: ${-input.indent}px`}></div>
+        <div class="selection fill ${input.editorState ? "hidden" : ""}" style=${`margin-left: ${-input.indent}px`}></div>
       ` : nothing4}
       <div class=${Lit6.Directives.classMap(gutterContainerClasses)}
            style="left: ${-input.indent}px"
@@ -12787,7 +12787,7 @@ var DEFAULT_VIEW3 = (input, output, target) => {
              ${input.descendantDecorations.map((d) => html8`<div class="elements-gutter-decoration elements-has-decorated-children" style="--decoration-color: ${d.color}"></div>`)}
         </div>` : nothing4}
       </div>
-      ${hasAdorners ? html8`<div class="adorner-container ${!hasAdorners ? "hidden" : ""}">
+      ${hasAdorners ? html8`<div class="adorner-container ${input.editorState ? "hidden" : ""}">
         ${maybeRenderAdAdorner(input)}
         ${input.showViewSourceAdorner ? html8`<devtools-adorner
           .name=${ElementsComponents5.AdornerManager.RegisteredAdorners.VIEW_SOURCE}
@@ -12946,10 +12946,10 @@ var DEFAULT_VIEW3 = (input, output, target) => {
         </devtools-adorner>` : nothing4}
       </div>` : nothing4}
       ${input.isSelected ? html8`
-        <span class="selected-hint" title=${i18nString10(UIStrings11.useSInTheConsoleToReferToThis, { PH1: "$0" })} aria-hidden="true"></span>
+        <span class="selected-hint ${input.editorState ? "hidden" : ""}" title=${i18nString10(UIStrings11.useSInTheConsoleToReferToThis, { PH1: "$0" })} aria-hidden="true"></span>
       ` : nothing4}
       ${input.showAiButton ? html8`
-        <span class="ai-button-container">
+        <span class="ai-button-container ${input.editorState ? "hidden" : ""}">
           <devtools-floating-button
             icon-name=${AIAssistance.AiUtils.getIconName()}
             title=${input.aiButtonTitle || ""}
@@ -12959,6 +12959,15 @@ var DEFAULT_VIEW3 = (input, output, target) => {
           </devtools-floating-button>
         </span>
       ` : nothing4}
+      ${input.editorState ? html8`<div @keydown=${(event) => {
+    if (event.key === "Escape") {
+      event.consume(true);
+    }
+  }} class="source-code elements-tree-editor" style="width: ${input.editorWidth ?? 0}px;">
+        <devtools-text-editor .state=${input.editorState} ${ref2((el) => {
+    output.editorRef = el;
+  })}></devtools-text-editor>
+      </div>` : nothing4}
     </div>
   `, target);
 };
@@ -12971,7 +12980,9 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
   inClipboard;
   #hovered;
   editing;
-  htmlEditElement;
+  #editorRef;
+  #editorState = null;
+  #editorWidth = null;
   expandAllButtonElement;
   #elementIssues = /* @__PURE__ */ new Map();
   #nodeElementToIssue = /* @__PURE__ */ new Map();
@@ -13084,9 +13095,6 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
   }
   // ClearNode param is used to clean DOM after in-place editing..
   performUpdate(clearNode = false) {
-    if (this.editing) {
-      return;
-    }
     const output = {};
     DEFAULT_VIEW3({
       node: !clearNode ? this.nodeInternal : null,
@@ -13168,9 +13176,12 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
         if (action2) {
           void action2.execute();
         }
-      }
+      },
+      editorState: this.#editorState,
+      editorWidth: this.#editorWidth
     }, output, this.listItemElement);
     this.#contentElement = output.contentElement;
+    this.#editorRef = output.editorRef;
     if (this.#updateRecord) {
       this.#updateRecord = null;
     }
@@ -13421,10 +13432,7 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
       this.nodeInternal.addEventListener(SDK13.DOMModel.DOMNodeEvents.SCROLL_SNAP_OVERLAY_STATE_CHANGED, this.#onPersistentScrollSnapOverlayStateChanged, this);
     }
   }
-  onunbind() {
-    if (this.editing) {
-      this.editing.cancel();
-    }
+  clearView() {
     DEFAULT_VIEW3({
       node: null,
       isClosingTag: false,
@@ -13490,8 +13498,16 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
       decorations: [],
       descendantDecorations: [],
       decorationsTooltip: "",
-      indent: 0
+      indent: 0,
+      editorState: null,
+      editorWidth: null
     }, {}, this.listItemElement);
+  }
+  onunbind() {
+    if (this.editing) {
+      this.editing.cancel();
+    }
+    this.clearView();
     if (this.treeOutline && this.treeOutline.treeElementByNode.get(this.nodeInternal) === this) {
       this.treeOutline.treeElementByNode.delete(this.nodeInternal);
     }
@@ -14107,7 +14123,6 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
       this.editing = {
         commit: editorHandles.commit,
         cancel: editorHandles.cancel,
-        editor: void 0,
         resize: () => {
         }
       };
@@ -14120,26 +14135,11 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
     if (this.editing) {
       return;
     }
-    const initialValue = convertUnicodeCharsToHTMLEntities(maybeInitialValue).text;
-    this.htmlEditElement = document.createElement("div");
-    this.htmlEditElement.className = "source-code elements-tree-editor";
-    let child = this.listItemElement.firstChild;
-    while (child) {
-      if (child instanceof HTMLElement) {
-        child.style.display = "none";
-      }
-      child = child.nextSibling;
-    }
     if (this.childrenListElement) {
       this.childrenListElement.style.display = "none";
     }
-    this.listItemElement.append(this.htmlEditElement);
-    this.htmlEditElement.addEventListener("keydown", (event) => {
-      if (event.key === "Escape") {
-        event.consume(true);
-      }
-    });
-    const editor = new TextEditor3.TextEditor.TextEditor(CodeMirror2.EditorState.create({
+    const initialValue = convertUnicodeCharsToHTMLEntities(maybeInitialValue).text;
+    this.#editorState = CodeMirror2.EditorState.create({
       doc: initialValue,
       extensions: [
         CodeMirror2.keymap.of([
@@ -14169,48 +14169,43 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
         }),
         CodeMirror2.EditorView.domEventHandlers({
           focusout: (event) => {
+            if (!this.#editorRef) {
+              return;
+            }
             const relatedTarget = event.relatedTarget;
-            if (relatedTarget && !relatedTarget.isSelfOrDescendant(editor)) {
+            if (relatedTarget && !relatedTarget.isSelfOrDescendant(this.#editorRef)) {
               this.editing?.commit();
             }
           }
         })
       ]
-    }));
-    this.editing = { commit: commit.bind(this), cancel: dispose.bind(this), editor, resize: resize.bind(this) };
+    });
+    this.performUpdate();
     resize.call(this);
-    this.htmlEditElement.appendChild(editor);
-    editor.editor.focus();
+    this.#editorRef?.focus();
+    this.editing = { commit: commit.bind(this), cancel: dispose.bind(this), resize: resize.bind(this) };
     this.treeOutline?.setMultilineEditing(this.editing);
     function resize() {
-      if (this.treeOutline && this.htmlEditElement) {
-        this.htmlEditElement.style.width = this.treeOutline.visibleWidth() - this.computeLeftIndent() - 30 + "px";
+      if (this.treeOutline) {
+        this.#editorWidth = this.treeOutline.visibleWidth() - this.computeLeftIndent() - 30;
+        this.performUpdate();
       }
     }
     function commit() {
-      if (this.editing?.editor) {
-        commitCallback(initialValue, this.editing.editor.state.doc.toString());
+      if (this.#editorRef) {
+        commitCallback(initialValue, this.#editorRef.editor.state.doc.toString());
       }
       dispose.call(this);
     }
     function dispose() {
-      if (!this.editing?.editor) {
+      if (!this.#editorRef) {
         return;
       }
       this.editing = null;
-      if (this.htmlEditElement) {
-        this.listItemElement.removeChild(this.htmlEditElement);
-      }
-      this.htmlEditElement = void 0;
+      this.#editorState = null;
+      this.performUpdate();
       if (this.childrenListElement) {
         this.childrenListElement.style.removeProperty("display");
-      }
-      let child2 = this.listItemElement.firstChild;
-      while (child2) {
-        if (child2 instanceof HTMLElement) {
-          child2.style.removeProperty("display");
-        }
-        child2 = child2.nextSibling;
       }
       if (this.treeOutline) {
         this.treeOutline.setMultilineEditing(null);
@@ -14463,7 +14458,7 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
     void this.nodeInternal.removeNode();
   }
   toggleEditAsHTML(callback, startEditing) {
-    if (this.editing && this.htmlEditElement) {
+    if (this.editing && this.#editorState) {
       this.editing.commit();
       return;
     }
@@ -20048,7 +20043,7 @@ var DEFAULT_VIEW10 = (input, _output, target) => {
       ${input.objectTree && input.allChildrenFiltered ? html15`
         <div class="gray-info-message">${i18nString17(UIStrings18.noMatchingProperty)}</div>
       ` : nothing7}
-      <devtools-tree @treeelementexpand=${onExpand} .template=${html15`
+      <devtools-tree show-selection-on-keyboard-focus @treeelementexpand=${onExpand} .template=${html15`
         <ul role=tree class="source-code object-properties-section">
           <style>${ObjectUI.ObjectPropertiesSection.objectValueStyles}</style>;
           <style>${ObjectUI.ObjectPropertiesSection.objectPropertiesSectionStyles}</style>;

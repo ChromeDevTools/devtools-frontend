@@ -6263,6 +6263,9 @@
   "panels/application/TrustTokensTreeElement.ts | trustTokens": {
     "message": "Private state tokens"
   },
+  "panels/application/WebMCPView.ts | cancelCall": {
+    "message": "Cancel"
+  },
   "panels/application/WebMCPView.ts | canceled": {
     "message": "Canceled"
   },

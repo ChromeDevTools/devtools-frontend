@@ -13,7 +13,7 @@ export declare class WatchExpressionsSidebarPane extends UI.Widget.VBox implemen
     private readonly treeOutline;
     private readonly expandController;
     private readonly linkifier;
-    private constructor();
+    constructor();
     static instance(): WatchExpressionsSidebarPane;
     get watchExpressions(): WatchExpression[];
     toolbarItems(): UI.Toolbar.ToolbarItem[];
@@ -42,6 +42,7 @@ export declare class WatchExpression extends Common.ObjectWrapper.ObjectWrapper<
     private result?;
     private preventClickTimeout?;
     constructor(expression: string | null, expandController: ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionsTreeExpandController, linkifier: Components.Linkifier.Linkifier);
+    get updateComplete(): Promise<void>;
     treeElement(): UI.TreeOutline.TreeElement;
     expression(): string | null;
     update(): void;
@@ -49,7 +50,7 @@ export declare class WatchExpression extends Common.ObjectWrapper.ObjectWrapper<
     isEditing(): boolean;
     private finishEditing;
     private dblClickOnWatchExpression;
-    private updateExpression;
+    updateExpression(newExpression: string | null): void;
     private deleteWatchExpression;
     createWatchExpression(result?: SDK.RemoteObject.RemoteObject, exceptionDetails?: Protocol.Runtime.ExceptionDetails): void;
     private createWatchExpressionHeader;

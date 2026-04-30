@@ -45,9 +45,6 @@
       "path": "../../Images/optimize_images-tsconfig.json"
     },
     {
-      "path": "../../core/dom_extension/bundle-tsconfig.json"
-    },
-    {
       "path": "../../core/sdk/meta-tsconfig.json"
     },
     {
@@ -97,6 +94,9 @@
     },
     {
       "path": "../../panels/sources/meta-tsconfig.json"
+    },
+    {
+      "path": "../../ui/dom_extension/bundle-tsconfig.json"
     },
     {
       "path": "../../ui/legacy/components/object_ui/meta-tsconfig.json"

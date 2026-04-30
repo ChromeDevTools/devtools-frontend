@@ -1,6 +1,6 @@
 // gen/front_end/entrypoints/shell/shell.prebundle.js
 import "./../../Images/Images.js";
-import "./../../core/dom_extension/dom_extension.js";
+import "./../../ui/dom_extension/dom_extension.js";
 
 // gen/front_end/panels/sources/sources-meta.js
 import * as Common from "./../../core/common/common.js";

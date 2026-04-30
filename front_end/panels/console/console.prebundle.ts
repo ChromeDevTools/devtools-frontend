@@ -13,6 +13,7 @@ import './ConsoleViewMessage.js';
 import './ConsolePrompt.js';
 import './ConsoleView.js';
 import './ConsolePanel.js';
+import './SymbolizedErrorWidget.js';
 import './PromptBuilder.js';
 
 import * as ConsoleContextSelector from './ConsoleContextSelector.js';
@@ -27,6 +28,7 @@ import * as ConsoleView from './ConsoleView.js';
 import * as ConsoleViewMessage from './ConsoleViewMessage.js';
 import * as ConsoleViewport from './ConsoleViewport.js';
 import * as PromptBuilder from './PromptBuilder.js';
+import * as SymbolizedErrorWidget from './SymbolizedErrorWidget.js';
 
 export {
   ConsoleContextSelector,
@@ -41,4 +43,5 @@ export {
   ConsoleViewMessage,
   ConsoleViewport,
   PromptBuilder,
+  SymbolizedErrorWidget,
 };

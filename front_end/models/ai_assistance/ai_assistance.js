@@ -6767,7 +6767,9 @@ var ScorePriority;
 })(ScorePriority || (ScorePriority = {}));
 var SUPPORTED_INSIGHT_WIDGETS = /* @__PURE__ */ new Set([
   Trace6.Insights.Types.InsightKeys.LCP_BREAKDOWN,
-  Trace6.Insights.Types.InsightKeys.RENDER_BLOCKING
+  Trace6.Insights.Types.InsightKeys.RENDER_BLOCKING,
+  Trace6.Insights.Types.InsightKeys.LCP_DISCOVERY,
+  Trace6.Insights.Types.InsightKeys.CLS_CULPRITS
 ]);
 var PerformanceTraceContext = class _PerformanceTraceContext extends ConversationContext {
   static fromParsedTrace(parsedTrace) {

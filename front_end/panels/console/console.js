@@ -8195,6 +8195,62 @@ var ConsolePrompt = class extends Common8.ObjectWrapper.eventMixin(UI10.Widget.W
   editorSetForTest() {
   }
 };
+
+// gen/front_end/panels/console/SymbolizedErrorWidget.js
+var SymbolizedErrorWidget_exports = {};
+__export(SymbolizedErrorWidget_exports, {
+  SymbolizedErrorWidget: () => SymbolizedErrorWidget
+});
+import * as Bindings4 from "./../../models/bindings/bindings.js";
+import * as UI11 from "./../../ui/legacy/legacy.js";
+var DEFAULT_VIEW5 = (_input, _output, _target) => {
+};
+var SymbolizedErrorWidget = class extends UI11.Widget.Widget {
+  #error;
+  #view;
+  #ignoreListManager;
+  constructor(element, view = DEFAULT_VIEW5) {
+    super(element);
+    this.#view = view;
+  }
+  set ignoreListManager(ignoreListManager) {
+    this.#ignoreListManager = ignoreListManager;
+    this.requestUpdate();
+  }
+  get ignoreListManager() {
+    return this.#ignoreListManager;
+  }
+  set error(error) {
+    this.#error?.removeEventListener("UPDATED", this.requestUpdate, this);
+    this.#error = error;
+    if (this.isShowing()) {
+      this.#error?.addEventListener("UPDATED", this.requestUpdate, this);
+    }
+    this.requestUpdate();
+  }
+  get error() {
+    return this.#error;
+  }
+  wasShown() {
+    super.wasShown();
+    this.#error?.addEventListener("UPDATED", this.requestUpdate, this);
+    this.requestUpdate();
+  }
+  willHide() {
+    super.willHide();
+    this.#error?.removeEventListener("UPDATED", this.requestUpdate, this);
+  }
+  performUpdate() {
+    if (!this.#error) {
+      return;
+    }
+    const input = {
+      error: this.#error,
+      ignoreListManager: this.#ignoreListManager
+    };
+    this.#view(input, {}, this.contentElement);
+  }
+};
 export {
   ConsoleContextSelector_exports as ConsoleContextSelector,
   ConsoleFilter_exports as ConsoleFilter,
@@ -8207,6 +8263,7 @@ export {
   ConsoleView_exports as ConsoleView,
   ConsoleViewMessage_exports as ConsoleViewMessage,
   ConsoleViewport_exports as ConsoleViewport,
-  PromptBuilder_exports as PromptBuilder
+  PromptBuilder_exports as PromptBuilder,
+  SymbolizedErrorWidget_exports as SymbolizedErrorWidget
 };
 //# sourceMappingURL=console.js.map

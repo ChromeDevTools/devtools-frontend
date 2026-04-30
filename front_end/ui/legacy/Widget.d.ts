@@ -1,4 +1,4 @@
-import '../../core/dom_extension/dom_extension.js';
+import '../dom_extension/dom_extension.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Geometry from '../../models/geometry/geometry.js';
 import * as Lit from '../../ui/lit/lit.js';

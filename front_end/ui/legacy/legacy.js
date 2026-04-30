@@ -2711,7 +2711,7 @@ __export(Widget_exports, {
   widgetConfig: () => widgetConfig,
   widgetRef: () => widgetRef
 });
-import "./../../core/dom_extension/dom_extension.js";
+import "./../dom_extension/dom_extension.js";
 import * as Platform5 from "./../../core/platform/platform.js";
 import * as Geometry from "./../../models/geometry/geometry.js";
 import * as Lit from "./../lit/lit.js";

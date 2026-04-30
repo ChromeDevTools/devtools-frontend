@@ -58,8 +58,13 @@ function decode(input) {
   }
   return bytes;
 }
-function encode(input) {
-  return new Promise((resolve, reject) => {
+async function encode(input) {
+  if (typeof FileReader === "undefined") {
+    const blob = new Blob([input]);
+    const arrayBuffer = await blob.arrayBuffer();
+    return globalThis.Buffer.from(arrayBuffer).toString("base64");
+  }
+  return await new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onerror = () => reject(new Error("failed to convert to base64: internal error"));
     reader.onload = () => {

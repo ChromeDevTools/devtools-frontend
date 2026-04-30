@@ -58,7 +58,10 @@ before(async function () {
         });
     });
 });
-beforeEach(async () => {
+beforeEach(async function () {
+    if (this.currentTest) {
+        this.currentTest.hasExclusiveTests = this.currentTest.parent?.hasOnly?.();
+    }
     stopTrackingAsyncActivity();
     resetHostConfig();
     // Clear out any Sinon stubs or spies between individual tests.

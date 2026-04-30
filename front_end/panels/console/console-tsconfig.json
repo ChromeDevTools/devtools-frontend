@@ -47,6 +47,7 @@
     "../../../../../../front_end/panels/console/ConsoleViewMessage.ts",
     "../../../../../../front_end/panels/console/ConsoleViewport.ts",
     "../../../../../../front_end/panels/console/PromptBuilder.ts",
+    "../../../../../../front_end/panels/console/SymbolizedErrorWidget.ts",
     "../../../../../../front_end/legacy/legacy-defs.d.ts",
     "../../../../../../front_end/global_typings/global_defs.d.ts",
     "../../../../../../node_modules/@types/filesystem/index.d.ts"

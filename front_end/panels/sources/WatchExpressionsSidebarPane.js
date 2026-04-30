@@ -184,6 +184,7 @@ export class WatchExpressionsSidebarPane extends UI.Widget.VBox {
             }
             this.createWatchExpression(expression);
         }
+        await Promise.all(this.#watchExpressions.map(we => we.updateComplete));
     }
     createWatchExpression(expression) {
         this.contentElement.appendChild(this.treeOutline.element);
@@ -282,6 +283,7 @@ export class WatchExpression extends Common.ObjectWrapper.ObjectWrapper {
     textPrompt;
     result;
     preventClickTimeout;
+    #updateComplete = Promise.resolve();
     constructor(expression, expandController, linkifier) {
         super();
         this.#expression = expression;
@@ -293,6 +295,9 @@ export class WatchExpression extends Common.ObjectWrapper.ObjectWrapper {
         this.linkifier = linkifier;
         this.createWatchExpression();
         this.update();
+    }
+    get updateComplete() {
+        return this.#updateComplete;
     }
     treeElement() {
         return this.#treeElement;
@@ -325,7 +330,7 @@ export class WatchExpression extends Common.ObjectWrapper.ObjectWrapper {
     update() {
         const currentExecutionContext = UI.Context.Context.instance().flavor(SDK.RuntimeModel.ExecutionContext);
         if (currentExecutionContext && this.#expression) {
-            void this.#evaluateExpression(currentExecutionContext, this.#expression).then(result => {
+            this.#updateComplete = this.#evaluateExpression(currentExecutionContext, this.#expression).then(result => {
                 if ('object' in result) {
                     this.createWatchExpression(result.object, result.exceptionDetails);
                 }
@@ -336,6 +341,7 @@ export class WatchExpression extends Common.ObjectWrapper.ObjectWrapper {
         }
         else {
             this.createWatchExpression();
+            this.#updateComplete = Promise.resolve();
         }
     }
     startEditing() {
@@ -367,8 +373,9 @@ export class WatchExpression extends Common.ObjectWrapper.ObjectWrapper {
         this.#treeElement.setDisableSelectFocus(false);
         this.#treeElement.listItemElement.classList.remove('watch-expression-editing');
         if (this.textPrompt) {
+            const text = this.textPrompt.text();
             this.textPrompt.detach();
-            const newExpression = canceled ? this.#expression : this.textPrompt.text();
+            const newExpression = canceled ? this.#expression : text;
             this.textPrompt = undefined;
             this.element.removeChildren();
             this.updateExpression(newExpression);

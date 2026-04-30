@@ -21,7 +21,7 @@ export declare function getAllSupportedDevToolsLocales(): string[];
  * Depending whether a locale is present in `bundledLocales`, the data will be
  * fetched locally or remotely.
  */
-export declare function fetchAndRegisterLocaleData(locale: Intl.UnicodeBCP47LocaleIdentifier, location?: string): Promise<void>;
+export declare function fetchAndRegisterLocaleData(locale: Intl.UnicodeBCP47LocaleIdentifier, location?: any): Promise<void>;
 export declare function hasLocaleDataForTest(locale: Intl.UnicodeBCP47LocaleIdentifier): boolean;
 export declare function resetLocaleDataForTest(): void;
 export declare function registerLocaleDataForTest(locale: Intl.UnicodeBCP47LocaleIdentifier, messages: I18n.I18n.LocalizedMessages): void;

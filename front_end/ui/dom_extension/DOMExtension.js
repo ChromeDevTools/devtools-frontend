@@ -35,7 +35,7 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck This file is not checked by TypeScript Compiler as it has a lot of legacy code.
 /* eslint-disable @devtools/no-imperative-dom-api */
-import * as Platform from '../platform/platform.js';
+import * as Platform from '../../core/platform/platform.js';
 Node.prototype.traverseNextTextNode = function (stayWithin) {
     let node = this.traverseNextNode(stayWithin);
     if (!node) {

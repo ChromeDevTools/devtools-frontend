@@ -6,12 +6,13 @@ let runtimePlatform = '';
 let runtimeInstance;
 let isNode;
 let isTraceAppEntry;
+const globalObject = globalThis;
 /**
  * Returns the base URL (similar to `<base>`).
  * Used to resolve the relative URLs of any additional DevTools files (locale strings, etc) needed.
  * See: https://cs.chromium.org/remoteBase+f:devtools_window
  */
-export function getRemoteBase(location = self.location.toString()) {
+export function getRemoteBase(location = globalObject.self?.location?.toString() ?? '') {
     const url = new URL(location);
     const remoteBase = url.searchParams.get('remoteBase');
     if (!remoteBase) {
@@ -24,7 +25,7 @@ export function getRemoteBase(location = self.location.toString()) {
     return { base: `devtools://devtools/remote/serve_file/${version[1]}/`, version: version[1] };
 }
 export function getPathName() {
-    return window.location.pathname;
+    return globalObject.location?.pathname ?? '';
 }
 export function isNodeEntry(pathname) {
     const nodeEntryPoints = ['node_app', 'js_app'];
@@ -32,7 +33,7 @@ export function isNodeEntry(pathname) {
 }
 export const getChromeVersion = () => {
     const chromeRegex = /(?:^|\W)(?:Chrome|HeadlessChrome)\/(\S+)/;
-    const chromeMatch = navigator.userAgent.match(chromeRegex);
+    const chromeMatch = globalObject.navigator?.userAgent?.match(chromeRegex);
     if (chromeMatch && chromeMatch.length > 1) {
         return chromeMatch[1];
     }
@@ -53,9 +54,8 @@ export class Runtime {
     }
     static #queryParamsObject;
     static #getSearchParams() {
-        // TODO(crbug.com/451502260): Find a more explicit way to support running in Node.js
-        if (!Runtime.#queryParamsObject && 'location' in globalThis) {
-            Runtime.#queryParamsObject = new URLSearchParams(location.search);
+        if (!Runtime.#queryParamsObject && globalObject.location) {
+            Runtime.#queryParamsObject = new URLSearchParams(globalObject.location.search);
         }
         return Runtime.#queryParamsObject;
     }
@@ -231,12 +231,12 @@ export class ExperimentsSupport {
         return this.#experimentNames.has(experimentName);
     }
 }
-/** Manages the 'experiments' dictionary in self.localStorage */
+/** Manages the 'experiments' dictionary in globalThis.localStorage */
 class ExperimentStorage {
     #experiments = {};
     constructor() {
         try {
-            const storedExperiments = self.localStorage?.getItem('experiments');
+            const storedExperiments = globalObject.localStorage?.getItem('experiments');
             if (storedExperiments) {
                 this.#experiments = JSON.parse(storedExperiments);
             }
@@ -267,7 +267,7 @@ class ExperimentStorage {
         this.#syncToLocalStorage();
     }
     #syncToLocalStorage() {
-        self.localStorage?.setItem('experiments', JSON.stringify(this.#experiments));
+        globalObject.localStorage?.setItem('experiments', JSON.stringify(this.#experiments));
     }
 }
 /**

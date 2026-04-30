@@ -30,6 +30,7 @@ core/i18n/ByteUtilities.test.js
 core/i18n/DevToolsLocale.test.js
 core/i18n/NumberFormatter.test.js
 core/i18n/i18n.test.js
+core/i18n/i18nImpl.test.js
 core/i18n/time-utilities.test.js
 core/platform/ArrayUtilities.test.js
 core/platform/DateUtilities.test.js
@@ -43,6 +44,7 @@ core/platform/TypedArrayUtilities.test.js
 core/protocol_client/InspectorBackend.test.js
 core/root/Runtime.test.js
 core/sdk/DebuggerModel.test.js
+core/sdk/NetworkManager.test.js
 core/sdk/PageResourceLoader.test.js
 core/sdk/RuntimeModel.test.js
 core/sdk/ServerSentEventsProtocol.test.js
@@ -89,15 +91,11 @@ models/stack_trace/StackTrace.test.js
 models/stack_trace/StackTraceImpl.test.js
 models/stack_trace/StackTraceModel.test.js
 models/stack_trace/Trie.test.js
-core/common/Base64.browser.test.js
-core/dom_extension/DOMExtension.test.js
 core/host/AidaClient.test.js
 core/host/AidaGcaTranslation.test.js
 core/host/DispatchHttpRequestClient.test.js
 core/host/GcaClient.test.js
 core/host/GdpClient.test.js
-core/i18n/i18nImpl.test.js
-core/root/Runtime.browser.test.js
 core/sdk/AccessibilityModel.test.js
 core/sdk/AnimationModel.test.js
 core/sdk/AutofillModel.test.js
@@ -120,7 +118,6 @@ core/sdk/DOMModel.test.js
 core/sdk/EmulationModel.test.js
 core/sdk/EnhancedTracesParser.test.js
 core/sdk/FrameManager.test.js
-core/sdk/NetworkManager.test.js
 core/sdk/NetworkRequest.test.js
 core/sdk/OverlayColorGenerator.test.js
 core/sdk/OverlayModel.test.js
@@ -415,6 +412,7 @@ panels/console/ConsoleView.test.js
 panels/console/ConsoleViewMessage.test.js
 panels/console/ConsoleViewport.test.js
 panels/console/PromptBuilder.test.js
+panels/console/SymbolizedErrorWidget.test.js
 panels/console_counters/console_counters.test.js
 panels/coverage/CoverageDecorationManager.test.js
 panels/coverage/CoverageListView.test.js
@@ -710,6 +708,7 @@ ui/components/text_editor/javascript.test.js
 ui/components/text_prompt/TextPrompt.test.js
 ui/components/tooltips/Tooltip.test.js
 ui/components/tree_outline/TreeOutline.test.js
+ui/dom_extension/DOMExtension.test.js
 ui/helpers/OpenInNewTab.test.js
 ui/i18n/i18n.test.js
 ui/kit/cards/Card.test.js

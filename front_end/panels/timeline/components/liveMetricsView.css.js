@@ -210,8 +210,8 @@ export default `/*
 }
 
 .interaction-inp-chip {
-  background-color: var(--sys-color-yellow-bright);
-  color: var(--sys-color-on-yellow);
+  background-color: var(--sys-color-yellow-container);
+  color: var(--sys-color-on-yellow-container);
   padding: 0 2px;
 }
 

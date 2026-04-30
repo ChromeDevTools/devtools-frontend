@@ -191,10 +191,11 @@ var ScorePriority;
     ScorePriority[ScorePriority["CRITICAL"] = 2] = "CRITICAL";
     ScorePriority[ScorePriority["DEFAULT"] = 1] = "DEFAULT";
 })(ScorePriority || (ScorePriority = {}));
-// TODO(crbug.com/503296282): Remove this when we add support for all insights
 const SUPPORTED_INSIGHT_WIDGETS = new Set([
     Trace.Insights.Types.InsightKeys.LCP_BREAKDOWN,
     Trace.Insights.Types.InsightKeys.RENDER_BLOCKING,
+    Trace.Insights.Types.InsightKeys.LCP_DISCOVERY,
+    Trace.Insights.Types.InsightKeys.CLS_CULPRITS,
 ]);
 export class PerformanceTraceContext extends ConversationContext {
     static fromParsedTrace(parsedTrace) {

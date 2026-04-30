@@ -302,9 +302,9 @@ function getLocaleFetchUrl(locale, location) {
   const path = LOCAL_FETCH_PATTERN.replace("@LOCALE@", locale);
   return new URL(path, import.meta.url).toString();
 }
-async function fetchAndRegisterLocaleData(locale, location = self.location.toString()) {
+async function fetchAndRegisterLocaleData(locale, location = globalThis.location?.toString() ?? "") {
   const localeDataTextPromise = fetch(getLocaleFetchUrl(locale, location)).then((result) => result.json());
-  const timeoutPromise = new Promise((_, reject) => window.setTimeout(() => reject(new Error("timed out fetching locale")), 5e3));
+  const timeoutPromise = new Promise((_, reject) => globalThis.setTimeout(() => reject(new Error("timed out fetching locale")), 5e3));
   const localeData = await Promise.race([timeoutPromise, localeDataTextPromise]);
   i18nInstance.registerLocaleData(locale, localeData);
 }

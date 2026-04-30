@@ -47,9 +47,12 @@ function getLocaleFetchUrl(locale, location) {
  * Depending whether a locale is present in `bundledLocales`, the data will be
  * fetched locally or remotely.
  */
-export async function fetchAndRegisterLocaleData(locale, location = self.location.toString()) {
+export async function fetchAndRegisterLocaleData(locale, 
+// Type issue with universal types.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+location = globalThis.location?.toString() ?? '') {
     const localeDataTextPromise = fetch(getLocaleFetchUrl(locale, location)).then(result => result.json());
-    const timeoutPromise = new Promise((_, reject) => window.setTimeout(() => reject(new Error('timed out fetching locale')), 5000));
+    const timeoutPromise = new Promise((_, reject) => globalThis.setTimeout(() => reject(new Error('timed out fetching locale')), 5000));
     const localeData = await Promise.race([timeoutPromise, localeDataTextPromise]);
     i18nInstance.registerLocaleData(locale, localeData);
 }

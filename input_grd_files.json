@@ -330,7 +330,7 @@
   "front_end/core/platform/browser/browser.js",
   "front_end/core/platform/node/node.js",
   "front_end/core/platform/platform.js",
-  "front_end/core/dom_extension/dom_extension.js",
+  "front_end/ui/dom_extension/dom_extension.js",
   "front_end/entrypoints/device_mode_emulation_frame/device_mode_emulation_frame.js",
   "front_end/core/root/root.js",
   "front_end/third_party/intl-messageformat/intl-messageformat.js",

@@ -89,8 +89,9 @@ var runtimePlatform = "";
 var runtimeInstance;
 var isNode;
 var isTraceAppEntry;
-function getRemoteBase(location2 = self.location.toString()) {
-  const url = new URL(location2);
+var globalObject = globalThis;
+function getRemoteBase(location = globalObject.self?.location?.toString() ?? "") {
+  const url = new URL(location);
   const remoteBase = url.searchParams.get("remoteBase");
   if (!remoteBase) {
     return null;
@@ -102,7 +103,7 @@ function getRemoteBase(location2 = self.location.toString()) {
   return { base: `devtools://devtools/remote/serve_file/${version[1]}/`, version: version[1] };
 }
 function getPathName() {
-  return window.location.pathname;
+  return globalObject.location?.pathname ?? "";
 }
 function isNodeEntry(pathname) {
   const nodeEntryPoints = ["node_app", "js_app"];
@@ -110,7 +111,7 @@ function isNodeEntry(pathname) {
 }
 var getChromeVersion = () => {
   const chromeRegex = /(?:^|\W)(?:Chrome|HeadlessChrome)\/(\S+)/;
-  const chromeMatch = navigator.userAgent.match(chromeRegex);
+  const chromeMatch = globalObject.navigator?.userAgent?.match(chromeRegex);
   if (chromeMatch && chromeMatch.length > 1) {
     return chromeMatch[1];
   }
@@ -131,8 +132,8 @@ var Runtime = class _Runtime {
   }
   static #queryParamsObject;
   static #getSearchParams() {
-    if (!_Runtime.#queryParamsObject && "location" in globalThis) {
-      _Runtime.#queryParamsObject = new URLSearchParams(location.search);
+    if (!_Runtime.#queryParamsObject && globalObject.location) {
+      _Runtime.#queryParamsObject = new URLSearchParams(globalObject.location.search);
     }
     return _Runtime.#queryParamsObject;
   }
@@ -307,7 +308,7 @@ var ExperimentStorage = class {
   #experiments = {};
   constructor() {
     try {
-      const storedExperiments = self.localStorage?.getItem("experiments");
+      const storedExperiments = globalObject.localStorage?.getItem("experiments");
       if (storedExperiments) {
         this.#experiments = JSON.parse(storedExperiments);
       }
@@ -337,7 +338,7 @@ var ExperimentStorage = class {
     this.#syncToLocalStorage();
   }
   #syncToLocalStorage() {
-    self.localStorage?.setItem("experiments", JSON.stringify(this.#experiments));
+    globalObject.localStorage?.setItem("experiments", JSON.stringify(this.#experiments));
   }
 };
 var Experiment = class {

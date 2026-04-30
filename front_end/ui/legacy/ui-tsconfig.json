@@ -93,9 +93,6 @@
       "path": "../../core/common/bundle-tsconfig.json"
     },
     {
-      "path": "../../core/dom_extension/bundle-tsconfig.json"
-    },
-    {
       "path": "../../core/host/bundle-tsconfig.json"
     },
     {
@@ -148,6 +145,9 @@
     },
     {
       "path": "../components/highlighting/bundle-tsconfig.json"
+    },
+    {
+      "path": "../dom_extension/bundle-tsconfig.json"
     },
     {
       "path": "../helpers/bundle-tsconfig.json"

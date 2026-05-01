@@ -43,7 +43,6 @@ const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined
 export const enum CookieIssueSubCategory {
   GENERIC_COOKIE = 'GenericCookie',
   SAME_SITE_COOKIE = 'SameSiteCookie',
-  THIRD_PARTY_PHASEOUT_COOKIE = 'ThirdPartyPhaseoutCookie',
 }
 
 /** Enum to show cookie status from the security panel's third-party cookie report tool **/
@@ -273,9 +272,6 @@ export class CookieIssue extends Issue<Protocol.Audits.CookieIssueDetails> {
   static getSubCategory(code: string): CookieIssueSubCategory {
     if (code.includes('SameSite') || code.includes('Downgrade')) {
       return CookieIssueSubCategory.SAME_SITE_COOKIE;
-    }
-    if (code.includes('ThirdPartyPhaseout')) {
-      return CookieIssueSubCategory.THIRD_PARTY_PHASEOUT_COOKIE;
     }
     return CookieIssueSubCategory.GENERIC_COOKIE;
   }

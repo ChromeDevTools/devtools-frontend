@@ -40,7 +40,6 @@ import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
-import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as LegacyWrapper from '../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import {createIcon} from '../../ui/kit/kit.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
@@ -275,11 +274,6 @@ const UIStrings = {
    * @description Application sidebar panel
    */
   applicationSidebarPanel: 'Application panel sidebar',
-  /**
-   * @description Tooltip in Application Panel Sidebar of the Application panel
-   * @example {https://example.com} PH1
-   */
-  thirdPartyPhaseout: 'Cookies from {PH1} may have been blocked due to third-party cookie phaseout.',
   /**
    * @description Description text in the Application Panel describing a frame's resources
    */
@@ -1846,11 +1840,6 @@ export class CookieTreeElement extends ApplicationPanelTreeElement {
     this.#cookieDomain = cookieUrl.securityOrigin();
     this.tooltip = i18nString(UIStrings.cookiesUsedByFramesFromS, {PH1: this.#cookieDomain});
     const icon = createIcon('cookie');
-    // Note that we cannot use `cookieDomainInternal` here since it contains scheme.
-    if (IssuesManager.RelatedIssue.hasThirdPartyPhaseoutCookieIssueForDomain(cookieUrl.domain())) {
-      icon.name = 'warning-filled';
-      this.tooltip = i18nString(UIStrings.thirdPartyPhaseout, {PH1: this.#cookieDomain});
-    }
     this.setLeadingIcons([icon]);
   }
 

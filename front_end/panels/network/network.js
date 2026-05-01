@@ -1532,7 +1532,7 @@ var NetworkConfigView = class _NetworkConfigView extends UI5.Widget.VBox {
     const title = i18nString5(UIStrings5.networkThrottling);
     const section5 = this.createSection(title, "network-config-throttling");
     MobileThrottling2.NetworkThrottlingSelector.NetworkThrottlingSelect.createForGlobalConditions(section5, title);
-    const saveDataSelect = MobileThrottling2.ThrottlingManager.throttlingManager().createSaveDataOverrideSelector("chrome-select").element;
+    const saveDataSelect = MobileThrottling2.ThrottlingManager.throttlingManager().createSaveDataOverrideSelector("chrome-select");
     section5.appendChild(saveDataSelect);
   }
   createUserAgentSection() {

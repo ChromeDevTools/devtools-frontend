@@ -697,7 +697,6 @@
   "front_end/emulated_devices/optimized/Nexus5X-portrait.avif",
   "front_end/emulated_devices/optimized/Nexus6P-landscape.avif",
   "front_end/emulated_devices/optimized/Nexus6P-portrait.avif",
-  "front_end/panels/emulation/components/components.js",
   "front_end/panels/emulation/emulation.js",
   "front_end/models/javascript_metadata/javascript_metadata.js",
   "front_end/ui/components/code_highlighter/code_highlighter.js",

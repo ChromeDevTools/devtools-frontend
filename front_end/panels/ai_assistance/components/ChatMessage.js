@@ -33,7 +33,7 @@ import { walkthroughCloseTitle, walkthroughTitle, WalkthroughView } from './Walk
 const { html, Directives: { ref, ifDefined } } = Lit;
 const lockedString = i18n.i18n.lockedString;
 const { widget } = UI.Widget;
-const REPORT_URL = 'https://crbug.com/364805393';
+const REPORT_URL = 'https://crbug.com/508304827';
 const SCROLL_ROUNDING_OFFSET = 1;
 const MAX_NUM_LINES_IN_CODEBLOCK = 11;
 /*
@@ -213,6 +213,14 @@ const UIStringsNotTranslate = {
      */
     revealBottomUpTree: 'Reveal bottom-up thread activity',
     /**
+     * @description Accessible label for the reveal button in the network dependency tree widget.
+     */
+    revealNetworkDependencyTree: 'Reveal network dependency tree',
+    /**
+     * @description Accessible label for the reveal button in the 3rd parties widget.
+     */
+    revealThirdParties: 'Reveal 3rd parties',
+    /**
      * @description Title for the core web vitals widget.
      */
     coreVitals: 'Core Web Vitals',
@@ -233,6 +241,14 @@ const UIStringsNotTranslate = {
      */
     renderBlockingBreakdown: 'Render-blocking requests',
     /**
+     * @description Title for the network dependency tree widget.
+     */
+    networkDependencyTree: 'Network dependency tree',
+    /**
+     * @description Title for the 3rd parties widget.
+     */
+    thirdParties: '3rd parties',
+    /**
      * @description Title for the LCP element widget.
      */
     lcpElement: 'LCP element',
@@ -248,6 +264,30 @@ const UIStringsNotTranslate = {
      * @description Title for the bottom up thread activity widget.
      */
     bottomUpTree: 'Bottom-up thread activity',
+    /**
+     * @description Accessible label for the reveal button in the forced reflow widget.
+     */
+    revealForcedReflow: 'Reveal forced reflow',
+    /**
+     * @description Title for the forced reflow widget.
+     */
+    forcedReflow: 'Forced reflow',
+    /**
+     * @description Accessible label for the reveal button in the cache widget.
+     */
+    revealCache: 'Reveal efficient cache lifetimes',
+    /**
+     * @description Title for the cache widget.
+     */
+    cache: 'Efficient cache lifetimes',
+    /**
+     * @description Accessible label for the reveal button in the INP breakdown widget.
+     */
+    revealInpBreakdown: 'Reveal INP breakdown',
+    /**
+     * @description Title for the INP breakdown widget.
+     */
+    inpBreakdown: 'INP breakdown',
 };
 export const DEFAULT_VIEW = (input, output, target) => {
     const hasAiV2 = Boolean(Root.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled);
@@ -739,6 +779,36 @@ const INSIGHT_METADATA = {
         accessibleLabel: UIStringsNotTranslate.revealClsCulprits,
         title: UIStringsNotTranslate.clsCulprits,
         jslog: 'cls-culprits-widget',
+    },
+    [Trace.Insights.Types.InsightKeys.NETWORK_DEPENDENCY_TREE]: {
+        component: TimelineInsights.NetworkDependencyTree.NetworkDependencyTree,
+        accessibleLabel: UIStringsNotTranslate.revealNetworkDependencyTree,
+        title: UIStringsNotTranslate.networkDependencyTree,
+        jslog: 'network-dependency-tree-widget',
+    },
+    [Trace.Insights.Types.InsightKeys.THIRD_PARTIES]: {
+        component: TimelineInsights.ThirdParties.ThirdParties,
+        accessibleLabel: UIStringsNotTranslate.revealThirdParties,
+        title: UIStringsNotTranslate.thirdParties,
+        jslog: 'third-parties-widget',
+    },
+    [Trace.Insights.Types.InsightKeys.FORCED_REFLOW]: {
+        component: TimelineInsights.ForcedReflow.ForcedReflow,
+        accessibleLabel: UIStringsNotTranslate.revealForcedReflow,
+        title: UIStringsNotTranslate.forcedReflow,
+        jslog: 'forced-reflow-widget',
+    },
+    [Trace.Insights.Types.InsightKeys.CACHE]: {
+        component: TimelineInsights.Cache.Cache,
+        accessibleLabel: UIStringsNotTranslate.revealCache,
+        title: UIStringsNotTranslate.cache,
+        jslog: 'cache-widget',
+    },
+    [Trace.Insights.Types.InsightKeys.INP_BREAKDOWN]: {
+        component: TimelineInsights.INPBreakdown.INPBreakdown,
+        accessibleLabel: UIStringsNotTranslate.revealInpBreakdown,
+        title: UIStringsNotTranslate.inpBreakdown,
+        jslog: 'inp-breakdown-widget',
     },
 };
 function renderInsightWidget(component, insight, jslog, accessibleLabel, title, bounds) {

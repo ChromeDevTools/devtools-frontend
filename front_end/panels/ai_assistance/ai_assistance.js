@@ -3648,7 +3648,7 @@ var WalkthroughView = class extends UI4.Widget.Widget {
 var { html: html7, Directives: { ref: ref3, ifDefined } } = Lit5;
 var lockedString5 = i18n9.i18n.lockedString;
 var { widget: widget3 } = UI5.Widget;
-var REPORT_URL = "https://crbug.com/364805393";
+var REPORT_URL = "https://crbug.com/508304827";
 var SCROLL_ROUNDING_OFFSET = 1;
 var MAX_NUM_LINES_IN_CODEBLOCK = 11;
 var UIStringsNotTranslate4 = {
@@ -3825,6 +3825,14 @@ var UIStringsNotTranslate4 = {
    */
   revealBottomUpTree: "Reveal bottom-up thread activity",
   /**
+   * @description Accessible label for the reveal button in the network dependency tree widget.
+   */
+  revealNetworkDependencyTree: "Reveal network dependency tree",
+  /**
+   * @description Accessible label for the reveal button in the 3rd parties widget.
+   */
+  revealThirdParties: "Reveal 3rd parties",
+  /**
    * @description Title for the core web vitals widget.
    */
   coreVitals: "Core Web Vitals",
@@ -3845,6 +3853,14 @@ var UIStringsNotTranslate4 = {
    */
   renderBlockingBreakdown: "Render-blocking requests",
   /**
+   * @description Title for the network dependency tree widget.
+   */
+  networkDependencyTree: "Network dependency tree",
+  /**
+   * @description Title for the 3rd parties widget.
+   */
+  thirdParties: "3rd parties",
+  /**
    * @description Title for the LCP element widget.
    */
   lcpElement: "LCP element",
@@ -3859,7 +3875,31 @@ var UIStringsNotTranslate4 = {
   /**
    * @description Title for the bottom up thread activity widget.
    */
-  bottomUpTree: "Bottom-up thread activity"
+  bottomUpTree: "Bottom-up thread activity",
+  /**
+   * @description Accessible label for the reveal button in the forced reflow widget.
+   */
+  revealForcedReflow: "Reveal forced reflow",
+  /**
+   * @description Title for the forced reflow widget.
+   */
+  forcedReflow: "Forced reflow",
+  /**
+   * @description Accessible label for the reveal button in the cache widget.
+   */
+  revealCache: "Reveal efficient cache lifetimes",
+  /**
+   * @description Title for the cache widget.
+   */
+  cache: "Efficient cache lifetimes",
+  /**
+   * @description Accessible label for the reveal button in the INP breakdown widget.
+   */
+  revealInpBreakdown: "Reveal INP breakdown",
+  /**
+   * @description Title for the INP breakdown widget.
+   */
+  inpBreakdown: "INP breakdown"
 };
 var DEFAULT_VIEW4 = (input, output, target) => {
   const hasAiV2 = Boolean(Root3.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled);
@@ -4277,6 +4317,36 @@ var INSIGHT_METADATA = {
     accessibleLabel: UIStringsNotTranslate4.revealClsCulprits,
     title: UIStringsNotTranslate4.clsCulprits,
     jslog: "cls-culprits-widget"
+  },
+  [Trace.Insights.Types.InsightKeys.NETWORK_DEPENDENCY_TREE]: {
+    component: TimelineInsights.NetworkDependencyTree.NetworkDependencyTree,
+    accessibleLabel: UIStringsNotTranslate4.revealNetworkDependencyTree,
+    title: UIStringsNotTranslate4.networkDependencyTree,
+    jslog: "network-dependency-tree-widget"
+  },
+  [Trace.Insights.Types.InsightKeys.THIRD_PARTIES]: {
+    component: TimelineInsights.ThirdParties.ThirdParties,
+    accessibleLabel: UIStringsNotTranslate4.revealThirdParties,
+    title: UIStringsNotTranslate4.thirdParties,
+    jslog: "third-parties-widget"
+  },
+  [Trace.Insights.Types.InsightKeys.FORCED_REFLOW]: {
+    component: TimelineInsights.ForcedReflow.ForcedReflow,
+    accessibleLabel: UIStringsNotTranslate4.revealForcedReflow,
+    title: UIStringsNotTranslate4.forcedReflow,
+    jslog: "forced-reflow-widget"
+  },
+  [Trace.Insights.Types.InsightKeys.CACHE]: {
+    component: TimelineInsights.Cache.Cache,
+    accessibleLabel: UIStringsNotTranslate4.revealCache,
+    title: UIStringsNotTranslate4.cache,
+    jslog: "cache-widget"
+  },
+  [Trace.Insights.Types.InsightKeys.INP_BREAKDOWN]: {
+    component: TimelineInsights.INPBreakdown.INPBreakdown,
+    accessibleLabel: UIStringsNotTranslate4.revealInpBreakdown,
+    title: UIStringsNotTranslate4.inpBreakdown,
+    jslog: "inp-breakdown-widget"
   }
 };
 function renderInsightWidget(component, insight, jslog, accessibleLabel, title, bounds) {

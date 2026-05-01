@@ -13,6 +13,7 @@ export declare class GreenDevContext extends ConversationContext<string> {
  * prototypes.
  */
 export declare class GreenDevAgent extends AiAgent<string> {
+    #private;
     constructor(options: AgentOptions);
     preamble: string;
     get clientFeature(): Host.AidaClient.ClientFeature;
@@ -26,6 +27,7 @@ export declare class GreenDevAgent extends AiAgent<string> {
         string: string;
         failed: boolean;
     }>>;
+    getEventListeners(uid: number): Promise<string>;
     getNetworkRequests(params: {
         filter?: string;
         beforeIndex?: number;
@@ -38,5 +40,10 @@ export declare class GreenDevAgent extends AiAgent<string> {
         afterIndex?: number;
         limit?: number;
     }): Promise<string>;
-    getSourceLine(fileName: string, lineNumber: number, buffer: number): Promise<string>;
+    getSourceLine(fileName: string, lineNumber: number, buffer: number, calledFromAI?: boolean): Promise<string[]>;
+    findInSource(fileName: string, query: string): Promise<Array<{
+        line: number;
+        source: string[];
+    }>>;
+    getReactComponentProps(uid: number, calledFromAI?: boolean): Promise<string>;
 }

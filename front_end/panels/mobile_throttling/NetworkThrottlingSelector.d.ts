@@ -48,6 +48,7 @@ export declare class NetworkThrottlingSelect extends NetworkThrottlingSelect_bas
     set currentConditions(currentConditions: SDK.NetworkManager.ThrottlingConditions | undefined);
     get jslogContext(): string | undefined;
     set jslogContext(jslogContext: string | undefined);
+    set bindToGlobalConditions(bind: boolean);
     get variant(): NetworkThrottlingSelect.Variant;
     set variant(variant: NetworkThrottlingSelect.Variant);
     get title(): string | undefined;

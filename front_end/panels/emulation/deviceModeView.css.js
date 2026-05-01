@@ -30,6 +30,31 @@ export default `/*
   font-size: 16px;
 }
 
+.device-mode-size-input {
+  /*
+   * 4 characters for the maximum size of the value,
+   * 2 characters for the width of the step-buttons,
+   * 2 pixels padding between the characters and the
+   * step-buttons.
+   */
+  width: calc(4ch + 2ch + 2px);
+  max-height: 18px;
+  border: var(--sys-color-neutral-outline);
+  border-radius: 4px;
+  margin: 0 2px;
+  text-align: center;
+  font-size: inherit;
+  font-family: inherit;
+}
+
+.device-mode-size-input:disabled {
+  user-select: none;
+}
+
+.device-mode-size-input:focus::-webkit-input-placeholder {
+  color: transparent;
+}
+
 .device-mode-empty-toolbar-element {
   width: 0;
 }

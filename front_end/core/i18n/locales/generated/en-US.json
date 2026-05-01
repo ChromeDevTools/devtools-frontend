@@ -12002,9 +12002,6 @@
   "panels/profiler/HeapSnapshotView.ts | duplicatedStrings": {
     "message": "Duplicated strings"
   },
-  "panels/profiler/HeapSnapshotView.ts | exposeInternals": {
-    "message": "Internals with implementation details"
-  },
   "panels/profiler/HeapSnapshotView.ts | filter": {
     "message": "Filter"
   },

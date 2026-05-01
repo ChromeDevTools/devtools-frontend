@@ -150,7 +150,6 @@ declare const HeapSnapshotProfileType_base: (new (...args: any[]) => {
     dispatchDOMEvent?(event: Event): void;
 }) & typeof ProfileType;
 export declare class HeapSnapshotProfileType extends HeapSnapshotProfileType_base implements SDK.TargetManager.SDKModelObserver<SDK.HeapProfilerModel.HeapProfilerModel> {
-    readonly exposeInternals: Common.Settings.Setting<boolean>;
     customContentInternal: UI.UIUtils.CheckboxLabel | null;
     constructor(id?: string, title?: string);
     modelAdded(heapProfilerModel: SDK.HeapProfilerModel.HeapProfilerModel): void;
@@ -162,8 +161,6 @@ export declare class HeapSnapshotProfileType extends HeapSnapshotProfileType_bas
     buttonClicked(): boolean;
     get treeItemTitle(): Common.UIString.LocalizedString;
     get description(): Common.UIString.LocalizedString;
-    customContent(): Element | null;
-    setCustomContentEnabled(enable: boolean): void;
     createProfileLoadedFromFile(title: string): ProfileHeader;
     takeHeapSnapshot(): Promise<void>;
     addHeapSnapshotChunk(event: Common.EventTarget.EventTargetEvent<string>): void;

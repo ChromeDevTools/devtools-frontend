@@ -1927,7 +1927,6 @@ export const bindToSetting = (settingOrName, optionsOrValidator) => {
             jslog = optionsOrValidator.jslog;
         }
     }
-    const jslogBuilder = jslog ? VisualLogging.toggle(setting.name).track({ change: true }) : null;
     // We can't use `setValue` as the change listener directly, otherwise we won't
     // be able to remove it again.
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -1936,20 +1935,41 @@ export const bindToSetting = (settingOrName, optionsOrValidator) => {
         setValue(setting.get());
     }
     if (setting.type() === "boolean" /* Common.Settings.SettingType.BOOLEAN */ || typeof setting.defaultValue === 'boolean') {
+        let attachedButton;
+        let clickListener;
         return Directives.ref(e => {
             if (e === undefined) {
                 setting.removeChangeListener(settingChanged);
+                if (attachedButton && clickListener) {
+                    attachedButton.removeEventListener('click', clickListener);
+                    attachedButton = undefined;
+                }
                 return;
             }
-            if (jslogBuilder) {
+            if (jslog) {
+                const isButton = e instanceof Buttons.Button.Button;
+                const jslogBuilder = VisualLogging.toggle(setting.name).track(isButton ? { click: true } : { change: true });
                 e.setAttribute('jslog', jslogBuilder.toString());
             }
             setting.addChangeListener(settingChanged);
-            setValue =
-                bindCheckboxImpl(e, setting.set.bind(setting));
+            if (e instanceof Buttons.Button.Button) {
+                attachedButton = e;
+                clickListener = () => {
+                    setting.set(!setting.get());
+                };
+                e.addEventListener('click', clickListener);
+                setValue = (value) => {
+                    e.toggled = value;
+                };
+            }
+            else {
+                setValue =
+                    bindCheckboxImpl(e, setting.set.bind(setting));
+            }
             setValue(setting.get());
         });
     }
+    const jslogBuilder = jslog ? VisualLogging.toggle(setting.name).track({ change: true }) : null;
     if (setting.type() === "regex" /* Common.Settings.SettingType.REGEX */ || setting instanceof Common.Settings.RegExpSetting) {
         return Directives.ref(e => {
             if (e === undefined) {

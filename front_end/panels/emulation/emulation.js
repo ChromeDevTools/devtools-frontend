@@ -56,7 +56,6 @@ import * as uiI18n from "./../../ui/i18n/i18n.js";
 import * as UI from "./../../ui/legacy/legacy.js";
 import * as VisualLogging from "./../../ui/visual_logging/visual_logging.js";
 import * as MobileThrottling from "./../mobile_throttling/mobile_throttling.js";
-import * as EmulationComponents from "./components/components.js";
 var UIStrings = {
   /**
    * @description Title of the device dimensions selection item in the Device Mode Toolbar.
@@ -276,8 +275,8 @@ var DeviceModeToolbar = class {
     this.showUserAgentTypeSetting.addChangeListener(this.updateUserAgentTypeVisibility, this);
     this.autoAdjustScaleSetting = Common.Settings.Settings.instance().createSetting("emulation.auto-adjust-scale", true);
     this.lastMode = /* @__PURE__ */ new Map();
-    this.widthInput = new EmulationComponents.DeviceSizeInputElement.SizeInputElement(i18nString(UIStrings.width), { jslogContext: "width" });
-    this.heightInput = new EmulationComponents.DeviceSizeInputElement.SizeInputElement(i18nString(UIStrings.heightLeaveEmptyForFull), { jslogContext: "height" });
+    this.widthInput = this.createSizeInput(i18nString(UIStrings.width), "width");
+    this.heightInput = this.createSizeInput(i18nString(UIStrings.heightLeaveEmptyForFull), "height");
     this.#element = document.createElement("div");
     this.#element.classList.add("device-mode-toolbar");
     this.#element.setAttribute("jslog", `${VisualLogging.toolbar("device-mode").track({ resize: true })}`);
@@ -312,6 +311,27 @@ var DeviceModeToolbar = class {
     element.classList.add("device-mode-empty-toolbar-element");
     return element;
   }
+  createSizeInput(title, jslogContext) {
+    const input = document.createElement("input");
+    input.type = "number";
+    input.max = String(EmulationModel.DeviceModeModel.MaxDeviceSize);
+    input.min = String(EmulationModel.DeviceModeModel.MinDeviceSize);
+    input.title = title;
+    input.classList.add("device-mode-size-input");
+    input.setAttribute("jslog", `${VisualLogging.textField().track({ change: true }).context(jslogContext)}`);
+    input.addEventListener("keydown", (event) => {
+      let modifiedValue = UI.UIUtils.modifiedFloatNumber(Number(input.value), event);
+      if (modifiedValue === null) {
+        return;
+      }
+      modifiedValue = Math.min(modifiedValue, EmulationModel.DeviceModeModel.MaxDeviceSize);
+      modifiedValue = Math.max(modifiedValue, EmulationModel.DeviceModeModel.MinDeviceSize);
+      event.preventDefault();
+      input.value = String(modifiedValue);
+      input.dispatchEvent(new Event("change"));
+    });
+    return input;
+  }
   createMainToolbar() {
     const mainToolbar = this.#element.createChild("devtools-toolbar", "main-toolbar");
     mainToolbar.append(this.createEmptyToolbarElement());
@@ -324,14 +344,16 @@ var DeviceModeToolbar = class {
     const dimensionsSpan = uiI18n.getFormatLocalizedString(str_, UIStrings.dimensions, { PH1: this.deviceSelectItem });
     mainToolbar.append(...dimensionsSpan.childNodes);
     mainToolbar.append(this.deviceSelectItem);
-    this.widthInput.addEventListener("sizechanged", ({ size: width }) => {
+    this.widthInput.addEventListener("change", () => {
+      const width = Number(this.widthInput.value);
       if (this.autoAdjustScaleSetting.get()) {
         this.model.setWidthAndScaleToFit(width);
       } else {
         this.model.setWidth(width);
       }
     });
-    this.heightInput.addEventListener("sizechanged", ({ size: height }) => {
+    this.heightInput.addEventListener("change", () => {
+      const height = Number(this.heightInput.value);
       if (this.autoAdjustScaleSetting.get()) {
         this.model.setHeightAndScaleToFit(height);
       } else {
@@ -385,8 +407,8 @@ var DeviceModeToolbar = class {
     mainToolbar.append(this.uaItem);
     MobileThrottling.NetworkThrottlingSelector.NetworkThrottlingSelect.createForGlobalConditions(mainToolbar, i18nString(UIStrings.throttling));
     const saveDataItem = MobileThrottling.ThrottlingManager.throttlingManager().createSaveDataOverrideSelector();
-    saveDataItem.turnShrinkable();
-    mainToolbar.appendToolbarItem(saveDataItem);
+    saveDataItem.classList.add("dark-text", "toolbar-has-dropdown-shrinkable");
+    mainToolbar.append(saveDataItem);
     mainToolbar.append(this.createEmptyToolbarElement());
     this.modeButton = new Buttons.Button.Button();
     this.modeButton.classList.add("toolbar-button");
@@ -828,8 +850,8 @@ var DeviceModeToolbar = class {
       }
     }
     const size = this.model.appliedDeviceSize();
-    this.widthInput.size = String(size.width);
-    this.heightInput.size = this.model.type() === EmulationModel.DeviceModeModel.Type.Responsive && this.model.isFullHeight() ? "" : String(size.height);
+    this.widthInput.value = String(size.width);
+    this.heightInput.value = this.model.type() === EmulationModel.DeviceModeModel.Type.Responsive && this.model.isFullHeight() ? "" : String(size.height);
     this.heightInput.placeholder = String(size.height);
     if (this.model.scale() !== this.cachedScale) {
       this.updateScaleMenuItems();
@@ -966,6 +988,31 @@ var deviceModeView_css_default = `/*
 .device-mode-x {
   margin: 0 1px;
   font-size: 16px;
+}
+
+.device-mode-size-input {
+  /*
+   * 4 characters for the maximum size of the value,
+   * 2 characters for the width of the step-buttons,
+   * 2 pixels padding between the characters and the
+   * step-buttons.
+   */
+  width: calc(4ch + 2ch + 2px);
+  max-height: 18px;
+  border: var(--sys-color-neutral-outline);
+  border-radius: 4px;
+  margin: 0 2px;
+  text-align: center;
+  font-size: inherit;
+  font-family: inherit;
+}
+
+.device-mode-size-input:disabled {
+  user-select: none;
+}
+
+.device-mode-size-input:focus::-webkit-input-placeholder {
+  color: transparent;
 }
 
 .device-mode-empty-toolbar-element {

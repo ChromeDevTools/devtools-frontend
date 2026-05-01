@@ -13,7 +13,6 @@ import * as uiI18n from '../../ui/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
-import * as EmulationComponents from './components/components.js';
 const UIStrings = {
     /**
      * @description Title of the device dimensions selection item in the Device Mode Toolbar.
@@ -243,8 +242,8 @@ export class DeviceModeToolbar {
         this.autoAdjustScaleSetting =
             Common.Settings.Settings.instance().createSetting('emulation.auto-adjust-scale', true);
         this.lastMode = new Map();
-        this.widthInput = new EmulationComponents.DeviceSizeInputElement.SizeInputElement(i18nString(UIStrings.width), { jslogContext: 'width' });
-        this.heightInput = new EmulationComponents.DeviceSizeInputElement.SizeInputElement(i18nString(UIStrings.heightLeaveEmptyForFull), { jslogContext: 'height' });
+        this.widthInput = this.createSizeInput(i18nString(UIStrings.width), 'width');
+        this.heightInput = this.createSizeInput(i18nString(UIStrings.heightLeaveEmptyForFull), 'height');
         this.#element = document.createElement('div');
         this.#element.classList.add('device-mode-toolbar');
         this.#element.setAttribute('jslog', `${VisualLogging.toolbar('device-mode').track({ resize: true })}`);
@@ -279,6 +278,27 @@ export class DeviceModeToolbar {
         element.classList.add('device-mode-empty-toolbar-element');
         return element;
     }
+    createSizeInput(title, jslogContext) {
+        const input = document.createElement('input');
+        input.type = 'number';
+        input.max = String(EmulationModel.DeviceModeModel.MaxDeviceSize);
+        input.min = String(EmulationModel.DeviceModeModel.MinDeviceSize);
+        input.title = title;
+        input.classList.add('device-mode-size-input');
+        input.setAttribute('jslog', `${VisualLogging.textField().track({ change: true }).context(jslogContext)}`);
+        input.addEventListener('keydown', (event) => {
+            let modifiedValue = UI.UIUtils.modifiedFloatNumber(Number(input.value), event);
+            if (modifiedValue === null) {
+                return;
+            }
+            modifiedValue = Math.min(modifiedValue, EmulationModel.DeviceModeModel.MaxDeviceSize);
+            modifiedValue = Math.max(modifiedValue, EmulationModel.DeviceModeModel.MinDeviceSize);
+            event.preventDefault();
+            input.value = String(modifiedValue);
+            input.dispatchEvent(new Event('change'));
+        });
+        return input;
+    }
     createMainToolbar() {
         const mainToolbar = this.#element.createChild('devtools-toolbar', 'main-toolbar');
         mainToolbar.append(this.createEmptyToolbarElement());
@@ -291,7 +311,8 @@ export class DeviceModeToolbar {
         const dimensionsSpan = uiI18n.getFormatLocalizedString(str_, UIStrings.dimensions, { PH1: this.deviceSelectItem });
         mainToolbar.append(...dimensionsSpan.childNodes);
         mainToolbar.append(this.deviceSelectItem);
-        this.widthInput.addEventListener('sizechanged', ({ size: width }) => {
+        this.widthInput.addEventListener('change', () => {
+            const width = Number(this.widthInput.value);
             if (this.autoAdjustScaleSetting.get()) {
                 this.model.setWidthAndScaleToFit(width);
             }
@@ -299,7 +320,8 @@ export class DeviceModeToolbar {
                 this.model.setWidth(width);
             }
         });
-        this.heightInput.addEventListener('sizechanged', ({ size: height }) => {
+        this.heightInput.addEventListener('change', () => {
+            const height = Number(this.heightInput.value);
             if (this.autoAdjustScaleSetting.get()) {
                 this.model.setHeightAndScaleToFit(height);
             }
@@ -355,8 +377,8 @@ export class DeviceModeToolbar {
         mainToolbar.append(this.uaItem);
         MobileThrottling.NetworkThrottlingSelector.NetworkThrottlingSelect.createForGlobalConditions(mainToolbar, i18nString(UIStrings.throttling));
         const saveDataItem = MobileThrottling.ThrottlingManager.throttlingManager().createSaveDataOverrideSelector();
-        saveDataItem.turnShrinkable();
-        mainToolbar.appendToolbarItem(saveDataItem);
+        saveDataItem.classList.add('dark-text', 'toolbar-has-dropdown-shrinkable');
+        mainToolbar.append(saveDataItem);
         mainToolbar.append(this.createEmptyToolbarElement());
         this.modeButton = new Buttons.Button.Button();
         this.modeButton.classList.add('toolbar-button');
@@ -814,8 +836,8 @@ export class DeviceModeToolbar {
             }
         }
         const size = this.model.appliedDeviceSize();
-        this.widthInput.size = String(size.width);
-        this.heightInput.size =
+        this.widthInput.value = String(size.width);
+        this.heightInput.value =
             this.model.type() === EmulationModel.DeviceModeModel.Type.Responsive && this.model.isFullHeight() ?
                 '' :
                 String(size.height);

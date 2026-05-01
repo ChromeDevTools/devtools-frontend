@@ -151,6 +151,8 @@ import * as SDK3 from "./../../core/sdk/sdk.js";
 var ThrottlingManager_exports = {};
 __export(ThrottlingManager_exports, {
   ActionDelegate: () => ActionDelegate,
+  DEFAULT_SAVE_DATA_VIEW: () => DEFAULT_SAVE_DATA_VIEW,
+  SaveDataOverrideSelect: () => SaveDataOverrideSelect,
   ThrottlingManager: () => ThrottlingManager,
   throttlingManager: () => throttlingManager
 });
@@ -160,6 +162,7 @@ import * as i18n3 from "./../../core/i18n/i18n.js";
 import * as SDK2 from "./../../core/sdk/sdk.js";
 import { Icon } from "./../../ui/kit/kit.js";
 import * as UI from "./../../ui/legacy/legacy.js";
+import { html, render } from "./../../ui/lit/lit.js";
 import * as VisualLogging from "./../../ui/visual_logging/visual_logging.js";
 var UIStrings2 = {
   /**
@@ -415,45 +418,26 @@ var ThrottlingManager = class _ThrottlingManager extends Common.ObjectWrapper.Ob
       }
     };
   }
+  setSaveDataOverride(selectedIndex) {
+    let override = "unset";
+    if (selectedIndex === 1) {
+      override = "enabled";
+    } else if (selectedIndex === 2) {
+      override = "disabled";
+    }
+    for (const emulationModel of SDK2.TargetManager.TargetManager.instance().models(SDK2.EmulationModel.EmulationModel)) {
+      void this.#emulationQueue.push(emulationModel.setDataSaverOverride(override));
+    }
+    this.dispatchEventToListeners("SaveDataOverrideChanged", selectedIndex);
+  }
   createSaveDataOverrideSelector(className) {
-    const reset = new Option(i18nString2(UIStrings2.noSaveDataOverride), void 0, true, true);
-    const enable = new Option(i18nString2(UIStrings2.saveDataOn));
-    const disable = new Option(i18nString2(UIStrings2.saveDataOff));
-    const handler = (e) => {
-      const select2 = e.target;
-      switch (select2.selectedOptions.item(0)) {
-        case reset:
-          for (const emulationModel of SDK2.TargetManager.TargetManager.instance().models(SDK2.EmulationModel.EmulationModel)) {
-            void this.#emulationQueue.push(emulationModel.setDataSaverOverride(
-              "unset"
-              /* SDK.EmulationModel.DataSaverOverride.UNSET */
-            ));
-          }
-          break;
-        case enable:
-          for (const emulationModel of SDK2.TargetManager.TargetManager.instance().models(SDK2.EmulationModel.EmulationModel)) {
-            void this.#emulationQueue.push(emulationModel.setDataSaverOverride(
-              "enabled"
-              /* SDK.EmulationModel.DataSaverOverride.ENABLED */
-            ));
-          }
-          break;
-        case disable:
-          for (const emulationModel of SDK2.TargetManager.TargetManager.instance().models(SDK2.EmulationModel.EmulationModel)) {
-            void this.#emulationQueue.push(emulationModel.setDataSaverOverride(
-              "disabled"
-              /* SDK.EmulationModel.DataSaverOverride.DISABLED */
-            ));
-          }
-          break;
-      }
-      this.dispatchEventToListeners("SaveDataOverrideChanged", select2.selectedIndex);
-    };
-    const select = new UI.Toolbar.ToolbarComboBox(handler, i18nString2(UIStrings2.saveDataSettingTooltip), className);
-    select.addOption(reset);
-    select.addOption(enable);
-    select.addOption(disable);
-    this.addEventListener("SaveDataOverrideChanged", ({ data }) => select.setSelectedIndex(data));
+    const select = document.createElement("select");
+    select.title = i18nString2(UIStrings2.saveDataSettingTooltip);
+    UI.ARIAUtils.setLabel(select, i18nString2(UIStrings2.saveDataSettingTooltip));
+    if (className) {
+      select.className = className;
+    }
+    UI.Widget.registerWidgetConfig(select, UI.Widget.widgetConfig(SaveDataOverrideSelect));
     return select;
   }
   /** Hardware Concurrency doesn't store state in a setting. */
@@ -515,6 +499,34 @@ var ThrottlingManager = class _ThrottlingManager extends Common.ObjectWrapper.Ob
     const networkConditions = SDK2.NetworkManager.MultitargetNetworkManager.instance().networkConditions();
     const knownCurrentConditions = this.#getCurrentNetworkConditions();
     return !SDK2.NetworkManager.networkConditionsEqual(networkConditions, knownCurrentConditions);
+  }
+};
+var DEFAULT_SAVE_DATA_VIEW = (input, _output, target) => {
+  render(html`
+    <option value="unset" ?selected=${input.selectedIndex === 0}>${i18nString2(UIStrings2.noSaveDataOverride)}</option>
+    <option value="enabled" ?selected=${input.selectedIndex === 1}>${i18nString2(UIStrings2.saveDataOn)}</option>
+    <option value="disabled" ?selected=${input.selectedIndex === 2}>${i18nString2(UIStrings2.saveDataOff)}</option>
+  `, target, { container: { listeners: { change: (e) => input.onSelect(e.target.selectedIndex) } } });
+};
+var SaveDataOverrideSelect = class extends Common.ObjectWrapper.eventMixin(UI.Widget.Widget) {
+  #selectedIndex = 0;
+  #view;
+  constructor(element, view = DEFAULT_SAVE_DATA_VIEW) {
+    super(element);
+    this.#view = view;
+    ThrottlingManager.instance().addEventListener("SaveDataOverrideChanged", ({ data }) => {
+      this.#selectedIndex = data;
+      this.requestUpdate();
+    });
+    this.performUpdate();
+  }
+  performUpdate() {
+    this.#view({
+      selectedIndex: this.#selectedIndex,
+      onSelect: (index) => {
+        ThrottlingManager.instance().setSaveDataOverride(index);
+      }
+    }, void 0, this.contentElement);
   }
 };
 var ActionDelegate = class {
@@ -684,7 +696,7 @@ import * as UI3 from "./../../ui/legacy/legacy.js";
 import * as Lit from "./../../ui/lit/lit.js";
 import * as VisualLogging2 from "./../../ui/visual_logging/visual_logging.js";
 import * as PanelsCommon from "./../common/common.js";
-var { render, html, Directives } = Lit;
+var { render: render2, html: html2, Directives } = Lit;
 var UIStrings5 = {
   /**
    * @description Text to indicate something is not enabled
@@ -754,11 +766,11 @@ var DEFAULT_VIEW = (input, output, target) => {
       }
     }
   }
-  render(
+  render2(
     // clang-format off
-    html`${input.throttlingGroups.map((group) => html`<optgroup
+    html2`${input.throttlingGroups.map((group) => html2`<optgroup
             label=${group.title}>
-            ${group.items.map((condition) => html`<option
+            ${group.items.map((condition) => html2`<option
               ${Directives.ref((option) => option && optionsMap.set(option, condition))}
               ?selected=${selectedConditions ? SDK5.NetworkManager.networkConditionsEqual(condition, selectedConditions) : group === input.throttlingGroups[0]}
               value=${title(condition)}
@@ -768,7 +780,7 @@ var DEFAULT_VIEW = (input, output, target) => {
             </option>`)}
         </optgroup>`)}
         <optgroup label=${input.customConditionsGroup.title}>
-          ${input.customConditionsGroup.items.map((condition) => html`<option
+          ${input.customConditionsGroup.items.map((condition) => html2`<option
               ${Directives.ref((option) => option && optionsMap.set(option, condition))}
               ?selected=${selectedConditions && SDK5.NetworkManager.networkConditionsEqual(condition, selectedConditions)}
               value=${title(condition)}
@@ -806,35 +818,16 @@ var NetworkThrottlingSelect = class _NetworkThrottlingSelect extends Common3.Obj
   #variant = "global-conditions";
   #disabled = false;
   static createForGlobalConditions(element, title) {
-    ThrottlingManager.instance();
     const selectElement = element.createChild("select");
-    const select = new _NetworkThrottlingSelect(selectElement, {
-      title,
-      jslogContext: SDK5.NetworkManager.activeNetworkThrottlingKeySetting().name,
-      currentConditions: SDK5.NetworkManager.MultitargetNetworkManager.instance().networkConditions()
-    });
+    const select = new _NetworkThrottlingSelect(selectElement, { title });
+    select.bindToGlobalConditions = true;
     select.show(
       element,
       void 0,
       /* suppressOrphanWidgetError= */
       true
     );
-    select.addEventListener("ConditionsChanged", (event) => {
-      const conditions = event.data;
-      if (!("block" in conditions)) {
-        SDK5.NetworkManager.MultitargetNetworkManager.instance().setNetworkConditions(conditions);
-      }
-    });
-    SDK5.NetworkManager.MultitargetNetworkManager.instance().addEventListener("ConditionsChanged", () => {
-      select.currentConditions = SDK5.NetworkManager.MultitargetNetworkManager.instance().networkConditions();
-    });
-    const cruxManager = CrUXManager.CrUXManager.instance();
-    const updateRecommendation = () => {
-      const roundTripTimeMetricData = cruxManager.getSelectedFieldMetricData("round_trip_time");
-      select.recommendedConditions = PanelsCommon.ThrottlingUtils.getRecommendedNetworkConditions(roundTripTimeMetricData);
-    };
-    cruxManager.addEventListener("field-data-changed", updateRecommendation);
-    updateRecommendation();
+    select.performUpdate();
     return select;
   }
   constructor(element, options = {}, view = DEFAULT_VIEW) {
@@ -872,6 +865,38 @@ var NetworkThrottlingSelect = class _NetworkThrottlingSelect extends Common3.Obj
   }
   set jslogContext(jslogContext) {
     this.#jslogContext = jslogContext;
+    this.requestUpdate();
+  }
+  #onConditionsChanged = (event) => {
+    const conditions = event.data;
+    if (!("block" in conditions)) {
+      SDK5.NetworkManager.MultitargetNetworkManager.instance().setNetworkConditions(conditions);
+    }
+  };
+  #onGlobalConditionsChanged = () => {
+    this.currentConditions = SDK5.NetworkManager.MultitargetNetworkManager.instance().networkConditions();
+  };
+  #updateRecommendation = () => {
+    const cruxManager = CrUXManager.CrUXManager.instance();
+    const roundTripTimeMetricData = cruxManager.getSelectedFieldMetricData("round_trip_time");
+    this.recommendedConditions = PanelsCommon.ThrottlingUtils.getRecommendedNetworkConditions(roundTripTimeMetricData);
+  };
+  set bindToGlobalConditions(bind) {
+    const cruxManager = CrUXManager.CrUXManager.instance();
+    const multitargetNetworkManager = SDK5.NetworkManager.MultitargetNetworkManager.instance();
+    if (bind) {
+      this.#jslogContext = SDK5.NetworkManager.activeNetworkThrottlingKeySetting().name;
+      ThrottlingManager.instance();
+      this.#currentConditions = multitargetNetworkManager.networkConditions();
+      this.addEventListener("ConditionsChanged", this.#onConditionsChanged);
+      multitargetNetworkManager.addEventListener("ConditionsChanged", this.#onGlobalConditionsChanged);
+      cruxManager.addEventListener("field-data-changed", this.#updateRecommendation);
+      this.#updateRecommendation();
+    } else {
+      this.removeEventListener("ConditionsChanged", this.#onConditionsChanged);
+      multitargetNetworkManager.removeEventListener("ConditionsChanged", this.#onGlobalConditionsChanged);
+      cruxManager.removeEventListener("field-data-changed", this.#updateRecommendation);
+    }
     this.requestUpdate();
   }
   get variant() {

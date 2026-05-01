@@ -3510,7 +3510,7 @@ var ContextSelectionAgent_exports = {};
 __export(ContextSelectionAgent_exports, {
   ContextSelectionAgent: () => ContextSelectionAgent
 });
-import * as Common5 from "./../../core/common/common.js";
+import * as Common6 from "./../../core/common/common.js";
 import * as Host9 from "./../../core/host/host.js";
 import * as i18n13 from "./../../core/i18n/i18n.js";
 import * as Root8 from "./../../core/root/root.js";
@@ -4071,6 +4071,7 @@ __export(NetworkAgent_exports, {
   NetworkAgent: () => NetworkAgent,
   RequestContext: () => RequestContext
 });
+import * as Common3 from "./../../core/common/common.js";
 import * as Host6 from "./../../core/host/host.js";
 import * as i18n7 from "./../../core/i18n/i18n.js";
 import * as Root5 from "./../../core/root/root.js";
@@ -4156,7 +4157,7 @@ var RequestContext = class extends ConversationContext {
    * inspect all network requests that were made for that given target URL.
    */
   getOrigin() {
-    return this.#request.documentURL;
+    return Common3.ParsedURL.ParsedURL.extractOrigin(this.#request.documentURL);
   }
   getItem() {
     return this.#request;
@@ -4241,7 +4242,7 @@ __export(PerformanceAgent_exports, {
   PerformanceTraceContext: () => PerformanceTraceContext,
   getLabelName: () => getLabelName
 });
-import * as Common4 from "./../../core/common/common.js";
+import * as Common5 from "./../../core/common/common.js";
 import * as Host7 from "./../../core/host/host.js";
 import * as i18n9 from "./../../core/i18n/i18n.js";
 import * as Platform5 from "./../../core/platform/platform.js";
@@ -4259,7 +4260,7 @@ var PerformanceInsightFormatter_exports = {};
 __export(PerformanceInsightFormatter_exports, {
   PerformanceInsightFormatter: () => PerformanceInsightFormatter
 });
-import * as Common3 from "./../../core/common/common.js";
+import * as Common4 from "./../../core/common/common.js";
 import * as Trace4 from "./../trace/trace.js";
 
 // gen/front_end/models/ai_assistance/data_formatters/PerformanceTraceFormatter.js
@@ -5840,7 +5841,7 @@ Duplication grouped by Node modules: ${filesFormatted}`;
     for (const font of insight.fonts) {
       let fontName = font.name;
       if (!fontName) {
-        const url = new Common3.ParsedURL.ParsedURL(font.request.args.data.url);
+        const url = new Common4.ParsedURL.ParsedURL(font.request.args.data.url);
         fontName = url.isValid ? url.lastPathComponent : "(not available)";
       }
       output += `
@@ -6717,7 +6718,7 @@ Note: if the user asks a specific question about the trace (such as "What is my 
   - \`nav-to-lcp\` (navigation to LCP)
   - \`lcp-ttfb\` (LCP TTFB phase)
   - \`lcp-render-delay\` (LCP render delay phase)
-  - Insight names: \`LCPBreakdown\`, \`CLSCulprits\`, \`RenderBlocking\`, \`NetworkDependencyTree\`, \`ImageDelivery\`, \`FontDisplay\`, \`ThirdParties\`, \`ForcedReflow\`, \`Cache\`, \`DOMSize\`
+  - Insight names: \`LCPBreakdown\`, \`CLSCulprits\`, \`RenderBlocking\`, \`NetworkDependencyTree\`, \`ImageDelivery\`, \`FontDisplay\`, \`ThirdParties\`, \`ForcedReflow\`, \`Cache\`, \`DOMSize\`, \`INPBreakdown\`
   - Navigation IDs: \`NAVIGATION_0\`, \`NAVIGATION_1\`, etc.
 - Use \`getEventByKey\` to get data on a specific trace event. This is great for root-cause analysis or validating any assumptions.
 - Provide clear, actionable recommendations. Avoid technical jargon unless necessary, and explain any technical terms used.
@@ -6769,7 +6770,12 @@ var SUPPORTED_INSIGHT_WIDGETS = /* @__PURE__ */ new Set([
   Trace6.Insights.Types.InsightKeys.LCP_BREAKDOWN,
   Trace6.Insights.Types.InsightKeys.RENDER_BLOCKING,
   Trace6.Insights.Types.InsightKeys.LCP_DISCOVERY,
-  Trace6.Insights.Types.InsightKeys.CLS_CULPRITS
+  Trace6.Insights.Types.InsightKeys.CLS_CULPRITS,
+  Trace6.Insights.Types.InsightKeys.NETWORK_DEPENDENCY_TREE,
+  Trace6.Insights.Types.InsightKeys.THIRD_PARTIES,
+  Trace6.Insights.Types.InsightKeys.FORCED_REFLOW,
+  Trace6.Insights.Types.InsightKeys.CACHE,
+  Trace6.Insights.Types.InsightKeys.INP_BREAKDOWN
 ]);
 var PerformanceTraceContext = class _PerformanceTraceContext extends ConversationContext {
   static fromParsedTrace(parsedTrace) {
@@ -7772,7 +7778,7 @@ ${result}`,
             return { error: "Invalid eventKey" };
           }
           const revealable = new SDK8.TraceObject.RevealableEvent(event);
-          await Common4.Revealer.reveal(revealable);
+          await Common5.Revealer.reveal(revealable);
           return { result: { success: true } };
         }
       });
@@ -8633,7 +8639,7 @@ var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
         const origin = this.#allowedOrigin();
         let hasCrossOriginRequest = false;
         for (const request of Logs3.NetworkLog.NetworkLog.instance().requests()) {
-          const documentOrigin = Common5.ParsedURL.ParsedURL.extractOrigin(request.documentURL);
+          const documentOrigin = Common6.ParsedURL.ParsedURL.extractOrigin(request.documentURL);
           if (origin && documentOrigin !== origin) {
             hasCrossOriginRequest = true;
             continue;
@@ -8683,7 +8689,7 @@ var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
           if (req.requestId() !== id) {
             return false;
           }
-          const documentOrigin = Common5.ParsedURL.ParsedURL.extractOrigin(req.documentURL);
+          const documentOrigin = Common6.ParsedURL.ParsedURL.extractOrigin(req.documentURL);
           return !origin || documentOrigin === origin;
         });
         if (request) {
@@ -9088,14 +9094,9 @@ import * as Host11 from "./../../core/host/host.js";
 import * as Root10 from "./../../core/root/root.js";
 import * as SDK10 from "./../../core/sdk/sdk.js";
 import * as Greendev3 from "./../greendev/greendev.js";
+import * as Workspace5 from "./../workspace/workspace.js";
 var preamble9 = `You are a general purpose web page troubleshooting agent.
 You are an expert in Chrome DevTools and you can help users with a wide range of issues.
-
-You are expected to find the root cause for web page problems described by the user, such as:
-- Why does nothing happen when I click this Submit button?
-- Why is this ad not loading?
-- Why is this text not using the correct font?
-- ... and other similar requests.
 
 Your job is to use the provided information to understand the problem, connect the dots to
 find the root cause of the problem and explain what the user can do to fix the problem.
@@ -9104,65 +9105,69 @@ The user will start the process by selecting a DOM element and send a query abou
 selected DOM element. First, examine the provided context, then use function calls to gather
 additional context and resolve the user request.
 
+### Your Debugging Strategy
+
+1.  **Analyze the User-Selected Node**: This is your primary clue. Understand its attributes,
+    children, and position in the DOM. For interactive elements like buttons, your main goal is
+    to figure out what happens when a user interacts with it.
+
+2.  **Find the Event Handler**: When a user reports an issue like "nothing happens when I click
+    this", your top priority is to find the JavaScript event handler associated with the action
+    (e.g., a 'click' handler for a button).
+
+3.  **Note on Modern Frameworks (React, etc.)**: Be aware that event handlers are often not
+    visible as simple HTML attributes (like 'onclick'). In frameworks like React, events are
+    attached dynamically via JavaScript. You will need to investigate the JavaScript source
+    files (like 'bundle.js') to find the component and its event handler logic.
+
+4.  **Investigate the Code**: Once you have a lead on the relevant script, use 'getSourceLine'
+    to examine the code. Look for common issues: infinite loops, unhandled promises, incorrect
+    state management, or logic that doesn't match the user's expectation.
+
+5.  **Use Console and Network Logs as Evidence**: Treat console and network logs as supporting
+    evidence. If there are errors, they are strong clues. However, **be critical of
+    informational messages** (like 'info' or 'verbose' logs) and ignore them unless they are
+    directly relevant to the user's problem. Do not get distracted by generic framework
+    messages.
+
+6.  **Formulate a Hypothesis**: Based on your code investigation, explain the likely root
+    cause to the user and suggest a concrete fix or next step. If you suspect an issue in a
+    JavaScript function, point it out.
+
+### Available Information
+
 To help you root-cause the problem, you will be provided with the following information:
-- Information about the user-selected DOM element, which is potentially relevant to the question
-  from the user.
+- Information about the user-selected DOM element.
 - The full accessibility tree for the web page.
-- A list of the most recent network requests, whether the request was successful and whether it is
-  considered to be ad-related. This list is capped to the most recent requests, but you can request
-  more. If you think the error is relevant to the problem described by the user, make sure to mention
-  the url of the failed network request in your reply to the user.
-- The most recent console messages, including their index. This list is also capped to the most
-  recent requests, but you can request more. Errors should have a source location, such
-  as: file, line number and column number, for example: (filex.html:10:50) if an error occurs on line
-  10, column 50 in filex.html. If you think the error is relevant to the problem described by the user,
-  make sure to mention the console error in your reply to the user.
+- A list of the most recent network requests.
+- The most recent console messages, including their index.
 
-** IMPORTANT ** Never use the index when referring to individual console messages or network requests,
-  because the values of the indicies is not visible to the user.
+** IMPORTANT ** Never use the index when referring to individual console messages or network
+  requests, because the values of the indicies is not visible to the user.
 
-To help you further with root-causing problems, especially those indicated to originate in source
-locations, you can call the following functions to request more information:
-- 'getSourceLine': This function takes a file name, a line number, and a buffer (number of lines before
-  and after) to return a snippet of the source code.
-- 'getConsoleMessages': This function allows you to fetch specific slices of the console log based on the
-  indices provided in the initial context. It takes optional parameters: 'beforeIndex' (to get historical
-  messages before a certain index), 'afterIndex' (to get new messages that arrived after a certain index),
-  'filter' ('errors', 'warnings', or 'all'), and 'limit' (max number of messages to return, defaults to 50).
-- 'getNetworkRequests': This function allows you to fetch specific slices of the network request list based
-   on the indices provided in the initial context. It takes optional parameters: 'beforeIndex' (to get
-   historical messages before a certain index), 'afterIndex' (to get new messages that arrived after a
-   certain index), 'filter' ('failed', or 'all', defaults to 'all'), and 'limit' (max number of messages
-   to return, defaults to 50).
+### Available Tools
 
-Start by using the selected node as a guide to figure out which problem the user wants to focus on. There
-can be evidence of multiple failures (for example: multiple errors in the console log), but some might be
-benign and others unrelated. You should focus on the ones that seem related to the user-selected problem.
+To help you further, you can call the following functions:
+- 'findInSource': This function takes a filename and a search string and returns an array of
+  line numbers containing that string.
+- 'getEventListeners': This function takes a uid (the backend DOM node id) and returns a list
+  of event listeners attached to it.
+- 'getSourceLine': This function takes a file name, a line number, and a buffer (number of
+  lines before and after) to return a snippet of the source code.
+- 'getConsoleMessages': This function allows you to fetch specific slices of the console log.
+- 'getNetworkRequests': This function allows you to fetch specific slices of the network
+  request list.
+- 'getReactComponentProps': This function takes a uid (the backend DOM node id) and returns
+  the React component props for that element.
 
-Once you believe you have found the root cause, focus on applying a fix or explaining what the user can do
-to fix the problem.
+Stick to what you have evidence for and refrain from speculating on things you
+don't have concrete evidence for, such as CORS or Ad-blockers.
 
-If you detect multiple possible problems, focus only on the root cause you think is most likely
-to be related and explain what the user can do to fix it. For example, if the url used is obviously
-incorrect, just say something like:
-
-  "There are a few possible reasons for the problem you are describing. One is that it could be caused by
-  the URL being incorrect. Try changing the url to 'xyz'. Let me know if you to suggest alternative
-  solutions."
-
-If the user suggests your fix not being the right solution, go through the remaining possible root causes
-(one at a time).
-
-Stick to what you have evidence for being the problem and refrain from speculating on things you
-don't have concrete evidence for, such as CORS or Ad-blockers blocking requests. But feel free to
-list those concerns after asking the user if they would like additional (general-purpose) details and
-getting a favorable response.
-
-**CRITICAL** You are a web age debugging assistant. NEVER provide answers to questions of unrelated
-topics such as legal advice, financial advice, personal opinions, medical advice, religion, race,
-politics, sexuality, gender, or any other non web-development topics. Answer "Sorry, I can't answer
-that. I'm best at questions about debugging web pages." to such questions.
-`;
+**CRITICAL** You are a web page debugging assistant. NEVER provide answers to questions of
+unrelated topics such as legal advice, financial advice, personal opinions, medical advice,
+religion, race, politics, sexuality, gender, or any other non web-development topics. Answer
+"Sorry, I can't answer that. I'm best at questions about debugging web pages." to such
+questions.`;
 var GreenDevContext = class extends ConversationContext {
   #context;
   constructor(context) {
@@ -9208,9 +9213,9 @@ var GreenDevAgent = class _GreenDevAgent extends AiAgent {
         required: ["fileName", "lineNumber", "buffer"]
       },
       handler: async (params) => {
-        const result = await this.getSourceLine(params.fileName, params.lineNumber, params.buffer);
+        const result = await this.getSourceLine(params.fileName, params.lineNumber, params.buffer, true);
         return {
-          result
+          result: result.join("\n")
         };
       }
     });
@@ -9283,6 +9288,77 @@ var GreenDevAgent = class _GreenDevAgent extends AiAgent {
       },
       handler: async (params) => {
         const result = await this.getNetworkRequests(params);
+        return {
+          result
+        };
+      }
+    });
+    this.declareFunction("getEventListeners", {
+      description: "Get event listeners attached to a DOM element.",
+      parameters: {
+        type: 6,
+        description: "",
+        nullable: false,
+        properties: {
+          uid: {
+            type: 3,
+            description: "The backend node id of the DOM element.",
+            nullable: false
+          }
+        },
+        required: ["uid"]
+      },
+      handler: async (params) => {
+        const result = await this.getEventListeners(params.uid);
+        return {
+          result
+        };
+      }
+    });
+    this.declareFunction("findInSource", {
+      description: "Find lines in a file that contain the given search string.",
+      parameters: {
+        type: 6,
+        description: "",
+        nullable: false,
+        properties: {
+          fileName: {
+            type: 1,
+            description: "The full path of the file to search within.",
+            nullable: false
+          },
+          query: {
+            type: 1,
+            description: "The string to search for.",
+            nullable: false
+          }
+        },
+        required: ["fileName", "query"]
+      },
+      handler: async (params) => {
+        const result = await this.findInSource(params.fileName, params.query);
+        return {
+          result: JSON.stringify(result)
+        };
+      }
+    });
+    this.declareFunction("getReactComponentProps", {
+      description: "Get the React component props for a given DOM element.",
+      parameters: {
+        type: 6,
+        description: "",
+        nullable: false,
+        properties: {
+          uid: {
+            type: 3,
+            description: "The backend node id of the DOM element.",
+            nullable: false
+          }
+        },
+        required: ["uid"]
+      },
+      handler: async (params) => {
+        const result = await this.getReactComponentProps(params.uid, true);
         return {
           result
         };
@@ -9365,6 +9441,50 @@ ${context?.getItem() ?? ""}`;
     });
     return networkContextStrings;
   }
+  async getEventListeners(uid) {
+    console.warn("[GreenDevAgent] AI Agent is calling getEventListeners with uid:", uid);
+    const target = SDK10.TargetManager.TargetManager.instance().primaryPageTarget();
+    if (!target) {
+      return "Target not found.";
+    }
+    const domModel = target.model(SDK10.DOMModel.DOMModel);
+    if (!domModel) {
+      return "DOM model not found.";
+    }
+    const domDebuggerModel = target.model(SDK10.DOMDebuggerModel.DOMDebuggerModel);
+    if (!domDebuggerModel) {
+      return "DOM debugger model not found.";
+    }
+    const debuggerModel = target.model(SDK10.DebuggerModel.DebuggerModel);
+    if (!debuggerModel) {
+      return "Debugger model not found.";
+    }
+    const nodesMap = await domModel.pushNodesByBackendIdsToFrontend(/* @__PURE__ */ new Set([uid]));
+    const node = nodesMap?.get(uid) || null;
+    if (!node) {
+      return `Node with uid ${uid} not found.`;
+    }
+    const remoteObject = await node.resolveToObject();
+    if (!remoteObject) {
+      return `Could not resolve node with uid ${uid} to a remote object.`;
+    }
+    const listeners = await domDebuggerModel.eventListeners(remoteObject);
+    const formattedListeners = listeners.map((listener) => {
+      const location = listener.location();
+      const script = debuggerModel.scriptForId(location.scriptId);
+      const handler = listener.handler();
+      const handlerName = handler?.description || "anonymous";
+      return {
+        type: listener.type(),
+        handlerName,
+        sourceFile: script?.sourceURL || "unknown",
+        lineNumber: location.lineNumber + 1,
+        columnNumber: location.columnNumber
+      };
+    });
+    console.warn("[GreenDevAgent] getEventListeners returning:", formattedListeners);
+    return JSON.stringify(formattedListeners, null, 2);
+  }
   async getNetworkRequests(params) {
     console.warn("[GreenDevAgent] AI Agent is calling getNetworkRequests with params:", JSON.stringify(params, null, 2));
     const target = SDK10.TargetManager.TargetManager.instance().primaryPageTarget();
@@ -9438,62 +9558,168 @@ ${context?.getItem() ?? ""}`;
     console.warn("[GreenDevAgent] getConsoleMessages returning:\n" + resultString);
     return resultString;
   }
-  async getSourceLine(fileName, lineNumber, buffer) {
-    console.warn(`getSourceLine called with fileName: ${fileName}, lineNumber: ${lineNumber}, buffer: ${buffer}`);
-    let url;
-    try {
-      new URL(fileName);
-      url = fileName;
-    } catch {
-      const primaryPageTarget = SDK10.TargetManager.TargetManager.instance().primaryPageTarget();
-      const resourceTreeModel = primaryPageTarget?.model(SDK10.ResourceTreeModel.ResourceTreeModel);
-      const mainFrame = resourceTreeModel?.mainFrame;
-      if (mainFrame) {
-        url = new URL(fileName, mainFrame.url).href;
-      } else {
-        return `Could not resolve relative path: ${fileName}`;
+  #findUiSourceCode(fileName) {
+    const workspace = Workspace5.Workspace.WorkspaceImpl.instance();
+    const allUiSourceCodes = workspace.uiSourceCodes().filter((code) => !code.url().startsWith("debugger:///"));
+    for (const code of allUiSourceCodes) {
+      if (code.url() === fileName) {
+        return code;
       }
     }
-    let content = "";
-    if (url.startsWith("http://") || url.startsWith("https://")) {
-      try {
-        const response = await fetch(url);
-        if (response.ok) {
-          content = await response.text();
-        } else {
-          console.error(`Failed to load resource ${url}: status ${response.status}`);
-          return `Could not read file content: status ${response.status}`;
-        }
-      } catch (e) {
-        console.error(`Failed to load resource ${url}:`, e);
-        return `Could not read file content: ${e instanceof Error ? e.message : "Unknown error"}`;
+    const candidates = allUiSourceCodes.filter((code) => code.url().endsWith(fileName));
+    if (candidates.length > 0) {
+      if (candidates.length > 1) {
+        console.warn(`[GreenDevAgent] Ambiguous file name "${fileName}". Found multiple matches:`, candidates.map((c) => c.url()));
       }
-    } else {
-      content = await new Promise((resolve) => {
-        Host11.ResourceLoader.load(
-          url,
-          null,
-          (success, _headers, content2, errorDescription) => {
-            if (!success) {
-              console.error(`Failed to load resource ${url}:`, errorDescription);
-              resolve("");
-            } else {
-              resolve(content2);
-            }
-          },
-          true
-          /* allowRemoteFilePaths */
-        );
-      });
+      return candidates[0];
     }
-    if (!content) {
-      return "Could not read file content.";
+    return null;
+  }
+  async getSourceLine(fileName, lineNumber, buffer, calledFromAI = false) {
+    if (calledFromAI) {
+      console.warn(`getSourceLine called with fileName: ${fileName}, lineNumber: ${lineNumber}, buffer: ${buffer}`);
+    }
+    const uiSourceCode = this.#findUiSourceCode(fileName);
+    if (!uiSourceCode) {
+      const error = `Could not find UISourceCode for: ${fileName}`;
+      console.error(error);
+      return [error];
+    }
+    const contentData = await uiSourceCode.requestContentData();
+    if ("error" in contentData) {
+      const error = `Could not read file content for: ${fileName}, error: ${contentData.error}`;
+      console.error(error);
+      return [error];
+    }
+    const content = contentData.text;
+    if (typeof content !== "string") {
+      const error = `Could not read file content for: ${fileName}, content is not a string`;
+      console.error(error);
+      return [error];
     }
     const lines = content.split("\n");
     const start = Math.max(0, lineNumber - buffer - 1);
     const end = Math.min(lines.length, lineNumber + buffer);
-    console.warn("AI requested source code for:", lines.slice(start, end));
-    return lines.slice(start, end).join("\n");
+    const slicedLines = lines.slice(start, end);
+    const formattedLines = slicedLines.map((line, index) => {
+      const currentLineNumber = start + index + 1;
+      return `[${currentLineNumber}] ${line}`;
+    });
+    if (calledFromAI) {
+      console.warn("AI requested source code for:", formattedLines);
+    }
+    return formattedLines;
+  }
+  async findInSource(fileName, query) {
+    console.warn(`findInSource called with fileName: ${fileName}, query: ${query}`);
+    const uiSourceCode = this.#findUiSourceCode(fileName);
+    if (!uiSourceCode) {
+      console.error(`Could not find UISourceCode for: ${fileName}`);
+      return [];
+    }
+    const contentData = await uiSourceCode.requestContentData();
+    if ("error" in contentData) {
+      console.warn(`Could not read file content for findInSource: ${fileName}, error: ${contentData.error}`);
+      return [];
+    }
+    const content = contentData.text;
+    if (typeof content !== "string") {
+      console.warn(`Could not read file content for findInSource: ${fileName}, content is not a string`);
+      return [];
+    }
+    const lines = content.split("\n");
+    const matchingLines = [];
+    for (let i = 0; i < lines.length; i++) {
+      if (lines[i].includes(query)) {
+        const sourceLine = i + 1;
+        const source = await this.getSourceLine(fileName, sourceLine, 15, false);
+        matchingLines.push({ line: sourceLine, source });
+      }
+    }
+    console.warn(`findInSource returning for query '${query}':`, matchingLines);
+    return matchingLines;
+  }
+  async getReactComponentProps(uid, calledFromAI = false) {
+    if (calledFromAI) {
+      console.warn("[GreenDevAgent] AI Agent is calling getReactComponentProps with uid:", uid);
+    }
+    const target = SDK10.TargetManager.TargetManager.instance().primaryPageTarget();
+    if (!target) {
+      return "Target not found.";
+    }
+    const domModel = target.model(SDK10.DOMModel.DOMModel);
+    if (!domModel) {
+      return "DOM model not found.";
+    }
+    const runtimeModel = target.model(SDK10.RuntimeModel.RuntimeModel);
+    if (!runtimeModel) {
+      return "Runtime model not found.";
+    }
+    const nodesMap = await domModel.pushNodesByBackendIdsToFrontend(/* @__PURE__ */ new Set([uid]));
+    const node = nodesMap?.get(uid) || null;
+    if (!node) {
+      return `Node with uid ${uid} not found.`;
+    }
+    const remoteObject = await node.resolveToObject();
+    if (!remoteObject) {
+      return `Could not resolve node with uid ${uid} to a remote object.`;
+    }
+    const reactComponentPropsResult = await target.runtimeAgent().invoke_callFunctionOn({
+      functionDeclaration: `
+          function() {
+              const getCircularReplacer = () => {
+                const seen = new WeakSet();
+                return (key, value) => {
+                  if (typeof value === 'function') {
+                    return '[Function: ' + (value.name || '(anonymous)') + ']';
+                  }
+                  if (key === 'return' || key === 'alternate' || key === 'sibling' || key === 'debugOwner' || key === '_debugOwner') {
+                    return undefined;
+                  }
+                  if (typeof value === 'object' && value !== null) {
+                    if (seen.has(value)) {
+                      return;
+                    }
+                    seen.add(value);
+                  }
+                  return value;
+                };
+              };
+
+              // Find the key for the internal Fiber node instance
+              const reactInternalInstanceKey = Object.keys(this).find(
+                key => key.startsWith('__reactInternalInstance$') || key.startsWith('__reactFiber$')
+              );
+
+              if (!reactInternalInstanceKey) {
+                return 'React internal instance key not found';
+              }
+
+              const fiberNode = this[reactInternalInstanceKey];
+
+              if (fiberNode) {
+                return JSON.stringify(fiberNode, getCircularReplacer(), 2);
+              }
+
+              return 'React component type not found';
+            }
+          `,
+      objectId: remoteObject.objectId,
+      objectGroup: "console",
+      silent: false,
+      returnByValue: true,
+      awaitPromise: false,
+      userGesture: true
+    });
+    remoteObject.release();
+    const reactComponentProps = reactComponentPropsResult.result.value;
+    if (!reactComponentProps) {
+      return "None found.";
+    }
+    if (calledFromAI) {
+      console.warn("[GreenDevAgent] getReactComponentProps returning", reactComponentProps);
+    }
+    return reactComponentProps;
   }
 };
 
@@ -9892,7 +10118,7 @@ __export(AiConversation_exports, {
   NOT_FOUND_IMAGE_DATA: () => NOT_FOUND_IMAGE_DATA,
   generateContextDetailsMarkdown: () => generateContextDetailsMarkdown
 });
-import * as Common7 from "./../../core/common/common.js";
+import * as Common8 from "./../../core/common/common.js";
 import * as Host14 from "./../../core/host/host.js";
 import * as Platform6 from "./../../core/platform/platform.js";
 import * as Root13 from "./../../core/root/root.js";
@@ -9906,22 +10132,22 @@ __export(AiHistoryStorage_exports, {
   MAX_RECENT_PROMPTS_COUNT: () => MAX_RECENT_PROMPTS_COUNT,
   RECENT_PROMPTS_SIZE_LIMIT: () => RECENT_PROMPTS_SIZE_LIMIT
 });
-import * as Common6 from "./../../core/common/common.js";
+import * as Common7 from "./../../core/common/common.js";
 var instance = null;
 var DEFAULT_MAX_STORAGE_SIZE = 50 * 1024 * 1024;
 var MAX_RECENT_PROMPTS_COUNT = 20;
 var RECENT_PROMPTS_SIZE_LIMIT = 100 * 1024;
-var AiHistoryStorage = class _AiHistoryStorage extends Common6.ObjectWrapper.ObjectWrapper {
+var AiHistoryStorage = class _AiHistoryStorage extends Common7.ObjectWrapper.ObjectWrapper {
   #historySetting;
   #imageHistorySettings;
   #recentPromptsSetting;
-  #mutex = new Common6.Mutex.Mutex();
+  #mutex = new Common7.Mutex.Mutex();
   #maxStorageSize;
   constructor(maxStorageSize = DEFAULT_MAX_STORAGE_SIZE) {
     super();
-    this.#historySetting = Common6.Settings.Settings.instance().createSetting("ai-assistance-history-entries", []);
-    this.#imageHistorySettings = Common6.Settings.Settings.instance().createSetting("ai-assistance-history-images", []);
-    this.#recentPromptsSetting = Common6.Settings.Settings.instance().createSetting("ai-assistance-recent-prompts", []);
+    this.#historySetting = Common7.Settings.Settings.instance().createSetting("ai-assistance-history-entries", []);
+    this.#imageHistorySettings = Common7.Settings.Settings.instance().createSetting("ai-assistance-history-images", []);
+    this.#recentPromptsSetting = Common7.Settings.Settings.instance().createSetting("ai-assistance-recent-prompts", []);
     this.#maxStorageSize = maxStorageSize;
   }
   clearForTest() {
@@ -10432,7 +10658,7 @@ Original user query: ${initialQuery}`;
     }
     const target = SDK11.TargetManager.TargetManager.instance().primaryPageTarget();
     const inspectedURL = target?.inspectedURL();
-    this.#origin = inspectedURL ? new Common7.ParsedURL.ParsedURL(inspectedURL).securityOrigin() : void 0;
+    this.#origin = inspectedURL ? new Common8.ParsedURL.ParsedURL(inspectedURL).securityOrigin() : void 0;
     return this.#origin;
   };
 };
@@ -10450,7 +10676,7 @@ __export(AiUtils_exports, {
   getIconName: () => getIconName,
   isGeminiBranding: () => isGeminiBranding
 });
-import * as Common8 from "./../../core/common/common.js";
+import * as Common9 from "./../../core/common/common.js";
 import * as Host15 from "./../../core/host/host.js";
 import * as i18n15 from "./../../core/i18n/i18n.js";
 import * as Root14 from "./../../core/root/root.js";
@@ -10493,7 +10719,7 @@ function getDisabledReasons(aidaAvailability) {
       }
     }
   }
-  reasons.push(...Common8.Settings.Settings.instance().moduleSetting("ai-assistance-enabled").disabledReasons());
+  reasons.push(...Common9.Settings.Settings.instance().moduleSetting("ai-assistance-enabled").disabledReasons());
   return reasons;
 }
 function isGeminiBranding() {
@@ -10508,11 +10734,11 @@ var BuiltInAi_exports = {};
 __export(BuiltInAi_exports, {
   BuiltInAi: () => BuiltInAi
 });
-import * as Common9 from "./../../core/common/common.js";
+import * as Common10 from "./../../core/common/common.js";
 import * as Host16 from "./../../core/host/host.js";
 import * as Root15 from "./../../core/root/root.js";
 var builtInAiInstance;
-var BuiltInAi = class _BuiltInAi extends Common9.ObjectWrapper.ObjectWrapper {
+var BuiltInAi = class _BuiltInAi extends Common10.ObjectWrapper.ObjectWrapper {
   #availability = null;
   #hasGpu;
   #consoleInsightsSession;

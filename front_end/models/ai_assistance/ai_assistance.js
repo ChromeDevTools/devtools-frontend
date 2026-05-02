@@ -6718,7 +6718,7 @@ Note: if the user asks a specific question about the trace (such as "What is my 
   - \`nav-to-lcp\` (navigation to LCP)
   - \`lcp-ttfb\` (LCP TTFB phase)
   - \`lcp-render-delay\` (LCP render delay phase)
-  - Insight names: \`LCPBreakdown\`, \`CLSCulprits\`, \`RenderBlocking\`, \`NetworkDependencyTree\`, \`ImageDelivery\`, \`FontDisplay\`, \`ThirdParties\`, \`ForcedReflow\`, \`Cache\`, \`DOMSize\`, \`INPBreakdown\`
+  - Insight names: \`LCPBreakdown\`, \`INPBreakdown\`, \`CLSCulprits\`, \`ThirdParties\`, \`DocumentLatency\`, \`DOMSize\`, \`DuplicatedJavaScript\`, \`FontDisplay\`, \`ForcedReflow\`, \`ImageDelivery\`, \`LCPDiscovery\`, \`LegacyJavaScript\`, \`NetworkDependencyTree\`, \`RenderBlocking\`, \`SlowCSSSelector\`, \`Viewport\`, \`ModernHTTP\`, \`Cache\`, \`CharacterSet\`
   - Navigation IDs: \`NAVIGATION_0\`, \`NAVIGATION_1\`, etc.
 - Use \`getEventByKey\` to get data on a specific trace event. This is great for root-cause analysis or validating any assumptions.
 - Provide clear, actionable recommendations. Avoid technical jargon unless necessary, and explain any technical terms used.
@@ -6766,17 +6766,6 @@ var ScorePriority;
   ScorePriority2[ScorePriority2["CRITICAL"] = 2] = "CRITICAL";
   ScorePriority2[ScorePriority2["DEFAULT"] = 1] = "DEFAULT";
 })(ScorePriority || (ScorePriority = {}));
-var SUPPORTED_INSIGHT_WIDGETS = /* @__PURE__ */ new Set([
-  Trace6.Insights.Types.InsightKeys.LCP_BREAKDOWN,
-  Trace6.Insights.Types.InsightKeys.RENDER_BLOCKING,
-  Trace6.Insights.Types.InsightKeys.LCP_DISCOVERY,
-  Trace6.Insights.Types.InsightKeys.CLS_CULPRITS,
-  Trace6.Insights.Types.InsightKeys.NETWORK_DEPENDENCY_TREE,
-  Trace6.Insights.Types.InsightKeys.THIRD_PARTIES,
-  Trace6.Insights.Types.InsightKeys.FORCED_REFLOW,
-  Trace6.Insights.Types.InsightKeys.CACHE,
-  Trace6.Insights.Types.InsightKeys.INP_BREAKDOWN
-]);
 var PerformanceTraceContext = class _PerformanceTraceContext extends ConversationContext {
   static fromParsedTrace(parsedTrace) {
     return new _PerformanceTraceContext(AgentFocus.fromParsedTrace(parsedTrace));
@@ -7028,7 +7017,7 @@ var PerformanceAgent = class extends AiAgent {
     }
     if (focus.insight) {
       const insightKey = focus.insight.insightKey;
-      if (Trace6.Insights.Common.isInsightKey(insightKey) && SUPPORTED_INSIGHT_WIDGETS.has(insightKey)) {
+      if (Trace6.Insights.Common.isInsightKey(insightKey)) {
         widgets.push({
           name: "PERF_INSIGHT",
           data: {
@@ -7406,7 +7395,7 @@ ${result}`,
           }
         }
         const insightKey = params.insightName;
-        if (Trace6.Insights.Common.isInsightKey(insightKey) && SUPPORTED_INSIGHT_WIDGETS.has(insightKey)) {
+        if (Trace6.Insights.Common.isInsightKey(insightKey)) {
           widgets.push({
             name: "PERF_INSIGHT",
             data: {

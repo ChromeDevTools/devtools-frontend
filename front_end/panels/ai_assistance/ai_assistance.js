@@ -3899,7 +3899,87 @@ var UIStringsNotTranslate4 = {
   /**
    * @description Title for the INP breakdown widget.
    */
-  inpBreakdown: "INP breakdown"
+  inpBreakdown: "INP breakdown",
+  /**
+   * @description Accessible label for the reveal button in the document latency widget.
+   */
+  revealDocumentLatency: "Reveal document latency",
+  /**
+   * @description Title for the document latency widget.
+   */
+  documentLatency: "Document latency",
+  /**
+   * @description Accessible label for the reveal button in the DOM size widget.
+   */
+  revealDomSize: "Reveal DOM size",
+  /**
+   * @description Title for the DOM size widget.
+   */
+  domSize: "DOM size",
+  /**
+   * @description Accessible label for the reveal button in the duplicated JavaScript widget.
+   */
+  revealDuplicateJavaScript: "Reveal duplicated JavaScript",
+  /**
+   * @description Title for the duplicated JavaScript widget.
+   */
+  duplicateJavaScript: "Duplicated JavaScript",
+  /**
+   * @description Accessible label for the reveal button in the image delivery widget.
+   */
+  revealImageDelivery: "Reveal image delivery",
+  /**
+   * @description Title for the image delivery widget.
+   */
+  imageDelivery: "Image delivery",
+  /**
+   * @description Accessible label for the reveal button in the font display widget.
+   */
+  revealFontDisplay: "Reveal font display",
+  /**
+   * @description Title for the font display widget.
+   */
+  fontDisplay: "Font display",
+  /**
+   * @description Accessible label for the reveal button in the slow CSS selectors widget.
+   */
+  revealSlowCssSelector: "Reveal slow CSS selectors",
+  /**
+   * @description Title for the slow CSS selectors widget.
+   */
+  slowCssSelector: "Slow CSS selectors",
+  /**
+   * @description Accessible label for the reveal button in the legacy JavaScript widget.
+   */
+  revealLegacyJavaScript: "Reveal legacy JavaScript",
+  /**
+   * @description Title for the legacy JavaScript widget.
+   */
+  legacyJavaScript: "Legacy JavaScript",
+  /**
+   * @description Accessible label for the reveal button in the viewport optimization widget.
+   */
+  revealViewport: "Reveal viewport optimization",
+  /**
+   * @description Title for the viewport optimization widget.
+   */
+  viewport: "Viewport optimization",
+  /**
+   * @description Accessible label for the reveal button in the modern HTTP usage widget.
+   */
+  revealModernHttp: "Reveal modern HTTP usage",
+  /**
+   * @description Title for the modern HTTP usage widget.
+   */
+  modernHttp: "Modern HTTP usage",
+  /**
+   * @description Accessible label for the reveal button in the character set declaration widget.
+   */
+  revealCharacterSet: "Reveal character set declaration",
+  /**
+   * @description Title for the character set declaration widget.
+   */
+  characterSet: "Character set declaration"
 };
 var DEFAULT_VIEW4 = (input, output, target) => {
   const hasAiV2 = Boolean(Root3.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled);
@@ -4347,6 +4427,66 @@ var INSIGHT_METADATA = {
     accessibleLabel: UIStringsNotTranslate4.revealInpBreakdown,
     title: UIStringsNotTranslate4.inpBreakdown,
     jslog: "inp-breakdown-widget"
+  },
+  [Trace.Insights.Types.InsightKeys.DOCUMENT_LATENCY]: {
+    component: TimelineInsights.DocumentLatency.DocumentLatency,
+    accessibleLabel: UIStringsNotTranslate4.revealDocumentLatency,
+    title: UIStringsNotTranslate4.documentLatency,
+    jslog: "document-latency-widget"
+  },
+  [Trace.Insights.Types.InsightKeys.DOM_SIZE]: {
+    component: TimelineInsights.DOMSize.DOMSize,
+    accessibleLabel: UIStringsNotTranslate4.revealDomSize,
+    title: UIStringsNotTranslate4.domSize,
+    jslog: "dom-size-widget"
+  },
+  [Trace.Insights.Types.InsightKeys.DUPLICATE_JAVASCRIPT]: {
+    component: TimelineInsights.DuplicatedJavaScript.DuplicatedJavaScript,
+    accessibleLabel: UIStringsNotTranslate4.revealDuplicateJavaScript,
+    title: UIStringsNotTranslate4.duplicateJavaScript,
+    jslog: "duplicate-javascript-widget"
+  },
+  [Trace.Insights.Types.InsightKeys.IMAGE_DELIVERY]: {
+    component: TimelineInsights.ImageDelivery.ImageDelivery,
+    accessibleLabel: UIStringsNotTranslate4.revealImageDelivery,
+    title: UIStringsNotTranslate4.imageDelivery,
+    jslog: "image-delivery-widget"
+  },
+  [Trace.Insights.Types.InsightKeys.FONT_DISPLAY]: {
+    component: TimelineInsights.FontDisplay.FontDisplay,
+    accessibleLabel: UIStringsNotTranslate4.revealFontDisplay,
+    title: UIStringsNotTranslate4.fontDisplay,
+    jslog: "font-display-widget"
+  },
+  [Trace.Insights.Types.InsightKeys.SLOW_CSS_SELECTOR]: {
+    component: TimelineInsights.SlowCSSSelector.SlowCSSSelector,
+    accessibleLabel: UIStringsNotTranslate4.revealSlowCssSelector,
+    title: UIStringsNotTranslate4.slowCssSelector,
+    jslog: "slow-css-selector-widget"
+  },
+  [Trace.Insights.Types.InsightKeys.LEGACY_JAVASCRIPT]: {
+    component: TimelineInsights.LegacyJavaScript.LegacyJavaScript,
+    accessibleLabel: UIStringsNotTranslate4.revealLegacyJavaScript,
+    title: UIStringsNotTranslate4.legacyJavaScript,
+    jslog: "legacy-javascript-widget"
+  },
+  [Trace.Insights.Types.InsightKeys.VIEWPORT]: {
+    component: TimelineInsights.Viewport.Viewport,
+    accessibleLabel: UIStringsNotTranslate4.revealViewport,
+    title: UIStringsNotTranslate4.viewport,
+    jslog: "viewport-widget"
+  },
+  [Trace.Insights.Types.InsightKeys.MODERN_HTTP]: {
+    component: TimelineInsights.ModernHTTP.ModernHTTP,
+    accessibleLabel: UIStringsNotTranslate4.revealModernHttp,
+    title: UIStringsNotTranslate4.modernHttp,
+    jslog: "modern-http-widget"
+  },
+  [Trace.Insights.Types.InsightKeys.CHARACTER_SET]: {
+    component: TimelineInsights.CharacterSet.CharacterSet,
+    accessibleLabel: UIStringsNotTranslate4.revealCharacterSet,
+    title: UIStringsNotTranslate4.characterSet,
+    jslog: "character-set-widget"
   }
 };
 function renderInsightWidget(component, insight, jslog, accessibleLabel, title, bounds) {

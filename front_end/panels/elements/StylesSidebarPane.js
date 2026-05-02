@@ -1573,14 +1573,18 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
                     return;
                 }
                 break;
-            case 'Enter':
+            case 'Enter': {
                 if (keyboardEvent.shiftKey) {
                     return;
                 }
                 // Accept any available autocompletions and advance to the next field.
-                this.tabKeyPressed();
+                const handled = this.tabKeyPressed();
+                if (this.aiCodeCompletionProvider && handled) {
+                    event.consume(true);
+                }
                 keyboardEvent.preventDefault();
                 return;
+            }
             case 'Escape':
                 if (this.#handleEscape(keyboardEvent)) {
                     return;

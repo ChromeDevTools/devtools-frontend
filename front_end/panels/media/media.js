@@ -94,7 +94,7 @@ var PlayerEventsView = class _PlayerEventsView extends UI.Widget.VBox {
     this.contentElement.classList.add("event-display-table-contents-table-container");
     this.dataGrid = this.createDataGrid([
       {
-        id: "display-timestamp",
+        id: "displayTimestamp",
         title: i18nString(UIStrings.timestamp),
         weight: 1,
         sortable: false

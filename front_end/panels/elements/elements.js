@@ -6583,7 +6583,7 @@ var StylePropertiesSection = class _StylePropertiesSection {
       return;
     }
     const sourceTreeElement = this.closestPropertyForEditing(this.#activeAiSuggestion.cssProperty.index);
-    if (!(sourceTreeElement instanceof StylePropertyTreeElement) || sourceTreeElement.property !== this.#activeAiSuggestion.cssProperty) {
+    if (!(sourceTreeElement instanceof StylePropertyTreeElement)) {
       return;
     }
     return sourceTreeElement;
@@ -9791,13 +9791,17 @@ var CSSPropertyPrompt = class extends UI10.TextPrompt.TextPrompt {
           return;
         }
         break;
-      case "Enter":
+      case "Enter": {
         if (keyboardEvent.shiftKey) {
           return;
         }
-        this.tabKeyPressed();
+        const handled = this.tabKeyPressed();
+        if (this.aiCodeCompletionProvider && handled) {
+          event.consume(true);
+        }
         keyboardEvent.preventDefault();
         return;
+      }
       case "Escape":
         if (this.#handleEscape(keyboardEvent)) {
           return;

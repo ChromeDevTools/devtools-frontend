@@ -767,8 +767,7 @@ export class StylePropertiesSection {
             return;
         }
         const sourceTreeElement = this.closestPropertyForEditing(this.#activeAiSuggestion.cssProperty.index);
-        if (!(sourceTreeElement instanceof StylePropertyTreeElement) ||
-            sourceTreeElement.property !== this.#activeAiSuggestion.cssProperty) {
+        if (!(sourceTreeElement instanceof StylePropertyTreeElement)) {
             return;
         }
         return sourceTreeElement;

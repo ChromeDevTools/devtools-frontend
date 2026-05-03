@@ -74,6 +74,8 @@ export declare class ConsoleView extends UI.Widget.VBox implements UI.Searchable
     }): ConsoleView;
     createAiCodeCompletionSummaryToolbar(): void;
     clearConsole(): void;
+    collapseAll(): void;
+    expandAll(): void;
     issuesCountUpdatedForTest(): void;
     modelAdded(model: SDK.ConsoleModel.ConsoleModel): void;
     modelRemoved(model: SDK.ConsoleModel.ConsoleModel): void;

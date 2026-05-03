@@ -6971,6 +6971,9 @@
   "panels/console/ConsoleView.ts | autocompleteFromHistory": {
     "message": "Autocomplete from history"
   },
+  "panels/console/ConsoleView.ts | collapseAll": {
+    "message": "Collapse all"
+  },
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "Console cleared"
   },
@@ -7009,6 +7012,9 @@
   },
   "panels/console/ConsoleView.ts | errors": {
     "message": "Errors"
+  },
+  "panels/console/ConsoleView.ts | expandAll": {
+    "message": "Expand all"
   },
   "panels/console/ConsoleView.ts | filteredMessagesInConsole": {
     "message": "{PH1} messages in console"

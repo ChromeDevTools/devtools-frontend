@@ -25,6 +25,7 @@ export declare class ConsoleViewMessage implements ConsoleViewportElement {
     protected messageIcon: Icon | null;
     private traceExpanded;
     private expandTrace;
+    private hasStackTrace;
     protected anchorElement: HTMLElement | null;
     protected contentElementInternal: HTMLElement | null;
     private nestingLevelMarkers;
@@ -86,6 +87,9 @@ export declare class ConsoleViewMessage implements ConsoleViewportElement {
     setConsoleGroup(group: ConsoleGroupViewMessage): void;
     clearConsoleGroup(): void;
     consoleGroup(): ConsoleGroupViewMessage | null;
+    isTraceExpanded(): boolean;
+    isExpandableTrace(): boolean;
+    setTraceExpanded(expanded: boolean): void;
     setInSimilarGroup(inSimilarGroup: boolean, isLast?: boolean): void;
     isLastInSimilarGroup(): boolean;
     resetCloseGroupDecorationCount(): void;
@@ -138,6 +142,7 @@ export declare class ConsoleGroupViewMessage extends ConsoleViewMessage {
     private groupEndMessageInternal;
     constructor(consoleMessage: SDK.ConsoleModel.ConsoleMessage, linkifier: Components.Linkifier.Linkifier, requestResolver: Logs.RequestResolver.RequestResolver, issueResolver: IssuesManager.IssueResolver.IssueResolver, onToggle: () => void, onResize: (arg0: Common.EventTarget.EventTargetEvent<HTMLElement | UI.TreeOutline.TreeElement>) => void);
     setCollapsed(collapsed: boolean): void;
+    setCollapsedSilent(collapsed: boolean): void;
     collapsed(): boolean;
     maybeHandleOnKeyDown(event: KeyboardEvent): boolean;
     toMessageElement(): HTMLElement;

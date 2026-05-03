@@ -139,6 +139,7 @@ style.setProperty('--image-file-edit', 'url(\"' + new URL(new URL('edit.svg', im
 style.setProperty('--image-file-empty', 'url(\"' + new URL(new URL('empty.svg', import.meta.url).href).toString() + '\")');
 style.setProperty('--image-file-errorWave', 'url(\"' + new URL(new URL('errorWave.svg', import.meta.url).href).toString() + '\")');
 style.setProperty('--image-file-exclamation', 'url(\"' + new URL(new URL('exclamation.svg', import.meta.url).href).toString() + '\")');
+style.setProperty('--image-file-expand', 'url(\"' + new URL(new URL('expand.svg', import.meta.url).href).toString() + '\")');
 style.setProperty('--image-file-experiment-check', 'url(\"' + new URL(new URL('experiment-check.svg', import.meta.url).href).toString() + '\")');
 style.setProperty('--image-file-experiment', 'url(\"' + new URL(new URL('experiment.svg', import.meta.url).href).toString() + '\")');
 style.setProperty('--image-file-extension', 'url(\"' + new URL(new URL('extension.svg', import.meta.url).href).toString() + '\")');

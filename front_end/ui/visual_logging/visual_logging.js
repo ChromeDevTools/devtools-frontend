@@ -930,6 +930,7 @@ var knownContextValues = /* @__PURE__ */ new Set([
   "console-view",
   "console.clear",
   "console.clear.history",
+  "console.collapse-all",
   "console.create-pin",
   "console.sidebar-selected-filter",
   "console.text-filter",

@@ -250,6 +250,16 @@ const UIStrings = {
      * @example {5} PH1
      */
     filteredMessagesInConsole: '{PH1} messages in console',
+    /**
+     * @description Tooltip for the collapse all button in the Console panel toolbar.
+     * Clicking this button will collapse all groups and stack traces.
+     */
+    collapseAll: 'Collapse all',
+    /**
+     * @description Tooltip for the expand all button in the Console panel toolbar.
+     * Clicking this button will expand all groups and stack traces.
+     */
+    expandAll: 'Expand all',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/console/ConsoleView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -316,6 +326,8 @@ export class ConsoleView extends UI.Widget.VBox {
     issueResolver = new IssuesManager.IssueResolver.IssueResolver();
     #isDetached = false;
     #onIssuesCountUpdateBound = this.#onIssuesCountUpdate.bind(this);
+    #collapseAllButton;
+    #allCollapsed = false;
     aiCodeCompletionConfig;
     aiCodeCompletionSummaryToolbarContainer;
     aiCodeCompletionSummaryToolbar;
@@ -390,6 +402,10 @@ export class ConsoleView extends UI.Widget.VBox {
         toolbar.wrappable = true;
         toolbar.appendToolbarItem(this.splitWidget.createShowHideSidebarButton(i18nString(UIStrings.showConsoleSidebar), i18nString(UIStrings.hideConsoleSidebar), i18nString(UIStrings.consoleSidebarShown), i18nString(UIStrings.consoleSidebarHidden), 'console-sidebar'));
         toolbar.appendToolbarItem(UI.Toolbar.Toolbar.createActionButton('console.clear'));
+        this.#collapseAllButton =
+            new UI.Toolbar.ToolbarButton(i18nString(UIStrings.collapseAll), 'compress', undefined, 'console.collapse-all');
+        this.#collapseAllButton.addEventListener("Click" /* UI.Toolbar.ToolbarButton.Events.CLICK */, this.#toggleCollapseAll, this);
+        toolbar.appendToolbarItem(this.#collapseAllButton);
         toolbar.appendSeparator();
         toolbar.appendToolbarItem(this.consoleContextSelector.toolbarItem());
         toolbar.appendSeparator();
@@ -571,6 +587,60 @@ export class ConsoleView extends UI.Widget.VBox {
     clearConsole() {
         SDK.ConsoleModel.ConsoleModel.requestClearMessages();
         this.prompt.clearAiCodeCompletionCache();
+    }
+    collapseAll() {
+        for (const message of this.consoleMessages) {
+            if (message instanceof ConsoleGroupViewMessage) {
+                message.setCollapsedSilent(true);
+            }
+            message.setTraceExpanded(false);
+        }
+        this.updateMessageList();
+    }
+    expandAll() {
+        for (const message of this.consoleMessages) {
+            if (message instanceof ConsoleGroupViewMessage) {
+                message.setCollapsedSilent(false);
+            }
+            message.setTraceExpanded(true);
+        }
+        this.updateMessageList();
+    }
+    #toggleCollapseAll() {
+        if (this.#allCollapsed) {
+            this.expandAll();
+        }
+        else {
+            this.collapseAll();
+        }
+        this.#allCollapsed = !this.#allCollapsed;
+        this.#updateCollapseAllButton();
+    }
+    #updateCollapseAllButton() {
+        let hasExpandedMessages = false;
+        let hasCollapsedMessages = false;
+        for (const message of this.visibleViewMessages) {
+            if (message instanceof ConsoleGroupViewMessage) {
+                hasExpandedMessages = hasExpandedMessages || !message.collapsed();
+                hasCollapsedMessages = hasCollapsedMessages || message.collapsed();
+            }
+            if (message.isExpandableTrace()) {
+                hasExpandedMessages = hasExpandedMessages || message.isTraceExpanded();
+                hasCollapsedMessages = hasCollapsedMessages || !message.isTraceExpanded();
+            }
+            if (hasExpandedMessages && hasCollapsedMessages) {
+                break;
+            }
+        }
+        this.#allCollapsed = !hasExpandedMessages && hasCollapsedMessages;
+        if (this.#allCollapsed) {
+            this.#collapseAllButton.setGlyph('expand');
+            this.#collapseAllButton.setTitle(i18nString(UIStrings.expandAll));
+        }
+        else {
+            this.#collapseAllButton.setGlyph('compress');
+            this.#collapseAllButton.setTitle(i18nString(UIStrings.collapseAll));
+        }
     }
     #onIssuesCountUpdate() {
         void this.issueToolbarThrottle.schedule(async () => this.updateIssuesToolbarItem());
@@ -951,11 +1021,13 @@ export class ConsoleView extends UI.Widget.VBox {
             }
             const parentGroup = currentGroup.consoleGroup();
             if (parentGroup) {
+                // If the parent group has its messages hidden, don't show this group.
+                if (parentGroup.messagesHidden()) {
+                    return;
+                }
                 showGroup(parentGroup, visibleViewMessages);
             }
-            if (!parentGroup?.messagesHidden()) {
-                visibleViewMessages.push(currentGroup);
-            }
+            visibleViewMessages.push(currentGroup);
         }
     }
     messageAppendedForTests() {
@@ -1154,16 +1226,21 @@ export class ConsoleView extends UI.Widget.VBox {
             for (const consoleMessage of this.consoleMessages) {
                 consoleMessage.setInSimilarGroup(false);
                 if (consoleMessage.consoleMessage().isGroupable()) {
-                    // Since grouping similar messages is disabled, we need clear the
-                    // reference to the artificial console group start.
-                    consoleMessage.clearConsoleGroup();
+                    // Since grouping similar messages is disabled, we need to clear the
+                    // reference to the artificial console group start, but preserve
+                    // references to real console groups (console.group()/console.groupCollapsed()).
+                    const group = consoleMessage.consoleGroup();
+                    if (group && !this.consoleGroupStarts.includes(group)) {
+                        consoleMessage.clearConsoleGroup();
+                    }
                 }
-                this.appendMessageToEnd(consoleMessage, true /* crbug.com/1082963: prevent collaps`e of same messages when "Group similar" is false */);
+                this.appendMessageToEnd(consoleMessage, true /* crbug.com/1082963: prevent collapse of same messages when "Group similar" is false */);
             }
         }
         this.updateFilterStatus();
         this.#searchableView.updateSearchMatchesCount(this.regexMatchRanges.length);
         this.highlightMatch(this.currentMatchRangeIndex, false); // Re-highlight current match without scrolling.
+        this.#updateCollapseAllButton();
         this.viewport.invalidate();
         this.messagesCountElement.setAttribute('aria-label', i18nString(UIStrings.filteredMessagesInConsole, { PH1: this.visibleViewMessages.length }));
     }

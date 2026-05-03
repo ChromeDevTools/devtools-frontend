@@ -250,6 +250,7 @@ export class ConsoleViewMessage {
     messageIcon;
     traceExpanded;
     expandTrace;
+    hasStackTrace;
     anchorElement;
     contentElementInternal;
     nestingLevelMarkers;
@@ -285,6 +286,7 @@ export class ConsoleViewMessage {
         this.messageIcon = null;
         this.traceExpanded = false;
         this.expandTrace = null;
+        this.hasStackTrace = false;
         this.anchorElement = null;
         this.contentElementInternal = null;
         this.nestingLevelMarkers = null;
@@ -570,6 +572,7 @@ export class ConsoleViewMessage {
             Common.Settings.Settings.instance().moduleSetting('console-trace-expand').get()) {
             this.expandTrace(true);
         }
+        this.hasStackTrace = true;
         // @ts-expect-error
         toggleElement._expandStackTraceForTest = this.expandTrace.bind(this, true);
         return toggleElement;
@@ -1046,6 +1049,17 @@ export class ConsoleViewMessage {
     }
     consoleGroup() {
         return this.consoleGroupInternal;
+    }
+    isTraceExpanded() {
+        return this.traceExpanded;
+    }
+    isExpandableTrace() {
+        return this.hasStackTrace;
+    }
+    setTraceExpanded(expanded) {
+        if (this.expandTrace && this.traceExpanded !== expanded) {
+            this.expandTrace(expanded);
+        }
     }
     setInSimilarGroup(inSimilarGroup, isLast) {
         this.inSimilarGroup = inSimilarGroup;
@@ -1887,11 +1901,14 @@ export class ConsoleGroupViewMessage extends ConsoleViewMessage {
         this.groupEndMessageInternal = null;
     }
     setCollapsed(collapsed) {
+        this.setCollapsedSilent(collapsed);
+        this.onToggle.call(null);
+    }
+    setCollapsedSilent(collapsed) {
         this.collapsedInternal = collapsed;
         if (this.expandGroupIcon) {
             this.expandGroupIcon.name = this.collapsedInternal ? 'triangle-right' : 'triangle-down';
         }
-        this.onToggle.call(null);
     }
     collapsed() {
         return this.collapsedInternal;

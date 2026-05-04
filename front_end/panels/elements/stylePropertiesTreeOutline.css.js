@@ -94,7 +94,11 @@ export default `/*
   }
 
   &.ghost-row, .ghost-value-prediction {
-    opacity: 50%;
+    .webkit-css-property {
+      opacity: 50%;
+    }
+
+    color: var(--sys-color-token-subtle);
     font-style: italic;
     pointer-events: none;
   }

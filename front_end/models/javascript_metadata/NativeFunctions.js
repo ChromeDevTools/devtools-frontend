@@ -2323,6 +2323,11 @@ export const NativeFunctions = [
         receivers: ["HTMLScriptElement", "ClipboardItem"]
     },
     {
+        name: "supports",
+        signatures: [["operation", "algorithm", "?length"], ["operation", "algorithm", "additionalAlgorithm"]],
+        receivers: ["SubtleCrypto"]
+    },
+    {
         name: "toggle",
         signatures: [["token", "?force"]]
     },
@@ -7434,10 +7439,6 @@ export const NativeFunctions = [
         signatures: [["event"]]
     },
     {
-        name: "notifyEvent",
-        signatures: [["triggering_event"]]
-    },
-    {
         name: "FencedFrameConfig",
         signatures: [["url"]]
     },
@@ -9387,6 +9388,10 @@ export const NativeFunctions = [
     },
     {
         name: "startDiagnosticLogging",
+        signatures: [["?options"]]
+    },
+    {
+        name: "finishDiagnosticLogging",
         signatures: [["?options"]]
     },
     {

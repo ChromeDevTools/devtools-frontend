@@ -36,7 +36,12 @@ export class StylesAiCodeCompletionProvider {
             // early return as this means that code completion was previously setup
             return;
         }
-        this.#aiCodeCompletion = new AiCodeCompletion.AiCodeCompletion.AiCodeCompletion({ aidaClient: this.#aidaClient }, this.#aiCodeCompletionConfig.panel, undefined, this.#aiCodeCompletionConfig.completionContext.stopSequences);
+        // Adding '}' as a stop sequence so that suggestion is limited to properties for a given style section
+        const stopSequences = ['}'];
+        if (this.#aiCodeCompletionConfig.completionContext.stopSequences) {
+            stopSequences.push(...this.#aiCodeCompletionConfig.completionContext.stopSequences);
+        }
+        this.#aiCodeCompletion = new AiCodeCompletion.AiCodeCompletion.AiCodeCompletion({ aidaClient: this.#aidaClient }, this.#aiCodeCompletionConfig.panel, undefined, stopSequences);
         this.#aiCodeCompletionConfig.onFeatureEnabled();
     }
     #cleanupAiCodeCompletion() {

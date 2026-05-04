@@ -13457,6 +13457,7 @@ export declare namespace Page {
         SubApps = "sub-apps",
         Summarizer = "summarizer",
         SyncXhr = "sync-xhr",
+        Tools = "tools",
         Translator = "translator",
         Unload = "unload",
         Usb = "usb",

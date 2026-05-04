@@ -204,6 +204,10 @@ export declare const UIStrings: {
      */
     readonly PrefixedVideoSupportsFullscreen: "HTMLVideoElement.webkitSupportsFullscreen is deprecated. Please use Document.fullscreenEnabled instead.";
     /**
+     * @description Warning displayed to developers when an SVG filter is applied to a disallowed content type.
+     */
+    readonly PreventSvgFilterPaint: "SVG filters cannot be applied to cross-origin iframes, restricted iframes (e.g., sandboxed), or plugins.";
+    /**
      * @description Standard message when one web API is deprecated in favor of another.
      */
     readonly RangeExpand: "Range.expand() is deprecated. Please use Selection.modify() instead.";

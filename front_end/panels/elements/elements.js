@@ -2352,7 +2352,11 @@ var stylePropertiesTreeOutline_css_default = `/*
   }
 
   &.ghost-row, .ghost-value-prediction {
-    opacity: 50%;
+    .webkit-css-property {
+      opacity: 50%;
+    }
+
+    color: var(--sys-color-token-subtle);
     font-style: italic;
     pointer-events: none;
   }
@@ -5583,7 +5587,7 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI7.TreeO
     if (this.prompt) {
       this.prompt.detach();
       this.prompt = null;
-      this.#clearGhostTextInValue();
+      this.section().activeAiSuggestion = void 0;
     }
   }
   styleTextAppliedForTest() {
@@ -7805,7 +7809,11 @@ var StylesAiCodeCompletionProvider = class _StylesAiCodeCompletionProvider {
     if (this.#aiCodeCompletion) {
       return;
     }
-    this.#aiCodeCompletion = new AiCodeCompletion.AiCodeCompletion.AiCodeCompletion({ aidaClient: this.#aidaClient }, this.#aiCodeCompletionConfig.panel, void 0, this.#aiCodeCompletionConfig.completionContext.stopSequences);
+    const stopSequences = ["}"];
+    if (this.#aiCodeCompletionConfig.completionContext.stopSequences) {
+      stopSequences.push(...this.#aiCodeCompletionConfig.completionContext.stopSequences);
+    }
+    this.#aiCodeCompletion = new AiCodeCompletion.AiCodeCompletion.AiCodeCompletion({ aidaClient: this.#aidaClient }, this.#aiCodeCompletionConfig.panel, void 0, stopSequences);
     this.#aiCodeCompletionConfig.onFeatureEnabled();
   }
   #cleanupAiCodeCompletion() {
@@ -8384,10 +8392,16 @@ var UIStrings6 = {
   /**
    * @description Tooltip text for the link in the sidebar pane layer separators that reveals the layer in the layer tree view.
    */
-  clickToRevealLayer: "Click to reveal layer in layer tree"
+  clickToRevealLayer: "Click to reveal layer in layer tree",
+  /**
+   * @description Text to announce that the AI suggestion was accepted.
+   * @example {color: blue;} PH1
+   */
+  aiSuggestionAccepted: "{PH1} Suggestion accepted."
 };
 var str_6 = i18n12.i18n.registerUIStrings("panels/elements/StylesSidebarPane.ts", UIStrings6);
 var i18nString6 = i18n12.i18n.getLocalizedString.bind(void 0, str_6);
+var lockedString = i18n12.i18n.lockedString;
 var FILTER_IDLE_PERIOD = 500;
 var MIN_FOLDED_SECTIONS_COUNT = 5;
 var REGISTERED_PROPERTY_SECTION_NAME = "@property";
@@ -10091,9 +10105,16 @@ var CSSPropertyPrompt = class extends UI10.TextPrompt.TextPrompt {
     if (!this.queryRange) {
       this.queryRange = new TextUtils5.TextRange.TextRange(0, 0, 0, this.text().length);
     }
+    const properties = this.#getAiSuggestedProperties(args.text);
+    if (properties.length === 0) {
+      this.treeElement.section().activeAiSuggestion = void 0;
+      this.activeAiSuggestionInfo = void 0;
+      return;
+    }
+    const styleText = properties.map((p) => `${p.name}: ${p.value};`).join(" ");
     this.treeElement.section().activeAiSuggestion = {
-      text: args.text,
-      properties: this.#getAiSuggestedProperties(args.text),
+      text: styleText,
+      properties,
       cursorPosition: args.from,
       clearCachedRequest: args.clearCachedRequest,
       cssProperty: this.treeElement.property
@@ -10103,6 +10124,7 @@ var CSSPropertyPrompt = class extends UI10.TextPrompt.TextPrompt {
     if (args.rpcGlobalId) {
       args.onImpression(args.rpcGlobalId, latency, args.sampleId);
     }
+    UI10.ARIAUtils.LiveAnnouncer.status(lockedString(styleText));
   }
   #getAiSuggestedProperties(suggestionText) {
     const cssParser = CodeMirror.css.cssLanguage.parser.configure({ top: "Styles" });
@@ -10180,9 +10202,13 @@ var CSSPropertyPrompt = class extends UI10.TextPrompt.TextPrompt {
     return true;
   }
   async commitAiSuggestion() {
+    const suggestionText = this.treeElement.section().activeAiSuggestion?.text;
     await this.treeElement.section().commitActiveAiSuggestion();
     if (this.activeAiSuggestionInfo) {
       this.aiCodeCompletionProvider?.onSuggestionAccepted(this.activeAiSuggestionInfo.citations, this.activeAiSuggestionInfo.rpcGlobalId, this.activeAiSuggestionInfo.sampleId);
+    }
+    if (suggestionText) {
+      UI10.ARIAUtils.LiveAnnouncer.status(i18nString6(UIStrings6.aiSuggestionAccepted, { PH1: suggestionText }));
     }
     this.setAiAutoCompletion(null);
   }

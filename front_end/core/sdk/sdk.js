@@ -1138,7 +1138,7 @@ var generatedProperties = [
   {
     "inherited": true,
     "keywords": [
-      "auto",
+      "ellipsis",
       "no-ellipsis"
     ],
     "name": "block-ellipsis"
@@ -2007,7 +2007,7 @@ var generatedProperties = [
   },
   {
     "keywords": [
-      "auto",
+      "normal",
       "collapse",
       "-webkit-legacy"
     ],
@@ -4012,7 +4012,7 @@ var generatedProperties = [
     "inherited": true,
     "keywords": [
       "auto",
-      "none"
+      "spaces"
     ],
     "name": "ruby-overhang"
   },
@@ -5386,7 +5386,7 @@ var generatedPropertyValues = {
   },
   "block-ellipsis": {
     "values": [
-      "auto",
+      "ellipsis",
       "no-ellipsis"
     ]
   },
@@ -5829,7 +5829,7 @@ var generatedPropertyValues = {
   },
   "continue": {
     "values": [
-      "auto",
+      "normal",
       "collapse",
       "-webkit-legacy"
     ]
@@ -6947,7 +6947,7 @@ var generatedPropertyValues = {
   "ruby-overhang": {
     "values": [
       "auto",
-      "none"
+      "spaces"
     ]
   },
   "ruby-position": {

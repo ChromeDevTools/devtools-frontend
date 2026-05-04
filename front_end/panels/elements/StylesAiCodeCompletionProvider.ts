@@ -5,6 +5,7 @@
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import * as Root from '../../core/root/root.js';
 import type * as SDK from '../../core/sdk/sdk.js';
 import * as AiCodeCompletion from '../../models/ai_code_completion/ai_code_completion.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
@@ -60,7 +61,11 @@ export class StylesAiCodeCompletionProvider {
       stopSequences.push(...this.#aiCodeCompletionConfig.completionContext.stopSequences);
     }
     this.#aiCodeCompletion = new AiCodeCompletion.AiCodeCompletion.AiCodeCompletion(
-        {aidaClient: this.#aidaClient}, this.#aiCodeCompletionConfig.panel, undefined, stopSequences);
+        {
+          aidaClient: this.#aidaClient,
+          serverSideLoggingEnabled: !Root.Runtime.hostConfig.aidaAvailability?.disallowLogging
+        },
+        this.#aiCodeCompletionConfig.panel, undefined, stopSequences);
     this.#aiCodeCompletionConfig.onFeatureEnabled();
   }
 

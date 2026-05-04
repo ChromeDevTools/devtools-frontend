@@ -14,7 +14,6 @@ import {debugLog} from './debug.js';
 interface AgentOptions {
   aidaClient: Host.AidaClient.AidaClient;
   serverSideLoggingEnabled?: boolean;
-  confirmSideEffectForTest?: typeof Promise.withResolvers;
 }
 
 interface RequestOptions {
@@ -274,7 +273,7 @@ export class AiCodeCompletion {
 
     void this.#aidaClient.registerClientEvent({
       corresponding_aida_rpc_global_id: rpcGlobalId,
-      disable_user_content_logging: true,
+      disable_user_content_logging: !(this.#serverSideLoggingEnabled ?? false),
       complete_code_client_event: {
         user_impression: {
           sample: {
@@ -296,7 +295,7 @@ export class AiCodeCompletion {
   registerUserAcceptance(rpcGlobalId: Host.AidaClient.RpcGlobalId, sampleId?: number): void {
     void this.#aidaClient.registerClientEvent({
       corresponding_aida_rpc_global_id: rpcGlobalId,
-      disable_user_content_logging: true,
+      disable_user_content_logging: !(this.#serverSideLoggingEnabled ?? false),
       complete_code_client_event: {
         user_acceptance: {
           sample: {

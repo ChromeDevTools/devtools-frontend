@@ -39,7 +39,6 @@ The console has direct access to the inspected page's \`window\` and \`document\
 interface Options {
   aidaClient: Host.AidaClient.AidaClient;
   serverSideLoggingEnabled?: boolean;
-  confirmSideEffectForTest?: typeof Promise.withResolvers;
 }
 
 interface RequestOptions {
@@ -124,7 +123,7 @@ export class AiCodeGeneration {
 
     void this.#aidaClient.registerClientEvent({
       corresponding_aida_rpc_global_id: rpcGlobalId,
-      disable_user_content_logging: true,
+      disable_user_content_logging: !(this.#serverSideLoggingEnabled ?? false),
       generate_code_client_event: {
         user_impression: {
           sample: {
@@ -146,7 +145,7 @@ export class AiCodeGeneration {
   registerUserAcceptance(rpcGlobalId: Host.AidaClient.RpcGlobalId, sampleId?: number): void {
     void this.#aidaClient.registerClientEvent({
       corresponding_aida_rpc_global_id: rpcGlobalId,
-      disable_user_content_logging: true,
+      disable_user_content_logging: !(this.#serverSideLoggingEnabled ?? false),
       generate_code_client_event: {
         user_acceptance: {
           sample: {

@@ -45,7 +45,7 @@ export class CPUThrottlingManager extends Common.ObjectWrapper.ObjectWrapper<Eve
   #hardwareConcurrency?: number;
   #pendingMainTargetPromise?: (r: number) => void;
 
-  private constructor(settings: Common.Settings.Settings, targetManager: TargetManager) {
+  constructor(settings: Common.Settings.Settings, targetManager: TargetManager) {
     super();
     this.#targetManager = targetManager;
     this.#cpuThrottlingOption = NoThrottlingOption;

@@ -249,7 +249,7 @@ export function generateReport(stores: ResultStore|ResultStore[]): void {
 </html>`;
 
   fs.writeFileSync(reportPath, finalHtml, 'utf8');
-  console.log(`HTML Report generated: ${reportPath}`);
+  console.log(`HTML Report generated: file://${reportPath}`);
 }
 
 /**

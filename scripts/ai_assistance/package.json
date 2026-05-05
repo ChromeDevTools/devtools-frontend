@@ -1,8 +1,9 @@
 {
   "type": "module",
   "scripts": {
-    "auto-run": "node auto-run/auto-run.ts",
+    "auto-run": "vpython3 ../../third_party/node/node.py --output auto-run/auto-run.ts",
     "auto-run:test": "npx  mocha auto-run/**/*.test.ts",
-    "eval-suite": "node suite/*.eval.ts"
+    "eval-suite": "vpython3 ../../third_party/node/node.py --output suite/*.eval.ts",
+    "eval-server": "echo See run results at http://localhost:8000/eval/ && python3 -m http.server 8000"
   }
 }

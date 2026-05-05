@@ -275,8 +275,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
       }
     });
 
-    const devtoolsLocale = i18n.DevToolsLocale.DevToolsLocale.instance();
-    if (AiCodeCompletion.AiCodeCompletion.AiCodeCompletion.isAiCodeCompletionStylesEnabled(devtoolsLocale.locale)) {
+    if (AiCodeCompletion.AiCodeCompletion.AiCodeCompletion.isAiCodeCompletionStylesAvailable()) {
       this.aiCodeCompletionConfig = {
         completionContext: {},
         generationContext: {},

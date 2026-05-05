@@ -89,7 +89,7 @@ describeWithEnvironment('StylesAiCodeCompletionProvider', () => {
         enabled: false,
       },
     });
-    assert.throws(() => createProvider(), 'AI code completion feature in Styles is not enabled.');
+    assert.throws(() => createProvider(), 'AI code completion feature in Styles is not available.');
   });
 
   describe('Triggers code completion', () => {

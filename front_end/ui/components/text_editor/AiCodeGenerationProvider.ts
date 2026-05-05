@@ -51,7 +51,6 @@ export interface AiCodeGenerationConfig {
 }
 
 export class AiCodeGenerationProvider {
-  #devtoolsLocale: string;
   // 'ai-code-completion-enabled' setting controls both AI code completion and AI code generation.
   // Since this provider deals with code generation, the field has been named `#aiCodeGenerationEnabledSetting`.
   #aiCodeGenerationEnabledSetting =
@@ -72,9 +71,8 @@ export class AiCodeGenerationProvider {
   #controller = new AbortController();
 
   private constructor(aiCodeGenerationConfig: AiCodeGenerationConfig) {
-    this.#devtoolsLocale = i18n.DevToolsLocale.DevToolsLocale.instance().locale;
-    if (!AiCodeGeneration.AiCodeGeneration.AiCodeGeneration.isAiCodeGenerationEnabled(this.#devtoolsLocale)) {
-      throw new Error('AI code generation feature is not enabled.');
+    if (!AiCodeGeneration.AiCodeGeneration.AiCodeGeneration.isAiCodeGenerationAvailable()) {
+      throw new Error('AI code generation feature is not available.');
     }
     this.#generationTeaser = new PanelCommon.AiCodeGenerationTeaser.AiCodeGenerationTeaser();
     this.#generationTeaser.disclaimerTooltipId =
@@ -142,8 +140,11 @@ export class AiCodeGenerationProvider {
   async #updateAiCodeGenerationState(): Promise<void> {
     const aidaAvailability = await Host.AidaClient.AidaClient.checkAccessPreconditions();
     const isAvailable = aidaAvailability === Host.AidaClient.AidaAccessPreconditions.AVAILABLE;
-    const isEnabled = this.#aiCodeGenerationEnabledSetting.get();
-    if (isAvailable && isEnabled) {
+    const devtoolsLocale = i18n.DevToolsLocale.DevToolsLocale.instance().locale;
+    const aiCodeGenerationEnabled =
+        AiCodeGeneration.AiCodeGeneration.AiCodeGeneration.isAiCodeGenerationEnabled(devtoolsLocale);
+    const isSettingEnabled = this.#aiCodeGenerationEnabledSetting.get();
+    if (isAvailable && aiCodeGenerationEnabled && isSettingEnabled) {
       if (!this.#aiCodeGenerationSettingEnabled) {
         // If the user enabled setting when code generation feature is already available,
         // we do not need to show the upgrade dialog.
@@ -153,7 +154,7 @@ export class AiCodeGenerationProvider {
     } else {
       this.#cleanupAiCodeGeneration();
     }
-    this.#aiCodeGenerationSettingEnabled = isEnabled;
+    this.#aiCodeGenerationSettingEnabled = isSettingEnabled;
   }
 
   #editorKeymap(): readonly CodeMirror.KeyBinding[] {

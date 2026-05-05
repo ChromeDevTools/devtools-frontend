@@ -99,6 +99,22 @@ describeWithEnvironment('TabbedPane', () => {
     dispatchKeyEvent('Enter');
     assert.strictEqual(getFocusedElementText(), 'Widget 0', 'Focus should move to Widget 0');
   });
+
+  it('places role="tab" on the focusable tab element, not on a child', () => {
+    // The ARIA tabs pattern requires the focusable, selectable element to have
+    // role="tab" as a direct child of role="tablist". Otherwise screen readers
+    // announce the focused element by its container role (e.g. "group") instead
+    // of "tab". See https://www.w3.org/WAI/ARIA/apg/patterns/tabs/
+    tabbedPane.selectTab('0');
+    tabbedPane.focusSelectedTabHeader();
+
+    const focused = UI.DOMUtilities.deepActiveElement(document) as HTMLElement;
+    assert.strictEqual(focused.getAttribute('role'), 'tab');
+    assert.strictEqual(focused.getAttribute('aria-selected'), 'true');
+    assert.strictEqual(focused.getAttribute('aria-label'), 'Tab 0');
+    assert.strictEqual((focused.parentElement as HTMLElement).getAttribute('role'), 'tablist');
+    assert.isNull(focused.querySelector('[role="tab"]'), 'role="tab" should not also appear on a descendant element');
+  });
 });
 
 describeWithEnvironment('TabbedPaneElement', () => {

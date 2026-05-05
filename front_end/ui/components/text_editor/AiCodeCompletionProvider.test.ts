@@ -67,7 +67,7 @@ describeWithEnvironment('AiCodeCompletionProvider', () => {
         enabled: false,
       },
     });
-    assert.throws(() => createEditorWithProvider(''), 'AI code completion feature is not enabled.');
+    assert.throws(() => createEditorWithProvider(''), 'AI code completion feature is not available.');
   });
 
   describe('Teaser decoration', () => {

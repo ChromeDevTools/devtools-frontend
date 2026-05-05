@@ -571,9 +571,8 @@ export class ConsoleView extends UI.Widget.VBox implements
     this.consoleMessages = [];
     this.consoleGroupStarts = [];
 
-    const devtoolsLocale = i18n.DevToolsLocale.DevToolsLocale.instance();
-    this.aiCodeCompletionConfig =
-        AiCodeCompletion.AiCodeCompletion.AiCodeCompletion.isAiCodeCompletionEnabled(devtoolsLocale.locale) ? {
+    this.aiCodeCompletionConfig = AiCodeCompletion.AiCodeCompletion.AiCodeCompletion.isAiCodeCompletionAvailable() ?
+        {
           completionContext: {
             getPrefix: this.getConsoleMessageHistory.bind(this),
             additionalFiles: [{
@@ -597,7 +596,7 @@ export class ConsoleView extends UI.Widget.VBox implements
           onResponseReceived: this.#onAiCodeCompletionResponseReceived.bind(this),
           panel: AiCodeCompletion.AiCodeCompletion.ContextFlavor.CONSOLE,
         } :
-                                                                                                              undefined;
+        undefined;
 
     this.prompt = new ConsolePrompt(this.aiCodeCompletionConfig);
     this.prompt.show(this.promptElement);

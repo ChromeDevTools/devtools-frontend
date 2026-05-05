@@ -170,6 +170,10 @@ export class AiCodeGeneration {
     return response;
   }
 
+  static isAiCodeGenerationAvailable(): boolean {
+    return Root.Runtime.hostConfig.devToolsAiCodeGeneration?.enabled ?? false;
+  }
+
   static isAiCodeGenerationEnabled(locale: string): boolean {
     if (!locale.startsWith('en-')) {
       return false;
@@ -179,6 +183,6 @@ export class AiCodeGeneration {
         aidaAvailability.blockedByEnterprisePolicy) {
       return false;
     }
-    return Boolean(aidaAvailability.enabled && Root.Runtime.hostConfig.devToolsAiCodeGeneration?.enabled);
+    return Boolean(aidaAvailability.enabled && AiCodeGeneration.isAiCodeGenerationAvailable());
   }
 }

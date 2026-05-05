@@ -20,6 +20,10 @@ export const UIStrings = {
     columnScript: 'Script',
     /** Label for a column in a data table; entries will be the number of wasted bytes (aka the estimated savings in terms of bytes). */
     columnWastedBytes: 'Wasted bytes',
+    /**
+     * @description Message shown when no legacy JavaScript is found.
+     */
+    noLegacyJavaScript: 'No legacy JavaScript found',
 };
 const str_ = i18n.i18n.registerUIStrings('models/trace/insights/LegacyJavaScript.ts', UIStrings);
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

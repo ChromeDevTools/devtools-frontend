@@ -1614,7 +1614,11 @@ var UIStrings6 = {
   /** Label for a column in a data table; entries will be the locations of JavaScript or CSS code, e.g. the name of a Javascript package or module. */
   columnSource: "Source",
   /** Label for a column in a data table; entries will be the number of wasted bytes due to duplication of a web resource. */
-  columnDuplicatedBytes: "Duplicated bytes"
+  columnDuplicatedBytes: "Duplicated bytes",
+  /**
+   * @description Message shown when no duplicated JavaScript is found.
+   */
+  noDuplicatedJavaScript: "No duplicated JavaScript found"
 };
 var str_6 = i18n11.i18n.registerUIStrings("models/trace/insights/DuplicatedJavaScript.ts", UIStrings6);
 var i18nString6 = i18n11.i18n.getLocalizedString.bind(void 0, str_6);
@@ -1708,7 +1712,11 @@ var UIStrings7 = {
   /** Column for a font loaded by the page to render text. */
   fontColumn: "Font",
   /** Column for the amount of time wasted. */
-  wastedTimeColumn: "Wasted time"
+  wastedTimeColumn: "Wasted time",
+  /**
+   * @description Message shown when no fonts with suboptimal font-display are found.
+   */
+  noFonts: "No fonts with suboptimal font-display found"
 };
 var str_7 = i18n13.i18n.registerUIStrings("models/trace/insights/FontDisplay.ts", UIStrings7);
 var i18nString7 = i18n13.i18n.getLocalizedString.bind(void 0, str_7);
@@ -2676,7 +2684,11 @@ var UIStrings13 = {
   /** Label for a column in a data table; entries will be the individual JavaScript scripts. */
   columnScript: "Script",
   /** Label for a column in a data table; entries will be the number of wasted bytes (aka the estimated savings in terms of bytes). */
-  columnWastedBytes: "Wasted bytes"
+  columnWastedBytes: "Wasted bytes",
+  /**
+   * @description Message shown when no legacy JavaScript is found.
+   */
+  noLegacyJavaScript: "No legacy JavaScript found"
 };
 var str_13 = i18n25.i18n.registerUIStrings("models/trace/insights/LegacyJavaScript.ts", UIStrings13);
 var i18nString13 = i18n25.i18n.getLocalizedString.bind(void 0, str_13);

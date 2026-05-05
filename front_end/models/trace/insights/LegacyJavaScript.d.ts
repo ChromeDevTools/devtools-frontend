@@ -14,6 +14,10 @@ export declare const UIStrings: {
     readonly columnScript: "Script";
     /** Label for a column in a data table; entries will be the number of wasted bytes (aka the estimated savings in terms of bytes). */
     readonly columnWastedBytes: "Wasted bytes";
+    /**
+     * @description Message shown when no legacy JavaScript is found.
+     */
+    readonly noLegacyJavaScript: "No legacy JavaScript found";
 };
 export declare const i18nString: (id: string, values?: import("../../../core/i18n/i18nTypes.js").Values | undefined) => import("../../../core/platform/UIString.js").LocalizedString;
 export interface PatternMatchResult {

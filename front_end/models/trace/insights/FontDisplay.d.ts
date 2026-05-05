@@ -13,6 +13,10 @@ export declare const UIStrings: {
     readonly fontColumn: "Font";
     /** Column for the amount of time wasted. */
     readonly wastedTimeColumn: "Wasted time";
+    /**
+     * @description Message shown when no fonts with suboptimal font-display are found.
+     */
+    readonly noFonts: "No fonts with suboptimal font-display found";
 };
 export declare const i18nString: (id: string, values?: import("../../../core/i18n/i18nTypes.js").Values | undefined) => Platform.UIString.LocalizedString;
 export interface RemoteFont {

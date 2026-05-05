@@ -559,7 +559,7 @@ function renderWalkthroughSidebarButton(input, steps) {
         return Lit.nothing;
     }
     const hasOneStepWithWidget = steps.some(step => step.widgets?.length);
-    const isExpanded = walkthrough.isExpanded && input.message === input.walkthrough.activeSidebarMessage;
+    const isExpanded = walkthrough.isExpanded && input.message.id === input.walkthrough.activeSidebarMessage?.id;
     const title = isExpanded ? walkthroughCloseTitle({ hasWidgets: hasOneStepWithWidget }) : walkthroughTitle({
         isLoading: input.isLoading,
         hasWidgets: hasOneStepWithWidget,
@@ -596,7 +596,7 @@ function renderWalkthroughSidebarButton(input, steps) {
         .jslogContext=${walkthrough.isExpanded ? 'ai-hide-walkthrough-sidebar' : 'ai-show-walkthrough-sidebar'}
         data-show-walkthrough
         @click=${() => {
-        if (walkthrough.activeSidebarMessage === input.message && walkthrough.isExpanded) {
+        if (walkthrough.activeSidebarMessage?.id === input.message.id && walkthrough.isExpanded) {
             walkthrough.onToggle(false, message);
         }
         else {
@@ -630,8 +630,8 @@ function renderWalkthroughUI(input, steps) {
     // open and it is specifically targeting this message. This is necessary
     // because the walkthrough state is shared across all messages in the chat.
     const isExpanded = input.walkthrough.isInlined ?
-        input.walkthrough.inlineExpandedMessages.includes(input.message) :
-        (input.walkthrough.isExpanded && input.walkthrough.activeSidebarMessage === input.message);
+        input.walkthrough.inlineExpandedMessages.some(m => m.id === input.message.id) :
+        (input.walkthrough.isExpanded && input.walkthrough.activeSidebarMessage?.id === input.message.id);
     // clang-format off
     const walkthroughInline = input.walkthrough.isInlined ? html `
     <div class="walkthrough-container">
@@ -1475,7 +1475,7 @@ function renderActions(input, output) {
     // clang-format on
 }
 export class ChatMessage extends UI.Widget.Widget {
-    message = { entity: "user" /* ChatMessageEntity.USER */, text: '' };
+    message = { entity: "user" /* ChatMessageEntity.USER */, text: '', id: '' };
     isLoading = false;
     isReadOnly = false;
     prompt = '';

@@ -1,6 +1,7 @@
 // Copyright 2025 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+import * as Platform from '../platform/platform.js';
 import { InspectorFrontendHostInstance } from './InspectorFrontendHost.js';
 export var ErrorType;
 (function (ErrorType) {
@@ -50,7 +51,7 @@ export async function makeHttpRequest(request, options) {
     throw new DispatchHttpRequestError(ErrorType.HTTP_RESPONSE_UNAVAILABLE, response);
 }
 function isDebugMode() {
-    return Boolean(localStorage.getItem('debugDispatchHttpRequestEnabled'));
+    return Boolean(Platform.HostRuntime.HOST_RUNTIME.getLocalStorage()?.getItem('debugDispatchHttpRequestEnabled'));
 }
 function debugLog(...log) {
     if (!isDebugMode()) {
@@ -60,11 +61,12 @@ function debugLog(...log) {
     console.log('debugLog', ...log);
 }
 function setDebugDispatchHttpRequestEnabled(enabled) {
+    const localStorage = Platform.HostRuntime.HOST_RUNTIME.getLocalStorage();
     if (enabled) {
-        localStorage.setItem('debugDispatchHttpRequestEnabled', 'true');
+        localStorage?.setItem('debugDispatchHttpRequestEnabled', 'true');
     }
     else {
-        localStorage.removeItem('debugDispatchHttpRequestEnabled');
+        localStorage?.removeItem('debugDispatchHttpRequestEnabled');
     }
 }
 // @ts-expect-error

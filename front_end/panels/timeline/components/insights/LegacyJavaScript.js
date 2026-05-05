@@ -42,6 +42,9 @@ export class LegacyJavaScript extends BaseInsightComponent {
         if (!this.model) {
             return Lit.nothing;
         }
+        if (this.model.legacyJavaScriptResults.size === 0) {
+            return html `<div class="insight-section">${i18nString(UIStrings.noLegacyJavaScript)}</div>`;
+        }
         const rows = [...this.model.legacyJavaScriptResults.entries()].slice(0, 10).map(([script, result]) => {
             const overlays = [];
             if (script.request) {

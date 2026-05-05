@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as Common from '../common/common.js';
+import * as Platform from '../platform/platform.js';
 import * as Root from '../root/root.js';
 import { ClientFeature, debugLog, FunctionalityType, RecitationAction, Role, UserTier, } from './AidaClientTypes.js';
 import { gcaChunkResponseToAidaChunkResponse } from './AidaGcaTranslation.js';
@@ -71,7 +72,7 @@ export class AidaClient {
         return request;
     }
     static async checkAccessPreconditions() {
-        if (!navigator.onLine) {
+        if (!Platform.HostRuntime.HOST_RUNTIME.getOnLine()) {
             return "no-internet" /* AidaAccessPreconditions.NO_INTERNET */;
         }
         const syncInfo = await new Promise(resolve => InspectorFrontendHostInstance.getSyncInformation(syncInfo => resolve(syncInfo)));
@@ -378,7 +379,7 @@ export class HostConfigTracker extends Common.ObjectWrapper.ObjectWrapper {
         const isFirst = !this.hasEventListeners(eventType);
         const eventDescriptor = super.addEventListener(eventType, listener);
         if (isFirst) {
-            window.clearTimeout(this.#pollTimer);
+            clearTimeout(this.#pollTimer);
             void this.pollAidaAvailability();
         }
         return eventDescriptor;
@@ -386,11 +387,11 @@ export class HostConfigTracker extends Common.ObjectWrapper.ObjectWrapper {
     removeEventListener(eventType, listener) {
         super.removeEventListener(eventType, listener);
         if (!this.hasEventListeners(eventType)) {
-            window.clearTimeout(this.#pollTimer);
+            clearTimeout(this.#pollTimer);
         }
     }
     async pollAidaAvailability() {
-        this.#pollTimer = window.setTimeout(() => this.pollAidaAvailability(), 2000);
+        this.#pollTimer = setTimeout(() => this.pollAidaAvailability(), 2000);
         const currentAidaAvailability = await AidaClient.checkAccessPreconditions();
         if (currentAidaAvailability !== this.#aidaAvailability) {
             this.#aidaAvailability = currentAidaAvailability;

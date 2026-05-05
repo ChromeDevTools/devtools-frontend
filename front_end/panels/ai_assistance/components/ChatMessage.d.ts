@@ -49,12 +49,14 @@ export interface UserChatMessage {
     entity: ChatMessageEntity.USER;
     text: string;
     imageInput?: Host.AidaClient.Part;
+    id: string;
 }
 export interface ModelChatMessage {
     entity: ChatMessageEntity.MODEL;
     parts: ModelMessagePart[];
     error?: AiAssistanceModel.AiAgent.ErrorType;
     rpcId?: Host.AidaClient.RpcGlobalId;
+    id: string;
 }
 export type Message = UserChatMessage | ModelChatMessage;
 export interface RatingViewInput {

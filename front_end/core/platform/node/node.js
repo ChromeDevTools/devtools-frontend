@@ -76,7 +76,16 @@ var HOST_RUNTIME = {
   createWorker(url) {
     return new NodeWorker(url);
   },
-  workerScope: new NodeWorkerScope()
+  workerScope: new NodeWorkerScope(),
+  getOnLine() {
+    return true;
+  },
+  getUserAgent() {
+    return "Node.js";
+  },
+  getLocalStorage() {
+    return void 0;
+  }
 };
 export {
   HostRuntime_exports as HostRuntime

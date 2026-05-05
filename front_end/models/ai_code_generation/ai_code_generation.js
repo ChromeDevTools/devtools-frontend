@@ -114,7 +114,7 @@ var AiCodeGeneration = class {
     const nanos = Math.floor(remainingMs * 1e6);
     void this.#aidaClient.registerClientEvent({
       corresponding_aida_rpc_global_id: rpcGlobalId,
-      disable_user_content_logging: true,
+      disable_user_content_logging: !(this.#serverSideLoggingEnabled ?? false),
       generate_code_client_event: {
         user_impression: {
           sample: {
@@ -135,7 +135,7 @@ var AiCodeGeneration = class {
   registerUserAcceptance(rpcGlobalId, sampleId) {
     void this.#aidaClient.registerClientEvent({
       corresponding_aida_rpc_global_id: rpcGlobalId,
-      disable_user_content_logging: true,
+      disable_user_content_logging: !(this.#serverSideLoggingEnabled ?? false),
       generate_code_client_event: {
         user_acceptance: {
           sample: {

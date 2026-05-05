@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 import * as Common from '../core/common/common.js';
 import * as Host from '../core/host/host.js';
+import * as Platform from '../core/platform/platform.js';
 import * as Root from '../core/root/root.js';
 import * as SDK from '../core/sdk/sdk.js';
 import * as Bindings from '../models/bindings/bindings.js';
@@ -180,13 +181,13 @@ export function expectConsoleLogs(expectedLogs) {
         }
     });
 }
-let originalUserAgent;
+let userAgentStub;
 export function setUserAgentForTesting() {
-    originalUserAgent = window.navigator.userAgent;
-    Object.defineProperty(window.navigator, 'userAgent', { value: 'Chrome/unit_test', configurable: true });
+    userAgentStub = sinon.stub(Platform.HostRuntime.HOST_RUNTIME, 'getUserAgent').returns('Chrome/unit_test');
 }
 export function restoreUserAgentForTesting() {
-    Object.defineProperty(window.navigator, 'userAgent', { value: originalUserAgent });
+    userAgentStub?.restore();
+    userAgentStub = undefined;
 }
 export function resetHostConfig() {
     for (const key of Object.keys(Root.Runtime.hostConfig)) {

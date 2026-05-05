@@ -11,7 +11,7 @@ __export(InspectElementModeController_exports, {
   ToggleSearchActionDelegate: () => ToggleSearchActionDelegate
 });
 import * as Common14 from "./../../core/common/common.js";
-import * as Root7 from "./../../core/root/root.js";
+import * as Root8 from "./../../core/root/root.js";
 import * as SDK19 from "./../../core/sdk/sdk.js";
 import * as UI22 from "./../../ui/legacy/legacy.js";
 import * as VisualLogging13 from "./../../ui/visual_logging/visual_logging.js";
@@ -32,7 +32,7 @@ import * as Common13 from "./../../core/common/common.js";
 import * as Host6 from "./../../core/host/host.js";
 import * as i18n32 from "./../../core/i18n/i18n.js";
 import * as Platform10 from "./../../core/platform/platform.js";
-import * as Root6 from "./../../core/root/root.js";
+import * as Root7 from "./../../core/root/root.js";
 import * as SDK18 from "./../../core/sdk/sdk.js";
 import * as Annotations from "./../../models/annotations/annotations.js";
 import * as ComputedStyle3 from "./../../models/computed_style/computed_style.js";
@@ -1208,7 +1208,7 @@ import * as Host4 from "./../../core/host/host.js";
 import * as i18n12 from "./../../core/i18n/i18n.js";
 import * as Platform5 from "./../../core/platform/platform.js";
 import { assertNotNullOrUndefined } from "./../../core/platform/platform.js";
-import * as Root4 from "./../../core/root/root.js";
+import * as Root5 from "./../../core/root/root.js";
 import * as SDK8 from "./../../core/sdk/sdk.js";
 import * as AiCodeCompletion3 from "./../../models/ai_code_completion/ai_code_completion.js";
 import * as Bindings4 from "./../../models/bindings/bindings.js";
@@ -5676,11 +5676,11 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI7.TreeO
     }
     const isEditingName = UI7.UIUtils.isBeingEdited(this.nameElement);
     if (isEditingName) {
-      this.prompt.applySuggestion({ text: activeAiSuggestion.name }, true);
+      this.prompt.applySuggestion({ text: activeAiSuggestion.name, disableAcceptSuggestionOnStopCharacters: true }, true);
       this.#showGhostTextInValue(activeAiSuggestion.value);
     } else {
       const currentSuggestedText = isEditingName ? activeAiSuggestion.name : activeAiSuggestion.value;
-      this.prompt.applySuggestion({ text: currentSuggestedText }, true);
+      this.prompt.applySuggestion({ text: currentSuggestedText, disableAcceptSuggestionOnStopCharacters: true }, true);
     }
   }
   clearActiveAiSuggestion() {
@@ -7778,6 +7778,7 @@ __export(StylesAiCodeCompletionProvider_exports, {
 import * as Common4 from "./../../core/common/common.js";
 import * as Host3 from "./../../core/host/host.js";
 import * as i18n11 from "./../../core/i18n/i18n.js";
+import * as Root3 from "./../../core/root/root.js";
 import * as AiCodeCompletion from "./../../models/ai_code_completion/ai_code_completion.js";
 import * as TextUtils4 from "./../../models/text_utils/text_utils.js";
 import * as TextEditor from "./../../ui/components/text_editor/text_editor.js";
@@ -7813,7 +7814,10 @@ var StylesAiCodeCompletionProvider = class _StylesAiCodeCompletionProvider {
     if (this.#aiCodeCompletionConfig.completionContext.stopSequences) {
       stopSequences.push(...this.#aiCodeCompletionConfig.completionContext.stopSequences);
     }
-    this.#aiCodeCompletion = new AiCodeCompletion.AiCodeCompletion.AiCodeCompletion({ aidaClient: this.#aidaClient }, this.#aiCodeCompletionConfig.panel, void 0, stopSequences);
+    this.#aiCodeCompletion = new AiCodeCompletion.AiCodeCompletion.AiCodeCompletion({
+      aidaClient: this.#aidaClient,
+      serverSideLoggingEnabled: !Root3.Runtime.hostConfig.aidaAvailability?.disallowLogging
+    }, this.#aiCodeCompletionConfig.panel, void 0, stopSequences);
     this.#aiCodeCompletionConfig.onFeatureEnabled();
   }
   #cleanupAiCodeCompletion() {
@@ -8305,7 +8309,7 @@ var WebCustomData_exports = {};
 __export(WebCustomData_exports, {
   WebCustomData: () => WebCustomData
 });
-import * as Root3 from "./../../core/root/root.js";
+import * as Root4 from "./../../core/root/root.js";
 var WebCustomData = class _WebCustomData {
   #data = /* @__PURE__ */ new Map();
   /** The test actually needs to wait for the result */
@@ -8327,7 +8331,7 @@ var WebCustomData = class _WebCustomData {
    * Throws if no valid remoteBase was found.
    */
   static create() {
-    const remoteBase = Root3.Runtime.getRemoteBase();
+    const remoteBase = Root4.Runtime.getRemoteBase();
     return new _WebCustomData(remoteBase?.base ?? "");
   }
   /**
@@ -8881,7 +8885,7 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common5.ObjectWrapper.e
     this.#resetUpdateIfNotEditing();
   }
   onComputedStyleChanged() {
-    if (!Root4.Runtime.hostConfig.devToolsAnimationStylesInStylesTab?.enabled) {
+    if (!Root5.Runtime.hostConfig.devToolsAnimationStylesInStylesTab?.enabled) {
       return;
     }
     void this.computedStyleUpdateThrottler.schedule(async () => {
@@ -10191,7 +10195,7 @@ var CSSPropertyPrompt = class extends UI10.TextPrompt.TextPrompt {
       }
       if (suggestionForCurrentPrompt !== textAfterAccept) {
         this.queryRange = new TextUtils5.TextRange.TextRange(0, 0, 0, textAfterAccept.length);
-        this.applySuggestion({ text: suggestionForCurrentPrompt }, true);
+        this.applySuggestion({ text: suggestionForCurrentPrompt, disableAcceptSuggestionOnStopCharacters: true }, true);
       }
       return true;
     }
@@ -11770,7 +11774,7 @@ import * as Common8 from "./../../core/common/common.js";
 import * as Host5 from "./../../core/host/host.js";
 import * as i18n22 from "./../../core/i18n/i18n.js";
 import * as Platform7 from "./../../core/platform/platform.js";
-import * as Root5 from "./../../core/root/root.js";
+import * as Root6 from "./../../core/root/root.js";
 import * as SDK13 from "./../../core/sdk/sdk.js";
 import * as AIAssistance from "./../../models/ai_assistance/ai_assistance.js";
 import * as Badges3 from "./../../models/badges/badges.js";
@@ -13146,7 +13150,7 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
       showGridAdorner: Boolean(this.#layout?.isGrid) && !this.isClosingTag(),
       showGridLanesAdorner: Boolean(this.#layout?.isGridLanes) && !this.isClosingTag(),
       showMediaAdorner: this.node().isMediaNode() && !this.isClosingTag(),
-      showPopoverAdorner: Boolean(Root5.Runtime.hostConfig.devToolsAllowPopoverForcing?.enabled) && Boolean(this.node().attributes().find((attr) => attr.name === "popover")) && !this.isClosingTag(),
+      showPopoverAdorner: Boolean(Root6.Runtime.hostConfig.devToolsAllowPopoverForcing?.enabled) && Boolean(this.node().attributes().find((attr) => attr.name === "popover")) && !this.isClosingTag(),
       showTopLayerAdorner: this.node().topLayerIndex() !== -1 && !this.isClosingTag(),
       gridAdornerActive: this.#gridAdornerActive,
       popoverAdornerActive: this.#popoverAdornerActive,
@@ -18625,7 +18629,7 @@ var ElementsPanel = class _ElementsPanel extends UI21.Panel.Panel {
     }
     const isComputedStyleWidgetVisible = this.#computedStyleWidget.isShowing();
     const isStylesTabVisible = Boolean(UI21.Context.Context.instance().flavor(StylesSidebarPane));
-    const shouldTrackComputedStyleUpdates = isComputedStyleWidgetVisible || isStylesTabVisible && Root6.Runtime.hostConfig.devToolsAnimationStylesInStylesTab?.enabled;
+    const shouldTrackComputedStyleUpdates = isComputedStyleWidgetVisible || isStylesTabVisible && Root7.Runtime.hostConfig.devToolsAnimationStylesInStylesTab?.enabled;
     void selectedNode.domModel()?.cssModel()?.trackComputedStyleUpdatesForNode(shouldTrackComputedStyleUpdates ? selectedNode.id : void 0);
   }, 100);
   async #updateComputedStyles() {
@@ -19757,7 +19761,7 @@ var InspectElementModeController = class _InspectElementModeController {
 };
 var ToggleSearchActionDelegate = class {
   handleAction(_context, actionId) {
-    if (Root7.Runtime.Runtime.queryParam("isSharedWorker")) {
+    if (Root8.Runtime.Runtime.queryParam("isSharedWorker")) {
       return false;
     }
     inspectElementModeController = InspectElementModeController.instance();

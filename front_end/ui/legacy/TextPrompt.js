@@ -534,7 +534,8 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper {
     }
     acceptSuggestionOnStopCharacters(key) {
         if (!this.currentSuggestion || !this.queryRange || key.length !== 1 ||
-            !this.completionStopCharacters?.includes(key)) {
+            !this.completionStopCharacters?.includes(key) ||
+            this.currentSuggestion.disableAcceptSuggestionOnStopCharacters) {
             return false;
         }
         const query = this.text().substring(this.queryRange.startColumn, this.queryRange.endColumn);

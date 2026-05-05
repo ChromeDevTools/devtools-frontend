@@ -43,6 +43,9 @@ export class DuplicatedJavaScript extends BaseInsightComponent {
         if (!this.model) {
             return Lit.nothing;
         }
+        if (this.model.duplicationGroupedByNodeModules.size === 0) {
+            return html `<div class="insight-section">${i18nString(UIStrings.noDuplicatedJavaScript)}</div>`;
+        }
         const rows = [...this.model.duplicationGroupedByNodeModules.entries()].slice(0, 10).map(([source, data]) => {
             const scriptToOverlay = new Map();
             for (const { script } of data.duplicates) {

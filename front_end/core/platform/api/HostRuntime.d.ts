@@ -5,6 +5,9 @@
 export interface HostRuntime {
     createWorker(url: string): Worker;
     workerScope: WorkerScope;
+    getOnLine(): boolean;
+    getUserAgent(): string;
+    getLocalStorage(): Storage | undefined;
 }
 /**
  * Abstracts away the differences between browser web workers and Node.js worker threads.

@@ -19,6 +19,10 @@ export const UIStrings = {
     columnSource: 'Source',
     /** Label for a column in a data table; entries will be the number of wasted bytes due to duplication of a web resource. */
     columnDuplicatedBytes: 'Duplicated bytes',
+    /**
+     * @description Message shown when no duplicated JavaScript is found.
+     */
+    noDuplicatedJavaScript: 'No duplicated JavaScript found',
 };
 const str_ = i18n.i18n.registerUIStrings('models/trace/insights/DuplicatedJavaScript.ts', UIStrings);
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

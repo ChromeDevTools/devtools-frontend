@@ -1978,7 +1978,7 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
                 // Explicitly set the query range as it is cleared during `acceptAutoComplete`
                 this.queryRange = new TextUtils.TextRange.TextRange(0, 0, 0, textAfterAccept.length);
                 // Re-apply the ghost text for the remainder
-                this.applySuggestion({ text: suggestionForCurrentPrompt }, true);
+                this.applySuggestion({ text: suggestionForCurrentPrompt, disableAcceptSuggestionOnStopCharacters: true }, true);
             }
             return true;
         }

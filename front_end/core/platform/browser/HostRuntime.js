@@ -62,5 +62,14 @@ export const HOST_RUNTIME = {
         return new WebWorker(url);
     },
     workerScope: new WebWorkerScope(),
+    getOnLine() {
+        return navigator.onLine;
+    },
+    getUserAgent() {
+        return navigator.userAgent;
+    },
+    getLocalStorage() {
+        return 'localStorage' in globalThis ? globalThis.localStorage : undefined;
+    },
 };
 //# sourceMappingURL=HostRuntime.js.map

@@ -67,7 +67,16 @@ var HOST_RUNTIME = {
   createWorker(url) {
     return new WebWorker(url);
   },
-  workerScope: new WebWorkerScope()
+  workerScope: new WebWorkerScope(),
+  getOnLine() {
+    return navigator.onLine;
+  },
+  getUserAgent() {
+    return navigator.userAgent;
+  },
+  getLocalStorage() {
+    return "localStorage" in globalThis ? globalThis.localStorage : void 0;
+  }
 };
 export {
   HostRuntime_exports as HostRuntime

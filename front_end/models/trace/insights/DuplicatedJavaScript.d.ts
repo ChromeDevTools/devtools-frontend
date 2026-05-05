@@ -15,6 +15,10 @@ export declare const UIStrings: {
     readonly columnSource: "Source";
     /** Label for a column in a data table; entries will be the number of wasted bytes due to duplication of a web resource. */
     readonly columnDuplicatedBytes: "Duplicated bytes";
+    /**
+     * @description Message shown when no duplicated JavaScript is found.
+     */
+    readonly noDuplicatedJavaScript: "No duplicated JavaScript found";
 };
 export declare const i18nString: (id: string, values?: import("../../../core/i18n/i18nTypes.js").Values | undefined) => import("../../../core/platform/UIString.js").LocalizedString;
 export type DuplicatedJavaScriptInsightModel = InsightModel<typeof UIStrings, {

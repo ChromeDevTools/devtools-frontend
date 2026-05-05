@@ -111,7 +111,8 @@ function isNodeEntry(pathname) {
 }
 var getChromeVersion = () => {
   const chromeRegex = /(?:^|\W)(?:Chrome|HeadlessChrome)\/(\S+)/;
-  const chromeMatch = globalObject.navigator?.userAgent?.match(chromeRegex);
+  const userAgent = Platform.HostRuntime.HOST_RUNTIME.getUserAgent();
+  const chromeMatch = userAgent.match(chromeRegex);
   if (chromeMatch && chromeMatch.length > 1) {
     return chromeMatch[1];
   }
@@ -308,12 +309,12 @@ var ExperimentStorage = class {
   #experiments = {};
   constructor() {
     try {
-      const storedExperiments = globalObject.localStorage?.getItem("experiments");
+      const storedExperiments = Platform.HostRuntime.HOST_RUNTIME.getLocalStorage()?.getItem("experiments");
       if (storedExperiments) {
         this.#experiments = JSON.parse(storedExperiments);
       }
-    } catch {
-      console.error("Failed to parse localStorage['experiments']");
+    } catch (err) {
+      console.error("Failed to parse localStorage['experiments']: " + err.message);
     }
   }
   /**
@@ -338,7 +339,7 @@ var ExperimentStorage = class {
     this.#syncToLocalStorage();
   }
   #syncToLocalStorage() {
-    globalObject.localStorage?.setItem("experiments", JSON.stringify(this.#experiments));
+    Platform.HostRuntime.HOST_RUNTIME.getLocalStorage()?.setItem("experiments", JSON.stringify(this.#experiments));
   }
 };
 var Experiment = class {

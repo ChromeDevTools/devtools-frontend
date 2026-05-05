@@ -436,7 +436,7 @@ function defaultView(input, output, target) {
         let walkthroughIsForLastMessage = false;
         if (input.state === "chat-view" /* ViewState.CHAT_VIEW */) {
             const lastMessage = input.props.messages.at(-1);
-            if (lastMessage && input.props.walkthrough.activeSidebarMessage === lastMessage) {
+            if (lastMessage && input.props.walkthrough.activeSidebarMessage?.id === lastMessage.id) {
                 walkthroughIsForLastMessage = true;
             }
         }
@@ -711,7 +711,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         this.requestUpdate();
     }
     #openWalkthrough(message) {
-        if (!this.#walkthrough.inlineExpandedMessages.includes(message)) {
+        if (!this.#walkthrough.inlineExpandedMessages.some(m => m.id === message.id)) {
             this.#walkthrough.inlineExpandedMessages.push(message);
         }
         this.#walkthrough.activeSidebarMessage = message;
@@ -735,14 +735,15 @@ export class AiAssistancePanel extends UI.Panel.Panel {
             return;
         }
         // If we are closing a walkthrough, remove it from the list of expanded messages.
-        this.#walkthrough.inlineExpandedMessages = this.#walkthrough.inlineExpandedMessages.filter(m => m !== message);
+        this.#walkthrough.inlineExpandedMessages =
+            this.#walkthrough.inlineExpandedMessages.filter(m => m.id !== message.id);
         if (this.#walkthrough.isInlined) {
             // In Narrow mode, the global expanded state tracks if at least one walkthrough is open.
             this.#walkthrough.isExpanded = this.#walkthrough.inlineExpandedMessages.length > 0;
             // If the message we just closed was the active one, we pick a new active message
             // from the remaining open ones (if any). This ensures that if the user
             // re-opens the sidebar later, it shows the most recently opened walkthrough.
-            if (this.#walkthrough.activeSidebarMessage === message) {
+            if (this.#walkthrough.activeSidebarMessage?.id === message.id) {
                 this.#walkthrough.activeSidebarMessage = this.#walkthrough.inlineExpandedMessages.at(-1) ?? null;
             }
         }
@@ -1520,6 +1521,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
             let systemMessage = {
                 entity: "model" /* ChatMessageEntity.MODEL */,
                 parts: [],
+                id: crypto.randomUUID(),
             };
             let step = { isLoading: true };
             /**
@@ -1546,10 +1548,12 @@ export class AiAssistancePanel extends UI.Panel.Panel {
                             entity: "user" /* ChatMessageEntity.USER */,
                             text: data.query,
                             imageInput: data.imageInput,
+                            id: crypto.randomUUID(),
                         });
                         systemMessage = {
                             entity: "model" /* ChatMessageEntity.MODEL */,
                             parts: [],
+                            id: crypto.randomUUID(),
                         };
                         this.#messages.push(systemMessage);
                         // If the walkthrough is currently expanded in the sidebar, we want to

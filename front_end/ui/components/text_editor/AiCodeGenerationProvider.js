@@ -83,7 +83,10 @@ export class AiCodeGenerationProvider {
         if (this.#aiCodeGeneration) {
             return;
         }
-        this.#aiCodeGeneration = new AiCodeGeneration.AiCodeGeneration.AiCodeGeneration({ aidaClient: this.#aidaClient });
+        this.#aiCodeGeneration = new AiCodeGeneration.AiCodeGeneration.AiCodeGeneration({
+            aidaClient: this.#aidaClient,
+            serverSideLoggingEnabled: !Root.Runtime.hostConfig.aidaAvailability?.disallowLogging,
+        });
         this.#editor?.dispatch({
             effects: [this.#generationTeaserCompartment.reconfigure([aiCodeGenerationTeaserExtension(this.#generationTeaser)])],
         });

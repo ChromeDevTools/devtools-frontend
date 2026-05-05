@@ -75,7 +75,7 @@ const DEFAULT_VIEW = (input, output, target) => {
         <main @scroll=${input.handleScroll} ${ref(element => { output.mainElement = element; })}>
           ${input.messages.length > 0 ? html `
             <div class="messages-container" ${ref(input.handleMessageContainerRef)}>
-              ${repeat(input.messages, (message, index) => {
+              ${repeat(input.messages, message => message.id, (message, index) => {
         const prevMessage = index > 0 ? input.messages[index - 1] : null;
         const prompt = (message.entity === "model" /* ChatMessageEntity.MODEL */ && prevMessage?.entity === "user" /* ChatMessageEntity.USER */) ?
             prevMessage.text :
@@ -89,7 +89,7 @@ const DEFAULT_VIEW = (input, output, target) => {
             isLastMessage: index === input.messages.length - 1,
             isFirstMessage: index === 0,
             prompt,
-            shouldShowCSSChangeSummary: message === cssChangeSummaryMessage,
+            shouldShowCSSChangeSummary: message.id === cssChangeSummaryMessage?.id,
             onSuggestionClick: input.handleSuggestionClick,
             onFeedbackSubmit: input.onFeedbackSubmit,
             onCopyResponseClick: input.onCopyResponseClick,

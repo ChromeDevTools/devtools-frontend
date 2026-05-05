@@ -72,6 +72,7 @@ __export(AiCodeCompletionProvider_exports, {
 import * as Common3 from "./../../../core/common/common.js";
 import * as Host2 from "./../../../core/host/host.js";
 import * as i18n4 from "./../../../core/i18n/i18n.js";
+import * as Root2 from "./../../../core/root/root.js";
 import * as AiCodeCompletion from "./../../../models/ai_code_completion/ai_code_completion.js";
 import * as AiCodeGeneration3 from "./../../../models/ai_code_generation/ai_code_generation.js";
 import * as PanelCommon2 from "./../../../panels/common/common.js";
@@ -1000,7 +1001,10 @@ var AiCodeGenerationProvider = class _AiCodeGenerationProvider {
     if (this.#aiCodeGeneration) {
       return;
     }
-    this.#aiCodeGeneration = new AiCodeGeneration.AiCodeGeneration.AiCodeGeneration({ aidaClient: this.#aidaClient });
+    this.#aiCodeGeneration = new AiCodeGeneration.AiCodeGeneration.AiCodeGeneration({
+      aidaClient: this.#aidaClient,
+      serverSideLoggingEnabled: !Root.Runtime.hostConfig.aidaAvailability?.disallowLogging
+    });
     this.#editor?.dispatch({
       effects: [this.#generationTeaserCompartment.reconfigure([aiCodeGenerationTeaserExtension(this.#generationTeaser)])]
     });
@@ -1409,7 +1413,10 @@ var AiCodeCompletionProvider = class _AiCodeCompletionProvider {
     if (this.#aiCodeCompletion) {
       return;
     }
-    this.#aiCodeCompletion = new AiCodeCompletion.AiCodeCompletion.AiCodeCompletion({ aidaClient: this.#aidaClient }, this.#aiCodeCompletionConfig.panel, void 0, this.#aiCodeCompletionConfig.completionContext.stopSequences);
+    this.#aiCodeCompletion = new AiCodeCompletion.AiCodeCompletion.AiCodeCompletion({
+      aidaClient: this.#aidaClient,
+      serverSideLoggingEnabled: !Root2.Runtime.hostConfig.aidaAvailability?.disallowLogging
+    }, this.#aiCodeCompletionConfig.panel, void 0, this.#aiCodeCompletionConfig.completionContext.stopSequences);
     this.#aiCodeCompletionConfig.onFeatureEnabled();
   }
   #cleanupAiCodeCompletion() {

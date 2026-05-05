@@ -1609,6 +1609,9 @@ var DuplicatedJavaScript = class extends BaseInsightComponent {
     if (!this.model) {
       return Lit12.nothing;
     }
+    if (this.model.duplicationGroupedByNodeModules.size === 0) {
+      return html12`<div class="insight-section">${i18nString7(UIStrings7.noDuplicatedJavaScript)}</div>`;
+    }
     const rows = [...this.model.duplicationGroupedByNodeModules.entries()].slice(0, 10).map(([source, data]) => {
       const scriptToOverlay = /* @__PURE__ */ new Map();
       for (const { script } of data.duplicates) {
@@ -1716,6 +1719,9 @@ var FontDisplay = class extends BaseInsightComponent {
   renderContent() {
     if (!this.model) {
       return Lit13.nothing;
+    }
+    if (this.model.fonts.length === 0) {
+      return html13`<div class="insight-section">${i18nString8(UIStrings8.noFonts)}</div>`;
     }
     const rows = createLimitedRows(this.model.fonts, this);
     return html13`
@@ -2222,6 +2228,9 @@ var LegacyJavaScript = class extends BaseInsightComponent {
   renderContent() {
     if (!this.model) {
       return Lit20.nothing;
+    }
+    if (this.model.legacyJavaScriptResults.size === 0) {
+      return html20`<div class="insight-section">${i18nString14(UIStrings14.noLegacyJavaScript)}</div>`;
     }
     const rows = [...this.model.legacyJavaScriptResults.entries()].slice(0, 10).map(([script, result]) => {
       const overlays = [];

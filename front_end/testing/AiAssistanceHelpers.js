@@ -240,6 +240,19 @@ export function cleanup() {
     }
     patchWidgets = [];
 }
+/**
+ * Removes the 'id' field from a message.
+ * Note: the return type is a distributive conditional type. This is required
+ * to ensure that Omit is applied to each member of the message union
+ * individually. Without this, Omit<Message, 'id'> would only preserve
+ * properties common to all members of the union, losing fields like 'text'
+ * (from UserChatMessage) or 'parts' (from ModelChatMessage).
+ */
+export function stripId(message) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { id, ...rest } = message;
+    return rest;
+}
 export function openHistoryContextMenu(lastUpdate, item) {
     const contextMenu = new UI.ContextMenu.ContextMenu(new MouseEvent('click'));
     lastUpdate.populateHistoryMenu(contextMenu);

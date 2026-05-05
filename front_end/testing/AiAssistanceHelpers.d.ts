@@ -72,6 +72,17 @@ export declare function createPatchWidgetWithDiffView(options?: {
 }>;
 export declare function initializePersistenceImplForTests(): void;
 export declare function cleanup(): void;
+/**
+ * Removes the 'id' field from a message.
+ * Note: the return type is a distributive conditional type. This is required
+ * to ensure that Omit is applied to each member of the message union
+ * individually. Without this, Omit<Message, 'id'> would only preserve
+ * properties common to all members of the union, losing fields like 'text'
+ * (from UserChatMessage) or 'parts' (from ModelChatMessage).
+ */
+export declare function stripId<T extends {
+    id: string;
+}>(message: T): T extends AiAssistancePanel.ChatMessage.Message ? Omit<T, 'id'> : never;
 export declare function openHistoryContextMenu(lastUpdate: AiAssistancePanel.ViewInput, item: string): {
     contextMenu: UI.ContextMenu.ContextMenu;
     id: number | undefined;

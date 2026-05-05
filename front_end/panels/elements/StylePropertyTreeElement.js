@@ -3070,13 +3070,13 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
         }
         const isEditingName = UI.UIUtils.isBeingEdited(this.nameElement);
         if (isEditingName) {
-            this.prompt.applySuggestion({ text: activeAiSuggestion.name }, true);
+            this.prompt.applySuggestion({ text: activeAiSuggestion.name, disableAcceptSuggestionOnStopCharacters: true }, true);
             this.#showGhostTextInValue(activeAiSuggestion.value);
         }
         else {
             // Only has ghost text for one field - name part or value part
             const currentSuggestedText = isEditingName ? activeAiSuggestion.name : activeAiSuggestion.value;
-            this.prompt.applySuggestion({ text: currentSuggestedText }, true);
+            this.prompt.applySuggestion({ text: currentSuggestedText, disableAcceptSuggestionOnStopCharacters: true }, true);
         }
     }
     clearActiveAiSuggestion() {

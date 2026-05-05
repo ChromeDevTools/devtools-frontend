@@ -6,7 +6,6 @@ import * as Host from '../../core/host/host.js';
 interface AgentOptions {
     aidaClient: Host.AidaClient.AidaClient;
     serverSideLoggingEnabled?: boolean;
-    confirmSideEffectForTest?: typeof Promise.withResolvers;
 }
 export interface Callbacks {
     getSelectionHead: () => number;

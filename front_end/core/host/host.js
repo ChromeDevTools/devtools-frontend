@@ -27,9 +27,11 @@ __export(AidaClient_exports, {
   getClientFeatureName: () => getClientFeatureName
 });
 import * as Common4 from "./../common/common.js";
+import * as Platform4 from "./../platform/platform.js";
 import * as Root3 from "./../root/root.js";
 
 // gen/front_end/core/host/AidaClientTypes.js
+import * as Platform from "./../platform/platform.js";
 var Role;
 (function(Role2) {
   Role2[Role2["ROLE_UNSPECIFIED"] = 0] = "ROLE_UNSPECIFIED";
@@ -106,7 +108,7 @@ var CitationSourceType;
   CitationSourceType2["INDIRECT"] = "INDIRECT";
 })(CitationSourceType || (CitationSourceType = {}));
 function debugLog(...log) {
-  if (!Boolean(localStorage.getItem("debugAiServicesEnabled"))) {
+  if (!Boolean(Platform.HostRuntime.HOST_RUNTIME.getLocalStorage()?.getItem("debugAiServicesEnabled"))) {
     return;
   }
   console.log(...log);
@@ -707,6 +709,7 @@ __export(DispatchHttpRequestClient_exports, {
   ErrorType: () => ErrorType,
   makeHttpRequest: () => makeHttpRequest
 });
+import * as Platform3 from "./../platform/platform.js";
 
 // gen/front_end/core/host/InspectorFrontendHost.js
 var InspectorFrontendHost_exports = {};
@@ -790,7 +793,7 @@ var EventDescriptors = [
 // gen/front_end/core/host/InspectorFrontendHostStub.js
 import * as Common2 from "./../common/common.js";
 import * as i18n3 from "./../i18n/i18n.js";
-import * as Platform from "./../platform/platform.js";
+import * as Platform2 from "./../platform/platform.js";
 
 // gen/front_end/core/host/ResourceLoader.js
 var ResourceLoader_exports = {};
@@ -1133,8 +1136,8 @@ var InspectorFrontendHostStub = class {
     let fileName = "";
     if (url) {
       try {
-        const trimmed = Platform.StringUtilities.trimURL(url);
-        fileName = Platform.StringUtilities.removeURLFragment(trimmed);
+        const trimmed = Platform2.StringUtilities.trimURL(url);
+        fileName = Platform2.StringUtilities.removeURLFragment(trimmed);
       } catch {
         fileName = url;
       }
@@ -1515,7 +1518,7 @@ async function makeHttpRequest(request, options) {
   throw new DispatchHttpRequestError(ErrorType.HTTP_RESPONSE_UNAVAILABLE, response);
 }
 function isDebugMode() {
-  return Boolean(localStorage.getItem("debugDispatchHttpRequestEnabled"));
+  return Boolean(Platform3.HostRuntime.HOST_RUNTIME.getLocalStorage()?.getItem("debugDispatchHttpRequestEnabled"));
 }
 function debugLog2(...log) {
   if (!isDebugMode()) {
@@ -1524,10 +1527,11 @@ function debugLog2(...log) {
   console.log("debugLog", ...log);
 }
 function setDebugDispatchHttpRequestEnabled(enabled) {
+  const localStorage = Platform3.HostRuntime.HOST_RUNTIME.getLocalStorage();
   if (enabled) {
-    localStorage.setItem("debugDispatchHttpRequestEnabled", "true");
+    localStorage?.setItem("debugDispatchHttpRequestEnabled", "true");
   } else {
-    localStorage.removeItem("debugDispatchHttpRequestEnabled");
+    localStorage?.removeItem("debugDispatchHttpRequestEnabled");
   }
 }
 globalThis.setDebugDispatchHttpRequestEnabled = setDebugDispatchHttpRequestEnabled;
@@ -1718,7 +1722,7 @@ var AidaClient = class {
     return request;
   }
   static async checkAccessPreconditions() {
-    if (!navigator.onLine) {
+    if (!Platform4.HostRuntime.HOST_RUNTIME.getOnLine()) {
       return "no-internet";
     }
     const syncInfo = await new Promise((resolve) => InspectorFrontendHostInstance.getSyncInformation((syncInfo2) => resolve(syncInfo2)));
@@ -1997,7 +2001,7 @@ var HostConfigTracker = class _HostConfigTracker extends Common4.ObjectWrapper.O
     const isFirst = !this.hasEventListeners(eventType);
     const eventDescriptor = super.addEventListener(eventType, listener);
     if (isFirst) {
-      window.clearTimeout(this.#pollTimer);
+      clearTimeout(this.#pollTimer);
       void this.pollAidaAvailability();
     }
     return eventDescriptor;
@@ -2005,11 +2009,11 @@ var HostConfigTracker = class _HostConfigTracker extends Common4.ObjectWrapper.O
   removeEventListener(eventType, listener) {
     super.removeEventListener(eventType, listener);
     if (!this.hasEventListeners(eventType)) {
-      window.clearTimeout(this.#pollTimer);
+      clearTimeout(this.#pollTimer);
     }
   }
   async pollAidaAvailability() {
-    this.#pollTimer = window.setTimeout(() => this.pollAidaAvailability(), 2e3);
+    this.#pollTimer = setTimeout(() => this.pollAidaAvailability(), 2e3);
     const currentAidaAvailability = await AidaClient.checkAccessPreconditions();
     if (currentAidaAvailability !== this.#aidaAvailability) {
       this.#aidaAvailability = currentAidaAvailability;

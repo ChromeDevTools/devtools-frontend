@@ -1,7 +1,6 @@
 // Copyright 2021 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 /* eslint-disable @devtools/no-lit-render-outside-of-view */
 
 /*
@@ -55,7 +54,6 @@ import type * as Adorners from '../../ui/components/adorners/adorners.js';
 import * as CodeHighlighter from '../../ui/components/code_highlighter/code_highlighter.js';
 import * as Highlighting from '../../ui/components/highlighting/highlighting.js';
 import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
-import {Icon} from '../../ui/kit/kit.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
@@ -1233,12 +1231,9 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     this.performUpdate();
 
     if (this.nodeInternal.retained && !this.isClosingTag()) {
-      const icon = new Icon();
-      icon.name = 'small-status-dot';
-      icon.style.color = 'var(--icon-error)';
-      icon.classList.add('extra-small');
-      icon.style.setProperty('vertical-align', 'middle');
-      this.setLeadingIcons([icon]);
+      this.setLeadingIcons([
+        html`<devtools-icon class="extra-small" name="small-status-dot" style="color:var(--icon-error); vertical-align:middle"></devtools-icon>`
+      ]);
       this.listItemNode.classList.add('detached-elements-detached-node');
       this.listItemNode.style.setProperty('display', '-webkit-box');
       this.listItemNode.setAttribute('title', 'Retained Node');
@@ -2375,7 +2370,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
   private addNewAttribute(): boolean {
     // Cannot just convert the textual html into an element without
     // a parent node. Use a temporary span container for the HTML.
-    const container = document.createElement('span');
+    const container = document.createDocumentFragment();
 
     Lit.render(renderAttribute({name: ' ', value: ''}, null, false, this.nodeInternal), container);
     const attr = container.firstElementChild as HTMLElement;

@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as App from './App.js';
-import * as AppProvider from './AppProvider.js';
 import * as Base64 from './Base64.js';
 import * as CharacterIdMap from './CharacterIdMap.js';
 import * as Color from './Color.js';
@@ -43,8 +41,6 @@ import * as VersionController from './VersionController.js';
  */
 export {UIString} from '../platform/platform.js';
 export {
-  App,
-  AppProvider,
   Base64,
   CharacterIdMap,
   Color,

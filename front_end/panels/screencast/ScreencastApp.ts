@@ -20,7 +20,7 @@ const str_ = i18n.i18n.registerUIStrings('panels/screencast/ScreencastApp.ts', U
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let appInstance: ScreencastApp;
 
-export class ScreencastApp implements Common.App.App,
+export class ScreencastApp implements UI.App.App,
                                       SDK.TargetManager.SDKModelObserver<SDK.ScreenCaptureModel.ScreenCaptureModel> {
   private readonly enabledSetting: Common.Settings.Setting<boolean>;
   toggleButton: UI.Toolbar.ToolbarToggle;
@@ -127,7 +127,7 @@ export class ToolbarButtonProvider implements UI.Toolbar.Provider {
 
 let screencastAppProviderInstance: ScreencastAppProvider;
 
-export class ScreencastAppProvider implements Common.AppProvider.AppProvider {
+export class ScreencastAppProvider implements UI.AppProvider.AppProvider {
   static instance(opts: {forceNew: boolean} = {forceNew: false}): ScreencastAppProvider {
     const {forceNew} = opts;
     if (!screencastAppProviderInstance || forceNew) {
@@ -137,7 +137,7 @@ export class ScreencastAppProvider implements Common.AppProvider.AppProvider {
     return screencastAppProviderInstance;
   }
 
-  createApp(): Common.App.App {
+  createApp(): UI.App.App {
     return ScreencastApp.instance();
   }
 }

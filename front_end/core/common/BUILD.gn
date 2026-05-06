@@ -12,8 +12,6 @@ ts_library("ColorUtils") {
 
 devtools_module("common") {
   sources = [
-    "App.ts",
-    "AppProvider.ts",
     "Base64.ts",
     "CharacterIdMap.ts",
     "Color.ts",

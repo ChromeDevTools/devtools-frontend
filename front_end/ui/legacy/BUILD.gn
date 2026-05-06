@@ -52,6 +52,8 @@ devtools_ui_module("ui") {
     "ARIAUtils.ts",
     "ActionRegistration.ts",
     "ActionRegistry.ts",
+    "App.ts",
+    "AppProvider.ts",
     "Context.ts",
     "ContextFlavorListener.ts",
     "ContextMenu.ts",

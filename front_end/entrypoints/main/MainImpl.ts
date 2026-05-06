@@ -563,7 +563,7 @@ export class MainImpl {
 
     MainImpl.timeEnd('Main._createAppUI');
 
-    const appProvider = Common.AppProvider.getRegisteredAppProviders()[0];
+    const appProvider = UI.AppProvider.getRegisteredAppProviders()[0];
     if (!appProvider) {
       throw new Error('Unable to boot DevTools, as the appprovider is missing');
     }
@@ -572,7 +572,7 @@ export class MainImpl {
 
   async #showAppUI(appProvider: Object): Promise<void> {
     MainImpl.time('Main._showAppUI');
-    const app = (appProvider as Common.AppProvider.AppProvider).createApp();
+    const app = (appProvider as UI.AppProvider.AppProvider).createApp();
     // It is important to kick controller lifetime after apps are instantiated.
     UI.DockController.DockController.instance().initialize();
     ThemeSupport.ThemeSupport.instance().fetchColorsAndApplyHostTheme();

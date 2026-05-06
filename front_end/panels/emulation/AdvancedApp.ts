@@ -13,7 +13,7 @@ import {type Bounds, Events, InspectedPagePlaceholder} from './InspectedPagePlac
 
 let appInstance: AdvancedApp;
 
-export class AdvancedApp implements Common.App.App {
+export class AdvancedApp implements UI.App.App {
   private rootSplitWidget!: UI.SplitWidget.SplitWidget;
   private deviceModeView!: DeviceModeWrapper;
   private inspectedPagePlaceholder!: InspectedPagePlaceholder;
@@ -188,7 +188,7 @@ globalThis.Emulation.AdvancedApp = AdvancedApp;
 
 let advancedAppProviderInstance: AdvancedAppProvider;
 
-export class AdvancedAppProvider implements Common.AppProvider.AppProvider {
+export class AdvancedAppProvider implements UI.AppProvider.AppProvider {
   static instance(opts: {
     forceNew: boolean|null,
   } = {forceNew: null}): AdvancedAppProvider {
@@ -200,7 +200,7 @@ export class AdvancedAppProvider implements Common.AppProvider.AppProvider {
     return advancedAppProviderInstance;
   }
 
-  createApp(): Common.App.App {
+  createApp(): UI.App.App {
     return AdvancedApp.instance();
   }
 }

@@ -36,6 +36,7 @@ ts_library("testing") {
     "OverridesHelpers.ts",
     "PersistenceHelpers.ts",
     "PropertyParser.ts",
+    "ResourceHelpers.ts",
     "ResourceTreeHelpers.ts",
     "RuntimeHelpers.ts",
     "SettingsHelpers.ts",

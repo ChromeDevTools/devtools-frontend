@@ -7,7 +7,7 @@ import("../../../scripts/build/ninja/devtools_module.gni")
 import("../../../scripts/build/typescript/typescript.gni")
 import("../visibility.gni")
 
-devtools_module("workspace") {
+devtools_foundation_module("workspace") {
   sources = [
     "FileManager.ts",
     "IgnoreListManager.ts",
@@ -96,7 +96,7 @@ devtools_entrypoint("meta") {
   ]
 }
 
-ts_library("unittests") {
+devtools_foundation_module("foundation_unittests") {
   testonly = true
 
   sources = [

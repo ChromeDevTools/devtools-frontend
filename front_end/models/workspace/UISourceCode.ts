@@ -214,7 +214,7 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
     if (!content) {
       return null;
     }
-    return content.isEncoded && content.content ? window.atob(content.content) : content.content;
+    return content.isEncoded && content.content ? atob(content.content) : content.content;
   }
 
   /** Only used to compare whether content changed */
@@ -222,7 +222,7 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
     if (!content || TextUtils.ContentData.ContentData.isError(content)) {
       return null;
     }
-    return content.createdFromBase64 ? window.atob(content.base64) : content.text;
+    return content.createdFromBase64 ? atob(content.base64) : content.text;
   }
 
   async checkContentUpdated(): Promise<void> {
@@ -264,9 +264,14 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
     await Common.Revealer.reveal(this);
 
     // Make sure we are in the next frame before stopping the world with confirm
-    await new Promise(resolve => window.setTimeout(resolve, 0));
+    await new Promise(resolve => setTimeout(resolve, 0));
 
-    const shouldUpdate = window.confirm(i18nString(UIStrings.thisFileWasChangedExternally));
+    // FIXME: we should not call confirm() from the models.
+    const shouldUpdate = typeof (globalThis as unknown as {confirm: (msg: string) => boolean}).confirm === 'function' ?
+        (globalThis as unknown as {
+          confirm: (msg: string) => boolean,
+        }).confirm(i18nString(UIStrings.thisFileWasChangedExternally)) :
+        true;
     if (shouldUpdate) {
       this.#contentCommitted(updatedContent.content, false);
     } else {

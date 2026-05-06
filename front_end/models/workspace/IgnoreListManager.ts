@@ -419,7 +419,7 @@ export class IgnoreListManager extends Common.ObjectWrapper.ObjectWrapper<EventT
     }
 
     let regexPatterns = this.getSkipStackFramesPatternSetting().getAsArray();
-    const regexValue = IgnoreListManager.instance().urlToRegExpString(url);
+    const regexValue = this.urlToRegExpString(url);
     if (!regexValue) {
       return;
     }

@@ -3,12 +3,11 @@
 // found in the LICENSE file.
 
 import * as Protocol from '../../generated/protocol.js';
-import {createTarget} from '../../testing/EnvironmentHelpers.js';
-import {
-  clearAllMockConnectionResponseHandlers,
-  describeWithMockConnection,
-  setMockConnectionResponseHandler,
-} from '../../testing/MockConnection.js';
+import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
+import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
+import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
+import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
+import {TestUniverse} from '../../testing/TestUniverse.js';
 
 import * as SDK from './sdk.js';
 
@@ -38,14 +37,20 @@ function createAnimationPayload(payload: Partial<Protocol.Animation.Animation>):
   };
 }
 
-describeWithMockConnection('AnimationModel', () => {
-  afterEach(() => {
-    clearAllMockConnectionResponseHandlers();
+describe('AnimationModel', () => {
+  setupLocaleHooks();
+  setupSettingsHooks();
+  setupRuntimeHooks();
+
+  let universe: TestUniverse;
+
+  beforeEach(() => {
+    universe = new TestUniverse();
   });
 
   it('can be instantiated', () => {
     assert.doesNotThrow(() => {
-      const target = createTarget();
+      const target = universe.createTarget();
       new SDK.AnimationModel.AnimationModel(target);
     });
   });
@@ -60,7 +65,7 @@ describeWithMockConnection('AnimationModel', () => {
 
     it('should resolve the containing animation group if the animation with given name and node id exists in the group',
        async () => {
-         const target = createTarget();
+         const target = universe.createTarget();
          const model = new SDK.AnimationModel.AnimationModel(target);
          const animationGroupStartedPromiseWithResolvers = Promise.withResolvers<void>();
          model.addEventListener(SDK.AnimationModel.Events.AnimationGroupStarted, () => {
@@ -74,7 +79,7 @@ describeWithMockConnection('AnimationModel', () => {
        });
 
     it('should resolve null if there is no animations with matching name', async () => {
-      const target = createTarget();
+      const target = universe.createTarget();
       const model = new SDK.AnimationModel.AnimationModel(target);
       const animationGroupStartedPromiseWithResolvers = Promise.withResolvers<void>();
       model.addEventListener(SDK.AnimationModel.Events.AnimationGroupStarted, () => {
@@ -88,7 +93,7 @@ describeWithMockConnection('AnimationModel', () => {
     });
 
     it('should resolve null if there is an animation with the same name but for a different node id', async () => {
-      const target = createTarget();
+      const target = universe.createTarget();
       const model = new SDK.AnimationModel.AnimationModel(target);
       const animationGroupStartedPromiseWithResolvers = Promise.withResolvers<void>();
       model.addEventListener(SDK.AnimationModel.Events.AnimationGroupStarted, () => {
@@ -106,7 +111,7 @@ describeWithMockConnection('AnimationModel', () => {
   describe('AnimationImpl', () => {
     it('setPayload should update values returned from the relevant value functions for time based animations',
        async () => {
-         const target = createTarget();
+         const target = universe.createTarget();
          const model = new SDK.AnimationModel.AnimationModel(target);
          const animationImpl = await SDK.AnimationModel.AnimationImpl.parsePayload(model, {
            id: '1',
@@ -172,15 +177,14 @@ describeWithMockConnection('AnimationModel', () => {
 
     it('setPayload should update values returned from the relevant value functions for scroll based animations',
        async () => {
-         setMockConnectionResponseHandler('Runtime.evaluate', () => {
-           return {
-             result: {
-               type: 'number',
-               value: 1,
-             },
-           } as Protocol.Runtime.EvaluateResponse;
-         });
-         const target = createTarget();
+         const connection = new MockCDPConnection();
+         connection.setSuccessHandler('Runtime.evaluate', () => ({
+                                                            result: {
+                                                              type: Protocol.Runtime.RemoteObjectType.Number,
+                                                              value: 1,
+                                                            },
+                                                          } as Protocol.Runtime.EvaluateResponse));
+         const target = universe.createTarget({connection});
          const model = new SDK.AnimationModel.AnimationModel(target);
          const animationImpl = await SDK.AnimationModel.AnimationImpl.parsePayload(model, {
            id: '1',

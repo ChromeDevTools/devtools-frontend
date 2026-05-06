@@ -142,11 +142,6 @@ ts_library("unittests") {
   testonly = true
 
   sources = [
-    "AccessibilityModel.test.ts",
-    "AnimationModel.test.ts",
-    "AutofillModel.test.ts",
-    "CPUThrottlingManager.test.ts",
-    "CSSContainerQuery.test.ts",
     "CSSMatchedStyles.test.ts",
     "CSSModel.test.ts",
     "CSSProperty.test.ts",
@@ -209,6 +204,11 @@ devtools_foundation_module("foundation_unittests") {
   testonly = true
 
   sources = [
+    "AccessibilityModel.test.ts",
+    "AnimationModel.test.ts",
+    "AutofillModel.test.ts",
+    "CPUThrottlingManager.test.ts",
+    "CSSContainerQuery.test.ts",
     "DebuggerModel.test.ts",
     "NetworkManager.test.ts",
     "PageResourceLoader.test.ts",

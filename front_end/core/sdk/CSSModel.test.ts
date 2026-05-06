@@ -2,19 +2,33 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as ProtocolClient from '../../core/protocol_client/protocol_client.js';
 import * as Protocol from '../../generated/protocol.js';
-import {createTarget} from '../../testing/EnvironmentHelpers.js';
-import {describeWithMockConnection, setMockConnectionResponseHandler} from '../../testing/MockConnection.js';
+import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
+import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
 import {activate, getMainFrame, navigate} from '../../testing/ResourceTreeHelpers.js';
+import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
+import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
+import {TestUniverse} from '../../testing/TestUniverse.js';
 import * as Platform from '../platform/platform.js';
 
 import * as SDK from './sdk.js';
 
 const {urlString} = Platform.DevToolsPath;
 
-describeWithMockConnection('CSSModel', () => {
+describe('CSSModel', () => {
+  setupLocaleHooks();
+  setupSettingsHooks();
+  setupRuntimeHooks();
+
+  let universe: TestUniverse;
+
+  beforeEach(() => {
+    universe = new TestUniverse();
+  });
+
   it('gets the FontFace of a source URL', () => {
-    const target = createTarget();
+    const target = universe.createTarget();
     const cssModel = new SDK.CSSModel.CSSModel(target);
     const src = 'mock.com';
     const fontFace = {fontFamily: 'Roboto', src, fontDisplay: 'swap'} as unknown as Protocol.CSS.FontFace;
@@ -26,7 +40,7 @@ describeWithMockConnection('CSSModel', () => {
   });
 
   it('reports stylesheets that fail to load as constructed stylesheets', async () => {
-    const target = createTarget();
+    const target = universe.createTarget();
     const cssModel = new SDK.CSSModel.CSSModel(target);
     const header: Protocol.CSS.CSSStyleSheetHeader = {
       styleSheetId: 'stylesheet' as Protocol.DOM.StyleSheetId,
@@ -75,7 +89,7 @@ describeWithMockConnection('CSSModel', () => {
     };
 
     beforeEach(() => {
-      target = createTarget();
+      target = universe.createTarget();
       cssModel = target.model(SDK.CSSModel.CSSModel);
     });
 
@@ -107,11 +121,14 @@ describeWithMockConnection('CSSModel', () => {
 
   describe('getStyleSheetText', () => {
     it('should return null when the backend sends an error', async () => {
-      setMockConnectionResponseHandler('CSS.getStyleSheetText', () => ({
-                                                                  getError: () => 'Some custom error',
-                                                                }));
+      const connection = new MockCDPConnection();
+      connection.setFailureHandler(
+          'CSS.getStyleSheetText', () => ({
+                                     message: 'Some custom error',
+                                     code: ProtocolClient.CDPConnection.CDPErrorStatus.DEVTOOLS_STUB_ERROR,
+                                   }));
 
-      const target = createTarget();
+      const target = universe.createTarget({connection});
       const cssModel = target.model(SDK.CSSModel.CSSModel)!;
 
       assert.isNull(await cssModel.getStyleSheetText('id' as Protocol.DOM.StyleSheetId));

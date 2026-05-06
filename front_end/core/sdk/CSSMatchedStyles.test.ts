@@ -4,13 +4,26 @@
 
 import * as Protocol from '../../generated/protocol.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
-import {createTarget} from '../../testing/EnvironmentHelpers.js';
-import {describeWithMockConnection, setMockConnectionResponseHandler} from '../../testing/MockConnection.js';
+import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
+import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
+import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
+import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
 import {getMatchedStyles, ruleMatch} from '../../testing/StyleHelpers.js';
+import {TestUniverse} from '../../testing/TestUniverse.js';
 
 import * as SDK from './sdk.js';
 
 describe('CSSMatchedStyles', () => {
+  setupLocaleHooks();
+  setupSettingsHooks();
+  setupRuntimeHooks();
+
+  let universe: TestUniverse;
+
+  beforeEach(() => {
+    universe = new TestUniverse();
+  });
+
   describe('computeCSSVariable', () => {
     const testCssValueEquals = async (text: string, expectedValue: unknown) => {
       const matchedStyles = await getMatchedStyles({
@@ -840,7 +853,7 @@ describe('CSSMatchedStyles', () => {
     pseudoElement.id = 2 as Protocol.DOM.NodeId;
     pseudoElement.nodeType.returns(Node.ELEMENT_NODE);
     pseudoElement.parentNode = node;
-    pseudoElement.pseudoType.returns('before');
+    pseudoElement.pseudoType.returns('before' as Protocol.DOM.PseudoType);
     const matchedStyles = await getMatchedStyles({
       matchedPayload: [ruleMatch('div::before', {content: 'attr(data-content)'})],
       node: pseudoElement,
@@ -933,141 +946,142 @@ describe('CSSMatchedStyles', () => {
       }
     }
   });
-});
 
-describeWithMockConnection('NodeCascade', () => {
-  it('correctly marks custom properties as Overloaded if they are registered as inherits: false', async () => {
-    setMockConnectionResponseHandler(
-        'CSS.getEnvironmentVariables', () => ({} as Protocol.CSS.GetEnvironmentVariablesResponse));
-    const target = createTarget();
-    const cssModel = new SDK.CSSModel.CSSModel(target);
-    const parentNode = sinon.createStubInstance(SDK.DOMModel.DOMNode);
-    parentNode.id = 0 as Protocol.DOM.NodeId;
-    const node = sinon.createStubInstance(SDK.DOMModel.DOMNode);
-    node.parentNode = parentNode;
-    node.id = 1 as Protocol.DOM.NodeId;
-    const inheritablePropertyPayload: Protocol.CSS.CSSProperty = {name: '--inheritable', value: 'green'};
-    const nonInheritablePropertyPayload: Protocol.CSS.CSSProperty = {name: '--non-inheritable', value: 'green'};
-    const matchedCSSRules: Protocol.CSS.RuleMatch[] = [{
-      matchingSelectors: [0],
-      rule: {
-        selectorList: {selectors: [{text: 'div'}], text: 'div'},
-        origin: Protocol.CSS.StyleSheetOrigin.Regular,
-        style: {
-          cssProperties: [inheritablePropertyPayload, nonInheritablePropertyPayload],
-          shorthandEntries: [],
+  describe('NodeCascade', () => {
+    it('correctly marks custom properties as Overloaded if they are registered as inherits: false', async () => {
+      const connection = new MockCDPConnection();
+      connection.setSuccessHandler(
+          'CSS.getEnvironmentVariables', () => ({} as Protocol.CSS.GetEnvironmentVariablesResponse));
+      const target = universe.createTarget({connection});
+      const cssModel = target.model(SDK.CSSModel.CSSModel)!;
+      const parentNode = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+      parentNode.id = 0 as Protocol.DOM.NodeId;
+      const node = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+      node.parentNode = parentNode;
+      node.id = 1 as Protocol.DOM.NodeId;
+      const inheritablePropertyPayload: Protocol.CSS.CSSProperty = {name: '--inheritable', value: 'green'};
+      const nonInheritablePropertyPayload: Protocol.CSS.CSSProperty = {name: '--non-inheritable', value: 'green'};
+      const matchedCSSRules: Protocol.CSS.RuleMatch[] = [{
+        matchingSelectors: [0],
+        rule: {
+          selectorList: {selectors: [{text: 'div'}], text: 'div'},
+          origin: Protocol.CSS.StyleSheetOrigin.Regular,
+          style: {
+            cssProperties: [inheritablePropertyPayload, nonInheritablePropertyPayload],
+            shorthandEntries: [],
+          },
         },
-      },
-    }];
-    const cssPropertyRegistrations = [
-      {
-        propertyName: inheritablePropertyPayload.name,
-        initialValue: {text: 'blue'},
-        inherits: true,
-        syntax: '<color>',
-      },
-      {
-        propertyName: nonInheritablePropertyPayload.name,
-        initialValue: {text: 'red'},
-        inherits: false,
-        syntax: '<color>',
-      },
-    ];
-    const matchedStyles = await getMatchedStyles({
-      cssModel,
-      node,
-      matchedPayload: [
-        ruleMatch('div', []),
-      ],
-      inheritedPayload: [{matchedCSSRules}],
-      cssPropertyRegistrations,
+      }];
+      const cssPropertyRegistrations = [
+        {
+          propertyName: inheritablePropertyPayload.name,
+          initialValue: {text: 'blue'},
+          inherits: true,
+          syntax: '<color>',
+        },
+        {
+          propertyName: nonInheritablePropertyPayload.name,
+          initialValue: {text: 'red'},
+          inherits: false,
+          syntax: '<color>',
+        },
+      ];
+      const matchedStyles = await getMatchedStyles({
+        cssModel,
+        node,
+        matchedPayload: [
+          ruleMatch('div', []),
+        ],
+        inheritedPayload: [{matchedCSSRules}],
+        cssPropertyRegistrations,
+      });
+
+      const style = matchedStyles.nodeStyles()[1];
+      const [inheritableProperty, nonInheritableProperty] = style.allProperties();
+
+      assert.strictEqual(
+          matchedStyles.propertyState(nonInheritableProperty), SDK.CSSMatchedStyles.PropertyState.OVERLOADED);
+      assert.strictEqual(matchedStyles.propertyState(inheritableProperty), SDK.CSSMatchedStyles.PropertyState.ACTIVE);
     });
 
-    const style = matchedStyles.nodeStyles()[1];
-    const [inheritableProperty, nonInheritableProperty] = style.allProperties();
+    it('correctly computes active properties for nested at-rules', async () => {
+      const outerRule = ruleMatch('a', [{name: 'color', value: 'var(--inner)'}]);
+      const nestedRule = ruleMatch('&', [{name: '--inner', value: 'red'}]);
+      nestedRule.rule.nestingSelectors = ['a'];
+      nestedRule.rule.selectorList = {selectors: [], text: '&'};
+      nestedRule.rule.supports = [{
+        text: '(--var:s)',
+        active: true,
+        styleSheetId: nestedRule.rule.styleSheetId,
+      }];
+      const matchedStyles = await getMatchedStyles({
+        matchedPayload: [outerRule, nestedRule],
+      });
 
-    assert.strictEqual(
-        matchedStyles.propertyState(nonInheritableProperty), SDK.CSSMatchedStyles.PropertyState.OVERLOADED);
-    assert.strictEqual(matchedStyles.propertyState(inheritableProperty), SDK.CSSMatchedStyles.PropertyState.ACTIVE);
-  });
-
-  it('correctly computes active properties for nested at-rules', async () => {
-    const outerRule = ruleMatch('a', [{name: 'color', value: 'var(--inner)'}]);
-    const nestedRule = ruleMatch('&', [{name: '--inner', value: 'red'}]);
-    nestedRule.rule.nestingSelectors = ['a'];
-    nestedRule.rule.selectorList = {selectors: [], text: '&'};
-    nestedRule.rule.supports = [{
-      text: '(--var:s)',
-      active: true,
-      styleSheetId: nestedRule.rule.styleSheetId,
-    }];
-    const matchedStyles = await getMatchedStyles({
-      matchedPayload: [outerRule, nestedRule],
+      assert.deepEqual(matchedStyles.availableCSSVariables(matchedStyles.nodeStyles()[0]), ['--inner']);
     });
 
-    assert.deepEqual(matchedStyles.availableCSSVariables(matchedStyles.nodeStyles()[0]), ['--inner']);
-  });
+    describe('isPropertyOverriddenByAnimation', () => {
+      it('returns true when a property is overridden by an animation', async () => {
+        const animationStyle = {
+          style: {
+            cssProperties: [{name: 'opacity', value: '1'}],
+            shorthandEntries: [],
+          },
+        } as Protocol.CSS.CSSAnimationStyle;
 
-  describe('isPropertyOverriddenByAnimation', () => {
-    it('returns true when a property is overridden by an animation', async () => {
-      const animationStyle = {
-        style: {
+        const matchedStyles = await getMatchedStyles({
+          matchedPayload: [ruleMatch('div', [{name: 'opacity', value: '0.5'}])],
+          animationStylesPayload: [animationStyle],
+        });
+
+        const styles = matchedStyles.nodeStyles();
+        const regularStyle = styles.find(style => style.type === SDK.CSSStyleDeclaration.Type.Regular);
+        assert.exists(regularStyle);
+        const property = regularStyle.allProperties().find(p => p.name === 'opacity');
+        assert.exists(property);
+
+        assert.isTrue(matchedStyles.isPropertyOverriddenByAnimation(property));
+      });
+
+      it('returns true when a property is overridden by a transition', async () => {
+        const transitionStyle = {
           cssProperties: [{name: 'opacity', value: '1'}],
           shorthandEntries: [],
-        },
-      } as Protocol.CSS.CSSAnimationStyle;
+        } as Protocol.CSS.CSSStyle;
 
-      const matchedStyles = await getMatchedStyles({
-        matchedPayload: [ruleMatch('div', [{name: 'opacity', value: '0.5'}])],
-        animationStylesPayload: [animationStyle],
+        const matchedStyles = await getMatchedStyles({
+          matchedPayload: [ruleMatch('div', [{name: 'opacity', value: '0.5'}])],
+          transitionsStylePayload: transitionStyle,
+        });
+
+        const styles = matchedStyles.nodeStyles();
+        const regularStyle = styles.find(style => style.type === SDK.CSSStyleDeclaration.Type.Regular);
+        assert.exists(regularStyle);
+        const property = regularStyle.allProperties().find(p => p.name === 'opacity');
+        assert.exists(property);
+
+        assert.isTrue(matchedStyles.isPropertyOverriddenByAnimation(property));
       });
 
-      const styles = matchedStyles.nodeStyles();
-      const regularStyle = styles.find(style => style.type === SDK.CSSStyleDeclaration.Type.Regular);
-      assert.exists(regularStyle);
-      const property = regularStyle.allProperties().find(p => p.name === 'opacity');
-      assert.exists(property);
+      it('returns false when a property is overridden by another regular property', async () => {
+        const matchedStyles = await getMatchedStyles({
+          matchedPayload: [
+            ruleMatch('div', [{name: 'opacity', value: '0.5'}]),
+            ruleMatch('div.active', [{name: 'opacity', value: '1'}]),  // Higher specificity
+          ],
+        });
 
-      assert.isTrue(matchedStyles.isPropertyOverriddenByAnimation(property));
-    });
+        const styles = matchedStyles.nodeStyles();
+        const regularStyle = styles.find(
+            style => style.type === SDK.CSSStyleDeclaration.Type.Regular &&
+                style.allProperties().find(p => p.value === '0.5'));
+        assert.exists(regularStyle);
+        const property = regularStyle.allProperties().find(p => p.name === 'opacity');
+        assert.exists(property);
 
-    it('returns true when a property is overridden by a transition', async () => {
-      const transitionStyle = {
-        cssProperties: [{name: 'opacity', value: '1'}],
-        shorthandEntries: [],
-      } as Protocol.CSS.CSSStyle;
-
-      const matchedStyles = await getMatchedStyles({
-        matchedPayload: [ruleMatch('div', [{name: 'opacity', value: '0.5'}])],
-        transitionsStylePayload: transitionStyle,
+        assert.isFalse(matchedStyles.isPropertyOverriddenByAnimation(property));
       });
-
-      const styles = matchedStyles.nodeStyles();
-      const regularStyle = styles.find(style => style.type === SDK.CSSStyleDeclaration.Type.Regular);
-      assert.exists(regularStyle);
-      const property = regularStyle.allProperties().find(p => p.name === 'opacity');
-      assert.exists(property);
-
-      assert.isTrue(matchedStyles.isPropertyOverriddenByAnimation(property));
-    });
-
-    it('returns false when a property is overridden by another regular property', async () => {
-      const matchedStyles = await getMatchedStyles({
-        matchedPayload: [
-          ruleMatch('div', [{name: 'opacity', value: '0.5'}]),
-          ruleMatch('div.active', [{name: 'opacity', value: '1'}]),  // Higher specificity
-        ],
-      });
-
-      const styles = matchedStyles.nodeStyles();
-      const regularStyle = styles.find(
-          style => style.type === SDK.CSSStyleDeclaration.Type.Regular &&
-              style.allProperties().find(p => p.value === '0.5'));
-      assert.exists(regularStyle);
-      const property = regularStyle.allProperties().find(p => p.name === 'opacity');
-      assert.exists(property);
-
-      assert.isFalse(matchedStyles.isPropertyOverriddenByAnimation(property));
     });
   });
 });

@@ -3,19 +3,27 @@
 // found in the LICENSE file.
 
 import * as Protocol from '../../generated/protocol.js';
-import {createTarget} from '../../testing/EnvironmentHelpers.js';
-import {describeWithMockConnection} from '../../testing/MockConnection.js';
-import * as Common from '../common/common.js';
+import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
+import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
+import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
+import {TestUniverse} from '../../testing/TestUniverse.js';
 
 import * as SDK from './sdk.js';
 
-describeWithMockConnection('AutofillModel', () => {
+describe('AutofillModel', () => {
+  setupLocaleHooks();
+  setupSettingsHooks();
+  setupRuntimeHooks();
+
+  let universe: TestUniverse;
+
   beforeEach(() => {
-    Common.Settings.Settings.instance().createLocalSetting('show-test-addresses-in-autofill-menu-on-event', true);
+    universe = new TestUniverse();
+    universe.settings.createSetting('show-test-addresses-in-autofill-menu-on-event', true);
   });
 
   it('can enable and disable the Autofill CDP domain', () => {
-    const target = createTarget();
+    const target = universe.createTarget();
     const autofillModel = target.model(SDK.AutofillModel.AutofillModel);
     const enableSpy = sinon.spy(autofillModel!.agent, 'invoke_enable');
     const disableSpy = sinon.spy(autofillModel!.agent, 'invoke_disable');
@@ -33,7 +41,7 @@ describeWithMockConnection('AutofillModel', () => {
   });
 
   it('sets test addresses by calling the Autofill backend', () => {
-    const target = createTarget();
+    const target = universe.createTarget();
     const autofillModel = target.model(SDK.AutofillModel.AutofillModel);
     const setAddressSpy = sinon.spy(autofillModel!.agent, 'invoke_setAddresses');
     sinon.assert.notCalled(setAddressSpy);
@@ -46,7 +54,7 @@ describeWithMockConnection('AutofillModel', () => {
   });
 
   it('dispatches addressFormFilledEvent on autofill event', () => {
-    const target = createTarget();
+    const target = universe.createTarget();
     const autofillModel = target.model(SDK.AutofillModel.AutofillModel);
 
     const dispatchedEvents: SDK.AutofillModel.AddressFormFilledEvent[] = [];

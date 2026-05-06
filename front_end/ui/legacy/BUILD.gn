@@ -94,6 +94,7 @@ devtools_ui_module("ui") {
     "Toolbar.ts",
     "Tooltip.ts",
     "Treeoutline.ts",
+    "UIUserMetrics.ts",
     "UIUtils.ts",
     "View.ts",
     "ViewManager.ts",

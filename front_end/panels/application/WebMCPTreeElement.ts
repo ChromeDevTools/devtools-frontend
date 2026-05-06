@@ -2,9 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Host from '../../core/host/host.js';
 import type * as Platform from '../../core/platform/platform.js';
 import {createIcon} from '../../ui/kit/kit.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 import {ApplicationPanelTreeElement} from './ApplicationPanelTreeElement.js';
 import type {ResourcesPanel} from './ResourcesPanel.js';
@@ -29,7 +29,7 @@ export class WebMCPTreeElement extends ApplicationPanelTreeElement {
       this.#view = new WebMCPView();
     }
     this.showView(this.#view);
-    Host.userMetrics.panelShown('web-mcp');
+    UI.UIUserMetrics.UIUserMetrics.instance().panelShown('web-mcp');
     return false;
   }
 }

@@ -206,11 +206,11 @@ export class SettingsScreen extends UI.Widget.VBox implements UI.View.ViewLocati
 
   private reportSettingsPanelShown(tabId: string): void {
     if (tabId === i18nString(UIStrings.shortcuts)) {
-      Host.userMetrics.settingsPanelShown('shortcuts');
+      UI.UIUserMetrics.UIUserMetrics.instance().settingsPanelShown('shortcuts');
       return;
     }
 
-    Host.userMetrics.settingsPanelShown(tabId);
+    UI.UIUserMetrics.UIUserMetrics.instance().settingsPanelShown(tabId);
   }
 
   private onEscapeKeyPressed(event: KeyboardEvent): void {

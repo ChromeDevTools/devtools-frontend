@@ -27,6 +27,7 @@ import type {Panel} from './Panel.js';
 import {type ShowMode, SplitWidget} from './SplitWidget.js';
 import {type EventData, Events as TabbedPaneEvents, type TabbedPane, type TabbedPaneTabDelegate} from './TabbedPane.js';
 import {Tooltip} from './Tooltip.js';
+import {UIUserMetrics} from './UIUserMetrics.js';
 import type {TabbedViewLocation, View, ViewLocation, ViewLocationResolver} from './View.js';
 import {ViewManager} from './ViewManager.js';
 import {VBox, type Widget, WidgetFocusRestorer} from './Widget.js';
@@ -243,7 +244,7 @@ export class InspectorView extends VBox implements ViewLocationResolver {
         (event: Common.EventTarget.EventTargetEvent<EventData>) => this.tabSelected(event.data.tabId), this);
     const selectedTab = this.tabbedPane.selectedTabId;
     if (selectedTab) {
-      Host.userMetrics.panelShown(selectedTab, true);
+      UIUserMetrics.instance().panelShown(selectedTab, true);
     }
     this.tabbedPane.setAccessibleName(i18nString(UIStrings.panels));
     this.tabbedPane.setTabDelegate(this.tabDelegate);
@@ -257,7 +258,7 @@ export class InspectorView extends VBox implements ViewLocationResolver {
                                    })}`);
 
     // Store the initial selected panel for use in launch histograms
-    Host.userMetrics.setLaunchPanel(this.tabbedPane.selectedTabId);
+    UIUserMetrics.instance().setLaunchPanel(this.tabbedPane.selectedTabId);
 
     if (Host.InspectorFrontendHost.isUnderTest()) {
       this.tabbedPane.setAutoSelectFirstItemOnShow(false);
@@ -710,7 +711,7 @@ export class InspectorView extends VBox implements ViewLocationResolver {
   }
 
   private tabSelected(tabId: string): void {
-    Host.userMetrics.panelShown(tabId);
+    UIUserMetrics.instance().panelShown(tabId, false);
   }
 
   setOwnerSplit(splitWidget: SplitWidget): void {

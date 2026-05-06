@@ -190,7 +190,7 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
     this.editorSetForTest();
 
     // Record the console tool load time after the console prompt constructor is complete.
-    Host.userMetrics.panelLoaded('console', 'DevTools.Launch.Console');
+    UI.UIUserMetrics.UIUserMetrics.instance().panelLoaded('console', 'DevTools.Launch.Console');
   }
 
   private eagerSettingChanged(): void {

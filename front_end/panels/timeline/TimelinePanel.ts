@@ -776,7 +776,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     super.wasShown();
     UI.Context.Context.instance().setFlavor(TimelinePanel, this);
     // Record the performance tool load time.
-    Host.userMetrics.panelLoaded('timeline', 'DevTools.Launch.Timeline');
+    UI.UIUserMetrics.UIUserMetrics.instance().panelLoaded('timeline', 'DevTools.Launch.Timeline');
 
     const cruxManager = CrUXManager.CrUXManager.instance();
     cruxManager.addEventListener(CrUXManager.Events.FIELD_DATA_CHANGED, this.#onFieldDataChanged, this);
@@ -2575,7 +2575,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
         const measure = performance.measure('TraceLoad', {start, end});
         const duration = Trace.Types.Timing.Milli(measure.duration);
         this.element.dispatchEvent(new TraceLoadEvent(duration));
-        Host.userMetrics.performanceTraceLoad(measure);
+        UI.UIUserMetrics.UIUserMetrics.instance().performanceTraceLoad(measure);
       }, 0);
     });
   }

@@ -46,15 +46,6 @@ export function setPlatformForTests(platform: string): void {
   _isWin = undefined;
 }
 
-let _isCustomDevtoolsFrontend: boolean;
-
-export function isCustomDevtoolsFrontend(): boolean {
-  if (typeof _isCustomDevtoolsFrontend === 'undefined') {
-    _isCustomDevtoolsFrontend = window.location.toString().startsWith('devtools://devtools/custom/');
-  }
-  return _isCustomDevtoolsFrontend;
-}
-
 let _fontFamily: string;
 
 export function fontFamily(): string {

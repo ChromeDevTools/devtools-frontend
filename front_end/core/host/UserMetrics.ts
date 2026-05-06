@@ -6,28 +6,6 @@ import {InspectorFrontendHostInstance} from './InspectorFrontendHost.js';
 import {EnumeratedHistogram} from './InspectorFrontendHostAPI.js';
 
 export class UserMetrics {
-  #panelChangedSinceLaunch: boolean;
-  #firedLaunchHistogram: boolean;
-  #launchPanelName: string;
-  constructor() {
-    this.#panelChangedSinceLaunch = false;
-    this.#firedLaunchHistogram = false;
-    this.#launchPanelName = '';
-  }
-
-  panelShown(panelName: string, isLaunching?: boolean): void {
-    const code = PanelCodes[panelName as keyof typeof PanelCodes] || 0;
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(EnumeratedHistogram.PanelShown, code, PanelCodes.MAX_VALUE);
-    InspectorFrontendHostInstance.recordUserMetricsAction('DevTools_PanelShown_' + panelName);
-    // Store that the user has changed the panel so we know launch histograms should not be fired.
-    if (!isLaunching) {
-      this.#panelChangedSinceLaunch = true;
-    }
-  }
-
-  settingsPanelShown(settingsViewId: string): void {
-    this.panelShown('settings-' + settingsViewId);
-  }
 
   sourcesPanelFileDebugged(mediaType?: string): void {
     const code = (mediaType && MediaTypes[mediaType as keyof typeof MediaTypes]) || MediaTypes.Unknown;
@@ -49,38 +27,6 @@ export class UserMetrics {
 
   actionTaken(action: Action): void {
     InspectorFrontendHostInstance.recordEnumeratedHistogram(EnumeratedHistogram.ActionTaken, action, Action.MAX_VALUE);
-  }
-
-  panelLoaded(panelName: string, histogramName: string): void {
-    if (this.#firedLaunchHistogram || panelName !== this.#launchPanelName) {
-      return;
-    }
-
-    this.#firedLaunchHistogram = true;
-    // Use rAF and window.setTimeout to ensure the marker is fired after layout and rendering.
-    // This will give the most accurate representation of the tool being ready for a user.
-    requestAnimationFrame(() => {
-      window.setTimeout(() => {
-        // Mark the load time so that we can pinpoint it more easily in a trace.
-        performance.mark(histogramName);
-        // If the user has switched panel before we finished loading, ignore the histogram,
-        // since the launch timings will have been affected and are no longer valid.
-        if (this.#panelChangedSinceLaunch) {
-          return;
-        }
-        // This fires the event for the appropriate launch histogram.
-        // The duration is measured as the time elapsed since the time origin of the document.
-        InspectorFrontendHostInstance.recordPerformanceHistogram(histogramName, performance.now());
-      }, 0);
-    });
-  }
-
-  setLaunchPanel(panelName: string|null): void {
-    this.#launchPanelName = (panelName as string);
-  }
-
-  performanceTraceLoad(measure: PerformanceMeasure): void {
-    InspectorFrontendHostInstance.recordPerformanceHistogram('DevTools.TraceLoad', measure.duration);
   }
 
   keybindSetSettingChanged(keybindSet: string): void {

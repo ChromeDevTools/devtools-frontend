@@ -1044,7 +1044,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     this.swatchPopoverHelper().reposition();
 
     // Record the elements tool load time after the sidepane has loaded.
-    Host.userMetrics.panelLoaded('elements', 'DevTools.Launch.Elements');
+    UI.UIUserMetrics.UIUserMetrics.instance().panelLoaded('elements', 'DevTools.Launch.Elements');
 
     this.dispatchEventToListeners(Events.STYLES_UPDATE_COMPLETED, {hasMatchedStyles: false});
   }

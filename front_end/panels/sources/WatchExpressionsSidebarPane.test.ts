@@ -23,8 +23,7 @@ describeWithEnvironment('WatchExpression', () => {
     executionContext.evaluate.resolves({object, exceptionDetails: undefined});
     sinon.stub(UI.Context.Context.instance(), 'flavor').returns(executionContext);
 
-    const expandController = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionsTreeExpandController(
-        new UI.TreeOutline.TreeOutline());
+    const expandController = new ObjectUI.ObjectPropertiesSection.ObjectTreeExpansionTracker();
     const linkifier = new Components.Linkifier.Linkifier();
 
     const watchExpression = new Sources.WatchExpressionsSidebarPane.WatchExpression('obj', expandController, linkifier);
@@ -46,11 +45,13 @@ describeWithEnvironment('WatchExpression', () => {
 
     const pane = new Sources.WatchExpressionsSidebarPane.WatchExpressionsSidebarPane();
     renderElementIntoDOM(pane);
+
     await pane.updateComplete;
 
     const emptyElement = pane.contentElement.querySelector('.gray-info-message');
     assert.exists(emptyElement);
     assert.strictEqual(emptyElement.textContent, 'No watch expressions');
+
   });
 
   it('adds expression via action', async () => {
@@ -71,6 +72,7 @@ describeWithEnvironment('WatchExpression', () => {
     await pane.updateComplete;
 
     assert.deepEqual(setting.get(), ['1 + 1']);
+
   });
 
   it('edits an expression and saves to settings', async () => {
@@ -91,19 +93,16 @@ describeWithEnvironment('WatchExpression', () => {
 
     const watchExpression = pane.watchExpressions[0];
 
-    const treeOutlineElement = pane.contentElement.querySelector('.gray-info-message')?.nextElementSibling;
-    assert.instanceOf(treeOutlineElement, HTMLElement);
-    assert.exists(treeOutlineElement.shadowRoot);
+    const listItemElement = watchExpression.treeElement().listItemElement;
+    assert.exists(listItemElement);
 
-    const watchExpressionItem = treeOutlineElement.shadowRoot.querySelector<HTMLElement>('.watch-expression-tree-item');
-    assert.exists(watchExpressionItem);
-    const headerElement = watchExpressionItem.querySelector<HTMLElement>('.watch-expression-header');
+    const headerElement = listItemElement.querySelector('.watch-expression-header') as HTMLElement;
     assert.exists(headerElement);
 
     // Double click to start editing
     headerElement.dispatchEvent(new MouseEvent('dblclick', {bubbles: true}));
 
-    const textPromptElement = treeOutlineElement.shadowRoot.querySelector<HTMLElement>('.text-prompt');
+    const textPromptElement = listItemElement.querySelector('.text-prompt') as HTMLElement;
     assert.exists(textPromptElement);
 
     textPromptElement.textContent = '2 + 2';
@@ -113,6 +112,7 @@ describeWithEnvironment('WatchExpression', () => {
     await watchExpression.updateComplete;
 
     assert.deepEqual(setting.get(), ['2 + 2']);
+
   });
 
   it('deletes an expression and saves to settings', async () => {
@@ -133,17 +133,16 @@ describeWithEnvironment('WatchExpression', () => {
 
     const watchExpression = pane.watchExpressions[0];
 
-    const treeOutlineElement = pane.contentElement.querySelector('.gray-info-message')?.nextElementSibling;
-    assert.instanceOf(treeOutlineElement, HTMLElement);
-    assert.exists(treeOutlineElement.shadowRoot);
-
-    const deleteButton = treeOutlineElement.shadowRoot.querySelector<HTMLElement>('.watch-expression-delete-button');
+    const listItemElement = watchExpression.treeElement().listItemElement;
+    const deleteButton = listItemElement.querySelector('.watch-expression-delete-button') as HTMLElement;
     assert.exists(deleteButton);
 
     deleteButton.dispatchEvent(new MouseEvent('click', {bubbles: true}));
+
     await watchExpression.updateComplete;
 
     assert.deepEqual(setting.get(), []);
+
   });
 
   it('screenshot for empty state', async () => {
@@ -156,6 +155,7 @@ describeWithEnvironment('WatchExpression', () => {
     await pane.updateComplete;
 
     await assertScreenshot('sources/watch-expressions-empty.png');
+
   });
 
   it('screenshot for list of expressions', async () => {
@@ -177,11 +177,18 @@ describeWithEnvironment('WatchExpression', () => {
     });
 
     sinon.stub(UI.Context.Context.instance(), 'flavor').returns(executionContext);
+    const pane = Sources.WatchExpressionsSidebarPane.WatchExpressionsSidebarPane.instance();
+    UI.Context.Context.instance().setFlavor(SDK.RuntimeModel.ExecutionContext, executionContext);
 
-    const pane = new Sources.WatchExpressionsSidebarPane.WatchExpressionsSidebarPane();
     pane.element.style.width = '300px';
     pane.element.style.height = '200px';
     renderElementIntoDOM(pane);
+    await pane.updateComplete;
+
+    const watchExpressions = pane.watchExpressions;
+    assert.lengthOf(watchExpressions, 2);
+
+    watchExpressions[1].treeElement().select();
     await pane.updateComplete;
 
     await assertScreenshot('sources/watch-expressions-list.png');

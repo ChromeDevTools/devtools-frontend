@@ -387,6 +387,10 @@ class CdpPage extends Page_js_1.Page {
     async openDevTools() {
         const pageTargetId = this.target()._targetId;
         const browser = this.browser();
+        const devtoolsTargetId = await browser._hasDevToolsTarget(this.target()._targetId);
+        if (devtoolsTargetId) {
+            return await browser._getDevToolsTargetPage(devtoolsTargetId);
+        }
         const devtoolsPage = await browser._createDevToolsPage(pageTargetId);
         return devtoolsPage;
     }

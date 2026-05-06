@@ -20,8 +20,8 @@ import { TargetManager } from './TargetManager.js';
 export declare class CdpBrowser extends BrowserBase {
     #private;
     readonly protocol = "cdp";
-    static _create(connection: Connection, contextIds: string[], acceptInsecureCerts: boolean, defaultViewport?: Viewport | null, downloadBehavior?: DownloadBehavior, process?: ChildProcess, closeCallback?: BrowserCloseCallback, targetFilterCallback?: TargetFilterCallback, isPageTargetCallback?: IsPageTargetCallback, waitForInitiallyDiscoveredTargets?: boolean, networkEnabled?: boolean, issuesEnabled?: boolean, handleDevToolsAsPage?: boolean, blockList?: string[]): Promise<CdpBrowser>;
-    constructor(connection: Connection, contextIds: string[], defaultViewport?: Viewport | null, process?: ChildProcess, closeCallback?: BrowserCloseCallback, targetFilterCallback?: TargetFilterCallback, isPageTargetCallback?: IsPageTargetCallback, waitForInitiallyDiscoveredTargets?: boolean, networkEnabled?: boolean, issuesEnabled?: boolean, handleDevToolsAsPage?: boolean, networkConditions?: string[]);
+    static _create(connection: Connection, contextIds: string[], acceptInsecureCerts: boolean, defaultViewport?: Viewport | null, downloadBehavior?: DownloadBehavior, process?: ChildProcess, closeCallback?: BrowserCloseCallback, targetFilterCallback?: TargetFilterCallback, isPageTargetCallback?: IsPageTargetCallback, waitForInitiallyDiscoveredTargets?: boolean, networkEnabled?: boolean, issuesEnabled?: boolean, handleDevToolsAsPage?: boolean, blocklist?: string[], allowlist?: string[]): Promise<CdpBrowser>;
+    constructor(connection: Connection, contextIds: string[], defaultViewport?: Viewport | null, process?: ChildProcess, closeCallback?: BrowserCloseCallback, targetFilterCallback?: TargetFilterCallback, isPageTargetCallback?: IsPageTargetCallback, waitForInitiallyDiscoveredTargets?: boolean, networkEnabled?: boolean, issuesEnabled?: boolean, handleDevToolsAsPage?: boolean, blocklist?: string[], allowlist?: string[]);
     _attach(downloadBehavior: DownloadBehavior | undefined): Promise<void>;
     _detach(): void;
     process(): ChildProcess | null;
@@ -35,6 +35,7 @@ export declare class CdpBrowser extends BrowserBase {
     newPage(options?: CreatePageOptions): Promise<Page>;
     _createPageInContext(contextId?: string, options?: CreatePageOptions): Promise<Page>;
     _createDevToolsPage(pageTargetId: string): Promise<Page>;
+    _getDevToolsTargetPage(devtoolsTargetId: string): Promise<Page>;
     _hasDevToolsTarget(pageTargetId: string): Promise<string | undefined>;
     installExtension(path: string): Promise<string>;
     uninstallExtension(id: string): Promise<void>;

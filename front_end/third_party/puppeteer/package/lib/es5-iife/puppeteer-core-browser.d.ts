@@ -37,7 +37,6 @@ import {Session} from 'webdriver-bidi-protocol';
  */
 export declare class Accessibility {
   
-
   /**
    * Captures the current state of the accessibility tree.
    * The returned object represents the root accessible node of the page.
@@ -599,7 +598,6 @@ export declare abstract class Browser extends EventEmitter<BrowserEvents> {
    * Whether Puppeteer is connected to this {@link Browser | browser}.
    */
   abstract get connected(): boolean;
-
   /**
    * Get debug information from Puppeteer.
    *
@@ -611,7 +609,6 @@ export declare abstract class Browser extends EventEmitter<BrowserEvents> {
    * @experimental
    */
   abstract get debugInfo(): DebugInfo;
-
   /**
    * Retrieves a map of all extensions installed in the browser, where the keys
    * are extension IDs and the values are the corresponding {@link Extension} instances.
@@ -661,13 +658,11 @@ export declare abstract class Browser extends EventEmitter<BrowserEvents> {
  */
 export declare abstract class BrowserContext extends EventEmitter<BrowserContextEvents> {
   
-
   /**
    * Gets all active {@link Target | targets} inside this
    * {@link BrowserContext | browser context}.
    */
   abstract targets(): Target[];
-
   /**
    * Waits until a {@link Target | target} matching the given `predicate`
    * appears and returns it.
@@ -921,7 +916,6 @@ export declare interface BrowserEvents extends Record<EventType, unknown> {
  */
 export declare abstract class BrowserLauncher {
   
-
   get browser(): SupportedBrowser;
   launch(options?: LaunchOptions): Promise<Browser>;
   abstract executablePath(
@@ -979,7 +973,6 @@ export declare abstract class CDPSession extends EventEmitter<CDPSessionEvents> 
    * @public
    */
   abstract get detached(): boolean;
-
   abstract send<T extends keyof ProtocolMapping.Commands>(
     method: T,
     params?: ProtocolMapping.Commands[T]['paramsType'][0],
@@ -1239,9 +1232,7 @@ export declare class Connection extends EventEmitter<CDPSessionEvents> {
     idGenerator?: () => number,
   );
   static fromSession(session: CDPSession): Connection | undefined;
-
   get timeout(): number;
-
   /**
    * @param sessionId - The session id
    * @returns The current CDP session if it exists
@@ -1253,9 +1244,7 @@ export declare class Connection extends EventEmitter<CDPSessionEvents> {
     params?: ProtocolMapping.Commands[T]['paramsType'][0],
     options?: CommandOptions,
   ): Promise<ProtocolMapping.Commands[T]['returnType']>;
-
   dispose(): void;
-
   /**
    * @param targetInfo - The target info
    * @returns The CDP session that is created
@@ -1342,7 +1331,6 @@ export declare interface ConnectOptions {
    * Callback to decide if Puppeteer should connect to a given target or not.
    */
   targetFilter?: TargetFilterCallback;
-
   /**
    * Whether to handle the DevTools windows as pages in Puppeteer. Supported
    * only in Chrome with CDP.
@@ -1371,7 +1359,6 @@ export declare interface ConnectOptions {
   browserWSEndpoint?: string;
   browserURL?: string;
   transport?: ConnectionTransport;
-
   /**
    * Headers to use for the web socket connection.
    * @remarks
@@ -1407,9 +1394,45 @@ export declare interface ConnectOptions {
    * @remarks
    * Currently only supported for CDP connections.
    *
+   * Inner `<iframe>` content loading is currently not blocked.
+   *
+   * Cannot be used along with {@link ConnectOptions.allowlist}.
+   *
    * @experimental
    */
-  blockList?: string[];
+  blocklist?: string[];
+  /**
+   * A list of URL patterns to allow.
+   *
+   * **Requires Chrome 149+.**
+   *
+   * This option allows you to restrict the browser from accessing any URLs
+   * except for those that match the patterns in the allowList.
+   * It uses the standard [URLPattern](https://urlpattern.spec.whatwg.org/) API to match URLs.
+   *
+   * When connecting to an existing browser, Puppeteer will silently detach from any
+   * already open targets that violate the patterns.
+   *
+   * For any network requests made by the browser (including navigations and
+   * subresources like images or scripts), the request will fail with an error
+   * if the URL does not match any pattern in the allowlist.
+   *
+   * @example Pattern to allow a specific domain:
+   * `*://example.com/*`
+   *
+   * @example Pattern to allow all subdomains:
+   * `*://*.example.com/*`
+   *
+   * @remarks
+   * Currently only supported for CDP connections.
+   *
+   * Inner `<iframe>` content loading is currently not blocked.
+   *
+   * Cannot be used along with {@link ConnectOptions.blocklist}.
+   *
+   * @experimental
+   */
+  allowlist?: string[];
 }
 
 /**
@@ -1418,7 +1441,6 @@ export declare interface ConnectOptions {
  */
 export declare class ConsoleMessage {
   
-
   /**
    * The type of the console message.
    */
@@ -1746,7 +1768,6 @@ export declare type CookieSourceScheme = 'Unset' | 'NonSecure' | 'Secure';
  */
 export declare class Coverage {
   
-
   /**
    * @param options - Set of configurable options for coverage defaults to
    * `resetOnNavigation : true, reportAnonymousScripts : false,`
@@ -1843,7 +1864,6 @@ export declare interface Credentials {
 export declare class CSSCoverage {
   
   constructor(client: CDPSession);
-
   start(options?: {resetOnNavigation?: boolean}): Promise<void>;
   stop(): Promise<CoverageEntry[]>;
 }
@@ -2045,7 +2065,6 @@ export declare interface DeviceRequestPromptDevice {
  */
 export declare abstract class Dialog {
   
-
   /**
    * The type of the dialog.
    */
@@ -2059,7 +2078,6 @@ export declare abstract class Dialog {
    * is not a `prompt`.
    */
   defaultValue(): string;
-
   /**
    * A promise that resolves when the dialog has been accepted.
    *
@@ -2156,7 +2174,6 @@ export declare abstract class ElementHandle<
   ElementType extends Node = Element,
 > extends JSHandle<ElementType> {
   
-
   /**
    * Frame corresponding to the current handle.
    */
@@ -2512,7 +2529,6 @@ export declare abstract class ElementHandle<
     this: ElementHandle<HTMLInputElement>,
     ...paths: string[]
   ): Promise<void>;
-
   /**
    * This method scrolls element into view if needed, and then uses
    * {@link Touchscreen.tap} to tap in the center of the element.
@@ -2606,7 +2622,6 @@ export declare abstract class ElementHandle<
     },
   ): Promise<string>;
   screenshot(options?: Readonly<ScreenshotOptions>): Promise<Uint8Array>;
-
   /**
    * Resolves to true if the element is visible in the current viewport. If an
    * element is an SVG, we check if the svg owner element is in the viewport
@@ -2724,7 +2739,6 @@ export declare class EventEmitter<
   Events extends Record<EventType, unknown>,
 > implements CommonEventEmitter<EventsWithWildcard<Events>> {
   
-
   /**
    * Bind an event listener to fire when an event occurs.
    * @param type - the event type you'd like to listen to. Can be a string or symbol.
@@ -2841,7 +2855,6 @@ export declare type ExperimentsConfiguration = Record<string, never>;
  */
 export declare abstract class Extension {
   
-
   /**
    * Whether the extension is enabled.
    *
@@ -2911,7 +2924,6 @@ export declare class ExtensionTransport implements ConnectionTransport {
   static connectTab(tabId: number): Promise<ExtensionTransport>;
   onmessage?: (message: string) => void;
   onclose?: () => void;
-
   send(message: string): void;
   close(): void;
 }
@@ -2940,7 +2952,6 @@ export declare class ExtensionTransport implements ConnectionTransport {
  */
 export declare class FileChooser {
   
-
   /**
    * Whether file chooser allow for
    * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/file#attr-multiple | multiple}
@@ -3076,7 +3087,6 @@ export declare type FlattenHandle<T> = T extends HandleOr<infer U> ? U : never;
  */
 export declare abstract class Frame extends EventEmitter<FrameEvents> {
   
-
   /**
    * The page associated with the frame.
    */
@@ -3147,7 +3157,6 @@ export declare abstract class Frame extends EventEmitter<FrameEvents> {
   abstract waitForNavigation(
     options?: WaitForOptions,
   ): Promise<HTTPResponse | null>;
-
   /**
    * @returns The frame element associated with this frame (if any).
    */
@@ -3437,7 +3446,6 @@ export declare abstract class Frame extends EventEmitter<FrameEvents> {
    * what point to consider the content setting successful.
    */
   abstract setContent(html: string, options?: WaitForOptions): Promise<void>;
-
   /**
    * The frame's `name` attribute as specified in the tag.
    *
@@ -3478,7 +3486,6 @@ export declare abstract class Frame extends EventEmitter<FrameEvents> {
    * @deprecated Use the `detached` getter.
    */
   isDetached(): boolean;
-
   /**
    * Adds a `<script>` tag into the page with the desired url or content.
    *
@@ -3597,7 +3604,6 @@ export declare abstract class Frame extends EventEmitter<FrameEvents> {
    * The frame's title.
    */
   title(): Promise<string>;
-
   /**
    * Retrieves the list of extension execution realms associated with this frame.
    * Extension execution realms are created by extension content scripts injected
@@ -3795,7 +3801,6 @@ export declare abstract class HTTPRequest {
    * @experimental
    */
   abstract get client(): CDPSession;
-
   /**
    * The URL of the request
    */
@@ -3841,7 +3846,6 @@ export declare abstract class HTTPRequest {
   enqueueInterceptAction(
     pendingHandler: () => void | PromiseLike<unknown>,
   ): void;
-
   /**
    * Awaits pending interception handlers and then decides how to fulfill
    * the request interception.
@@ -3945,7 +3949,6 @@ export declare abstract class HTTPRequest {
   abstract failure(): {
     errorText: string;
   } | null;
-
   /**
    * Continues request with optional request overrides.
    *
@@ -4187,7 +4190,6 @@ export declare interface Issue {
  */
 export declare class JSCoverage {
   
-
   start(options?: {
     resetOnNavigation?: boolean;
     reportAnonymousScripts?: boolean;
@@ -4260,7 +4262,6 @@ export declare abstract class JSHandle<T = unknown> {
    * Used for nominally typing {@link JSHandle}.
    */
   _?: T;
-
   /**
    * Evaluates the given function with the current handle as its first argument.
    */
@@ -4333,7 +4334,6 @@ export declare abstract class JSHandle<T = unknown> {
    * Useful during debugging.
    */
   abstract toString(): string;
-
   /**
    * Provides access to the
    * {@link https://chromedevtools.github.io/devtools-protocol/tot/Runtime/#type-RemoteObject | Protocol.Runtime.RemoteObject}
@@ -5105,7 +5105,6 @@ export declare abstract class Locator<T> extends EventEmitter<LocatorEvents> {
    * Used for nominally typing {@link Locator}.
    */
   _?: T;
-
   get timeout(): number;
   /**
    * Creates a new locator instance by cloning the current locator and setting
@@ -5157,7 +5156,6 @@ export declare abstract class Locator<T> extends EventEmitter<LocatorEvents> {
     this: Locator<ElementType>,
     value: boolean,
   ): Locator<ElementType>;
-
   /**
    * Clones the locator.
    */
@@ -5190,7 +5188,6 @@ export declare abstract class Locator<T> extends EventEmitter<LocatorEvents> {
    * @public
    */
   filter<S extends T>(predicate: Predicate<T, S>): Locator<S>;
-
   /**
    * Clicks the located element.
    */
@@ -5202,11 +5199,12 @@ export declare abstract class Locator<T> extends EventEmitter<LocatorEvents> {
    * Fills out the input identified by the locator using the provided value. The
    * type of the input is determined at runtime and the appropriate fill-out
    * method is chosen based on the type. `contenteditable`, select, textarea and
-   * input elements are supported.
+   * input elements are supported. For checkboxes, radio buttons and switches
+   * specify a boolean value.
    */
   fill<ElementType extends Element>(
     this: Locator<ElementType>,
-    value: string,
+    value: string | boolean,
     options?: Readonly<LocatorFillOptions>,
   ): Promise<void>;
   /**
@@ -5698,7 +5696,6 @@ export declare interface Offset {
  */
 export declare abstract class Page extends EventEmitter<PageEvents> {
   
-
   /**
    * `true` if the service worker are being bypassed, `false` otherwise.
    */
@@ -5715,7 +5712,6 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
    * `true` if the page has JavaScript enabled, `false` otherwise.
    */
   abstract isJavaScriptEnabled(): boolean;
-
   /**
    * This method is typically coupled with an action that triggers file
    * choosing.
@@ -5991,7 +5987,6 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
    * {@link https://pptr.dev/guides/page-interactions#prefixed-selector-syntax | prefix}.
    */
   locator<Ret>(func: () => Awaitable<Ret>): Locator<Ret>;
-
   /**
    * Finds the first element that matches the selector. If no element matches
    * the selector, the return value resolves to `null`.
@@ -6667,7 +6662,6 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
    * @returns A promise which resolves once the network is idle.
    */
   waitForNetworkIdle(options?: WaitForNetworkIdleOptions): Promise<void>;
-
   /**
    * Waits for a frame matching the given conditions to appear.
    *
@@ -7056,7 +7050,6 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
    * @defaultValue `true`
    */
   abstract setCacheEnabled(enabled?: boolean): Promise<void>;
-
   /**
    * Captures a screencast of this {@link Page | page}.
    *
@@ -7098,7 +7091,6 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
    * You must have {@link https://ffmpeg.org/ | ffmpeg} installed on your system.
    */
   screencast(options?: Readonly<ScreencastOptions>): Promise<ScreenRecorder>;
-
   /**
    * Captures a screenshot of this {@link Page | page}.
    *
@@ -7128,7 +7120,6 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
    * @param enabled - Whether to emulate focus.
    */
   abstract emulateFocusedPage(enabled: boolean): Promise<void>;
-
   /**
    * Generates a PDF of the page with the `print` CSS media type.
    *
@@ -7552,10 +7543,9 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
    * @experimental
    */
   abstract windowId(): Promise<WindowId>;
-
   /**
-   * Opens DevTools for the current Page and returns the DevTools Page. This
-   * method is only available in Chrome.
+   * Opens DevTools for the this page if not already open and returns the DevTools page.
+   * This method is only available in Chrome.
    */
   abstract openDevTools(): Promise<Page>;
   /**
@@ -8155,7 +8145,6 @@ export declare class Puppeteer {
    * Unregisters all custom query handlers.
    */
   static clearCustomQueryHandlers(): void;
-
   /**
    * This method attaches Puppeteer to an existing browser instance.
    *
@@ -8455,7 +8444,6 @@ export declare type PuppeteerLifeCycleEvent =
  */
 export declare class PuppeteerNode extends Puppeteer {
   
-
   /**
    * This method attaches Puppeteer to an existing browser instance.
    *
@@ -8512,7 +8500,6 @@ export declare class PuppeteerNode extends Puppeteer {
    * The default executable path.
    */
   executablePath(): string;
-
   /**
    * The name of the browser that was last launched.
    */
@@ -8580,7 +8567,6 @@ export declare interface QueryOptions {
  */
 export declare abstract class Realm {
   
-
   /**
    * Returns the origin that created the Realm.
    * For example, if the realm was created by an extension content script,
@@ -8602,7 +8588,6 @@ export declare abstract class Realm {
    * @experimental
    */
   abstract extension(): Promise<Extension | null>;
-
   /**
    * Evaluates a function in the realm's context and returns a
    * {@link JSHandle} to the result.
@@ -8879,7 +8864,6 @@ export type {ScreenOrientation_2 as ScreenOrientation};
  */
 export declare class ScreenRecorder extends PassThrough {
   
-
   /**
    * Stops the recorder.
    *
@@ -8965,7 +8949,6 @@ export declare interface ScreenshotOptions {
  */
 export declare class SecurityDetails {
   
-
   /**
    * The name of the issuer of the certificate.
    */
@@ -9098,7 +9081,6 @@ export declare interface SerializedAXNode {
    * Children of this node, if there are any.
    */
   children?: SerializedAXNode[];
-
   /**
    * Get an ElementHandle for this AXNode if available.
    *
@@ -9322,7 +9304,6 @@ export declare abstract class Touchscreen {
  */
 export declare class Tracing {
   
-
   /**
    * Starts a trace for the current page.
    * @remarks
@@ -9459,7 +9440,6 @@ export declare interface WaitForOptions {
    * @defaultValue `'load'`
    */
   waitUntil?: PuppeteerLifeCycleEvent | PuppeteerLifeCycleEvent[];
-
   /**
    * A signal object that allows you to cancel the call.
    */
@@ -9565,7 +9545,6 @@ export declare class WebMCP extends EventEmitter<{
   toolresponded: WebMCPToolCallResult;
 }> {
   
-
   /**
    * Gets all WebMCP tools defined by the page.
    */
@@ -9582,6 +9561,11 @@ export declare interface WebMCPAnnotation {
    * A hint indicating that the tool does not modify any state.
    */
   readOnly?: boolean;
+  /**
+   * A hint indicating that the tool output may contain untrusted content, ex: UGC, 3rd
+   * party data.
+   */
+  untrustedContent?: boolean;
   /**
    * If the declarative tool was declared with the autosubmit attribute.
    */
@@ -9629,7 +9613,6 @@ export declare class WebMCPTool extends EventEmitter<{
    * Source location that defined the tool (if available).
    */
   location?: ConsoleMessageLocation;
-
   /**
    * The corresponding ElementHandle when tool was registered via a form.
    */
@@ -9737,7 +9720,6 @@ export declare interface WebMCPToolsRemovedEvent {
  */
 export declare abstract class WebWorker extends EventEmitter<WebWorkerEvents> {
   
-
   /**
    * The URL of this web worker.
    */

@@ -211,9 +211,10 @@ export declare abstract class Locator<T> extends EventEmitter<LocatorEvents> {
      * Fills out the input identified by the locator using the provided value. The
      * type of the input is determined at runtime and the appropriate fill-out
      * method is chosen based on the type. `contenteditable`, select, textarea and
-     * input elements are supported.
+     * input elements are supported. For checkboxes, radio buttons and switches
+     * specify a boolean value.
      */
-    fill<ElementType extends Element>(this: Locator<ElementType>, value: string, options?: Readonly<LocatorFillOptions>): Promise<void>;
+    fill<ElementType extends Element>(this: Locator<ElementType>, value: string | boolean, options?: Readonly<LocatorFillOptions>): Promise<void>;
     /**
      * Hovers over the located element.
      */

@@ -3049,7 +3049,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    */
   // If moved update release-please config
   // x-release-please-start-version
-  const packageVersion = '24.42.0';
+  const packageVersion = '24.43.0';
   // x-release-please-end
 
   /**
@@ -6565,7 +6565,8 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
      * Fills out the input identified by the locator using the provided value. The
      * type of the input is determined at runtime and the appropriate fill-out
      * method is chosen based on the type. `contenteditable`, select, textarea and
-     * input elements are supported.
+     * input elements are supported. For checkboxes, radio buttons and switches
+     * specify a boolean value.
      */
     fill(value, options) {
       return firstValueFrom(_assertClassBrand(_Locator_brand, this, _fill).call(this, value, options));
@@ -6613,11 +6614,27 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
           return 'typeable-input';
         }
         if (el instanceof HTMLInputElement) {
-          if (new Set(['textarea', 'text', 'url', 'tel', 'search', 'password', 'number', 'email']).has(el.type)) {
-            return 'typeable-input';
-          } else {
-            return 'other-input';
+          switch (el.type) {
+            case 'checkbox':
+            case 'radio':
+              return 'checkable-input';
+            case 'text':
+            case 'url':
+            case 'tel':
+            case 'search':
+            case 'password':
+            case 'number':
+            case 'email':
+              return 'typeable-input';
+            default:
+              return 'other-input';
           }
+        }
+        switch (el.getAttribute('role')) {
+          case 'checkbox':
+          case 'radio':
+          case 'switch':
+            return 'checkable-input';
         }
         if (el.isContentEditable) {
           return 'contenteditable';
@@ -6628,14 +6645,15 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
           return from(handle.focus()).pipe(mergeMap(() => {
             return from(handle.evaluate((input, newValue) => {
               const element = input;
+              const valString = String(newValue);
               const currentValue = element.isContentEditable ? element.innerText : element.value;
-              if (currentValue === newValue) {
+              if (currentValue === valString) {
                 return;
               }
               if (element.isContentEditable) {
-                element.innerText = newValue;
+                element.innerText = valString;
               } else {
-                element.value = newValue;
+                element.value = valString;
               }
               element.dispatchEvent(new Event('input', {
                 bubbles: true
@@ -6646,24 +6664,43 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
             }, value));
           }));
         };
+        const toggleIfNeeded = () => {
+          return from(handle.evaluate(toggleEl => {
+            if (toggleEl.indeterminate || toggleEl.getAttribute('aria-checked') === 'mixed') {
+              return 'mixed';
+            }
+            return toggleEl.checked || toggleEl.getAttribute('aria-checked') === 'true';
+          })).pipe(mergeMap(currentState => {
+            if (currentState === 'mixed' || currentState !== !!value) {
+              return from(handle.click());
+            }
+            return of(undefined);
+          }));
+        };
         switch (inputType) {
+          case 'checkable-input':
+            return toggleIfNeeded();
           case 'select':
             return from(handle.select(value).then(noop));
           case 'contenteditable':
           case 'typeable-input':
-            if (value.length < typingThreshold) {
+            if (typeof value === 'string' && value.length < typingThreshold) {
               return from(handle.evaluate((input, newValue) => {
                 const element = input;
+                const valString = String(newValue);
                 const currentValue = element.isContentEditable ? element.innerText : input.value;
+                if (currentValue === valString) {
+                  return '';
+                }
                 // Clear the input if the current value does not match the filled
                 // out value.
-                if (newValue.length <= currentValue.length || !newValue.startsWith(currentValue)) {
+                if (!valString.startsWith(currentValue) || !currentValue) {
                   if (element.isContentEditable) {
                     element.innerText = '';
                   } else {
                     input.value = '';
                   }
-                  return newValue;
+                  return valString;
                 }
                 // If the value is partially filled out, only type the rest. Move
                 // cursor to the end of the common prefix.
@@ -6674,7 +6711,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
                   input.value = '';
                   input.value = currentValue;
                 }
-                return newValue.substring(currentValue.length);
+                return valString.substring(currentValue.length);
               }, value)).pipe(mergeMap(textToType => {
                 if (!textToType) {
                   return of(undefined);
@@ -21480,7 +21517,6 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
      * @internal
      */
     async initialize() {
-      // @ts-expect-error WebMCP is not yet in the Protocol types.
       return await _classPrivateFieldGet(_client16, this).send('WebMCP.enable').catch(debugError);
     }
     /**
@@ -21506,13 +21542,10 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
      * @internal
      */
     updateClient(client) {
-      // @ts-expect-error WebMCP is not yet in the Protocol types.
       _classPrivateFieldGet(_client16, this).off('WebMCP.toolsAdded', _classPrivateFieldGet(_onToolsAdded, this));
-      // @ts-expect-error WebMCP is not yet in the Protocol types.
       _classPrivateFieldGet(_client16, this).off('WebMCP.toolsRemoved', _classPrivateFieldGet(_onToolsRemoved, this));
-      // @ts-expect-error WebMCP is not yet in the Protocol types.
       _classPrivateFieldGet(_client16, this).off('WebMCP.toolInvoked', _classPrivateFieldGet(_onToolInvoked, this));
-      // @ts-expect-error WebMCP is not yet in the Protocol types.
+      // @ts-expect-error M148 has non-final status type, update expected in M149
       _classPrivateFieldGet(_client16, this).off('WebMCP.toolResponded', _classPrivateFieldGet(_onToolResponded, this));
       _classPrivateFieldSet(_client16, this, client);
       _assertClassBrand(_WebMCP_brand, this, _bindListeners).call(this);
@@ -21525,13 +21558,10 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    * SPDX-License-Identifier: Apache-2.0
    */
   function _bindListeners() {
-    // @ts-expect-error WebMCP is not yet in the Protocol types.
     _classPrivateFieldGet(_client16, this).on('WebMCP.toolsAdded', _classPrivateFieldGet(_onToolsAdded, this));
-    // @ts-expect-error WebMCP is not yet in the Protocol types.
     _classPrivateFieldGet(_client16, this).on('WebMCP.toolsRemoved', _classPrivateFieldGet(_onToolsRemoved, this));
-    // @ts-expect-error WebMCP is not yet in the Protocol types.
     _classPrivateFieldGet(_client16, this).on('WebMCP.toolInvoked', _classPrivateFieldGet(_onToolInvoked, this));
-    // @ts-expect-error WebMCP is not yet in the Protocol types.
+    // @ts-expect-error M148 has non-final status type, update expected in M149
     _classPrivateFieldGet(_client16, this).on('WebMCP.toolResponded', _classPrivateFieldGet(_onToolResponded, this));
   }
   var __addDisposableResource$1 = undefined && undefined.__addDisposableResource || function (env, value, async) {
@@ -21810,6 +21840,10 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     async openDevTools() {
       const pageTargetId = this.target()._targetId;
       const browser = this.browser();
+      const devtoolsTargetId = await browser._hasDevToolsTarget(this.target()._targetId);
+      if (devtoolsTargetId) {
+        return await browser._getDevToolsTargetPage(devtoolsTargetId);
+      }
       const devtoolsPage = await browser._createDevToolsPage(pageTargetId);
       return devtoolsPage;
     }
@@ -24077,7 +24111,8 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   var _discoveryFilter = /*#__PURE__*/new WeakMap();
   var _targetsIdsForInit = /*#__PURE__*/new WeakMap();
   var _initialAttachDone = /*#__PURE__*/new WeakMap();
-  var _blockList = /*#__PURE__*/new WeakMap();
+  var _blocklist = /*#__PURE__*/new WeakMap();
+  var _allowlist = /*#__PURE__*/new WeakMap();
   var _TargetManager_brand = /*#__PURE__*/new WeakSet();
   var _silentDetach = /*#__PURE__*/new WeakMap();
   var _getParentTarget = /*#__PURE__*/new WeakMap();
@@ -24090,7 +24125,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   var _isUrlAllowed = /*#__PURE__*/new WeakMap();
   var _maybeSetupNetworkConditions = /*#__PURE__*/new WeakMap();
   class TargetManager extends EventEmitter {
-    constructor(connection, targetFactory, targetFilterCallback, waitForInitiallyDiscoveredTargets = true, networkConditions) {
+    constructor(connection, targetFactory, targetFilterCallback, waitForInitiallyDiscoveredTargets = true, blocklist, allowlist) {
       super();
       _classPrivateMethodInitSpec(this, _TargetManager_brand);
       _classPrivateFieldInitSpec(this, _connection4, void 0);
@@ -24137,7 +24172,8 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       // done. It indicates whethere we are running the initial auto-attach step or
       // if we are handling targets after that.
       _classPrivateFieldInitSpec(this, _initialAttachDone, false);
-      _classPrivateFieldInitSpec(this, _blockList, void 0);
+      _classPrivateFieldInitSpec(this, _blocklist, []);
+      _classPrivateFieldInitSpec(this, _allowlist, []);
       _classPrivateFieldInitSpec(this, _silentDetach, async (session, parentSession) => {
         await session.send('Runtime.runIfWaitingForDebugger').catch(debugError);
         // We don't use `session.detach()` because that dispatches all commands on
@@ -24298,47 +24334,75 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
        * Helper to validate URL against blocklist patterns
        */
       _classPrivateFieldInitSpec(this, _isUrlAllowed, url => {
-        if (!_classPrivateFieldGet(_blockList, this)) {
+        if (_classPrivateFieldGet(_blocklist, this).length === 0 && _classPrivateFieldGet(_allowlist, this).length === 0) {
           return true;
         }
         // Always allow internal or setup pages
         if (!url || url === 'about:blank') {
           return true;
         }
-        for (const rule of _classPrivateFieldGet(_blockList, this)) {
-          try {
-            const pattern = new Y(rule);
-            if (pattern.test(url)) {
-              return false; // return false as url matches pattern from blockList
-            }
-          } catch {
-            debugError(`Invalid URL pattern: ${rule}`);
+        for (const item of _classPrivateFieldGet(_blocklist, this)) {
+          if (item.pattern.test(url)) {
+            return false;
           }
+        }
+        if (_classPrivateFieldGet(_allowlist, this).length > 0) {
+          for (const item of _classPrivateFieldGet(_allowlist, this)) {
+            if (item.pattern.test(url)) {
+              return true;
+            }
+          }
+          return false;
         }
         return true;
       });
       _classPrivateFieldInitSpec(this, _maybeSetupNetworkConditions, async session => {
-        if (!_classPrivateFieldGet(_blockList, this)?.length) {
+        if (_classPrivateFieldGet(_blocklist, this).length === 0 && _classPrivateFieldGet(_allowlist, this).length === 0) {
           return;
         }
-        const matchedNetworkConditions = _classPrivateFieldGet(_blockList, this).map(pattern => {
-          return {
-            urlPattern: pattern,
+        const matchedNetworkConditions = [];
+        for (const item of _classPrivateFieldGet(_blocklist, this)) {
+          matchedNetworkConditions.push({
+            urlPattern: item.rule,
+            offline: true,
             latency: 0,
             downloadThroughput: -1,
             uploadThroughput: -1
-          };
-        });
+          });
+        }
+        if (_classPrivateFieldGet(_allowlist, this).length > 0) {
+          for (const item of _classPrivateFieldGet(_allowlist, this)) {
+            matchedNetworkConditions.push({
+              urlPattern: item.rule,
+              offline: false,
+              latency: 0,
+              downloadThroughput: -1,
+              uploadThroughput: -1
+            });
+          }
+          matchedNetworkConditions.push({
+            urlPattern: '',
+            offline: true,
+            latency: 0,
+            downloadThroughput: -1,
+            uploadThroughput: -1
+          });
+        }
         await session.send('Network.emulateNetworkConditionsByRule', {
-          matchedNetworkConditions,
-          offline: true
+          // @ts-expect-error offline cannot be undefined before M149.
+          offline: _classPrivateFieldGet(_blocklist, this).length > 0 ? true : undefined,
+          matchedNetworkConditions
         });
       });
+      if (blocklist && allowlist) {
+        throw new Error('Cannot specify both blockList and allowList');
+      }
       _classPrivateFieldSet(_connection4, this, connection);
       _classPrivateFieldSet(_targetFilterCallback, this, targetFilterCallback);
       _classPrivateFieldSet(_targetFactory, this, targetFactory);
       _classPrivateFieldSet(_waitForInitiallyDiscoveredTargets, this, waitForInitiallyDiscoveredTargets);
-      _classPrivateFieldSet(_blockList, this, networkConditions);
+      _classPrivateFieldSet(_blocklist, this, _assertClassBrand(_TargetManager_brand, this, _mapPatterns).call(this, blocklist));
+      _classPrivateFieldSet(_allowlist, this, _assertClassBrand(_TargetManager_brand, this, _mapPatterns).call(this, allowlist));
       _classPrivateFieldGet(_connection4, this).on('Target.targetCreated', _classPrivateFieldGet(_onTargetCreated, this));
       _classPrivateFieldGet(_connection4, this).on('Target.targetDestroyed', _classPrivateFieldGet(_onTargetDestroyed, this));
       _classPrivateFieldGet(_connection4, this).on('Target.targetInfoChanged', _classPrivateFieldGet(_onTargetInfoChanged, this));
@@ -24431,6 +24495,16 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       _classPrivateFieldGet(_initializeDeferred, this).resolve();
     }
   }
+  function _mapPatterns(rules) {
+    const result = [];
+    for (const rule of rules ?? []) {
+      result.push({
+        pattern: new Y(rule),
+        rule
+      });
+    }
+    return result;
+  }
   function isDevToolsPageTarget(url) {
     return url.startsWith('devtools://devtools/bundled/devtools_app.html');
   }
@@ -24458,8 +24532,15 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   var _onTargetChanged = /*#__PURE__*/new WeakMap();
   var _onTargetDiscovered = /*#__PURE__*/new WeakMap();
   class CdpBrowser extends Browser {
-    static async _create(connection, contextIds, acceptInsecureCerts, defaultViewport, downloadBehavior, process, closeCallback, targetFilterCallback, isPageTargetCallback, waitForInitiallyDiscoveredTargets = true, networkEnabled = true, issuesEnabled = true, handleDevToolsAsPage = false, blockList) {
-      const browser = new CdpBrowser(connection, contextIds, defaultViewport, process, closeCallback, targetFilterCallback, isPageTargetCallback, waitForInitiallyDiscoveredTargets, networkEnabled, issuesEnabled, handleDevToolsAsPage, blockList);
+    static async _create(connection, contextIds, acceptInsecureCerts, defaultViewport, downloadBehavior, process, closeCallback, targetFilterCallback, isPageTargetCallback, waitForInitiallyDiscoveredTargets = true, networkEnabled = true, issuesEnabled = true, handleDevToolsAsPage = false, blocklist, allowlist) {
+      const browser = new CdpBrowser(connection, contextIds, defaultViewport, process, closeCallback, targetFilterCallback, isPageTargetCallback, waitForInitiallyDiscoveredTargets, networkEnabled, issuesEnabled, handleDevToolsAsPage, blocklist, allowlist);
+      if (allowlist) {
+        const version = await _assertClassBrand(_CdpBrowser_brand, browser, _getVersion).call(browser);
+        const majorVersion = parseInt(version.product.match(/\d+/)?.[0] ?? '0', 10);
+        if (majorVersion < 149) {
+          throw new Error('The allowlist option require Chrome 149 or greater.');
+        }
+      }
       if (acceptInsecureCerts) {
         await connection.send('Security.setIgnoreCertificateErrors', {
           ignore: true
@@ -24468,7 +24549,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       await browser._attach(downloadBehavior);
       return browser;
     }
-    constructor(connection, contextIds, defaultViewport, process, closeCallback, targetFilterCallback, _isPageTargetCallback2, waitForInitiallyDiscoveredTargets = true, networkEnabled = true, issuesEnabled = true, handleDevToolsAsPage = false, networkConditions) {
+    constructor(connection, contextIds, defaultViewport, process, closeCallback, targetFilterCallback, _isPageTargetCallback2, waitForInitiallyDiscoveredTargets = true, networkEnabled = true, issuesEnabled = true, handleDevToolsAsPage = false, blocklist, allowlist) {
       super();
       _classPrivateMethodInitSpec(this, _CdpBrowser_brand);
       _defineProperty(this, "protocol", 'cdp');
@@ -24545,7 +24626,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       }));
       _classPrivateFieldSet(_handleDevToolsAsPage, this, handleDevToolsAsPage);
       _assertClassBrand(_CdpBrowser_brand, this, _setIsPageTargetCallback).call(this, _isPageTargetCallback2);
-      _classPrivateFieldSet(_targetManager3, this, new TargetManager(connection, _classPrivateFieldGet(_createTarget, this), _classPrivateFieldGet(_targetFilterCallback2, this), waitForInitiallyDiscoveredTargets, networkConditions));
+      _classPrivateFieldSet(_targetManager3, this, new TargetManager(connection, _classPrivateFieldGet(_createTarget, this), _classPrivateFieldGet(_targetFilterCallback2, this), waitForInitiallyDiscoveredTargets, blocklist, allowlist));
       _classPrivateFieldSet(_defaultContext, this, new CdpBrowserContext(_classPrivateFieldGet(_connection5, this), this));
       for (const contextId of contextIds) {
         _classPrivateFieldGet(_contexts, this).set(contextId, new CdpBrowserContext(_classPrivateFieldGet(_connection5, this), this, contextId));
@@ -24657,19 +24738,22 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       const openDevToolsResponse = await _classPrivateFieldGet(_connection5, this).send('Target.openDevTools', {
         targetId: pageTargetId
       });
+      return await this._getDevToolsTargetPage(openDevToolsResponse.targetId);
+    }
+    async _getDevToolsTargetPage(devtoolsTargetId) {
       const target = await this.waitForTarget(t => {
-        return t._targetId === openDevToolsResponse.targetId;
+        return t._targetId === devtoolsTargetId;
       });
       if (!target) {
-        throw new Error(`Missing target for DevTools page (id = ${pageTargetId})`);
+        throw new Error(`Missing target for DevTools page (id = ${devtoolsTargetId})`);
       }
       const initialized = (await target._initializedDeferred.valueOrThrow()) === exports.InitializationStatus.SUCCESS;
       if (!initialized) {
-        throw new Error(`Failed to create target for DevTools page (id = ${pageTargetId})`);
+        throw new Error(`Failed to create target for DevTools page (id = ${devtoolsTargetId})`);
       }
       const page = await target.page();
       if (!page) {
-        throw new Error(`Failed to create a DevTools Page for target (id = ${pageTargetId})`);
+        throw new Error(`Failed to create a DevTools Page for target (id = ${devtoolsTargetId})`);
       }
       return page;
     }
@@ -24844,7 +24928,8 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       protocolTimeout,
       handleDevToolsAsPage,
       idGenerator = createIncrementalIdGenerator(),
-      blockList
+      blocklist,
+      allowlist
     } = options;
     const connection = new Connection(url, connectionTransport, slowMo, protocolTimeout, /* rawErrors */false, idGenerator);
     const {
@@ -24852,7 +24937,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     } = await connection.send('Target.getBrowserContexts');
     const browser = await CdpBrowser._create(connection, browserContextIds, acceptInsecureCerts, defaultViewport, downloadBehavior, undefined, () => {
       return connection.send('Browser.close').catch(debugError);
-    }, targetFilter, isPageTarget, undefined, networkEnabled, issuesEnabled, handleDevToolsAsPage, blockList);
+    }, targetFilter, isPageTarget, undefined, networkEnabled, issuesEnabled, handleDevToolsAsPage, blocklist, allowlist);
     return browser;
   }
   const tabTargetInfo = {
@@ -26734,6 +26819,9 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    * @internal
    */
   async function _connectToBrowser(options) {
+    if (options.blocklist && options.allowlist) {
+      throw new Error('Cannot specify both blocklist and allowlist');
+    }
     const {
       connectionTransport,
       endpointUrl
@@ -26976,9 +27064,9 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    * @internal
    */
   const PUPPETEER_REVISIONS = Object.freeze({
-    chrome: '147.0.7727.57',
-    'chrome-headless-shell': '147.0.7727.57',
-    firefox: 'stable_149.0.2'
+    chrome: '148.0.7778.97',
+    'chrome-headless-shell': '148.0.7778.97',
+    firefox: 'stable_150.0.1'
   });
 
   /**

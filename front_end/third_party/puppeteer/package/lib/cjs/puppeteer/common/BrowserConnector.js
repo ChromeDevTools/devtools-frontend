@@ -57,6 +57,9 @@ const getWebSocketTransportClass = async () => {
  * @internal
  */
 async function _connectToBrowser(options) {
+    if (options.blocklist && options.allowlist) {
+        throw new Error('Cannot specify both blocklist and allowlist');
+    }
     const { connectionTransport, endpointUrl } = await getConnectionTransport(options);
     if (options.protocol === 'webDriverBiDi') {
         const bidiBrowser = await (0, BrowserConnector_js_1._connectToBiDiBrowser)(connectionTransport, endpointUrl, options);

@@ -71,14 +71,19 @@ export class TargetManager extends EventEmitter {
     // done. It indicates whethere we are running the initial auto-attach step or
     // if we are handling targets after that.
     #initialAttachDone = false;
-    #blockList;
-    constructor(connection, targetFactory, targetFilterCallback, waitForInitiallyDiscoveredTargets = true, networkConditions) {
+    #blocklist = [];
+    #allowlist = [];
+    constructor(connection, targetFactory, targetFilterCallback, waitForInitiallyDiscoveredTargets = true, blocklist, allowlist) {
         super();
+        if (blocklist && allowlist) {
+            throw new Error('Cannot specify both blockList and allowList');
+        }
         this.#connection = connection;
         this.#targetFilterCallback = targetFilterCallback;
         this.#targetFactory = targetFactory;
         this.#waitForInitiallyDiscoveredTargets = waitForInitiallyDiscoveredTargets;
-        this.#blockList = networkConditions;
+        this.#blocklist = this.#mapPatterns(blocklist);
+        this.#allowlist = this.#mapPatterns(allowlist);
         this.#connection.on('Target.targetCreated', this.#onTargetCreated);
         this.#connection.on('Target.targetDestroyed', this.#onTargetDestroyed);
         this.#connection.on('Target.targetInfoChanged', this.#onTargetInfoChanged);
@@ -338,41 +343,71 @@ export class TargetManager extends EventEmitter {
      * Helper to validate URL against blocklist patterns
      */
     #isUrlAllowed = (url) => {
-        if (!this.#blockList) {
+        if (this.#blocklist.length === 0 && this.#allowlist.length === 0) {
             return true;
         }
         // Always allow internal or setup pages
         if (!url || url === 'about:blank') {
             return true;
         }
-        for (const rule of this.#blockList) {
-            try {
-                const pattern = new URLPattern(rule);
-                if (pattern.test(url)) {
-                    return false; // return false as url matches pattern from blockList
+        for (const item of this.#blocklist) {
+            if (item.pattern.test(url)) {
+                return false;
+            }
+        }
+        if (this.#allowlist.length > 0) {
+            for (const item of this.#allowlist) {
+                if (item.pattern.test(url)) {
+                    return true;
                 }
             }
-            catch {
-                debugError(`Invalid URL pattern: ${rule}`);
-            }
+            return false;
         }
         return true;
     };
+    #mapPatterns(rules) {
+        const result = [];
+        for (const rule of rules ?? []) {
+            result.push({ pattern: new URLPattern(rule), rule });
+        }
+        return result;
+    }
     #maybeSetupNetworkConditions = async (session) => {
-        if (!this.#blockList?.length) {
+        if (this.#blocklist.length === 0 && this.#allowlist.length === 0) {
             return;
         }
-        const matchedNetworkConditions = this.#blockList.map(pattern => {
-            return {
-                urlPattern: pattern,
+        const matchedNetworkConditions = [];
+        for (const item of this.#blocklist) {
+            matchedNetworkConditions.push({
+                urlPattern: item.rule,
+                offline: true,
                 latency: 0,
                 downloadThroughput: -1,
                 uploadThroughput: -1,
-            };
-        });
+            });
+        }
+        if (this.#allowlist.length > 0) {
+            for (const item of this.#allowlist) {
+                matchedNetworkConditions.push({
+                    urlPattern: item.rule,
+                    offline: false,
+                    latency: 0,
+                    downloadThroughput: -1,
+                    uploadThroughput: -1,
+                });
+            }
+            matchedNetworkConditions.push({
+                urlPattern: '',
+                offline: true,
+                latency: 0,
+                downloadThroughput: -1,
+                uploadThroughput: -1,
+            });
+        }
         await session.send('Network.emulateNetworkConditionsByRule', {
+            // @ts-expect-error offline cannot be undefined before M149.
+            offline: this.#blocklist.length > 0 ? true : undefined,
             matchedNetworkConditions,
-            offline: true,
         });
     };
 }

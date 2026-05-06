@@ -30,6 +30,9 @@ const getWebSocketTransportClass = async () => {
 export async function _connectToBrowser(
   options: ConnectOptions,
 ): Promise<Browser> {
+  if (options.blocklist && options.allowlist) {
+    throw new Error('Cannot specify both blocklist and allowlist');
+  }
   const {connectionTransport, endpointUrl} =
     await getConnectionTransport(options);
 

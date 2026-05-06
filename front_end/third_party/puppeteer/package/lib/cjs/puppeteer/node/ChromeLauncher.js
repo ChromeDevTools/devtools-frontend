@@ -128,6 +128,7 @@ class ChromeLauncher extends BrowserLauncher_js_1.BrowserLauncher {
             'AcceptCHFrame',
             'MediaRouter',
             'OptimizationHints',
+            'WebUIReloadButton',
             ...(turnOnExperimentalFeaturesForTesting
                 ? []
                 : [

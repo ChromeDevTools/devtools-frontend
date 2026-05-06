@@ -308,21 +308,27 @@ export class Locator extends EventEmitter {
                     return 'typeable-input';
                 }
                 if (el instanceof HTMLInputElement) {
-                    if (new Set([
-                        'textarea',
-                        'text',
-                        'url',
-                        'tel',
-                        'search',
-                        'password',
-                        'number',
-                        'email',
-                    ]).has(el.type)) {
-                        return 'typeable-input';
+                    switch (el.type) {
+                        case 'checkbox':
+                        case 'radio':
+                            return 'checkable-input';
+                        case 'text':
+                        case 'url':
+                        case 'tel':
+                        case 'search':
+                        case 'password':
+                        case 'number':
+                        case 'email':
+                            return 'typeable-input';
+                        default:
+                            return 'other-input';
                     }
-                    else {
-                        return 'other-input';
-                    }
+                }
+                switch (el.getAttribute('role')) {
+                    case 'checkbox':
+                    case 'radio':
+                    case 'switch':
+                        return 'checkable-input';
                 }
                 if (el.isContentEditable) {
                     return 'contenteditable';
@@ -334,45 +340,68 @@ export class Locator extends EventEmitter {
                     return from(handle.focus()).pipe(mergeMap(() => {
                         return from(handle.evaluate((input, newValue) => {
                             const element = input;
+                            const valString = String(newValue);
                             const currentValue = element.isContentEditable
                                 ? element.innerText
                                 : element.value;
-                            if (currentValue === newValue) {
+                            if (currentValue === valString) {
                                 return;
                             }
                             if (element.isContentEditable) {
-                                element.innerText = newValue;
+                                element.innerText = valString;
                             }
                             else {
-                                element.value = newValue;
+                                element.value = valString;
                             }
                             element.dispatchEvent(new Event('input', { bubbles: true }));
                             element.dispatchEvent(new Event('change', { bubbles: true }));
                         }, value));
                     }));
                 };
+                const toggleIfNeeded = () => {
+                    return from(handle.evaluate(toggleEl => {
+                        if (toggleEl.indeterminate ||
+                            toggleEl.getAttribute('aria-checked') === 'mixed') {
+                            return 'mixed';
+                        }
+                        return (toggleEl.checked ||
+                            toggleEl.getAttribute('aria-checked') === 'true');
+                    })).pipe(mergeMap(currentState => {
+                        if (currentState === 'mixed' || currentState !== !!value) {
+                            return from(handle.click());
+                        }
+                        return of(undefined);
+                    }));
+                };
                 switch (inputType) {
+                    case 'checkable-input':
+                        return toggleIfNeeded();
                     case 'select':
                         return from(handle.select(value).then(noop));
                     case 'contenteditable':
                     case 'typeable-input':
-                        if (value.length < typingThreshold) {
+                        if (typeof value === 'string' &&
+                            value.length < typingThreshold) {
                             return from(handle.evaluate((input, newValue) => {
                                 const element = input;
+                                const valString = String(newValue);
                                 const currentValue = element.isContentEditable
                                     ? element.innerText
                                     : input.value;
+                                if (currentValue === valString) {
+                                    return '';
+                                }
                                 // Clear the input if the current value does not match the filled
                                 // out value.
-                                if (newValue.length <= currentValue.length ||
-                                    !newValue.startsWith(currentValue)) {
+                                if (!valString.startsWith(currentValue) ||
+                                    !currentValue) {
                                     if (element.isContentEditable) {
                                         element.innerText = '';
                                     }
                                     else {
                                         input.value = '';
                                     }
-                                    return newValue;
+                                    return valString;
                                 }
                                 // If the value is partially filled out, only type the rest. Move
                                 // cursor to the end of the common prefix.
@@ -384,7 +413,7 @@ export class Locator extends EventEmitter {
                                     input.value = '';
                                     input.value = currentValue;
                                 }
-                                return newValue.substring(currentValue.length);
+                                return valString.substring(currentValue.length);
                             }, value)).pipe(mergeMap(textToType => {
                                 if (!textToType) {
                                     return of(undefined);
@@ -530,7 +559,8 @@ export class Locator extends EventEmitter {
      * Fills out the input identified by the locator using the provided value. The
      * type of the input is determined at runtime and the appropriate fill-out
      * method is chosen based on the type. `contenteditable`, select, textarea and
-     * input elements are supported.
+     * input elements are supported. For checkboxes, radio buttons and switches
+     * specify a boolean value.
      */
     fill(value, options) {
         return firstValueFrom(this.#fill(value, options));

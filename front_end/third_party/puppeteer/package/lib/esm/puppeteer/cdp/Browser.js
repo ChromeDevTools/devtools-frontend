@@ -20,8 +20,15 @@ function isDevToolsPageTarget(url) {
  */
 export class CdpBrowser extends BrowserBase {
     protocol = 'cdp';
-    static async _create(connection, contextIds, acceptInsecureCerts, defaultViewport, downloadBehavior, process, closeCallback, targetFilterCallback, isPageTargetCallback, waitForInitiallyDiscoveredTargets = true, networkEnabled = true, issuesEnabled = true, handleDevToolsAsPage = false, blockList) {
-        const browser = new CdpBrowser(connection, contextIds, defaultViewport, process, closeCallback, targetFilterCallback, isPageTargetCallback, waitForInitiallyDiscoveredTargets, networkEnabled, issuesEnabled, handleDevToolsAsPage, blockList);
+    static async _create(connection, contextIds, acceptInsecureCerts, defaultViewport, downloadBehavior, process, closeCallback, targetFilterCallback, isPageTargetCallback, waitForInitiallyDiscoveredTargets = true, networkEnabled = true, issuesEnabled = true, handleDevToolsAsPage = false, blocklist, allowlist) {
+        const browser = new CdpBrowser(connection, contextIds, defaultViewport, process, closeCallback, targetFilterCallback, isPageTargetCallback, waitForInitiallyDiscoveredTargets, networkEnabled, issuesEnabled, handleDevToolsAsPage, blocklist, allowlist);
+        if (allowlist) {
+            const version = await browser.#getVersion();
+            const majorVersion = parseInt(version.product.match(/\d+/)?.[0] ?? '0', 10);
+            if (majorVersion < 149) {
+                throw new Error('The allowlist option require Chrome 149 or greater.');
+            }
+        }
         if (acceptInsecureCerts) {
             await connection.send('Security.setIgnoreCertificateErrors', {
                 ignore: true,
@@ -43,7 +50,7 @@ export class CdpBrowser extends BrowserBase {
     #targetManager;
     #handleDevToolsAsPage = false;
     #extensions = new Map();
-    constructor(connection, contextIds, defaultViewport, process, closeCallback, targetFilterCallback, isPageTargetCallback, waitForInitiallyDiscoveredTargets = true, networkEnabled = true, issuesEnabled = true, handleDevToolsAsPage = false, networkConditions) {
+    constructor(connection, contextIds, defaultViewport, process, closeCallback, targetFilterCallback, isPageTargetCallback, waitForInitiallyDiscoveredTargets = true, networkEnabled = true, issuesEnabled = true, handleDevToolsAsPage = false, blocklist, allowlist) {
         super();
         this.#networkEnabled = networkEnabled;
         this.#issuesEnabled = issuesEnabled;
@@ -58,7 +65,7 @@ export class CdpBrowser extends BrowserBase {
                 });
         this.#handleDevToolsAsPage = handleDevToolsAsPage;
         this.#setIsPageTargetCallback(isPageTargetCallback);
-        this.#targetManager = new TargetManager(connection, this.#createTarget, this.#targetFilterCallback, waitForInitiallyDiscoveredTargets, networkConditions);
+        this.#targetManager = new TargetManager(connection, this.#createTarget, this.#targetFilterCallback, waitForInitiallyDiscoveredTargets, blocklist, allowlist);
         this.#defaultContext = new CdpBrowserContext(this.#connection, this);
         for (const contextId of contextIds) {
             this.#contexts.set(contextId, new CdpBrowserContext(this.#connection, this, contextId));
@@ -227,20 +234,23 @@ export class CdpBrowser extends BrowserBase {
         const openDevToolsResponse = await this.#connection.send('Target.openDevTools', {
             targetId: pageTargetId,
         });
+        return await this._getDevToolsTargetPage(openDevToolsResponse.targetId);
+    }
+    async _getDevToolsTargetPage(devtoolsTargetId) {
         const target = (await this.waitForTarget(t => {
-            return t._targetId === openDevToolsResponse.targetId;
+            return t._targetId === devtoolsTargetId;
         }));
         if (!target) {
-            throw new Error(`Missing target for DevTools page (id = ${pageTargetId})`);
+            throw new Error(`Missing target for DevTools page (id = ${devtoolsTargetId})`);
         }
         const initialized = (await target._initializedDeferred.valueOrThrow()) ===
             InitializationStatus.SUCCESS;
         if (!initialized) {
-            throw new Error(`Failed to create target for DevTools page (id = ${pageTargetId})`);
+            throw new Error(`Failed to create target for DevTools page (id = ${devtoolsTargetId})`);
         }
         const page = await target.page();
         if (!page) {
-            throw new Error(`Failed to create a DevTools Page for target (id = ${pageTargetId})`);
+            throw new Error(`Failed to create a DevTools Page for target (id = ${devtoolsTargetId})`);
         }
         return page;
     }

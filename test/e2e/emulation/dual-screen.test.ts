@@ -35,7 +35,6 @@ describe('Dual screen mode', () => {
        await selectNonDualScreenDevice(devToolsPage);
        // toggle button should not be found
        const toggleButton = await selectToggleButton(devToolsPage);
-       const hidden = await toggleButton.evaluate(x => x.classList.contains('hidden'));
-       assert.isTrue(hidden);
+       assert.isNull(toggleButton);
      });
 });

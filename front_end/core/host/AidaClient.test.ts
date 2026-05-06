@@ -33,6 +33,7 @@ describe('AidaClient', () => {
       aidaAvailability: {
         disallowLogging: false,
       },
+      devToolsConsoleInsights: {}
     });
     const request = Host.AidaClient.AidaClient.buildConsoleInsightsRequest('foo');
     assert.deepEqual(request, {

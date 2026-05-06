@@ -8,9 +8,7 @@ import {GEN_DIR} from '../../test/conductor/paths.js';
 import {loadTests, TestConfig} from '../conductor/test_config.js';
 
 module.exports = {
-  // This should make mocha crash on uncaught errors.
-  // See https://github.com/mochajs/mocha/blob/master/docs/index.md#--allow-uncaught.
-  allowUncaught : true,
+  allowUncaught : false,
   require :
           [
             'source-map-support/register', 'chai/register-assert', 'sinon/pkg/sinon.js',

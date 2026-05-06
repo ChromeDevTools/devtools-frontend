@@ -23,6 +23,7 @@ ts_e2e_library("sources") {
     "continue-to-location-markers.test.ts",
     "debug-raw-wasm.test.ts",
     "debugger-sidebar.test.ts",
+    "dom-breakpoints.test.ts",
     "eval.test.ts",
     "header-overrides.test.ts",
     "icon-row-bucket.test.ts",

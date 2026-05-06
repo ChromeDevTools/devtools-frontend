@@ -250,7 +250,7 @@ export class AidaClient {
         } else if ('error' in result) {
           throw new Error(`Server responded: ${JSON.stringify(result)}`);
         } else {
-          throw new Error('Unknown chunk result');
+          throw new Error(`Unknown chunk result ${JSON.stringify(result)}`);
         }
       }
       if (textUpdated) {

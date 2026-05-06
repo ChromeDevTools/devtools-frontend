@@ -16,6 +16,14 @@ interface NodeChildren {
 export interface ObjectTreeOptions {
     readonly propertiesMode: ObjectPropertiesMode;
     readonly readOnly: boolean;
+    readonly expansionTracker?: ObjectTreeExpansionTracker;
+}
+export declare class ObjectTreeExpansionTracker {
+    #private;
+    clear(): void;
+    apply(node: ObjectTree): Promise<void>;
+    collapse(node: ObjectTreeNodeBase): void;
+    expand(node: ObjectTreeNodeBase): void;
 }
 export declare abstract class ObjectTreeNodeBase extends Common.ObjectWrapper.ObjectWrapper<ObjectTreeNodeBase.EventTypes> {
     #private;
@@ -26,8 +34,9 @@ export declare abstract class ObjectTreeNodeBase extends Common.ObjectWrapper.Ob
         regex: RegExp | null;
     } | null;
     protected extraProperties: ObjectTreeNode[];
-    expanded: boolean;
     constructor(parent: ObjectTreeNodeBase | undefined, options: ObjectTreeOptions);
+    get expanded(): boolean;
+    set expanded(val: boolean);
     get readOnly(): boolean;
     get propertiesMode(): ObjectPropertiesMode;
     get includeNullOrUndefinedValues(): boolean;
@@ -49,7 +58,7 @@ export declare abstract class ObjectTreeNodeBase extends Common.ObjectWrapper.Ob
     get arrayLength(): number;
     setPropertyValue(name: string | Protocol.Runtime.CallArgument, value: string): Promise<string | undefined>;
     addExtraProperties(...properties: SDK.RemoteObject.RemoteObjectProperty[]): void;
-    static getGettersAndSetters(properties: ObjectTreeNode[]): ObjectTreeNode[];
+    static getGettersAndSetters(properties: ObjectTreeNode[], options: ObjectTreeOptions): ObjectTreeNode[];
 }
 export declare namespace ObjectTreeNodeBase {
     const enum Events {
@@ -68,20 +77,17 @@ export declare class ObjectTree extends ObjectTreeNodeBase {
     constructor(object: SDK.RemoteObject.RemoteObject, options: ObjectTreeOptions);
     get object(): SDK.RemoteObject.RemoteObject;
 }
-declare class ArrayGroupTreeNode extends ObjectTreeNodeBase {
+interface ArrayGroupRange {
+    fromIndex: number;
+    toIndex: number;
+    count: number;
+}
+export declare class ArrayGroupTreeNode extends ObjectTreeNodeBase {
     #private;
-    constructor(object: SDK.RemoteObject.RemoteObject, range: {
-        fromIndex: number;
-        toIndex: number;
-        count: number;
-    }, parent: ObjectTreeNodeBase, options: ObjectTreeOptions);
+    constructor(object: SDK.RemoteObject.RemoteObject, range: ArrayGroupRange, parent: ObjectTreeNodeBase, options: ObjectTreeOptions);
     populateChildrenIfNeededImpl(): Promise<NodeChildren>;
     get singular(): boolean;
-    get range(): {
-        fromIndex: number;
-        toIndex: number;
-        count: number;
-    };
+    get range(): ArrayGroupRange;
     get object(): SDK.RemoteObject.RemoteObject;
 }
 export declare class ObjectTreeNode extends ObjectTreeNodeBase {
@@ -219,6 +225,8 @@ export declare class ArrayGroupingTreeElement extends UI.TreeOutline.TreeElement
     private readonly linkifier;
     constructor(child: ArrayGroupTreeNode, linkifier?: Components.Linkifier.Linkifier);
     static populate(treeNode: UI.TreeOutline.TreeElement, children: NodeChildren, linkifier?: Components.Linkifier.Linkifier): Promise<void>;
+    onexpand(): void;
+    oncollapse(): void;
     onpopulate(): Promise<void>;
     onattach(): void;
     static bucketThreshold: number;

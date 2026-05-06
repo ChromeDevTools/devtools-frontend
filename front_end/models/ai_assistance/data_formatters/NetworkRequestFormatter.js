@@ -84,7 +84,12 @@ export class NetworkRequestFormatter {
     static formatFailureReasons(reasons) {
         const lines = [];
         if (reasons.blockedReason) {
-            lines.push(`Blocked reason: ${reasons.blockedReason}`);
+            if (reasons.blockedReason === "inspector" /* Protocol.Network.BlockedReason.Inspector */) {
+                lines.push('Blocked reason: a custom network condition in DevTools is blocking this request');
+            }
+            else {
+                lines.push(`Blocked reason: ${reasons.blockedReason}`);
+            }
         }
         if (reasons.corsErrorStatus) {
             lines.push(`CORS error: ${reasons.corsErrorStatus.corsError} ${reasons.corsErrorStatus.failedParameter}`);

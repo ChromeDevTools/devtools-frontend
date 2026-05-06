@@ -23,6 +23,9 @@ export class MockCDPConnection {
      * Sets the provided handler or clears an existing handler when passing `null`.
      *
      * Throws if a set would overwrite an existing handler.
+     *
+     * If the handler only ever returns a success result, consider using {@link setSuccessHandler}.
+     * If the handler only ever returns a failure, consider using {@link setFailureHandler}.
      */
     setHandler(method, handler) {
         if (handler && this.#handlers.has(method)) {
@@ -34,6 +37,34 @@ export class MockCDPConnection {
         else {
             this.#handlers.delete(method);
         }
+    }
+    /**
+     * A more ergonomic version of {@link setHandler} for handlers that only return
+     * a successful result.
+     */
+    setSuccessHandler(method, handler) {
+        const wrappedHandler = (params, sessionId) => {
+            const result = handler(params, sessionId);
+            if (result && typeof result === 'object' && 'then' in result) {
+                return result.then(result => ({ result }));
+            }
+            return { result };
+        };
+        this.setHandler(method, wrappedHandler);
+    }
+    /**
+     * A more ergonomic version of {@link setHandler} for handlers that only return
+     * a failure.
+     */
+    setFailureHandler(method, handler) {
+        const wrappedHandler = (params, sessionId) => {
+            const error = handler(params, sessionId);
+            if (error && typeof error === 'object' && 'then' in error) {
+                return error.then(error => ({ error }));
+            }
+            return { error };
+        };
+        this.setHandler(method, wrappedHandler);
     }
     send(method, params, sessionId) {
         const handler = this.#handlers.get(method);

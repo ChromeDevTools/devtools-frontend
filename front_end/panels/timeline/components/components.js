@@ -7981,9 +7981,13 @@ var SidebarSingleInsightSet = class _SidebarSingleInsightSet extends UI16.Widget
       agentFocus,
       fieldMetrics
     };
-    return html19`<devtools-widget class="insight-component-widget" ?highlight-insight=${isActiveInsight && this.#isActiveInsightHighlighted}
-      ${widget5(componentClass, widgetConfig)}
-    ></devtools-widget>`;
+    const items = [{ componentClass, widgetConfig }];
+    const output = Lit19.Directives.repeat(items, (data) => data.widgetConfig.model, (data) => {
+      return html19`<devtools-widget class="insight-component-widget" ?highlight-insight=${isActiveInsight && this.#isActiveInsightHighlighted}
+        ${widget5(data.componentClass, data.widgetConfig)}
+      ></devtools-widget>`;
+    });
+    return html19`${output}`;
   }
   performUpdate() {
     const { parsedTrace, insightSetKey } = this.#data;

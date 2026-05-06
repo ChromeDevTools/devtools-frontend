@@ -40,12 +40,10 @@ export function setMockResourceTree(shouldMock) {
     }
 }
 export function mockResourceTree(connection) {
-    connection.setHandler('Page.getResourceTree', () => ({
-        result: {
-            frameTree: {
-                frame: MAIN_FRAME,
-                resources: [],
-            }
+    connection.setSuccessHandler('Page.getResourceTree', () => ({
+        frameTree: {
+            frame: MAIN_FRAME,
+            resources: [],
         }
     }));
 }

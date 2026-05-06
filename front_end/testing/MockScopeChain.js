@@ -335,11 +335,11 @@ export class MockDebuggerBackend {
         this.cdpConnection.setHandler('Debugger.getScriptSource', this.#getScriptSourceHandler.bind(this));
         this.cdpConnection.setHandler('Runtime.getProperties', this.#getPropertiesHandler.bind(this));
         this.cdpConnection.setHandler('Debugger.setBreakpointByUrl', this.#setBreakpointByUrlHandler.bind(this));
-        this.cdpConnection.setHandler('Storage.getStorageKey', () => ({ result: { storageKey: 'test-key' } }));
+        this.cdpConnection.setSuccessHandler('Storage.getStorageKey', () => ({ storageKey: 'test-key' }));
         this.cdpConnection.setHandler('Debugger.removeBreakpoint', this.#removeBreakpointHandler.bind(this));
-        this.cdpConnection.setHandler('Debugger.resume', () => ({ result: {} }));
-        this.cdpConnection.setHandler('Debugger.enable', () => ({ result: { debuggerId: 'DEBUGGER_ID' } }));
-        this.cdpConnection.setHandler('Debugger.setInstrumentationBreakpoint', () => ({ result: {} }));
+        this.cdpConnection.setSuccessHandler('Debugger.resume', () => ({}));
+        this.cdpConnection.setSuccessHandler('Debugger.enable', () => ({ debuggerId: 'DEBUGGER_ID' }));
+        this.cdpConnection.setSuccessHandler('Debugger.setInstrumentationBreakpoint', () => ({}));
         this.universe.pageResourceLoader; // Eagerly trigger creation.
     }
     createTarget(options) {

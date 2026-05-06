@@ -657,6 +657,7 @@ panels/whats_new/ReleaseNoteView.test.js
 services/trace_bounds/TraceBounds.test.js
 services/tracing/FreshRecording.test.js
 services/tracing/TracingManager.test.js
+testing/MockCDPConnection.test.js
 testing/MockScopeChain.test.js
 testing/MutationHelpers.test.js
 testing/SnapshotTester.test.js

@@ -7023,6 +7023,10 @@ export const NativeFunctions = [
         signatures: [["html", "?options"]]
     },
     {
+        name: "matchContainer",
+        signatures: [["query"]]
+    },
+    {
         name: "scrollIntoViewIfNeeded",
         signatures: [["?centerIfNeeded"]]
     },

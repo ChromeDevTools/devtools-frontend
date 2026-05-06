@@ -161,10 +161,18 @@ export class SidebarSingleInsightSet extends UI.Widget.Widget {
             agentFocus,
             fieldMetrics,
         };
+        const items = [{ componentClass, widgetConfig }];
         // clang-format off
-        return html `<devtools-widget class="insight-component-widget" ?highlight-insight=${isActiveInsight && this.#isActiveInsightHighlighted}
-      ${widget(componentClass, widgetConfig)}
-    ></devtools-widget>`;
+        // We use `repeat` to force the widget to be recreated if the model
+        // changes (e.g. on new trace import). If Lit tries to reuse DOM
+        // across different traces, where the ordering of the sidebar
+        // insights changes, this causes errors.
+        const output = Lit.Directives.repeat(items, data => data.widgetConfig.model, data => {
+            return html `<devtools-widget class="insight-component-widget" ?highlight-insight=${isActiveInsight && this.#isActiveInsightHighlighted}
+        ${widget(data.componentClass, data.widgetConfig)}
+      ></devtools-widget>`;
+        });
+        return html `${output}`;
         // clang-format on
     }
     performUpdate() {

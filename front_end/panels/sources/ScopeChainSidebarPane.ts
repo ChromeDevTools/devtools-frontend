@@ -104,6 +104,10 @@ export class ScopeChainSidebarPane extends UI.Widget.VBox implements UI.ContextF
     return scopeChainSidebarPaneInstance;
   }
 
+  treeOutlineForTest(): ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionsTreeOutline {
+    return this.treeOutline;
+  }
+
   flavorChanged(callFrame: StackTrace.StackTrace.DebuggableFrameFlavor|null): void {
     this.#scopeChainModel?.dispose();
     this.#scopeChainModel = null;
@@ -210,6 +214,6 @@ export class ScopeChainSidebarPane extends UI.Widget.VBox implements UI.ContextF
     return section;
   }
 
-  private sidebarPaneUpdatedForTest(): void {
+  sidebarPaneUpdatedForTest(): void {
   }
 }

@@ -184,6 +184,7 @@ devtools_ui_module("unittests") {
     "OutlineQuickOpen.test.ts",
     "PersistenceAction.test.ts",
     "ResourceOriginPlugin.test.ts",
+    "ScopeChainSidebarPane.test.ts",
     "SourcesNavigator.test.ts",
     "SourcesPanel.test.ts",
     "SourcesView.test.ts",

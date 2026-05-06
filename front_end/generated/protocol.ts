@@ -3557,6 +3557,7 @@ export namespace CSS {
     FontFace = 'font-face',
     FontFeatureValues = 'font-feature-values',
     FontPaletteValues = 'font-palette-values',
+    CounterStyle = 'counter-style',
   }
 
   export const enum CSSAtRuleSubsection {
@@ -11813,6 +11814,7 @@ export namespace Network {
     Success = 'Success',
     KeyError = 'KeyError',
     SigningError = 'SigningError',
+    TransientSigningError = 'TransientSigningError',
     ServerRequestedTermination = 'ServerRequestedTermination',
     InvalidSessionId = 'InvalidSessionId',
     InvalidChallenge = 'InvalidChallenge',
@@ -11926,13 +11928,14 @@ export namespace Network {
 
   export const enum RefreshEventDetailsRefreshResult {
     Refreshed = 'Refreshed',
-    RefreshedAsWaiter = 'RefreshedAsWaiter',
     InitializedService = 'InitializedService',
     Unreachable = 'Unreachable',
     ServerError = 'ServerError',
     RefreshQuotaExceeded = 'RefreshQuotaExceeded',
     FatalError = 'FatalError',
     SigningQuotaExceeded = 'SigningQuotaExceeded',
+    RefreshedAsWaiter = 'RefreshedAsWaiter',
+    TransientSigningError = 'TransientSigningError',
   }
 
   /**

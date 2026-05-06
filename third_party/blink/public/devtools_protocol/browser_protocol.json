@@ -5327,7 +5327,8 @@
                             "enum": [
                                 "font-face",
                                 "font-feature-values",
-                                "font-palette-values"
+                                "font-palette-values",
+                                "counter-style"
                             ]
                         },
                         {
@@ -17786,6 +17787,7 @@
                         "Success",
                         "KeyError",
                         "SigningError",
+                        "TransientSigningError",
                         "ServerRequestedTermination",
                         "InvalidSessionId",
                         "InvalidChallenge",
@@ -17921,13 +17923,14 @@
                             "type": "string",
                             "enum": [
                                 "Refreshed",
-                                "RefreshedAsWaiter",
                                 "InitializedService",
                                 "Unreachable",
                                 "ServerError",
                                 "RefreshQuotaExceeded",
                                 "FatalError",
-                                "SigningQuotaExceeded"
+                                "SigningQuotaExceeded",
+                                "RefreshedAsWaiter",
+                                "TransientSigningError"
                             ]
                         },
                         {

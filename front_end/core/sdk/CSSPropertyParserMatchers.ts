@@ -945,36 +945,6 @@ export class ShadowMatcher extends matcherBase(ShadowMatch) {
   }
 }
 
-export class FontMatch implements Match {
-  constructor(readonly text: string, readonly node: CodeMirror.SyntaxNode) {
-  }
-}
-
-// clang-format off
-export class FontMatcher extends matcherBase(FontMatch) {
-  // clang-format on
-  override accepts(propertyName: string): boolean {
-    return cssMetadata().isFontAwareProperty(propertyName);
-  }
-  override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): Match|null {
-    if (node.name !== 'Declaration') {
-      return null;
-    }
-    const valueNodes = ASTUtils.siblings(ASTUtils.declValue(node));
-    if (valueNodes.length === 0) {
-      return null;
-    }
-    const validNodes = matching.ast.propertyName === 'font-family' ? ['ValueName', 'StringLiteral', 'Comment', ','] :
-                                                                     ['Comment', 'ValueName', 'NumberLiteral'];
-
-    if (valueNodes.some(node => !validNodes.includes(node.name))) {
-      return null;
-    }
-    const valueText = matching.ast.textRange(valueNodes[0], valueNodes[valueNodes.length - 1]);
-    return new FontMatch(valueText, node);
-  }
-}
-
 export class LengthMatch implements Match {
   constructor(readonly text: string, readonly node: CodeMirror.SyntaxNode, readonly unit: string) {
   }

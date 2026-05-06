@@ -62,16 +62,15 @@ describe('Runtime', () => {
   });
 
   it('allConfigurableExperiments returns all registered experiments', () => {
-    Root.Runtime.experiments.register(
-        Root.ExperimentNames.ExperimentName.FONT_EDITOR, 'font editor' as Platform.UIString.LocalizedString);
-    const dummyExperiment = 'dummy-experiment' as Root.ExperimentNames.ExperimentName;
-    Root.Runtime.experiments.register(dummyExperiment, 'dummy experiment' as Platform.UIString.LocalizedString);
+    const dummyExperiment1 = 'dummy-experiment-1' as Root.ExperimentNames.ExperimentName;
+    Root.Runtime.experiments.register(dummyExperiment1, 'dummy experiment 1' as Platform.UIString.LocalizedString);
+
+    const dummyExperiment2 = 'dummy-experiment-2' as Root.ExperimentNames.ExperimentName;
+    Root.Runtime.experiments.register(dummyExperiment2, 'dummy experiment 2' as Platform.UIString.LocalizedString);
 
     const experiments = Root.Runtime.experiments.allConfigurableExperiments();
 
-    assert.deepEqual(
-        experiments.map(experiment => experiment.name),
-        [Root.ExperimentNames.ExperimentName.FONT_EDITOR, dummyExperiment]);
+    assert.deepEqual(experiments.map(experiment => experiment.name), [dummyExperiment1, dummyExperiment2]);
   });
 
   describe('ExperimentsSupport', () => {

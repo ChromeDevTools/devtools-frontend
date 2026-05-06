@@ -357,7 +357,7 @@ describe('User Metrics', () => {
         [
           {
             actionName: 'DevTools.ExperimentDisabledAtLaunch',
-            actionCode: 41,  // Disabled by default: FontEditor
+            actionCode: 1,  // Disabled by default: capture-node-creation-stacks
           },
         ],
         devToolsPage,

@@ -761,7 +761,6 @@ export enum DevtoolsExperiments {
   'live-heap-profile' = 11,
   'protocol-monitor' = 13,
   'timeline-invalidation-tracking' = 26,
-  'font-editor' = 41,
   'instrumentation-breakpoints' = 61,
   'use-source-map-scopes' = 76,
   'timeline-debug-mode' = 93,

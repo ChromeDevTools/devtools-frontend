@@ -114,7 +114,6 @@ devtools_svg_sources = [
   "cross-circle-filled.svg",
   "cross-circle.svg",
   "cross.svg",
-  "custom-typography.svg",
   "database-off.svg",
   "database.svg",
   "deployed.svg",

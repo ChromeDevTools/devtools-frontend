@@ -35,8 +35,6 @@ const COMPUTED_PROPERTY_SELECTOR = 'devtools-computed-style-property';
 const COMPUTED_STYLES_PANEL_SELECTOR = '[aria-label="Computed panel"]';
 const COMPUTED_STYLES_SHOW_ALL_SELECTOR = '[title="Show all"]';
 export const ELEMENTS_PANEL_SELECTOR = '.panel[aria-label="elements"]';
-const FONT_EDITOR_SELECTOR = 'devtools-button[aria-label="Font Editor"]';
-const HIDDEN_FONT_EDITOR_SELECTOR = '.font-toolbar-hidden';
 export const SECTION_SUBTITLE_SELECTOR = '.styles-section-subtitle';
 const CLS_PANE_SELECTOR = '.styles-sidebar-toolbar-pane';
 const CLS_BUTTON_SELECTOR = '[aria-label="Element Classes"]';
@@ -49,7 +47,6 @@ export const ACTIVE_GRID_ADORNER_SELECTOR = '[aria-label="Disable grid mode"]';
 export const INACTIVE_STARTING_STYLE_ADORNER_SELECTOR = '[aria-label="Enable @starting-style mode"]';
 export const ACTIVE_STARTING_STYLE_ADORNER_SELECTOR = '[aria-label="Disable @starting-style mode"]';
 const ELEMENT_CHECKBOX_IN_LAYOUT_PANE_SELECTOR = `${LAYOUT_PANE_TABPANEL_SELECTOR} .elements devtools-checkbox`;
-const ELEMENT_STYLE_SECTION_SELECTOR = '[aria-label="element.style, css selector"]';
 const STYLE_QUERY_RULE_TEXT_SELECTOR = '.query-text';
 export const STYLE_PROPERTIES_SELECTOR = '.tree-outline-disclosure [role="treeitem"]';
 const CSS_AUTHORING_HINTS_ICON_SELECTOR = '.hint';
@@ -752,26 +749,6 @@ export const shiftClickColorSwatch =
                 'Menu', undefined, [veImpression('Action', 'clipped-color'), veImpression('Item', 'color')])]),
       ],
       undefined, devToolsPage);
-};
-
-export const getElementStyleFontEditorButton = async (devToolsPage: DevToolsPage) => {
-  const section = await devToolsPage.waitFor(ELEMENT_STYLE_SECTION_SELECTOR);
-  const result = await devToolsPage.$(FONT_EDITOR_SELECTOR, section);
-  await expectVeEvents(
-      [veImpressionsUnder(
-          'Panel: elements > Pane: styles > Section: style-properties', [veImpression('Action', 'font-editor')])],
-      undefined, devToolsPage);
-  return result;
-};
-
-export const getFontEditorButtons = async (devToolsPage: DevToolsPage) => {
-  const buttons = await devToolsPage.$$(FONT_EDITOR_SELECTOR);
-  return buttons;
-};
-
-export const getHiddenFontEditorButtons = async (devToolsPage: DevToolsPage) => {
-  const buttons = await devToolsPage.$$(HIDDEN_FONT_EDITOR_SELECTOR);
-  return buttons;
 };
 
 export const getStyleSectionSubtitles = async (devToolsPage: DevToolsPage) => {

@@ -379,11 +379,6 @@ export class MainImpl {
     Root.Runtime.experiments.register(
         Root.ExperimentNames.ExperimentName.USE_SOURCE_MAP_SCOPES, 'Use scope information from source maps');
 
-    // Font Editor
-    Root.Runtime.experiments.register(
-        Root.ExperimentNames.ExperimentName.FONT_EDITOR, 'New font editor in the Styles tab',
-        'https://developer.chrome.com/blog/new-in-devtools-89/#font');
-
     Root.Runtime.experiments.registerHostExperiment({
       name: Root.ExperimentNames.ExperimentName.DURABLE_MESSAGES,
       title: 'Durable Messages',

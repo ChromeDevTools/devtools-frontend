@@ -50,6 +50,7 @@ devtools_ui_module("components") {
     "../../../generated:protocol",
     "../../../ui/components/buttons:bundle",
     "../../../ui/components/helpers:bundle",
+    "../../../ui/components/input:bundle",
     "../../../ui/components/legacy_wrapper:bundle",
     "../../../ui/components/node_text:bundle",
     "../../../ui/components/render_coordinator:bundle",

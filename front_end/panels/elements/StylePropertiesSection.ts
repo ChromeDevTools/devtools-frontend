@@ -39,7 +39,6 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
-import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as Badges from '../../models/badges/badges.js';
@@ -54,7 +53,6 @@ import {html, type LitTemplate, nothing, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as PanelsCommon from '../common/common.js';
 
-import {FontEditorSectionManager} from './ColorSwatchPopoverIcon.js';
 import * as ElementsComponents from './components/components.js';
 import {ElementsPanel} from './ElementsPanel.js';
 import stylePropertiesTreeOutlineStyles from './stylePropertiesTreeOutline.css.js';
@@ -166,9 +164,6 @@ export class StylePropertiesSection {
   private showAllButton: Buttons.Button.Button;
   protected selectorElement: HTMLSpanElement;
   private readonly newStyleRuleToolbar: UI.Toolbar.Toolbar|undefined;
-  private readonly fontEditorToolbar: UI.Toolbar.Toolbar|undefined;
-  private readonly fontEditorSectionManager: FontEditorSectionManager|undefined;
-  private readonly fontEditorButton: UI.Toolbar.ToolbarButton|undefined;
   private selectedSinceMouseDown: boolean;
   private readonly elementToSelectorIndex = new WeakMap<Element, number>();
   navigable: boolean|null|undefined;
@@ -309,31 +304,6 @@ export class StylePropertiesSection {
       UI.ARIAUtils.setHidden(this.newStyleRuleToolbar, true);
     }
 
-    if (Root.Runtime.experiments.isEnabled(Root.ExperimentNames.ExperimentName.FONT_EDITOR) && this.editable) {
-      this.fontEditorToolbar = this.#styleRuleElement.createChild('devtools-toolbar', 'sidebar-pane-section-toolbar');
-      this.fontEditorSectionManager = new FontEditorSectionManager(this.stylesContainer.swatchPopoverHelper(), this);
-      this.fontEditorButton =
-          new UI.Toolbar.ToolbarButton('Font Editor', 'custom-typography', undefined, 'font-editor');
-      this.fontEditorButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, () => {
-        this.onFontEditorButtonClicked();
-      }, this);
-      this.fontEditorButton.element.addEventListener('keydown', event => {
-        if (Platform.KeyboardUtilities.isEnterOrSpaceKey(event)) {
-          event.consume(true);
-          this.onFontEditorButtonClicked();
-        }
-      }, false);
-      this.fontEditorToolbar.appendToolbarItem(this.fontEditorButton);
-
-      if (this.styleInternal.type === SDK.CSSStyleDeclaration.Type.Inline) {
-        if (this.newStyleRuleToolbar) {
-          this.newStyleRuleToolbar.classList.add('shifted-toolbar');
-        }
-      } else {
-        this.fontEditorToolbar.classList.add('font-toolbar-hidden');
-      }
-    }
-
     this.selectorElement.addEventListener('click', this.handleSelectorClick.bind(this), false);
     this.selectorElement.setAttribute(
         'jslog', `${VisualLogging.cssRuleHeader('selector').track({click: true, change: true})}`);
@@ -407,31 +377,6 @@ export class StylePropertiesSection {
 
   getSectionIdx(): number {
     return this.sectionIdx;
-  }
-
-  registerFontProperty(treeElement: StylePropertyTreeElement): void {
-    if (this.fontEditorSectionManager) {
-      this.fontEditorSectionManager.registerFontProperty(treeElement);
-    }
-    if (this.fontEditorToolbar) {
-      this.fontEditorToolbar.classList.remove('font-toolbar-hidden');
-      if (this.newStyleRuleToolbar) {
-        this.newStyleRuleToolbar.classList.add('shifted-toolbar');
-      }
-    }
-  }
-
-  resetToolbars(): void {
-    if (this.stylesContainer.swatchPopoverHelper().isShowing() ||
-        this.styleInternal.type === SDK.CSSStyleDeclaration.Type.Inline) {
-      return;
-    }
-    if (this.fontEditorToolbar) {
-      this.fontEditorToolbar.classList.add('font-toolbar-hidden');
-    }
-    if (this.newStyleRuleToolbar) {
-      this.newStyleRuleToolbar.classList.remove('shifted-toolbar');
-    }
   }
 
   static createRuleOriginNode(
@@ -675,12 +620,6 @@ export class StylePropertiesSection {
     const selection = this.element.getComponentSelection();
     if (!this.selectedSinceMouseDown && selection?.toString()) {
       this.selectedSinceMouseDown = true;
-    }
-  }
-
-  private onFontEditorButtonClicked(): void {
-    if (this.fontEditorSectionManager && this.fontEditorButton) {
-      void this.fontEditorSectionManager.showPopover(this.fontEditorButton.element, this.stylesContainer);
     }
   }
 

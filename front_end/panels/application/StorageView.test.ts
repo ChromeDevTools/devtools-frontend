@@ -15,14 +15,14 @@ import * as Resources from './application.js';
 describeWithMockConnection('StorageView', () => {
   const testKey = 'test-storage-key';
   let target: SDK.Target.Target;
-  let domStorageModel: Resources.DOMStorageModel.DOMStorageModel|null;
+  let domStorageModel: SDK.DOMStorageModel.DOMStorageModel|null;
   let storageKeyManager: SDK.StorageKeyManager.StorageKeyManager|null;
 
   beforeEach(() => {
     const tabTarget = createTarget({type: SDK.Target.Type.TAB});
     createTarget({parentTarget: tabTarget, subtype: 'prerender'});
     target = createTarget({parentTarget: tabTarget});
-    domStorageModel = target.model(Resources.DOMStorageModel.DOMStorageModel);
+    domStorageModel = target.model(SDK.DOMStorageModel.DOMStorageModel);
     domStorageModel?.enable();
     storageKeyManager = target.model(SDK.StorageKeyManager.StorageKeyManager);
     sinon.stub(target.networkAgent(), 'invoke_getCookies').resolves({
@@ -51,9 +51,9 @@ describeWithMockConnection('StorageView', () => {
     sinon.assert.calledOnce(spyClearDataForStorageKey);
     sinon.assert.callCount(dispatcherSpy, 4);
     sinon.assert.calledWith(
-        dispatcherSpy, Resources.DOMStorageModel.Events.DOM_STORAGE_REMOVED as unknown as sinon.SinonMatcher);
+        dispatcherSpy, SDK.DOMStorageModel.Events.DOM_STORAGE_REMOVED as unknown as sinon.SinonMatcher);
     sinon.assert.calledWith(
-        dispatcherSpy, Resources.DOMStorageModel.Events.DOM_STORAGE_ADDED as unknown as sinon.SinonMatcher);
+        dispatcherSpy, SDK.DOMStorageModel.Events.DOM_STORAGE_ADDED as unknown as sinon.SinonMatcher);
   });
 
   it('changes subtitle on MainStorageKeyChanged event', () => {

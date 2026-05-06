@@ -31,10 +31,13 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import * as Common from '../../core/common/common.js';
-import * as SDK from '../../core/sdk/sdk.js';
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import type * as Protocol from '../../generated/protocol.js';
+import * as Common from '../common/common.js';
+
+import {SDKModel} from './SDKModel.js';
+import * as StorageKeyManager from './StorageKeyManager.js';
+import {Capability, type Target} from './Target.js';
 
 export class DOMStorage extends Common.ObjectWrapper.ObjectWrapper<DOMStorage.EventTypes> {
   private readonly model: DOMStorageModel;
@@ -112,16 +115,16 @@ export namespace DOMStorage {
   }
 }
 
-export class DOMStorageModel extends SDK.SDKModel.SDKModel<EventTypes> {
-  readonly #storageKeyManager: SDK.StorageKeyManager.StorageKeyManager|null;
+export class DOMStorageModel extends SDKModel<EventTypes> {
+  readonly #storageKeyManager: StorageKeyManager.StorageKeyManager|null;
   #storages: Record<string, DOMStorage>;
   readonly agent: ProtocolProxyApi.DOMStorageApi;
   private enabled?: boolean;
 
-  constructor(target: SDK.Target.Target) {
+  constructor(target: Target) {
     super(target);
 
-    this.#storageKeyManager = target.model(SDK.StorageKeyManager.StorageKeyManager);
+    this.#storageKeyManager = target.model(StorageKeyManager.StorageKeyManager);
     this.#storages = {};
     this.agent = target.domstorageAgent();
   }
@@ -133,10 +136,9 @@ export class DOMStorageModel extends SDK.SDKModel.SDKModel<EventTypes> {
 
     this.target().registerDOMStorageDispatcher(new DOMStorageDispatcher(this));
     if (this.#storageKeyManager) {
+      this.#storageKeyManager.addEventListener(StorageKeyManager.Events.STORAGE_KEY_ADDED, this.storageKeyAdded, this);
       this.#storageKeyManager.addEventListener(
-          SDK.StorageKeyManager.Events.STORAGE_KEY_ADDED, this.storageKeyAdded, this);
-      this.#storageKeyManager.addEventListener(
-          SDK.StorageKeyManager.Events.STORAGE_KEY_REMOVED, this.storageKeyRemoved, this);
+          StorageKeyManager.Events.STORAGE_KEY_REMOVED, this.storageKeyRemoved, this);
 
       for (const storageKey of this.#storageKeyManager.storageKeys()) {
         this.addStorageKey(storageKey);
@@ -250,7 +252,7 @@ export class DOMStorageModel extends SDK.SDKModel.SDKModel<EventTypes> {
   }
 }
 
-SDK.SDKModel.SDKModel.register(DOMStorageModel, {capabilities: SDK.Target.Capability.DOM_STORAGE, autostart: false});
+SDKModel.register(DOMStorageModel, {capabilities: Capability.DOM_STORAGE, autostart: false});
 
 export const enum Events {
   DOM_STORAGE_ADDED = 'DOMStorageAdded',

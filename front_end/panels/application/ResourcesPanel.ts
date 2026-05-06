@@ -17,7 +17,6 @@ import {CookieItemsView} from './CookieItemsView.js';
 import type {DeviceBoundSessionsModel} from './DeviceBoundSessionsModel.js';
 import {DeviceBoundSessionsView} from './DeviceBoundSessionsView.js';
 import {DOMStorageItemsView} from './DOMStorageItemsView.js';
-import type {DOMStorage} from './DOMStorageModel.js';
 import {ExtensionStorageItemsView} from './ExtensionStorageItemsView.js';
 import type {ExtensionStorage} from './ExtensionStorageModel.js';
 import type * as PreloadingHelper from './preloading/helper/helper.js';
@@ -166,7 +165,7 @@ export class ResourcesPanel extends UI.Panel.PanelWithSidebar {
     this.showView(this.categoryView);
   }
 
-  showDOMStorage(domStorage: DOMStorage): void {
+  showDOMStorage(domStorage: SDK.DOMStorageModel.DOMStorage): void {
     if (!domStorage) {
       return;
     }

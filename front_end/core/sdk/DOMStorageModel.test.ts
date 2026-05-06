@@ -2,23 +2,22 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
 
-import * as Resources from './application.js';
+import * as SDK from './sdk.js';
 
 describeWithMockConnection('DOMStorageModel', () => {
-  let domStorageModel: Resources.DOMStorageModel.DOMStorageModel;
-  let domStorage: Resources.DOMStorageModel.DOMStorage;
+  let domStorageModel: SDK.DOMStorageModel.DOMStorageModel;
+  let domStorage: SDK.DOMStorageModel.DOMStorage;
   let target: SDK.Target.Target;
   const initKey = 'storageKey1';
 
   beforeEach(() => {
     target = createTarget();
-    domStorageModel = new Resources.DOMStorageModel.DOMStorageModel(target);
-    domStorage = new Resources.DOMStorageModel.DOMStorage(domStorageModel, initKey, true);
+    domStorageModel = new SDK.DOMStorageModel.DOMStorageModel(target);
+    domStorage = new SDK.DOMStorageModel.DOMStorage(domStorageModel, initKey, true);
   });
 
   it('DOMStorage is instantiated correctly', () => {

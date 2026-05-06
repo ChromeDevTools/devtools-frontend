@@ -16,7 +16,6 @@ import * as SettingsUI from '../../ui/legacy/components/settings_ui/settings_ui.
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import {DOMStorageModel} from './DOMStorageModel.js';
 import {IndexedDBModel} from './IndexedDBModel.js';
 import storageViewStyles from './storageView.css.js';
 
@@ -459,7 +458,7 @@ export class StorageView extends UI.Widget.VBox {
     const hasAll = set.has(Protocol.Storage.StorageType.All);
 
     if (set.has(Protocol.Storage.StorageType.Local_storage) || hasAll) {
-      const storageModel = target.model(DOMStorageModel);
+      const storageModel = target.model(SDK.DOMStorageModel.DOMStorageModel);
       if (storageModel) {
         storageModel.clearForStorageKey(storageKey);
       }

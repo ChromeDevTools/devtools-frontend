@@ -53,7 +53,6 @@ import {BackgroundServiceView} from './BackgroundServiceView.js';
 import {BounceTrackingMitigationsTreeElement} from './BounceTrackingMitigationsTreeElement.js';
 import {DeviceBoundSessionsModel} from './DeviceBoundSessionsModel.js';
 import {RootTreeElement as DeviceBoundSessionsRootTreeElement} from './DeviceBoundSessionsTreeElement.js';
-import {type DOMStorage, DOMStorageModel, Events as DOMStorageModelEvents} from './DOMStorageModel.js';
 import {
   Events as ExtensionStorageModelEvents,
   type ExtensionStorage,
@@ -346,7 +345,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
   deviceBoundSessionsModel: DeviceBoundSessionsModel|undefined;
   preloadingSummaryTreeElement: PreloadingSummaryTreeElement|undefined;
   private readonly resourcesSection: ResourcesSection;
-  private domStorageTreeElements: Map<DOMStorage, DOMStorageTreeElement>;
+  private domStorageTreeElements: Map<SDK.DOMStorageModel.DOMStorage, DOMStorageTreeElement>;
   private extensionIdToStorageTreeParentElement: Map<string, ExtensionStorageTreeParentElement>;
   private extensionStorageModels: ExtensionStorageModel[];
   private extensionStorageTreeElements: Map<string, ExtensionStorageTreeElement>;
@@ -518,9 +517,9 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
     }
 
     SDK.TargetManager.TargetManager.instance().observeModels(
-        DOMStorageModel, {
-          modelAdded: (model: DOMStorageModel) => this.domStorageModelAdded(model),
-          modelRemoved: (model: DOMStorageModel) => this.domStorageModelRemoved(model),
+        SDK.DOMStorageModel.DOMStorageModel, {
+          modelAdded: (model: SDK.DOMStorageModel.DOMStorageModel) => this.domStorageModelAdded(model),
+          modelRemoved: (model: SDK.DOMStorageModel.DOMStorageModel) => this.domStorageModelRemoved(model),
         },
         {scoped: true});
 
@@ -653,17 +652,17 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
     }
   }
 
-  private domStorageModelAdded(model: DOMStorageModel): void {
+  private domStorageModelAdded(model: SDK.DOMStorageModel.DOMStorageModel): void {
     model.enable();
     model.storages().forEach(this.addDOMStorage.bind(this));
-    model.addEventListener(DOMStorageModelEvents.DOM_STORAGE_ADDED, this.domStorageAdded, this);
-    model.addEventListener(DOMStorageModelEvents.DOM_STORAGE_REMOVED, this.domStorageRemoved, this);
+    model.addEventListener(SDK.DOMStorageModel.Events.DOM_STORAGE_ADDED, this.domStorageAdded, this);
+    model.addEventListener(SDK.DOMStorageModel.Events.DOM_STORAGE_REMOVED, this.domStorageRemoved, this);
   }
 
-  private domStorageModelRemoved(model: DOMStorageModel): void {
+  private domStorageModelRemoved(model: SDK.DOMStorageModel.DOMStorageModel): void {
     model.storages().forEach(this.removeDOMStorage.bind(this));
-    model.removeEventListener(DOMStorageModelEvents.DOM_STORAGE_ADDED, this.domStorageAdded, this);
-    model.removeEventListener(DOMStorageModelEvents.DOM_STORAGE_REMOVED, this.domStorageRemoved, this);
+    model.removeEventListener(SDK.DOMStorageModel.Events.DOM_STORAGE_ADDED, this.domStorageAdded, this);
+    model.removeEventListener(SDK.DOMStorageModel.Events.DOM_STORAGE_REMOVED, this.domStorageRemoved, this);
   }
 
   private extensionStorageModelAdded(model: ExtensionStorageModel): void {
@@ -823,12 +822,12 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
     }
   }
 
-  private domStorageAdded(event: Common.EventTarget.EventTargetEvent<DOMStorage>): void {
+  private domStorageAdded(event: Common.EventTarget.EventTargetEvent<SDK.DOMStorageModel.DOMStorage>): void {
     const domStorage = (event.data);
     this.addDOMStorage(domStorage);
   }
 
-  private addDOMStorage(domStorage: DOMStorage): void {
+  private addDOMStorage(domStorage: SDK.DOMStorageModel.DOMStorage): void {
     console.assert(!this.domStorageTreeElements.get(domStorage));
     console.assert(Boolean(domStorage.storageKey));
 
@@ -847,12 +846,12 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
     }
   }
 
-  private domStorageRemoved(event: Common.EventTarget.EventTargetEvent<DOMStorage>): void {
+  private domStorageRemoved(event: Common.EventTarget.EventTargetEvent<SDK.DOMStorageModel.DOMStorage>): void {
     const domStorage = (event.data);
     this.removeDOMStorage(domStorage);
   }
 
-  private removeDOMStorage(domStorage: DOMStorage): void {
+  private removeDOMStorage(domStorage: SDK.DOMStorageModel.DOMStorage): void {
     const treeElement = this.domStorageTreeElements.get(domStorage);
     if (!treeElement) {
       return;
@@ -1738,8 +1737,8 @@ export class IDBIndexTreeElement extends ApplicationPanelTreeElement {
 }
 
 export class DOMStorageTreeElement extends ApplicationPanelTreeElement {
-  private readonly domStorage: DOMStorage;
-  constructor(storagePanel: ResourcesPanel, domStorage: DOMStorage) {
+  private readonly domStorage: SDK.DOMStorageModel.DOMStorage;
+  constructor(storagePanel: ResourcesPanel, domStorage: SDK.DOMStorageModel.DOMStorage) {
     super(
         storagePanel,
         domStorage.storageKey ? SDK.StorageKeyManager.parseStorageKey(domStorage.storageKey).origin :

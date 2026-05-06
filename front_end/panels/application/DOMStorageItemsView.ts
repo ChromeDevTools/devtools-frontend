@@ -32,12 +32,12 @@
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
+import * as SDK from '../../core/sdk/sdk.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import {DOMStorage} from './DOMStorageModel.js';
 import {KeyValueStorageItemsView} from './KeyValueStorageItemsView.js';
 
 const UIStrings = {
@@ -58,10 +58,10 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/application/DOMStorageItemsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class DOMStorageItemsView extends KeyValueStorageItemsView {
-  private domStorage: DOMStorage;
+  private domStorage: SDK.DOMStorageModel.DOMStorage;
   private eventListeners: Common.EventTarget.EventDescriptor[];
 
-  constructor(domStorage: DOMStorage) {
+  constructor(domStorage: SDK.DOMStorageModel.DOMStorage) {
     super(
         i18nString(UIStrings.domStorageItems), 'dom-storage', true, /* view=*/ undefined, /* metadataView=*/ undefined,
         /* jslog=*/ undefined, ['storage-view', 'table']);
@@ -91,7 +91,7 @@ export class DOMStorageItemsView extends KeyValueStorageItemsView {
     );
   }
 
-  setStorage(domStorage: DOMStorage): void {
+  setStorage(domStorage: SDK.DOMStorageModel.DOMStorage): void {
     Common.EventTarget.removeEventListeners(this.eventListeners);
     this.domStorage = domStorage;
     const storageKind = domStorage.isLocalStorage ? 'local-storage-data' : 'session-storage-data';
@@ -100,10 +100,14 @@ export class DOMStorageItemsView extends KeyValueStorageItemsView {
       this.toolbar?.setStorageKey(domStorage.storageKey);
     }
     this.eventListeners = [
-      this.domStorage.addEventListener(DOMStorage.Events.DOM_STORAGE_ITEMS_CLEARED, this.domStorageItemsCleared, this),
-      this.domStorage.addEventListener(DOMStorage.Events.DOM_STORAGE_ITEM_REMOVED, this.domStorageItemRemoved, this),
-      this.domStorage.addEventListener(DOMStorage.Events.DOM_STORAGE_ITEM_ADDED, this.domStorageItemAdded, this),
-      this.domStorage.addEventListener(DOMStorage.Events.DOM_STORAGE_ITEM_UPDATED, this.domStorageItemUpdated, this),
+      this.domStorage.addEventListener(
+          SDK.DOMStorageModel.DOMStorage.Events.DOM_STORAGE_ITEMS_CLEARED, this.domStorageItemsCleared, this),
+      this.domStorage.addEventListener(
+          SDK.DOMStorageModel.DOMStorage.Events.DOM_STORAGE_ITEM_REMOVED, this.domStorageItemRemoved, this),
+      this.domStorage.addEventListener(
+          SDK.DOMStorageModel.DOMStorage.Events.DOM_STORAGE_ITEM_ADDED, this.domStorageItemAdded, this),
+      this.domStorage.addEventListener(
+          SDK.DOMStorageModel.DOMStorage.Events.DOM_STORAGE_ITEM_UPDATED, this.domStorageItemUpdated, this),
     ];
     this.refreshItems();
   }
@@ -121,8 +125,8 @@ export class DOMStorageItemsView extends KeyValueStorageItemsView {
     UI.ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.domStorageItemsCleared));
   }
 
-  private domStorageItemRemoved(event: Common.EventTarget.EventTargetEvent<DOMStorage.DOMStorageItemRemovedEvent>):
-      void {
+  private domStorageItemRemoved(
+      event: Common.EventTarget.EventTargetEvent<SDK.DOMStorageModel.DOMStorage.DOMStorageItemRemovedEvent>): void {
     if (!this.isShowing()) {
       return;
     }
@@ -135,7 +139,8 @@ export class DOMStorageItemsView extends KeyValueStorageItemsView {
     UI.ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.domStorageItemDeleted));
   }
 
-  private domStorageItemAdded(event: Common.EventTarget.EventTargetEvent<DOMStorage.DOMStorageItemAddedEvent>): void {
+  private domStorageItemAdded(
+      event: Common.EventTarget.EventTargetEvent<SDK.DOMStorageModel.DOMStorage.DOMStorageItemAddedEvent>): void {
     if (!this.isShowing()) {
       return;
     }
@@ -143,8 +148,8 @@ export class DOMStorageItemsView extends KeyValueStorageItemsView {
     this.itemAdded(event.data.key, event.data.value);
   }
 
-  private domStorageItemUpdated(event: Common.EventTarget.EventTargetEvent<DOMStorage.DOMStorageItemUpdatedEvent>):
-      void {
+  private domStorageItemUpdated(
+      event: Common.EventTarget.EventTargetEvent<SDK.DOMStorageModel.DOMStorage.DOMStorageItemUpdatedEvent>): void {
     if (!this.isShowing()) {
       return;
     }

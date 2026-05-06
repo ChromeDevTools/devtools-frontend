@@ -160,7 +160,7 @@ export const databaseModel = function() {
 };
 
 export const domStorageModel = function() {
-  return TestRunner.mainTarget.model(Application.DOMStorageModel.DOMStorageModel);
+  return TestRunner.mainTarget.model(SDK.DOMStorageModel.DOMStorageModel);
 };
 
 export const indexedDBModel = function() {

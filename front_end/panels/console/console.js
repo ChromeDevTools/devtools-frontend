@@ -6536,8 +6536,7 @@ var ConsoleView = class _ConsoleView extends UI8.Widget.VBox {
     this.linkifier.addEventListener("liveLocationUpdated", refilterMessages);
     this.consoleMessages = [];
     this.consoleGroupStarts = [];
-    const devtoolsLocale = i18n11.DevToolsLocale.DevToolsLocale.instance();
-    this.aiCodeCompletionConfig = AiCodeCompletion.AiCodeCompletion.AiCodeCompletion.isAiCodeCompletionEnabled(devtoolsLocale.locale) ? {
+    this.aiCodeCompletionConfig = AiCodeCompletion.AiCodeCompletion.AiCodeCompletion.isAiCodeCompletionAvailable() ? {
       completionContext: {
         getPrefix: this.getConsoleMessageHistory.bind(this),
         additionalFiles: [{
@@ -8036,7 +8035,7 @@ var ConsolePrompt = class extends Common8.ObjectWrapper.eventMixin(UI10.Widget.W
     }
     this.element.removeAttribute("tabindex");
     this.editorSetForTest();
-    Host4.userMetrics.panelLoaded("console", "DevTools.Launch.Console");
+    UI10.UIUserMetrics.UIUserMetrics.instance().panelLoaded("console", "DevTools.Launch.Console");
   }
   eagerSettingChanged() {
     const enabled = this.eagerEvalSetting.get();

@@ -4,7 +4,6 @@ export declare enum ExperimentName {
     LIVE_HEAP_PROFILE = "live-heap-profile",
     PROTOCOL_MONITOR = "protocol-monitor",
     TIMELINE_INVALIDATION_TRACKING = "timeline-invalidation-tracking",
-    FONT_EDITOR = "font-editor",
     INSTRUMENTATION_BREAKPOINTS = "instrumentation-breakpoints",
     USE_SOURCE_MAP_SCOPES = "use-source-map-scopes",
     TIMELINE_DEBUG_MODE = "timeline-debug-mode",

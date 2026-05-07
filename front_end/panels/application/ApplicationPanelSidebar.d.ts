@@ -8,7 +8,6 @@ import { BackgroundServiceModel } from './BackgroundServiceModel.js';
 import { BounceTrackingMitigationsTreeElement } from './BounceTrackingMitigationsTreeElement.js';
 import { DeviceBoundSessionsModel } from './DeviceBoundSessionsModel.js';
 import { RootTreeElement as DeviceBoundSessionsRootTreeElement } from './DeviceBoundSessionsTreeElement.js';
-import { type DOMStorage } from './DOMStorageModel.js';
 import { type ExtensionStorage } from './ExtensionStorageModel.js';
 import { type Database as IndexedDBModelDatabase, type DatabaseId, type Index, IndexedDBModel, type ObjectStore } from './IndexedDBModel.js';
 import { InterestGroupTreeElement } from './InterestGroupTreeElement.js';
@@ -225,7 +224,7 @@ export declare class IDBIndexTreeElement extends ApplicationPanelTreeElement {
 }
 export declare class DOMStorageTreeElement extends ApplicationPanelTreeElement {
     private readonly domStorage;
-    constructor(storagePanel: ResourcesPanel, domStorage: DOMStorage);
+    constructor(storagePanel: ResourcesPanel, domStorage: SDK.DOMStorageModel.DOMStorage);
     get itemURL(): Platform.DevToolsPath.UrlString;
     onselect(selectedByUser?: boolean): boolean;
     onattach(): void;

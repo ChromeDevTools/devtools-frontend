@@ -4,7 +4,6 @@
 /* eslint-disable @devtools/no-imperative-dom-api */
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
-import * as i18n from '../../core/i18n/i18n.js';
 import * as FormatterActions from '../../entrypoints/formatter_worker/FormatterActions.js'; // eslint-disable-line @devtools/es-modules-import
 import * as AiCodeCompletion from '../../models/ai_code_completion/ai_code_completion.js';
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
@@ -280,8 +279,7 @@ export class UISourceCodeFrame extends Common.ObjectWrapper
             PerformanceProfilePlugin,
             AiWarningInfobarPlugin,
         ];
-        const devtoolsLocale = i18n.DevToolsLocale.DevToolsLocale.instance();
-        if (AiCodeCompletion.AiCodeCompletion.AiCodeCompletion.isAiCodeCompletionEnabled(devtoolsLocale.locale)) {
+        if (AiCodeCompletion.AiCodeCompletion.AiCodeCompletion.isAiCodeCompletionAvailable()) {
             sourceFramePluginsList.push(AiCodeCompletionPlugin);
         }
         return sourceFramePluginsList;

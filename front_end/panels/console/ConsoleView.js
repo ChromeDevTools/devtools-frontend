@@ -489,9 +489,8 @@ export class ConsoleView extends UI.Widget.VBox {
         this.linkifier.addEventListener("liveLocationUpdated" /* Components.Linkifier.Events.LIVE_LOCATION_UPDATED */, refilterMessages);
         this.consoleMessages = [];
         this.consoleGroupStarts = [];
-        const devtoolsLocale = i18n.DevToolsLocale.DevToolsLocale.instance();
-        this.aiCodeCompletionConfig =
-            AiCodeCompletion.AiCodeCompletion.AiCodeCompletion.isAiCodeCompletionEnabled(devtoolsLocale.locale) ? {
+        this.aiCodeCompletionConfig = AiCodeCompletion.AiCodeCompletion.AiCodeCompletion.isAiCodeCompletionAvailable() ?
+            {
                 completionContext: {
                     getPrefix: this.getConsoleMessageHistory.bind(this),
                     additionalFiles: [{
@@ -515,7 +514,7 @@ export class ConsoleView extends UI.Widget.VBox {
                 onResponseReceived: this.#onAiCodeCompletionResponseReceived.bind(this),
                 panel: "console" /* AiCodeCompletion.AiCodeCompletion.ContextFlavor.CONSOLE */,
             } :
-                undefined;
+            undefined;
         this.prompt = new ConsolePrompt(this.aiCodeCompletionConfig);
         this.prompt.show(this.promptElement);
         this.prompt.element.addEventListener('keydown', this.promptKeyDown.bind(this), true);

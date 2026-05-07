@@ -4,28 +4,6 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
-// gen/front_end/core/common/App.js
-var App_exports = {};
-
-// gen/front_end/core/common/AppProvider.js
-var AppProvider_exports = {};
-__export(AppProvider_exports, {
-  getRegisteredAppProviders: () => getRegisteredAppProviders,
-  registerAppProvider: () => registerAppProvider
-});
-import * as Root from "./../root/root.js";
-var registeredAppProvider = [];
-function registerAppProvider(registration) {
-  registeredAppProvider.push(registration);
-}
-function getRegisteredAppProviders() {
-  return registeredAppProvider.filter((provider) => Root.Runtime.Runtime.isDescriptorEnabled({ condition: provider.condition })).sort((firstProvider, secondProvider) => {
-    const order1 = firstProvider.order || 0;
-    const order2 = secondProvider.order || 0;
-    return order1 - order2;
-  });
-}
-
 // gen/front_end/core/common/Base64.js
 var Base64_exports = {};
 __export(Base64_exports, {
@@ -3467,7 +3445,7 @@ __export(Console_exports, {
   FrontendMessageSource: () => FrontendMessageSource,
   Message: () => Message
 });
-import * as Root2 from "./../root/root.js";
+import * as Root from "./../root/root.js";
 
 // gen/front_end/core/common/Object.js
 var Object_exports = {};
@@ -3712,13 +3690,13 @@ var RevealerDestination = {
 var Console = class _Console extends ObjectWrapper {
   #messages = [];
   static instance(opts) {
-    if (!Root2.DevToolsContext.globalInstance().has(_Console) || opts?.forceNew) {
-      Root2.DevToolsContext.globalInstance().set(_Console, new _Console());
+    if (!Root.DevToolsContext.globalInstance().has(_Console) || opts?.forceNew) {
+      Root.DevToolsContext.globalInstance().set(_Console, new _Console());
     }
-    return Root2.DevToolsContext.globalInstance().get(_Console);
+    return Root.DevToolsContext.globalInstance().get(_Console);
   }
   static removeInstance() {
-    Root2.DevToolsContext.globalInstance().delete(_Console);
+    Root.DevToolsContext.globalInstance().delete(_Console);
   }
   /**
    * Add a message to the Console panel.
@@ -5240,7 +5218,7 @@ __export(SettingRegistration_exports, {
   resetSettings: () => resetSettings
 });
 import * as i18n5 from "./../i18n/i18n.js";
-import * as Root3 from "./../root/root.js";
+import * as Root2 from "./../root/root.js";
 var UIStrings3 = {
   /**
    * @description Title of the Elements Panel
@@ -5329,7 +5307,7 @@ function registerSettingExtension(registration) {
   registeredSettings.push(registration);
 }
 function getRegisteredSettings() {
-  return registeredSettings.filter((setting) => Root3.Runtime.Runtime.isDescriptorEnabled(setting));
+  return registeredSettings.filter((setting) => Root2.Runtime.Runtime.isDescriptorEnabled(setting));
 }
 function registerSettingsForTest(settings, forceReset = false) {
   if (registeredSettings.length === 0 || forceReset) {
@@ -5419,7 +5397,7 @@ __export(Settings_exports, {
   settingForTest: () => settingForTest
 });
 import * as Platform5 from "./../platform/platform.js";
-import * as Root5 from "./../root/root.js";
+import * as Root4 from "./../root/root.js";
 
 // gen/front_end/core/common/VersionController.js
 var VersionController_exports = {};
@@ -5427,7 +5405,7 @@ __export(VersionController_exports, {
   VersionController: () => VersionController
 });
 import * as Platform4 from "./../platform/platform.js";
-import * as Root4 from "./../root/root.js";
+import * as Root3 from "./../root/root.js";
 var VersionController = class _VersionController {
   static GLOBAL_VERSION_SETTING_NAME = "inspectorVersion";
   static SYNCED_VERSION_SETTING_NAME = "syncedInspectorVersion";
@@ -5633,12 +5611,13 @@ var VersionController = class _VersionController {
     }
   }
   updateVersionFrom9To10() {
-    if (!window.localStorage) {
+    const localStorage = Platform4.HostRuntime.HOST_RUNTIME.getLocalStorage();
+    if (!localStorage) {
       return;
     }
-    for (const key in window.localStorage) {
+    for (const key in localStorage) {
       if (key.startsWith("revision-history")) {
-        window.localStorage.removeItem(key);
+        localStorage.removeItem(key);
       }
     }
   }
@@ -6090,7 +6069,7 @@ var VersionController = class _VersionController {
     recordingsSetting.set(recordings);
   }
   updateVersionFrom42To43() {
-    const timelineShowAllEventsExperimentEnabled = Root4.Runtime.experiments.getValueFromStorage("timeline-show-all-events");
+    const timelineShowAllEventsExperimentEnabled = Root3.Runtime.experiments.getValueFromStorage("timeline-show-all-events");
     if (timelineShowAllEventsExperimentEnabled !== void 0) {
       if (this.#settings.syncedStorage.has("timeline-show-all-events")) {
         return;
@@ -6103,7 +6082,7 @@ var VersionController = class _VersionController {
     }
   }
   updateVersionFrom43To44() {
-    const apcaExperimentEnabled = Root4.Runtime.experiments.getValueFromStorage("apca");
+    const apcaExperimentEnabled = Root3.Runtime.experiments.getValueFromStorage("apca");
     if (apcaExperimentEnabled !== void 0) {
       if (this.#settings.syncedStorage.has("apca")) {
         return;
@@ -6137,15 +6116,16 @@ var VersionController = class _VersionController {
       "workspaceExcludedFolders",
       "xhrBreakpoints"
     ]);
-    if (!window.localStorage) {
+    const localStorage = Platform4.HostRuntime.HOST_RUNTIME.getLocalStorage();
+    if (!localStorage) {
       return;
     }
-    for (const key in window.localStorage) {
+    for (const key in localStorage) {
       if (localSettings.has(key)) {
         continue;
       }
-      const value = window.localStorage[key];
-      window.localStorage.removeItem(key);
+      const value = localStorage[key];
+      localStorage.removeItem(key);
       this.#settings.globalStorage.set(key, value);
     }
   }
@@ -6178,11 +6158,11 @@ var Settings = class _Settings {
     for (const registration of this.#settingRegistrations) {
       const { settingName, defaultValue, storageType } = registration;
       const isRegex = registration.settingType === "regex";
-      const evaluatedDefaultValue = typeof defaultValue === "function" ? defaultValue(Root5.Runtime.hostConfig) : defaultValue;
+      const evaluatedDefaultValue = typeof defaultValue === "function" ? defaultValue(Root4.Runtime.hostConfig) : defaultValue;
       const setting = isRegex && typeof evaluatedDefaultValue === "string" ? this.createRegExpSetting(settingName, evaluatedDefaultValue, void 0, storageType) : this.createSetting(settingName, evaluatedDefaultValue, storageType);
       setting.setTitleFunction(registration.title);
       if (registration.userActionCondition) {
-        setting.setRequiresUserAction(Boolean(Root5.Runtime.Runtime.queryParam(registration.userActionCondition)));
+        setting.setRequiresUserAction(Boolean(Root4.Runtime.Runtime.queryParam(registration.userActionCondition)));
       }
       setting.setRegistration(registration);
       this.registerModuleSetting(setting);
@@ -6195,15 +6175,15 @@ var Settings = class _Settings {
     return this.#settingRegistrations;
   }
   static hasInstance() {
-    return Root5.DevToolsContext.globalInstance().has(_Settings);
+    return Root4.DevToolsContext.globalInstance().has(_Settings);
   }
   static instance(opts = { forceNew: null, syncedStorage: null, globalStorage: null, localStorage: null, settingRegistrations: null }) {
     const { forceNew, syncedStorage, globalStorage, localStorage, settingRegistrations, logSettingAccess, runSettingsMigration } = opts;
-    if (!Root5.DevToolsContext.globalInstance().has(_Settings) || forceNew) {
+    if (!Root4.DevToolsContext.globalInstance().has(_Settings) || forceNew) {
       if (!syncedStorage || !globalStorage || !localStorage || !settingRegistrations) {
         throw new Error(`Unable to create settings: global and local storage must be provided: ${new Error().stack}`);
       }
-      Root5.DevToolsContext.globalInstance().set(_Settings, new _Settings({
+      Root4.DevToolsContext.globalInstance().set(_Settings, new _Settings({
         syncedStorage,
         globalStorage,
         localStorage,
@@ -6212,10 +6192,10 @@ var Settings = class _Settings {
         runSettingsMigration
       }));
     }
-    return Root5.DevToolsContext.globalInstance().get(_Settings);
+    return Root4.DevToolsContext.globalInstance().get(_Settings);
   }
   static removeInstance() {
-    Root5.DevToolsContext.globalInstance().delete(_Settings);
+    Root4.DevToolsContext.globalInstance().delete(_Settings);
   }
   registerModuleSetting(setting) {
     const settingName = setting.name;
@@ -6413,7 +6393,7 @@ var Deprecation = class {
     }
     this.disabled = deprecationNotice.disabled;
     this.warning = deprecationNotice.warning();
-    this.experiment = deprecationNotice.experiment ? Root5.Runtime.experiments.allConfigurableExperiments().find((e) => e.name === deprecationNotice.experiment) : void 0;
+    this.experiment = deprecationNotice.experiment ? Root4.Runtime.experiments.allConfigurableExperiments().find((e) => e.name === deprecationNotice.experiment) : void 0;
   }
 };
 var Setting = class {
@@ -6472,7 +6452,7 @@ var Setting = class {
   }
   disabled() {
     if (this.#registration?.disabledCondition) {
-      const { disabled } = this.#registration.disabledCondition(Root5.Runtime.hostConfig);
+      const { disabled } = this.#registration.disabledCondition(Root4.Runtime.hostConfig);
       if (disabled) {
         return true;
       }
@@ -6481,7 +6461,7 @@ var Setting = class {
   }
   disabledReasons() {
     if (this.#registration?.disabledCondition) {
-      const result = this.#registration.disabledCondition(Root5.Runtime.hostConfig);
+      const result = this.#registration.disabledCondition(Root4.Runtime.hostConfig);
       if (result.disabled) {
         return result.reasons;
       }
@@ -6574,7 +6554,7 @@ var Setting = class {
     this.#registration = registration;
     const { deprecationNotice } = registration;
     if (deprecationNotice?.disabled) {
-      const experiment = deprecationNotice.experiment ? Root5.Runtime.experiments.allConfigurableExperiments().find((e) => e.name === deprecationNotice.experiment) : void 0;
+      const experiment = deprecationNotice.experiment ? Root4.Runtime.experiments.allConfigurableExperiments().find((e) => e.name === deprecationNotice.experiment) : void 0;
       if (!experiment || experiment.isEnabled()) {
         this.set(this.defaultValue);
         this.setDisabled(true);
@@ -7111,8 +7091,6 @@ var Throttler = class {
 // gen/front_end/core/common/common.prebundle.js
 import { UIString } from "./../platform/platform.js";
 export {
-  App_exports as App,
-  AppProvider_exports as AppProvider,
   Base64_exports as Base64,
   CharacterIdMap_exports as CharacterIdMap,
   Color_exports as Color,

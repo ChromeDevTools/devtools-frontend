@@ -2229,7 +2229,6 @@ function isStarterBadgeEnabled() {
 var Platform_exports = {};
 __export(Platform_exports, {
   fontFamily: () => fontFamily,
-  isCustomDevtoolsFrontend: () => isCustomDevtoolsFrontend,
   isMac: () => isMac,
   isWin: () => isWin,
   platform: () => platform,
@@ -2260,13 +2259,6 @@ function setPlatformForTests(platform2) {
   _platform = platform2;
   _isMac = void 0;
   _isWin = void 0;
-}
-var _isCustomDevtoolsFrontend;
-function isCustomDevtoolsFrontend() {
-  if (typeof _isCustomDevtoolsFrontend === "undefined") {
-    _isCustomDevtoolsFrontend = window.location.toString().startsWith("devtools://devtools/custom/");
-  }
-  return _isCustomDevtoolsFrontend;
 }
 var _fontFamily;
 function fontFamily() {
@@ -2304,25 +2296,6 @@ __export(UserMetrics_exports, {
   UserMetrics: () => UserMetrics
 });
 var UserMetrics = class {
-  #panelChangedSinceLaunch;
-  #firedLaunchHistogram;
-  #launchPanelName;
-  constructor() {
-    this.#panelChangedSinceLaunch = false;
-    this.#firedLaunchHistogram = false;
-    this.#launchPanelName = "";
-  }
-  panelShown(panelName, isLaunching) {
-    const code = PanelCodes[panelName] || 0;
-    InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.PanelShown", code, PanelCodes.MAX_VALUE);
-    InspectorFrontendHostInstance.recordUserMetricsAction("DevTools_PanelShown_" + panelName);
-    if (!isLaunching) {
-      this.#panelChangedSinceLaunch = true;
-    }
-  }
-  settingsPanelShown(settingsViewId) {
-    this.panelShown("settings-" + settingsViewId);
-  }
   sourcesPanelFileDebugged(mediaType) {
     const code = mediaType && MediaTypes[mediaType] || MediaTypes.Unknown;
     InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.SourcesPanelFileDebugged", code, MediaTypes.MAX_VALUE);
@@ -2337,27 +2310,6 @@ var UserMetrics = class {
   }
   actionTaken(action) {
     InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.ActionTaken", action, Action.MAX_VALUE);
-  }
-  panelLoaded(panelName, histogramName) {
-    if (this.#firedLaunchHistogram || panelName !== this.#launchPanelName) {
-      return;
-    }
-    this.#firedLaunchHistogram = true;
-    requestAnimationFrame(() => {
-      window.setTimeout(() => {
-        performance.mark(histogramName);
-        if (this.#panelChangedSinceLaunch) {
-          return;
-        }
-        InspectorFrontendHostInstance.recordPerformanceHistogram(histogramName, performance.now());
-      }, 0);
-    });
-  }
-  setLaunchPanel(panelName) {
-    this.#launchPanelName = panelName;
-  }
-  performanceTraceLoad(measure) {
-    InspectorFrontendHostInstance.recordPerformanceHistogram("DevTools.TraceLoad", measure.duration);
   }
   keybindSetSettingChanged(keybindSet) {
     const value = KeybindSetSettings[keybindSet] || 0;
@@ -3033,7 +2985,6 @@ var DevtoolsExperiments;
   DevtoolsExperiments2[DevtoolsExperiments2["live-heap-profile"] = 11] = "live-heap-profile";
   DevtoolsExperiments2[DevtoolsExperiments2["protocol-monitor"] = 13] = "protocol-monitor";
   DevtoolsExperiments2[DevtoolsExperiments2["timeline-invalidation-tracking"] = 26] = "timeline-invalidation-tracking";
-  DevtoolsExperiments2[DevtoolsExperiments2["font-editor"] = 41] = "font-editor";
   DevtoolsExperiments2[DevtoolsExperiments2["instrumentation-breakpoints"] = 61] = "instrumentation-breakpoints";
   DevtoolsExperiments2[DevtoolsExperiments2["use-source-map-scopes"] = 76] = "use-source-map-scopes";
   DevtoolsExperiments2[DevtoolsExperiments2["timeline-debug-mode"] = 93] = "timeline-debug-mode";

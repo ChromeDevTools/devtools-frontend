@@ -123,7 +123,7 @@ const console = {
 };`;
 var MIN_CHARACTER_THRESHOLD = 5;
 var EMPTY_RESPONSE_DIFF_THRESHOLD = 3;
-var AiCodeCompletion = class {
+var AiCodeCompletion = class _AiCodeCompletion {
   #stopSequences;
   #renderingTimeout;
   #aidaRequestCache;
@@ -296,6 +296,9 @@ var AiCodeCompletion = class {
     }
     this.#callbacks?.setAiAutoCompletion(null);
   }
+  static isAiCodeCompletionAvailable() {
+    return Root.Runtime.hostConfig.devToolsAiCodeCompletion?.enabled ?? false;
+  }
   static isAiCodeCompletionEnabled(locale) {
     if (!locale.startsWith("en-")) {
       return false;
@@ -304,7 +307,10 @@ var AiCodeCompletion = class {
     if (!aidaAvailability || aidaAvailability.blockedByGeo || aidaAvailability.blockedByAge || aidaAvailability.blockedByEnterprisePolicy) {
       return false;
     }
-    return Boolean(aidaAvailability.enabled && Root.Runtime.hostConfig.devToolsAiCodeCompletion?.enabled);
+    return Boolean(aidaAvailability.enabled && _AiCodeCompletion.isAiCodeCompletionAvailable());
+  }
+  static isAiCodeCompletionStylesAvailable() {
+    return Root.Runtime.hostConfig.devToolsAiCodeCompletionStyles?.enabled ?? false;
   }
   static isAiCodeCompletionStylesEnabled(locale) {
     if (!locale.startsWith("en-")) {
@@ -314,7 +320,7 @@ var AiCodeCompletion = class {
     if (!aidaAvailability || aidaAvailability.blockedByGeo || aidaAvailability.blockedByAge || aidaAvailability.blockedByEnterprisePolicy) {
       return false;
     }
-    return Boolean(aidaAvailability.enabled && Root.Runtime.hostConfig.devToolsAiCodeCompletionStyles?.enabled);
+    return Boolean(aidaAvailability.enabled && _AiCodeCompletion.isAiCodeCompletionStylesAvailable());
   }
 };
 export {

@@ -1095,6 +1095,7 @@ var knownContextValues = /* @__PURE__ */ new Set([
   "copy-watch-expression-value",
   "copy-xpath",
   "core-web-vitals",
+  "corner",
   "corner-block-end-shape",
   "corner-block-start-shape",
   "corner-bottom-left-shape",

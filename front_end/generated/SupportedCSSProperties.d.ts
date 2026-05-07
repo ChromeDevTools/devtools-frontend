@@ -335,6 +335,9 @@ export const generatedPropertyValues: {
     continue: {
         values: string[];
     };
+    corner: {
+        values: string[];
+    };
     "corner-bottom-left-shape": {
         values: string[];
     };
@@ -345,9 +348,6 @@ export const generatedPropertyValues: {
         values: string[];
     };
     "corner-top-right-shape": {
-        values: string[];
-    };
-    corners: {
         values: string[];
     };
     "counter-increment": {

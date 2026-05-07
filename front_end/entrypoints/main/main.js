@@ -550,6 +550,13 @@ var WINDOW_LOCAL_STORAGE = {
   },
   clear: () => window.localStorage.clear()
 };
+var isCustomDevtoolsFrontendInternal;
+function isCustomDevtoolsFrontend() {
+  if (typeof isCustomDevtoolsFrontendInternal === "undefined") {
+    isCustomDevtoolsFrontendInternal = window.location.toString().startsWith("devtools://devtools/custom/");
+  }
+  return isCustomDevtoolsFrontendInternal;
+}
 var MainImpl = class {
   #readyForTestPromise = Promise.withResolvers();
   #veStartPromise;
@@ -651,7 +658,7 @@ var MainImpl = class {
   createSettingsStorage(prefs) {
     this.#initializeExperiments();
     let storagePrefix = "";
-    if (Host.Platform.isCustomDevtoolsFrontend()) {
+    if (isCustomDevtoolsFrontend()) {
       storagePrefix = "__custom__";
     } else if (!Root2.Runtime.Runtime.queryParam("can_dock") && Boolean(Root2.Runtime.Runtime.queryParam("debugFrontend")) && !Host.InspectorFrontendHost.isUnderTest()) {
       storagePrefix = "__bundled__";
@@ -705,7 +712,6 @@ var MainImpl = class {
     Root2.Runtime.experiments.register(Root2.ExperimentNames.ExperimentName.TIMELINE_DEBUG_MODE, "Performance panel: debug mode (trace event details, etc)");
     Root2.Runtime.experiments.register(Root2.ExperimentNames.ExperimentName.INSTRUMENTATION_BREAKPOINTS, "Instrumentation breakpoints");
     Root2.Runtime.experiments.register(Root2.ExperimentNames.ExperimentName.USE_SOURCE_MAP_SCOPES, "Use scope information from source maps");
-    Root2.Runtime.experiments.register(Root2.ExperimentNames.ExperimentName.FONT_EDITOR, "New font editor in the Styles tab", "https://developer.chrome.com/blog/new-in-devtools-89/#font");
     Root2.Runtime.experiments.registerHostExperiment({
       name: Root2.ExperimentNames.ExperimentName.DURABLE_MESSAGES,
       title: "Durable Messages",
@@ -846,7 +852,7 @@ var MainImpl = class {
       await PanelCommon.GeminiRebrandPromoDialog.maybeShow();
     }
     _a.timeEnd("Main._createAppUI");
-    const appProvider = Common2.AppProvider.getRegisteredAppProviders()[0];
+    const appProvider = UI2.AppProvider.getRegisteredAppProviders()[0];
     if (!appProvider) {
       throw new Error("Unable to boot DevTools, as the appprovider is missing");
     }

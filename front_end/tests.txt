@@ -48,6 +48,11 @@ core/platform/StringUtilities.test.js
 core/platform/TypedArrayUtilities.test.js
 core/protocol_client/InspectorBackend.test.js
 core/root/Runtime.test.js
+core/sdk/AccessibilityModel.test.js
+core/sdk/AnimationModel.test.js
+core/sdk/AutofillModel.test.js
+core/sdk/CPUThrottlingManager.test.js
+core/sdk/CSSContainerQuery.test.js
 core/sdk/DebuggerModel.test.js
 core/sdk/NetworkManager.test.js
 core/sdk/PageResourceLoader.test.js
@@ -96,11 +101,10 @@ models/stack_trace/StackTrace.test.js
 models/stack_trace/StackTraceImpl.test.js
 models/stack_trace/StackTraceModel.test.js
 models/stack_trace/Trie.test.js
-core/sdk/AccessibilityModel.test.js
-core/sdk/AnimationModel.test.js
-core/sdk/AutofillModel.test.js
-core/sdk/CPUThrottlingManager.test.js
-core/sdk/CSSContainerQuery.test.js
+models/workspace/IgnoreListManager.test.js
+models/workspace/SearchConfig.test.js
+models/workspace/UISourceCode.test.js
+models/workspace/WorkspaceImpl.test.js
 core/sdk/CSSMatchedStyles.test.js
 core/sdk/CSSModel.test.js
 core/sdk/CSSProperty.test.js
@@ -115,6 +119,7 @@ core/sdk/CookieModel.test.js
 core/sdk/CookieParser.test.js
 core/sdk/CrashReportContextModel.test.js
 core/sdk/DOMModel.test.js
+core/sdk/DOMStorageModel.test.js
 core/sdk/EmulationModel.test.js
 core/sdk/EnhancedTracesParser.test.js
 core/sdk/FrameManager.test.js
@@ -311,10 +316,6 @@ models/trace/types/File.test.js
 models/trace/types/TraceEvents.test.js
 models/trace_source_maps_resolver/SourceMapsResolver.test.js
 models/web_mcp/WebMCPModel.test.js
-models/workspace/IgnoreListManager.test.js
-models/workspace/SearchConfig.test.js
-models/workspace/UISourceCode.test.js
-models/workspace/WorkspaceImpl.test.js
 models/workspace_diff/WorkspaceDiff.test.js
 panels/accessibility/ARIAAttributesView.test.js
 panels/accessibility/AccessibilitySidebarView.test.js
@@ -338,7 +339,6 @@ panels/application/AppManifestView.test.js
 panels/application/ApplicationPanelSidebar.test.js
 panels/application/BackgroundServiceView.test.js
 panels/application/CrashReportContextView.test.js
-panels/application/DOMStorageModel.test.js
 panels/application/DeviceBoundSessionsModel.test.js
 panels/application/DeviceBoundSessionsTreeElement.test.js
 panels/application/DeviceBoundSessionsView.test.js
@@ -755,8 +755,6 @@ ui/legacy/components/inline_editor/CSSLinearEasingModel.test.js
 ui/legacy/components/inline_editor/CSSShadowEditor.test.js
 ui/legacy/components/inline_editor/ColorMixSwatch.test.js
 ui/legacy/components/inline_editor/ColorSwatch.test.js
-ui/legacy/components/inline_editor/FontEditorUnitConverter.test.js
-ui/legacy/components/inline_editor/FontEditorUtils.test.js
 ui/legacy/components/inline_editor/LinkSwatch.test.js
 ui/legacy/components/object_ui/CustomPreviewComponent.test.js
 ui/legacy/components/object_ui/JavaScriptREPL.test.js

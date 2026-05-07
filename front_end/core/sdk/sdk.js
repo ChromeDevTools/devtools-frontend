@@ -2014,6 +2014,22 @@ var generatedProperties = [
     "name": "continue"
   },
   {
+    "keywords": [
+      "normal"
+    ],
+    "longhands": [
+      "border-top-left-radius",
+      "corner-top-left-shape",
+      "border-top-right-radius",
+      "corner-top-right-shape",
+      "border-bottom-right-radius",
+      "corner-bottom-right-shape",
+      "border-bottom-left-radius",
+      "corner-bottom-left-shape"
+    ],
+    "name": "corner"
+  },
+  {
     "longhands": [
       "corner-end-start-shape",
       "corner-end-end-shape"
@@ -2133,22 +2149,6 @@ var generatedProperties = [
       "corner-top-right-shape"
     ],
     "name": "corner-top-shape"
-  },
-  {
-    "keywords": [
-      "normal"
-    ],
-    "longhands": [
-      "border-top-left-radius",
-      "corner-top-left-shape",
-      "border-top-right-radius",
-      "corner-top-right-shape",
-      "border-bottom-right-radius",
-      "corner-bottom-right-shape",
-      "border-bottom-left-radius",
-      "corner-bottom-left-shape"
-    ],
-    "name": "corners"
   },
   {
     "keywords": [
@@ -5834,6 +5834,11 @@ var generatedPropertyValues = {
       "-webkit-legacy"
     ]
   },
+  "corner": {
+    "values": [
+      "normal"
+    ]
+  },
   "corner-bottom-left-shape": {
     "values": [
       "notch",
@@ -5872,11 +5877,6 @@ var generatedPropertyValues = {
       "round",
       "squircle",
       "square"
-    ]
-  },
-  "corners": {
-    "values": [
-      "normal"
     ]
   },
   "counter-increment": {
@@ -8153,10 +8153,6 @@ var CSSMetadata = class _CSSMetadata {
     propertyName = propertyName.toLowerCase();
     return bezierAwareProperties.has(propertyName) || this.isCustomProperty(propertyName);
   }
-  isFontAwareProperty(propertyName) {
-    propertyName = propertyName.toLowerCase();
-    return fontAwareProperties.has(propertyName) || this.isCustomProperty(propertyName);
-  }
   isCustomProperty(propertyName) {
     return propertyName.startsWith("--");
   }
@@ -8380,7 +8376,6 @@ var bezierAwareProperties = /* @__PURE__ */ new Set([
   "-webkit-transition",
   "-webkit-transition-timing-function"
 ]);
-var fontAwareProperties = /* @__PURE__ */ new Set(["font-size", "line-height", "font-weight", "font-family", "letter-spacing"]);
 var colorAwareProperties = /* @__PURE__ */ new Set([
   "accent-color",
   "background",
@@ -9569,7 +9564,7 @@ __export(CookieModel_exports, {
 });
 import * as Common25 from "./../common/common.js";
 import * as Platform16 from "./../platform/platform.js";
-import * as Root11 from "./../root/root.js";
+import * as Root10 from "./../root/root.js";
 
 // gen/front_end/core/sdk/Cookie.js
 var Cookie_exports = {};
@@ -12693,7 +12688,7 @@ __export(DOMModel_exports, {
 });
 import * as Common21 from "./../common/common.js";
 import * as Platform13 from "./../platform/platform.js";
-import * as Root10 from "./../root/root.js";
+import * as Root9 from "./../root/root.js";
 
 // gen/front_end/core/sdk/CSSModel.js
 var CSSModel_exports = {};
@@ -12709,7 +12704,7 @@ import * as TextUtils18 from "./../../models/text_utils/text_utils.js";
 import * as Common13 from "./../common/common.js";
 import * as Host3 from "./../host/host.js";
 import * as Platform10 from "./../platform/platform.js";
-import * as Root7 from "./../root/root.js";
+import * as Root6 from "./../root/root.js";
 
 // gen/front_end/core/sdk/CSSFontFace.js
 var CSSFontFace_exports = {};
@@ -12763,7 +12758,6 @@ import * as TextUtils3 from "./../../models/text_utils/text_utils.js";
 import * as Common7 from "./../common/common.js";
 import * as HostModule from "./../host/host.js";
 import * as Platform4 from "./../platform/platform.js";
-import * as Root4 from "./../root/root.js";
 
 // gen/front_end/core/sdk/CSSPropertyParser.js
 var CSSPropertyParser_exports = {};
@@ -12819,8 +12813,6 @@ __export(CSSPropertyParserMatchers_exports, {
   EnvFunctionMatcher: () => EnvFunctionMatcher,
   FlexGridGridLanesMatch: () => FlexGridGridLanesMatch,
   FlexGridGridLanesMatcher: () => FlexGridGridLanesMatcher,
-  FontMatch: () => FontMatch,
-  FontMatcher: () => FontMatcher,
   GridTemplateMatch: () => GridTemplateMatch,
   GridTemplateMatcher: () => GridTemplateMatcher,
   LengthMatch: () => LengthMatch,
@@ -13649,35 +13641,6 @@ var ShadowMatcher = class extends matcherBase(ShadowMatch) {
       matching.ast.propertyName === "text-shadow" ? "textShadow" : "boxShadow"
       /* ShadowType.BOX_SHADOW */
     );
-  }
-};
-var FontMatch = class {
-  text;
-  node;
-  constructor(text, node) {
-    this.text = text;
-    this.node = node;
-  }
-};
-var FontMatcher = class extends matcherBase(FontMatch) {
-  // clang-format on
-  accepts(propertyName) {
-    return cssMetadata().isFontAwareProperty(propertyName);
-  }
-  matches(node, matching) {
-    if (node.name !== "Declaration") {
-      return null;
-    }
-    const valueNodes = ASTUtils.siblings(ASTUtils.declValue(node));
-    if (valueNodes.length === 0) {
-      return null;
-    }
-    const validNodes = matching.ast.propertyName === "font-family" ? ["ValueName", "StringLiteral", "Comment", ","] : ["Comment", "ValueName", "NumberLiteral"];
-    if (valueNodes.some((node2) => !validNodes.includes(node2.name))) {
-      return null;
-    }
-    const valueText = matching.ast.textRange(valueNodes[0], valueNodes[valueNodes.length - 1]);
-    return new FontMatch(valueText, node);
   }
 };
 var LengthMatch = class {
@@ -14764,9 +14727,6 @@ var CSSProperty = class _CSSProperty extends Common7.ObjectWrapper.ObjectWrapper
   #matchers(matchedStyles, computedStyles) {
     const matchers = matchedStyles.propertyMatchers(this.ownerStyle, computedStyles);
     matchers.push(new CSSWideKeywordMatcher(this, matchedStyles));
-    if (Root4.Runtime.experiments.isEnabled(Root4.ExperimentNames.ExperimentName.FONT_EDITOR)) {
-      matchers.push(new FontMatcher());
-    }
     return matchers;
   }
   ensureRanges() {
@@ -17592,7 +17552,7 @@ __export(PageResourceLoader_exports, {
 import * as Common10 from "./../common/common.js";
 import * as Host2 from "./../host/host.js";
 import * as i18n5 from "./../i18n/i18n.js";
-import * as Root5 from "./../root/root.js";
+import * as Root4 from "./../root/root.js";
 
 // gen/front_end/core/sdk/IOModel.js
 var IOModel_exports = {};
@@ -18610,12 +18570,12 @@ var PageResourceLoader = class _PageResourceLoader extends Common10.ObjectWrappe
     loadOverride: null
   }) {
     if (forceNew) {
-      Root5.DevToolsContext.globalInstance().set(_PageResourceLoader, new _PageResourceLoader(targetManager ?? TargetManager.instance(), settings ?? Common10.Settings.Settings.instance(), userAgentProvider ?? MultitargetNetworkManager.instance(), loadOverride, maxConcurrentLoads));
+      Root4.DevToolsContext.globalInstance().set(_PageResourceLoader, new _PageResourceLoader(targetManager ?? TargetManager.instance(), settings ?? Common10.Settings.Settings.instance(), userAgentProvider ?? MultitargetNetworkManager.instance(), loadOverride, maxConcurrentLoads));
     }
-    return Root5.DevToolsContext.globalInstance().get(_PageResourceLoader);
+    return Root4.DevToolsContext.globalInstance().get(_PageResourceLoader);
   }
   static removeInstance() {
-    Root5.DevToolsContext.globalInstance().delete(_PageResourceLoader);
+    Root4.DevToolsContext.globalInstance().delete(_PageResourceLoader);
   }
   onPrimaryPageChanged(event) {
     const { frame: mainFrame, type } = event.data;
@@ -18907,7 +18867,7 @@ import * as TextUtils17 from "./../../models/text_utils/text_utils.js";
 import * as ScopesCodec from "./../../third_party/source-map-scopes-codec/source-map-scopes-codec.js";
 import * as Common11 from "./../common/common.js";
 import * as Platform8 from "./../platform/platform.js";
-import * as Root6 from "./../root/root.js";
+import * as Root5 from "./../root/root.js";
 
 // gen/front_end/core/sdk/ScopeTreeCache.js
 var ScopeTreeCache_exports = {};
@@ -20064,7 +20024,7 @@ var SourceMap = class {
       nameIndex += tokenIter.nextVLQ();
       this.mappings().push(new SourceMapEntry(lineNumber, columnNumber, sourceIndex, sourceURL, sourceLineNumber, sourceColumnNumber, names[nameIndex]));
     }
-    if (Root6.Runtime.experiments.isEnabled(Root6.ExperimentNames.ExperimentName.USE_SOURCE_MAP_SCOPES)) {
+    if (Root5.Runtime.experiments.isEnabled(Root5.ExperimentNames.ExperimentName.USE_SOURCE_MAP_SCOPES)) {
       if (!this.#scopesInfo) {
         this.#scopesInfo = new SourceMapScopesInfo(this, { scopes: [], ranges: [] });
       }
@@ -20757,7 +20717,7 @@ var CSSModel = class _CSSModel extends SDKModel {
     if (!node) {
       return null;
     }
-    const shouldGetAnimatedStyles = Root7.Runtime.hostConfig.devToolsAnimationStylesInStylesTab?.enabled;
+    const shouldGetAnimatedStyles = Root6.Runtime.hostConfig.devToolsAnimationStylesInStylesTab?.enabled;
     const [matchedStylesResponse, animatedStylesResponse] = await Promise.all([
       this.agent.invoke_getMatchedStylesForNode({ nodeId }),
       shouldGetAnimatedStyles ? this.agent.invoke_getAnimatedStylesForNode({ nodeId }) : void 0
@@ -21417,7 +21377,7 @@ __export(FrameManager_exports, {
   FrameManager: () => FrameManager
 });
 import * as Common14 from "./../common/common.js";
-import * as Root8 from "./../root/root.js";
+import * as Root7 from "./../root/root.js";
 var FrameManager = class _FrameManager extends Common14.ObjectWrapper.ObjectWrapper {
   #eventListeners = /* @__PURE__ */ new WeakMap();
   // Maps frameIds to #frames and a count of how many ResourceTreeModels contain this frame.
@@ -21433,13 +21393,13 @@ var FrameManager = class _FrameManager extends Common14.ObjectWrapper.ObjectWrap
     targetManager.observeModels(ResourceTreeModel, this);
   }
   static instance({ forceNew } = { forceNew: false }) {
-    if (!Root8.DevToolsContext.globalInstance().has(_FrameManager) || forceNew) {
-      Root8.DevToolsContext.globalInstance().set(_FrameManager, new _FrameManager(TargetManager.instance()));
+    if (!Root7.DevToolsContext.globalInstance().has(_FrameManager) || forceNew) {
+      Root7.DevToolsContext.globalInstance().set(_FrameManager, new _FrameManager(TargetManager.instance()));
     }
-    return Root8.DevToolsContext.globalInstance().get(_FrameManager);
+    return Root7.DevToolsContext.globalInstance().get(_FrameManager);
   }
   static removeInstance() {
-    Root8.DevToolsContext.globalInstance().delete(_FrameManager);
+    Root7.DevToolsContext.globalInstance().delete(_FrameManager);
   }
   modelAdded(resourceTreeModel) {
     const addListener = resourceTreeModel.addEventListener(Events3.FrameAdded, this.frameAdded, this);
@@ -21616,7 +21576,7 @@ __export(DebuggerModel_exports, {
 });
 import * as Common17 from "./../common/common.js";
 import * as i18n11 from "./../i18n/i18n.js";
-import * as Root9 from "./../root/root.js";
+import * as Root8 from "./../root/root.js";
 
 // gen/front_end/core/sdk/RuntimeModel.js
 var RuntimeModel_exports = {};
@@ -22860,11 +22820,11 @@ var DebuggerModel = class _DebuggerModel extends SDKModel {
       return;
     }
     this.#debuggerEnabled = true;
-    const isRemoteFrontend = Root9.Runtime.Runtime.queryParam("remoteFrontend") || Root9.Runtime.Runtime.queryParam("ws");
+    const isRemoteFrontend = Root8.Runtime.Runtime.queryParam("remoteFrontend") || Root8.Runtime.Runtime.queryParam("ws");
     const maxScriptsCacheSize = isRemoteFrontend ? 1e7 : 1e8;
     const enablePromise = this.agent.invoke_enable({ maxScriptsCacheSize });
     let instrumentationPromise;
-    if (Root9.Runtime.experiments.isEnabled(Root9.ExperimentNames.ExperimentName.INSTRUMENTATION_BREAKPOINTS)) {
+    if (Root8.Runtime.experiments.isEnabled(Root8.ExperimentNames.ExperimentName.INSTRUMENTATION_BREAKPOINTS)) {
       instrumentationPromise = this.agent.invoke_setInstrumentationBreakpoint({
         instrumentation: "beforeScriptExecution"
       });
@@ -22880,7 +22840,7 @@ var DebuggerModel = class _DebuggerModel extends SDKModel {
     this.registerDebugger(enableResult);
   }
   async syncDebuggerId() {
-    const isRemoteFrontend = Root9.Runtime.Runtime.queryParam("remoteFrontend") || Root9.Runtime.Runtime.queryParam("ws");
+    const isRemoteFrontend = Root8.Runtime.Runtime.queryParam("remoteFrontend") || Root8.Runtime.Runtime.queryParam("ws");
     const maxScriptsCacheSize = isRemoteFrontend ? 1e7 : 1e8;
     const enablePromise = this.agent.invoke_enable({ maxScriptsCacheSize });
     void enablePromise.then(this.registerDebugger.bind(this));
@@ -26271,7 +26231,7 @@ var DOMModel = class _DOMModel extends SDKModel {
     if (!target.suspended()) {
       void this.agent.invoke_enable({});
     }
-    if (Root10.Runtime.experiments.isEnabled(Root10.ExperimentNames.ExperimentName.CAPTURE_NODE_CREATION_STACKS)) {
+    if (Root9.Runtime.experiments.isEnabled(Root9.ExperimentNames.ExperimentName.CAPTURE_NODE_CREATION_STACKS)) {
       void this.agent.invoke_setNodeStackTracesEnabled({ enable: true });
     }
   }
@@ -28245,8 +28205,8 @@ var CookieModel = class extends SDKModel {
     if (cookie.expires()) {
       expires = Math.floor(Date.parse(`${cookie.expires()}`) / 1e3);
     }
-    const schemeBindingEnabled = Boolean(Root11.Runtime.hostConfig.devToolsEnableOriginBoundCookies?.schemeBindingEnabled);
-    const portBindingEnabled = Boolean(Root11.Runtime.hostConfig.devToolsEnableOriginBoundCookies?.portBindingEnabled);
+    const schemeBindingEnabled = Boolean(Root10.Runtime.hostConfig.devToolsEnableOriginBoundCookies?.schemeBindingEnabled);
+    const portBindingEnabled = Boolean(Root10.Runtime.hostConfig.devToolsEnableOriginBoundCookies?.portBindingEnabled);
     const preserveUnset = (scheme) => scheme === "Unset" ? scheme : void 0;
     const protocolCookie = {
       name: cookie.name(),
@@ -32063,7 +32023,7 @@ import * as i18n29 from "./../i18n/i18n.js";
 import * as Common33 from "./../common/common.js";
 import * as Host7 from "./../host/host.js";
 import * as ProtocolClient3 from "./../protocol_client/protocol_client.js";
-import * as Root13 from "./../root/root.js";
+import * as Root12 from "./../root/root.js";
 
 // gen/front_end/core/sdk/RehydratingConnection.js
 var RehydratingConnection_exports = {};
@@ -32074,7 +32034,7 @@ __export(RehydratingConnection_exports, {
 import * as Common32 from "./../common/common.js";
 import * as i18n27 from "./../i18n/i18n.js";
 import * as ProtocolClient2 from "./../protocol_client/protocol_client.js";
-import * as Root12 from "./../root/root.js";
+import * as Root11 from "./../root/root.js";
 
 // gen/front_end/core/sdk/EnhancedTracesParser.js
 var EnhancedTracesParser_exports = {};
@@ -32474,9 +32434,9 @@ var RehydratingConnectionTransport = class {
   }
   /** Returns true if found a trace URL. */
   #maybeHandleLoadingFromUrl() {
-    let traceUrl = Root12.Runtime.Runtime.queryParam("traceURL");
+    let traceUrl = Root11.Runtime.Runtime.queryParam("traceURL");
     if (!traceUrl) {
-      const timelineUrl = Root12.Runtime.Runtime.queryParam("loadTimelineFromURL");
+      const timelineUrl = Root11.Runtime.Runtime.queryParam("loadTimelineFromURL");
       if (timelineUrl) {
         traceUrl = decodeURIComponent(timelineUrl);
       }
@@ -33009,11 +32969,11 @@ async function initMainConnection(createRootTarget, onConnectionLost) {
   Host7.InspectorFrontendHost.InspectorFrontendHostInstance.connectionReady();
 }
 function createMainTransport(onConnectionLost) {
-  if (Root13.Runtime.Runtime.isTraceApp()) {
+  if (Root12.Runtime.Runtime.isTraceApp()) {
     return new RehydratingConnectionTransport(onConnectionLost);
   }
-  const wsParam = Root13.Runtime.Runtime.queryParam("ws");
-  const wssParam = Root13.Runtime.Runtime.queryParam("wss");
+  const wsParam = Root12.Runtime.Runtime.queryParam("ws");
+  const wssParam = Root12.Runtime.Runtime.queryParam("wss");
   if (wsParam || wssParam) {
     const ws = wsParam ? `ws://${wsParam}` : `wss://${wssParam}`;
     return new WebSocketTransport(ws, onConnectionLost);
@@ -35148,6 +35108,185 @@ var DOMDebuggerManager = class _DOMDebuggerManager {
 };
 SDKModel.register(DOMDebuggerModel, { capabilities: 2, autostart: false });
 
+// gen/front_end/core/sdk/DOMStorageModel.js
+var DOMStorageModel_exports = {};
+__export(DOMStorageModel_exports, {
+  DOMStorage: () => DOMStorage,
+  DOMStorageDispatcher: () => DOMStorageDispatcher,
+  DOMStorageModel: () => DOMStorageModel
+});
+import * as Common36 from "./../common/common.js";
+var DOMStorage = class _DOMStorage extends Common36.ObjectWrapper.ObjectWrapper {
+  model;
+  #storageKey;
+  #isLocalStorage;
+  constructor(model, storageKey, isLocalStorage) {
+    super();
+    this.model = model;
+    this.#storageKey = storageKey;
+    this.#isLocalStorage = isLocalStorage;
+  }
+  static storageId(storageKey, isLocalStorage) {
+    return { storageKey, isLocalStorage };
+  }
+  get id() {
+    return _DOMStorage.storageId(this.#storageKey, this.#isLocalStorage);
+  }
+  get storageKey() {
+    return this.#storageKey;
+  }
+  get isLocalStorage() {
+    return this.#isLocalStorage;
+  }
+  getItems() {
+    return this.model.agent.invoke_getDOMStorageItems({ storageId: this.id }).then(({ entries }) => entries);
+  }
+  setItem(key, value) {
+    void this.model.agent.invoke_setDOMStorageItem({ storageId: this.id, key, value });
+  }
+  removeItem(key) {
+    void this.model.agent.invoke_removeDOMStorageItem({ storageId: this.id, key });
+  }
+  clear() {
+    void this.model.agent.invoke_clear({ storageId: this.id });
+  }
+};
+var DOMStorageModel = class extends SDKModel {
+  #storageKeyManager;
+  #storages;
+  agent;
+  enabled;
+  constructor(target) {
+    super(target);
+    this.#storageKeyManager = target.model(StorageKeyManager);
+    this.#storages = {};
+    this.agent = target.domstorageAgent();
+  }
+  enable() {
+    if (this.enabled) {
+      return;
+    }
+    this.target().registerDOMStorageDispatcher(new DOMStorageDispatcher(this));
+    if (this.#storageKeyManager) {
+      this.#storageKeyManager.addEventListener("StorageKeyAdded", this.storageKeyAdded, this);
+      this.#storageKeyManager.addEventListener("StorageKeyRemoved", this.storageKeyRemoved, this);
+      for (const storageKey of this.#storageKeyManager.storageKeys()) {
+        this.addStorageKey(storageKey);
+      }
+    }
+    void this.agent.invoke_enable();
+    this.enabled = true;
+  }
+  clearForStorageKey(storageKey) {
+    if (!this.enabled) {
+      return;
+    }
+    for (const isLocal of [true, false]) {
+      const key = this.storageKey(storageKey, isLocal);
+      const storage = this.#storages[key];
+      if (!storage) {
+        return;
+      }
+      storage.clear();
+    }
+    this.removeStorageKey(storageKey);
+    this.addStorageKey(storageKey);
+  }
+  storageKeyAdded(event) {
+    this.addStorageKey(event.data);
+  }
+  addStorageKey(storageKey) {
+    for (const isLocal of [true, false]) {
+      const key = this.storageKey(storageKey, isLocal);
+      console.assert(!this.#storages[key]);
+      const storage = new DOMStorage(this, storageKey, isLocal);
+      this.#storages[key] = storage;
+      this.dispatchEventToListeners("DOMStorageAdded", storage);
+    }
+  }
+  storageKeyRemoved(event) {
+    this.removeStorageKey(event.data);
+  }
+  removeStorageKey(storageKey) {
+    for (const isLocal of [true, false]) {
+      const key = this.storageKey(storageKey, isLocal);
+      const storage = this.#storages[key];
+      if (!storage) {
+        continue;
+      }
+      delete this.#storages[key];
+      this.dispatchEventToListeners("DOMStorageRemoved", storage);
+    }
+  }
+  storageKey(storageKey, isLocalStorage) {
+    return JSON.stringify(DOMStorage.storageId(storageKey, isLocalStorage));
+  }
+  domStorageItemsCleared(storageId) {
+    const domStorage = this.storageForId(storageId);
+    if (!domStorage) {
+      return;
+    }
+    domStorage.dispatchEventToListeners(
+      "DOMStorageItemsCleared"
+      /* DOMStorage.Events.DOM_STORAGE_ITEMS_CLEARED */
+    );
+  }
+  domStorageItemRemoved(storageId, key) {
+    const domStorage = this.storageForId(storageId);
+    if (!domStorage) {
+      return;
+    }
+    const eventData = { key };
+    domStorage.dispatchEventToListeners("DOMStorageItemRemoved", eventData);
+  }
+  domStorageItemAdded(storageId, key, value) {
+    const domStorage = this.storageForId(storageId);
+    if (!domStorage) {
+      return;
+    }
+    const eventData = { key, value };
+    domStorage.dispatchEventToListeners("DOMStorageItemAdded", eventData);
+  }
+  domStorageItemUpdated(storageId, key, oldValue, value) {
+    const domStorage = this.storageForId(storageId);
+    if (!domStorage) {
+      return;
+    }
+    const eventData = { key, oldValue, value };
+    domStorage.dispatchEventToListeners("DOMStorageItemUpdated", eventData);
+  }
+  storageForId(storageId) {
+    console.assert(Boolean(storageId.storageKey));
+    return this.#storages[this.storageKey(storageId.storageKey || "", storageId.isLocalStorage)];
+  }
+  storages() {
+    const result = [];
+    for (const id in this.#storages) {
+      result.push(this.#storages[id]);
+    }
+    return result;
+  }
+};
+SDKModel.register(DOMStorageModel, { capabilities: 1048576, autostart: false });
+var DOMStorageDispatcher = class {
+  model;
+  constructor(model) {
+    this.model = model;
+  }
+  domStorageItemsCleared({ storageId }) {
+    this.model.domStorageItemsCleared(storageId);
+  }
+  domStorageItemRemoved({ storageId, key }) {
+    this.model.domStorageItemRemoved(storageId, key);
+  }
+  domStorageItemAdded({ storageId, key, newValue }) {
+    this.model.domStorageItemAdded(storageId, key, newValue);
+  }
+  domStorageItemUpdated({ storageId, key, oldValue, newValue }) {
+    this.model.domStorageItemUpdated(storageId, key, oldValue, newValue);
+  }
+};
+
 // gen/front_end/core/sdk/EventBreakpointsModel.js
 var EventBreakpointsModel_exports = {};
 __export(EventBreakpointsModel_exports, {
@@ -35289,9 +35428,9 @@ __export(IsolateManager_exports, {
   MemoryTrend: () => MemoryTrend,
   MemoryTrendWindowMs: () => MemoryTrendWindowMs
 });
-import * as Common36 from "./../common/common.js";
+import * as Common37 from "./../common/common.js";
 var isolateManagerInstance;
-var IsolateManager = class _IsolateManager extends Common36.ObjectWrapper.ObjectWrapper {
+var IsolateManager = class _IsolateManager extends Common37.ObjectWrapper.ObjectWrapper {
   #isolates = /* @__PURE__ */ new Map();
   /**
    * Contains null while the isolateId is being retrieved.
@@ -36607,7 +36746,7 @@ __export(ServiceWorkerCacheModel_exports, {
   Cache: () => Cache,
   ServiceWorkerCacheModel: () => ServiceWorkerCacheModel
 });
-import * as Common37 from "./../common/common.js";
+import * as Common38 from "./../common/common.js";
 import * as i18n37 from "./../i18n/i18n.js";
 
 // gen/front_end/core/sdk/StorageBucketsModel.js
@@ -36759,7 +36898,7 @@ var ServiceWorkerCacheModel = class extends SDKModel {
   #caches = /* @__PURE__ */ new Map();
   #storageKeysTracked = /* @__PURE__ */ new Set();
   #storageBucketsUpdated = /* @__PURE__ */ new Set();
-  #throttler = new Common37.Throttler.Throttler(2e3);
+  #throttler = new Common38.Throttler.Throttler(2e3);
   #enabled = false;
   // Used by tests to remove the Throttler timeout.
   #scheduleAsSoonAsPossible = false;
@@ -36817,7 +36956,7 @@ var ServiceWorkerCacheModel = class extends SDKModel {
   async deleteCacheEntry(cache, request) {
     const response = await this.cacheAgent.invoke_deleteEntry({ cacheId: cache.cacheId, request });
     if (response.getError()) {
-      Common37.Console.Console.instance().error(i18nString17(UIStrings17.serviceworkercacheagentError, { PH1: cache.toString(), PH2: String(response.getError()) }));
+      Common38.Console.Console.instance().error(i18nString17(UIStrings17.serviceworkercacheagentError, { PH1: cache.toString(), PH2: String(response.getError()) }));
       return;
     }
   }
@@ -37010,7 +37149,7 @@ __export(ServiceWorkerManager_exports, {
   ServiceWorkerVersion: () => ServiceWorkerVersion,
   ServiceWorkerVersionState: () => ServiceWorkerVersionState
 });
-import * as Common38 from "./../common/common.js";
+import * as Common39 from "./../common/common.js";
 import * as i18n39 from "./../i18n/i18n.js";
 var UIStrings18 = {
   /**
@@ -37074,7 +37213,7 @@ var ServiceWorkerManager = class extends SDKModel {
     target.registerServiceWorkerDispatcher(new ServiceWorkerDispatcher(this));
     this.#agent = target.serviceWorkerAgent();
     void this.enable();
-    this.#forceUpdateSetting = this.target().targetManager().context.get(Common38.Settings.Settings).createSetting("service-worker-update-on-reload", false);
+    this.#forceUpdateSetting = this.target().targetManager().context.get(Common39.Settings.Settings).createSetting("service-worker-update-on-reload", false);
     if (this.#forceUpdateSetting.get()) {
       this.forceUpdateSettingChanged();
     }
@@ -37136,7 +37275,7 @@ var ServiceWorkerManager = class extends SDKModel {
     if (!registration) {
       return;
     }
-    const origin = Common38.ParsedURL.ParsedURL.extractOrigin(registration.scopeURL);
+    const origin = Common39.ParsedURL.ParsedURL.extractOrigin(registration.scopeURL);
     await this.#agent.invoke_deliverPushMessage({ origin, registrationId, data });
   }
   async dispatchSyncEvent(registrationId, tag, lastChance) {
@@ -37144,7 +37283,7 @@ var ServiceWorkerManager = class extends SDKModel {
     if (!registration) {
       return;
     }
-    const origin = Common38.ParsedURL.ParsedURL.extractOrigin(registration.scopeURL);
+    const origin = Common39.ParsedURL.ParsedURL.extractOrigin(registration.scopeURL);
     await this.#agent.invoke_dispatchSyncEvent({ origin, registrationId, tag, lastChance });
   }
   async dispatchPeriodicSyncEvent(registrationId, tag) {
@@ -37152,7 +37291,7 @@ var ServiceWorkerManager = class extends SDKModel {
     if (!registration) {
       return;
     }
-    const origin = Common38.ParsedURL.ParsedURL.extractOrigin(registration.scopeURL);
+    const origin = Common39.ParsedURL.ParsedURL.extractOrigin(registration.scopeURL);
     await this.#agent.invoke_dispatchPeriodicSyncEvent({ origin, registrationId, tag });
   }
   async unregister(scopeURL) {
@@ -37273,7 +37412,7 @@ var ServiceWorkerVersion = class {
   update(payload) {
     this.id = payload.versionId;
     this.scriptURL = payload.scriptURL;
-    const parsedURL = new Common38.ParsedURL.ParsedURL(payload.scriptURL);
+    const parsedURL = new Common39.ParsedURL.ParsedURL(payload.scriptURL);
     this.securityOrigin = parsedURL.securityOrigin();
     this.currentState = new ServiceWorkerVersionState(payload.runningStatus, payload.status, this.currentState, Date.now());
     this.scriptLastModified = payload.scriptLastModified;
@@ -37428,7 +37567,7 @@ var ServiceWorkerRegistration = class {
     this.#fingerprint = Symbol("fingerprint");
     this.id = payload.registrationId;
     this.scopeURL = payload.scopeURL;
-    const parsedURL = new Common38.ParsedURL.ParsedURL(payload.scopeURL);
+    const parsedURL = new Common39.ParsedURL.ParsedURL(payload.scopeURL);
     this.securityOrigin = parsedURL.securityOrigin();
     this.isDeleted = payload.isDeleted;
   }
@@ -37524,7 +37663,7 @@ var ServiceWorkerContextNamer = class {
       context.setLabel("");
       return;
     }
-    const parsedUrl = Common38.ParsedURL.ParsedURL.fromString(context.origin);
+    const parsedUrl = Common39.ParsedURL.ParsedURL.fromString(context.origin);
     const label = parsedUrl ? parsedUrl.lastPathComponentWithFragment() : context.name;
     const localizedStatus = ServiceWorkerVersion.Status[version.status];
     context.setLabel(i18nString18(UIStrings18.sSS, { PH1: label, PH2: version.id, PH3: localizedStatus() }));
@@ -37634,6 +37773,7 @@ export {
   CrashReportContextModel_exports as CrashReportContextModel,
   DOMDebuggerModel_exports as DOMDebuggerModel,
   DOMModel_exports as DOMModel,
+  DOMStorageModel_exports as DOMStorageModel,
   DebuggerModel_exports as DebuggerModel,
   EmulationModel_exports as EmulationModel,
   EnhancedTracesParser_exports as EnhancedTracesParser,

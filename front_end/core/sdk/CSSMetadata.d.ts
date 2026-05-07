@@ -21,7 +21,6 @@ export declare class CSSMetadata {
     isGridNameAwareProperty(propertyName: string): boolean;
     isLengthProperty(propertyName: string): boolean;
     isBezierAwareProperty(propertyName: string): boolean;
-    isFontAwareProperty(propertyName: string): boolean;
     isCustomProperty(propertyName: string): boolean;
     isShadowProperty(propertyName: string): boolean;
     isStringProperty(propertyName: string): boolean;

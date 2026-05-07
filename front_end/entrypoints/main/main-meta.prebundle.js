@@ -895,7 +895,7 @@ UI.Toolbar.registerToolbarItem({
     order: 101,
     location: "main-toolbar-right" /* UI.Toolbar.ToolbarItemLocation.MAIN_TOOLBAR_RIGHT */,
 });
-Common.AppProvider.registerAppProvider({
+UI.AppProvider.registerAppProvider({
     async loadAppProvider() {
         const Main = await loadMainModule();
         return Main.SimpleApp.SimpleAppProvider.instance();

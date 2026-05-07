@@ -134,6 +134,9 @@ export class AiCodeGeneration {
         debugLog({ request, response });
         return response;
     }
+    static isAiCodeGenerationAvailable() {
+        return Root.Runtime.hostConfig.devToolsAiCodeGeneration?.enabled ?? false;
+    }
     static isAiCodeGenerationEnabled(locale) {
         if (!locale.startsWith('en-')) {
             return false;
@@ -143,7 +146,7 @@ export class AiCodeGeneration {
             aidaAvailability.blockedByEnterprisePolicy) {
             return false;
         }
-        return Boolean(aidaAvailability.enabled && Root.Runtime.hostConfig.devToolsAiCodeGeneration?.enabled);
+        return Boolean(aidaAvailability.enabled && AiCodeGeneration.isAiCodeGenerationAvailable());
     }
 }
 //# sourceMappingURL=AiCodeGeneration.js.map

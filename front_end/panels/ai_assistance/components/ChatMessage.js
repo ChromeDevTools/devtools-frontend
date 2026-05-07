@@ -1646,19 +1646,35 @@ export class ChatMessage extends UI.Widget.Widget {
 async function makeTimelineRangeSummaryWidget(widgetData) {
     const { bounds, parsedTrace, track } = widgetData.data;
     let events = [];
+    // Note: right now "main" is the only track we support, but in the future we
+    // can imagine supporting more.
     if (track === 'main') {
-        const flameChartView = Timeline.TimelinePanel.TimelinePanel.instance().getFlameChart();
-        const mainDataProvider = flameChartView.getMainDataProvider();
-        const mainTrack = mainDataProvider.timelineData().groups.find((group) => group.name.startsWith('Main \u2014 '));
-        if (mainTrack) {
-            events = mainDataProvider.groupTreeEvents(mainTrack) ?? [];
+        // To find the main thread, we first find the navigationId that is "active"
+        // for the given bounds. We do this because the "main" thread can change on
+        // navigations, so this is the most accurate way to find the main thread at
+        // the timespan we are interested in.
+        let navigationId;
+        for (const nav of parsedTrace.data.Meta.mainFrameNavigations) {
+            if (nav.ts <= bounds.min) {
+                navigationId = nav.args.data?.navigationId;
+            }
+            else {
+                break;
+            }
+        }
+        const mainThread = AiAssistanceModel.AIQueries.AIQueries.findMainThread(navigationId, parsedTrace);
+        if (mainThread) {
+            events = mainThread.entries;
+            AiAssistanceModel.Debug.debugLog(`TimelineRangeSummaryAiWidget found main thread. PID:`, mainThread.pid, 'TID:', mainThread.tid, 'Number of entries:', mainThread.entries.length);
         }
     }
-    const eventsArray = Array.from(events);
-    eventsArray.sort((a, b) => a.ts - b.ts);
+    if (!events) {
+        AiAssistanceModel.Debug.debugLog(`Warning: could not find events for TimelineRangeSummaryAiWidget`, widgetData);
+        return null;
+    }
     const thirdPartyTree = new Timeline.ThirdPartyTreeView.ThirdPartyTreeViewWidget();
     const mapper = Trace.EntityMapper.EntityMapper.getOrCreate(parsedTrace);
-    thirdPartyTree.model = { selectedEvents: eventsArray, parsedTrace, entityMapper: mapper };
+    thirdPartyTree.model = { selectedEvents: events, parsedTrace, entityMapper: mapper };
     thirdPartyTree.activeSelection = Timeline.TimelineSelection.selectionFromRangeMicroSeconds(bounds.min, bounds.max);
     thirdPartyTree.refreshTree(true);
     // clang-format off

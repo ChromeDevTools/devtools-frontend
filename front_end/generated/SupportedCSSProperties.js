@@ -1951,6 +1951,22 @@ export const generatedProperties = [
         "name": "continue"
     },
     {
+        "keywords": [
+            "normal"
+        ],
+        "longhands": [
+            "border-top-left-radius",
+            "corner-top-left-shape",
+            "border-top-right-radius",
+            "corner-top-right-shape",
+            "border-bottom-right-radius",
+            "corner-bottom-right-shape",
+            "border-bottom-left-radius",
+            "corner-bottom-left-shape"
+        ],
+        "name": "corner"
+    },
+    {
         "longhands": [
             "corner-end-start-shape",
             "corner-end-end-shape"
@@ -2070,22 +2086,6 @@ export const generatedProperties = [
             "corner-top-right-shape"
         ],
         "name": "corner-top-shape"
-    },
-    {
-        "keywords": [
-            "normal"
-        ],
-        "longhands": [
-            "border-top-left-radius",
-            "corner-top-left-shape",
-            "border-top-right-radius",
-            "corner-top-right-shape",
-            "border-bottom-right-radius",
-            "corner-bottom-right-shape",
-            "border-bottom-left-radius",
-            "corner-bottom-left-shape"
-        ],
-        "name": "corners"
     },
     {
         "keywords": [
@@ -5771,6 +5771,11 @@ export const generatedPropertyValues = {
             "-webkit-legacy"
         ]
     },
+    "corner": {
+        "values": [
+            "normal"
+        ]
+    },
     "corner-bottom-left-shape": {
         "values": [
             "notch",
@@ -5809,11 +5814,6 @@ export const generatedPropertyValues = {
             "round",
             "squircle",
             "square"
-        ]
-    },
-    "corners": {
-        "values": [
-            "normal"
         ]
     },
     "counter-increment": {

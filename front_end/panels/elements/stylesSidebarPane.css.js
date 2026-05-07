@@ -222,10 +222,6 @@ export default `/**
   width: 100%;
 }
 
-.font-toolbar-hidden {
-  visibility: hidden;
-}
-
 .sidebar-separator {
   background-color: var(--sys-color-surface2);
   padding: 0 5px;
@@ -266,10 +262,6 @@ export default `/**
     margin-bottom: 5px;
 
     --toolbar-height: 16px;
-  }
-
-  &.shifted-toolbar {
-    padding-right: 32px;
   }
 }
 

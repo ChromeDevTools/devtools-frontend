@@ -888,7 +888,7 @@ UI.Toolbar.registerToolbarItem({
   order: 101,
   location: "main-toolbar-right"
 });
-Common.AppProvider.registerAppProvider({
+UI.AppProvider.registerAppProvider({
   async loadAppProvider() {
     const Main = await loadMainModule();
     return Main.SimpleApp.SimpleAppProvider.instance();

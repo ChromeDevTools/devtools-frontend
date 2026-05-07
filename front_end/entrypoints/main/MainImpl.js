@@ -143,6 +143,13 @@ const WINDOW_LOCAL_STORAGE = {
     },
     clear: () => window.localStorage.clear(),
 };
+let isCustomDevtoolsFrontendInternal;
+function isCustomDevtoolsFrontend() {
+    if (typeof isCustomDevtoolsFrontendInternal === 'undefined') {
+        isCustomDevtoolsFrontendInternal = window.location.toString().startsWith('devtools://devtools/custom/');
+    }
+    return isCustomDevtoolsFrontendInternal;
+}
 export class MainImpl {
     #readyForTestPromise = Promise.withResolvers();
     #veStartPromise;
@@ -257,7 +264,7 @@ export class MainImpl {
     createSettingsStorage(prefs) {
         this.#initializeExperiments();
         let storagePrefix = '';
-        if (Host.Platform.isCustomDevtoolsFrontend()) {
+        if (isCustomDevtoolsFrontend()) {
             storagePrefix = '__custom__';
         }
         else if (!Root.Runtime.Runtime.queryParam('can_dock') && Boolean(Root.Runtime.Runtime.queryParam('debugFrontend')) &&
@@ -323,8 +330,6 @@ export class MainImpl {
         // Debugging
         Root.Runtime.experiments.register(Root.ExperimentNames.ExperimentName.INSTRUMENTATION_BREAKPOINTS, 'Instrumentation breakpoints');
         Root.Runtime.experiments.register(Root.ExperimentNames.ExperimentName.USE_SOURCE_MAP_SCOPES, 'Use scope information from source maps');
-        // Font Editor
-        Root.Runtime.experiments.register(Root.ExperimentNames.ExperimentName.FONT_EDITOR, 'New font editor in the Styles tab', 'https://developer.chrome.com/blog/new-in-devtools-89/#font');
         Root.Runtime.experiments.registerHostExperiment({
             name: Root.ExperimentNames.ExperimentName.DURABLE_MESSAGES,
             title: 'Durable Messages',
@@ -474,7 +479,7 @@ export class MainImpl {
             await PanelCommon.GeminiRebrandPromoDialog.maybeShow();
         }
         _a.timeEnd('Main._createAppUI');
-        const appProvider = Common.AppProvider.getRegisteredAppProviders()[0];
+        const appProvider = UI.AppProvider.getRegisteredAppProviders()[0];
         if (!appProvider) {
             throw new Error('Unable to boot DevTools, as the appprovider is missing');
         }

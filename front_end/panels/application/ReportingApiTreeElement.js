@@ -1,9 +1,9 @@
 // Copyright 2021 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import { createIcon } from '../../ui/kit/kit.js';
+import * as UI from '../../ui/legacy/legacy.js';
 import { ApplicationPanelTreeElement } from './ApplicationPanelTreeElement.js';
 import { CrashReportContextView } from './CrashReportContextView.js';
 import { ReportingApiView } from './ReportingApiView.js';
@@ -43,7 +43,7 @@ export class ReportingApiTreeElement extends ApplicationPanelTreeElement {
             this.view = new ReportingApiView();
         }
         this.showView(this.view);
-        Host.userMetrics.panelShown('reporting-api');
+        UI.UIUserMetrics.UIUserMetrics.instance().panelShown('reporting-api');
         return false;
     }
 }
@@ -64,7 +64,7 @@ export class CrashReportContextTreeElement extends ApplicationPanelTreeElement {
         }
         this.view.requestUpdate();
         this.showView(this.view);
-        Host.userMetrics.panelShown('crash-report-context');
+        UI.UIUserMetrics.UIUserMetrics.instance().panelShown('crash-report-context');
         return false;
     }
 }

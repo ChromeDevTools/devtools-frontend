@@ -5161,18 +5161,27 @@ async function makeTimelineRangeSummaryWidget(widgetData) {
   const { bounds, parsedTrace, track } = widgetData.data;
   let events = [];
   if (track === "main") {
-    const flameChartView = Timeline.TimelinePanel.TimelinePanel.instance().getFlameChart();
-    const mainDataProvider = flameChartView.getMainDataProvider();
-    const mainTrack = mainDataProvider.timelineData().groups.find((group) => group.name.startsWith("Main \u2014 "));
-    if (mainTrack) {
-      events = mainDataProvider.groupTreeEvents(mainTrack) ?? [];
+    let navigationId;
+    for (const nav of parsedTrace.data.Meta.mainFrameNavigations) {
+      if (nav.ts <= bounds.min) {
+        navigationId = nav.args.data?.navigationId;
+      } else {
+        break;
+      }
+    }
+    const mainThread = AiAssistanceModel5.AIQueries.AIQueries.findMainThread(navigationId, parsedTrace);
+    if (mainThread) {
+      events = mainThread.entries;
+      AiAssistanceModel5.Debug.debugLog(`TimelineRangeSummaryAiWidget found main thread. PID:`, mainThread.pid, "TID:", mainThread.tid, "Number of entries:", mainThread.entries.length);
     }
   }
-  const eventsArray = Array.from(events);
-  eventsArray.sort((a, b) => a.ts - b.ts);
+  if (!events) {
+    AiAssistanceModel5.Debug.debugLog(`Warning: could not find events for TimelineRangeSummaryAiWidget`, widgetData);
+    return null;
+  }
   const thirdPartyTree = new Timeline.ThirdPartyTreeView.ThirdPartyTreeViewWidget();
   const mapper = Trace.EntityMapper.EntityMapper.getOrCreate(parsedTrace);
-  thirdPartyTree.model = { selectedEvents: eventsArray, parsedTrace, entityMapper: mapper };
+  thirdPartyTree.model = { selectedEvents: events, parsedTrace, entityMapper: mapper };
   thirdPartyTree.activeSelection = Timeline.TimelineSelection.selectionFromRangeMicroSeconds(bounds.min, bounds.max);
   thirdPartyTree.refreshTree(true);
   const template = html7`

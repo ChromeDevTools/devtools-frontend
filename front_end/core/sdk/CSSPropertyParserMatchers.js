@@ -875,37 +875,6 @@ export class ShadowMatcher extends matcherBase(ShadowMatch) {
         return new ShadowMatch(valueText, node, matching.ast.propertyName === 'text-shadow' ? "textShadow" /* ShadowType.TEXT_SHADOW */ : "boxShadow" /* ShadowType.BOX_SHADOW */);
     }
 }
-export class FontMatch {
-    text;
-    node;
-    constructor(text, node) {
-        this.text = text;
-        this.node = node;
-    }
-}
-// clang-format off
-export class FontMatcher extends matcherBase(FontMatch) {
-    // clang-format on
-    accepts(propertyName) {
-        return cssMetadata().isFontAwareProperty(propertyName);
-    }
-    matches(node, matching) {
-        if (node.name !== 'Declaration') {
-            return null;
-        }
-        const valueNodes = ASTUtils.siblings(ASTUtils.declValue(node));
-        if (valueNodes.length === 0) {
-            return null;
-        }
-        const validNodes = matching.ast.propertyName === 'font-family' ? ['ValueName', 'StringLiteral', 'Comment', ','] :
-            ['Comment', 'ValueName', 'NumberLiteral'];
-        if (valueNodes.some(node => !validNodes.includes(node.name))) {
-            return null;
-        }
-        const valueText = matching.ast.textRange(valueNodes[0], valueNodes[valueNodes.length - 1]);
-        return new FontMatch(valueText, node);
-    }
-}
 export class LengthMatch {
     text;
     node;

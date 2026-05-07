@@ -11,12 +11,9 @@ import * as CSSAngle from './CSSAngle.js';
 import * as CSSAngleUtils from './CSSAngleUtils.js';
 import * as CSSLinearEasingModel from './CSSLinearEasingModel.js';
 import * as CSSShadowEditor from './CSSShadowEditor.js';
-import * as FontEditor from './FontEditor.js';
-import * as FontEditorUnitConverter from './FontEditorUnitConverter.js';
-import * as FontEditorUtils from './FontEditorUtils.js';
 import * as InlineEditorUtils from './InlineEditorUtils.js';
 import * as LinkSwatch from './LinkSwatch.js';
 import * as Swatches from './Swatches.js';
 import * as SwatchPopoverHelper from './SwatchPopoverHelper.js';
-export { AnimationTimingModel, AnimationTimingUI, BezierEditor, BezierUI, ColorMixSwatch, ColorSwatch, CSSAngle, CSSAngleUtils, CSSLinearEasingModel, CSSShadowEditor, FontEditor, FontEditorUnitConverter, FontEditorUtils, InlineEditorUtils, LinkSwatch, Swatches, SwatchPopoverHelper, };
+export { AnimationTimingModel, AnimationTimingUI, BezierEditor, BezierUI, ColorMixSwatch, ColorSwatch, CSSAngle, CSSAngleUtils, CSSLinearEasingModel, CSSShadowEditor, InlineEditorUtils, LinkSwatch, Swatches, SwatchPopoverHelper, };
 //# sourceMappingURL=inline_editor.prebundle.js.map

@@ -1,5 +1,3 @@
-import * as App from './App.js';
-import * as AppProvider from './AppProvider.js';
 import * as Base64 from './Base64.js';
 import * as CharacterIdMap from './CharacterIdMap.js';
 import * as Color from './Color.js';
@@ -32,4 +30,4 @@ import * as Throttler from './Throttler.js';
 import * as Trie from './Trie.js';
 import * as VersionController from './VersionController.js';
 export { UIString } from '../platform/platform.js';
-export { App, AppProvider, Base64, CharacterIdMap, Color, ColorConverter, ColorUtils, Console, Debouncer, EventTarget, Gzip, JavaScriptMetaData, Lazy, MapWithDefault, Mutex, ObjectWrapper, ParsedURL, Progress, ResolverBase, ResourceType, ReturnToPanel, Revealer, Runnable, SegmentedRange, SettingRegistration, Settings, SimpleHistoryManager, Srcset, StringOutputStream, TextDictionary, Throttler, Trie, VersionController, };
+export { Base64, CharacterIdMap, Color, ColorConverter, ColorUtils, Console, Debouncer, EventTarget, Gzip, JavaScriptMetaData, Lazy, MapWithDefault, Mutex, ObjectWrapper, ParsedURL, Progress, ResolverBase, ResourceType, ReturnToPanel, Revealer, Runnable, SegmentedRange, SettingRegistration, Settings, SimpleHistoryManager, Srcset, StringOutputStream, TextDictionary, Throttler, Trie, VersionController, };

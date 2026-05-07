@@ -230,8 +230,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsS
                 this.#scheduleResetUpdateIfNotEditing();
             }
         });
-        const devtoolsLocale = i18n.DevToolsLocale.DevToolsLocale.instance();
-        if (AiCodeCompletion.AiCodeCompletion.AiCodeCompletion.isAiCodeCompletionStylesEnabled(devtoolsLocale.locale)) {
+        if (AiCodeCompletion.AiCodeCompletion.AiCodeCompletion.isAiCodeCompletionStylesAvailable()) {
             this.aiCodeCompletionConfig = {
                 completionContext: {},
                 generationContext: {},
@@ -852,7 +851,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsS
         }
         this.swatchPopoverHelper().reposition();
         // Record the elements tool load time after the sidepane has loaded.
-        Host.userMetrics.panelLoaded('elements', 'DevTools.Launch.Elements');
+        UI.UIUserMetrics.UIUserMetrics.instance().panelLoaded('elements', 'DevTools.Launch.Elements');
         this.dispatchEventToListeners("StylesUpdateCompleted" /* Events.STYLES_UPDATE_COMPLETED */, { hasMatchedStyles: false });
     }
     nodeStylesUpdatedForTest(_node, _rebuild) {

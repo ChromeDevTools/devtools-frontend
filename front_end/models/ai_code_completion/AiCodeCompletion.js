@@ -279,6 +279,9 @@ export class AiCodeCompletion {
         }
         this.#callbacks?.setAiAutoCompletion(null);
     }
+    static isAiCodeCompletionAvailable() {
+        return Root.Runtime.hostConfig.devToolsAiCodeCompletion?.enabled ?? false;
+    }
     static isAiCodeCompletionEnabled(locale) {
         if (!locale.startsWith('en-')) {
             return false;
@@ -288,7 +291,10 @@ export class AiCodeCompletion {
             aidaAvailability.blockedByEnterprisePolicy) {
             return false;
         }
-        return Boolean(aidaAvailability.enabled && Root.Runtime.hostConfig.devToolsAiCodeCompletion?.enabled);
+        return Boolean(aidaAvailability.enabled && AiCodeCompletion.isAiCodeCompletionAvailable());
+    }
+    static isAiCodeCompletionStylesAvailable() {
+        return Root.Runtime.hostConfig.devToolsAiCodeCompletionStyles?.enabled ?? false;
     }
     static isAiCodeCompletionStylesEnabled(locale) {
         if (!locale.startsWith('en-')) {
@@ -299,7 +305,7 @@ export class AiCodeCompletion {
             aidaAvailability.blockedByEnterprisePolicy) {
             return false;
         }
-        return Boolean(aidaAvailability.enabled && Root.Runtime.hostConfig.devToolsAiCodeCompletionStyles?.enabled);
+        return Boolean(aidaAvailability.enabled && AiCodeCompletion.isAiCodeCompletionStylesAvailable());
     }
 }
 //# sourceMappingURL=AiCodeCompletion.js.map

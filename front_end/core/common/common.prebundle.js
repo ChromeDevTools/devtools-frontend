@@ -1,8 +1,6 @@
 // Copyright 2019 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-import * as App from './App.js';
-import * as AppProvider from './AppProvider.js';
 import * as Base64 from './Base64.js';
 import * as CharacterIdMap from './CharacterIdMap.js';
 import * as Color from './Color.js';
@@ -40,5 +38,5 @@ import * as VersionController from './VersionController.js';
  * update all references to `Common.UIString` to `Platform.UIString`.
  */
 export { UIString } from '../platform/platform.js';
-export { App, AppProvider, Base64, CharacterIdMap, Color, ColorConverter, ColorUtils, Console, Debouncer, EventTarget, Gzip, JavaScriptMetaData, Lazy, MapWithDefault, Mutex, ObjectWrapper, ParsedURL, Progress, ResolverBase, ResourceType, ReturnToPanel, Revealer, Runnable, SegmentedRange, SettingRegistration, Settings, SimpleHistoryManager, Srcset, StringOutputStream, TextDictionary, Throttler, Trie, VersionController, };
+export { Base64, CharacterIdMap, Color, ColorConverter, ColorUtils, Console, Debouncer, EventTarget, Gzip, JavaScriptMetaData, Lazy, MapWithDefault, Mutex, ObjectWrapper, ParsedURL, Progress, ResolverBase, ResourceType, ReturnToPanel, Revealer, Runnable, SegmentedRange, SettingRegistration, Settings, SimpleHistoryManager, Srcset, StringOutputStream, TextDictionary, Throttler, Trie, VersionController, };
 //# sourceMappingURL=common.prebundle.js.map

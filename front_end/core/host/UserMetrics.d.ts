@@ -1,15 +1,8 @@
 export declare class UserMetrics {
-    #private;
-    constructor();
-    panelShown(panelName: string, isLaunching?: boolean): void;
-    settingsPanelShown(settingsViewId: string): void;
     sourcesPanelFileDebugged(mediaType?: string): void;
     sourcesPanelFileOpened(mediaType?: string): void;
     networkPanelResponsePreviewOpened(mediaType: string): void;
     actionTaken(action: Action): void;
-    panelLoaded(panelName: string, histogramName: string): void;
-    setLaunchPanel(panelName: string | null): void;
-    performanceTraceLoad(measure: PerformanceMeasure): void;
     keybindSetSettingChanged(keybindSet: string): void;
     keyboardShortcutFired(actionId: string): void;
     issuesPanelOpenedFrom(issueOpener: IssueOpener): void;
@@ -517,7 +510,6 @@ export declare enum DevtoolsExperiments {
     'live-heap-profile' = 11,
     'protocol-monitor' = 13,
     'timeline-invalidation-tracking' = 26,
-    'font-editor' = 41,
     'instrumentation-breakpoints' = 61,
     'use-source-map-scopes' = 76,
     'timeline-debug-mode' = 93,

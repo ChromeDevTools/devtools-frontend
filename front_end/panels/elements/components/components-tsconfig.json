@@ -79,6 +79,9 @@
       "path": "../../../ui/components/helpers/bundle-tsconfig.json"
     },
     {
+      "path": "../../../ui/components/input/bundle-tsconfig.json"
+    },
+    {
       "path": "../../../ui/components/legacy_wrapper/bundle-tsconfig.json"
     },
     {

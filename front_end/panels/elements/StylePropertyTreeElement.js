@@ -7,7 +7,6 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
-import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Badges from '../../models/badges/badges.js';
 import * as Bindings from '../../models/bindings/bindings.js';
@@ -1323,20 +1322,6 @@ export class ShadowRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.S
     }
 }
 // clang-format off
-export class FontRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.FontMatch) {
-    treeElement;
-    // clang-format on
-    constructor(treeElement) {
-        super();
-        this.treeElement = treeElement;
-    }
-    render(match, context) {
-        this.treeElement.section().registerFontProperty(this.treeElement);
-        const { nodes } = Renderer.render(ASTUtils.siblings(ASTUtils.declValue(match.node)), context);
-        return nodes;
-    }
-}
-// clang-format off
 export class GridTemplateRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.GridTemplateMatch) {
     // clang-format on
     render(match, context) {
@@ -2047,9 +2032,6 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
         const renderers = this.property.parsedOk ?
             getPropertyRenderers(this.name, this.style, this.#stylesContainer, this.#matchedStyles, this, this.getComputedStyles() ?? new Map(), this.getComputedStyleExtraFields()) :
             [];
-        if (Root.Runtime.experiments.isEnabled(Root.ExperimentNames.ExperimentName.FONT_EDITOR) && this.property.parsedOk) {
-            renderers.push(new FontRenderer(this));
-        }
         this.listItemElement.removeChildren();
         const matchedResult = this.property.parseValue(this.matchedStyles(), this.computedStyles);
         this.valueElement = Renderer.renderValueElement(this.property, matchedResult, renderers).valueElement;
@@ -3047,10 +3029,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
         // This occurs when deleting the last index of a StylePropertiesSection as this.style._allProperties array gets updated
         // before we index it when setting the value for updatedProperty
         const deleteProperty = majorChange && !styleText.length;
-        if (deleteProperty) {
-            this.#parentSection.resetToolbars();
-        }
-        else if (!deleteProperty && updatedProperty) {
+        if (!deleteProperty && updatedProperty) {
             this.property = updatedProperty;
         }
         if (currentNode === this.node()) {

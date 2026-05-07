@@ -45,12 +45,11 @@ export class AiCodeCompletionProvider {
     #aiCodeGenerationProvider;
     #boundOnUpdateAiCodeCompletionState = this.#updateAiCodeCompletionState.bind(this);
     constructor(aiCodeCompletionConfig) {
-        const devtoolsLocale = i18n.DevToolsLocale.DevToolsLocale.instance();
-        if (!AiCodeCompletion.AiCodeCompletion.AiCodeCompletion.isAiCodeCompletionEnabled(devtoolsLocale.locale)) {
-            throw new Error('AI code completion feature is not enabled.');
+        if (!AiCodeCompletion.AiCodeCompletion.AiCodeCompletion.isAiCodeCompletionAvailable()) {
+            throw new Error('AI code completion feature is not available.');
         }
         this.#aiCodeCompletionConfig = aiCodeCompletionConfig;
-        if (AiCodeGeneration.AiCodeGeneration.AiCodeGeneration.isAiCodeGenerationEnabled(devtoolsLocale.locale)) {
+        if (AiCodeGeneration.AiCodeGeneration.AiCodeGeneration.isAiCodeGenerationAvailable()) {
             this.#aiCodeGenerationConfig = {
                 generationContext: {
                     inferenceLanguage: this.#aiCodeCompletionConfig.completionContext.inferenceLanguage,
@@ -137,18 +136,22 @@ export class AiCodeCompletionProvider {
     async #updateAiCodeCompletionState() {
         const aidaAvailability = await Host.AidaClient.AidaClient.checkAccessPreconditions();
         const isAvailable = aidaAvailability === "available" /* Host.AidaClient.AidaAccessPreconditions.AVAILABLE */;
-        const isEnabled = this.#aiCodeCompletionSetting.get();
-        if (isAvailable && isEnabled) {
-            this.#detachTeaser();
-            this.#setupAiCodeCompletion();
-        }
-        else if (isAvailable && !isEnabled) {
-            if (this.#teaser && !this.#aiCodeCompletionTeaserDismissedSetting.get()) {
-                this.#editor?.editor.dispatch({ effects: this.#teaserCompartment.reconfigure([aiCodeCompletionTeaserExtension(this.#teaser)]) });
+        const devtoolsLocale = i18n.DevToolsLocale.DevToolsLocale.instance().locale;
+        const aiCodeCompletionEnabled = AiCodeCompletion.AiCodeCompletion.AiCodeCompletion.isAiCodeCompletionEnabled(devtoolsLocale);
+        const isSettingEnabled = this.#aiCodeCompletionSetting.get();
+        if (isAvailable && aiCodeCompletionEnabled) {
+            if (isSettingEnabled) {
+                this.#detachTeaser();
+                this.#setupAiCodeCompletion();
             }
-            this.#cleanupAiCodeCompletion();
+            else {
+                if (this.#teaser && !this.#aiCodeCompletionTeaserDismissedSetting.get()) {
+                    this.#editor?.editor.dispatch({ effects: this.#teaserCompartment.reconfigure([aiCodeCompletionTeaserExtension(this.#teaser)]) });
+                }
+                this.#cleanupAiCodeCompletion();
+            }
         }
-        else if (!isAvailable) {
+        else {
             this.#detachTeaser();
             this.#cleanupAiCodeCompletion();
         }

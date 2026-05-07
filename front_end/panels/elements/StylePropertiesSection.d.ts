@@ -38,9 +38,6 @@ export declare class StylePropertiesSection {
     private showAllButton;
     protected selectorElement: HTMLSpanElement;
     private readonly newStyleRuleToolbar;
-    private readonly fontEditorToolbar;
-    private readonly fontEditorSectionManager;
-    private readonly fontEditorButton;
     private selectedSinceMouseDown;
     private readonly elementToSelectorIndex;
     navigable: boolean | null | undefined;
@@ -59,8 +56,6 @@ export declare class StylePropertiesSection {
     updateAuthoringHint(): void;
     setSectionIdx(sectionIdx: number): void;
     getSectionIdx(): number;
-    registerFontProperty(treeElement: StylePropertyTreeElement): void;
-    resetToolbars(): void;
     static createRuleOriginNode(matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, linkifier: Components.Linkifier.Linkifier, rule: SDK.CSSRule.CSSRule | null): LitTemplate;
     protected createRuleOriginNode(matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, linkifier: Components.Linkifier.Linkifier, rule: SDK.CSSRule.CSSRule | null): LitTemplate;
     private static getRuleLocationFromCSSRule;
@@ -74,7 +69,6 @@ export declare class StylePropertiesSection {
     private setSectionHovered;
     private onMouseLeave;
     private onMouseMove;
-    private onFontEditorButtonClicked;
     style(): SDK.CSSStyleDeclaration.CSSStyleDeclaration;
     headerText(): string;
     private onMouseOutSelector;

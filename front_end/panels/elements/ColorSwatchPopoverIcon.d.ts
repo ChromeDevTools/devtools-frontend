@@ -2,9 +2,7 @@ import * as Common from '../../core/common/common.js';
 import type { Icon } from '../../ui/kit/kit.js';
 import * as ColorPicker from '../../ui/legacy/components/color_picker/color_picker.js';
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
-import type { StylePropertiesSection } from './StylePropertiesSection.js';
 import type { StylePropertyTreeElement } from './StylePropertyTreeElement.js';
-import type { StylesContainer } from './StylesContainer.js';
 interface BezierPopoverIconParams {
     treeElement: StylePropertyTreeElement;
     swatchPopoverHelper: InlineEditor.SwatchPopoverHelper.SwatchPopoverHelper;
@@ -75,27 +73,6 @@ export declare class ShadowSwatchPopoverHelper extends Common.ObjectWrapper.Obje
     private iconClick;
     showPopover(): void;
     private shadowChanged;
-    private onScroll;
-    private onPopoverHidden;
-}
-export declare class FontEditorSectionManager {
-    private readonly treeElementMap;
-    private readonly swatchPopoverHelper;
-    private readonly section;
-    private stylesContainer;
-    private fontEditor;
-    private scrollerElement;
-    private readonly boundFontChanged;
-    private readonly boundOnScroll;
-    private readonly boundResized;
-    constructor(swatchPopoverHelper: InlineEditor.SwatchPopoverHelper.SwatchPopoverHelper, section: StylePropertiesSection);
-    private fontChanged;
-    private updateFontProperty;
-    private fontEditorResized;
-    private fixIndex;
-    private createPropertyValueMap;
-    registerFontProperty(treeElement: StylePropertyTreeElement): void;
-    showPopover(iconElement: Element, stylesContainer: StylesContainer): Promise<void>;
     private onScroll;
     private onPopoverHidden;
 }

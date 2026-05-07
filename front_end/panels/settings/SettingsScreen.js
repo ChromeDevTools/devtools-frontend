@@ -177,10 +177,10 @@ export class SettingsScreen extends UI.Widget.VBox {
     }
     reportSettingsPanelShown(tabId) {
         if (tabId === i18nString(UIStrings.shortcuts)) {
-            Host.userMetrics.settingsPanelShown('shortcuts');
+            UI.UIUserMetrics.UIUserMetrics.instance().settingsPanelShown('shortcuts');
             return;
         }
-        Host.userMetrics.settingsPanelShown(tabId);
+        UI.UIUserMetrics.UIUserMetrics.instance().settingsPanelShown(tabId);
     }
     onEscapeKeyPressed(event) {
         if (this.tabbedLocation.tabbedPane().selectedTabId === 'keybinds' && this.keybindsTab) {

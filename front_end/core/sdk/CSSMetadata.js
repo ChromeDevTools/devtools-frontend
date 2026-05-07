@@ -171,10 +171,6 @@ export class CSSMetadata {
         propertyName = propertyName.toLowerCase();
         return bezierAwareProperties.has(propertyName) || this.isCustomProperty(propertyName);
     }
-    isFontAwareProperty(propertyName) {
-        propertyName = propertyName.toLowerCase();
-        return fontAwareProperties.has(propertyName) || this.isCustomProperty(propertyName);
-    }
     isCustomProperty(propertyName) {
         return propertyName.startsWith('--');
     }
@@ -419,7 +415,6 @@ const bezierAwareProperties = new Set([
     '-webkit-transition',
     '-webkit-transition-timing-function',
 ]);
-const fontAwareProperties = new Set(['font-size', 'line-height', 'font-weight', 'font-family', 'letter-spacing']);
 const colorAwareProperties = new Set([
     'accent-color',
     'background',

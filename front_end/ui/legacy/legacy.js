@@ -464,6 +464,28 @@ var ActionRegistry = class _ActionRegistry {
   }
 };
 
+// gen/front_end/ui/legacy/App.js
+var App_exports = {};
+
+// gen/front_end/ui/legacy/AppProvider.js
+var AppProvider_exports = {};
+__export(AppProvider_exports, {
+  getRegisteredAppProviders: () => getRegisteredAppProviders,
+  registerAppProvider: () => registerAppProvider
+});
+import * as Root2 from "./../../core/root/root.js";
+var registeredAppProvider = [];
+function registerAppProvider(registration) {
+  registeredAppProvider.push(registration);
+}
+function getRegisteredAppProviders() {
+  return registeredAppProvider.filter((provider) => Root2.Runtime.Runtime.isDescriptorEnabled({ condition: provider.condition })).sort((firstProvider, secondProvider) => {
+    const order1 = firstProvider.order || 0;
+    const order2 = secondProvider.order || 0;
+    return order1 - order2;
+  });
+}
+
 // gen/front_end/ui/legacy/ARIAUtils.js
 var ARIAUtils_exports = {};
 __export(ARIAUtils_exports, {
@@ -724,7 +746,7 @@ __export(Toolbar_exports, {
 import * as Common14 from "./../../core/common/common.js";
 import * as i18n21 from "./../../core/i18n/i18n.js";
 import * as Platform13 from "./../../core/platform/platform.js";
-import * as Root5 from "./../../core/root/root.js";
+import * as Root6 from "./../../core/root/root.js";
 import * as Buttons5 from "./../components/buttons/buttons.js";
 import * as VisualLogging14 from "./../visual_logging/visual_logging.js";
 import { createIcon as createIcon6 } from "./../kit/kit.js";
@@ -741,8 +763,8 @@ __export(ContextMenu_exports, {
   registerItem: () => registerItem,
   registerProvider: () => registerProvider
 });
-import * as Host6 from "./../../core/host/host.js";
-import * as Root4 from "./../../core/root/root.js";
+import * as Host7 from "./../../core/host/host.js";
+import * as Root5 from "./../../core/root/root.js";
 import * as Buttons4 from "./../components/buttons/buttons.js";
 import { html as html2, render as render2 } from "./../lit/lit.js";
 import * as VisualLogging10 from "./../visual_logging/visual_logging.js";
@@ -1521,9 +1543,9 @@ __export(InspectorView_exports, {
   InspectorViewTabDelegate: () => InspectorViewTabDelegate
 });
 import * as Common11 from "./../../core/common/common.js";
-import * as Host5 from "./../../core/host/host.js";
+import * as Host6 from "./../../core/host/host.js";
 import * as i18n15 from "./../../core/i18n/i18n.js";
-import * as Root3 from "./../../core/root/root.js";
+import * as Root4 from "./../../core/root/root.js";
 import * as SDK from "./../../core/sdk/sdk.js";
 import * as Buttons3 from "./../components/buttons/buttons.js";
 import { createIcon as createIcon4 } from "./../kit/kit.js";
@@ -5043,10 +5065,10 @@ var TabbedPaneTab = class {
     const tabElement = document.createElement("div");
     tabElement.classList.add("tabbed-pane-header-tab");
     tabElement.id = "tab-" + this.#id;
+    markAsTab(tabElement);
     setSelected(tabElement, false);
     setLabel(tabElement, this.title);
     const titleElement = tabElement.createChild("span", "tabbed-pane-header-tab-title");
-    markAsTab(titleElement);
     titleElement.textContent = this.title;
     Tooltip.install(titleElement, this.tooltip || "");
     this.createIconElement(tabElement, titleElement, measuring);
@@ -5451,7 +5473,7 @@ found in the LICENSE file. */
 
 // gen/front_end/ui/legacy/ViewRegistration.js
 import * as i18n9 from "./../../core/i18n/i18n.js";
-import * as Root2 from "./../../core/root/root.js";
+import * as Root3 from "./../../core/root/root.js";
 var UIStrings5 = {
   /**
    * @description Badge label for an entry in the Quick Open menu. Selecting the entry opens the 'Elements' panel.
@@ -5493,7 +5515,7 @@ function registerViewExtension(registration) {
   registeredViewExtensions.set(viewId, registration);
 }
 function getRegisteredViewExtensions() {
-  return registeredViewExtensions.values().filter((view) => Root2.Runtime.Runtime.isDescriptorEnabled({ experiment: view.experiment, condition: view.condition })).toArray();
+  return registeredViewExtensions.values().filter((view) => Root3.Runtime.Runtime.isDescriptorEnabled({ experiment: view.experiment, condition: view.condition })).toArray();
 }
 function maybeRemoveViewExtension(viewId) {
   return registeredViewExtensions.delete(viewId);
@@ -7610,6 +7632,57 @@ var MinPadding = 20;
 var suppressUnused = function(_value) {
 };
 
+// gen/front_end/ui/legacy/UIUserMetrics.js
+var UIUserMetrics_exports = {};
+__export(UIUserMetrics_exports, {
+  UIUserMetrics: () => UIUserMetrics
+});
+import * as Host5 from "./../../core/host/host.js";
+var UIUserMetrics = class _UIUserMetrics {
+  #panelChangedSinceLaunch = false;
+  #firedLaunchHistogram = false;
+  #launchPanelName = "";
+  static #instance = null;
+  static instance() {
+    if (!this.#instance) {
+      this.#instance = new _UIUserMetrics();
+    }
+    return this.#instance;
+  }
+  panelLoaded(panelName, histogramName) {
+    if (this.#firedLaunchHistogram || panelName !== this.#launchPanelName) {
+      return;
+    }
+    this.#firedLaunchHistogram = true;
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        performance.mark(histogramName);
+        if (this.#panelChangedSinceLaunch) {
+          return;
+        }
+        Host5.InspectorFrontendHost.InspectorFrontendHostInstance.recordPerformanceHistogram(histogramName, performance.now());
+      }, 0);
+    });
+  }
+  setLaunchPanel(panelName) {
+    this.#launchPanelName = panelName;
+  }
+  performanceTraceLoad(measure) {
+    Host5.InspectorFrontendHost.InspectorFrontendHostInstance.recordPerformanceHistogram("DevTools.TraceLoad", measure.duration);
+  }
+  panelShown(panelName, isLaunching) {
+    const code = Host5.UserMetrics.PanelCodes[panelName] || 0;
+    Host5.InspectorFrontendHost.InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.PanelShown", code, Host5.UserMetrics.PanelCodes.MAX_VALUE);
+    Host5.InspectorFrontendHost.InspectorFrontendHostInstance.recordUserMetricsAction("DevTools_PanelShown_" + panelName);
+    if (!isLaunching) {
+      this.#panelChangedSinceLaunch = true;
+    }
+  }
+  settingsPanelShown(settingsViewId) {
+    this.panelShown("settings-" + settingsViewId);
+  }
+};
+
 // gen/front_end/ui/legacy/InspectorView.js
 var UIStrings8 = {
   /**
@@ -7768,7 +7841,7 @@ var InspectorView = class _InspectorView extends VBox {
       onTabSelected: this.tabSelected.bind(this),
       isConsoleOpenInMainAndDrawer: (tabId) => tabId === "console-view" && this.tabbedPane.selectedTabId === "console",
       tabDelegate: this.tabDelegate,
-      enableOrientationToggle: Boolean(Root3.Runtime.hostConfig.devToolsFlexibleLayout?.verticalDrawerEnabled),
+      enableOrientationToggle: Boolean(Root4.Runtime.hostConfig.devToolsFlexibleLayout?.verticalDrawerEnabled),
       isVertical,
       verticalExpandedMinimumWidth: MIN_VERTICAL_DRAWER_WIDTH,
       minimumSizes: {
@@ -7780,16 +7853,16 @@ var InspectorView = class _InspectorView extends VBox {
     });
     this.drawerTabbedLocation = this.#drawerView.tabbedLocation;
     this.drawerTabbedPane = this.#drawerView.tabbedPane;
-    this.tabbedLocation = ViewManager.instance().createTabbedLocation(Host5.InspectorFrontendHost.InspectorFrontendHostInstance.bringToFront.bind(Host5.InspectorFrontendHost.InspectorFrontendHostInstance), "panel", true, true, Root3.Runtime.Runtime.queryParam("panel"));
+    this.tabbedLocation = ViewManager.instance().createTabbedLocation(Host6.InspectorFrontendHost.InspectorFrontendHostInstance.bringToFront.bind(Host6.InspectorFrontendHost.InspectorFrontendHostInstance), "panel", true, true, Root4.Runtime.Runtime.queryParam("panel"));
     this.tabbedPane = this.tabbedLocation.tabbedPane();
     this.tabbedPane.setMinimumSize(MIN_MAIN_PANEL_WIDTH, 0);
     this.tabbedPane.element.classList.add("main-tabbed-pane");
-    const allocatedSpace = Root3.Runtime.conditions.canDock() ? "69px" : "41px";
+    const allocatedSpace = Root4.Runtime.conditions.canDock() ? "69px" : "41px";
     this.tabbedPane.leftToolbar().style.minWidth = allocatedSpace;
     this.tabbedPane.addEventListener(Events.TabSelected, (event) => this.tabSelected(event.data.tabId), this);
     const selectedTab = this.tabbedPane.selectedTabId;
     if (selectedTab) {
-      Host5.userMetrics.panelShown(selectedTab, true);
+      UIUserMetrics.instance().panelShown(selectedTab, true);
     }
     this.tabbedPane.setAccessibleName(i18nString8(UIStrings8.panels));
     this.tabbedPane.setTabDelegate(this.tabDelegate);
@@ -7800,14 +7873,14 @@ var InspectorView = class _InspectorView extends VBox {
       drag: true,
       keydown: "ArrowUp|ArrowLeft|ArrowDown|ArrowRight|Enter|Space"
     })}`);
-    Host5.userMetrics.setLaunchPanel(this.tabbedPane.selectedTabId);
-    if (Host5.InspectorFrontendHost.isUnderTest()) {
+    UIUserMetrics.instance().setLaunchPanel(this.tabbedPane.selectedTabId);
+    if (Host6.InspectorFrontendHost.isUnderTest()) {
       this.tabbedPane.setAutoSelectFirstItemOnShow(false);
     }
     this.drawerSplitWidget.setMainWidget(this.tabbedPane);
     this.drawerSplitWidget.setDefaultFocusedChild(this.tabbedPane);
     this.keyDownBound = this.keyDown.bind(this);
-    Host5.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host5.InspectorFrontendHostAPI.Events.ShowPanel, showPanel.bind(this));
+    Host6.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host6.InspectorFrontendHostAPI.Events.ShowPanel, showPanel.bind(this));
     function showPanel({ data: panelName }) {
       void this.showPanel(panelName);
     }
@@ -8159,7 +8232,7 @@ var InspectorView = class _InspectorView extends VBox {
     this.tabbedPane.headerResized();
   }
   tabSelected(tabId) {
-    Host5.userMetrics.panelShown(tabId);
+    UIUserMetrics.instance().panelShown(tabId, false);
   }
   setOwnerSplit(splitWidget) {
     this.ownerSplitWidget = splitWidget;
@@ -8235,7 +8308,7 @@ var InspectorView = class _InspectorView extends VBox {
           text: i18nString8(UIStrings8.restartChrome),
           delegate: () => {
             if (confirm(i18nString8(UIStrings8.areYouSureYouWantToRestartChrome))) {
-              Host5.InspectorFrontendHost.InspectorFrontendHostInstance.requestRestart();
+              Host6.InspectorFrontendHost.InspectorFrontendHostInstance.requestRestart();
             }
           },
           dismiss: false,
@@ -8326,10 +8399,10 @@ function createLocaleInfobar() {
 }
 function reloadDevTools() {
   if (DockController.instance().canDock() && DockController.instance().dockSide() === "undocked") {
-    Host5.InspectorFrontendHost.InspectorFrontendHostInstance.setIsDocked(true, function() {
+    Host6.InspectorFrontendHost.InspectorFrontendHostInstance.setIsDocked(true, function() {
     });
   }
-  Host5.InspectorFrontendHost.InspectorFrontendHostInstance.reattach(() => window.location.reload());
+  Host6.InspectorFrontendHost.InspectorFrontendHostInstance.reattach(() => window.location.reload());
 }
 function reloadDebuggedTab() {
   void ActionRegistry.instance().getAction("inspector-main.reload").execute();
@@ -8367,11 +8440,11 @@ var InspectorViewTabDelegate = class {
     tabbedPane.closeTabs(ids, true);
   }
   moveToDrawer(tabId) {
-    Host5.userMetrics.actionTaken(Host5.UserMetrics.Action.TabMovedToDrawer);
+    Host6.userMetrics.actionTaken(Host6.UserMetrics.Action.TabMovedToDrawer);
     ViewManager.instance().moveView(tabId, "drawer-view");
   }
   moveToMainTabBar(tabId) {
-    Host5.userMetrics.actionTaken(Host5.UserMetrics.Action.TabMovedToMainPanel);
+    Host6.userMetrics.actionTaken(Host6.UserMetrics.Action.TabMovedToMainPanel);
     ViewManager.instance().moveView(tabId, "panel");
   }
   onContextMenu(tabId, contextMenu) {
@@ -9494,7 +9567,7 @@ var SubMenu = class extends Item {
       return order1 - order2;
     });
     for (const item8 of items) {
-      if (item8.experiment && !Root4.Runtime.experiments.isEnabled(item8.experiment)) {
+      if (item8.experiment && !Root5.Runtime.experiments.isEnabled(item8.experiment)) {
         continue;
       }
       const itemLocation = item8.location;
@@ -9567,7 +9640,7 @@ var ContextMenu = class _ContextMenu extends SubMenu {
    * commands from the host to toggle soft menu usage.
    */
   static initialize() {
-    Host6.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host6.InspectorFrontendHostAPI.Events.SetUseSoftMenu, setUseSoftMenu);
+    Host7.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host7.InspectorFrontendHostAPI.Events.SetUseSoftMenu, setUseSoftMenu);
     function setUseSoftMenu(event) {
       _ContextMenu.useSoftMenu = event.data;
     }
@@ -9666,7 +9739,7 @@ var ContextMenu = class _ContextMenu extends SubMenu {
     }
     const menuObject = this.buildMenuDescriptors();
     const ownerDocument = this.eventTarget.ownerDocument;
-    let useSoftMenu = this.useSoftMenu || _ContextMenu.useSoftMenu || Host6.InspectorFrontendHost.InspectorFrontendHostInstance.isHostedMode();
+    let useSoftMenu = this.useSoftMenu || _ContextMenu.useSoftMenu || Host7.InspectorFrontendHost.InspectorFrontendHostInstance.isHostedMode();
     if (!this.useSoftMenu && _ContextMenu.useSoftMenu && this.event.altKey) {
       useSoftMenu = false;
     }
@@ -9680,10 +9753,10 @@ var ContextMenu = class _ContextMenu extends SubMenu {
       }
     } else {
       let listenToEvents = function() {
-        Host6.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host6.InspectorFrontendHostAPI.Events.ContextMenuCleared, this.menuCleared, this);
-        Host6.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host6.InspectorFrontendHostAPI.Events.ContextMenuItemSelected, this.onItemSelected, this);
+        Host7.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host7.InspectorFrontendHostAPI.Events.ContextMenuCleared, this.menuCleared, this);
+        Host7.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host7.InspectorFrontendHostAPI.Events.ContextMenuItemSelected, this.onItemSelected, this);
       };
-      Host6.InspectorFrontendHost.InspectorFrontendHostInstance.showContextMenuAtPoint(this.x, this.y, menuObject, ownerDocument);
+      Host7.InspectorFrontendHost.InspectorFrontendHostInstance.showContextMenuAtPoint(this.x, this.y, menuObject, ownerDocument);
       VisualLogging10.registerLoggable(menuObject, `${VisualLogging10.menu()}`, this.loggableParent, new DOMRect(0, 0, MENU_ITEM_WIDTH_FOR_LOGGING, MENU_ITEM_HEIGHT_FOR_LOGGING * menuObject.length));
       this.registerLoggablesWithin(menuObject);
       this.openHostedMenu = menuObject;
@@ -9757,14 +9830,14 @@ var ContextMenu = class _ContextMenu extends SubMenu {
         void VisualLogging10.logClick(item8, new MouseEvent("click"));
       }
       if (item8 && featuresUsed.length > 0) {
-        featuresUsed.map((feature) => Host6.InspectorFrontendHost.InspectorFrontendHostInstance.recordNewBadgeUsage(feature));
+        featuresUsed.map((feature) => Host7.InspectorFrontendHost.InspectorFrontendHostInstance.recordNewBadgeUsage(feature));
       }
     }
     this.menuCleared();
   }
   menuCleared() {
-    Host6.InspectorFrontendHost.InspectorFrontendHostInstance.events.removeEventListener(Host6.InspectorFrontendHostAPI.Events.ContextMenuCleared, this.menuCleared, this);
-    Host6.InspectorFrontendHost.InspectorFrontendHostInstance.events.removeEventListener(Host6.InspectorFrontendHostAPI.Events.ContextMenuItemSelected, this.onItemSelected, this);
+    Host7.InspectorFrontendHost.InspectorFrontendHostInstance.events.removeEventListener(Host7.InspectorFrontendHostAPI.Events.ContextMenuCleared, this.menuCleared, this);
+    Host7.InspectorFrontendHost.InspectorFrontendHostInstance.events.removeEventListener(Host7.InspectorFrontendHostAPI.Events.ContextMenuItemSelected, this.onItemSelected, this);
     if (this.openHostedMenu) {
       void VisualLogging10.logResize(this.openHostedMenu, new DOMRect(0, 0, 0, 0));
     }
@@ -9936,7 +10009,7 @@ function registerProvider(registration) {
 async function loadApplicableRegisteredProviders(target) {
   const providers = [];
   for (const providerRegistration of registeredProviders) {
-    if (!Root4.Runtime.Runtime.isDescriptorEnabled({ experiment: providerRegistration.experiment })) {
+    if (!Root5.Runtime.Runtime.isDescriptorEnabled({ experiment: providerRegistration.experiment })) {
       continue;
     }
     if (providerRegistration.contextTypes) {
@@ -13087,12 +13160,12 @@ function registerToolbarItem(registration) {
   registeredToolbarItems.push(registration);
 }
 function getRegisteredToolbarItems() {
-  return registeredToolbarItems.filter((item8) => Root5.Runtime.Runtime.isDescriptorEnabled({ experiment: item8.experiment, condition: item8.condition }));
+  return registeredToolbarItems.filter((item8) => Root6.Runtime.Runtime.isDescriptorEnabled({ experiment: item8.experiment, condition: item8.condition }));
 }
 
 // gen/front_end/ui/legacy/UIUtils.js
 import * as Common15 from "./../../core/common/common.js";
-import * as Host7 from "./../../core/host/host.js";
+import * as Host8 from "./../../core/host/host.js";
 import * as i18n23 from "./../../core/i18n/i18n.js";
 import * as Platform15 from "./../../core/platform/platform.js";
 import * as Geometry5 from "./../../models/geometry/geometry.js";
@@ -14729,7 +14802,7 @@ var DragHandler = class _DragHandler {
   }
   elementDragStart(targetElement, elementDragStart2, elementDrag, elementDragEnd, cursor, ev, preventDefault = true) {
     const event = ev;
-    if (event.button || Host7.Platform.isMac() && event.ctrlKey) {
+    if (event.button || Host8.Platform.isMac() && event.ctrlKey) {
       return;
     }
     if (this.elementDraggingEventListener) {
@@ -15087,12 +15160,12 @@ function asyncFragmentLabel(stackTrace, asyncFragment) {
   return description;
 }
 function addPlatformClass(element) {
-  element.classList.add("platform-" + Host7.Platform.platform());
+  element.classList.add("platform-" + Host8.Platform.platform());
 }
 function installComponentRootStyles(element) {
   appendStyle(element, inspectorCommon_css_default);
   appendStyle(element, Buttons6.textButtonStyles);
-  if (!Host7.Platform.isMac() && measuredScrollbarWidth(element.ownerDocument) === 0) {
+  if (!Host8.Platform.isMac() && measuredScrollbarWidth(element.ownerDocument) === 0) {
     element.classList.add("overlay-scrollbar-enabled");
   }
 }
@@ -16306,7 +16379,7 @@ var HTMLElementWithLightDOMTemplate = class _HTMLElementWithLightDOMTemplate ext
   }
 };
 function copyTextToClipboard(text, alert) {
-  Host7.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(text);
+  Host8.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(text);
   if (alert) {
     LiveAnnouncer.alert(alert);
   }
@@ -16324,13 +16397,13 @@ var bindCheckboxImpl = function(input, apply, metric) {
   function onInputChanged() {
     apply(input.checked);
     if (input.checked && metric?.enable) {
-      Host7.userMetrics.actionTaken(metric.enable);
+      Host8.userMetrics.actionTaken(metric.enable);
     }
     if (!input.checked && metric?.disable) {
-      Host7.userMetrics.actionTaken(metric.disable);
+      Host8.userMetrics.actionTaken(metric.disable);
     }
     if (metric?.toggle) {
-      Host7.userMetrics.actionTaken(metric.toggle);
+      Host8.userMetrics.actionTaken(metric.toggle);
     }
   }
   return function setValue(value) {
@@ -17481,7 +17554,7 @@ __export(FilterBar_exports, {
   filterStyles: () => filter_css_default
 });
 import * as Common17 from "./../../core/common/common.js";
-import * as Host8 from "./../../core/host/host.js";
+import * as Host9 from "./../../core/host/host.js";
 import * as i18n29 from "./../../core/i18n/i18n.js";
 import * as Platform18 from "./../../core/platform/platform.js";
 import * as VisualLogging18 from "./../visual_logging/visual_logging.js";
@@ -17965,7 +18038,7 @@ var NamedBitSetFilterUI = class _NamedBitSetFilterUI extends Common17.ObjectWrap
   onTypeFilterClicked(event) {
     const e = event;
     let toggle6;
-    if (Host8.Platform.isMac()) {
+    if (Host9.Platform.isMac()) {
       toggle6 = e.metaKey && !e.ctrlKey && !e.altKey && !e.shiftKey;
     } else {
       toggle6 = e.ctrlKey && !e.metaKey && !e.altKey && !e.shiftKey;
@@ -18153,10 +18226,10 @@ var ForwardedInputEventHandler_exports = {};
 __export(ForwardedInputEventHandler_exports, {
   ForwardedInputEventHandler: () => ForwardedInputEventHandler
 });
-import * as Host9 from "./../../core/host/host.js";
+import * as Host10 from "./../../core/host/host.js";
 var ForwardedInputEventHandler = class {
   constructor() {
-    Host9.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host9.InspectorFrontendHostAPI.Events.KeyEventUnhandled, this.onKeyEventUnhandled, this);
+    Host10.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host10.InspectorFrontendHostAPI.Events.KeyEventUnhandled, this.onKeyEventUnhandled, this);
   }
   async onKeyEventUnhandled(event) {
     const { type, key, keyCode, modifiers } = event.data;
@@ -18351,7 +18424,7 @@ var LinkContextMenuProvider_exports = {};
 __export(LinkContextMenuProvider_exports, {
   LinkContextMenuProvider: () => LinkContextMenuProvider
 });
-import * as Host10 from "./../../core/host/host.js";
+import * as Host11 from "./../../core/host/host.js";
 import * as UIHelpers from "./../helpers/helpers.js";
 import { Link } from "./../kit/kit.js";
 var LinkContextMenuProvider = class {
@@ -18371,7 +18444,7 @@ var LinkContextMenuProvider = class {
     }, { jslogContext: "open-in-new-tab" });
     contextMenu.revealSection().appendItem(copyLinkAddressLabel(), () => {
       if (node.href) {
-        Host10.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(node.href);
+        Host11.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(node.href);
       }
     }, { jslogContext: "copy-link-address" });
   }
@@ -23105,6 +23178,8 @@ export {
   ARIAUtils_exports as ARIAUtils,
   ActionRegistration_exports as ActionRegistration,
   ActionRegistry_exports as ActionRegistry,
+  App_exports as App,
+  AppProvider_exports as AppProvider,
   Context_exports as Context,
   ContextFlavorListener_exports as ContextFlavorListener,
   ContextMenu_exports as ContextMenu,
@@ -23144,6 +23219,7 @@ export {
   Toolbar_exports as Toolbar,
   Tooltip_exports as Tooltip,
   Treeoutline_exports as TreeOutline,
+  UIUserMetrics_exports as UIUserMetrics,
   UIUtils_exports as UIUtils,
   View_exports as View,
   ViewManager_exports as ViewManager,

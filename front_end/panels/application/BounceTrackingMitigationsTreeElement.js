@@ -1,9 +1,9 @@
 // Copyright 2023 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import { createIcon } from '../../ui/kit/kit.js';
+import * as UI from '../../ui/legacy/legacy.js';
 import { ApplicationPanelTreeElement } from './ApplicationPanelTreeElement.js';
 import * as ApplicationComponents from './components/components.js';
 const UIStrings = {
@@ -30,7 +30,7 @@ export class BounceTrackingMitigationsTreeElement extends ApplicationPanelTreeEl
             this.view = new ApplicationComponents.BounceTrackingMitigationsView.BounceTrackingMitigationsView();
         }
         this.showView(this.view);
-        Host.userMetrics.panelShown('bounce-tracking-mitigations');
+        UI.UIUserMetrics.UIUserMetrics.instance().panelShown('bounce-tracking-mitigations');
         return false;
     }
 }

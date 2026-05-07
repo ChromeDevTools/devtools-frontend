@@ -3308,7 +3308,8 @@ export declare namespace CSS {
     const enum CSSAtRuleType {
         FontFace = "font-face",
         FontFeatureValues = "font-feature-values",
-        FontPaletteValues = "font-palette-values"
+        FontPaletteValues = "font-palette-values",
+        CounterStyle = "counter-style"
     }
     const enum CSSAtRuleSubsection {
         Swash = "swash",
@@ -10946,6 +10947,7 @@ export declare namespace Network {
         Success = "Success",
         KeyError = "KeyError",
         SigningError = "SigningError",
+        TransientSigningError = "TransientSigningError",
         ServerRequestedTermination = "ServerRequestedTermination",
         InvalidSessionId = "InvalidSessionId",
         InvalidChallenge = "InvalidChallenge",
@@ -11056,13 +11058,14 @@ export declare namespace Network {
     }
     const enum RefreshEventDetailsRefreshResult {
         Refreshed = "Refreshed",
-        RefreshedAsWaiter = "RefreshedAsWaiter",
         InitializedService = "InitializedService",
         Unreachable = "Unreachable",
         ServerError = "ServerError",
         RefreshQuotaExceeded = "RefreshQuotaExceeded",
         FatalError = "FatalError",
-        SigningQuotaExceeded = "SigningQuotaExceeded"
+        SigningQuotaExceeded = "SigningQuotaExceeded",
+        RefreshedAsWaiter = "RefreshedAsWaiter",
+        TransientSigningError = "TransientSigningError"
     }
     /**
      * Session event details specific to refresh.

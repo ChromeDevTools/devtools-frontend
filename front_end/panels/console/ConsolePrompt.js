@@ -159,7 +159,7 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin(UI.Widget.Wid
         this.element.removeAttribute('tabindex');
         this.editorSetForTest();
         // Record the console tool load time after the console prompt constructor is complete.
-        Host.userMetrics.panelLoaded('console', 'DevTools.Launch.Console');
+        UI.UIUserMetrics.UIUserMetrics.instance().panelLoaded('console', 'DevTools.Launch.Console');
     }
     eagerSettingChanged() {
         const enabled = this.eagerEvalSetting.get();

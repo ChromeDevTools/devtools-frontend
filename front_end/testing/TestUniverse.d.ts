@@ -31,7 +31,7 @@ export declare class TestUniverse {
     /**
      * Convenience shortcut for `createTarget({targetManager: testUniverse.targetManager})`
      */
-    createTarget(options: Parameters<typeof createTarget>[0]): SDK.Target.Target;
+    createTarget(options?: Parameters<typeof createTarget>[0]): SDK.Target.Target;
     get console(): Common.Console.Console;
     get cssWorkspaceBinding(): Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding;
     get debuggerWorkspaceBinding(): Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding;

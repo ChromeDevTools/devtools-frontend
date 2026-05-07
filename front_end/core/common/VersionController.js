@@ -208,12 +208,13 @@ export class VersionController {
     }
     updateVersionFrom9To10() {
         // This one is localStorage specific, which is fine.
-        if (!window.localStorage) {
+        const localStorage = Platform.HostRuntime.HOST_RUNTIME.getLocalStorage();
+        if (!localStorage) {
             return;
         }
-        for (const key in window.localStorage) {
+        for (const key in localStorage) {
             if (key.startsWith('revision-history')) {
-                window.localStorage.removeItem(key);
+                localStorage.removeItem(key);
             }
         }
     }
@@ -773,15 +774,16 @@ export class VersionController {
             'workspaceExcludedFolders',
             'xhrBreakpoints',
         ]);
-        if (!window.localStorage) {
+        const localStorage = Platform.HostRuntime.HOST_RUNTIME.getLocalStorage();
+        if (!localStorage) {
             return;
         }
-        for (const key in window.localStorage) {
+        for (const key in localStorage) {
             if (localSettings.has(key)) {
                 continue;
             }
-            const value = window.localStorage[key];
-            window.localStorage.removeItem(key);
+            const value = localStorage[key];
+            localStorage.removeItem(key);
             this.#settings.globalStorage.set(key, value);
         }
     }

@@ -70,6 +70,7 @@
     "../../../../../../front_end/core/sdk/CrashReportContextModel.ts",
     "../../../../../../front_end/core/sdk/DOMDebuggerModel.ts",
     "../../../../../../front_end/core/sdk/DOMModel.ts",
+    "../../../../../../front_end/core/sdk/DOMStorageModel.ts",
     "../../../../../../front_end/core/sdk/DebuggerModel.ts",
     "../../../../../../front_end/core/sdk/EmulationModel.ts",
     "../../../../../../front_end/core/sdk/EnhancedTracesParser.ts",

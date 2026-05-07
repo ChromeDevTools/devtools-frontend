@@ -4239,7 +4239,7 @@ UI9.Toolbar.registerToolbarItem({
   order: 101,
   location: "main-toolbar-right"
 });
-Common7.AppProvider.registerAppProvider({
+UI9.AppProvider.registerAppProvider({
   async loadAppProvider() {
     const Main = await loadMainModule();
     return Main.SimpleApp.SimpleAppProvider.instance();

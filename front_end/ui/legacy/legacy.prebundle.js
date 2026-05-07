@@ -3,6 +3,8 @@
 // found in the LICENSE file.
 import * as ActionRegistration from './ActionRegistration.js';
 import * as ActionRegistry from './ActionRegistry.js';
+import * as App from './App.js';
+import * as AppProvider from './AppProvider.js';
 import * as ARIAUtils from './ARIAUtils.js';
 import * as Context from './Context.js';
 import * as ContextFlavorListener from './ContextFlavorListener.js';
@@ -44,10 +46,11 @@ import * as TextPrompt from './TextPrompt.js';
 import * as Toolbar from './Toolbar.js';
 import * as Tooltip from './Tooltip.js';
 import * as TreeOutline from './Treeoutline.js';
+import * as UIUserMetrics from './UIUserMetrics.js';
 import * as UIUtils from './UIUtils.js';
 import * as View from './View.js';
 import * as ViewManager from './ViewManager.js';
 import * as Widget from './Widget.js';
 import * as ZoomManager from './ZoomManager.js';
-export { ActionRegistration, ActionRegistry, ARIAUtils, Context, ContextFlavorListener, ContextMenu, Dialog, DockController, DOMUtilities, DropTarget, EmptyWidget, FilterBar, FilterSuggestionBuilder, ForwardedInputEventHandler, GlassPane, Infobar, InplaceEditor, inspectorCommonStyles, InspectorView, KeyboardShortcut, LinkContextMenuProvider, ListControl, ListModel, ListWidget, Panel, PopoverHelper, ProgressIndicator, RemoteDebuggingTerminatedScreen, ReportView, ResizerWidget, RootView, SearchableView, ShortcutRegistry, SoftContextMenu, SoftDropDown, SplitWidget, SuggestBox, TabbedPane, TargetCrashedScreen, TextPrompt, Toolbar, Tooltip, TreeOutline, UIUtils, View, ViewManager, Widget, ZoomManager };
+export { ActionRegistration, ActionRegistry, App, AppProvider, ARIAUtils, Context, ContextFlavorListener, ContextMenu, Dialog, DockController, DOMUtilities, DropTarget, EmptyWidget, FilterBar, FilterSuggestionBuilder, ForwardedInputEventHandler, GlassPane, Infobar, InplaceEditor, inspectorCommonStyles, InspectorView, KeyboardShortcut, LinkContextMenuProvider, ListControl, ListModel, ListWidget, Panel, PopoverHelper, ProgressIndicator, RemoteDebuggingTerminatedScreen, ReportView, ResizerWidget, RootView, SearchableView, ShortcutRegistry, SoftContextMenu, SoftDropDown, SplitWidget, SuggestBox, TabbedPane, TargetCrashedScreen, TextPrompt, Toolbar, Tooltip, TreeOutline, UIUserMetrics, UIUtils, View, ViewManager, Widget, ZoomManager };
 //# sourceMappingURL=legacy.prebundle.js.map

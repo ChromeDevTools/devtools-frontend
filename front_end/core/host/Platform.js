@@ -34,13 +34,6 @@ export function setPlatformForTests(platform) {
     _isMac = undefined;
     _isWin = undefined;
 }
-let _isCustomDevtoolsFrontend;
-export function isCustomDevtoolsFrontend() {
-    if (typeof _isCustomDevtoolsFrontend === 'undefined') {
-        _isCustomDevtoolsFrontend = window.location.toString().startsWith('devtools://devtools/custom/');
-    }
-    return _isCustomDevtoolsFrontend;
-}
 let _fontFamily;
 export function fontFamily() {
     if (_fontFamily) {

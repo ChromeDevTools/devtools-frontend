@@ -113,7 +113,6 @@ style.setProperty('--image-file-credit-card', 'url(\"' + new URL(new URL('credit
 style.setProperty('--image-file-cross-circle-filled', 'url(\"' + new URL(new URL('cross-circle-filled.svg', import.meta.url).href).toString() + '\")');
 style.setProperty('--image-file-cross-circle', 'url(\"' + new URL(new URL('cross-circle.svg', import.meta.url).href).toString() + '\")');
 style.setProperty('--image-file-cross', 'url(\"' + new URL(new URL('cross.svg', import.meta.url).href).toString() + '\")');
-style.setProperty('--image-file-custom-typography', 'url(\"' + new URL(new URL('custom-typography.svg', import.meta.url).href).toString() + '\")');
 style.setProperty('--image-file-database-off', 'url(\"' + new URL(new URL('database-off.svg', import.meta.url).href).toString() + '\")');
 style.setProperty('--image-file-database', 'url(\"' + new URL(new URL('database.svg', import.meta.url).href).toString() + '\")');
 style.setProperty('--image-file-deployed', 'url(\"' + new URL(new URL('deployed.svg', import.meta.url).href).toString() + '\")');

@@ -7003,7 +7003,7 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
   wasShown() {
     super.wasShown();
     UI8.Context.Context.instance().setFlavor(_TimelinePanel, this);
-    Host2.userMetrics.panelLoaded("timeline", "DevTools.Launch.Timeline");
+    UI8.UIUserMetrics.UIUserMetrics.instance().panelLoaded("timeline", "DevTools.Launch.Timeline");
     const cruxManager = CrUXManager3.CrUXManager.instance();
     cruxManager.addEventListener("field-data-changed", this.#onFieldDataChanged, this);
     this.#onFieldDataChanged();
@@ -8469,7 +8469,7 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
         const measure = performance.measure("TraceLoad", { start, end });
         const duration = Trace22.Types.Timing.Milli(measure.duration);
         this.element.dispatchEvent(new TraceLoadEvent(duration));
-        Host2.userMetrics.performanceTraceLoad(measure);
+        UI8.UIUserMetrics.UIUserMetrics.instance().performanceTraceLoad(measure);
       }, 0);
     });
   }

@@ -47,9 +47,6 @@
     "../../../../../../../../front_end/ui/legacy/components/inline_editor/CSSShadowEditor.ts",
     "../../../../../../../../front_end/ui/legacy/components/inline_editor/ColorMixSwatch.ts",
     "../../../../../../../../front_end/ui/legacy/components/inline_editor/ColorSwatch.ts",
-    "../../../../../../../../front_end/ui/legacy/components/inline_editor/FontEditor.ts",
-    "../../../../../../../../front_end/ui/legacy/components/inline_editor/FontEditorUnitConverter.ts",
-    "../../../../../../../../front_end/ui/legacy/components/inline_editor/FontEditorUtils.ts",
     "../../../../../../../../front_end/ui/legacy/components/inline_editor/InlineEditorUtils.ts",
     "../../../../../../../../front_end/ui/legacy/components/inline_editor/LinkSwatch.ts",
     "../../../../../../../../front_end/ui/legacy/components/inline_editor/SwatchPopoverHelper.ts",
@@ -69,9 +66,6 @@
       "path": "../../../../core/platform/bundle-tsconfig.json"
     },
     {
-      "path": "../../../../core/sdk/bundle-tsconfig.json"
-    },
-    {
       "path": "../../../../models/bindings/bundle-tsconfig.json"
     },
     {
@@ -79,9 +73,6 @@
     },
     {
       "path": "../../../../models/text_utils/bundle-tsconfig.json"
-    },
-    {
-      "path": "../../../../panels/css_overview/bundle-tsconfig.json"
     },
     {
       "path": "../../../../third_party/codemirror.next/bundle-tsconfig.json"

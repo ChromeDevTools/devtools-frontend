@@ -36,7 +36,9 @@ export declare class AiCodeCompletion {
         fromCache: boolean;
     }>;
     remove(): void;
+    static isAiCodeCompletionAvailable(): boolean;
     static isAiCodeCompletionEnabled(locale: string): boolean;
+    static isAiCodeCompletionStylesAvailable(): boolean;
     static isAiCodeCompletionStylesEnabled(locale: string): boolean;
 }
 export declare const enum ContextFlavor {

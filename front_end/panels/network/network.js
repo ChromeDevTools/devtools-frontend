@@ -13631,7 +13631,7 @@ var NetworkPanel = class _NetworkPanel extends UI26.Panel.Panel {
   wasShown() {
     super.wasShown();
     UI26.Context.Context.instance().setFlavor(_NetworkPanel, this);
-    Host11.userMetrics.panelLoaded("network", "DevTools.Launch.Network");
+    UI26.UIUserMetrics.UIUserMetrics.instance().panelLoaded("network", "DevTools.Launch.Network");
     if (Annotations2.AnnotationRepository.annotationsEnabled()) {
       void PanelCommon.AnnotationManager.instance().resolveAnnotationsOfType(Annotations2.AnnotationType.NETWORK_REQUEST);
     }

@@ -46,9 +46,6 @@
     },
     {
       "path": "./inline_editor-tsconfig.json"
-    },
-    {
-      "path": "../../../../core/sdk/bundle-tsconfig.json"
     }
   ]
 }

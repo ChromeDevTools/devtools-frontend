@@ -541,7 +541,7 @@ export class NetworkPanel extends UI.Panel.Panel {
         super.wasShown();
         UI.Context.Context.instance().setFlavor(NetworkPanel, this);
         // Record the network tool load time after the panel has loaded.
-        Host.userMetrics.panelLoaded('network', 'DevTools.Launch.Network');
+        UI.UIUserMetrics.UIUserMetrics.instance().panelLoaded('network', 'DevTools.Launch.Network');
         if (Annotations.AnnotationRepository.annotationsEnabled()) {
             void PanelCommon.AnnotationManager.instance().resolveAnnotationsOfType(Annotations.AnnotationType.NETWORK_REQUEST);
         }

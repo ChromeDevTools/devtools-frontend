@@ -204,15 +204,6 @@ export declare class ShadowRenderer extends ShadowRenderer_base {
     shadowModel(shadow: CodeMirror.SyntaxNode[], shadowType: SDK.CSSPropertyParserMatchers.ShadowType, context: RenderingContext): null | ShadowModel;
     render(match: SDK.CSSPropertyParserMatchers.ShadowMatch, context: RenderingContext): Node[];
 }
-declare const FontRenderer_base: abstract new () => {
-    readonly matchType: Platform.Constructor.Constructor<SDK.CSSPropertyParserMatchers.FontMatch, any[]>;
-    render(_match: SDK.CSSPropertyParserMatchers.FontMatch, _context: RenderingContext): Node[];
-};
-export declare class FontRenderer extends FontRenderer_base {
-    readonly treeElement: StylePropertyTreeElement;
-    constructor(treeElement: StylePropertyTreeElement);
-    render(match: SDK.CSSPropertyParserMatchers.FontMatch, context: RenderingContext): Node[];
-}
 declare const GridTemplateRenderer_base: abstract new () => {
     readonly matchType: Platform.Constructor.Constructor<SDK.CSSPropertyParserMatchers.GridTemplateMatch, any[]>;
     render(_match: SDK.CSSPropertyParserMatchers.GridTemplateMatch, _context: RenderingContext): Node[];

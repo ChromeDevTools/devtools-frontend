@@ -48,6 +48,11 @@ core/platform/StringUtilities.test.js
 core/platform/TypedArrayUtilities.test.js
 core/protocol_client/InspectorBackend.test.js
 core/root/Runtime.test.js
+core/sdk/AccessibilityModel.test.js
+core/sdk/AnimationModel.test.js
+core/sdk/AutofillModel.test.js
+core/sdk/CPUThrottlingManager.test.js
+core/sdk/CSSContainerQuery.test.js
 core/sdk/DebuggerModel.test.js
 core/sdk/NetworkManager.test.js
 core/sdk/PageResourceLoader.test.js
@@ -96,3 +101,7 @@ models/stack_trace/StackTrace.test.js
 models/stack_trace/StackTraceImpl.test.js
 models/stack_trace/StackTraceModel.test.js
 models/stack_trace/Trie.test.js
+models/workspace/IgnoreListManager.test.js
+models/workspace/SearchConfig.test.js
+models/workspace/UISourceCode.test.js
+models/workspace/WorkspaceImpl.test.js

@@ -1037,9 +1037,6 @@ var CookieIssue = class _CookieIssue extends Issue {
     if (code.includes("SameSite") || code.includes("Downgrade")) {
       return "SameSiteCookie";
     }
-    if (code.includes("ThirdPartyPhaseout")) {
-      return "ThirdPartyPhaseoutCookie";
-    }
     return "GenericCookie";
   }
   static isThirdPartyCookiePhaseoutRelatedIssue(issue) {
@@ -4864,8 +4861,6 @@ var RelatedIssue_exports = {};
 __export(RelatedIssue_exports, {
   hasIssueOfCategory: () => hasIssueOfCategory,
   hasIssues: () => hasIssues,
-  hasThirdPartyPhaseoutCookieIssue: () => hasThirdPartyPhaseoutCookieIssue,
-  hasThirdPartyPhaseoutCookieIssueForDomain: () => hasThirdPartyPhaseoutCookieIssueForDomain,
   issuesAssociatedWith: () => issuesAssociatedWith,
   reveal: () => reveal
 });
@@ -4907,21 +4902,6 @@ function hasIssues(obj) {
 function hasIssueOfCategory(obj, category) {
   const issues = Array.from(IssuesManager.instance().issues());
   return issuesAssociatedWith(issues, obj).some((issue) => issue.getCategory() === category);
-}
-function hasThirdPartyPhaseoutCookieIssue(obj) {
-  const issues = Array.from(IssuesManager.instance().issues());
-  return issuesAssociatedWith(issues, obj).some(
-    (issue) => CookieIssue.getSubCategory(issue.code()) === "ThirdPartyPhaseoutCookie"
-    /* CookieIssueSubCategory.THIRD_PARTY_PHASEOUT_COOKIE */
-  );
-}
-function hasThirdPartyPhaseoutCookieIssueForDomain(domain) {
-  const issues = Array.from(IssuesManager.instance().issues());
-  const issuesForDomain = issues.filter((issue) => Array.from(issue.cookies()).some((cookie) => cookie.domain === domain));
-  return issuesForDomain.some(
-    (issue) => CookieIssue.getSubCategory(issue.code()) === "ThirdPartyPhaseoutCookie"
-    /* CookieIssueSubCategory.THIRD_PARTY_PHASEOUT_COOKIE */
-  );
 }
 async function reveal(obj, category) {
   if (typeof obj === "string") {

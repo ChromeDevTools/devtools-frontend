@@ -29,6 +29,7 @@
  */
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import * as SDK from '../../core/sdk/sdk.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -80,10 +81,10 @@ export class DOMStorageItemsView extends KeyValueStorageItemsView {
             this.toolbar?.setStorageKey(domStorage.storageKey);
         }
         this.eventListeners = [
-            this.domStorage.addEventListener("DOMStorageItemsCleared" /* DOMStorage.Events.DOM_STORAGE_ITEMS_CLEARED */, this.domStorageItemsCleared, this),
-            this.domStorage.addEventListener("DOMStorageItemRemoved" /* DOMStorage.Events.DOM_STORAGE_ITEM_REMOVED */, this.domStorageItemRemoved, this),
-            this.domStorage.addEventListener("DOMStorageItemAdded" /* DOMStorage.Events.DOM_STORAGE_ITEM_ADDED */, this.domStorageItemAdded, this),
-            this.domStorage.addEventListener("DOMStorageItemUpdated" /* DOMStorage.Events.DOM_STORAGE_ITEM_UPDATED */, this.domStorageItemUpdated, this),
+            this.domStorage.addEventListener("DOMStorageItemsCleared" /* SDK.DOMStorageModel.DOMStorage.Events.DOM_STORAGE_ITEMS_CLEARED */, this.domStorageItemsCleared, this),
+            this.domStorage.addEventListener("DOMStorageItemRemoved" /* SDK.DOMStorageModel.DOMStorage.Events.DOM_STORAGE_ITEM_REMOVED */, this.domStorageItemRemoved, this),
+            this.domStorage.addEventListener("DOMStorageItemAdded" /* SDK.DOMStorageModel.DOMStorage.Events.DOM_STORAGE_ITEM_ADDED */, this.domStorageItemAdded, this),
+            this.domStorage.addEventListener("DOMStorageItemUpdated" /* SDK.DOMStorageModel.DOMStorage.Events.DOM_STORAGE_ITEM_UPDATED */, this.domStorageItemUpdated, this),
         ];
         this.refreshItems();
     }

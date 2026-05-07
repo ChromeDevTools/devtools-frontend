@@ -204,9 +204,6 @@ export class CookieIssue extends Issue {
         if (code.includes('SameSite') || code.includes('Downgrade')) {
             return "SameSiteCookie" /* CookieIssueSubCategory.SAME_SITE_COOKIE */;
         }
-        if (code.includes('ThirdPartyPhaseout')) {
-            return "ThirdPartyPhaseoutCookie" /* CookieIssueSubCategory.THIRD_PARTY_PHASEOUT_COOKIE */;
-        }
         return "GenericCookie" /* CookieIssueSubCategory.GENERIC_COOKIE */;
     }
     static isThirdPartyCookiePhaseoutRelatedIssue(issue) {

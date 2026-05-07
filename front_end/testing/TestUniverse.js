@@ -28,7 +28,7 @@ export class TestUniverse {
     /**
      * Convenience shortcut for `createTarget({targetManager: testUniverse.targetManager})`
      */
-    createTarget(options) {
+    createTarget(options = {}) {
         return createTarget({ ...options, targetManager: this.targetManager });
     }
     get console() {

@@ -6,7 +6,6 @@ import * as UI from '../../ui/legacy/legacy.js';
 import { ApplicationPanelSidebar } from './ApplicationPanelSidebar.js';
 import type { StorageMetadataView } from './components/components.js';
 import type { DeviceBoundSessionsModel } from './DeviceBoundSessionsModel.js';
-import type { DOMStorage } from './DOMStorageModel.js';
 import type { ExtensionStorage } from './ExtensionStorageModel.js';
 import type * as PreloadingHelper from './preloading/helper/helper.js';
 export declare class ResourcesPanel extends UI.Panel.PanelWithSidebar {
@@ -36,7 +35,7 @@ export declare class ResourcesPanel extends UI.Panel.PanelWithSidebar {
     showView(view: UI.Widget.AnyWidget | null): void;
     scheduleShowView(viewPromise: Promise<UI.Widget.AnyWidget>): Promise<UI.Widget.AnyWidget | null>;
     showCategoryView(categoryName: string, categoryHeadline: string, categoryDescription: string, categoryLink: Platform.DevToolsPath.UrlString | null): void;
-    showDOMStorage(domStorage: DOMStorage): void;
+    showDOMStorage(domStorage: SDK.DOMStorageModel.DOMStorage): void;
     showExtensionStorage(extensionStorage: ExtensionStorage): void;
     showCookies(cookieFrameTarget: SDK.Target.Target, cookieDomain: string): void;
     clearCookies(target: SDK.Target.Target, cookieDomain: string): void;

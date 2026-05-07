@@ -6,8 +6,7 @@ import { type MarkdownIssueDescription } from './MarkdownIssueDescription.js';
 /** The enum string values need to match the IssueExpanded enum values in UserMetrics.ts. **/
 export declare const enum CookieIssueSubCategory {
     GENERIC_COOKIE = "GenericCookie",
-    SAME_SITE_COOKIE = "SameSiteCookie",
-    THIRD_PARTY_PHASEOUT_COOKIE = "ThirdPartyPhaseoutCookie"
+    SAME_SITE_COOKIE = "SameSiteCookie"
 }
 /** Enum to show cookie status from the security panel's third-party cookie report tool **/
 export declare const enum CookieStatus {

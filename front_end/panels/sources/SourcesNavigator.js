@@ -109,7 +109,7 @@ export class NetworkNavigatorView extends NavigatorView {
         this.registerRequiredCSS(sourcesNavigatorStyles);
         SDK.TargetManager.TargetManager.instance().addEventListener("InspectedURLChanged" /* SDK.TargetManager.Events.INSPECTED_URL_CHANGED */, this.inspectedURLChanged, this);
         // Record the sources tool load time after the file navigator has loaded.
-        Host.userMetrics.panelLoaded('sources', 'DevTools.Launch.Sources');
+        UI.UIUserMetrics.UIUserMetrics.instance().panelLoaded('sources', 'DevTools.Launch.Sources');
         SDK.TargetManager.TargetManager.instance().addScopeChangeListener(this.onScopeChange.bind(this));
     }
     static instance(opts = { forceNew: null }) {

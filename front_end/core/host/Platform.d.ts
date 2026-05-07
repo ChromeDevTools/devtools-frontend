@@ -7,5 +7,4 @@ export declare function isWin(): boolean;
  * We circumvent this by adding 'setPlatformForTests'.
  **/
 export declare function setPlatformForTests(platform: string): void;
-export declare function isCustomDevtoolsFrontend(): boolean;
 export declare function fontFamily(): string;

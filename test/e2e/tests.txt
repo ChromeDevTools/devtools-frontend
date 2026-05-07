@@ -96,7 +96,6 @@ extensions/debugger-language-plugins.test.js
 host/out-of-process.test.js
 host/user-metrics.test.js
 inline_editor/color-swatch.test.js
-inline_editor/font-editor.test.js
 inspector/drawer.test.js
 issues/bounce-tracking-issues.test.js
 issues/client-hint-issues.test.js
@@ -187,6 +186,7 @@ sources/color-swatch.test.js
 sources/continue-to-location-markers.test.js
 sources/debug-raw-wasm.test.js
 sources/debugger-sidebar.test.js
+sources/dom-breakpoints.test.js
 sources/eval.test.js
 sources/header-overrides.test.js
 sources/icon-row-bucket.test.js

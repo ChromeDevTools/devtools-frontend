@@ -13,7 +13,6 @@ import * as DeviceBoundSessionsModel from './DeviceBoundSessionsModel.js';
 import * as DeviceBoundSessionsTreeElement from './DeviceBoundSessionsTreeElement.js';
 import * as DeviceBoundSessionsView from './DeviceBoundSessionsView.js';
 import * as DOMStorageItemsView from './DOMStorageItemsView.js';
-import * as DOMStorageModel from './DOMStorageModel.js';
 import * as ExtensionStorageItemsView from './ExtensionStorageItemsView.js';
 import * as ExtensionStorageModel from './ExtensionStorageModel.js';
 import * as FrameDetailsView from './FrameDetailsView.js';
@@ -58,7 +57,6 @@ export {
   DeviceBoundSessionsTreeElement,
   DeviceBoundSessionsView,
   DOMStorageItemsView,
-  DOMStorageModel,
   ExtensionStorageItemsView,
   ExtensionStorageModel,
   FrameDetailsView,

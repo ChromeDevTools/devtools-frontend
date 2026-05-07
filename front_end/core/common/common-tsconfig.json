@@ -35,8 +35,6 @@
     "useUnknownInCatchVariables": false
   },
   "files": [
-    "../../../../../../front_end/core/common/App.ts",
-    "../../../../../../front_end/core/common/AppProvider.ts",
     "../../../../../../front_end/core/common/Base64.ts",
     "../../../../../../front_end/core/common/CharacterIdMap.ts",
     "../../../../../../front_end/core/common/Color.ts",

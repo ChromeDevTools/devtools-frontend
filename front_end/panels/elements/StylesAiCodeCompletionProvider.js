@@ -17,9 +17,8 @@ export class StylesAiCodeCompletionProvider {
     setAiAutoCompletion;
     #boundOnUpdateAiCodeCompletionState = this.#updateAiCodeCompletionState.bind(this);
     constructor(aiCodeCompletionConfig) {
-        const devtoolsLocale = i18n.DevToolsLocale.DevToolsLocale.instance();
-        if (!AiCodeCompletion.AiCodeCompletion.AiCodeCompletion.isAiCodeCompletionStylesEnabled(devtoolsLocale.locale)) {
-            throw new Error('AI code completion feature in Styles is not enabled.');
+        if (!AiCodeCompletion.AiCodeCompletion.AiCodeCompletion.isAiCodeCompletionStylesAvailable()) {
+            throw new Error('AI code completion feature in Styles is not available.');
         }
         this.#aiCodeCompletionConfig = aiCodeCompletionConfig;
         Host.AidaClient.HostConfigTracker.instance().addEventListener("aidaAvailabilityChanged" /* Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED */, this.#boundOnUpdateAiCodeCompletionState);
@@ -59,7 +58,9 @@ export class StylesAiCodeCompletionProvider {
     async #updateAiCodeCompletionState() {
         const aidaAvailability = await Host.AidaClient.AidaClient.checkAccessPreconditions();
         const isAvailable = aidaAvailability === "available" /* Host.AidaClient.AidaAccessPreconditions.AVAILABLE */;
-        const isEnabled = this.#aiCodeCompletionSetting.get();
+        const devtoolsLocale = i18n.DevToolsLocale.DevToolsLocale.instance().locale;
+        const isEnabled = AiCodeCompletion.AiCodeCompletion.AiCodeCompletion.isAiCodeCompletionStylesEnabled(devtoolsLocale) &&
+            this.#aiCodeCompletionSetting.get();
         if (isAvailable && isEnabled) {
             this.#setupAiCodeCompletion();
         }

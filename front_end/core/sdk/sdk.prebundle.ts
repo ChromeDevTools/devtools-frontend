@@ -44,6 +44,7 @@ import * as CSSSupports from './CSSSupports.js';
 import * as DebuggerModel from './DebuggerModel.js';
 import * as DOMDebuggerModel from './DOMDebuggerModel.js';
 import * as DOMModel from './DOMModel.js';
+import * as DOMStorageModel from './DOMStorageModel.js';
 import * as EmulationModel from './EmulationModel.js';
 import * as EnhancedTracesParser from './EnhancedTracesParser.js';
 import * as EventBreakpointsModel from './EventBreakpointsModel.js';
@@ -128,6 +129,7 @@ export {
   DebuggerModel,
   DOMDebuggerModel,
   DOMModel,
+  DOMStorageModel,
   EmulationModel,
   EnhancedTracesParser,
   EventBreakpointsModel,

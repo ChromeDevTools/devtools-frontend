@@ -715,7 +715,6 @@ var HeapProfilerPanel_exports = {};
 __export(HeapProfilerPanel_exports, {
   HeapProfilerPanel: () => HeapProfilerPanel
 });
-import * as Host3 from "./../../core/host/host.js";
 import * as i18n27 from "./../../core/i18n/i18n.js";
 import * as UI15 from "./../../ui/legacy/legacy.js";
 
@@ -8932,7 +8931,7 @@ var HeapProfilerPanel = class _HeapProfilerPanel extends ProfilesPanel {
   wasShown() {
     super.wasShown();
     UI15.Context.Context.instance().setFlavor(_HeapProfilerPanel, this);
-    Host3.userMetrics.panelLoaded("heap-profiler", "DevTools.Launch.HeapProfiler");
+    UI15.UIUserMetrics.UIUserMetrics.instance().panelLoaded("heap-profiler", "DevTools.Launch.HeapProfiler");
   }
   willHide() {
     UI15.Context.Context.instance().setFlavor(_HeapProfilerPanel, null);

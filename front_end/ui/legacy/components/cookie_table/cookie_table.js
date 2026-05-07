@@ -538,13 +538,7 @@ var CookiesTable = class extends UI.Widget.VBox {
       data.icons = data.icons || {};
       if (!(attribute in data.icons)) {
         data.icons[attribute] = new Icon();
-        if (attribute === "name" && IssuesManager.RelatedIssue.hasThirdPartyPhaseoutCookieIssue(cookie)) {
-          data.icons[attribute].name = "warning-filled";
-          data.icons[attribute].onclick = () => IssuesManager.RelatedIssue.reveal(cookie);
-          data.icons[attribute].style.cursor = "pointer";
-        } else {
-          data.icons[attribute].name = "info";
-        }
+        data.icons[attribute].name = "info";
         data.icons[attribute].classList.add("small");
         data.icons[attribute].title = blockedReason.uiString;
       } else if (data.icons[attribute]) {

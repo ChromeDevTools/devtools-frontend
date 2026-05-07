@@ -71,6 +71,7 @@
     "../../../../../front_end/testing/OverridesHelpers.ts",
     "../../../../../front_end/testing/PersistenceHelpers.ts",
     "../../../../../front_end/testing/PropertyParser.ts",
+    "../../../../../front_end/testing/ResourceHelpers.ts",
     "../../../../../front_end/testing/ResourceTreeHelpers.ts",
     "../../../../../front_end/testing/RuntimeHelpers.ts",
     "../../../../../front_end/testing/SettingsHelpers.ts",

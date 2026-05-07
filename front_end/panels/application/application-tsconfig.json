@@ -45,7 +45,6 @@
     "../../../../../../front_end/panels/application/CookieItemsView.ts",
     "../../../../../../front_end/panels/application/CrashReportContextView.ts",
     "../../../../../../front_end/panels/application/DOMStorageItemsView.ts",
-    "../../../../../../front_end/panels/application/DOMStorageModel.ts",
     "../../../../../../front_end/panels/application/DeviceBoundSessionsModel.ts",
     "../../../../../../front_end/panels/application/DeviceBoundSessionsTreeElement.ts",
     "../../../../../../front_end/panels/application/DeviceBoundSessionsView.ts",

@@ -115,9 +115,14 @@ function isFileAgentFeatureAvailable(config?: Root.Runtime.HostConfig): boolean 
   return (config?.aidaAvailability?.enabled && (config?.devToolsAiAssistanceFileAgent?.enabled)) === true;
 }
 
+function isStorageAgentFeatureAvailable(config?: Root.Runtime.HostConfig): boolean {
+  return (config?.aidaAvailability?.enabled && (config?.devToolsAiAssistanceStorageAgent?.enabled)) === true;
+}
+
 function isAnyFeatureAvailable(config?: Root.Runtime.HostConfig): boolean {
   return isStylingAgentFeatureAvailable(config) || isNetworkAgentFeatureAvailable(config) ||
-      isPerformanceAgentFeatureAvailable(config) || isFileAgentFeatureAvailable(config);
+      isPerformanceAgentFeatureAvailable(config) || isFileAgentFeatureAvailable(config) ||
+      isStorageAgentFeatureAvailable(config);
 }
 
 UI.ViewManager.registerViewExtension({

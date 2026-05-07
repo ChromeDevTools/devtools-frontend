@@ -133,6 +133,8 @@ export enum ClientFeature {
   CHROME_ACCESSIBILITY_AGENT = 26,
   // Chrome AI Assistance Conversation Summary Agent.
   CHROME_CONVERSATION_SUMMARY_AGENT = 27,
+  // Chrome AI Assistance Storage Agent.
+  CHROME_STORAGE_AGENT = 28,
 }
 
 export enum UserTier {

@@ -333,7 +333,7 @@ describe('Tooltip', () => {
     });
   });
 
-  it('should print a warning if rich tooltip is used with wrong aria label on anchor', () => {
+  it('should print a warning if rich tooltip is defined without aria-details', () => {
     const consoleSpy = sinon.stub(console, 'warn');
     renderTooltip({variant: 'rich'});
     sinon.assert.calledOnce(consoleSpy);

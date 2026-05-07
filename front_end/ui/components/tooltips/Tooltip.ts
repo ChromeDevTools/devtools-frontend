@@ -627,9 +627,9 @@ export class Tooltip extends HTMLElement {
         throw new Error('Anchor must be an HTMLElement.');
       }
       this.#anchor = anchor;
-      if (this.variant === 'rich' && describedbyAnchor) {
-        console.warn(`The anchor for tooltip ${
-            id} was defined with "aria-describedby". For rich tooltips "aria-details" is more appropriate.`);
+      if (this.variant === 'rich' && !detailsAnchor) {
+        console.warn(
+            `"aria-details" was not defined for tooltip ${id}. For rich tooltips "aria-details" should be defined.`);
       }
     }
 

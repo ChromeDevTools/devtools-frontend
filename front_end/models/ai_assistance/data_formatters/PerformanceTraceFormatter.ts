@@ -902,6 +902,29 @@ The order of headers corresponds to an internal fixed list. If a header is not p
   }
 
   /**
+   * Formats only the first line of the function code to save space in summaries.
+   * The agent can use this information (url, line, column) to get the whole function source.
+   */
+  #formatFunctionCodeSummary(code: SourceMapScopes.FunctionCodeResolver.FunctionCode): string {
+    this.#formattedFunctionCodes.add(this.#functionCodeToKey(code));
+
+    const {startLine, startColumn} = code.range;
+    const name = code.functionBounds.name || '(anonymous)';
+    const url = code.functionBounds.uiSourceCode.url();
+
+    const lines = code.code.split('\n');
+    const firstLine = lines[0] || '';
+
+    const parts = [];
+    parts.push(`${name} @ ${url}:${startLine}:${startColumn}`);
+    parts.push('```');
+    parts.push(firstLine);
+    parts.push('```');
+
+    return parts.join('\n');
+  }
+
+  /**
    * Appends the code of each call frame's function, but only if the function was not
    * serialized previously.
    */
@@ -917,7 +940,7 @@ The order of headers corresponds to an internal fixed list. If a header is not p
             resolveFunctionCode(frame.url as Platform.DevToolsPath.UrlString, frame.lineNumber, frame.columnNumber)));
     for (const code of functionCodes) {
       if (code && !this.#hasFormattedFunctionCode(code)) {
-        functionCodeStrings.push(this.#formatFunctionCode(code));
+        functionCodeStrings.push(this.#formatFunctionCodeSummary(code));
       }
     }
 
@@ -927,8 +950,8 @@ The order of headers corresponds to an internal fixed list. If a header is not p
 
     return '\n' + [
       this.#getFormattedFunctionCodeExplainer(),
-      functionCodeStrings.length > 1 ? `Here are ${functionCodeStrings.length} relevant functions:` :
-                                       `Here is a relevant function:`,
+      functionCodeStrings.length > 1 ? `Here is the first line of ${functionCodeStrings.length} relevant functions:` :
+                                       `Here is the first line of a relevant function:`,
       ...functionCodeStrings,
     ].join('\n\n');
   }

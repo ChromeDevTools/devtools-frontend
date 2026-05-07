@@ -332,33 +332,21 @@ IMPORTANT: Never show eventKey to the user.
 
 The following are markdown block(s) of code that ran in the page, each representing a separate function. <FUNCTION_START> and <FUNCTION_END> marks the exact function declaration, and everything outside that is provided for additional context. Comments at the end of each line indicate the runtime performance cost of that code. Do not show the user the function markers or the additional context.
 
-Here are 3 relevant functions:
+Here is the first line of 3 relevant functions:
 
-(anonymous) @ https://s.yimg.com/aaq/prebid/prebid-2.0.js:12:53984. With added context, chunk is from 9:0 to 18:0
+(anonymous) @ https://s.yimg.com/aaq/prebid/prebid-2.0.js:12:53984
 ```
-// context ...
-
 () => { /* some code from https://s.yimg.com/aaq/prebid/prebid-2.0.js... */ }
-
-// context ...
 ```
 
-(anonymous) @ https://s.yimg.com/aaq/f10d509c/d1irmdsmbztlvx.js:0:43042. With added context, chunk is from 0:0 to 6:0
+(anonymous) @ https://s.yimg.com/aaq/f10d509c/d1irmdsmbztlvx.js:0:43042
 ```
-// context ...
-
 () => { /* some code from https://s.yimg.com/aaq/f10d509c/d1irmdsmbztlvx.js... */ }
-
-// context ...
 ```
 
-(anonymous) @ https://s.yimg.com/aaq/prebid/prebid-2.0.js:12:15854. With added context, chunk is from 9:0 to 18:0
+(anonymous) @ https://s.yimg.com/aaq/prebid/prebid-2.0.js:12:15854
 ```
-// context ...
-
 () => { /* some code from https://s.yimg.com/aaq/prebid/prebid-2.0.js... */ }
-
-// context ...
 ```
 
 # Bottom-up main thread summary
@@ -1019,42 +1007,26 @@ IMPORTANT: Never show eventKey to the user.
 
 The following are markdown block(s) of code that ran in the page, each representing a separate function. <FUNCTION_START> and <FUNCTION_END> marks the exact function declaration, and everything outside that is provided for additional context. Comments at the end of each line indicate the runtime performance cost of that code. Do not show the user the function markers or the additional context.
 
-Here are 4 relevant functions:
+Here is the first line of 4 relevant functions:
 
-(anonymous) @ https://www.gstatic.com/firebasejs/6.6.1/firebase-auth.js:0:0. With added context, chunk is from 0:0 to 6:0
+(anonymous) @ https://www.gstatic.com/firebasejs/6.6.1/firebase-auth.js:0:0
 ```
-// context ...
-
 () => { /* some code from https://www.gstatic.com/firebasejs/6.6.1/firebase-auth.js... */ }
-
-// context ...
 ```
 
-(anonymous) @ https://www.gstatic.com/firebasejs/6.6.1/firebase-auth.js:0:231. With added context, chunk is from 0:0 to 6:0
+(anonymous) @ https://www.gstatic.com/firebasejs/6.6.1/firebase-auth.js:0:231
 ```
-// context ...
-
 () => { /* some code from https://www.gstatic.com/firebasejs/6.6.1/firebase-auth.js... */ }
-
-// context ...
 ```
 
-(anonymous) @ https://www.gstatic.com/firebasejs/6.6.1/firebase-auth.js:0:292. With added context, chunk is from 0:0 to 6:0
+(anonymous) @ https://www.gstatic.com/firebasejs/6.6.1/firebase-auth.js:0:292
 ```
-// context ...
-
 () => { /* some code from https://www.gstatic.com/firebasejs/6.6.1/firebase-auth.js... */ }
-
-// context ...
 ```
 
-(anonymous) @ https://www.gstatic.com/firebasejs/6.6.1/firebase-auth.js:0:155034. With added context, chunk is from 0:0 to 6:0
+(anonymous) @ https://www.gstatic.com/firebasejs/6.6.1/firebase-auth.js:0:155034
 ```
-// context ...
-
 () => { /* some code from https://www.gstatic.com/firebasejs/6.6.1/firebase-auth.js... */ }
-
-// context ...
 ```
 === end content
 

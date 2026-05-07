@@ -16,13 +16,28 @@ import * as Emulation from './emulation.js';
 
 function createFakeSetting<T>(defaultValue: T): Common.Settings.Setting<T> {
   let value = defaultValue;
+  const listeners: Array<{listener: (_: Common.EventTarget.EventTargetEvent<T>) => void, thisObject?: object}> = [];
   return {
     get: () => value,
     set: (v: T) => {
+      const isChanged = JSON.stringify(value) !== JSON.stringify(v);
       value = v;
+      if (isChanged) {
+        for (const {listener, thisObject} of listeners) {
+          listener.call(thisObject, {data: v} as Common.EventTarget.EventTargetEvent<T>);
+        }
+      }
     },
-    addChangeListener: () => {},
-    removeChangeListener: () => {},
+    addChangeListener: (listener: (_: Common.EventTarget.EventTargetEvent<T>) => void, thisObject?: object) => {
+      listeners.push({listener, thisObject});
+      return {listener, thisObject};
+    },
+    removeChangeListener: (listener: (_: Common.EventTarget.EventTargetEvent<T>) => void, thisObject?: object) => {
+      const index = listeners.findIndex(l => l.listener === listener && l.thisObject === thisObject);
+      if (index >= 0) {
+        listeners.splice(index, 1);
+      }
+    },
     setDisabled: () => {},
     setTitle: () => {},
     title: () => '',
@@ -81,6 +96,45 @@ describeWithMockConnection('DeviceModeToolbar', () => {
     return button;
   }
 
+  describe('UI updates on model changes', () => {
+    let renderSpy: sinon.SinonSpy;
+
+    beforeEach(() => {
+      renderSpy = sinon.spy(Emulation.DeviceModeToolbar.DeviceModeToolbar.prototype, 'update');
+      // Re-create toolbar so that it registers the spied update method.
+      toolbar = new Emulation.DeviceModeToolbar.DeviceModeToolbar(
+          deviceModeModel,
+          createFakeSetting(false),
+          createFakeSetting(false),
+      );
+      renderSpy.resetHistory();
+    });
+
+    afterEach(() => {
+      renderSpy.restore();
+    });
+
+    it('updates UI when scale changes', () => {
+      deviceModeModel.scaleSetting().set(1.5);
+      sinon.assert.called(renderSpy);
+    });
+
+    it('updates UI when User Agent changes', () => {
+      deviceModeModel.uaSetting().set(EmulationModel.DeviceModeModel.UA.DESKTOP);
+      sinon.assert.called(renderSpy);
+    });
+
+    it('updates UI when Device Pixel Ratio changes', () => {
+      deviceModeModel.deviceScaleFactorSetting().set(2);
+      sinon.assert.called(renderSpy);
+    });
+
+    it('updates UI on generic model update events', () => {
+      deviceModeModel.dispatchEventToListeners(EmulationModel.DeviceModeModel.Events.UPDATED);
+      sinon.assert.called(renderSpy);
+    });
+  });
+
   describe('screen orientation lock', () => {
     it('disables the rotate button when screen orientation is locked', () => {
       // Set up responsive mode so the rotate button is initially enabled.
@@ -98,17 +152,16 @@ describeWithMockConnection('DeviceModeToolbar', () => {
         orientation: {type: Protocol.Emulation.ScreenOrientationType.PortraitPrimary, angle: 0},
       });
       toolbar.update();
+      const updatedModeButton = findRotateButton();
 
-      assert.isTrue(modeButton.disabled, 'rotate button should be disabled when orientation is locked');
-      assert.include(modeButton.title, 'locked');
+      assert.isTrue(updatedModeButton.disabled, 'rotate button should be disabled when orientation is locked');
+      assert.include(updatedModeButton.title, 'locked');
     });
 
     it('re-enables the rotate button when screen orientation is unlocked', () => {
       // Set up responsive mode.
       deviceModeModel.emulate(EmulationModel.DeviceModeModel.Type.Responsive, null, null);
       toolbar.update();
-
-      const modeButton = findRotateButton();
 
       // Lock, then unlock orientation.
       const emulationModel = target.model(SDK.EmulationModel.EmulationModel);
@@ -118,10 +171,12 @@ describeWithMockConnection('DeviceModeToolbar', () => {
         orientation: {type: Protocol.Emulation.ScreenOrientationType.PortraitPrimary, angle: 0},
       });
       toolbar.update();
+      let modeButton = findRotateButton();
       assert.isTrue(modeButton.disabled, 'rotate button should be disabled when locked');
 
       emulationModel.screenOrientationLockChanged({locked: false});
       toolbar.update();
+      modeButton = findRotateButton();
 
       assert.isFalse(modeButton.disabled, 'rotate button should be re-enabled after unlock');
       assert.include(modeButton.title, 'Rotate');

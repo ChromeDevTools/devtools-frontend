@@ -248,6 +248,10 @@ export class DeviceModeToolbar {
         'emulation.device-mode-value', {device: '', orientation: '', mode: ''});
 
     this.model.toolbarControlsEnabledSetting().addChangeListener(this.update, this);
+    this.model.scaleSetting().addChangeListener(this.update, this);
+    this.model.uaSetting().addChangeListener(this.update, this);
+    this.model.deviceScaleFactorSetting().addChangeListener(this.update, this);
+    this.model.addEventListener(EmulationModel.DeviceModeModel.Events.UPDATED, this.update, this);
 
     this.update();
   }
@@ -449,11 +453,11 @@ export class DeviceModeToolbar {
 
       <div class="device-mode-empty-toolbar-element"></div>
       <devtools-button class="toolbar-button"
-                       .data=${{variant: Buttons.Button.Variant.TOOLBAR, iconName: 'screen-rotation'} as Buttons.Button.ButtonData}
+                       .data=${{variant: Buttons.Button.Variant.TOOLBAR, iconName: 'screen-rotation',
+                                disabled: modeButtonDisabled} as Buttons.Button.ButtonData}
                        jslog=${VisualLogging.action('screen-rotation').track({click: true})}
                        @click=${this.modeMenuClicked.bind(this)}
-                       .title=${modeButtonTitle}
-                       .disabled=${modeButtonDisabled}>
+                       .title=${modeButtonTitle}>
       </devtools-button>
 
       <!-- Show dual screen toolbar -->

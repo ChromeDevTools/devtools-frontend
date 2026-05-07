@@ -147,12 +147,17 @@ export class Tool {
         new SDK.DOMModel.DeferredDOMNode(target, this.#protocolTool.backendNodeId);
   }
 
-  async invoke(input: unknown): Promise<Protocol.WebMCP.InvokeToolResponse|undefined> {
-    return await this.#target.deref()?.webMCPAgent().invoke_invokeTool({
+  async invoke(input: unknown): Promise<string|undefined> {
+    const target = this.#target.deref();
+    const response = await target?.webMCPAgent().invoke_invokeTool({
       toolName: this.name,
       frameId: this.#protocolTool.frameId,
       input,
     });
+    if (!response || response.getError()) {
+      return undefined;
+    }
+    return response.invocationId;
   }
 }
 export interface EventTypes {
@@ -188,6 +193,10 @@ export class WebMCPModel extends SDK.SDKModel.SDKModel<EventTypes> implements Pr
 
   get toolCalls(): Call[] {
     return [...this.#calls.values()];
+  }
+
+  toolCallForId(invocationId: string): Call|undefined {
+    return this.#calls.get(invocationId);
   }
 
   clearCalls(): void {

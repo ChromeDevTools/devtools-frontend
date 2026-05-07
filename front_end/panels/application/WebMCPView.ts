@@ -191,6 +191,10 @@ const UIStrings = {
    * @description Notice to display when a tool has been unregistered
    */
   toolUnregisteredNotice: 'This tool has been unregistered',
+  /**
+   * @description Text preceding a nested error in a stack trace
+   */
+  causedBy: 'Caused by:',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/application/WebMCPView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -697,6 +701,7 @@ export class WebMCPView extends UI.Widget.VBox {
   readonly #view: View;
   #selectedTool: SelectedTool|null = null;
   #selectedCall: WebMCP.WebMCPModel.Call|null = null;
+  #lastDevToolsInvocationId: string|null = null;
 
   #filterState: FilterState = {
     text: '',
@@ -799,15 +804,24 @@ export class WebMCPView extends UI.Widget.VBox {
   #webMCPModelAdded(model: WebMCP.WebMCPModel.WebMCPModel): void {
     model.addEventListener(WebMCP.WebMCPModel.Events.TOOLS_ADDED, this.requestUpdate, this);
     model.addEventListener(WebMCP.WebMCPModel.Events.TOOLS_REMOVED, this.#toolsRemoved, this);
-    model.addEventListener(WebMCP.WebMCPModel.Events.TOOL_INVOKED, this.requestUpdate, this);
+    model.addEventListener(WebMCP.WebMCPModel.Events.TOOL_INVOKED, this.#toolInvoked, this);
     model.addEventListener(WebMCP.WebMCPModel.Events.TOOL_RESPONDED, this.requestUpdate, this);
   }
 
   #webMCPModelRemoved(model: WebMCP.WebMCPModel.WebMCPModel): void {
     model.removeEventListener(WebMCP.WebMCPModel.Events.TOOLS_ADDED, this.requestUpdate, this);
     model.removeEventListener(WebMCP.WebMCPModel.Events.TOOLS_REMOVED, this.#toolsRemoved, this);
-    model.removeEventListener(WebMCP.WebMCPModel.Events.TOOL_INVOKED, this.requestUpdate, this);
+    model.removeEventListener(WebMCP.WebMCPModel.Events.TOOL_INVOKED, this.#toolInvoked, this);
     model.removeEventListener(WebMCP.WebMCPModel.Events.TOOL_RESPONDED, this.requestUpdate, this);
+  }
+
+  #toolInvoked(event: Common.EventTarget.EventTargetEvent<WebMCP.WebMCPModel.Call>): void {
+    const call = event.data;
+    if (call.invocationId === this.#lastDevToolsInvocationId) {
+      this.#selectedCall = call;
+      this.#lastDevToolsInvocationId = null;
+    }
+    this.requestUpdate();
   }
 
   #toolsRemoved(event: Common.EventTarget.EventTargetEvent<readonly WebMCP.WebMCPModel.Tool[]>): void {
@@ -870,9 +884,20 @@ export class WebMCPView extends UI.Widget.VBox {
       filterButtons: this.#filterButtons,
       onClearLogClick: this.#handleClearLogClick,
       onFilterChange: this.#handleFilterChange,
-      onRunTool: event => {
+      onRunTool: async event => {
         if (this.#selectedTool) {
-          void this.#selectedTool.tool.invoke(event.data.parameters || {});
+          this.#selectedTool.parameters = event.data.parameters || {};
+          this.#lastDevToolsInvocationId = await this.#selectedTool.tool.invoke(this.#selectedTool.parameters) ?? null;
+          if (this.#lastDevToolsInvocationId) {
+            const models = SDK.TargetManager.TargetManager.instance().models(WebMCP.WebMCPModel.WebMCPModel);
+            const call =
+                models.flatMap(model => model.toolCalls).find(c => c.invocationId === this.#lastDevToolsInvocationId);
+            if (call) {
+              this.#selectedCall = call;
+              this.#lastDevToolsInvocationId = null;
+            }
+          }
+          this.requestUpdate();
         }
       },
       onPaste: async () => {
@@ -972,7 +997,9 @@ export const PAYLOAD_DEFAULT_VIEW = (input: PayloadViewInput, output: object, ta
       <div class="payload-value source-code error-text">
         ${details.frames.length === 0 && details.description ? html`<span>${details.description}\n</span>` : nothing}
         <div>${details.frames.map(renderFrame)}</div>
-        ${details.cause ? html`\nCaused by:\n${createException(details.cause, linkifier)}` : nothing}</div>`;
+        ${
+        details.cause ? html`\n${i18nString(UIStrings.causedBy)}\n${createException(details.cause, linkifier)}` :
+                        nothing}</div>`;
   };
 
   render(
@@ -1124,7 +1151,7 @@ const TOOL_DETAILS_VIEW = (input: ToolDetailsViewInput, output: undefined, targe
            ></devtools-button>
       </div>` : origin ? html`
       <div class="label">Origin</div>
-      <div class="value">
+      <div class="value stack-trace">
         ${widget(Components.JSPresentationUtils.StackTracePreviewContent,
                  {stackTrace: origin, options: { expandable: true}})}
       </div>` : nothing}

@@ -10,7 +10,6 @@ export enum ExperimentName {
   TIMELINE_INVALIDATION_TRACKING = 'timeline-invalidation-tracking',
   INSTRUMENTATION_BREAKPOINTS = 'instrumentation-breakpoints',
   USE_SOURCE_MAP_SCOPES = 'use-source-map-scopes',
-  TIMELINE_DEBUG_MODE = 'timeline-debug-mode',
   DURABLE_MESSAGES = 'durable-messages',
   JPEG_XL = 'jpeg-xl',
   // Adding or removing an entry from this enum?

@@ -13,7 +13,6 @@ const REGISTERED_EXPERIMENTS = [
   Root.ExperimentNames.ExperimentName.TIMELINE_INVALIDATION_TRACKING,
   Root.ExperimentNames.ExperimentName.INSTRUMENTATION_BREAKPOINTS,
   Root.ExperimentNames.ExperimentName.USE_SOURCE_MAP_SCOPES,
-  Root.ExperimentNames.ExperimentName.TIMELINE_DEBUG_MODE,
 ];
 
 export function setupRuntime() {

@@ -497,16 +497,8 @@ type TimeRangeCategoryStats = Record<string, number>;
 const {SamplesIntegrator} = Trace.Helpers.SamplesIntegrator;
 
 export class TimelineUIUtils {
-  /**
-   * use getGetDebugModeEnabled() to query this variable.
-   */
-  static debugModeEnabled: boolean|undefined = undefined;
   static getGetDebugModeEnabled(): boolean {
-    if (TimelineUIUtils.debugModeEnabled === undefined) {
-      TimelineUIUtils.debugModeEnabled =
-          Root.Runtime.experiments.isEnabled(Root.ExperimentNames.ExperimentName.TIMELINE_DEBUG_MODE);
-    }
-    return TimelineUIUtils.debugModeEnabled;
+    return Common.Settings.Settings.instance().moduleSetting('timeline-debug-mode').get() as boolean;
   }
   static frameDisplayName(frame: Protocol.Runtime.CallFrame): string {
     const maybeResolvedData = SourceMapsResolver.SourceMapsResolver.resolvedCodeLocationForCallFrame(frame);
@@ -1527,7 +1519,7 @@ export class TimelineUIUtils {
       await TimelineUIUtils.generateCauses(event, contentHelper, parsedTrace);
     }
 
-    if (Root.Runtime.experiments.isEnabled(Root.ExperimentNames.ExperimentName.TIMELINE_DEBUG_MODE)) {
+    if (TimelineUIUtils.getGetDebugModeEnabled()) {
       TimelineUIUtils.renderEventJson(event, contentHelper);
     }
 

@@ -17,7 +17,7 @@ export class VersionController {
   static readonly SYNCED_VERSION_SETTING_NAME = 'syncedInspectorVersion';
   static readonly LOCAL_VERSION_SETTING_NAME = 'localInspectorVersion';
 
-  static readonly CURRENT_VERSION = 44;
+  static readonly CURRENT_VERSION = 45;
 
   readonly #settings: Settings;
   readonly #globalVersionSetting: Setting<number>;
@@ -859,6 +859,22 @@ export class VersionController {
       try {
         const apcaSetting = this.#settings.moduleSetting('apca');
         apcaSetting.set(apcaExperimentEnabled);
+      } catch {
+        // If the setting is not registered yet (e.g. in tests), skip.
+      }
+    }
+  }
+
+  updateVersionFrom44To45(): void {
+    const timelineDebugModeExperimentEnabled =
+        Root.Runtime.experiments.getValueFromStorage('timeline-debug-mode' as Root.ExperimentNames.ExperimentName);
+    if (timelineDebugModeExperimentEnabled !== undefined) {
+      if (this.#settings.syncedStorage.has('timeline-debug-mode')) {
+        return;  // Already migrated
+      }
+      try {
+        const timelineDebugModeSetting = this.#settings.moduleSetting('timeline-debug-mode');
+        timelineDebugModeSetting.set(timelineDebugModeExperimentEnabled);
       } catch {
         // If the setting is not registered yet (e.g. in tests), skip.
       }

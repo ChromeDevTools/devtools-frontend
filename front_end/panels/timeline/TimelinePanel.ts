@@ -740,7 +740,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
   #instantiateNewModel(): Trace.TraceModel.Model {
     const config = Trace.Types.Configuration.defaults();
     config.showAllEvents = Common.Settings.Settings.instance().moduleSetting('timeline-show-all-events').get();
-    config.debugMode = Root.Runtime.experiments.isEnabled(Root.ExperimentNames.ExperimentName.TIMELINE_DEBUG_MODE);
+    config.debugMode = Common.Settings.Settings.instance().moduleSetting('timeline-debug-mode').get() as boolean;
 
     const traceEngineModel = Trace.TraceModel.Model.createWithAllHandlers(config);
 

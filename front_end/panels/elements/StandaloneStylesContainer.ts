@@ -314,6 +314,9 @@ export class StandaloneStylesContainer extends Common.ObjectWrapper.eventMixin<E
   jumpToFontPaletteDefinition(_paletteName: string): void {
   }
 
+  jumpToCounterStyleDefinition(_counterStyleName: string): void {
+  }
+
   jumpToDeclaration(_valueSource: SDK.CSSMatchedStyles.CSSValueSource): void {
   }
 

@@ -140,6 +140,10 @@ const UIStrings = {
    * @example {color: blue;} PH1
    */
   aiSuggestionAccepted: '{PH1} Suggestion accepted.',
+  /**
+   * @description Title of the general at-rule section
+   */
+  atRuleSection: 'Other @rules',
 } as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/elements/StylesSidebarPane.ts', UIStrings);
@@ -154,8 +158,6 @@ const MIN_FOLDED_SECTIONS_COUNT = 5;
 export const REGISTERED_PROPERTY_SECTION_NAME = '@property';
 /** Title of the function section **/
 export const FUNCTION_SECTION_NAME = '@function';
-/** Title of the general at-rule section */
-export const AT_RULE_SECTION_NAME = '@font-*';
 
 // Highlightable properties are those that can be hovered in the sidebar to trigger a specific
 // highlighting mode on the current element.
@@ -347,7 +349,11 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
   }
 
   jumpToFontPaletteDefinition(paletteName: string): void {
-    this.jumpToSection(`@font-palette-values ${paletteName}`, AT_RULE_SECTION_NAME);
+    this.jumpToSection(`@font-palette-values ${paletteName}`, i18nString(UIStrings.atRuleSection));
+  }
+
+  jumpToCounterStyleDefinition(counterStyleName: string): void {
+    this.jumpToSection(`@counter-style ${counterStyleName}`, i18nString(UIStrings.atRuleSection));
   }
 
   forceUpdate(): void {
@@ -1710,7 +1716,7 @@ export class SectionBlock {
     const separatorElement = document.createElement('div');
     const block = new SectionBlock(separatorElement, true, expandedByDefault);
     separatorElement.className = 'sidebar-separator';
-    separatorElement.appendChild(document.createTextNode(AT_RULE_SECTION_NAME));
+    separatorElement.appendChild(document.createTextNode(i18nString(UIStrings.atRuleSection)));
     return block;
   }
 

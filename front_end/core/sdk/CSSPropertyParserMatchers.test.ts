@@ -309,6 +309,11 @@ describe('Matchers for SDK.CSSPropertyParser.BottomUpTreeMatching', () => {
       assert.deepEqual(match('position-try', '--one, --two'), ['--one', '--two']);
     }
     {
+      assert.deepEqual(match('list-style-type', 'custom'), ['custom']);
+      assert.deepEqual(match('list-style-type', 'georgian'), []);
+      assert.deepEqual(match('list-style', 'custom outside'), ['custom']);
+    }
+    {
       injectVariableSubstitutions({
         '--duration-and-easing': '1s linear',
       });

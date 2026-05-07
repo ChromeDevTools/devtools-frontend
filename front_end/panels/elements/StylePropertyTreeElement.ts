@@ -1156,9 +1156,18 @@ export class LinkableNameRenderer extends rendererBase(SDK.CSSPropertyParserMatc
         return {
           jslogContext: 'css-font-palette',
           metric: null,
-          ruleBlock: '@font-*',
+          ruleBlock: '',  // Not used
           isDefined: Boolean(this.#matchedStyles.atRules().find(
               ar => ar.type() === 'font-palette-values' && ar.name()?.text === match.text)),
+        };
+      case SDK.CSSPropertyParserMatchers.LinkableNameProperties.LIST_STYLE:
+      case SDK.CSSPropertyParserMatchers.LinkableNameProperties.LIST_STYLE_TYPE:
+        return {
+          jslogContext: 'css-list-style-type',
+          metric: null,
+          ruleBlock: '',  // Not used
+          isDefined: Boolean(this.#matchedStyles.atRules().find(
+              ar => ar.type() === 'counter-style' && ar.name()?.text === match.text)),
         };
       case SDK.CSSPropertyParserMatchers.LinkableNameProperties.POSITION_TRY:
       case SDK.CSSPropertyParserMatchers.LinkableNameProperties.POSITION_TRY_FALLBACKS:
@@ -1182,6 +1191,10 @@ export class LinkableNameRenderer extends rendererBase(SDK.CSSPropertyParserMatc
         metric && Host.userMetrics.swatchActivated(metric);
         if (match.propertyName === SDK.CSSPropertyParserMatchers.LinkableNameProperties.FONT_PALETTE) {
           this.#stylesContainer.jumpToFontPaletteDefinition(match.text);
+        } else if (
+            match.propertyName === SDK.CSSPropertyParserMatchers.LinkableNameProperties.LIST_STYLE ||
+            match.propertyName === SDK.CSSPropertyParserMatchers.LinkableNameProperties.LIST_STYLE_TYPE) {
+          this.#stylesContainer.jumpToCounterStyleDefinition(match.text);
         } else {
           this.#stylesContainer.jumpToSectionBlock(`${ruleBlock} ${match.text}`);
         }

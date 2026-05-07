@@ -2404,6 +2404,37 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       assert.isNull(stylePropertyTreeElement.listItemElement.querySelector('.ghost-value-prediction'));
     });
 
+    it('renderActiveAiSuggestion does not show ghost text when suggestion value matches existing value', async () => {
+      const stylePropertyTreeElement = getTreeElement('color', 'red');
+      stylePropertyTreeElement.treeOutline = new LegacyUI.TreeOutline.TreeOutline();
+      stylePropertyTreeElement.updateTitle();
+      stylePropertyTreeElement.startEditingName();
+
+      stylePropertyTreeElement.renderActiveAiSuggestion({name: 'background-color', value: 'red'});
+
+      const valueGhostElement = stylePropertyTreeElement.listItemElement.querySelector('.ghost-value-prediction');
+      assert.isNull(valueGhostElement);
+      assert.isFalse(stylePropertyTreeElement.listItemElement.classList.contains('not-parsed-ok'));
+      assert.isFalse(stylePropertyTreeElement.listItemElement.classList.contains('invalid-property-value'));
+    });
+
+    it('clearActiveAiSuggestion restores original validation classes correctly', async () => {
+      const stylePropertyTreeElement = getTreeElement('color', 'red');
+      stylePropertyTreeElement.treeOutline = new LegacyUI.TreeOutline.TreeOutline();
+      stylePropertyTreeElement.updateTitle();
+      stylePropertyTreeElement.startEditingName();
+
+      stylePropertyTreeElement.renderActiveAiSuggestion({name: 'background-color', value: 'blue'});
+
+      assert.isTrue(stylePropertyTreeElement.listItemElement.classList.contains('not-parsed-ok'));
+      assert.isTrue(stylePropertyTreeElement.listItemElement.classList.contains('invalid-property-value'));
+
+      stylePropertyTreeElement.clearActiveAiSuggestion();
+
+      assert.isFalse(stylePropertyTreeElement.listItemElement.classList.contains('not-parsed-ok'));
+      assert.isFalse(stylePropertyTreeElement.listItemElement.classList.contains('invalid-property-value'));
+    });
+
     it('commitAiSuggestion calls applyStyleText and ends editing', async () => {
       const stylePropertyTreeElement = getTreeElement('color', '');
       stylePropertyTreeElement.updateTitle();

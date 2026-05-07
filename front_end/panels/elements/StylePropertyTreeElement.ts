@@ -3655,6 +3655,9 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       return;
     }
     this.#clearGhostTextInValue();
+    if (this.value === text) {
+      return;
+    }
     if (this.value) {
       // If there is an existing value, and user is editing the name field
       // which leads to a new value suggestion, then the previous value should no
@@ -3668,7 +3671,24 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   #clearGhostTextInValue(): void {
-    this.listItemElement.querySelector('.ghost-value-prediction')?.remove();
+    const ghostTextElement = this.listItemElement.querySelector('.ghost-value-prediction');
+    if (!ghostTextElement) {
+      return;
+    }
+    ghostTextElement.remove();
+    // If there's no value, there's nothing to restore
+    if (!this.value) {
+      return;
+    }
+    // Restore original classes
+    if (this.property.parsedOk) {
+      this.listItemElement.classList.remove('not-parsed-ok', 'invalid-property-value');
+    } else {
+      const invalidPropertyValue = SDK.CSSMetadata.cssMetadata().isCSSPropertyName(this.property.name);
+      if (!invalidPropertyValue) {
+        this.listItemElement.classList.remove('invalid-property-value');
+      }
+    }
   }
 }
 

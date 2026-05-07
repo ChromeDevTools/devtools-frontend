@@ -223,6 +223,11 @@ export interface FilterMenuButtons {
   toolTypes: FilterMenuButton;
   statusTypes: FilterMenuButton;
 }
+export const enum TabId {
+  DETAILS = 'webmcp.tool-details',
+  INPUT = 'webmcp.call-inputs',
+  OUTPUT = 'webmcp.call-outputs',
+}
 export interface SelectedTool {
   tool: WebMCP.WebMCPModel.Tool;
   parameters?: Record<string, unknown>;
@@ -233,7 +238,8 @@ export interface ViewInput {
   onToolSelect: (tool: WebMCP.WebMCPModel.Tool|null) => void;
   onRevealTool: (tool: WebMCP.WebMCPModel.Tool, parameters?: Record<string, unknown>) => void;
   selectedCall: WebMCP.WebMCPModel.Call|null;
-  onCallSelect: (call: WebMCP.WebMCPModel.Call|null) => void;
+  selectedTab?: TabId;
+  onCallSelect: (call: WebMCP.WebMCPModel.Call|null, tabId?: TabId) => void;
   filters: FilterState;
   filterButtons: FilterMenuButtons;
   onClearLogClick: () => void;
@@ -512,7 +518,10 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
                             }, {jslogContext: 'webmcp.cancel-call'});
                           }
                         }}>
-                      <td>
+                      <td @click=${(e: Event) => {
+                        e.stopPropagation();
+                        input.onCallSelect(call, TabId.DETAILS);
+                      }}>
                         <div class="name-cell">
                           <span>${call.tool.name}</span>
                           <button class="run-tool-action-button"
@@ -528,7 +537,10 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
                           </button>
                         </div>
                       </td>
-                      <td>
+                      <td @click=${(e: Event) => {
+                        e.stopPropagation();
+                        input.onCallSelect(call, TabId.OUTPUT);
+                      }}>
                         <div class="status-cell">
                           ${iconName(call) ? html`<devtools-icon class="small" name=${iconName(call)}></devtools-icon>`
                                            : ''}
@@ -536,8 +548,14 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
                         </div>
                       </td>
                       ${!input.selectedCall ? html`
-                        <td>${call.input}</td>
-                        <td>${call.result?.output ? JSON.stringify(call.result.output)
+                        <td @click=${(e: Event) => {
+                          e.stopPropagation();
+                          input.onCallSelect(call, TabId.INPUT);
+                        }}>${call.input}</td>
+                        <td @click=${(e: Event) => {
+                          e.stopPropagation();
+                          input.onCallSelect(call, TabId.OUTPUT);
+                        }}>${call.result?.output ? JSON.stringify(call.result.output)
                                                     : call.result?.errorText ?? ''}</td>
                         ` : nothing}
                     </tr>
@@ -556,17 +574,20 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
                   @click=${() => input.onCallSelect(null)}
                 ></devtools-button>
                 <devtools-widget
-                  id="webmcp.tool-details"
+                  id=${TabId.DETAILS}
+                  ?selected=${input.selectedTab === TabId.DETAILS}
                   title=${i18nString(UIStrings.toolDetails)}
                   ${widget(ToolDetailsWidget, {tool: input.selectedCall?.tool, isUnregistered: input.selectedCall ? !input.tools.includes(input.selectedCall.tool) : false})}>
                 </devtools-widget>
                 <devtools-widget
-                  id="webmcp.call-inputs"
+                  id=${TabId.INPUT}
+                  ?selected=${input.selectedTab === TabId.INPUT}
                   title=${i18nString(UIStrings.input)}
                   ${widget(PayloadWidget, parsePayload(input.selectedCall?.input))}>
                 </devtools-widget>
                 <devtools-widget
-                  id="webmcp.call-outputs"
+                  id=${TabId.OUTPUT}
+                  ?selected=${input.selectedTab === TabId.OUTPUT}
                   title=${i18nString(UIStrings.output)}
                   ${widget(PayloadWidget, {
                           valueObject: input.selectedCall?.result?.output,
@@ -701,6 +722,7 @@ export class WebMCPView extends UI.Widget.VBox {
   readonly #view: View;
   #selectedTool: SelectedTool|null = null;
   #selectedCall: WebMCP.WebMCPModel.Call|null = null;
+  #selectedTab: TabId|undefined = undefined;
   #lastDevToolsInvocationId: string|null = null;
 
   #filterState: FilterState = {
@@ -875,8 +897,16 @@ export class WebMCPView extends UI.Widget.VBox {
         this.requestUpdate();
       },
       selectedCall: this.#selectedCall,
-      onCallSelect: call => {
-        this.#selectedCall = call;
+      selectedTab: this.#selectedTab,
+      onCallSelect: (call, tabId) => {
+        if (call === null) {
+          this.#selectedCall = null;
+        } else if (this.#selectedCall === null) {
+          this.#selectedCall = call;
+          this.#selectedTab = tabId;
+        } else {
+          this.#selectedCall = call;
+        }
         this.requestUpdate();
       },
       toolCalls: filteredCalls,
@@ -916,6 +946,7 @@ export class WebMCPView extends UI.Widget.VBox {
       },
     };
     this.#view(input, {}, this.contentElement);
+    this.#selectedTab = undefined;
   }
 }
 export interface PayloadViewInput {

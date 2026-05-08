@@ -880,8 +880,12 @@ declare namespace ProtocolProxyApi {
 
     /**
      * Modifies the expression of a container query.
+     * Deprecated. Use setContainerQueryConditionText instead.
+     * @deprecated
      */
     invoke_setContainerQueryText(params: Protocol.CSS.SetContainerQueryTextRequest): Promise<Protocol.CSS.SetContainerQueryTextResponse>;
+
+    invoke_setContainerQueryConditionText(params: Protocol.CSS.SetContainerQueryConditionTextRequest): Promise<Protocol.CSS.SetContainerQueryConditionTextResponse>;
 
     /**
      * Modifies the expression of a supports at-rule.

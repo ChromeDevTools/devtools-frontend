@@ -730,6 +730,7 @@ describe('StylesSidebarPane', () => {
                     condition: {
                       containerQueries: {
                         text: '(width > 300px)',
+                        conditionText: '--foo (width > 300px)',
                       },
                       conditionText: '<unused>',
                       children: [

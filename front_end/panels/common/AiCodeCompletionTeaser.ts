@@ -9,6 +9,7 @@ import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Root from '../../core/root/root.js';
 import * as AIAssistance from '../../models/ai_assistance/ai_assistance.js';
+import * as AiCodeCompletion from '../../models/ai_code_completion/ai_code_completion.js';
 import * as AiCodeGeneration from '../../models/ai_code_generation/ai_code_generation.js';
 import * as Snackbars from '../../ui/components/snackbars/snackbars.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -163,6 +164,7 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
 
 interface AiCodeCompletionTeaserConfig {
   onDetach: () => void;
+  panel?: AiCodeCompletion.AiCodeCompletion.ContextFlavor;
 }
 
 export class AiCodeCompletionTeaser extends UI.Widget.Widget {
@@ -172,6 +174,7 @@ export class AiCodeCompletionTeaser extends UI.Widget.Widget {
   #boundOnAidaAvailabilityChange: () => Promise<void>;
   #boundOnAiCodeCompletionSettingChanged: () => void;
   #onDetach: () => void;
+  #panel?: AiCodeCompletion.AiCodeCompletion.ContextFlavor;
 
   // Whether the user completed first run experience dialog or not.
   #aiCodeCompletionFreCompletedSetting =
@@ -186,6 +189,7 @@ export class AiCodeCompletionTeaser extends UI.Widget.Widget {
     super();
     this.markAsExternallyManaged();
     this.#onDetach = config.onDetach;
+    this.#panel = config.panel;
     this.#view = view ?? DEFAULT_VIEW;
     this.#boundOnAidaAvailabilityChange = this.#onAidaAvailabilityChange.bind(this);
     this.#boundOnAiCodeCompletionSettingChanged = this.#onAiCodeCompletionSettingChanged.bind(this);
@@ -283,6 +287,11 @@ export class AiCodeCompletionTeaser extends UI.Widget.Widget {
 
     if (result) {
       this.#aiCodeCompletionFreCompletedSetting.set(true);
+      if (this.#panel === AiCodeCompletion.AiCodeCompletion.ContextFlavor.CONSOLE) {
+        Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiCodeCompletionFreCompletedFromConsole);
+      } else if (this.#panel === AiCodeCompletion.AiCodeCompletion.ContextFlavor.SOURCES) {
+        Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiCodeCompletionFreCompletedFromSources);
+      }
       this.detach();
     } else {
       this.requestUpdate();

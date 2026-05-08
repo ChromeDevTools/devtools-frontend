@@ -489,7 +489,14 @@ export enum Action {
   InsightTeaserModelDownloadCompleted = 198,
   AiCodeGenerationError = 199,
   AiCodeGenerationRequestTriggered = 200,
-  MAX_VALUE = 201,
+  AiCodeCompletionRequestTriggeredFromConsole = 201,
+  AiCodeCompletionRequestTriggeredFromSources = 202,
+  AiCodeCompletionRequestTriggeredFromStyles = 203,
+  AiCodeGenerationRequestTriggeredFromConsole = 204,
+  AiCodeGenerationRequestTriggeredFromSources = 205,
+  AiCodeCompletionFreCompletedFromConsole = 206,
+  AiCodeCompletionFreCompletedFromSources = 207,
+  MAX_VALUE = 208,
   /* eslint-enable @typescript-eslint/naming-convention */
 }
 

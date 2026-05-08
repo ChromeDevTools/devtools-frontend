@@ -16,6 +16,7 @@ devtools_module("breakpoints") {
     "../../core/platform:bundle",
     "../../core/root:bundle",
     "../../core/sdk:bundle",
+    "../../generated",
     "../../generated:protocol",
     "../bindings:bundle",
     "../formatter:bundle",
@@ -33,12 +34,16 @@ devtools_entrypoint("bundle") {
   visibility = [
     ":*",
     "../../entrypoints/main",
+    "../../models/ai_assistance/*",
+    "../../panels/changes/*",
     "../../panels/console/*",
     "../../panels/settings/*",
     "../../panels/sources/*",
+    "../../testing/*",
     "../../ui/components/linkifier/*",
     "../../ui/legacy/components/utils/*",
     "../persistence/*",
+    "../workspace_diff/*",
   ]
 
   visibility += devtools_models_visibility
@@ -51,6 +56,15 @@ ts_library("unittests") {
 
   deps = [
     ":bundle",
+    "../../core/common:bundle",
+    "../../core/platform:bundle",
+    "../../core/root:bundle",
+    "../../core/sdk:bundle",
+    "../../generated",
     "../../testing",
+    "../bindings:bundle",
+    "../persistence:bundle",
+    "../text_utils:bundle",
+    "../workspace:bundle",
   ]
 }

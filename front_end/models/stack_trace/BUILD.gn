@@ -15,6 +15,7 @@ devtools_foundation_module("stack_trace") {
     "../../core/common:bundle",
     "../../core/platform:bundle",
     "../../core/sdk:bundle",
+    "../../generated",
     "../../generated:protocol",
     "../workspace:bundle",
   ]
@@ -39,8 +40,10 @@ devtools_foundation_module("stack_trace_impl") {
   deps = [
     ":bundle",
     "../../core/common:bundle",
+    "../../core/platform:bundle",
     "../../core/sdk:bundle",
     "../../generated",
+    "../workspace:bundle",
   ]
 }
 

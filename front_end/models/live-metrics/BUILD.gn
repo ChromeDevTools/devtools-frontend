@@ -15,6 +15,7 @@ devtools_module("live-metrics") {
     "../../core/i18n:bundle",
     "../../core/platform:bundle",
     "../../core/sdk:bundle",
+    "../../generated",
     "../../generated:protocol",
     "../emulation:bundle",
     "./web-vitals-injected",
@@ -44,8 +45,10 @@ ts_library("unittests") {
   deps = [
     ":bundle",
     "../../core/sdk:bundle",
+    "../../generated",
     "../../generated:protocol",
     "../../testing",
     "../trace:bundle",
+    "web-vitals-injected/spec:bundle",
   ]
 }

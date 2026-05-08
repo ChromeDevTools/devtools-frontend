@@ -38,6 +38,7 @@ devtools_ui_module("text_editor") {
     "../../../models/source_map_scopes:bundle",
     "../../../models/text_utils:bundle",
     "../../../panels/common:bundle",
+    "../../../third_party/codemirror.next:bundle",
     "../../kit:bundle",
     "../../legacy:bundle",
     "../../legacy/theme_support:bundle",
@@ -81,8 +82,17 @@ devtools_ui_module("unittests") {
   deps = [
     ":bundle",
     "../../../core/common:bundle",
+    "../../../core/host:bundle",
     "../../../core/platform:bundle",
+    "../../../core/sdk:bundle",
+    "../../../generated",
+    "../../../models/ai_code_completion:bundle",
+    "../../../models/ai_code_generation:bundle",
+    "../../../models/bindings:bundle",
+    "../../../models/workspace:bundle",
+    "../../../panels/common:bundle",
     "../../../testing",
     "../../../third_party/codemirror.next:bundle",
+    "../../legacy:bundle",
   ]
 }

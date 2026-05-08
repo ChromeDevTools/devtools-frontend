@@ -58,6 +58,7 @@ devtools_ui_module("unittests") {
     "../../../core/platform:bundle",
     "../../../testing",
     "../../legacy:bundle",
+    "../buttons:bundle",
     "../render_coordinator:bundle",
   ]
 }

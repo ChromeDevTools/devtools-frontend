@@ -86,6 +86,12 @@ devtools_ui_module("unittests") {
 
   deps = [
     ":bundle",
+    "../../core/common:bundle",
+    "../../core/platform:bundle",
+    "../../core/sdk:bundle",
+    "../../models/bindings:bundle",
+    "../../models/breakpoints:bundle",
+    "../../models/persistence:bundle",
     "../../models/workspace:bundle",
     "../../models/workspace_diff:bundle",
     "../../testing",

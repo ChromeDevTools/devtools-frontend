@@ -42,6 +42,7 @@ ts_library("unittests") {
 
   deps = [
     ":bundle",
+    "../../generated",
     "../../testing",
   ]
 }

@@ -40,6 +40,7 @@ devtools_ui_module("source_frame") {
     "../../../../core/root:bundle",
     "../../../../core/sdk:bundle",
     "../../../../entrypoints/formatter_worker:bundle",
+    "../../../../entrypoints/formatter_worker:formatter_actions",
     "../../../../models/formatter:bundle",
     "../../../../models/text_utils:bundle",
     "../../../../models/workspace:bundle",
@@ -112,9 +113,11 @@ devtools_ui_module("unittests") {
     "../../../../core/platform:bundle",
     "../../../../core/root:bundle",
     "../../../../models/text_utils:bundle",
+    "../../../../panels/linear_memory_inspector/components:bundle",
     "../../../../testing",
     "../../../../third_party/codemirror.next:bundle",
     "../../../../ui/legacy:bundle",
+    "../../../components/buttons:bundle",
     "../object_ui:bundle",
   ]
 }

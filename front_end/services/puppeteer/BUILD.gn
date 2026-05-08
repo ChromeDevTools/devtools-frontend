@@ -11,6 +11,7 @@ devtools_module("puppeteer_connection") {
   deps = [
     "../../core/protocol_client:bundle",
     "../../core/sdk:bundle",
+    "../../generated",
     "../../generated:protocol",
     "../../third_party/puppeteer:bundle",
   ]

@@ -26,6 +26,7 @@ devtools_module("greendev") {
     "../../core/common:bundle",
     "../../core/host:bundle",
     "../../core/i18n:bundle",
+    "../../core/platform:bundle",
     "../../core/root:bundle",
     "../../core/sdk:bundle",
     "../../entrypoints/inspector_main:meta",
@@ -35,6 +36,7 @@ devtools_module("greendev") {
     "../../models/ai_assistance:bundle",
     "../../models/workspace:meta",
     "../../panels/sensors:meta",
+    "../../third_party/marked:bundle",
     "../../ui/components/markdown_view:bundle",
     "../../ui/legacy:bundle",
   ]

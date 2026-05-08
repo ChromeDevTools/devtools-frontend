@@ -33,6 +33,7 @@ devtools_ui_module("security") {
     "../../core/platform:bundle",
     "../../core/root:bundle",
     "../../core/sdk:bundle",
+    "../../generated",
     "../../generated:protocol",
     "../../models/issues_manager:bundle",
     "../../models/text_utils:bundle",
@@ -92,6 +93,7 @@ devtools_ui_module("unittests") {
     "../../core/platform:bundle",
     "../../core/root:bundle",
     "../../core/sdk:bundle",
+    "../../generated",
     "../../generated:protocol",
     "../../testing",
   ]

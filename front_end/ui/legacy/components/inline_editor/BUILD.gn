@@ -105,6 +105,8 @@ devtools_ui_module("unittests") {
 
   deps = [
     ":bundle",
+    "../../../../core/common:bundle",
+    "../../../../models/geometry:bundle",
     "../../../../testing",
     "../../../legacy:bundle",
   ]

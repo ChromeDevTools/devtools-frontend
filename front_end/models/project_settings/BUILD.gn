@@ -27,7 +27,8 @@ devtools_entrypoint("bundle") {
     ":*",
     "../../entrypoints/main",
     "../../panels/settings",
-    "../persistence",
+    "../../testing/*",
+    "../persistence/*",
   ]
 
   visibility += devtools_models_visibility
@@ -39,6 +40,8 @@ ts_library("unittests") {
 
   deps = [
     ":bundle",
+    "../../core/platform:bundle",
+    "../../core/sdk:bundle",
     "../../testing",
   ]
 }

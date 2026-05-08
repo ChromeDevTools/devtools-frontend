@@ -188,6 +188,8 @@ ts_library("unittests") {
 
   deps = [
     ":bundle",
+    "../../entrypoints/formatter_worker:bundle",
+    "../../generated",
     "../../generated:protocol",
     "../../models/bindings:bundle",
     "../../models/formatter:bundle",
@@ -196,7 +198,10 @@ ts_library("unittests") {
     "../../models/trace:bundle",
     "../../models/workspace:bundle",
     "../../testing",
+    "../../third_party/codemirror.next:bundle",
+    "../../third_party/source-map-scopes-codec:bundle",
     "../common:bundle",
+    "../platform:bundle",
     "../protocol_client:bundle",
     "../root:bundle",
   ]
@@ -224,10 +229,14 @@ devtools_foundation_module("foundation_unittests") {
     ":bundle",
     "../../generated",
     "../../models/bindings:bundle",
+    "../../models/persistence:bundle",
+    "../../models/text_utils:bundle",
     "../../models/workspace:bundle",
     "../../testing",
+    "../common:bundle",
     "../host:bundle",
     "../platform:bundle",
+    "../protocol_client:bundle",
     "../root:bundle",
   ]
 }

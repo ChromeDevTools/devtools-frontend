@@ -38,6 +38,7 @@ devtools_ui_module("accessibility") {
     "../../generated",
     "../../generated:protocol",
     "../../ui/components/panel_feedback:bundle",
+    "../../ui/components/switch:bundle",
     "../../ui/i18n:bundle",
     "../../ui/legacy:bundle",
     "../../ui/lit:bundle",
@@ -86,6 +87,10 @@ devtools_ui_module("unittests") {
 
   deps = [
     ":bundle",
+    "../../core/platform:bundle",
+    "../../core/sdk:bundle",
+    "../../generated",
     "../../testing",
+    "../../ui/legacy:bundle",
   ]
 }

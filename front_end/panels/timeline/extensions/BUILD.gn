@@ -27,5 +27,8 @@ devtools_entrypoint("bundle") {
 
   deps = [ ":extensions" ]
 
-  visibility = [ "..:*" ]
+  visibility = [
+    "..:*",
+    "../../../ui/legacy/components/perf_ui/*",
+  ]
 }

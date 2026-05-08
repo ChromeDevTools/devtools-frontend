@@ -46,6 +46,7 @@ devtools_ui_module("perf_ui") {
     "../../../../core/platform:bundle",
     "../../../../core/root:bundle",
     "../../../../core/sdk:bundle",
+    "../../../../generated",
     "../../../../generated:protocol",
     "../../../../models/bindings:bundle",
     "../../../../models/cpu_profile:bundle",
@@ -59,6 +60,7 @@ devtools_ui_module("perf_ui") {
     "../../../../ui/lit:bundle",
     "../../../components/buttons:bundle",
     "../../../components/render_coordinator:bundle",
+    "../../../components/snackbars:bundle",
     "../../../kit:bundle",
     "../../../visual_logging:bundle",
   ]
@@ -79,6 +81,7 @@ devtools_entrypoint("bundle") {
     # as the UI modules should only be used to actually build user interfaces,
     # and the business logic should never depend on the UI modules.
     ":*",
+    "../../../../entrypoints/main/*",
     "../../../../panels/application/*",
     "../../../../panels/layer_viewer/*",
     "../../../../panels/media/*",
@@ -123,8 +126,16 @@ devtools_ui_module("unittests") {
 
   deps = [
     ":bundle",
+    "../../../../core/common:bundle",
+    "../../../../core/platform:bundle",
     "../../../../core/sdk:bundle",
+    "../../../../generated",
+    "../../../../models/bindings:bundle",
+    "../../../../models/trace:bundle",
+    "../../../../models/workspace:bundle",
+    "../../../../panels/timeline/extensions:bundle",
     "../../../../testing",
     "../../../../ui/legacy:bundle",
+    "../../../visual_logging:bundle",
   ]
 }

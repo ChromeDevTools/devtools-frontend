@@ -14,6 +14,7 @@ devtools_module("autofill_manager") {
     "../../core/common:bundle",
     "../../core/platform:bundle",
     "../../core/sdk:bundle",
+    "../../generated",
     "../../generated:protocol",
   ]
 }
@@ -41,6 +42,7 @@ ts_library("unittests") {
     ":bundle",
     "../../core/common:bundle",
     "../../core/sdk:bundle",
+    "../../generated",
     "../../testing",
   ]
 }

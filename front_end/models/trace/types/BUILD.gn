@@ -33,6 +33,7 @@ devtools_entrypoint("bundle") {
   visibility = [
     ":*",
     "../*",
+    "../../../models/ai_assistance/*",
   ]
 
   visibility += devtools_models_visibility
@@ -48,6 +49,7 @@ ts_library("unittests") {
 
   deps = [
     "../../../core/platform:bundle",
+    "../../../generated",
     "../../../models/trace:bundle",
     "../../../testing",
   ]

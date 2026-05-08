@@ -36,6 +36,7 @@ devtools_module("bindings") {
     "../../core/platform:bundle",
     "../../core/root:bundle",
     "../../core/sdk:bundle",
+    "../../generated",
     "../../generated:protocol",
     "../../models/stack_trace:bundle",
     "../../models/stack_trace:impl",
@@ -61,6 +62,7 @@ devtools_entrypoint("bundle") {
     "../../foundation/*",
     "../../legacy_test_runner/*",
     "../../panels/application/*",
+    "../../panels/changes/*",
     "../../panels/common/*",
     "../../panels/console/*",
     "../../panels/coverage/*",
@@ -92,6 +94,7 @@ devtools_entrypoint("bundle") {
     "../trace_source_maps_resolver/*",
     "../web_mcp/*",
     "../workspace/*",
+    "../workspace_diff/*",
   ]
 
   visibility += devtools_models_visibility
@@ -118,11 +121,14 @@ ts_library("unittests") {
   deps = [
     ":bundle",
     "../../core/common:bundle",
+    "../../core/platform:bundle",
     "../../core/root:bundle",
     "../../core/sdk:bundle",
+    "../../generated",
     "../../testing",
     "../../third_party/source-map-scopes-codec:bundle",
     "../persistence:bundle",
+    "../stack_trace:bundle",
     "../stack_trace:impl",
     "../text_utils:bundle",
     "../workspace:bundle",

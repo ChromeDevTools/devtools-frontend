@@ -21,10 +21,17 @@ devtools_ui_module("unittests") {
   ]
 
   deps = [
+    "../../../core/common:bundle",
+    "../../../core/platform:bundle",
     "../../../core/sdk:bundle",
+    "../../../models/bindings:bundle",
+    "../../../models/trace:bundle",
     "../../../models/trace/handlers:unittests",
+    "../../../models/workspace:bundle",
     "../../../panels/timeline:bundle",
     "../../../testing",
     "../../../ui/legacy/components/perf_ui:bundle",
+    "../../../ui/legacy/theme_support:bundle",
+    "../components:bundle",
   ]
 }

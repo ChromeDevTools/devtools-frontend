@@ -128,5 +128,7 @@ devtools_foundation_module("foundation_unittests") {
   deps = [
     ":bundle",
     "../../testing",
+    "../../third_party/i18n:bundle",
+    "../platform:bundle",
   ]
 }

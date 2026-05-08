@@ -50,8 +50,10 @@ devtools_ui_module("components") {
     "../../../core/platform:bundle",
     "../../../core/root:bundle",
     "../../../core/sdk:bundle",
+    "../../../generated",
     "../../../generated:protocol",
     "../../../models/bindings:bundle",
+    "../../../models/text_utils:bundle",
     "../../../panels/common:bundle",
     "../../../panels/network/forward:bundle",
     "../../../third_party/csp_evaluator:bundle",
@@ -112,7 +114,15 @@ devtools_ui_module("unittests") {
 
   deps = [
     ":bundle",
+    "../../../core/common:bundle",
+    "../../../core/host:bundle",
+    "../../../core/platform:bundle",
+    "../../../core/sdk:bundle",
+    "../../../generated",
     "../../../testing",
     "../../../ui/components/render_coordinator:bundle",
+    "../../../ui/components/report_view:bundle",
+    "../../../ui/kit:bundle",
+    "../../../ui/legacy:bundle",
   ]
 }

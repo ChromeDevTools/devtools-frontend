@@ -48,6 +48,8 @@ ts_library("unittests") {
   deps = [
     "../:bundle",
     "../../:bundle",  # Trace engine bundle
+    "../../../../generated",
+    "../../../../testing",
     "../testing:bundle",
   ]
 

@@ -20,6 +20,7 @@ devtools_ui_module("request_link_icon") {
     "../../../core/i18n:bundle",
     "../../../core/platform:bundle",
     "../../../core/sdk:bundle",
+    "../../../generated",
     "../../../generated:protocol",
     "../../../models/logs:bundle",
     "../../../panels/network/forward:bundle",
@@ -52,9 +53,12 @@ devtools_ui_module("unittests") {
     "../../../core/common:bundle",
     "../../../core/platform:bundle",
     "../../../core/sdk:bundle",
+    "../../../generated",
     "../../../models/logs:bundle",
+    "../../../panels/network/forward:bundle",
     "../../../testing",
     "../../kit:bundle",
     "../../legacy:bundle",
+    "../render_coordinator:bundle",
   ]
 }

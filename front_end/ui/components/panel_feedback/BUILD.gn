@@ -30,6 +30,7 @@ devtools_ui_module("panel_feedback") {
     "../../../ui/components/render_coordinator:bundle",
     "../../../ui/legacy:bundle",
     "../../../ui/lit:bundle",
+    "../../kit:bundle",
     "../../visual_logging:bundle",
     "../buttons:bundle",
     "../input:bundle",
@@ -58,6 +59,9 @@ devtools_ui_module("unittests") {
 
   deps = [
     ":bundle",
+    "../../../core/host:bundle",
+    "../../../core/platform:bundle",
+    "../../../core/root:bundle",
     "../../../testing",
     "../render_coordinator:bundle",
   ]

@@ -25,6 +25,7 @@ devtools_entrypoint("bundle") {
     "../../panels/ai_assistance/*",
     "../../panels/changes/*",
     "../../panels/common/*",
+    "../../panels/console/*",
     "../../panels/settings/*",
     "../../ui/*",
   ]

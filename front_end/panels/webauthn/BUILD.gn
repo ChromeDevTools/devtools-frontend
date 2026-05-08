@@ -21,6 +21,7 @@ devtools_ui_module("webauthn") {
     "../../core/i18n:bundle",
     "../../core/platform:bundle",
     "../../core/sdk:bundle",
+    "../../generated",
     "../../generated:protocol",
     "../../ui/components/buttons:bundle",
     "../../ui/components/input:bundle",
@@ -68,6 +69,7 @@ devtools_ui_module("unittests") {
     ":bundle",
     "../../core/platform:bundle",
     "../../core/sdk:bundle",
+    "../../generated",
     "../../generated:protocol",
     "../../testing",
   ]

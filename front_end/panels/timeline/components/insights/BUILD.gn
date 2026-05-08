@@ -51,17 +51,28 @@ devtools_ui_module("insights") {
 
   deps = [
     "../../../../core/common:bundle",
+    "../../../../core/i18n:bundle",
     "../../../../core/platform:bundle",
+    "../../../../core/root:bundle",
     "../../../../core/sdk:bundle",
+    "../../../../generated",
+    "../../../../models/ai_assistance:bundle",
+    "../../../../models/badges:bundle",
+    "../../../../models/bindings:bundle",
     "../../../../models/trace:bundle",
+    "../../../../models/trace/insights:bundle",
     "../../../../services/trace_bounds:bundle",
     "../../../../third_party/marked:bundle",
     "../../../../ui/components/buttons:bundle",
     "../../../../ui/components/helpers:bundle",
     "../../../../ui/components/linkifier:bundle",
     "../../../../ui/components/markdown_view:bundle",
+    "../../../../ui/i18n:bundle",
     "../../../../ui/kit:bundle",
+    "../../../../ui/legacy:bundle",
+    "../../../../ui/legacy/components/utils:bundle",
     "../../../../ui/lit:bundle",
+    "../../../../ui/visual_logging:bundle",
     "../../../common:bundle",
     "../../overlays:bundle",
     "../../utils:bundle",
@@ -79,6 +90,7 @@ devtools_entrypoint("bundle") {
   visibility = [
     ":*",
     "..:*",
+    "../..:*",
     "../../../ai_assistance/*",
   ]
 }
@@ -97,8 +109,17 @@ devtools_ui_module("unittests") {
 
   deps = [
     ":bundle",
+    "../../../../core/common:bundle",
+    "../../../../core/root:bundle",
+    "../../../../core/sdk:bundle",
+    "../../../../generated",
+    "../../../../models/ai_assistance:bundle",
+    "../../../../models/badges:bundle",
     "../../../../models/trace:bundle",
     "../../../../testing",
     "../../../../ui/components/render_coordinator:bundle",
+    "../../../../ui/legacy:bundle",
+    "../../../../ui/lit:bundle",
+    "../../../common:bundle",
   ]
 }

@@ -62,6 +62,7 @@ devtools_ui_module("unittests") {
   deps = [
     ":bundle",
     "../../../testing",
+    "../../kit:bundle",
     "../../lit:bundle",
   ]
 }

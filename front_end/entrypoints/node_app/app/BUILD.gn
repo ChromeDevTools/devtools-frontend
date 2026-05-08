@@ -24,9 +24,11 @@ devtools_module("app") {
     "../../../core/platform:bundle",
     "../../../core/protocol_client:bundle",
     "../../../core/sdk:bundle",
+    "../../../generated",
     "../../../generated:protocol",
     "../../../ui/components/buttons:bundle",
     "../../../ui/i18n:bundle",
+    "../../../ui/kit:bundle",
     "../../../ui/legacy:bundle",
     "../../../ui/legacy/components/utils:bundle",
   ]
@@ -54,6 +56,7 @@ ts_library("unittests") {
   deps = [
     ":bundle",
     "../../../core/sdk:bundle",
+    "../../../generated",
     "../../../generated:protocol",
     "../../../testing",
   ]

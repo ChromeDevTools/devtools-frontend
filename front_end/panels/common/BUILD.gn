@@ -54,6 +54,7 @@ devtools_ui_module("common") {
     "../../core/protocol_client:bundle",
     "../../core/root:bundle",
     "../../core/sdk:bundle",
+    "../../generated",
     "../../generated:protocol",
     "../../models/ai_assistance:bundle",
     "../../models/ai_code_completion:bundle",
@@ -128,8 +129,25 @@ devtools_ui_module("unittests") {
 
   deps = [
     ":bundle",
+    "../../core/common:bundle",
+    "../../core/host:bundle",
     "../../core/platform:bundle",
+    "../../core/root:bundle",
+    "../../core/sdk:bundle",
+    "../../generated",
+    "../../models/ai_code_completion:bundle",
+    "../../models/badges:bundle",
+    "../../models/bindings:bundle",
+    "../../models/crux-manager:bundle",
+    "../../models/extensions:bundle",
+    "../../models/har:bundle",
+    "../../models/logs:bundle",
+    "../../models/text_utils:bundle",
+    "../../models/workspace:bundle",
     "../../testing",
+    "../../ui/components/snackbars:bundle",
     "../../ui/legacy:bundle",
+    "../../ui/legacy/components/utils:bundle",
+    "../../ui/lit:bundle",
   ]
 }

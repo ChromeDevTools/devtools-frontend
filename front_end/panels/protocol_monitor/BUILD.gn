@@ -83,7 +83,13 @@ devtools_ui_module("unittests") {
 
   deps = [
     ":bundle",
+    "../../core/host:bundle",
+    "../../core/platform:bundle",
+    "../../core/protocol_client:bundle",
+    "../../core/sdk:bundle",
     "../../models/text_utils:bundle",
     "../../testing",
+    "../../ui/components/suggestion_input:bundle",
+    "../../ui/legacy:bundle",
   ]
 }

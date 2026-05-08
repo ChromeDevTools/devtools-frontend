@@ -19,6 +19,11 @@ devtools_ui_module("unittests") {
   deps = [
     "../:bundle",
     "../../../core/common:bundle",
+    "../../../core/host:bundle",
+    "../../../core/platform:bundle",
     "../../../testing",
+    "../../../ui/components/markdown_view:bundle",
+    "../../../ui/lit:bundle",
+    "../../console:bundle",
   ]
 }

@@ -15,6 +15,7 @@ devtools_entrypoint("bundle") {
   visibility = [
     ":*",
     "../:web-vitals-injected",
+    "../../:*",
     "../../:live-metrics",
   ]
 }

@@ -214,11 +214,16 @@ devtools_ui_module("unittests") {
   deps = [
     ":bundle",
     "../../core/common:bundle",
+    "../../core/host:bundle",
     "../../core/i18n:bundle",
     "../../core/platform:bundle",
     "../../core/root:bundle",
     "../../testing",
+    "../components/buttons:bundle",
+    "../components/render_coordinator:bundle",
+    "../kit:bundle",
     "../lit:bundle",
+    "../visual_logging:bundle",
     "./components/quick_open:bundle",
   ]
 }

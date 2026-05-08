@@ -13,6 +13,7 @@ devtools_module("web_mcp") {
   deps = [
     "../../core/common:bundle",
     "../../core/sdk:bundle",
+    "../../generated",
     "../../generated:protocol",
     "../bindings:bundle",
     "../stack_trace:bundle",
@@ -40,6 +41,7 @@ ts_library("unittests") {
   deps = [
     ":bundle",
     "../../core/sdk:bundle",
+    "../../generated",
     "../../testing",
   ]
 }

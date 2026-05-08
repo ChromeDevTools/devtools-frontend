@@ -35,6 +35,7 @@ devtools_ui_module("recorder") {
     "../../ui/components/buttons:bundle",
     "../../ui/components/dialogs:bundle",
     "../../ui/components/menus:bundle",
+    "../../ui/kit:bundle",
     "../../ui/legacy:bundle",
     "../../ui/lit:bundle",
     "../../ui/visual_logging:bundle",
@@ -92,7 +93,10 @@ devtools_ui_module("unittests") {
     ":bundle",
     "../../testing",
     "../../ui/components/render_coordinator:bundle",
+    "../../ui/legacy:bundle",
     "./components:bundle",
     "./models:bundle",
+    "injected:bundle",
+    "recorder-actions:bundle",
   ]
 }

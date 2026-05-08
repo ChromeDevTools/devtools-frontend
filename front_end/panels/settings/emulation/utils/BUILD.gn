@@ -14,6 +14,7 @@ devtools_ui_module("ui_utils") {
   ]
 
   deps = [
+    "../../../../generated",
     "../../../../generated:protocol",
     "../../../../ui/legacy:bundle",
   ]
@@ -43,6 +44,7 @@ devtools_ui_module("unittests") {
 
   deps = [
     ":bundle",
+    "../../../../generated",
     "../../../../testing",
   ]
 }

@@ -66,11 +66,14 @@ devtools_ui_module("unittests") {
 
   deps = [
     ":bundle",
+    "../../../core/common:bundle",
     "../../../core/platform:bundle",
     "../../../core/root:bundle",
     "../../../core/sdk:bundle",
+    "../../../generated",
     "../../../models/bindings:bundle",
     "../../../models/trace:bundle",
+    "../../../models/trace_source_maps_resolver:bundle",
     "../../../models/workspace:bundle",
     "../../../testing",
   ]

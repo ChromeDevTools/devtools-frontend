@@ -24,6 +24,7 @@ ts_library("unittests") {
     "../../bindings:bundle",
     "../../text_utils:bundle",
     "../../trace:bundle",
+    "../../workspace:bundle",
   ]
 }
 
@@ -39,7 +40,14 @@ devtools_foundation_module("foundation_unittests") {
 
   deps = [
     "..:bundle",
+    "../../../core/platform:bundle",
+    "../../../core/sdk:bundle",
+    "../../../generated",
     "../../../testing",
+    "../../crux-manager:bundle",
+    "../../lighthouse:bundle",
+    "../../text_utils:bundle",
     "../../trace:bundle",
+    "../../workspace:bundle",
   ]
 }

@@ -51,6 +51,7 @@ devtools_ui_module("profiler") {
     "../../core/platform/api:bundle",
     "../../core/root:bundle",
     "../../core/sdk:bundle",
+    "../../generated",
     "../../generated:protocol",
     "../../models/bindings:bundle",
     "../../models/cpu_profile:bundle",
@@ -68,6 +69,7 @@ devtools_ui_module("profiler") {
     "../../ui/legacy/components/settings_ui:bundle",
     "../../ui/legacy/components/utils:bundle",
     "../../ui/legacy/theme_support:bundle",
+    "../../ui/lit:bundle",
     "../../ui/visual_logging:bundle",
   ]
 }

@@ -83,5 +83,6 @@ devtools_ui_module("unittests") {
   deps = [
     ":bundle",
     "../../../testing",
+    "../../../ui/components/buttons:bundle",
   ]
 }

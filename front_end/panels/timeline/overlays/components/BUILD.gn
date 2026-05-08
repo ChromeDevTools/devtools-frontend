@@ -58,6 +58,7 @@ devtools_entrypoint("bundle") {
   visibility = [
     ":*",
     "..:*",
+    "../..:*",
     "../../../ui/components/docs/*",
   ]
 }
@@ -69,6 +70,7 @@ devtools_ui_module("unittests") {
 
   deps = [
     ":bundle",
+    "../../../../models/trace:bundle",
     "../../../../testing",
     "../../../../ui/components/render_coordinator:bundle",
   ]

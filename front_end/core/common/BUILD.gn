@@ -108,5 +108,7 @@ devtools_foundation_module("foundation_unittests") {
     ":bundle",
     "../../testing",
     "../i18n:bundle",
+    "../platform:bundle",
+    "../root:bundle",
   ]
 }

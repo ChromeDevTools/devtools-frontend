@@ -24,6 +24,7 @@ devtools_module("trace") {
     "../../core/platform:bundle",
     "../../core/root:bundle",
     "../../core/sdk:bundle",
+    "../../generated",
     "../../generated:protocol",
     "../cpu_profile:bundle",
     "extras:bundle",
@@ -55,6 +56,7 @@ devtools_entrypoint("bundle") {
     "../../core/sdk:unittests",
     "../../legacy_test_runner/*",
     "../../models/lighthouse/*",
+    "../../panels/ai_assistance/*",
     "../../panels/lighthouse/*",
     "../../panels/network/*",
     "../../panels/recorder/*",
@@ -87,5 +89,6 @@ ts_library("unittests") {
   deps = [
     ":bundle",
     "../../testing",
+    "../cpu_profile:bundle",
   ]
 }

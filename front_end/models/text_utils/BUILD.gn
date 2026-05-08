@@ -69,6 +69,7 @@ ts_library("unittests") {
 
   deps = [
     ":bundle",
+    "../../core/common:bundle",
     "../../core/platform:bundle",
     "../../testing",
   ]

@@ -27,7 +27,9 @@ devtools_ui_module("components") {
     "../../../ui/components/helpers:bundle",
     "../../../ui/components/settings:bundle",
     "../../../ui/components/tooltips:bundle",
+    "../../../ui/helpers:bundle",
     "../../../ui/i18n:bundle",
+    "../../../ui/kit:bundle",
     "../../../ui/legacy:bundle",
     "../../../ui/lit:bundle",
     "../../../ui/visual_logging:bundle",
@@ -63,5 +65,6 @@ devtools_ui_module("unittests") {
     "../../../ui/components/helpers:bundle",
     "../../../ui/components/settings:bundle",
     "../../../ui/lit:bundle",
+    "../../common:bundle",
   ]
 }

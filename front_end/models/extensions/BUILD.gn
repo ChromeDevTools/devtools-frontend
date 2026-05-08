@@ -42,7 +42,7 @@ devtools_entrypoint("bundle") {
   visibility = [
     ":*",
     "../../entrypoints/main/*",
-    "../../panels/common",
+    "../../panels/common/*",
     "../../panels/elements/*",
     "../../panels/recorder/*",
     "../../panels/sources/*",
@@ -64,6 +64,9 @@ ts_library("unittests") {
 
   deps = [
     ":bundle",
+    "../../core/platform:bundle",
+    "../../core/sdk:bundle",
+    "../../generated",
     "../../testing",
   ]
 }

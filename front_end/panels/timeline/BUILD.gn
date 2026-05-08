@@ -112,6 +112,7 @@ devtools_ui_module("timeline") {
     "../../core/platform:bundle",
     "../../core/root:bundle",
     "../../core/sdk:bundle",
+    "../../generated",
     "../../generated:protocol",
     "../../models/ai_assistance:bundle",
     "../../models/badges:bundle",
@@ -158,6 +159,8 @@ devtools_ui_module("timeline") {
     "./extensions:bundle",
     "./overlays:bundle",
     "./utils:bundle",
+    "components/insights:bundle",
+    "overlays/components:bundle",
   ]
 
   visibility = [ "../../component_docs/*" ]
@@ -175,6 +178,7 @@ devtools_entrypoint("bundle") {
     ":*",
     "../../../test/e2e/*",
     "../../entrypoints/*",
+    "../../models/trace/extras/*",
     "../../models/trace/handlers:unittests",
     "../../panels/ai_assistance/*",
     "../../services/tracing/*",
@@ -186,6 +190,8 @@ devtools_entrypoint("bundle") {
     "../lighthouse/*",
     "../recorder/*",
     "./track_appenders:unittests",
+    "components/*",
+    "overlays/*",
   ]
 
   visibility += devtools_panels_visibility
@@ -240,14 +246,23 @@ devtools_ui_module("unittests") {
 
   deps = [
     ":bundle",
+    "../../core/common:bundle",
     "../../core/platform:bundle",
     "../../core/root:bundle",
     "../../core/sdk:bundle",
+    "../../generated",
+    "../../models/ai_assistance:bundle",
     "../../models/bindings:bundle",
+    "../../models/live-metrics:bundle",
+    "../../models/text_utils:bundle",
     "../../models/trace:bundle",
     "../../models/trace_source_maps_resolver:bundle",
     "../../models/workspace:bundle",
+    "../../services/trace_bounds:bundle",
     "../../testing",
+    "../../ui/components/render_coordinator:bundle",
+    "../../ui/legacy:bundle",
+    "../../ui/legacy/components/perf_ui:bundle",
     "../../ui/legacy/components/utils:bundle",
     "../../ui/legacy/theme_support:bundle",
     "./components:bundle",

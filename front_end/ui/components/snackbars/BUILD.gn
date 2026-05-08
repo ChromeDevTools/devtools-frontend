@@ -47,6 +47,7 @@ devtools_ui_module("unittests") {
   deps = [
     ":bundle",
     "../../../testing",
+    "../../legacy:bundle",
   ]
 }
 

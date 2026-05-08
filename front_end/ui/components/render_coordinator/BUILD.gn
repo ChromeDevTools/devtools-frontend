@@ -13,6 +13,7 @@ devtools_entrypoint("bundle") {
   deps = [ "../../../core/platform:bundle" ]
 
   visibility = default_components_visibility
+  visibility += [ "../../../models/ai_assistance/*" ]
 }
 
 devtools_ui_module("unittests") {

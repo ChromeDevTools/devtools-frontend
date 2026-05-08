@@ -55,6 +55,7 @@ devtools_module("issues_manager") {
     "../../core/protocol_client:bundle",
     "../../core/root:bundle",
     "../../core/sdk:bundle",
+    "../../generated",
     "../../generated:protocol",
     "../../models/bindings:bundle",
     "../../models/text_utils:bundle",
@@ -335,6 +336,7 @@ ts_library("unittests") {
     ":bundle",
     "../../core/common:bundle",
     "../../core/sdk:bundle",
+    "../../generated",
     "../../generated:protocol",
     "../../testing",
   ]
@@ -365,7 +367,9 @@ devtools_foundation_module("foundation_unittests") {
   deps = [
     ":bundle",
     "../../core/common:bundle",
+    "../../core/platform:bundle",
     "../../core/sdk:bundle",
+    "../../generated",
     "../../testing",
   ]
 }

@@ -124,6 +124,7 @@ devtools_entrypoint("bundle") {
     # only for use in tests
     "../../../models/trace/handlers/*",
     "../../../ui/components/docs/*",
+    "../track_appenders/*",
   ]
 }
 
@@ -157,10 +158,24 @@ devtools_ui_module("unittests") {
 
   deps = [
     ":bundle",
+    "..:bundle",
+    "../../../core/common:bundle",
+    "../../../core/platform:bundle",
     "../../../core/sdk:bundle",
+    "../../../generated",
+    "../../../models/bindings:bundle",
     "../../../models/cpu_profile:bundle",
+    "../../../models/crux-manager:bundle",
+    "../../../models/emulation:bundle",
+    "../../../models/live-metrics:bundle",
     "../../../models/trace:bundle",
+    "../../../models/workspace:bundle",
     "../../../testing",
+    "../../../ui/components/menus:bundle",
     "../../../ui/components/render_coordinator:bundle",
+    "../../../ui/legacy:bundle",
+    "../../../ui/legacy/components/utils:bundle",
+    "../../mobile_throttling:bundle",
+    "insights:bundle",
   ]
 }

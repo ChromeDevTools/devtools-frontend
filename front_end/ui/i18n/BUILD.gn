@@ -29,6 +29,8 @@ ts_library("unittests") {
 
   deps = [
     ":bundle",
+    "../../core/i18n:bundle",
     "../../testing",
+    "../../third_party/i18n:bundle",
   ]
 }

@@ -43,6 +43,7 @@ devtools_entrypoint("bundle") {
     ":*",
     "../*",
     "../../entrypoints/main/*",
+    "../../entrypoints/node_app/*",
     "../../panels/*",
   ]
 }

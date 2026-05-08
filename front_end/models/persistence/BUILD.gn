@@ -27,6 +27,7 @@ devtools_module("persistence") {
     "../../core/i18n:bundle",
     "../../core/platform:bundle",
     "../../core/sdk:bundle",
+    "../../generated",
     "../../generated:protocol",
     "../../models/bindings:bundle",
     "../../models/breakpoints:bundle",
@@ -43,7 +44,7 @@ devtools_entrypoint("bundle") {
 
   visibility = [
     ":*",
-    "../../core/sdk:unittests",
+    "../../core/sdk/*",
     "../../entrypoints/main/*",
     "../../models/ai_assistance/*",
     "../../panels/ai_assistance/*",
@@ -57,6 +58,7 @@ devtools_entrypoint("bundle") {
     "../../panels/utils/*",
     "../../testing/*",
     "../bindings:unittests",
+    "../breakpoints/*",
     "../workspace:*",
     "../workspace_diff/*",
   ]
@@ -89,8 +91,15 @@ ts_library("unittests") {
 
   deps = [
     ":bundle",
+    "../../core/common:bundle",
+    "../../core/host:bundle",
     "../../core/platform:bundle",
     "../../core/sdk:bundle",
+    "../../generated",
     "../../testing",
+    "../bindings:bundle",
+    "../breakpoints:bundle",
+    "../project_settings:bundle",
+    "../workspace:bundle",
   ]
 }

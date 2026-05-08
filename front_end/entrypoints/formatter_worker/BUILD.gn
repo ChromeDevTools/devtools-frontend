@@ -47,6 +47,7 @@ devtools_entrypoint("bundle") {
 
   visibility = [
     ":*",
+    "../../core/sdk/*",
     "../../panels/sources/*",
     "../../ui/legacy/components/source_frame",
   ]
@@ -62,6 +63,8 @@ devtools_entrypoint("formatter_actions") {
   visibility = [
     ":*",
     "../../models/formatter/*",
+    "../../panels/sources/*",
+    "../../ui/legacy/components/source_frame/*",
   ]
 
   visibility += devtools_entrypoints_visibility

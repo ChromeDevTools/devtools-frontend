@@ -108,6 +108,11 @@ devtools_ui_module("unittests") {
   deps = [
     ":bundle",
     "../../core/common:bundle",
+    "../../core/host:bundle",
+    "../../core/platform:bundle",
+    "../../models/ai_assistance:bundle",
+    "../../models/persistence:bundle",
     "../../testing",
+    "../../ui/components/switch:bundle",
   ]
 }

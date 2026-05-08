@@ -83,6 +83,7 @@ devtools_ui_module("elements") {
     "../../core/sdk:bundle",
     "../../generated",
     "../../models/ai_assistance:bundle",
+    "../../models/ai_code_completion:bundle",
     "../../models/annotations:bundle",
     "../../models/badges:bundle",
     "../../models/bindings:bundle",
@@ -101,6 +102,7 @@ devtools_ui_module("elements") {
     "../../panels/media:bundle",
     "../../panels/mobile_throttling:bundle",
     "../../panels/utils:bundle",
+    "../../third_party/codemirror.next:bundle",
     "../../ui/components/adorners:bundle",
     "../../ui/components/buttons:bundle",
     "../../ui/components/code_highlighter:bundle",
@@ -147,6 +149,7 @@ devtools_entrypoint("bundle") {
     "../../ui/components/docs/flexbox_editor/*",
     "../../ui/components/docs/layout_pane/*",
     "../network/*",
+    "components/*",
   ]
 
   visibility += devtools_panels_visibility
@@ -206,8 +209,33 @@ devtools_ui_module("unittests") {
 
   deps = [
     ":bundle",
+    "../../core/common:bundle",
+    "../../core/host:bundle",
+    "../../core/platform:bundle",
+    "../../core/root:bundle",
+    "../../core/sdk:bundle",
+    "../../generated",
+    "../../models/ai_code_completion:bundle",
+    "../../models/bindings:bundle",
+    "../../models/computed_style:bundle",
+    "../../models/issues_manager:bundle",
     "../../models/text_utils:bundle",
+    "../../models/workspace:bundle",
     "../../testing",
+    "../../third_party/codemirror.next:bundle",
+    "../../ui/components/text_editor:bundle",
+    "../../ui/components/tooltips:bundle",
+    "../../ui/components/tree_outline:bundle",
+    "../../ui/kit:bundle",
+    "../../ui/legacy:bundle",
+    "../../ui/legacy/components/color_picker:bundle",
+    "../../ui/legacy/components/inline_editor:bundle",
+    "../../ui/legacy/components/object_ui:bundle",
+    "../../ui/legacy/components/utils:bundle",
+    "../../ui/lit:bundle",
+    "../common:bundle",
+    "../utils:bundle",
     "./components:unittests",
+    "components:bundle",
   ]
 }

@@ -30,6 +30,7 @@ devtools_ui_module("whats_new") {
     "../../ui/components/markdown_view:bundle",
     "../../ui/components/render_coordinator:bundle",
     "../../ui/helpers:bundle",
+    "../../ui/kit:bundle",
     "../../ui/legacy:bundle",
     "../../ui/lit:bundle",
     "../../ui/visual_logging:bundle",
@@ -75,8 +76,11 @@ devtools_ui_module("unittests") {
   deps = [
     ":bundle",
     "../../core/common:bundle",
+    "../../core/host:bundle",
     "../../core/platform:bundle",
+    "../../core/root:bundle",
     "../../testing",
+    "../../ui/kit:bundle",
     "../../ui/legacy:bundle",
   ]
 }

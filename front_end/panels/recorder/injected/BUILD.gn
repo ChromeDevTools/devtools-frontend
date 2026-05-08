@@ -35,6 +35,7 @@ devtools_ui_module("injected") {
 
   deps = [
     "../../../third_party/puppeteer",
+    "../../../third_party/puppeteer:bundle",
     "../../../third_party/puppeteer-replay:bundle",
   ]
 }
@@ -49,6 +50,7 @@ devtools_entrypoint("bundle") {
     "../../../ui/components/docs/recorder_injected/*",
     "../controllers:*",
     "../models:*",
+    "selectors:*",
   ]
 
   deps = [ ":injected" ]

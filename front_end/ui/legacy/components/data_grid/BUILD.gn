@@ -29,6 +29,7 @@ devtools_ui_module("data_grid") {
     "../../../../ui/legacy:bundle",
     "../../../components/buttons:bundle",
     "../../../components/render_coordinator:bundle",
+    "../../../lit:bundle",
     "../../../visual_logging:bundle",
   ]
 }
@@ -47,6 +48,7 @@ devtools_entrypoint("bundle") {
     # and the business logic should never depend on the UI modules.
     ":*",
     "../../../../panels/*",
+    "../../../../testing/*",
     "../cookie_table/*",
   ]
 
@@ -60,6 +62,9 @@ devtools_ui_module("unittests") {
 
   deps = [
     ":bundle",
+    "../..:bundle",
     "../../../../testing",
+    "../../../components/render_coordinator:bundle",
+    "../../../lit:bundle",
   ]
 }

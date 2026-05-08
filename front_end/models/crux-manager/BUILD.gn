@@ -42,7 +42,10 @@ devtools_foundation_module("foundation_unittests") {
 
   deps = [
     ":bundle",
+    "../../core/common:bundle",
+    "../../core/platform:bundle",
     "../../core/sdk:bundle",
     "../../testing",
+    "../emulation:bundle",
   ]
 }

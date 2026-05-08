@@ -26,6 +26,7 @@ devtools_entrypoint("bundle") {
     "../../models/issues_manager/*",
     "../../panels/ai_assistance/*",
     "../../panels/explain/*",
+    "../../panels/greendev/*",
     "../../panels/timeline/*",
     "../../panels/whats_new/*",
     "../../ui/components/docs/ai_assistance/*",

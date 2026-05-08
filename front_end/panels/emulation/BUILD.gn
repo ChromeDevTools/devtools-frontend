@@ -34,12 +34,14 @@ devtools_ui_module("emulation") {
     "../../core/protocol_client:bundle",
     "../../core/root:bundle",
     "../../core/sdk:bundle",
+    "../../generated",
     "../../generated:protocol",
     "../../models/bindings:bundle",
     "../../models/emulation:bundle",
     "../../models/geometry:bundle",
     "../../models/workspace:bundle",
     "../../panels/mobile_throttling:bundle",
+    "../../ui/components/buttons:bundle",
     "../../ui/i18n:bundle",
     "../../ui/kit:bundle",
     "../../ui/legacy:bundle",
@@ -99,6 +101,16 @@ devtools_ui_module("unittests") {
 
   deps = [
     ":bundle",
+    "../../core/common:bundle",
+    "../../core/host:bundle",
+    "../../core/platform:bundle",
+    "../../core/sdk:bundle",
+    "../../generated",
+    "../../models/emulation:bundle",
     "../../testing",
+    "../../ui/components/buttons:bundle",
+    "../../ui/legacy:bundle",
+    "../../ui/legacy/theme_support:bundle",
+    "../mobile_throttling:bundle",
   ]
 }

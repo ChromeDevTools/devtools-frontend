@@ -20,6 +20,7 @@ devtools_ui_module("linear_memory_inspector") {
     "../../core/platform:bundle",
     "../../core/sdk:bundle",
     "../../models/bindings:bundle",
+    "../../ui/kit:bundle",
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/object_ui:bundle",
     "../../ui/visual_logging:bundle",
@@ -71,6 +72,7 @@ devtools_ui_module("unittests") {
 
   deps = [
     ":bundle",
+    "../../core/sdk:bundle",
     "../../testing",
     "./components:bundle",
   ]

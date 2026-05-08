@@ -31,6 +31,7 @@ devtools_ui_module("utils") {
     "../../../../core/platform:bundle",
     "../../../../core/root:bundle",
     "../../../../core/sdk:bundle",
+    "../../../../generated",
     "../../../../generated:protocol",
     "../../../../models/bindings:bundle",
     "../../../../models/breakpoints:bundle",
@@ -61,6 +62,7 @@ devtools_entrypoint("bundle") {
     "../../../../entrypoints/*",
     "../../../../panels/*",
     "../../../../panels/search/*",
+    "../../../../testing/*",
     "../../../components/linear_memory_inspector/*",
     "../../../components/report_view/*",
     "../inline_editor/*",
@@ -80,8 +82,14 @@ devtools_ui_module("unittests") {
 
   deps = [
     ":bundle",
+    "../..:bundle",
+    "../../../../core/common:bundle",
+    "../../../../core/platform:bundle",
     "../../../../core/sdk:bundle",
+    "../../../../generated",
     "../../../../models/bindings:bundle",
+    "../../../../models/breakpoints:bundle",
+    "../../../../models/stack_trace:bundle",
     "../../../../models/workspace:bundle",
     "../../../../testing",
   ]

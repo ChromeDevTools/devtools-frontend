@@ -36,6 +36,7 @@ devtools_ui_module("components") {
     "../../../core/platform:bundle",
     "../../../core/root:bundle",
     "../../../core/sdk:bundle",
+    "../../../generated",
     "../../../generated:protocol",
     "../../../models/issues_manager:bundle",
     "../../../models/persistence:bundle",
@@ -87,7 +88,16 @@ devtools_ui_module("unittests") {
 
   deps = [
     ":bundle",
+    "../../../core/common:bundle",
+    "../../../core/host:bundle",
     "../../../core/platform:bundle",
+    "../../../core/sdk:bundle",
+    "../../../generated",
+    "../../../models/persistence:bundle",
+    "../../../models/workspace:bundle",
     "../../../testing",
+    "../../../ui/components/render_coordinator:bundle",
+    "../../../ui/legacy:bundle",
+    "../forward:bundle",
   ]
 }

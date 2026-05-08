@@ -40,12 +40,17 @@ devtools_ui_module("components") {
   deps = [
     "../../../core/common:bundle",
     "../../../core/host:bundle",
+    "../../../core/i18n:bundle",
     "../../../core/platform:bundle",
     "../../../core/sdk:bundle",
+    "../../../generated",
+    "../../../models/badges:bundle",
     "../../../models/extensions:bundle",
     "../../../third_party/codemirror.next:bundle",
+    "../../../third_party/puppeteer:bundle",
     "../../../third_party/puppeteer-replay:bundle",
     "../../../ui/components/buttons:bundle",
+    "../../../ui/components/code_highlighter:bundle",
     "../../../ui/components/dialogs:bundle",
     "../../../ui/components/helpers:bundle",
     "../../../ui/components/input:bundle",
@@ -62,7 +67,9 @@ devtools_ui_module("components") {
     "../converters:bundle",
     "../extensions:bundle",
     "../models:bundle",
+    "../models:recorder",
     "../recorder-actions:bundle",
+    "../util:bundle",
   ]
 }
 
@@ -95,8 +102,13 @@ devtools_ui_module("unittests") {
 
   deps = [
     ":bundle",
+    "../../../core/host:bundle",
     "../../../testing",
+    "../../../ui/components/menus:bundle",
+    "../../../ui/components/suggestion_input:bundle",
     "../../../ui/components/text_editor:bundle",
+    "../converters:bundle",
+    "../extensions:bundle",
     "../models:bundle",
     "../testing",
   ]

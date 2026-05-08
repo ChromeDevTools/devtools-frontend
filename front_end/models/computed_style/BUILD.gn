@@ -22,6 +22,7 @@ devtools_entrypoint("bundle") {
 
   visibility = [
     ":*",
+    "../../panels/ai_assistance/*",
     "../../panels/elements/*",
     "../ai_assistance/*",
   ]
@@ -35,6 +36,7 @@ ts_library("unittests") {
   deps = [
     ":bundle",
     "../../core/sdk:bundle",
+    "../../generated",
     "../../generated:protocol",
     "../../testing",
   ]

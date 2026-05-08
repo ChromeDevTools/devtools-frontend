@@ -23,6 +23,7 @@ devtools_ui_module("web_audio") {
     "../../core/i18n:bundle",
     "../../core/platform:bundle",
     "../../core/sdk:bundle",
+    "../../generated",
     "../../generated:protocol",
     "../../ui/legacy:bundle",
     "../../ui/lit:bundle",
@@ -68,6 +69,9 @@ devtools_ui_module("unittests") {
 
   deps = [
     ":bundle",
+    "../../core/platform:bundle",
+    "../../generated",
     "../../testing",
+    "../../ui/legacy:bundle",
   ]
 }

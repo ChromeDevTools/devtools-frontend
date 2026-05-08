@@ -6,6 +6,7 @@ import * as Host from '../../../core/host/host.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import type * as AIAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
+import * as TextUtils from '../../../models/text_utils/text_utils.js';
 import {assertScreenshot, querySelectorErrorOnMissing, renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import {
   describeWithEnvironment,
@@ -927,37 +928,9 @@ describeWithEnvironment('ChatMessage', () => {
         id: '1',
       };
 
-      // We need to mock the widget maker to return a name
-      const targetElement = document.createElement('div');
-      AiAssistance.ChatMessage.DEFAULT_VIEW(
-          {
-            onRatingClick: () => {},
-            onReportClick: () => {},
-            onCopyResponseClick: () => {},
-            scrollSuggestionsScrollContainer: () => {},
-            onSuggestionsScrollOrResize: () => {},
-            onSuggestionClick: () => {},
-            onSubmit: () => {},
-            onClose: () => {},
-            onInputChange: () => {},
-            onFeedbackSubmit: () => {},
-            showRateButtons: false,
-            isSubmitButtonDisabled: false,
-            isShowingFeedbackForm: false,
-            isLastMessage: true,
-            isFirstMessage: false,
-            prompt: 'test prompt',
-            shouldShowCSSChangeSummary: false,
-            showActions: true,
-            message: messageWithNamedWidget,
-            isLoading: false,
-            isReadOnly: false,
-            canShowFeedbackForm: false,
-            markdownRenderer: new AiAssistance.MarkdownRendererWithCodeBlock(),
-            currentRating: undefined,
-            walkthrough: {...DEFAULT_WALKTHROUGH},
-          },
-          {}, targetElement);
+      const targetElement = renderView({
+        message: messageWithNamedWidget,
+      });
 
       // We need to wait for the async renderWidgets
       const widgetHeader = await waitFor('.widget-header', targetElement);
@@ -966,6 +939,50 @@ describeWithEnvironment('ChatMessage', () => {
       const revealButton = widgetHeader.querySelector('.widget-reveal-button');
       assert.isNotNull(revealButton);
       assert.strictEqual(revealButton.getAttribute('accessibleLabel'), 'Reveal LCP element');
+    });
+
+    it('renders network request image using imageContent.asImagePreviewUrl()', async () => {
+      const root = sinon.createStubInstance(SDK.DOMModel.DOMNodeSnapshot);
+      const domModel = sinon.createStubInstance(SDK.DOMModel.DOMModel);
+      const target = sinon.createStubInstance(SDK.Target.Target);
+      root.domModel.returns(domModel);
+      domModel.target.returns(target);
+      root.backendNodeId.returns(1 as Protocol.DOM.BackendNodeId);
+
+      const mockContentData = sinon.createStubInstance(TextUtils.ContentData.ContentData);
+      mockContentData.asImagePreviewUrl.returns('blob:http://localhost/123');
+
+      const messageWithWidget: AiAssistance.ChatMessage.ModelChatMessage = {
+        entity: AiAssistance.ChatMessage.ChatMessageEntity.MODEL,
+        parts: [{
+          type: 'widget',
+          widgets: [{
+            name: 'DOM_TREE',
+            data: {
+              root,
+              networkRequest: {
+                url: 'https://example.com/image.png',
+                size: 100,
+                resourceType: 'Image' as Protocol.Network.ResourceType,
+                mimeType: 'image/png',
+                imageContent: mockContentData,
+              },
+            },
+          }],
+        }],
+        rpcId: 99,
+        id: '1',
+      };
+
+      const targetElement = renderView({
+        message: messageWithWidget,
+      });
+
+      await waitFor('img', targetElement);
+      const img = targetElement.querySelector('img');
+      assert.exists(img);
+      assert.strictEqual(img?.src, 'blob:http://localhost/123');
+      sinon.assert.calledOnce(mockContentData.asImagePreviewUrl);
     });
 
     it('renders the "Export for agents" button after action buttons and before suggestions when onExportClick is provided, it is the last message, and V2 is enabled',

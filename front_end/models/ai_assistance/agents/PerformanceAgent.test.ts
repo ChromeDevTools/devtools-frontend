@@ -7,7 +7,7 @@ import * as Host from '../../../core/host/host.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
-import {mockAidaClient} from '../../../testing/AiAssistanceHelpers.js';
+import {createNetworkRequest, mockAidaClient} from '../../../testing/AiAssistanceHelpers.js';
 import {
   createTarget,
   restoreUserAgentForTesting,
@@ -20,6 +20,8 @@ import {SnapshotTester} from '../../../testing/SnapshotTester.js';
 import {allThreadEntriesInTrace} from '../../../testing/TraceHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as Bindings from '../../bindings/bindings.js';
+import * as Logs from '../../logs/logs.js';
+import * as TextUtils from '../../text_utils/text_utils.js';
 import * as Trace from '../../trace/trace.js';
 import type {SerializableKey} from '../../trace/types/File.js';
 import * as Workspace from '../../workspace/workspace.js';
@@ -786,6 +788,70 @@ code
       // It should show the widget again because it's a new response.
       assert.exists(secondActions[0].widgets);
       assert.lengthOf(secondActions[0].widgets!, 2);
+    });
+
+    it('populates imageContent for DOM_TREE widget if lcpRequest is present', async function() {
+      const parsedTrace = await TraceLoader.traceEngine(this, 'lcp-images.json.gz');
+      assert.isOk(parsedTrace.insights);
+      const [firstNav] = parsedTrace.data.Meta.mainFrameNavigations;
+      const lcpDiscovery = getInsightOrError('LCPDiscovery', parsedTrace.insights, firstNav);
+      const insightSetId = [...parsedTrace.insights.keys()][0];
+      const insightSet = parsedTrace.insights.get(insightSetId)!;
+
+      const lcpRequest = parsedTrace.data.NetworkRequests.byTime.find(r => r.args.data.url.endsWith('50.jpg'));
+      assert.exists(lcpRequest);
+
+      insightSet.model.LCPBreakdown = {
+        insightKey: 'LCPBreakdown',
+        state: 'fail',
+        lcpMs: 1 as Trace.Types.Timing.Milli,
+        lcpEvent: {
+          name: 'largestContentfulPaint::Candidate',
+          args: {data: {nodeId: 4}},
+        } as unknown as Trace.Types.Events.LargestContentfulPaintCandidate,
+        lcpRequest,
+      } as Trace.Insights.Types.InsightModels['LCPBreakdown'];
+
+      const context = PerformanceAgent.PerformanceTraceContext.fromInsight(parsedTrace, lcpDiscovery);
+
+      const agent = new PerformanceAgent.PerformanceAgent({
+        aidaClient: mockAidaClient([
+          [{
+            explanation: '',
+            functionCalls: [
+              {name: 'getInsightDetails', args: {insightSetId: insightSet.id, insightName: 'LCPDiscovery'}},
+            ]
+          }],
+          [{explanation: 'done'}]
+        ])
+      });
+
+      const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+      assert.exists(target);
+      const domModel = target.model(SDK.DOMModel.DOMModel);
+      assert.exists(domModel);
+
+      sinon.stub(domModel, 'pushNodesByBackendIdsToFrontend').resolves(new Map([[
+        4 as Protocol.DOM.BackendNodeId,
+        {takeSnapshot: sinon.stub().resolves({root: {nodeName: 'IMG'}})} as unknown as SDK.DOMModel.DOMNode
+      ]]));
+
+      const mockRequest = createNetworkRequest();
+      sinon.stub(mockRequest, 'contentType').returns({
+        isImage: () => true
+      } as unknown as Common.ResourceType.ResourceType);
+      sinon.stub(mockRequest, 'requestContentData')
+          .resolves(new TextUtils.ContentData.ContentData('base64', true, 'image/jpeg'));
+      sinon.stub(Logs.NetworkLog.NetworkLog.instance(), 'requestByManagerAndId').returns(mockRequest);
+
+      const responses = await Array.fromAsync(agent.run('test', {selected: context}));
+      const action = responses.find(r => r.type === AiAgent.ResponseType.ACTION) as AiAgent.ActionResponse;
+      assert.exists(action);
+      assert.exists(action.widgets);
+      const domTreeWidget = action.widgets?.find(w => w.name === 'DOM_TREE') as AiAgent.DomTreeAiWidget;
+      assert.exists(domTreeWidget);
+      assert.exists(domTreeWidget.data.networkRequest?.imageContent);
+      assert.strictEqual(domTreeWidget.data.networkRequest?.imageContent?.base64, 'base64');
     });
 
     describe('getInsightDetails yields PERF_INSIGHT widget', () => {

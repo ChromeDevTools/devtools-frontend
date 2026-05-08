@@ -985,9 +985,14 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
                 const nodeMap = await domModel.pushNodesByBackendIdsToFrontend(new Set([nodeId]));
                 const node = nodeMap?.get(nodeId);
                 if (node) {
-                  const snapshot = await node.takeSnapshot();
-                  let networkRequest;
                   const lcpSyntheticRequest = insight.lcpRequest;
+                  const [snapshot, imageContent] = await Promise.all([
+                    node.takeSnapshot(),
+                    lcpSyntheticRequest ? this.#getNetworkRequestImageData(lcpSyntheticRequest) :
+                                          Promise.resolve(undefined),
+                  ]);
+
+                  let networkRequest;
                   if (lcpSyntheticRequest) {
                     networkRequest = {
                       url: lcpSyntheticRequest.args.data.url,
@@ -995,7 +1000,7 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
                           lcpSyntheticRequest.args.data.encodedDataLength ?? 0,
                       resourceType: lcpSyntheticRequest.args.data.resourceType,
                       mimeType: lcpSyntheticRequest.args.data.mimeType ?? '',
-                      imageUrl: await this.#getNetworkRequestImageData(lcpSyntheticRequest),
+                      imageContent,
                     };
                   }
                   widgets.push({
@@ -1567,7 +1572,8 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
     return {result: {success: true}};
   }
 
-  async #getNetworkRequestImageData(lcpRequest: Trace.Types.Events.SyntheticNetworkRequest): Promise<string|undefined> {
+  async #getNetworkRequestImageData(lcpRequest: Trace.Types.Events.SyntheticNetworkRequest):
+      Promise<TextUtils.ContentData.ContentData|undefined> {
     const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
     const networkManager = target?.model(SDK.NetworkManager.NetworkManager);
     if (!target || !networkManager) {
@@ -1581,7 +1587,7 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
     if (sdkRequest?.contentType().isImage()) {
       const contentData = await sdkRequest.requestContentData();
       if (!TextUtils.ContentData.ContentData.isError(contentData)) {
-        return contentData.asDataUrl() ?? undefined;
+        return contentData;
       }
     }
     return undefined;

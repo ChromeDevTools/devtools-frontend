@@ -18,17 +18,15 @@ export class CSSFormatter {
   #toOffset!: number;
   #fromOffset!: number;
   #lineEndings!: number[];
-  #lastLine: number;
+  #lastLine = -1;
   #state: {
     eatWhitespace?: boolean,
     seenProperty?: boolean,
     inPropertyValue?: boolean,
     afterClosingBrace?: boolean,
-  };
+  } = {};
   constructor(builder: FormattedContentBuilder) {
     this.#builder = builder;
-    this.#lastLine = -1;
-    this.#state = {};
   }
 
   format(text: string, lineEndings: number[], fromOffset: number, toOffset: number): void {

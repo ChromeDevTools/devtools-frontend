@@ -1,3 +1,131 @@
+## 8.16.0 (2026-02-19)
+
+### New features
+
+The `sourceType` option can now be set to `"commonjs"` to have the parser treat the top level scope as a function scope.
+
+Add support for Unicode 17.
+
+### Bug fixes
+
+Don't recognize `await using` as contextual keywords when followed directly by a backslash.
+
+Fix an issue where the parser would allow `return` statements in `static` blocks when `allowReturnOutsideFunction` was enabled.
+
+Properly reject `using` declarations that appear directly in `switch` or `for` head scopes.
+
+Fix some corner case issues in the recognition of `using` syntax.
+
+## 8.15.0 (2025-06-08)
+
+### New features
+
+Support `using` and `await using` syntax.
+
+The `AnyNode` type is now defined in such a way that plugins can extend it.
+
+### Bug fixes
+
+Fix an issue where the `bigint` property of literal nodes for non-decimal bigints had the wrong format.
+
+The `acorn` CLI tool no longer crashes when emitting a tree that contains a bigint.
+
+## 8.14.1 (2025-03-05)
+
+### Bug fixes
+
+Fix an issue where `await` expressions in class field initializers were inappropriately allowed.
+
+Properly allow await inside an async arrow function inside a class field initializer.
+
+Mention the source file name in syntax error messages when given.
+
+Properly add an empty `attributes` property to every form of `ExportNamedDeclaration`.
+
+## 8.14.0 (2024-10-27)
+
+### New features
+
+Support ES2025 import attributes.
+
+Support ES2025 RegExp modifiers.
+
+### Bug fixes
+
+Support some missing Unicode properties.
+
+## 8.13.0 (2024-10-16)
+
+### New features
+
+Upgrade to Unicode 16.0.
+
+## 8.12.1 (2024-07-03)
+
+### Bug fixes
+
+Fix a regression that caused Acorn to no longer run on Node versions <8.10.
+
+## 8.12.0 (2024-06-14)
+
+### New features
+
+Support ES2025 duplicate capture group names in regular expressions.
+
+### Bug fixes
+
+Include `VariableDeclarator` in the `AnyNode` type so that walker objects can refer to it without getting a type error.
+
+Properly raise a parse error for invalid `for`/`of` statements using `async` as binding name.
+
+Properly recognize \"use strict\" when preceded by a string with an escaped newline.
+
+Mark the `Parser` constructor as protected, not private, so plugins can extend it without type errors.
+
+Fix a bug where some invalid `delete` expressions were let through when the operand was parenthesized and `preserveParens` was enabled.
+
+Properly normalize line endings in raw strings of invalid template tokens.
+
+Properly track line numbers for escaped newlines in strings.
+
+Fix a bug that broke line number accounting after a template literal with invalid escape sequences.
+
+## 8.11.3 (2023-12-29)
+
+### Bug fixes
+
+Add `Function` and `Class` to the `AggregateType` type, so that they can be used in walkers without raising a type error.
+
+Make sure `onToken` get an `import` keyword token when parsing `import.meta`.
+
+Fix a bug where `.loc.start` could be undefined for `new.target` `meta` nodes.
+
+## 8.11.2 (2023-10-27)
+
+### Bug fixes
+
+Fix a bug that caused regular expressions after colon tokens to not be properly tokenized in some circumstances.
+
+## 8.11.1 (2023-10-26)
+
+### Bug fixes
+
+Fix a regression where `onToken` would receive 'name' tokens for 'new' keyword tokens.
+
+## 8.11.0 (2023-10-26)
+
+### Bug fixes
+
+Fix an issue where tokenizing (without parsing) an object literal with a property named `class` or `function` could, in some circumstance, put the tokenizer into an invalid state.
+
+Fix an issue where a slash after a call to a propery named the same as some keywords would be tokenized as a regular expression.
+
+### New features
+
+Upgrade to Unicode 15.1.
+
+Use a set of new, much more precise, TypeScript types.
+
 ## 8.10.0 (2023-07-05)
 
 ### New features

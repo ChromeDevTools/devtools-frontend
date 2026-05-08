@@ -786,4 +786,9 @@ function formatted2() {
 str = "abc".toUpperCase();
 `);
   });
+
+  it('formats import attributes correctly', () => {
+    const formattedCode = formatJavaScript('import  data  from  \'./data.json\'  with  {  type:  \'json\'  };');
+    assert.strictEqual(formattedCode, 'import data from \'./data.json\' with {type: \'json\'};\n');
+  });
 });

@@ -61,6 +61,7 @@ export class AcornTokenizer {
   }
 
   static identifier(token: TokenOrComment, identifier?: string): boolean {
+    // @ts-expect-error https://github.com/acornjs/acorn/issues/1285
     return token.type === Acorn.tokTypes.name && (!identifier || token.value === identifier);
   }
 
@@ -107,4 +108,4 @@ export class AcornTokenizer {
   }
 }
 
-export const ECMA_VERSION = 2022;
+export const ECMA_VERSION = 'latest';

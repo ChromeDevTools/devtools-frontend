@@ -13,5 +13,5 @@ Description:
 A tiny, fast JavaScript parser written in JavaScript.
 
 ```bash
-wget -qO- https://registry.npmjs.org/acorn/-/acorn-8.10.0.tgz | tar xzf -
+wget -qO- https://registry.npmjs.org/acorn/-/acorn-8.16.0.tgz | tar xzf -
 ```

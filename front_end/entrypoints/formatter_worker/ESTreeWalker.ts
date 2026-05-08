@@ -91,7 +91,8 @@ const WALK_ORDER = {
   FunctionDeclaration: ['id', 'params', 'body'],
   FunctionExpression: ['id', 'params', 'body'],
   Identifier: [],
-  ImportDeclaration: ['specifiers', 'source'],
+  ImportDeclaration: ['specifiers', 'source', 'attributes'],
+  ImportAttribute: ['key', 'value'],
   ImportDefaultSpecifier: ['local'],
   ImportNamespaceSpecifier: ['local'],
   ImportSpecifier: ['imported', 'local'],
@@ -136,4 +137,4 @@ const WALK_ORDER = {
   WhileStatement: ['test', 'body'],
   WithStatement: ['object', 'body'],
   YieldExpression: ['argument'],
-};
+} as const;

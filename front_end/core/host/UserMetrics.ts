@@ -1146,7 +1146,8 @@ export const enum LighthouseCategoryUsed {
   SEO = 3,
   PWA = 4,
   PUB_ADS = 5,
-  MAX_VALUE = 6,
+  AGENTIC_BROWSING = 6,
+  MAX_VALUE = 7,
 }
 
 export const enum SwatchType {

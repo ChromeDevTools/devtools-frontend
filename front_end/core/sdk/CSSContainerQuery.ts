@@ -15,6 +15,7 @@ export class CSSContainerQuery extends CSSQuery {
   logicalAxes?: Protocol.DOM.LogicalAxes;
   queriesScrollState?: boolean;
   queriesAnchored?: boolean;
+  textIsConditionText?: boolean;
 
   static parseContainerQueriesPayload(cssModel: CSSModel, payload: Protocol.CSS.CSSContainerQuery[]):
       CSSContainerQuery[] {
@@ -27,7 +28,8 @@ export class CSSContainerQuery extends CSSQuery {
   }
 
   reinitialize(payload: Protocol.CSS.CSSContainerQuery): void {
-    this.text = payload.text;
+    this.textIsConditionText = !!payload.conditionText;
+    this.text = this.textIsConditionText ? payload.conditionText : payload.text;
     this.range = payload.range ? TextUtils.TextRange.TextRange.fromObject(payload.range) : null;
     this.styleSheetId = payload.styleSheetId;
     this.name = payload.name;

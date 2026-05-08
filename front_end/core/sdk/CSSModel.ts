@@ -552,6 +552,29 @@ export class CSSModel extends SDKModel<EventTypes> {
     }
   }
 
+  async setContainerQueryConditionText(
+      styleSheetId: Protocol.DOM.StyleSheetId, range: TextUtils.TextRange.TextRange,
+      newContainerQueryConditionText: string): Promise<boolean> {
+    Host.userMetrics.actionTaken(Host.UserMetrics.Action.StyleRuleEdited);
+
+    try {
+      await this.ensureOriginalStyleSheetText(styleSheetId);
+      const {containerQuery} = await this.agent.invoke_setContainerQueryConditionText(
+          {styleSheetId, range, text: newContainerQueryConditionText});
+
+      if (!containerQuery) {
+        return false;
+      }
+      this.#domModel.markUndoableState();
+      const edit = new Edit(styleSheetId, range, newContainerQueryConditionText, containerQuery);
+      this.fireStyleSheetChanged(styleSheetId, edit);
+      return true;
+    } catch (e) {
+      console.error(e);
+      return false;
+    }
+  }
+
   async setSupportsText(
       styleSheetId: Protocol.DOM.StyleSheetId, range: TextUtils.TextRange.TextRange,
       newSupportsText: string): Promise<boolean> {

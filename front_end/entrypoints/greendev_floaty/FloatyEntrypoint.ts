@@ -534,7 +534,6 @@ async function init(): Promise<void> {
         Root.ExperimentNames.ExperimentName.INSTRUMENTATION_BREAKPOINTS, 'Enable instrumentation breakpoints');
     safeRegisterExperiment(
         Root.ExperimentNames.ExperimentName.USE_SOURCE_MAP_SCOPES, 'Use scope information from source maps');
-    safeRegisterExperiment(Root.ExperimentNames.ExperimentName.LIVE_HEAP_PROFILE, 'Live heap profile');
     safeRegisterExperiment(Root.ExperimentNames.ExperimentName.PROTOCOL_MONITOR, 'Protocol Monitor');
 
     const hostUnsyncedStorage: Common.Settings.SettingsBackingStore = {

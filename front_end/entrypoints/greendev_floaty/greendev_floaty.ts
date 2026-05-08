@@ -250,7 +250,6 @@ async function init(): Promise<void> {
         Root.ExperimentNames.ExperimentName.INSTRUMENTATION_BREAKPOINTS, 'Enable instrumentation breakpoints');
     Root.Runtime.experiments.register(
         Root.ExperimentNames.ExperimentName.USE_SOURCE_MAP_SCOPES, 'Use scope information from source maps');
-    Root.Runtime.experiments.register(Root.ExperimentNames.ExperimentName.LIVE_HEAP_PROFILE, 'Live heap profile');
     Root.Runtime.experiments.register(Root.ExperimentNames.ExperimentName.PROTOCOL_MONITOR, 'Protocol Monitor');
 
     const WINDOW_LOCAL_STORAGE: Common.Settings.SettingsBackingStore = {

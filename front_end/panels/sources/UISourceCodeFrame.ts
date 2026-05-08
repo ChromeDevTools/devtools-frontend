@@ -25,7 +25,7 @@ import {CoveragePlugin} from './CoveragePlugin.js';
 import {CSSPlugin} from './CSSPlugin.js';
 import {DebuggerPlugin} from './DebuggerPlugin.js';
 import type {Plugin} from './Plugin.js';
-import {MemoryProfilePlugin, PerformanceProfilePlugin} from './ProfilePlugin.js';
+import {PerformanceProfilePlugin} from './ProfilePlugin.js';
 import {ResourceOriginPlugin} from './ResourceOriginPlugin.js';
 import {SnippetsPlugin} from './SnippetsPlugin.js';
 import {SourcesPanel} from './SourcesPanel.js';
@@ -321,7 +321,6 @@ export class UISourceCodeFrame extends Common.ObjectWrapper
       SnippetsPlugin,
       ResourceOriginPlugin,
       CoveragePlugin,
-      MemoryProfilePlugin,
       PerformanceProfilePlugin,
       AiWarningInfobarPlugin,
     ];

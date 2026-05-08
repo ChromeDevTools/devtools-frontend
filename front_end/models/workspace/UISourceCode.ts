@@ -719,7 +719,6 @@ export class UISourceCodeMetadata {
 
 export const enum DecoratorType {
   PERFORMANCE = 'performance',
-  MEMORY = 'memory',
   COVERAGE = 'coverage',
 }
 

@@ -102,62 +102,6 @@ export class Performance {
   }
 }
 
-let memoryInstance: Memory;
-
-// Note: this is used only by LiveHeapProfile (a drawer panel) if the experiment is enabled.
-export class Memory {
-  private readonly helper: Helper;
-  private constructor() {
-    this.helper = new Helper(Workspace.UISourceCode.DecoratorType.MEMORY);
-  }
-
-  static instance(opts: {
-    forceNew: boolean|null,
-  } = {forceNew: null}): Memory {
-    const {forceNew} = opts;
-    if (!memoryInstance || forceNew) {
-      memoryInstance = new Memory();
-    }
-
-    return memoryInstance;
-  }
-
-  reset(): void {
-    this.helper.reset();
-    void this.helper.update();
-  }
-
-  initialize(profilesAndTargets: Array<{
-    profile: Protocol.HeapProfiler.SamplingHeapProfile,
-    target: SDK.Target.Target,
-  }>): void {
-    this.helper.reset();
-    for (const {profile, target} of profilesAndTargets) {
-      this.appendHeapProfile(profile, target);
-    }
-    void this.helper.update();
-  }
-
-  private appendHeapProfile(profile: Protocol.HeapProfiler.SamplingHeapProfile, target: SDK.Target.Target|null): void {
-    const helper = this.helper;
-    processNode(profile.head);
-
-    function processNode(node: Protocol.HeapProfiler.SamplingHeapProfileNode): void {
-      node.children.forEach(processNode);
-      if (!node.selfSize) {
-        return;
-      }
-      const script = Number(node.callFrame.scriptId) || node.callFrame.url as Platform.DevToolsPath.UrlString;
-      if (!script) {
-        return;
-      }
-      const line = node.callFrame.lineNumber + 1;
-      const column = node.callFrame.columnNumber + 1;
-      helper.addLocationData(target, script, {line, column}, node.selfSize);
-    }
-  }
-}
-
 export class Helper {
   private readonly type: Workspace.UISourceCode.DecoratorType;
   private readonly locationPool = new Bindings.LiveLocation.LiveLocationPool();

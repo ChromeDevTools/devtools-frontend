@@ -30,7 +30,6 @@ devtools_ui_module("perf_ui") {
     "Font.ts",
     "GCActionDelegate.ts",
     "LineLevelProfile.ts",
-    "LiveHeapProfile.ts",
     "NetworkPriorities.ts",
     "OverviewGrid.ts",
     "PieChart.ts",

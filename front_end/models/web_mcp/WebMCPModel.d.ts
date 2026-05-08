@@ -40,7 +40,7 @@ export declare class Tool {
     get frame(): SDK.ResourceTreeModel.ResourceTreeFrame | undefined;
     get isDeclarative(): boolean;
     get node(): SDK.DOMModel.DeferredDOMNode | undefined;
-    invoke(input: unknown): Promise<Protocol.WebMCP.InvokeToolResponse | undefined>;
+    invoke(input: unknown): Promise<string | undefined>;
 }
 export interface EventTypes {
     [Events.TOOLS_ADDED]: readonly Tool[];
@@ -54,6 +54,7 @@ export declare class WebMCPModel extends SDK.SDKModel.SDKModel<EventTypes> imple
     constructor(target: SDK.Target.Target);
     get tools(): IteratorObject<Tool>;
     get toolCalls(): Call[];
+    toolCallForId(invocationId: string): Call | undefined;
     clearCalls(): void;
     enable(): Promise<void>;
     toolsRemoved(params: Protocol.WebMCP.ToolsRemovedEvent): void;

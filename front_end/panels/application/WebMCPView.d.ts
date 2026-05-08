@@ -31,6 +31,11 @@ export interface FilterMenuButtons {
     toolTypes: FilterMenuButton;
     statusTypes: FilterMenuButton;
 }
+export declare const enum TabId {
+    DETAILS = "webmcp.tool-details",
+    INPUT = "webmcp.call-inputs",
+    OUTPUT = "webmcp.call-outputs"
+}
 export interface SelectedTool {
     tool: WebMCP.WebMCPModel.Tool;
     parameters?: Record<string, unknown>;
@@ -41,7 +46,8 @@ export interface ViewInput {
     onToolSelect: (tool: WebMCP.WebMCPModel.Tool | null) => void;
     onRevealTool: (tool: WebMCP.WebMCPModel.Tool, parameters?: Record<string, unknown>) => void;
     selectedCall: WebMCP.WebMCPModel.Call | null;
-    onCallSelect: (call: WebMCP.WebMCPModel.Call | null) => void;
+    selectedTab?: TabId;
+    onCallSelect: (call: WebMCP.WebMCPModel.Call | null, tabId?: TabId) => void;
     filters: FilterState;
     filterButtons: FilterMenuButtons;
     onClearLogClick: () => void;

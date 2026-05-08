@@ -199,7 +199,7 @@ export class AidaClient {
                     throw new Error(`Server responded: ${JSON.stringify(result)}`);
                 }
                 else {
-                    throw new Error('Unknown chunk result');
+                    throw new Error(`Unknown chunk result ${JSON.stringify(result)}`);
                 }
             }
             if (textUpdated) {

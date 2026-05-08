@@ -7959,10 +7959,6 @@ export const NativeFunctions = [
         signatures: [["textCluster", "x", "y", "?options"]]
     },
     {
-        name: "transferToGPUTexture",
-        signatures: [["options"]]
-    },
-    {
         name: "beginLayer",
         signatures: [["?options"]]
     },

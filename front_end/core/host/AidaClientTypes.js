@@ -46,6 +46,8 @@ export var ClientFeature;
     ClientFeature[ClientFeature["CHROME_ACCESSIBILITY_AGENT"] = 26] = "CHROME_ACCESSIBILITY_AGENT";
     // Chrome AI Assistance Conversation Summary Agent.
     ClientFeature[ClientFeature["CHROME_CONVERSATION_SUMMARY_AGENT"] = 27] = "CHROME_CONVERSATION_SUMMARY_AGENT";
+    // Chrome AI Assistance Storage Agent.
+    ClientFeature[ClientFeature["CHROME_STORAGE_AGENT"] = 28] = "CHROME_STORAGE_AGENT";
 })(ClientFeature || (ClientFeature = {}));
 export var UserTier;
 (function (UserTier) {

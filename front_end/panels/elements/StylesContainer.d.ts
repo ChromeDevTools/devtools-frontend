@@ -37,6 +37,7 @@ export interface StylesContainer {
     jumpToProperty(propertyName: string, sectionName?: string, blockName?: string): boolean;
     jumpToSectionBlock(section: string): void;
     jumpToFontPaletteDefinition(paletteName: string): void;
+    jumpToCounterStyleDefinition(counterStyleName: string): void;
     jumpToDeclaration(valueSource: SDK.CSSMatchedStyles.CSSValueSource): void;
     setActiveProperty(treeElement: StylePropertyTreeElement | null): void;
     addStyleUpdateListener(listener: () => void): void;

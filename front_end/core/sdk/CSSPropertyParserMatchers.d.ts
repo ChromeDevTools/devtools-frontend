@@ -297,8 +297,10 @@ export declare const enum LinkableNameProperties {
     ANIMATION = "animation",
     ANIMATION_NAME = "animation-name",
     FONT_PALETTE = "font-palette",
-    POSITION_TRY_FALLBACKS = "position-try-fallbacks",
-    POSITION_TRY = "position-try"
+    LIST_STYLE = "list-style",
+    LIST_STYLE_TYPE = "list-style-type",
+    POSITION_TRY = "position-try",
+    POSITION_TRY_FALLBACKS = "position-try-fallbacks"
 }
 declare const enum AnimationLonghandPart {
     DIRECTION = "direction",

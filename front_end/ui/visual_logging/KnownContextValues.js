@@ -1134,6 +1134,7 @@ export const knownContextValues = new Set([
     'css-font-palette',
     'css-function',
     'css-layers',
+    'css-list-style-type',
     'css-location',
     'css-overview',
     'css-overview.cancel-processing',

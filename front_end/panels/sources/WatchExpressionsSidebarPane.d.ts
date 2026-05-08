@@ -5,26 +5,28 @@ import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import { UISourceCodeFrame } from './UISourceCodeFrame.js';
-export declare class WatchExpressionsSidebarPane extends UI.Widget.VBox implements UI.ActionRegistration.ActionDelegate, UI.Toolbar.ItemsProvider, UI.ContextMenu.Provider<ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement | UISourceCodeFrame> {
+interface ViewInput {
+    onCopyWatchExpression(watchExpression: WatchExpression): void;
+    onDeleteAll(): unknown;
+    onAddExpression(): unknown;
+    watchExpressions: WatchExpression[];
+}
+type View = (input: ViewInput, output: object, target: HTMLElement) => void;
+export declare const DEFAULT_VIEW: View;
+export declare class WatchExpressionsSidebarPane extends UI.Widget.VBox implements UI.ActionRegistration.ActionDelegate, UI.Toolbar.ItemsProvider {
     #private;
-    private emptyElement;
     private readonly addButton;
     private readonly refreshButton;
-    private readonly treeOutline;
-    private readonly expandController;
     private readonly linkifier;
     constructor();
     static instance(): WatchExpressionsSidebarPane;
     get watchExpressions(): WatchExpression[];
     toolbarItems(): UI.Toolbar.ToolbarItem[];
-    focus(): void;
     private saveExpressions;
     private addButtonClicked;
     performUpdate(): Promise<void>;
     private createWatchExpression;
     private watchExpressionUpdated;
-    private contextMenu;
-    private populateContextMenu;
     private deleteAllButtonClicked;
     private focusAndAddExpressionToWatch;
     handleAction(_context: UI.Context.Context, _actionId: string): boolean;
@@ -34,14 +36,13 @@ export declare class WatchExpression extends Common.ObjectWrapper.ObjectWrapper<
     #private;
     private nameElement;
     private valueElement;
-    private readonly expandController;
     private element;
     private editing;
     private linkifier;
     private textPrompt?;
-    private result?;
     private preventClickTimeout?;
-    constructor(expression: string | null, expandController: ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionsTreeExpandController, linkifier: Components.Linkifier.Linkifier);
+    constructor(expression: string | null, expandController: ObjectUI.ObjectPropertiesSection.ObjectTreeExpansionTracker, linkifier: Components.Linkifier.Linkifier);
+    get result(): SDK.RemoteObject.RemoteObject | null;
     get updateComplete(): Promise<void>;
     treeElement(): UI.TreeOutline.TreeElement;
     expression(): string | null;
@@ -52,13 +53,10 @@ export declare class WatchExpression extends Common.ObjectWrapper.ObjectWrapper<
     private dblClickOnWatchExpression;
     updateExpression(newExpression: string | null): void;
     private deleteWatchExpression;
-    createWatchExpression(result?: SDK.RemoteObject.RemoteObject, exceptionDetails?: Protocol.Runtime.ExceptionDetails): void;
+    createWatchExpression(result?: SDK.RemoteObject.RemoteObject, exceptionDetails?: Protocol.Runtime.ExceptionDetails): Promise<void>;
     private createWatchExpressionHeader;
-    private createWatchExpressionTreeElement;
     private onSectionClick;
     private promptKeyDown;
-    populateContextMenu(contextMenu: UI.ContextMenu.ContextMenu, event: Event): void;
-    private copyValueButtonClicked;
     private static readonly watchObjectGroupId;
 }
 declare const enum Events {

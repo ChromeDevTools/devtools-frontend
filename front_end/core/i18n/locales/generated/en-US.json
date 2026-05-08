@@ -6281,6 +6281,9 @@
   "panels/application/WebMCPView.ts | canceledCount": {
     "message": "{PH1} Canceled"
   },
+  "panels/application/WebMCPView.ts | causedBy": {
+    "message": "Caused by:"
+  },
   "panels/application/WebMCPView.ts | clearFilters": {
     "message": "Clear filters"
   },
@@ -8395,6 +8398,9 @@
   },
   "panels/elements/StylesSidebarPane.ts | aiSuggestionAccepted": {
     "message": "{PH1} Suggestion accepted."
+  },
+  "panels/elements/StylesSidebarPane.ts | atRuleSection": {
+    "message": "Other @rules"
   },
   "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
     "message": "Automatic dark mode"

@@ -230,6 +230,8 @@ export class StandaloneStylesContainer extends Common.ObjectWrapper.eventMixin(U
     }
     jumpToFontPaletteDefinition(_paletteName) {
     }
+    jumpToCounterStyleDefinition(_counterStyleName) {
+    }
     jumpToDeclaration(_valueSource) {
     }
     addStyleUpdateListener(listener) {

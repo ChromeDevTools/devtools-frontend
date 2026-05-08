@@ -20,8 +20,6 @@ import { WebCustomData } from './WebCustomData.js';
 export declare const REGISTERED_PROPERTY_SECTION_NAME = "@property";
 /** Title of the function section **/
 export declare const FUNCTION_SECTION_NAME = "@function";
-/** Title of the general at-rule section */
-export declare const AT_RULE_SECTION_NAME = "@font-*";
 declare const StylesSidebarPane_base: (new (...args: any[]) => {
     __events: Common.ObjectWrapper.ObjectWrapper<EventTypes>;
     addEventListener<T extends keyof EventTypes>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<EventTypes[T], any>) => void, thisObject?: Object): Common.EventTarget.EventDescriptor<EventTypes, T>;
@@ -77,6 +75,7 @@ export declare class StylesSidebarPane extends StylesSidebarPane_base implements
     jumpToSectionBlock(section: string): void;
     jumpToFunctionDefinition(functionName: string): void;
     jumpToFontPaletteDefinition(paletteName: string): void;
+    jumpToCounterStyleDefinition(counterStyleName: string): void;
     forceUpdate(): void;
     private sectionsContainerKeyDown;
     private sectionsContainerFocusChanged;

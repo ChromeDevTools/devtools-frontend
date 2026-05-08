@@ -11719,6 +11719,14 @@ var webMCPView_css_default = `/*
     display: flex;
     gap: var(--sys-size-5);
     align-items: center;
+    min-width: 0;
+  }
+
+  .name-cell > span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
   }
 
   .run-tool-action-button {
@@ -11772,8 +11780,11 @@ var webMCPView_css_default = `/*
       color: var(--sys-color-on-surface);
       overflow-wrap: anywhere;
 
-      &:has(> .stack-preview-container) {
-        padding: var(--sys-size-4) 0;
+      &.stack-trace {
+        display: flex;
+        padding: 0;
+        margin-top: calc(-1 * (var(--sys-size-1) + var(--sys-size-2)));
+        margin-left: calc(-1 * var(--sys-size-3));
       }
 
       &.tool-origin-container {
@@ -12086,7 +12097,11 @@ var UIStrings30 = {
   /**
    * @description Notice to display when a tool has been unregistered
    */
-  toolUnregisteredNotice: "This tool has been unregistered"
+  toolUnregisteredNotice: "This tool has been unregistered",
+  /**
+   * @description Text preceding a nested error in a stack trace
+   */
+  causedBy: "Caused by:"
 };
 var str_30 = i18n59.i18n.registerUIStrings("panels/application/WebMCPView.ts", UIStrings30);
 var i18nString30 = i18n59.i18n.getLocalizedString.bind(void 0, str_30);
@@ -12327,7 +12342,14 @@ var DEFAULT_VIEW7 = (input, output, target) => {
       }, { jslogContext: "webmcp.cancel-call" });
     }
   }}>
-                      <td>
+                      <td @click=${(e) => {
+    e.stopPropagation();
+    input.onCallSelect(
+      call,
+      "webmcp.tool-details"
+      /* TabId.DETAILS */
+    );
+  }}>
                         <div class="name-cell">
                           <span>${call.tool.name}</span>
                           <button class="run-tool-action-button"
@@ -12342,15 +12364,36 @@ var DEFAULT_VIEW7 = (input, output, target) => {
                           </button>
                         </div>
                       </td>
-                      <td>
+                      <td @click=${(e) => {
+    e.stopPropagation();
+    input.onCallSelect(
+      call,
+      "webmcp.call-outputs"
+      /* TabId.OUTPUT */
+    );
+  }}>
                         <div class="status-cell">
                           ${iconName(call) ? html10`<devtools-icon class="small" name=${iconName(call)}></devtools-icon>` : ""}
                           <span>${statusString(call)}</span>
                         </div>
                       </td>
                       ${!input.selectedCall ? html10`
-                        <td>${call.input}</td>
-                        <td>${call.result?.output ? JSON.stringify(call.result.output) : call.result?.errorText ?? ""}</td>
+                        <td @click=${(e) => {
+    e.stopPropagation();
+    input.onCallSelect(
+      call,
+      "webmcp.call-inputs"
+      /* TabId.INPUT */
+    );
+  }}>${call.input}</td>
+                        <td @click=${(e) => {
+    e.stopPropagation();
+    input.onCallSelect(
+      call,
+      "webmcp.call-outputs"
+      /* TabId.OUTPUT */
+    );
+  }}>${call.result?.output ? JSON.stringify(call.result.output) : call.result?.errorText ?? ""}</td>
                         ` : nothing6}
                     </tr>
                   `)}
@@ -12368,17 +12411,20 @@ var DEFAULT_VIEW7 = (input, output, target) => {
                   @click=${() => input.onCallSelect(null)}
                 ></devtools-button>
                 <devtools-widget
-                  id="webmcp.tool-details"
+                  id=${"webmcp.tool-details"}
+                  ?selected=${input.selectedTab === "webmcp.tool-details"}
                   title=${i18nString30(UIStrings30.toolDetails)}
                   ${widget7(ToolDetailsWidget, { tool: input.selectedCall?.tool, isUnregistered: input.selectedCall ? !input.tools.includes(input.selectedCall.tool) : false })}>
                 </devtools-widget>
                 <devtools-widget
-                  id="webmcp.call-inputs"
+                  id=${"webmcp.call-inputs"}
+                  ?selected=${input.selectedTab === "webmcp.call-inputs"}
                   title=${i18nString30(UIStrings30.input)}
                   ${widget7(PayloadWidget, parsePayload(input.selectedCall?.input))}>
                 </devtools-widget>
                 <devtools-widget
-                  id="webmcp.call-outputs"
+                  id=${"webmcp.call-outputs"}
+                  ?selected=${input.selectedTab === "webmcp.call-outputs"}
                   title=${i18nString30(UIStrings30.output)}
                   ${widget7(PayloadWidget, {
     valueObject: input.selectedCall?.result?.output,
@@ -12518,6 +12564,8 @@ var WebMCPView = class _WebMCPView extends UI28.Widget.VBox {
   #view;
   #selectedTool = null;
   #selectedCall = null;
+  #selectedTab = void 0;
+  #lastDevToolsInvocationId = null;
   #filterState = {
     text: ""
   };
@@ -12596,14 +12644,22 @@ var WebMCPView = class _WebMCPView extends UI28.Widget.VBox {
   #webMCPModelAdded(model) {
     model.addEventListener("ToolsAdded", this.requestUpdate, this);
     model.addEventListener("ToolsRemoved", this.#toolsRemoved, this);
-    model.addEventListener("ToolInvoked", this.requestUpdate, this);
+    model.addEventListener("ToolInvoked", this.#toolInvoked, this);
     model.addEventListener("ToolResponded", this.requestUpdate, this);
   }
   #webMCPModelRemoved(model) {
     model.removeEventListener("ToolsAdded", this.requestUpdate, this);
     model.removeEventListener("ToolsRemoved", this.#toolsRemoved, this);
-    model.removeEventListener("ToolInvoked", this.requestUpdate, this);
+    model.removeEventListener("ToolInvoked", this.#toolInvoked, this);
     model.removeEventListener("ToolResponded", this.requestUpdate, this);
+  }
+  #toolInvoked(event) {
+    const call = event.data;
+    if (call.invocationId === this.#lastDevToolsInvocationId) {
+      this.#selectedCall = call;
+      this.#lastDevToolsInvocationId = null;
+    }
+    this.requestUpdate();
   }
   #toolsRemoved(event) {
     if (this.#selectedTool && event.data.includes(this.#selectedTool.tool)) {
@@ -12648,8 +12704,16 @@ var WebMCPView = class _WebMCPView extends UI28.Widget.VBox {
         this.requestUpdate();
       },
       selectedCall: this.#selectedCall,
-      onCallSelect: (call) => {
-        this.#selectedCall = call;
+      selectedTab: this.#selectedTab,
+      onCallSelect: (call, tabId) => {
+        if (call === null) {
+          this.#selectedCall = null;
+        } else if (this.#selectedCall === null) {
+          this.#selectedCall = call;
+          this.#selectedTab = tabId;
+        } else {
+          this.#selectedCall = call;
+        }
         this.requestUpdate();
       },
       toolCalls: filteredCalls,
@@ -12657,9 +12721,19 @@ var WebMCPView = class _WebMCPView extends UI28.Widget.VBox {
       filterButtons: this.#filterButtons,
       onClearLogClick: this.#handleClearLogClick,
       onFilterChange: this.#handleFilterChange,
-      onRunTool: (event) => {
+      onRunTool: async (event) => {
         if (this.#selectedTool) {
-          void this.#selectedTool.tool.invoke(event.data.parameters || {});
+          this.#selectedTool.parameters = event.data.parameters || {};
+          this.#lastDevToolsInvocationId = await this.#selectedTool.tool.invoke(this.#selectedTool.parameters) ?? null;
+          if (this.#lastDevToolsInvocationId) {
+            const models2 = SDK24.TargetManager.TargetManager.instance().models(WebMCP.WebMCPModel.WebMCPModel);
+            const call = models2.flatMap((model) => model.toolCalls).find((c) => c.invocationId === this.#lastDevToolsInvocationId);
+            if (call) {
+              this.#selectedCall = call;
+              this.#lastDevToolsInvocationId = null;
+            }
+          }
+          this.requestUpdate();
         }
       },
       onPaste: async () => {
@@ -12678,6 +12752,7 @@ var WebMCPView = class _WebMCPView extends UI28.Widget.VBox {
       }
     };
     this.#view(input, {}, this.contentElement);
+    this.#selectedTab = void 0;
   }
 };
 var PAYLOAD_DEFAULT_VIEW = (input, output, target) => {
@@ -12728,7 +12803,7 @@ var PAYLOAD_DEFAULT_VIEW = (input, output, target) => {
       <div class="payload-value source-code error-text">
         ${details.frames.length === 0 && details.description ? html10`<span>${details.description}\n</span>` : nothing6}
         <div>${details.frames.map(renderFrame)}</div>
-        ${details.cause ? html10`\nCaused by:\n${createException(details.cause, linkifier)}` : nothing6}</div>`;
+        ${details.cause ? html10`\n${i18nString30(UIStrings30.causedBy)}\n${createException(details.cause, linkifier)}` : nothing6}</div>`;
   };
   render9(html10`
     <style>${webMCPView_css_default}</style>
@@ -12848,7 +12923,7 @@ var TOOL_DETAILS_VIEW = (input, output, target) => {
            ></devtools-button>
       </div>` : origin ? html10`
       <div class="label">Origin</div>
-      <div class="value">
+      <div class="value stack-trace">
         ${widget7(Components4.JSPresentationUtils.StackTracePreviewContent, { stackTrace: origin, options: { expandable: true } })}
       </div>` : nothing6}
     </div>

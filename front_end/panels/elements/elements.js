@@ -1059,7 +1059,6 @@ import * as VisualLogging6 from "./../../ui/visual_logging/visual_logging.js";
 // gen/front_end/panels/elements/StylesSidebarPane.js
 var StylesSidebarPane_exports = {};
 __export(StylesSidebarPane_exports, {
-  AT_RULE_SECTION_NAME: () => AT_RULE_SECTION_NAME,
   ActionDelegate: () => ActionDelegate,
   ButtonProvider: () => ButtonProvider2,
   CSSPropertyPrompt: () => CSSPropertyPrompt,
@@ -3556,8 +3555,18 @@ var LinkableNameRenderer = class extends rendererBase(SDK6.CSSPropertyParserMatc
         return {
           jslogContext: "css-font-palette",
           metric: null,
-          ruleBlock: "@font-*",
+          ruleBlock: "",
+          // Not used
           isDefined: Boolean(this.#matchedStyles.atRules().find((ar) => ar.type() === "font-palette-values" && ar.name()?.text === match.text))
+        };
+      case "list-style":
+      case "list-style-type":
+        return {
+          jslogContext: "css-list-style-type",
+          metric: null,
+          ruleBlock: "",
+          // Not used
+          isDefined: Boolean(this.#matchedStyles.atRules().find((ar) => ar.type() === "counter-style" && ar.name()?.text === match.text))
         };
       case "position-try":
       case "position-try-fallbacks":
@@ -3580,6 +3589,8 @@ var LinkableNameRenderer = class extends rendererBase(SDK6.CSSPropertyParserMatc
         metric && Host.userMetrics.swatchActivated(metric);
         if (match.propertyName === "font-palette") {
           this.#stylesContainer.jumpToFontPaletteDefinition(match.text);
+        } else if (match.propertyName === "list-style" || match.propertyName === "list-style-type") {
+          this.#stylesContainer.jumpToCounterStyleDefinition(match.text);
         } else {
           this.#stylesContainer.jumpToSectionBlock(`${ruleBlock} ${match.text}`);
         }
@@ -5541,6 +5552,9 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI7.TreeO
       return;
     }
     this.#clearGhostTextInValue();
+    if (this.value === text) {
+      return;
+    }
     if (this.value) {
       this.listItemElement.classList.add("not-parsed-ok", "invalid-property-value");
     }
@@ -5550,7 +5564,22 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI7.TreeO
     this.valueElement.insertAdjacentElement("afterend", ghostTextElement);
   }
   #clearGhostTextInValue() {
-    this.listItemElement.querySelector(".ghost-value-prediction")?.remove();
+    const ghostTextElement = this.listItemElement.querySelector(".ghost-value-prediction");
+    if (!ghostTextElement) {
+      return;
+    }
+    ghostTextElement.remove();
+    if (!this.value) {
+      return;
+    }
+    if (this.property.parsedOk) {
+      this.listItemElement.classList.remove("not-parsed-ok", "invalid-property-value");
+    } else {
+      const invalidPropertyValue = SDK6.CSSMetadata.cssMetadata().isCSSPropertyName(this.property.name);
+      if (!invalidPropertyValue) {
+        this.listItemElement.classList.remove("invalid-property-value");
+      }
+    }
   }
 };
 var GhostStylePropertyTreeElement = class extends StylePropertyTreeElement {
@@ -8190,7 +8219,11 @@ var UIStrings6 = {
    * @description Text to announce that the AI suggestion was accepted.
    * @example {color: blue;} PH1
    */
-  aiSuggestionAccepted: "{PH1} Suggestion accepted."
+  aiSuggestionAccepted: "{PH1} Suggestion accepted.",
+  /**
+   * @description Title of the general at-rule section
+   */
+  atRuleSection: "Other @rules"
 };
 var str_6 = i18n12.i18n.registerUIStrings("panels/elements/StylesSidebarPane.ts", UIStrings6);
 var i18nString6 = i18n12.i18n.getLocalizedString.bind(void 0, str_6);
@@ -8199,7 +8232,6 @@ var FILTER_IDLE_PERIOD = 500;
 var MIN_FOLDED_SECTIONS_COUNT = 5;
 var REGISTERED_PROPERTY_SECTION_NAME = "@property";
 var FUNCTION_SECTION_NAME = "@function";
-var AT_RULE_SECTION_NAME = "@font-*";
 var HIGHLIGHTABLE_PROPERTIES = [
   { mode: "padding", properties: ["padding"] },
   { mode: "border", properties: ["border"] },
@@ -8357,7 +8389,10 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common5.ObjectWrapper.e
     this.jumpToSection(functionName, FUNCTION_SECTION_NAME);
   }
   jumpToFontPaletteDefinition(paletteName) {
-    this.jumpToSection(`@font-palette-values ${paletteName}`, AT_RULE_SECTION_NAME);
+    this.jumpToSection(`@font-palette-values ${paletteName}`, i18nString6(UIStrings6.atRuleSection));
+  }
+  jumpToCounterStyleDefinition(counterStyleName) {
+    this.jumpToSection(`@counter-style ${counterStyleName}`, i18nString6(UIStrings6.atRuleSection));
   }
   forceUpdate() {
     this.needsForceUpdate = true;
@@ -9413,7 +9448,7 @@ var SectionBlock = class _SectionBlock {
     const separatorElement = document.createElement("div");
     const block = new _SectionBlock(separatorElement, true, expandedByDefault);
     separatorElement.className = "sidebar-separator";
-    separatorElement.appendChild(document.createTextNode(AT_RULE_SECTION_NAME));
+    separatorElement.appendChild(document.createTextNode(i18nString6(UIStrings6.atRuleSection)));
     return block;
   }
   static createPositionTryBlock(positionTryName) {
@@ -21159,6 +21194,8 @@ var StandaloneStylesContainer = class extends Common18.ObjectWrapper.eventMixin(
   jumpToSectionBlock(_section) {
   }
   jumpToFontPaletteDefinition(_paletteName) {
+  }
+  jumpToCounterStyleDefinition(_counterStyleName) {
   }
   jumpToDeclaration(_valueSource) {
   }

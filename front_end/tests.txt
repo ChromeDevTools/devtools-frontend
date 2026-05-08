@@ -571,6 +571,7 @@ panels/sources/NavigatorView.test.js
 panels/sources/OutlineQuickOpen.test.js
 panels/sources/PersistenceAction.test.js
 panels/sources/ResourceOriginPlugin.test.js
+panels/sources/ScopeChainSidebarPane.test.js
 panels/sources/SourcesNavigator.test.js
 panels/sources/SourcesPanel.test.js
 panels/sources/SourcesView.test.js

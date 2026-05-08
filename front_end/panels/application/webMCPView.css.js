@@ -93,6 +93,14 @@ export default `/*
     display: flex;
     gap: var(--sys-size-5);
     align-items: center;
+    min-width: 0;
+  }
+
+  .name-cell > span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
   }
 
   .run-tool-action-button {
@@ -146,8 +154,11 @@ export default `/*
       color: var(--sys-color-on-surface);
       overflow-wrap: anywhere;
 
-      &:has(> .stack-preview-container) {
-        padding: var(--sys-size-4) 0;
+      &.stack-trace {
+        display: flex;
+        padding: 0;
+        margin-top: calc(-1 * (var(--sys-size-1) + var(--sys-size-2)));
+        margin-left: calc(-1 * var(--sys-size-3));
       }
 
       &.tool-origin-container {

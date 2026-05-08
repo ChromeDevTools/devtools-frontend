@@ -1288,12 +1288,12 @@ var AiAgent = class {
     const userTier = Host.AidaClient.convertToUserTierEnum(this.userTier);
     const clientFeatureName = Host.AidaClient.getClientFeatureName(this.clientFeature);
     debugLog(`Client ${clientFeatureName} running with userTier ${this.userTier}`);
-    const preamble11 = userTier === Host.AidaClient.UserTier.TESTERS ? this.preamble : void 0;
+    const preamble12 = userTier === Host.AidaClient.UserTier.TESTERS ? this.preamble : void 0;
     const facts = Array.from(this.#facts);
     const request = {
       client: Host.AidaClient.CLIENT_NAME,
       current_message: currentMessage,
-      preamble: preamble11,
+      preamble: preamble12,
       historical_contexts: history.length ? history : void 0,
       facts: facts.length ? facts : void 0,
       ...enableAidaFunctionCalling ? { function_declarations: declarations } : {},
@@ -5438,6 +5438,24 @@ The order of headers corresponds to an internal fixed list. If a header is not p
     return parts.join("\n");
   }
   /**
+   * Formats only the first line of the function code to save space in summaries.
+   * The agent can use this information (url, line, column) to get the whole function source.
+   */
+  #formatFunctionCodeSummary(code) {
+    this.#formattedFunctionCodes.add(this.#functionCodeToKey(code));
+    const { startLine, startColumn } = code.range;
+    const name = code.functionBounds.name || "(anonymous)";
+    const url = code.functionBounds.uiSourceCode.url();
+    const lines = code.code.split("\n");
+    const firstLine = lines[0] || "";
+    const parts = [];
+    parts.push(`${name} @ ${url}:${startLine}:${startColumn}`);
+    parts.push("```");
+    parts.push(firstLine);
+    parts.push("```");
+    return parts.join("\n");
+  }
+  /**
    * Appends the code of each call frame's function, but only if the function was not
    * serialized previously.
    */
@@ -5450,7 +5468,7 @@ The order of headers corresponds to an internal fixed list. If a header is not p
     const functionCodes = await Promise.all(callFrames.map((frame) => resolveFunctionCode(frame.url, frame.lineNumber, frame.columnNumber)));
     for (const code of functionCodes) {
       if (code && !this.#hasFormattedFunctionCode(code)) {
-        functionCodeStrings.push(this.#formatFunctionCode(code));
+        functionCodeStrings.push(this.#formatFunctionCodeSummary(code));
       }
     }
     if (!functionCodeStrings.length) {
@@ -5458,7 +5476,7 @@ The order of headers corresponds to an internal fixed list. If a header is not p
     }
     return "\n" + [
       this.#getFormattedFunctionCodeExplainer(),
-      functionCodeStrings.length > 1 ? `Here are ${functionCodeStrings.length} relevant functions:` : `Here is a relevant function:`,
+      functionCodeStrings.length > 1 ? `Here is the first line of ${functionCodeStrings.length} relevant functions:` : `Here is the first line of a relevant function:`,
       ...functionCodeStrings
     ].join("\n\n");
   }
@@ -10103,6 +10121,69 @@ Generate a concise label (max 60 chars, single line) describing the *user-visibl
 - Very important: Only output the 60 character label text, your response will be used in full to show to the user as an annotation in the timeline.
 `;
 
+// gen/front_end/models/ai_assistance/agents/StorageAgent.js
+var StorageAgent_exports = {};
+__export(StorageAgent_exports, {
+  StorageAgent: () => StorageAgent,
+  StorageContext: () => StorageContext
+});
+import * as Host14 from "./../../core/host/host.js";
+import * as Root13 from "./../../core/root/root.js";
+var preamble11 = `You are a Senior Software Engineer, specializing in state audit and storage analysis within Chrome DevTools. Your mission is to help developers debug storage-related issues faster by analyzing the evidence in Cookies, LocalStorage, and SessionStorage and connecting it to the application logic in the source code.
+
+# Considerations
+
+-   **Raw Evidence**: Treat storage data as "raw evidence". Do not make assumptions without verifying code references.
+-   **Brevity**: Use the precision of Strunk & White, the brevity of Hemingway, and the simple clarity of Vonnegut. Keep answers short and actionable.
+
+ **CRITICAL** You are a debugging assistant in DevTools. NEVER provide answers to questions of unrelated topics such as legal advice, financial advice, personal opinions, medical advice, religion, race, politics, sexuality, gender, or any other non web-development topics. Answer "Sorry, I can't answer that. I'm best at questions about debugging web pages." to such questions.
+`;
+var StorageContext = class extends ConversationContext {
+  #item;
+  constructor(item) {
+    super();
+    this.#item = item;
+  }
+  getOrigin() {
+    return this.#item.origin;
+  }
+  getItem() {
+    return this.#item;
+  }
+  getTitle() {
+    if (this.#item.key) {
+      return `${this.#item.storageType}: ${this.#item.key}`;
+    }
+    return `Storage for ${this.#item.origin}`;
+  }
+};
+var StorageAgent = class extends AiAgent {
+  preamble = preamble11;
+  clientFeature = Host14.AidaClient.ClientFeature.CHROME_STORAGE_AGENT;
+  get userTier() {
+    return Root13.Runtime.hostConfig.devToolsFreestyler?.userTier;
+  }
+  get options() {
+    const temperature = Root13.Runtime.hostConfig.devToolsFreestyler?.temperature;
+    const modelId = Root13.Runtime.hostConfig.devToolsFreestyler?.modelId;
+    return {
+      temperature,
+      modelId
+    };
+  }
+  constructor(opts = {}) {
+    super({
+      aidaClient: opts.aidaClient ?? new Host14.AidaClient.AidaClient(),
+      sessionId: opts.sessionId
+    });
+  }
+  async *handleContextDetails(_context) {
+  }
+  async enhanceQuery(query, _context) {
+    return query;
+  }
+};
+
 // gen/front_end/models/ai_assistance/AiConversation.js
 var AiConversation_exports = {};
 __export(AiConversation_exports, {
@@ -10112,9 +10193,9 @@ __export(AiConversation_exports, {
   generateContextDetailsMarkdown: () => generateContextDetailsMarkdown
 });
 import * as Common8 from "./../../core/common/common.js";
-import * as Host14 from "./../../core/host/host.js";
+import * as Host15 from "./../../core/host/host.js";
 import * as Platform6 from "./../../core/platform/platform.js";
-import * as Root13 from "./../../core/root/root.js";
+import * as Root14 from "./../../core/root/root.js";
 import * as SDK11 from "./../../core/sdk/sdk.js";
 import * as Greendev4 from "./../greendev/greendev.js";
 
@@ -10313,7 +10394,7 @@ var AiConversation = class _AiConversation {
   #onInspectElement;
   #networkTimeCalculator;
   constructor(options) {
-    const { type, data = [], id = crypto.randomUUID(), isReadOnly = true, aidaClient = new Host14.AidaClient.AidaClient(), changeManager, isExternal = false, performanceRecordAndReload, onInspectElement, networkTimeCalculator, lighthouseRecording } = options;
+    const { type, data = [], id = crypto.randomUUID(), isReadOnly = true, aidaClient = new Host15.AidaClient.AidaClient(), changeManager, isExternal = false, performanceRecordAndReload, onInspectElement, networkTimeCalculator, lighthouseRecording } = options;
     this.#changeManager = changeManager;
     this.#aidaClient = aidaClient;
     this.#performanceRecordAndReload = performanceRecordAndReload;
@@ -10656,10 +10737,10 @@ Original user query: ${initialQuery}`;
   };
 };
 function isAiAssistanceServerSideLoggingEnabled() {
-  return !Root13.Runtime.hostConfig.aidaAvailability?.disallowLogging;
+  return !Root14.Runtime.hostConfig.aidaAvailability?.disallowLogging;
 }
 function isAiAssistanceContextSelectionAgentEnabled() {
-  return Boolean(Root13.Runtime.hostConfig.devToolsAiAssistanceContextSelectionAgent?.enabled);
+  return Boolean(Root14.Runtime.hostConfig.devToolsAiAssistanceContextSelectionAgent?.enabled);
 }
 
 // gen/front_end/models/ai_assistance/AiUtils.js
@@ -10670,9 +10751,9 @@ __export(AiUtils_exports, {
   isGeminiBranding: () => isGeminiBranding
 });
 import * as Common9 from "./../../core/common/common.js";
-import * as Host15 from "./../../core/host/host.js";
+import * as Host16 from "./../../core/host/host.js";
 import * as i18n15 from "./../../core/i18n/i18n.js";
-import * as Root14 from "./../../core/root/root.js";
+import * as Root15 from "./../../core/root/root.js";
 var UIStrings = {
   /**
    * @description Message shown to the user if the age check is not successful.
@@ -10695,7 +10776,7 @@ var str_ = i18n15.i18n.registerUIStrings("models/ai_assistance/AiUtils.ts", UISt
 var i18nString = i18n15.i18n.getLocalizedString.bind(void 0, str_);
 function getDisabledReasons(aidaAvailability) {
   const reasons = [];
-  if (Root14.Runtime.hostConfig.isOffTheRecord) {
+  if (Root15.Runtime.hostConfig.isOffTheRecord) {
     reasons.push(i18nString(UIStrings.notAvailableInIncognitoMode));
   }
   switch (aidaAvailability) {
@@ -10707,7 +10788,7 @@ function getDisabledReasons(aidaAvailability) {
     case "no-internet":
       reasons.push(i18nString(UIStrings.offline));
     case "available": {
-      if (Root14.Runtime.hostConfig?.aidaAvailability?.blockedByAge === true) {
+      if (Root15.Runtime.hostConfig?.aidaAvailability?.blockedByAge === true) {
         reasons.push(i18nString(UIStrings.ageRestricted));
       }
     }
@@ -10716,7 +10797,7 @@ function getDisabledReasons(aidaAvailability) {
   return reasons;
 }
 function isGeminiBranding() {
-  return !!Root14.Runtime.hostConfig.devToolsGeminiRebranding?.enabled;
+  return !!Root15.Runtime.hostConfig.devToolsGeminiRebranding?.enabled;
 }
 function getIconName() {
   return isGeminiBranding() ? "spark" : "smart-assistant";
@@ -10728,8 +10809,8 @@ __export(BuiltInAi_exports, {
   BuiltInAi: () => BuiltInAi
 });
 import * as Common10 from "./../../core/common/common.js";
-import * as Host16 from "./../../core/host/host.js";
-import * as Root15 from "./../../core/root/root.js";
+import * as Host17 from "./../../core/host/host.js";
+import * as Root16 from "./../../core/root/root.js";
 var builtInAiInstance;
 var BuiltInAi = class _BuiltInAi extends Common10.ObjectWrapper.ObjectWrapper {
   #availability = null;
@@ -10750,7 +10831,7 @@ var BuiltInAi = class _BuiltInAi extends Common10.ObjectWrapper.ObjectWrapper {
     this.initDoneForTesting = this.getLanguageModelAvailability().then(() => this.#sendAvailabilityMetrics()).then(() => this.initialize());
   }
   async getLanguageModelAvailability() {
-    if (!Root15.Runtime.hostConfig.devToolsConsoleInsightsTeasers?.enabled) {
+    if (!Root16.Runtime.hostConfig.devToolsConsoleInsightsTeasers?.enabled) {
       this.#availability = "disabled";
       return this.#availability;
     }
@@ -10774,7 +10855,7 @@ var BuiltInAi = class _BuiltInAi extends Common10.ObjectWrapper.ObjectWrapper {
     return this.#availability === "downloading";
   }
   isEventuallyAvailable() {
-    if (!this.#hasGpu && !Boolean(Root15.Runtime.hostConfig.devToolsConsoleInsightsTeasers?.allowWithoutGpu)) {
+    if (!this.#hasGpu && !Boolean(Root16.Runtime.hostConfig.devToolsConsoleInsightsTeasers?.allowWithoutGpu)) {
       return false;
     }
     return this.#availability === "available" || this.#availability === "downloading" || this.#availability === "downloadable";
@@ -10787,7 +10868,7 @@ var BuiltInAi = class _BuiltInAi extends Common10.ObjectWrapper.ObjectWrapper {
     return this.#downloadProgress;
   }
   startDownloadingModel() {
-    if (!Root15.Runtime.hostConfig.devToolsConsoleInsightsTeasers?.allowWithoutGpu && !this.#hasGpu) {
+    if (!Root16.Runtime.hostConfig.devToolsConsoleInsightsTeasers?.allowWithoutGpu && !this.#hasGpu) {
       return;
     }
     if (this.#availability !== "downloadable") {
@@ -10822,7 +10903,7 @@ var BuiltInAi = class _BuiltInAi extends Common10.ObjectWrapper.ObjectWrapper {
     return Boolean(this.#consoleInsightsSession);
   }
   async initialize() {
-    if (!Root15.Runtime.hostConfig.devToolsConsoleInsightsTeasers?.allowWithoutGpu && !this.#hasGpu) {
+    if (!Root16.Runtime.hostConfig.devToolsConsoleInsightsTeasers?.allowWithoutGpu && !this.#hasGpu) {
       return;
     }
     if (this.#availability !== "available" && this.#availability !== "downloading") {
@@ -10909,31 +10990,31 @@ Your instructions are as follows:
     if (this.#hasGpu) {
       switch (this.#availability) {
         case "unavailable":
-          Host16.userMetrics.builtInAiAvailability(
+          Host17.userMetrics.builtInAiAvailability(
             0
             /* Host.UserMetrics.BuiltInAiAvailability.UNAVAILABLE_HAS_GPU */
           );
           break;
         case "downloadable":
-          Host16.userMetrics.builtInAiAvailability(
+          Host17.userMetrics.builtInAiAvailability(
             1
             /* Host.UserMetrics.BuiltInAiAvailability.DOWNLOADABLE_HAS_GPU */
           );
           break;
         case "downloading":
-          Host16.userMetrics.builtInAiAvailability(
+          Host17.userMetrics.builtInAiAvailability(
             2
             /* Host.UserMetrics.BuiltInAiAvailability.DOWNLOADING_HAS_GPU */
           );
           break;
         case "available":
-          Host16.userMetrics.builtInAiAvailability(
+          Host17.userMetrics.builtInAiAvailability(
             3
             /* Host.UserMetrics.BuiltInAiAvailability.AVAILABLE_HAS_GPU */
           );
           break;
         case "disabled":
-          Host16.userMetrics.builtInAiAvailability(
+          Host17.userMetrics.builtInAiAvailability(
             4
             /* Host.UserMetrics.BuiltInAiAvailability.DISABLED_HAS_GPU */
           );
@@ -10942,31 +11023,31 @@ Your instructions are as follows:
     } else {
       switch (this.#availability) {
         case "unavailable":
-          Host16.userMetrics.builtInAiAvailability(
+          Host17.userMetrics.builtInAiAvailability(
             5
             /* Host.UserMetrics.BuiltInAiAvailability.UNAVAILABLE_NO_GPU */
           );
           break;
         case "downloadable":
-          Host16.userMetrics.builtInAiAvailability(
+          Host17.userMetrics.builtInAiAvailability(
             6
             /* Host.UserMetrics.BuiltInAiAvailability.DOWNLOADABLE_NO_GPU */
           );
           break;
         case "downloading":
-          Host16.userMetrics.builtInAiAvailability(
+          Host17.userMetrics.builtInAiAvailability(
             7
             /* Host.UserMetrics.BuiltInAiAvailability.DOWNLOADING_NO_GPU */
           );
           break;
         case "available":
-          Host16.userMetrics.builtInAiAvailability(
+          Host17.userMetrics.builtInAiAvailability(
             8
             /* Host.UserMetrics.BuiltInAiAvailability.AVAILABLE_NO_GPU */
           );
           break;
         case "disabled":
-          Host16.userMetrics.builtInAiAvailability(
+          Host17.userMetrics.builtInAiAvailability(
             9
             /* Host.UserMetrics.BuiltInAiAvailability.DISABLED_NO_GPU */
           );
@@ -10975,6 +11056,9 @@ Your instructions are as follows:
     }
   }
 };
+
+// gen/front_end/models/ai_assistance/StorageItem.js
+var StorageItem_exports = {};
 export {
   AICallTree_exports as AICallTree,
   AIContext_exports as AIContext,
@@ -11005,6 +11089,8 @@ export {
   PerformanceAnnotationsAgent_exports as PerformanceAnnotationsAgent,
   PerformanceInsightFormatter_exports as PerformanceInsightFormatter,
   PerformanceTraceFormatter_exports as PerformanceTraceFormatter,
+  StorageAgent_exports as StorageAgent,
+  StorageItem_exports as StorageItem,
   StylingAgent_exports as StylingAgent,
   UnitFormatters_exports as UnitFormatters
 };

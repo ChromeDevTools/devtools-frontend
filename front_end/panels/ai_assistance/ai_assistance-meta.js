@@ -89,8 +89,11 @@ function isPerformanceAgentFeatureAvailable(config) {
 function isFileAgentFeatureAvailable(config) {
   return (config?.aidaAvailability?.enabled && config?.devToolsAiAssistanceFileAgent?.enabled) === true;
 }
+function isStorageAgentFeatureAvailable(config) {
+  return (config?.aidaAvailability?.enabled && config?.devToolsAiAssistanceStorageAgent?.enabled) === true;
+}
 function isAnyFeatureAvailable(config) {
-  return isStylingAgentFeatureAvailable(config) || isNetworkAgentFeatureAvailable(config) || isPerformanceAgentFeatureAvailable(config) || isFileAgentFeatureAvailable(config);
+  return isStylingAgentFeatureAvailable(config) || isNetworkAgentFeatureAvailable(config) || isPerformanceAgentFeatureAvailable(config) || isFileAgentFeatureAvailable(config) || isStorageAgentFeatureAvailable(config);
 }
 UI.ViewManager.registerViewExtension({
   location: "drawer-view",

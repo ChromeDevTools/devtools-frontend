@@ -951,8 +951,16 @@ export class LinkableNameRenderer extends rendererBase(SDK.CSSPropertyParserMatc
                 return {
                     jslogContext: 'css-font-palette',
                     metric: null,
-                    ruleBlock: '@font-*',
+                    ruleBlock: '', // Not used
                     isDefined: Boolean(this.#matchedStyles.atRules().find(ar => ar.type() === 'font-palette-values' && ar.name()?.text === match.text)),
+                };
+            case "list-style" /* SDK.CSSPropertyParserMatchers.LinkableNameProperties.LIST_STYLE */:
+            case "list-style-type" /* SDK.CSSPropertyParserMatchers.LinkableNameProperties.LIST_STYLE_TYPE */:
+                return {
+                    jslogContext: 'css-list-style-type',
+                    metric: null,
+                    ruleBlock: '', // Not used
+                    isDefined: Boolean(this.#matchedStyles.atRules().find(ar => ar.type() === 'counter-style' && ar.name()?.text === match.text)),
                 };
             case "position-try" /* SDK.CSSPropertyParserMatchers.LinkableNameProperties.POSITION_TRY */:
             case "position-try-fallbacks" /* SDK.CSSPropertyParserMatchers.LinkableNameProperties.POSITION_TRY_FALLBACKS */:
@@ -975,6 +983,10 @@ export class LinkableNameRenderer extends rendererBase(SDK.CSSPropertyParserMatc
                 metric && Host.userMetrics.swatchActivated(metric);
                 if (match.propertyName === "font-palette" /* SDK.CSSPropertyParserMatchers.LinkableNameProperties.FONT_PALETTE */) {
                     this.#stylesContainer.jumpToFontPaletteDefinition(match.text);
+                }
+                else if (match.propertyName === "list-style" /* SDK.CSSPropertyParserMatchers.LinkableNameProperties.LIST_STYLE */ ||
+                    match.propertyName === "list-style-type" /* SDK.CSSPropertyParserMatchers.LinkableNameProperties.LIST_STYLE_TYPE */) {
+                    this.#stylesContainer.jumpToCounterStyleDefinition(match.text);
                 }
                 else {
                     this.#stylesContainer.jumpToSectionBlock(`${ruleBlock} ${match.text}`);
@@ -3066,6 +3078,9 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
             return;
         }
         this.#clearGhostTextInValue();
+        if (this.value === text) {
+            return;
+        }
         if (this.value) {
             // If there is an existing value, and user is editing the name field
             // which leads to a new value suggestion, then the previous value should no
@@ -3078,7 +3093,25 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
         this.valueElement.insertAdjacentElement('afterend', ghostTextElement);
     }
     #clearGhostTextInValue() {
-        this.listItemElement.querySelector('.ghost-value-prediction')?.remove();
+        const ghostTextElement = this.listItemElement.querySelector('.ghost-value-prediction');
+        if (!ghostTextElement) {
+            return;
+        }
+        ghostTextElement.remove();
+        // If there's no value, there's nothing to restore
+        if (!this.value) {
+            return;
+        }
+        // Restore original classes
+        if (this.property.parsedOk) {
+            this.listItemElement.classList.remove('not-parsed-ok', 'invalid-property-value');
+        }
+        else {
+            const invalidPropertyValue = SDK.CSSMetadata.cssMetadata().isCSSPropertyName(this.property.name);
+            if (!invalidPropertyValue) {
+                this.listItemElement.classList.remove('invalid-property-value');
+            }
+        }
     }
 }
 export class GhostStylePropertyTreeElement extends StylePropertyTreeElement {

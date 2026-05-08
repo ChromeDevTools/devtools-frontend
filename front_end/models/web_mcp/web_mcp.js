@@ -102,11 +102,16 @@ var Tool = class {
     return this.#protocolTool.backendNodeId && target && new SDK.DOMModel.DeferredDOMNode(target, this.#protocolTool.backendNodeId);
   }
   async invoke(input) {
-    return await this.#target.deref()?.webMCPAgent().invoke_invokeTool({
+    const target = this.#target.deref();
+    const response = await target?.webMCPAgent().invoke_invokeTool({
       toolName: this.name,
       frameId: this.#protocolTool.frameId,
       input
     });
+    if (!response || response.getError()) {
+      return void 0;
+    }
+    return response.invocationId;
   }
 };
 var WebMCPModel = class extends SDK.SDKModel.SDKModel {
@@ -129,6 +134,9 @@ var WebMCPModel = class extends SDK.SDKModel.SDKModel {
   }
   get toolCalls() {
     return [...this.#calls.values()];
+  }
+  toolCallForId(invocationId) {
+    return this.#calls.get(invocationId);
   }
   clearCalls() {
     this.#calls.clear();

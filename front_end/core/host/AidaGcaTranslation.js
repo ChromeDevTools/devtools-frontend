@@ -418,9 +418,9 @@ export function gcaChunkResponseToAidaChunkResponse(response) {
                 })),
             };
         }
-        const chunks = (parts).map(part => {
+        const chunks = parts.map(part => {
             const aidaChunkResponse = { metadata };
-            if (part.text) {
+            if (part.text !== undefined) {
                 aidaChunkResponse.textChunk = {
                     text: extractTextFromGcaParts(parts),
                 };

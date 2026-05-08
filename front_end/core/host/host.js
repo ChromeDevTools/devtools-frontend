@@ -58,6 +58,7 @@ var ClientFeature;
   ClientFeature2[ClientFeature2["CHROME_CONTEXT_SELECTION_AGENT"] = 25] = "CHROME_CONTEXT_SELECTION_AGENT";
   ClientFeature2[ClientFeature2["CHROME_ACCESSIBILITY_AGENT"] = 26] = "CHROME_ACCESSIBILITY_AGENT";
   ClientFeature2[ClientFeature2["CHROME_CONVERSATION_SUMMARY_AGENT"] = 27] = "CHROME_CONVERSATION_SUMMARY_AGENT";
+  ClientFeature2[ClientFeature2["CHROME_STORAGE_AGENT"] = 28] = "CHROME_STORAGE_AGENT";
 })(ClientFeature || (ClientFeature = {}));
 var UserTier;
 (function(UserTier2) {
@@ -673,7 +674,7 @@ function gcaChunkResponseToAidaChunkResponse(response) {
     }
     const chunks = parts.map((part) => {
       const aidaChunkResponse = { metadata };
-      if (part.text) {
+      if (part.text !== void 0) {
         aidaChunkResponse.textChunk = {
           text: extractTextFromGcaParts(parts)
         };
@@ -1840,7 +1841,7 @@ var AidaClient = class {
         } else if ("error" in result) {
           throw new Error(`Server responded: ${JSON.stringify(result)}`);
         } else {
-          throw new Error("Unknown chunk result");
+          throw new Error(`Unknown chunk result ${JSON.stringify(result)}`);
         }
       }
       if (textUpdated) {

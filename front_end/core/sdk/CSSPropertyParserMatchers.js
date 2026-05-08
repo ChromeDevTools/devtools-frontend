@@ -712,8 +712,10 @@ export class LinkableNameMatcher extends matcherBase(LinkableNameMatch) {
             "animation" /* LinkableNameProperties.ANIMATION */,
             "animation-name" /* LinkableNameProperties.ANIMATION_NAME */,
             "font-palette" /* LinkableNameProperties.FONT_PALETTE */,
-            "position-try-fallbacks" /* LinkableNameProperties.POSITION_TRY_FALLBACKS */,
+            "list-style" /* LinkableNameProperties.LIST_STYLE */,
+            "list-style-type" /* LinkableNameProperties.LIST_STYLE_TYPE */,
             "position-try" /* LinkableNameProperties.POSITION_TRY */,
+            "position-try-fallbacks" /* LinkableNameProperties.POSITION_TRY_FALLBACKS */,
         ];
         return names.includes(propertyName);
     }
@@ -797,6 +799,10 @@ export class LinkableNameMatcher extends matcherBase(LinkableNameMatch) {
         // We only mark top level nodes or nodes that are inside `var()` expressions as linkable names.
         if (!propertyName || (node.name !== 'ValueName' && node.name !== 'VariableName') ||
             !isAParentDeclarationOrVarCall || (node.name === 'ValueName' && shouldMatchOnlyVariableName)) {
+            return null;
+        }
+        // If it is a builtin keyword value, it is not linkable.
+        if (cssMetadata().getPropertyValues(propertyName).includes(text)) {
             return null;
         }
         if (propertyName === 'animation') {

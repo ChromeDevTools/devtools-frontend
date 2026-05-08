@@ -66,6 +66,7 @@ export declare class StandaloneStylesContainer extends StandaloneStylesContainer
     jumpToProperty(_propertyName: string, _sectionName?: string, _blockName?: string): boolean;
     jumpToSectionBlock(_section: string): void;
     jumpToFontPaletteDefinition(_paletteName: string): void;
+    jumpToCounterStyleDefinition(_counterStyleName: string): void;
     jumpToDeclaration(_valueSource: SDK.CSSMatchedStyles.CSSValueSource): void;
     addStyleUpdateListener(listener: () => void): void;
     removeStyleUpdateListener(listener: () => void): void;

@@ -67,6 +67,9 @@ export class ScopeChainSidebarPane extends UI.Widget.VBox {
         }
         return scopeChainSidebarPaneInstance;
     }
+    treeOutlineForTest() {
+        return this.treeOutline;
+    }
     flavorChanged(callFrame) {
         this.#scopeChainModel?.dispose();
         this.#scopeChainModel = null;

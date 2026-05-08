@@ -10905,7 +10905,7 @@ var timelineTreeView_css_default = `/*
 }
 
 .timeline-tree-view .data-grid .data-container {
-  overflow-y: scroll;
+  overflow: scroll;
 }
 
 .timeline-tree-view .data-grid.data-grid-fits-viewport .corner {
@@ -10913,6 +10913,7 @@ var timelineTreeView_css_default = `/*
 }
 
 .timeline-tree-view .data-grid table.data {
+  width: max-content;
   background: var(--sys-color-cdt-base-container);
 }
 
@@ -10998,7 +10999,6 @@ var timelineTreeView_css_default = `/*
 
 .timeline-tree-view .data-grid .name-container .activity-link {
   flex: auto;
-  text-align: right;
   overflow: hidden;
   text-overflow: ellipsis;
   margin-left: 5px;

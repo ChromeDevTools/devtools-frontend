@@ -5047,7 +5047,6 @@ var GCActionDelegate = class {
 var LineLevelProfile_exports = {};
 __export(LineLevelProfile_exports, {
   Helper: () => Helper,
-  Memory: () => Memory,
   Performance: () => Performance
 });
 import * as SDK2 from "./../../../../core/sdk/sdk.js";
@@ -5120,51 +5119,6 @@ var Performance = class _Performance {
       }
       const time = profile.timestamps[i] - profile.timestamps[i - 1];
       this.helper.addLocationData(target, scriptIdOrUrl, { line, column }, time);
-    }
-  }
-};
-var memoryInstance;
-var Memory = class _Memory {
-  helper;
-  constructor() {
-    this.helper = new Helper(
-      "memory"
-      /* Workspace.UISourceCode.DecoratorType.MEMORY */
-    );
-  }
-  static instance(opts = { forceNew: null }) {
-    const { forceNew } = opts;
-    if (!memoryInstance || forceNew) {
-      memoryInstance = new _Memory();
-    }
-    return memoryInstance;
-  }
-  reset() {
-    this.helper.reset();
-    void this.helper.update();
-  }
-  initialize(profilesAndTargets) {
-    this.helper.reset();
-    for (const { profile, target } of profilesAndTargets) {
-      this.appendHeapProfile(profile, target);
-    }
-    void this.helper.update();
-  }
-  appendHeapProfile(profile, target) {
-    const helper = this.helper;
-    processNode(profile.head);
-    function processNode(node) {
-      node.children.forEach(processNode);
-      if (!node.selfSize) {
-        return;
-      }
-      const script = Number(node.callFrame.scriptId) || node.callFrame.url;
-      if (!script) {
-        return;
-      }
-      const line = node.callFrame.lineNumber + 1;
-      const column = node.callFrame.columnNumber + 1;
-      helper.addLocationData(target, script, { line, column }, node.selfSize);
     }
   }
 };
@@ -5271,96 +5225,6 @@ var Helper = class {
   }
 };
 
-// gen/front_end/ui/legacy/components/perf_ui/LiveHeapProfile.js
-var LiveHeapProfile_exports = {};
-__export(LiveHeapProfile_exports, {
-  LiveHeapProfile: () => LiveHeapProfile
-});
-import * as Common4 from "./../../../../core/common/common.js";
-import * as Host3 from "./../../../../core/host/host.js";
-import * as SDK3 from "./../../../../core/sdk/sdk.js";
-var liveHeapProfileInstance;
-var LiveHeapProfile = class _LiveHeapProfile {
-  running;
-  sessionId;
-  loadEventCallback;
-  setting;
-  constructor() {
-    this.running = false;
-    this.sessionId = 0;
-    this.loadEventCallback = () => {
-    };
-    this.setting = Common4.Settings.Settings.instance().moduleSetting("memory-live-heap-profile");
-    this.setting.addChangeListener((event) => event.data ? this.startProfiling() : this.stopProfiling());
-    if (this.setting.get()) {
-      void this.startProfiling();
-    }
-  }
-  static instance(opts = { forceNew: null }) {
-    const { forceNew } = opts;
-    if (!liveHeapProfileInstance || forceNew) {
-      liveHeapProfileInstance = new _LiveHeapProfile();
-    }
-    return liveHeapProfileInstance;
-  }
-  async run() {
-    return;
-  }
-  modelAdded(model) {
-    void model.startSampling(1e4);
-  }
-  modelRemoved(_model) {
-  }
-  async startProfiling() {
-    if (this.running) {
-      return;
-    }
-    this.running = true;
-    const sessionId = this.sessionId;
-    SDK3.TargetManager.TargetManager.instance().observeModels(SDK3.HeapProfilerModel.HeapProfilerModel, this);
-    SDK3.TargetManager.TargetManager.instance().addModelListener(SDK3.ResourceTreeModel.ResourceTreeModel, SDK3.ResourceTreeModel.Events.Load, this.loadEventFired, this);
-    do {
-      const models = SDK3.TargetManager.TargetManager.instance().models(SDK3.HeapProfilerModel.HeapProfilerModel);
-      const profiles = await Promise.all(models.map((model) => model.getSamplingProfile()));
-      if (sessionId !== this.sessionId) {
-        break;
-      }
-      const profilesAndTargets = [];
-      for (let i = 0; i < profiles.length; ++i) {
-        const profile = profiles[i];
-        if (!profile) {
-          continue;
-        }
-        const target = models[i].target();
-        profilesAndTargets.push({ profile, target });
-      }
-      Memory.instance().initialize(profilesAndTargets);
-      await Promise.race([
-        new Promise((r) => window.setTimeout(r, Host3.InspectorFrontendHost.isUnderTest() ? 10 : 5e3)),
-        new Promise((r) => {
-          this.loadEventCallback = r;
-        })
-      ]);
-    } while (sessionId === this.sessionId);
-    SDK3.TargetManager.TargetManager.instance().unobserveModels(SDK3.HeapProfilerModel.HeapProfilerModel, this);
-    SDK3.TargetManager.TargetManager.instance().removeModelListener(SDK3.ResourceTreeModel.ResourceTreeModel, SDK3.ResourceTreeModel.Events.Load, this.loadEventFired, this);
-    for (const model of SDK3.TargetManager.TargetManager.instance().models(SDK3.HeapProfilerModel.HeapProfilerModel)) {
-      void model.stopSampling();
-    }
-    Memory.instance().reset();
-  }
-  stopProfiling() {
-    if (!this.running) {
-      return;
-    }
-    this.running = false;
-    this.sessionId++;
-  }
-  loadEventFired() {
-    this.loadEventCallback();
-  }
-};
-
 // gen/front_end/ui/legacy/components/perf_ui/NetworkPriorities.js
 var NetworkPriorities_exports = {};
 __export(NetworkPriorities_exports, {
@@ -5438,7 +5302,7 @@ __export(OverviewGrid_exports, {
   Window: () => Window,
   WindowSelector: () => WindowSelector
 });
-import * as Common5 from "./../../../../core/common/common.js";
+import * as Common4 from "./../../../../core/common/common.js";
 import * as i18n11 from "./../../../../core/i18n/i18n.js";
 import * as Platform5 from "./../../../../core/platform/platform.js";
 import { createIcon } from "./../../../kit/kit.js";
@@ -5697,7 +5561,7 @@ var MinSelectableSize = 14;
 var WindowScrollSpeedFactor = 0.3;
 var ResizerOffset = 5;
 var OffsetFromWindowEnds = 10;
-var Window = class extends Common5.ObjectWrapper.ObjectWrapper {
+var Window = class extends Common4.ObjectWrapper.ObjectWrapper {
   parentElement;
   calculator;
   leftResizeElement;
@@ -6547,7 +6411,7 @@ __export(TimelineOverviewPane_exports, {
   TimelineOverviewBase: () => TimelineOverviewBase,
   TimelineOverviewPane: () => TimelineOverviewPane
 });
-import * as Common6 from "./../../../../core/common/common.js";
+import * as Common5 from "./../../../../core/common/common.js";
 import * as Trace4 from "./../../../../models/trace/trace.js";
 import * as TraceBounds from "./../../../../services/trace_bounds/trace_bounds.js";
 import * as VisualLoggging from "./../../../visual_logging/visual_logging.js";
@@ -6581,7 +6445,7 @@ var timelineOverviewInfo_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./timelineOverviewInfo.css")} */`;
 
 // gen/front_end/ui/legacy/components/perf_ui/TimelineOverviewPane.js
-var TimelineOverviewPane = class extends Common6.ObjectWrapper.eventMixin(UI7.Widget.VBox) {
+var TimelineOverviewPane = class extends Common5.ObjectWrapper.eventMixin(UI7.Widget.VBox) {
   overviewCalculator;
   overviewGrid;
   cursorArea;
@@ -6589,7 +6453,7 @@ var TimelineOverviewPane = class extends Common6.ObjectWrapper.eventMixin(UI7.Wi
   overviewControls = [];
   markers = /* @__PURE__ */ new Map();
   overviewInfo;
-  updateThrottler = new Common6.Throttler.Throttler(100);
+  updateThrottler = new Common5.Throttler.Throttler(100);
   cursorEnabled = false;
   cursorPosition = 0;
   lastWidth = 0;
@@ -7015,7 +6879,6 @@ export {
   Font_exports as Font,
   GCActionDelegate_exports as GCActionDelegate,
   LineLevelProfile_exports as LineLevelProfile,
-  LiveHeapProfile_exports as LiveHeapProfile,
   NetworkPriorities_exports as NetworkPriorities,
   OverviewGrid_exports as OverviewGrid,
   PieChart_exports as PieChart,

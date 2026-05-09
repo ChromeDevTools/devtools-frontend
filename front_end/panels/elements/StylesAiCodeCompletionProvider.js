@@ -127,7 +127,7 @@ export class StylesAiCodeCompletionProvider {
     async #requestAidaSuggestion(prefix, suffix, cursorPositionAtRequest) {
         this.#aiCodeCompletionConfig?.onRequestTriggered();
         // Registering AiCodeCompletionRequestTriggered metric even if the request is served from cache
-        Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiCodeCompletionRequestTriggered);
+        Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiCodeCompletionRequestTriggeredFromStyles);
         try {
             const completionResponse = await this.#aiCodeCompletion?.completeCode(prefix, suffix, cursorPositionAtRequest, "CSS" /* Host.AidaClient.AidaInferenceLanguage.CSS */);
             this.#aiCodeCompletionConfig?.onResponseReceived();

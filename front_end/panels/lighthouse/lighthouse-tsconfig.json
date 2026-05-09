@@ -71,6 +71,9 @@
       "path": "../../core/sdk/bundle-tsconfig.json"
     },
     {
+      "path": "../../generated/generated-tsconfig.json"
+    },
+    {
       "path": "../../generated/protocol-tsconfig.json"
     },
     {
@@ -98,7 +101,13 @@
       "path": "../../third_party/lighthouse/report/report-tsconfig.json"
     },
     {
+      "path": "../../third_party/lighthouse/report/bundle-tsconfig.json"
+    },
+    {
       "path": "../../ui/components/buttons/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../ui/kit/bundle-tsconfig.json"
     },
     {
       "path": "../../ui/legacy/bundle-tsconfig.json"

@@ -68,6 +68,9 @@
       "path": "../../core/sdk/bundle-tsconfig.json"
     },
     {
+      "path": "../../generated/generated-tsconfig.json"
+    },
+    {
       "path": "../../generated/protocol-tsconfig.json"
     },
     {
@@ -84,6 +87,9 @@
     },
     {
       "path": "../mobile_throttling/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../ui/components/buttons/bundle-tsconfig.json"
     },
     {
       "path": "../../ui/i18n/bundle-tsconfig.json"

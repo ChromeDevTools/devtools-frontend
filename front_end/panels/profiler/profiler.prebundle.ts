@@ -10,7 +10,6 @@ import * as HeapSnapshotGridNodes from './HeapSnapshotGridNodes.js';
 import * as HeapSnapshotView from './HeapSnapshotView.js';
 import * as HeapTimelineOverview from './HeapTimelineOverview.js';
 import * as IsolateSelector from './IsolateSelector.js';
-import * as LiveHeapProfileView from './LiveHeapProfileView.js';
 import * as ProfileDataGrid from './ProfileDataGrid.js';
 import * as ProfileFlameChart from './ProfileFlameChartDataProvider.js';
 import * as ProfileHeader from './ProfileHeader.js';
@@ -30,7 +29,6 @@ export {
   HeapSnapshotView,
   HeapTimelineOverview,
   IsolateSelector,
-  LiveHeapProfileView,
   ProfileDataGrid,
   ProfileFlameChart,
   ProfileHeader,

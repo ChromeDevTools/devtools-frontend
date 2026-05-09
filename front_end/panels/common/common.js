@@ -69,6 +69,7 @@ import * as Host from "./../../core/host/host.js";
 import * as i18n3 from "./../../core/i18n/i18n.js";
 import * as Root from "./../../core/root/root.js";
 import * as AIAssistance from "./../../models/ai_assistance/ai_assistance.js";
+import * as AiCodeCompletion from "./../../models/ai_code_completion/ai_code_completion.js";
 import * as AiCodeGeneration from "./../../models/ai_code_generation/ai_code_generation.js";
 import * as Snackbars from "./../../ui/components/snackbars/snackbars.js";
 import * as UI2 from "./../../ui/legacy/legacy.js";
@@ -459,6 +460,7 @@ var AiCodeCompletionTeaser = class extends UI2.Widget.Widget {
   #boundOnAidaAvailabilityChange;
   #boundOnAiCodeCompletionSettingChanged;
   #onDetach;
+  #panel;
   // Whether the user completed first run experience dialog or not.
   #aiCodeCompletionFreCompletedSetting = Common.Settings.Settings.instance().createSetting("ai-code-completion-enabled", false);
   // Whether the user dismissed the teaser or not.
@@ -469,6 +471,7 @@ var AiCodeCompletionTeaser = class extends UI2.Widget.Widget {
     super();
     this.markAsExternallyManaged();
     this.#onDetach = config.onDetach;
+    this.#panel = config.panel;
     this.#view = view ?? DEFAULT_VIEW;
     this.#boundOnAidaAvailabilityChange = this.#onAidaAvailabilityChange.bind(this);
     this.#boundOnAiCodeCompletionSettingChanged = this.#onAiCodeCompletionSettingChanged.bind(this);
@@ -543,6 +546,11 @@ var AiCodeCompletionTeaser = class extends UI2.Widget.Widget {
     });
     if (result) {
       this.#aiCodeCompletionFreCompletedSetting.set(true);
+      if (this.#panel === "console") {
+        Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiCodeCompletionFreCompletedFromConsole);
+      } else if (this.#panel === "sources") {
+        Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiCodeCompletionFreCompletedFromSources);
+      }
       this.detach();
     } else {
       this.requestUpdate();
@@ -593,7 +601,7 @@ import * as Common2 from "./../../core/common/common.js";
 import * as Host2 from "./../../core/host/host.js";
 import * as i18n5 from "./../../core/i18n/i18n.js";
 import * as Root2 from "./../../core/root/root.js";
-import * as AiCodeCompletion from "./../../models/ai_code_completion/ai_code_completion.js";
+import * as AiCodeCompletion2 from "./../../models/ai_code_completion/ai_code_completion.js";
 import * as Buttons2 from "./../../ui/components/buttons/buttons.js";
 import * as UI3 from "./../../ui/legacy/legacy.js";
 import { Directives, html as html3, nothing as nothing2, render as render3 } from "./../../ui/lit/lit.js";
@@ -2114,7 +2122,7 @@ import "./../../ui/components/tooltips/tooltips.js";
 import * as Host6 from "./../../core/host/host.js";
 import * as i18n13 from "./../../core/i18n/i18n.js";
 import * as Root4 from "./../../core/root/root.js";
-import * as AiCodeCompletion2 from "./../../models/ai_code_completion/ai_code_completion.js";
+import * as AiCodeCompletion3 from "./../../models/ai_code_completion/ai_code_completion.js";
 import * as UI8 from "./../../ui/legacy/legacy.js";
 import { Directives as Directives2, html as html8, nothing as nothing4, render as render8 } from "./../../ui/lit/lit.js";
 import * as VisualLogging5 from "./../../ui/visual_logging/visual_logging.js";

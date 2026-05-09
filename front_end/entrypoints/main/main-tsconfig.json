@@ -129,10 +129,16 @@
       "path": "../../ui/components/snackbars/bundle-tsconfig.json"
     },
     {
+      "path": "../../ui/helpers/bundle-tsconfig.json"
+    },
+    {
       "path": "../../ui/kit/bundle-tsconfig.json"
     },
     {
       "path": "../../ui/legacy/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../ui/legacy/components/perf_ui/bundle-tsconfig.json"
     },
     {
       "path": "../../ui/legacy/components/utils/bundle-tsconfig.json"

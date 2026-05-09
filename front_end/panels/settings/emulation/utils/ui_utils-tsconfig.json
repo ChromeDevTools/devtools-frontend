@@ -43,6 +43,9 @@
   ],
   "references": [
     {
+      "path": "../../../../generated/generated-tsconfig.json"
+    },
+    {
       "path": "../../../../generated/protocol-tsconfig.json"
     },
     {

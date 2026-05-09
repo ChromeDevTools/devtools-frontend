@@ -43,7 +43,6 @@
     "../../../../../../../../front_end/ui/legacy/components/perf_ui/Font.ts",
     "../../../../../../../../front_end/ui/legacy/components/perf_ui/GCActionDelegate.ts",
     "../../../../../../../../front_end/ui/legacy/components/perf_ui/LineLevelProfile.ts",
-    "../../../../../../../../front_end/ui/legacy/components/perf_ui/LiveHeapProfile.ts",
     "../../../../../../../../front_end/ui/legacy/components/perf_ui/NetworkPriorities.ts",
     "../../../../../../../../front_end/ui/legacy/components/perf_ui/OverviewGrid.ts",
     "../../../../../../../../front_end/ui/legacy/components/perf_ui/PieChart.ts",
@@ -72,6 +71,9 @@
     },
     {
       "path": "../../../../core/sdk/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../../../generated/generated-tsconfig.json"
     },
     {
       "path": "../../../../generated/protocol-tsconfig.json"
@@ -111,6 +113,9 @@
     },
     {
       "path": "../../../components/render_coordinator/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../../components/snackbars/bundle-tsconfig.json"
     },
     {
       "path": "../../../kit/bundle-tsconfig.json"

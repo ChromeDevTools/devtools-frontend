@@ -303,6 +303,14 @@ var UIStrings = {
    */
   isThisPageOptimizedForSearch: "Is this page optimized for search engine results ranking",
   /**
+   * @description Text of checkbox to include running the Agentic Browsing audits in Lighthouse
+   */
+  agenticBrowsing: "Agentic browsing",
+  /**
+   * @description Tooltip text of checkbox to include running the Agentic Browsing audits in Lighthouse
+   */
+  agenticBrowsingDescription: "These checks ensure high-quality, browsable websites for AI agents and validate the correctness of WebMCP integrations. This category is still under development and subject to change.",
+  /**
    * @description ARIA label for a radio button input to emulate mobile device behavior when running audits in Lighthouse.
    */
   applyMobileEmulation: "Apply mobile emulation",
@@ -850,6 +858,19 @@ function getPresets() {
         description: i18nLazyString(UIStrings.isThisPageOptimizedForSearch),
         supportedModes: ["navigation", "snapshot"],
         userMetric: 3
+      },
+      {
+        setting: Common.Settings.Settings.instance().createSetting(
+          "lighthouse.cat-agentic-browsing",
+          false,
+          "Synced"
+          /* Common.Settings.SettingStorageType.SYNCED */
+        ),
+        configID: "agentic-browsing",
+        title: i18nLazyString(UIStrings.agenticBrowsing),
+        description: i18nLazyString(UIStrings.agenticBrowsingDescription),
+        supportedModes: ["navigation", "snapshot"],
+        userMetric: 6
       }
     ];
   }

@@ -78,7 +78,13 @@
       "path": "../../../ui/components/tooltips/bundle-tsconfig.json"
     },
     {
+      "path": "../../../ui/helpers/bundle-tsconfig.json"
+    },
+    {
       "path": "../../../ui/i18n/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../../ui/kit/bundle-tsconfig.json"
     },
     {
       "path": "../../../ui/legacy/bundle-tsconfig.json"

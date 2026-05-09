@@ -697,7 +697,6 @@ var MainImpl = class {
   }
   #initializeExperiments() {
     Root2.Runtime.experiments.register(Root2.ExperimentNames.ExperimentName.CAPTURE_NODE_CREATION_STACKS, "Capture node creation stacks");
-    Root2.Runtime.experiments.register(Root2.ExperimentNames.ExperimentName.LIVE_HEAP_PROFILE, "Live heap profile");
     const enableProtocolMonitor = (Root2.Runtime.hostConfig.devToolsProtocolMonitor?.enabled ?? false) || Boolean(Root2.Runtime.Runtime.queryParam("isChromeForTesting"));
     const protocolMonitorExperiment = Root2.Runtime.experiments.registerHostExperiment({
       name: Root2.ExperimentNames.ExperimentName.PROTOCOL_MONITOR,
@@ -732,12 +731,6 @@ var MainImpl = class {
     const enabledExperiments = Root2.Runtime.Runtime.queryParam("enabledExperiments");
     if (enabledExperiments) {
       Root2.Runtime.experiments.setServerEnabledExperiments(enabledExperiments.split(";"));
-    }
-    if (Host.InspectorFrontendHost.isUnderTest()) {
-      const testParam = Root2.Runtime.Runtime.queryParam("test");
-      if (testParam?.includes("live-line-level-heap-profile.js")) {
-        Root2.Runtime.experiments.enableForTest(Root2.ExperimentNames.ExperimentName.LIVE_HEAP_PROFILE);
-      }
     }
     for (const experiment of Root2.Runtime.experiments.allConfigurableExperiments()) {
       if (experiment.isEnabled()) {
@@ -931,26 +924,10 @@ var MainImpl = class {
   async #lateInitialization() {
     _a.time("Main._lateInitialization");
     PanelCommon.ExtensionServer.ExtensionServer.instance().initializeExtensions();
-    const promises = Common2.Runnable.lateInitializationRunnables().map(async (lateInitializationLoader) => {
+    void Promise.all(Common2.Runnable.lateInitializationRunnables().map(async (lateInitializationLoader) => {
       const runnable = await lateInitializationLoader();
       return await runnable.run();
-    });
-    if (Root2.Runtime.experiments.isEnabled(Root2.ExperimentNames.ExperimentName.LIVE_HEAP_PROFILE)) {
-      const PerfUI = await import("./../../ui/legacy/components/perf_ui/perf_ui.js");
-      const setting = "memory-live-heap-profile";
-      if (Common2.Settings.Settings.instance().moduleSetting(setting).get()) {
-        promises.push(PerfUI.LiveHeapProfile.LiveHeapProfile.instance().run());
-      } else {
-        const changeListener = async (event) => {
-          if (!event.data) {
-            return;
-          }
-          Common2.Settings.Settings.instance().moduleSetting(setting).removeChangeListener(changeListener);
-          void PerfUI.LiveHeapProfile.LiveHeapProfile.instance().run();
-        };
-        Common2.Settings.Settings.instance().moduleSetting(setting).addChangeListener(changeListener);
-      }
-    }
+    }));
     _a.timeEnd("Main._lateInitialization");
   }
   readyForTest() {

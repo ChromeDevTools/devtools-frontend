@@ -7,7 +7,6 @@ export class HeapProfilerModel extends SDKModel {
     #enabled = false;
     #heapProfilerAgent;
     #runtimeModel;
-    #samplingProfilerDepth = 0;
     constructor(target) {
         super(target);
         target.registerHeapProfilerDispatcher(new HeapProfilerDispatcher(this));
@@ -28,23 +27,14 @@ export class HeapProfilerModel extends SDKModel {
         await this.#heapProfilerAgent.invoke_enable();
     }
     async startSampling(samplingRateInBytes) {
-        if (this.#samplingProfilerDepth++) {
-            return false;
-        }
         const defaultSamplingIntervalInBytes = 16384;
         const response = await this.#heapProfilerAgent.invoke_startSampling({ samplingInterval: samplingRateInBytes || defaultSamplingIntervalInBytes });
         return Boolean(response.getError());
     }
     async stopSampling() {
-        if (!this.#samplingProfilerDepth) {
-            throw new Error('Sampling profiler is not running.');
-        }
-        if (--this.#samplingProfilerDepth) {
-            return await this.getSamplingProfile();
-        }
         const response = await this.#heapProfilerAgent.invoke_stopSampling();
         if (response.getError()) {
-            return null;
+            throw new Error('Sampling profiler is not running.');
         }
         return response.profile;
     }

@@ -106,6 +106,9 @@
       "path": "../../core/sdk/bundle-tsconfig.json"
     },
     {
+      "path": "../../generated/generated-tsconfig.json"
+    },
+    {
       "path": "../../generated/protocol-tsconfig.json"
     },
     {
@@ -157,10 +160,16 @@
       "path": "../../ui/components/expandable_list/bundle-tsconfig.json"
     },
     {
+      "path": "../../ui/components/icon_button/bundle-tsconfig.json"
+    },
+    {
       "path": "../../ui/components/legacy_wrapper/bundle-tsconfig.json"
     },
     {
       "path": "../../ui/components/lists/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../ui/components/node_text/bundle-tsconfig.json"
     },
     {
       "path": "../../ui/components/report_view/bundle-tsconfig.json"

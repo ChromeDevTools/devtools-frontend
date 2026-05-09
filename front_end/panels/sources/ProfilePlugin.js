@@ -14,51 +14,9 @@ const UIStrings = {
      * @description The milisecond unit
      */
     ms: 'ms',
-    /**
-     * @description Unit for data size in DevTools
-     */
-    mb: 'MB',
-    /**
-     * @description A unit
-     */
-    kb: 'kB',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/sources/ProfilePlugin.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-class MemoryMarker extends CodeMirror.GutterMarker {
-    value;
-    constructor(value) {
-        super();
-        this.value = value;
-    }
-    eq(other) {
-        return this.value === other.value;
-    }
-    toDOM() {
-        const element = document.createElement('div');
-        element.className = 'cm-profileMarker';
-        let value = this.value;
-        const intensity = Platform.NumberUtilities.clamp(Math.log10(1 + 2e-3 * value) / 5, 0.02, 1);
-        element.style.backgroundColor = `hsla(217, 100%, 70%, ${intensity.toFixed(3)})`;
-        value /= 1e3;
-        let units;
-        let fractionDigits;
-        if (value >= 1e3) {
-            units = i18nString(UIStrings.mb);
-            value /= 1e3;
-            fractionDigits = value >= 20 ? 0 : 1;
-        }
-        else {
-            units = i18nString(UIStrings.kb);
-            fractionDigits = 0;
-        }
-        element.textContent = value.toFixed(fractionDigits);
-        const unitElement = element.appendChild(document.createElement('span'));
-        unitElement.className = 'cm-units';
-        unitElement.textContent = units;
-        return element;
-    }
-}
 class PerformanceMarker extends CodeMirror.GutterMarker {
     value;
     constructor(value) {
@@ -81,8 +39,7 @@ class PerformanceMarker extends CodeMirror.GutterMarker {
         return element;
     }
 }
-function markersFromProfileData(map, state, type) {
-    const markerType = type === "performance" /* Workspace.UISourceCode.DecoratorType.PERFORMANCE */ ? PerformanceMarker : MemoryMarker;
+function markersFromProfileData(map, state) {
     const markers = [];
     const aggregatedByLine = new Map();
     for (const [line, value] of map) {
@@ -94,11 +51,11 @@ function markersFromProfileData(map, state, type) {
     }
     for (const [line, value] of aggregatedByLine) {
         const { from } = state.doc.line(line);
-        markers.push(new markerType(value).range(from));
+        markers.push(new PerformanceMarker(value).range(from));
     }
     return CodeMirror.RangeSet.of(markers, true);
 }
-const makeLineLevelProfilePlugin = (type) => class ProfilePlugin extends Plugin {
+export class PerformanceProfilePlugin extends Plugin {
     updateEffect = CodeMirror.StateEffect.define();
     field;
     gutter;
@@ -112,13 +69,13 @@ const makeLineLevelProfilePlugin = (type) => class ProfilePlugin extends Plugin 
             },
             update: (markers, tr) => {
                 return tr.effects.reduce((markers, effect) => {
-                    return effect.is(this.updateEffect) ? markersFromProfileData(effect.value, tr.state, type) : markers;
+                    return effect.is(this.updateEffect) ? markersFromProfileData(effect.value, tr.state) : markers;
                 }, markers.map(tr.changes));
             },
         });
         this.gutter = CodeMirror.gutter({
             markers: view => view.state.field(this.field),
-            class: `cm-${type}Gutter`,
+            class: `cm-${"performance" /* Workspace.UISourceCode.DecoratorType.PERFORMANCE */}Gutter`,
         });
         this.#transformer = transformer;
     }
@@ -126,7 +83,7 @@ const makeLineLevelProfilePlugin = (type) => class ProfilePlugin extends Plugin 
         return uiSourceCode.contentType().hasScripts();
     }
     getLineMap() {
-        const uiSourceCodeProfileMap = this.uiSourceCode.getDecorationData(type);
+        const uiSourceCodeProfileMap = this.uiSourceCode.getDecorationData("performance" /* Workspace.UISourceCode.DecoratorType.PERFORMANCE */);
         if (!uiSourceCodeProfileMap) {
             return undefined;
         }
@@ -137,7 +94,7 @@ const makeLineLevelProfilePlugin = (type) => class ProfilePlugin extends Plugin 
     }
     editorExtension() {
         const map = this.getLineMap();
-        return this.compartment.of(!map ? [] : [this.field.init(state => markersFromProfileData(map, state, type)), this.gutter, theme]);
+        return this.compartment.of(!map ? [] : [this.field.init(state => markersFromProfileData(map, state)), this.gutter, theme]);
     }
     decorationChanged(type, editor) {
         const installed = Boolean(editor.state.field(this.field, false));
@@ -149,14 +106,14 @@ const makeLineLevelProfilePlugin = (type) => class ProfilePlugin extends Plugin 
         }
         else if (!installed) {
             editor.dispatch({
-                effects: this.compartment.reconfigure([this.field.init(state => markersFromProfileData(map, state, type)), this.gutter, theme]),
+                effects: this.compartment.reconfigure([this.field.init(state => markersFromProfileData(map, state)), this.gutter, theme]),
             });
         }
         else {
             editor.dispatch({ effects: this.updateEffect.of(map) });
         }
     }
-};
+}
 const theme = CodeMirror.EditorView.baseTheme({
     '.cm-line::selection': {
         backgroundColor: 'transparent',
@@ -164,11 +121,6 @@ const theme = CodeMirror.EditorView.baseTheme({
     },
     '.cm-performanceGutter': {
         width: '60px',
-        backgroundColor: 'var(--sys-color-cdt-base-container)',
-        marginLeft: '3px',
-    },
-    '.cm-memoryGutter': {
-        width: '48px',
         backgroundColor: 'var(--sys-color-cdt-base-container)',
         marginLeft: '3px',
     },
@@ -182,6 +134,4 @@ const theme = CodeMirror.EditorView.baseTheme({
         marginLeft: '3px',
     },
 });
-export const MemoryProfilePlugin = makeLineLevelProfilePlugin("memory" /* Workspace.UISourceCode.DecoratorType.MEMORY */);
-export const PerformanceProfilePlugin = makeLineLevelProfilePlugin("performance" /* Workspace.UISourceCode.DecoratorType.PERFORMANCE */);
 //# sourceMappingURL=ProfilePlugin.js.map

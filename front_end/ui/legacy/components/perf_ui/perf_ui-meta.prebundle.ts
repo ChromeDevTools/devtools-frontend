@@ -4,7 +4,6 @@
 
 import * as Common from '../../../../core/common/common.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
-import * as Root from '../../../../core/root/root.js';
 import * as UI from '../../legacy.js';
 
 import type * as PerfUI from './perf_ui.js';
@@ -24,21 +23,6 @@ const UIStrings = {
    * @description Classic navigation option in the Performance Panel.
    */
   classic: 'Classic',
-  /**
-   * @description Title of a setting under the Memory category in Settings. Live memory is memory
-   * that is still in-use by the program (not dead). Allocation of live memory is when the program
-   * creates new memory. This is a setting that turns on extra annotations in the UI to mark these
-   * allocations.
-   */
-  liveMemoryAllocationAnnotations: 'Live memory allocation annotations',
-  /**
-   * @description Title of a setting under the Memory category that can be invoked through the Command Menu
-   */
-  showLiveMemoryAllocation: 'Show live memory allocation annotations',
-  /**
-   * @description Title of a setting under the Memory category that can be invoked through the Command Menu
-   */
-  hideLiveMemoryAllocation: 'Hide live memory allocation annotations',
   /**
    * @description Title of an action in the components tool to collect garbage
    */
@@ -85,25 +69,6 @@ Common.Settings.registerSettingExtension({
       title: i18nLazyString(UIStrings.classic),
       text: i18nLazyString(UIStrings.classic),
       value: 'classic',
-    },
-  ],
-});
-
-Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategory.MEMORY,
-  experiment: Root.ExperimentNames.ExperimentName.LIVE_HEAP_PROFILE,
-  title: i18nLazyString(UIStrings.liveMemoryAllocationAnnotations),
-  settingName: 'memory-live-heap-profile',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  defaultValue: false,
-  options: [
-    {
-      value: true,
-      title: i18nLazyString(UIStrings.showLiveMemoryAllocation),
-    },
-    {
-      value: false,
-      title: i18nLazyString(UIStrings.hideLiveMemoryAllocation),
     },
   ],
 });

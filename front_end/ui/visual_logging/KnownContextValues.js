@@ -2502,6 +2502,7 @@ export const knownContextValues = new Set([
     'lighthouse.audit.work-during-interaction',
     'lighthouse.cancel',
     'lighthouse.cat-a11y',
+    'lighthouse.cat-agentic-browsing',
     'lighthouse.cat-best-practices',
     'lighthouse.cat-perf',
     'lighthouse.cat-seo',

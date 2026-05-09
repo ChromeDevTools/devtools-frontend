@@ -55,7 +55,6 @@ var ExperimentName;
 (function(ExperimentName2) {
   ExperimentName2["ALL"] = "*";
   ExperimentName2["CAPTURE_NODE_CREATION_STACKS"] = "capture-node-creation-stacks";
-  ExperimentName2["LIVE_HEAP_PROFILE"] = "live-heap-profile";
   ExperimentName2["PROTOCOL_MONITOR"] = "protocol-monitor";
   ExperimentName2["TIMELINE_INVALIDATION_TRACKING"] = "timeline-invalidation-tracking";
   ExperimentName2["INSTRUMENTATION_BREAKPOINTS"] = "instrumentation-breakpoints";

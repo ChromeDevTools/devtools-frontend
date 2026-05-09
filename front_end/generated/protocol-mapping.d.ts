@@ -1729,10 +1729,15 @@ export namespace ProtocolMapping {
     };
     /**
      * Modifies the expression of a container query.
+     * Deprecated. Use setContainerQueryConditionText instead.
      */
     'CSS.setContainerQueryText': {
       paramsType: [Protocol.CSS.SetContainerQueryTextRequest];
       returnType: Protocol.CSS.SetContainerQueryTextResponse;
+    };
+    'CSS.setContainerQueryConditionText': {
+      paramsType: [Protocol.CSS.SetContainerQueryConditionTextRequest];
+      returnType: Protocol.CSS.SetContainerQueryConditionTextResponse;
     };
     /**
      * Modifies the expression of a supports at-rule.

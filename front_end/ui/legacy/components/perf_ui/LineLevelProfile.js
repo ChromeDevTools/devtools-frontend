@@ -72,49 +72,6 @@ export class Performance {
         }
     }
 }
-let memoryInstance;
-// Note: this is used only by LiveHeapProfile (a drawer panel) if the experiment is enabled.
-export class Memory {
-    helper;
-    constructor() {
-        this.helper = new Helper("memory" /* Workspace.UISourceCode.DecoratorType.MEMORY */);
-    }
-    static instance(opts = { forceNew: null }) {
-        const { forceNew } = opts;
-        if (!memoryInstance || forceNew) {
-            memoryInstance = new Memory();
-        }
-        return memoryInstance;
-    }
-    reset() {
-        this.helper.reset();
-        void this.helper.update();
-    }
-    initialize(profilesAndTargets) {
-        this.helper.reset();
-        for (const { profile, target } of profilesAndTargets) {
-            this.appendHeapProfile(profile, target);
-        }
-        void this.helper.update();
-    }
-    appendHeapProfile(profile, target) {
-        const helper = this.helper;
-        processNode(profile.head);
-        function processNode(node) {
-            node.children.forEach(processNode);
-            if (!node.selfSize) {
-                return;
-            }
-            const script = Number(node.callFrame.scriptId) || node.callFrame.url;
-            if (!script) {
-                return;
-            }
-            const line = node.callFrame.lineNumber + 1;
-            const column = node.callFrame.columnNumber + 1;
-            helper.addLocationData(target, script, { line, column }, node.selfSize);
-        }
-    }
-}
 export class Helper {
     type;
     locationPool = new Bindings.LiveLocation.LiveLocationPool();

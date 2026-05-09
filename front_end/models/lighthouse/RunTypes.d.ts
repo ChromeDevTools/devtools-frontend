@@ -1,7 +1,7 @@
 import type * as Common from '../../core/common/common.js';
 import type * as Host from '../../core/host/host.js';
 import type * as Platform from '../../core/platform/platform.js';
-export type CategoryId = 'performance' | 'accessibility' | 'best-practices' | 'seo';
+export type CategoryId = 'performance' | 'accessibility' | 'best-practices' | 'seo' | 'agentic-browsing';
 export type RunMode = 'navigation' | 'timespan' | 'snapshot';
 export interface Preset {
     setting: Common.Settings.Setting<boolean>;

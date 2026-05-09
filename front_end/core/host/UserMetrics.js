@@ -124,7 +124,7 @@ export class UserMetrics {
         InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.LighthouseModeRun" /* EnumeratedHistogram.LighthouseModeRun */, type, 4 /* LighthouseModeRun.MAX_VALUE */);
     }
     lighthouseCategoryUsed(type) {
-        InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.LighthouseCategoryUsed" /* EnumeratedHistogram.LighthouseCategoryUsed */, type, 6 /* LighthouseCategoryUsed.MAX_VALUE */);
+        InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.LighthouseCategoryUsed" /* EnumeratedHistogram.LighthouseCategoryUsed */, type, 7 /* LighthouseCategoryUsed.MAX_VALUE */);
     }
     swatchActivated(swatch) {
         InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.SwatchActivated" /* EnumeratedHistogram.SwatchActivated */, swatch, 13 /* SwatchType.MAX_VALUE */);
@@ -398,7 +398,14 @@ export var Action;
     Action[Action["InsightTeaserModelDownloadCompleted"] = 198] = "InsightTeaserModelDownloadCompleted";
     Action[Action["AiCodeGenerationError"] = 199] = "AiCodeGenerationError";
     Action[Action["AiCodeGenerationRequestTriggered"] = 200] = "AiCodeGenerationRequestTriggered";
-    Action[Action["MAX_VALUE"] = 201] = "MAX_VALUE";
+    Action[Action["AiCodeCompletionRequestTriggeredFromConsole"] = 201] = "AiCodeCompletionRequestTriggeredFromConsole";
+    Action[Action["AiCodeCompletionRequestTriggeredFromSources"] = 202] = "AiCodeCompletionRequestTriggeredFromSources";
+    Action[Action["AiCodeCompletionRequestTriggeredFromStyles"] = 203] = "AiCodeCompletionRequestTriggeredFromStyles";
+    Action[Action["AiCodeGenerationRequestTriggeredFromConsole"] = 204] = "AiCodeGenerationRequestTriggeredFromConsole";
+    Action[Action["AiCodeGenerationRequestTriggeredFromSources"] = 205] = "AiCodeGenerationRequestTriggeredFromSources";
+    Action[Action["AiCodeCompletionFreCompletedFromConsole"] = 206] = "AiCodeCompletionFreCompletedFromConsole";
+    Action[Action["AiCodeCompletionFreCompletedFromSources"] = 207] = "AiCodeCompletionFreCompletedFromSources";
+    Action[Action["MAX_VALUE"] = 208] = "MAX_VALUE";
     /* eslint-enable @typescript-eslint/naming-convention */
 })(Action || (Action = {}));
 export var PanelCodes;
@@ -428,7 +435,6 @@ export var PanelCodes;
     PanelCodes[PanelCodes["changes.changes"] = 23] = "changes.changes";
     PanelCodes[PanelCodes["performance.monitor"] = 24] = "performance.monitor";
     PanelCodes[PanelCodes["release-note"] = 25] = "release-note";
-    PanelCodes[PanelCodes["live-heap-profile"] = 26] = "live-heap-profile";
     PanelCodes[PanelCodes["sources.quick"] = 27] = "sources.quick";
     PanelCodes[PanelCodes["network.blocked-urls"] = 28] = "network.blocked-urls";
     PanelCodes[PanelCodes["settings-preferences"] = 29] = "settings-preferences";
@@ -578,8 +584,6 @@ export var KeyboardShortcutAction;
     KeyboardShortcutAction[KeyboardShortcutAction["inspector-main.focus-debuggee"] = 47] = "inspector-main.focus-debuggee";
     KeyboardShortcutAction[KeyboardShortcutAction["inspector-main.hard-reload"] = 48] = "inspector-main.hard-reload";
     KeyboardShortcutAction[KeyboardShortcutAction["inspector-main.reload"] = 49] = "inspector-main.reload";
-    KeyboardShortcutAction[KeyboardShortcutAction["live-heap-profile.start-with-reload"] = 50] = "live-heap-profile.start-with-reload";
-    KeyboardShortcutAction[KeyboardShortcutAction["live-heap-profile.toggle-recording"] = 51] = "live-heap-profile.toggle-recording";
     KeyboardShortcutAction[KeyboardShortcutAction["main.debug-reload"] = 52] = "main.debug-reload";
     KeyboardShortcutAction[KeyboardShortcutAction["main.next-tab"] = 53] = "main.next-tab";
     KeyboardShortcutAction[KeyboardShortcutAction["main.previous-tab"] = 54] = "main.previous-tab";
@@ -657,7 +661,6 @@ export var DevtoolsExperiments;
 (function (DevtoolsExperiments) {
     /* eslint-disable @typescript-eslint/naming-convention */
     DevtoolsExperiments[DevtoolsExperiments["capture-node-creation-stacks"] = 1] = "capture-node-creation-stacks";
-    DevtoolsExperiments[DevtoolsExperiments["live-heap-profile"] = 11] = "live-heap-profile";
     DevtoolsExperiments[DevtoolsExperiments["protocol-monitor"] = 13] = "protocol-monitor";
     DevtoolsExperiments[DevtoolsExperiments["timeline-invalidation-tracking"] = 26] = "timeline-invalidation-tracking";
     DevtoolsExperiments[DevtoolsExperiments["instrumentation-breakpoints"] = 61] = "instrumentation-breakpoints";

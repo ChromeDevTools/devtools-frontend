@@ -7720,7 +7720,7 @@ var StylesAiCodeCompletionProvider = class _StylesAiCodeCompletionProvider {
   }
   async #requestAidaSuggestion(prefix, suffix, cursorPositionAtRequest) {
     this.#aiCodeCompletionConfig?.onRequestTriggered();
-    Host3.userMetrics.actionTaken(Host3.UserMetrics.Action.AiCodeCompletionRequestTriggered);
+    Host3.userMetrics.actionTaken(Host3.UserMetrics.Action.AiCodeCompletionRequestTriggeredFromStyles);
     try {
       const completionResponse = await this.#aiCodeCompletion?.completeCode(
         prefix,

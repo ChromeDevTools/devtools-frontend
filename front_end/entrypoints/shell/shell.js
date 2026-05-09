@@ -1971,7 +1971,6 @@ UI.ContextMenu.registerProvider({
 
 // gen/front_end/panels/profiler/profiler-meta.js
 import * as i18n3 from "./../../core/i18n/i18n.js";
-import * as Root2 from "./../../core/root/root.js";
 import * as SDK2 from "./../../core/sdk/sdk.js";
 import * as UI2 from "./../../ui/legacy/legacy.js";
 var loadedProfilerModule;
@@ -1981,22 +1980,6 @@ var UIStrings2 = {
    */
   memory: "Memory",
   /**
-   * @description Title of the 'Live Heap Profile' tool in the bottom drawer
-   */
-  liveHeapProfile: "Live Heap Profile",
-  /**
-   * @description Title of an action under the Performance category that can be invoked through the Command Menu
-   */
-  startRecordingHeapAllocations: "Start recording heap allocations",
-  /**
-   * @description Title of an action under the Performance category that can be invoked through the Command Menu
-   */
-  stopRecordingHeapAllocations: "Stop recording heap allocations",
-  /**
-   * @description Title of an action in the live heap profile tool to start with reload
-   */
-  startRecordingHeapAllocationsAndReload: "Start recording heap allocations and reload the page",
-  /**
    * @description Text in the Shortcuts page to explain a keyboard shortcut (start/stop recording performance)
    */
   startStopRecording: "Start/stop recording",
@@ -2004,10 +1987,6 @@ var UIStrings2 = {
    * @description Command for showing the profiler tab
    */
   showMemory: "Show Memory",
-  /**
-   * @description Command for showing the 'Live Heap Profile' tool in the bottom drawer
-   */
-  showLiveHeapProfile: "Show Live Heap Profile",
   /**
    * @description Tooltip text that appears when hovering over the largeicon clear button in the Profiles Panel of a profiler tool
    */
@@ -2049,53 +2028,6 @@ UI2.ViewManager.registerViewExtension({
     const Profiler = await loadProfilerModule();
     return Profiler.HeapProfilerPanel.HeapProfilerPanel.instance();
   }
-});
-UI2.ViewManager.registerViewExtension({
-  location: "drawer-view",
-  id: "live-heap-profile",
-  commandPrompt: i18nLazyString2(UIStrings2.showLiveHeapProfile),
-  title: i18nLazyString2(UIStrings2.liveHeapProfile),
-  persistence: "closeable",
-  order: 100,
-  async loadView() {
-    const Profiler = await loadProfilerModule();
-    return Profiler.LiveHeapProfileView.LiveHeapProfileView.instance();
-  },
-  experiment: Root2.ExperimentNames.ExperimentName.LIVE_HEAP_PROFILE
-});
-UI2.ActionRegistration.registerActionExtension({
-  actionId: "live-heap-profile.toggle-recording",
-  iconClass: "record-start",
-  toggleable: true,
-  toggledIconClass: "record-stop",
-  toggleWithRedColor: true,
-  async loadActionDelegate() {
-    const Profiler = await loadProfilerModule();
-    return new Profiler.LiveHeapProfileView.ActionDelegate();
-  },
-  category: "MEMORY",
-  experiment: Root2.ExperimentNames.ExperimentName.LIVE_HEAP_PROFILE,
-  options: [
-    {
-      value: true,
-      title: i18nLazyString2(UIStrings2.startRecordingHeapAllocations)
-    },
-    {
-      value: false,
-      title: i18nLazyString2(UIStrings2.stopRecordingHeapAllocations)
-    }
-  ]
-});
-UI2.ActionRegistration.registerActionExtension({
-  actionId: "live-heap-profile.start-with-reload",
-  iconClass: "refresh",
-  async loadActionDelegate() {
-    const Profiler = await loadProfilerModule();
-    return new Profiler.LiveHeapProfileView.ActionDelegate();
-  },
-  category: "MEMORY",
-  experiment: Root2.ExperimentNames.ExperimentName.LIVE_HEAP_PROFILE,
-  title: i18nLazyString2(UIStrings2.startRecordingHeapAllocationsAndReload)
 });
 UI2.ActionRegistration.registerActionExtension({
   actionId: "profiler.heap-toggle-recording",
@@ -2869,7 +2801,7 @@ import * as i18n13 from "./../../core/i18n/i18n.js";
 import * as UI7 from "./../../ui/legacy/legacy.js";
 import * as Common4 from "./../../core/common/common.js";
 import * as i18n32 from "./../../core/i18n/i18n.js";
-import * as Root3 from "./../../core/root/root.js";
+import * as Root2 from "./../../core/root/root.js";
 import * as UI22 from "./../../ui/legacy/legacy.js";
 var UIStrings7 = {
   /**
@@ -3027,7 +2959,7 @@ UI22.ViewManager.registerViewExtension({
   title: i18nLazyString22(UIStrings22.experiments),
   commandPrompt: i18nLazyString22(UIStrings22.showExperiments),
   order: 3,
-  experiment: Root3.ExperimentNames.ExperimentName.ALL,
+  experiment: Root2.ExperimentNames.ExperimentName.ALL,
   async loadView() {
     const Settings22 = await loadSettingsModule();
     return new Settings22.SettingsScreen.ExperimentsSettingsTab();
@@ -3154,8 +3086,8 @@ Common4.Revealer.registerRevealer({
   contextTypes() {
     return [
       Common4.Settings.Setting,
-      Root3.Runtime.Experiment,
-      Root3.Runtime.HostExperiment
+      Root2.Runtime.Experiment,
+      Root2.Runtime.HostExperiment
     ];
   },
   async loadRevealer() {
@@ -3174,7 +3106,7 @@ UI22.ContextMenu.registerItem({
 
 // gen/front_end/panels/protocol_monitor/protocol_monitor-meta.js
 import * as i18n16 from "./../../core/i18n/i18n.js";
-import * as Root4 from "./../../core/root/root.js";
+import * as Root3 from "./../../core/root/root.js";
 import * as UI8 from "./../../ui/legacy/legacy.js";
 var UIStrings8 = {
   /**
@@ -3209,7 +3141,7 @@ UI8.ViewManager.registerViewExtension({
     const ProtocolMonitor = await loadProtocolMonitorModule();
     return new ProtocolMonitor.ProtocolMonitor.ProtocolMonitorImpl();
   },
-  experiment: Root4.ExperimentNames.ExperimentName.PROTOCOL_MONITOR
+  experiment: Root3.ExperimentNames.ExperimentName.PROTOCOL_MONITOR
 });
 
 // gen/front_end/models/persistence/persistence-meta.js
@@ -3353,7 +3285,7 @@ Common6.Settings.registerSettingExtension({
 import * as Common7 from "./../../core/common/common.js";
 import * as Host2 from "./../../core/host/host.js";
 import * as i18n22 from "./../../core/i18n/i18n.js";
-import * as Root5 from "./../../core/root/root.js";
+import * as Root4 from "./../../core/root/root.js";
 import * as SDK4 from "./../../core/sdk/sdk.js";
 import * as Workspace2 from "./../../models/workspace/workspace.js";
 import * as Components from "./../../ui/legacy/components/utils/utils.js";
@@ -4224,7 +4156,7 @@ UI9.Toolbar.registerToolbarItem({
   location: "main-toolbar-right"
 });
 UI9.Toolbar.registerToolbarItem({
-  condition: () => !Root5.Runtime.Runtime.isTraceApp(),
+  condition: () => !Root4.Runtime.Runtime.isTraceApp(),
   async loadItem() {
     const Main = await loadMainModule();
     return Main.MainImpl.MainMenuItem.instance();
@@ -4250,7 +4182,6 @@ UI9.AppProvider.registerAppProvider({
 // gen/front_end/ui/legacy/components/perf_ui/perf_ui-meta.js
 import * as Common8 from "./../../core/common/common.js";
 import * as i18n24 from "./../../core/i18n/i18n.js";
-import * as Root6 from "./../../core/root/root.js";
 import * as UI10 from "./../../ui/legacy/legacy.js";
 var UIStrings12 = {
   /**
@@ -4267,21 +4198,6 @@ var UIStrings12 = {
    * @description Classic navigation option in the Performance Panel.
    */
   classic: "Classic",
-  /**
-   * @description Title of a setting under the Memory category in Settings. Live memory is memory
-   * that is still in-use by the program (not dead). Allocation of live memory is when the program
-   * creates new memory. This is a setting that turns on extra annotations in the UI to mark these
-   * allocations.
-   */
-  liveMemoryAllocationAnnotations: "Live memory allocation annotations",
-  /**
-   * @description Title of a setting under the Memory category that can be invoked through the Command Menu
-   */
-  showLiveMemoryAllocation: "Show live memory allocation annotations",
-  /**
-   * @description Title of a setting under the Memory category that can be invoked through the Command Menu
-   */
-  hideLiveMemoryAllocation: "Hide live memory allocation annotations",
   /**
    * @description Title of an action in the components tool to collect garbage
    */
@@ -4323,24 +4239,6 @@ Common8.Settings.registerSettingExtension({
       title: i18nLazyString12(UIStrings12.classic),
       text: i18nLazyString12(UIStrings12.classic),
       value: "classic"
-    }
-  ]
-});
-Common8.Settings.registerSettingExtension({
-  category: "MEMORY",
-  experiment: Root6.ExperimentNames.ExperimentName.LIVE_HEAP_PROFILE,
-  title: i18nLazyString12(UIStrings12.liveMemoryAllocationAnnotations),
-  settingName: "memory-live-heap-profile",
-  settingType: "boolean",
-  defaultValue: false,
-  options: [
-    {
-      value: true,
-      title: i18nLazyString12(UIStrings12.showLiveMemoryAllocation)
-    },
-    {
-      value: false,
-      title: i18nLazyString12(UIStrings12.hideLiveMemoryAllocation)
     }
   ]
 });
@@ -5944,7 +5842,7 @@ for (const action of actions) {
 // gen/front_end/panels/ai_assistance/ai_assistance-meta.js
 import * as Common13 from "./../../core/common/common.js";
 import * as i18n35 from "./../../core/i18n/i18n.js";
-import * as Root7 from "./../../core/root/root.js";
+import * as Root5 from "./../../core/root/root.js";
 import * as UI15 from "./../../ui/legacy/legacy.js";
 var UIStrings17 = {
   /**
@@ -6000,7 +5898,7 @@ var UIStrings17 = {
 var str_17 = i18n35.i18n.registerUIStrings("panels/ai_assistance/ai_assistance-meta.ts", UIStrings17);
 var i18nString2 = i18n35.i18n.getLocalizedString.bind(void 0, str_17);
 function i18nAiBrandedString(gemini, assistance) {
-  return () => Root7.Runtime.hostConfig.devToolsGeminiRebranding?.enabled ? i18nString2(gemini) : i18nString2(assistance);
+  return () => Root5.Runtime.hostConfig.devToolsGeminiRebranding?.enabled ? i18nString2(gemini) : i18nString2(assistance);
 }
 var setting2 = "ai-assistance-enabled";
 function isLocaleRestricted2() {

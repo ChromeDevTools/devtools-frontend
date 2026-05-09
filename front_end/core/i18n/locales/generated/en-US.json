@@ -9335,6 +9335,12 @@
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "Accessibility"
   },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsing": {
+    "message": "Agentic browsing"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsingDescription": {
+    "message": "These checks ensure high-quality, browsable websites for AI agents and validate the correctness of WebMCP integrations. This category is still under development and subject to change."
+  },
   "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
     "message": "Apply desktop emulation during auditing"
   },
@@ -12164,33 +12170,6 @@
   "panels/profiler/IsolateSelector.ts | totalPageJsHeapSizeChangeTrend": {
     "message": "Total page JS heap size change trend over the last {PH1} minutes."
   },
-  "panels/profiler/LiveHeapProfileView.ts | allocatedJsHeapSizeCurrentlyIn": {
-    "message": "Allocated JS heap size currently in use"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | anonymousScriptS": {
-    "message": "(Anonymous Script {PH1})"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | heapProfile": {
-    "message": "Heap Profile"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | jsHeap": {
-    "message": "JS Heap"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | kb": {
-    "message": "kB"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | numberOfVmsSharingTheSameScript": {
-    "message": "Number of VMs sharing the same script source"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | scriptUrl": {
-    "message": "Script URL"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | urlOfTheScriptSource": {
-    "message": "URL of the script source"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | vms": {
-    "message": "VMs"
-  },
   "panels/profiler/ModuleUIStrings.ts | buildingAllocationStatistics": {
     "message": "Building allocation statistics…"
   },
@@ -12293,9 +12272,6 @@
   "panels/profiler/profiler-meta.ts | deleteProfile": {
     "message": "Delete profile"
   },
-  "panels/profiler/profiler-meta.ts | liveHeapProfile": {
-    "message": "Live Heap Profile"
-  },
   "panels/profiler/profiler-meta.ts | loadProfile": {
     "message": "Load profile…"
   },
@@ -12305,23 +12281,11 @@
   "panels/profiler/profiler-meta.ts | saveProfile": {
     "message": "Save profile…"
   },
-  "panels/profiler/profiler-meta.ts | showLiveHeapProfile": {
-    "message": "Show Live Heap Profile"
-  },
   "panels/profiler/profiler-meta.ts | showMemory": {
     "message": "Show Memory"
   },
-  "panels/profiler/profiler-meta.ts | startRecordingHeapAllocations": {
-    "message": "Start recording heap allocations"
-  },
-  "panels/profiler/profiler-meta.ts | startRecordingHeapAllocationsAndReload": {
-    "message": "Start recording heap allocations and reload the page"
-  },
   "panels/profiler/profiler-meta.ts | startStopRecording": {
     "message": "Start/stop recording"
-  },
-  "panels/profiler/profiler-meta.ts | stopRecordingHeapAllocations": {
-    "message": "Stop recording heap allocations"
   },
   "panels/profiler/ProfileSidebarTreeElement.ts | profileOptions": {
     "message": "Profile options"
@@ -14668,12 +14632,6 @@
   },
   "panels/sources/PersistenceActions.ts | showOverrides": {
     "message": "Show all overrides"
-  },
-  "panels/sources/ProfilePlugin.ts | kb": {
-    "message": "kB"
-  },
-  "panels/sources/ProfilePlugin.ts | mb": {
-    "message": "MB"
   },
   "panels/sources/ProfilePlugin.ts | ms": {
     "message": "ms"
@@ -17792,17 +17750,8 @@
   "ui/legacy/components/perf_ui/perf_ui-meta.ts | flamechartSelectedNavigation": {
     "message": "Flamechart navigation:"
   },
-  "ui/legacy/components/perf_ui/perf_ui-meta.ts | hideLiveMemoryAllocation": {
-    "message": "Hide live memory allocation annotations"
-  },
-  "ui/legacy/components/perf_ui/perf_ui-meta.ts | liveMemoryAllocationAnnotations": {
-    "message": "Live memory allocation annotations"
-  },
   "ui/legacy/components/perf_ui/perf_ui-meta.ts | modern": {
     "message": "Modern"
-  },
-  "ui/legacy/components/perf_ui/perf_ui-meta.ts | showLiveMemoryAllocation": {
-    "message": "Show live memory allocation annotations"
   },
   "ui/legacy/components/perf_ui/PieChart.ts | total": {
     "message": "Total"

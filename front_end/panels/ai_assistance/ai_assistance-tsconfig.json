@@ -79,6 +79,9 @@
       "path": "../../core/sdk/bundle-tsconfig.json"
     },
     {
+      "path": "../../generated/generated-tsconfig.json"
+    },
+    {
       "path": "../../generated/protocol-tsconfig.json"
     },
     {
@@ -91,10 +94,16 @@
       "path": "../../models/badges/bundle-tsconfig.json"
     },
     {
+      "path": "../../models/computed_style/bundle-tsconfig.json"
+    },
+    {
       "path": "../../models/geometry/bundle-tsconfig.json"
     },
     {
       "path": "../../models/greendev/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../models/lighthouse/bundle-tsconfig.json"
     },
     {
       "path": "../../models/logs/bundle-tsconfig.json"
@@ -107,6 +116,9 @@
     },
     {
       "path": "../../models/text_utils/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../models/trace/bundle-tsconfig.json"
     },
     {
       "path": "../../models/trace/helpers/bundle-tsconfig.json"
@@ -143,6 +155,9 @@
     },
     {
       "path": "../timeline/utils/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../services/trace_bounds/bundle-tsconfig.json"
     },
     {
       "path": "../../third_party/marked/bundle-tsconfig.json"

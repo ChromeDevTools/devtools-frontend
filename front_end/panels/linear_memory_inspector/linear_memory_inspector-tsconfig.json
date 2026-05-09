@@ -58,6 +58,9 @@
       "path": "../../models/bindings/bundle-tsconfig.json"
     },
     {
+      "path": "../../ui/kit/bundle-tsconfig.json"
+    },
+    {
       "path": "../../ui/legacy/bundle-tsconfig.json"
     },
     {

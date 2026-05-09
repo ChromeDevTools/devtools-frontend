@@ -2,6 +2,7 @@ import * as Host from '../../../core/host/host.js';
 import type * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import type * as LHModel from '../../lighthouse/lighthouse.js';
+import type * as TextUtils from '../../text_utils/text_utils.js';
 import type * as Trace from '../../trace/trace.js';
 export declare const enum ResponseType {
     CONTEXT = "context",
@@ -179,7 +180,7 @@ export interface DomTreeAiWidget {
             size: number;
             resourceType: Protocol.Network.ResourceType;
             mimeType: string;
-            imageUrl?: string;
+            imageContent?: TextUtils.ContentData.ContentData;
         };
     };
 }

@@ -5,6 +5,7 @@ import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Root from '../../../core/root/root.js';
+import * as AiCodeCompletion from '../../../models/ai_code_completion/ai_code_completion.js';
 import * as AiCodeGeneration from '../../../models/ai_code_generation/ai_code_generation.js';
 import * as PanelCommon from '../../../panels/common/common.js';
 import * as CodeMirror from '../../../third_party/codemirror.next/codemirror.next.js';
@@ -177,6 +178,14 @@ export class AiCodeGenerationProvider {
             return;
         }
         void VisualLogging.logKeyDown(event.currentTarget, event, 'ai-code-generation.triggered');
+        if (this.#aiCodeGenerationConfig?.panel === "console" /* AiCodeCompletion.AiCodeCompletion.ContextFlavor.CONSOLE */) {
+            Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiCodeGenerationRequestTriggeredFromConsole);
+            void VisualLogging.logKeyDown(event.currentTarget, event, 'ai-code-generation.triggered-from-console');
+        }
+        else if (this.#aiCodeGenerationConfig?.panel === "sources" /* AiCodeCompletion.AiCodeCompletion.ContextFlavor.SOURCES */) {
+            Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiCodeGenerationRequestTriggeredFromSources);
+            void VisualLogging.logKeyDown(event.currentTarget, event, 'ai-code-generation.triggered-from-sources');
+        }
         void this.#triggerAiCodeGeneration({ signal: this.#controller.signal });
     }
     async #onboardUser() {

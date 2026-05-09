@@ -7392,16 +7392,19 @@ ${result}`,
                 const nodeMap = await domModel.pushNodesByBackendIdsToFrontend(/* @__PURE__ */ new Set([nodeId]));
                 const node = nodeMap?.get(nodeId);
                 if (node) {
-                  const snapshot = await node.takeSnapshot();
-                  let networkRequest;
                   const lcpSyntheticRequest = insight.lcpRequest;
+                  const [snapshot, imageContent] = await Promise.all([
+                    node.takeSnapshot(),
+                    lcpSyntheticRequest ? this.#getNetworkRequestImageData(lcpSyntheticRequest) : Promise.resolve(void 0)
+                  ]);
+                  let networkRequest;
                   if (lcpSyntheticRequest) {
                     networkRequest = {
                       url: lcpSyntheticRequest.args.data.url,
                       size: lcpSyntheticRequest.args.data.decodedBodyLength ?? lcpSyntheticRequest.args.data.encodedDataLength ?? 0,
                       resourceType: lcpSyntheticRequest.args.data.resourceType,
                       mimeType: lcpSyntheticRequest.args.data.mimeType ?? "",
-                      imageUrl: await this.#getNetworkRequestImageData(lcpSyntheticRequest)
+                      imageContent
                     };
                   }
                   widgets.push({
@@ -7887,7 +7890,7 @@ ${result}`,
     if (sdkRequest?.contentType().isImage()) {
       const contentData = await sdkRequest.requestContentData();
       if (!TextUtils5.ContentData.ContentData.isError(contentData)) {
-        return contentData.asDataUrl() ?? void 0;
+        return contentData;
       }
     }
     return void 0;

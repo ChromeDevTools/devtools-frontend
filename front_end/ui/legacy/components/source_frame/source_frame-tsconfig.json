@@ -71,6 +71,9 @@
       "path": "../../../../entrypoints/formatter_worker/bundle-tsconfig.json"
     },
     {
+      "path": "../../../../entrypoints/formatter_worker/formatter_actions-tsconfig.json"
+    },
+    {
       "path": "../../../../models/formatter/bundle-tsconfig.json"
     },
     {

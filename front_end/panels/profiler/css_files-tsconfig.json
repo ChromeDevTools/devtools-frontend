@@ -5,7 +5,6 @@
     },
     "files": [
         "heapProfiler.css.js",
-        "liveHeapProfile.css.js",
         "profileLauncherView.css.js",
         "profilesPanel.css.js",
         "profilesSidebarTree.css.js"

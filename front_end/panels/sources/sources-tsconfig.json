@@ -97,6 +97,12 @@
       "path": "../../entrypoints/formatter_worker/bundle-tsconfig.json"
     },
     {
+      "path": "../../entrypoints/formatter_worker/formatter_actions-tsconfig.json"
+    },
+    {
+      "path": "../../generated/generated-tsconfig.json"
+    },
+    {
       "path": "../../generated/protocol-tsconfig.json"
     },
     {
@@ -104,6 +110,9 @@
     },
     {
       "path": "../../models/ai_code_completion/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../models/ai_code_generation/bundle-tsconfig.json"
     },
     {
       "path": "../../models/badges/bundle-tsconfig.json"

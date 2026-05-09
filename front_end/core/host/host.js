@@ -2464,7 +2464,7 @@ var UserMetrics = class {
     InspectorFrontendHostInstance.recordEnumeratedHistogram(
       "DevTools.LighthouseCategoryUsed",
       type,
-      6
+      7
       /* LighthouseCategoryUsed.MAX_VALUE */
     );
   }
@@ -2738,7 +2738,14 @@ var Action;
   Action2[Action2["InsightTeaserModelDownloadCompleted"] = 198] = "InsightTeaserModelDownloadCompleted";
   Action2[Action2["AiCodeGenerationError"] = 199] = "AiCodeGenerationError";
   Action2[Action2["AiCodeGenerationRequestTriggered"] = 200] = "AiCodeGenerationRequestTriggered";
-  Action2[Action2["MAX_VALUE"] = 201] = "MAX_VALUE";
+  Action2[Action2["AiCodeCompletionRequestTriggeredFromConsole"] = 201] = "AiCodeCompletionRequestTriggeredFromConsole";
+  Action2[Action2["AiCodeCompletionRequestTriggeredFromSources"] = 202] = "AiCodeCompletionRequestTriggeredFromSources";
+  Action2[Action2["AiCodeCompletionRequestTriggeredFromStyles"] = 203] = "AiCodeCompletionRequestTriggeredFromStyles";
+  Action2[Action2["AiCodeGenerationRequestTriggeredFromConsole"] = 204] = "AiCodeGenerationRequestTriggeredFromConsole";
+  Action2[Action2["AiCodeGenerationRequestTriggeredFromSources"] = 205] = "AiCodeGenerationRequestTriggeredFromSources";
+  Action2[Action2["AiCodeCompletionFreCompletedFromConsole"] = 206] = "AiCodeCompletionFreCompletedFromConsole";
+  Action2[Action2["AiCodeCompletionFreCompletedFromSources"] = 207] = "AiCodeCompletionFreCompletedFromSources";
+  Action2[Action2["MAX_VALUE"] = 208] = "MAX_VALUE";
 })(Action || (Action = {}));
 var PanelCodes;
 (function(PanelCodes2) {
@@ -2766,7 +2773,6 @@ var PanelCodes;
   PanelCodes2[PanelCodes2["changes.changes"] = 23] = "changes.changes";
   PanelCodes2[PanelCodes2["performance.monitor"] = 24] = "performance.monitor";
   PanelCodes2[PanelCodes2["release-note"] = 25] = "release-note";
-  PanelCodes2[PanelCodes2["live-heap-profile"] = 26] = "live-heap-profile";
   PanelCodes2[PanelCodes2["sources.quick"] = 27] = "sources.quick";
   PanelCodes2[PanelCodes2["network.blocked-urls"] = 28] = "network.blocked-urls";
   PanelCodes2[PanelCodes2["settings-preferences"] = 29] = "settings-preferences";
@@ -2910,8 +2916,6 @@ var KeyboardShortcutAction;
   KeyboardShortcutAction2[KeyboardShortcutAction2["inspector-main.focus-debuggee"] = 47] = "inspector-main.focus-debuggee";
   KeyboardShortcutAction2[KeyboardShortcutAction2["inspector-main.hard-reload"] = 48] = "inspector-main.hard-reload";
   KeyboardShortcutAction2[KeyboardShortcutAction2["inspector-main.reload"] = 49] = "inspector-main.reload";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["live-heap-profile.start-with-reload"] = 50] = "live-heap-profile.start-with-reload";
-  KeyboardShortcutAction2[KeyboardShortcutAction2["live-heap-profile.toggle-recording"] = 51] = "live-heap-profile.toggle-recording";
   KeyboardShortcutAction2[KeyboardShortcutAction2["main.debug-reload"] = 52] = "main.debug-reload";
   KeyboardShortcutAction2[KeyboardShortcutAction2["main.next-tab"] = 53] = "main.next-tab";
   KeyboardShortcutAction2[KeyboardShortcutAction2["main.previous-tab"] = 54] = "main.previous-tab";
@@ -2983,7 +2987,6 @@ var KeyboardShortcutAction;
 var DevtoolsExperiments;
 (function(DevtoolsExperiments2) {
   DevtoolsExperiments2[DevtoolsExperiments2["capture-node-creation-stacks"] = 1] = "capture-node-creation-stacks";
-  DevtoolsExperiments2[DevtoolsExperiments2["live-heap-profile"] = 11] = "live-heap-profile";
   DevtoolsExperiments2[DevtoolsExperiments2["protocol-monitor"] = 13] = "protocol-monitor";
   DevtoolsExperiments2[DevtoolsExperiments2["timeline-invalidation-tracking"] = 26] = "timeline-invalidation-tracking";
   DevtoolsExperiments2[DevtoolsExperiments2["instrumentation-breakpoints"] = 61] = "instrumentation-breakpoints";

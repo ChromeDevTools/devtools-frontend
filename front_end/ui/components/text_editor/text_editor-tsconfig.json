@@ -93,6 +93,9 @@
       "path": "../../../panels/common/bundle-tsconfig.json"
     },
     {
+      "path": "../../../third_party/codemirror.next/bundle-tsconfig.json"
+    },
+    {
       "path": "../../kit/bundle-tsconfig.json"
     },
     {

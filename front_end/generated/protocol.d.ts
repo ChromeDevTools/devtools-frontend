@@ -3006,6 +3006,10 @@ export declare namespace CSS {
     interface CSSContainerQuery {
         /**
          * Container query text.
+         * Contains the query part without the container name for a single query.
+         * Deprecated in favor of conditionText which contains the full prelude
+         * after @container.
+         * @deprecated
          */
         text: string;
         /**
@@ -3037,6 +3041,10 @@ export declare namespace CSS {
          * true if the query contains anchored() queries.
          */
         queriesAnchored?: boolean;
+        /**
+         * CSSContainerRule.conditionText
+         */
+        conditionText: string;
     }
     /**
      * CSS Supports at-rule descriptor.
@@ -3831,6 +3839,17 @@ export declare namespace CSS {
         text: string;
     }
     interface SetContainerQueryTextResponse extends ProtocolResponseWithError {
+        /**
+         * The resulting CSS container query rule after modification.
+         */
+        containerQuery: CSSContainerQuery;
+    }
+    interface SetContainerQueryConditionTextRequest {
+        styleSheetId: DOM.StyleSheetId;
+        range: SourceRange;
+        text: string;
+    }
+    interface SetContainerQueryConditionTextResponse extends ProtocolResponseWithError {
         /**
          * The resulting CSS container query rule after modification.
          */

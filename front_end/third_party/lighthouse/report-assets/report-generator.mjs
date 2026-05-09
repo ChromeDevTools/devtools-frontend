@@ -35,7 +35,7 @@
     ReportGenerator: () => ReportGenerator
   });
 
-  // replace-modules:/usr/local/google/home/lusazhan/Git/lighthouse-pristine/report/generator/flow-report-assets.js
+  // replace-modules:/usr/local/google/home/lusazhan/Git/lighthouse/report/generator/flow-report-assets.js
   var flowReportAssets = {};
 
   // report/generator/report-assets.js

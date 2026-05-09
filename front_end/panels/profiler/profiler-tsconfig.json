@@ -45,7 +45,6 @@
     "../../../../../../front_end/panels/profiler/HeapSnapshotView.ts",
     "../../../../../../front_end/panels/profiler/HeapTimelineOverview.ts",
     "../../../../../../front_end/panels/profiler/IsolateSelector.ts",
-    "../../../../../../front_end/panels/profiler/LiveHeapProfileView.ts",
     "../../../../../../front_end/panels/profiler/ModuleUIStrings.ts",
     "../../../../../../front_end/panels/profiler/ProfileDataGrid.ts",
     "../../../../../../front_end/panels/profiler/ProfileFlameChartDataProvider.ts",
@@ -81,6 +80,9 @@
     },
     {
       "path": "../../core/sdk/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../generated/generated-tsconfig.json"
     },
     {
       "path": "../../generated/protocol-tsconfig.json"
@@ -132,6 +134,9 @@
     },
     {
       "path": "../../ui/legacy/theme_support/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../ui/lit/bundle-tsconfig.json"
     },
     {
       "path": "../../ui/visual_logging/bundle-tsconfig.json"

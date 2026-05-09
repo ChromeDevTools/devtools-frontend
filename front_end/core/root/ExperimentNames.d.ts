@@ -1,7 +1,6 @@
 export declare enum ExperimentName {
     ALL = "*",
     CAPTURE_NODE_CREATION_STACKS = "capture-node-creation-stacks",
-    LIVE_HEAP_PROFILE = "live-heap-profile",
     PROTOCOL_MONITOR = "protocol-monitor",
     TIMELINE_INVALIDATION_TRACKING = "timeline-invalidation-tracking",
     INSTRUMENTATION_BREAKPOINTS = "instrumentation-breakpoints",

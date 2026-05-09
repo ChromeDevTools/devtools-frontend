@@ -8174,51 +8174,10 @@ var UIStrings11 = {
   /**
    * @description The milisecond unit
    */
-  ms: "ms",
-  /**
-   * @description Unit for data size in DevTools
-   */
-  mb: "MB",
-  /**
-   * @description A unit
-   */
-  kb: "kB"
+  ms: "ms"
 };
 var str_11 = i18n21.i18n.registerUIStrings("panels/sources/ProfilePlugin.ts", UIStrings11);
 var i18nString10 = i18n21.i18n.getLocalizedString.bind(void 0, str_11);
-var MemoryMarker = class extends CodeMirror5.GutterMarker {
-  value;
-  constructor(value2) {
-    super();
-    this.value = value2;
-  }
-  eq(other) {
-    return this.value === other.value;
-  }
-  toDOM() {
-    const element = document.createElement("div");
-    element.className = "cm-profileMarker";
-    let value2 = this.value;
-    const intensity = Platform7.NumberUtilities.clamp(Math.log10(1 + 2e-3 * value2) / 5, 0.02, 1);
-    element.style.backgroundColor = `hsla(217, 100%, 70%, ${intensity.toFixed(3)})`;
-    value2 /= 1e3;
-    let units;
-    let fractionDigits;
-    if (value2 >= 1e3) {
-      units = i18nString10(UIStrings11.mb);
-      value2 /= 1e3;
-      fractionDigits = value2 >= 20 ? 0 : 1;
-    } else {
-      units = i18nString10(UIStrings11.kb);
-      fractionDigits = 0;
-    }
-    element.textContent = value2.toFixed(fractionDigits);
-    const unitElement = element.appendChild(document.createElement("span"));
-    unitElement.className = "cm-units";
-    unitElement.textContent = units;
-    return element;
-  }
-};
 var PerformanceMarker = class extends CodeMirror5.GutterMarker {
   value;
   constructor(value2) {
@@ -8241,8 +8200,7 @@ var PerformanceMarker = class extends CodeMirror5.GutterMarker {
     return element;
   }
 };
-function markersFromProfileData(map, state, type) {
-  const markerType = type === "performance" ? PerformanceMarker : MemoryMarker;
+function markersFromProfileData(map, state) {
   const markers = [];
   const aggregatedByLine = /* @__PURE__ */ new Map();
   for (const [line, value2] of map) {
@@ -8254,11 +8212,11 @@ function markersFromProfileData(map, state, type) {
   }
   for (const [line, value2] of aggregatedByLine) {
     const { from } = state.doc.line(line);
-    markers.push(new markerType(value2).range(from));
+    markers.push(new PerformanceMarker(value2).range(from));
   }
   return CodeMirror5.RangeSet.of(markers, true);
 }
-var makeLineLevelProfilePlugin = (type) => class ProfilePlugin extends Plugin {
+var PerformanceProfilePlugin = class extends Plugin {
   updateEffect = CodeMirror5.StateEffect.define();
   field;
   gutter;
@@ -8272,13 +8230,13 @@ var makeLineLevelProfilePlugin = (type) => class ProfilePlugin extends Plugin {
       },
       update: (markers, tr) => {
         return tr.effects.reduce((markers2, effect) => {
-          return effect.is(this.updateEffect) ? markersFromProfileData(effect.value, tr.state, type) : markers2;
+          return effect.is(this.updateEffect) ? markersFromProfileData(effect.value, tr.state) : markers2;
         }, markers.map(tr.changes));
       }
     });
     this.gutter = CodeMirror5.gutter({
       markers: (view) => view.state.field(this.field),
-      class: `cm-${type}Gutter`
+      class: `cm-${"performance"}Gutter`
     });
     this.#transformer = transformer;
   }
@@ -8286,7 +8244,10 @@ var makeLineLevelProfilePlugin = (type) => class ProfilePlugin extends Plugin {
     return uiSourceCode.contentType().hasScripts();
   }
   getLineMap() {
-    const uiSourceCodeProfileMap = this.uiSourceCode.getDecorationData(type);
+    const uiSourceCodeProfileMap = this.uiSourceCode.getDecorationData(
+      "performance"
+      /* Workspace.UISourceCode.DecoratorType.PERFORMANCE */
+    );
     if (!uiSourceCodeProfileMap) {
       return void 0;
     }
@@ -8297,9 +8258,9 @@ var makeLineLevelProfilePlugin = (type) => class ProfilePlugin extends Plugin {
   }
   editorExtension() {
     const map = this.getLineMap();
-    return this.compartment.of(!map ? [] : [this.field.init((state) => markersFromProfileData(map, state, type)), this.gutter, theme4]);
+    return this.compartment.of(!map ? [] : [this.field.init((state) => markersFromProfileData(map, state)), this.gutter, theme4]);
   }
-  decorationChanged(type2, editor) {
+  decorationChanged(type, editor) {
     const installed = Boolean(editor.state.field(this.field, false));
     const map = this.getLineMap();
     if (!map) {
@@ -8308,7 +8269,7 @@ var makeLineLevelProfilePlugin = (type) => class ProfilePlugin extends Plugin {
       }
     } else if (!installed) {
       editor.dispatch({
-        effects: this.compartment.reconfigure([this.field.init((state) => markersFromProfileData(map, state, type2)), this.gutter, theme4])
+        effects: this.compartment.reconfigure([this.field.init((state) => markersFromProfileData(map, state)), this.gutter, theme4])
       });
     } else {
       editor.dispatch({ effects: this.updateEffect.of(map) });
@@ -8325,11 +8286,6 @@ var theme4 = CodeMirror5.EditorView.baseTheme({
     backgroundColor: "var(--sys-color-cdt-base-container)",
     marginLeft: "3px"
   },
-  ".cm-memoryGutter": {
-    width: "48px",
-    backgroundColor: "var(--sys-color-cdt-base-container)",
-    marginLeft: "3px"
-  },
   ".cm-profileMarker": {
     textAlign: "right",
     paddingRight: "3px"
@@ -8340,14 +8296,6 @@ var theme4 = CodeMirror5.EditorView.baseTheme({
     marginLeft: "3px"
   }
 });
-var MemoryProfilePlugin = makeLineLevelProfilePlugin(
-  "memory"
-  /* Workspace.UISourceCode.DecoratorType.MEMORY */
-);
-var PerformanceProfilePlugin = makeLineLevelProfilePlugin(
-  "performance"
-  /* Workspace.UISourceCode.DecoratorType.PERFORMANCE */
-);
 
 // gen/front_end/panels/sources/ResourceOriginPlugin.js
 var ResourceOriginPlugin_exports = {};
@@ -8687,7 +8635,6 @@ var UISourceCodeFrame = class _UISourceCodeFrame extends Common9.ObjectWrapper.e
       SnippetsPlugin,
       ResourceOriginPlugin,
       CoveragePlugin,
-      MemoryProfilePlugin,
       PerformanceProfilePlugin,
       AiWarningInfobarPlugin
     ];

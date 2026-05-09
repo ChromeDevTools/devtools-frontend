@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as i18n from '../../core/i18n/i18n.js';
-import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 let loadedProfilerModule;
@@ -12,22 +11,6 @@ const UIStrings = {
      */
     memory: 'Memory',
     /**
-     * @description Title of the 'Live Heap Profile' tool in the bottom drawer
-     */
-    liveHeapProfile: 'Live Heap Profile',
-    /**
-     * @description Title of an action under the Performance category that can be invoked through the Command Menu
-     */
-    startRecordingHeapAllocations: 'Start recording heap allocations',
-    /**
-     * @description Title of an action under the Performance category that can be invoked through the Command Menu
-     */
-    stopRecordingHeapAllocations: 'Stop recording heap allocations',
-    /**
-     * @description Title of an action in the live heap profile tool to start with reload
-     */
-    startRecordingHeapAllocationsAndReload: 'Start recording heap allocations and reload the page',
-    /**
      * @description Text in the Shortcuts page to explain a keyboard shortcut (start/stop recording performance)
      */
     startStopRecording: 'Start/stop recording',
@@ -35,10 +18,6 @@ const UIStrings = {
      * @description Command for showing the profiler tab
      */
     showMemory: 'Show Memory',
-    /**
-     * @description Command for showing the 'Live Heap Profile' tool in the bottom drawer
-     */
-    showLiveHeapProfile: 'Show Live Heap Profile',
     /**
      * @description Tooltip text that appears when hovering over the largeicon clear button in the Profiles Panel of a profiler tool
      */
@@ -80,53 +59,6 @@ UI.ViewManager.registerViewExtension({
         const Profiler = await loadProfilerModule();
         return Profiler.HeapProfilerPanel.HeapProfilerPanel.instance();
     },
-});
-UI.ViewManager.registerViewExtension({
-    location: "drawer-view" /* UI.ViewManager.ViewLocationValues.DRAWER_VIEW */,
-    id: 'live-heap-profile',
-    commandPrompt: i18nLazyString(UIStrings.showLiveHeapProfile),
-    title: i18nLazyString(UIStrings.liveHeapProfile),
-    persistence: "closeable" /* UI.ViewManager.ViewPersistence.CLOSEABLE */,
-    order: 100,
-    async loadView() {
-        const Profiler = await loadProfilerModule();
-        return Profiler.LiveHeapProfileView.LiveHeapProfileView.instance();
-    },
-    experiment: Root.ExperimentNames.ExperimentName.LIVE_HEAP_PROFILE,
-});
-UI.ActionRegistration.registerActionExtension({
-    actionId: 'live-heap-profile.toggle-recording',
-    iconClass: "record-start" /* UI.ActionRegistration.IconClass.START_RECORDING */,
-    toggleable: true,
-    toggledIconClass: "record-stop" /* UI.ActionRegistration.IconClass.STOP_RECORDING */,
-    toggleWithRedColor: true,
-    async loadActionDelegate() {
-        const Profiler = await loadProfilerModule();
-        return new Profiler.LiveHeapProfileView.ActionDelegate();
-    },
-    category: "MEMORY" /* UI.ActionRegistration.ActionCategory.MEMORY */,
-    experiment: Root.ExperimentNames.ExperimentName.LIVE_HEAP_PROFILE,
-    options: [
-        {
-            value: true,
-            title: i18nLazyString(UIStrings.startRecordingHeapAllocations),
-        },
-        {
-            value: false,
-            title: i18nLazyString(UIStrings.stopRecordingHeapAllocations),
-        },
-    ],
-});
-UI.ActionRegistration.registerActionExtension({
-    actionId: 'live-heap-profile.start-with-reload',
-    iconClass: "refresh" /* UI.ActionRegistration.IconClass.REFRESH */,
-    async loadActionDelegate() {
-        const Profiler = await loadProfilerModule();
-        return new Profiler.LiveHeapProfileView.ActionDelegate();
-    },
-    category: "MEMORY" /* UI.ActionRegistration.ActionCategory.MEMORY */,
-    experiment: Root.ExperimentNames.ExperimentName.LIVE_HEAP_PROFILE,
-    title: i18nLazyString(UIStrings.startRecordingHeapAllocationsAndReload),
 });
 UI.ActionRegistration.registerActionExtension({
     actionId: 'profiler.heap-toggle-recording',

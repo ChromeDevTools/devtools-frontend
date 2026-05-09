@@ -831,9 +831,13 @@ export class PerformanceAgent extends AiAgent {
                                 const nodeMap = await domModel.pushNodesByBackendIdsToFrontend(new Set([nodeId]));
                                 const node = nodeMap?.get(nodeId);
                                 if (node) {
-                                    const snapshot = await node.takeSnapshot();
-                                    let networkRequest;
                                     const lcpSyntheticRequest = insight.lcpRequest;
+                                    const [snapshot, imageContent] = await Promise.all([
+                                        node.takeSnapshot(),
+                                        lcpSyntheticRequest ? this.#getNetworkRequestImageData(lcpSyntheticRequest) :
+                                            Promise.resolve(undefined),
+                                    ]);
+                                    let networkRequest;
                                     if (lcpSyntheticRequest) {
                                         networkRequest = {
                                             url: lcpSyntheticRequest.args.data.url,
@@ -841,7 +845,7 @@ export class PerformanceAgent extends AiAgent {
                                                 lcpSyntheticRequest.args.data.encodedDataLength ?? 0,
                                             resourceType: lcpSyntheticRequest.args.data.resourceType,
                                             mimeType: lcpSyntheticRequest.args.data.mimeType ?? '',
-                                            imageUrl: await this.#getNetworkRequestImageData(lcpSyntheticRequest),
+                                            imageContent,
                                         };
                                     }
                                     widgets.push({
@@ -1338,7 +1342,7 @@ export class PerformanceAgent extends AiAgent {
         if (sdkRequest?.contentType().isImage()) {
             const contentData = await sdkRequest.requestContentData();
             if (!TextUtils.ContentData.ContentData.isError(contentData)) {
-                return contentData.asDataUrl() ?? undefined;
+                return contentData;
             }
         }
         return undefined;

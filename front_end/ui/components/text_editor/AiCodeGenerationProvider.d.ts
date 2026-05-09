@@ -1,5 +1,5 @@
 import * as Host from '../../../core/host/host.js';
-import type * as AiCodeCompletion from '../../../models/ai_code_completion/ai_code_completion.js';
+import * as AiCodeCompletion from '../../../models/ai_code_completion/ai_code_completion.js';
 import * as CodeMirror from '../../../third_party/codemirror.next/codemirror.next.js';
 import type { TextEditor } from './TextEditor.js';
 export declare enum AiCodeGenerationTeaserMode {

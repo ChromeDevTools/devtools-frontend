@@ -93,6 +93,7 @@ export class AiCodeCompletionProvider {
         if (!this.#aiCodeCompletionSetting.get() && !this.#aiCodeCompletionTeaserDismissedSetting.get()) {
             this.#teaser = new PanelCommon.AiCodeCompletionTeaser({
                 onDetach: () => this.#detachTeaser.bind(this),
+                panel: this.#aiCodeCompletionConfig?.panel,
             });
             this.#editor.editor.dispatch({ effects: this.#teaserCompartment.reconfigure([aiCodeCompletionTeaserExtension(this.#teaser)]) });
         }
@@ -251,7 +252,13 @@ export class AiCodeCompletionProvider {
         const startTime = performance.now();
         this.#aiCodeCompletionConfig?.onRequestTriggered();
         // Registering AiCodeCompletionRequestTriggered metric even if the request is served from cache
-        Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiCodeCompletionRequestTriggered);
+        const panel = this.#aiCodeCompletionConfig?.panel;
+        if (panel === "console" /* AiCodeCompletion.AiCodeCompletion.ContextFlavor.CONSOLE */) {
+            Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiCodeCompletionRequestTriggeredFromConsole);
+        }
+        else if (panel === "sources" /* AiCodeCompletion.AiCodeCompletion.ContextFlavor.SOURCES */) {
+            Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiCodeCompletionRequestTriggeredFromSources);
+        }
         try {
             const completionResponse = await this.#aiCodeCompletion.completeCode(prefix, suffix, cursorPositionAtRequest, inferenceLanguage, additionalFiles);
             if (!completionResponse) {

@@ -9,7 +9,6 @@ import * as HeapSnapshotGridNodes from './HeapSnapshotGridNodes.js';
 import * as HeapSnapshotView from './HeapSnapshotView.js';
 import * as HeapTimelineOverview from './HeapTimelineOverview.js';
 import * as IsolateSelector from './IsolateSelector.js';
-import * as LiveHeapProfileView from './LiveHeapProfileView.js';
 import * as ProfileDataGrid from './ProfileDataGrid.js';
 import * as ProfileFlameChart from './ProfileFlameChartDataProvider.js';
 import * as ProfileHeader from './ProfileHeader.js';
@@ -19,5 +18,5 @@ import * as ProfilesPanel from './ProfilesPanel.js';
 import * as ProfileTypeRegistry from './ProfileTypeRegistry.js';
 import * as ProfileView from './ProfileView.js';
 import * as TopDownProfileDataGrid from './TopDownProfileDataGrid.js';
-export { BottomUpProfileDataGrid, HeapProfilerPanel, HeapProfileView, HeapSnapshotDataGrids, HeapSnapshotGridNodes, HeapSnapshotView, HeapTimelineOverview, IsolateSelector, LiveHeapProfileView, ProfileDataGrid, ProfileFlameChart, ProfileHeader, ProfileLauncherView, ProfileSidebarTreeElement, ProfilesPanel, ProfileTypeRegistry, ProfileView, TopDownProfileDataGrid, };
+export { BottomUpProfileDataGrid, HeapProfilerPanel, HeapProfileView, HeapSnapshotDataGrids, HeapSnapshotGridNodes, HeapSnapshotView, HeapTimelineOverview, IsolateSelector, ProfileDataGrid, ProfileFlameChart, ProfileHeader, ProfileLauncherView, ProfileSidebarTreeElement, ProfilesPanel, ProfileTypeRegistry, ProfileView, TopDownProfileDataGrid, };
 //# sourceMappingURL=profiler.prebundle.js.map

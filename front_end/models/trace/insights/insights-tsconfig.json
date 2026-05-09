@@ -73,6 +73,9 @@
       "path": "../../../core/platform/bundle-tsconfig.json"
     },
     {
+      "path": "../../../generated/generated-tsconfig.json"
+    },
+    {
       "path": "../../../generated/protocol-tsconfig.json"
     },
     {

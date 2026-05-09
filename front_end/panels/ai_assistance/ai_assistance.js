@@ -4612,15 +4612,15 @@ function renderNetworkRequestPreview(networkRequest) {
   const size = i18n9.ByteUtilities.bytesToString(networkRequest.size);
   const resourceType = Common4.ResourceType.resourceTypes[networkRequest.resourceType];
   const { iconName, color } = PanelUtils3.iconDataForResourceType(resourceType);
+  const imageUrl = networkRequest.imageContent?.asImagePreviewUrl() ?? networkRequest.url;
   return html7`
     <div class="network-request-preview">
       <div class="network-request-header">
         <div class="network-request-icon">
-          ${resourceType.isImage() ? html7`<img src=${networkRequest.imageUrl ?? networkRequest.url} alt=${filename} />` : html7`<devtools-icon name=${iconName} style=${Lit5.Directives.styleMap({
+          ${resourceType.isImage() ? html7`<img src=${imageUrl} alt=${filename} />` : html7`<devtools-icon name=${iconName} style=${Lit5.Directives.styleMap({
     color: color ?? ""
   })}></devtools-icon>`}
-        </div>
-        <div class="network-request-details">
+        </div>        <div class="network-request-details">
           <div class="network-request-name" title=${networkRequest.url}>${filename}</div>
           <div class="network-request-size">${size}</div>
         </div>

@@ -154,7 +154,6 @@ export declare class UISourceCodeMetadata {
 }
 export declare const enum DecoratorType {
     PERFORMANCE = "performance",
-    MEMORY = "memory",
     COVERAGE = "coverage"
 }
 /** 1-based. line => column => value */

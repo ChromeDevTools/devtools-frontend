@@ -73,7 +73,7 @@ import * as Common3 from "./../../../core/common/common.js";
 import * as Host2 from "./../../../core/host/host.js";
 import * as i18n4 from "./../../../core/i18n/i18n.js";
 import * as Root2 from "./../../../core/root/root.js";
-import * as AiCodeCompletion from "./../../../models/ai_code_completion/ai_code_completion.js";
+import * as AiCodeCompletion2 from "./../../../models/ai_code_completion/ai_code_completion.js";
 import * as AiCodeGeneration3 from "./../../../models/ai_code_generation/ai_code_generation.js";
 import * as PanelCommon2 from "./../../../panels/common/common.js";
 import * as CodeMirror3 from "./../../../third_party/codemirror.next/codemirror.next.js";
@@ -91,6 +91,7 @@ import * as Common2 from "./../../../core/common/common.js";
 import * as Host from "./../../../core/host/host.js";
 import * as i18n3 from "./../../../core/i18n/i18n.js";
 import * as Root from "./../../../core/root/root.js";
+import * as AiCodeCompletion from "./../../../models/ai_code_completion/ai_code_completion.js";
 import * as AiCodeGeneration from "./../../../models/ai_code_generation/ai_code_generation.js";
 import * as PanelCommon from "./../../../panels/common/common.js";
 import * as CodeMirror2 from "./../../../third_party/codemirror.next/codemirror.next.js";
@@ -1088,6 +1089,13 @@ var AiCodeGenerationProvider = class _AiCodeGenerationProvider {
       return;
     }
     void VisualLogging2.logKeyDown(event.currentTarget, event, "ai-code-generation.triggered");
+    if (this.#aiCodeGenerationConfig?.panel === "console") {
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiCodeGenerationRequestTriggeredFromConsole);
+      void VisualLogging2.logKeyDown(event.currentTarget, event, "ai-code-generation.triggered-from-console");
+    } else if (this.#aiCodeGenerationConfig?.panel === "sources") {
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiCodeGenerationRequestTriggeredFromSources);
+      void VisualLogging2.logKeyDown(event.currentTarget, event, "ai-code-generation.triggered-from-sources");
+    }
     void this.#triggerAiCodeGeneration({ signal: this.#controller.signal });
   }
   async #onboardUser() {
@@ -1346,7 +1354,7 @@ var AiCodeCompletionProvider = class _AiCodeCompletionProvider {
   #aiCodeGenerationProvider;
   #boundOnUpdateAiCodeCompletionState = this.#updateAiCodeCompletionState.bind(this);
   constructor(aiCodeCompletionConfig) {
-    if (!AiCodeCompletion.AiCodeCompletion.AiCodeCompletion.isAiCodeCompletionAvailable()) {
+    if (!AiCodeCompletion2.AiCodeCompletion.AiCodeCompletion.isAiCodeCompletionAvailable()) {
       throw new Error("AI code completion feature is not available.");
     }
     this.#aiCodeCompletionConfig = aiCodeCompletionConfig;
@@ -1393,7 +1401,8 @@ var AiCodeCompletionProvider = class _AiCodeCompletionProvider {
     this.#editor = editor;
     if (!this.#aiCodeCompletionSetting.get() && !this.#aiCodeCompletionTeaserDismissedSetting.get()) {
       this.#teaser = new PanelCommon2.AiCodeCompletionTeaser({
-        onDetach: () => this.#detachTeaser.bind(this)
+        onDetach: () => this.#detachTeaser.bind(this),
+        panel: this.#aiCodeCompletionConfig?.panel
       });
       this.#editor.editor.dispatch({ effects: this.#teaserCompartment.reconfigure([aiCodeCompletionTeaserExtension(this.#teaser)]) });
     }
@@ -1412,7 +1421,7 @@ var AiCodeCompletionProvider = class _AiCodeCompletionProvider {
     if (this.#aiCodeCompletion) {
       return;
     }
-    this.#aiCodeCompletion = new AiCodeCompletion.AiCodeCompletion.AiCodeCompletion({
+    this.#aiCodeCompletion = new AiCodeCompletion2.AiCodeCompletion.AiCodeCompletion({
       aidaClient: this.#aidaClient,
       serverSideLoggingEnabled: !Root2.Runtime.hostConfig.aidaAvailability?.disallowLogging
     }, this.#aiCodeCompletionConfig.panel, void 0, this.#aiCodeCompletionConfig.completionContext.stopSequences);
@@ -1436,7 +1445,7 @@ var AiCodeCompletionProvider = class _AiCodeCompletionProvider {
     const aidaAvailability = await Host2.AidaClient.AidaClient.checkAccessPreconditions();
     const isAvailable = aidaAvailability === "available";
     const devtoolsLocale = i18n4.DevToolsLocale.DevToolsLocale.instance().locale;
-    const aiCodeCompletionEnabled = AiCodeCompletion.AiCodeCompletion.AiCodeCompletion.isAiCodeCompletionEnabled(devtoolsLocale);
+    const aiCodeCompletionEnabled = AiCodeCompletion2.AiCodeCompletion.AiCodeCompletion.isAiCodeCompletionEnabled(devtoolsLocale);
     const isSettingEnabled = this.#aiCodeCompletionSetting.get();
     if (isAvailable && aiCodeCompletionEnabled) {
       if (isSettingEnabled) {
@@ -1537,14 +1546,19 @@ var AiCodeCompletionProvider = class _AiCodeCompletionProvider {
   async #requestAidaSuggestion(prefix, suffix, cursorPositionAtRequest, inferenceLanguage, additionalFiles) {
     this.#aiCodeCompletionCitations = [];
     if (!this.#aiCodeCompletion) {
-      AiCodeCompletion.debugLog("Ai Code Completion is not initialized");
+      AiCodeCompletion2.debugLog("Ai Code Completion is not initialized");
       this.#aiCodeCompletionConfig?.onResponseReceived();
       Host2.userMetrics.actionTaken(Host2.UserMetrics.Action.AiCodeCompletionError);
       return;
     }
     const startTime = performance.now();
     this.#aiCodeCompletionConfig?.onRequestTriggered();
-    Host2.userMetrics.actionTaken(Host2.UserMetrics.Action.AiCodeCompletionRequestTriggered);
+    const panel = this.#aiCodeCompletionConfig?.panel;
+    if (panel === "console") {
+      Host2.userMetrics.actionTaken(Host2.UserMetrics.Action.AiCodeCompletionRequestTriggeredFromConsole);
+    } else if (panel === "sources") {
+      Host2.userMetrics.actionTaken(Host2.UserMetrics.Action.AiCodeCompletionRequestTriggeredFromSources);
+    }
     try {
       const completionResponse = await this.#aiCodeCompletion.completeCode(prefix, suffix, cursorPositionAtRequest, inferenceLanguage, additionalFiles);
       if (!completionResponse) {
@@ -1586,12 +1600,12 @@ var AiCodeCompletionProvider = class _AiCodeCompletionProvider {
         if (fromCache) {
           Host2.userMetrics.actionTaken(Host2.UserMetrics.Action.AiCodeCompletionResponseServedFromCache);
         }
-        AiCodeCompletion.debugLog("Suggestion dispatched to the editor", suggestionText, "at cursor position", cursorPositionAtRequest);
+        AiCodeCompletion2.debugLog("Suggestion dispatched to the editor", suggestionText, "at cursor position", cursorPositionAtRequest);
         this.#aiCodeCompletionCitations = citations;
         this.#aiCodeCompletionConfig?.onResponseReceived();
       }, remainingDelay);
     } catch (e) {
-      AiCodeCompletion.debugLog("Error while fetching code completion suggestions from AIDA", e);
+      AiCodeCompletion2.debugLog("Error while fetching code completion suggestions from AIDA", e);
       this.#aiCodeCompletionConfig?.onResponseReceived();
       Host2.userMetrics.actionTaken(Host2.UserMetrics.Action.AiCodeCompletionError);
     }

@@ -9,6 +9,7 @@ import {
   openDeviceToolbar,
   selectZoomLevel,
   toggleAutoAdjustZoom,
+  waitForZoom,
 } from '../helpers/emulation-helpers.js';
 
 describe('Custom devices', () => {
@@ -20,7 +21,7 @@ describe('Custom devices', () => {
 
     await clickWidthInput(devToolsPage);
     await devToolsPage.page.keyboard.press('ArrowDown');
-    assert.strictEqual(await getZoom(devToolsPage), '100%');
+    await waitForZoom(devToolsPage, '100%');
 
     await selectZoomLevel(devToolsPage, '50%');
     assert.strictEqual(await getZoom(devToolsPage), '50%');
@@ -29,6 +30,6 @@ describe('Custom devices', () => {
 
     await clickWidthInput(devToolsPage);
     await devToolsPage.page.keyboard.press('ArrowDown');
-    assert.strictEqual(await getZoom(devToolsPage), '50%');
+    await waitForZoom(devToolsPage, '50%');
   });
 });

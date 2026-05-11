@@ -6,10 +6,10 @@ import {assert} from 'chai';
 import {
   clickDevicePosture,
   getDevicePostureDropDown,
-  getWidthOfDevice,
   openDeviceToolbar,
   selectFoldableDevice,
   selectNonDualScreenDevice,
+  waitForWidthOfDevice,
 } from '../helpers/emulation-helpers.js';
 import type {DevToolsPage} from '../shared/frontend-helper.js';
 import type {InspectedPage} from '../shared/target-helper.js';
@@ -34,16 +34,13 @@ describe('Test the Device Posture API support', () => {
   it('User can change the posture of a foldable device', async ({devToolsPage, inspectedPage}) => {
     await setup(devToolsPage, inspectedPage);
     await selectFoldableDevice(devToolsPage);
-    let widthSingle = await getWidthOfDevice(devToolsPage);
-    assert.strictEqual(widthSingle, ZENBOOK_VERTICAL_WIDTH);
+    await waitForWidthOfDevice(devToolsPage, ZENBOOK_VERTICAL_WIDTH);
 
     await clickDevicePosture('Folded', devToolsPage);
-    const widthDual = await getWidthOfDevice(devToolsPage);
-    assert.strictEqual(widthDual, ZENBOOK_VERTICAL_SPANNED_WIDTH);
+    await waitForWidthOfDevice(devToolsPage, ZENBOOK_VERTICAL_SPANNED_WIDTH);
 
     await clickDevicePosture('Continuous', devToolsPage);
-    widthSingle = await getWidthOfDevice(devToolsPage);
-    assert.strictEqual(widthSingle, ZENBOOK_VERTICAL_WIDTH);
+    await waitForWidthOfDevice(devToolsPage, ZENBOOK_VERTICAL_WIDTH);
   });
 
   it('User may not change the posture for a non-foldable screen device', async ({devToolsPage, inspectedPage}) => {

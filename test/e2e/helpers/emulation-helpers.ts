@@ -173,6 +173,14 @@ export const toggleAutoAdjustZoom = async (devToolsPage: DevToolsPage) => {
   await devToolsPage.click(AUTO_AUTO_ADJUST_ZOOM_SELECTOR, {root: toolbar});
 };
 
+export const waitForWidthOfDevice = async (devToolsPage: DevToolsPage, expectedWidth: string) => {
+  await devToolsPage.waitForFunction(async () => await getWidthOfDevice(devToolsPage) === expectedWidth);
+};
+
+export const waitForZoom = async (devToolsPage: DevToolsPage, expectedZoom: string) => {
+  await devToolsPage.waitForFunction(async () => await getZoom(devToolsPage) === expectedZoom);
+};
+
 export const selectNonDualScreenDevice = async (devToolsPage: DevToolsPage) => {
   await selectDeviceItem(devToolsPage, 'iPad');
 };

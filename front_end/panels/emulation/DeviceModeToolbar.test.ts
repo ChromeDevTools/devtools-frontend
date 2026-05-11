@@ -3,11 +3,12 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
+import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as EmulationModel from '../../models/emulation/emulation.js';
-import {createTarget} from '../../testing/EnvironmentHelpers.js';
-import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import type * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
@@ -48,12 +49,24 @@ function createFakeSetting<T>(defaultValue: T): Common.Settings.Setting<T> {
   } as unknown as Common.Settings.Setting<T>;
 }
 
-describeWithMockConnection('DeviceModeToolbar', () => {
+describeWithEnvironment('DeviceModeToolbar', () => {
+  setupLocaleHooks();
+
+  let tabTarget: SDK.Target.Target;
+  let prerenderTarget: SDK.Target.Target;
   let target: SDK.Target.Target;
   let deviceModeModel: EmulationModel.DeviceModeModel.DeviceModeModel;
   let toolbar: Emulation.DeviceModeToolbar.DeviceModeToolbar;
 
   beforeEach(() => {
+    i18n.DevToolsLocale.DevToolsLocale.instance({
+      create: true,
+      data: {
+        navigatorLanguage: 'en-US',
+        settingLanguage: 'en-US',
+        lookupClosestDevToolsLocale: () => 'en-US',
+      },
+    });
     sinon.stub(Common.Settings.Settings, 'instance').returns({
       createSetting: <T>(_name: string, defaultValue: T) => createFakeSetting(defaultValue),
       moduleSetting: <T>(name: string) => {
@@ -65,8 +78,8 @@ describeWithMockConnection('DeviceModeToolbar', () => {
       createLocalSetting: <T>(_name: string, defaultValue: T) => createFakeSetting(defaultValue),
     } as unknown as Common.Settings.Settings);
 
-    const tabTarget = createTarget({type: SDK.Target.Type.TAB});
-    createTarget({parentTarget: tabTarget, subtype: 'prerender'});
+    tabTarget = createTarget({type: SDK.Target.Type.TAB});
+    prerenderTarget = createTarget({parentTarget: tabTarget, subtype: 'prerender'});
     target = createTarget({parentTarget: tabTarget});
     deviceModeModel = EmulationModel.DeviceModeModel.DeviceModeModel.instance({forceNew: true});
 
@@ -85,12 +98,20 @@ describeWithMockConnection('DeviceModeToolbar', () => {
     );
   });
 
+  afterEach(async () => {
+    await UI.Widget.Widget.allUpdatesComplete;
+    toolbar?.detach();
+    target?.dispose('test');
+    prerenderTarget?.dispose('test');
+    tabTarget?.dispose('test');
+  });
+
   /**
    * Finds the rotate/screen-rotation toolbar button inside the toolbar element.
    * The button is a devtools-button with jslogContext 'screen-rotation'.
    */
   function findRotateButton(): Buttons.Button.Button {
-    const buttons = toolbar.element().querySelectorAll<Buttons.Button.Button>('devtools-button.toolbar-button');
+    const buttons = toolbar.element.querySelectorAll<Buttons.Button.Button>('devtools-button.toolbar-button');
     const button = [...buttons].find(b => b.getAttribute('jslog')?.includes('screen-rotation'));
     assert.exists(button, 'Could not find rotate button');
     return button;
@@ -100,7 +121,7 @@ describeWithMockConnection('DeviceModeToolbar', () => {
     let renderSpy: sinon.SinonSpy;
 
     beforeEach(() => {
-      renderSpy = sinon.spy(Emulation.DeviceModeToolbar.DeviceModeToolbar.prototype, 'update');
+      renderSpy = sinon.spy(Emulation.DeviceModeToolbar.DeviceModeToolbar.prototype, 'performUpdate');
       // Re-create toolbar so that it registers the spied update method.
       toolbar = new Emulation.DeviceModeToolbar.DeviceModeToolbar(
           deviceModeModel,
@@ -114,32 +135,37 @@ describeWithMockConnection('DeviceModeToolbar', () => {
       renderSpy.restore();
     });
 
-    it('updates UI when scale changes', () => {
+    it('updates UI when scale changes', async () => {
       deviceModeModel.scaleSetting().set(1.5);
+      await toolbar.updateComplete;
       sinon.assert.called(renderSpy);
     });
 
-    it('updates UI when User Agent changes', () => {
+    it('updates UI when User Agent changes', async () => {
       deviceModeModel.uaSetting().set(EmulationModel.DeviceModeModel.UA.DESKTOP);
+      await toolbar.updateComplete;
       sinon.assert.called(renderSpy);
     });
 
-    it('updates UI when Device Pixel Ratio changes', () => {
+    it('updates UI when Device Pixel Ratio changes', async () => {
       deviceModeModel.deviceScaleFactorSetting().set(2);
+      await toolbar.updateComplete;
       sinon.assert.called(renderSpy);
     });
 
-    it('updates UI on generic model update events', () => {
+    it('updates UI on generic model update events', async () => {
       deviceModeModel.dispatchEventToListeners(EmulationModel.DeviceModeModel.Events.UPDATED);
+      await toolbar.updateComplete;
       sinon.assert.called(renderSpy);
     });
   });
 
   describe('screen orientation lock', () => {
-    it('disables the rotate button when screen orientation is locked', () => {
+    it('disables the rotate button when screen orientation is locked', async () => {
       // Set up responsive mode so the rotate button is initially enabled.
       deviceModeModel.emulate(EmulationModel.DeviceModeModel.Type.Responsive, null, null);
-      toolbar.update();
+      toolbar.requestUpdate();
+      await toolbar.updateComplete;
 
       const modeButton = findRotateButton();
       assert.isFalse(modeButton.disabled, 'rotate button should initially be enabled');
@@ -151,17 +177,19 @@ describeWithMockConnection('DeviceModeToolbar', () => {
         locked: true,
         orientation: {type: Protocol.Emulation.ScreenOrientationType.PortraitPrimary, angle: 0},
       });
-      toolbar.update();
+      toolbar.requestUpdate();
+      await toolbar.updateComplete;
       const updatedModeButton = findRotateButton();
 
       assert.isTrue(updatedModeButton.disabled, 'rotate button should be disabled when orientation is locked');
       assert.include(updatedModeButton.title, 'locked');
     });
 
-    it('re-enables the rotate button when screen orientation is unlocked', () => {
+    it('re-enables the rotate button when screen orientation is unlocked', async () => {
       // Set up responsive mode.
       deviceModeModel.emulate(EmulationModel.DeviceModeModel.Type.Responsive, null, null);
-      toolbar.update();
+      toolbar.requestUpdate();
+      await toolbar.updateComplete;
 
       // Lock, then unlock orientation.
       const emulationModel = target.model(SDK.EmulationModel.EmulationModel);
@@ -170,22 +198,26 @@ describeWithMockConnection('DeviceModeToolbar', () => {
         locked: true,
         orientation: {type: Protocol.Emulation.ScreenOrientationType.PortraitPrimary, angle: 0},
       });
-      toolbar.update();
-      let modeButton = findRotateButton();
-      assert.isTrue(modeButton.disabled, 'rotate button should be disabled when locked');
+      toolbar.requestUpdate();
+      await toolbar.updateComplete;
+
+      const modeButtonLocked = findRotateButton();
+      assert.isTrue(modeButtonLocked.disabled, 'rotate button should be disabled when locked');
 
       emulationModel.screenOrientationLockChanged({locked: false});
-      toolbar.update();
-      modeButton = findRotateButton();
+      toolbar.requestUpdate();
+      await toolbar.updateComplete;
 
-      assert.isFalse(modeButton.disabled, 'rotate button should be re-enabled after unlock');
-      assert.include(modeButton.title, 'Rotate');
+      const modeButtonUnlocked = findRotateButton();
+      assert.isFalse(modeButtonUnlocked.disabled, 'rotate button should be re-enabled after unlock');
+      assert.include(modeButtonUnlocked.title, 'Rotate');
     });
 
-    it('does not rotate when screen orientation is locked and rotate button is clicked', () => {
+    it('does not rotate when screen orientation is locked and rotate button is clicked', async () => {
       // Set up responsive mode.
       deviceModeModel.emulate(EmulationModel.DeviceModeModel.Type.Responsive, null, null);
-      toolbar.update();
+      toolbar.requestUpdate();
+      await toolbar.updateComplete;
 
       // Lock orientation.
       const emulationModel = target.model(SDK.EmulationModel.EmulationModel);
@@ -194,7 +226,8 @@ describeWithMockConnection('DeviceModeToolbar', () => {
         locked: true,
         orientation: {type: Protocol.Emulation.ScreenOrientationType.PortraitPrimary, angle: 0},
       });
-      toolbar.update();
+      toolbar.requestUpdate();
+      await toolbar.updateComplete;
 
       // Spy on setWidth/setHeight to ensure no rotation happens.
       const setWidthSpy = sinon.spy(deviceModeModel, 'setWidth');
@@ -207,5 +240,23 @@ describeWithMockConnection('DeviceModeToolbar', () => {
       sinon.assert.notCalled(setWidthSpy);
       sinon.assert.notCalled(setHeightSpy);
     });
+  });
+
+  it('resets the device dropdown to the current device when "Edit" is selected', async () => {
+    deviceModeModel.emulate(EmulationModel.DeviceModeModel.Type.Responsive, null, null);
+    toolbar.requestUpdate();
+    await toolbar.updateComplete;
+
+    const select = toolbar.element.querySelector('select') as HTMLSelectElement;
+    assert.strictEqual(select.value, 'Responsive');
+
+    // Simulate selecting "Edit"
+    select.value = 'Edit';
+    select.dispatchEvent(new Event('change'));
+
+    await toolbar.updateComplete;
+
+    // It should have reverted to "Responsive"
+    assert.strictEqual(select.value, 'Responsive');
   });
 });

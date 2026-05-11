@@ -7,12 +7,12 @@ import type * as puppeteer from 'puppeteer-core';
 
 import {waitForDomNodeToBeVisible} from '../helpers/elements-helpers.js';
 import {
-  getZoom,
   openDeviceToolbar,
   selectDevice,
   selectEdit,
   selectTestDevice,
   selectZoomLevel,
+  waitForZoom,
 } from '../helpers/emulation-helpers.js';
 import type {DevToolsPage} from '../shared/frontend-helper.js';
 import type {InspectedPage} from '../shared/target-helper.js';
@@ -223,11 +223,11 @@ describe('Custom devices', () => {
     await selectDevice('Prime numbers', devToolsPage);
 
     // Check fit-to-window text is selected.
-    assert.strictEqual(await getZoom(devToolsPage), '51% (fit to window)');
+    await waitForZoom(devToolsPage, '51% (fit to window)');
 
     // Select 100%.
     await selectZoomLevel(devToolsPage, '100%');
-    assert.strictEqual(await getZoom(devToolsPage), '100%');
+    await waitForZoom(devToolsPage, '100%');
   });
 
   it('shows an error if the pixel ratio is not a number', async ({devToolsPage, inspectedPage}) => {

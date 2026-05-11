@@ -110,6 +110,8 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
   private measuredDropDownButtonWidth?: number;
   #leftToolbar?: Toolbar;
   #rightToolbar?: Toolbar;
+  #trailingSlot!: HTMLSlotElement;
+  #lastDispatchedHiddenTabIds = '';
   allowTabReorder?: boolean;
   private automaticReorder?: boolean;
 
@@ -144,6 +146,25 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.tabSlider = document.createElement('div');
     this.tabSlider.classList.add('tabbed-pane-tab-slider');
     this.tabsElement = this.headerContentsElement.createChild('div', 'tabbed-pane-header-tabs');
+
+    // Declarative slot for a trailing affordance (e.g. a plus button).
+    // When something is assigned to this slot, the legacy overflow
+    // chevron is suppressed and the slotted element's width is reserved
+    // during overflow detection so it always stays visible. The slot
+    // itself has `display: contents` and so contributes no layout box
+    // when empty.
+    this.#trailingSlot = document.createElement('slot');
+    this.#trailingSlot.name = 'trailing-button';
+    this.#trailingSlot.classList.add('tabbed-pane-trailing-button');
+    this.headerContentsElement.appendChild(this.#trailingSlot);
+    this.#trailingSlot.addEventListener('slotchange', () => this.requestUpdate());
+
+    // Re-run overflow detection whenever the available space for tabs
+    // changes. The header is a flex container in which `headerContentsElement`
+    // is `flex: auto`, so any growth in the left/right toolbars (e.g. the
+    // issues counter loading asynchronously into the right toolbar) shrinks
+    // `headerContentsElement` and is captured by this single observer.
+    new ResizeObserver(() => this.requestUpdate()).observe(this.headerContentsElement);
     this.tabsElement.setAttribute('role', 'tablist');
     this.tabsElement.addEventListener('keydown', this.keyDown.bind(this), false);
     this.#contentElement = this.contentElement.createChild('div', 'tabbed-pane-content');
@@ -737,15 +758,6 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
     }
   }
 
-  private showTabElement(index: number, tab: TabbedPaneTab): void {
-    if (index >= this.tabsElement.children.length) {
-      this.tabsElement.appendChild(tab.tabElement);
-    } else {
-      this.tabsElement.insertBefore(tab.tabElement, this.tabsElement.children[index]);
-    }
-    tab.shown = true;
-  }
-
   private hideTabElement(tab: TabbedPaneTab): void {
     this.tabsElement.removeChild(tab.tabElement);
     tab.shown = false;
@@ -831,8 +843,16 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
   }
 
   private updateTabsDropDown(): void {
-    const tabsToShowIndexes =
-        this.tabsToShowIndexes(this.#tabs, this.tabsHistory, this.totalWidth(), this.measuredDropDownButtonWidth || 0);
+    // Reserve width for the trailing affordance so it never gets clipped
+    // or pushed past the right edge. When a `trailing-button` slot is
+    // populated (e.g. with a plus button), reserve that element's width
+    // and never use the legacy chevron. Otherwise, fall back to the
+    // legacy chevron behavior: reserve its measured width only when at
+    // least one tab is overflowed.
+    const slottedTrailing = this.#trailingSlot.assignedElements()[0];
+    const reservedWidth =
+        slottedTrailing ? slottedTrailing.getBoundingClientRect().width : (this.measuredDropDownButtonWidth || 0);
+    const tabsToShowIndexes = this.tabsToShowIndexes(this.#tabs, this.tabsHistory, this.totalWidth(), reservedWidth);
     if (this.lastSelectedOverflowTab && this.numberOfTabsShown() !== tabsToShowIndexes.length) {
       delete this.lastSelectedOverflowTab;
       this.updateTabsDropDown();
@@ -844,22 +864,119 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
         this.hideTabElement(this.#tabs[i]);
       }
     }
+    // Synchronize the DOM order of the visible tab row to match
+    // `tabsToShowIndexes`. `insertBefore` moves a node if it is
+    // already in the DOM (preserving focus/selection) and inserts
+    // it otherwise, so a single pass handles both newly-visible
+    // tabs and reorderings of currently-visible tabs without any
+    // imperative DOM manipulation from callers like `moveTab`.
     for (let i = 0; i < tabsToShowIndexes.length; ++i) {
       const tab = this.#tabs[tabsToShowIndexes[i]];
-      if (!tab.shown) {
-        this.showTabElement(i, tab);
+      if (this.tabsElement.children[i] !== tab.tabElement) {
+        this.tabsElement.insertBefore(tab.tabElement, this.tabsElement.children[i] ?? null);
       }
+      tab.shown = true;
     }
 
     this.maybeShowDropDown(tabsToShowIndexes.length !== this.#tabs.length);
+    this.#dispatchOverflowTabsChangedIfNeeded();
   }
 
   private maybeShowDropDown(hasMoreTabs: boolean): void {
-    if (hasMoreTabs && !this.dropDownButton.parentElement) {
+    // The legacy chevron is suppressed when a trailing-button slot is
+    // populated; the slotted element takes its place.
+    const shouldShow = this.#trailingSlot.assignedElements().length === 0 && hasMoreTabs;
+    if (shouldShow && !this.dropDownButton.parentElement) {
       this.headerContentsElement.appendChild(this.dropDownButton);
-    } else if (!hasMoreTabs && this.dropDownButton.parentElement) {
+    } else if (!shouldShow && this.dropDownButton.parentElement) {
       this.headerContentsElement.removeChild(this.dropDownButton);
     }
+  }
+
+  /**
+   * Dispatches an `overflow-tabs-changed` DOM event whenever the set of
+   * hidden (overflowed) tabs changes. The event bubbles and is composed
+   * so consumers slotted into `trailing-button` can listen via the
+   * standard `addEventListener` / lit-html `@overflow-tabs-changed=`
+   * syntax. Payload (`event.detail.hiddenTabs`) lists hidden tabs in
+   * tab order.
+   *
+   * `updateTabsDropDown()` runs on every layout/resize tick (including
+   * ResizeObserver callbacks on the toolbars), but in the steady state
+   * the overflow set rarely changes. Dedup against the last dispatched
+   * tab-id list so consumers (e.g. a plus button rendering the hidden
+   * tabs in its menu) are not re-notified on every paint.
+   */
+  #dispatchOverflowTabsChangedIfNeeded(): void {
+    const hidden = this.hiddenTabs();
+    const key = hidden.map(t => t.id).join('\u0000');
+    if (key === this.#lastDispatchedHiddenTabIds) {
+      return;
+    }
+    this.#lastDispatchedHiddenTabIds = key;
+    this.dispatchDOMEvent(new CustomEvent('overflow-tabs-changed', {
+      bubbles: true,
+      composed: true,
+      detail: {hiddenTabs: hidden},
+    }));
+  }
+
+  /**
+   * Returns the tabs that are currently hidden because of overflow, in
+   * tab order. Mirrors the payload of the `overflow-tabs-changed` event.
+   */
+  hiddenTabs(): Array<{id: string, title: string, jslogContext?: string}> {
+    return this.#tabs.filter(tab => !tab.shown).map(tab => ({
+                                                      id: tab.id,
+                                                      title: tab.title,
+                                                      jslogContext: tab.jslogContext,
+                                                    }));
+  }
+
+  /**
+   * Returns the index in tab order of the first overflowed (hidden) tab,
+   * or -1 if every tab fits.
+   */
+  firstHiddenTabIndex(): number {
+    return this.#tabs.findIndex(tab => !tab.shown);
+  }
+
+  /**
+   * Reorders `tabId` to position `newIndex` in the tab list. Unlike
+   * {@link insertBefore}, this does not require the tab to currently be in
+   * the DOM (overflowed tabs are detached). The change is persisted via the
+   * {@link Events.TabOrderChanged} event so the new order survives across
+   * DevTools reloads.
+   */
+  moveTab(tabId: string, newIndex: number): void {
+    const tab = this.tabsById.get(tabId);
+    if (!tab) {
+      return;
+    }
+    const oldIndex = this.#tabs.indexOf(tab);
+    if (oldIndex === -1) {
+      return;
+    }
+    // `newIndex` is the desired final index of the tab. The maximum
+    // valid final index for an existing item is `length - 1`; clamp
+    // here so the no-op early return below catches calls like
+    // `moveTab(lastTabId, 999)` instead of doing redundant work and
+    // firing a spurious TabOrderChanged event.
+    const targetIndex = Math.max(0, Math.min(newIndex, this.#tabs.length - 1));
+    if (oldIndex === targetIndex) {
+      return;
+    }
+    this.#tabs.splice(oldIndex, 1);
+    // After the splice-remove the array is one shorter, so inserting at
+    // `targetIndex` lands the tab at exactly the requested final index
+    // regardless of move direction.
+    this.#tabs.splice(targetIndex, 0, tab);
+    // The visible row's DOM order is reconciled declaratively in
+    // `updateTabsDropDown()` (scheduled by `requestUpdate()` below),
+    // so no imperative DOM reordering is needed here.
+    const eventData: EventData = {tabId: tab.id, view: tab.view};
+    this.dispatchEventToListeners(Events.TabOrderChanged, eventData);
+    this.requestUpdate();
   }
 
   private measureDropDownButton(): void {
@@ -964,11 +1081,20 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
     if (this.lastSelectedOverflowTab !== undefined) {
       tabsToLookAt.unshift(tabsToLookAt.splice(tabsToLookAt.indexOf(this.lastSelectedOverflowTab), 1)[0]);
     }
+    // The trailing affordance only steals space when it is shown. The
+    // legacy chevron is conditional on actual overflow (so it can be
+    // skipped on the very last tab if everything fits), but a slotted
+    // trailing button (e.g. a plus button) is always rendered and must
+    // therefore always be reserved for — even when the last tab would
+    // otherwise just barely fit by itself — otherwise it gets pushed
+    // past the right edge and clipped by the surrounding
+    // `overflow: hidden` containers.
+    const reserveOnLastTab = this.#trailingSlot.assignedElements().length > 0;
     for (let i = 0; i < tabCount; ++i) {
       const tab = this.automaticReorder ? tabsHistory[i] : tabsToLookAt[i];
       totalTabsWidth += tab.width();
       let minimalRequiredWidth = totalTabsWidth;
-      if (i !== tabCount - 1) {
+      if (i !== tabCount - 1 || reserveOnLastTab) {
         minimalRequiredWidth += measuredDropDownButtonWidth;
       }
       if (!this.verticalTabLayout && minimalRequiredWidth > totalWidth) {

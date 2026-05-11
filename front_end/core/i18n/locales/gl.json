@@ -323,6 +323,9 @@
   "core/sdk/NetworkManager.ts | noContentForRedirect": {
     "message": "Non hai contido dispoñible porque se redirixiu esta solicitude"
   },
+  "core/sdk/NetworkManager.ts | noContentForSSE": {
+    "message": "Nestes momentos non se admite o contido dos eventos enviados polo servidor (SSE)"
+  },
   "core/sdk/NetworkManager.ts | noContentForWebSocket": {
     "message": "Nestes momentos non se admite o contido de WebSockets"
   },
@@ -559,6 +562,9 @@
   },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "Acromatopsia (falta de percepción da cor)"
+  },
+  "core/sdk/sdk-meta.ts | apca": {
+    "message": "O algoritmo de contraste perceptivo avanzado (APCA) substitúe a proporción de contraste anterior e as directrices AA/AAA"
   },
   "core/sdk/sdk-meta.ts | blurredVision": {
     "message": "Visión desenfocada"
@@ -1441,6 +1447,9 @@
   },
   "generated/Deprecation.ts | PrefixedVideoSupportsFullscreen": {
     "message": "HTMLVideoElement.webkitSupportsFullscreen quedou obsoleta. Proba a usar Document.fullscreenEnabled."
+  },
+  "generated/Deprecation.ts | PreventSvgFilterPaint": {
+    "message": "Os filtros SVG non se poden aplicar a iframes de orixe cruzada, iframes restrinxidos (como os illados) nin a complementos."
   },
   "generated/Deprecation.ts | RTCConstraintEnableDtlsSrtpFalse": {
     "message": "A restrición DtlsSrtpKeyAgreement deixou de estar dispoñible. Especificaches un valor false para esta restrición, o que se interpreta como un intento de usar o método SDES key negotiation, que deixou de estar dispoñible. Esta función deixou de estar dispoñible. Mellor usa un servizo que admita o atributo DTLS key negotiation."
@@ -3207,13 +3216,34 @@
     "message": "Esta función de IA é experimental e non sempre acerta. Verifica o texto antes de pegalo noutra ferramenta."
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | exportForAgents": {
-    "message": "Copiar para o teu axente de programación"
+    "message": "Copiar para o axente de programación"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | generatingSummary": {
     "message": "Xerando resumo…"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | saveAsMarkdown": {
     "message": "Gardar como…"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | gotIt": {
+    "message": "Entendido"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | integrationPoint": {
+    "message": "A asistencia de IA agora está integrada nos paneis Aplicación e Lighthouse, e extrae o contexto das fontes de datos simultaneamente"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | manageSettings": {
+    "message": "Xestionar na configuración"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | privacyDisclaimer": {
+    "message": "Envíanse a Google as mensaxes de chat, os datos aos que poida acceder este sitio a través dos paneis de DevTools e das API web, e os elementos que selecciones (por exemplo, solicitudes de rede, ficheiros e rastros de rendemento). Co fin de mellorar esta función, a información pode someterse a un proceso de revisión por parte do noso equipo. Este recurso de IA é experimental e non sempre acerta."
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | privacyDisclaimerEnterpriseNoLogging": {
+    "message": "Envíanse a Google as mensaxes de chat, os datos aos que poida acceder este sitio a través dos paneis de DevTools e das API web, e os elementos que selecciones (por exemplo, solicitudes de rede, ficheiros e rastros de rendemento). O contido que se envíe a esta función, así como o que ela xere, non se usará para mellorar os modelos de IA de Google. Este recurso de IA é experimental e non sempre acerta."
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | title": {
+    "message": "Mellorouse a asistencia de IA"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | widgetPoint": {
+    "message": "Usa os widgets para verificar os resultados ou acceder aos datos de orixe en determinados casos de depuración"
   },
   "panels/ai_assistance/components/WalkthroughView.ts | close": {
     "message": "Pechar"
@@ -3223,6 +3253,9 @@
   },
   "panels/ai_assistance/components/WalkthroughView.ts | hideThinking": {
     "message": "Ocultar razoamento"
+  },
+  "panels/ai_assistance/components/WalkthroughView.ts | inProgress": {
+    "message": "En curso"
   },
   "panels/ai_assistance/components/WalkthroughView.ts | showAgentWalkthrough": {
     "message": "Mostrar titorial do axente"
@@ -3677,9 +3710,6 @@
   "panels/application/ApplicationPanelSidebar.ts | theContentOfThisDocumentHasBeen": {
     "message": "O contido deste documento xerouse de forma dinámica usando \"document.write()\"."
   },
-  "panels/application/ApplicationPanelSidebar.ts | thirdPartyPhaseout": {
-    "message": "Pode que as cookies de {PH1} estean bloqueadas debido á eliminación gradual das cookies de terceiros."
-  },
   "panels/application/ApplicationPanelSidebar.ts | versionS": {
     "message": "Versión: {PH1}"
   },
@@ -3829,6 +3859,9 @@
   },
   "panels/application/DOMStorageItemsView.ts | domStorageItemsCleared": {
     "message": "Borráronse os elementos de almacenamento do DOM"
+  },
+  "panels/application/DeviceBoundSessionsTreeElement.ts | clear": {
+    "message": "Borrar"
   },
   "panels/application/DeviceBoundSessionsTreeElement.ts | deviceBoundSessions": {
     "message": "Sesións vinculadas ao dispositivo"
@@ -4922,6 +4955,9 @@
   "panels/application/TrustTokensTreeElement.ts | trustTokens": {
     "message": "Tokens de estado privado"
   },
+  "panels/application/WebMCPView.ts | cancelCall": {
+    "message": "Cancelar"
+  },
   "panels/application/WebMCPView.ts | canceled": {
     "message": "Operación cancelada"
   },
@@ -4937,8 +4973,20 @@
   "panels/application/WebMCPView.ts | close": {
     "message": "Pechar"
   },
+  "panels/application/WebMCPView.ts | completed": {
+    "message": "Operación finalizada"
+  },
+  "panels/application/WebMCPView.ts | copyDescription": {
+    "message": "Copiar descrición"
+  },
+  "panels/application/WebMCPView.ts | copyName": {
+    "message": "Copiar nome"
+  },
   "panels/application/WebMCPView.ts | declarative": {
     "message": "Declarativas"
+  },
+  "panels/application/WebMCPView.ts | editAndRun": {
+    "message": "Editar e executar"
   },
   "panels/application/WebMCPView.ts | error": {
     "message": "Erro"
@@ -4982,17 +5030,23 @@
   "panels/application/WebMCPView.ts | output": {
     "message": "Resultado"
   },
+  "panels/application/WebMCPView.ts | paste": {
+    "message": "Pegar"
+  },
   "panels/application/WebMCPView.ts | pending": {
     "message": "En curso"
+  },
+  "panels/application/WebMCPView.ts | revealTool": {
+    "message": "Mostrar ferramenta"
+  },
+  "panels/application/WebMCPView.ts | runTool": {
+    "message": "Executar ferramenta"
   },
   "panels/application/WebMCPView.ts | status": {
     "message": "Estado"
   },
   "panels/application/WebMCPView.ts | statusTypes": {
     "message": "Tipos de estado"
-  },
-  "panels/application/WebMCPView.ts | success": {
-    "message": "Operación completada"
   },
   "panels/application/WebMCPView.ts | toolDetails": {
     "message": "Detalles"
@@ -5002,6 +5056,9 @@
   },
   "panels/application/WebMCPView.ts | toolTypes": {
     "message": "Tipos de ferramentas"
+  },
+  "panels/application/WebMCPView.ts | toolUnregisteredNotice": {
+    "message": "Esta ferramenta xa non está rexistrada"
   },
   "panels/application/WebMCPView.ts | totalCalls": {
     "message": "Chamadas totais: {PH1}"
@@ -5873,6 +5930,9 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsFailureReason": {
     "message": "Motivo do erro"
   },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsFormSubmission": {
+    "message": "Envío de formulario"
+  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsRuleSet": {
     "message": "Conxunto de normas"
   },
@@ -5882,11 +5942,17 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsTargetHint": {
     "message": "Suxestión obxectivo"
   },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | no": {
+    "message": "Non"
+  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | noElementSelected": {
     "message": "Non se seleccionou ningún elemento"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "Selecciona un elemento para obter máis información"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | yes": {
+    "message": "Si"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByBatterySaver": {
     "message": "A carga especulativa está desactivada debido ao modo de aforro de batería do sistema operativo."
@@ -6765,7 +6831,7 @@
     "message": "Liña de comandos da consola"
   },
   "panels/console/ConsolePrompt.ts | selfXssWarning": {
-    "message": "Advertencia: Non pegues na consola de DevTools código que non entendas ou que non revisases. Iso podería permitirlles aos atacantes roubarche a identidade ou asumir o control do teu ordenador. Escribe {PH1} máis abaixo e preme Introducir para poder pegar o texto."
+    "message": "Advertencia: Non pegues na consola de DevTools código que non entendas ou que non revisases. Iso podería permitir ataques para roubarche a identidade ou asumir o control do teu ordenador. Escribe \"{PH1}\" máis abaixo e preme Introducir para poder pegar contido."
   },
   "panels/console/ConsoleSidebar.ts | dErrors": {
     "message": "{n,plural, =0{Ningún erro}=1{# erro}other{# erros}}"
@@ -6793,6 +6859,9 @@
   },
   "panels/console/ConsoleView.ts | autocompleteFromHistory": {
     "message": "Autocompleta o texto a partir do historial"
+  },
+  "panels/console/ConsoleView.ts | collapseAll": {
+    "message": "Contraer todo"
   },
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "Borrouse a consola"
@@ -6832,6 +6901,9 @@
   },
   "panels/console/ConsoleView.ts | errors": {
     "message": "Erros"
+  },
+  "panels/console/ConsoleView.ts | expandAll": {
+    "message": "Despregar todo"
   },
   "panels/console/ConsoleView.ts | filteredMessagesInConsole": {
     "message": "{PH1} mensaxes na consola"
@@ -8147,6 +8219,9 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Ver valor calculado"
   },
+  "panels/elements/StylesSidebarPane.ts | aiSuggestionAccepted": {
+    "message": "{PH1} Suxestión aceptada."
+  },
   "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
     "message": "Modo escuro automático"
   },
@@ -8251,6 +8326,9 @@
   },
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "Copiar estilos"
+  },
+  "panels/elements/elements-meta.ts | cssAnimationsOnlyWhenAnimationsTabOpen": {
+    "message": "Mostrar os estilos de animación só cando estea aberta a pestana Animacións"
   },
   "panels/elements/elements-meta.ts | detailedInspectTooltip": {
     "message": "Cadro de información con información detallada sobre a inspección"
@@ -11723,6 +11801,9 @@
   "panels/profiler/HeapProfileView.ts | sBytes": {
     "message": "{PH1} bytes"
   },
+  "panels/profiler/HeapProfileView.ts | samplingHeapProfilerTimeline": {
+    "message": "Cronoloxía do analizador da zona de memoria dinámica da mostraxe"
+  },
   "panels/profiler/HeapProfileView.ts | samplingProfiles": {
     "message": "Perfís de mostraxe"
   },
@@ -11930,9 +12011,6 @@
   "panels/profiler/HeapSnapshotView.ts | duplicatedStrings": {
     "message": "Cadeas duplicadas"
   },
-  "panels/profiler/HeapSnapshotView.ts | exposeInternals": {
-    "message": "Datos internos con detalles de implementación"
-  },
   "panels/profiler/HeapSnapshotView.ts | filter": {
     "message": "Filtrar"
   },
@@ -12070,33 +12148,6 @@
   },
   "panels/profiler/IsolateSelector.ts | totalPageJsHeapSizeChangeTrend": {
     "message": "Tendencia de cambios no tamaño total da zona de memoria dinámica de JavaScript da páxina nos últimos {PH1} minutos."
-  },
-  "panels/profiler/LiveHeapProfileView.ts | allocatedJsHeapSizeCurrentlyIn": {
-    "message": "Tamaño de zona de memoria dinámica de JavaScript asignado que está en uso actualmente"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | anonymousScriptS": {
-    "message": "(Script anónimo {PH1})"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | heapProfile": {
-    "message": "Perfil da zona de memoria dinámica"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | jsHeap": {
-    "message": "Zona de memoria dinámica de JavaScript"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | kb": {
-    "message": "kB"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | numberOfVmsSharingTheSameScript": {
-    "message": "Número de máquinas virtuais que comparten a mesma orixe de scripts"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | scriptUrl": {
-    "message": "URL do script"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | urlOfTheScriptSource": {
-    "message": "URL da fonte do script"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | vms": {
-    "message": "Máquinas virtuais"
   },
   "panels/profiler/ModuleUIStrings.ts | buildingAllocationStatistics": {
     "message": "Creando estatísticas de asignación…"
@@ -12275,9 +12326,6 @@
   "panels/profiler/profiler-meta.ts | deleteProfile": {
     "message": "Eliminar perfil"
   },
-  "panels/profiler/profiler-meta.ts | liveHeapProfile": {
-    "message": "Perfil de zona de memoria dinámica en directo"
-  },
   "panels/profiler/profiler-meta.ts | loadProfile": {
     "message": "Cargar perfil…"
   },
@@ -12287,23 +12335,11 @@
   "panels/profiler/profiler-meta.ts | saveProfile": {
     "message": "Gardar perfil…"
   },
-  "panels/profiler/profiler-meta.ts | showLiveHeapProfile": {
-    "message": "Mostrar perfil da zona de memoria dinámica activa"
-  },
   "panels/profiler/profiler-meta.ts | showMemory": {
     "message": "Mostrar memoria"
   },
-  "panels/profiler/profiler-meta.ts | startRecordingHeapAllocations": {
-    "message": "Comezar a gravar asignacións da zona de memoria dinámica"
-  },
-  "panels/profiler/profiler-meta.ts | startRecordingHeapAllocationsAndReload": {
-    "message": "Comezar a gravar as asignacións de zona de memoria dinámica e volver cargar a páxina"
-  },
   "panels/profiler/profiler-meta.ts | startStopRecording": {
     "message": "Iniciar/deter gravación"
-  },
-  "panels/profiler/profiler-meta.ts | stopRecordingHeapAllocations": {
-    "message": "Deixar de rexistrar asignacións da zona de memoria dinámica"
   },
   "panels/protocol_monitor/JSONEditor.ts | addCustomProperty": {
     "message": "Engadir propiedade personalizada"
@@ -12417,7 +12453,7 @@
     "message": "Eliminar gravación"
   },
   "panels/recorder/RecorderController.ts | doNotImport": {
-    "message": "Non importes en DevTools gravacións que non entendas ou que non revisases. Iso podería permitirlles aos atacantes roubarche a identidade ou asumir o control do teu ordenador. Escribe ''{PH1}'' máis abaixo para permitir a importación."
+    "message": "Non importes en DevTools gravacións que non entendas ou que non revisases. Iso podería permitir ataques para roubarche a identidade ou asumir o control do teu ordenador. Escribe ''{PH1}'' máis abaixo para permitir a importación."
   },
   "panels/recorder/RecorderController.ts | doYouTrustThisCode": {
     "message": "Confías nesta gravación?"
@@ -12477,7 +12513,7 @@
     "message": "Activar/desactivar vista de código"
   },
   "panels/recorder/RecorderController.ts | typeAllowImporting": {
-    "message": "Escribe ''{PH1}''"
+    "message": "Escribe \"{PH1}\""
   },
   "panels/recorder/components/CreateRecordingView.ts | cancelRecording": {
     "message": "Cancelar gravación"
@@ -13459,6 +13495,21 @@
   },
   "panels/settings/AISettingsTab.ts | aIAnnotationsFeatureDescription": {
     "message": "Xera automaticamente títulos para as anotacións do rastro de rendemento"
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceDescriptionV2": {
+    "message": "Obtén axuda baseada no contexto na páxina inspeccionada"
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceThingsToConsiderNoLoggingV2": {
+    "message": "Para xerar explicacións, envíanse a Google as mensaxes de chat, os datos aos que poida acceder este sitio a través dos paneis de DevTools e das API web, e os elementos que selecciones (por exemplo, solicitudes de rede, ficheiros e rastros de rendemento). O contido que envíes e o que xere esta función non se usarán para mellorar os modelos de IA de Google. Este recurso de IA é experimental e non sempre acerta."
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceThingsToConsiderV2": {
+    "message": "Para xerar explicacións, envíanse a Google as mensaxes de chat, os datos aos que poida acceder este sitio a través dos paneis de DevTools e das API web, e os elementos que selecciones (por exemplo, solicitudes de rede, ficheiros e rastros de rendemento). Co fin de mellorar esta función, a información pode someterse a un proceso de revisión por parte do noso equipo. Este recurso de IA é experimental e non sempre acerta."
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceWhenOnItem1V2": {
+    "message": "Depura problemas de estilo, rede, rendemento, código fonte, accesibilidade e almacenamento coa asistencia de IA de DevTools"
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceWhenOnItem2V2": {
+    "message": "Sigue o razoamento do axente paso a paso e vai rapidamente aos datos de orixe relevantes"
   },
   "panels/settings/AISettingsTab.ts | asYouTypeCodeSuggestions": {
     "message": "A medida que escribes na consola ou no panel Fontes, recibirás suxestións de código. Preme o tabulador para aceptar unha."
@@ -14539,12 +14590,6 @@
   },
   "panels/sources/PersistenceActions.ts | showOverrides": {
     "message": "Mostrar todas as omisións"
-  },
-  "panels/sources/ProfilePlugin.ts | kb": {
-    "message": "kB"
-  },
-  "panels/sources/ProfilePlugin.ts | mb": {
-    "message": "MB"
   },
   "panels/sources/ProfilePlugin.ts | ms": {
     "message": "ms"
@@ -17183,6 +17228,9 @@
   "ui/components/markdown_view/CodeBlock.ts | copy": {
     "message": "Copiar código"
   },
+  "ui/components/markdown_view/CodeBlock.ts | copyCodeSnippet": {
+    "message": "Copiar o fragmento de código de {PH1}"
+  },
   "ui/components/markdown_view/CodeBlock.ts | disclaimer": {
     "message": "Usa os fragmentos de código con precaución"
   },
@@ -17306,6 +17354,9 @@
   "ui/legacy/ActionRegistration.ts | sources": {
     "message": "Fontes"
   },
+  "ui/legacy/Dialog.ts | close": {
+    "message": "Pechar"
+  },
   "ui/legacy/DockController.ts | close": {
     "message": "Pechar"
   },
@@ -17339,6 +17390,12 @@
   "ui/legacy/InspectorDrawerView.ts | closeDrawer": {
     "message": "Pecha o panel"
   },
+  "ui/legacy/InspectorDrawerView.ts | expandDrawer": {
+    "message": "Despregar panel"
+  },
+  "ui/legacy/InspectorDrawerView.ts | minimizeDrawer": {
+    "message": "Minimizar panel"
+  },
   "ui/legacy/InspectorDrawerView.ts | moreTools": {
     "message": "Máis ferramentas"
   },
@@ -17354,8 +17411,14 @@
   "ui/legacy/InspectorView.ts | drawer": {
     "message": "Panel de ferramentas"
   },
+  "ui/legacy/InspectorView.ts | drawerExpanded": {
+    "message": "Panel despregado"
+  },
   "ui/legacy/InspectorView.ts | drawerHidden": {
     "message": "Ocúltase o panel"
+  },
+  "ui/legacy/InspectorView.ts | drawerMinimized": {
+    "message": "Panel minimizado"
   },
   "ui/legacy/InspectorView.ts | drawerShown": {
     "message": "Móstrase o panel"
@@ -17831,66 +17894,6 @@
   "ui/legacy/components/inline_editor/ColorSwatch.ts | shiftclickToChangeColorFormat": {
     "message": "Preme Maiúsculas e fai clic para cambiar o formato da cor"
   },
-  "ui/legacy/components/inline_editor/FontEditor.ts | PleaseEnterAValidValueForSText": {
-    "message": "*Indica un valor válido para a entrada de texto de {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | cssProperties": {
-    "message": "Propiedades de CSS"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | deleteS": {
-    "message": "Eliminar {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fallbackS": {
-    "message": "Alternativa {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fontFamily": {
-    "message": "Familia de tipo de letra"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fontSelectorDeletedAtIndexS": {
-    "message": "Eliminouse o selector de tipos de letra no índice: {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fontSize": {
-    "message": "Tamaño do tipo de letra"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fontWeight": {
-    "message": "Grosor do tipo de letra"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | lineHeight": {
-    "message": "Altura de liña"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sKeyValueSelector": {
-    "message": "Selector de valor clave ({PH1})"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sSliderInput": {
-    "message": "Entrada de control desprazable ({PH1})"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sTextInput": {
-    "message": "Introdución de texto {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sToggleInputType": {
-    "message": "Alternar tipo de entrada de {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sUnitInput": {
-    "message": "Entrada de unidade ({PH1})"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | selectorInputMode": {
-    "message": "Modo de introdución de texto do selector"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sliderInputMode": {
-    "message": "Modo de introdución de texto do control desprazable"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | spacing": {
-    "message": "Espazamento"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | thereIsNoValueToDeleteAtIndexS": {
-    "message": "Non hai ningún valor para eliminar no índice: {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | thisPropertyIsSetToContainUnits": {
-    "message": "Esta propiedade está configurada para conter unidades, pero non ten definido o correspondente valor unitsArray: {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | units": {
-    "message": "Unidades"
-  },
   "ui/legacy/components/object_ui/CustomPreviewComponent.ts | showAsJavascriptObject": {
     "message": "Mostrar como obxecto de JavaScript"
   },
@@ -18047,17 +18050,8 @@
   "ui/legacy/components/perf_ui/perf_ui-meta.ts | flamechartSelectedNavigation": {
     "message": "Navegación polo gráfico de chamas:"
   },
-  "ui/legacy/components/perf_ui/perf_ui-meta.ts | hideLiveMemoryAllocation": {
-    "message": "Ocultar anotacións de asignación de memoria activa"
-  },
-  "ui/legacy/components/perf_ui/perf_ui-meta.ts | liveMemoryAllocationAnnotations": {
-    "message": "Anotacións de asignación de memoria activa"
-  },
   "ui/legacy/components/perf_ui/perf_ui-meta.ts | modern": {
     "message": "Moderna"
-  },
-  "ui/legacy/components/perf_ui/perf_ui-meta.ts | showLiveMemoryAllocation": {
-    "message": "Mostrar anotacións de asignación de memoria activa"
   },
   "ui/legacy/components/quick_open/CommandMenu.ts | command": {
     "message": "Comando"
@@ -18171,7 +18165,7 @@
     "message": "{PH1} rexións seleccionadas"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | doNotPaste": {
-    "message": "Non pegues en DevTools código que non entendas ou que non revisases. Iso podería permitirlles aos atacantes roubarche a identidade ou asumir o control do teu ordenador. Escribe \"{PH1}\" máis abaixo para poder pegar código."
+    "message": "Non pegues en DevTools código que non entendas ou que non revisases. Iso podería permitir ataques para roubarche a identidade ou asumir o control do teu ordenador. Escribe \"{PH1}\" máis abaixo para poder pegar contido."
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | doYouTrustThisCode": {
     "message": "Confías neste código?"
@@ -18189,7 +18183,7 @@
     "message": "Orixe"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | typeAllowPasting": {
-    "message": "Escribe ''{PH1}''"
+    "message": "Escribe \"{PH1}\""
   },
   "ui/legacy/components/source_frame/XMLView.ts | find": {
     "message": "Buscar"

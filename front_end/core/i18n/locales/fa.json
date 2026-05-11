@@ -323,6 +323,9 @@
   "core/sdk/NetworkManager.ts | noContentForRedirect": {
     "message": "هیچ محتوایی موجود نیست زیرا این درخواست هدایت شده است"
   },
+  "core/sdk/NetworkManager.ts | noContentForSSE": {
+    "message": "محتوای «رویدادهای ارسالی سرور»‏ (SSE) درحال‌حاضر پشتیبانی نمی‌شود"
+  },
   "core/sdk/NetworkManager.ts | noContentForWebSocket": {
     "message": "درحال‌حاضر محتوای WebSocket پشتیبانی نمی‌شود"
   },
@@ -559,6 +562,9 @@
   },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "نادیدرنگی (بدون رنگ)"
+  },
+  "core/sdk/sdk-meta.ts | apca": {
+    "message": "«الگوریتم کنتراست ادراکی پیشرفته»‏ (APCA) جایگزین نسبت کنتراست قبلی و دستورالعمل‌های ‎AA/AAA می‌شود"
   },
   "core/sdk/sdk-meta.ts | blurredVision": {
     "message": "تاری دید"
@@ -1441,6 +1447,9 @@
   },
   "generated/Deprecation.ts | PrefixedVideoSupportsFullscreen": {
     "message": "HTMLVideoElement.webkitSupportsFullscreen منسوخ شده است. لطفاً درعوض از Document.fullscreenEnabled استفاده کنید."
+  },
+  "generated/Deprecation.ts | PreventSvgFilterPaint": {
+    "message": "فیلترهای قالب SVG را نمی‌توان روی iframeهای بین مبدأ، iframeهای محدودشده (برای نمونه، جعبه شنی)، یا افزایه‌ها اعمال کرد."
   },
   "generated/Deprecation.ts | RTCConstraintEnableDtlsSrtpFalse": {
     "message": "محدودیت DtlsSrtpKeyAgreement برداشته شد. مقدار false را برای این محدودیت مشخص کرده‌اید. این اقدام به‌عنوان تلاشی برای استفاده از روش برداشته‌شده SDES key negotiation تفسیر می‌شود. این عملکرد برداشته شده است؛ درعوض از سرویسی استفاده کنید که از DTLS key negotiation پشتیبانی کند."
@@ -2811,7 +2820,7 @@
     "message": "عنصری که کاربر می‌تواند بعداز این مورد، به‌جای عنصر بعدی در ترتیب DOM، به آن پیمایش کند."
   },
   "panels/accessibility/AccessibilityStrings.ts | expanded": {
-    "message": "گسترده‌شده"
+    "message": "گسترده"
   },
   "panels/accessibility/AccessibilityStrings.ts | focusable": {
     "message": "قابل‌تمرکز"
@@ -3207,13 +3216,34 @@
     "message": "این یک ویژگی هوشواره‌ای آزمایشی است و همیشه درست عمل نمی‌کند. پیش‌از جای‌گذاری این متن در ابزاری دیگر، آن را دوباره‌سنجی کنید."
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | exportForAgents": {
-    "message": "کپی کردن برای عامل کدنویسی"
+    "message": "کپی کردن در عامل کدنویسی"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | generatingSummary": {
     "message": "درحال تولید کردن خلاصه…"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | saveAsMarkdown": {
     "message": "ذخیره به‌عنوان…"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | gotIt": {
+    "message": "متوجهم"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | integrationPoint": {
+    "message": "اکنون دستیاری هوشواره‌ای با پانل‌های «برنامه» و Lighthouse یکپارچه شده است و به‌طور هم‌زمان از منابع داده زمینه را استخراج می‌کند"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | manageSettings": {
+    "message": "مدیریت در تنظیمات"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | privacyDisclaimer": {
+    "message": "پیام‌های گپ، داده‌های دردسترس برای این سایت ازطریق پانل‌های DevTools و «میاناهای برنامه‌سازی کاربردی وب»، و مواردی که انتخاب می‌کنید مانند درخواست‌های شبکه، فایل‌ها، و ردپاهای عملکرد به Google ارسال می‌شوند و افراد بازبین ممکن است آن‌ها را برای بهبود این ویژگی ببینند. این یک ویژگی هوشواره‌ای آزمایشی است و همیشه درست عمل نمی‌کند."
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | privacyDisclaimerEnterpriseNoLogging": {
+    "message": "پیام‌های گپ، داده‌های دردسترس برای این سایت ازطریق پانل‌های DevTools و «میاناهای برنامه‌سازی کاربردی وب»، و مواردی که انتخاب می‌کنید مانند درخواست‌های شبکه، فایل‌ها، و ردپاهای عملکرد به Google ارسال می‌شوند. محتوایی که ارسال می‌کنید و محتوایی که توسط این ویژگی تولید می‌شود، برای بهبود هوشواره‌های Google استفاده نخواهد شد. این یک ویژگی هوشواره‌ای آزمایشی است و همیشه درست عمل نمی‌کند."
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | title": {
+    "message": "دستیاری هوشواره‌ای بهتر ازقبل شده است"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | widgetPoint": {
+    "message": "برای درستی‌سنجی نتایج یا رفتن به داده‌های منبع برای موارد خاص اشکال‌زدایی، از ابزاره‌ها استفاده کنید"
   },
   "panels/ai_assistance/components/WalkthroughView.ts | close": {
     "message": "بستن"
@@ -3223,6 +3253,9 @@
   },
   "panels/ai_assistance/components/WalkthroughView.ts | hideThinking": {
     "message": "پنهان کردن روند تفکر"
+  },
+  "panels/ai_assistance/components/WalkthroughView.ts | inProgress": {
+    "message": "درجریان"
   },
   "panels/ai_assistance/components/WalkthroughView.ts | showAgentWalkthrough": {
     "message": "نمایش راهنمای گام‌به‌گام نماینده"
@@ -3677,9 +3710,6 @@
   "panels/application/ApplicationPanelSidebar.ts | theContentOfThisDocumentHasBeen": {
     "message": "محتوای این سند به‌طور پویا ازطریق ‎«document.write()»‎ تولید شده است."
   },
-  "panels/application/ApplicationPanelSidebar.ts | thirdPartyPhaseout": {
-    "message": "کوکی‌های {PH1} ممکن است به‌دلیل توقف تدریجی کوکی شخص ثالث مسدود شده باشد."
-  },
   "panels/application/ApplicationPanelSidebar.ts | versionS": {
     "message": "نسخه: {PH1}"
   },
@@ -3829,6 +3859,9 @@
   },
   "panels/application/DOMStorageItemsView.ts | domStorageItemsCleared": {
     "message": "موارد موجود در فضای ذخیره‌سازی DOM پاک شد"
+  },
+  "panels/application/DeviceBoundSessionsTreeElement.ts | clear": {
+    "message": "پاک کردن"
   },
   "panels/application/DeviceBoundSessionsTreeElement.ts | deviceBoundSessions": {
     "message": "جلسه‌های محدود به دستگاه"
@@ -4922,6 +4955,9 @@
   "panels/application/TrustTokensTreeElement.ts | trustTokens": {
     "message": "کدهای حالت خصوصی"
   },
+  "panels/application/WebMCPView.ts | cancelCall": {
+    "message": "لغو"
+  },
   "panels/application/WebMCPView.ts | canceled": {
     "message": "لغو شد"
   },
@@ -4937,8 +4973,20 @@
   "panels/application/WebMCPView.ts | close": {
     "message": "بستن"
   },
+  "panels/application/WebMCPView.ts | completed": {
+    "message": "کامل شد"
+  },
+  "panels/application/WebMCPView.ts | copyDescription": {
+    "message": "کپی کردن توضیحات"
+  },
+  "panels/application/WebMCPView.ts | copyName": {
+    "message": "کپی کردن نام"
+  },
   "panels/application/WebMCPView.ts | declarative": {
     "message": "اظهاری"
+  },
+  "panels/application/WebMCPView.ts | editAndRun": {
+    "message": "ویرایش و اجرا"
   },
   "panels/application/WebMCPView.ts | error": {
     "message": "خطا"
@@ -4982,17 +5030,23 @@
   "panels/application/WebMCPView.ts | output": {
     "message": "خروجی"
   },
+  "panels/application/WebMCPView.ts | paste": {
+    "message": "جای‌گذاری"
+  },
   "panels/application/WebMCPView.ts | pending": {
     "message": "درحال انجام"
+  },
+  "panels/application/WebMCPView.ts | revealTool": {
+    "message": "ابزار آشکارسازی"
+  },
+  "panels/application/WebMCPView.ts | runTool": {
+    "message": "اجرای ابزار"
   },
   "panels/application/WebMCPView.ts | status": {
     "message": "وضعیت"
   },
   "panels/application/WebMCPView.ts | statusTypes": {
     "message": "انواع وضعیت"
-  },
-  "panels/application/WebMCPView.ts | success": {
-    "message": "موفقیت‌آمیز"
   },
   "panels/application/WebMCPView.ts | toolDetails": {
     "message": "جزئیات"
@@ -5002,6 +5056,9 @@
   },
   "panels/application/WebMCPView.ts | toolTypes": {
     "message": "انواع ابزار"
+  },
+  "panels/application/WebMCPView.ts | toolUnregisteredNotice": {
+    "message": "این ابزار لغو ثبت‌نام شده است"
   },
   "panels/application/WebMCPView.ts | totalCalls": {
     "message": "مجموع تماس‌ها {PH1} مورد"
@@ -5873,6 +5930,9 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsFailureReason": {
     "message": "دلیل عدم موفقیت"
   },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsFormSubmission": {
+    "message": "ارسال فرم"
+  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsRuleSet": {
     "message": "مجموعه قوانین"
   },
@@ -5882,11 +5942,17 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsTargetHint": {
     "message": "راهنمای هدف"
   },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | no": {
+    "message": "نه"
+  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | noElementSelected": {
     "message": "عنصری انتخاب نشده است"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "برای جزئیات بیشتر، عنصری را انتخاب کنید"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | yes": {
+    "message": "بله"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByBatterySaver": {
     "message": "بار کردن حدسی به‌دلیل حالت «بهینه‌سازی باتری» سیستم‌عامل غیرفعال شد."
@@ -6765,7 +6831,7 @@
     "message": "فرمان کنسول"
   },
   "panels/console/ConsolePrompt.ts | selfXssWarning": {
-    "message": "هشدار: اگر کدی را درک نمی‌کنید یا خودتان آن را ارزیابی نکرده‌اید، آن را در «کنسول DevTools» جای‌گذاری نکنید. این کار می‌تواند به مهاجمان اجازه دهد هویت شما را سرقت کنند یا کنترل رایانه‌تان را دردست بگیرند. لطفاً «{PH1}» را در بخش زیر تایپ کنید و برای مجاز کردن جای‌گذاری، کلید Enter را فشار دهید."
+    "message": "هشدار: اگر کدی را درک نمی‌کنید یا خودتان آن را بررسی نکرده‌اید، آن را در «کنسول DevTools» جای‌گذاری نکنید. این کار می‌تواند به مهاجمان اجازه دهد از هویت شما استفاده کنند یا کنترل رایانه‌تان را دردست بگیرند. لطفاً «{PH1}» را در بخش زیر تایپ کنید و برای اجازه جای‌گذاری دادن، کلید Enter را فشار دهید."
   },
   "panels/console/ConsoleSidebar.ts | dErrors": {
     "message": "{n,plural, =0{هیچ خطایی وجود ندارد}=1{# خطا}one{# خطا}other{# خطا}}"
@@ -6793,6 +6859,9 @@
   },
   "panels/console/ConsoleView.ts | autocompleteFromHistory": {
     "message": "تکمیل خودکار از سابقه"
+  },
+  "panels/console/ConsoleView.ts | collapseAll": {
+    "message": "جمع کردن همه موارد"
   },
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "کنسول پاک شد"
@@ -6832,6 +6901,9 @@
   },
   "panels/console/ConsoleView.ts | errors": {
     "message": "خطاها"
+  },
+  "panels/console/ConsoleView.ts | expandAll": {
+    "message": "گسترده کردن همه موارد"
   },
   "panels/console/ConsoleView.ts | filteredMessagesInConsole": {
     "message": "‏{PH1} پیام در کنسول است"
@@ -7860,7 +7932,7 @@
     "message": "رفتن به پانل «رسانه»"
   },
   "panels/elements/ElementsTreeElement.ts | paste": {
-    "message": "جای‌گذاری کردن"
+    "message": "جای‌گذاری"
   },
   "panels/elements/ElementsTreeElement.ts | removeScrollbars": {
     "message": "برداشتن نوارهای پیمایش"
@@ -8034,7 +8106,7 @@
     "message": "نمایش"
   },
   "panels/elements/StylePropertiesSection.ts | collapseExpandedRule": {
-    "message": "جمع کردن قانون گسترده‌شده"
+    "message": "جمع کردن قانون گسترده"
   },
   "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
     "message": "برگه سبک نگارش ساخته‌شده"
@@ -8147,6 +8219,9 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "مشاهده مقدار محاسبه‌شده"
   },
+  "panels/elements/StylesSidebarPane.ts | aiSuggestionAccepted": {
+    "message": "{PH1} پیشنهاد پذیرفته شد"
+  },
   "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
     "message": "حالت تاریک خودکار"
   },
@@ -8251,6 +8326,9 @@
   },
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "کپی کردن سبک‌ها"
+  },
+  "panels/elements/elements-meta.ts | cssAnimationsOnlyWhenAnimationsTabOpen": {
+    "message": "نمایش سبک‌های پویانمایی فقط در صورت باز بودن زبانه «پویانمایی‌ها»"
   },
   "panels/elements/elements-meta.ts | detailedInspectTooltip": {
     "message": "نکته‌ابزار بازرسی دقیق"
@@ -11723,6 +11801,9 @@
   "panels/profiler/HeapProfileView.ts | sBytes": {
     "message": "{PH1} بایت"
   },
+  "panels/profiler/HeapProfileView.ts | samplingHeapProfilerTimeline": {
+    "message": "خط زمان نمونه‌گیری تحلیل‌گر پشته"
+  },
   "panels/profiler/HeapProfileView.ts | samplingProfiles": {
     "message": "تحلیل‌های نمونه‌گیری"
   },
@@ -11930,9 +12011,6 @@
   "panels/profiler/HeapSnapshotView.ts | duplicatedStrings": {
     "message": "رشته‌های تکراری"
   },
-  "panels/profiler/HeapSnapshotView.ts | exposeInternals": {
-    "message": "داده‌های داخلی با جزئیات پیاده‌سازی"
-  },
   "panels/profiler/HeapSnapshotView.ts | filter": {
     "message": "فیلتر"
   },
@@ -12070,33 +12148,6 @@
   },
   "panels/profiler/IsolateSelector.ts | totalPageJsHeapSizeChangeTrend": {
     "message": "روند تغییر اندازه پشته جاوا اسکریپت همه صفحه‌ها طی {PH1} دقیقه گذشته."
-  },
-  "panels/profiler/LiveHeapProfileView.ts | allocatedJsHeapSizeCurrentlyIn": {
-    "message": "اندازه پشته جاوا اسکریپت تخصیص داده‌شده که اکنون درحال استفاده است"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | anonymousScriptS": {
-    "message": "(اسکریپت ناشناس {PH1})"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | heapProfile": {
-    "message": "نمایه پشته"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | jsHeap": {
-    "message": "پشته جاوا اسکریپت"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | kb": {
-    "message": "کیلوبایت"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | numberOfVmsSharingTheSameScript": {
-    "message": "تعداد VM که از یک منبع اسکریپت مشترک استفاده می‌کنند"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | scriptUrl": {
-    "message": "نشانی وب اسکریپت"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | urlOfTheScriptSource": {
-    "message": "نشانی وب منبع اسکریپت"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | vms": {
-    "message": "موارد VM"
   },
   "panels/profiler/ModuleUIStrings.ts | buildingAllocationStatistics": {
     "message": "درحال ساخت آمار تخصیص…"
@@ -12275,9 +12326,6 @@
   "panels/profiler/profiler-meta.ts | deleteProfile": {
     "message": "حذف نمایه"
   },
-  "panels/profiler/profiler-meta.ts | liveHeapProfile": {
-    "message": "نمایه پشته پویا"
-  },
   "panels/profiler/profiler-meta.ts | loadProfile": {
     "message": "بار کردن نمایه…"
   },
@@ -12287,23 +12335,11 @@
   "panels/profiler/profiler-meta.ts | saveProfile": {
     "message": "ذخیره نمایه…"
   },
-  "panels/profiler/profiler-meta.ts | showLiveHeapProfile": {
-    "message": "نمایش Live Heap Profile"
-  },
   "panels/profiler/profiler-meta.ts | showMemory": {
     "message": "نمایش «حافظه»"
   },
-  "panels/profiler/profiler-meta.ts | startRecordingHeapAllocations": {
-    "message": "شروع ضبط تخصیص پشته"
-  },
-  "panels/profiler/profiler-meta.ts | startRecordingHeapAllocationsAndReload": {
-    "message": "شروع کردن ضبط تخصیص‌های پشته و بار کردن مجدد صفحه"
-  },
   "panels/profiler/profiler-meta.ts | startStopRecording": {
     "message": "شروع/ توقف ضبط"
-  },
-  "panels/profiler/profiler-meta.ts | stopRecordingHeapAllocations": {
-    "message": "توقف ضبط تخصیص‌های پشته"
   },
   "panels/protocol_monitor/JSONEditor.ts | addCustomProperty": {
     "message": "افزودن دارایی سفارشی"
@@ -12417,7 +12453,7 @@
     "message": "حذف قطعه ضبط‌شده"
   },
   "panels/recorder/RecorderController.ts | doNotImport": {
-    "message": "قطعه‌های ضبط‌شده‌ای را که درک نمی‌کنید یا خودتان آن‌ها را بازبینی نکرده‌اید در DevTools وارد نکنید. این کار می‌تواند به مهاجمان اجازه دهد هویت شما را سرقت کنند یا کنترل رایانه‌تان را دردست بگیرند. برای مجاز کردن درون‌برد، لطفاً «{PH1}» را در زیر تایپ کنید."
+    "message": "قطعه‌های ضبط‌شده‌ای را که درک نمی‌کنید یا خودتان آن‌ها را بررسی نکرده‌اید در DevTools وارد نکنید. این کار می‌تواند به مهاجمان اجازه دهد از هویت شما استفاده کنند یا کنترل رایانه‌تان را دردست بگیرند. برای مجاز کردن درون‌برد، لطفاً «{PH1}» را در زیر تایپ کنید."
   },
   "panels/recorder/RecorderController.ts | doYouTrustThisCode": {
     "message": "آیا به این قطعه ضبط‌شده اعتماد دارید؟"
@@ -13459,6 +13495,21 @@
   },
   "panels/settings/AISettingsTab.ts | aIAnnotationsFeatureDescription": {
     "message": "به‌طور خودکار عناوینی برای حاشیه‌نویسی‌های ردیابی عملکرد تولید می‌شود"
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceDescriptionV2": {
+    "message": "دریافت راهنمای متناسب با بافتار در صفحه بازرسی‌شده"
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceThingsToConsiderNoLoggingV2": {
+    "message": "پیام‌های گپ، داده‌های دردسترس این سایت ازطریق پانل‌های DevTools و «میاناهای برنامه‌سازی کاربردی وب»، و مواردی که انتخاب می‌کنید مانند درخواست‌های شبکه، فایل‌ها، و ردپاهای عملکرد، برای تولید توضیحات به Google ارسال می‌شوند. محتوایی که ارسال می‌کنید و محتوایی که توسط این ویژگی تولید می‌شود، برای بهبود مدل‌های هوشواره‌های Google استفاده نخواهد شد. این یک ویژگی هوشواره‌ای آزمایشی است و همیشه درست عمل نمی‌کند."
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceThingsToConsiderV2": {
+    "message": "پیام‌های گپ، داده‌های دردسترس برای این سایت ازطریق پانل‌های DevTools و «میاناهای برنامه‌سازی کاربردی وب»، و مواردی که انتخاب می‌کنید مانند درخواست‌های شبکه، فایل‌ها، و ردپاهای عملکرد برای تولید توضیحات به Google ارسال می‌شوند و افراد بازبین ممکن است آن‌ها را برای بهبود این ویژگی ببینند. این یک ویژگی هوشواره‌ای آزمایشی است و همیشه درست عمل نمی‌کند."
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceWhenOnItem1V2": {
+    "message": "اشکال‌زدایی سبک‌بندی، شبکه، عملکرد، کد منبع، دسترس‌پذیری و مشکلات فضای ذخیره‌سازی با دستیاری هوشواره‌ای DevTools"
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceWhenOnItem2V2": {
+    "message": "روند استدلال عامل را گام‌به‌گام دنبال کنید و به‌سرعت به داده‌های منبع مربوط بروید"
   },
   "panels/settings/AISettingsTab.ts | asYouTypeCodeSuggestions": {
     "message": "درحین تایپ در پانل «کنسول» یا «منابع»، پیشنهادهایی برای کد دریافت خواهید کرد. برای پذیرفتن یکی از پیشنهادها، کلید جهش را فشار دهید."
@@ -14539,12 +14590,6 @@
   },
   "panels/sources/PersistenceActions.ts | showOverrides": {
     "message": "نمایش همه موارد ملغی‌شده"
-  },
-  "panels/sources/ProfilePlugin.ts | kb": {
-    "message": "کیلوبایت"
-  },
-  "panels/sources/ProfilePlugin.ts | mb": {
-    "message": "مگابایت"
   },
   "panels/sources/ProfilePlugin.ts | ms": {
     "message": "میلی‌ثانیه"
@@ -16233,7 +16278,7 @@
     "message": "تأیید"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | onlyFetchFieldData": {
-    "message": "سنجه‌های فیلد مربوط به نشانی وب زیر همیشه نشان داده شود"
+    "message": "همیشه نشان دادن سنجه‌های فیلد مربوط به نشانی وب زیر"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | optOut": {
     "message": "انصراف دادن"
@@ -17183,6 +17228,9 @@
   "ui/components/markdown_view/CodeBlock.ts | copy": {
     "message": "کپی کردن کد"
   },
+  "ui/components/markdown_view/CodeBlock.ts | copyCodeSnippet": {
+    "message": "کپی کردن تکه‌کد {PH1}"
+  },
   "ui/components/markdown_view/CodeBlock.ts | disclaimer": {
     "message": "از تکه‌کدها بااحتیاط استفاده کنید"
   },
@@ -17306,6 +17354,9 @@
   "ui/legacy/ActionRegistration.ts | sources": {
     "message": "منابع"
   },
+  "ui/legacy/Dialog.ts | close": {
+    "message": "بستن"
+  },
   "ui/legacy/DockController.ts | close": {
     "message": "بستن"
   },
@@ -17339,6 +17390,12 @@
   "ui/legacy/InspectorDrawerView.ts | closeDrawer": {
     "message": "بستن کشو"
   },
+  "ui/legacy/InspectorDrawerView.ts | expandDrawer": {
+    "message": "گسترده کردن کشو"
+  },
+  "ui/legacy/InspectorDrawerView.ts | minimizeDrawer": {
+    "message": "کوچک کردن کشو"
+  },
   "ui/legacy/InspectorDrawerView.ts | moreTools": {
     "message": "ابزارهای بیشتر"
   },
@@ -17354,8 +17411,14 @@
   "ui/legacy/InspectorView.ts | drawer": {
     "message": "کشوی ابزار"
   },
+  "ui/legacy/InspectorView.ts | drawerExpanded": {
+    "message": "کشو گسترده‌شده"
+  },
   "ui/legacy/InspectorView.ts | drawerHidden": {
     "message": "کشو پنهان شده است"
+  },
+  "ui/legacy/InspectorView.ts | drawerMinimized": {
+    "message": "کشو کوچک‌شده"
   },
   "ui/legacy/InspectorView.ts | drawerShown": {
     "message": "کشو نمایش داده می‌شود"
@@ -17568,7 +17631,7 @@
     "message": "کپی کردن نام فایل"
   },
   "ui/legacy/UIUtils.ts | copyLinkAddress": {
-    "message": "کپی نشانی پیوند"
+    "message": "کپی کردن نشانی پیوند"
   },
   "ui/legacy/UIUtils.ts | new": {
     "message": "جدید"
@@ -17831,66 +17894,6 @@
   "ui/legacy/components/inline_editor/ColorSwatch.ts | shiftclickToChangeColorFormat": {
     "message": "کلیک کردن هم‌زمان با نگه داشتن کلید تبدیل برای تغییر قالب رنگ"
   },
-  "ui/legacy/components/inline_editor/FontEditor.ts | PleaseEnterAValidValueForSText": {
-    "message": "* لطفاً مقدار معتبری برای ورودی نوشتار {PH1} وارد کنید"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | cssProperties": {
-    "message": "مشخصات CSS"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | deleteS": {
-    "message": "حذف {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fallbackS": {
-    "message": "بازگشت {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fontFamily": {
-    "message": "خانواده قلم"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fontSelectorDeletedAtIndexS": {
-    "message": "«انتخاب‌گر قلم» در نمایه حذف شد: {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fontSize": {
-    "message": "اندازه قلم"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fontWeight": {
-    "message": "سیاهی قلم"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | lineHeight": {
-    "message": "ارتفاع خط"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sKeyValueSelector": {
-    "message": "{PH1} انتخاب‌گر مقدار کلید"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sSliderInput": {
-    "message": "{PH1} وارد کردن با لغزنده"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sTextInput": {
-    "message": "{PH1} وارد کردن نوشتار"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sToggleInputType": {
-    "message": "{PH1} تغییر وضعیت نوع ورودی"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sUnitInput": {
-    "message": "{PH1} وارد کردن واحد"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | selectorInputMode": {
-    "message": "حالت ورودی انتخاب‌گر"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sliderInputMode": {
-    "message": "حالت ورودی لغزنده"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | spacing": {
-    "message": "فاصله‌گذاری"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | thereIsNoValueToDeleteAtIndexS": {
-    "message": "مقداری برای حذف در نمایه وجود ندارد: {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | thisPropertyIsSetToContainUnits": {
-    "message": "این دارایی تنظیم شده تا واحدها را در خود جای دهد، اما unitsArray مرتبطی برای آن تعریف نشده است: {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | units": {
-    "message": "واحدها"
-  },
   "ui/legacy/components/object_ui/CustomPreviewComponent.ts | showAsJavascriptObject": {
     "message": "نمایش به‌عنوان شیء جاوا اسکریپت"
   },
@@ -18047,17 +18050,8 @@
   "ui/legacy/components/perf_ui/perf_ui-meta.ts | flamechartSelectedNavigation": {
     "message": "پیمایش در نمودار شعله‌ای:"
   },
-  "ui/legacy/components/perf_ui/perf_ui-meta.ts | hideLiveMemoryAllocation": {
-    "message": "پنهان کردن گزارمان‌های تخصیص حافظه زنده"
-  },
-  "ui/legacy/components/perf_ui/perf_ui-meta.ts | liveMemoryAllocationAnnotations": {
-    "message": "گزارمان‌های زنده تخصیص حافظه"
-  },
   "ui/legacy/components/perf_ui/perf_ui-meta.ts | modern": {
     "message": "مدرن"
-  },
-  "ui/legacy/components/perf_ui/perf_ui-meta.ts | showLiveMemoryAllocation": {
-    "message": "نمایش گزارمان‌های تخصیص حافظه زنده"
   },
   "ui/legacy/components/quick_open/CommandMenu.ts | command": {
     "message": "فرمان"
@@ -18171,7 +18165,7 @@
     "message": "{PH1} منطقه انتخابی"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | doNotPaste": {
-    "message": "کدهایی را که درک نمی‌کنید یا خودتان آن‌ها را بررسی نکرده‌اید در DevTools جای‌گذاری نکنید. این کار می‌تواند به مهاجمان اجازه دهد از هویت شما استفاده کنند یا کنترل رایانه‌تان را دردست بگیرند. برای مجاز کردن جای‌گذاری، لطفاً «{PH1}» را در پایین تایپ کنید."
+    "message": "کدهایی را که درک نمی‌کنید یا خودتان آن‌ها را بررسی نکرده‌اید در DevTools جای‌گذاری نکنید. این کار می‌تواند به مهاجمان اجازه دهد از هویت شما استفاده کنند یا کنترل رایانه‌تان را دردست بگیرند. برای اجازه جای‌گذاری دادن، لطفاً «{PH1}» را در پایین تایپ کنید."
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | doYouTrustThisCode": {
     "message": "آیا به این کد اعتماد دارید؟"

@@ -323,6 +323,9 @@
   "core/sdk/NetworkManager.ts | noContentForRedirect": {
     "message": "Der er intet tilgængeligt indhold, fordi denne anmodning blev omdirigeret"
   },
+  "core/sdk/NetworkManager.ts | noContentForSSE": {
+    "message": "Indhold til Server-Sent Events (SSE) understøttes ikke i øjeblikket"
+  },
   "core/sdk/NetworkManager.ts | noContentForWebSocket": {
     "message": "Indhold til WebSockets understøttes ikke i øjeblikket"
   },
@@ -559,6 +562,9 @@
   },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "Akromatopsi (ingen farve)"
+  },
+  "core/sdk/sdk-meta.ts | apca": {
+    "message": "Advanced Perceptual Contrast Algorithm (APCA) erstatter de tidligere retningslinjer for kontrastforhold og AA/AAA"
   },
   "core/sdk/sdk-meta.ts | blurredVision": {
     "message": "Sløret visning"
@@ -1441,6 +1447,9 @@
   },
   "generated/Deprecation.ts | PrefixedVideoSupportsFullscreen": {
     "message": "HTMLVideoElement.webkitSupportsFullscreen er udfaset. Brug Document.fullscreenEnabled i stedet."
+  },
+  "generated/Deprecation.ts | PreventSvgFilterPaint": {
+    "message": "SVG-filtre kan ikke anvendes på iframes med krydsoprindelse, begrænsede iframes (f.eks. sandboxed) eller plugins."
   },
   "generated/Deprecation.ts | RTCConstraintEnableDtlsSrtpFalse": {
     "message": "Begrænsningen DtlsSrtpKeyAgreement er fjernet. Du har angivet værdien false for denne begrænsning, hvilket tolkes som et forsøg på at bruge den fjernede metode SDES key negotiation. Denne funktion er fjernet. Brug i stedet en tjeneste, der understøtter DTLS key negotiation."
@@ -3207,13 +3216,34 @@
     "message": "Dette er en eksperimentel AI-funktion, som ikke altid rammer plet. Dobbelttjek denne tekst, før du indsætter den i et andet værktøj."
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | exportForAgents": {
-    "message": "Kopiér til din kodningsagent"
+    "message": "Kopiér til kodningsagent"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | generatingSummary": {
     "message": "Oversigten genereres…"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | saveAsMarkdown": {
     "message": "Gem som…"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | gotIt": {
+    "message": "OK"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | integrationPoint": {
+    "message": "AI-hjælp er nu integreret med panelerne Program og Lighthouse og henter samtidig kontekst fra datakilder"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | manageSettings": {
+    "message": "Administrer i Indstillinger"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | privacyDisclaimer": {
+    "message": "Chatbeskeder, data, der er tilgængelige for dette website via paneler i Udviklerværktøjer og web-API'er, og de elementer, du vælger, f.eks. netværksanmodninger, filer og effektivitetssporinger, sendes til Google og kan blive gennemgået af menneskelige kontrollanter med henblik på at forbedre denne funktion. Dette er en eksperimentel AI-funktion, som ikke altid rammer plet."
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | privacyDisclaimerEnterpriseNoLogging": {
+    "message": "Chatbeskeder, data, der er tilgængelige for dette website via paneler i Udviklerværktøjer og web-API'er, og de elementer, du vælger, f.eks. netværksanmodninger, filer og effektivitetssporinger, sendes til Google. Det indhold, der indsendes til og genereres af denne funktion, bruges ikke til at forbedre Google AI-modeller. Dette er en eksperimentel AI-funktion, som ikke altid rammer plet."
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | title": {
+    "message": "AI-hjælp er blevet endnu bedre"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | widgetPoint": {
+    "message": "Brug widgets til at verificere resultater eller gå til kildedata for udvalgte fejlretningssager"
   },
   "panels/ai_assistance/components/WalkthroughView.ts | close": {
     "message": "Luk"
@@ -3223,6 +3253,9 @@
   },
   "panels/ai_assistance/components/WalkthroughView.ts | hideThinking": {
     "message": "Skjul ræsonnement"
+  },
+  "panels/ai_assistance/components/WalkthroughView.ts | inProgress": {
+    "message": "Under behandling"
   },
   "panels/ai_assistance/components/WalkthroughView.ts | showAgentWalkthrough": {
     "message": "Vis trinvis vejledning til agent"
@@ -3677,9 +3710,6 @@
   "panels/application/ApplicationPanelSidebar.ts | theContentOfThisDocumentHasBeen": {
     "message": "Indholdet i dette dokument er genereret dynamisk via \"document.write()\"."
   },
-  "panels/application/ApplicationPanelSidebar.ts | thirdPartyPhaseout": {
-    "message": "Cookies fra {PH1} er muligvis blokeret som følge af udfasningen af tredjepartscookies."
-  },
   "panels/application/ApplicationPanelSidebar.ts | versionS": {
     "message": "Version: {PH1}"
   },
@@ -3723,7 +3753,7 @@
     "message": "Begivenhed"
   },
   "panels/application/BackgroundServiceView.ts | instanceId": {
-    "message": "Forekomst-id"
+    "message": "Instans-id"
   },
   "panels/application/BackgroundServiceView.ts | noEventSelected": {
     "message": "Der er ikke valgt nogen hændelse"
@@ -3829,6 +3859,9 @@
   },
   "panels/application/DOMStorageItemsView.ts | domStorageItemsCleared": {
     "message": "Elementer i DOM-lagerpladsen er ryddet"
+  },
+  "panels/application/DeviceBoundSessionsTreeElement.ts | clear": {
+    "message": "Ryd"
   },
   "panels/application/DeviceBoundSessionsTreeElement.ts | deviceBoundSessions": {
     "message": "Enhedsbundne sessioner"
@@ -4922,6 +4955,9 @@
   "panels/application/TrustTokensTreeElement.ts | trustTokens": {
     "message": "Private state tokens"
   },
+  "panels/application/WebMCPView.ts | cancelCall": {
+    "message": "Annuller"
+  },
   "panels/application/WebMCPView.ts | canceled": {
     "message": "Annulleret"
   },
@@ -4937,8 +4973,20 @@
   "panels/application/WebMCPView.ts | close": {
     "message": "Luk"
   },
+  "panels/application/WebMCPView.ts | completed": {
+    "message": "Fuldført"
+  },
+  "panels/application/WebMCPView.ts | copyDescription": {
+    "message": "Kopiér beskrivelse"
+  },
+  "panels/application/WebMCPView.ts | copyName": {
+    "message": "Kopiér navn"
+  },
   "panels/application/WebMCPView.ts | declarative": {
     "message": "Deklarativ"
+  },
+  "panels/application/WebMCPView.ts | editAndRun": {
+    "message": "Rediger, og kør"
   },
   "panels/application/WebMCPView.ts | error": {
     "message": "Fejl"
@@ -4982,17 +5030,23 @@
   "panels/application/WebMCPView.ts | output": {
     "message": "Output"
   },
+  "panels/application/WebMCPView.ts | paste": {
+    "message": "Indsæt"
+  },
   "panels/application/WebMCPView.ts | pending": {
     "message": "I gang"
+  },
+  "panels/application/WebMCPView.ts | revealTool": {
+    "message": "Vis værktøj"
+  },
+  "panels/application/WebMCPView.ts | runTool": {
+    "message": "Kør værktøj"
   },
   "panels/application/WebMCPView.ts | status": {
     "message": "Status"
   },
   "panels/application/WebMCPView.ts | statusTypes": {
     "message": "Statustyper"
-  },
-  "panels/application/WebMCPView.ts | success": {
-    "message": "Gennemført"
   },
   "panels/application/WebMCPView.ts | toolDetails": {
     "message": "Oplysninger"
@@ -5002,6 +5056,9 @@
   },
   "panels/application/WebMCPView.ts | toolTypes": {
     "message": "Værktøjstyper"
+  },
+  "panels/application/WebMCPView.ts | toolUnregisteredNotice": {
+    "message": "Dette værktøj er afmeldt"
   },
   "panels/application/WebMCPView.ts | totalCalls": {
     "message": "{PH1} opkald i alt"
@@ -5058,7 +5115,7 @@
     "message": "Back/forward-cachen er deaktiveret for forhåndsgengivelsen."
   },
   "panels/application/components/BackForwardCacheStrings.ts | broadcastChannel": {
-    "message": "Siden kan ikke cachelagres, da den har en BroadcastChannel-forekomst med registrerede hændelsesfunktioner."
+    "message": "Siden kan ikke cachelagres, da den har en BroadcastChannel-instans med registrerede hændelsesfunktioner."
   },
   "panels/application/components/BackForwardCacheStrings.ts | cacheControlNoStore": {
     "message": "Sider med headeren cache-control:no-store kan ikke føjes til back/forward-cachen."
@@ -5727,7 +5784,7 @@
     "message": "Ja, fordi websitet på øverste niveau er uigennemsigtigt"
   },
   "panels/application/components/TrustTokensView.ts | allStoredTrustTokensAvailableIn": {
-    "message": "Alle gemte private state tokens, der er tilgængelige i denne browserforekomst."
+    "message": "Alle gemte private state tokens, der er tilgængelige i denne browserinstans."
   },
   "panels/application/components/TrustTokensView.ts | deleteTrustTokens": {
     "message": "Slet alle gemte private state tokens, der stammer fra {PH1}."
@@ -5873,6 +5930,9 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsFailureReason": {
     "message": "Årsag til fejl"
   },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsFormSubmission": {
+    "message": "Formularindsendelse"
+  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsRuleSet": {
     "message": "Regelsæt"
   },
@@ -5882,11 +5942,17 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsTargetHint": {
     "message": "Målhint"
   },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | no": {
+    "message": "Nej"
+  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | noElementSelected": {
     "message": "Der er ikke valgt noget element"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "Vælg et element for at få flere oplysninger"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | yes": {
+    "message": "Ja"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByBatterySaver": {
     "message": "Spekulativ indlæsning er deaktiveret på grund af operativsystemets batterisparefunktion."
@@ -6794,6 +6860,9 @@
   "panels/console/ConsoleView.ts | autocompleteFromHistory": {
     "message": "Autofuldfør ud fra historik"
   },
+  "panels/console/ConsoleView.ts | collapseAll": {
+    "message": "Skjul alle"
+  },
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "Konsollen er ryddet"
   },
@@ -6832,6 +6901,9 @@
   },
   "panels/console/ConsoleView.ts | errors": {
     "message": "Fejl"
+  },
+  "panels/console/ConsoleView.ts | expandAll": {
+    "message": "Udvid alle"
   },
   "panels/console/ConsoleView.ts | filteredMessagesInConsole": {
     "message": "{PH1} meddelelser i konsol"
@@ -8147,6 +8219,9 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Se beregnede værdier"
   },
+  "panels/elements/StylesSidebarPane.ts | aiSuggestionAccepted": {
+    "message": "{PH1} Forslaget er accepteret"
+  },
   "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
     "message": "Automatisk mørk tilstand"
   },
@@ -8251,6 +8326,9 @@
   },
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "Kopiér stile"
+  },
+  "panels/elements/elements-meta.ts | cssAnimationsOnlyWhenAnimationsTabOpen": {
+    "message": "Vis kun animationsstile, når fanen Animationer er åben"
   },
   "panels/elements/elements-meta.ts | detailedInspectTooltip": {
     "message": "Værktøjstip med detaljeret inspektion"
@@ -8919,7 +8997,7 @@
     "message": "Skjulte problemer"
   },
   "panels/issues/HiddenIssuesRow.ts | unhideAll": {
-    "message": "Vis alle igen"
+    "message": "Vis alle"
   },
   "panels/issues/IssueKindView.ts | hideAllCurrentBreakingChanges": {
     "message": "Skjul alle aktuelle fejlskabende ændringer"
@@ -11723,6 +11801,9 @@
   "panels/profiler/HeapProfileView.ts | sBytes": {
     "message": "{PH1} bytes"
   },
+  "panels/profiler/HeapProfileView.ts | samplingHeapProfilerTimeline": {
+    "message": "Tidslinje for stikprøvebaseret heap-profileringsværktøj"
+  },
   "panels/profiler/HeapProfileView.ts | samplingProfiles": {
     "message": "Stikprøveprofiler"
   },
@@ -11930,9 +12011,6 @@
   "panels/profiler/HeapSnapshotView.ts | duplicatedStrings": {
     "message": "Duplikerede strenge"
   },
-  "panels/profiler/HeapSnapshotView.ts | exposeInternals": {
-    "message": "Interne data med implementeringsoplysninger"
-  },
   "panels/profiler/HeapSnapshotView.ts | filter": {
     "message": "Filtrér"
   },
@@ -12071,33 +12149,6 @@
   "panels/profiler/IsolateSelector.ts | totalPageJsHeapSizeChangeTrend": {
     "message": "Trend for ændring af samlet JS-heap-størrelse i løbet af de seneste {PH1} minutter."
   },
-  "panels/profiler/LiveHeapProfileView.ts | allocatedJsHeapSizeCurrentlyIn": {
-    "message": "Tildelt JS-heapstørrelse, der er i brug"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | anonymousScriptS": {
-    "message": "(Anonymt script {PH1})"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | heapProfile": {
-    "message": "Heap-profil"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | jsHeap": {
-    "message": "JS-heap"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | kb": {
-    "message": "kB"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | numberOfVmsSharingTheSameScript": {
-    "message": "Antal VM'er, som deler den samme scriptkilde"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | scriptUrl": {
-    "message": "Scriptwebadresse"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | urlOfTheScriptSource": {
-    "message": "Scriptkildens webadresse"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | vms": {
-    "message": "VM'er"
-  },
   "panels/profiler/ModuleUIStrings.ts | buildingAllocationStatistics": {
     "message": "Bygger tildelingsstatistikker…"
   },
@@ -12180,7 +12231,7 @@
     "message": "Indlæs profil"
   },
   "panels/profiler/ProfileLauncherView.ts | selectJavascriptVmInstance": {
-    "message": "Vælg JavaScript VM-forekomst"
+    "message": "Vælg JavaScript VM-instans"
   },
   "panels/profiler/ProfileLauncherView.ts | selectProfilingType": {
     "message": "Vælg profileringstype"
@@ -12275,9 +12326,6 @@
   "panels/profiler/profiler-meta.ts | deleteProfile": {
     "message": "Slet profil"
   },
-  "panels/profiler/profiler-meta.ts | liveHeapProfile": {
-    "message": "Live heap-profil"
-  },
   "panels/profiler/profiler-meta.ts | loadProfile": {
     "message": "Indlæs profil…"
   },
@@ -12287,23 +12335,11 @@
   "panels/profiler/profiler-meta.ts | saveProfile": {
     "message": "Gem profil…"
   },
-  "panels/profiler/profiler-meta.ts | showLiveHeapProfile": {
-    "message": "Vis live-heap-profil"
-  },
   "panels/profiler/profiler-meta.ts | showMemory": {
     "message": "Vis hukommelse"
   },
-  "panels/profiler/profiler-meta.ts | startRecordingHeapAllocations": {
-    "message": "Start optagelse af heap-tildelinger"
-  },
-  "panels/profiler/profiler-meta.ts | startRecordingHeapAllocationsAndReload": {
-    "message": "Start optagelse af heap-tildelinger, og genindlæs siden"
-  },
   "panels/profiler/profiler-meta.ts | startStopRecording": {
     "message": "Start/stop optagelse"
-  },
-  "panels/profiler/profiler-meta.ts | stopRecordingHeapAllocations": {
-    "message": "Stop optagelse af heap-tildelinger"
   },
   "panels/protocol_monitor/JSONEditor.ts | addCustomProperty": {
     "message": "Tilføj tilpasset egenskab"
@@ -12477,7 +12513,7 @@
     "message": "Slå kodevisning til/fra"
   },
   "panels/recorder/RecorderController.ts | typeAllowImporting": {
-    "message": "Type \"{PH1}\""
+    "message": "Angiv \"{PH1}\""
   },
   "panels/recorder/components/CreateRecordingView.ts | cancelRecording": {
     "message": "Annuller optagelse"
@@ -13459,6 +13495,21 @@
   },
   "panels/settings/AISettingsTab.ts | aIAnnotationsFeatureDescription": {
     "message": "Generér automatisk titler til annoteringer af effektivitetssporing"
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceDescriptionV2": {
+    "message": "Få kontekstbevidst hjælp på den inspicerede side"
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceThingsToConsiderNoLoggingV2": {
+    "message": "For at generere forklaringer sendes chatbeskeder, data, der er tilgængelige for dette website via paneler i Udviklerværktøjer og web-API'er, og de elementer, du vælger, f.eks. netværksanmodninger, filer og effektivitetssporinger, til Google. Det indhold, du indsender, og som genereres af denne funktion, bruges ikke til at forbedre Google AI-modeller. Dette er en eksperimentel AI-funktion, som ikke altid rammer plet."
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceThingsToConsiderV2": {
+    "message": "For at generere forklaringer sendes chatbeskeder, data, der er tilgængelige for dette website via paneler i Udviklerværktøjer og web-API'er, og de elementer, du vælger, f.eks. netværksanmodninger, filer og effektivitetssporinger, til Google og kan blive gennemgået af menneskelige kontrollanter med henblik på at forbedre denne funktion. Dette er en eksperimentel AI-funktion, som ikke altid rammer plet."
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceWhenOnItem1V2": {
+    "message": "Fejlret problemer med typografi, netværk, ydeevne, kildekode, tilgængelighed og lagerplads med AI-hjælp i Udviklerværktøjer"
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceWhenOnItem2V2": {
+    "message": "Følg agentens ræsonnement trin for trin, og gå hurtigt til de relevante kildedata"
   },
   "panels/settings/AISettingsTab.ts | asYouTypeCodeSuggestions": {
     "message": "Når du skriver i panelet Konsol eller Kilder, får du kodeforslag. Tryk på Tab-tasten for at acceptere et forslag."
@@ -14540,12 +14591,6 @@
   "panels/sources/PersistenceActions.ts | showOverrides": {
     "message": "Vis alle tilsidesættelser"
   },
-  "panels/sources/ProfilePlugin.ts | kb": {
-    "message": "kB"
-  },
-  "panels/sources/ProfilePlugin.ts | mb": {
-    "message": "MB"
-  },
   "panels/sources/ProfilePlugin.ts | ms": {
     "message": "ms"
   },
@@ -15183,7 +15228,7 @@
     "message": "(tom)"
   },
   "panels/timeline/IsolateSelector.ts | selectJavascriptVmInstance": {
-    "message": "Vælg JavaScript VM-forekomst"
+    "message": "Vælg JavaScript VM-instans"
   },
   "panels/timeline/LayoutShiftsTrackAppender.ts | layoutShift": {
     "message": "Layoutskift"
@@ -17183,6 +17228,9 @@
   "ui/components/markdown_view/CodeBlock.ts | copy": {
     "message": "Kopiér kode"
   },
+  "ui/components/markdown_view/CodeBlock.ts | copyCodeSnippet": {
+    "message": "Kopiér kodestykket {PH1}"
+  },
   "ui/components/markdown_view/CodeBlock.ts | disclaimer": {
     "message": "Brug kodestykker med omhu"
   },
@@ -17306,6 +17354,9 @@
   "ui/legacy/ActionRegistration.ts | sources": {
     "message": "Kilder"
   },
+  "ui/legacy/Dialog.ts | close": {
+    "message": "Luk"
+  },
   "ui/legacy/DockController.ts | close": {
     "message": "Luk"
   },
@@ -17339,6 +17390,12 @@
   "ui/legacy/InspectorDrawerView.ts | closeDrawer": {
     "message": "Luk skuffe"
   },
+  "ui/legacy/InspectorDrawerView.ts | expandDrawer": {
+    "message": "Udvid skuffe"
+  },
+  "ui/legacy/InspectorDrawerView.ts | minimizeDrawer": {
+    "message": "Minimer skuffe"
+  },
   "ui/legacy/InspectorDrawerView.ts | moreTools": {
     "message": "Flere værktøjer"
   },
@@ -17354,8 +17411,14 @@
   "ui/legacy/InspectorView.ts | drawer": {
     "message": "Værktøjsskuffe"
   },
+  "ui/legacy/InspectorView.ts | drawerExpanded": {
+    "message": "Skuffen er udvidet"
+  },
   "ui/legacy/InspectorView.ts | drawerHidden": {
     "message": "Skuffen er skjult"
+  },
+  "ui/legacy/InspectorView.ts | drawerMinimized": {
+    "message": "Skuffen er minimeret"
   },
   "ui/legacy/InspectorView.ts | drawerShown": {
     "message": "Skuffen vises"
@@ -17831,66 +17894,6 @@
   "ui/legacy/components/inline_editor/ColorSwatch.ts | shiftclickToChangeColorFormat": {
     "message": "Shift+klik for at ændre farveformat"
   },
-  "ui/legacy/components/inline_editor/FontEditor.ts | PleaseEnterAValidValueForSText": {
-    "message": "* Angiv en gyldig værdi for tekstinput i {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | cssProperties": {
-    "message": "CSS-egenskaber"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | deleteS": {
-    "message": "Slet {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fallbackS": {
-    "message": "Alternativ {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fontFamily": {
-    "message": "Skrifttypefamilie"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fontSelectorDeletedAtIndexS": {
-    "message": "Skrifttypevælger er slettet ved indeks: {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fontSize": {
-    "message": "Skriftstørrelse"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fontWeight": {
-    "message": "Skrifttykkelse"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | lineHeight": {
-    "message": "Linjehøjde"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sKeyValueSelector": {
-    "message": "{PH1} selektor for nøgleværdi"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sSliderInput": {
-    "message": "{PH1} skyders input"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sTextInput": {
-    "message": "Tekstinput i {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sToggleInputType": {
-    "message": "{PH1} slå inputtype til/fra"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sUnitInput": {
-    "message": "{PH1} enhedsinput"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | selectorInputMode": {
-    "message": "Input-tilstand for selektor"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sliderInputMode": {
-    "message": "Skyders input-tilstand"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | spacing": {
-    "message": "Mellemrum"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | thereIsNoValueToDeleteAtIndexS": {
-    "message": "Der er ingen værdi at slette ved indeks: {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | thisPropertyIsSetToContainUnits": {
-    "message": "Denne egenskab er konfigureret til at indeholde enheder, men der er ikke angivet en tilsvarende unitsArray: {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | units": {
-    "message": "Enheder"
-  },
   "ui/legacy/components/object_ui/CustomPreviewComponent.ts | showAsJavascriptObject": {
     "message": "Vis som JavaScript-objekt"
   },
@@ -18047,17 +18050,8 @@
   "ui/legacy/components/perf_ui/perf_ui-meta.ts | flamechartSelectedNavigation": {
     "message": "Navigation på flammediagram:"
   },
-  "ui/legacy/components/perf_ui/perf_ui-meta.ts | hideLiveMemoryAllocation": {
-    "message": "Skjul annoteringer for aktuelle hukommelsestildelinger"
-  },
-  "ui/legacy/components/perf_ui/perf_ui-meta.ts | liveMemoryAllocationAnnotations": {
-    "message": "Annoteringer for aktuelle hukommelsestildelinger"
-  },
   "ui/legacy/components/perf_ui/perf_ui-meta.ts | modern": {
     "message": "Moderne"
-  },
-  "ui/legacy/components/perf_ui/perf_ui-meta.ts | showLiveMemoryAllocation": {
-    "message": "Vis annoteringer for aktuel hukommelsestildeling"
   },
   "ui/legacy/components/quick_open/CommandMenu.ts | command": {
     "message": "Kommando"
@@ -18171,7 +18165,7 @@
     "message": "{PH1} valg af regioner"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | doNotPaste": {
-    "message": "Undlad at indsætte kode, som du ikke forstår, eller som du ikke selv har tjekket, ind i Udviklerværktøjer. Dette kan give hackere mulighed for at stjæle din identitet eller tage kontrollen over din computer. Angiv \"{PH1}\" nedenfor for at tillade indsættelse."
+    "message": "Undlad at indsætte kode, som du ikke forstår, eller som du ikke selv har tjekket, i Udviklerværktøjer. Dette kan give hackere mulighed for at stjæle din identitet eller tage kontrollen over din computer. Angiv \"{PH1}\" nedenfor for at tillade indsættelse."
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | doYouTrustThisCode": {
     "message": "Har du tillid til denne kode?"
@@ -18189,7 +18183,7 @@
     "message": "Kilde"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | typeAllowPasting": {
-    "message": "Type \"{PH1}\""
+    "message": "Angiv \"{PH1}\""
   },
   "ui/legacy/components/source_frame/XMLView.ts | find": {
     "message": "Find"

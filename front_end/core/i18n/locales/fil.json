@@ -323,6 +323,9 @@
   "core/sdk/NetworkManager.ts | noContentForRedirect": {
     "message": "Walang available na content dahil na-redirect ang kahilingang ito"
   },
+  "core/sdk/NetworkManager.ts | noContentForSSE": {
+    "message": "Kasalukuyang hindi sinusuportahan ang Content for Server-Sent Events (SSE)"
+  },
   "core/sdk/NetworkManager.ts | noContentForWebSocket": {
     "message": "Kasalukuyang hindi sinusuportahan ang content para sa WebSockets"
   },
@@ -559,6 +562,9 @@
   },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "Achromatopsia (walang kulay)"
+  },
+  "core/sdk/sdk-meta.ts | apca": {
+    "message": "Advanced Perceptual Contrast Algorithm (APCA) na pumapalit sa dating contrast ratio at mga alituntunin sa AA/AAA"
   },
   "core/sdk/sdk-meta.ts | blurredVision": {
     "message": "Malabong paningin"
@@ -1441,6 +1447,9 @@
   },
   "generated/Deprecation.ts | PrefixedVideoSupportsFullscreen": {
     "message": "Hindi na ginagamit ang HTMLVideoElement.webkitSupportsFullscreen. Pakigamit na lang ang Document.fullscreenEnabled."
+  },
+  "generated/Deprecation.ts | PreventSvgFilterPaint": {
+    "message": "Hindi puwedeng ilapat ang mga SVG filter sa mga cross-origin na iframe, pinaghihigpitang iframe (hal., naka-sandbox), o plugin."
   },
   "generated/Deprecation.ts | RTCConstraintEnableDtlsSrtpFalse": {
     "message": "Inalis ang paghihigpit na DtlsSrtpKeyAgreement. Tinukoy mo ang isang false na value para sa paghihigpit na ito, na itinuturing na pagsubok na gamitin ang inalis na paraan ng SDES key negotiation. Inalis ang functionality na ito; isang serbisyong sumusuporta sa DTLS key negotiation na lang ang gamitin."
@@ -3207,13 +3216,34 @@
     "message": "Isa itong pang-eksperimentong feature ng AI at hindi ito palaging tama. I-double check ang text na ito bago i-paste sa ibang tool."
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | exportForAgents": {
-    "message": "Kopyahin para sa iyong coding agent"
+    "message": "Kopyahin sa coding agent"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | generatingSummary": {
     "message": "Bumubuo ng buod…"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | saveAsMarkdown": {
     "message": "I-save bilang…"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | gotIt": {
+    "message": "OK"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | integrationPoint": {
+    "message": "Naka-integrate na ngayon ang Tulong ng AI sa mga panel ng Application at Lighthouse, at sabay-sabay itong kumukuha ng konteksto mula sa mga data source"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | manageSettings": {
+    "message": "Pamahalaan sa mga setting"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | privacyDisclaimer": {
+    "message": "Ipinapadala sa Google ang mga mensahe sa chat, data na naa-access para sa site na ito sa pamamagitan ng mga panel ng DevTools at Web API, at mga item na pipiliin mo gaya ng mga request sa network, file, at trace ng performance at posibleng makita ng mga taong tagasuri para mapahusay ang feature na ito. Isa itong pang-eksperimentong feature ng AI at hindi ito palaging tama."
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | privacyDisclaimerEnterpriseNoLogging": {
+    "message": "Ipinapadala sa Google ang mga mensahe sa chat, data na naa-access para sa site na ito sa pamamagitan ng mga panel ng DevTools at Web API, at mga item na pipiliin mo gaya ng mga request sa network, file, at trace ng performance. Hindi gagamitin ang content na isinumite at binuo ng feature na ito para pahusayin ang mga model ng Google AI. Isa itong pang-eksperimentong feature ng AI at hindi ito palaging tama."
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | title": {
+    "message": "Mas pinahusay ang Tulong ng AI"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | widgetPoint": {
+    "message": "Gumamit ng mga widget para i-verify ang mga resulta o lumipat sa source ng data para sa mga piling case ng pag-debug"
   },
   "panels/ai_assistance/components/WalkthroughView.ts | close": {
     "message": "Isara"
@@ -3223,6 +3253,9 @@
   },
   "panels/ai_assistance/components/WalkthroughView.ts | hideThinking": {
     "message": "I-hide ang pag-iisip"
+  },
+  "panels/ai_assistance/components/WalkthroughView.ts | inProgress": {
+    "message": "Kasalukuyang isinasagawa"
   },
   "panels/ai_assistance/components/WalkthroughView.ts | showAgentWalkthrough": {
     "message": "Ipakita ang walkthrough ng agent"
@@ -3677,9 +3710,6 @@
   "panels/application/ApplicationPanelSidebar.ts | theContentOfThisDocumentHasBeen": {
     "message": "Dynamic na nabuo ang content ng dokumentong ito sa pamamagitan ng 'document.write()'."
   },
-  "panels/application/ApplicationPanelSidebar.ts | thirdPartyPhaseout": {
-    "message": "Posibleng na-block ang cookies mula sa {PH1} dahil sa pag-phase out ng third-party na cookie."
-  },
   "panels/application/ApplicationPanelSidebar.ts | versionS": {
     "message": "Bersyon: {PH1}"
   },
@@ -3829,6 +3859,9 @@
   },
   "panels/application/DOMStorageItemsView.ts | domStorageItemsCleared": {
     "message": "Na-clear ang mga DOM Storage Item"
+  },
+  "panels/application/DeviceBoundSessionsTreeElement.ts | clear": {
+    "message": "I-clear"
   },
   "panels/application/DeviceBoundSessionsTreeElement.ts | deviceBoundSessions": {
     "message": "Mga session na naka-bind sa device"
@@ -4922,6 +4955,9 @@
   "panels/application/TrustTokensTreeElement.ts | trustTokens": {
     "message": "Mga private state token"
   },
+  "panels/application/WebMCPView.ts | cancelCall": {
+    "message": "Kanselahin"
+  },
   "panels/application/WebMCPView.ts | canceled": {
     "message": "Kinansela"
   },
@@ -4937,8 +4973,20 @@
   "panels/application/WebMCPView.ts | close": {
     "message": "Isara"
   },
+  "panels/application/WebMCPView.ts | completed": {
+    "message": "Nakumpleto na"
+  },
+  "panels/application/WebMCPView.ts | copyDescription": {
+    "message": "Kopyahin ang paglalarawan"
+  },
+  "panels/application/WebMCPView.ts | copyName": {
+    "message": "Kopyahin ang pangalan"
+  },
   "panels/application/WebMCPView.ts | declarative": {
     "message": "Declarative"
+  },
+  "panels/application/WebMCPView.ts | editAndRun": {
+    "message": "I-edit at paganahin"
   },
   "panels/application/WebMCPView.ts | error": {
     "message": "Error"
@@ -4982,17 +5030,23 @@
   "panels/application/WebMCPView.ts | output": {
     "message": "Output"
   },
+  "panels/application/WebMCPView.ts | paste": {
+    "message": "I-paste"
+  },
   "panels/application/WebMCPView.ts | pending": {
     "message": "Isinasagawa"
+  },
+  "panels/application/WebMCPView.ts | revealTool": {
+    "message": "Ipakita ang tool"
+  },
+  "panels/application/WebMCPView.ts | runTool": {
+    "message": "Paganahin ang Tool"
   },
   "panels/application/WebMCPView.ts | status": {
     "message": "Status"
   },
   "panels/application/WebMCPView.ts | statusTypes": {
     "message": "Mga uri ng status"
-  },
-  "panels/application/WebMCPView.ts | success": {
-    "message": "Matagumpay"
   },
   "panels/application/WebMCPView.ts | toolDetails": {
     "message": "Mga Detalye"
@@ -5002,6 +5056,9 @@
   },
   "panels/application/WebMCPView.ts | toolTypes": {
     "message": "Mga uri ng tool"
+  },
+  "panels/application/WebMCPView.ts | toolUnregisteredNotice": {
+    "message": "Na-unregister ang tool na ito"
   },
   "panels/application/WebMCPView.ts | totalCalls": {
     "message": "Kabuuang {PH1} (na) tawag"
@@ -5873,6 +5930,9 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsFailureReason": {
     "message": "Dahilan ng pagpalya"
   },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsFormSubmission": {
+    "message": "Pagsusumite ng form"
+  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsRuleSet": {
     "message": "Hanay ng panuntunan"
   },
@@ -5882,11 +5942,17 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsTargetHint": {
     "message": "Hint sa target"
   },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | no": {
+    "message": "Hindi"
+  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | noElementSelected": {
     "message": "Walang napiling element"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "Pumili ng element para sa higit pang detalye"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | yes": {
+    "message": "Oo"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByBatterySaver": {
     "message": "Naka-disable ang speculative na pag-load dahil sa Battery Saver mode ng operating system."
@@ -6765,7 +6831,7 @@
     "message": "Prompt ng Console"
   },
   "panels/console/ConsolePrompt.ts | selfXssWarning": {
-    "message": "Babala: Huwag mag-paste ng code sa DevTools Console na hindi mo nauunawaan o hindi mo pa mismo nasusuri. Puwede nitong mabigyang-daan ang mga attacker na nakawin ang iyong pagkakakilanlan o kontrolin ang computer mo. Paki-type ang ‘{PH1}’ sa ibaba at pindutin ang Enter para pahintulutan ang pag-paste."
+    "message": "Babala: Huwag mag-paste ng code sa DevTools Console na hindi mo nauunawaan o hindi mo pa mismo nasusuri. Puwede nitong mabigyang-daan ang mga attacker na nakawin ang iyong pagkakakilanlan o kontrolin ang computer mo. Paki-type ang “{PH1}” sa ibaba at pindutin ang Enter para payagan ang pag-paste."
   },
   "panels/console/ConsoleSidebar.ts | dErrors": {
     "message": "{n,plural, =0{Walang error}=1{# error}one{# error}other{# na error}}"
@@ -6793,6 +6859,9 @@
   },
   "panels/console/ConsoleView.ts | autocompleteFromHistory": {
     "message": "I-autocomplete mula sa history"
+  },
+  "panels/console/ConsoleView.ts | collapseAll": {
+    "message": "I-collapse lahat"
   },
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "na-clear ang Console"
@@ -6832,6 +6901,9 @@
   },
   "panels/console/ConsoleView.ts | errors": {
     "message": "Mga Error"
+  },
+  "panels/console/ConsoleView.ts | expandAll": {
+    "message": "I-expand lahat"
   },
   "panels/console/ConsoleView.ts | filteredMessagesInConsole": {
     "message": "{PH1} (na) mensahe sa console"
@@ -8147,6 +8219,9 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Tingnan ang na-compute na value"
   },
+  "panels/elements/StylesSidebarPane.ts | aiSuggestionAccepted": {
+    "message": "{PH1} Tinanggap ang suhestyon."
+  },
   "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
     "message": "Awtomatikong dark mode"
   },
@@ -8251,6 +8326,9 @@
   },
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "Kopyahin ang mga istilo"
+  },
+  "panels/elements/elements-meta.ts | cssAnimationsOnlyWhenAnimationsTabOpen": {
+    "message": "Ipakita lang ang mga istilo ng animation kapag nakabukas ang tab na Mga Animation"
   },
   "panels/elements/elements-meta.ts | detailedInspectTooltip": {
     "message": "Detalyadong tooltip sa pagsiyasat"
@@ -11723,6 +11801,9 @@
   "panels/profiler/HeapProfileView.ts | sBytes": {
     "message": "{PH1} bytes"
   },
+  "panels/profiler/HeapProfileView.ts | samplingHeapProfilerTimeline": {
+    "message": "Timeline ng profiler ng heap ng sampling"
+  },
   "panels/profiler/HeapProfileView.ts | samplingProfiles": {
     "message": "Mga sampling profile"
   },
@@ -11930,9 +12011,6 @@
   "panels/profiler/HeapSnapshotView.ts | duplicatedStrings": {
     "message": "Mga na-duplicate na string"
   },
-  "panels/profiler/HeapSnapshotView.ts | exposeInternals": {
-    "message": "Mga internal na may mga detalye ng pagpapatupad"
-  },
   "panels/profiler/HeapSnapshotView.ts | filter": {
     "message": "I-filter"
   },
@@ -12070,33 +12148,6 @@
   },
   "panels/profiler/IsolateSelector.ts | totalPageJsHeapSizeChangeTrend": {
     "message": "Kabuuang trend ng pagbabago ng laki ng page ng heap sa JS sa nakalipas na {PH1} (na) minuto."
-  },
-  "panels/profiler/LiveHeapProfileView.ts | allocatedJsHeapSizeCurrentlyIn": {
-    "message": "Naka-allocate na laki ng heap sa JS na kasalukuyang ginagamit"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | anonymousScriptS": {
-    "message": "(Anonymous na Script {PH1})"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | heapProfile": {
-    "message": "Heap Profile"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | jsHeap": {
-    "message": "JS Heap"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | kb": {
-    "message": "kB"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | numberOfVmsSharingTheSameScript": {
-    "message": "Bilang ng mga VM na naghahati sa iisang source ng script"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | scriptUrl": {
-    "message": "URL ng Script"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | urlOfTheScriptSource": {
-    "message": "URL ng source ng script"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | vms": {
-    "message": "VMs"
   },
   "panels/profiler/ModuleUIStrings.ts | buildingAllocationStatistics": {
     "message": "Binubuo ang mga istatistika ng pag-allocate…"
@@ -12275,9 +12326,6 @@
   "panels/profiler/profiler-meta.ts | deleteProfile": {
     "message": "I-delete ang profile"
   },
-  "panels/profiler/profiler-meta.ts | liveHeapProfile": {
-    "message": "Live na Heap Profile"
-  },
   "panels/profiler/profiler-meta.ts | loadProfile": {
     "message": "I-load ang profile…"
   },
@@ -12287,23 +12335,11 @@
   "panels/profiler/profiler-meta.ts | saveProfile": {
     "message": "I-save ang profile…"
   },
-  "panels/profiler/profiler-meta.ts | showLiveHeapProfile": {
-    "message": "Ipakita ang Profile ng Live na Heap"
-  },
   "panels/profiler/profiler-meta.ts | showMemory": {
     "message": "Ipakita ang Memory"
   },
-  "panels/profiler/profiler-meta.ts | startRecordingHeapAllocations": {
-    "message": "Simulang i-record ang mga pag-allocate ng heap"
-  },
-  "panels/profiler/profiler-meta.ts | startRecordingHeapAllocationsAndReload": {
-    "message": "Simulang mag-record ng mga pag-allocate ng heap at i-reload ang page"
-  },
   "panels/profiler/profiler-meta.ts | startStopRecording": {
     "message": "Simulan/ihinto ang pag-record"
-  },
-  "panels/profiler/profiler-meta.ts | stopRecordingHeapAllocations": {
-    "message": "Ihinto ang pag-record ng mga pag-allocate ng heap"
   },
   "panels/protocol_monitor/JSONEditor.ts | addCustomProperty": {
     "message": "Magdagdag ng custom na property"
@@ -12417,7 +12453,7 @@
     "message": "I-delete ang recording"
   },
   "panels/recorder/RecorderController.ts | doNotImport": {
-    "message": "Huwag mag-import ng mga recording na hindi mo nauunawaan o hindi mo pa nasusuri sa DevTools. Puwede nitong mabigyang-daan ang mga attacker na nakawin ang iyong pagkakakilanlan o kontrolin ang computer mo. Paki-type ang ''{PH1}'' sa ibaba para payagan ang pag-import."
+    "message": "Huwag mag-import ng mga recording na hindi mo nauunawaan o hindi mo pa mismo nasusuri sa DevTools. Puwede nitong mabigyang-daan ang mga attacker na nakawin ang iyong pagkakakilanlan o kontrolin ang computer mo. Paki-type ang “{PH1}” sa ibaba para payagan ang pag-import."
   },
   "panels/recorder/RecorderController.ts | doYouTrustThisCode": {
     "message": "Pinagkakatiwalaan mo ba ang recording na ito?"
@@ -12477,7 +12513,7 @@
     "message": "I-toggle ang view ng code"
   },
   "panels/recorder/RecorderController.ts | typeAllowImporting": {
-    "message": "I-type ang ''{PH1}''"
+    "message": "I-type ang “{PH1}”"
   },
   "panels/recorder/components/CreateRecordingView.ts | cancelRecording": {
     "message": "Kanselahin ang pag-record"
@@ -13459,6 +13495,21 @@
   },
   "panels/settings/AISettingsTab.ts | aIAnnotationsFeatureDescription": {
     "message": "Awtomatikong bumuo ng mga pamagat para sa mga anotasyon ng trace ng performance"
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceDescriptionV2": {
+    "message": "Makakuha ng tulong na may kaalaman sa konteksto sa sinuring page"
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceThingsToConsiderNoLoggingV2": {
+    "message": "Para bumuo ng mga paliwanag, ipinapadala sa Google ang mga mensahe sa chat, data na naa-access para sa site na ito sa pamamagitan ng mga panel ng DevTools at Web API, at mga item na pipiliin mo gaya ng mga request sa network, file, at trace ng performance. Hindi gagamitin ang content na isusumite mo at bubuuin ng feature na ito para pahusayin ang mga model ng Google AI. Isa itong pang-eksperimentong feature ng AI at hindi ito palaging tama."
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceThingsToConsiderV2": {
+    "message": "Para bumuo ng mga paliwanag, ipinapadala sa Google ang mga mensahe sa chat, data na naa-access para sa site na ito sa pamamagitan ng mga panel ng DevTools at Web API, at mga item na pipiliin mo gaya ng mga request sa network, file, at trace ng performance at posibleng makita ng mga taong tagasuri para mapahusay ang feature na ito. Isa itong pang-eksperimentong feature ng AI at hindi ito palaging tama."
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceWhenOnItem1V2": {
+    "message": "Mag-debug ng mga isyu sa pag-style, network, performance, source code, accessibility, at storage gamit ang Tulong ng AI sa DevTools"
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceWhenOnItem2V2": {
+    "message": "Sundin nang step-by-step ang reasoning ng agent at mabilis na pumunta sa nauugnay na source ng data"
   },
   "panels/settings/AISettingsTab.ts | asYouTypeCodeSuggestions": {
     "message": "Habang nagta-type ka sa panel na Console o Mga Source, makakakuha ka ng mga suhestyon sa code. Pindutin ang Tab para tanggapin ang isang code."
@@ -14539,12 +14590,6 @@
   },
   "panels/sources/PersistenceActions.ts | showOverrides": {
     "message": "Ipakita ang lahat ng override"
-  },
-  "panels/sources/ProfilePlugin.ts | kb": {
-    "message": "kB"
-  },
-  "panels/sources/ProfilePlugin.ts | mb": {
-    "message": "MB"
   },
   "panels/sources/ProfilePlugin.ts | ms": {
     "message": "ms"
@@ -17183,6 +17228,9 @@
   "ui/components/markdown_view/CodeBlock.ts | copy": {
     "message": "Kopyahin ang code"
   },
+  "ui/components/markdown_view/CodeBlock.ts | copyCodeSnippet": {
+    "message": "Kopyahin ang {PH1} snippet ng code"
+  },
   "ui/components/markdown_view/CodeBlock.ts | disclaimer": {
     "message": "Gumamit ng mga snippet ng code nang may pag-iingat"
   },
@@ -17306,6 +17354,9 @@
   "ui/legacy/ActionRegistration.ts | sources": {
     "message": "Mga Source"
   },
+  "ui/legacy/Dialog.ts | close": {
+    "message": "Isara"
+  },
   "ui/legacy/DockController.ts | close": {
     "message": "Isara"
   },
@@ -17339,6 +17390,12 @@
   "ui/legacy/InspectorDrawerView.ts | closeDrawer": {
     "message": "Isara ang drawer"
   },
+  "ui/legacy/InspectorDrawerView.ts | expandDrawer": {
+    "message": "I-expand ang drawer"
+  },
+  "ui/legacy/InspectorDrawerView.ts | minimizeDrawer": {
+    "message": "I-minimize ang drawer"
+  },
   "ui/legacy/InspectorDrawerView.ts | moreTools": {
     "message": "Higit Pang Tool"
   },
@@ -17354,8 +17411,14 @@
   "ui/legacy/InspectorView.ts | drawer": {
     "message": "Tool drawer"
   },
+  "ui/legacy/InspectorView.ts | drawerExpanded": {
+    "message": "Na-expand ang drawer"
+  },
   "ui/legacy/InspectorView.ts | drawerHidden": {
     "message": "Nakatago ang drawer"
+  },
+  "ui/legacy/InspectorView.ts | drawerMinimized": {
+    "message": "Na-minimize ang drawer"
   },
   "ui/legacy/InspectorView.ts | drawerShown": {
     "message": "Ipinapakita ang drawer"
@@ -17831,66 +17894,6 @@
   "ui/legacy/components/inline_editor/ColorSwatch.ts | shiftclickToChangeColorFormat": {
     "message": "Pindutin ang Shift at mag-click para baguhin ang format ng kulay"
   },
-  "ui/legacy/components/inline_editor/FontEditor.ts | PleaseEnterAValidValueForSText": {
-    "message": "* Maglagay ng valid na value para sa pag-input ng text ng {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | cssProperties": {
-    "message": "Mga Property ng CSS"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | deleteS": {
-    "message": "I-delete ang {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fallbackS": {
-    "message": "Fallback {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fontFamily": {
-    "message": "Pamilya ng Font"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fontSelectorDeletedAtIndexS": {
-    "message": "Na-delete ang Selector ng Font sa index na: {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fontSize": {
-    "message": "Laki ng Font"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fontWeight": {
-    "message": "Weight ng Font"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | lineHeight": {
-    "message": "Taas ng Linya"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sKeyValueSelector": {
-    "message": "Selector ng Value ng Key para sa {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sSliderInput": {
-    "message": "Pag-input ng Slider ng {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sTextInput": {
-    "message": "Pag-input ng Text ng {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sToggleInputType": {
-    "message": "Uri ng pag-input ng toggle ng {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sUnitInput": {
-    "message": "Pag-input sa Unit na {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | selectorInputMode": {
-    "message": "Pamamaraan ng Pag-input ng Selector"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sliderInputMode": {
-    "message": "Pamamaraan ng Pag-input ng Slider"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | spacing": {
-    "message": "Spacing"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | thereIsNoValueToDeleteAtIndexS": {
-    "message": "Walang value na made-delete sa index: {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | thisPropertyIsSetToContainUnits": {
-    "message": "Nakatakda ang property na itong magkaroon ng mga unit, pero wala itong natukoy na katumbas na unitsArray: {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | units": {
-    "message": "Mga Unit"
-  },
   "ui/legacy/components/object_ui/CustomPreviewComponent.ts | showAsJavascriptObject": {
     "message": "Ipakita bilang object ng JavaScript"
   },
@@ -18047,17 +18050,8 @@
   "ui/legacy/components/perf_ui/perf_ui-meta.ts | flamechartSelectedNavigation": {
     "message": "Pag-navigate sa flamechart:"
   },
-  "ui/legacy/components/perf_ui/perf_ui-meta.ts | hideLiveMemoryAllocation": {
-    "message": "Itago ang mga anotasyon ng live na pag-allocate ng memory"
-  },
-  "ui/legacy/components/perf_ui/perf_ui-meta.ts | liveMemoryAllocationAnnotations": {
-    "message": "Mga anotasyon ng live na pag-allocate ng memory"
-  },
   "ui/legacy/components/perf_ui/perf_ui-meta.ts | modern": {
     "message": "Moderno"
-  },
-  "ui/legacy/components/perf_ui/perf_ui-meta.ts | showLiveMemoryAllocation": {
-    "message": "Ipakita ang mga anotasyon ng live na pag-allocate ng memory"
   },
   "ui/legacy/components/quick_open/CommandMenu.ts | command": {
     "message": "Command"
@@ -18171,7 +18165,7 @@
     "message": "{PH1} (na) napiling rehiyon"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | doNotPaste": {
-    "message": "Huwag mag-paste ng code na hindi mo nauunawaan o hindi mo pa mismo nasusuri sa DevTools. Puwede nitong mabigyang-daan ang mga attacker na nakawin ang iyong pagkakakilanlan o kontrolin ang computer mo. Paki-type ang ''{PH1}'' sa ibaba para payagan ang pag-paste."
+    "message": "Huwag mag-paste ng code na hindi mo nauunawaan o hindi mo pa mismo nasusuri sa DevTools. Puwede nitong mabigyang-daan ang mga attacker na nakawin ang iyong pagkakakilanlan o kontrolin ang computer mo. Paki-type ang “{PH1}” sa ibaba para payagan ang pag-paste."
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | doYouTrustThisCode": {
     "message": "Pinagkakatiwalaan mo ba ang code na ito?"
@@ -18189,7 +18183,7 @@
     "message": "Source"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | typeAllowPasting": {
-    "message": "I-type ang ''{PH1}''"
+    "message": "I-type ang “{PH1}”"
   },
   "ui/legacy/components/source_frame/XMLView.ts | find": {
     "message": "Maghanap"

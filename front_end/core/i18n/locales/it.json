@@ -323,6 +323,9 @@
   "core/sdk/NetworkManager.ts | noContentForRedirect": {
     "message": "Nessun contenuto disponibile perché la richiesta è stata reindirizzata"
   },
+  "core/sdk/NetworkManager.ts | noContentForSSE": {
+    "message": "I contenuti per Server-Sent Events (SSE) non sono al momento supportati"
+  },
   "core/sdk/NetworkManager.ts | noContentForWebSocket": {
     "message": "I contenuti per i WebSocket non sono al momento supportati"
   },
@@ -559,6 +562,9 @@
   },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "Acromatopsia (nessun colore)"
+  },
+  "core/sdk/sdk-meta.ts | apca": {
+    "message": "Algoritmo di contrasto percettivo avanzato (APCA) che sostituisce le linee guida precedenti sul rapporto di contrasto e AA/AAA"
   },
   "core/sdk/sdk-meta.ts | blurredVision": {
     "message": "Vista annebbiata"
@@ -1441,6 +1447,9 @@
   },
   "generated/Deprecation.ts | PrefixedVideoSupportsFullscreen": {
     "message": "L'API HTMLVideoElement.webkitSupportsFullscreen è deprecata. Usa invece Document.fullscreenEnabled."
+  },
+  "generated/Deprecation.ts | PreventSvgFilterPaint": {
+    "message": "I filtri SVG non possono essere applicati a iframe multiorigine, iframe limitati (ad es. tramite sandbox) o plug-in."
   },
   "generated/Deprecation.ts | RTCConstraintEnableDtlsSrtpFalse": {
     "message": "Il vincolo DtlsSrtpKeyAgreement è stato rimosso. Hai specificato un valore false per questo vincolo, il che viene interpretato come un tentativo di utilizzo del metodo SDES key negotiation rimosso. Questa funzionalità è stata rimossa; utilizza invece un servizio che supporti DTLS key negotiation."
@@ -3207,13 +3216,34 @@
     "message": "Si tratta di una funzionalità di AI sperimentale che non funzionerà sempre correttamente. Verifica questo testo prima di incollarlo in un altro strumento."
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | exportForAgents": {
-    "message": "Copia per l'agente di programmazione"
+    "message": "Copia nell'agente di programmazione"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | generatingSummary": {
     "message": "Generazione del riepilogo in corso…"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | saveAsMarkdown": {
     "message": "Salva come…"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | gotIt": {
+    "message": "Ok"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | integrationPoint": {
+    "message": "L'assistenza AI è ora integrata con i riquadri Applicazione e Lighthouse e recupera il contesto dalle origini dati contemporaneamente"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | manageSettings": {
+    "message": "Gestisci nelle impostazioni"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | privacyDisclaimer": {
+    "message": "I messaggi di chat, i dati accessibili per questo sito tramite i riquadri di DevTools e le API web nonché gli elementi selezionati, ad esempio richieste di rete, file e tracce delle prestazioni, vengono inviati a Google e potrebbero essere esaminati da revisori umani per migliorare questa funzionalità. Si tratta di una funzionalità di AI sperimentale che non funzionerà sempre correttamente."
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | privacyDisclaimerEnterpriseNoLogging": {
+    "message": "I messaggi di chat, i dati accessibili per questo sito tramite i riquadri di DevTools e le API web nonché gli elementi selezionati, ad esempio richieste di rete, file e tracce delle prestazioni, vengono inviati a Google. I contenuti inviati e generati da questa funzionalità non verranno utilizzati per migliorare i modelli di Google AI. Si tratta di una funzionalità di AI sperimentale che non funzionerà sempre correttamente."
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | title": {
+    "message": "L'assistenza AI è migliorata"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | widgetPoint": {
+    "message": "Utilizza i widget per verificare i risultati o passare ai dati di origine per selezionare i casi di debug"
   },
   "panels/ai_assistance/components/WalkthroughView.ts | close": {
     "message": "Chiudi"
@@ -3223,6 +3253,9 @@
   },
   "panels/ai_assistance/components/WalkthroughView.ts | hideThinking": {
     "message": "Nascondi ragionamento"
+  },
+  "panels/ai_assistance/components/WalkthroughView.ts | inProgress": {
+    "message": "In corso"
   },
   "panels/ai_assistance/components/WalkthroughView.ts | showAgentWalkthrough": {
     "message": "Mostra procedura dettagliata per user agent"
@@ -3677,9 +3710,6 @@
   "panels/application/ApplicationPanelSidebar.ts | theContentOfThisDocumentHasBeen": {
     "message": "Il contenuto di questo documento è stato generato dinamicamente tramite \"document.write()\"."
   },
-  "panels/application/ApplicationPanelSidebar.ts | thirdPartyPhaseout": {
-    "message": "I cookie di {PH1} potrebbero essere stati bloccati a causa della graduale eliminazione dei cookie di terze parti."
-  },
   "panels/application/ApplicationPanelSidebar.ts | versionS": {
     "message": "Versione: {PH1}"
   },
@@ -3829,6 +3859,9 @@
   },
   "panels/application/DOMStorageItemsView.ts | domStorageItemsCleared": {
     "message": "Elementi spazio di archiviazione DOM cancellati"
+  },
+  "panels/application/DeviceBoundSessionsTreeElement.ts | clear": {
+    "message": "Cancella"
   },
   "panels/application/DeviceBoundSessionsTreeElement.ts | deviceBoundSessions": {
     "message": "Sessioni associate al dispositivo"
@@ -4284,7 +4317,7 @@
     "message": "Content Security Policy (CSP)"
   },
   "panels/application/FrameDetailsView.ts | createdByAdScriptExplanation": {
-    "message": "Quando è stato creato questo frame, era presente uno script dell'annuncio nello (async) stack. Potresti trovare ulteriori informazioni esaminando l'stack trace di creazione di questo frame."
+    "message": "Quando è stato creato questo frame, era presente uno script dell'annuncio nello (async) stack. Potresti trovare ulteriori insight esaminando l'stack trace di creazione di questo frame."
   },
   "panels/application/FrameDetailsView.ts | creationStackTrace": {
     "message": "Stack Trace di creazione del frame"
@@ -4922,6 +4955,9 @@
   "panels/application/TrustTokensTreeElement.ts | trustTokens": {
     "message": "Token di stato privati"
   },
+  "panels/application/WebMCPView.ts | cancelCall": {
+    "message": "Annulla"
+  },
   "panels/application/WebMCPView.ts | canceled": {
     "message": "Annullata"
   },
@@ -4937,8 +4973,20 @@
   "panels/application/WebMCPView.ts | close": {
     "message": "Chiudi"
   },
+  "panels/application/WebMCPView.ts | completed": {
+    "message": "Operazione completata"
+  },
+  "panels/application/WebMCPView.ts | copyDescription": {
+    "message": "Copia descrizione"
+  },
+  "panels/application/WebMCPView.ts | copyName": {
+    "message": "Copia nome"
+  },
   "panels/application/WebMCPView.ts | declarative": {
     "message": "Dichiarativi"
+  },
+  "panels/application/WebMCPView.ts | editAndRun": {
+    "message": "Modifica ed esegui"
   },
   "panels/application/WebMCPView.ts | error": {
     "message": "Errore"
@@ -4982,17 +5030,23 @@
   "panels/application/WebMCPView.ts | output": {
     "message": "Output"
   },
+  "panels/application/WebMCPView.ts | paste": {
+    "message": "Incolla"
+  },
   "panels/application/WebMCPView.ts | pending": {
     "message": "In corso"
+  },
+  "panels/application/WebMCPView.ts | revealTool": {
+    "message": "Rivela strumento"
+  },
+  "panels/application/WebMCPView.ts | runTool": {
+    "message": "Esegui strumento"
   },
   "panels/application/WebMCPView.ts | status": {
     "message": "Stato"
   },
   "panels/application/WebMCPView.ts | statusTypes": {
     "message": "Tipi di stato"
-  },
-  "panels/application/WebMCPView.ts | success": {
-    "message": "Operazione riuscita"
   },
   "panels/application/WebMCPView.ts | toolDetails": {
     "message": "Dettagli"
@@ -5002,6 +5056,9 @@
   },
   "panels/application/WebMCPView.ts | toolTypes": {
     "message": "Tipi di strumenti"
+  },
+  "panels/application/WebMCPView.ts | toolUnregisteredNotice": {
+    "message": "La registrazione di questo strumento è stata annullata"
   },
   "panels/application/WebMCPView.ts | totalCalls": {
     "message": "Chiamate totali: {PH1}"
@@ -5873,6 +5930,9 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsFailureReason": {
     "message": "Motivo dell'errore"
   },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsFormSubmission": {
+    "message": "Invio modulo"
+  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsRuleSet": {
     "message": "Insieme di regole"
   },
@@ -5882,11 +5942,17 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsTargetHint": {
     "message": "Suggerimento target"
   },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | no": {
+    "message": "No"
+  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | noElementSelected": {
     "message": "Nessun elemento selezionato"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "Seleziona un elemento per ulteriori dettagli"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | yes": {
+    "message": "Sì"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByBatterySaver": {
     "message": "Il caricamento speculativo è disattivato a causa della modalità di risparmio energetico del sistema operativo."
@@ -6765,7 +6831,7 @@
     "message": "Richiesta console"
   },
   "panels/console/ConsolePrompt.ts | selfXssWarning": {
-    "message": "Avviso: non incollare nella console DevTools il codice che non comprendi o che non hai esaminato. Questo potrebbe consentire ad attaccanti di rubare la tua identità o assumere il controllo del tuo computer. Digita \"{PH1}\" qui sotto e premi Invio per consentire di incollare."
+    "message": "Avviso: non incollare nella console DevTools il codice che non comprendi o che non hai esaminato. Ciò potrebbe consentire agli attaccanti di rubare la tua identità o assumere il controllo del tuo computer. Digita \"{PH1}\" qui sotto e premi Invio per consentire di incollare."
   },
   "panels/console/ConsoleSidebar.ts | dErrors": {
     "message": "{n,plural, =0{Nessun errore}=1{# errore}other{# errori}}"
@@ -6793,6 +6859,9 @@
   },
   "panels/console/ConsoleView.ts | autocompleteFromHistory": {
     "message": "Completa automaticamente dalla cronologia"
+  },
+  "panels/console/ConsoleView.ts | collapseAll": {
+    "message": "Comprimi tutto"
   },
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "Console cancellata"
@@ -6832,6 +6901,9 @@
   },
   "panels/console/ConsoleView.ts | errors": {
     "message": "Errori"
+  },
+  "panels/console/ConsoleView.ts | expandAll": {
+    "message": "Espandi tutto"
   },
   "panels/console/ConsoleView.ts | filteredMessagesInConsole": {
     "message": "{PH1} messaggi nella console"
@@ -8147,6 +8219,9 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Visualizza valore calcolato"
   },
+  "panels/elements/StylesSidebarPane.ts | aiSuggestionAccepted": {
+    "message": "{PH1} Suggerimento accettato."
+  },
   "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
     "message": "Modalità Buio automatica"
   },
@@ -8251,6 +8326,9 @@
   },
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "Copia stili"
+  },
+  "panels/elements/elements-meta.ts | cssAnimationsOnlyWhenAnimationsTabOpen": {
+    "message": "Mostra gli stili di animazione solo quando è aperta la scheda Animazioni"
   },
   "panels/elements/elements-meta.ts | detailedInspectTooltip": {
     "message": "Descrizione comando di ispezione dettagliata"
@@ -8577,7 +8655,7 @@
     "message": "Contenuti correlati"
   },
   "panels/explain/components/ConsoleInsight.ts | reloadRecommendation": {
-    "message": "Ricarica la pagina per acquisire i dati delle richieste di rete correlate per questo messaggio e creare informazioni migliori."
+    "message": "Ricarica la pagina per acquisire i dati delle richieste di rete correlate per questo messaggio e creare insight migliori."
   },
   "panels/explain/components/ConsoleInsight.ts | report": {
     "message": "Segnala un problema legale"
@@ -11723,6 +11801,9 @@
   "panels/profiler/HeapProfileView.ts | sBytes": {
     "message": "{PH1} byte"
   },
+  "panels/profiler/HeapProfileView.ts | samplingHeapProfilerTimeline": {
+    "message": "Sequenza temporale del profiler heap di campionamento"
+  },
   "panels/profiler/HeapProfileView.ts | samplingProfiles": {
     "message": "Profili di campionamento"
   },
@@ -11930,9 +12011,6 @@
   "panels/profiler/HeapSnapshotView.ts | duplicatedStrings": {
     "message": "Stringhe duplicate"
   },
-  "panels/profiler/HeapSnapshotView.ts | exposeInternals": {
-    "message": "Dati interni con dettagli sull'implementazione"
-  },
   "panels/profiler/HeapSnapshotView.ts | filter": {
     "message": "Filtra"
   },
@@ -12070,33 +12148,6 @@
   },
   "panels/profiler/IsolateSelector.ts | totalPageJsHeapSizeChangeTrend": {
     "message": "Tendenza di modifica dimensioni totali heap della pagina JS negli ultimi {PH1} minuti."
-  },
-  "panels/profiler/LiveHeapProfileView.ts | allocatedJsHeapSizeCurrentlyIn": {
-    "message": "Dimensioni heap JS allocate attualmente in uso"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | anonymousScriptS": {
-    "message": "(Script anonimo {PH1})"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | heapProfile": {
-    "message": "Profilo heap"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | jsHeap": {
-    "message": "Heap JS"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | kb": {
-    "message": "kB"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | numberOfVmsSharingTheSameScript": {
-    "message": "Numero di VM che condividono la stessa origine dello script"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | scriptUrl": {
-    "message": "URL script"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | urlOfTheScriptSource": {
-    "message": "URL dell'origine dello script"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | vms": {
-    "message": "VM"
   },
   "panels/profiler/ModuleUIStrings.ts | buildingAllocationStatistics": {
     "message": "Creazione statistiche di allocazione in corso…"
@@ -12275,9 +12326,6 @@
   "panels/profiler/profiler-meta.ts | deleteProfile": {
     "message": "Elimina profilo"
   },
-  "panels/profiler/profiler-meta.ts | liveHeapProfile": {
-    "message": "Profilo heap in tempo reale"
-  },
   "panels/profiler/profiler-meta.ts | loadProfile": {
     "message": "Carica profilo…"
   },
@@ -12287,23 +12335,11 @@
   "panels/profiler/profiler-meta.ts | saveProfile": {
     "message": "Salva profilo…"
   },
-  "panels/profiler/profiler-meta.ts | showLiveHeapProfile": {
-    "message": "Mostra profilo heap in tempo reale"
-  },
   "panels/profiler/profiler-meta.ts | showMemory": {
     "message": "Mostra memoria"
   },
-  "panels/profiler/profiler-meta.ts | startRecordingHeapAllocations": {
-    "message": "Avvia registrazione allocazioni heap"
-  },
-  "panels/profiler/profiler-meta.ts | startRecordingHeapAllocationsAndReload": {
-    "message": "Inizia a registrare le allocazioni heap e ricarica la pagina"
-  },
   "panels/profiler/profiler-meta.ts | startStopRecording": {
     "message": "Avvia/interrompi registrazione"
-  },
-  "panels/profiler/profiler-meta.ts | stopRecordingHeapAllocations": {
-    "message": "Interrompi registrazione allocazioni heap"
   },
   "panels/protocol_monitor/JSONEditor.ts | addCustomProperty": {
     "message": "Aggiungi proprietà personalizzata"
@@ -12417,7 +12453,7 @@
     "message": "Elimina registrazione"
   },
   "panels/recorder/RecorderController.ts | doNotImport": {
-    "message": "Non importare in DevTools le registrazioni che non comprendi o che non hai esaminato. Farlo potrebbe consentire ad attaccanti di rubare la tua identità o assumere il controllo del tuo computer. Digita \"{PH1}\" qui sotto per consentire l'importazione."
+    "message": "Non importare in DevTools le registrazioni che non comprendi o che non hai esaminato. Ciò potrebbe consentire agli attaccanti di rubare la tua identità o assumere il controllo del tuo computer. Digita \"{PH1}\" qui sotto per consentire l'importazione."
   },
   "panels/recorder/RecorderController.ts | doYouTrustThisCode": {
     "message": "Ritieni attendibile questa registrazione?"
@@ -12477,7 +12513,7 @@
     "message": "Attiva/disattiva visualizzazione codice"
   },
   "panels/recorder/RecorderController.ts | typeAllowImporting": {
-    "message": "Digita \"{PH1}\""
+    "message": "Tipo \"{PH1}\""
   },
   "panels/recorder/components/CreateRecordingView.ts | cancelRecording": {
     "message": "Annulla registrazione"
@@ -13459,6 +13495,21 @@
   },
   "panels/settings/AISettingsTab.ts | aIAnnotationsFeatureDescription": {
     "message": "Genera automaticamente i titoli per le annotazioni della traccia di rendimento"
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceDescriptionV2": {
+    "message": "Ricevi assistenza sensibile al contesto sulla pagina ispezionata"
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceThingsToConsiderNoLoggingV2": {
+    "message": "Per generare spiegazioni, i messaggi di chat, i dati accessibili per questo sito tramite i riquadri di DevTools e le API web e gli elementi selezionati, ad esempio richieste di rete, file e tracce delle prestazioni, vengono inviati a Google. I contenuti che invii e quelli generati da questa funzionalità non verranno utilizzati per migliorare i modelli di Google AI. Si tratta di una funzionalità di AI sperimentale che non funzionerà sempre correttamente."
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceThingsToConsiderV2": {
+    "message": "Per generare spiegazioni, i messaggi di chat, i dati accessibili per questo sito tramite i riquadri di DevTools e le API web nonché gli elementi selezionati, ad esempio richieste di rete, file e tracce delle prestazioni, vengono inviati a Google e potrebbero essere esaminati da revisori umani per migliorare questa funzionalità. Si tratta di una funzionalità di AI sperimentale che non funzionerà sempre correttamente."
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceWhenOnItem1V2": {
+    "message": "Esegui il debug di problemi relativi a stili, rete, prestazioni, codice sorgente, accessibilità e archiviazione con l'assistenza AI di DevTools"
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceWhenOnItem2V2": {
+    "message": "Segui il ragionamento dell'agente passo dopo passo e passa rapidamente ai dati di origine pertinenti"
   },
   "panels/settings/AISettingsTab.ts | asYouTypeCodeSuggestions": {
     "message": "Mentre digiti nel riquadro Console o Origini, riceverai suggerimenti di codice. Premi Tab per accettarne uno."
@@ -14539,12 +14590,6 @@
   },
   "panels/sources/PersistenceActions.ts | showOverrides": {
     "message": "Mostra tutte le sostituzioni"
-  },
-  "panels/sources/ProfilePlugin.ts | kb": {
-    "message": "kB"
-  },
-  "panels/sources/ProfilePlugin.ts | mb": {
-    "message": "MB"
   },
   "panels/sources/ProfilePlugin.ts | ms": {
     "message": "ms"
@@ -16761,10 +16806,10 @@
     "message": "Origine della produzione"
   },
   "panels/timeline/components/RelatedInsightChips.ts | insightKeyword": {
-    "message": "Approfondimento"
+    "message": "Insight"
   },
   "panels/timeline/components/RelatedInsightChips.ts | insightWithName": {
-    "message": "Approfondimento: {PH1}"
+    "message": "Insight: {PH1}"
   },
   "panels/timeline/components/SidebarAnnotationsTab.ts | annotationGetStarted": {
     "message": "Annota una traccia per te e per gli altri"
@@ -16824,25 +16869,25 @@
     "message": "Risparmi stimati: {PH1}"
   },
   "panels/timeline/components/insights/BaseInsightComponent.ts | estimatedSavingsAriaBytes": {
-    "message": "Risparmio stimato per questa informazione: dimensione di trasferimento {PH1}"
+    "message": "Risparmio stimato per questo insight: dimensione di trasferimento {PH1}"
   },
   "panels/timeline/components/insights/BaseInsightComponent.ts | estimatedSavingsAriaTiming": {
-    "message": "Risparmio stimato per questa informazione: {PH1}"
+    "message": "Risparmio stimato per questo insight: {PH1}"
   },
   "panels/timeline/components/insights/BaseInsightComponent.ts | estimatedSavingsTimingAndBytes": {
     "message": "Risparmi stimati: {PH1} e {PH2}"
   },
   "panels/timeline/components/insights/BaseInsightComponent.ts | estimatedSavingsTimingAndBytesAria": {
-    "message": "Risparmio stimato per questa informazione: {PH1} e dimensione di trasferimento {PH2}"
+    "message": "Risparmio stimato per questo insight: {PH1} e dimensione di trasferimento {PH2}"
   },
   "panels/timeline/components/insights/BaseInsightComponent.ts | viewDetails": {
-    "message": "Visualizza i dettagli dell'informazione {PH1}."
+    "message": "Visualizza i dettagli dell'insight {PH1}."
   },
   "panels/timeline/components/insights/Checklist.ts | failedAriaLabel": {
-    "message": "Controllo statistiche non riuscito: {PH1}"
+    "message": "Controllo insight non riuscito: {PH1}"
   },
   "panels/timeline/components/insights/Checklist.ts | successAriaLabel": {
-    "message": "Controllo delle informazioni superato: {PH1}"
+    "message": "Controllo insight superato: {PH1}"
   },
   "panels/timeline/components/insights/Table.ts | others": {
     "message": "Altre {PH1}"
@@ -17183,6 +17228,9 @@
   "ui/components/markdown_view/CodeBlock.ts | copy": {
     "message": "Copia codice"
   },
+  "ui/components/markdown_view/CodeBlock.ts | copyCodeSnippet": {
+    "message": "Copia snippet di codice {PH1}"
+  },
   "ui/components/markdown_view/CodeBlock.ts | disclaimer": {
     "message": "Utilizza gli snippet di codice con cautela"
   },
@@ -17306,6 +17354,9 @@
   "ui/legacy/ActionRegistration.ts | sources": {
     "message": "Origini"
   },
+  "ui/legacy/Dialog.ts | close": {
+    "message": "Chiudi"
+  },
   "ui/legacy/DockController.ts | close": {
     "message": "Chiudi"
   },
@@ -17339,6 +17390,12 @@
   "ui/legacy/InspectorDrawerView.ts | closeDrawer": {
     "message": "Chiudi riquadro a scomparsa"
   },
+  "ui/legacy/InspectorDrawerView.ts | expandDrawer": {
+    "message": "Espandi il riquadro a scomparsa"
+  },
+  "ui/legacy/InspectorDrawerView.ts | minimizeDrawer": {
+    "message": "Riduci a icona il riquadro a scomparsa"
+  },
   "ui/legacy/InspectorDrawerView.ts | moreTools": {
     "message": "Altri strumenti"
   },
@@ -17354,8 +17411,14 @@
   "ui/legacy/InspectorView.ts | drawer": {
     "message": "Riquadro a scomparsa dello strumento"
   },
+  "ui/legacy/InspectorView.ts | drawerExpanded": {
+    "message": "Riquadro a scomparsa espanso"
+  },
   "ui/legacy/InspectorView.ts | drawerHidden": {
     "message": "Riquadro a scomparsa nascosto"
+  },
+  "ui/legacy/InspectorView.ts | drawerMinimized": {
+    "message": "Riquadro a scomparsa ridotto a icona"
   },
   "ui/legacy/InspectorView.ts | drawerShown": {
     "message": "Riquadro a scomparsa mostrato"
@@ -17831,66 +17894,6 @@
   "ui/legacy/components/inline_editor/ColorSwatch.ts | shiftclickToChangeColorFormat": {
     "message": "Utilizza la combinazione Maiusc-clic per cambiare il formato del colore"
   },
-  "ui/legacy/components/inline_editor/FontEditor.ts | PleaseEnterAValidValueForSText": {
-    "message": "*Specifica un valore valido per l'inserimento di testo {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | cssProperties": {
-    "message": "Proprietà CSS"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | deleteS": {
-    "message": "Elimina {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fallbackS": {
-    "message": "Selettori di riserva: {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fontFamily": {
-    "message": "Famiglia di caratteri"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fontSelectorDeletedAtIndexS": {
-    "message": "Selettore del carattere eliminato nell'indice: {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fontSize": {
-    "message": "Dimensioni carattere"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fontWeight": {
-    "message": "Spessore del carattere"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | lineHeight": {
-    "message": "Altezza riga"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sKeyValueSelector": {
-    "message": "Selettore coppia chiave-valore: {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sSliderInput": {
-    "message": "Input cursore {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sTextInput": {
-    "message": "Inserimento testo {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sToggleInputType": {
-    "message": "Tipo di input di attivazione/disattivazione {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sUnitInput": {
-    "message": "Input unità {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | selectorInputMode": {
-    "message": "Modalità di immissione selettore"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sliderInputMode": {
-    "message": "Modalità di immissione cursore"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | spacing": {
-    "message": "Spaziatura"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | thereIsNoValueToDeleteAtIndexS": {
-    "message": "Non è presente alcun valore da eliminare all'indice: {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | thisPropertyIsSetToContainUnits": {
-    "message": "Questa proprietà è impostata per ospitare le unità, ma non ha un valore corrispondente unitsArray definito: {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | units": {
-    "message": "Unità"
-  },
   "ui/legacy/components/object_ui/CustomPreviewComponent.ts | showAsJavascriptObject": {
     "message": "Mostra come oggetto JavaScript"
   },
@@ -18047,17 +18050,8 @@
   "ui/legacy/components/perf_ui/perf_ui-meta.ts | flamechartSelectedNavigation": {
     "message": "Navigazione nel flame chart:"
   },
-  "ui/legacy/components/perf_ui/perf_ui-meta.ts | hideLiveMemoryAllocation": {
-    "message": "Nascondi annotazioni dell'allocazione della memoria live"
-  },
-  "ui/legacy/components/perf_ui/perf_ui-meta.ts | liveMemoryAllocationAnnotations": {
-    "message": "Annotazioni di allocazione della memoria live"
-  },
   "ui/legacy/components/perf_ui/perf_ui-meta.ts | modern": {
     "message": "Moderna"
-  },
-  "ui/legacy/components/perf_ui/perf_ui-meta.ts | showLiveMemoryAllocation": {
-    "message": "Mostra le annotazioni di allocazione della memoria live"
   },
   "ui/legacy/components/quick_open/CommandMenu.ts | command": {
     "message": "Comando"
@@ -18171,7 +18165,7 @@
     "message": "{PH1} aree selezionate"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | doNotPaste": {
-    "message": "Non incollare in DevTools il codice che non comprendi o che non hai esaminato. Questo potrebbe consentire ad attaccanti di rubare la tua identità o assumere il controllo del tuo computer. Digita \"{PH1}\" qui sotto per consentire di incollare."
+    "message": "Non incollare in DevTools un codice che non comprendi o che non hai esaminato. Ciò potrebbe consentire agli attaccanti di rubare la tua identità o assumere il controllo del tuo computer. Digita \"{PH1}\" qui sotto per consentire di incollare."
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | doYouTrustThisCode": {
     "message": "Ritieni attendibile questo codice?"
@@ -18189,7 +18183,7 @@
     "message": "Fonte"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | typeAllowPasting": {
-    "message": "Digita \"{PH1}\""
+    "message": "Tipo \"{PH1}\""
   },
   "ui/legacy/components/source_frame/XMLView.ts | find": {
     "message": "Trova"

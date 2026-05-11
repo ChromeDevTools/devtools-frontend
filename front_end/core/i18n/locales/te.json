@@ -323,6 +323,9 @@
   "core/sdk/NetworkManager.ts | noContentForRedirect": {
     "message": "ఈ రిక్వెస్ట్ మళ్లించబడినందున కంటెంట్ ఏదీ అందుబాటులో లేదు"
   },
+  "core/sdk/NetworkManager.ts | noContentForSSE": {
+    "message": "సర్వర్-పంపిన ఈవెంట్‌ల (SSE) కోసం కంటెంట్ ప్రస్తుతం సపోర్ట్ చేయడం లేదు"
+  },
   "core/sdk/NetworkManager.ts | noContentForWebSocket": {
     "message": "WebSocketsలో ఉన్న కంటెంట్‌కు ప్రస్తుతం సపోర్ట్ లేదు"
   },
@@ -559,6 +562,9 @@
   },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "అక్రోమాటోప్సియా (నీలం ఉండదు)"
+  },
+  "core/sdk/sdk-meta.ts | apca": {
+    "message": "మునుపటి కాంట్రాస్ట్ రేషియో, AA/AAA గైడ్‌లైన్స్‌ను రీప్లేస్ చేస్తున్న అడ్వాన్స్‌డ్ పర్‌సెప్చువల్ కాంట్రాస్ట్ అల్గారిథమ్ (APCA)"
   },
   "core/sdk/sdk-meta.ts | blurredVision": {
     "message": "అస్పష్టమైన దృష్టి"
@@ -1441,6 +1447,9 @@
   },
   "generated/Deprecation.ts | PrefixedVideoSupportsFullscreen": {
     "message": "HTMLVideoElement.webkitSupportsFullscreen నిలిపివేయబడింది. బదులుగా, దయచేసి Document.fullscreenEnabledని ఉపయోగించండి."
+  },
+  "generated/Deprecation.ts | PreventSvgFilterPaint": {
+    "message": "క్రాస్-ఆరిజిన్ iframeలకు, పరిమితం చేసిన iframeలకు (ఉదా., శాండ్‌బాక్స్ చేసినది), లేదా ప్లగిన్‌లకు SVG ఫిల్టర్‌లను వర్తింపజేయడం సాధ్యం కాదు."
   },
   "generated/Deprecation.ts | RTCConstraintEnableDtlsSrtpFalse": {
     "message": "పరిమితి DtlsSrtpKeyAgreement తీసివేయబడింది. మీరు ఈ పరిమితికి false విలువను పేర్కొన్నారు, అనగా తీసివేసిన SDES key negotiation విధానాన్ని మీరు ఉపయోగించడానికి ప్రయత్నించారని అర్ఠం. ఈ ఫంక్షనాలిటీ తీసివేయబడింది; బదులుగా DTLS key negotiation‌ను సపోర్ట్ చేసే సర్వీస్‌ను ఉపయోగించండి."
@@ -3207,13 +3216,34 @@
     "message": "ఇది ప్రయోగాత్మక AI ఫీచర్, ఇది ఇచ్చే సమాధానాలన్నీ నూటికి నూరు శాతం సరైనవే అని చెప్పలేము. మరొక టూల్‌లో పేస్ట్ చేసే ముందు ఈ టెక్స్ట్‌ను డబుల్-చెక్ చేయండి."
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | exportForAgents": {
-    "message": "మీ కోడింగ్ ఏజెంట్ కోసం కాపీ చేయండి"
+    "message": "కోడింగ్ ఏజెంట్‌కు కాపీ చేయండి"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | generatingSummary": {
     "message": "సారాంశాన్ని జెనరేట్ చేస్తోంది…"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | saveAsMarkdown": {
     "message": "ఇలా సేవ్ చేయాలి…"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | gotIt": {
+    "message": "అర్థమైంది"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | integrationPoint": {
+    "message": "AI సహాయం ఇప్పుడు అప్లికేషన్, Lighthouse ప్యానెల్స్‌తో ఇంటిగ్రేట్ అయింది, డేటా సోర్స్‌ల నుండి ఒకేసారి సందర్భాన్ని పొందుతుంది"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | manageSettings": {
+    "message": "సెట్టింగ్‌లలో మేనేజ్ చేయండి"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | privacyDisclaimer": {
+    "message": "చాట్ మెసేజ్‌లను, DevTools ప్యానెల్స్, వెబ్ APIల ద్వారా ఈ సైట్‌లో యాక్సెస్ చేయదగిన డేటాను, నెట్‌వర్క్ రిక్వెస్ట్‌లు, ఫైల్స్, పనితీరు ట్రేస్‌ల వంటి మీరు ఎంచుకునే ఐటెమ్‌లు Googleకు పంపబడతాయి, ఈ ఫీచర్‌ను మెరుగుపరచడం కోసం రివ్యూవర్లు వీటిని చూసే అవకాశం ఉంది. ఇది ప్రయోగాత్మక AI ఫీచర్, ఇది ఇచ్చే సమాధానాలన్నీ నూటికి నూరు శాతం సరైనవే అని చెప్పలేము."
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | privacyDisclaimerEnterpriseNoLogging": {
+    "message": "చాట్ మెసేజ్‌లు, DevTools ప్యానెల్స్, వెబ్ APIల ద్వారా ఈ సైట్‌లో యాక్సెస్ చేయగల డేటా, అలాగే మీరు ఎంచుకున్న నెట్‌వర్క్ రిక్వెస్ట్‌లు, ఫైళ్లు, పనితీరు ట్రేస్‌ల వంటి మీరు ఎంచుకునే ఐటెమ్‌లు Googleకు పంపబడతాయి. ఈ ఫీచర్‌కు సమర్పించిన, ఈ ఫీచర్ జెనరేట్ చేసిన కంటెంట్‌ను Googleకు చెందిన AI టెక్నాలజీల మోడల్స్‌ను మెరుగుపరచడానికి ఉపయోగించరు. ఇది ప్రయోగాత్మక AI ఫీచర్, ఇది ఇచ్చే సమాధానాలన్నీ నూటికి నూరు శాతం సరైనవే అని చెప్పలేము."
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | title": {
+    "message": "AI సహాయం ఇప్పుడు మరింత మెరుగైంది"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | widgetPoint": {
+    "message": "ఫలితాలను వెరిఫై చేయడానికి లేదా ఎంచుకున్న డీబగ్గింగ్ కేస్‌ల కోసం సోర్స్ డేటాకు వెళ్లడానికి విడ్జెట్‌లను ఉపయోగించండి"
   },
   "panels/ai_assistance/components/WalkthroughView.ts | close": {
     "message": "మూసివేయండి"
@@ -3223,6 +3253,9 @@
   },
   "panels/ai_assistance/components/WalkthroughView.ts | hideThinking": {
     "message": "ఆలోచిస్తున్నట్టు చూపే దశలను దాచండి"
+  },
+  "panels/ai_assistance/components/WalkthroughView.ts | inProgress": {
+    "message": "ప్రోగ్రెస్‌లో ఉంది"
   },
   "panels/ai_assistance/components/WalkthroughView.ts | showAgentWalkthrough": {
     "message": "ఏజెంట్ గైడ్‌ను చూడండి"
@@ -3677,9 +3710,6 @@
   "panels/application/ApplicationPanelSidebar.ts | theContentOfThisDocumentHasBeen": {
     "message": "ఈ డాక్యుమెంట్ కంటెంట్ 'document.write()' ద్వారా డైనమిక్‌గా జెనరేట్ చేయబడింది."
   },
-  "panels/application/ApplicationPanelSidebar.ts | thirdPartyPhaseout": {
-    "message": "థర్డ్-పార్టీ కుక్కీ ఫేజ్అవుట్ కారణంగా {PH1} నుండి కుక్కీలు బ్లాక్ చేయబడి ఉండవచ్చు."
-  },
   "panels/application/ApplicationPanelSidebar.ts | versionS": {
     "message": "వెర్షన్: {PH1}"
   },
@@ -3829,6 +3859,9 @@
   },
   "panels/application/DOMStorageItemsView.ts | domStorageItemsCleared": {
     "message": "DOM స్టోరేజ్ ఐటెమ్‌లు క్లియర్ చేయబడ్డాయి"
+  },
+  "panels/application/DeviceBoundSessionsTreeElement.ts | clear": {
+    "message": "క్లియర్ చేయండి"
   },
   "panels/application/DeviceBoundSessionsTreeElement.ts | deviceBoundSessions": {
     "message": "డివైజ్‌కు సంబంధించిన సెషన్‌లు"
@@ -4922,6 +4955,9 @@
   "panels/application/TrustTokensTreeElement.ts | trustTokens": {
     "message": "ప్రైవేట్ స్టేట్ టోకెన్‌లు"
   },
+  "panels/application/WebMCPView.ts | cancelCall": {
+    "message": "రద్దు చేయండి"
+  },
   "panels/application/WebMCPView.ts | canceled": {
     "message": "రద్దయింది"
   },
@@ -4937,8 +4973,20 @@
   "panels/application/WebMCPView.ts | close": {
     "message": "మూసివేయండి"
   },
+  "panels/application/WebMCPView.ts | completed": {
+    "message": "పూర్తయింది"
+  },
+  "panels/application/WebMCPView.ts | copyDescription": {
+    "message": "వివరణను కాపీ చేయండి"
+  },
+  "panels/application/WebMCPView.ts | copyName": {
+    "message": "పేరును కాపీ చేయండి"
+  },
   "panels/application/WebMCPView.ts | declarative": {
     "message": "నిర్దేశాత్మకం"
+  },
+  "panels/application/WebMCPView.ts | editAndRun": {
+    "message": "ఎడిట్ చేసి, రన్ చేయండి"
   },
   "panels/application/WebMCPView.ts | error": {
     "message": "ఎర్రర్"
@@ -4982,17 +5030,23 @@
   "panels/application/WebMCPView.ts | output": {
     "message": "అవుట్‌పుట్"
   },
+  "panels/application/WebMCPView.ts | paste": {
+    "message": "పేస్ట్ చేయండి"
+  },
   "panels/application/WebMCPView.ts | pending": {
     "message": "ప్రోగ్రెస్‌లో ఉంది"
+  },
+  "panels/application/WebMCPView.ts | revealTool": {
+    "message": "టూల్‌ను చూడండి"
+  },
+  "panels/application/WebMCPView.ts | runTool": {
+    "message": "టూల్‌ను రన్ చేయండి"
   },
   "panels/application/WebMCPView.ts | status": {
     "message": "స్టేటస్"
   },
   "panels/application/WebMCPView.ts | statusTypes": {
     "message": "స్టేటస్ రకాలు"
-  },
-  "panels/application/WebMCPView.ts | success": {
-    "message": "విజయవంతమైంది"
   },
   "panels/application/WebMCPView.ts | toolDetails": {
     "message": "వివరాలు"
@@ -5002,6 +5056,9 @@
   },
   "panels/application/WebMCPView.ts | toolTypes": {
     "message": "టూల్ రకాలు"
+  },
+  "panels/application/WebMCPView.ts | toolUnregisteredNotice": {
+    "message": "ఈ టూల్ అన్‌రిజిస్టర్ అయింది"
   },
   "panels/application/WebMCPView.ts | totalCalls": {
     "message": "మొత్తం కాల్స్ {PH1}"
@@ -5873,6 +5930,9 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsFailureReason": {
     "message": "వైఫల్యానికి కారణం"
   },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsFormSubmission": {
+    "message": "ఫారమ్ సమర్పణ"
+  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsRuleSet": {
     "message": "నియమాల సెట్"
   },
@@ -5882,11 +5942,17 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsTargetHint": {
     "message": "టార్గెట్ సూచన"
   },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | no": {
+    "message": "లేదు"
+  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | noElementSelected": {
     "message": "ఎలిమెంట్ ఏదీ ఎంచుకోబడలేదు"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "మరిన్ని వివరాల కోసం ఎలిమెంట్‌ను ఎంచుకోండి"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | yes": {
+    "message": "అవును"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByBatterySaver": {
     "message": "ఆపరేటింగ్ సిస్టమ్ బ్యాటరీ సేవర్ మోడ్ కారణంగా స్పెక్యులేటివ్ లోడింగ్ డిజేబుల్ అయింది."
@@ -6765,7 +6831,7 @@
     "message": "కన్సోల్ ప్రాంప్ట్"
   },
   "panels/console/ConsolePrompt.ts | selfXssWarning": {
-    "message": "హెచ్చరిక: DevTools కన్సోల్‌లో మీకు అర్థం కాని, లేదా మీ అంతట మీరు రివ్యూ చేయని కోడ్‌ను పేస్ట్ చేయవద్దు. అలా చేయడం వలన, అటాక్ చేసేవారు మీ గుర్తింపును దొంగిలించవచ్చు లేదా మీ కంప్యూటర్‌ను కంట్రోల్ చేసే అవకాశం పొందవచ్చు. పేస్ట్ చేయడాన్ని అనుమతించడానికి, దిగువున ఉన్న ‘{PH1}’ అని టైప్ చేసి, Enterను నొక్కండి."
+    "message": "హెచ్చరిక: మీకు అర్థం కాని, లేదా మీ అంతట మీరు రివ్యూ చేయని కోడ్‌ను DevTools కన్సోల్‌లో పేస్ట్ చేయవద్దు. అలా చేయడం వలన, అటాక్ చేసే వారు మీ ఐడెంటిటీని దొంగిలించవచ్చు లేదా మీ కంప్యూటర్‌ను కంట్రోల్ చేసే అవకాశం పొందవచ్చు. పేస్ట్ చేయడాన్ని అనుమతించడానికి, దయచేసి దిగువున “{PH1}” అని టైప్ చేసి, Enterను నొక్కండి."
   },
   "panels/console/ConsoleSidebar.ts | dErrors": {
     "message": "{n,plural, =0{ఎర్రర్‌లు ఏవీ లేవు}=1{# ఎర్రర్}other{# ఎర్రర్‌లు}}"
@@ -6793,6 +6859,9 @@
   },
   "panels/console/ConsoleView.ts | autocompleteFromHistory": {
     "message": "హిస్టరీ నుండి ఆటో-కంప్లీట్"
+  },
+  "panels/console/ConsoleView.ts | collapseAll": {
+    "message": "అన్నింటినీ కుదించండి"
   },
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "కన్సోల్ క్లియర్ చేయబడింది"
@@ -6832,6 +6901,9 @@
   },
   "panels/console/ConsoleView.ts | errors": {
     "message": "ఎర్రర్‌లు"
+  },
+  "panels/console/ConsoleView.ts | expandAll": {
+    "message": "అన్నింటినీ విస్తరించండి"
   },
   "panels/console/ConsoleView.ts | filteredMessagesInConsole": {
     "message": "కన్సోల్‌లో {PH1} మెసేజ్‌లు"
@@ -8147,6 +8219,9 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "కంప్యూట్ చేయబడిన విలువను చూడండి"
   },
+  "panels/elements/StylesSidebarPane.ts | aiSuggestionAccepted": {
+    "message": "{PH1} సూచన ఆమోదం పొందింది."
+  },
   "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
     "message": "ఆటోమేటిక్ డార్క్ మోడ్"
   },
@@ -8251,6 +8326,9 @@
   },
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "కాపీ స్టయిల్‌లు"
+  },
+  "panels/elements/elements-meta.ts | cssAnimationsOnlyWhenAnimationsTabOpen": {
+    "message": "యానిమేషన్‌ల ట్యాబ్ తెరిచినప్పుడు మాత్రమే యానిమేషన్ స్టయిల్స్‌ను చూడండి"
   },
   "panels/elements/elements-meta.ts | detailedInspectTooltip": {
     "message": "వివరణాత్మక పర్వక్షించే టూల్‌టిప్"
@@ -11723,6 +11801,9 @@
   "panels/profiler/HeapProfileView.ts | sBytes": {
     "message": "{PH1} బైట్‌లు"
   },
+  "panels/profiler/HeapProfileView.ts | samplingHeapProfilerTimeline": {
+    "message": "శాంప్లింగ్ హీప్ ప్రొఫైలర్ టైమ్‌లైన్"
+  },
   "panels/profiler/HeapProfileView.ts | samplingProfiles": {
     "message": "శాంపిల్ ప్రొఫైల్స్"
   },
@@ -11930,9 +12011,6 @@
   "panels/profiler/HeapSnapshotView.ts | duplicatedStrings": {
     "message": "డూప్లికేట్ చేయబడిన స్ట్రింగ్‌లు"
   },
-  "panels/profiler/HeapSnapshotView.ts | exposeInternals": {
-    "message": "అమలులోకి వచ్చిన వివరాలకు సంబంధించిన అంతర్గత డేటా"
-  },
   "panels/profiler/HeapSnapshotView.ts | filter": {
     "message": "ఫిల్టర్ చేయి"
   },
@@ -12070,33 +12148,6 @@
   },
   "panels/profiler/IsolateSelector.ts | totalPageJsHeapSizeChangeTrend": {
     "message": "చివరి {PH1} నిమిషాల్లో మొత్తం పేజీ JS హీప్ సైజ్ మార్పు ట్రెండ్."
-  },
-  "panels/profiler/LiveHeapProfileView.ts | allocatedJsHeapSizeCurrentlyIn": {
-    "message": "కేటాయించిన JS హీప్ సైజ్ ప్రస్తుతం వినియోగంలో ఉంది"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | anonymousScriptS": {
-    "message": "(అనామక స్క్రిప్ట్ {PH1})"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | heapProfile": {
-    "message": "హీప్ ప్రొఫైల్"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | jsHeap": {
-    "message": "JS హీప్"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | kb": {
-    "message": "kB"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | numberOfVmsSharingTheSameScript": {
-    "message": "ఒకే స్క్రిప్ట్ సోర్స్‌ను షేర్ చేసుకుంటున్న VMల సంఖ్య"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | scriptUrl": {
-    "message": "స్క్రిప్ట్ URL"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | urlOfTheScriptSource": {
-    "message": "స్క్రిప్ట్ సోర్స్ URL"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | vms": {
-    "message": "VMలు"
   },
   "panels/profiler/ModuleUIStrings.ts | buildingAllocationStatistics": {
     "message": "కేటాయింపు గణాంకాలను రూపొందిస్తోంది…"
@@ -12275,9 +12326,6 @@
   "panels/profiler/profiler-meta.ts | deleteProfile": {
     "message": "ప్రొఫైల్‌ను తొలగించండి"
   },
-  "panels/profiler/profiler-meta.ts | liveHeapProfile": {
-    "message": "లైవ్ హీప్ ప్రొఫైల్"
-  },
   "panels/profiler/profiler-meta.ts | loadProfile": {
     "message": "ప్రొఫైల్‌ను లోడ్ చేయండి…"
   },
@@ -12287,23 +12335,11 @@
   "panels/profiler/profiler-meta.ts | saveProfile": {
     "message": "ప్రొఫైల్‌ను సేవ్ చేయండి…"
   },
-  "panels/profiler/profiler-meta.ts | showLiveHeapProfile": {
-    "message": "లైవ్ హీప్ ప్రొఫైల్‌ను చూపించు"
-  },
   "panels/profiler/profiler-meta.ts | showMemory": {
     "message": "మెమరీని చూపు"
   },
-  "panels/profiler/profiler-meta.ts | startRecordingHeapAllocations": {
-    "message": "హీప్ కేటాయింపులను రికార్డ్ చేయడం ప్రారంభించండి"
-  },
-  "panels/profiler/profiler-meta.ts | startRecordingHeapAllocationsAndReload": {
-    "message": "హీప్ కేటాయింపులను రికార్డ్ చేయడం ప్రారంభించి, పేజీని రీలోడ్ చేయండి"
-  },
   "panels/profiler/profiler-meta.ts | startStopRecording": {
     "message": "రికార్డింగ్‌ను ప్రారంభించండి/ఆపివేయి"
-  },
-  "panels/profiler/profiler-meta.ts | stopRecordingHeapAllocations": {
-    "message": "హీప్ కేటాయింపులను రికార్డ్ చేయడం ఆపివేయండి"
   },
   "panels/protocol_monitor/JSONEditor.ts | addCustomProperty": {
     "message": "అనుకూల ప్రాపర్టీని జోడించండి"
@@ -12417,7 +12453,7 @@
     "message": "రికార్డింగ్‌ను తొలగించండి"
   },
   "panels/recorder/RecorderController.ts | doNotImport": {
-    "message": "DevToolsలో మీకు అర్థం కాని, లేదా మీ అంతట మీరు రివ్యూ చేయని రికార్డింగ్‌లను దిగుమతి చేయవద్దు. అలా చేయడం వలన, అటాక్ చేసేవారు మీ గుర్తింపును దొంగిలించవచ్చు లేదా మీ కంప్యూటర్‌పై కంట్రోల్‌ను సాధించవచ్చు. దిగుమతి చేసుకోవడానికి దయచేసి కింద ''{PH1}'' అని టైప్ చేయండి."
+    "message": "మీకు అర్థం కాని, లేదా మీ అంతట మీరు రివ్యూ చేయని రికార్డింగ్‌లను DevToolsలోకి దిగుమతి చేయవద్దు. అలా చేయడం వలన, అటాక్ చేసే వారు మీ ఐడెంటిటీని దొంగిలించవచ్చు లేదా మీ కంప్యూటర్‌ను కంట్రోల్ చేసే అవకాశం పొందవచ్చు. దిగుమతి చేయడానికి అనుమతినివ్వడం కోసం దయచేసి కింద \"{PH1}\" అని టైప్ చేయండి."
   },
   "panels/recorder/RecorderController.ts | doYouTrustThisCode": {
     "message": "మీరు ఈ రికార్డింగ్‌ను విశ్వసిస్తున్నారా?"
@@ -12477,7 +12513,7 @@
     "message": "కోడ్ వీక్షణను టోగుల్ చేయండి"
   },
   "panels/recorder/RecorderController.ts | typeAllowImporting": {
-    "message": "రకం ''{PH1}''"
+    "message": "“{PH1}” రకం"
   },
   "panels/recorder/components/CreateRecordingView.ts | cancelRecording": {
     "message": "రికార్డింగ్‌ను రద్దు చేయండి"
@@ -13459,6 +13495,21 @@
   },
   "panels/settings/AISettingsTab.ts | aIAnnotationsFeatureDescription": {
     "message": "పనితీరు ట్రేస్ అదనపు గమనికల కోసం టైటిల్స్‌ను ఆటోమేటిక్‌గా జెనరేట్ చేయండి"
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceDescriptionV2": {
+    "message": "పరిశీలన పేజీలో సందర్భోచిత సహాయాన్ని పొందండి"
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceThingsToConsiderNoLoggingV2": {
+    "message": "వివరణలను జెనరేట్ చేయడానికి, చాట్ మెసేజ్‌లు, DevTools ప్యానెల్స్, వెబ్ APIల ద్వారా ఈ సైట్‌లో యాక్సెస్ చేయగల డేటా, అలాగే నెట్‌వర్క్ రిక్వెస్ట్‌లు, ఫైళ్లు, పనితీరు ట్రేస్‌ల వంటి మీరు ఎంచుకునే ఐటెమ్‌లు Googleకు పంపబడతాయి. మీరు సమర్పించే కంటెంట్‌ను, ఈ ఫీచర్ జెనరేట్ చేసే కంటెంట్‌ను Googleకు చెందిన AI టెక్నాలజీలను మెరుగుపరచడానికి ఉపయోగించరు. ఇది ప్రయోగాత్మక AI ఫీచర్, ఇది ఇచ్చే సమాధానాలన్నీ నూటికి నూరు శాతం సరైనవే అని చెప్పలేము."
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceThingsToConsiderV2": {
+    "message": "వివరణలను జెనరేట్ చేయడానికి, చాట్ మెసేజ్‌లను, DevTools ప్యానెల్స్, వెబ్ APIల ద్వారా ఈ సైట్‌లో యాక్సెస్ చేయదగిన డేటాను, నెట్‌వర్క్ రిక్వెస్ట్‌లు, ఫైల్స్, పనితీరు ట్రేస్‌ల వంటి మీరు ఎంచుకునే ఐటెమ్‌లు Googleకు పంపబడతాయి, ఈ ఫీచర్‌ను మెరుగుపరచడం కోసం రివ్యూవర్లు వీటిని చూసే అవకాశం ఉంది. ఇది ప్రయోగాత్మక AI ఫీచర్, ఇది ఇచ్చే సమాధానాలన్నీ నూటికి నూరు శాతం సరైనవే అని చెప్పలేము."
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceWhenOnItem1V2": {
+    "message": "DevTools AI సహాయంతో స్టయిలింగ్, నెట్‌వర్క్, పనితీరు, సోర్స్ కోడ్, యాక్సెసిబిలిటీ, స్టోరేజ్ సమస్యలను డీబగ్ చేయండి"
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceWhenOnItem2V2": {
+    "message": "ఏజెంట్ అందించిన రీజనింగ్‌ను దశల వారీగా ఫాలో అయి, సంబంధిత సోర్స్ డేటాకు త్వరగా వెళ్లండి"
   },
   "panels/settings/AISettingsTab.ts | asYouTypeCodeSuggestions": {
     "message": "మీరు కన్సోల్ లేదా సోర్స్‌ల ప్యానెల్‌లో టైప్ చేసేటప్పుడు, మీకు కోడ్ సూచనలు వస్తాయి. ఒక దాన్ని అంగీకరించడానికి Tabను నొక్కండి."
@@ -14539,12 +14590,6 @@
   },
   "panels/sources/PersistenceActions.ts | showOverrides": {
     "message": "ఓవర్‌రైడ్‌లు అన్నిటినీ చూడండి"
-  },
-  "panels/sources/ProfilePlugin.ts | kb": {
-    "message": "kB"
-  },
-  "panels/sources/ProfilePlugin.ts | mb": {
-    "message": "MB"
   },
   "panels/sources/ProfilePlugin.ts | ms": {
     "message": "మి.సె."
@@ -17183,6 +17228,9 @@
   "ui/components/markdown_view/CodeBlock.ts | copy": {
     "message": "కోడ్ కాపీ చేయండి"
   },
+  "ui/components/markdown_view/CodeBlock.ts | copyCodeSnippet": {
+    "message": "{PH1} కోడ్ స్నిప్పెట్‌ను కాపీ చేయండి"
+  },
   "ui/components/markdown_view/CodeBlock.ts | disclaimer": {
     "message": "కోడ్ టెక్స్ట్ ప్రివ్యూలను జాగ్రత్తగా ఉపయోగించండి"
   },
@@ -17306,6 +17354,9 @@
   "ui/legacy/ActionRegistration.ts | sources": {
     "message": "సోర్స్‌లు"
   },
+  "ui/legacy/Dialog.ts | close": {
+    "message": "మూసివేయండి"
+  },
   "ui/legacy/DockController.ts | close": {
     "message": "మూసివేయండి"
   },
@@ -17339,6 +17390,12 @@
   "ui/legacy/InspectorDrawerView.ts | closeDrawer": {
     "message": "డ్రాయర్‌ను మూసివేయండి"
   },
+  "ui/legacy/InspectorDrawerView.ts | expandDrawer": {
+    "message": "డ్రాయర్‌ను విస్తరించండి"
+  },
+  "ui/legacy/InspectorDrawerView.ts | minimizeDrawer": {
+    "message": "డ్రాయర్‌ను మినిమైజ్ చేయండి"
+  },
   "ui/legacy/InspectorDrawerView.ts | moreTools": {
     "message": "మరిన్ని టూల్స్"
   },
@@ -17354,8 +17411,14 @@
   "ui/legacy/InspectorView.ts | drawer": {
     "message": "టూల్ డ్రాయర్"
   },
+  "ui/legacy/InspectorView.ts | drawerExpanded": {
+    "message": "డ్రాయర్ విస్తరించారు"
+  },
   "ui/legacy/InspectorView.ts | drawerHidden": {
     "message": "డ్రాయర్ దాచబడింది"
+  },
+  "ui/legacy/InspectorView.ts | drawerMinimized": {
+    "message": "డ్రాయర్ మినిమైజ్ చేసి ఉంది"
   },
   "ui/legacy/InspectorView.ts | drawerShown": {
     "message": "డ్రాయర్ చూపబడింది"
@@ -17831,66 +17894,6 @@
   "ui/legacy/components/inline_editor/ColorSwatch.ts | shiftclickToChangeColorFormat": {
     "message": "రంగు ఫార్మాట్‌ను మార్చడానికి షిఫ్ట్ కీని నొక్కి, క్లిక్ చేయండి"
   },
-  "ui/legacy/components/inline_editor/FontEditor.ts | PleaseEnterAValidValueForSText": {
-    "message": "* {PH1} టెక్స్ట్ ఇన్‌పుట్‌కు సంబంధించి దయచేసి చెల్లుబాటు అయ్యే విలువను ఎంటర్ చేయండి"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | cssProperties": {
-    "message": "CSS ప్రాపర్టీలు"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | deleteS": {
-    "message": "{PH1}ను తొలగించండి"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fallbackS": {
-    "message": "ఫాల్‌బ్యాక్ {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fontFamily": {
-    "message": "ఫాంట్ ఫ్యామిలీ"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fontSelectorDeletedAtIndexS": {
-    "message": "ఫాంట్ ఎంపిక సాధనం ఇండెక్స్ వద్ద తొలగించబడింది: {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fontSize": {
-    "message": "ఫాంట్ సైజ్"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fontWeight": {
-    "message": "ఫాంట్ మందం"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | lineHeight": {
-    "message": "లైన్ ఎత్తు"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sKeyValueSelector": {
-    "message": "{PH1} కీ విలువ ఎంపిక సాధనం"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sSliderInput": {
-    "message": "{PH1} స్లయిడర్ ఇన్‌పుట్"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sTextInput": {
-    "message": "{PH1} టెక్స్ట్ ఇన్‌పుట్"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sToggleInputType": {
-    "message": "{PH1} ఇన్‌పుట్ రకాన్ని టోగుల్ చేయండి"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sUnitInput": {
-    "message": "{PH1} యూనిట్ ఇన్‌పుట్"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | selectorInputMode": {
-    "message": "ఎంపిక సాధనం ఇన్‌పుట్ మోడ్"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sliderInputMode": {
-    "message": "స్లయిడర్ ఇన్‌పుట్ మోడ్"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | spacing": {
-    "message": "స్పేస్"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | thereIsNoValueToDeleteAtIndexS": {
-    "message": "ఇండెక్స్‌లో తొలగించడానికి విలువ ఏదీ లేదు: {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | thisPropertyIsSetToContainUnits": {
-    "message": "ఈ ప్రాపర్టీ, యూనిట్‌లను కలిగి ఉండాలి కానీ దాని కోసం కేటాయించిన సంబంధిత unitsArrayను కలిగి లేదు:{PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | units": {
-    "message": "యూనిట్‌లు"
-  },
   "ui/legacy/components/object_ui/CustomPreviewComponent.ts | showAsJavascriptObject": {
     "message": "JavaScript ఆబ్జెక్ట్‌గా చూపించు"
   },
@@ -18047,17 +18050,8 @@
   "ui/legacy/components/perf_ui/perf_ui-meta.ts | flamechartSelectedNavigation": {
     "message": "ఫ్లేమ్ చార్ట్ నావిగేషన్:"
   },
-  "ui/legacy/components/perf_ui/perf_ui-meta.ts | hideLiveMemoryAllocation": {
-    "message": "లైవ్ మెమరీ కేటాయింపు అదనపు గమనికలను దాచండి"
-  },
-  "ui/legacy/components/perf_ui/perf_ui-meta.ts | liveMemoryAllocationAnnotations": {
-    "message": "లైవ్ మెమరీ కేటాయింపు అదనపు గమనికలు"
-  },
   "ui/legacy/components/perf_ui/perf_ui-meta.ts | modern": {
     "message": "ఆధునిక"
-  },
-  "ui/legacy/components/perf_ui/perf_ui-meta.ts | showLiveMemoryAllocation": {
-    "message": "లైవ్ మెమరీ కేటాయింపుకు సంబంధించిన అదనపు గమనికలను చూపు"
   },
   "ui/legacy/components/quick_open/CommandMenu.ts | command": {
     "message": "కమాండ్"
@@ -18171,7 +18165,7 @@
     "message": "{PH1} ఎంపిక ప్రాంతాలు"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | doNotPaste": {
-    "message": "DevToolsలో మీకు అర్థం కాని, లేదా మీ అంతట మీరు రివ్యూ చేయని కోడ్‌ను పేస్ట్ చేయవద్దు. అలా చేయడం వలన, అటాక్ చేసేవారు మీ గుర్తింపును దొంగిలించవచ్చు లేదా మీ కంప్యూటర్‌పై కంట్రోల్‌ను సాధించవచ్చు. పేస్ట్ చేయడాన్ని అనుమతించడం కోసం, దిగువున దయచేసి ''{PH1}'' అని టైప్ చేయండి."
+    "message": "మీకు అర్థం కాని, లేదా మీ అంతట మీరు రివ్యూ చేయని కోడ్‌ను DevToolsలో పేస్ట్ చేయవద్దు. అలా చేయడం వలన, అటాక్ చేసే వారు మీ ఐడెంటిటీని దొంగిలించవచ్చు లేదా మీ కంప్యూటర్‌ను కంట్రోల్ చేసే అవకాశం పొందవచ్చు. పేస్ట్ చేయడాన్ని అనుమతించడం కోసం, దిగువున దయచేసి “{PH1}” అని టైప్ చేయండి."
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | doYouTrustThisCode": {
     "message": "మీరు ఈ కోడ్‌ను విశ్వసిస్తున్నారా?"
@@ -18189,7 +18183,7 @@
     "message": "సోర్స్"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | typeAllowPasting": {
-    "message": "రకం ''{PH1}''"
+    "message": "“{PH1}” రకం"
   },
   "ui/legacy/components/source_frame/XMLView.ts | find": {
     "message": "కనుగొనండి"

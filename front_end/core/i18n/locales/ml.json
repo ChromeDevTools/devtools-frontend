@@ -323,6 +323,9 @@
   "core/sdk/NetworkManager.ts | noContentForRedirect": {
     "message": "ഈ അഭ്യർത്ഥന റീഡയറക്റ്റ് ചെയ്‌തതിനാൽ ഉള്ളടക്കമൊന്നും ലഭ്യമല്ല"
   },
+  "core/sdk/NetworkManager.ts | noContentForSSE": {
+    "message": "Server-Sent Events (SSE) ഉള്ളടക്കത്തിന് നിലവിൽ പിന്തുണയില്ല"
+  },
   "core/sdk/NetworkManager.ts | noContentForWebSocket": {
     "message": "WebSockets-നുള്ള ഉള്ളടക്കം നിലവിൽ പിന്തുണയ്ക്കുന്നില്ല"
   },
@@ -559,6 +562,9 @@
   },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "അക്രോമാറ്റോപ്സിയ (നിറം ഇല്ല)"
+  },
+  "core/sdk/sdk-meta.ts | apca": {
+    "message": "മുമ്പത്തെ കോൺട്രാസ്റ്റ് അനുപാതത്തിനും AA/AAA മാർഗ്ഗനിർദ്ദേശങ്ങൾക്കും പകരം അഡ്വാൻസ്‌ഡ് പെർസെപ്ച്വൽ കോൺട്രാസ്റ്റ് ആൽഗരിതം (APCA) ലഭ്യമാകുന്നു"
   },
   "core/sdk/sdk-meta.ts | blurredVision": {
     "message": "മങ്ങിയ കാഴ്ച"
@@ -1441,6 +1447,9 @@
   },
   "generated/Deprecation.ts | PrefixedVideoSupportsFullscreen": {
     "message": "HTMLVideoElement.webkitSupportsFullscreen അവസാനിപ്പിച്ചു. പകരം Document.fullscreenEnabled ഉപയോഗിക്കുക."
+  },
+  "generated/Deprecation.ts | PreventSvgFilterPaint": {
+    "message": "ക്രോസ്-ഒറിജിൻ iframe-കൾ, നിയന്ത്രിത iframe-കൾ (ഉദാ. സാൻഡ്‌ബോക്‌സ് ചെയ്‌തവ), അല്ലെങ്കിൽ പ്ലഗിനുകൾ എന്നിവയിലേക്ക് SVG ഫിൽട്ടറുകൾ പ്രയോഗിക്കാനാകില്ല."
   },
   "generated/Deprecation.ts | RTCConstraintEnableDtlsSrtpFalse": {
     "message": "DtlsSrtpKeyAgreement കൺസ്ട്രയന്റ് നീക്കം ചെയ്തു. ഈ കൺസ്ട്രയിന്റിന് false മൂല്യമാണ് നിങ്ങൾ വ്യക്തമാക്കിയത്, നീക്കം ചെയ്യപ്പെട്ട രീതിയായ SDES key negotiation ഉപയോഗിക്കാനുള്ള ശ്രമം ആയിട്ടാണ് ഇതിനെ കണക്കാക്കുന്നത്. ഈ ഫംഗ്ഷണാലിറ്റി നീക്കം ചെയ്തു; പകരം DTLS key negotiation പിന്തുണയ്ക്കുന്ന ഒരു സേവനം ഉപയോഗിക്കുക."
@@ -3207,13 +3216,34 @@
     "message": "ഇതൊരു പരീക്ഷണാത്മക AI ഫീച്ചറാണ്, എല്ലായ്‌പ്പോഴും ശരിയായിരിക്കണമെന്നില്ല. മറ്റൊരു ടൂളിലേക്ക് ഒട്ടിക്കുന്നതിന് മുമ്പ് ഈ ടെക്സ്റ്റ് വീണ്ടും പരിശോധിക്കുക."
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | exportForAgents": {
-    "message": "നിങ്ങളുടെ കോഡിംഗ് ഏജന്റിനായി പകർത്തുക"
+    "message": "കോഡിംഗ് ഏജന്റിലേക്ക് പകർത്തുക"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | generatingSummary": {
     "message": "സംഗ്രഹം ജനറേറ്റ് ചെയ്യുന്നു…"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | saveAsMarkdown": {
     "message": "ഇനിപ്പറയുന്നതായി സംരക്ഷിക്കുക…"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | gotIt": {
+    "message": "മനസ്സിലായി"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | integrationPoint": {
+    "message": "AI സഹായം ഇപ്പോൾ ആപ്പ്, Lighthouse പാനലുകൾ എന്നിവയുമായി സംയോജിപ്പിച്ചിരിക്കുന്നു, ഡാറ്റാ ഉറവിടങ്ങളിൽ നിന്ന് ഇത് ഒരേ സമയം സന്ദർഭം ലഭ്യമാക്കുന്നു"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | manageSettings": {
+    "message": "ക്രമീകരണത്തിൽ മാനേജ് ചെയ്യുക"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | privacyDisclaimer": {
+    "message": "ചാറ്റ് സന്ദേശങ്ങൾ, DevTools പാനലുകളും വെബ് API-കളും വഴി ഈ സൈറ്റിന് ആക്‌സസ് ചെയ്യാൻ കഴിയുന്ന ഡാറ്റ, നെറ്റ്‌വർക്ക് അഭ്യർത്ഥനകളും ഫയലുകളും പ്രകടന ട്രെയ്‌സുകളും പോലെ നിങ്ങൾ തിരഞ്ഞെടുക്കുന്ന ഇനങ്ങൾ എന്നിവ Google-ലേക്ക് അയയ്ക്കുന്നു, ഈ ഫീച്ചർ മെച്ചപ്പെടുത്താൻ റിവ്യൂവർമാർ ഈ ഡാറ്റ കണ്ടേക്കാം. ഇതൊരു പരീക്ഷണാത്മക AI ഫീച്ചറാണ്, എല്ലായ്‌പ്പോഴും ശരിയായിരിക്കണമെന്നില്ല."
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | privacyDisclaimerEnterpriseNoLogging": {
+    "message": "ചാറ്റ് സന്ദേശങ്ങൾ, DevTools പാനലുകളും വെബ് API-കളും വഴി ഈ സൈറ്റിന് ആക്‌സസ് ചെയ്യാൻ കഴിയുന്ന ഡാറ്റ, നെറ്റ്‌വർക്ക് അഭ്യർത്ഥനകളും ഫയലുകളും പ്രകടന ട്രെയ്‌സുകളും പോലെ നിങ്ങൾ തിരഞ്ഞെടുക്കുന്ന ഇനങ്ങൾ എന്നിവ Google-ലേക്ക് അയയ്ക്കുന്നു. ഈ ഫീച്ചറിലേക്ക് സമർപ്പിച്ചതും ഈ ഫീച്ചർ ജനറേറ്റ് ചെയ്തതുമായ ഉള്ളടക്കം Google-ന്റെ AI മോഡലുകൾ മെച്ചപ്പെടുത്താൻ ഉപയോഗിക്കില്ല. ഇതൊരു പരീക്ഷണാത്മക AI ഫീച്ചറാണ്, എല്ലായ്‌പ്പോഴും ശരിയായിരിക്കണമെന്നില്ല."
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | title": {
+    "message": "AI സഹായം ഇപ്പോൾ കൂടുതൽ മികച്ചതായിരിക്കുന്നു"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | widgetPoint": {
+    "message": "ഫലങ്ങൾ പരിശോധിച്ചുറപ്പിക്കാനോ തിരഞ്ഞെടുത്ത ഡീബഗ്ഗിംഗ് കേസുകൾക്കായി ഉറവിട ഡാറ്റയിലേക്ക് പോകാനോ വിജറ്റുകൾ ഉപയോഗിക്കുക"
   },
   "panels/ai_assistance/components/WalkthroughView.ts | close": {
     "message": "അടയ്ക്കുക"
@@ -3223,6 +3253,9 @@
   },
   "panels/ai_assistance/components/WalkthroughView.ts | hideThinking": {
     "message": "ചിന്തിക്കുന്നത് മറയ്ക്കുക"
+  },
+  "panels/ai_assistance/components/WalkthroughView.ts | inProgress": {
+    "message": "പുരോഗമിക്കുന്നു"
   },
   "panels/ai_assistance/components/WalkthroughView.ts | showAgentWalkthrough": {
     "message": "ഏജന്റ് വാക്ക്ത്രൂ കാണിക്കുക"
@@ -3677,9 +3710,6 @@
   "panels/application/ApplicationPanelSidebar.ts | theContentOfThisDocumentHasBeen": {
     "message": "ഈ ഡോക്യുമെന്റിന്റെ ഉള്ളടക്കം, 'document.write()' വഴി, ഡെെനാമിക്കായി സൃഷ്‌ടിച്ചിരിക്കുന്നു."
   },
-  "panels/application/ApplicationPanelSidebar.ts | thirdPartyPhaseout": {
-    "message": "മൂന്നാം കക്ഷി കുക്കിയുടെ ടെസ്‌റ്റിംഗ്, ഘട്ടം ഘട്ടമായുള്ളതിനാൽ {PH1} എന്നതിൽ നിന്നുള്ള കുക്കികൾ തടഞ്ഞിരിക്കാം."
-  },
   "panels/application/ApplicationPanelSidebar.ts | versionS": {
     "message": "പതിപ്പ്: {PH1}"
   },
@@ -3829,6 +3859,9 @@
   },
   "panels/application/DOMStorageItemsView.ts | domStorageItemsCleared": {
     "message": "DOM സ്റ്റോറേജ് ഇനങ്ങൾ മായ്ച്ചു"
+  },
+  "panels/application/DeviceBoundSessionsTreeElement.ts | clear": {
+    "message": "മായ്ക്കുക"
   },
   "panels/application/DeviceBoundSessionsTreeElement.ts | deviceBoundSessions": {
     "message": "ഉപകരണവുമായി ബന്ധപ്പെട്ട സെഷനുകൾ"
@@ -4922,6 +4955,9 @@
   "panels/application/TrustTokensTreeElement.ts | trustTokens": {
     "message": "പ്രൈവെറ്റ് സ്റ്റേറ്റ് ടോക്കണുകൾ"
   },
+  "panels/application/WebMCPView.ts | cancelCall": {
+    "message": "റദ്ദാക്കുക"
+  },
   "panels/application/WebMCPView.ts | canceled": {
     "message": "റദ്ദാക്കി"
   },
@@ -4937,8 +4973,20 @@
   "panels/application/WebMCPView.ts | close": {
     "message": "അടയ്ക്കുക"
   },
+  "panels/application/WebMCPView.ts | completed": {
+    "message": "പൂർത്തിയായി"
+  },
+  "panels/application/WebMCPView.ts | copyDescription": {
+    "message": "വിവരണം പകർത്തുക"
+  },
+  "panels/application/WebMCPView.ts | copyName": {
+    "message": "പേര് പകർത്തുക"
+  },
   "panels/application/WebMCPView.ts | declarative": {
     "message": "ഡിക്ലറേറ്റീവ്"
+  },
+  "panels/application/WebMCPView.ts | editAndRun": {
+    "message": "എഡിറ്റ് ചെയ്ത് റൺ ചെയ്യുക"
   },
   "panels/application/WebMCPView.ts | error": {
     "message": "പിശക്"
@@ -4982,17 +5030,23 @@
   "panels/application/WebMCPView.ts | output": {
     "message": "ഔട്ട്പുട്ട്"
   },
+  "panels/application/WebMCPView.ts | paste": {
+    "message": "ഒട്ടിക്കുക"
+  },
   "panels/application/WebMCPView.ts | pending": {
     "message": "പുരോഗമിക്കുന്നു"
+  },
+  "panels/application/WebMCPView.ts | revealTool": {
+    "message": "വെളിപ്പെടുത്തൽ ടൂൾ"
+  },
+  "panels/application/WebMCPView.ts | runTool": {
+    "message": "ടൂൾ റൺ ചെയ്യുക"
   },
   "panels/application/WebMCPView.ts | status": {
     "message": "നില"
   },
   "panels/application/WebMCPView.ts | statusTypes": {
     "message": "സ്റ്റാറ്റസ് തരങ്ങൾ"
-  },
-  "panels/application/WebMCPView.ts | success": {
-    "message": "വിജയകരം"
   },
   "panels/application/WebMCPView.ts | toolDetails": {
     "message": "വിശദാംശങ്ങൾ"
@@ -5002,6 +5056,9 @@
   },
   "panels/application/WebMCPView.ts | toolTypes": {
     "message": "ടൂൾ തരങ്ങൾ"
+  },
+  "panels/application/WebMCPView.ts | toolUnregisteredNotice": {
+    "message": "ഈ ടൂൾ അൺരജിസ്റ്റർ ചെയ്തു"
   },
   "panels/application/WebMCPView.ts | totalCalls": {
     "message": "മൊത്തം {PH1} കോളുകൾ"
@@ -5873,6 +5930,9 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsFailureReason": {
     "message": "പരാജയ കാരണം"
   },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsFormSubmission": {
+    "message": "ഫോം സമർപ്പിക്കൽ"
+  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsRuleSet": {
     "message": "റൂൾ സെറ്റ്"
   },
@@ -5882,11 +5942,17 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsTargetHint": {
     "message": "ടാർഗറ്റ് ഹിന്റ്"
   },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | no": {
+    "message": "ഇല്ല"
+  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | noElementSelected": {
     "message": "എലമെന്റ് ഒന്നും തിരഞ്ഞെടുത്തിട്ടില്ല"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "കൂടുതൽ വിശദാംശങ്ങൾക്ക് ഒരു എലമെന്റ് തിരഞ്ഞെടുക്കുക"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | yes": {
+    "message": "ഉവ്വ്"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByBatterySaver": {
     "message": "ഓപ്പറേറ്റിംഗ് സിസ്റ്റത്തിന്റെ ബാറ്ററി സേവർ മോഡ് കാരണം സ്‌പെക്യുലേറ്റിവ് ലോഡിംഗ് പ്രവർത്തനരഹിതമാണ്."
@@ -6765,7 +6831,7 @@
     "message": "കൺസോൾ പ്രോംപ്റ്റ്"
   },
   "panels/console/ConsolePrompt.ts | selfXssWarning": {
-    "message": "മുന്നറിയിപ്പ്: നിങ്ങൾക്ക് മനസ്സിലാകാത്തതോ സ്വയം അവലോകനം ചെയ്യാത്തതോ ആയ കോഡ് DevTools കൺസോളിൽ ഒട്ടിക്കരുത്. ഇത് നിങ്ങളുടെ ഐഡന്റിറ്റി അപഹരിക്കാനോ നിങ്ങളുടെ കമ്പ്യൂട്ടറിന്റെ നിയന്ത്രണം ഏറ്റെടുക്കാനോ ആക്രമണകാരികളെ അനുവദിച്ചേക്കാം. താഴെ ‘{PH1}’എന്ന് ടൈപ്പ് ചെയ്‌ത്, ഒട്ടിക്കാൻ 'Enter' അമർത്തുക."
+    "message": "മുന്നറിയിപ്പ്: നിങ്ങൾക്ക് മനസ്സിലാകാത്തതോ സ്വയം അവലോകനം ചെയ്യാത്തതോ ആയ കോഡ് DevTools കൺസോളിൽ ഒട്ടിക്കരുത്. ഇത് നിങ്ങളുടെ ഐഡന്റിറ്റി അപഹരിക്കാനോ നിങ്ങളുടെ കമ്പ്യൂട്ടറിന്റെ നിയന്ത്രണം ഏറ്റെടുക്കാനോ അക്രമികളെ അനുവദിച്ചേക്കാം. ചുവടെ “{PH1}” എന്ന് ടൈപ്പ് ചെയ്‌ത്, ഒട്ടിക്കാൻ അനുവദിക്കുന്നതിന് 'Enter' അമർത്തുക."
   },
   "panels/console/ConsoleSidebar.ts | dErrors": {
     "message": "{n,plural, =0{പിശകുകൾ ഒന്നുമില്ല}=1{# പിശക്}other{# പിശകുകൾ}}"
@@ -6793,6 +6859,9 @@
   },
   "panels/console/ConsoleView.ts | autocompleteFromHistory": {
     "message": "ചരിത്രത്തിൽ നിന്ന് സ്വയമേവ പൂർത്തിയാക്കുക"
+  },
+  "panels/console/ConsoleView.ts | collapseAll": {
+    "message": "എല്ലാം ചുരുക്കുക"
   },
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "കൺസോൾ മായ്‌ച്ചു"
@@ -6832,6 +6901,9 @@
   },
   "panels/console/ConsoleView.ts | errors": {
     "message": "പിശകുകൾ"
+  },
+  "panels/console/ConsoleView.ts | expandAll": {
+    "message": "എല്ലാം വികസിപ്പിക്കുക"
   },
   "panels/console/ConsoleView.ts | filteredMessagesInConsole": {
     "message": "കൺസോളിൽ {PH1} സന്ദേശങ്ങളുണ്ട്"
@@ -8147,6 +8219,9 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "കണക്കാക്കിയ മൂല്യം കാണുക"
   },
+  "panels/elements/StylesSidebarPane.ts | aiSuggestionAccepted": {
+    "message": "{PH1} നിർദ്ദേശം അംഗീകരിച്ചു."
+  },
   "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
     "message": "സ്വയമേവയുള്ള ഡാർക്ക് മോഡ്"
   },
@@ -8251,6 +8326,9 @@
   },
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "സ്റ്റൈലുകൾ പകർത്തുക"
+  },
+  "panels/elements/elements-meta.ts | cssAnimationsOnlyWhenAnimationsTabOpen": {
+    "message": "ആനിമേഷനുകൾ ടാബ് തുറന്നിരിക്കുമ്പോൾ മാത്രം ആനിമേഷൻ സ്റ്റൈലുകൾ കാണിക്കുക"
   },
   "panels/elements/elements-meta.ts | detailedInspectTooltip": {
     "message": "വിശദമായ പരിശോധനാ ടൂൾടിപ്പ്"
@@ -11723,6 +11801,9 @@
   "panels/profiler/HeapProfileView.ts | sBytes": {
     "message": "{PH1} ബൈറ്റുകൾ"
   },
+  "panels/profiler/HeapProfileView.ts | samplingHeapProfilerTimeline": {
+    "message": "സാംപ്ലിംഗ് ഹീപ്പ് പ്രൊഫൈലർ ടൈംലൈൻ"
+  },
   "panels/profiler/HeapProfileView.ts | samplingProfiles": {
     "message": "സാംപ്ലിംഗ് പ്രൊഫൈലുകൾ"
   },
@@ -11930,9 +12011,6 @@
   "panels/profiler/HeapSnapshotView.ts | duplicatedStrings": {
     "message": "ഡ്യൂപ്ലിക്കേറ്റ് സ്ട്രിംഗുകൾ"
   },
-  "panels/profiler/HeapSnapshotView.ts | exposeInternals": {
-    "message": "നടപ്പിലാക്കൽ വിശദാംശങ്ങൾ അടങ്ങിയ ഇന്റേണലുകൾ"
-  },
   "panels/profiler/HeapSnapshotView.ts | filter": {
     "message": "ഫിൽട്ടർ ചെയ്യുക"
   },
@@ -12070,33 +12148,6 @@
   },
   "panels/profiler/IsolateSelector.ts | totalPageJsHeapSizeChangeTrend": {
     "message": "കഴിഞ്ഞ {PH1} മിനിറ്റിലെ മൊത്തം പേജിലുള്ള JS ഹീപ്പ് വലുപ്പ മാറ്റത്തിന്റെ ട്രെൻഡ്."
-  },
-  "panels/profiler/LiveHeapProfileView.ts | allocatedJsHeapSizeCurrentlyIn": {
-    "message": "നിലവിൽ ഉപയോഗത്തിലുള്ള, അനുവദിച്ച JS ഹീപ്പ് വലുപ്പം"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | anonymousScriptS": {
-    "message": "(അജ്ഞാത സ്ക്രിപ്റ്റ് {PH1})"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | heapProfile": {
-    "message": "ഹീപ്പ് പ്രൊഫൈൽ"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | jsHeap": {
-    "message": "JS ഹീപ്പ്"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | kb": {
-    "message": "kB"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | numberOfVmsSharingTheSameScript": {
-    "message": "ഒരേ സ്‌ക്രിപ്‌റ്റ് ഉറവിടം പങ്കിടുന്ന VM-കളുടെ എണ്ണം"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | scriptUrl": {
-    "message": "സ്‌ക്രിപ്‌റ്റ് URL"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | urlOfTheScriptSource": {
-    "message": "സ്ക്രിപ്റ്റ് ഉറവിടത്തിന്റെ URL"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | vms": {
-    "message": "VMS"
   },
   "panels/profiler/ModuleUIStrings.ts | buildingAllocationStatistics": {
     "message": "അലോക്കേഷൻ സ്ഥിതിവിവരക്കണക്കുകൾ സൃഷ്‌ടിക്കുന്നു…"
@@ -12275,9 +12326,6 @@
   "panels/profiler/profiler-meta.ts | deleteProfile": {
     "message": "പ്രൊഫൈൽ ഇല്ലാതാക്കുക"
   },
-  "panels/profiler/profiler-meta.ts | liveHeapProfile": {
-    "message": "തത്സമയ ഹീപ്പ് പ്രൊഫൈൽ"
-  },
   "panels/profiler/profiler-meta.ts | loadProfile": {
     "message": "പ്രൊഫൈൽ ലോഡ് ചെയ്യുക…"
   },
@@ -12287,23 +12335,11 @@
   "panels/profiler/profiler-meta.ts | saveProfile": {
     "message": "പ്രൊഫൈൽ സംരക്ഷിക്കുക…"
   },
-  "panels/profiler/profiler-meta.ts | showLiveHeapProfile": {
-    "message": "ലൈവ് ഹീപ്പ് പ്രൊഫൈൽ കാണിക്കുക"
-  },
   "panels/profiler/profiler-meta.ts | showMemory": {
     "message": "മെമ്മറി കാണിക്കുക"
   },
-  "panels/profiler/profiler-meta.ts | startRecordingHeapAllocations": {
-    "message": "ഹീപ്പ് അലോക്കേഷനുകൾ റെക്കോർഡ് ചെയ്യാൻ ആരംഭിക്കുക"
-  },
-  "panels/profiler/profiler-meta.ts | startRecordingHeapAllocationsAndReload": {
-    "message": "ഹീപ്പ് അലോക്കേഷനുകൾ റെക്കോർഡ് ചെയ്യാൻ ആരംഭിക്കുക, പേജ് റീലോഡ് ചെയ്യുക"
-  },
   "panels/profiler/profiler-meta.ts | startStopRecording": {
     "message": "റെക്കോർഡിംഗ് ആരംഭിക്കുക/അവസാനിപ്പിക്കുക"
-  },
-  "panels/profiler/profiler-meta.ts | stopRecordingHeapAllocations": {
-    "message": "ഹീപ്പ് അലോക്കേഷനുകൾ റെക്കോർഡ് ചെയ്യുന്നത് നിർത്തുക"
   },
   "panels/protocol_monitor/JSONEditor.ts | addCustomProperty": {
     "message": "ഇഷ്‌ടാനുസൃത പ്രോപ്പർട്ടി ചേർക്കുക"
@@ -12417,7 +12453,7 @@
     "message": "റെക്കോർഡിംഗ് ഇല്ലാതാക്കുക"
   },
   "panels/recorder/RecorderController.ts | doNotImport": {
-    "message": "നിങ്ങൾക്ക് മനസ്സിലാകാത്തതോ സ്വയം അവലോകനം ചെയ്യാത്തതോ ആയ റെക്കോർഡിംഗുകൾ ഇമ്പോർട്ട് ചെയ്യരുത്. ഇത് നിങ്ങളുടെ ഐഡന്റിറ്റി അപഹരിക്കാനോ നിങ്ങളുടെ കമ്പ്യൂട്ടറിന്റെ നിയന്ത്രണം ഏറ്റെടുക്കാനോ ആക്രമണകാരികളെ അനുവദിച്ചേക്കാം. ഇമ്പോർട്ട് ചെയ്യാൻ അനുവദിക്കുന്നതിനായി ചുവടെ ''{PH1}'' ടൈപ്പ് ചെയ്യുക."
+    "message": "നിങ്ങൾക്ക് മനസ്സിലാകാത്തതോ സ്വയം അവലോകനം ചെയ്യാത്തതോ ആയ റെക്കോർഡിംഗുകൾ ഇമ്പോർട്ട് ചെയ്യരുത്. ഇത് നിങ്ങളുടെ ഐഡന്റിറ്റി അപഹരിക്കാനോ നിങ്ങളുടെ കമ്പ്യൂട്ടറിന്റെ നിയന്ത്രണം ഏറ്റെടുക്കാനോ അക്രമികളെ അനുവദിച്ചേക്കാം. ഇമ്പോർട്ട് ചെയ്യാൻ അനുവദിക്കുന്നതിനായി ചുവടെ “{PH1}” എന്ന് ടൈപ്പ് ചെയ്യുക."
   },
   "panels/recorder/RecorderController.ts | doYouTrustThisCode": {
     "message": "നിങ്ങൾക്ക് ഈ റെക്കോർഡിംഗിൽ വിശ്വാസമുണ്ടോ?"
@@ -12477,7 +12513,7 @@
     "message": "കോഡ് കാഴ്‌ച ടോഗിൾ ചെയ്യുക"
   },
   "panels/recorder/RecorderController.ts | typeAllowImporting": {
-    "message": "\"{PH1}\" ടൈപ്പ് ചെയ്യുക"
+    "message": "“{PH1}” എന്ന് ടൈപ്പ് ചെയ്യുക"
   },
   "panels/recorder/components/CreateRecordingView.ts | cancelRecording": {
     "message": "റെക്കോർഡിംഗ് റദ്ദാക്കുക"
@@ -13459,6 +13495,21 @@
   },
   "panels/settings/AISettingsTab.ts | aIAnnotationsFeatureDescription": {
     "message": "പ്രകടന ട്രെയ്സ് കുറിപ്പുകൾക്കുള്ള തലക്കെട്ടുകൾ സ്വയമേവ ജനറേറ്റ് ചെയ്യുക"
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceDescriptionV2": {
+    "message": "പരിശോധിച്ച പേജിൽ സന്ദർഭോചിതമായ സഹായം നേടുക"
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceThingsToConsiderNoLoggingV2": {
+    "message": "വിശദീകരണങ്ങൾ ജനറേറ്റ് ചെയ്യാൻ, ചാറ്റ് സന്ദേശങ്ങൾ, DevTools പാനലുകളും വെബ് API-കളും വഴി ഈ സൈറ്റിന് ആക്‌സസ് ചെയ്യാൻ കഴിയുന്ന ഡാറ്റ, നെറ്റ്‌വർക്ക് അഭ്യർത്ഥനകളും ഫയലുകളും പ്രകടന ട്രെയ്‌സുകളും പോലെ നിങ്ങൾ തിരഞ്ഞെടുക്കുന്ന ഇനങ്ങൾ എന്നിവ Google-ലേക്ക് അയയ്ക്കുന്നു. നിങ്ങൾ സമർപ്പിക്കുന്ന ഉള്ളടക്കവും ഈ ഫീച്ചർ ജനറേറ്റ് ചെയ്യുന്ന ഉള്ളടക്കവും Google-ന്റെ AI മോഡലുകൾ മെച്ചപ്പെടുത്താൻ ഉപയോഗിക്കില്ല. ഇതൊരു പരീക്ഷണാത്മക AI ഫീച്ചറാണ്, എല്ലായ്‌പ്പോഴും ശരിയായിരിക്കണമെന്നില്ല."
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceThingsToConsiderV2": {
+    "message": "വിശദീകരണങ്ങൾ ജനറേറ്റ് ചെയ്യാൻ, ചാറ്റ് സന്ദേശങ്ങൾ, DevTools പാനലുകളും വെബ് API-കളും വഴി ഈ സൈറ്റിന് ആക്‌സസ് ചെയ്യാൻ കഴിയുന്ന ഡാറ്റ, നെറ്റ്‌വർക്ക് അഭ്യർത്ഥനകളും ഫയലുകളും പ്രകടന ട്രെയ്‌സുകളും പോലെ നിങ്ങൾ തിരഞ്ഞെടുക്കുന്ന ഇനങ്ങൾ എന്നിവ Google-ലേക്ക് അയയ്ക്കുന്നു, ഈ ഫീച്ചർ മെച്ചപ്പെടുത്താൻ റിവ്യൂവർമാർ ഈ ഡാറ്റ കണ്ടേക്കാം. ഇതൊരു പരീക്ഷണാത്മക AI ഫീച്ചറാണ്, എല്ലായ്‌പ്പോഴും ശരിയായിരിക്കണമെന്നില്ല."
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceWhenOnItem1V2": {
+    "message": "DevTools AI സഹായം ഉപയോഗിച്ച് സ്റ്റൈലിംഗ്, നെറ്റ്‌വർക്ക്, പ്രകടനം, സോഴ്‌സ് കോഡ്, ആക്‌സസ് ചെയ്യൽ, സ്റ്റോറേജ് എന്നിവയുമായി ബന്ധപ്പെട്ട പ്രശ്നങ്ങൾ ഡീബഗ് ചെയ്യുക"
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceWhenOnItem2V2": {
+    "message": "ഏജന്റിന്റെ റീസണിംഗ് ഘട്ടം ഘട്ടമായി പിന്തുടർന്ന് പ്രസക്തമായ ഉറവിട ഡാറ്റയിലേക്ക് അതിവേഗം പോകുക"
   },
   "panels/settings/AISettingsTab.ts | asYouTypeCodeSuggestions": {
     "message": "കൺസോൾ അല്ലെങ്കിൽ ഉറവിടങ്ങളുടെ പാനലിൽ ടൈപ്പ് ചെയ്യുന്നതിനനുസരിച്ച്, നിങ്ങൾക്ക് കോഡ് നിർദ്ദേശങ്ങൾ ലഭിക്കും. ഒരെണ്ണം സ്വീകരിക്കാൻ, ടാബ് അമർത്തുക."
@@ -14539,12 +14590,6 @@
   },
   "panels/sources/PersistenceActions.ts | showOverrides": {
     "message": "എല്ലാ അസാധുവാക്കലുകളും കാണിക്കുക"
-  },
-  "panels/sources/ProfilePlugin.ts | kb": {
-    "message": "kB"
-  },
-  "panels/sources/ProfilePlugin.ts | mb": {
-    "message": "MB"
   },
   "panels/sources/ProfilePlugin.ts | ms": {
     "message": "മി.സെ"
@@ -17183,6 +17228,9 @@
   "ui/components/markdown_view/CodeBlock.ts | copy": {
     "message": "കോഡ് പകർത്തുക"
   },
+  "ui/components/markdown_view/CodeBlock.ts | copyCodeSnippet": {
+    "message": "{PH1} കോഡ് സ്‌നിപ്പെറ്റ് പകർത്തുക"
+  },
   "ui/components/markdown_view/CodeBlock.ts | disclaimer": {
     "message": "ജാഗ്രതയോടെ കോഡ് സ്‌നിപ്പറ്റുകൾ ഉപയോഗിക്കുക"
   },
@@ -17306,6 +17354,9 @@
   "ui/legacy/ActionRegistration.ts | sources": {
     "message": "സ്രോതസ്സുകൾ"
   },
+  "ui/legacy/Dialog.ts | close": {
+    "message": "അടയ്ക്കുക"
+  },
   "ui/legacy/DockController.ts | close": {
     "message": "അടയ്ക്കുക"
   },
@@ -17339,6 +17390,12 @@
   "ui/legacy/InspectorDrawerView.ts | closeDrawer": {
     "message": "ഡ്രോയർ അടയ്ക്കുക"
   },
+  "ui/legacy/InspectorDrawerView.ts | expandDrawer": {
+    "message": "വലിപ്പ് വികസിപ്പിക്കുക"
+  },
+  "ui/legacy/InspectorDrawerView.ts | minimizeDrawer": {
+    "message": "വലിപ്പ് ചെറുതാക്കുക"
+  },
   "ui/legacy/InspectorDrawerView.ts | moreTools": {
     "message": "കൂടുതൽ ടൂളുകൾ"
   },
@@ -17354,8 +17411,14 @@
   "ui/legacy/InspectorView.ts | drawer": {
     "message": "ടൂൾ ഡ്രോയർ"
   },
+  "ui/legacy/InspectorView.ts | drawerExpanded": {
+    "message": "വലിപ്പ് വികസിപ്പിച്ചു"
+  },
   "ui/legacy/InspectorView.ts | drawerHidden": {
     "message": "ഡ്രോയർ മറച്ചിരിക്കുന്നു"
+  },
+  "ui/legacy/InspectorView.ts | drawerMinimized": {
+    "message": "വലിപ്പ് ചെറുതാക്കി"
   },
   "ui/legacy/InspectorView.ts | drawerShown": {
     "message": "ഡ്രോയർ കാണിച്ചിരിക്കുന്നു"
@@ -17831,66 +17894,6 @@
   "ui/legacy/components/inline_editor/ColorSwatch.ts | shiftclickToChangeColorFormat": {
     "message": "നിറത്തിന്റെ ഫോർമാറ്റ് മാറ്റാൻ Shift-ക്ലിക്ക് ചെയ്യുക"
   },
-  "ui/legacy/components/inline_editor/FontEditor.ts | PleaseEnterAValidValueForSText": {
-    "message": "* {PH1} ടെക്‌സ്‌റ്റ് ഇൻപുട്ടിന് സാധുവായ ഒരു മൂല്യം നൽകുക"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | cssProperties": {
-    "message": "CSS പ്രോപ്പർട്ടികൾ"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | deleteS": {
-    "message": "{PH1} ഇല്ലാതാക്കുക"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fallbackS": {
-    "message": "ഫോൾബാക്ക് {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fontFamily": {
-    "message": "ഫോണ്ട് കുടുംബം"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fontSelectorDeletedAtIndexS": {
-    "message": "സൂചികയിൽ ഫോണ്ട് സെലക്ടർ ഇല്ലാതാക്കി: {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fontSize": {
-    "message": "ഫോണ്ട് വലുപ്പം"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fontWeight": {
-    "message": "ഫോണ്ടിന്റെ കനം"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | lineHeight": {
-    "message": "ലൈൻ ഉയരം"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sKeyValueSelector": {
-    "message": "{PH1} കീ മൂല്യം സെലക്ടർ"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sSliderInput": {
-    "message": "{PH1} സ്ലൈഡർ ഇൻപുട്ട്"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sTextInput": {
-    "message": "{PH1} ടെക്‌സ്‌റ്റ് ഇൻപുട്ട്"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sToggleInputType": {
-    "message": "{PH1} ഇൻപുട്ട് തരം മാറ്റുക"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sUnitInput": {
-    "message": "{PH1} യൂണിറ്റ് ഇൻപുട്ട്"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | selectorInputMode": {
-    "message": "സെലക്‌ടർ ഇൻപുട്ട് മോഡ്"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sliderInputMode": {
-    "message": "സ്ലൈഡർ ഇൻപുട്ട് മോഡ്"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | spacing": {
-    "message": "സ്പെയ്‌സിംഗ്"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | thereIsNoValueToDeleteAtIndexS": {
-    "message": "സൂചികയിൽ ഇല്ലാതാക്കാൻ ഒരു മൂല്യവുമില്ല: {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | thisPropertyIsSetToContainUnits": {
-    "message": "ഈ പ്രോപ്പർട്ടി, യൂണിറ്റുകൾ ഉൾക്കൊള്ളാൻ സജ്ജീകരിച്ചിരിക്കുന്നു, എന്നാൽ നിർവചിച്ച അനുബന്ധ unitsArray ഇതിന് ഇല്ല: {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | units": {
-    "message": "യൂണിറ്റുകൾ"
-  },
   "ui/legacy/components/object_ui/CustomPreviewComponent.ts | showAsJavascriptObject": {
     "message": "JavaScript ഒബ്‌ജക്‌റ്റായി കാണിക്കുക"
   },
@@ -18047,17 +18050,8 @@
   "ui/legacy/components/perf_ui/perf_ui-meta.ts | flamechartSelectedNavigation": {
     "message": "ഫ്ലെയിംചാർട്ട് നാവിഗേഷൻ:"
   },
-  "ui/legacy/components/perf_ui/perf_ui-meta.ts | hideLiveMemoryAllocation": {
-    "message": "തത്സമയ മെമ്മറി അലോക്കേഷൻ കുറിപ്പുകൾ മറയ്ക്കുക"
-  },
-  "ui/legacy/components/perf_ui/perf_ui-meta.ts | liveMemoryAllocationAnnotations": {
-    "message": "തത്സമയ മെമ്മറി അലോക്കേഷൻ കുറിപ്പുകൾ"
-  },
   "ui/legacy/components/perf_ui/perf_ui-meta.ts | modern": {
     "message": "മോഡേൺ"
-  },
-  "ui/legacy/components/perf_ui/perf_ui-meta.ts | showLiveMemoryAllocation": {
-    "message": "തത്സമയ മെമ്മറി അലോക്കേഷൻ കുറിപ്പുകൾ കാണിക്കുക"
   },
   "ui/legacy/components/quick_open/CommandMenu.ts | command": {
     "message": "കമാൻഡ്"
@@ -18171,7 +18165,7 @@
     "message": "{PH1} തിരഞ്ഞെടുക്കാനുള്ള റീജിയണുകൾ"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | doNotPaste": {
-    "message": "നിങ്ങൾക്ക് മനസ്സിലാകാത്തതോ സ്വയം അവലോകനം ചെയ്യാത്തതോ ആയ കോഡ് DevTools-ൽ ഒട്ടിക്കരുത്. ഇത് നിങ്ങളുടെ ഐഡന്റിറ്റി അപഹരിക്കാനോ നിങ്ങളുടെ കമ്പ്യൂട്ടറിന്റെ നിയന്ത്രണം ഏറ്റെടുക്കാനോ ആക്രമണകാരികളെ അനുവദിച്ചേക്കാം. ഒട്ടിക്കാൻ അനുവദിക്കുന്നതിന് താഴെ ''{PH1}'' എന്ന് ടൈപ്പ് ചെയ്യുക."
+    "message": "നിങ്ങൾക്ക് മനസ്സിലാകാത്തതോ സ്വയം അവലോകനം ചെയ്യാത്തതോ ആയ കോഡ് DevTools-ൽ ഒട്ടിക്കരുത്. ഇത് നിങ്ങളുടെ ഐഡന്റിറ്റി അപഹരിക്കാനോ നിങ്ങളുടെ കമ്പ്യൂട്ടറിന്റെ നിയന്ത്രണം ഏറ്റെടുക്കാനോ അക്രമികളെ അനുവദിച്ചേക്കാം. ഒട്ടിക്കാൻ അനുവദിക്കുന്നതിന് ചുവടെ “{PH1}” എന്ന് ടൈപ്പ് ചെയ്യുക."
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | doYouTrustThisCode": {
     "message": "നിങ്ങൾക്ക് ഈ കോഡിൽ വിശ്വാസമുണ്ടോ?"
@@ -18189,7 +18183,7 @@
     "message": "ഉറവിടം"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | typeAllowPasting": {
-    "message": "\"{PH1}\" ടൈപ്പ് ചെയ്യുക"
+    "message": "“{PH1}” എന്ന് ടൈപ്പ് ചെയ്യുക"
   },
   "ui/legacy/components/source_frame/XMLView.ts | find": {
     "message": "കണ്ടെത്തുക"

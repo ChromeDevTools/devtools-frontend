@@ -323,6 +323,9 @@
   "core/sdk/NetworkManager.ts | noContentForRedirect": {
     "message": "Không có nội dung phù hợp do yêu cầu này đã bị chuyển hướng"
   },
+  "core/sdk/NetworkManager.ts | noContentForSSE": {
+    "message": "Nội dung của Sự kiện được gửi bởi máy chủ (SSE) hiện không được hỗ trợ"
+  },
   "core/sdk/NetworkManager.ts | noContentForWebSocket": {
     "message": "Nội dung của WebSockets hiện chưa được hỗ trợ"
   },
@@ -559,6 +562,9 @@
   },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "Mù màu (không màu)"
+  },
+  "core/sdk/sdk-meta.ts | apca": {
+    "message": "Thuật toán tính toán độ tương phản dựa trên nhận thức nâng cao (APCA) thay thế các nguyên tắc về AA/AAA và tỷ lệ tương phản trước đây"
   },
   "core/sdk/sdk-meta.ts | blurredVision": {
     "message": "Mờ mắt"
@@ -1441,6 +1447,9 @@
   },
   "generated/Deprecation.ts | PrefixedVideoSupportsFullscreen": {
     "message": "HTMLVideoElement.webkitSupportsFullscreen không còn được dùng nữa. Thay vào đó, vui lòng sử dụng Document.fullscreenEnabled."
+  },
+  "generated/Deprecation.ts | PreventSvgFilterPaint": {
+    "message": "Không thể áp dụng bộ lọc SVG cho iframe nhiều nguồn gốc, iframe bị hạn chế (ví dụ: iframe chạy trong môi trường hộp cát) hoặc trình bổ trợ."
   },
   "generated/Deprecation.ts | RTCConstraintEnableDtlsSrtpFalse": {
     "message": "Điều kiện hạn chế DtlsSrtpKeyAgreement đã bị xoá. Bạn đã chỉ định một giá trị false cho điều kiện hạn chế này, đây được coi là nỗ lực sử dụng phương thức SDES key negotiation đã bị xoá. Chức năng này đã bị xoá; thay vào đó, hãy sử dụng một dịch vụ có hỗ trợ DTLS key negotiation."
@@ -3207,13 +3216,34 @@
     "message": "Đây là tính năng AI thử nghiệm và không phải lúc nào cũng chính xác. Vui lòng xác minh văn bản này trước khi dán vào một công cụ khác."
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | exportForAgents": {
-    "message": "Sao chép cho tác nhân lập trình"
+    "message": "Sao chép vào tác nhân lập trình"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | generatingSummary": {
     "message": "Đang tạo tóm tắt…"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | saveAsMarkdown": {
     "message": "Lưu dưới dạng…"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | gotIt": {
+    "message": "Tôi hiểu"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | integrationPoint": {
+    "message": "Trợ lý AI hiện đã được tích hợp với các bảng Điều khiển Ứng dụng và Lighthouse, đồng thời thu thập thông tin ngữ cảnh từ các nguồn dữ liệu"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | manageSettings": {
+    "message": "Quản lý trong phần cài đặt"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | privacyDisclaimer": {
+    "message": "Hệ thống sẽ gửi cho Google các tin nhắn trò chuyện, dữ liệu có thể truy cập qua bảng điều khiển Công cụ cho nhà phát triển về trang web này và API web cũng như các mục bạn chọn, chẳng hạn như yêu cầu về mạng, tệp và dấu vết hiệu suất. Ngoài ra, nhân viên đánh giá có thể xem xét các thông tin đó để cải thiện tính năng này. Đây là tính năng AI thử nghiệm và không phải lúc nào cũng chính xác."
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | privacyDisclaimerEnterpriseNoLogging": {
+    "message": "Hệ thống sẽ gửi cho Google các tin nhắn trò chuyện, dữ liệu có thể truy cập qua bảng điều khiển Công cụ cho nhà phát triển về trang web này và API web cũng như các mục bạn chọn, chẳng hạn như yêu cầu về mạng, tệp và dấu vết hiệu suất. Hệ thống sẽ không sử dụng nội dung được gửi đến và tạo bởi tính năng này để cải thiện các mô hình AI của Google. Đây là tính năng AI thử nghiệm và không phải lúc nào cũng chính xác."
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | title": {
+    "message": "Trợ lý AI vừa được nâng cấp"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | widgetPoint": {
+    "message": "Sử dụng tiện ích để xác minh kết quả hoặc chuyển đến dữ liệu nguồn của một số trường hợp gỡ lỗi"
   },
   "panels/ai_assistance/components/WalkthroughView.ts | close": {
     "message": "Đóng"
@@ -3223,6 +3253,9 @@
   },
   "panels/ai_assistance/components/WalkthroughView.ts | hideThinking": {
     "message": "Ẩn tiến trình tư duy"
+  },
+  "panels/ai_assistance/components/WalkthroughView.ts | inProgress": {
+    "message": "Đang thực hiện"
   },
   "panels/ai_assistance/components/WalkthroughView.ts | showAgentWalkthrough": {
     "message": "Hiện hướng dẫn từng bước của nhân viên hỗ trợ"
@@ -3677,9 +3710,6 @@
   "panels/application/ApplicationPanelSidebar.ts | theContentOfThisDocumentHasBeen": {
     "message": "Nội dung của tài liệu này được tạo theo phương thức động qua \"document.write()\"."
   },
-  "panels/application/ApplicationPanelSidebar.ts | thirdPartyPhaseout": {
-    "message": "Cookie của {PH1} có thể đã bị chặn do Google đang dần loại bỏ cookie của bên thứ ba."
-  },
   "panels/application/ApplicationPanelSidebar.ts | versionS": {
     "message": "Phiên bản: {PH1}"
   },
@@ -3829,6 +3859,9 @@
   },
   "panels/application/DOMStorageItemsView.ts | domStorageItemsCleared": {
     "message": "Đã xoá các Mục trong bộ nhớ DOM"
+  },
+  "panels/application/DeviceBoundSessionsTreeElement.ts | clear": {
+    "message": "Xoá"
   },
   "panels/application/DeviceBoundSessionsTreeElement.ts | deviceBoundSessions": {
     "message": "Phiên được liên kết với thiết bị"
@@ -4922,6 +4955,9 @@
   "panels/application/TrustTokensTreeElement.ts | trustTokens": {
     "message": "Mã thông báo trạng thái riêng tư"
   },
+  "panels/application/WebMCPView.ts | cancelCall": {
+    "message": "Huỷ"
+  },
   "panels/application/WebMCPView.ts | canceled": {
     "message": "Đã huỷ"
   },
@@ -4937,8 +4973,20 @@
   "panels/application/WebMCPView.ts | close": {
     "message": "Đóng"
   },
+  "panels/application/WebMCPView.ts | completed": {
+    "message": "Ðã hoàn tất"
+  },
+  "panels/application/WebMCPView.ts | copyDescription": {
+    "message": "Sao chép nội dung mô tả"
+  },
+  "panels/application/WebMCPView.ts | copyName": {
+    "message": "Sao chép tên"
+  },
   "panels/application/WebMCPView.ts | declarative": {
     "message": "Mang tính khai báo"
+  },
+  "panels/application/WebMCPView.ts | editAndRun": {
+    "message": "Chỉnh sửa và chạy"
   },
   "panels/application/WebMCPView.ts | error": {
     "message": "Lỗi"
@@ -4982,17 +5030,23 @@
   "panels/application/WebMCPView.ts | output": {
     "message": "Đầu ra"
   },
+  "panels/application/WebMCPView.ts | paste": {
+    "message": "Dán"
+  },
   "panels/application/WebMCPView.ts | pending": {
     "message": "Đang diễn ra"
+  },
+  "panels/application/WebMCPView.ts | revealTool": {
+    "message": "Hiển thị công cụ"
+  },
+  "panels/application/WebMCPView.ts | runTool": {
+    "message": "Chạy công cụ"
   },
   "panels/application/WebMCPView.ts | status": {
     "message": "Trạng thái"
   },
   "panels/application/WebMCPView.ts | statusTypes": {
     "message": "Loại trạng thái"
-  },
-  "panels/application/WebMCPView.ts | success": {
-    "message": "Thành công"
   },
   "panels/application/WebMCPView.ts | toolDetails": {
     "message": "Chi tiết"
@@ -5002,6 +5056,9 @@
   },
   "panels/application/WebMCPView.ts | toolTypes": {
     "message": "Loại công cụ"
+  },
+  "panels/application/WebMCPView.ts | toolUnregisteredNotice": {
+    "message": "Công cụ này đã bị huỷ đăng ký"
   },
   "panels/application/WebMCPView.ts | totalCalls": {
     "message": "Tổng số {PH1} cuộc gọi"
@@ -5873,6 +5930,9 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsFailureReason": {
     "message": "Lý do xảy ra lỗi"
   },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsFormSubmission": {
+    "message": "Gửi biểu mẫu"
+  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsRuleSet": {
     "message": "Bộ quy tắc"
   },
@@ -5882,11 +5942,17 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsTargetHint": {
     "message": "Gợi ý về mục tiêu"
   },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | no": {
+    "message": "Không"
+  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | noElementSelected": {
     "message": "Chưa chọn phần tử nào"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "Chọn một phần tử để biết thêm chi tiết"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | yes": {
+    "message": "Có"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByBatterySaver": {
     "message": "Tính năng tải theo suy đoán đang tắt do chế độ Tiết kiệm pin của hệ điều hành."
@@ -6794,6 +6860,9 @@
   "panels/console/ConsoleView.ts | autocompleteFromHistory": {
     "message": "Tự động hoàn thành nhờ nhật ký"
   },
+  "panels/console/ConsoleView.ts | collapseAll": {
+    "message": "Thu gọn tất cả"
+  },
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "Bảng điều khiển đã bị xóa thông tin"
   },
@@ -6832,6 +6901,9 @@
   },
   "panels/console/ConsoleView.ts | errors": {
     "message": "Lỗi"
+  },
+  "panels/console/ConsoleView.ts | expandAll": {
+    "message": "Mở rộng tất cả"
   },
   "panels/console/ConsoleView.ts | filteredMessagesInConsole": {
     "message": "{PH1} thông báo trong bảng điều khiển"
@@ -8147,6 +8219,9 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Xem giá trị đã tính"
   },
+  "panels/elements/StylesSidebarPane.ts | aiSuggestionAccepted": {
+    "message": "{PH1} Đã chấp nhận đề xuất."
+  },
   "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
     "message": "Chế độ tối tự động"
   },
@@ -8251,6 +8326,9 @@
   },
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "Sao chép kiểu"
+  },
+  "panels/elements/elements-meta.ts | cssAnimationsOnlyWhenAnimationsTabOpen": {
+    "message": "Chỉ hiển thị kiểu ảnh động khi thẻ Ảnh động đang mở"
   },
   "panels/elements/elements-meta.ts | detailedInspectTooltip": {
     "message": "Chú thích tính năng kiểm tra chi tiết"
@@ -11723,6 +11801,9 @@
   "panels/profiler/HeapProfileView.ts | sBytes": {
     "message": "{PH1} byte"
   },
+  "panels/profiler/HeapProfileView.ts | samplingHeapProfilerTimeline": {
+    "message": "Dòng thời gian của công cụ lập hồ sơ ảnh chụp nhanh của vùng nhớ khối xếp bằng phương thức lấy mẫu"
+  },
   "panels/profiler/HeapProfileView.ts | samplingProfiles": {
     "message": "Hồ sơ ảnh chụp nhanh tạo bằng cách lấy mẫu"
   },
@@ -11930,9 +12011,6 @@
   "panels/profiler/HeapSnapshotView.ts | duplicatedStrings": {
     "message": "Chuỗi trùng lặp"
   },
-  "panels/profiler/HeapSnapshotView.ts | exposeInternals": {
-    "message": "Dữ liệu nội bộ kèm theo thông tin chi tiết về việc triển khai"
-  },
   "panels/profiler/HeapSnapshotView.ts | filter": {
     "message": "Lọc"
   },
@@ -12070,33 +12148,6 @@
   },
   "panels/profiler/IsolateSelector.ts | totalPageJsHeapSizeChangeTrend": {
     "message": "Xu hướng thay đổi tổng thể của kích thước vùng nhớ khối xếp JS trên trang trong {PH1} phút trước."
-  },
-  "panels/profiler/LiveHeapProfileView.ts | allocatedJsHeapSizeCurrentlyIn": {
-    "message": "Kích thước vùng nhớ khối xếp JS đã phân bổ hiện được sử dụng"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | anonymousScriptS": {
-    "message": "(Tập lệnh ẩn danh {PH1})"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | heapProfile": {
-    "message": "Hồ sơ của vùng nhớ khối xếp"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | jsHeap": {
-    "message": "Vùng nhớ khối xếp JS"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | kb": {
-    "message": "kB"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | numberOfVmsSharingTheSameScript": {
-    "message": "Số lượng máy ảo dùng chung một nguồn tập lệnh"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | scriptUrl": {
-    "message": "URL của tập lệnh"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | urlOfTheScriptSource": {
-    "message": "URL của nguồn tập lệnh"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | vms": {
-    "message": "Máy ảo"
   },
   "panels/profiler/ModuleUIStrings.ts | buildingAllocationStatistics": {
     "message": "Đang tạo các số liệu thống kê phân bổ…"
@@ -12275,9 +12326,6 @@
   "panels/profiler/profiler-meta.ts | deleteProfile": {
     "message": "Xoá hồ sơ"
   },
-  "panels/profiler/profiler-meta.ts | liveHeapProfile": {
-    "message": "Cấu hình vùng nhớ khối xếp trực tiếp"
-  },
   "panels/profiler/profiler-meta.ts | loadProfile": {
     "message": "Tải hồ sơ…"
   },
@@ -12287,23 +12335,11 @@
   "panels/profiler/profiler-meta.ts | saveProfile": {
     "message": "Lưu hồ sơ…"
   },
-  "panels/profiler/profiler-meta.ts | showLiveHeapProfile": {
-    "message": "Hiển thị Hồ sơ ảnh chụp nhanh của vùng nhớ khối xếp trực tiếp"
-  },
   "panels/profiler/profiler-meta.ts | showMemory": {
     "message": "Hiển thị bộ nhớ"
   },
-  "panels/profiler/profiler-meta.ts | startRecordingHeapAllocations": {
-    "message": "Bắt đầu ghi lại quá trình phân bổ vùng nhớ khối xếp"
-  },
-  "panels/profiler/profiler-meta.ts | startRecordingHeapAllocationsAndReload": {
-    "message": "Bắt đầu ghi lại các quá trình phân bổ vùng nhớ khối xếp và tải lại trang"
-  },
   "panels/profiler/profiler-meta.ts | startStopRecording": {
     "message": "Bắt đầu/dừng ghi"
-  },
-  "panels/profiler/profiler-meta.ts | stopRecordingHeapAllocations": {
-    "message": "Dừng ghi lại mức phân bổ vùng nhớ khối xếp"
   },
   "panels/protocol_monitor/JSONEditor.ts | addCustomProperty": {
     "message": "Thêm thuộc tính tuỳ chỉnh"
@@ -12417,7 +12453,7 @@
     "message": "Xoá bản ghi"
   },
   "panels/recorder/RecorderController.ts | doNotImport": {
-    "message": "Không nhập bản ghi mà bạn không nắm rõ hoặc chưa tự xem xét vào Công cụ cho nhà phát triển. Hành động này có thể tạo điều kiện cho kẻ tấn công đánh cắp danh tính của bạn hoặc kiểm soát máy tính của bạn. Vui lòng nhập ''{PH1}\" vào bên dưới để cho phép nhập bản ghi."
+    "message": "Không nhập bản ghi mà bạn không nắm rõ hoặc chưa tự xem xét vào Công cụ cho nhà phát triển. Hành động này có thể tạo điều kiện cho kẻ tấn công đánh cắp danh tính của bạn hoặc kiểm soát máy tính của bạn. Vui lòng nhập \"{PH1}\" vào bên dưới để cho phép nhập bản ghi."
   },
   "panels/recorder/RecorderController.ts | doYouTrustThisCode": {
     "message": "Bạn có tin tưởng bản ghi này không?"
@@ -12477,7 +12513,7 @@
     "message": "Bật/tắt chế độ xem mã"
   },
   "panels/recorder/RecorderController.ts | typeAllowImporting": {
-    "message": "Loại \"{PH1}\""
+    "message": "Nhập \"{PH1}\""
   },
   "panels/recorder/components/CreateRecordingView.ts | cancelRecording": {
     "message": "Huỷ ghi"
@@ -13459,6 +13495,21 @@
   },
   "panels/settings/AISettingsTab.ts | aIAnnotationsFeatureDescription": {
     "message": "Tự động tạo tiêu đề cho chú thích về dấu vết hiệu suất"
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceDescriptionV2": {
+    "message": "Nhận trợ giúp phù hợp với bối cảnh trên trang đã kiểm tra"
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceThingsToConsiderNoLoggingV2": {
+    "message": "Để tạo nội dung giải thích, hệ thống sẽ gửi cho Google các tin nhắn trò chuyện, dữ liệu có thể truy cập qua bảng điều khiển Công cụ cho nhà phát triển về trang web này và API web cũng như các mục bạn chọn, chẳng hạn như yêu cầu về mạng, tệp và dấu vết hiệu suất. Hệ thống sẽ không sử dụng nội dung bạn gửi và nội dung được tạo bởi tính năng này để cải thiện các mô hình AI của Google. Đây là tính năng AI thử nghiệm và không phải lúc nào cũng chính xác."
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceThingsToConsiderV2": {
+    "message": "Để tạo nội dung giải thích, hệ thống sẽ gửi cho Google các tin nhắn trò chuyện, dữ liệu có thể truy cập qua bảng điều khiển Công cụ cho nhà phát triển về trang web này và API web cũng như các mục bạn chọn, chẳng hạn như yêu cầu về mạng, tệp và dấu vết hiệu suất. Ngoài ra, nhân viên đánh giá có thể xem xét các thông tin đó để cải thiện tính năng này. Đây là tính năng AI thử nghiệm và không phải lúc nào cũng chính xác."
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceWhenOnItem1V2": {
+    "message": "Trợ lý AI trong Công cụ cho nhà phát triển giúp bạn gỡ lỗi các vấn đề về định kiểu, mạng, hiệu suất, mã nguồn, khả năng tiếp cận và bộ nhớ"
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceWhenOnItem2V2": {
+    "message": "Theo dõi từng bước suy luận của tác nhân AI và nhanh chóng chuyển đến dữ liệu nguồn có liên quan"
   },
   "panels/settings/AISettingsTab.ts | asYouTypeCodeSuggestions": {
     "message": "Khi nhập vào Bảng điều khiển hoặc bảng điều khiển Nguồn, bạn sẽ nhận được các đề xuất về mã. Nhấn phím Tab để chấp nhận một đề xuất."
@@ -14539,12 +14590,6 @@
   },
   "panels/sources/PersistenceActions.ts | showOverrides": {
     "message": "Hiển thị tất cả tệp đã ghi đè"
-  },
-  "panels/sources/ProfilePlugin.ts | kb": {
-    "message": "kB"
-  },
-  "panels/sources/ProfilePlugin.ts | mb": {
-    "message": "MB"
   },
   "panels/sources/ProfilePlugin.ts | ms": {
     "message": "mili giây"
@@ -17183,6 +17228,9 @@
   "ui/components/markdown_view/CodeBlock.ts | copy": {
     "message": "Sao chép mã"
   },
+  "ui/components/markdown_view/CodeBlock.ts | copyCodeSnippet": {
+    "message": "Sao chép đoạn mã {PH1}"
+  },
   "ui/components/markdown_view/CodeBlock.ts | disclaimer": {
     "message": "Hãy thận trọng khi sử dụng đoạn mã"
   },
@@ -17306,6 +17354,9 @@
   "ui/legacy/ActionRegistration.ts | sources": {
     "message": "Nguồn"
   },
+  "ui/legacy/Dialog.ts | close": {
+    "message": "Đóng"
+  },
   "ui/legacy/DockController.ts | close": {
     "message": "Đóng"
   },
@@ -17339,6 +17390,12 @@
   "ui/legacy/InspectorDrawerView.ts | closeDrawer": {
     "message": "Đóng ngăn"
   },
+  "ui/legacy/InspectorDrawerView.ts | expandDrawer": {
+    "message": "Mở rộng ngăn"
+  },
+  "ui/legacy/InspectorDrawerView.ts | minimizeDrawer": {
+    "message": "Thu nhỏ ngăn"
+  },
   "ui/legacy/InspectorDrawerView.ts | moreTools": {
     "message": "Công cụ khác"
   },
@@ -17354,8 +17411,14 @@
   "ui/legacy/InspectorView.ts | drawer": {
     "message": "Ngăn công cụ"
   },
+  "ui/legacy/InspectorView.ts | drawerExpanded": {
+    "message": "Đã mở rộng ngăn"
+  },
   "ui/legacy/InspectorView.ts | drawerHidden": {
     "message": "Đã ẩn ngăn"
+  },
+  "ui/legacy/InspectorView.ts | drawerMinimized": {
+    "message": "Đã thu nhỏ ngăn"
   },
   "ui/legacy/InspectorView.ts | drawerShown": {
     "message": "Đã hiện ngăn"
@@ -17831,66 +17894,6 @@
   "ui/legacy/components/inline_editor/ColorSwatch.ts | shiftclickToChangeColorFormat": {
     "message": "Nhấn phím Shift và nhấp để thay đổi định dạng màu"
   },
-  "ui/legacy/components/inline_editor/FontEditor.ts | PleaseEnterAValidValueForSText": {
-    "message": "* Vui lòng nhập một giá trị hợp lệ cho phương thức nhập văn bản {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | cssProperties": {
-    "message": "Thuộc tính CSS"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | deleteS": {
-    "message": "Xóa {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fallbackS": {
-    "message": "Bản dự phòng {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fontFamily": {
-    "message": "Bộ phông chữ"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fontSelectorDeletedAtIndexS": {
-    "message": "Bộ chọn phông chữ đã bị xóa tại chỉ mục: {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fontSize": {
-    "message": "Cỡ chữ"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fontWeight": {
-    "message": "Độ đậm phông chữ"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | lineHeight": {
-    "message": "Chiều cao dòng"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sKeyValueSelector": {
-    "message": "Bộ chọn giá trị khóa của {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sSliderInput": {
-    "message": "Phương thức nhập văn bản vào thanh trượt {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sTextInput": {
-    "message": "Phương thức nhập văn bản của {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sToggleInputType": {
-    "message": "nút bật/tắt phương thức nhập của {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sUnitInput": {
-    "message": "Dữ liệu đầu vào của đơn vị {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | selectorInputMode": {
-    "message": "Chế độ nhập của bộ chọn"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sliderInputMode": {
-    "message": "Chế độ nhập bằng thanh trượt"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | spacing": {
-    "message": "Giãn cách"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | thereIsNoValueToDeleteAtIndexS": {
-    "message": "Không có giá trị nào để xóa tại chỉ mục: {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | thisPropertyIsSetToContainUnits": {
-    "message": "Thuộc tính này được đặt để chứa các đơn vị nhưng lại chưa có unitsArray tương ứng nào được xác định: {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | units": {
-    "message": "Đơn vị"
-  },
   "ui/legacy/components/object_ui/CustomPreviewComponent.ts | showAsJavascriptObject": {
     "message": "Hiển thị dưới dạng đối tượng JavaScript"
   },
@@ -18047,17 +18050,8 @@
   "ui/legacy/components/perf_ui/perf_ui-meta.ts | flamechartSelectedNavigation": {
     "message": "Điều hướng trên biểu đồ hình ngọn lửa:"
   },
-  "ui/legacy/components/perf_ui/perf_ui-meta.ts | hideLiveMemoryAllocation": {
-    "message": "Ẩn chú thích phân bổ bộ nhớ trực tiếp"
-  },
-  "ui/legacy/components/perf_ui/perf_ui-meta.ts | liveMemoryAllocationAnnotations": {
-    "message": "Chú thích phân bổ bộ nhớ trực tiếp"
-  },
   "ui/legacy/components/perf_ui/perf_ui-meta.ts | modern": {
     "message": "Hiện đại"
-  },
-  "ui/legacy/components/perf_ui/perf_ui-meta.ts | showLiveMemoryAllocation": {
-    "message": "Hiển thị các mã chú thích phân bổ bộ nhớ trực tiếp"
   },
   "ui/legacy/components/quick_open/CommandMenu.ts | command": {
     "message": "Lệnh"
@@ -18171,7 +18165,7 @@
     "message": "{PH1} khu vực lựa chọn"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | doNotPaste": {
-    "message": "Không dán mã mà bạn không nắm rõ hoặc chưa tự xem xét vào Công cụ cho nhà phát triển. Hành động này có thể tạo điều kiện cho kẻ tấn công đánh cắp danh tính của bạn hoặc kiểm soát máy tính của bạn. Vui lòng nhập ''{PH1}'' vào bên dưới để cho phép dán."
+    "message": "Không dán mã mà bạn không nắm rõ hoặc chưa tự xem xét vào Công cụ cho nhà phát triển. Hành động này có thể tạo điều kiện cho kẻ tấn công đánh cắp danh tính của bạn hoặc kiểm soát máy tính của bạn. Vui lòng nhập \"{PH1}\" vào bên dưới để cho phép dán."
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | doYouTrustThisCode": {
     "message": "Bạn có tin tưởng mã này không?"
@@ -18189,7 +18183,7 @@
     "message": "Nguồn"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | typeAllowPasting": {
-    "message": "Loại \"{PH1}\""
+    "message": "Nhập \"{PH1}\""
   },
   "ui/legacy/components/source_frame/XMLView.ts | find": {
     "message": "Tìm"

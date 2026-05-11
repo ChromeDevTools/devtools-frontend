@@ -323,6 +323,9 @@
   "core/sdk/NetworkManager.ts | noContentForRedirect": {
     "message": "没有可显示的内容，因为此请求被重定向了"
   },
+  "core/sdk/NetworkManager.ts | noContentForSSE": {
+    "message": "尚不支持显示服务器发送事件 (SSE) 的内容"
+  },
   "core/sdk/NetworkManager.ts | noContentForWebSocket": {
     "message": "尚不支持显示 WebSockets 内容"
   },
@@ -559,6 +562,9 @@
   },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "全色盲（无法感知任何颜色）"
+  },
+  "core/sdk/sdk-meta.ts | apca": {
+    "message": "高级感知对比度算法 (APCA) 取代了之前的对比度比率以及 AA/AAA 准则"
   },
   "core/sdk/sdk-meta.ts | blurredVision": {
     "message": "视力模糊"
@@ -1441,6 +1447,9 @@
   },
   "generated/Deprecation.ts | PrefixedVideoSupportsFullscreen": {
     "message": "HTMLVideoElement.webkitSupportsFullscreen 已被弃用。请改用 Document.fullscreenEnabled。"
+  },
+  "generated/Deprecation.ts | PreventSvgFilterPaint": {
+    "message": "SVG 滤镜无法应用于跨源 iframe、受限 iframe（比如沙盒化 iframe）或插件。"
   },
   "generated/Deprecation.ts | RTCConstraintEnableDtlsSrtpFalse": {
     "message": "约束条件 DtlsSrtpKeyAgreement 已被移除。您已为此约束条件指定 false 值，系统会将这种情况解读为尝试使用已被移除的 SDES key negotiation 方法。此功能已被移除；请改用支持 DTLS key negotiation的服务。"
@@ -3207,13 +3216,34 @@
     "message": "这是一项实验性 AI 功能，并非始终准确无误。在将此文本粘贴到其他工具之前，请先仔细核查。"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | exportForAgents": {
-    "message": "复制以供编码代理使用"
+    "message": "复制到编码智能体"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | generatingSummary": {
     "message": "正在生成摘要…"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | saveAsMarkdown": {
     "message": "另存为…"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | gotIt": {
+    "message": "知道了"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | integrationPoint": {
+    "message": "AI 辅助功能现已集成到“应用”和“Lighthouse”面板中，并能同步从多个数据源提取上下文信息"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | manageSettings": {
+    "message": "前往“设置”页面进行管理"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | privacyDisclaimer": {
+    "message": "对话消息、可通过开发者工具面板和 Web API 访问的此网站数据，以及您选择的网络请求、文件和性能跟踪记录等内容会发送给 Google，并且可能由人工审核员查看，以改进此功能。这是一项实验性 AI 功能，并非始终准确无误。"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | privacyDisclaimerEnterpriseNoLogging": {
+    "message": "系统会将对话消息、可通过开发者工具面板和 Web API 访问的此网站数据，以及您选择的网络请求、文件和性能跟踪记录等内容发送给 Google。提交给此功能的内容以及此功能生成的内容不会用于改进 Google AI 模型。这是一项实验性 AI 功能，并非始终准确无误。"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | title": {
+    "message": "AI 辅助功能现在更好用了"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | widgetPoint": {
+    "message": "您可以通过微件验证结果，或在特定调试场景下直接跳转到源数据"
   },
   "panels/ai_assistance/components/WalkthroughView.ts | close": {
     "message": "关闭"
@@ -3223,6 +3253,9 @@
   },
   "panels/ai_assistance/components/WalkthroughView.ts | hideThinking": {
     "message": "隐藏思考过程"
+  },
+  "panels/ai_assistance/components/WalkthroughView.ts | inProgress": {
+    "message": "进行中"
   },
   "panels/ai_assistance/components/WalkthroughView.ts | showAgentWalkthrough": {
     "message": "显示代理演示"
@@ -3677,9 +3710,6 @@
   "panels/application/ApplicationPanelSidebar.ts | theContentOfThisDocumentHasBeen": {
     "message": "已通过“document.write()”动态生成此文档的内容。"
   },
-  "panels/application/ApplicationPanelSidebar.ts | thirdPartyPhaseout": {
-    "message": "来自 {PH1} 的 Cookie 可能因第三方 Cookie 逐步淘汰机制而被屏蔽。"
-  },
   "panels/application/ApplicationPanelSidebar.ts | versionS": {
     "message": "版本：{PH1}"
   },
@@ -3829,6 +3859,9 @@
   },
   "panels/application/DOMStorageItemsView.ts | domStorageItemsCleared": {
     "message": "DOM 存储项已被清除"
+  },
+  "panels/application/DeviceBoundSessionsTreeElement.ts | clear": {
+    "message": "清除"
   },
   "panels/application/DeviceBoundSessionsTreeElement.ts | deviceBoundSessions": {
     "message": "设备绑定会话"
@@ -4922,6 +4955,9 @@
   "panels/application/TrustTokensTreeElement.ts | trustTokens": {
     "message": "私密状态令牌"
   },
+  "panels/application/WebMCPView.ts | cancelCall": {
+    "message": "取消"
+  },
   "panels/application/WebMCPView.ts | canceled": {
     "message": "已取消"
   },
@@ -4937,8 +4973,20 @@
   "panels/application/WebMCPView.ts | close": {
     "message": "关闭"
   },
+  "panels/application/WebMCPView.ts | completed": {
+    "message": "已完成"
+  },
+  "panels/application/WebMCPView.ts | copyDescription": {
+    "message": "复制说明"
+  },
+  "panels/application/WebMCPView.ts | copyName": {
+    "message": "复制名称"
+  },
   "panels/application/WebMCPView.ts | declarative": {
     "message": "声明式"
+  },
+  "panels/application/WebMCPView.ts | editAndRun": {
+    "message": "修改并运行"
   },
   "panels/application/WebMCPView.ts | error": {
     "message": "错误"
@@ -4982,17 +5030,23 @@
   "panels/application/WebMCPView.ts | output": {
     "message": "输出"
   },
+  "panels/application/WebMCPView.ts | paste": {
+    "message": "粘贴"
+  },
   "panels/application/WebMCPView.ts | pending": {
     "message": "进行中"
+  },
+  "panels/application/WebMCPView.ts | revealTool": {
+    "message": "显示工具"
+  },
+  "panels/application/WebMCPView.ts | runTool": {
+    "message": "运行工具"
   },
   "panels/application/WebMCPView.ts | status": {
     "message": "状态"
   },
   "panels/application/WebMCPView.ts | statusTypes": {
     "message": "状态类型"
-  },
-  "panels/application/WebMCPView.ts | success": {
-    "message": "成功"
   },
   "panels/application/WebMCPView.ts | toolDetails": {
     "message": "详细信息"
@@ -5002,6 +5056,9 @@
   },
   "panels/application/WebMCPView.ts | toolTypes": {
     "message": "工具类型"
+  },
+  "panels/application/WebMCPView.ts | toolUnregisteredNotice": {
+    "message": "此工具已被取消注册"
   },
   "panels/application/WebMCPView.ts | totalCalls": {
     "message": "共 {PH1} 项调用"
@@ -5873,6 +5930,9 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsFailureReason": {
     "message": "失败原因"
   },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsFormSubmission": {
+    "message": "表单提交"
+  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsRuleSet": {
     "message": "规则集"
   },
@@ -5882,11 +5942,17 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsTargetHint": {
     "message": "目标提示"
   },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | no": {
+    "message": "否"
+  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | noElementSelected": {
     "message": "未选择任何元素"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "选择一个元素即可了解更多详情"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | yes": {
+    "message": "是"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByBatterySaver": {
     "message": "由于操作系统启用了省电模式，推测加载已停用。"
@@ -6765,7 +6831,7 @@
     "message": "控制台提示"
   },
   "panels/console/ConsolePrompt.ts | selfXssWarning": {
-    "message": "警告：请勿将您不理解或未自行检查的代码粘贴到开发者工具控制台中。这可能会导致攻击者趁机窃取您的身份信息或控制您的计算机。请在下方输入“{PH1}”，然后按 Enter 键允许粘贴。"
+    "message": "警告：请勿将您不理解或未自行检查的代码粘贴到开发者工具控制台中。这可能会导致攻击者趁机窃取您的身份信息或控制您的电脑。请在下方输入“{PH1}”，然后按 Enter 键允许粘贴。"
   },
   "panels/console/ConsoleSidebar.ts | dErrors": {
     "message": "{n,plural, =0{无错误}=1{# 个错误}other{# 个错误}}"
@@ -6793,6 +6859,9 @@
   },
   "panels/console/ConsoleView.ts | autocompleteFromHistory": {
     "message": "根据历史记录自动补全"
+  },
+  "panels/console/ConsoleView.ts | collapseAll": {
+    "message": "全部收起"
   },
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "已清除控制台"
@@ -6832,6 +6901,9 @@
   },
   "panels/console/ConsoleView.ts | errors": {
     "message": "错误"
+  },
+  "panels/console/ConsoleView.ts | expandAll": {
+    "message": "全部展开"
   },
   "panels/console/ConsoleView.ts | filteredMessagesInConsole": {
     "message": "控制台中有 {PH1} 条消息"
@@ -8147,6 +8219,9 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "查看计算得出的值"
   },
+  "panels/elements/StylesSidebarPane.ts | aiSuggestionAccepted": {
+    "message": "“{PH1}”建议被采纳。"
+  },
   "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
     "message": "自动深色模式"
   },
@@ -8251,6 +8326,9 @@
   },
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "复制样式"
+  },
+  "panels/elements/elements-meta.ts | cssAnimationsOnlyWhenAnimationsTabOpen": {
+    "message": "仅在“动画”标签页打开时显示动画样式"
   },
   "panels/elements/elements-meta.ts | detailedInspectTooltip": {
     "message": "详细检查提示"
@@ -11723,6 +11801,9 @@
   "panels/profiler/HeapProfileView.ts | sBytes": {
     "message": "{PH1} 个字节"
   },
+  "panels/profiler/HeapProfileView.ts | samplingHeapProfilerTimeline": {
+    "message": "采样堆性能分析器时间轴"
+  },
   "panels/profiler/HeapProfileView.ts | samplingProfiles": {
     "message": "抽样分析报告"
   },
@@ -11930,9 +12011,6 @@
   "panels/profiler/HeapSnapshotView.ts | duplicatedStrings": {
     "message": "重复字符串"
   },
-  "panels/profiler/HeapSnapshotView.ts | exposeInternals": {
-    "message": "包含实现细节的内部数据"
-  },
   "panels/profiler/HeapSnapshotView.ts | filter": {
     "message": "过滤"
   },
@@ -12070,33 +12148,6 @@
   },
   "panels/profiler/IsolateSelector.ts | totalPageJsHeapSizeChangeTrend": {
     "message": "过去 {PH1} 分钟总页面 JS 堆大小的变化趋势。"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | allocatedJsHeapSizeCurrentlyIn": {
-    "message": "当前正在使用的已分配 JS 堆的大小"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | anonymousScriptS": {
-    "message": "（匿名脚本 {PH1}）"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | heapProfile": {
-    "message": "堆性能分析报告"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | jsHeap": {
-    "message": "JS 堆"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | kb": {
-    "message": "kB"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | numberOfVmsSharingTheSameScript": {
-    "message": "共用同一脚本来源的虚拟机数量"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | scriptUrl": {
-    "message": "脚本网址"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | urlOfTheScriptSource": {
-    "message": "脚本来源的网址"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | vms": {
-    "message": "虚拟机"
   },
   "panels/profiler/ModuleUIStrings.ts | buildingAllocationStatistics": {
     "message": "正在建立分配统计信息…"
@@ -12275,9 +12326,6 @@
   "panels/profiler/profiler-meta.ts | deleteProfile": {
     "message": "删除个人资料"
   },
-  "panels/profiler/profiler-meta.ts | liveHeapProfile": {
-    "message": "实时堆性能分析报告"
-  },
   "panels/profiler/profiler-meta.ts | loadProfile": {
     "message": "加载性能分析报告…"
   },
@@ -12287,23 +12335,11 @@
   "panels/profiler/profiler-meta.ts | saveProfile": {
     "message": "保存性能分析报告…"
   },
-  "panels/profiler/profiler-meta.ts | showLiveHeapProfile": {
-    "message": "显示实时堆分析"
-  },
   "panels/profiler/profiler-meta.ts | showMemory": {
     "message": "显示内存"
   },
-  "panels/profiler/profiler-meta.ts | startRecordingHeapAllocations": {
-    "message": "开始录制堆分配量"
-  },
-  "panels/profiler/profiler-meta.ts | startRecordingHeapAllocationsAndReload": {
-    "message": "开始录制堆分配量，并重新加载网页"
-  },
   "panels/profiler/profiler-meta.ts | startStopRecording": {
     "message": "开始/停止录制"
-  },
-  "panels/profiler/profiler-meta.ts | stopRecordingHeapAllocations": {
-    "message": "停止记录堆分配"
   },
   "panels/protocol_monitor/JSONEditor.ts | addCustomProperty": {
     "message": "添加自定义属性"
@@ -12417,7 +12453,7 @@
     "message": "删除录制内容"
   },
   "panels/recorder/RecorderController.ts | doNotImport": {
-    "message": "请勿将您不理解或未自行检查的录制内容导入开发者工具。这可能会导致攻击者趁机窃取您的身份信息或控制您的计算机。请在下方输入“{PH1}”以允许导入。"
+    "message": "请勿将您不理解或未自行检查的录制内容导入开发者工具。这可能会导致攻击者趁机窃取您的身份信息或控制您的电脑。请在下方输入“{PH1}”以允许导入。"
   },
   "panels/recorder/RecorderController.ts | doYouTrustThisCode": {
     "message": "您信任此录制内容吗？"
@@ -13459,6 +13495,21 @@
   },
   "panels/settings/AISettingsTab.ts | aIAnnotationsFeatureDescription": {
     "message": "自动为性能跟踪记录注释生成标题"
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceDescriptionV2": {
+    "message": "获取与所检查页面相关的帮助"
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceThingsToConsiderNoLoggingV2": {
+    "message": "为了生成说明，系统会将对话消息、可通过开发者工具面板和 Web API 访问的此网站数据，以及您选择的网络请求、文件和性能跟踪记录等内容发送给 Google。您提交的内容和此功能生成的内容不会用于改进 Google AI 模型。这是一项实验性 AI 功能，并非始终准确无误。"
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceThingsToConsiderV2": {
+    "message": "为了生成说明，系统会将对话消息、可通过开发者工具面板和 Web API 访问的此网站数据，以及您选择的网络请求、文件和性能跟踪记录等内容发送给 Google，并且人工审核员可能会查看这些内容，以改进此功能。这是一项实验性 AI 功能，并非始终准确无误。"
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceWhenOnItem1V2": {
+    "message": "使用开发者工具 AI 辅助功能调试样式、网络、性能、源代码、无障碍功能和存储空间问题"
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceWhenOnItem2V2": {
+    "message": "逐步查看智能体的推理过程，并快速跳转到相关的源数据"
   },
   "panels/settings/AISettingsTab.ts | asYouTypeCodeSuggestions": {
     "message": "当您开始在控制台或“来源”面板中输入内容时，系统会显示代码建议。按 Tab 键即可接受建议。"
@@ -14539,12 +14590,6 @@
   },
   "panels/sources/PersistenceActions.ts | showOverrides": {
     "message": "显示所有替换项"
-  },
-  "panels/sources/ProfilePlugin.ts | kb": {
-    "message": "kB"
-  },
-  "panels/sources/ProfilePlugin.ts | mb": {
-    "message": "MB"
   },
   "panels/sources/ProfilePlugin.ts | ms": {
     "message": "毫秒"
@@ -17183,6 +17228,9 @@
   "ui/components/markdown_view/CodeBlock.ts | copy": {
     "message": "复制代码"
   },
+  "ui/components/markdown_view/CodeBlock.ts | copyCodeSnippet": {
+    "message": "复制“{PH1}”代码段"
+  },
   "ui/components/markdown_view/CodeBlock.ts | disclaimer": {
     "message": "谨慎使用代码段"
   },
@@ -17306,6 +17354,9 @@
   "ui/legacy/ActionRegistration.ts | sources": {
     "message": "来源"
   },
+  "ui/legacy/Dialog.ts | close": {
+    "message": "关闭"
+  },
   "ui/legacy/DockController.ts | close": {
     "message": "关闭"
   },
@@ -17339,6 +17390,12 @@
   "ui/legacy/InspectorDrawerView.ts | closeDrawer": {
     "message": "关闭抽屉栏"
   },
+  "ui/legacy/InspectorDrawerView.ts | expandDrawer": {
+    "message": "展开抽屉式导航栏"
+  },
+  "ui/legacy/InspectorDrawerView.ts | minimizeDrawer": {
+    "message": "最小化抽屉式导航栏"
+  },
   "ui/legacy/InspectorDrawerView.ts | moreTools": {
     "message": "更多工具"
   },
@@ -17354,8 +17411,14 @@
   "ui/legacy/InspectorView.ts | drawer": {
     "message": "工具抽屉式导航栏"
   },
+  "ui/legacy/InspectorView.ts | drawerExpanded": {
+    "message": "已展开抽屉式导航栏"
+  },
   "ui/legacy/InspectorView.ts | drawerHidden": {
     "message": "已隐藏抽屉式导航栏"
+  },
+  "ui/legacy/InspectorView.ts | drawerMinimized": {
+    "message": "已最小化抽屉式导航栏"
   },
   "ui/legacy/InspectorView.ts | drawerShown": {
     "message": "已显示抽屉式导航栏"
@@ -17831,66 +17894,6 @@
   "ui/legacy/components/inline_editor/ColorSwatch.ts | shiftclickToChangeColorFormat": {
     "message": "按住 Shift 并点击即可更改颜色格式"
   },
-  "ui/legacy/components/inline_editor/FontEditor.ts | PleaseEnterAValidValueForSText": {
-    "message": "* 请为 {PH1} 文本输入指定有效值"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | cssProperties": {
-    "message": "CSS 属性"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | deleteS": {
-    "message": "删除 {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fallbackS": {
-    "message": "后备选择器 {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fontFamily": {
-    "message": "字体系列"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fontSelectorDeletedAtIndexS": {
-    "message": "已删除索引 {PH1} 处的字体选择器"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fontSize": {
-    "message": "字号"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fontWeight": {
-    "message": "字体粗细"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | lineHeight": {
-    "message": "行高"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sKeyValueSelector": {
-    "message": "{PH1}键值对选择器"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sSliderInput": {
-    "message": "{PH1}滑块输入"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sTextInput": {
-    "message": "{PH1} 文本输入"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sToggleInputType": {
-    "message": "{PH1} 切换输入类型"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sUnitInput": {
-    "message": "{PH1}单位输入"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | selectorInputMode": {
-    "message": "选择器输入法"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sliderInputMode": {
-    "message": "滑块输入法"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | spacing": {
-    "message": "间距"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | thereIsNoValueToDeleteAtIndexS": {
-    "message": "索引 {PH1} 处没有值可以删除"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | thisPropertyIsSetToContainUnits": {
-    "message": "此属性设为包含单元，但没有已定义的相应 unitsArray：{PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | units": {
-    "message": "单位"
-  },
   "ui/legacy/components/object_ui/CustomPreviewComponent.ts | showAsJavascriptObject": {
     "message": "显示为 JavaScript 对象"
   },
@@ -18047,17 +18050,8 @@
   "ui/legacy/components/perf_ui/perf_ui-meta.ts | flamechartSelectedNavigation": {
     "message": "火焰图导航："
   },
-  "ui/legacy/components/perf_ui/perf_ui-meta.ts | hideLiveMemoryAllocation": {
-    "message": "隐藏实时内存分配情况注解"
-  },
-  "ui/legacy/components/perf_ui/perf_ui-meta.ts | liveMemoryAllocationAnnotations": {
-    "message": "实时内存分配情况注解"
-  },
   "ui/legacy/components/perf_ui/perf_ui-meta.ts | modern": {
     "message": "现代"
-  },
-  "ui/legacy/components/perf_ui/perf_ui-meta.ts | showLiveMemoryAllocation": {
-    "message": "显示实时内存分配情况注解"
   },
   "ui/legacy/components/quick_open/CommandMenu.ts | command": {
     "message": "命令"
@@ -18171,7 +18165,7 @@
     "message": "{PH1} 个所选区域"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | doNotPaste": {
-    "message": "请勿将您不理解或未自行检查的代码粘贴到开发者工具中。这可能会导致攻击者趁机窃取您的身份信息或控制您的计算机。请在下方输入“{PH1}”以允许粘贴。"
+    "message": "请勿将您不理解或未自行检查的代码粘贴到开发者工具中。这可能会导致攻击者趁机窃取您的身份信息或控制您的电脑。请在下方输入“{PH1}”以允许粘贴。"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | doYouTrustThisCode": {
     "message": "您信任此代码吗？"

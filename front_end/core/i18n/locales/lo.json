@@ -323,6 +323,9 @@
   "core/sdk/NetworkManager.ts | noContentForRedirect": {
     "message": "ບໍ່ມີເນື້ອຫາທີ່ສາມາດໃຊ້ໄດ້ເນື່ອງຈາກຄຳຮ້ອງຂໍນີ້ຖືກປ່ຽນເສັ້ນທາງ"
   },
+  "core/sdk/NetworkManager.ts | noContentForSSE": {
+    "message": "ຕອນນີ້ຍັງບໍ່ຮອງຮັບເນື້ອຫາສຳລັບ Server-Sent Events (SSE) ເທື່ອ"
+  },
   "core/sdk/NetworkManager.ts | noContentForWebSocket": {
     "message": "ຕອນນີ້ຍັງບໍ່ຮອງຮັບເນື້ອຫາສຳລັບ WebSockets ເທື່ອ"
   },
@@ -559,6 +562,9 @@
   },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "ສະພາວະຕາບອດທຸກສີ (ເບິ່ງບໍ່ເຫັນສີ)"
+  },
+  "core/sdk/sdk-meta.ts | apca": {
+    "message": "ອະກໍຣິທຶມຄອນທຣາສການຮັບຮູ້ຂັ້ນສູງ (APCA) ຈະປ່ຽນແທນອັດຕາສ່ວນຄອນທຣາສ ແລະ ຄຳແນະນຳ AA/AAA ກ່ອນໜ້າ"
   },
   "core/sdk/sdk-meta.ts | blurredVision": {
     "message": "ສະພາວະເບິ່ງເຫັນມົວ"
@@ -1441,6 +1447,9 @@
   },
   "generated/Deprecation.ts | PrefixedVideoSupportsFullscreen": {
     "message": "HTMLVideoElement.webkitSupportsFullscreen ເຊົານຳໃຊ້ແລ້ວ. ກະລຸນາໃຊ້ Document.fullscreenEnabled ແທນ."
+  },
+  "generated/Deprecation.ts | PreventSvgFilterPaint": {
+    "message": "ບໍ່ສາມາດນຳໃຊ້ຕົວກັ່ນຕອງ SVG ກັບ iframe ແບບຂ້າມຕົ້ນທາງ, iframe ທີ່ຖືກຈຳກັດ (ເຊັ່ນ: ເຮັດແຊນບັອກໄວ້) ຫຼື ປລັກອິນໄດ້."
   },
   "generated/Deprecation.ts | RTCConstraintEnableDtlsSrtpFalse": {
     "message": "ລຶບຂໍ້ຈຳກັດ DtlsSrtpKeyAgreement ອອກແລ້ວ. ທ່ານໄດ້ລະບຸຄ່າ false ສຳລັບຂໍ້ຈຳກັດນີ້ແລ້ວ, ເຊິ່ງຈະແປຄວາມໝາຍເປັນການພະຍາຍາມໃຊ້ວິທີ SDES key negotiation ທີ່ຖືກລຶບອອກແລ້ວ. ຄຸນສົມບັດນີ້ຖືກລຶບອອກໄປແລ້ວ; ໃຫ້ໃຊ້ບໍລິການທີ່ຮອງຮັບ DTLS key negotiation ແທນ."
@@ -3207,13 +3216,34 @@
     "message": "ຄຸນສົມບັດ AI ນີ້ຢູ່ໃນຂັ້ນທົດລອງ ແລະ ອາດເຮັດວຽກໄດ້ບໍ່ຖືກຕ້ອງສະເໝີໄປ. ກະລຸນາກວດສອບຂໍ້ຄວາມນີ້ຊ້ຳກ່ອນທີ່ຈະວາງໃສ່ໃນເຄື່ອງມືອື່ນ."
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | exportForAgents": {
-    "message": "ສຳເນົາສຳລັບຕົວແທນການຂຽນໂຄດຂອງທ່ານ"
+    "message": "ສຳເນົາໄປໃສ່ຕົວແທນການຂຽນໂຄດ"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | generatingSummary": {
     "message": "ກຳລັງສ້າງຂໍ້ມູນສະຫຼຸບ…"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | saveAsMarkdown": {
     "message": "ບັນທຶກເປັນ…"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | gotIt": {
+    "message": "ເຂົ້າໃຈແລ້ວ"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | integrationPoint": {
+    "message": "ຕອນນີ້ຜູ້ຊ່ວຍ AI ໄດ້ຮວມເຂົ້າກັບແອັບພລິເຄຊັນ ແລະ ແຜງ Lighthouse ແລ້ວ ແລະ ດຶງບໍລິບົດຈາກແຫຼ່ງຂໍ້ມູນຕ່າງໆພ້ອມກັນ"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | manageSettings": {
+    "message": "ຈັດການໃນການຕັ້ງຄ່າ"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | privacyDisclaimer": {
+    "message": "ລະບົບຈະສົ່ງຂໍ້ຄວາມການສົນທະນາ, ຂໍ້ມູນທີ່ເຂົ້າເຖິງໄດ້ສຳລັບເວັບໄຊນີ້ຜ່ານແຜງ DevTools ແລະ Web API ຮວມທັງລາຍການທີ່ທ່ານເລືອກ ເຊັ່ນ: ຄຳຮ້ອງຂໍເຄືອຂ່າຍ, ໄຟລ໌ ແລະ ການຕິດຕາມປະສິດທິພາບໄປຫາ Google ແລະ ທີມງານກວດສອບອາດເຫັນຂໍ້ມູນດັ່ງກ່າວເພື່ອນຳໄປໃຊ້ປັບປຸງຄຸນສົມບັດນີ້. ຄຸນສົມບັດ AI ນີ້ຢູ່ໃນຂັ້ນທົດລອງ ແລະ ອາດເຮັດວຽກໄດ້ບໍ່ຖືກຕ້ອງສະເໝີໄປ."
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | privacyDisclaimerEnterpriseNoLogging": {
+    "message": "ລະບົບຈະສົ່ງຂໍ້ຄວາມການສົນທະນາ, ຂໍ້ມູນທີ່ເຂົ້າເຖິງໄດ້ສຳລັບເວັບໄຊນີ້ຜ່ານແຜງ DevTools ແລະ Web API ຮວມທັງລາຍການທີ່ທ່ານເລືອກ ເຊັ່ນ: ຄຳຮ້ອງຂໍເຄືອຂ່າຍ, ໄຟລ໌ ແລະ ການຕິດຕາມປະສິດທິພາບໄປຫາ Google. ເນື້ອຫາທີ່ສົ່ງໄປຫາ ແລະ ສ້າງໂດຍຄຸນສົມບັດນີ້ຈະບໍ່ຖືກໃຊ້ເພື່ອປັບປຸງໂມເດວ AI ຂອງ Google. ຄຸນສົມບັດ AI ນີ້ຢູ່ໃນຂັ້ນທົດລອງ ແລະ ອາດເຮັດວຽກໄດ້ບໍ່ຖືກຕ້ອງສະເໝີໄປ."
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | title": {
+    "message": "ຄວາມຊ່ວຍເຫຼືອຈາກ AI ດີຂຶ້ນກວ່າເກົ່າ"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | widgetPoint": {
+    "message": "ໃຊ້ວິດເຈັດເພື່ອຢັ້ງຢືນຜົນໄດ້ຮັບ ຫຼື ຂ້າມໄປຫາຂໍ້ມູນແຫຼ່ງທີ່ມາສຳລັບກໍລະນີການດີບັກທີ່ເລືອກ"
   },
   "panels/ai_assistance/components/WalkthroughView.ts | close": {
     "message": "ປິດ"
@@ -3223,6 +3253,9 @@
   },
   "panels/ai_assistance/components/WalkthroughView.ts | hideThinking": {
     "message": "ເຊື່ອງວິທີຄິດ"
+  },
+  "panels/ai_assistance/components/WalkthroughView.ts | inProgress": {
+    "message": "ກຳລັງດຳເນີນການ"
   },
   "panels/ai_assistance/components/WalkthroughView.ts | showAgentWalkthrough": {
     "message": "ສະແດງຄຳແນະນຳແບບເທື່ອລະຂັ້ນຂອງ Agent"
@@ -3677,9 +3710,6 @@
   "panels/application/ApplicationPanelSidebar.ts | theContentOfThisDocumentHasBeen": {
     "message": "ເນື້ອຫາຂອງເອກະສານນີ້ສ້າງຂຶ້ນແບບໄດນາມິກຜ່ານ 'document.write()'."
   },
-  "panels/application/ApplicationPanelSidebar.ts | thirdPartyPhaseout": {
-    "message": "ຄຸກກີ້ຈາກ {PH1} ອາດຖືກບລັອກເນື່ອງຈາກມີການຍົກເລີກການນຳໃຊ້ຄຸກກີ້ພາກສ່ວນທີສາມ."
-  },
   "panels/application/ApplicationPanelSidebar.ts | versionS": {
     "message": "ເວີຊັນ: {PH1}"
   },
@@ -3829,6 +3859,9 @@
   },
   "panels/application/DOMStorageItemsView.ts | domStorageItemsCleared": {
     "message": "ລົບລ້າງລາຍການບ່ອນຈັດເກັບຂໍ້ມູນ DOM ແລ້ວ"
+  },
+  "panels/application/DeviceBoundSessionsTreeElement.ts | clear": {
+    "message": "ລຶບ"
   },
   "panels/application/DeviceBoundSessionsTreeElement.ts | deviceBoundSessions": {
     "message": "ເຊດຊັນທີ່ຜູກກັບອຸປະກອນ"
@@ -4922,6 +4955,9 @@
   "panels/application/TrustTokensTreeElement.ts | trustTokens": {
     "message": "ໂທເຄນສະຖານະສ່ວນຕົວ"
   },
+  "panels/application/WebMCPView.ts | cancelCall": {
+    "message": "ຍົກເລີກ"
+  },
   "panels/application/WebMCPView.ts | canceled": {
     "message": "ຍົກເລີກແລ້ວ"
   },
@@ -4937,8 +4973,20 @@
   "panels/application/WebMCPView.ts | close": {
     "message": "ປິດ"
   },
+  "panels/application/WebMCPView.ts | completed": {
+    "message": "ສຳເລັດແລ້ວ"
+  },
+  "panels/application/WebMCPView.ts | copyDescription": {
+    "message": "ສຳເນົາຄຳອະທິບາຍ"
+  },
+  "panels/application/WebMCPView.ts | copyName": {
+    "message": "ສຳເນົາຊື່"
+  },
   "panels/application/WebMCPView.ts | declarative": {
     "message": "ແບບປະກາດ"
+  },
+  "panels/application/WebMCPView.ts | editAndRun": {
+    "message": "ແກ້ໄຂ ແລະ ເອີ້ນໃຊ້"
   },
   "panels/application/WebMCPView.ts | error": {
     "message": "ຂໍ້ຜິດພາດ"
@@ -4982,17 +5030,23 @@
   "panels/application/WebMCPView.ts | output": {
     "message": "ເອົ້າພຸດ"
   },
+  "panels/application/WebMCPView.ts | paste": {
+    "message": "ວາງ"
+  },
   "panels/application/WebMCPView.ts | pending": {
     "message": "ກຳລັງດຳເນີນການ"
+  },
+  "panels/application/WebMCPView.ts | revealTool": {
+    "message": "ສະແດງເຄື່ອງມື"
+  },
+  "panels/application/WebMCPView.ts | runTool": {
+    "message": "ເອີ້ນໃຊ້ເຄື່ອງມື"
   },
   "panels/application/WebMCPView.ts | status": {
     "message": "ສະຖານະ"
   },
   "panels/application/WebMCPView.ts | statusTypes": {
     "message": "ປະເພດສະຖານະ"
-  },
-  "panels/application/WebMCPView.ts | success": {
-    "message": "ສຳເລັດ"
   },
   "panels/application/WebMCPView.ts | toolDetails": {
     "message": "ລາຍລະອຽດ"
@@ -5002,6 +5056,9 @@
   },
   "panels/application/WebMCPView.ts | toolTypes": {
     "message": "ປະເພດຂອງເຄື່ອງມື"
+  },
+  "panels/application/WebMCPView.ts | toolUnregisteredNotice": {
+    "message": "ຖອນການລົງທະບຽນເຄື່ອງມືນີ້ແລ້ວ"
   },
   "panels/application/WebMCPView.ts | totalCalls": {
     "message": "ການໂທທັງໝົດ {PH1} ເທື່ອ"
@@ -5873,6 +5930,9 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsFailureReason": {
     "message": "ເຫດຜົນທີ່ບໍ່ສຳເລັດ"
   },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsFormSubmission": {
+    "message": "ການສົ່ງແບບຟອມ"
+  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsRuleSet": {
     "message": "ຊຸດກົດລະບຽບ"
   },
@@ -5882,11 +5942,17 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsTargetHint": {
     "message": "hints ເປົ້າໝາຍ"
   },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | no": {
+    "message": "ບໍ່"
+  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | noElementSelected": {
     "message": "ບໍ່ໄດ້ເລືອກອົງປະກອບ"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "ເລືອກອົງປະກອບເພື່ອເບິ່ງລາຍລະອຽດເພີ່ມເຕີມ"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | yes": {
+    "message": "ແມ່ນ"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByBatterySaver": {
     "message": "ການໂຫຼດແບບຄາດເດົາຖືກປິດການນຳໃຊ້ເນື່ອງຈາກໂໝດຕົວປະຢັດແບັດເຕີຣີຂອງລະບົບປະຕິບັດການ."
@@ -6765,7 +6831,7 @@
     "message": "ການເຕືອນຄອນໂຊນ"
   },
   "panels/console/ConsolePrompt.ts | selfXssWarning": {
-    "message": "ຄຳເຕືອນ: ຢ່າວາງລະຫັດໃສ່ຄອນໂຊນ DevTools ທີ່ທ່ານບໍ່ເຂົ້າໃຈ ຫຼື ບໍ່ໄດ້ກວດສອບດ້ວຍຕົວເອງ. ສິ່ງນີ້ສາມາດເຮັດໃຫ້ຜູ້ໂຈມຕີສາມາດລັກຂໍ້ມູນຢັ້ງຢືນຕົວຕົນຂອງທ່ານ ຫຼື ຄວບຄຸມຄອມພິວເຕີຂອງທ່ານໄດ້. ກະລຸນາລອງ ‘{PH1}’ ດ້ານລຸ່ມແລ້ວກົດ Enter ເພື່ອອະນຸຍາດການວາງ."
+    "message": "ຄຳເຕືອນ: ຢ່າວາງລະຫັດໃສ່ຄອນໂຊນ DevTools ທີ່ທ່ານບໍ່ເຂົ້າໃຈ ຫຼື ບໍ່ໄດ້ກວດສອບດ້ວຍຕົວເອງ. ສິ່ງນີ້ສາມາດເຮັດໃຫ້ຜູ້ໂຈມຕີສາມາດລັກຂໍ້ມູນຢັ້ງຢືນຕົວຕົນຂອງທ່ານ ຫຼື ຄວບຄຸມຄອມພິວເຕີຂອງທ່ານໄດ້. ກະລຸນາພິມ “{PH1}” ທາງລຸ່ມແລ້ວກົດ Enter ເພື່ອອະນຸຍາດການວາງ."
   },
   "panels/console/ConsoleSidebar.ts | dErrors": {
     "message": "{n,plural, =0{ບໍ່ມີຂໍ້ຜິດພາດ}=1{# ຂໍ້ຜິດພາດ}other{# ຂໍ້ຜິດພາດ}}"
@@ -6793,6 +6859,9 @@
   },
   "panels/console/ConsoleView.ts | autocompleteFromHistory": {
     "message": "ຕື່ມຂໍ້ມູນອັດຕະໂນມັດຈາກປະຫວັດ"
+  },
+  "panels/console/ConsoleView.ts | collapseAll": {
+    "message": "ຫຍໍ້ທັງໝົດລົງ"
   },
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "ລຶບລ້າງຄອນໂຊນແລ້ວ"
@@ -6832,6 +6901,9 @@
   },
   "panels/console/ConsoleView.ts | errors": {
     "message": "ຂໍ້ຜິດພາດ"
+  },
+  "panels/console/ConsoleView.ts | expandAll": {
+    "message": "ຂະຫຍາຍທັງໝົດ"
   },
   "panels/console/ConsoleView.ts | filteredMessagesInConsole": {
     "message": "{PH1} ຂໍ້ຄວາມໃນຄອນໂຊ"
@@ -8147,6 +8219,9 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "ເບິ່ງຄ່າທີ່ຄຳນວນແລ້ວ"
   },
+  "panels/elements/StylesSidebarPane.ts | aiSuggestionAccepted": {
+    "message": "{PH1} ຍອມຮັບຄຳແນະນຳແລ້ວ."
+  },
   "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
     "message": "ໂໝດມືດອັດຕະໂນມັດ"
   },
@@ -8251,6 +8326,9 @@
   },
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "ສຳເນົາຮູບແບບ"
+  },
+  "panels/elements/elements-meta.ts | cssAnimationsOnlyWhenAnimationsTabOpen": {
+    "message": "ສະແດງຮູບແບບອະນິເມຊັນສະເພາະເມື່ອແຖບອະນິເມຊັນເປີດຢູ່"
   },
   "panels/elements/elements-meta.ts | detailedInspectTooltip": {
     "message": "ຄຳແນະນຳການກວດສອບແບບລະອຽດ"
@@ -11723,6 +11801,9 @@
   "panels/profiler/HeapProfileView.ts | sBytes": {
     "message": "{PH1} ໄບຕ໌"
   },
+  "panels/profiler/HeapProfileView.ts | samplingHeapProfilerTimeline": {
+    "message": "ທາມລາຍຂອງເຄື່ອງມືສ້າງ heap profiler ແບບສຸ່ມຕົວຢ່າງ"
+  },
   "panels/profiler/HeapProfileView.ts | samplingProfiles": {
     "message": "ສຸ່ມຕົວຢ່າງໂປຣໄຟລ໌"
   },
@@ -11930,9 +12011,6 @@
   "panels/profiler/HeapSnapshotView.ts | duplicatedStrings": {
     "message": "ສະຕຣິງທີ່ຊ້ຳກັນ"
   },
-  "panels/profiler/HeapSnapshotView.ts | exposeInternals": {
-    "message": "ຂໍ້ມູນພາຍໃນພ້ອມລາຍລະອຽດການນຳໃຊ້"
-  },
   "panels/profiler/HeapSnapshotView.ts | filter": {
     "message": "ກັ່ນຕອງ"
   },
@@ -12070,33 +12148,6 @@
   },
   "panels/profiler/IsolateSelector.ts | totalPageJsHeapSizeChangeTrend": {
     "message": "ແນວໂນ້ມການປ່ຽນແປງຂະໜາດຮີບ JS ຂອງໜ້າທັງໝົດໃນຊ່ວງ {PH1} ນາທີຜ່ານມາ."
-  },
-  "panels/profiler/LiveHeapProfileView.ts | allocatedJsHeapSizeCurrentlyIn": {
-    "message": "ມີການໃຊ້ຂະໜາດຮີບ JS ທີ່ຈັດຢູ່ໃນຂະນະນີ້"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | anonymousScriptS": {
-    "message": "(ສະຄຣິບແບບບໍ່ລະບຸຊື່ {PH1})"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | heapProfile": {
-    "message": "ໂປຣໄຟລ໌ຮີບ"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | jsHeap": {
-    "message": "ຮີບ JS"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | kb": {
-    "message": "kB"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | numberOfVmsSharingTheSameScript": {
-    "message": "ຈຳນວນ VM ເຊິ່ງແບ່ງປັນແຫຼ່ງທີ່ມາຂອງສະຄຣິບແຫຼ່ງດຽວກັນ"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | scriptUrl": {
-    "message": "URL ຂອງສະຄຣິບ"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | urlOfTheScriptSource": {
-    "message": "URL ຂອງແຫຼ່ງທີ່ມາຂອງສະຄຣິບ"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | vms": {
-    "message": "VM"
   },
   "panels/profiler/ModuleUIStrings.ts | buildingAllocationStatistics": {
     "message": "ກຳລັງສ້າງສະຖິຕິການຈັດສັນ…"
@@ -12275,9 +12326,6 @@
   "panels/profiler/profiler-meta.ts | deleteProfile": {
     "message": "ລຶບໂປຣໄຟລ໌"
   },
-  "panels/profiler/profiler-meta.ts | liveHeapProfile": {
-    "message": "ໂປຣໄຟລ໌ຮີບແບບສົດ"
-  },
   "panels/profiler/profiler-meta.ts | loadProfile": {
     "message": "ໂຫຼດໂປຣໄຟລ໌…"
   },
@@ -12287,23 +12335,11 @@
   "panels/profiler/profiler-meta.ts | saveProfile": {
     "message": "ບັນທຶກໂປຣໄຟລ໌…"
   },
-  "panels/profiler/profiler-meta.ts | showLiveHeapProfile": {
-    "message": "ສະແດງໂປຣໄຟລ໌ຮີບແບບສົດ"
-  },
   "panels/profiler/profiler-meta.ts | showMemory": {
     "message": "ສະແດງຄວາມຊົງຈຳ"
   },
-  "panels/profiler/profiler-meta.ts | startRecordingHeapAllocations": {
-    "message": "ເລີ່ມການບັນທຶກການຈັດສັນຮີບ"
-  },
-  "panels/profiler/profiler-meta.ts | startRecordingHeapAllocationsAndReload": {
-    "message": "ເລີ່ມບັນທຶກການຈັດສັນຮີບ ແລະ ໂຫຼດໜ້າເວັບຄືນໃໝ່"
-  },
   "panels/profiler/profiler-meta.ts | startStopRecording": {
     "message": "ເລີ່ມ/ຢຸດການບັນທຶກ"
-  },
-  "panels/profiler/profiler-meta.ts | stopRecordingHeapAllocations": {
-    "message": "ຢຸດການບັນທຶກການຈັດສັນຮີບ"
   },
   "panels/protocol_monitor/JSONEditor.ts | addCustomProperty": {
     "message": "ເພີ່ມຄຸນສົມບັດກຳນົດເອງ"
@@ -12417,7 +12453,7 @@
     "message": "ລຶບການບັນທຶກ"
   },
   "panels/recorder/RecorderController.ts | doNotImport": {
-    "message": "ຢ່ານຳເຂົ້າໄຟລ໌ບັນທຶກທີ່ທ່ານບໍ່ຮູ້ຈັກດີ ຫຼື ຍັງບໍ່ໄດ້ກວດສອບດ້ວຍຕົນເອງມາໃນ DevTools. ເຊິ່ງອາດເຮັດໃຫ້ຜູ້ໂຈມຕີສາມາດລັກຂໍ້ມູນຢັ້ງຢືນຕົວຕົນຂອງທ່ານ ຫຼື ຄວບຄຸມຄອມພິວເຕີຂອງທ່ານໄດ້. ກະລຸນາພິມ ''{PH1}'' ລຸ່ມນີ້ເພື່ອອະນຸຍາດການນຳເຂົ້າ."
+    "message": "ຢ່ານຳເຂົ້າໄຟລ໌ບັນທຶກທີ່ທ່ານບໍ່ຮູ້ຈັກດີ ຫຼື ຍັງບໍ່ໄດ້ກວດສອບດ້ວຍຕົນເອງມາໃນ DevTools. ສິ່ງນີ້ສາມາດເຮັດໃຫ້ຜູ້ໂຈມຕີສາມາດລັກຂໍ້ມູນຢັ້ງຢືນຕົວຕົນຂອງທ່ານ ຫຼື ຄວບຄຸມຄອມພິວເຕີຂອງທ່ານໄດ້. ກະລຸນາພິມ “{PH1}” ທາງລຸ່ມພື່ອອະນຸຍາດການນຳເຂົ້າ."
   },
   "panels/recorder/RecorderController.ts | doYouTrustThisCode": {
     "message": "ທ່ານເຊື່ອຖືໄຟລ໌ບັນທຶກນີ້ຫຼືບໍ່?"
@@ -12477,7 +12513,7 @@
     "message": "ສະຫຼັບໄປເປັນມຸມມອງລະຫັດ"
   },
   "panels/recorder/RecorderController.ts | typeAllowImporting": {
-    "message": "ພິມ ''{PH1}''"
+    "message": "ພິມ “{PH1}”"
   },
   "panels/recorder/components/CreateRecordingView.ts | cancelRecording": {
     "message": "ຍົກເລີກການບັນທຶກ"
@@ -13459,6 +13495,21 @@
   },
   "panels/settings/AISettingsTab.ts | aIAnnotationsFeatureDescription": {
     "message": "ສ້າງຊື່ໃຫ້ກັບການອະທິບາຍຄວາມເຫັນການຕິດຕາມປະສິດທິພາບໂດຍອັດຕະໂນມັດ"
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceDescriptionV2": {
+    "message": "ຮັບຄວາມຊ່ວຍເຫຼືອທີ່ຄຳນຶງເຖິງບໍລິບົດໃນໜ້າທີ່ກວດສອບ"
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceThingsToConsiderNoLoggingV2": {
+    "message": "ເພື່ອສ້າງຄຳອະທິບາຍ, ລະບົບຈະສົ່ງຂໍ້ຄວາມການສົນທະນາ, ຂໍ້ມູນທີ່ເຂົ້າເຖິງໄດ້ສຳລັບເວັບໄຊນີ້ຜ່ານແຜງ DevTools ແລະ Web API ຮວມທັງລາຍການທີ່ທ່ານເລືອກ ເຊັ່ນ: ຄຳຮ້ອງຂໍເຄືອຂ່າຍ, ໄຟລ໌ ແລະ ການຕິດຕາມປະສິດທິພາບໄປຫາ Google. ເນື້ອຫາທີ່ທ່ານສົ່ງ ແລະ ເນື້ອຫາທີ່ສ້າງໂດຍຄຸນສົມບັດນີ້ຈະບໍ່ຖືກໃຊ້ເພື່ອປັບປຸງໂມເດວ AI ຂອງ Google. ຄຸນສົມບັດ AI ນີ້ຢູ່ໃນຂັ້ນທົດລອງ ແລະ ອາດເຮັດວຽກໄດ້ບໍ່ຖືກຕ້ອງສະເໝີໄປ."
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceThingsToConsiderV2": {
+    "message": "ເພື່ອສ້າງຄຳອະທິບາຍ, ລະບົບຈະສົ່ງຂໍ້ຄວາມການສົນທະນາ, ຂໍ້ມູນທີ່ເຂົ້າເຖິງໄດ້ສຳລັບເວັບໄຊນີ້ຜ່ານແຜງ DevTools ແລະ Web API ຮວມທັງລາຍການທີ່ທ່ານເລືອກ ເຊັ່ນ: ຄຳຮ້ອງຂໍເຄືອຂ່າຍ, ໄຟລ໌ ແລະ ການຕິດຕາມປະສິດທິພາບໄປຫາ Google ແລະ ທີມງານກວດສອບອາດເຫັນຂໍ້ມູນດັ່ງກ່າວເພື່ອນຳໄປໃຊ້ປັບປຸງຄຸນສົມບັດນີ້. ຄຸນສົມບັດ AI ນີ້ຢູ່ໃນຂັ້ນທົດລອງ ແລະ ອາດເຮັດວຽກໄດ້ບໍ່ຖືກຕ້ອງສະເໝີໄປ."
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceWhenOnItem1V2": {
+    "message": "ດີບັກບັນຫາການຈັດຮູບແບບ, ເຄືອຂ່າຍ, ປະສິດທິພາບ, ຊອດໂຄດ, ການເຂົ້າເຖິງ ແລະ ບ່ອນຈັດເກັບຂໍ້ມູນດ້ວຍຄວາມຊ່ວຍເຫຼືອຈາກ AI ຂອງ DevTools"
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceWhenOnItem2V2": {
+    "message": "ປະຕິບັດຕາມເຫດຜົນຂອງຕົວແທນເທື່ອລະຂັ້ນຕອນ ແລະ ຂ້າມໄປຫາແຫຼ່ງຂໍ້ມູນທີ່ກ່ຽວຂ້ອງໄດ້ຢ່າງວ່ອງໄວ"
   },
   "panels/settings/AISettingsTab.ts | asYouTypeCodeSuggestions": {
     "message": "ໃນລະຫວ່າງທີ່ທ່ານພິມໃນແຜງຄອນໂຊ ຫຼື ແຜງແຫຼ່ງທີ່ມາ, ທ່ານຈະໄດ້ຮັບຄຳແນະນຳໂຄດ. ກົດ Tab ເພື່ອຍອມຮັບຄຳແນະນຳ."
@@ -14539,12 +14590,6 @@
   },
   "panels/sources/PersistenceActions.ts | showOverrides": {
     "message": "ສະແດງການຍົກເລີກທັງໝົດ"
-  },
-  "panels/sources/ProfilePlugin.ts | kb": {
-    "message": "kB"
-  },
-  "panels/sources/ProfilePlugin.ts | mb": {
-    "message": "MB"
   },
   "panels/sources/ProfilePlugin.ts | ms": {
     "message": "ms"
@@ -17183,6 +17228,9 @@
   "ui/components/markdown_view/CodeBlock.ts | copy": {
     "message": "ສຳເນົາລະຫັດ"
   },
+  "ui/components/markdown_view/CodeBlock.ts | copyCodeSnippet": {
+    "message": "ສຳເນົາສະນິບເພັດຂອງໂຄດ {PH1}"
+  },
   "ui/components/markdown_view/CodeBlock.ts | disclaimer": {
     "message": "ກະລຸນາໃຊ້ຂໍ້ມູນຫຍໍ້ຂອງລະຫັດຢ່າງລະມັດລະວັງ"
   },
@@ -17306,6 +17354,9 @@
   "ui/legacy/ActionRegistration.ts | sources": {
     "message": "ແຫຼ່ງທີ່ມາ"
   },
+  "ui/legacy/Dialog.ts | close": {
+    "message": "ປິດ"
+  },
   "ui/legacy/DockController.ts | close": {
     "message": "ປິດ"
   },
@@ -17339,6 +17390,12 @@
   "ui/legacy/InspectorDrawerView.ts | closeDrawer": {
     "message": "ປິດ​ລິ້ນ​ຊັກ"
   },
+  "ui/legacy/InspectorDrawerView.ts | expandDrawer": {
+    "message": "ຂະຫຍາຍລິ້ນຊັກ"
+  },
+  "ui/legacy/InspectorDrawerView.ts | minimizeDrawer": {
+    "message": "ຫຍໍ້ແຖບລິ້ນຊັກລົງ"
+  },
   "ui/legacy/InspectorDrawerView.ts | moreTools": {
     "message": "ເຄື່ອງມືເພີ່ມເຕີມ"
   },
@@ -17354,8 +17411,14 @@
   "ui/legacy/InspectorView.ts | drawer": {
     "message": "ລິ້ນຊັກເຄື່ອງມື"
   },
+  "ui/legacy/InspectorView.ts | drawerExpanded": {
+    "message": "ຂະຫຍາຍລິ້ນຊັກແລ້ວ"
+  },
   "ui/legacy/InspectorView.ts | drawerHidden": {
     "message": "ເຊື່ອງລິ້ນຊັກແລ້ວ"
+  },
+  "ui/legacy/InspectorView.ts | drawerMinimized": {
+    "message": "ຫຍໍ້ລິ້ນຊັກລົງແລ້ວ"
   },
   "ui/legacy/InspectorView.ts | drawerShown": {
     "message": "ສະແດງລິ້ນຊັກແລ້ວ"
@@ -17831,66 +17894,6 @@
   "ui/legacy/components/inline_editor/ColorSwatch.ts | shiftclickToChangeColorFormat": {
     "message": "ຄລິກ Shift ເພື່ອປ່ຽນຮູບແບບສີ"
   },
-  "ui/legacy/components/inline_editor/FontEditor.ts | PleaseEnterAValidValueForSText": {
-    "message": "* ກະລຸນາປ້ອນຄ່າທີ່ຖືກຕ້ອງສຳລັບການປ້ອນຂໍ້ຄວາມ {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | cssProperties": {
-    "message": "ຄຸນລັກສະນະ CSS"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | deleteS": {
-    "message": "ລຶບ {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fallbackS": {
-    "message": "ສຳຮອງ {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fontFamily": {
-    "message": "ສະກຸນຟອນ"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fontSelectorDeletedAtIndexS": {
-    "message": "ລຶບຕົວເລືອກຟອນທີ່ດັດຊະນີ: {PH1} ແລ້ວ"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fontSize": {
-    "message": "ຂະໜາດຟອນ"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fontWeight": {
-    "message": "ນ້ຳໜັກຟອນ"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | lineHeight": {
-    "message": "ຄວາມສູງຂອງແຖວ"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sKeyValueSelector": {
-    "message": "ຕົວເລືອກຄ່າກະແຈ {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sSliderInput": {
-    "message": "ອິນພຸດແຖບເລື່ອນ {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sTextInput": {
-    "message": "ການປ້ອນຂໍ້ຄວາມ {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sToggleInputType": {
-    "message": "ປະເພດການປ້ອນຂໍ້ມູນເມື່ອສະຫຼັບ {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sUnitInput": {
-    "message": "ອິນພຸດຫົວໜ່ວຍ {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | selectorInputMode": {
-    "message": "ໂໝດປ້ອນຂໍ້ມູນຂອງຕົວເລືອກ"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sliderInputMode": {
-    "message": "ໂໝດການປ້ອນຂໍ້ມູນຂອງແຖບເລື່ອນ"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | spacing": {
-    "message": "ການຍະຫວ່າງ"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | thereIsNoValueToDeleteAtIndexS": {
-    "message": "ບໍ່ມີຄ່າທີ່ຈະລຶບກົງກັບດັດຊະນີ: {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | thisPropertyIsSetToContainUnits": {
-    "message": "ຄຸນລັກສະນະນີ້ໄດ້ຮັບການຕັ້ງຄ່າໃຫ້ມີໜ່ວຍຕ່າງໆ ແຕ່ບໍ່ມີ unitsArray: {PH1} ທີ່ກ່ຽວຂ້ອງທີ່ກຳນົດ"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | units": {
-    "message": "ຫົວໜ່ວຍ"
-  },
   "ui/legacy/components/object_ui/CustomPreviewComponent.ts | showAsJavascriptObject": {
     "message": "ສະແດງເປັນວັດຖຸ JavaScript"
   },
@@ -18047,17 +18050,8 @@
   "ui/legacy/components/perf_ui/perf_ui-meta.ts | flamechartSelectedNavigation": {
     "message": "ການນຳທາງໄປຫາພາກສ່ວນຕ່າງໆຂອງແຜນພາບ Flame Chart:"
   },
-  "ui/legacy/components/perf_ui/perf_ui-meta.ts | hideLiveMemoryAllocation": {
-    "message": "ເຊື່ອງຄຳອະທິບາຍປະກອບການຈັດສັນໜ່ວຍຄວາມຈຳແບບສົດ"
-  },
-  "ui/legacy/components/perf_ui/perf_ui-meta.ts | liveMemoryAllocationAnnotations": {
-    "message": "ຄຳອະທິບາຍຄວາມເຫັນການຈັດສັນໜ່ວຍຄວາມຈຳສົດ"
-  },
   "ui/legacy/components/perf_ui/perf_ui-meta.ts | modern": {
     "message": "ທັນສະໄໝ"
-  },
-  "ui/legacy/components/perf_ui/perf_ui-meta.ts | showLiveMemoryAllocation": {
-    "message": "ສະແດງຄຳອະທິບາຍປະກອບການຈັດສັນໜ່ວຍຄວາມຈຳແບບສົດໆ"
   },
   "ui/legacy/components/quick_open/CommandMenu.ts | command": {
     "message": "ຄຳສັ່ງ"
@@ -18171,7 +18165,7 @@
     "message": "{PH1} ຂອບເຂດການເລືອກ"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | doNotPaste": {
-    "message": "ຢ່າວາງລະຫັດທີ່ທ່ານບໍ່ເຂົ້າໃຈ ຫຼື ຍັງບໍ່ໄດ້ກວດສອບດ້ວຍຕົນເອງໃສ່ໃນ DevTools. ສິ່ງນີ້ສາມາດເຮັດໃຫ້ຜູ້ໂຈມຕີສາມາດລັກຂໍ້ມູນຢັ້ງຢືນຕົວຕົນຂອງທ່ານ ຫຼື ຄວບຄຸມຄອມພິວເຕີຂອງທ່ານໄດ້. ກະລຸນາພິມ ''{PH1}'' ຢູ່ດ້ານລຸ່ມເພື່ອອະນຸຍາດໃຫ້ວາງ."
+    "message": "ຢ່າວາງລະຫັດທີ່ທ່ານບໍ່ເຂົ້າໃຈ ຫຼື ຍັງບໍ່ໄດ້ກວດສອບດ້ວຍຕົນເອງໃສ່ໃນ DevTools. ສິ່ງນີ້ສາມາດເຮັດໃຫ້ຜູ້ໂຈມຕີສາມາດລັກຂໍ້ມູນຢັ້ງຢືນຕົວຕົນຂອງທ່ານ ຫຼື ຄວບຄຸມຄອມພິວເຕີຂອງທ່ານໄດ້. ກະລຸນາພິມ “{PH1}” ທາງລຸ່ມເພື່ອອະນຸຍາດໃຫ້ວາງ."
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | doYouTrustThisCode": {
     "message": "ທ່ານເຊື່ອລະຫັດນີ້ບໍ?"
@@ -18189,7 +18183,7 @@
     "message": "ແຫຼ່ງທີ່ມາ"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | typeAllowPasting": {
-    "message": "ພິມ ''{PH1}''"
+    "message": "ພິມ “{PH1}”"
   },
   "ui/legacy/components/source_frame/XMLView.ts | find": {
     "message": "ຊອກຫາ"

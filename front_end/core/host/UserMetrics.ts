@@ -764,7 +764,6 @@ export enum DevtoolsExperiments {
   /* eslint-disable @typescript-eslint/naming-convention */
   'capture-node-creation-stacks' = 1,
   'protocol-monitor' = 13,
-  'timeline-invalidation-tracking' = 26,
   'instrumentation-breakpoints' = 61,
   'use-source-map-scopes' = 76,
   'durable-messages' = 110,

@@ -70,6 +70,10 @@ const UIStrings = {
    * @description Title of a setting under the Performance category in Settings
    */
   timelineDebugMode: 'Timeline debug mode (trace event details, etc.)',
+  /**
+   * @description Title of a setting under the Performance category in Settings
+   */
+  timelineInvalidationTracking: 'Invalidation tracking',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/timeline-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
@@ -336,6 +340,15 @@ Common.Settings.registerSettingExtension({
   storageType: Common.Settings.SettingStorageType.SYNCED,
   title: i18nLazyString(UIStrings.timelineDebugMode),
   settingName: 'timeline-debug-mode',
+  settingType: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+});
+
+Common.Settings.registerSettingExtension({
+  category: Common.Settings.SettingCategory.PERFORMANCE,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
+  title: i18nLazyString(UIStrings.timelineInvalidationTracking),
+  settingName: 'timeline-invalidation-tracking',
   settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: false,
 });

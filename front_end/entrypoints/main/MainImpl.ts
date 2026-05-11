@@ -365,10 +365,6 @@ export class MainImpl {
     this.#migrateValueFromLegacyToHostExperiment(
         Root.ExperimentNames.ExperimentName.PROTOCOL_MONITOR, protocolMonitorExperiment);
 
-    // Timeline
-    Root.Runtime.experiments.register(
-        Root.ExperimentNames.ExperimentName.TIMELINE_INVALIDATION_TRACKING, 'Performance panel: invalidation tracking');
-
     // Debugging
     Root.Runtime.experiments.register(
         Root.ExperimentNames.ExperimentName.INSTRUMENTATION_BREAKPOINTS, 'Instrumentation breakpoints');

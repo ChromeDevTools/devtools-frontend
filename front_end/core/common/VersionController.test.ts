@@ -828,6 +828,8 @@ describeExperimentMigration(
 describeExperimentMigration(43, 44, 'apca', 'apca' as Root.ExperimentNames.ExperimentName);
 describeExperimentMigration(
     44, 45, 'timeline-debug-mode', 'timeline-debug-mode' as Root.ExperimentNames.ExperimentName);
+describeExperimentMigration(
+    45, 46, 'timeline-invalidation-tracking', 'timeline-invalidation-tracking' as Root.ExperimentNames.ExperimentName);
 
 describe('access logging', () => {
   let settings: Common.Settings.Settings;

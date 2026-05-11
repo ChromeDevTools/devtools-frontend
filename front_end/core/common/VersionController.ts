@@ -17,7 +17,7 @@ export class VersionController {
   static readonly SYNCED_VERSION_SETTING_NAME = 'syncedInspectorVersion';
   static readonly LOCAL_VERSION_SETTING_NAME = 'localInspectorVersion';
 
-  static readonly CURRENT_VERSION = 45;
+  static readonly CURRENT_VERSION = 46;
 
   readonly #settings: Settings;
   readonly #globalVersionSetting: Setting<number>;
@@ -875,6 +875,22 @@ export class VersionController {
       try {
         const timelineDebugModeSetting = this.#settings.moduleSetting('timeline-debug-mode');
         timelineDebugModeSetting.set(timelineDebugModeExperimentEnabled);
+      } catch {
+        // If the setting is not registered yet (e.g. in tests), skip.
+      }
+    }
+  }
+
+  updateVersionFrom45To46(): void {
+    const timelineInvalidationTrackingExperimentEnabled = Root.Runtime.experiments.getValueFromStorage(
+        'timeline-invalidation-tracking' as Root.ExperimentNames.ExperimentName);
+    if (timelineInvalidationTrackingExperimentEnabled !== undefined) {
+      if (this.#settings.syncedStorage.has('timeline-invalidation-tracking')) {
+        return;  // Already migrated
+      }
+      try {
+        const timelineInvalidationTrackingSetting = this.#settings.moduleSetting('timeline-invalidation-tracking');
+        timelineInvalidationTrackingSetting.set(timelineInvalidationTrackingExperimentEnabled);
       } catch {
         // If the setting is not registered yet (e.g. in tests), skip.
       }

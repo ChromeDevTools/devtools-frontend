@@ -323,6 +323,9 @@
   "core/sdk/NetworkManager.ts | noContentForRedirect": {
     "message": "இந்தக் கோரிக்கை திசைதிருப்பப்பட்டதால் எந்த உள்ளடக்கமும் காட்டப்படவில்லை"
   },
+  "core/sdk/NetworkManager.ts | noContentForSSE": {
+    "message": "Server-Sent Eventsஸிற்கான (SSE) உள்ளடக்கம் தற்போது ஆதரிக்கப்படவில்லை"
+  },
   "core/sdk/NetworkManager.ts | noContentForWebSocket": {
     "message": "WebSocketsஸிற்கான உள்ளடக்கம் தற்போது ஆதரிக்கப்படவில்லை"
   },
@@ -559,6 +562,9 @@
   },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "அக்ரமடோப்ஸியா (நிறமில்லாதது)"
+  },
+  "core/sdk/sdk-meta.ts | apca": {
+    "message": "தற்போது உள்ள ஒளி மாறுபாட்டு விகிதம் மற்றும் AA/AAA வழிகாட்டுதல்களுக்குப் பதிலாக மேம்பட்ட புலனுணர்வுக் கான்ட்ராஸ்ட் அல்காரிதம் (APCA - Advanced Perceptual Contrast Algorithm) பயன்படுத்தப்படுகிறது"
   },
   "core/sdk/sdk-meta.ts | blurredVision": {
     "message": "மங்கலான பார்வைக் குறைபாடு"
@@ -1441,6 +1447,9 @@
   },
   "generated/Deprecation.ts | PrefixedVideoSupportsFullscreen": {
     "message": "HTMLVideoElement.webkitSupportsFullscreen நிறுத்தப்பட்டது. இதற்குப் பதிலாக Document.fullscreenEnabled ஐப் பயன்படுத்தவும்."
+  },
+  "generated/Deprecation.ts | PreventSvgFilterPaint": {
+    "message": "கிராஸ் ஆரிஜின் iframeகள், கட்டுப்படுத்தப்பட்ட iframeகள் (எ.கா. சாண்ட்பாக்ஸ் செய்யப்பட்டவை) அல்லது செருகுநிரல்களில் SVG ஃபில்டர்களைப் பயன்படுத்த முடியாது."
   },
   "generated/Deprecation.ts | RTCConstraintEnableDtlsSrtpFalse": {
     "message": "DtlsSrtpKeyAgreement கட்டுப்பாடு அகற்றப்பட்டது. இந்தக் கட்டுப்பாட்டுக்கு false மதிப்பைக் குறிப்பிட்டுள்ளீர்கள். இதன் மூலம் அகற்றப்பட்ட SDES key negotiation முறையைப் பயன்படுத்த முயற்சித்ததாகப் புரிந்துகொள்ளப்படுகிறது. இந்தச் செயல்பாடு அகற்றப்பட்டது, இதற்கு பதிலாக DTLS key negotiation ஐ ஆதரிக்கும் சேவையைப் பயன்படுத்தவும்."
@@ -3207,13 +3216,34 @@
     "message": "இது பரிசோதனை நிலையில் உள்ள AI அம்சம் என்பதால் சில சமயங்களில் சரியாகச் செயல்படாமல் போகலாம். வேறொரு கருவியில் ஒட்டுவதற்கு முன்பு இந்த வார்த்தைகளைச் சரிபார்க்கவும்."
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | exportForAgents": {
-    "message": "உங்கள் கோடிங் ஏஜெண்ட்டுக்கு நகலெடுத்தல்"
+    "message": "கோடிங் ஏஜெண்ட்டுக்கு நகலெடுத்தல்"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | generatingSummary": {
     "message": "சுருக்க விவரத்தை உருவாக்குகிறது…"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | saveAsMarkdown": {
     "message": "இப்படிச் சேமி…"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | gotIt": {
+    "message": "சரி"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | integrationPoint": {
+    "message": "AI உதவி இப்போது ஆப்ஸ் மற்றும் Lighthouse பேனல்களுடன் ஒருங்கிணைக்கப்பட்டுள்ளது. மேலும் தரவு மூலங்களில் இருந்து ஒரே நேரத்தில் சூழலை பெறுகிறது."
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | manageSettings": {
+    "message": "அமைப்புகளில் நிர்வகிக்கலாம்"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | privacyDisclaimer": {
+    "message": "உரையாடல் மெசேஜ்கள், டெவெலப்பர் கருவிகளின் பேனல்கள் மற்றும் Web APIகள் மூலம் இந்தத் தளத்திற்கு அணுகக்கூடிய தரவு, நெட்வொர்க் கோரிக்கைகள், ஃபைல்கள், செயல்திறன் டிரேஸ்கள் போன்ற நீங்கள் தேர்ந்தெடுக்கும் விஷயங்கள் Googleளுக்கு அனுப்பப்படும். மேலும், இந்த அம்சத்தை மேம்படுத்தும் வகையில் மதிப்பாய்வாளர்களுக்கு அவை காட்டப்படக்கூடும். இது பரிசோதனை நிலையில் உள்ள AI அம்சம் என்பதால் சில சமயங்களில் சரியாகச் செயல்படாமல் போகலாம்."
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | privacyDisclaimerEnterpriseNoLogging": {
+    "message": "உரையாடல் மெசேஜ்கள், டெவெலப்பர் கருவிகளின் பேனல்கள் மற்றும் Web APIகள் மூலம் இந்தத் தளத்திற்கு அணுகக்கூடிய தரவு, நெட்வொர்க் கோரிக்கைகள், ஃபைல்கள், செயல்திறன் டிரேஸ்கள் போன்ற நீங்கள் தேர்ந்தெடுக்கும் விஷயங்கள் Googleளுக்கு அனுப்பப்படும். நீங்கள் சமர்ப்பிக்கும் உள்ளடக்கமும் இந்த அம்சம் மூலம் உருவாக்கப்படும் உள்ளடக்கமும் Google AI மாடல்களை மேம்படுத்தப் பயன்படுத்தப்படாது. இது பரிசோதனை நிலையில் உள்ள AI அம்சம் என்பதால் சில சமயங்களில் சரியாகச் செயல்படாமல் போகலாம்."
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | title": {
+    "message": "AI உதவி மேம்படுத்தப்பட்டுள்ளது"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | widgetPoint": {
+    "message": "முடிவுகளைச் சரிபார்க்க அல்லது குறிப்பிட்ட பிழைதிருத்த நிகழ்வுகளுக்கான மூலத் தரவுக்குச் செல்ல விட்ஜெட்களைப் பயன்படுத்தலாம்"
   },
   "panels/ai_assistance/components/WalkthroughView.ts | close": {
     "message": "மூடு"
@@ -3223,6 +3253,9 @@
   },
   "panels/ai_assistance/components/WalkthroughView.ts | hideThinking": {
     "message": "சிந்தனையை மறை"
+  },
+  "panels/ai_assistance/components/WalkthroughView.ts | inProgress": {
+    "message": "செயலில் உள்ளது"
   },
   "panels/ai_assistance/components/WalkthroughView.ts | showAgentWalkthrough": {
     "message": "ஏஜெண்ட் டெமோவைக் காட்டு"
@@ -3677,9 +3710,6 @@
   "panels/application/ApplicationPanelSidebar.ts | theContentOfThisDocumentHasBeen": {
     "message": "'document.write()' மூலம் இந்த ஆவணத்திற்கான உள்ளடக்கம் டைனமிக் முறையில் உருவாக்கப்பட்டுள்ளது."
   },
-  "panels/application/ApplicationPanelSidebar.ts | thirdPartyPhaseout": {
-    "message": "மூன்றாம் தரப்புக் குக்கீகள் தவிர்க்கப்பட்டுள்ளதால், {PH1} தளத்தின் குக்கீகள் தடுக்கப்பட்டிருக்கக்கூடும்."
-  },
   "panels/application/ApplicationPanelSidebar.ts | versionS": {
     "message": "பதிப்பு: {PH1}"
   },
@@ -3829,6 +3859,9 @@
   },
   "panels/application/DOMStorageItemsView.ts | domStorageItemsCleared": {
     "message": "DOM சேமிப்பகத் தரவு அழிக்கப்பட்டது"
+  },
+  "panels/application/DeviceBoundSessionsTreeElement.ts | clear": {
+    "message": "அழி"
   },
   "panels/application/DeviceBoundSessionsTreeElement.ts | deviceBoundSessions": {
     "message": "சாதனத்துடன் பிணைக்கப்பட்ட அமர்வுகள்"
@@ -4922,6 +4955,9 @@
   "panels/application/TrustTokensTreeElement.ts | trustTokens": {
     "message": "தனிப்பட்ட நிலை டோக்கன்கள்"
   },
+  "panels/application/WebMCPView.ts | cancelCall": {
+    "message": "ரத்துசெய்"
+  },
   "panels/application/WebMCPView.ts | canceled": {
     "message": "ரத்துசெய்யப்பட்டது"
   },
@@ -4937,8 +4973,20 @@
   "panels/application/WebMCPView.ts | close": {
     "message": "மூடுக"
   },
+  "panels/application/WebMCPView.ts | completed": {
+    "message": "முடிந்தது"
+  },
+  "panels/application/WebMCPView.ts | copyDescription": {
+    "message": "விளக்கத்தை நகலெடு"
+  },
+  "panels/application/WebMCPView.ts | copyName": {
+    "message": "பெயரை நகலெடு"
+  },
   "panels/application/WebMCPView.ts | declarative": {
     "message": "டிக்ளரேட்டிவ்"
+  },
+  "panels/application/WebMCPView.ts | editAndRun": {
+    "message": "எடிட் செய்து இயக்கு"
   },
   "panels/application/WebMCPView.ts | error": {
     "message": "பிழை"
@@ -4982,17 +5030,23 @@
   "panels/application/WebMCPView.ts | output": {
     "message": "வெளியீடு"
   },
+  "panels/application/WebMCPView.ts | paste": {
+    "message": "ஒட்டும்"
+  },
   "panels/application/WebMCPView.ts | pending": {
     "message": "செயலில் உள்ளது"
+  },
+  "panels/application/WebMCPView.ts | revealTool": {
+    "message": "கருவியைக் காட்டு"
+  },
+  "panels/application/WebMCPView.ts | runTool": {
+    "message": "கருவியை இயக்குதல்"
   },
   "panels/application/WebMCPView.ts | status": {
     "message": "நிலை"
   },
   "panels/application/WebMCPView.ts | statusTypes": {
     "message": "நிலை வகைகள்"
-  },
-  "panels/application/WebMCPView.ts | success": {
-    "message": "வெற்றி"
   },
   "panels/application/WebMCPView.ts | toolDetails": {
     "message": "விவரங்கள்"
@@ -5003,11 +5057,14 @@
   "panels/application/WebMCPView.ts | toolTypes": {
     "message": "கருவி வகைகள்"
   },
+  "panels/application/WebMCPView.ts | toolUnregisteredNotice": {
+    "message": "இந்தக் கருவி பதிவுநீக்கப்பட்டது"
+  },
   "panels/application/WebMCPView.ts | totalCalls": {
     "message": "{PH1} மொத்த அழைப்புகள்"
   },
   "panels/application/WebMCPView.ts | viewInElementsPanel": {
-    "message": "எலிமெண்ட்டுகள் பேனலில் காட்டு"
+    "message": "உறுப்புகள் பேனலில் காட்டு"
   },
   "panels/application/application-meta.ts | application": {
     "message": "ஆப்ஸ்"
@@ -5873,6 +5930,9 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsFailureReason": {
     "message": "தோல்விக்கான காரணம்"
   },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsFormSubmission": {
+    "message": "படிவச் சமர்ப்பிப்பு"
+  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsRuleSet": {
     "message": "ரூல் செட்"
   },
@@ -5882,11 +5942,17 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsTargetHint": {
     "message": "இலக்கிற்கான குறிப்பு"
   },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | no": {
+    "message": "இல்லை"
+  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | noElementSelected": {
     "message": "எலிமெண்ட் எதுவும் தேர்ந்தெடுக்கப்படவில்லை"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "கூடுதல் விவரங்களுக்கு எலிமெண்ட்டைத் தேர்ந்தெடுக்கவும்"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | yes": {
+    "message": "ஆம்"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByBatterySaver": {
     "message": "ஆப்ரேட்டிங் சிஸ்டத்தின் பேட்டரி சேமிப்பான் பயன்முறை காரணமாக யூக அடிப்படையிலான ஏற்றுதல் முடக்கப்பட்டது."
@@ -6765,7 +6831,7 @@
     "message": "கன்சோல் அறிவிப்பு"
   },
   "panels/console/ConsolePrompt.ts | selfXssWarning": {
-    "message": "எச்சரிக்கை: உங்களுக்குப் புரியாத அல்லது நீங்கள் சரிபார்க்காத குறியீட்டை டெவெலப்பர் கருவிகள் கன்சோலில் ஒட்ட வேண்டாம். ஹேக்கர்கள் உங்கள் அடையாளத்தைத் திருடவும் உங்கள் கம்ப்யூட்டரைக் கட்டுப்படுத்தவும் இது அனுமதிக்கக்கூடும். ஒட்டுவதை அனுமதிக்க, கீழே ‘{PH1}’ என்று டைப் செய்து Enter அழுத்தவும்."
+    "message": "எச்சரிக்கை: உங்களுக்குப் புரியாத அல்லது நீங்கள் சரிபார்க்காத குறியீட்டை டெவெலப்பர் கருவிகள் கன்சோலில் ஒட்ட வேண்டாம். அப்படிச் செய்தால், ஹேக்கர்கள் உங்கள் அடையாளத்தைத் திருடக்கூடும், உங்கள் கம்ப்யூட்டரைக் கட்டுப்படுத்தக்கூடும். ஒட்டுவதை அனுமதிக்க, கீழே “{PH1}” என்று டைப் செய்து Enter அழுத்தவும்."
   },
   "panels/console/ConsoleSidebar.ts | dErrors": {
     "message": "{n,plural, =0{பிழைகள் இல்லை}=1{# பிழை}other{# பிழைகள்}}"
@@ -6793,6 +6859,9 @@
   },
   "panels/console/ConsoleView.ts | autocompleteFromHistory": {
     "message": "இதுவரையான கன்சோல் பதிவில் இருந்து தானாக நிரப்பலாம்"
+  },
+  "panels/console/ConsoleView.ts | collapseAll": {
+    "message": "எல்லாவற்றையும் சுருக்கும்"
   },
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "கன்சோல் அழிக்கப்பட்டது"
@@ -6832,6 +6901,9 @@
   },
   "panels/console/ConsoleView.ts | errors": {
     "message": "பிழைகள்"
+  },
+  "panels/console/ConsoleView.ts | expandAll": {
+    "message": "எல்லாவற்றையும் விரிவாக்கும்"
   },
   "panels/console/ConsoleView.ts | filteredMessagesInConsole": {
     "message": "கன்சோலில் {PH1} மெசேஜ்கள் உள்ளன"
@@ -8147,6 +8219,9 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "கணக்கிடப்பட்ட மதிப்பைக் காட்டு"
   },
+  "panels/elements/StylesSidebarPane.ts | aiSuggestionAccepted": {
+    "message": "{PH1} பரிந்துரை ஏற்கப்பட்டது."
+  },
   "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
     "message": "தானியங்கு டார்க் பயன்முறை"
   },
@@ -8251,6 +8326,9 @@
   },
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "ஸ்டைல்களை நகலெடு"
+  },
+  "panels/elements/elements-meta.ts | cssAnimationsOnlyWhenAnimationsTabOpen": {
+    "message": "அனிமேஷன்கள் பிரிவு திறந்திருக்கும்போது மட்டும் அனிமேஷன் ஸ்டைல்களைக் காட்டு"
   },
   "panels/elements/elements-meta.ts | detailedInspectTooltip": {
     "message": "விரிவான ஆய்வு உதவிக்குறிப்பு"
@@ -11723,6 +11801,9 @@
   "panels/profiler/HeapProfileView.ts | sBytes": {
     "message": "{PH1} பைட்டுகள்"
   },
+  "panels/profiler/HeapProfileView.ts | samplingHeapProfilerTimeline": {
+    "message": "சாம்பிளிங் ஹீப் ப்ரொஃபைலர் டைம்லைன்"
+  },
   "panels/profiler/HeapProfileView.ts | samplingProfiles": {
     "message": "மாதிரி ப்ரொஃபைல்கள்"
   },
@@ -11930,9 +12011,6 @@
   "panels/profiler/HeapSnapshotView.ts | duplicatedStrings": {
     "message": "நகல் வார்த்தைகள்"
   },
-  "panels/profiler/HeapSnapshotView.ts | exposeInternals": {
-    "message": "செயல்படுத்தல் விவரங்களுடன் அகத் தரவு"
-  },
   "panels/profiler/HeapSnapshotView.ts | filter": {
     "message": "வடிகட்டு"
   },
@@ -12070,33 +12148,6 @@
   },
   "panels/profiler/IsolateSelector.ts | totalPageJsHeapSizeChangeTrend": {
     "message": "கடந்த {PH1} நிமிடங்களில் மொத்தப் பக்க JS ஹீப் அளவின் மாறுபாடு நிலவரம்."
-  },
-  "panels/profiler/LiveHeapProfileView.ts | allocatedJsHeapSizeCurrentlyIn": {
-    "message": "தற்சமயம் பயன்பாட்டில் உள்ள ஒதுக்கப்பட்ட JS ஹீப் அளவு"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | anonymousScriptS": {
-    "message": "(அடையாளம் தெரியாத ஸ்கிரிப்ட் {PH1})"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | heapProfile": {
-    "message": "ஹீப் சுயவிவரம்"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | jsHeap": {
-    "message": "JS ஹீப்"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | kb": {
-    "message": "கி.பை."
-  },
-  "panels/profiler/LiveHeapProfileView.ts | numberOfVmsSharingTheSameScript": {
-    "message": "ஒரே ஸ்கிரிப்ட் மூலத்தைப் பகிரும் VMகளின் எண்ணிக்கை"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | scriptUrl": {
-    "message": "ஸ்கிரிப்ட் URL"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | urlOfTheScriptSource": {
-    "message": "ஸ்கிரிப்ட் ஆதாரத்தின் URL"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | vms": {
-    "message": "VMகள்"
   },
   "panels/profiler/ModuleUIStrings.ts | buildingAllocationStatistics": {
     "message": "ஒதுக்கீட்டுப் புள்ளிவிவரங்களை உருவாக்குகிறது…"
@@ -12275,9 +12326,6 @@
   "panels/profiler/profiler-meta.ts | deleteProfile": {
     "message": "சுயவிவரத்தை நீக்கு"
   },
-  "panels/profiler/profiler-meta.ts | liveHeapProfile": {
-    "message": "நேரலை ஹீப் சுயவிவரம்"
-  },
   "panels/profiler/profiler-meta.ts | loadProfile": {
     "message": "சுயவிவரத்தை ஏற்றும்…"
   },
@@ -12287,23 +12335,11 @@
   "panels/profiler/profiler-meta.ts | saveProfile": {
     "message": "சுயவிவரத்தைச் சேமிக்கும்…"
   },
-  "panels/profiler/profiler-meta.ts | showLiveHeapProfile": {
-    "message": "லைவ் ஹீப் ப்ரொஃபைலைக் காட்டு"
-  },
   "panels/profiler/profiler-meta.ts | showMemory": {
     "message": "நினைவகத்தைக் காட்டு"
   },
-  "panels/profiler/profiler-meta.ts | startRecordingHeapAllocations": {
-    "message": "ஹீப் ஒதுக்கீடுகளை ரெக்கார்டிங் செய்யத் தொடங்கு"
-  },
-  "panels/profiler/profiler-meta.ts | startRecordingHeapAllocationsAndReload": {
-    "message": "ஹீப் ஒதுக்கீடுகளை ரெக்கார்டிங் செய்யத் தொடங்கி பக்கத்தை ரெஃப்ரெஷ் செய்"
-  },
   "panels/profiler/profiler-meta.ts | startStopRecording": {
     "message": "ரெக்கார்டிங்கைத் தொடங்க/நிறுத்த"
-  },
-  "panels/profiler/profiler-meta.ts | stopRecordingHeapAllocations": {
-    "message": "ஹீப் ஒதுக்கீடுகளை ரெக்கார்டு செய்வதை நிறுத்து"
   },
   "panels/protocol_monitor/JSONEditor.ts | addCustomProperty": {
     "message": "பிரத்தியேகமான பிராப்பர்ட்டியைச் சேர்"
@@ -12417,7 +12453,7 @@
     "message": "ரெக்கார்டிங்கை நீக்கு"
   },
   "panels/recorder/RecorderController.ts | doNotImport": {
-    "message": "உங்களுக்குப் புரியாத அல்லது நீங்கள் சரிபார்க்காத ரெக்கார்டிங்குகளை டெவெலப்பர் கருவிகளில் இறக்க வேண்டாம். ஹேக்கர்கள் உங்கள் அடையாளத்தைத் திருடவும் உங்கள் கம்ப்யூட்டரை அவர்கள் கட்டுப்பாட்டில் எடுக்கவும் இது அனுமதிக்கக்கூடும். இறக்குவதை அனுமதிக்க ''{PH1}'' என்று டைப் செய்யவும்."
+    "message": "உங்களுக்குப் புரியாத அல்லது நீங்கள் சரிபார்க்காத ரெக்கார்டிங்குகளை டெவெலப்பர் கருவிகளில் இம்போர்ட் செய்ய வேண்டாம். அப்படிச் செய்தால், ஹேக்கர்கள் உங்கள் அடையாளத்தைத் திருடக்கூடும், உங்கள் கம்ப்யூட்டரைக் கட்டுப்படுத்தக்கூடும். இம்போர்ட் செய்வதை அனுமதிக்க “{PH1}” என்று டைப் செய்யவும்."
   },
   "panels/recorder/RecorderController.ts | doYouTrustThisCode": {
     "message": "இந்த ரெக்கார்டிங் நம்பகமானதா?"
@@ -12477,7 +12513,7 @@
     "message": "குறியீட்டுக் காட்சியைக் காட்டுதல் அல்லது மறைத்தல்"
   },
   "panels/recorder/RecorderController.ts | typeAllowImporting": {
-    "message": "வகை ''{PH1}''"
+    "message": "“{PH1}” என்று டைப் செய்யவும்"
   },
   "panels/recorder/components/CreateRecordingView.ts | cancelRecording": {
     "message": "ரெக்கார்டிங்கை ரத்துசெய்"
@@ -13459,6 +13495,21 @@
   },
   "panels/settings/AISettingsTab.ts | aIAnnotationsFeatureDescription": {
     "message": "செயல்திறன் டிரேஸ் குறிப்புகளுக்குத் தானாக டைல்களை உருவாக்கும்"
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceDescriptionV2": {
+    "message": "ஆய்வு செய்யப்பட்ட பக்கத்தில் சூழலுக்கேற்ற உதவியைப் பெறுங்கள்"
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceThingsToConsiderNoLoggingV2": {
+    "message": "விளக்கங்களை உருவாக்க, உரையாடல் மெசேஜ்கள், டெவெலப்பர் கருவிகளின் பேனல்கள் மற்றும் Web APIகள் மூலம் இந்தத் தளத்திற்கு அணுகக்கூடிய தரவு, நெட்வொர்க் கோரிக்கைகள், ஃபைல்கள், செயல்திறன் டிரேஸ்கள் போன்ற நீங்கள் தேர்ந்தெடுக்கும் விஷயங்கள் Googleளுக்கு அனுப்பப்படும். நீங்கள் சமர்ப்பிக்கும் உள்ளடக்கமும் இந்த அம்சம் மூலம் உருவாக்கப்படும் உள்ளடக்கமும் Google AI மாடல்களை மேம்படுத்தப் பயன்படுத்தப்படாது. இது பரிசோதனை நிலையில் உள்ள AI அம்சம் என்பதால் சில சமயங்களில் சரியாகச் செயல்படாமல் போகலாம்."
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceThingsToConsiderV2": {
+    "message": "விளக்கங்களை உருவாக்க, உரையாடல் மெசேஜ்கள், டெவெலப்பர் கருவிகளின் பேனல்கள் மற்றும் Web APIகள் மூலம் இந்தத் தளத்திற்கு அணுகக்கூடிய தரவு, நெட்வொர்க் கோரிக்கைகள், ஃபைல்கள், செயல்திறன் டிரேஸ்கள் போன்ற நீங்கள் தேர்ந்தெடுக்கும் விஷயங்கள் Googleளுக்கு அனுப்பப்படும். மேலும், இந்த அம்சத்தை மேம்படுத்தும் வகையில் மதிப்பாய்வாளர்களுக்கு அவை காட்டப்படக்கூடும். இது பரிசோதனை நிலையில் உள்ள AI அம்சம் என்பதால் சில சமயங்களில் சரியாகச் செயல்படாமல் போகலாம்."
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceWhenOnItem1V2": {
+    "message": "டெவெலப்பர் கருவிகள் AI உதவியுடன் ஸ்டைலிங், நெட்வொர்க், செயல்திறன், சோர்ஸ் குறியீடு, மாற்றுத்திறன் வசதி, சேமிப்பகம் ஆகியவற்றில் உள்ள சிக்கல்களைப் பிழைதிருத்தலாம்"
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceWhenOnItem2V2": {
+    "message": "ஏஜெண்ட்டின் ரீசனிங்கைப் படிப்படியாகப் பின்பற்றி, தொடர்புடைய மூலத் தரவிற்கு விரைவாகச் செல்லலாம்"
   },
   "panels/settings/AISettingsTab.ts | asYouTypeCodeSuggestions": {
     "message": "கன்சோல் அல்லது ஆதாரங்கள் பேனலில் நீங்கள் டைப் செய்யும்போதே கோடிங் பரிந்துரைகள் காட்டப்படும். அவற்றில் ஒன்றைப் பயன்படுத்த Tab அழுத்தவும்."
@@ -14539,12 +14590,6 @@
   },
   "panels/sources/PersistenceActions.ts | showOverrides": {
     "message": "ஓவர்ரைடுகள் அனைத்தையும் காட்டு"
-  },
-  "panels/sources/ProfilePlugin.ts | kb": {
-    "message": "கி.பை."
-  },
-  "panels/sources/ProfilePlugin.ts | mb": {
-    "message": "மெ.பை."
   },
   "panels/sources/ProfilePlugin.ts | ms": {
     "message": "மிவி"
@@ -17183,6 +17228,9 @@
   "ui/components/markdown_view/CodeBlock.ts | copy": {
     "message": "குறியீட்டை நகலெடு"
   },
+  "ui/components/markdown_view/CodeBlock.ts | copyCodeSnippet": {
+    "message": "{PH1} குறியீட்டுத் துணுக்கை நகலெடுக்கும்"
+  },
   "ui/components/markdown_view/CodeBlock.ts | disclaimer": {
     "message": "குறியீட்டுத் துணுக்குகளைக் கவனமாகப் பயன்படுத்துங்கள்"
   },
@@ -17306,6 +17354,9 @@
   "ui/legacy/ActionRegistration.ts | sources": {
     "message": "ஆதாரங்கள்"
   },
+  "ui/legacy/Dialog.ts | close": {
+    "message": "மூடு"
+  },
   "ui/legacy/DockController.ts | close": {
     "message": "மூடுக"
   },
@@ -17339,6 +17390,12 @@
   "ui/legacy/InspectorDrawerView.ts | closeDrawer": {
     "message": "டிராயரை மூடுக"
   },
+  "ui/legacy/InspectorDrawerView.ts | expandDrawer": {
+    "message": "டிராயரை விரிவாக்கு"
+  },
+  "ui/legacy/InspectorDrawerView.ts | minimizeDrawer": {
+    "message": "டிராயரைச் சுருக்கும்"
+  },
   "ui/legacy/InspectorDrawerView.ts | moreTools": {
     "message": "கூடுதல் கருவிகள்"
   },
@@ -17354,8 +17411,14 @@
   "ui/legacy/InspectorView.ts | drawer": {
     "message": "டூல் டிராயர்"
   },
+  "ui/legacy/InspectorView.ts | drawerExpanded": {
+    "message": "டிராயர் விரிவாக்கப்பட்டுள்ளது"
+  },
   "ui/legacy/InspectorView.ts | drawerHidden": {
     "message": "டிராயர் மறைக்கப்பட்டுள்ளது"
+  },
+  "ui/legacy/InspectorView.ts | drawerMinimized": {
+    "message": "டிராயர் சிறிதாக்கப்பட்டுள்ளது"
   },
   "ui/legacy/InspectorView.ts | drawerShown": {
     "message": "டிராயர் காட்டப்படுகிறது"
@@ -17831,66 +17894,6 @@
   "ui/legacy/components/inline_editor/ColorSwatch.ts | shiftclickToChangeColorFormat": {
     "message": "வண்ண வடிவத்தை மாற்ற, Shift விசையை அழுத்தியபடி கிளிக் செய்க"
   },
-  "ui/legacy/components/inline_editor/FontEditor.ts | PleaseEnterAValidValueForSText": {
-    "message": "* {PH1} உரை உள்ளீட்டிற்குச் சரியான மதிப்பை உள்ளிடவும்"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | cssProperties": {
-    "message": "CSS பண்புகள்"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | deleteS": {
-    "message": "{PH1} ஐ நீக்கு"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fallbackS": {
-    "message": "{PH1} ஃபால்பேக்"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fontFamily": {
-    "message": "எழுத்து வடிவக் குடும்பம்"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fontSelectorDeletedAtIndexS": {
-    "message": "அட்டவணையில் நீக்கப்பட்ட எழுத்துருத் தேர்வி: {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fontSize": {
-    "message": "எழுத்து வடிவத்தின் அளவு"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fontWeight": {
-    "message": "எழுத்துருவின் தடிமன்"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | lineHeight": {
-    "message": "கோட்டின் உயரம்"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sKeyValueSelector": {
-    "message": "{PH1} முதன்மை மதிப்புத் தேர்வி"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sSliderInput": {
-    "message": "{PH1} ஸ்லைடர் உள்ளீடு"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sTextInput": {
-    "message": "{PH1} உரை உள்ளீடு"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sToggleInputType": {
-    "message": "{PH1} உள்ளீட்டு வகையை நிலைமாற்று"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sUnitInput": {
-    "message": "{PH1} யூனிட் உள்ளீடு"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | selectorInputMode": {
-    "message": "உள்ளீட்டு முறைத் தேர்வி"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sliderInputMode": {
-    "message": "ஸ்லைடர் உள்ளீட்டு முறை"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | spacing": {
-    "message": "இடைவெளி"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | thereIsNoValueToDeleteAtIndexS": {
-    "message": "அட்டவணையில் நீக்குவதற்கு மதிப்பு எதுவுமில்லை: {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | thisPropertyIsSetToContainUnits": {
-    "message": "யூனிட்களை வைத்திருக்க இந்தப் பண்பு அமைக்கப்பட்டுள்ளது, ஆனால் தொடர்புடைய unitsArray இல்லை: {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | units": {
-    "message": "அலகுகள்"
-  },
   "ui/legacy/components/object_ui/CustomPreviewComponent.ts | showAsJavascriptObject": {
     "message": "JavaScript ஆப்ஜெக்ட்டாகக் காட்டு"
   },
@@ -18047,17 +18050,8 @@
   "ui/legacy/components/perf_ui/perf_ui-meta.ts | flamechartSelectedNavigation": {
     "message": "ஃபிளேம் சார்ட் வழிசெலுத்தல்:"
   },
-  "ui/legacy/components/perf_ui/perf_ui-meta.ts | hideLiveMemoryAllocation": {
-    "message": "நேரலை நினைவக ஒதுக்கீட்டிற்கான விரிவுரைகளை மறை"
-  },
-  "ui/legacy/components/perf_ui/perf_ui-meta.ts | liveMemoryAllocationAnnotations": {
-    "message": "நேரலை நினைவக ஒதுக்கீட்டிற்கான சிறுகுறிப்புகள்"
-  },
   "ui/legacy/components/perf_ui/perf_ui-meta.ts | modern": {
     "message": "மாடர்ன்"
-  },
-  "ui/legacy/components/perf_ui/perf_ui-meta.ts | showLiveMemoryAllocation": {
-    "message": "நேரலை நினைவக ஒதுக்கீட்டிற்கான சிறுகுறிப்புகளைக் காட்டு"
   },
   "ui/legacy/components/quick_open/CommandMenu.ts | command": {
     "message": "கட்டளை"
@@ -18171,7 +18165,7 @@
     "message": "{PH1} தேர்வுசெய்யப்பட்ட பிராந்தியங்கள்"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | doNotPaste": {
-    "message": "உங்களுக்குப் புரியாத அல்லது டெவெலப்பர் கருவிகளில் நீங்கள் சரிபார்க்காத குறியீட்டை ஒட்ட வேண்டாம். தீங்கிழைப்போர் உங்கள் அடையாளத்தைத் திருடவும் உங்கள் கம்ப்யூட்டரை தங்கள் கட்டுப்பாட்டில் எடுக்கவும் இது அனுமதிக்கக்கூடும். ஒட்டுவதை அனுமதிக்க ''{PH1}'' என்று கீழே டைப் செய்யவும்."
+    "message": "உங்களுக்குப் புரியாத அல்லது டெவெலப்பர் கருவிகளில் நீங்கள் சரிபார்க்காத குறியீட்டை ஒட்ட வேண்டாம். அப்படிச் செய்தால், ஹேக்கர்கள் உங்கள் அடையாளத்தைத் திருடக்கூடும், உங்கள் கம்ப்யூட்டரைக் கட்டுப்படுத்தக்கூடும். ஒட்டுவதை அனுமதிக்க “{PH1}” என்று கீழே டைப் செய்யவும்."
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | doYouTrustThisCode": {
     "message": "இந்தக் குறியீட்டை நம்புகிறீர்களா?"
@@ -18189,7 +18183,7 @@
     "message": "ஆதாரம்"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | typeAllowPasting": {
-    "message": "வகை ''{PH1}''"
+    "message": "“{PH1}” என்று டைப் செய்யவும்"
   },
   "ui/legacy/components/source_frame/XMLView.ts | find": {
     "message": "தேடு"

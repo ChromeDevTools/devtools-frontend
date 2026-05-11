@@ -323,6 +323,9 @@
   "core/sdk/NetworkManager.ts | noContentForRedirect": {
     "message": "Nincs rendelkezésre álló tartalom, mert a kérelem át lett irányítva"
   },
+  "core/sdk/NetworkManager.ts | noContentForSSE": {
+    "message": "A szerver által küldött eseményekhez (Server-Sent Events, SSE) kapcsolódó tartalmak jelenleg nem támogatottak"
+  },
   "core/sdk/NetworkManager.ts | noContentForWebSocket": {
     "message": "A WebSockettel kapcsolatos tartalmak jelenleg nem támogatottak"
   },
@@ -559,6 +562,9 @@
   },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "Akromatopszia (nincs szín)"
+  },
+  "core/sdk/sdk-meta.ts | apca": {
+    "message": "Fejlett perceptuális kontrasztalgoritmus (APCA), amely felváltja a korábbi kontrasztarányt és az AA/AAA irányelveket"
   },
   "core/sdk/sdk-meta.ts | blurredVision": {
     "message": "Homályos látás"
@@ -1441,6 +1447,9 @@
   },
   "generated/Deprecation.ts | PrefixedVideoSupportsFullscreen": {
     "message": "A HTMLVideoElement.webkitSupportsFullscreen elavult. A Document.fullscreenEnabled elemet használja helyette."
+  },
+  "generated/Deprecation.ts | PreventSvgFilterPaint": {
+    "message": "Az SVG-szűrők nem alkalmazhatók eltérő eredetű iframe-ekre, korlátozott iframe-ekre (pl. sandboxban lévőkre) vagy bővítményekre."
   },
   "generated/Deprecation.ts | RTCConstraintEnableDtlsSrtpFalse": {
     "message": "A DtlsSrtpKeyAgreement korlátozást eltávolítottuk. Olyan false értéket adott meg ennél a korlátozásnál, amelyet a rendszer úgy értelmez, hogy az eltávolított SDES key negotiation metódust szeretné használni. Ezt a funkciót eltávolítottuk. Használjon helyette egy olyan szolgáltatást, amely támogatja a DTLS key negotiation műveletet."
@@ -3129,7 +3138,7 @@
     "message": "AI-támogatás"
   },
   "panels/ai_assistance/ai_assistance-meta.ts | debugWithAi": {
-    "message": "Hibakeresés AI-jal"
+    "message": "Hibakeresés AI segítségével"
   },
   "panels/ai_assistance/ai_assistance-meta.ts | debugWithGemini": {
     "message": "Hibakeresés a Geminivel"
@@ -3207,13 +3216,34 @@
     "message": "Ez egy kísérleti AI-funkció, amely nem mindig működik megfelelően. Mielőtt a szöveget más eszközbe illesztené be, ellenőrizze."
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | exportForAgents": {
-    "message": "Másolás a kódoló ügynök számára"
+    "message": "Másolás a kódoló ügynökbe"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | generatingSummary": {
     "message": "Összegzés létrehozása…"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | saveAsMarkdown": {
     "message": "Mentés másként…"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | gotIt": {
+    "message": "Értem"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | integrationPoint": {
+    "message": "Az AI-támogatás mostantól integrálva van az Alkalmazás és a Lighthouse panelekbe, és egyszerre gyűjt kontextust az adatforrásokból"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | manageSettings": {
+    "message": "A Beállítások között kezelheti"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | privacyDisclaimer": {
+    "message": "A rendszer elküldi a Google-nak a csevegőüzeneteket, a DevTools-paneleken és a webes API-kon keresztül az ezen webhely számára hozzáférhető adatokat, valamint az Ön által kiválasztott elemeket (például hálózati kérelmeket, fájlokat és teljesítménynyomokat), és előfordulhat, hogy a funkció továbbfejlesztése érdekében felülvizsgálatot végző emberek is láthatják őket. Ez egy kísérleti AI-funkció, amely nem mindig működik megfelelően."
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | privacyDisclaimerEnterpriseNoLogging": {
+    "message": "A rendszer elküldi a Google-nak a csevegőüzeneteket, a DevTools-paneleken és a webes API-kon keresztül az ezen webhely számára hozzáférhető adatokat, valamint az Ön által kiválasztott elemeket (például hálózati kérelmeket, fájlokat és teljesítménynyomokat). A funkcióba beküldött és a funkció által generált tartalmakat nem használjuk fel a Google AI-modelljeinek továbbfejlesztésére. Ez egy kísérleti AI-funkció, amely nem mindig működik megfelelően."
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | title": {
+    "message": "Az AI-támogatás még jobb lett"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | widgetPoint": {
+    "message": "A modulok segítségével ellenőrizheti az eredményeket, vagy a kiválasztott hibakeresési eseteknél a forrásadatokhoz ugorhat."
   },
   "panels/ai_assistance/components/WalkthroughView.ts | close": {
     "message": "Bezárás"
@@ -3223,6 +3253,9 @@
   },
   "panels/ai_assistance/components/WalkthroughView.ts | hideThinking": {
     "message": "Gondolatmenet elrejtése"
+  },
+  "panels/ai_assistance/components/WalkthroughView.ts | inProgress": {
+    "message": "Folyamatban"
   },
   "panels/ai_assistance/components/WalkthroughView.ts | showAgentWalkthrough": {
     "message": "Ügynöki bemutató megjelenítése"
@@ -3677,9 +3710,6 @@
   "panels/application/ApplicationPanelSidebar.ts | theContentOfThisDocumentHasBeen": {
     "message": "E dokumentum tartalmát a rendszer dinamikusan hozta létre a „document.write()” metódussal."
   },
-  "panels/application/ApplicationPanelSidebar.ts | thirdPartyPhaseout": {
-    "message": "Előfordulhat, hogy a {PH1} webhelyről származó cookie-k le lettek tiltva a harmadik féltől származó cookie-k fokozatos kivezetése miatt."
-  },
   "panels/application/ApplicationPanelSidebar.ts | versionS": {
     "message": "Verzió: {PH1}"
   },
@@ -3829,6 +3859,9 @@
   },
   "panels/application/DOMStorageItemsView.ts | domStorageItemsCleared": {
     "message": "DOM-tárhelyelemek törölve"
+  },
+  "panels/application/DeviceBoundSessionsTreeElement.ts | clear": {
+    "message": "Törlés"
   },
   "panels/application/DeviceBoundSessionsTreeElement.ts | deviceBoundSessions": {
     "message": "Eszközhöz kötött munkamenetek"
@@ -4922,6 +4955,9 @@
   "panels/application/TrustTokensTreeElement.ts | trustTokens": {
     "message": "Privát állapottokenek"
   },
+  "panels/application/WebMCPView.ts | cancelCall": {
+    "message": "Mégse"
+  },
   "panels/application/WebMCPView.ts | canceled": {
     "message": "Megszakítva"
   },
@@ -4937,8 +4973,20 @@
   "panels/application/WebMCPView.ts | close": {
     "message": "Bezárás"
   },
+  "panels/application/WebMCPView.ts | completed": {
+    "message": "Kész"
+  },
+  "panels/application/WebMCPView.ts | copyDescription": {
+    "message": "Leírás másolása"
+  },
+  "panels/application/WebMCPView.ts | copyName": {
+    "message": "Név másolása"
+  },
   "panels/application/WebMCPView.ts | declarative": {
     "message": "Deklaratív"
+  },
+  "panels/application/WebMCPView.ts | editAndRun": {
+    "message": "Szerkesztés és futtatás"
   },
   "panels/application/WebMCPView.ts | error": {
     "message": "Hiba"
@@ -4982,17 +5030,23 @@
   "panels/application/WebMCPView.ts | output": {
     "message": "Kimenet"
   },
+  "panels/application/WebMCPView.ts | paste": {
+    "message": "Beillesztés"
+  },
   "panels/application/WebMCPView.ts | pending": {
     "message": "Folyamatban"
+  },
+  "panels/application/WebMCPView.ts | revealTool": {
+    "message": "Eszköz felfedése"
+  },
+  "panels/application/WebMCPView.ts | runTool": {
+    "message": "Eszköz futtatása"
   },
   "panels/application/WebMCPView.ts | status": {
     "message": "Állapot"
   },
   "panels/application/WebMCPView.ts | statusTypes": {
     "message": "Állapottípusok"
-  },
-  "panels/application/WebMCPView.ts | success": {
-    "message": "Sikerült"
   },
   "panels/application/WebMCPView.ts | toolDetails": {
     "message": "Részletek"
@@ -5002,6 +5056,9 @@
   },
   "panels/application/WebMCPView.ts | toolTypes": {
     "message": "Eszköztípusok"
+  },
+  "panels/application/WebMCPView.ts | toolUnregisteredNotice": {
+    "message": "Az eszköz regisztrációja törölve"
   },
   "panels/application/WebMCPView.ts | totalCalls": {
     "message": "Összes hívás: {PH1}"
@@ -5873,6 +5930,9 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsFailureReason": {
     "message": "A hiba oka"
   },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsFormSubmission": {
+    "message": "Űrlap elküldése"
+  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsRuleSet": {
     "message": "Szabálykészlet"
   },
@@ -5882,11 +5942,17 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsTargetHint": {
     "message": "Célra vonatkozó tipp"
   },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | no": {
+    "message": "Nem"
+  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | noElementSelected": {
     "message": "Nincs kiválasztott elem"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "Válassza ki a kívánt elemet a további részletekért"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | yes": {
+    "message": "Igen"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByBatterySaver": {
     "message": "A spekulatív betöltés ki van kapcsolva az operációs rendszer Akkumulátorkímélő módja miatt."
@@ -6794,6 +6860,9 @@
   "panels/console/ConsoleView.ts | autocompleteFromHistory": {
     "message": "Automatikus kiegészítés az előzményekből"
   },
+  "panels/console/ConsoleView.ts | collapseAll": {
+    "message": "Az összes összecsukása"
+  },
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "Konzol kiürítve"
   },
@@ -6832,6 +6901,9 @@
   },
   "panels/console/ConsoleView.ts | errors": {
     "message": "Hibák"
+  },
+  "panels/console/ConsoleView.ts | expandAll": {
+    "message": "Az összes kibontása"
   },
   "panels/console/ConsoleView.ts | filteredMessagesInConsole": {
     "message": "{PH1} üzenet a konzolban"
@@ -8147,6 +8219,9 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Kiszámított érték megtekintése"
   },
+  "panels/elements/StylesSidebarPane.ts | aiSuggestionAccepted": {
+    "message": "{PH1} Javaslat elfogadva."
+  },
   "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
     "message": "Automatikus sötét mód"
   },
@@ -8251,6 +8326,9 @@
   },
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "Stílusok másolása"
+  },
+  "panels/elements/elements-meta.ts | cssAnimationsOnlyWhenAnimationsTabOpen": {
+    "message": "Animációs stílusok megjelenítése csak akkor, amikor meg van nyitva az Animációk lap"
   },
   "panels/elements/elements-meta.ts | detailedInspectTooltip": {
     "message": "Részletes vizsgálat elemleírása"
@@ -11723,6 +11801,9 @@
   "panels/profiler/HeapProfileView.ts | sBytes": {
     "message": "{PH1} bájt"
   },
+  "panels/profiler/HeapProfileView.ts | samplingHeapProfilerTimeline": {
+    "message": "Mintavételi memóriateljesítmény-elemző eszköz idővonala"
+  },
   "panels/profiler/HeapProfileView.ts | samplingProfiles": {
     "message": "Mintavételi profilok"
   },
@@ -11930,9 +12011,6 @@
   "panels/profiler/HeapSnapshotView.ts | duplicatedStrings": {
     "message": "Ismétlődő karakterláncok"
   },
-  "panels/profiler/HeapSnapshotView.ts | exposeInternals": {
-    "message": "Belső adatok a megvalósítás részleteivel"
-  },
   "panels/profiler/HeapSnapshotView.ts | filter": {
     "message": "Szűrő"
   },
@@ -12070,33 +12148,6 @@
   },
   "panels/profiler/IsolateSelector.ts | totalPageJsHeapSizeChangeTrend": {
     "message": "A JS-halomméret teljes változási trendje az oldalon az elmúlt {PH1} percben."
-  },
-  "panels/profiler/LiveHeapProfileView.ts | allocatedJsHeapSizeCurrentlyIn": {
-    "message": "Jelenleg használatban lévő, kiosztott JS-memória mérete"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | anonymousScriptS": {
-    "message": "(Névtelen szkript {PH1})"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | heapProfile": {
-    "message": "Memóriaprofil"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | jsHeap": {
-    "message": "JS-memória"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | kb": {
-    "message": "kB"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | numberOfVmsSharingTheSameScript": {
-    "message": "Az ugyanazon szkriptforráson osztozó VM-ek száma"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | scriptUrl": {
-    "message": "Szkript URL-címe"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | urlOfTheScriptSource": {
-    "message": "Szkriptforrás URL-je"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | vms": {
-    "message": "VM-ek"
   },
   "panels/profiler/ModuleUIStrings.ts | buildingAllocationStatistics": {
     "message": "Allokációs statisztikák készítése…"
@@ -12275,9 +12326,6 @@
   "panels/profiler/profiler-meta.ts | deleteProfile": {
     "message": "Profil törlése"
   },
-  "panels/profiler/profiler-meta.ts | liveHeapProfile": {
-    "message": "Élő memóriaprofil"
-  },
   "panels/profiler/profiler-meta.ts | loadProfile": {
     "message": "Profil betöltése…"
   },
@@ -12287,23 +12335,11 @@
   "panels/profiler/profiler-meta.ts | saveProfile": {
     "message": "Profil mentése…"
   },
-  "panels/profiler/profiler-meta.ts | showLiveHeapProfile": {
-    "message": "Élő memóriaprofil megjelenítése"
-  },
   "panels/profiler/profiler-meta.ts | showMemory": {
     "message": "Memória megjelenítése"
   },
-  "panels/profiler/profiler-meta.ts | startRecordingHeapAllocations": {
-    "message": "Memóriakiosztás rögzítésének indítása"
-  },
-  "panels/profiler/profiler-meta.ts | startRecordingHeapAllocationsAndReload": {
-    "message": "Memóriaallokációk rögzítésének megkezdése és az oldal újratöltése"
-  },
   "panels/profiler/profiler-meta.ts | startStopRecording": {
     "message": "Rögzítés indítása/leállítása"
-  },
-  "panels/profiler/profiler-meta.ts | stopRecordingHeapAllocations": {
-    "message": "Memóriakiosztás rögzítésének leállítása"
   },
   "panels/protocol_monitor/JSONEditor.ts | addCustomProperty": {
     "message": "Egyéni tulajdonság hozzáadása"
@@ -12417,7 +12453,7 @@
     "message": "Felvétel törlése"
   },
   "panels/recorder/RecorderController.ts | doNotImport": {
-    "message": "Ne importáljon olyan felvételeket, amelyeket nem ért, vagy amelyeket még nem vizsgált felül a DevTools segítségével. Ha ilyen felvételt importál, támadók tulajdoníthatják el az Ön személyazonosságát, vagy vehetik át az irányítást a számítógépe felett. Az importálás engedélyezéséhez írja be alább a következőt: „{PH1}”."
+    "message": "Ne importáljon olyan felvételeket, amelyeket nem ért, vagy amelyeket még nem vizsgált felül a DevTools segítségével. A támadók így eltulajdoníthatják az Ön személyazonosságát, vagy átvehetik az irányítást a számítógépe felett. Az importálás engedélyezéséhez írja be alább a következőt: „{PH1}”."
   },
   "panels/recorder/RecorderController.ts | doYouTrustThisCode": {
     "message": "Megbízik ebben a felvételben?"
@@ -12477,7 +12513,7 @@
     "message": "Kódnézet váltása"
   },
   "panels/recorder/RecorderController.ts | typeAllowImporting": {
-    "message": "Típus: „{PH1}”"
+    "message": "Írja be a következőt: „{PH1}”"
   },
   "panels/recorder/components/CreateRecordingView.ts | cancelRecording": {
     "message": "Felvétel megszakítása"
@@ -13459,6 +13495,21 @@
   },
   "panels/settings/AISettingsTab.ts | aIAnnotationsFeatureDescription": {
     "message": "Címek automatikus generálása a teljesítménykivonatok jelöléseihez"
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceDescriptionV2": {
+    "message": "Kontextusfüggő segítséget kaphat a vizsgált oldalon"
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceThingsToConsiderNoLoggingV2": {
+    "message": "A magyarázatok generálásához a rendszer elküldi a Google-nak a csevegőüzeneteket, a DevTools-paneleken és a webes API-kon keresztül az ezen webhely számára hozzáférhető adatokat, valamint az Ön által kiválasztott elemeket (például hálózati kérelmeket, fájlokat és teljesítménynyomokat). Az Ön által beküldött és a funkció által generált tartalmakat nem használjuk fel a Google AI-modelljeinek továbbfejlesztésére. Ez egy kísérleti AI-funkció, amely nem mindig működik megfelelően."
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceThingsToConsiderV2": {
+    "message": "A magyarázatok generálásához a rendszer elküldi a Google-nak a csevegőüzeneteket, a DevTools-paneleken és a webes API-kon keresztül az ezen webhely számára hozzáférhető adatokat, valamint az Ön által kiválasztott elemeket (például hálózati kérelmeket, fájlokat és teljesítménynyomokat), és előfordulhat, hogy a funkció továbbfejlesztése érdekében felülvizsgálatot végző emberek is láthatják őket. Ez egy kísérleti AI-funkció, amely nem mindig működik megfelelően."
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceWhenOnItem1V2": {
+    "message": "A DevTools AI-támogatásával hibakeresést végezhet a stílusokkal, a hálózattal, a teljesítménnyel, a forráskóddal, a kisegítő lehetőségekkel és a tárolással kapcsolatos problémák esetén."
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceWhenOnItem2V2": {
+    "message": "Lépésről lépésre követheti az ügynök érvelését, és gyorsan a releváns forrásadatokra ugorhat"
   },
   "panels/settings/AISettingsTab.ts | asYouTypeCodeSuggestions": {
     "message": "Kódjavaslatokat kap a Konzol vagy a Források panelen gépelés közben. A Tab billentyűvel fogadhatja el őket."
@@ -14539,12 +14590,6 @@
   },
   "panels/sources/PersistenceActions.ts | showOverrides": {
     "message": "Összes felülbírálás megjelenítése"
-  },
-  "panels/sources/ProfilePlugin.ts | kb": {
-    "message": "kB"
-  },
-  "panels/sources/ProfilePlugin.ts | mb": {
-    "message": "MB"
   },
   "panels/sources/ProfilePlugin.ts | ms": {
     "message": "ms"
@@ -17183,6 +17228,9 @@
   "ui/components/markdown_view/CodeBlock.ts | copy": {
     "message": "Kód másolása"
   },
+  "ui/components/markdown_view/CodeBlock.ts | copyCodeSnippet": {
+    "message": "{PH1} kódrészlet másolása"
+  },
   "ui/components/markdown_view/CodeBlock.ts | disclaimer": {
     "message": "Körültekintően használja a kódrészleteket"
   },
@@ -17306,6 +17354,9 @@
   "ui/legacy/ActionRegistration.ts | sources": {
     "message": "Források"
   },
+  "ui/legacy/Dialog.ts | close": {
+    "message": "Bezárás"
+  },
   "ui/legacy/DockController.ts | close": {
     "message": "Bezárás"
   },
@@ -17339,6 +17390,12 @@
   "ui/legacy/InspectorDrawerView.ts | closeDrawer": {
     "message": "Fiók bezárása"
   },
+  "ui/legacy/InspectorDrawerView.ts | expandDrawer": {
+    "message": "Fiók kibontása"
+  },
+  "ui/legacy/InspectorDrawerView.ts | minimizeDrawer": {
+    "message": "Fiók kis méretre állítása"
+  },
   "ui/legacy/InspectorDrawerView.ts | moreTools": {
     "message": "További eszközök"
   },
@@ -17354,8 +17411,14 @@
   "ui/legacy/InspectorView.ts | drawer": {
     "message": "Eszközfiók"
   },
+  "ui/legacy/InspectorView.ts | drawerExpanded": {
+    "message": "Fiók kibontva"
+  },
   "ui/legacy/InspectorView.ts | drawerHidden": {
     "message": "A fiók el van rejtve"
+  },
+  "ui/legacy/InspectorView.ts | drawerMinimized": {
+    "message": "Fiók kis méretűre állítva"
   },
   "ui/legacy/InspectorView.ts | drawerShown": {
     "message": "A fiók látható"
@@ -17831,66 +17894,6 @@
   "ui/legacy/components/inline_editor/ColorSwatch.ts | shiftclickToChangeColorFormat": {
     "message": "Shift + kattintás a színformátum módosításához"
   },
-  "ui/legacy/components/inline_editor/FontEditor.ts | PleaseEnterAValidValueForSText": {
-    "message": "* Érvényes értéket adjon meg a(z) {PH1} betűméretű szövegbevitelnél"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | cssProperties": {
-    "message": "CSS-tulajdonságok"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | deleteS": {
-    "message": "{PH1} törlése"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fallbackS": {
-    "message": "Tartalék {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fontFamily": {
-    "message": "Betűtípuscsalád"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fontSelectorDeletedAtIndexS": {
-    "message": "Betűtípus-választó törölve a következő indexnél: {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fontSize": {
-    "message": "Betűméret"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fontWeight": {
-    "message": "Betűvastagság"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | lineHeight": {
-    "message": "Sormagasság"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sKeyValueSelector": {
-    "message": "{PH1} kulcsértékválasztó"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sSliderInput": {
-    "message": "{PH1} – csúszkabevitel"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sTextInput": {
-    "message": "{PH1} szöveges bevitel"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sToggleInputType": {
-    "message": "{PH1} beviteli típus váltása"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sUnitInput": {
-    "message": "{PH1} egység bevitele"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | selectorInputMode": {
-    "message": "Választó beviteli módja"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sliderInputMode": {
-    "message": "Csúszka beviteli módja"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | spacing": {
-    "message": "Térköz"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | thereIsNoValueToDeleteAtIndexS": {
-    "message": "Nincs törölhető érték a következő indexnél: {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | thisPropertyIsSetToContainUnits": {
-    "message": "A tulajdon úgy van beállítva, hogy tartalmazzon mértékegységet, de nem rendelkezik meghatározott egyező unitsArray paraméterrel: {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | units": {
-    "message": "Egységek"
-  },
   "ui/legacy/components/object_ui/CustomPreviewComponent.ts | showAsJavascriptObject": {
     "message": "Megjelenítés JavaScript-objektumként"
   },
@@ -18047,17 +18050,8 @@
   "ui/legacy/components/perf_ui/perf_ui-meta.ts | flamechartSelectedNavigation": {
     "message": "Navigáció nyomonkövetési diagramon:"
   },
-  "ui/legacy/components/perf_ui/perf_ui-meta.ts | hideLiveMemoryAllocation": {
-    "message": "Élő memóriakiosztási jelölések elrejtése"
-  },
-  "ui/legacy/components/perf_ui/perf_ui-meta.ts | liveMemoryAllocationAnnotations": {
-    "message": "Élő memóriakiosztási jelölések"
-  },
   "ui/legacy/components/perf_ui/perf_ui-meta.ts | modern": {
     "message": "Modern"
-  },
-  "ui/legacy/components/perf_ui/perf_ui-meta.ts | showLiveMemoryAllocation": {
-    "message": "Élő memóriakiosztási jelölések megjelenítése"
   },
   "ui/legacy/components/quick_open/CommandMenu.ts | command": {
     "message": "Parancs"
@@ -18189,7 +18183,7 @@
     "message": "Forrás"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | typeAllowPasting": {
-    "message": "Típus: „{PH1}”"
+    "message": "Írja be a következőt: „{PH1}”"
   },
   "ui/legacy/components/source_frame/XMLView.ts | find": {
     "message": "Keresés"

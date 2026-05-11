@@ -323,6 +323,9 @@
   "core/sdk/NetworkManager.ts | noContentForRedirect": {
     "message": "Inget innehåll är tillgängligt eftersom begäran omdirigerades"
   },
+  "core/sdk/NetworkManager.ts | noContentForSSE": {
+    "message": "Innehåll för Server-Sent Events (SSE) stöds inte för närvarande"
+  },
   "core/sdk/NetworkManager.ts | noContentForWebSocket": {
     "message": "Innehåll för WebSockets stöds inte för närvarande"
   },
@@ -559,6 +562,9 @@
   },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "Akromatopsi (ingen färg)"
+  },
+  "core/sdk/sdk-meta.ts | apca": {
+    "message": "Advanced Perceptual Contrast Algorithm (APCA) ersätter tidigare riktlinjer för kontrastförhållande och AA/AAA"
   },
   "core/sdk/sdk-meta.ts | blurredVision": {
     "message": "Oskarp syn"
@@ -1441,6 +1447,9 @@
   },
   "generated/Deprecation.ts | PrefixedVideoSupportsFullscreen": {
     "message": "HTMLVideoElement.webkitSupportsFullscreen har fasats ut. Använd Document.fullscreenEnabled i stället."
+  },
+  "generated/Deprecation.ts | PreventSvgFilterPaint": {
+    "message": "SVG-filter kan inte tillämpas på iframe-element från andra ursprung, begränsade iframe-element (t.ex. sandlådor) eller plugin."
   },
   "generated/Deprecation.ts | RTCConstraintEnableDtlsSrtpFalse": {
     "message": "Begränsningen DtlsSrtpKeyAgreement har tagits bort. Du har angett ett false-värde för denna begränsning, vilket tolkas som ett försök att använda den borttagna SDES key negotiation-metoden. Denna funktion har tagits bort. Använd i stället en tjänst med stöd för DTLS key negotiation."
@@ -3207,13 +3216,34 @@
     "message": "Det här är en experimentell AI-funktion som inte alltid fungerar som den ska. Dubbelkolla texten innan du klistrar in den i ett annat verktyg."
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | exportForAgents": {
-    "message": "Kopia till kodningsagenten"
+    "message": "Kopiera till kodningsagent"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | generatingSummary": {
     "message": "Skapar sammanfattning …"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | saveAsMarkdown": {
     "message": "Spara som …"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | gotIt": {
+    "message": "OK"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | integrationPoint": {
+    "message": "AI-hjälp är nu integrerat med panelerna App och Lighthouse och hämtar sammanhang från datakällor samtidigt"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | manageSettings": {
+    "message": "Hantera i inställningarna"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | privacyDisclaimer": {
+    "message": "Chattmeddelanden, data som är tillgänglig för den här webbplatsen via panelerna i Verktyg för programmerare och webb-API:er samt objekt som du väljer, till exempel nätverksbegäranden, filer och resultatspårning, skickas till Google och kan ses av mänskliga granskare för att förbättra den här funktionen. Det här är en experimentell AI-funktion som inte alltid fungerar som den ska."
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | privacyDisclaimerEnterpriseNoLogging": {
+    "message": "Chattmeddelanden, data som är tillgänglig för denna webbplats via panelerna i Verktyg för programmerare och webb-API:er samt objekt du väljer, till exempel nätverksbegäranden, filer och resultatspårning, skickas till Google. Innehållet som skickas till och genereras av den här funktionen används inte för att förbättra Googles AI-modeller. Det här är en experimentell AI-funktion som inte alltid fungerar som den ska."
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | title": {
+    "message": "AI-hjälp har nu blivit ännu bättre"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | widgetPoint": {
+    "message": "Använd widgetar för att verifiera resultat eller hoppa till källdata för utvalda felsökningsfall"
   },
   "panels/ai_assistance/components/WalkthroughView.ts | close": {
     "message": "Stäng"
@@ -3223,6 +3253,9 @@
   },
   "panels/ai_assistance/components/WalkthroughView.ts | hideThinking": {
     "message": "Dölj tänkande"
+  },
+  "panels/ai_assistance/components/WalkthroughView.ts | inProgress": {
+    "message": "Pågår"
   },
   "panels/ai_assistance/components/WalkthroughView.ts | showAgentWalkthrough": {
     "message": "Visa agentgenomgång"
@@ -3677,9 +3710,6 @@
   "panels/application/ApplicationPanelSidebar.ts | theContentOfThisDocumentHasBeen": {
     "message": "Innehållet i detta dokument har genererats dynamiskt via document.write()."
   },
-  "panels/application/ApplicationPanelSidebar.ts | thirdPartyPhaseout": {
-    "message": "Cookies från {PH1} kan ha blockerats på grund av utfasning av tredjepartscookies."
-  },
   "panels/application/ApplicationPanelSidebar.ts | versionS": {
     "message": "Version: {PH1}"
   },
@@ -3829,6 +3859,9 @@
   },
   "panels/application/DOMStorageItemsView.ts | domStorageItemsCleared": {
     "message": "Objekt i DOM-lagringsutrymmet rensades"
+  },
+  "panels/application/DeviceBoundSessionsTreeElement.ts | clear": {
+    "message": "Rensa"
   },
   "panels/application/DeviceBoundSessionsTreeElement.ts | deviceBoundSessions": {
     "message": "Enhetsbundna sessioner"
@@ -4922,6 +4955,9 @@
   "panels/application/TrustTokensTreeElement.ts | trustTokens": {
     "message": "Förtroendetoken"
   },
+  "panels/application/WebMCPView.ts | cancelCall": {
+    "message": "Avbryt"
+  },
   "panels/application/WebMCPView.ts | canceled": {
     "message": "Avbruten"
   },
@@ -4937,8 +4973,20 @@
   "panels/application/WebMCPView.ts | close": {
     "message": "Stäng"
   },
+  "panels/application/WebMCPView.ts | completed": {
+    "message": "Slutfört"
+  },
+  "panels/application/WebMCPView.ts | copyDescription": {
+    "message": "Textbeskrivning"
+  },
+  "panels/application/WebMCPView.ts | copyName": {
+    "message": "Kopiera namn"
+  },
   "panels/application/WebMCPView.ts | declarative": {
     "message": "Deklarativa"
+  },
+  "panels/application/WebMCPView.ts | editAndRun": {
+    "message": "Redigera och kör"
   },
   "panels/application/WebMCPView.ts | error": {
     "message": "Fel"
@@ -4982,17 +5030,23 @@
   "panels/application/WebMCPView.ts | output": {
     "message": "Utdata"
   },
+  "panels/application/WebMCPView.ts | paste": {
+    "message": "Klistra in"
+  },
   "panels/application/WebMCPView.ts | pending": {
     "message": "Pågår"
+  },
+  "panels/application/WebMCPView.ts | revealTool": {
+    "message": "Visa verktyg"
+  },
+  "panels/application/WebMCPView.ts | runTool": {
+    "message": "Kör verktyget"
   },
   "panels/application/WebMCPView.ts | status": {
     "message": "Status"
   },
   "panels/application/WebMCPView.ts | statusTypes": {
     "message": "Statustyper"
-  },
-  "panels/application/WebMCPView.ts | success": {
-    "message": "Klart"
   },
   "panels/application/WebMCPView.ts | toolDetails": {
     "message": "Information"
@@ -5002,6 +5056,9 @@
   },
   "panels/application/WebMCPView.ts | toolTypes": {
     "message": "Verktygstyper"
+  },
+  "panels/application/WebMCPView.ts | toolUnregisteredNotice": {
+    "message": "Det här verktyget har avregistrerats"
   },
   "panels/application/WebMCPView.ts | totalCalls": {
     "message": "{PH1} anrop totalt"
@@ -5873,6 +5930,9 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsFailureReason": {
     "message": "Felorsak"
   },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsFormSubmission": {
+    "message": "Inlämning av formulär"
+  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsRuleSet": {
     "message": "Regeluppsättning"
   },
@@ -5882,11 +5942,17 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsTargetHint": {
     "message": "Information"
   },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | no": {
+    "message": "Nej"
+  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | noElementSelected": {
     "message": "Inget element har valts"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "Välj ett element för mer information"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | yes": {
+    "message": "Ja"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByBatterySaver": {
     "message": "Spekulativ inläsning har inaktiverats på grund av operativsystemets batterisparläge."
@@ -6794,6 +6860,9 @@
   "panels/console/ConsoleView.ts | autocompleteFromHistory": {
     "message": "Autoslutför från historik"
   },
+  "panels/console/ConsoleView.ts | collapseAll": {
+    "message": "Komprimera alla"
+  },
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "Konsolen har rensats"
   },
@@ -6832,6 +6901,9 @@
   },
   "panels/console/ConsoleView.ts | errors": {
     "message": "Fel"
+  },
+  "panels/console/ConsoleView.ts | expandAll": {
+    "message": "Utöka alla"
   },
   "panels/console/ConsoleView.ts | filteredMessagesInConsole": {
     "message": "{PH1} meddelanden i konsolen"
@@ -8147,6 +8219,9 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Visa beräknat värde"
   },
+  "panels/elements/StylesSidebarPane.ts | aiSuggestionAccepted": {
+    "message": "{PH1} Förslaget har godkänts"
+  },
   "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
     "message": "Automatiskt mörkt läge"
   },
@@ -8251,6 +8326,9 @@
   },
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "Kopiera format"
+  },
+  "panels/elements/elements-meta.ts | cssAnimationsOnlyWhenAnimationsTabOpen": {
+    "message": "Visa endast animationsstilar när fliken Animationer är öppen"
   },
   "panels/elements/elements-meta.ts | detailedInspectTooltip": {
     "message": "Detaljerad beskrivning i granskningsläget"
@@ -11723,6 +11801,9 @@
   "panels/profiler/HeapProfileView.ts | sBytes": {
     "message": "{PH1} byte"
   },
+  "panels/profiler/HeapProfileView.ts | samplingHeapProfilerTimeline": {
+    "message": "Tidslinje för minnesprofilerare med sampling"
+  },
   "panels/profiler/HeapProfileView.ts | samplingProfiles": {
     "message": "Samplingsprofiler"
   },
@@ -11930,9 +12011,6 @@
   "panels/profiler/HeapSnapshotView.ts | duplicatedStrings": {
     "message": "Dubbletter av strängar"
   },
-  "panels/profiler/HeapSnapshotView.ts | exposeInternals": {
-    "message": "Intern data med implementeringsdetaljer"
-  },
   "panels/profiler/HeapSnapshotView.ts | filter": {
     "message": "Filtrera"
   },
@@ -12070,33 +12148,6 @@
   },
   "panels/profiler/IsolateSelector.ts | totalPageJsHeapSizeChangeTrend": {
     "message": "Trend för ändring av total minnesstorlek för JavaScript-objekt på sidan under de senaste {PH1} minuterna."
-  },
-  "panels/profiler/LiveHeapProfileView.ts | allocatedJsHeapSizeCurrentlyIn": {
-    "message": "Tilldelad storlek för JavaScript-minne används för närvarande"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | anonymousScriptS": {
-    "message": "(Anonymt skript {PH1})"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | heapProfile": {
-    "message": "Minnesprofil"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | jsHeap": {
-    "message": "JavaScript-minne"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | kb": {
-    "message": "kB"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | numberOfVmsSharingTheSameScript": {
-    "message": "Antalet VM som delar samma skriptkälla"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | scriptUrl": {
-    "message": "Webbadress för skript"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | urlOfTheScriptSource": {
-    "message": "Skriptkällans webbadress"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | vms": {
-    "message": "Virtuella maskiner"
   },
   "panels/profiler/ModuleUIStrings.ts | buildingAllocationStatistics": {
     "message": "Skapar allokeringsstatistik …"
@@ -12275,9 +12326,6 @@
   "panels/profiler/profiler-meta.ts | deleteProfile": {
     "message": "Radera profil"
   },
-  "panels/profiler/profiler-meta.ts | liveHeapProfile": {
-    "message": "Profil för liveminne"
-  },
   "panels/profiler/profiler-meta.ts | loadProfile": {
     "message": "Läs in profil …"
   },
@@ -12287,23 +12335,11 @@
   "panels/profiler/profiler-meta.ts | saveProfile": {
     "message": "Spara profil …"
   },
-  "panels/profiler/profiler-meta.ts | showLiveHeapProfile": {
-    "message": "Visa aktiv minnesprofil"
-  },
   "panels/profiler/profiler-meta.ts | showMemory": {
     "message": "Visa minne"
   },
-  "panels/profiler/profiler-meta.ts | startRecordingHeapAllocations": {
-    "message": "Starta inspelning av minnesallokeringar"
-  },
-  "panels/profiler/profiler-meta.ts | startRecordingHeapAllocationsAndReload": {
-    "message": "Börja spela in minnesallokeringar och läs in sidan igen"
-  },
   "panels/profiler/profiler-meta.ts | startStopRecording": {
     "message": "Starta/stoppa inspelning"
-  },
-  "panels/profiler/profiler-meta.ts | stopRecordingHeapAllocations": {
-    "message": "Sluta spela in minnesallokeringar"
   },
   "panels/protocol_monitor/JSONEditor.ts | addCustomProperty": {
     "message": "Lägg till anpassad egenskap"
@@ -13460,6 +13496,21 @@
   "panels/settings/AISettingsTab.ts | aIAnnotationsFeatureDescription": {
     "message": "Generera titlar för kommentarer i resultatspårning automatiskt"
   },
+  "panels/settings/AISettingsTab.ts | aiAssistanceDescriptionV2": {
+    "message": "Få sammanhangsbaserad hjälp på den granskade sidan"
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceThingsToConsiderNoLoggingV2": {
+    "message": "För att generera förklaringar skickas chattmeddelanden, data som är tillgänglig för denna webbplats via panelerna i Verktyg för programmerare och webb-API:er samt objekt du väljer, till exempel nätverksbegäranden, filer och resultatspårning, till Google. Innehållet du skickar och som genereras av den här funktionen används inte för att förbättra Googles AI-modeller. Det här är en experimentell AI-funktion som inte alltid fungerar som den ska."
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceThingsToConsiderV2": {
+    "message": "För att generera förklaringar skickas chattmeddelanden, data som är tillgänglig för denna webbplats via panelerna i Verktyg för programmerare och webb-API:er samt objekt du väljer, till exempel nätverksbegäranden, filer och resultatspårning, till Google och kan ses av mänskliga granskare för att förbättra funktionen. Det här är en experimentell AI-funktion som inte alltid fungerar som den ska."
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceWhenOnItem1V2": {
+    "message": "Felsök problem med format, nätverk, resultat, källkod, tillgänglighet och lagring med hjälp av AI-hjälpen i Verktyg för programmerare"
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceWhenOnItem2V2": {
+    "message": "Följ agentens resonemang steg för steg och hoppa snabbt till relevant källdata"
+  },
   "panels/settings/AISettingsTab.ts | asYouTypeCodeSuggestions": {
     "message": "När du skriver i panelen Konsol eller Källor får du kodförslag. Tryck på Tabb för att godkänna ett."
   },
@@ -14539,12 +14590,6 @@
   },
   "panels/sources/PersistenceActions.ts | showOverrides": {
     "message": "Visa alla åsidosättningar"
-  },
-  "panels/sources/ProfilePlugin.ts | kb": {
-    "message": "kB"
-  },
-  "panels/sources/ProfilePlugin.ts | mb": {
-    "message": "MB"
   },
   "panels/sources/ProfilePlugin.ts | ms": {
     "message": "ms"
@@ -17183,6 +17228,9 @@
   "ui/components/markdown_view/CodeBlock.ts | copy": {
     "message": "Kopiera kod"
   },
+  "ui/components/markdown_view/CodeBlock.ts | copyCodeSnippet": {
+    "message": "Kopiera kodavsnittet {PH1}"
+  },
   "ui/components/markdown_view/CodeBlock.ts | disclaimer": {
     "message": "Använd kodavsnitt med försiktighet"
   },
@@ -17306,6 +17354,9 @@
   "ui/legacy/ActionRegistration.ts | sources": {
     "message": "Källor"
   },
+  "ui/legacy/Dialog.ts | close": {
+    "message": "Stäng"
+  },
   "ui/legacy/DockController.ts | close": {
     "message": "Stäng"
   },
@@ -17339,6 +17390,12 @@
   "ui/legacy/InspectorDrawerView.ts | closeDrawer": {
     "message": "Stäng utdragbar panel"
   },
+  "ui/legacy/InspectorDrawerView.ts | expandDrawer": {
+    "message": "Öppna utdragbar panel"
+  },
+  "ui/legacy/InspectorDrawerView.ts | minimizeDrawer": {
+    "message": "Minimera den utdragbara panelen"
+  },
   "ui/legacy/InspectorDrawerView.ts | moreTools": {
     "message": "Fler verktyg"
   },
@@ -17354,8 +17411,14 @@
   "ui/legacy/InspectorView.ts | drawer": {
     "message": "Verktygslåda"
   },
+  "ui/legacy/InspectorView.ts | drawerExpanded": {
+    "message": "Den utdragbara panelen har utökats"
+  },
   "ui/legacy/InspectorView.ts | drawerHidden": {
     "message": "Utdragbar panel dold"
+  },
+  "ui/legacy/InspectorView.ts | drawerMinimized": {
+    "message": "Den utdragbara panelen har minimerats"
   },
   "ui/legacy/InspectorView.ts | drawerShown": {
     "message": "Utdragbar panel visas"
@@ -17831,66 +17894,6 @@
   "ui/legacy/components/inline_editor/ColorSwatch.ts | shiftclickToChangeColorFormat": {
     "message": "Ändra färgformat genom att trycka på skift och klicka"
   },
-  "ui/legacy/components/inline_editor/FontEditor.ts | PleaseEnterAValidValueForSText": {
-    "message": "* Ange ett giltigt värde för textinmatningen {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | cssProperties": {
-    "message": "CSS-egenskaper"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | deleteS": {
-    "message": "Radera {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fallbackS": {
-    "message": "Alternativ {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fontFamily": {
-    "message": "Fontfamilj"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fontSelectorDeletedAtIndexS": {
-    "message": "Fontväljaren raderades vid index: {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fontSize": {
-    "message": "Fontstorlek"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fontWeight": {
-    "message": "Fontens vikt"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | lineHeight": {
-    "message": "Radhöjd"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sKeyValueSelector": {
-    "message": "Väljare av nyckel-värde för {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sSliderInput": {
-    "message": "Inmatning med skjutreglage för {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sTextInput": {
-    "message": "Textinmatningen {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sToggleInputType": {
-    "message": "Aktivera/inaktivera inmatningstyp för {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sUnitInput": {
-    "message": "Enhetsinmatning för {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | selectorInputMode": {
-    "message": "Väljare för inmatningsläge"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sliderInputMode": {
-    "message": "Läge för inmatning med skjutreglage"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | spacing": {
-    "message": "Radavstånd"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | thereIsNoValueToDeleteAtIndexS": {
-    "message": "Det finns inget värde att radera i index: {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | thisPropertyIsSetToContainUnits": {
-    "message": "Egenskapen är inställd på att innehålla enheter, men det finns ingen angiven motsvarande unitsArray: {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | units": {
-    "message": "Enheter"
-  },
   "ui/legacy/components/object_ui/CustomPreviewComponent.ts | showAsJavascriptObject": {
     "message": "Visa som JavaScript-objekt"
   },
@@ -18047,17 +18050,8 @@
   "ui/legacy/components/perf_ui/perf_ui-meta.ts | flamechartSelectedNavigation": {
     "message": "Navigering i flame chart:"
   },
-  "ui/legacy/components/perf_ui/perf_ui-meta.ts | hideLiveMemoryAllocation": {
-    "message": "Dölj livekommentarer för minnesallokering"
-  },
-  "ui/legacy/components/perf_ui/perf_ui-meta.ts | liveMemoryAllocationAnnotations": {
-    "message": "Livekommentarer för minnesallokering"
-  },
   "ui/legacy/components/perf_ui/perf_ui-meta.ts | modern": {
     "message": "Modern"
-  },
-  "ui/legacy/components/perf_ui/perf_ui-meta.ts | showLiveMemoryAllocation": {
-    "message": "Visa annoteringar för minnesallokering live"
   },
   "ui/legacy/components/quick_open/CommandMenu.ts | command": {
     "message": "Kommando"

@@ -323,6 +323,9 @@
   "core/sdk/NetworkManager.ts | noContentForRedirect": {
     "message": "Geen content beschikbaar omdat dit verzoek is omgeleid"
   },
+  "core/sdk/NetworkManager.ts | noContentForSSE": {
+    "message": "Content voor Server-Sent Events (SSE) wordt op dit moment niet ondersteund"
+  },
   "core/sdk/NetworkManager.ts | noContentForWebSocket": {
     "message": "Content voor WebSockets wordt momenteel niet ondersteund"
   },
@@ -559,6 +562,9 @@
   },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "Achromatopsie (geen kleur)"
+  },
+  "core/sdk/sdk-meta.ts | apca": {
+    "message": "Geavanceerd algoritme voor perceptueel contrast (Advanced Perceptual Contrast Algorithm, APCA) vervangt de eerdere richtlijnen voor contrastverhouding en AA/AAA"
   },
   "core/sdk/sdk-meta.ts | blurredVision": {
     "message": "Wazig zicht"
@@ -1441,6 +1447,9 @@
   },
   "generated/Deprecation.ts | PrefixedVideoSupportsFullscreen": {
     "message": "HTMLVideoElement.webkitSupportsFullscreen is beëindigd. Gebruik in plaats daarvan Document.fullscreenEnabled."
+  },
+  "generated/Deprecation.ts | PreventSvgFilterPaint": {
+    "message": "Svg-filters kunnen niet worden toegepast op cross-origin iframes, beperkte iframes (bijvoorbeeld sandbox-iframes) of plug-ins."
   },
   "generated/Deprecation.ts | RTCConstraintEnableDtlsSrtpFalse": {
     "message": "De beperking DtlsSrtpKeyAgreement is verwijderd. Je hebt een false-waarde voor deze beperking opgegeven. Deze wordt niet geïnterpreteerd als een poging om de verwijderde SDES key negotiation-methode te gebruiken. Deze functionaliteit is verwijderd. Gebruik een service die in plaats daarvan DTLS key negotiation ondersteunt."
@@ -3207,13 +3216,34 @@
     "message": "Dit is een experimentele AI-functie die het niet altijd juist heeft. Dubbelcheck deze tekst voordat je deze in een andere tool plakt."
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | exportForAgents": {
-    "message": "Kopiëren voor je programmeeragent"
+    "message": "Kopiëren naar programmeeragent"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | generatingSummary": {
     "message": "Samenvatting genereren…"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | saveAsMarkdown": {
     "message": "Opslaan als…"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | gotIt": {
+    "message": "OK"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | integrationPoint": {
+    "message": "AI-ondersteuning is nu geïntegreerd met de deelvensters App en Lighthouse en haalt tegelijkertijd context uit gegevensbronnen"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | manageSettings": {
+    "message": "Beheren via instellingen"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | privacyDisclaimer": {
+    "message": "Chatberichten, gegevens die toegankelijk zijn voor deze site via DevTools-deelvensters en web-API's, en items die je selecteert, zoals netwerkverzoeken, bestanden en prestatietraceringen, worden naar Google gestuurd. Deze items kunnen door menselijke reviewers worden bekeken om deze functie te verbeteren. Dit is een experimentele AI-functie die het niet altijd juist heeft."
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | privacyDisclaimerEnterpriseNoLogging": {
+    "message": "Chatberichten, gegevens die toegankelijk zijn voor deze site via DevTools-deelvensters en web-API's, en items die je selecteert, zoals netwerkverzoeken, bestanden en prestatietraceringen, worden naar Google gestuurd. De content die wordt ingediend bij en gegenereerd door deze functie, wordt niet gebruikt om de AI-modellen van Google te verbeteren. Dit is een experimentele AI-functie die het niet altijd juist heeft."
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | title": {
+    "message": "AI-ondersteuning is nu nog beter"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | widgetPoint": {
+    "message": "Gebruik widgets om resultaten te verifiëren of naar brongegevens te gaan voor bepaalde foutopsporingsgevallen"
   },
   "panels/ai_assistance/components/WalkthroughView.ts | close": {
     "message": "Sluiten"
@@ -3223,6 +3253,9 @@
   },
   "panels/ai_assistance/components/WalkthroughView.ts | hideThinking": {
     "message": "Denkproces verbergen"
+  },
+  "panels/ai_assistance/components/WalkthroughView.ts | inProgress": {
+    "message": "In behandeling"
   },
   "panels/ai_assistance/components/WalkthroughView.ts | showAgentWalkthrough": {
     "message": "Handleiding voor agent tonen"
@@ -3677,9 +3710,6 @@
   "panels/application/ApplicationPanelSidebar.ts | theContentOfThisDocumentHasBeen": {
     "message": "De content van dit document is dynamisch gegenereerd via document.write()."
   },
-  "panels/application/ApplicationPanelSidebar.ts | thirdPartyPhaseout": {
-    "message": "Cookies van {PH1} zijn misschien geblokkeerd omdat cookies van derden zijn uitgefaseerd."
-  },
   "panels/application/ApplicationPanelSidebar.ts | versionS": {
     "message": "Versie: {PH1}"
   },
@@ -3829,6 +3859,9 @@
   },
   "panels/application/DOMStorageItemsView.ts | domStorageItemsCleared": {
     "message": "DOM-opslagitems gewist"
+  },
+  "panels/application/DeviceBoundSessionsTreeElement.ts | clear": {
+    "message": "Wissen"
   },
   "panels/application/DeviceBoundSessionsTreeElement.ts | deviceBoundSessions": {
     "message": "Apparaatgebonden sessies"
@@ -4922,6 +4955,9 @@
   "panels/application/TrustTokensTreeElement.ts | trustTokens": {
     "message": "Privéstatustokens"
   },
+  "panels/application/WebMCPView.ts | cancelCall": {
+    "message": "Annuleren"
+  },
   "panels/application/WebMCPView.ts | canceled": {
     "message": "Geannuleerd"
   },
@@ -4937,8 +4973,20 @@
   "panels/application/WebMCPView.ts | close": {
     "message": "Sluiten"
   },
+  "panels/application/WebMCPView.ts | completed": {
+    "message": "Afgerond"
+  },
+  "panels/application/WebMCPView.ts | copyDescription": {
+    "message": "Beschrijving kopiëren"
+  },
+  "panels/application/WebMCPView.ts | copyName": {
+    "message": "Naam kopiëren"
+  },
   "panels/application/WebMCPView.ts | declarative": {
     "message": "Declaratief"
+  },
+  "panels/application/WebMCPView.ts | editAndRun": {
+    "message": "Bewerken en uitvoeren"
   },
   "panels/application/WebMCPView.ts | error": {
     "message": "Fout"
@@ -4982,17 +5030,23 @@
   "panels/application/WebMCPView.ts | output": {
     "message": "Uitvoer"
   },
+  "panels/application/WebMCPView.ts | paste": {
+    "message": "Plakken"
+  },
   "panels/application/WebMCPView.ts | pending": {
     "message": "Bezig"
+  },
+  "panels/application/WebMCPView.ts | revealTool": {
+    "message": "Tool Tonen"
+  },
+  "panels/application/WebMCPView.ts | runTool": {
+    "message": "Tool uitvoeren"
   },
   "panels/application/WebMCPView.ts | status": {
     "message": "Status"
   },
   "panels/application/WebMCPView.ts | statusTypes": {
     "message": "Statustypes"
-  },
-  "panels/application/WebMCPView.ts | success": {
-    "message": "Geslaagd"
   },
   "panels/application/WebMCPView.ts | toolDetails": {
     "message": "Details"
@@ -5002,6 +5056,9 @@
   },
   "panels/application/WebMCPView.ts | toolTypes": {
     "message": "Tooltypen"
+  },
+  "panels/application/WebMCPView.ts | toolUnregisteredNotice": {
+    "message": "De registratie van deze tool is ongedaan gemaakt"
   },
   "panels/application/WebMCPView.ts | totalCalls": {
     "message": "Totaal aantal aanroepen: {PH1}"
@@ -5873,6 +5930,9 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsFailureReason": {
     "message": "Oorzaak van fout"
   },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsFormSubmission": {
+    "message": "Formulierinzending"
+  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsRuleSet": {
     "message": "Regelset"
   },
@@ -5882,11 +5942,17 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsTargetHint": {
     "message": "Doelhint"
   },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | no": {
+    "message": "Nee"
+  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | noElementSelected": {
     "message": "Geen element geselecteerd"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "Selecteer een element voor meer informatie"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | yes": {
+    "message": "Ja"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByBatterySaver": {
     "message": "Speculatief laden is uitgezet vanwege de modus Batterijbesparing van het besturingssysteem."
@@ -6765,7 +6831,7 @@
     "message": "Consoleprompt"
   },
   "panels/console/ConsolePrompt.ts | selfXssWarning": {
-    "message": "Waarschuwing: Plak geen code in de DevTools-console die je niet begrijpt of die je niet zelf hebt gecontroleerd. Met zulke code kunnen aanvallers je identiteit stelen of je computer overnemen. Typ hieronder '{PH1}' en druk op Enter om plakken toe te staan."
+    "message": "Waarschuwing: Plak geen code in de DevTools-console die je niet begrijpt of die je niet zelf hebt gecontroleerd. Met zulke code kunnen aanvallers je identiteit stelen of je computer overnemen. Typ hieronder “{PH1}” en druk op Enter om plakken toe te staan."
   },
   "panels/console/ConsoleSidebar.ts | dErrors": {
     "message": "{n,plural, =0{Geen fouten}=1{# fout}other{# fouten}}"
@@ -6793,6 +6859,9 @@
   },
   "panels/console/ConsoleView.ts | autocompleteFromHistory": {
     "message": "Automatisch aanvullen uit geschiedenis"
+  },
+  "panels/console/ConsoleView.ts | collapseAll": {
+    "message": "Alles samenvouwen"
   },
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "Console gewist"
@@ -6832,6 +6901,9 @@
   },
   "panels/console/ConsoleView.ts | errors": {
     "message": "Fouten"
+  },
+  "panels/console/ConsoleView.ts | expandAll": {
+    "message": "Alles uitvouwen"
   },
   "panels/console/ConsoleView.ts | filteredMessagesInConsole": {
     "message": "{PH1} berichten in console"
@@ -8147,6 +8219,9 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Berekende waarde bekijken"
   },
+  "panels/elements/StylesSidebarPane.ts | aiSuggestionAccepted": {
+    "message": "{PH1} Suggestie geaccepteerd"
+  },
   "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
     "message": "Automatische donkere modus"
   },
@@ -8251,6 +8326,9 @@
   },
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "Stijlen kopiëren"
+  },
+  "panels/elements/elements-meta.ts | cssAnimationsOnlyWhenAnimationsTabOpen": {
+    "message": "Animatiestijlen alleen tonen als het tabblad Animaties open is"
   },
   "panels/elements/elements-meta.ts | detailedInspectTooltip": {
     "message": "Tooltip voor gedetailleerde inspectie"
@@ -11723,6 +11801,9 @@
   "panels/profiler/HeapProfileView.ts | sBytes": {
     "message": "{PH1} bytes"
   },
+  "panels/profiler/HeapProfileView.ts | samplingHeapProfilerTimeline": {
+    "message": "Tijdlijn van heapprofiler voor sampling"
+  },
   "panels/profiler/HeapProfileView.ts | samplingProfiles": {
     "message": "Steekproefprofielen"
   },
@@ -11930,9 +12011,6 @@
   "panels/profiler/HeapSnapshotView.ts | duplicatedStrings": {
     "message": "Dubbele tekenreeksen"
   },
-  "panels/profiler/HeapSnapshotView.ts | exposeInternals": {
-    "message": "Interne gegevens met implementatiedetails"
-  },
   "panels/profiler/HeapSnapshotView.ts | filter": {
     "message": "Filter"
   },
@@ -12070,33 +12148,6 @@
   },
   "panels/profiler/IsolateSelector.ts | totalPageJsHeapSizeChangeTrend": {
     "message": "Trendwijziging voor de totale grootte van de JS-heappagina tijdens de afgelopen {PH1} minuten."
-  },
-  "panels/profiler/LiveHeapProfileView.ts | allocatedJsHeapSizeCurrentlyIn": {
-    "message": "Toegewezen JS-heapgrootte momenteel in gebruik"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | anonymousScriptS": {
-    "message": "(Anoniem script {PH1})"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | heapProfile": {
-    "message": "Heapprofiel"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | jsHeap": {
-    "message": "JS-heap"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | kb": {
-    "message": "KB"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | numberOfVmsSharingTheSameScript": {
-    "message": "Aantal VM's dat dezelfde scriptbron deelt"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | scriptUrl": {
-    "message": "Script-URL"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | urlOfTheScriptSource": {
-    "message": "URL van de scriptbron"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | vms": {
-    "message": "VM's"
   },
   "panels/profiler/ModuleUIStrings.ts | buildingAllocationStatistics": {
     "message": "Toewijzingsstatistieken bouwen…"
@@ -12275,9 +12326,6 @@
   "panels/profiler/profiler-meta.ts | deleteProfile": {
     "message": "Profiel verwijderen"
   },
-  "panels/profiler/profiler-meta.ts | liveHeapProfile": {
-    "message": "Live heapprofiel"
-  },
   "panels/profiler/profiler-meta.ts | loadProfile": {
     "message": "Profiel laden…"
   },
@@ -12287,23 +12335,11 @@
   "panels/profiler/profiler-meta.ts | saveProfile": {
     "message": "Profiel opslaan…"
   },
-  "panels/profiler/profiler-meta.ts | showLiveHeapProfile": {
-    "message": "Live heapprofiel tonen"
-  },
   "panels/profiler/profiler-meta.ts | showMemory": {
     "message": "Geheugen tonen"
   },
-  "panels/profiler/profiler-meta.ts | startRecordingHeapAllocations": {
-    "message": "Beginnen met opnemen van heaptoewijzingen"
-  },
-  "panels/profiler/profiler-meta.ts | startRecordingHeapAllocationsAndReload": {
-    "message": "Heaptoewijzingen opnemen en de pagina herladen"
-  },
   "panels/profiler/profiler-meta.ts | startStopRecording": {
     "message": "Opname starten/stoppen"
-  },
-  "panels/profiler/profiler-meta.ts | stopRecordingHeapAllocations": {
-    "message": "Opname van heaptoewijzingen stoppen"
   },
   "panels/protocol_monitor/JSONEditor.ts | addCustomProperty": {
     "message": "Aangepaste property toevoegen"
@@ -12417,7 +12453,7 @@
     "message": "Opname verwijderen"
   },
   "panels/recorder/RecorderController.ts | doNotImport": {
-    "message": "Importeer geen opnames in DevTools die je niet begrijpt of die je niet zelf hebt beoordeeld. Met dergelijke code kunnen aanvallers je identiteit stelen of je computer overnemen. Typ hieronder '{PH1}' om importeren toe te staan."
+    "message": "Importeer geen opnames in DevTools die je niet begrijpt of die je niet zelf hebt beoordeeld. Met zulke code kunnen aanvallers je identiteit stelen of je computer overnemen. Typ hieronder “{PH1}” om importeren toe te staan."
   },
   "panels/recorder/RecorderController.ts | doYouTrustThisCode": {
     "message": "Vertrouw je deze opname?"
@@ -12477,7 +12513,7 @@
     "message": "Codeweergave aan-/uitzetten"
   },
   "panels/recorder/RecorderController.ts | typeAllowImporting": {
-    "message": "Typ '{PH1}'"
+    "message": "Typ “{PH1}”"
   },
   "panels/recorder/components/CreateRecordingView.ts | cancelRecording": {
     "message": "Opname annuleren"
@@ -13459,6 +13495,21 @@
   },
   "panels/settings/AISettingsTab.ts | aIAnnotationsFeatureDescription": {
     "message": "Automatisch titels genereren voor annotaties voor prestatietracering"
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceDescriptionV2": {
+    "message": "Krijg contextafhankelijke hulp op de geïnspecteerde pagina"
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceThingsToConsiderNoLoggingV2": {
+    "message": "Voor het genereren van uitleg worden chatberichten, gegevens die toegankelijk zijn voor deze site via DevTools-deelvensters en web-API's, en items die je selecteert, zoals netwerkverzoeken, bestanden en prestatietraceringen, naar Google gestuurd. De content die je indient en die door deze functie wordt gegenereerd, wordt niet gebruikt om de AI-modellen van Google te verbeteren. Dit is een experimentele AI-functie die het niet altijd juist heeft."
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceThingsToConsiderV2": {
+    "message": "Voor het genereren van uitleg worden chatberichten, gegevens die toegankelijk zijn voor deze site via DevTools-deelvensters en web-API's, en items die je selecteert, zoals netwerkverzoeken, bestanden en prestatietraceringen, naar Google gestuurd. Deze items kunnen door menselijke reviewers worden bekeken om deze functie te verbeteren. Dit is een experimentele AI-functie die het niet altijd juist heeft."
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceWhenOnItem1V2": {
+    "message": "Los problemen met stijlen, netwerk, prestaties, broncode, toegankelijkheid en opslag op met AI-ondersteuning van DevTools"
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceWhenOnItem2V2": {
+    "message": "Volg de redenering van de agent stap voor stap en ga snel naar de relevante brongegevens"
   },
   "panels/settings/AISettingsTab.ts | asYouTypeCodeSuggestions": {
     "message": "Terwijl je typt in het deelvenster Console of Bronnen, krijg je codesuggesties. Druk op Tab om er een te accepteren."
@@ -14539,12 +14590,6 @@
   },
   "panels/sources/PersistenceActions.ts | showOverrides": {
     "message": "Alle overschrijvingen tonen"
-  },
-  "panels/sources/ProfilePlugin.ts | kb": {
-    "message": "KB"
-  },
-  "panels/sources/ProfilePlugin.ts | mb": {
-    "message": "MB"
   },
   "panels/sources/ProfilePlugin.ts | ms": {
     "message": "ms"
@@ -17183,6 +17228,9 @@
   "ui/components/markdown_view/CodeBlock.ts | copy": {
     "message": "Code kopiëren"
   },
+  "ui/components/markdown_view/CodeBlock.ts | copyCodeSnippet": {
+    "message": "Codefragment {PH1} kopiëren"
+  },
   "ui/components/markdown_view/CodeBlock.ts | disclaimer": {
     "message": "Wees voorzichtig met het gebruik van codefragmenten"
   },
@@ -17306,6 +17354,9 @@
   "ui/legacy/ActionRegistration.ts | sources": {
     "message": "Bronnen"
   },
+  "ui/legacy/Dialog.ts | close": {
+    "message": "Sluiten"
+  },
   "ui/legacy/DockController.ts | close": {
     "message": "Sluiten"
   },
@@ -17339,6 +17390,12 @@
   "ui/legacy/InspectorDrawerView.ts | closeDrawer": {
     "message": "Lade sluiten"
   },
+  "ui/legacy/InspectorDrawerView.ts | expandDrawer": {
+    "message": "Lade uitvouwen"
+  },
+  "ui/legacy/InspectorDrawerView.ts | minimizeDrawer": {
+    "message": "Lade minimaliseren"
+  },
   "ui/legacy/InspectorDrawerView.ts | moreTools": {
     "message": "Meer tools"
   },
@@ -17354,8 +17411,14 @@
   "ui/legacy/InspectorView.ts | drawer": {
     "message": "Toollade"
   },
+  "ui/legacy/InspectorView.ts | drawerExpanded": {
+    "message": "Lade uitgevouwen"
+  },
   "ui/legacy/InspectorView.ts | drawerHidden": {
     "message": "Lade verborgen"
+  },
+  "ui/legacy/InspectorView.ts | drawerMinimized": {
+    "message": "Lade geminimaliseerd"
   },
   "ui/legacy/InspectorView.ts | drawerShown": {
     "message": "Getoonde lade"
@@ -17831,66 +17894,6 @@
   "ui/legacy/components/inline_editor/ColorSwatch.ts | shiftclickToChangeColorFormat": {
     "message": "Houd de Shift-toets ingedrukt en klik om de kleurindeling te wijzigen"
   },
-  "ui/legacy/components/inline_editor/FontEditor.ts | PleaseEnterAValidValueForSText": {
-    "message": "* Geef een geldige waarde op voor {PH1}-tekstinvoer"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | cssProperties": {
-    "message": "Css-property's"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | deleteS": {
-    "message": "{PH1} verwijderen"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fallbackS": {
-    "message": "Reserve {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fontFamily": {
-    "message": "Lettertypefamilie"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fontSelectorDeletedAtIndexS": {
-    "message": "Lettertypeselector verwijderd bij index: {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fontSize": {
-    "message": "Lettergrootte"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fontWeight": {
-    "message": "Lettertypegewicht"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | lineHeight": {
-    "message": "Regelhoogte"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sKeyValueSelector": {
-    "message": "{PH1} Sleutel/waarde-kiezer"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sSliderInput": {
-    "message": "{PH1} Invoer van schuifregelaar"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sTextInput": {
-    "message": "{PH1}-tekstinvoer"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sToggleInputType": {
-    "message": "{PH1}-schakelaar voor invoertype"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sUnitInput": {
-    "message": "Invoer van {PH1} eenheid"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | selectorInputMode": {
-    "message": "Invoermodus met kiezer"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sliderInputMode": {
-    "message": "Invoermodus met schuifregelaar"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | spacing": {
-    "message": "Regelafstand"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | thereIsNoValueToDeleteAtIndexS": {
-    "message": "Er is geen waarde om te verwijderen in de index: {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | thisPropertyIsSetToContainUnits": {
-    "message": "Deze property is ingesteld om eenheden te bevatten, maar heeft geen gedefinieerde overeenkomstige unitsArray: {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | units": {
-    "message": "Eenheden"
-  },
   "ui/legacy/components/object_ui/CustomPreviewComponent.ts | showAsJavascriptObject": {
     "message": "Tonen als JavaScript-object"
   },
@@ -18047,17 +18050,8 @@
   "ui/legacy/components/perf_ui/perf_ui-meta.ts | flamechartSelectedNavigation": {
     "message": "Flame chart-navigatie:"
   },
-  "ui/legacy/components/perf_ui/perf_ui-meta.ts | hideLiveMemoryAllocation": {
-    "message": "Annotaties voor live geheugentoewijzing verbergen"
-  },
-  "ui/legacy/components/perf_ui/perf_ui-meta.ts | liveMemoryAllocationAnnotations": {
-    "message": "Annotaties voor live geheugentoewijzing"
-  },
   "ui/legacy/components/perf_ui/perf_ui-meta.ts | modern": {
     "message": "Modern"
-  },
-  "ui/legacy/components/perf_ui/perf_ui-meta.ts | showLiveMemoryAllocation": {
-    "message": "Annotaties voor live geheugentoewijzing tonen"
   },
   "ui/legacy/components/quick_open/CommandMenu.ts | command": {
     "message": "Opdracht"
@@ -18171,7 +18165,7 @@
     "message": "{PH1} selectieregio's"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | doNotPaste": {
-    "message": "Plak geen code in DevTools die je niet begrijpt of die je niet hebt gecontroleerd. Met dergelijke code kunnen aanvallers je identiteit stelen of je computer overnemen. Typ hieronder '{PH1}' om plakken toe te staan."
+    "message": "Plak geen code in DevTools die je niet begrijpt of die je niet hebt gecontroleerd. Met zulke code kunnen aanvallers je identiteit stelen of je computer overnemen. Typ hieronder “{PH1}” om plakken toe te staan."
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | doYouTrustThisCode": {
     "message": "Vertrouw je deze code?"
@@ -18189,7 +18183,7 @@
     "message": "Bron"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | typeAllowPasting": {
-    "message": "Typ '{PH1}'"
+    "message": "Typ “{PH1}”"
   },
   "ui/legacy/components/source_frame/XMLView.ts | find": {
     "message": "Zoeken"

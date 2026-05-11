@@ -323,6 +323,9 @@
   "core/sdk/NetworkManager.ts | noContentForRedirect": {
     "message": "Няма даступнага змесціва, бо гэты запыт быў перанакіраваны"
   },
+  "core/sdk/NetworkManager.ts | noContentForSSE": {
+    "message": "Змесціва для падзей, якія адпраўляюцца серверам, пакуль што не падтрымліваецца"
+  },
   "core/sdk/NetworkManager.ts | noContentForWebSocket": {
     "message": "Змесціва для WebSockets зараз не падтрымліваецца"
   },
@@ -559,6 +562,9 @@
   },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "Ахраматапсія (без колеру)"
+  },
+  "core/sdk/sdk-meta.ts | apca": {
+    "message": "Палепшаны алгарытм успрымання кантрасту замяняе папярэднія рэкамендацыі па каэфіцыенце кантрасту і адпаведнасці стандартам AA/AAA"
   },
   "core/sdk/sdk-meta.ts | blurredVision": {
     "message": "Расфакусіраваны зрок"
@@ -1441,6 +1447,9 @@
   },
   "generated/Deprecation.ts | PrefixedVideoSupportsFullscreen": {
     "message": "Метад HTMLVideoElement.webkitSupportsFullscreen больш не падтрымліваецца. Выкарыстоўвайце замест яго метад Document.fullscreenEnabled."
+  },
+  "generated/Deprecation.ts | PreventSvgFilterPaint": {
+    "message": "Фільтры SVG нельга прымяняць да вокнаў iframe з розных крыніц, абмежаваных вокнаў iframe (напрыклад ізаляваных) або ўбудоў."
   },
   "generated/Deprecation.ts | RTCConstraintEnableDtlsSrtpFalse": {
     "message": "Абмежаванне DtlsSrtpKeyAgreement выдалена. Вы ўказалі false значэнне для гэтага абмежавання, што было інтэрпрэтавана як спроба выкарыстання выдаленага метаду (SDES key negotiation). Гэта магчымасць выдалена. Замест яе выкарыстоўвайце сэрвіс, які падтрымлівае гэты метад (DTLS key negotiation)."
@@ -3207,13 +3216,34 @@
     "message": "Гэта эксперыментальная функцыя на аснове AI, якая не заўсёды працуе бездакорна. Перад тым як устаўляць гэты тэкст у іншы інструмент, праверце яго."
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | exportForAgents": {
-    "message": "Скапіруйце для агента па стварэнні кода"
+    "message": "Капіраванне для агента па стварэнні кода"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | generatingSummary": {
     "message": "Ствараецца зводка…"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | saveAsMarkdown": {
     "message": "Захаваць як…"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | gotIt": {
+    "message": "Зразумела"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | integrationPoint": {
+    "message": "Цяпер памочнік на аснове штучнага інтэлекту інтэграваны з панэлямі \"Праграма\" і Lighthouse і адначасова атрымлівае кантэкст з крыніц даных"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | manageSettings": {
+    "message": "Змяніць параметры ў наладах"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | privacyDisclaimer": {
+    "message": "У Google адпраўляюцца паведамленні ў чаце, даныя, даступныя для гэтага сайта праз панэлі інструментаў распрацоўшчыка і Web API, а таксама выбраныя вамі элементы, у прыватнасці сеткавыя запыты, файлы і даныя трасіроўкі прадукцыйнасці. Для паляпшэння гэтай функцыі іх могуць праглядаць спецыялісты. Гэта эксперыментальная функцыя на аснове AI, якая не заўсёды працуе бездакорна."
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | privacyDisclaimerEnterpriseNoLogging": {
+    "message": "У Google адпраўляюцца паведамленні ў чаце, даныя, даступныя для гэтага сайта праз панэлі інструментаў распрацоўшчыка і Web API, а таксама выбраныя вамі элементы, у прыватнасці сеткавыя запыты, файлы і даныя трасіроўкі прадукцыйнасці. Змесціва, якое адпраўляецца ў гэту функцыю і якое яна генерыруе, не будзе выкарыстоўвацца для паляпшэння мадэлей штучнага інтэлекту ад Google. Гэта эксперыментальная функцыя на аснове AI, якая не заўсёды працуе бездакорна."
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | title": {
+    "message": "Дапамога AI стала яшчэ лепшай"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | widgetPoint": {
+    "message": "Выкарыстоўвайце віджэты, каб спраўджваць вынікі або пераходзіць да зыходных даных для асобных выпадкаў адладкі"
   },
   "panels/ai_assistance/components/WalkthroughView.ts | close": {
     "message": "Закрыць"
@@ -3223,6 +3253,9 @@
   },
   "panels/ai_assistance/components/WalkthroughView.ts | hideThinking": {
     "message": "Схаваць працэс разважання"
+  },
+  "panels/ai_assistance/components/WalkthroughView.ts | inProgress": {
+    "message": "Выконваецца"
   },
   "panels/ai_assistance/components/WalkthroughView.ts | showAgentWalkthrough": {
     "message": "Паказаць пакрокавыя інструкцыі для агента"
@@ -3677,9 +3710,6 @@
   "panels/application/ApplicationPanelSidebar.ts | theContentOfThisDocumentHasBeen": {
     "message": "Змесціва гэтага дакумента было згенерыравана дынамічна праз \"document.write()\"."
   },
-  "panels/application/ApplicationPanelSidebar.ts | thirdPartyPhaseout": {
-    "message": "Магчыма, файлы cookie з сайта {PH1} заблакіраваны з-за паступовага спынення падтрымкі старонніх файлаў cookie."
-  },
   "panels/application/ApplicationPanelSidebar.ts | versionS": {
     "message": "Версія: {PH1}"
   },
@@ -3829,6 +3859,9 @@
   },
   "panels/application/DOMStorageItemsView.ts | domStorageItemsCleared": {
     "message": "Табліца \"Элементы сховішча DOM\" ачышчана"
+  },
+  "panels/application/DeviceBoundSessionsTreeElement.ts | clear": {
+    "message": "Ачысціць"
   },
   "panels/application/DeviceBoundSessionsTreeElement.ts | deviceBoundSessions": {
     "message": "Сеансы, прывязаныя да прылады"
@@ -4922,6 +4955,9 @@
   "panels/application/TrustTokensTreeElement.ts | trustTokens": {
     "message": "Прыватныя токены стану"
   },
+  "panels/application/WebMCPView.ts | cancelCall": {
+    "message": "Скасаваць"
+  },
   "panels/application/WebMCPView.ts | canceled": {
     "message": "Скасавана"
   },
@@ -4937,8 +4973,20 @@
   "panels/application/WebMCPView.ts | close": {
     "message": "Закрыць"
   },
+  "panels/application/WebMCPView.ts | completed": {
+    "message": "Завершана"
+  },
+  "panels/application/WebMCPView.ts | copyDescription": {
+    "message": "Скапіраваць апісанне"
+  },
+  "panels/application/WebMCPView.ts | copyName": {
+    "message": "Скапіраваць назву"
+  },
   "panels/application/WebMCPView.ts | declarative": {
     "message": "Дэкларатыўныя"
+  },
+  "panels/application/WebMCPView.ts | editAndRun": {
+    "message": "Змяніць і запусціць"
   },
   "panels/application/WebMCPView.ts | error": {
     "message": "Памылка"
@@ -4982,17 +5030,23 @@
   "panels/application/WebMCPView.ts | output": {
     "message": "Вывад"
   },
+  "panels/application/WebMCPView.ts | paste": {
+    "message": "Уставіць"
+  },
   "panels/application/WebMCPView.ts | pending": {
     "message": "Выконваецца"
+  },
+  "panels/application/WebMCPView.ts | revealTool": {
+    "message": "Паказаць інструмент"
+  },
+  "panels/application/WebMCPView.ts | runTool": {
+    "message": "Запусціць інструмент"
   },
   "panels/application/WebMCPView.ts | status": {
     "message": "Стан"
   },
   "panels/application/WebMCPView.ts | statusTypes": {
     "message": "Тыпы станаў"
-  },
-  "panels/application/WebMCPView.ts | success": {
-    "message": "Выканана"
   },
   "panels/application/WebMCPView.ts | toolDetails": {
     "message": "Падрабязныя звесткі"
@@ -5002,6 +5056,9 @@
   },
   "panels/application/WebMCPView.ts | toolTypes": {
     "message": "Тыпы інструментаў"
+  },
+  "panels/application/WebMCPView.ts | toolUnregisteredNotice": {
+    "message": "Рэгістрацыя гэтага інструмента скасавана"
   },
   "panels/application/WebMCPView.ts | totalCalls": {
     "message": "Усяго выклікаў ({PH1})"
@@ -5873,6 +5930,9 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsFailureReason": {
     "message": "Прычына збою"
   },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsFormSubmission": {
+    "message": "Адпраўка формы"
+  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsRuleSet": {
     "message": "Набор правіл"
   },
@@ -5882,11 +5942,17 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsTargetHint": {
     "message": "Мэтавая падказка"
   },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | no": {
+    "message": "Не"
+  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | noElementSelected": {
     "message": "Элементаў не выбрана"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "Каб атрымаць дадатковую інфармацыю, выберыце элемент"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | yes": {
+    "message": "Так"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByBatterySaver": {
     "message": "Прагнозная загрузка адключана па прычыне ўключэння ў аперацыйнай сістэме рэжыму энергазберажэння."
@@ -6794,6 +6860,9 @@
   "panels/console/ConsoleView.ts | autocompleteFromHistory": {
     "message": "Аўтазапаўненне з гісторыі"
   },
+  "panels/console/ConsoleView.ts | collapseAll": {
+    "message": "Згарнуць усе"
+  },
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "Кансоль ачышчана"
   },
@@ -6832,6 +6901,9 @@
   },
   "panels/console/ConsoleView.ts | errors": {
     "message": "Памылкі"
+  },
+  "panels/console/ConsoleView.ts | expandAll": {
+    "message": "Разгарнуць усе"
   },
   "panels/console/ConsoleView.ts | filteredMessagesInConsole": {
     "message": "Паведамленняў у кансолі: {PH1}"
@@ -8147,6 +8219,9 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Праглядзець вылічанае значэнне"
   },
+  "panels/elements/StylesSidebarPane.ts | aiSuggestionAccepted": {
+    "message": "{PH1} Прапанова прынята."
+  },
   "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
     "message": "Аўтаматычнае ўключэнне цёмнага рэжыму"
   },
@@ -8251,6 +8326,9 @@
   },
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "Скапіраваць стылі"
+  },
+  "panels/elements/elements-meta.ts | cssAnimationsOnlyWhenAnimationsTabOpen": {
+    "message": "Паказваць стылі анімацыі толькі пры адкрытай укладцы \"Анімацыя\""
   },
   "panels/elements/elements-meta.ts | detailedInspectTooltip": {
     "message": "Падрабязная падказка пра праверку"
@@ -11723,6 +11801,9 @@
   "panels/profiler/HeapProfileView.ts | sBytes": {
     "message": "{PH1} Б"
   },
+  "panels/profiler/HeapProfileView.ts | samplingHeapProfilerTimeline": {
+    "message": "Храналогія дзеяння інструмента \"Прафіліроўшчык кучы сэмплаў\""
+  },
   "panels/profiler/HeapProfileView.ts | samplingProfiles": {
     "message": "Профілі выбаркі"
   },
@@ -11930,9 +12011,6 @@
   "panels/profiler/HeapSnapshotView.ts | duplicatedStrings": {
     "message": "Радкі, якія паўтараюцца"
   },
-  "panels/profiler/HeapSnapshotView.ts | exposeInternals": {
-    "message": "Унутраныя даныя з падрабязнымі звесткамі пра рэалізацыю"
-  },
   "panels/profiler/HeapSnapshotView.ts | filter": {
     "message": "Фільтр"
   },
@@ -12070,33 +12148,6 @@
   },
   "panels/profiler/IsolateSelector.ts | totalPageJsHeapSizeChangeTrend": {
     "message": "Змяненне агульнага памеру дынамічнай памяці JS на старонцы за апошнія {PH1} хв."
-  },
-  "panels/profiler/LiveHeapProfileView.ts | allocatedJsHeapSizeCurrentlyIn": {
-    "message": "Размеркаваны памер дынамічнай вобласці JS, які выкарыстоўваецца зараз"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | anonymousScriptS": {
-    "message": "(Ананімны сцэнарый {PH1})"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | heapProfile": {
-    "message": "Профіль дынамічнай памяці"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | jsHeap": {
-    "message": "Дынамічная памяць JS"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | kb": {
-    "message": "КБ"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | numberOfVmsSharingTheSameScript": {
-    "message": "Колькасць віртуальных машын, якія выкарыстоўваць аднолькавую крыніцу сцэнарыяў"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | scriptUrl": {
-    "message": "URL-адрас сцэнарыя"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | urlOfTheScriptSource": {
-    "message": "URL-адрас крыніцы сцэнарыя"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | vms": {
-    "message": "Віртуальныя машыны"
   },
   "panels/profiler/ModuleUIStrings.ts | buildingAllocationStatistics": {
     "message": "Ідзе стварэнне статыстыкі размеркавання…"
@@ -12275,9 +12326,6 @@
   "panels/profiler/profiler-meta.ts | deleteProfile": {
     "message": "Выдаліць профіль"
   },
-  "panels/profiler/profiler-meta.ts | liveHeapProfile": {
-    "message": "Профіль актыўнай дынамічнай памяці"
-  },
   "panels/profiler/profiler-meta.ts | loadProfile": {
     "message": "Загрузіць профіль…"
   },
@@ -12287,23 +12335,11 @@
   "panels/profiler/profiler-meta.ts | saveProfile": {
     "message": "Захаваць профіль…"
   },
-  "panels/profiler/profiler-meta.ts | showLiveHeapProfile": {
-    "message": "Паказаць профіль дынамічнай памяці ў рэальным часе"
-  },
   "panels/profiler/profiler-meta.ts | showMemory": {
     "message": "Паказаць укладку \"Памяць\""
   },
-  "panels/profiler/profiler-meta.ts | startRecordingHeapAllocations": {
-    "message": "Пачаць запіс размеркавання аб’ектаў у дынамічнай памяці"
-  },
-  "panels/profiler/profiler-meta.ts | startRecordingHeapAllocationsAndReload": {
-    "message": "Пачаць запіс размеркаванняў дынамічнай памяці і перазагрузіць старонку"
-  },
   "panels/profiler/profiler-meta.ts | startStopRecording": {
     "message": "Пачаць/спыніць запіс"
-  },
-  "panels/profiler/profiler-meta.ts | stopRecordingHeapAllocations": {
-    "message": "Спыніць запіс размеркавання аб’ектаў у дынамічнай памяці"
   },
   "panels/protocol_monitor/JSONEditor.ts | addCustomProperty": {
     "message": "Дадаць карыстальніцкую ўласцівасць"
@@ -12417,7 +12453,7 @@
     "message": "Выдаліць запіс"
   },
   "panels/recorder/RecorderController.ts | doNotImport": {
-    "message": "Не імпартуйце ў DevTools запісы, якія вы не разумееце або не правяралі. Так зламыснікі могуць украсці вашы даныя або атрымаць кантроль над вашым камп’ютарам. Увядзіце \"{PH1}\" ніжэй, каб дазволіць імпарт."
+    "message": "Не імпартуйце ў інструменты распрацоўшчыка запісы, якія вы не разумееце або не правяралі. Так зламыснікі могуць украсці вашы даныя або атрымаць кантроль над вашым камп’ютарам. Увядзіце \"{PH1}\" ніжэй, каб дазволіць імпарт."
   },
   "panels/recorder/RecorderController.ts | doYouTrustThisCode": {
     "message": "Вы давяраеце гэтаму запісу?"
@@ -12477,7 +12513,7 @@
     "message": "Уключыць/выключыць прагляд кода"
   },
   "panels/recorder/RecorderController.ts | typeAllowImporting": {
-    "message": "Увядзіце \"{PH1}\""
+    "message": "Тып \"{PH1}\""
   },
   "panels/recorder/components/CreateRecordingView.ts | cancelRecording": {
     "message": "Скасаваць запіс"
@@ -13459,6 +13495,21 @@
   },
   "panels/settings/AISettingsTab.ts | aIAnnotationsFeatureDescription": {
     "message": "Аўтаматычнае генерыраванне назваў для анатацый трасіроўкі паказчыкаў эфектыўнасці"
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceDescriptionV2": {
+    "message": "Вы будзеце атрымліваць кантэкстуальную дапамогу на праверанай старонцы"
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceThingsToConsiderNoLoggingV2": {
+    "message": "Каб генерыраваць тлумачэнні, у Google адпраўляюцца паведамленні ў чаце, даныя, даступныя для гэтага сайта праз панэлі інструментаў распрацоўшчыка і Web API, а таксама выбраныя вамі элементы, у прыватнасці сеткавыя запыты, файлы і даныя трасіроўкі прадукцыйнасці. Змесціва, якое вы адпраўляеце і якое гэта функцыя генерыруе, не будзе выкарыстоўвацца для паляпшэння мадэлей штучнага інтэлекту ад Google. Гэта эксперыментальная функцыя на аснове AI, якая не заўсёды працуе бездакорна."
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceThingsToConsiderV2": {
+    "message": "Каб генерыраваць тлумачэнні, у Google адпраўляюцца паведамленні ў чаце, даныя, даступныя для гэтага сайта праз панэлі інструментаў распрацоўшчыка і Web API, а таксама выбраныя вамі элементы, у прыватнасці сеткавыя запыты, файлы і даныя трасіроўкі прадукцыйнасці. Для паляпшэння гэтай функцыі іх могуць праглядаць спецыялісты. Гэта эксперыментальная функцыя на аснове AI, якая не заўсёды працуе бездакорна."
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceWhenOnItem1V2": {
+    "message": "Вы можаце адладжваць праблемы са стылем, сеткай, прадукцыйнасцю, зыходным кодам, даступнасцю і сховішчам з дапамогай AI ў інструментах распрацоўшчыка"
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceWhenOnItem2V2": {
+    "message": "Вы можаце сачыць за разважаннямі агента па кроках і хутка пераходзіць да адпаведных зыходных даных"
   },
   "panels/settings/AISettingsTab.ts | asYouTypeCodeSuggestions": {
     "message": "Падчас уводу тэксту ў кансолі або ў панэлі \"Крыніца\" вы будзеце атрымліваць прапановы па кодзе. Каб прыняць прапанову, націсніце Tab."
@@ -14539,12 +14590,6 @@
   },
   "panels/sources/PersistenceActions.ts | showOverrides": {
     "message": "Паказаць усе перавызначэнні"
-  },
-  "panels/sources/ProfilePlugin.ts | kb": {
-    "message": "КБ"
-  },
-  "panels/sources/ProfilePlugin.ts | mb": {
-    "message": "МБ"
   },
   "panels/sources/ProfilePlugin.ts | ms": {
     "message": "мс"
@@ -17183,6 +17228,9 @@
   "ui/components/markdown_view/CodeBlock.ts | copy": {
     "message": "Капіраваць код"
   },
+  "ui/components/markdown_view/CodeBlock.ts | copyCodeSnippet": {
+    "message": "Скапіраваць фрагмент кода \"{PH1}\""
+  },
   "ui/components/markdown_view/CodeBlock.ts | disclaimer": {
     "message": "Выкарыстоўвайце фрагменты кода з асцярожнасцю"
   },
@@ -17306,6 +17354,9 @@
   "ui/legacy/ActionRegistration.ts | sources": {
     "message": "Крыніцы"
   },
+  "ui/legacy/Dialog.ts | close": {
+    "message": "Закрыць"
+  },
   "ui/legacy/DockController.ts | close": {
     "message": "Закрыць"
   },
@@ -17339,6 +17390,12 @@
   "ui/legacy/InspectorDrawerView.ts | closeDrawer": {
     "message": "Закрыць высоўнае меню"
   },
+  "ui/legacy/InspectorDrawerView.ts | expandDrawer": {
+    "message": "Разгарнуць высоўнае меню"
+  },
+  "ui/legacy/InspectorDrawerView.ts | minimizeDrawer": {
+    "message": "Згарнуць высоўнае меню"
+  },
   "ui/legacy/InspectorDrawerView.ts | moreTools": {
     "message": "Іншыя інструменты"
   },
@@ -17354,8 +17411,14 @@
   "ui/legacy/InspectorView.ts | drawer": {
     "message": "Высоўнае меню інструментаў"
   },
+  "ui/legacy/InspectorView.ts | drawerExpanded": {
+    "message": "Высоўнае меню разгорнута"
+  },
   "ui/legacy/InspectorView.ts | drawerHidden": {
     "message": "Высоўнае меню схавана"
+  },
+  "ui/legacy/InspectorView.ts | drawerMinimized": {
+    "message": "Высоўнае меню згорнута"
   },
   "ui/legacy/InspectorView.ts | drawerShown": {
     "message": "Паказваецца высоўнае меню"
@@ -17831,66 +17894,6 @@
   "ui/legacy/components/inline_editor/ColorSwatch.ts | shiftclickToChangeColorFormat": {
     "message": "Каб змяніць фармат колеру, націсніце кнопку мышы, утрымліваючы Shift"
   },
-  "ui/legacy/components/inline_editor/FontEditor.ts | PleaseEnterAValidValueForSText": {
-    "message": "* Увядзіце сапраўднае значэнне ў полі ўводу тэксту \"{PH1}\""
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | cssProperties": {
-    "message": "Уласцівасці CSS"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | deleteS": {
-    "message": "Выдаліць {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fallbackS": {
-    "message": "Запасны варыянт {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fontFamily": {
-    "message": "Сямейства шрыфтоў"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fontSelectorDeletedAtIndexS": {
-    "message": "Інструмент выбару шрыфту выдалены пад індэксам: {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fontSize": {
-    "message": "Памер шрыфту"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fontWeight": {
-    "message": "Насычанасць шрыфту"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | lineHeight": {
-    "message": "Вышыня радка"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sKeyValueSelector": {
-    "message": "Інструмент выбару значэння ключа {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sSliderInput": {
-    "message": "{PH1}: увод з дапамогай паўзунка"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sTextInput": {
-    "message": "{PH1}: увод тэксту"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sToggleInputType": {
-    "message": "{PH1}: пераключыць метад уводу"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sUnitInput": {
-    "message": "{PH1}: увод адзінак"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | selectorInputMode": {
-    "message": "Рэжым уводу інструмента выбару"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sliderInputMode": {
-    "message": "Рэжым уводу паўзунка"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | spacing": {
-    "message": "Інтэрвалы"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | thereIsNoValueToDeleteAtIndexS": {
-    "message": "Няма значэння для выдалення па індэксе: {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | thisPropertyIsSetToContainUnits": {
-    "message": "Для гэтай уласцівасці зададзена змяшчэнне адзінак, аднак яна не мае вызначанага адпаведнага масіву unitsArray: {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | units": {
-    "message": "Адзінкі"
-  },
   "ui/legacy/components/object_ui/CustomPreviewComponent.ts | showAsJavascriptObject": {
     "message": "Паказаць як аб’ект JavaScript"
   },
@@ -18047,17 +18050,8 @@
   "ui/legacy/components/perf_ui/perf_ui-meta.ts | flamechartSelectedNavigation": {
     "message": "Навігацыя па графіку тыпу \"полымя\":"
   },
-  "ui/legacy/components/perf_ui/perf_ui-meta.ts | hideLiveMemoryAllocation": {
-    "message": "Схаваць анатацыі размеркавання актыўнай памяці"
-  },
-  "ui/legacy/components/perf_ui/perf_ui-meta.ts | liveMemoryAllocationAnnotations": {
-    "message": "Анатацыі размеркавання актыўнай памяці"
-  },
   "ui/legacy/components/perf_ui/perf_ui-meta.ts | modern": {
     "message": "Сучаснасць"
-  },
-  "ui/legacy/components/perf_ui/perf_ui-meta.ts | showLiveMemoryAllocation": {
-    "message": "Паказаць анатацыі размеркавання актыўнай памяці"
   },
   "ui/legacy/components/quick_open/CommandMenu.ts | command": {
     "message": "Каманда"
@@ -18171,7 +18165,7 @@
     "message": "Вобласці вылучэння: {PH1}"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | doNotPaste": {
-    "message": "Не ўстаўляйце ў інструменты распрацоўшчыка код, які вы не разумееце або не правяралі. Так зламыснікі могуць украсці вашы даныя або атрымаць кантроль над вашым камп’ютарам. Каб дазволіць устаўку, увядзіце \"{PH1}\" ніжэй."
+    "message": "Не ўстаўляйце ў інструменты распрацоўшчыка код, які вы не разумееце або не правяралі. Так зламыснікі могуць украсці вашы даныя або атрымаць кантроль над вашым камп’ютарам. Каб дазволіць устаўку кода, увядзіце \"{PH1}\" ніжэй."
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | doYouTrustThisCode": {
     "message": "Ці давяраеце вы гэтаму коду?"
@@ -18189,7 +18183,7 @@
     "message": "Крыніца"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | typeAllowPasting": {
-    "message": "Увядзіце \"{PH1}\""
+    "message": "Тып \"{PH1}\""
   },
   "ui/legacy/components/source_frame/XMLView.ts | find": {
     "message": "Пошук"

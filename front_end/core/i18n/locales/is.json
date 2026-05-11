@@ -323,6 +323,9 @@
   "core/sdk/NetworkManager.ts | noContentForRedirect": {
     "message": "Ekkert efni tiltækt því að þessi beiðni var framsend"
   },
+  "core/sdk/NetworkManager.ts | noContentForSSE": {
+    "message": "Efni fyrir Server-Sent Events (SSE) er ekki stutt eins og er"
+  },
   "core/sdk/NetworkManager.ts | noContentForWebSocket": {
     "message": "Efni fyrir WebSockets er ekki stutt eins og er"
   },
@@ -559,6 +562,9 @@
   },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "Achromatopsia-litblinda (enginn litur)"
+  },
+  "core/sdk/sdk-meta.ts | apca": {
+    "message": "Ítarlegt reiknirit fyrir skynjunarbirtuskil (APCA) kemur í stað fyrri birtuskilahlutfalla og AA/AAA-leiðbeininga"
   },
   "core/sdk/sdk-meta.ts | blurredVision": {
     "message": "Óskýr sjón"
@@ -1441,6 +1447,9 @@
   },
   "generated/Deprecation.ts | PrefixedVideoSupportsFullscreen": {
     "message": "HTMLVideoElement.webkitSupportsFullscreen er úrelt. Nota skal Document.fullscreenEnabled í staðinn."
+  },
+  "generated/Deprecation.ts | PreventSvgFilterPaint": {
+    "message": "Ekki er hægt að nota SVG-síur á iframe-ramma þvert á uppruna, takmarkaða iframe-ramma (t.d. í sandkassa) eða viðbætur."
   },
   "generated/Deprecation.ts | RTCConstraintEnableDtlsSrtpFalse": {
     "message": "Takmörkunin DtlsSrtpKeyAgreement var fjarlægð. Þú tilgreindir false gildi fyrir þessa takmörkun sem er túlkað sem tilraun til að nota aðferðina SDES key negotiation sem var fjarlægð. Þessi eiginleiki var fjarlægður. Nota skal þjónustu sem styður DTLS key negotiation í staðinn."
@@ -3215,6 +3224,27 @@
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | saveAsMarkdown": {
     "message": "Vista sem…"
   },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | gotIt": {
+    "message": "Ég skil"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | integrationPoint": {
+    "message": "Gervigreindarhjálp er nú samþætt forritum og Lighthouse-svæðum og sækir samhengi úr gagnauppsprettum samtímis"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | manageSettings": {
+    "message": "Stjórna í stillingum"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | privacyDisclaimer": {
+    "message": "Spjallskilaboð, gögn sem eru aðgengileg á þessu vefsvæði í gegnum DevTools-svæði og vefforritaskil og atriði sem þú velur, s.s. netkerfisbeiðnir, skrár og afkastaspor, eru send til Google og mannlegir yfirlesarar kunna að fara yfir þau til að bæta þennan eiginleika. Þetta er gervigreindareiginleiki á tilraunastigi sem getur gert villur."
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | privacyDisclaimerEnterpriseNoLogging": {
+    "message": "Spjallskilaboð, gögn sem eru aðgengileg á þessu vefsvæði í gegnum DevTools-svæði og vefforritaskil og atriði sem þú velur, s.s. netkerfisbeiðnir, skrár og afkastaspor, eru send til Google. Efni sem er sent inn og búið til með þessum eiginleika verður ekki notað til að bæta gervigreindarlíkön Google. Þetta er gervigreindareiginleiki á tilraunastigi sem getur gert villur."
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | title": {
+    "message": "Gervigreindaraðstoð er nú enn betri"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | widgetPoint": {
+    "message": "Notaðu græjur til að staðfesta niðurstöður eða hoppa í upprunagögn fyrir valin tilvik villuleitar"
+  },
   "panels/ai_assistance/components/WalkthroughView.ts | close": {
     "message": "Loka"
   },
@@ -3223,6 +3253,9 @@
   },
   "panels/ai_assistance/components/WalkthroughView.ts | hideThinking": {
     "message": "Fela hugsun"
+  },
+  "panels/ai_assistance/components/WalkthroughView.ts | inProgress": {
+    "message": "Í vinnslu"
   },
   "panels/ai_assistance/components/WalkthroughView.ts | showAgentWalkthrough": {
     "message": "Sýna kynningu fulltrúa"
@@ -3677,9 +3710,6 @@
   "panels/application/ApplicationPanelSidebar.ts | theContentOfThisDocumentHasBeen": {
     "message": "Efni þessa skjals var myndað jafnóðum með „document.write()“."
   },
-  "panels/application/ApplicationPanelSidebar.ts | thirdPartyPhaseout": {
-    "message": "Hugsanlega var lokað á fótspor frá {PH1} vegna niðurfellingar fótspora þriðju aðila."
-  },
   "panels/application/ApplicationPanelSidebar.ts | versionS": {
     "message": "Útgáfa: {PH1}"
   },
@@ -3829,6 +3859,9 @@
   },
   "panels/application/DOMStorageItemsView.ts | domStorageItemsCleared": {
     "message": "Atriði í DOM-geymslu voru hreinsuð"
+  },
+  "panels/application/DeviceBoundSessionsTreeElement.ts | clear": {
+    "message": "Hreinsa"
   },
   "panels/application/DeviceBoundSessionsTreeElement.ts | deviceBoundSessions": {
     "message": "Tækjabundnar lotur"
@@ -4922,6 +4955,9 @@
   "panels/application/TrustTokensTreeElement.ts | trustTokens": {
     "message": "Traustslyklar"
   },
+  "panels/application/WebMCPView.ts | cancelCall": {
+    "message": "Hætta við"
+  },
   "panels/application/WebMCPView.ts | canceled": {
     "message": "Hætt við"
   },
@@ -4937,8 +4973,20 @@
   "panels/application/WebMCPView.ts | close": {
     "message": "Loka"
   },
+  "panels/application/WebMCPView.ts | completed": {
+    "message": "Lokið"
+  },
+  "panels/application/WebMCPView.ts | copyDescription": {
+    "message": "Afrita lýsingu"
+  },
+  "panels/application/WebMCPView.ts | copyName": {
+    "message": "Afrita heiti"
+  },
   "panels/application/WebMCPView.ts | declarative": {
     "message": "Yfirlýsing"
+  },
+  "panels/application/WebMCPView.ts | editAndRun": {
+    "message": "Breyta og keyra"
   },
   "panels/application/WebMCPView.ts | error": {
     "message": "Villa"
@@ -4982,17 +5030,23 @@
   "panels/application/WebMCPView.ts | output": {
     "message": "Úttak"
   },
+  "panels/application/WebMCPView.ts | paste": {
+    "message": "Líma"
+  },
   "panels/application/WebMCPView.ts | pending": {
     "message": "Í vinnslu"
+  },
+  "panels/application/WebMCPView.ts | revealTool": {
+    "message": "Sýna verkfæri"
+  },
+  "panels/application/WebMCPView.ts | runTool": {
+    "message": "Keyra verkfæri"
   },
   "panels/application/WebMCPView.ts | status": {
     "message": "Staða"
   },
   "panels/application/WebMCPView.ts | statusTypes": {
     "message": "Stöðugerðir"
-  },
-  "panels/application/WebMCPView.ts | success": {
-    "message": "Lokið"
   },
   "panels/application/WebMCPView.ts | toolDetails": {
     "message": "Nánar"
@@ -5002,6 +5056,9 @@
   },
   "panels/application/WebMCPView.ts | toolTypes": {
     "message": "Verkfæragerðir"
+  },
+  "panels/application/WebMCPView.ts | toolUnregisteredNotice": {
+    "message": "Þetta verkfæri hefur verið afskráð"
   },
   "panels/application/WebMCPView.ts | totalCalls": {
     "message": "{PH1} símtöl samtals"
@@ -5873,6 +5930,9 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsFailureReason": {
     "message": "Ástæða villu"
   },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsFormSubmission": {
+    "message": "Innsending eyðublaðs"
+  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsRuleSet": {
     "message": "Reglusett"
   },
@@ -5882,11 +5942,17 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsTargetHint": {
     "message": "Markvísbending"
   },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | no": {
+    "message": "Nei"
+  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | noElementSelected": {
     "message": "Engin eining valin"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "Veldu einingu til að fá frekari upplýsingar"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | yes": {
+    "message": "Já"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByBatterySaver": {
     "message": "Slökkt er á getgátuhleðslu vegna þess að stýrikerfið er stillt á rafhlöðusparnað."
@@ -6794,6 +6860,9 @@
   "panels/console/ConsoleView.ts | autocompleteFromHistory": {
     "message": "Sjálfvirk útfylling úr ferli"
   },
+  "panels/console/ConsoleView.ts | collapseAll": {
+    "message": "Draga allt saman"
+  },
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "Stjórnborð hreinsað"
   },
@@ -6832,6 +6901,9 @@
   },
   "panels/console/ConsoleView.ts | errors": {
     "message": "Villur"
+  },
+  "panels/console/ConsoleView.ts | expandAll": {
+    "message": "Stækka allt"
   },
   "panels/console/ConsoleView.ts | filteredMessagesInConsole": {
     "message": "{PH1} skilaboð á stjórnborði"
@@ -8147,6 +8219,9 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Skoða reiknað gildi"
   },
+  "panels/elements/StylesSidebarPane.ts | aiSuggestionAccepted": {
+    "message": "{PH1} Tillaga samþykkt."
+  },
   "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
     "message": "Sjálfvirk dökk stilling"
   },
@@ -8251,6 +8326,9 @@
   },
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "Afrita stíla"
+  },
+  "panels/elements/elements-meta.ts | cssAnimationsOnlyWhenAnimationsTabOpen": {
+    "message": "Sýna hreyfimyndastíla aðeins þegar hreyfimyndaflipinn er opinn"
   },
   "panels/elements/elements-meta.ts | detailedInspectTooltip": {
     "message": "Ítarlegur ábendingagluggi"
@@ -11723,6 +11801,9 @@
   "panels/profiler/HeapProfileView.ts | sBytes": {
     "message": "{PH1} bæti"
   },
+  "panels/profiler/HeapProfileView.ts | samplingHeapProfilerTimeline": {
+    "message": "Tímalína vöktunarþjónustu minnis"
+  },
   "panels/profiler/HeapProfileView.ts | samplingProfiles": {
     "message": "Prófunarhlutar"
   },
@@ -11930,9 +12011,6 @@
   "panels/profiler/HeapSnapshotView.ts | duplicatedStrings": {
     "message": "Afritaðir strengir"
   },
-  "panels/profiler/HeapSnapshotView.ts | exposeInternals": {
-    "message": "Innri stillingar ásamt upplýsingum um innleiðingu"
-  },
   "panels/profiler/HeapSnapshotView.ts | filter": {
     "message": "Sía"
   },
@@ -12070,33 +12148,6 @@
   },
   "panels/profiler/IsolateSelector.ts | totalPageJsHeapSizeChangeTrend": {
     "message": "Breyting á heildarstærð JS-minnis síðu undanfarnar {PH1} mínútur."
-  },
-  "panels/profiler/LiveHeapProfileView.ts | allocatedJsHeapSizeCurrentlyIn": {
-    "message": "Stærð úthlutaðs JS-minnis í notkun"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | anonymousScriptS": {
-    "message": "(Nafnlaus skrifta {PH1})"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | heapProfile": {
-    "message": "Minnisvöktun"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | jsHeap": {
-    "message": "JS-minni"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | kb": {
-    "message": "kB"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | numberOfVmsSharingTheSameScript": {
-    "message": "Fjöldi sýndarvéla sem deila sama skriftukóða"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | scriptUrl": {
-    "message": "Vefslóð skriftu"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | urlOfTheScriptSource": {
-    "message": "Vefslóð skriftuuppruna"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | vms": {
-    "message": "Sýndarvélar"
   },
   "panels/profiler/ModuleUIStrings.ts | buildingAllocationStatistics": {
     "message": "Úthlutunartölfræði útbúin…"
@@ -12275,9 +12326,6 @@
   "panels/profiler/profiler-meta.ts | deleteProfile": {
     "message": "Eyða prófíl"
   },
-  "panels/profiler/profiler-meta.ts | liveHeapProfile": {
-    "message": "Virkt minnisyfirlit"
-  },
   "panels/profiler/profiler-meta.ts | loadProfile": {
     "message": "Hlaða prófíl…"
   },
@@ -12287,23 +12335,11 @@
   "panels/profiler/profiler-meta.ts | saveProfile": {
     "message": "Vista snið…"
   },
-  "panels/profiler/profiler-meta.ts | showLiveHeapProfile": {
-    "message": "Sýna virkt minnisyfirlit"
-  },
   "panels/profiler/profiler-meta.ts | showMemory": {
     "message": "Sýna minni"
   },
-  "panels/profiler/profiler-meta.ts | startRecordingHeapAllocations": {
-    "message": "Hefja upptöku minnisúthlutunar"
-  },
-  "panels/profiler/profiler-meta.ts | startRecordingHeapAllocationsAndReload": {
-    "message": "Hefja upptöku minnisúthlutunar og endurhlaða síðuna"
-  },
   "panels/profiler/profiler-meta.ts | startStopRecording": {
     "message": "Hefja/stöðva upptöku"
-  },
-  "panels/profiler/profiler-meta.ts | stopRecordingHeapAllocations": {
-    "message": "Stöðva upptöku minnisúthlutunar"
   },
   "panels/protocol_monitor/JSONEditor.ts | addCustomProperty": {
     "message": "Bæta við sérstilltum eiginleika"
@@ -12477,7 +12513,7 @@
     "message": "Breyta kóðayfirliti"
   },
   "panels/recorder/RecorderController.ts | typeAllowImporting": {
-    "message": "Gerð „{PH1}“"
+    "message": "Sláðu inn „{PH1}“"
   },
   "panels/recorder/components/CreateRecordingView.ts | cancelRecording": {
     "message": "Hætta við upptöku"
@@ -13459,6 +13495,21 @@
   },
   "panels/settings/AISettingsTab.ts | aIAnnotationsFeatureDescription": {
     "message": "Búa sjálfkrafa til titla fyrir textaskýringar afkastaspora"
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceDescriptionV2": {
+    "message": "Fáðu samhengisháða hjálp á síðunni sem þú skoðar"
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceThingsToConsiderNoLoggingV2": {
+    "message": "Til að búa til útskýringar eru spjallskilaboð, gögn sem eru aðgengileg á þessu vefsvæði í gegnum DevTools-svæði og vefforritaskil og atriði sem þú velur, s.s. netkerfisbeiðnir, skrár og afkastaspor, send til Google. Efnið sem þú sendir inn og er búið til með þessum eiginleika verður ekki notað til að bæta gervigreindarlíkön Google. Þetta er gervigreindareiginleiki á tilraunastigi sem getur gert villur."
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceThingsToConsiderV2": {
+    "message": "Til að búa til útskýringar eru spjallskilaboð, gögn sem eru aðgengileg fyrir þetta vefsvæði í gegnum DevTools-svæði og vefforritaskil og atriði sem þú velur, s.s. netkerfisbeiðnir, skrár og afkastaspor, send til Google og mannlegir yfirlesarar kunna að fara yfir þau til að bæta þennan eiginleika. Þetta er gervigreindareiginleiki á tilraunastigi sem getur gert villur."
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceWhenOnItem1V2": {
+    "message": "Villuleitaðu stíla, netkerfi, afköst, upprunakóða, aðgengis- og geymsluvandamál með gervigreindarhjálp DevTools"
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceWhenOnItem2V2": {
+    "message": "Fylgdu rökfærslu fulltrúans skref fyrir skref og hoppaðu fljótt í viðeigandi upprunagögn"
   },
   "panels/settings/AISettingsTab.ts | asYouTypeCodeSuggestions": {
     "message": "Þegar þú slærð eitthvað inn á svæðunum „Stjórnborð“ eða „Efnisveitur“ færðu tillögur að kóða. Ýttu á dálkalykilinn til að samþykkja."
@@ -14539,12 +14590,6 @@
   },
   "panels/sources/PersistenceActions.ts | showOverrides": {
     "message": "Sýna allar hnekkingar"
-  },
-  "panels/sources/ProfilePlugin.ts | kb": {
-    "message": "kB"
-  },
-  "panels/sources/ProfilePlugin.ts | mb": {
-    "message": "MB"
   },
   "panels/sources/ProfilePlugin.ts | ms": {
     "message": "msek."
@@ -17183,6 +17228,9 @@
   "ui/components/markdown_view/CodeBlock.ts | copy": {
     "message": "Afrita kóða"
   },
+  "ui/components/markdown_view/CodeBlock.ts | copyCodeSnippet": {
+    "message": "Afrita {PH1} kóðabút"
+  },
   "ui/components/markdown_view/CodeBlock.ts | disclaimer": {
     "message": "Sýndu aðgát við notkun kóðabúta"
   },
@@ -17306,6 +17354,9 @@
   "ui/legacy/ActionRegistration.ts | sources": {
     "message": "Uppruni"
   },
+  "ui/legacy/Dialog.ts | close": {
+    "message": "Loka"
+  },
   "ui/legacy/DockController.ts | close": {
     "message": "Loka"
   },
@@ -17339,6 +17390,12 @@
   "ui/legacy/InspectorDrawerView.ts | closeDrawer": {
     "message": "Loka skúffu"
   },
+  "ui/legacy/InspectorDrawerView.ts | expandDrawer": {
+    "message": "Stækka skúffu"
+  },
+  "ui/legacy/InspectorDrawerView.ts | minimizeDrawer": {
+    "message": "Minnka skúffu"
+  },
   "ui/legacy/InspectorDrawerView.ts | moreTools": {
     "message": "Fleiri verkfæri"
   },
@@ -17354,8 +17411,14 @@
   "ui/legacy/InspectorView.ts | drawer": {
     "message": "Verkfæraskúffa"
   },
+  "ui/legacy/InspectorView.ts | drawerExpanded": {
+    "message": "Skúffa stækkuð"
+  },
   "ui/legacy/InspectorView.ts | drawerHidden": {
     "message": "Skúffa falin"
+  },
+  "ui/legacy/InspectorView.ts | drawerMinimized": {
+    "message": "Skúffa minnkuð"
   },
   "ui/legacy/InspectorView.ts | drawerShown": {
     "message": "Skúffa sýnd"
@@ -17831,66 +17894,6 @@
   "ui/legacy/components/inline_editor/ColorSwatch.ts | shiftclickToChangeColorFormat": {
     "message": "Haltu inni Shift og smelltu til að breyta litasniði"
   },
-  "ui/legacy/components/inline_editor/FontEditor.ts | PleaseEnterAValidValueForSText": {
-    "message": "* Sláðu inn gilt gildi fyrir textareitinn {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | cssProperties": {
-    "message": "CSS-eiginleikar"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | deleteS": {
-    "message": "Eyða {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fallbackS": {
-    "message": "Varaleið {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fontFamily": {
-    "message": "Leturhópur"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fontSelectorDeletedAtIndexS": {
-    "message": "Leturvali eytt við vísi: {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fontSize": {
-    "message": "Leturstærð"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fontWeight": {
-    "message": "Leturbreidd"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | lineHeight": {
-    "message": "Línuhæð"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sKeyValueSelector": {
-    "message": "Val á gildi fyrir lykilinn {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sSliderInput": {
-    "message": "{PH1} sleðainntak"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sTextInput": {
-    "message": "Textareitur fyrir {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sToggleInputType": {
-    "message": "{PH1} breyta innsláttaraðferð"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sUnitInput": {
-    "message": "{PH1} mælieiningareitur"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | selectorInputMode": {
-    "message": "Innsláttaraðferð fyrir val"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sliderInputMode": {
-    "message": "Innsláttur með sleða"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | spacing": {
-    "message": "Bil"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | thereIsNoValueToDeleteAtIndexS": {
-    "message": "Ekkert gildi til að eyða við vísi: {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | thisPropertyIsSetToContainUnits": {
-    "message": "Þessi eiginleiki er stilltur á að innihalda mælieiningar en er ekki með samsvarandi unitsArray tilgreint: {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | units": {
-    "message": "Mælieiningar"
-  },
   "ui/legacy/components/object_ui/CustomPreviewComponent.ts | showAsJavascriptObject": {
     "message": "Sýna sem JavaScript-hlut"
   },
@@ -18047,17 +18050,8 @@
   "ui/legacy/components/perf_ui/perf_ui-meta.ts | flamechartSelectedNavigation": {
     "message": "Fletting í logariti:"
   },
-  "ui/legacy/components/perf_ui/perf_ui-meta.ts | hideLiveMemoryAllocation": {
-    "message": "Fela virka lýsingu á minnisúthlutun"
-  },
-  "ui/legacy/components/perf_ui/perf_ui-meta.ts | liveMemoryAllocationAnnotations": {
-    "message": "Úthlutunarskýringar í virku minni"
-  },
   "ui/legacy/components/perf_ui/perf_ui-meta.ts | modern": {
     "message": "Nútímalegt"
-  },
-  "ui/legacy/components/perf_ui/perf_ui-meta.ts | showLiveMemoryAllocation": {
-    "message": "Sýna virka lýsingu á minnisúthlutun"
   },
   "ui/legacy/components/quick_open/CommandMenu.ts | command": {
     "message": "Skipun"
@@ -18189,7 +18183,7 @@
     "message": "Uppruni"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | typeAllowPasting": {
-    "message": "Gerð „{PH1}“"
+    "message": "Sláðu inn „{PH1}“"
   },
   "ui/legacy/components/source_frame/XMLView.ts | find": {
     "message": "Finna"

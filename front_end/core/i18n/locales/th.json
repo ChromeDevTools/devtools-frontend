@@ -323,6 +323,9 @@
   "core/sdk/NetworkManager.ts | noContentForRedirect": {
     "message": "ไม่มีเนื้อหาเนื่องจากมีการเปลี่ยนเส้นทางคำขอนี้"
   },
+  "core/sdk/NetworkManager.ts | noContentForSSE": {
+    "message": "ขณะนี้ยังไม่รองรับเนื้อหาสำหรับ Server-Sent Events (SSE)"
+  },
   "core/sdk/NetworkManager.ts | noContentForWebSocket": {
     "message": "ขณะนี้ยังไม่รองรับเนื้อหาสำหรับ WebSocket"
   },
@@ -559,6 +562,9 @@
   },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "ตาบอดสี (มองไม่เห็นสี)"
+  },
+  "core/sdk/sdk-meta.ts | apca": {
+    "message": "Advanced Perceptual Contrast Algorithm (APCA) จะแทนที่อัตราส่วนคอนทราสต์และหลักเกณฑ์ AA/AAA ก่อนหน้านี้"
   },
   "core/sdk/sdk-meta.ts | blurredVision": {
     "message": "ภาวะมองเห็นภาพไม่ชัดเจน"
@@ -1441,6 +1447,9 @@
   },
   "generated/Deprecation.ts | PrefixedVideoSupportsFullscreen": {
     "message": "HTMLVideoElement.webkitSupportsFullscreen เลิกใช้งานแล้ว โปรดใช้ Document.fullscreenEnabled แทน"
+  },
+  "generated/Deprecation.ts | PreventSvgFilterPaint": {
+    "message": "ใช้ตัวกรอง SVG กับ iframe แบบข้ามต้นทาง, iframe ที่ถูกจำกัด (เช่น ทำแซนด์บ็อกซ์ไว้) หรือปลั๊กอินไม่ได้"
   },
   "generated/Deprecation.ts | RTCConstraintEnableDtlsSrtpFalse": {
     "message": "ข้อจำกัด DtlsSrtpKeyAgreement ถูกนำออกแล้ว คุณได้ระบุค่า false สำหรับข้อจำกัดนี้ ซึ่งระบบตีความว่าเป็นการพยายามใช้เมธอด SDES key negotiation ที่นำออกไปแล้ว ฟังก์ชันการทำงานนี้ถูกนำออกแล้ว โปรดใช้บริการที่รองรับ DTLS key negotiation แทน"
@@ -3207,13 +3216,34 @@
     "message": "ฟีเจอร์นี้อยู่ในขั้นทดลองและอาจไม่ได้ทำงานถูกต้องเสมอไป โปรดตรวจสอบข้อความนี้อีกครั้งก่อนวางลงในเครื่องมืออื่น"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | exportForAgents": {
-    "message": "คัดลอกสำหรับ Agent การเขียนโค้ด"
+    "message": "คัดลอกไปยัง Agent การเขียนโค้ด"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | generatingSummary": {
     "message": "กำลังสร้างข้อมูลสรุป…"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | saveAsMarkdown": {
     "message": "บันทึกเป็น…"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | gotIt": {
+    "message": "รับทราบ"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | integrationPoint": {
+    "message": "ตอนนี้ความช่วยเหลือจาก AI ได้ผสานรวมเข้ากับแผงแอปพลิเคชันและ Lighthouse แล้ว และดึงบริบทจากแหล่งข้อมูลพร้อมกัน"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | manageSettings": {
+    "message": "จัดการในการตั้งค่า"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | privacyDisclaimer": {
+    "message": "ระบบจะส่งข้อความแชท ข้อมูลที่เว็บไซต์นี้เข้าถึงได้ผ่านแผงเครื่องมือสำหรับนักพัฒนาเว็บและ Web API รวมถึงรายการที่คุณเลือก เช่น คำขอเครือข่าย ไฟล์ และการติดตามประสิทธิภาพไปยัง Google และเจ้าหน้าที่ตรวจสอบอาจเห็นข้อมูลดังกล่าวเพื่อนำไปใช้ปรับปรุงฟีเจอร์นี้ ฟีเจอร์ AI นี้อยู่ในขั้นทดลองและอาจไม่ได้ทำงานถูกต้องเสมอไป"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | privacyDisclaimerEnterpriseNoLogging": {
+    "message": "ระบบจะส่งข้อความแชท ข้อมูลที่เข้าถึงได้สำหรับเว็บไซต์นี้ผ่านแผงเครื่องมือสำหรับนักพัฒนาเว็บและ Web API รวมถึงรายการที่คุณเลือก เช่น คำขอเครือข่าย ไฟล์ และการติดตามประสิทธิภาพไปยัง Google ระบบจะไม่นำเนื้อหาที่ส่งและเนื้อหาที่ฟีเจอร์นี้สร้างขึ้นไปใช้ปรับปรุงโมเดล AI ของ Google ฟีเจอร์ AI นี้อยู่ในขั้นทดลองและอาจไม่ได้ทำงานถูกต้องเสมอไป"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | title": {
+    "message": "ความช่วยเหลือจาก AI ดีขึ้นกว่าที่เคย"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | widgetPoint": {
+    "message": "ใช้วิดเจ็ตเพื่อยืนยันผลลัพธ์หรือข้ามไปที่ข้อมูลต้นฉบับสำหรับกรณีการแก้ไขข้อบกพร่องที่เลือก"
   },
   "panels/ai_assistance/components/WalkthroughView.ts | close": {
     "message": "ปิด"
@@ -3223,6 +3253,9 @@
   },
   "panels/ai_assistance/components/WalkthroughView.ts | hideThinking": {
     "message": "ซ่อนวิธีคิด"
+  },
+  "panels/ai_assistance/components/WalkthroughView.ts | inProgress": {
+    "message": "กำลังดำเนินการ"
   },
   "panels/ai_assistance/components/WalkthroughView.ts | showAgentWalkthrough": {
     "message": "แสดงคำแนะนำแบบทีละขั้นของ Agent"
@@ -3677,9 +3710,6 @@
   "panels/application/ApplicationPanelSidebar.ts | theContentOfThisDocumentHasBeen": {
     "message": "เนื้อหาของเอกสารนี้สร้างขึ้นแบบไดนามิกผ่าน \"document.write()\""
   },
-  "panels/application/ApplicationPanelSidebar.ts | thirdPartyPhaseout": {
-    "message": "คุกกี้จาก {PH1} อาจถูกบล็อกเนื่องจากมีการเลิกใช้งานคุกกี้ของบุคคลที่สาม"
-  },
   "panels/application/ApplicationPanelSidebar.ts | versionS": {
     "message": "เวอร์ชัน: {PH1}"
   },
@@ -3829,6 +3859,9 @@
   },
   "panels/application/DOMStorageItemsView.ts | domStorageItemsCleared": {
     "message": "ล้างรายการในพื้นที่เก็บข้อมูล DOM แล้ว"
+  },
+  "panels/application/DeviceBoundSessionsTreeElement.ts | clear": {
+    "message": "ล้าง"
   },
   "panels/application/DeviceBoundSessionsTreeElement.ts | deviceBoundSessions": {
     "message": "เซสชันที่ผูกกับอุปกรณ์"
@@ -4922,6 +4955,9 @@
   "panels/application/TrustTokensTreeElement.ts | trustTokens": {
     "message": "โทเค็นสถานะส่วนตัว"
   },
+  "panels/application/WebMCPView.ts | cancelCall": {
+    "message": "ยกเลิก"
+  },
   "panels/application/WebMCPView.ts | canceled": {
     "message": "ยกเลิกแล้ว"
   },
@@ -4937,8 +4973,20 @@
   "panels/application/WebMCPView.ts | close": {
     "message": "ปิด"
   },
+  "panels/application/WebMCPView.ts | completed": {
+    "message": "เสร็จสมบูรณ์"
+  },
+  "panels/application/WebMCPView.ts | copyDescription": {
+    "message": "คัดลอกคำอธิบาย"
+  },
+  "panels/application/WebMCPView.ts | copyName": {
+    "message": "คัดลอกชื่อ"
+  },
   "panels/application/WebMCPView.ts | declarative": {
     "message": "เชิงประกาศ"
+  },
+  "panels/application/WebMCPView.ts | editAndRun": {
+    "message": "แก้ไขและเรียกใช้"
   },
   "panels/application/WebMCPView.ts | error": {
     "message": "ข้อผิดพลาด"
@@ -4982,17 +5030,23 @@
   "panels/application/WebMCPView.ts | output": {
     "message": "เอาต์พุต"
   },
+  "panels/application/WebMCPView.ts | paste": {
+    "message": "วาง"
+  },
   "panels/application/WebMCPView.ts | pending": {
     "message": "กำลังดำเนินการ"
+  },
+  "panels/application/WebMCPView.ts | revealTool": {
+    "message": "แสดงเครื่องมือ"
+  },
+  "panels/application/WebMCPView.ts | runTool": {
+    "message": "เรียกใช้เครื่องมือ"
   },
   "panels/application/WebMCPView.ts | status": {
     "message": "สถานะ"
   },
   "panels/application/WebMCPView.ts | statusTypes": {
     "message": "ประเภทสถานะ"
-  },
-  "panels/application/WebMCPView.ts | success": {
-    "message": "สำเร็จ"
   },
   "panels/application/WebMCPView.ts | toolDetails": {
     "message": "รายละเอียด"
@@ -5002,6 +5056,9 @@
   },
   "panels/application/WebMCPView.ts | toolTypes": {
     "message": "ประเภทของเครื่องมือ"
+  },
+  "panels/application/WebMCPView.ts | toolUnregisteredNotice": {
+    "message": "ยกเลิกการลงทะเบียนเครื่องมือนี้แล้ว"
   },
   "panels/application/WebMCPView.ts | totalCalls": {
     "message": "การโทรทั้งหมด {PH1} ครั้ง"
@@ -5873,6 +5930,9 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsFailureReason": {
     "message": "เหตุผลที่ไม่สำเร็จ"
   },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsFormSubmission": {
+    "message": "การส่งแบบฟอร์ม"
+  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsRuleSet": {
     "message": "ชุดกฎ"
   },
@@ -5882,11 +5942,17 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsTargetHint": {
     "message": "คำแนะนำเกี่ยวกับเป้าหมาย"
   },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | no": {
+    "message": "ไม่"
+  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | noElementSelected": {
     "message": "ไม่ได้เลือกองค์ประกอบ"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "เลือกองค์ประกอบเพื่อดูรายละเอียดเพิ่มเติม"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | yes": {
+    "message": "ใช่"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByBatterySaver": {
     "message": "การโหลดแบบคาดเดาถูกปิดใช้เนื่องจากโหมดประหยัดแบตเตอรี่ของระบบปฏิบัติการ"
@@ -6765,7 +6831,7 @@
     "message": "ข้อความแจ้งของคอนโซล"
   },
   "panels/console/ConsolePrompt.ts | selfXssWarning": {
-    "message": "คำเตือน: อย่าวางโค้ดที่คุณไม่เข้าใจหรือยังไม่ได้ตรวจสอบด้วยตนเองลงในคอนโซลเครื่องมือสำหรับนักพัฒนาเว็บ เนื่องจากอาจทำให้ผู้โจมตีสวมรอยเป็นคุณหรือควบคุมคอมพิวเตอร์ของคุณได้ โปรดพิมพ์ \"{PH1}\" ด้านล่าง แล้วกด Enter เพื่ออนุญาตให้วางได้"
+    "message": "คำเตือน: อย่าวางโค้ดที่คุณไม่รู้จักดีหรือยังไม่ได้ตรวจสอบด้วยตนเองลงในคอนโซลเครื่องมือสำหรับนักพัฒนาเว็บ เนื่องจากอาจทำให้ผู้โจมตีสวมรอยเป็นคุณหรือควบคุมคอมพิวเตอร์ของคุณได้ โปรดพิมพ์ \"{PH1}\" ด้านล่าง แล้วกด Enter เพื่ออนุญาตให้วางได้"
   },
   "panels/console/ConsoleSidebar.ts | dErrors": {
     "message": "{n,plural, =0{ไม่มีข้อผิดพลาด}=1{ข้อผิดพลาด # รายการ}other{ข้อผิดพลาด # รายการ}}"
@@ -6793,6 +6859,9 @@
   },
   "panels/console/ConsoleView.ts | autocompleteFromHistory": {
     "message": "การเติมข้อความอัตโนมัติจากประวัติการเข้าชม"
+  },
+  "panels/console/ConsoleView.ts | collapseAll": {
+    "message": "ยุบทั้งหมด"
   },
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "ล้างคอนโซลแล้ว"
@@ -6832,6 +6901,9 @@
   },
   "panels/console/ConsoleView.ts | errors": {
     "message": "ข้อผิดพลาด"
+  },
+  "panels/console/ConsoleView.ts | expandAll": {
+    "message": "ขยายทั้งหมด"
   },
   "panels/console/ConsoleView.ts | filteredMessagesInConsole": {
     "message": "{PH1} ข้อความในคอนโซล"
@@ -8147,6 +8219,9 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "ดูค่าที่คำนวณแล้ว"
   },
+  "panels/elements/StylesSidebarPane.ts | aiSuggestionAccepted": {
+    "message": "{PH1} ยอมรับคำแนะนำแล้ว"
+  },
   "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
     "message": "โหมดมืดอัตโนมัติ"
   },
@@ -8251,6 +8326,9 @@
   },
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "คัดลอกรูปแบบ"
+  },
+  "panels/elements/elements-meta.ts | cssAnimationsOnlyWhenAnimationsTabOpen": {
+    "message": "แสดงรูปแบบภาพเคลื่อนไหวเมื่อเปิดแท็บภาพเคลื่อนไหวเท่านั้น"
   },
   "panels/elements/elements-meta.ts | detailedInspectTooltip": {
     "message": "เคล็ดลับเครื่องมือการตรวจสอบอย่างละเอียด"
@@ -11723,6 +11801,9 @@
   "panels/profiler/HeapProfileView.ts | sBytes": {
     "message": "{PH1} ไบต์"
   },
+  "panels/profiler/HeapProfileView.ts | samplingHeapProfilerTimeline": {
+    "message": "สุ่มตัวอย่างไทม์ไลน์ของเครื่องมือสร้างโปรไฟล์ฮีป"
+  },
   "panels/profiler/HeapProfileView.ts | samplingProfiles": {
     "message": "โปรไฟล์แบบสุ่ม"
   },
@@ -11930,9 +12011,6 @@
   "panels/profiler/HeapSnapshotView.ts | duplicatedStrings": {
     "message": "สตริงที่ซ้ำกัน"
   },
-  "panels/profiler/HeapSnapshotView.ts | exposeInternals": {
-    "message": "ข้อมูลภายในพร้อมรายละเอียดการใช้งาน"
-  },
   "panels/profiler/HeapSnapshotView.ts | filter": {
     "message": "กรอง"
   },
@@ -12070,33 +12148,6 @@
   },
   "panels/profiler/IsolateSelector.ts | totalPageJsHeapSizeChangeTrend": {
     "message": "แนวโน้มการเปลี่ยนแปลงขนาดฮีป JS ของหน้าทั้งหมดในช่วง {PH1} นาทีที่ผ่านมา"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | allocatedJsHeapSizeCurrentlyIn": {
-    "message": "มีการใช้ขนาดฮีป JS ที่จัดสรรอยู่"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | anonymousScriptS": {
-    "message": "(สคริปต์แบบไม่ระบุชื่อ {PH1})"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | heapProfile": {
-    "message": "โปรไฟล์ฮีป"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | jsHeap": {
-    "message": "ฮีป JS"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | kb": {
-    "message": "kB"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | numberOfVmsSharingTheSameScript": {
-    "message": "จำนวน VM ซึ่งแชร์แหล่งที่มาของสคริปต์แหล่งเดียวกัน"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | scriptUrl": {
-    "message": "URL สคริปต์"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | urlOfTheScriptSource": {
-    "message": "URL ของแหล่งที่มาของสคริปต์"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | vms": {
-    "message": "VM"
   },
   "panels/profiler/ModuleUIStrings.ts | buildingAllocationStatistics": {
     "message": "กำลังสร้างสถิติการจัดสรร…"
@@ -12275,9 +12326,6 @@
   "panels/profiler/profiler-meta.ts | deleteProfile": {
     "message": "ลบโปรไฟล์"
   },
-  "panels/profiler/profiler-meta.ts | liveHeapProfile": {
-    "message": "โปรไฟล์ฮีปแบบสด"
-  },
   "panels/profiler/profiler-meta.ts | loadProfile": {
     "message": "โหลดโปรไฟล์…"
   },
@@ -12287,23 +12335,11 @@
   "panels/profiler/profiler-meta.ts | saveProfile": {
     "message": "บันทึกโปรไฟล์…"
   },
-  "panels/profiler/profiler-meta.ts | showLiveHeapProfile": {
-    "message": "แสดงโปรไฟล์ฮีปแบบสด"
-  },
   "panels/profiler/profiler-meta.ts | showMemory": {
     "message": "แสดงหน่วยความจำ"
   },
-  "panels/profiler/profiler-meta.ts | startRecordingHeapAllocations": {
-    "message": "เริ่มบันทึกการจัดสรรฮีป"
-  },
-  "panels/profiler/profiler-meta.ts | startRecordingHeapAllocationsAndReload": {
-    "message": "เริ่มบันทึกการจัดสรรฮีปและโหลดหน้าเว็บซ้ำ"
-  },
   "panels/profiler/profiler-meta.ts | startStopRecording": {
     "message": "เริ่ม/หยุดบันทึก"
-  },
-  "panels/profiler/profiler-meta.ts | stopRecordingHeapAllocations": {
-    "message": "หยุดบันทึกการจัดสรรฮีป"
   },
   "panels/protocol_monitor/JSONEditor.ts | addCustomProperty": {
     "message": "เพิ่มพร็อพเพอร์ตี้ที่กำหนดเอง"
@@ -12417,7 +12453,7 @@
     "message": "ลบการบันทึก"
   },
   "panels/recorder/RecorderController.ts | doNotImport": {
-    "message": "อย่านำเข้าไฟล์บันทึกที่คุณไม่รู้จักดีหรือยังไม่ได้ตรวจสอบด้วยตนเองมาในเครื่องมือสำหรับนักพัฒนาเว็บ เนื่องจากอาจทำให้ผู้โจมตีสวมรอยเป็นคุณหรือควบคุมคอมพิวเตอร์ของคุณได้ โปรดพิมพ์ ''{PH1}'' ด้านล่างเพื่อให้นำเข้าได้"
+    "message": "อย่านำเข้าไฟล์บันทึกที่คุณไม่รู้จักดีหรือยังไม่ได้ตรวจสอบด้วยตนเองมาในเครื่องมือสำหรับนักพัฒนาเว็บ เนื่องจากอาจทำให้ผู้โจมตีสวมรอยเป็นคุณหรือควบคุมคอมพิวเตอร์ของคุณได้ โปรดพิมพ์ \"{PH1}\" ด้านล่างเพื่ออนุญาตให้นำเข้าได้"
   },
   "panels/recorder/RecorderController.ts | doYouTrustThisCode": {
     "message": "คุณเชื่อถือไฟล์บันทึกนี้ไหม"
@@ -12477,7 +12513,7 @@
     "message": "เปิด/ปิดมุมมองโค้ด"
   },
   "panels/recorder/RecorderController.ts | typeAllowImporting": {
-    "message": "พิมพ์ ''{PH1}''"
+    "message": "พิมพ์ \"{PH1}\""
   },
   "panels/recorder/components/CreateRecordingView.ts | cancelRecording": {
     "message": "ยกเลิกการบันทึก"
@@ -13459,6 +13495,21 @@
   },
   "panels/settings/AISettingsTab.ts | aIAnnotationsFeatureDescription": {
     "message": "สร้างชื่อโดยอัตโนมัติสำหรับคำอธิบายประกอบการติดตามประสิทธิภาพ"
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceDescriptionV2": {
+    "message": "รับความช่วยเหลือแบบคำนึงถึงบริบทในหน้าเว็บที่ตรวจสอบ"
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceThingsToConsiderNoLoggingV2": {
+    "message": "ระบบจะส่งข้อความแชท ข้อมูลที่เข้าถึงได้สำหรับเว็บไซต์นี้ผ่านแผงเครื่องมือสำหรับนักพัฒนาเว็บและ Web API รวมถึงรายการที่คุณเลือก เช่น คำขอเครือข่าย ไฟล์ และการติดตามประสิทธิภาพไปยัง Google เพื่อสร้างคำอธิบาย ระบบจะไม่นำเนื้อหาที่คุณส่งและเนื้อหาที่ฟีเจอร์นี้สร้างขึ้นไปใช้ปรับปรุงโมเดล AI ของ Google ฟีเจอร์ AI นี้อยู่ในขั้นทดลองและอาจไม่ได้ทำงานถูกต้องเสมอไป"
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceThingsToConsiderV2": {
+    "message": "ระบบจะส่งข้อความแชท ข้อมูลที่เข้าถึงได้สำหรับเว็บไซต์นี้ผ่านแผงเครื่องมือสำหรับนักพัฒนาเว็บและ Web API รวมถึงรายการที่คุณเลือก เช่น คำขอเครือข่าย ไฟล์ และการติดตามประสิทธิภาพไปยัง Google เพื่อสร้างคำอธิบาย และเจ้าหน้าที่ตรวจสอบอาจเห็นข้อมูลดังกล่าวเพื่อนำไปใช้ปรับปรุงฟีเจอร์นี้ ฟีเจอร์ AI นี้อยู่ในขั้นทดลองและอาจไม่ได้ทำงานถูกต้องเสมอไป"
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceWhenOnItem1V2": {
+    "message": "แก้ไขข้อบกพร่องด้านการจัดรูปแบบ เครือข่าย ประสิทธิภาพ ซอร์สโค้ด การช่วยเหลือพิเศษ และพื้นที่เก็บข้อมูลด้วยความช่วยเหลือจาก AI ของเครื่องมือสำหรับนักพัฒนาเว็บ"
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceWhenOnItem2V2": {
+    "message": "ติดตามการให้เหตุผลของ Agent ทีละขั้นตอนและข้ามไปที่ข้อมูลต้นฉบับที่เกี่ยวข้องได้อย่างรวดเร็ว"
   },
   "panels/settings/AISettingsTab.ts | asYouTypeCodeSuggestions": {
     "message": "ขณะที่พิมพ์ในแผงคอนโซลหรือแผงแหล่งที่มา คุณจะได้รับคำแนะนำโค้ด กด Tab เพื่อยอมรับคำแนะนำ"
@@ -14539,12 +14590,6 @@
   },
   "panels/sources/PersistenceActions.ts | showOverrides": {
     "message": "แสดงการลบล้างทั้งหมด"
-  },
-  "panels/sources/ProfilePlugin.ts | kb": {
-    "message": "kB"
-  },
-  "panels/sources/ProfilePlugin.ts | mb": {
-    "message": "MB"
   },
   "panels/sources/ProfilePlugin.ts | ms": {
     "message": "มิลลิวินาที"
@@ -17183,6 +17228,9 @@
   "ui/components/markdown_view/CodeBlock.ts | copy": {
     "message": "คัดลอกโค้ด"
   },
+  "ui/components/markdown_view/CodeBlock.ts | copyCodeSnippet": {
+    "message": "คัดลอกข้อมูลโค้ด {PH1}"
+  },
   "ui/components/markdown_view/CodeBlock.ts | disclaimer": {
     "message": "โปรดใช้ข้อมูลโค้ดอย่างระมัดระวัง"
   },
@@ -17306,6 +17354,9 @@
   "ui/legacy/ActionRegistration.ts | sources": {
     "message": "แหล่งที่มา"
   },
+  "ui/legacy/Dialog.ts | close": {
+    "message": "ปิด"
+  },
   "ui/legacy/DockController.ts | close": {
     "message": "ปิด"
   },
@@ -17339,6 +17390,12 @@
   "ui/legacy/InspectorDrawerView.ts | closeDrawer": {
     "message": "ปิดลิ้นชัก"
   },
+  "ui/legacy/InspectorDrawerView.ts | expandDrawer": {
+    "message": "ขยายลิ้นชัก"
+  },
+  "ui/legacy/InspectorDrawerView.ts | minimizeDrawer": {
+    "message": "ย่อลิ้นชัก"
+  },
   "ui/legacy/InspectorDrawerView.ts | moreTools": {
     "message": "เครื่องมือเพิ่มเติม"
   },
@@ -17354,8 +17411,14 @@
   "ui/legacy/InspectorView.ts | drawer": {
     "message": "ลิ้นชักเครื่องมือ"
   },
+  "ui/legacy/InspectorView.ts | drawerExpanded": {
+    "message": "ขยายลิ้นชักแล้ว"
+  },
   "ui/legacy/InspectorView.ts | drawerHidden": {
     "message": "ลิ้นชักที่ซ่อนอยู่"
+  },
+  "ui/legacy/InspectorView.ts | drawerMinimized": {
+    "message": "ย่อลิ้นชักแล้ว"
   },
   "ui/legacy/InspectorView.ts | drawerShown": {
     "message": "ลิ้นชักที่แสดง"
@@ -17831,66 +17894,6 @@
   "ui/legacy/components/inline_editor/ColorSwatch.ts | shiftclickToChangeColorFormat": {
     "message": "กด Shift และคลิกเพื่อเปลี่ยนรูปแบบสี"
   },
-  "ui/legacy/components/inline_editor/FontEditor.ts | PleaseEnterAValidValueForSText": {
-    "message": "* โปรดป้อนค่าที่ถูกต้องสำหรับการป้อนข้อความ{PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | cssProperties": {
-    "message": "พร็อพเพอร์ตี้ CSS"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | deleteS": {
-    "message": "ลบ {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fallbackS": {
-    "message": "สำรอง {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fontFamily": {
-    "message": "ชุดแบบอักษร"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fontSelectorDeletedAtIndexS": {
-    "message": "ลบเครื่องมือเลือกแบบอักษรที่ดัชนี: {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fontSize": {
-    "message": "ขนาดแบบอักษร"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fontWeight": {
-    "message": "น้ำหนักแบบอักษร"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | lineHeight": {
-    "message": "ความสูงของบรรทัด"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sKeyValueSelector": {
-    "message": "ตัวเลือกคีย์-ค่า {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sSliderInput": {
-    "message": "อินพุตแถบเลื่อน {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sTextInput": {
-    "message": "การป้อนข้อความ{PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sToggleInputType": {
-    "message": "ประเภทการป้อนข้อมูลเมื่อสลับ{PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sUnitInput": {
-    "message": "อินพุตหน่วย {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | selectorInputMode": {
-    "message": "โหมดป้อนข้อมูลของตัวเลือก"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sliderInputMode": {
-    "message": "โหมดป้อนข้อมูลของแถบเลื่อน"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | spacing": {
-    "message": "การเว้นวรรค"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | thereIsNoValueToDeleteAtIndexS": {
-    "message": "ไม่มีค่าที่จะลบตรงดัชนี: {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | thisPropertyIsSetToContainUnits": {
-    "message": "พร็อพเพอร์ตี้นี้ได้รับการตั้งค่าให้มีหน่วยต่างๆ แต่ไม่มี unitsArray: {PH1} ที่เกี่ยวข้องที่กำหนด"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | units": {
-    "message": "หน่วย"
-  },
   "ui/legacy/components/object_ui/CustomPreviewComponent.ts | showAsJavascriptObject": {
     "message": "แสดงเป็นออบเจ็กต์ JavaScript"
   },
@@ -18047,17 +18050,8 @@
   "ui/legacy/components/perf_ui/perf_ui-meta.ts | flamechartSelectedNavigation": {
     "message": "การไปยังส่วนต่างๆ ของแผนภูมิ Flame Chart:"
   },
-  "ui/legacy/components/perf_ui/perf_ui-meta.ts | hideLiveMemoryAllocation": {
-    "message": "ซ่อนคำอธิบายประกอบการจัดสรรหน่วยความจำแบบสด"
-  },
-  "ui/legacy/components/perf_ui/perf_ui-meta.ts | liveMemoryAllocationAnnotations": {
-    "message": "คำอธิบายประกอบการจัดสรรหน่วยความจำแบบสด"
-  },
   "ui/legacy/components/perf_ui/perf_ui-meta.ts | modern": {
     "message": "ทันสมัย"
-  },
-  "ui/legacy/components/perf_ui/perf_ui-meta.ts | showLiveMemoryAllocation": {
-    "message": "แสดงคำอธิบายประกอบการจัดสรรหน่วยความจำแบบเรียลไทม์"
   },
   "ui/legacy/components/quick_open/CommandMenu.ts | command": {
     "message": "คำสั่ง"
@@ -18171,7 +18165,7 @@
     "message": "{PH1} ภูมิภาคการเลือก"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | doNotPaste": {
-    "message": "อย่าวางโค้ดที่คุณไม่เข้าใจหรือยังไม่ได้ตรวจสอบด้วยตนเองลงในเครื่องมือสำหรับนักพัฒนาเว็บ เนื่องจากอาจทำให้ผู้โจมตีสวมรอยเป็นคุณหรือควบคุมคอมพิวเตอร์ของคุณได้ โปรดพิมพ์ ''{PH1}'' ด้านล่างเพื่อให้วางได้"
+    "message": "อย่าวางโค้ดที่คุณไม่รู้จักดีหรือยังไม่ได้ตรวจสอบด้วยตนเองลงในเครื่องมือสำหรับนักพัฒนาเว็บ เนื่องจากอาจทำให้ผู้โจมตีสวมรอยเป็นคุณหรือควบคุมคอมพิวเตอร์ของคุณได้ โปรดพิมพ์ \"{PH1}\" ด้านล่างเพื่ออนุญาตให้วางได้"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | doYouTrustThisCode": {
     "message": "คุณเชื่อถือโค้ดนี้ไหม"
@@ -18189,7 +18183,7 @@
     "message": "แหล่งที่มา"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | typeAllowPasting": {
-    "message": "พิมพ์ ''{PH1}''"
+    "message": "พิมพ์ \"{PH1}\""
   },
   "ui/legacy/components/source_frame/XMLView.ts | find": {
     "message": "ค้นหา"

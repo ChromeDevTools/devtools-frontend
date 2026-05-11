@@ -323,6 +323,9 @@
   "core/sdk/NetworkManager.ts | noContentForRedirect": {
     "message": "Sisu pole saadaval, kuna see taotlus suunati ümber"
   },
+  "core/sdk/NetworkManager.ts | noContentForSSE": {
+    "message": "Serveri saadetud sündmuste (SSE) sisu ei toetata praegu."
+  },
   "core/sdk/NetworkManager.ts | noContentForWebSocket": {
     "message": "WebSocketsi sisu praegu ei toetata"
   },
@@ -559,6 +562,9 @@
   },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "Akromatopsia (värvideta)"
+  },
+  "core/sdk/sdk-meta.ts | apca": {
+    "message": "Täiustatud tajupõhise kontrastsuse algoritm (APCA), mis asendab varasemad kontrastsussuhte ja AA/AAA juhised"
   },
   "core/sdk/sdk-meta.ts | blurredVision": {
     "message": "Hägune nägemine"
@@ -1441,6 +1447,9 @@
   },
   "generated/Deprecation.ts | PrefixedVideoSupportsFullscreen": {
     "message": "API HTMLVideoElement.webkitSupportsFullscreen tugi on katkestatud. Kasutage selle asemel API-t Document.fullscreenEnabled."
+  },
+  "generated/Deprecation.ts | PreventSvgFilterPaint": {
+    "message": "SVG-filtreid ei saa rakendada lähtekohaülestele iframe'idele, piiratud iframe'idele (nt liivakastis) ega pistikprogrammile."
   },
   "generated/Deprecation.ts | RTCConstraintEnableDtlsSrtpFalse": {
     "message": "Piirang DtlsSrtpKeyAgreement on eemaldatud. Olete sellele piirangule määranud väärtuse false, mida tõlgendatakse katsena kasutada eemaldatud meetodit SDES key negotiation. See funktsioon on eemaldatud; kasutage selle asemel teenust, mis toetab meetodit DTLS key negotiation."
@@ -3207,13 +3216,34 @@
     "message": "See on katsejärgus AI-funktsioon ega paku alati õigeid tulemusi. Enne teise tööriista kleepimist kontrollige see tekst üle."
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | exportForAgents": {
-    "message": "Kopeeri kodeerimisagendi jaoks"
+    "message": "Kodeerimisagendi jaoks kopeerimine"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | generatingSummary": {
     "message": "Kokkuvõtte genereerimine…"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | saveAsMarkdown": {
     "message": "Salvesta nimega…"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | gotIt": {
+    "message": "Selge"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | integrationPoint": {
+    "message": "AI-abi on nüüd integreeritud paneelidega Rakendus ja Lighthouse ning tõmbab konteksti andmeallikatest samaaegselt."
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | manageSettings": {
+    "message": "Seadetes haldamine"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | privacyDisclaimer": {
+    "message": "Google'ile saadetakse vestlussõnumid, andmed, millele see sait pääseb juurde arendaja tööriistade paneelide ja veebi-API-de kaudu, ning teie valitud üksused, nagu võrgupäringud, failid ja toimivusjäljed. Ülevaatajad võivad neid vaadata, et seda funktsiooni täiustada. See on katsejärgus AI-funktsioon ega paku alati õigeid tulemusi."
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | privacyDisclaimerEnterpriseNoLogging": {
+    "message": "Google'ile saadetakse vestlussõnumid, arendaja tööriistade paneelide ja veebi-API-de kaudu juurdepääsetavad saidi andmed ning teie valitud üksused, nagu võrgupäringud, failid ja toimivusjäljed. Sellele funktsioonile esitatud ja selle genereeritud sisu ei kasutata Google'i AI-mudelite täiustamiseks. See on katsejärgus AI-funktsioon ega paku alati õigeid tulemusi."
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | title": {
+    "message": "AI-abi on nüüd veelgi parem"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | widgetPoint": {
+    "message": "Vidinad võimaldavad teatud silumisjuhtumite puhul tulemusi kontrollida või lähtekoodi juurde liikuda."
   },
   "panels/ai_assistance/components/WalkthroughView.ts | close": {
     "message": "Sule"
@@ -3223,6 +3253,9 @@
   },
   "panels/ai_assistance/components/WalkthroughView.ts | hideThinking": {
     "message": "Peida mõtlemispaneel"
+  },
+  "panels/ai_assistance/components/WalkthroughView.ts | inProgress": {
+    "message": "Pooleli"
   },
   "panels/ai_assistance/components/WalkthroughView.ts | showAgentWalkthrough": {
     "message": "Kuva agendi juhised"
@@ -3677,9 +3710,6 @@
   "panels/application/ApplicationPanelSidebar.ts | theContentOfThisDocumentHasBeen": {
     "message": "Selle dokumendi sisu loodi dünaamiliselt atribuudiga „document.write()“."
   },
-  "panels/application/ApplicationPanelSidebar.ts | thirdPartyPhaseout": {
-    "message": "Saidi {PH1} küpsised on võib-olla blokeeritud kolmanda osapoole küpsisefaili järkjärgulise kasutuselevõtu tõttu."
-  },
   "panels/application/ApplicationPanelSidebar.ts | versionS": {
     "message": "Versioon: {PH1}"
   },
@@ -3829,6 +3859,9 @@
   },
   "panels/application/DOMStorageItemsView.ts | domStorageItemsCleared": {
     "message": "DOM-i salvestusruumi üksused kustutati"
+  },
+  "panels/application/DeviceBoundSessionsTreeElement.ts | clear": {
+    "message": "Kustuta"
   },
   "panels/application/DeviceBoundSessionsTreeElement.ts | deviceBoundSessions": {
     "message": "Seadmega seotud seansid"
@@ -4922,6 +4955,9 @@
   "panels/application/TrustTokensTreeElement.ts | trustTokens": {
     "message": "Privaatse oleku märgid"
   },
+  "panels/application/WebMCPView.ts | cancelCall": {
+    "message": "Tühista"
+  },
   "panels/application/WebMCPView.ts | canceled": {
     "message": "Tühistatud"
   },
@@ -4937,8 +4973,20 @@
   "panels/application/WebMCPView.ts | close": {
     "message": "Sule"
   },
+  "panels/application/WebMCPView.ts | completed": {
+    "message": "Lõpule viidud"
+  },
+  "panels/application/WebMCPView.ts | copyDescription": {
+    "message": "Kopeeri kirjeldus"
+  },
+  "panels/application/WebMCPView.ts | copyName": {
+    "message": "Kopeeri nimi"
+  },
   "panels/application/WebMCPView.ts | declarative": {
     "message": "Deklaratiivne"
+  },
+  "panels/application/WebMCPView.ts | editAndRun": {
+    "message": "Muutmine ja käitamine"
   },
   "panels/application/WebMCPView.ts | error": {
     "message": "Viga"
@@ -4982,17 +5030,23 @@
   "panels/application/WebMCPView.ts | output": {
     "message": "Väljund"
   },
+  "panels/application/WebMCPView.ts | paste": {
+    "message": "Kleebi"
+  },
   "panels/application/WebMCPView.ts | pending": {
     "message": "Pooleli"
+  },
+  "panels/application/WebMCPView.ts | revealTool": {
+    "message": "Kuva tööriist"
+  },
+  "panels/application/WebMCPView.ts | runTool": {
+    "message": "Tööriista käitamine"
   },
   "panels/application/WebMCPView.ts | status": {
     "message": "Olek"
   },
   "panels/application/WebMCPView.ts | statusTypes": {
     "message": "Oleku tüübid"
-  },
-  "panels/application/WebMCPView.ts | success": {
-    "message": "Õnnestus"
   },
   "panels/application/WebMCPView.ts | toolDetails": {
     "message": "Üksikasjad"
@@ -5002,6 +5056,9 @@
   },
   "panels/application/WebMCPView.ts | toolTypes": {
     "message": "Tööriistatüübid"
+  },
+  "panels/application/WebMCPView.ts | toolUnregisteredNotice": {
+    "message": "Selle tööriista registreerimine on tühistatud."
   },
   "panels/application/WebMCPView.ts | totalCalls": {
     "message": "{PH1} kutset kokku"
@@ -5873,6 +5930,9 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsFailureReason": {
     "message": "Ebaõnnestumise põhjus"
   },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsFormSubmission": {
+    "message": "Vormi esitamine"
+  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsRuleSet": {
     "message": "Reeglistik"
   },
@@ -5882,11 +5942,17 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsTargetHint": {
     "message": "Sihtmärgi vihje"
   },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | no": {
+    "message": "Ei"
+  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | noElementSelected": {
     "message": "Elementi pole valitud"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "Lisateabe saamiseks valige element"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | yes": {
+    "message": "Jah"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByBatterySaver": {
     "message": "Spekulatiivne laadimine on keelatud operatsioonisüsteemi akusäästja režiimi tõttu."
@@ -6765,7 +6831,7 @@
     "message": "Konsooli viip"
   },
   "panels/console/ConsolePrompt.ts | selfXssWarning": {
-    "message": "Hoiatus: ärge kleepige arendaja tööriistade konsooli koodi, mida te ei tunne või pole ise kontrollinud. See võib lubada ründajatel teie identiteedi varastada või teie arvuti üle kontrolli võtta. Sisestage allpool „{PH1}“ ja vajutage sisestusklahvi, et kleepimine lubada."
+    "message": "Hoiatus: ärge kleepige arendaja tööriistade konsooli koodi, millest te ei saa aru või mida te pole ise kontrollinud. See võib lubada ründajatel teie identiteedi varastada või teie arvuti üle võtta. Kleepimise lubamiseks sisestage allpool „{PH1}“ ja vajutage sisestusklahvi."
   },
   "panels/console/ConsoleSidebar.ts | dErrors": {
     "message": "{n,plural, =0{Ühtki viga ei ole}=1{# viga}other{# viga}}"
@@ -6793,6 +6859,9 @@
   },
   "panels/console/ConsoleView.ts | autocompleteFromHistory": {
     "message": "Automaatne täitmine ajaloost"
+  },
+  "panels/console/ConsoleView.ts | collapseAll": {
+    "message": "Ahenda kõik"
   },
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "Konsool on tühjendatud"
@@ -6832,6 +6901,9 @@
   },
   "panels/console/ConsoleView.ts | errors": {
     "message": "Vead"
+  },
+  "panels/console/ConsoleView.ts | expandAll": {
+    "message": "Laienda kõik"
   },
   "panels/console/ConsoleView.ts | filteredMessagesInConsole": {
     "message": "{PH1} sõnumit konsoolil"
@@ -8147,6 +8219,9 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Kuva arvutatud väärtus"
   },
+  "panels/elements/StylesSidebarPane.ts | aiSuggestionAccepted": {
+    "message": "{PH1} Soovitus võeti vastu."
+  },
   "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
     "message": "Automaatne tume režiim"
   },
@@ -8251,6 +8326,9 @@
   },
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "Kopeeri stiilid"
+  },
+  "panels/elements/elements-meta.ts | cssAnimationsOnlyWhenAnimationsTabOpen": {
+    "message": "Kuva animatsioonistiilid ainult siis, kui vahekaart Animatsioonid on avatud"
   },
   "panels/elements/elements-meta.ts | detailedInspectTooltip": {
     "message": "Üksikasjaliku uurimise kohtspikker"
@@ -11723,6 +11801,9 @@
   "panels/profiler/HeapProfileView.ts | sBytes": {
     "message": "{PH1} baiti"
   },
+  "panels/profiler/HeapProfileView.ts | samplingHeapProfilerTimeline": {
+    "message": "Diskreetiva kuhjaprofileerija ajaskaala"
+  },
   "panels/profiler/HeapProfileView.ts | samplingProfiles": {
     "message": "Valimiprofiilid"
   },
@@ -11930,9 +12011,6 @@
   "panels/profiler/HeapSnapshotView.ts | duplicatedStrings": {
     "message": "Duplikaatstringid"
   },
-  "panels/profiler/HeapSnapshotView.ts | exposeInternals": {
-    "message": "Siseandmed koos juurutamise üksikasjadega"
-  },
   "panels/profiler/HeapSnapshotView.ts | filter": {
     "message": "Filtreeri"
   },
@@ -12070,33 +12148,6 @@
   },
   "panels/profiler/IsolateSelector.ts | totalPageJsHeapSizeChangeTrend": {
     "message": "Lehe JS-i kuhja kogumahu muutuse trend viimase {PH1} minuti jooksul."
-  },
-  "panels/profiler/LiveHeapProfileView.ts | allocatedJsHeapSizeCurrentlyIn": {
-    "message": "Praegu kasutusel oleva jaotatud JS-i kuhja suurus"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | anonymousScriptS": {
-    "message": "(Anonüümne skript {PH1})"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | heapProfile": {
-    "message": "Kuhja profiil"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | jsHeap": {
-    "message": "JS-i kuhi"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | kb": {
-    "message": "kB"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | numberOfVmsSharingTheSameScript": {
-    "message": "Sama skripti allikat jagavate virtuaalmasinate arv"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | scriptUrl": {
-    "message": "Skripti URL"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | urlOfTheScriptSource": {
-    "message": "Skripti allika URL"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | vms": {
-    "message": "Virtuaalmasinad"
   },
   "panels/profiler/ModuleUIStrings.ts | buildingAllocationStatistics": {
     "message": "Jaotuse statistika loomine …"
@@ -12275,9 +12326,6 @@
   "panels/profiler/profiler-meta.ts | deleteProfile": {
     "message": "Kustuta profiil"
   },
-  "panels/profiler/profiler-meta.ts | liveHeapProfile": {
-    "message": "Reaalajas kuhja profiil"
-  },
   "panels/profiler/profiler-meta.ts | loadProfile": {
     "message": "Laadi profiil …"
   },
@@ -12287,23 +12335,11 @@
   "panels/profiler/profiler-meta.ts | saveProfile": {
     "message": "Salvesta profiil …"
   },
-  "panels/profiler/profiler-meta.ts | showLiveHeapProfile": {
-    "message": "Kuva reaalajas kuhja profiil"
-  },
   "panels/profiler/profiler-meta.ts | showMemory": {
     "message": "Kuva mälumaht"
   },
-  "panels/profiler/profiler-meta.ts | startRecordingHeapAllocations": {
-    "message": "Alusta kuhja jaotuste salvestamist"
-  },
-  "panels/profiler/profiler-meta.ts | startRecordingHeapAllocationsAndReload": {
-    "message": "Alusta kuhja jaotuste salvestamist ja laadi leht uuesti"
-  },
   "panels/profiler/profiler-meta.ts | startStopRecording": {
     "message": "Salvestuse alustamine/katkestamine"
-  },
-  "panels/profiler/profiler-meta.ts | stopRecordingHeapAllocations": {
-    "message": "Katkesta kuhja jaotuste salvestamine"
   },
   "panels/protocol_monitor/JSONEditor.ts | addCustomProperty": {
     "message": "Lisa kohandatud atribuut"
@@ -12417,7 +12453,7 @@
     "message": "Kustuta salvestis"
   },
   "panels/recorder/RecorderController.ts | doNotImport": {
-    "message": "Ärge importige arendaja tööriista salvestisi, millest te aru ei saa või mida te pole kontrollinud. See võib lubada ründajatel teie identiteedi varastada või teie arvuti üle kontrolli võtta. Importimise lubamiseks sisestage allpool „{PH1}“."
+    "message": "Ärge importige arendaja tööriista salvestisi, millest te aru ei saa või mida te pole kontrollinud. See võib lubada ründajatel teie identiteedi varastada või teie arvuti üle võtta. Importimise lubamiseks sisestage allpool „{PH1}“."
   },
   "panels/recorder/RecorderController.ts | doYouTrustThisCode": {
     "message": "Kas usaldate seda salvestist?"
@@ -13459,6 +13495,21 @@
   },
   "panels/settings/AISettingsTab.ts | aIAnnotationsFeatureDescription": {
     "message": "Toimivusjälgede märkustele genereeritakse automaatselt pealkirju"
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceDescriptionV2": {
+    "message": "Kontekstiteadlik abi inspekteeritaval lehel"
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceThingsToConsiderNoLoggingV2": {
+    "message": "Selgituste genereerimiseks saadetakse Google'ile vestlussõnumid, arendaja tööriistade paneelide ja veebi-API-de kaudu juurdepääsetavad saidi andmed ning teie valitud üksused, nagu võrgupäringud, failid ja toimivusjäljed. Teie esitatud ja selle funktsiooni genereeritud sisu ei kasutata Google'i AI-mudelite täiustamiseks. See on katsejärgus AI-funktsioon ega paku alati õigeid tulemusi."
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceThingsToConsiderV2": {
+    "message": "Selgituste genereerimiseks saadetakse Google'ile vestlussõnumid, andmed, millele see sait pääseb juurde arendaja tööriistade paneelide ja veebi-API-de kaudu, ning teie valitud üksused, nagu võrgupäringud, failid ja toimivusjäljed. Ülevaatajad võivad neid vaadata, et seda funktsiooni täiustada. See on katsejärgus AI-funktsioon ega paku alati õigeid tulemusi."
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceWhenOnItem1V2": {
+    "message": "Siluge arendaja tööriistade AI-abi abil stiili, võrgu, toimivuse, lähtekoodi, juurdepääsetavuse ja salvestusruumi probleeme."
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceWhenOnItem2V2": {
+    "message": "Saate agendi arutluskäiku sammhaaval jälgida ja kiiresti asjakohaseid lähteandmeid kontrollida."
   },
   "panels/settings/AISettingsTab.ts | asYouTypeCodeSuggestions": {
     "message": "Konsooli või allikate paneeli koodi sisestades saate koodisoovitusi. Soovitusega nõustumiseks vajutage tabulaatorit."
@@ -14539,12 +14590,6 @@
   },
   "panels/sources/PersistenceActions.ts | showOverrides": {
     "message": "Kuva kõik alistamised"
-  },
-  "panels/sources/ProfilePlugin.ts | kb": {
-    "message": "kB"
-  },
-  "panels/sources/ProfilePlugin.ts | mb": {
-    "message": "MB"
   },
   "panels/sources/ProfilePlugin.ts | ms": {
     "message": "ms"
@@ -17183,6 +17228,9 @@
   "ui/components/markdown_view/CodeBlock.ts | copy": {
     "message": "Kopeeri kood"
   },
+  "ui/components/markdown_view/CodeBlock.ts | copyCodeSnippet": {
+    "message": "Kopeeri koodilõik {PH1}"
+  },
   "ui/components/markdown_view/CodeBlock.ts | disclaimer": {
     "message": "Kasutage koodilõike ettevaatlikult"
   },
@@ -17306,6 +17354,9 @@
   "ui/legacy/ActionRegistration.ts | sources": {
     "message": "Allikad"
   },
+  "ui/legacy/Dialog.ts | close": {
+    "message": "Sule"
+  },
   "ui/legacy/DockController.ts | close": {
     "message": "Sule"
   },
@@ -17339,6 +17390,12 @@
   "ui/legacy/InspectorDrawerView.ts | closeDrawer": {
     "message": "Sule sahtel"
   },
+  "ui/legacy/InspectorDrawerView.ts | expandDrawer": {
+    "message": "Laienda sahtlit"
+  },
+  "ui/legacy/InspectorDrawerView.ts | minimizeDrawer": {
+    "message": "Minimeeri sahtel"
+  },
   "ui/legacy/InspectorDrawerView.ts | moreTools": {
     "message": "Veel tööriistu"
   },
@@ -17354,8 +17411,14 @@
   "ui/legacy/InspectorView.ts | drawer": {
     "message": "Tööriistasahtel"
   },
+  "ui/legacy/InspectorView.ts | drawerExpanded": {
+    "message": "Sahtel on laiendatud"
+  },
   "ui/legacy/InspectorView.ts | drawerHidden": {
     "message": "Sahtel on peidetud"
+  },
+  "ui/legacy/InspectorView.ts | drawerMinimized": {
+    "message": "Sahtel on minimeeritud"
   },
   "ui/legacy/InspectorView.ts | drawerShown": {
     "message": "Sahtel on kuvatud"
@@ -17831,66 +17894,6 @@
   "ui/legacy/components/inline_editor/ColorSwatch.ts | shiftclickToChangeColorFormat": {
     "message": "Värvivormingu muutmiseks vajutage tõstuklahvi ja klõpsake"
   },
-  "ui/legacy/components/inline_editor/FontEditor.ts | PleaseEnterAValidValueForSText": {
-    "message": "* Sisestage teksti sisestamise atribuudi {PH1} jaoks sobiv väärtus"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | cssProperties": {
-    "message": "CSS-i atribuudid"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | deleteS": {
-    "message": "Kustuta {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fallbackS": {
-    "message": "Varu {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fontFamily": {
-    "message": "Fondipere"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fontSelectorDeletedAtIndexS": {
-    "message": "Fondivalija kustutati asukohas: {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fontSize": {
-    "message": "Fondi suurus"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fontWeight": {
-    "message": "Fondi kaal"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | lineHeight": {
-    "message": "Rea kõrgus"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sKeyValueSelector": {
-    "message": "Atribuudi {PH1} võtme väärtuse valija"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sSliderInput": {
-    "message": "Atribuudi {PH1} liuguri sisend"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sTextInput": {
-    "message": "Üksuse {PH1} tekstisisestus"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sToggleInputType": {
-    "message": "Üksuse {PH1} sisendi tüübi vahetamine"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sUnitInput": {
-    "message": "Atribuudi {PH1} ühiku sisestus"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | selectorInputMode": {
-    "message": "Valija sisestusrežiim"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sliderInputMode": {
-    "message": "Liuguri sisestusrežiim"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | spacing": {
-    "message": "Sõrendus"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | thereIsNoValueToDeleteAtIndexS": {
-    "message": "Järgmises registri asukohas ei ole kustutatavat väärtust: {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | thisPropertyIsSetToContainUnits": {
-    "message": "See atribuut on seadistatud nii, et see sisaldab üksusi, ent sellel puudub määratletud vastav unitsArray: {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | units": {
-    "message": "Ühikud"
-  },
   "ui/legacy/components/object_ui/CustomPreviewComponent.ts | showAsJavascriptObject": {
     "message": "Kuva JavaScripti objektina"
   },
@@ -18047,17 +18050,8 @@
   "ui/legacy/components/perf_ui/perf_ui-meta.ts | flamechartSelectedNavigation": {
     "message": "Tulpdiagrammi navigeerimine:"
   },
-  "ui/legacy/components/perf_ui/perf_ui-meta.ts | hideLiveMemoryAllocation": {
-    "message": "Peida reaalajas mälumahu jaotuse märkused"
-  },
-  "ui/legacy/components/perf_ui/perf_ui-meta.ts | liveMemoryAllocationAnnotations": {
-    "message": "Reaalajas mälumahu eraldamise märkmed"
-  },
   "ui/legacy/components/perf_ui/perf_ui-meta.ts | modern": {
     "message": "Moodne"
-  },
-  "ui/legacy/components/perf_ui/perf_ui-meta.ts | showLiveMemoryAllocation": {
-    "message": "Kuva reaalajas mälumahu jaotuse märkused"
   },
   "ui/legacy/components/quick_open/CommandMenu.ts | command": {
     "message": "Käsk"
@@ -18171,7 +18165,7 @@
     "message": "{PH1} valitud piirkonda"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | doNotPaste": {
-    "message": "Ärge kleepige arendaja tööriista koodi, millest te aru ei saa või mida te pole kontrollinud. See võib lubada ründajatel teie identiteedi varastada või teie arvuti üle kontrolli võtta. Kleepimise lubamiseks sisestage allpool „{PH1}”."
+    "message": "Ärge kleepige arendaja tööriistadesse koodi, millest te aru ei saa või mida te pole kontrollinud. See võib lubada ründajatel teie identiteedi varastada või teie arvuti üle võtta. Kleepimise lubamiseks sisestage allpool „{PH1}“."
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | doYouTrustThisCode": {
     "message": "Kas usaldate seda koodi?"

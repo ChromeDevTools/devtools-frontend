@@ -323,6 +323,9 @@
   "core/sdk/NetworkManager.ts | noContentForRedirect": {
     "message": "Няма съдържание, тъй като тази заявка бе пренасочена"
   },
+  "core/sdk/NetworkManager.ts | noContentForSSE": {
+    "message": "Понастоящем не се поддържа съдържание за събития, изпращани от сървъра (SSE)"
+  },
   "core/sdk/NetworkManager.ts | noContentForWebSocket": {
     "message": "Понастоящем не се поддържа съдържание за WebSockets"
   },
@@ -559,6 +562,9 @@
   },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "Ахроматопсия (без цвят)"
+  },
+  "core/sdk/sdk-meta.ts | apca": {
+    "message": "Усъвършенстван алгоритъм за възприемане на контраста (APCA), който заменя предишния коефициент на контрастност и указанията за AA/AAA"
   },
   "core/sdk/sdk-meta.ts | blurredVision": {
     "message": "Замъглено зрение"
@@ -1441,6 +1447,9 @@
   },
   "generated/Deprecation.ts | PrefixedVideoSupportsFullscreen": {
     "message": "Приложният програмен интерфейс HTMLVideoElement.webkitSupportsFullscreen е оттеглен. Вместо него използвайте Document.fullscreenEnabled."
+  },
+  "generated/Deprecation.ts | PreventSvgFilterPaint": {
+    "message": "Филтрите за SVG не могат да се прилагат към вложени рамки от външни източници, ограничени вложени рамки (напр. такива в тестова среда) или приставки."
   },
   "generated/Deprecation.ts | RTCConstraintEnableDtlsSrtpFalse": {
     "message": "Ограничението DtlsSrtpKeyAgreement е премахнато. Посочихте за него стойност false, която се тълкува като опит за използване на оттегления метод SDES key negotiation. Тази функционалност е премахната. Вместо нея използвайте услуга, която поддържа DTLS key negotiation."
@@ -3207,13 +3216,34 @@
     "message": "Това е експериментална функция с AI и понякога греши. Проверете този текст повторно, преди да го поставите в друг инструмент."
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | exportForAgents": {
-    "message": "Копиране за агента ви за програмиране"
+    "message": "Копиране в агента за програмиране"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | generatingSummary": {
     "message": "Генерира се обобщение…"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | saveAsMarkdown": {
     "message": "Запазване като…"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | gotIt": {
+    "message": "Разбрах"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | integrationPoint": {
+    "message": "Инструментите за помощ от AI вече са интегрирани в панелите за приложения и Lighthouse и извличат контекст от източниците на данни едновременно"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | manageSettings": {
+    "message": "Управление от настройките"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | privacyDisclaimer": {
+    "message": "До Google се изпращат съобщенията в чата, данните, достъпни за съответния сайт чрез уеб API и панелите на DevTools, и избраните от вас елементи, като например заявки в мрежата, файлове и трасирания на ефективността. Данните може да бъдат видени от проверяващи лица с цел подобряване на тази функция. Това е експериментална функция с AI и понякога греши."
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | privacyDisclaimerEnterpriseNoLogging": {
+    "message": "До Google се изпращат съобщенията в чата, данните, достъпни за съответния сайт чрез уеб API и панелите на DevTools, и избраните от вас елементи, като например заявки в мрежата, файлове и трасирания на ефективността. Съдържанието, изпращано до и генерирано от тази функция, няма да се използва за подобряване на моделите на AI на Google. Това е експериментална функция с AI и понякога греши."
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | title": {
+    "message": "Инструментите за помощ от AI вече са по-добри"
+  },
+  "panels/ai_assistance/components/OptInChangeDialog.ts | widgetPoint": {
+    "message": "Използвайте приспособления, за да проверявате резултатите или да преминавате към изходните данни за определени случаи на отстраняване на грешки"
   },
   "panels/ai_assistance/components/WalkthroughView.ts | close": {
     "message": "Затваряне"
@@ -3223,6 +3253,9 @@
   },
   "panels/ai_assistance/components/WalkthroughView.ts | hideThinking": {
     "message": "Скриване на процеса на мислене"
+  },
+  "panels/ai_assistance/components/WalkthroughView.ts | inProgress": {
+    "message": "В ход"
   },
   "panels/ai_assistance/components/WalkthroughView.ts | showAgentWalkthrough": {
     "message": "Показване на подробните указания за агента"
@@ -3677,9 +3710,6 @@
   "panels/application/ApplicationPanelSidebar.ts | theContentOfThisDocumentHasBeen": {
     "message": "Съдържанието на този документ е динамично генерирано чрез document.write()."
   },
-  "panels/application/ApplicationPanelSidebar.ts | thirdPartyPhaseout": {
-    "message": "„Бисквитките“ от {PH1} може да са блокирани поради поетапното изключване на „бисквитките“ на трети страни."
-  },
   "panels/application/ApplicationPanelSidebar.ts | versionS": {
     "message": "Версия: {PH1}"
   },
@@ -3829,6 +3859,9 @@
   },
   "panels/application/DOMStorageItemsView.ts | domStorageItemsCleared": {
     "message": "Елементите в хранилището на DOM бяха изчистени"
+  },
+  "panels/application/DeviceBoundSessionsTreeElement.ts | clear": {
+    "message": "Изчистване"
   },
   "panels/application/DeviceBoundSessionsTreeElement.ts | deviceBoundSessions": {
     "message": "Сесии, свързани с дадено устройство"
@@ -4922,6 +4955,9 @@
   "panels/application/TrustTokensTreeElement.ts | trustTokens": {
     "message": "Токени за частно състояние"
   },
+  "panels/application/WebMCPView.ts | cancelCall": {
+    "message": "Отказ"
+  },
   "panels/application/WebMCPView.ts | canceled": {
     "message": "Анулирано"
   },
@@ -4937,8 +4973,20 @@
   "panels/application/WebMCPView.ts | close": {
     "message": "Затваряне"
   },
+  "panels/application/WebMCPView.ts | completed": {
+    "message": "Завършено"
+  },
+  "panels/application/WebMCPView.ts | copyDescription": {
+    "message": "Копиране на описанието"
+  },
+  "panels/application/WebMCPView.ts | copyName": {
+    "message": "Копиране на името"
+  },
   "panels/application/WebMCPView.ts | declarative": {
     "message": "Декларативни"
+  },
+  "panels/application/WebMCPView.ts | editAndRun": {
+    "message": "Редактиране и изпълнение"
   },
   "panels/application/WebMCPView.ts | error": {
     "message": "Грешка"
@@ -4982,17 +5030,23 @@
   "panels/application/WebMCPView.ts | output": {
     "message": "Изходяща информация"
   },
+  "panels/application/WebMCPView.ts | paste": {
+    "message": "Поставяне"
+  },
   "panels/application/WebMCPView.ts | pending": {
     "message": "В ход"
+  },
+  "panels/application/WebMCPView.ts | revealTool": {
+    "message": "Инструмент за разкриване"
+  },
+  "panels/application/WebMCPView.ts | runTool": {
+    "message": "Стартиране на инструмента"
   },
   "panels/application/WebMCPView.ts | status": {
     "message": "Състояние"
   },
   "panels/application/WebMCPView.ts | statusTypes": {
     "message": "Типове състояния"
-  },
-  "panels/application/WebMCPView.ts | success": {
-    "message": "Успех"
   },
   "panels/application/WebMCPView.ts | toolDetails": {
     "message": "Подробности"
@@ -5002,6 +5056,9 @@
   },
   "panels/application/WebMCPView.ts | toolTypes": {
     "message": "Типове инструменти"
+  },
+  "panels/application/WebMCPView.ts | toolUnregisteredNotice": {
+    "message": "Регистрацията на този инструмент е отменена"
   },
   "panels/application/WebMCPView.ts | totalCalls": {
     "message": "Общ брой извиквания: {PH1}"
@@ -5873,6 +5930,9 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsFailureReason": {
     "message": "Причина за проблема"
   },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsFormSubmission": {
+    "message": "Изпращане на формуляр"
+  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsRuleSet": {
     "message": "Набор от правила"
   },
@@ -5882,11 +5942,17 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsTargetHint": {
     "message": "Подсказка за целта"
   },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | no": {
+    "message": "Не"
+  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | noElementSelected": {
     "message": "Не е избран елемент"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "За повече подробности изберете елемент"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | yes": {
+    "message": "Да"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByBatterySaver": {
     "message": "Спекулативното зареждане е деактивирано заради режима за запазване на батерията на операционната система."
@@ -6794,6 +6860,9 @@
   "panels/console/ConsoleView.ts | autocompleteFromHistory": {
     "message": "Автоматично довършване от историята"
   },
+  "panels/console/ConsoleView.ts | collapseAll": {
+    "message": "Свиване на всички"
+  },
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "Данните в конзолата са изчистени"
   },
@@ -6832,6 +6901,9 @@
   },
   "panels/console/ConsoleView.ts | errors": {
     "message": "Грешки"
+  },
+  "panels/console/ConsoleView.ts | expandAll": {
+    "message": "Разгъване на всички"
   },
   "panels/console/ConsoleView.ts | filteredMessagesInConsole": {
     "message": "{PH1} съобщения в конзолата"
@@ -8147,6 +8219,9 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Преглед на изчислената стойност"
   },
+  "panels/elements/StylesSidebarPane.ts | aiSuggestionAccepted": {
+    "message": "Предложението за {PH1} бе прието."
+  },
   "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
     "message": "Автоматичен тъмен режим"
   },
@@ -8251,6 +8326,9 @@
   },
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "Копиране на стиловете"
+  },
+  "panels/elements/elements-meta.ts | cssAnimationsOnlyWhenAnimationsTabOpen": {
+    "message": "Показване на стиловете на анимациите само когато разделът „Анимации“ е отворен"
   },
   "panels/elements/elements-meta.ts | detailedInspectTooltip": {
     "message": "Подробна подсказка за проверката"
@@ -11723,6 +11801,9 @@
   "panels/profiler/HeapProfileView.ts | sBytes": {
     "message": "{PH1} байта"
   },
+  "panels/profiler/HeapProfileView.ts | samplingHeapProfilerTimeline": {
+    "message": "Хронология на инструмента за управление на разпределената памет чрез семплиране"
+  },
   "panels/profiler/HeapProfileView.ts | samplingProfiles": {
     "message": "Профили, създадени чрез семплиране"
   },
@@ -11930,9 +12011,6 @@
   "panels/profiler/HeapSnapshotView.ts | duplicatedStrings": {
     "message": "Дублиращи се низове"
   },
-  "panels/profiler/HeapSnapshotView.ts | exposeInternals": {
-    "message": "Вътрешни данни с подробности за реализацията"
-  },
   "panels/profiler/HeapSnapshotView.ts | filter": {
     "message": "Филтър"
   },
@@ -12070,33 +12148,6 @@
   },
   "panels/profiler/IsolateSelector.ts | totalPageJsHeapSizeChangeTrend": {
     "message": "Тенденция на промяна на размера на разпределената памет за JS през последните {PH1} минути."
-  },
-  "panels/profiler/LiveHeapProfileView.ts | allocatedJsHeapSizeCurrentlyIn": {
-    "message": "Размер на разпределената за JS памет, която понастоящем се използва"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | anonymousScriptS": {
-    "message": "(Анонимен скрипт {PH1})"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | heapProfile": {
-    "message": "Профил на разпределената памет"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | jsHeap": {
-    "message": "Разпределена за JS памет"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | kb": {
-    "message": "КБ"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | numberOfVmsSharingTheSameScript": {
-    "message": "Брой виртуални машини, използващи един и същ източник на скрипта"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | scriptUrl": {
-    "message": "URL адрес на скрипта"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | urlOfTheScriptSource": {
-    "message": "URL адрес на източника на скрипта"
-  },
-  "panels/profiler/LiveHeapProfileView.ts | vms": {
-    "message": "Виртуални машини"
   },
   "panels/profiler/ModuleUIStrings.ts | buildingAllocationStatistics": {
     "message": "Създават се статистически данни за разпределението…"
@@ -12275,9 +12326,6 @@
   "panels/profiler/profiler-meta.ts | deleteProfile": {
     "message": "Изтриване на потребителския профил"
   },
-  "panels/profiler/profiler-meta.ts | liveHeapProfile": {
-    "message": "Профил на разпределяне на паметта в реално време"
-  },
   "panels/profiler/profiler-meta.ts | loadProfile": {
     "message": "Зареждане на профила…"
   },
@@ -12287,23 +12335,11 @@
   "panels/profiler/profiler-meta.ts | saveProfile": {
     "message": "Запазване на профила…"
   },
-  "panels/profiler/profiler-meta.ts | showLiveHeapProfile": {
-    "message": "Показване на профила на разпределяне на паметта в реално време"
-  },
   "panels/profiler/profiler-meta.ts | showMemory": {
     "message": "Показване на панела за паметта"
   },
-  "panels/profiler/profiler-meta.ts | startRecordingHeapAllocations": {
-    "message": "Старт на записа на разпределянето на области в разпределената памет"
-  },
-  "panels/profiler/profiler-meta.ts | startRecordingHeapAllocationsAndReload": {
-    "message": "Стартиране на записването на разпределената памет и презареждане на страницата"
-  },
   "panels/profiler/profiler-meta.ts | startStopRecording": {
     "message": "Стартиране/спиране на записването"
-  },
-  "panels/profiler/profiler-meta.ts | stopRecordingHeapAllocations": {
-    "message": "Спиране на записването на разпределената памет"
   },
   "panels/protocol_monitor/JSONEditor.ts | addCustomProperty": {
     "message": "Добавяне на персонализирано свойство"
@@ -12417,7 +12453,7 @@
     "message": "Изтриване на записа"
   },
   "panels/recorder/RecorderController.ts | doNotImport": {
-    "message": "Не импортирайте в DevTools записи, които не разбирате или не сте проверили. Това може да даде възможност на хакерите да откраднат самоличността ви или да поемат контрол над компютъра ви. Моля, въведете „{PH1}“ по-долу, за да разрешите импортирането."
+    "message": "Не импортирайте в DevTools записи, които не разбирате или не сте проверили. Това може да даде възможност на хакерите да откраднат самоличността ви или да поемат контрол над компютъра ви. Въведете „{PH1}“ по-долу, за да разрешите импортирането."
   },
   "panels/recorder/RecorderController.ts | doYouTrustThisCode": {
     "message": "Имате ли доверие на този запис?"
@@ -13459,6 +13495,21 @@
   },
   "panels/settings/AISettingsTab.ts | aIAnnotationsFeatureDescription": {
     "message": "Автоматично генериране на заглавия за анотациите в трасирането на ефективността"
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceDescriptionV2": {
+    "message": "Получаване на помощ въз основа на контекста на проверяваната страница"
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceThingsToConsiderNoLoggingV2": {
+    "message": "За да бъдат генерирани обяснения, до Google се изпращат съобщенията в чата, данните, достъпни за съответния сайт чрез уеб API и панелите на DevTools, и избраните от вас елементи, като например заявки в мрежата, файлове и трасирания на ефективността. Съдържанието, което изпращате и което се генерира от тази функция, няма да се използва за подобряване на моделите на AI на Google. Това е експериментална функция с AI и понякога греши."
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceThingsToConsiderV2": {
+    "message": "За да бъдат генерирани обяснения, до Google се изпращат съобщенията в чата, данните, достъпни за съответния сайт чрез уеб API и панелите на DevTools, и избраните от вас елементи, като например заявки в мрежата, файлове и трасирания на ефективността. Данните може да бъдат видени от проверяващи лица с цел подобряване на тази функция. Това е експериментална функция с AI и понякога греши."
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceWhenOnItem1V2": {
+    "message": "Отстранявайте проблеми със стиловете, мрежата, ефективността, изходния код, достъпността и хранилището с инструментите за помощ от AI в DevTools"
+  },
+  "panels/settings/AISettingsTab.ts | aiAssistanceWhenOnItem2V2": {
+    "message": "Следвайте разсъжденията на агента стъпка по стъпка и бързо преминавайте към съответните изходни данни"
   },
   "panels/settings/AISettingsTab.ts | asYouTypeCodeSuggestions": {
     "message": "Докато пишете в панела „Конзола“ или „Източници“, ще получавате предложения за код. За да приемете някое от тях, натиснете Tab."
@@ -14539,12 +14590,6 @@
   },
   "panels/sources/PersistenceActions.ts | showOverrides": {
     "message": "Показване на всички заменени файлове"
-  },
-  "panels/sources/ProfilePlugin.ts | kb": {
-    "message": "КБ"
-  },
-  "panels/sources/ProfilePlugin.ts | mb": {
-    "message": "МБ"
   },
   "panels/sources/ProfilePlugin.ts | ms": {
     "message": "мсек"
@@ -17183,6 +17228,9 @@
   "ui/components/markdown_view/CodeBlock.ts | copy": {
     "message": "Копиране на код"
   },
+  "ui/components/markdown_view/CodeBlock.ts | copyCodeSnippet": {
+    "message": "Копиране на фрагмента от код „{PH1}“"
+  },
   "ui/components/markdown_view/CodeBlock.ts | disclaimer": {
     "message": "Използвайте внимателно фрагментите от код"
   },
@@ -17306,6 +17354,9 @@
   "ui/legacy/ActionRegistration.ts | sources": {
     "message": "Източници"
   },
+  "ui/legacy/Dialog.ts | close": {
+    "message": "Затваряне"
+  },
   "ui/legacy/DockController.ts | close": {
     "message": "Затваряне"
   },
@@ -17339,6 +17390,12 @@
   "ui/legacy/InspectorDrawerView.ts | closeDrawer": {
     "message": "Затваряне на слоя"
   },
+  "ui/legacy/InspectorDrawerView.ts | expandDrawer": {
+    "message": "Разгъване на слоя"
+  },
+  "ui/legacy/InspectorDrawerView.ts | minimizeDrawer": {
+    "message": "Намаляване на слоя"
+  },
   "ui/legacy/InspectorDrawerView.ts | moreTools": {
     "message": "Още инструменти"
   },
@@ -17354,8 +17411,14 @@
   "ui/legacy/InspectorView.ts | drawer": {
     "message": "Слой с инструменти"
   },
+  "ui/legacy/InspectorView.ts | drawerExpanded": {
+    "message": "Слоят е разгънат"
+  },
   "ui/legacy/InspectorView.ts | drawerHidden": {
     "message": "Слоят е скрит"
+  },
+  "ui/legacy/InspectorView.ts | drawerMinimized": {
+    "message": "Слоят е намален"
   },
   "ui/legacy/InspectorView.ts | drawerShown": {
     "message": "Слоят е показан"
@@ -17831,66 +17894,6 @@
   "ui/legacy/components/inline_editor/ColorSwatch.ts | shiftclickToChangeColorFormat": {
     "message": "Натиснете и задръжте Shift и кликнете, за да промените цветовия формат"
   },
-  "ui/legacy/components/inline_editor/FontEditor.ts | PleaseEnterAValidValueForSText": {
-    "message": "* Моля, посочете валидна стойност за въвеждането на текст за {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | cssProperties": {
-    "message": "Свойства на CSS"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | deleteS": {
-    "message": "Изтриване на „{PH1}“"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fallbackS": {
-    "message": "Резервен елемент {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fontFamily": {
-    "message": "Семейство шрифтове"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fontSelectorDeletedAtIndexS": {
-    "message": "Изтрит бе селектор за шрифт при показалец {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fontSize": {
-    "message": "Размер на шрифта"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | fontWeight": {
-    "message": "Тегло на шрифта"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | lineHeight": {
-    "message": "Височина на реда"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sKeyValueSelector": {
-    "message": "Селектор за ключ-стойности за {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sSliderInput": {
-    "message": "Въвеждане с плъзгач за {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sTextInput": {
-    "message": "Въвеждане на текст {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sToggleInputType": {
-    "message": "Превключване на типа въвеждане за {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sUnitInput": {
-    "message": "Въвеждане на единица за {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | selectorInputMode": {
-    "message": "Режим на въвеждане с инструмент за избор"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | sliderInputMode": {
-    "message": "Режим на въвеждане с плъзгач"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | spacing": {
-    "message": "Разстояние между знаците"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | thereIsNoValueToDeleteAtIndexS": {
-    "message": "Няма стойност за изтриване при показалец {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | thisPropertyIsSetToContainUnits": {
-    "message": "Това свойство е настроено така, че да съдържа единици, но не е дефиниран съответстващ масив unitsArray: {PH1}"
-  },
-  "ui/legacy/components/inline_editor/FontEditor.ts | units": {
-    "message": "Единици"
-  },
   "ui/legacy/components/object_ui/CustomPreviewComponent.ts | showAsJavascriptObject": {
     "message": "Показване като обект на JavaScript"
   },
@@ -18047,17 +18050,8 @@
   "ui/legacy/components/perf_ui/perf_ui-meta.ts | flamechartSelectedNavigation": {
     "message": "Навигиране в диаграмата тип „пламък“:"
   },
-  "ui/legacy/components/perf_ui/perf_ui-meta.ts | hideLiveMemoryAllocation": {
-    "message": "Скриване на анотациите за разпределяне на паметта в реално време"
-  },
-  "ui/legacy/components/perf_ui/perf_ui-meta.ts | liveMemoryAllocationAnnotations": {
-    "message": "Анотации за разпределяне на паметта в реално време"
-  },
   "ui/legacy/components/perf_ui/perf_ui-meta.ts | modern": {
     "message": "Съвременно навигиране"
-  },
-  "ui/legacy/components/perf_ui/perf_ui-meta.ts | showLiveMemoryAllocation": {
-    "message": "Показване на анотации за разпределяне на паметта в реално време"
   },
   "ui/legacy/components/quick_open/CommandMenu.ts | command": {
     "message": "Команда"
@@ -18171,7 +18165,7 @@
     "message": "{PH1} области за избор"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | doNotPaste": {
-    "message": "Не поставяйте в DevTools код, който не разбирате или не сте проверили. Това може да даде възможност на хакерите да откраднат самоличността ви или да поемат контрол над компютъра ви. Моля, въведете „{PH1}“ по-долу, за да разрешите поставянето."
+    "message": "Не поставяйте в DevTools код, който не разбирате или не сте проверили. Това може да даде възможност на хакерите да откраднат самоличността ви или да поемат контрол над компютъра ви. Въведете „{PH1}“ по-долу, за да разрешите поставянето."
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | doYouTrustThisCode": {
     "message": "Имате ли доверие на този код?"

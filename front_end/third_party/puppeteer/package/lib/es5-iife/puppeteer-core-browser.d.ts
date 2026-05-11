@@ -3127,6 +3127,8 @@ export declare abstract class Frame extends EventEmitter<FrameEvents> {
    * - the remote server does not respond or is unreachable.
    *
    * - the main resource failed to load.
+   *
+   * - the URL is blocked by blocklist/allowlist rules.
    */
   abstract goto(
     url: string,
@@ -3445,7 +3447,10 @@ export declare abstract class Frame extends EventEmitter<FrameEvents> {
    * @param options - Options to configure how long before timing out and at
    * what point to consider the content setting successful.
    */
-  abstract setContent(html: string, options?: WaitForOptions): Promise<void>;
+  abstract setContent(
+    html: string,
+    options?: SetContentWaitForOptions,
+  ): Promise<void>;
   /**
    * The frame's `name` attribute as specified in the tag.
    *
@@ -6547,7 +6552,7 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
    * @param html - HTML markup to assign to the page.
    * @param options - Parameters that has some properties.
    */
-  setContent(html: string, options?: WaitForOptions): Promise<void>;
+  setContent(html: string, options?: SetContentWaitForOptions): Promise<void>;
   /**
    * {@inheritDoc Frame.goto}
    */
@@ -8199,6 +8204,7 @@ declare namespace Puppeteer_2 {
     AutofillData,
     WaitForOptions,
     GoToOptions,
+    SetContentWaitForOptions,
     FrameWaitForFunctionOptions,
     FrameAddScriptTagOptions,
     FrameAddStyleTagOptions,
@@ -9091,6 +9097,21 @@ export declare interface SerializedAXNode {
 }
 
 export {Session};
+
+/**
+ * @public
+ */
+export declare interface SetContentWaitForOptions extends WaitForOptions {
+  /**
+   * When to consider waiting succeeds. Given an array of event strings, waiting
+   * is considered to be successful after all events have been fired.
+   *
+   * @defaultValue `'load'`
+   */
+  waitUntil?:
+    | Exclude<PuppeteerLifeCycleEvent, 'networkidle0' | 'networkidle2'>
+    | Array<Exclude<PuppeteerLifeCycleEvent, 'networkidle0' | 'networkidle2'>>;
+}
 
 /**
  * @public

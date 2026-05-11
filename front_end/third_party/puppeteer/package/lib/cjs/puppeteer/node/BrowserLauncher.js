@@ -46,6 +46,7 @@ const browsers_1 = require("@puppeteer/browsers");
 const rxjs_js_1 = require("../../third_party/rxjs/rxjs.js");
 const Browser_js_1 = require("../cdp/Browser.js");
 const Connection_js_1 = require("../cdp/Connection.js");
+const BrowserConnector_js_1 = require("../common/BrowserConnector.js");
 const Errors_js_1 = require("../common/Errors.js");
 const util_js_1 = require("../common/util.js");
 const incremental_id_generator_js_1 = require("../util/incremental-id-generator.js");
@@ -73,15 +74,17 @@ class BrowserLauncher {
         return this.#browser;
     }
     async launch(options = {}) {
-        if (options.blocklist && options.allowlist) {
-            throw new Error('Cannot specify both blocklist and allowlist');
-        }
         const { dumpio = false, enableExtensions = false, env = process.env, handleSIGINT = true, handleSIGTERM = true, handleSIGHUP = true, acceptInsecureCerts = false, networkEnabled = true, issuesEnabled = true, defaultViewport = util_js_1.DEFAULT_VIEWPORT, downloadBehavior, slowMo = 0, timeout = 30000, waitForInitialPage = true, protocolTimeout, handleDevToolsAsPage, idGenerator = (0, incremental_id_generator_js_1.createIncrementalIdGenerator)(), blocklist, allowlist, } = options;
         let { protocol } = options;
         // Default to 'webDriverBiDi' for Firefox.
         if (this.#browser === 'firefox' && protocol === undefined) {
             protocol = 'webDriverBiDi';
         }
+        (0, BrowserConnector_js_1.assertSupportedUrlRestrictions)({
+            allowlist,
+            blocklist,
+            protocol,
+        });
         if (this.#browser === 'firefox' && protocol === 'cdp') {
             throw new Error('Connecting to Firefox using CDP is no longer supported');
         }

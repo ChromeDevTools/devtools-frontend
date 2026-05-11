@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import { type Emitter } from '../../third_party/mitt/mitt.js';
-import { disposeSymbol } from '../util/disposable.js';
+import { asyncDisposeSymbol, disposeSymbol } from '../util/disposable.js';
 /**
  * @public
  */
@@ -98,5 +98,9 @@ export declare class EventEmitter<Events extends Record<EventType, unknown>> imp
      * @internal
      */
     [disposeSymbol](): void;
+    /**
+     * @internal
+     */
+    [asyncDisposeSymbol](): Promise<void>;
 }
 //# sourceMappingURL=EventEmitter.d.ts.map

@@ -10,6 +10,7 @@ import { Browser as InstalledBrowser, CDP_WEBSOCKET_ENDPOINT_REGEX, launch, Time
 import { firstValueFrom, from, map, race, timer, } from '../../third_party/rxjs/rxjs.js';
 import { CdpBrowser } from '../cdp/Browser.js';
 import { Connection } from '../cdp/Connection.js';
+import { assertSupportedUrlRestrictions } from '../common/BrowserConnector.js';
 import { TimeoutError } from '../common/Errors.js';
 import { debugError, DEFAULT_VIEWPORT } from '../common/util.js';
 import { createIncrementalIdGenerator, } from '../util/incremental-id-generator.js';
@@ -37,15 +38,17 @@ export class BrowserLauncher {
         return this.#browser;
     }
     async launch(options = {}) {
-        if (options.blocklist && options.allowlist) {
-            throw new Error('Cannot specify both blocklist and allowlist');
-        }
         const { dumpio = false, enableExtensions = false, env = process.env, handleSIGINT = true, handleSIGTERM = true, handleSIGHUP = true, acceptInsecureCerts = false, networkEnabled = true, issuesEnabled = true, defaultViewport = DEFAULT_VIEWPORT, downloadBehavior, slowMo = 0, timeout = 30000, waitForInitialPage = true, protocolTimeout, handleDevToolsAsPage, idGenerator = createIncrementalIdGenerator(), blocklist, allowlist, } = options;
         let { protocol } = options;
         // Default to 'webDriverBiDi' for Firefox.
         if (this.#browser === 'firefox' && protocol === undefined) {
             protocol = 'webDriverBiDi';
         }
+        assertSupportedUrlRestrictions({
+            allowlist,
+            blocklist,
+            protocol,
+        });
         if (this.#browser === 'firefox' && protocol === 'cdp') {
             throw new Error('Connecting to Firefox using CDP is no longer supported');
         }

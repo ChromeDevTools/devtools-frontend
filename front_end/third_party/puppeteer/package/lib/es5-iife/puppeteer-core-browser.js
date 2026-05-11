@@ -2812,133 +2812,6 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
 
   /**
    * @license
-   * Copyright 2022 Google Inc.
-   * SPDX-License-Identifier: Apache-2.0
-   */
-  /**
-   * The EventEmitter class that many Puppeteer classes extend.
-   *
-   * @remarks
-   *
-   * This allows you to listen to events that Puppeteer classes fire and act
-   * accordingly. Therefore you'll mostly use {@link EventEmitter.on | on} and
-   * {@link EventEmitter.off | off} to bind
-   * and unbind to event listeners.
-   *
-   * @public
-   */
-  var _emitter = /*#__PURE__*/new WeakMap();
-  var _handlers = /*#__PURE__*/new WeakMap();
-  class EventEmitter {
-    /**
-     * If you pass an emitter, the returned emitter will wrap the passed emitter.
-     *
-     * @internal
-     */
-    constructor(emitter = mitt_default(new Map())) {
-      _classPrivateFieldInitSpec(this, _emitter, void 0);
-      _classPrivateFieldInitSpec(this, _handlers, new Map());
-      _classPrivateFieldSet(_emitter, this, emitter);
-    }
-    /**
-     * Bind an event listener to fire when an event occurs.
-     * @param type - the event type you'd like to listen to. Can be a string or symbol.
-     * @param handler - the function to be called when the event occurs.
-     * @returns `this` to enable you to chain method calls.
-     */
-    on(type, handler) {
-      const handlers = _classPrivateFieldGet(_handlers, this).get(type);
-      if (handlers === undefined) {
-        _classPrivateFieldGet(_handlers, this).set(type, [handler]);
-      } else {
-        handlers.push(handler);
-      }
-      _classPrivateFieldGet(_emitter, this).on(type, handler);
-      return this;
-    }
-    /**
-     * Remove an event listener from firing.
-     * @param type - the event type you'd like to stop listening to.
-     * @param handler - the function that should be removed.
-     * @returns `this` to enable you to chain method calls.
-     */
-    off(type, handler) {
-      const handlers = _classPrivateFieldGet(_handlers, this).get(type) ?? [];
-      if (handler === undefined) {
-        for (const handler of handlers) {
-          _classPrivateFieldGet(_emitter, this).off(type, handler);
-        }
-        _classPrivateFieldGet(_handlers, this).delete(type);
-        return this;
-      }
-      const index = handlers.lastIndexOf(handler);
-      if (index > -1) {
-        _classPrivateFieldGet(_emitter, this).off(type, ...handlers.splice(index, 1));
-      }
-      return this;
-    }
-    /**
-     * Emit an event and call any associated listeners.
-     *
-     * @param type - the event you'd like to emit
-     * @param eventData - any data you'd like to emit with the event
-     * @returns `true` if there are any listeners, `false` if there are not.
-     */
-    emit(type, event) {
-      _classPrivateFieldGet(_emitter, this).emit(type, event);
-      return this.listenerCount(type) > 0;
-    }
-    /**
-     * Like `on` but the listener will only be fired once and then it will be removed.
-     * @param type - the event you'd like to listen to
-     * @param handler - the handler function to run when the event occurs
-     * @returns `this` to enable you to chain method calls.
-     */
-    once(type, handler) {
-      const onceHandler = eventData => {
-        handler(eventData);
-        this.off(type, onceHandler);
-      };
-      return this.on(type, onceHandler);
-    }
-    /**
-     * Gets the number of listeners for a given event.
-     *
-     * @param type - the event to get the listener count for
-     * @returns the number of listeners bound to the given event
-     */
-    listenerCount(type) {
-      return _classPrivateFieldGet(_handlers, this).get(type)?.length || 0;
-    }
-    /**
-     * Removes all listeners. If given an event argument, it will remove only
-     * listeners for that event.
-     *
-     * @param type - the event to remove listeners for.
-     * @returns `this` to enable you to chain method calls.
-     */
-    removeAllListeners(type) {
-      if (type !== undefined) {
-        return this.off(type);
-      }
-      this[disposeSymbol]();
-      return this;
-    }
-    /**
-     * @internal
-     */
-    [disposeSymbol]() {
-      for (const [type, handlers] of _classPrivateFieldGet(_handlers, this)) {
-        for (const handler of handlers) {
-          _classPrivateFieldGet(_emitter, this).off(type, handler);
-        }
-      }
-      _classPrivateFieldGet(_handlers, this).clear();
-    }
-  }
-
-  /**
-   * @license
    * Copyright 2020 Google Inc.
    * SPDX-License-Identifier: Apache-2.0
    */
@@ -3049,7 +2922,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    */
   // If moved update release-please config
   // x-release-please-start-version
-  const packageVersion = '24.43.0';
+  const packageVersion = '24.43.1';
   // x-release-please-end
 
   /**
@@ -3748,6 +3621,139 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   }
 
   /**
+   * @license
+   * Copyright 2022 Google Inc.
+   * SPDX-License-Identifier: Apache-2.0
+   */
+  /**
+   * The EventEmitter class that many Puppeteer classes extend.
+   *
+   * @remarks
+   *
+   * This allows you to listen to events that Puppeteer classes fire and act
+   * accordingly. Therefore you'll mostly use {@link EventEmitter.on | on} and
+   * {@link EventEmitter.off | off} to bind
+   * and unbind to event listeners.
+   *
+   * @public
+   */
+  var _emitter = /*#__PURE__*/new WeakMap();
+  var _handlers = /*#__PURE__*/new WeakMap();
+  class EventEmitter {
+    /**
+     * If you pass an emitter, the returned emitter will wrap the passed emitter.
+     *
+     * @internal
+     */
+    constructor(emitter = mitt_default(new Map())) {
+      _classPrivateFieldInitSpec(this, _emitter, void 0);
+      _classPrivateFieldInitSpec(this, _handlers, new Map());
+      _classPrivateFieldSet(_emitter, this, emitter);
+    }
+    /**
+     * Bind an event listener to fire when an event occurs.
+     * @param type - the event type you'd like to listen to. Can be a string or symbol.
+     * @param handler - the function to be called when the event occurs.
+     * @returns `this` to enable you to chain method calls.
+     */
+    on(type, handler) {
+      const handlers = _classPrivateFieldGet(_handlers, this).get(type);
+      if (handlers === undefined) {
+        _classPrivateFieldGet(_handlers, this).set(type, [handler]);
+      } else {
+        handlers.push(handler);
+      }
+      _classPrivateFieldGet(_emitter, this).on(type, handler);
+      return this;
+    }
+    /**
+     * Remove an event listener from firing.
+     * @param type - the event type you'd like to stop listening to.
+     * @param handler - the function that should be removed.
+     * @returns `this` to enable you to chain method calls.
+     */
+    off(type, handler) {
+      const handlers = _classPrivateFieldGet(_handlers, this).get(type) ?? [];
+      if (handler === undefined) {
+        for (const handler of handlers) {
+          _classPrivateFieldGet(_emitter, this).off(type, handler);
+        }
+        _classPrivateFieldGet(_handlers, this).delete(type);
+        return this;
+      }
+      const index = handlers.lastIndexOf(handler);
+      if (index > -1) {
+        _classPrivateFieldGet(_emitter, this).off(type, ...handlers.splice(index, 1));
+      }
+      return this;
+    }
+    /**
+     * Emit an event and call any associated listeners.
+     *
+     * @param type - the event you'd like to emit
+     * @param eventData - any data you'd like to emit with the event
+     * @returns `true` if there are any listeners, `false` if there are not.
+     */
+    emit(type, event) {
+      _classPrivateFieldGet(_emitter, this).emit(type, event);
+      return this.listenerCount(type) > 0;
+    }
+    /**
+     * Like `on` but the listener will only be fired once and then it will be removed.
+     * @param type - the event you'd like to listen to
+     * @param handler - the handler function to run when the event occurs
+     * @returns `this` to enable you to chain method calls.
+     */
+    once(type, handler) {
+      const onceHandler = eventData => {
+        handler(eventData);
+        this.off(type, onceHandler);
+      };
+      return this.on(type, onceHandler);
+    }
+    /**
+     * Gets the number of listeners for a given event.
+     *
+     * @param type - the event to get the listener count for
+     * @returns the number of listeners bound to the given event
+     */
+    listenerCount(type) {
+      return _classPrivateFieldGet(_handlers, this).get(type)?.length || 0;
+    }
+    /**
+     * Removes all listeners. If given an event argument, it will remove only
+     * listeners for that event.
+     *
+     * @param type - the event to remove listeners for.
+     * @returns `this` to enable you to chain method calls.
+     */
+    removeAllListeners(type) {
+      if (type !== undefined) {
+        return this.off(type);
+      }
+      this[disposeSymbol]();
+      return this;
+    }
+    /**
+     * @internal
+     */
+    [disposeSymbol]() {
+      return void this[asyncDisposeSymbol]().catch(debugError);
+    }
+    /**
+     * @internal
+     */
+    async [asyncDisposeSymbol]() {
+      for (const [type, handlers] of _classPrivateFieldGet(_handlers, this)) {
+        for (const handler of handlers) {
+          _classPrivateFieldGet(_emitter, this).off(type, handler);
+        }
+      }
+      _classPrivateFieldGet(_handlers, this).clear();
+    }
+  }
+
+  /**
    * @internal
    */
   const WEB_PERMISSION_TO_PROTOCOL_PERMISSION = new Map([['accelerometer', 'sensors'], ['ambient-light-sensor', 'sensors'], ['background-sync', 'backgroundSync'], ['camera', 'videoCapture'], ['clipboard-read', 'clipboardReadWrite'], ['clipboard-sanitized-write', 'clipboardSanitizedWrite'], ['clipboard-write', 'clipboardReadWrite'], ['geolocation', 'geolocation'], ['gyroscope', 'sensors'], ['idle-detection', 'idleDetection'], ['keyboard-lock', 'keyboardLock'], ['magnetometer', 'sensors'], ['microphone', 'audioCapture'], ['midi', 'midi'], ['notifications', 'notifications'], ['payment-handler', 'paymentHandler'], ['persistent-storage', 'durableStorage'], ['pointer-lock', 'pointerLock'],
@@ -3917,17 +3923,16 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     }
     /** @internal */
     [disposeSymbol]() {
-      if (this.process()) {
-        return void this.close().catch(debugError);
-      }
-      return void this.disconnect().catch(debugError);
+      return void this[asyncDisposeSymbol]().catch(debugError);
     }
     /** @internal */
-    [asyncDisposeSymbol]() {
+    async [asyncDisposeSymbol]() {
       if (this.process()) {
-        return this.close();
+        await this.close();
+      } else {
+        await this.disconnect();
       }
-      return this.disconnect();
+      await super[asyncDisposeSymbol]();
     }
   }
 
@@ -4263,11 +4268,12 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     }
     /** @internal */
     [disposeSymbol]() {
-      return void this.close().catch(debugError);
+      return void this[asyncDisposeSymbol]().catch(debugError);
     }
     /** @internal */
-    [asyncDisposeSymbol]() {
-      return this.close();
+    async [asyncDisposeSymbol]() {
+      await this.close();
+      await super[asyncDisposeSymbol]();
     }
   }
 
@@ -6129,7 +6135,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       }
       /** @internal */
       [_ref]() {
-        return void this.dispose().catch(debugError);
+        return void this[asyncDisposeSymbol]().catch(debugError);
       }
       /** @internal */
       [asyncDisposeSymbol]() {
@@ -12241,11 +12247,12 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       }
       /** @internal */
       [_ref2]() {
-        return void this.close().catch(debugError);
+        return void this[asyncDisposeSymbol]().catch(debugError);
       }
       /** @internal */
-      [asyncDisposeSymbol]() {
-        return this.close();
+      async [asyncDisposeSymbol]() {
+        await this.close();
+        await super[asyncDisposeSymbol]();
       }
     }, (() => {
       const _metadata = typeof Symbol === "function" && Symbol.metadata ? Object.create(_classSuper[Symbol.metadata] ?? null) : void 0;
@@ -16384,6 +16391,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     [disposeSymbol]() {
       _classPrivateFieldGet(_disposables, this).dispose();
       this.emit('disposed', undefined);
+      super[disposeSymbol]();
     }
   }
   async function _addBinding(binding) {
@@ -16886,8 +16894,8 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     [disposeSymbol]() {
       _classPrivateFieldGet(_context, this)?.[disposeSymbol]();
       _classPrivateFieldGet(_emitter3, this).emit('disposed', undefined);
-      super[disposeSymbol]();
       _classPrivateFieldGet(_emitter3, this).removeAllListeners();
+      super[disposeSymbol]();
     }
     get origin() {
       return _classPrivateFieldGet(_origin, this);
@@ -17246,6 +17254,9 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         return this._frameManager.page();
       }
       async goto(url, options = {}) {
+        if (!this.page()._isUrlAllowed(url)) {
+          throw new Error(`Navigation to ${url} is blocked by blocklist/allowlist rules`);
+        }
         const {
           referer = this._frameManager.networkManager.extraHTTPHeaders()['referer'],
           referrerPolicy = this._frameManager.networkManager.extraHTTPHeaders()['referer-policy'],
@@ -17417,6 +17428,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         for (const extensionWorld of Object.values(this.extensionWorlds)) {
           extensionWorld[disposeSymbol]();
         }
+        super[disposeSymbol]();
       }
       exposeFunction() {
         throw new UnsupportedOperation();
@@ -19221,10 +19233,12 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     for (const child of frame.childFrames()) {
       _assertClassBrand(_FrameManager_brand, this, _removeFramesRecursively).call(this, child);
     }
-    frame[disposeSymbol]();
     this._frameTree.removeFrame(frame);
     this.emit(exports.FrameManagerEvent.FrameDetached, frame);
     frame.emit(exports.FrameEvent.FrameDetached, frame);
+    // Needs to be last to ensure events
+    // sent before handlers are cleared.
+    frame[disposeSymbol]();
   }
   const _keyDefinitions = {
     '0': {
@@ -21828,6 +21842,9 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     _client() {
       return _classPrivateFieldGet(_primaryTargetClient, this);
     }
+    _isUrlAllowed(url) {
+      return _classPrivateFieldGet(_targetManager, this).isUrlAllowed(url);
+    }
     isServiceWorkerBypassed() {
       return _classPrivateFieldGet(_serviceWorkerBypassed, this);
     }
@@ -24122,7 +24139,6 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   var _onTargetInfoChanged = /*#__PURE__*/new WeakMap();
   var _onAttachedToTarget2 = /*#__PURE__*/new WeakMap();
   var _onDetachedFromTarget2 = /*#__PURE__*/new WeakMap();
-  var _isUrlAllowed = /*#__PURE__*/new WeakMap();
   var _maybeSetupNetworkConditions = /*#__PURE__*/new WeakMap();
   class TargetManager extends EventEmitter {
     constructor(connection, targetFactory, targetFilterCallback, waitForInitiallyDiscoveredTargets = true, blocklist, allowlist) {
@@ -24253,7 +24269,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         }
         // If we connect to a browser that is already open,
         // immediately detach from any tab that is on the blocklist.
-        if (!_classPrivateFieldGet(_initialAttachDone, this) && !_classPrivateFieldGet(_isUrlAllowed, this).call(this, targetInfo.url)) {
+        if (!_classPrivateFieldGet(_initialAttachDone, this) && !this.isUrlAllowed(targetInfo.url)) {
           await _classPrivateFieldGet(_silentDetach, this).call(this, session, parentSession);
           return;
         }
@@ -24333,7 +24349,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       /**
        * Helper to validate URL against blocklist patterns
        */
-      _classPrivateFieldInitSpec(this, _isUrlAllowed, url => {
+      _defineProperty(this, "isUrlAllowed", url => {
         if (_classPrivateFieldGet(_blocklist, this).length === 0 && _classPrivateFieldGet(_allowlist, this).length === 0) {
           return true;
         }
@@ -26818,10 +26834,16 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    *
    * @internal
    */
-  async function _connectToBrowser(options) {
+  function assertSupportedUrlRestrictions(options) {
     if (options.blocklist && options.allowlist) {
       throw new Error('Cannot specify both blocklist and allowlist');
     }
+    if (options.protocol === 'webDriverBiDi' && (options.blocklist || options.allowlist)) {
+      throw new Error('blocklist and allowlist are only supported with the CDP protocol');
+    }
+  }
+  async function _connectToBrowser(options) {
+    assertSupportedUrlRestrictions(options);
     const {
       connectionTransport,
       endpointUrl
@@ -27066,7 +27088,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   const PUPPETEER_REVISIONS = Object.freeze({
     chrome: '148.0.7778.97',
     'chrome-headless-shell': '148.0.7778.97',
-    firefox: 'stable_150.0.1'
+    firefox: 'stable_150.0.2'
   });
 
   /**

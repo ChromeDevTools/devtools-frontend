@@ -4,7 +4,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import mitt from '../../third_party/mitt/mitt.js';
-import { disposeSymbol } from '../util/disposable.js';
+import { asyncDisposeSymbol, disposeSymbol } from '../util/disposable.js';
+import { debugError } from './util.js';
 /**
  * The EventEmitter class that many Puppeteer classes extend.
  *
@@ -117,6 +118,12 @@ export class EventEmitter {
      * @internal
      */
     [disposeSymbol]() {
+        return void this[asyncDisposeSymbol]().catch(debugError);
+    }
+    /**
+     * @internal
+     */
+    async [asyncDisposeSymbol]() {
         for (const [type, handlers] of this.#handlers) {
             for (const handler of handlers) {
                 this.#emitter.off(type, handler);

@@ -31,7 +31,7 @@ import type { DeviceRequestPrompt } from './DeviceRequestPrompt.js';
 import type { Dialog } from './Dialog.js';
 import type { BoundingBox, ClickOptions, ElementHandle } from './ElementHandle.js';
 import type { Extension } from './Extension.js';
-import type { Frame, FrameAddScriptTagOptions, FrameAddStyleTagOptions, FrameWaitForFunctionOptions, GoToOptions, WaitForOptions } from './Frame.js';
+import type { Frame, FrameAddScriptTagOptions, FrameAddStyleTagOptions, FrameWaitForFunctionOptions, GoToOptions, SetContentWaitForOptions, WaitForOptions } from './Frame.js';
 import type { Keyboard, KeyboardTypeOptions, Mouse, Touchscreen } from './Input.js';
 import type { Issue } from './Issue.js';
 import type { JSHandle } from './JSHandle.js';
@@ -1452,7 +1452,7 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      * @param html - HTML markup to assign to the page.
      * @param options - Parameters that has some properties.
      */
-    setContent(html: string, options?: WaitForOptions): Promise<void>;
+    setContent(html: string, options?: SetContentWaitForOptions): Promise<void>;
     /**
      * {@inheritDoc Frame.goto}
      */

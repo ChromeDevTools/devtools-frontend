@@ -214,7 +214,7 @@ let JSHandle = (() => {
         }
         /** @internal */
         [(_getProperty_decorators = [throwIfDisposed()], _getProperties_decorators = [throwIfDisposed()], disposeSymbol)]() {
-            return void this.dispose().catch(debugError);
+            return void this[asyncDisposeSymbol]().catch(debugError);
         }
         /** @internal */
         [asyncDisposeSymbol]() {

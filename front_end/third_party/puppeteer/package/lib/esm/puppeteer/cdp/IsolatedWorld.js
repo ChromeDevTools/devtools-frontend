@@ -155,8 +155,8 @@ export class IsolatedWorld extends Realm {
     [disposeSymbol]() {
         this.#context?.[disposeSymbol]();
         this.#emitter.emit('disposed', undefined);
-        super[disposeSymbol]();
         this.#emitter.removeAllListeners();
+        super[disposeSymbol]();
     }
     get origin() {
         return this.#origin;

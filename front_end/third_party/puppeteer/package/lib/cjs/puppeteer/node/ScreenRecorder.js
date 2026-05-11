@@ -278,6 +278,7 @@ let ScreenRecorder = (() => {
          */
         async [(_private_writeFrame_decorators = [(0, decorators_js_1.guarded)()], _stop_decorators = [(0, decorators_js_1.guarded)()], disposable_js_1.asyncDisposeSymbol)]() {
             await this.stop();
+            await super[disposable_js_1.asyncDisposeSymbol]();
         }
     };
 })();

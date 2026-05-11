@@ -2,11 +2,11 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-# This represents all the files expected to be be in the GRD. The file
-# has two lists, one for files expected for the "bundled" build
-# (devtools_bundle=true), and another for the "unbundled" build (devtools_bundle=false).
-# The two lists are checked for overlap, and an error thrown if there is
-# any. In the root BUILD.gn these lists are used to ensure that no files
+# This represents all the files expected to be be in the GRD. The file has two
+# lists, one for files expected for the "bundled" build (devtools_bundle=true),
+# and another for the "unbundled" build (devtools_bundle=false). The two lists
+# are checked for overlap, and an error thrown if there is any. In the root
+# BUILD.gn these lists are used to ensure that no files
 # are missed from the GRD.
 
 grd_files_bundled_sources = [

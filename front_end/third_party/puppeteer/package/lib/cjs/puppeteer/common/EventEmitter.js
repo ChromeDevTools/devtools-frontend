@@ -11,6 +11,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.EventEmitter = void 0;
 const mitt_js_1 = __importDefault(require("../../third_party/mitt/mitt.js"));
 const disposable_js_1 = require("../util/disposable.js");
+const util_js_1 = require("./util.js");
 /**
  * The EventEmitter class that many Puppeteer classes extend.
  *
@@ -123,6 +124,12 @@ class EventEmitter {
      * @internal
      */
     [disposable_js_1.disposeSymbol]() {
+        return void this[disposable_js_1.asyncDisposeSymbol]().catch(util_js_1.debugError);
+    }
+    /**
+     * @internal
+     */
+    async [disposable_js_1.asyncDisposeSymbol]() {
         for (const [type, handlers] of this.#handlers) {
             for (const handler of handlers) {
                 this.#emitter.off(type, handler);

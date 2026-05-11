@@ -38,6 +38,7 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.assertSupportedUrlRestrictions = assertSupportedUrlRestrictions;
 exports._connectToBrowser = _connectToBrowser;
 const BrowserConnector_js_1 = require("../bidi/BrowserConnector.js");
 const BrowserConnector_js_2 = require("../cdp/BrowserConnector.js");
@@ -56,10 +57,17 @@ const getWebSocketTransportClass = async () => {
  *
  * @internal
  */
-async function _connectToBrowser(options) {
+function assertSupportedUrlRestrictions(options) {
     if (options.blocklist && options.allowlist) {
         throw new Error('Cannot specify both blocklist and allowlist');
     }
+    if (options.protocol === 'webDriverBiDi' &&
+        (options.blocklist || options.allowlist)) {
+        throw new Error('blocklist and allowlist are only supported with the CDP protocol');
+    }
+}
+async function _connectToBrowser(options) {
+    assertSupportedUrlRestrictions(options);
     const { connectionTransport, endpointUrl } = await getConnectionTransport(options);
     if (options.protocol === 'webDriverBiDi') {
         const bidiBrowser = await (0, BrowserConnector_js_1._connectToBiDiBrowser)(connectionTransport, endpointUrl, options);

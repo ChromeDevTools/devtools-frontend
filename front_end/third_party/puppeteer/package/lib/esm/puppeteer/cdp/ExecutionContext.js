@@ -439,6 +439,7 @@ export class ExecutionContext extends EventEmitter {
     [disposeSymbol]() {
         this.#disposables.dispose();
         this.emit('disposed', undefined);
+        super[disposeSymbol]();
     }
 }
 const rewriteError = (error) => {

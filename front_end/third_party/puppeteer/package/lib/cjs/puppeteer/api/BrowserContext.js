@@ -175,11 +175,12 @@ class BrowserContext extends EventEmitter_js_1.EventEmitter {
     }
     /** @internal */
     [disposable_js_1.disposeSymbol]() {
-        return void this.close().catch(util_js_1.debugError);
+        return void this[disposable_js_1.asyncDisposeSymbol]().catch(util_js_1.debugError);
     }
     /** @internal */
-    [disposable_js_1.asyncDisposeSymbol]() {
-        return this.close();
+    async [disposable_js_1.asyncDisposeSymbol]() {
+        await this.close();
+        await super[disposable_js_1.asyncDisposeSymbol]();
     }
 }
 exports.BrowserContext = BrowserContext;

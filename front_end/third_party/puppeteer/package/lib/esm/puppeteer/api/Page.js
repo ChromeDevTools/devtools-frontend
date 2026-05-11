@@ -1450,11 +1450,12 @@ let Page = (() => {
         [(_screenshot_decorators = [guarded(function () {
                 return this.browser();
             })], disposeSymbol)]() {
-            return void this.close().catch(debugError);
+            return void this[asyncDisposeSymbol]().catch(debugError);
         }
         /** @internal */
-        [asyncDisposeSymbol]() {
-            return this.close();
+        async [asyncDisposeSymbol]() {
+            await this.close();
+            await super[asyncDisposeSymbol]();
         }
     };
 })();

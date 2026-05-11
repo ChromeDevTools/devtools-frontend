@@ -442,6 +442,7 @@ class ExecutionContext extends EventEmitter_js_1.EventEmitter {
     [disposable_js_1.disposeSymbol]() {
         this.#disposables.dispose();
         this.emit('disposed', undefined);
+        super[disposable_js_1.disposeSymbol]();
     }
 }
 exports.ExecutionContext = ExecutionContext;

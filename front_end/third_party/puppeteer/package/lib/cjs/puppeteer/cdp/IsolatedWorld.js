@@ -158,8 +158,8 @@ class IsolatedWorld extends Realm_js_1.Realm {
     [disposable_js_1.disposeSymbol]() {
         this.#context?.[disposable_js_1.disposeSymbol]();
         this.#emitter.emit('disposed', undefined);
-        super[disposable_js_1.disposeSymbol]();
         this.#emitter.removeAllListeners();
+        super[disposable_js_1.disposeSymbol]();
     }
     get origin() {
         return this.#origin;

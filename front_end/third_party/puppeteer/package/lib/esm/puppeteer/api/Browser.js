@@ -188,17 +188,17 @@ export class Browser extends EventEmitter {
     }
     /** @internal */
     [disposeSymbol]() {
-        if (this.process()) {
-            return void this.close().catch(debugError);
-        }
-        return void this.disconnect().catch(debugError);
+        return void this[asyncDisposeSymbol]().catch(debugError);
     }
     /** @internal */
-    [asyncDisposeSymbol]() {
+    async [asyncDisposeSymbol]() {
         if (this.process()) {
-            return this.close();
+            await this.close();
         }
-        return this.disconnect();
+        else {
+            await this.disconnect();
+        }
+        await super[asyncDisposeSymbol]();
     }
 }
 //# sourceMappingURL=Browser.js.map

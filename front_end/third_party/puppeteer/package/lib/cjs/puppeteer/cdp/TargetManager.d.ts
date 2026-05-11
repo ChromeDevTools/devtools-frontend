@@ -35,5 +35,9 @@ export declare class TargetManager extends EventEmitter<TargetManagerEvents> imp
     dispose(): void;
     getAvailableTargets(): ReadonlyMap<string, CdpTarget>;
     getDiscoveredTargetInfos(): ReadonlyMap<string, Protocol.Target.TargetInfo>;
+    /**
+     * Helper to validate URL against blocklist patterns
+     */
+    isUrlAllowed: (url: string) => boolean;
 }
 //# sourceMappingURL=TargetManager.d.ts.map

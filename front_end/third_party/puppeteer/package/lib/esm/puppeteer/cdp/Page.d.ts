@@ -46,6 +46,7 @@ export declare class CdpPage extends Page {
     }): Promise<void>;
     windowId(): Promise<WindowId>;
     _client(): CDPSession;
+    _isUrlAllowed(url: string): boolean;
     isServiceWorkerBypassed(): boolean;
     isDragInterceptionEnabled(): boolean;
     isJavaScriptEnabled(): boolean;

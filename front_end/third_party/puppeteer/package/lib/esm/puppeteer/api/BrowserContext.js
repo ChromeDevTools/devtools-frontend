@@ -172,11 +172,12 @@ export class BrowserContext extends EventEmitter {
     }
     /** @internal */
     [disposeSymbol]() {
-        return void this.close().catch(debugError);
+        return void this[asyncDisposeSymbol]().catch(debugError);
     }
     /** @internal */
-    [asyncDisposeSymbol]() {
-        return this.close();
+    async [asyncDisposeSymbol]() {
+        await this.close();
+        await super[asyncDisposeSymbol]();
     }
 }
 //# sourceMappingURL=BrowserContext.js.map

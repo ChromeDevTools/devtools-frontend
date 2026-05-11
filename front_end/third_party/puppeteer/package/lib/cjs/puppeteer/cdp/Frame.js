@@ -146,6 +146,9 @@ let CdpFrame = (() => {
             return this._frameManager.page();
         }
         async goto(url, options = {}) {
+            if (!this.page()._isUrlAllowed(url)) {
+                throw new Error(`Navigation to ${url} is blocked by blocklist/allowlist rules`);
+            }
             const { referer = this._frameManager.networkManager.extraHTTPHeaders()['referer'], referrerPolicy = this._frameManager.networkManager.extraHTTPHeaders()['referer-policy'], waitUntil = ['load'], timeout = this._frameManager.timeoutSettings.navigationTimeout(), } = options;
             let ensureNewDocumentNavigation = false;
             const watcher = new LifecycleWatcher_js_1.LifecycleWatcher(this._frameManager.networkManager, this, waitUntil, timeout);
@@ -334,6 +337,7 @@ let CdpFrame = (() => {
             for (const extensionWorld of Object.values(this.extensionWorlds)) {
                 extensionWorld[disposable_js_1.disposeSymbol]();
             }
+            super[disposable_js_1.disposeSymbol]();
         }
         exposeFunction() {
             throw new Errors_js_1.UnsupportedOperation();

@@ -370,6 +370,9 @@ export class CdpPage extends Page {
     _client() {
         return this.#primaryTargetClient;
     }
+    _isUrlAllowed(url) {
+        return this.#targetManager.isUrlAllowed(url);
+    }
     isServiceWorkerBypassed() {
         return this.#serviceWorkerBypassed;
     }

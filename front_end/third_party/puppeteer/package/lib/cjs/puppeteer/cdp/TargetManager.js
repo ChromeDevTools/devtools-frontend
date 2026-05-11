@@ -243,7 +243,7 @@ class TargetManager extends EventEmitter_js_1.EventEmitter {
         }
         // If we connect to a browser that is already open,
         // immediately detach from any tab that is on the blocklist.
-        if (!this.#initialAttachDone && !this.#isUrlAllowed(targetInfo.url)) {
+        if (!this.#initialAttachDone && !this.isUrlAllowed(targetInfo.url)) {
             await this.#silentDetach(session, parentSession);
             return;
         }
@@ -345,7 +345,7 @@ class TargetManager extends EventEmitter_js_1.EventEmitter {
     /**
      * Helper to validate URL against blocklist patterns
      */
-    #isUrlAllowed = (url) => {
+    isUrlAllowed = (url) => {
         if (this.#blocklist.length === 0 && this.#allowlist.length === 0) {
             return true;
         }

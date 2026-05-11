@@ -191,17 +191,17 @@ class Browser extends EventEmitter_js_1.EventEmitter {
     }
     /** @internal */
     [disposable_js_1.disposeSymbol]() {
-        if (this.process()) {
-            return void this.close().catch(util_js_1.debugError);
-        }
-        return void this.disconnect().catch(util_js_1.debugError);
+        return void this[disposable_js_1.asyncDisposeSymbol]().catch(util_js_1.debugError);
     }
     /** @internal */
-    [disposable_js_1.asyncDisposeSymbol]() {
+    async [disposable_js_1.asyncDisposeSymbol]() {
         if (this.process()) {
-            return this.close();
+            await this.close();
         }
-        return this.disconnect();
+        else {
+            await this.disconnect();
+        }
+        await super[disposable_js_1.asyncDisposeSymbol]();
     }
 }
 exports.Browser = Browser;

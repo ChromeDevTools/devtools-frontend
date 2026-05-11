@@ -6,7 +6,7 @@
 import * as Bidi from 'webdriver-bidi-protocol';
 import type { CDPSession } from '../api/CDPSession.js';
 import type { DeviceRequestPrompt } from '../api/DeviceRequestPrompt.js';
-import { Frame, type GoToOptions, type WaitForOptions } from '../api/Frame.js';
+import { Frame, type GoToOptions, type SetContentWaitForOptions, type WaitForOptions } from '../api/Frame.js';
 import { type WaitTimeoutOptions } from '../api/Page.js';
 import type { Realm } from '../api/Realm.js';
 import { Accessibility } from '../cdp/Accessibility.js';
@@ -40,7 +40,7 @@ export declare class BidiFrame extends Frame {
     parentFrame(): BidiFrame | null;
     childFrames(): BidiFrame[];
     goto(url: string, options?: GoToOptions): Promise<BidiHTTPResponse | null>;
-    setContent(html: string, options?: WaitForOptions): Promise<void>;
+    setContent(html: string, options?: SetContentWaitForOptions): Promise<void>;
     waitForNavigation(options?: WaitForOptions): Promise<BidiHTTPResponse | null>;
     waitForDevicePrompt(options?: WaitTimeoutOptions): Promise<DeviceRequestPrompt>;
     get detached(): boolean;

@@ -272,6 +272,7 @@ let ScreenRecorder = (() => {
          */
         async [(_private_writeFrame_decorators = [guarded()], _stop_decorators = [guarded()], asyncDisposeSymbol)]() {
             await this.stop();
+            await super[asyncDisposeSymbol]();
         }
     };
 })();

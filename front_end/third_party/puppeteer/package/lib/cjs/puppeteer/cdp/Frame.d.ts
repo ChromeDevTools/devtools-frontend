@@ -7,7 +7,7 @@ import type { Protocol } from 'devtools-protocol';
 import type { CDPSession } from '../api/CDPSession.js';
 import type { DeviceRequestPrompt } from '../api/DeviceRequestPrompt.js';
 import type { ElementHandle } from '../api/ElementHandle.js';
-import type { WaitForOptions } from '../api/Frame.js';
+import type { SetContentWaitForOptions, WaitForOptions } from '../api/Frame.js';
 import { Frame } from '../api/Frame.js';
 import type { HTTPResponse } from '../api/HTTPResponse.js';
 import type { WaitTimeoutOptions } from '../api/Page.js';
@@ -62,10 +62,7 @@ export declare class CdpFrame extends Frame {
     get client(): CDPSession;
     mainRealm(): IsolatedWorld;
     isolatedRealm(): IsolatedWorld;
-    setContent(html: string, options?: {
-        timeout?: number;
-        waitUntil?: PuppeteerLifeCycleEvent | PuppeteerLifeCycleEvent[];
-    }): Promise<void>;
+    setContent(html: string, options?: SetContentWaitForOptions): Promise<void>;
     url(): string;
     parentFrame(): CdpFrame | null;
     childFrames(): CdpFrame[];

@@ -11,5 +11,10 @@ import type { ConnectOptions } from './ConnectOptions.js';
  *
  * @internal
  */
+export declare function assertSupportedUrlRestrictions(options: {
+    allowlist?: string[];
+    blocklist?: string[];
+    protocol?: string;
+}): void;
 export declare function _connectToBrowser(options: ConnectOptions): Promise<Browser>;
 //# sourceMappingURL=BrowserConnector.d.ts.map

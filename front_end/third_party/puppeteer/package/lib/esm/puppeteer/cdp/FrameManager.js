@@ -484,10 +484,12 @@ export class FrameManager extends EventEmitter {
         for (const child of frame.childFrames()) {
             this.#removeFramesRecursively(child);
         }
-        frame[disposeSymbol]();
         this._frameTree.removeFrame(frame);
         this.emit(FrameManagerEvent.FrameDetached, frame);
         frame.emit(FrameEvent.FrameDetached, frame);
+        // Needs to be last to ensure events
+        // sent before handlers are cleared.
+        frame[disposeSymbol]();
     }
 }
 //# sourceMappingURL=FrameManager.js.map

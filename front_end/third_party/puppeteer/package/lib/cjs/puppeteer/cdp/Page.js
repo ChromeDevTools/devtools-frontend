@@ -375,6 +375,9 @@ class CdpPage extends Page_js_1.Page {
     _client() {
         return this.#primaryTargetClient;
     }
+    _isUrlAllowed(url) {
+        return this.#targetManager.isUrlAllowed(url);
+    }
     isServiceWorkerBypassed() {
         return this.#serviceWorkerBypassed;
     }

@@ -12,6 +12,7 @@ import * as Platform from '../../core/platform/platform.js';
 import type * as Root from '../../core/root/root.js';
 import type * as Foundation from '../../foundation/foundation.js';
 import {createIcon, type Icon} from '../kit/kit.js';
+import {render, type TemplateResult} from '../lit/lit.js';
 import * as VisualLogging from '../visual_logging/visual_logging.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
@@ -119,7 +120,7 @@ export class PreRegisteredView implements View {
     return this.viewRegistration.persistence;
   }
 
-  async toolbarItems(): Promise<ToolbarItem[]> {
+  async toolbarItems(): Promise<ToolbarItem[]|TemplateResult> {
     if (!this.viewRegistration.hasToolbar) {
       return [];
     }
@@ -244,13 +245,18 @@ export class ViewManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
     viewManagerInstance = undefined;
   }
 
-  static createToolbar(toolbarItems: ToolbarItem[]): Element|null {
-    if (!toolbarItems.length) {
+  static createToolbar(toolbarItems: ToolbarItem[]|TemplateResult): Element|null {
+    if (Array.isArray(toolbarItems) && !toolbarItems.length) {
       return null;
     }
     const toolbar = document.createElement('devtools-toolbar');
-    for (const item of toolbarItems) {
-      toolbar.appendToolbarItem(item);
+    if (Array.isArray(toolbarItems)) {
+      for (const item of toolbarItems) {
+        toolbar.appendToolbarItem(item);
+      }
+    } else {
+      // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
+      render(toolbarItems, toolbar);
     }
     return toolbar;
   }

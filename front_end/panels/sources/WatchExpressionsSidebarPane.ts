@@ -49,7 +49,7 @@ import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import objectValueStyles from '../../ui/legacy/components/object_ui/objectValue.css.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import {Directives, html, render} from '../../ui/lit/lit.js';
+import {Directives, html, render, type TemplateResult} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {UISourceCodeFrame} from './UISourceCodeFrame.js';
@@ -179,8 +179,6 @@ export class WatchExpressionsSidebarPane extends UI.Widget.VBox implements UI.Ac
                                                                            UI.Toolbar.ItemsProvider {
   #watchExpressions: WatchExpression[];
   #watchExpressionsSetting: Common.Settings.Setting<string[]>;
-  private readonly addButton: UI.Toolbar.ToolbarButton;
-  private readonly refreshButton: UI.Toolbar.ToolbarButton;
   private readonly linkifier: Components.Linkifier.Linkifier;
   #view: View;
   #expandControllers = new Map<string, ObjectUI.ObjectPropertiesSection.ObjectTreeExpansionTracker>();
@@ -191,17 +189,6 @@ export class WatchExpressionsSidebarPane extends UI.Widget.VBox implements UI.Ac
     this.#watchExpressions = [];
     this.#watchExpressionsSetting =
         Common.Settings.Settings.instance().createLocalSetting<string[]>('watch-expressions', []);
-
-    this.addButton = new UI.Toolbar.ToolbarButton(
-        i18nString(UIStrings.addWatchExpression), 'plus', undefined, 'add-watch-expression');
-    this.addButton.setSize(Buttons.Button.Size.SMALL);
-    this.addButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, _event => {
-      void this.addButtonClicked();
-    });
-    this.refreshButton = new UI.Toolbar.ToolbarButton(
-        i18nString(UIStrings.refreshWatchExpressions), 'refresh', undefined, 'refresh-watch-expressions');
-    this.refreshButton.setSize(Buttons.Button.Size.SMALL);
-    this.refreshButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, this.#refreshExpressions, this);
 
     UI.Context.Context.instance().addFlavorChangeListener(
         SDK.RuntimeModel.ExecutionContext, this.#refreshExpressions, this);
@@ -223,8 +210,27 @@ export class WatchExpressionsSidebarPane extends UI.Widget.VBox implements UI.Ac
     return this.#watchExpressions;
   }
 
-  toolbarItems(): UI.Toolbar.ToolbarItem[] {
-    return [this.addButton, this.refreshButton];
+  toolbarItems(): TemplateResult {
+    // clang-format off
+    return html`
+      <devtools-button .data=${{
+          variant: Buttons.Button.Variant.TOOLBAR,
+          iconName: 'plus',
+          size: Buttons.Button.Size.SMALL,
+          title: i18nString(UIStrings.addWatchExpression),
+          jslogContext: 'add-watch-expression',
+        } as Buttons.Button.ButtonData}
+        @click=${(e: Event) => this.addButtonClicked(e)}></devtools-button>
+      <devtools-button .data=${{
+          variant: Buttons.Button.Variant.TOOLBAR,
+          iconName: 'refresh',
+          size: Buttons.Button.Size.SMALL,
+          title: i18nString(UIStrings.refreshWatchExpressions),
+          jslogContext: 'refresh-watch-expressions',
+        } as Buttons.Button.ButtonData}
+        @click=${(e: Event) => this.refreshButtonClicked(e)}></devtools-button>
+    `;
+    // clang-format on
   }
 
   private saveExpressions(): void {
@@ -239,7 +245,8 @@ export class WatchExpressionsSidebarPane extends UI.Widget.VBox implements UI.Ac
     this.#watchExpressionsSetting.set(toSave);
   }
 
-  private async addButtonClicked(): Promise<void> {
+  private async addButtonClicked(event?: Event): Promise<void> {
+    event?.consume(true);
     await UI.ViewManager.ViewManager.instance().showView('sources.watch');
     const watchExpression = this.createWatchExpression(null);
     this.requestUpdate();
@@ -248,6 +255,11 @@ export class WatchExpressionsSidebarPane extends UI.Widget.VBox implements UI.Ac
     // prompt is migrated to Lit.
     await this.updateComplete;
     watchExpression.startEditing();
+  }
+
+  private refreshButtonClicked(event: Event): void {
+    event.consume(true);
+    this.#refreshExpressions();
   }
 
   #refreshExpressions(): void {
@@ -407,7 +419,6 @@ export class WatchExpression extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   get result(): SDK.RemoteObject.RemoteObject|null {
     return this.#result ?? null;
   }
-
   get updateComplete(): Promise<void> {
     return this.#updateComplete;
   }

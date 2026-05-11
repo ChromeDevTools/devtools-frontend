@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Platform from '../../core/platform/platform.js';
+import type {TemplateResult} from '../lit/lit.js';
 
 import type {TabbedPane} from './TabbedPane.js';
 import type {ToolbarItem, ToolbarMenuButton} from './Toolbar.js';
@@ -22,7 +23,7 @@ export interface View {
 
   isTransient(): boolean;
 
-  toolbarItems(): Promise<ToolbarItem[]>;
+  toolbarItems(): Promise<ToolbarItem[]|TemplateResult>;
 
   widget(): Promise<AnyWidget>;
 

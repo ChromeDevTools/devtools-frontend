@@ -467,7 +467,8 @@ describeWithMockConnection('ConsoleView', () => {
     });
 
     it('shows a loading state when a request is triggered', async () => {
-      const setLoadingSpy = sinon.stub(AiCodeCompletionSummaryToolbar.prototype, 'setLoading');
+      const setLoadingSpy =
+          sinon.stub(AiCodeCompletionSummaryToolbar.AiCodeCompletionSummaryToolbar.prototype, 'setLoading');
       const providerConfig = consoleView.aiCodeCompletionConfig;
       assert.exists(providerConfig);
       providerConfig.onFeatureEnabled();
@@ -479,7 +480,8 @@ describeWithMockConnection('ConsoleView', () => {
     });
 
     it('hides the loading indicator when a response is received', async () => {
-      const setLoadingSpy = sinon.stub(AiCodeCompletionSummaryToolbar.prototype, 'setLoading');
+      const setLoadingSpy =
+          sinon.stub(AiCodeCompletionSummaryToolbar.AiCodeCompletionSummaryToolbar.prototype, 'setLoading');
       const providerConfig = consoleView.aiCodeCompletionConfig;
       assert.exists(providerConfig);
       providerConfig.onFeatureEnabled();
@@ -494,7 +496,8 @@ describeWithMockConnection('ConsoleView', () => {
     });
 
     it('attaches the citations toolbar when a suggestion with citations is accepted', async () => {
-      const updateCitationsSpy = sinon.spy(AiCodeCompletionSummaryToolbar.prototype, 'updateCitations');
+      const updateCitationsSpy =
+          sinon.spy(AiCodeCompletionSummaryToolbar.AiCodeCompletionSummaryToolbar.prototype, 'updateCitations');
       const providerConfig = consoleView.aiCodeCompletionConfig;
       assert.exists(providerConfig);
 
@@ -508,7 +511,8 @@ describeWithMockConnection('ConsoleView', () => {
     });
 
     it('does not attach the citations toolbar if there are no citations', async () => {
-      const updateCitationsSpy = sinon.spy(AiCodeCompletionSummaryToolbar.prototype, 'updateCitations');
+      const updateCitationsSpy =
+          sinon.spy(AiCodeCompletionSummaryToolbar.AiCodeCompletionSummaryToolbar.prototype, 'updateCitations');
       const providerConfig = consoleView.aiCodeCompletionConfig;
       assert.exists(providerConfig);
 

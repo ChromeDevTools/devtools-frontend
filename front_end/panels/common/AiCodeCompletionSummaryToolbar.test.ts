@@ -4,7 +4,7 @@
 
 import * as Host from '../../core/host/host.js';
 import * as AiCodeCompletion from '../../models/ai_code_completion/ai_code_completion.js';
-import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {assertScreenshot, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 
@@ -12,8 +12,8 @@ import * as Common from './common.js';
 
 describeWithEnvironment('AiCodeCompletionSummaryToolbar', () => {
   async function createToolbar() {
-    const view = createViewFunctionStub(Common.AiCodeCompletionSummaryToolbar);
-    const widget = new Common.AiCodeCompletionSummaryToolbar(
+    const view = createViewFunctionStub(Common.AiCodeCompletionSummaryToolbar.AiCodeCompletionSummaryToolbar);
+    const widget = new Common.AiCodeCompletionSummaryToolbar.AiCodeCompletionSummaryToolbar(
         {
           citationsTooltipId: 'citations-tooltip',
           disclaimerTooltipId: 'disclaimer-tooltip',
@@ -121,5 +121,66 @@ describeWithEnvironment('AiCodeCompletionSummaryToolbar', () => {
 
     assert.strictEqual(view.input.aidaAvailability, Host.AidaClient.AidaAccessPreconditions.NO_ACCOUNT_EMAIL);
     widget.detach();
+  });
+
+  describe('screenshots', () => {
+    beforeEach(() => {
+      sinon.stub(Host.AidaClient.HostConfigTracker.instance(), 'pollAidaAvailability').callsFake(async () => {});
+      const checkAccessPreconditionsStub = sinon.stub(Host.AidaClient.AidaClient, 'checkAccessPreconditions');
+      checkAccessPreconditionsStub.resolves(Host.AidaClient.AidaAccessPreconditions.AVAILABLE);
+    });
+
+    function createTarget(width: string) {
+      const container = document.createElement('div');
+      container.style.containerType = 'inline-size';
+      container.style.width = width;
+
+      const target = document.createElement('div');
+      target.style.width = width;
+      target.style.height = '200px';
+
+      container.appendChild(target);
+      renderElementIntoDOM(container);
+
+      return target;
+    }
+
+    it('renders correct wide layout', async () => {
+      const target = createTarget('700px');
+      const citations = new Set<string>(['https://example.com/1']);
+      Common.AiCodeCompletionSummaryToolbar.DEFAULT_SUMMARY_TOOLBAR_VIEW(
+          {
+            citationsTooltipId: 'citations-tooltip',
+            disclaimerTooltipId: 'disclaimer-tooltip',
+            spinnerTooltipId: 'spinner-tooltip',
+            hasTopBorder: false,
+            panel: AiCodeCompletion.AiCodeCompletion.ContextFlavor.SOURCES,
+            citations,
+            loading: false,
+            aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
+          },
+          undefined, target);
+
+      await assertScreenshot('panels/common/ai-code-completion-summary-toolbar-wide.png');
+    });
+
+    it('renders correct narrow layout', async () => {
+      const target = createTarget('400px');
+      const citations = new Set<string>(['https://example.com/1']);
+      Common.AiCodeCompletionSummaryToolbar.DEFAULT_SUMMARY_TOOLBAR_VIEW(
+          {
+            citationsTooltipId: 'citations-tooltip',
+            disclaimerTooltipId: 'disclaimer-tooltip',
+            spinnerTooltipId: 'spinner-tooltip',
+            hasTopBorder: false,
+            panel: AiCodeCompletion.AiCodeCompletion.ContextFlavor.SOURCES,
+            citations,
+            loading: false,
+            aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
+          },
+          undefined, target);
+
+      await assertScreenshot('panels/common/ai-code-completion-summary-toolbar-narrow.png');
+    });
   });
 });

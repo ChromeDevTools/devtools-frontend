@@ -1291,7 +1291,8 @@ describe('StylesSidebarPane', () => {
       });
 
       it('shows a loading state when a request is triggered', async () => {
-        const setLoadingSpy = sinon.stub(PanelsCommon.AiCodeCompletionSummaryToolbar.prototype, 'setLoading');
+        const setLoadingSpy = sinon.stub(
+            PanelsCommon.AiCodeCompletionSummaryToolbar.AiCodeCompletionSummaryToolbar.prototype, 'setLoading');
         const providerConfig = stylesSidebarPane.aiCodeCompletionConfig;
         assert.exists(providerConfig);
         providerConfig.onFeatureEnabled();
@@ -1303,7 +1304,8 @@ describe('StylesSidebarPane', () => {
       });
 
       it('hides the loading indicator when a response is received', async () => {
-        const setLoadingSpy = sinon.stub(PanelsCommon.AiCodeCompletionSummaryToolbar.prototype, 'setLoading');
+        const setLoadingSpy = sinon.stub(
+            PanelsCommon.AiCodeCompletionSummaryToolbar.AiCodeCompletionSummaryToolbar.prototype, 'setLoading');
         const providerConfig = stylesSidebarPane.aiCodeCompletionConfig;
         assert.exists(providerConfig);
         providerConfig.onFeatureEnabled();
@@ -1318,7 +1320,8 @@ describe('StylesSidebarPane', () => {
       });
 
       it('attaches the citations toolbar when a suggestion with citations is accepted', async () => {
-        const updateCitationsSpy = sinon.spy(PanelsCommon.AiCodeCompletionSummaryToolbar.prototype, 'updateCitations');
+        const updateCitationsSpy = sinon.spy(
+            PanelsCommon.AiCodeCompletionSummaryToolbar.AiCodeCompletionSummaryToolbar.prototype, 'updateCitations');
         const providerConfig = stylesSidebarPane.aiCodeCompletionConfig;
         assert.exists(providerConfig);
 
@@ -1332,7 +1335,8 @@ describe('StylesSidebarPane', () => {
       });
 
       it('does not attach the citations toolbar if there are no citations', async () => {
-        const updateCitationsSpy = sinon.spy(PanelsCommon.AiCodeCompletionSummaryToolbar.prototype, 'updateCitations');
+        const updateCitationsSpy = sinon.spy(
+            PanelsCommon.AiCodeCompletionSummaryToolbar.AiCodeCompletionSummaryToolbar.prototype, 'updateCitations');
         const providerConfig = stylesSidebarPane.aiCodeCompletionConfig;
         assert.exists(providerConfig);
 

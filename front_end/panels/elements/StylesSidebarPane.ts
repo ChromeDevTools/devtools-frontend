@@ -229,7 +229,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
   aiCodeCompletionConfig?: TextEditor.AiCodeCompletionProvider.AiCodeCompletionConfig;
   aiCodeCompletionProvider?: StylesAiCodeCompletionProvider.StylesAiCodeCompletionProvider;
   #aiCodeCompletionSummaryToolbarContainer?: HTMLElement;
-  #aiCodeCompletionSummaryToolbar?: PanelsCommon.AiCodeCompletionSummaryToolbar;
+  #aiCodeCompletionSummaryToolbar?: PanelsCommon.AiCodeCompletionSummaryToolbar.AiCodeCompletionSummaryToolbar;
 
   constructor(computedStyleModel: ComputedStyle.ComputedStyleModel.ComputedStyleModel) {
     super(computedStyleModel, {delegatesFocus: true, useShadowDom: true, classes: ['flex-none']});
@@ -1581,12 +1581,13 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     if (this.#aiCodeCompletionSummaryToolbar) {
       return;
     }
-    this.#aiCodeCompletionSummaryToolbar = new PanelsCommon.AiCodeCompletionSummaryToolbar({
-      citationsTooltipId: CITATIONS_TOOLTIP_ID,
-      disclaimerTooltipId: DISCLAIMER_TOOLTIP_ID,
-      spinnerTooltipId: SPINNER_TOOLTIP_ID,
-      panel: AiCodeCompletion.AiCodeCompletion.ContextFlavor.STYLES,
-    });
+    this.#aiCodeCompletionSummaryToolbar =
+        new PanelsCommon.AiCodeCompletionSummaryToolbar.AiCodeCompletionSummaryToolbar({
+          citationsTooltipId: CITATIONS_TOOLTIP_ID,
+          disclaimerTooltipId: DISCLAIMER_TOOLTIP_ID,
+          spinnerTooltipId: SPINNER_TOOLTIP_ID,
+          panel: AiCodeCompletion.AiCodeCompletion.ContextFlavor.STYLES,
+        });
     const containingPane = this.contentElement.enclosingNodeOrSelfWithClass('style-panes-wrapper') as HTMLElement;
     this.#aiCodeCompletionSummaryToolbarContainer =
         containingPane.createChild('div', 'ai-code-completion-summary-toolbar-container');

@@ -23,7 +23,7 @@ export class AiCodeCompletionPlugin extends Plugin {
   #aiCodeCompletionDisclaimer?: PanelCommon.AiCodeCompletionDisclaimer;
   #aiCodeCompletionDisclaimerContainer = document.createElement('div');
   #aiCodeCompletionDisclaimerToolbarItem = new UI.Toolbar.ToolbarItem(this.#aiCodeCompletionDisclaimerContainer);
-  #aiCodeCompletionCitationsToolbar?: PanelCommon.AiCodeCompletionSummaryToolbar;
+  #aiCodeCompletionCitationsToolbar?: PanelCommon.AiCodeCompletionSummaryToolbar.AiCodeCompletionSummaryToolbar;
   #aiCodeCompletionCitationsToolbarContainer = document.createElement('div');
   #aiCodeCompletionCitationsToolbarAttached = false;
   aiCodeCompletionConfig: TextEditor.AiCodeCompletionProvider.AiCodeCompletionConfig;
@@ -113,11 +113,12 @@ export class AiCodeCompletionPlugin extends Plugin {
     if (this.#aiCodeCompletionCitationsToolbar) {
       return;
     }
-    this.#aiCodeCompletionCitationsToolbar = new PanelCommon.AiCodeCompletionSummaryToolbar({
-      citationsTooltipId: CITATIONS_TOOLTIP_ID,
-      hasTopBorder: true,
-      panel: AiCodeCompletion.AiCodeCompletion.ContextFlavor.SOURCES
-    });
+    this.#aiCodeCompletionCitationsToolbar =
+        new PanelCommon.AiCodeCompletionSummaryToolbar.AiCodeCompletionSummaryToolbar({
+          citationsTooltipId: CITATIONS_TOOLTIP_ID,
+          hasTopBorder: true,
+          panel: AiCodeCompletion.AiCodeCompletion.ContextFlavor.SOURCES
+        });
     this.#aiCodeCompletionCitationsToolbar.show(this.#aiCodeCompletionCitationsToolbarContainer, undefined, true);
   }
 

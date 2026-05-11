@@ -351,7 +351,7 @@ export class ConsoleView extends UI.Widget.VBox implements
   #allCollapsed = false;
   aiCodeCompletionConfig?: TextEditor.AiCodeCompletionProvider.AiCodeCompletionConfig;
   private aiCodeCompletionSummaryToolbarContainer?: HTMLElement;
-  private aiCodeCompletionSummaryToolbar?: AiCodeCompletionSummaryToolbar;
+  private aiCodeCompletionSummaryToolbar?: AiCodeCompletionSummaryToolbar.AiCodeCompletionSummaryToolbar;
 
   constructor(viewportThrottlerTimeout: number) {
     super();
@@ -667,7 +667,7 @@ export class ConsoleView extends UI.Widget.VBox implements
     if (this.aiCodeCompletionSummaryToolbar) {
       return;
     }
-    this.aiCodeCompletionSummaryToolbar = new AiCodeCompletionSummaryToolbar({
+    this.aiCodeCompletionSummaryToolbar = new AiCodeCompletionSummaryToolbar.AiCodeCompletionSummaryToolbar({
       citationsTooltipId: CITATIONS_TOOLTIP_ID,
       disclaimerTooltipId: DISCLAIMER_TOOLTIP_ID,
       spinnerTooltipId: SPINNER_TOOLTIP_ID,

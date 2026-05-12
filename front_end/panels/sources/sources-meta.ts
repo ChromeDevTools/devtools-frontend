@@ -1076,6 +1076,13 @@ UI.ActionRegistration.registerActionExtension({
         UI.ActionRegistration.KeybindSet.VS_CODE,
       ],
     },
+    {
+      shortcut: 'Alt+g',
+      keybindSets: [
+        UI.ActionRegistration.KeybindSet.DEVTOOLS_DEFAULT,
+        UI.ActionRegistration.KeybindSet.VS_CODE,
+      ],
+    },
   ],
 });
 

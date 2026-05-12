@@ -32,8 +32,7 @@ describeWithMockConnection(`RequestConditionsDrawer with individual request thro
         .returns(false);
   });
 
-  // Test is failing on CQ
-  it.skip('[crbug.com/504504142] shows a placeholder', async () => {
+  it('shows a placeholder', async () => {
     const requestConditionsDrawer = new Network.RequestConditionsDrawer.RequestConditionsDrawer();
     renderElementIntoDOM(requestConditionsDrawer);
     await requestConditionsDrawer.updateComplete;
@@ -48,8 +47,7 @@ describeWithMockConnection(`RequestConditionsDrawer with individual request thro
     await assertScreenshot('request_conditions/throttling_placeholder.png');
   });
 
-  // Test is failing on CQ
-  it.skip('[crbug.com/504504142] Add pattern button triggers showing the editor view', async () => {
+  it('Add pattern button triggers showing the editor view', async () => {
     const requestConditionsDrawer = new Network.RequestConditionsDrawer.RequestConditionsDrawer();
     renderElementIntoDOM(requestConditionsDrawer);
     await requestConditionsDrawer.updateComplete;
@@ -101,17 +99,11 @@ describeWithMockConnection(`RequestConditionsDrawer with individual request thro
       }
     };
 
-    // Test is failing on CQ
-    it.skip(
-        '[crbug.com/503622772] are updated upon RequestFinished event (when target is in scope)',
-        updatesOnRequestFinishedEvent(true));
-    // Test is failing on CQ
-    it.skip(
-        '[crbug.com/504504142] are updated upon RequestFinished event (when target is out of scope)',
-        updatesOnRequestFinishedEvent(false));
+    it('are updated upon RequestFinished event (when target is in scope)', updatesOnRequestFinishedEvent(true));
+    it('are updated upon RequestFinished event (when target is out of scope)', updatesOnRequestFinishedEvent(false));
 
     // Test is failing on CQ
-    it.skip('[crbug.com/504504142] are updated upon Reset event', async () => {
+    it('are updated upon Reset event', async () => {
       const viewFunction = createViewFunctionStub(Network.RequestConditionsDrawer.AffectedCountWidget);
       const widget = new Network.RequestConditionsDrawer.AffectedCountWidget(undefined, viewFunction);
       widget.condition = SDK.NetworkManager.RequestCondition.createFromSetting({url: '*', enabled: true});
@@ -128,6 +120,10 @@ describeWithMockConnection(`RequestConditionsDrawer with individual request thro
 
 describeWithMockConnection('RequestConditionsDrawer', () => {
   beforeEach(() => {
+    registerNoopActions([
+      'network.add-network-request-blocking-pattern',
+      'network.remove-all-network-request-blocking-patterns',
+    ]);
     SDK.NetworkManager.MultitargetNetworkManager.instance({forceNew: true});
   });
 

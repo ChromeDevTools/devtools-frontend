@@ -42,7 +42,12 @@ const UIStrings = {
   /**
    * @description title for history intervention documentation page.
    */
-  historyManipulationInterventionPageTitle: 'History manipulation intervention explainer'
+  historyManipulationInterventionPageTitle: 'History manipulation intervention explainer',
+
+  /**
+   * @description title for back-to-ad intervention documentation page.
+   */
+  backToAdInterventionPageTitle: 'Back-to-ad intervention explainer',
 } as const;
 
 const str_ = i18n.i18n.registerUIStrings('models/issues_manager/GenericIssue.ts', UIStrings);
@@ -193,6 +198,14 @@ export const genericNavigationEntryMarkedSkippable = {
   }],
 };
 
+export const genericBackUINavigationWouldSkipAd = {
+  file: 'genericBackUINavigationWouldSkipAd.md',
+  links: [{
+    link: 'https://chromium.googlesource.com/chromium/src/+/main/docs/history_manipulation_intervention.md',
+    linkTitle: i18nLazyString(UIStrings.backToAdInterventionPageTitle),
+  }],
+};
+
 export const genericFormModelContextMissingToolName = {
   file: 'genericFormModelContextMissingToolName.md',
   links: [],
@@ -257,6 +270,10 @@ const issueDescriptions = new Map<Protocol.Audits.GenericIssueErrorType, LazyMar
   [
     Protocol.Audits.GenericIssueErrorType.NavigationEntryMarkedSkippable,
     genericNavigationEntryMarkedSkippable,
+  ],
+  [
+    Protocol.Audits.GenericIssueErrorType.BackUINavigationWouldSkipAd,
+    genericBackUINavigationWouldSkipAd,
   ],
   [
     Protocol.Audits.GenericIssueErrorType.FormModelContextMissingToolName,

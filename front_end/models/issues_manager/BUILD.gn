@@ -137,6 +137,7 @@ devtools_issue_description_files = [
   "genericFormLabelHasNeitherForNorNestedInputError.md",
   "genericFormLabelForMatchesNonExistingIdError.md",
   "genericNavigationEntryMarkedSkippable.md",
+  "genericBackUINavigationWouldSkipAd.md",
   "genericResponseWasBlockedByORB.md",
   "genericFormModelContextMissingToolName.md",
   "genericFormModelContextMissingToolDescription.md",

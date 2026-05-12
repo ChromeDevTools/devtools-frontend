@@ -762,7 +762,6 @@ export const enum IssueOpener {
  */
 export enum DevtoolsExperiments {
   /* eslint-disable @typescript-eslint/naming-convention */
-  'capture-node-creation-stacks' = 1,
   'protocol-monitor' = 13,
   'instrumentation-breakpoints' = 61,
   'use-source-map-scopes' = 76,

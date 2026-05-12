@@ -245,8 +245,6 @@ async function init(): Promise<void> {
 
     // Register necessary experiments to avoid "Unknown experiment" errors.
     Root.Runtime.experiments.register(
-        Root.ExperimentNames.ExperimentName.CAPTURE_NODE_CREATION_STACKS, 'Capture node creation stacks');
-    Root.Runtime.experiments.register(
         Root.ExperimentNames.ExperimentName.INSTRUMENTATION_BREAKPOINTS, 'Enable instrumentation breakpoints');
     Root.Runtime.experiments.register(
         Root.ExperimentNames.ExperimentName.USE_SOURCE_MAP_SCOPES, 'Use scope information from source maps');

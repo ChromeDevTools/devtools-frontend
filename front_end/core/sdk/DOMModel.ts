@@ -38,7 +38,6 @@ import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as Common from '../common/common.js';
 import * as Platform from '../platform/platform.js';
-import * as Root from '../root/root.js';
 
 import {CSSModel} from './CSSModel.js';
 import {FrameManager} from './FrameManager.js';
@@ -1460,10 +1459,6 @@ export class DOMModel extends SDKModel<EventTypes> {
 
     if (!target.suspended()) {
       void this.agent.invoke_enable({});
-    }
-
-    if (Root.Runtime.experiments.isEnabled(Root.ExperimentNames.ExperimentName.CAPTURE_NODE_CREATION_STACKS)) {
-      void this.agent.invoke_setNodeStackTracesEnabled({enable: true});
     }
   }
 

@@ -356,8 +356,8 @@ describe('User Metrics', () => {
     await assertHistogramEventsInclude(
         [
           {
-            actionName: 'DevTools.ExperimentDisabledAtLaunch',
-            actionCode: 1,  // Disabled by default: capture-node-creation-stacks
+            actionName: 'DevTools.ExperimentEnabledAtLaunch',
+            actionCode: 13,  // Enabled by default: protocol-monitor
           },
         ],
         devToolsPage,

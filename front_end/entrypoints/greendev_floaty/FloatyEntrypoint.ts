@@ -529,8 +529,6 @@ async function init(): Promise<void> {
     Object.assign(Root.Runtime.hostConfig, config);
 
     safeRegisterExperiment(
-        Root.ExperimentNames.ExperimentName.CAPTURE_NODE_CREATION_STACKS, 'Capture node creation stacks');
-    safeRegisterExperiment(
         Root.ExperimentNames.ExperimentName.INSTRUMENTATION_BREAKPOINTS, 'Enable instrumentation breakpoints');
     safeRegisterExperiment(
         Root.ExperimentNames.ExperimentName.USE_SOURCE_MAP_SCOPES, 'Use scope information from source maps');

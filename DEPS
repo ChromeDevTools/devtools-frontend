@@ -12,13 +12,13 @@ vars = {
   'build_with_chromium': False,
 
   'build_url': 'https://chromium.googlesource.com/chromium/src/build.git',
-  'build_revision': 'e8ac890bfac4f4bdf83066fa05c04eaa7afc0f3f',
+  'build_revision': '50e151001f341b2108d7cb8971d1e535dd2bb2a5',
 
   'buildtools_url': 'https://chromium.googlesource.com/chromium/src/buildtools.git',
   'buildtools_revision': 'c389d23aa69eb752f185e40215649bcf9d2e6527',
 
   'depot_tools_url': 'https://chromium.googlesource.com/chromium/tools/depot_tools.git',
-  'depot_tools_revision': '7b46edbbedc92d910a485815c2499d74254b4f74',
+  'depot_tools_revision': 'b84f0682adbfd310e06d075a3c407b9583f4b75b',
 
   'inspector_protocol_url': 'https://chromium.googlesource.com/deps/inspector_protocol',
   'inspector_protocol_revision': '874bbc6ee5e0cbf24bcee399e20052649b86837b',
@@ -32,7 +32,7 @@ vars = {
   'emscripten_tag': 'ade9d780ff17c88d81aa13860361743e3c1e1396',
 
   # GN CIPD package version.
-  'gn_version': 'git_revision:7ecf26c4148fd141741775347af89aa9c00a80bc',
+  'gn_version': 'git_revision:068dd892acb22dc21d9e17691266c8499ba2d6c8',
 
   'cmake_version': 'version:2@3.21.3',
 
@@ -62,7 +62,7 @@ vars = {
   'non_git_source': 'True',
 
   # siso CIPD package version
-  'siso_version': 'git_revision:8629cde6728d25cde0f6fc1e6ae6b5886e0ebe41',
+  'siso_version': 'git_revision:e82794032885e80beead7f130c4c5c43cb99486b',
 }
 
 # Only these hosts are allowed for dependencies in this DEPS file.

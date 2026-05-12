@@ -1770,6 +1770,7 @@
                         "FormInputHasWrongButWellIntendedAutocompleteValueError",
                         "ResponseWasBlockedByORB",
                         "NavigationEntryMarkedSkippable",
+                        "BackUINavigationWouldSkipAd",
                         "AutofillAndManualTextPolicyControlledFeaturesInfo",
                         "AutofillPolicyControlledFeatureInfo",
                         "ManualTextPolicyControlledFeatureInfo",

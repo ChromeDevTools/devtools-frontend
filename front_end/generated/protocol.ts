@@ -1208,6 +1208,7 @@ export namespace Audits {
     FormInputHasWrongButWellIntendedAutocompleteValueError = 'FormInputHasWrongButWellIntendedAutocompleteValueError',
     ResponseWasBlockedByORB = 'ResponseWasBlockedByORB',
     NavigationEntryMarkedSkippable = 'NavigationEntryMarkedSkippable',
+    BackUINavigationWouldSkipAd = 'BackUINavigationWouldSkipAd',
     AutofillAndManualTextPolicyControlledFeaturesInfo = 'AutofillAndManualTextPolicyControlledFeaturesInfo',
     AutofillPolicyControlledFeatureInfo = 'AutofillPolicyControlledFeatureInfo',
     ManualTextPolicyControlledFeatureInfo = 'ManualTextPolicyControlledFeatureInfo',

@@ -6605,7 +6605,7 @@ var ConsoleView = class _ConsoleView extends UI8.Widget.VBox {
     if (this.aiCodeCompletionSummaryToolbar) {
       return;
     }
-    this.aiCodeCompletionSummaryToolbar = new AiCodeCompletionSummaryToolbar({
+    this.aiCodeCompletionSummaryToolbar = new AiCodeCompletionSummaryToolbar.AiCodeCompletionSummaryToolbar({
       citationsTooltipId: CITATIONS_TOOLTIP_ID,
       disclaimerTooltipId: DISCLAIMER_TOOLTIP_ID,
       spinnerTooltipId: SPINNER_TOOLTIP_ID,

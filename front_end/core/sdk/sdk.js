@@ -15061,6 +15061,7 @@ var CSSContainerQuery = class _CSSContainerQuery extends CSSQuery {
   logicalAxes;
   queriesScrollState;
   queriesAnchored;
+  textIsConditionText;
   static parseContainerQueriesPayload(cssModel, payload) {
     return payload.map((cq) => new _CSSContainerQuery(cssModel, cq));
   }
@@ -15069,7 +15070,8 @@ var CSSContainerQuery = class _CSSContainerQuery extends CSSQuery {
     this.reinitialize(payload);
   }
   reinitialize(payload) {
-    this.text = payload.text;
+    this.textIsConditionText = !!payload.conditionText;
+    this.text = this.textIsConditionText ? payload.conditionText : payload.text;
     this.range = payload.range ? TextUtils5.TextRange.TextRange.fromObject(payload.range) : null;
     this.styleSheetId = payload.styleSheetId;
     this.name = payload.name;
@@ -20902,6 +20904,23 @@ var CSSModel = class _CSSModel extends SDKModel {
       }
       this.#domModel.markUndoableState();
       const edit = new Edit(styleSheetId, range, newContainerQueryText, containerQuery);
+      this.fireStyleSheetChanged(styleSheetId, edit);
+      return true;
+    } catch (e) {
+      console.error(e);
+      return false;
+    }
+  }
+  async setContainerQueryConditionText(styleSheetId, range, newContainerQueryConditionText) {
+    Host3.userMetrics.actionTaken(Host3.UserMetrics.Action.StyleRuleEdited);
+    try {
+      await this.ensureOriginalStyleSheetText(styleSheetId);
+      const { containerQuery } = await this.agent.invoke_setContainerQueryConditionText({ styleSheetId, range, text: newContainerQueryConditionText });
+      if (!containerQuery) {
+        return false;
+      }
+      this.#domModel.markUndoableState();
+      const edit = new Edit(styleSheetId, range, newContainerQueryConditionText, containerQuery);
       this.fireStyleSheetChanged(styleSheetId, edit);
       return true;
     } catch (e) {

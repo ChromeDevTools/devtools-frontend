@@ -261,7 +261,7 @@ var AiCodeCompletionPlugin = class extends Plugin {
     if (this.#aiCodeCompletionCitationsToolbar) {
       return;
     }
-    this.#aiCodeCompletionCitationsToolbar = new PanelCommon.AiCodeCompletionSummaryToolbar({
+    this.#aiCodeCompletionCitationsToolbar = new PanelCommon.AiCodeCompletionSummaryToolbar.AiCodeCompletionSummaryToolbar({
       citationsTooltipId: CITATIONS_TOOLTIP_ID,
       hasTopBorder: true,
       panel: "sources"

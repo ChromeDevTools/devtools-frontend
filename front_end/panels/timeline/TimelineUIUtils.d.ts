@@ -18,10 +18,6 @@ interface LinkifyLocationOptions {
 }
 type TimeRangeCategoryStats = Record<string, number>;
 export declare class TimelineUIUtils {
-    /**
-     * use getGetDebugModeEnabled() to query this variable.
-     */
-    static debugModeEnabled: boolean | undefined;
     static getGetDebugModeEnabled(): boolean;
     static frameDisplayName(frame: Protocol.Runtime.CallFrame): string;
     static testContentMatching(traceEvent: Trace.Types.Events.Event, regExp: RegExp, handlerData?: Trace.Handlers.Types.HandlerData): boolean;

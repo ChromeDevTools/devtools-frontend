@@ -76,6 +76,8 @@ export const DEFAULT_SETTING_REGISTRATIONS_FOR_TEST = [
     createSettingValue("ELEMENTS" /* Common.Settings.SettingCategory.ELEMENTS */, 'apca', false),
     createSettingValue("PERFORMANCE" /* Common.Settings.SettingCategory.PERFORMANCE */, 'annotations-hidden', false),
     createSettingValue("PERFORMANCE" /* Common.Settings.SettingCategory.PERFORMANCE */, 'timeline-show-all-events', false),
+    createSettingValue("PERFORMANCE" /* Common.Settings.SettingCategory.PERFORMANCE */, 'timeline-debug-mode', false),
+    createSettingValue("PERFORMANCE" /* Common.Settings.SettingCategory.PERFORMANCE */, 'timeline-invalidation-tracking', false),
     createSettingValue("NETWORK" /* Common.Settings.SettingCategory.NETWORK */, 'cache-disabled', false),
     createSettingValue("RENDERING" /* Common.Settings.SettingCategory.RENDERING */, 'avif-format-disabled', false),
     createSettingValue("RENDERING" /* Common.Settings.SettingCategory.RENDERING */, 'jpeg-xl-format-disabled', false),

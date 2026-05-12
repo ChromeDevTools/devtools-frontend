@@ -39,4 +39,4 @@ export declare class AcornTokenizer {
     tokenLineStart(): number;
     tokenLineEnd(): number;
 }
-export declare const ECMA_VERSION = 2022;
+export declare const ECMA_VERSION = "latest";

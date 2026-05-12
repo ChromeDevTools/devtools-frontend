@@ -16184,6 +16184,12 @@
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "Stop"
   },
+  "panels/timeline/timeline-meta.ts | timelineDebugMode": {
+    "message": "Timeline debug mode (trace event details, etc.)"
+  },
+  "panels/timeline/timeline-meta.ts | timelineInvalidationTracking": {
+    "message": "Invalidation tracking"
+  },
   "panels/timeline/timeline-meta.ts | timelineShowAllEvents": {
     "message": "Show all events"
   },

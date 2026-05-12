@@ -2117,7 +2117,7 @@ __export(TimelineFlameChartDataProvider_exports, {
 });
 import * as Common17 from "./../../core/common/common.js";
 import * as i18n54 from "./../../core/i18n/i18n.js";
-import * as Root5 from "./../../core/root/root.js";
+import * as Root4 from "./../../core/root/root.js";
 import * as AIAssistance2 from "./../../models/ai_assistance/ai_assistance.js";
 import * as Trace34 from "./../../models/trace/trace.js";
 import * as SourceMapsResolver5 from "./../../models/trace_source_maps_resolver/trace_source_maps_resolver.js";
@@ -2895,7 +2895,7 @@ import "./../../ui/kit/kit.js";
 import * as Common11 from "./../../core/common/common.js";
 import * as i18n37 from "./../../core/i18n/i18n.js";
 import * as Platform11 from "./../../core/platform/platform.js";
-import * as Root4 from "./../../core/root/root.js";
+import * as Root3 from "./../../core/root/root.js";
 import * as SDK8 from "./../../core/sdk/sdk.js";
 import * as Bindings2 from "./../../models/bindings/bindings.js";
 import * as TextUtils3 from "./../../models/text_utils/text_utils.js";
@@ -3124,7 +3124,7 @@ import * as Common10 from "./../../core/common/common.js";
 import * as Host2 from "./../../core/host/host.js";
 import * as i18n35 from "./../../core/i18n/i18n.js";
 import * as Platform10 from "./../../core/platform/platform.js";
-import * as Root3 from "./../../core/root/root.js";
+import * as Root2 from "./../../core/root/root.js";
 import * as SDK7 from "./../../core/sdk/sdk.js";
 import * as AiAssistanceModel from "./../../models/ai_assistance/ai_assistance.js";
 import * as Badges from "./../../models/badges/badges.js";
@@ -3651,7 +3651,6 @@ __export(TimelineController_exports, {
 });
 import * as Common6 from "./../../core/common/common.js";
 import * as i18n23 from "./../../core/i18n/i18n.js";
-import * as Root from "./../../core/root/root.js";
 import * as SDK5 from "./../../core/sdk/sdk.js";
 import * as CrUXManager from "./../../models/crux-manager/crux-manager.js";
 import * as LiveMetrics from "./../../models/live-metrics/live-metrics.js";
@@ -3899,7 +3898,7 @@ var TimelineController = class {
     if (options.enableJSSampling) {
       categoriesArray.push(disabledByDefault("v8.cpu_profiler"));
     }
-    if (Root.Runtime.experiments.isEnabled(Root.ExperimentNames.ExperimentName.TIMELINE_INVALIDATION_TRACKING)) {
+    if (Common6.Settings.Settings.instance().moduleSetting("timeline-invalidation-tracking").get()) {
       categoriesArray.push(disabledByDefault("devtools.timeline.invalidationTracking"));
     }
     if (options.capturePictures) {
@@ -6236,7 +6235,7 @@ __export(UIDevtoolsUtils_exports, {
   UIDevtoolsUtils: () => UIDevtoolsUtils
 });
 import * as i18n33 from "./../../core/i18n/i18n.js";
-import * as Root2 from "./../../core/root/root.js";
+import * as Root from "./../../core/root/root.js";
 import * as Trace20 from "./../../models/trace/trace.js";
 var UIStrings17 = {
   /**
@@ -6306,7 +6305,7 @@ var eventStylesMap = null;
 var categories = null;
 var UIDevtoolsUtils = class _UIDevtoolsUtils {
   static isUiDevTools() {
-    return Root2.Runtime.Runtime.queryParam("uiDevTools") === "true";
+    return Root.Runtime.Runtime.queryParam("uiDevTools") === "true";
   }
   static categorizeEvents() {
     if (eventStylesMap) {
@@ -6635,7 +6634,7 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
   #viewMode = { mode: "LANDING_PAGE" };
   #dimThirdPartiesSetting = null;
   #thirdPartyCheckbox = null;
-  #isNode = Root3.Runtime.Runtime.isNode();
+  #isNode = Root2.Runtime.Runtime.isNode();
   #onAnnotationModifiedEventBound = this.#onAnnotationModifiedEvent.bind(this);
   /**
    * We get given any filters for a new trace when it is recorded/imported.
@@ -6978,7 +6977,7 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
   #instantiateNewModel() {
     const config = Trace22.Types.Configuration.defaults();
     config.showAllEvents = Common10.Settings.Settings.instance().moduleSetting("timeline-show-all-events").get();
-    config.debugMode = Root3.Runtime.experiments.isEnabled(Root3.ExperimentNames.ExperimentName.TIMELINE_DEBUG_MODE);
+    config.debugMode = Common10.Settings.Settings.instance().moduleSetting("timeline-debug-mode").get();
     const traceEngineModel = Trace22.TraceModel.Model.createWithAllHandlers(config);
     traceEngineModel.addEventListener(Trace22.TraceModel.ModelUpdateEvent.eventName, (e) => {
       const updateEvent = e;
@@ -7212,7 +7211,7 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
    * NOT available.
    */
   canRecord() {
-    return !Root3.Runtime.Runtime.isTraceApp();
+    return !Root2.Runtime.Runtime.isTraceApp();
   }
   populateToolbar() {
     const canRecord = this.canRecord();
@@ -8240,7 +8239,7 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
    */
   #showSidebarIfRequired() {
     const disabledByLocalStorage = window.localStorage.getItem("disable-auto-show-rpp-sidebar-for-test") === "true";
-    if (Root3.Runtime.Runtime.queryParam("disable-auto-performance-sidebar-reveal") !== null || disabledByLocalStorage) {
+    if (Root2.Runtime.Runtime.queryParam("disable-auto-performance-sidebar-reveal") !== null || disabledByLocalStorage) {
       return;
     }
     const needToRestore = this.#restoreSidebarVisibilityOnTraceLoad;
@@ -9343,15 +9342,8 @@ var eventDispatchDesciptors;
 var colorGenerator;
 var { SamplesIntegrator } = Trace23.Helpers.SamplesIntegrator;
 var TimelineUIUtils = class _TimelineUIUtils {
-  /**
-   * use getGetDebugModeEnabled() to query this variable.
-   */
-  static debugModeEnabled = void 0;
   static getGetDebugModeEnabled() {
-    if (_TimelineUIUtils.debugModeEnabled === void 0) {
-      _TimelineUIUtils.debugModeEnabled = Root4.Runtime.experiments.isEnabled(Root4.ExperimentNames.ExperimentName.TIMELINE_DEBUG_MODE);
-    }
-    return _TimelineUIUtils.debugModeEnabled;
+    return Common11.Settings.Settings.instance().moduleSetting("timeline-debug-mode").get();
   }
   static frameDisplayName(frame) {
     const maybeResolvedData = SourceMapsResolver3.SourceMapsResolver.resolvedCodeLocationForCallFrame(frame);
@@ -9767,7 +9759,7 @@ var TimelineUIUtils = class _TimelineUIUtils {
       const userDetail = structuredClone(event.userDetail);
       if (userDetail && Object.keys(userDetail).length) {
         const hasExclusiveLink = typeof userDetail === "object" && typeof userDetail.url === "string" && typeof userDetail.description === "string";
-        if (hasExclusiveLink && Boolean(Root4.Runtime.hostConfig.devToolsDeepLinksViaExtensibilityApi?.enabled)) {
+        if (hasExclusiveLink && Boolean(Root3.Runtime.hostConfig.devToolsDeepLinksViaExtensibilityApi?.enabled)) {
           const linkElement = this.maybeCreateLinkElement(String(userDetail.url));
           if (linkElement) {
             contentHelper.appendElementRow(String(userDetail.description), linkElement);
@@ -10154,7 +10146,7 @@ var TimelineUIUtils = class _TimelineUIUtils {
     if (Trace23.Types.Events.isUserTiming(event) || Trace23.Types.Extensions.isSyntheticExtensionEntry(event) || Trace23.Types.Events.isProfileCall(event) || initiator || initiatorFor || hasStackTrace || parsedTrace?.data.Invalidations.invalidationsForEvent.get(event)) {
       await _TimelineUIUtils.generateCauses(event, contentHelper, parsedTrace);
     }
-    if (Root4.Runtime.experiments.isEnabled(Root4.ExperimentNames.ExperimentName.TIMELINE_DEBUG_MODE)) {
+    if (_TimelineUIUtils.getGetDebugModeEnabled()) {
       _TimelineUIUtils.renderEventJson(event, contentHelper);
     }
     const stats = {};
@@ -17650,7 +17642,7 @@ var TimelineFlameChartDataProvider = class extends Common17.ObjectWrapper.Object
       return;
     }
     this.framesGroupStyle.collapsible = hasScreenshots ? 0 : 1;
-    const expanded = Root5.Runtime.Runtime.queryParam("flamechart-force-expand") === "frames";
+    const expanded = Root4.Runtime.Runtime.queryParam("flamechart-force-expand") === "frames";
     this.appendHeader(i18nString27(UIStrings27.frames), this.framesGroupStyle, false, expanded);
     this.entryTypeByLevel[this.currentLevel] = "Frame";
     for (const frame of this.parsedTrace.data.Frames.frames) {

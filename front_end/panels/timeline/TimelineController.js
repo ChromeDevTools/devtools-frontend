@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as CrUXManager from '../../models/crux-manager/crux-manager.js';
 import * as LiveMetrics from '../../models/live-metrics/live-metrics.js';
@@ -221,7 +220,7 @@ export class TimelineController {
         if (options.enableJSSampling) {
             categoriesArray.push(disabledByDefault('v8.cpu_profiler'));
         }
-        if (Root.Runtime.experiments.isEnabled(Root.ExperimentNames.ExperimentName.TIMELINE_INVALIDATION_TRACKING)) {
+        if (Common.Settings.Settings.instance().moduleSetting('timeline-invalidation-tracking').get()) {
             categoriesArray.push(disabledByDefault('devtools.timeline.invalidationTracking'));
         }
         if (options.capturePictures) {

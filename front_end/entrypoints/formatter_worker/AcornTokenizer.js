@@ -53,6 +53,7 @@ export class AcornTokenizer {
             (!keyword || token.type.keyword === keyword);
     }
     static identifier(token, identifier) {
+        // @ts-expect-error https://github.com/acornjs/acorn/issues/1285
         return token.type === Acorn.tokTypes.name && (!identifier || token.value === identifier);
     }
     static arrowIdentifier(token, identifier) {
@@ -89,5 +90,5 @@ export class AcornTokenizer {
         return this.#tokenLineEnd;
     }
 }
-export const ECMA_VERSION = 2022;
+export const ECMA_VERSION = 'latest';
 //# sourceMappingURL=AcornTokenizer.js.map

@@ -707,8 +707,6 @@ var MainImpl = class {
       docLink: "https://developer.chrome.com/blog/new-in-devtools-92/#protocol-monitor"
     });
     this.#migrateValueFromLegacyToHostExperiment(Root2.ExperimentNames.ExperimentName.PROTOCOL_MONITOR, protocolMonitorExperiment);
-    Root2.Runtime.experiments.register(Root2.ExperimentNames.ExperimentName.TIMELINE_INVALIDATION_TRACKING, "Performance panel: invalidation tracking");
-    Root2.Runtime.experiments.register(Root2.ExperimentNames.ExperimentName.TIMELINE_DEBUG_MODE, "Performance panel: debug mode (trace event details, etc)");
     Root2.Runtime.experiments.register(Root2.ExperimentNames.ExperimentName.INSTRUMENTATION_BREAKPOINTS, "Instrumentation breakpoints");
     Root2.Runtime.experiments.register(Root2.ExperimentNames.ExperimentName.USE_SOURCE_MAP_SCOPES, "Use scope information from source maps");
     Root2.Runtime.experiments.registerHostExperiment({

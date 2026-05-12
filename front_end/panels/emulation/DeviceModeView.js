@@ -108,7 +108,7 @@ export class DeviceModeView extends UI.Widget.VBox {
     }
     createUI() {
         this.toolbar = new DeviceModeToolbar(this.model, this.showMediaInspectorSetting, this.showRulersSetting);
-        this.contentElement.appendChild(this.toolbar.element());
+        this.toolbar.show(this.contentElement);
         this.contentClip = this.contentElement.createChild('div', 'device-mode-content-clip vbox');
         this.responsivePresetsContainer = this.contentClip.createChild('div', 'device-mode-presets-container');
         this.responsivePresetsContainer.setAttribute('jslog', `${VisualLogging.responsivePresets()}`);
@@ -317,7 +317,7 @@ export class DeviceModeView extends UI.Widget.VBox {
             }
             this.cachedScale = this.model.scale();
         }
-        this.toolbar.update();
+        this.toolbar.requestUpdate();
         this.loadImage(this.screenImage, this.model.screenImage());
         this.loadImage(this.outlineImage, this.model.outlineImage());
         this.mediaInspector.setAxisTransform(this.model.scale());

@@ -1287,12 +1287,13 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsS
         if (this.#aiCodeCompletionSummaryToolbar) {
             return;
         }
-        this.#aiCodeCompletionSummaryToolbar = new PanelsCommon.AiCodeCompletionSummaryToolbar({
-            citationsTooltipId: CITATIONS_TOOLTIP_ID,
-            disclaimerTooltipId: DISCLAIMER_TOOLTIP_ID,
-            spinnerTooltipId: SPINNER_TOOLTIP_ID,
-            panel: "styles" /* AiCodeCompletion.AiCodeCompletion.ContextFlavor.STYLES */,
-        });
+        this.#aiCodeCompletionSummaryToolbar =
+            new PanelsCommon.AiCodeCompletionSummaryToolbar.AiCodeCompletionSummaryToolbar({
+                citationsTooltipId: CITATIONS_TOOLTIP_ID,
+                disclaimerTooltipId: DISCLAIMER_TOOLTIP_ID,
+                spinnerTooltipId: SPINNER_TOOLTIP_ID,
+                panel: "styles" /* AiCodeCompletion.AiCodeCompletion.ContextFlavor.STYLES */,
+            });
         const containingPane = this.contentElement.enclosingNodeOrSelfWithClass('style-panes-wrapper');
         this.#aiCodeCompletionSummaryToolbarContainer =
             containingPane.createChild('div', 'ai-code-completion-summary-toolbar-container');

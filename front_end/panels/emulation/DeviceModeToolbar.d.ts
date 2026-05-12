@@ -1,7 +1,8 @@
 import '../../ui/legacy/legacy.js';
 import * as Common from '../../core/common/common.js';
 import * as EmulationModel from '../../models/emulation/emulation.js';
-export declare class DeviceModeToolbar {
+import * as UI from '../../ui/legacy/legacy.js';
+export declare class DeviceModeToolbar extends UI.Widget.Widget {
     #private;
     private model;
     private readonly showMediaInspectorSetting;
@@ -45,8 +46,7 @@ export declare class DeviceModeToolbar {
     private modeMenuClicked;
     private getPrettyFitZoomPercentage;
     private getPrettyZoomPercentage;
-    element(): Element;
-    update(): void;
+    performUpdate(): void;
     restore(): void;
     private calculateItemWidth;
 }

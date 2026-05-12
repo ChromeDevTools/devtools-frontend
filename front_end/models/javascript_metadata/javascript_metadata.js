@@ -7669,6 +7669,10 @@ var NativeFunctions = [
     signatures: [["tool", "?options"]]
   },
   {
+    name: "executeTool",
+    signatures: [["tool", "input_arguments", "?options"]]
+  },
+  {
     name: "SnapEvent",
     signatures: [["type", "?eventInitDict"]]
   },

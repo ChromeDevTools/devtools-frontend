@@ -102,7 +102,7 @@ export {FreDialog} from './FreDialog.js';
 export {GdpSignUpDialog} from './GdpSignUpDialog.js';
 export {GeminiRebrandPromoDialog} from './GeminiRebrandPromoDialog.js';
 export {AiCodeCompletionDisclaimer} from './AiCodeCompletionDisclaimer.js';
-export {AiCodeCompletionSummaryToolbar} from './AiCodeCompletionSummaryToolbar.js';
+export * as AiCodeCompletionSummaryToolbar from './AiCodeCompletionSummaryToolbar.js';
 export * from './BadgeNotification.js';
 export * as ExtensionPanel from './ExtensionPanel.js';
 export * as ExtensionServer from './ExtensionServer.js';

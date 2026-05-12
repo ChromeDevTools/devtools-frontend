@@ -625,7 +625,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin(UI.Panel.Pane
     #instantiateNewModel() {
         const config = Trace.Types.Configuration.defaults();
         config.showAllEvents = Common.Settings.Settings.instance().moduleSetting('timeline-show-all-events').get();
-        config.debugMode = Root.Runtime.experiments.isEnabled(Root.ExperimentNames.ExperimentName.TIMELINE_DEBUG_MODE);
+        config.debugMode = Common.Settings.Settings.instance().moduleSetting('timeline-debug-mode').get();
         const traceEngineModel = Trace.TraceModel.Model.createWithAllHandlers(config);
         traceEngineModel.addEventListener(Trace.TraceModel.ModelUpdateEvent.eventName, e => {
             const updateEvent = e;

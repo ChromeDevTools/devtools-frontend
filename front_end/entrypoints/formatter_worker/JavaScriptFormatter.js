@@ -145,6 +145,13 @@ export class JavaScriptFormatter {
             }
             return 't';
         }
+        // @ts-expect-error not on the types
+        if (nodeType === 'ImportAttribute') {
+            if (AT.punctuator(token, ':')) {
+                return 'ts';
+            }
+            return 't';
+        }
         if (nodeType === 'ArrayExpression') {
             if (AT.punctuator(token, ',')) {
                 return 'ts';
@@ -358,9 +365,15 @@ export class JavaScriptFormatter {
                 return 'ts';
             }
             if (AT.punctuator(token, '}')) {
+                if (node.attributes.length > 0) {
+                    return 't';
+                }
                 return node.source ? 'ts' : 't';
             }
             if (AT.punctuator(token, '*')) {
+                return 'sts';
+            }
+            if (AT.keyword(token, 'with')) {
                 return 'sts';
             }
             return 't';

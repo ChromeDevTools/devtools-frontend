@@ -471,16 +471,8 @@ let eventDispatchDesciptors;
 let colorGenerator;
 const { SamplesIntegrator } = Trace.Helpers.SamplesIntegrator;
 export class TimelineUIUtils {
-    /**
-     * use getGetDebugModeEnabled() to query this variable.
-     */
-    static debugModeEnabled = undefined;
     static getGetDebugModeEnabled() {
-        if (TimelineUIUtils.debugModeEnabled === undefined) {
-            TimelineUIUtils.debugModeEnabled =
-                Root.Runtime.experiments.isEnabled(Root.ExperimentNames.ExperimentName.TIMELINE_DEBUG_MODE);
-        }
-        return TimelineUIUtils.debugModeEnabled;
+        return Common.Settings.Settings.instance().moduleSetting('timeline-debug-mode').get();
     }
     static frameDisplayName(frame) {
         const maybeResolvedData = SourceMapsResolver.SourceMapsResolver.resolvedCodeLocationForCallFrame(frame);
@@ -1350,7 +1342,7 @@ export class TimelineUIUtils {
             parsedTrace?.data.Invalidations.invalidationsForEvent.get(event)) {
             await TimelineUIUtils.generateCauses(event, contentHelper, parsedTrace);
         }
-        if (Root.Runtime.experiments.isEnabled(Root.ExperimentNames.ExperimentName.TIMELINE_DEBUG_MODE)) {
+        if (TimelineUIUtils.getGetDebugModeEnabled()) {
             TimelineUIUtils.renderEventJson(event, contentHelper);
         }
         const stats = {};

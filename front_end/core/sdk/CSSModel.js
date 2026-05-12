@@ -447,6 +447,24 @@ export class CSSModel extends SDKModel {
             return false;
         }
     }
+    async setContainerQueryConditionText(styleSheetId, range, newContainerQueryConditionText) {
+        Host.userMetrics.actionTaken(Host.UserMetrics.Action.StyleRuleEdited);
+        try {
+            await this.ensureOriginalStyleSheetText(styleSheetId);
+            const { containerQuery } = await this.agent.invoke_setContainerQueryConditionText({ styleSheetId, range, text: newContainerQueryConditionText });
+            if (!containerQuery) {
+                return false;
+            }
+            this.#domModel.markUndoableState();
+            const edit = new Edit(styleSheetId, range, newContainerQueryConditionText, containerQuery);
+            this.fireStyleSheetChanged(styleSheetId, edit);
+            return true;
+        }
+        catch (e) {
+            console.error(e);
+            return false;
+        }
+    }
     async setSupportsText(styleSheetId, range, newSupportsText) {
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.StyleRuleEdited);
         try {

@@ -2409,6 +2409,11 @@ var AiCodeCompletionDisclaimer = class extends UI8.Widget.Widget {
 };
 
 // gen/front_end/panels/common/AiCodeCompletionSummaryToolbar.js
+var AiCodeCompletionSummaryToolbar_exports = {};
+__export(AiCodeCompletionSummaryToolbar_exports, {
+  AiCodeCompletionSummaryToolbar: () => AiCodeCompletionSummaryToolbar,
+  DEFAULT_SUMMARY_TOOLBAR_VIEW: () => DEFAULT_SUMMARY_TOOLBAR_VIEW2
+});
 import "./../../ui/components/spinners/spinners.js";
 import "./../../ui/components/tooltips/tooltips.js";
 import "./../../ui/kit/kit.js";
@@ -5124,7 +5129,7 @@ var TypeToAllowDialog = class {
 };
 export {
   AiCodeCompletionDisclaimer,
-  AiCodeCompletionSummaryToolbar,
+  AiCodeCompletionSummaryToolbar_exports as AiCodeCompletionSummaryToolbar,
   AiCodeCompletionTeaser,
   AiCodeGenerationTeaser_exports as AiCodeGenerationTeaser,
   AiCodeGenerationUpgradeDialog,

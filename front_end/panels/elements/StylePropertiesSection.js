@@ -869,7 +869,7 @@ export class StylePropertiesSection {
         const containerQueryElement = new ElementsComponents.CSSQuery.CSSQuery();
         containerQueryElement.data = {
             queryPrefix: '@container',
-            queryName: containerQuery.name,
+            queryName: containerQuery.textIsConditionText ? undefined : containerQuery.name,
             queryText: containerQuery.text,
             onQueryTextClick,
             jslogContext: 'container-query',
@@ -1358,7 +1358,12 @@ export class StylePropertiesSection {
             const range = query.range;
             let success = false;
             if (query instanceof SDK.CSSContainerQuery.CSSContainerQuery) {
-                success = await cssModel.setContainerQueryText(query.styleSheetId, range, newContent);
+                if (query.textIsConditionText) {
+                    success = await cssModel.setContainerQueryConditionText(query.styleSheetId, range, newContent);
+                }
+                else {
+                    success = await cssModel.setContainerQueryText(query.styleSheetId, range, newContent);
+                }
             }
             else if (query instanceof SDK.CSSSupports.CSSSupports) {
                 success = await cssModel.setSupportsText(query.styleSheetId, range, newContent);

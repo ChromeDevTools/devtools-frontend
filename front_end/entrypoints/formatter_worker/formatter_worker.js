@@ -3796,7 +3796,7 @@ var AcornTokenizer = class {
     return this.#tokenLineEnd;
   }
 };
-var ECMA_VERSION = 2022;
+var ECMA_VERSION = "latest";
 
 // gen/front_end/entrypoints/formatter_worker/ESTreeWalker.js
 var ESTreeWalker = class {
@@ -3874,7 +3874,8 @@ var WALK_ORDER = {
   FunctionDeclaration: ["id", "params", "body"],
   FunctionExpression: ["id", "params", "body"],
   Identifier: [],
-  ImportDeclaration: ["specifiers", "source"],
+  ImportDeclaration: ["specifiers", "source", "attributes"],
+  ImportAttribute: ["key", "value"],
   ImportDefaultSpecifier: ["local"],
   ImportNamespaceSpecifier: ["local"],
   ImportSpecifier: ["imported", "local"],
@@ -4047,6 +4048,12 @@ var JavaScriptFormatter = class {
       return node.argument ? "ts" : "t";
     }
     if (nodeType === "Property") {
+      if (AT.punctuator(token, ":")) {
+        return "ts";
+      }
+      return "t";
+    }
+    if (nodeType === "ImportAttribute") {
       if (AT.punctuator(token, ":")) {
         return "ts";
       }
@@ -4236,9 +4243,15 @@ var JavaScriptFormatter = class {
         return "ts";
       }
       if (AT.punctuator(token, "}")) {
+        if (node.attributes.length > 0) {
+          return "t";
+        }
         return node.source ? "ts" : "t";
       }
       if (AT.punctuator(token, "*")) {
+        return "sts";
+      }
+      if (AT.keyword(token, "with")) {
         return "sts";
       }
       return "t";
@@ -5646,12 +5659,10 @@ var CSSFormatter = class {
   #toOffset;
   #fromOffset;
   #lineEndings;
-  #lastLine;
-  #state;
+  #lastLine = -1;
+  #state = {};
   constructor(builder) {
     this.#builder = builder;
-    this.#lastLine = -1;
-    this.#state = {};
   }
   format(text, lineEndings, fromOffset, toOffset) {
     this.#lineEndings = lineEndings;

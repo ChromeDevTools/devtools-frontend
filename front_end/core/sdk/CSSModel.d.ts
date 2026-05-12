@@ -69,6 +69,7 @@ export declare class CSSModel extends SDKModel<EventTypes> {
     pseudoState(node: DOMNode): string[] | null;
     setMediaText(styleSheetId: Protocol.DOM.StyleSheetId, range: TextUtils.TextRange.TextRange, newMediaText: string): Promise<boolean>;
     setContainerQueryText(styleSheetId: Protocol.DOM.StyleSheetId, range: TextUtils.TextRange.TextRange, newContainerQueryText: string): Promise<boolean>;
+    setContainerQueryConditionText(styleSheetId: Protocol.DOM.StyleSheetId, range: TextUtils.TextRange.TextRange, newContainerQueryConditionText: string): Promise<boolean>;
     setSupportsText(styleSheetId: Protocol.DOM.StyleSheetId, range: TextUtils.TextRange.TextRange, newSupportsText: string): Promise<boolean>;
     setNavigationText(styleSheetId: Protocol.DOM.StyleSheetId, range: TextUtils.TextRange.TextRange, newNavigationText: string): Promise<boolean>;
     setScopeText(styleSheetId: Protocol.DOM.StyleSheetId, range: TextUtils.TextRange.TextRange, newScopeText: string): Promise<boolean>;

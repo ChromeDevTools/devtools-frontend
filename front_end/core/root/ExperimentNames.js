@@ -6,10 +6,8 @@ export var ExperimentName;
     ExperimentName["ALL"] = "*";
     ExperimentName["CAPTURE_NODE_CREATION_STACKS"] = "capture-node-creation-stacks";
     ExperimentName["PROTOCOL_MONITOR"] = "protocol-monitor";
-    ExperimentName["TIMELINE_INVALIDATION_TRACKING"] = "timeline-invalidation-tracking";
     ExperimentName["INSTRUMENTATION_BREAKPOINTS"] = "instrumentation-breakpoints";
     ExperimentName["USE_SOURCE_MAP_SCOPES"] = "use-source-map-scopes";
-    ExperimentName["TIMELINE_DEBUG_MODE"] = "timeline-debug-mode";
     ExperimentName["DURABLE_MESSAGES"] = "durable-messages";
     ExperimentName["JPEG_XL"] = "jpeg-xl";
     // Adding or removing an entry from this enum?

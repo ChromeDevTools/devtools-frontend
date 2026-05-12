@@ -9,6 +9,7 @@ export class CSSContainerQuery extends CSSQuery {
     logicalAxes;
     queriesScrollState;
     queriesAnchored;
+    textIsConditionText;
     static parseContainerQueriesPayload(cssModel, payload) {
         return payload.map(cq => new CSSContainerQuery(cssModel, cq));
     }
@@ -17,7 +18,8 @@ export class CSSContainerQuery extends CSSQuery {
         this.reinitialize(payload);
     }
     reinitialize(payload) {
-        this.text = payload.text;
+        this.textIsConditionText = !!payload.conditionText;
+        this.text = this.textIsConditionText ? payload.conditionText : payload.text;
         this.range = payload.range ? TextUtils.TextRange.TextRange.fromObject(payload.range) : null;
         this.styleSheetId = payload.styleSheetId;
         this.name = payload.name;

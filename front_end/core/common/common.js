@@ -5410,7 +5410,7 @@ var VersionController = class _VersionController {
   static GLOBAL_VERSION_SETTING_NAME = "inspectorVersion";
   static SYNCED_VERSION_SETTING_NAME = "syncedInspectorVersion";
   static LOCAL_VERSION_SETTING_NAME = "localInspectorVersion";
-  static CURRENT_VERSION = 44;
+  static CURRENT_VERSION = 46;
   #settings;
   #globalVersionSetting;
   #syncedVersionSetting;
@@ -6090,6 +6090,32 @@ var VersionController = class _VersionController {
       try {
         const apcaSetting = this.#settings.moduleSetting("apca");
         apcaSetting.set(apcaExperimentEnabled);
+      } catch {
+      }
+    }
+  }
+  updateVersionFrom44To45() {
+    const timelineDebugModeExperimentEnabled = Root3.Runtime.experiments.getValueFromStorage("timeline-debug-mode");
+    if (timelineDebugModeExperimentEnabled !== void 0) {
+      if (this.#settings.syncedStorage.has("timeline-debug-mode")) {
+        return;
+      }
+      try {
+        const timelineDebugModeSetting = this.#settings.moduleSetting("timeline-debug-mode");
+        timelineDebugModeSetting.set(timelineDebugModeExperimentEnabled);
+      } catch {
+      }
+    }
+  }
+  updateVersionFrom45To46() {
+    const timelineInvalidationTrackingExperimentEnabled = Root3.Runtime.experiments.getValueFromStorage("timeline-invalidation-tracking");
+    if (timelineInvalidationTrackingExperimentEnabled !== void 0) {
+      if (this.#settings.syncedStorage.has("timeline-invalidation-tracking")) {
+        return;
+      }
+      try {
+        const timelineInvalidationTrackingSetting = this.#settings.moduleSetting("timeline-invalidation-tracking");
+        timelineInvalidationTrackingSetting.set(timelineInvalidationTrackingExperimentEnabled);
       } catch {
       }
     }

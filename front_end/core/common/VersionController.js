@@ -12,7 +12,7 @@ export class VersionController {
     static GLOBAL_VERSION_SETTING_NAME = 'inspectorVersion';
     static SYNCED_VERSION_SETTING_NAME = 'syncedInspectorVersion';
     static LOCAL_VERSION_SETTING_NAME = 'localInspectorVersion';
-    static CURRENT_VERSION = 44;
+    static CURRENT_VERSION = 46;
     #settings;
     #globalVersionSetting;
     #syncedVersionSetting;
@@ -745,6 +745,36 @@ export class VersionController {
             try {
                 const apcaSetting = this.#settings.moduleSetting('apca');
                 apcaSetting.set(apcaExperimentEnabled);
+            }
+            catch {
+                // If the setting is not registered yet (e.g. in tests), skip.
+            }
+        }
+    }
+    updateVersionFrom44To45() {
+        const timelineDebugModeExperimentEnabled = Root.Runtime.experiments.getValueFromStorage('timeline-debug-mode');
+        if (timelineDebugModeExperimentEnabled !== undefined) {
+            if (this.#settings.syncedStorage.has('timeline-debug-mode')) {
+                return; // Already migrated
+            }
+            try {
+                const timelineDebugModeSetting = this.#settings.moduleSetting('timeline-debug-mode');
+                timelineDebugModeSetting.set(timelineDebugModeExperimentEnabled);
+            }
+            catch {
+                // If the setting is not registered yet (e.g. in tests), skip.
+            }
+        }
+    }
+    updateVersionFrom45To46() {
+        const timelineInvalidationTrackingExperimentEnabled = Root.Runtime.experiments.getValueFromStorage('timeline-invalidation-tracking');
+        if (timelineInvalidationTrackingExperimentEnabled !== undefined) {
+            if (this.#settings.syncedStorage.has('timeline-invalidation-tracking')) {
+                return; // Already migrated
+            }
+            try {
+                const timelineInvalidationTrackingSetting = this.#settings.moduleSetting('timeline-invalidation-tracking');
+                timelineInvalidationTrackingSetting.set(timelineInvalidationTrackingExperimentEnabled);
             }
             catch {
                 // If the setting is not registered yet (e.g. in tests), skip.

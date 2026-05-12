@@ -227,10 +227,10 @@ var UIStrings = {
 };
 var str_ = i18n.i18n.registerUIStrings("panels/emulation/DeviceModeToolbar.ts", UIStrings);
 var i18nString = i18n.i18n.getLocalizedString.bind(void 0, str_);
-var { ifDefined, styleMap } = Directives;
+var { ifDefined, live, styleMap } = Directives;
 var { widget } = UI.Widget;
 var { bindToSetting } = UI.UIUtils;
-var DeviceModeToolbar = class {
+var DeviceModeToolbar = class extends UI.Widget.Widget {
   model;
   showMediaInspectorSetting;
   showRulersSetting;
@@ -239,7 +239,6 @@ var DeviceModeToolbar = class {
   showUserAgentTypeSetting;
   autoAdjustScaleSetting;
   lastMode;
-  #element;
   emulatedDevicesList;
   persistenceSetting;
   mainToolbar;
@@ -247,31 +246,31 @@ var DeviceModeToolbar = class {
   #itemWidthCache = /* @__PURE__ */ new Map();
   #measuringElement = null;
   constructor(model, showMediaInspectorSetting, showRulersSetting) {
+    super();
     this.model = model;
     this.showMediaInspectorSetting = showMediaInspectorSetting;
     this.showRulersSetting = showRulersSetting;
     this.deviceOutlineSetting = this.model.deviceOutlineSetting();
     this.showDeviceScaleFactorSetting = Common.Settings.Settings.instance().createSetting("emulation.show-device-scale-factor", false);
-    this.showDeviceScaleFactorSetting.addChangeListener(this.update, this);
+    this.showDeviceScaleFactorSetting.addChangeListener(this.requestUpdate, this);
     this.showUserAgentTypeSetting = Common.Settings.Settings.instance().createSetting("emulation.show-user-agent-type", false);
-    this.showUserAgentTypeSetting.addChangeListener(this.update, this);
+    this.showUserAgentTypeSetting.addChangeListener(this.requestUpdate, this);
     this.autoAdjustScaleSetting = Common.Settings.Settings.instance().createSetting("emulation.auto-adjust-scale", true);
     this.lastMode = /* @__PURE__ */ new Map();
-    this.#element = document.createElement("div");
-    this.#element.classList.add("device-mode-toolbar");
-    this.#element.setAttribute("jslog", `${VisualLogging.toolbar("device-mode").track({ resize: true })}`);
+    this.contentElement.classList.add("device-mode-toolbar");
+    this.contentElement.setAttribute("jslog", VisualLogging.toolbar("device-mode").track({ resize: true }).toString());
     this.mainToolbar = this.createMainToolbar();
     this.optionsToolbar = this.createOptionsToolbar();
     this.emulatedDevicesList = EmulationModel.EmulatedDevices.EmulatedDevicesList.instance();
     this.emulatedDevicesList.addEventListener("CustomDevicesUpdated", this.deviceListChanged, this);
     this.emulatedDevicesList.addEventListener("StandardDevicesUpdated", this.deviceListChanged, this);
     this.persistenceSetting = Common.Settings.Settings.instance().createSetting("emulation.device-mode-value", { device: "", orientation: "", mode: "" });
-    this.model.toolbarControlsEnabledSetting().addChangeListener(this.update, this);
-    this.model.scaleSetting().addChangeListener(this.update, this);
-    this.model.uaSetting().addChangeListener(this.update, this);
-    this.model.deviceScaleFactorSetting().addChangeListener(this.update, this);
-    this.model.addEventListener("Updated", this.update, this);
-    this.update();
+    this.model.toolbarControlsEnabledSetting().addChangeListener(this.requestUpdate, this);
+    this.model.scaleSetting().addChangeListener(this.requestUpdate, this);
+    this.model.uaSetting().addChangeListener(this.requestUpdate, this);
+    this.model.deviceScaleFactorSetting().addChangeListener(this.requestUpdate, this);
+    this.model.addEventListener("Updated", this.requestUpdate, this);
+    this.requestUpdate();
   }
   createEmptyToolbarElement() {
     const element = document.createElement("div");
@@ -304,7 +303,7 @@ var DeviceModeToolbar = class {
     }}>`;
   }
   createMainToolbar() {
-    const mainToolbar = this.#element.createChild("devtools-toolbar", "main-toolbar");
+    const mainToolbar = this.contentElement.createChild("devtools-toolbar", "main-toolbar");
     return mainToolbar;
   }
   renderMainToolbar() {
@@ -361,7 +360,7 @@ var DeviceModeToolbar = class {
                 title=${i18nString(UIStrings.deviceType)}
                 aria-label=${i18nString(UIStrings.deviceType)}
                 @change=${this.onDeviceChange.bind(this)}
-                .value=${selectedDeviceOption === deviceModeOptions.responsive ? "Responsive" : selectedDeviceOption?.title || "Responsive"}
+                .value=${live(selectedDeviceOption === deviceModeOptions.responsive ? "Responsive" : selectedDeviceOption?.title || "Responsive")}
                 jslog=${VisualLogging.dropDown().track({ change: true }).context("device")}>
           <option value="Responsive" ?selected=${deviceModeOptions.responsive.selected} jslog=${VisualLogging.item(deviceModeOptions.responsive.jslogContext).track({ click: true })}>
             ${deviceModeOptions.responsive.title}
@@ -492,7 +491,7 @@ var DeviceModeToolbar = class {
         </select>` : ""}`, this.mainToolbar, { host: this });
   }
   createOptionsToolbar() {
-    const optionsToolbar = this.#element.createChild("devtools-toolbar", "device-mode-toolbar-options");
+    const optionsToolbar = this.contentElement.createChild("devtools-toolbar", "device-mode-toolbar-options");
     optionsToolbar.wrappable = true;
     optionsToolbar.appendToolbarItem(new UI.Toolbar.ToolbarItem(this.createEmptyToolbarElement()));
     const moreOptionsButton = new UI.Toolbar.ToolbarMenuButton(this.appendOptionsMenuItems.bind(this), true, void 0, "more-options", "dots-vertical");
@@ -677,7 +676,7 @@ var DeviceModeToolbar = class {
     const value = event.target.value;
     if (value === "Edit") {
       this.emulatedDevicesList.revealCustomSetting();
-      this.renderMainToolbar();
+      this.requestUpdate();
     } else if (value === "Responsive") {
       this.switchToResponsive();
     } else {
@@ -690,7 +689,7 @@ var DeviceModeToolbar = class {
     }
   }
   deviceListChanged() {
-    this.renderMainToolbar();
+    this.requestUpdate();
     const device = this.model.device();
     if (!device) {
       return;
@@ -794,10 +793,7 @@ var DeviceModeToolbar = class {
   getPrettyZoomPercentage() {
     return `${(this.model.scale() * 100).toFixed(0)}`;
   }
-  element() {
-    return this.#element;
-  }
-  update() {
+  performUpdate() {
     const enabled = this.model.toolbarControlsEnabledSetting().get();
     this.mainToolbar.setEnabled(enabled);
     this.optionsToolbar.setEnabled(enabled);
@@ -849,7 +845,7 @@ var DeviceModeToolbar = class {
       this.#measuringElement.style.pointerEvents = "none";
       const dummyOption2 = document.createElement("option");
       this.#measuringElement.appendChild(dummyOption2);
-      this.#element.appendChild(this.#measuringElement);
+      this.contentElement.appendChild(this.#measuringElement);
     }
     const dummyOption = this.#measuringElement.options[0];
     dummyOption.textContent = text;
@@ -1927,7 +1923,7 @@ var DeviceModeView = class extends UI3.Widget.VBox {
   }
   createUI() {
     this.toolbar = new DeviceModeToolbar(this.model, this.showMediaInspectorSetting, this.showRulersSetting);
-    this.contentElement.appendChild(this.toolbar.element());
+    this.toolbar.show(this.contentElement);
     this.contentClip = this.contentElement.createChild("div", "device-mode-content-clip vbox");
     this.responsivePresetsContainer = this.contentClip.createChild("div", "device-mode-presets-container");
     this.responsivePresetsContainer.setAttribute("jslog", `${VisualLogging3.responsivePresets()}`);
@@ -2130,7 +2126,7 @@ var DeviceModeView = class extends UI3.Widget.VBox {
       }
       this.cachedScale = this.model.scale();
     }
-    this.toolbar.update();
+    this.toolbar.requestUpdate();
     this.loadImage(this.screenImage, this.model.screenImage());
     this.loadImage(this.outlineImage, this.model.outlineImage());
     this.mediaInspector.setAxisTransform(this.model.scale());

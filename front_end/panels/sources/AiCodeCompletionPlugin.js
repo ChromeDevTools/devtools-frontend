@@ -96,11 +96,12 @@ export class AiCodeCompletionPlugin extends Plugin {
         if (this.#aiCodeCompletionCitationsToolbar) {
             return;
         }
-        this.#aiCodeCompletionCitationsToolbar = new PanelCommon.AiCodeCompletionSummaryToolbar({
-            citationsTooltipId: CITATIONS_TOOLTIP_ID,
-            hasTopBorder: true,
-            panel: "sources" /* AiCodeCompletion.AiCodeCompletion.ContextFlavor.SOURCES */
-        });
+        this.#aiCodeCompletionCitationsToolbar =
+            new PanelCommon.AiCodeCompletionSummaryToolbar.AiCodeCompletionSummaryToolbar({
+                citationsTooltipId: CITATIONS_TOOLTIP_ID,
+                hasTopBorder: true,
+                panel: "sources" /* AiCodeCompletion.AiCodeCompletion.ContextFlavor.SOURCES */
+            });
         this.#aiCodeCompletionCitationsToolbar.show(this.#aiCodeCompletionCitationsToolbarContainer, undefined, true);
     }
     #attachAiCodeCompletionCitationsToolbar() {

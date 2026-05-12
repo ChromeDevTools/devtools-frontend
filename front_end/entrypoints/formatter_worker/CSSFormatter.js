@@ -13,12 +13,10 @@ export class CSSFormatter {
     #toOffset;
     #fromOffset;
     #lineEndings;
-    #lastLine;
-    #state;
+    #lastLine = -1;
+    #state = {};
     constructor(builder) {
         this.#builder = builder;
-        this.#lastLine = -1;
-        this.#state = {};
     }
     format(text, lineEndings, fromOffset, toOffset) {
         this.#lineEndings = lineEndings;

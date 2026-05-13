@@ -7,7 +7,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as Logs from '../../models/logs/logs.js';
 import {assertScreenshot, dispatchClickEvent, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
-import {createTarget, registerNoopActions} from '../../testing/EnvironmentHelpers.js';
+import {createTarget, registerNoopActions, stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
 import {expectCall} from '../../testing/ExpectStubCall.js';
 import {describeWithMockConnection, setMockConnectionResponseHandler} from '../../testing/MockConnection.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
@@ -20,6 +20,7 @@ const {urlString} = Platform.DevToolsPath;
 
 describeWithMockConnection(`RequestConditionsDrawer with individual request throttling enabled`, () => {
   beforeEach(() => {
+    stubNoopSettings();
     setMockConnectionResponseHandler('Debugger.enable', () => ({} as Protocol.Debugger.EnableResponse));
     setMockConnectionResponseHandler('Storage.getStorageKey', () => ({} as Protocol.Storage.GetStorageKeyResponse));
     registerNoopActions([
@@ -120,6 +121,7 @@ describeWithMockConnection(`RequestConditionsDrawer with individual request thro
 
 describeWithMockConnection('RequestConditionsDrawer', () => {
   beforeEach(() => {
+    stubNoopSettings();
     registerNoopActions([
       'network.add-network-request-blocking-pattern',
       'network.remove-all-network-request-blocking-patterns',

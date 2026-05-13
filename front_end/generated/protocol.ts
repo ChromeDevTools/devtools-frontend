@@ -1120,6 +1120,10 @@ export namespace Audits {
     ValidationFailedInvalidLength = 'ValidationFailedInvalidLength',
     ValidationFailedSignatureMismatch = 'ValidationFailedSignatureMismatch',
     ValidationFailedIntegrityMismatch = 'ValidationFailedIntegrityMismatch',
+    SignatureBaseUnknownDerivedComponent = 'SignatureBaseUnknownDerivedComponent',
+    SignatureBaseMissingHeader = 'SignatureBaseMissingHeader',
+    SignatureBaseInvalidUnencodedDigest = 'SignatureBaseInvalidUnencodedDigest',
+    SignatureBaseUnsupportedComponent = 'SignatureBaseUnsupportedComponent',
   }
 
   export const enum UnencodedDigestError {
@@ -17077,6 +17081,7 @@ export namespace Preload {
     BrowsingDataRemoved = 'BrowsingDataRemoved',
     PrerenderHostReused = 'PrerenderHostReused',
     FormSubmitWhenPrerendering = 'FormSubmitWhenPrerendering',
+    CrossDocumentRestart = 'CrossDocumentRestart',
   }
 
   /**

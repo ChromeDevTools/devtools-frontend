@@ -1592,7 +1592,11 @@
                         "ValidationFailedSignatureExpired",
                         "ValidationFailedInvalidLength",
                         "ValidationFailedSignatureMismatch",
-                        "ValidationFailedIntegrityMismatch"
+                        "ValidationFailedIntegrityMismatch",
+                        "SignatureBaseUnknownDerivedComponent",
+                        "SignatureBaseMissingHeader",
+                        "SignatureBaseInvalidUnencodedDigest",
+                        "SignatureBaseUnsupportedComponent"
                     ]
                 },
                 {
@@ -25539,7 +25543,8 @@
                         "PrerenderFailedDuringPrefetch",
                         "BrowsingDataRemoved",
                         "PrerenderHostReused",
-                        "FormSubmitWhenPrerendering"
+                        "FormSubmitWhenPrerendering",
+                        "CrossDocumentRestart"
                     ]
                 },
                 {

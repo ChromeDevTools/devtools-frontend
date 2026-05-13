@@ -234,6 +234,7 @@ component_doc("docs") {
     "RadioButton.docs.ts",
     "SelectMenu.docs.ts",
     "Slider.docs.ts",
+    "TextPrompt.docs.ts",
   ]
   deps = [
     ":bundle",

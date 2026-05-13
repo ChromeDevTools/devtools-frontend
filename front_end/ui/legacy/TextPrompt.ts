@@ -67,17 +67,37 @@ import {cloneCustomElement, ElementFocusRestorer} from './UIUtils.js';
  *            large.
  */
 export class TextPromptElement extends HTMLElement {
-  static readonly observedAttributes = ['editing', 'completions', 'placeholder'];
+  static readonly observedAttributes = ['editing', 'completions', 'placeholder', 'cancel-on-blur'];
+  static formAssociated = true;
   readonly #shadow = this.attachShadow({mode: 'open'});
+  readonly #internals = this.attachInternals();
   readonly #entrypoint = this.#shadow.createChild('span');
   readonly #slot = this.#entrypoint.createChild('slot');
   readonly #textPrompt = new TextPrompt();
   #completionTimeout: number|null = null;
   #completionObserver = new MutationObserver(this.#onMutate.bind(this));
+  #validator?: (value: string) => null | Platform.UIString.LocalizedString;
+  #cancelOnBlur = false;
 
   constructor() {
     super();
     this.#textPrompt.initialize(this.#willAutoComplete.bind(this));
+  }
+
+  set validator(v: (value: string) => (null | Platform.UIString.LocalizedString)) {
+    this.#validator = v;
+  }
+
+  get validator(): undefined|((value: string) => (null | Platform.UIString.LocalizedString)) {
+    return this.#validator;
+  }
+
+  set cancelOnBlur(cancelOnBlur: boolean) {
+    this.setAttribute('cancel-on-blur', `${cancelOnBlur}`);
+  }
+
+  get cancelOnBlur(): boolean {
+    return this.#cancelOnBlur;
   }
 
   #onMutate(changes: MutationRecord[]): void {
@@ -103,17 +123,27 @@ export class TextPromptElement extends HTMLElement {
       this.#updateCompletions();
     }
   }
-
   attributeChangedCallback(name: string, oldValue: string|null, newValue: string|null): void {
     if (oldValue === newValue) {
       return;
     }
 
+    const isTruthy = (value: string|null): boolean => value !== null && value !== 'false';
+
     switch (name) {
+      case 'cancel-on-blur':
+        if (isTruthy(newValue)) {
+          this.#cancelOnBlur = true;
+        } else {
+          this.#cancelOnBlur = false;
+        }
+        break;
       case 'editing':
         if (this.isConnected) {
-          if (newValue !== null && newValue !== 'false' && oldValue === null) {
-            this.#startEditing();
+          if (isTruthy(newValue)) {
+            if (!isTruthy(oldValue)) {
+              this.#startEditing();
+            }
           } else {
             this.#stopEditing();
           }
@@ -166,9 +196,11 @@ export class TextPromptElement extends HTMLElement {
     }
     this.#slot.remove();
 
-    const proxy = this.#textPrompt.attachAndStartEditing(placeholder, e => this.#done(e, /* commit=*/ true));
+    const proxy =
+        this.#textPrompt.attachAndStartEditing(placeholder, e => this.#done(e, /* commit=*/ !this.#cancelOnBlur));
     proxy.addEventListener('keydown', this.#editingValueKeyDown.bind(this));
     placeholder.getComponentSelection()?.selectAllChildren(placeholder);
+    this.#textPrompt.focus();
   }
 
   #stopEditing(): void {
@@ -183,10 +215,26 @@ export class TextPromptElement extends HTMLElement {
     }
   }
 
+  disconnectedCallback(): void {
+    if (this.hasAttribute('editing')) {
+      this.#stopEditing();
+    }
+  }
+
   #done(e: Event, commit: boolean): void {
     const target = e.target as HTMLElement;
     const text = target.textContent || '';
+    this.#internals.setValidity({});
     if (commit) {
+      const validationMessage = this.#validator?.(text) ?? '';
+      if (validationMessage) {
+        this.#internals.setValidity({customError: true}, validationMessage, this.#entrypoint);
+      }
+
+      if (!this.#internals.reportValidity()) {
+        return;
+      }
+
       this.dispatchEvent(new TextPromptElement.CommitEvent(text));
     } else {
       this.dispatchEvent(new TextPromptElement.CancelEvent());
@@ -198,6 +246,7 @@ export class TextPromptElement extends HTMLElement {
     if (event.handled || !(event instanceof KeyboardEvent)) {
       return;
     }
+    this.#internals.setValidity({});
 
     if (event.key === 'Enter') {
       this.#done(event, /* commit=*/ true);
@@ -226,7 +275,7 @@ export namespace TextPromptElement {
       super('commit', {detail});
     }
   }
-  export class CancelEvent extends CustomEvent<string> {
+  export class CancelEvent extends CustomEvent<void> {
     constructor() {
       super('cancel');
     }

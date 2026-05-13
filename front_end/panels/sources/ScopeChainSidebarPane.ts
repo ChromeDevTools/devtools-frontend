@@ -1,7 +1,6 @@
 // Copyright 2021 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 
 /*
  * Copyright (C) 2008 Apple Inc. All Rights Reserved.
@@ -31,13 +30,14 @@
 
 import type * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import * as SDK from '../../core/sdk/sdk.js';
+import type * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as SourceMapScopes from '../../models/source_map_scopes/source_map_scopes.js';
 import * as StackTrace from '../../models/stack_trace/stack_trace.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import {html, nothing, render, type TemplateResult} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import scopeChainSidebarPaneStyles from './scopeChainSidebarPane.css.js';
@@ -69,32 +69,119 @@ const str_ = i18n.i18n.registerUIStrings('panels/sources/ScopeChainSidebarPane.t
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let scopeChainSidebarPaneInstance: ScopeChainSidebarPane;
 
-export class ScopeChainSidebarPane extends UI.Widget.VBox implements UI.ContextFlavorListener.ContextFlavorListener {
-  private readonly treeOutline: ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionsTreeOutline;
-  private readonly expandController: ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionsTreeExpandController;
-  private readonly linkifier: Components.Linkifier.Linkifier;
-  private infoElement: HTMLDivElement;
-  #scopeChainModel: SourceMapScopes.ScopeChainModel.ScopeChainModel|null = null;
+interface ViewInput {
+  linkifier: Components.Linkifier.Linkifier;
+  isPaused: boolean;
+  scopeChain: Array<{
+    scope: SDK.DebuggerModel.ScopeChainEntry,
+    objectTree: ObjectUI.ObjectPropertiesSection.ObjectTree,
+  }>|null;
+}
+type View = (input: ViewInput, output: object, target: HTMLElement) => void;
+export const DEFAULT_VIEW: View = (input, output, target) => {
+  const createScopeSectionTreeElement =
+      (scope: SDK.DebuggerModel.ScopeChainEntry,
+       objectTree: ObjectUI.ObjectPropertiesSection.ObjectTree): TemplateResult => {
+        let emptyPlaceholder: Common.UIString.LocalizedString|null = null;
+        if (scope.type() === Protocol.Debugger.ScopeType.Local ||
+            scope.type() === Protocol.Debugger.ScopeType.Closure) {
+          emptyPlaceholder = i18nString(UIStrings.noVariables);
+        }
+        const icon = scope.icon();
+        const {title, subtitle} = scopeTitle(scope);
+        const section = new ObjectUI.ObjectPropertiesSection.RootElement(objectTree, input.linkifier, emptyPlaceholder);
+        section.listItemElement.classList.add('scope-chain-sidebar-pane-section');
+        section.listItemElement.setAttribute('aria-label', title);
 
-  private constructor() {
-    super({
+        const titleNode = document.createDocumentFragment();
+        // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
+        render(
+            html`<div class='scope-chain-sidebar-pane-section-header tree-element-title'>${
+                icon ? html`<img class=scope-chain-sidebar-pane-section-icon src=${icon}>` : nothing}
+                   <div class=scope-chain-sidebar-pane-section-subtitle>${subtitle}</div>
+                   <div class=scope-chain-sidebar-pane-section-title>${title}</div>
+                 </div>`,
+            titleNode);
+        section.title = titleNode;
+
+        if (scope === input.scopeChain?.[0]?.scope) {
+          section.select(/* omitFocus */ true);
+        }
+
+        return html`<devtools-tree-wrapper .treeElement=${section}></devtools-tree-wrapper>`;
+      };
+
+  render(
+      // clang-format off
+      html`
+    <style>${scopeChainSidebarPaneStyles}</style>
+    ${input.scopeChain ? html`
+      <devtools-tree autofocus hide-overflow show-selection-on-keyboard-focus .template=${
+            html`<ul role=tree class="source-code object-properties-section">
+          <style>${ObjectUI.ObjectPropertiesSection.objectValueStyles}</style>
+          <style>${ObjectUI.ObjectPropertiesSection.objectPropertiesSectionStyles}</style>
+          <style>${scopeChainSidebarPaneStyles}</style>
+          ${input.scopeChain?.map(({scope, objectTree}) => createScopeSectionTreeElement(scope, objectTree)) ?? nothing}
+        </ul>`}>
+      </devtools-tree>` : html`
+      <div class=gray-info-message tabindex=-1>${
+          input.isPaused ? i18nString(UIStrings.loading) : i18nString(UIStrings.notPaused)}</div>`}
+    `,
+      // clang-format on
+      target);
+};
+
+function scopeTitle(scope: SDK.DebuggerModel.ScopeChainEntry): {title: string, subtitle: string|null} {
+  let title = scope.typeName();
+  if (scope.type() === Protocol.Debugger.ScopeType.Closure) {
+    const scopeName = scope.name();
+    if (scopeName) {
+      title = i18nString(UIStrings.closureS, {PH1: UI.UIUtils.beautifyFunctionName(scopeName)});
+    } else {
+      title = i18nString(UIStrings.closure);
+    }
+  }
+  let subtitle: string|null = scope.description();
+  if (!title || title === subtitle) {
+    subtitle = null;
+  }
+  return {title, subtitle};
+}
+
+function scopeKey(scope: SDK.DebuggerModel.ScopeChainEntry): string {
+  let title = scope.typeName();
+  if (scope.type() === Protocol.Debugger.ScopeType.Closure) {
+    const scopeName = scope.name();
+    if (scopeName) {
+      title = `Closure: ${UI.UIUtils.beautifyFunctionName(scopeName)}`;
+    } else {
+      title = 'Closure';
+    }
+  }
+  let subtitle: string|null = scope.description();
+  if (!title || title === subtitle) {
+    subtitle = null;
+  }
+  return title + (subtitle ? ':' + subtitle : '');
+}
+export class ScopeChainSidebarPane extends UI.Widget.VBox implements UI.ContextFlavorListener.ContextFlavorListener {
+  readonly #linkifier: Components.Linkifier.Linkifier;
+  #expansionTrackers = new Map<string, ObjectUI.ObjectPropertiesSection.ObjectTreeExpansionTracker>();
+  #scopeChainModel: SourceMapScopes.ScopeChainModel.ScopeChainModel|null = null;
+  #scopeChain:
+      Array<{scope: SDK.DebuggerModel.ScopeChainEntry, objectTree: ObjectUI.ObjectPropertiesSection.ObjectTree}>|null =
+          null;
+  #view: View;
+
+  constructor(target?: HTMLElement, view = DEFAULT_VIEW) {
+    super(target, {
       jslog: `${VisualLogging.section('sources.scope-chain')}`,
       useShadowDom: true,
     });
-    this.registerRequiredCSS(scopeChainSidebarPaneStyles);
 
-    this.treeOutline = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionsTreeOutline();
-    this.treeOutline.registerRequiredCSS(scopeChainSidebarPaneStyles);
-    this.treeOutline.setHideOverflow(true);
-
-    this.treeOutline.setShowSelectionOnKeyboardFocus(/* show */ true);
-    this.expandController =
-        new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionsTreeExpandController(this.treeOutline);
-    this.linkifier = new Components.Linkifier.Linkifier();
-    this.infoElement = document.createElement('div');
-    this.infoElement.className = 'gray-info-message';
-    this.infoElement.tabIndex = -1;
+    this.#linkifier = new Components.Linkifier.Linkifier();
     this.flavorChanged(UI.Context.Context.instance().flavor(StackTrace.StackTrace.DebuggableFrameFlavor));
+    this.#view = view;
   }
 
   static instance(): ScopeChainSidebarPane {
@@ -104,116 +191,92 @@ export class ScopeChainSidebarPane extends UI.Widget.VBox implements UI.ContextF
     return scopeChainSidebarPaneInstance;
   }
 
-  treeOutlineForTest(): ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionsTreeOutline {
-    return this.treeOutline;
+  /**
+   * @deprecated Required for legacy web tests via DebuggerTestRunner.js
+   */
+  get treeOutline(): ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionsTreeOutline|null {
+    const devtoolsTree = this.contentElement.querySelector('devtools-tree');
+    if (devtoolsTree) {
+      return (devtoolsTree as UI.TreeOutline.TreeViewElement).getInternalTreeOutlineForTest() as
+          ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionsTreeOutline;
+    }
+    return null;
   }
 
   flavorChanged(callFrame: StackTrace.StackTrace.DebuggableFrameFlavor|null): void {
     this.#scopeChainModel?.dispose();
     this.#scopeChainModel = null;
+    this.#scopeChain = null;
 
-    this.linkifier.reset();
-    this.contentElement.removeChildren();
-    this.contentElement.appendChild(this.infoElement);
+    this.#linkifier.reset();
 
     if (callFrame) {
-      // Resolving the scope may take a while to complete, so indicate to the user that something
-      // is happening (see https://crbug.com/1162416).
-      this.infoElement.textContent = i18nString(UIStrings.loading);
-
-      this.#scopeChainModel = new SourceMapScopes.ScopeChainModel.ScopeChainModel(callFrame.sdkFrame);
-      this.#scopeChainModel.addEventListener(
-          SourceMapScopes.ScopeChainModel.Events.SCOPE_CHAIN_UPDATED, event => this.buildScopeTreeOutline(event.data),
-          this);
-    } else {
-      this.infoElement.textContent = i18nString(UIStrings.notPaused);
+      const scopeChainModel = new SourceMapScopes.ScopeChainModel.ScopeChainModel(callFrame.sdkFrame);
+      this.#scopeChainModel = scopeChainModel;
+      this.#scopeChainModel.addEventListener(SourceMapScopes.ScopeChainModel.Events.SCOPE_CHAIN_UPDATED, event => {
+        if (this.#scopeChainModel === scopeChainModel) {
+          this.#buildScopeChain(event.data);
+        }
+      });
     }
+
+    this.requestUpdate();
   }
 
-  override focus(): void {
-    if (this.hasFocus()) {
-      return;
-    }
-
-    if (UI.Context.Context.instance().flavor(SDK.DebuggerModel.DebuggerPausedDetails)) {
-      this.treeOutline.forceSelect();
-    }
+  override performUpdate(): void {
+    this.#view(
+        {
+          linkifier: this.#linkifier,
+          isPaused: Boolean(this.#scopeChainModel),
+          scopeChain: this.#scopeChain,
+        },
+        {}, this.contentElement);
   }
 
-  private buildScopeTreeOutline(eventScopeChain: SourceMapScopes.ScopeChainModel.ScopeChain): void {
-    const {scopeChain} = eventScopeChain;
+  #buildScopeChain({scopeChain}: SourceMapScopes.ScopeChainModel.ScopeChain): void {
+    const oldExpansionTrackers = this.#expansionTrackers;
+    this.#expansionTrackers = new Map();
+    this.#scopeChain = [];
 
-    this.treeOutline.removeChildren();
-
-    this.contentElement.removeChildren();
-    this.contentElement.appendChild(this.treeOutline.element);
-    let foundLocalScope = false;
-    for (const [i, scope] of scopeChain.entries()) {
-      if (scope.type() === Protocol.Debugger.ScopeType.Local) {
-        foundLocalScope = true;
+    for (const scope of scopeChain) {
+      const key = scopeKey(scope);
+      let expansionTracker = this.#expansionTrackers.get(key);
+      if (!expansionTracker) {
+        expansionTracker =
+            oldExpansionTrackers.get(key) ?? new ObjectUI.ObjectPropertiesSection.ObjectTreeExpansionTracker();
+        this.#expansionTrackers.set(key, expansionTracker);
       }
 
-      const section = this.createScopeSectionTreeElement(scope);
+      const objectTree = new ObjectUI.ObjectPropertiesSection.ObjectTree(scope.object(), {
+        propertiesMode: ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.ALL,
+        readOnly: false,
+        expansionTracker,
+      });
+      void expansionTracker.apply(objectTree);
+      objectTree.addExtraProperties(...scope.extraProperties());
       if (scope.type() === Protocol.Debugger.ScopeType.Global) {
-        section.collapse();
-      } else if (!foundLocalScope || scope.type() === Protocol.Debugger.ScopeType.Local) {
-        section.expand();
+        objectTree.expanded = false;
       }
 
-      this.treeOutline.appendChild(section);
-      if (i === 0) {
-        section.select(/* omitFocus */ true);
+      this.#scopeChain.push({scope, objectTree});
+    }
+
+    for (const {scope, objectTree} of this.#scopeChain) {
+      if (scope.type() !== Protocol.Debugger.ScopeType.Global) {
+        objectTree.expanded = true;
+      }
+      if (scope.type() === Protocol.Debugger.ScopeType.Local) {
+        break;
       }
     }
-    this.sidebarPaneUpdatedForTest();
+
+    this.requestUpdate();
+    void this.updateComplete.then(() => this.sidebarPaneUpdatedForTest());
   }
 
-  private createScopeSectionTreeElement(scope: SDK.DebuggerModel.ScopeChainEntry):
-      ObjectUI.ObjectPropertiesSection.RootElement {
-    let emptyPlaceholder: Common.UIString.LocalizedString|null = null;
-    if (scope.type() === Protocol.Debugger.ScopeType.Local || scope.type() === Protocol.Debugger.ScopeType.Closure) {
-      emptyPlaceholder = i18nString(UIStrings.noVariables);
-    }
-
-    let title = scope.typeName();
-    if (scope.type() === Protocol.Debugger.ScopeType.Closure) {
-      const scopeName = scope.name();
-      if (scopeName) {
-        title = i18nString(UIStrings.closureS, {PH1: UI.UIUtils.beautifyFunctionName(scopeName)});
-      } else {
-        title = i18nString(UIStrings.closure);
-      }
-    }
-    let subtitle: string|null = scope.description();
-    if (!title || title === subtitle) {
-      subtitle = null;
-    }
-    const icon = scope.icon();
-
-    const titleElement = document.createElement('div');
-    titleElement.classList.add('scope-chain-sidebar-pane-section-header');
-    titleElement.classList.add('tree-element-title');
-    if (icon) {
-      const iconElement = document.createElement('img');
-      iconElement.classList.add('scope-chain-sidebar-pane-section-icon');
-      iconElement.src = icon;
-      titleElement.appendChild(iconElement);
-    }
-    titleElement.createChild('div', 'scope-chain-sidebar-pane-section-subtitle').textContent = subtitle;
-    titleElement.createChild('div', 'scope-chain-sidebar-pane-section-title').textContent = title;
-
-    const root = new ObjectUI.ObjectPropertiesSection.ObjectTree(
-        scope.object(), {propertiesMode: ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.ALL, readOnly: false});
-    root.addExtraProperties(...scope.extraProperties());
-    const section = new ObjectUI.ObjectPropertiesSection.RootElement(root, this.linkifier, emptyPlaceholder);
-    section.title = titleElement;
-    section.listItemElement.classList.add('scope-chain-sidebar-pane-section');
-    section.listItemElement.setAttribute('aria-label', title);
-    this.expandController.watchSection(title + (subtitle ? ':' + subtitle : ''), section);
-
-    return section;
-  }
-
+  /**
+   * @deprecated Hook for legacy web tests
+   */
   sidebarPaneUpdatedForTest(): void {
   }
 }

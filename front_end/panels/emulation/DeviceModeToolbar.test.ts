@@ -52,8 +52,8 @@ function createFakeSetting<T>(defaultValue: T): Common.Settings.Setting<T> {
 describeWithEnvironment('DeviceModeToolbar', () => {
   setupLocaleHooks();
 
-  let tabTarget: SDK.Target.Target;
-  let prerenderTarget: SDK.Target.Target;
+  let tabTarget: SDK.Target.Target|undefined;
+  let prerenderTarget: SDK.Target.Target|undefined;
   let target: SDK.Target.Target;
   let deviceModeModel: EmulationModel.DeviceModeModel.DeviceModeModel;
   let toolbar: Emulation.DeviceModeToolbar.DeviceModeToolbar;
@@ -101,6 +101,7 @@ describeWithEnvironment('DeviceModeToolbar', () => {
   afterEach(async () => {
     await UI.Widget.Widget.allUpdatesComplete;
     toolbar?.detach();
+    deviceModeModel?.dispose();
     target?.dispose('test');
     prerenderTarget?.dispose('test');
     tabTarget?.dispose('test');
@@ -179,8 +180,8 @@ describeWithEnvironment('DeviceModeToolbar', () => {
       });
       toolbar.requestUpdate();
       await toolbar.updateComplete;
-      const updatedModeButton = findRotateButton();
 
+      const updatedModeButton = findRotateButton();
       assert.isTrue(updatedModeButton.disabled, 'rotate button should be disabled when orientation is locked');
       assert.include(updatedModeButton.title, 'locked');
     });
@@ -201,16 +202,16 @@ describeWithEnvironment('DeviceModeToolbar', () => {
       toolbar.requestUpdate();
       await toolbar.updateComplete;
 
-      const modeButtonLocked = findRotateButton();
-      assert.isTrue(modeButtonLocked.disabled, 'rotate button should be disabled when locked');
+      const modeButton = findRotateButton();
+      assert.isTrue(modeButton.disabled, 'rotate button should be disabled when locked');
 
       emulationModel.screenOrientationLockChanged({locked: false});
       toolbar.requestUpdate();
       await toolbar.updateComplete;
 
-      const modeButtonUnlocked = findRotateButton();
-      assert.isFalse(modeButtonUnlocked.disabled, 'rotate button should be re-enabled after unlock');
-      assert.include(modeButtonUnlocked.title, 'Rotate');
+      const updatedModeButton = findRotateButton();
+      assert.isFalse(updatedModeButton.disabled, 'rotate button should be re-enabled after unlock');
+      assert.include(updatedModeButton.title, 'Rotate');
     });
 
     it('does not rotate when screen orientation is locked and rotate button is clicked', async () => {

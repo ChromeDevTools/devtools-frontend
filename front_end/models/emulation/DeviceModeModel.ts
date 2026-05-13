@@ -200,6 +200,10 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     }
   }
 
+  dispose(): void {
+    SDK.TargetManager.TargetManager.instance().unobserveModels(SDK.EmulationModel.EmulationModel, this);
+  }
+
   static widthValidator(value: string): {
     valid: boolean,
     errorMessage: (string|undefined),

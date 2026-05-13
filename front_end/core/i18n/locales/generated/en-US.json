@@ -7850,14 +7850,8 @@
   "panels/elements/elements-meta.ts | showProperties": {
     "message": "Show Properties"
   },
-  "panels/elements/elements-meta.ts | showStackTrace": {
-    "message": "Show Stack Trace"
-  },
   "panels/elements/elements-meta.ts | showStyles": {
     "message": "Show Styles"
-  },
-  "panels/elements/elements-meta.ts | stackTrace": {
-    "message": "Stack Trace"
   },
   "panels/elements/elements-meta.ts | toggleA11yTree": {
     "message": "Toggle accessibility tree"
@@ -8239,9 +8233,6 @@
   },
   "panels/elements/MarkerDecorator.ts | elementIsHidden": {
     "message": "Element is hidden"
-  },
-  "panels/elements/NodeStackTraceWidget.ts | noStackTraceAvailable": {
-    "message": "No stack trace available"
   },
   "panels/elements/PlatformFontsWidget.ts | dGlyphs": {
     "message": "{n, plural, =1 {(# glyph)} other {(# glyphs)}}"

@@ -16,7 +16,6 @@ import './MarkerDecorator.js';
 import './MetricsSidebarPane.js';
 import './PlatformFontsWidget.js';
 import './PropertiesWidget.js';
-import './NodeStackTraceWidget.js';
 import './StylePropertiesSection.js';
 import './StylePropertyHighlighter.js';
 import './StylesSidebarPane.js';
@@ -52,7 +51,6 @@ import * as LayersWidget from './LayersWidget.js';
 import * as LayoutPane from './LayoutPane.js';
 import * as MarkerDecorator from './MarkerDecorator.js';
 import * as MetricsSidebarPane from './MetricsSidebarPane.js';
-import * as NodeStackTraceWidget from './NodeStackTraceWidget.js';
 import * as PlatformFontsWidget from './PlatformFontsWidget.js';
 import * as PropertiesWidget from './PropertiesWidget.js';
 import * as PropertyRenderer from './PropertyRenderer.js';
@@ -90,7 +88,6 @@ export {
   LayoutPane,
   MarkerDecorator,
   MetricsSidebarPane,
-  NodeStackTraceWidget,
   PlatformFontsWidget,
   PropertiesWidget,
   PropertyRenderer,

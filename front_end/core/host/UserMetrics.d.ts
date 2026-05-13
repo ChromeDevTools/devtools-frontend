@@ -510,7 +510,6 @@ export declare const enum IssueOpener {
  * gaps are expected.
  */
 export declare enum DevtoolsExperiments {
-    'capture-node-creation-stacks' = 1,
     'protocol-monitor' = 13,
     'instrumentation-breakpoints' = 61,
     'use-source-map-scopes' = 76,

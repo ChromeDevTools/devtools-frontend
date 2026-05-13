@@ -5699,21 +5699,21 @@ var StyleEditorWidget = class _StyleEditorWidget extends UI8.Widget.VBox {
     triggerButton.onclick = async (event) => {
       event.stopPropagation();
       const popoverHelper = stylesContainer.swatchPopoverHelper();
-      const widget5 = _StyleEditorWidget.instance();
-      widget5.element.classList.toggle("with-padding", true);
-      widget5.setEditor(editorClass);
-      widget5.bindContext(stylesContainer, section5);
-      widget5.setTriggerKey(triggerKey);
-      await widget5.render();
-      widget5.focus();
+      const widget4 = _StyleEditorWidget.instance();
+      widget4.element.classList.toggle("with-padding", true);
+      widget4.setEditor(editorClass);
+      widget4.bindContext(stylesContainer, section5);
+      widget4.setTriggerKey(triggerKey);
+      await widget4.render();
+      widget4.focus();
       const scrollerElement = triggerButton.enclosingNodeOrSelfWithClass("style-panes-wrapper");
       const onScroll = () => {
         popoverHelper.hide(true);
       };
-      const onStylesUpdateCompleted = widget5.requestUpdate.bind(widget5);
+      const onStylesUpdateCompleted = widget4.requestUpdate.bind(widget4);
       stylesContainer.addStyleUpdateListener(onStylesUpdateCompleted);
-      popoverHelper.show(widget5, triggerButton, () => {
-        widget5.unbindContext();
+      popoverHelper.show(widget4, triggerButton, () => {
+        widget4.unbindContext();
         if (scrollerElement) {
           scrollerElement.removeEventListener("scroll", onScroll);
         }
@@ -9241,17 +9241,17 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common5.ObjectWrapper.e
     const toolbarPaneContent = toolbarPaneContainer.createChild("div", "styles-sidebar-toolbar-pane");
     return toolbarPaneContent;
   }
-  showToolbarPane(widget5, toggle4) {
+  showToolbarPane(widget4, toggle4) {
     if (this.pendingWidgetToggle) {
       this.pendingWidgetToggle.setToggled(false);
     }
     this.pendingWidgetToggle = toggle4;
     if (this.animatedToolbarPane) {
-      this.pendingWidget = widget5;
+      this.pendingWidget = widget4;
     } else {
-      this.startToolbarPaneAnimation(widget5);
+      this.startToolbarPaneAnimation(widget4);
     }
-    if (widget5 && toggle4) {
+    if (widget4 && toggle4) {
       toggle4.setToggled(true);
     }
   }
@@ -9266,25 +9266,25 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common5.ObjectWrapper.e
   removeStyleUpdateListener(listener) {
     this.removeEventListener("StylesUpdateCompleted", listener);
   }
-  startToolbarPaneAnimation(widget5) {
-    if (widget5 === this.currentToolbarPane) {
+  startToolbarPaneAnimation(widget4) {
+    if (widget4 === this.currentToolbarPane) {
       return;
     }
-    if (widget5 && this.currentToolbarPane) {
+    if (widget4 && this.currentToolbarPane) {
       this.currentToolbarPane.detach();
-      widget5.show(this.toolbarPaneElement);
-      this.currentToolbarPane = widget5;
+      widget4.show(this.toolbarPaneElement);
+      this.currentToolbarPane = widget4;
       this.currentToolbarPane.focus();
       return;
     }
-    this.animatedToolbarPane = widget5;
+    this.animatedToolbarPane = widget4;
     if (this.currentToolbarPane) {
       this.toolbarPaneElement.style.animationName = "styles-element-state-pane-slideout";
-    } else if (widget5) {
+    } else if (widget4) {
       this.toolbarPaneElement.style.animationName = "styles-element-state-pane-slidein";
     }
-    if (widget5) {
-      widget5.show(this.toolbarPaneElement);
+    if (widget4) {
+      widget4.show(this.toolbarPaneElement);
     }
     const listener = onAnimationEnd.bind(this);
     this.toolbarPaneElement.addEventListener("animationend", listener, false);
@@ -13104,10 +13104,10 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
     await UI14.ViewManager.ViewManager.instance().showView("medias");
     const view = UI14.ViewManager.ViewManager.instance().view("medias");
     if (view) {
-      const widget5 = await view.widget();
-      if (widget5 instanceof Media.MainView.MainView) {
-        await widget5.waitForInitialPlayers();
-        widget5.selectPlayerByDOMNodeId(this.node().backendNodeId());
+      const widget4 = await view.widget();
+      if (widget4 instanceof Media.MainView.MainView) {
+        await widget4.waitForInitialPlayers();
+        widget4.selectPlayerByDOMNodeId(this.node().backendNodeId());
       }
     }
   }
@@ -18520,8 +18520,8 @@ var ElementsPanel = class _ElementsPanel extends UI21.Panel.Panel {
   resolveLocation(_locationName) {
     return this.sidebarPaneView || null;
   }
-  showToolbarPane(widget5, toggle4) {
-    this.stylesWidget.showToolbarPane(widget5, toggle4);
+  showToolbarPane(widget4, toggle4) {
+    this.stylesWidget.showToolbarPane(widget4, toggle4);
   }
   modelAdded(domModel) {
     this.setupStyleTracking(domModel.cssModel());
@@ -20030,77 +20030,6 @@ var PropertiesWidget = class extends UI24.Widget.VBox {
   }
 };
 
-// gen/front_end/panels/elements/NodeStackTraceWidget.js
-var NodeStackTraceWidget_exports = {};
-__export(NodeStackTraceWidget_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW11,
-  NodeStackTraceWidget: () => NodeStackTraceWidget
-});
-import * as i18n38 from "./../../core/i18n/i18n.js";
-import * as SDK22 from "./../../core/sdk/sdk.js";
-import * as Bindings5 from "./../../models/bindings/bindings.js";
-import * as Components7 from "./../../ui/legacy/components/utils/utils.js";
-import * as UI25 from "./../../ui/legacy/legacy.js";
-import { html as html16, render as render16 } from "./../../ui/lit/lit.js";
-
-// gen/front_end/panels/elements/nodeStackTraceWidget.css.js
-var nodeStackTraceWidget_css_default = `/*
- * Copyright 2019 The Chromium Authors
- * Use of this source code is governed by a BSD-style license that can be
- * found in the LICENSE file.
- */
-@scope to (devtools-widget > *) {
-  .stack-trace {
-    font-size: 11px !important; /* stylelint-disable-line declaration-no-important */
-    font-family: Menlo, var(--monospace-font-family);
-  }
-}
-
-/*# sourceURL=${import.meta.resolve("./nodeStackTraceWidget.css")} */`;
-
-// gen/front_end/panels/elements/NodeStackTraceWidget.js
-var UIStrings19 = {
-  /**
-   * @description Message displayed when no JavaScript stack trace is available for the DOM node in the Stack Trace widget of the Elements panel
-   */
-  noStackTraceAvailable: "No stack trace available"
-};
-var str_19 = i18n38.i18n.registerUIStrings("panels/elements/NodeStackTraceWidget.ts", UIStrings19);
-var i18nString18 = i18n38.i18n.getLocalizedString.bind(void 0, str_19);
-var { widget: widget4 } = UI25.Widget;
-var DEFAULT_VIEW11 = (input, _output, target) => {
-  const { stackTrace } = input;
-  render16(html16`
-    <style>${nodeStackTraceWidget_css_default}</style>
-    ${target && stackTrace ? html16`<devtools-widget
-                class="stack-trace"
-                ${widget4(Components7.JSPresentationUtils.StackTracePreviewContent, { stackTrace })}>
-              </devtools-widget>` : html16`<div class="gray-info-message">${i18nString18(UIStrings19.noStackTraceAvailable)}</div>`}`, target);
-};
-var NodeStackTraceWidget = class extends UI25.Widget.VBox {
-  #view;
-  constructor(view = DEFAULT_VIEW11) {
-    super({ useShadowDom: true });
-    this.#view = view;
-  }
-  wasShown() {
-    super.wasShown();
-    UI25.Context.Context.instance().addFlavorChangeListener(SDK22.DOMModel.DOMNode, this.requestUpdate, this);
-    this.requestUpdate();
-  }
-  willHide() {
-    super.willHide();
-    UI25.Context.Context.instance().removeFlavorChangeListener(SDK22.DOMModel.DOMNode, this.requestUpdate, this);
-  }
-  async performUpdate() {
-    const node = UI25.Context.Context.instance().flavor(SDK22.DOMModel.DOMNode);
-    const target = node?.domModel().target();
-    const runtimeStackTrace = await node?.creationStackTrace() ?? void 0;
-    const stackTrace = runtimeStackTrace && target ? await Bindings5.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createStackTraceFromProtocolRuntime(runtimeStackTrace, target) : void 0;
-    this.#view({ stackTrace }, {}, this.contentElement);
-  }
-};
-
 // gen/front_end/panels/elements/ClassesPaneWidget.js
 var ClassesPaneWidget_exports = {};
 __export(ClassesPaneWidget_exports, {
@@ -20109,10 +20038,10 @@ __export(ClassesPaneWidget_exports, {
   ClassesPaneWidget: () => ClassesPaneWidget
 });
 import * as Common17 from "./../../core/common/common.js";
-import * as i18n40 from "./../../core/i18n/i18n.js";
+import * as i18n38 from "./../../core/i18n/i18n.js";
 import * as Platform12 from "./../../core/platform/platform.js";
-import * as SDK23 from "./../../core/sdk/sdk.js";
-import * as UI26 from "./../../ui/legacy/legacy.js";
+import * as SDK22 from "./../../core/sdk/sdk.js";
+import * as UI25 from "./../../ui/legacy/legacy.js";
 import * as VisualLogging16 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/elements/classesPaneWidget.css.js
@@ -20162,7 +20091,7 @@ var classesPaneWidget_css_default = `/**
 /*# sourceURL=${import.meta.resolve("./classesPaneWidget.css")} */`;
 
 // gen/front_end/panels/elements/ClassesPaneWidget.js
-var UIStrings20 = {
+var UIStrings19 = {
   /**
    * @description Prompt text for a text field in the Classes Pane Widget of the Elements panel.
    * Class refers to a CSS class.
@@ -20184,9 +20113,9 @@ var UIStrings20 = {
    */
   elementClasses: "Element Classes"
 };
-var str_20 = i18n40.i18n.registerUIStrings("panels/elements/ClassesPaneWidget.ts", UIStrings20);
-var i18nString19 = i18n40.i18n.getLocalizedString.bind(void 0, str_20);
-var ClassesPaneWidget = class extends UI26.Widget.Widget {
+var str_19 = i18n38.i18n.registerUIStrings("panels/elements/ClassesPaneWidget.ts", UIStrings19);
+var i18nString18 = i18n38.i18n.getLocalizedString.bind(void 0, str_19);
+var ClassesPaneWidget = class extends UI25.Widget.Widget {
   input;
   classesContainer;
   prompt;
@@ -20210,15 +20139,15 @@ var ClassesPaneWidget = class extends UI26.Widget.Widget {
     this.prompt.setAutocompletionTimeout(0);
     this.prompt.renderAsBlock();
     const proxyElement = this.prompt.attach(this.input);
-    this.prompt.setPlaceholder(i18nString19(UIStrings20.addNewClass));
+    this.prompt.setPlaceholder(i18nString18(UIStrings19.addNewClass));
     this.prompt.addEventListener("TextChanged", this.onTextChanged, this);
     proxyElement.addEventListener("keydown", this.onKeyDown.bind(this), false);
-    SDK23.TargetManager.TargetManager.instance().addModelListener(SDK23.DOMModel.DOMModel, SDK23.DOMModel.Events.DOMMutated, this.onDOMMutated, this, { scoped: true });
+    SDK22.TargetManager.TargetManager.instance().addModelListener(SDK22.DOMModel.DOMModel, SDK22.DOMModel.Events.DOMMutated, this.onDOMMutated, this, { scoped: true });
     this.mutatingNodes = /* @__PURE__ */ new Set();
     this.pendingNodeClasses = /* @__PURE__ */ new Map();
     this.updateNodeThrottler = new Common17.Throttler.Throttler(0);
     this.previousTarget = null;
-    UI26.Context.Context.instance().addFlavorChangeListener(SDK23.DOMModel.DOMNode, this.onSelectedNodeChanged, this);
+    UI25.Context.Context.instance().addFlavorChangeListener(SDK22.DOMModel.DOMNode, this.onSelectedNodeChanged, this);
   }
   splitTextIntoClasses(text) {
     return text.split(/[,\s]/).map((className) => className.trim()).filter((className) => className.length);
@@ -20243,7 +20172,7 @@ var ClassesPaneWidget = class extends UI26.Widget.Widget {
     }
     this.prompt.clearAutocomplete();
     eventTarget.textContent = "";
-    const node = UI26.Context.Context.instance().flavor(SDK23.DOMModel.DOMNode);
+    const node = UI25.Context.Context.instance().flavor(SDK22.DOMModel.DOMNode);
     if (!node) {
       return;
     }
@@ -20256,13 +20185,13 @@ var ClassesPaneWidget = class extends UI26.Widget.Widget {
       this.toggleClass(node, className, true);
     }
     const joinClassString = classNames.join(" ");
-    const announcementString = classNames.length > 1 ? i18nString19(UIStrings20.classesSAdded, { PH1: joinClassString }) : i18nString19(UIStrings20.classSAdded, { PH1: joinClassString });
-    UI26.ARIAUtils.LiveAnnouncer.alert(announcementString);
+    const announcementString = classNames.length > 1 ? i18nString18(UIStrings19.classesSAdded, { PH1: joinClassString }) : i18nString18(UIStrings19.classSAdded, { PH1: joinClassString });
+    UI25.ARIAUtils.LiveAnnouncer.alert(announcementString);
     this.installNodeClasses(node);
     this.update();
   }
   onTextChanged() {
-    const node = UI26.Context.Context.instance().flavor(SDK23.DOMModel.DOMNode);
+    const node = UI25.Context.Context.instance().flavor(SDK22.DOMModel.DOMNode);
     if (!node) {
       return;
     }
@@ -20292,7 +20221,7 @@ var ClassesPaneWidget = class extends UI26.Widget.Widget {
     if (!this.isShowing()) {
       return;
     }
-    let node = UI26.Context.Context.instance().flavor(SDK23.DOMModel.DOMNode);
+    let node = UI25.Context.Context.instance().flavor(SDK22.DOMModel.DOMNode);
     if (node) {
       node = node.enclosingElementOrSelf();
     }
@@ -20305,14 +20234,14 @@ var ClassesPaneWidget = class extends UI26.Widget.Widget {
     const keys = [...classes.keys()];
     keys.sort(Platform12.StringUtilities.caseInsensetiveComparator);
     for (const className of keys) {
-      const checkbox = UI26.UIUtils.CheckboxLabel.createWithStringLiteral(className, classes.get(className), "element-class", true);
+      const checkbox = UI25.UIUtils.CheckboxLabel.createWithStringLiteral(className, classes.get(className), "element-class", true);
       checkbox.classList.add("monospace");
       checkbox.addEventListener("click", this.onClick.bind(this, className), false);
       this.classesContainer.appendChild(checkbox);
     }
   }
   onClick(className, event) {
-    const node = UI26.Context.Context.instance().flavor(SDK23.DOMModel.DOMNode);
+    const node = UI25.Context.Context.instance().flavor(SDK22.DOMModel.DOMNode);
     if (!node) {
       return;
     }
@@ -20378,7 +20307,7 @@ var ButtonProvider3 = class _ButtonProvider {
   button;
   view;
   constructor() {
-    this.button = new UI26.Toolbar.ToolbarToggle(i18nString19(UIStrings20.elementClasses), "class");
+    this.button = new UI25.Toolbar.ToolbarToggle(i18nString18(UIStrings19.elementClasses), "class");
     this.button.element.style.setProperty("--dot-toggle-top", "12px");
     this.button.element.style.setProperty("--dot-toggle-left", "18px");
     this.button.element.setAttribute("jslog", `${VisualLogging16.toggleSubpane("elements-classes").track({ click: true })}`);
@@ -20399,7 +20328,7 @@ var ButtonProvider3 = class _ButtonProvider {
     return this.button;
   }
 };
-var ClassNamePrompt = class extends UI26.TextPrompt.TextPrompt {
+var ClassNamePrompt = class extends UI25.TextPrompt.TextPrompt {
   nodeClasses;
   selectedFrameId;
   classNamesPromise;
@@ -20442,7 +20371,7 @@ var ClassNamePrompt = class extends UI26.TextPrompt.TextPrompt {
     if (!prefix || force) {
       this.classNamesPromise = null;
     }
-    const selectedNode = UI26.Context.Context.instance().flavor(SDK23.DOMModel.DOMNode);
+    const selectedNode = UI25.Context.Context.instance().flavor(SDK22.DOMModel.DOMNode);
     if (!selectedNode || !prefix && !force && !expression.trim()) {
       return [];
     }
@@ -20475,15 +20404,15 @@ var ClassNamePrompt = class extends UI26.TextPrompt.TextPrompt {
 var ElementStatePaneWidget_exports = {};
 __export(ElementStatePaneWidget_exports, {
   ButtonProvider: () => ButtonProvider4,
-  DEFAULT_VIEW: () => DEFAULT_VIEW12,
+  DEFAULT_VIEW: () => DEFAULT_VIEW11,
   ElementStatePaneWidget: () => ElementStatePaneWidget
 });
-import * as i18n42 from "./../../core/i18n/i18n.js";
-import * as SDK24 from "./../../core/sdk/sdk.js";
+import * as i18n40 from "./../../core/i18n/i18n.js";
+import * as SDK23 from "./../../core/sdk/sdk.js";
 import * as Buttons3 from "./../../ui/components/buttons/buttons.js";
 import * as UIHelpers from "./../../ui/helpers/helpers.js";
-import * as UI27 from "./../../ui/legacy/legacy.js";
-import { html as html17, render as render17 } from "./../../ui/lit/lit.js";
+import * as UI26 from "./../../ui/legacy/legacy.js";
+import { html as html16, render as render16 } from "./../../ui/lit/lit.js";
 import * as VisualLogging17 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/elements/elementStatePaneWidget.css.js
@@ -20543,8 +20472,8 @@ var elementStatePaneWidget_css_default = `/**
 /*# sourceURL=${import.meta.resolve("./elementStatePaneWidget.css")} */`;
 
 // gen/front_end/panels/elements/ElementStatePaneWidget.js
-var { bindToSetting: bindToSetting4 } = UI27.UIUtils;
-var UIStrings21 = {
+var { bindToSetting: bindToSetting4 } = UI26.UIUtils;
+var UIStrings20 = {
   /**
    * @description Title of a section in the Element State Pane Widget of the Elements panel. The
    * controls in this section allow users to force a particular state on the selected element, e.g. a
@@ -20574,8 +20503,8 @@ var UIStrings21 = {
    */
   learnMore: "Learn more"
 };
-var str_21 = i18n42.i18n.registerUIStrings("panels/elements/ElementStatePaneWidget.ts", UIStrings21);
-var i18nString20 = i18n42.i18n.getLocalizedString.bind(void 0, str_21);
+var str_20 = i18n40.i18n.registerUIStrings("panels/elements/ElementStatePaneWidget.ts", UIStrings20);
+var i18nString19 = i18n40.i18n.getLocalizedString.bind(void 0, str_20);
 var SpecificPseudoStates;
 (function(SpecificPseudoStates2) {
   SpecificPseudoStates2["ENABLED"] = "enabled";
@@ -20599,9 +20528,9 @@ var SpecificPseudoStates;
   SpecificPseudoStates2["OPEN"] = "open";
   SpecificPseudoStates2["TARGET_CURRENT"] = "target-current";
 })(SpecificPseudoStates || (SpecificPseudoStates = {}));
-var DEFAULT_VIEW12 = (input, _output, target) => {
+var DEFAULT_VIEW11 = (input, _output, target) => {
   const createElementStateCheckbox = (state) => {
-    return html17`
+    return html16`
         <div id=${state.state}>
           <devtools-checkbox class="small" @click=${input.onStateCheckboxClicked}
               jslog=${VisualLogging17.toggle(state.state).track({ change: true })} ?checked=${state.checked} ?disabled=${state.disabled}
@@ -20610,13 +20539,13 @@ var DEFAULT_VIEW12 = (input, _output, target) => {
         </devtools-checkbox>
         </div>`;
   };
-  render17(html17`
+  render16(html16`
     <style>${elementStatePaneWidget_css_default}</style>
     <div class="styles-element-state-pane"
         jslog=${VisualLogging17.pane("element-states")}>
       <div class="page-state-checkbox">
-        <devtools-checkbox class="small" title=${i18nString20(UIStrings21.emulatesAFocusedPage)}
-            ${bindToSetting4("emulate-page-focus")}>${i18nString20(UIStrings21.emulateFocusedPage)}</devtools-checkbox>
+        <devtools-checkbox class="small" title=${i18nString19(UIStrings20.emulatesAFocusedPage)}
+            ${bindToSetting4("emulate-page-focus")}>${i18nString19(UIStrings20.emulateFocusedPage)}</devtools-checkbox>
         <devtools-button
             @click=${() => UIHelpers.openInNewTab("https://developer.chrome.com/docs/devtools/rendering/apply-effects#emulate_a_focused_page")}
            .data=${{
@@ -20624,18 +20553,18 @@ var DEFAULT_VIEW12 = (input, _output, target) => {
     iconName: "help",
     size: "SMALL",
     jslogContext: "learn-more",
-    title: i18nString20(UIStrings21.learnMore)
+    title: i18nString19(UIStrings20.learnMore)
   }}></devtools-button>
       </div>
       <div class="section-header">
-        <span>${i18nString20(UIStrings21.forceElementState)}</span>
+        <span>${i18nString19(UIStrings20.forceElementState)}</span>
       </div>
       <div class="pseudo-states-container" role="presentation">
         ${input.states.filter(({ type }) => type === "persistent").map((state) => createElementStateCheckbox(state))}
       </div>
       <details class="specific-details" ?hidden=${input.states.filter(({ type }) => type === "specific").every((state) => state.hidden)}>
         <summary class="force-specific-element-header section-header">
-          <span>${i18nString20(UIStrings21.forceElementSpecificStates)}</span>
+          <span>${i18nString19(UIStrings20.forceElementSpecificStates)}</span>
         </summary>
         <div class="pseudo-states-container specific-pseudo-states" role="presentation">
           ${input.states.filter(({ type, hidden }) => type === "specific" && !hidden).map((state) => createElementStateCheckbox(state))}
@@ -20643,12 +20572,12 @@ var DEFAULT_VIEW12 = (input, _output, target) => {
       </details>
     </div>`, target);
 };
-var ElementStatePaneWidget = class extends UI27.Widget.Widget {
+var ElementStatePaneWidget = class extends UI26.Widget.Widget {
   #duals;
   #cssModel;
   #states = /* @__PURE__ */ new Map();
   #view;
-  constructor(view = DEFAULT_VIEW12) {
+  constructor(view = DEFAULT_VIEW11) {
     super({ useShadowDom: true });
     this.#view = view;
     this.#duals = /* @__PURE__ */ new Map();
@@ -20688,11 +20617,11 @@ var ElementStatePaneWidget = class extends UI27.Widget.Widget {
     setDualStateCheckboxes(SpecificPseudoStates.IN_RANGE, SpecificPseudoStates.OUT_OF_RANGE);
     setDualStateCheckboxes(SpecificPseudoStates.ENABLED, SpecificPseudoStates.DISABLED);
     setDualStateCheckboxes(SpecificPseudoStates.VISITED, SpecificPseudoStates.LINK);
-    UI27.Context.Context.instance().addFlavorChangeListener(SDK24.DOMModel.DOMNode, this.requestUpdate, this);
+    UI26.Context.Context.instance().addFlavorChangeListener(SDK23.DOMModel.DOMNode, this.requestUpdate, this);
   }
   onStateCheckboxClicked(event) {
-    const node = UI27.Context.Context.instance().flavor(SDK24.DOMModel.DOMNode);
-    if (!node || !(event.target instanceof UI27.UIUtils.CheckboxLabel)) {
+    const node = UI26.Context.Context.instance().flavor(SDK23.DOMModel.DOMNode);
+    if (!node || !(event.target instanceof UI26.UIUtils.CheckboxLabel)) {
       return;
     }
     const state = event.target.title.slice(1);
@@ -20711,11 +20640,11 @@ var ElementStatePaneWidget = class extends UI27.Widget.Widget {
       return;
     }
     if (this.#cssModel) {
-      this.#cssModel.removeEventListener(SDK24.CSSModel.Events.PseudoStateForced, this.requestUpdate, this);
+      this.#cssModel.removeEventListener(SDK23.CSSModel.Events.PseudoStateForced, this.requestUpdate, this);
     }
     this.#cssModel = cssModel;
     if (this.#cssModel) {
-      this.#cssModel.addEventListener(SDK24.CSSModel.Events.PseudoStateForced, this.requestUpdate, this);
+      this.#cssModel.addEventListener(SDK23.CSSModel.Events.PseudoStateForced, this.requestUpdate, this);
     }
   }
   wasShown() {
@@ -20723,7 +20652,7 @@ var ElementStatePaneWidget = class extends UI27.Widget.Widget {
     this.requestUpdate();
   }
   async performUpdate() {
-    let node = UI27.Context.Context.instance().flavor(SDK24.DOMModel.DOMNode);
+    let node = UI26.Context.Context.instance().flavor(SDK23.DOMModel.DOMNode);
     if (node) {
       node = node.enclosingElementOrSelf();
     }
@@ -20878,7 +20807,7 @@ var ButtonProvider4 = class _ButtonProvider {
   button;
   view;
   constructor() {
-    this.button = new UI27.Toolbar.ToolbarToggle(i18nString20(UIStrings21.toggleElementState), "hover");
+    this.button = new UI26.Toolbar.ToolbarToggle(i18nString19(UIStrings20.toggleElementState), "hover");
     this.button.addEventListener("Click", this.clicked, this);
     this.button.element.classList.add("element-state");
     this.button.element.setAttribute("jslog", `${VisualLogging17.toggleSubpane("element-states").track({ click: true })}`);
@@ -20906,8 +20835,8 @@ var ElementsTreeOutlineRenderer_exports = {};
 __export(ElementsTreeOutlineRenderer_exports, {
   Renderer: () => Renderer2
 });
-import * as SDK25 from "./../../core/sdk/sdk.js";
-import * as UI28 from "./../../ui/legacy/legacy.js";
+import * as SDK24 from "./../../core/sdk/sdk.js";
+import * as UI27 from "./../../ui/legacy/legacy.js";
 var rendererInstance;
 var Renderer2 = class _Renderer {
   static instance(opts = { forceNew: null }) {
@@ -20919,9 +20848,9 @@ var Renderer2 = class _Renderer {
   }
   async render(object, options) {
     let node = null;
-    if (object instanceof SDK25.DOMModel.DOMNode) {
+    if (object instanceof SDK24.DOMModel.DOMNode) {
       node = object;
-    } else if (object instanceof SDK25.DOMModel.DeferredDOMNode) {
+    } else if (object instanceof SDK24.DOMModel.DeferredDOMNode) {
       node = await object.resolvePromise();
     }
     if (!node) {
@@ -20951,9 +20880,9 @@ var Renderer2 = class _Renderer {
     const dispatchDimensionChange = () => {
       treeOutline.element.dispatchEvent(new CustomEvent("dimensionschanged"));
     };
-    treeOutline.addEventListener(UI28.TreeOutline.Events.ElementAttached, dispatchDimensionChange);
-    treeOutline.addEventListener(UI28.TreeOutline.Events.ElementExpanded, dispatchDimensionChange);
-    treeOutline.addEventListener(UI28.TreeOutline.Events.ElementCollapsed, dispatchDimensionChange);
+    treeOutline.addEventListener(UI27.TreeOutline.Events.ElementAttached, dispatchDimensionChange);
+    treeOutline.addEventListener(UI27.TreeOutline.Events.ElementExpanded, dispatchDimensionChange);
+    treeOutline.addEventListener(UI27.TreeOutline.Events.ElementCollapsed, dispatchDimensionChange);
     return {
       element: treeOutline.element,
       forceSelect: treeOutline.forceSelect.bind(treeOutline)
@@ -20964,19 +20893,19 @@ var Renderer2 = class _Renderer {
 // gen/front_end/panels/elements/StandaloneStylesContainer.js
 var StandaloneStylesContainer_exports = {};
 __export(StandaloneStylesContainer_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW13,
+  DEFAULT_VIEW: () => DEFAULT_VIEW12,
   StandaloneStylesContainer: () => StandaloneStylesContainer
 });
 import * as Common18 from "./../../core/common/common.js";
 import * as ComputedStyle4 from "./../../models/computed_style/computed_style.js";
 import * as InlineEditor5 from "./../../ui/legacy/components/inline_editor/inline_editor.js";
-import * as Components8 from "./../../ui/legacy/components/utils/utils.js";
-import * as UI29 from "./../../ui/legacy/legacy.js";
-import { html as html18, render as render18 } from "./../../ui/lit/lit.js";
+import * as Components7 from "./../../ui/legacy/components/utils/utils.js";
+import * as UI28 from "./../../ui/legacy/legacy.js";
+import { html as html17, render as render17 } from "./../../ui/lit/lit.js";
 import * as VisualLogging18 from "./../../ui/visual_logging/visual_logging.js";
 import * as ElementsComponents8 from "./components/components.js";
-var DEFAULT_VIEW13 = (input, _output, target) => {
-  render18(html18`
+var DEFAULT_VIEW12 = (input, _output, target) => {
+  render17(html17`
     <style>${stylesSidebarPane_css_default}</style>
     <div class="style-panes-wrapper" jslog=${VisualLogging18.section("standalone-styles").track({
     resize: true
@@ -20987,12 +20916,12 @@ var DEFAULT_VIEW13 = (input, _output, target) => {
     </div>
   `, target);
 };
-var StandaloneStylesContainer = class extends Common18.ObjectWrapper.eventMixin(UI29.Widget.VBox) {
+var StandaloneStylesContainer = class extends Common18.ObjectWrapper.eventMixin(UI28.Widget.VBox) {
   activeCSSAngle = null;
   isEditingStyle = false;
   sectionByElement = /* @__PURE__ */ new WeakMap();
   // TODO: Reference the MAX_LINK_LENGTH from StylesSidebarPane at a later stage, when we have a reference to it.
-  linkifier = new Components8.Linkifier.Linkifier(
+  linkifier = new Components7.Linkifier.Linkifier(
     23,
     /* useLinkDecorator */
     true
@@ -21005,7 +20934,7 @@ var StandaloneStylesContainer = class extends Common18.ObjectWrapper.eventMixin(
   #view;
   #filter = null;
   #rebuildThrottler = new Common18.Throttler.Throttler(200);
-  constructor(element, view = DEFAULT_VIEW13) {
+  constructor(element, view = DEFAULT_VIEW12) {
     super(element, { useShadowDom: true });
     this.#view = view;
     this.#computedStyleModelInternal.addEventListener("CSSModelChanged", this.#onCSSModelChanged, this);
@@ -21233,7 +21162,6 @@ export {
   LayoutPane_exports as LayoutPane,
   MarkerDecorator_exports as MarkerDecorator,
   MetricsSidebarPane_exports as MetricsSidebarPane,
-  NodeStackTraceWidget_exports as NodeStackTraceWidget,
   PlatformFontsWidget_exports as PlatformFontsWidget,
   PropertiesWidget_exports as PropertiesWidget,
   PropertyRenderer_exports as PropertyRenderer,

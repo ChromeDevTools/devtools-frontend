@@ -59,7 +59,6 @@
     "../../../../../../front_end/panels/elements/LayoutPane.ts",
     "../../../../../../front_end/panels/elements/MarkerDecorator.ts",
     "../../../../../../front_end/panels/elements/MetricsSidebarPane.ts",
-    "../../../../../../front_end/panels/elements/NodeStackTraceWidget.ts",
     "../../../../../../front_end/panels/elements/PlatformFontsWidget.ts",
     "../../../../../../front_end/panels/elements/PropertiesWidget.ts",
     "../../../../../../front_end/panels/elements/PropertyNameCategories.ts",

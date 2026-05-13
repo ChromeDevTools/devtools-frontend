@@ -1041,6 +1041,13 @@ UI.ActionRegistration.registerActionExtension({
         "devToolsDefault",
         "vsCode"
       ]
+    },
+    {
+      shortcut: "Alt+g",
+      keybindSets: [
+        "devToolsDefault",
+        "vsCode"
+      ]
     }
   ]
 });

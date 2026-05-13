@@ -2986,7 +2986,6 @@ var KeyboardShortcutAction;
 })(KeyboardShortcutAction || (KeyboardShortcutAction = {}));
 var DevtoolsExperiments;
 (function(DevtoolsExperiments2) {
-  DevtoolsExperiments2[DevtoolsExperiments2["capture-node-creation-stacks"] = 1] = "capture-node-creation-stacks";
   DevtoolsExperiments2[DevtoolsExperiments2["protocol-monitor"] = 13] = "protocol-monitor";
   DevtoolsExperiments2[DevtoolsExperiments2["instrumentation-breakpoints"] = 61] = "instrumentation-breakpoints";
   DevtoolsExperiments2[DevtoolsExperiments2["use-source-map-scopes"] = 76] = "use-source-map-scopes";

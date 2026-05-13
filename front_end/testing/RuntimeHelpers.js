@@ -6,7 +6,6 @@ import * as Root from '../core/root/root.js';
  * @deprecated we prefer using HostConfig to control DevTools features.
  */
 const REGISTERED_EXPERIMENTS = [
-    Root.ExperimentNames.ExperimentName.CAPTURE_NODE_CREATION_STACKS,
     Root.ExperimentNames.ExperimentName.PROTOCOL_MONITOR,
     Root.ExperimentNames.ExperimentName.INSTRUMENTATION_BREAKPOINTS,
     Root.ExperimentNames.ExperimentName.USE_SOURCE_MAP_SCOPES,

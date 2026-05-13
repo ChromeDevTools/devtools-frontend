@@ -35,17 +35,6 @@ const UIStrings = {
      */
     properties: 'Properties',
     /**
-     * @description Command for showing the 'Stack Trace' tool. Stack trace refers to the location in
-     * the code where the program was at a point in time.
-     */
-    showStackTrace: 'Show Stack Trace',
-    /**
-     * @description Text for the execution stack trace tool, which shows the stack trace from when this
-     * HTML element was created. Stack trace refers to the location in the code where the program was
-     * at a point in time.
-     */
-    stackTrace: 'Stack Trace',
-    /**
      * @description Command for showing the 'Layout' tool
      */
     showLayout: 'Show Layout',
@@ -233,19 +222,6 @@ UI.ViewManager.registerViewExtension({
     async loadView() {
         const Elements = await loadElementsModule();
         return new Elements.PropertiesWidget.PropertiesWidget();
-    },
-});
-UI.ViewManager.registerViewExtension({
-    experiment: Root.ExperimentNames.ExperimentName.CAPTURE_NODE_CREATION_STACKS,
-    location: "elements-sidebar" /* UI.ViewManager.ViewLocationValues.ELEMENTS_SIDEBAR */,
-    id: 'elements.dom-creation',
-    commandPrompt: i18nLazyString(UIStrings.showStackTrace),
-    title: i18nLazyString(UIStrings.stackTrace),
-    order: 10,
-    persistence: "permanent" /* UI.ViewManager.ViewPersistence.PERMANENT */,
-    async loadView() {
-        const Elements = await loadElementsModule();
-        return new Elements.NodeStackTraceWidget.NodeStackTraceWidget();
     },
 });
 UI.ViewManager.registerViewExtension({

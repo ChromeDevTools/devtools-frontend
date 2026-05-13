@@ -148,6 +148,7 @@ var freDialog_css_default = `/*
 
 
 .fre-disclaimer {
+  overflow-y: auto;
   width: var(--sys-size-33);
   padding: var(--sys-size-9);
 

@@ -660,7 +660,6 @@ export var KeyboardShortcutAction;
 export var DevtoolsExperiments;
 (function (DevtoolsExperiments) {
     /* eslint-disable @typescript-eslint/naming-convention */
-    DevtoolsExperiments[DevtoolsExperiments["capture-node-creation-stacks"] = 1] = "capture-node-creation-stacks";
     DevtoolsExperiments[DevtoolsExperiments["protocol-monitor"] = 13] = "protocol-monitor";
     DevtoolsExperiments[DevtoolsExperiments["instrumentation-breakpoints"] = 61] = "instrumentation-breakpoints";
     DevtoolsExperiments[DevtoolsExperiments["use-source-map-scopes"] = 76] = "use-source-map-scopes";

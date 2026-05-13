@@ -311,7 +311,6 @@ export class MainImpl {
         }
     }
     #initializeExperiments() {
-        Root.Runtime.experiments.register(Root.ExperimentNames.ExperimentName.CAPTURE_NODE_CREATION_STACKS, 'Capture node creation stacks');
         const enableProtocolMonitor = (Root.Runtime.hostConfig.devToolsProtocolMonitor?.enabled ?? false) ||
             Boolean(Root.Runtime.Runtime.queryParam('isChromeForTesting'));
         const protocolMonitorExperiment = Root.Runtime.experiments.registerHostExperiment({

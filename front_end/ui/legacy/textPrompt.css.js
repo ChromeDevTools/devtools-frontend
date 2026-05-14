@@ -42,6 +42,10 @@ export default `/*
   color: var(--sys-color-token-subtle) !important; /* stylelint-disable-line declaration-no-important */
 }
 
+:host(:invalid) .text-prompt {
+  outline: var(--sys-color-error) auto var(--sys-size-1);
+}
+
 .text-prompt[data-placeholder] {
   &:empty::before {
     content: attr(data-placeholder);

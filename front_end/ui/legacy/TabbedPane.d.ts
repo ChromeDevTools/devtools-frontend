@@ -109,7 +109,6 @@ export declare class TabbedPane extends TabbedPane_base {
     updateTabAnnotationIcons(): void;
     performUpdate(): void;
     private adjustToolbarWidth;
-    private showTabElement;
     private hideTabElement;
     private createDropDownButton;
     private dropDownClicked;
@@ -119,6 +118,28 @@ export declare class TabbedPane extends TabbedPane_base {
     private numberOfTabsShown;
     private updateTabsDropDown;
     private maybeShowDropDown;
+    /**
+     * Returns the tabs that are currently hidden because of overflow, in
+     * tab order. Mirrors the payload of the `overflow-tabs-changed` event.
+     */
+    hiddenTabs(): Array<{
+        id: string;
+        title: string;
+        jslogContext?: string;
+    }>;
+    /**
+     * Returns the index in tab order of the first overflowed (hidden) tab,
+     * or -1 if every tab fits.
+     */
+    firstHiddenTabIndex(): number;
+    /**
+     * Reorders `tabId` to position `newIndex` in the tab list. Unlike
+     * {@link insertBefore}, this does not require the tab to currently be in
+     * the DOM (overflowed tabs are detached). The change is persisted via the
+     * {@link Events.TabOrderChanged} event so the new order survives across
+     * DevTools reloads.
+     */
+    moveTab(tabId: string, newIndex: number): void;
     private measureDropDownButton;
     private updateWidths;
     private measureWidths;

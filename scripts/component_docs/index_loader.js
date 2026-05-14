@@ -17,6 +17,7 @@
 'RadioButton': () => import('../../front_end/ui/legacy/RadioButton.docs.js'),
 'SelectMenu': () => import('../../front_end/ui/legacy/SelectMenu.docs.js'),
 'Slider': () => import('../../front_end/ui/legacy/Slider.docs.js'),
+'TextPrompt': () => import('../../front_end/ui/legacy/TextPrompt.docs.js'),
 'ThemeColors': () => import('../../front_end/ui/legacy/theme_support/ThemeColors.docs.js'),
     };
 

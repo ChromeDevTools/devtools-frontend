@@ -34,6 +34,7 @@ import { createIcon } from '../../ui/kit/kit.js';
 // eslint-disable-next-line @devtools/es-modules-import
 import objectValueStyles from '../../ui/legacy/components/object_ui/objectValue.css.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import { render } from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import { DetachedElementsProfileHeader, DetachedElementsProfileType, DetachedElementsProfileView } from './HeapDetachedElementsView.js';
 import heapProfilerStyles from './heapProfiler.css.js';
@@ -377,7 +378,13 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar {
         }
         this.profileViewToolbar.removeToolbarItems();
         void view.toolbarItems().then(items => {
-            items.map(item => this.profileViewToolbar.appendToolbarItem(item));
+            if (Array.isArray(items)) {
+                items.map(item => this.profileViewToolbar.appendToolbarItem(item));
+            }
+            else {
+                // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
+                render(items, this.profileViewToolbar);
+            }
         });
         return view;
     }

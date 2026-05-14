@@ -89,6 +89,13 @@ export declare const genericNavigationEntryMarkedSkippable: {
         linkTitle: () => import("../../core/platform/UIString.js").LocalizedString;
     }[];
 };
+export declare const genericBackUINavigationWouldSkipAd: {
+    file: string;
+    links: {
+        link: string;
+        linkTitle: () => import("../../core/platform/UIString.js").LocalizedString;
+    }[];
+};
 export declare const genericFormModelContextMissingToolName: {
     file: string;
     links: never[];

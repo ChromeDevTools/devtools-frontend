@@ -1,4 +1,5 @@
 import * as Common from '../../core/common/common.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import { SuggestBox, type SuggestBoxDelegate, type Suggestion } from './SuggestBox.js';
 /**
@@ -26,9 +27,15 @@ import { SuggestBox, type SuggestBoxDelegate, type Suggestion } from './SuggestB
 export declare class TextPromptElement extends HTMLElement {
     #private;
     static readonly observedAttributes: string[];
+    static formAssociated: boolean;
     constructor();
+    set validator(v: (value: string) => (null | Platform.UIString.LocalizedString));
+    get validator(): undefined | ((value: string) => (null | Platform.UIString.LocalizedString));
+    set cancelOnBlur(cancelOnBlur: boolean);
+    get cancelOnBlur(): boolean;
     attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null): void;
     connectedCallback(): void;
+    disconnectedCallback(): void;
     set completionTimeout(timeout: number);
     cloneNode(): Node;
 }
@@ -36,7 +43,7 @@ export declare namespace TextPromptElement {
     class CommitEvent extends CustomEvent<string> {
         constructor(detail: string);
     }
-    class CancelEvent extends CustomEvent<string> {
+    class CancelEvent extends CustomEvent<void> {
         constructor();
     }
     class BeforeAutoCompleteEvent extends CustomEvent<{

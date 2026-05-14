@@ -1921,6 +1921,9 @@ var DeviceModeModel = class _DeviceModeModel extends Common2.ObjectWrapper.Objec
       return null;
     }
   }
+  dispose() {
+    SDK2.TargetManager.TargetManager.instance().unobserveModels(SDK2.EmulationModel.EmulationModel, this);
+  }
   static widthValidator(value) {
     let valid = false;
     let errorMessage;

@@ -149,8 +149,6 @@ export const DEFAULT_VIEW = (input, output, target) => {
 export class WatchExpressionsSidebarPane extends UI.Widget.VBox {
     #watchExpressions;
     #watchExpressionsSetting;
-    addButton;
-    refreshButton;
     linkifier;
     #view;
     #expandControllers = new Map();
@@ -160,14 +158,6 @@ export class WatchExpressionsSidebarPane extends UI.Widget.VBox {
         this.#watchExpressions = [];
         this.#watchExpressionsSetting =
             Common.Settings.Settings.instance().createLocalSetting('watch-expressions', []);
-        this.addButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.addWatchExpression), 'plus', undefined, 'add-watch-expression');
-        this.addButton.setSize("SMALL" /* Buttons.Button.Size.SMALL */);
-        this.addButton.addEventListener("Click" /* UI.Toolbar.ToolbarButton.Events.CLICK */, _event => {
-            void this.addButtonClicked();
-        });
-        this.refreshButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.refreshWatchExpressions), 'refresh', undefined, 'refresh-watch-expressions');
-        this.refreshButton.setSize("SMALL" /* Buttons.Button.Size.SMALL */);
-        this.refreshButton.addEventListener("Click" /* UI.Toolbar.ToolbarButton.Events.CLICK */, this.#refreshExpressions, this);
         UI.Context.Context.instance().addFlavorChangeListener(SDK.RuntimeModel.ExecutionContext, this.#refreshExpressions, this);
         UI.Context.Context.instance().addFlavorChangeListener(StackTrace.StackTrace.DebuggableFrameFlavor, this.#refreshExpressions, this);
         this.linkifier = new Components.Linkifier.Linkifier();
@@ -184,7 +174,26 @@ export class WatchExpressionsSidebarPane extends UI.Widget.VBox {
         return this.#watchExpressions;
     }
     toolbarItems() {
-        return [this.addButton, this.refreshButton];
+        // clang-format off
+        return html `
+      <devtools-button .data=${{
+            variant: "toolbar" /* Buttons.Button.Variant.TOOLBAR */,
+            iconName: 'plus',
+            size: "SMALL" /* Buttons.Button.Size.SMALL */,
+            title: i18nString(UIStrings.addWatchExpression),
+            jslogContext: 'add-watch-expression',
+        }}
+        @click=${(e) => this.addButtonClicked(e)}></devtools-button>
+      <devtools-button .data=${{
+            variant: "toolbar" /* Buttons.Button.Variant.TOOLBAR */,
+            iconName: 'refresh',
+            size: "SMALL" /* Buttons.Button.Size.SMALL */,
+            title: i18nString(UIStrings.refreshWatchExpressions),
+            jslogContext: 'refresh-watch-expressions',
+        }}
+        @click=${(e) => this.refreshButtonClicked(e)}></devtools-button>
+    `;
+        // clang-format on
     }
     saveExpressions() {
         const toSave = [];
@@ -196,7 +205,8 @@ export class WatchExpressionsSidebarPane extends UI.Widget.VBox {
         }
         this.#watchExpressionsSetting.set(toSave);
     }
-    async addButtonClicked() {
+    async addButtonClicked(event) {
+        event?.consume(true);
         await UI.ViewManager.ViewManager.instance().showView('sources.watch');
         const watchExpression = this.createWatchExpression(null);
         this.requestUpdate();
@@ -205,6 +215,10 @@ export class WatchExpressionsSidebarPane extends UI.Widget.VBox {
         // prompt is migrated to Lit.
         await this.updateComplete;
         watchExpression.startEditing();
+    }
+    refreshButtonClicked(event) {
+        event.consume(true);
+        this.#refreshExpressions();
     }
     #refreshExpressions() {
         this.linkifier.reset();

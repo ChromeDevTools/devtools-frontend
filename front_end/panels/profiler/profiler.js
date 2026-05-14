@@ -843,6 +843,7 @@ var objectValue_css_default = `/*
 
 // gen/front_end/panels/profiler/ProfilesPanel.js
 import * as UI14 from "./../../ui/legacy/legacy.js";
+import { render as render2 } from "./../../ui/lit/lit.js";
 import * as VisualLogging6 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/profiler/HeapDetachedElementsView.js
@@ -8640,7 +8641,11 @@ var ProfilesPanel = class _ProfilesPanel extends UI14.Panel.PanelWithSidebar {
     }
     this.profileViewToolbar.removeToolbarItems();
     void view.toolbarItems().then((items) => {
-      items.map((item) => this.profileViewToolbar.appendToolbarItem(item));
+      if (Array.isArray(items)) {
+        items.map((item) => this.profileViewToolbar.appendToolbarItem(item));
+      } else {
+        render2(items, this.profileViewToolbar);
+      }
     });
     return view;
   }

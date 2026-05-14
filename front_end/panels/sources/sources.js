@@ -14398,8 +14398,6 @@ var DEFAULT_VIEW6 = (input, output, target) => {
 var WatchExpressionsSidebarPane = class _WatchExpressionsSidebarPane extends UI26.Widget.VBox {
   #watchExpressions;
   #watchExpressionsSetting;
-  addButton;
-  refreshButton;
   linkifier;
   #view;
   #expandControllers = /* @__PURE__ */ new Map();
@@ -14408,20 +14406,6 @@ var WatchExpressionsSidebarPane = class _WatchExpressionsSidebarPane extends UI2
     this.registerRequiredCSS(watchExpressionsSidebarPane_css_default, objectValue_css_default);
     this.#watchExpressions = [];
     this.#watchExpressionsSetting = Common19.Settings.Settings.instance().createLocalSetting("watch-expressions", []);
-    this.addButton = new UI26.Toolbar.ToolbarButton(i18nString25(UIStrings26.addWatchExpression), "plus", void 0, "add-watch-expression");
-    this.addButton.setSize(
-      "SMALL"
-      /* Buttons.Button.Size.SMALL */
-    );
-    this.addButton.addEventListener("Click", (_event) => {
-      void this.addButtonClicked();
-    });
-    this.refreshButton = new UI26.Toolbar.ToolbarButton(i18nString25(UIStrings26.refreshWatchExpressions), "refresh", void 0, "refresh-watch-expressions");
-    this.refreshButton.setSize(
-      "SMALL"
-      /* Buttons.Button.Size.SMALL */
-    );
-    this.refreshButton.addEventListener("Click", this.#refreshExpressions, this);
     UI26.Context.Context.instance().addFlavorChangeListener(SDK15.RuntimeModel.ExecutionContext, this.#refreshExpressions, this);
     UI26.Context.Context.instance().addFlavorChangeListener(StackTrace9.StackTrace.DebuggableFrameFlavor, this.#refreshExpressions, this);
     this.linkifier = new Components4.Linkifier.Linkifier();
@@ -14438,7 +14422,24 @@ var WatchExpressionsSidebarPane = class _WatchExpressionsSidebarPane extends UI2
     return this.#watchExpressions;
   }
   toolbarItems() {
-    return [this.addButton, this.refreshButton];
+    return html12`
+      <devtools-button .data=${{
+      variant: "toolbar",
+      iconName: "plus",
+      size: "SMALL",
+      title: i18nString25(UIStrings26.addWatchExpression),
+      jslogContext: "add-watch-expression"
+    }}
+        @click=${(e) => this.addButtonClicked(e)}></devtools-button>
+      <devtools-button .data=${{
+      variant: "toolbar",
+      iconName: "refresh",
+      size: "SMALL",
+      title: i18nString25(UIStrings26.refreshWatchExpressions),
+      jslogContext: "refresh-watch-expressions"
+    }}
+        @click=${(e) => this.refreshButtonClicked(e)}></devtools-button>
+    `;
   }
   saveExpressions() {
     const toSave = [];
@@ -14450,12 +14451,17 @@ var WatchExpressionsSidebarPane = class _WatchExpressionsSidebarPane extends UI2
     }
     this.#watchExpressionsSetting.set(toSave);
   }
-  async addButtonClicked() {
+  async addButtonClicked(event) {
+    event?.consume(true);
     await UI26.ViewManager.ViewManager.instance().showView("sources.watch");
     const watchExpression = this.createWatchExpression(null);
     this.requestUpdate();
     await this.updateComplete;
     watchExpression.startEditing();
+  }
+  refreshButtonClicked(event) {
+    event.consume(true);
+    this.#refreshExpressions();
   }
   #refreshExpressions() {
     this.linkifier.reset();

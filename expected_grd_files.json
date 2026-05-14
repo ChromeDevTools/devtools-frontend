@@ -524,6 +524,7 @@
   "front_end/models/issues_manager/descriptions/federatedAuthUserInfoRequestNotSameOrigin.md",
   "front_end/models/issues_manager/descriptions/federatedAuthUserInfoRequestNotSignedInWithIdp.md",
   "front_end/models/issues_manager/descriptions/fetchingPartitionedBlobURL.md",
+  "front_end/models/issues_manager/descriptions/genericBackUINavigationWouldSkipAd.md",
   "front_end/models/issues_manager/descriptions/genericFormAriaLabelledByToNonExistingIdError.md",
   "front_end/models/issues_manager/descriptions/genericFormAutocompleteAttributeEmptyError.md",
   "front_end/models/issues_manager/descriptions/genericFormDuplicateIdForInputError.md",

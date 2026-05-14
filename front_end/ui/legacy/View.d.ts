@@ -1,4 +1,5 @@
 import * as Platform from '../../core/platform/platform.js';
+import type { TemplateResult } from '../lit/lit.js';
 import type { TabbedPane } from './TabbedPane.js';
 import type { ToolbarItem, ToolbarMenuButton } from './Toolbar.js';
 import { type AnyWidget, VBox, type WidgetOptions } from './Widget.js';
@@ -9,7 +10,7 @@ export interface View {
     isPreviewFeature(): boolean;
     iconName(): string | undefined;
     isTransient(): boolean;
-    toolbarItems(): Promise<ToolbarItem[]>;
+    toolbarItems(): Promise<ToolbarItem[] | TemplateResult>;
     widget(): Promise<AnyWidget>;
     disposeView(): void | Promise<void>;
 }

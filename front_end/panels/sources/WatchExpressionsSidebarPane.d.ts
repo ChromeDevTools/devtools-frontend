@@ -4,6 +4,7 @@ import type * as Protocol from '../../generated/protocol.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import { type TemplateResult } from '../../ui/lit/lit.js';
 import { UISourceCodeFrame } from './UISourceCodeFrame.js';
 interface ViewInput {
     onCopyWatchExpression(watchExpression: WatchExpression): void;
@@ -15,15 +16,14 @@ type View = (input: ViewInput, output: object, target: HTMLElement) => void;
 export declare const DEFAULT_VIEW: View;
 export declare class WatchExpressionsSidebarPane extends UI.Widget.VBox implements UI.ActionRegistration.ActionDelegate, UI.Toolbar.ItemsProvider {
     #private;
-    private readonly addButton;
-    private readonly refreshButton;
     private readonly linkifier;
     constructor();
     static instance(): WatchExpressionsSidebarPane;
     get watchExpressions(): WatchExpression[];
-    toolbarItems(): UI.Toolbar.ToolbarItem[];
+    toolbarItems(): TemplateResult;
     private saveExpressions;
     private addButtonClicked;
+    private refreshButtonClicked;
     performUpdate(): Promise<void>;
     private createWatchExpression;
     private watchExpressionUpdated;

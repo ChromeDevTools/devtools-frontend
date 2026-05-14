@@ -14,5 +14,6 @@
   "../../front_end/ui/legacy/RadioButton.docs.js",
   "../../front_end/ui/legacy/SelectMenu.docs.js",
   "../../front_end/ui/legacy/Slider.docs.js",
+  "../../front_end/ui/legacy/TextPrompt.docs.js",
   "../../front_end/ui/legacy/theme_support/ThemeColors.docs.js"
 ]

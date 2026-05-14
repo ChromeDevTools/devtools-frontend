@@ -63,16 +63,32 @@ import { cloneCustomElement, ElementFocusRestorer } from './UIUtils.js';
  *            large.
  */
 export class TextPromptElement extends HTMLElement {
-    static observedAttributes = ['editing', 'completions', 'placeholder'];
+    static observedAttributes = ['editing', 'completions', 'placeholder', 'cancel-on-blur'];
+    static formAssociated = true;
     #shadow = this.attachShadow({ mode: 'open' });
+    #internals = this.attachInternals();
     #entrypoint = this.#shadow.createChild('span');
     #slot = this.#entrypoint.createChild('slot');
     #textPrompt = new TextPrompt();
     #completionTimeout = null;
     #completionObserver = new MutationObserver(this.#onMutate.bind(this));
+    #validator;
+    #cancelOnBlur = false;
     constructor() {
         super();
         this.#textPrompt.initialize(this.#willAutoComplete.bind(this));
+    }
+    set validator(v) {
+        this.#validator = v;
+    }
+    get validator() {
+        return this.#validator;
+    }
+    set cancelOnBlur(cancelOnBlur) {
+        this.setAttribute('cancel-on-blur', `${cancelOnBlur}`);
+    }
+    get cancelOnBlur() {
+        return this.#cancelOnBlur;
     }
     #onMutate(changes) {
         const listId = this.getAttribute('completions');
@@ -99,11 +115,22 @@ export class TextPromptElement extends HTMLElement {
         if (oldValue === newValue) {
             return;
         }
+        const isTruthy = (value) => value !== null && value !== 'false';
         switch (name) {
+            case 'cancel-on-blur':
+                if (isTruthy(newValue)) {
+                    this.#cancelOnBlur = true;
+                }
+                else {
+                    this.#cancelOnBlur = false;
+                }
+                break;
             case 'editing':
                 if (this.isConnected) {
-                    if (newValue !== null && newValue !== 'false' && oldValue === null) {
-                        this.#startEditing();
+                    if (isTruthy(newValue)) {
+                        if (!isTruthy(oldValue)) {
+                            this.#startEditing();
+                        }
                     }
                     else {
                         this.#stopEditing();
@@ -152,9 +179,10 @@ export class TextPromptElement extends HTMLElement {
             placeholder.setTextContentTruncatedIfNeeded(this.#slot.deepInnerText(), truncatedTextPlaceholder);
         }
         this.#slot.remove();
-        const proxy = this.#textPrompt.attachAndStartEditing(placeholder, e => this.#done(e, /* commit=*/ true));
+        const proxy = this.#textPrompt.attachAndStartEditing(placeholder, e => this.#done(e, /* commit=*/ !this.#cancelOnBlur));
         proxy.addEventListener('keydown', this.#editingValueKeyDown.bind(this));
         placeholder.getComponentSelection()?.selectAllChildren(placeholder);
+        this.#textPrompt.focus();
     }
     #stopEditing() {
         this.#entrypoint.removeChildren();
@@ -166,10 +194,23 @@ export class TextPromptElement extends HTMLElement {
             this.attributeChangedCallback('editing', null, '');
         }
     }
+    disconnectedCallback() {
+        if (this.hasAttribute('editing')) {
+            this.#stopEditing();
+        }
+    }
     #done(e, commit) {
         const target = e.target;
         const text = target.textContent || '';
+        this.#internals.setValidity({});
         if (commit) {
+            const validationMessage = this.#validator?.(text) ?? '';
+            if (validationMessage) {
+                this.#internals.setValidity({ customError: true }, validationMessage, this.#entrypoint);
+            }
+            if (!this.#internals.reportValidity()) {
+                return;
+            }
             this.dispatchEvent(new TextPromptElement.CommitEvent(text));
         }
         else {
@@ -181,6 +222,7 @@ export class TextPromptElement extends HTMLElement {
         if (event.handled || !(event instanceof KeyboardEvent)) {
             return;
         }
+        this.#internals.setValidity({});
         if (event.key === 'Enter') {
             this.#done(event, /* commit=*/ true);
         }

@@ -2355,6 +2355,7 @@ var issueDescriptions6 = /* @__PURE__ */ new Map([
 var GenericIssue_exports = {};
 __export(GenericIssue_exports, {
   GenericIssue: () => GenericIssue,
+  genericBackUINavigationWouldSkipAd: () => genericBackUINavigationWouldSkipAd,
   genericFormAriaLabelledByToNonExistingIdError: () => genericFormAriaLabelledByToNonExistingIdError,
   genericFormAutocompleteAttributeEmptyError: () => genericFormAutocompleteAttributeEmptyError,
   genericFormDuplicateIdForInputError: () => genericFormDuplicateIdForInputError,
@@ -2398,7 +2399,11 @@ var UIStrings12 = {
   /**
    * @description title for history intervention documentation page.
    */
-  historyManipulationInterventionPageTitle: "History manipulation intervention explainer"
+  historyManipulationInterventionPageTitle: "History manipulation intervention explainer",
+  /**
+   * @description title for back-to-ad intervention documentation page.
+   */
+  backToAdInterventionPageTitle: "Back-to-ad intervention explainer"
 };
 var str_11 = i18n21.i18n.registerUIStrings("models/issues_manager/GenericIssue.ts", UIStrings12);
 var i18nLazyString8 = i18n21.i18n.getLazilyComputedLocalizedString.bind(void 0, str_11);
@@ -2524,6 +2529,13 @@ var genericNavigationEntryMarkedSkippable = {
     linkTitle: i18nLazyString8(UIStrings12.historyManipulationInterventionPageTitle)
   }]
 };
+var genericBackUINavigationWouldSkipAd = {
+  file: "genericBackUINavigationWouldSkipAd.md",
+  links: [{
+    link: "https://chromium.googlesource.com/chromium/src/+/main/docs/history_manipulation_intervention.md",
+    linkTitle: i18nLazyString8(UIStrings12.backToAdInterventionPageTitle)
+  }]
+};
 var genericFormModelContextMissingToolName = {
   file: "genericFormModelContextMissingToolName.md",
   links: []
@@ -2583,6 +2595,10 @@ var issueDescriptions7 = /* @__PURE__ */ new Map([
   [
     "NavigationEntryMarkedSkippable",
     genericNavigationEntryMarkedSkippable
+  ],
+  [
+    "BackUINavigationWouldSkipAd",
+    genericBackUINavigationWouldSkipAd
   ],
   [
     "FormModelContextMissingToolName",

@@ -8866,10 +8866,10 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common5.ObjectWrapper.e
     const focusedIndex = this.focusedSectionIndex();
     this.linkifier.reset();
     const prevSections = this.sectionBlocks.map((block) => block.sections).flat();
-    this.sectionBlocks = [];
     const node = this.node();
     this.hasMatchedStyles = matchedStyles !== null && node !== null;
     if (!this.hasMatchedStyles) {
+      this.sectionBlocks = [];
       this.sectionsContainer.contentElement.removeChildren();
       this.sectionsContainer.detachChildWidgets();
       this.noMatchesElement.classList.remove("hidden");

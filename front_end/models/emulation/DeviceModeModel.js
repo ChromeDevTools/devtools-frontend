@@ -173,6 +173,9 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
             return null;
         }
     }
+    dispose() {
+        SDK.TargetManager.TargetManager.instance().unobserveModels(SDK.EmulationModel.EmulationModel, this);
+    }
     static widthValidator(value) {
         let valid = false;
         let errorMessage;

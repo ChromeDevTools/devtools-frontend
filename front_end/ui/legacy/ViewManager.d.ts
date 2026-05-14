@@ -2,6 +2,7 @@ import './Toolbar.js';
 import * as Common from '../../core/common/common.js';
 import type * as Root from '../../core/root/root.js';
 import type * as Foundation from '../../foundation/foundation.js';
+import { type TemplateResult } from '../lit/lit.js';
 import { TabbedPane } from './TabbedPane.js';
 import { type ToolbarItem } from './Toolbar.js';
 import type { TabbedViewLocation, View, ViewLocation } from './View.js';
@@ -30,7 +31,7 @@ export declare class PreRegisteredView implements View {
     settings(): string[] | undefined;
     tags(): string | undefined;
     persistence(): ViewPersistence | undefined;
-    toolbarItems(): Promise<ToolbarItem[]>;
+    toolbarItems(): Promise<ToolbarItem[] | TemplateResult>;
     widget(): Promise<AnyWidget>;
     disposeView(): Promise<void>;
     experiment(): string | undefined;
@@ -58,7 +59,7 @@ export declare class ViewManager extends Common.ObjectWrapper.ObjectWrapper<Even
         universe?: Foundation.Universe.Universe;
     }): ViewManager;
     static removeInstance(): void;
-    static createToolbar(toolbarItems: ToolbarItem[]): Element | null;
+    static createToolbar(toolbarItems: ToolbarItem[] | TemplateResult): Element | null;
     getRegisteredViewExtensions(): PreRegisteredView[];
     locationNameForViewId(viewId: string): string;
     /**

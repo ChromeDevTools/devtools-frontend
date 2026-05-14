@@ -766,7 +766,7 @@ __export(ContextMenu_exports, {
 import * as Host7 from "./../../core/host/host.js";
 import * as Root5 from "./../../core/root/root.js";
 import * as Buttons4 from "./../components/buttons/buttons.js";
-import { html as html2, render as render2 } from "./../lit/lit.js";
+import { html as html2, render as render3 } from "./../lit/lit.js";
 import * as VisualLogging10 from "./../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/ShortcutRegistry.js
@@ -3983,6 +3983,8 @@ var TabbedPane = class extends Common6.ObjectWrapper.eventMixin(VBox) {
   measuredDropDownButtonWidth;
   #leftToolbar;
   #rightToolbar;
+  #trailingSlot;
+  #lastDispatchedHiddenTabIds = "";
   allowTabReorder;
   automaticReorder;
   constructor(element) {
@@ -4013,6 +4015,12 @@ var TabbedPane = class extends Common6.ObjectWrapper.eventMixin(VBox) {
     this.tabSlider = document.createElement("div");
     this.tabSlider.classList.add("tabbed-pane-tab-slider");
     this.tabsElement = this.headerContentsElement.createChild("div", "tabbed-pane-header-tabs");
+    this.#trailingSlot = document.createElement("slot");
+    this.#trailingSlot.name = "trailing-button";
+    this.#trailingSlot.classList.add("tabbed-pane-trailing-button");
+    this.headerContentsElement.appendChild(this.#trailingSlot);
+    this.#trailingSlot.addEventListener("slotchange", () => this.requestUpdate());
+    new ResizeObserver(() => this.requestUpdate()).observe(this.headerContentsElement);
     this.tabsElement.setAttribute("role", "tablist");
     this.tabsElement.addEventListener("keydown", this.keyDown.bind(this), false);
     this.#contentElement = this.contentElement.createChild("div", "tabbed-pane-content");
@@ -4526,14 +4534,6 @@ var TabbedPane = class extends Common6.ObjectWrapper.eventMixin(VBox) {
       this.#rightToolbar.setCompactLayout(false);
     }
   }
-  showTabElement(index, tab) {
-    if (index >= this.tabsElement.children.length) {
-      this.tabsElement.appendChild(tab.tabElement);
-    } else {
-      this.tabsElement.insertBefore(tab.tabElement, this.tabsElement.children[index]);
-    }
-    tab.shown = true;
-  }
   hideTabElement(tab) {
     this.tabsElement.removeChild(tab.tabElement);
     tab.shown = false;
@@ -4610,7 +4610,9 @@ var TabbedPane = class extends Common6.ObjectWrapper.eventMixin(VBox) {
     return numTabsShown;
   }
   updateTabsDropDown() {
-    const tabsToShowIndexes = this.tabsToShowIndexes(this.#tabs, this.tabsHistory, this.totalWidth(), this.measuredDropDownButtonWidth || 0);
+    const slottedTrailing = this.#trailingSlot.assignedElements()[0];
+    const reservedWidth = slottedTrailing ? slottedTrailing.getBoundingClientRect().width : this.measuredDropDownButtonWidth || 0;
+    const tabsToShowIndexes = this.tabsToShowIndexes(this.#tabs, this.tabsHistory, this.totalWidth(), reservedWidth);
     if (this.lastSelectedOverflowTab && this.numberOfTabsShown() !== tabsToShowIndexes.length) {
       delete this.lastSelectedOverflowTab;
       this.updateTabsDropDown();
@@ -4623,18 +4625,92 @@ var TabbedPane = class extends Common6.ObjectWrapper.eventMixin(VBox) {
     }
     for (let i = 0; i < tabsToShowIndexes.length; ++i) {
       const tab = this.#tabs[tabsToShowIndexes[i]];
-      if (!tab.shown) {
-        this.showTabElement(i, tab);
+      if (this.tabsElement.children[i] !== tab.tabElement) {
+        this.tabsElement.insertBefore(tab.tabElement, this.tabsElement.children[i] ?? null);
       }
+      tab.shown = true;
     }
     this.maybeShowDropDown(tabsToShowIndexes.length !== this.#tabs.length);
+    this.#dispatchOverflowTabsChangedIfNeeded();
   }
   maybeShowDropDown(hasMoreTabs) {
-    if (hasMoreTabs && !this.dropDownButton.parentElement) {
+    const shouldShow = this.#trailingSlot.assignedElements().length === 0 && hasMoreTabs;
+    if (shouldShow && !this.dropDownButton.parentElement) {
       this.headerContentsElement.appendChild(this.dropDownButton);
-    } else if (!hasMoreTabs && this.dropDownButton.parentElement) {
+    } else if (!shouldShow && this.dropDownButton.parentElement) {
       this.headerContentsElement.removeChild(this.dropDownButton);
     }
+  }
+  /**
+   * Dispatches an `overflow-tabs-changed` DOM event whenever the set of
+   * hidden (overflowed) tabs changes. The event bubbles and is composed
+   * so consumers slotted into `trailing-button` can listen via the
+   * standard `addEventListener` / lit-html `@overflow-tabs-changed=`
+   * syntax. Payload (`event.detail.hiddenTabs`) lists hidden tabs in
+   * tab order.
+   *
+   * `updateTabsDropDown()` runs on every layout/resize tick (including
+   * ResizeObserver callbacks on the toolbars), but in the steady state
+   * the overflow set rarely changes. Dedup against the last dispatched
+   * tab-id list so consumers (e.g. a plus button rendering the hidden
+   * tabs in its menu) are not re-notified on every paint.
+   */
+  #dispatchOverflowTabsChangedIfNeeded() {
+    const hidden = this.hiddenTabs();
+    const key = hidden.map((t) => t.id).join("\0");
+    if (key === this.#lastDispatchedHiddenTabIds) {
+      return;
+    }
+    this.#lastDispatchedHiddenTabIds = key;
+    this.dispatchDOMEvent(new CustomEvent("overflow-tabs-changed", {
+      bubbles: true,
+      composed: true,
+      detail: { hiddenTabs: hidden }
+    }));
+  }
+  /**
+   * Returns the tabs that are currently hidden because of overflow, in
+   * tab order. Mirrors the payload of the `overflow-tabs-changed` event.
+   */
+  hiddenTabs() {
+    return this.#tabs.filter((tab) => !tab.shown).map((tab) => ({
+      id: tab.id,
+      title: tab.title,
+      jslogContext: tab.jslogContext
+    }));
+  }
+  /**
+   * Returns the index in tab order of the first overflowed (hidden) tab,
+   * or -1 if every tab fits.
+   */
+  firstHiddenTabIndex() {
+    return this.#tabs.findIndex((tab) => !tab.shown);
+  }
+  /**
+   * Reorders `tabId` to position `newIndex` in the tab list. Unlike
+   * {@link insertBefore}, this does not require the tab to currently be in
+   * the DOM (overflowed tabs are detached). The change is persisted via the
+   * {@link Events.TabOrderChanged} event so the new order survives across
+   * DevTools reloads.
+   */
+  moveTab(tabId, newIndex) {
+    const tab = this.tabsById.get(tabId);
+    if (!tab) {
+      return;
+    }
+    const oldIndex = this.#tabs.indexOf(tab);
+    if (oldIndex === -1) {
+      return;
+    }
+    const targetIndex = Math.max(0, Math.min(newIndex, this.#tabs.length - 1));
+    if (oldIndex === targetIndex) {
+      return;
+    }
+    this.#tabs.splice(oldIndex, 1);
+    this.#tabs.splice(targetIndex, 0, tab);
+    const eventData = { tabId: tab.id, view: tab.view };
+    this.dispatchEventToListeners(Events.TabOrderChanged, eventData);
+    this.requestUpdate();
   }
   measureDropDownButton() {
     if (this.measuredDropDownButtonWidth) {
@@ -4717,11 +4793,12 @@ var TabbedPane = class extends Common6.ObjectWrapper.eventMixin(VBox) {
     if (this.lastSelectedOverflowTab !== void 0) {
       tabsToLookAt.unshift(tabsToLookAt.splice(tabsToLookAt.indexOf(this.lastSelectedOverflowTab), 1)[0]);
     }
+    const reserveOnLastTab = this.#trailingSlot.assignedElements().length > 0;
     for (let i = 0; i < tabCount; ++i) {
       const tab = this.automaticReorder ? tabsHistory[i] : tabsToLookAt[i];
       totalTabsWidth += tab.width();
       let minimalRequiredWidth = totalTabsWidth;
-      if (i !== tabCount - 1) {
+      if (i !== tabCount - 1 || reserveOnLastTab) {
         minimalRequiredWidth += measuredDropDownButtonWidth;
       }
       if (!this.verticalTabLayout && minimalRequiredWidth > totalWidth) {
@@ -5376,6 +5453,7 @@ import * as Host4 from "./../../core/host/host.js";
 import * as i18n11 from "./../../core/i18n/i18n.js";
 import * as Platform7 from "./../../core/platform/platform.js";
 import { createIcon as createIcon3 } from "./../kit/kit.js";
+import { render as render2 } from "./../lit/lit.js";
 import * as VisualLogging5 from "./../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/viewContainers.css.js
@@ -5711,12 +5789,16 @@ var ViewManager = class _ViewManager extends Common7.ObjectWrapper.ObjectWrapper
     viewManagerInstance = void 0;
   }
   static createToolbar(toolbarItems) {
-    if (!toolbarItems.length) {
+    if (Array.isArray(toolbarItems) && !toolbarItems.length) {
       return null;
     }
     const toolbar5 = document.createElement("devtools-toolbar");
-    for (const item8 of toolbarItems) {
-      toolbar5.appendToolbarItem(item8);
+    if (Array.isArray(toolbarItems)) {
+      for (const item8 of toolbarItems) {
+        toolbar5.appendToolbarItem(item8);
+      }
+    } else {
+      render2(toolbarItems, toolbar5);
     }
     return toolbar5;
   }
@@ -9991,7 +10073,7 @@ var MenuButton = class extends HTMLElement {
     if (!this.iconName) {
       throw new Error("<devtools-menu-button> expects an icon.");
     }
-    render2(html2`
+    render3(html2`
         <devtools-button .disabled=${this.disabled}
                          .iconName=${this.iconName}
                          .variant=${"icon"}
@@ -11096,6 +11178,10 @@ var textPrompt_css_default = `/*
   color: var(--sys-color-token-subtle) !important; /* stylelint-disable-line declaration-no-important */
 }
 
+:host(:invalid) .text-prompt {
+  outline: var(--sys-color-error) auto var(--sys-size-1);
+}
+
 .text-prompt[data-placeholder] {
   &:empty::before {
     content: attr(data-placeholder);
@@ -11141,16 +11227,32 @@ var textPrompt_css_default = `/*
 
 // gen/front_end/ui/legacy/TextPrompt.js
 var TextPromptElement = class _TextPromptElement extends HTMLElement {
-  static observedAttributes = ["editing", "completions", "placeholder"];
+  static observedAttributes = ["editing", "completions", "placeholder", "cancel-on-blur"];
+  static formAssociated = true;
   #shadow = this.attachShadow({ mode: "open" });
+  #internals = this.attachInternals();
   #entrypoint = this.#shadow.createChild("span");
   #slot = this.#entrypoint.createChild("slot");
   #textPrompt = new TextPrompt();
   #completionTimeout = null;
   #completionObserver = new MutationObserver(this.#onMutate.bind(this));
+  #validator;
+  #cancelOnBlur = false;
   constructor() {
     super();
     this.#textPrompt.initialize(this.#willAutoComplete.bind(this));
+  }
+  set validator(v) {
+    this.#validator = v;
+  }
+  get validator() {
+    return this.#validator;
+  }
+  set cancelOnBlur(cancelOnBlur) {
+    this.setAttribute("cancel-on-blur", `${cancelOnBlur}`);
+  }
+  get cancelOnBlur() {
+    return this.#cancelOnBlur;
   }
   #onMutate(changes) {
     const listId = this.getAttribute("completions");
@@ -11175,11 +11277,21 @@ var TextPromptElement = class _TextPromptElement extends HTMLElement {
     if (oldValue === newValue) {
       return;
     }
+    const isTruthy = (value) => value !== null && value !== "false";
     switch (name) {
+      case "cancel-on-blur":
+        if (isTruthy(newValue)) {
+          this.#cancelOnBlur = true;
+        } else {
+          this.#cancelOnBlur = false;
+        }
+        break;
       case "editing":
         if (this.isConnected) {
-          if (newValue !== null && newValue !== "false" && oldValue === null) {
-            this.#startEditing();
+          if (isTruthy(newValue)) {
+            if (!isTruthy(oldValue)) {
+              this.#startEditing();
+            }
           } else {
             this.#stopEditing();
           }
@@ -11228,10 +11340,11 @@ var TextPromptElement = class _TextPromptElement extends HTMLElement {
     const proxy = this.#textPrompt.attachAndStartEditing(placeholder, (e) => this.#done(
       e,
       /* commit=*/
-      true
+      !this.#cancelOnBlur
     ));
     proxy.addEventListener("keydown", this.#editingValueKeyDown.bind(this));
     placeholder.getComponentSelection()?.selectAllChildren(placeholder);
+    this.#textPrompt.focus();
   }
   #stopEditing() {
     this.#entrypoint.removeChildren();
@@ -11243,10 +11356,23 @@ var TextPromptElement = class _TextPromptElement extends HTMLElement {
       this.attributeChangedCallback("editing", null, "");
     }
   }
+  disconnectedCallback() {
+    if (this.hasAttribute("editing")) {
+      this.#stopEditing();
+    }
+  }
   #done(e, commit) {
     const target = e.target;
     const text = target.textContent || "";
+    this.#internals.setValidity({});
     if (commit) {
+      const validationMessage = this.#validator?.(text) ?? "";
+      if (validationMessage) {
+        this.#internals.setValidity({ customError: true }, validationMessage, this.#entrypoint);
+      }
+      if (!this.#internals.reportValidity()) {
+        return;
+      }
       this.dispatchEvent(new _TextPromptElement.CommitEvent(text));
     } else {
       this.dispatchEvent(new _TextPromptElement.CancelEvent());
@@ -11257,6 +11383,7 @@ var TextPromptElement = class _TextPromptElement extends HTMLElement {
     if (event.handled || !(event instanceof KeyboardEvent)) {
       return;
     }
+    this.#internals.setValidity({});
     if (event.key === "Enter") {
       this.#done(
         event,
@@ -14678,7 +14805,7 @@ div.error {
 /*# sourceURL=${import.meta.resolve("./smallBubble.css")} */`;
 
 // gen/front_end/ui/legacy/UIUtils.js
-var { Directives: Directives2, render: render3 } = Lit2;
+var { Directives: Directives2, render: render4 } = Lit2;
 var UIStrings12 = {
   /**
    * @description label to open link externally
@@ -16343,7 +16470,7 @@ var HTMLElementWithLightDOMTemplate = class _HTMLElementWithLightDOMTemplate ext
       this.#mutationObserver.observe(this.#contentTemplate.content, { childList: true, attributes: true, subtree: true, characterData: true });
     }
     _HTMLElementWithLightDOMTemplate.patchLitTemplate(template);
-    render3(template, this.#contentTemplate.content);
+    render4(template, this.#contentTemplate.content);
   }
   #onChange(mutationList) {
     this.onChange(mutationList);
@@ -17452,7 +17579,7 @@ __export(EmptyWidget_exports, {
 });
 import "./../kit/kit.js";
 import * as i18n27 from "./../../core/i18n/i18n.js";
-import { Directives as Directives3, html as html3, render as render4 } from "./../lit/lit.js";
+import { Directives as Directives3, html as html3, render as render5 } from "./../lit/lit.js";
 import * as VisualLogging17 from "./../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/emptyWidget.css.js
@@ -17479,7 +17606,7 @@ var str_14 = i18n27.i18n.registerUIStrings("ui/legacy/EmptyWidget.ts", UIStrings
 var i18nString14 = i18n27.i18n.getLocalizedString.bind(void 0, str_14);
 var { ref } = Directives3;
 var DEFAULT_VIEW = (input, output, target) => {
-  render4(html3`
+  render5(html3`
     <style>${inspectorCommon_css_default}</style>
     <style>${emptyWidget_css_default}</style>
     <div class="empty-state" jslog=${VisualLogging17.section("empty-view")}
@@ -18459,7 +18586,7 @@ __export(ListWidget_exports, {
 import * as i18n31 from "./../../core/i18n/i18n.js";
 import * as Platform21 from "./../../core/platform/platform.js";
 import * as Buttons8 from "./../components/buttons/buttons.js";
-import { html as html4, render as render5 } from "./../lit/lit.js";
+import { html as html4, render as render6 } from "./../lit/lit.js";
 import * as VisualLogging19 from "./../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/listWidget.css.js
@@ -18795,7 +18922,7 @@ var ListWidget = class extends VBox {
     const controls = document.createElement("div");
     controls.classList.add("controls-container");
     controls.classList.add("fill");
-    render5(html4`
+    render6(html4`
       <div class="controls-gradient"></div>
       <div class="controls-buttons">
         <devtools-toolbar>
@@ -19496,7 +19623,7 @@ __export(RemoteDebuggingTerminatedScreen_exports, {
 });
 import * as i18n33 from "./../../core/i18n/i18n.js";
 import * as Buttons9 from "./../components/buttons/buttons.js";
-import { html as html5, render as render6 } from "./../lit/lit.js";
+import { html as html5, render as render7 } from "./../lit/lit.js";
 
 // gen/front_end/ui/legacy/remoteDebuggingTerminatedScreen.css.js
 var remoteDebuggingTerminatedScreen_css_default = `/*
@@ -19561,7 +19688,7 @@ var UIStrings17 = {
 var str_17 = i18n33.i18n.registerUIStrings("ui/legacy/RemoteDebuggingTerminatedScreen.ts", UIStrings17);
 var i18nString17 = i18n33.i18n.getLocalizedString.bind(void 0, str_17);
 var DEFAULT_VIEW2 = (input, _output, target) => {
-  render6(html5`
+  render7(html5`
     <style>${remoteDebuggingTerminatedScreen_css_default}</style>
     <div class="header">${i18nString17(UIStrings17.debuggingConnectionWasClosed)}</div>
     <div class="content">
@@ -21145,7 +21272,7 @@ __export(TargetCrashedScreen_exports, {
   TargetCrashedScreen: () => TargetCrashedScreen
 });
 import * as i18n39 from "./../../core/i18n/i18n.js";
-import { html as html6, render as render7 } from "./../lit/lit.js";
+import { html as html6, render as render8 } from "./../lit/lit.js";
 
 // gen/front_end/ui/legacy/targetCrashedScreen.css.js
 var targetCrashedScreen_css_default = `/*
@@ -21181,7 +21308,7 @@ var UIStrings20 = {
 var str_20 = i18n39.i18n.registerUIStrings("ui/legacy/TargetCrashedScreen.ts", UIStrings20);
 var i18nString20 = i18n39.i18n.getLocalizedString.bind(void 0, str_20);
 var DEFAULT_VIEW3 = (input, _output, target) => {
-  render7(html6`
+  render8(html6`
     <style>${targetCrashedScreen_css_default}</style>
     <div class="message">${i18nString20(UIStrings20.devtoolsWasDisconnectedFromThe)}</div>
     <div class="message">${i18nString20(UIStrings20.oncePageIsReloadedDevtoolsWill)}</div>`, target);
@@ -21544,7 +21671,7 @@ ol.tree-outline.tree-variant-navigation:not(.hide-selection-when-blurred) li.sel
 
 // gen/front_end/ui/legacy/Treeoutline.js
 var nodeToParentTreeElementMap = /* @__PURE__ */ new WeakMap();
-var { render: render8 } = Lit3;
+var { render: render9 } = Lit3;
 var Events2;
 (function(Events3) {
   Events3["ElementAttached"] = "ElementAttached";
@@ -22180,7 +22307,7 @@ var TreeElement = class {
       this.listItemNode.insertBefore(this.leadingIconsElement, this.titleElement);
       this.ensureSelection();
     }
-    render8(icons, this.leadingIconsElement);
+    render9(icons, this.leadingIconsElement);
   }
   get tooltip() {
     return this.tooltipInternal;

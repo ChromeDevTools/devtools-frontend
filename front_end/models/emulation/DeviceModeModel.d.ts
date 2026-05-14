@@ -19,6 +19,7 @@ export declare class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<
     static tryInstance(opts?: {
         forceNew: boolean;
     }): DeviceModeModel | null;
+    dispose(): void;
     static widthValidator(value: string): {
         valid: boolean;
         errorMessage: (string | undefined);

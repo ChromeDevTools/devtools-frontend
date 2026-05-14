@@ -56,8 +56,8 @@ describe('ExportForAgentsDialog', () => {
     assert.strictEqual(stateSelection.getAttribute('aria-labelledby'), 'export-for-agents-dialog-title');
     assert.isTrue(promptRadioButton.checked);
     assert.isFalse(markdownRadioButton.checked);
-    assert.strictEqual(promptRadioButton.getAttribute('aria-label'), 'As prompt');
-    assert.strictEqual(markdownRadioButton.getAttribute('aria-label'), 'As markdown');
+    assert.strictEqual(promptRadioButton.getAttribute('aria-label'), 'Summary prompt');
+    assert.strictEqual(markdownRadioButton.getAttribute('aria-label'), 'Full conversation');
     assert.strictEqual(textarea.value, promptText);
     assert.isTrue(textarea.classList.contains('prompt'));
     assert.strictEqual(primaryButton.textContent?.trim(), 'Copy to clipboard');

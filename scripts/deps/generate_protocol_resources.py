@@ -65,7 +65,7 @@ GENERATE_SUPPORTED_CSS_SCRIPT = path.join(SCRIPTS_BUILD_PATH,
                                           'generate_supported_css.py')
 GENERATE_PROTOCOL_DEFINITIONS_SCRIPT = path.join(SCRIPTS_BUILD_PATH,
                                                  'code_generator_frontend.py')
-CONCATENATE_PROTOCOL_SCRIPT = path.join(ROOT_DIRECTORY, 'third_party',
+CONCATENATE_PROTOCOL_SCRIPT = path.join(devtools_paths.third_party_path(),
                                         'inspector_protocol',
                                         'concatenate_protocols.py')
 GENERATE_DEPRECATIONS_SCRIPT = path.join(SCRIPTS_BUILD_PATH,

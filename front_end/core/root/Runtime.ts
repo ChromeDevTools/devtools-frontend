@@ -625,6 +625,10 @@ interface UseGcaApi {
   enabled: boolean;
 }
 
+interface DevToolsAIV2Architecture {
+  enabled: boolean;
+}
+
 interface DevToolsProtocolMonitor {
   enabled: boolean;
 }
@@ -663,6 +667,7 @@ export type HostConfig = Platform.TypeScriptUtilities.RecursivePartial<{
   devToolsAiAssistanceAccessibilityAgent: HostConfigAiAssistanceAccessibilityAgent,
   devToolsAiAssistanceStorageAgent: HostConfigAiAssistanceStorageAgent,
   devToolsAiAssistanceV2: HostConfigAiAssistanceV2,
+  devToolsAIV2Architecture: DevToolsAIV2Architecture,
   devToolsAiCodeCompletion: HostConfigAiCodeCompletion,
   devToolsAiCodeGeneration: HostConfigAiCodeGeneration,
   devToolsAiCodeCompletionStyles: HostConfigAiCodeCompletionStyles,

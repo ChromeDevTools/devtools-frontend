@@ -7185,10 +7185,6 @@ export const NativeFunctions = [
         signatures: [["type", "?eventInitDict"]]
     },
     {
-        name: "EmailVerifiedEvent",
-        signatures: [["type", "?eventInitDict"]]
-    },
-    {
         name: "ErrorEvent",
         signatures: [["type", "?eventInitDict"]]
     },

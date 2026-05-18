@@ -19,6 +19,8 @@ EXCLUDED_SOURCES = [
 ]
 
 SOURCES = [
+  "package/lib/es5-iife/puppeteer-core-browser.d.ts",
+  "package/lib/es5-iife/puppeteer-core-browser.js",
   "package/lib/puppeteer/api/BluetoothEmulation.d.ts",
   "package/lib/puppeteer/api/BluetoothEmulation.js",
   "package/lib/puppeteer/api/Browser.d.ts",
@@ -383,6 +385,7 @@ SOURCES = [
   "package/lib/third_party/rxjs/rxjs.js",
   "package/lib/third_party/urlpattern-polyfill/urlpattern-polyfill.d.ts",
   "package/lib/third_party/urlpattern-polyfill/urlpattern-polyfill.js",
+  "package/lib/types.d.ts",
   "puppeteer-tsconfig.json",
 ]
 

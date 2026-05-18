@@ -3,6 +3,7 @@
     "composite": true
   },
   "files": [
+    "package/lib/es5-iife/puppeteer-core-browser.js",
     "package/lib/puppeteer/api/BluetoothEmulation.js",
     "package/lib/puppeteer/api/Browser.js",
     "package/lib/puppeteer/api/BrowserContext.js",

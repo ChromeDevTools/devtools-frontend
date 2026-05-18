@@ -2247,6 +2247,7 @@ grd_files_unbundled_sources = [
   "front_end/third_party/lit/lib/static-html.js",
   "front_end/third_party/marked/package/lib/marked.esm.js",
   "front_end/third_party/puppeteer-replay/package/lib/main.js",
+  "front_end/third_party/puppeteer/package/lib/es5-iife/puppeteer-core-browser.js",
   "front_end/third_party/puppeteer/package/lib/puppeteer/api/BluetoothEmulation.js",
   "front_end/third_party/puppeteer/package/lib/puppeteer/api/Browser.js",
   "front_end/third_party/puppeteer/package/lib/puppeteer/api/BrowserContext.js",

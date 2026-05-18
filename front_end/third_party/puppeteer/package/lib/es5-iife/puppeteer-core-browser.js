@@ -2922,7 +2922,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    */
   // If moved update release-please config
   // x-release-please-start-version
-  const packageVersion = '24.43.1';
+  const packageVersion = '25.0.2';
   // x-release-please-end
 
   /**
@@ -3912,14 +3912,6 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
      */
     async setPermission(origin, ...permissions) {
       return await this.defaultBrowserContext().setPermission(origin, ...permissions);
-    }
-    /**
-     * Whether Puppeteer is connected to this {@link Browser | browser}.
-     *
-     * @deprecated Use {@link Browser | Browser.connected}.
-     */
-    isConnected() {
-      return this.connected;
     }
     /** @internal */
     [disposeSymbol]() {
@@ -13778,6 +13770,9 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       _classPrivateFieldInitSpec(this, _idGenerator, void 0);
       _classPrivateFieldSet(_idGenerator, this, idGenerator);
     }
+    has(id) {
+      return _classPrivateFieldGet(_callbacks, this).has(id);
+    }
     create(label, timeout, request) {
       const callback = new Callback(_classPrivateFieldGet(_idGenerator, this).call(this), label, timeout);
       _classPrivateFieldGet(_callbacks, this).set(callback.id, callback);
@@ -14018,6 +14013,12 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     /**
      * @internal
      */
+    hasCallback(id) {
+      return _classPrivateFieldGet(_callbacks2, this).has(id);
+    }
+    /**
+     * @internal
+     */
     getPendingProtocolErrors() {
       return _classPrivateFieldGet(_callbacks2, this).getPendingProtocolErrors();
     }
@@ -14040,6 +14041,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   var _sessions = /*#__PURE__*/new WeakMap();
   var _closed = /*#__PURE__*/new WeakMap();
   var _manuallyAttached = /*#__PURE__*/new WeakMap();
+  var _rejectEmulateNetworkConditionsCalls = /*#__PURE__*/new WeakMap();
   var _callbacks3 = /*#__PURE__*/new WeakMap();
   var _rawErrors2 = /*#__PURE__*/new WeakMap();
   var _idGenerator2 = /*#__PURE__*/new WeakMap();
@@ -14055,6 +14057,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       _classPrivateFieldInitSpec(this, _sessions, new Map());
       _classPrivateFieldInitSpec(this, _closed, false);
       _classPrivateFieldInitSpec(this, _manuallyAttached, new Set());
+      _classPrivateFieldInitSpec(this, _rejectEmulateNetworkConditionsCalls, false);
       _classPrivateFieldInitSpec(this, _callbacks3, void 0);
       _classPrivateFieldInitSpec(this, _rawErrors2, false);
       _classPrivateFieldInitSpec(this, _idGenerator2, void 0);
@@ -14079,6 +14082,15 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     }
     get timeout() {
       return _classPrivateFieldGet(_timeout2, this);
+    }
+    /**
+     * @internal
+     */
+    get rejectEmulateNetworkConditionsCalls() {
+      return _classPrivateFieldGet(_rejectEmulateNetworkConditionsCalls, this);
+    }
+    set rejectEmulateNetworkConditionsCalls(value) {
+      _classPrivateFieldSet(_rejectEmulateNetworkConditionsCalls, this, value);
     }
     /**
      * @internal
@@ -14129,6 +14141,9 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     _rawSend(callbacks, method, params, sessionId, options) {
       if (_classPrivateFieldGet(_closed, this)) {
         return Promise.reject(new ConnectionClosedError('Connection closed.'));
+      }
+      if (method === 'Network.emulateNetworkConditions' && this.rejectEmulateNetworkConditionsCalls) {
+        return Promise.reject(new Error('Cannot reset network conditions: rule-based emulation is enabled.'));
       }
       return callbacks.create(method, options?.timeout ?? _classPrivateFieldGet(_timeout2, this), id => {
         const stringifiedMessage = JSON.stringify({
@@ -14185,14 +14200,23 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
           session.onMessage(object);
         }
       } else if (object.id) {
-        if (object.error) {
-          if (_classPrivateFieldGet(_rawErrors2, this)) {
-            _classPrivateFieldGet(_callbacks3, this).rejectRaw(object.id, object.error);
+        if (_classPrivateFieldGet(_callbacks3, this).has(object.id)) {
+          if (object.error) {
+            if (_classPrivateFieldGet(_rawErrors2, this)) {
+              _classPrivateFieldGet(_callbacks3, this).rejectRaw(object.id, object.error);
+            } else {
+              _classPrivateFieldGet(_callbacks3, this).reject(object.id, createProtocolErrorMessage(object), object.error.message);
+            }
           } else {
-            _classPrivateFieldGet(_callbacks3, this).reject(object.id, createProtocolErrorMessage(object), object.error.message);
+            _classPrivateFieldGet(_callbacks3, this).resolve(object.id, object.result);
           }
         } else {
-          _classPrivateFieldGet(_callbacks3, this).resolve(object.id, object.result);
+          for (const session of _classPrivateFieldGet(_sessions, this).values()) {
+            if (session.hasCallback(object.id)) {
+              session.onMessage(object);
+              break;
+            }
+          }
         }
       } else {
         this.emit(object.method, object.params);
@@ -17914,6 +17938,26 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   }
 
   /**
+   * @license
+   * Copyright 2025 Google Inc.
+   * SPDX-License-Identifier: Apache-2.0
+   */
+  /**
+   * Normalizes HTTP header values by handling multiline values.
+   * Multiline header values are joined with commas according to HTTP/1.1 spec.
+   *
+   * @internal
+   */
+  function normalizeHeaderValue(header) {
+    if (!header.includes('\n')) {
+      return header;
+    }
+    return header.split('\n').map(v => {
+      return v.trim();
+    }).filter(Boolean).join(', ');
+  }
+
+  /**
    * @internal
    */
   var _request = /*#__PURE__*/new WeakMap();
@@ -17954,7 +17998,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       _classPrivateFieldSet(_status, this, _extraInfo ? _extraInfo.statusCode : responsePayload.status);
       const headers = _extraInfo ? _extraInfo.headers : responsePayload.headers;
       for (const [key, value] of Object.entries(headers)) {
-        _classPrivateFieldGet(_headers2, this)[key.toLowerCase()] = value;
+        _classPrivateFieldGet(_headers2, this)[key.toLowerCase()] = normalizeHeaderValue(value);
       }
       _classPrivateFieldSet(_securityDetails, this, responsePayload.securityDetails ? new SecurityDetails(responsePayload.securityDetails) : null);
       _classPrivateFieldSet(_timing, this, responsePayload.timing || null);
@@ -20945,27 +20989,24 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     async click(x, y, options = {}) {
       const {
         delay,
-        count = 1,
-        clickCount = count
+        count = 1
       } = options;
       if (count < 1) {
         throw new Error('Click must occur a positive number of times.');
       }
       const actions = [this.move(x, y)];
-      if (clickCount === count) {
-        for (let i = 1; i < count; ++i) {
-          actions.push(this.down({
-            ...options,
-            clickCount: i
-          }), this.up({
-            ...options,
-            clickCount: i
-          }));
-        }
+      for (let i = 1; i < count; ++i) {
+        actions.push(this.down({
+          ...options,
+          clickCount: i
+        }), this.up({
+          ...options,
+          clickCount: i
+        }));
       }
       actions.push(this.down({
         ...options,
-        clickCount
+        clickCount: count
       }));
       if (typeof delay === 'number') {
         await Promise.all(actions);
@@ -20976,7 +21017,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       }
       actions.push(this.up({
         ...options,
-        clickCount
+        clickCount: count
       }));
       await Promise.all(actions);
     }
@@ -21996,9 +22037,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
           ...cookie,
           // TODO: a breaking change is needed in Puppeteer types to support other
           // partition keys.
-          partitionKey: cookie.partitionKey ? cookie.partitionKey.topLevelSite : undefined,
-          // TODO: remove sameParty as it is removed from Chrome.
-          sameParty: false
+          partitionKey: cookie.partitionKey ? cookie.partitionKey.topLevelSite : undefined
         };
       });
     }
@@ -22815,9 +22854,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
           partitionKey: cookie.partitionKey ? {
             sourceOrigin: cookie.partitionKey.topLevelSite,
             hasCrossSiteAncestor: cookie.partitionKey.hasCrossSiteAncestor
-          } : undefined,
-          // TODO: remove sameParty as it is removed from Chrome.
-          sameParty: false
+          } : undefined
         };
       });
     }
@@ -24642,6 +24679,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       }));
       _classPrivateFieldSet(_handleDevToolsAsPage, this, handleDevToolsAsPage);
       _assertClassBrand(_CdpBrowser_brand, this, _setIsPageTargetCallback).call(this, _isPageTargetCallback2);
+      connection.rejectEmulateNetworkConditionsCalls = Boolean(blocklist && blocklist.length > 0 || allowlist && allowlist.length > 0);
       _classPrivateFieldSet(_targetManager3, this, new TargetManager(connection, _classPrivateFieldGet(_createTarget, this), _classPrivateFieldGet(_targetFilterCallback2, this), waitForInitiallyDiscoveredTargets, blocklist, allowlist));
       _classPrivateFieldSet(_defaultContext, this, new CdpBrowserContext(_classPrivateFieldGet(_connection5, this), this));
       for (const contextId of contextIds) {
@@ -25240,8 +25278,8 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
           this.onclose.call(null);
         }
       });
-      // Silently ignore all errors - we don't know what to do with them.
-      _classPrivateFieldGet(_ws, this).addEventListener('error', () => {});
+      // Silently log all errors - we don't know what to do with them.
+      _classPrivateFieldGet(_ws, this).addEventListener('error', debugError);
     }
     send(message) {
       _classPrivateFieldGet(_ws, this).send(message);
@@ -27086,9 +27124,9 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    * @internal
    */
   const PUPPETEER_REVISIONS = Object.freeze({
-    chrome: '148.0.7778.97',
-    'chrome-headless-shell': '148.0.7778.97',
-    firefox: 'stable_150.0.2'
+    chrome: '148.0.7778.167',
+    'chrome-headless-shell': '148.0.7778.167',
+    firefox: 'stable_150.0.3'
   });
 
   /**
@@ -27271,6 +27309,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   exports.isRegExp = isRegExp;
   exports.isString = isString;
   exports.isTargetClosedError = isTargetClosedError;
+  exports.normalizeHeaderValue = normalizeHeaderValue;
   exports.pageBindingInitString = pageBindingInitString;
   exports.paperFormats = paperFormats;
   exports.parsePDFOptions = parsePDFOptions;

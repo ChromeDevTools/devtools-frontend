@@ -918,7 +918,6 @@ export class BidiPage extends Page {
         // Chrome-specific properties.
         ...cdpSpecificCookiePropertiesFromPuppeteerToBidi(
           cookie,
-          'sameParty',
           'sourceScheme',
           'priority',
           'url',
@@ -1132,7 +1131,6 @@ export function bidiToPuppeteerCookie(
     // Extending with CDP-specific properties with `goog:` prefix.
     ...cdpSpecificCookiePropertiesFromBidiToPuppeteer(
       bidiCookie,
-      'sameParty',
       'sourceScheme',
       'partitionKeyOpaque',
       'priority',
@@ -1155,10 +1153,6 @@ function cdpSpecificCookiePropertiesFromBidiToPuppeteer(
     if (bidiCookie[CDP_SPECIFIC_PREFIX + property] !== undefined) {
       result[property] = bidiCookie[CDP_SPECIFIC_PREFIX + property];
     }
-  }
-  // TODO: remove once deprecated sameParty attribute is dropped.
-  if (!result.sameParty) {
-    result.sameParty = false;
   }
   return result;
 }

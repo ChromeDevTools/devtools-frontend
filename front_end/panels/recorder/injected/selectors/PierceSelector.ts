@@ -4,7 +4,7 @@
 
 import {
   pierceQuerySelectorAll,
-} from '../../../../third_party/puppeteer/package/lib/esm/puppeteer/injected/PierceQuerySelector.js';
+} from '../../../../third_party/puppeteer/package/lib/puppeteer/injected/PierceQuerySelector.js';
 
 import {
   findMinMax,

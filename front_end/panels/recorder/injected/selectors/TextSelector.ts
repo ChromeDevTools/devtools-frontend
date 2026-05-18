@@ -4,10 +4,10 @@
 
 import {
   createTextContent,
-} from '../../../../third_party/puppeteer/package/lib/esm/puppeteer/injected/TextContent.js';
+} from '../../../../third_party/puppeteer/package/lib/puppeteer/injected/TextContent.js';
 import {
   textQuerySelectorAll,
-} from '../../../../third_party/puppeteer/package/lib/esm/puppeteer/injected/TextQuerySelector.js';
+} from '../../../../third_party/puppeteer/package/lib/puppeteer/injected/TextQuerySelector.js';
 
 import type {Selector} from './Selector.js';
 

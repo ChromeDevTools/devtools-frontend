@@ -142,7 +142,7 @@ new RuleTester().run('es-modules-import', rule, {
     },
     {
       // Valid even though it breaks the rules, because it's in front_end/third_party.
-      code: 'import { Browser } from "./package/lib/esm/puppeteer/common/Browser.js";',
+      code: 'import { Browser } from "./package/lib/puppeteer/common/Browser.js";',
       filename: 'front_end/third_party/puppeteer/puppeteer.ts',
     },
     // Type imports are unrestricted

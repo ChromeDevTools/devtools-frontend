@@ -91,37 +91,19 @@ export type SetGeoLocationOverrideOptions =
  */
 export class BrowsingContext extends EventEmitter<{
   /** Emitted when this context is closed. */
-  closed: {
-    /** The reason the browsing context was closed */
-    reason: string;
-  };
+  closed: string;
   /** Emitted when a child browsing context is created. */
-  browsingcontext: {
-    /** The newly created child browsing context. */
-    browsingContext: BrowsingContext;
-  };
+  browsingcontext: BrowsingContext;
   /** Emitted whenever a navigation occurs. */
-  navigation: {
-    /** The navigation that occurred. */
-    navigation: Navigation;
-  };
+  navigation: Navigation;
   /** Emitted whenever a file dialog is opened occurs. */
   filedialogopened: Bidi.Input.FileDialogInfo;
   /** Emitted whenever a request is made. */
-  request: {
-    /** The request that was made. */
-    request: Request;
-  };
+  request: Request;
   /** Emitted whenever a log entry is added. */
-  log: {
-    /** Entry added to the log. */
-    entry: Bidi.Log.Entry;
-  };
+  log: Bidi.Log.Entry;
   /** Emitted whenever a prompt is opened. */
-  userprompt: {
-    /** The prompt that was opened. */
-    userPrompt: UserPrompt;
-  };
+  userprompt: UserPrompt;
   /** Emitted whenever the frame history is updated. */
   historyUpdated: void;
   /** Emitted whenever the frame emits `DOMContentLoaded` */
@@ -129,10 +111,7 @@ export class BrowsingContext extends EventEmitter<{
   /** Emitted whenever the frame emits `load` */
   load: void;
   /** Emitted whenever a dedicated worker is created */
-  worker: {
-    /** The realm for the new dedicated worker */
-    realm: DedicatedWorkerRealm;
-  };
+  worker: DedicatedWorkerRealm;
 }> {
   static from(
     userContext: UserContext,
@@ -162,7 +141,6 @@ export class BrowsingContext extends EventEmitter<{
   readonly #children = new Map<string, BrowsingContext>();
   readonly #disposables = new DisposableStack();
   readonly #realms = new Map<string, WindowRealm>();
-  readonly #requests = new Map<string, Request>();
   readonly defaultRealm: WindowRealm;
   readonly id: string;
   readonly parent: BrowsingContext | undefined;
@@ -207,7 +185,7 @@ export class BrowsingContext extends EventEmitter<{
     const userContextEmitter = this.#disposables.use(
       new EventEmitter(this.userContext),
     );
-    userContextEmitter.once('closed', ({reason}) => {
+    userContextEmitter.once('closed', reason => {
       this.dispose(`Browsing context already closed: ${reason}`);
     });
 
@@ -244,7 +222,7 @@ export class BrowsingContext extends EventEmitter<{
         this.#children.delete(browsingContext.id);
       });
 
-      this.emit('browsingcontext', {browsingContext});
+      this.emit('browsingcontext', browsingContext);
     });
     sessionEmitter.on('browsingContext.contextDestroyed', info => {
       if (info.context !== this.id) {
@@ -284,11 +262,6 @@ export class BrowsingContext extends EventEmitter<{
       // Note: we should not update this.#url at this point since the context
       // has not finished navigating to the info.url yet.
 
-      for (const [id, request] of this.#requests) {
-        if (request.disposed) {
-          this.#requests.delete(id);
-        }
-      }
       // If the navigation hasn't finished, then this is nested navigation. The
       // current navigation will handle this.
       if (this.#navigation !== undefined && !this.#navigation.disposed) {
@@ -309,21 +282,20 @@ export class BrowsingContext extends EventEmitter<{
         });
       }
 
-      this.emit('navigation', {navigation: this.#navigation});
+      this.emit('navigation', this.#navigation);
     });
     sessionEmitter.on('network.beforeRequestSent', event => {
       if (event.context !== this.id) {
         return;
       }
-      if (this.#requests.has(event.request.request)) {
+      if (event.redirectCount > 0) {
         // Means the request is a redirect. This is handled in Request.
         // Or an Auth event was issued
         return;
       }
 
       const request = Request.from(this, event);
-      this.#requests.set(request.id, request);
-      this.emit('request', {request});
+      this.emit('request', request);
     });
 
     sessionEmitter.on('log.entryAdded', entry => {
@@ -331,7 +303,7 @@ export class BrowsingContext extends EventEmitter<{
         return;
       }
 
-      this.emit('log', {entry});
+      this.emit('log', entry);
     });
 
     sessionEmitter.on('browsingContext.userPromptOpened', info => {
@@ -340,7 +312,7 @@ export class BrowsingContext extends EventEmitter<{
       }
 
       const userPrompt = UserPrompt.from(this, info);
-      this.emit('userprompt', {userPrompt});
+      this.emit('userprompt', userPrompt);
     });
   }
 
@@ -378,7 +350,7 @@ export class BrowsingContext extends EventEmitter<{
   #createWindowRealm(sandbox?: string) {
     const realm = WindowRealm.from(this, sandbox);
     realm.on('worker', realm => {
-      this.emit('worker', {realm});
+      this.emit('worker', realm);
     });
     return realm;
   }
@@ -714,7 +686,7 @@ export class BrowsingContext extends EventEmitter<{
   override [disposeSymbol](): void {
     this.#reason ??=
       'Browsing context already closed, probably because the user context closed.';
-    this.emit('closed', {reason: this.#reason});
+    this.emit('closed', this.#reason);
 
     this.#disposables.dispose();
     super[disposeSymbol]();

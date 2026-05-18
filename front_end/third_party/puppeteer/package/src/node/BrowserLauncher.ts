@@ -241,8 +241,7 @@ export abstract class BrowserLauncher {
         logs.includes(
           'Failed to create a ProcessSingleton for your profile directory',
         ) ||
-        // On Windows we will not get logs due to the singleton process
-        // handover. See
+        // On Windows we will not get logs due to the singleton process handover. See
         // https://source.chromium.org/chromium/chromium/src/+/main:chrome/browser/process_singleton_win.cc;l=46;drc=fc7952f0422b5073515a205a04ec9c3a1ae81658
         (process.platform === 'win32' &&
           existsSync(join(launchArgs.userDataDir, 'lockfile')))
@@ -286,7 +285,7 @@ export abstract class BrowserLauncher {
   abstract executablePath(
     channel?: ChromeReleaseChannel,
     validatePath?: boolean,
-  ): string;
+  ): Promise<string>;
 
   abstract defaultArgs(object: LaunchOptions): string[];
 
@@ -488,9 +487,10 @@ export abstract class BrowserLauncher {
   /**
    * @internal
    */
-  protected getProfilePath(): string {
+  protected async getProfilePath(): Promise<string> {
+    const config = await this.puppeteer.configuration();
     return join(
-      this.puppeteer.configuration.temporaryDirectory ?? tmpdir(),
+      config.temporaryDirectory ?? tmpdir(),
       `puppeteer_dev_${this.browser}_profile-`,
     );
   }
@@ -498,11 +498,12 @@ export abstract class BrowserLauncher {
   /**
    * @internal
    */
-  resolveExecutablePath(
+  async resolveExecutablePath(
     headless?: boolean | 'shell',
     validatePath = true,
-  ): string {
-    let executablePath = this.puppeteer.configuration.executablePath;
+  ): Promise<string> {
+    const config = await this.puppeteer.configuration();
+    let executablePath = config.executablePath;
     if (executablePath) {
       if (validatePath && !existsSync(executablePath)) {
         throw new Error(
@@ -533,15 +534,17 @@ export abstract class BrowserLauncher {
       headless,
     );
 
+    const defaultDownloadPath = await this.puppeteer.defaultDownloadPath();
+    const browserVersion = await this.puppeteer.browserVersion();
+
     executablePath = computeExecutablePath({
-      cacheDir: this.puppeteer.defaultDownloadPath!,
+      cacheDir: defaultDownloadPath!,
       browser: browserType,
-      buildId: this.puppeteer.browserVersion,
+      buildId: browserVersion,
     });
 
     if (validatePath && !existsSync(executablePath)) {
-      const configVersion =
-        this.puppeteer.configuration?.[this.browser]?.version;
+      const configVersion = config?.[this.browser]?.version;
       if (configVersion) {
         throw new Error(
           `Tried to find the browser at the configured path (${executablePath}) for version ${configVersion}, but no executable was found.`,
@@ -550,16 +553,16 @@ export abstract class BrowserLauncher {
       switch (this.browser) {
         case 'chrome':
           throw new Error(
-            `Could not find Chrome (ver. ${this.puppeteer.browserVersion}). This can occur if either\n` +
+            `Could not find Chrome (ver. ${browserVersion}). This can occur if either\n` +
               ` 1. you did not perform an installation before running the script (e.g. \`npx puppeteer browsers install ${browserType}\`) or\n` +
-              ` 2. your cache path is incorrectly configured (which is: ${this.puppeteer.configuration.cacheDirectory}).\n` +
+              ` 2. your cache path is incorrectly configured (which is: ${config.cacheDirectory}).\n` +
               'For (2), check out our guide on configuring puppeteer at https://pptr.dev/guides/configuration.',
           );
         case 'firefox':
           throw new Error(
-            `Could not find Firefox (rev. ${this.puppeteer.browserVersion}). This can occur if either\n` +
+            `Could not find Firefox (rev. ${browserVersion}). This can occur if either\n` +
               ' 1. you did not perform an installation for Firefox before running the script (e.g. `npx puppeteer browsers install firefox`) or\n' +
-              ` 2. your cache path is incorrectly configured (which is: ${this.puppeteer.configuration.cacheDirectory}).\n` +
+              ` 2. your cache path is incorrectly configured (which is: ${config.cacheDirectory}).\n` +
               'For (2), check out our guide on configuring puppeteer at https://pptr.dev/guides/configuration.',
           );
       }

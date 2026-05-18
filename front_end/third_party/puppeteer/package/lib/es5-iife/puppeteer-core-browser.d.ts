@@ -590,12 +590,6 @@ export declare abstract class Browser extends EventEmitter<BrowserEvents> {
   abstract removeScreen(screenId: string): Promise<void>;
   /**
    * Whether Puppeteer is connected to this {@link Browser | browser}.
-   *
-   * @deprecated Use {@link Browser | Browser.connected}.
-   */
-  isConnected(): boolean;
-  /**
-   * Whether Puppeteer is connected to this {@link Browser | browser}.
    */
   abstract get connected(): boolean;
   /**
@@ -921,7 +915,7 @@ export declare abstract class BrowserLauncher {
   abstract executablePath(
     channel?: ChromeReleaseChannel,
     validatePath?: boolean,
-  ): string;
+  ): Promise<string>;
   abstract defaultArgs(object: LaunchOptions): string[];
 }
 
@@ -1596,10 +1590,6 @@ export declare interface CookieData {
    */
   priority?: CookiePriority;
   /**
-   * @deprecated Always set to false. Supported only in Chrome.
-   */
-  sameParty?: boolean;
-  /**
    * Cookie source scheme type. Supported only in Chrome.
    */
   sourceScheme?: CookieSourceScheme;
@@ -1660,10 +1650,6 @@ export declare interface CookieParam {
    * Cookie Priority. Supported only in Chrome.
    */
   priority?: CookiePriority;
-  /**
-   * @deprecated Always ignored.
-   */
-  sameParty?: boolean;
   /**
    * Cookie source scheme type. Supported only in Chrome.
    */
@@ -1940,7 +1926,7 @@ export declare const /**
   /**
    * @public
    */
-  defaultArgs: (options?: Puppeteer_2.LaunchOptions) => string[];
+  defaultArgs: (options?: Puppeteer_2.LaunchOptions) => Promise<string[]>;
 
 /**
  * @public
@@ -2821,9 +2807,9 @@ export declare const /**
    * @public
    */
   executablePath: {
-    (channel: Puppeteer_2.ChromeReleaseChannel): string;
-    (options: Puppeteer_2.LaunchOptions): string;
-    (): string;
+    (channel: Puppeteer_2.ChromeReleaseChannel): Promise<string>;
+    (options: Puppeteer_2.LaunchOptions): Promise<string>;
+    (): Promise<string>;
   };
 
 /**
@@ -5571,14 +5557,6 @@ export declare interface MouseOptions {
    * @defaultValue `'left'`
    */
   button?: MouseButton;
-  /**
-   * Determines the click count for the mouse event. This does not perform
-   * multiple clicks.
-   *
-   * @deprecated Use {@link MouseClickOptions.count}.
-   * @defaultValue `1`
-   */
-  clickCount?: number;
 }
 
 /**
@@ -8089,16 +8067,6 @@ export declare type ProtocolLifeCycleEvent =
  */
 export declare type ProtocolType = 'cdp' | 'webDriverBiDi';
 
-declare interface ProtocolWebMCPTool {
-  name: string;
-  description: string;
-  inputSchema?: object;
-  annotations?: WebMCPAnnotation;
-  frameId: string;
-  backendNodeId?: number;
-  stackTrace?: Protocol.Runtime.StackTrace;
-}
-
 /**
  * The main Puppeteer class.
  *
@@ -8450,6 +8418,7 @@ export declare type PuppeteerLifeCycleEvent =
  */
 export declare class PuppeteerNode extends Puppeteer {
   
+  configuration: () => Promise<Configuration>;
   /**
    * This method attaches Puppeteer to an existing browser instance.
    *
@@ -8497,40 +8466,31 @@ export declare class PuppeteerNode extends Puppeteer {
   /**
    * The default executable path for a given ChromeReleaseChannel.
    */
-  executablePath(channel: ChromeReleaseChannel): string;
+  executablePath(channel: ChromeReleaseChannel): Promise<string>;
   /**
    * The default executable path given LaunchOptions.
    */
-  executablePath(options: LaunchOptions): string;
+  executablePath(options: LaunchOptions): Promise<string>;
   /**
    * The default executable path.
    */
-  executablePath(): string;
+  executablePath(): Promise<string>;
   /**
    * The name of the browser that was last launched.
    */
-  get lastLaunchedBrowser(): SupportedBrowser;
+  lastLaunchedBrowser(): Promise<SupportedBrowser>;
   /**
    * The name of the browser that will be launched by default. For
    * `puppeteer`, this is influenced by your configuration. Otherwise, it's
    * `chrome`.
    */
-  get defaultBrowser(): SupportedBrowser;
-  /**
-   * @deprecated Do not use as this field as it does not take into account
-   * multiple browsers of different types. Use
-   * {@link PuppeteerNode.defaultBrowser | defaultBrowser} or
-   * {@link PuppeteerNode.lastLaunchedBrowser | lastLaunchedBrowser}.
-   *
-   * @returns The name of the browser that is under automation.
-   */
-  get product(): string;
+  defaultBrowser(): Promise<SupportedBrowser>;
   /**
    * @param options - Set of configurable options to set on the browser.
    *
    * @returns The default arguments that the browser will be launched with.
    */
-  defaultArgs(options?: LaunchOptions): string[];
+  defaultArgs(options?: LaunchOptions): Promise<string[]>;
   /**
    * Removes all non-current Firefox and Chrome binaries in the cache directory
    * identified by the provided Puppeteer configuration. The current browser

@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
+import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
@@ -16,6 +17,7 @@ import objectValueStyles from '../../ui/legacy/components/object_ui/objectValue.
 import * as UI from '../../ui/legacy/legacy.js';
 import {Directives, html, type LitTemplate, nothing, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
+import * as PanelCommon from '../common/common.js';
 
 import consolePinPaneStyles from './consolePinPane.css.js';
 
@@ -56,6 +58,25 @@ const UIStrings = {
    * @description Text of a DOM element in Console Pin Pane of the Console panel
    */
   notAvailable: 'not available',
+  /**
+   * @description Headline of warning shown to users when pasting text/code into DevTools.
+   */
+  doYouTrustThisCode: 'Do you trust this code?',
+  /**
+   * @description Warning shown to users when pasting text/code into DevTools. IMPORTANT: keep double quotes around PH1 and do not use single quotes.
+   * @example {allow pasting} PH1
+   */
+  doNotPaste:
+      'Don\'t paste code you do not understand or have not reviewed yourself into DevTools. This could allow attackers to steal your identity or take control of your computer. Please type “{PH1}” below to allow pasting.',
+  /**
+   * @description Text a user needs to type in order to confirm that they are aware of the danger of pasting code into the DevTools console.
+   */
+  allowPasting: 'allow pasting',
+  /**
+   * @description Input box placeholder which instructs the user to type 'allow pasting' into the input box. IMPORTANT: keep double quotes around PH1 and do not use single quotes.
+   * @example {allow pasting} PH1
+   */
+  typeAllowPasting: 'Type “{PH1}”',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/console/ConsolePinPane.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -271,10 +292,14 @@ export class ConsolePinPresenter extends UI.Widget.Widget {
   #hovered = false;
   #lastNode: SDK.RemoteObject.RemoteObject|null = null;
   #deletePinIcon!: Buttons.Button.Button;
+  readonly #selfXssWarningDisabledSetting: Common.Settings.Setting<boolean>;
 
   constructor(element?: HTMLElement, view = DEFAULT_VIEW) {
     super(element);
     this.#view = view;
+
+    this.#selfXssWarningDisabledSetting = Common.Settings.Settings.instance().createSetting(
+        'disable-self-xss-warning', false, Common.Settings.SettingStorageType.SYNCED);
 
     this.#pinEditor = {
       workingCopy: () => this.#editor?.state.doc.toString() ?? '',
@@ -375,7 +400,10 @@ export class ConsolePinPresenter extends UI.Widget.Widget {
           },
         },
       ]),
-      CodeMirror.EditorView.domEventHandlers({blur: (_e, view) => this.#onBlur(view)}),
+      CodeMirror.EditorView.domEventHandlers({
+        blur: (_e, view) => this.#onBlur(view),
+        paste: () => this.#onPaste(),
+      }),
       TextEditor.Config.baseConfiguration(doc),
       TextEditor.Config.closeBrackets.instance(),
       TextEditor.Config.autocompletion.instance(),
@@ -396,6 +424,32 @@ export class ConsolePinPresenter extends UI.Widget.Widget {
       changes: !commitedAsIs ? {from: 0, to: editor.state.doc.length, insert: this.#pin.expression} : undefined,
     });
     this.requestUpdate();
+  }
+
+  #onPaste(): boolean {
+    if (Root.Runtime.Runtime.queryParam('isChromeForTesting') ||
+        Root.Runtime.Runtime.queryParam('disableSelfXssWarnings') || this.#selfXssWarningDisabledSetting.get()) {
+      return false;
+    }
+    void this.#showSelfXssWarning();
+    return true;
+  }
+
+  async #showSelfXssWarning(): Promise<void> {
+    const allowPasting = await PanelCommon.TypeToAllowDialog.show({
+      jslogContext: {
+        dialog: 'self-xss-warning',
+        input: 'allow-pasting',
+      },
+      header: i18nString(UIStrings.doYouTrustThisCode),
+      message: i18nString(UIStrings.doNotPaste, {PH1: i18nString(UIStrings.allowPasting)}),
+      typePhrase: i18nString(UIStrings.allowPasting),
+      inputPlaceholder: i18nString(UIStrings.typeAllowPasting, {PH1: i18nString(UIStrings.allowPasting)}),
+    });
+    if (allowPasting) {
+      this.#selfXssWarningDisabledSetting.set(true);
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.SelfXssAllowPastingInDialog);
+    }
   }
 
   setHovered(hovered: boolean): void {

@@ -4,7 +4,7 @@ This document outlines the security goals, boundaries, and threat model for the 
 
 ## Architectural Philosophy & Trust Boundaries
 
-Chrome DevTools is a privileged web app running in a sandboxed renderer process, communicating via the Chrome DevTools Protocol (CDP). 
+Chrome DevTools is a privileged web app running in a sandboxed renderer process, communicating via the Chrome DevTools Protocol (CDP).
 
 * **Intended Capabilities:** DevTools is designed to inspect, mutate, and control debug targets (tabs, workers, remote nodes). Actions like code execution (Console, Snippets) or filesystem binding are intended behaviors, not vulnerabilities.
 * **Data Processing:** The frontend does not execute untrusted user-space code in its own processes. It may instruct the debug target to execute code. It parses structured data from the CDP target. While a target page may be compromised, DevTools must safely display this data without escalating privileges to the browser process or host OS.
@@ -16,7 +16,6 @@ Chrome DevTools is a privileged web app running in a sandboxed renderer process,
 * Compromising the CDP backend via tampered protocol messages.
 * Unauthorized exfiltration of sensitive local files or user data outside the debugging scope.
 * Triggering Chrome memory corruption exploits.
-* Exfiltrating user data via an open DevTools instance.
 
 ### Outside Threat Model
 * **Social Engineering:** Convincing developers to paste payloads into the Console or connect to malicious remote debugging ports.
@@ -40,8 +39,8 @@ Chrome DevTools is a privileged web app running in a sandboxed renderer process,
 * Targets leveraging parsing flaws to compromise another renderer process without escaping the browser sandbox.
 
 ### S3 (Low)
-* Exploits requiring a malicious, highly-privileged Chrome Extension to interact with DevTools APIs.
-* Tricking users into navigating debug targets to restricted internal URLs (e.g., `chrome://`).
+* Exploits requiring a malicious, highly-privileged Chrome Extension to interact with DevTools APIs, including bypassing extension host policy.
+* Spoofing links in DevTools that navigate to restricted internal URLs (e.g., `chrome://`).
 * Vulnerabilities requiring specific command-line arguments, third-party tools, or loading tampered local files.
 
 ## Specific Aspects

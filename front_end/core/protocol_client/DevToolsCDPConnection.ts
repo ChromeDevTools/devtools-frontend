@@ -137,6 +137,15 @@ export class DevToolsCDPConnection implements CDPConnection {
         return;
       }
 
+      // DevTools inconsistently uses empty string or undefined to denote root
+      // session. Generally, empty string should not be used for the root
+      // session but to avoid potentially breaking callers we use '' for
+      // comparison here if the sessionId is undefined.
+      if ((callback.sessionId ?? '') !== (messageObject.sessionId ?? '')) {
+        // Ignore messages where ID does not match the session.
+        return;
+      }
+
       callback.resolve(messageObject);
       --this.#pendingResponsesCount;
       this.#pendingLongPollingMessageIds.delete(messageObject.id);

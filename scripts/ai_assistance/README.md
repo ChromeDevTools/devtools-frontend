@@ -39,6 +39,8 @@ npm run auto-run -- --label title-change --example-urls <example-url-1> <example
 
 Tip: You can add a `--eval` flag to the run to generate a secondary file named `*.eval.json` that contains the output in the format the evaluation suite expects.
 
+Tip: You can add a `--grade` flag to the run to automatically grade the results. This flag generates the `.eval.json` file, copies it to the correct subfolder in `suite/outputs/outputs/` (renaming it to use only the label, e.g., `network-test.json`), and then executes the corresponding grader script (e.g., `suite/network.eval.ts`) to calculate scores using the LLM judge.
+
 ## `--test-target` values
 
 * `elements`: tests the entrypoint via right clicking on an element in the Elements panel.

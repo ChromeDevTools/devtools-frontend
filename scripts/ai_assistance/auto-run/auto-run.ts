@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {execSync} from 'node:child_process';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import type {Browser, Page} from 'puppeteer-core';
@@ -60,6 +61,11 @@ const userArgsBuilder = yargs(hideBin(process.argv))
                             })
                             .option('eval', {
                               describe: 'Also output to the format required for the DevTools Eval framework',
+                              boolean: true,
+                              default: false,
+                            })
+                            .option('grade', {
+                              describe: 'Automatically grade the result',
                               boolean: true,
                               default: false,
                             });
@@ -439,7 +445,7 @@ function writeOutput(
   fs.writeFileSync(outputPath, JSON.stringify(output, null, 2));
   console.info(`\n[Info]: Finished exporting results to ${outputPath}, it took ${formatElapsedTime()}`);
 
-  if (userArgs.eval) {
+  if (userArgs.eval || userArgs.grade) {
     const convertedOutput = convertRawOutputToEval({
       inputFromAutoRun: output as RawOutput,
       label: userArgs.label,
@@ -447,6 +453,35 @@ function writeOutput(
     const evalOutputPath = outputPath.replace('.json', '.eval.json');
     fs.writeFileSync(evalOutputPath, JSON.stringify(convertedOutput, null, 2));
     console.info(`\n[Info]: Exported eval output to ${evalOutputPath}`);
+
+    if (userArgs.grade) {
+      const target = userArgs.testTarget;
+      const dateStr = new Date().toISOString().slice(0, 10);
+      const targetDir = path.resolve(import.meta.dirname, '..', 'suite', 'outputs', 'outputs', target, dateStr);
+      fs.mkdirSync(targetDir, {recursive: true});
+
+      const copiedFileName = `${userArgs.label}.json`;
+      const copiedFilePath = path.resolve(targetDir, copiedFileName);
+
+      fs.copyFileSync(evalOutputPath, copiedFilePath);
+      console.info(`\n[Info]: Copied eval output to ${copiedFilePath}`);
+
+      const graderScript = path.resolve(import.meta.dirname, '..', 'suite', `${target}.eval.ts`);
+      if (fs.existsSync(graderScript)) {
+        console.info(`\n[Info]: Running grader ${graderScript}`);
+        try {
+          const cwd = path.resolve(import.meta.dirname, '..');
+          const cmd = `node suite/${target}.eval.ts`;
+          console.info(`\n[Info]: Running command: ${cmd} in ${cwd}`);
+          const stdout = execSync(cmd, {cwd, encoding: 'utf8'});
+          console.info(stdout);
+        } catch (error) {
+          console.error(`\n[Error]: Grader failed`, error);
+        }
+      } else {
+        console.warn(`\n[Warn]: Grader script ${graderScript} not found.`);
+      }
+    }
   }
 }
 

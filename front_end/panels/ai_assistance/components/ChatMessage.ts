@@ -14,7 +14,7 @@ import * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import type {
   AiWidget, BottomUpTreeAiWidget, ComputedStyleAiWidget, CoreVitalsAiWidget, DomTreeAiWidget, PerfInsightAiWidget,
-  PerformanceTraceAiWidget, StylePropertiesAiWidget,
+  PerformanceTraceAiWidget, SourceFileAiWidget, StylePropertiesAiWidget,
   TimelineRangeSummaryAiWidget} from '../../../models/ai_assistance/agents/AiAgent.js';
 import * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
 import * as ComputedStyle from '../../../models/computed_style/computed_style.js';
@@ -1323,6 +1323,19 @@ async function makePerformanceTraceWidget(widgetData: PerformanceTraceAiWidget):
   };
 }
 
+async function makeSourceFileWidget(widgetData: SourceFileAiWidget): Promise<WidgetMakerResponse|null> {
+  const file = widgetData.data.uiSourceCode;
+  const customRevealTitle = i18n.i18n.lockedString(`Show ${file.name()}`);
+  return {
+    renderedWidget: null,
+    title: null,
+    revealable: file,
+    customRevealTitle,
+    accessibleRevealLabel: customRevealTitle,
+    jslogContext: 'source-file-widget',
+  };
+}
+
 function renderNetworkRequestPreview(networkRequest: NonNullable<DomTreeAiWidget['data']['networkRequest']>):
     Lit.TemplateResult {
   const filename = networkRequest.url.split('/').pop() || networkRequest.url;
@@ -1428,6 +1441,8 @@ export function getWidgetSignature(widget: AiWidget): string {
       return `${widget.name}:${widget.data.track}:${widget.data.bounds.min}-${widget.data.bounds.max}`;
     case 'BOTTOM_UP_TREE':
       return `${widget.name}:${widget.data.bounds.min}-${widget.data.bounds.max}`;
+    case 'SOURCE_FILE':
+      return `${widget.name}:${widget.data.uiSourceCode.url()}`;
     default:
       Platform.assertNever(widget, 'Unknown AiWidget name');
   }
@@ -1510,6 +1525,9 @@ async function renderWidgets(
         break;
       case 'BOTTOM_UP_TREE':
         response = await makeBottomUpTimelineTreeWidget(widgetData);
+        break;
+      case 'SOURCE_FILE':
+        response = await makeSourceFileWidget(widgetData);
         break;
       default:
         Platform.assertNever(widgetData, 'Unknown AiWidget name');

@@ -10,6 +10,7 @@ import * as Greendev from '../../greendev/greendev.js';
 import type * as LHModel from '../../lighthouse/lighthouse.js';
 import type * as TextUtils from '../../text_utils/text_utils.js';
 import type * as Trace from '../../trace/trace.js';
+import type * as Workspace from '../../workspace/workspace.js';
 import {debugLog, isStructuredLogEnabled} from '../debug.js';
 
 export const enum ResponseType {
@@ -276,9 +277,16 @@ export interface BottomUpTreeAiWidget {
   };
 }
 
+export interface SourceFileAiWidget {
+  name: 'SOURCE_FILE';
+  data: {
+    uiSourceCode: Workspace.UISourceCode.UISourceCode,
+  };
+}
+
 // This type will grow as we add more widgets.
 export type AiWidget = ComputedStyleAiWidget|CoreVitalsAiWidget|StylePropertiesAiWidget|DomTreeAiWidget|
-    PerformanceTraceAiWidget|PerfInsightAiWidget|TimelineRangeSummaryAiWidget|BottomUpTreeAiWidget;
+    PerformanceTraceAiWidget|PerfInsightAiWidget|TimelineRangeSummaryAiWidget|BottomUpTreeAiWidget|SourceFileAiWidget;
 
 export type FunctionCallHandlerResult<Result> = {
   requiresApproval: true,

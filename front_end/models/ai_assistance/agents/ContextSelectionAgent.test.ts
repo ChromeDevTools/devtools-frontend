@@ -737,10 +737,16 @@ describeWithMockConnection('ContextSelectionAgent', function() {
       });
 
       const responses = await Array.fromAsync(agent.run('test', {selected: null}));
-      const contextChange = responses.find(r => r.type === AiAgent.ResponseType.CONTEXT_CHANGE);
+      const contextChange =
+          responses.find(r => r.type === AiAgent.ResponseType.CONTEXT_CHANGE) as AiAgent.ContextChangeResponse;
       assert.exists(contextChange);
       assert.instanceOf(contextChange.context, FileAgent.FileContext);
       assert.strictEqual(contextChange.context.getItem(), file);
+      assert.exists(contextChange.widgets);
+      assert.lengthOf(contextChange.widgets, 1);
+      const widget = contextChange.widgets[0] as AiAgent.SourceFileAiWidget;
+      assert.strictEqual(widget.name, 'SOURCE_FILE');
+      assert.strictEqual(widget.data.uiSourceCode, file);
     });
   });
 });

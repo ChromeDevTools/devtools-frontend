@@ -5763,13 +5763,13 @@ var UIStrings3 = {
    */
   copiedToClipboard: "Copied to clipboard",
   /**
-   * @description Label for the 'as prompt' radio button in the export for agents dialog.
+   * @description Label for the 'summary prompt' radio button in the export for agents dialog.
    */
-  asPrompt: "As prompt",
+  asPrompt: "Summary prompt",
   /**
-   * @description Label for the 'as markdown' radio button in the export for agents dialog.
+   * @description Label for the 'full conversation' radio button in the export for agents dialog.
    */
-  asMarkdown: "As markdown",
+  asMarkdown: "Full conversation",
   /**
    * @description Button text for saving content as a markdown file.
    */

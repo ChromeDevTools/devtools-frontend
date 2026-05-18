@@ -3213,10 +3213,10 @@
     "message": "Turn on {PH1} to get help with styles, network requests, performance, and files"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asMarkdown": {
-    "message": "As markdown"
+    "message": "Full conversation"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asPrompt": {
-    "message": "As prompt"
+    "message": "Summary prompt"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | copiedToClipboard": {
     "message": "Copied to clipboard"

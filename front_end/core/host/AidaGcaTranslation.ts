@@ -48,7 +48,7 @@ export function aidaDoConversationRequestToGcaRequest(request: AIDA.DoConversati
                                                 })),
       }];
     }
-    AIDA.debugLog('Translation succeded:', JSON.stringify(request), JSON.stringify(gcaRequest));
+    AIDA.debugLog('Translation succeeded:', JSON.stringify(request), JSON.stringify(gcaRequest));
     return gcaRequest;
   } catch (e) {
     AIDA.debugLog('Translation error:', JSON.stringify(request), e);
@@ -70,15 +70,19 @@ function mapCommonAidaRequestFields(aidaRequest: AidaRequest, gcaRequest: GCA.Ge
 
 export function gcaResponseToAidaDoConversationResponse(response: GCA.GenerateContentResponse):
     AIDA.DoConversationResponse {
-  const functionCalls: AIDA.AidaFunctionCallResponse[] = [];
+  const functionCalls: AIDA.AidaFunctionCall[] = [];
 
   if (response.candidates?.[0].content?.parts) {
     for (const part of response.candidates[0].content.parts) {
       if (part.functionCall) {
-        functionCalls.push({
+        const functionCall: AIDA.AidaFunctionCall = {
           name: part.functionCall.name,
           args: part.functionCall.args || {},
-        });
+        };
+        if (part.thoughtSignature) {
+          functionCall.thoughtSignature = part.thoughtSignature;
+        }
+        functionCalls.push(functionCall);
       }
     }
   }
@@ -88,9 +92,8 @@ export function gcaResponseToAidaDoConversationResponse(response: GCA.GenerateCo
     metadata: {
       rpcGlobalId: response.responseId,
     },
-    functionCalls: functionCalls.length > 0 ?
-        (functionCalls as [AIDA.AidaFunctionCallResponse, ...AIDA.AidaFunctionCallResponse[]]) :
-        undefined,
+    functionCalls: functionCalls.length > 0 ? (functionCalls as [AIDA.AidaFunctionCall, ...AIDA.AidaFunctionCall[]]) :
+                                              undefined,
     completed: true,
   };
 }
@@ -387,12 +390,16 @@ function convertAidaPartToGcaPart(part: AIDA.Part): GCA.Part {
     return {text: part.text};
   }
   if ('functionCall' in part) {
-    return {
+    const gcaPart: GCA.Part = {
       functionCall: {
         name: part.functionCall.name,
         args: part.functionCall.args,
       },
     };
+    if (part.functionCall.thoughtSignature) {
+      gcaPart.thoughtSignature = part.functionCall.thoughtSignature;
+    }
+    return gcaPart;
   }
   if ('functionResponse' in part) {
     const fResponse: Record<string, unknown> = {};
@@ -451,6 +458,9 @@ function convertAidaParamToGcaSchema<T extends string|number|symbol = string>(pa
 
 export function gcaChunkResponseToAidaChunkResponse(response: GCA.GenerateContentResponse): AIDA.AidaChunkResponse[] {
   try {
+    if (response.error) {
+      throw new Error(JSON.stringify(response.error));
+    }
     const candidate = response.candidates?.[0];
     const parts = candidate?.content?.parts || [];
     const metadata: AIDA.ResponseMetadata = {
@@ -482,6 +492,9 @@ export function gcaChunkResponseToAidaChunkResponse(response: GCA.GenerateConten
             args: part.functionCall.args || {},
           },
         };
+        if (part.thoughtSignature) {
+          aidaChunkResponse.functionCallChunk.functionCall.thoughtSignature = part.thoughtSignature;
+        }
       }
       if (part.executableCode) {
         aidaChunkResponse.codeChunk = {

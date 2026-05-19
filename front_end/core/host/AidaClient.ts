@@ -9,7 +9,7 @@ import * as Root from '../root/root.js';
 import {
   AidaAccessPreconditions,
   type AidaChunkResponse,
-  type AidaFunctionCallResponse,
+  type AidaFunctionCall,
   AidaInferenceLanguage,
   type AidaRegisterClientEvent,
   ClientFeature,
@@ -211,7 +211,7 @@ export class AidaClient {
     let chunk;
     const text = [];
     let inCodeChunk = false;
-    const functionCalls: AidaFunctionCallResponse[] = [];
+    const functionCalls: AidaFunctionCall[] = [];
     let metadata: ResponseMetadata = {rpcGlobalId: 0};
     while ((chunk = await stream.read())) {
       debugLog('doConversation stream chunk:', chunk);
@@ -246,6 +246,7 @@ export class AidaClient {
           functionCalls.push({
             name: result.functionCallChunk.functionCall.name,
             args: result.functionCallChunk.functionCall.args,
+            thoughtSignature: result.functionCallChunk.functionCall.thoughtSignature,
           });
         } else if ('error' in result) {
           throw new Error(`Server responded: ${JSON.stringify(result)}`);
@@ -264,8 +265,7 @@ export class AidaClient {
     yield {
       explanation: text.join('') + (inCodeChunk ? CODE_CHUNK_SEPARATOR() : ''),
       metadata,
-      functionCalls: functionCalls.length ? functionCalls as [AidaFunctionCallResponse, ...AidaFunctionCallResponse[]] :
-                                            undefined,
+      functionCalls: functionCalls.length ? functionCalls as [AidaFunctionCall, ...AidaFunctionCall[]] : undefined,
       completed: true,
     };
   }

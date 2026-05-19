@@ -333,6 +333,7 @@ export interface GenerateContentResponse {
   usageMetadata: UsageMetadata;
   modelVersion: string;
   responseId: string;
+  error?: Record<string, unknown>;
 }
 
 export interface Candidate {

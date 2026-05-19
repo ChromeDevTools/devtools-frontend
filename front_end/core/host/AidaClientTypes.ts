@@ -32,10 +32,7 @@ export interface Content {
 export type Part = {
   text: string,
 }|{
-  functionCall: {
-    name: string,
-    args: Record<string, unknown>,
-  },
+  functionCall: AidaFunctionCall,
 }|{
   functionResponse: {
     name: string,
@@ -375,9 +372,10 @@ export interface AttributionMetadata {
   citations: Citation[];
 }
 
-export interface AidaFunctionCallResponse {
+export interface AidaFunctionCall {
   name: string;
   args: Record<string, unknown>;
+  thoughtSignature?: string;
 }
 
 export interface FactualityFact {
@@ -402,7 +400,7 @@ export interface ResponseMetadata {
 export interface DoConversationResponse {
   explanation: string;
   metadata: ResponseMetadata;
-  functionCalls?: [AidaFunctionCallResponse, ...AidaFunctionCallResponse[]];
+  functionCalls?: [AidaFunctionCall, ...AidaFunctionCall[]];
   completed: boolean;
 }
 
@@ -461,10 +459,7 @@ export interface AidaChunkResponse {
     inferenceLanguage: AidaInferenceLanguage,
   };
   functionCallChunk?: {
-    functionCall: {
-      name: string,
-      args: Record<string, unknown>,
-    },
+    functionCall: AidaFunctionCall,
   };
   error?: string;
 }

@@ -618,4 +618,38 @@ describe('AidaGcaTranslation', () => {
                        }]);
     });
   });
+  it('translates a functionCallChunk with thoughtSignature', () => {
+    const gcaResponse = createGcaResponse({
+      modelVersion: 'gen-model',
+      responseId: 'response-789',
+      candidates: [{
+        index: 0,
+        content: {
+          role: 'model',
+          parts: [{functionCall: {name: 'getStyles', args: {uid: 1}}, thoughtSignature: 'thought-sig-abc'}]
+        },
+        finishReason: GcaTypes.FinishReason.STOP,
+        safetyRatings: [],
+        citationMetadata: {citations: []},
+        groundingMetadata: {},
+        aicodeOutput: {contents: []},
+      }],
+    });
+    assert.deepEqual(AidaGcaTranslation.gcaChunkResponseToAidaChunkResponse(gcaResponse), [
+      {
+        functionCallChunk: {
+          functionCall: {
+            name: 'getStyles',
+            args: {uid: 1},
+            thoughtSignature: 'thought-sig-abc',
+          },
+        },
+        metadata: {
+          rpcGlobalId: 'response-789',
+          inferenceOptionMetadata: {modelId: 'gen-model'},
+          attributionMetadata: {attributionAction: AidaClient.RecitationAction.CITE, citations: []}
+        }
+      },
+    ]);
+  });
 });

@@ -358,7 +358,7 @@ export interface FunctionDeclaration<Args extends Record<string, unknown>, Retur
 
 interface AidaFetchResult {
   text?: string;
-  functionCall?: Host.AidaClient.AidaFunctionCallResponse;
+  functionCall?: Host.AidaClient.AidaFunctionCall;
   completed: boolean;
   rpcId?: Host.AidaClient.RpcGlobalId;
 }
@@ -655,7 +655,7 @@ export abstract class AiAgent<T> {
 
       let rpcId: Host.AidaClient.RpcGlobalId|undefined;
       let textResponse = '';
-      let functionCall: Host.AidaClient.AidaFunctionCallResponse|undefined = undefined;
+      let functionCall: Host.AidaClient.AidaFunctionCall|undefined = undefined;
       try {
         for await (const fetchResult of this.#aidaFetch(request, {signal: options.signal})) {
           rpcId = fetchResult.rpcId;
@@ -731,6 +731,7 @@ export abstract class AiAgent<T> {
               this.#callFunction(
                   functionCall.name,
                   functionCall.args,
+                  functionCall.thoughtSignature,
                   {
                     ...options,
                     explanation: textResponse,
@@ -782,6 +783,7 @@ export abstract class AiAgent<T> {
       #callFunction(
           name: string,
           args: Record<string, unknown>,
+          thoughtSignature?: string,
           options?: FunctionHandlerOptions&{explanation?: string},
           ): AsyncGenerator<FunctionCallResponseData, {
         result: unknown,
@@ -797,12 +799,14 @@ export abstract class AiAgent<T> {
         text: options.explanation,
       });
     }
-    parts.push({
-      functionCall: {
-        name,
-        args,
-      },
-    });
+    const functionCall: Host.AidaClient.AidaFunctionCall = {
+      name,
+      args,
+    };
+    if (thoughtSignature) {
+      functionCall.thoughtSignature = thoughtSignature;
+    }
+    parts.push({functionCall});
     this.#history.push({
       parts,
       role: Host.AidaClient.Role.MODEL,

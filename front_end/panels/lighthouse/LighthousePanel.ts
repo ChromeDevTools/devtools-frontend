@@ -399,6 +399,10 @@ export class LighthousePanel extends UI.Panel.Panel {
     }
   }
 
+  selectReport(report: LighthouseModel.ReporterTypes.ReportJSON): void {
+    this.reportSelector.selectReport(report);
+  }
+
   static async executeLighthouseRecording(
       overrides?: LighthouseModel.RunTypes.RunOverrides,
       ): Promise<LighthouseModel.ReporterTypes.ReportJSON|null> {
@@ -407,5 +411,12 @@ export class LighthousePanel extends UI.Panel.Panel {
 
     const {report} = await panel.handleCompleteRun(overrides);
     return report;
+  }
+}
+
+export class ReportRevealer implements Common.Revealer.Revealer<ActiveLighthouseReport> {
+  async reveal(report: ActiveLighthouseReport): Promise<void> {
+    await UI.ViewManager.ViewManager.instance().showView('lighthouse');
+    LighthousePanel.instance().selectReport(report.report);
   }
 }

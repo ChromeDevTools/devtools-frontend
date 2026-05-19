@@ -358,6 +358,7 @@ export class ContextSelectionAgent extends AiAgent<never> {
         return {
           context: new AccessibilityContext(result),
           description: 'User has selected a Lighthouse report',
+          widgets: [{name: 'LIGHTHOUSE_REPORT', data: {report: result}}],
         };
       }
     });

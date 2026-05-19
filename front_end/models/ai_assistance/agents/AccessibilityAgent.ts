@@ -260,7 +260,10 @@ export class AccessibilityAgent extends AiAgent<LHModel.ReporterTypes.ReportJSON
           return {error: 'Failed to run accessibility audits.'};
         }
         const audits = new LighthouseFormatter().audits(report, 'accessibility');
-        return {result: {audits}};
+        return {
+          result: {audits},
+          widgets: [{name: 'LIGHTHOUSE_REPORT', data: {report}}],
+        };
       }
     });
 
@@ -294,7 +297,10 @@ export class AccessibilityAgent extends AiAgent<LHModel.ReporterTypes.ReportJSON
           return {error: 'No Lighthouse report available.'};
         }
         const audits = new LighthouseFormatter().audits(report, params.categoryId);
-        return {result: {audits}};
+        return {
+          result: {audits},
+          widgets: [{name: 'LIGHTHOUSE_REPORT', data: {report}}],
+        };
       }
     });
 

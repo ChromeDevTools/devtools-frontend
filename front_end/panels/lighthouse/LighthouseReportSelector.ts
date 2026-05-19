@@ -94,16 +94,28 @@ export class ReportSelector {
   selectNewReport(): void {
     this.#comboBox.select(this.newLighthouseItem);
   }
+
+  selectReport(report: LighthouseModel.ReporterTypes.ReportJSON): void {
+    for (const [optionElement, item] of this.itemByOptionElement) {
+      if (item.report === report) {
+        this.#comboBox.select(optionElement);
+        item.select();
+        return;
+      }
+    }
+  }
 }
 
 export class Item {
   private readonly renderReport: () => void;
   private readonly showLandingCallback: () => void;
   private readonly element: HTMLOptionElement;
+  readonly report: LighthouseModel.ReporterTypes.ReportJSON;
 
   constructor(
       lighthouseResult: LighthouseModel.ReporterTypes.ReportJSON, renderReport: () => void,
       showLandingCallback: () => void) {
+    this.report = lighthouseResult;
     this.renderReport = renderReport;
     this.showLandingCallback = showLandingCallback;
 

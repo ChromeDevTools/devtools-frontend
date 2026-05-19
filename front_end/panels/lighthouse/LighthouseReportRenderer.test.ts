@@ -4,6 +4,7 @@
 
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
+import type * as LighthouseModel from '../../models/lighthouse/lighthouse.js';
 import {stripLitHtmlCommentNodes} from '../../testing/DOMHelpers.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
@@ -124,5 +125,27 @@ describeWithMockConnection('LighthouseReportRenderer', () => {
     await Lighthouse.LighthouseReportRenderer.LighthouseReportRenderer.linkifyNodeDetails(sourceElement);
 
     assert.strictEqual(sourceElement.innerHTML, originalHtml);
+  });
+
+  it('renders lighthouse scores and strips out topbar', async () => {
+    const lhr = {
+      finalDisplayedUrl: 'http://example.com',
+      configSettings: {},
+      audits: {},
+      categories: {
+        performance: {auditRefs: [], id: 'performance', score: 0.8},
+        accessibility: {auditRefs: [], id: 'accessibility', score: 0.9},
+      },
+      lighthouseVersion: '',
+      userAgent: '',
+      fetchTime: 0,
+      environment: {benchmarkIndex: 0},
+      i18n: {rendererFormattedStrings: {}},
+    } as unknown as LighthouseModel.ReporterTypes.ReportJSON;
+
+    const el = Lighthouse.LighthouseReportRenderer.LighthouseReportRenderer.renderLighthouseScores(lhr);
+    assert.isNotNull(el);
+    assert.isNotNull(el?.querySelector('.lh-scores-header'));
+    assert.isNull(el?.querySelector('.lh-topbar'));
   });
 });

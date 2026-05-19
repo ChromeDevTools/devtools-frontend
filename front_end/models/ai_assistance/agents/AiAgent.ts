@@ -284,9 +284,17 @@ export interface SourceFileAiWidget {
   };
 }
 
+export interface LighthouseReportAiWidget {
+  name: 'LIGHTHOUSE_REPORT';
+  data: {
+    report: LHModel.ReporterTypes.ReportJSON,
+  };
+}
+
 // This type will grow as we add more widgets.
-export type AiWidget = ComputedStyleAiWidget|CoreVitalsAiWidget|StylePropertiesAiWidget|DomTreeAiWidget|
-    PerformanceTraceAiWidget|PerfInsightAiWidget|TimelineRangeSummaryAiWidget|BottomUpTreeAiWidget|SourceFileAiWidget;
+export type AiWidget =
+    ComputedStyleAiWidget|CoreVitalsAiWidget|StylePropertiesAiWidget|DomTreeAiWidget|PerformanceTraceAiWidget|
+    PerfInsightAiWidget|TimelineRangeSummaryAiWidget|BottomUpTreeAiWidget|SourceFileAiWidget|LighthouseReportAiWidget;
 
 export type FunctionCallHandlerResult<Result> = {
   requiresApproval: true,

@@ -293,6 +293,18 @@ describeWithEnvironment('ChatMessage', () => {
         } as AIAssistanceModel.AiAgent.AiWidget;
         assert.strictEqual(AiAssistance.ChatMessage.getWidgetSignature(widget), 'BOTTOM_UP_TREE:100-200');
       });
+
+      it('should correctly handle LIGHTHOUSE_REPORT widget', () => {
+        const widget = {
+          name: 'LIGHTHOUSE_REPORT',
+          data: {
+            report: {
+              fetchTime: 123456,
+            },
+          },
+        } as unknown as AIAssistanceModel.AiAgent.AiWidget;
+        assert.strictEqual(AiAssistance.ChatMessage.getWidgetSignature(widget), 'LIGHTHOUSE_REPORT:123456');
+      });
     });
   });
 

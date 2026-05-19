@@ -108,4 +108,24 @@ describeWithMockConnection('LighthousePanel', () => {
     sinon.assert.calledOnceWithExactly(showViewStub, 'lighthouse');
     assert.strictEqual(result, REPORT_JSON);
   });
+
+  it('can select a specific report', async () => {
+    const instance = Lighthouse.LighthousePanel.LighthousePanel.instance({forceNew: true, protocolService, controller});
+    await instance.handleCompleteRun();
+
+    const secondReport = {
+      ...LH_REPORT.lhr,
+      fetchTime: 100,
+    } as unknown as LighthouseModel.ReporterTypes.ReportJSON;
+    (protocolService.collectLighthouseResults as sinon.SinonStub).resolves({
+      lhr: secondReport,
+    } as unknown as LighthouseModel.ReporterTypes.RunnerResult);
+    await instance.handleCompleteRun();
+
+    const context = UI.Context.Context.instance();
+    assert.strictEqual(context.flavor(Lighthouse.LighthousePanel.ActiveLighthouseReport)?.report, secondReport);
+
+    instance.selectReport(LH_REPORT.lhr);
+    assert.strictEqual(context.flavor(Lighthouse.LighthousePanel.ActiveLighthouseReport)?.report, LH_REPORT.lhr);
+  });
 });

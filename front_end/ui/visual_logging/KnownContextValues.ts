@@ -3856,6 +3856,7 @@ export const knownContextValues = new Set([
   'storage',
   'storage-bucket',
   'storage-buckets',
+  'storage-default',
   'storage-items-view.clear-all',
   'storage-items-view.delete-selected',
   'storage-items-view.refresh',

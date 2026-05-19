@@ -28,6 +28,7 @@ import {ContextSelectionAgent} from './agents/ContextSelectionAgent.js';
 import {FileAgent, FileContext} from './agents/FileAgent.js';
 import {NetworkAgent, RequestContext} from './agents/NetworkAgent.js';
 import {PerformanceAgent, PerformanceTraceContext} from './agents/PerformanceAgent.js';
+import {StorageAgent, StorageContext} from './agents/StorageAgent.js';
 import {NodeContext, StylingAgent} from './agents/StylingAgent.js';
 import {AiHistoryStorage, ConversationType, type SerializedConversation} from './AiHistoryStorage.js';
 import type {ChangeManager} from './ChangeManager.js';
@@ -188,6 +189,8 @@ export class AiConversation {
         this.#updateAgent(ConversationType.PERFORMANCE);
       } else if (updateContext instanceof AccessibilityContext) {
         this.#updateAgent(ConversationType.ACCESSIBILITY);
+      } else if (updateContext instanceof StorageContext) {
+        this.#updateAgent(ConversationType.STORAGE);
       }
     }
   }
@@ -380,6 +383,10 @@ export class AiConversation {
       }
       case ConversationType.ACCESSIBILITY: {
         this.#agent = new AccessibilityAgent(options);
+        break;
+      }
+      case ConversationType.STORAGE: {
+        this.#agent = new StorageAgent(options);
         break;
       }
       case ConversationType.NONE: {

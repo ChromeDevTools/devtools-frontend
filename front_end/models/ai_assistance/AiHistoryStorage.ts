@@ -15,6 +15,7 @@ export const enum ConversationType {
   PERFORMANCE = 'drjones-performance-full',
   BREAKPOINT = 'breakpoint',
   ACCESSIBILITY = 'accessibility',
+  STORAGE = 'storage',
 }
 
 export interface SerializedConversation {

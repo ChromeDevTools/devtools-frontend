@@ -91,6 +91,7 @@ devtools_ui_module("application") {
     "../../core/sdk:bundle",
     "../../generated",
     "../../generated:protocol",
+    "../../models/ai_assistance:bundle",
     "../../models/bindings:bundle",
     "../../models/geometry:bundle",
     "../../models/issues_manager:bundle",

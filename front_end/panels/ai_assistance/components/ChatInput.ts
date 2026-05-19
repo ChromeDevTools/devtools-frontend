@@ -106,6 +106,10 @@ const UIStringsNotTranslate = {
   /**
    * @description Label added to the button that remove the currently selected context in AI Assistance panel.
    */
+  removeContextStorage: 'Remove storage from context',
+  /**
+   * @description Label added to the button that remove the currently selected context in AI Assistance panel.
+   */
   removeContext: 'Remove from context',
 } as const;
 
@@ -178,6 +182,9 @@ function getContextRemoveLabel(context: AiAssistanceModel.AiAgent.ConversationCo
   }
   if (context instanceof AiAssistanceModel.PerformanceAgent.PerformanceTraceContext) {
     return lockedString(UIStringsNotTranslate.removeContextPerfInsight);
+  }
+  if (context instanceof AiAssistanceModel.StorageAgent.StorageContext) {
+    return lockedString(UIStringsNotTranslate.removeContextStorage);
   }
   return lockedString(UIStringsNotTranslate.removeContext);
 }
@@ -352,6 +359,8 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: ViewOutput, target: HTML
                             html`<devtools-icon class="icon" name="performance" title="Lighthouse"></devtools-icon>` :
                             input.context instanceof AiAssistanceModel.PerformanceAgent.PerformanceTraceContext ?
                             html`<devtools-icon class="icon" name="performance" title="Performance"></devtools-icon>` :
+                            input.context instanceof AiAssistanceModel.StorageAgent.StorageContext ?
+                            html`<devtools-icon class="icon" name="table" title="Storage"></devtools-icon>` :
                             Lit.nothing}
                             <span
                               role="button"

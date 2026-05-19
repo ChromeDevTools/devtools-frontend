@@ -224,7 +224,9 @@ export abstract class KeyValueStorageItemsView extends UI.Widget.VBox {
         } else {
           void this.#previewEntry(item);
         }
+        this.selectedItemChanged(item);
       },
+
       onSort: (ascending: boolean) => {
         this.#isSortOrderAscending = ascending;
       },
@@ -401,6 +403,9 @@ export abstract class KeyValueStorageItemsView extends UI.Widget.VBox {
 
   protected keys(): string[] {
     return this.#items.map(item => item.key);
+  }
+
+  protected selectedItemChanged(_item: {key: string, value: string}|null): void {
   }
 
   protected abstract setItem(key: string, value: string): void;

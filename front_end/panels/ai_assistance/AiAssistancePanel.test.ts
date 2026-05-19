@@ -314,9 +314,10 @@ describeWithMockConnection('AI Assistance Panel', () => {
         flavor: SDK.NetworkRequest.NetworkRequest,
         name: 'NetworkRequest',
         createContext: () => {
+          const networkRequest =
+              createNetworkRequest({url: urlString`https://example.com`, documentURL: urlString`https://example.com`});
           return new AiAssistanceModel.NetworkAgent.RequestContext(
-              sinon.createStubInstance(SDK.NetworkRequest.NetworkRequest),
-              sinon.createStubInstance(NetworkTimeCalculator.NetworkTransferDurationCalculator));
+              networkRequest, sinon.createStubInstance(NetworkTimeCalculator.NetworkTransferDurationCalculator));
         },
         action: 'drjones.network-floating-button'
       },
@@ -324,7 +325,10 @@ describeWithMockConnection('AI Assistance Panel', () => {
         flavor: AiAssistanceModel.AIContext.AgentFocus,
         name: 'AgentFocus',
         createContext: () => {
-          const parsedTrace = {insights: new Map(), data: {Meta: {mainFrameId: ''}}} as Trace.TraceModel.ParsedTrace;
+          const parsedTrace = {
+            insights: new Map(),
+            data: {Meta: {mainFrameId: '', mainFrameURL: 'https://www.example.com'}}
+          } as Trace.TraceModel.ParsedTrace;
           return AiAssistanceModel.PerformanceAgent.PerformanceTraceContext.fromParsedTrace(parsedTrace);
         },
         action: 'drjones.performance-panel-context'
@@ -333,8 +337,10 @@ describeWithMockConnection('AI Assistance Panel', () => {
         flavor: Workspace.UISourceCode.UISourceCode,
         name: 'UISourceCode',
         createContext: () => {
-          return new AiAssistanceModel.FileAgent.FileContext(
-              sinon.createStubInstance(Workspace.UISourceCode.UISourceCode));
+          const file = sinon.createStubInstance(Workspace.UISourceCode.UISourceCode, {
+            url: urlString`https://www.example.com/app.js`,
+          });
+          return new AiAssistanceModel.FileAgent.FileContext(file);
         },
         action: 'drjones.sources-panel-context',
       }
@@ -413,7 +419,10 @@ describeWithMockConnection('AI Assistance Panel', () => {
       const {panel, view} = await createAiAssistancePanel({chatView});
 
       // Firstly, start a conversation and set a context
-      const fakeParsedTrace = {insights: new Map(), data: {Meta: {mainFrameId: ''}}} as Trace.TraceModel.ParsedTrace;
+      const fakeParsedTrace = {
+        insights: new Map(),
+        data: {Meta: {mainFrameId: '', mainFrameURL: 'https://www.example.com'}}
+      } as Trace.TraceModel.ParsedTrace;
       const context = AiAssistanceModel.PerformanceAgent.PerformanceTraceContext.fromParsedTrace(fakeParsedTrace);
       UI.Context.Context.instance().setFlavor(AiAssistanceModel.AIContext.AgentFocus, context.getItem());
 
@@ -473,6 +482,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
       assert.isTrue(nextInput.props.isContextSelected);
       assert.strictEqual(nextInput.props.context?.getItem(), node2);
     });
+
     it('should not update the context when the conversation is not empty if the feature is enabled', async () => {
       updateHostConfig({
         devToolsAiAssistanceContextSelectionAgent: {
@@ -480,12 +490,17 @@ describeWithMockConnection('AI Assistance Panel', () => {
         },
       });
 
-      const networkRequest = createNetworkRequest({url: urlString`https://example.com`});
+      const networkRequest =
+          createNetworkRequest({url: urlString`https://example.com`, documentURL: urlString`https://example.com`});
       UI.Context.Context.instance().setFlavor(SDK.NetworkRequest.NetworkRequest, networkRequest);
 
       const initialNode = sinon.createStubInstance(SDK.DOMModel.DOMNode, {
         nodeType: Node.ELEMENT_NODE,
       });
+      const ownerDoc = sinon.createStubInstance(SDK.DOMModel.DOMDocument);
+      ownerDoc.documentURL = urlString`https://example.com`;
+      initialNode.ownerDocument = ownerDoc;
+
       UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, initialNode);
       viewManagerIsViewVisibleStub.callsFake(viewName => viewName === 'elements');
 
@@ -2029,8 +2044,10 @@ describeWithMockConnection('AI Assistance Panel', () => {
            viewManagerIsViewVisibleStub.callsFake(viewName => viewName === 'timeline');
            UI.Context.Context.instance().setFlavor(Timeline.TimelinePanel.TimelinePanel, timelinePanel);
 
-           const fakeParsedTrace = {insights: new Map(), data: {Meta: {mainFrameId: ''}}} as
-               Trace.TraceModel.ParsedTrace;
+           const fakeParsedTrace = {
+             insights: new Map(),
+             data: {Meta: {mainFrameId: '', mainFrameURL: 'https://www.example.com'}}
+           } as Trace.TraceModel.ParsedTrace;
            const focus = AiAssistanceModel.AIContext.AgentFocus.fromParsedTrace(fakeParsedTrace);
            UI.Context.Context.instance().setFlavor(AiAssistanceModel.AIContext.AgentFocus, focus);
 
@@ -2183,6 +2200,10 @@ describeWithMockConnection('AI Assistance Panel', () => {
         const node = sinon.createStubInstance(SDK.DOMModel.DOMNode, {
           nodeType: Node.ELEMENT_NODE,
         });
+        const ownerDoc = sinon.createStubInstance(SDK.DOMModel.DOMDocument);
+        ownerDoc.documentURL = urlString`https://example.com`;
+        node.ownerDocument = ownerDoc;
+
         UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, node);
         viewManagerIsViewVisibleStub.callsFake(viewName => viewName === 'elements');
 

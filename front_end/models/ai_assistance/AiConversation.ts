@@ -429,16 +429,7 @@ export class AiConversation {
         throw new Error('cross-origin context data should not be included');
       }
 
-      const userQuery: UserQuery = {
-        type: ResponseType.USER_QUERY,
-        query: initialQuery,
-        imageInput: options.multimodalInput?.input,
-        imageId: options.multimodalInput?.id,
-      };
-      void this.addHistoryItem(userQuery);
-      yield userQuery;
-
-      yield* this.#runAgent(initialQuery, options);
+      yield* this.#runAgent(initialQuery, options, {isInitialCall: true});
     } finally {
       targetManager.removeModelListener(
           SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.PrimaryPageChanged, listener, this);
@@ -456,6 +447,7 @@ export class AiConversation {
             signal?: AbortSignal,
             multimodalInput?: MultimodalInput,
           } = {},
+          runOptions: {isInitialCall?: boolean} = {},
           ): AsyncGenerator<ResponseData, void, void> {
     this.#setOriginIfEmpty(this.selectedContext?.getOrigin());
     if (this.isBlockedByOrigin) {
@@ -464,6 +456,17 @@ export class AiConversation {
         error: ErrorType.CROSS_ORIGIN,
       };
       return;
+    }
+
+    if (runOptions.isInitialCall) {
+      const userQuery: UserQuery = {
+        type: ResponseType.USER_QUERY,
+        query: initialQuery,
+        imageInput: options.multimodalInput?.input,
+        imageId: options.multimodalInput?.id,
+      };
+      void this.addHistoryItem(userQuery);
+      yield userQuery;
     }
 
     function shouldAddToHistory(data: ResponseData): boolean {
@@ -499,7 +502,9 @@ export class AiConversation {
       // requery with the specialized agent.
       if (data.type === ResponseType.CONTEXT_CHANGE) {
         this.setContext(data.context);
-        yield* this.#runAgent(this.#getQueryAfterSelection(initialQuery, data.description), options);
+        yield*
+            this.#runAgent(
+                this.#getQueryAfterSelection(initialQuery, data.description), options, {isInitialCall: false});
         return;
       }
     }

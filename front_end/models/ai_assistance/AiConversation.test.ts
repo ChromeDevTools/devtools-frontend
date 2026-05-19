@@ -577,4 +577,32 @@ describeWithEnvironment('AiConversation', () => {
       expectBlocked: false,
     });
   });
+
+  it('should throw an error when starting a conversation with an opaque origin', async () => {
+    const conversation = new AiAssistance.AiConversation.AiConversation({
+      type: AiAssistance.AiHistoryStorage.ConversationType.STYLING,
+    });
+
+    class OpaqueContext extends AiAssistance.AiAgent.ConversationContext<unknown> {
+      override getOrigin(): string {
+        return 'null';
+      }
+      override getItem(): unknown {
+        return null;
+      }
+      override getTitle(): string {
+        return 'Opaque';
+      }
+    }
+
+    conversation.setContext(new OpaqueContext());
+
+    try {
+      await Array.fromAsync(conversation.run('test'));
+      assert.fail('Error was not thrown');
+    } catch (err) {
+      assert.instanceOf(err, Error);
+      assert.strictEqual(err.message, 'cross-origin context data should not be included');
+    }
+  });
 });

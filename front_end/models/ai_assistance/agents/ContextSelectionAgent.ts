@@ -20,6 +20,7 @@ import {
   AiAgent,
   type AllowedOriginResult,
   type ContextResponse,
+  isOpaqueOrigin,
   type RequestOptions,
 } from './AiAgent.js';
 import {FileContext} from './FileAgent.js';
@@ -126,6 +127,11 @@ export class ContextSelectionAgent extends AiAgent<never> {
           };
         }
         const origin = allowedOriginResult.origin;
+        if (origin && isOpaqueOrigin(origin)) {
+          return {
+            error: 'No requests recorded by DevTools',
+          };
+        }
 
         let hasCrossOriginRequest = false;
         for (const request of Logs.NetworkLog.NetworkLog.instance().requests()) {
@@ -196,6 +202,11 @@ export class ContextSelectionAgent extends AiAgent<never> {
           };
         }
         const origin = allowedOriginResult.origin;
+        if (origin && isOpaqueOrigin(origin)) {
+          return {
+            error: 'No request found',
+          };
+        }
         const request = Logs.NetworkLog.NetworkLog.instance().requests().find(req => {
           if (req.requestId() !== id) {
             return false;

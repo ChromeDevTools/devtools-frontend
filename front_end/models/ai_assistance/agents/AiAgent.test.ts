@@ -371,41 +371,83 @@ describeWithEnvironment('AiAgent', () => {
       return new TestContext();
     }
     it('checks context origins', () => {
-      const tests = [
+      const tests: Array<{dataOrigin: string, establishedOrigin: string | undefined, isAllowed: boolean}> = [
         {
-          contextOrigin: 'https://google.test',
-          agentOrigin: 'https://google.test',
+          dataOrigin: 'https://google.test',
+          establishedOrigin: 'https://google.test',
           isAllowed: true,
         },
         {
-          contextOrigin: 'https://google.test',
-          agentOrigin: 'about:blank',
+          dataOrigin: 'https://google.test',
+          establishedOrigin: 'about:blank',
           isAllowed: false,
         },
         {
-          contextOrigin: 'https://google.test',
-          agentOrigin: 'https://www.google.test',
+          dataOrigin: 'https://google.test',
+          establishedOrigin: 'https://www.google.test',
           isAllowed: false,
         },
         {
-          contextOrigin: 'https://a.test',
-          agentOrigin: 'https://b.test',
+          dataOrigin: 'https://a.test',
+          establishedOrigin: 'https://b.test',
           isAllowed: false,
         },
         {
-          contextOrigin: 'https://a.test',
-          agentOrigin: 'file:///tmp',
+          dataOrigin: 'https://a.test',
+          establishedOrigin: 'file:///tmp',
           isAllowed: false,
         },
         {
-          contextOrigin: 'https://a.test',
-          agentOrigin: 'http://a.test',
+          dataOrigin: 'https://a.test',
+          establishedOrigin: 'http://a.test',
+          isAllowed: false,
+        },
+        {
+          dataOrigin: 'null',
+          establishedOrigin: 'null',
+          isAllowed: false,
+        },
+        {
+          dataOrigin: 'null',
+          establishedOrigin: undefined,
+          isAllowed: false,
+        },
+        {
+          dataOrigin: 'data:',
+          establishedOrigin: 'data:',
+          isAllowed: false,
+        },
+        {
+          dataOrigin: 'about://',
+          establishedOrigin: 'about://',
+          isAllowed: false,
+        },
+        {
+          dataOrigin: 'about:srcdoc',
+          establishedOrigin: 'about:srcdoc',
+          isAllowed: false,
+        },
+        {
+          dataOrigin: 'detached',
+          establishedOrigin: 'detached',
           isAllowed: false,
         },
       ];
       for (const test of tests) {
-        assert.strictEqual(getTestContext(test.contextOrigin).isOriginAllowed(test.agentOrigin), test.isAllowed);
+        assert.strictEqual(
+            getTestContext(test.dataOrigin).isOriginAllowed(test.establishedOrigin), test.isAllowed,
+            `Checking origin ${test.dataOrigin} against ${test.establishedOrigin}`);
       }
+    });
+
+    it('identifies opaque origins', () => {
+      assert.isTrue(AiAssistance.AiAgent.isOpaqueOrigin('null'));
+      assert.isTrue(AiAssistance.AiAgent.isOpaqueOrigin('data:'));
+      assert.isTrue(AiAssistance.AiAgent.isOpaqueOrigin('about://'));
+      assert.isTrue(AiAssistance.AiAgent.isOpaqueOrigin('about:srcdoc'));
+      assert.isTrue(AiAssistance.AiAgent.isOpaqueOrigin('detached'));
+      assert.isTrue(AiAssistance.AiAgent.isOpaqueOrigin('detached:123'));
+      assert.isFalse(AiAssistance.AiAgent.isOpaqueOrigin('https://google.com'));
     });
   });
 

@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as SDK from '../../../core/sdk/sdk.js';
+import type * as Protocol from '../../../generated/protocol.js';
 import {mockAidaClient} from '../../../testing/AiAssistanceHelpers.js';
 import {createTarget} from '../../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../../testing/MockConnection.js';
@@ -125,6 +126,82 @@ describeWithMockConnection('AccessibilityAgent', () => {
     assert.exists(titleResponse);
     assert.strictEqual(titleResponse.title, 'Reading accessibility details');
   });
+
+  it('getElementAccessibilityDetails yields a ComputedStyleAiWidget if styles and matched styles are found',
+     async () => {
+       createTarget();
+       const aidaClient = mockAidaClient([[{
+         explanation: '',
+         functionCalls:
+             [{name: 'getElementAccessibilityDetails', args: {path: '1,HTML,1,BODY', explanation: 'testing'}}],
+         metadata: {
+           rpcGlobalId: 123,
+         },
+       }]]);
+       const agent = new AiAssistance.AccessibilityAgent.AccessibilityAgent({
+         aidaClient,
+       });
+       const context = new AiAssistance.AccessibilityAgent.AccessibilityContext(mockReport);
+
+       const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget()!;
+       const domModel = target.model(SDK.DOMModel.DOMModel)!;
+       const accessibilityModel = target.model(SDK.AccessibilityModel.AccessibilityModel)!;
+       const cssModel = domModel.cssModel();
+
+       const mockNode = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+       mockNode.domModel.returns(domModel);
+       mockNode.id = 42 as Protocol.DOM.NodeId;
+       mockNode.backendNodeId.returns(100 as Protocol.DOM.BackendNodeId);
+       mockNode.attributes.returns([]);
+
+       sinon.stub(domModel, 'pushNodeByPathToFrontend').resolves(42 as Protocol.DOM.NodeId);
+       sinon.stub(domModel, 'nodeForId').withArgs(42 as Protocol.DOM.NodeId).returns(mockNode);
+
+       const styles = new Map<string, string>([
+         ['color', 'rgb(0, 0, 0)'],
+         ['background-color', 'rgb(255, 255, 255)'],
+       ]);
+       sinon.stub(cssModel, 'getComputedStyle').resolves(styles);
+       const matchedStyles = sinon.createStubInstance(SDK.CSSMatchedStyles.CSSMatchedStyles);
+       sinon.stub(cssModel, 'getMatchedStyles').resolves(matchedStyles);
+
+       sinon.stub(accessibilityModel, 'requestAndLoadSubTreeToNode').resolves();
+       const mockAxNode = sinon.createStubInstance(SDK.AccessibilityModel.AccessibilityNode);
+       mockAxNode.role.returns({value: 'button', type: 'role' as Protocol.Accessibility.AXValueType});
+       mockAxNode.name.returns({
+         value: 'Click me',
+         type: 'string' as Protocol.Accessibility.AXValueType,
+         sources: [{type: 'attribute' as Protocol.Accessibility.AXValueSourceType}],
+       });
+       mockAxNode.ignored.returns(false);
+       mockAxNode.ignoredReasons.returns([]);
+       sinon.stub(accessibilityModel, 'axNodeForDOMNode').withArgs(mockNode).returns(mockAxNode);
+
+       const responses = await Array.fromAsync(agent.run('test', {selected: context}));
+       const actions = responses.filter(r => r.type === AiAssistance.AiAgent.ResponseType.ACTION);
+       assert.lengthOf(actions, 1);
+       assert.exists(actions[0].widgets);
+       const widget =
+           actions[0].widgets?.find(w => w.name === 'COMPUTED_STYLES') as AiAssistance.AiAgent.ComputedStyleAiWidget;
+       assert.exists(widget);
+       assert.strictEqual(widget.data.backendNodeId, 100 as Protocol.DOM.BackendNodeId);
+       assert.strictEqual(widget.data.computedStyles, styles);
+       assert.strictEqual(widget.data.matchedCascade, matchedStyles);
+       assert.deepEqual(widget.data.properties, [
+         'color',
+         'background-color',
+         'display',
+         'visibility',
+         'opacity',
+         'clip',
+         'clip-path',
+         'font-size',
+         'font-weight',
+         'line-height',
+         'letter-spacing',
+         'text-transform',
+       ]);
+     });
 
   it('can call the runAccessibilityAudits method', async () => {
     const aidaClient = mockAidaClient([[{

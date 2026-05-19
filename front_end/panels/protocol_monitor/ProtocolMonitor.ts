@@ -5,7 +5,6 @@
 import '../../ui/legacy/legacy.js';
 import '../../ui/legacy/components/data_grid/data_grid.js';
 
-import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as ProtocolClient from '../../core/protocol_client/protocol_client.js';
@@ -13,6 +12,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
+import * as UIHelpers from '../../ui/helpers/helpers.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {Directives, html, render} from '../../ui/lit/lit.js';
@@ -523,7 +523,7 @@ export class ProtocolMonitorImpl extends UI.Panel.Panel implements SDK.TargetMan
     menu.footerSection().appendItem(i18nString(UIStrings.documentation), () => {
       const [domain, method] = message.method.split('.');
       const type = 'id' in message ? 'method' : 'event';
-      Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(
+      UIHelpers.openInNewTab(
           `https://chromedevtools.github.io/devtools-protocol/tot/${domain}#${type}-${method}` as
           Platform.DevToolsPath.UrlString);
     }, {jslogContext: 'documentation'});

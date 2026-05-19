@@ -1112,7 +1112,7 @@ export class ContentProviderContextMenuProvider implements
     if (!Common.ParsedURL.schemeIs(contentUrl, 'file:')) {
       contextMenu.revealSection().appendItem(
           UI.UIUtils.openLinkExternallyLabel(),
-          () => Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(
+          () => UIHelpers.openInNewTab(
               contentUrl.endsWith(':formatted') ?
                   Common.ParsedURL.ParsedURL.slice(contentUrl, 0, contentUrl.lastIndexOf(':')) :
                   contentUrl),

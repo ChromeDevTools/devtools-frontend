@@ -422,7 +422,7 @@ export class MenuItem extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
   connectedCallback(): void {
     this.tabIndex = 0;
-    this.setAttribute('role', 'option');
+    this.setAttribute('role', 'menuitem');
     this.setAttribute('aria-selected', String(this.#props.selected));
   }
   #props: MenuItemData = {

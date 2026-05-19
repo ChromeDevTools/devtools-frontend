@@ -18,6 +18,7 @@ import {AccessibilityContext} from './AccessibilityAgent.js';
 import {
   type AgentOptions,
   AiAgent,
+  type AllowedOriginResult,
   type ContextResponse,
   type RequestOptions,
 } from './AiAgent.js';
@@ -87,7 +88,7 @@ export class ContextSelectionAgent extends AiAgent<never> {
   readonly #networkTimeCalculator?: NetworkTimeCalculator.NetworkTransferTimeCalculator;
   readonly #lighthouseRecording?:
       (overrides?: LHModel.RunTypes.RunOverrides) => Promise<LHModel.ReporterTypes.ReportJSON|null>;
-  #allowedOrigin: () => string | undefined;
+  #allowedOrigin: () => AllowedOriginResult;
 
   constructor(opts: AgentOptions&{
     performanceRecordAndReload?: () => Promise<Trace.TraceModel.ParsedTrace>,
@@ -99,7 +100,7 @@ export class ContextSelectionAgent extends AiAgent<never> {
     this.#lighthouseRecording = opts.lighthouseRecording;
     this.#onInspectElement = opts.onInspectElement;
     this.#networkTimeCalculator = opts.networkTimeCalculator;
-    this.#allowedOrigin = opts.allowedOrigin ?? (() => undefined);
+    this.#allowedOrigin = opts.allowedOrigin ?? (() => ({origin: undefined}));
 
     this.declareFunction<Record<string, never>>('listNetworkRequests', {
       description: `Gives a list of network requests including URL, status code, and duration.`,
@@ -118,7 +119,13 @@ export class ContextSelectionAgent extends AiAgent<never> {
       },
       handler: async () => {
         const requests = [];
-        const origin = this.#allowedOrigin();
+        const allowedOriginResult = this.#allowedOrigin();
+        if ('blocked' in allowedOriginResult) {
+          return {
+            error: 'Cross-origin access blocked due to navigation. Please start a new chat.',
+          };
+        }
+        const origin = allowedOriginResult.origin;
 
         let hasCrossOriginRequest = false;
         for (const request of Logs.NetworkLog.NetworkLog.instance().requests()) {
@@ -182,7 +189,13 @@ export class ContextSelectionAgent extends AiAgent<never> {
         };
       },
       handler: async ({id}) => {
-        const origin = this.#allowedOrigin();
+        const allowedOriginResult = this.#allowedOrigin();
+        if ('blocked' in allowedOriginResult) {
+          return {
+            error: 'Cross-origin access blocked due to navigation. Please start a new chat.',
+          };
+        }
+        const origin = allowedOriginResult.origin;
         const request = Logs.NetworkLog.NetworkLog.instance().requests().find(req => {
           if (req.requestId() !== id) {
             return false;

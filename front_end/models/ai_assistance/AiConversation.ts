@@ -14,6 +14,7 @@ import type * as NetworkTimeCalculator from '../network_time_calculator/network_
 import {AccessibilityAgent, AccessibilityContext} from './agents/AccessibilityAgent.js';
 import {
   type AiAgent,
+  type AllowedOriginResult,
   type ContextDetail,
   type ConversationContext,
   ErrorType,
@@ -34,6 +35,17 @@ import type {ChangeManager} from './ChangeManager.js';
 export const NOT_FOUND_IMAGE_DATA = '';
 export const CONTEXT_TITLE = 'Analyzing data';
 const MAX_TITLE_LENGTH = 80;
+/**
+ * List of page navigations that are allowed during an AI agent run.
+ * These are page navigations triggered by agents themselves:
+ * - `about://` : Navigated to before initiating a trace recording to ensure a clean state.
+ * - `chrome://terms`: Navigated to by Lighthouse during its Back-Forward Cache
+ *    audit.
+ */
+export const ALLOWED_PAGE_NAVIGATIONS: Platform.DevToolsPath.UrlString[] = [
+  Platform.DevToolsPath.urlString`about://`,
+  Platform.DevToolsPath.urlString`chrome://terms`,
+];
 
 export function generateContextDetailsMarkdown(details: ContextDetail[]): string {
   const detailsMarkdown: string[] = [];
@@ -87,6 +99,7 @@ export class AiConversation {
   #aidaClient: Host.AidaClient.AidaClient;
   #changeManager: ChangeManager|undefined;
   #origin?: string;
+  #navigationOccurredDuringRun = false;
 
   #contexts: Array<ConversationContext<unknown>> = [];
 
@@ -386,22 +399,43 @@ export class AiConversation {
             multimodalInput?: MultimodalInput,
           } = {},
           ): AsyncGenerator<ResponseData, void, void> {
-    if (this.isBlockedByOrigin) {
-      // This error should not be reached. If it happens, some
-      // invariants do not hold anymore.
-      throw new Error('cross-origin context data should not be included');
-    }
-
-    const userQuery: UserQuery = {
-      type: ResponseType.USER_QUERY,
-      query: initialQuery,
-      imageInput: options.multimodalInput?.input,
-      imageId: options.multimodalInput?.id,
+    this.#navigationOccurredDuringRun = false;
+    const originAtRunStart = getPrimaryPageOrigin();
+    const listener = (): void => {
+      // If an unexpected navigation to a different origin occurred
+      // during processing the user's request, we don't want to allow
+      // the agent to run any function calls and retrieve data from the new origin.
+      // Performance agent and accessibility agent navigate to 'about://' or 'chrome://terms'
+      const newOrigin = getPrimaryPageOrigin();
+      if (originAtRunStart !== newOrigin && newOrigin && !ALLOWED_PAGE_NAVIGATIONS.includes(newOrigin)) {
+        this.#navigationOccurredDuringRun = true;
+      }
     };
-    void this.addHistoryItem(userQuery);
-    yield userQuery;
+    const targetManager = SDK.TargetManager.TargetManager.instance();
+    targetManager.addModelListener(
+        SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.PrimaryPageChanged, listener, this);
 
-    yield* this.#runAgent(initialQuery, options);
+    try {
+      if (this.isBlockedByOrigin) {
+        // This error should not be reached. If it happens, some
+        // invariants do not hold anymore.
+        throw new Error('cross-origin context data should not be included');
+      }
+
+      const userQuery: UserQuery = {
+        type: ResponseType.USER_QUERY,
+        query: initialQuery,
+        imageInput: options.multimodalInput?.input,
+        imageId: options.multimodalInput?.id,
+      };
+      void this.addHistoryItem(userQuery);
+      yield userQuery;
+
+      yield* this.#runAgent(initialQuery, options);
+    } finally {
+      targetManager.removeModelListener(
+          SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.PrimaryPageChanged, listener, this);
+    }
   }
 
   #getQueryAfterSelection(initialQuery: string, selection: string): string {
@@ -481,15 +515,16 @@ export class AiConversation {
     return this.#type;
   }
 
-  allowedOrigin = (): string|undefined => {
-    if (this.#origin) {
-      return this.#origin;
+  allowedOrigin = (): AllowedOriginResult => {
+    if (this.#navigationOccurredDuringRun) {
+      return {blocked: true};
     }
-    const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
-    const inspectedURL = target?.inspectedURL();
-    this.#origin = inspectedURL ? new Common.ParsedURL.ParsedURL(inspectedURL).securityOrigin() : undefined;
+    if (this.#origin) {
+      return {origin: this.#origin};
+    }
+    this.#origin = getPrimaryPageOrigin();
 
-    return this.#origin;
+    return {origin: this.#origin};
   };
 }
 
@@ -499,4 +534,10 @@ function isAiAssistanceServerSideLoggingEnabled(): boolean {
 
 function isAiAssistanceContextSelectionAgentEnabled(): boolean {
   return Boolean(Root.Runtime.hostConfig.devToolsAiAssistanceContextSelectionAgent?.enabled);
+}
+
+function getPrimaryPageOrigin(): Platform.DevToolsPath.UrlString|undefined {
+  const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+  const inspectedURL = target?.inspectedURL();
+  return inspectedURL ? new Common.ParsedURL.ParsedURL(inspectedURL).securityOrigin() : undefined;
 }

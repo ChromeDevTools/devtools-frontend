@@ -146,6 +146,12 @@ export interface RequestOptions {
   modelId?: string;
 }
 
+export type AllowedOriginResult = {
+  origin: string|undefined,
+}|{
+  blocked: true,
+};
+
 export interface AgentOptions {
   aidaClient: Host.AidaClient.AidaClient;
   serverSideLoggingEnabled?: boolean;
@@ -153,7 +159,7 @@ export interface AgentOptions {
   confirmSideEffectForTest?: typeof Promise.withResolvers;
   onInspectElement?: () => Promise<SDK.DOMModel.DOMNode|null>;
   history?: Host.AidaClient.Content[];
-  allowedOrigin?: () => string | undefined;
+  allowedOrigin?: () => AllowedOriginResult;
   lighthouseRecording?: (overrides?: LHModel.RunTypes.RunOverrides) => Promise<LHModel.ReporterTypes.ReportJSON|null>;
 }
 
@@ -384,6 +390,7 @@ export abstract class AiAgent<T> {
   readonly #serverSideLoggingEnabled: boolean;
   readonly confirmSideEffect: typeof Promise.withResolvers;
   readonly #functionDeclarations = new Map<string, FunctionDeclaration<Record<string, unknown>, unknown>>();
+  readonly #allowedOrigin?: () => AllowedOriginResult;
 
   /**
    * Used in the debug mode and evals.
@@ -416,6 +423,7 @@ export abstract class AiAgent<T> {
     this.#sessionId = opts.sessionId ?? crypto.randomUUID();
     this.confirmSideEffect = opts.confirmSideEffectForTest ?? (() => Promise.withResolvers());
     this.#history = opts.history ?? [];
+    this.#allowedOrigin = opts.allowedOrigin;
   }
 
   async enhanceQuery(query: string, selected: ConversationContext<T>|null, multimodalInputType?: MultimodalInputType):
@@ -711,6 +719,13 @@ export abstract class AiAgent<T> {
       }
 
       if (functionCall) {
+        const allowedOriginResult = this.#allowedOrigin?.();
+        if (allowedOriginResult && 'blocked' in allowedOriginResult) {
+          // Abort immediately if the page navigated before we could lock the origin.
+          // This prevents the AI from accessing data from the new page.
+          yield this.#createErrorResponse(ErrorType.CROSS_ORIGIN);
+          break;
+        }
         try {
           const result = yield*
               this.#callFunction(

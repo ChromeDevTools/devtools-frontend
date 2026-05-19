@@ -259,7 +259,7 @@ describeWithMockConnection('ContextSelectionAgent', function() {
           }],
           [{explanation: 'Done'}],
         ]),
-        allowedOrigin: () => 'https://example.com',
+        allowedOrigin: () => ({origin: 'https://example.com'}),
       });
 
       await Array.fromAsync(agent.run('test', {selected: null}));
@@ -331,7 +331,7 @@ describeWithMockConnection('ContextSelectionAgent', function() {
           }],
           [{explanation: 'Done'}],
         ]),
-        allowedOrigin: () => 'https://example.com',
+        allowedOrigin: () => ({origin: 'https://example.com'}),
       });
 
       await Array.fromAsync(agent.run('test', {selected: null}));
@@ -385,7 +385,7 @@ describeWithMockConnection('ContextSelectionAgent', function() {
           }],
           [{explanation: 'Done'}],
         ]),
-        allowedOrigin: () => 'https://example.com',
+        allowedOrigin: () => ({origin: 'https://example.com'}),
       });
 
       await Array.fromAsync(agent.run('test', {selected: null}));
@@ -449,7 +449,7 @@ describeWithMockConnection('ContextSelectionAgent', function() {
           }],
           [{explanation: 'Done'}],
         ]),
-        allowedOrigin: () => 'https://example.com',
+        allowedOrigin: () => ({origin: 'https://example.com'}),
       });
 
       await Array.fromAsync(agent.run('test', {selected: null}));
@@ -507,7 +507,7 @@ describeWithMockConnection('ContextSelectionAgent', function() {
           }],
           [{explanation: 'Done'}],
         ]),
-        allowedOrigin: () => 'https://example.com',
+        allowedOrigin: () => ({origin: 'https://example.com'}),
       });
 
       await Array.fromAsync(agent.run('test', {selected: null}));
@@ -638,7 +638,7 @@ describeWithMockConnection('ContextSelectionAgent', function() {
           }],
           [{explanation: 'Done'}],
         ]),
-        allowedOrigin: () => 'https://example.com',
+        allowedOrigin: () => ({origin: 'https://example.com'}),
       });
 
       const responses = await Array.fromAsync(agent.run('test', {selected: null}));
@@ -686,7 +686,7 @@ describeWithMockConnection('ContextSelectionAgent', function() {
           }],
           [{explanation: 'Done'}],
         ]),
-        allowedOrigin: () => 'https://example.com',
+        allowedOrigin: () => ({origin: 'https://example.com'}),
       });
 
       const responses = await Array.fromAsync(agent.run('test', {selected: null}));

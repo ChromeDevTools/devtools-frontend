@@ -10,6 +10,7 @@ import type * as Protocol from '../../generated/protocol.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import {createNetworkRequest, mockAidaClient} from '../../testing/AiAssistanceHelpers.js';
 import {
+  createTarget,
   describeWithEnvironment,
   updateHostConfig,
 } from '../../testing/EnvironmentHelpers.js';
@@ -471,5 +472,109 @@ describeWithEnvironment('AiConversation', () => {
     // ActionResponse should have widgets removed
     assert.strictEqual(serialized.history[2].type, AiAssistance.AiAgent.ResponseType.ACTION);
     assert.isUndefined((serialized.history[2] as AiAssistance.AiAgent.ActionResponse).widgets);
+  });
+
+  async function testNavigationDuringRun({
+    navigationUrl,
+    expectBlocked,
+  }: {
+    navigationUrl: Platform.DevToolsPath.UrlString,
+    expectBlocked: boolean,
+  }) {
+    updateHostConfig({devToolsAiAssistanceContextSelectionAgent: {enabled: true}});
+
+    const origin = Platform.DevToolsPath.urlString`https://example.com`;
+
+    const target = createTarget({url: Platform.DevToolsPath.urlString`${origin}/`});
+    target.setInspectedURL(Platform.DevToolsPath.urlString`${origin}/`);
+
+    const request = SDK.NetworkRequest.NetworkRequest.create(
+        'requestId1' as Protocol.Network.RequestId,
+        Platform.DevToolsPath.urlString`${origin}/foo`,
+        Platform.DevToolsPath.urlString`${origin}/foo`,
+        null,
+        null,
+        null,
+    );
+    request.statusCode = 200;
+    request.setIssueTime(0, 0);
+    request.endTime = 1;
+
+    const networkLog = Logs.NetworkLog.NetworkLog.instance();
+    sinon.stub(networkLog, 'requests').returns([request]);
+
+    const aidaClient = mockAidaClient([
+      [{
+        functionCalls: [{
+          name: 'listNetworkRequests',
+          args: {},
+        }],
+        explanation: '',
+      }],
+      [{explanation: 'Done'}],
+    ]);
+    const conversation = new AiAssistance.AiConversation.AiConversation({
+      type: AiAssistance.AiHistoryStorage.ConversationType.NONE,
+      data: [],
+      id: 'test-id',
+      isReadOnly: false,
+      aidaClient,
+    });
+
+    const generator = conversation.run('test');
+
+    // First yield should be the UserQuery
+    const firstYield = await generator.next();
+    assert.strictEqual(firstYield.value?.type, AiAssistance.AiAgent.ResponseType.USER_QUERY);
+
+    // Simulate navigation BEFORE the tool call is processed
+    target.setInspectedURL(navigationUrl);
+    const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
+    assert.exists(resourceTreeModel);
+    resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.PrimaryPageChanged, {
+      frame: {
+        resourceTreeModel: () => resourceTreeModel,
+        unreachableUrl: () => '',
+      } as unknown as SDK.ResourceTreeModel.ResourceTreeFrame,
+      type: SDK.ResourceTreeModel.PrimaryPageChangeType.NAVIGATION
+    });
+
+    // Continue running the generator to completion
+    const results = [];
+    for await (const result of generator) {
+      results.push(result);
+    }
+
+    const errorResult = results.find(r => r.type === AiAssistance.AiAgent.ResponseType.ERROR);
+    if (expectBlocked) {
+      assert.exists(errorResult);
+      assert.strictEqual(errorResult.error, AiAssistance.AiAgent.ErrorType.CROSS_ORIGIN);
+      sinon.assert.callCount(aidaClient.doConversation, 1);
+    } else {
+      assert.isUndefined(errorResult);
+      sinon.assert.callCount(aidaClient.doConversation, 2);
+    }
+  }
+
+  it('blocks tool calls if navigation occurs during the run', async () => {
+    const otherOrigin = Platform.DevToolsPath.urlString`https://other.com`;
+    await testNavigationDuringRun({
+      navigationUrl: Platform.DevToolsPath.urlString`${otherOrigin}/`,
+      expectBlocked: true,
+    });
+  });
+
+  it('does NOT block tool calls if navigation is to about://', async () => {
+    await testNavigationDuringRun({
+      navigationUrl: Platform.DevToolsPath.urlString`about://`,
+      expectBlocked: false,
+    });
+  });
+
+  it('does NOT block tool calls if navigation is to chrome://terms', async () => {
+    await testNavigationDuringRun({
+      navigationUrl: Platform.DevToolsPath.urlString`chrome://terms`,
+      expectBlocked: false,
+    });
   });
 });

@@ -245,6 +245,8 @@ export class RecorderController extends LitElement {
   @state() declare private replayExtensions: Extensions.ExtensionManager.Extension[];
 
   @state() declare private viewDescriptor?: PublicExtensions.RecorderPluginManager.ViewDescriptor;
+  #extensionViewShowRequestedListener?:
+      (event: Common.EventTarget.EventTargetEvent<PublicExtensions.RecorderPluginManager.ViewDescriptor>) => void;
 
   #recorderSettings = new Models.RecorderSettings.RecorderSettings();
   #shortcutHelper = new Models.RecorderShortcutHelper.RecorderShortcutHelper();
@@ -293,6 +295,13 @@ export class RecorderController extends LitElement {
 
     if (this.currentRecordingSession) {
       void this.currentRecordingSession.stop();
+    }
+    if (this.#extensionViewShowRequestedListener) {
+      PublicExtensions.RecorderPluginManager.RecorderPluginManager.instance().removeEventListener(
+          PublicExtensions.RecorderPluginManager.Events.SHOW_VIEW_REQUESTED,
+          this.#extensionViewShowRequestedListener,
+      );
+      this.#extensionViewShowRequestedListener = undefined;
     }
   }
 
@@ -482,7 +491,40 @@ export class RecorderController extends LitElement {
       return;
     }
     const pluginManager = PublicExtensions.RecorderPluginManager.RecorderPluginManager.instance();
-    const promise = pluginManager.once(PublicExtensions.RecorderPluginManager.Events.SHOW_VIEW_REQUESTED);
+
+    if (this.#extensionViewShowRequestedListener) {
+      pluginManager.removeEventListener(
+          PublicExtensions.RecorderPluginManager.Events.SHOW_VIEW_REQUESTED,
+          this.#extensionViewShowRequestedListener,
+      );
+      this.#extensionViewShowRequestedListener = undefined;
+    }
+
+    let resolveView: (descriptor: PublicExtensions.RecorderPluginManager.ViewDescriptor) => void;
+    const promise = new Promise<PublicExtensions.RecorderPluginManager.ViewDescriptor>(resolve => {
+      resolveView = resolve;
+    });
+
+    this.#extensionViewShowRequestedListener =
+        (event: Common.EventTarget.EventTargetEvent<PublicExtensions.RecorderPluginManager.ViewDescriptor>): void => {
+          const descriptor = event.data;
+          if (descriptor.extensionOrigin === extension.getOrigin()) {
+            if (this.#extensionViewShowRequestedListener) {
+              pluginManager.removeEventListener(
+                  PublicExtensions.RecorderPluginManager.Events.SHOW_VIEW_REQUESTED,
+                  this.#extensionViewShowRequestedListener,
+              );
+              this.#extensionViewShowRequestedListener = undefined;
+            }
+            resolveView(descriptor);
+          }
+        };
+
+    pluginManager.addEventListener(
+        PublicExtensions.RecorderPluginManager.Events.SHOW_VIEW_REQUESTED,
+        this.#extensionViewShowRequestedListener,
+    );
+
     extension.replay(this.currentRecording.flow);
     const descriptor = await promise;
     this.viewDescriptor = descriptor;
@@ -495,6 +537,13 @@ export class RecorderController extends LitElement {
     }
     if (this.viewDescriptor) {
       this.viewDescriptor = undefined;
+    }
+    if (this.#extensionViewShowRequestedListener) {
+      PublicExtensions.RecorderPluginManager.RecorderPluginManager.instance().removeEventListener(
+          PublicExtensions.RecorderPluginManager.Events.SHOW_VIEW_REQUESTED,
+          this.#extensionViewShowRequestedListener,
+      );
+      this.#extensionViewShowRequestedListener = undefined;
     }
     if (event.extension) {
       return await this.#onPlayViaExtension(event.extension);

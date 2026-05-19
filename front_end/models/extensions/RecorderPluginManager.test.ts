@@ -2,7 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Platform from '../../core/platform/platform.js';
 import * as Extensions from '../extensions/extensions.js';
+
+const {urlString} = Platform.DevToolsPath;
 
 describe('RecorderPluginManager', () => {
   it('emits events when the plugin list is modified', async () => {
@@ -15,7 +18,7 @@ describe('RecorderPluginManager', () => {
         Extensions.RecorderPluginManager.Events.PLUGIN_REMOVED,
         event => events.push({event: 'pluginRemoved', plugin: event.data}));
     const plugin = new Extensions.RecorderExtensionEndpoint.RecorderExtensionEndpoint(
-        'test', new MessageChannel().port1, ['export'], 'application/javascript');
+        'test', new MessageChannel().port1, ['export'], urlString`chrome-extension://test`, 'application/javascript');
 
     manager.addPlugin(plugin);
     manager.removePlugin(plugin);

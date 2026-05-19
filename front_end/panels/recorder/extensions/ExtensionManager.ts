@@ -10,6 +10,7 @@ let instance: ExtensionManager|null = null;
 
 export interface Extension {
   getName(): string;
+  getOrigin(): string;
   getMediaType(): string|undefined;
   stringify(recording: Object): Promise<string>;
   stringifyStep(step: Object): Promise<string>;

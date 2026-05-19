@@ -447,6 +447,50 @@ describeWithDevtoolsExtension('Extensions', {}, context => {
     await context.chrome.devtools?.recorder.unregisterRecorderExtensionPlugin(extensionPlugin);
   });
 
+  it('cannot show a Recorder view registered by another extension', async () => {
+    const view = await context.chrome.devtools?.recorder.createView('Test', 'test.html');
+    assert.isNotNull(view);
+    const viewId = (view as unknown as {_id: string})._id;
+
+    const server = PanelCommon.ExtensionServer.ExtensionServer.instance();
+    const attackerOrigin = Platform.DevToolsPath.urlString`chrome-extension://attacker`;
+    const attackerDescriptor = {
+      startPage: `${attackerOrigin}/blank.html`,
+      name: 'AttackerExtension',
+      exposeExperimentalAPIs: true,
+      allowFileAccess: false,
+    };
+    server.addExtension(attackerDescriptor);
+
+    const channel = new MessageChannel();
+    (server as unknown as {
+      registerExtension: (origin: Platform.DevToolsPath.UrlString, port: MessagePort) => void,
+    }).registerExtension(attackerOrigin, channel.port1);
+
+    const responsePromise = new Promise<{
+      command: string,
+      connectId: number,
+      result: PanelCommon.ExtensionServer.Record,
+    }>(resolve => {
+      channel.port2.onmessage = (event: MessageEvent<{
+        command: string,
+        connectId: number,
+        result: PanelCommon.ExtensionServer.Record,
+      }>) => resolve(event.data);
+    });
+    channel.port2.postMessage({
+      command: 'showRecorderView',
+      id: viewId,
+      requestId: 123,
+    });
+
+    const response = await responsePromise;
+    assert.isTrue(response.result.isError);
+    assert.strictEqual(response.result.code, 'E_FAILED');
+    assert.strictEqual(response.result.description, 'Operation failed: %s');
+    assert.deepEqual(response.result.details, ['Permission denied']);
+  });
+
   it('reload only the main toplevel frame', async () => {
     const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
     assert.isNotNull(target);

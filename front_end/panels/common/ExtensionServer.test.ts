@@ -50,6 +50,21 @@ describeWithDevtoolsExtension('Extensions', {}, context => {
     sinon.assert.notCalled(addExtensionStub);
   });
 
+  it('applies network.addRequestHeaders when no host policy is configured', async () => {
+    const target = createTarget({type: SDK.Target.Type.FRAME});
+    target.setInspectedURL(urlString`http://example.com`);
+    assert.exists(context.chrome.devtools);
+
+    const headersCall = spyCall(SDK.NetworkManager.MultitargetNetworkManager.instance(), 'setExtraHTTPHeaders');
+
+    const networkApi =
+        context.chrome.devtools?.network as unknown as {addRequestHeaders(headers: Record<string, string>): void};
+    networkApi.addRequestHeaders({'X-Test': 'v'});
+
+    const {args} = await headersCall;
+    assert.deepEqual(args[0], {'X-Test': 'v'});
+  });
+
   it('defers loading extensions until after navigation from a privileged to a non-privileged host', async () => {
     const addExtensionSpy = sinon.spy(PanelCommon.ExtensionServer.ExtensionServer.instance(), 'addExtension');
     const target = createTarget({type: SDK.Target.Type.FRAME});
@@ -823,6 +838,23 @@ describeWithDevtoolsExtension('Runtime hosts policy', {hostsPolicy}, context => 
 
     assert.deepEqual(project.uiSourceCodeForURL(allowedUrl)?.content(), 'modified');
     assert.deepEqual(project.uiSourceCodeForURL(blockedUrl)?.content(), 'content');
+  });
+
+  it('blocks network.addRequestHeaders when runtime_blocked_hosts is set', async () => {
+    const target = createTarget({type: SDK.Target.Type.FRAME});
+    target.setInspectedURL(allowedUrl);
+    assert.exists(context.chrome.devtools);
+
+    const setHeadersSpy = sinon.spy(SDK.NetworkManager.MultitargetNetworkManager.instance(), 'setExtraHTTPHeaders');
+
+    const networkApi =
+        context.chrome.devtools?.network as unknown as {addRequestHeaders(headers: Record<string, string>): void};
+    networkApi.addRequestHeaders({'X-Test': '1'});
+    // Round-trip a callback command on the same MessagePort to ensure the
+    // addRequestHeaders message has been processed before we assert.
+    await new Promise<object>(cb => context.chrome.devtools?.network.getHAR(cb));
+
+    sinon.assert.notCalled(setHeadersSpy);
   });
 });
 

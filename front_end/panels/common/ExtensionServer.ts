@@ -614,15 +614,25 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     return undefined;
   }
 
-  private onAddRequestHeaders(message: Extensions.ExtensionAPI.PrivateAPI.ExtensionServerRequestMessage): Record
-      |undefined {
+  private onAddRequestHeaders(
+      message: Extensions.ExtensionAPI.PrivateAPI.ExtensionServerRequestMessage, port: MessagePort): Record|undefined {
     if (message.command !== Extensions.ExtensionAPI.PrivateAPI.Commands.AddRequestHeaders) {
       return this.status.E_BADARG(
           'command', `expected ${Extensions.ExtensionAPI.PrivateAPI.Commands.AddRequestHeaders}`);
     }
-    const id = message.extensionId;
-    if (typeof id !== 'string') {
-      return this.status.E_BADARGTYPE('extensionId', typeof id, 'string');
+    // Use the authenticated port origin instead of the caller-supplied extensionId to
+    // prevent one extension from manipulating another extension's header set.
+    const id = this.getExtensionOrigin(port);
+    const extension = this.registeredExtensions.get(id);
+    if (!extension) {
+      return this.status.E_FAILED('Permission denied');
+    }
+    // Refuse the request if the extension has any runtime_blocked_hosts policy entries.
+    // MultitargetNetworkManager fans out setExtraHTTPHeaders to every attached network
+    // agent (including OOPIF/subframe targets), so there is no safe per-target URL check
+    // here. Blocking the call when blocked hosts exist is the minimal safe mitigation.
+    if (extension.hostsPolicy.runtimeBlockedHosts.length > 0) {
+      return this.status.E_FAILED('Permission denied');
     }
     let extensionHeaders = this.extraHeaders.get(id);
     if (!extensionHeaders) {
@@ -977,8 +987,6 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     }
     const options = (message.options || {});
 
-    SDK.NetworkManager.MultitargetNetworkManager.instance().setUserAgentOverride(
-        typeof options.userAgent === 'string' ? options.userAgent : '', null);
     let injectedScript;
     if (options.injectedScript) {
       injectedScript = '(function(){' + options.injectedScript + '})()';
@@ -991,6 +999,11 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     if (!this.extensionAllowedOnTarget(target, port)) {
       return this.status.E_FAILED('Permission denied');
     }
+    // Apply the UA override only after confirming the extension is allowed on this target,
+    // so that extensions blocked by runtime_blocked_hosts cannot override the UA for the
+    // primary page (and, via singleton persistence, for future targets that attach later).
+    SDK.NetworkManager.MultitargetNetworkManager.instance().setUserAgentOverride(
+        typeof options.userAgent === 'string' ? options.userAgent : '', null);
     resourceTreeModel?.reloadPage(Boolean(options.ignoreCache), injectedScript);
     return this.status.OK();
   }

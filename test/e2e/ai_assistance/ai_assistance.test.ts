@@ -698,7 +698,7 @@ describe('AI Assistance', function() {
           name: 'executeJavaScript',
           response: {
             result:
-                `Error: executing the line "await setElementStyles($0, { 'non/css/prop': 'blue' });" failed with the following error:\nNone of the suggested CSS properties or their values for selector were considered valid by the browser's CSS engine. Please ensure property names are correct and values match the expected format for those properties.`,
+                `Error: None of the suggested CSS properties or their values for selector were considered valid by the browser's CSS engine. Please ensure property names are correct and values match the expected format for those properties.`,
           },
         },
       }]

@@ -262,12 +262,13 @@ Cannot read properties of undefined (reading 'bar')`);
     });
 
     it('runs stringification on the page for objects', async () => {
-      const object = new SDK.RemoteObject.LocalJSONObject({});
+      const object = SDK.RemoteObject.RemoteObject.fromLocalObject(new SDK.RemoteObject.LocalJSONObject({}));
       const callFunctionStub = sinon.stub(object, 'callFunction');
       callFunctionStub.resolves({object: new SDK.RemoteObject.LocalJSONObject('result')});
       const result = await AiAssistance.EvaluateAction.stringifyRemoteObject(object, exampleCode);
       assert.strictEqual(result, 'result');
-      sinon.assert.calledOnceWithExactly(callFunctionStub, AiAssistance.EvaluateAction.stringifyObjectOnThePage);
+      sinon.assert.calledOnceWithExactly(
+          callFunctionStub, AiAssistance.EvaluateAction.stringifyObjectOnThePage, undefined, {throwOnSideEffect: true});
     });
 
     describe('HTMLElement', () => {

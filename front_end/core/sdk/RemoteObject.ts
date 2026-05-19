@@ -210,14 +210,15 @@ export abstract class RemoteObject {
     return null;
   }
 
-  callFunction<T, U>(_functionDeclaration: (this: U, ...args: any[]) => T, _args?: Protocol.Runtime.CallArgument[]):
-      Promise<CallFunctionResult> {
+  callFunction<T, U>(
+      _functionDeclaration: (this: U, ...args: any[]) => T, _args?: Protocol.Runtime.CallArgument[],
+      _params?: {throwOnSideEffect?: boolean}|undefined): Promise<CallFunctionResult> {
     throw new Error('Not implemented');
   }
 
   callFunctionJSON<T, U>(
-      _functionDeclaration: (this: U, ...args: any[]) => T,
-      _args: Protocol.Runtime.CallArgument[]|undefined): Promise<T|null> {
+      _functionDeclaration: (this: U, ...args: any[]) => T, _args: Protocol.Runtime.CallArgument[]|undefined,
+      _params?: {throwOnSideEffect?: boolean}|undefined): Promise<T|null> {
     throw new Error('Not implemented');
   }
 
@@ -523,13 +524,14 @@ export class RemoteObjectImpl extends RemoteObject {
   }
 
   override async callFunction<T, U>(
-      functionDeclaration: (this: U, ...args: any[]) => T,
-      args?: Protocol.Runtime.CallArgument[]): Promise<CallFunctionResult> {
+      functionDeclaration: (this: U, ...args: any[]) => T, args?: Protocol.Runtime.CallArgument[],
+      params?: {throwOnSideEffect?: boolean}): Promise<CallFunctionResult> {
     const response = await this.#runtimeAgent.invoke_callFunctionOn({
       objectId: this.#objectId,
       functionDeclaration: functionDeclaration.toString(),
       arguments: args,
       silent: true,
+      throwOnSideEffect: params?.throwOnSideEffect,
     });
     if (response.getError()) {
       return {object: null, wasThrown: false};
@@ -542,14 +544,15 @@ export class RemoteObjectImpl extends RemoteObject {
   }
 
   override async callFunctionJSON<T, U>(
-      functionDeclaration: (this: U, ...args: any[]) => T,
-      args: Protocol.Runtime.CallArgument[]|undefined): Promise<T|null> {
+      functionDeclaration: (this: U, ...args: any[]) => T, args: Protocol.Runtime.CallArgument[]|undefined,
+      params?: {throwOnSideEffect?: boolean}): Promise<T|null> {
     const response = await this.#runtimeAgent.invoke_callFunctionOn({
       objectId: this.#objectId,
       functionDeclaration: functionDeclaration.toString(),
       arguments: args,
       silent: true,
       returnByValue: true,
+      throwOnSideEffect: params?.throwOnSideEffect,
     });
     if (response.getError() || response.exceptionDetails) {
       return null;

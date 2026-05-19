@@ -19,12 +19,13 @@ export interface GetErrorStackOutput {
 
 /* istanbul ignore next */
 export function getErrorStackOnThePage(this: Error): GetErrorStackOutput {
-  return {stack: this.stack, message: this.message};
+  // Using this.stack causes side effect checks to throw.
+  return {stack: '', message: this.message};
 }
 
 /* istanbul ignore next */
 export function stringifyObjectOnThePage(this: unknown): string {
-  const seenBefore = new WeakMap();
+  const seenBefore = new Map();
   return JSON.stringify(this, function replacer(this: unknown, key: string, value: unknown) {
     if (typeof value === 'object' && value !== null) {
       if (seenBefore.has(value)) {
@@ -70,7 +71,7 @@ export async function stringifyRemoteObject(
       return `${object.description}`;
     case Protocol.Runtime.RemoteObjectType.Object: {
       if (object.subtype === 'error') {
-        const res = await object.callFunctionJSON(getErrorStackOnThePage, []);
+        const res = await object.callFunctionJSON(getErrorStackOnThePage, [], {throwOnSideEffect: true});
 
         if (!res) {
           throw new Error('Could not stringify the object' + object);
@@ -78,8 +79,9 @@ export async function stringifyRemoteObject(
 
         return EvaluateAction.stringifyError(res, functionDeclaration);
       }
-      const res = await object.callFunction(stringifyObjectOnThePage);
-
+      const res = await object.callFunction(stringifyObjectOnThePage, undefined, {
+        throwOnSideEffect: true,
+      });
       if (!res.object || res.object.type !== Protocol.Runtime.RemoteObjectType.String) {
         throw new Error('Could not stringify the object' + object);
       }

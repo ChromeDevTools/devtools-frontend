@@ -1,0 +1,24 @@
+{
+  "network": [
+    {
+      "label": "cors-credentials",
+      "url": "http://localhost:4321/devtools-times/articles/life-with-charlie"
+    },
+    {
+      "label": "bad-request-4xx",
+      "url": "http://localhost:4321/devtools-times/articles/silent-architects"
+    },
+    {
+      "label": "redirect-3xx",
+      "url": "http://localhost:4321/devtools-times/articles/coastal-pulse"
+    },
+    {
+      "label": "request-info",
+      "url": "http://localhost:4321/devtools-times/articles/breakthrough-research"
+    },
+    {
+      "label": "server-error-5xx",
+      "url": "http://localhost:4321/devtools-times/articles/coffee-alchemy"
+    }
+  ]
+}

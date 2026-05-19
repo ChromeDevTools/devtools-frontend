@@ -37,6 +37,12 @@ Tip: You can add a `--label <label>` argument to the run to label the dataset. F
 npm run auto-run -- --label title-change --example-urls <example-url-1> <example-url-2>
 ```
 
+Tip: You can omit `--example-urls` and `--label` to run the script in **Recipe Mode**. In this mode, it reads URLs and labels from `auto-run/recipes.json` for the specified `--test-target`. For example:
+```bash
+npm run auto-run -- --test-target network --grade
+```
+This will run all available evaluations for the target, generate separate output files for each label, and grade them if `--grade` is specified.
+
 Tip: You can add a `--eval` flag to the run to generate a secondary file named `*.eval.json` that contains the output in the format the evaluation suite expects.
 
 Tip: You can add a `--grade` flag to the run to automatically grade the results. This flag generates the `.eval.json` file, copies it to the correct subfolder in `suite/outputs/outputs/` (renaming it to use only the label, e.g., `network-test.json`), and then executes the corresponding grader script (e.g., `suite/network.eval.ts`) to calculate scores using the LLM judge.

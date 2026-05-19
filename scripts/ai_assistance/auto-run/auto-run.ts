@@ -11,8 +11,7 @@ import {hideBin} from 'yargs/helpers';
 import yargs from 'yargs/yargs';
 
 import {convertRawOutputToEval, type RawOutput} from '../suite/to_eval_output.ts';
-import type {
-  ExampleMetadata, ExecutedExample, IndividualPromptRequestResponse, Logs, RpcGlobalId, RunResult} from '../types.js';
+import type {ExampleMetadata, ExecutedExample, IndividualPromptRequestResponse, Logs, RpcGlobalId} from '../types.js';
 
 import {createTargetExecutor} from './targets/factory.ts';
 import type {TargetExecutor, TargetPreparationResult} from './targets/interface.ts';
@@ -31,7 +30,7 @@ const userArgsBuilder = yargs(hideBin(process.argv))
                             .option('example-urls', {
                               string: true,
                               type: 'array',
-                              demandOption: true,
+                              demandOption: false,
                             })
                             .option('parallel', {
                               boolean: true,
@@ -68,6 +67,15 @@ const userArgsBuilder = yargs(hideBin(process.argv))
                               describe: 'Automatically grade the result',
                               boolean: true,
                               default: false,
+                            })
+                            .check(argv => {
+                              const rawArgs = hideBin(process.argv);
+                              const hasLabel = rawArgs.includes('--label');
+                              const hasExampleUrls = argv['example-urls'] && argv['example-urls'].length > 0;
+                              if (!hasExampleUrls && hasLabel) {
+                                throw new Error('Cannot provide --label when running without --example-urls');
+                              }
+                              return true;
                             });
 type UserArgs = ReturnType<typeof userArgsBuilder.parseSync>;
 
@@ -135,6 +143,7 @@ class Logger {
 
 export class Example {
   #url: string;
+  #label: string;
   #browser: Browser;
   #ready = false;
   #page: Page|null = null;
@@ -148,9 +157,10 @@ export class Example {
   #exampleUrls: readonly string[];
 
   constructor(
-      url: string, browser: Browser, userArgs: UserArgs, logger: Logger, traceDownloader: TraceDownloader,
-      exampleUrls: readonly string[]) {
+      url: string, label: string, browser: Browser, userArgs: UserArgs, logger: Logger,
+      traceDownloader: TraceDownloader, exampleUrls: readonly string[]) {
     this.#url = url;
+    this.#label = label;
     this.#browser = browser;
     this.#logger = logger;
     this.#userArgs = userArgs;
@@ -205,7 +215,7 @@ export class Example {
     }
   }
 
-  async execute(): Promise<ExecutedExample> {
+  async execute(): Promise<ExecutedExample&{label: string}> {
     if (!this.#devtoolsPage) {
       throw new Error('Cannot execute without DevTools page.');
     }
@@ -266,6 +276,7 @@ export class Example {
       return {
         results: filteredResults,
         metadata: {exampleId: this.id(), explanation: this.#preparationResult.explanation},
+        label: this.#label,
       };
 
     } finally {
@@ -295,21 +306,20 @@ export class Example {
   }
 }
 
-async function runInParallel(examples: Example[], logger: Logger): Promise<RunResult> {
+async function runInParallel(examples: Example[], logger: Logger):
+    Promise<Array<{results: IndividualPromptRequestResponse[], metadata: ExampleMetadata, label: string}>> {
   logger.head('Preparing examples...');
   for (const example of examples) {
     await example.prepare();
   }
 
   logger.head('Running examples...');
-  const allExampleResults: IndividualPromptRequestResponse[] = [];
-  const metadata: ExampleMetadata[] = [];
+  const results: Array<{results: IndividualPromptRequestResponse[], metadata: ExampleMetadata, label: string}> = [];
   await Promise.all(
       examples.filter(example => example.isReady()).map(async example => {
         try {
           const executedExample = await example.execute();
-          allExampleResults.push(...executedExample.results);
-          metadata.push(executedExample.metadata);
+          results.push(executedExample);
         } catch (err) {
           const errorMsg = err instanceof Error ? logger.formatError(err) : String(err);
           example.error(
@@ -319,12 +329,12 @@ async function runInParallel(examples: Example[], logger: Logger): Promise<RunRe
       }),
   );
 
-  return {allExampleResults, metadata};
+  return results;
 }
 
-async function runSequentially(examples: Example[], logger: Logger): Promise<RunResult> {
-  const allExampleResults: IndividualPromptRequestResponse[] = [];
-  const metadata: ExampleMetadata[] = [];
+async function runSequentially(examples: Example[], logger: Logger):
+    Promise<Array<{results: IndividualPromptRequestResponse[], metadata: ExampleMetadata, label: string}>> {
+  const results: Array<{results: IndividualPromptRequestResponse[], metadata: ExampleMetadata, label: string}> = [];
   logger.head('Running examples sequentially...');
   for (const example of examples) {
     await example.prepare();
@@ -334,29 +344,56 @@ async function runSequentially(examples: Example[], logger: Logger): Promise<Run
 
     try {
       const executedExample = await example.execute();
-      allExampleResults.push(...executedExample.results);
-      metadata.push(executedExample.metadata);
+      results.push(executedExample);
     } catch (err) {
       const errorMsg = err instanceof Error ? logger.formatError(err) : String(err);
       example.error(`There is an error, skipping it.\n${errorMsg}`);
     }
   }
 
-  return {allExampleResults, metadata};
+  return results;
+}
+
+function loadRecipes(target: string): Array<{url: string, label: string}> {
+  const recipesPath = path.resolve(import.meta.dirname, 'recipes.json');
+  if (!fs.existsSync(recipesPath)) {
+    throw new Error(`recipes.json not found at ${recipesPath}`);
+  }
+  const recipesData = JSON.parse(fs.readFileSync(recipesPath, 'utf8'));
+  const targetRecipes = recipesData[target];
+  if (!targetRecipes) {
+    throw new Error(`No recipes found for target ${target} in recipes.json`);
+  }
+  return targetRecipes;
 }
 
 // Run if this file invoked as a CLI directly
 async function main() {
   const userArgs: UserArgs = userArgsBuilder.parseSync();
 
-  const exampleUrls: string[] = [];
-  for (const exampleUrl of userArgs.exampleUrls) {
-    for (let i = 0; i < userArgs.times; i++) {
-      const url = new URL(exampleUrl);
-      if (i !== 0) {
-        url.searchParams.set('iteration', `${i + 1}`);
+  const pairsToRun: Array<{url: string, label: string}> = [];
+  const isRecipeMode = !userArgs.exampleUrls || userArgs.exampleUrls.length === 0;
+
+  if (isRecipeMode) {
+    const recipes = loadRecipes(userArgs.testTarget);
+    for (const recipe of recipes) {
+      for (let i = 0; i < userArgs.times; i++) {
+        const url = new URL(recipe.url);
+        if (i !== 0) {
+          url.searchParams.set('iteration', `${i + 1}`);
+        }
+        pairsToRun.push({url: url.toString(), label: recipe.label});
       }
-      exampleUrls.push(url.toString());
+    }
+  } else if (userArgs.exampleUrls) {
+    for (const exampleUrl of userArgs.exampleUrls) {
+      for (let i = 0; i < userArgs.times; i++) {
+        const url = new URL(exampleUrl);
+        if (i !== 0) {
+          url.searchParams.set('iteration', `${i + 1}`);
+        }
+        pairsToRun.push({url: url.toString(), label: userArgs.label});
+      }
     }
   }
 
@@ -390,35 +427,71 @@ async function main() {
 
   logger.head('Preparing examples...');
   const traceDownloader = new TraceDownloader();
-  const examples =
-      exampleUrls.map(exampleUrl => new Example(exampleUrl, browser, userArgs, logger, traceDownloader, exampleUrls));
 
-  const {allExampleResults, metadata} =
+  const allUrls = pairsToRun.map(p => p.url);
+  const examples =
+      pairsToRun.map(pair => new Example(pair.url, pair.label, browser, userArgs, logger, traceDownloader, allUrls));
+
+  const executionResults =
       userArgs.parallel ? await runInParallel(examples, logger) : await runSequentially(examples, logger);
 
   await browser.disconnect();
 
-  let score = 0;
-  {
+  function computeScore(results: IndividualPromptRequestResponse[]): number {
     let scoreSum = 0;
     let count = 0;
-    for (const example of allExampleResults) {
+    for (const example of results) {
       if (example.score !== undefined) {
         scoreSum += example.score;
         count++;
       }
     }
-    if (count > 0) {
-      score = scoreSum / count;
+    return count > 0 ? scoreSum / count : 0;
+  }
+
+  // Group results by label
+  const groupedResults = new Map<string, {results: IndividualPromptRequestResponse[], metadata: ExampleMetadata[]}>();
+  for (const res of executionResults) {
+    let group = groupedResults.get(res.label);
+    if (!group) {
+      group = {results: [], metadata: []};
+      groupedResults.set(res.label, group);
+    }
+    group.results.push(...res.results);
+    group.metadata.push(res.metadata);
+  }
+
+  // Write output for each group
+  for (const [label, data] of groupedResults) {
+    const score = computeScore(data.results);
+    const output: Output = {
+      score,
+      metadata: data.metadata,
+      examples: data.results,
+    };
+    writeOutput(output, {...userArgs, label});
+  }
+
+  // Run grader once at the end if --grade is set
+  if (userArgs.grade) {
+    const target = userArgs.testTarget;
+    const graderScript = path.resolve(import.meta.dirname, '..', 'suite', `${target}.eval.ts`);
+    if (fs.existsSync(graderScript)) {
+      console.info(`\n[Info]: Running grader ${graderScript} at the end`);
+      try {
+        const cwd = path.resolve(import.meta.dirname, '..');
+        const cmd = `node suite/${target}.eval.ts`;
+        console.info(`\n[Info]: Running command: ${cmd} in ${cwd}`);
+        const stdout = execSync(cmd, {cwd, encoding: 'utf8'});
+        console.info(stdout);
+      } catch (error) {
+        console.error(`\n[Error]: Grader failed`, error);
+      }
+    } else {
+      console.warn(`\n[Warn]: Grader script ${graderScript} not found.`);
     }
   }
 
-  const output: Output = {
-    score,
-    metadata,
-    examples: allExampleResults,
-  };
-  writeOutput(output, userArgs);
   logger.destroy();
 }
 
@@ -466,21 +539,6 @@ function writeOutput(
       fs.copyFileSync(evalOutputPath, copiedFilePath);
       console.info(`\n[Info]: Copied eval output to ${copiedFilePath}`);
 
-      const graderScript = path.resolve(import.meta.dirname, '..', 'suite', `${target}.eval.ts`);
-      if (fs.existsSync(graderScript)) {
-        console.info(`\n[Info]: Running grader ${graderScript}`);
-        try {
-          const cwd = path.resolve(import.meta.dirname, '..');
-          const cmd = `node suite/${target}.eval.ts`;
-          console.info(`\n[Info]: Running command: ${cmd} in ${cwd}`);
-          const stdout = execSync(cmd, {cwd, encoding: 'utf8'});
-          console.info(stdout);
-        } catch (error) {
-          console.error(`\n[Error]: Grader failed`, error);
-        }
-      } else {
-        console.warn(`\n[Warn]: Grader script ${graderScript} not found.`);
-      }
     }
   }
 }
